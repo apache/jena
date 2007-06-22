@@ -32,43 +32,43 @@ public interface TurtleParserConstants {
   int STRING_LITERAL_LONG2 = 26;
   int DIGITS = 27;
   int HEX = 28;
-  int Q_IRIref = 29;
-  int QNAME_NS = 30;
-  int QNAME = 31;
+  int IRIref = 29;
+  int PNAME_NS = 30;
+  int PNAME_LN = 31;
   int BLANK_NODE_LABEL = 32;
-  int VAR1 = 33;
-  int VAR2 = 34;
-  int LANGTAG = 35;
-  int A2Z = 36;
-  int A2ZN = 37;
-  int LPAREN = 38;
-  int RPAREN = 39;
-  int NIL = 40;
-  int LBRACE = 41;
-  int RBRACE = 42;
-  int LBRACKET = 43;
-  int RBRACKET = 44;
-  int ANON = 45;
-  int SEMICOLON = 46;
-  int COMMA = 47;
-  int DOT = 48;
-  int EQ = 49;
-  int ARROW = 50;
-  int DOLLAR = 51;
-  int QMARK = 52;
-  int TILDE = 53;
-  int COLON = 54;
-  int STAR = 55;
-  int SLASH = 56;
-  int RSLASH = 57;
-  int DATATYPE = 58;
-  int AT = 59;
-  int NCCHAR1p = 60;
-  int NCCHAR1 = 61;
-  int NCCHAR = 62;
-  int NCNAME_PREFIX = 63;
-  int NCNAME = 64;
-  int VARNAME = 65;
+  int VAR = 33;
+  int LANGTAG = 34;
+  int A2Z = 35;
+  int A2ZN = 36;
+  int LPAREN = 37;
+  int RPAREN = 38;
+  int NIL = 39;
+  int LBRACE = 40;
+  int RBRACE = 41;
+  int LBRACKET = 42;
+  int RBRACKET = 43;
+  int ANON = 44;
+  int SEMICOLON = 45;
+  int COMMA = 46;
+  int DOT = 47;
+  int EQ = 48;
+  int ARROW = 49;
+  int DOLLAR = 50;
+  int QMARK = 51;
+  int TILDE = 52;
+  int COLON = 53;
+  int STAR = 54;
+  int SLASH = 55;
+  int RSLASH = 56;
+  int DATATYPE = 57;
+  int AT = 58;
+  int PN_CHARS_BASE = 59;
+  int PN_CHARS_U = 60;
+  int PN_CHARS = 61;
+  int PN_PREFIX = 62;
+  int PN_LOCAL = 63;
+  int VARNAME = 64;
+  int UNKNOWN = 65;
 
   int DEFAULT = 0;
 
@@ -102,12 +102,11 @@ public interface TurtleParserConstants {
     "<STRING_LITERAL_LONG2>",
     "<DIGITS>",
     "<HEX>",
-    "<Q_IRIref>",
-    "<QNAME_NS>",
-    "<QNAME>",
+    "<IRIref>",
+    "<PNAME_NS>",
+    "<PNAME_LN>",
     "<BLANK_NODE_LABEL>",
-    "<VAR1>",
-    "<VAR2>",
+    "<VAR>",
     "<LANGTAG>",
     "<A2Z>",
     "<A2ZN>",
@@ -133,12 +132,13 @@ public interface TurtleParserConstants {
     "\"\\\\\"",
     "\"^^\"",
     "\"@\"",
-    "<NCCHAR1p>",
-    "<NCCHAR1>",
-    "<NCCHAR>",
-    "<NCNAME_PREFIX>",
-    "<NCNAME>",
+    "<PN_CHARS_BASE>",
+    "<PN_CHARS_U>",
+    "<PN_CHARS>",
+    "<PN_PREFIX>",
+    "<PN_LOCAL>",
     "<VARNAME>",
+    "<UNKNOWN>",
   };
 
 }

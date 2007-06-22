@@ -1,4 +1,4 @@
-// (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+// (c) Copyright 2006 Hewlett-Packard Development Company, LP
 // Turtle & N3 for Jena 
 
 // N3 compatible:
@@ -54,13 +54,13 @@ void Statement() : {}
   <DOT>
 }
 
-void Directive() : { Token t ; String iri ; }
+void Directive() : { Token t ; Node n ; }
 {
     // Need a token for @prefix?
     // Looks like a LANTAG
-    <PREFIX> t = <PNAME_NS> iri = IRI_REF()
+    <PREFIX> t = <QNAME_NS> n = Q_IRI_REF()
     { String s = fixupPrefix(t.image, t.beginLine, t.beginColumn) ;
-      setPrefix(t.beginLine, t.beginColumn, s, iri) ; }
+      setPrefix(t.beginLine, t.beginColumn, s, n.getURI()) ; }
 }
 
 // -------- PATH
@@ -119,19 +119,16 @@ void Object(Node s, Node p): { Node o ; }
 }
 
 // <<<<< SPARQL extract
-Node Verb() : { Node p ; String iri ;}
+Node Verb() : {Node p ;}
 {
-//  ( p = VarOrIRIref() | 
-  
-   ( iri = IRIref() { p = createNode(iri) ; }
-   | <KW_A> { p = nRDFtype ; }
-   | <ARROW> 
+  ( p = IRIref() | <KW_A> { p = nRDFtype ; } | 
+    <ARROW> 
       { p = nLogImplies ;
         if ( strictTurtle )
-          raiseException("=> (log:implies) not legal in Turtle",
+          raiseException("=> (log:implies) not legalin Turtle",
                           token.beginLine, token.beginColumn ) ;
       }
-    )
+  )
   { return p ; }
 }
 
@@ -216,13 +213,13 @@ Node Formula() : {Token t ; }
 
 Node Var() : { Token t ;}
 {
-    t = <VAR> 
+    ( t = <VAR1> | t = <VAR2> )
     { return createVariable(t.image, t.beginLine, t.beginColumn) ; }
 }
 
-Node GraphTerm() : { Node n ; String iri ; }
+Node GraphTerm() : { Node n ; }
 {
-  iri = IRIref()    { return createNode(iri) ; }
+  n = IRIref()          { return n ; }
 | 
   n = RDFLiteral()      { return n ; }
 |
@@ -240,9 +237,9 @@ Node GraphTerm() : { Node n ; String iri ; }
 
 Node NumericLiteral() : { Token t ; }
 {
-  t = <INTEGER> { return createLiteralInteger(t.image) ; }
-| t = <DECIMAL> { return createLiteralDecimal(t.image) ; }
-| t = <DOUBLE> { return createLiteralDouble(t.image) ; }
+  t = <INTEGER> { return makeNodeInteger(t.image) ; }
+| t = <DECIMAL> { return makeNodeDecimal(t.image) ; }
+| t = <DOUBLE> { return makeNodeDouble(t.image) ; }
 }
 
 // >>>>> SPARQL extract
@@ -251,13 +248,13 @@ Node RDFLiteral() : { Token t ; String lex = null ; }
 {
   lex = String()
   // Optional lang tag and datatype.
-  { String lang = null ; String dt = null ; }
+  { String lang = null ; Node uri = null ; }
   (
     lang = Langtag()
   |
-    ( <DATATYPE> dt = IRIref() )
+    ( <DATATYPE> uri = IRIref() )
   )?
-    { return createLiteral(lex, lang, dt) ; }
+    { return makeNode(lex, lang, uri) ; }
 } 
 
 String Langtag() : { Token t ; }
@@ -288,20 +285,20 @@ String String() : { Token t ;  String lex ; }
     }
 }
 
-String IRIref() : { String iri ; }
+Node IRIref() : { Node n ; }
 {
-  iri = IRI_REF() { return iri ; }
+  n = Q_IRI_REF() { return n ; }
 |
-  iri = PrefixedName() { return iri ; }
+  n = QName() { return n ; }
 }
 
-String PrefixedName() : { Token t ; }
+Node QName() : { Token t ; }
 {
-  ( t = <PNAME_LN>
-    { return resolvePName(t.image, t.beginLine, t.beginColumn) ; }
+  ( t = <QNAME>
+    { return createURIfromQName(t.image, t.beginLine, t.beginColumn) ; }
   |
-    t = <PNAME_NS>
-    { return resolvePName(t.image, t.beginLine, t.beginColumn) ; }
+    t = <QNAME_NS>
+    { return createURIfromQName(t.image, t.beginLine, t.beginColumn) ; }
   )
 }
 
@@ -315,10 +312,10 @@ Node BlankNode() :  { Token t = null ; }
 
 }
 
-String IRI_REF() : { Token t ; }
+Node Q_IRI_REF() : { Token t ; }
 {
-  t = <IRIref>
-  { return resolveQuotedIRI(t.image, t.beginLine, t.beginColumn) ; }
+  t = <Q_IRIref>
+  { return createNodeFromURI(t.image, t.beginLine, t.beginColumn) ; }
 }
 
 // ------------------------------------------
@@ -411,12 +408,15 @@ TOKEN :
 TOKEN:
 {
    // Includes # for relative URIs
-   <IRIref: "<" (~[ ">","<", "\"", "{", "}", "^", "\\", "|", "`",
-                      "\u0000"-"\u0020"])* ">" >
-|  <PNAME_NS: (<PN_PREFIX>)? ":" >
-|  <PNAME_LN: <PNAME_NS> <PN_LOCAL> >
-|  <BLANK_NODE_LABEL: "_:" <PN_LOCAL> >
-|  <VAR: "?" <VARNAME> >
+   <Q_IRIref: "<" (~[">","<","\u0000"-"\u0020"])* ">" >
+
+|  <QNAME_NS: (<NCNAME_PREFIX>)? ":" >
+|  <QNAME: (<NCNAME_PREFIX>)? ":" (<NCNAME>)? >
+|  <BLANK_NODE_LABEL: "_:" <NCNAME> >
+//|  <BLANK_NODE_ID: "_!:" <NCNAME> >
+
+|  <VAR1: <QMARK> <VARNAME> >
+|  <VAR2: <DOLLAR> <VARNAME> >
 |  <LANGTAG: <AT> (<A2Z>)+("-" (<A2ZN>)+)* >
 |  <#A2Z: ["a"-"z","A"-"Z"]>
 |  <#A2ZN: ["a"-"z","A"-"Z","0"-"9"]>
@@ -476,44 +476,36 @@ TOKEN :
 
 TOKEN:
 {
-  <#PN_CHARS_BASE:
+  // XML 1.1 NCNameStartChar without "_"
+  <#NCCHAR1p:
           ["A"-"Z"] | ["a"-"z"] |
           ["\u00C0"-"\u00D6"] | ["\u00D8"-"\u00F6"] | ["\u00F8"-"\u02FF"] |
           ["\u0370"-"\u037D"] | ["\u037F"-"\u1FFF"] |
           ["\u200C"-"\u200D"] | ["\u2070"-"\u218F"] | ["\u2C00"-"\u2FEF"] |
-          ["\u3001"-"\uD7FF"] | ["\uF900"-"\uFFFD"]
-          >
+          ["\u3001"-"\uD7FF"] | ["\uF900"-"\uFFFD"] >
           // [#x10000-#xEFFFF]
 |
-  <#PN_CHARS_U: <PN_CHARS_BASE> | "_" >
+  <#NCCHAR1: <NCCHAR1p> | "_" >
+
+// No trailing DOTs in qnames.
 |
-// No DOT
-  <#PN_CHARS: (<PN_CHARS_U> | "-" | ["0"-"9"] | "\u00B7" |
+  // #NCCHAR without "."
+  <#NCCHAR: (<NCCHAR1> | "-" | ["0"-"9"] | "\u00B7" |
               ["\u0300"-"\u036F"] | ["\u203F"-"\u2040"] ) >
 |
-  // No leading "_", no trailing ".", can have dot inside prefix name.
-  <#PN_PREFIX: <PN_CHARS_BASE> ((<PN_CHARS>|".")* <PN_CHARS>)? >
+  // NCNAME but no leading "_", no trailing ".", can have dot inside prefix name.
+  <#NCNAME_PREFIX: <NCCHAR1p> ((<NCCHAR>|".")* <NCCHAR>)?  >
 |
   // With a leading "_", no dot at end of local name.
-  <#PN_LOCAL: (<PN_CHARS_U> | ["0"-"9"]) ((<PN_CHARS>|".")* <PN_CHARS>)? >
+  <#NCNAME: <NCCHAR1> ((<NCCHAR>|".")* <NCCHAR>)?  >
 |
   // NCNAME without "-" and ".", allowing leading digits.
-  <#VARNAME: ( <PN_CHARS_U> | ["0"-"9"] )
-             ( <PN_CHARS_U> | ["0"-"9"] | "\u00B7" |
+  <#VARNAME: ( <NCCHAR1> | ["0"-"9"] )
+             ( <NCCHAR1> | ["0"-"9"] | "\u00B7" |
                ["\u0300"-"\u036F"] | ["\u203F"-"\u2040"] )* >
 }
-
-// Catch-all tokens.  Must be last.  
-// Any non-whitespace.  Causes a parser exception, rather than a
-// token manager error (with hidden line numbers).
-// Only bad IRIs (e.g. spaces) now give unhelpful parse errors.
-TOKEN:
-{
-  <#UNKNOWN: (~[" ","\t","\n","\r","\f" ])+ >
-}
-
 /*
- * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2006 Hewlett-Packard Development Company, LP
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions

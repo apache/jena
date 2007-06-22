@@ -19,20 +19,7 @@ import com.hp.hpl.jena.util.FileUtils;
 
 public class ParserTurtle
 {
-    public static void main(String argv[])
-    {
-        try{
-            FileInputStream f = new FileInputStream("WorkSpace/Turtle/T.ttl") ;
-            ParserTurtle p =  new ParserTurtle() ;
-            p.parse(null, "http://loclhost/unset/", f) ;
-        } catch (Exception ex)
-        {
-            //System.err.println(ex.getMessage()) ;
-            ex.printStackTrace() ;
-        }
-    }
-    
-    //private ParserTurtle() {}
+    public ParserTurtle() {}
     
     public void parse(Graph graph, String baseURI, InputStream in)
     {

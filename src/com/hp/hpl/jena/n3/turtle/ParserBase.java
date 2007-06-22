@@ -13,12 +13,14 @@ import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.n3.IRIResolver;
 import com.hp.hpl.jena.n3.JenaURIException;
+import com.hp.hpl.jena.rdf.model.AnonId;
 import com.hp.hpl.jena.shared.PrefixMapping;
 import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
 import com.hp.hpl.jena.vocabulary.RDF;
 
 public class ParserBase
 {
+    // Should be the same as ARQ ParserBase and Prologues.
     protected final Node XSD_TRUE   = Node.createLiteral("true", null, XSDDatatype.XSDboolean) ;
     protected final Node XSD_FALSE  = Node.createLiteral("false", null, XSDDatatype.XSDboolean) ;
     
@@ -37,17 +39,20 @@ public class ParserBase
     protected final Node nLogImplies    = Node.createURI(SWAP_LOG_NS+"implies") ;
     
     protected boolean strictTurtle = true ;
+    protected boolean skolomizedBNodes = true ; 
     
-    // Resolver
-    protected IRIResolver resolver = null ;
+    public ParserBase() {}
+    
+    
+    IRIResolver resolver = new IRIResolver() ;
     
     protected String getBaseURI()       { return resolver.getBaseIRI() ; }
     public void setBaseURI(String u)    { resolver = new IRIResolver(u) ; }
+    PrefixMapping prefixMapping = new PrefixMappingImpl() ;
+    public PrefixMapping getPrefixMapping() { return prefixMapping ; }
     
     // label => bNode for construct templates patterns
     LabelToNodeMap bNodeLabels = new LabelToNodeMap() ;
-    PrefixMapping prefixMapping = new PrefixMappingImpl() ;
-    public PrefixMapping getPrefixMapping() { return prefixMapping ; }
     
     TurtleEventHandler handler = null ; 
     public void setEventHandler(TurtleEventHandler h) { handler = h ; }
@@ -65,7 +70,7 @@ public class ParserBase
     
     protected void setPrefix(int line, int col, String prefix, String uri)
     {
-        getPrefixMapping().setNsPrefix(prefix, uri) ;
+        prefixMapping.setNsPrefix(prefix, uri) ;
         handler.prefix(line, col, prefix, uri) ;
     }
     
@@ -77,28 +82,28 @@ public class ParserBase
         return Integer.parseInt(lexicalForm) ;
     }
     
-    protected Node makeNodeInteger(String lexicalForm)
+    protected Node createLiteralInteger(String lexicalForm)
     {
         return Node.createLiteral(lexicalForm, null, XSDDatatype.XSDinteger) ;
     }
     
-    protected Node makeNodeDouble(String lexicalForm)
+    protected Node createLiteralDouble(String lexicalForm)
     {
         return Node.createLiteral(lexicalForm, null, XSDDatatype.XSDdouble) ;
     }
     
-    protected Node makeNodeDecimal(String lexicalForm)
+    protected Node createLiteralDecimal(String lexicalForm)
     {
         return Node.createLiteral(lexicalForm, null, XSDDatatype.XSDdecimal) ;
     }
 
-    protected Node makeNode(String lexicalForm, String langTag, Node datatype)
+    protected Node createLiteral(String lexicalForm, String langTag, Node datatype)
     {
         String uri = (datatype==null) ? null : datatype.getURI() ;
-        return makeNode(lexicalForm, langTag,  uri) ;
+        return createLiteral(lexicalForm, langTag,  uri) ;
     }
     
-    protected Node makeNode(String lexicalForm, String langTag, String datatypeURI)
+    protected Node createLiteral(String lexicalForm, String langTag, String datatypeURI)
     {
         Node n = null ;
         // Can't have type and lang tag.
@@ -147,64 +152,92 @@ public class ParserBase
     {
         return s.substring(n, s.length())  ;
     }
+
+    protected String resolveQuotedIRI(String iriStr ,int line, int column)
+    {
+        iriStr = stripQuotes(iriStr) ;
+        return resolveIRI(iriStr, line, column) ;
+    }
+    
+    protected String resolveIRI(String iriStr ,int line, int column)
+    {
+        if ( isBNodeIRI(iriStr) )
+            return iriStr ;
         
+        if ( resolver != null )
+        {
+                try {
+                    iriStr = resolver.resolve(iriStr) ;
+                } catch (JenaURIException ex)
+                { throwParseException(ex.getMessage(), line, column) ; }
+        }
+        return iriStr ;
+    }
+    
+    protected String resolvePName(String qname, int line, int column)
+    {
+        String s = prefixMapping.expandPrefix(qname) ;
+        if ( s == null )
+            throwParseException("Unresolved prefixed name: "+qname, line, column) ;
+        return s ;
+    }
+
+    
     final static String bNodeLabelStart = "_:" ;
     
+    protected Node createListNode() { return createBNode() ; }
+
+    // Unlabelled bNode.
+    protected Node createBNode() { return bNodeLabels.allocNode() ; }
+    
+    //  Labelled bNode.
+    protected Node createBNode(String label, int line, int column)
+    { 
+        return bNodeLabels.asNode(label) ;
+    }
     protected Node createVariable(String s, int line, int column)
     {
         s = s.substring(1) ; // Drop the marker
         return Node.createVariable(s) ;
     }
     
-    protected Node createURIfromQName(String s, int line, int column)
+    protected Node createNode(String iri)
     {
-        s = fixupQName(s, line, column) ;
-        return Node.createURI(s) ;
-    }
-    
-    
-    protected Node createNodeFromURI(String s, int line, int column)
-    {
-        s = stripQuotes(s) ;
-        String uriStr = s ;     // Mutated
-        
-        try {
-            uriStr = resolver.resolve(uriStr) ;
-        } catch (JenaURIException ex)
+        // Is it a bNode label? i.e. <_:xyz>
+        if ( isBNodeIRI(iri) )
         {
-            throw new TurtleParseException(exMsg(ex.getMessage(), line, column)) ;
+            String s = iri.substring(bNodeLabelStart.length()) ;
+            Node n = Node.createAnon(new AnonId(s)) ;
+            return n ;
         }
-        return Node.createURI(uriStr) ;
+        return Node.createURI(iri) ;
     }
     
-    protected void raiseException(String s , int line, int column)
+    protected boolean isBNodeIRI(String iri)
+    {
+        return skolomizedBNodes && iri.startsWith(bNodeLabelStart) ;
+    }
+    
+
+    
+//    protected Node createNodeFromURI(String s, int line, int column)
+//    {
+//        s = stripQuotes(s) ;
+//        String uriStr = s ;     // Mutated
+//        
+//        try {
+//            uriStr = resolver.resolve(uriStr) ;
+//        } catch (JenaURIException ex)
+//        {
+//            throw new TurtleParseException(exMsg(ex.getMessage(), line, column)) ;
+//        }
+//        return Node.createURI(uriStr) ;
+//    }
+    
+    protected void throwParseException(String s , int line, int column)
     {
         throw new TurtleParseException(exMsg(s, line, column)) ;
     }
-    
-    // Unlabelled bNode.
-    protected Node createBNode() { return bNodeLabels.allocNode() ; }
-    
-    // Labelled bNode.
-    protected Node createBNode(String label, int line, int column)
-    { 
-        return bNodeLabels.asNode(label) ;
-    }
-        
-    
-    
-    protected String fixupQName(String qname, int line, int column)
-    {
-        String s = this.getPrefixMapping().expandPrefix(qname) ;
-        
-        if ( s.equals(qname) )
-        {
-            String msg = "Line " + line + ", column " + column;
-            throw new TurtleParseException(msg+": Unresolved qname: "+qname) ; 
-        }
-        return s ;
-    }
-
     
     protected String fixupPrefix(String prefix, int line, int column)
     {
