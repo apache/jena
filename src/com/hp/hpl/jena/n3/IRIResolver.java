@@ -27,6 +27,7 @@ public class IRIResolver
     {
         if ( base == null )
             base = chooseBaseURI() ;
+        //baseStr = RelURI.resolve(base) ;
         baseStr = base ;
 //        if ( base == null )
 //            throw new JenaURIException("Null base IRI") ;
