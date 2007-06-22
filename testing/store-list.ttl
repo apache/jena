@@ -15,28 +15,28 @@ _:x rdf:type sdb:StoreList ;
       [ rdfs:label "Derby/Index" ;
         sdb:description <StoreDesc/derby-index.ttl> ]
 
-      [ rdfs:label "MySQL/Hash" ;
-        sdb:description <StoreDesc/mysql-hash.ttl> ]
-
-      [ rdfs:label "MySQL/Index" ;
-        sdb:description <StoreDesc/mysql-index.ttl> ]
-
+##       [ rdfs:label "MySQL/Hash" ;
+##         sdb:description <StoreDesc/mysql-hash.ttl> ]
+## 
+##       [ rdfs:label "MySQL/Index" ;
+##         sdb:description <StoreDesc/mysql-index.ttl> ]
+## 
       [ rdfs:label "PGSQL/Hash" ;
         sdb:description <StoreDesc/pgsql-hash.ttl> ]
 
       [ rdfs:label "PGSQL/Index" ;
         sdb:description <StoreDesc/pgsql-index.ttl> ]
 
-      [ rdfs:label "MS-SQL-e/Hash" ;
-        sdb:description <StoreDesc/ms-sql-e-hash.ttl> ]
-
-      [ rdfs:label "MS-SQL-e/Index" ;
-        sdb:description <StoreDesc/ms-sql-e-index.ttl> ]
-
-      [ rdfs:label "HSQLDB/Hash" ;
-        sdb:description <StoreDesc/hsqldb-hash.ttl> ]
-
-      [ rdfs:label "HSQLDB/Index" ;
-        sdb:description <StoreDesc/hsqldb-index.ttl> ]
+##       [ rdfs:label "MS-SQL-e/Hash" ;
+##         sdb:description <StoreDesc/ms-sql-e-hash.ttl> ]
+## 
+##       [ rdfs:label "MS-SQL-e/Index" ;
+##         sdb:description <StoreDesc/ms-sql-e-index.ttl> ]
+## 
+##       [ rdfs:label "HSQLDB/Hash" ;
+##         sdb:description <StoreDesc/hsqldb-hash.ttl> ]
+## 
+##       [ rdfs:label "HSQLDB/Index" ;
+##         sdb:description <StoreDesc/hsqldb-index.ttl> ]
 
     ) .
