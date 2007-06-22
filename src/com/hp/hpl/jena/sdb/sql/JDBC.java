@@ -27,6 +27,7 @@ public class JDBC
         driver.put(DBtype.Derby,       "org.apache.derby.jdbc.EmbeddedDriver") ;
         //driver.put(DBtype.Derby,       "org.apache.derby.jdbc.ClientDriver") ;
         driver.put(DBtype.SQLServer,   "com.microsoft.sqlserver.jdbc.SQLServerDriver") ;
+        driver.put(DBtype.Oracle,      "oracle.jdbc.driver.OracleDriver") ;
     }
     
     static public String getDriver(DBtype dbType) { return driver.get(dbType) ; }
@@ -36,6 +37,7 @@ public class JDBC
     static public void loadDriverPGSQL() { loadDriver(driver.get(DBtype.PostgreSQL)); }
     static public void loadDriverDerby() { loadDriver(driver.get(DBtype.Derby)); }
     static public void loadDriverSQLServer() { loadDriver(driver.get(DBtype.SQLServer)); }
+    static public void loadDriverOracle() { loadDriver(driver.get(DBtype.Oracle)); }
     static public void loadDriver(String className) { loadClass(className) ; }
     
 //    static public void loadClass(String className)
@@ -107,6 +109,12 @@ public class JDBC
             //jdbc:sqlserver://${TESTHOST}\\SQLEXPRESS;databaseName=jenatest"
             String s = String.format("jdbc:%s://%s\\SQLEXPRESS;databaseName=%s","sqlserver",host, dbName) ;
             return s ;
+        }
+        
+        if ( type.startsWith("oracle") )
+        {
+        	String s = String.format("jdbc:%s:@%s:%s", type, host, dbName) ;
+        	return s;
         }
         
         if ( type.equalsIgnoreCase("none") )

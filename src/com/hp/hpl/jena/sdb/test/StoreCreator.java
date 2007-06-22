@@ -7,14 +7,17 @@
 package com.hp.hpl.jena.sdb.test;
 
 import com.hp.hpl.jena.sdb.SDBFactory;
+import com.hp.hpl.jena.sdb.layout2.StoreBase;
 import com.hp.hpl.jena.sdb.layout2.hash.StoreTriplesNodesHashDerby;
 import com.hp.hpl.jena.sdb.layout2.hash.StoreTriplesNodesHashHSQL;
 import com.hp.hpl.jena.sdb.layout2.hash.StoreTriplesNodesHashMySQL;
+import com.hp.hpl.jena.sdb.layout2.hash.StoreTriplesNodesHashOracle;
 import com.hp.hpl.jena.sdb.layout2.hash.StoreTriplesNodesHashPGSQL;
 import com.hp.hpl.jena.sdb.layout2.hash.StoreTriplesNodesHashSQLServer;
 import com.hp.hpl.jena.sdb.layout2.index.StoreTriplesNodesIndexDerby;
 import com.hp.hpl.jena.sdb.layout2.index.StoreTriplesNodesIndexHSQL;
 import com.hp.hpl.jena.sdb.layout2.index.StoreTriplesNodesIndexMySQL;
+import com.hp.hpl.jena.sdb.layout2.index.StoreTriplesNodesIndexOracle;
 import com.hp.hpl.jena.sdb.layout2.index.StoreTriplesNodesIndexPGSQL;
 import com.hp.hpl.jena.sdb.layout2.index.StoreTriplesNodesIndexSQLServer;
 import com.hp.hpl.jena.sdb.sql.JDBC;
@@ -40,6 +43,8 @@ public class StoreCreator {
 	private static StoreTriplesNodesHashHSQL sdbhsh;
 	private static StoreTriplesNodesHashDerby sdbdh;
 	private static StoreTriplesNodesIndexDerby sdbdi;
+	private static StoreBase sdboh;
+	private static StoreTriplesNodesIndexOracle sdboi;
 
 	public static Store getIndexMySQL() {
 		if (sdbmsi == null) {
@@ -203,6 +208,42 @@ public class StoreCreator {
 		sdbdi.getTableFormatter().truncate();
 			
 		return sdbdi;
+	}
+	
+	public static Store getHashOracle() {
+		if (sdboh == null) {
+			JDBC.loadDriverOracle() ;
+			
+			String url = JDBC.makeURL("oracle:thin", "localhost:1521", "XE") ;
+			
+			SDBConnection sdb = new SDBConnection(url, "jena", "swara") ;
+			
+			sdboh = new StoreTriplesNodesHashOracle(sdb);
+			
+			sdboh.getTableFormatter().format();
+		}
+		
+		sdboh.getTableFormatter().truncate();
+			
+		return sdboh;
+	}
+	
+	public static Store getIndexOracle() {
+		if (sdboi == null) {
+			JDBC.loadDriverOracle() ;
+			
+			String url = JDBC.makeURL("oracle:thin", "localhost:1521", "XE") ;
+			
+			SDBConnection sdb = new SDBConnection(url, "jena", "swara") ;
+			
+			sdboi = new StoreTriplesNodesIndexOracle(sdb);
+			
+			sdboi.getTableFormatter().format();
+		}
+		
+		sdboi.getTableFormatter().truncate();
+			
+		return sdboi;
 	}
 }
 

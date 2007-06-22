@@ -26,11 +26,13 @@ import com.hp.hpl.jena.sdb.layout1.StoreSimpleSQLServer;
 import com.hp.hpl.jena.sdb.layout2.hash.StoreTriplesNodesHashDerby;
 import com.hp.hpl.jena.sdb.layout2.hash.StoreTriplesNodesHashHSQL;
 import com.hp.hpl.jena.sdb.layout2.hash.StoreTriplesNodesHashMySQL;
+import com.hp.hpl.jena.sdb.layout2.hash.StoreTriplesNodesHashOracle;
 import com.hp.hpl.jena.sdb.layout2.hash.StoreTriplesNodesHashPGSQL;
 import com.hp.hpl.jena.sdb.layout2.hash.StoreTriplesNodesHashSQLServer;
 import com.hp.hpl.jena.sdb.layout2.index.StoreTriplesNodesIndexDerby;
 import com.hp.hpl.jena.sdb.layout2.index.StoreTriplesNodesIndexHSQL;
 import com.hp.hpl.jena.sdb.layout2.index.StoreTriplesNodesIndexMySQL;
+import com.hp.hpl.jena.sdb.layout2.index.StoreTriplesNodesIndexOracle;
 import com.hp.hpl.jena.sdb.layout2.index.StoreTriplesNodesIndexPGSQL;
 import com.hp.hpl.jena.sdb.layout2.index.StoreTriplesNodesIndexSQLServer;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
@@ -106,8 +108,9 @@ public class StoreFactory
                     return new StoreTriplesNodesHashHSQL(sdb) ;
                 case SQLServer:
                     return new StoreTriplesNodesHashSQLServer(sdb) ;
-                case MySQL41:
                 case Oracle10:
+                	return new StoreTriplesNodesHashOracle(sdb) ;
+                case MySQL41:
                 default:
                     throw new SDBException(format("Unknown DB type: %s [layout=%s, hash variant]",
                                                   desc.getDbType().getName(), desc.getLayout().getName())) ;
@@ -126,10 +129,11 @@ public class StoreFactory
                     return new StoreTriplesNodesIndexPGSQL(sdb) ;
                 case HSQLDB:
                     return new StoreTriplesNodesIndexHSQL(sdb) ;
-                case MySQL41:
                 case Oracle10:
+                	return new StoreTriplesNodesIndexOracle(sdb) ;
                 case SQLServer:
                     return new StoreTriplesNodesIndexSQLServer(sdb) ;
+                case MySQL41:
                 default:
                     throw new SDBException(format("Unknown DB type: %s [layout=%s, index variant]",
                                                   desc.getDbType().getName(), desc.getLayout().getName())) ;

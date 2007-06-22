@@ -11,7 +11,7 @@ import java.util.Set;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.sdb.SDBException;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
-import com.hp.hpl.jena.sdb.sql.SQLUtils;
+import com.hp.hpl.jena.sdb.sql.TableUtils;
 import com.hp.hpl.jena.sdb.store.TableDesc;
 
 public abstract class TupleLoaderBase extends com.hp.hpl.jena.sdb.store.TupleLoaderBase implements TupleLoaderBasics {
@@ -48,8 +48,10 @@ public abstract class TupleLoaderBase extends com.hp.hpl.jena.sdb.store.TupleLoa
 		Connection conn = this.connection().getSqlConnection();
 		
 		// Create the temporary tables
-		connection().exec(getCreateTempNodes());
-		connection().exec(getCreateTempTuples());
+		if (!TableUtils.hasTable(connection().getSqlConnection(), getNodeLoader()))
+			connection().exec(getCreateTempNodes());
+		if (!TableUtils.hasTable(connection().getSqlConnection(), getTupleLoader()))
+			connection().exec(getCreateTempTuples());
 		
 		// Prepare those statements
 		insertNodeLoader = conn.prepareStatement(getInsertTempNodes());
@@ -169,11 +171,11 @@ public abstract class TupleLoaderBase extends com.hp.hpl.jena.sdb.store.TupleLoa
 	/** These are the SQL 'bits' we use to construct the loader statements **/
 	
 	public String getNodeLoader() {
-		return "NNode" + hashCode();
+		return "NNode" + System.currentTimeMillis();
 	}
 	
 	public String getTupleLoader() {
-		return "N" + this.getTableName() + hashCode();
+		return "N" + this.getTableName() + System.currentTimeMillis();
 	}
 	
 	public String getCreateTempNodes() {
@@ -296,7 +298,7 @@ public abstract class TupleLoaderBase extends com.hp.hpl.jena.sdb.store.TupleLoa
 
             hash = NodeLayout2.hash(lex, lang, datatype, typeId);
             
-            if (computeVals) // don't need this for deleting
+            /*if (computeVals) // don't need this for deleting
             {
             	// Value of the node
             	valInt = null;
@@ -313,7 +315,7 @@ public abstract class TupleLoaderBase extends com.hp.hpl.jena.sdb.store.TupleLoa
             		String dateTime = SQLUtils.toSQLdatetimeString(lex);
             		valDateTime = Timestamp.valueOf(dateTime);
             	}
-            }
+            }*/
         }
         
         public void addToStatement(PreparedStatement s)

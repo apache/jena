@@ -96,9 +96,9 @@ public class TableUtils
     {
     	long size = -1;
     	try {
-    		ResultSet res = connection.createStatement().executeQuery("SELECT COUNT(*) AS size FROM " + table);
+    		ResultSet res = connection.createStatement().executeQuery("SELECT COUNT(*) FROM " + table);
     		if (res.next())
-    			size = res.getLong("size");
+    			size = res.getLong(1);
     		res.close();
     	} catch (SQLException e) { throw new SDBExceptionSQL(e) ; }
     

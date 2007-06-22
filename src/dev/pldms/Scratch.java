@@ -5,12 +5,13 @@ import java.sql.SQLException;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.sdb.SDBFactory;
-import com.hp.hpl.jena.sdb.layout2.TupleLoaderBase;
-import com.hp.hpl.jena.sdb.layout2.index.StoreTriplesNodesIndexHSQL;
-import com.hp.hpl.jena.sdb.layout2.index.TupleLoaderIndexHSQL;
+import com.hp.hpl.jena.sdb.layout2.index.StoreTriplesNodesIndexOracle;
 import com.hp.hpl.jena.sdb.sql.JDBC;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
+import com.hp.hpl.jena.sdb.sql.SDBConnectionDesc;
+import com.hp.hpl.jena.sdb.sql.TableUtils;
 import com.hp.hpl.jena.sdb.store.Store;
+import com.hp.hpl.jena.sdb.store.StoreLoaderPlus;
 import com.hp.hpl.jena.sdb.store.TableDesc;
 
 
@@ -22,63 +23,49 @@ public class Scratch {
          */
         public static void main(String[] args) throws SQLException {
                 
-                JDBC.loadDriverHSQL();
-
-                SDBConnection sdb = SDBFactory.createConnection(
-                                "jdbc:hsqldb:mem:aname", "sa", "");
-
-                Store store = new StoreTriplesNodesIndexHSQL(sdb);
-
+        		Store store;
+        		SDBConnection conn;
+        	
+                JDBC.loadDriverOracle();
+                SDBConnectionDesc desc = new SDBConnectionDesc();
+                desc.setHost("localhost:1521");
+                desc.setName("XE");
+                desc.setUser("jena");
+                desc.setPassword("swara");
+                desc.setType("oracle:thin");
+                conn = SDBFactory.createConnection(desc);
+                
+                System.err.println("!! ! " + TableUtils.hasTable(conn.getSqlConnection(), "nodeid"));
+                
+                store = new StoreTriplesNodesIndexOracle(conn);
                 store.getTableFormatter().format();
                 store.getTableFormatter().addIndexes();
-                TableDesc desc = store.getTripleTableDesc();
-                
-                TupleLoaderBase tl = new TupleLoaderIndexHSQL(sdb, desc, 50);
-                
-                System.out.println("-------------");
-                System.out.println(tl.getCreateTempNodes());
-                System.out.println("-------------");
-                System.out.println(tl.getLoadTuples());
-                System.out.println("-------------");
-                System.out.println(tl.getDeleteTuples());
-                System.out.println("-------------");
-                System.out.println(tl.getInsertTempNodes());
-                System.out.println("-------------");
-                System.out.println(tl.getInsertTempTuples());
-                System.out.println("-------------");
-                Node[] s1 = new Node[] {Node.createAnon(), Node.createAnon(), Node.createAnon()};
-                Node[] s2 = new Node[] {Node.createAnon(), Node.createAnon(), Node.createAnon()};
-                tl.load(s1);
-                tl.finish();
-                tl.load(s2);
-                tl.finish();
-                System.out.println("Node count: " + getSize("Nodes", sdb));
-                System.out.println("Tuple count: " + getSize(desc.getTableName(), sdb));
-                //tl.unload(s1);
-                tl.unload(s2);
-                tl.finish();
-                System.out.println("Node count: " + getSize("Nodes", sdb));
-                System.out.println("Tuple count: " + getSize(desc.getTableName(), sdb));
-                
-                desc = store.getQuadTableDesc();
-                
-                Node[] q1 = new Node[] {Node.createAnon(), Node.createAnon(), Node.createAnon(), Node.createAnon()};
-                Node[] q2 = new Node[] {Node.createAnon(), Node.createAnon(), Node.createAnon(), Node.createAnon()};
-                
-                tl = new TupleLoaderIndexHSQL(sdb, desc, 50);
-                
-                tl.load(q1);
-                tl.load(q2);
-                tl.finish();
-                System.out.println("Node count: " + getSize("Nodes", sdb));
-                System.out.println("Tuple count: " + getSize(desc.getTableName(), sdb));
-                tl.unload(q1);
-                //tl.unload(q2);
-                tl.finish();
-                System.out.println("Node count: " + getSize("Nodes", sdb));
-                System.out.println("Tuple count: " + getSize(desc.getTableName(), sdb));
-                
                 store.close();
+                conn.close();
+                
+                conn = SDBFactory.createConnection(desc);
+                store = new StoreTriplesNodesIndexOracle(conn);
+                
+                StoreLoaderPlus loader = (StoreLoaderPlus) store.getLoader();
+                
+                TableDesc descT = store.getTripleTableDesc();
+                
+                loader.startBulkUpdate();
+                loader.addTuple(descT, Node.create("a"), Node.create("a"), Node.create("a"));
+                loader.addTuple(descT, Node.create("b"), Node.create("a"), Node.create("a"));
+                loader.addTuple(descT, Node.create("c"), Node.create("a"), Node.create("a"));
+                loader.finishBulkUpdate();
+                System.err.println("Nodes: " + getSize("Nodes", conn));
+                System.err.println("Triples: " + getSize("Triples", conn));
+                loader.startBulkUpdate();
+                loader.deleteTuple(descT, Node.create("a"), Node.create("a"), Node.create("a"));
+                loader.deleteTuple(descT, Node.create("b"), Node.create("a"), Node.create("a"));
+                loader.deleteTuple(descT, Node.create("c"), Node.create("a"), Node.create("a"));
+                loader.finishBulkUpdate();
+                System.err.println("Nodes: " + getSize("Nodes", conn));
+                System.err.println("Triples: " + getSize("Triples", conn));
+                store.close();
+                conn.close();
         }
         
         public static Integer getSize(String table, SDBConnection conn) {
