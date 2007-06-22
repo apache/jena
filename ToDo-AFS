@@ -18,6 +18,8 @@ SDB ToDo list (and general notes)
 
 + Transactions - cleanup.
 
++ DatasetStore.hasNonEmptyModel(IRI)
+
 + Add a formatter option to test if DB setup already
 
 + canonicalise literals on input?

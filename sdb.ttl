@@ -5,22 +5,23 @@
 
 _:c rdf:type sdb:SDBConnection ;
 
-##      sdb:sdbType        "derby" ;
-##      sdb:sdbName        "DB/SDB2" ;
-##      sdb:driver         "org.apache.derby.jdbc.EmbeddedDriver" ;
+     sdb:sdbType        "derby" ;
+     sdb:sdbName        "DB/SDB2" ;
+     sdb:driver         "org.apache.derby.jdbc.EmbeddedDriver" ;
 
 ##     sdb:sdbType        "postgresql" ;
 ##     sdb:sdbHost        "localhost" ;
 ##     sdb:sdbName        "SDB2" ;
 ##     sdb:driver         "org.postgresql.Driver" ;
 
-    sdb:sdbType        "MSSQLServerExpress" ;
-    sdb:sdbHost        "localhost" ;
-    sdb:sdbName        "test2-hash" ;
-    sdb:driver         "com.microsoft.sqlserver.jdbc.SQLServerDriver"
-    .
+##     sdb:sdbType        "MSSQLServerExpress" ;
+##     sdb:sdbHost        "localhost" ;
+##     sdb:sdbName        "test2-hash" ;
+##     sdb:driver         "com.microsoft.sqlserver.jdbc.SQLServerDriver"
+
+     .
 
 [] rdf:type sdb:Store ;
-    sdb:layout         "layout2/index" ;
+    sdb:layout         "layout2" ;
     sdb:connection     _:c ;
 .

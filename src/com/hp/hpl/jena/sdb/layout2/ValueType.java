@@ -71,6 +71,13 @@ public enum ValueType implements Named
         @Override public String getName()         { return "Datetime" ; }
     } ,
     
+    VAR
+    { 
+        @Override public XSDDatatype getDatatype()  { return null ; }
+        @Override public int getTypeId()            { return 8 ; }
+        @Override public String getName()           { return "var" ; }
+    } ,
+    
     OTHER
     { 
         @Override public XSDDatatype getDatatype()  { return null ; }
@@ -123,6 +130,7 @@ public enum ValueType implements Named
         if ( type == INTEGER.getTypeId() )    return INTEGER ;
         if ( type == DOUBLE.getTypeId() )     return DOUBLE ;
         if ( type == DATETIME.getTypeId() )   return DATETIME ;
+        if ( type == VAR.getTypeId() )        return VAR ;
         if ( type == OTHER.getTypeId() )      return OTHER ;
         
 //        LogFactory.getLog(ValueType.class).warn("Seen an unrecognized type") ;
