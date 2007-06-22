@@ -114,6 +114,8 @@ public class QueryFactory
         
         if ( parser == null )
             throw new UnsupportedOperationException("Unrecognized syntax for parsing: "+syntaxURI) ;
+        if ( baseURI != null )
+            baseURI = IRIResolver.resolveGlobal(baseURI) ;
         query.setResolver(new IRIResolver(baseURI)) ;
         return parser.parse(query, queryString) ;
     }

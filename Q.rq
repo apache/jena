@@ -1,4 +1,7 @@
+PREFIX there: <foo/>
+#PREFIX here: <>
 PREFIX :  <http://example/> 
+
 
 SELECT *
 { ?s ?p ""^^<> }

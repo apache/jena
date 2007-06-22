@@ -64,6 +64,8 @@ public class ParserBase
     //LabelToNodeMap listLabelMap = new LabelToNodeMap(true, new VarAlloc("L")) ;
     // ----
     
+    public ParserBase() {}
+    
     Prologue prologue ;
     public void setPrologue(Prologue prologue) { this.prologue = prologue ; }
     public Prologue getPrologue() { return prologue ; }
@@ -210,21 +212,6 @@ public class ParserBase
     final static String bNodeLabelStart = "_:" ;
     
     boolean skolomizedBNodes = ARQ.isTrue(ARQ.constantBNodeLabels) ;
-
-    
-//    protected Node createNodeFromPrefixedName(String qname, int line, int column)
-//    {
-//        //s = unescapeCodePoint(s, line, column) ;
-//        
-//        String s = getPrologue().expandPrefixedName(qname) ;
-//        if ( s == null )
-//        {
-//            String msg = "Line " + line + ", column " + column;
-//            throw new QNameException(msg+": Unresolved prefixed name: "+qname, line, column) ; 
-//        }
-//        return Node.createURI(s) ;
-//    }
-    
     
     protected String resolveQuotedIRI(String iriStr ,int line, int column)
     {

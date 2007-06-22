@@ -11,7 +11,8 @@ import com.hp.hpl.jena.graph.Triple;
 
 public class Quad
 {
-    public static Node defaultGraph = Node.createURI("http://localhost/defaultgraph") ;
+    public static Node defaultGraph      =  Node.createURI("urn:x-sdb:defaultgraph") ;
+    public static Node defaultUnionGraph =  Node.createURI("urn:x-sdb:uniongraph") ;
 
     private final Node graph, subject, predicate, object ;
     
