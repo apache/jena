@@ -90,7 +90,7 @@ public class FmtLayout2IndexOracle extends FmtLayout2
             connection().exec(sqlStr ("CREATE SEQUENCE nodeid",
                                       "START WITH 1",
                                       "INCREMENT BY 1",
-                                      "NOCACHE",
+                                      "CACHE 5000",
                                       "NOCYCLE"
             		));
         } catch (SQLException ex)
