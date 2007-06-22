@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: GraphBase.java,v 1.47 2007-01-12 15:01:33 chris-dollin Exp $
+  $Id: GraphBase.java,v 1.48 2007-06-22 14:25:49 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -344,11 +344,11 @@ public abstract class GraphBase implements GraphWithPerform
 //        System.err.println( ">> GB(" + className + ")::size = " + baseSize + "(base) + " + reifierSize + "(reifier)" );
         return baseSize + reifierSize; }
     
-    private String leafName( String name )
-        {
-        int dot = name.lastIndexOf( '.' );
-        return name.substring( dot + 1 );
-        }
+//    private String leafName( String name )
+//        {
+//        int dot = name.lastIndexOf( '.' );
+//        return name.substring( dot + 1 );
+//        }
 
     /**
          Answer the number of visible reification quads. Subclasses will not normally

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: SimpleReifier.java,v 1.52 2007-01-02 11:48:28 andy_seaborne Exp $
+  $Id: SimpleReifier.java,v 1.53 2007-06-22 14:25:49 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -207,7 +207,29 @@ public class SimpleReifier implements Reifier
         }        
     
     public ExtendedIterator find( TripleMatch m )
-        { return tripleMap.find( m ).andThen( fragmentsMap.find( m ) ); }
+        {
+        return matchesReification( m ) 
+            ? tripleMap.find( m ).andThen( fragmentsMap.find( m ) ) 
+            : NullIterator.instance; 
+        }
+    
+    /**
+        Answer true iff <code>m</code> might match a reification triple.
+    */
+    private boolean matchesReification( TripleMatch m )
+        {
+        Node predicate = m.asTriple().getPredicate();
+        return 
+            !predicate.isConcrete()
+            || predicate.equals( RDF.Nodes.subject ) 
+            || predicate.equals( RDF.Nodes.predicate ) 
+            || predicate.equals( RDF.Nodes.object )
+            || predicate.equals( RDF.Nodes.type ) && matchesStatement( m.asTriple().getObject() )
+            ;
+        }
+
+    private boolean matchesStatement( Node x )
+        { return x.isVariable() || x.equals( RDF.Nodes.Statement ); }
     
     public ExtendedIterator findExposed( TripleMatch m )
         { return findEither( m, false ); }
