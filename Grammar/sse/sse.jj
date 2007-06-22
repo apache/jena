@@ -166,14 +166,14 @@ Node RDFLiteral() : { Token t ; String lex = null ; String dt = null ; }
     dt = IRIref()
   )?
     { token_source.SwitchTo(DEFAULT) ; }
-    { return makeNode(lex, lang, dt) ; }
+    { return createLiteral(lex, lang, dt) ; }
 } 
 
 Node NumericLiteral() : { Token t ; }
 {
-  t = <INTEGER> { return makeNodeInteger(t.image) ; }
-| t = <DECIMAL> { return makeNodeDecimal(t.image) ; }
-| t = <DOUBLE>  { return makeNodeDouble(t.image) ; }
+  t = <INTEGER> { return createLiteralInteger(t.image) ; }
+| t = <DECIMAL> { return createLiteralDecimal(t.image) ; }
+| t = <DOUBLE>  { return createLiteralDouble(t.image) ; }
 }
 
 // Node BooleanLiteral() : {}

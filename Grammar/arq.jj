@@ -771,7 +771,7 @@ Node RDFLiteral() : { Token t ; String lex = null ; }
   |
     ( <DATATYPE> uri = IRIref() )
   )?
-    { return makeNode(lex, lang, uri) ; }
+    { return createLiteral(lex, lang, uri) ; }
 }
 
 
@@ -788,23 +788,23 @@ Node NumericLiteral() : { Node n ; }
 
 Node NumericLiteralUnsigned() : { Token t ; }
 {
-  t = <INTEGER> { return makeNodeInteger(t.image) ; }
-| t = <DECIMAL> { return makeNodeDecimal(t.image) ; }
-| t = <DOUBLE> { return makeNodeDouble(t.image) ; }
+  t = <INTEGER> { return createLiteralInteger(t.image) ; }
+| t = <DECIMAL> { return createLiteralDecimal(t.image) ; }
+| t = <DOUBLE> { return createLiteralDouble(t.image) ; }
 }
 
 Node NumericLiteralPositive() : { Token t ; }
 {
-  t = <INTEGER_POSITIVE> { return makeNodeInteger(t.image) ; }
-| t = <DECIMAL_POSITIVE> { return makeNodeDecimal(t.image) ; }
-| t = <DOUBLE_POSITIVE> { return makeNodeDouble(t.image) ; }
+  t = <INTEGER_POSITIVE> { return createLiteralInteger(t.image) ; }
+| t = <DECIMAL_POSITIVE> { return createLiteralDecimal(t.image) ; }
+| t = <DOUBLE_POSITIVE> { return createLiteralDouble(t.image) ; }
 }
 
 Node NumericLiteralNegative() : { Token t ; }
 {
-  t = <INTEGER_NEGATIVE> { return makeNodeInteger(t.image) ; }
-| t = <DECIMAL_NEGATIVE> { return makeNodeDecimal(t.image) ; }
-| t = <DOUBLE_NEGATIVE> { return makeNodeDouble(t.image) ; }
+  t = <INTEGER_NEGATIVE> { return createLiteralInteger(t.image) ; }
+| t = <DECIMAL_NEGATIVE> { return createLiteralDecimal(t.image) ; }
+| t = <DOUBLE_NEGATIVE> { return createLiteralDouble(t.image) ; }
 }
 
 

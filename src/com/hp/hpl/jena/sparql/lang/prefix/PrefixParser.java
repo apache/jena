@@ -1562,7 +1562,7 @@ public class PrefixParser extends PrefixParserBase implements PrefixParserConsta
       jj_la1[46] = jj_gen;
       ;
     }
-      {if (true) return makeNode(lex, lang, iri) ;}
+      {if (true) return createLiteral(lex, lang, iri) ;}
     throw new Error("Missing return statement in function");
   }
 
@@ -1571,15 +1571,15 @@ public class PrefixParser extends PrefixParserBase implements PrefixParserConsta
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case INTEGER:
       t = jj_consume_token(INTEGER);
-                  {if (true) return makeNodeInteger(t.image) ;}
+                  {if (true) return createLiteralInteger(t.image) ;}
       break;
     case DECIMAL:
       t = jj_consume_token(DECIMAL);
-                  {if (true) return makeNodeDecimal(t.image) ;}
+                  {if (true) return createLiteralDecimal(t.image) ;}
       break;
     case DOUBLE:
       t = jj_consume_token(DOUBLE);
-                  {if (true) return makeNodeDouble(t.image) ;}
+                  {if (true) return createLiteralDouble(t.image) ;}
       break;
     default:
       jj_la1[47] = jj_gen;

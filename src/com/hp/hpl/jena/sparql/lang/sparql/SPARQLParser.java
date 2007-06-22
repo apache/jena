@@ -1793,7 +1793,7 @@ public class SPARQLParser extends SPARQLParserBase implements SPARQLParserConsta
       jj_la1[67] = jj_gen;
       ;
     }
-      {if (true) return makeNode(lex, lang, uri) ;}
+      {if (true) return createLiteral(lex, lang, uri) ;}
     throw new Error("Missing return statement in function");
   }
 
@@ -1829,15 +1829,15 @@ public class SPARQLParser extends SPARQLParserBase implements SPARQLParserConsta
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case INTEGER:
       t = jj_consume_token(INTEGER);
-                  {if (true) return makeNodeInteger(t.image) ;}
+                  {if (true) return createLiteralInteger(t.image) ;}
       break;
     case DECIMAL:
       t = jj_consume_token(DECIMAL);
-                  {if (true) return makeNodeDecimal(t.image) ;}
+                  {if (true) return createLiteralDecimal(t.image) ;}
       break;
     case DOUBLE:
       t = jj_consume_token(DOUBLE);
-                 {if (true) return makeNodeDouble(t.image) ;}
+                 {if (true) return createLiteralDouble(t.image) ;}
       break;
     default:
       jj_la1[69] = jj_gen;
@@ -1852,15 +1852,15 @@ public class SPARQLParser extends SPARQLParserBase implements SPARQLParserConsta
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case INTEGER_POSITIVE:
       t = jj_consume_token(INTEGER_POSITIVE);
-                           {if (true) return makeNodeInteger(t.image) ;}
+                           {if (true) return createLiteralInteger(t.image) ;}
       break;
     case DECIMAL_POSITIVE:
       t = jj_consume_token(DECIMAL_POSITIVE);
-                           {if (true) return makeNodeDecimal(t.image) ;}
+                           {if (true) return createLiteralDecimal(t.image) ;}
       break;
     case DOUBLE_POSITIVE:
       t = jj_consume_token(DOUBLE_POSITIVE);
-                          {if (true) return makeNodeDouble(t.image) ;}
+                          {if (true) return createLiteralDouble(t.image) ;}
       break;
     default:
       jj_la1[70] = jj_gen;
@@ -1875,15 +1875,15 @@ public class SPARQLParser extends SPARQLParserBase implements SPARQLParserConsta
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case INTEGER_NEGATIVE:
       t = jj_consume_token(INTEGER_NEGATIVE);
-                           {if (true) return makeNodeInteger(t.image) ;}
+                           {if (true) return createLiteralInteger(t.image) ;}
       break;
     case DECIMAL_NEGATIVE:
       t = jj_consume_token(DECIMAL_NEGATIVE);
-                           {if (true) return makeNodeDecimal(t.image) ;}
+                           {if (true) return createLiteralDecimal(t.image) ;}
       break;
     case DOUBLE_NEGATIVE:
       t = jj_consume_token(DOUBLE_NEGATIVE);
-                          {if (true) return makeNodeDouble(t.image) ;}
+                          {if (true) return createLiteralDouble(t.image) ;}
       break;
     default:
       jj_la1[71] = jj_gen;

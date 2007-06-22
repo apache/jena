@@ -91,17 +91,17 @@ public class ParserBase
         return elg ;
     }
     
-    protected Node makeNodeInteger(String lexicalForm)
+    protected Node createLiteralInteger(String lexicalForm)
     {
         return Node.createLiteral(lexicalForm, null, XSDDatatype.XSDinteger) ;
     }
     
-    protected Node makeNodeDouble(String lexicalForm)
+    protected Node createLiteralDouble(String lexicalForm)
     {
         return Node.createLiteral(lexicalForm, null, XSDDatatype.XSDdouble) ;
     }
     
-    protected Node makeNodeDecimal(String lexicalForm)
+    protected Node createLiteralDecimal(String lexicalForm)
     {
         return Node.createLiteral(lexicalForm, null, XSDDatatype.XSDdecimal) ;
     }
@@ -120,34 +120,7 @@ public class ParserBase
         return Node.createLiteral(lex, lang, dt) ;
     }
     
-//    protected Node makeNodeInteger(boolean positive, String lexicalForm)
-//    {
-//        if ( !positive )
-//            lexicalForm = "-"+lexicalForm ;
-//        return makeNodeInteger(lexicalForm) ;
-//    }
-//    
-//    protected Node makeNodeDouble(boolean positive, String lexicalForm)
-//    {
-//        if ( !positive )
-//            lexicalForm = "-"+lexicalForm ;
-//        return makeNodeDouble(lexicalForm) ;
-//    }
-//    
-//    protected Node makeNodeDecimal(boolean positive, String lexicalForm)
-//    {
-//        if ( !positive )
-//            lexicalForm = "-"+lexicalForm ;
-//        return makeNodeDecimal(lexicalForm) ;
-//    }
-
-//    protected Node makeNode(String lexicalForm, String langTag, Node datatype)
-//    {
-//        String uri = (datatype==null) ? null : datatype.getURI() ;
-//        return makeNode(lexicalForm, langTag,  uri) ;
-//    }
-    
-    protected Node makeNode(String lexicalForm, String langTag, String datatypeURI)
+    protected Node createLiteral(String lexicalForm, String langTag, String datatypeURI)
     {
         Node n = null ;
         // Can't have type and lang tag.
@@ -376,7 +349,7 @@ public class ParserBase
         String lex = n.getLiteralLexicalForm() ;
         String lang = n.getLiteralLanguage() ;
         String dtURI = n.getLiteralDatatypeURI() ;
-        n = makeNode(lex, lang, dtURI) ;
+        n = createLiteral(lex, lang, dtURI) ;
         
         return ExprUtils.nodeToExpr(n) ;
     }

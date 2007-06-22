@@ -729,14 +729,14 @@ Node RDFLiteral() : { Token t ; String lex = null ; }
   |
     ( <DATATYPE> iri = IRIref() )
   )?
-    { return makeNode(lex, lang, iri) ; }
+    { return createLiteral(lex, lang, iri) ; }
 } 
 
 Node NumericLiteral() : { Token t ; }
 {
-  t = <INTEGER> { return makeNodeInteger(t.image) ; }
-| t = <DECIMAL> { return makeNodeDecimal(t.image) ; }
-| t = <DOUBLE>  { return makeNodeDouble(t.image) ; }
+  t = <INTEGER> { return createLiteralInteger(t.image) ; }
+| t = <DECIMAL> { return createLiteralDecimal(t.image) ; }
+| t = <DOUBLE>  { return createLiteralDouble(t.image) ; }
 }
 
 Node BooleanLiteral() : {}
