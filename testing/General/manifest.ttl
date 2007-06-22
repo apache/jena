@@ -30,6 +30,26 @@
           mf:action [ qt:query <term-7.rq> ; qt:data <data-1.ttl> ] ;
        ]
 
+       [  mf:name   "Unicode-1" ;
+          mf:action [ qt:query <unicode-1.rq> ; qt:data <data-1.ttl> ] ;
+       ]
+
+       [  mf:name   "Unicode-2" ;
+          mf:action [ qt:query <unicode-2.rq> ; qt:data <data-1.ttl> ] ;
+       ]
+
+       [  mf:name   "Unicode-3" ;
+          mf:action [ qt:query <unicode-3.rq> ; qt:data <data-1.ttl> ] ;
+       ]
+
+       [  mf:name   "Unicode-4" ;
+          mf:action [ qt:query <unicode-4.rq> ; qt:data <data-1.ttl> ] ;
+       ]
+
+       [  mf:name   "Unicode-5" ;
+          mf:action [ qt:query <unicode-5.rq> ; qt:data <data-1.ttl> ] ;
+       ]
+
        [  mf:name   "Vars-1" ;
           mf:action [ qt:query <vars-1.rq> ; qt:data <data-1.ttl> ] ;
        ]

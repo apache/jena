@@ -45,6 +45,9 @@ public class TableDesc
     
     public Iterator<String> colNames()
     { return columnNames.iterator() ; } 
+    
+    @Override
+    public String toString() { return tableName ; }
 }
 
 /*
