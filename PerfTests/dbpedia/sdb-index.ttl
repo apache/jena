@@ -1,19 +1,19 @@
-@prefix acmd:     <http://jena.hpl.hp.com/2006/01/acmd#> .
+@prefix sdb:      <http://jena.hpl.hp.com/2007/sdb#> .
 @prefix rdfs:     <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix rdf:      <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix ja:     <http://jena.hpl.hp.com/2005/11/Assembler#> .
 
-_:c rdf:type acmd:SDBConnection ;
-    acmd:sdbType    "postgresql" ;
-    acmd:sdbHost    "localhost" ;
-    acmd:sdbName    "dbpedia-index" ;
-    acmd:driver     "org.postgresql.Driver" ;
-    acmd:sdbUser    "jena" ;
-    acmd:sdbPassword "swara" ;
+_:c rdf:type sdb:SDBConnection ;
+    sdb:sdbType    "postgresql" ;
+    sdb:sdbHost    "localhost" ;
+    sdb:sdbName    "dbpedia-index" ;
+    sdb:driver     "org.postgresql.Driver" ;
+    sdb:sdbUser    "jena" ;
+    sdb:sdbPassword "swara" ;
     .
 
-[] rdf:type acmd:Store ;
-    acmd:layout     "layout2/index" ;
-    acmd:connection _:c ;
+[] rdf:type sdb:Store ;
+    sdb:layout     "layout2/index" ;
+    sdb:connection _:c ;
     .
 

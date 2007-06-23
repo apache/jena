@@ -9,6 +9,8 @@ SDB ToDo list (and general notes)
 ** Subclass loading.
 ** OpSlice. OpUnion
 
++ sdbtest and the store list. 
+
 + Tidy up and document DBtest
 + /General tests - unicode.
 + StoreList

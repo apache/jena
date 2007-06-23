@@ -49,9 +49,9 @@ public abstract class TupleLoaderBase extends com.hp.hpl.jena.sdb.store.TupleLoa
 		
 		// Create the temporary tables
 		if (!TableUtils.hasTable(connection().getSqlConnection(), getNodeLoader()))
-			connection().exec(getCreateTempNodes());
+		    connection().exec(getCreateTempNodes());
 		if (!TableUtils.hasTable(connection().getSqlConnection(), getTupleLoader()))
-			connection().exec(getCreateTempTuples());
+		    connection().exec(getCreateTempTuples());
 		
 		// Prepare those statements
 		insertNodeLoader = conn.prepareStatement(getInsertTempNodes());
@@ -169,13 +169,18 @@ public abstract class TupleLoaderBase extends com.hp.hpl.jena.sdb.store.TupleLoa
 	}
 	
 	/** These are the SQL 'bits' we use to construct the loader statements **/
-	
+	private String nameNNode = "NNode" + System.currentTimeMillis();
+    
 	public String getNodeLoader() {
-		return "NNode" + System.currentTimeMillis();
+		//return "NNode" + System.currentTimeMillis();
+        return nameNNode ;
 	}
 	
+    private String nameTuple = null ;  
 	public String getTupleLoader() {
-		return "N" + this.getTableName() + System.currentTimeMillis();
+        if ( nameTuple == null )
+            nameTuple = "N" + this.getTableName() + System.currentTimeMillis();
+        return nameTuple ;
 	}
 	
 	public String getCreateTempNodes() {

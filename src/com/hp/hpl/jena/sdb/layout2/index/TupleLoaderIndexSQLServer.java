@@ -12,7 +12,7 @@ public class TupleLoaderIndexSQLServer extends TupleLoaderIndexBase {
 	}
 	
 	public String[] getNodeColTypes() {
-		return new String[] {"BIGINT", "TEXT", "VARCHAR(10)", "VARCHAR("+ TableDescNodes.DatatypeUriLength+ ")", "INT"};
+		return new String[] {"BIGINT", "NVARCHAR(max)", "NVARCHAR(10)", "NVARCHAR("+ TableDescNodes.DatatypeUriLength+ ")", "INT"};
 	}
 	
 	public String getTupleColType() {

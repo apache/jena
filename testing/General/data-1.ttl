@@ -32,14 +32,14 @@
 :x :p24    "E-acute:\u00E9" .
 :y :p24    "E-acute:é" .
 
-:x :p25    "Alpha:\u03B1" .
-:y :p25    "Alpha:α" .
+## :x :p25    "Alpha:\u03B1" .
+## :y :p25    "Alpha:α" .
 
 :x :p26    "Arabic 123:\u0661\u0662\u0663" .
 :y :p26    "Arabic 123:١٢٣" .
 
-:x :p27    "Left arrow:\u2190" .
-:y :p27    "Left arrow:←" .
+## :x :p27    "Left arrow:\u2190" .
+## :y :p27    "Left arrow:←" .
 
 :x :p30    ex:uri .
 :x :p40    _:a .

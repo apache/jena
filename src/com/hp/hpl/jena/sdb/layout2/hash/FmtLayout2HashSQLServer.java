@@ -90,9 +90,9 @@ public class FmtLayout2HashSQLServer extends FmtLayout2
         try { 
             connection().exec(sqlStr ("CREATE TABLE "+TableDescNodes.name()+" (",
                                        "   hash BIGINT NOT NULL,",
-                                       "   lex TEXT NOT NULL,",
-                                       "   lang VARCHAR(10) NOT NULL DEFAULT '',",
-                                       "   datatype VARCHAR("+TableDescNodes.DatatypeUriLength+") NOT NULL default '',",
+                                       "   lex NVARCHAR(MAX) NOT NULL,",
+                                       "   lang NVARCHAR(10) NOT NULL DEFAULT '',",
+                                       "   datatype NVARCHAR("+TableDescNodes.DatatypeUriLength+") NOT NULL default '',",
                                        "   type INT NOT NULL DEFAULT '0',",
                                        "   PRIMARY KEY (hash)",
                                        ")"

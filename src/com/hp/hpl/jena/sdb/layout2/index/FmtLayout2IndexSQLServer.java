@@ -68,9 +68,9 @@ public class FmtLayout2IndexSQLServer extends FmtLayout2HashSQLServer
             connection().exec(sqlStr ("CREATE TABLE "+TableDescNodes.name()+" (",
                                        "   id INT IDENTITY (1, 1) NOT NULL ,",
                                        "   hash BIGINT NOT NULL,",
-                                       "   lex TEXT NOT NULL,",
-                                       "   lang VARCHAR(10) NOT NULL DEFAULT '',",
-                                       "   datatype VARCHAR("+TableDescNodes.DatatypeUriLength+") NOT NULL default '',",
+                                       "   lex NVARCHAR(max) NOT NULL,",
+                                       "   lang NVARCHAR(10) NOT NULL DEFAULT '',",
+                                       "   datatype NVARCHAR("+TableDescNodes.DatatypeUriLength+") NOT NULL default '',",
                                        "   type INT NOT NULL DEFAULT '0',",
                                        "   PRIMARY KEY (id)",
                                        ")"

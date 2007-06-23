@@ -1,0 +1,13 @@
+#!/bin/perl
+
+# acmd: => sdb:
+# @prefix acmd:     <http://jena.hpl.hp.com/2006/01/acmd#> .
+# =>
+# @prefix sdb:      <http://jena.hpl.hp.com/2007/sdb#> .
+
+$/ = undef ;
+$_ = <> ;
+s!\@prefix\s+acmd:\s+<http://jena.hpl.hp.com/2006/01/acmd#>\s*\.\n!\@prefix sdb:      \<http://jena.hpl.hp.com/2007/sdb#\> .\n! ;
+s/acmd:/sdb:/g ;
+print $_ ;
+

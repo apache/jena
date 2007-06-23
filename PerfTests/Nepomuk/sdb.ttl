@@ -1,17 +1,17 @@
-@prefix acmd:     <http://jena.hpl.hp.com/2006/01/acmd#> .
+@prefix sdb:     <http://jena.hpl.hp.com/2006/01/acmd#> .
 ##@prefix schema:   <http://jena.hpl.hp.com/2006/01/schema/> .
 @prefix rdfs:	    <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix ja:     <http://jena.hpl.hp.com/2005/11/Assembler#> .
 
 
-_:c a acmd:SDBConnection ;
-    acmd:sdbType     "mysql" ;
-    acmd:sdbHost     "localhost" ;
-    acmd:sdbName     "WordNet" ;
+_:c a sdb:SDBConnection ;
+    sdb:sdbType     "mysql" ;
+    sdb:sdbHost     "localhost" ;
+    sdb:sdbName     "WordNet" ;
     .
 
-[] rdf:type acmd:Store ;
-    acmd:layout     "layout2" ;
-    acmd:connection _:c ;
-    acmd:engine     "InnoDB" ;
+[] rdf:type sdb:Store ;
+    sdb:layout     "layout2" ;
+    sdb:connection _:c ;
+    sdb:engine     "InnoDB" ;
     .

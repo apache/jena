@@ -1,16 +1,16 @@
 @prefix  rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
-@prefix acmd:     <http://jena.hpl.hp.com/2006/01/acmd#> .
+@prefix sdb:     <http://jena.hpl.hp.com/2006/01/acmd#> .
 @prefix rdfs:	    <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix ja:     <http://jena.hpl.hp.com/2005/11/Assembler#> .
 
-_:c a acmd:SDBConnection ;
-    acmd:sdbType     "mysql" ;
-    acmd:sdbHost     "localhost" ;
-    acmd:sdbName     "UniProt10" ;
+_:c a sdb:SDBConnection ;
+    sdb:sdbType     "mysql" ;
+    sdb:sdbHost     "localhost" ;
+    sdb:sdbName     "UniProt10" ;
     .
 
-[] rdf:type acmd:Store ;
-    acmd:layout     "layout2" ;
-    acmd:connection _:c ;
-    acmd:engine     "InnoDB" ;
+[] rdf:type sdb:Store ;
+    sdb:layout     "layout2" ;
+    sdb:connection _:c ;
+    sdb:engine     "InnoDB" ;
     .
