@@ -66,7 +66,6 @@ public class TransGraph<GNode> extends HashMap<GNode, HashSet<GNode>> implements
     // Walshall's algorithm
     // Adapted only in that it works on the sparse graph
     // representation used to record the links.
-    // TODO CHECK (the internet) in a modern algorithm book!
 
     public void expand()
     {

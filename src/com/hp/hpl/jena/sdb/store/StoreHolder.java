@@ -8,11 +8,8 @@ package com.hp.hpl.jena.sdb.store;
 
 public class StoreHolder
 {
-    // It's so common to take and keep a store, that it is worth
-    // making a container for it.
-    
-    // Oh no it's not
-    // TODO CompileContextHolder wouldbe more useful!
+    // It's so common to take and keep a store, that it is
+    // worth making a container for it.
     
     private Store store ;
 

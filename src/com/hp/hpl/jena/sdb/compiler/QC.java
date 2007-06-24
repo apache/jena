@@ -179,14 +179,9 @@ public class QC
                 // And check this is called once per SQL.
                 if ( opSQL.getBridge() == null )
                     System.err.println("Null bridge") ;
-                // TODO "Ideally" stream this as a wrapper function on JDBC
-                // but. Relies on app closing queryExecution.  OR ELSE.
                 return opSQL.getBridge().assembleResults(jdbcResultSet, binding, execCxt) ;
             } finally {
-                // resultSet Now closed inside assembleResults
-                // or by the iterator returned.
-                // jdbcResultSet.close() -- 
-                
+                // ResultSet closed inside assembleResults or by the iterator returned.
                 jdbcResultSet = null ;
             }
         } catch (SQLException ex)

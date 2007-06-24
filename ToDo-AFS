@@ -9,12 +9,7 @@ SDB ToDo list (and general notes)
 ** Subclass loading.
 ** OpSlice. OpUnion
 
-+ sdbtest and the store list. 
-
 + Tidy up and document DBtest
-+ /General tests - unicode.
-+ StoreList
-+ SQLBridge : lang/datatype may be null => ""
 
 + SPARQL/Update input and control
 
@@ -26,9 +21,7 @@ SDB ToDo list (and general notes)
 
 + canonicalise literals on input?
 
-+ Do OpSlice - test out a modifier code path.
-
-+ GraphSDB : query handler
++ GraphSDB : graph query handler
 
 + QueryEngineSDB has duplication with QueryEngineMain - eliminate!
 
@@ -61,6 +54,8 @@ SDB ToDo list (and general notes)
   Partial alternative: condition is "T.o = hash1 OR T.o = hash2"
 
 + Generating SQL:
+  + Restrict(Join(A,B)) == Join(A,B,condition)
+    In rel algebra, don't push into conditions: do in code generation.
   + Precedence-driven output for SqlExpr // SqlExprGenerateSQL, not lots of nesting.
   + SELECT/one table ==> move constraints out (it's just SPJ)
     Put in a SqlNode optimizer stage, just before generation
