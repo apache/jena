@@ -176,7 +176,8 @@ public abstract class TupleLoaderBase extends com.hp.hpl.jena.sdb.store.TupleLoa
         return nameNNode ;
 	}
 	
-    private String nameTuple = null ;  
+    private String nameTuple = null ; 
+    
 	public String getTupleLoader() {
         if ( nameTuple == null )
             nameTuple = "N" + this.getTableName() + System.currentTimeMillis();
