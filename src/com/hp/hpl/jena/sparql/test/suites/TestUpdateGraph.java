@@ -25,8 +25,6 @@ import com.hp.hpl.jena.query.QueryFactory;
 
 public class TestUpdateGraph extends TestUpdateBase
 {
-    // TODO Tests fronm script files
-    
     protected static Node s = Node.create("http://example/r") ;
     protected static Node p = Node.create("http://example/p") ;
     protected static Node o1 = Node.create("2007") ;

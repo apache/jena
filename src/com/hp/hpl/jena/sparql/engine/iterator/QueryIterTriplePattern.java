@@ -125,7 +125,7 @@ public class QueryIterTriplePattern extends QueryIterRepeatApply
         }
 
         // TODO Test and swap to this code.
-        // Avoid allocaing a Binding.
+        // Avoid allocating a Binding.
         private Binding _mapper(Triple r)
         {
             Binding results = new BindingMap(binding) ;
@@ -156,7 +156,7 @@ public class QueryIterTriplePattern extends QueryIterRepeatApply
             return results ;
         }
 
-        // return -1 - no match ; 0 - OK, no binding chnage ; 1 - OK, binding happened
+        // return -1 - no match ; 0 - OK, no binding change ; 1 - OK, binding happened
         private static int _insert(Node inputNode, Node outputNode, Binding results)
         {
             if ( ! Var.isVar(inputNode) )

@@ -137,7 +137,6 @@ public abstract class QueryIteratorBase
     public String debug()
     {
         String s = "" ;
-        // TODO Limit stacktrace to first non-constructor.
         if ( stackTrace != null )
         {
             for ( int i = 0 ; i < stackTrace.getStackTrace().length ; i++ )

@@ -21,7 +21,6 @@ import com.hp.hpl.jena.sparql.core.Var;
 
 public class BindingFixed extends BindingWrapped
 {
-    // TODO Merge with BindingKey 
     int varSize = 0 ;
     int calcHashCode = 0 ;
     private boolean haveDoneHashCode = false ; 
