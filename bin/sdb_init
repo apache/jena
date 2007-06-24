@@ -1,19 +1,18 @@
 #!/bin/bash  -- hint to emacs
 # Source this file, not execute it.
 
-## Source this file to set:
-##  JVM_ARGS   :: arguments to the JVM
-##  CP         :: Classpath
-##  STORE_SPEC :: Default store specification
-##  CMD        :: The SDB command to call.
-
 ## Environment variable usage:
 ## SDBROOT         :: The root of the SDB installation (required)
-## JDBC_CONNECTOR  :: The JDBC jar file
+## SDB_JDBC        :: The JDBC jar file, or path list of JDBC jars
 ## JVM_ARGS        :: Additional argument to the JVM (e.g. -Xmx1024M)
 ##   Default store description 
 ##   is the file sdb.ttl in the
 ##   current directory
+
+## Source this file to set:
+##  CP         :: Classpath
+##  STORE_SPEC :: Default store specification
+##  CMD        :: The SDB command to call.
 
 ## ---- Check root
 if [ "$SDBROOT" = "" ]
@@ -33,18 +32,21 @@ then
 CMD=$(basename $0)
 
 ## ---- JDBC
-JDBC_MYSQL="${SDBROOT}/jdbc/mysql-connector-java-5.0.0-beta-bin.jar"
-JDBC_HSQLDB="${SDBROOT}/jdbc/hsqldb.jar"
-JDBC_PSQL="${SDBROOT}/jdbc/postgresql-8.1-407.jdbc3.jar"
 ## Commercial drivers can't be shipped for license reasons
-JDBC="$JDBC_PSQL"
+
+# MySQL-ism : should not be needed
 ## ARGS="--dbArgs 'useUnicode=true&characterEncoding=UTF-8'"
 
 ## ---- Additional JDBC jar files.
-CP="${JDBC_CONNECTOR:-$JDBC}"
+# JDBC_CONNECTOR is deprecated
 
-## ---- Always put the HSQLDB jar on the path
-CP="$CP$SEP$JDBC_HSQLDB"
+SDB_JDBC="${SDB_JDBC:-$JDBC_CONNECTOR}"
+if [ "$SDB_JDBC" = "" ]
+then
+    echo "Warning: SDB_JDBC not set" 2>&1
+    fi
+
+CP="${SDB_JDBC}"
 
 ## ---- Add the script engine
 if [ "$SDBSCRIPT" != "" ]
