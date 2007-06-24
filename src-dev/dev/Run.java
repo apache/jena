@@ -34,14 +34,8 @@ public class Run
 {
     public static void main(String[] argv)
     {
-//        String []a = {"--data=D.ttl", "--query=Q.rq"} ;
-//        //ARQ.setFalse(StageBasic.altMatcher) ;
-//        arq.sparql.main(a) ;
-
-        String []a = {"--query=Q.rq"} ;
-//      //ARQ.setFalse(StageBasic.altMatcher) ;
-        arq.qparse.main(a) ;
-        
+        String []a = {"'foo' = 'foo'^^xsd:string"} ;
+        arq.qexpr.main(a) ;
         System.exit(0) ;
         
         //runQExpr() ;

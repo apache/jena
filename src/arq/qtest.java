@@ -112,7 +112,10 @@ public class qtest
         
         ArgDecl setDecl = new ArgDecl(ArgDecl.HasValue, "set", "define", "defn", "def") ;
         cl.add(setDecl) ;
-        
+
+        ArgDecl strictDecl = new ArgDecl(ArgDecl.NoValue, "strict") ;
+        cl.add(strictDecl) ;
+
         try {
             cl.process() ;
         } catch (IllegalArgumentException ex)
@@ -132,6 +135,10 @@ public class qtest
         // ==== General things
         //boolean verbose = cl.contains(verboseDecl) ;
         //boolean quiet = cl.contains(quietDecl) ;
+        
+        // Strict mode
+        if ( cl.contains(strictDecl) )
+            ARQ.setStrictMode() ;
         
         // Set symbols
         if ( cl.getValues(setDecl) != null )
