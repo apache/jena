@@ -75,7 +75,7 @@ public class FmtLayout2HashOracle extends FmtLayout2
             connection().exec(sqlStr ("CREATE TABLE "+TableDescNodes.name()+" (",
                                        //"   id int generated always as identity ,",
                                        "   hash NUMBER(20) NOT NULL,",
-                                       "   lex CLOB NOT NULL,",
+                                       "   lex NCLOB NOT NULL,",
                                        "   lang NVARCHAR2(10),", // '' IS NULL IN ORACLE!
                                        "   datatype NVARCHAR2("+TableDescNodes.DatatypeUriLength+"),",
                                        "   type integer  NOT NULL,",

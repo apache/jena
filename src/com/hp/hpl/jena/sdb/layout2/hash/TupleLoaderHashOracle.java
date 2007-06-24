@@ -17,7 +17,7 @@ public class TupleLoaderHashOracle extends TupleLoaderHashBase {
 	}
 	
 	public String[] getNodeColTypes() {
-		return new String[] {"NUMBER(20)", "CLOB", "NVARCHAR2(10)", "NVARCHAR2("+TableDescNodes.DatatypeUriLength+")", "INT"};
+		return new String[] {"NUMBER(20)", "NCLOB", "NVARCHAR2(10)", "NVARCHAR2("+TableDescNodes.DatatypeUriLength+")", "INT"};
 	}
 	
 	public String getTupleColType() {
