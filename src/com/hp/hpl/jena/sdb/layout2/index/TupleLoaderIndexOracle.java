@@ -17,7 +17,7 @@ public class TupleLoaderIndexOracle extends TupleLoaderIndexBase {
 	}
 	
 	public String[] getNodeColTypes() {
-		return new String[] {"NUMBER(20)", "CLOB", "NVARCHAR2(10)", "NVARCHAR2("+TableDescNodes.DatatypeUriLength+")", "INT"};
+		return new String[] {"NUMBER(20)", "NCLOB", "NVARCHAR2(10)", "NVARCHAR2("+TableDescNodes.DatatypeUriLength+")", "INT"};
 	}
 	
 	public String getTupleColType() {
@@ -37,12 +37,6 @@ public class TupleLoaderIndexOracle extends TupleLoaderIndexBase {
 	public String getClearTempTuples() {
 		return null;
 	}
-	
-	@Override
-	public String getNodeLoader() { return "NNode"; }
-	
-	@Override
-	public String getTupleLoader() {return "N" + this.getTableName();}
 	
 	@Override
 	public String getLoadTuples() {

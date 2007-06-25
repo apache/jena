@@ -2,7 +2,6 @@ package com.hp.hpl.jena.sdb.layout2;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.HashSet;
@@ -28,7 +27,7 @@ public abstract class TupleLoaderBase extends com.hp.hpl.jena.sdb.store.TupleLoa
     boolean amLoading; // flag for whether we're loading or deleting
     int tupleNum;
     
-    Set<Long> seenNodes; // For supressing duplicate nodes
+    Set<Long> seenNodes; // For suppressing duplicate nodes
     
 	public TupleLoaderBase(SDBConnection connection,
 			TableDesc tableDesc, int chunkSize) {
@@ -48,10 +47,10 @@ public abstract class TupleLoaderBase extends com.hp.hpl.jena.sdb.store.TupleLoa
 		Connection conn = this.connection().getSqlConnection();
 		
 		// Create the temporary tables
-		if (!TableUtils.hasTable(connection().getSqlConnection(), getNodeLoader()))
-		    connection().exec(getCreateTempNodes());
+		if (!TableUtils.hasTable(connection().getSqlConnection(), getNodeLoader())) // Can happen with Oracle
+			connection().exec(getCreateTempNodes());
 		if (!TableUtils.hasTable(connection().getSqlConnection(), getTupleLoader()))
-		    connection().exec(getCreateTempTuples());
+			connection().exec(getCreateTempTuples());
 		
 		// Prepare those statements
 		insertNodeLoader = conn.prepareStatement(getInsertTempNodes());
@@ -151,37 +150,14 @@ public abstract class TupleLoaderBase extends com.hp.hpl.jena.sdb.store.TupleLoa
 		}
 	}
 	
-	public void dump(String table) {
-		try {
-			ResultSet res = connection().exec("SELECT * FROM " + table);
-			System.out.println("== " + table + "==");
-			while (res.next()) {
-				for (int i = 0; i < res.getMetaData().getColumnCount(); i++) {
-					System.out.print("\t");
-					System.out.print(res.getObject(i + 1));
-				}
-				System.out.println();
-			}
-			System.out.println("\n====");
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-	
 	/** These are the SQL 'bits' we use to construct the loader statements **/
-	private String nameNNode = "NNode" + System.currentTimeMillis();
-    
-	public String getNodeLoader() {
-		//return "NNode" + System.currentTimeMillis();
-        return nameNNode ;
-	}
 	
-    private String nameTuple = null ; 
+	public String getNodeLoader() {
+		return "NNode" + this.getTableName();
+	}
     
 	public String getTupleLoader() {
-        if ( nameTuple == null )
-            nameTuple = "N" + this.getTableName() + System.currentTimeMillis();
-        return nameTuple ;
+		return "N" + this.getTableName();
 	}
 	
 	public String getCreateTempNodes() {

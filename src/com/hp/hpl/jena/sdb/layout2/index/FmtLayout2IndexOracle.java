@@ -75,8 +75,8 @@ public class FmtLayout2IndexOracle extends FmtLayout2
             connection().exec(sqlStr ("CREATE TABLE "+TableDescNodes.name()+" (",
                                        "   id int NOT NULL ,",
                                        "   hash NUMBER(20) NOT NULL,",
-                                       "   lex CLOB NOT NULL,",
-                                       "   lang NVARCHAR2(10),", // '' IS NULL IN ORACLE!
+                                       "   lex NCLOB,", // No NOT NULL on char data in Oracle. '' is NULL!
+                                       "   lang NVARCHAR2(10),",
                                        "   datatype NVARCHAR2("+TableDescNodes.DatatypeUriLength+"),",
                                        "   type integer  NOT NULL,",
                                        "   PRIMARY KEY (id)",
@@ -106,8 +106,8 @@ public class FmtLayout2IndexOracle extends FmtLayout2
         try { 
             connection().exec(sqlStr(
                                       "CREATE TABLE "+TablePrefixes.name()+" (",
-                                      "    prefix VARCHAR("+TablePrefixes.prefixColWidth+") NOT NULL ,",
-                                      "    uri VARCHAR("+TablePrefixes.uriColWidth+") NOT NULL ,", 
+                                      "    prefix VARCHAR("+TablePrefixes.prefixColWidth+") ,",
+                                      "    uri VARCHAR("+TablePrefixes.uriColWidth+") ,", 
                                       "    PRIMARY KEY  (prefix)",
                                       ")"            
                     )) ;

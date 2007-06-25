@@ -108,6 +108,7 @@ public class LoaderTuplesNodes
     		this.commitThread = null;
     		this.queue = null;
     		this.tupleLoaderClass = null;
+    		this.tupleLoaders = null;
     	}
     }
     
@@ -172,23 +173,7 @@ public class LoaderTuplesNodes
 	    }
 	    else
 	    {
-			try 
-			{
-				updateOneTuple(tuple);
-			} 
-			catch (SQLException e)
-			{
-				try 
-				{
-					connection().getSqlConnection().rollback();
-				} 
-				catch (SQLException e1)
-				{
-					log.error("Error rolling back",e);
-				}
-				log.error("Problem adding triple: " + e.getMessage());
-				throw new SDBExceptionSQL("Problem adding triple", e);
-			}
+			updateOneTuple(tuple);
 	    }
 	}
 
@@ -216,23 +201,7 @@ public class LoaderTuplesNodes
 	    }
 		else
 		{
-			try 
-			{
-				commitTuples();
-			} 
-			catch (SQLException e) 
-			{
-				try 
-				{
-					connection().getSqlConnection().rollback();
-				} 
-				catch (SQLException e1) 
-				{
-					log.error("Error rolling back", e);
-				}
-				log.error("Problem commiting: " + e.getMessage());
-				throw new SDBExceptionSQL("Problem commiting", e);
-			}
+			commitTuples();
 		}
 	}
 
@@ -276,7 +245,7 @@ public class LoaderTuplesNodes
     }
     
     // Queue up a triple, committing if we have enough chunks
-    private void updateOneTuple(TupleChange tuple) throws SQLException
+    private void updateOneTuple(TupleChange tuple)
     {
     	if (currentLoader == null || !currentLoader.getTableDesc().getTableName().equals(tuple.table.getTableName())) {
     		
@@ -300,7 +269,7 @@ public class LoaderTuplesNodes
     	else currentLoader.unload(tuple.tuple);
     }
     
-    private void commitTuples() throws SQLException
+    private void commitTuples()
     {
     	if (currentLoader != null) {
     		currentLoader.finish();
@@ -365,14 +334,6 @@ public class LoaderTuplesNodes
         }
 
 		private void handleIssue(Throwable e) {
-			try
-    		{
-				connection().getSqlConnection().rollback();
-			} 
-    		catch (SQLException e1) 
-    		{
-				log.error("Problem rolling back", e1);
-			}
     		log.error("Error in thread: " + e.getMessage(), e);
     		threadException.set(e);
 		}

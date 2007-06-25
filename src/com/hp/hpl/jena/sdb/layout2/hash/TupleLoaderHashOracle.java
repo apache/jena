@@ -37,10 +37,4 @@ public class TupleLoaderHashOracle extends TupleLoaderHashBase {
 	public String getClearTempTuples() {
 		return null;
 	}
-	
-	@Override
-	public String getNodeLoader() { return "NNode"; }
-	
-	@Override
-	public String getTupleLoader() {return "N" + this.getTableName();}
 }

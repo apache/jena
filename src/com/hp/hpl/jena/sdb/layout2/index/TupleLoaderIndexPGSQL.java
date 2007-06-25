@@ -32,4 +32,15 @@ public class TupleLoaderIndexPGSQL extends TupleLoaderIndexBase {
 	public String getClearTempTuples() {
 		return null;
 	}
+	
+	@Override
+	public String getNodeLoader() {
+		return super.getNodeLoader() + hashCode();
+
+	}
+	
+	@Override
+	public String getTupleLoader() {
+		return super.getTupleLoader() + hashCode();
+	}
 }

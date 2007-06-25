@@ -32,4 +32,15 @@ public class TupleLoaderHashPGSQL extends TupleLoaderHashBase {
 	public String getClearTempTuples() {
 		return null;
 	}
+	
+	@Override
+	public String getNodeLoader() {
+		return super.getNodeLoader() + hashCode();
+
+	}
+	
+	@Override
+	public String getTupleLoader() {
+		return super.getTupleLoader() + hashCode();
+	}
 }
