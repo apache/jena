@@ -147,6 +147,8 @@ public class PrefixMappingSDB extends PrefixMappingImpl
     
     private void insertIntoPrefixMap(String prefix, String uri)
     {
+        // Only called from set() and set() has already updated the superclass
+        // but get() defers to superclass so is never null.  Err.
         try {
             // Delete old one.
             String x = get(prefix) ;

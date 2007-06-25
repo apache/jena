@@ -45,7 +45,7 @@ public class RunSDB
         SDBConnection.logSQLStatements = true ;
         sdb.sdbload.main("--sdb=Store/sdb-oracle.ttl",  "D.ttl") ;
 //        sdb.sdbtuple.main("--sdb=sdb.ttl", "--print", "Nodes") ;
-//        System.exit(0) ;
+        System.exit(0) ;
         
         //SDBConnection.logSQLQueries = true ;
         //SDBConnection.logSQLStatements = true ;
