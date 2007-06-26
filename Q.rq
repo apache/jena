@@ -1,7 +1,2 @@
-PREFIX there: <foo/>
-#PREFIX here: <>
-PREFIX :  <http://example/> 
-
-
-SELECT *
-{ ?s ?p ""^^<> }
+PREFIX : <http://example/>
+SELECT * { :x.y :123 :1-4 }
