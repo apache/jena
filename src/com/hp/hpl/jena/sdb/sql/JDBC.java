@@ -111,7 +111,7 @@ public class JDBC
             return s ;
         }
         
-        if ( type.startsWith("oracle") )
+        if ( type.equals("oracle") || type.startsWith("oracle:") )
         {
         	String s = String.format("jdbc:%s:@%s:%s", type, host, dbName) ;
         	return s;

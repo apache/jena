@@ -9,6 +9,8 @@ SDB ToDo list (and general notes)
 ** Subclass loading.
 ** OpSlice. OpUnion
 
+Why do command intuit the driver class name but test suite does not?
+
 + Model management
   Need a "graph ids" table
   
