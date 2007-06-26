@@ -324,7 +324,10 @@ public class GenerateSQLVisitor implements SqlNodeVisitor
             out.print(leftCol.toString()) ;
             out.print(", ") ;
             out.print(rightCol.toString()) ;
-            out.print(") AS "+col.getColumnName()) ;
+            
+            out.print(")") ;
+            out.print(aliasToken()) ;
+            out.print(col.getColumnName()) ;
             first = false ;
         }
         
@@ -337,9 +340,11 @@ public class GenerateSQLVisitor implements SqlNodeVisitor
             first = false ;
             
             // Need generated names.
-            SqlColumn col = sqlNode.getIdScope().findScopeForVar(v).getColumn() ;
-            SqlColumn col2 = join.getIdScope().findScopeForVar(v).getColumn() ;
-            out.print(col2+" AS "+col.getColumnName()) ;
+            SqlColumn col = join.getIdScope().findScopeForVar(v).getColumn() ;
+            SqlColumn col2 = sqlNode.getIdScope().findScopeForVar(v).getColumn() ;
+            out.print(col2.getColumnName()) ;
+            out.print(aliasToken()) ;
+            out.print(col.getColumnName()) ;
         }
         out.ensureStartOfLine() ;
 
@@ -501,9 +506,12 @@ public class GenerateSQLVisitor implements SqlNodeVisitor
             // Every derived table (SELECT ...) must have an alias.
             // Is there a more principled way to do this? .isDerived?
 //            if ( sqlNode.isRestrict() || sqlNode.isProject())
-//                out.print(" AS "+sqlNode.getAliasName()) ;
+//                out.print(+sqlNode.getAliasName()) ;
         if ( sqlNode.getAliasName() != null )
-            out.print(" AS "+sqlNode.getAliasName()) ;
+        {
+            out.print(aliasToken()) ;
+            out.print(sqlNode.getAliasName()) ;
+        }
         annotate(sqlNode) ;
         level -- ;
     }
