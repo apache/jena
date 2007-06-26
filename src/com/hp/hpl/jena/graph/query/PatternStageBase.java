@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
     [See end of file]
-    $Id: PatternStageBase.java,v 1.15 2007-05-21 11:21:56 chris-dollin Exp $
+    $Id: PatternStageBase.java,v 1.16 2007-06-26 15:31:09 chris-dollin Exp $
 */
 package com.hp.hpl.jena.graph.query;
 
@@ -144,6 +144,7 @@ public abstract class PatternStageBase extends Stage
             }
         PatternStageThread f = new PatternStageThread( "PatternStage-" + ++count );
         log.debug( "created new thread " + f );
+        f.setDaemon( true );
         f.start();
         return f;
         }
