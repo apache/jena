@@ -276,41 +276,48 @@ public class FmtUtils
 
     static public String stringForURI(String uri, PrefixMapping mapping)
     {
-        if ( mapping != null )
-        {
-            // qnameFor is more aggressive about spliting only at a non NCName char
-            // Problems with "ns." , namespace of ".../ab" etc.
-
-            // Try one way
-            String tmp = mapping.shortForm(uri) ;
-            if ( checkValidPrefixName(tmp, uri) )
-                return tmp ;
-            // No - try a different way
-            tmp = mapping.qnameFor(uri) ;
-            if ( checkValidPrefixName(tmp, uri) )
-                return tmp ;
-            // No match - fall through
-        }
-        
+        String pname = prefixFor(uri, mapping) ;
+        if ( pname != null )
+            return pname ;
         return stringForURI(uri) ; 
+        
+//        if ( mapping != null )
+//        {
+//            // qnameFor is more aggressive about spliting only at a non NCName char
+//            // Problems with "ns." , namespace of ".../ab" etc.
+//
+//            // Try one way
+//            String tmp = mapping.shortForm(uri) ;
+//            if ( ! tmp.equals(uri) )
+//            {
+//                // Shortened - but is it legal?
+//                if ( checkValidPrefixName(tmp) )
+//                    return tmp ;
+//            }
+//            
+//            // No - try a different way
+//            tmp = mapping.qnameFor(uri) ;
+//            if ( tmp != null && checkValidPrefixName(tmp) )
+//                return tmp ;
+//            // No match - fall through
+//        }
+//        
+//        return stringForURI(uri) ; 
     }
     
-//    private static String prefixFor(String uri, PrefixMapping mapping)
-//    {
-//        String tmp = mapping.shortForm(uri) ;
-//        if ( checkValidPrefixName(tmp, uri) )
-//            return tmp ;
-//        tmp = mapping.qnameFor(uri) ;
-//        if ( checkValidPrefixName(tmp, uri) )
-//            return tmp ;
-//        return uri ;
-//    }
-    
-    private static boolean checkValidPrefixName(String prefixedName, String uri)
+    private static String prefixFor(String uri, PrefixMapping mapping)
     {
-        if ( ! isShort(prefixedName, uri) )
-            return false ;
-        
+        String pname = mapping.shortForm(uri) ;
+        if ( pname != null && checkValidPrefixName(pname) )
+            return pname ;
+        pname = mapping.qnameFor(uri) ;
+        if ( pname != null && checkValidPrefixName(pname) )
+            return pname ;
+        return null ;
+    }
+    
+    private static boolean checkValidPrefixName(String prefixedName)
+    {
         // Split it to get the parts.
         int i = prefixedName.indexOf(':') ;
         if ( i < 0 )
@@ -323,12 +330,10 @@ public class FmtUtils
         return false ;
     }
     
-    private static boolean isShort(String prefixedName, String uri)
-    { return prefixedName != null && ! prefixedName.equals(uri) ; }
-    
     private static boolean checkValidPrefix(String prefixStr)
     {
         if ( prefixStr.startsWith("_"))
+            // Should .equals?? 
             return false ;
         return checkValidLocalname(prefixStr) ;
     }
@@ -338,33 +343,29 @@ public class FmtUtils
         if ( localname.length() == 0 )
             return true ;
         
-        char ch1 = localname.charAt(0) ;
-        if ( ! Character.isLetter(ch1) && ch1 != '_' ) 
-            return false ;
+        for ( int idx = 0 ; idx < localname.length() ; idx++ )
+        {
+            char ch = localname.charAt(idx) ;
+            if ( ! validPNameChar(ch) )
+                return false ;
+        }
         
-        // Test end
+        // Test start and end - at least one character in the name.
         
         if ( localname.endsWith(".") )
             return false ;
         if ( localname.startsWith(".") )
             return false ;
-        if ( localname.startsWith(".") )
-            return false ;
-
-        if ( localname.indexOf('/') >= 0 )
-            return false ;
         
-        // Test start
-        
-        char ch = localname.charAt(0) ;
-        
-        if ( Character.isLetterOrDigit(ch) )
-            return true ;
-
-        if ( ch == '_'  )
-            return true ;
-
-        
+        return true ;
+    }
+    
+    private static boolean validPNameChar(char ch)
+    {
+        if ( Character.isLetterOrDigit(ch) ) return true ;
+        if ( ch == '.' )    return true ;
+        if ( ch == '-' )    return true ;
+        if ( ch == '_' )    return true ;
         return false ;
     }
     

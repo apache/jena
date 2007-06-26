@@ -34,8 +34,8 @@ public class Run
 {
     public static void main(String[] argv)
     {
-        String []a = {"'foo' = 'foo'^^xsd:string"} ;
-        arq.qexpr.main(a) ;
+        String []a = {"--file=Q.rq"} ;
+        arq.qparse.main(a) ;
         System.exit(0) ;
         
         //runQExpr() ;

@@ -40,24 +40,46 @@ public class TestSerialization extends TestCase
     public void test_URI_2() // Too short
     { fmtURI("http://example/", "<http://example/>", pmap1) ; }
     
-    public void test_QName_1() 
+    public void test_PName_1() 
     { fmtURI("http://example/x#abc", "ex:abc", pmap1) ; }
 
-    public void test_QName_2() 
+    public void test_PName_2() 
     { fmtURI("http://example/x#", "ex:", pmap1) ; }
 
-    public void test_QName_3()
+    public void test_PName_3()
     { fmtURI("http://default/x", ":x", pmap1) ; }
 
-    public void test_QName_4()
+    public void test_PName_4()
     { fmtURI("http://default/", ":", pmap1) ; }
 
-    public void test_QName_5() // Prefixed names with a leading number in the local part
-    { fmtURI("http://default/0", "<http://default/0>", pmap1) ; }
+    public void test_PName_5() // Prefixed names with a leading number in the local part
+    { fmtURI("http://default/0", ":0", pmap1) ; }
     
-    public void test_QName_6()
-    { fmtURI("http://example/x#_1", "ex:_1", pmap1) ; }
+    public void test_PName_6()
+    { fmtURI("http://example/x#x-1", "ex:x-1", pmap1) ; }
     
+    // Things that can't be prefixed names
+
+    public void test_PName_Bad_1()
+    { fmtURI("http://other/x", "<http://other/x>", pmap1) ; }
+
+    public void test_PName_Bad_2()
+    { fmtURI("http://other/x#a", "<http://other/x#a>", pmap1) ; }
+    
+    public void test_PName_Bad_3()
+    { fmtURI("http://example/x##", "<http://example/x##>", pmap1) ; }
+
+    public void test_PName_Bad_4() 
+    { fmtURI("http://default/x#a", "<http://default/x#a>", pmap1) ; }
+
+    public void test_PName_Bad_5() 
+    { fmtURI("http://default/#a", "<http://default/#a>", pmap1) ; }
+
+    public void test_PName_Bad_6()
+    { fmtURI("http://example/x/a", "<http://example/x/a>", pmap1) ; }
+    
+    public void test_PName_Bad_7() 
+    { fmtURI("http://example/x.", "<http://example/x.>", pmap1) ; }
     
     // Dots
     public void test_Dots_1() // Internal DOT 
@@ -69,17 +91,6 @@ public class TestSerialization extends TestCase
     public void test_Dots_3() // Leading DOT
     { fmtURI("http://example/x#.b", "<http://example/x#.b>", pmap1) ; }
 
-    // Things that can't be qnames
-    
-    public void test_URI_NoQName_1() // local part wrong 
-    { fmtURI("http://example/x#-", "<http://example/x#->", pmap1) ; }
-
-    public void test_URI_NoQName_2() // local part wrong
-    { fmtURI("http://example/x#-a", "<http://example/x#-a>", pmap1) ; }
-    
-    public void test_URI_NoQName_3() 
-    { fmtURI("http://example/x#.", "<http://example/x#.>", pmap1) ; }
-    
     public void testQueryPattern1()
     { test("SELECT * { ?s ?p ?o }", 
            "SELECT * { ?s ?p ?o }",
