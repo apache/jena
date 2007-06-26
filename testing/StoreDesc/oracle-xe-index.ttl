@@ -8,6 +8,9 @@ _:c rdf:type sdb:SDBConnection ;
     sdb:sdbType        "oracle:thin" ;
     sdb:sdbHost        "localhost:1521" ;
     sdb:sdbName        "XE" ;
+    sdb:sdbUser        "test2-index" ;
+    sdb:sdbPassword    "test2-index" ;
+    sdb:driver         "oracle.jdbc.driver.OracleDriver" ;
     .
 
 [] rdf:type sdb:Store ;
