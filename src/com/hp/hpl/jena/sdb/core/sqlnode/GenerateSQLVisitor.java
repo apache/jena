@@ -321,9 +321,9 @@ public class GenerateSQLVisitor implements SqlNodeVisitor
             SqlColumn rightCol = join.getRight().getIdScope().findScopeForVar(v).getColumn() ;
             
             out.print("COALESCE(") ;
-            out.print(leftCol.toString()) ;
+            out.print(leftCol.getFullColumnName()) ;
             out.print(", ") ;
-            out.print(rightCol.toString()) ;
+            out.print(rightCol.getFullColumnName()) ;
             
             out.print(")") ;
             out.print(aliasToken()) ;
@@ -340,11 +340,13 @@ public class GenerateSQLVisitor implements SqlNodeVisitor
             first = false ;
             
             // Need generated names.
-            SqlColumn col = join.getIdScope().findScopeForVar(v).getColumn() ;
-            SqlColumn col2 = sqlNode.getIdScope().findScopeForVar(v).getColumn() ;
-            out.print(col2.getColumnName()) ;
+            SqlColumn colSub = join.getIdScope().findScopeForVar(v).getColumn() ;
+            SqlColumn col = sqlNode.getIdScope().findScopeForVar(v).getColumn() ;
+
+            out.print(colSub.getFullColumnName()) ;
             out.print(aliasToken()) ;
             out.print(col.getColumnName()) ;
+
         }
         out.ensureStartOfLine() ;
 
