@@ -14,13 +14,13 @@ public class GenerateSQLDerby extends GenerateSQL
     @Override
     protected SqlNodeVisitor makeVisitor(IndentedLineBuffer buff)
     {
-        return new GeneratorVisitorMyDerby(buff.getIndentedWriter()) ;
+        return new GeneratorVisitorDerby(buff.getIndentedWriter()) ;
     }
 }
 
-class GeneratorVisitorMyDerby extends GenerateSQLVisitor
+class GeneratorVisitorDerby extends GenerateSQLVisitor
 {
-    public GeneratorVisitorMyDerby(IndentedWriter out)
+    public GeneratorVisitorDerby(IndentedWriter out)
     { super(out) ; }
     
     // No "true" in Derby

@@ -41,9 +41,14 @@ public class PrefixMappingSDB extends PrefixMappingImpl
     // Would work if they all called a minimal interface and leave the checking to
     // general code.
     
-    // new design needed : safe failures of other updates. 
+    // TODO Per-graph prefix mappings.
     
-    // We are a an in-memory prefix mapping except the update operations
+    // TODO: Encode capital letters in prefix names.
+    
+    // new design needed : safe failures of other updates.
+    
+    
+    // We are an in-memory prefix mapping except the update operations
     // are also applied to the table.
     /* Roughly:
           CREATE TABLE Prefixes (,
@@ -62,9 +67,9 @@ public class PrefixMappingSDB extends PrefixMappingImpl
     {
         super() ;
         connection = sdb  ;
-        
-        // DISABLED - does not work on ModelRDB
-        //readPrefixMapping() ;
+        // ModelRDB does not support prefixes in the same way as models/graphs over SDB stores. 
+        try { readPrefixMapping() ; }
+        catch (Throwable th) { }
     }
     
     @Override
@@ -113,6 +118,7 @@ public class PrefixMappingSDB extends PrefixMappingImpl
             while(rs.next())
             {
                 String p = rs.getString("prefix") ;
+                p = decode(p) ;
                 String v = rs.getString("uri") ;
                 // Load in-memory copy.
                 super.set(p, v) ;
@@ -154,7 +160,7 @@ public class PrefixMappingSDB extends PrefixMappingImpl
             String x = get(prefix) ;
             if ( x != null )
                 removeFromPrefixMap(prefix, x) ;
-
+            prefix = encode(prefix) ;
             String sqlStmt = sqlStr(
                 "INSERT INTO "+prefixTableName,
                 "   VALUES ("+quoteStr(prefix)+", "+quoteStr(uri)+")"
@@ -167,6 +173,7 @@ public class PrefixMappingSDB extends PrefixMappingImpl
     private void removeFromPrefixMap(String prefix, String uri)
     {
         try {
+            prefix = encode(prefix) ;
             String sqlStmt = sqlStr(
                  "DELETE FROM "+prefixTableName+" WHERE",
                  "   prefix = "+quoteStr(prefix) //+" AND uri = "+quote(uri)
@@ -175,6 +182,16 @@ public class PrefixMappingSDB extends PrefixMappingImpl
         } catch (SQLException ex)
         { throw new SDBExceptionSQL(format("Failed to remove prefix (%s,%s)", prefix, uri), ex) ; }
     }
+    
+    // Always put in a trailing ":" so the prefix is never the empty string
+    // which is null on Oracle but the prefix is a primary key and can't be null. 
+    
+    private String encode(String prefix)
+    { return prefix+":" ; }
+
+    private String decode(String prefix)
+    { return prefix.substring(0, prefix.length()-1) ; }
+
 }
 
 /*

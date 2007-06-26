@@ -33,17 +33,14 @@ import com.hp.hpl.jena.sparql.resultset.ResultsFormat;
 import com.hp.hpl.jena.sparql.util.QueryExecUtils;
 import com.hp.hpl.jena.util.FileManager;
 
-
-
-
 public class RunSDB
 {
     static { CmdUtils.setLog4j() ; CmdUtils.setN3Params() ; }
     public static void main(String[]argv)
     {
         SDBConnection.logSQLExceptions = true ;
-        SDBConnection.logSQLStatements = true ;
-        sdb.sdbload.main("--sdb=Store/sdb-oracle.ttl",  "D.ttl") ;
+        //SDBConnection.logSQLStatements = true ;
+        sdb.sdbdump.main("--sdb=sdb.ttl",  "--out=TTL") ;
 //        sdb.sdbtuple.main("--sdb=sdb.ttl", "--print", "Nodes") ;
         System.exit(0) ;
         

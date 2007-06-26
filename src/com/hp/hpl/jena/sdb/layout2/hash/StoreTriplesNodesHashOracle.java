@@ -6,7 +6,7 @@
 
 package com.hp.hpl.jena.sdb.layout2.hash;
 
-import com.hp.hpl.jena.sdb.core.sqlnode.GenerateSQL;
+import com.hp.hpl.jena.sdb.core.sqlnode.GenerateSQLOracle;
 import com.hp.hpl.jena.sdb.layout2.LoaderTuplesNodes;
 import com.hp.hpl.jena.sdb.layout2.SQLBridgeFactory2;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
@@ -21,7 +21,7 @@ public class StoreTriplesNodesHashOracle extends StoreBaseHash
               new LoaderTuplesNodes(connection, TupleLoaderHashOracle.class),
               new QueryCompilerFactoryHash(), 
               new SQLBridgeFactory2(),
-              new GenerateSQL()) ;
+              new GenerateSQLOracle()) ;
         
         ((LoaderTuplesNodes) this.getLoader()).setStore(this);
     }

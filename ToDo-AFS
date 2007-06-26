@@ -9,7 +9,14 @@ SDB ToDo list (and general notes)
 ** Subclass loading.
 ** OpSlice. OpUnion
 
++ Model management
+  Need a "graph ids" table
+  
++ Prefixes
+   Per graph, not global
+
 + Tidy up and document DBtest
+  per DB col types!
 
 + SPARQL/Update input and control
 

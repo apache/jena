@@ -4,27 +4,36 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.layout2.index;
+package com.hp.hpl.jena.sdb.core.sqlnode;
 
-import com.hp.hpl.jena.sdb.core.sqlnode.GenerateSQLOracle;
-import com.hp.hpl.jena.sdb.layout2.LoaderTuplesNodes;
-import com.hp.hpl.jena.sdb.layout2.SQLBridgeFactory2;
-import com.hp.hpl.jena.sdb.sql.SDBConnection;
+import com.hp.hpl.jena.sparql.util.IndentedLineBuffer;
+import com.hp.hpl.jena.sparql.util.IndentedWriter;
 
-public class StoreTriplesNodesIndexOracle extends StoreBaseIndex
+public class GenerateSQLOracle extends GenerateSQL
 {
-
-    public StoreTriplesNodesIndexOracle(SDBConnection connection)
+    @Override
+    protected SqlNodeVisitor makeVisitor(IndentedLineBuffer buff)
     {
-        super(connection,
-              new FmtLayout2IndexOracle(connection) ,
-              new LoaderTuplesNodes(connection, TupleLoaderIndexOracle.class),
-              new QueryCompilerFactoryIndex(), 
-              new SQLBridgeFactory2(),
-              new GenerateSQLOracle()) ;
-        
-        ((LoaderTuplesNodes) this.getLoader()).setStore(this);
+        return new GeneratorVisitorOracle(buff.getIndentedWriter()) ;
     }
+}
+
+class GeneratorVisitorOracle extends GenerateSQLVisitor
+{
+    public GeneratorVisitorOracle(IndentedWriter out)
+    { super(out) ; }
+
+    // No "AS" in Oracle
+    @Override
+    protected String aliasToken()
+    {
+        return " " ;
+    }
+    
+    // No "true" in Oracle
+    @Override
+    protected String leftJoinNoConditionsString()
+    { return "1=1" ; }
 }
 
 /*

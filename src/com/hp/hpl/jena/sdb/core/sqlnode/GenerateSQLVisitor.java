@@ -101,12 +101,14 @@ public class GenerateSQLVisitor implements SqlNodeVisitor
                 
                 currentPrefix = x ;
             }
-            out.print(c.cdr().asString()) ;
+            
+            String projectName = c.cdr().asString() ;
+            out.print(projectName) ;
             
             if ( aliasVar != null )
             {
                 String varLabel = c.car().getName() ;
-                out.print(" AS ") ;
+                out.print(aliasToken()) ;
                 out.print(varLabel) ;
             }
         }
@@ -186,7 +188,7 @@ public class GenerateSQLVisitor implements SqlNodeVisitor
             out.println("SELECT *") ;
             out.print("FROM ") ;
             out.print(node2.asTable().getTableName()) ;
-            out.print(" AS ") ;
+            out.print(aliasToken()) ;
             out.print(node2.asTable().getAliasName()) ;
             annotate(node2.asTable()) ;
             out.ensureStartOfLine() ;
@@ -211,8 +213,8 @@ public class GenerateSQLVisitor implements SqlNodeVisitor
 //            out.print(sep) ;
 //            sep = " " ;
 //            out.print(table.getTableName()) ;
-//            out.print(" AS ") ;
-//            out.print(table.getAliasName()) ;
+//            out.print(aliasToken()) ;
+//            out.print(table.getAliasName())) ;
 //        }
     }
     
@@ -228,7 +230,7 @@ public class GenerateSQLVisitor implements SqlNodeVisitor
     public void visit(SqlTable table)
     {
         out.print(table.getTableName()) ;
-        out.print(" AS ") ;
+        out.print(aliasToken()) ;
         out.print(table.getAliasName()) ;
         annotate(table) ;
     }
@@ -409,7 +411,16 @@ public class GenerateSQLVisitor implements SqlNodeVisitor
         }
     }
 
+    // -------- Extension points for various SQL differences
+    
+    protected String aliasToken()
+    {
+        return " AS " ;
+    }
+
     protected String leftJoinNoConditionsString() { return "1 = 1" ; }
+    
+    // --------
     
     // Interaction with annotations
     static boolean allOnOneLine = false ;

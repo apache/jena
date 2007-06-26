@@ -11,6 +11,7 @@ import sdb.cmd.CmdArgsDB;
 import sdb.cmd.ModGraph;
 import arq.cmdline.ArgDecl;
 
+import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.sparql.util.Utils;
 
  /** Write out the data from an SDB model.  Only works for small models
@@ -72,7 +73,8 @@ public class sdbdump extends CmdArgsDB
             System.out.println("Debug: syntax is "+syntax) ;
         
         try {
-            modGraph.getModel(getStore()).write(System.out, syntax) ;
+            Model model = modGraph.getModel(getStore()) ;
+            model.write(System.out, syntax) ;
         } catch (Exception ex)
         {
             System.err.println("Exception: "+ex+" :: "+ex.getMessage()) ;
