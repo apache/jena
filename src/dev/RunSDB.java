@@ -36,8 +36,9 @@ public class RunSDB
     {
         SDBConnection.logSQLExceptions = true ;
         //SDBConnection.logSQLStatements = true ;
-        sdb.sdbdump.main("--sdb=testing/StoreDesc/pgsql-hash.ttl",  "--out=TTL") ;
-//        sdb.sdbtuple.main("--sdb=sdb.ttl", "--print", "Nodes") ;
+        
+        sdb.sdbprint.main("--sdb=Store/sdb-mssql-express.ttl",  "--query=Q.rq") ;
+
         System.exit(0) ;
         
         //SDBConnection.logSQLQueries = true ;

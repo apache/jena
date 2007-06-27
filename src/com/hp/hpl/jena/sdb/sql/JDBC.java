@@ -65,6 +65,9 @@ public class JDBC
     // This is the only place a driver is created.
     public static Connection createConnection(String url, String user, String password) throws SQLException
     {
+        if ( url.equals(jdbcNone) )
+            return null ;
+        
         if ( user == null )
             user = Access.getUser() ;
         if ( password == null )
