@@ -1,15 +1,11 @@
 SDB ToDo list (and general notes)
 =================================
 
-** StoreConfig
-   locally cache
-   List of tables - all table creation to be noted.
-   Prefixes.
-** StoreLoader interface
+++ Layout1/oracle
+++ layout2/MS SQL clustered index?
+
 ** Subclass loading.
 ** OpSlice. OpUnion
-
-Why do command intuit the driver class name but test suite does not?
 
 + Model management
   Need a "graph ids" table
@@ -17,8 +13,7 @@ Why do command intuit the driver class name but test suite does not?
 + Prefixes
    Per graph, not global
 
-+ Tidy up and document DBtest
-  per DB col types!
++ Tidy up and document DBtest :  per DB col types!
 
 + SPARQL/Update input and control
 
@@ -30,6 +25,23 @@ Why do command intuit the driver class name but test suite does not?
 
 + canonicalise literals on input?
 
++ StoreConfig
+   locally cache
+   List of tables - all table creation to be noted.
+   Prefixes.
+
++ Generating SQL:
+  + Nested SELECT
+  + Restrict(Join(A,B)) == Join(A,B,condition)
+    In rel algebra, don't push into conditions: do in code generation.
+  + Precedence-driven output for SqlExpr // SqlExprGenerateSQL, not lots of nesting.
+  + SELECT/one table ==> move constraints out (it's just SPJ)
+    Put in a SqlNode optimizer stage, just before generation
+      IJ-R-T => IJ(r)-T is done specially 
+  + Generalize linearization of InnerJoin-only trees
+  + Be careful about code generation and a right complex expression
+    Use a SELECT for nested expressions?  generalize from COALESCE code generation.
+   
 + GraphSDB : graph query handler
 
 + QueryEngineSDB has duplication with QueryEngineMain - eliminate!
@@ -43,17 +55,10 @@ Why do command intuit the driver class name but test suite does not?
   Reduce data?  is there always a minimum?  No - but synthetic?
   Or nested SELECT DISTINCT in SQL.
 
-+ Store config
-    in sdb.ttl // in DB // rebuildable?
-    Current description + "features"
-
 + StoreConnection needs a StoreLayout indirection ??
   Connection -> Config "StoreControl" -> Store 
   Store hasA "StoreControl" -- c.f. StoreFormatter
    Features play into this
-
-+ Prefixes : disable for ModelRDB only.
-  Done?? Check
 
 + Prepared statement query cache?
   When will it be beneficial - GraphSDB and add/delete single triples?
@@ -61,18 +66,6 @@ Why do command intuit the driver class name but test suite does not?
 + Value-based hashing
   String version - and have fixed choice of xsd:string or plain string for terms.
   Partial alternative: condition is "T.o = hash1 OR T.o = hash2"
-
-+ Generating SQL:
-  + Restrict(Join(A,B)) == Join(A,B,condition)
-    In rel algebra, don't push into conditions: do in code generation.
-  + Precedence-driven output for SqlExpr // SqlExprGenerateSQL, not lots of nesting.
-  + SELECT/one table ==> move constraints out (it's just SPJ)
-    Put in a SqlNode optimizer stage, just before generation
-      IJ-R-T => IJ(r)-T is done specially 
-  + Generalize linearization of InnerJoin-only trees
-  + Be careful about code generation and a right complex expression
-    Use a SELECT for nested expressions?  generalize from COALESCE code generation.
-   
 
 + Add query tests :
   /Structure/ { opt ... } JOIN { opt ... } 
