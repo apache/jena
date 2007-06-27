@@ -4,6 +4,10 @@
 ++ ** Document "update API"
 -----
 
++ Move ResultSetRewindable into the "query" package 
+  Leave a toolstone in sparql.ResultSetRewindable
+  Add to FAQ
+
 + DateTime arithmetic and durations
   http://www.w3.org/TR/xpath-functions/#dateTime-arithmetic
 
