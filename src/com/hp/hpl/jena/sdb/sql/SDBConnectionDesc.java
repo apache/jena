@@ -7,17 +7,13 @@
 package com.hp.hpl.jena.sdb.sql;
 
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-
 import com.hp.hpl.jena.assembler.assemblers.AssemblerBase;
-import com.hp.hpl.jena.sparql.util.GraphUtils;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.sdb.SDBException;
 import com.hp.hpl.jena.sdb.assembler.AssemblerVocab;
+import com.hp.hpl.jena.sparql.util.GraphUtils;
 import com.hp.hpl.jena.util.FileManager;
 
 public class SDBConnectionDesc
@@ -34,7 +30,11 @@ public class SDBConnectionDesc
     
     public String rdbType   = null ;    // ModelRDB specific
     
+    public static SDBConnectionDesc blank()
+    { return new SDBConnectionDesc() ; }
 
+    private SDBConnectionDesc() {}
+    
     public static SDBConnectionDesc read(String filename)
     {
         Model m = FileManager.get().loadModel(filename) ;
@@ -52,39 +52,15 @@ public class SDBConnectionDesc
         Resource r = GraphUtils.getResourceByType(m, AssemblerVocab.SDBConnectionAssemblerType) ;
         if ( r == null )
             throw new SDBException("Can't find connection description") ;
-        return (SDBConnectionDesc)AssemblerBase.general.open(r) ;
+        SDBConnectionDesc desc = (SDBConnectionDesc)AssemblerBase.general.open(r) ;
+        desc.initJDBC() ;
+        return desc ;
     }
 
-    public void initJDBC()
+    private void initJDBC()
     {
         if ( jdbcURL == null )
             jdbcURL = JDBC.makeURL(type, host, name, argStr, user, password) ;
-    }
-    
-    /** Create a new SDB connection from the description. */ 
-    public SDBConnection createConnection()
-    {
-        initJDBC() ;
-        if ( driver != null )
-            JDBC.loadDriver(driver) ;
-        SDBConnection c = new SDBConnection(jdbcURL, user, password) ;
-        if ( label != null )
-            c.setLabel(label) ;
-        return c ;
-    }
-
-    /** Create a new, plain JDBC SQL connection from the description. */ 
-    public Connection createSqlConnection()
-    {
-        initJDBC() ;
-        if ( driver != null )
-            JDBC.loadDriver(driver) ;
-        try {
-            return DriverManager.getConnection(jdbcURL, user, password) ;
-        } catch (SQLException e)
-        {
-            throw new SDBException("SQL Exception while connecting to database: "+jdbcURL+" : "+e.getMessage()) ;
-        }
     }
 
     public String getArgStr()
@@ -106,7 +82,10 @@ public class SDBConnectionDesc
     { this.host = host ; }
 
     public String getJdbcURL()
-    { return jdbcURL ; }
+    { 
+        initJDBC() ;
+        return jdbcURL ;
+    }
 
     public void setJdbcURL(String jdbcURL)
     { this.jdbcURL = jdbcURL ; }
@@ -146,6 +125,7 @@ public class SDBConnectionDesc
 
     public void setUser(String user)
     { this.user = user ; }
+
 }
 
 /*

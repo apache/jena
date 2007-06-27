@@ -26,6 +26,7 @@ import com.hp.hpl.jena.sdb.layout2.index.StoreTriplesNodesIndexPGSQL;
 import com.hp.hpl.jena.sdb.layout2.index.StoreTriplesNodesIndexSQLServer;
 import com.hp.hpl.jena.sdb.sql.JDBC;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
+import com.hp.hpl.jena.sdb.sql.SDBConnectionFactory;
 import com.hp.hpl.jena.sdb.store.Store;
 
 @RunWith(AllTests.class)
@@ -33,7 +34,7 @@ import com.hp.hpl.jena.sdb.store.Store;
 // static suite() becomes in JUnit 4:... 
 //@RunWith(Suite.class) and SuiteClasses(TestClass1.class, ...)
 
-public class SDBTestSuite2 extends TestSuite
+public class SDBTestSuite2OLD extends TestSuite
 {
     // Better:
     // @RunWith(Parameterized.class) and parameters are sdb files or Stores 
@@ -52,10 +53,10 @@ public class SDBTestSuite2 extends TestSuite
     static boolean includeSQLServer = false ;
     
     static public TestSuite suite() {
-        return new SDBTestSuite2();
+        return new SDBTestSuite2OLD();
     }
 
-    private SDBTestSuite2()
+    private SDBTestSuite2OLD()
     {
         super("SDB - Schema 2") ;
         
@@ -74,7 +75,7 @@ public class SDBTestSuite2 extends TestSuite
             if ( includeHash )
             {
                 String url = JDBC.makeURL("derby", "localhost", "DB/test2-hash") ;
-                SDBConnection sdb = new SDBConnection(url, null, null) ;
+                SDBConnection sdb = SDBConnectionFactory.create(url, null, null) ;
                 TestSuite ts = QueryTestSDBFactory.make(new StoreTriplesNodesHashDerby(sdb),
                                                         SDBTest.testDirSDB+"manifest-sdb.ttl",
                                                         "Derby/Hash - ") ;
@@ -84,7 +85,7 @@ public class SDBTestSuite2 extends TestSuite
             if ( includeIndex )
             {
                 String url = JDBC.makeURL("derby", "localhost", "DB/test2-index") ;
-                SDBConnection sdb = new SDBConnection(url, null, null) ;
+                SDBConnection sdb = SDBConnectionFactory.create(url, null, null) ;
                 TestSuite ts = QueryTestSDBFactory.make(new StoreTriplesNodesIndexDerby(sdb),
                                                         SDBTest.testDirSDB+"manifest-sdb.ttl",
                                                         "Derby/Index - ") ;
@@ -98,7 +99,7 @@ public class SDBTestSuite2 extends TestSuite
             JDBC.loadDriverMySQL() ;
             if ( includeHash )
             {
-                SDBConnection sdb = new SDBConnection("jdbc:mysql://localhost/test2-hash", Access.getUser(), Access.getPassword()) ;
+                SDBConnection sdb = SDBConnectionFactory.create("jdbc:mysql://localhost/test2-hash", Access.getUser(), Access.getPassword()) ;
                 TestSuite ts = QueryTestSDBFactory.make(new StoreTriplesNodesHashMySQL(sdb),
                                                  SDBTest.testDirSDB+"manifest-sdb.ttl", "MySQL/Hash - ") ;
                 ts.setName(ts.getName()+" (MySQL/hash)") ;
@@ -106,7 +107,7 @@ public class SDBTestSuite2 extends TestSuite
             }
             if ( includeIndex )
             {
-                SDBConnection sdb = new SDBConnection("jdbc:mysql://localhost/test2-index", Access.getUser(), Access.getPassword()) ;
+                SDBConnection sdb = SDBConnectionFactory.create("jdbc:mysql://localhost/test2-index", Access.getUser(), Access.getPassword()) ;
                 TestSuite ts = QueryTestSDBFactory.make(new StoreTriplesNodesIndexMySQL(sdb),
                                          SDBTest.testDirSDB+"manifest-sdb.ttl", "MySQL/Index - ") ;
                 ts.setName(ts.getName()+" (MySQL/index)") ;
@@ -119,7 +120,7 @@ public class SDBTestSuite2 extends TestSuite
             JDBC.loadDriverPGSQL() ;
             if ( includeHash )
             {
-                SDBConnection sdb = new SDBConnection("jdbc:postgresql://localhost/test2-hash", Access.getUser(), Access.getPassword()) ;
+                SDBConnection sdb = SDBConnectionFactory.create("jdbc:postgresql://localhost/test2-hash", Access.getUser(), Access.getPassword()) ;
                 TestSuite ts = QueryTestSDBFactory.make(new StoreTriplesNodesHashPGSQL(sdb),
                                                  SDBTest.testDirSDB+"manifest-sdb.ttl", "PostgreSQL/Hash - ") ;
                 ts.setName(ts.getName()+" (PostgreSQL/hash)") ;
@@ -127,7 +128,7 @@ public class SDBTestSuite2 extends TestSuite
             }
             if ( includeIndex )
             {
-                SDBConnection sdb = new SDBConnection("jdbc:postgresql://localhost/test2-index", Access.getUser(), Access.getPassword()) ;
+                SDBConnection sdb = SDBConnectionFactory.create("jdbc:postgresql://localhost/test2-index", Access.getUser(), Access.getPassword()) ;
                 TestSuite ts = QueryTestSDBFactory.make(new StoreTriplesNodesIndexPGSQL(sdb),
                                          SDBTest.testDirSDB+"manifest-sdb.ttl", "PostgreSQL/Index - ") ;
                 ts.setName(ts.getName()+" (PostgreSQL/index)") ;
@@ -143,7 +144,7 @@ public class SDBTestSuite2 extends TestSuite
             if ( includeHash )
             {
                 String jdbc = String.format("jdbc:sqlserver://localhost%s;databaseName=test2-hash", expressStr) ;
-                SDBConnection sdb = new SDBConnection(jdbc, Access.getUser(), Access.getPassword()) ;
+                SDBConnection sdb = SDBConnectionFactory.create(jdbc, Access.getUser(), Access.getPassword()) ;
                 TestSuite ts = QueryTestSDBFactory.make(new StoreTriplesNodesHashSQLServer(sdb),
                                                         SDBTest.testDirSDB+"manifest-sdb.ttl",
                                                         "MS SQL/Hash - ") ;
@@ -153,7 +154,7 @@ public class SDBTestSuite2 extends TestSuite
             if ( includeIndex )
             {
                 String jdbc = String.format("jdbc:sqlserver://localhost%s;databaseName=test2-index", expressStr) ;
-                SDBConnection sdb = new SDBConnection(jdbc, Access.getUser(), Access.getPassword()) ;
+                SDBConnection sdb = SDBConnectionFactory.create(jdbc, Access.getUser(), Access.getPassword()) ;
                 TestSuite ts = QueryTestSDBFactory.make(new StoreTriplesNodesIndexSQLServer(sdb),
                                                         SDBTest.testDirSDB+"manifest-sdb.ttl",
                                                         "MS SQL/Index - ") ;
@@ -167,7 +168,7 @@ public class SDBTestSuite2 extends TestSuite
             JDBC.loadDriverHSQL() ;
             if ( includeHash )
             {
-                SDBConnection sdb = new SDBConnection("jdbc:hsqldb:mem:testdb2", "sa", "") ;
+                SDBConnection sdb = SDBConnectionFactory.create("jdbc:hsqldb:mem:testdb2", "sa", "") ;
                 Store store = new StoreTriplesNodesIndexHSQL(sdb) ;
                 store.getTableFormatter().format() ;
                 TestSuite ts = QueryTestSDBFactory.make(store, 
@@ -178,7 +179,7 @@ public class SDBTestSuite2 extends TestSuite
             
             if ( includeIndex )
             {
-                SDBConnection sdb = new SDBConnection("jdbc:hsqldb:mem:testdb2", "sa", "") ;
+                SDBConnection sdb = SDBConnectionFactory.create("jdbc:hsqldb:mem:testdb2", "sa", "") ;
                 Store store = new StoreTriplesNodesIndexHSQL(sdb) ;
                 store.getTableFormatter().format() ;
                 TestSuite ts = QueryTestSDBFactory.make(store,

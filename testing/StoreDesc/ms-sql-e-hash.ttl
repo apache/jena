@@ -7,7 +7,7 @@ _:c rdf:type sdb:SDBConnection ;
     sdb:sdbType        "MSSQLServerExpress" ;
     sdb:sdbHost        "localhost" ;
     sdb:sdbName        "test2-hash" ;
-    sdb:driver         "com.microsoft.sqlserver.jdbc.SQLServerDriver"
+#    sdb:driver         "com.microsoft.sqlserver.jdbc.SQLServerDriver"
     .
 
 [] rdf:type sdb:Store ;

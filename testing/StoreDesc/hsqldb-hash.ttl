@@ -9,7 +9,7 @@ _:c rdf:type sdb:SDBConnection ;
     sdb:sdbUser      "sa" ;
     sdb:sdbPassword  "" ;
     sdb:sdbName      "test2-hash" ;
-    sdb:driver       "org.hsqldb.jdbcDriver" ;
+#    sdb:driver       "org.hsqldb.jdbcDriver" ;
     .
 
 [] rdf:type sdb:Store ;

@@ -27,8 +27,8 @@ public abstract class CmdArgsDB extends CmdGeneral
     }
     
     private ModSymbol modSymbol = new ModSymbol(SDB.symbolNamespace) ;
-    private ModStore modStore   = new ModStore() ;
-    private ModTime  modTime    = new ModTime() ;
+    private ModStore  modStore  = new ModStore() ;
+    private ModTime   modTime   = new ModTime() ;
 
     protected CmdArgsDB(String argv[])
     {
@@ -40,9 +40,9 @@ public abstract class CmdArgsDB extends CmdGeneral
     
     protected void setModStore(ModStore modStore) { this.modStore = modStore ; }
     
-    protected ModStore getModStore() { return modStore  ; }
-    protected ModTime  getModTime()  { return modTime  ; }
-    protected Store getStore() { return modStore.getStore()  ; }
+    protected ModStore getModStore()    { return modStore  ; }
+    protected ModTime  getModTime()     { return modTime ; }
+    protected Store getStore()          { return modStore.getStore() ; }
     
     protected abstract void execCmd(List<String> positionalArgs) ;
     

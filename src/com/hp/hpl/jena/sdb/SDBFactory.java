@@ -37,7 +37,7 @@ public class SDBFactory
     // ---- Connections
     
     public static SDBConnection createConnection(String jdbcURL, String user, String password)
-    { return new SDBConnection(jdbcURL, user, password) ; }
+    { return SDBConnectionFactory.create(jdbcURL, user, password); }
     
     public static SDBConnection createConnection(SDBConnectionDesc desc)
     { return SDBConnectionFactory.create(desc) ; }
@@ -46,7 +46,7 @@ public class SDBFactory
     { return SDBConnectionFactory.create(configFile) ; }
 
     public static Connection createSqlConnection(SDBConnectionDesc desc)
-    { return SDBConnectionFactory.createJDBC(desc) ; }
+    { return SDBConnectionFactory.createSqlConnection(desc) ; }
 
     public static Connection createSqlConnection(String configFile)
     { return SDBConnectionFactory.createJDBC(configFile) ; }

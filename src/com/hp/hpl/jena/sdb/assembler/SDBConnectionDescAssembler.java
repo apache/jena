@@ -23,7 +23,7 @@ public class SDBConnectionDescAssembler extends AssemblerBase implements Assembl
     @Override
     public Object open(Assembler a, Resource root, Mode mode)
     {
-        SDBConnectionDesc sDesc = new SDBConnectionDesc() ;
+        SDBConnectionDesc sDesc = SDBConnectionDesc.blank() ;
         
         sDesc.setType(     GraphUtils.getStringValue(root, AssemblerVocab.pSDBtype) ) ;
         sDesc.setHost(     GraphUtils.getStringValue(root, AssemblerVocab.pSDBhost) ) ;

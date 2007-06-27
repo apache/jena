@@ -7,6 +7,9 @@
 package com.hp.hpl.jena.sdb.sql;
 
 import java.sql.Connection;
+import java.sql.SQLException;
+
+import com.hp.hpl.jena.sdb.SDBException;
 
 /*
  * An SDBConnection is the abstraction of the link between client
@@ -16,7 +19,7 @@ import java.sql.Connection;
 
 public class SDBConnectionFactory
 {
-    public static SDBConnection create(SDBConnectionDesc desc){ return desc.createConnection() ; }
+    public static SDBConnection create(SDBConnectionDesc desc){ return worker(desc) ; }
 
     public static SDBConnection create(String configFile)
     { 
@@ -24,17 +27,56 @@ public class SDBConnectionFactory
         return create(desc) ;
     }
 
-    public static Connection createJDBC(SDBConnectionDesc desc) { return desc.createSqlConnection() ; }
+    public static SDBConnection create(String url, String user, String password)
+    {
+        return new SDBConnection(createSqlConnection(url, user, password)) ;
+    }
+    
     public static Connection createJDBC(String configFile)
     { 
         SDBConnectionDesc desc = SDBConnectionDesc.read(configFile) ;
-        return createJDBC(desc) ;
+        return createSqlConnection(desc) ;
     }
 
     public static SDBConnection create(Connection sqlConnection)
     {
         return new SDBConnection(sqlConnection) ;
     }
+    
+    // --------
+    
+    /** Create a new SDB connection from the description. */ 
+    private static SDBConnection worker(SDBConnectionDesc desc)
+    {
+        java.sql.Connection sqlConnection = createSqlConnection(desc) ;
+        if ( desc.getDriver() != null )
+            JDBC.loadDriver(desc.getDriver()) ;
+        SDBConnection c = new SDBConnection(sqlConnection) ;
+        if ( desc.getLabel() != null )
+            c.setLabel(desc.getLabel()) ;
+        return c ;
+    }
+
+    /** Create a new, plain JDBC SQL connection from the description. */ 
+    public static Connection createSqlConnection(SDBConnectionDesc desc)
+    {
+        String driver = desc.getDriver() ;
+        if ( driver == null )
+            driver = JDBC.guessDriver(desc.getType()) ;
+        if ( driver != null )
+            JDBC.loadDriver(driver) ;
+        
+        return createSqlConnection(desc.getJdbcURL(), desc.getUser(), desc.getPassword()) ;
+    }
+
+    public static Connection createSqlConnection(String jdbcURL, String user, String password)
+    {
+        try {
+            return JDBC.createConnection(jdbcURL, user, password) ;
+        } catch (SQLException e)
+        { throw new SDBException("SQL Exception while connecting to database: "+jdbcURL+" : "+e.getMessage()) ; }
+    }
+    
 }
 
 /*

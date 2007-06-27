@@ -7,9 +7,7 @@
 package sdb.cmd;
 
 import java.sql.SQLException;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import arq.cmd.TerminationException;
 import arq.cmdline.ArgDecl;
@@ -21,8 +19,6 @@ import com.hp.hpl.jena.query.Dataset;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.sdb.SDBException;
 import com.hp.hpl.jena.sdb.SDBFactory;
-import com.hp.hpl.jena.sdb.shared.SDBNotFoundException;
-import com.hp.hpl.jena.sdb.sql.JDBC;
 import com.hp.hpl.jena.sdb.sql.MySQLEngineType;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.sql.SDBExceptionSQL;
@@ -63,39 +59,8 @@ public class ModStore extends ModBase
     protected final ArgDecl argDeclLayout       = new ArgDecl(true, "layout");
     protected final ArgDecl argDeclMySQLEngine  = new ArgDecl(true, "engine");
 
-    // Load some data - useful for in-memory stores.
-    // ModData extends ModStore? 
-//    protected final ArgDecl argDeclLoad         = new ArgDecl(true,  "load");
-//    protected final ArgDecl argDeclFormat       = new ArgDecl(false, "format");
     
-    protected String driverName = null;      // JDBC class name
-    //protected String argDriverTypeName = null;  // Jena driver name
-    //protected String argModelName = null;
-    //protected String layoutName = null ;
-
-    // DB types to JDBC driver name (some common choices)
-    private static Map<String,String> jdbcDrivers = new HashMap<String,String>();
-    static {
-        jdbcDrivers.put("mysql",       "com.mysql.jdbc.Driver");
-        jdbcDrivers.put("mssql",       "com.microsoft.jdbc.sqlserver.SQLServerDriver") ;
-        jdbcDrivers.put("postgres",    "org.postgresql.Driver");
-        jdbcDrivers.put("postgresql",  "org.postgresql.Driver");
-        jdbcDrivers.put("hsqldb:file", "org.hsqldb.jdbcDriver");
-        jdbcDrivers.put("hsqldb:mem",  "org.hsqldb.jdbcDriver");
-        jdbcDrivers.put("oracle10",      "oracle.jdbc.driver.OracleDriver");
-        jdbcDrivers.put("oracle:thin",      "oracle.jdbc.driver.OracleDriver");
-    }
-    
-    // DB types to name Jena uses internally
-//    private static Map<String,String> jenaDriverName = new HashMap<String,String>();
-//    static {
-//        jenaDriverName.put("mssql",       "MsSQL");
-//        jenaDriverName.put("mysql",       "MySQL");
-//        jenaDriverName.put("postgresql",  "PostgreSQL");
-//        jenaDriverName.put("postgres",    "PostgreSQL");
-//        jenaDriverName.put("oracle",      "Oracle");
-//    }
-
+//    protected String driverName = null;      // JDBC class name
     StoreDesc storeDesc = null ;
     SDBConnection connection = null ;
     boolean connectionAttempted = false ;
@@ -255,38 +220,11 @@ public class ModStore extends ModBase
             SDBConnection.logSQLStatements = true ;
         }
 
-        // Mandatory arguments
-//        if ( argDbURL == null )
-//        {
-//            System.err.println("Missing a required argument (JDBC URL)");
-//            throw new TerminationException(9);
-//        }
-
-       
-        driverName = storeDesc.connDesc.getDriver() ;
-        
         if (cmdLine.contains(argDeclJdbcDriver))
-            driverName = cmdLine.getArg(argDeclJdbcDriver).getValue();
-
-        if ( driverName == null )
-            driverName = jdbcDrivers.get(storeDesc.connDesc.getType().toLowerCase());
-
-        if (driverName == null)
         {
-            System.err.println("No known driver: please say which JDBC driver to use");
-            throw new TerminationException(9);
+            String driverName = cmdLine.getArg(argDeclJdbcDriver).getValue();
+            storeDesc.connDesc.setDriver(driverName) ;
         }
-
-        try { JDBC.loadDriver(driverName); }
-        catch (SDBNotFoundException ex)
-        {
-            System.err.println("Driver not found: "+driverName);
-            throw new TerminationException(9);
-        }
-        
-        // Data stuff - move to ModData
-        loadFiles = null ; //(List<String>)cmdLine.getValues(argDeclLoad) ;
-        formatFirst = false ; // cmdLine.contains(argDeclFormat) ;
     }
     
     public Store getStore()

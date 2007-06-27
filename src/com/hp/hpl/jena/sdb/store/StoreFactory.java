@@ -16,7 +16,6 @@ import com.hp.hpl.jena.db.ModelRDB;
 import com.hp.hpl.jena.db.RDFRDBException;
 import com.hp.hpl.jena.sdb.SDB;
 import com.hp.hpl.jena.sdb.SDBException;
-import com.hp.hpl.jena.sdb.SDBFactory;
 import com.hp.hpl.jena.sdb.layout1.StoreRDB;
 import com.hp.hpl.jena.sdb.layout1.StoreSimpleDerby;
 import com.hp.hpl.jena.sdb.layout1.StoreSimpleHSQL;
@@ -36,6 +35,7 @@ import com.hp.hpl.jena.sdb.layout2.index.StoreTriplesNodesIndexOracle;
 import com.hp.hpl.jena.sdb.layout2.index.StoreTriplesNodesIndexPGSQL;
 import com.hp.hpl.jena.sdb.layout2.index.StoreTriplesNodesIndexSQLServer;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
+import com.hp.hpl.jena.sdb.sql.SDBConnectionFactory;
 
 /** Construct Stores
  * @author Andy Seaborne
@@ -63,7 +63,7 @@ public class StoreFactory
     private static Store _create(StoreDesc desc, SDBConnection sdb)
     {    
         if ( sdb == null ) 
-            sdb = SDBFactory.createConnection(desc.connDesc) ;
+            sdb = SDBConnectionFactory.create(desc.connDesc) ;
 
         if ( desc.getLayout() == null )
         {
@@ -75,13 +75,10 @@ public class StoreFactory
         {
             switch (desc.getDbType())
             {
-                case MySQL5:
+                case MySQL:
                     return new StoreSimpleMySQL(sdb, desc.engineType) ;
                 case PostgreSQL:
                     return new StoreSimplePGSQL(sdb) ;
-                case MySQL41:
-                case Oracle10:
-                    throw new SDBException("Not supported (yet): "+desc.getLayout().getName()+" : "+desc.getDbType().getName()) ;
                 case HSQLDB:
                     return new StoreSimpleHSQL(sdb) ;
                 case Derby:
@@ -89,7 +86,7 @@ public class StoreFactory
                 case SQLServer:
                     return new StoreSimpleSQLServer(sdb) ;
                 default:
-                    throw new SDBException(format("Unknown DB type: %s [layout=%s]",
+                    throw new SDBException(format("Unknown or unsupported DB type: %s [layout=%s]",
                                                   desc.getDbType().getName(), desc.getLayout().getName())) ;
             }
         }
@@ -100,7 +97,7 @@ public class StoreFactory
             {
                 case Derby:
                     return new StoreTriplesNodesHashDerby(sdb) ;
-                case MySQL5:
+                case MySQL:
                     return new StoreTriplesNodesHashMySQL(sdb, desc.engineType) ;
                 case PostgreSQL:
                     return new StoreTriplesNodesHashPGSQL(sdb) ;
@@ -108,11 +105,10 @@ public class StoreFactory
                     return new StoreTriplesNodesHashHSQL(sdb) ;
                 case SQLServer:
                     return new StoreTriplesNodesHashSQLServer(sdb) ;
-                case Oracle10:
+                case Oracle:
                 	return new StoreTriplesNodesHashOracle(sdb) ;
-                case MySQL41:
                 default:
-                    throw new SDBException(format("Unknown DB type: %s [layout=%s, hash variant]",
+                    throw new SDBException(format("Unknown or unsupported DB type: %s [layout=%s, hash variant]",
                                                   desc.getDbType().getName(), desc.getLayout().getName())) ;
             }
         }
@@ -123,19 +119,18 @@ public class StoreFactory
             {
                 case Derby:
                     return new StoreTriplesNodesIndexDerby(sdb) ;
-                case MySQL5:
+                case MySQL:
                     return new StoreTriplesNodesIndexMySQL(sdb, desc.engineType) ;
                 case PostgreSQL:
                     return new StoreTriplesNodesIndexPGSQL(sdb) ;
                 case HSQLDB:
                     return new StoreTriplesNodesIndexHSQL(sdb) ;
-                case Oracle10:
+                case Oracle:
                 	return new StoreTriplesNodesIndexOracle(sdb) ;
                 case SQLServer:
                     return new StoreTriplesNodesIndexSQLServer(sdb) ;
-                case MySQL41:
                 default:
-                    throw new SDBException(format("Unknown DB type: %s [layout=%s, index variant]",
+                    throw new SDBException(format("Unknown or unsupported DB type: %s [layout=%s, index variant]",
                                                   desc.getDbType().getName(), desc.getLayout().getName())) ;
             }
         }

@@ -6,7 +6,7 @@
 _:c rdf:type sdb:SDBConnection ;
     sdb:sdbType        "derby" ;
     sdb:sdbName        "DB/test2-hash" ;
-    sdb:driver         "org.apache.derby.jdbc.EmbeddedDriver" ;
+#    sdb:driver         "org.apache.derby.jdbc.EmbeddedDriver" ;
     .
 
 [] rdf:type sdb:Store ;

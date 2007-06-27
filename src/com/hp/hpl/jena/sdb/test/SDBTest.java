@@ -12,8 +12,7 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
     SDBTestMisc.class,
-//    SDBTestSuite1.class,
-    SDBTestSuite2.class
+    SDBQueryTestSuite.class
 } )
 
 public class SDBTest

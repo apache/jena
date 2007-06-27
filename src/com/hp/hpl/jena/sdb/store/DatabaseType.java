@@ -18,37 +18,50 @@ import com.hp.hpl.jena.sdb.SDBException;
  * @author Andy Seaborne
  * @version $Id: DatabaseType.java,v 1.4 2006/05/07 19:19:24 andy_seaborne Exp $
  */
+/*
+public enum DBtype implements Named { 
+    MySQL       { public String getName() { return "MySQL" ; } } ,
+    PostgreSQL  { public String getName() { return "PostgreSQL" ; } } , 
+    HSQL        { public String getName() { return "HSQL" ; } } ,
+    Derby       { public String getName() { return "Derby" ; } } , 
+    SQLServer   { public String getName() { return "SQLServer" ; } } , 
+    Oracle      { public String getName() { return "Oracle" ; } } , 
+} 
+ */
 
 public enum DatabaseType implements Named {
-    MySQL5     { public String getName() { return "MySQL5" ; } } ,
-    MySQL41    { public String getName() { return "MySQL41" ; } } ,
-    PostgreSQL { public String getName() { return "PostgreSQL" ; } } ,
-    Oracle10   { public String getName() { return "Oracle10" ; } } ,
-    SQLServer  { public String getName() { return "MSSQLServer" ; } } ,
-    HSQLDB     { public String getName() { return "HSQLDB" ; } } ,
-    Derby      { public String getName() { return "Derby" ; } } ,
+    MySQL       { public String getName() { return "MySQL5" ; } } ,
+//    MySQL41    { public String getName() { return "MySQL41" ; } } ,
+    PostgreSQL  { public String getName() { return "PostgreSQL" ; } } ,
+    Oracle      { public String getName() { return "Oracle10" ; } } ,
+    SQLServer   { public String getName() { return "MSSQLServer" ; } } ,
+    HSQLDB      { public String getName() { return "HSQLDB" ; } } ,
+    Derby       { public String getName() { return "Derby" ; } } ,
+    DB2         { public String getName() { return "DB2" ; } } ,
     ;
     
     private DatabaseType() {}
     
     public static DatabaseType convert(String databaseTypeName)
     {
-        if ( databaseTypeName.equalsIgnoreCase("MySQL") )         return MySQL5 ;
-        if ( databaseTypeName.equalsIgnoreCase("MySQL4") )        return MySQL41 ;
-        if ( databaseTypeName.equalsIgnoreCase("MySQL5") )        return MySQL5 ;
+        if ( databaseTypeName.equalsIgnoreCase("MySQL") )           return MySQL ;
+//        if ( databaseTypeName.equalsIgnoreCase("MySQL4") )        return MySQL41 ;
+        if ( databaseTypeName.equalsIgnoreCase("MySQL5") )          return MySQL ;
         
-        if ( databaseTypeName.equalsIgnoreCase("PostgreSQL") )    return PostgreSQL ;
-        if ( databaseTypeName.equalsIgnoreCase("Oracle10") )      return Oracle10 ;
-        if ( databaseTypeName.startsWith("oracle"))               return Oracle10 ;
-        if ( databaseTypeName.equalsIgnoreCase("SQLServer") )     return SQLServer ;
-        if ( databaseTypeName.equalsIgnoreCase("MSSQLServer") )   return SQLServer ;
+        if ( databaseTypeName.equalsIgnoreCase("PostgreSQL") )      return PostgreSQL ;
+        if ( databaseTypeName.equalsIgnoreCase("oracle") )          return Oracle ;
+        if ( databaseTypeName.startsWith("oracle:"))                return Oracle ;
+        if ( databaseTypeName.equalsIgnoreCase("SQLServer") )       return SQLServer ;
+        if ( databaseTypeName.equalsIgnoreCase("MSSQLServer") )     return SQLServer ;
         if ( databaseTypeName.equalsIgnoreCase("MSSQLServerExpress") )   return SQLServer ;
         
-        if ( databaseTypeName.equalsIgnoreCase("hsqldb") )        return HSQLDB ;
-        if ( databaseTypeName.equalsIgnoreCase("hsql") )          return HSQLDB ;
+        if ( databaseTypeName.equalsIgnoreCase("hsqldb") )          return HSQLDB ;
+        if ( databaseTypeName.equalsIgnoreCase("hsqldb:file") )     return HSQLDB ;
+        if ( databaseTypeName.equalsIgnoreCase("hsqldb:mem") )      return HSQLDB ;
+        if ( databaseTypeName.equalsIgnoreCase("hsql") )            return HSQLDB ;
         
-        if ( databaseTypeName.equalsIgnoreCase("Derby") )          return Derby ;
-        if ( databaseTypeName.equalsIgnoreCase("JavaDB") )         return Derby ;
+        if ( databaseTypeName.equalsIgnoreCase("Derby") )           return Derby ;
+        if ( databaseTypeName.equalsIgnoreCase("JavaDB") )          return Derby ;
         
         LogFactory.getLog(DatabaseType.class).warn("Can't turn '"+databaseTypeName+"' into a database type") ;
         throw new SDBException("Can't turn '"+databaseTypeName+"' into a database type") ; 

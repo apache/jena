@@ -6,8 +6,8 @@
 
 package dev;
 
-import com.hp.hpl.jena.sdb.shared.DBtype;
 import com.hp.hpl.jena.sdb.sql.JDBC;
+import com.hp.hpl.jena.sdb.store.DatabaseType;
 
 /** Setup RDB properties */ 
 public class RDB
@@ -25,22 +25,22 @@ public class RDB
     public static void set_MySQL(String dbName)
     {
         set("jena.db.url",        "jdbc:mysql://localhost/"+dbName) ;
-        set("jena.db.type",       DBtype.MySQL.getName()) ;
-        set("jena.db.driver",     JDBC.getDriver(DBtype.MySQL)) ;
+        set("jena.db.type",       DatabaseType.MySQL.getName()) ;
+        set("jena.db.driver",     JDBC.getDriver(DatabaseType.MySQL)) ;
     }
     
     public static void set_PostgreSQL(String dbName)
     {
         set("jena.db.url",       "jdbc:postgresql://localhost/"+dbName) ;
-        set("jena.db.type",      DBtype.PostgreSQL.getName()) ;
-        set("jena.db.driver",    JDBC.getDriver(DBtype.PostgreSQL) ) ;
+        set("jena.db.type",      DatabaseType.PostgreSQL.getName()) ;
+        set("jena.db.driver",    JDBC.getDriver(DatabaseType.PostgreSQL) ) ;
     }
     
     public static void set_SQLserver(String dbName)
     {
         set("jena.db.url",         "jdbc:sqlserver://localhost\\SQLEXPRESS;database="+dbName) ;
-        set("jena.db.type",        DBtype.SQLServer.getName()) ;
-        set("jena.db.driver",      JDBC.getDriver(DBtype.SQLServer) ) ;
+        set("jena.db.type",        DatabaseType.SQLServer.getName()) ;
+        set("jena.db.driver",      JDBC.getDriver(DatabaseType.SQLServer) ) ;
         //set("jena.db.concurrent",  "false") ;
     }
     
@@ -48,16 +48,16 @@ public class RDB
     {
         // "host" = "mem"
         set("jena.db.url",         "jdbc:hsqldb:mem:"+dbName) ;
-        set("jena.db.type",        DBtype.HSQL.getName()) ;
-        set("jena.db.driver",      JDBC.getDriver(DBtype.HSQL) ) ;
+        set("jena.db.type",        DatabaseType.HSQLDB.getName()) ;
+        set("jena.db.driver",      JDBC.getDriver(DatabaseType.HSQLDB) ) ;
         set("jena.db.concurrent",  "false") ;
     }
 
     public static void set_Derby(String dbName)
     {
         set("jena.db.url",         "jdbc:derby:"+dbName) ;
-        set("jena.db.type",        DBtype.Derby.getName()) ;
-        set("jena.db.driver",      JDBC.getDriver(DBtype.Derby) ) ;
+        set("jena.db.type",        DatabaseType.Derby.getName()) ;
+        set("jena.db.driver",      JDBC.getDriver(DatabaseType.Derby) ) ;
         set("jena.db.concurrent",  "false") ;
     }
     

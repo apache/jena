@@ -6,39 +6,72 @@
 
 package com.hp.hpl.jena.sdb.sql;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
 import com.hp.hpl.jena.sdb.Access;
 import com.hp.hpl.jena.sdb.SDBException;
-import com.hp.hpl.jena.sdb.shared.DBtype;
 import com.hp.hpl.jena.sdb.shared.SDBNotFoundException;
+import com.hp.hpl.jena.sdb.store.DatabaseType;
 
 public class JDBC
 {
     // The "well known" not a JDBC connection really scheme
     public static final String jdbcNone = "jdbc:none" ;
-    
-    private static Map<DBtype, String> driver = new HashMap<DBtype, String>() ;
+
+//    private static Map<String,String> jdbcDrivers = new HashMap<String,String>();
+//    static {
+//        jdbcDrivers.put("mysql",        "com.mysql.jdbc.Driver");
+//        jdbcDrivers.put("mssql",        "com.microsoft.jdbc.sqlserver.SQLServerDriver") ;
+//        jdbcDrivers.put("mssql-e",      "com.microsoft.jdbc.sqlserver.SQLServerDriver") ;
+//        jdbcDrivers.put("postgres",     "org.postgresql.Driver");
+//        jdbcDrivers.put("postgresql",   "org.postgresql.Driver");
+//        jdbcDrivers.put("hsqldb:file",  "org.hsqldb.jdbcDriver");
+//        jdbcDrivers.put("hsqldb:mem",   "org.hsqldb.jdbcDriver");
+//        jdbcDrivers.put("oracle",       "oracle.jdbc.driver.OracleDriver");
+//        jdbcDrivers.put("oracle:thin",  "oracle.jdbc.driver.OracleDriver");
+//    }
+
+    private static Map<DatabaseType, String> driver = new HashMap<DatabaseType, String>() ;
     static {
-        driver.put(DBtype.MySQL,       "com.mysql.jdbc.Driver") ;
-        driver.put(DBtype.PostgreSQL,  "org.postgresql.Driver") ;
-        driver.put(DBtype.HSQL,        "org.hsqldb.jdbcDriver") ;
-        driver.put(DBtype.Derby,       "org.apache.derby.jdbc.EmbeddedDriver") ;
-        //driver.put(DBtype.Derby,       "org.apache.derby.jdbc.ClientDriver") ;
-        driver.put(DBtype.SQLServer,   "com.microsoft.sqlserver.jdbc.SQLServerDriver") ;
-        driver.put(DBtype.Oracle,      "oracle.jdbc.driver.OracleDriver") ;
+        driver.put(DatabaseType.MySQL,       "com.mysql.jdbc.Driver") ;
+        driver.put(DatabaseType.PostgreSQL,  "org.postgresql.Driver") ;
+        driver.put(DatabaseType.HSQLDB,        "org.hsqldb.jdbcDriver") ;
+        driver.put(DatabaseType.Derby,       "org.apache.derby.jdbc.EmbeddedDriver") ;
+        //driver.put(DatabaseType.Derby,       "org.apache.derby.jdbc.ClientDriver") ;
+        driver.put(DatabaseType.SQLServer,   "com.microsoft.sqlserver.jdbc.SQLServerDriver") ;
+        driver.put(DatabaseType.Oracle,      "oracle.jdbc.driver.OracleDriver") ;
     }
     
-    static public String getDriver(DBtype dbType) { return driver.get(dbType) ; }
+    static public String getDriver(DatabaseType dbType) { return driver.get(dbType) ; }
     
-    static public void loadDriverHSQL()  { loadDriver(driver.get(DBtype.HSQL)) ; }
-    static public void loadDriverMySQL() { loadDriver(driver.get(DBtype.MySQL)) ; }
-    static public void loadDriverPGSQL() { loadDriver(driver.get(DBtype.PostgreSQL)); }
-    static public void loadDriverDerby() { loadDriver(driver.get(DBtype.Derby)); }
-    static public void loadDriverSQLServer() { loadDriver(driver.get(DBtype.SQLServer)); }
-    static public void loadDriverOracle() { loadDriver(driver.get(DBtype.Oracle)); }
+    static public void loadDriverHSQL()  { loadDriver(driver.get(DatabaseType.HSQLDB)) ; }
+    static public void loadDriverMySQL() { loadDriver(driver.get(DatabaseType.MySQL)) ; }
+    static public void loadDriverPGSQL() { loadDriver(driver.get(DatabaseType.PostgreSQL)); }
+    static public void loadDriverDerby() { loadDriver(driver.get(DatabaseType.Derby)); }
+    static public void loadDriverSQLServer() { loadDriver(driver.get(DatabaseType.SQLServer)); }
+    static public void loadDriverOracle() { loadDriver(driver.get(DatabaseType.Oracle)); }
+    
     static public void loadDriver(String className) { loadClass(className) ; }
+    
+    static public String guessDriver(String type)
+    { 
+        return getDriver(DatabaseType.convert(type)) ;
+    }
+    
+    // This is the only place a driver is created.
+    public static Connection createConnection(String url, String user, String password) throws SQLException
+    {
+        if ( user == null )
+            user = Access.getUser() ;
+        if ( password == null )
+            password = Access.getPassword() ;
+
+        return DriverManager.getConnection(url, user, password) ;
+    }
     
 //    static public void loadClass(String className)
 //    { Loader.loadClass(className) ; }

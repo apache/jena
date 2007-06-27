@@ -12,7 +12,6 @@ import static sdb.SDBCmd.sdbquery;
 import static sdb.SDBCmd.setExitOnError;
 import static sdb.SDBCmd.setSDBConfig;
 import static sdb.SDBCmd.sparql;
-import junit.framework.TestSuite;
 import arq.cmd.CmdUtils;
 
 import com.hp.hpl.jena.query.Query;
@@ -20,15 +19,12 @@ import com.hp.hpl.jena.query.QueryExecution;
 import com.hp.hpl.jena.query.QueryExecutionFactory;
 import com.hp.hpl.jena.query.QueryFactory;
 import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.sdb.SDB;
 import com.hp.hpl.jena.sdb.SDBFactory;
 import com.hp.hpl.jena.sdb.sql.JDBC;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.store.Store;
 import com.hp.hpl.jena.sdb.store.StoreConfig;
 import com.hp.hpl.jena.sdb.store.StoreFactory;
-import com.hp.hpl.jena.sdb.test.SDBTestSuite1;
-import com.hp.hpl.jena.sparql.junit.SimpleTestRunner;
 import com.hp.hpl.jena.sparql.resultset.ResultsFormat;
 import com.hp.hpl.jena.sparql.util.QueryExecUtils;
 import com.hp.hpl.jena.util.FileManager;
@@ -40,7 +36,7 @@ public class RunSDB
     {
         SDBConnection.logSQLExceptions = true ;
         //SDBConnection.logSQLStatements = true ;
-        sdb.sdbdump.main("--sdb=sdb.ttl",  "--out=TTL") ;
+        sdb.sdbdump.main("--sdb=testing/StoreDesc/pgsql-hash.ttl",  "--out=TTL") ;
 //        sdb.sdbtuple.main("--sdb=sdb.ttl", "--print", "Nodes") ;
         System.exit(0) ;
         
@@ -52,7 +48,6 @@ public class RunSDB
         
         //runInMem("Q.rq", "D.ttl") ;
         //run() ;
-        runTest() ;
         System.err.println("Nothing ran!") ;
         System.exit(0) ;
     }
@@ -102,25 +97,6 @@ public class RunSDB
     }
     
    
-    public static void runTest()
-    {
-        if ( false )
-        {
-            SDB.init() ;
-            SDBTestSuite1.includeMySQL = true ;
-            SDBTestSuite1.includeHSQL = false ;
-            TestSuite ts = SDBTestSuite1.suite() ;
-            SimpleTestRunner.runAndReport(ts) ;
-            System.exit(0) ;
-        }
-        String[] a = { "--sdb=sdb.ttl",
-            "testing/Graph/manifest.ttl",
-            } ;
-
-        sdb.sdbtest.main(a) ;
-        System.exit(0) ;
-    }
-
     static void runScript()
     {
         String[] a = { } ;

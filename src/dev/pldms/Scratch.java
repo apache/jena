@@ -27,7 +27,7 @@ public class Scratch {
         		SDBConnection conn;
         	
                 JDBC.loadDriverOracle();
-                SDBConnectionDesc desc = new SDBConnectionDesc();
+                SDBConnectionDesc desc = SDBConnectionDesc.blank();
                 desc.setHost("localhost:1521");
                 desc.setName("XE");
                 desc.setUser("jena");

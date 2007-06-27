@@ -56,7 +56,6 @@ public class SDBQueryTestSuite extends TestSuite
         TestSuite ts = QueryTestSDBFactory.make(store, manifest, label+" - ") ;
         return ts ;
     }
-
 }
 
 /*

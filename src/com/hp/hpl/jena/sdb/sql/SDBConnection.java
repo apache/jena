@@ -6,7 +6,10 @@
 
 package com.hp.hpl.jena.sdb.sql;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.List;
 
 import javax.sql.DataSource;
@@ -15,8 +18,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.graph.TransactionHandler;
-import com.hp.hpl.jena.sdb.Access;
-import com.hp.hpl.jena.sdb.SDBException;
 import com.hp.hpl.jena.sdb.graph.TransactionHandlerSDB;
 import com.hp.hpl.jena.shared.Command;
 
@@ -58,7 +59,10 @@ public class SDBConnection
     }
     
     public SDBConnection(String url, String user, String password)
-    { init(url, user, password) ; }
+    { 
+        this(SDBConnectionFactory.createSqlConnection(url, user, password)) ;
+        setLabel(url) ;
+    }
     
     public SDBConnection(Connection jdbcConnection)
     { 
@@ -66,30 +70,6 @@ public class SDBConnection
         transactionHandler = new TransactionHandlerSDB(this) ;
     }
 
-    private void init(String url, String user, String password)
-    {
-        if ( url == null )
-            throw new SDBException("JDBC URL is null") ;
-        if ( user == null )
-            user = Access.getUser() ;
-        if ( password == null )
-            password = Access.getPassword() ;
-        try
-        {
-            sqlConnection = null ;
-            if ( log.isDebugEnabled() )
-                log.debug(String.format("Attempt to create SQL connection: %s %s %s\n", url, user, password)) ;
-            if ( ! url.equals(JDBC.jdbcNone))
-                sqlConnection = DriverManager.getConnection(url, user, password) ;
-            setLabel(url) ;
-        } catch (SQLException e)
-        {
-            exception("SDBConnection",e ) ;
-            throw new SDBException("SQL Exception while connecting to database: "+url+" : "+e.getMessage()) ;
-        }
-        transactionHandler = new TransactionHandlerSDB(this) ;
-    }
-    
     public boolean hasSQLConnection() { return sqlConnection != null ; }
     
     public TransactionHandler getTransactionHandler() { return transactionHandler ; } 

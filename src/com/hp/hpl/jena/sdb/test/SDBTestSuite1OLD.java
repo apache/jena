@@ -19,11 +19,12 @@ import com.hp.hpl.jena.sdb.layout1.StoreSimpleMySQL;
 import com.hp.hpl.jena.sdb.layout1.StoreSimpleSQLServer;
 import com.hp.hpl.jena.sdb.sql.JDBC;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
+import com.hp.hpl.jena.sdb.sql.SDBConnectionFactory;
 import com.hp.hpl.jena.sdb.store.Store;
 
 
 @RunWith(AllTests.class)
-public class SDBTestSuite1 extends TestSuite
+public class SDBTestSuite1OLD extends TestSuite
 {
     public static boolean includeDerby      = true ;
     public static boolean includeMySQL      = false ;
@@ -38,10 +39,10 @@ public class SDBTestSuite1 extends TestSuite
     // Is there a better way to dynamically build a set of tests?
     static public TestSuite suite() {
         CmdUtils.setLog4j() ;
-        return new SDBTestSuite1();
+        return new SDBTestSuite1OLD();
     }
 
-    private SDBTestSuite1()
+    private SDBTestSuite1OLD()
     {
         super("SDB - Schema 1") ;
         if ( true ) SDBConnection.logSQLExceptions = true ;
@@ -50,7 +51,7 @@ public class SDBTestSuite1 extends TestSuite
         {
             JDBC.loadDriverDerby() ;
             String url = JDBC.makeURL("derby", "localhost", "DB/test1") ;
-            SDBConnection sdb = new SDBConnection(url, null, null) ;
+            SDBConnection sdb = SDBConnectionFactory.create(url, null, null) ;
             addTest(QueryTestSDBFactory.make(new StoreSimpleDerby(sdb),
                                              SDBTest.testDirSDB+"manifest-sdb.ttl",
                                              "Schema 1 - Derby: ")) ;
@@ -59,7 +60,7 @@ public class SDBTestSuite1 extends TestSuite
         if ( includeMySQL )
         {
             JDBC.loadDriverMySQL() ;
-            SDBConnection sdb = new SDBConnection("jdbc:mysql://localhost/SDB1", Access.getUser(), Access.getPassword()) ;
+            SDBConnection sdb =SDBConnectionFactory.create("jdbc:mysql://localhost/SDB1", Access.getUser(), Access.getPassword()) ;
             addTest(QueryTestSDBFactory.make(new StoreSimpleMySQL(sdb),
                                              SDBTest.testDirSDB+"manifest-sdb.ttl",
                                              "Schema 1 - MySQL : ")) ;
@@ -71,7 +72,7 @@ public class SDBTestSuite1 extends TestSuite
             String expressStr= "\\SQLEXPRESS" ;
             
             String jdbc = String.format("jdbc:sqlserver://localhost%s;databaseName=test1", expressStr) ;
-            SDBConnection sdb = new SDBConnection(jdbc, Access.getUser(), Access.getPassword()) ;
+            SDBConnection sdb = SDBConnectionFactory.create(jdbc, Access.getUser(), Access.getPassword()) ;
             TestSuite ts = QueryTestSDBFactory.make(new StoreSimpleSQLServer(sdb),
                                                     SDBTest.testDirSDB+"manifest-sdb.ttl",
                                                     "Schema 1 - SQLServer : ") ;
@@ -82,7 +83,7 @@ public class SDBTestSuite1 extends TestSuite
         if ( includeHSQL )
         {
             JDBC.loadDriverHSQL() ;
-            SDBConnection sdb = new SDBConnection("jdbc:hsqldb:mem:testdb1", "sa", "") ;
+            SDBConnection sdb = SDBConnectionFactory.create("jdbc:hsqldb:mem:testdb1", "sa", "") ;
             Store store = new StoreSimpleHSQL(sdb) ;
             store.getTableFormatter().format() ;
             TestSuite ts = QueryTestSDBFactory.make(store,
@@ -94,7 +95,7 @@ public class SDBTestSuite1 extends TestSuite
         
         if ( includeHSQL )
         {
-            SDBConnection sdb = new SDBConnection("jdbc:hsqldb:file:tmp/testdb1", "sa", "") ;
+            SDBConnection sdb = SDBConnectionFactory.create("jdbc:hsqldb:file:tmp/testdb1", "sa", "") ;
             Store store = new StoreSimpleHSQL(sdb) ;
             store.getTableFormatter().format() ;
             TestSuite ts = QueryTestSDBFactory.make(new StoreSimpleHSQL(sdb),
