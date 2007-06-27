@@ -85,7 +85,7 @@ public class FmtLayout2IndexOracle extends FmtLayout2
             //connection().exec("CREATE UNIQUE INDEX Hash ON " + TableNodes.tableName + " (hash)");
             
             // Urgh. How do we find out if a sequence exists?
-            try {connection().exec("DROP SEQUENCE nodeid");} catch (SQLException e) {}
+            connection().execSilent("DROP SEQUENCE nodeid");
             
             connection().exec(sqlStr ("CREATE SEQUENCE nodeid",
                                       "START WITH 1",
