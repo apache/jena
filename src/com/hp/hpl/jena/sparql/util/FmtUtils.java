@@ -76,21 +76,45 @@ public class FmtUtils
     
     public static String stringForQuad(Quad quad)
     {
-        return
-            stringForNode(quad.getGraph())+" "+
-            stringForNode(quad.getSubject())+" "+
-            stringForNode(quad.getPredicate())+" "+
-            stringForNode(quad.getObject()) ;
+        return stringForQuad(quad, ARQConstants.getGlobalPrefixMap()) ;
     }
     
     
     public static String stringForQuad(Quad quad, PrefixMapping prefixMap)
     {
-        return
-            stringForNode(quad.getGraph(), prefixMap)+" "+
-            stringForNode(quad.getSubject(), prefixMap)+" "+
-            stringForNode(quad.getPredicate(), prefixMap)+" "+
-            stringForNode(quad.getObject(), prefixMap) ;
+        StringBuffer buff = new StringBuffer() ;
+        if ( quad.isDefaultGraph() || quad.isDefaultUnionGraph() )
+        {
+            if ( quad.isDefaultUnionGraph() )
+            {
+                buff.append("*") ;
+                buff.append(" ") ;
+            }
+        }
+        else
+        {
+            buff.append(stringForNode(quad.getGraph(), prefixMap)) ;
+            buff.append(" ") ;
+        }
+
+        buff.append(stringForNode(quad.getSubject(), prefixMap)) ;
+        buff.append(" ") ;
+        buff.append(stringForNode(quad.getPredicate(), prefixMap)) ;
+        buff.append(" ") ;
+        buff.append(stringForNode(quad.getObject(), prefixMap)) ;
+        return buff.toString() ;
+    }
+    
+    public void formatQuad(IndentedWriter out, Quad quad, SerializationContext sCxt)
+    {
+        out.print(stringForNode(quad.getGraph(), sCxt)) ;
+        out.print(" ") ;
+        out.print(stringForNode(quad.getSubject(), sCxt)) ;
+        out.print(" ") ;
+        out.print(stringForNode(quad.getPredicate(), sCxt)) ;
+        out.print(" ") ;
+        out.print(stringForNode(quad.getObject(), sCxt)) ;
+        out.print(" .") ;
     }
     
     public static String stringForObject(Object obj)

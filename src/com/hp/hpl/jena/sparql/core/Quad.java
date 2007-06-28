@@ -39,6 +39,9 @@ public class Quad
     public Node getObject()     { return object ; }
     public Triple getTriple()   { return new Triple(subject, predicate, object) ; }
     
+    public boolean isDefaultGraph()         { return graph.equals(defaultGraph) ; }
+    public boolean isDefaultUnionGraph()    { return graph.equals(defaultUnionGraph) ; }
+    
     public int hashCode() 
     { 
         return (graph.hashCode()>>2) ^
