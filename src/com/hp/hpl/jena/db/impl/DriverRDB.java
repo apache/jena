@@ -43,7 +43,7 @@ import org.apache.xerces.util.XMLChar;
 * loaded in a separate file etc/[layout]_[database].sql from the classpath.
 *
 * @author hkuno modification of Jena1 code by Dave Reynolds (der)
-* @version $Revision: 1.67 $ on $Date: 2007-02-05 12:41:09 $
+* @version $Revision: 1.68 $ on $Date: 2007-06-28 12:46:53 $
 */
 
 public abstract class DriverRDB implements IRDBDriver {
@@ -2353,7 +2353,7 @@ public abstract class DriverRDB implements IRDBDriver {
 	
 	public String genSQLQualConst ( int alias, char pred, Node lit ) {
 		String val = nodeToRDBString(lit, false);
-		if ( val == "" )
+		if ( val == null )
 			// constant not in database.
 			// should really optimize this and not
 			// even run the query but ok for now.
