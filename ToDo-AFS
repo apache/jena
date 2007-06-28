@@ -19,10 +19,13 @@ SDB ToDo list (and general notes)
 
 + Transactions - cleanup.
 
-
 + Add a formatter option to test if DB setup already
 
 + canonicalise literals on input?
+
++ Extensible factories for new layouts
+  Related to StoreConfig
+  sdb/layoutXXX ; sdb/StoreType ; sdb/store/LayoutType ; sdb/store/StoreFactory
 
 + StoreConfig
    locally cache
