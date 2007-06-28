@@ -13,6 +13,7 @@ import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.store.Store;
 
 
+@SuppressWarnings("deprecation")
 public class ModelSDB extends ModelCom implements Model
 {
 
