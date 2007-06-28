@@ -34,6 +34,7 @@ public class SqlStageBasicQuad implements SqlStage
     {
         SqlExprList conditions = new SqlExprList() ;
         boolean defaultGraph = quad.getGraph().equals(Quad.defaultGraph) ;
+        boolean defaultUnionGraph = quad.getGraph().equals(Quad.defaultUnionGraph) ;
         
         // The default graph table may be a specialized quad table,
         // or it may be the same as the quad table with a known name.
@@ -53,9 +54,16 @@ public class SqlStageBasicQuad implements SqlStage
         }
         
         SqlTable table = new SqlTable(tableDesc.getTableName(), alias) ;
-        table.addNote(FmtUtils.stringForTriple(quad.getTriple(), request.getPrefixMapping())) ;
+        if ( defaultGraph )
+            table.addNote(FmtUtils.stringForTriple(quad.getTriple(), request.getPrefixMapping())) ;
+        else
+            table.addNote(FmtUtils.stringForQuad(quad, request.getPrefixMapping())) ;
 
-        if ( tableDesc.getGraphColName() != null )
+        // Only constrain the G column if there is a graph column
+        // (so it's not the triples table)
+        // or if we are noot unioning the named graphs. 
+        
+        if ( tableDesc.getGraphColName() != null || ! defaultUnionGraph )
             slotCompiler.processSlot(request, table, conditions, quad.getGraph(),
                                      tableDesc.getGraphColName()) ;
         slotCompiler.processSlot(request, table, conditions, quad.getSubject(),

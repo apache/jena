@@ -2,13 +2,13 @@ SDB ToDo list (and general notes)
 =================================
 
 ++ Layout1/oracle
-++ layout2/MS SQL clustered index?
 
 ** Subclass loading.
 ** OpSlice. OpUnion
 
 + Model management
   Need a "graph ids" table
+  Temp: DatasetStore.hasNonEmptyModel(IRI)
   
 + Prefixes
    Per graph, not global
@@ -19,7 +19,6 @@ SDB ToDo list (and general notes)
 
 + Transactions - cleanup.
 
-+ DatasetStore.hasNonEmptyModel(IRI)
 
 + Add a formatter option to test if DB setup already
 
