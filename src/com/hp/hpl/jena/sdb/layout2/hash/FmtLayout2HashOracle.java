@@ -106,6 +106,16 @@ public class FmtLayout2HashOracle extends FmtLayout2
             throw new SDBExceptionSQL("SQLException resetting table '"+TablePrefixes.name()+"'",ex) ;
         }
     }
+    
+    /* Use truncate */
+    @Override
+    protected void truncateTable(String tableName)
+    {
+        try { 
+            connection().exec("TRUNCATE TABLE "+tableName) ;
+        } catch (SQLException ex)
+        { throw new SDBExceptionSQL("SQLException truncating table: "+tableName,ex) ; }
+    }
 }
 
 /*
