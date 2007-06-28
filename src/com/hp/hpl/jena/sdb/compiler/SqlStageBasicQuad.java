@@ -61,10 +61,10 @@ public class SqlStageBasicQuad implements SqlStage
 
         // Only constrain the G column if there is a graph column
         // (so it's not the triples table)
-        // or if we are noot unioning the named graphs. 
+        // and if we are not unioning the named graphs. 
         
-        if ( tableDesc.getGraphColName() != null || ! defaultUnionGraph )
-            slotCompiler.processSlot(request, table, conditions, quad.getGraph(),
+        if ( tableDesc.getGraphColName() != null && ! defaultUnionGraph )
+                slotCompiler.processSlot(request, table, conditions, quad.getGraph(),
                                      tableDesc.getGraphColName()) ;
         slotCompiler.processSlot(request, table, conditions, quad.getSubject(),
                                  tableDesc.getSubjectColName()) ; 

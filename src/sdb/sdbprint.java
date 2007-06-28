@@ -72,7 +72,7 @@ public class sdbprint extends CmdArgsDB
             // Only fake the connection if not ModelRDB
             // else we need a live conenction (currently)
             storeDesc.connDesc.setJdbcURL(JDBC.jdbcNone) ;
-            storeDesc.connDesc.setType("none") ;
+            //storeDesc.connDesc.setType("none") ;
         }
         if ( storeDesc.getLayout() == null )
             storeDesc.setLayout(layoutDefault) ;

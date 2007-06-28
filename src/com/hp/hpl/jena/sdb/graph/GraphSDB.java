@@ -98,7 +98,18 @@ public class GraphSDB extends GraphBase implements Graph
     { 
         if ( pmap == null )
             try {
-                pmap = new PrefixMappingSDB(store.getConnection()) ;
+                String graphURI = null ;
+                if ( graphNode.equals(Quad.defaultGraph) )
+                    graphURI = "" ;
+                else if ( graphNode.isURI() )
+                    graphURI = graphNode.getURI() ; 
+                else
+                {
+                    log.warn("Not a URI for graph name") ;
+                    graphURI = graphNode.toString() ;
+                }
+                
+                pmap = new PrefixMappingSDB(graphURI, store.getConnection()) ;
             } catch (Exception ex)
             { log.warn("Failed to get prefixes: "+ex.getMessage()) ; }
         return pmap ;

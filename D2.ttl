@@ -2,8 +2,8 @@
 @prefix rdfs:	    <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix : <http://example/> .
 
-:xx :q 10 .
-:xx :q 20 .
+:x :q 10 .
+:x :q 20 .
 
 ## :C1 rdfs:subClassOf :C2 .
 ## :C2 rdfs:subClassOf :C3 .

@@ -109,7 +109,7 @@ public class TableUtils
     {
         try {
             if (TableUtils.hasTable(connection.getSqlConnection(), tableName))
-                connection.exec("DROP TABLE "+tableName) ;
+                connection.execSilent("DROP TABLE "+tableName) ;
         } catch (SQLException ex)
         { throw new SDBExceptionSQL("SQLException : Can't drop table: "+tableName, ex) ; }
     }

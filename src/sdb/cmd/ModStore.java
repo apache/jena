@@ -40,6 +40,7 @@ public class ModStore extends ModBase
 {
     // -------- This ...
     protected final ArgDecl argDeclSDBdesc       = new ArgDecl(true, "sdb", "store");
+    protected final ArgDecl argDeclSDBdescList   = new ArgDecl(true, "storelist", "storeList", "stores");
     
     // ---- modified by these .... makes a connection description
     protected final ArgDecl argDeclJdbcURL      = new ArgDecl(true, "jdbc");

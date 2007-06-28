@@ -37,7 +37,7 @@ public class RunSDB
         SDBConnection.logSQLExceptions = true ;
         //SDBConnection.logSQLStatements = true ;
         
-        sdb.sdbprint.main("--sdb=Store/sdb-mssql-express.ttl",  "--query=Q.rq") ;
+        sdb.sdbprint.main("--sdb=sdb.ttl",  "--query=Q.rq") ;
 
         System.exit(0) ;
         

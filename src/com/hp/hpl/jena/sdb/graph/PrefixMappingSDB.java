@@ -61,11 +61,13 @@ public class PrefixMappingSDB extends PrefixMappingImpl
           )
      */
     
-    SDBConnection connection = null ; 
+    private SDBConnection connection = null ;
+    private String graphName ; 
     
-    public PrefixMappingSDB(SDBConnection sdb)
+    public PrefixMappingSDB(String graphURI, SDBConnection sdb)
     {
         super() ;
+        graphName = graphURI ;
         connection = sdb  ;
         // ModelRDB does not support prefixes in the same way as models/graphs over SDB stores. 
         try { readPrefixMapping() ; }

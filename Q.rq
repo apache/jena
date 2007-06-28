@@ -2,5 +2,5 @@ PREFIX :    <http://example/>
 
 SELECT *
 { 
-    ?x :p ?v .
+    GRAPH <urn:x-sdb:uniongraph> { ?x :p ?z . ?x :q ?v }
 }
