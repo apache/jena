@@ -222,6 +222,8 @@ public abstract class PrefixMappingImplAlt implements PrefixMapping
         Obsolete - use shortForm.
      	@see com.hp.hpl.jena.shared.PrefixMapping#usePrefix(java.lang.String)
      */
+    @Deprecated
+    @SuppressWarnings("deprecation")
     public String usePrefix( String uri )
         { return shortForm( uri ); }
     
