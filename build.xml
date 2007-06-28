@@ -6,7 +6,7 @@
   <!-- The major and minor version numbers  -->
   <property name="version-major"   value="0"/>
   <property name="version-minor"   value="0"/>
-  <property name="version-status"  value="-alpha-2"/>
+  <property name="version-status"  value="-beta-1-rc-0"/>
   <property name="version"
 	    value="${version-major}.${version-minor}${version-status}"/>
 
@@ -58,7 +58,7 @@
 	 set setting them again has no effect -->
     <property name="java.debug"       value="true"/>
     <property name="java.debuglevel"  value="source,lines,vars"/>
-    <property name="java.deprecation" value="off"/>
+    <property name="java.deprecation" value="false"/>
     <property name="java.optimize"    value="true"/>
     <property name="java.source"      value="1.5"/>
     <property name="java.target"      value="1.5"/>
@@ -117,7 +117,6 @@
 	   optimize="${java.optimize}"
 	   source="${java.source}"
 	   target="${java.target}"
-
 	   >
       <classpath refid="classpath" />
     </javac>
@@ -275,7 +274,7 @@
     <copy todir="${dist.dir}/" file="build.xml"/>
     <copy todir="${dist.dir}/" file="copyright.txt"/>
     <copy todir="${dist.dir}/" file="README.txt"/>
-    <copy todir="${dist.dir}/" file="sdb.ttl"/>
+    <!-- <copy todir="${dist.dir}/" file="sdb.ttl"/> -->
     <!-- 
     <copy todir="${dist.dir}/" file="ChangeLog.txt"/>
     <copy todir="${dist.dir}/" file="test.sh"/>

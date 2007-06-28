@@ -10,6 +10,10 @@ SDB ToDo list (and general notes)
   Need a "graph ids" table
   Temp: DatasetStore.hasNonEmptyModel(IRI)
   
++ Extensible factories for new layouts
+  Related to StoreConfig
+  sdb/layoutXXX ; sdb/StoreType ; sdb/store/LayoutType ; sdb/store/StoreFactory
+
 + Prefixes
    Per graph, not global
 
@@ -22,10 +26,6 @@ SDB ToDo list (and general notes)
 + Add a formatter option to test if DB setup already
 
 + canonicalise literals on input?
-
-+ Extensible factories for new layouts
-  Related to StoreConfig
-  sdb/layoutXXX ; sdb/StoreType ; sdb/store/LayoutType ; sdb/store/StoreFactory
 
 + StoreConfig
    locally cache
