@@ -44,7 +44,7 @@
   <target name="optimise-javac-flags">
     <property name="java.debug"       value="false"/>
     <property name="java.debuglevel"  value=""/>
-    <property name="java.deprecation" value="false"/>
+    <property name="java.deprecation" value="true"/>
     <property name="java.optimize"    value="true"/>
     <property name="java.source"      value="1.5"/>
     <property name="java.target"      value="1.5"/>
@@ -58,7 +58,7 @@
 	 set setting them again has no effect -->
     <property name="java.debug"       value="true"/>
     <property name="java.debuglevel"  value="source,lines,vars"/>
-    <property name="java.deprecation" value="false"/>
+    <property name="java.deprecation" value="true"/>
     <property name="java.optimize"    value="true"/>
     <property name="java.source"      value="1.5"/>
     <property name="java.target"      value="1.5"/>
