@@ -300,37 +300,19 @@ public class FmtUtils
 
     static public String stringForURI(String uri, PrefixMapping mapping)
     {
-        String pname = prefixFor(uri, mapping) ;
-        if ( pname != null )
-            return pname ;
+        if ( mapping != null )
+        {
+            String pname = prefixFor(uri, mapping) ;
+            if ( pname != null )
+                return pname ;
+        }
         return stringForURI(uri) ; 
-        
-//        if ( mapping != null )
-//        {
-//            // qnameFor is more aggressive about spliting only at a non NCName char
-//            // Problems with "ns." , namespace of ".../ab" etc.
-//
-//            // Try one way
-//            String tmp = mapping.shortForm(uri) ;
-//            if ( ! tmp.equals(uri) )
-//            {
-//                // Shortened - but is it legal?
-//                if ( checkValidPrefixName(tmp) )
-//                    return tmp ;
-//            }
-//            
-//            // No - try a different way
-//            tmp = mapping.qnameFor(uri) ;
-//            if ( tmp != null && checkValidPrefixName(tmp) )
-//                return tmp ;
-//            // No match - fall through
-//        }
-//        
-//        return stringForURI(uri) ; 
     }
     
     private static String prefixFor(String uri, PrefixMapping mapping)
     {
+        if ( mapping == null ) return null ;
+        
         String pname = mapping.shortForm(uri) ;
         if ( pname != null && checkValidPrefixName(pname) )
             return pname ;

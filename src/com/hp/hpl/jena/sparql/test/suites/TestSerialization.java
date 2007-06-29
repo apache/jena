@@ -40,6 +40,9 @@ public class TestSerialization extends TestCase
     public void test_URI_2() // Too short
     { fmtURI("http://example/", "<http://example/>", pmap1) ; }
     
+    public void test_URI_3() // No prefix mapping
+    { fmtURI("http://default/", "<http://default/>", null) ; }
+
     public void test_PName_1() 
     { fmtURI("http://example/x#abc", "ex:abc", pmap1) ; }
 
