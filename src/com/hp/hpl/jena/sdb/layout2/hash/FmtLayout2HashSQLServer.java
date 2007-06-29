@@ -111,8 +111,8 @@ public class FmtLayout2HashSQLServer extends FmtLayout2
         try { 
             connection().exec(sqlStr(
                                       "CREATE TABLE "+TablePrefixes.name()+" (",
-                                      "    prefix VARCHAR("+TablePrefixes.prefixColWidth+") NOT NULL ,",
-                                      "    uri VARCHAR("+TablePrefixes.uriColWidth+") NOT NULL ,", 
+                                      "    prefix NVARCHAR("+TablePrefixes.prefixColWidth+") NOT NULL ,",
+                                      "    uri NVARCHAR("+TablePrefixes.uriColWidth+") NOT NULL ,", 
                                       "    PRIMARY KEY  (prefix)",
                                       ")"            
                     )) ;

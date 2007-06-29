@@ -36,10 +36,10 @@ public class RunSDB
     public static void main(String[]argv)
     {
         SDBConnection.logSQLExceptions = true ;
-        //SDBConnection.logSQLStatements = true ;
+        SDBConnection.logSQLStatements = true ;
         
-        //sdb.sdbprint.main("--sdb=sdb.ttl",  "--query=Q.rq") ;
-        //System.exit(0) ;
+        sdb.sdbload.main("--sdb=sdb1.ttl",  "D.ttl") ;
+        System.exit(0) ;
         
         //SDBConnection.logSQLQueries = true ;
         //SDBConnection.logSQLStatements = true ;
