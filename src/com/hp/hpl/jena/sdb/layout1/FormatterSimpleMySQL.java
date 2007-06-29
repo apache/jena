@@ -25,6 +25,8 @@ public class FormatterSimpleMySQL extends FormatterSimple
     private static Log log = LogFactory.getLog(FormatterSimpleMySQL.class) ;
     private MySQLEngineType engineType ;
     
+    private static final String colDecl = "VARCHAR2("+UriWidth+") BINARY NOT NULL" ;
+    
     public FormatterSimpleMySQL(SDBConnection connection, MySQLEngineType tableType)
     { 
         super(connection) ;
@@ -92,10 +94,10 @@ public class FormatterSimpleMySQL extends FormatterSimple
             connection().exec(sqlStr(
                     "CREATE TABLE Triples",
                     "(", 
-                    "  s VARCHAR(200) BINARY NOT NULL ,",
-                    "  p VARCHAR(200) BINARY NOT NULL ,",
-                    "  o VARCHAR(200) BINARY NOT NULL  ",
-                    ",  PRIMARY KEY (s,p,o)",
+                    "  s "+colDecl+" ,",
+                    "  p "+colDecl+" ,",
+                    "  o "+colDecl+" ,",
+                    "  PRIMARY KEY (s,p,o)",
                     ")",
                     "ENGINE="+engineType.getEngineName()+" CHARSET=utf8"
                 )) ;

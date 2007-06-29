@@ -15,6 +15,8 @@ import com.hp.hpl.jena.sdb.store.StoreFormatterBase;
 
 public abstract class FormatterSimple extends StoreFormatterBase
 {
+    public static int UriWidth = 500 ; 
+    
     public FormatterSimple(SDBConnection connection)
     { 
         super(connection) ;

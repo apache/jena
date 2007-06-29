@@ -21,6 +21,8 @@ public class FormatterSimpleHSQL extends FormatterSimple
 {
     private static Log log = LogFactory.getLog(FormatterSimpleHSQL.class) ;
     
+    private static final String colDecl = "VARCHAR" ;
+    
     public FormatterSimpleHSQL(SDBConnection connection)
     { 
         super(connection) ;
@@ -82,9 +84,9 @@ public class FormatterSimpleHSQL extends FormatterSimple
             connection().exec(sqlStr(
                     "CREATE CACHED TABLE Triples",
                     "(", 
-                    "  s VARCHAR(200) NOT NULL ,",
-                    "  p VARCHAR(200) NOT NULL ,",
-                    "  o VARCHAR(200) NOT NULL ,",
+                    "  s "+colDecl+" ,",
+                    "  p "+colDecl+" ,",
+                    "  o "+colDecl+" ,",
                     "  PRIMARY KEY (s,p,o)",                
                     ")"
                 )) ;

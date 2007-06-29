@@ -22,6 +22,8 @@ public class FormatterSimpleDerby extends FormatterSimple
 {
     private static Log log = LogFactory.getLog(FormatterSimpleDerby.class) ;
     
+    private static final String colDecl = "VARCHAR("+UriWidth+")" ;
+    
     public FormatterSimpleDerby(SDBConnection connection)
     { 
         super(connection) ;
@@ -84,10 +86,10 @@ public class FormatterSimpleDerby extends FormatterSimple
             connection().exec(sqlStr(
                     "CREATE TABLE Triples",
                     "(", 
-                    "  s VARCHAR(200) NOT NULL ,",
-                    "  p VARCHAR(200) NOT NULL ,",
-                    "  o VARCHAR(200) NOT NULL  ",
-                    ",  PRIMARY KEY (s,p,o)",
+                    "  s "+colDecl+" ,",
+                    "  p "+colDecl+" ,",
+                    "  o "+colDecl+" ,",
+                    "  PRIMARY KEY (s,p,o)",
                     ")"
                 )) ;
         } catch (SQLException ex)

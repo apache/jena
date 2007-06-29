@@ -62,7 +62,6 @@ public class StoreList
     public static List<Pair<Store, String>> stores(String fn)
     {
         return storesByQuery(fn) ;
-        //return toList(append(stores1(), stores2())) ;
     }
     
     private static List<Pair<Store, String>> storesByQuery(String fn)
@@ -94,63 +93,6 @@ public class StoreList
         Pair<Store, String> e = new Pair<Store, String>(store, label) ;
         data.add(e) ;
     }
-
-    
-//    static boolean includeHash      = true ;
-//    static boolean includeIndex     = true ;
-//    
-//    
-//    static boolean includeDerby     = true ;
-//    static boolean includePGSQL     = true ;
-//    static boolean includeHSQL      = true ;
-//    static boolean includeSQLServer = true ;
-//    static boolean includeMySQL     = true ;
-    
-//    public static List<Pair<Store, String>> stores1()
-//    {
-//        return null ;
-//    }
-//    
-//    public static List<Pair<Store, String>> stores2() 
-//    {
-//        //  [ :assembler <file:sdb.ttl> ; :rdfs:label "foobar" ] ;
-//        // SELECT * {
-//        //  ?x rdf:type %s ; :list [ :listMember [ :description ?desc ; :rdfs:label ?label ] ] }
-//        
-//        List<Pair<Store, String>> stores = new ArrayList<Pair<Store, String>>() ;
-//
-//        if ( includeDerby )
-//        {
-//            if ( includeHash )  worker(stores, "Derby/Hash",  storeDescBase+"derby-hash.ttl") ;
-//            if ( includeIndex ) worker(stores, "Derby/Index", storeDescBase+"derby-index.ttl") ;
-//        }
-//        
-//        if ( includeMySQL )
-//        {
-//            if ( includeHash )  worker(stores, "MySQL/Hash",  storeDescBase+"mysql-hash.ttl") ;
-//            if ( includeIndex ) worker(stores, "MySQL/Index", storeDescBase+"mysql-index.ttl") ;
-//        }
-//
-//        if ( includePGSQL )
-//        {
-//            if ( includeHash )  worker(stores, "PGSQL/Hash",  storeDescBase+"pgsql-hash.ttl") ;
-//            if ( includeIndex ) worker(stores, "PGSQL/Index", storeDescBase+"pgsql-index.ttl") ;
-//        }
-//
-//        if ( includeSQLServer )
-//        {
-//            if ( includeHash )  worker(stores, "MS-SQL-e/Hash",  storeDescBase+"ms-sql-e-hash.ttl") ;
-//            if ( includeIndex ) worker(stores, "MS-SQL-e/Index", storeDescBase+"ms-sql-e-index.ttl") ;
-//        }
-//        
-//        if ( includeHSQL )
-//        {
-//            if ( includeHash )  worker(stores, "HSQLDB/Hash",  storeDescBase+"hsqldb-hash.ttl") ;
-//            if ( includeIndex ) worker(stores, "HSQLDB/Index", storeDescBase+"hsqldb-index.ttl") ;
-//        }
-//        
-//        return stores ;
-//    }
 }
 
 /*

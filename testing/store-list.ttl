@@ -1,3 +1,5 @@
+#Store list for the normal layout (also known as "layout2")
+
 @prefix sdb:      <http://jena.hpl.hp.com/2007/sdb#> .
 @prefix rdf:      <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs:	  <http://www.w3.org/2000/01/rdf-schema#> .
@@ -33,17 +35,16 @@ _:x rdf:type sdb:StoreList ;
 ##       [ rdfs:label "OracleXE/Index" ;
 ##         sdb:description <StoreDesc/oracle-xe-index.ttl> ]
 ## 
-      [ rdfs:label "MS-SQL-e/Hash" ;
-        sdb:description <StoreDesc/ms-sql-e-hash.ttl> ]
+##       [ rdfs:label "MS-SQL-e/Hash" ;
+##         sdb:description <StoreDesc/ms-sql-e-hash.ttl> ]
+## 
+##       [ rdfs:label "MS-SQL-e/Index" ;
+##         sdb:description <StoreDesc/ms-sql-e-index.ttl> ]
+## 
+      [ rdfs:label "HSQLDB/Hash" ;
+        sdb:description <StoreDesc/hsqldb-hash.ttl> ]
 
-      [ rdfs:label "MS-SQL-e/Index" ;
-        sdb:description <StoreDesc/ms-sql-e-index.ttl> ]
-## 
-##       [ rdfs:label "HSQLDB/Hash" ;
-##         sdb:description <StoreDesc/hsqldb-hash.ttl> ]
-## 
-##       [ rdfs:label "HSQLDB/Index" ;
-##         sdb:description <StoreDesc/hsqldb-index.ttl> ]
-## 
+      [ rdfs:label "HSQLDB/Index" ;
+        sdb:description <StoreDesc/hsqldb-index.ttl> ]
 
     ) .

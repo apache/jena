@@ -147,6 +147,9 @@ public class SQLBridge2 extends SQLBridgeBase
                 continue ;
 
             String codename = super.getSqlName(v) ;
+            if ( codename == null )
+                // Not mentioned in query.
+                continue ;
             try {
                 String lex = rs.getString(SQLUtils.gen(codename,"lex")) ;   // chars
                 

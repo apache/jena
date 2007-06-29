@@ -7,6 +7,7 @@
 package com.hp.hpl.jena.sdb.test;
 
 import static com.hp.hpl.jena.sdb.test.SDBTest.manifest;
+import static com.hp.hpl.jena.sdb.test.SDBTest.manifestSimple;
 import junit.framework.TestSuite;
 import org.junit.runner.RunWith;
 import org.junit.runners.AllTests;
@@ -30,7 +31,8 @@ public class SDBQueryTestSuite extends TestSuite
     // Old style (JUnit3) but it allows programmatic
     // construction of the test suite hierarchy from a script.
     
-    static String storeList = "testing/store-list.ttl" ;
+    static String storeList         = "testing/store-list.ttl" ;
+    static String storeListSimple   = "testing/store-list-simple.ttl" ;
     
     static public TestSuite suite() { return new SDBQueryTestSuite() ; }
     
@@ -44,18 +46,32 @@ public class SDBQueryTestSuite extends TestSuite
         
         for ( Pair<Store, String> p : StoreList.stores(storeList) )
         {
-            TestSuite ts2 = makeSuite(p.getLeft(), p.getRight()) ;
-            //ts2.setName(ts2.getName()+" - "+p.getRight()) ;
-            ts2.setName(p.getRight()) ;
+            TestSuite ts2 = makeSuite2(p.getLeft(), p.getRight()) ;
             addTest(ts2) ;
         }
+        
+        for ( Pair<Store, String> p : StoreList.stores(storeListSimple) )
+        {
+            TestSuite ts2 = makeSuite1(p.getLeft(), p.getRight()) ;
+            addTest(ts2) ;
+        }
+        
     }
     
-    private static TestSuite makeSuite(Store store, String label)
+    private static TestSuite makeSuite2(Store store, String label)
     {
         TestSuite ts = QueryTestSDBFactory.make(store, manifest, label+" - ") ;
+        ts.setName(label) ;
         return ts ;
     }
+
+    private static TestSuite makeSuite1(Store store, String label)
+    {
+        TestSuite ts = QueryTestSDBFactory.make(store, manifestSimple, label+" - ") ;
+        ts.setName(label) ;
+        return ts ;
+    }
+
 }
 
 /*

@@ -24,6 +24,8 @@ public class FormatterSimplePGSQL extends FormatterSimple
 {
     private static Log log = LogFactory.getLog(FormatterSimplePGSQL.class) ;
     
+    private static final String colDecl = "VARCHAR("+UriWidth+") NOT NULL ," ;
+    
     public FormatterSimplePGSQL(SDBConnection connection)
     { 
         super(connection) ;
@@ -86,10 +88,10 @@ public class FormatterSimplePGSQL extends FormatterSimple
             connection().exec(sqlStr(
                     "CREATE TABLE Triples",
                     "(", 
-                    "  s VARCHAR(200) NOT NULL ,",
-                    "  p VARCHAR(200) NOT NULL ,",
-                    "  o VARCHAR(200) NOT NULL  ",
-                    ",  PRIMARY KEY (s,p,o)",
+                    "  s "+colDecl+" ,",
+                    "  p "+colDecl+" ,",
+                    "  o "+colDecl+" ,",
+                    "  PRIMARY KEY (s,p,o)",
                     ")"
                 )) ;
         } catch (SQLException ex)

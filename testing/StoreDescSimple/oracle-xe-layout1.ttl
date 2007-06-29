@@ -8,12 +8,12 @@ _:c rdf:type sdb:SDBConnection ;
     sdb:sdbHost        "localhost:1521" ;
     sdb:sdbName        "XE" ;
     ## Use different users to have different tests database in the same installation
-    sdb:sdbUser        "test2-hash" ;
-    sdb:sdbPassword    "test2-hash" ;
+    sdb:sdbUser        "test1" ;
+    sdb:sdbPassword    "test1" ;
 #    sdb:driver         "oracle.jdbc.driver.OracleDriver" ;
     .
 
 [] rdf:type sdb:Store ;
-    sdb:layout         "layout2/hash" ;
+    sdb:layout         "layout1" ;
     sdb:connection     _:c ;
 .

@@ -14,18 +14,19 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.sdb.SDBException;
+import com.hp.hpl.jena.sdb.layout2.TablePrefixes;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.sql.SDBExceptionSQL;
 import com.hp.hpl.jena.sdb.sql.TableUtils;
 
 
-public class FormatterSimpleSQLServer extends FormatterSimple 
+public class FormatterSimpleOracle extends FormatterSimple 
 {
-    private static Log log = LogFactory.getLog(FormatterSimpleSQLServer.class) ;
+    private static Log log = LogFactory.getLog(FormatterSimpleOracle.class) ;
     
-    private static final String colDecl = "NVARCHAR("+UriWidth+") NOT NULL" ;
+    private static final String colDecl = "NVARCHAR2("+UriWidth+") NOT NULL ," ;
     
-    public FormatterSimpleSQLServer(SDBConnection connection)
+    public FormatterSimpleOracle(SDBConnection connection)
     { 
         super(connection) ;
     }
@@ -54,8 +55,8 @@ public class FormatterSimpleSQLServer extends FormatterSimple
             dropTable("Prefixes") ;
             connection().exec(sqlStr(
                     "CREATE TABLE Prefixes (",
-                    "    prefix NVARCHAR("+UriWidth+") NOT NULL ,",
-                    "    uri    NVARCHAR("+UriWidth+") NOT NULL ,",
+                    "    prefix NVARCHAR("+TablePrefixes.prefixColWidth+") NOT NULL ,",
+                    "    uri NVARCHAR("+TablePrefixes.uriColWidth+") NOT NULL ,", 
                     "  PRIMARY KEY(prefix)",
                     ")"
                 )) ;
@@ -87,7 +88,7 @@ public class FormatterSimpleSQLServer extends FormatterSimple
             connection().exec(sqlStr(
                     "CREATE TABLE Triples",
                     "(", 
-                    "  s "+colDecl+" ,",
+                    "  s "+colDecl+" ,", 
                     "  p "+colDecl+" ,",
                     "  o "+colDecl+" ,",
                     "  PRIMARY KEY (s,p,o)",

@@ -8,6 +8,7 @@ package com.hp.hpl.jena.sdb.util;
 
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.sdb.SDBFactory;
+import com.hp.hpl.jena.sdb.layout1.StoreSimpleHSQL;
 import com.hp.hpl.jena.sdb.store.Store;
 import com.hp.hpl.jena.sdb.store.StoreBaseHSQL;
 import com.hp.hpl.jena.util.FileManager;
@@ -15,7 +16,11 @@ import com.hp.hpl.jena.util.FileManager;
 public class StoreUtils
 {
     public static boolean isHSQL(Store store)
-    { return ( store instanceof StoreBaseHSQL ) ; }
+    { 
+        if ( store instanceof StoreBaseHSQL ) return true ;
+        if ( store instanceof StoreSimpleHSQL ) return true ;
+        return false ;
+    }
     
     public static void load(Store store, String filename)
     {
