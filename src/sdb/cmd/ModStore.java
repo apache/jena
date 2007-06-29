@@ -49,11 +49,11 @@ public class ModStore extends ModBase
     protected final ArgDecl argDeclDbHost       = new ArgDecl(true, "dbHost", "dbhost");
     protected final ArgDecl argDeclDbName       = new ArgDecl(true, "dbName", "db");
     
-    protected final ArgDecl argDeclDbType      = new ArgDecl(true, "dbType", "dbtype");
-    protected final ArgDecl argDeclDbArgs      = new ArgDecl(true, "dbArgs", "dbargs");
+    protected final ArgDecl argDeclDbType       = new ArgDecl(true, "dbType", "dbtype");
+    protected final ArgDecl argDeclDbArgs       = new ArgDecl(true, "dbArgs", "dbargs");
     
-    protected final ArgDecl argDeclDbUser      = new ArgDecl(true, "dbUser", "user");
-    protected final ArgDecl argDeclDbPassword  = new ArgDecl(true, "dbPassword", "password", "pw");
+    protected final ArgDecl argDeclDbUser       = new ArgDecl(true, "dbUser", "user");
+    protected final ArgDecl argDeclDbPassword   = new ArgDecl(true, "dbPassword", "password", "pw");
 
     // Store modifiers
     

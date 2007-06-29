@@ -19,6 +19,7 @@ import com.hp.hpl.jena.query.QueryExecution;
 import com.hp.hpl.jena.query.QueryExecutionFactory;
 import com.hp.hpl.jena.query.QueryFactory;
 import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.StmtIterator;
 import com.hp.hpl.jena.sdb.SDBFactory;
 import com.hp.hpl.jena.sdb.sql.JDBC;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
@@ -37,9 +38,8 @@ public class RunSDB
         SDBConnection.logSQLExceptions = true ;
         //SDBConnection.logSQLStatements = true ;
         
-        sdb.sdbprint.main("--sdb=sdb.ttl",  "--query=Q.rq") ;
-
-        System.exit(0) ;
+        //sdb.sdbprint.main("--sdb=sdb.ttl",  "--query=Q.rq") ;
+        //System.exit(0) ;
         
         //SDBConnection.logSQLQueries = true ;
         //SDBConnection.logSQLStatements = true ;
@@ -48,7 +48,7 @@ public class RunSDB
         //runScript() ;
         
         //runInMem("Q.rq", "D.ttl") ;
-        //run() ;
+        run() ;
         System.err.println("Nothing ran!") ;
         System.exit(0) ;
     }
@@ -138,17 +138,13 @@ public class RunSDB
     {
         Store store = StoreFactory.create("sdb.ttl") ;
         
-        Model model1 = SDBFactory.connectDefaultModel(store); 
-        FileManager.get().readModel(model1, "D.ttl") ;
+        Model model1 = SDBFactory.connectNamedModel(store, "http://nosuch/");
         
-//        sdb.sdbtuple.main("--sdb=sdb.ttl", "Nodes") ;
-        
-        store.getTableFormatter().format() ;
-        store = StoreFactory.create("sdb.ttl") ;
-        Model model3 = SDBFactory.connectDefaultModel(store); 
-        FileManager.get().readModel(model3, "D.ttl") ;
-        
-        sdb.sdbtuple.main("--sdb=sdb.ttl", "Nodes") ;
+        StmtIterator iter = model1.listStatements();
+        if (iter == null || !iter.hasNext()) 
+            System.err.println("No such model") ;
+        else
+            System.err.println("Model!") ;
         System.exit(0) ;
     }
 }
