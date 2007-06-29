@@ -18,8 +18,6 @@ import com.hp.hpl.jena.sdb.store.StoreConfig;
 import com.hp.hpl.jena.sdb.store.StoreFormatter;
 import com.hp.hpl.jena.sdb.store.StoreLoader;
 
-
-
 public abstract class StoreBase 
     extends SDBConnectionHolder
     implements Store
@@ -87,8 +85,6 @@ public abstract class StoreBase
     public TableDescTriples getTripleTableDesc()               { return tripleTableDesc ; }
     public TableDescQuads   getQuadTableDesc()                 { return quadTableDesc ; }
 }
-
-
 
 /*
  * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
