@@ -64,18 +64,13 @@ public class SQLBridge1 extends SQLBridgeBase
         {
             try {
                 String sqlVarName = getSqlName(v) ;
+                
                 if ( sqlVarName == null )
                     // Not mentioned in query.
                     continue ;
                 
-                String s = null ;
-                try { 
-                    s = rs.getString(sqlVarName) ;
-                } catch ( NullPointerException ex)
-                {
-                    System.err.println("NPE") ;
-                    throw ex ;
-                }
+                String s = rs.getString(sqlVarName) ;
+
                 // Same as rs.wasNull() for things that can return Java nulls.
                 if ( s == null )
                     continue ;
