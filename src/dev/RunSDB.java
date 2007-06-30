@@ -141,7 +141,7 @@ public class RunSDB
         setSDBConfig("testing/StoreDescSimple/pgsql-layout1.ttl") ;
         sdbconfig("--create") ;
         String DIR = "testing/Structure/" ;
-        if ( false )
+        if ( true )
             sdbtest(DIR+"manifest.ttl") ;
         else
         {
