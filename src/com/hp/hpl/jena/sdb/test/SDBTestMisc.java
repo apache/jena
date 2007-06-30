@@ -17,6 +17,7 @@ import org.junit.runners.Suite;
     TestRegex.class,
     TestPrefixMappingSDB.class
 } )
+
 public class SDBTestMisc
 {
 }
