@@ -20,6 +20,7 @@ import com.hp.hpl.jena.sdb.core.SDBRequest;
 import com.hp.hpl.jena.sdb.core.ScopeEntry;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
+import com.hp.hpl.jena.sdb.sql.SQLUtils;
 import com.hp.hpl.jena.sdb.store.SQLBridgeBase;
 
 public class SQLBridge1 extends SQLBridgeBase
@@ -62,18 +63,20 @@ public class SQLBridge1 extends SQLBridgeBase
         Binding b = new BindingMap(parent) ;
         for ( Var v : getProject() )
         {
+            String sqlVarName = getSqlName(v) ;
+            
+            if ( sqlVarName == null )
+                // Not mentioned in query.
+                continue ;
             try {
-                String sqlVarName = getSqlName(v) ;
-                
-                if ( sqlVarName == null )
-                    // Not mentioned in query.
-                    continue ;
-                
+                // because of encoding into SPARQL terms, this is never the empty string.
                 String s = rs.getString(sqlVarName) ;
-
                 // Same as rs.wasNull() for things that can return Java nulls.
                 if ( s == null )
                     continue ;
+                // TupleLoaderSimple used SqlConstant which made the string SQL-safe
+                // so it could be embedded in a non-prepared statement.  
+                s = SQLUtils.unescapeStr(s) ;
                 Node n = codec.decode(s) ;
                 b.add(v, n) ;
                 // Ignore any access error (variable requested not in results)

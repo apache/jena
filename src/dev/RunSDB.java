@@ -9,37 +9,39 @@ package dev;
 import static sdb.SDBCmd.sdbconfig;
 import static sdb.SDBCmd.sdbload;
 import static sdb.SDBCmd.sdbquery;
+import static sdb.SDBCmd.sdbtest;
+import static sdb.SDBCmd.sdbprint;
 import static sdb.SDBCmd.setExitOnError;
 import static sdb.SDBCmd.setSDBConfig;
 import static sdb.SDBCmd.sparql;
 import arq.cmd.CmdUtils;
 
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.util.FileManager;
+
+import com.hp.hpl.jena.sparql.resultset.ResultsFormat;
+import com.hp.hpl.jena.sparql.util.QueryExecUtils;
+
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryExecution;
 import com.hp.hpl.jena.query.QueryExecutionFactory;
 import com.hp.hpl.jena.query.QueryFactory;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.StmtIterator;
+
 import com.hp.hpl.jena.sdb.SDBFactory;
 import com.hp.hpl.jena.sdb.sql.JDBC;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
-import com.hp.hpl.jena.sdb.store.Store;
 import com.hp.hpl.jena.sdb.store.StoreConfig;
-import com.hp.hpl.jena.sdb.store.StoreFactory;
-import com.hp.hpl.jena.sparql.resultset.ResultsFormat;
-import com.hp.hpl.jena.sparql.util.QueryExecUtils;
-import com.hp.hpl.jena.util.FileManager;
 
 public class RunSDB
 {
     static { CmdUtils.setLog4j() ; CmdUtils.setN3Params() ; }
     public static void main(String[]argv)
     {
-        SDBConnection.logSQLExceptions = true ;
-        SDBConnection.logSQLStatements = true ;
-        
-        sdb.sdbload.main("--sdb=sdb1.ttl",  "D.ttl") ;
-        System.exit(0) ;
+//        SDBConnection.logSQLExceptions = true ;
+//        SDBConnection.logSQLStatements = true ;
+//        
+//        sdb.sdbload.main("--sdb=sdb1.ttl",  "D.ttl") ;
+//        System.exit(0) ;
         
         //SDBConnection.logSQLQueries = true ;
         //SDBConnection.logSQLStatements = true ;
@@ -136,15 +138,19 @@ public class RunSDB
     
     public static void run()
     {
-        Store store = StoreFactory.create("sdb.ttl") ;
-        
-        Model model1 = SDBFactory.connectNamedModel(store, "http://nosuch/");
-        
-        StmtIterator iter = model1.listStatements();
-        if (iter == null || !iter.hasNext()) 
-            System.err.println("No such model") ;
+        setSDBConfig("testing/StoreDescSimple/pgsql-layout1.ttl") ;
+        sdbconfig("--create") ;
+        String DIR = "testing/Structure/" ;
+        if ( false )
+            sdbtest(DIR+"manifest.ttl") ;
         else
-            System.err.println("Model!") ;
+        {
+            sdbload(DIR+"data.ttl") ;
+            sdbprint("--query="+DIR+"struct-10.rq") ;
+            sdbquery("--query="+DIR+"struct-10.rq") ;
+            
+            sparql("--data="+DIR+"data.ttl","--query="+DIR+"struct-10.rq") ;
+        }
         System.exit(0) ;
     }
 }

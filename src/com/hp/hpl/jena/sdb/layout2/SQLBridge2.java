@@ -151,7 +151,16 @@ public class SQLBridge2 extends SQLBridgeBase
                 // Not mentioned in query.
                 continue ;
             try {
-                String lex = rs.getString(SQLUtils.gen(codename,"lex")) ;   // chars
+                int type        = rs.getInt(SQLUtils.gen(codename,"type")) ;
+                // returns 0 on null : type 0 is not allocated
+                // Test with "wasNull()" for safety
+                if ( rs.wasNull() )
+                    continue ;
+
+                // Oracle: may be null (empty string).
+                String lex = rs.getString(SQLUtils.gen(codename,"lex")) ;
+                if ( lex == null )
+                    lex = "" ;
                 
                 // byte bytes[] = rs.getBytes(SQLUtils.gen(codename,"lex")) ; // bytes
                 // try {
@@ -159,9 +168,7 @@ public class SQLBridge2 extends SQLBridgeBase
                 //     log.info("lex bytes : "+$+"("+$.length()+")") ;
                 // } catch (Exception ex) {}
                 // Same as rs.wasNull() for things that can return Java nulls.
-                if ( lex == null )
-                    continue ;
-                int type        = rs.getInt(SQLUtils.gen(codename,"type")) ;
+
                 String datatype = rs.getString(SQLUtils.gen(codename,"datatype")) ;
                 String lang     = rs.getString(SQLUtils.gen(codename,"lang")) ;
                 ValueType vType = ValueType.lookup(type) ;

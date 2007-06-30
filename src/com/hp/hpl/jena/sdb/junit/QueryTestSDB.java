@@ -152,6 +152,7 @@ public class QueryTestSDB extends TestCase
             {
                 rs1.reset() ;
                 rs2.reset() ;
+                System.out.println("------------------- "+this.getName());
                 System.out.println("**** Expected (standard engine)") ;
                 ResultSetFormatter.out(System.out, rs1) ; 
                 System.out.println("**** Got (SDB engine)") ;

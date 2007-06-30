@@ -24,7 +24,7 @@ public class FormatterSimpleOracle extends FormatterSimple
 {
     private static Log log = LogFactory.getLog(FormatterSimpleOracle.class) ;
     
-    private static final String colDecl = "NVARCHAR2("+UriWidth+") NOT NULL ," ;
+    private static final String colDecl = "NVARCHAR2("+UriWidth+") NOT NULL" ;
     
     public FormatterSimpleOracle(SDBConnection connection)
     { 
@@ -55,8 +55,8 @@ public class FormatterSimpleOracle extends FormatterSimple
             dropTable("Prefixes") ;
             connection().exec(sqlStr(
                     "CREATE TABLE Prefixes (",
-                    "    prefix NVARCHAR("+TablePrefixes.prefixColWidth+") NOT NULL ,",
-                    "    uri NVARCHAR("+TablePrefixes.uriColWidth+") NOT NULL ,", 
+                    "    prefix NVARCHAR2("+TablePrefixes.prefixColWidth+") NOT NULL ,",
+                    "    uri NVARCHAR2("+TablePrefixes.uriColWidth+") NOT NULL ,", 
                     "  PRIMARY KEY(prefix)",
                     ")"
                 )) ;

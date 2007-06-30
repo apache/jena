@@ -19,8 +19,8 @@ public class SDBCmd
     private static boolean exitOnError = true ;
     public static void setExitOnError(boolean exitOn) { exitOnError = exitOn ; }
     
-    public static int qparse(String... args)       { return exit(new arq.qparse(args(args))) ; } 
-    public static int sparql(String... args)       { return exit(new arq.query(args(args))) ; } 
+    public static int qparse(String... args)       { return exit(new arq.qparse(args)) ; } 
+    public static int sparql(String... args)       { return exit(new arq.query(args)) ; } 
     
     public static int sdbprint(String... args)     { return exit(new sdb.sdbprint(args(args))) ; } 
     public static int sdbconfig(String... args)    { return exit(new sdb.sdbconfig(args(args))) ; } 
@@ -28,10 +28,12 @@ public class SDBCmd
     public static int sdbdump(String... args)      { return exit(new sdb.sdbdump(args(args))) ; } 
     public static int sdbquery(String... args)     { return exit(new sdb.sdbquery(args(args))) ; } 
     public static int sdbtruncate(String... args)  { return exit(new sdb.sdbtruncate(args(args))) ; } 
+
+    public static int sdbtest(String... args)      { return exit(new sdb.sdbtest(args(args))) ; } 
     
     public static int sdbinfo(String... args)      { return exit(new sdb.sdbinfo(args(args))) ; } 
     public static int sdbmeta(String... args)      { return exit(new sdb.sdbmeta(args(args))) ; } 
-    public static int sdbsql(String... args)      { return exit(new sdb.sdbsql(args(args))) ; } 
+    public static int sdbsql(String... args)       { return exit(new sdb.sdbsql(args(args))) ; } 
     
     private static int exit(CmdMain cmd)
     {

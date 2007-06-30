@@ -24,7 +24,7 @@ public class FormatterSimplePGSQL extends FormatterSimple
 {
     private static Log log = LogFactory.getLog(FormatterSimplePGSQL.class) ;
     
-    private static final String colDecl = "VARCHAR("+UriWidth+") NOT NULL ," ;
+    private static final String colDecl = "VARCHAR("+UriWidth+") NOT NULL" ;
     
     public FormatterSimplePGSQL(SDBConnection connection)
     { 

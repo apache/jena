@@ -8,6 +8,8 @@ package sdb;
 
 import java.util.List;
 
+import arq.cmd.CmdException;
+
 import sdb.cmd.CmdArgsDB;
 import sdb.cmd.ModConfig;
 
@@ -40,13 +42,8 @@ public class sdbconfig extends CmdArgsDB
     @Override
     protected void processModulesAndArgs()
     {
-        if ( getNumPositional() == 1 )
-        {
-            String dbToZap = getPositionalArg(0) ;
-            getModStore().setDbName(dbToZap) ;
-        }
-//        else
-//            cmdError("Must give the database name explicitly") ;
+        if ( getNumPositional() > 0  )
+            throw new CmdException("No position arguments (specify DB in spec file or with --dbName DB") ;
     }
     
     @Override

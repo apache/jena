@@ -10,22 +10,21 @@
 _:x rdf:type sdb:StoreList ;
     sdb:list
     (
-## Layout 1 
-##       [ rdfs:label "Derby/Simple" ;
-##         sdb:description <StoreDescSimple/derby-layout1.ttl> ]
-## 
-##       [ rdfs:label "PGSQL/Simple" ;
-##         sdb:description <StoreDescSimple/pgsql-layout1.ttl> ]
-## 
-##       [ rdfs:label "MySQL/Simple" ;
-##         sdb:description <StoreDescSimple/mysql-layout1.ttl> ]
-## 
-##       [ rdfs:label "OracleXE/Simple" ;
-##         sdb:description <StoreDescSimple/oracle-xe-layout1.ttl> ]
-## 
-##       [ rdfs:label "MS-SQL-e/Simple" ;
-##         sdb:description <StoreDescSimple/ms-sql-e-layout1.ttl> ]
-## 
-##       [ rdfs:label "HSQLDB/Simple" ;
-##         sdb:description <StoreDescSimple/hsqldb-layout1.ttl> ]
+      [ rdfs:label "Derby/Simple" ;
+        sdb:description <StoreDescSimple/derby-layout1.ttl> ]
+
+      [ rdfs:label "PGSQL/Simple" ;
+        sdb:description <StoreDescSimple/pgsql-layout1.ttl> ]
+
+      [ rdfs:label "MySQL/Simple" ;
+        sdb:description <StoreDescSimple/mysql-layout1.ttl> ]
+
+      [ rdfs:label "OracleXE/Simple" ;
+        sdb:description <StoreDescSimple/oracle-xe-layout1.ttl> ]
+
+      [ rdfs:label "MS-SQL-e/Simple" ;
+        sdb:description <StoreDescSimple/ms-sql-e-layout1.ttl> ]
+
+      [ rdfs:label "HSQLDB/Simple" ;
+        sdb:description <StoreDescSimple/hsqldb-layout1.ttl> ]
     ) .

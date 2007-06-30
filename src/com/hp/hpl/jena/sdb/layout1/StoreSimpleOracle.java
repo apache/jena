@@ -1,18 +1,37 @@
 /*
- * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.sql;
+package com.hp.hpl.jena.sdb.layout1;
 
-public class SQL
+import com.hp.hpl.jena.sdb.core.sqlnode.GenerateSQLOracle;
+import com.hp.hpl.jena.sdb.layout2.TableDescTriples;
+import com.hp.hpl.jena.sdb.sql.SDBConnection;
+
+public class StoreSimpleOracle extends StoreBase1
 {
 
+    public StoreSimpleOracle(SDBConnection connection)
+    {
+        this(connection , new TableDescSPO(), new CodecSimple()) ;
+    }
+
+    private StoreSimpleOracle(SDBConnection connection, TableDescTriples triples, EncoderDecoder codec)
+    {
+        super(connection,
+              new FormatterSimpleOracle(connection) ,
+              new TupleLoaderSimple(connection, triples, codec), 
+              new QueryCompilerFactory1(codec), 
+              new SQLBridgeFactory1(codec),
+              new GenerateSQLOracle(),
+              triples) ;
+    }
 }
 
 /*
- * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

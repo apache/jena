@@ -8,6 +8,9 @@
     rdfs:label "SDB - Scripts - Simple layout" ;
     mfx:include (
         <General/manifest.ttl>
+        # Some databases do allow the full range of 
+        # unicode in SQL statements as strings (need prepared statements)
+        #<Unicode/manifest.ttl>
         <BasicPatterns/manifest.ttl>
 
         <Optionals1/manifest.ttl>
@@ -16,4 +19,6 @@
 
         <Algebra/manifest.ttl>
         <Structure/manifest.ttl>
+        # No quad support
+        #<Graph/manifest.ttl>
     ) .

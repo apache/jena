@@ -10,14 +10,17 @@ import java.io.Reader;
 import java.io.StringReader;
 
 import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.sparql.lang.sparql.ParseException;
-import com.hp.hpl.jena.sparql.lang.sparql.SPARQLParser;
-import com.hp.hpl.jena.sparql.lang.sparql.Token;
-import com.hp.hpl.jena.sparql.util.FmtUtils;
 import com.hp.hpl.jena.rdf.model.AnonId;
 import com.hp.hpl.jena.shared.PrefixMapping;
 import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
+
+import com.hp.hpl.jena.sparql.lang.sparql.ParseException;
+import com.hp.hpl.jena.sparql.lang.sparql.SPARQLParser;
+import com.hp.hpl.jena.sparql.lang.sparql.Token;
+import com.hp.hpl.jena.sparql.lang.sparql.TokenMgrError;
+import com.hp.hpl.jena.sparql.util.FmtUtils;
+
+import com.hp.hpl.jena.query.Query;
 
 
 public class CodecSimple implements EncoderDecoder
@@ -28,15 +31,20 @@ public class CodecSimple implements EncoderDecoder
     
     public CodecSimple(PrefixMapping pMap) { prefixMapping = pMap ; }
     
+    // Does not need to make the string SQL-safe
     public String encode(Node node)
     {
         if ( node.isBlank() )
             return "_:"+node.getBlankNodeId().getLabelString() ;
-        return FmtUtils.stringForNode(node, prefixMapping) ;
+        String s = FmtUtils.stringForNode(node, prefixMapping) ;
+        return s ; 
     }
     
     public Node decode(String s)
     {
+        if ( s.startsWith("Double"))
+            System.err.println(s) ;
+        
         if ( s.startsWith("_:") )
             return Node.createAnon(new AnonId(s.substring(2))) ;
         return stringToNode(s, prefixMapping) ; 
@@ -65,7 +73,13 @@ public class CodecSimple implements EncoderDecoder
             if ( t.kind != SPARQLParser.EOF )
                 throw new ParseException("More to parse: "+t.image) ;
             return n ;
-        } catch (ParseException ex)
+        }
+        catch (TokenMgrError ex)
+        {
+            System.err.println(ex.getMessage()) ;
+            ex.printStackTrace(System.err) ;
+        }
+        catch (ParseException ex)
         {
             if ( ex.currentToken != null )
             {

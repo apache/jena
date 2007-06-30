@@ -96,8 +96,8 @@ public class FmtLayout2HashOracle extends FmtLayout2
         try { 
             connection().exec(sqlStr(
                                       "CREATE TABLE "+TablePrefixes.name()+" (",
-                                      "    prefix VARCHAR("+TablePrefixes.prefixColWidth+") ,",
-                                      "    uri VARCHAR("+TablePrefixes.uriColWidth+") ,", 
+                                      "    prefix NVARCHAR2("+TablePrefixes.prefixColWidth+") ,",
+                                      "    uri NVARCHAR2("+TablePrefixes.uriColWidth+") ,", 
                                       "    PRIMARY KEY  (prefix)",
                                       ")"            
                     )) ;

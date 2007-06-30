@@ -21,6 +21,13 @@ public enum ValueType implements Named
     5. A plain literal is lower than an RDF literal with type xsd:string of the same lexical form.
     */
 
+    // Do not allocate id 0 (which is the return for NULL in JDBC)
+//    NULL
+//    {
+//        @Override public XSDDatatype getDatatype()  { return null ; }
+//        @Override public int getTypeId()            { return 0 ; }
+//        @Override public String getName()           { return "null" ; }
+//    } ,
     
     BNODE
     {

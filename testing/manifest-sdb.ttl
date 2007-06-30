@@ -8,6 +8,7 @@
     rdfs:label "SDB - Scripts" ;
     mfx:include (
         <General/manifest.ttl>
+        <Unicode/manifest.ttl>
         <BasicPatterns/manifest.ttl>
 
         <Optionals1/manifest.ttl>

@@ -16,12 +16,7 @@ import com.hp.hpl.jena.db.ModelRDB;
 import com.hp.hpl.jena.db.RDFRDBException;
 import com.hp.hpl.jena.sdb.SDB;
 import com.hp.hpl.jena.sdb.SDBException;
-import com.hp.hpl.jena.sdb.layout1.StoreRDB;
-import com.hp.hpl.jena.sdb.layout1.StoreSimpleDerby;
-import com.hp.hpl.jena.sdb.layout1.StoreSimpleHSQL;
-import com.hp.hpl.jena.sdb.layout1.StoreSimpleMySQL;
-import com.hp.hpl.jena.sdb.layout1.StoreSimplePGSQL;
-import com.hp.hpl.jena.sdb.layout1.StoreSimpleSQLServer;
+import com.hp.hpl.jena.sdb.layout1.*;
 import com.hp.hpl.jena.sdb.layout2.hash.StoreTriplesNodesHashDerby;
 import com.hp.hpl.jena.sdb.layout2.hash.StoreTriplesNodesHashHSQL;
 import com.hp.hpl.jena.sdb.layout2.hash.StoreTriplesNodesHashMySQL;
@@ -85,6 +80,8 @@ public class StoreFactory
                     return new StoreSimpleDerby(sdb) ;
                 case SQLServer:
                     return new StoreSimpleSQLServer(sdb) ;
+                case Oracle:
+                    return new StoreSimpleOracle(sdb) ;
                 default:
                     throw new SDBException(format("Unknown or unsupported DB type: %s [layout=%s]",
                                                   desc.getDbType().getName(), desc.getLayout().getName())) ;
@@ -138,7 +135,6 @@ public class StoreFactory
         if ( desc.getLayout() == LayoutType.LayoutRDB )
         {
             try { 
-                // TODO Cope with no real connection
                 IDBConnection conn = new DBConnection(sdb.getSqlConnection(), desc.connDesc.rdbType) ;
                 String mName = desc.rdbModelName ;
                 ModelRDB modelRDB = null ;

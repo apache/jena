@@ -6,9 +6,11 @@
 ## Layout 1 (simple form)
 
 _:c rdf:type sdb:SDBConnection ;
-    sdb:sdbType        "MSSQLServerExpress" ;
-    sdb:sdbHost        "localhost" ;
-    sdb:sdbName        "test1" ;
+    sdb:sdbType        "oracle:thin" ;
+    sdb:sdbHost        "localhost:1521" ;
+    sdb:sdbName        "XE" ;    
+    sdb:sdbUser        "test1" ;
+    sdb:sdbPassword    "test1" ;
 ##     sdb:sdbType        "derby" ;
 ##     sdb:sdbName        "DB/SDB1" ;
 ##     sdb:driver         "org.apache.derby.jdbc.EmbeddedDriver" ;

@@ -38,11 +38,16 @@ public class SQLUtils
     //   Variables: _ (not $ strictly)
     
     // Standard SQL quoting is to double up '
+    // PostgreSQL and MySQL also have \-style escapes so escape \ as well.
     static private String strQuoteChar = "'" ;
     static private String strQuoteCharEsc = strQuoteChar+strQuoteChar ;
+
+    static private String strQuoteChar2 = "\\" ;
+    static private String strQuoteCharEsc2 = strQuoteChar2+strQuoteChar2 ;
+
     
-    static private String[] strChar =       { strQuoteChar } ;
-    static private String[] strCharEsc =    { strQuoteCharEsc } ;
+    static private String[] strChar =       { strQuoteChar, strQuoteChar2 } ;
+    static private String[] strCharEsc =    { strQuoteCharEsc, strQuoteCharEsc2 } ;
     
     static public String escapeStr(String s)
     { return map(s, strChar, strCharEsc) ; }

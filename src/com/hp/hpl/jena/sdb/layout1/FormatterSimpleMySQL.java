@@ -25,7 +25,8 @@ public class FormatterSimpleMySQL extends FormatterSimple
     private static Log log = LogFactory.getLog(FormatterSimpleMySQL.class) ;
     private MySQLEngineType engineType ;
     
-    private static final String colDecl = "VARCHAR2("+UriWidth+") BINARY NOT NULL" ;
+    // MySQL keys are limited to 765 bytes, and a key is S/P/O
+    private static final String colDecl = "VARCHAR(200) BINARY NOT NULL" ;
     
     public FormatterSimpleMySQL(SDBConnection connection, MySQLEngineType tableType)
     { 
