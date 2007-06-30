@@ -6,18 +6,16 @@
 
 package com.hp.hpl.jena.sdb.test;
 
-import static com.hp.hpl.jena.sdb.test.SDBTest.manifest;
+import static com.hp.hpl.jena.sdb.test.SDBTest.manifestMain;
 import static com.hp.hpl.jena.sdb.test.SDBTest.manifestSimple;
 import junit.framework.TestSuite;
 import org.junit.runner.RunWith;
 import org.junit.runners.AllTests;
 
 import com.hp.hpl.jena.query.ARQ;
+
 import com.hp.hpl.jena.sdb.SDB;
 import com.hp.hpl.jena.sdb.junit.QueryTestSDBFactory;
-import com.hp.hpl.jena.sdb.shared.StoreList;
-import com.hp.hpl.jena.sdb.store.Store;
-import com.hp.hpl.jena.sdb.util.Pair;
 
 @RunWith(AllTests.class)
 public class SDBQueryTestSuite extends TestSuite
@@ -43,35 +41,12 @@ public class SDBQueryTestSuite extends TestSuite
         if ( true )
             // PostgreSQL gets upset with comments in comments??
             ARQ.getContext().setFalse(SDB.annotateGeneratedSQL) ;
-        
-        for ( Pair<Store, String> p : StoreList.stores(storeList) )
-        {
-            TestSuite ts2 = makeSuite2(p.getLeft(), p.getRight()) ;
-            addTest(ts2) ;
-        }
-        
-        for ( Pair<Store, String> p : StoreList.stores(storeListSimple) )
-        {
-            TestSuite ts2 = makeSuite1(p.getLeft(), p.getRight()) ;
-            addTest(ts2) ;
-        }
-        
+
+        QueryTestSDBFactory.make(this, storeList, manifestMain) ;
+        QueryTestSDBFactory.make(this, storeListSimple, manifestSimple) ;
     }
     
-    private static TestSuite makeSuite2(Store store, String label)
-    {
-        TestSuite ts = QueryTestSDBFactory.make(store, manifest, label+" - ") ;
-        ts.setName(label) ;
-        return ts ;
-    }
-
-    private static TestSuite makeSuite1(Store store, String label)
-    {
-        TestSuite ts = QueryTestSDBFactory.make(store, manifestSimple, label+" - ") ;
-        ts.setName(label) ;
-        return ts ;
-    }
-
+ 
 }
 
 /*

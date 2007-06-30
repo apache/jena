@@ -14,7 +14,11 @@ import junit.framework.TestSuite;
 
 import com.hp.hpl.jena.query.Syntax;
 import com.hp.hpl.jena.rdf.model.Resource;
+
+import com.hp.hpl.jena.sdb.shared.StoreList;
 import com.hp.hpl.jena.sdb.store.Store;
+import com.hp.hpl.jena.sdb.util.Pair;
+
 import com.hp.hpl.jena.sparql.core.DataFormat;
 import com.hp.hpl.jena.sparql.junit.QueryTestException;
 import com.hp.hpl.jena.sparql.junit.SurpressedTest;
@@ -26,16 +30,38 @@ import com.hp.hpl.jena.util.junit.TestFactoryManifest;
 
 public class QueryTestSDBFactory extends TestFactoryManifest
 {
+    public static TestSuite makeSuite(String storeListFile, String manifestFile)
+    {
+        TestSuite ts = new TestSuite() ;
+        make(ts, storeListFile, manifestFile) ;
+        return ts ;
+    }
+    
+    public static void make(TestSuite ts, String storeList, String manifestFile)
+    {
+        for ( Pair<Store, String> p : StoreList.stores(storeList) )
+        {
+            Store store = p.car() ;
+            String label = p.cdr();
+            if ( label != null && !label.equals("") )
+                label = label+" - " ;
+            TestSuite ts2 = QueryTestSDBFactory.make(store, manifestFile, label) ;
+            ts.addTest(ts2) ;
+        }
+    }
+    
+    static public TestSuite make(Store store, String manifestFile, String testRootName) 
+    {
+        QueryTestSDBFactory f = new QueryTestSDBFactory(store, testRootName) ;
+        return f.process(manifestFile) ;
+    }
+
     FileManager fileManager = FileManager.get() ;
     Store store ;
     private String testRootName ;
     
-    static public TestSuite make(Store store, String filename, String testRootName) 
-    {
-        QueryTestSDBFactory f = new QueryTestSDBFactory(store, testRootName) ;
-        return f.process(filename) ;
-    }   
-
+    
+    
     private QueryTestSDBFactory(Store store, String testRootName)
     {
         this.store = store ;

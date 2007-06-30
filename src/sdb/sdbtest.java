@@ -55,8 +55,6 @@ public class sdbtest extends CmdArgsDB
             cmdError("No manifest to run") ;
     }
     
-    // Don't use exec1 which has a transaction wrapper.
-    
     @Override 
     protected void execCmd(List<String> positionalArgs)
     {
