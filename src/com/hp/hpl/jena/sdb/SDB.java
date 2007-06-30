@@ -15,6 +15,7 @@ import com.hp.hpl.jena.vocabulary.RDF;
 import com.hp.hpl.jena.vocabulary.RDFS;
 
 import com.hp.hpl.jena.sparql.ARQInternalErrorException;
+import com.hp.hpl.jena.sparql.util.Context;
 import com.hp.hpl.jena.sparql.util.Symbol;
 
 import com.hp.hpl.jena.sdb.assembler.AssemblerVocab;
@@ -38,6 +39,9 @@ public class SDB
     public static final Symbol streamJDBC               = SDBConstants.allocSymbol("streamJDBC") ;
     public static final Symbol annotateGeneratedSQL     = SDBConstants.allocSymbol("annotateGeneratedSQL") ;
     // ----------------------------------
+    
+    // Global context is the ARQ context.
+    public static Context getContext() { return ARQ.getContext() ; }
     
     private static boolean initialized = false ;
     public static synchronized void init()
@@ -63,9 +67,9 @@ public class SDB
         // Wire in the SDB query engne
         QueryEngineSDB.register() ;
         
-        ARQ.getContext().setIfUndef(useQuadRewrite,        false) ;
-        ARQ.getContext().setIfUndef(streamJDBC,            true) ;
-        ARQ.getContext().setIfUndef(annotateGeneratedSQL,  true) ;
+        SDB.getContext().setIfUndef(useQuadRewrite,        false) ;
+        SDB.getContext().setIfUndef(streamJDBC,            true) ;
+        SDB.getContext().setIfUndef(annotateGeneratedSQL,  true) ;
         
     }
     
@@ -81,8 +85,8 @@ public class SDB
     /** XSD namespace prefix */
     private static final String xsdPrefix = XSDDatatype.XSD+"#" ;
     
-    /** The namespace of the XML results format */ 
-    private static final String srxPrefix = "http://www.w3.org/2005/sparql-results#" ;
+//    /** The namespace of the XML results format */ 
+//    private static final String srxPrefix = "http://www.w3.org/2005/sparql-results#" ;
     
     protected static PrefixMapping globalPrefixMap = new PrefixMappingImpl() ;
     static {
@@ -127,7 +131,6 @@ public class SDB
    
     /** The date and time at which this release was built */   
     public static final String BUILD_DATE = "@build-time@";
-    
 }
 
 /*
