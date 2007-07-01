@@ -1,0 +1,20 @@
+SDB Change Log
+==============
+
+SDB Beta 1
+==========
+
+Databases supported:
++ Oracle 10gR2, Microsoft SQL Server 2005, PostgreSQL, MySQL, Apache Derby, HSQLDB
+
++ Database schema change for Microsoft SQL Server for new databases to
+  allow full internationalization support.  Old databases continue to work.
+  Reformatting and reloading data recommended.
+
+
+SDB alpha 2
+===========
+
+The namespace for store description assembler files is
+now <http://jena.hpl.hp.com/2007/sdb#>.  This is a change from
+alpha-1.
