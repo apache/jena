@@ -1,10 +1,8 @@
 SDB ToDo list (and general notes)
 =================================
 
-++ Layout1/oracle
-
-** Subclass loading.
-** OpSlice. OpUnion
++ Subclass loading.
++ OpSlice. OpUnion
 
 + More logging statements e.g. set up, JDBC URL
 

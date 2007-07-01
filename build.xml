@@ -274,9 +274,9 @@
     <copy todir="${dist.dir}/" file="build.xml"/>
     <copy todir="${dist.dir}/" file="copyright.txt"/>
     <copy todir="${dist.dir}/" file="README.txt"/>
-    <!-- <copy todir="${dist.dir}/" file="sdb.ttl"/> -->
     <copy todir="${dist.dir}/" file="ChangeLog.txt"/>
     <copy todir="${dist.dir}/" file="test.sh"/>
+  	<copy tofile="${dist.dir}/sdb.ttl" file="Store/sdb-blank.ttl"/>
 
     <copy todir="${dist.dir}/${src.dir}">
       <fileset dir="${src.build.dir}" includes="**" excludes="dev/**"/>
