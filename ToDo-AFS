@@ -6,6 +6,8 @@ SDB ToDo list (and general notes)
 ** Subclass loading.
 ** OpSlice. OpUnion
 
++ More logging statements e.g. set up, JDBC URL
+
 + Model management
   Need a "graph ids" table
   Temp: DatasetStore.hasNonEmptyModel(IRI)

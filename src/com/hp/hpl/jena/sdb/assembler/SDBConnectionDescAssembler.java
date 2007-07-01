@@ -27,7 +27,6 @@ public class SDBConnectionDescAssembler extends AssemblerBase implements Assembl
         
         sDesc.setType(     GraphUtils.getStringValue(root, AssemblerVocab.pSDBtype) ) ;
         sDesc.setHost(     GraphUtils.getStringValue(root, AssemblerVocab.pSDBhost) ) ;
-        sDesc.setArgStr(   GraphUtils.getStringValue(root, AssemblerVocab.pSDBargStr) ) ;
         sDesc.setName(     GraphUtils.getStringValue(root, AssemblerVocab.pSDBname) ) ;
         sDesc.setUser(     GraphUtils.getStringValue(root, AssemblerVocab.pSDBuser) ) ;
         sDesc.setPassword( GraphUtils.getStringValue(root, AssemblerVocab.pSDBpassword) ) ;
@@ -36,9 +35,9 @@ public class SDBConnectionDescAssembler extends AssemblerBase implements Assembl
         sDesc.setRdbType(  GraphUtils.getStringValue(root, AssemblerVocab.pRDBtype) ) ;
         sDesc.setLabel(    GraphUtils.getStringValue(root, RDFS.label) ) ;
         
-        if ( sDesc.getJdbcURL() == null && sDesc.getUser() == null )
+        if ( sDesc.getUser() == null )
             sDesc.setUser(Access.getUser()) ;
-        if ( sDesc.getJdbcURL() == null && sDesc.getPassword() == null )
+        if ( sDesc.getPassword() == null )
             sDesc.setPassword(Access.getPassword()) ;
         return sDesc ;
     }

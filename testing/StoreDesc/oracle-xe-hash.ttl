@@ -4,7 +4,7 @@
 @prefix sdb:      <http://jena.hpl.hp.com/2007/sdb#> .
 
 _:c rdf:type sdb:SDBConnection ;
-    sdb:sdbType        "oracle:thin" ;
+    sdb:sdbType        "oracle" ;
     sdb:sdbHost        "localhost:1521" ;
     sdb:sdbName        "XE" ;
     ## Use different users to have different tests database in the same installation

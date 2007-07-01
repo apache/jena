@@ -1,16 +1,24 @@
 SDB Change Log
 ==============
 
-Homepage:	http://jena.sf.net/SDB
-Wiki:      	http://jena.hpl.hp.com/wiki/SDB
+Homepage:
+    http://jena.sf.net/SDB
+Documentation:
+    http://jena.hpl.hp.com/wiki/SDB
+
 
 SDB Beta 1
 ==========
 
-Databases tested:
++ Support for named graphs.
+  In order to use named graphs, SDB stores must be reformatted and reloaded.
+  SDB-alpha stores and queries should continue to work but rebuilding
+  the store is recommended. 
+
+Databases supported in this release:
 + Oracle 10gR2, Microsoft SQL Server 2005, PostgreSQL 8.2,
   MySQL 5.0 , Apache Derby 10.2, HSQLDB 1.8.
-  Please report ealier versions that pass the test suite.
+  Please report earlier versions that pass the test suite.
 
 + Database schema change for Microsoft SQL Server for new databases to
   allow full internationalization support.  Old databases continue to work.

@@ -52,9 +52,8 @@ public class AssemblerVocab
     public static final Property pDriver             = Vocab.property(NS, "driver") ;
     public static final Property pSDBtype            = Vocab.property(NS, "sdbType") ;
     public static final Property pSDBhost            = Vocab.property(NS, "sdbHost") ;
-    public static final Property pSDBargStr          = Vocab.property(NS, "sdbArgStr") ;
     public static final Property pSDBname            = Vocab.property(NS, "sdbName") ;
-    public static final Property pSDBschema          = Vocab.property(NS, "sdbSchema") ;
+    //public static final Property pSDBschema          = Vocab.property(NS, "sdbSchema") ;
     // ModeRDB graph name - on the connection
     public static final Property pRDBtype           = Vocab.property(NS, "rdbType") ;
     

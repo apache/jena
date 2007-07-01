@@ -89,11 +89,8 @@ public class JDBC
     public static String makeURL(String type, String host, String dbName)
     { return makeURL(type, host, dbName, null, null) ; }
 
-    public static String makeURL(String type, String host, String dbName, String user, String password)
-    { return makeURL(type, host, dbName, null, user, password) ; }
-
     // How to make URLs.
-    public static String makeURL(String type, String host, String dbName, String argStr, String user, String password)
+    public static String makeURL(String type, String host, String dbName, String user, String password)
     {
         type = type.toLowerCase() ;
         
@@ -105,24 +102,18 @@ public class JDBC
         if ( type.equals("mysql") || type.equals("postgresql") || type.equals("pgsql") )
         {
             String s = String.format("jdbc:%s://%s/%s", type, host, dbName) ;
-            if ( argStr != null && ! argStr.equals("") )
-                s = s+ "?"+ argStr ;
             return s ;
         }
         
         if ( type.startsWith("hsql"))
         {
             String s = String.format("jdbc:%s:%s:%s", type, host, dbName) ;
-            if ( argStr != null && ! argStr.equals("") )
-                s = s+ "?"+ argStr ;
             return s ;
         }
         
         if ( type.startsWith("pgsql"))
         {
         	String s = String.format("jdbc:%s://%s/%s", type, host, dbName) ;
-        	if (argStr != null && ! argStr.equals("") )
-        		s = s+ "?"+ argStr ;
         	return s ;
         }
         
@@ -147,13 +138,20 @@ public class JDBC
             return s ;
         }
         
-        if ( type.equals("oracle") || type.startsWith("oracle:") )
+        if ( type.startsWith("oracle:") )
         {
         	String s = String.format("jdbc:%s:@%s:%s", type, host, dbName) ;
         	return s;
         }
         
-        if ( type.equalsIgnoreCase("none") )
+        if ( type.equals("oracle") )
+        {
+            // If not specified, use the thin driver.
+            String s = String.format("jdbc:%s:thin:@%s:%s", type, host, dbName) ;
+            return s;
+        }
+        
+        if ( type.equals("none") )
             return jdbcNone ;
         
         throw new SDBException("Don't know how to construct a JDBC URL for "+type) ;

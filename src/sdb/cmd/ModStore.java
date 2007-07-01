@@ -50,7 +50,6 @@ public class ModStore extends ModBase
     protected final ArgDecl argDeclDbName       = new ArgDecl(true, "dbName", "db");
     
     protected final ArgDecl argDeclDbType       = new ArgDecl(true, "dbType", "dbtype");
-    protected final ArgDecl argDeclDbArgs       = new ArgDecl(true, "dbArgs", "dbargs");
     
     protected final ArgDecl argDeclDbUser       = new ArgDecl(true, "dbUser", "user");
     protected final ArgDecl argDeclDbPassword   = new ArgDecl(true, "dbPassword", "password", "pw");
@@ -105,10 +104,6 @@ public class ModStore extends ModBase
         if ( AddUsage )
             cmdLine.getUsage().addUsage("--dbName=", "Database name") ;
         
-        cmdLine.add(argDeclDbArgs);
-        if ( AddUsage )
-            cmdLine.getUsage().addUsage("--dbArgs=", "Additional arguments for JDBC URL") ;
-
         cmdLine.add(argDeclDbType);
         if ( AddUsage )
             cmdLine.getUsage().addUsage("--dbType=", "Database type") ;
@@ -177,9 +172,6 @@ public class ModStore extends ModBase
         if (cmdLine.contains(argDeclDbType))
             storeDesc.connDesc.setType(cmdLine.getArg(argDeclDbType).getValue()) ;
 
-        if (cmdLine.contains(argDeclDbArgs))
-            storeDesc.connDesc.setArgStr(cmdLine.getArg(argDeclDbArgs).getValue()) ;
-
         if (cmdLine.contains(argDeclDbUser))
             storeDesc.connDesc.setUser(cmdLine.getArg(argDeclDbUser).getValue()) ;
 
@@ -211,8 +203,8 @@ public class ModStore extends ModBase
             System.out.println("Database  = " + storeDesc.connDesc.getName());
             System.out.println("User      = " + storeDesc.connDesc.getUser());
             System.out.println("Password  = " + storeDesc.connDesc.getPassword());
-            if ( storeDesc.connDesc.getArgStr() != null )
-                System.out.println("Args      = " + storeDesc.connDesc.getArgStr());
+//            if ( storeDesc.connDesc.getArgStr() != null )
+//                System.out.println("Args      = " + storeDesc.connDesc.getArgStr());
                 
             System.out.println("Layout    = " + storeDesc.getLayout().getName()) ;
             //System.out.println("Name      = " + argModelName);

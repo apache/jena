@@ -53,7 +53,10 @@ public class QueryTestSDBFactory extends TestFactoryManifest
     static public TestSuite make(Store store, String manifestFile, String testRootName) 
     {
         QueryTestSDBFactory f = new QueryTestSDBFactory(store, testRootName) ;
-        return f.process(manifestFile) ;
+        TestSuite ts = f.process(manifestFile) ;
+        if ( testRootName != null )
+            ts.setName(testRootName+ts.getName()) ;
+        return ts ;
     }
 
     FileManager fileManager = FileManager.get() ;

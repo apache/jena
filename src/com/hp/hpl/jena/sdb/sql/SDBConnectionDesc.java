@@ -20,7 +20,6 @@ public class SDBConnectionDesc
 {
     private String type      = null ;
     private String host      = null ;
-    private String argStr    = null ;
     private String name      = null ;
     private String user      = null ;
     private String password  = null ;
@@ -60,14 +59,14 @@ public class SDBConnectionDesc
     private void initJDBC()
     {
         if ( jdbcURL == null )
-            jdbcURL = JDBC.makeURL(type, host, name, argStr, user, password) ;
+            jdbcURL = JDBC.makeURL(type, host, name, user, password) ;
     }
 
-    public String getArgStr()
-    { return argStr ; }
-
-    public void setArgStr(String argStr)
-    { this.argStr = argStr ; }
+//    public String getArgStr()
+//    { return argStr ; }
+//
+//    public void setArgStr(String argStr)
+//    { this.argStr = argStr ; }
 
     public String getDriver()
     { return driver ; }

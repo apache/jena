@@ -5,7 +5,7 @@
 @prefix qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#> .
 
 <>  rdf:type mf:Manifest ;
-    rdfs:label "General tests" ;
+    rdfs:label "Unicode" ;
     mf:entries
     ( 
        [  mf:name   "Unicode-1" ;
