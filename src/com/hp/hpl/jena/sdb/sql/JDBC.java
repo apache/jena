@@ -12,6 +12,9 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import com.hp.hpl.jena.sdb.Access;
 import com.hp.hpl.jena.sdb.SDBException;
 import com.hp.hpl.jena.sdb.shared.SDBNotFoundException;
@@ -19,6 +22,7 @@ import com.hp.hpl.jena.sdb.store.DatabaseType;
 
 public class JDBC
 {
+    private static Log log = LogFactory.getLog(JDBC.class) ; 
     // The "well known" not a JDBC connection really scheme
     public static final String jdbcNone = "jdbc:none" ;
 
@@ -65,6 +69,9 @@ public class JDBC
     // This is the only place a driver is created.
     public static Connection createConnection(String url, String user, String password) throws SQLException
     {
+        if ( log.isDebugEnabled() )
+            log.debug("Create JDBC connection: "+url);
+        
         if ( url.equals(jdbcNone) )
             return null ;
         
@@ -92,6 +99,9 @@ public class JDBC
     // How to make URLs.
     public static String makeURL(String type, String host, String dbName, String user, String password)
     {
+        if ( log.isDebugEnabled() )
+            log.debug(String.format("Create JDBC URL: (type=%s, host=%s, dbName=%s)", type, host, dbName)) ;
+        
         type = type.toLowerCase() ;
         
         if ( user == null )
