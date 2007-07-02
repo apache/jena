@@ -15,7 +15,10 @@ SDB ToDo list (and general notes)
 + Prefixes
    Per graph, not global
 
-+ Tidy up and document DBtest :  per DB col types!
++ Tidy DB formatting
+    per DB list of column generators (getVarchar, getText etc).
+
++ Tidy up and document DBtest :  DB formatting info => per DB col types
 
 + SPARQL/Update input and control
 
