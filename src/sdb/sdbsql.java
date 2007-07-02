@@ -84,10 +84,10 @@ public class sdbsql extends CmdArgsDB
             sqlStmt = FileManager.get().readWholeFileAsUTF8(sqlStmt.substring(1)) ;
         
         getModTime().startTimer() ;
-        long x = 0 ;
+        long queryTime = 0 ;
         try {
             ResultSet rs = getModStore().getConnection().exec(sqlStmt) ;
-            x = getModTime().readTimer() ;
+            queryTime = getModTime().readTimer() ;
             
             if ( rs == null )
                 System.out.println("Executed with no errors or results") ;
@@ -104,8 +104,14 @@ public class sdbsql extends CmdArgsDB
             throw new TerminationException(9) ;
         }
         long time = getModTime().endTimer() ;
+        long fmtTime = time-queryTime ;
         if ( getModTime().timingEnabled() )
-            System.out.println("Query: "+getModTime().timeStr(time)+"("+getModTime().timeStr(x)+"/"+getModTime().timeStr(time-x)+")") ; 
+        {
+            String totalTimeStr = getModTime().timeStr(time) ;
+            String queryTimeStr = getModTime().timeStr(queryTime) ;
+            String fmtTimeStr = getModTime().timeStr(fmtTime) ;
+            System.out.printf("Query: %s (query %s, formatting %s)\n", totalTimeStr, queryTimeStr, fmtTimeStr) ;
+        }
     }
 
 }
