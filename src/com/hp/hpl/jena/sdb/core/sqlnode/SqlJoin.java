@@ -15,11 +15,9 @@ import com.hp.hpl.jena.sdb.core.ScopeOptional;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExpr;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExprList;
 
-public abstract class SqlJoin extends SqlNodeBase
+public abstract class SqlJoin extends SqlNodeBase2
 {
     private JoinType joinType ;
-    private SqlNode left ;
-    private SqlNode right ;
     private Scope idScope ;
     private Scope nodeScope ;
     private SqlExprList conditions = new SqlExprList() ;
@@ -40,14 +38,12 @@ public abstract class SqlJoin extends SqlNodeBase
 
 
     protected SqlJoin(JoinType joinType, SqlNode left, SqlNode right)
-    { this(joinType, left, right, null) ; }
+    { this(null, joinType, left, right) ; }
 
-    protected SqlJoin(JoinType joinType, SqlNode left, SqlNode right, String alias)
+    protected SqlJoin(String alias, JoinType joinType, SqlNode left, SqlNode right)
     { 
-        super(alias) ;
+        super(alias, left, right) ;
         this.joinType = joinType ;
-        this.left = left ;
-        this.right = right ;
         
         if ( joinType == JoinType.LEFT )
         {
@@ -61,9 +57,6 @@ public abstract class SqlJoin extends SqlNodeBase
             nodeScope = new Scope2(left.getNodeScope(), right.getNodeScope()) ;
         }
     } 
-    
-    public SqlNode   getLeft()   { return left ; }
-    public SqlNode   getRight()  { return right ; }
     
     public JoinType  getJoinType() { return joinType ; }
     

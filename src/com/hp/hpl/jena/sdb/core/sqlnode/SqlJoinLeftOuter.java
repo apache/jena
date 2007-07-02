@@ -15,7 +15,7 @@ public class SqlJoinLeftOuter extends SqlJoin
     { super(JoinType.LEFT, left, right) ; }
     
     public SqlJoinLeftOuter(SqlNode left, SqlNode right, String alias)
-    { super(JoinType.LEFT, left, right, alias) ; }
+    { super(alias, JoinType.LEFT, left, right) ; }
     
     @Override 
     public boolean   isLeftJoin()        { return true ; }

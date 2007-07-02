@@ -36,6 +36,8 @@ public class SDBRequest extends StoreHolder
     
     // See TransformSDB
     public boolean LeftJoinTranslation = true ;
+    public boolean LimitOffsetTranslation = false ;
+    
     private Context context ;
 
     public SDBRequest(Store store, Query query, Context context)

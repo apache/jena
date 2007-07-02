@@ -6,28 +6,22 @@
 
 package com.hp.hpl.jena.sdb.core.sqlnode;
 
-public class SqlNodeVisitorBase implements SqlNodeVisitor
+
+public abstract class SqlNodeBase2 extends SqlNodeBase 
 {
-    public void visit(SqlProject sqlProject)
-    {}
+    private SqlNode left ;
+    private SqlNode right ;
 
-    public void visit(SqlRestrict sqlRestrict)
-    {}
-
-    public void visit(SqlTable sqlTable)
-    {}
-
-    public void visit(SqlJoinInner sqlJoin)
-    {}
-
-    public void visit(SqlJoinLeftOuter sqlJoin)
-    {}
-
-    public void visit(SqlCoalesce sqlCoalesce)
-    {}
-
-    public void visit(SqlSlice sqlSlice)
-    {}
+    protected SqlNodeBase2(String aliasName, SqlNode left, SqlNode right)
+    { 
+        super(aliasName) ; 
+        this.left = left ;
+        this.right = right ;
+    }
+        
+    public SqlNode   getLeft()   { return left ; }
+    public SqlNode   getRight()  { return right ; }
+    
 }
 
 /*

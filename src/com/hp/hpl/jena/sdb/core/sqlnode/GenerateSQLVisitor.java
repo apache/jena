@@ -14,6 +14,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.query.ARQ;
+import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.sdb.SDB;
 import com.hp.hpl.jena.sdb.core.Annotations;
 import com.hp.hpl.jena.sdb.core.JoinType;
@@ -355,6 +356,19 @@ public class GenerateSQLVisitor implements SqlNodeVisitor
         join.visit(this) ;
         out.ensureStartOfLine() ;
         // Alias and annotations handled by outputNode
+    }
+
+    public void visit(SqlSlice sqlSlice)
+    {
+        //String str = String.format("(%d, %d)", sqlNode.getStart(), sqlNode.getLength()) ;
+        SqlNode sqlNode = sqlSlice.getSubNode() ;
+        sqlNode = GenerateSQL.ensureProject(sqlNode) ;
+        sqlNode.visit(this) ;
+        out.ensureStartOfLine() ;
+        if ( sqlSlice.getStart() != Query.NOLIMIT )
+            out.println("LIMIT "+sqlSlice.getStart()) ;
+        if ( sqlSlice.getLength() != Query.NOLIMIT )
+            out.println("OFFSET "+sqlSlice.getLength()) ;
     }
 
     protected void visitJoin(SqlJoin join) { visitJoin(join, join.getJoinType().sqlOperator()) ; }

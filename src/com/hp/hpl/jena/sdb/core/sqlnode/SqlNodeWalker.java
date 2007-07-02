@@ -23,42 +23,42 @@ public class SqlNodeWalker
         public SqlNodeVisitor visitor ;
         private Walker(SqlNodeVisitor visitor) { this.visitor = visitor ; }
         
-        public void visit(SqlProject sqlNode)
-        {
-            sqlNode.visit(visitor) ;
-            sqlNode.getSubNode().visit(this) ;
-        }
-    
-        public void visit(SqlRestrict sqlNode)
+        private void visit1(SqlNodeBase1 sqlNode)
         {
             sqlNode.visit(visitor) ;
             sqlNode.getSubNode().visit(this) ;
         }
         
-        public void visit(SqlTable sqlNode)
-        {
-            sqlNode.visit(visitor) ;
-        }
-    
-        public void visit(SqlJoinInner sqlNode)
-        {
-            sqlNode.visit(visitor) ;
-            sqlNode.getLeft().visit(this) ;
-            sqlNode.getRight().visit(this) ;
-        }
-    
-        public void visit(SqlJoinLeftOuter sqlNode)
+        private void visit2(SqlNodeBase2 sqlNode)
         {
             sqlNode.visit(visitor) ;
             sqlNode.getLeft().visit(this) ;
             sqlNode.getRight().visit(this) ;
         }
 
+        public void visit(SqlProject sqlNode)
+        { visit1(sqlNode) ; }
+    
+        public void visit(SqlRestrict sqlNode)
+        { visit1(sqlNode) ; }
+        
+        public void visit(SqlTable sqlNode)
+        { sqlNode.visit(visitor) ; }
+        
+        public void visit(SqlJoinInner sqlNode)
+        { visit2(sqlNode) ; }
+    
+        public void visit(SqlJoinLeftOuter sqlNode)
+        { visit2(sqlNode) ; }
+
         public void visit(SqlCoalesce sqlNode)
         {
             sqlNode.visit(visitor) ;
             sqlNode.getJoinNode().visit(this) ;
         }
+
+        public void visit(SqlSlice sqlNode)
+        { visit1(sqlNode) ; }
     }
 }
 

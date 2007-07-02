@@ -143,6 +143,19 @@ public class SqlNodeTextVisitor implements SqlNodeVisitor
         finish() ;
     }
 
+    public void visit(SqlSlice sqlNode)
+    {
+        String str = String.format("(%d, %d)", sqlNode.getStart(), sqlNode.getLength()) ;
+        
+        start(sqlNode, "Slice "+str, null) ;
+        out.incIndent() ;
+        sqlNode.getSubNode().visit(this) ;
+        out.decIndent() ;
+        finish() ;
+    }
+
+
+    
     int depth = 0 ;
     
     private void visitJoin(SqlJoin sqlJoin)

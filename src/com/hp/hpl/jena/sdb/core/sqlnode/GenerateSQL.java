@@ -18,11 +18,8 @@ public class GenerateSQL implements SQLGenerator
     {
         IndentedLineBuffer buff = new IndentedLineBuffer() ;
         SqlNodeVisitor v = makeVisitor(buff) ;
-
         // Top must be a project to cause the SELECT to be written
-        if ( ! sqlNode.isProject() )
-            sqlNode = SqlProject.project(sqlNode) ;
-
+        sqlNode = ensureProject(sqlNode) ;
         sqlNode.visit(v) ;
         return buff.asString() ;
     }
@@ -30,6 +27,13 @@ public class GenerateSQL implements SQLGenerator
     protected SqlNodeVisitor makeVisitor(IndentedLineBuffer buff)
     {
         return new GenerateSQLVisitor(buff.getIndentedWriter()) ;
+    }
+    
+    public static SqlNode ensureProject(SqlNode sqlNode)
+    {
+        if ( ! sqlNode.isProject() )
+            sqlNode = SqlProject.project(sqlNode) ;
+        return sqlNode ;
     }
 }
 

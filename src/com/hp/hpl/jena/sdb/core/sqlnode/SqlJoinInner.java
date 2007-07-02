@@ -16,7 +16,7 @@ public class SqlJoinInner extends SqlJoin
     
     public SqlJoinInner(SqlNode left, SqlNode right, String alias)
     {
-        super(JoinType.INNER, left, right, alias) ;
+        super(alias, JoinType.INNER, left, right) ;
     }
     
     @Override 

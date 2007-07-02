@@ -1,37 +1,36 @@
 /*
- * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
 package com.hp.hpl.jena.sdb.core.sqlnode;
 
-public class SqlNodeVisitorBase implements SqlNodeVisitor
+
+public class SqlSlice extends SqlNodeBase1
 {
-    public void visit(SqlProject sqlProject)
-    {}
+    private long start ;
+    private long length ;
+    
+    public SqlSlice(SqlNode subOp, long start, long length)
+    {
+        super(null, subOp) ;
+        this.start = start ;
+        this.length = length ;
+    }
+    
+    public long getLength()         { return length ; }
+    public long getStart()          { return start ; }
 
-    public void visit(SqlRestrict sqlRestrict)
-    {}
-
-    public void visit(SqlTable sqlTable)
-    {}
-
-    public void visit(SqlJoinInner sqlJoin)
-    {}
-
-    public void visit(SqlJoinLeftOuter sqlJoin)
-    {}
-
-    public void visit(SqlCoalesce sqlCoalesce)
-    {}
-
-    public void visit(SqlSlice sqlSlice)
-    {}
+//    @Override
+//    public boolean isModifier()     { return true ; }
+    
+    public void visit(SqlNodeVisitor visitor)
+    { visitor.visit(this) ; }
 }
 
 /*
- * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

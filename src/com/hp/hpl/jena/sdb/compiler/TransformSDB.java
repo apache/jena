@@ -20,6 +20,7 @@ import com.hp.hpl.jena.sdb.core.AliasesSql;
 import com.hp.hpl.jena.sdb.core.SDBRequest;
 import com.hp.hpl.jena.sdb.core.ScopeEntry;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
+import com.hp.hpl.jena.sdb.core.sqlnode.SqlSlice;
 
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.TransformCopy;
@@ -28,6 +29,7 @@ import com.hp.hpl.jena.sparql.algebra.op.OpFilter;
 import com.hp.hpl.jena.sparql.algebra.op.OpJoin;
 import com.hp.hpl.jena.sparql.algebra.op.OpLeftJoin;
 import com.hp.hpl.jena.sparql.algebra.op.OpQuadPattern;
+import com.hp.hpl.jena.sparql.algebra.op.OpSlice;
 import com.hp.hpl.jena.sparql.algebra.op.OpTable;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.expr.Expr;
@@ -130,6 +132,20 @@ public class TransformSDB extends TransformCopy
             log.fatal("OpTable : Not join identity") ;
         //return new OpSQL(null, opUnit, request) ;
         return super.transform(opTable) ;
+    }
+    
+    @Override
+    public Op transform(OpSlice opSlice, Op subOp)
+    {
+        if ( ! request.LimitOffsetTranslation )
+            return super.transform(opSlice, subOp) ;
+        
+        if ( ! QC.isOpSQL(subOp) )
+            return super.transform(opSlice, subOp) ; 
+        
+        SqlNode sqlSubOp = ((OpSQL)subOp).getSqlNode() ;
+        SqlNode sqlSlice = new SqlSlice(sqlSubOp, opSlice.getStart(), opSlice.getLength()) ;
+        return new OpSQL(sqlSlice, opSlice, request) ;
     }
     
     private boolean translateConstraints = false ;

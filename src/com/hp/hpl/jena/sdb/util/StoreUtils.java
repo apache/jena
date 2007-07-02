@@ -9,6 +9,9 @@ package com.hp.hpl.jena.sdb.util;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.sdb.SDBFactory;
 import com.hp.hpl.jena.sdb.layout1.StoreSimpleHSQL;
+import com.hp.hpl.jena.sdb.layout1.StoreSimplePGSQL;
+import com.hp.hpl.jena.sdb.layout2.hash.StoreTriplesNodesHashPGSQL;
+import com.hp.hpl.jena.sdb.layout2.index.StoreTriplesNodesIndexPGSQL;
 import com.hp.hpl.jena.sdb.store.Store;
 import com.hp.hpl.jena.sdb.store.StoreBaseHSQL;
 import com.hp.hpl.jena.util.FileManager;
@@ -22,6 +25,14 @@ public class StoreUtils
         return false ;
     }
     
+    public static boolean isPostgreSQL(Store store)
+    { 
+        if ( store instanceof StoreTriplesNodesIndexPGSQL ) return true ;
+        if ( store instanceof StoreTriplesNodesHashPGSQL ) return true ;
+        if ( store instanceof StoreSimplePGSQL ) return true ;
+        return false ;
+    }
+
     public static void load(Store store, String filename)
     {
         Model model = SDBFactory.connectDefaultModel(store) ;
