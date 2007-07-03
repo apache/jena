@@ -40,7 +40,7 @@ public class RunSDB
 //        SDBConnection.logSQLExceptions = true ;
 //        SDBConnection.logSQLStatements = true ;
 //        
-        sdb.sdbprint.main("--sdb=sdb.ttl",  "--query=Q.rq") ;
+        sdb.sdbconfig.main("--sdb=sdb.ttl",  "-log=all", "--create") ;
         System.exit(0) ;
         
         //SDBConnection.logSQLQueries = true ;

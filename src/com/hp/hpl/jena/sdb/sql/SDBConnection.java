@@ -251,7 +251,7 @@ public class SDBConnection
         this.label = label ;
     }
     
-    static Log sqlLog = LogFactory.getLog("SQL") ; 
+    static Log sqlLog = log ; // LogFactory.getLog("SQL") ; // Remember to turn on in log4j.properties.
     
     private void exception(String who, SQLException ex, String sqlString)
     {
@@ -264,15 +264,12 @@ public class SDBConnection
         if ( this.loggingSQLExceptions() )
             sqlLog.warn(who+": SQLException\n"+ex.getMessage()) ;
     }
-
-
     
     private void writeLog(String who, String sqlString)
     {
         if ( sqlLog.isInfoEnabled() )
             sqlLog.info(who+"\n\n"+sqlString+"\n") ;
     }
-
 }
 
 /*

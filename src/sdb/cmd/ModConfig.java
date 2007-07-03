@@ -27,9 +27,9 @@ public class ModConfig extends ModBase
     public void registerWith(CmdGeneral cmdLine)
     {
         cmdLine.add(argDeclCreate,
-                    "--create", "Format a database - destroys any existing data - add indexes") ;
+                    "--create", "Format a database and add indexes") ;
         cmdLine.add(argDeclFormat,
-                    "--format", "Format a database - destroys any existing data - no indexes") ;
+                    "--format", "Format a database (no indexes)") ;
         cmdLine.add(argDeclDropIndexes,
                     "--drop", "Drop indexes") ;
         cmdLine.add(argDeclIndexes,
