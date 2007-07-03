@@ -21,24 +21,16 @@ public class ModLogSQL extends ModBase
     // Logging.
     // query, sql
     protected final ArgDecl argDeclSQL          = new ArgDecl(true, "log") ;
-    protected final ArgDecl argDeclSQLquery     = new ArgDecl(false, "logQuery", "logquery") ;
-    protected final ArgDecl argDeclSQLall       = new ArgDecl(false, "logsql") ;
 
     public void registerWith(CmdGeneral cmdLine)
     {
         cmdLine.getUsage().startCategory("DB logging") ;
-        cmdLine.add(argDeclSQL,         "--log=", "SQL logging [none, query, exceptions, statement]") ;
-        cmdLine.add(argDeclSQLquery,    "--logQuery", "SQL query statements") ;
-        cmdLine.add(argDeclSQLall,      "--logsql", "Log all SQL statements") ;
+        cmdLine.add(argDeclSQL,         "--log=", "SQL logging [none, all, query, exceptions, statement]") ;
         
     }
 
     public void processArgs(CmdArgModule cmdLine)
     {
-        if ( cmdLine.contains(argDeclSQLquery) )
-            SDBConnection.logSQLQueries = true ;
-        if ( cmdLine.contains(argDeclSQLall) )
-            SDBConnection.logSQLStatements = true ;
         @SuppressWarnings("unchecked")
         List<String> vals = cmdLine.getValues(argDeclSQL) ;
         for ( String v : vals )

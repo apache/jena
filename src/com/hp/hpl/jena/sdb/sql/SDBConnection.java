@@ -18,6 +18,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.graph.TransactionHandler;
+
+import com.hp.hpl.jena.sdb.core.Generator;
+import com.hp.hpl.jena.sdb.core.Gensym;
 import com.hp.hpl.jena.sdb.graph.TransactionHandlerSDB;
 import com.hp.hpl.jena.shared.Command;
 
@@ -30,12 +33,14 @@ import com.hp.hpl.jena.shared.Command;
 public class SDBConnection
 {
     static private Log log = LogFactory.getLog(SDBConnection.class) ;
+    static private Generator gen = Gensym.create("connection-") ;
+
     private Connection sqlConnection = null ;
     boolean inTransaction = false ;
     TransactionHandler transactionHandler = null ;
-    String label = "<unset>" ;
+    String label = gen.next() ;
     
-    // TODO (here or TransactionHandler) counting transactions.
+    // ??(here or TransactionHandler) counting transactions.
     //   record transaction state
     //   start transation on 0 -> 1
     //   commit transaction on 1 -> 0
@@ -80,7 +85,7 @@ public class SDBConnection
     private ResultSet execQuery(String sqlString, boolean silent) throws SQLException
     {
         if ( loggingSQLStatements() || loggingSQLQueries() )
-            log.info("execQuery\n\n"+sqlString+"\n") ;
+            writeLog("execQuery", sqlString) ;
         
         Connection conn = getSqlConnection() ;
 
@@ -113,7 +118,7 @@ public class SDBConnection
     public int execUpdate(String sqlString) throws SQLException
     {
         if ( loggingSQLStatements() )
-            log.info("execUpdate\n\n"+sqlString+"\n") ;
+            writeLog("execUpdate", sqlString) ;
         
         Connection conn = getSqlConnection() ;
         try {
@@ -132,7 +137,7 @@ public class SDBConnection
     public ResultSet exec(String sqlString) throws SQLException
     {
         if ( loggingSQLStatements() )
-            log.info("exec\n\n"+sqlString+"\n") ;
+            writeLog("exec", sqlString) ;
         
         Connection conn = getSqlConnection() ;
         
@@ -160,7 +165,7 @@ public class SDBConnection
     public ResultSet execSilent(String sqlString)
     {
         if ( loggingSQLStatements() )
-            log.info("execSilent\n\n"+sqlString+"\n") ;
+            writeLog("execSilent", sqlString) ;
         
         Connection conn = getSqlConnection() ;
         
@@ -175,18 +180,6 @@ public class SDBConnection
         {  return null ; }
     }
     
-    private void exception(String who, SQLException ex, String sqlString)
-    {
-        if ( this.loggingSQLExceptions() )
-            log.warn(who+": SQLException\n"+ex.getMessage()+"\n"+sqlString) ;
-    }
-
-    private void exception(String who, SQLException ex)
-    {
-        if ( this.loggingSQLExceptions() )
-            log.warn(who+": SQLException\n"+ex.getMessage()) ;
-    }
-
     /** Get the names of the application tables */
     public List<String> getTableNames()
     {
@@ -256,6 +249,28 @@ public class SDBConnection
     public void setLabel(String label)
     {
         this.label = label ;
+    }
+    
+    static Log sqlLog = LogFactory.getLog("SQL") ; 
+    
+    private void exception(String who, SQLException ex, String sqlString)
+    {
+        if ( this.loggingSQLExceptions() )
+            sqlLog.warn(who+": SQLException\n"+ex.getMessage()+"\n"+sqlString+"\n") ;
+    }
+
+    private void exception(String who, SQLException ex)
+    {
+        if ( this.loggingSQLExceptions() )
+            sqlLog.warn(who+": SQLException\n"+ex.getMessage()) ;
+    }
+
+
+    
+    private void writeLog(String who, String sqlString)
+    {
+        if ( sqlLog.isInfoEnabled() )
+            sqlLog.info(who+"\n\n"+sqlString+"\n") ;
     }
 
 }
