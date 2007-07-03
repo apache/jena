@@ -31,14 +31,15 @@ public class FmtLayout2HashPGSQL extends FmtLayout2
     @Override
     protected void formatTableTriples()
     {
-        dropTable(TableDescTriples.name()) ;
+        String tname = TableDescTriples.name() ;
+        dropTable(tname) ;
         try { 
             connection().exec(sqlStr(
-                                 "CREATE TABLE "+TableDescTriples.name()+" (",
+                                 "CREATE TABLE "+tname+" (",
                                  "    s BIGINT NOT NULL,",
                                  "    p BIGINT NOT NULL,",
                                  "    o BIGINT NOT NULL,",
-                                 "    PRIMARY KEY (s, p, o)",
+                                 "    CONSTRAINT "+tname+"_PK PRIMARY KEY (s, p, o)",
                                  ")"                
                     )) ;
         } catch (SQLException ex)
@@ -48,15 +49,16 @@ public class FmtLayout2HashPGSQL extends FmtLayout2
     @Override
     protected void formatTableQuads()
     {
-        dropTable(TableDescQuads.name()) ;
+        String tname = TableDescQuads.name() ;
+        dropTable(tname) ;
         try { 
             connection().exec(sqlStr(
-                                 "CREATE TABLE "+TableDescQuads.name()+" (",
+                                 "CREATE TABLE "+tname+" (",
                                  "    g BIGINT NOT NULL,",
                                  "    s BIGINT NOT NULL,",
                                  "    p BIGINT NOT NULL,",
                                  "    o BIGINT NOT NULL,",
-                                 "    PRIMARY KEY (g, s, p, o)",
+                                 "    CONSTRAINT "+tname+"_PK PRIMARY KEY (g, s, p, o)",
                                  ")"                
                     )) ;
         } catch (SQLException ex)
@@ -76,15 +78,16 @@ public class FmtLayout2HashPGSQL extends FmtLayout2
     @Override
     protected void formatTableNodes()
     {
-        dropTable(TableDescNodes.name()) ;
+        String tname = TableDescNodes.name() ;
+        dropTable(tname) ;
         try { 
-            connection().exec(sqlStr ("CREATE TABLE "+TableDescNodes.name()+" (",
+            connection().exec(sqlStr ("CREATE TABLE "+tname+" (",
                                        "   hash BIGINT NOT NULL,",
                                        "   lex TEXT NOT NULL,",
-                                       "   lang varchar NOT NULL default '',",
+                                       "   lang varchar NOT NULL default E'',",
                                        "   datatype varchar("+TableDescNodes.DatatypeUriLength+") NOT NULL default '',",
-                                       "   type integer NOT NULL default '0',",
-                                       "   PRIMARY KEY (hash)",
+                                       "   type integer NOT NULL default E'0',",
+                                       "   CONSTRAINT "+tname+"_PK PRIMARY KEY (hash)",
                                        ")"
                     )) ;
             connection().exec("CREATE UNIQUE INDEX Hash ON " + TableDescNodes.name() + " (hash)");
@@ -97,13 +100,14 @@ public class FmtLayout2HashPGSQL extends FmtLayout2
     @Override
     protected void formatTablePrefixes()
     {
-        dropTable(TablePrefixes.name()) ;
+        String tname = TablePrefixes.name() ;
+        dropTable(tname) ;
         try { 
             connection().exec(sqlStr(
-                                      "CREATE TABLE "+TablePrefixes.name()+" (",
+                                      "CREATE TABLE "+tname+" (",
                                       "    prefix VARCHAR("+TablePrefixes.prefixColWidth+") NOT NULL ,",
                                       "    uri VARCHAR("+TablePrefixes.uriColWidth+") NOT NULL ,", 
-                                      "    PRIMARY KEY  (prefix)",
+                                      "    CONSTRAINT "+tname+"_PK PRIMARY KEY  (prefix)",
                                       ")"            
                     )) ;
         } catch (SQLException ex)

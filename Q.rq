@@ -2,5 +2,6 @@ PREFIX :    <http://example/>
 
 SELECT *
 { 
-    GRAPH ?g { ?x :p ?z . ?x :q ?v }
+     ?x :p ?z 
 }
+LIMIT 2

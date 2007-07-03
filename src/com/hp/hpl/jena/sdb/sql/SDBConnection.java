@@ -160,7 +160,7 @@ public class SDBConnection
     public ResultSet execSilent(String sqlString)
     {
         if ( loggingSQLStatements() )
-            log.info("execNoEx\n\n"+sqlString+"\n") ;
+            log.info("execSilent\n\n"+sqlString+"\n") ;
         
         Connection conn = getSqlConnection() ;
         

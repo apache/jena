@@ -15,6 +15,11 @@ SDB ToDo list (and general notes)
 + Prefixes
    Per graph, not global
 
++ Per store
+  SQLUtils and quoting.
+  Id generation
+   
+
 + Tidy DB formatting
     per DB list of column generators (getVarchar, getText etc).
 

@@ -2,7 +2,11 @@
 ## @prefix rdfs:	    <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix : <http://example/> .
 
-:x :p 'Double " quote' .
+:x :p 1 .
+:x :p 2 .
+:x :p 3 .
+:x :p 4 .
+:x :p 5 .
 
 
 ## :C1 rdfs:subClassOf :C2 .

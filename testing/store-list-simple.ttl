@@ -24,7 +24,7 @@ _:x rdf:type sdb:StoreList ;
 ## 
 ##       [ rdfs:label "MS-SQL-e/Simple" ;
 ##         sdb:description <StoreDescSimple/ms-sql-e-layout1.ttl> ]
-
-      [ rdfs:label "HSQLDB/Simple" ;
-        sdb:description <StoreDescSimple/hsqldb-layout1.ttl> ]
+## 
+##       [ rdfs:label "HSQLDB/Simple" ;
+##         sdb:description <StoreDescSimple/hsqldb-layout1.ttl> ]
     ) .
