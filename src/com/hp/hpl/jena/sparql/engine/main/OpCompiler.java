@@ -15,12 +15,15 @@ import com.hp.hpl.jena.sparql.ARQNotImplemented;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.op.*;
 import com.hp.hpl.jena.sparql.core.BasicPattern;
-import com.hp.hpl.jena.sparql.core.Quad;
-import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.ExecUtils;
+import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.iterator.*;
-import com.hp.hpl.jena.sparql.engine.main.iterator.*;
+import com.hp.hpl.jena.sparql.engine.main.iterator.QueryIterGraph;
+import com.hp.hpl.jena.sparql.engine.main.iterator.QueryIterJoin;
+import com.hp.hpl.jena.sparql.engine.main.iterator.QueryIterLeftJoin;
+import com.hp.hpl.jena.sparql.engine.main.iterator.QueryIterOptionalIndex;
+import com.hp.hpl.jena.sparql.engine.main.iterator.QueryIterUnion;
 import com.hp.hpl.jena.sparql.expr.Expr;
 import com.hp.hpl.jena.sparql.expr.ExprBuild;
 import com.hp.hpl.jena.sparql.expr.ExprList;
@@ -81,7 +84,7 @@ public class OpCompiler
     {
         if ( false )
         {
-            if ( quadPattern.getGraphNode().equals(Quad.defaultGraph) )
+            if ( quadPattern.isDefaultGraph() )
             {
                 // Easy case.
                 OpBGP opBGP = new OpBGP(quadPattern.getBasicPattern()) ;

@@ -83,20 +83,15 @@ public class FmtUtils
     public static String stringForQuad(Quad quad, PrefixMapping prefixMap)
     {
         StringBuffer buff = new StringBuffer() ;
-        if ( quad.isDefaultGraph() || quad.isDefaultUnionGraph() )
+        
+        if ( ! quad.isDefaultGraph() )
         {
             if ( quad.isDefaultUnionGraph() )
-            {
                 buff.append("*") ;
-                buff.append(" ") ;
-            }
-        }
-        else
-        {
-            buff.append(stringForNode(quad.getGraph(), prefixMap)) ;
+            else
+                buff.append(stringForNode(quad.getGraph(), prefixMap)) ;
             buff.append(" ") ;
         }
-
         buff.append(stringForNode(quad.getSubject(), prefixMap)) ;
         buff.append(" ") ;
         buff.append(stringForNode(quad.getPredicate(), prefixMap)) ;

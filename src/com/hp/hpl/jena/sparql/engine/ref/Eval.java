@@ -298,7 +298,7 @@ public class Eval
             { throw new ARQInternalErrorException("Not a URI or variable: "+opQuad.getGraphNode()) ;}
             Graph g = null ;
             
-            if ( opQuad.getGraphNode().equals(Quad.defaultGraph) )
+            if ( opQuad.isDefaultGraph() )
                 g = ds.getDefaultGraph() ;
             else
                 g = ds.getGraph(opQuad.getGraphNode()) ;

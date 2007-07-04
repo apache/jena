@@ -11,8 +11,12 @@ import com.hp.hpl.jena.graph.Triple;
 
 public class Quad
 {
-    public static Node defaultGraph      =  Node.createURI("urn:x-sdb:defaultgraph") ;
-    public static Node defaultUnionGraph =  Node.createURI("urn:x-sdb:uniongraph") ;
+    public static Node defaultGraph         =  Node.createURI("urn:x-arq:DefaultGraph") ;
+    
+    // These are convenience constants for other systems to give special
+    // interpretation to these "named" graphs.  
+    public static Node defaultGraphName     =  Node.createURI("urn:x-arq:DefaultGraphIRI") ;
+    public static Node unionDefaultGraph    =  Node.createURI("urn:x-arq:UnionDefaultGraph") ;
 
     private final Node graph, subject, predicate, object ;
     
@@ -39,8 +43,12 @@ public class Quad
     public Node getObject()     { return object ; }
     public Triple getTriple()   { return new Triple(subject, predicate, object) ; }
     
+    // See also OpQuadPattern
+    public static boolean isDefaultGraphNode(Node node) { return node.equals(defaultGraph) ; }
+    
     public boolean isDefaultGraph()         { return graph.equals(defaultGraph) ; }
-    public boolean isDefaultUnionGraph()    { return graph.equals(defaultUnionGraph) ; }
+    public boolean isDefaultGraphIRI()      { return graph.equals(defaultGraphName) ; }
+    public boolean isDefaultUnionGraph()    { return graph.equals(unionDefaultGraph) ; }
     
     public int hashCode() 
     { 
