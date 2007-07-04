@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
   [See end of file]ispo
-  $Id: GraphTestBase.java,v 1.33 2007-01-02 11:50:07 andy_seaborne Exp $
+  $Id: GraphTestBase.java,v 1.34 2007-07-04 15:21:57 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -31,7 +31,7 @@ public class GraphTestBase extends JenaTestBase
         <code>Node.create(x)</code>, which see.
     */
     public static Node node( String x )
-        { return Node.create( x ); }
+        { return NodeCreateUtils.create( x ); }
         
     /**
         Answer a set containing the elements from the iterator <code>it</code>;

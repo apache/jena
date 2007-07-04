@@ -1,15 +1,16 @@
 /*
     (c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
     All rights reserved - see end of file.
-    $Id: TestQueryNode.java,v 1.8 2007-01-02 11:51:44 andy_seaborne Exp $
+    $Id: TestQueryNode.java,v 1.9 2007-07-04 15:21:55 chris-dollin Exp $
 */
 package com.hp.hpl.jena.graph.query.test;
 
 import java.util.HashSet;
 import java.util.Set;
 
-import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.query.*;
+import com.hp.hpl.jena.graph.test.NodeCreateUtils;
 
 import junit.framework.TestSuite;
 
@@ -28,7 +29,7 @@ public class TestQueryNode extends QueryTestBase
     
     public void testFixed()
         { 
-        Node fixed = Node.create( "fixed" );
+        Node fixed = NodeCreateUtils.create( "fixed" );
         QueryNode n = new QueryNode.Fixed( fixed );
         assertSame( fixed, n.node );
         assertEquals( QueryNode.NO_INDEX, n.index );
@@ -39,7 +40,7 @@ public class TestQueryNode extends QueryTestBase
     public void testBind()
         {
         final int index = 7;
-        Node bind = Node.create( "?bind" );
+        Node bind = NodeCreateUtils.create( "?bind" );
         QueryNode n = new QueryNode.Bind( bind, index );
         assertSame( bind, n.node );
         assertEquals( index, n.index );
@@ -56,13 +57,13 @@ public class TestQueryNode extends QueryTestBase
 
     protected void testBoundAt( final int index )
         {
-        Node bound = Node.create( "?bound" );
+        Node bound = NodeCreateUtils.create( "?bound" );
         QueryNode n = new QueryNode.Bound( bound, index );
         assertSame( bound, n.node );
         assertEquals( index, n.index );
         assertEquals( false, n.mustMatch() );
         Domain d = new Domain( index + 1 );
-        Node item = Node.create( "'anItem'" );
+        Node item = NodeCreateUtils.create( "'anItem'" );
         d.setElement( index, item );
         assertSame( item, n.finder( d ) );
         }
@@ -70,7 +71,7 @@ public class TestQueryNode extends QueryTestBase
     public void testJustBound()
         {
         final int index = 1;
-        Node just = Node.create( "?jBound" );
+        Node just = NodeCreateUtils.create( "?jBound" );
         QueryNode n = new QueryNode.JustBound( just, index );
         assertSame( just, n.node );
         assertEquals( index, n.index );
@@ -89,7 +90,7 @@ public class TestQueryNode extends QueryTestBase
 
     public void testClassifyFixed()
         {
-        Node fixed = Node.create( "someURI" );
+        Node fixed = NodeCreateUtils.create( "someURI" );
         QueryNode n = QueryNode.classify( F, null, null, fixed );
         assertInstanceOf( QueryNode.Fixed.class, n );
         assertEquals( QueryNode.NO_INDEX, n.index );
@@ -107,14 +108,14 @@ public class TestQueryNode extends QueryTestBase
     public void testClassifyFirstBind()
         {
         Mapping m = new Mapping( new Node[0] );
-        testClassifyBind( Node.create( "?bind" ), m, 0 );
+        testClassifyBind( NodeCreateUtils.create( "?bind" ), m, 0 );
         }    
     
     public void testClassifySecondBind()
         {
         Mapping m = new Mapping( new Node[0] );
-        m.newIndex( Node.create( "?other" ) );
-        testClassifyBind( Node.create( "?bind" ), m, 1 );
+        m.newIndex( NodeCreateUtils.create( "?other" ) );
+        testClassifyBind( NodeCreateUtils.create( "?bind" ), m, 1 );
         }
 
     protected void testClassifyBind( Node bind, Mapping m, int index )
@@ -135,7 +136,7 @@ public class TestQueryNode extends QueryTestBase
 
     protected void testClassifyBound( int index )
         {
-        Node bound = Node.create( "?bound" );
+        Node bound = NodeCreateUtils.create( "?bound" );
         Mapping m = getPreloadedMapping( index );
         m.newIndex( bound );
         QueryNode n = QueryNode.classify( F, m, new HashSet(), bound );
@@ -154,7 +155,7 @@ public class TestQueryNode extends QueryTestBase
 
     protected void testClassifyJustBound( int index )
         {
-        Node recent = Node.create( "?recent" );
+        Node recent = NodeCreateUtils.create( "?recent" );
         Mapping m = getPreloadedMapping( index );
         m.newIndex( recent );
         Set withRecent = new HashSet();
@@ -167,7 +168,7 @@ public class TestQueryNode extends QueryTestBase
     
     public void testBindingSetsJustBound()
         {
-        Node X = Node.create( "?X" );
+        Node X = NodeCreateUtils.create( "?X" );
         Mapping m = getPreloadedMapping( 0 );
         Set s = new HashSet();
         QueryNode n = QueryNode.classify( F, m, s, X );
@@ -176,7 +177,7 @@ public class TestQueryNode extends QueryTestBase
     
     public void testBindingSetsJustBoundTwice()
         {
-        Node X = Node.create( "?X" ), Y = Node.create( "?Y" );
+        Node X = NodeCreateUtils.create( "?X" ), Y = NodeCreateUtils.create( "?Y" );
         Mapping m = getPreloadedMapping( 0 );
         Set s = new HashSet();
         QueryNode.classify( F, m, s, X );
@@ -188,37 +189,37 @@ public class TestQueryNode extends QueryTestBase
     protected Mapping getPreloadedMapping( int count )
         {
         Mapping m = new Mapping( new Node[0] );
-        for (int i = 0; i < count; i += 1) m.newIndex( Node.create( "?bound-" + i ) );
+        for (int i = 0; i < count; i += 1) m.newIndex( NodeCreateUtils.create( "?bound-" + i ) );
         return m;
         }
     
     public void testMatchFixed()
         {
-        Node fixed = Node.create( "_anon" );
+        Node fixed = NodeCreateUtils.create( "_anon" );
         QueryNode n = new QueryNode.Fixed( fixed );
-        try { n.match( null, Node.create( "named" ) ); fail( "Fixed should not be matching" ); }
+        try { n.match( null, NodeCreateUtils.create( "named" ) ); fail( "Fixed should not be matching" ); }
         catch (QueryNode.MustNotMatchException e) { pass(); }
         }
     
     public void testMatchBound()
         {
-        Node bound = Node.create( "?xx" );
+        Node bound = NodeCreateUtils.create( "?xx" );
         QueryNode n = new QueryNode.Bound( bound, 1 );
-        try { n.match( null, Node.create( "_anon" ) ); fail( "Bound should not be matching" ); }
+        try { n.match( null, NodeCreateUtils.create( "_anon" ) ); fail( "Bound should not be matching" ); }
         catch (QueryNode.MustNotMatchException e) { pass(); }
         }
     
     public void testMatchAny()
         {
         QueryNode n = new QueryNode.Any();
-        try { n.match( null, Node.create( "17" ) ); fail( "Any should not be matching" ); }
+        try { n.match( null, NodeCreateUtils.create( "17" ) ); fail( "Any should not be matching" ); }
         catch (QueryNode.MustNotMatchException e) { pass(); }
         }
     
     public void testMatchBind()
         {
-        Node v = Node.create( "?v" );
-        Node x = Node.create( "elephant" ), y = Node.create( "hedgehog" );
+        Node v = NodeCreateUtils.create( "?v" );
+        Node x = NodeCreateUtils.create( "elephant" ), y = NodeCreateUtils.create( "hedgehog" );
         QueryNode n = new QueryNode.Bind( v, 1 );
         Domain d = new Domain(3);
         assertTrue( n.match( d, x ) );
@@ -229,8 +230,8 @@ public class TestQueryNode extends QueryTestBase
     
     public void testMatchJustBound()
         {
-        Node v = Node.create( "?who" );
-        Node A = Node.create( "A" ), B = Node.create( "B" );
+        Node v = NodeCreateUtils.create( "?who" );
+        Node A = NodeCreateUtils.create( "A" ), B = NodeCreateUtils.create( "B" );
         QueryNode n = new QueryNode.JustBound( v, 1 );
         Domain d = new Domain(3);
         d.setElement( n.index, A );

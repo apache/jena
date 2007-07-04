@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestNode.java,v 1.46 2007-03-07 15:54:30 chris-dollin Exp $
+  $Id: TestNode.java,v 1.47 2007-07-04 15:21:57 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -272,10 +272,10 @@ public class TestNode extends GraphTestBase
     */
     public void testCreateBadString()
         {
-        try { Node.create( null ); fail( "must catch null argument" ); }
+        try { NodeCreateUtils.create( null ); fail( "must catch null argument" ); }
         catch (NullPointerException e) {}
         catch (JenaException e) {}
-        try { Node.create( "" ); fail("must catch empty argument" ); }
+        try { NodeCreateUtils.create( "" ); fail("must catch empty argument" ); }
         catch (JenaException e) {}
         }
         
@@ -285,7 +285,7 @@ public class TestNode extends GraphTestBase
     public void testCreateAnon()
         {
         String idA = "_xxx", idB = "_yyy";
-        Node a = Node.create( idA ), b = Node.create( idB );
+        Node a = NodeCreateUtils.create( idA ), b = NodeCreateUtils.create( idB );
         assertTrue( "both must be bnodes", a.isBlank() && b.isBlank() );
         assertEquals( new AnonId( idA ), a.getBlankNodeId() );
         assertEquals( new AnonId( idB ), b.getBlankNodeId() );
@@ -294,19 +294,19 @@ public class TestNode extends GraphTestBase
     public void testCreateVariable()
         {
         String V = "wobbly";
-        Node v = Node.create( "?" + V );
+        Node v = NodeCreateUtils.create( "?" + V );
         assertTrue( "must be a variable", v.isVariable() );
         assertEquals( "name must be correct", V, v.getName() );
         }
         
     public void testCreateANY()
         {
-        assertEquals( "?? must denote ANY", Node.ANY, Node.create( "??" ) );
+        assertEquals( "?? must denote ANY", Node.ANY, NodeCreateUtils.create( "??" ) );
         }
     
     public void testCreatePlainLiteralSingleQuotes()
         {
-        Node n = Node.create( "'xxx'" );
+        Node n = NodeCreateUtils.create( "'xxx'" );
         assertEquals( "xxx", n.getLiteralLexicalForm() );
         assertEquals( "", n.getLiteralLanguage() );
         assertEquals( null, n.getLiteralDatatypeURI() );
@@ -314,7 +314,7 @@ public class TestNode extends GraphTestBase
     
     public void testCreatePlainLiteralDoubleQuotes()
         {
-        Node n = Node.create( "\"xxx\"" );
+        Node n = NodeCreateUtils.create( "\"xxx\"" );
         assertEquals( "xxx", n.getLiteralLexicalForm() );
         assertEquals( "", n.getLiteralLanguage() );
         assertEquals( null, n.getLiteralDatatypeURI() );
@@ -343,7 +343,7 @@ public class TestNode extends GraphTestBase
     
     protected void testStringConversion( String wanted, String template )
         {
-        Node n = Node.create( template );
+        Node n = NodeCreateUtils.create( template );
         assertEquals( wanted, n.getLiteralLexicalForm() );
         assertEquals( "", n.getLiteralLanguage() );
         assertEquals( null, n.getLiteralDatatypeURI() );
@@ -351,7 +351,7 @@ public class TestNode extends GraphTestBase
 
     public void testCreateLanguagedLiteralEN1()
         {
-        Node n = Node.create( "'chat'en-UK" );
+        Node n = NodeCreateUtils.create( "'chat'en-UK" );
         assertEquals( "chat", n.getLiteralLexicalForm() );
         assertEquals( "en-UK", n.getLiteralLanguage() );
         assertEquals( null, n.getLiteralDatatypeURI() );
@@ -359,15 +359,15 @@ public class TestNode extends GraphTestBase
 
     public void testCreateLanguagedLiteralEN2()
         {
-        Node n1 = Node.create( "'chat'en-UK" );
-        Node n2 = Node.create( "'chat'EN-UK" );
+        Node n1 = NodeCreateUtils.create( "'chat'en-UK" );
+        Node n2 = NodeCreateUtils.create( "'chat'EN-UK" );
         assertTrue( n1.sameValueAs(n2) ) ;
         assertFalse( n1.equals(n2) ) ;
         }    
     
     public void testCreateLanguagedLiteralXY()
         {
-        Node n = Node.create( "\"chat\"xy-AB" );
+        Node n = NodeCreateUtils.create( "\"chat\"xy-AB" );
         assertEquals( "chat", n.getLiteralLexicalForm() );
         assertEquals( "xy-AB", n.getLiteralLanguage() );
         assertEquals( null, n.getLiteralDatatypeURI() );
@@ -375,7 +375,7 @@ public class TestNode extends GraphTestBase
     
     public void testCreateTypedLiteralInteger()
         {
-        Node n = Node.create( "'42'xsd:integer" );
+        Node n = NodeCreateUtils.create( "'42'xsd:integer" );
         assertEquals( "42", n.getLiteralLexicalForm() );
         assertEquals( "", n.getLiteralLanguage() );
         assertEquals( expand( "xsd:integer" ), n.getLiteralDatatypeURI() );
@@ -383,7 +383,7 @@ public class TestNode extends GraphTestBase
     
     public void testCreateTypedLiteralBoolean()
         {
-        Node n = Node.create( "\"true\"xsd:boolean" );
+        Node n = NodeCreateUtils.create( "\"true\"xsd:boolean" );
         assertEquals( "true", n.getLiteralLexicalForm() );
         assertEquals( "", n.getLiteralLanguage() );
         assertEquals( expand( "xsd:boolean" ), n.getLiteralDatatypeURI() );
@@ -391,13 +391,13 @@ public class TestNode extends GraphTestBase
         
     public void testGetPlainLiteralLexicalForm()
         {
-        Node n = Node.create( "'stuff'" );
+        Node n = NodeCreateUtils.create( "'stuff'" );
         assertEquals( "stuff", n.getLiteralLexicalForm() );
         }
     
     public void testGetNumericLiteralLexicalForm()
         {
-        Node n = Node.create( "17" );
+        Node n = NodeCreateUtils.create( "17" );
         assertEquals( "17", n.getLiteralLexicalForm() );
         }
     
@@ -412,7 +412,7 @@ public class TestNode extends GraphTestBase
     
     private void testTypeExpandsPrefix( String type )
         {
-        Node n = Node.create( "'stuff'" + type );
+        Node n = NodeCreateUtils.create( "'stuff'" + type );
         String wanted = PrefixMapping.Extended.expandPrefix( type );
         assertEquals( wanted, n.getLiteralDatatypeURI() );
         }
@@ -433,7 +433,7 @@ public class TestNode extends GraphTestBase
         {
         String myNS = "eh:foo/bar#", suffix = "something";
         PrefixMapping mine = PrefixMapping.Factory.create().setNsPrefix( "mine", myNS );
-        Node n = Node.create( mine, "mine:" + suffix );
+        Node n = NodeCreateUtils.create( mine, "mine:" + suffix );
         assertEquals( myNS + suffix, n.getURI() );
         }
         
@@ -442,7 +442,7 @@ public class TestNode extends GraphTestBase
         
     private void testCreateURI( String in, String wanted )
         {
-        String got = Node.create( in ).getURI();
+        String got = NodeCreateUtils.create( in ).getURI();
         if (!wanted.equals( got ))
             {
             if (in.equals( wanted )) fail( "should preserve " + in );
@@ -453,7 +453,7 @@ public class TestNode extends GraphTestBase
     public void testCreatePrefixed()
         {
         PrefixMapping pm = PrefixMapping.Factory.create();
-        /* TODO Node n = */ Node.create( pm, "xyz" );
+        /* TODO Node n = */ NodeCreateUtils.create( pm, "xyz" );
         }
         
     public void testToStringWithPrefixMapping()
@@ -462,7 +462,7 @@ public class TestNode extends GraphTestBase
         String prefix = "spoo", ns = "abc:def/ghi#";
         pm.setNsPrefix( prefix, ns );
         String suffix = "bamboozle";
-        assertEquals( prefix + ":" + suffix, Node.create( ns + suffix ).toString( pm ) );    
+        assertEquals( prefix + ":" + suffix, NodeCreateUtils.create( ns + suffix ).toString( pm ) );    
         }
         
     public void testNodeHelp()
@@ -551,18 +551,18 @@ public class TestNode extends GraphTestBase
         
     public void testSimpleMatches()
         {
-        assertTrue( Node.create( "S").matches( Node.create( "S" ) ) );
-        assertFalse(  "", Node.create( "S").matches( Node.create( "T" ) ) );
-        assertFalse( "", Node.create( "S" ).matches( null ) );
-        assertTrue( Node.create( "_X").matches( Node.create( "_X" ) ) );
-        assertFalse( "", Node.create( "_X").matches( Node.create( "_Y" ) ) );
-        assertFalse( "", Node.create( "_X").matches( null ) );
-        assertTrue( Node.create( "10" ).matches( Node.create( "10" ) ) );
-        assertFalse( "", Node.create( "10" ).matches( Node.create( "11" ) ) );
-        assertFalse( "", Node.create( "10" ).matches( null ) );
-        assertTrue( Node.ANY.matches( Node.create( "S" ) ) );
-        assertTrue( Node.ANY.matches( Node.create( "_X" ) ) );
-        assertTrue( Node.ANY.matches( Node.create( "10" ) ) );
+        assertTrue( NodeCreateUtils.create( "S").matches( NodeCreateUtils.create( "S" ) ) );
+        assertFalse(  "", NodeCreateUtils.create( "S").matches( NodeCreateUtils.create( "T" ) ) );
+        assertFalse( "", NodeCreateUtils.create( "S" ).matches( null ) );
+        assertTrue( NodeCreateUtils.create( "_X").matches( NodeCreateUtils.create( "_X" ) ) );
+        assertFalse( "", NodeCreateUtils.create( "_X").matches( NodeCreateUtils.create( "_Y" ) ) );
+        assertFalse( "", NodeCreateUtils.create( "_X").matches( null ) );
+        assertTrue( NodeCreateUtils.create( "10" ).matches( NodeCreateUtils.create( "10" ) ) );
+        assertFalse( "", NodeCreateUtils.create( "10" ).matches( NodeCreateUtils.create( "11" ) ) );
+        assertFalse( "", NodeCreateUtils.create( "10" ).matches( null ) );
+        assertTrue( Node.ANY.matches( NodeCreateUtils.create( "S" ) ) );
+        assertTrue( Node.ANY.matches( NodeCreateUtils.create( "_X" ) ) );
+        assertTrue( Node.ANY.matches( NodeCreateUtils.create( "10" ) ) );
         assertFalse( "", Node.ANY.matches( null ) );
         }
         
@@ -593,24 +593,24 @@ public class TestNode extends GraphTestBase
     
     public void testGetIndexingValueURI()
         {
-        Node u = Node.create( "eh:/telephone" );
+        Node u = NodeCreateUtils.create( "eh:/telephone" );
         assertSame( u, u.getIndexingValue() );
         }
     
     public void testGetIndexingValueBlank()
         {
-        Node b = Node.create( "_television" );
+        Node b = NodeCreateUtils.create( "_television" );
         assertSame( b, b.getIndexingValue() );
         }
     
     public void testGetIndexingValuePlainString()
-        { testIndexingValueLiteral( Node.create( "'literally'" ) ); }
+        { testIndexingValueLiteral( NodeCreateUtils.create( "'literally'" ) ); }
     
     public void testGetIndexingValueLanguagedString()
-        { testIndexingValueLiteral( Node.create( "'chat'fr" ) ); }
+        { testIndexingValueLiteral( NodeCreateUtils.create( "'chat'fr" ) ); }
     
     public void testGetIndexingValueXSDString()
-        { testIndexingValueLiteral( Node.create( "'string'xsd:string" ) ); }
+        { testIndexingValueLiteral( NodeCreateUtils.create( "'string'xsd:string" ) ); }
     
     private void testIndexingValueLiteral( Node s )
         { assertEquals( s.getLiteral().getIndexingValue(), s.getIndexingValue() ); }
@@ -618,32 +618,32 @@ public class TestNode extends GraphTestBase
     // TODO should have more of these
     public void  testGetLiteralValuePlainString()
         {
-        Node s = Node.create( "'aString'" );
+        Node s = NodeCreateUtils.create( "'aString'" );
         assertSame( s.getLiteral().getValue(), s.getLiteralValue() );
         }
     
     public void testGetLiteralDatatypeNull()
         {
-        assertEquals( null, Node.create( "'plain'" ).getLiteralDatatype() );
+        assertEquals( null, NodeCreateUtils.create( "'plain'" ).getLiteralDatatype() );
         }
     
     public void testLiteralIsXML()
         {
-        assertFalse( Node.create( "'notXML'" ).getLiteralIsXML() );
-        assertFalse( Node.create( "17" ).getLiteralIsXML() );
-        assertFalse( Node.create( "'joke'xsd:Joke" ).getLiteralIsXML() );
+        assertFalse( NodeCreateUtils.create( "'notXML'" ).getLiteralIsXML() );
+        assertFalse( NodeCreateUtils.create( "17" ).getLiteralIsXML() );
+        assertFalse( NodeCreateUtils.create( "'joke'xsd:Joke" ).getLiteralIsXML() );
         assertTrue( Node.createLiteral( "lit", "lang", true ).getLiteralIsXML() );
         assertFalse( Node.createLiteral( "lit", "lang", false ).getLiteralIsXML() );
         }
    
     public void testConcrete()
         {
-        assertTrue( Node.create( "S" ).isConcrete() );
-        assertTrue( Node.create( "_P" ).isConcrete() );
-        assertTrue( Node.create( "11" ).isConcrete() );
-        assertTrue( Node.create( "'hello'" ).isConcrete() );
-        assertFalse( Node.create( "??" ).isConcrete() );
-        assertFalse( Node.create( "?x" ).isConcrete() );
+        assertTrue( NodeCreateUtils.create( "S" ).isConcrete() );
+        assertTrue( NodeCreateUtils.create( "_P" ).isConcrete() );
+        assertTrue( NodeCreateUtils.create( "11" ).isConcrete() );
+        assertTrue( NodeCreateUtils.create( "'hello'" ).isConcrete() );
+        assertFalse( NodeCreateUtils.create( "??" ).isConcrete() );
+        assertFalse( NodeCreateUtils.create( "?x" ).isConcrete() );
         }
 
     static String [] someURIs = new String [] 
@@ -664,7 +664,7 @@ public class TestNode extends GraphTestBase
             {
             String uri = someURIs[i];
             int split = Util.splitNamespace( uri );
-        	Node n = Node.create( uri );
+        	Node n = NodeCreateUtils.create( uri );
         	assertEquals( "check namespace", uri.substring( 0, split ), n.getNameSpace() );
             assertEquals( "check localname", uri.substring( split ), n.getLocalName() );
             }
@@ -687,7 +687,7 @@ public class TestNode extends GraphTestBase
 
 	protected void testHasURI( String uri ) 
         {
-		Node n = Node.create( uri );
+		Node n = NodeCreateUtils.create( uri );
 		assertTrue( uri, !n.isURI() || n.hasURI( uri ) );
 		assertFalse( uri, n.hasURI( uri + "x" ) );
         }

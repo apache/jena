@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestTriple.java,v 1.21 2007-01-02 11:50:08 andy_seaborne Exp $
+  $Id: TestTriple.java,v 1.22 2007-07-04 15:21:57 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -109,13 +109,13 @@ public class TestTriple extends GraphTestBase
     
     public void testTripleCreate()
         {
-        Node S = Node.create( "s" ), P = Node.create( "p" ), O = Node.create( "o" );
+        Node S = NodeCreateUtils.create( "s" ), P = NodeCreateUtils.create( "p" ), O = NodeCreateUtils.create( "o" );
         assertEquals( new Triple( S, P, O ), Triple.create( S, P, O ) );
         }
         
     public void testTripleCreateFromString()
         {
-        Node S = Node.create( "a" ), P = Node.create( "_P" ), O = Node.create( "?c" );
+        Node S = NodeCreateUtils.create( "a" ), P = NodeCreateUtils.create( "_P" ), O = NodeCreateUtils.create( "?c" );
         assertEquals( new Triple( S, P, O ), Triple.create( "a _P ?c") );
         }
         
@@ -125,8 +125,8 @@ public class TestTriple extends GraphTestBase
     */
     public void testTriplePrefixes()
         {
-        Node S = Node.create( "rdf:alpha" ), P = Node.create( "dc:creator" );
-        Node O = Node.create( "spoo:notmapped" );
+        Node S = NodeCreateUtils.create( "rdf:alpha" ), P = NodeCreateUtils.create( "dc:creator" );
+        Node O = NodeCreateUtils.create( "spoo:notmapped" );
         Triple t = Triple.create( "rdf:alpha dc:creator spoo:notmapped" );
         assertEquals( new Triple( S, P, O ), t );
         }

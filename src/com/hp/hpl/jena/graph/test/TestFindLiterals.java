@@ -2,9 +2,9 @@
  	(c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
 <<<<<<< TestFindLiterals.java
- 	$Id: TestFindLiterals.java,v 1.8 2007-01-02 11:50:08 andy_seaborne Exp $
+ 	$Id: TestFindLiterals.java,v 1.9 2007-07-04 15:21:56 chris-dollin Exp $
 =======
- 	$Id: TestFindLiterals.java,v 1.8 2007-01-02 11:50:08 andy_seaborne Exp $
+ 	$Id: TestFindLiterals.java,v 1.9 2007-07-04 15:21:56 chris-dollin Exp $
 >>>>>>> 1.4
 */
 
@@ -41,7 +41,7 @@ public class TestFindLiterals extends GraphTestBase
                 { 
                 Graph g = graphWith( graph );
                 int n = Integer.parseInt( size );
-                Node literal = Node.create( search );
+                Node literal = NodeCreateUtils.create( search );
             //
                 assertEquals( "graph has wrong size", n, g.size() );
                 Set got = iteratorToSet
@@ -88,8 +88,8 @@ public class TestFindLiterals extends GraphTestBase
     
     public void testFloatVsDouble()
         {
-        Node A = Node.create( "'1'xsd:float" );
-        Node B = Node.create( "'1'xsd:double" );
+        Node A = NodeCreateUtils.create( "'1'xsd:float" );
+        Node B = NodeCreateUtils.create( "'1'xsd:double" );
         assertFalse( A.equals( B ) );
         assertFalse( A.sameValueAs( B ) );
         assertFalse( B.sameValueAs( A ) );
@@ -104,16 +104,16 @@ public class TestFindLiterals extends GraphTestBase
         Node ai = Node.createLiteral( new LiteralLabel( new Integer(42) ) );
         Node al = Node.createLiteral( new LiteralLabel( new Long(42) ) );
         Graph g = graphWith( "" );
-        Node SB = Node.create( "SB" );
-        Node SS = Node.create( "SS" );
-        Node SI = Node.create( "SI" );
-        Node SL = Node.create( "SL" );
-        Node P = Node.create( "P" );
+        Node SB = NodeCreateUtils.create( "SB" );
+        Node SS = NodeCreateUtils.create( "SS" );
+        Node SI = NodeCreateUtils.create( "SI" );
+        Node SL = NodeCreateUtils.create( "SL" );
+        Node P = NodeCreateUtils.create( "P" );
         g.add( Triple.create( SB, P, ab ) );
         g.add( Triple.create( SS, P, as ) );
         g.add( Triple.create( SI, P, ai ) );
         g.add( Triple.create( SL, P, al ) );
-        assertEquals( 4, iteratorToSet( g.find( Node.ANY, P, Node.create( "42" ) ) ).size() );
+        assertEquals( 4, iteratorToSet( g.find( Node.ANY, P, NodeCreateUtils.create( "42" ) ) ).size() );
         }
     }
 

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestPackage.java,v 1.20 2007-01-02 11:50:23 andy_seaborne Exp $
+  $Id: TestPackage.java,v 1.21 2007-07-04 15:22:00 chris-dollin Exp $
 */
 /*
  * EnhancedTestSuite.java
@@ -86,7 +86,7 @@ public class TestPackage extends GraphTestBase  {
     */
     public void testEquals()
         {
-        EnhNode a = new EnhNode( Node.create( "eg:example" ), null );
+        EnhNode a = new EnhNode( NodeCreateUtils.create( "eg:example" ), null );
         assertEquals( a, a );
         }
         
@@ -400,7 +400,7 @@ public class TestPackage extends GraphTestBase  {
          Graph g = Factory.createGraphMem();
          Personality ours = BuiltinPersonalities.model.copy().add( Example.class, Example.factory );
          EnhGraph eg = new EnhGraph( g, ours ); 
-         Node n = Node.create( "spoo:bar" );
+         Node n = NodeCreateUtils.create( "spoo:bar" );
          EnhNode eNode = new EnhNode( n, eg );
          eNode.viewAs( Example.class );
          try
@@ -420,7 +420,7 @@ public class TestPackage extends GraphTestBase  {
     public void testNullPointerTrap()
         {
         EnhGraph eg = new EnhGraph( Factory.createGraphMem(), BuiltinPersonalities.model );
-        Node n = Node.create( "eh:something" );
+        Node n = NodeCreateUtils.create( "eh:something" );
         EnhNode en = new EnhNode( n, eg );
         try 
             { 
@@ -438,7 +438,7 @@ public class TestPackage extends GraphTestBase  {
     public void testNullPointerTrapInCanSupport()
         {
         EnhGraph eg = new EnhGraph( Factory.createGraphMem(), BuiltinPersonalities.model );
-        Node n = Node.create( "eh:something" );
+        Node n = NodeCreateUtils.create( "eh:something" );
         EnhNode en = new EnhNode( n, eg );
         assertFalse( en.canAs( Integer.class ) );        
         }

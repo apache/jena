@@ -1,15 +1,15 @@
 /*
   (c) Copyright 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestExpressions.java,v 1.13 2007-01-02 11:51:44 andy_seaborne Exp $
+  $Id: TestExpressions.java,v 1.14 2007-07-04 15:21:55 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query.test;
 
 import junit.framework.*;
 
-import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.query.*;
+import com.hp.hpl.jena.graph.test.NodeCreateUtils;
 
 /**
  	@author hedgehog
@@ -233,7 +233,7 @@ public class TestExpressions extends QueryTestBase
         { return e.prepare( emptyMapping ).evalBool( noIVs ); }
     
     protected Expression litString( String s )
-        { return lit( Node.create( s ) ); }  
+        { return lit( NodeCreateUtils.create( s ) ); }  
 
     protected Expression lit( Object x )
         { return new Expression.Fixed( x ); }

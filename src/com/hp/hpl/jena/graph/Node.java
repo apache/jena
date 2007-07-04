@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Node.java,v 1.56 2007-01-02 11:49:18 andy_seaborne Exp $
+  $Id: Node.java,v 1.57 2007-07-04 15:22:02 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -9,8 +9,8 @@ package com.hp.hpl.jena.graph;
 import com.hp.hpl.jena.rdf.model.AnonId;
 
 import com.hp.hpl.jena.datatypes.*;
-import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.graph.impl.*;
+import com.hp.hpl.jena.graph.test.NodeCreateUtils;
 import com.hp.hpl.jena.shared.*;
 
 /**
@@ -52,9 +52,10 @@ public abstract class Node {
         </ul>
         @param x the string describing the node
         @return a node of the appropriate type with the appropriate label
+     * @deprecated Use {@link NodeCreateUtils#create(String)} instead
     */
     public static Node create( String x )
-        { return create( PrefixMapping.Extended, x ); }
+        { return NodeCreateUtils.create( x ); }
         
     /**
         As for create(String), but the PrefixMapping used to translate URI strings
@@ -62,81 +63,13 @@ public abstract class Node {
         @param pm the PrefixMapping for translating pre:X strings
         @param x the string encoding the node to create
         @return a node with the appropriate type and label
+     * @deprecated Use {@link NodeCreateUtils#create(PrefixMapping,String)} instead
     */
     public static Node create( PrefixMapping pm, String x )
-        {
-        if (x.equals( "" ))
-            throw new JenaException( "Node.create does not accept an empty string as argument" );
-        char first = x.charAt( 0 );
-        if (first == '\'' || first == '\"')
-            return Node.createLiteral( newString( pm, first, x ) );
-        if (Character.isDigit( first )) 
-            return Node.createLiteral( x, "", XSDDatatype.XSDinteger );
-        if (first == '_')
-            return Node.createAnon( new AnonId( x ) );
-        if (x.equals( "??" ))
-            return Node.ANY;
-        if (first == '?')
-            return Node.createVariable( x.substring( 1 ) );
-        if (first == '&')
-            return Node.createURI( "q:" + x.substring( 1 ) );        
-        int colon = x.indexOf( ':' );
-        String d = pm.getNsPrefixURI( "" );
-        return colon < 0 
-            ? Node.createURI( (d == null ? "eh:/" : d) + x )
-            : Node.createURI( pm.expandPrefix( x ) )
-            ;
-        }
+        { return NodeCreateUtils.create( pm, x ); }
             
-    private static RDFDatatype getType( String s )
+    public static RDFDatatype getType( String s )
         { return TypeMapper.getInstance().getSafeTypeByName( s ); }
-    
-    private static LiteralLabel literal( PrefixMapping pm, String spelling, String langOrType )
-        {
-        String content = unEscape( spelling );
-        int colon = langOrType.indexOf( ':' );
-        return colon < 0 
-            ? new LiteralLabel( content, langOrType, false )
-            : LiteralLabel.createLiteralLabel( content, "", getType( pm.expandPrefix( langOrType ) ) )
-            ;
-        }
-    
-    private static String unEscape( String spelling )
-        {
-        if (spelling.indexOf( '\\' ) < 0) return spelling;
-        StringBuffer result = new StringBuffer( spelling.length() );
-        int start = 0;
-        while (true)
-            {
-            int b = spelling.indexOf( '\\', start );
-            if (b < 0) break;
-            result.append( spelling.substring( start, b ) );
-            result.append( unEscape( spelling.charAt( b + 1 ) ) );
-            start = b + 2;
-            }
-        result.append( spelling.substring( start ) );
-        return result.toString();
-        }
-    
-    private static char unEscape( char ch )
-        {
-        switch (ch)
-        	{
-            case '\\':
-            case '\"':
-            case '\'': return ch;
-            case 'n': return '\n';
-            case 's': return ' ';
-            case 't': return '\t';
-            default: return 'Z';
-        	}
-        }
-    
-    private static LiteralLabel newString( PrefixMapping pm, char quote, String nodeString )
-        {
-        int close = nodeString.lastIndexOf( quote );
-        return literal( pm, nodeString.substring( 1, close ), nodeString.substring( close + 1 ) );
-        }
     
     /** make a blank node with a fresh anon id */ 
     public static Node createAnon()

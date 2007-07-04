@@ -1,11 +1,12 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Triple.java,v 1.25 2007-01-02 11:49:18 andy_seaborne Exp $
+  $Id: Triple.java,v 1.26 2007-07-04 15:22:02 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
 
+import com.hp.hpl.jena.graph.test.NodeCreateUtils;
 import com.hp.hpl.jena.shared.*;
 import com.hp.hpl.jena.util.iterator.Filter;
 
@@ -168,9 +169,9 @@ public class Triple implements TripleMatch
     public static Triple create( PrefixMapping pm, String fact )
         {
         StringTokenizer st = new StringTokenizer( fact );
-        Node sub = Node.create( pm, st.nextToken() );
-        Node pred = Node.create( pm, st.nextToken() );
-        Node obj = Node.create( pm, st.nextToken() );
+        Node sub = NodeCreateUtils.create( pm, st.nextToken() );
+        Node pred = NodeCreateUtils.create( pm, st.nextToken() );
+        Node obj = NodeCreateUtils.create( pm, st.nextToken() );
         return Triple.create( sub, pred, obj );
         }
 

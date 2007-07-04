@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: AbstractTestGraph.java,v 1.75 2007-06-15 14:52:54 chris-dollin Exp $i
+  $Id: AbstractTestGraph.java,v 1.76 2007-07-04 15:21:57 chris-dollin Exp $i
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -56,7 +56,7 @@ public/* abstract */class AbstractTestGraph extends GraphTestBase
     public void testFindAndContains()
         {
         Graph g = getGraph();
-        Node r = Node.create( "r" ), s = Node.create( "s" ), p = Node.create( "P" );
+        Node r = NodeCreateUtils.create( "r" ), s = NodeCreateUtils.create( "s" ), p = NodeCreateUtils.create( "P" );
         g.add( Triple.create( r, p, s ) );
         assertTrue( g.contains( r, p, Node.ANY ) );
         assertEquals( 1, g.find( r, p, Node.ANY ).toList().size() );
@@ -362,14 +362,14 @@ public/* abstract */class AbstractTestGraph extends GraphTestBase
     protected void xSPOyXYZ( Reifier r )
         {
         xSPO( r );
-        r.reifyAs( Node.create( "y" ), Triple.create( "X Y Z" ) );       
+        r.reifyAs( NodeCreateUtils.create( "y" ), Triple.create( "X Y Z" ) );       
         }
 
     protected void aABC( Reifier r )
-        { r.reifyAs( Node.create( "a" ), Triple.create( "A B C" ) ); }
+        { r.reifyAs( NodeCreateUtils.create( "a" ), Triple.create( "A B C" ) ); }
         
     protected void xSPO( Reifier r )
-        { r.reifyAs( Node.create( "x" ), Triple.create( "S P O" ) ); }
+        { r.reifyAs( NodeCreateUtils.create( "x" ), Triple.create( "S P O" ) ); }
         
     public void testRemove()
         { 

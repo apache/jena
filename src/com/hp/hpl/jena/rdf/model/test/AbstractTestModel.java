@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: AbstractTestModel.java,v 1.15 2007-01-02 11:48:26 andy_seaborne Exp $
+  $Id: AbstractTestModel.java,v 1.16 2007-07-04 15:21:51 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -10,6 +10,7 @@ import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.rdf.model.impl.ModelCom;
 import com.hp.hpl.jena.shared.*;
 import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.graph.test.NodeCreateUtils;
 
 /**
  	@author kers
@@ -38,21 +39,21 @@ public abstract class AbstractTestModel extends ModelTestBase
         
     public void testCreateResourceFromNode()
         {
-        RDFNode S = model.getRDFNode( Node.create( "spoo:S" ) ); 
+        RDFNode S = model.getRDFNode( NodeCreateUtils.create( "spoo:S" ) ); 
         assertInstanceOf( Resource.class, S );
         assertEquals( "spoo:S", ((Resource) S).getURI() );
         }
         
     public void testCreateLiteralFromNode()
         {
-        RDFNode S = model.getRDFNode( Node.create( "42" ) ); 
+        RDFNode S = model.getRDFNode( NodeCreateUtils.create( "42" ) ); 
         assertInstanceOf( Literal.class, S );
         assertEquals( "42", ((Literal) S).getLexicalForm() );
         }    
             
    public void testCreateBlankFromNode()
         {
-        RDFNode S = model.getRDFNode( Node.create( "_Blank" ) ); 
+        RDFNode S = model.getRDFNode( NodeCreateUtils.create( "_Blank" ) ); 
         assertInstanceOf( Resource.class, S );
         assertEquals( new AnonId( "_Blank" ), ((Resource) S).getId() );
         }
