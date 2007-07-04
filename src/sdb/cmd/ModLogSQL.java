@@ -42,7 +42,7 @@ public class ModLogSQL extends ModBase
                 SDBConnection.logSQLStatements = false ;
                 continue ;
             }
-            if ( v.equalsIgnoreCase("query") )
+            if ( v.equalsIgnoreCase("query") || v.equalsIgnoreCase("queries") )
             {
                 SDBConnection.logSQLQueries = true ;
                 continue ;
@@ -52,7 +52,7 @@ public class ModLogSQL extends ModBase
                 SDBConnection.logSQLExceptions = true ;
                 continue ;
             }
-            if ( v.equalsIgnoreCase("statement") )
+            if ( v.equalsIgnoreCase("statement") || v.equalsIgnoreCase("statements") )
             {
                 SDBConnection.logSQLStatements = true ;
                 continue ;
