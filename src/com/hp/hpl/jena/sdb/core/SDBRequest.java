@@ -9,8 +9,8 @@ package com.hp.hpl.jena.sdb.core;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.hp.hpl.jena.query.ARQ;
 import com.hp.hpl.jena.query.Query;
+import com.hp.hpl.jena.sdb.SDB;
 import com.hp.hpl.jena.sdb.store.Store;
 import com.hp.hpl.jena.sdb.store.StoreHolder;
 import com.hp.hpl.jena.shared.PrefixMapping;
@@ -49,7 +49,7 @@ public class SDBRequest extends StoreHolder
         if ( query != null )
             prefixMapping = query.getPrefixMapping() ;
         if ( context == null )
-            context = ARQ.getContext() ;
+            context = SDB.getContext() ;
         this.context = new Context(context) ;
     }
 

@@ -98,10 +98,10 @@ public abstract class FmtLayout2
     abstract protected void formatTableQuads() ;
     abstract protected void formatTablePrefixes() ;
     
-    protected void truncateTableTriples()  { truncateTable(TableDescTriples.name()) ; }
-    protected void truncateTableQuads() { truncateTable(TableDescQuads.name()) ; }
-    protected void truncateTableNodes()    { truncateTable(TableDescNodes.name()) ; }
-    protected void truncateTablePrefixes() { truncateTable(TablePrefixes.name()) ; }
+    protected void truncateTableTriples()   { truncateTable(TableDescTriples.name()) ; }
+    protected void truncateTableQuads()     { truncateTable(TableDescQuads.name()) ; }
+    protected void truncateTableNodes()     { truncateTable(TableDescNodes.name()) ; }
+    protected void truncateTablePrefixes()  { truncateTable(TablePrefixes.name()) ; }
     
     protected void truncateTable(String tableName)
     {

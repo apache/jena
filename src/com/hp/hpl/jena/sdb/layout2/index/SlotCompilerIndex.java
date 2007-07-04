@@ -102,7 +102,7 @@ public class SlotCompilerIndex extends SlotCompiler2
     {
         for ( Quad quad : quadBlock )
         {
-            if ( ! quad.getGraph().equals(Quad.defaultGraph) )
+            if ( ! ( quad.isDefaultGraph() && quad.isDefaultUnionGraph() ) )
                 acc(constants, vars, quad.getGraph()) ;
             acc(constants, vars, quad.getSubject()) ;
             acc(constants, vars, quad.getPredicate()) ;

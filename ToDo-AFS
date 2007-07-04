@@ -1,10 +1,16 @@
 SDB ToDo list (and general notes)
 =================================
 
++ Query union model.
+  Document SDB.getContext().setTrue(SDB.defaultUnionModel)
+
 + Subclass loading.
 + OpSlice. OpUnion
 
 + Model management
+  Delete model.
+  Clear model (DELKET FROM vs TRUNCATE)
+  
   Need a "graph ids" table
   Temp: DatasetStore.hasNonEmptyModel(IRI)
   

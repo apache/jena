@@ -9,6 +9,7 @@ package com.hp.hpl.jena.sdb.compiler;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.hp.hpl.jena.sdb.SDB;
 import com.hp.hpl.jena.sdb.core.AliasesSql;
 import com.hp.hpl.jena.sdb.core.SDBRequest;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExprList;
@@ -29,15 +30,34 @@ public class SqlStageBasicQuad implements SqlStage
     {
         this.quad = quad ;
     }
+    
+    // There are three special graph names:
+    //   Quad.defaultGraph - the quad marker for a query pattern for the default graph.
+    //   Quad.defaultGraphName - the explicit internal name for the default graph
+    //   Quad.unionDefaultGraph - the internal name for the union of all named graphs (excluding the degault graph).
+    //
+    // If SDB.unionDefaultGraph is true in the context, then patterns on the 
+    // default graph are made against the union graph.
+    //
+    // If the explicit names (defaultGraphName, unionDefaultGraph) are used in GRAPH, 
+    // then the default or union beahviour is avilable regardless of the setting of
+    //  SDB.unionDefaultGraph.
+    
 
     public SqlNode build(SDBRequest request, SlotCompiler slotCompiler)
     {
         SqlExprList conditions = new SqlExprList() ;
-        boolean defaultGraph = quad.getGraph().equals(Quad.defaultGraph) ;
-        boolean defaultUnionGraph = quad.getGraph().equals(Quad.defaultUnionGraph) ;
+        boolean defaultGraph = quad.isDefaultGraph() ;
+        boolean defaultUnionGraph = quad.isDefaultUnionGraph() ;
         
-        // The default graph table may be a specialized quad table,
-        // or it may be the same as the quad table with a known name.
+        if ( defaultGraph && request.getContext().isTrue(SDB.unionDefaultGraph) )
+        {
+            // Treat the default graph as the union of all triples in named graphs.
+            defaultGraph = false ;
+            defaultUnionGraph = true ;
+        }
+        
+        // The default graph table may be a specialized table (e.g. triples, not quads).
         
         TableDescQuads tableDesc = null ;
         String alias = null ;
@@ -59,9 +79,9 @@ public class SqlStageBasicQuad implements SqlStage
         else
             table.addNote(FmtUtils.stringForQuad(quad, request.getPrefixMapping())) ;
 
-        // Only constrain the G column if there is a graph column
-        // (so it's not the triples table)
-        // and if we are not unioning the named graphs. 
+        // Only constrain the G column 
+        // IF there is a graph column (so it's not the triples table)
+        // AND if we are not unioning the named graphs. 
         
         if ( tableDesc.getGraphColName() != null && ! defaultUnionGraph )
                 slotCompiler.processSlot(request, table, conditions, quad.getGraph(),
