@@ -16,6 +16,7 @@ import org.apache.commons.logging.LogFactory;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.impl.AllCapabilities;
 import com.hp.hpl.jena.graph.impl.GraphBase;
+import com.hp.hpl.jena.graph.query.QueryHandler;
 import com.hp.hpl.jena.mem.TrackingTripleIterator;
 import com.hp.hpl.jena.shared.PrefixMapping;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
@@ -113,18 +114,6 @@ public class GraphSDB extends GraphBase implements Graph
             } catch (Exception ex)
             { log.warn("Failed to get prefixes: "+ex.getMessage()) ; }
         return pmap ;
-    }
-    
-    private ExtendedIterator graphBaseFind2(TripleMatch m)
-    {
-        Quad q = quad(m) ;
-        
-        OpQuadPattern pat = null ; //new OpQuadPattern() ;
-        //pat.add(q) ;
-        //QueryEngineSDB qe = new QueryEngineSDB(getStore(), q, null) ;
-        //qe.setDataset(new DataSourceImpl(dsg)) ;
-        
-        return null ;
     }
     
     private Quad quad(TripleMatch m)
@@ -235,6 +224,12 @@ public class GraphSDB extends GraphBase implements Graph
     {
     	if (bulkHandler == null) bulkHandler = new UpdateHandlerSDB(this);
     	return bulkHandler;
+    }
+    
+    @Override
+    public QueryHandler queryHandler()
+    {
+        return super.queryHandler() ;
     }
     
     @Override

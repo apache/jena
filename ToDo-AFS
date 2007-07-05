@@ -1,21 +1,47 @@
 SDB ToDo list (and general notes)
 =================================
 
-+ Query union model.
-  Document SDB.getContext().setTrue(SDB.defaultUnionModel)
 
-+ Subclass loading.
++ Revisit generating SQL for nested DISTINCT
++ Document SDB.getContext().setTrue(SDB.defaultUnionModel)
+
+== Pattern table and inference
+
++ Pattern/Inf tables:
+  Data:
+    Q: { :s a ?t }  D: :s a :C1 . :s a :C2 .  : SC: (:C1, :C2) => duplicates
+    Could reduce the input to exclude :s a :C2.
+    But if schema changes?
+    Else need SELECT DISTINCT subquery.
+  Reduce data?  is there always a minimum?  No - but synthetic?
+  Or nested SELECT DISTINCT in SQL.
+
+
+== Graph Management
+
+  Delete model.
+  Clear model
+  Need a "graph ids" table
+
+
+== Value tables and FILTERs
+
++ Value-based hashing
+  String version - and have fixed choice of xsd:string or plain string for terms.
+  Partial alternative: condition is "T.o = hash1 OR T.o = hash2"
+
++ ValueTables
+  Values and conditions : reactivate condition compilation.
+  String value table
+    With no URIs, much shorter.
+    Full text indexing where available?
+  Isolate QC2.insertValueGetter
+
+
+== Design
+
 + OpSlice. OpUnion
 
-+ Model management
-  Delete model.
-  Clear model (DELKET FROM vs TRUNCATE)
-  
-  Need a "graph ids" table
-  Temp: DatasetStore.hasNonEmptyModel(IRI)
-
-+ Load timing - print time occasionally.
-  
 + Extensible factories for new layouts
   Related to StoreConfig
   sdb/layoutXXX ; sdb/StoreType ; sdb/store/LayoutType ; sdb/store/StoreFactory
@@ -27,28 +53,20 @@ SDB ToDo list (and general notes)
   SQLUtils and quoting.
   Id generation
    
-+ TriG syntax dumping
-  http://sites.wiwiss.fu-berlin.de/suhl/bizer/TriG/Spec/
-
 + Tidy DB formatting
     per DB list of column generators (getVarchar, getText etc).
 
-+ Tidy up and document DBtest :  DB formatting info => per DB col types
-
 + SPARQL/Update input and control
 
-+ Transactions - cleanup.
+== Testing
 
-+ Add a formatter option to test if DB setup already
++ Add query tests :
+  /Structure/ { opt ... } JOIN { opt ... } 
+  
+== Misc
 
 + canonicalise literals on input?
 
-+ StoreConfig
-   locally cache
-   List of tables - all table creation to be noted.
-   Prefixes.
-
-+ Generating SQL:
   + Nested SELECT
   + Restrict(Join(A,B)) == Join(A,B,condition)
     In rel algebra, don't push into conditions: do in code generation.
@@ -63,34 +81,3 @@ SDB ToDo list (and general notes)
 + GraphSDB : graph query handler
 
 + QueryEngineSDB has duplication with QueryEngineMain - eliminate!
-
-+ Pattern/Inf tables:
-  Data:
-    Q: { :s a ?t }  D: :s a :C1 . :s a :C2 .  : SC: (:C1, :C2) => duplicates
-    Could reduce the input to exclude :s a :C2.
-    But if schema changes?
-    Else need SELECT DISTINCT subquery.
-  Reduce data?  is there always a minimum?  No - but synthetic?
-  Or nested SELECT DISTINCT in SQL.
-
-+ StoreConnection needs a StoreLayout indirection ??
-  Connection -> Config "StoreControl" -> Store 
-  Store hasA "StoreControl" -- c.f. StoreFormatter
-   Features play into this
-
-+ Prepared statement query cache?
-  When will it be beneficial - GraphSDB and add/delete single triples?
-
-+ Value-based hashing
-  String version - and have fixed choice of xsd:string or plain string for terms.
-  Partial alternative: condition is "T.o = hash1 OR T.o = hash2"
-
-+ Add query tests :
-  /Structure/ { opt ... } JOIN { opt ... } 
-  
-+ ValueTables
-  Values and conditions : reactivate condition compilation.
-  String value table
-    With no URIs, much shorter.
-    Full text indexing where available?
-  Isolate QC2.insertValueGetter

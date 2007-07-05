@@ -6,6 +6,11 @@ Homepage:
 Documentation:
     http://jena.hpl.hp.com/wiki/SDB
 
+SDB Beta 2
+==========
+
++ Command tidy up; wider use of --time.
+
 
 SDB Beta 1
 ==========
