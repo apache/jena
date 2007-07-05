@@ -13,6 +13,8 @@ SDB ToDo list (and general notes)
   
   Need a "graph ids" table
   Temp: DatasetStore.hasNonEmptyModel(IRI)
+
++ Load timing - print time occasionally.
   
 + Extensible factories for new layouts
   Related to StoreConfig
@@ -25,6 +27,8 @@ SDB ToDo list (and general notes)
   SQLUtils and quoting.
   Id generation
    
++ TriG syntax dumping
+  http://sites.wiwiss.fu-berlin.de/suhl/bizer/TriG/Spec/
 
 + Tidy DB formatting
     per DB list of column generators (getVarchar, getText etc).

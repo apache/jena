@@ -18,6 +18,7 @@ import com.hp.hpl.jena.graph.GraphListener;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.sparql.util.Timer;
 import com.hp.hpl.jena.sparql.util.Utils;
 import com.hp.hpl.jena.sdb.store.StoreBaseHSQL;
 import com.hp.hpl.jena.util.FileUtils;
@@ -87,9 +88,10 @@ public class sdbload extends CmdArgsDB
         Model model = ModelFactory.createModelForGraph(graph) ;
         
         if ( isVerbose() )
-        {
             System.out.println("Start load: "+filename) ;
-            monitor = new Monitor(getStore().getLoader().getChunkSize()) ;
+        if ( getModTime().timingEnabled() )
+        {
+            monitor = new Monitor(getStore().getLoader().getChunkSize(), isVerbose()) ;
             graph.getEventManager().register(monitor) ;
         }
 
@@ -98,7 +100,8 @@ public class sdbload extends CmdArgsDB
             filename = "file:"+filename ;
 
         String lang = FileUtils.guessLang(filename) ;
-        getModTime().startTimer() ;
+        if ( getModTime().timingEnabled() )
+            getModTime().startTimer() ;
         
         // Load here
         model.read(filename, lang) ;
@@ -120,12 +123,18 @@ public class sdbload extends CmdArgsDB
     {
         int addNotePoint ;
         long addCount = 0 ;
-		private long startTime; 
+        int outputCount = 0 ;
+        
+        private Timer timer = null ;
+		private long lastTime = 0 ;
+        private boolean displayMemory = false ; 
             
-        Monitor(int addNotePoint)
+        Monitor(int addNotePoint, boolean displayMemory)
         {
             this.addNotePoint = addNotePoint ;
-            this.startTime = System.currentTimeMillis();
+            this.displayMemory = displayMemory ;
+            this.timer = new Timer() ;
+            this.timer.startTimer() ;
         }
         
         
@@ -174,12 +183,26 @@ public class sdbload extends CmdArgsDB
             addCount++ ;
             if ( addNotePoint > 0 && (addCount%addNotePoint) == 0 )
             {
-                long mem = Runtime.getRuntime().totalMemory() ;
-                long free = Runtime.getRuntime().freeMemory() ;
-                long tps = (addCount * 1000L) / (System.currentTimeMillis() - startTime);
+                outputCount++ ;
+                long soFar = timer.readTimer() ;
+                long thisTime = soFar - lastTime ;
                 
-                System.out.printf("Add: %,d  triples (%d)   [M:%,d/F:%,d]\n",
-                                  addCount, tps, mem, free) ;
+                // *1000L is milli to second conversion
+                //   addNotePoint/ (thisTime/1000L)
+                long tpsBatch = (addNotePoint * 1000L) / thisTime;
+                long tpsAvg = (addCount * 1000L) / soFar;
+                
+                String msg = String.format("Add: %,d  triples (Batch: %d / Run: %d)", addCount, tpsBatch, tpsAvg) ;
+                if ( displayMemory )
+                {
+                  long mem = Runtime.getRuntime().totalMemory() ;
+                  long free = Runtime.getRuntime().freeMemory() ;
+                  msg = msg+String.format("   [M:%,d/F:%,d]", mem,free) ;
+                }
+                System.out.println(msg) ;
+                if ( outputCount > 0 && (outputCount%10) == 0 )
+                    System.out.printf("  Elapsed: %.2f seconds\n", (soFar/1000F)) ;
+                lastTime = soFar ;
             }
         }
         

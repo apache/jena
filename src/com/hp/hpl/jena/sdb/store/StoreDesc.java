@@ -42,7 +42,6 @@ public class StoreDesc
     
     public static StoreDesc read(String filename)
     {
-        //Model m = FileManager.get().loadModel(filename) ;
         Model m = Env.fileManager().loadModel(filename) ;
         return worker(m) ;
     }

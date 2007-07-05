@@ -10,6 +10,9 @@ import java.util.List;
 
 import sdb.cmd.CmdArgsDB;
 
+import arq.cmd.CmdException;
+import arq.cmdline.ArgDecl;
+
 import com.hp.hpl.jena.sparql.util.Utils;
 
 /** Format an SDB database.  Destroys all existing data permanently.
@@ -20,6 +23,8 @@ import com.hp.hpl.jena.sparql.util.Utils;
 
 public class sdbtruncate extends CmdArgsDB
 {
+    private static ArgDecl argDeclConfirm  = new ArgDecl(false,  "confirm", "force") ;
+    
     public static void main (String... argv)
     {
         new sdbtruncate(argv).main() ;
@@ -30,29 +35,22 @@ public class sdbtruncate extends CmdArgsDB
     protected sdbtruncate(String... args)
     {
         super(args);
-        
+        super.add(argDeclConfirm, "--confirm", "Confirm action") ;
     }
     
     @Override
     protected String getCommandName() { return Utils.className(this) ; }
     
     @Override
-    protected String getSummary()  { return Utils.className(this)+" --sdb <SPEC> <NAME>" ; }
+    protected String getSummary()  { return Utils.className(this)+" --sdb <SPEC> --confirm" ; }
     
     @Override
     protected void processModulesAndArgs()
     {
-        if ( getNumPositional() == 1 )
-        {
-            String dbToZap = getPositionalArg(0) ;
-            getModStore().setDbName(dbToZap) ;
-        }
-        else
-            cmdError("Must give the database name explicitly") ;
-        
-//        // Safety check
-//        if ( !contains("dbName") )
-//            cmdError("Must give the name of the database") ;
+        if ( getNumPositional() > 0  )
+            throw new CmdException("No position arguments (specify DB in spec file or with --dbName DB") ;
+        if ( ! super.contains(argDeclConfirm) )
+            throw new CmdException("Argument --confirm required") ;
     }
     
     @Override

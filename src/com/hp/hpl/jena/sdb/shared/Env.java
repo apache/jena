@@ -27,7 +27,9 @@ public class Env
         fileManager = new FileManager() ;
         fileManager.addLocatorFile() ;
 
-        sysBase = System.getenv(SDBROOT) ;
+        // Enabling this causes SDB to look in its installation directory for sdb.ttl files.
+        // While convenient, that can be dangerous with the data manipulation commands. 
+        // sysBase = System.getenv(SDBROOT) ;
         if ( sysBase == null )
             return ;
         
