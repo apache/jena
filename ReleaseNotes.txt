@@ -1,6 +1,11 @@
 Release Notes
 =============
 
+==== Jena 2.5.4
+
+N3 Writer
+      Correct writing nested bnodes with no properties to make strict Turtle.
+
 ==== Jena 2.5.3
 
 Statement.Util

@@ -26,7 +26,7 @@ import java.text.* ;
 /** Common framework for implementing N3 writers.
  *
  * @author		Andy Seaborne
- * @version 	$Id: N3JenaWriterCommon.java,v 1.36 2007-01-02 11:48:32 andy_seaborne Exp $
+ * @version 	$Id: N3JenaWriterCommon.java,v 1.37 2007-07-05 16:45:55 andy_seaborne Exp $
  */
 
 public class N3JenaWriterCommon implements RDFWriter
@@ -276,14 +276,14 @@ public class N3JenaWriterCommon implements RDFWriter
         // Does not take effect until newline.
         out.incIndent(indentProperty) ;
         writeSubject(subject);
-        writePropertiesForSubject(subject) ;
+        ClosableIterator iter = preparePropertiesForSubject(subject);
+        writePropertiesForSubject(subject, iter) ;
         out.decIndent(indentProperty) ; 
         out.println(" .");
     }
 
-    protected void writePropertiesForSubject(Resource subj)
+    protected void writePropertiesForSubject(Resource subj, ClosableIterator iter)
     {
-        ClosableIterator iter = preparePropertiesForSubject(subj);
         // For each property.
         for (; iter.hasNext();)
         {

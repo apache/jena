@@ -18,7 +18,7 @@ import java.util.* ;
  *  Tries to make N3 data look readable - works better on regular data.
  *
  * @author		Andy Seaborne
- * @version 	$Id: N3JenaWriterPP.java,v 1.20 2007-01-02 11:48:32 andy_seaborne Exp $
+ * @version 	$Id: N3JenaWriterPP.java,v 1.21 2007-07-05 16:45:55 andy_seaborne Exp $
  */
 
 
@@ -491,21 +491,23 @@ public class N3JenaWriterPP extends N3JenaWriterCommon
 		if ( allowDeep && ! isSimpleObject(rObj))
 		{
 			oneRefDone.add(rObj);
-			//int oldIndent = out.getIndent();
-			//out.setIndent(out.getCol());
-
-			//out.incIndent(4);
-			//out.println();
-			out.print("[ ");
-			out.incIndent(2);
-			writePropertiesForSubject(rObj);
-            out.decIndent(2);
-            out.println() ;
-            // Line up []
-			out.print("]");
-			//out.decIndent(4);
-
-			//out.setIndent(oldIndent);
+	        ClosableIterator iter = preparePropertiesForSubject(rObj);
+	        if (! iter.hasNext() )
+	        {
+	            // No properties.
+	            out.print("[]");
+	        }
+	        else
+	        {
+    			out.print("[ ");
+    			out.incIndent(2);
+    			writePropertiesForSubject(rObj, iter);
+                out.decIndent(2);
+                out.println() ;
+                // Line up []
+    			out.print("]");
+	        }
+	        iter.close();
 			return ;
 		}
 
