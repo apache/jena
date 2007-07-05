@@ -4,4 +4,3 @@ SELECT *
 { 
      ?x :p ?z 
 }
-LIMIT 2

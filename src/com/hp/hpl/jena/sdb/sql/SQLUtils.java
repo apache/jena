@@ -8,167 +8,36 @@ package com.hp.hpl.jena.sdb.sql;
 
 import static com.hp.hpl.jena.sdb.util.StrUtils.strjoinNL;
 
-import java.sql.Timestamp;
-
-import javax.xml.datatype.DatatypeConfigurationException;
-import javax.xml.datatype.DatatypeFactory;
-import javax.xml.datatype.XMLGregorianCalendar;
-
-import org.apache.commons.logging.LogFactory;
-
 public class SQLUtils
 {
+    static SQLUtilsStd op = new SQLUtilsStd() ;
+    
     static public String sqlStr(String ... str)
-    {
-        return strjoinNL(str) ;
-    }
-    
-    // TODO Check SQL-92/2003 
-    // for what the quoting characters and escape mechanisms 
-    // are for:
-    //   Strings
-    //   Identifiers with strange chars
-    // Per-store-iation?
-    
-    // Standard:
-    //   String quote is single quote
-    //   Identifier quote is " 
-    //     but MySQL uses `
-    // MySQL has "ANSI quotes" mode => "
-    //   Variables: _ (not $ strictly)
-    
-    // Standard SQL quoting is to double up '
-    // PostgreSQL and MySQL also have \-style escapes so escape \ as well.
-    static private String strQuoteChar = "'" ;
-    static private String strQuoteCharEsc = strQuoteChar+strQuoteChar ;
-
-    static private String strQuoteChar2 = "\\" ;
-    static private String strQuoteCharEsc2 = strQuoteChar2+strQuoteChar2 ;
-
-    
-    static private String[] strChar =       { strQuoteChar, strQuoteChar2 } ;
-    static private String[] strCharEsc =    { strQuoteCharEsc, strQuoteCharEsc2 } ;
+    { return strjoinNL(str) ; }
     
     static public String escapeStr(String s)
-    { return map(s, strChar, strCharEsc) ; }
+    { return op.escapeStr(s) ; }
     
     static public String unescapeStr(String s)
-    { return map(s, strCharEsc, strChar) ; }
+    { return op.unescapeStr(s) ; }
     
     static public String quoteStr(String s)
-    {
-        s = escapeStr(s) ;
-        return strQuoteChar+s+strQuoteChar ;
-    }
+    { return op.quoteStr(s) ; }
 
     static public String unquoteStr(String s)
-    {
-        if ( s.startsWith(strQuoteChar) )
-            s = s.substring(1,s.length()-1 ) ;
-        s = unescapeStr(s) ;
-        return s ;
-    }
-    
-    static private String map(String str, String[] fromArray, String[] toArray)
-    {
-        for ( int i = 0 ; i < fromArray.length ; i++ )
-            str = str.replace(fromArray[i], toArray[i]) ;
-        return str ;
-    }
-    
-    static private String identifierQuoteChar = "\"" ;
-    static private String identifierQuoteChar2 = "\"\"" ;
+    { return op.unquoteStr(s) ; }
     
     static public String quoteIdentifier(String name)
-    {
-        if ( sqlSafeChar(name) )
-            return name ;
-        // Check SQL-92
-        name = name.replace(identifierQuoteChar, identifierQuoteChar2) ;
-        return identifierQuoteChar+name+identifierQuoteChar ;
-    }
-    
-    
-    
-    private static final String SQLmark = "_" ;
-    
-    // TODO Need per store gen(first, last) =>
-    
-    /** Separator used in SQL name generation.
-     *  Not used as a leading character. 
-     */ 
-    public static String getSQLmark() { return SQLmark ; }
+    { return op.quoteIdentifier(name) ; }
+
+    public static String getSQLmark()
+    { return op.getSQLmark() ; }
     
     public static String gen(String first, String last)
-    { return first+SQLmark+last ; }
+    { return op.gen(first, last) ; }
     
     public static String gen(String first)
-    { return first+SQLmark ; }
-    
-    // Not needed - we don't use the SPARQL name to generate the SQL name
-    // anymore but instead allocate a plain name and remember the mapping (Dec 2006)
-//    /** Map a SPARQL variable to an SQL identifier.
-//     * @param var 
-//     * @return String   The SQL identifier
-//     */
-//    static public String varToSqlId(Var var)
-//    { 
-//        return quoteIdentifier(var.getName()) ;
-//    }
-//
-//    /** Map an SQL identifier to a SPARQL variable
-//     * @param sqlName   The SQL identifier 
-//     * @return Var 
-//     */
-//    static public Var sqlIdToVar(String sqlName)
-//    {
-//        if ( sqlName.startsWith("'") )
-//            return null ;
-//        return Var.alloc(sqlName) ;
-//    }
-    
-    private static boolean sqlSafeChar(String str)
-    {
-        if ( ! isLowerCaseSqlChar(str.charAt(0)) )
-            return false ;
-        
-        for ( int i = 0 ; i < str.length() ; i++ )
-        {
-            char ch = str.charAt(i) ;
-            // Explicitly ASCII
-            // if not lowercase letter
-            if ( ! isLowerCaseSqlChar(ch) && ! isSqlDigit(ch) )
-                return false ;
-        }
-        return true ;
-    }
-
-    private static boolean isLowerCaseSqlChar(char ch)
-    {
-        return ch >= 'a' && ch <= 'z' ;
-    }
-    
-    private static boolean isSqlDigit(char ch)
-    {
-        return ch >= '0' && ch <= '9' ;
-    }
-
-    /** Turn the lexical form of an XSD date into what SQL believes in */
-    public static String toSQLdatetimeString(String lex)
-    {
-        try
-        {
-            DatatypeFactory f = DatatypeFactory.newInstance() ;
-            XMLGregorianCalendar cal = f.newXMLGregorianCalendar(lex) ;
-            long millis = cal.toGregorianCalendar().getTimeInMillis() ;
-            Timestamp timestamp = new Timestamp(millis) ;
-            return timestamp.toString() ;
-        } catch (DatatypeConfigurationException e)
-        {
-            LogFactory.getLog(SQLUtils.class).warn("Failed to convert "+lex, e) ;
-            return "0000-00-00 00:00:00" ;
-        }
-    }
+    { return op.gen(first) ; }
 }
 
 /*

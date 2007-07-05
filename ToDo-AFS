@@ -1,7 +1,6 @@
 SDB ToDo list (and general notes)
 =================================
 
-
 + Revisit generating SQL for nested DISTINCT
 + Document SDB.getContext().setTrue(SDB.defaultUnionModel)
 
@@ -16,13 +15,12 @@ SDB ToDo list (and general notes)
   Reduce data?  is there always a minimum?  No - but synthetic?
   Or nested SELECT DISTINCT in SQL.
 
-
 == Graph Management
 
-  Delete model.
-  Clear model
+  Delete model, Clear model, Create model
+    Only load is model exists?
+    Check in GraphSDB
   Need a "graph ids" table
-
 
 == Value tables and FILTERs
 
@@ -37,17 +35,17 @@ SDB ToDo list (and general notes)
     Full text indexing where available?
   Isolate QC2.insertValueGetter
 
-
 == Design
 
 + OpSlice. OpUnion
+
++ Filters
 
 + Extensible factories for new layouts
   Related to StoreConfig
   sdb/layoutXXX ; sdb/StoreType ; sdb/store/LayoutType ; sdb/store/StoreFactory
 
-+ Prefixes
-   Per graph, not global
++ Prefixes:  Per graph, not global
 
 + Per store
   SQLUtils and quoting.
