@@ -5,14 +5,18 @@
 ## SDBROOT         :: The root of the SDB installation (required)
 ## SDB_JDBC        :: The JDBC jar file, or path list of JDBC jars
 ## JVM_ARGS        :: Additional argument to the JVM (e.g. -Xmx1024M)
+## 
 ##   Default store description 
 ##   is the file sdb.ttl in the
 ##   current directory
 
 ## Source this file to set:
-##  CP         :: Classpath
-##  STORE_SPEC :: Default store specification
-##  CMD        :: The SDB command to call.
+##  SDB_CP         :: Classpath
+##  SDB_SPEC       :: Default store specification
+##  SDB_CMD        :: The SDB command to call.
+
+# Check for alternative name
+SDBROOT="${SDBROOT:-$SDB_ROOT}"
 
 ## ---- Check root
 if [ "$SDBROOT" = "" ]
@@ -29,13 +33,10 @@ then
     fi
 
 ## ---- who am I?
-CMD=$(basename $0)
+SDB_CMD=$(basename $0)
 
 ## ---- JDBC
 ## Commercial drivers can't be shipped for license reasons
-
-# MySQL-ism : should not be needed
-## ARGS="--dbArgs 'useUnicode=true&characterEncoding=UTF-8'"
 
 ## ---- Additional JDBC jar files.
 # JDBC_CONNECTOR is deprecated
@@ -46,20 +47,19 @@ then
     echo "Warning: SDB_JDBC not set" 2>&1
     fi
 
-CP="${SDB_JDBC}"
+export SDB_CP="${SDB_JDBC}"
 
 ## ---- Add the script engine
-if [ "$SDBSCRIPT" != "" ]
+if [ "$SDB_SCRIPT" != "" ]
 then
-    CP="$SDBSCRIPT$SEP$CP"
+    SDB_CP="$SDB_SCRIPT$SEP$CP"
 fi
 
 ## ---- JVM Args e.g. -Xmx1024M
 JVM_ARGS=${JVM_ARGS:-}
 
 ## ---- Classpath : adds in current CP
-export CP
-CP="$($SDBROOT/bin/sdb_path)"
+SDB_CP="$($SDBROOT/bin/sdb_path)"
 
 ## ---- Store description (default)
-STORE_SPEC="${STORE_SPEC:---sdb=sdb.ttl}"
+SDB_SPEC="${SDB_SPEC:---sdb=sdb.ttl}"

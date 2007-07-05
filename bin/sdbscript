@@ -1,15 +1,4 @@
 #!/bin/bash
 
 source "$SDBROOT/bin/sdb_init"
-
-if [ "$JRUBY_HOME" = "" ]
-then
-    echo "JRUBY_HOME not set" 1>&2
-    exit 1
-    fi
-
-CP="$CP;jdbc/*;$JRUBY_HOME/lib/jruby.jar"
-
-#exec java $JVM_ARGS -cp "$CP" sdb.$CMD $STORE_SPEC "$@"
-
-exec java $JVM_ARGS -cp "$CP" sdb.$CMD "$@"
+exec java $JVM_ARGS -cp "$SDB_CP" "sdb.$SDB_CMD" $SDB_SPEC "$@"

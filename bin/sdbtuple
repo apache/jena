@@ -1,4 +1,4 @@
 #!/bin/bash
 
 source "$SDBROOT/bin/sdb_init"
-exec java $JVM_ARGS -cp "$CP" sdb.$CMD $STORE_SPEC "$@"
+exec java $JVM_ARGS -cp "$SDB_CP" "sdb.$SDB_CMD" $SDB_SPEC "$@"

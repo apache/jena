@@ -3,6 +3,7 @@
 
 ## sdbdump sdbconfig sdbinfo sdbload sdbprint
 ## sdbquery sdbsql sdbtest sdbtruncate sdbmeta
+## but not anything sdb_*
 
 for c in sdb[a-z]*
 do
