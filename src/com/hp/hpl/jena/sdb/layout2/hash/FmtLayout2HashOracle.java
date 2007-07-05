@@ -82,7 +82,6 @@ public class FmtLayout2HashOracle extends FmtLayout2
                                        "   PRIMARY KEY (hash)",
                                        ")"
                     )) ;
-            //connection().exec("CREATE UNIQUE INDEX Hash ON " + TableNodes.tableName + " (hash)");
         } catch (SQLException ex)
         {
             throw new SDBExceptionSQL("SQLException resetting table '"+TableDescNodes.name()+"'",ex) ;

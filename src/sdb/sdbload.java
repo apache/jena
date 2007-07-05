@@ -192,7 +192,7 @@ public class sdbload extends CmdArgsDB
                 long tpsBatch = (addNotePoint * 1000L) / thisTime;
                 long tpsAvg = (addCount * 1000L) / soFar;
                 
-                String msg = String.format("Add: %,d  triples (Batch: %d / Run: %d)", addCount, tpsBatch, tpsAvg) ;
+                String msg = String.format("Add: %,d triples  (Batch: %d / Run: %d)", addCount, tpsBatch, tpsAvg) ;
                 if ( displayMemory )
                 {
                   long mem = Runtime.getRuntime().totalMemory() ;
@@ -201,7 +201,7 @@ public class sdbload extends CmdArgsDB
                 }
                 System.out.println(msg) ;
                 if ( outputCount > 0 && (outputCount%10) == 0 )
-                    System.out.printf("  Elapsed: %.2f seconds\n", (soFar/1000F)) ;
+                    System.out.printf("  Elapsed: %.1f seconds\n", (soFar/1000F)) ;
                 lastTime = soFar ;
             }
         }

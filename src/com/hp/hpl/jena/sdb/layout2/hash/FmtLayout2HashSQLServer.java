@@ -97,7 +97,6 @@ public class FmtLayout2HashSQLServer extends FmtLayout2
                                        "   PRIMARY KEY (hash)",
                                        ")"
                     )) ;
-//            connection().exec("CREATE UNIQUE INDEX Hash ON " + TableDescNodes.name() + " (hash)");
         } catch (SQLException ex)
         {
             throw new SDBExceptionSQL("SQLException formatting table '"+TableDescNodes.name()+"'",ex) ;

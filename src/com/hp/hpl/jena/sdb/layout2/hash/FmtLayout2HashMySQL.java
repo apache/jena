@@ -104,7 +104,6 @@ public class FmtLayout2HashMySQL extends FmtLayout2
                                  "   PRIMARY KEY Hash  (hash)",
                                  ") ENGINE="+engineType.getEngineName()+" DEFAULT CHARSET=utf8;"  
                     )) ;
-            connection().exec("CREATE UNIQUE INDEX Hash ON "+TableDescNodes.name()+" (hash)") ;
         } catch (SQLException ex)
         {
             throw new SDBExceptionSQL("SQLException formatting table '"+TableDescNodes.name()+"'",ex) ;

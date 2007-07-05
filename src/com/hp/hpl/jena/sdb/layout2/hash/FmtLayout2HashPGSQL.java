@@ -39,7 +39,7 @@ public class FmtLayout2HashPGSQL extends FmtLayout2
                                  "    s BIGINT NOT NULL,",
                                  "    p BIGINT NOT NULL,",
                                  "    o BIGINT NOT NULL,",
-                                 "    CONSTRAINT "+tname+"_PK PRIMARY KEY (s, p, o)",
+                                 "    PRIMARY KEY (s, p, o)",
                                  ")"                
                     )) ;
         } catch (SQLException ex)
@@ -58,7 +58,7 @@ public class FmtLayout2HashPGSQL extends FmtLayout2
                                  "    s BIGINT NOT NULL,",
                                  "    p BIGINT NOT NULL,",
                                  "    o BIGINT NOT NULL,",
-                                 "    CONSTRAINT "+tname+"_PK PRIMARY KEY (g, s, p, o)",
+                                 "    PRIMARY KEY (g, s, p, o)",
                                  ")"                
                     )) ;
         } catch (SQLException ex)
@@ -87,10 +87,9 @@ public class FmtLayout2HashPGSQL extends FmtLayout2
                                        "   lang varchar NOT NULL default E'',",
                                        "   datatype varchar("+TableDescNodes.DatatypeUriLength+") NOT NULL default '',",
                                        "   type integer NOT NULL default E'0',",
-                                       "   CONSTRAINT "+tname+"_PK PRIMARY KEY (hash)",
+                                       "   PRIMARY KEY (hash)",
                                        ")"
                     )) ;
-            connection().exec("CREATE UNIQUE INDEX Hash ON " + TableDescNodes.name() + " (hash)");
         } catch (SQLException ex)
         {
             throw new SDBExceptionSQL("SQLException formatting table '"+TableDescNodes.name()+"'",ex) ;
