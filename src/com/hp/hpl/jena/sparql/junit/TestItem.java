@@ -43,8 +43,6 @@ public class TestItem
     private Resource testType = null ;
     private String queryFile ;
     private Syntax queryFileSyntax ;
-    private Resource queryForm ;
-    private Resource resultForm ;
     
     public TestItem(Resource r, Resource defaultTestType, Syntax defaultQuerySyntax, DataFormat defaultDataSyntax)
     {
@@ -76,9 +74,6 @@ public class TestItem
         if ( queryFileSyntax == null && queryFile != null )
             queryFileSyntax = Syntax.guessQueryFileSyntax(queryFile) ;
         
-        queryForm = _getQueryForm() ; 
-        resultForm = _getResultForm() ;
-        
         buildLuceneIndex = _getTextIndex() ;
     }
         
@@ -94,23 +89,18 @@ public class TestItem
         namedGraphURIs =  new ArrayList() ;
         resultFile = _resultFile ;
         comment = "" ;
-        queryForm = null ; 
-        resultForm = null ;
         queryFileSyntax = Syntax.guessQueryFileSyntax(_queryFile) ;
     }
              
     
     public Resource getResource() { return testResource ; }
+    public Resource getAction()   { return _getAction() ; }
     
     /** @return Returns the testType. */
     public Resource getTestType() { return testType ; }
     public String getQueryFile() { return queryFile ; }
     public Syntax getQueryFileSyntax() { return queryFileSyntax ; }
     public void setQueryFileSyntax(Syntax syntax) { queryFileSyntax = syntax ; }
-
-    public Resource getQueryForm() { return queryForm ; }
-
-    public Resource getResultForm() { return resultForm ; }
 
     public String getResultFile() { return resultFile ; }
     public String getName() { return name ; }
@@ -215,18 +205,6 @@ public class TestItem
         return _getAction().getURI() ;
     }
         
-    private Resource _getQueryForm()
-    {
-        //return _getAction().getProperty(TestQuery.queryForm).getResource() ;
-        return null ;
-    }
-    
-    private Resource _getResultForm()
-    {
-        //return _getAction().getProperty(TestQuery.resultForm).getResource() ;
-        return null ;
-    }
-    
     private Syntax _getSyntax(Model m, String uri, Syntax def)
     {
         Resource r = m.createResource(uri) ;
