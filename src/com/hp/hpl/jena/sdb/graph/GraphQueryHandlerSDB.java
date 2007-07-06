@@ -10,6 +10,7 @@ import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.graph.query.*;
+import com.hp.hpl.jena.sdb.SDBException;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 
 public class GraphQueryHandlerSDB implements QueryHandler
@@ -22,6 +23,12 @@ public class GraphQueryHandlerSDB implements QueryHandler
 
     public Stage patternStage( Mapping map, ExpressionSet constraints, Triple [] p )
     {
+        if ( constraints != null && constraints.iterator().hasNext() )
+            throw new SDBException("Constraints not supported") ;
+        
+        
+        
+        
         return null ; 
     }
 
@@ -69,7 +76,20 @@ class StageSDB extends Stage
     {
         return null ;
     }
-    
+}
+
+
+/*
+A BindingQueryPlan is something that can run executeBindings() to get back an
+ExtendedIterator over Domains, ie, Lists.
+*/
+
+class BindingQueryPlanSDB implements BindingQueryPlan
+{
+    public ExtendedIterator executeBindings()
+    {
+        return null ;
+    }
 }
 
 /*

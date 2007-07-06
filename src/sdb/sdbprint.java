@@ -17,6 +17,7 @@ import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.Syntax;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.util.Utils;
+import com.hp.hpl.jena.sdb.SDB;
 import com.hp.hpl.jena.sdb.engine.QueryEngineSDB;
 import com.hp.hpl.jena.sdb.sql.JDBC;
 import com.hp.hpl.jena.sdb.store.LayoutType;
@@ -109,6 +110,8 @@ public class sdbprint extends CmdArgsDB
     
     private void compilePrint(Store store, Query query)
     {
+        SDB.getContext().set(SDB.annotateGeneratedSQL, true) ;
+        
         if ( !printQuery && ! printPrefix && ! printOp && ! printSqlNode && ! printSQL && ! printPlan )
             printSQL = true ;
         
