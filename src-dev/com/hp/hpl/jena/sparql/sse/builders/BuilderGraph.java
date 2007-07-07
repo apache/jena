@@ -193,7 +193,7 @@ public class BuilderGraph
     {
         Node g = null ;
         if ( "_".equals(list.get(0).getWord()) )
-            g = Quad.defaultGraph ;
+            g = Quad.defaultGraphNode ;
         else
             g = BuilderNode.buildNode(list.get(0)) ;
         Node s = BuilderNode.buildNode(list.get(1)) ;

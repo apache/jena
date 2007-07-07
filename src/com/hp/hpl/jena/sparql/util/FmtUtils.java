@@ -86,7 +86,7 @@ public class FmtUtils
         
         if ( ! quad.isDefaultGraph() )
         {
-            if ( quad.isDefaultUnionGraph() )
+            if ( quad.isUnionGraph() )
                 buff.append("*") ;
             else
                 buff.append(stringForNode(quad.getGraph(), prefixMap)) ;

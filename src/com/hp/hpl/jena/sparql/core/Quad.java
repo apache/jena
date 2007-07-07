@@ -11,12 +11,12 @@ import com.hp.hpl.jena.graph.Triple;
 
 public class Quad
 {
-    public static Node defaultGraph         =  Node.createURI("urn:x-arq:DefaultGraph") ;
+    public static Node defaultGraphNode     =  Node.createURI("urn:x-arq:DefaultGraphNode") ;
     
     // These are convenience constants for other systems to give special
     // interpretation to these "named" graphs.  
-    public static Node defaultGraphName     =  Node.createURI("urn:x-arq:DefaultGraphIRI") ;
-    public static Node unionDefaultGraph    =  Node.createURI("urn:x-arq:UnionDefaultGraph") ;
+    public static Node defaultGraphIRI      =  Node.createURI("urn:x-arq:DefaultGraph") ;
+    public static Node unionGraph           =  Node.createURI("urn:x-arq:UnionGraph") ;
 
     private final Node graph, subject, predicate, object ;
     
@@ -44,11 +44,11 @@ public class Quad
     public Triple getTriple()   { return new Triple(subject, predicate, object) ; }
     
     // See also OpQuadPattern
-    public static boolean isDefaultGraphNode(Node node) { return node.equals(defaultGraph) ; }
+    public static boolean isDefaultGraphNode(Node node) { return node.equals(defaultGraphNode) ; }
     
-    public boolean isDefaultGraph()         { return graph.equals(defaultGraph) ; }
-    public boolean isDefaultGraphIRI()      { return graph.equals(defaultGraphName) ; }
-    public boolean isDefaultUnionGraph()    { return graph.equals(unionDefaultGraph) ; }
+    public boolean isDefaultGraph()         { return graph.equals(defaultGraphNode) ; }
+    public boolean isDefaultGraphIRI()      { return graph.equals(defaultGraphIRI) ; }
+    public boolean isUnionGraph()           { return graph.equals(unionGraph) ; }
     
     public int hashCode() 
     { 

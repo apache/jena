@@ -28,7 +28,7 @@ public class AlgebraGeneratorQuad extends AlgebraGenerator
         return new AlgebraGeneratorQuad().compile(elt) ;
     }
     
-    private Node currentGraph = Quad.defaultGraph ;
+    private Node currentGraph = Quad.defaultGraphNode ;
     
     public AlgebraGeneratorQuad(Context context) { super(context) ; }
     public AlgebraGeneratorQuad()                { super() ; }
