@@ -15,8 +15,8 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.hp.hpl.jena.sdb.Access;
 import com.hp.hpl.jena.sdb.SDBException;
+import com.hp.hpl.jena.sdb.shared.Access;
 import com.hp.hpl.jena.sdb.shared.SDBNotFoundException;
 import com.hp.hpl.jena.sdb.store.DatabaseType;
 

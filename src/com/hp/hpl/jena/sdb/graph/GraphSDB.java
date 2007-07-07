@@ -52,7 +52,7 @@ public class GraphSDB extends GraphBase implements Graph
     // ARP buffers, which results in nested updates from our prespective
     protected int inBulkUpdate = 0 ;
     
-    protected Node graphNode = Quad.defaultGraph ;
+    protected Node graphNode = Quad.defaultGraphNode ;
     protected DatasetStoreGraph datasetStore = null ;
     
     public GraphSDB(Store store, String uri)
@@ -69,7 +69,7 @@ public class GraphSDB extends GraphBase implements Graph
     public GraphSDB(Store store, Node graphNode)
     {
         if ( graphNode == null )
-            graphNode = Quad.defaultGraph ;
+            graphNode = Quad.defaultGraphNode ;
 
         this.store = store ;
         this.graphNode = graphNode ;
@@ -100,7 +100,7 @@ public class GraphSDB extends GraphBase implements Graph
         if ( pmap == null )
             try {
                 String graphURI = null ;
-                if ( graphNode.equals(Quad.defaultGraph) )
+                if ( graphNode.equals(Quad.defaultGraphNode) )
                     graphURI = "" ;
                 else if ( graphNode.isURI() )
                     graphURI = graphNode.getURI() ; 
@@ -244,7 +244,7 @@ public class GraphSDB extends GraphBase implements Graph
     {
     	if (inBulkUpdate == 0) store.getLoader().startBulkUpdate();
         
-        if ( graphNode == Quad.defaultGraph )
+        if ( graphNode == Quad.defaultGraphNode )
             store.getLoader().addTriple(triple) ;
         else
         {
@@ -259,7 +259,7 @@ public class GraphSDB extends GraphBase implements Graph
     public void performDelete( Triple triple ) 
     {
     	if (inBulkUpdate == 0) store.getLoader().startBulkUpdate();
-        if ( graphNode == Quad.defaultGraph )
+        if ( graphNode == Quad.defaultGraphNode )
             store.getLoader().deleteTriple(triple) ;
         else
         {
@@ -277,7 +277,7 @@ public class GraphSDB extends GraphBase implements Graph
     public TransactionHandler getTransactionHandler() { return store.getConnection().getTransactionHandler() ; }
     
     @Override
-    public int graphBaseSize() { return (int) ((graphNode == Quad.defaultGraph) ? store.getSize() : store.getSize(graphNode)); }
+    public int graphBaseSize() { return (int) ((graphNode == Quad.defaultGraphNode) ? store.getSize() : store.getSize(graphNode)); }
 }
 
 /*

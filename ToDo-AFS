@@ -7,6 +7,9 @@ SDB ToDo list (and general notes)
 + Setting options for testing.
 + Tests for union graphs. 
 
++ javadoc in build.xml
++ Home page
+
 == Pattern table and inference
 
 + Pattern/Inf tables:
