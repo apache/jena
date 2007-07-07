@@ -47,6 +47,8 @@ public class SqlStageBasicQuad implements SqlStage
     public SqlNode build(SDBRequest request, SlotCompiler slotCompiler)
     {
         SqlExprList conditions = new SqlExprList() ;
+        boolean defaultGraph = quad.isDefaultGraph() ;
+        boolean unionGraph = quad.isUnionGraph() ;
         
         // ---- Choose the mode of access.
         
@@ -56,6 +58,8 @@ public class SqlStageBasicQuad implements SqlStage
         if ( accessStoredDefaultGraph && request.getContext().isTrue(SDB.unionDefaultGraph) )
         {
             // Treat the default graph as the union of all triples in named graphs.
+            defaultGraph = false ;
+            unionGraph = true ;
             accessStoredDefaultGraph = false ;
             accessUnionGraph = true ;
         }
@@ -68,7 +72,7 @@ public class SqlStageBasicQuad implements SqlStage
             accessUnionGraph = false ;
         }
         
-        if ( quad.isDefaultUnionGraph() )
+        if ( quad.isUnionGraph() )
         {
             // "named" access to the union of the named graphs
             accessStoredDefaultGraph = false ;
@@ -98,12 +102,10 @@ public class SqlStageBasicQuad implements SqlStage
         else
             table.addNote(FmtUtils.stringForQuad(quad, request.getPrefixMapping())) ;
 
-        // -- Compile the quad for this mode and table.
         // Only constrain the G column 
         // IF there is a graph column (so it's not the triples table)
         // AND if we are not unioning the named graphs. 
         
-//        if ( tableDesc.getGraphColName() != null && ! accessUnionGraph )
         if ( ! accessStoredDefaultGraph && ! accessUnionGraph )
                 slotCompiler.processSlot(request, table, conditions, quad.getGraph(),
                                      tableDesc.getGraphColName()) ;
