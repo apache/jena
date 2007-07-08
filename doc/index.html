@@ -1,0 +1,84 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+  <title>SDB - A SPARQL Database for Jena</title>
+  <link rel="stylesheet" type="text/css" href="styles/doc.css" />
+<style type="text/css">
+
+/* CA DF F4 is 202, 223, 244 */
+/* 65 A2 DF is 101 162 223 */
+
+.indexBody { background: #F0F0F0 ; }
+
+.nav { padding:0 ; 
+       margin-left: 5ex ;
+       margin-right: 5ex ;
+       margin-top: 2ex ;
+       margin-bottom: 2ex ;
+       }
+
+.nav ul { margin:0 ; padding : 0 ;}
+.nav li    { padding:0 ; list-style: none; display: inline;  
+             margin:0 ; margin-right: 1ex ; }
+             
+             
+.nav li a  { background:#D8D8D8 ; 
+			 text-decoration:none ;
+             margin: 0 ; padding: 0.5ex ; 
+             border: 1px solid #000; }
+.nav li *:hover         { color: rgb(0,0,255) ; background:#BBB ;  }
+
+/* IE needs this */
+.nav  *:visited         { color: rgb(0,0,255) ; background:#D8D8D8 ;  } 
+
+.main {
+  margin-left: 5ex ; 
+  margin-right: 5ex ; 
+  margin-top: 1ex ; margin-bottom: 1ex; 
+  background: white ; border: 1px solid black ;
+  }
+</style>
+</head>
+
+<!-- <body class="blue">-->
+<body class="indexBody">
+  <h1 style="margin-bottom: 0">SDB - A SPARQL Database for Jena</h1>
+
+  <div class="nav">
+  <ul>
+    <li><a href="http://sourceforge.net/project/showfiles.php?group_id=40417&package_id=220977">Download</a></li>
+    <li><a href="http://jena.hpl.hp.com/wiki/SDB">Documentation</a></li>
+    <li><a href="license.html">License</a></li>
+    <li><a href="http://jena.hpl.hp.com/wiki/SDB/Support">Support</a></li>
+    </ul>
+  </div>
+  <div class="main">
+    <!-- <div style="height: 0.25ex;"></div> -->
+    <p>SDB is a component of
+	<a class="external text" title="http://jena.sf.net/" rel="nofollow" href="http://jena.sf.net/">
+	Jena</a>. It provides for large scale storage and query of RDF datasets 
+	using conventional SQL databases. The database tools for load balancing, 
+	security, clustering, backup and administration can all be used to manage 
+	the installation. SDB is designed specifically to support <a href="http://www.w3.org/TR/rdf-sparql-query/">SPARQL</a>, 
+	the query language developed by the W3C
+    <a href="http://www.w3.org/2001/sw/DataAccess/">RDF Data Access Working Group</a>.
+    </p>
+	<p>Supported databases include:</p>
+	<ul>
+		<li>Microsoft SQL Server 2005 including SQL Server Express</li>
+		<li>Oracle 10gR2 including Oracle Express </li>
+		<li><a href="http://www.postgresql.org/">PostgreSQL</a> v8</li>
+		<li><a href="http://www.mysql.com">MySQL</a> 5.0 (&gt;=5.0.22)</li>
+		<li><a href="http://www.hsqldb.org">HSQLDB</a> 1.8</li>
+		<li><a href="http://db.apache.org/derby/">Apache Derby</a> 10.2</li>
+	</ul>
+    
+    <h2>See Also</h2>
+	<p><a href="http://jena.sf.net/ARQ/">ARQ</a> - the SPARQL query engine for 
+	Jena.&nbsp; SDB provides an ARQ query engine.</p>
+    <p><a href="http://www.joseki.org/">Joseki</a> - a SPARQL query server, using 
+    ARQ and the SPARQL protocol.</p>
+  </div>
+</body>
+
+</html>
