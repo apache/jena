@@ -16,7 +16,7 @@ function proc
     echo "Schemagen: $FILE"
     schemagen --rdfs -i "$FILE" -n "$CLASS" -a "$NS" -o "$CLASS".java -e N3
     # Add imports
-    echo "package com.hp.hpl.jena.query.vocabulary ;" >> "$TMP"
+    echo "package com.hp.hpl.jena.sparql.vocabulary ;" >> "$TMP"
     echo >>"$TMP"
     cat "$CLASS".java >> "$TMP"
     mv "$TMP" "$CLASS".java
@@ -36,9 +36,9 @@ function proc
 ##     "http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#"
 
 
-## syntaxCheck test-manifest-x.n3
-## proc test-manifest-x.n3 TestManifestX \
-##     "http://jena.hpl.hp.com/2005/05/test-manifest-extra#"
+syntaxCheck test-manifest-x.n3
+proc test-manifest-x.n3 TestManifestX \
+    "http://jena.hpl.hp.com/2005/05/test-manifest-extra#"
 
 
 ## proc test-query.n3 VocabTestQuery \
@@ -47,6 +47,6 @@ function proc
 ## proc test-dawg.n3 TestDAWGVocab \
 ##     "http://www.w3.org/2001/sw/DataAccess/tests/test-dawg#"
 
-syntaxCheck  list-pfunction.ttl
-proc list-pfunction.ttl ListPFunction "http://jena.hpl.hp.com/ARQ/list#"
+## syntaxCheck  list-pfunction.ttl
+## proc list-pfunction.ttl ListPFunction "http://jena.hpl.hp.com/ARQ/list#"
 

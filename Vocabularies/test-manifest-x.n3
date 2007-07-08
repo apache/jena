@@ -59,6 +59,8 @@
     # Default default is a query test
     .
 
+:option rdf:type rdf:Property ;
+    rdfs:comment "Option for an action" .
 
 
 ## ---- Constants ----
