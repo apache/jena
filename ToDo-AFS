@@ -2,7 +2,6 @@ SDB ToDo list (and general notes)
 =================================
 
 + Revisit generating SQL for nested DISTINCT
-+ Document SDB.getContext().setTrue(SDB.defaultUnionModel)
 
 + Setting options for testing.
 + Tests for union graphs. 

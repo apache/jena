@@ -112,6 +112,11 @@ public class QueryTestSDBFactory extends TestFactoryManifest
             // Default 
             if ( test == null )
                 test = new QueryTestSDB(store, testName, fileManager, testItem) ;
+
+            Resource action2 = testItem.getAction() ;
+            if ( action2.hasProperty(TestManifestX.option))
+                System.out.println("OPTION") ;
+            
             return test ;
     }
 }
