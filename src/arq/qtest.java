@@ -114,6 +114,9 @@ public class qtest
         ArgDecl setDecl = new ArgDecl(ArgDecl.HasValue, "set", "define", "defn", "def") ;
         cl.add(setDecl) ;
 
+        ArgDecl earlDecl = new ArgDecl(ArgDecl.NoValue, "earl") ;
+        cl.add(earlDecl) ;
+        
         ArgDecl strictDecl = new ArgDecl(ArgDecl.NoValue, "strict") ;
         cl.add(strictDecl) ;
 
@@ -216,20 +219,32 @@ public class qtest
         NodeValue.VerboseWarnings = false ;
         E_Function.WarnOnUnknownFunction = false ;
         
-        oneManifest(testfileAbs) ;
+        if ( cl.contains(earlDecl) )
+            oneManifestEarl(testfileAbs) ;
+        else
+            oneManifest(testfileAbs) ;
         throw new TerminationException(0) ;
     }
     
     static void oneManifest(String testManifest)
     {
-        QueryTestSuiteFactory.results = new EarlReport(null, null, null, null) ;
         TestSuite suite = QueryTestSuiteFactory.make(testManifest) ;
 
         //junit.textui.TestRunner.run(suite) ;
         SimpleTestRunner.runAndReport(suite) ;
+    }
+    
+    
+    static void oneManifestEarl(String testManifest)
+    {
+        QueryTestSuiteFactory.results = new EarlReport(null, null, null, null) ;
+        TestSuite suite = QueryTestSuiteFactory.make(testManifest) ;
+
+        //junit.textui.TestRunner.run(suite) ;
+        SimpleTestRunner.runSilent(suite) ;
         
-        // XXX
-        //QueryTestSuiteFactory.results.getModel().write(System.out, "TTL") ;
+        QueryTestSuiteFactory.results.getModel().write(System.out, "TTL") ;
+        
     }
     
     static void allTests()

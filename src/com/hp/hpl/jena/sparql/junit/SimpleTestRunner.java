@@ -30,6 +30,14 @@ public class SimpleTestRunner extends BaseTestRunner
     public void testFailed(int arg0, Test test, Throwable t) {}
     protected void runFailed(String arg0) { }
 
+
+    static public TestResult runSilent(Test ts)
+    {
+        TestResult result = new TestResult() ;
+        result.addListener(new SilentListener()) ;
+        ts.run(result) ;
+        return result ;
+    }
     
     static public TestResult runNoReport(Test ts)
     {
