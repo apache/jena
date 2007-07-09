@@ -22,6 +22,7 @@ import com.hp.hpl.jena.sparql.engine.ref.QueryEngineQuad;
 import com.hp.hpl.jena.sparql.engine.ref.QueryEngineRef;
 import com.hp.hpl.jena.sparql.expr.E_Function;
 import com.hp.hpl.jena.sparql.expr.NodeValue;
+import com.hp.hpl.jena.sparql.junit.EarlReport;
 import com.hp.hpl.jena.sparql.junit.QueryTestSuiteFactory;
 import com.hp.hpl.jena.sparql.junit.SimpleTestRunner;
 import com.hp.hpl.jena.sparql.test.ARQTestSuite;
@@ -221,10 +222,14 @@ public class qtest
     
     static void oneManifest(String testManifest)
     {
+        QueryTestSuiteFactory.results = new EarlReport(null, null, null, null) ;
         TestSuite suite = QueryTestSuiteFactory.make(testManifest) ;
 
         //junit.textui.TestRunner.run(suite) ;
         SimpleTestRunner.runAndReport(suite) ;
+        
+        // XXX
+        //QueryTestSuiteFactory.results.getModel().write(System.out, "TTL") ;
     }
     
     static void allTests()
