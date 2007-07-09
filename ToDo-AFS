@@ -5,9 +5,7 @@ SDB ToDo list (and general notes)
 
 + Setting options for testing.
 + Tests for union graphs. 
-
-+ javadoc in build.xml
-+ Home page
++ Use cursors for streaming / PostgreSQL
 
 == Pattern table and inference
 
