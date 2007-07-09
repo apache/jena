@@ -1,0 +1,305 @@
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl:     <http://www.w3.org/2002/07/owl#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+
+<http://www.w3.org/ns/earl#SingleAssertor>
+    rdf:type    owl:Thing , rdfs:Class ;
+    rdfs:comment
+                "One person or evaluation tool that claims assertions"@en ;
+    rdfs:label  "Single Assertor"@en ;
+    owl:oneOf   ([ rdf:type    owl:Thing , <http://www.w3.org/ns/earl#Software>
+                  ] [ rdf:type    <http://xmlns.com/foaf/0.1/Agent> , owl:Thing
+                  ]) .
+
+<http://www.w3.org/ns/earl#helpAssertor>
+    rdf:type    rdf:Property ;
+    rdfs:comment
+                "Assertor assisting to determine assertion result"@en ;
+    rdfs:domain
+                <http://www.w3.org/ns/earl#CompoundAssertor> ;
+    rdfs:label  "Has Help Assertor"@en ;
+    rdfs:range  <http://www.w3.org/ns/earl#Assertor> .
+
+<http://www.w3.org/ns/earl#fail>
+    rdf:type    owl:Thing ;
+    rdfs:comment
+                "Test failed"@en ;
+    rdfs:label  "Fail"@en .
+
+<http://www.w3.org/ns/earl#TestRequirement>
+    rdf:type    rdfs:Class ;
+    rdfs:comment
+                "A requirement against which subjects are tested"@en ;
+    rdfs:label  "Test Requirement"@en ;
+    rdfs:subClassOf
+                <http://www.w3.org/ns/earl#TestCriterion> .
+
+<http://www.w3.org/ns/earl#info>
+    rdf:type    rdf:Property ;
+    rdfs:domain
+                <http://www.w3.org/ns/earl#TestResult> ;
+    rdfs:label  "Has Additional Information"@en .
+
+<http://www.w3.org/ns/earl#semiAutomatic>
+    rdf:type    owl:Thing ;
+    rdfs:comment
+                "Test was performed primarily by a tool, and human assistance"@en ;
+    rdfs:label  "Semi-Automatic"@en .
+
+<http://www.w3.org/ns/earl#TestResult>
+    rdf:type    rdfs:Class ;
+    rdfs:comment
+                "Result from conducting test cases on subjects"@en ;
+    rdfs:label  "Test Result"@en ;
+    rdfs:subClassOf
+                ([ rdf:type    owl:Restriction ;
+                    owl:maxCardinality
+                                "1"^^<http://www.w3.org/2001/XMLSchema#nonNegativeInteger> ;
+                    owl:minCardinality
+                                "1"^^<http://www.w3.org/2001/XMLSchema#nonNegativeInteger> ;
+                    owl:onProperty
+                                <http://www.w3.org/ns/earl#outcome>
+                  ]) .
+
+<http://www.w3.org/ns/earl#Software>
+    rdf:type    rdfs:Class ;
+    rdfs:comment
+                "A tool that can perform tests or be the subject of testing"@en ;
+    rdfs:label  "Software Tool"@en ;
+    rdfs:subClassOf
+                ([ rdf:type    owl:Restriction ;
+                    owl:minCardinality
+                                "1"^^<http://www.w3.org/2001/XMLSchema#nonNegativeInteger> ;
+                    owl:onProperty
+                                <http://purl.org/dc/elements/1.1/title>
+                  ]) .
+
+<http://www.w3.org/ns/earl#mode>
+    rdf:type    rdf:Property ;
+    rdfs:domain
+                <http://www.w3.org/ns/earl#Assertion> ;
+    rdfs:label  "Has Test Mode"@en ;
+    rdfs:range  <http://www.w3.org/ns/earl#TestMode> .
+
+<http://www.w3.org/ns/earl#result>
+    rdf:type    rdf:Property ;
+    rdfs:domain
+                <http://www.w3.org/ns/earl#Assertion> ;
+    rdfs:label  "Has Test Result"@en ;
+    rdfs:range  <http://www.w3.org/ns/earl#TestResult> .
+
+<http://www.w3.org/ns/earl#notAvailable>
+    rdf:type    owl:Thing ;
+    rdfs:comment
+                "Test was performed by a combination of persons and tools"@en ;
+    rdfs:label  "Not Available"@en .
+
+<http://www.w3.org/ns/earl#pass>
+    rdf:type    owl:Thing ;
+    rdfs:comment
+                "Test passed"@en ;
+    rdfs:label  "Pass"@en .
+
+<http://www.w3.org/ns/earl#TestMode>
+    rdf:type    rdfs:Class ;
+    rdfs:comment
+                "Mode in which tests were conducted"@en ;
+    rdfs:label  "Test Mode"@en ;
+    owl:oneOf   (<http://www.w3.org/ns/earl#manual> <http://www.w3.org/ns/earl#automatic> <http://www.w3.org/ns/earl#semiAutomatic> <http://www.w3.org/ns/earl#notAvailable> <http://www.w3.org/ns/earl#heuristic>) .
+
+<http://www.w3.org/ns/earl#CompoundAssertor>
+    rdf:type    owl:Thing , rdfs:Class ;
+    rdfs:comment
+                "Group of persons or evaluation tools that claim assertions"@en ;
+    rdfs:label  "Compound Assertor"@en ;
+    rdfs:subClassOf
+                ([ rdf:type    owl:Restriction ;
+                    owl:minCardinality
+                                "1"^^<http://www.w3.org/2001/XMLSchema#nonNegativeInteger> ;
+                    owl:onProperty
+                                <http://www.w3.org/ns/earl#mainAssertor>
+                  ]) .
+
+<http://www.w3.org/ns/earl#outcome>
+    rdf:type    rdf:Property ;
+    rdfs:domain
+                <http://www.w3.org/ns/earl#TestResult> ;
+    rdfs:label  "Has Outcome"@en ;
+    rdfs:range  <http://www.w3.org/ns/earl#OutcomeValue> .
+
+<http://www.w3.org/ns/earl#TestCase>
+    rdf:type    rdfs:Class ;
+    rdfs:comment
+                "A test case against which subjects are tested"@en ;
+    rdfs:label  "Test Case"@en ;
+    rdfs:subClassOf
+                <http://www.w3.org/ns/earl#TestCriterion> .
+
+<http://www.w3.org/ns/earl#subject>
+    rdf:type    rdf:Property ;
+    rdfs:domain
+                <http://www.w3.org/ns/earl#Assertion> ;
+    rdfs:label  "Has Test Subject"@en ;
+    rdfs:range  <http://www.w3.org/ns/earl#TestSubject> .
+
+<http://www.w3.org/ns/earl#>
+    rdfs:comment
+                "Evaluation And Report Language (EARL) 1.0 Schema as defined by http://www.w3.org/TR/EARL10-Schema/"@en ;
+    rdfs:label  "EARL 1.0 Schema"@en .
+
+<http://www.w3.org/ns/earl#sourceCopy>
+    rdf:type    rdf:Property ;
+    rdfs:domain
+                <http://www.w3.org/ns/earl#Content> ;
+    rdfs:label  "Has Copy of Source"@en .
+
+<http://www.w3.org/ns/earl#Content>
+    rdf:type    rdfs:Class ;
+    rdfs:comment
+                "Subjects that are available on the Web"@en ;
+    rdfs:label  "Content"@en ;
+    rdfs:subClassOf
+                ([ rdf:type    owl:Restriction ;
+                    owl:minCardinality
+                                "1"^^<http://www.w3.org/2001/XMLSchema#nonNegativeInteger> ;
+                    owl:onProperty
+                                <http://purl.org/dc/elements/1.1/date>
+                  ]) .
+
+<http://www.w3.org/ns/earl#cannotTell>
+    rdf:type    owl:Thing ;
+    rdfs:comment
+                "Outcome of the test is uncertain"@en ;
+    rdfs:label  "Can Not Tell"@en .
+
+<http://www.w3.org/ns/earl#Assertor>
+    rdf:type    rdfs:Class ;
+    rdfs:comment
+                "Persons or evaluation tools that claim assertions"@en ;
+    rdfs:label  "Assertor"@en ;
+    owl:oneOf   (<http://www.w3.org/ns/earl#SingleAssertor> <http://www.w3.org/ns/earl#CompoundAssertor>) .
+
+<http://www.w3.org/ns/earl#notTested>
+    rdf:type    owl:Thing ;
+    rdfs:comment
+                "Test has not been carried out"@en ;
+    rdfs:label  "Not Tested"@en .
+
+<http://www.w3.org/ns/earl#Assertion>
+    rdf:type    rdfs:Class ;
+    rdfs:comment
+                "Parent node that contains all parts of an assertion"@en ;
+    rdfs:label  "An assertion"@en ;
+    rdfs:subClassOf
+                ([ rdf:type    owl:Restriction ;
+                    owl:maxCardinality
+                                "1"^^<http://www.w3.org/2001/XMLSchema#nonNegativeInteger> ;
+                    owl:minCardinality
+                                "1"^^<http://www.w3.org/2001/XMLSchema#nonNegativeInteger> ;
+                    owl:onProperty
+                                <http://www.w3.org/ns/earl#assertedBy>
+                  ] [ rdf:type    owl:Restriction ;
+                    owl:maxCardinality
+                                "1"^^<http://www.w3.org/2001/XMLSchema#nonNegativeInteger> ;
+                    owl:minCardinality
+                                "1"^^<http://www.w3.org/2001/XMLSchema#nonNegativeInteger> ;
+                    owl:onProperty
+                                <http://www.w3.org/ns/earl#subject>
+                  ] [ rdf:type    owl:Restriction ;
+                    owl:maxCardinality
+                                "1"^^<http://www.w3.org/2001/XMLSchema#nonNegativeInteger> ;
+                    owl:minCardinality
+                                "1"^^<http://www.w3.org/2001/XMLSchema#nonNegativeInteger> ;
+                    owl:onProperty
+                                <http://www.w3.org/ns/earl#test>
+                  ] [ rdf:type    owl:Restriction ;
+                    owl:maxCardinality
+                                "1"^^<http://www.w3.org/2001/XMLSchema#nonNegativeInteger> ;
+                    owl:minCardinality
+                                "1"^^<http://www.w3.org/2001/XMLSchema#nonNegativeInteger> ;
+                    owl:onProperty
+                                <http://www.w3.org/ns/earl#result>
+                  ] [ rdf:type    owl:Restriction ;
+                    owl:maxCardinality
+                                "1"^^<http://www.w3.org/2001/XMLSchema#nonNegativeInteger> ;
+                    owl:onProperty
+                                <http://www.w3.org/ns/earl#mode>
+                  ]) .
+
+<http://www.w3.org/ns/earl#automatic>
+    rdf:type    owl:Thing ;
+    rdfs:comment
+                "Test was performed by a tool only"@en ;
+    rdfs:label  "Automatic"@en .
+
+<http://www.w3.org/ns/earl#notApplicable>
+    rdf:type    owl:Thing ;
+    rdfs:comment
+                "Test is not applicable to the subject"@en ;
+    rdfs:label  "Not Applicable"@en .
+
+<http://www.w3.org/ns/earl#context>
+    rdf:type    rdf:Property ;
+    rdfs:domain
+                <http://www.w3.org/ns/earl#Content> ;
+    rdfs:label  "Has Context"@en .
+
+<http://www.w3.org/ns/earl#assertedBy>
+    rdf:type    rdf:Property ;
+    rdfs:domain
+                <http://www.w3.org/ns/earl#Assertion> ;
+    rdfs:label  "Is Asserted By"@en ;
+    rdfs:range  <http://www.w3.org/ns/earl#Assertor> .
+
+<http://www.w3.org/ns/earl#heuristic>
+    rdf:type    owl:Thing ;
+    rdfs:comment
+                "Result was derived from other results"@en ;
+    rdfs:label  "Heuristic"@en .
+
+<http://www.w3.org/ns/earl#TestCriterion>
+    rdf:type    rdfs:Class ;
+    rdfs:comment
+                "A testable statement against which subjects are tested"@en ;
+    rdfs:label  "Test Criterion"@en .
+
+<http://www.w3.org/ns/earl#TestSubject>
+    rdf:type    rdfs:Class ;
+    rdfs:comment
+                "Subject of the assertion"@en ;
+    rdfs:label  "Test Subject"@en .
+
+<http://www.w3.org/ns/earl#mainAssertor>
+    rdf:type    rdf:Property ;
+    rdfs:comment
+                "Assertor mainly responsible for determining assertion result"@en ;
+    rdfs:domain
+                <http://www.w3.org/ns/earl#CompoundAssertor> ;
+    rdfs:label  "Has Main Assertor"@en ;
+    rdfs:range  <http://www.w3.org/ns/earl#Assertor> .
+
+<http://www.w3.org/ns/earl#pointer>
+    rdf:type    rdf:Property ;
+    rdfs:domain
+                <http://www.w3.org/ns/earl#TestResult> ;
+    rdfs:label  "Has Location Pointer"@en .
+
+<http://www.w3.org/ns/earl#test>
+    rdf:type    rdf:Property ;
+    rdfs:domain
+                <http://www.w3.org/ns/earl#Assertion> ;
+    rdfs:label  "Has Test Criterion"@en ;
+    rdfs:range  <http://www.w3.org/ns/earl#TestCriterion> .
+
+<http://www.w3.org/ns/earl#OutcomeValue>
+    rdf:type    rdfs:Class ;
+    rdfs:comment
+                "Nominal value of the result"@en ;
+    rdfs:label  "Outcome Value"@en ;
+    owl:oneOf   (<http://www.w3.org/ns/earl#pass> <http://www.w3.org/ns/earl#fail> <http://www.w3.org/ns/earl#cannotTell> <http://www.w3.org/ns/earl#notApplicable> <http://www.w3.org/ns/earl#notTested>) .
+
+<http://www.w3.org/ns/earl#manual>
+    rdf:type    owl:Thing ;
+    rdfs:comment
+                "Test was performed by a human only"@en ;
+    rdfs:label  "Manual"@en .

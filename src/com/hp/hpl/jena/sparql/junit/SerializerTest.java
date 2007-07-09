@@ -16,9 +16,9 @@ public class SerializerTest extends TestCaseARQ
     String queryString ;
     TestItem testItem ;
     
-    public SerializerTest(String testName, TestItem t)
+    public SerializerTest(String testName, EarlReport earl, TestItem t)
     {
-        super(testName) ;
+        super(testName, earl) ;
         testItem = t ;
     }
 
@@ -33,7 +33,7 @@ public class SerializerTest extends TestCaseARQ
 //        setTest(testName, queryString) ;
 //    }
 
-    private void setTest(String testName, String _queryString)
+    private void setTest(String testName, EarlReport earl, String _queryString)
     {
         super.setName(testName) ;
         this.queryString = _queryString ;

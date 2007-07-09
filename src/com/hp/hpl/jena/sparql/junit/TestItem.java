@@ -44,19 +44,20 @@ public class TestItem
     private String queryFile ;
     private Syntax queryFileSyntax ;
     
-    public TestItem(Resource r, Resource defaultTestType, Syntax defaultQuerySyntax, DataFormat defaultDataSyntax)
+    public TestItem(Resource entry, Resource defaultTestType,
+                    Syntax defaultQuerySyntax, DataFormat defaultDataSyntax)
     {
-        testResource = r ;
+        testResource = entry ;
         
-        if ( ! r.hasProperty(TestManifest.name) )
-            throw new QueryTestException("TestItem with no name ("+r+")") ;
+        if ( ! entry.hasProperty(TestManifest.name) )
+            throw new QueryTestException("TestItem with no name ("+entry+")") ;
         name = _getName() ;
 
-        if ( ! r.hasProperty(TestManifest.action) )
+        if ( ! entry.hasProperty(TestManifest.action) )
             throw new QueryTestException("TestItem '"+name+"' with no action") ;
         
         // Assumes one type per test only.
-        testType = TestUtils.getResource(r, RDF.type) ;
+        testType = TestUtils.getResource(entry, RDF.type) ;
         if ( testType == null )
             testType= defaultTestType ;
         
@@ -70,7 +71,7 @@ public class TestItem
         namedGraphURIs = _getNamedGraphsURIs() ; 
         
         queryFile = _getQueryFile() ;
-        queryFileSyntax = _getSyntax(r.getModel(), queryFile, defaultQuerySyntax) ;
+        queryFileSyntax = _getSyntax(entry.getModel(), queryFile, defaultQuerySyntax) ;
         if ( queryFileSyntax == null && queryFile != null )
             queryFileSyntax = Syntax.guessQueryFileSyntax(queryFile) ;
         

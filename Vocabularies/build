@@ -36,9 +36,9 @@ function proc
 ##     "http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#"
 
 
-syntaxCheck test-manifest-x.n3
-proc test-manifest-x.n3 TestManifestX \
-    "http://jena.hpl.hp.com/2005/05/test-manifest-extra#"
+## syntaxCheck test-manifest-x.n3
+## proc test-manifest-x.n3 TestManifestX \
+##     "http://jena.hpl.hp.com/2005/05/test-manifest-extra#"
 
 
 ## proc test-query.n3 VocabTestQuery \
@@ -49,4 +49,10 @@ proc test-manifest-x.n3 TestManifestX \
 
 ## syntaxCheck  list-pfunction.ttl
 ## proc list-pfunction.ttl ListPFunction "http://jena.hpl.hp.com/ARQ/list#"
+
+syntaxCheck  EARL.ttl
+proc EARL.ttl VocabEARL "http://www.w3.org/ns/earl#"
+
+## syntaxCheck  FOAF.ttl
+## proc FOAF.ttl FOAF "http://xmlns.com/foaf/0.1/"
 

@@ -6,15 +6,26 @@
 
 package com.hp.hpl.jena.sparql.junit;
 
+import junit.framework.TestCase;
+
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryFactory;
-
-import junit.framework.TestCase;
 
 
 public class TestCaseARQ extends TestCase
 {
-    protected TestCaseARQ(String name) { super(name) ; }
+    protected EarlReport results = null ;
+    
+    protected TestCaseARQ(String name, EarlReport earl)
+    { 
+        super(name) ;
+        this.results = earl ;
+    }
+    
+    public void setEARL(EarlReport earl)
+    {
+        this.results = earl ;
+    }
     
     protected Query queryFromString(String qStr)
     {
@@ -35,6 +46,22 @@ public class TestCaseARQ extends TestCase
         return query ;
     }
 
+    protected void success()
+    {
+        if ( results == null ) return ;
+    }
+
+    protected void failure()
+    {
+        if ( results == null ) return ;
+    }
+
+    protected void notApplicable()
+    {
+        if ( results == null ) return ;
+    }
+
+    
 }
 
 /*

@@ -18,14 +18,14 @@ public class SyntaxTest extends TestCaseARQ
     boolean expectLegalSyntax ;
     TestItem testItem ;
     
-    public SyntaxTest(String testName, TestItem t)
+    public SyntaxTest(String testName, EarlReport earl, TestItem t)
     {
-        this(testName, t, true) ;
+        this(testName, earl, t, true) ;
     }
 
-    public SyntaxTest(String testName, TestItem t, boolean positiveTest)
+    public SyntaxTest(String testName, EarlReport earl, TestItem t, boolean positiveTest)
     {
-        super(testName) ;
+        super(testName, earl) ;
         testItem = t ;
         expectLegalSyntax = positiveTest ; 
     }
@@ -47,9 +47,9 @@ public class SyntaxTest extends TestCaseARQ
 //    { this(testName, queryString, true) ; }
 
     
-    public SyntaxTest(String testName, String queryString,  boolean positiveTest)
+    public SyntaxTest(String testName, EarlReport earl, String queryString,  boolean positiveTest)
     {
-        super(testName) ;
+        super(testName, earl) ;
         setTest(testName, queryString, positiveTest) ;
     }
 

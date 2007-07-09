@@ -34,7 +34,6 @@ public class QueryTest extends TestCaseARQ
     private static int testCounter = 1 ;
     private static boolean printModelsOnFailure = false ;
     // -- Items from construction
-    Model model ;
     int testNumber = testCounter++ ;
     TestItem testItem ;
     FileManager queryFileManager ;
@@ -46,10 +45,9 @@ public class QueryTest extends TestCaseARQ
     // If supplied with a model, the test will load that model with data from the source
     // If no model is supplied one is created or attached (e.g. a database)
 
-    public QueryTest(Model m, String testName, FileManager fm, TestItem t)
+    public QueryTest(String testName, EarlReport earl, FileManager fm, TestItem t)
     {
-        super(fixName(testName)) ;
-        model = m ;
+        super(fixName(testName), earl) ;
         queryFileManager = fm ;
         testItem = t ;
         isRDQLtest = (testItem.getQueryFileSyntax().equals(Syntax.syntaxRDQL)) ;
@@ -157,16 +155,7 @@ public class QueryTest extends TestCaseARQ
     {
         Query query = null ;
         try {
-            // Create query
-            if ( testItem.getQueryFile() == null )
-            {
-                fail("Query test file is null") ;
-                return ;
-            }
-            
-            try {
-                query = QueryFactory.read(testItem.getQueryFile(), null, testItem.getQueryFileSyntax()) ;
-            }
+            try { query = queryFromTestItem(testItem) ; }
             catch (QueryException qEx)
             {
                 query = null ;
@@ -174,7 +163,6 @@ public class QueryTest extends TestCaseARQ
                 throw qEx ;
             }
 
-            //query.setBaseURI(testItem.getBaseURI()) ;
             Dataset dataset = setUpDataset(query, testItem) ;
             if ( dataset == null && ! doesQueryHaveDataset(query) ) 
                 fail("No dataset for query") ;

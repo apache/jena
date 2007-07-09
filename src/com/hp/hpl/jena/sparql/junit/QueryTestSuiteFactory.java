@@ -6,8 +6,11 @@
 
 package com.hp.hpl.jena.sparql.junit;
 
+import junit.framework.Test;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
+
 import com.hp.hpl.jena.query.Syntax;
-import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.sparql.core.DataFormat;
 import com.hp.hpl.jena.sparql.vocabulary.TestManifest;
@@ -16,13 +19,11 @@ import com.hp.hpl.jena.util.FileManager;
 import com.hp.hpl.jena.util.junit.TestFactoryManifest;
 import com.hp.hpl.jena.util.junit.TestUtils;
 
-import junit.framework.*;
-
 public class QueryTestSuiteFactory extends TestFactoryManifest
 {
     private FileManager fileManager = FileManager.get() ;
-    private Model model = null ;
-    
+    // XXX
+    private EarlReport results = new EarlReport(null, null, null, null) ;
 
     /** Make a test suite from a manifest file */
     static public TestSuite make(String filename) 
@@ -35,7 +36,9 @@ public class QueryTestSuiteFactory extends TestFactoryManifest
     static public TestSuite make(String query, String data, String result)
     {
         TestItem item = new TestItem(query, query, data, result) ;
-        QueryTest t = new QueryTest(null, item.getName(), FileManager.get(), item) ;
+        // Minimal
+        EarlReport results = new EarlReport(null, null, null, null) ;
+        QueryTest t = new QueryTest(item.getName(), results, FileManager.get(), item) ;
         TestSuite ts = new TestSuite() ;
         ts.setName(TestUtils.safeName(query)) ;
         ts.addTest(t) ;
@@ -64,10 +67,6 @@ public class QueryTestSuiteFactory extends TestFactoryManifest
         
         TestItem item = new TestItem(entry, defaultTestType, querySyntax, DataFormat.langXML) ;
         
-        //Done by TestItem itself
-//        if ( querySyntax != null )
-//            item.setQueryFileSyntax(querySyntax) ;
-        
         TestCase test = null ;
         
         if ( item.getTestType() != null )
@@ -75,19 +74,19 @@ public class QueryTestSuiteFactory extends TestFactoryManifest
             // Good syntax
             if ( item.getTestType().equals(TestManifest.PositiveSyntaxTest)
                  || item.getTestType().equals(TestManifestX.TestSyntax) )
-                test = new SyntaxTest(testName, item) ;
+                test = new SyntaxTest(testName, results, item) ;
             
             // Bad syntax
             if ( item.getTestType().equals(TestManifest.NegativeSyntaxTest) 
                 || item.getTestType().equals(TestManifestX.TestBadSyntax) )
-                test = new SyntaxTest(testName, item, false) ;
+                test = new SyntaxTest(testName, results, item, false) ;
             
             if ( item.getTestType().equals(TestManifestX.TestSerialization) )
-                test = new SerializerTest(testName, item) ;
+                test = new SerializerTest(testName, results, item) ;
             
             if ( item.getTestType().equals(TestManifest.QueryEvaluationTest)
                 || item.getTestType().equals(TestManifestX.TestQuery) )
-                test = new QueryTest(model, testName, fileManager, item) ;
+                test = new QueryTest(testName, results, fileManager, item) ;
             
             if ( item.getTestType().equals(TestManifestX.TestSurpressed) )
                 test = new SurpressedTest(testName, item.getComment()) ;
@@ -97,11 +96,9 @@ public class QueryTestSuiteFactory extends TestFactoryManifest
         }
         // Default 
         if ( test == null )
-            test = new QueryTest(model, testName, fileManager, item) ;
+            test = new QueryTest(testName, results, fileManager, item) ;
         return test ;
     }
-
-    
 }
 
 /*
