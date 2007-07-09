@@ -26,7 +26,7 @@ import java.text.* ;
 /** Common framework for implementing N3 writers.
  *
  * @author		Andy Seaborne
- * @version 	$Id: N3JenaWriterCommon.java,v 1.37 2007-07-05 16:45:55 andy_seaborne Exp $
+ * @version 	$Id: N3JenaWriterCommon.java,v 1.38 2007-07-09 17:23:01 andy_seaborne Exp $
  */
 
 public class N3JenaWriterCommon implements RDFWriter
@@ -42,7 +42,8 @@ public class N3JenaWriterCommon implements RDFWriter
     
     Map writerPropertyMap = null ;
 
-    final boolean doAbbreviatedBaseURIref = getBooleanValue("abbrevBaseURI", true) ; 
+// BaseURI - <#>    
+//    final boolean doAbbreviatedBaseURIref = getBooleanValue("abbrevBaseURI", true) ; 
     boolean alwaysAllocateBNodeLabel = false ;
     
     // Common variables
@@ -64,8 +65,9 @@ public class N3JenaWriterCommon implements RDFWriter
 
 	// Work variables controlling the output
 	IndentedWriter out = null ;
-	String baseURIref = null ;
-    String baseURIrefHash = null ;
+	//Removed base URI specials - look for  "// BaseURI - <#>" & doAbbreviatedBaseURIref
+	//String baseURIref = null ;
+    //String baseURIrefHash = null ;
 
     // Min spacing of items    
     int minGap = getIntValue("minGap", 1) ;
@@ -153,12 +155,13 @@ public class N3JenaWriterCommon implements RDFWriter
             _out = new BufferedWriter(_out);
         out = new IndentedWriter(_out);
 
-        if ( base != null )
-        {
-            baseURIref = base ;
-            if ( !base.endsWith("#") &&! isOpaque(base) )
-                baseURIrefHash = baseURIref+"#" ;
-        }
+// BaseURI - <#>        
+//        if ( base != null )
+//        {
+//            baseURIref = base ;
+//            if ( !base.endsWith("#") &&! isOpaque(base) )
+//                baseURIrefHash = baseURIref+"#" ;
+//        }
         
         processModel(baseModel) ;
     }
@@ -210,8 +213,9 @@ public class N3JenaWriterCommon implements RDFWriter
         // then use this.
         String base2 = (String)prefixMap.get("") ;
         
-        if ( base2 == null && baseURIrefHash != null )
-            prefixMap.put("", baseURIrefHash) ;
+// BaseURI - <#>        
+//        if ( base2 == null && baseURIrefHash != null )
+//            prefixMap.put("", baseURIrefHash) ;
 
         for ( Iterator iter = prefixMap.keySet().iterator() ; iter.hasNext() ; )
         {
@@ -327,8 +331,9 @@ public class N3JenaWriterCommon implements RDFWriter
     
     protected void writeHeader(Model model)
     {
-        if (baseURIref != null && !baseURIref.equals("") )
-            out.println("# Base: " + baseURIref);
+// BaseURI - <#>
+//        if (baseURIref != null && !baseURIref.equals("") )
+//            out.println("# Base: " + baseURIref);
     }
     
     protected void writePrefixes(Model model)
@@ -338,14 +343,15 @@ public class N3JenaWriterCommon implements RDFWriter
             String p = (String) pIter.next();
             String u = (String) prefixMap.get(p);
 
-            // Special cases: N3 handling of base names.
-            if (doAbbreviatedBaseURIref && p.equals(""))
-            {
-                if (baseURIrefHash != null && u.equals(baseURIrefHash))
-                    u = "#";
-                if (baseURIref != null && u.equals(baseURIref))
-                    u = "";
-            }
+// BaseURI - <#>            
+//            // Special cases: N3 handling of base names.
+//            if (doAbbreviatedBaseURIref && p.equals(""))
+//            {
+//                if (baseURIrefHash != null && u.equals(baseURIrefHash))
+//                    u = "#";
+//                if (baseURIref != null && u.equals(baseURIref))
+//                    u = "";
+//            }
 
             String tmp = "@prefix " + p + ": ";
             out.print(tmp);
@@ -584,8 +590,9 @@ public class N3JenaWriterCommon implements RDFWriter
 		String matchURI = "" ;
 		String matchPrefix = null ;
 
-        if ( doAbbreviatedBaseURIref && uriStr.equals(baseURIref) )
-            return "<>" ;
+// BaseURI - <#>		
+//        if ( doAbbreviatedBaseURIref && uriStr.equals(baseURIref) )
+//            return "<>" ;
 
 		// Try for a prefix and write as qname.  Find the longest if several.
         // Possible optimization: split URI and have URI=> ns: map.
