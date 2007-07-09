@@ -10,7 +10,7 @@ package com.hp.hpl.jena.sparql.junit;
 import com.hp.hpl.jena.query.*;
 import com.hp.hpl.jena.sparql.util.IndentedLineBuffer;
 
-public class SerializerTest extends TestCaseARQ
+public class SerializerTest extends EarlTestCase
 {
     static int count = 0 ;
     String queryString ;
@@ -18,7 +18,7 @@ public class SerializerTest extends TestCaseARQ
     
     public SerializerTest(String testName, EarlReport earl, TestItem t)
     {
-        super(testName, earl) ;
+        super(testName, t.getURI(), earl) ;
         testItem = t ;
     }
 
@@ -45,7 +45,7 @@ public class SerializerTest extends TestCaseARQ
     //   Parse again.
     //   Are they equal?
     
-    protected void runTest() throws Throwable
+    protected void runTestForReal() throws Throwable
     {
         Query query = null ;
         if ( queryString == null )

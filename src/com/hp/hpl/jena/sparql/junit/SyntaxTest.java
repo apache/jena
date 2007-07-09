@@ -11,7 +11,7 @@ package com.hp.hpl.jena.sparql.junit;
 import com.hp.hpl.jena.query.*;
 
 
-public class SyntaxTest extends TestCaseARQ
+public class SyntaxTest extends EarlTestCase
 {
     static int count = 0 ;
     String queryString ;
@@ -25,7 +25,7 @@ public class SyntaxTest extends TestCaseARQ
 
     public SyntaxTest(String testName, EarlReport earl, TestItem t, boolean positiveTest)
     {
-        super(testName, earl) ;
+        super(testName, t.getURI(), earl) ;
         testItem = t ;
         expectLegalSyntax = positiveTest ; 
     }
@@ -49,7 +49,7 @@ public class SyntaxTest extends TestCaseARQ
     
     public SyntaxTest(String testName, EarlReport earl, String queryString,  boolean positiveTest)
     {
-        super(testName, earl) ;
+        super(testName, TestItem.fakeURI(), earl) ;
         setTest(testName, queryString, positiveTest) ;
     }
 
@@ -61,7 +61,7 @@ public class SyntaxTest extends TestCaseARQ
     }
     
     
-    protected void runTest() throws Throwable
+    protected void runTestForReal() throws Throwable
     {
         try {
             if ( queryString == null )

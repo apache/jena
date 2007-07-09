@@ -6,17 +6,16 @@
 
 package com.hp.hpl.jena.sparql.junit;
 
-import junit.framework.TestCase;
 
-public class SurpressedTest extends TestCase
+public class SurpressedTest extends EarlTestCase
 {
     public static boolean verbose = true ;
     String comment ;
     
-    public SurpressedTest(String testName, String comment)
+    public SurpressedTest(String testName, EarlReport report, TestItem testItem)
     {
-        super(testName) ;
-        this.comment = comment ;
+        super(testName, testItem.getURI(), report) ;
+        this.comment = testItem.getComment() ;
     }
     
 //    protected void setUp() throws Exception
@@ -29,8 +28,9 @@ public class SurpressedTest extends TestCase
 //        super.tearDown() ;
 //    }
 
-    protected void runTest() throws Throwable
+    protected void runTestForReal() throws Throwable
     {
+        super.notTested() ;
         if ( verbose )
         {
             System.out.print("** Surpressed: "+getName()) ;

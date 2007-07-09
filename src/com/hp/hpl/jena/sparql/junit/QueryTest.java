@@ -27,7 +27,7 @@ import com.hp.hpl.jena.util.FileManager;
 import com.hp.hpl.jena.util.FileUtils;
 import com.hp.hpl.jena.vocabulary.RDF;
 
-public class QueryTest extends TestCaseARQ
+public class QueryTest extends EarlTestCase
 {
     private static Log log = LogFactory.getLog( QueryTest.class );
     
@@ -47,7 +47,7 @@ public class QueryTest extends TestCaseARQ
 
     public QueryTest(String testName, EarlReport earl, FileManager fm, TestItem t)
     {
-        super(fixName(testName), earl) ;
+        super(fixName(testName), t.getURI(), earl) ;
         queryFileManager = fm ;
         testItem = t ;
         isRDQLtest = (testItem.getQueryFileSyntax().equals(Syntax.syntaxRDQL)) ;
@@ -151,7 +151,7 @@ public class QueryTest extends TestCaseARQ
         return DatasetUtils.createDataset(defaultGraphURIs, namedGraphURIs, null, null) ;
     }
     
-    protected void runTest() throws Throwable
+    protected void runTestForReal() throws Throwable
     {
         Query query = null ;
         try {

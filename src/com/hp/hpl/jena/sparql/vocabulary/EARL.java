@@ -96,7 +96,7 @@ public class EARL
     public static final Resource pass = resource("pass") ;
     public static final Resource fail = resource("fail") ;
     
-    public static final Resource notAvailable = resource("notAvailable") ;
+    public static final Resource notApplicable = resource("notApplicable") ;
     public static final Resource cannotTell = resource("cannotTell") ;
     public static final Resource notTested = resource("notTested") ;
     

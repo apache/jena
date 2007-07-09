@@ -30,6 +30,9 @@ import java.util.* ;
  */
 public class TestItem
 {
+    static int counter = 0 ;
+    public static String fakeURI() { return "test:"+(++counter) ; }
+    
     private Resource testResource = null ;
     private Resource actionResource = null ;
 
@@ -105,6 +108,13 @@ public class TestItem
 
     public String getResultFile() { return resultFile ; }
     public String getName() { return name ; }
+    public String getURI()
+    { 
+        if ( testResource.isURIResource() )
+            return testResource.getURI();
+        return fakeURI() ;
+    }
+    
     public String getComment() { return comment ; }
     public List getDefaultGraphURIs() { return defaultGraphURIs ; }
     public List getNamedGraphURIs() { return namedGraphURIs ; }

@@ -6,20 +6,26 @@
 
 package com.hp.hpl.jena.sparql.junit;
 
+import com.hp.hpl.jena.sparql.ARQException;
+
+import junit.framework.AssertionFailedError;
 import junit.framework.TestCase;
 
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryFactory;
 
 
-public class TestCaseARQ extends TestCase
+public abstract class EarlTestCase extends TestCase
 {
     protected EarlReport results = null ;
+    protected String testURI = null ;
+    private boolean resultRecorded = false ;
     
-    protected TestCaseARQ(String name, EarlReport earl)
+    protected EarlTestCase(String name, String testURI, EarlReport earl)
     { 
         super(name) ;
         this.results = earl ;
+        this.testURI = testURI ;
     }
     
     public void setEARL(EarlReport earl)
@@ -33,7 +39,6 @@ public class TestCaseARQ extends TestCase
         return query ;
     }
 
-
     protected Query queryFromTestItem(TestItem testItem)
     {
         if ( testItem.getQueryFile() == null )
@@ -46,22 +51,57 @@ public class TestCaseARQ extends TestCase
         return query ;
     }
 
+    final protected void runTest() throws Throwable
+    { 
+        try {
+            runTestForReal() ;
+            if ( ! resultRecorded )
+                success() ;
+        } catch (AssertionFailedError ex)
+        { 
+            if ( ! resultRecorded )
+                failure() ;
+            throw ex ;
+        }
+    }
+    
+    protected abstract void runTestForReal() throws Throwable ;
+
     protected void success()
     {
+        note() ;
         if ( results == null ) return ;
+        results.success(testURI) ;
     }
 
     protected void failure()
     {
+        note() ;
         if ( results == null ) return ;
+        results.failure(testURI) ;
     }
 
     protected void notApplicable()
     {
+        note() ;
         if ( results == null ) return ;
+        results.notApplicable(testURI) ;
+    }
+    
+    protected void notTested()
+    {
+        resultRecorded = true ;
+        if ( results == null ) return ;
+        results.notTested(testURI) ;
+    }
+    
+    private void note()
+    {
+        if ( resultRecorded )
+            throw new ARQException("Duplictaed test results: "+getName()) ;
+        resultRecorded = true ;
     }
 
-    
 }
 
 /*

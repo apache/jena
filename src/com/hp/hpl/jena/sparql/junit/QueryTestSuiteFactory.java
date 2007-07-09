@@ -22,8 +22,8 @@ import com.hp.hpl.jena.util.junit.TestUtils;
 public class QueryTestSuiteFactory extends TestFactoryManifest
 {
     private FileManager fileManager = FileManager.get() ;
-    // XXX
-    private EarlReport results = new EarlReport(null, null, null, null) ;
+    // Set (and retrieve) externally.
+    public static EarlReport results = null ;
 
     /** Make a test suite from a manifest file */
     static public TestSuite make(String filename) 
@@ -36,9 +36,7 @@ public class QueryTestSuiteFactory extends TestFactoryManifest
     static public TestSuite make(String query, String data, String result)
     {
         TestItem item = new TestItem(query, query, data, result) ;
-        // Minimal
-        EarlReport results = new EarlReport(null, null, null, null) ;
-        QueryTest t = new QueryTest(item.getName(), results, FileManager.get(), item) ;
+        QueryTest t = new QueryTest(item.getName(), null, FileManager.get(), item) ;
         TestSuite ts = new TestSuite() ;
         ts.setName(TestUtils.safeName(query)) ;
         ts.addTest(t) ;
@@ -89,7 +87,7 @@ public class QueryTestSuiteFactory extends TestFactoryManifest
                 test = new QueryTest(testName, results, fileManager, item) ;
             
             if ( item.getTestType().equals(TestManifestX.TestSurpressed) )
-                test = new SurpressedTest(testName, item.getComment()) ;
+                test = new SurpressedTest(testName, results, item) ;
             
             if ( test == null )
                 System.err.println("Test type '"+item.getTestType()+"' not recognized") ;

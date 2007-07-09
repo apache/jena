@@ -13,23 +13,30 @@ import com.hp.hpl.jena.sparql.vocabulary.EARL;
 import com.hp.hpl.jena.sparql.vocabulary.FOAF;
 import com.hp.hpl.jena.vocabulary.DC;
 import com.hp.hpl.jena.vocabulary.DCTerms;
+import com.hp.hpl.jena.vocabulary.RDF;
 import com.hp.hpl.jena.vocabulary.RDFS;
 
 public class EarlReport
 {
-    /*
-     * [ a earl:Assertion;
-         earl:assertedBy _8:chime;
-         earl:result [ a earl:TestResult;
-                 earl:outcome earl:pass];
-         earl:subject <http://rdflib.net>;
-         earl:test _7:dawg-graph-02].
+    /* An entry looks like:
+     * [ rdf:type earl:Assertion;
+         earl:assertedBy [ ...] 
+         earl:result [ 
+                 rdf:type earl:TestResult;
+                 earl:outcome earl:pass ];
+         earl:subject <thingBeingTested>;
+         earl:test <testPerformed> ].
      */
     
-    Model earl = ModelFactory.createDefaultModel() ;
-    
+    Model earl = null ;
+
     public EarlReport(String label, String title, String version, String homepage)
     {
+        earl = ModelFactory.createDefaultModel() ;
+        earl.setNsPrefix("earl", EARL.getURI()) ;
+        earl.setNsPrefix("foaf", FOAF.getURI()) ;
+        earl.setNsPrefix("rdf", RDF.getURI()) ;
+        
         Resource system = earl.createResource(EARL.Software);
         if ( label != null )
             system.addProperty(RDFS.label, label);
@@ -52,27 +59,39 @@ public class EarlReport
   147 //                    .addProperty(DC.date,date)
   148          );
     */
-    public void success()
+    public void success(String testURI)
     {
-        earl.createResource(EARL.TestResult)
-                .addProperty(EARL.outcome, EARL.pass) ;
+        createAssertionResult(testURI, EARL.pass) ;
     }
     
-    public void failure()
+    public void failure(String testURI)
     {
-        earl.createResource(EARL.TestResult)
-        .addProperty(EARL.outcome, EARL.pass) ;
-
+        createAssertionResult(testURI, EARL.fail) ;
     }
 
-    public void notApplicable()
-    {}
+    public void notApplicable(String testURI)
+    {
+        createAssertionResult(testURI, EARL.notApplicable);
+    }
     
-    private Resource createAssertion(String testURI, Resource outcome)
+    public void notTested(String testURI)
+    {
+        createAssertionResult(testURI, EARL.notTested);
+    }
+    
+    private void createAssertionResult(String testURI, Resource outcome)
+    {
+        Resource result = createResult(outcome) ;
+        Resource assertion = createAssertion(testURI) ;
+        assertion.addProperty(EARL.result, result) ;
+    }
+    
+    
+    private Resource createAssertion(String testURI)
     {
         return earl.createResource(EARL.Assertion)
                     .addProperty(EARL.test, testURI)
-                    .addProperty(EARL.result, createResult(outcome))
+                    //.addProperty(EARL.result, ???)
                     .addProperty(EARL.subject, "ARQ") ; // Resource
     }
     
