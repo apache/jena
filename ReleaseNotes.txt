@@ -3,8 +3,9 @@ Release Notes
 
 ==== Jena 2.5.4
 
-N3 Writer
-      Correct writing nested bnodes with no properties to make strict Turtle.
+N3 & Turtle Writer
+    o Correct writing nested bnodes with no properties to make strict Turtle.
+    o No longer automatcally add default namespace prefix. 
 
 ==== Jena 2.5.3
 
