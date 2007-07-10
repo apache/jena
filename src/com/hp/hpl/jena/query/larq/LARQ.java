@@ -22,7 +22,7 @@ import com.hp.hpl.jena.rdf.model.AnonId;
 import com.hp.hpl.jena.rdf.model.Literal;
 import com.hp.hpl.jena.sparql.ARQConstants;
 import com.hp.hpl.jena.sparql.util.Context;
-import com.hp.hpl.jena.sparql.util.NodeUtils;
+import com.hp.hpl.jena.sparql.util.NodeFactory;
 import com.hp.hpl.jena.sparql.util.Symbol;
 
 public class LARQ
@@ -165,7 +165,7 @@ public class LARQ
             return null ;
         String datatype = doc.get(LARQ.fDataType) ;
         String lang = doc.get(LARQ.fLang) ;
-        return NodeUtils.createLiteralNode(lex, lang, datatype) ;
+        return NodeFactory.createLiteralNode(lex, lang, datatype) ;
     }
 }
 

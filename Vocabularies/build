@@ -11,10 +11,13 @@ function proc
 {
     TMP=TT
     FILE="$1"
+    shift
     CLASS="$2"
+    shift
     NS="$3"
+    shift
     echo "Schemagen: $FILE"
-    schemagen --rdfs -i "$FILE" -n "$CLASS" -a "$NS" -o "$CLASS".java -e N3
+    schemagen --rdfs -i "$FILE" -n "$CLASS" -a "$NS" -o "$CLASS".java -e N3 "$@" 
     # Add imports
     echo "package com.hp.hpl.jena.sparql.vocabulary ;" >> "$TMP"
     echo >>"$TMP"
@@ -50,8 +53,10 @@ function proc
 ## syntaxCheck  list-pfunction.ttl
 ## proc list-pfunction.ttl ListPFunction "http://jena.hpl.hp.com/ARQ/list#"
 
+##java jena.schemagen -i schema.rdf -o Earl.java -a http://www.w3.org/ns/earl# --inference
+
 syntaxCheck  EARL.ttl
-proc EARL.ttl VocabEARL "http://www.w3.org/ns/earl#"
+proc EARL.ttl VocabEARL "http://www.w3.org/ns/earl#" --inference
 
 ## syntaxCheck  FOAF.ttl
 ## proc FOAF.ttl FOAF "http://xmlns.com/foaf/0.1/"

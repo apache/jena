@@ -32,7 +32,7 @@ import com.hp.hpl.jena.sparql.pfunction.PropFuncArg;
 import com.hp.hpl.jena.sparql.pfunction.PropFuncArgType;
 import com.hp.hpl.jena.sparql.pfunction.PropertyFunctionEval;
 import com.hp.hpl.jena.sparql.util.IteratorTruncate;
-import com.hp.hpl.jena.sparql.util.NodeUtils;
+import com.hp.hpl.jena.sparql.util.NodeFactory;
 import com.hp.hpl.jena.util.iterator.Map1;
 import com.hp.hpl.jena.util.iterator.Map1Iterator;
 
@@ -218,7 +218,7 @@ public abstract class LuceneSearch extends PropertyFunctionEval
             Binding b = new BindingMap(binding) ;
             b.add(match, hit.getNode()) ;
             if ( score != null )
-                b.add(score, NodeUtils.floatToNode(hit.getScore())) ;
+                b.add(score, NodeFactory.floatToNode(hit.getScore())) ;
             return b ;
         }
         
@@ -235,7 +235,7 @@ public abstract class LuceneSearch extends PropertyFunctionEval
             return new QueryIterNullIterator(execCxt) ;
         if ( score == null ) 
             return new QueryIterSingleton(binding, execCxt) ;
-        return PFLib.oneResult(binding, score, NodeUtils.floatToNode(hit.getScore()), execCxt) ;
+        return PFLib.oneResult(binding, score, NodeFactory.floatToNode(hit.getScore()), execCxt) ;
     }
 
     static private String asString(Node node)
@@ -259,7 +259,7 @@ public abstract class LuceneSearch extends PropertyFunctionEval
     static private int asInteger(Node n)
     {
         if ( n == null ) return Integer.MIN_VALUE ;
-        return NodeUtils.nodeToInt(n) ;
+        return NodeFactory.nodeToInt(n) ;
     }
     
     static private boolean isInteger(int i) { return i != Integer.MIN_VALUE ; }

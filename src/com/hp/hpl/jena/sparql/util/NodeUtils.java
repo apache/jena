@@ -7,10 +7,8 @@
 package com.hp.hpl.jena.sparql.util;
 
 import com.hp.hpl.jena.datatypes.RDFDatatype;
-import com.hp.hpl.jena.datatypes.TypeMapper;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.impl.LiteralLabel;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException;
 import com.hp.hpl.jena.sparql.expr.Expr;
 
@@ -188,53 +186,6 @@ public class NodeUtils
     {
         return  node.getLiteralDatatypeURI() == null && 
                 node.getLiteralLanguage().equals("") ; 
-    }
-    
-
-    public static Node createLiteralNode(String lex, String lang, String datatypeURI)
-    {
-        if ( datatypeURI != null && datatypeURI.equals("") )
-            datatypeURI = null ;
-        
-        if ( lang != null && lang.equals("") )
-            lang = null ;
-        
-        RDFDatatype dType = null ;
-        if ( datatypeURI != null )
-            dType = TypeMapper.getInstance().getSafeTypeByName(datatypeURI);
-        
-        Node n = Node.createLiteral(lex, lang, dType) ;
-        return n ;
-    }
-    
-    public static int nodeToInt(Node node)
-    {
-        LiteralLabel lit = node.getLiteral() ;
-        
-        if ( ! XSDDatatype.XSDinteger.isValidLiteral(lit) )
-            return Integer.MIN_VALUE ;
-        int i = ((Number)lit.getValue()).intValue() ;
-        return i ;
-    }
-    
-    public static long nodeToLong(Node node)
-    {
-        LiteralLabel lit = node.getLiteral() ;
-        
-        if ( ! XSDDatatype.XSDinteger.isValidLiteral(lit) )
-            return Long.MIN_VALUE ;
-        long i = ((Number)lit.getValue()).longValue() ;
-        return i ;
-    }
-    
-    public static Node intToNode(int integer)
-    {
-        return Node.createLiteral(Integer.toString(integer), "", XSDDatatype.XSDinteger) ;
-    }
-
-    public static Node floatToNode(float value)
-    {
-        return Node.createLiteral(Float.toString(value), "", XSDDatatype.XSDfloat) ;
     }
 }
 

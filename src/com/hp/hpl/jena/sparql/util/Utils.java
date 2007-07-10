@@ -10,6 +10,7 @@ import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.TimeZone;
 
 /** Miscellaneous operations - not query specific */
@@ -49,6 +50,16 @@ public class Utils
 //    }
     
     
+    public static String nowAsXSDDateTimeString()
+    {
+        return calendarToXSDDateTimeString(new GregorianCalendar()) ;
+    }
+    
+    public static String todayAsXSDDateString()
+    {
+        return calendarToXSDDateString(new GregorianCalendar()) ;
+    }
+
     public static String calendarToXSDDateTimeString(Calendar cal)
     {
         return calendarToXSDString(cal, "yyyy-MM-dd'T'HH:mm:ss.S") ;

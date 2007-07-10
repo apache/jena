@@ -9,7 +9,7 @@ package com.hp.hpl.jena.query.larq;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.binding.BindingMap;
-import com.hp.hpl.jena.sparql.util.NodeUtils;
+import com.hp.hpl.jena.sparql.util.NodeFactory;
 import com.hp.hpl.jena.util.iterator.Map1;
 
 /** Convert Lucene search hits to LARQ form (node and score)
@@ -38,7 +38,7 @@ class HitConverter implements Map1
         Binding b = new BindingMap(binding) ;
         b.add(Var.alloc(subject), hit.getNode()) ;
         if ( score != null )
-            b.add(Var.alloc(score), NodeUtils.floatToNode(hit.getScore())) ;
+            b.add(Var.alloc(score), NodeFactory.floatToNode(hit.getScore())) ;
         return b ;
     }
     

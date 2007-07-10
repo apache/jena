@@ -16,7 +16,7 @@ import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.pfunction.PFLib;
 import com.hp.hpl.jena.sparql.util.GNode;
 import com.hp.hpl.jena.sparql.util.GraphList;
-import com.hp.hpl.jena.sparql.util.NodeUtils;
+import com.hp.hpl.jena.sparql.util.NodeFactory;
 
 /** List length : property function to get the length of a list.
  * 
@@ -48,14 +48,14 @@ public class listLength extends ListBase1
         int x = GraphList.length(new GNode(graph, listNode)) ;
         if ( x < 0 )
             return PFLib.noResults(execCxt) ;
-        Node n = NodeUtils.intToNode(x) ;
+        Node n = NodeFactory.intToNode(x) ;
         return PFLib.oneResult(binding, varLength, n, execCxt) ;
     }
     
     private QueryIterator verify(Binding binding, Graph graph, Node listNode, Node length, ExecutionContext execCxt)
     {
         int x = GraphList.length(new GNode(graph, listNode)) ;
-        int len = NodeUtils.nodeToInt(length) ;
+        int len = NodeFactory.nodeToInt(length) ;
         
         if ( x == len )
             return PFLib.result(binding, execCxt) ;

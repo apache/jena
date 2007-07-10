@@ -22,7 +22,7 @@ import com.hp.hpl.jena.sparql.pfunction.PFLib;
 import com.hp.hpl.jena.sparql.pfunction.PropFuncArg;
 import com.hp.hpl.jena.sparql.util.GNode;
 import com.hp.hpl.jena.sparql.util.GraphList;
-import com.hp.hpl.jena.sparql.util.NodeUtils;
+import com.hp.hpl.jena.sparql.util.NodeFactory;
 
 /** List membership with index : property function to access list using index  
  *  Usage: ?list :listIndex (?index ?member)
@@ -64,7 +64,7 @@ public class listIndex extends ListBaseList
                                             Node listNode, Node indexNode, Var varMember,
                                             ExecutionContext execCxt)
     {
-        int i = NodeUtils.nodeToInt(indexNode) ;
+        int i = NodeFactory.nodeToInt(indexNode) ;
         if ( i < 0 )
             return PFLib.noResults(execCxt) ;
 
@@ -78,7 +78,7 @@ public class listIndex extends ListBaseList
                                                Node listNode, Node indexNode, Node memberNode,
                                                ExecutionContext execCxt)
     {
-        int i = NodeUtils.nodeToInt(indexNode) ;
+        int i = NodeFactory.nodeToInt(indexNode) ;
         if ( i < 0 )
             return PFLib.noResults(execCxt) ;
         Node n = GraphList.get(new GNode(graph, listNode), i) ;
@@ -98,7 +98,7 @@ public class listIndex extends ListBaseList
         int i = GraphList.index(new GNode(graph, listNode), member) ;
         if ( i < 0 )
             return PFLib.noResults(execCxt) ;
-        Node idx = NodeUtils.intToNode(i) ;
+        Node idx = NodeFactory.intToNode(i) ;
         return PFLib.oneResult(binding, var, idx, execCxt) ; 
     }
 
@@ -111,7 +111,7 @@ public class listIndex extends ListBaseList
         List bindings = new ArrayList() ;
         for ( int i = 0 ; i < members.size() ; i++ )
         {
-            Node idx = NodeUtils.intToNode(i) ;
+            Node idx = NodeFactory.intToNode(i) ;
             Node member = (Node)members.get(i) ;
             Binding b = new BindingMap(binding) ;
             b.add(varIndex, idx) ;

@@ -243,7 +243,6 @@ public class qtest
     
     static void oneManifestEarl(String testManifest)
     {
-        
         // Include information later.
         EarlReport report = new EarlReport("ARQ", ARQ.VERSION, "http://jena.sf.net/ARQ") ;
         QueryTestSuiteFactory.results = report ;
@@ -262,7 +261,8 @@ public class qtest
         // Andy wrote the test software (updates the thing being tested as well as they are the same). 
         Resource who = report.getModel().createResource(FOAF.Person)
                                 .addProperty(FOAF.name, "Andy Seaborne")
-                                .addProperty(FOAF.homepage, model.createResource("http://www.hpl.hp.com/people/afs")) ; 
+                                .addProperty(FOAF.homepage, 
+                                             model.createResource("http://www.hpl.hp.com/people/afs")) ; 
         Resource reporter = report.getReporter() ;
         reporter.addProperty(DC.creator, who) ;
         

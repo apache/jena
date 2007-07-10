@@ -6,9 +6,13 @@
 
 package com.hp.hpl.jena.sparql.junit;
 
+import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
+import com.hp.hpl.jena.rdf.model.Literal;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.Resource;
+import com.hp.hpl.jena.rdf.model.ResourceFactory;
+import com.hp.hpl.jena.sparql.util.Utils;
 import com.hp.hpl.jena.sparql.vocabulary.EARL;
 import com.hp.hpl.jena.sparql.vocabulary.FOAF;
 import com.hp.hpl.jena.vocabulary.DC;
@@ -56,6 +60,7 @@ public class EarlReport
         </earl:Software>
         */
         
+        // Utils.
         system = earl.createResource(EARL.Software);
         if ( title != null )
             system.addProperty(DC.title, title);
@@ -118,8 +123,19 @@ public class EarlReport
     
     private Resource createResult(Resource outcome)
     {
+//        String nowStr = Utils.nowAsXSDDateTimeString() ;
+//        
+//        Literal now = 
+//            ResourceFactory.createTypedLiteral(nowStr, XSDDatatype.XSDdateTime) ;
+
+        String todayStr = Utils.todayAsXSDDateString() ;
+        
+        Literal now = 
+            ResourceFactory.createTypedLiteral(todayStr, XSDDatatype.XSDdate) ;
+            
         return earl.createResource(EARL.TestResult)
-                   .addProperty(EARL.outcome, outcome) ;
+                   .addProperty(EARL.outcome, outcome)
+                   .addProperty(DC.date, now) ;
     }
         
     

@@ -18,6 +18,7 @@ import com.hp.hpl.jena.sparql.syntax.Element;
 import com.hp.hpl.jena.sparql.syntax.Template;
 import com.hp.hpl.jena.sparql.syntax.TemplateGroup;
 import com.hp.hpl.jena.sparql.syntax.TemplateTriple;
+import com.hp.hpl.jena.sparql.util.NodeFactory;
 import com.hp.hpl.jena.update.GraphStore;
 import com.hp.hpl.jena.update.GraphStoreFactory;
 
@@ -25,14 +26,14 @@ import com.hp.hpl.jena.query.QueryFactory;
 
 public class TestUpdateGraph extends TestUpdateBase
 {
-    protected static Node s = Node.create("http://example/r") ;
-    protected static Node p = Node.create("http://example/p") ;
-    protected static Node o1 = Node.create("2007") ;
+    protected static Node s = NodeFactory.create("<http://example/r>") ;
+    protected static Node p = NodeFactory.create("<http://example/p>") ;
+    protected static Node o1 = NodeFactory.create("2007") ;
     protected static Triple triple1 =  new Triple(s,p,o1) ;
-    protected static Node o2 = Node.create("1066") ;
+    protected static Node o2 = NodeFactory.create("1066") ;
     protected static Triple triple2 =  new Triple(s,p,o2) ;
     protected static Graph graph1 = data1() ;
-    protected static Node graphIRI = Node.createURI("http://example/graph") ;
+    protected static Node graphIRI = NodeFactory.create("<http://example/graph>") ;
     
     public void testInsert1()
     {
@@ -162,7 +163,7 @@ public class TestUpdateGraph extends TestUpdateBase
     {
         GraphStore gStore = GraphStoreFactory.create() ;
         script(gStore, "update-1.rup") ;
-        assertTrue(graphContains(gStore.getDefaultGraph(), new Triple(s,p,Node.create("123")))) ;
+        assertTrue(graphContains(gStore.getDefaultGraph(), new Triple(s,p,NodeFactory.create("123")))) ;
     }
     
     public void testUpdateScript2()
@@ -170,7 +171,7 @@ public class TestUpdateGraph extends TestUpdateBase
         GraphStore gStore = GraphStoreFactory.create() ;
         script(gStore, "update-2.rup") ;
         assertTrue(graphContains(gStore.getGraph(Node.createURI("http://example/g1")),
-                                 new Triple(s,p,Node.create("123")))) ;
+                                 new Triple(s,p,NodeFactory.create("123")))) ;
         assertTrue(graphEmpty(gStore.getDefaultGraph())) ;
     }
 

@@ -13,10 +13,9 @@ import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.shared.PrefixMapping;
 import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
-import com.hp.hpl.jena.vocabulary.XSD;
-
 import com.hp.hpl.jena.sparql.ARQException;
-import com.hp.hpl.jena.sparql.util.NodeUtils;
+import com.hp.hpl.jena.sparql.util.NodeFactory;
+import com.hp.hpl.jena.vocabulary.XSD;
 
 public class TestSSE extends TestCase
 {
@@ -31,8 +30,8 @@ public class TestSSE extends TestCase
     static Node int3 = Node.createLiteral("3", null, XSDDatatype.XSDinteger) ;
     static Node strLangEN = Node.createLiteral("xyz", "en", null) ;
 
-    static Node typeLit1 = NodeUtils.createLiteralNode("123", null, "http://example/type") ;
-    static Node node1 = Node.create("http://example/node1") ;
+    static Node typeLit1 = NodeFactory.createLiteralNode("123", null, "http://example/type") ;
+    static Node node1 = Node.createURI("http://example/node1") ;
     
     static Item int1i = Item.createNode(int1) ;
     static Item int2i = Item.createNode(int2) ;

@@ -118,28 +118,11 @@ public class ExprUtils
 
     public static NodeValue parseNodeValue(String s)
     {
-        try {
-            Query query = QueryFactory.make() ;
-            query.setPrefixMapping(ARQConstants.getGlobalPrefixMap()) ;
-            Reader in = new StringReader(s) ;
-            SPARQLParser parser = new SPARQLParser(in) ;
-            parser.setQuery(query) ;
-            Node n = parser.GraphTerm() ;
-            // Check we consumed the whole string.
-            Token t = parser.getNextToken() ;
-            if ( t.kind != SPARQLParserTokenManager.EOF )
-                throw makeException("Extra tokens beginning \""+t.image+"\" starting line "+t.beginLine+", column "+t.beginColumn, t.beginLine, t.beginColumn) ;
-            NodeValue nv = NodeValue.makeNode(n) ;
-            return nv ;
-        } catch (ParseException ex)
-        { throw new QueryParseException(ex.getMessage(), ex.currentToken.beginLine, ex.currentToken.beginColumn) ; }
+        Node n = NodeFactory.create(s) ;
+        NodeValue nv = NodeValue.makeNode(n) ;
+        return nv ;
     }
     
-    private static QueryParseException makeException(String msg, int line, int column)
-    {
-        return new QueryParseException(msg, line, column) ;
-    }
-
     public static void fmtSPARQL(IndentedWriter iOut, Expr expr, PrefixMapping pmap)
     {
         ExprVisitor v = new FmtExprARQ(iOut, pmap) ;

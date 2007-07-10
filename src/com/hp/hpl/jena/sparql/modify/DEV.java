@@ -21,6 +21,7 @@ import com.hp.hpl.jena.sparql.modify.op.UpdateCreate;
 import com.hp.hpl.jena.sparql.modify.op.UpdateInsert;
 import com.hp.hpl.jena.sparql.modify.op.UpdateLoad;
 import com.hp.hpl.jena.sparql.util.FmtUtils;
+import com.hp.hpl.jena.sparql.util.NodeFactory;
 import com.hp.hpl.jena.update.GraphStore;
 import com.hp.hpl.jena.update.GraphStoreFactory;
 import com.hp.hpl.jena.update.UpdateFactory;
@@ -29,11 +30,11 @@ import com.hp.hpl.jena.util.FileManager;
 
 public class DEV
 {
-    protected static Node s = Node.create("http://example/r") ;
-    protected static Node p = Node.create("http://example/p") ;
-    protected static Node o1 = Node.create("2007") ;
+    protected static Node s = NodeFactory.create("<http://example/r>") ;
+    protected static Node p = NodeFactory.create("<http://example/p>") ;
+    protected static Node o1 = NodeFactory.create("2007") ;
     protected static Triple triple1 =  new Triple(s,p,o1) ;
-    protected static Node o2 = Node.create("1066") ;
+    protected static Node o2 = NodeFactory.create("1066") ;
     protected static Triple triple2 =  new Triple(s,p,o2) ;
     
     public static void main(String[] argv) 

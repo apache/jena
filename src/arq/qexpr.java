@@ -28,6 +28,7 @@ import com.hp.hpl.jena.sparql.expr.NodeValue;
 import com.hp.hpl.jena.sparql.function.FunctionEnv;
 import com.hp.hpl.jena.sparql.util.ExprUtils;
 import com.hp.hpl.jena.sparql.util.FmtUtils;
+import com.hp.hpl.jena.sparql.util.NodeFactory;
 
 /** A program to execute expressions from the command line.
   *
@@ -164,6 +165,7 @@ public class qexpr
                     else
                     {
                         // Default action
+                        ARQ.getContext().set(ARQConstants.sysCurrentTime, NodeFactory.nowAsDateTime()) ;
                         FunctionEnv env = new ExecutionContext(ARQ.getContext(), null, null) ; 
                         NodeValue r = expr.eval(null, env) ;
                         //System.out.println(r.asQuotedString()) ;

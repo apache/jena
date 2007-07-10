@@ -29,7 +29,7 @@ import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.binding.BindingMap;
 import com.hp.hpl.jena.sparql.util.GraphUtils;
 import com.hp.hpl.jena.sparql.util.LabelToNodeMap;
-import com.hp.hpl.jena.sparql.util.NodeUtils;
+import com.hp.hpl.jena.sparql.util.NodeFactory;
 import com.hp.hpl.jena.util.FileUtils;
 
 /**
@@ -295,7 +295,7 @@ public class JSONInput extends SPARQLResult
                         String lex = jbinding.getString(dfValue) ;
                         String lang = jbinding.optString(dfLang) ;
                         String dtype = jbinding.optString(dfDatatype) ;
-                        Node n = NodeUtils.createLiteralNode(lex, lang, dtype) ;
+                        Node n = NodeFactory.createLiteralNode(lex, lang, dtype) ;
                         binding.add(Var.alloc(varName), n) ;
                     }
                 }

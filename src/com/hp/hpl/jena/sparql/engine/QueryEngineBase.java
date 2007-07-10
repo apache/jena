@@ -10,6 +10,7 @@ import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.graph.Graph;
 
+import com.hp.hpl.jena.sparql.ARQConstants;
 import com.hp.hpl.jena.sparql.algebra.AlgebraGenerator;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.core.DataSourceGraphImpl;
@@ -17,6 +18,7 @@ import com.hp.hpl.jena.sparql.core.DatasetGraph;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.binding.BindingRoot;
 import com.hp.hpl.jena.sparql.util.Context;
+import com.hp.hpl.jena.sparql.util.NodeFactory;
 
 import com.hp.hpl.jena.query.ARQ;
 import com.hp.hpl.jena.query.Query;
@@ -60,6 +62,7 @@ public abstract class QueryEngineBase implements OpExec
             input = BindingRoot.create() ;
         }
         this.startBinding = input ;
+        context.set(ARQConstants.sysCurrentTime, NodeFactory.nowAsDateTime()) ;
     }
     
     public Plan getPlan()
