@@ -6,15 +6,15 @@
 
 package com.hp.hpl.jena.sdb;
 
-import com.hp.hpl.jena.query.QueryException;
+import com.hp.hpl.jena.sparql.ARQException;
 
-/** Root of all exception in SDB
+/** Root of all exceptions in SDB
  * 
  * @author Andy Seaborne
  * @version $Id: SDBException.java,v 1.3 2006/02/01 10:20:04 andy_seaborne Exp $
  */
 
-public class SDBException extends QueryException
+public class SDBException extends ARQException
 {
     public SDBException() { super() ; }
     public SDBException(Throwable cause) { super(cause) ; }
