@@ -122,10 +122,10 @@ public class sdbquery extends CmdArgsDB
                 Query query = modQuery.getQuery() ;
                 QueryExecution qExec = QueryExecutionFactory.create(query, getModStore().getDataset()) ;
                 
-                
                 if ( isVerbose() )
                     PrintSDB.print(((QueryExecutionBase)qExec).getPlan().getOp()) ;
                 
+                // Better: if timing, copy results to local and time that. 
                 if ( false )
                     System.err.println("Execute query for loop "+(i+1)+" "+memStr()) ;
                 QueryExecUtils.executeQuery(query, qExec, modResults.getResultsFormat()) ;
