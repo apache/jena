@@ -18,6 +18,8 @@ import arq.cmdline.CmdLineArgs;
 
 import com.hp.hpl.jena.n3.IRIResolver;
 import com.hp.hpl.jena.query.ARQ;
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.sparql.engine.ref.QueryEngineQuad;
 import com.hp.hpl.jena.sparql.engine.ref.QueryEngineRef;
 import com.hp.hpl.jena.sparql.expr.E_Function;
@@ -28,6 +30,10 @@ import com.hp.hpl.jena.sparql.junit.SimpleTestRunner;
 import com.hp.hpl.jena.sparql.test.ARQTestSuite;
 import com.hp.hpl.jena.sparql.util.Symbol;
 import com.hp.hpl.jena.sparql.util.Utils;
+import com.hp.hpl.jena.sparql.vocabulary.FOAF;
+import com.hp.hpl.jena.sparql.vocabulary.TestManifest;
+import com.hp.hpl.jena.vocabulary.DC;
+import com.hp.hpl.jena.vocabulary.DCTerms;
 
 
 /** A program to execute query test suites
@@ -237,10 +243,30 @@ public class qtest
     
     static void oneManifestEarl(String testManifest)
     {
-        QueryTestSuiteFactory.results = new EarlReport(null, null, null, null) ;
+        
+        // Include information later.
+        EarlReport report = new EarlReport("ARQ", ARQ.VERSION, "http://jena.sf.net/ARQ") ;
+        QueryTestSuiteFactory.results = report ;
+        
+        Model model = report.getModel() ;
+        model.setNsPrefix("dawg", TestManifest.getURI()) ;
+        
+        // Update the EARL report. 
+        Resource jena = model.createResource()
+                    .addProperty(FOAF.homepage, model.createResource("http://jena.sf.net/")) ;
+        
+        // ARQ is part fo Jena.
+        Resource arq = report.getSystem()
+                        .addProperty(DCTerms.isPartOf, jena) ;
+        
+        // Andy wrote the test software (updates the thing being tested as well as they are the same). 
+        Resource who = report.getModel().createResource(FOAF.Person)
+                                .addProperty(FOAF.name, "Andy Seaborne")
+                                .addProperty(FOAF.homepage, model.createResource("http://www.hpl.hp.com/people/afs")) ; 
+        Resource reporter = report.getReporter() ;
+        reporter.addProperty(DC.creator, who) ;
+        
         TestSuite suite = QueryTestSuiteFactory.make(testManifest) ;
-
-        //junit.textui.TestRunner.run(suite) ;
         SimpleTestRunner.runSilent(suite) ;
         
         QueryTestSuiteFactory.results.getModel().write(System.out, "TTL") ;

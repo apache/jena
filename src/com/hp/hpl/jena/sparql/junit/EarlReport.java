@@ -14,10 +14,11 @@ import com.hp.hpl.jena.sparql.vocabulary.FOAF;
 import com.hp.hpl.jena.vocabulary.DC;
 import com.hp.hpl.jena.vocabulary.DCTerms;
 import com.hp.hpl.jena.vocabulary.RDF;
-import com.hp.hpl.jena.vocabulary.RDFS;
 
 public class EarlReport
 {
+    // Ref: http://www.w3.org/TR/EARL10-Schema/
+    
     /* An entry looks like:
      * [ rdf:type earl:Assertion;
          earl:assertedBy [ ...] 
@@ -25,42 +26,56 @@ public class EarlReport
                  rdf:type earl:TestResult;
                  earl:outcome earl:pass ];
          earl:subject <thingBeingTested>;
-         earl:test <testPerformed> ].
+         earl:test <testPerformed> ;
+         earl:mode .... ].
      */
     
     Model earl = null ;
+    Resource system = null ;
+    Resource reporter = null ;
 
-    public EarlReport(String label, String title, String version, String homepage)
+    /* Required:
+     * Recommended: DC title
+     * Optional: dc:hasVersion, dc:description, homepage
+     */
+    
+    public EarlReport(String title, String version, String homepage)
     {
         earl = ModelFactory.createDefaultModel() ;
         earl.setNsPrefix("earl", EARL.getURI()) ;
         earl.setNsPrefix("foaf", FOAF.getURI()) ;
         earl.setNsPrefix("rdf", RDF.getURI()) ;
+        earl.setNsPrefix("dc", DC.getURI()) ;
         
-        Resource system = earl.createResource(EARL.Software);
-        if ( label != null )
-            system.addProperty(RDFS.label, label);
+        /*
+        <earl:Software rdf:about="#tool">
+          <dc:title xml:lang="en">Cool Tool</dc:title>
+          <dc:description xml:lang="en">My favorite tool!</dc:description>
+          <foaf:homepage rdf:resource="http://example.org/tools/#cool"/>
+          <dct:hasVersion>1.0.3</dct:hasVersion>
+        </earl:Software>
+        */
+        
+        system = earl.createResource(EARL.Software);
         if ( title != null )
             system.addProperty(DC.title, title);
         if ( version != null )
             system.addProperty(DCTerms.hasVersion, version);
         if ( homepage != null )
             system.addProperty(FOAF.homepage, earl.createResource(homepage));
+        
+        // Can be a person or a thing.
+        // But here it is automated tests unless told otherwise..
+        reporter = system ;
     }
-
-    /*return earl.createResource(EARL.Assertion).
-  140          addProperty(EARL.test,tests[i])
-  141          .addProperty(EARL.mode,
-  142                       mode
-  143                  )
-  144          .addProperty(
-  145               EARL.result,
-  146               rslt
-  147 //                    .addProperty(DC.date,date)
-  148          );
-    */
+    
+    public Resource getSystem() { return system ; }
+    
+    public Resource getReporter() { return reporter ; }
+    public void setReporter(Resource reporter) { this.reporter = reporter ; }
+    
     public void success(String testURI)
-    {
+    { 
         createAssertionResult(testURI, EARL.pass) ;
     }
     
@@ -82,17 +97,23 @@ public class EarlReport
     private void createAssertionResult(String testURI, Resource outcome)
     {
         Resource result = createResult(outcome) ;
-        Resource assertion = createAssertion(testURI) ;
-        assertion.addProperty(EARL.result, result) ;
+        Resource assertion = createAssertion(testURI, result) ;
     }
+
+    /* 
+    *  Required: earl:assertedBy , earl:subject , earl:test , earl:result
+    *  Recommended: earl:mode 
+    */
     
-    
-    private Resource createAssertion(String testURI)
+    private Resource createAssertion(String testURI, Resource result)
     {
+        Resource thisTest = earl.createResource(testURI) ;
         return earl.createResource(EARL.Assertion)
-                    .addProperty(EARL.test, testURI)
-                    //.addProperty(EARL.result, ???)
-                    .addProperty(EARL.subject, "ARQ") ; // Resource
+                    .addProperty(EARL.test, thisTest)
+                    .addProperty(EARL.result, result)
+                    .addProperty(EARL.subject, system)
+                    .addProperty(EARL.assertedBy, system)
+                    .addProperty(EARL.mode, EARL.automatic) ;
     }
     
     private Resource createResult(Resource outcome)

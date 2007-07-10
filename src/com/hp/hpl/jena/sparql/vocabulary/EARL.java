@@ -93,13 +93,36 @@ public class EARL
     /** <p>Persons or evaluation tools that claim assertions</p> */
     public static final Resource Assertor = resource( "Assertor" );
     
-    public static final Resource pass = resource("pass") ;
-    public static final Resource fail = resource("fail") ;
     
-    public static final Resource notApplicable = resource("notApplicable") ;
-    public static final Resource cannotTell = resource("cannotTell") ;
-    public static final Resource notTested = resource("notTested") ;
+    /** <p>Test failed</p> */
+    public static final Resource fail = resource( "fail" );
     
+    /** <p>Test has not been carried out</p> */
+    public static final Resource notTested = resource( "notTested" );
+    
+    /** <p>Test passed</p> */
+    public static final Resource pass = resource( "pass" );
+    
+    /** <p>Test was performed primarily by a tool, and human assistance</p> */
+    public static final Resource semiAutomatic = resource( "semiAutomatic" );
+    
+    /** <p>Test is not applicable to the subject</p> */
+    public static final Resource notApplicable = resource( "notApplicable" );
+    
+    /** <p>Result was derived from other results</p> */
+    public static final Resource heuristic = resource( "heuristic" );
+    
+    /** <p>Test was performed by a tool only</p> */
+    public static final Resource automatic = resource( "automatic" );
+    
+    /** <p>Test was performed by a human only</p> */
+    public static final Resource manual = resource( "manual" );
+    
+    /** <p>Outcome of the test is uncertain</p> */
+    public static final Resource cannotTell = resource( "cannotTell" );
+    
+    /** <p>Test was performed by a combination of persons and tools</p> */
+    public static final Resource notAvailable = resource( "notAvailable" );
 }
 
 /*
