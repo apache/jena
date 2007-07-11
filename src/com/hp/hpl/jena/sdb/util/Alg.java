@@ -172,6 +172,31 @@ public class Alg
         
         return iter ;
     }
+    
+    
+    private static class InvertedFilter<T> implements Filter<T>
+    {
+        public static <T> Filter<T> invert(Filter<T> filter) { return new InvertedFilter<T>(filter) ; }
+        private Filter<T> baseFilter ;
+        private InvertedFilter(Filter<T> baseFilter) { this.baseFilter = baseFilter ; }
+        
+        public boolean accept(T item)
+        {
+            return ! baseFilter.accept(item) ;
+        }
+        
+    }
+    
+    public static <T> Iterator<T> notFilter(Iterable<? extends T> stream,
+                                         Filter<T> filter)
+    { return notFilter(stream.iterator(), filter) ; }
+    
+    public static <T> Iterator<T> notFilter(final Iterator<? extends T> stream, final Filter<T> filter)
+    {
+        Filter<T> flippedFilter = InvertedFilter.invert(filter) ;
+        return filter(stream, flippedFilter) ;
+    }
+    
 
     public static <T, R> Iterator<R> map(Iterable<? extends T> stream, Transform<T, R> converter)
     { return map(stream.iterator(), converter) ; }
