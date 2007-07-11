@@ -7,6 +7,7 @@
 package com.hp.hpl.jena.sdb.sql;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -178,6 +179,21 @@ public class SDBConnection
             return null ;
         } catch (SQLException ex)
         {  return null ; }
+    }
+    
+    /** Prepare a statement **/
+    public PreparedStatement prepareStatement(String sqlString) throws SQLException {
+    	if ( loggingSQLStatements() )
+    		writeLog("prepareStatement", sqlString) ;
+    	
+    	Connection conn = getSqlConnection() ;
+    	try {
+    		PreparedStatement ps = conn.prepareStatement(sqlString);
+    		return ps;
+    	} catch (SQLException ex) {
+    		exception("prepareStatement", ex, sqlString) ;
+    		throw ex;
+    	}
     }
     
     /** Get the names of the application tables */

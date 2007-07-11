@@ -6,7 +6,6 @@
 
 package com.hp.hpl.jena.sdb.layout2;
 
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -50,8 +49,6 @@ public abstract class TupleLoaderBase extends com.hp.hpl.jena.sdb.store.TupleLoa
 	}
 	
 	protected void init() throws SQLException {
-		Connection conn = this.connection().getSqlConnection();
-		
 		// Create the temporary tables
 		if (!TableUtils.hasTable(connection().getSqlConnection(), getNodeLoader())) // Can happen with Oracle
 			connection().exec(getCreateTempNodes());
@@ -59,13 +56,13 @@ public abstract class TupleLoaderBase extends com.hp.hpl.jena.sdb.store.TupleLoa
 			connection().exec(getCreateTempTuples());
 		
 		// Prepare those statements
-		insertNodeLoader = conn.prepareStatement(getInsertTempNodes());
-		insertTupleLoader = conn.prepareStatement(getInsertTempTuples());
-		insertNodes = conn.prepareStatement(getLoadNodes());
-		insertTuples = conn.prepareStatement(getLoadTuples());
-		deleteTuples = conn.prepareStatement(getDeleteTuples());
-		if (getClearTempNodes() != null) clearNodeLoader = conn.prepareStatement(getClearTempNodes());
-		if (getClearTempTuples() != null) clearTupleLoader = conn.prepareStatement(getClearTempTuples());
+		insertNodeLoader = connection().prepareStatement(getInsertTempNodes());
+		insertTupleLoader = connection().prepareStatement(getInsertTempTuples());
+		insertNodes = connection().prepareStatement(getLoadNodes());
+		insertTuples = connection().prepareStatement(getLoadTuples());
+		deleteTuples = connection().prepareStatement(getDeleteTuples());
+		if (getClearTempNodes() != null) clearNodeLoader = connection().prepareStatement(getClearTempNodes());
+		if (getClearTempTuples() != null) clearTupleLoader = connection().prepareStatement(getClearTempTuples());
 	}
 	
 	public int getArity() {

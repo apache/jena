@@ -15,11 +15,9 @@ import com.hp.hpl.jena.sdb.layout2.index.StoreTriplesNodesIndexOracle;
 import com.hp.hpl.jena.sdb.sql.JDBC;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.sql.SDBConnectionDesc;
-import com.hp.hpl.jena.sdb.sql.TableUtils;
 import com.hp.hpl.jena.sdb.store.Store;
 import com.hp.hpl.jena.sdb.store.StoreLoaderPlus;
 import com.hp.hpl.jena.sdb.store.TableDesc;
-
 
 public class Scratch {
 
@@ -40,8 +38,6 @@ public class Scratch {
                 desc.setPassword("swara");
                 desc.setType("oracle:thin");
                 conn = SDBFactory.createConnection(desc);
-                
-                System.err.println("!! ! " + TableUtils.hasTable(conn.getSqlConnection(), "nodeid"));
                 
                 store = new StoreTriplesNodesIndexOracle(conn);
                 store.getTableFormatter().format();
