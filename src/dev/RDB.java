@@ -18,7 +18,7 @@ public class RDB
         set("jena.db.password",  password) ;
     }
     
-    private static void set(String k, String v) {  set(k, v) ; }
+    private static void set(String k, String v) {  System.getProperties().setProperty(k, v) ; }
     
     // Set the basics, not user/password
     
