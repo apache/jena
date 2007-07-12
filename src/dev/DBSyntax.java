@@ -9,6 +9,8 @@ package dev;
 import static java.lang.String.format ;
 import static com.hp.hpl.jena.sdb.util.StrUtils.strjoin ;
 
+import java.util.List;
+
 /** Database column descriptions.  This calls contains the SQL (or common) standard forms,
  *  to be overrided by each database type.
  *  
@@ -34,6 +36,9 @@ public class DBSyntax
     
     public String text()                { return "ntext" ; }
 
+    public String primaryKey(List<String> colNames)
+    { return format("PRIMARY KEY(%s))", strjoin(", ", colNames)) ; }
+    
     public String primaryKey(String... colNames)                
     { return format("PRIMARY KEY(%s))", strjoin(", ", colNames)) ; }
 

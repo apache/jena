@@ -6,9 +6,12 @@
 
 package dev;
 
+import com.hp.hpl.jena.sdb.layout2.TableDescQuads;
+import com.hp.hpl.jena.sdb.layout2.TableDescTriples;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.sql.TableUtils;
 import com.hp.hpl.jena.sdb.store.StoreFormatterBase;
+import com.hp.hpl.jena.sdb.store.TableDesc;
 
 public abstract class StoreFormatterStd extends StoreFormatterBase
 {
@@ -51,9 +54,17 @@ public abstract class StoreFormatterStd extends StoreFormatterBase
         dropIndexesTableQuads() ;
     }
 
-    abstract protected void formatTableTriples() ;
+    public static TableDescQuads descQ = new TableDescQuads() ;
+    public static TableDescTriples descT = new TableDescTriples() ;
+    
+
+    
+    protected void formatTableTriples() { formatTupleTable(descT) ; }
+    protected void formatTableQuads()   { formatTupleTable(descQ) ; }
+    
+    abstract protected void formatTupleTable(TableDesc tableDesc) ;
+    
     abstract protected void formatTableNodes() ;
-    abstract protected void formatTableQuads() ;
     abstract protected void formatTablePrefixes() ;
     
     abstract protected void addIndexesTableTriples() ;

@@ -18,6 +18,7 @@ import com.hp.hpl.jena.sdb.util.alg.Transform;
 public class Iter<T> implements Iterable<T>
 {
     public static <T> Iter<T> iter(Iterator<T> iterator) { return new Iter<T>(iterator) ; }
+    public static <T> Iter<T> iter(Iterable<T> iterable) { return new Iter<T>(iterable.iterator()) ; }
     
     @SuppressWarnings("unchecked")
     public static <T> Iter<T> convert(Iterator iterator) { return new Iter<T>((Iterator<T>)iterator) ; }
@@ -56,9 +57,12 @@ public class Iter<T> implements Iterable<T>
         Alg.apply(iterator, action) ;
     }
 
+    public String asString() { return Alg.asString(iterator) ; }
+    public String asString(String sep) { return Alg.asString(iterator, sep) ; }
+    
     public Iter<T> append(Iter< ? extends T> iter)
     {
-        return iter(new Iterator2<T>(iterator, iter.iterator())) ;
+        return new Iter<T>(new Iterator2<T>(iterator, iter.iterator())) ;
     }
 }
 
