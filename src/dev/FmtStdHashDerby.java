@@ -68,9 +68,9 @@ public class FmtStdHashDerby extends StoreFormatterStd
         try { 
             connection().exec(sqlStr(
                                  "CREATE TABLE "+TableDescTriples.name()+" (",
-                                 "    "+col("s", syntax.integer64(), false),
-                                 "    "+col("p", syntax.integer64(), false),
-                                 "    "+col("o", syntax.integer64(), false),
+                                 "    "+col("s", syntax.integer64(), NOT_NULL),
+                                 "    "+col("p", syntax.integer64(), NOT_NULL),
+                                 "    "+col("o", syntax.integer64(), NOT_NULL),
                                  "    "+syntax.primaryKey("s", "p", "o") ,
                                  ")"                
                     )) ;
@@ -87,10 +87,10 @@ public class FmtStdHashDerby extends StoreFormatterStd
         try { 
             connection().exec(sqlStr(
                                  "CREATE TABLE "+TableDescQuads.name()+" (",
-                                 "    "+col("g", syntax.integer64(), false),
-                                 "    "+col("s", syntax.integer64(), false),
-                                 "    "+col("p", syntax.integer64(), false),
-                                 "    "+col("o", syntax.integer64(), false),
+                                 "    "+col("g", syntax.integer64(), NOT_NULL),
+                                 "    "+col("s", syntax.integer64(), NOT_NULL),
+                                 "    "+col("p", syntax.integer64(), NOT_NULL),
+                                 "    "+col("o", syntax.integer64(), NOT_NULL),
                                  "    "+syntax.primaryKey("g", "s", "p", "o") ,
                                  ")"                
                     )) ;
