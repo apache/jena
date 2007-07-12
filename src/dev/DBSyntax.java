@@ -15,7 +15,7 @@ import static com.hp.hpl.jena.sdb.util.StrUtils.strjoin ;
  * @author Andy Seaborne
  * @version $Id$
  */ 
-public class DBCols
+public class DBSyntax
 {
     // -----------------
 
@@ -52,7 +52,10 @@ public class DBCols
     { return "DELETE FROM "+tableName ; }
     // -----------------
     
-    private String allowNull(String x, boolean nullable)
+    public static String notNull(String x)
+    { return allowNull(x, false); }
+    
+    public static String allowNull(String x, boolean nullable)
     {
         if ( ! nullable )
             x = x+" NOT NULL" ;
@@ -60,14 +63,20 @@ public class DBCols
     }
 
 
-    private String defaultValue(String x, String dftValue)
+    public static String defaultValue(String x, String dftValue)
     {
         if ( dftValue != null )
             x = x+" DEFAULT "+dftValue ;
         return x ;
     }
 
-
+    public static String col(String name, String type, boolean nullable)
+    {
+        String x = name+" "+type ;
+        x = allowNull(x, nullable) ;
+        return x ;
+        
+    }
 }
 
 /*

@@ -47,7 +47,7 @@ public abstract class FmtLayout2
     	dropIndexesTableQuads() ;
     }
 
-    // Override this if the synatx is a bit different 
+    // Override this if the syntax is a bit different 
     protected void addIndexesTableTriples()
     {
         try {
@@ -57,7 +57,7 @@ public abstract class FmtLayout2
         { throw new SDBExceptionSQL("SQLException indexing table '"+TableDescTriples.name()+"'",ex) ; }
     }
     
- // Override this if the syntax is a bit different 
+    // Override this if the syntax is a bit different 
     protected void addIndexesTableQuads()
     {
         try {
