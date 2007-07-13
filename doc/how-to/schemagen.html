@@ -123,7 +123,7 @@ Perhaps the easiest way to explain the detail of what schemagen does is to show 
   <code>Java jena.schemagen -i deputy.rdf -a http://example.org/eg#</code><br />
 to produce the following generated class:</p>
 <code><pre>
-/* CVS $Id: schemagen.html,v 1.13 2006-01-17 10:12:51 chris-dollin Exp $ */
+/* CVS $Id: schemagen.html,v 1.14 2007-07-13 07:28:03 ian_dickinson Exp $ */
 
 import com.hp.hpl.jena.rdf.model.*;
 
@@ -162,7 +162,7 @@ public class Deputy {
   to get:</p>
 <p>
   <pre><code>
-/* CVs $Id: schemagen.html,v 1.13 2006-01-17 10:12:51 chris-dollin Exp $ */
+/* CVs $Id: schemagen.html,v 1.14 2007-07-13 07:28:03 ian_dickinson Exp $ */
 
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.ontology.*;
@@ -283,7 +283,7 @@ Options can be specified on the command line (when invoking schemagen), or may b
   schemagen will continue and use default values (plus the other command line
   options) to configure the tool. If a file name or URL is given with <code>-c</code>,
   and that file cannot be located, schemagen will stop with an error.</p>
-  
+
 <p>Schemagen will assume the the language encoding of the configuration file
 is implied by the filename/ULRL suffix: ".n3" means N3, ".nt" means NTRIPLES,
 ".rdf" and ".owl" mean "RDF/XML". By default it assumes RDF/XML.
@@ -719,7 +719,7 @@ is implied by the filename/ULRL suffix: ".n3" means N3, ".nt" means NTRIPLES,
 &lt;!DOCTYPE rdf:RDF [
  &nbsp;&nbsp;&nbsp;&lt;!ENTITY jena &nbsp;&nbsp;&nbsp;'http://jena.hpl.hp.com/'&gt;
 
- &nbsp;&nbsp;&nbsp;&lt;!ENTITY rdf &nbsp;&nbsp;&nbsp;&nbsp;'http://www.w3.org/1999/02/22-rdf-syntax-Ns#'&gt;
+ &nbsp;&nbsp;&nbsp;&lt;!ENTITY rdf &nbsp;&nbsp;&nbsp;&nbsp;'http://www.w3.org/1999/02/22-rdf-syntax-ns#'&gt;
  &nbsp;&nbsp;&nbsp;&lt;!ENTITY rdfs &nbsp;&nbsp;&nbsp;'http://www.w3.org/2000/01/rdf-schema#'&gt;
  &nbsp;&nbsp;&nbsp;&lt;!ENTITY owl &nbsp;&nbsp;&nbsp;&nbsp;'http://www.w3.org/2002/07/owl#'&gt;
  &nbsp;&nbsp;&nbsp;&lt;!ENTITY xsd &nbsp;&nbsp;&nbsp;&nbsp;'http://www.w3.org/2001/XMLSchema#'&gt;
@@ -737,11 +737,11 @@ is implied by the filename/ULRL suffix: ".n3" means N3, ".nt" means NTRIPLES,
 &gt;</span>
 
 &lt;!--
-	Example schemagen configuration for use with jena.schemagen
+    Example schemagen configuration for use with jena.schemagen
  &nbsp;&nbsp;&nbsp;Not all possible options are used in this example, see Javadoc and Howto for full details.
 
-	Author: Ian Dickinson, mailto:ian.dickinson@hp.com
-	CVs: &nbsp;&nbsp;&nbsp;$Id: schemagen.html,v 1.13 2006-01-17 10:12:51 chris-dollin Exp $
+    Author: Ian Dickinson, mailto:ian.dickinson@hp.com
+    CVs: &nbsp;&nbsp;&nbsp;$Id: schemagen.html,v 1.14 2007-07-13 07:28:03 ian_dickinson Exp $
 --&gt;
 
 <span class="xmlText">&lt;sgen:Config&gt;
@@ -773,11 +773,11 @@ is implied by the filename/ULRL suffix: ".n3" means N3, ".nt" means NTRIPLES,
  * Web site &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@website@
  * Created &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%date%
  * Filename &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$RCSfile: schemagen.html,v $
- * Revision &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$Revision: 1.13 $
+ * Revision &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$Revision: 1.14 $
  * Release status &nbsp;&nbsp;&nbsp;&nbsp;@releaseStatus@ $State: Exp $
  *
- * Last modified on &nbsp;&nbsp;$Date: 2006-01-17 10:12:51 $
- * &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;by &nbsp;&nbsp;$Author: chris-dollin $
+ * Last modified on &nbsp;&nbsp;$Date: 2007-07-13 07:28:03 $
+ * &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;by &nbsp;&nbsp;$Author: ian_dickinson $
  *
  * @copyright@
  *****************************************************************************/
@@ -843,6 +843,6 @@ is implied by the filename/ULRL suffix: ".n3" means N3, ".nt" means NTRIPLES,
 </code></pre>
 </p>
 <hr />
-<p><small>CVS $Id: schemagen.html,v 1.13 2006-01-17 10:12:51 chris-dollin Exp $</small></p>
+<p><small>CVS $Id: schemagen.html,v 1.14 2007-07-13 07:28:03 ian_dickinson Exp $</small></p>
 </body>
 </html>
