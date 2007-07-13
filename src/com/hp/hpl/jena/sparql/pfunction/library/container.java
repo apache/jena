@@ -116,8 +116,6 @@ public class container extends PFuncSimple
         return new QueryIterYieldN(count, binding, execCxt) ;
     }
     
-    
-    
     static private Collection findContainers(Graph graph, Node typeNode)
     {
         Set acc = new HashSet() ;
