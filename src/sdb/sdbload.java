@@ -100,8 +100,9 @@ public class sdbload extends CmdArgsDB
             filename = "file:"+filename ;
 
         String lang = FileUtils.guessLang(filename) ;
-        if ( getModTime().timingEnabled() )
-            getModTime().startTimer() ;
+        
+        // Always time, only print if enabled. 
+        getModTime().startTimer() ;
         
         // Load here
         model.read(filename, lang) ;

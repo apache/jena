@@ -19,13 +19,13 @@ import com.hp.hpl.jena.sdb.sql.SDBExceptionSQL;
 import com.hp.hpl.jena.sdb.store.TableDesc;
 import com.hp.hpl.jena.sdb.util.alg.Transform;
 
-public class FmtStdHashDerby extends StoreFormatterStd
+public class FmtStdHash extends StoreFormatterStd
 {
     private DBSyntax syntax ;
     private static final boolean NOT_NULL = false ;
     
 
-    public FmtStdHashDerby(SDBConnection conn, DBSyntax syntax)
+    public FmtStdHash(SDBConnection conn, DBSyntax syntax)
     {
         super(conn) ;
         this.syntax = syntax ;
@@ -43,14 +43,7 @@ public class FmtStdHashDerby extends StoreFormatterStd
                                       "   "+col("datatype", syntax.varchar(200),    NOT_NULL),
                                       "   "+col("type",     syntax.integer32(),     NOT_NULL),
                                       "   "+syntax.primaryKey("hash"),
-                                      
-//                                       "   hash BIGINT NOT NULL ,",
-//                                       "   lex CLOB NOT NULL ,",
-//                                       "   lang LONG VARCHAR NOT NULL ,",
-//                                       "   datatype LONG VARCHAR NOT NULL ,",
-//                                       "   type integer NOT NULL ,",
-//                                       "   PRIMARY KEY (hash)",
-                                       ")"
+                                      ")"
                     )) ;
         } catch (SQLException ex)
         {
@@ -75,62 +68,21 @@ public class FmtStdHashDerby extends StoreFormatterStd
     
     @Override
     protected void formatTupleTable(TableDesc tableDesc)
-  {
-      dropTable(tableDesc.getTableName()) ;
-      try {
-          String cols = iter(tableDesc.getColNames())
-                              .map(getColDeclTransform())
-                              .asString(SEP) ;
-          cols = cols + SEP + syntax.primaryKey(tableDesc.getColNames()) ;
-          String sql = String.format("CREATE TABLE %s (\n%s\n)", tableDesc.getTableName(), cols) ;
-          connection().exec(sql) ;                
-      } catch (SQLException ex)
-      {
-          throw new SDBExceptionSQL("SQLException formatting table '"+tableDesc.getTableName()+"'",ex) ;
-      }
-  }
-
-    
-//    @Override
-//    protected void formatTableTriples()
-//    {
-//        // This is formatting a tuple table.
-//        dropTable(TableDescTriples.name()) ;
-//        try { 
-//            connection().exec(sqlStr(
-//                                 "CREATE TABLE "+TableDescTriples.name()+" (",
-//                                 "    "+col("s", syntax.integer64(), NOT_NULL),
-//                                 "    "+col("p", syntax.integer64(), NOT_NULL),
-//                                 "    "+col("o", syntax.integer64(), NOT_NULL),
-//                                 "    "+syntax.primaryKey("s", "p", "o") ,
-//                                 ")"                
-//                    )) ;
-//        } catch (SQLException ex)
-//        {
-//            throw new SDBExceptionSQL("SQLException formatting table '"+TableDescTriples.name()+"'",ex) ;
-//        }
-//    }
-//
-//    @Override
-//    protected void formatTableQuads()
-//    {
-//        dropTable(TableDescQuads.name()) ;
-//        try { 
-//            connection().exec(sqlStr(
-//                                 "CREATE TABLE "+TableDescQuads.name()+" (",
-//                                 "    "+col("g", syntax.integer64(), NOT_NULL),
-//                                 "    "+col("s", syntax.integer64(), NOT_NULL),
-//                                 "    "+col("p", syntax.integer64(), NOT_NULL),
-//                                 "    "+col("o", syntax.integer64(), NOT_NULL),
-//                                 "    "+syntax.primaryKey("g", "s", "p", "o") ,
-//                                 ")"                
-//                    )) ;
-//        } catch (SQLException ex)
-//        {
-//            throw new SDBExceptionSQL("SQLException formatting table '"+TableDescTriples.name()+"'",ex) ;
-//        }
-//
-//    }
+    {
+        dropTable(tableDesc.getTableName()) ;
+        try {
+            
+            String cols = iter(tableDesc.getColNames())
+                                .map(getColDeclTransform())
+                                .asString(SEP) ;
+            cols = cols + SEP + syntax.primaryKey(tableDesc.getColNames()) ;
+            String sql = String.format("CREATE TABLE %s (\n%s\n)", tableDesc.getTableName(), cols) ;
+            connection().exec(sql) ;                
+        } catch (SQLException ex)
+        {
+            throw new SDBExceptionSQL("SQLException formatting table '"+tableDesc.getTableName()+"'",ex) ;
+        }
+    }
 
 
     @Override
