@@ -6,6 +6,9 @@ Release Notes
 N3 & Turtle Writer
     o Correct writing nested bnodes with no properties to make strict Turtle.
     o No longer automatcally add default namespace prefix. 
+    
+Reasoners
+    o Added rebindAll() to FBRuleInfGraph    
 
 ==== Jena 2.5.3
 

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: FBRuleInfGraph.java,v 1.64 2007-01-12 10:42:30 chris-dollin Exp $
+ * $Id: FBRuleInfGraph.java,v 1.65 2007-07-13 11:06:50 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -38,7 +38,7 @@ import org.apache.commons.logging.LogFactory;
  * for future reference).
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.64 $ on $Date: 2007-01-12 10:42:30 $
+ * @version $Revision: 1.65 $ on $Date: 2007-07-13 11:06:50 $
  */
 public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements BackwardRuleInfGraphI {
     
@@ -480,6 +480,18 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
         version++;
         if (bEngine != null) bEngine.reset();
         isPrepared = false;
+    }
+    
+    /**
+     * Cause the inference graph to reconsult both the underlying graph and
+     * the reasoner ruleset, permits the forward rule set to be dynamically changed.
+     * Causes the entire rule engine to be rebuilt from the current ruleset and 
+     * reinitialized against the current data. Not needed for normal cases.
+     */
+    public void rebindAll() {
+        rawRules = ((FBRuleReasoner)reasoner).getRules();
+        instantiateRuleEngine( rawRules );
+        rebind();
     }
     
     /**
