@@ -3,4 +3,5 @@ PREFIX :    <http://example/>
 SELECT *
 { 
      ?x :p ?z 
+    FILTER regex(?z, "foo")
 }
