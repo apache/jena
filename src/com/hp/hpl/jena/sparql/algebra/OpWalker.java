@@ -62,6 +62,9 @@ public class OpWalker
         public void visit(OpGraph opGraph)
         { visitX(opGraph) ; }
 
+        public void visit(OpService opService)
+        { visitX(opService) ; }
+
         public void visit(OpQuadPattern quadPattern)
         { visitX(quadPattern) ; }
 

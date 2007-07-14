@@ -179,6 +179,16 @@ public class OpWriter
             finish(opGraph) ;
         }
 
+        public void visit(OpService opService)
+        {
+            start(opService, NoNL) ;
+            out.print(" ") ;
+            out.println(FmtUtils.stringForNode(opService.getService())) ;
+            out.incIndent() ;
+            opService.getSubOp().visit(this) ;
+            finish(opService) ;
+        }
+
         public void visit(OpTable opTable)
         {
             if ( TableUnit.isJoinUnit(opTable.getTable()) )

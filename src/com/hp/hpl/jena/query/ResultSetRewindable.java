@@ -1,43 +1,27 @@
 /*
- * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
- * All rights reserved.
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.algebra;
+/**
+ * @author     Andy Seaborne
+ * @version    $Id: ResultSetRewindable.java,v 1.5 2007/02/08 16:18:44 andy_seaborne Exp $
+ */
+ 
+package com.hp.hpl.jena.query;
 
-import com.hp.hpl.jena.sparql.algebra.op.*;
-
-public interface OpVisitor
+public interface ResultSetRewindable extends com.hp.hpl.jena.sparql.resultset.ResultSetRewindable
 {
-    public void visit(OpBGP opBGP) ;
-    public void visit(OpQuadPattern quadPattern) ;
-    public void visit(OpJoin opJoin) ;
-    public void visit(OpLeftJoin opLeftJoin) ;
-    public void visit(OpDiff opDiff) ;
-    public void visit(OpUnion opUnion) ;
-    public void visit(OpFilter opFilter) ;
-    public void visit(OpGraph opGraph) ;
-    public void visit(OpService opService) ;
-    public void visit(OpDatasetNames dsNames) ;
+    /** Move back to the start of the iterator for this instance of results of a query. */
+    public void reset() ;
     
-    public void visit(OpTable opTable) ;
-    public void visit(OpExt opExt) ;
-    public void visit(OpNull opNull) ;
-    
-    public void visit(OpList opList) ;
-    public void visit(OpOrder opOrder) ;
-    public void visit(OpProject opProject) ;
-    public void visit(OpReduced opReduced) ;
-    public void visit(OpDistinct opDistinct) ;
-    public void visit(OpSlice opSlice) ;
-    public void visit(OpGroupAgg opGroupAgg) ;
-    
+    /** return the number of solutions */ 
+    public int size() ;
 }
 
 /*
- * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
- * All rights reserved.
+ *  (c) Copyright 2007 Hewlett-Packard Development Company, LP
+ *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions

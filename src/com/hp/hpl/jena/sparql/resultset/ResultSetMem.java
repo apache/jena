@@ -5,10 +5,14 @@
 
 package com.hp.hpl.jena.sparql.resultset;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
-import com.hp.hpl.jena.query.*;
 import com.hp.hpl.jena.sparql.util.Utils;
+
+import com.hp.hpl.jena.query.QuerySolution;
+import com.hp.hpl.jena.query.ResultSet;
 
 /** An in-memory result set.  
  * Also useful for writing input processors which
@@ -19,7 +23,7 @@ import com.hp.hpl.jena.sparql.util.Utils;
  */
 
 
-public class ResultSetMem implements ResultSetRewindable
+public class ResultSetMem implements com.hp.hpl.jena.query.ResultSetRewindable
 {
     // TODO Convert to use a ResultSetProcessor
     // The result set in memory

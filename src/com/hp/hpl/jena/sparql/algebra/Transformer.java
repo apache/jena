@@ -101,6 +101,9 @@ public class Transformer
         public void visit(OpGraph opGraph)
         { visit1(opGraph) ; }
 
+        public void visit(OpService opService)
+        { visit1(opService) ; }
+        
         public void visit(OpExt opExt)
         { push(transform.transform(opExt)) ; }
         

@@ -133,6 +133,12 @@ public class Eval
             push(evalGraph(opGraph, evaluator)) ;
         }
 
+        public void visit(OpService opService)
+        {
+            throw new QueryExecException("Encountered OpService during execution of reference engine") ;
+            //push(evalGraph(opGraph, evaluator)) ;
+        }
+
         public void visit(OpDatasetNames dsNames)
         {
             push(evalDS(dsNames, evaluator)) ;

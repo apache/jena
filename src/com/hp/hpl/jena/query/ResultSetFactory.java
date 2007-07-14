@@ -17,12 +17,13 @@ import org.apache.commons.logging.LogFactory;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.shared.NotFoundException;
+import com.hp.hpl.jena.util.FileManager;
+
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.ResultSetStream;
 import com.hp.hpl.jena.sparql.resultset.*;
 import com.hp.hpl.jena.sparql.util.GraphUtils;
-import com.hp.hpl.jena.util.FileManager;
 
 /** ResultSetFactory - make result sets from places other than a query.
  * 

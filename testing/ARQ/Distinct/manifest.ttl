@@ -8,11 +8,97 @@
     rdfs:label "DISTINCT" ;
     mf:entries
     ( 
-      [  mf:name    "Distinct-1" ;
-         rdf:type   mfx:TestQuery ; 
-         mf:action
+      <#no-distinct-1>
+      <#distinct-1>
+      <#no-distinct-2>
+      <#distinct-2>
+      <#no-distinct-3>
+      <#distinct-3>
+      <#no-distinct-4>
+      <#distinct-4>
+      <#no-distinct-9>
+      <#distinct-9>
+    ) .
+
+
+<#no-distinct-1>
+    mf:name    "Numbers: No distinct" ;
+    rdf:type   mfx:TestQuery ; 
+    mf:action
+            [ qt:query  <no-distinct-1.rq> ;
+              qt:data   <data-num.ttl> ] ;
+    mf:result  <no-distinct-num.srx> .
+
+<#distinct-1>
+    mf:name    "Numbers: Distinct" ;
+    rdf:type   mfx:TestQuery ; 
+    mf:action
             [ qt:query  <distinct-1.rq> ;
-              qt:data   <data-1.ttl> ] ;
-        mf:result  <distinct-1-results.srx>
-      ]
-    ).
+              qt:data   <data-num.ttl> ] ;
+    mf:result  <distinct-num.srx> .
+
+<#no-distinct-2>
+    mf:name    "Strings: No distinct" ;
+    rdf:type   mfx:TestQuery ; 
+    mf:action
+            [ qt:query  <no-distinct-1.rq> ;
+              qt:data   <data-str.ttl> ] ;
+    mf:result  <no-distinct-str.srx> .
+
+<#distinct-2>
+    mf:name    "Strings: Distinct" ;
+    rdf:type   mfx:TestQuery ; 
+    mf:action
+            [ qt:query  <distinct-1.rq> ;
+              qt:data   <data-str.ttl> ] ;
+    mf:result  <distinct-str.srx> .
+
+<#no-distinct-3>
+    mf:name    "Nodes: No distinct" ;
+    rdf:type   mfx:TestQuery ; 
+    mf:action
+            [ qt:query  <no-distinct-1.rq> ;
+              qt:data   <data-node.ttl> ] ;
+    mf:result  <no-distinct-node.srx> .
+
+<#distinct-3>
+    mf:name    "Nodes: Distinct" ;
+    rdf:type   mfx:TestQuery ; 
+    mf:action
+            [ qt:query  <distinct-1.rq> ;
+              qt:data   <data-node.ttl> ] ;
+    mf:result  <distinct-node.srx> .
+
+<#no-distinct-4>
+    mf:name    "Opt: No distinct" ;
+    rdf:type   mfx:TestQuery ; 
+    mf:action
+            [ qt:query  <no-distinct-2.rq> ;
+              qt:data   <data-opt.ttl> ] ;
+    mf:result  <no-distinct-opt.srx> .
+
+<#distinct-4>
+    mf:name    "Opt: Distinct" ;
+    rdf:type   mfx:TestQuery ; 
+    mf:action
+            [ qt:query  <distinct-2.rq> ;
+              qt:data   <data-opt.ttl> ] ;
+    mf:result  <distinct-opt.srx> .
+
+
+
+<#no-distinct-9>
+    mf:name    "All: No distinct" ;
+    rdf:type   mfx:TestQuery ; 
+    mf:action
+            [ qt:query  <no-distinct-1.rq> ;
+              qt:data   <data-num.ttl> , <data-str.ttl> , <data-node.ttl> ] ;
+    mf:result  <no-distinct-all.srx> .
+
+<#distinct-9>
+    mf:name    "All: Distinct" ;
+    rdf:type   mfx:TestQuery ; 
+    mf:action
+            [ qt:query  <distinct-1.rq> ;
+              qt:data   <data-num.ttl> , <data-str.ttl> , <data-node.ttl> ] ;
+    mf:result  <distinct-all.srx> .

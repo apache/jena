@@ -1,42 +1,52 @@
 /*
- * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.algebra;
+package com.hp.hpl.jena.sparql.algebra.op;
 
-import com.hp.hpl.jena.sparql.algebra.op.*;
+import com.hp.hpl.jena.graph.Node;
 
-public interface OpVisitor
+import com.hp.hpl.jena.sparql.algebra.Op;
+import com.hp.hpl.jena.sparql.algebra.OpVisitor;
+import com.hp.hpl.jena.sparql.algebra.Transform;
+
+public class OpService extends Op1
 {
-    public void visit(OpBGP opBGP) ;
-    public void visit(OpQuadPattern quadPattern) ;
-    public void visit(OpJoin opJoin) ;
-    public void visit(OpLeftJoin opLeftJoin) ;
-    public void visit(OpDiff opDiff) ;
-    public void visit(OpUnion opUnion) ;
-    public void visit(OpFilter opFilter) ;
-    public void visit(OpGraph opGraph) ;
-    public void visit(OpService opService) ;
-    public void visit(OpDatasetNames dsNames) ;
-    
-    public void visit(OpTable opTable) ;
-    public void visit(OpExt opExt) ;
-    public void visit(OpNull opNull) ;
-    
-    public void visit(OpList opList) ;
-    public void visit(OpOrder opOrder) ;
-    public void visit(OpProject opProject) ;
-    public void visit(OpReduced opReduced) ;
-    public void visit(OpDistinct opDistinct) ;
-    public void visit(OpSlice opSlice) ;
-    public void visit(OpGroupAgg opGroupAgg) ;
-    
+    Node serviceURI = null ;
+    public OpService(Node serviceURI, Op subOp)
+    {
+        super(subOp) ;
+        this.serviceURI = serviceURI ;
+    }
+
+    public Op apply(Transform transform, Op subOp)
+    {
+        return null ;
+    }
+
+    public Op copy(Op subOp)
+    {
+        return null ;
+    }
+
+    public String getName()
+    { return "Service" ; }
+
+    public void visit(OpVisitor opVisitor)
+    { opVisitor.visit(this) ; }
+
+    public Node getService()
+    {
+        return serviceURI ;
+    }
+
+
 }
 
 /*
- * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

@@ -33,6 +33,9 @@ public class OpVisitorBase implements OpVisitor
     public void visit(OpGraph opGraph)
     {}
 
+    public void visit(OpService opService)
+    {}
+
     public void visit(OpQuadPattern quadPattern)
     {}
 
