@@ -11,8 +11,8 @@ package com.hp.hpl.jena.sdb.exprmatch;
 
 public class NoExprMatch extends RuntimeException
 {
- //NoMatch() { this(null) ; }
- NoExprMatch(String msg) { super(msg) ; }
+    //NoMatch() { this(null) ; }
+    NoExprMatch(String msg) { super(msg) ; }
 }
 
 

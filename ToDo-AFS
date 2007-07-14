@@ -9,6 +9,8 @@ SDB ToDo list (and general notes)
 
 + DB type tables
 
++ Per store additional context items
+
 == Pattern table and inference
 
 + Pattern/Inf tables:

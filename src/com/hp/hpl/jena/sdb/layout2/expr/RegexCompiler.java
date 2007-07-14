@@ -26,6 +26,8 @@ import com.hp.hpl.jena.sdb.layout2.ValueType;
 public class RegexCompiler implements ConditionCompiler
 {
     // --- regex : testing a term (in a variable)
+    // Change to SSE?  ?? for meta variables  (regex ??a1 ??a2 ["i"])
+    // Map of meta variable to action? 
     private static ExprPattern regex1 = new ExprPattern("regex(?a1, ?a2)",
                                                         new Var[]{ Var.alloc("a1") , Var.alloc("a2") },
                                                         new Action[]{ new ActionMatchVar() ,
@@ -43,9 +45,6 @@ public class RegexCompiler implements ConditionCompiler
         
         if ( ( rMap = regex1.match(expr) ) != null )
         {
-            Object $ = rMap.get(Var.alloc("a1")) ;
-            
-            
             Var var = rMap.get("a1").getNodeVar().asVar() ;
             String pattern = rMap.get("a2").getConstant().getString() ;
             return new RegexSqlGen(expr, regex1, pattern, null, true) ;

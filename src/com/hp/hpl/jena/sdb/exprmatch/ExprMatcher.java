@@ -20,7 +20,7 @@ public class ExprMatcher
     /* ActionMap  : what to do when a variable is encountered in the pattern
      * CalloutMap : what to do when a (fixed) function is discovered in the pattern 
      * ResultMap  : Association of var name to expression needed for a match.
-     *              Actually, juts a string -> expression mp  
+     *              Actually, just a string -> expression map  
      */
     
     /** Match an expression against a pattern.  If the pattern has variables

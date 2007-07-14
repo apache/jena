@@ -27,7 +27,7 @@ public abstract class SDBConstraint
     public boolean isComplete() { return completeConstraint ; }
     
     @Override
-    public String toString() { return "[PlanSDBConstraint "+expr+"]" ; }
+    public String toString() { return "[SDBConstraint "+expr+"]" ; }
 
     public Expr getExpr()
     {

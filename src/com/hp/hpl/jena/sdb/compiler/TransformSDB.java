@@ -21,6 +21,7 @@ import com.hp.hpl.jena.sdb.core.SDBRequest;
 import com.hp.hpl.jena.sdb.core.ScopeEntry;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlSlice;
+import com.hp.hpl.jena.sdb.layout2.expr.RegexCompiler;
 
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.TransformCopy;
@@ -122,6 +123,9 @@ public class TransformSDB extends TransformCopy
     @Override
     public Op transform(OpFilter opFilter, Op op)
     {
+//        SDBConstraint constraint = transformFilter(opFilter) ;
+//        if ( constraint != null )
+//            log.info("recognized: "+opFilter.getExprs()) ;
         return super.transform(opFilter, op) ;
     }
     
@@ -148,7 +152,7 @@ public class TransformSDB extends TransformCopy
         return new OpSQL(sqlSlice, opSlice, request) ;
     }
     
-    private boolean translateConstraints = false ;
+    private boolean translateConstraints = true ;
     
     
     private SDBConstraint transformFilter(OpFilter opFilter)
@@ -161,9 +165,10 @@ public class TransformSDB extends TransformCopy
         List<Expr> x = (List<Expr>)exprs.getList() ;
         for ( Expr  expr : x )
         {
-            ConditionCompiler cc = null ;
+            ConditionCompiler cc = new RegexCompiler() ;
             SDBConstraint psc = cc.recognize(expr) ;
-            // Maybe null (not recognized)
+            if ( psc != null )
+                return psc ; 
         }
         return null ;
     }
