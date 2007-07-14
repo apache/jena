@@ -115,6 +115,7 @@ public class BuilderOp
     
     static protected final String symFilter       = symBase + "filter" ;
     static protected final String symGraph        = symBase + "graph" ;
+    static protected final String symService      = symBase + "service" ;
     static protected final String symJoin         = symBase + "join" ;
     static protected final String symLeftJoin     = symBase + "leftjoin" ;
     static protected final String symDiff         = symBase + "diff" ;
@@ -266,7 +267,18 @@ public class BuilderOp
         }
     } ;
 
-
+    final protected Build buildService = new Build()
+    {
+        public Op make(ItemList list)
+        {
+            BuilderBase.checkLength(3, list, "service") ;
+            Node service = BuilderNode.buildNode(list.get(1)) ;
+            if ( ! service.isURI() )
+                BuilderBase.broken(list, "Service must provide a URI") ;
+            Op sub  = build(list, 2) ;
+            return new OpService(service, sub) ;
+        }
+    } ;
 
     final protected Build buildToList = new Build()
     {

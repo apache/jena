@@ -4,14 +4,7 @@
 ++ ** Document "update API"
 -----
 
-OpService
-
-+ Move ResultSetRewindable into the "query" package 
-  Leave a toolstone in sparql.ResultSetRewindable
-  Add to FAQ
-
-+ DateTime arithmetic and durations
-  http://www.w3.org/TR/xpath-functions/#dateTime-arithmetic
++ OpService
 
 + Aggregates: QueryIterGroup
   Parsing : 
@@ -19,6 +12,9 @@ OpService
      Ordered Map [LinkedHashMap?] from name (generated if necessary) to expression.
      Phase 2 detects inconsistences 
          
++ DateTime arithmetic and durations
+  http://www.w3.org/TR/xpath-functions/#dateTime-arithmetic
+
 + Quads - independent quads?  Or retain blocking structure?
 
 + Remote update over HTTP
