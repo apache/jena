@@ -2,6 +2,11 @@ SDB ToDo list (and general notes)
 =================================
 
 + Revisit generating SQL for nested DISTINCT
++ SqlToTable node that passes on its columns as renames (specialization of SqlRename)
+    SqlRestrict ==> SELECT/WHERE vs ON
+    SqlRename and specialism SqlOneTable(alias)
+    SqlProject : use inside expressions 
+      SqlRename, SqlProject, SqlCoalesce ==> SELECT
 
 + Setting options for testing.
 + Tests for union graphs. 
@@ -10,6 +15,8 @@ SDB ToDo list (and general notes)
 + DB type tables
 
 + Per store additional context items
+
++ Use apart from Jena. Built-in (simple) HTTP from Joseki?
 
 == Pattern table and inference
 
