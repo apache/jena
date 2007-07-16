@@ -19,12 +19,17 @@ public class SqlTable extends SqlNodeBase
     protected ScopeBase idScope = null ;
     protected ScopeBase nodeScope = null ;
     
+    public SqlTable(String name)
+    {
+        this(name, name) ;
+    }
+
     public SqlTable(String tableName, String aliasName)
     {
         super(aliasName) ;
         this.tableName = tableName ;
-        this.idScope = new ScopeBase() ; ;
-        this.nodeScope = null ;
+        this.idScope = new ScopeBase() ;
+        this.nodeScope = new ScopeBase() ;
     }
     
     @Override
@@ -42,12 +47,7 @@ public class SqlTable extends SqlNodeBase
 
     public Scope getIdScope() { return idScope ; }
 
-    public Scope getNodeScope()
-    { 
-        if ( nodeScope == null )
-            nodeScope = new ScopeBase() ;
-        return nodeScope ;
-    }
+    public Scope getNodeScope() { return nodeScope ; }
     
     public void setIdColumnForVar(Var var, SqlColumn thisCol)
     {

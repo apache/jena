@@ -16,7 +16,16 @@ SDB ToDo list (and general notes)
 
 + Per store additional context items
 
-+ Use apart from Jena. Built-in (simple) HTTP from Joseki?
++ Use apart from Jena.
+   Built-in (simple) HTTP from Joseki?
+   Or just Joseki+example config.
+   Joseki needs 
+   
+   sdb:SDBConnection ja:assembler "com.hp.hpl.jena.sdb.assembler.SDBConnectionDescAssembler"
+   sdb:Store ja:assembler "com.hp.hpl.jena.sdb.assembler.StoreDescAssembler"
+ or 
+   a general initializer:
+     sdb:SDB ja:assembler com.hp.hpl.jena.sdb.SDBSystem"
 
 == Pattern table and inference
 

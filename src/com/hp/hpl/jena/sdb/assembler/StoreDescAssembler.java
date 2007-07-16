@@ -16,6 +16,8 @@ import com.hp.hpl.jena.assembler.Mode;
 import com.hp.hpl.jena.assembler.assemblers.AssemblerBase;
 import com.hp.hpl.jena.sparql.util.GraphUtils;
 import com.hp.hpl.jena.rdf.model.Resource;
+
+import com.hp.hpl.jena.sdb.SDB;
 import com.hp.hpl.jena.sdb.SDBException;
 import com.hp.hpl.jena.sdb.sql.MySQLEngineType;
 import com.hp.hpl.jena.sdb.sql.SDBConnectionDesc;
@@ -25,6 +27,8 @@ import com.hp.hpl.jena.sdb.store.StoreDesc;
 
 public class StoreDescAssembler extends AssemblerBase implements Assembler
 {
+    static { SDB.init() ; }
+    
     private static Log log = LogFactory.getLog(StoreDescAssembler.class) ;
     
     @Override

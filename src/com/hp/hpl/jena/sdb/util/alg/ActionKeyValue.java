@@ -6,9 +6,9 @@
 
 package com.hp.hpl.jena.sdb.util.alg;
 
-public interface Action<T>
+public interface ActionKeyValue<KeyType, ValueType>
 {
-    public void apply(T item) ;
+    public void apply(KeyType key, ValueType value) ;
 }
 
 /*

@@ -3,7 +3,7 @@
 @prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix ja:      <http://jena.hpl.hp.com/2005/11/Assembler#> .
 
-# SDb for PostgreSQL over the simple layout1.
+# SDB for PostgreSQL over the simple layout1.
 
 _:c rdf:type sdb:SDBConnection ;
     sdb:sdbType        "postgresql" ;

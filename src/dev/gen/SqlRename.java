@@ -10,6 +10,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import com.hp.hpl.jena.sparql.core.Var;
+
 import com.hp.hpl.jena.sdb.core.Generator;
 import com.hp.hpl.jena.sdb.core.Gensym;
 import com.hp.hpl.jena.sdb.core.Scope;
@@ -20,10 +22,14 @@ import com.hp.hpl.jena.sdb.core.sqlnode.SqlNodeBase;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNodeVisitor;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlTable;
 import com.hp.hpl.jena.sdb.util.StrUtils;
-import com.hp.hpl.jena.sparql.core.Var;
 
 public class SqlRename extends SqlNodeBase
 {
+    // Alt: an SELECT node with disinct, project, order by
+    // Distinct(Project(Order(Having(groupBy(restrict(joins)))))
+    // 
+    // Table-WHERE-GROUPBY-HAVING-ORDERBY-Project-Distinct
+    
     SqlNode sqlNode ;
     ScopeRename idScope ;
     ScopeRename nodeScope ;
@@ -46,35 +52,40 @@ public class SqlRename extends SqlNodeBase
         idScope = new ScopeRename(sqlNode.getIdScope()) ;
         nodeScope = new ScopeRename(sqlNode.getNodeScope()) ;
         
-        // TODO A "Column generator" would be neater.  See also SqlCoalesce.
+        here = new SqlTable(aliasName) ;
         
-        // SqlView = alias over 
+        setAliases(here, idRenames, sqlNode.getIdScope(), idScope) ;
+        setAliases(here, nodeRenames, sqlNode.getNodeScope(), nodeScope) ;
+    }
+
+    private void setAliases(final SqlTable here, final Map<Var, String> renames, final Scope subScope, final ScopeRename scope)
+    {
+        if ( renames == null )
+            return ;
         
-        // The table name is just a debug convenience.
-        here = new SqlTable("rename", aliasName) ;
-        for ( Var v : idRenames.keySet() )
+//        MapAction<Var, String> action = new MapAction<Var, String>()
+//        {
+//            public void apply(Var var, String colName)
+//            { 
+//                if ( subScope.hasColumnForVar(var) )
+//                {
+//                    SqlColumn col = new SqlColumn(here, colName) ;
+//                    scope.setAlias(var, col) ;
+//                }
+//            }
+//        } ;
+//        MapUtils.apply(renames, action) ;
+        
+        for ( Var v : renames.keySet() )
         {
-            String colName = idRenames.get(v) ;
-            if ( sqlNode.getIdScope().hasColumnForVar(v) )
+            String colName = renames.get(v) ;
+            if ( subScope.hasColumnForVar(v) )
             {
                 SqlColumn col = new SqlColumn(here, colName) ;
-                idScope.setAlias(v, col) ;
-            }
-        }
-        
-        for ( Var v : nodeRenames.keySet() )
-        {
-            String colName = nodeRenames.get(v) ;
-            
-            
-            if ( sqlNode.getNodeScope().hasColumnForVar(v) )
-            {
-                SqlColumn col = new SqlColumn(here, colName) ;
-                nodeScope.setAlias(v, col) ;
+                scope.setAlias(v, col) ;
             }
         }
     }
-
     
     public void visit(SqlNodeVisitor visitor)
     {}
@@ -104,6 +115,8 @@ public class SqlRename extends SqlNodeBase
     
     private static Map<Var, String> mapping(SqlNode sqlNode, Scope scope, Generator gen)
     {
+        if ( scope == null )
+            return null ;
         Map<Var, String> mapping = new HashMap<Var, String>() ;
         Set<Var> vars = scope.getVars() ;
         for ( Var v : vars)

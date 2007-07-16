@@ -6,10 +6,19 @@
 
 package com.hp.hpl.jena.sdb.util.alg;
 
-public interface Action<T>
+import java.util.Map;
+
+public class MapUtils
 {
-    public void apply(T item) ;
+     // Map specific operations
+    
+    public static <K, V> void apply(Map<K, V> map, ActionKeyValue<K, V> action)
+    {
+        for ( Map.Entry<K,V> entry : map.entrySet() )
+            action.apply(entry.getKey(), entry.getValue()) ;
+    }
 }
+
 
 /*
  * (c) Copyright 2007 Hewlett-Packard Development Company, LP
