@@ -33,7 +33,6 @@ import com.hp.hpl.jena.rdf.model.Statement;
 import com.hp.hpl.jena.shared.PrefixMapping;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.core.DatasetGraph;
-import com.hp.hpl.jena.sparql.core.ResultBinding;
 import com.hp.hpl.jena.sparql.core.describe.DescribeHandler;
 import com.hp.hpl.jena.sparql.core.describe.DescribeHandlerRegistry;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
@@ -95,7 +94,7 @@ public class QueryExecutionBase implements QueryExecution
     {
         if ( ! query.isSelectType() )
             throw new QueryExecException("Attempt to have ResultSet from a "+labelForQuery(query)+" query") ; 
-        return execInternal() ;
+        return execResultSet() ;
     }
 
 
@@ -111,20 +110,19 @@ public class QueryExecutionBase implements QueryExecution
         // That in turn, exposes the initial bindings.  
         query.setQueryResultStar(true) ;
 
-        ResultSet qRes = execInternal() ;
-
+        startQueryIterator() ;
+        
         // Prefixes for result
         insertPrefixesInto(model) ;
         Set set = new HashSet() ;
         Template template = query.getConstructTemplate() ;
 
         // Build each template substitution as triples.
-        for ( ; qRes.hasNext() ; )
+        for ( ; queryIterator.hasNext() ; )
         {
             Map bNodeMap = new HashMap() ;
-            QuerySolution qs = qRes.nextSolution() ;
-            ResultBinding rb = (ResultBinding)qs ;
-            template.subst(set, bNodeMap, rb.getBinding()) ; 
+            Binding binding = queryIterator.nextBinding() ;
+            template.subst(set, bNodeMap, binding) ; 
         }
 
         // Convert and merge into Model.
@@ -153,7 +151,7 @@ public class QueryExecutionBase implements QueryExecution
         Set set = new HashSet() ;
 
         //May return null (no query pattern) 
-        ResultSet qRes = execInternal() ;
+        ResultSet qRes = execResultSet() ;
 
         // Prefixes for result (after initialization)
         insertPrefixesInto(model) ;
@@ -226,30 +224,23 @@ public class QueryExecutionBase implements QueryExecution
         if ( ! query.isAskType() )
             throw new QueryExecException("Attempt to have boolean from a "+labelForQuery(query)+" query") ; 
 
-        ResultSet results = execInternal() ;
-        boolean r = results.hasNext() ;
+        startQueryIterator() ;
+        boolean r = queryIterator.hasNext() ;
         this.close() ;
         return r ; 
     }
 
     protected void execInit() {}
 
-    private ResultSet execInternal()
+    private ResultSet asResultSet(QueryIterator qIter)
     {
-        execInit() ;
-        
-        if ( query.getQueryPattern() == null )
-            return null ;
-        
         Model model = null ;
         if ( dataset != null )
             model = dataset.getDefaultModel() ;
         else
             model = ModelFactory.createDefaultModel() ;
         
-        queryIterator = getPlan().iterator() ;
-        
-        ResultSetStream rStream = new ResultSetStream(query.getResultVars(), model, queryIterator) ;
+        ResultSetStream rStream = new ResultSetStream(query.getResultVars(), model, qIter) ;
         
         // Set flags (the plan has the elements for solution modifiers)
         if ( query.hasOrderBy() )
@@ -257,6 +248,20 @@ public class QueryExecutionBase implements QueryExecution
         if ( query.isDistinct() )
             rStream.setDistinct(true) ;
         return rStream ;
+    }
+    
+    private void startQueryIterator()
+    {
+        execInit() ;
+        if ( queryIterator != null )
+            log.warn("Query iterator has already been started") ;
+        queryIterator = getPlan().iterator() ;
+    }
+    
+    private ResultSet execResultSet()
+    {
+        startQueryIterator() ;
+        return asResultSet(queryIterator) ; 
     }
 
     public Plan getPlan() 

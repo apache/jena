@@ -115,9 +115,15 @@ public class ResultSetStream
     public List getResultVars() { return resultVars ; }
     
     public void setOrdered(boolean ordered) { this.ordered = ordered ; } 
+    /**
+     * @deprecated SPARQL results sets no longer record ordered/distinct status
+     */
     public boolean isOrdered() { return ordered ; }
 
     public void setDistinct(boolean distinct) { this.distinct = distinct ; } 
+    /**
+     * @deprecated SPARQL results sets no longer record ordered/distinct status
+     */
     public boolean isDistinct() { return distinct ; }
 }
 
