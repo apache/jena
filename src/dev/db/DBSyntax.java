@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package dev;
+package dev.db;
 
 import static java.lang.String.format ;
 import static com.hp.hpl.jena.sdb.util.StrUtils.strjoin ;

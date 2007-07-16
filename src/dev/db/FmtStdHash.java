@@ -4,12 +4,12 @@
  * [See end of file]
  */
 
-package dev;
+package dev.db;
 
 import static com.hp.hpl.jena.sdb.sql.SQLUtils.sqlStr;
 import static com.hp.hpl.jena.sdb.util.Iter.iter; 
 
-import static dev.DBSyntax.col;
+import static dev.db.DBSyntax.col;
 
 import java.sql.SQLException;
 

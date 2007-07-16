@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package dev;
+package dev.db;
 
 import com.hp.hpl.jena.sdb.layout2.TableDescQuads;
 import com.hp.hpl.jena.sdb.layout2.TableDescTriples;
