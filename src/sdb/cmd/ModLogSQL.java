@@ -57,7 +57,7 @@ public class ModLogSQL extends ModBase
                 SDBConnection.logSQLStatements = true ;
                 continue ;
             }
-            if ( v.equalsIgnoreCase("all") )
+            if ( v.equalsIgnoreCase("all") || v.equalsIgnoreCase("sql") )
             {
                 SDBConnection.logSQLExceptions = true ;
                 SDBConnection.logSQLQueries = true ;
