@@ -47,6 +47,10 @@ public class SqlRename extends SqlNodeBase
         nodeScope = new ScopeRename(sqlNode.getNodeScope()) ;
         
         // TODO A "Column generator" would be neater.  See also SqlCoalesce.
+        
+        // SqlView = alias over 
+        
+        // The table name is just a debug convenience.
         here = new SqlTable("rename", aliasName) ;
         for ( Var v : idRenames.keySet() )
         {

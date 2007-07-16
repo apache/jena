@@ -15,8 +15,6 @@ import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
 
 public class SqlTable extends SqlNodeBase
 {
-    // Alternative: SqlTableValue and SqlTableTriple
-    
     private String tableName ;
     protected ScopeBase idScope = null ;
     protected ScopeBase nodeScope = null ;

@@ -13,7 +13,7 @@ public class SqlColumn extends SqlExprBase
 {
     SqlTable  table ;
     String columnName ;
-    public SqlColumn(SqlTable sqlNode, String colName) { this.table = sqlNode ; this.columnName = colName ; }
+    public SqlColumn(SqlTable sqlTable, String colName) { this.table = sqlTable ; this.columnName = colName ; }
 
     public String getColumnName() { return columnName ; }
     public SqlTable getTable()  { return table ;  }
