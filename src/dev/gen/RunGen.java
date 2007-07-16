@@ -31,6 +31,7 @@ public class RunGen
         QueryEngineSDB qe = new QueryEngineSDB(store, query) ;
         Op op = qe.getOp() ;
         
+        // Check - shouldn't this have been removed as it's part of teh SQL expression? 
         if ( op instanceof OpProject )
             op = ((OpProject)op).getSubOp() ;
         

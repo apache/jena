@@ -17,10 +17,9 @@ import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.GraphListener;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.sdb.store.StoreBaseHSQL;
 import com.hp.hpl.jena.sparql.util.Timer;
 import com.hp.hpl.jena.sparql.util.Utils;
-import com.hp.hpl.jena.sdb.store.StoreBaseHSQL;
 import com.hp.hpl.jena.util.FileUtils;
  
  /** Load data files into an SDB model in a database.
@@ -84,8 +83,8 @@ public class sdbload extends CmdArgsDB
     {
         Monitor monitor = null ;
         
-        Graph graph = modGraph.getGraph(getStore()) ;
-        Model model = ModelFactory.createModelForGraph(graph) ;
+        Model model = modGraph.getModel(getStore()) ;
+        Graph graph = model.getGraph() ;    
         
         if ( isVerbose() )
             System.out.println("Start load: "+filename) ;
@@ -210,8 +209,6 @@ public class sdbload extends CmdArgsDB
     }
 }
  
-
-
 /*
  * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
