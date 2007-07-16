@@ -59,7 +59,8 @@ public class SqlCoalesce extends SqlNodeBase
         idScope = new ScopeRename(join.getIdScope()) ;
         nodeScope = new ScopeRename(join.getNodeScope()) ;
         
-        // TODO A "Column generator" would be neater.
+        // Only the alias is used (for column generation).
+        // Maybe a column generator?
         SqlTable table = new SqlTable("Coalesce", alias) ;
         
         nonCoalesceVars = SetUtils.difference(join.getIdScope().getVars(),
