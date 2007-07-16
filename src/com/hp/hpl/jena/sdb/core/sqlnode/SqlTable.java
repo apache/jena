@@ -64,7 +64,9 @@ public class SqlTable extends SqlNodeBase
     @Override
     public int hashCode()
     {
-        int h = tableName.hashCode() ;
+        int h = 981 ;
+        if ( tableName != null )
+            h = h ^ tableName.hashCode() ;
         if ( getAliasName() != null )
             h = h ^ getAliasName().hashCode() << 1 ;
         return h ;
