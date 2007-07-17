@@ -76,8 +76,11 @@ public class QuerySerializer implements QueryVisitor
 
     public void visitPrologue(Prologue prologue)
     { 
+        int row1 = out.getRow() ;
         PrologueSerializer.output(out, prologue) ;
-        out.newline() ;
+        int row2 = out.getRow() ;
+        if ( row1 != row2 )
+            out.newline() ;
     }
     
     public void visitSelectResultForm(Query query)
