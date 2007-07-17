@@ -35,8 +35,10 @@ public class Run
     public static void main(String[] argv)
     {
         String []a = {"-engine=ref",
-            "--data=testing/ARQ/Examples/data-1.ttl",
-            "--file=testing/ARQ/Examples/ex-label-1.rq"
+            //"--data=testing/ARQ/Examples/data-1.ttl",
+            //"--file=testing/ARQ/Examples/ex-label-1.rq"
+            "--data=D.ttl",
+            "--file=Q.rq"
         } ;
         arq.sparql.main(a) ;
         System.exit(0) ;
