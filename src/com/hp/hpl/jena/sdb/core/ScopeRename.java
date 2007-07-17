@@ -53,6 +53,9 @@ public class ScopeRename implements Scope
         return x ;
     }
 
+    public boolean isEmpty()
+    { return frame.isEmpty() ; } 
+
     public Set<Var> getVars()
     {
         return frame.keySet() ;

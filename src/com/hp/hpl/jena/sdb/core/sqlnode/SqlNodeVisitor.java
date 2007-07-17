@@ -12,6 +12,7 @@ public interface SqlNodeVisitor
     public void visit(SqlProject        sqlProject) ;
     public void visit(SqlRestrict       sqlRestrict) ;
     public void visit(SqlTable          sqlTable) ;
+    public void visit(SqlRename         sqlRename) ;
     
     public void visit(SqlJoinInner      sqlJoin) ;
     public void visit(SqlJoinLeftOuter  sqlJoin) ;

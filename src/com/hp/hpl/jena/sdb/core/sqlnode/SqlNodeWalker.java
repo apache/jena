@@ -42,6 +42,12 @@ public class SqlNodeWalker
         public void visit(SqlRestrict sqlNode)
         { visit1(sqlNode) ; }
         
+        public void visit(SqlRename sqlNode)
+        {
+            sqlNode.visit(visitor) ;
+            sqlNode.getSqlNode().visit(this) ;
+        }
+
         public void visit(SqlTable sqlNode)
         { sqlNode.visit(visitor) ; }
         
@@ -59,6 +65,7 @@ public class SqlNodeWalker
 
         public void visit(SqlSlice sqlNode)
         { visit1(sqlNode) ; }
+
     }
 }
 

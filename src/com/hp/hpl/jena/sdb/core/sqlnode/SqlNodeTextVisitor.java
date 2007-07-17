@@ -10,14 +10,13 @@ import static com.hp.hpl.jena.sparql.util.FmtUtils.stringForNode;
 
 import java.util.Collection;
 
-import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.sparql.util.IndentedWriter;
-
 import com.hp.hpl.jena.sdb.core.Annotations;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExpr;
 import com.hp.hpl.jena.sdb.sql.SQLUtils;
 import com.hp.hpl.jena.sdb.util.Pair;
+import com.hp.hpl.jena.sparql.core.Var;
+import com.hp.hpl.jena.sparql.util.IndentedWriter;
 
 
 public class SqlNodeTextVisitor implements SqlNodeVisitor
@@ -93,6 +92,17 @@ public class SqlNodeTextVisitor implements SqlNodeVisitor
         finish() ;
     }
 
+    public void visit(SqlRename sqlRename)
+    {
+        start(sqlRename, "Rename", sqlRename.getAliasName()) ;
+        out.incIndent() ;
+        out.println(sqlRename.getIdScope().toString()) ;
+        out.println(sqlRename.getNodeScope().toString()) ;
+        out.decIndent() ;
+        sqlRename.getSqlNode().visit(this) ;
+        finish() ;
+    }
+    
     public void visit(SqlTable sqlNode)
     {
 //        if ( ! sqlNode.hasOneNote() )

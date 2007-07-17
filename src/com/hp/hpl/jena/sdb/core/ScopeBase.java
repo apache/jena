@@ -46,6 +46,9 @@ public class ScopeBase implements Scope
         return x ;
     }
     
+    public boolean isEmpty()
+    { return frame.isEmpty() ; }
+    
     public Set<ScopeEntry> findScopes()
     {
         Set<ScopeEntry> x = new HashSet<ScopeEntry>() ;

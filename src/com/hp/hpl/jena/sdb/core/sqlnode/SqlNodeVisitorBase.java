@@ -14,6 +14,9 @@ public class SqlNodeVisitorBase implements SqlNodeVisitor
     public void visit(SqlRestrict sqlRestrict)
     {}
 
+    public void visit(SqlRename sqlRename)
+    {}
+
     public void visit(SqlTable sqlTable)
     {}
 

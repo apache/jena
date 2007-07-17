@@ -20,7 +20,6 @@ public class ExprPattern
     Expr pattern ;
     MapAction mapAction;
     
-    
     public ExprPattern(String pattern ,
                        Var[] vars,
                        Action[] actions)

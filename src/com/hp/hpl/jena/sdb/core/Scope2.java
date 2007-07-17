@@ -43,6 +43,9 @@ public class Scope2 implements Scope
         return acc ;
     }
     
+    public boolean isEmpty()
+    { return left.isEmpty() && right.isEmpty() ; }
+
     public Set<ScopeEntry> findScopes()
     {
         Set<ScopeEntry> x = new HashSet<ScopeEntry>() ;
@@ -89,7 +92,14 @@ public class Scope2 implements Scope
     @Override
     public String toString()
     {
-        return left.toString() + " " + right.toString(); 
+        String x = "" ;
+        if ( ! left.isEmpty() )
+            x = left.toString() ;
+        if ( !left.isEmpty() && !right.isEmpty() )
+            x = x + " " ;
+        if ( ! right.isEmpty() )
+            x = x + right.toString();
+        return x ;
     }
 }
 

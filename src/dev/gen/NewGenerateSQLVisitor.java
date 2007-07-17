@@ -1,10 +1,10 @@
 /*
- * (c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.core.sqlnode;
+package dev.gen;
 
 import static com.hp.hpl.jena.sparql.util.StringUtils.str;
 
@@ -22,6 +22,8 @@ import com.hp.hpl.jena.sdb.core.sqlexpr.S_Equal;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExpr;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExprList;
+import com.hp.hpl.jena.sdb.core.sqlnode.SqlNodeVisitor;
+import com.hp.hpl.jena.sdb.core.sqlnode.*;
 import com.hp.hpl.jena.sdb.shared.SDBNotImplemented;
 import com.hp.hpl.jena.sdb.sql.SQLUtils;
 import static com.hp.hpl.jena.sdb.util.Alg.* ;
@@ -36,10 +38,10 @@ import com.hp.hpl.jena.sparql.util.IndentedWriter;
 // It just writes out the tree - it does not optimize it in anyway (that
 // happens before this stage). 
 
-public class GenerateSQLVisitor implements SqlNodeVisitor
+public class NewGenerateSQLVisitor implements SqlNodeVisitor
 {
     // Annotate should ensureEndofLine ?
-    private static Log log = LogFactory.getLog(GenerateSQLVisitor.class) ;
+    private static Log log = LogFactory.getLog(NewGenerateSQLVisitor.class) ;
     
     private IndentedWriter out ;
     int level = 0 ;
@@ -49,7 +51,7 @@ public class GenerateSQLVisitor implements SqlNodeVisitor
     private static final int annotationColumn = 40 ;
     private static boolean commentSQLStyle = true ;
     
-    public GenerateSQLVisitor(IndentedWriter out)
+    public NewGenerateSQLVisitor(IndentedWriter out)
     { this.out = out ; }
     
     public void visit(SqlProject sqlNode)
@@ -366,7 +368,7 @@ public class GenerateSQLVisitor implements SqlNodeVisitor
     {
         //String str = String.format("(%d, %d)", sqlNode.getStart(), sqlNode.getLength()) ;
         SqlNode sqlNode = sqlSlice.getSubNode() ;
-        sqlNode = GenerateSQL.ensureProject(sqlNode) ;
+        sqlNode = NewGenerateSQL.ensureProject(sqlNode) ;
         sqlNode.visit(this) ;
         out.ensureStartOfLine() ;
         if ( sqlSlice.getStart() != Query.NOLIMIT )
@@ -563,7 +565,7 @@ public class GenerateSQLVisitor implements SqlNodeVisitor
 }
 
 /*
- * (c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

@@ -4,77 +4,88 @@
  * [See end of file]
  */
 
-package dev.gen;
+package com.hp.hpl.jena.sdb.core.sqlnode;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-
-import com.hp.hpl.jena.sparql.core.Var;
 
 import com.hp.hpl.jena.sdb.core.Generator;
 import com.hp.hpl.jena.sdb.core.Gensym;
 import com.hp.hpl.jena.sdb.core.Scope;
 import com.hp.hpl.jena.sdb.core.ScopeRename;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
-import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
-import com.hp.hpl.jena.sdb.core.sqlnode.SqlNodeBase;
-import com.hp.hpl.jena.sdb.core.sqlnode.SqlNodeVisitor;
-import com.hp.hpl.jena.sdb.core.sqlnode.SqlTable;
-import com.hp.hpl.jena.sdb.util.StrUtils;
+import com.hp.hpl.jena.sparql.core.Var;
+
+/** SQL rename */
 
 public class SqlRename extends SqlNodeBase
 {
-    // Alt: an SELECT node with disinct, project, order by
-    // Distinct(Project(Order(Having(groupBy(restrict(joins)))))
-    // 
-    // Table-WHERE-GROUPBY-HAVING-ORDERBY-Project-Distinct
-    
-    SqlNode sqlNode ;
-    ScopeRename idScope ;
-    ScopeRename nodeScope ;
-    SqlTable here ;
+    private SqlNode sqlNode ;
+    private ScopeRename idScope ;
+    private ScopeRename nodeScope ;
+    private SqlTable here ;
 
     public static SqlRename view(String alias, SqlNode sqlNode)
     { 
+        SqlRename rename = new SqlRename(alias, sqlNode) ;
         Generator gen = Gensym.create("X") ;
-        Map<Var, String> idRenames = mapping(sqlNode, sqlNode.getIdScope(), gen) ;
-        Map<Var, String> nodeRenames = mapping(sqlNode, sqlNode.getNodeScope(), gen) ;
-        return new SqlRename(alias, sqlNode, idRenames, nodeRenames) ;
+
+        setAliasesAll(rename.here, sqlNode.getIdScope(), rename.idScope, gen) ;
+        setAliasesAll(rename.here, sqlNode.getNodeScope(), rename.nodeScope, gen) ;
+        
+        return rename ;
+    }
+    
+    private SqlRename(String aliasName, SqlNode sqlNode)
+    {
+        super(aliasName) ;
+        this.sqlNode = sqlNode ;
+        this.here = new SqlTable(aliasName) ;
+        this.idScope = new ScopeRename(sqlNode.getIdScope()) ;
+        this.nodeScope = new ScopeRename(sqlNode.getNodeScope()) ;
     }
     
     public SqlRename(String aliasName, SqlNode sqlNode, 
                      Map<Var, String> idRenames,
                      Map<Var, String> nodeRenames)
     {
-        super(aliasName) ;
-        this.sqlNode = sqlNode ;
-        idScope = new ScopeRename(sqlNode.getIdScope()) ;
-        nodeScope = new ScopeRename(sqlNode.getNodeScope()) ;
-        
-        here = new SqlTable(aliasName) ;
-        
+        this(aliasName, sqlNode) ;
         setAliases(here, idRenames, sqlNode.getIdScope(), idScope) ;
         setAliases(here, nodeRenames, sqlNode.getNodeScope(), nodeScope) ;
     }
 
-    private void setAliases(final SqlTable here, final Map<Var, String> renames, final Scope subScope, final ScopeRename scope)
+    // Map all vars in the scope to names in the rename.
+    private static void setAliasesAll(final SqlTable here, Scope scope, 
+                                      final ScopeRename renameScope, final Generator gen)
+    {
+        if ( scope == null ) return ;
+        
+        // Would be nicer if Java didn't impose such asn overhead on writing lambda's/
+//        Action<Var> action = new Action<Var>(){
+//            public void apply(Var var)
+//            {
+//                String colName = gen.next() ;
+//                SqlColumn col = new SqlColumn(here, colName) ;
+//                renameScope.setAlias(var, col) ;
+//            }
+//        } ;
+//        Alg.apply(scope.getVars(), action) ;
+            
+        Set<Var> vars = scope.getVars() ;
+        for ( Var v : vars)
+        {
+            String colName = gen.next() ;
+            SqlColumn col = new SqlColumn(here, colName) ;
+            renameScope.setAlias(v, col) ;
+        }
+    }
+
+    // Map certain vars into the rename
+    private static void setAliases(final SqlTable here, final Map<Var, String> renames,
+                                   final Scope subScope, final ScopeRename scope)
     {
         if ( renames == null )
             return ;
-        
-//        MapAction<Var, String> action = new MapAction<Var, String>()
-//        {
-//            public void apply(Var var, String colName)
-//            { 
-//                if ( subScope.hasColumnForVar(var) )
-//                {
-//                    SqlColumn col = new SqlColumn(here, colName) ;
-//                    scope.setAlias(var, col) ;
-//                }
-//            }
-//        } ;
-//        MapUtils.apply(renames, action) ;
         
         for ( Var v : renames.keySet() )
         {
@@ -88,41 +99,31 @@ public class SqlRename extends SqlNodeBase
     }
     
     public void visit(SqlNodeVisitor visitor)
-    {}
+    { visitor.visit(this) ; }
 
-    @Override
-    public String toString()
-    {
-        return StrUtils.strjoinNL(idScope.toString(),
-                                  nodeScope.toString(),
-                                  sqlNode.toString()) ;
-    }
+    public Scope getIdScope()   { return idScope ; }
     
-    // temp
-    
-    
-    public Scope getIdScope()
-    {
-        return idScope ;
-    }
+    public Scope getNodeScope() { return nodeScope ; }
 
-    public Scope getNodeScope()
-    {
-        return nodeScope ;
-    }
+    public ScopeRename getIdScopeRename()   { return idScope ; }
     
-    // -------- Workers to build a view mapping.
+    public ScopeRename getNodeScopeRename() { return nodeScope ; }
     
-    private static Map<Var, String> mapping(SqlNode sqlNode, Scope scope, Generator gen)
-    {
-        if ( scope == null )
-            return null ;
-        Map<Var, String> mapping = new HashMap<Var, String>() ;
-        Set<Var> vars = scope.getVars() ;
-        for ( Var v : vars)
-            mapping.put(v, gen.next()) ;
-        return mapping ;
-    }
+    public SqlNode getSqlNode()             { return sqlNode ; }
+
+    
+//    // -------- Workers to build a view mapping.
+//    
+//    private static Map<Var, String> mapping(SqlNode sqlNode, Scope scope, Generator gen)
+//    {
+//        if ( scope == null )
+//            return null ;
+//        Map<Var, String> mapping = new HashMap<Var, String>() ;
+//        Set<Var> vars = scope.getVars() ;
+//        for ( Var v : vars)
+//            mapping.put(v, gen.next()) ;
+//        return mapping ;
+//    }
 }
 
 /*

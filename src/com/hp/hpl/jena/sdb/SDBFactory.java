@@ -55,6 +55,14 @@ public class SDBFactory
     { return SDBConnectionFactory.create(desc) ; }
 
     /**
+     * Create a connection to a database from a JDBC connection. 
+     * @param desc              SDB connection description
+     * @return SDBConnection
+     */
+    public static SDBConnection createConnection(java.sql.Connection conn)
+    { return SDBConnectionFactory.create(conn) ; }
+
+    /**
      * Create a connection to a database from connection description in a file.
      * @param configFile        Filename to be read and parsed (Jena assembler)
      * @return SDBConnection

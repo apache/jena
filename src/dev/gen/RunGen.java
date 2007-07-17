@@ -11,11 +11,17 @@ import com.hp.hpl.jena.query.QueryFactory;
 import com.hp.hpl.jena.sdb.SDBFactory;
 import com.hp.hpl.jena.sdb.compiler.OpSQL;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
+import com.hp.hpl.jena.sdb.core.sqlnode.SqlRename;
 import com.hp.hpl.jena.sdb.engine.QueryEngineSDB;
 import com.hp.hpl.jena.sdb.store.Store;
 import com.hp.hpl.jena.sdb.util.PrintSDB;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.op.OpProject;
+
+// Alt: an SELECT node with disinct, project, order by
+// Distinct(Project(Order(Having(groupBy(restrict(joins)))))
+// 
+// Table-WHERE-GROUPBY-HAVING-ORDERBY-Project-Distinct
 
 public class RunGen
 {
@@ -25,7 +31,10 @@ public class RunGen
         boolean printSqlNode    = false ;
         boolean printSQL        = false ;
         
-        Query query = QueryFactory.create("SELECT ?x ?v { ?x ?p ?v }") ;
+        Query query = QueryFactory.create("SELECT ?x ?v ?w { ?x ?p ?v OPTIONAL { ?x ?q ?w } }") ;
+        System.out.println(query.serialize()) ;
+        String x = query.serialize() ;
+        
         Store store = SDBFactory.connectStore("sdb.ttl") ;
         
         QueryEngineSDB qe = new QueryEngineSDB(store, query) ;

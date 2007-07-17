@@ -12,11 +12,11 @@ import com.hp.hpl.jena.sparql.core.Var;
 
 public interface Scope
 {
+    public boolean          isEmpty() ;
     public boolean          hasColumnForVar(Var var) ;
     public Set<Var>         getVars() ;
     public Set<ScopeEntry>  findScopes() ;
     public ScopeEntry       findScopeForVar(Var var) ;
-    
 }
 
 /*

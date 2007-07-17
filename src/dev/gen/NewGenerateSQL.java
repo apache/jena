@@ -1,57 +1,42 @@
 /*
- * (c) Copyright 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.core;
+package dev.gen;
 
-import java.util.Set;
+import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
+import com.hp.hpl.jena.sdb.core.sqlnode.SqlNodeVisitor;
+import com.hp.hpl.jena.sdb.core.sqlnode.SqlProject;
+import com.hp.hpl.jena.sdb.store.SQLGenerator;
+import com.hp.hpl.jena.sparql.util.IndentedLineBuffer;
 
-import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.sdb.util.Alg;
-
-public class ScopeOptional implements Scope
+public class NewGenerateSQL implements SQLGenerator 
 {
-    private Scope scope ;
-    private ScopeStatus scopeStatus = ScopeStatus.OPTIONAL ;
-
-    public ScopeOptional(Scope subScope)
-    { this.scope = subScope ; }
+    public static String toSQL(SqlNode sqlNode)
+    { return new NewGenerateSQL().generateSQL(sqlNode) ; }
     
-    public ScopeEntry findScopeForVar(Var var)
+    public String generateSQL(SqlNode sqlNode)
     {
-        ScopeEntry e = scope.findScopeForVar(var) ;
-        if ( e == null )
-            return null ;
-        e.setStatus(scopeStatus) ;
-        return e ;
-    }
-
-    public Set<Var> getVars()
-    {
-        return scope.getVars() ;
-    }
-
-    public boolean isEmpty()
-    { return scope.isEmpty() ; }
-    
-    public Set<ScopeEntry> findScopes()
-    {
-        Set<ScopeEntry> x = scope.findScopes() ;
-        Alg.apply(x, ScopeEntry.SetOpt) ;
-        return x ;
+        IndentedLineBuffer buff = new IndentedLineBuffer() ;
+        SqlNodeVisitor v = makeVisitor(buff) ;
+        // Top must be a project to cause the SELECT to be written
+        sqlNode = ensureProject(sqlNode) ;
+        sqlNode.visit(v) ;
+        return buff.asString() ;
     }
     
-    public boolean hasColumnForVar(Var var)
+    protected SqlNodeVisitor makeVisitor(IndentedLineBuffer buff)
     {
-        return scope.hasColumnForVar(var) ;
+        return new NewGenerateSQLVisitor(buff.getIndentedWriter()) ;
     }
-
-    @Override
-    public String toString()
+    
+    public static SqlNode ensureProject(SqlNode sqlNode)
     {
-        return "Opt("+scope.toString()+")" ;
+        if ( ! sqlNode.isProject() )
+            sqlNode = SqlProject.project(sqlNode) ;
+        return sqlNode ;
     }
 }
 

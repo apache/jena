@@ -94,7 +94,7 @@ class StringEqualsSqlGen extends SDBConstraint
             LogFactory.getLog(this.getClass()).fatal("Variable '"+var+"' not in scope") ;
             return null ;
         }
-          
+        
         SqlColumn vCol = scope.findScopeForVar(var).getColumn() ;
         SqlColumn lexCol = new SqlColumn(vCol.getTable(), "lex") ;
         SqlColumn vTypeCol = new SqlColumn(vCol.getTable(), "type") ;
