@@ -62,6 +62,7 @@ public class sdbinfo extends CmdArgsDB
             cmdError("No positional arguments allowed", true) ;
     }
     
+    @SuppressWarnings("unchecked")
     @Override
     protected void execCmd(List args)
     {

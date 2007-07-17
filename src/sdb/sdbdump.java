@@ -62,6 +62,7 @@ public class sdbdump extends CmdArgsDB
             cmdError("No positional arguments allowed", true) ;
     }
     
+    @SuppressWarnings("unchecked")
     @Override
     protected void execCmd(List args)
     {

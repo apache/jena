@@ -8,9 +8,11 @@ package com.hp.hpl.jena.sdb.exprmatch;
 
 import java.util.List;
 
+import com.hp.hpl.jena.sparql.expr.Expr;
+
 public interface FunctionAction
 {
-    public boolean match(String fn, List args, MapResult resultMap) ;
+    public boolean match(String fn, List<Expr> args, MapResult resultMap) ;
 }
 
 /*

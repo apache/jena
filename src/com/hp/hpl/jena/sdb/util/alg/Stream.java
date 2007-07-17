@@ -12,7 +12,7 @@ import com.hp.hpl.jena.sdb.util.Alg;
 
 
 
-public class Stream<T> implements Iterable
+public class Stream<T> implements Iterable<T>
 {
     // Add merge(Stream, Stream, MergeOp)
     // statics to Alg?

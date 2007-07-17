@@ -34,12 +34,14 @@ public class UpdateHandlerSDB extends SimpleBulkUpdateHandler {
 		finally { ((GraphSDB) graph).finishBulkUpdate(); }
 	}
 
+    @SuppressWarnings("unchecked")
     @Override
     public void add(List arg0) {
 		try { ((GraphSDB) graph).startBulkUpdate(); super.add(arg0); }
 		finally { ((GraphSDB) graph).finishBulkUpdate(); }
 	}
 
+    @SuppressWarnings("unchecked")
     @Override
     public void add(Iterator arg0) {
 		try { ((GraphSDB) graph).startBulkUpdate(); super.add(arg0); }
@@ -64,12 +66,14 @@ public class UpdateHandlerSDB extends SimpleBulkUpdateHandler {
 		finally { ((GraphSDB) graph).finishBulkUpdate(); }
 	}
 
+    @SuppressWarnings("unchecked")
     @Override
 	public void delete(List arg0) {
 		try { ((GraphSDB) graph).startBulkUpdate(); super.delete(arg0); }
 		finally { ((GraphSDB) graph).finishBulkUpdate(); }
 	}
 
+    @SuppressWarnings("unchecked")
     @Override
 	public void delete(Iterator arg0) {
 		try { ((GraphSDB) graph).startBulkUpdate(); super.delete(arg0); }

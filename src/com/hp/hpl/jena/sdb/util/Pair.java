@@ -40,7 +40,7 @@ public class Pair<A, B>
         // instanceof then call super.equals.
         
         if( ! ( other instanceof Pair ) ) return false ;
-        Pair p2 = (Pair)other ;
+        Pair<?,?> p2 = (Pair<?,?>)other ;
         return  eq(car(), p2.car()) && eq(cdr(), p2.cdr()) ;
     }
     

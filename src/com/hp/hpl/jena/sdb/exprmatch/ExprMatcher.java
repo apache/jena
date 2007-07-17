@@ -6,6 +6,8 @@
 
 package com.hp.hpl.jena.sdb.exprmatch;
 
+import java.util.List;
+
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.expr.*;
 import com.hp.hpl.jena.sparql.util.ExprUtils;
@@ -102,7 +104,9 @@ class MatchVisitor implements ExprVisitor
         
         if ( uri != null && cMap != null && cMap.containsKey(uri) )
         {
-            if( ! cMap.get(uri).match(uri, patExpr.getArgs(), rMap) )
+            @SuppressWarnings("unchecked")
+            List<Expr> args = patExpr.getArgs() ;
+            if( ! cMap.get(uri).match(uri, args, rMap) )
                 throw new NoExprMatch("Function callout rejected match") ;
             return ;
         }

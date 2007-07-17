@@ -210,7 +210,7 @@ public class GraphSDB extends GraphBase implements Graph
 
     class GraphIterator extends TrackingTripleIterator
     {
-        GraphIterator(Iterator iter) { super(iter) ; }
+        GraphIterator(Iterator<Triple> iter) { super(iter) ; }
         
         @Override
         public void remove()

@@ -28,21 +28,21 @@ public abstract class SqlNodeBase extends AnnotationsBase implements SqlNode
 //    public boolean isRightJoin() { return false ; }
 //    public boolean isOuterJoin() { return false ; }
 
-    public SqlJoin      asJoin()     { classError(SqlJoin.class) ; return null  ; }
+    public SqlJoin      asJoin()        { classError(SqlJoin.class) ; return null  ; }
     public SqlJoinLeftOuter     asLeftJoin() { classError(SqlJoinLeftOuter.class) ; return null  ; }
     public SqlJoinInner         asInnerJoin(){ classError(SqlJoinInner.class) ; return null  ; }
 
-    public boolean      isRestrict()  { return false ; }
-    public SqlRestrict  asRestrict() { classError(SqlRestrict.class) ; return null  ; }
+    public boolean      isRestrict()    { return false ; }
+    public SqlRestrict  asRestrict()    { classError(SqlRestrict.class) ; return null  ; }
 
-    public boolean      isProject()   { return false ; }
-    public SqlProject   asProject()  { classError(SqlProject.class) ; return null  ; }
+    public boolean      isProject()     { return false ; }
+    public SqlProject   asProject()     { classError(SqlProject.class) ; return null  ; }
 
-    public boolean      isTable()     { return false ; }
-    public SqlTable     asTable()    { classError(SqlTable.class) ; return null  ; }
+    public boolean      isTable()       { return false ; }
+    public SqlTable     asTable()       { classError(SqlTable.class) ; return null  ; }
 
-    public boolean      isCoalesce()  { return false ; }
-    public SqlCoalesce  asCoalesce() { classError(SqlCoalesce.class) ; return null  ; }
+    public boolean      isCoalesce()    { return false ; }
+    public SqlCoalesce  asCoalesce()    { classError(SqlCoalesce.class) ; return null  ; }
     
     public void output(IndentedWriter out)  { output(out, true) ; }
     
@@ -60,7 +60,7 @@ public abstract class SqlNodeBase extends AnnotationsBase implements SqlNode
     final
     public String getAliasName() { return aliasName ; }
 
-    private void classError(Class wanted)
+    private void classError(Class<?> wanted)
     {
         throw new ClassCastException("Wanted class: "+Utils.className(wanted)+" :: Actual class "+Utils.className(this) ) ;
     }

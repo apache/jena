@@ -146,11 +146,13 @@ public class sdbload extends CmdArgsDB
                 addEvent(t) ;
         }
 
+        @SuppressWarnings("unchecked")
         public void notifyAddList(Graph g, List triples) 
         { 
             notifyAddIterator(g, triples.iterator()) ;
         }
 
+        @SuppressWarnings("unchecked")
         public void notifyAddIterator(Graph g, Iterator it)
         {
             for ( ; it.hasNext() ; )
@@ -163,12 +165,14 @@ public class sdbload extends CmdArgsDB
         public void notifyDeleteTriple(Graph g, Triple t)
         {}
 
+        @SuppressWarnings("unchecked")
         public void notifyDeleteList(Graph g, List L)
         {}
 
         public void notifyDeleteArray(Graph g, Triple[] triples)
         {}
 
+        @SuppressWarnings("unchecked")
         public void notifyDeleteIterator(Graph g, Iterator it)
         {}
 

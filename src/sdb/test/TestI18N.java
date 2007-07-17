@@ -59,7 +59,7 @@ public class TestI18N extends TestStringBase
     }
     
     @Parameters
-    public static Collection data()
+    public static Collection<Object[]> data()
     {
         List<Object[]> x = new ArrayList<Object[]>() ;
         
