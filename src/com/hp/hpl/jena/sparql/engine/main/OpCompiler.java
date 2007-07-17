@@ -272,8 +272,10 @@ public class OpCompiler
         throw new QueryExecException("Encountered unsupport OpExt: "+opExt.getName()) ;
     }
 
-    public QueryIterator compile(OpNull opNull, QueryIterator input)
+    QueryIterator compile(OpNull opNull, QueryIterator input)
     {
+        // Loose the input.
+        input.close() ;
         return new QueryIterNullIterator(execCxt) ;
     }
 

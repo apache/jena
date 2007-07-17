@@ -144,7 +144,6 @@ public class QueryExecutionBase implements QueryExecution
 
     public Model execDescribe(Model model)
     {
-        System.out.println(query) ;
         if ( ! query.isDescribeType() )
             throw new QueryExecException("Attempt to get a DESCRIBE result from a "+labelForQuery(query)+" query") ; 
         query.setQueryResultStar(true) ;
@@ -168,7 +167,7 @@ public class QueryExecutionBase implements QueryExecution
                     set.add(n) ;
                 }
             }
-            //this.close() ;
+            this.close() ;
         }
 
         if ( query.getResultURIs() != null )

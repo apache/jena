@@ -34,8 +34,11 @@ public class Run
 {
     public static void main(String[] argv)
     {
-        String []a = {"--file=Q.rq"} ;
-        arq.qparse.main(a) ;
+        String []a = {"-engine=ref",
+            "--data=testing/ARQ/Examples/data-1.ttl",
+            "--file=testing/ARQ/Examples/ex-label-1.rq"
+        } ;
+        arq.sparql.main(a) ;
         System.exit(0) ;
         
         //runQExpr() ;

@@ -75,8 +75,7 @@ public abstract class QueryEngineBase implements OpExec
     protected Plan createPlan()
     {
         Op op = modifyOp(queryOp) ;
-        
-        
+
         QueryIterator queryIterator = null ;
         if ( dataset != null )
             // Null means setting up but not executing a query.

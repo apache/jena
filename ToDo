@@ -3,7 +3,8 @@
 ++ ** Document "stages"
 ++ ** Document "update API"
 -----
-
++ QueryIterRoot is not used by engine main beause it calcs the root bindign (may be startBinding)
+  remove QueryIterRoot and just use BindingRoot. 
 + OpService
 
 + Aggregates: QueryIterGroup
