@@ -3,10 +3,12 @@
 @prefix : <http://example/> .
 
 :x :p 1 .
-:x :p 2 .
-:x :p 3 .
-:x :p 4 .
-:x :p 5 .
+:x :q [ :pp :o1 ; :pp :o2 ] .
+
+## :x :p 2 .
+## :x :p 3 .
+## :x :p 4 .
+## :x :p 5 .
 
 
 ## :C1 rdfs:subClassOf :C2 .
