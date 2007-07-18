@@ -6,89 +6,179 @@
 
 package com.hp.hpl.jena.sdb.graph;
 
+import java.util.Set;
+
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.graph.query.*;
 import com.hp.hpl.jena.sdb.SDBException;
-import com.hp.hpl.jena.util.iterator.ExtendedIterator;
+import com.hp.hpl.jena.sdb.engine.QueryEngineSDB;
+import com.hp.hpl.jena.sdb.shared.SDBNotImplemented;
+import com.hp.hpl.jena.sdb.store.DatasetStoreGraph;
+import com.hp.hpl.jena.sparql.algebra.Op;
+import com.hp.hpl.jena.sparql.algebra.OpVars;
+import com.hp.hpl.jena.sparql.algebra.op.OpQuadPattern;
+import com.hp.hpl.jena.sparql.core.BasicPattern;
+import com.hp.hpl.jena.sparql.core.Var;
+import com.hp.hpl.jena.sparql.engine.Plan;
+import com.hp.hpl.jena.sparql.engine.QueryIterator;
+import com.hp.hpl.jena.sparql.engine.binding.Binding;
 
-public class GraphQueryHandlerSDB implements QueryHandler
+public class GraphQueryHandlerSDB extends SimpleQueryHandler
 {
-    public BindingQueryPlan prepareBindings( Query q, Node [] variables )
-    {
-        return null ;
+    DatasetStoreGraph datasetStore ;
+    Node graphNode ;
+    /**
+     * @param graph
+     */
+    public GraphQueryHandlerSDB(Graph graph, Node graphNode, DatasetStoreGraph datasetStore)
+    { 
+        super(graph) ;
+        this.datasetStore = datasetStore ;
+        this.graphNode = graphNode ;
     }
-    
+      
+//    @Override
+//    public BindingQueryPlan prepareBindings( Query q, Node [] variables )
+//    {
+//        return null ;
+//    }
 
-    public Stage patternStage( Mapping map, ExpressionSet constraints, Triple [] p )
+    @Override
+    public TreeQueryPlan prepareTree( Graph pattern )
+    {
+        throw new SDBNotImplemented("prepareTree - Chris says this will not be called") ;
+    }
+
+
+    @Override
+    public Stage patternStage( final Mapping map, ExpressionSet constraints, final Triple [] pattern )
     {
         if ( constraints != null && constraints.iterator().hasNext() )
             throw new SDBException("Constraints not supported") ;
+        Stage stage = new Stage() {
+            @Override
+            public Pipe deliver(Pipe pipe)
+            {
+                Pipe pipe2 = new BufferPipe() ;
+                // Previous's output is pipe2
+                previous.deliver(pipe2) ;
+                new SDBQueryThread(map, pattern, pipe2, pipe).start() ;
+                return pipe ;
+            }} ;
+        return stage ;
         
-        
-        
-        
-        return null ; 
     }
 
-    public TreeQueryPlan prepareTree( Graph pattern )
-    {
-        return null ; 
-    }
-
-    // Special cases.
+//    // -------- Special cases.
+//    
+//    public ExtendedIterator subjectsFor( Node p, Node o )
+//    {
+//        return null ; 
+//    }
+//    
+//    public ExtendedIterator predicatesFor( Node s, Node o )
+//    {
+//        return null ; 
+//    }
+//    
+//    public ExtendedIterator objectsFor( Node s, Node p )
+//    {
+//        return null ; 
+//    }
+//
+//    public boolean containsNode( Node n )
+//    {
+//        return false ; 
+//    }
+//    // -------- 
     
-    public ExtendedIterator subjectsFor( Node p, Node o )
+    class SDBQueryThread extends Thread
     {
-        return null ; 
+        Triple[] pattern ;
+        Mapping map ;
+        private Pipe inputPipe ;
+        private Pipe outputPipe ;
+
+        // Later - inner classify.
+        public SDBQueryThread(
+                       Mapping map, Triple[] pattern,
+                       Pipe inputPipe, Pipe outputPipe)
+        {
+            this.map = map ;
+            this.pattern = pattern ;
+            this.inputPipe = inputPipe ;
+            this.outputPipe = outputPipe ;
+        }
+
+        @Override
+        public void run()
+        {
+            while ( inputPipe.hasNext() )
+            {
+                Domain input = inputPipe.get() ;
+
+                Op op = prepareTriples(map, pattern, graphNode, input) ;
+                @SuppressWarnings("unchecked")
+                Set<Var> vars = (Set<Var>)OpVars.allVars(op) ;
+                Plan plan = QueryEngineSDB.getFactory().create(op, datasetStore, null, null) ;
+                QueryIterator qIter = plan.iterator() ;
+
+                for ( ; qIter.hasNext() ; )
+                {
+                    Domain output = new Domain(input.size()) ;
+                    Binding binding = qIter.nextBinding() ;
+                    for ( Var v : vars )
+                    {     
+                        Node value = binding.get(v) ;
+                        int idx = map.lookUp(v) ;
+                        output.setElement(idx, value) ;
+                    }
+                    outputPipe.put(output) ;
+                }
+            }
+        }
     }
-    
-    public ExtendedIterator predicatesFor( Node s, Node o )
+    // ---- Workers 
+
+    private static Op prepareTriples(Mapping map, Triple[] p, Node graphNode, Domain input)
     {
-        return null ; 
+        Triple[] pattern = new Triple[p.length] ;
+
+        for ( int i = 0 ; i < p.length ; i++ )
+        {
+            Triple t = subst(map, p[i], input) ;
+            pattern[i] = t ;
+        }
+
+        // -- BGP
+        BasicPattern bgp = new BasicPattern() ;
+        for ( int i = 0 ; i < pattern.length ; i ++ )
+            bgp.add(pattern[i]) ;
+        Op op = new OpQuadPattern(graphNode, bgp) ;
+        return op ;
     }
-    
-    public ExtendedIterator objectsFor( Node s, Node p )
+
+    private static Triple subst(Mapping map, Triple triple, Domain input)
     {
-        return null ; 
+        Node s = subst(map, triple.getSubject(), input) ;
+        Node p = subst(map, triple.getPredicate(), input) ;
+        Node o = subst(map, triple.getObject(), input) ;
+        return new Triple(s, p, o) ;
     }
 
-    public boolean containsNode( Node n )
+    private static Node subst(Mapping map, Node node, Domain input)
     {
-        return false ; 
-    }
-}
+        if ( map.hasBound(node) )
+        {
+            int idx = map.lookUp(node) ;
+            if ( idx == -1 )
+            {}
+            return input.getElement(idx) ;
+        }
 
-class TreeQueryPlanSDB implements TreeQueryPlan
-{
-
-    public Graph executeTree()
-    {
-        return null ;
-    }
-}
-
-class StageSDB extends Stage
-{
-    @Override
-    public Pipe deliver(Pipe arg0)
-    {
-        return null ;
-    }
-}
-
-
-/*
-A BindingQueryPlan is something that can run executeBindings() to get back an
-ExtendedIterator over Domains, ie, Lists.
-*/
-
-class BindingQueryPlanSDB implements BindingQueryPlan
-{
-    public ExtendedIterator executeBindings()
-    {
-        return null ;
+        return node ;
     }
 }
 

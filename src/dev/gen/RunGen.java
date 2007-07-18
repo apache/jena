@@ -19,9 +19,12 @@ import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.op.OpProject;
 
 // Alt: an SELECT node with disinct, project, order by
-// Distinct(Project(Order(Having(groupBy(restrict(joins)))))
+// Distinct(Rename(Project(Order(Having(groupBy(restrict(joins))))))
 // 
 // Table-WHERE-GROUPBY-HAVING-ORDERBY-Project-Distinct
+// Table-Restrict-Group-Restrict-Order-Project-Rename-Distinct
+
+// Rename == Project?
 
 public class RunGen
 {

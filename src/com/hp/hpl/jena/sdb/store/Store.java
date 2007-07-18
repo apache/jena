@@ -66,8 +66,11 @@ public interface Store
     
     /** Where the default graph is store */ 
     public TableDescTriples     getTripleTableDesc() ;
+    
     /** Where the named graphs are in is store */ 
     public TableDescQuads       getQuadTableDesc() ;
+    
+    /** Location of the nodes in the store (if meaningful) */  
     public TableDescNodes       getNodeTableDesc() ;
 }
 
