@@ -29,7 +29,10 @@ public class TableFactory
     public static Table create(QueryIterator queryIterator)
     { 
         if ( queryIterator instanceof QueryIterRoot )
-            return createUnit() ; 
+        {
+            queryIterator.close();
+            return createUnit() ;
+        }
         
         return new TableN(queryIterator) ; }
 

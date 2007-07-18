@@ -1,2 +1,6 @@
-PREFIX : <http://example/>
-SELECT * { :x.y :123 :1-4 }
+PREFIX  jext:    <java:arq.examples.propertyfunction.>
+
+SELECT ?x 
+{
+    ?x jext:labelSearch "zzz" .
+}

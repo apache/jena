@@ -33,6 +33,7 @@ import com.hp.hpl.jena.sparql.engine.binding.Binding1;
 import com.hp.hpl.jena.sparql.engine.binding.BindingRoot;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterConcat;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterPlainWrapper;
+import com.hp.hpl.jena.sparql.engine.iterator.QueryIterRoot;
 import com.hp.hpl.jena.sparql.engine.main.StageBuilder;
 
 
@@ -311,7 +312,7 @@ public class Eval
             if ( g == null )
                 return new TableEmpty() ;
             ExecutionContext cxt2 = new ExecutionContext(cxt, g) ;
-            QueryIterator qIter = StageBuilder.compile(pattern, ExecUtils.makeRoot(cxt2), cxt2) ;
+            QueryIterator qIter = StageBuilder.compile(pattern, QueryIterRoot.create(cxt2), cxt2) ;
             return TableFactory.create(qIter) ;
         }
         else
@@ -332,7 +333,7 @@ public class Eval
                 // Eval the pattern, eval the variable, join.
                 // Pattern may be non-linear in tehvariable - do a pure execution.  
                 Table t1 = TableFactory.create(gVar, gn) ;
-                QueryIterator qIter = StageBuilder.compile(pattern, ExecUtils.makeRoot(cxt2), cxt2) ;
+                QueryIterator qIter = StageBuilder.compile(pattern, QueryIterRoot.create(cxt2), cxt2) ;
                 Table t2 = TableFactory.create(qIter) ;
                 Table t3 = evaluator.join(t1, t2) ;
                 concat.add(t3.iterator(cxt2)) ;

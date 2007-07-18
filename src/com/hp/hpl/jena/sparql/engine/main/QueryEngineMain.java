@@ -6,16 +6,20 @@
 
 package com.hp.hpl.jena.sparql.engine.main;
 
+import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.sparql.algebra.AlgebraGenerator;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.core.DatasetGraph;
-import com.hp.hpl.jena.sparql.engine.*;
+import com.hp.hpl.jena.sparql.engine.ExecutionContext;
+import com.hp.hpl.jena.sparql.engine.Plan;
+import com.hp.hpl.jena.sparql.engine.QueryEngineBase;
+import com.hp.hpl.jena.sparql.engine.QueryEngineFactory;
+import com.hp.hpl.jena.sparql.engine.QueryEngineRegistry;
+import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.sparql.engine.iterator.QueryIterSingleton;
+import com.hp.hpl.jena.sparql.engine.iterator.QueryIterRoot;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIteratorCheck;
 import com.hp.hpl.jena.sparql.util.Context;
-
-import com.hp.hpl.jena.query.Query;
 
 public class QueryEngineMain extends QueryEngineBase
 {
@@ -35,7 +39,7 @@ public class QueryEngineMain extends QueryEngineBase
     public QueryIterator eval(Op op, DatasetGraph dsg, Binding input, Context context)
     {
         ExecutionContext execCxt = new ExecutionContext(context, dsg.getDefaultGraph(), dsg) ;
-        QueryIterator qIter1 = new QueryIterSingleton(input, execCxt) ;
+        QueryIterator qIter1 = QueryIterRoot.create(input, execCxt) ;
         QueryIterator qIter = OpCompiler.compile(op, qIter1, execCxt) ;
         // Wrap with something to check for closed iterators.
         qIter = QueryIteratorCheck.check(qIter, execCxt) ;

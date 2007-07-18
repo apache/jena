@@ -7,18 +7,31 @@
 package com.hp.hpl.jena.sparql.engine.iterator;
 
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
+import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.binding.BindingRoot;
+import com.hp.hpl.jena.sparql.serializer.SerializationContext;
+import com.hp.hpl.jena.sparql.util.IndentedWriter;
 
 public class QueryIterRoot extends QueryIterSingleton
 {
     public static QueryIterRoot create(ExecutionContext execCxt)
-    { return new QueryIterRoot(execCxt) ; }
+    { return new QueryIterRoot(BindingRoot.create(), execCxt) ; }
     
-    private QueryIterRoot(ExecutionContext execCxt)
+    public static QueryIterRoot create(Binding binding, ExecutionContext execCxt)
+    { return new QueryIterRoot(binding, execCxt) ; }
+
+    private QueryIterRoot(Binding binding, ExecutionContext execCxt)
     {
         super(BindingRoot.create(), execCxt) ;
     }
 
+    public void output(IndentedWriter out, SerializationContext sCxt)
+    {
+        if ( binding instanceof BindingRoot )
+            out.print("QueryIterRoot");
+        else
+            out.print("QueryIterRoot: "+binding);
+    }
 }
 
 /*

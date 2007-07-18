@@ -9,11 +9,12 @@ package com.hp.hpl.jena.sparql.engine.ref;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.hp.hpl.jena.query.ResultSet;
+import com.hp.hpl.jena.query.ResultSetFormatter;
 import com.hp.hpl.jena.sparql.algebra.Table;
 import com.hp.hpl.jena.sparql.algebra.TableFactory;
 import com.hp.hpl.jena.sparql.algebra.table.TableN;
 import com.hp.hpl.jena.sparql.core.BasicPattern;
-import com.hp.hpl.jena.sparql.engine.ExecUtils;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.ResultSetStream;
@@ -22,9 +23,6 @@ import com.hp.hpl.jena.sparql.engine.iterator.*;
 import com.hp.hpl.jena.sparql.engine.main.StageBuilder;
 import com.hp.hpl.jena.sparql.expr.ExprList;
 import com.hp.hpl.jena.sparql.util.Utils;
-
-import com.hp.hpl.jena.query.ResultSet;
-import com.hp.hpl.jena.query.ResultSetFormatter;
 
 
 class EvaluatorSimple implements Evaluator
@@ -44,7 +42,7 @@ class EvaluatorSimple implements Evaluator
 
     public Table basicPattern(BasicPattern pattern)
     {
-        QueryIterator qIter = StageBuilder.compile(pattern, ExecUtils.makeRoot(execCxt), execCxt) ;
+        QueryIterator qIter = StageBuilder.compile(pattern, QueryIterRoot.create(execCxt), execCxt) ;
         return TableFactory.create(qIter) ;
     }
 
