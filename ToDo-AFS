@@ -2,30 +2,29 @@ SDB ToDo list (and general notes)
 =================================
 
 + Revisit generating SQL for nested DISTINCT
-+ SqlToTable node that passes on its columns as renames (specialization of SqlRename)
-    SqlRestrict ==> SELECT/WHERE vs ON
-    SqlRename and specialism SqlOneTable(alias)
-    SqlProject : use inside expressions 
-      SqlRename, SqlProject, SqlCoalesce ==> SELECT
 
 + Setting options for testing.
 + Tests for union graphs. 
 + Use cursors for streaming / PostgreSQL
 
++ StoreLoader => StoreLoaderPlus.
+
 + DB type tables
 
 + Per store additional context items
 
-+ Use apart from Jena.
++ Improve Joseki integration.
    Built-in (simple) HTTP from Joseki?
    Or just Joseki+example config.
    Joseki needs 
    
+   Canned joseki-config.ttl
+
    sdb:SDBConnection ja:assembler "com.hp.hpl.jena.sdb.assembler.SDBConnectionDescAssembler"
    sdb:Store ja:assembler "com.hp.hpl.jena.sdb.assembler.StoreDescAssembler"
  or 
    a general initializer:
-     sdb:SDB ja:assembler com.hp.hpl.jena.sdb.SDBSystem"
+     sdb:SDB ja:assembler com.hp.hpl.jena.sdb.[core.]SDBSystem"
 
 == Pattern table and inference
 
@@ -88,7 +87,6 @@ SDB ToDo list (and general notes)
 
 + canonicalise literals on input?
 
-  + Nested SELECT
   + Restrict(Join(A,B)) == Join(A,B,condition)
     In rel algebra, don't push into conditions: do in code generation.
   + Precedence-driven output for SqlExpr // SqlExprGenerateSQL, not lots of nesting.
@@ -99,6 +97,4 @@ SDB ToDo list (and general notes)
   + Be careful about code generation and a right complex expression
     Use a SELECT for nested expressions?  generalize from COALESCE code generation.
    
-+ GraphSDB : graph query handler
-
 + QueryEngineSDB has duplication with QueryEngineMain - eliminate!

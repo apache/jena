@@ -29,9 +29,7 @@ public class GraphQueryHandlerSDB extends SimpleQueryHandler
 {
     DatasetStoreGraph datasetStore ;
     Node graphNode ;
-    /**
-     * @param graph
-     */
+
     public GraphQueryHandlerSDB(Graph graph, Node graphNode, DatasetStoreGraph datasetStore)
     { 
         super(graph) ;
