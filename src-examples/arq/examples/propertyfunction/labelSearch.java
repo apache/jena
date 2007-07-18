@@ -136,7 +136,7 @@ public class labelSearch implements PropertyFunction
             return Algebra.exec(op2, execCxt.getDataset()) ;
         }        
         
-        // Use the default, optimizing query engine. 
+        // Use the default, optimizing query engine.
         return OpCompiler.compile(filter, input, execCxt) ;
     }
 
