@@ -2,6 +2,5 @@ PREFIX :    <http://example/>
 
 SELECT *
 { 
-     ?x :p ?z 
-    FILTER regex(?z, "foo")
+     ?x :q ?a . ?a :pp ?v
 }

@@ -146,7 +146,7 @@ public class RunSDB
         store.getTableFormatter().create() ;
         Model model = SDBFactory.connectDefaultModel(store) ;
         FileManager.get().readModel(model, "D.ttl") ;
-        Query query = QueryFactory.create("SELECT * { ?s ?p ?o }") ;
+        Query query = QueryFactory.read("Q.rq") ;
         QueryExecution qexec = QueryExecutionFactory.create(query, model) ;
         QueryExecUtils.executeQuery(query, qexec) ;
         qexec.close() ;
