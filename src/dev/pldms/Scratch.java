@@ -9,7 +9,8 @@ package dev.pldms;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.graph.test.NodeCreateUtils;
+
 import com.hp.hpl.jena.sdb.SDBFactory;
 import com.hp.hpl.jena.sdb.layout2.index.StoreTriplesNodesIndexOracle;
 import com.hp.hpl.jena.sdb.sql.JDBC;
@@ -53,16 +54,16 @@ public class Scratch {
                 TableDesc descT = store.getTripleTableDesc();
                 
                 loader.startBulkUpdate();
-                loader.addTuple(descT, Node.create("a"), Node.create("a"), Node.create("a"));
-                loader.addTuple(descT, Node.create("b"), Node.create("a"), Node.create("a"));
-                loader.addTuple(descT, Node.create("c"), Node.create("a"), Node.create("a"));
+                loader.addTuple(descT, NodeCreateUtils.create("a"), NodeCreateUtils.create("a"), NodeCreateUtils.create("a"));
+                loader.addTuple(descT, NodeCreateUtils.create("b"), NodeCreateUtils.create("a"), NodeCreateUtils.create("a"));
+                loader.addTuple(descT, NodeCreateUtils.create("c"), NodeCreateUtils.create("a"), NodeCreateUtils.create("a"));
                 loader.finishBulkUpdate();
                 System.err.println("Nodes: " + getSize("Nodes", conn));
                 System.err.println("Triples: " + getSize("Triples", conn));
                 loader.startBulkUpdate();
-                loader.deleteTuple(descT, Node.create("a"), Node.create("a"), Node.create("a"));
-                loader.deleteTuple(descT, Node.create("b"), Node.create("a"), Node.create("a"));
-                loader.deleteTuple(descT, Node.create("c"), Node.create("a"), Node.create("a"));
+                loader.deleteTuple(descT, NodeCreateUtils.create("a"), NodeCreateUtils.create("a"), NodeCreateUtils.create("a"));
+                loader.deleteTuple(descT, NodeCreateUtils.create("b"), NodeCreateUtils.create("a"), NodeCreateUtils.create("a"));
+                loader.deleteTuple(descT, NodeCreateUtils.create("c"), NodeCreateUtils.create("a"), NodeCreateUtils.create("a"));
                 loader.finishBulkUpdate();
                 System.err.println("Nodes: " + getSize("Nodes", conn));
                 System.err.println("Triples: " + getSize("Triples", conn));

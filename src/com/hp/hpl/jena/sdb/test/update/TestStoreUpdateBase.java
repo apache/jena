@@ -15,6 +15,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.graph.test.NodeCreateUtils;
+
 import com.hp.hpl.jena.sdb.layout2.TableDescNodes;
 import com.hp.hpl.jena.sdb.store.Store;
 import com.hp.hpl.jena.sdb.store.StoreLoaderPlus;
@@ -50,7 +52,7 @@ public abstract class TestStoreUpdateBase {
 	}
 	
 	protected Node node(String str) {
-		return Node.create(str);
+		return NodeCreateUtils.create(str);
 	}
 	
 	@Before public void init() {

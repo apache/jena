@@ -5,11 +5,12 @@ package com.hp.hpl.jena.sdb.scoreplanner;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
+import com.hp.hpl.jena.graph.test.NodeCreateUtils;
 
 class TripleScorer
 {
-	public static final Node BOUND = Node.create("BOUND");
-	public static final Node UNBOUND = Node.create("UNBOUND");
+	public static final Node BOUND = NodeCreateUtils.create("BOUND");
+	public static final Node UNBOUND = NodeCreateUtils.create("UNBOUND");
 	private Node subject;
 	private Node predicate;
 	private Node object;
