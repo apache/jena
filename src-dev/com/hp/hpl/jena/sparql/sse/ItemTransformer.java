@@ -20,26 +20,6 @@ public class ItemTransformer
         TransformerApply v = new TransformerApply(transform) ;
         item.visit(v) ;
         return v.result() ;
-        
-//        return new TransformerApply().transformation(tranform, op) ;
-//        
-//        if ( item.isNode() )
-//            return transform.transform(item, item.getNode()) ;
-//        if ( item.isWord() )
-//            return transform.transform(item, item.getWord()) ;
-//        if ( item.isList() )
-//        {
-//            List<Item> newItems = new ArrayList<Item>() ;
-//            for ( Item subItem : item.getList() )
-//            {
-//                Item newItem = transform(transform, subItem) ;
-//                newItems.add(newItem) ;
-//            }
-//            return Item.createList(newItems, item.getLine(), item.getColumn()) ;
-//        }
-//        
-//        LogFactory.getLog(Transformer.class).fatal("Broken item") ;
-//        return null ;
     }
     
     // Is it worth being an ItemVisitor?

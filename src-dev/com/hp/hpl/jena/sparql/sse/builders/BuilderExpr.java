@@ -80,7 +80,6 @@ public class BuilderExpr
     public BuilderExpr()
     {
         dispatch.put(symRegex, buildRegex) ;
-        
         dispatch.put(symEQ, buildEQ) ;
         dispatch.put(symNE, buildNE) ;
         dispatch.put(symGT, buildGT) ;
