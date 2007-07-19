@@ -28,7 +28,7 @@ SDB ToDo list (and general notes)
  or 
    a general initializer:
    		implements Assembler 
-     sdb:SDB ja:assembler com.hp.hpl.jena.sdb.[core.|assembler.]SDBSystem" InitSDB
+     sdb:SDB ja:loadClass com.hp.hpl.jena.sdb.SDB
 
 == Pattern table and inference
 

@@ -42,8 +42,11 @@ public class SDB
     // Global context is the ARQ context.
     public static Context getContext() { return ARQ.getContext() ; }
     
+    static { initWorker() ; }
+    public static void init() {}
+    
     private static boolean initialized = false ;
-    public static synchronized void init()
+    private static synchronized void initWorker()
     {
         // Called from 
         // + StoreFactory
