@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: JA.java,v 1.11 2007-05-10 14:01:57 chris-dollin Exp $
+ 	$Id: JA.java,v 1.12 2007-07-19 14:23:31 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler;
@@ -89,8 +89,6 @@ public class JA
 
     public static final Resource Expanded = resource( "Expanded" );
 
-    public static final Property assembler = property( "assembler" );
-
     public static final Property prefix = property( "prefix" );
 
     public static final Property namespace = property( "namespace" );
@@ -171,6 +169,10 @@ public class JA
 
     public static final Property dbClassProperty = property( "dbClassProperty" );
 
+    public static final Property assembler = property( "assembler" );
+    
+    public static final Property loadClass = property( "loadClass" );
+    
     public static final Property imports = property( "imports" );
 
     public static final Property reasonerFactory = property( "reasonerFactory" );

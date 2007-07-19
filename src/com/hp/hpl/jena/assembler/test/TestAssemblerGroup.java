@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestAssemblerGroup.java,v 1.7 2007-05-09 15:28:05 chris-dollin Exp $
+ 	$Id: TestAssemblerGroup.java,v 1.8 2007-07-19 14:23:34 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.test;
@@ -43,6 +43,11 @@ public class TestAssemblerGroup extends AssemblerTestBase
             assertEquals( JA.Object, e.getType() );
             assertNotNull( e.getAssembler() );
             }
+        }
+    
+    public void testLoadsClasses()
+        {
+        // TODO work out how to do this!
         }
     
     public void testSingletonAssemblerGroup()

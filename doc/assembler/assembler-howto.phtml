@@ -617,6 +617,15 @@ must implement the <code>Assembler</code> interface. See
 for more details.
 </p>
 
+<p>Similarly, statements of the form:
+
+<blockquote>
+<code>someResource ja:loadClass "some.class.name"</code>
+</blockquote>
+
+will cause the named class to be loaded (but not treated as assemblers).
+</p>
+
 <h3>imports</h3>
 
 <p>If a specification contains statements of the form:
@@ -735,6 +744,43 @@ the name or the other root properties to make their decision.
 Note that the Modes only apply to persistent objects, so <i>eg</i>
 MemoryModels or PrefixMappings ignore their Mode arguments.
 </p>
+
+<h2>implementing your own assemblers</h2>
+
+(Temporary documentation pasted in from email; will be
+integrated and made nice RSN.)
+
+<pre>
+You have to implement the Assembler interface, most straightforwardly
+done by subclassing AssemblerBase and overriding 
+
+    public Object open( Assembler a, Resource root, Mode mode );
+
+    because AssemblerBase both implements the boring methods that are
+    just specialisations of `open` and provides some utility methods
+    such as getting the values of unique properties. The arguments are
+
+    * a -- the assembler to use for any sub-assemblies
+    * root -- the resource in the assembler description for this object
+    * mode -- the persistent open vs create mode
+
+    The pattern is to look for the known properties of the root, use
+    those to define any sub-objects of the object you're assembling
+    (including using `a` for anything that's itself a structured
+    object) and then constructing a new result object from those
+    components. 
+
+    Then you attach this new assembler object to its type in some
+    AssemblerGroup using that group's `implementWith` method. You
+    can attach it to the handy-but-public-and-shared group
+    `Assembler.general` or you can construct your own group. The
+    point about an AssemblerGroup is that it does the type-to-assembler
+    mapping for you -- and when an AssemblerGroup calls a component
+    assembler's `open` method, it passes /itself/ in as the `a` argument,
+    so that the invoked assembler has access to all of the component
+    assemblers of the Group.
+</pre>
+
 
 <h1>basic assemblers</h1>
 

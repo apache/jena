@@ -46,13 +46,14 @@
 <div class="toc-H3"><a href="#TOC-ID-15">assembler</a></div>
 <div class="toc-H3"><a href="#TOC-ID-16">imports</a></div>
 <div class="toc-H1"><a href="#TOC-ID-17">inside Assemblers</a></div>
-<div class="toc-H1"><a href="#TOC-ID-18">basic assemblers</a></div>
-<div class="toc-H2"><a href="#TOC-ID-19">basic assembler ContentAssembler</a></div>
-<div class="toc-H2"><a href="#TOC-ID-20">basic assembler ConnectionAssembler</a></div>
-<div class="toc-H2"><a href="#TOC-ID-21">basic assembler RulesetAssembler</a></div>
-<div class="toc-H2"><a href="#TOC-ID-22">basic assembler DefaultModelAssembler</a></div>
-<div class="toc-H2"><a href="#TOC-ID-23">AssemblerGroup</a></div>
-<div class="toc-H3"><a href="#TOC-ID-24">loading assembler classes</a></div></div>
+<div class="toc-H2"><a href="#TOC-ID-18">implementing your own assemblers</a></div>
+<div class="toc-H1"><a href="#TOC-ID-19">basic assemblers</a></div>
+<div class="toc-H2"><a href="#TOC-ID-20">basic assembler ContentAssembler</a></div>
+<div class="toc-H2"><a href="#TOC-ID-21">basic assembler ConnectionAssembler</a></div>
+<div class="toc-H2"><a href="#TOC-ID-22">basic assembler RulesetAssembler</a></div>
+<div class="toc-H2"><a href="#TOC-ID-23">basic assembler DefaultModelAssembler</a></div>
+<div class="toc-H2"><a href="#TOC-ID-24">AssemblerGroup</a></div>
+<div class="toc-H3"><a href="#TOC-ID-25">loading assembler classes</a></div></div>
 
 <h1><a name="TOC-ID-1"></a>introduction</h1>
 
@@ -358,16 +359,16 @@ to the values of the system properties <code>jena.dbUser</code> and
 <div class="show-property"><span class="keyword">domainOf</span> ja:dbType <span class="keyword">maxCardinality</span> 1</div></div></div>
 <div class="hide" id="1007B"><a href="javascript:exchange('1007')">&nabla; show as condensed</a>
 <div class="show-class">ja:Connection a rdfs:Class
-<div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:dbClassProperty; owl:maxCardinality 1]</div>
-<div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:dbTypeProperty; owl:maxCardinality 1]</div>
-<div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:dbURLProperty; owl:maxCardinality 1]</div>
-<div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:dbClass; owl:maxCardinality 1]</div>
-<div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:dbURL; owl:maxCardinality 1]</div>
-<div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:dbType; owl:maxCardinality 1]</div>
-<div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:dbPasswordProperty; owl:maxCardinality 1]</div>
-<div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:dbUserProperty; owl:maxCardinality 1]</div>
 <div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:dbPassword; owl:maxCardinality 1]</div>
+<div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:dbURLProperty; owl:maxCardinality 1]</div>
 <div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:dbUser; owl:maxCardinality 1]</div>
+<div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:dbClass; owl:maxCardinality 1]</div>
+<div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:dbUserProperty; owl:maxCardinality 1]</div>
+<div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:dbType; owl:maxCardinality 1]</div>
+<div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:dbURL; owl:maxCardinality 1]</div>
+<div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:dbTypeProperty; owl:maxCardinality 1]</div>
+<div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:dbPasswordProperty; owl:maxCardinality 1]</div>
+<div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:dbClassProperty; owl:maxCardinality 1]</div>
 <div class="show-subclass"> ; rdfs:subClassOf ja:Object</div>
 <div class="show-subclass">.</div>
 <div class="show-property">ja:dbPasswordProperty a rdf:Property
@@ -738,10 +739,11 @@ as <code>ModelFactory.createOntologyModel()</code>.
 
 <div class="surrounding">
 <div class="show" id="1013A"><a href="javascript:exchange('1013')">&nabla; show as N3</a>
-<div class="show-class"><span class="keyword">class</span> ja:OntModel <span class="keyword">subClassOf</span> ja:InfModel
+<div class="show-class"><span class="keyword">class</span> ja:OntModel <span class="keyword">subClassOf</span> ja:UnionModel ja:InfModel
 <div class="show-property"><span class="keyword">domainOf</span> ja:ontModelSpec <span class="keyword">withRange</span> ja:OntModelSpec</div></div></div>
 <div class="hide" id="1013B"><a href="javascript:exchange('1013')">&nabla; show as condensed</a>
 <div class="show-class">ja:OntModel a rdfs:Class
+<div class="show-subclass"> ; rdfs:subClassOf ja:UnionModel</div>
 <div class="show-subclass"> ; rdfs:subClassOf ja:InfModel</div>
 <div class="show-subclass">.</div>
 <div class="show-property">ja:ontModelSpec a rdf:Property
@@ -1057,6 +1059,15 @@ must implement the <code>Assembler</code> interface. See
 for more details.
 </p>
 
+<p>Similarly, statements of the form:
+
+<blockquote>
+<code>someResource ja:loadClass "some.class.name"</code>
+</blockquote>
+
+will cause the named class to be loaded (but not treated as assemblers).
+</p>
+
 <h3><a name="TOC-ID-16"></a>imports</h3>
 
 <p>If a specification contains statements of the form:
@@ -1176,7 +1187,44 @@ Note that the Modes only apply to persistent objects, so <i>eg</i>
 MemoryModels or PrefixMappings ignore their Mode arguments.
 </p>
 
-<h1><a name="TOC-ID-18"></a>basic assemblers</h1>
+<h2><a name="TOC-ID-18"></a>implementing your own assemblers</h2>
+
+(Temporary documentation pasted in from email; will be
+integrated and made nice RSN.)
+
+<pre>
+You have to implement the Assembler interface, most straightforwardly
+done by subclassing AssemblerBase and overriding 
+
+    public Object open( Assembler a, Resource root, Mode mode );
+
+    because AssemblerBase both implements the boring methods that are
+    just specialisations of `open` and provides some utility methods
+    such as getting the values of unique properties. The arguments are
+
+    * a -- the assembler to use for any sub-assemblies
+    * root -- the resource in the assembler description for this object
+    * mode -- the persistent open vs create mode
+
+    The pattern is to look for the known properties of the root, use
+    those to define any sub-objects of the object you're assembling
+    (including using `a` for anything that's itself a structured
+    object) and then constructing a new result object from those
+    components. 
+
+    Then you attach this new assembler object to its type in some
+    AssemblerGroup using that group's `implementWith` method. You
+    can attach it to the handy-but-public-and-shared group
+    `Assembler.general` or you can construct your own group. The
+    point about an AssemblerGroup is that it does the type-to-assembler
+    mapping for you -- and when an AssemblerGroup calls a component
+    assembler's `open` method, it passes /itself/ in as the `a` argument,
+    so that the invoked assembler has access to all of the component
+    assemblers of the Group.
+</pre>
+
+
+<h1><a name="TOC-ID-19"></a>basic assemblers</h1>
 
 <p>
 There is a family of <i>basic assemblers</i>, each of which knows how to
@@ -1280,7 +1328,7 @@ classes that return non-Model objects and conclude with a description
 of <code>AssemblerGroup</code>.
 </p>
 
-<h2><a name="TOC-ID-19"></a>basic assembler ContentAssembler</h2>
+<h2><a name="TOC-ID-20"></a>basic assembler ContentAssembler</h2>
 
 <p>The ContentAssembler constructs Content objects (using the
 <code>ja:Content</code> vocabulary) used to supply
@@ -1296,7 +1344,7 @@ the <code>Content</code> objects corresponding to
 <code>ja:content</code> property values.
 </p>
 
-<h2><a name="TOC-ID-20"></a>basic assembler ConnectionAssembler</h2>
+<h2><a name="TOC-ID-21"></a>basic assembler ConnectionAssembler</h2>
 
 <p>A ConnectionAssembler constructs ConnectionDescriptions
 according to the specification. An ConnectionDescription
@@ -1315,12 +1363,12 @@ defaults taken from the system properties <code>jena.dbUser</code>
 and <code>jena.dbType</code>
 </p>
 
-<h2><a name="TOC-ID-21"></a>basic assembler RulesetAssembler</h2>
+<h2><a name="TOC-ID-22"></a>basic assembler RulesetAssembler</h2>
 
 <p>A RulesetAssembler generates lists of Jena rules.
 </p>
 
-<h2><a name="TOC-ID-22"></a>basic assembler DefaultModelAssembler</h2>
+<h2><a name="TOC-ID-23"></a>basic assembler DefaultModelAssembler</h2>
 
 <p>A "default model" is a model of unspecified type which is implemented as
 whatever kind the assembler for <code>ja:DefaultModel</code> generates.
@@ -1328,7 +1376,7 @@ The default for a DefaultModel is to create a MemoryModel with no special
 properties.
 </p>
 
-<h2><a name="TOC-ID-23"></a>AssemblerGroup</h2>
+<h2><a name="TOC-ID-24"></a>AssemblerGroup</h2>
 
 <p>The AssemblerGroup class allows a bunch of other Assemblers to be
 bundled together and selected by RDF type. AssemblerGroup implements
@@ -1353,7 +1401,7 @@ particular objects.
 with the argument type by a previous call of <code>implementWith</code>,
 or <code>null</code> if there is no associated assembler.</p>
 
-<h3><a name="TOC-ID-24"></a><a id="loading-assembler-classes">loading assembler classes</a></h3>
+<h3><a name="TOC-ID-25"></a><a id="loading-assembler-classes">loading assembler classes</a></h3>
 
 <p>
 AssemblerGroups implement the <code>ja:assembler</code> functionality.

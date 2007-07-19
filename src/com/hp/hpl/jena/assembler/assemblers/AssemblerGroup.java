@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: AssemblerGroup.java,v 1.9 2007-05-09 15:28:00 chris-dollin Exp $
+ 	$Id: AssemblerGroup.java,v 1.10 2007-07-19 14:23:33 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.assemblers;
@@ -46,7 +46,10 @@ public abstract class AssemblerGroup extends AssemblerBase implements Assembler
             }
 
         public void loadClasses( Model model )
-            { AssemblerHelp.loadClasses( this, model ); }
+            {
+            AssemblerHelp.loadClasses( model );
+            AssemblerHelp.loadClasses( this, model ); 
+            }
 
         public AssemblerGroup implementWith( Resource type, Assembler a )
             {
