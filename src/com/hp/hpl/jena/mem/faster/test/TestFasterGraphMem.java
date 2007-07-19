@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestFasterGraphMem.java,v 1.7 2007-07-19 13:26:48 chris-dollin Exp $
+ 	$Id: TestFasterGraphMem.java,v 1.8 2007-07-19 15:05:00 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem.faster.test;
@@ -11,7 +11,7 @@ import junit.framework.TestSuite;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.test.*;
 import com.hp.hpl.jena.mem.faster.GraphMemFaster;
-import com.hp.hpl.jena.shared.JenaException;
+import com.hp.hpl.jena.shared.*;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 
 public class TestFasterGraphMem extends AbstractTestGraph
@@ -114,6 +114,15 @@ public class TestFasterGraphMem extends AbstractTestGraph
     public void testStatsWithConcreteTriple()
         {
         testStatsWithConcreteTriple( 0, "x P y", "" );
+        }
+    
+    public void testStatsWithreification()
+        {
+        ReificationStyle style = ReificationStyle.Standard;
+        Graph g = new GraphMemFaster( style );
+        GraphStatisticsHandler h = g.getStatisticsHandler();
+        graphAdd( g, "x rdf:subject A" );
+        assertEquals( -1L, h.getStatistic( node( "x" ), Node.ANY, Node.ANY ) );
         }
     
     private void testStatsWithConcreteTriple( int expect, String triple, String graph )
