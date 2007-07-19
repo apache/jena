@@ -20,6 +20,7 @@ import com.hp.hpl.jena.sdb.store.Store;
 import com.hp.hpl.jena.sdb.util.Pair;
 
 import com.hp.hpl.jena.sparql.core.DataFormat;
+import com.hp.hpl.jena.sparql.junit.EarlReport;
 import com.hp.hpl.jena.sparql.junit.QueryTestException;
 import com.hp.hpl.jena.sparql.junit.SurpressedTest;
 import com.hp.hpl.jena.sparql.junit.TestItem;
@@ -30,6 +31,8 @@ import com.hp.hpl.jena.util.junit.TestFactoryManifest;
 
 public class QueryTestSDBFactory extends TestFactoryManifest
 {
+    public static EarlReport results = null ;
+    
     public static TestSuite makeSuite(String storeListFile, String manifestFile)
     {
         TestSuite ts = new TestSuite() ;
@@ -101,17 +104,17 @@ public class QueryTestSDBFactory extends TestFactoryManifest
             if ( testItem.getTestType() != null )
             {
                 if ( testItem.getTestType().equals(TestManifestX.TestQuery) )
-                    test = new QueryTestSDB(store, testName, fileManager, testItem) ;
+                    test = new QueryTestSDB(store, testName, results, fileManager, testItem) ;
                 
                 if ( testItem.getTestType().equals(TestManifestX.TestSurpressed) )
-                    test = new SurpressedTest(testName, testItem.getComment()) ;
+                    test = new SurpressedTest(testName, results, testItem) ;
                 
                 if ( test == null )
                     System.err.println("Unrecognized test type: "+testItem.getTestType()) ;
             }
             // Default 
             if ( test == null )
-                test = new QueryTestSDB(store, testName, fileManager, testItem) ;
+                test = new QueryTestSDB(store, testName, results, fileManager, testItem) ;
 
             Resource action2 = testItem.getAction() ;
             if ( action2.hasProperty(TestManifestX.option))

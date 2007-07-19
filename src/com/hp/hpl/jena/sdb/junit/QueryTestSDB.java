@@ -9,45 +9,43 @@ package com.hp.hpl.jena.sdb.junit;
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.TestCase;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.hp.hpl.jena.shared.Command;
-import com.hp.hpl.jena.util.FileManager;
-
-import com.hp.hpl.jena.sparql.engine.QueryEngineFactory;
-import com.hp.hpl.jena.sparql.engine.QueryExecutionBase;
-import com.hp.hpl.jena.sparql.engine.ref.QueryEngineRef;
-import com.hp.hpl.jena.sparql.junit.TestItem;
-import com.hp.hpl.jena.sparql.resultset.RSCompare;
-import com.hp.hpl.jena.sparql.resultset.ResultSetRewindable;
-
 import com.hp.hpl.jena.query.*;
-
 import com.hp.hpl.jena.sdb.engine.QueryEngineSDB;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.store.DatasetStore;
 import com.hp.hpl.jena.sdb.store.Store;
 import com.hp.hpl.jena.sdb.util.StoreUtils;
+import com.hp.hpl.jena.shared.Command;
+import com.hp.hpl.jena.sparql.engine.QueryEngineFactory;
+import com.hp.hpl.jena.sparql.engine.QueryExecutionBase;
+import com.hp.hpl.jena.sparql.engine.ref.QueryEngineRef;
+import com.hp.hpl.jena.sparql.junit.EarlReport;
+import com.hp.hpl.jena.sparql.junit.EarlTestCase;
+import com.hp.hpl.jena.sparql.junit.TestItem;
+import com.hp.hpl.jena.sparql.resultset.RSCompare;
+import com.hp.hpl.jena.sparql.resultset.ResultSetRewindable;
+import com.hp.hpl.jena.util.FileManager;
 
-public class QueryTestSDB extends TestCase
+public class QueryTestSDB extends EarlTestCase
 {
     public static boolean VERBOSE = false ;
     Store store ;
     TestItem item ;
     private static Log log = LogFactory.getLog(QueryTestSDB.class) ; 
     
-    public QueryTestSDB(Store store, String testName, TestItem item)
+    public QueryTestSDB(Store store, String testName, EarlReport report, TestItem item)
     {
-        super(testName) ;
+        super(testName, item.getURI(), report) ;
         this.store = store ;
         this.item = item ;
     }
 
-    public QueryTestSDB(Store store, String testName, FileManager fileManager, TestItem item)
+    public QueryTestSDB(Store store, String testName, EarlReport report, FileManager fileManager, TestItem item)
     {
-        this(store, testName, item) ;
+        this(store, testName, report, item) ;
     }
 
     // NB static.
@@ -104,7 +102,7 @@ public class QueryTestSDB extends TestCase
     }
 
     @Override
-    public void runTest()
+    public void runTestForReal()
     {
         if ( skipThisTest )
         {
