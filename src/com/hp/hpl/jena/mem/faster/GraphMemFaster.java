@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: GraphMemFaster.java,v 1.17 2007-07-19 13:25:35 chris-dollin Exp $
+ 	$Id: GraphMemFaster.java,v 1.18 2007-07-19 13:26:46 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem.faster;
@@ -83,9 +83,9 @@ public class GraphMemFaster extends GraphMemBase
             <p>Otherwise answers -1, ie, no information available. (May change;
             the two degenerate cases might deserve an answer.)
             
-         	@see com.hp.hpl.jena.graph.GraphStatisticsHandler#getStatistics(com.hp.hpl.jena.graph.Node, com.hp.hpl.jena.graph.Node, com.hp.hpl.jena.graph.Node)
+         	@see com.hp.hpl.jena.graph.GraphStatisticsHandler#getStatistic(com.hp.hpl.jena.graph.Node, com.hp.hpl.jena.graph.Node, com.hp.hpl.jena.graph.Node)
          */
-        public long getStatistics( Node S, Node P, Node O )
+        public long getStatistic( Node S, Node P, Node O )
             {
             int concrete = (S.isConcrete() ? C.S : 0) + (P.isConcrete() ? C.P : 0) + (O.isConcrete() ? C.O : 0);
             switch (concrete)

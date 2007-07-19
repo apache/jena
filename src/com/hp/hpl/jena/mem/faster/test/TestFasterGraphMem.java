@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestFasterGraphMem.java,v 1.6 2007-07-19 13:25:50 chris-dollin Exp $
+ 	$Id: TestFasterGraphMem.java,v 1.7 2007-07-19 13:26:48 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem.faster.test;
@@ -56,14 +56,14 @@ public class TestFasterGraphMem extends AbstractTestGraph
         Graph g = getGraphWith( "a P b" );
         GraphStatisticsHandler h = g.getStatisticsHandler();
         assertNotNull( h );
-        assertEquals( 1L, h.getStatistics( node( "a" ), Node.ANY, Node.ANY ) );
-        assertEquals( 0L, h.getStatistics( node( "x" ), Node.ANY, Node.ANY ) );
+        assertEquals( 1L, h.getStatistic( node( "a" ), Node.ANY, Node.ANY ) );
+        assertEquals( 0L, h.getStatistic( node( "x" ), Node.ANY, Node.ANY ) );
     //
-        assertEquals( 1L, h.getStatistics( Node.ANY, node( "P" ), Node.ANY ) );
-        assertEquals( 0L, h.getStatistics( Node.ANY, node( "Q" ), Node.ANY ) );
+        assertEquals( 1L, h.getStatistic( Node.ANY, node( "P" ), Node.ANY ) );
+        assertEquals( 0L, h.getStatistic( Node.ANY, node( "Q" ), Node.ANY ) );
     //
-        assertEquals( 1L, h.getStatistics( Node.ANY, Node.ANY, node( "b" ) ) );
-        assertEquals( 0L, h.getStatistics( Node.ANY, Node.ANY, node( "y" ) ) );
+        assertEquals( 1L, h.getStatistic( Node.ANY, Node.ANY, node( "b" ) ) );
+        assertEquals( 0L, h.getStatistic( Node.ANY, Node.ANY, node( "y" ) ) );
         }
     
     public void testSingletonStatisticsWithSeveralTriples()
@@ -71,17 +71,17 @@ public class TestFasterGraphMem extends AbstractTestGraph
         Graph g = getGraphWith( "a P b; a P c; a Q b; x S y" );
         GraphStatisticsHandler h = g.getStatisticsHandler();
         assertNotNull( h );
-        assertEquals( 3L, h.getStatistics( node( "a" ), Node.ANY, Node.ANY ) );
-        assertEquals( 1L, h.getStatistics( node( "x" ), Node.ANY, Node.ANY ) );
-        assertEquals( 0L, h.getStatistics( node( "y" ), Node.ANY, Node.ANY ) );
+        assertEquals( 3L, h.getStatistic( node( "a" ), Node.ANY, Node.ANY ) );
+        assertEquals( 1L, h.getStatistic( node( "x" ), Node.ANY, Node.ANY ) );
+        assertEquals( 0L, h.getStatistic( node( "y" ), Node.ANY, Node.ANY ) );
     //
-        assertEquals( 2L, h.getStatistics( Node.ANY, node( "P" ), Node.ANY ) );
-        assertEquals( 1L, h.getStatistics( Node.ANY, node( "Q" ), Node.ANY ) );
-        assertEquals( 0L, h.getStatistics( Node.ANY, node( "R" ), Node.ANY ) );
+        assertEquals( 2L, h.getStatistic( Node.ANY, node( "P" ), Node.ANY ) );
+        assertEquals( 1L, h.getStatistic( Node.ANY, node( "Q" ), Node.ANY ) );
+        assertEquals( 0L, h.getStatistic( Node.ANY, node( "R" ), Node.ANY ) );
     //
-        assertEquals( 2L, h.getStatistics( Node.ANY, Node.ANY, node( "b" ) ) );
-        assertEquals( 1L, h.getStatistics( Node.ANY, Node.ANY, node( "c" ) ) );
-        assertEquals( 0L, h.getStatistics( Node.ANY, Node.ANY, node( "d" ) ) );
+        assertEquals( 2L, h.getStatistic( Node.ANY, Node.ANY, node( "b" ) ) );
+        assertEquals( 1L, h.getStatistic( Node.ANY, Node.ANY, node( "c" ) ) );
+        assertEquals( 0L, h.getStatistic( Node.ANY, Node.ANY, node( "d" ) ) );
         }
     
     public void testDoubletonStatisticsWithTriples()
@@ -89,11 +89,11 @@ public class TestFasterGraphMem extends AbstractTestGraph
         Graph g = getGraphWith( "a P b; a P c; a Q b; x S y" );
         GraphStatisticsHandler h = g.getStatisticsHandler();
         assertNotNull( h );
-        assertEquals( -1L, h.getStatistics( node( "a" ), node( "P" ), Node.ANY ) );
-        assertEquals( -1L, h.getStatistics( Node.ANY, node( "P" ), node( "b"  ) ) );
-        assertEquals( -1L, h.getStatistics( node( "a" ), Node.ANY, node( "b" ) ) );
+        assertEquals( -1L, h.getStatistic( node( "a" ), node( "P" ), Node.ANY ) );
+        assertEquals( -1L, h.getStatistic( Node.ANY, node( "P" ), node( "b"  ) ) );
+        assertEquals( -1L, h.getStatistic( node( "a" ), Node.ANY, node( "b" ) ) );
     //
-        assertEquals( 0L, h.getStatistics( node( "no" ), node( "P" ), Node.ANY ) );
+        assertEquals( 0L, h.getStatistic( node( "no" ), node( "P" ), Node.ANY ) );
         }
     
     public void testStatisticsWithOnlyVariables()
@@ -108,7 +108,7 @@ public class TestFasterGraphMem extends AbstractTestGraph
         {
         Graph g = getGraphWith( triples );
         GraphStatisticsHandler h = g.getStatisticsHandler();
-        assertEquals( g.size(), h.getStatistics( Node.ANY, Node.ANY, Node.ANY ) );
+        assertEquals( g.size(), h.getStatistic( Node.ANY, Node.ANY, Node.ANY ) );
         }
     
     public void testStatsWithConcreteTriple()
@@ -121,7 +121,7 @@ public class TestFasterGraphMem extends AbstractTestGraph
         Graph g = getGraphWith( graph );
         GraphStatisticsHandler h = g.getStatisticsHandler();
         Triple t = triple( triple );
-        assertEquals( expect, h.getStatistics( t.getSubject(), t.getPredicate(), t.getObject() ) );
+        assertEquals( expect, h.getStatistic( t.getSubject(), t.getPredicate(), t.getObject() ) );
         }
 
     protected final class GraphMemWithoutFind extends GraphMemFaster

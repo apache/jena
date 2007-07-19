@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2007 Hewlett-Packard Development Company, LP
  	All rights reserved.
- 	$Id: GraphStatisticsHandler.java,v 1.1 2007-07-19 11:29:09 chris-dollin Exp $
+ 	$Id: GraphStatisticsHandler.java,v 1.2 2007-07-19 13:26:50 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -19,7 +19,7 @@ public interface GraphStatisticsHandler
         pattern <code>(S, P, O)</code>, or -1 if no good estimate is available.
         The estimate is good until the graph is updated.
     */
-    public long getStatistics( Node S, Node P, Node O );
+    public long getStatistic( Node S, Node P, Node O );
     }
 
 
