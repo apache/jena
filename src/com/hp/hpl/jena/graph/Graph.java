@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Graph.java,v 1.29 2007-01-02 11:49:18 andy_seaborne Exp $
+  $Id: Graph.java,v 1.30 2007-07-19 11:29:09 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -57,6 +57,12 @@ public interface Graph  extends GraphAdd
     */
     GraphEventManager getEventManager(); 
    
+    /**
+        Answer this Graph's statistics handler, or null if there isn't one. Every
+        call to this method on a particular graph delivers the same (==) answer.
+    */
+    GraphStatisticsHandler getStatisticsHandler();
+    
     /** 
         returns this Graph's reifier. Each call on a given Graph gets the same
         Reifier object.

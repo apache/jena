@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: GraphMemFaster.java,v 1.15 2007-01-02 11:52:40 andy_seaborne Exp $
+ 	$Id: GraphMemFaster.java,v 1.16 2007-07-19 11:28:24 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem.faster;
@@ -43,6 +43,83 @@ public class GraphMemFaster extends GraphMemBase
         { 
         if (queryHandler == null) queryHandler = new GraphMemFasterQueryHandler( this );
         return queryHandler;
+        }
+
+    protected GraphStatisticsHandler createStatisticsHandler()
+        { return new GraphMemFasterStatisticsHandler( (FasterTripleStore) store ); }
+    
+    /**
+        The GraphMemFasterStatisticsHandler exploits the existing FasterTripleStore
+        indexes to deliver statistics information for single-concrete-node queries
+        and for trivial cases of two-concrete-node queries.        
+        
+     	@author kers
+    */
+    protected static class GraphMemFasterStatisticsHandler implements GraphStatisticsHandler
+        {
+        protected final FasterTripleStore store;
+        
+        public GraphMemFasterStatisticsHandler( FasterTripleStore store )
+            { this.store = store; }
+
+        private static class C 
+            {
+            static final int S = 1, P = 2, O = 4;
+            static final int SP = S + P, SO = S + O, PO = P + O;
+            }
+        
+        /**
+            Answer a good estimate of the number of triples matching (S, P, O)
+            if cheaply possible.
+            
+            <p>If only one of S, P, O is concrete, answers the number of triples
+            with that value in that field.
+            
+            <p>If two of S, P, P are concrete and at least one of them has no
+            corresponding triples, answers 0.
+            
+            <p>Otherwise answers -1, ie, no information available. (May change;
+            the two degenerate cases might deserve an answer.)
+            
+         	@see com.hp.hpl.jena.graph.GraphStatisticsHandler#getStatistics(com.hp.hpl.jena.graph.Node, com.hp.hpl.jena.graph.Node, com.hp.hpl.jena.graph.Node)
+         */
+        public long getStatistics( Node S, Node P, Node O )
+            {
+            int concrete = (S.isConcrete() ? C.S : 0) + (P.isConcrete() ? C.P : 0) + (O.isConcrete() ? C.O : 0);
+            switch (concrete)
+                {
+                case C.S:
+                    return countInMap( S, store.getSubjects() );
+                    
+                case C.SP:
+                    return countsInMap( S, store.getSubjects(), P, store.getPredicates() );
+                
+                case C.SO:
+                    return countsInMap( S, store.getSubjects(), O, store.getObjects() );
+                    
+                case C.P:
+                    return countInMap( P, store.getPredicates() );
+                    
+                case C.PO:
+                    return countsInMap( P, store.getPredicates(), O, store.getObjects() );
+                
+                case C.O:
+                    return countInMap( O, store.getObjects() );
+                }
+            return -1;
+            }
+
+        public long countsInMap( Node a, NodeToTriplesMapFaster mapA, Node b, NodeToTriplesMapFaster mapB )
+            {
+            long countA = countInMap( a, mapA ), countB = countInMap( b, mapB );
+            return countA == 0 || countB == 0 ? 0 : -1L;
+            }
+        
+        public long countInMap( Node n, NodeToTriplesMapFaster map )
+            {
+            TripleBunch b = map.get( n.getIndexingValue() );
+            return b == null ? 0 : b.size();
+            }
         }
     
     /**

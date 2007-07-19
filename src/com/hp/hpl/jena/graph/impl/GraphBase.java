@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: GraphBase.java,v 1.48 2007-06-22 14:25:49 chris-dollin Exp $
+  $Id: GraphBase.java,v 1.49 2007-07-19 11:28:57 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -74,7 +74,7 @@ public abstract class GraphBase implements GraphWithPerform
         { return closed; }
             
     /**
-         Default implemenentation answers <code>true</code> iff this graph is the
+         Default implementation answers <code>true</code> iff this graph is the
          same graph as the argument graph.
     */
 	public boolean dependsOn( Graph other ) 
@@ -97,9 +97,20 @@ public abstract class GraphBase implements GraphWithPerform
     */
     protected QueryHandler queryHandler;
     
+    public GraphStatisticsHandler getStatisticsHandler()
+        {
+        if (statisticsHandler == null) statisticsHandler = createStatisticsHandler();
+        return statisticsHandler;
+        }
+    
+    protected GraphStatisticsHandler statisticsHandler;
+    
+    protected GraphStatisticsHandler createStatisticsHandler()
+        { return null; }
+    
     /**
         Answer the event manager for this graph; allocate a new one if required.
-        Subclasses may override if they have a more specialed event handler.
+        Subclasses may override if they have a more specialised event handler.
         The default is a SimpleEventManager.
     */
     public GraphEventManager getEventManager()

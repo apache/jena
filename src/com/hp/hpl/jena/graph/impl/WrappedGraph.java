@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: WrappedGraph.java,v 1.14 2007-01-02 11:48:28 andy_seaborne Exp $
+  $Id: WrappedGraph.java,v 1.15 2007-07-19 11:28:57 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -41,6 +41,9 @@ public class WrappedGraph implements GraphWithPerform
         return bud;
         }
 
+    public GraphStatisticsHandler getStatisticsHandler()
+        { return base.getStatisticsHandler(); }
+    
     public Capabilities getCapabilities()
         { return base.getCapabilities(); }
 

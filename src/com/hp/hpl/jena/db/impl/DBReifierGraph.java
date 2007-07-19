@@ -24,7 +24,7 @@ import java.util.*;
  * @since Jena 2.0
  * 
  * @author csayers 
- * @version $Revision: 1.21 $
+ * @version $Revision: 1.22 $
  */
 public class DBReifierGraph implements Graph {
 
@@ -99,7 +99,9 @@ public class DBReifierGraph implements Graph {
 	public boolean contains(Node s, Node p, Node o) {
 		return contains( Triple.create( s, p, o ) );
 	} 
-			
+
+    public GraphStatisticsHandler getStatisticsHandler()
+        { return null; }
 
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.graph.Graph#find(com.hp.hpl.jena.graph.TripleMatch)
