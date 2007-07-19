@@ -10,7 +10,7 @@ import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.db.impl.DBQueryHandler;
 import com.hp.hpl.jena.graph.query.QueryHandler;
-import com.hp.hpl.jena.graph.query.SimpleQueryHandler;
+import com.hp.hpl.jena.mem.GraphMemBaseQueryHandler;
 import com.hp.hpl.jena.sparql.ARQConstants;
 import com.hp.hpl.jena.sparql.core.BasicPattern;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
@@ -47,7 +47,8 @@ public class StageBasic implements Stage
             return QueryIterBlockTriplesQH.create(input, pattern, cxt) ;
         
         // If in-memory and allowing alt matching ...
-        if ( qh instanceof SimpleQueryHandler &&
+        // Was SimpleQueryHandler.
+        if ( qh instanceof GraphMemBaseQueryHandler &&
              cxt.getContext().isTrueOrUndef(altMatcher) )
         {
             // The alt matcher avoids thread creation - makes a difference when called very heavily.
