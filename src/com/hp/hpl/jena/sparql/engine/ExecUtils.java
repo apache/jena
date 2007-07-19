@@ -26,7 +26,7 @@ public class ExecUtils
     public static Log log = LogFactory.getLog(ExecUtils.class) ;
     
     public static void compilePattern(com.hp.hpl.jena.graph.query.Query graphQuery,
-                               List pattern, Binding presets, Set vars)
+                                      List pattern, Binding presets, Set vars)
     {
         if ( pattern == null )
             return ;

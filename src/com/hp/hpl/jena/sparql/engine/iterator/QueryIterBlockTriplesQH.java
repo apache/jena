@@ -69,8 +69,8 @@ public class QueryIterBlockTriplesQH extends QueryIterRepeatApply
         // be confusing.  Unnecessary complication.
         
         public StagePattern(Binding binding,
-                                BasicPattern pattern, 
-                                ExecutionContext qCxt)
+                            BasicPattern pattern, 
+                            ExecutionContext qCxt)
         {
             super(qCxt) ;
             this.binding = binding ;
