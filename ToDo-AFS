@@ -1,6 +1,8 @@
 SDB ToDo list (and general notes)
 =================================
 
++ Freeze API
+
 + Revisit generating SQL for nested DISTINCT
 
 + Setting options for testing.
@@ -19,12 +21,14 @@ SDB ToDo list (and general notes)
    Joseki needs 
    
    Canned joseki-config.ttl
+     
 
    sdb:SDBConnection ja:assembler "com.hp.hpl.jena.sdb.assembler.SDBConnectionDescAssembler"
    sdb:Store ja:assembler "com.hp.hpl.jena.sdb.assembler.StoreDescAssembler"
  or 
    a general initializer:
-     sdb:SDB ja:assembler com.hp.hpl.jena.sdb.[core.]SDBSystem"
+   		implements Assembler 
+     sdb:SDB ja:assembler com.hp.hpl.jena.sdb.[core.|assembler.]SDBSystem" InitSDB
 
 == Pattern table and inference
 
