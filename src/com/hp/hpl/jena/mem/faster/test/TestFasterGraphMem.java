@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestFasterGraphMem.java,v 1.5 2007-07-19 11:29:03 chris-dollin Exp $
+ 	$Id: TestFasterGraphMem.java,v 1.6 2007-07-19 13:25:50 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem.faster.test;
@@ -96,6 +96,34 @@ public class TestFasterGraphMem extends AbstractTestGraph
         assertEquals( 0L, h.getStatistics( node( "no" ), node( "P" ), Node.ANY ) );
         }
     
+    public void testStatisticsWithOnlyVariables()
+        {
+        testStatsWithAllVariables( "" );
+        testStatsWithAllVariables( "a P b" );
+        testStatsWithAllVariables( "a P b; a P c" );
+        testStatsWithAllVariables( "a P b; a P c; a Q b; x S y" );
+        }
+
+    private void testStatsWithAllVariables( String triples )
+        {
+        Graph g = getGraphWith( triples );
+        GraphStatisticsHandler h = g.getStatisticsHandler();
+        assertEquals( g.size(), h.getStatistics( Node.ANY, Node.ANY, Node.ANY ) );
+        }
+    
+    public void testStatsWithConcreteTriple()
+        {
+        testStatsWithConcreteTriple( 0, "x P y", "" );
+        }
+    
+    private void testStatsWithConcreteTriple( int expect, String triple, String graph )
+        {
+        Graph g = getGraphWith( graph );
+        GraphStatisticsHandler h = g.getStatisticsHandler();
+        Triple t = triple( triple );
+        assertEquals( expect, h.getStatistics( t.getSubject(), t.getPredicate(), t.getObject() ) );
+        }
+
     protected final class GraphMemWithoutFind extends GraphMemFaster
         {
         public ExtendedIterator graphBaseFind( TripleMatch t )

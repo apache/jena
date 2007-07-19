@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: GraphMemFaster.java,v 1.16 2007-07-19 11:28:24 chris-dollin Exp $
+ 	$Id: GraphMemFaster.java,v 1.17 2007-07-19 13:25:35 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem.faster;
@@ -64,8 +64,10 @@ public class GraphMemFaster extends GraphMemBase
 
         private static class C 
             {
+            static final int NONE = 0;
             static final int S = 1, P = 2, O = 4;
             static final int SP = S + P, SO = S + O, PO = P + O;
+            static final int SPO = S + P + O;
             }
         
         /**
@@ -88,6 +90,9 @@ public class GraphMemFaster extends GraphMemBase
             int concrete = (S.isConcrete() ? C.S : 0) + (P.isConcrete() ? C.P : 0) + (O.isConcrete() ? C.O : 0);
             switch (concrete)
                 {
+                case C.NONE:
+                    return store.size();
+                
                 case C.S:
                     return countInMap( S, store.getSubjects() );
                     
@@ -105,6 +110,9 @@ public class GraphMemFaster extends GraphMemBase
                 
                 case C.O:
                     return countInMap( O, store.getObjects() );
+                    
+                case C.SPO:
+                    return store.contains( Triple.create( S, P, O ) ) ? 1 : 0;
                 }
             return -1;
             }
