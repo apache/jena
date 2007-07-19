@@ -24,7 +24,6 @@ import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.Plan;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 
 public class GraphQueryHandlerSDB extends SimpleQueryHandler
 {
@@ -69,35 +68,35 @@ public class GraphQueryHandlerSDB extends SimpleQueryHandler
                 return pipe ;
             }} ;
         return stage ;
-        
     }
 
     // -------- Special cases.
+    // Coudl have prepared (SQL) queries!
     
-    @Override
-    public ExtendedIterator subjectsFor( Node p, Node o )
-    {
-        return super.subjectsFor(p, o) ;
-    }
-    
-    @Override
-    public ExtendedIterator predicatesFor( Node s, Node o )
-    {
-        return super.predicatesFor(s, o) ; 
-    }
-    
-    @Override
-    public ExtendedIterator objectsFor( Node s, Node p )
-    {
-        return super.objectsFor(s, p) ;
-    }
-
-    @Override
-    public boolean containsNode( Node n )
-    {
-        return super.containsNode(n) ; 
-    }
-//    // -------- 
+//    @Override
+//    public ExtendedIterator subjectsFor( Node p, Node o )
+//    {
+//        return super.subjectsFor(p, o) ;
+//    }
+//    
+//    @Override
+//    public ExtendedIterator predicatesFor( Node s, Node o )
+//    {
+//        return super.predicatesFor(s, o) ; 
+//    }
+//    
+//    @Override
+//    public ExtendedIterator objectsFor( Node s, Node p )
+//    {
+//        return super.objectsFor(s, p) ;
+//    }
+//
+//    @Override
+//    public boolean containsNode( Node n )
+//    {
+//        return super.containsNode(n) ; 
+//    }
+    // -------- 
     
     class SDBQueryThread extends Thread
     {
@@ -106,7 +105,6 @@ public class GraphQueryHandlerSDB extends SimpleQueryHandler
         private Pipe inputPipe ;
         private Pipe outputPipe ;
 
-        // Later - inner classify.
         public SDBQueryThread(
                        Mapping map, Triple[] pattern,
                        Pipe inputPipe, Pipe outputPipe)
@@ -115,6 +113,19 @@ public class GraphQueryHandlerSDB extends SimpleQueryHandler
             this.pattern = pattern ;
             this.inputPipe = inputPipe ;
             this.outputPipe = outputPipe ;
+            for ( Triple t : pattern ) 
+            {     
+                Node s = t.getSubject() ;
+                Node p = t.getPredicate() ;
+                Node o = t.getObject() ;
+                
+                if ( s.isVariable() && ! map.hasBound(s) ) 
+                    map.newIndex(s) ;
+                if ( p.isVariable() && ! map.hasBound(p) ) 
+                    map.newIndex(p) ;
+                if ( o.isVariable() && ! map.hasBound(o) ) 
+                    map.newIndex(o) ;
+            }
         }
 
         @Override
@@ -127,14 +138,6 @@ public class GraphQueryHandlerSDB extends SimpleQueryHandler
                 Op op = prepareTriples(map, pattern, graphNode, input) ;
                 @SuppressWarnings("unchecked")
                 Set<Var> vars = (Set<Var>)OpVars.allVars(op) ;
-                for ( Var v : vars )
-                {     
-                    if ( ! map.hasBound(v) ) 
-                        map.newIndex(v) ;
-                }
-                
-                
-                
                 Plan plan = QueryEngineSDB.getFactory().create(op, datasetStore, null, null) ;
                 QueryIterator qIter = plan.iterator() ;
 
@@ -145,13 +148,6 @@ public class GraphQueryHandlerSDB extends SimpleQueryHandler
                     for ( Var v : vars )
                     {     
                         Node value = binding.get(v) ;
-//                        int idx = -1 ;
-//                        
-//                        // What?
-//                        if ( ! map.hasBound(v) ) 
-//                            idx = map.newIndex(v) ;
-//                        else
-//                            idx = map.lookUp(v) ;
                         int idx = map.lookUp(v) ;
                         output.setElement(idx, value) ;
                     }
@@ -164,20 +160,20 @@ public class GraphQueryHandlerSDB extends SimpleQueryHandler
     }
     // ---- Workers 
 
-    private static Op prepareTriples(Mapping map, Triple[] p, Node graphNode, Domain input)
+    private static Op prepareTriples(Mapping map, Triple[] pattern, Node graphNode, Domain input)
     {
-        Triple[] pattern = new Triple[p.length] ;
-
-        for ( int i = 0 ; i < p.length ; i++ )
+        Triple[] groundedPattern = new Triple[pattern.length] ;
+        
+        for ( int i = 0 ; i < pattern.length ; i++ )
         {
-            Triple t = subst(map, p[i], input) ;
-            pattern[i] = t ;
+            Triple t = subst(map, pattern[i], input) ;
+            groundedPattern[i] = t ;
         }
 
-        // -- BGP
+        // -- BGP - quad pattern
         BasicPattern bgp = new BasicPattern() ;
-        for ( int i = 0 ; i < pattern.length ; i ++ )
-            bgp.add(pattern[i]) ;
+        for ( int i = 0 ; i < groundedPattern.length ; i ++ )
+            bgp.add(groundedPattern[i]) ;
         Op op = new OpQuadPattern(graphNode, bgp) ;
         return op ;
     }
@@ -192,14 +188,14 @@ public class GraphQueryHandlerSDB extends SimpleQueryHandler
 
     private static Node subst(Mapping map, Node node, Domain input)
     {
-        if ( map.hasBound(node) )
-        {
-            int idx = map.lookUp(node) ;
-            if ( idx == -1 )
-            {}
-            return input.getElement(idx) ;
-        }
-
+        if ( ! map.hasBound(node) ) 
+            return node ;
+        int idx = map.lookUp(node) ;
+        if ( idx == -1 )
+            return node ;
+        Node n = input.getElement(idx) ;
+        if ( n != null )
+            return  n ;
         return node ;
     }
 }
