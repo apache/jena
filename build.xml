@@ -344,7 +344,7 @@
 
   <target name="clean-javadoc" description="Clean the javadoc directories">
     <delete dir="${javadoc.dir}"/>
-    <mkdir  dir="${javadoc.all.dir}"/>
+    <mkdir  dir="${javadoc.dir}"/>
   </target>
 
 </project>
