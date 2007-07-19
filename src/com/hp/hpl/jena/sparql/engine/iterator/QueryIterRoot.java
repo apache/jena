@@ -22,7 +22,7 @@ public class QueryIterRoot extends QueryIterSingleton
 
     private QueryIterRoot(Binding binding, ExecutionContext execCxt)
     {
-        super(BindingRoot.create(), execCxt) ;
+        super(binding, execCxt) ;
     }
 
     public void output(IndentedWriter out, SerializationContext sCxt)
