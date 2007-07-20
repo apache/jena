@@ -6,8 +6,8 @@
 
 package com.hp.hpl.jena.sparql.core;
 
-import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import com.hp.hpl.jena.graph.Triple;
@@ -22,7 +22,7 @@ import com.hp.hpl.jena.sparql.util.VarUtils;
 
 public class PatternVars
 {
-    public static Set vars(Element element) { return vars(new HashSet(), element) ; }
+    public static Set vars(Element element) { return vars(new LinkedHashSet(), element) ; }
 
     public static Set vars(Set s, Element element)
     {

@@ -386,18 +386,21 @@ public class Query extends Prologue implements Cloneable
         {
             if ( isQueryResultStar() )
                 findAndAddNamedVars() ;
+            return ;
         }
         
         if ( isConstructType() )
         {
             // All named variables are in-scope
             findAndAddNamedVars() ;
+            return ;
         }
         
         if ( isDescribeType() )
         {
             if ( isQueryResultStar() )
                 findAndAddNamedVars() ;
+            return ;
         }
 
 //        if ( isAskType() )
