@@ -9,7 +9,7 @@ package com.hp.hpl.jena.sparql.syntax;
 import java.util.*;
 
 import com.hp.hpl.jena.sparql.core.LabelMap;
-import com.hp.hpl.jena.sparql.core.VarsMentionedVisitor;
+import com.hp.hpl.jena.sparql.core.PatternVars;
 import com.hp.hpl.jena.sparql.serializer.FormatterARQ;
 
 /** Element - abstract class for all pattern elements 
@@ -24,9 +24,7 @@ public abstract class Element
     {
         // In patterns, not in filters
         LinkedHashSet s = new LinkedHashSet() ;
-        ElementVisitor v = new VarsMentionedVisitor(s) ;
-        ElementWalker.walk(this, v) ;
-        return s ; 
+        return PatternVars.vars(s, this) ;
     }
     
     public abstract void visit(ElementVisitor v) ;

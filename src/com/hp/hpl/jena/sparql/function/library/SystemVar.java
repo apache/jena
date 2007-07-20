@@ -10,6 +10,7 @@ package com.hp.hpl.jena.sparql.function.library;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.sparql.expr.ExprEvalException;
+import com.hp.hpl.jena.sparql.expr.ExprException;
 import com.hp.hpl.jena.sparql.expr.NodeValue;
 import com.hp.hpl.jena.sparql.function.FunctionBase0;
 import com.hp.hpl.jena.sparql.util.Symbol;
@@ -27,6 +28,8 @@ public class SystemVar extends FunctionBase0
     Symbol systemSymbol ;
     protected SystemVar(Symbol systemSymbol)
     {
+        if ( systemSymbol == null )
+            throw new ExprException("System symbol is null ptr") ;
         this.systemSymbol = systemSymbol ;
     }
     
@@ -35,6 +38,8 @@ public class SystemVar extends FunctionBase0
     {
         Object obj = getContext().get(systemSymbol) ;
         
+        if ( obj == null )
+            throw new ExprEvalException("null for system symbol: "+systemSymbol) ;
         if ( ! ( obj instanceof Node ) )
             throw new ExprEvalException("Not a Node: "+Utils.className(obj)) ;
         

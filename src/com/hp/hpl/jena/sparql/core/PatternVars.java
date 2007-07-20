@@ -6,38 +6,54 @@
 
 package com.hp.hpl.jena.sparql.core;
 
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
 import com.hp.hpl.jena.graph.Triple;
+import com.hp.hpl.jena.sparql.syntax.Element;
 import com.hp.hpl.jena.sparql.syntax.ElementNamedGraph;
 import com.hp.hpl.jena.sparql.syntax.ElementTriplesBlock;
+import com.hp.hpl.jena.sparql.syntax.ElementVisitor;
 import com.hp.hpl.jena.sparql.syntax.ElementVisitorBase;
+import com.hp.hpl.jena.sparql.syntax.ElementWalker;
 import com.hp.hpl.jena.sparql.util.VarUtils;
 
 
-public class VarsMentionedVisitor extends ElementVisitorBase
+public class PatternVars
 {
-    private Set acc ;
-    public VarsMentionedVisitor(Set s) { acc = s ; } 
-    
-    public void visit(ElementTriplesBlock el)
+    public static Set vars(Element element) { return vars(new HashSet(), element) ; }
+
+    public static Set vars(Set s, Element element)
     {
-        for (Iterator iter = el.triples() ; iter.hasNext() ; )
-        {
-            Triple t = (Triple)iter.next() ;
-            VarUtils.addVarsFromTriple(acc, t) ;
-        }
+        ElementVisitor v = new PatternVarsVisitor(s) ;
+        ElementWalker.walk(element, v) ;
+        return s ;
     }
-    
-//    public void visit(ElementFilter el)
-//    {
-//        el.getExpr().varsMentioned(acc);
-//    }
-    
-    public void visit(ElementNamedGraph el)
+
+    static class PatternVarsVisitor extends ElementVisitorBase
     {
-        VarUtils.addVar(acc, el.getGraphNameNode()) ;
+        private Set acc ;
+        private PatternVarsVisitor(Set s) { acc = s ; } 
+
+        public void visit(ElementTriplesBlock el)
+        {
+            for (Iterator iter = el.triples() ; iter.hasNext() ; )
+            {
+                Triple t = (Triple)iter.next() ;
+                VarUtils.addVarsFromTriple(acc, t) ;
+            }
+        }
+
+//      public void visit(ElementFilter el)
+//      {
+//      el.getExpr().varsMentioned(acc);
+//      }
+
+        public void visit(ElementNamedGraph el)
+        {
+            VarUtils.addVar(acc, el.getGraphNameNode()) ;
+        }
     }
 }
 

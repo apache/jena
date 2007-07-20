@@ -13,6 +13,8 @@ Legacy query engine1 removed.
 
 Add new Algebra operations
   OpGroup, OpNull
+  
+VarsMentionedVisitor removed - convert to an algebra expression and use OpVars.allVars instead.
 
 ARQ 2.0
 -------
