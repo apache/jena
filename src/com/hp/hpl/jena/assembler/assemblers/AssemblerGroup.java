@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: AssemblerGroup.java,v 1.10 2007-07-19 14:23:33 chris-dollin Exp $
+ 	$Id: AssemblerGroup.java,v 1.11 2007-07-20 15:15:03 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.assemblers;
@@ -9,7 +9,7 @@ package com.hp.hpl.jena.assembler.assemblers;
 import java.util.*;
 
 import com.hp.hpl.jena.assembler.*;
-import com.hp.hpl.jena.assembler.exceptions.NoImplementationException;
+import com.hp.hpl.jena.assembler.exceptions.*;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.vocabulary.RDFS;
 
@@ -32,6 +32,30 @@ public abstract class AssemblerGroup extends AssemblerBase implements Assembler
         return result;
         }
     
+    public static class Frame
+        {
+        public final Resource root;
+        public final Resource type;
+        public final Class assembler;
+        
+        public Frame( Resource root, Resource type, Class assembler )
+            { this.root = root; this.type = type; this.assembler = assembler; }
+        
+        public boolean equals( Object other )
+            { return other instanceof Frame && same( (Frame) other ); }
+        
+        protected boolean same( Frame other )
+            { 
+            return root.equals( other.root )
+                && type.equals( other.type )
+                && assembler.equals( other.assembler )
+                ; 
+            }
+        
+        public String toString()
+            { return "root: " + root + " with type: " + type + " assembler class: " + assembler; }
+        }
+
     public static class ExpandingAssemblerGroup extends AssemblerGroup
         {
         PlainAssemblerGroup internal = new PlainAssemblerGroup();
@@ -39,6 +63,7 @@ public abstract class AssemblerGroup extends AssemblerBase implements Assembler
         
         public Object open( Assembler a, Resource suppliedRoot, Mode mode )
             {
+            List doing = new ArrayList();
             Resource root = AssemblerHelp.withFullModel( suppliedRoot );
             root.getModel().add( implementTypes );
             loadClasses( root.getModel() );
@@ -65,15 +90,35 @@ public abstract class AssemblerGroup extends AssemblerBase implements Assembler
     static class PlainAssemblerGroup extends AssemblerGroup
         {
         Map mappings = new HashMap();
-        
+
         public Object open( Assembler a, Resource root, Mode mode )
             {
-            Resource type = AssemblerHelp.findSpecificType( root );
+            Resource type = findSpecificType( root );
             Assembler toUse = assemblerFor( type );
-            if (toUse == null)
-                throw new NoImplementationException( this, root, type );
-            else
-                return toUse.open( a, root, mode );
+            Class aClass = toUse == null ? null : toUse.getClass();
+            Frame frame = new Frame( root, type, aClass );
+            try 
+                { 
+                if (toUse == null)
+                    throw new NoImplementationException( this, root, type );
+                else
+                    return toUse.open( a, root, mode ); 
+                }
+            catch (AssemblerException e) 
+                { 
+                throw e.pushDoing( frame ); 
+                }
+            catch (Exception e) 
+                { 
+                AssemblerException x = new AssemblerException( root, "caught: " + e.getMessage(), e ); 
+                throw x.pushDoing( frame );
+                }
+            }
+
+        private Resource findSpecificType( Resource root )
+            {
+            try { return AssemblerHelp.findSpecificType( root ); }
+            catch (NoSpecificTypeException e) { return null; }
             }
         
         public AssemblerGroup implementWith( Resource type, Assembler a )

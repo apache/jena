@@ -1,11 +1,14 @@
 /*
  	(c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: AssemblerException.java,v 1.4 2007-01-02 11:49:34 andy_seaborne Exp $
+ 	$Id: AssemblerException.java,v 1.5 2007-07-20 15:15:16 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.exceptions;
 
+import java.util.*;
+
+import com.hp.hpl.jena.assembler.assemblers.AssemblerGroup;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.shared.JenaException;
 
@@ -18,6 +21,7 @@ import com.hp.hpl.jena.shared.JenaException;
 public class AssemblerException extends JenaException
     {
     protected final Resource root;
+    protected List doing = new ArrayList();
     
     public AssemblerException( Resource root, String string, Throwable t )
         { 
@@ -38,6 +42,12 @@ public class AssemblerException extends JenaException
         { return root; }
     
     /**
+        XXX 
+    */
+    public AssemblerException pushDoing( AssemblerGroup.Frame frame )
+        { doing.add( frame ); return this; }
+    
+    /**
          Answer a "nice" representation of <code>r</code>, suitable for appearance
          within an exception message.
     */
@@ -46,6 +56,20 @@ public class AssemblerException extends JenaException
     
     protected static String nice( RDFNode r )
         { return r.isLiteral() ? r.asNode().toString(): nice( (Resource) r ); }
+
+    public List getDoing()
+        { return doing; }
+    
+    public String toString()
+        { return super.toString() + "\n  doing:\n" + frameStrings(); }
+    
+    protected String frameStrings()
+        {
+        StringBuffer result = new StringBuffer();
+        for (Iterator it = doing.iterator(); it.hasNext();)
+            result.append( "    " ).append( it.next().toString() ).append( "\n" );
+        return result.toString();
+        }
     }
 
 
