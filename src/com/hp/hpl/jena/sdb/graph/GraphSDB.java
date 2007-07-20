@@ -229,7 +229,6 @@ public class GraphSDB extends GraphBase implements Graph
     @Override
     public QueryHandler queryHandler()
     {
-        //return super.queryHandler() ;
         return new GraphQueryHandlerSDB(this, graphNode, datasetStore) ;
     }
     
