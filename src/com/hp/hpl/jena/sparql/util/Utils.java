@@ -13,6 +13,11 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.TimeZone;
 
+import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.graph.Triple;
+
+import com.hp.hpl.jena.sparql.core.Var;
+
 /** Miscellaneous operations - not query specific */
 
 public class Utils
@@ -154,6 +159,43 @@ public class Utils
     { 
         // No SPARQL short form.
         return Float.toString(f) ;
+    }
+    
+    public static boolean equals(Triple t1, Triple t2, LabelMap labelMap)
+    {
+        Node s1 = t1.getSubject() ;
+        Node p1 = t1.getPredicate() ;
+        Node o1 = t1.getObject() ;
+        
+        Node s2 = t2.getSubject() ;
+        Node p2 = t2.getPredicate() ;
+        Node o2 = t2.getObject() ;
+        
+        if ( ! nodeEquals(s1, s2, labelMap) )
+            return false ;
+        if ( ! nodeEquals(p1, p2, labelMap) )
+            return false ;
+        if ( ! nodeEquals(o1, o2, labelMap) )
+            return false ;
+
+        return true ;
+    }
+    
+    public static boolean nodeEquals(Node n1, Node n2, LabelMap labelMap)
+    {
+        if ( labelMap != null && Var.isBlankNodeVar(n1) && Var.isBlankNodeVar(n2) )
+        {
+            String label1 = n1.getName();
+            String label2 = n2.getName();
+            String maybe = labelMap.get(label1) ;
+            if ( maybe == null )
+            {
+                labelMap.put(label1, label2) ;
+                return true ;
+            }
+            return maybe.equals(label2) ;
+        }
+        return n1.equals(n2) ;
     }
 }
 

@@ -9,6 +9,7 @@ package com.hp.hpl.jena.sparql.algebra.op;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.OpVisitor;
 import com.hp.hpl.jena.sparql.algebra.Transform;
+import com.hp.hpl.jena.sparql.util.LabelMap;
 
 public class OpList extends OpModifier
 {
@@ -25,6 +26,18 @@ public class OpList extends OpModifier
 
     public Op apply(Transform transform, Op subOp) 
     { return transform.transform(this, subOp) ; }
+    
+    public int hashCode()
+    {
+        return getSubOp().hashCode() ^ OpBase.HashToList ; 
+    }
+
+    public boolean equalTo(Op other, LabelMap labelMap)
+    {
+        if ( ! (other instanceof OpList) ) return false ;
+        return getSubOp().equalTo(((OpList)other).getSubOp(), labelMap) ;
+    }
+
 }
 
 /*

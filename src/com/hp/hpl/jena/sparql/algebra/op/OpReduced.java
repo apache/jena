@@ -11,6 +11,7 @@ import com.hp.hpl.jena.sparql.algebra.OpVisitor;
 import com.hp.hpl.jena.sparql.algebra.Table;
 import com.hp.hpl.jena.sparql.algebra.Transform;
 import com.hp.hpl.jena.sparql.engine.ref.Evaluator;
+import com.hp.hpl.jena.sparql.util.LabelMap;
 
 public class OpReduced extends OpModifier
 {
@@ -27,6 +28,15 @@ public class OpReduced extends OpModifier
 
     public void visit(OpVisitor opVisitor)  { opVisitor.visit(this) ; }
     public Op copy(Op subOp)                { return new OpReduced(subOp) ; }
+
+    public int hashCode()
+    { return getSubOp().hashCode() ^ OpBase.HashReduced ; }
+    
+    public boolean equalTo(Op other, LabelMap labelMap)
+    {
+        if ( ! (other instanceof OpReduced) ) return false ;
+        return getSubOp().equalTo(((OpReduced)other).getSubOp(), labelMap) ;
+    }
 }
 
 /*

@@ -9,7 +9,8 @@ package com.hp.hpl.jena.sparql.syntax;
 import java.util.* ;
 
 import com.hp.hpl.jena.query.Dataset;
-import com.hp.hpl.jena.sparql.core.LabelMap;
+
+import com.hp.hpl.jena.sparql.util.LabelMap;
 
 /** A set of constraints in a query expression.
  * 

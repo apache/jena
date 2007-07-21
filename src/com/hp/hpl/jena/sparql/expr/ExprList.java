@@ -86,6 +86,14 @@ public class ExprList
     
     public String toString()
     { return expressions.toString() ; }
+    
+    public int hashCode() { return expressions.hashCode() ; }
+
+    public boolean equals(Object other)
+    {
+        if ( ! ( other instanceof ExprList ) ) return false ;
+        return expressions.equals(other) ;
+    }
 }
 
 /*

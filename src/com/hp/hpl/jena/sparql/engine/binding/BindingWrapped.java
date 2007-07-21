@@ -56,6 +56,16 @@ public class BindingWrapped implements Binding
     public int size()           { return binding.size() ; }
 
     public boolean isEmpty()    { return binding.isEmpty() ; }
+    
+    public int hashCode() { return BindingBase.hashCode(this) ; } 
+    
+    public boolean equals(Object other)
+    {
+        if ( ! ( other instanceof Binding) ) return false ;
+        Binding binding = (Binding)other ;
+        return BindingBase.equals(this, binding) ; 
+    }   
+    
 }
 
 /*

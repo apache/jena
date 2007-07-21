@@ -9,9 +9,9 @@ package com.hp.hpl.jena.sparql.syntax;
 import java.util.Collection;
 import java.util.Map;
 
-import com.hp.hpl.jena.sparql.core.LabelMap;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.serializer.FmtTemplateARQ;
+import com.hp.hpl.jena.sparql.util.LabelMap;
 
 
 /**

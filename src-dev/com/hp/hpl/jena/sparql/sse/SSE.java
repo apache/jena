@@ -17,6 +17,7 @@ import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
 
 import com.hp.hpl.jena.sparql.ARQConstants;
 import com.hp.hpl.jena.sparql.ARQException;
+import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.Table;
 import com.hp.hpl.jena.sparql.core.Quad;
 import com.hp.hpl.jena.sparql.expr.Expr;
@@ -87,6 +88,10 @@ public class SSE
         return BuilderGraph.buildGraph(item) ;
     }
     
+    public static Op readOp(String filename) { return AlgSSE.read(filename) ; }
+    
+    public static Op parseOp(String s) { return AlgSSE.parse(s) ; }
+    
     public static Table readTable(String filename) { return readTable(filename, null) ; }
     
     public static Table readTable(String filename, PrefixMapping pmap)
@@ -102,8 +107,8 @@ public class SSE
         Item item = parse(s, pmap) ;
         return BuilderTable.build(item) ;
     }
-    
-//    public static Item parseResolve(String string)
+
+    //    public static Item parseResolve(String string)
 //    { return parseResolve(string, null) ; }
 //    
 //    public static Item parseResolve(String string, PrefixMapping pmap)

@@ -8,6 +8,7 @@ package com.hp.hpl.jena.sparql.algebra.op;
 
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.Transform;
+import com.hp.hpl.jena.sparql.util.LabelMap;
 
 public abstract class Op2 extends OpBase
 {
@@ -27,6 +28,18 @@ public abstract class Op2 extends OpBase
     
     public abstract Op apply(Transform transform, Op left, Op right) ;
     public abstract Op copy(Op left, Op right) ;
+
+    public int hashCode()
+    {
+        return left.hashCode()<<1 ^ right.hashCode() ^ getName().hashCode() ;
+    }
+    
+    // equalsTo worker
+    protected boolean sameAs(Op2 op2, LabelMap labelMap)
+    {
+        return left.equalTo(op2.left, labelMap) && 
+               right.equalTo(op2.right, labelMap) ;
+    }
 }
 
 /*

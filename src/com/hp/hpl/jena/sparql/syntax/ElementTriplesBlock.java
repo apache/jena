@@ -8,11 +8,10 @@ package com.hp.hpl.jena.sparql.syntax;
 
 import java.util.Iterator;
 
-import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
+
 import com.hp.hpl.jena.sparql.core.BasicPattern;
-import com.hp.hpl.jena.sparql.core.LabelMap;
-import com.hp.hpl.jena.sparql.core.Var;
+import com.hp.hpl.jena.sparql.util.LabelMap;
 
 /** A SPARQL BasicGraphPattern
  * 
@@ -57,60 +56,13 @@ public class ElementTriplesBlock extends Element implements TripleCollector
             return false ;
         
         ElementTriplesBlock eg2 = (ElementTriplesBlock)el2 ;
-        if ( this.pattern.size() != eg2.pattern.size() )
-            return false ;
-        for ( int i = 0 ; i < this.pattern.size() ; i++ )
-        {
-            Triple t1 = pattern.get(i) ;
-            Triple t2 = eg2.pattern.get(i) ;
-            
-            // Need to be labelmap same.
-            if ( ! equalTo(t1, t2, labelMap) )
-                return false ;
-        }
-        return true ;
+        
+        return this.pattern.equiv(eg2.pattern, labelMap) ; 
     }
 
     public void visit(ElementVisitor v) { v.visit(this) ; }
     
     // Code to test triples for sameness with remapping. 
-    
-    private static boolean equalTo(Triple t1, Triple t2, LabelMap labelMap)
-    {
-        Node s1 = t1.getSubject() ;
-        Node p1 = t1.getPredicate() ;
-        Node o1 = t1.getObject() ;
-        
-        Node s2 = t2.getSubject() ;
-        Node p2 = t2.getPredicate() ;
-        Node o2 = t2.getObject() ;
-        
-        if ( ! nodeEquals(s1, s2, labelMap) )
-            return false ;
-        if ( ! nodeEquals(p1, p2, labelMap) )
-            return false ;
-        if ( ! nodeEquals(o1, o2, labelMap) )
-            return false ;
-
-        return true ;
-    }
-    
-    private static boolean nodeEquals(Node n1, Node n2, LabelMap labelMap)
-    {
-        if ( Var.isBlankNodeVar(n1) && Var.isBlankNodeVar(n2) )
-        {
-            String label1 = n1.getName();
-            String label2 = n2.getName();
-            String maybe = labelMap.get(label1) ;
-            if ( maybe == null )
-            {
-                labelMap.put(label1, label2) ;
-                return true ;
-            }
-            return maybe.equals(label2) ;
-        }
-        return n1.equals(n2) ;
-    }
 }
 
 /*

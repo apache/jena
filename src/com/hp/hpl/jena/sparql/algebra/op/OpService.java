@@ -11,14 +11,15 @@ import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.OpVisitor;
 import com.hp.hpl.jena.sparql.algebra.Transform;
+import com.hp.hpl.jena.sparql.util.LabelMap;
 
 public class OpService extends Op1
 {
-    Node serviceURI = null ;
-    public OpService(Node serviceURI, Op subOp)
+    Node serviceNode = null ;    
+    public OpService(Node serviceNode, Op subOp)
     {
         super(subOp) ;
-        this.serviceURI = serviceURI ;
+        this.serviceNode = serviceNode ;
     }
 
     public Op apply(Transform transform, Op subOp)
@@ -32,16 +33,28 @@ public class OpService extends Op1
     }
 
     public String getName()
-    { return "Service" ; }
+    { return "service" ; }
 
     public void visit(OpVisitor opVisitor)
     { opVisitor.visit(this) ; }
 
     public Node getService()
     {
-        return serviceURI ;
+        return serviceNode ;
     }
 
+    public int hashCode()
+    { return serviceNode.hashCode() ^ getSubOp().hashCode() ; }
+    
+    public boolean equalTo(Op other, LabelMap labelMap)
+    {
+        if ( ! (other instanceof OpService) )
+            return false ;
+        OpService opService = (OpService)other ;
+        if ( ! ( serviceNode.equals(opService.serviceNode) ) )
+            return false ;
+        return getSubOp().equalTo(opService, labelMap) ;
+    }
 
 }
 

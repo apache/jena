@@ -6,7 +6,7 @@
 
 package com.hp.hpl.jena.sparql.syntax;
 
-import com.hp.hpl.jena.sparql.core.LabelMap;
+import com.hp.hpl.jena.sparql.util.LabelMap;
 
 /** An optional element in a query.
  * 

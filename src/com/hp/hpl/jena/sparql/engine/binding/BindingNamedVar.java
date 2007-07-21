@@ -6,6 +6,10 @@
 
 package com.hp.hpl.jena.sparql.engine.binding;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.sparql.core.Var;
 
@@ -18,12 +22,28 @@ public class BindingNamedVar extends BindingWrapped
         super(other) ;
     }
     
+    public Iterator vars()
+    {
+        List x = new ArrayList() ;
+        for ( Iterator iter = getWrapped().vars() ; iter.hasNext() ; )
+        {
+            Var var = (Var)iter.next() ;
+            if ( ! var.isNamedVar() )
+                continue ;
+            x.add(var) ;
+        }
+        
+        return x.iterator() ;
+    }
+    
     public Node get(Var var)
     {
         if ( ! var.isNamedVar() )
             return null ;
         return binding.get(var) ;
     }
+    
+    
 }
 
 /*

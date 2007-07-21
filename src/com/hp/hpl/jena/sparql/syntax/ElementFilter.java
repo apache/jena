@@ -6,8 +6,8 @@
 
 package com.hp.hpl.jena.sparql.syntax;
 
-import com.hp.hpl.jena.sparql.core.LabelMap;
 import com.hp.hpl.jena.sparql.expr.Expr;
+import com.hp.hpl.jena.sparql.util.LabelMap;
 
 /** A constraint (Filter) in a query expression.
  * 

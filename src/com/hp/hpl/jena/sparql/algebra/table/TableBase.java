@@ -14,6 +14,7 @@ import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.ResultSetStream;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
+import com.hp.hpl.jena.sparql.engine.binding.BindingBase;
 import com.hp.hpl.jena.sparql.engine.binding.BindingMap;
 import com.hp.hpl.jena.sparql.engine.binding.BindingUtils;
 import com.hp.hpl.jena.sparql.engine.ref.Evaluator;
@@ -100,6 +101,42 @@ public abstract class TableBase implements Table
     {
         return TableWriter.asSSE(this) ; 
     }
+    
+    public int hashCode()
+    { 
+        int hash = 0 ;
+        QueryIterator qIter = iterator(null) ;
+        try {
+            for ( ; qIter.hasNext() ; )
+            {
+                Binding binding = qIter.nextBinding() ;
+                hash ^= binding.hashCode();
+            }
+            return hash ;
+        } finally { qIter.close() ; }
+    }
+
+    
+    public boolean equals(Object other)
+    {
+        if ( ! ( other instanceof Table) ) return false ;
+        Table table = (Table)other ;
+        if ( table.size() != this.size() )
+            return false ;
+        QueryIterator qIter1 = iterator(null) ;
+        QueryIterator qIter2 = table.iterator(null) ;
+        try {
+            for ( ; qIter1.hasNext() ; )
+            {
+                Binding bind1 = qIter1.nextBinding() ;
+                Binding bind2 = qIter2.nextBinding() ;
+                if ( ! BindingBase.equals(bind1, bind2) )
+                    return false ; 
+            }
+            return true ;
+        } finally { qIter1.close() ; qIter2.close() ;}
+    }
+
 }
 
 /*

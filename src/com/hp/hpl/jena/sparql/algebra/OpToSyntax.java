@@ -11,21 +11,20 @@ import java.util.List;
 import java.util.Stack;
 
 import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.QueryFactory;
-import com.hp.hpl.jena.query.SortCondition;
+
 import com.hp.hpl.jena.sparql.ARQNotImplemented;
 import com.hp.hpl.jena.sparql.algebra.op.*;
+import com.hp.hpl.jena.sparql.core.BasicPattern;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.expr.Expr;
 import com.hp.hpl.jena.sparql.expr.ExprList;
-import com.hp.hpl.jena.sparql.syntax.Element;
-import com.hp.hpl.jena.sparql.syntax.ElementFilter;
-import com.hp.hpl.jena.sparql.syntax.ElementGroup;
-import com.hp.hpl.jena.sparql.syntax.ElementOptional;
-import com.hp.hpl.jena.sparql.syntax.ElementTriplesBlock;
-import com.hp.hpl.jena.sparql.syntax.ElementUnion;
+import com.hp.hpl.jena.sparql.sse.SSE;
+import com.hp.hpl.jena.sparql.syntax.*;
 import com.hp.hpl.jena.sparql.util.StringUtils;
+
+import com.hp.hpl.jena.query.Query;
+import com.hp.hpl.jena.query.QueryFactory;
+import com.hp.hpl.jena.query.SortCondition;
 
 /** Convert an Op expression in SPARQL syntax, that is, the reverse of algebra generation */   
 public class OpToSyntax
@@ -34,7 +33,31 @@ public class OpToSyntax
     {
         String [] a1 = new String[]{
             "PREFIX : <http://example/>",
+            "SELECT ?o",
+            "{ ?s ?p ?o . }"
+        } ;
+
+        String [] a2 = new String[]{
+            "PREFIX : <http://example/>",
             "SELECT *",
+            "{ ?s ?p ?o . }"
+        } ;
+
+        String [] a5 = new String[]{
+            "PREFIX : <http://example/>",
+            "SELECT ?s",
+            "{ ?s ?p ?o . ?s ?p ?o2 OPTIONAL { ?s1 ?p1 ?o1} }"
+        } ;
+
+        String [] a8 = new String[]{
+            "PREFIX : <http://example/>",
+            "SELECT ?s1 ?p2",
+            "{ { ?s1 ?p1 ?o1 } UNION { ?s2 ?p2 ?o2 } }" //UNION { ?s3 ?p3 ?o3 } }"
+        } ;
+
+        String [] a9 = new String[]{
+            "PREFIX : <http://example/>",
+            "SELECT ?x",
             " { {?s ?p ?o }",
             "   UNION {",
             "     ?s ?p ?o . ",
@@ -44,20 +67,61 @@ public class OpToSyntax
             "}"
         } ;
 
-        String [] a2 = new String[]{
-            "PREFIX : <http://example/>",
-            "SELECT *",
-            "{ { ?s1 ?p1 ?o1 } UNION { ?s2 ?p2 ?o2 } }" //UNION { ?s3 ?p3 ?o3 } }" 
-        } ;
-
-        String qs = StringUtils.join("\n", a2) ;
+//        one(a1, false) ;
+//        one(a2, false) ;
+//        one(a5, false) ;
+//        one(a8, false) ;
+//        System.out.println("====") ;
+        
+        Op op1 = SSE.parseOp("(join (bgp (?s ?p _:a)) (bgp (?s ?p ?o)) )") ;
+        Op op2 = SSE.parseOp("(union (bgp (?s ?p _:Z)) (bgp (?s ?p ?o)) )") ;
+        if ( ! op1.equals(op2) )
+        {
+            System.out.println("**** Different") ;
+            System.out.print(op1) ;
+            System.out.print(op2) ;
+            System.out.println("------------") ;
+        }
+        else
+            System.out.println("Same") ;
+            
+        
+        System.out.print(asQuery(op1)) ;
+        
+    }
+    
+    public static void one(String[] a, boolean verbose)
+    {
+        String qs = StringUtils.join("\n", a) ;
         
         Query query = QueryFactory.create(qs) ;
         Op op = Algebra.compile(query) ;
-        System.out.print(op) ;
-        System.out.println() ;
+        if ( verbose )
+        {
+            System.out.print(op) ;
+            System.out.println() ;
+        }
         Query query2 = asQuery(op) ;
-        System.out.print(query2) ;
+        if ( verbose )
+        {
+            System.out.print(query2) ;
+            System.out.println() ;
+        }
+        Op op2 = Algebra.compile(query2) ;
+        if ( verbose )
+            System.out.print(op2) ;
+        
+        if ( ! op.equals(op2) )
+        {
+            System.out.println("**** query algebra expression not equal to it's serialized/parsed form") ;
+            System.out.print(op) ;
+            System.out.print(op2) ;
+            System.out.println("------------") ;
+        }
+        else if ( verbose )
+            System.out.println("------------") ;
+        
+
     }
     
     public static Query asQuery(Op op)
@@ -74,7 +138,7 @@ public class OpToSyntax
         
         query.setResultVars() ; 
         // Always name the variables, no "SELECT *"
-        query.setQueryResultStar(false) ;
+        //query.setQueryResultStar(false) ;
         return query ; 
     }
     
@@ -87,35 +151,50 @@ public class OpToSyntax
         public Converter(Query query)
         {
             this.query = query ;
+            currentGroup = new ElementGroup() ;
         }
 
         Element asElement(Op op)
         {
-            op.visit(this) ;
-            Element el = element ;
-            element = null ;
-            return el ;
-//            Element e = pop() ;
-//            return e ;
+            ElementGroup g = asElementGroup(op) ;
+            if ( g.getElements().size() == 1 )
+                return (Element)g.getElements().get(0) ;
+            return g ;
         }
         
+        ElementGroup asElementGroup(Op op)
+        {
+            startSubGroup() ;
+            op.visit(this) ;
+            return endSubGroup() ;
+        }
+
         public void visit(OpBGP opBGP)
         {
+            currentGroup().addElement(process(opBGP.getPattern())) ;
+        }
+
+        private ElementTriplesBlock process(BasicPattern pattern)
+        {
             ElementTriplesBlock e = new ElementTriplesBlock() ;
-            Iterator iter = opBGP.getPattern().iterator() ;
+            Iterator iter = pattern.iterator() ;
             for ( ; iter.hasNext() ; )
             {
                 Triple t = (Triple)iter.next() ;
+                // Leave bNode variables as they are
+                // Queruy serialization will deal with them. 
                 e.addTriple(t) ;
             }
-            element = e ;
+            return e ;
         }
-
+        
         public void visit(OpQuadPattern quadPattern)
         { throw new ARQNotImplemented("OpQuadPattern") ; }
 
         public void visit(OpJoin opJoin)
         {
+            // start/stop subgroups - no - joins are linear groups.
+            // Have option to explicitly {} sub elements.
             Element eLeft = asElement(opJoin.getLeft()) ;
             Element eRight = asElement(opJoin.getRight()) ;
             
@@ -128,7 +207,7 @@ public class OpToSyntax
         public void visit(OpLeftJoin opLeftJoin)
         {
             Element eLeft = asElement(opLeftJoin.getLeft()) ;
-            Element eRight = asElement(opLeftJoin.getRight()) ;
+            Element eRight = asElementGroup(opLeftJoin.getRight()) ;
             ElementGroup g = currentGroup() ;
             g.addElement(eLeft) ;
             ElementOptional opt = new ElementOptional(eRight) ;
@@ -140,8 +219,8 @@ public class OpToSyntax
 
         public void visit(OpUnion opUnion)
         {
-            Element eLeft = asElement(opUnion.getLeft()) ;
-            Element eRight = asElement(opUnion.getRight()) ;
+            Element eLeft = asElementGroup(opUnion.getLeft()) ;
+            Element eRight = asElementGroup(opUnion.getRight()) ;
             if ( eLeft instanceof ElementUnion )
             {
                 ElementUnion elUnion = (ElementUnion)eLeft ;
@@ -179,11 +258,17 @@ public class OpToSyntax
         }
 
         public void visit(OpGraph opGraph)
-        {}
+        {
+            startSubGroup() ;
+            Element e = asElement(opGraph.getSubOp()) ;
+            ElementGroup g = endSubGroup() ;
+            
+            Element graphElt = new ElementNamedGraph(opGraph.getNode(), e) ;
+            currentGroup().addElement(graphElt) ;
+        }
 
         public void visit(OpService opService)
         { throw new ARQNotImplemented("OpService") ; }
-
 
         public void visit(OpDatasetNames dsNames)
         { throw new ARQNotImplemented("OpDatasetNames") ; }
@@ -220,10 +305,11 @@ public class OpToSyntax
                 Var v = (Var)iter.next();
                 query.addResultVar(v) ;
             }
+            opProject.getSubOp().visit(this) ;
         }
 
         public void visit(OpReduced opReduced)
-        {}
+        { query.setReduced(true) ; }
 
         public void visit(OpDistinct opDistinct)
         { query.setDistinct(true) ; }
@@ -248,39 +334,42 @@ public class OpToSyntax
             return (Element)g.getElements().get(len-1) ;
         }
 
+        private void startSubGroup()
+        {
+            push(currentGroup) ;
+            ElementGroup g = new ElementGroup() ;
+            currentGroup = g ;
+        }
+        
+        private ElementGroup endSubGroup()
+        {
+            ElementGroup g = pop() ;
+            ElementGroup r = currentGroup ;
+            currentGroup = g ;
+            return r ;
+        }
+        
+//        private void endCurrentGroup()
+//        {
+//            currentGroup = null ;
+//            element = null ; //??
+//        }
         
         private ElementGroup currentGroup()
         {
-            ElementGroup g = currentGroup ;
-            if ( g == null )
-            {
-                g = new ElementGroup() ;
-                if ( element != null )
-                    System.err.println("element not null") ;
-                element = g ;
-                currentGroup = g ;
-            }
-            return g ;
+//            if ( currentGroup == null )
+//                startSubGroup() ;
+            return currentGroup ;
         }
-//            ElementGroup g = null ;
-//            if ( peek() instanceof ElementGroup )
-//                g = (ElementGroup)(peek()) ;
-//            else
-//            {
-//                g = new ElementGroup() ;
-//                push(g) ;
-//            }
-//            return g ;
-//        }
         
-//        private Element peek()
-//        {
-//            if ( stack.size() == 0 )
-//                return null ;
-//            return (Element)stack.peek();
-//        }
-//        private Element pop() { return (Element)stack.pop(); }
-//        private void push(Element el) { stack.push(el); }
+        private ElementGroup peek()
+        {
+            if ( stack.size() == 0 )
+                return null ;
+            return (ElementGroup)stack.peek();
+        }
+        private ElementGroup pop() { return (ElementGroup)stack.pop(); }
+        private void push(ElementGroup el) { stack.push(el); }
     }
 }
 

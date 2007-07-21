@@ -12,6 +12,9 @@ import java.util.ListIterator;
 
 import com.hp.hpl.jena.graph.Triple;
 
+import com.hp.hpl.jena.sparql.util.LabelMap;
+import com.hp.hpl.jena.sparql.util.Utils;
+
 /** A class whose purpose is to give a name to a collection of triples
  * Reduces the use of bland "List" in APIs (Java 1.4) 
  */ 
@@ -35,6 +38,7 @@ public class BasicPattern
     public List getList() { return triples ; } 
     
     public int hashCode() { return triples.hashCode() ; } 
+    
     public boolean equals(Object other)
     { 
         if ( ! ( other instanceof BasicPattern) ) 
@@ -42,6 +46,27 @@ public class BasicPattern
         BasicPattern bp = (BasicPattern)other ;
         return triples.equals(bp.triples) ;
     }
+    
+    public boolean equiv(BasicPattern other, LabelMap labelMap)
+    { 
+        if ( ! ( other instanceof BasicPattern) ) 
+            return false ;
+        BasicPattern bp = (BasicPattern)other ;
+        if ( this.triples.size() != bp.triples.size() )
+            return false ;
+        
+        for ( int i = 0 ; i < this.triples.size() ; i++ )
+        {
+            Triple t1 = get(i) ;
+            Triple t2 = bp.get(i) ;
+            
+            // Need to be "labelmap same".
+            if ( ! Utils.equals(t1, t2, labelMap) )
+                return false ;
+        }
+        return true ;
+    }
+    
     
     public String toString() { return triples.toString() ; } 
 }

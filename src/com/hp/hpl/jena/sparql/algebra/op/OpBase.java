@@ -10,15 +10,29 @@ import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.OpWriter;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
+import com.hp.hpl.jena.sparql.util.LabelMap;
 import com.hp.hpl.jena.sparql.util.PrintSerializableBase;
 
 public abstract class OpBase extends PrintSerializableBase implements Op
 {
+    public abstract int hashCode() ;
+    public abstract boolean equalTo(Op other, LabelMap labelMap) ;
+
+    final public boolean equals(Object other)
+    { 
+        if ( this == other ) return true ;
+
+        if ( ! ( other instanceof Op ) )
+            return false ;
+        return equalTo((Op)other, null) ;
+    }
+
+
     public void output(IndentedWriter out)
     {
         OpWriter.out(out, this) ;
     }
-    
+
     public void output(IndentedWriter out, SerializationContext sCxt)
     {
         int line = out.getRow() ;
@@ -26,8 +40,22 @@ public abstract class OpBase extends PrintSerializableBase implements Op
         if ( line != out.getRow() )
             out.ensureStartOfLine() ;
     }
-    
+
     //public String getName()                 { return Utils.className(this) ; }
+    
+    // Constants used in hashing to stop an element and it's subelement
+    // (if just one) having the same hash.
+    
+    static final int HashBasicGraphPattern      = 0xB1 ;
+//    static final int HashGroup                = 0xB2 ;
+//    static final int HashUnion                = 0xB3 ;
+//    static final int HashLeftJoin             = 0xB4 ;
+    static final int HashDistinct               = 0xB5 ;
+    static final int HashReduced                = 0xB5 ;
+    static final int HashToList                 = 0xB6 ;
+    static final int HashNull                   = 0xB7 ;
+
+
 }
 
 /*

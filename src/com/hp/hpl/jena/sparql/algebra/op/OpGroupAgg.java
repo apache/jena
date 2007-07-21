@@ -13,6 +13,7 @@ import com.hp.hpl.jena.sparql.algebra.OpVisitor;
 import com.hp.hpl.jena.sparql.algebra.Table;
 import com.hp.hpl.jena.sparql.algebra.Transform;
 import com.hp.hpl.jena.sparql.engine.ref.Evaluator;
+import com.hp.hpl.jena.sparql.util.LabelMap;
 
 public class OpGroupAgg extends OpModifier
 {
@@ -37,6 +38,20 @@ public class OpGroupAgg extends OpModifier
 
     public Op apply(Transform transform, Op subOp)
     { return transform.transform(this, subOp) ; }
+
+    public int hashCode()
+    { return getSubOp().hashCode() ^ groupVars.hashCode() ^ aggregators.hashCode() ; }
+
+    public boolean equalTo(Op other, LabelMap labelMap)
+    {
+        if ( ! (other instanceof OpGroupAgg) ) return false ;
+        OpGroupAgg opAgg = (OpGroupAgg)other ;
+        if ( ! groupVars.equals(opAgg.groupVars) ||
+             ! aggregators.equals(opAgg.aggregators) )
+            return false ;
+        return getSubOp().equalTo(opAgg.getSubOp(), labelMap) ;
+    }
+
 
 }
 

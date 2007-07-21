@@ -4,13 +4,13 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.core;
+package com.hp.hpl.jena.sparql.util;
 
 import java.util.HashMap;
 
 import com.hp.hpl.jena.sparql.ARQInternalErrorException;
 
-/** Map labels (system allocated variable names or blank node labels) to other labels.
+/** Map labels (blank node labels) to other labels.
  *  
  * @author Andy Seaborne
  * @version $Id: LabelMap.java,v 1.2 2007/01/02 11:20:30 andy_seaborne Exp $

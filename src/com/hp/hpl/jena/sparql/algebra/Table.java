@@ -8,11 +8,12 @@ package com.hp.hpl.jena.sparql.algebra;
 
 import java.util.List;
 
-import com.hp.hpl.jena.query.ResultSet;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.expr.ExprList;
+
+import com.hp.hpl.jena.query.ResultSet;
 
 public interface Table
 {

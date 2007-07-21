@@ -6,8 +6,7 @@
 
 package arq.examples.propertyfunction;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
@@ -108,7 +107,8 @@ public class localname extends PFuncSimple
                 return new QueryIterNullIterator(execCxt) ;
         }
         
-        Set bindings = new HashSet() ;
+        //Set bindings = new HashSet() ;    // Use a Set if you want unique results. 
+        List bindings = new ArrayList() ;   // Use a list if you want counting results. 
         Graph graph = execCxt.getActiveGraph() ;
         
         ExtendedIterator iter = graph.find(Node.ANY, Node.ANY, Node.ANY) ;
@@ -122,7 +122,7 @@ public class localname extends PFuncSimple
         return new QueryIterPlainWrapper(bindings.iterator(), execCxt) ;
     }
 
-    private void slot(Set bindings, Binding input, Node node, Var subjVar, Node nodeLocalname)
+    private void slot(Collection bindings, Binding input, Node node, Var subjVar, Node nodeLocalname)
     {
         if ( ! node.isURI() ) return ;
         Node localname = Node.createLiteral(node.getLocalName()) ;

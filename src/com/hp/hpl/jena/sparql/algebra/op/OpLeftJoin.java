@@ -13,6 +13,7 @@ import com.hp.hpl.jena.sparql.algebra.Transform;
 import com.hp.hpl.jena.sparql.engine.ref.Evaluator;
 import com.hp.hpl.jena.sparql.expr.Expr;
 import com.hp.hpl.jena.sparql.expr.ExprList;
+import com.hp.hpl.jena.sparql.util.LabelMap;
 
 public class OpLeftJoin extends Op2
 {
@@ -48,6 +49,12 @@ public class OpLeftJoin extends Op2
     public void visit(OpVisitor opVisitor) { opVisitor.visit(this) ; }
     public Op copy(Op newLeft, Op newRight)
     { return new OpLeftJoin(newLeft, newRight, expressions) ; }
+    
+    public boolean equalTo(Op op2, LabelMap labelMap)
+    {
+        if ( ! ( op2 instanceof OpLeftJoin) ) return false ;
+        return super.sameAs((Op2)op2, labelMap) ;
+    }
 }
 
 /*

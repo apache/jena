@@ -55,32 +55,7 @@ public class BindingFixed extends BindingWrapped
             return false ;
         
         BindingFixed b = (BindingFixed)obj ;
-        if ( b.hashCode() != this.hashCode())
-            return false ;
-        
-        if ( varSize != b.varSize )
-            // Mismatch in the variables.
-            return false ;
-        
-        Iterator iter = binding.vars() ;
-        for ( ; iter.hasNext() ; )
-        {
-            Var v = (Var)iter.next() ; 
-            Node node1 = this.get(v) ;
-            Node node2 = b.get(v) ;
-            
-            if ( node1 == null && node2 == null )
-                continue ;
-            if (node1 == null )
-                return false ;      // obj2 not null
-            if (node2 == null )
-                return false ;      // obj1 not null
-
-            // Same by graph matching (.equals or .sameAs)
-            if ( !node1.equals(node2) )   // *** .equals - not sameValueAs
-                return false ;
-        }
-        return true ;
+        return BindingBase.equals(this, b) ; 
     }
     
     public int hashCode()

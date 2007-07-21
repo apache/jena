@@ -13,10 +13,11 @@ import java.util.Map;
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.sparql.core.LabelMap;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.syntax.TemplateGroup;
 import com.hp.hpl.jena.sparql.syntax.TemplateTriple;
+import com.hp.hpl.jena.sparql.util.LabelMap;
+
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 
 public class TemplateGraph extends TemplateGroup

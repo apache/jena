@@ -10,6 +10,7 @@ import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.OpVisitor;
 import com.hp.hpl.jena.sparql.algebra.Transform;
+import com.hp.hpl.jena.sparql.util.LabelMap;
 
 public class OpGraph extends Op1
     // Must override evaluation - need to flip the execution context on the way down
@@ -29,6 +30,18 @@ public class OpGraph extends Op1
     public Op apply(Transform transform, Op op)     { return transform.transform(this, op) ; } 
     public void visit(OpVisitor opVisitor)          { opVisitor.visit(this) ; }
     public Op copy(Op newOp)                        { return new OpGraph(node, newOp) ; }
+    
+    public int hashCode()
+    { return node.hashCode() ^ getSubOp().hashCode() ; }
+    
+    public boolean equalTo(Op other, LabelMap labelMap)
+    {
+        if ( ! (other instanceof OpGraph) ) return false ;
+        OpGraph opGraph = (OpGraph)other ;
+        if ( ! ( node.equals(opGraph.node) ) )
+            return false ;
+        return getSubOp().equalTo(opGraph, labelMap) ;
+    }
 }
 
 /*

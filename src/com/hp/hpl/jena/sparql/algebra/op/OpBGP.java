@@ -10,6 +10,7 @@ import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.OpVisitor;
 import com.hp.hpl.jena.sparql.algebra.Transform;
 import com.hp.hpl.jena.sparql.core.BasicPattern;
+import com.hp.hpl.jena.sparql.util.LabelMap;
 
 public class OpBGP extends Op0
 {
@@ -24,6 +25,24 @@ public class OpBGP extends Op0
     public Op apply(Transform transform)    { return transform.transform(this) ; } 
     public void visit(OpVisitor opVisitor)  { opVisitor.visit(this) ; }
     public Op copy()                        { return new OpBGP(pattern) ; }
+    
+    //@Override
+    public int hashCode()
+    { 
+        int calcHashCode = OpBase.HashBasicGraphPattern ;
+        calcHashCode ^=  pattern.hashCode() ; 
+        return calcHashCode ;
+    }
+
+    //@Override
+    public boolean equalTo(Op op2, LabelMap labelMap)
+    {
+        if ( ! ( op2 instanceof OpBGP) )
+            return false ;
+        
+        OpBGP bgp2 = (OpBGP)op2 ;
+        return pattern.equiv(bgp2.pattern, labelMap) ;
+    }
 }
 
 /*

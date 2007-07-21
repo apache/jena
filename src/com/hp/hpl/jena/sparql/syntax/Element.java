@@ -8,9 +8,9 @@ package com.hp.hpl.jena.sparql.syntax;
 
 import java.util.*;
 
-import com.hp.hpl.jena.sparql.core.LabelMap;
 import com.hp.hpl.jena.sparql.core.PatternVars;
 import com.hp.hpl.jena.sparql.serializer.FormatterARQ;
+import com.hp.hpl.jena.sparql.util.LabelMap;
 
 /** Element - abstract class for all pattern elements 
  * 
@@ -30,6 +30,8 @@ public abstract class Element
     public abstract void visit(ElementVisitor v) ;
     
     public abstract int hashCode() ;
+    // If the labeMap is null, do .equals() on nodes, else map from
+    // bNode varables in one to bNodes variables in the other 
     public abstract boolean equalTo(Element el2, LabelMap labelMap) ;
     
     final public boolean equals(Object el2)
@@ -38,7 +40,8 @@ public abstract class Element
 
         if ( ! ( el2 instanceof Element ) )
             return false ;
-        return equalTo((Element)el2, null) ; }
+        return equalTo((Element)el2, null) ;
+    }
     
     
     public String toString()

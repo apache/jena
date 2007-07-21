@@ -13,6 +13,7 @@ import com.hp.hpl.jena.sparql.algebra.OpVisitor;
 import com.hp.hpl.jena.sparql.algebra.Table;
 import com.hp.hpl.jena.sparql.algebra.Transform;
 import com.hp.hpl.jena.sparql.engine.ref.Evaluator;
+import com.hp.hpl.jena.sparql.util.LabelMap;
 
 public class OpOrder extends OpModifier
 {
@@ -36,6 +37,21 @@ public class OpOrder extends OpModifier
 
     public Op apply(Transform transform, Op subOp)
     { return transform.transform(this, subOp) ; }
+    
+    public int hashCode()
+    {
+        return conditions.hashCode() ^ getSubOp().hashCode() ;
+    }
+
+    public boolean equalTo(Op other, LabelMap labelMap)
+    {
+        if ( ! (other instanceof OpOrder) ) return false ;
+        OpOrder opOrder = (OpOrder)other ;
+        //
+        return getSubOp().equalTo(opOrder.getSubOp(), labelMap) ;
+    }
+
+
 }
 
 /*

@@ -8,7 +8,7 @@ package com.hp.hpl.jena.sparql.syntax;
 
 import java.util.* ;
 
-import com.hp.hpl.jena.sparql.core.LabelMap;
+import com.hp.hpl.jena.sparql.util.LabelMap;
 
 /** 
  * 

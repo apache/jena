@@ -10,6 +10,7 @@ import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.OpVisitor;
 import com.hp.hpl.jena.sparql.algebra.Transform;
+import com.hp.hpl.jena.sparql.util.LabelMap;
 
 public class OpDatasetNames extends Op0
 {
@@ -26,6 +27,16 @@ public class OpDatasetNames extends Op0
     public Op apply(Transform transform)    { return transform.transform(this) ; } 
     public void visit(OpVisitor opVisitor)  { opVisitor.visit(this) ; }
     public Op copy()                        { return new OpDatasetNames(graphNode) ; }
+
+    public int hashCode()
+    { return graphNode.hashCode() ; }
+
+    public boolean equalTo(Op op2, LabelMap labelMap)
+    {
+        if ( ! ( op2 instanceof OpDatasetNames) ) return false ;
+        OpDatasetNames other = (OpDatasetNames)op2 ;
+        return graphNode.equals(other.graphNode) ;
+    }
 }
 
 /*

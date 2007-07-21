@@ -14,6 +14,7 @@ import com.hp.hpl.jena.sparql.algebra.Table;
 import com.hp.hpl.jena.sparql.algebra.Transform;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.ref.Evaluator;
+import com.hp.hpl.jena.sparql.util.LabelMap;
 
 public class OpProject extends OpModifier
 {
@@ -45,6 +46,20 @@ public class OpProject extends OpModifier
 
     public Op apply(Transform transform, Op subOp)
     { return transform.transform(this, subOp) ; }
+
+    public int hashCode()
+    {
+        return vars.hashCode() ^ getSubOp().hashCode() ;
+    }
+
+    public boolean equalTo(Op other, LabelMap labelMap)
+    {
+        if ( ! (other instanceof OpProject) ) return false ;
+        OpProject opProject = (OpProject)other ;
+        if ( ! vars.equals(opProject.vars) )
+            return false ;
+        return getSubOp().equalTo(opProject.getSubOp(), labelMap) ;
+    }
 }
 
 /*

@@ -13,6 +13,7 @@ import com.hp.hpl.jena.sparql.algebra.Transform;
 import com.hp.hpl.jena.sparql.engine.ref.Evaluator;
 import com.hp.hpl.jena.sparql.expr.Expr;
 import com.hp.hpl.jena.sparql.expr.ExprList;
+import com.hp.hpl.jena.sparql.util.LabelMap;
 
 public class OpFilter extends Op1
 {
@@ -91,6 +92,21 @@ public class OpFilter extends Op1
     public void visit(OpVisitor opVisitor) { opVisitor.visit(this) ; }
     
     public Op copy(Op subOp)                { return new OpFilter(expressions, subOp) ; }
+    
+    public int hashCode()
+    {
+        return expressions.hashCode() ;
+    }
+    
+    public boolean equalTo(Op other, LabelMap labelMap)
+    {
+        if ( ! (other instanceof OpFilter) ) return false ;
+        OpFilter opFilter = (OpFilter)other ;
+        if ( ! expressions.equals(opFilter.expressions) )
+            return false ;
+        
+        return getSubOp().equalTo(opFilter.getSubOp(), labelMap) ;
+    }
 }
 
 /*

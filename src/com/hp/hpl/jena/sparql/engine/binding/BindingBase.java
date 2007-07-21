@@ -192,29 +192,48 @@ abstract public class BindingBase implements Binding
 
     protected abstract void checkAdd1(Var var, Node node) ;
     
+    public int hashCode() { return hashCode(this) ; } 
+    public boolean equals(Object other)
+    {
+        if ( ! ( other instanceof Binding) ) return false ;
+        Binding binding = (Binding)other ;
+        return equals(this, binding) ; 
+    }
+    
+    // Not everything derives from BindingBase.
+    public static int hashCode(Binding bind)
+    {
+        int hash = 0xC0 ;
+        for ( Iterator iter = bind.vars() ; iter.hasNext() ; )
+        {
+            Var var = (Var)iter.next() ; 
+            Node node = bind.get(var) ;
+            hash ^= var.hashCode() ;
+            hash ^= node.hashCode() ;
+        }
+        return hash ;
+    }
+
     public static boolean equals(Binding bind1, Binding bind2)
     {
         // Same variables?
         
         if ( bind1.size() != bind2.size() )
             return false ;
-        
-        Iterator iter1 = bind1.vars() ;
-        for ( ; iter1.hasNext() ; )
+
+        for ( Iterator iter1 = bind1.vars() ; iter1.hasNext() ; )
         {
             Var var = (Var)iter1.next() ; 
-            Node n1 = bind1.get(var) ;
-            Node n2 = bind2.get(var) ;
+            Node node1 = bind1.get(var) ;
+            Node node2 = bind2.get(var) ;
             
-            // n1 is known not to be null
-//            if ( n1 == null && n2 == null )
-//                continue ;
-//            if (n1 == null )
-//                return false ;      // n2 not null
-            if (n2 == null )
-                return false ;      // n1 not null
-
-            if ( !n1.equals(n2) )
+            if ( node1 == null && node2 == null )
+                continue ;
+            if (node1 == null )
+                return false ;      // node2 not null
+            if (node2 == null )
+                return false ;      // node1 not null
+            if ( !node1.equals(node2) )
                 return false ;
         }
         

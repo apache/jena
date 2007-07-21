@@ -11,6 +11,7 @@ import com.hp.hpl.jena.sparql.algebra.OpVisitor;
 import com.hp.hpl.jena.sparql.algebra.Table;
 import com.hp.hpl.jena.sparql.algebra.Transform;
 import com.hp.hpl.jena.sparql.engine.ref.Evaluator;
+import com.hp.hpl.jena.sparql.util.LabelMap;
 
 public class OpSlice extends OpModifier
 {
@@ -46,6 +47,20 @@ public class OpSlice extends OpModifier
 
     public Op apply(Transform transform, Op subOp)
     { return transform.transform(this, subOp) ; }
+    
+    public int hashCode()
+    {
+        return getSubOp().hashCode() ^ (int)(start&0xFFFFFFFF) ^ (int)(length&0xFFFFFFFF) ;
+    }
+
+    public boolean equalTo(Op other, LabelMap labelMap)
+    {
+        if ( ! (other instanceof OpSlice) ) return false ;
+        OpSlice opSlice = (OpSlice)other ;
+        if ( opSlice.start != start || opSlice.length != length )
+            return false;
+        return getSubOp().equalTo(opSlice, labelMap) ;
+    }
 }
 
 /*

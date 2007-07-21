@@ -9,7 +9,8 @@ package com.hp.hpl.jena.sparql.syntax;
 import java.util.* ;
 
 import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.sparql.core.LabelMap;
+
+import com.hp.hpl.jena.sparql.util.LabelMap;
 
 import org.apache.commons.logging.LogFactory;
 import org.apache.commons.logging.Log;
@@ -105,36 +106,6 @@ public class ElementGroup extends Element
     }
     
     public void visit(ElementVisitor v) { v.visit(this) ; }
-
-    // Canonicalization
-    
-    // The parser signals when the group starts and finishes and when each basic
-    // graph pattern starts and finishes.  This is also checked in the query planner
-    // so it isn't necessary to do when creating a queyr programmtically, although
-    // the query may print oddly if it isn't canonical.
-    
-//    boolean groupInProgress = false ;
-//    boolean groupFinished  = false ;
-//    
-//    public void startGroup()
-//    {
-//        groupInProgress = true ;
-//    }
-//    
-//    public void endGroup()
-//    {
-//        if ( groupFinished )
-//            log.warn("Group has already been finished") ;
-//        groupFinished = true ;
-//        
-//    }
-//    
-//    public void startBasicGraphPattern()
-//    {}
-//    
-//    public void endBasicGraphPattern()
-//    {}
-    
 }
 
 /*

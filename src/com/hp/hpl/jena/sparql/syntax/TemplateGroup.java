@@ -9,8 +9,8 @@ package com.hp.hpl.jena.sparql.syntax;
 import java.util.*;
 
 import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.sparql.core.LabelMap;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
+import com.hp.hpl.jena.sparql.util.LabelMap;
 
 /** A number of templates, grouped together.
  *  Kept as a list so printing maintains order.
