@@ -9,10 +9,12 @@ Internal changes: the core engines are now Graph/DatasetGraph/Algebra-centric
   QueryEngine construction and extension need not know about
   the upper layers now.
 
+Algebra operaotr impleent .hashCode() and .equals() basic on structure/value equality
+
 Legacy query engine1 removed.
 
 Add new Algebra operations
-  OpGroup, OpNull
+  OpGroupAgg, OpNull
   
 VarsMentionedVisitor removed - convert to an algebra expression and use OpVars.allVars instead.
 
@@ -28,6 +30,7 @@ execution where possible.
   + The working group has removed attributes "ordered" and "distinct" from the
     XML Results format. These have been removed in this release.  ARQ will read
     old style XML files (and ignore the attributes).
+    JSON result format also updated.
 
 + Multiple query engines:
   + Main query engine for optimization and efficient execution

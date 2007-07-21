@@ -11,6 +11,7 @@ import com.hp.hpl.jena.sparql.algebra.OpVisitor;
 import com.hp.hpl.jena.sparql.algebra.Table;
 import com.hp.hpl.jena.sparql.algebra.Transform;
 import com.hp.hpl.jena.sparql.engine.ref.Evaluator;
+import com.hp.hpl.jena.sparql.expr.E_LogicalAnd;
 import com.hp.hpl.jena.sparql.expr.Expr;
 import com.hp.hpl.jena.sparql.expr.ExprList;
 import com.hp.hpl.jena.sparql.util.LabelMap;
@@ -21,13 +22,13 @@ public class OpFilter extends Op1
     
     public static OpFilter filter(Expr expr, Op op)
     {
+        ExprList x = asExprList(expr) ;
         if ( op instanceof OpFilter )
         {
             OpFilter f = (OpFilter)op ;
-            f.getExprs().add(expr) ;
+            f.getExprs().addAll(x) ;
             return f ;
         }
-        ExprList x = new ExprList(expr) ;
         return new OpFilter(x, op) ;
     }
     
@@ -43,6 +44,23 @@ public class OpFilter extends Op1
         return new OpFilter(exprs, op) ;
     }
 
+    private static ExprList asExprList(Expr expr)
+    {
+        ExprList exprList = new ExprList() ;
+        // Explode &&-chain to exprlist.
+        while ( expr instanceof E_LogicalAnd )
+        {
+            E_LogicalAnd x = (E_LogicalAnd)expr ;
+            Expr left = x.getArg1() ;
+            Expr right = x.getArg2() ;
+            exprList.add(left) ;
+            expr = right ;
+        }
+        // Add remaining
+        exprList.add(expr) ;
+        return exprList ;
+    }
+    
     private OpFilter(ExprList exprs , Op sub)
     { 
         super(sub) ;

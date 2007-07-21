@@ -192,7 +192,9 @@ public class ExprUtils
     }
 
     public static void fmtPrefix(IndentedWriter iOut, ExprList exprs, PrefixMapping pmap)
-    { fmtPrefix(iOut, exprs, 0, pmap ) ; }
+    {
+        fmtPrefix(iOut, exprs, 0, pmap ) ;
+    }
     
     
     private static void fmtPrefix(IndentedWriter iOut, ExprList exprs, int i, PrefixMapping pmap)
@@ -204,11 +206,12 @@ public class ExprUtils
         
         if ( exprs.size() == (i+1) )
         { 
+            // End.  Just the last expression.
             exprs.get(i).visit(v) ;
             return ;
         }
         
-        iOut.print("( && ") ;
+        iOut.print("(&& ") ;
         exprs.get(i).visit(v) ;
         iOut.print(" ") ;
         fmtPrefix(iOut, exprs, i+1, pmap) ;

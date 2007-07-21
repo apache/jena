@@ -42,6 +42,12 @@ public class OpToSyntax
             "SELECT *",
             "{ ?s ?p ?o . }"
         } ;
+        
+        String [] a3 = new String[]{
+            "PREFIX : <http://example/>",
+            "SELECT *",
+            "{ ?s ?p ?o . FILTER(?o) FILTER(?z) }"
+        } ;
 
         String [] a5 = new String[]{
             "PREFIX : <http://example/>",
@@ -49,11 +55,27 @@ public class OpToSyntax
             "{ ?s ?p ?o . ?s ?p ?o2 OPTIONAL { ?s1 ?p1 ?o1} }"
         } ;
 
-        String [] a8 = new String[]{
+        String [] a6 = new String[]{
+            "PREFIX : <http://example/>",
+            "SELECT ?s1 ?p2",
+            "{ ",
+            "  { ?s1 ?p1 ?o1 } UNION { ?s2 ?p2 ?o2 } ",
+            "  ?a ?b ?c",
+            "}"
+        } ;
+        
+        String [] a7 = new String[]{
             "PREFIX : <http://example/>",
             "SELECT ?s1 ?p2",
             "{ { ?s1 ?p1 ?o1 } UNION { ?s2 ?p2 ?o2 } }" //UNION { ?s3 ?p3 ?o3 } }"
         } ;
+
+        String [] a8 = new String[]{
+            "PREFIX : <http://example/>",
+            "SELECT ?s1 ?p2",
+            "{ { ?s1 ?p1 ?o1 } UNION { ?s2 ?p2 ?o2 } UNION { ?s3 ?p3 ?o3 } }"
+        } ;
+
 
         String [] a9 = new String[]{
             "PREFIX : <http://example/>",
@@ -67,14 +89,21 @@ public class OpToSyntax
             "}"
         } ;
 
+        // Graph
 //        one(a1, false) ;
 //        one(a2, false) ;
+//        one(a3, false) ;
 //        one(a5, false) ;
+//        one(a6, false) ;
+//        one(a7, false) ;
 //        one(a8, false) ;
+//        one(a9, false) ;
 //        System.out.println("====") ;
+//        System.exit(0) ;
         
-        Op op1 = SSE.parseOp("(join (bgp (?s ?p _:a)) (bgp (?s ?p ?o)) )") ;
-        Op op2 = SSE.parseOp("(union (bgp (?s ?p _:Z)) (bgp (?s ?p ?o)) )") ;
+        Op op1 = SSE.parseOp("(filter ?x (filter ?o (bgp (?s ?p _:a)) ) )") ;
+        Op op2 = SSE.parseOp("(filter (&& ?o ?x) (bgp (?s ?p _:a)) )") ;
+        
         if ( ! op1.equals(op2) )
         {
             System.out.println("**** Different") ;
@@ -84,10 +113,30 @@ public class OpToSyntax
         }
         else
             System.out.println("Same") ;
-            
         
         System.out.print(asQuery(op1)) ;
+
+        checkOp("(join (bgp (?s ?p _:a)) (bgp (?s ?p ?o)) )") ;
+    }
+
+    public static void checkOp(String str)
+    {
+        check(SSE.parseOp(str)) ;
+    }
+    
+    public static void check(Op op)
+    {
+        Query query = asQuery(op) ;
+        Op op2 = Algebra.compile(query) ;
         
+        if ( ! op.equals(op2) )
+        {
+            System.out.println("**** Different algebra expressions after converting to syntax and back") ;
+            System.out.print(op) ;
+            System.out.print(query) ;
+            System.out.print(op2) ;
+            System.out.println("------------") ;
+        }
     }
     
     public static void one(String[] a, boolean verbose)
@@ -95,7 +144,10 @@ public class OpToSyntax
         String qs = StringUtils.join("\n", a) ;
         
         Query query = QueryFactory.create(qs) ;
+        
         Op op = Algebra.compile(query) ;
+        
+        // Check the query.
         if ( verbose )
         {
             System.out.print(op) ;
@@ -120,6 +172,10 @@ public class OpToSyntax
         }
         else if ( verbose )
             System.out.println("------------") ;
+        
+        
+        // Check the Op.
+        check(op) ;
         
 
     }
@@ -193,10 +249,19 @@ public class OpToSyntax
 
         public void visit(OpJoin opJoin)
         {
+            // XXX Amalgamate adjacent BGPs? No bnodes variables by now.
+            
             // start/stop subgroups - no - joins are linear groups.
             // Have option to explicitly {} sub elements.
+            
+            // Keep things clearly separated.
             Element eLeft = asElement(opJoin.getLeft()) ;
-            Element eRight = asElement(opJoin.getRight()) ;
+            Element eRight = asElementGroup(opJoin.getRight()) ;
+            
+//            // Allow adjacent BGPs to merge
+//            Element eLeft = asElement(opJoin.getLeft()) ;
+//            Element eRight = asElement(opJoin.getRight()) ;
+            
             
             ElementGroup g = currentGroup() ;
             g.addElement(eLeft) ;

@@ -40,7 +40,7 @@ public class OpGraph extends Op1
         OpGraph opGraph = (OpGraph)other ;
         if ( ! ( node.equals(opGraph.node) ) )
             return false ;
-        return getSubOp().equalTo(opGraph, labelMap) ;
+        return getSubOp().equalTo(opGraph.getSubOp(), labelMap) ;
     }
 }
 

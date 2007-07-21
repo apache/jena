@@ -55,7 +55,6 @@ public class BuilderExpr
                     return buildItem(item) ;
                 }
                 
-                
                 return buildKnownFunction(list) ;                
             }
             throw new ARQInternalErrorException() ;
