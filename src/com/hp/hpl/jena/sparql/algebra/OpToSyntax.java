@@ -31,6 +31,30 @@ public class OpToSyntax
 {
     public static void main(String[] argv)
     {
+        Op op1 = SSE.parseOp("(filter ?x (filter ?o (bgp (?s ?p _:a)) ) )") ;
+        // Not canonicalized: two nested filters.
+        Op op2 = SSE.parseOp("(filter (&& ?o ?x) (bgp (?s ?p _:a)) )") ;
+        // Not canonicalized: Expression list, length 1, (&& ?o ?x)
+        
+        // Canonical:one filter, Expression list, length 2, ?o ?x
+        
+        if ( ! op1.equals(op2) )
+        {
+            System.out.println("**** Different") ;
+            System.out.print(op1) ;
+            System.out.print(op2) ;
+            System.out.println("------------") ;
+        }
+        else
+            System.out.println("Same") ;
+        
+        // Non-canonical: { { .. FILTER } FILTER }
+        System.out.print(asQuery(op1)) ;
+        System.out.print(asQuery(op2)) ;
+
+        System.out.println("------------") ;
+        System.exit(0) ;
+        
         String [] a1 = new String[]{
             "PREFIX : <http://example/>",
             "SELECT ?o",
@@ -101,20 +125,6 @@ public class OpToSyntax
 //        System.out.println("====") ;
 //        System.exit(0) ;
         
-        Op op1 = SSE.parseOp("(filter ?x (filter ?o (bgp (?s ?p _:a)) ) )") ;
-        Op op2 = SSE.parseOp("(filter (&& ?o ?x) (bgp (?s ?p _:a)) )") ;
-        
-        if ( ! op1.equals(op2) )
-        {
-            System.out.println("**** Different") ;
-            System.out.print(op1) ;
-            System.out.print(op2) ;
-            System.out.println("------------") ;
-        }
-        else
-            System.out.println("Same") ;
-        
-        System.out.print(asQuery(op1)) ;
 
         checkOp("(join (bgp (?s ?p _:a)) (bgp (?s ?p ?o)) )") ;
     }
@@ -308,6 +318,9 @@ public class OpToSyntax
 
         public void visit(OpFilter opFilter)
         {
+            // XXX
+            // (filter .. (filter ( ... ))   (non-canonicalizing OpFilters)
+            // Inner gets Grouped unnecessarily. 
             Element e = asElement(opFilter.getSubOp()) ;
             if ( currentGroup() != e )
                 currentGroup().addElement(e) ;

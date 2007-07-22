@@ -18,18 +18,30 @@ import com.hp.hpl.jena.sparql.util.LabelMap;
 
 public class OpFilter extends Op1
 {
+    // Canonicalization turns "&&" into multiple expr lists items
+    // 
+    private static boolean canonicalize = false ;
     ExprList expressions ;
     
     public static OpFilter filter(Expr expr, Op op)
     {
-        ExprList x = asExprList(expr) ;
         if ( op instanceof OpFilter )
         {
             OpFilter f = (OpFilter)op ;
-            f.getExprs().addAll(x) ;
+            f.getExprs().add(expr) ;
             return f ;
         }
-        return new OpFilter(x, op) ;
+        ExprList exprList = asExprList(expr) ;
+        return new OpFilter(exprList, op) ;
+        
+//        ExprList x = asExprList(expr) ;
+//        if ( /*canonicalize &&*/ ( op instanceof OpFilter ) )
+//        {
+//            OpFilter f = (OpFilter)op ;
+//            f.getExprs().addAll(x) ;
+//            return f ;
+//        }
+//        return new OpFilter(x, op) ;
     }
     
     public static OpFilter filter(ExprList exprs, Op op)
@@ -47,20 +59,36 @@ public class OpFilter extends Op1
     private static ExprList asExprList(Expr expr)
     {
         ExprList exprList = new ExprList() ;
-        // Explode &&-chain to exprlist.
-        while ( expr instanceof E_LogicalAnd )
-        {
-            E_LogicalAnd x = (E_LogicalAnd)expr ;
-            Expr left = x.getArg1() ;
-            Expr right = x.getArg2() ;
-            exprList.add(left) ;
-            expr = right ;
-        }
-        // Add remaining
-        exprList.add(expr) ;
+        mergeExprList(exprList, expr) ;
         return exprList ;
     }
     
+    private static void mergeExprList(ExprList exprList, Expr expr)
+    {
+        if ( canonicalize )
+        {
+            // Explode &&-chain to exprlist.
+            while ( expr instanceof E_LogicalAnd )
+            {
+                E_LogicalAnd x = (E_LogicalAnd)expr ;
+                Expr left = x.getArg1() ;
+                Expr right = x.getArg2() ;
+                mergeExprList(exprList, left) ;
+                expr = right ;
+            }
+            // Drop through and add remaining
+        }
+        exprList.add(expr) ;
+    }
+    
+    private OpFilter(Expr expr , Op sub)
+    { 
+        super(sub) ;
+        expressions = new ExprList() ;
+        expressions.add(expr) ;
+    }
+    
+
     private OpFilter(ExprList exprs , Op sub)
     { 
         super(sub) ;

@@ -109,7 +109,7 @@ public class ParseHandlerResolver implements ParseHandler
     {
         --depth ;
         // At end of a list,
-        // If it's the current (prefix ...) or (base ...)
+        // If it's the current stack front, i.e. (prefix ...) or (base ...)
         //   pop the stack and return the inner form instead. 
         if ( frameStack.isCurrent(listItem) )
         {
@@ -137,7 +137,7 @@ public class ParseHandlerResolver implements ParseHandler
         {
             if ( elt.isWordIgnoreCase(prefixTag) || elt.isWordIgnoreCase(baseTag))
             {
-                // It's  (prefix ...) or (base...), not inside the delaration of an outer prefix/base
+                // It's  (prefix ...) or (base...), not inside the declaration of an outer prefix/base
                 // For base, leave processing of qnames on.
                 if ( elt.isWordIgnoreCase(prefixTag) )
                     inDecl = true ;
@@ -181,6 +181,7 @@ public class ParseHandlerResolver implements ParseHandler
             return ;
         }
 
+        // ??
         // (prefix (DECLS) TERM)
         // (base <IRI> TERM)
         if ( list.size() == 3 )

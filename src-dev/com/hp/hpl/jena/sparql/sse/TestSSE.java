@@ -139,6 +139,18 @@ public class TestSSE extends TestCase
     public void testMisc_10()    { testNotEquals("(a)", "a") ; }
     public void testMisc_11()    { testNotEquals("(a)", "()") ; }
     public void testMisc_12()    { testNotEquals("(a)", "(<a>)") ; }
+    
+    public void testBase_01()
+    { 
+        Item r = Item.createNode(Node.createURI("http://example/x")) ; 
+        testItem("(base <http://example/> <x>)", r) ;
+    }
+    
+    public void testPrefix_01()
+    { 
+        Item r = Item.createNode(Node.createURI("http://example/abc")) ;
+        testItem("(prefix ((ex: <http://example/>)) ex:abc)", r);
+    }
 
     // ---- Workers ----
     
@@ -200,6 +212,13 @@ public class TestSSE extends TestCase
         assertEquals(item.getList().get(1), item2) ;
         assertEquals(item.getList().get(2), item3) ;
     }
+    
+    private void testItem(String str, Item result)
+    {
+        Item item = parse(str) ;
+        assertEquals(result, item) ;
+    }
+    
 
     private void testNode(String str)
     {

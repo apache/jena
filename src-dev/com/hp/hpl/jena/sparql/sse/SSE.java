@@ -77,7 +77,7 @@ public class SSE
     public static Expr parseExpr(String s, PrefixMapping pmap)
     { 
         Item item = parse(s, pmap) ;
-        return BuilderExpr.build(item) ;
+        return BuilderExpr.buildExpr(item) ;
     }
     
     public static Graph readGraph(String filename) { return readGraph(filename, null) ; }

@@ -11,16 +11,17 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.QueryFactory;
-import com.hp.hpl.jena.query.QueryParseException;
 import com.hp.hpl.jena.shared.PrefixMapping;
+
 import com.hp.hpl.jena.sparql.ARQConstants;
-import com.hp.hpl.jena.sparql.ARQInternalErrorException;
 import com.hp.hpl.jena.sparql.expr.*;
 import com.hp.hpl.jena.sparql.lang.sparql.*;
 import com.hp.hpl.jena.sparql.serializer.FmtExprARQ;
 import com.hp.hpl.jena.sparql.serializer.FmtExprPrefix;
+
+import com.hp.hpl.jena.query.Query;
+import com.hp.hpl.jena.query.QueryFactory;
+import com.hp.hpl.jena.query.QueryParseException;
 
 
 /** Misc support for Expr
@@ -159,13 +160,6 @@ public class ExprUtils
         return buff.toString() ; 
     }
     
-    private static PrintUtils.Fmt fmtARQ = new PrintUtils.Fmt()
-    {
-        public String fmt(Object thing)
-        {
-            return null ;
-        }} ;
-    
     public static void fmtSPARQL(IndentedWriter iOut, ExprList exprs, PrefixMapping pmap)
     {
         ExprVisitor v = new FmtExprARQ(iOut, pmap) ;
@@ -193,30 +187,50 @@ public class ExprUtils
 
     public static void fmtPrefix(IndentedWriter iOut, ExprList exprs, PrefixMapping pmap)
     {
-        fmtPrefix(iOut, exprs, 0, pmap ) ;
-    }
-    
-    
-    private static void fmtPrefix(IndentedWriter iOut, ExprList exprs, int i, PrefixMapping pmap)
-    {
         ExprVisitor v = new FmtExprPrefix(iOut, pmap) ;
         
-        if ( exprs.size() <= i )
-            throw new ARQInternalErrorException("ExprList too short (Size:"+exprs.size()+"<="+i+")") ;
-        
-        if ( exprs.size() == (i+1) )
-        { 
-            // End.  Just the last expression.
-            exprs.get(i).visit(v) ;
+        if ( exprs.size() == 0 )
+        {
+            iOut.print("()") ;
             return ;
         }
         
-        iOut.print("(&& ") ;
-        exprs.get(i).visit(v) ;
-        iOut.print(" ") ;
-        fmtPrefix(iOut, exprs, i+1, pmap) ;
+        if ( exprs.size() == 1 )
+        {
+            exprs.get(0).visit(v) ;
+            return ;
+        }
+        
+        iOut.print("(exprlist") ;
+        for ( int i = 0 ; i < exprs.size() ;  i++ )
+        {
+            iOut.print(" ") ;
+            exprs.get(i).visit(v)  ;
+        }
         iOut.print(")") ;
     }
+    
+    
+//    private static void fmtPrefixAsLogAnd(IndentedWriter iOut, ExprList exprs, int i, PrefixMapping pmap)
+//    {
+//        ExprVisitor v = new FmtExprPrefix(iOut, pmap) ;
+//        
+//        if ( exprs.size() <= i )
+//            throw new ARQInternalErrorException("ExprList too short (Size:"+exprs.size()+"<="+i+")") ;
+//        
+//        if ( exprs.size() == (i+1) )
+//        { 
+//            // End.  Just the last expression.
+//            exprs.get(i).visit(v) ;
+//            return ;
+//        }
+//        
+//        iOut.print("(&& ") ;
+//        exprs.get(i).visit(v) ;
+//        iOut.print(" ") ;
+//        fmtPrefix(iOut, exprs, i+1, pmap) ;
+//        iOut.print(")") ;
+//    }
         
     public static void fmtPrefix(IndentedWriter iOut, ExprList exprs)
     {

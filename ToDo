@@ -9,6 +9,10 @@
 + QueryIterRoot is not used by engine main beause it calcs the root bindign (may be startBinding)
   remove QueryIterRoot and just use BindingRoot. 
 + OpService
++ OpOrder totake an ExprList
++ ExprList writing an LJ
+  Nested prefixes don't work?
++TestSSE - done, TestSSEprefix - not done.
 
 + Aggregates: QueryIterGroup
   Parsing : 

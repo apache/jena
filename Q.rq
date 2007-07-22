@@ -1,6 +1,7 @@
-PREFIX  jext:    <java:arq.examples.propertyfunction.>
 
-SELECT ?x 
+SELECT DISTINCT ?x
 {
-    ?x jext:labelSearch "zzz" .
+    ?s ?p ?x .
+    FILTER(?x) .
+    FILTER(?y) .
 }

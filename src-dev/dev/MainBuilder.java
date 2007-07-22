@@ -9,24 +9,26 @@ package dev;
 import java.io.FileInputStream;
 import java.io.InputStream;
 
+import com.hp.hpl.jena.util.FileUtils;
 
-import com.hp.hpl.jena.shared.PrefixMapping;
-import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.expr.Expr;
 import com.hp.hpl.jena.sparql.sse.Item;
-import com.hp.hpl.jena.sparql.sse.SSE;
 import com.hp.hpl.jena.sparql.sse.ItemWriter;
+import com.hp.hpl.jena.sparql.sse.SSE;
 import com.hp.hpl.jena.sparql.sse.builders.BuilderExpr;
 import com.hp.hpl.jena.sparql.sse.builders.BuilderOp;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
-import com.hp.hpl.jena.util.FileUtils;
 
 public class MainBuilder
 {
     public static void main(String[] argv)
     {
-        mainExpr(argv) ;
+        Item item = SSE.parse("(prefix ((: <http://example/>)) nil))") ;
+        System.out.println(item) ;
+        System.exit(0) ;
+        
+        //mainExpr(argv) ;
         //System.out.println() ;
         mainOp(argv) ;
         //mainTable(argv) ;
@@ -45,7 +47,7 @@ public class MainBuilder
                 System.out.println() ;
             }
             
-            Expr expr = BuilderExpr.build(item) ;
+            Expr expr = BuilderExpr.buildExpr(item) ;
             System.out.println(expr) ;
             System.out.println() ;
         } catch (Exception ex)
@@ -71,9 +73,10 @@ public class MainBuilder
             }
 
             InputStream in = new FileInputStream("SSE/op.sse") ;
-            PrefixMapping pmap = new PrefixMappingImpl() ;
-            pmap.setNsPrefix("", "http://example/") ;
-            Item item = SSE.parse(in, pmap) ;
+//            PrefixMapping pmap = new PrefixMappingImpl() ;
+//            pmap.setNsPrefix("", "http://example/") ;
+//            Item item = SSE.parse(in, pmap) ;
+            Item item = SSE.parse(in) ;
 
             if ( true )
             {

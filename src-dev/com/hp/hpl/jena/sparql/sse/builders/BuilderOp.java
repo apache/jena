@@ -77,7 +77,7 @@ public class BuilderOp
     
     public static Expr buildExpr(Item item)
     {
-        return BuilderExpr.build(item) ;
+        return BuilderExpr.buildExpr(item) ;
     }
 
     public static List buildExpr(ItemList list, int start)
@@ -197,12 +197,22 @@ public class BuilderOp
             Item itemOp = list.get(2) ;
 
             Op op = build(itemOp.getList()) ;
+            ExprList exprList = BuilderExpr.buildExprOrExprList(itemExpr) ;
+            return OpFilter.filter(exprList, op) ;
 
-            if ( itemExpr.isList() && itemExpr.getList().size() == 0 )
-                return OpFilter.filter(new ExprList(), op) ;
-            
-            Expr expr = buildExpr(itemExpr) ;
-            return OpFilter.filter(expr, op) ;
+//            // No filter
+//            if ( itemExpr.isList() ) 
+//            {
+//                if (itemExpr.getList().size() == 0 )
+//                    return OpFilter.filter(new ExprList(), op) ;
+//                // Maybe an exprlist
+//                if ( itemExpr.isTagged(BuilderExpr.symExprList) )
+//                {}
+//            }
+//            
+//            
+//            Expr expr = buildExpr(itemExpr) ;
+//            return OpFilter.filter(expr, op) ;
         }
     } ;
 

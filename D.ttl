@@ -3,7 +3,7 @@
 
 :x1 rdfs:label "a"  .
 :x2 rdfs:label "z" .
-:x3 rdfs:label "aaaZZZbbb" .
+:x3 rdfs:label "a" .
 :x4 rdfs:label "zzz" .
 
-:y1 :p "zzz" .
+:y1 :p "a" .
