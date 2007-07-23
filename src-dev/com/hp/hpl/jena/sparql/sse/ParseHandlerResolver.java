@@ -130,7 +130,7 @@ public class ParseHandlerResolver implements ParseHandler
             Frame f = frameStack.pop() ;
             prefixMap = f.prefixMap ;
             resolver = f.resolver ;
-            item = f.result ;
+            item = f.result ;  
             if ( item == null )
                 item = Item.createNil(list.line, list.column) ;
             
@@ -155,24 +155,23 @@ public class ParseHandlerResolver implements ParseHandler
             setCurrentItem(item) ;
             return ;
         }
-            
         
         ItemList list = listStack.getCurrent() ;
         // Always add to the current list, even for (base...) and (prefix...)
-        // They change the result list later.
+        // Then change the result list later.
         list.add(item) ;
         setCurrentItem(item) ;
 
-        if ( list.size() > 2 )
+        if ( list.size() > 2 && ( list.get(0).isWord(baseTag) || list.get(0).isWord(prefixTag) ) )
         {
             // Was it a (prefix...) or (base..)
             // Is it too long?
             // The list and frame stacks have not been pop'ed yet
-            if ( list.get(0).isWord(baseTag) || list.get(0).isWord(prefixTag) )
-            {
-                if ( list.size() > 3 )
-                    throwException("List too long for (base...) or (prefix...) body", item.getLine(), item.getColumn()) ;
-            }
+            if ( list.size() > 3 )
+                throwException("List too long for (base...) or (prefix...) body", item.getLine(), item.getColumn()) ;
+            else
+                // Result is this item, the 3rd in (base...) or (prefix...)
+                frameStack.getCurrent().result = item ;
         }
         
         
@@ -180,10 +179,9 @@ public class ParseHandlerResolver implements ParseHandler
         // a structure with prefixes as "special" words.
         // We parse that anbd continue.
         
-        
-        if ( inPrefixDecl )
+        // End of declaration
+        if ( list.size() == 2 && list.get(0).isWord(prefixTag) )
         {
-            // We're at the start of the decl block.
             PrefixMapping newMappings = BuilderPrefixMapping.build(item) ; 
             PrefixMapping2 ext = new PrefixMapping2(prefixMap, newMappings) ;
             // Remember first prefix mapping seen. 
@@ -191,8 +189,10 @@ public class ParseHandlerResolver implements ParseHandler
                 topMap = newMappings ;
             Frame f = new Frame(listStack.getCurrent(), ext, resolver) ;
             frameStack.push(f) ;
+            prefixMap = ext ;
             // End of prefix declaration handled in listFinish. 
             // List length is checked on next add's
+            inPrefixDecl = false ;
             return ;
         }
         
@@ -204,15 +204,18 @@ public class ParseHandlerResolver implements ParseHandler
             if ( ! item.getNode().isURI() )
                 throwException("(base ...): not an IRI for the base.", item.getLine(), item.getColumn()) ;
             String baseIRI = item.getNode().getURI() ;
-            resolver = new IRIResolver(baseIRI) ;
             if ( topBase == null )
                 topBase = baseIRI ; 
-            inBaseDecl = false ;
+            Frame f = new Frame(listStack.getCurrent(), prefixMap, resolver) ;
+            resolver = new IRIResolver(baseIRI) ;
+            frameStack.push(f) ;
             // List length is checked on next add's
+            inBaseDecl = false ;
+            return ;
         }
 
         // Start of declaration?
-        if ( list.size() == 0 )
+        if ( list.size() == 1 )
         {
             if ( item.isWord(baseTag) )
             {

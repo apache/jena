@@ -172,6 +172,8 @@ public class SSE
         SSE_Parser p = new SSE_Parser(reader) ;
         ParseHandlerResolver r = new ParseHandlerResolver(pmap) ;
         p.setHandler(r) ;
+        if ( false ) // Debug
+            p.setHandler(new ParseHandler2(new ParseHandlerDebug(), r)) ;
         try
         {
             p.term() ;
@@ -200,6 +202,8 @@ public class SSE
         SSE_Parser p = new SSE_Parser(reader) ;
         ParseHandlerResolver r = new ParseHandlerResolver(pmap) ;
         p.setHandler(r) ;
+        if ( false ) // Debug
+            p.setHandler(new ParseHandler2(new ParseHandlerDebug(), r)) ;
         try
         {
             //p.setHandler(null) ;

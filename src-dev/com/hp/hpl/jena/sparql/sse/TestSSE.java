@@ -140,11 +140,51 @@ public class TestSSE extends TestCase
     public void testMisc_11()    { testNotEquals("(a)", "()") ; }
     public void testMisc_12()    { testNotEquals("(a)", "(<a>)") ; }
     
+    // ----
+    
     public void testBase_01()
     { 
         Item r = Item.createNode(Node.createURI("http://example/x")) ; 
         testItem("(base <http://example/> <x>)", r) ;
     }
+    
+    public void testBase_02()
+    { 
+        Item r = Item.createNode(Node.createURI("http://example/x")) ; 
+        testItem("(base <http://HOST/> (base <http://example/xyz> <x>))", r) ;
+    }
+
+    public void testBase_03()
+    { 
+        Item r = SSE.parse("(1 <http://example/xyz>)", null) ;
+        testItem("(base <http://example/> (1 <xyz>))", r) ;
+    }
+    
+    public void testBase_04()
+    { 
+        Item r = SSE.parse("(1 <http://example/xyz>)", null) ;
+        testItem("(1 (base <http://example/> <xyz>))", r) ;
+    }
+    
+    public void testBase_05()
+    { 
+        Item r = SSE.parse("(<http://example/xyz> <http://EXAMPLE/other#foo>)", null) ;
+        testItem("((base <http://example/> <xyz>) (base <http://EXAMPLE/other> <#foo>))", r) ;
+    }
+    
+    public void testBase_06()
+    { 
+        Item r = SSE.parse("(<http://example/xyz> <http://EXAMPLE/other#foo>)", null) ;
+        testItem("(base <http://example/> (<xyz> (base <http://EXAMPLE/other> <#foo>)))", r) ;
+    }
+
+    public void testBase_07()
+    { 
+        Item r = SSE.parse("(<http://example/xyz> <http://EXAMPLE/other#foo>)", null) ;
+        testItem("(base <http://EXAMPLE/other#> ((base <http://example/> <xyz>) <#foo>))", r) ;
+    }
+    
+    // ----
     
     public void testPrefix_01()
     { 
@@ -152,6 +192,38 @@ public class TestSSE extends TestCase
         testItem("(prefix ((ex: <http://example/>)) ex:abc)", r);
     }
 
+    public void testPrefix_02()
+    { 
+        Item r = Item.createNode(Node.createURI("http://EXAMPLE/abc")) ;
+        testItem("(prefix ((ex: <http://example/>)) (prefix ((ex: <http://EXAMPLE/>)) ex:abc))", r);
+    }
+    
+    public void testPrefix_03()
+    { 
+        Item r = SSE.parse("(<http://example/abc>)" , null) ;
+        testItem("(prefix ((ex: <http://example/>)) (ex:abc))", r);
+    }
+    
+    public void testPrefix_04()
+    { 
+        Item r = SSE.parse("(<http://EXAMPLE/abc>)" , null) ;
+        testItem("(prefix ((ex: <http://example/>)) ( (prefix ((ex: <http://EXAMPLE/>)) ex:abc) ))", r);
+    }
+    
+    public void testPrefix_05()
+    { 
+        Item r = SSE.parse("(<http://example/abc>)" , null) ;
+        testItem("(prefix ((ex: <http://example/>)) ( (prefix ((x: <http://EXAMPLE/>)) ex:abc) ))", r);
+    }
+    
+    // ----
+
+    public void testBasePrefix_01()
+    { 
+        Item r = SSE.parse("<http://example/abc>" , null) ;
+        testItem("(base <http://example/> (prefix ((x: <>)) x:abc) )", r);
+    }
+    
     // ---- Workers ----
     
     private void testEquals(String x)

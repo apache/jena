@@ -31,10 +31,19 @@ public class ParseHandlerDebug implements ParseHandler
     { System.out.println(">>>>") ; }
 
     public void listStart(int line, int column)
-    { count++ ; }
+    { 
+        start(line, column) ;
+        count++ ;
+        System.out.println("(") ;
+    }
 
     public void listFinish(int line, int column)
-    { count-- ; }
+    {
+        count-- ;         
+        start(line, column) ;
+        System.out.println(")") ;
+    }
+
 
 
     public void emitBNode(int line, int column, String label)

@@ -24,7 +24,16 @@ public class MainBuilder
 {
     public static void main(String[] argv)
     {
-        Item item = SSE.parse("<x>"); //(prefix ((: <http://example/>)) nil))") ;
+        // More tests.
+        
+        //Item item = SSE.parse("(base <http://example/> <y>)");
+        //Item item = SSE.parse("(prefix ((: <http://example/>)) :foo)") ;
+        //Item item = SSE.parse("(prefix ((: <http://example/>)) 123)") ;
+        
+        //Item item = SSE.parse("(prefix ((: <http://example/>)) (base <http://example/> <#foo>)) ") ;
+        
+        Item item = SSE.parse("(base <http://HOST/other#> ((base <http://example/> <xyz>) <#foo>))") ;
+        
         System.out.println(item) ;
         System.exit(0) ;
         
