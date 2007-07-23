@@ -21,9 +21,7 @@ PARSER_BEGIN(SSE_Parser)
 
 package com.hp.hpl.jena.sparql.sse.parser ;
 
-import com.hp.hpl.jena.sparql.sse.* ;
-import com.hp.hpl.jena.graph.* ;
-import com.hp.hpl.jena.sparql.core.Var;   
+import com.hp.hpl.jena.sparql.sse.ParserSSEBase ;
     
 
 public class SSE_Parser extends ParserSSEBase
@@ -35,201 +33,160 @@ PARSER_END(SSE_Parser)
 // Now has explicit WS control in the grammar.
 // Policy - eat trailing WS
 
-// ---- Entry points
+// ---- Entry points : check for EOF.
 
-Item parse() : { Item elt ; }
+void parse() : { }
 {
     { parseStart() ; }
     (<WS>)*
-    elt = TermOrList()
+    TermOrList()
     <EOF>
     { parseFinish() ; }
-    { return elt ; }
-
 }
 
-Item term() : { Item elt ; }
+void term() : { }
 {
     { parseStart() ; }
-    elt = Term()
+    Term()
     <EOF>
     { parseFinish() ; }
-    { return elt ; }
 }
 
-// Node node() : { Node n ; }
-// {
-//     n = GraphTerm()
-//     <EOF>
-//     { return n ; }
-// }
-// 
-// String word() : { String str ; Token t ; }
-// {
-//     ( t = <WORD> | t = <OP> )
-//     <EOF>
-//     { return t.image ; }
-// }
+// ----
 
-// ---- 
+void TermOrList() : { }
+{
+  ( Term() (<WS>)* |  List() )
+}
 
-Item List() : { Token t ; Item list ; }
+void List() : { Token t ; }
 {
     // The OP token must exclude these
-(    t = <LPAREN> 
+  ( t = <LPAREN> 
     (<WS>)*
-    { list = Item.createList(t.beginLine, t.beginColumn) ;
-      listStart(list) ; 
-    }
-    BareList(list) 
-    <RPAREN>
- |  t = <LBRACKET> 
+    { listStart(t.beginLine, t.beginColumn) ; }
+    BareList() 
+    t = <RPAREN>
     (<WS>)*
-    { list = Item.createList(t.beginLine, t.beginColumn) ;
-      listStart(list) ;
-    }
-    BareList(list)
-    <RBRACKET>
-)
+    { listFinish(t.beginLine, t.beginColumn) ; }
+
+  | t = <LBRACKET> 
     (<WS>)*
-    { return listFinish(list) ; }
+    { listStart(t.beginLine, t.beginColumn) ; }
+    BareList() 
+    t = <RPAREN>
+    (<WS>)*
+    t = <RBRACKET>
+  )
 }
 
-void BareList(Item list) : { Item elt ; }
+void BareList() : { }
 {
-    ( 
-      elt = TermOrList()
-      { listAdd(list, elt) ; }
-      // White space swallowed
-    )*
+  ( 
+     TermOrList()
+     // White space swallowed
+  )*
 }
 
-Item Term() : { Token t ; Node node ; Item item ; }
+void Term() : { Token t ; }
+{
+    Symbol()
+  |
+    IRIref()
+  |
+    PrefixedName()
+  | 
+    Var()
+  |
+    Literal()
+}
+
+
+void Symbol() : { Token t ; }
 {
   ( t = <WORD> | t = <OP> )
-    { item = Item.createWord(t.image, t.beginLine, t.beginColumn) ;
-      item = itemWord(item) ;
-      return item ;
-    }
- | node = GraphTerm()
-    // Not quite right for line/col - this is the last token
-    { item = Item.createNode(node, token.beginLine, token.beginColumn) ;
-      item = itemNode(item) ;
-      return item ;
-    }
+    { emitSymbol(t.beginLine, t.beginColumn, t.image) ; }
 }
 
-Item TermOrList() : { Item item ; }
+void IRIref() : { Token t ; }
 {
-  ( item = Term() (<WS>)* |  item = List() )
-  { return item ; }
-    
+  t = <IRIref>
+    { emitIRI(t.beginLine, t.beginColumn, stripQuotes(t.image)) ; } 
 }
 
-
-// Abstract terminals (wrapped in grammar rules)
-
-Node GraphTerm() : { Node n ; String iri ; }
+void PrefixedName() : { Token t ; }
 {
-  iri = IRIref()        { return createNode(iri) ; }
-| n = Var()             { return n ; }
-| n = RDFLiteral()      { return n ; }
-| n = NumericLiteral()  { return n ; }
-// | n = BooleanLiteral()  { return n ; }
-| n = BlankNode()       { return n ; }   
-
-//| //  <LPAREN> <RPAREN>     { return nRDFnil ; }
-//  <NIL>  { return nRDFnil ; }
+  t = <PNAME>
+    { emitPName(t.beginLine, t.beginColumn, t.image) ; }
 }
 
-
-Node Var() : { Token t ; Var v ; }
+void Var() : { Token t ; }
 {
-  ( t = <VAR1> | t = <VAR2> )
-  { return createVariable(t.image, t.beginLine, t.beginColumn) ; }
-|
-  t = <HOOK>
-  { return createVariable() ; }
+  // Includes "?" as a variable for anon variables.
+  ( t = <VAR1> | t = <VAR2> | t = <HOOK> )
+  { emitVar(t.beginLine, t.beginColumn, stripChars(t.image, 1)) ; }
 }
 
-Node RDFLiteral() : { Token t ; String lex = null ; String dt = null ; }
+void Literal() : { }
 {
-  lex = String()
-  { token_source.SwitchTo(LITERAL) ; }
-  // Optional lang tag and datatype.
-  { String lang = null ; Node uri = null ; String qname = null ; }
-  (
-    ( t = <LANGTAG>  { lang = stripChars(t.image, 1) ; } )
-  |
-    <DATATYPE> 
-    { token_source.SwitchTo(DEFAULT) ; }
-    dt = IRIref()
-  )?
-    { token_source.SwitchTo(DEFAULT) ; }
-    { return createLiteral(lex, lang, dt) ; }
-} 
-
-Node NumericLiteral() : { Token t ; }
-{
-  t = <INTEGER> { return createLiteralInteger(t.image) ; }
-| t = <DECIMAL> { return createLiteralDecimal(t.image) ; }
-| t = <DOUBLE>  { return createLiteralDouble(t.image) ; }
+ ( RDFLiteral()
+ | NumericLiteral()
+// | BooleanLiteral() // Do as a symbol.
+ )
 }
 
-// Node BooleanLiteral() : {}
-// {
-//   <TRUE> { return XSD_TRUE ; }
-//  |
-//   <FALSE> { return XSD_FALSE ; }
-// }
+void BlankNode() : { Token t ; }
+{
+  t = <BLANK_NODE_LABEL>
+    { emitBNode(t.beginLine, t.beginColumn, t.image) ; }  
+//|
+//  t = <LBRACKET> <RBRACKET> { return emitBNode(t.beginLine, t.beginColumn) ; }
+//  t = <ANON> { return emitBNode(t.beginLine, t.beginColumn) ; }
+}
 
-
-
-String String() : { Token t ; String lex ; }
+void RDFLiteral() : { Token t = null ; int currLine ; int currColumn ;
+                      String lex ; String lang = null ;
+                      String dt_iri = null ; String dt_pn = null ; }
 {
   ( t = <STRING_LITERAL1> { lex = stripQuotes(t.image) ; }
   | t = <STRING_LITERAL2> { lex = stripQuotes(t.image) ; }
   | t = <STRING_LITERAL_LONG1> { lex = stripQuotes3(t.image) ; }
   | t = <STRING_LITERAL_LONG2> { lex = stripQuotes3(t.image) ; }
   )
-    {
-      lex = unescapeStr(lex,  t.beginLine, t.beginColumn) ;
-      return lex ;
-    }
-}
+  { currLine = t.beginLine ; currColumn = t.beginColumn ; }
+  { token_source.SwitchTo(LITERAL) ; }
 
-String IRIref() : { String iri ; }
-{
-  iri = IRI_REF() { return iri ; }
-|
-  iri = PrefixedName() { return iri ; }
-}
-
-String PrefixedName() : { Token t ; }
-{
-  ( t = <PNAME_LN>
-    { return resolvePName(t.image, t.beginLine, t.beginColumn) ; }
+  // Optional lang tag and datatype.
+  (
+     t = <LANGTAG> { lang = stripChars(t.image, 1) ; }
+      { token_source.SwitchTo(DEFAULT) ; }
   |
-    t = <PNAME_NS>
-    { return resolvePName(t.image, t.beginLine, t.beginColumn) ; }
-  )
-}
+    <DATATYPE> 
+    { token_source.SwitchTo(DEFAULT) ; }
+    ( t = <IRIref> { dt_iri  = stripQuotes(t.image) ; }
+    | t = <PNAME>  { dt_pn = t.image ; }
+    )
+  )?
+  { emitLiteral(currLine, currColumn, lex, lang, dt_iri, dt_pn) ; }
+} 
 
-Node BlankNode() :  { Token t = null ; }
+void NumericLiteral() : { Token t ; }
 {
-  t = <BLANK_NODE_LABEL>
-    { return createBNode(t.image, t.beginLine, t.beginColumn) ; }  
-//|
-//  <LBRACKET> <RBRACKET> { return createBNode() ; }
-//  <ANON> { return createBNode() ; }
-
+  t = <INTEGER>
+   { emitLiteralInteger(t.beginLine, t.beginColumn, t.image) ; }
+| t = <DECIMAL>
+   { emitLiteralDecimal(t.beginLine, t.beginColumn, t.image) ; }
+| t = <DOUBLE>
+   { emitLiteralDouble(t.beginLine, t.beginColumn, t.image) ; }
 }
 
-String IRI_REF() : { Token t ; }
-{
-  t = <IRIref>
-  { return resolveQuotedIRI(t.image, t.beginLine, t.beginColumn) ; }
-}
+// Symbol!
+// Node BooleanLiteral() : {}
+// {
+//   <TRUE> { return XSD_TRUE ; }
+//  |
+//   <FALSE> { return XSD_FALSE ; }
+// }
 
 // No whitespace skipping.
 #undef SKIP

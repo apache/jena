@@ -11,16 +11,17 @@ public interface ParseHandler
     public void parseStart() ;
     public void parseFinish() ;
     
-    public String resolvePName(String pname) ;
-    public String resolveIRI(String iri) ;
+    public void emitIRI(int line, int column, String iriStr) ;
+    public void emitBNode(int line, int column, String label) ;
+    public void emitLiteral(int line, int column, String lex, String lang, String datatype_iri, String datatype_pn) ;
+    public void emitVar(int line, int column, String varName) ;
     
-    public void listStart(Item list) ;
-    public Item listFinish(Item list) ;
+    // Need both?  Yes - for more detailed pname parsing.   123:xyz is not a prefixed name.
+    public void emitPName(int line, int column, String pname) ;
+    public void emitSymbol(int line, int column, String symbol) ;
     
-    public void listAdd(Item list, Item elt) ;
-    
-    public Item itemWord(Item item) ;
-    public Item itemNode(Item item) ;
+    public void listStart(int line, int column) ;
+    public void listFinish(int line, int column) ;
 }
 
 /*

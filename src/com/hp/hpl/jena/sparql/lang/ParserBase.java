@@ -513,7 +513,7 @@ public class ParserBase
         return x ;
     }
     
-    protected void throwParseException(String msg, int line, int column)
+    public static void throwParseException(String msg, int line, int column)
     {
         throw new QueryParseException("Line " + line + ", column " + column + ": " + msg,
                                       line, column) ;

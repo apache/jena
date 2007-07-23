@@ -22,61 +22,69 @@ public class ParseHandler2 implements ParseHandler
         this.handler1 = handler1 ;
         this.handler2 = handler2 ;
     }
-    
-    public void listStart(Item list)
-    {
-        handler1.listStart(list) ;
-        handler2.listStart(list) ;
-    }
-    
-    public Item listFinish(Item list)
-    {
-        handler1.listFinish(list) ;
-        return handler2.listFinish(list) ;
-    }
-    
-    public void listAdd(Item list, Item elt)
-    {
-        handler1.listAdd(list, elt) ;
-        handler2.listAdd(list, elt) ;
-    }
-    
-    public Item itemNode(Item item)
-    {
-        handler1.itemNode(item) ;
-        return handler2.itemNode(item) ;
-    }
-    
 
-    public Item itemWord(Item item)
+    public void parseStart()
     {
-        handler1.itemWord(item) ;
-        return handler2.itemWord(item) ;
+        handler1.parseStart() ;
+        handler2.parseStart() ; 
+        
     }
 
     public void parseFinish()
     {
         handler1.parseFinish() ;
-        handler2.parseFinish() ;
+        handler2.parseFinish() ; 
     }
 
-    public void parseStart()
+    public void listStart(int line, int column)
     {
-        handler1.parseStart() ;
-        handler2.parseStart() ;
+        handler1.listStart(line, column) ;
+        handler2.listStart(line, column) ;
+        
     }
 
-    public String resolvePName(String pname)
+    public void listFinish(int line, int column)
     {
-        handler1.resolvePName(pname) ;
-        return handler2.resolvePName(pname) ;
+        handler1.listFinish(line, column) ;
+        handler2.listFinish(line, column) ;
     }
 
-    public String resolveIRI(String iri)
-    {
-        handler1.resolveIRI(iri) ;
-        return handler2.resolveIRI(iri) ;
+    public void emitBNode(int line, int column, String label)
+    { 
+        handler1.emitBNode(line, column, label) ;
+        handler2.emitBNode(line, column, label) ;
     }
+
+    public void emitIRI(int line, int column, String iriStr)
+    {
+        handler1.emitIRI(line, column, iriStr) ;
+        handler2.emitIRI(line, column, iriStr) ;
+    }
+
+    public void emitLiteral(int line, int column, String lex, String lang, String datatype_iri, String datatype_pn)
+    {
+        handler1.emitLiteral(line, column, lex, lang, datatype_iri, datatype_pn) ;
+        handler2.emitLiteral(line, column, lex, lang, datatype_iri, datatype_pn) ;
+    }
+
+    public void emitPName(int line, int column, String pname)
+    {
+        handler1.emitPName(line, column, pname) ;
+        handler2.emitPName(line, column, pname) ;
+    }
+
+    public void emitSymbol(int line, int column, String symbol)
+    {
+        handler1.emitSymbol(line, column, symbol) ;
+        handler2.emitSymbol(line, column, symbol) ;
+    }
+
+    public void emitVar(int line, int column, String varName)
+    {
+        handler1.emitVar(line, column, varName) ;
+        handler2.emitVar(line, column, varName) ;
+    }
+    
 }
 
 /*

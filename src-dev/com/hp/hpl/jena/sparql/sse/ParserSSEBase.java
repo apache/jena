@@ -6,91 +6,76 @@
 
 package com.hp.hpl.jena.sparql.sse;
 
-import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.sparql.core.VarAlloc;
+import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.sparql.lang.ParserBase;
 
 public class ParserSSEBase extends ParserBase
 {
-    private ParseHandler handler = new ParseHandlerPlain() ;
+    private ParseHandler handler = null ;
     
     public void setHandler(ParseHandler handler) { this.handler = handler ; }
     
-    private VarAlloc varAlloc = new VarAlloc("") ;
-    protected Var createVariable()
-    {
-        return varAlloc.allocVar() ;
-    }
-
-    // --------
-    // ParserBase assumes a fixed Prologue.
-    // resolveQuotedIRI (uses resolveIRI)
-    // resolveIRI
-    // resolvePrefixedName
-
-//    protected String resolveQuotedIRI(String iriStr ,int line, int column)
-//    {
-//        iriStr = stripQuotes(iriStr) ;
-//        return resolveIRI(iriStr, line, column) ;
-//    }
-
-    
-    protected String resolveIRI(String iriStr ,int line, int column)
-    {
-        if ( isBNodeIRI(iriStr) )
-            return iriStr ;
-        return handler.resolveIRI(iriStr) ;
-    }
-    
-    protected String resolvePName(String pname, int line, int column)
-    {
-        return handler.resolvePName(pname) ;
-    }
-    
-    // ---- Labeled bnodes is always ON.
-    
-    final static String bNodeLabelStart = "_:" ;
-    protected boolean isBNodeIRI(String iri)
-    {
-        return iri.startsWith(bNodeLabelStart) ;
-    }
-    
-    // ----
-    
-    public void parseStart()
+    protected void parseStart()
     { handler.parseStart() ; }
     
-    public void parseFinish()
+    protected void parseFinish()
     { handler.parseFinish() ; }
+
+    protected void listStart(int line, int column)
+    { handler.listStart(line, column) ; }
+
+    protected void listFinish(int line, int column)
+    { handler.listFinish(line, column) ; }
+
+    protected void emitBNode(int line, int column, String label)
+    { handler.emitBNode(line, column, label) ; }
+
+    protected void emitIRI(int line, int column, String iriStr)
+    { handler.emitIRI(line, column, iriStr) ; }
+
+//    public void emitLiteral(int line, int column, String lex, String lang, String datatype)
+//    {}
+
+    protected void emitPName(int line, int column, String pname)
+    { handler.emitPName(line, column, pname) ; }
+
+    protected void emitSymbol(int line, int column, String pname)
+    { handler.emitSymbol(line, column, pname) ; }
+
+    protected void emitVar(int line, int column, String varName)
+    { handler.emitVar(line, column, varName) ; }
     
-    protected void listStart(Item list)
+    protected void emitLiteral(int currLine, int currColumn, String lex, String lang, String dt_iri, String dt_pname)
     { 
-        handler.listStart(list) ;
-    }
-    
-    protected Item listFinish(Item list)
-    {
-        return handler.listFinish(list) ;
+        if ( lang != null )
+        {
+            if ( dt_iri != null || dt_pname != null )
+                throwParseException("Internal error (lang and datatype)", currLine, currColumn) ;
+        }
+        else
+        {
+            if ( dt_iri != null && dt_pname != null )
+                throwParseException("Internal error (datatype from IRI and pname)", currLine, currColumn) ;
+        }
+        handler.emitLiteral(currLine, currColumn, lex, lang, dt_iri, dt_pname) ;
     }
 
-    protected void listAdd(Item list, Item elt)
-    {
-        handler.listAdd(list, elt) ;
-    }
-    
-    protected Item itemWord(Item item)
+    protected void emitLiteralInteger(int beginLine, int beginColumn, String image)
     { 
-        Item item2 = handler.itemWord(item) ; 
-        return item2 != null ? item2 : item ; 
-    }
-    
-    protected Item itemNode(Item item)
-    { 
-        Item item2 = handler.itemNode(item) ; 
-        return item2 != null ? item2 : item ; 
+        emitLiteral(beginLine, beginColumn, image, null, XSDDatatype.XSDinteger.getURI(), null) ;
     }
 
-    protected void throwParseException(String msg, int line, int column)
+    protected void emitLiteralDecimal(int beginLine, int beginColumn, String image)
+    {
+        emitLiteral(beginLine, beginColumn, image, null, XSDDatatype.XSDdecimal.getURI(), null) ;
+    }
+
+    protected void emitLiteralDouble(int beginLine, int beginColumn, String image)
+    {
+        emitLiteral(beginLine, beginColumn, image, null, XSDDatatype.XSDdouble.getURI(), null) ;
+    }
+
+    public static void throwParseException(String msg, int line, int column)
     {
         throw new SSEParseException("Line " + line + ", column " + column + ": " + msg,
                                     line, column) ;

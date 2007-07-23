@@ -29,8 +29,6 @@ import com.hp.hpl.jena.util.FileUtils;
 
 public class SSE
 {
-    private static boolean ResolveIRIs = true ;
-    
     // Short prefix map for convenience
     protected static PrefixMapping defaultDefaultPrefixMap = new PrefixMappingImpl() ;
     static {
@@ -169,17 +167,19 @@ public class SSE
     
     private static Item parseTerm(Reader reader, PrefixMapping pmap)
     {
+        if ( pmap == null )
+            pmap = getDefaultPrefixMap() ;
         SSE_Parser p = new SSE_Parser(reader) ;
-        if ( ResolveIRIs )
-            p.setHandler(new ParseHandlerResolver(pmap)) ;
+        ParseHandlerResolver r = new ParseHandlerResolver(pmap) ;
+        p.setHandler(r) ;
         try
         {
-            Item item = p.term() ;
+            p.term() ;
+            return r.getItem() ;
             // Checks for EOF 
 //            //<EOF> test : EOF is always token 0.
 //            if ( p.token_source.getNextToken().kind != 0 )
 //                throw new SSEParseException("Trailing characters after "+item, item.getLine(), item.getColumn()) ;
-            return item ;
        } 
        catch (ParseException ex)
        { throw new SSEParseException(ex.getMessage(), ex.currentToken.beginLine, ex.currentToken.beginColumn) ; }
@@ -198,12 +198,13 @@ public class SSE
         if ( pmap == null )
             pmap = getDefaultPrefixMap() ;
         SSE_Parser p = new SSE_Parser(reader) ;
-        if ( ResolveIRIs )
-            p.setHandler(new ParseHandlerResolver(pmap)) ;
+        ParseHandlerResolver r = new ParseHandlerResolver(pmap) ;
+        p.setHandler(r) ;
         try
         {
             //p.setHandler(null) ;
-            return p.parse() ;
+            p.parse() ;
+            return r.getItem() ; 
        } 
        catch (ParseException ex)
        { throw new SSEParseException(ex.getMessage(), ex.currentToken.beginLine, ex.currentToken.beginColumn) ; }

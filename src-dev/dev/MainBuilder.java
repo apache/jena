@@ -24,7 +24,7 @@ public class MainBuilder
 {
     public static void main(String[] argv)
     {
-        Item item = SSE.parse("(prefix ((: <http://example/>)) nil))") ;
+        Item item = SSE.parse("<x>"); //(prefix ((: <http://example/>)) nil))") ;
         System.out.println(item) ;
         System.exit(0) ;
         

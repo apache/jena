@@ -8,15 +8,46 @@ package com.hp.hpl.jena.sparql.sse;
 
 public class  ParseHandlerPlain implements ParseHandler 
 {
-    public void parseStart()                    { return ; }
-    public void parseFinish()                   { return ; }
-    public String resolvePName(String pname)    { return pname ; }
-    public String resolveIRI(String iri)        { return iri ; } 
-    public Item itemNode(Item item)             { return item ; }
-    public Item itemWord(Item item)             { return item ; }
-    public void listAdd(Item item, Item elt)    { item.getList().add(elt); }
-    public Item listFinish(Item item)           { return item ; }
-    public void listStart(Item item)            { return ; }
+
+    public void emitBNode(int line, int column, String label)
+    {}
+
+    public void emitIRI(int line, int column, String iriStr)
+    {}
+
+    public void emitLiteral(int line, int column, String lex, String lang, String dt_iri, String dt_pname)
+    {}
+
+    public void emitPName(int line, int column, String pname)
+    {}
+
+    public void emitSymbol(int line, int column, String symbol)
+    {}
+
+    public void emitVar(int line, int column, String varName)
+    {}
+
+    public void listFinish(int line, int column)
+    {}
+
+    public void listStart(int line, int column)
+    {}
+
+    public void parseFinish()
+    {}
+
+    public void parseStart()
+    {}
+    
+//    public void parseStart()                    { return ; }
+//    public void parseFinish()                   { return ; }
+//    public String resolvePName(String pname)    { return pname ; }
+//    public String resolveIRI(String iri)        { return iri ; } 
+//    public Item itemNode(Item item)             { return item ; }
+//    public Item itemWord(Item item)             { return item ; }
+//    public void listAdd(Item item, Item elt)    { item.getList().add(elt); }
+//    public Item listFinish(Item item)           { return item ; }
+//    public void listStart(Item item)            { return ; }
 }
 
 /*

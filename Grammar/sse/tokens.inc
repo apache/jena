@@ -20,8 +20,7 @@ SPECIAL_TOKEN :
 TOKEN:
 {
    <IRIref: "<" (~[">","<","\u0000"-"\u0020"])* ">" >
-|  <PNAME_NS: (<PN_PREFIX>)? ":" >
-|  <PNAME_LN: <PNAME_NS> <PN_LOCAL> >
+|  <PNAME: (<PN_PREFIX>)? ":" (<PN_LOCAL>)? >
 |  <BLANK_NODE_LABEL: "_:" <PN_LOCAL> >
 |  <VAR1: <HOOK> <VARNAME> >
 |  <VAR2: "$" <VARNAME> >
@@ -74,6 +73,8 @@ TOKEN :
 | < HOOK:     "?" >
 }
 
+// Specials for literals trailing parts
+// Otherwise include in Symbol() rule for when out of position.
 <LITERAL> TOKEN :
 {
   < DATATYPE: "^^" >
@@ -81,8 +82,6 @@ TOKEN :
 | < #AT: "@">
 |  <#A2Z: ["a"-"z","A"-"Z"]>
 |  <#A2ZN: ["a"-"z","A"-"Z","0"-"9"]>
-
-
 }
 
 TOKEN:

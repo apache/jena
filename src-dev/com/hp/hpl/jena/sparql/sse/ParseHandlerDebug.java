@@ -8,44 +8,77 @@ package com.hp.hpl.jena.sparql.sse;
 
 
 
-public class ParseHandlerDebug extends ParseHandlerPlain
+
+public class ParseHandlerDebug implements ParseHandler
 {
     int count = 0 ;
     
+    private void indent()
+    {
+        for ( int i = 0 ; i < count ; i++ ) System.out.print("  ") ;
+    }
+
+    private void start(int line, int column)
+    { 
+        System.out.print("["+line+", "+column+"]  ") ; 
+        indent() ;
+    }
+
     public void parseStart()
     { System.out.println("<<<<") ; }
 
     public void parseFinish()
     { System.out.println(">>>>") ; }
 
-    public void listAdd(Item item, Item elt)
-    {
-        if ( elt.isList() )
-            return ;
-        indent() ;
-        System.out.println(elt) ;
+    public void listStart(int line, int column)
+    { count++ ; }
+
+    public void listFinish(int line, int column)
+    { count-- ; }
+
+
+    public void emitBNode(int line, int column, String label)
+    { 
+        start(line, column) ;
+        System.out.println("BNode: "+label) ;
     }
 
-    public void listStart(Item item)
-    {   
-        indent() ;
-        System.out.println("<<") ;
-        count++ ; 
-    }
-    
-    public Item listFinish(Item item)
-    {   
-        count-- ; 
-        indent() ;
-        System.out.println(">>") ;
-        return item ;
-    }
-    
 
-    private void indent()
-    {
-        for ( int i = 0 ; i < count ; i++ ) System.out.print("  ") ;
+    public void emitIRI(int line, int column, String iriStr)
+    { 
+        start(line, column) ;
+        System.out.println("IRI: "+iriStr) ;
     }
+
+    public void emitLiteral(int line, int column, String lex, String lang, String datatype_iri, String datatype_pn)
+    { 
+        start(line, column) ;
+        if ( lang != null )
+            System.out.println("Literal: "+lex+" @"+lang) ;
+        else if ( datatype_iri != null )
+            System.out.println("Literal: "+lex+" ^^"+datatype_iri) ;
+        else if ( datatype_pn != null )
+            System.out.println("Literal: "+lex+" ^^"+datatype_pn) ;
+    }
+
+    public void emitPName(int line, int column, String pname)
+    { 
+        start(line, column) ;
+        System.out.println("PName: "+pname) ;
+    }
+
+    public void emitSymbol(int line, int column, String symbol)
+    { 
+        start(line, column) ;
+        System.out.println("Symbol: "+symbol) ;
+    }
+
+    public void emitVar(int line, int column, String varName)
+    { 
+        start(line, column) ;
+        System.out.println("Var: "+varName) ;
+    }
+
 }
 
 /*
