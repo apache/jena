@@ -133,6 +133,8 @@ public class TestSSE extends TestCase
     public void testList_6()
     { testList("(+ 1)", Item.createWord("+"), int1i) ; }
 
+    public void testList_7()
+    { testList("[+ 1]", Item.createWord("+"), int1i) ; }
     
     public void testMisc_01()    { testEquals("()") ; }
     public void testMisc_02()    { testEquals("(a)") ; }

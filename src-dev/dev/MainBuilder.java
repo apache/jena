@@ -6,115 +6,11 @@
 
 package dev;
 
-import java.io.FileInputStream;
-import java.io.InputStream;
-
-import com.hp.hpl.jena.util.FileUtils;
-
-import com.hp.hpl.jena.sparql.algebra.Op;
-import com.hp.hpl.jena.sparql.expr.Expr;
-import com.hp.hpl.jena.sparql.sse.Item;
-import com.hp.hpl.jena.sparql.sse.ItemWriter;
-import com.hp.hpl.jena.sparql.sse.SSE;
-import com.hp.hpl.jena.sparql.sse.builders.BuilderExpr;
-import com.hp.hpl.jena.sparql.sse.builders.BuilderOp;
-import com.hp.hpl.jena.sparql.util.IndentedWriter;
 
 public class MainBuilder
 {
     public static void main(String[] argv)
     {
-        // More tests.
-        
-        //Item item = SSE.parse("(base <http://example/> <y>)");
-        //Item item = SSE.parse("(prefix ((: <http://example/>)) :foo)") ;
-        //Item item = SSE.parse("(prefix ((: <http://example/>)) 123)") ;
-        
-        //Item item = SSE.parse("(prefix ((: <http://example/>)) (base <http://example/> <#foo>)) ") ;
-        
-        Item item = SSE.parse("(base <http://HOST/other#> ((base <http://example/> <xyz>) <#foo>))") ;
-        
-        System.out.println(item) ;
-        System.exit(0) ;
-        
-        //mainExpr(argv) ;
-        //System.out.println() ;
-        mainOp(argv) ;
-        //mainTable(argv) ;
-    }
-    
-    public static void mainExpr(String[] argv)
-    {
-        try
-        {
-            InputStream in = new FileInputStream("SSE/expr.sse") ;
-            Item item = SSE.parse(in) ;
-            if ( true )
-            {
-                System.out.println("**** SSE expression") ;
-                ItemWriter.write(System.out, item) ;
-                System.out.println() ;
-            }
-            
-            Expr expr = BuilderExpr.buildExpr(item) ;
-            System.out.println(expr) ;
-            System.out.println() ;
-        } catch (Exception ex)
-        {
-            ex.printStackTrace();
-        }
-    }
-    
-    public static void mainOp(String[] argv)
-    {
-        try
-        {
-
-            if ( false )
-            {
-                String s = FileUtils.readWholeFileAsUTF8("SSE/op.sse") ;
-                IndentedWriter iw = new IndentedWriter(System.out, true) ;
-                iw.print(s) ;
-                iw.flush();
-                if ( ! iw.atLineStart() )
-                    System.out.println() ;
-                System.out.println() ;
-            }
-
-            InputStream in = new FileInputStream("SSE/op.sse") ;
-//            PrefixMapping pmap = new PrefixMappingImpl() ;
-//            pmap.setNsPrefix("", "http://example/") ;
-//            Item item = SSE.parse(in, pmap) ;
-            Item item = SSE.parse(in) ;
-
-            if ( true )
-            {
-                System.out.println("**** SSE expression") ;
-                ItemWriter.write(System.out, item) ;
-            }
-
-//          item = ItemTransformer.transform(new ItemTransformBase(), item) ;
-//          Writer.write(System.out, item) ;
-
-
-            System.out.println() ;
-
-            Op op = BuilderOp.build(item) ;
-            System.out.println("**** Algebra") ;
-            System.out.print(op.toString()) ;
-            System.out.println() ;
-
-            System.out.println("**** Reparse") ;
-            // Parser broken?
-            String str = op.toString() ; //.replace("[", "(").replace("]", ")") ;
-
-            item = SSE.parse(str) ;
-            System.out.print(item.toString()) ;
-
-        } catch (Exception ex)
-        {
-            ex.printStackTrace();
-        }
     }
 }
 

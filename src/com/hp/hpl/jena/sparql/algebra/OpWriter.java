@@ -62,7 +62,10 @@ public class OpWriter
     }
 
     public static void out(IndentedWriter iWriter, Op op)
-    { out(iWriter, op, ARQConstants.getGlobalPrefixMap()) ; }
+    { 
+        PrefixMapping pmap = ARQConstants.getGlobalPrefixMap() ;
+        out(iWriter, op, pmap) ;
+    }
 
     
     static class OpWriterWorker implements OpVisitor

@@ -133,7 +133,7 @@ public class SSE_Parser extends ParserSSEBase implements SSE_ParserConstants {
       }
       listStart(t.beginLine, t.beginColumn) ;
       BareList();
-      t = jj_consume_token(RPAREN);
+      t = jj_consume_token(RBRACKET);
       label_6:
       while (true) {
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -146,7 +146,7 @@ public class SSE_Parser extends ParserSSEBase implements SSE_ParserConstants {
         }
         jj_consume_token(WS);
       }
-      t = jj_consume_token(RBRACKET);
+      listFinish(t.beginLine, t.beginColumn) ;
       break;
     default:
       jj_la1[7] = jj_gen;
