@@ -6,11 +6,15 @@
 
 package dev;
 
+import com.hp.hpl.jena.sparql.sse.builders.BuilderExec;
 
-public class MainBuilder
+
+public class RunSSE
 {
     public static void main(String[] argv)
     {
+        String[] a = { "--file=SSE/all.sse" } ;
+        BuilderExec.main(a) ;
     }
 }
 

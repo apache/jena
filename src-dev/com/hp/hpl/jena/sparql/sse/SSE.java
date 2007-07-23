@@ -29,19 +29,33 @@ import com.hp.hpl.jena.util.FileUtils;
 
 public class SSE
 {
-    // Short prefix map for convenience
-    protected static PrefixMapping defaultDefaultPrefixMap = new PrefixMappingImpl() ;
+    // Short prefix map for convenience (used in parsing, not in writing).
+    protected static PrefixMapping defaultDefaultPrefixMapRead = new PrefixMappingImpl() ;
     static {
-        defaultDefaultPrefixMap.setNsPrefix("rdf",  ARQConstants.rdfPrefix) ;
-        defaultDefaultPrefixMap.setNsPrefix("rdfs", ARQConstants.rdfsPrefix) ;
-        defaultDefaultPrefixMap.setNsPrefix("xsd",  ARQConstants.xsdPrefix) ;
-        defaultDefaultPrefixMap.setNsPrefix("owl" , ARQConstants.owlPrefix) ;
-        defaultDefaultPrefixMap.setNsPrefix("fn" ,  ARQConstants.fnPrefix) ; 
+        defaultDefaultPrefixMapRead.setNsPrefix("rdf",  ARQConstants.rdfPrefix) ;
+        defaultDefaultPrefixMapRead.setNsPrefix("rdfs", ARQConstants.rdfsPrefix) ;
+        defaultDefaultPrefixMapRead.setNsPrefix("xsd",  ARQConstants.xsdPrefix) ;
+        defaultDefaultPrefixMapRead.setNsPrefix("owl" , ARQConstants.owlPrefix) ;
+        defaultDefaultPrefixMapRead.setNsPrefix("fn" ,  ARQConstants.fnPrefix) ; 
+        defaultDefaultPrefixMapRead.setNsPrefix("ex" ,  "http://example/ns#") ;
+        defaultDefaultPrefixMapRead.setNsPrefix("" ,    "http://example/") ;
     }
     
-    public static PrefixMapping defaultPrefixMap = defaultDefaultPrefixMap ;
-    public static PrefixMapping getDefaultPrefixMap() { return defaultPrefixMap ; }
-    public static void setDefaultPrefixMap(PrefixMapping pmap) { defaultPrefixMap =  pmap ; }
+    public static PrefixMapping defaultPrefixMapRead = defaultDefaultPrefixMapRead ;
+    public static PrefixMapping getDefaultPrefixMapRead() { return defaultPrefixMapRead ; }
+    public static void setDefaultPrefixMapRead(PrefixMapping pmap) { defaultPrefixMapRead =  pmap ; }
+    
+    // Short prefix map for convenience used in writing.
+    protected static PrefixMapping defaultDefaultPrefixMapWrite = new PrefixMappingImpl() ;
+    static {
+        defaultDefaultPrefixMapWrite.setNsPrefix("rdf",  ARQConstants.rdfPrefix) ;
+        defaultDefaultPrefixMapWrite.setNsPrefix("rdfs", ARQConstants.rdfsPrefix) ;
+        defaultDefaultPrefixMapWrite.setNsPrefix("xsd",  ARQConstants.xsdPrefix) ;
+    }
+    
+    public static PrefixMapping defaultPrefixMapWrite = defaultDefaultPrefixMapWrite ;
+    public static PrefixMapping getDefaultPrefixMapWrite() { return defaultPrefixMapWrite ; }
+    public static void setDefaultPrefixMapWrite(PrefixMapping pmap) { defaultPrefixMapWrite =  pmap ; }
     
     public static Node parseNode(String str) { return parseNode(str, null) ; }
     
@@ -168,7 +182,7 @@ public class SSE
     private static Item parseTerm(Reader reader, PrefixMapping pmap)
     {
         if ( pmap == null )
-            pmap = getDefaultPrefixMap() ;
+            pmap = getDefaultPrefixMapRead() ;
         SSE_Parser p = new SSE_Parser(reader) ;
         ParseHandlerResolver r = new ParseHandlerResolver(pmap) ;
         p.setHandler(r) ;
@@ -198,7 +212,7 @@ public class SSE
     private static Item parse(Reader reader, PrefixMapping pmap)
     {
         if ( pmap == null )
-            pmap = getDefaultPrefixMap() ;
+            pmap = getDefaultPrefixMapRead() ;
         SSE_Parser p = new SSE_Parser(reader) ;
         ParseHandlerResolver r = new ParseHandlerResolver(pmap) ;
         p.setHandler(r) ;

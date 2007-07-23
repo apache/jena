@@ -34,7 +34,6 @@ public class Run
 {
     public static void main(String[] argv)
     {
-        
         String []a = {//"-engine=ref",
             "--data=D.ttl",
             "--file=Q.rq"

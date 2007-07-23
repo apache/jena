@@ -137,8 +137,10 @@ public class sse extends CmdARQ
         }
         divider() ;
         IndentedWriter out = new IndentedWriter(System.out, lineNumbers) ;
-        PrefixMapping pmap = null ; //SSE.getDefaultPrefixMap() ;
-        //pmap = null ;
+        
+        // Need to check if used.
+        //PrefixMapping pmap = SSE.getDefaultPrefixMapWrite() ;
+        PrefixMapping pmap = null ;
         SerializationContext sCxt = new SerializationContext(pmap) ;
         ItemWriter.write(out, item, sCxt) ;
         //item.output(out) ;
