@@ -1,6 +1,6 @@
 # (c) Copyright 2005 Hewlett-Packard Development Company, LP
 # All rights reserved.
-# $Id: assembler.n3,v 1.11 2007-05-11 14:26:54 chris-dollin Exp $
+# $Id: assembler.n3,v 1.12 2007-07-23 11:22:41 chris-dollin Exp $
 
 @prefix rdf:        <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs:       <http://www.w3.org/2000/01/rdf-schema#> .
@@ -121,6 +121,7 @@ ja:ContentGroup a rdfs:Class
 
 ja:ContentItem a rdfs:Class
     ; rdfs:subClassOf ja:Content
+    ; rdfs:subClassOf [owl:onProperty ja:fileManager; owl:maxCardinality 1]
     ; rdfs:label "Assembler.ContentItem"
     ; rdfs:comment "a single loadable model item"
     .

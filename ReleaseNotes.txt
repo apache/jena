@@ -3,6 +3,10 @@ Release Notes
 
 ==== Jena 2.5.4
 
+Assemblers
+    o ContentAssembler now respects the fileManager property for external
+      content.
+
 N3 & Turtle Writer
     o Correct writing nested bnodes with no properties to make strict Turtle.
     o No longer automatcally add default namespace prefix. 

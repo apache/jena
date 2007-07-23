@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: CannotConstructException.java,v 1.6 2007-01-02 11:49:34 andy_seaborne Exp $
+ 	$Id: CannotConstructException.java,v 1.7 2007-07-23 11:22:30 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.exceptions;
@@ -32,7 +32,7 @@ public class CannotConstructException extends AssemblerException
         return 
             "the assembler " + getClassName( assemblerClass )
             + " cannot construct the object named " + nice( root )
-            + " because it is not of rdf:type " + nice( root ) 
+            + " because it is not of rdf:type " + nice( type ) 
             ;
         }
     

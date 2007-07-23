@@ -170,6 +170,17 @@ all such resources. For example:
 
 <div class='insert-example' root='eg:external-content-example' source='examples'>example 1 goes here</div>
 
+<p>
+The external content is located using a <code>FileManager</code>. If
+the <code>Content</code> resource has a <code>ja:fileManager</code>
+property, then the <code>FileManager</code> described by that resource
+is used. Otherwise, if the <code>ContentAssembler</code> assembling
+this specification was constructed with a <code>FileManager</code>
+argument, that <code>FileManager</code> is used. Otherwise, the
+default <code>FileManager</code>, <code>FileManager.get()</code>,
+is used.
+</p>
+
 <p>The string literal value of the any <code>ja:literalContent</code>
 properties is interpreted as RDF in an appropriate language. The constructed
 Content object contains that RDF. The language is either specified by an

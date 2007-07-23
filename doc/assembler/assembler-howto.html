@@ -194,8 +194,8 @@ specifications. For example:</p>
     . 
 eg:common-example a ja:MemoryModel 
     ; ja:content eg:sharedContent 
-    ; ja:content [ja:externalContent &lt;file:///home/kers/projects/jena2/Data/B.rdf&gt;] 
     ; ja:content [ja:externalContent &lt;file:///home/kers/projects/jena2/Data/A.rdf&gt;] 
+    ; ja:content [ja:externalContent &lt;file:///home/kers/projects/jena2/Data/B.rdf&gt;] 
     . </pre>
 
 <p>
@@ -251,6 +251,17 @@ all such resources. For example:
     ja:externalContent &lt;http://jena.hpl.hp.com/some-jena-data.rdf&gt;,
         &lt;file:///home/kers/projects/jena2/Data/C.owl&gt; 
     . </pre>
+
+<p>
+The external content is located using a <code>FileManager</code>. If
+the <code>Content</code> resource has a <code>ja:fileManager</code>
+property, then the <code>FileManager</code> described by that resource
+is used. Otherwise, if the <code>ContentAssembler</code> assembling
+this specification was constructed with a <code>FileManager</code>
+argument, that <code>FileManager</code> is used. Otherwise, the
+default <code>FileManager</code>, <code>FileManager.get()</code>,
+is used.
+</p>
 
 <p>The string literal value of the any <code>ja:literalContent</code>
 properties is interpreted as RDF in an appropriate language. The constructed
@@ -359,15 +370,15 @@ to the values of the system properties <code>jena.dbUser</code> and
 <div class="show-property"><span class="keyword">domainOf</span> ja:dbType <span class="keyword">maxCardinality</span> 1</div></div></div>
 <div class="hide" id="1007B"><a href="javascript:exchange('1007')">&nabla; show as condensed</a>
 <div class="show-class">ja:Connection a rdfs:Class
-<div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:dbPassword; owl:maxCardinality 1]</div>
-<div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:dbURLProperty; owl:maxCardinality 1]</div>
 <div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:dbUser; owl:maxCardinality 1]</div>
-<div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:dbClass; owl:maxCardinality 1]</div>
-<div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:dbUserProperty; owl:maxCardinality 1]</div>
-<div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:dbType; owl:maxCardinality 1]</div>
 <div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:dbURL; owl:maxCardinality 1]</div>
-<div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:dbTypeProperty; owl:maxCardinality 1]</div>
+<div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:dbURLProperty; owl:maxCardinality 1]</div>
+<div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:dbType; owl:maxCardinality 1]</div>
+<div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:dbPassword; owl:maxCardinality 1]</div>
 <div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:dbPasswordProperty; owl:maxCardinality 1]</div>
+<div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:dbUserProperty; owl:maxCardinality 1]</div>
+<div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:dbTypeProperty; owl:maxCardinality 1]</div>
+<div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:dbClass; owl:maxCardinality 1]</div>
 <div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:dbClassProperty; owl:maxCardinality 1]</div>
 <div class="show-subclass"> ; rdfs:subClassOf ja:Object</div>
 <div class="show-subclass">.</div>
