@@ -23,6 +23,9 @@ public class TestOpSSE extends TestCase
     
     public void testOp_1() { same("(null)") ; }
 
+    public void testOp_2() { same("(bgp [triple ?s ?p ?o])") ; }
+
+    
     private static void same(String str)
     {
         Op op1 = SSE.parseOp(str) ;

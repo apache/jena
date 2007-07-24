@@ -11,11 +11,17 @@ import java.util.Iterator;
 
 import arq.cmd.CmdException;
 import arq.cmd.TerminationException;
-import arq.cmdline.*;
+import arq.cmdline.ArgDecl;
+import arq.cmdline.CmdARQ;
+import arq.cmdline.ModAssembler;
+import arq.cmdline.ModDataset;
+import arq.cmdline.ModEngine;
+import arq.cmdline.ModResultsOut;
+import arq.cmdline.ModTime;
 
+import com.hp.hpl.jena.query.Dataset;
+import com.hp.hpl.jena.query.QueryException;
 import com.hp.hpl.jena.shared.JenaException;
-import com.hp.hpl.jena.util.FileUtils;
-
 import com.hp.hpl.jena.sparql.ARQInternalErrorException;
 import com.hp.hpl.jena.sparql.algebra.Algebra;
 import com.hp.hpl.jena.sparql.algebra.Op;
@@ -26,13 +32,11 @@ import com.hp.hpl.jena.sparql.engine.Plan;
 import com.hp.hpl.jena.sparql.engine.PlanOp;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.resultset.ResultSetException;
-import com.hp.hpl.jena.sparql.sse.AlgSSE;
+import com.hp.hpl.jena.sparql.sse.SSE;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
 import com.hp.hpl.jena.sparql.util.QueryExecUtils;
 import com.hp.hpl.jena.sparql.util.Utils;
-
-import com.hp.hpl.jena.query.Dataset;
-import com.hp.hpl.jena.query.QueryException;
+import com.hp.hpl.jena.util.FileUtils;
 
 public class qexec extends CmdARQ
 {
@@ -123,12 +127,12 @@ public class qexec extends CmdARQ
                     { throw new CmdException("Error reading stdin", ex) ; }
                 }
                 else
-                    op = AlgSSE.read(queryFilename) ;
+                    op = SSE.readOp(queryFilename) ;
             }
 
             if ( queryString != null )
             {
-                op = AlgSSE.parse(queryString) ;
+                op = SSE.parseOp(queryString) ;
                 if ( op == null )
                     System.err.println("Faile to parse : "+queryString) ;
                 throw new TerminationException(9) ;
