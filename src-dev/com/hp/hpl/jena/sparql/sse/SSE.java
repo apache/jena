@@ -6,7 +6,11 @@
 
 package com.hp.hpl.jena.sparql.sse;
 
-import java.io.*;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.io.Reader;
+import java.io.StringReader;
 
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
@@ -14,17 +18,15 @@ import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.shared.NotFoundException;
 import com.hp.hpl.jena.shared.PrefixMapping;
 import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
-
 import com.hp.hpl.jena.sparql.ARQConstants;
 import com.hp.hpl.jena.sparql.ARQException;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.Table;
 import com.hp.hpl.jena.sparql.core.Quad;
 import com.hp.hpl.jena.sparql.expr.Expr;
-import com.hp.hpl.jena.sparql.sse.builders.*;
-import com.hp.hpl.jena.sparql.sse.parser.ParseException;
-import com.hp.hpl.jena.sparql.sse.parser.SSE_Parser;
-import com.hp.hpl.jena.sparql.sse.parser.TokenMgrError;
+import com.hp.hpl.jena.sparql.sse.builders.BuilderExpr;
+import com.hp.hpl.jena.sparql.sse.builders.BuilderGraph;
+import com.hp.hpl.jena.sparql.sse.builders.BuilderTable;
 import com.hp.hpl.jena.util.FileUtils;
 
 public class SSE
@@ -183,59 +185,21 @@ public class SSE
     {
         if ( pmap == null )
             pmap = getDefaultPrefixMapRead() ;
-        SSE_Parser p = new SSE_Parser(reader) ;
-        ParseHandlerResolver r = new ParseHandlerResolver(pmap) ;
-        p.setHandler(r) ;
-        if ( false ) // Debug
-            p.setHandler(new ParseHandler2(new ParseHandlerDebug(), r)) ;
-        try
-        {
-            p.term() ;
-            return r.getItem() ;
-            // Checks for EOF 
-//            //<EOF> test : EOF is always token 0.
-//            if ( p.token_source.getNextToken().kind != 0 )
-//                throw new SSEParseException("Trailing characters after "+item, item.getLine(), item.getColumn()) ;
-       } 
-       catch (ParseException ex)
-       { throw new SSEParseException(ex.getMessage(), ex.currentToken.beginLine, ex.currentToken.beginColumn) ; }
-       catch (TokenMgrError tErr)
-       { 
-           // Last valid token : not the same as token error message - but this should not happen
-           int col = p.token.endColumn ;
-           int line = p.token.endLine ;
-           throw new SSEParseException(tErr.getMessage(), line, col) ;
-       }
-       //catch (JenaException ex)  { throw new TurtleParseException(ex.getMessage(), ex) ; }
+        ParseHandlerResolver handler = new ParseHandlerResolver(pmap) ;
+        SSE_Parser.term(reader, handler) ; 
+        return handler.getItem() ;
     }
 
     private static Item parse(Reader reader, PrefixMapping pmap)
     {
         if ( pmap == null )
             pmap = getDefaultPrefixMapRead() ;
-        SSE_Parser p = new SSE_Parser(reader) ;
-        ParseHandlerResolver r = new ParseHandlerResolver(pmap) ;
-        p.setHandler(r) ;
-        if ( false ) // Debug
-            p.setHandler(new ParseHandler2(new ParseHandlerDebug(), r)) ;
-        try
-        {
-            //p.setHandler(null) ;
-            p.parse() ;
-            return r.getItem() ; 
-       } 
-       catch (ParseException ex)
-       { throw new SSEParseException(ex.getMessage(), ex.currentToken.beginLine, ex.currentToken.beginColumn) ; }
-       catch (TokenMgrError tErr)
-       { 
-           // Last valid token : not the same as token error message - but this should not happen
-           int col = p.token.endColumn ;
-           int line = p.token.endLine ;
-           throw new SSEParseException(tErr.getMessage(), line, col) ;
-       }
-       //catch (JenaException ex)  { throw new TurtleParseException(ex.getMessage(), ex) ; }
+        if ( pmap == null )
+            pmap = getDefaultPrefixMapRead() ;
+        ParseHandlerResolver handler = new ParseHandlerResolver(pmap) ;
+        SSE_Parser.parse(reader, handler) ; 
+        return handler.getItem() ;
     }
-    
 }
 
 /*

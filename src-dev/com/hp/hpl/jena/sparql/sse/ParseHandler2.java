@@ -6,8 +6,8 @@
 
 package com.hp.hpl.jena.sparql.sse;
 
-/** Spliter for parser handlers.
- *  Any results come from the second handler.
+/** Splitter for parser handlers.
+ *  Calls both, first one first.
  * @author Andy Seaborne
  * @version $Id$
  */

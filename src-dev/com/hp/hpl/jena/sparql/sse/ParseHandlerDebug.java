@@ -7,7 +7,7 @@
 package com.hp.hpl.jena.sparql.sse;
 
 
-
+/** Tracing  parser handler - logs what the core parse sees */ 
 
 public class ParseHandlerDebug implements ParseHandler
 {
