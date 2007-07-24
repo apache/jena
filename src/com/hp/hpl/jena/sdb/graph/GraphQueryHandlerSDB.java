@@ -6,16 +6,20 @@
 
 package com.hp.hpl.jena.sdb.graph;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.graph.query.Domain;
-import com.hp.hpl.jena.graph.query.Mapping;
-import com.hp.hpl.jena.graph.query.Pipe;
+import com.hp.hpl.jena.graph.query.*;
 import com.hp.hpl.jena.sdb.engine.QueryEngineSDB;
+import com.hp.hpl.jena.sdb.shared.SDBNotImplemented;
 import com.hp.hpl.jena.sdb.store.DatasetStoreGraph;
+import com.hp.hpl.jena.sdb.util.Alg;
+import com.hp.hpl.jena.sdb.util.alg.Transform;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.OpVars;
 import com.hp.hpl.jena.sparql.algebra.op.OpQuadPattern;
@@ -24,12 +28,19 @@ import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.Plan;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
+import com.hp.hpl.jena.util.iterator.ExtendedIterator;
+import com.hp.hpl.jena.util.iterator.WrappedIterator;
 
-public class GraphQueryHandlerSDB extends QueryHandlerBase
+public class GraphQueryHandlerSDB extends SimpleQueryHandler
 {
     DatasetStoreGraph datasetStore ;
     Node graphNode ;
-
+    BasicPattern bgp = new BasicPattern() ;
+    private Op op ;
+    private Node[] variables ;
+    private Map<Node, Integer> indexes ;
+    private Triple[] pattern ; 
+    
     public GraphQueryHandlerSDB(Graph graph, Node graphNode, DatasetStoreGraph datasetStore)
     { 
         super(graph) ;
@@ -38,83 +49,57 @@ public class GraphQueryHandlerSDB extends QueryHandlerBase
     }
 
     @Override
-    protected void initialize(Mapping map, Triple[] pattern)
+    final public TreeQueryPlan prepareTree( Graph pattern )
     {
-      for ( Triple t : pattern ) 
-      {     
-          Node s = t.getSubject() ;
-          Node p = t.getPredicate() ;
-          Node o = t.getObject() ;
-          
-          if ( s.isVariable() && ! map.hasBound(s) ) 
-              map.newIndex(s) ;
-          if ( p.isVariable() && ! map.hasBound(p) ) 
-              map.newIndex(p) ;
-          if ( o.isVariable() && ! map.hasBound(o) ) 
-              map.newIndex(o) ;
-      }
+        throw new SDBNotImplemented("prepareTree - Chris says this will not be called") ;
     }
     
     @Override
-    protected void execute(Mapping map, Triple[] pattern, Pipe inputPipe, Pipe outputPipe)
+    public BindingQueryPlan prepareBindings( Query q, Node [] variables )   
     {
-        while ( inputPipe.hasNext() )
-        {
-            Domain input = inputPipe.get() ;
+        this.variables = variables ;
+        this.indexes = new HashMap<Node, Integer>() ;
+        int idx = 0 ;
+        for ( Node v : variables )
+            indexes.put(v, (idx++) ) ;
 
-            Op op = prepareTriples(map, pattern, graphNode, input) ;
-            @SuppressWarnings("unchecked")
+        @SuppressWarnings("unchecked")
+        List<Triple> pattern = q.getPattern() ;
+        for ( Triple t : pattern )
+            bgp.add(t) ;
+        
+        op = new OpQuadPattern(graphNode, bgp) ;
+        return new BindingQueryPlanSDB() ;
+    }
+    
+    class BindingQueryPlanSDB implements BindingQueryPlan
+    {
+        // Iterator of domain objects
+        @SuppressWarnings("unchecked")
+        public ExtendedIterator executeBindings()
+        {
             Set<Var> vars = (Set<Var>)OpVars.allVars(op) ;
             Plan plan = QueryEngineSDB.getFactory().create(op, datasetStore, null, null) ;
             QueryIterator qIter = plan.iterator() ;
 
-            for ( ; qIter.hasNext() ; )
+            Transform<Binding, Domain> b2d = new Transform<Binding, Domain>()
             {
-                Domain output = new Domain(input.size()) ;
-                Binding binding = qIter.nextBinding() ;
-                for ( Var v : vars )
-                {     
-                    Node value = binding.get(v) ;
-                    int idx = map.lookUp(v) ;
-                    output.setElement(idx, value) ;
+                public Domain convert(Binding binding)
+                {
+                    Domain d = new Domain(variables.length) ;
+                    for ( Node n : variables )
+                    {     
+                        Var v = Var.alloc(n) ;
+                        Node value = binding.get(v) ;
+                        // Miss?
+                        int idx = indexes.get(v) ;
+                        d.setElement(idx, value) ;
+                    }
+                    return d ;
                 }
-                outputPipe.put(output) ;
-            }
+            };
+            return WrappedIterator.create(Alg.map(qIter, b2d)) ;
         }
-        outputPipe.close() ;
-    }
-
-    private static Op prepareTriples(Mapping map, Triple[] pattern, Node graphNode, Domain input)
-    {
-        BasicPattern bgp = new BasicPattern() ;
-        for ( int i = 0 ; i < pattern.length ; i++ )
-        {
-            Triple t = subst(map, pattern[i], input) ;
-            bgp.add(t) ;
-        }
-        Op op = new OpQuadPattern(graphNode, bgp) ;
-        return op ;
-    }
-
-    private static Triple subst(Mapping map, Triple triple, Domain input)
-    {
-        Node s = subst(map, triple.getSubject(), input) ;
-        Node p = subst(map, triple.getPredicate(), input) ;
-        Node o = subst(map, triple.getObject(), input) ;
-        return new Triple(s, p, o) ;
-    }
-
-    private static Node subst(Mapping map, Node node, Domain input)
-    {
-        if ( ! map.hasBound(node) ) 
-            return node ;
-        int idx = map.lookUp(node) ;
-        if ( idx == -1 )
-            return node ;
-        Node n = input.getElement(idx) ;
-        if ( n == null )
-            return  node ;
-        return n ;
     }
 }
 
