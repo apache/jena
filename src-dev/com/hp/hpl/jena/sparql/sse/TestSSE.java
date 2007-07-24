@@ -142,7 +142,7 @@ public class TestSSE extends TestCase
     public void testMisc_11()    { testNotEquals("(a)", "()") ; }
     public void testMisc_12()    { testNotEquals("(a)", "(<a>)") ; }
     
-    // ----
+    // ---- Assume ParseHandlerresolver from here on
     
     public void testBase_01()
     { 

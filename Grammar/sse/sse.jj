@@ -12,7 +12,7 @@ options
 //   DEBUG_TOKEN_MANAGER   = true ;
 }
 
-PARSER_BEGIN(SSE_Parser)
+PARSER_BEGIN(SSE_ParserCore)
 
 /*
  * (c) Copyright 2007 Hewlett-Packard Development Company, LP
@@ -24,11 +24,11 @@ package com.hp.hpl.jena.sparql.sse.parser ;
 import com.hp.hpl.jena.sparql.sse.ParserSSEBase ;
     
 
-public class SSE_Parser extends ParserSSEBase
+public class SSE_ParserCore extends ParserSSEBase
 {
 }
 
-PARSER_END(SSE_Parser)
+PARSER_END(SSE_ParserCore)
 
 // Now has explicit WS control in the grammar.
 // Policy - eat trailing WS

@@ -56,6 +56,7 @@ public class BuilderOp
         dispatch.put(symSlice, buildSlice) ;
         
         dispatch.put(symTable, buildTable) ;
+        dispatch.put(symNull, buildNull) ;
     }
 
     // The main recursive build operation.
@@ -130,6 +131,7 @@ public class BuilderOp
     static protected final String symSlice        = symBase + "slice" ;
     
     static protected final String symTable        = symBase + "table" ;
+    static protected final String symNull        = symBase + "null" ;
 
     static public interface Build { Op make(ItemList list) ; }
 
@@ -356,6 +358,16 @@ public class BuilderOp
             return new OpSlice(sub, start, length) ;
         }
     } ;
+    
+    final protected Build buildNull = new Build()
+    {
+        public Op make(ItemList list)
+        {
+            BuilderBase.checkLength(1, list, "null") ;
+            return new OpNull() ;
+        }
+    } ;
+    
 }
 /*
  * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP

@@ -83,7 +83,7 @@ for G in "$@"
   case "$G" in
   unisyn)
     dos2unix < "$GRAMMAR" | cpp -P -C | unix2dos > parser.jj
-    grammar parser.jj sse/parser SSE_Parser
+    grammar parser.jj sse/parser SSE_ParserCore
     [ "$RC" = 0 ] && rm parser.jj
     ;;
   *)    echo "**** Unknown grammar: $G" 1>&2
