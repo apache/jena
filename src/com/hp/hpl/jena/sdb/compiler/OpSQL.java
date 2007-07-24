@@ -37,25 +37,14 @@ public class OpSQL extends OpExtMain
     }
 
     public OpSQL copy() 
-    { 
-        return this ;       // We're immutable - return self.
-//        //System.out.println("Copy called") ;
-//        OpSQL x = new OpSQL(sqlNode, originalOp, request) ;
-//        x.setBridge(getBridge()) ;    // Remember any bridge
-//        return x ;
-    }
-    
+    { return this ; }      // We're immutable - return self.
     
     @Override
     public QueryIterator eval(QueryIterator input, ExecutionContext execCxt)
-    {
-        return new QueryIterSQL(this, input, execCxt) ;
-    }
+    { return new QueryIterSQL(this, input, execCxt) ; }
 
     public QueryIterator exec(ExecutionContext execCxt)
-    {
-        return exec(BindingRoot.create(), execCxt) ; 
-    }
+    { return exec(BindingRoot.create(), execCxt) ; }
 
     public QueryIterator exec(Binding parent, ExecutionContext execCxt)
     {
@@ -69,9 +58,8 @@ public class OpSQL extends OpExtMain
     }
 
 
-    public Op getOriginal() { return originalOp ; }
-    public Op effectiveOp() 
-    { return originalOp ; }
+    public Op getOriginal()     { return originalOp ; }
+    public Op effectiveOp()     { return originalOp ; }
 
     @Override
     public int hashCode()
@@ -82,6 +70,7 @@ public class OpSQL extends OpExtMain
     @Override
     public boolean equalTo(Op other, LabelMap labelMap)
     {
+        // SqlNodes don't provide structural equality (yet?).
         if ( ! ( other instanceof OpSQL ) ) return false ;
         OpSQL opSQL = (OpSQL)other ;
         return sqlNode.equals(opSQL.sqlNode) ;
