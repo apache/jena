@@ -17,6 +17,7 @@ import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.binding.BindingRoot;
 import com.hp.hpl.jena.sparql.engine.main.OpExtMain;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
+import com.hp.hpl.jena.sparql.util.LabelMap;
 
 public class OpSQL extends OpExtMain
 {
@@ -71,6 +72,20 @@ public class OpSQL extends OpExtMain
     public Op getOriginal() { return originalOp ; }
     public Op effectiveOp() 
     { return originalOp ; }
+
+    @Override
+    public int hashCode()
+    {
+        return sqlNode.hashCode() ^ 0x1 ;
+    }
+
+    @Override
+    public boolean equalTo(Op other, LabelMap labelMap)
+    {
+        if ( ! ( other instanceof OpSQL ) ) return false ;
+        OpSQL opSQL = (OpSQL)other ;
+        return sqlNode.equals(opSQL.sqlNode) ;
+    }
 
     public SDBRequest getRequest() { return request ; }
 

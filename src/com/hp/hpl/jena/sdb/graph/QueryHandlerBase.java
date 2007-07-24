@@ -61,7 +61,6 @@ public abstract class QueryHandlerBase extends SimpleQueryHandler
             }} ;
         return stage ;
     }
-
     
     static class QueryThread extends Thread
     {
