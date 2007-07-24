@@ -31,6 +31,7 @@
 
   <property name="jarfile"         value="${name}.jar"/>
   <property name="jarfile.extra"   value="${name}-extra.jar"/>
+  <property name="jarfile.sse"     value="${name}-sse.jar"/>
 
   <property name="arq.root"        value="src/com/hp/hpl/jena/query"/>
   
@@ -78,12 +79,14 @@
     <antcall target="clean-build-dirs"/>
   </target>
 
+  <target name="sse-jar" depends="make-jar-sse"
+	  description="Build arq-sse.jar">
+  </target>
 
   <target name="release" depends="init,package,test"
           description="Create ARQ release">
     <antcall target="clean-build-dirs"/>
   </target>
-  
 
   <!-- Section: Grammars, Compilation and JAR -->
 
@@ -125,29 +128,42 @@
     </javac>
   </target>
 
-  <!-- Other thing to go into the jar file -->
+<!--
   <target name="classes-misc">
     <copy todir="${classes.build.dir}" file="${src.dir}/log4j.properties"/>
   </target>
+-->
+  <!-- JARS -->
+  <!-- Use patternsets -->
 
-  <target name="make-jars" depends="make-jar-core,make-jar-extra"/>
-  
+  <target name="make-jars" depends="make-jar-core,make-jar-extra,make-jar-sse"/>
+
   <property name="arq.path.impl"      value="com/hp/hpl/jena/sparql"/>
+
   <property name="extra.classes" 
-	    value="${arq.path.impl}/**/test/**,${arq.path.impl}/**/junit/**,arq/**"/>
+	    value="${arq.path.impl}/**/test/** ${arq.path.impl}/**/junit/** arq/**"/>
+  <property name="sse.classes"
+	    value="${arq.path.impl}/sse/**"/>
 
   <target name="make-jar-core" depends="compile">
     <!-- Core jar -->
-      <jar destfile="${lib.dir}/${jarfile}" index="yes">
-        <fileset dir="${classes.build.dir}" excludes="${extra.classes}"/>
-      </jar>
+    <jar destfile="${lib.dir}/${jarfile}" index="yes">
+      <fileset dir="${classes.build.dir}" excludes="${extra.classes} ${sse.classes} "/>
+    </jar>
   </target>
   
-  <!-- Tests and examples -->
+  <!-- Tests and examples jar -->
   <target name="make-jar-extra" depends="compile">
     <jar destfile="${lib.dir}/${jarfile.extra}" index="yes">
       <fileset dir="${classes.build.dir}" includes="${extra.classes}"/>
     </jar>
+  </target>
+
+  <!-- SSE subsystem -->
+  <target name="make-jar-sse" depends="compile">
+    <jar destfile="${lib.dir}/${jarfile.sse}" index="yes">
+        <fileset dir="${classes.build.dir}" includes="${sse.classes}"/>
+      </jar>
   </target>
 
   <!-- Section: Testing -->
@@ -360,20 +376,16 @@
     <mkdir  dir="${javadoc.all.dir}"/>
   </target>
 
-  <!-- SSE -->
-
+  <!-- SSE : Remove sometime because it's in the core compile now. -->
+  
+  <!--
   <property name="sse.src.dir" value="src-dev"/>
-  <property name="sse.jarfile" value="arq-sse.jar"/>
 
   <path id="sse.classpath">
     <fileset dir="${lib.dir}" includes="*.jar" excludes="${sse.jarfile}"/>
   </path>
 
-  <target name="all-jars" depends="make-jars,make-sse-jar"/>
-
-  <target name="sse-jar" depends="sse-compile,make-sse-jar"
-	  description="Build arq-sse.jar">
-  </target>
+  <target name="all-jars" depends="make-jars"/>
 
   <target name="sse-compile" depends="default-javac-flags">
     <antcall target="clean-build-dirs"/>
@@ -389,12 +401,6 @@
       <classpath refid="sse.classpath" />
     </javac>
   </target>
-
-  <target name="make-sse-jar" depends="sse-compile">
-    <jar destfile="${lib.dir}/${sse.jarfile}" index="yes">
-        <fileset dir="${classes.build.dir}" 
-		 includes="${arq.path.impl}/sse/**"/>
-      </jar>
-  </target>
+  -->
 
 </project>
