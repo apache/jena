@@ -1,7 +1,5 @@
 ==== SSE
 
-+ test for (base(prefix ...))
-
 + Builder tidying and testing
 
 + Expr: (exists (pattern ...))
