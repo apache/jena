@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.sse;
+package com.hp.hpl.jena.sparql.test.suites;
 
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -14,6 +14,9 @@ import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.shared.PrefixMapping;
 import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
 import com.hp.hpl.jena.sparql.ARQException;
+import com.hp.hpl.jena.sparql.sse.Item;
+import com.hp.hpl.jena.sparql.sse.SSE;
+import com.hp.hpl.jena.sparql.sse.SSEParseException;
 import com.hp.hpl.jena.sparql.util.NodeFactory;
 import com.hp.hpl.jena.vocabulary.XSD;
 

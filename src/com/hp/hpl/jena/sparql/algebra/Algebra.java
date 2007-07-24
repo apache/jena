@@ -17,6 +17,9 @@ import com.hp.hpl.jena.sparql.engine.QueryEngineRegistry;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.BindingRoot;
 import com.hp.hpl.jena.sparql.engine.ref.QueryEngineRef;
+import com.hp.hpl.jena.sparql.sse.Item;
+import com.hp.hpl.jena.sparql.sse.SSE;
+import com.hp.hpl.jena.sparql.sse.builders.BuilderOp;
 import com.hp.hpl.jena.sparql.syntax.Element;
 
 import com.hp.hpl.jena.query.Dataset;
@@ -58,6 +61,26 @@ public class Algebra
         return new AlgebraGeneratorQuad().compile(elt) ;
     }
 
+    // ---- SSE
+    
+    static public Op read(String filename)
+    {
+        Item item = SSE.readFile(filename) ;
+        return parse(item) ;
+    }
+
+    static public Op parse(String string)
+    {
+        Item item = SSE.parse(string) ;
+        return parse(item) ;
+    }
+    
+    static public Op parse(Item item)
+    {
+        Op op = BuilderOp.build(item) ;
+        return op ;
+    }
+    
     // -------- Execute
 
     static public QueryIterator exec(Op op, Dataset ds)

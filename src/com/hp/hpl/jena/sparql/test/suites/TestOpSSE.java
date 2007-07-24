@@ -4,30 +4,30 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.sse;
+package com.hp.hpl.jena.sparql.test.suites;
 
 import com.hp.hpl.jena.sparql.algebra.Op;
-import com.hp.hpl.jena.sparql.sse.builders.BuilderOp;
+import com.hp.hpl.jena.sparql.sse.SSE;
 
-public class AlgSSE
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
+
+public class TestOpSSE extends TestCase
 {
-    // to Algebra class when ready.
-    static public Op read(String filename)
+    public static TestSuite suite()
     {
-        Item item = SSE.readFile(filename) ;
-        return parse(item) ;
+        TestSuite ts = new TestSuite(TestOpSSE.class) ;
+        ts.setName("TestOpSSE") ;
+        return ts ;
     }
+    
+    public void testOp_1() { same("(null)") ; }
 
-    static public Op parse(String string)
+    private static void same(String str)
     {
-        Item item = SSE.parse(string) ;
-        return parse(item) ;
-    }
-
-    static public Op parse(Item item)
-    {
-        Op op = BuilderOp.build(item) ;
-        return op ;
+        Op op1 = SSE.parseOp(str) ;
+        Op op2 = SSE.parseOp(str) ;
+        assertEquals(op1, op2) ;
     }
 }
 

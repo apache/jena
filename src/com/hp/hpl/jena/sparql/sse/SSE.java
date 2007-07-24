@@ -20,6 +20,7 @@ import com.hp.hpl.jena.shared.PrefixMapping;
 import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
 import com.hp.hpl.jena.sparql.ARQConstants;
 import com.hp.hpl.jena.sparql.ARQException;
+import com.hp.hpl.jena.sparql.algebra.Algebra;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.Table;
 import com.hp.hpl.jena.sparql.core.Quad;
@@ -102,9 +103,9 @@ public class SSE
         return BuilderGraph.buildGraph(item) ;
     }
     
-    public static Op readOp(String filename) { return AlgSSE.read(filename) ; }
+    public static Op readOp(String filename) { return Algebra.read(filename) ; }
     
-    public static Op parseOp(String s) { return AlgSSE.parse(s) ; }
+    public static Op parseOp(String s) { return Algebra.parse(s) ; }
     
     public static Table readTable(String filename) { return readTable(filename, null) ; }
     
