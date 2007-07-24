@@ -210,8 +210,6 @@ public class SSE
     {
         if ( pmap == null )
             pmap = getDefaultPrefixMapRead() ;
-        if ( pmap == null )
-            pmap = getDefaultPrefixMapRead() ;
         ParseHandlerResolver handler = new ParseHandlerResolver(pmap) ;
         SSE_Parser.parse(reader, handler) ; 
         return handler.getItem() ;
