@@ -6,6 +6,7 @@
 
 package dev;
 
+import arq.qexec;
 import arq.qexpr;
 import arq.qparse;
 import arq.sparql;
@@ -53,7 +54,7 @@ public class Run
         
     private static void codeSSE()
     {
-        dev.sse.main(new String[]{"('a'^^<>)"}) ;
+        arq.sse.main(new String[]{"('a'^^<>)"}) ;
         System.exit(0) ;
         
         System.exit(0) ;
@@ -88,7 +89,7 @@ public class Run
             System.exit(0) ;
         }
         
-        dev.qexec.main(new String[]{
+        arq.qexec.main(new String[]{
             //"--engine=ref" ,
             //--data=D.ttl",
             "--query=Q.sse"}) ;

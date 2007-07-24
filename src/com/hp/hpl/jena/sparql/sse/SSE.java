@@ -60,15 +60,19 @@ public class SSE
     public static PrefixMapping getDefaultPrefixMapWrite() { return defaultPrefixMapWrite ; }
     public static void setDefaultPrefixMapWrite(PrefixMapping pmap) { defaultPrefixMapWrite =  pmap ; }
     
+    /** Parse a string to obtain a Node */
     public static Node parseNode(String str) { return parseNode(str, null) ; }
     
+    /** Parse a string to obtain a Node */
     public static Node parseNode(String str, PrefixMapping pmap)
     { 
         return parseNode(new StringReader(str), pmap) ;
     }
     
+    /** Parse a string to obtain a Quad */
     public static Quad parseQuad(String s) { return parseQuad(s, null) ; }
     
+    /** Parse a string to obtain a Quad */
     public static Quad parseQuad(String s, PrefixMapping pmap)
     {
         Item item = parse(s, pmap) ;
@@ -77,8 +81,10 @@ public class SSE
         return BuilderGraph.buildQuad(item.getList()) ;
     }
 
+    /** Parse a string to obtain a Triple */
     public static Triple parseTriple(String s) { return parseTriple(s, null) ; }
     
+    /** Parse a string to obtain a Triple */
     public static Triple parseTriple(String s, PrefixMapping pmap)
     {
         Item item = parse(s, pmap) ;
@@ -87,75 +93,84 @@ public class SSE
         return BuilderGraph.buildTriple(item.getList()) ;
     }
     
+    /** Parse a string to obtain a SPARQL expression  */
     public static Expr parseExpr(String s) { return parseExpr(s, null) ; }
     
+    /** Parse a string to obtain a SPARQL expression  */
     public static Expr parseExpr(String s, PrefixMapping pmap)
     { 
         Item item = parse(s, pmap) ;
         return BuilderExpr.buildExpr(item) ;
     }
     
+    /** Read in a file, parse, and obtain a graph */
     public static Graph readGraph(String filename) { return readGraph(filename, null) ; }
     
+    /** Read in a file, parse, and obtain a graph */
     public static Graph readGraph(String filename, PrefixMapping pmap)
     {
-        Item item = readResolve(filename, pmap) ;
+        Item item = readFile(filename, pmap) ;
         return BuilderGraph.buildGraph(item) ;
     }
     
+    /** Read in a file, parse, and obtain a SPARQL algebra op */
     public static Op readOp(String filename) { return Algebra.read(filename) ; }
     
+    /** Parse a string and obtain a SPARQL algebra op */
     public static Op parseOp(String s) { return Algebra.parse(s) ; }
     
+    /** Parse a string and obtain a SPARQL algebra op, given a prefix mapping */
+    public static Op parseOp(String s, PrefixMapping pmap) { return Algebra.parse(s, pmap) ; }
+
+    /** Read a file and obtain a SPARQL algebra table */
     public static Table readTable(String filename) { return readTable(filename, null) ; }
     
+    /** Read a file and obtain a SPARQL algebra table */
     public static Table readTable(String filename, PrefixMapping pmap)
     { 
-        Item item = readResolve(filename, pmap) ;
+        Item item = readFile(filename, pmap) ;
         return BuilderTable.build(item) ;
     }
     
+    /** Parse a string and obtain a SPARQL algebra table */
     public static Table parseTable(String s) { return parseTable(s, null) ; }
-    
+
+    /** Parse a string and obtain a SPARQL algebra table */
     public static Table parseTable(String s, PrefixMapping pmap)
     { 
         Item item = parse(s, pmap) ;
         return BuilderTable.build(item) ;
     }
 
-    //    public static Item parseResolve(String string)
-//    { return parseResolve(string, null) ; }
-//    
-//    public static Item parseResolve(String string, PrefixMapping pmap)
-//    {
-//        return parse(string, pmap) ;
-//    }
-    
-    public static Item readResolve(String filename) { return readResolve(filename, null) ; }
-    
-    public static Item readResolve(String filename, PrefixMapping pmap)
-    {
-        return SSE.readFile(filename) ;
-    }
-    
+    /** Read a file and obtain an SSE item expression */
     public static Item readFile(String filename)
+    { return readFile(filename, null) ; }
+
+    
+    /** Read a file and obtain an SSE item expression */
+    public static Item readFile(String filename, PrefixMapping pmap)
     {
         try {
             InputStream in = new FileInputStream(filename) ;
-            return parse(in) ;
+            return parse(in, pmap) ;
         } 
         catch (FileNotFoundException ex)
         { throw new NotFoundException("Not found: "+filename) ; }
     }
     
+    /** Parse a string and obtain an SSE item expression */
     public static Item parse(String str) { return parse(str, null) ; }
+
+    /** Parse a string and obtain an SSE item expression */
     public static Item parse(String str, PrefixMapping pmap)
     {
         return parse(new StringReader(str), pmap) ;
     }
 
+    /** Parse from an input stream and obtain an SSE item expression */
     public static Item parse(InputStream in) { return parse(in, null) ; }
 
+    /** Parse from an input stream and obtain an SSE item expression */
     public static Item parse(InputStream in, PrefixMapping pmap)
     {
         Reader reader = FileUtils.asBufferedUTF8(in) ;

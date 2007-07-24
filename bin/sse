@@ -8,4 +8,4 @@ then
 
 CP="$($ARQROOT/bin/arq_path)"
 
-java $SOCKS -cp "$CP" dev.sse "$@"
+java $SOCKS -cp "$CP" arq.sse "$@"

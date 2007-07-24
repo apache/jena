@@ -8,6 +8,7 @@ package com.hp.hpl.jena.sparql.algebra;
 
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.shared.PrefixMapping;
 
 import com.hp.hpl.jena.sparql.core.DataSourceGraphImpl;
 import com.hp.hpl.jena.sparql.core.DatasetGraph;
@@ -72,6 +73,13 @@ public class Algebra
     static public Op parse(String string)
     {
         Item item = SSE.parse(string) ;
+        return parse(item) ;
+    }
+    
+
+    static public Op parse(String string, PrefixMapping pmap)
+    {
+        Item item = SSE.parse(string, pmap) ;
         return parse(item) ;
     }
     
