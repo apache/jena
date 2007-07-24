@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Query.java,v 1.38 2007-01-02 11:49:45 andy_seaborne Exp $
+  $Id: Query.java,v 1.39 2007-07-24 15:32:36 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -81,20 +81,13 @@ public class Query
     */
     public Query addMatch( Node s, Node p, Node o )
         { return addNamedMatch( NamedTripleBunches.anon, s, p, o ); }     
-        
-    /**
-        Add a triple to the query's collection of match triples. Return this query
-        for cascading.
-        @param t an (S, P, O) triple to add to the collection of matches
-        @return this Query, for cascading
-    */
-    public Query addMatch( Triple t )
-        { triples.add( NamedTripleBunches.anon, t );
-        return this; }
-        
+
     /**
         Add an (S, P, O) match triple to this query to match against the graph labelled
         with <code>name</code>. Return this query for cascading.
+        
+        @deprecated named triple patterns are not supported
+        
         @param name the name that will identify the graph in the matching
         @param s the node to match the subject
         @param p the node to match the predicate
@@ -103,7 +96,43 @@ public class Query
     */
     public Query addMatch( String name, Node s, Node p, Node o )
         { return addNamedMatch( name, s, p, o ); }   
+    
+    /**
+        Add a triple to the query's collection of match triples. Return this query
+        for cascading.
+        @param t an (S, P, O) triple to add to the collection of matches
+        @return this Query, for cascading
+    */
+    public Query addMatch( Triple t )
+        { 
+        triplePattern.add( t );
+        triples.add( NamedTripleBunches.anon, t );
+        return this; 
+        }
+    
+    private Query addNamedMatch( String name, Node s, Node p, Node o )
+        { 
+        triplePattern.add( Triple.create( s, p, o ) );
+        triples.add( name, Triple.create( s, p, o ) ); 
+        return this; 
+        }
+    
+    /** 
+         The named bunches of triples for graph matching 
+    */
+    private NamedTripleBunches triples = new NamedTripleBunches();
+    
+    private List triplePattern = new ArrayList();
+    
+    /**
+        Answer a list of the triples that have been added to this query.
+        (Note: ignores "named triples").
         
+     	@return
+    */
+    public List getPattern()
+        { return new ArrayList( triplePattern ); }
+    
     private ExpressionSet constraint = new ExpressionSet();
     
     public ExpressionSet getConstraints()
@@ -151,10 +180,10 @@ public class Query
     
     private SimpleQueryEngine lastQueryEngine = null;
     
-    /** The named bunches of triples for graph matching */
-    
-    private NamedTripleBunches triples = new NamedTripleBunches();
-    
+    /**
+        @deprecated use getPattern for the raw triples
+     	@return
+     */
     public NamedTripleBunches getTriples()
         { return triples; }
         
@@ -163,10 +192,6 @@ public class Query
             
     public NamedGraphMap args()
         { return argMap; }
-
-    private Query addNamedMatch( String name, Node s, Node p, Node o )
-        { triples.add( name, Triple.create( s, p, o ) ); 
-        return this; }
 
     public TripleSorter getSorter()
         { return sortMethod; }

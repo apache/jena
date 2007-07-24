@@ -1,6 +1,6 @@
 # (c) Copyright 2005 Hewlett-Packard Development Company, LP
 # All rights reserved.
-# $Id: assembler.n3,v 1.12 2007-07-23 11:22:41 chris-dollin Exp $
+# $Id: assembler.n3,v 1.13 2007-07-24 15:32:39 chris-dollin Exp $
 
 @prefix rdf:        <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs:       <http://www.w3.org/2000/01/rdf-schema#> .
@@ -31,11 +31,11 @@
 
 ja:imports a rdf:Property
     ; rdfs:label "Assembler.imports"
-    ; rdfs:comment 
+    ; rdfs:comment
         """property whose object is another JA description to
         be loaded into this one; equivalent to owl:imports."""
     .
-    
+
 #
 # Assembler object: those things that can be specified and created
 #
@@ -99,8 +99,14 @@ ja:Loadable a rdfs:Class
     ; rdfs:comment "a Loadable object, namely a Model or a Load"
     .
 
+ja:HasFileManager a rdfs:Class
+	; rdfs:subClassOf ja:Object
+	; rdfs:label "Assembler.HasFileManager"
+	; rdfs:comment "an object that may have a fileManager property"
+	.
+
 ja:Content a rdfs:Class
-    ; rdfs:subClassOf ja:Object
+    ; rdfs:subClassOf ja:Object, ja:HasFileManager
     ; rdfs:label "Assembler.Content"
     ; rdfs:comment "content to be loaded into a Loadable"
     .
@@ -333,7 +339,7 @@ ja:reasonerURL a rdf:Property
         in the reasoner registry; only one such property per reasoner."""
     ; rdfs:domain ja:ReasonerFactory
     .
-   
+
 ja:reasonerClass a rdf:Property
     ; rdfs:label "Assembler.reasonerClass"
     ; rdfs:comment "property of a ReasonerFactory giving the class name"
@@ -420,7 +426,7 @@ ja:LocationMapper a rdfs:Class
 lm:mapping a rdf:Property
     ; rdfs:domain ja:LocationMapper
     ; rdfs:label "LocationMapper.mapping"
-    ; rdfs:comment 
+    ; rdfs:comment
         """LocationMapper property which identifies location mappings and
         which we have stolen to identify ja:LocationMapper specifications."""
     .
@@ -441,6 +447,7 @@ ja:locationMapper a rdf:Property
 
 ja:DocumentManager a rdfs:Class
     ; rdfs:subClassOf ja:Object
+	; rdfs:subClassOf ja:HasFileManager
     ; rdfs:subClassOf [owl:onProperty ja:fileManager; owl:maxCardinality 1]
     ; rdfs:subClassOf [owl:onProperty ja:policyPath; owl:maxCardinality 1]
     ; rdfs:label "Assembler.DocumentManager"
@@ -448,10 +455,10 @@ ja:DocumentManager a rdfs:Class
     .
 
 ja:fileManager a rdf:Property
-    ; rdfs:domain ja:DocumentManager
+    ; rdfs:domain ja:HasFileManager
     ; rdfs:range ja:FileManager
     ; rdfs:label "Assembler.fileManager"
-    ; rdfs:comment 
+    ; rdfs:comment
         """property of a DocumentManager whose value is its FileManager"""
     .
 
@@ -640,11 +647,11 @@ ja:dbClassProperty a rdf:Property
     ; rdfs:label "Assembler.dbClass"
     ; rdfs:comment
         """property of a database connection that specifies as a string the
-        name a Java system property containing the name of a Java class to be 
+        name a Java system property containing the name of a Java class to be
         loaded before connection is attemped."""
     ; rdfs:domain ja:Connection
     .
-                                
+
 #
 # reification modes
 #

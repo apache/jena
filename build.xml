@@ -1,4 +1,4 @@
- <!-- CVS: $Id: build.xml,v 1.132 2007-06-15 10:35:31 andy_seaborne Exp $ -->
+ <!-- CVS: $Id: build.xml,v 1.133 2007-07-24 15:32:28 chris-dollin Exp $ -->
 
 <project name="jena" default="main" basedir=".">
 
@@ -295,7 +295,9 @@
      />
   </target>
 
-  <target name="assembler-doc">
+  <target name="assembler-doc" depends="assembler-doc-howto,assembler-doc-inside"/>
+
+  <target name="assembler-doc-howto">
       <java classname="jena.Weave">
           <classpath>
               <pathelement path="../rdf-html/bin"/>
@@ -310,6 +312,22 @@
           <sysproperty key="examples" value="doc/assembler/examples.n3"/>
       </java>
   </target>
+
+   <target name="assembler-doc-inside">
+        <java classname="jena.Weave">
+            <classpath>
+                <pathelement path="../rdf-html/bin"/>
+                <fileset dir="../rdf-html/lib" includes="*.jar"/>
+                <path refid="classpath.tools"/>
+             </classpath>
+             <redirector
+                 output="doc/assembler/inside-assemblers.html"
+             />
+             <arg value="doc/assembler/inside-assemblers.phtml"/>
+             <sysproperty key="vocab" value="vocabularies/assembler.n3"/>
+             <sysproperty key="examples" value="doc/assembler/examples.n3"/>
+         </java>
+     </target>
 
   <!-- Creating a Jena distribution -->
   <!-- ============================ -->

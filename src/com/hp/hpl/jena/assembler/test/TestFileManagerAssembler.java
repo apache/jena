@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestFileManagerAssembler.java,v 1.4 2007-01-02 11:52:50 andy_seaborne Exp $
+ 	$Id: TestFileManagerAssembler.java,v 1.5 2007-07-24 15:32:33 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.test;
@@ -27,6 +27,7 @@ public class TestFileManagerAssembler extends AssemblerTestBase
     public void testFileManagerVocabulary()
         {
         assertSubclassOf( JA.FileManager, JA.Object );
+        assertDomain( JA.HasFileManager, JA.fileManager );
         assertDomain( JA.FileManager, JA.locationMapper );
         assertRange( JA.LocationMapper, JA.locationMapper );
         }

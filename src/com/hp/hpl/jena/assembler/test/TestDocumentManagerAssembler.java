@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestDocumentManagerAssembler.java,v 1.4 2007-01-02 11:52:50 andy_seaborne Exp $
+ 	$Id: TestDocumentManagerAssembler.java,v 1.5 2007-07-24 15:32:33 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.test;
@@ -28,7 +28,7 @@ public class TestDocumentManagerAssembler extends AssemblerTestBase
     public void testDocumentManagerVocabulary()
         {
         assertSubclassOf( JA.DocumentManager, JA.Object );
-        assertDomain( JA.DocumentManager, JA.fileManager );
+        assertSubclassOf( JA.DocumentManager,  JA.HasFileManager);
         assertRange( JA.FileManager, JA.fileManager );
         assertDomain( JA.DocumentManager, JA.policyPath );
         }

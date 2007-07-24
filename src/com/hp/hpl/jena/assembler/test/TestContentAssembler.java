@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestContentAssembler.java,v 1.10 2007-07-23 11:22:33 chris-dollin Exp $
+ 	$Id: TestContentAssembler.java,v 1.11 2007-07-24 15:32:33 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.test;
@@ -27,7 +27,7 @@ public class TestContentAssembler extends AssemblerTestBase
     
     public void testContentVocabulary()
         {
-        assertSubclassOf( JA.Content, JA.Object );
+        assertSubclassOf( JA.Content, JA.HasFileManager );
         assertSubclassOf( JA.ContentItem, JA.Content );
         // assertSubclassOf( JA.LiteralContent, JA.Content );
         }

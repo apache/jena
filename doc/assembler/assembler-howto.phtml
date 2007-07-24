@@ -30,6 +30,17 @@
 <h1>introduction</h1>
 
 <p>
+<i>Under active development.</i> This document describes the
+vocabulary and effect of the built-in Jena assembler descriptions
+for constructing models (and other things). A 
+<a href="inside-assemblers.html">companion document</a>
+describes the built-in assembler classes and how to write and
+integrate your own assemblers. If you just need a quick
+guide to the common model specifications, see the
+<a href="index.html">assembler quickstart</a>.
+</p>
+
+<p>
 This document describes how to use the Assembler classes to construct models
 -- and other things -- from RDF descriptions that use the
 Jena Assembler vocabulary. That vocabulary is available in
@@ -87,6 +98,16 @@ but the externalContent bnode is implicitly typed by the domain of
 ja:externalContent. In this document, we will usually leave out
 inferrable types.
 </p>
+
+<pre>
+[BEING FIXED]
+
+Unless otherwise specified by an application, Assembler
+specifications are interpreted after /completion/ by
+(1) including (recursively) the objects of any owl:imports 
+and ja:imports statements and (2) doing (limited) RDFS inference
+[href to details here]. Your model is not modified.
+</pre>
 
 <p>
 We can construct our example model from the specification like this
@@ -159,6 +180,7 @@ models. Content can be external (files and URLs) or literal
 is part of the specification).
 
 <div class='insert-class' root='ja:Content' source='vocab'>ja:Content goes here</div>
+<div class='insert-class' root='ja:HasFileManager' source='vocab'>ja:HasFileManager goes here</div>
 
 <p>
 A <code>ja:Content</code> specification may have zero or more
@@ -656,335 +678,7 @@ RDF at <code>someURL</code>. That RDF may in turn contain
 <code>imports</code> referring to other RDF.
 </p>
 
-<h1>inside Assemblers</h1>
 
-<p><code>Assembler.general</code> is a particular implementation of
-the <code>Assembler</code> interface. An <code>Assembler</code> knows
-how to build the objects -- not just models -- described by an Assembler
-specification. The normal route into an Assembler is through the method:
-
-<ul>
-<li>open( Resource root ) &rarr; Object</li>
-</ul>
-
-The Assembler inspects the <code>root</code> resource properties and
-decides whether it can build an object with that description. If not,
-it throws an exception. Otherwise, it constructs and returns a suitable
-object.
-</p>
-
-<p>Since the creation of Models is the reason for the existance of
-Assemblers, there is a convenience wrapper method:
-
-<ul>
-<li>openModel( Resource root ) &rarr; Model</li>
-</ul>
-
-which constructs the object and checks that it's a Model before
-returning it.
-</p>
-
-<p>When an <code>Assembler</code> requires sub-objects (for example,
-when an InfModel Assembler requires a Reasoner object), it uses the
-method:
-
-<ul>
-<li>open( Assembler sub, Resource root ) &rarr; Model</li>
-</ul>
-
-passing in a suitable Assembler object. In fact the standard implementation
-of <code>open(root)</code> is just
-
-<ul>
-<li>open( this, root )</li>
-</ul>
-
-passing in itself as the sub-assembler and having
-<code>open(Assembler,Resource)</code> be the place where
-all the work is done. (Amongst other things, this makes testing
-easier.)
-</p>
-
-<p>When working with named persistent objects (typically database models),
-sometimes you need to control whether new objects should be constructed
-or old models can be reused. There is an additional method
-
-<ul>
-<li>open( Assembler sub, Resource root, Mode mode )</li>
-</ul>
-
-where the <code>Mode</code> argument controls the creation (or not)
-of persistent models. The mode is passed down to all sub-object
-creation. The standard implementation of <code>open(sub,root)</code>
-is just:
-
-<ul>
-<li>open( sub, root, Mode.DEFAULT )</li>
-</ul>
-
-A <code>Mode</code> object has two methods:
-
-<ul>
-<li>permitCreateNew( Resource root, String name )</li>
-<li>permitUseExisting( Resource root, String name )</li>
-</ul>
-
-<code>root</code> is the root resource describing the object to be
-created or reused, and <code>name</code> is the name given to it.
-The result is <code>true</code> iff the permission is granted.
-<code>Mode.DEFAULT</code> permits the reuse of existing objects
-and denies the creation of new ones.
-</p>
-
-<p>
-There are four <code>Mode constants:</code>
-
-<ul>
-<li>Mode.DEFAULT - reuse existing objects</li>
-<li>Mode.CREATE - create missing objects</li>
-<li>Mode.REUSE - reuse existing objects</li>
-<li>Mode.ANY - reuse existing objects, create missing ones</li>
-</ul>
-
-Since the <code>Mode</code> methods are passed the resource root and
-name, the user can write specialised <code>Mode</code>s that look at
-the name or the other root properties to make their decision.
-</p>
-
-<p>
-Note that the Modes only apply to persistent objects, so <i>eg</i>
-MemoryModels or PrefixMappings ignore their Mode arguments.
-</p>
-
-<h2>implementing your own assemblers</h2>
-
-(Temporary documentation pasted in from email; will be
-integrated and made nice RSN.)
-
-<pre>
-You have to implement the Assembler interface, most straightforwardly
-done by subclassing AssemblerBase and overriding 
-
-    public Object open( Assembler a, Resource root, Mode mode );
-
-    because AssemblerBase both implements the boring methods that are
-    just specialisations of `open` and provides some utility methods
-    such as getting the values of unique properties. The arguments are
-
-    * a -- the assembler to use for any sub-assemblies
-    * root -- the resource in the assembler description for this object
-    * mode -- the persistent open vs create mode
-
-    The pattern is to look for the known properties of the root, use
-    those to define any sub-objects of the object you're assembling
-    (including using `a` for anything that's itself a structured
-    object) and then constructing a new result object from those
-    components. 
-
-    Then you attach this new assembler object to its type in some
-    AssemblerGroup using that group's `implementWith` method. You
-    can attach it to the handy-but-public-and-shared group
-    `Assembler.general` or you can construct your own group. The
-    point about an AssemblerGroup is that it does the type-to-assembler
-    mapping for you -- and when an AssemblerGroup calls a component
-    assembler's `open` method, it passes /itself/ in as the `a` argument,
-    so that the invoked assembler has access to all of the component
-    assemblers of the Group.
-</pre>
-
-
-<h1>basic assemblers</h1>
-
-<p>
-There is a family of <i>basic assemblers</i>, each of which knows how to
-assemble a specific kind of object so long as they're given an
-Assembler that can construct their sub-objects. There are defined constants
-in <code>Assembler</code> for (an instance of) each of these basic
-assembler classes.
-</p>
-
-<table class='framed' align='center'>
-<thead>
-    <tr><th>produces</th><th>Class</th><th>Type</th><th>constant</th></tr>
-</thead>
-<tbody>
-<tr>
-    <td>default models</td>
-    <td>DefaultModelAssembler</td>
-    <td>ja:DefaultModel</td>
-    <td>defaultModel</td>
-</tr>
-<tr>
-    <td>memory models</td>
-    <td>MemoryModelAssembler</td>
-    <td>ja:MemoryModel</td>
-    <td>memoryModel</td>
-</tr>
-<tr>
-    <td>inference models</td>
-    <td>InfModelAssembler</td>
-    <td>ja:InfModel</td>
-    <td>infModel</td>
-</tr>
-<tr>
-    <td>RDB models</td>
-    <td>RDBModelAssembler</td>
-    <td>ja:RDBModel</td>
-    <td>rdbModel</td>
-</tr>
-<tr>
-    <td>reasoners</td>
-    <td>ReasonerAssembler</td>
-    <td>ja:Reasoner</td>
-    <td>reasoner</td>
-</tr>
-<tr>
-    <td>connection descriptions</td>
-    <td>ConnectionAssembler</td>
-    <td>ja:Connection</td>
-    <td>connection</td>
-</tr>
-<tr>
-    <td>content</td>
-    <td>ContentAssembler</td>
-    <td>ja:Content</td>
-    <td>content</td>
-</tr>
-<tr>
-    <td>ontology models</td>
-    <td>OntModelAssembler</td>
-    <td>ja:OntModel</td>
-    <td>ontModel</td>
-</tr>
-<tr>
-    <td>rules</td>
-    <td>RuleSetAssembler</td>
-    <td>ja:RuleSet</td>
-    <td>rules</td>
-</tr>
-<tr>
-    <td>union models</td>
-    <td>UnionModelAssembler</td>
-    <td>ja:UnionModel</td>
-    <td>unionModel</td>
-</tr>
-<tr>
-    <td>prefix mappings</td>
-    <td>PrefixMappingAssembler</td>
-    <td>ja:PrefixMapping</td>
-    <td>prefixMapping</td>
-</tr>
-<tr>
-    <td>file models</td>
-    <td>FileModelAssembler</td>
-    <td>ja:FileModel</td>
-    <td>fileModel</td>
-</tr>
-</tbody>
-</table>
-
-<p>
-<code>Assembler.general</code> is an <i>assembler group</i>,
-which ties together those basic assemblers. <code>general</code>
-can be extended by Jena coders if required. Jena components that
-use Assembler specifications to construct objects will use
-<code>general</code> unless documented otherwise.
-</p>
-
-<p>
-In the remaining sections we will discuss the <code>Assembler</code>
-classes that return non-Model objects and conclude with a description
-of <code>AssemblerGroup</code>.
-</p>
-
-<h2>basic assembler ContentAssembler</h2>
-
-<p>The ContentAssembler constructs Content objects (using the
-<code>ja:Content</code> vocabulary) used to supply
-content to models. A Content object has the method:
-
-<ul>
-<li>fill( Model m ) &rarr; m</li>
-</ul>
-
-Invoking the <code>fill</code> method adds the represented content to
-the model. The supplied ModelAssemblers automatically apply
-the <code>Content</code> objects corresponding to
-<code>ja:content</code> property values.
-</p>
-
-<h2>basic assembler ConnectionAssembler</h2>
-
-<p>A ConnectionAssembler constructs ConnectionDescriptions
-according to the specification. An ConnectionDescription
-retains the information required to make a database connection,
-can constructs that connection on demand.</p>
-
-<p>When a ConnectionAssembler is constructed, it may optionally
-be given a Resource describing (using the JA vocabulary) default values
-for any of the database properties. When that Assembler is used to
-create a Connection, missing values are filled in from the defaults.
-This allows sensitive information to be left out of the RDF description.
-</p>
-
-<p>The ConnectionAssembler embedded in Assembler.general has
-defaults taken from the system properties <code>jena.dbUser</code>
-and <code>jena.dbType</code>
-</p>
-
-<h2>basic assembler RulesetAssembler</h2>
-
-<p>A RulesetAssembler generates lists of Jena rules.
-</p>
-
-<h2>basic assembler DefaultModelAssembler</h2>
-
-<p>A "default model" is a model of unspecified type which is implemented as
-whatever kind the assembler for <code>ja:DefaultModel</code> generates.
-The default for a DefaultModel is to create a MemoryModel with no special
-properties.
-</p>
-
-<h2>AssemblerGroup</h2>
-
-<p>The AssemblerGroup class allows a bunch of other Assemblers to be
-bundled together and selected by RDF type. AssemblerGroup implements
-Assembler and adds the methods:</p>
-
-<ul>
-<li>implementWith( Resource type, Assembler a ) &rarr; this</li>
-<li>assemblerFor( Resource type ) &rarr; Assembler</li>
-</ul>
-
-<p>AssemblerGroup's implementation of <code>open(sub,root)</code>
-finds the <i>most specific type</i> of <code>root</code> that is a subclass
-of <code>ja:Object</code> and looks for the Assembler that has been
-associated with that type by a call of <code>implementWith</code>.
-It then delegates construction to that
-Assembler, passing <i>itself</i> as the sub-assembler. Hence each
-component Assembler only needs to know how to assemble its own
-particular objects.
-</p>
-
-<p>The <code>assemblerFor</code> method returns the assembler associated
-with the argument type by a previous call of <code>implementWith</code>,
-or <code>null</code> if there is no associated assembler.</p>
-
-<h3><a id="loading-assembler-classes">loading assembler classes</a></h3>
-
-<p>
-AssemblerGroups implement the <code>ja:assembler</code> functionality.
-The object of an <code>(type ja:assembler "ClassName")</code> statement
-is a string which is taken as the name of an <code>Assembler</code>
-implementation to load. An instance of that class is associated with
-<code>type</code> using <code>implementWith</code>.
-</p>
-
-<p>If the class has a constructor that takes a single <code>Resource</code>
-object, that constructor is used to initialise the class, passing in the
-<code>type</code> subject of the triple. Otherwise the no-argument
-constructor of the class is used.
-</p>
 
 </body>
 </html>

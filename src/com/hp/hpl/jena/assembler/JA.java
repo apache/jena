@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: JA.java,v 1.12 2007-07-19 14:23:31 chris-dollin Exp $
+ 	$Id: JA.java,v 1.13 2007-07-24 15:32:32 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler;
@@ -56,6 +56,8 @@ public class JA
     public static final Resource PrefixMapping = resource( "PrefixMapping" );
 
     public static final Resource ReasonerFactory = resource( "ReasonerFactory" );
+
+    public static final Resource HasFileManager = resource( "HasFileManager" );
 
     public static final Resource Content = resource( "Content" );
 
