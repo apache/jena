@@ -13,6 +13,8 @@ SDB ToDo list (and general notes)
 
 + DB type tables
 
++ Transform Join()
+
 + Per store additional context items
 
 + Improve Joseki integration.
