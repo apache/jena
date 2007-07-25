@@ -16,7 +16,7 @@ public class OpWalker
         op.visit(new Walker(visitor)) ;
     }
     
-    private static class Walker implements OpVisitor
+    public static class Walker implements OpVisitor
     {
         private OpVisitor visitor ;
 
