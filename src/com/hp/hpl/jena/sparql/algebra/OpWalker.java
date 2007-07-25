@@ -20,22 +20,22 @@ public class OpWalker
     {
         private OpVisitor visitor ;
 
-        Walker(OpVisitor visitor) { this.visitor = visitor ; }
+        public Walker(OpVisitor visitor) { this.visitor = visitor ; }
         
-        private void visitX(Op2 op)
+        protected void visitX(Op2 op)
         {
             op.getLeft().visit(this) ;
             op.getRight().visit(this) ;
             op.visit(visitor) ;        
         }
         
-        private void visitX(Op1 op)
+        protected void visitX(Op1 op)
         {
             op.getSubOp().visit(this) ;
             op.visit(visitor) ;        
         }
         
-        private void visitX(Op0 op)         
+        protected void visitX(Op0 op)         
         {  
             op.visit(visitor) ; 
         }
