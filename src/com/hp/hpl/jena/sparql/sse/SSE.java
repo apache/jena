@@ -179,9 +179,12 @@ public class SSE
     
     // ---- Workers
     
+    public static void setUseResolver(boolean flag) { useResolver = flag ; }
+    private static boolean useResolver = true ;
+    
     private static ParseHandler createParseHandler(PrefixMapping pmap)
     {
-        if ( true )
+        if ( useResolver )
             return new ParseHandlerResolver(pmap) ;
         else
             return new ParseHandlerPlain() ;

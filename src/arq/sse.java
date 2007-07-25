@@ -27,11 +27,13 @@ import com.hp.hpl.jena.sparql.util.Utils;
 
 public class sse extends CmdARQ
 {
-    protected final ArgDecl fileDecl    = new ArgDecl(ArgDecl.HasValue, "file") ;
-    protected final ArgDecl numberDecl  = new ArgDecl(ArgDecl.HasValue, "num", "number") ;
-    protected final ArgDecl noPrintDecl = new ArgDecl(ArgDecl.NoValue, "n") ;
+    protected final ArgDecl fileDecl        = new ArgDecl(ArgDecl.HasValue, "file") ;
+    protected final ArgDecl numberDecl      = new ArgDecl(ArgDecl.HasValue, "num", "number") ;
+    protected final ArgDecl noPrintDecl     = new ArgDecl(ArgDecl.NoValue, "n") ;
+    protected final ArgDecl noResolveDecl   = new ArgDecl(ArgDecl.NoValue, "raw") ;
 
     private boolean         print       = true ;
+    private boolean         structural  = true ;
     private boolean         lineNumbers = false ;
     private List            filenames ;
 
@@ -43,9 +45,10 @@ public class sse extends CmdARQ
     public sse(String[] argv)
     {
         super(argv) ;
-        super.add(fileDecl,     "--file=FILE",      "Algebra file to parse") ;
-        super.add(noPrintDecl,  "-n",               "Don't print the expression") ;
-        super.add(numberDecl,   "--num [on|off]",   "Numbers") ;
+        super.add(fileDecl,         "--file=FILE",      "Algebra file to parse") ;
+        super.add(noPrintDecl,      "-n",               "Don't print the expression") ;
+        super.add(numberDecl,       "--num [on|off]",   "Numbers") ;
+        super.add(noResolveDecl,    "--raw", "Don't handle base or prefix names specially") ;
     }
 
     protected void processModulesAndArgs()
@@ -59,6 +62,9 @@ public class sse extends CmdARQ
         print = ! contains(noPrintDecl) ;
         if ( contains(numberDecl) )
             lineNumbers = getValue(numberDecl).equalsIgnoreCase("on") ;
+        
+        if ( contains(noResolveDecl) )
+            SSE.setUseResolver(false) ;
     }
 
     protected String getCommandName() { return Utils.className(this) ; }
