@@ -67,6 +67,7 @@ public class dbquery extends DBcmd
 
     private ArgDecl queryDecl = new ArgDecl(true, "query") ; 
     private ArgDecl queryTime = new ArgDecl(false, "time") ;
+    private ArgDecl repeatDecl = new ArgDecl(true, "repeat") ;
     private boolean timing = false ;
 
     public dbquery()
@@ -74,6 +75,7 @@ public class dbquery extends DBcmd
         super("dbquery", false);
         getCommandLine().add(queryDecl) ;
         getCommandLine().add(queryTime) ;
+        getCommandLine().add(repeatDecl) ;
     }
 
     //@Override
@@ -115,24 +117,26 @@ public class dbquery extends DBcmd
         //super.getRDBModel().setDoFastpath(true) ;
         //System.err.println("Fastpath: "+getRDBModel().getDoFastpath()) ;
 
+        
+        
 
         long totalTime = 0 ;
         long firstTime = 0 ;
         ResultsFormat fmt = ResultsFormat.FMT_TEXT ;
         int repeat = 1 ;
+        
+        if ( getCommandLine().contains(repeatDecl) )
+            repeat = Integer.parseInt(getCommandLine().getValue(repeatDecl)) ;
 
         if ( timing )
-        {
             fmt =  ResultsFormat.FMT_NONE ;
-            repeat = 1 ;
-        }
 
         // Compile and execute once on empty model (get classes)
         if ( timing )
         {
             long startTime = System.currentTimeMillis() ;
             Query query = QueryFactory.create(arg) ;
-            Model m= ModelFactory.createDefaultModel() ;
+            Model m = ModelFactory.createDefaultModel() ;
             QueryExecution qExec = QueryExecutionFactory.create(query, m) ;
             doQuery(query, qExec, ResultsFormat.FMT_NONE) ;        
             long finishTime = System.currentTimeMillis() ;
@@ -162,9 +166,9 @@ public class dbquery extends DBcmd
 
         if ( timing )
         {
-            System.out.println("Query execution time:            "+(totalTime)/(repeat*1000.0)) ;
-            System.out.println("Query (first time/classloading): "+(firstTime)/1000.0) ;
-            System.out.println("JDBC setup:                      "+(jdbcTime)/1000.0) ;
+            System.out.println("Query execution time:   "+(totalTime)/(repeat*1000.0)) ;
+            System.out.println("Setup:                  "+(firstTime)/1000.0) ;
+            System.out.println("JDBC setup:             "+(jdbcTime)/1000.0) ;
         }
 
 
