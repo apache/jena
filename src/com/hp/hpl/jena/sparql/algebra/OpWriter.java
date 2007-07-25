@@ -8,6 +8,7 @@ package com.hp.hpl.jena.sparql.algebra;
 
 import java.io.OutputStream;
 import java.util.Iterator;
+import java.util.Map;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
@@ -54,17 +55,59 @@ public class OpWriter
         out(iWriter, op, sCxt) ;
     }
 
-    public static void out(IndentedWriter iWriter, Op op, SerializationContext sCxt)
-    {
-        op.visit(new OpWriterWorker(iWriter, sCxt)) ;
-        iWriter.ensureStartOfLine() ;
-        iWriter.flush();
-    }
-
     public static void out(IndentedWriter iWriter, Op op)
     { 
         PrefixMapping pmap = ARQConstants.getGlobalPrefixMap() ;
         out(iWriter, op, pmap) ;
+    }
+
+    // Actual work
+    public static void out(IndentedWriter iWriter, Op op, SerializationContext sCxt)
+    {
+        int closeCount = 0 ;
+//        if ( sCxt.getBaseIRI() != null )
+//        {
+//            iWriter.print("(base <") ;
+//            iWriter.print(sCxt.getBaseIRI()) ;
+//            iWriter.println(">") ;
+//            iWriter.incIndent() ;
+//            closeCount ++ ;
+//        }
+        if ( sCxt.getPrefixMapping() != null )
+        {
+            Map m = sCxt.getPrefixMapping().getNsPrefixMap() ;
+            if ( ! m.isEmpty() )
+            {
+                String tagStr = "(prefix (" ;
+                int len = tagStr.length() ;
+                iWriter.print(tagStr) ;
+                iWriter.incIndent(len) ;
+                Iterator iter = m.keySet().iterator();
+                boolean first = true ;
+                for ( ; iter.hasNext() ; )
+                {
+                    if ( ! first )
+                        iWriter.println() ;
+                    first = false ;
+                    String prefix = (String)iter.next();
+                    String uri = sCxt.getPrefixMapping().getNsPrefixURI(prefix) ;
+                    iWriter.print("("+prefix+": <"+uri+">)") ;
+                }
+                iWriter.println(")") ;
+                iWriter.decIndent(len) ;
+                iWriter.incIndent() ;
+                closeCount ++ ;
+            }
+        }
+        
+        op.visit(new OpWriterWorker(iWriter, sCxt)) ;
+        for ( int i = 0 ; i < closeCount ; i++) ;
+        {
+            iWriter.print(")") ;
+            iWriter.decIndent() ;
+        }
+        iWriter.ensureStartOfLine() ;
+        iWriter.flush();
     }
 
     

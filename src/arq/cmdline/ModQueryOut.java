@@ -8,7 +8,11 @@ package arq.cmdline;
 
 import arq.cmd.QueryUtils;
 
+import com.hp.hpl.jena.sparql.algebra.Algebra;
+import com.hp.hpl.jena.sparql.algebra.Op;
+import com.hp.hpl.jena.sparql.algebra.OpWriter;
 import com.hp.hpl.jena.sparql.lang.Parser;
+import com.hp.hpl.jena.sparql.sse.SSE;
 import com.hp.hpl.jena.sparql.util.IndentedLineBuffer;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
 
@@ -85,6 +89,33 @@ public class ModQueryOut implements ArgModuleGeneral
     
     
     public void checkParse(Query query)
+    {
+        checkParseSyntax(query) ;
+        checkOp(query) ;
+    }
+
+    public void checkOp(Query query)
+    {
+        IndentedLineBuffer buff = new IndentedLineBuffer() ;
+        Op op = Algebra.compile(query) ;
+        OpWriter.out(buff.getIndentedWriter(), op) ;
+        String str = buff.getBuffer().toString() ;
+        Op op2 = SSE.parseOp(str) ;
+        if ( op.hashCode() != op2.hashCode() )
+        {
+            System.out.println() ;
+            System.out.println("**** Check failed : reparsed algebra expression hashCode does not equal alegebra from query") ;
+        }
+        if ( ! op.equals(op2) )
+        {
+            System.out.println() ;
+            System.out.println("**** Check failed : reparsed algebra expression does not equal query algebar") ;
+
+        }
+    }
+
+    
+    public void checkParseSyntax(Query query)
     {
         if ( ! Parser.canParse(outputSyntax) )
             return ;

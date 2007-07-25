@@ -36,19 +36,15 @@ public class Run
     public static void main(String[] argv)
     {
         String []a = {//"-engine=ref",
-            "--data=D.ttl",
-            "--file=Q.rq"
+            "/home/afs/W3C/DataAccess/tests/data-r2/expr-equals/manifest.ttl"
         } ;
-        arq.sparql.main(a) ;
+        arq.qtest.main(a) ;
         System.exit(0) ;
         
         //runQExpr() ;
-        //print() ;
-        codeSSE() ;
-        //runQParse() ;
-        //classifyJ() ;
-        //classifyLJ() ;
-        execQuery("D.ttl", "Q.rq") ;
+        //codeSSE() ;
+        runQParse() ;
+        //execQuery("D.ttl", "Q.rq") ;
         //exec("D.ttl", "SSE/test.sse") ;
     }
         
@@ -222,7 +218,7 @@ public class Run
     {
         qparse.main(new String[]{ //"--in=prefix", 
                                   //"--out=prefix",
-                                  "--print=plan",
+                                  "--print=op",
                                   //"--print=query",
                                   //"--engine=ref",
                                   "--query=Q.rq"

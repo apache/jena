@@ -1,4 +1,5 @@
-
+PREFIX : <http://example/>
+PREFIX x: <http://example/ns#>
 SELECT DISTINCT ?x
 {
     ?s ?p ?x .

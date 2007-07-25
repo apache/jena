@@ -42,6 +42,7 @@
 + Commands
   + qtest to use modules (and qexpr)
     ModVersion
+  + qparse to test op output
 
 + DatasetImpl and DataSourceImpl 
     Revisit.

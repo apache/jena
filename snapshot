@@ -6,14 +6,13 @@ rm -f lib/arq.jar lib/arq-extra.jar
 ##     ant jars
 ##     fi
 ant jar
-ant sse-jar
 
 for d in SDB # Joseki3
 do
   echo "Moving ARQ jars to project $d"
   cp -u lib/arq.jar ../$d/lib
   cp -u lib/arq-extra.jar ../$d/lib
-  cp -u lib/arq-sse.jar ../$d/lib
+  # cp -u lib/arq-sse.jar ../$d/lib
   done
 
 ## Keep the JARs around for Eclipse libraries
