@@ -35,7 +35,7 @@ class BuilderBinding
         
         Item head = list.get(0) ;
         
-        if ( ! head.isWordIgnoreCase(tagRow) && ! head.isWordIgnoreCase(tagBinding) )
+        if ( ! head.isSymbolIgnoreCase(tagRow) && ! head.isSymbolIgnoreCase(tagBinding) )
             BuilderBase.broken(list, "Does not start ("+tagRow+" ...) or ("+tagBinding+" ...): "+BuilderBase.shortPrint(head)) ;
         
         Binding binding = new BindingMap() ;
@@ -49,7 +49,7 @@ class BuilderBinding
             Var v = BuilderNode.buildVar(pair.get(0)) ;
             Item cdr = pair.get(1) ;
             // undef
-            if ( cdr.isWordIgnoreCase(tagUndef) || cdr.isWordIgnoreCase(tagNull) )
+            if ( cdr.isSymbolIgnoreCase(tagUndef) || cdr.isSymbolIgnoreCase(tagNull) )
                 continue ;
             
             BuilderBase.checkNode(cdr) ;

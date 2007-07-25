@@ -24,6 +24,8 @@ public class ParseHandlerDebug implements ParseHandler
         indent() ;
     }
 
+    public Item getItem()       { return null ; }
+    
     public void parseStart()
     { System.out.println("<<<<") ; }
 

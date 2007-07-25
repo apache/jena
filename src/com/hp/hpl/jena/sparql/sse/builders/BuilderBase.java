@@ -17,7 +17,7 @@ public class BuilderBase
 {
     public static String shortPrint(Item item)
     {
-        if ( item.isWord() ) return item.getWord();
+        if ( item.isSymbol() ) return item.getSymbol();
         if ( item.isNode() ) return FmtUtils.stringForNode(item.getNode());
         return shortPrint(item.getList()) ;
     }
@@ -25,12 +25,12 @@ public class BuilderBase
     public static String shortPrint(ItemList list)
     {
         if ( list.size() == 0 ) return "()" ;
-        if ( list.get(0).isWord() ) 
+        if ( list.get(0).isSymbol() ) 
         {
             if ( list.size() == 1 )
-                return "("+list.get(0).getWord()+")";
+                return "("+list.get(0).getSymbol()+")";
             else
-                return "("+list.get(0).getWord()+" ...)";
+                return "("+list.get(0).getSymbol()+" ...)";
         }
         return "(...)" ;
     }
@@ -42,11 +42,11 @@ public class BuilderBase
         broken(item, "Not a node: "+BuilderBase.shortPrint(item)) ;
     }
     
-    public static void checkWord(Item item)
+    public static void checkSymbol(Item item)
     {
-        if ( item.isWord() ) 
+        if ( item.isSymbol() ) 
             return ;
-        broken(item, "Not a word: "+BuilderBase.shortPrint(item)) ;
+        broken(item, "Not a symbol: "+BuilderBase.shortPrint(item)) ;
     }
     
     public static void checkTagged(Item item, String tag, String msg)
@@ -67,7 +67,7 @@ public class BuilderBase
     {
         if ( list.size() == 0 )
             broken(list, "Empty list") ;
-        if ( ! list.get(0).isWordIgnoreCase(tag) )
+        if ( ! list.get(0).isSymbolIgnoreCase(tag) )
             broken(list, "List does not start ("+tag+ "...) : "+BuilderBase.shortPrint(list)) ;
     }
 
@@ -82,8 +82,8 @@ public class BuilderBase
     {
         if ( item.isList() )
             return ;
-        if ( msg == null && item.isWord())
-            msg = "Attempt to use a word where list expected: "+shortPrint(item) ;
+        if ( msg == null && item.isSymbol())
+            msg = "Attempt to use a symbol where list expected: "+shortPrint(item) ;
         if ( msg == null && item.isNode())
             msg = "Attempt to use a node where list expected: "+shortPrint(item) ;
         if ( msg == null )

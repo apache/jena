@@ -23,6 +23,14 @@ public class ParseHandler2 implements ParseHandler
         this.handler2 = handler2 ;
     }
 
+    public Item getItem()
+    {
+        Item item = handler1.getItem() ;
+        if ( item == null )
+            item = handler2.getItem() ;
+        return item ;
+    }
+
     public void parseStart()
     {
         handler1.parseStart() ;

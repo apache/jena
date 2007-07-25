@@ -33,11 +33,11 @@ public class BuilderNode
         return Var.alloc(item.getNode()) ;
     }
     
-    public static String buildWord(Item item)
+    public static String buildSymbol(Item item)
     {
-        if ( !item.isWord() )
-            BuilderBase.broken(item, "Not a word: "+BuilderBase.shortPrint(item)) ;
-        return item.getWord() ;
+        if ( !item.isSymbol() )
+            BuilderBase.broken(item, "Not a symbol: "+BuilderBase.shortPrint(item)) ;
+        return item.getSymbol() ;
     }
     
 

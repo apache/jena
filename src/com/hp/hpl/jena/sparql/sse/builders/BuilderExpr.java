@@ -75,7 +75,7 @@ public class BuilderExpr
                 return buildFunctionCall(list) ;
             else if ( head.isList() )
                 BuilderBase.broken(item, "Head is a list") ;
-            else if ( head.isWord() )
+            else if ( head.isSymbol() )
             {
                 if ( item.isTagged(symExpr) )
                 {
@@ -96,12 +96,12 @@ public class BuilderExpr
             return NodeValue.makeNode(item.getNode()) ;
         }
     
-        if ( item.isWordIgnoreCase(symTrue) )
+        if ( item.isSymbolIgnoreCase(symTrue) )
             return NodeValue.TRUE ;
-        if ( item.isWordIgnoreCase(symFalse) )
+        if ( item.isSymbolIgnoreCase(symFalse) )
             return NodeValue.FALSE ;
         
-        BuilderBase.broken(item, "Not a list or a node or recognized word: "+item) ;
+        BuilderBase.broken(item, "Not a list or a node or recognized symbol: "+item) ;
         return null ;
     }
 
@@ -187,7 +187,7 @@ public class BuilderExpr
             BuilderBase.broken(list, "Empty list for expression") ;
     
         Item item = list.get(0) ;
-        String tag = item.getWord() ;
+        String tag = item.getSymbol() ;
         if ( tag == null )
             BuilderBase.broken(item, "Null tag") ;
     

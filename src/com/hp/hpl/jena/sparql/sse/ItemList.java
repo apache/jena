@@ -35,7 +35,7 @@ public class ItemList extends ItemLocation //implements Iterable<Item>
     
     public void add(Item item){ elements.add(item) ; }
     public void add(Node node){ elements.add(Item.createNode(node)) ; }
-    public void add(String word){ elements.add(Item.createWord(word)) ; }
+    public void add(String symbol){ elements.add(Item.createSymbol(symbol)) ; }
     
     public Item get(int idx) { return (Item)elements.get(idx) ; }
 //  public List getList() { return items ; }

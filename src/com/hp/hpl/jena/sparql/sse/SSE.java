@@ -179,6 +179,14 @@ public class SSE
     
     // ---- Workers
     
+    private static ParseHandler createParseHandler(PrefixMapping pmap)
+    {
+        if ( true )
+            return new ParseHandlerResolver(pmap) ;
+        else
+            return new ParseHandlerPlain() ;
+    }
+    
     private static Node parseNode(Reader reader, PrefixMapping pmap)
     {
         Item item = parseTerm(reader, pmap) ;
@@ -187,12 +195,12 @@ public class SSE
         return item.getNode() ;
     }
 
-    private static String parseWord(Reader reader, PrefixMapping pmap)
+    private static String parseSymbol(Reader reader, PrefixMapping pmap)
     {
         Item item = parseTerm(reader, pmap) ;
-        if ( ! item.isWord() )
-            throw new SSEParseException("Not a word: "+item, item.getLine(), item.getColumn()) ;
-        return item.getWord() ;
+        if ( ! item.isSymbol() )
+            throw new SSEParseException("Not a symbol: "+item, item.getLine(), item.getColumn()) ;
+        return item.getSymbol() ;
     }
     
     // --- Parse single elements. 
@@ -201,7 +209,7 @@ public class SSE
     {
         if ( pmap == null )
             pmap = getDefaultPrefixMapRead() ;
-        ParseHandlerResolver handler = new ParseHandlerResolver(pmap) ;
+        ParseHandler handler = createParseHandler(pmap) ;
         SSE_Parser.term(reader, handler) ; 
         return handler.getItem() ;
     }
@@ -210,7 +218,7 @@ public class SSE
     {
         if ( pmap == null )
             pmap = getDefaultPrefixMapRead() ;
-        ParseHandlerResolver handler = new ParseHandlerResolver(pmap) ;
+        ParseHandler handler = createParseHandler(pmap) ;
         SSE_Parser.parse(reader, handler) ; 
         return handler.getItem() ;
     }

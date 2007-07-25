@@ -8,6 +8,9 @@ package com.hp.hpl.jena.sparql.sse;
 
 public interface ParseHandler
 {
+    /** The result of a parse */
+    public Item getItem() ;
+    
     public void parseStart() ;
     public void parseFinish() ;
     

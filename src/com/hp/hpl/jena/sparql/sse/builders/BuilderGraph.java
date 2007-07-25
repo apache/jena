@@ -38,8 +38,8 @@ public class BuilderGraph
         if (item.isNode() )
             BuilderBase.broken(item, "Attempt to build graph from a plain node") ;
 
-        if (item.isWord() )
-            BuilderBase.broken(item, "Attempt to build graph from a bare word") ;
+        if (item.isSymbol() )
+            BuilderBase.broken(item, "Attempt to build graph from a bare symbol") ;
 
         if ( item.isTagged(symGraph) )
             return buildGraph(item.getList()) ;
@@ -78,8 +78,8 @@ public class BuilderGraph
         if (item.isNode() )
             BuilderBase.broken(item, "Attempt to build dataset from a plain node") ;
 
-        if (item.isWord() )
-            BuilderBase.broken(item, "Attempt to build dataset from a bare word") ;
+        if (item.isSymbol() )
+            BuilderBase.broken(item, "Attempt to build dataset from a bare symbol") ;
 
         if ( item.isTagged(BuilderGraph.symGraph) )
         {
@@ -149,7 +149,7 @@ public class BuilderGraph
             BuilderBase.broken(list, "Not a triple: "+BuilderBase.shortPrint(list)) ;
         if ( list.size() == 4 )
         {
-            if ( ! list.get(0).isWord(symTriple) )
+            if ( ! list.get(0).isSymbol(symTriple) )
                 BuilderBase.broken(list, "Not a triple: "+BuilderBase.shortPrint(list)) ;
             list = list.cdr() ;
         }
@@ -176,7 +176,7 @@ public class BuilderGraph
             BuilderBase.broken(list, "Not a quad: "+BuilderBase.shortPrint(list)) ;
         if ( list.size() == 5 )
         {
-            if ( ! list.get(0).isWord(symQuad) )
+            if ( ! list.get(0).isSymbol(symQuad) )
                 BuilderBase.broken(list, "Not a quad: "+BuilderBase.shortPrint(list)) ;
             list = list.cdr() ;
         }
@@ -192,7 +192,7 @@ public class BuilderGraph
     private static Quad _buildNode4(ItemList list)
     {
         Node g = null ;
-        if ( "_".equals(list.get(0).getWord()) )
+        if ( "_".equals(list.get(0).getSymbol()) )
             g = Quad.defaultGraphNode ;
         else
             g = BuilderNode.buildNode(list.get(0)) ;

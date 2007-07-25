@@ -6,48 +6,160 @@
 
 package com.hp.hpl.jena.sparql.sse;
 
-public class  ParseHandlerPlain implements ParseHandler 
+import java.util.Stack;
+
+import com.hp.hpl.jena.datatypes.RDFDatatype;
+import com.hp.hpl.jena.datatypes.TypeMapper;
+import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.sparql.core.Var;
+import com.hp.hpl.jena.sparql.core.VarAlloc;
+import com.hp.hpl.jena.sparql.util.LabelToNodeMap;
+
+import org.apache.commons.logging.LogFactory;
+
+public class ParseHandlerPlain implements ParseHandler 
 {
+    protected ListStack      listStack   = new ListStack() ;
+    protected Item           currentItem = null ;
+    protected int            depth       = 0 ;
+    protected LabelToNodeMap bNodeLabels = LabelToNodeMap.createBNodeMap() ;
+    protected VarAlloc       varAlloc    = new VarAlloc("") ;
+    
+    public Item getItem()
+    {
+        return currentItem ; 
+    }
+    
+    public void parseStart()
+    { depth = 0 ; }
+    
+    public void parseFinish()
+    {
+        if ( depth != 0 )
+            LogFactory.getLog(ParseHandlerPlain.class).warn("Stack error: depth ="+depth+" at end of parse run") ;
+        depth = -1 ;
 
-    public void emitBNode(int line, int column, String label)
-    {}
-
-    public void emitIRI(int line, int column, String iriStr)
-    {}
-
-    public void emitLiteral(int line, int column, String lex, String lang, String dt_iri, String dt_pname)
-    {}
-
-    public void emitPName(int line, int column, String pname)
-    {}
-
-    public void emitSymbol(int line, int column, String symbol)
-    {}
-
-    public void emitVar(int line, int column, String varName)
-    {}
+    }
+    
+    public void listStart(int line, int column)
+    {
+        depth++ ;
+        ItemList list = new ItemList(line, column) ;
+        listStack.push(list) ;
+        setCurrentItem(Item.createList(list)) ;
+    }
 
     public void listFinish(int line, int column)
-    {}
+    {
+        --depth ;
+        ItemList list = listStack.pop() ;
+        Item item = Item.createList(list) ;
+        listAdd(item) ;
+    }
 
-    public void listStart(int line, int column)
-    {}
-
-    public void parseFinish()
-    {}
-
-    public void parseStart()
-    {}
     
-//    public void parseStart()                    { return ; }
-//    public void parseFinish()                   { return ; }
-//    public String resolvePName(String pname)    { return pname ; }
-//    public String resolveIRI(String iri)        { return iri ; } 
-//    public Item itemNode(Item item)             { return item ; }
-//    public Item itemWord(Item item)             { return item ; }
-//    public void listAdd(Item item, Item elt)    { item.getList().add(elt); }
-//    public Item listFinish(Item item)           { return item ; }
-//    public void listStart(Item item)            { return ; }
+    // Share??
+    
+    protected void setCurrentItem(Item item)
+    {
+        currentItem = item ;
+    }
+    
+    protected void listAdd(Item item)
+    {
+        if ( listStack.isEmpty() )
+        {
+            // Top level is outside a list.
+            setCurrentItem(item) ;
+            return ;
+        }
+        
+        ItemList list = listStack.getCurrent() ;
+        list.add(item) ;
+        setCurrentItem(item) ;
+    }
+    
+    public void emitSymbol(int line, int column, String symbol)
+    {
+        listAdd(Item.createSymbol(symbol, line, column)) ;
+    }
+
+    public void emitVar(int line, int column, String varName)
+    {
+        Var var = null ;
+        if ( varName.equals("") )
+            var = varAlloc.allocVar()  ;
+        else
+            var = Var.alloc(varName) ;
+        Item item = Item.createNode(var, line, column) ;
+        listAdd(item) ;
+    }
+
+    public void emitLiteral(int line, int column, String lexicalForm, String langTag, String datatypeIRI, String datatypePN)
+    {
+        Node n = null ;
+        if ( datatypeIRI != null || datatypePN != null )
+        {
+            if ( datatypePN != null )
+                datatypeIRI = handlePrefixedName(datatypePN, line, column) ;
+            
+            RDFDatatype dType = TypeMapper.getInstance().getSafeTypeByName(datatypeIRI) ;
+            n = Node.createLiteral(lexicalForm, null, dType) ;
+        }
+        else
+            n = Node.createLiteral(lexicalForm, langTag, null) ;
+        Item item = Item.createNode(n, line, column) ;
+        listAdd(item) ;
+    }
+
+    public void emitBNode(int line, int column, String label)
+    {
+        Node n = bNodeLabels.asNode(label) ;
+        Item item = Item.createNode(n, line, column) ;
+        listAdd(item) ;
+    }
+
+    public void emitIRI(int line, int column, String iriStr)
+    {
+        Node n = Node.createURI(iriStr) ;
+        Item item = Item.createNode(n, line, column) ;
+        listAdd(item) ;
+    }
+
+    public void emitPName(int line, int column, String pname)
+    {
+        String iriStr = handlePrefixedName(pname, line, column) ;
+        emitIRI(line, column, iriStr) ;
+    }
+
+    protected String handlePrefixedName(String pname, int line, int column)
+    {
+        // Not resolving.  Make a strange URI.
+        return "pname:"+pname ;
+    }
+    
+    protected static class ListStack
+    {
+        private Stack stack    = new Stack() ;
+        
+        boolean isEmpty() { return stack.size() == 0 ; }
+        
+        ItemList getCurrent()
+        {
+            if ( stack.size() == 0 )
+                return null ;
+            return (ItemList)stack.peek() ;
+        }
+    
+        void push(ItemList list) { stack.push(list) ; }
+        ItemList pop() { return (ItemList)stack.pop() ; }
+    }
+
+    
+    private static void throwException(String msg, int line, int column)
+    {
+        throw new SSEParseException("[" + line + ", " + column + "] " + msg, line, column) ;
+    }
 }
 
 /*

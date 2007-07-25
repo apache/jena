@@ -34,7 +34,6 @@ public class TS_Internal extends TestSuite
         
         addTest(TestRegex.suite()) ;
         addTest(TestSSE.suite()) ;
-        addTest(TestOpSSE.suite()) ;
     }
 }
 

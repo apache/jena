@@ -59,13 +59,13 @@ public class BuilderPrefixMapping
             Item prefixItem = pair.getList().get(0) ;
             Item iriItem = pair.getList().get(1) ;
 
-            // Maybe a Node (fake prefixed name) or a Word, depending on parser set up.
+            // Maybe a Node (fake prefixed name) or a Symbol, depending on parser set up.
             
             String prefix = null ;
 
-            // -- Prefix as word
-            if ( prefixItem.isWord() )
-                prefix = prefixItem.getWord() ;
+            // -- Prefix as symbol
+            if ( prefixItem.isSymbol() )
+                prefix = prefixItem.getSymbol() ;
 
             // -- Prefix as Node
 //            if ( prefixItem.isNode())

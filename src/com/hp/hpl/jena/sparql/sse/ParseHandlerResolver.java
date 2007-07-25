@@ -8,21 +8,13 @@ package com.hp.hpl.jena.sparql.sse;
 
 import java.util.Stack;
 
-import org.apache.commons.logging.LogFactory;
-
-import com.hp.hpl.jena.datatypes.RDFDatatype;
-import com.hp.hpl.jena.datatypes.TypeMapper;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.n3.IRIResolver;
 import com.hp.hpl.jena.shared.PrefixMapping;
 import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
-
 import com.hp.hpl.jena.sparql.ARQNotImplemented;
 import com.hp.hpl.jena.sparql.core.Prologue;
-import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.sparql.core.VarAlloc;
 import com.hp.hpl.jena.sparql.sse.builders.BuilderPrefixMapping;
-import com.hp.hpl.jena.sparql.util.LabelToNodeMap;
 import com.hp.hpl.jena.sparql.util.PrefixMapping2;
 
 /** Resolve prefixed names in a prefix map and IRIs relative to a base.
@@ -35,7 +27,7 @@ import com.hp.hpl.jena.sparql.util.PrefixMapping2;
  * @version $Id$
  */
 
-public class ParseHandlerResolver implements ParseHandler 
+public class ParseHandlerResolver extends ParseHandlerPlain 
 {
     /*  Both forms have a common structure.
      *    Exactly 3 items long.
@@ -49,7 +41,6 @@ public class ParseHandlerResolver implements ParseHandler
     
     // Maybe more restrictive.  Spot the special form (base BASE (prefix ....))
     
-    
     private static final String prefixTag       = "prefix" ;
     private static final String baseTag         = "base" ;
 
@@ -61,12 +52,6 @@ public class ParseHandlerResolver implements ParseHandler
     private PrefixMapping       prefixMap ;
     private IRIResolver         resolver ;
     private FrameStack          frameStack      = new FrameStack() ;
-    private ListStack           listStack       = new ListStack() ;
-    private VarAlloc            varAlloc        = new VarAlloc("") ;
-    private LabelToNodeMap      bNodeLabels     = LabelToNodeMap.createBNodeMap() ;
-
-    private Item                currentItem     = null ;
-    private int                 depth           = 0 ;
     public ParseHandlerResolver() { this(null, null) ; }
 
     public ParseHandlerResolver(PrefixMapping pmap) { this(pmap, null) ; }
@@ -97,22 +82,12 @@ public class ParseHandlerResolver implements ParseHandler
     }
      
     
-    public void parseStart()
-    {}
+    public void parseStart()    { super.parseStart() ; }
 
-    public void parseFinish()
-    {
-        if ( depth != 0 )
-            LogFactory.getLog(ParseHandlerResolver.class).warn("Stack error: depth ="+depth+" at end of parse run") ;
-    }
+    public void parseFinish()   { super.parseFinish() ; }
 
     public void listStart(int line, int column)
-    {
-        depth++ ;
-        ItemList list = new ItemList(line, column) ;
-        listStack.push(list) ;
-        setCurrentItem(Item.createList(list)) ;
-    }
+    { super.listStart(line, column) ; }
 
     public void listFinish(int line, int column)
     {
@@ -142,27 +117,17 @@ public class ParseHandlerResolver implements ParseHandler
         listAdd(item) ;
     }
 
-    private void setCurrentItem(Item item)
+    protected void listAdd(Item item)
     {
-        currentItem = item ;
-    }
-    
-    private void listAdd(Item item)
-    {
-        if ( listStack.isEmpty() )
-        {
-            // Top level is outside a list.
-            setCurrentItem(item) ;
-            return ;
-        }
-        
-        ItemList list = listStack.getCurrent() ;
         // Always add to the current list, even for (base...) and (prefix...)
         // Then change the result list later.
-        list.add(item) ;
-        setCurrentItem(item) ;
+        super.listAdd(item) ;
+        if ( listStack.isEmpty() )
+            // Top level is outside a list.
+            return ;
 
-        if ( list.size() > 2 && ( list.get(0).isWord(baseTag) || list.get(0).isWord(prefixTag) ) )
+        ItemList list = listStack.getCurrent() ;
+        if ( list.size() > 2 && ( list.get(0).isSymbol(baseTag) || list.get(0).isSymbol(prefixTag) ) )
         {
             // Was it a (prefix...) or (base..)
             // Is it too long?
@@ -176,11 +141,11 @@ public class ParseHandlerResolver implements ParseHandler
         
         
         // Build the prefix mapping, we continue parsing, to accumulate
-        // a structure with prefixes as "special" words.
+        // a structure with prefixes as "special" symbols.
         // We parse that anbd continue.
         
         // End of declaration
-        if ( list.size() == 2 && list.get(0).isWord(prefixTag) )
+        if ( list.size() == 2 && list.get(0).isSymbol(prefixTag) )
         {
             PrefixMapping newMappings = BuilderPrefixMapping.build(item) ; 
             PrefixMapping2 ext = new PrefixMapping2(prefixMap, newMappings) ;
@@ -217,12 +182,12 @@ public class ParseHandlerResolver implements ParseHandler
         // Start of declaration?
         if ( list.size() == 1 )
         {
-            if ( item.isWord(baseTag) )
+            if ( item.isSymbol(baseTag) )
             {
                 inBaseDecl = true ;
                 return ;
             }
-            if ( item.isWord(prefixTag) )
+            if ( item.isSymbol(prefixTag) )
             {
                 inPrefixDecl = true ;
                 return ;
@@ -235,44 +200,22 @@ public class ParseHandlerResolver implements ParseHandler
     {
         if ( inPrefixDecl )
             throwException("Symbols not allows in prefix declarations: "+symbol, line, column) ;
-        listAdd(Item.createWord(symbol, line, column)) ;
+        super.emitSymbol(line, column, symbol) ;
     }
 
     public void emitVar(int line, int column, String varName)
     {
         if ( inPrefixDecl )
             throwException("Variables not allowed in prefix declarations: ?"+varName, line, column) ;
-        Var var = null ;
-        if ( varName.equals("") )
-            var = varAlloc.allocVar()  ;
-        else
-            var = Var.alloc(varName) ;
-        Item item = Item.createNode(var, line, column) ;
-        listAdd(item) ;
+        super.emitVar(line, column, varName) ;
     }
 
     public void emitLiteral(int line, int column, String lexicalForm, String langTag, String datatypeIRI, String datatypePN)
     {
         if ( inPrefixDecl )
             throwException("Literals not allowed in prefix declarations", line, column) ;
-        
-        Node n = null ;
-        if ( datatypeIRI != null || datatypePN != null )
-        {
-            if ( datatypePN != null )
-                datatypeIRI = resolvePName(datatypePN, line, column) ;
-            else
-                datatypeIRI = resolveIRI(datatypeIRI, line, column) ;
-            
-            RDFDatatype dType = TypeMapper.getInstance().getSafeTypeByName(datatypeIRI) ;
-            n = Node.createLiteral(lexicalForm, null, dType) ;
-        }
-        else
-            n = Node.createLiteral(lexicalForm, langTag, null) ;
-        Item item = Item.createNode(n, line, column) ;
-        listAdd(item) ;
+        super.emitLiteral(line, column, lexicalForm, langTag, datatypeIRI, datatypePN) ;
     }
-    
     public void emitBNode(int line, int column, String label)
     {
         if ( inPrefixDecl )
@@ -289,28 +232,24 @@ public class ParseHandlerResolver implements ParseHandler
         // resolve as normal. No special action.
         //if ( inPrefixDecl ) {}
         iriStr = resolveIRI(iriStr, line, column) ;
-        Node n = Node.createURI(iriStr) ;
-        Item item = Item.createNode(n, line, column) ;
-        listAdd(item) ;
+        super.emitIRI(line, column, iriStr) ;
     }
 
+    
     public void emitPName(int line, int column, String pname)
     {
         if ( inPrefixDecl )
         {
             // Record a faked PName.
-            Item item = Item.createWord(pname, line, column) ;
+            Item item = Item.createSymbol(pname, line, column) ;
             listAdd(item) ;
             return ;
         }
-        String iriStr = resolvePName(pname, line, column) ;
-        Node n = Node.createURI(iriStr) ;
-        Item item = Item.createNode(n, line, column) ;
-        listAdd(item) ;
+        String iriStr = handlePrefixedName(pname, line, column) ;
+        super.emitIRI(line, column, iriStr) ;
     }
-    
-    
-    private String resolvePName(String pname, int line, int column)
+
+    protected String handlePrefixedName(String pname, int line, int column)
     { 
         if ( prefixMap == null )
             throwException("No prefix mapping for prefixed name: "+pname, line, column) ;
@@ -374,24 +313,6 @@ public class ParseHandlerResolver implements ParseHandler
     }
 
     // ----------------
-    
-    private static class ListStack
-    {
-        private Stack stack    = new Stack() ;
-        
-        boolean isEmpty() { return stack.size() == 0 ; }
-        
-        ItemList getCurrent()
-        {
-            if ( stack.size() == 0 )
-                return null ;
-            return (ItemList)stack.peek() ;
-        }
-    
-        void push(ItemList list) { stack.push(list) ; }
-        ItemList pop() { return (ItemList)stack.pop() ; }
-    }
-
     
     private static void throwException(String msg, int line, int column)
     {

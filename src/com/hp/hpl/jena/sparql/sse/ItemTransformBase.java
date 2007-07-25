@@ -20,9 +20,9 @@ public class ItemTransformBase implements ItemTransform
         return Item.createNode(node, item.getLine(), item.getColumn()) ;
     }
     
-    public Item transform(Item item, String word)
+    public Item transform(Item item, String symbol)
     {
-        return Item.createWord(word, item.getLine(), item.getColumn()) ;
+        return Item.createSymbol(symbol, item.getLine(), item.getColumn()) ;
     }
 
 }

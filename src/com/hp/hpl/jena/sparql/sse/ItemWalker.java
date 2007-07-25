@@ -38,9 +38,9 @@ public class ItemWalker
             visitor.visit(item, node) ;
         }
         
-        public void visit(Item item, String word)
+        public void visit(Item item, String symbol)
         {
-            visitor.visit(item, word) ;
+            visitor.visit(item, symbol) ;
         }
 
         public void visitNil()

@@ -30,11 +30,11 @@ public class BuilderTable
             // Null table;
             return TableFactory.createEmpty() ;
 
-        if ( list.size() == 2 && list.get(1).isWord() )
+        if ( list.size() == 2 && list.get(1).isSymbol() )
         {
             //  Short hand for well known tables
-            String word = list.get(1).getWord() ;
-            if ( word.equals("unit") ) 
+            String symbol = list.get(1).getSymbol() ;
+            if ( symbol.equals("unit") ) 
                 return new TableUnit() ;
         }
         

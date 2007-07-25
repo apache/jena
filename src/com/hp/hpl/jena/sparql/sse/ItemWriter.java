@@ -98,8 +98,8 @@ public class ItemWriter
         public void visit(Item item, Node node)
         { out.print(FmtUtils.stringForNode(node, sCxt)) ; }
         
-        public void visit(Item item, String word)
-        { out.print(word) ; } 
+        public void visit(Item item, String symbol)
+        { out.print(symbol) ; } 
 
         public void visit(Item item, ItemList list)
         {

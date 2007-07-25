@@ -13,7 +13,7 @@ public interface ItemTransform
     // Transformations keep the list structure
     public Item transform(Item item, ItemList list) ;
     public Item transform(Item item, Node node) ;
-    public Item transform(Item item, String word) ;
+    public Item transform(Item item, String symbol) ;
 }
 
 /*

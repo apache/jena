@@ -28,8 +28,8 @@ public class BuilderOp
         if (item.isNode() )
             BuilderBase.broken(item, "Attempt to build op structure from a plain node") ;
 
-        if (item.isWord() )
-            BuilderBase.broken(item, "Attempt to build op structure from a bare word") ;
+        if (item.isSymbol() )
+            BuilderBase.broken(item, "Attempt to build op structure from a bare symbol") ;
 
         BuilderOp b = new BuilderOp();
         return b.build(item.getList()) ;
@@ -66,7 +66,7 @@ public class BuilderOp
             list = null ;
     
         Item head = list.get(0) ;
-        String tag = head.getWord() ;
+        String tag = head.getSymbol() ;
     
         Build bob = findBuild(tag) ;
         if ( bob != null )

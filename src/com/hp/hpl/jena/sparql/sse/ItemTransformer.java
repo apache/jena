@@ -60,9 +60,9 @@ public class ItemTransformer
             push(newItem) ;
         }
 
-        public void visit(Item item, String word)
+        public void visit(Item item, String symbol)
         {
-            Item newItem = transform.transform(item, word) ;
+            Item newItem = transform.transform(item, symbol) ;
             push(newItem) ;
         }
         public void visitNil()

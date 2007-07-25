@@ -29,8 +29,8 @@ public class BuilderExec
         if (item.isNode() )
             BuilderBase.broken(item, "Attempt to build evaluation from a plain node") ;
 
-        if (item.isWord() )
-            BuilderBase.broken(item, "Attempt to build evaluation from a bare word") ;
+        if (item.isSymbol() )
+            BuilderBase.broken(item, "Attempt to build evaluation from a bare symbol") ;
 
         if ( ! item.isTagged(symEval) )
             throw new BuildException("Wanted ("+symEval+"...) : got: "+BuilderBase.shortPrint(item));

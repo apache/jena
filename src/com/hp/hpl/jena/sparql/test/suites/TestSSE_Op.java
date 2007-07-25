@@ -12,12 +12,12 @@ import com.hp.hpl.jena.sparql.sse.SSE;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
-public class TestOpSSE extends TestCase
+public class TestSSE_Op extends TestCase
 {
     public static TestSuite suite()
     {
-        TestSuite ts = new TestSuite(TestOpSSE.class) ;
-        ts.setName("TestOpSSE") ;
+        TestSuite ts = new TestSuite(TestSSE_Op.class) ;
+        ts.setName("SSE Op") ;
         return ts ;
     }
     

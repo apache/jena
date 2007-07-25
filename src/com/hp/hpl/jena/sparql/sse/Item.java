@@ -18,7 +18,7 @@ public class Item extends ItemLocation implements PrintSerializable
 {
     protected ItemList list = null ;
     protected Node node = null ;
-    protected String word = null ;
+    protected String symbol = null ;
     protected boolean isNil = false ;
     
     public static Item createList() { return createList(noLine, noColumn) ; }
@@ -47,13 +47,13 @@ public class Item extends ItemLocation implements PrintSerializable
         return item ;
     }
     
-    public static Item createWord(String word) { return createWord(word, noLine, noColumn) ; }
-    public static Item createWord(String word, int line, int column)
+    public static Item createSymbol(String symbol) { return createSymbol(symbol, noLine, noColumn) ; }
+    public static Item createSymbol(String symbol, int line, int column)
     {
-        if ( word.equals("nil") )
+        if ( symbol.equals("nil") )
             return createNil(line, column) ;
         Item item = new Item(line, column) ;
-        item.word = word;
+        item.symbol = symbol;
         return item ;
     }
     
@@ -85,8 +85,8 @@ public class Item extends ItemLocation implements PrintSerializable
         public void visit(Item item, Node node)
         { hashCode = node.hashCode() ; }
 
-        public void visit(Item item, String word)
-        { hashCode = word.hashCode() ; }
+        public void visit(Item item, String symbol)
+        { hashCode = symbol.hashCode() ; }
         
         public void visitNil()
         { hashCode = -99 ; }
@@ -111,8 +111,8 @@ public class Item extends ItemLocation implements PrintSerializable
         public void visit(Item item, Node node)
         { result = ( other.isNode() && other.getNode().equals(node) ) ; }
 
-        public void visit(Item item, String word)
-        { result = ( other.isWord() && other.getWord().equals(word) ) ; }
+        public void visit(Item item, String symbol)
+        { result = ( other.isSymbol() && other.getSymbol().equals(symbol) ) ; }
 
         public void visitNil()
         { result = other.isNil() ; }
@@ -133,28 +133,28 @@ public class Item extends ItemLocation implements PrintSerializable
     public ItemList getList()           { return list ; }
     public Node getNode()               { return node ; }
     //public String getPrefixedName()     { return prefixedName ; }
-    public String getWord()             { return word ; }
+    public String getSymbol()             { return symbol ; }
     
     public String sniff()
     {
         if ( ! isTaggable() ) return null ;
-        return getList().get(0).getWord() ;
+        return getList().get(0).getSymbol() ;
     }
     
     public boolean isTaggedIgnoreCase(String tag)
     {
         if ( ! isTaggable() ) return false ;
-        return getList().get(0).isWordIgnoreCase(tag) ;
+        return getList().get(0).isSymbolIgnoreCase(tag) ;
     }
     public boolean isTagged(String tag)
     {
         if ( ! isTaggable() ) return false ;
-        return getList().get(0).isWord(tag) ;
+        return getList().get(0).isSymbol(tag) ;
     }
     public boolean isTagged()
     {
         if ( ! isTaggable() ) return false ;
-        return list.get(0).isWord() ; 
+        return list.get(0).isSymbol() ; 
     }
     private boolean isTaggable()
     {
@@ -166,18 +166,18 @@ public class Item extends ItemLocation implements PrintSerializable
     public boolean isNil()              { return isNil ; } 
     public boolean isList()             { return list != null ; }
     public boolean isNode()             { return node != null ; }
-    public boolean isWord()             { return word != null ; }
-    public boolean isWord(String testWord)
+    public boolean isSymbol()             { return symbol != null ; }
+    public boolean isSymbol(String testSymbol)
     { 
-        if ( word == null )
+        if ( symbol == null )
             return false ;
-        return word.equals(testWord) ;
+        return symbol.equals(testSymbol) ;
     }
-    public boolean isWordIgnoreCase(String testWord)
+    public boolean isSymbolIgnoreCase(String testSymbol)
     { 
-        if ( word == null )
+        if ( symbol == null )
             return false ;
-        return word.equalsIgnoreCase(testWord) ;
+        return symbol.equalsIgnoreCase(testSymbol) ;
     }
     public void visit(ItemVisitor visitor)
     {
@@ -185,8 +185,8 @@ public class Item extends ItemLocation implements PrintSerializable
             visitor.visit(this, getList()) ;
         else if ( isNode() ) 
             visitor.visit(this, getNode()) ;
-        else if ( isWord() )
-            visitor.visit(this, getWord()) ;
+        else if ( isSymbol() )
+            visitor.visit(this, getSymbol()) ;
         else if ( isNil() )
             visitor.visitNil() ;
         else
@@ -201,8 +201,8 @@ public class Item extends ItemLocation implements PrintSerializable
 //        else
         if ( isNode() ) 
             return transformer.transform(this, getNode()) ;
-        else if ( isWord() )
-            return transformer.transform(this, getWord()) ;
+        else if ( isSymbol() )
+            return transformer.transform(this, getSymbol()) ;
         else
             System.err.println("broken item") ;
         return null ;
