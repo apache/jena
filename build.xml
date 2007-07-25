@@ -31,7 +31,6 @@
 
   <property name="jarfile"         value="${name}.jar"/>
   <property name="jarfile.extra"   value="${name}-extra.jar"/>
-  <property name="jarfile.sse"     value="${name}-sse.jar"/>
 
   <property name="arq.root"        value="src/com/hp/hpl/jena/query"/>
   
@@ -77,10 +76,6 @@
   <!-- Alternative name -->
   <target name="jar"  depends="make-jars" description="Build arq.jar">
     <antcall target="clean-build-dirs"/>
-  </target>
-
-  <target name="sse-jar" depends="make-jar-sse"
-	  description="Build arq-sse.jar">
   </target>
 
   <target name="release" depends="init,package,test"
@@ -136,19 +131,17 @@
   <!-- JARS -->
   <!-- Use patternsets -->
 
-  <target name="make-jars" depends="make-jar-core,make-jar-extra,make-jar-sse"/>
+  <target name="make-jars" depends="make-jar-core,make-jar-extra"/>
 
   <property name="arq.path.impl"      value="com/hp/hpl/jena/sparql"/>
 
   <property name="extra.classes" 
 	    value="${arq.path.impl}/**/test/** ${arq.path.impl}/**/junit/** arq/**"/>
-  <property name="sse.classes"
-	    value="${arq.path.impl}/sse/**"/>
 
   <target name="make-jar-core" depends="compile">
     <!-- Core jar -->
     <jar destfile="${lib.dir}/${jarfile}" index="yes">
-      <fileset dir="${classes.build.dir}" excludes="${extra.classes} ${sse.classes} "/>
+      <fileset dir="${classes.build.dir}" excludes="${extra.classes}"/>
     </jar>
   </target>
   
@@ -159,12 +152,14 @@
     </jar>
   </target>
 
-  <!-- SSE subsystem -->
+
+  <!-- SSE subsystem - ->
   <target name="make-jar-sse" depends="compile">
     <jar destfile="${lib.dir}/${jarfile.sse}" index="yes">
         <fileset dir="${classes.build.dir}" includes="${sse.classes}"/>
       </jar>
   </target>
+  -->
 
   <!-- Section: Testing -->
   <!-- <target name="test" depends="jar"> -->
