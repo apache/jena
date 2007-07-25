@@ -12,20 +12,19 @@ import java.util.List;
 
 import arq.cmd.TerminationException;
 import arq.cmdline.ArgDecl;
-import arq.cmdline.CmdARQ;
+import arq.cmdline.CmdGeneral;
 
 import com.hp.hpl.jena.shared.PrefixMapping;
-
 import com.hp.hpl.jena.sparql.ARQInternalErrorException;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext;
 import com.hp.hpl.jena.sparql.sse.Item;
+import com.hp.hpl.jena.sparql.sse.ItemWriter;
 import com.hp.hpl.jena.sparql.sse.SSE;
 import com.hp.hpl.jena.sparql.sse.SSEParseException;
-import com.hp.hpl.jena.sparql.sse.ItemWriter;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
 import com.hp.hpl.jena.sparql.util.Utils;
 
-public class sse extends CmdARQ
+public class sse extends CmdGeneral
 {
     protected final ArgDecl fileDecl        = new ArgDecl(ArgDecl.HasValue, "file") ;
     protected final ArgDecl numberDecl      = new ArgDecl(ArgDecl.HasValue, "num", "number") ;
@@ -45,6 +44,7 @@ public class sse extends CmdARQ
     public sse(String[] argv)
     {
         super(argv) ;
+        super.getUsage().startCategory("SSE") ;
         super.add(fileDecl,         "--file=FILE",      "Algebra file to parse") ;
         super.add(noPrintDecl,      "-n",               "Don't print the expression") ;
         super.add(numberDecl,       "--num [on|off]",   "Numbers") ;
@@ -53,7 +53,6 @@ public class sse extends CmdARQ
 
     protected void processModulesAndArgs()
     {
-        super.processModulesAndArgs() ;
         if ( contains(fileDecl) )
             filenames = getValues(fileDecl) ;
         if ( filenames == null )

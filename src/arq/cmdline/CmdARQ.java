@@ -21,7 +21,7 @@ public abstract class CmdARQ extends CmdGeneral
     {
         super(argv) ;
         addModule(modSymbol) ;
-        super.add(strictDecl, "--strict", "Operate in strict mode (no extensions of any kind)") ;
+        super.add(strictDecl, "--strict", "Operate in strict SPARQL mode (no extensions of any kind)") ;
     }
     
     protected void processModulesAndArgs()
