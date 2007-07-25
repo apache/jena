@@ -124,7 +124,7 @@ public class dbquery extends DBcmd
         if ( timing )
         {
             fmt =  ResultsFormat.FMT_NONE ;
-            repeat = 10 ;
+            repeat = 1 ;
         }
 
         // Compile and execute once on empty model (get classes)
