@@ -116,9 +116,16 @@ public class sdbquery extends CmdArgsDB
         
         long totalTime = 0 ;
         try {
+            getModTime().startTimer() ;
             for ( int i = 0 ; i < repeatCount ; i++ )
             {
-                getModTime().startTimer() ;
+//                if ( i == 2 )
+//                {
+//                    // Reset timer to forget classloading overhead
+//                    getModTime().endTimer() ;
+//                    getModTime().startTimer() ;
+//                }
+                    
                 Query query = modQuery.getQuery() ;
                 QueryExecution qExec = QueryExecutionFactory.create(query, getModStore().getDataset()) ;
                 
