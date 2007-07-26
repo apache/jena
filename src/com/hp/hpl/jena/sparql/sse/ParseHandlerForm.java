@@ -28,13 +28,13 @@ import java.util.Stack;
 public abstract class ParseHandlerForm extends ParseHandlerPlain 
 {
     // generally: (FORM DECL* TERM)
-    // TERM may be absent .
+    // TERM may be absent.
     
     // Stackable to enable multiple forms??
-    // Or "FormHandler"
+    // Or "FormHandler" with a dispatch on registered tags?
     
     private boolean             inDecl      = false ;
-    private FrameStack          frameStack      = new FrameStack() ;
+    private FrameStack          frameStack  = new FrameStack() ;
 
     public ParseHandlerForm() {}
     
@@ -70,6 +70,7 @@ public abstract class ParseHandlerForm extends ParseHandlerPlain
         if ( item == null )
         {
             // Checking for explicit setting of the result.
+            // Remove later - needed for 
             throwException("Inconsistent form: No result", line, column) ;
             // Defaulting result.
             item = list.getLast() ;
@@ -79,7 +80,10 @@ public abstract class ParseHandlerForm extends ParseHandlerPlain
         
         // And emit a result as a listAdd.
         // Must go through our listAdd() here. ?? super.listAdd should work?
-        listAdd(item) ;
+        
+        // item==null : remove Nil code above to allow forms that have no output.
+        if ( item != null )
+            listAdd(item) ;
     }
 
     protected void listAdd(Item item)
