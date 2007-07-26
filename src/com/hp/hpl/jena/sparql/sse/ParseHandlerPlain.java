@@ -101,7 +101,7 @@ public class ParseHandlerPlain implements ParseHandler
         if ( datatypeIRI != null || datatypePN != null )
         {
             if ( datatypePN != null )
-                datatypeIRI = handlePrefixedName(datatypePN, line, column) ;
+                datatypeIRI = resolvePrefixedName(datatypePN, line, column) ;
             
             RDFDatatype dType = TypeMapper.getInstance().getSafeTypeByName(datatypeIRI) ;
             n = Node.createLiteral(lexicalForm, null, dType) ;
@@ -128,11 +128,11 @@ public class ParseHandlerPlain implements ParseHandler
 
     public void emitPName(int line, int column, String pname)
     {
-        String iriStr = handlePrefixedName(pname, line, column) ;
+        String iriStr = resolvePrefixedName(pname, line, column) ;
         emitIRI(line, column, iriStr) ;
     }
 
-    protected String handlePrefixedName(String pname, int line, int column)
+    protected String resolvePrefixedName(String pname, int line, int column)
     {
         // Not resolving.  Make a strange URI.
         return "pname:"+pname ;

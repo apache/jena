@@ -136,7 +136,7 @@ public class ParseHandlerResolver extends ParseHandlerPlain
             // Is it too long?
             // The list and frame stacks have not been pop'ed yet
             if ( list.size() > 3 )
-                throwException("List too long for (base...) or (prefix...) body", item.getLine(), item.getColumn()) ;
+                throwException("List too long for (base...) or (prefix...) body", item) ;
             else
                 // Result is this item, the 3rd in (base...) or (prefix...)
                 frameStack.getCurrent().result = item ;
@@ -168,9 +168,9 @@ public class ParseHandlerResolver extends ParseHandlerPlain
         {
             // At end of base IRI
             if ( ! item.isNode() )
-                throwException("(base ...): not an RDF node for the base.", item.getLine(), item.getColumn()) ;
+                throwException("(base ...): not an RDF node for the base.", item) ;
             if ( ! item.getNode().isURI() )
-                throwException("(base ...): not an IRI for the base.", item.getLine(), item.getColumn()) ;
+                throwException("(base ...): not an IRI for the base.", item) ;
             String baseIRI = item.getNode().getURI() ;
             if ( topBase == null )
                 topBase = baseIRI ; 
@@ -248,11 +248,11 @@ public class ParseHandlerResolver extends ParseHandlerPlain
             listAdd(item) ;
             return ;
         }
-        String iriStr = handlePrefixedName(pname, line, column) ;
+        String iriStr = resolvePrefixedName(pname, line, column) ;
         super.emitIRI(line, column, iriStr) ;
     }
 
-    protected String handlePrefixedName(String pname, int line, int column)
+    protected String resolvePrefixedName(String pname, int line, int column)
     { 
         if ( prefixMap == null )
             throwException("No prefix mapping for prefixed name: "+pname, line, column) ;

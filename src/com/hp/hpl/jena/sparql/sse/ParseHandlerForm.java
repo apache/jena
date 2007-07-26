@@ -30,6 +30,9 @@ public abstract class ParseHandlerForm extends ParseHandlerPlain
     // generally: (FORM DECL* TERM)
     // TERM may be absent .
     
+    // Stackable to enable multiple forms??
+    // Or "FormHandler"
+    
     private boolean             inDecl      = false ;
     private FrameStack          frameStack      = new FrameStack() ;
 
@@ -92,8 +95,8 @@ public abstract class ParseHandlerForm extends ParseHandlerPlain
         ItemList list = listStack.getCurrent() ;
         Frame lastFrame = frameStack.getCurrent()  ;
         
-
-        if ( ! inDecl && lastFrame.listItem != list && isForm(list) ) 
+        if ( ! inDecl && lastFrame.listItem != list 
+             && list.size() == 1 && isForm(list.getFirst() ) ) 
         {
             Frame f = new Frame(listStack.getCurrent()) ;
             frameStack.push(f) ;
@@ -101,21 +104,24 @@ public abstract class ParseHandlerForm extends ParseHandlerPlain
             return ;
         }
         
-        if ( inDecl )
-            declItem(item) ;
-        
         if ( endOfDecl(list, item) )
         {
             inDecl = false ;
+            // Already added.
+            return ;
         }
-            
+
+        if ( inDecl )
+            declItem(list, item) ;
     }
     
-    abstract protected void declItem(Item item) ;
+    protected boolean inFormDecl()  { return inDecl; }
+    
+    abstract protected void declItem(ItemList list, Item item) ;
     
     abstract protected boolean endOfDecl(ItemList list, Item item) ;
 
-    abstract protected boolean isForm(ItemList list) ;
+    abstract protected boolean isForm(Item tag) ;
     
     protected void setFormResult(Item item)
     {
