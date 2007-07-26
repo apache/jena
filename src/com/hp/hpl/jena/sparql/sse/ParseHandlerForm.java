@@ -27,8 +27,9 @@ import java.util.Stack;
 
 public abstract class ParseHandlerForm extends ParseHandlerPlain 
 {
-    // generally: (FORM DECL* TERM)
-    // TERM may be absent.
+    // generally: (FORM DECL* TERM?)
+    // TERM may be absent, in which case the FORM makes
+    // no contribution to the output (it just disappears).
     
     // Stackable to enable multiple forms??
     // Or "FormHandler" with a dispatch on registered tags?
