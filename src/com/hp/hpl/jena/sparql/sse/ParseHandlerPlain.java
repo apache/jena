@@ -156,10 +156,16 @@ public class ParseHandlerPlain implements ParseHandler
     }
 
     
-    private static void throwException(String msg, int line, int column)
+    protected static void throwException(String msg, int line, int column)
     {
         throw new SSEParseException("[" + line + ", " + column + "] " + msg, line, column) ;
     }
+    
+    protected static void throwException(String msg, ItemLocation loc)
+    {
+        throwException(msg, loc.getLine(), loc.getColumn()) ;
+    }
+
 }
 
 /*

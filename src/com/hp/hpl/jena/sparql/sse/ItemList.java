@@ -38,7 +38,13 @@ public class ItemList extends ItemLocation //implements Iterable<Item>
     public void add(String symbol){ elements.add(Item.createSymbol(symbol)) ; }
     
     public Item get(int idx) { return (Item)elements.get(idx) ; }
-//  public List getList() { return items ; }
+
+
+    public Item getFirst()      { return get(0) ; }
+
+    public Item getLast()       { return get(size()-1) ; }
+
+    //  public List getList() { return items ; }
     public Iterator iterator() { return elements.iterator() ; }
     
     public Item car()

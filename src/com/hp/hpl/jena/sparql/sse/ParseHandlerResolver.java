@@ -70,11 +70,6 @@ public class ParseHandlerResolver extends ParseHandlerPlain
         resolver = prologue.getResolver() ;
     }
 
-    public Item getItem()
-    {
-        return currentItem ; 
-    }
-
     public Prologue getPrologue()
     {
         throw new ARQNotImplemented("getPrologue") ;
@@ -318,13 +313,6 @@ public class ParseHandlerResolver extends ParseHandlerPlain
     
         void push(Frame f) { frames.push(f) ; }
         Frame pop() { return (Frame)frames.pop() ; }
-    }
-
-    // ----------------
-    
-    private static void throwException(String msg, int line, int column)
-    {
-        throw new SSEParseException("[" + line + ", " + column + "] " + msg, line, column) ;
     }
 }
 
