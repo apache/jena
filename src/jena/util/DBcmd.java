@@ -10,12 +10,13 @@ import com.hp.hpl.jena.db.* ;
 import com.hp.hpl.jena.enhanced.BuiltinPersonalities;
 import com.hp.hpl.jena.rdf.model.Model;
 //import com.hp.hpl.jena.rdf.model.* ;
+import java.sql.SQLException;
 import java.util.* ;
  
 /** Framework for the database commands.
  * 
  * @author Andy Seaborne
- * @version $Id: DBcmd.java,v 1.5 2007-01-02 11:54:10 andy_seaborne Exp $
+ * @version $Id: DBcmd.java,v 1.6 2007-07-26 13:26:41 andy_seaborne Exp $
  */ 
  
 public abstract class DBcmd
@@ -49,10 +50,11 @@ public abstract class DBcmd
     // DB types to JDBC driver name (some common choices)
     private static Map jdbcDrivers = new HashMap();
     static {
-        jdbcDrivers.put("mysql",       "com.mysql.jdbc.Driver");
-        jdbcDrivers.put("mssql",       "com.microsoft.jdbc.sqlserver.SQLServerDriver") ;      // What's the best coice here?
-        jdbcDrivers.put("postgres",    "org.postgresql.Driver");
-        jdbcDrivers.put("postgresql",  "org.postgresql.Driver");
+        jdbcDrivers.put("mysql",       "com.mysql.jdbc.Driver") ;
+        jdbcDrivers.put("mssql",       "com.microsoft.jdbc.sqlserver.SQLServerDriver") ;
+        jdbcDrivers.put("postgres",    "org.postgresql.Driver") ;
+        jdbcDrivers.put("postgresql",  "org.postgresql.Driver") ;
+        jdbcDrivers.put("hsqldb",      "org.hsqldb.jdbcDriver") ;
     }
     
     // DB types to name Jena uses internally
@@ -63,6 +65,7 @@ public abstract class DBcmd
         jenaDriverName.put("postgresql",  "PostgreSQL");
         jenaDriverName.put("postgres",    "PostgreSQL");
         jenaDriverName.put("oracle",      "Oracle");
+        jenaDriverName.put("hsqldb",      "HSQLDB");
     }
 
     boolean takesPositionalArgs = false ;
@@ -222,6 +225,19 @@ public abstract class DBcmd
         }
     }
         
+    protected void closeConnection()
+    {
+        try {
+            if ( jdbcConnection != null)
+                jdbcConnection.close() ;
+        }
+        catch (SQLException ex)
+        {
+            System.err.println("Exception closing connection: "+ex.getMessage()) ;
+            System.exit(9) ;
+        }
+    }
+
     protected IDBConnection getConnection()
     {
         if ( jdbcConnection == null )
@@ -240,60 +256,65 @@ public abstract class DBcmd
 
     protected void exec()
     {
-        if ( cmdLine.numItems() == 0 )
-        {
-            exec0() ;
-            return ;
-        }
-        
-        
-        boolean inTransaction = false ;
-        try
-        {
-            for ( int i = 0 ; i < cmdLine.numItems() ; i++ )
+        try {   // Close down
+            if ( cmdLine.numItems() == 0 )
             {
-                if ( getRDBModel().supportsTransactions() )
-                {
-                    if ( ! inTransaction )
-                    {
-                        inTransaction = true ;
-                        getRDBModel().begin() ;
-                    }
-                }
+                exec0() ;
+                return ;
+            }
 
-                String arg = cmdLine.getItem(i) ;
-                boolean contTrans = false ;
-                try {
-                    contTrans = exec1(arg) ;
-                }
-                catch (Exception ex)
+            boolean inTransaction = false ;
+            try
+            {
+                for ( int i = 0 ; i < cmdLine.numItems() ; i++ )
                 {
-                    System.out.println(ex.getMessage()) ;
-                    ex.printStackTrace(System.out) ;
-                    if ( inTransaction )
+                    if ( getRDBModel().supportsTransactions() )
                     {
-                        getRDBModel().abort() ;
-                        inTransaction = false ;
+                        if ( ! inTransaction )
+                        {
+                            inTransaction = true ;
+                            getRDBModel().begin() ;
+                        }
                     }
-                    dbModel.close() ;
-                    dbModel = null ;
-                    System.exit(9);
+
+                    String arg = cmdLine.getItem(i) ;
+                    boolean contTrans = false ;
+                    try {
+                        contTrans = exec1(arg) ;
+                    }
+                    catch (Exception ex)
+                    {
+                        System.out.println(ex.getMessage()) ;
+                        ex.printStackTrace(System.out) ;
+                        if ( inTransaction )
+                        {
+                            getRDBModel().abort() ;
+                            inTransaction = false ;
+                        }
+                        dbModel.close() ;
+                        dbModel = null ;
+                        System.exit(9);
+                    }
+
+                    if ( !contTrans && inTransaction )
+                        getRDBModel().commit() ;
                 }
-                    
-                if ( !contTrans && inTransaction )
+            }            
+            finally
+            {
+                if ( inTransaction )
                     getRDBModel().commit() ;
             }
-        }            
-        finally
-        {
-            if ( inTransaction )
-                getRDBModel().commit() ;
         }
-        
-        dbModel.close() ;
-        dbModel = null ;
+        finally 
+        {
+            dbModel.close() ;
+            dbModel = null ;
+            closeConnection() ;
+        }
     }
 
+    
     /** Called if there are no psoitional arguments
      */     
     protected abstract void exec0() ;
