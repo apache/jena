@@ -13,18 +13,16 @@ import arq.cmdline.ArgDecl;
 import arq.cmdline.ModQueryIn;
 import arq.cmdline.ModResultsOut;
 
-import com.hp.hpl.jena.sparql.engine.QueryExecutionBase;
-import com.hp.hpl.jena.sparql.util.QueryExecUtils;
-import com.hp.hpl.jena.sparql.util.Utils;
-
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryException;
 import com.hp.hpl.jena.query.QueryExecution;
 import com.hp.hpl.jena.query.QueryExecutionFactory;
-
 import com.hp.hpl.jena.sdb.compiler.QC;
 import com.hp.hpl.jena.sdb.engine.QueryEngineSDB;
 import com.hp.hpl.jena.sdb.util.PrintSDB;
+import com.hp.hpl.jena.sparql.engine.QueryExecutionBase;
+import com.hp.hpl.jena.sparql.util.QueryExecUtils;
+import com.hp.hpl.jena.sparql.util.Utils;
 
  
  /** Query an SDB model.
@@ -132,14 +130,13 @@ public class sdbquery extends CmdArgsDB
                 if ( isVerbose() )
                     PrintSDB.print(((QueryExecutionBase)qExec).getPlan().getOp()) ;
                 
-                // Better: if timing, copy results to local and time that. 
                 if ( false )
                     System.err.println("Execute query for loop "+(i+1)+" "+memStr()) ;
                 QueryExecUtils.executeQuery(query, qExec, modResults.getResultsFormat()) ;
                 qExec.close() ;
-                long queryTime = getModTime().endTimer() ;
-                totalTime += queryTime ;
             }
+            long queryTime = getModTime().endTimer() ;
+            totalTime = queryTime ;
         } catch (QueryException ex)
         {
             System.out.println("Query exception: "+ex.getMessage()) ;
