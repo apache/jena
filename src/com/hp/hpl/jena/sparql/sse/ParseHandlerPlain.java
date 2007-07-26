@@ -98,6 +98,7 @@ public class ParseHandlerPlain implements ParseHandler
     public void emitLiteral(int line, int column, String lexicalForm, String langTag, String datatypeIRI, String datatypePN)
     {
         Node n = null ;
+        
         if ( datatypeIRI != null || datatypePN != null )
         {
             if ( datatypePN != null )

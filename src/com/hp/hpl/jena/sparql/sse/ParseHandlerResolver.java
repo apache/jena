@@ -8,7 +8,6 @@ package com.hp.hpl.jena.sparql.sse;
 
 import java.util.Stack;
 
-import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.n3.IRIResolver;
 import com.hp.hpl.jena.shared.PrefixMapping;
 import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
@@ -217,19 +216,18 @@ public class ParseHandlerResolver extends ParseHandlerPlain
     {
         if ( inPrefixDecl )
             throwException("Literals not allowed in prefix declarations", line, column) ;
+        
+        // Super class calls back down via resolvePrefixedName to turn it into a URI.
         super.emitLiteral(line, column, lexicalForm, langTag, datatypeIRI, datatypePN) ;
     }
+    
     public void emitBNode(int line, int column, String label)
     {
         if ( inPrefixDecl )
             throwException("Blank nodes not allowed in prefix declarations", line, column) ;
-        Node n = bNodeLabels.asNode(label) ;
-        Item item = Item.createNode(n, line, column) ;
-        listAdd(item) ;
+        super.emitBNode(line, column, label) ;
     }
 
-    // Only lists, IRIs and PName in a prefix decl.
-    
     public void emitIRI(int line, int column, String iriStr)
     { 
         // resolve as normal. No special action.
@@ -237,7 +235,6 @@ public class ParseHandlerResolver extends ParseHandlerPlain
         iriStr = resolveIRI(iriStr, line, column) ;
         super.emitIRI(line, column, iriStr) ;
     }
-
     
     public void emitPName(int line, int column, String pname)
     {
