@@ -6,90 +6,76 @@
 
 package com.hp.hpl.jena.sparql.sse;
 
+/** Splitter for parser handlers.
+ *  Calls both, first one first.
+ * @author Andy Seaborne
+ * @version $Id$
+ */
 
-/** Tracing parser handler - logs what the core parse sees */ 
-
-public class ParseHandlerDebug implements ParseHandler
+public class ParseHandlerWrapper implements ParseHandler
 {
-    int count = 0 ;
+    private ParseHandler handler ;
     
-    private void indent()
+    public ParseHandlerWrapper(ParseHandler handler)
     {
-        for ( int i = 0 ; i < count ; i++ ) System.out.print("  ") ;
+        this.handler = handler ;
     }
 
-    private void start(int line, int column)
-    { 
-        System.out.print("["+line+", "+column+"]  ") ; 
-        indent() ;
+    public Item getItem()
+    {
+        return handler.getItem() ;
     }
 
-    public Item getItem()       { return null ; }
-    
     public void parseStart()
-    { System.out.println("<<<<") ; }
+    {
+        handler.parseStart() ;
+    }
 
     public void parseFinish()
-    { System.out.println(">>>>") ; }
+    {
+        handler.parseFinish() ;
+    }
 
     public void listStart(int line, int column)
-    { 
-        start(line, column) ;
-        count++ ;
-        System.out.println("(") ;
+    {
+        handler.listStart(line, column) ;
     }
 
     public void listFinish(int line, int column)
     {
-        count-- ;         
-        start(line, column) ;
-        System.out.println(")") ;
+        handler.listFinish(line, column) ;
     }
-
-
 
     public void emitBNode(int line, int column, String label)
     { 
-        start(line, column) ;
-        System.out.println("BNode: "+label) ;
+        handler.emitBNode(line, column, label) ;
     }
 
-
     public void emitIRI(int line, int column, String iriStr)
-    { 
-        start(line, column) ;
-        System.out.println("IRI: "+iriStr) ;
+    {
+        handler.emitIRI(line, column, iriStr) ;
     }
 
     public void emitLiteral(int line, int column, String lex, String lang, String datatype_iri, String datatype_pn)
-    { 
-        start(line, column) ;
-        if ( lang != null )
-            System.out.println("Literal: "+lex+" @"+lang) ;
-        else if ( datatype_iri != null )
-            System.out.println("Literal: "+lex+" ^^"+datatype_iri) ;
-        else if ( datatype_pn != null )
-            System.out.println("Literal: "+lex+" ^^"+datatype_pn) ;
+    {
+        handler.emitLiteral(line, column, lex, lang, datatype_iri, datatype_pn) ;
     }
 
     public void emitPName(int line, int column, String pname)
-    { 
-        start(line, column) ;
-        System.out.println("PName: "+pname) ;
+    {
+        handler.emitPName(line, column, pname) ;
     }
 
     public void emitSymbol(int line, int column, String symbol)
-    { 
-        start(line, column) ;
-        System.out.println("Symbol: "+symbol) ;
+    {
+        handler.emitSymbol(line, column, symbol) ;
     }
 
     public void emitVar(int line, int column, String varName)
-    { 
-        start(line, column) ;
-        System.out.println("Var: "+varName) ;
+    {
+        handler.emitVar(line, column, varName) ;
     }
-
+    
 }
 
 /*
