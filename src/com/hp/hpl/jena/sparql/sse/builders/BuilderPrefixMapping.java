@@ -39,14 +39,14 @@ public class BuilderPrefixMapping
     public static void build(PrefixMapping newMappings, Item elt)
     {
         if ( ! elt.isList() )
-            BuilderBase.broken(elt, "Prefix mapping requires a list of pairs: "+BuilderBase.shortPrint(elt)) ;
+            BuilderBase.broken(elt, "Prefix mapping requires a list of pairs", elt) ;
 
         ItemList prefixes = elt.getList() ;
         
         // Strip (prefixmapping  ...)
         if ( elt.isTaggedIgnoreCase(symPrefixMap) || elt.isTaggedIgnoreCase(symPrefixMapping) )
         {
-            BuilderBase.checkLength(2, elt.getList(), "Not of length 2: "+BuilderBase.shortPrint(elt)) ;
+            BuilderBase.checkLength(2, elt.getList(), "Not of length 2"+elt.shortString()) ;
             // drop the tag
             prefixes = prefixes.cdr();
         }

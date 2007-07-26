@@ -33,11 +33,11 @@ public class BuilderExec
             BuilderBase.broken(item, "Attempt to build evaluation from a bare symbol") ;
 
         if ( ! item.isTagged(symEval) )
-            throw new BuildException("Wanted ("+symEval+"...) : got: "+BuilderBase.shortPrint(item));
+            throw new BuildException("Wanted ("+symEval+"...) : got: "+item.shortString());
 
         ItemList list = item.getList() ;  // Loose the tag.
         if ( list.size() != 3 )
-            throw new BuildException(BuilderBase.shortPrint(item)+ " does have 2 components");
+            throw new BuildException(item.shortString()+ " does have 2 components");
         
         DatasetGraph dsg = BuilderGraph.buildDataset(list.get(1)) ;
 //        Graph graph = BuilderGraph.buildGraph(list.get(1)) ;

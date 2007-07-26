@@ -9,44 +9,22 @@ package com.hp.hpl.jena.sparql.sse.builders;
 import com.hp.hpl.jena.sparql.sse.Item;
 import com.hp.hpl.jena.sparql.sse.ItemList;
 import com.hp.hpl.jena.sparql.sse.ItemLocation;
-import com.hp.hpl.jena.sparql.sse.builders.ExprBuildException;
-import com.hp.hpl.jena.sparql.util.FmtUtils;
-
 
 public class BuilderBase
 {
-    public static String shortPrint(Item item)
-    {
-        if ( item.isSymbol() ) return item.getSymbol();
-        if ( item.isNode() ) return FmtUtils.stringForNode(item.getNode());
-        return shortPrint(item.getList()) ;
-    }
-    
-    public static String shortPrint(ItemList list)
-    {
-        if ( list.size() == 0 ) return "()" ;
-        if ( list.get(0).isSymbol() ) 
-        {
-            if ( list.size() == 1 )
-                return "("+list.get(0).getSymbol()+")";
-            else
-                return "("+list.get(0).getSymbol()+" ...)";
-        }
-        return "(...)" ;
-    }
-
+ 
     public static void checkNode(Item item)
     {
         if ( item.isNode() ) 
             return ;
-        broken(item, "Not a node: "+BuilderBase.shortPrint(item)) ;
+        broken(item, "Not a node: "+item.shortString()) ;
     }
     
     public static void checkSymbol(Item item)
     {
         if ( item.isSymbol() ) 
             return ;
-        broken(item, "Not a symbol: "+BuilderBase.shortPrint(item)) ;
+        broken(item, "Not a symbol: "+item.shortString()) ;
     }
     
     public static void checkTagged(Item item, String tag, String msg)
@@ -68,14 +46,14 @@ public class BuilderBase
         if ( list.size() == 0 )
             broken(list, "Empty list") ;
         if ( ! list.get(0).isSymbolIgnoreCase(tag) )
-            broken(list, "List does not start ("+tag+ "...) : "+BuilderBase.shortPrint(list)) ;
+            broken(list, "List does not start ("+tag+ "...) : "+list.shortString()) ;
     }
 
     public static void checkList(Item item)
     {
         if ( item.isList() ) 
             return ;
-        broken(item, "Not a list: "+BuilderBase.shortPrint(item)) ;
+        broken(item, "Not a list: "+item.shortString()) ;
     }
 
     public static void checkList(Item item, String msg)
@@ -83,9 +61,9 @@ public class BuilderBase
         if ( item.isList() )
             return ;
         if ( msg == null && item.isSymbol())
-            msg = "Attempt to use a symbol where list expected: "+shortPrint(item) ;
+            msg = "Attempt to use a symbol where list expected: "+item.shortString() ;
         if ( msg == null && item.isNode())
-            msg = "Attempt to use a node where list expected: "+shortPrint(item) ;
+            msg = "Attempt to use a node where list expected: "+item.shortString() ;
         if ( msg == null )
             msg = "Not a list" ;
         broken(item, msg) ; 
@@ -102,9 +80,9 @@ public class BuilderBase
         if ( list.size() >= len1 && list.size() <= len2 )
             return ; 
         if ( msg == null )
-            msg =  "Wrong number of arguments: ("+len1+"-"+len2+")/"+list.size()+" : "+shortPrint(list) ;
+            msg =  "Wrong number of arguments: ("+len1+"-"+len2+")/"+list.size()+" : "+list.shortString() ;
         else
-            msg = msg+" : "+shortPrint(list) ;
+            msg = msg+" : "+list.shortString() ;
         broken(list, msg) ;
     }
     
@@ -114,32 +92,60 @@ public class BuilderBase
             return ;
         
         if ( msg == null )
-            msg =  "Wrong number of arguments: "+len+"/"+list.size()+" : "+shortPrint(list) ;
+            msg =  "Wrong number of arguments: "+len+"/"+list.size()+" : "+list.shortString() ;
         else
-            msg = msg+" : "+shortPrint(list) ;
+            msg = msg+" : "+list.shortString() ;
         broken(list, msg) ;
     }
 
     
+    public static void broken(Item item, String msg)
+    {
+        broken(item, msg, item) ;
+    }
+    
+    public static void broken(String msg)
+    {
+        System.err.println(msg) ;
+        exception(msg) ;
+    }
+    
+    
+    public static void exception(String msg)
+    {
+        throw new ExprBuildException(msg) ;
+    }
     
     public static void broken(ItemLocation location, String msg, Item item)
     {
         msg = msg(location, msg) ;
-        System.err.println(msg+": "+shortPrint(item)) ;
-        throw new ExprBuildException(msg) ;
+        System.err.println(msg+": "+item.shortString()) ;
+        exception(msg) ;
     }
 
+    public static void broken(ItemList list, String msg)
+    {
+        broken(list, msg, list) ; 
+    }
+
+    public static void broken(ItemLocation location, String msg, ItemList list)
+    {
+        msg = msg(location, msg) ;
+        System.err.println(msg+": "+list.shortString()) ;
+        exception(msg) ;
+    }
+    
     public static void broken(ItemLocation location, String msg)
     {
         msg = msg(location, msg) ;
         System.err.println(msg) ;
-        throw new BuildException(msg) ;
+        exception(msg) ;
     }
     
     public static String msg(ItemLocation location, String msg)
     {
         if ( location != null )
-            msg = location.location()+" "+msg ;
+            msg = location.location()+": "+msg ;
         return msg ;
     }
 }

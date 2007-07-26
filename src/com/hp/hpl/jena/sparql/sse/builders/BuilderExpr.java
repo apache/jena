@@ -79,7 +79,7 @@ public class BuilderExpr
             {
                 if ( item.isTagged(symExpr) )
                 {
-                    BuilderBase.checkLength(2, list, "Wrong length: "+BuilderBase.shortPrint(item)) ;
+                    BuilderBase.checkLength(2, list, "Wrong length: "+item.shortString()) ;
                     item = list.get(1) ;
                     return buildItem(item) ;
                 }

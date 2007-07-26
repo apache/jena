@@ -19,7 +19,6 @@ public interface ParseHandler
     public void emitLiteral(int line, int column, String lex, String lang, String datatype_iri, String datatype_pn) ;
     public void emitVar(int line, int column, String varName) ;
     
-    // Need both?  Yes - for more detailed pname parsing.   123:xyz is not a prefixed name.
     public void emitPName(int line, int column, String pname) ;
     public void emitSymbol(int line, int column, String symbol) ;
     

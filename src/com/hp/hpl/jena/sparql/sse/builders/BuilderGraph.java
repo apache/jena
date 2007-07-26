@@ -45,7 +45,8 @@ public class BuilderGraph
             return buildGraph(item.getList()) ;
         if ( item.isTagged(symLoad) )
             return loadGraph(item.getList()) ;
-        throw new BuildException("Wanted ("+symGraph+"...) or ("+symLoad+"...) : got: "+BuilderBase.shortPrint(item));
+        BuilderBase.broken(item, "Wanted ("+symGraph+"...) or ("+symLoad+"...)");
+        return null ;
     }
     
     public static Graph buildGraph(ItemList list)
@@ -89,8 +90,7 @@ public class BuilderGraph
         }
         
         if ( ! item.isTagged(symDataset) )
-            BuilderBase.broken(item, 
-                               "Wanted ("+symDataset+"...) : got: "+BuilderBase.shortPrint(item));
+            BuilderBase.broken(item, "Wanted ("+symDataset+"...)" );
         return buildDataset(item.getList()) ;
     }
     
@@ -122,7 +122,7 @@ public class BuilderGraph
                 ds.addGraph(n, g) ;
                 continue ;
             }
-            BuilderBase.broken(item, "Not expected in dataset: "+BuilderBase.shortPrint(item)) ;
+            BuilderBase.broken(item, "Not expected in dataset") ;
         }
         if ( ds.getDefaultGraph() == null )
             ds.setDefaultGraph(GraphUtils.makeDefaultGraph()) ;
@@ -136,21 +136,21 @@ public class BuilderGraph
         BuilderBase.checkLength(2, list, symLoad ) ;
         Item item = list.get(1) ;
         if ( ! item.isNode() )
-            BuilderBase.broken(item, "Expected: ("+symLoad+" 'filename') : Got: "+BuilderBase.shortPrint(item)) ;
+            BuilderBase.broken(item, "Expected: ("+symLoad+" 'filename')") ;
         String s = NodeUtils.stringLiteral(item.getNode()) ;
         if ( s == null )
-            BuilderBase.broken(item, "Expected: ("+symLoad+" 'filename') : Got: "+BuilderBase.shortPrint(item)) ;
+            BuilderBase.broken(item, "Expected: ("+symLoad+" 'filename')") ;
         return FileManager.get().loadModel(s).getGraph() ;
     }
     
     public static Triple buildTriple(ItemList list)
     {
         if ( list.size() != 3 && list.size() != 4 )
-            BuilderBase.broken(list, "Not a triple: "+BuilderBase.shortPrint(list)) ;
+            BuilderBase.broken(list, "Not a triple", list) ;
         if ( list.size() == 4 )
         {
             if ( ! list.get(0).isSymbol(symTriple) )
-                BuilderBase.broken(list, "Not a triple: "+BuilderBase.shortPrint(list)) ;
+                BuilderBase.broken(list, "Not a triple") ;
             list = list.cdr() ;
         }
         return _buildNode3(list) ;
@@ -173,11 +173,11 @@ public class BuilderGraph
     public static Quad buildQuad(ItemList list)
     {
         if ( list.size() != 4 && list.size() != 5 )
-            BuilderBase.broken(list, "Not a quad: "+BuilderBase.shortPrint(list)) ;
+            BuilderBase.broken(list, "Not a quad") ;
         if ( list.size() == 5 )
         {
             if ( ! list.get(0).isSymbol(symQuad) )
-                BuilderBase.broken(list, "Not a quad: "+BuilderBase.shortPrint(list)) ;
+                BuilderBase.broken(list, "Not a quad") ;
             list = list.cdr() ;
         }
         return _buildNode4(list) ;

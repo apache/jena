@@ -64,12 +64,24 @@ public class ItemList extends ItemLocation //implements Iterable<Item>
         return x ;
     }
     
+    public String shortString()
+    {
+        if ( size() == 0 ) return "()" ;
+        if ( get(0).isSymbol() ) 
+        {
+            if ( size() == 1 )
+                return "("+get(0).getSymbol()+")";
+            else
+                return "("+get(0).getSymbol()+" ...)";
+        }
+        return "(...)" ;
+    }
+    
     public String toString()
     { 
         String str = "" ;
         if ( hasLocation() )
             str = str.concat(location()) ;
-
         return str+elements.toString() ; }
 }
 

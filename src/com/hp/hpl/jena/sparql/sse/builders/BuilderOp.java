@@ -166,7 +166,7 @@ public class BuilderOp
     {
         public Op make(ItemList list)
         {
-            BuilderBase.broken(null, "Quad pattern not implemented") ;
+            BuilderBase.broken("Quad pattern not implemented") ;
             return null ;
 //          Node g = null ;
 //          QuadPattern quads = new QuadPattern() ;

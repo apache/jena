@@ -20,14 +20,14 @@ public class BuilderNode
     public static Node buildNode(Item item)
     {
         if ( !item.isNode() )
-            BuilderBase.broken(item, "Not a node: "+BuilderBase.shortPrint(item)) ;
+            BuilderBase.broken(item, "Not a node", item) ;
         return item.getNode() ;
     }
     
     public static Var buildVar(Item item)
     {
         if ( ! item.isNode() || !Var.isVar(item.getNode()) )
-            BuilderBase.broken(item, "Not a variable: "+BuilderBase.shortPrint(item)) ;
+            BuilderBase.broken(item, "Not a variable") ;
         if ( ! Var.isNamedVar(item.getNode()) )
             BuilderBase.broken(item, "Not a named variable") ;
         return Var.alloc(item.getNode()) ;
@@ -36,7 +36,7 @@ public class BuilderNode
     public static String buildSymbol(Item item)
     {
         if ( !item.isSymbol() )
-            BuilderBase.broken(item, "Not a symbol: "+BuilderBase.shortPrint(item)) ;
+            BuilderBase.broken(item, "Not a symbol", item) ;
         return item.getSymbol() ;
     }
     

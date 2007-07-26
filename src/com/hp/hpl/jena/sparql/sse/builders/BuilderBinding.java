@@ -36,7 +36,7 @@ class BuilderBinding
         Item head = list.get(0) ;
         
         if ( ! head.isSymbolIgnoreCase(tagRow) && ! head.isSymbolIgnoreCase(tagBinding) )
-            BuilderBase.broken(list, "Does not start ("+tagRow+" ...) or ("+tagBinding+" ...): "+BuilderBase.shortPrint(head)) ;
+            BuilderBase.broken(list, "Does not start ("+tagRow+" ...) or ("+tagBinding+" ...)", head) ;
         
         Binding binding = new BindingMap() ;
         for ( int i = 1 ; i < list.size() ; i++ )
