@@ -74,14 +74,14 @@ public class ParseHandlerResolver extends ParseHandlerPlain
     {
         return currentItem ; 
     }
-    
+
     public Prologue getPrologue()
     {
         throw new ARQNotImplemented("getPrologue") ;
         //return null ;
     }
-     
-    
+
+
     public void parseStart()    { super.parseStart() ; }
 
     public void parseFinish()   { super.parseFinish() ; }
@@ -91,29 +91,37 @@ public class ParseHandlerResolver extends ParseHandlerPlain
 
     public void listFinish(int line, int column)
     {
-        --depth ;
-        // At end of a list
-        // If it's the current frame stack front, i.e. (prefix ...) or (base ...)
-        //   pop the stack and return the inner form instead. 
-        ItemList list = listStack.pop() ;
-        Item item = null ; 
-        
-        if ( frameStack.isCurrent(list) )
+        ItemList list = listStack.getCurrent() ;
+
+        if ( ! frameStack.isCurrent(list) )
         {
-            // End of prefix item or base. 
-            // Restore previous state.
-            Frame f = frameStack.pop() ;
-            prefixMap = f.prefixMap ;
-            resolver = f.resolver ;
-            item = f.result ;  
-            if ( item == null )
-                item = Item.createNil(list.line, list.column) ;
-            
+            // Nothing special - proceed as normal.
+            super.listFinish(line, column) ;
+            return ;
         }
-        else
-            item = Item.createList(list) ;
-        
-        // Add to list, or pop'ed 
+
+        // Current frame stack front, is a wrapped form
+        // e.g.. (prefix ...) or (base ...)
+        // Manipulate the stack to return the inner form instead.
+        //
+        // Restore previous state.
+        // Manipulate stack to see inner result by calling this.list(item) ;
+
+        // Frame
+        Frame f = frameStack.pop() ;
+        prefixMap = f.prefixMap ;
+        resolver = f.resolver ;
+
+        // Drop the wrapper list.
+        listStack.pop();
+        --depth ;
+
+        // result
+        Item item = f.result ;  
+        if ( item == null )
+            item = Item.createNil(list.line, list.column) ;
+        // And emit a result as a listAdd.
+        // Must go through our listAdd() here. 
         listAdd(item) ;
     }
 
