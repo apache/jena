@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
     All rights reserved - see end of file.
-    $Id: HashedBunchMap.java,v 1.11 2007-01-02 11:52:20 andy_seaborne Exp $
+    $Id: HashedBunchMap.java,v 1.12 2007-07-26 13:05:01 chris-dollin Exp $
 */
 package com.hp.hpl.jena.mem;
 
@@ -24,8 +24,14 @@ public class HashedBunchMap extends HashCommon implements BunchMap
         elements are set to null (so the values may be garbage-collected).
     */
     public void clear()
-        { for (int i = 0; i < capacity; i += 1) keys[i] = values[i] = null; }  
+        {
+        size = 0;
+        for (int i = 0; i < capacity; i += 1) keys[i] = values[i] = null; 
+        }  
     
+    public long size()
+        { return size; }
+        
     public TripleBunch get( Object key )
         {
         int slot = findSlot( key );

@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: NodeToTriplesMapBase.java,v 1.15 2007-01-02 11:52:20 andy_seaborne Exp $
+ 	$Id: NodeToTriplesMapBase.java,v 1.16 2007-07-26 13:05:01 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem;
@@ -10,11 +10,10 @@ import java.util.*;
 
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.Triple.Field;
-import com.hp.hpl.jena.util.IteratorCollection;
 import com.hp.hpl.jena.util.iterator.*;
 
 /**
-    A base class for the "normal" nad "faster" NodeToTriplesMaps.
+    A base class for the "normal" and "faster" NodeToTriplesMaps.
     
     @author kers
 */
@@ -106,7 +105,7 @@ public abstract class NodeToTriplesMapBase
             private Iterator current = NullIterator.instance;
             private NotifyMe emptier = new NotifyMe();
             
-            private Object cn = "(none)";
+            // private Object cn = "(none)";
 
             public Object next()
                 {
@@ -130,7 +129,7 @@ public abstract class NodeToTriplesMapBase
                     if (current.hasNext()) return true;
                     if (nodes.hasNext() == false) return false;
                     Object next = nodes.next();
-                    cn = next;
+                    // cn = next;
                     // System.err.println( ">----> NTM:iterateAll:hasNext: node " + next );
                     current = iterator( next, emptier );
                     }

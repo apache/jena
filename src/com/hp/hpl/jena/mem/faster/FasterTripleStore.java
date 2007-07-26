@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: FasterTripleStore.java,v 1.21 2007-07-19 11:28:24 chris-dollin Exp $
+ 	$Id: FasterTripleStore.java,v 1.22 2007-07-26 13:04:49 chris-dollin Exp $
 */
 package com.hp.hpl.jena.mem.faster;
 
@@ -23,7 +23,7 @@ public class FasterTripleStore extends GraphTripleStoreBase implements TripleSto
             new NodeToTriplesMapFaster( Field.getObject, Field.getSubject, Field.getPredicate )
                 ); 
         }
-     
+    
     public NodeToTriplesMapFaster getSubjects()
         { return (NodeToTriplesMapFaster) subjects; }
 
