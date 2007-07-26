@@ -95,7 +95,15 @@ public class sdbquery extends CmdArgsDB
         }
         
         // Force setup
-        getStore() ;
+        {
+            getStore() ;
+            getModStore().getDataset() ;
+            Query query = modQuery.getQuery() ;
+            QueryExecution qExec = QueryExecutionFactory.create(query, getModStore().getDataset()) ;
+            // Don't execute
+            qExec.abort();
+        }
+        
         if ( getModTime().timingEnabled() )
         {
             // Setup costs : flush classes into memory and establish connection
