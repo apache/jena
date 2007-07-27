@@ -2,10 +2,10 @@ PREFIX : <http://example/>
 PREFIX  dc:     <http://purl.org/dc/elements/1.1/>
 
 SELECT ?a
+FROM <D.ttl>
 {
   ?b dc:title ?title .
-  :service :p ?service .
-  SERVICE ?service
+  SERVICE <http://sparql.org/books>
      { ?s dc:title ?title . ?s dc:creator ?a }
 }
 
