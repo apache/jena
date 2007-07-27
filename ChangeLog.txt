@@ -8,7 +8,7 @@ ARQ 2.1
   ARQ syntax only.
   New algebra operation: OpService
 
-+ Added SSE to the main codebase
++ Added SSE to the main codebase : http://jena.hpl.hp.com/wiki/SSE
 
 + Internal changes: the core engines are now Graph/DatasetGraph/Algebra-centric 
   and there are classes to map betwen that and the Model/Dataset.
