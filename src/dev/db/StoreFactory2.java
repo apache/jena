@@ -13,7 +13,6 @@ import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.sdb.layout2.hash.StoreTriplesNodesHashDerby;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
-import com.hp.hpl.jena.sdb.store.DatabaseType;
 import com.hp.hpl.jena.sdb.store.LayoutType;
 import com.hp.hpl.jena.sdb.store.Store;
 import com.hp.hpl.jena.sdb.store.StoreDesc;
@@ -23,13 +22,15 @@ public class StoreFactory2
 {
     private static Store _create(StoreDesc desc, SDBConnection sdb)
     {
-        DatabaseType dbType = desc.getDbType() ;
+        // Temp translate.
+        DatabaseType2 dbType = DatabaseType2.convert(desc.getDbType().name()) ;
         LayoutType t = desc.getLayout() ;
-        LayoutType2 layoutType = new LayoutType2(t.name()) ;    // Temp 
+        LayoutType2 layoutType = LayoutType2.convert(t.name()) ;
+        
         return _create(sdb, dbType, layoutType) ;
     }
     
-    private static Store _create(SDBConnection sdb, DatabaseType dbType, LayoutType2 layoutType)
+    private static Store _create(SDBConnection sdb, DatabaseType2 dbType, LayoutType2 layoutType)
     {
         StoreMaker f = registry.get(dbType, layoutType) ;
         if ( f == null )
@@ -41,12 +42,9 @@ public class StoreFactory2
         return f.create(sdb) ;
     }
     
-    // OR
-    // A single "type" which is DB+Layout
-    // StoreType:  "Oracle::Layout2/hash"
     // Need to sort out that SDBConnection needs the type as well
     
-    public static void register(DatabaseType dbType, LayoutType2 layoutType, StoreMaker factory)
+    public static void register(DatabaseType2 dbType, LayoutType2 layoutType, StoreMaker factory)
     {
         registry.put(dbType, layoutType, factory) ;
     }
@@ -59,14 +57,14 @@ public class StoreFactory2
     
     
     static Registry registry = new Registry() ;
-    static class Registry extends MapK2<DatabaseType, LayoutType2, StoreMaker>
+    static class Registry extends MapK2<DatabaseType2, LayoutType2, StoreMaker>
     {
         
     }
     
     static 
     {
-        register(DatabaseType.Derby, LayoutType2.LayoutHash, 
+        register(DatabaseType2.Derby, LayoutType2.LayoutHash, 
             new StoreMaker(){
                 public Store create(SDBConnection conn)
                 { return new StoreTriplesNodesHashDerby(conn) ; }} ) ;

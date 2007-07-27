@@ -6,14 +6,62 @@
 
 package dev.db;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import com.hp.hpl.jena.sparql.util.Named;
 import com.hp.hpl.jena.sparql.util.Symbol;
 
 public class LayoutType2 extends Symbol implements Named
 {
-    public static final LayoutType2 LayoutHash = null ;
+    static Set<LayoutType2> registeredTypes = new HashSet<LayoutType2>() ;
+    
+    
+    
+    public static final LayoutType2 LayoutHash = new LayoutType2("layout2") ;
+    
+    public static LayoutType2 convert(String s)
+    {
+        if ( s.equalsIgnoreCase(LayoutRDB.getName()) ) return LayoutRDB ;
+        if ( s.equalsIgnoreCase("layoutRDB") ) return LayoutRDB ;
+        
+        if ( s.equalsIgnoreCase(LayoutSimple.getName()) ) return LayoutSimple ;
+        if ( s.equalsIgnoreCase("layout1") ) return LayoutSimple ;
+        
+        if ( s.equalsIgnoreCase("layout2") ) return LayoutTripleNodesHash ;
+        if ( s.equalsIgnoreCase("layout2/hash") ) return LayoutTripleNodesHash ;
+        
+        if ( s.equalsIgnoreCase(LayoutTripleNodesIndex.getName()) ) return LayoutTripleNodesIndex ;
+        if ( s.equalsIgnoreCase("layout2/index") ) return LayoutTripleNodesIndex ;
+        
+        
+        return null ;
+    }
+    
+    public static final LayoutType2 LayoutTripleNodesHash           = new LayoutType2("layout2/hash") ;
+    public static final LayoutType2 LayoutTripleNodesIndex           = new LayoutType2("layout2/index") ;
+    public static final LayoutType2 LayoutSimple           = new LayoutType2("layoutRDB") ;
+    public static final LayoutType2 LayoutRDB           = new LayoutType2("layout1") ;
+    
+    static void init()
+    {
+        register(LayoutTripleNodesHash) ;
+        register(LayoutTripleNodesIndex) ;
+        register(LayoutSimple) ;
+        register(LayoutRDB) ;
+    }
+    
+    static public void register(String name)
+    {
+        register(new LayoutType2(name)) ; 
+    }
+    
+    static public void register(LayoutType2 layoutType)
+    {
+        registeredTypes.add(layoutType) ; 
+    }
 
-    protected LayoutType2(String layoutName)
+    private LayoutType2(String layoutName)
     {
         super(layoutName) ;
     }
