@@ -1,9 +1,5 @@
+@prefix  dc:     <http://purl.org/dc/elements/1.1/> .
 @prefix : <http://example/> .
 @prefix  rdfs:   <http://www.w3.org/2000/01/rdf-schema#> .
 
-:x1 rdfs:label "a"  .
-:x2 rdfs:label "z" .
-:x3 rdfs:label "a" .
-:x4 rdfs:label "zzz" .
-
-:y1 :p "a" .
+:book dc:title "Harry Potter and the Deathly Hallows" .
