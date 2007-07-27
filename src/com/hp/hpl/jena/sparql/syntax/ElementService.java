@@ -30,8 +30,8 @@ public class ElementService extends Element
     // Variable?
     public ElementService(Node n, Element el)
     {
-        if ( ! n.isURI() )
-            LogFactory.getLog(ElementService.class).fatal("Must be a URI for a service endpoint") ;
+        if ( ! n.isURI() && ! n.isVariable() )
+            LogFactory.getLog(ElementService.class).fatal("Must be a URI (or variable which will be bound) for a service endpoint") ;
         this.serviceNode = n ;
         this.element = el ;
     }

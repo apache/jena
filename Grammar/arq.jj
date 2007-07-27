@@ -328,7 +328,7 @@ Element GraphGraphPattern() : { Element el ; Node n ;}
 Element ServiceGraphPattern() : { Element el ; Node n ; String iri ; }
 {
   <SERVICE>
-  iri = IRIref() { n = createNode(iri) ; }
+  n = VarOrIRIref()
   el = GroupGraphPattern()
     { return new ElementService(n, el) ; }
 }

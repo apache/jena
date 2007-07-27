@@ -3,3 +3,4 @@
 @prefix  rdfs:   <http://www.w3.org/2000/01/rdf-schema#> .
 
 :book dc:title "Harry Potter and the Deathly Hallows" .
+:service :p <http://sparql.org/books> .

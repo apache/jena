@@ -822,8 +822,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
   final public Element ServiceGraphPattern() throws ParseException {
                                   Element el ; Node n ; String iri ;
     jj_consume_token(SERVICE);
-    iri = IRIref();
-                   n = createNode(iri) ;
+    n = VarOrIRIref();
     el = GroupGraphPattern();
       {if (true) return new ElementService(n, el) ;}
     throw new Error("Missing return statement in function");

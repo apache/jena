@@ -9,6 +9,7 @@ package com.hp.hpl.jena.sparql.engine.http;
 import java.io.InputStream;
 
 import com.hp.hpl.jena.query.Query;
+import com.hp.hpl.jena.query.QueryExecException;
 import com.hp.hpl.jena.query.ResultSet;
 import com.hp.hpl.jena.query.ResultSetFactory;
 import com.hp.hpl.jena.sparql.algebra.OpToSyntax;
@@ -23,6 +24,9 @@ public class Service
     public static QueryIterator exec(OpService op)
     {
         Query query = OpToSyntax.asQuery(op.getSubOp()) ;
+        
+        if ( ! op.getService().isURI() )
+            throw new QueryExecException("Service URI not bound: "+op.getService()) ; 
         
         HttpQuery httpQuery = new HttpQuery(op.getService().getURI()) ;
         httpQuery.addParam(HttpParams.pQuery, query.toString() );

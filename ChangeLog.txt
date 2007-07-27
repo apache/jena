@@ -4,19 +4,25 @@ ChangeLog for ARQ
 ARQ 2.1
 -------
 
-Internal changes: the core engines are now Graph/DatasetGraph/Algebra-centric 
++ Added extension : a graph pattern SERVICE <serviceEndPoint> { pattern }
+  ARQ syntax only.
+  New algebra operation: OpService
+
++ Added SSE to the main codebase
+
++ Internal changes: the core engines are now Graph/DatasetGraph/Algebra-centric 
   and there are classes to map betwen that and the Model/Dataset.
   QueryEngine construction and extension need not know about
   the upper layers now.
 
-Algebra operaotr impleent .hashCode() and .equals() basic on structure/value equality
++ Algebra operator implment .hashCode() and .equals() based on structure/value equality
 
-Legacy query engine1 removed.
++ Legacy query engine1 removed.
 
-Add new Algebra operations
++ Add new algebra operations
   OpGroupAgg, OpNull
   
-VarsMentionedVisitor removed - convert to an algebra expression and use OpVars.allVars instead.
++ VarsMentionedVisitor removed - convert to an algebra expression and use OpVars.allVars instead.
 
 ARQ 2.0
 -------

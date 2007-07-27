@@ -4,7 +4,9 @@ PREFIX  dc:     <http://purl.org/dc/elements/1.1/>
 SELECT ?a
 {
   ?b dc:title ?title .
-  SERVICE <http://sparql.org/books> { ?s dc:title ?title . ?s dc:creator ?a }
+  :service :p ?service .
+  SERVICE ?service
+     { ?s dc:title ?title . ?s dc:creator ?a }
 }
 
 

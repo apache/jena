@@ -78,7 +78,17 @@ public class OpSubstitute extends TransformCopy
         return OpFilter.filter(exprs, op) ; 
     }
 
-    //public Op transform(OpExt op) {}
+    public Op transform(OpGraph op, Op sub)
+    {
+        Node n = substitute(binding, op.getNode()) ;
+        return new OpGraph(n, sub) ;
+    }
+    
+    public Op transform(OpService op, Op sub)
+    {
+        Node n = substitute(binding, op.getService()) ;
+        return new OpService(n, sub) ;
+    }
     
     private static Node substitute(Binding b, Node n)
     {
