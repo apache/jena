@@ -1,8 +1,8 @@
-PREFIX : <http://example/>
-PREFIX x: <http://example/ns#>
-SELECT DISTINCT ?x
+PREFIX foaf:       <http://xmlns.com/foaf/0.1/>
+
+SELECT DISTINCT ?name ?nick
 {
-    ?s ?p ?x .
-    FILTER(?x) .
-    FILTER(?y) .
+    ?x foaf:mbox <mailt:person@server> .
+    ?x foaf:name ?name 
+    OPTIONAL { ?x foaf:nick ?nick }
 }

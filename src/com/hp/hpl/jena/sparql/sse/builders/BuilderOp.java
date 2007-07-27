@@ -287,8 +287,8 @@ public class BuilderOp
         {
             BuilderBase.checkLength(3, list, "service") ;
             Node service = BuilderNode.buildNode(list.get(1)) ;
-            if ( ! service.isURI() )
-                BuilderBase.broken(list, "Service must provide a URI") ;
+            if ( ! service.isURI() && ! service.isVariable() )
+                BuilderBase.broken(list, "Service must provide a URI or variable") ;
             Op sub  = build(list, 2) ;
             return new OpService(service, sub) ;
         }
