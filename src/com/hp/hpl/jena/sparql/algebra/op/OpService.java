@@ -22,26 +22,12 @@ public class OpService extends Op1
         this.serviceNode = serviceNode ;
     }
 
-    public Op apply(Transform transform, Op subOp)
-    {
-        return null ;
-    }
+    public Op apply(Transform transform, Op subOp)  { return transform.transform(this, subOp) ; }
 
-    public Op copy(Op subOp)
-    {
-        return null ;
-    }
-
-    public String getName()
-    { return "service" ; }
-
-    public void visit(OpVisitor opVisitor)
-    { opVisitor.visit(this) ; }
-
-    public Node getService()
-    {
-        return serviceNode ;
-    }
+    public Op copy(Op newOp)                    { return new OpService(serviceNode, newOp) ; }
+    public String getName()                     { return "service" ; }
+    public void visit(OpVisitor opVisitor)      { opVisitor.visit(this) ; }
+    public Node getService()                    { return serviceNode ;  }
 
     public int hashCode()
     { return serviceNode.hashCode() ^ getSubOp().hashCode() ; }
@@ -53,7 +39,7 @@ public class OpService extends Op1
         OpService opService = (OpService)other ;
         if ( ! ( serviceNode.equals(opService.serviceNode) ) )
             return false ;
-        return getSubOp().equalTo(opService, labelMap) ;
+        return getSubOp().equalTo(opService.getSubOp(), labelMap) ;
     }
 
 }

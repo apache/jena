@@ -156,7 +156,12 @@ public class Query extends Prologue implements Cloneable
     public Syntax getSyntax()         { return syntax ; }
 
     /** @param syntax The syntax to set. */
-    public void setSyntax(Syntax syntax)  { this.syntax = syntax ; }
+    public void setSyntax(Syntax syntax)
+    { 
+        this.syntax = syntax ;
+        if ( syntax != Syntax.syntaxSPARQL )
+            strictQuery = false ;
+    }
 
     // ---- Limit/offset
     

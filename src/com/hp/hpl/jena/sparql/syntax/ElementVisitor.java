@@ -21,6 +21,7 @@ public interface ElementVisitor
     public void visit(ElementDataset el) ;
     public void visit(ElementNamedGraph el) ;
     public void visit(ElementUnsaid el) ;
+    public void visit(ElementService el) ;
 }
 
 /*

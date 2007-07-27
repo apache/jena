@@ -253,15 +253,22 @@ public class FormatterARQ extends FormatterBase
 
     public void visit(ElementNamedGraph el)
     {
-        String s = "GRAPH " ;
-        int len = s.length() ;
-        out.print(s) ;
-        if ( el.getGraphNameNode() == null )
-            s = "*" ;
-        else
-            s = slotToString(el.getGraphNameNode()) ;
-        out.print(s) ;
-        len += s.length() ;
+        visitNodePattern("GRAPH", el.getGraphNameNode(), el.getElement()) ;
+    }
+
+    public void visit(ElementService el)
+    {
+        visitNodePattern("SERVICE", el.getServiceNode(), el.getElement()) ;
+    }
+    
+    private void visitNodePattern(String label, Node node, Element subElement)
+    {
+        int len = label.length() ;
+        out.print(label) ;
+        out.print(" ") ;
+        String nodeStr = ( node == null ) ? "*" : slotToString(node) ;
+        out.print(nodeStr) ;
+        len += nodeStr.length() ;
         if ( GRAPH_FIXED_INDENT )
         {
             out.incIndent(INDENT) ;
@@ -273,14 +280,13 @@ public class FormatterARQ extends FormatterBase
             len++ ;
             out.incIndent(len) ;
         }
-        visitAsGroup(el.getElement()) ;
+        visitAsGroup(subElement) ;
         
         if ( GRAPH_FIXED_INDENT )
             out.decIndent(INDENT) ;
         else
             out.decIndent(len) ;
     }
-
 
     public void visit(ElementUnsaid el)
     {

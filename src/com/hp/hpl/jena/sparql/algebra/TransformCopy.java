@@ -25,6 +25,7 @@ public class TransformCopy implements Transform
 
     public Op transform(OpFilter opFilter, Op x)                    { return xform(opFilter, x) ; }
     public Op transform(OpGraph opGraph, Op x)                      { return xform(opGraph, x) ; }
+    public Op transform(OpService opService, Op x)                  { return xform(opService, x) ; }
     
     public Op transform(OpJoin opJoin, Op left, Op right)           { return xform(opJoin, left, right) ; }
     

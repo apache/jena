@@ -18,6 +18,7 @@ public interface Transform
     
     public Op transform(OpFilter opFilter, Op subOp) ;
     public Op transform(OpGraph opGraph, Op subOp) ;
+    public Op transform(OpService opService, Op subOp) ;
 
     public Op transform(OpJoin opJoin, Op left, Op right) ;
     public Op transform(OpLeftJoin opLeftJoin, Op left, Op right) ;

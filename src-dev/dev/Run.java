@@ -35,10 +35,9 @@ public class Run
 {
     public static void main(String[] argv)
     {
-        String []a = {//"-engine=ref",
-            "/home/afs/W3C/DataAccess/tests/data-r2/expr-equals/manifest.ttl"
-        } ;
-        arq.qtest.main(a) ;
+        String []a = { "--query", "Q.arq", "--out=ARQ"
+            } ;
+        arq.qparse.main(a) ;
         System.exit(0) ;
         
         //runQExpr() ;

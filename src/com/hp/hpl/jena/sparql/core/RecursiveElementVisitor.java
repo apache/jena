@@ -36,8 +36,6 @@ import com.hp.hpl.jena.sparql.syntax.*;
 
 public class RecursiveElementVisitor implements ElementVisitor
 {
-    
-    
     // ---- Call points.
     // Not abstract, because subclasses don't have to implement them.
     
@@ -65,6 +63,9 @@ public class RecursiveElementVisitor implements ElementVisitor
 
     public void startElement(ElementNamedGraph el) {}
     public void endElement  (ElementNamedGraph el) {}
+
+    public void startElement(ElementService el) {}
+    public void endElement  (ElementService el) {}
 
     public void startElement(ElementUnsaid el) {}
     public void endElement  (ElementUnsaid el) {}
@@ -139,6 +140,12 @@ public class RecursiveElementVisitor implements ElementVisitor
         endElement(el) ;
     }
 
+    public final void visit(ElementService el)
+    {
+        startElement(el) ;
+        el.getElement().visit(this) ;
+        endElement(el) ;
+    }
 
     public final void visit(ElementUnsaid el)
     {

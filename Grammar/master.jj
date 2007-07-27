@@ -328,6 +328,10 @@ Element GraphPatternNotTriples() : { Element el = null ; }
    el = GroupOrUnionGraphPattern()
  |
    el = GraphGraphPattern()
+#ifdef ARQ
+ |
+   el = ServiceGraphPattern()
+#endif
  )
   { return el ; }
 }
@@ -344,6 +348,16 @@ Element GraphGraphPattern() : { Element el ; Node n ;}
   <GRAPH> n = VarOrIRIref() el = GroupGraphPattern()
     { return new ElementNamedGraph(n, el) ; }
 }
+
+#ifdef ARQ
+Element ServiceGraphPattern() : { Element el ; Node n ; String iri ; }
+{
+  <SERVICE> 
+  iri = IRIref() { n = createNode(iri) ; }
+  el = GroupGraphPattern()
+    { return new ElementService(n, el) ; }
+}
+#endif
 
 // G (union G)* can be a single group pattern
 // or a group pattern as part of an union.
@@ -956,6 +970,7 @@ TOKEN [IGNORE_CASE] :
 |  < UNION:       "union" >
 
 #ifdef ARQ
+|  < SERVICE:     "service" >
 |  < AS:          "as" >
 |  < EXT:         "ext" >
 |  < GROUP:       "group" >

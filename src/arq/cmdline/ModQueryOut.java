@@ -30,7 +30,6 @@ public class ModQueryOut implements ArgModuleGeneral
     private Syntax outputSyntax = Syntax.syntaxSPARQL ;
     private boolean lineNumbers = true ;
     
-    
     public void registerWith(CmdGeneral cmdLine)
     {
         cmdLine.getUsage().startCategory("Output") ;
@@ -104,12 +103,12 @@ public class ModQueryOut implements ArgModuleGeneral
         if ( op.hashCode() != op2.hashCode() )
         {
             System.out.println() ;
-            System.out.println("**** Check failed : reparsed algebra expression hashCode does not equal alegebra from query") ;
+            System.out.println("**** Check failed : reparsed algebra expression hashCode does not equal algebra from query") ;
         }
         if ( ! op.equals(op2) )
         {
             System.out.println() ;
-            System.out.println("**** Check failed : reparsed algebra expression does not equal query algebar") ;
+            System.out.println("**** Check failed : reparsed algebra expression does not equal query algebra") ;
 
         }
     }

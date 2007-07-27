@@ -4,52 +4,64 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.serializer;
+package com.hp.hpl.jena.sparql.syntax;
 
-import com.hp.hpl.jena.sparql.syntax.*;
-import com.hp.hpl.jena.sparql.util.IndentedWriter;
+import org.apache.commons.logging.LogFactory;
 
-/** com.hp.hpl.jena.query.core.FormatterXML
+import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.sparql.util.LabelMap;
+
+/** A SERVICE pattern - access a remote SPARQL service.
  * 
  * @author Andy Seaborne
- * @version $Id: FormatterXML.java,v 1.13 2007/01/31 13:01:20 andy_seaborne Exp $
+ * @version $Id: ElementUnsaid.java,v 1.16 2007/01/02 11:20:30 andy_seaborne Exp $
  */
 
-public class FormatterXML extends FormatterBase
-    implements FormatterElement, FormatterTemplate 
+public class ElementService extends Element
 {
-    public FormatterXML(IndentedWriter out, SerializationContext context)
-    {
-        super(out, context) ;
+    Node serviceNode ;
+    Element element ;
+
+    public ElementService(String serviceURI, Element el)
+    { 
+        this(Node.createURI(serviceURI), el) ;
     }
     
-    public boolean topMustBeGroup() { return false ; }
-
-    public void visit(ElementTriplesBlock el)       { }
-
-    public void visit(ElementDataset el)            { }
-
-    public void visit(ElementFilter el)             { }
-
-    public void visit(ElementUnion el)              { }
-
-    public void visit(ElementGroup el)              { }
-
-    public void visit(ElementOptional el)           { }
-
-    public void visit(ElementNamedGraph el)         { }
+    // Variable?
+    public ElementService(Node n, Element el)
+    {
+        if ( ! n.isURI() )
+            LogFactory.getLog(ElementService.class).fatal("Must be a URI for a service endpoint") ;
+        this.serviceNode = n ;
+        this.element = el ;
+    }
     
-    public void visit(ElementService el)            { }
-
-    public void visit(ElementUnsaid el)             { }
+    public Element getElement() { return element ; } 
+    public Node getServiceNode() { return serviceNode ; }
+    public String getServiceURI() { return serviceNode.getURI(); }
     
-    public void visit(TemplateTriple template)      { }
+    //@Override
+    public int hashCode()
+    { return serviceNode.hashCode() ^ element.hashCode(); }
 
-    public void visit(TemplateGroup template)       { }
+    //@Override
+    public boolean equalTo(Element el2, LabelMap labelMap)
+    {
+        if ( ! ( el2 instanceof ElementService ) )
+            return false ;
+        ElementService service = (ElementService)el2 ;
+        if ( ! serviceNode.equals(service.serviceNode) )
+            return false ;
+        if ( ! this.getElement().equalTo(service.getElement(), labelMap) )
+            return false ;
+        return true ;
+    }
+    
+    public void visit(ElementVisitor v) { v.visit(this) ; }
 }
 
 /*
- * (c) Copyright 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

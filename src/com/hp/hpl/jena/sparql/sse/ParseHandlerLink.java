@@ -24,7 +24,7 @@ public class ParseHandlerLink extends ParseHandlerResolver2
     public ParseHandlerLink(Prologue prologue)                  { super(prologue) ; }
     
     String currentName = null ;
-    Map namedItems = new HashMap() ;    // String => Item
+    Map namedItems = new HashMap() ;    // Item => Item
     
     // ----
     
@@ -40,18 +40,21 @@ public class ParseHandlerLink extends ParseHandlerResolver2
     {
         if ( list.getFirst().isSymbol(tagLink) )
         {
-            System.err.println("Not written") ;
+            System.err.println("Not written: "+item) ;
+            super.declItem(list, item) ;
             return ;
         }
         
         if ( list.getFirst().isSymbol(tagName) )
         {
             if ( ! item.isSymbol() )
-                throwException("Not a symbol for named item: "+item.shortString(), item) ;
+                throwException("Must be a symbol for a named item: "+item.shortString(), item) ;
             
-            if ( namedItems.containsKey(item.getSymbol()) )
-                throwException("Name already defined: "+item.getSymbol(), item) ;
+            if ( namedItems.containsKey(item) )
+                throwException("Name already defined: "+item, item) ;
             currentName = item.getSymbol() ;
+            // Add it anyway.  Removed in form processing.
+            super.declItem(list, item) ;
             return ;
         }
         
@@ -60,7 +63,7 @@ public class ParseHandlerLink extends ParseHandlerResolver2
 
     protected boolean endOfDecl(ItemList list, Item item)
     {
-        // XXX No.  Does not allow for nexted "@names"
+        // XXX No.  This does not allow for nested "@names"
         super.setFormResult(item) ;
         if ( namedItems.containsKey(currentName) )
             throwException("Name already defined: "+currentName, item) ;

@@ -43,6 +43,7 @@ public class BuilderOp
         //dispatch.put(symQuadPattern, buildQuadPattern) ;
         dispatch.put(symFilter, buildFilter) ;
         dispatch.put(symGraph, buildGraph) ;
+        dispatch.put(symService, buildService) ;
         dispatch.put(symJoin, buildJoin) ;
         dispatch.put(symLeftJoin, buildLeftJoin) ;
         dispatch.put(symDiff, buildDiff) ;

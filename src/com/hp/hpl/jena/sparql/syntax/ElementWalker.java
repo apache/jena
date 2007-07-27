@@ -99,6 +99,13 @@ public class ElementWalker
             proc.visit(el) ;
         }
     
+        public void visit(ElementService el)
+        {
+            if ( el.getElement() != null )
+                el.getElement().visit(this) ;
+            proc.visit(el) ;
+        }
+        
         public void visit(ElementUnsaid el)
         {
             if ( el.getElement() != null )

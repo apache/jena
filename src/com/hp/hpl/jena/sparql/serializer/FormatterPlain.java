@@ -111,6 +111,12 @@ public class FormatterPlain extends FormatterBase
     {
         singleElement("Graph", el.getElement()) ;
     }
+
+    public void visit(ElementService el)
+    {
+        singleElement("Service", el.getElement()) ;
+    }
+    
     
     public void visit(ElementUnsaid el)
     {

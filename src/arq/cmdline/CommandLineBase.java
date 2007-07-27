@@ -72,15 +72,21 @@ public class CommandLineBase
         {
             String argStr = argv[i] ;
             
-            if ( ! argStr.startsWith("-") )
-                positional = true ;
-                // and get caught by next if statement 
-            
-            if ( positional )
+//            if ( ! argStr.startsWith("-") )
+//                positional = true ;
+//                // and get caught by next if statement 
+//            
+//            if ( positional )
+//            {
+//                argList.add(argStr) ; 
+//                continue ;
+//            }
+
+            if ( positional || ! argStr.startsWith("-") )
             {
                 argList.add(argStr) ; 
                 continue ;
-            }
+            } 
             
             if ( argStr.equals("-") || argStr.equals("--") )
             {

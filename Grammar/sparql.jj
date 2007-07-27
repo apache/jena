@@ -276,6 +276,10 @@ Element GraphPatternNotTriples() : { Element el = null ; }
    el = GroupOrUnionGraphPattern()
  |
    el = GraphGraphPattern()
+
+
+
+
  )
   { return el ; }
 }
@@ -292,7 +296,6 @@ Element GraphGraphPattern() : { Element el ; Node n ;}
   <GRAPH> n = VarOrIRIref() el = GroupGraphPattern()
     { return new ElementNamedGraph(n, el) ; }
 }
-
 // G (union G)* can be a single group pattern
 // or a group pattern as part of an union.
 Element GroupOrUnionGraphPattern() :

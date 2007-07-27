@@ -59,6 +59,9 @@ public class AlgebraGenerator
       if ( elt instanceof ElementNamedGraph )
           return compile((ElementNamedGraph)elt) ; 
     
+      if ( elt instanceof ElementService )
+          return compile((ElementService)elt) ; 
+
       // This is only here for queries built programmatically
       // (triple patterns not in a group) 
       if ( elt instanceof ElementTriplesBlock )
@@ -149,6 +152,7 @@ public class AlgebraGenerator
             
             if ( elt instanceof ElementGroup || 
                  elt instanceof ElementNamedGraph ||
+                 elt instanceof ElementService ||
                  elt instanceof ElementUnion )
             {
                 Op op = compile(elt) ;
@@ -205,6 +209,13 @@ public class AlgebraGenerator
         Node graphNode = eltGraph.getGraphNameNode() ;
         Op sub = compile(eltGraph.getElement()) ;
         return new OpGraph(graphNode, sub) ;
+    }
+
+    protected Op compile(ElementService eltService)
+    {
+        Node serviceNode = eltService.getServiceNode() ;
+        Op sub = compile(eltService.getElement()) ;
+        return new OpService(serviceNode, sub) ;
     }
 
     private Op compileFixed(ElementGroup groupElt)

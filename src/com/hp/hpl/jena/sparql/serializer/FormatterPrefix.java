@@ -8,6 +8,7 @@ package com.hp.hpl.jena.sparql.serializer;
 
 import java.util.Iterator;
 
+import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.sparql.syntax.*;
 import com.hp.hpl.jena.sparql.util.IndentedLineBuffer;
@@ -125,16 +126,28 @@ public class FormatterPrefix extends FormatterBase
     
     public void visit(ElementNamedGraph el)
     {
+        visitNodePattern("graph", el.getGraphNameNode(), el.getElement()) ;
+    }
+
+    public void visit(ElementService el)
+    {
+        visitNodePattern("graph", el.getServiceNode(), el.getElement()) ;
+    }
+    
+    public void visitNodePattern(String label, Node node, Element subElement)
+    {
         printOpen() ;
-        out.print("graph") ;
+        out.print(label) ;
         out.print(" ") ;
-        out.print(slotToString(el.getGraphNameNode())) ;
+        out.print(slotToString(node)) ;
         out.incIndent(INDENT) ;
         out.newline() ;
-        el.getElement().visit(this) ;
+        subElement.visit(this) ;
         out.decIndent(INDENT) ;
         printClose() ;
     }
+    
+
     
     public void visit(ElementUnsaid el)
     {

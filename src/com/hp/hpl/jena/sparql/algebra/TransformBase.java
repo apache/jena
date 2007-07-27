@@ -15,9 +15,10 @@ public class TransformBase implements Transform
     public Op transform(OpDatasetNames dsNames)     { return dsNames ; }
     public Op transform(OpQuadPattern quadPattern)  { return quadPattern ; }
     
-    public Op transform(OpFilter opFilter, Op subOp)    { return opFilter ; }
-    public Op transform(OpGraph opGraph, Op subOp)      { return opGraph ; } 
-
+    public Op transform(OpFilter opFilter, Op subOp)        { return opFilter ; }
+    public Op transform(OpGraph opGraph, Op subOp)          { return opGraph ; } 
+    public Op transform(OpService opService, Op subOp)      { return opService ; } 
+    
     public Op transform(OpJoin opJoin, Op left, Op right)           { return opJoin ; }
     public Op transform(OpLeftJoin opLeftJoin, Op left, Op right)   { return opLeftJoin ; }
     public Op transform(OpDiff opDiff, Op left, Op right)           { return opDiff ; }
