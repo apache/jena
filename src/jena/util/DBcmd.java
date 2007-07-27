@@ -16,7 +16,7 @@ import java.util.* ;
 /** Framework for the database commands.
  * 
  * @author Andy Seaborne
- * @version $Id: DBcmd.java,v 1.7 2007-07-26 13:35:04 andy_seaborne Exp $
+ * @version $Id: DBcmd.java,v 1.8 2007-07-27 11:31:38 andy_seaborne Exp $
  */ 
  
 public abstract class DBcmd
@@ -225,6 +225,13 @@ public abstract class DBcmd
         }
     }
         
+    protected void closeModel()
+    {
+        if ( dbModel != null )
+            dbModel.close() ;
+        dbModel = null ;
+    }
+    
     protected void closeConnection()
     {
         try {
@@ -291,9 +298,8 @@ public abstract class DBcmd
                             getRDBModel().abort() ;
                             inTransaction = false ;
                         }
-                        dbModel.close() ;
+                        closeModel() ;
                         closeConnection() ;
-                        dbModel = null ;
                         System.exit(9);
                     }
 
@@ -309,8 +315,7 @@ public abstract class DBcmd
         }
         finally 
         {
-            dbModel.close() ;
-            dbModel = null ;
+            closeModel() ;
             closeConnection() ;
         }
     }
