@@ -11,7 +11,9 @@ import java.util.Map;
 
 import org.apache.commons.logging.LogFactory;
 
-import com.hp.hpl.jena.sdb.layout2.hash.StoreTriplesNodesHashDerby;
+import com.hp.hpl.jena.sdb.layout2.hash.* ;
+import com.hp.hpl.jena.sdb.layout2.index.* ;
+import com.hp.hpl.jena.sdb.layout1.* ;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.store.LayoutType;
 import com.hp.hpl.jena.sdb.store.Store;
@@ -27,10 +29,10 @@ public class StoreFactory2
         LayoutType t = desc.getLayout() ;
         LayoutType2 layoutType = LayoutType2.convert(t.name()) ;
         
-        return _create(sdb, dbType, layoutType) ;
+        return _create(desc, sdb, dbType, layoutType) ;
     }
     
-    private static Store _create(SDBConnection sdb, DatabaseType2 dbType, LayoutType2 layoutType)
+    private static Store _create(StoreDesc desc, SDBConnection sdb, DatabaseType2 dbType, LayoutType2 layoutType)
     {
         StoreMaker f = registry.get(dbType, layoutType) ;
         if ( f == null )
@@ -39,7 +41,7 @@ public class StoreFactory2
             return null ;
         }
         
-        return f.create(sdb) ;
+        return f.create(desc, sdb) ;
     }
     
     // Need to sort out that SDBConnection needs the type as well
@@ -52,40 +54,133 @@ public class StoreFactory2
     
     public static interface StoreMaker
     {
-        Store create(SDBConnection conn) ;
+        Store create(StoreDesc desc, SDBConnection conn) ;
     }
     
     
     static Registry registry = new Registry() ;
     static class Registry extends MapK2<DatabaseType2, LayoutType2, StoreMaker>
-    {
-        
-    }
+    {}
+
+    static { setRegistry() ; }
     
-    static 
+    static private void setRegistry()
     {
+        // registry.clear() ;
+        // -- Hash layout
+        
         register(DatabaseType2.Derby, LayoutType2.LayoutHash, 
             new StoreMaker(){
-                public Store create(SDBConnection conn)
-                { return new StoreTriplesNodesHashDerby(conn) ; }} ) ;
+                public Store create(StoreDesc desc, SDBConnection conn)
+                { return new StoreTriplesNodesHashDerby(conn) ; } }) ;
+        
+        register(DatabaseType2.HSQLDB, LayoutType2.LayoutHash, 
+                 new StoreMaker(){
+                     public Store create(StoreDesc desc, SDBConnection conn)
+                     { return new StoreTriplesNodesHashHSQL(conn) ; }} ) ;
+        
+        register(DatabaseType2.MySQL, LayoutType2.LayoutTripleNodesHash,
+                 new StoreMaker() {
+                    public Store create(StoreDesc desc, SDBConnection conn)
+                    { return new StoreTriplesNodesHashMySQL(conn, desc.engineType) ; } }) ;
+
+        register(DatabaseType2.PostgreSQL, LayoutType2.LayoutTripleNodesHash,
+                 new StoreMaker() {
+                    public Store create(StoreDesc desc, SDBConnection conn)
+                    { return new StoreTriplesNodesHashPGSQL(conn) ; } }) ;
+
+        register(DatabaseType2.SQLServer, LayoutType2.LayoutTripleNodesHash,
+                 new StoreMaker() {
+                    public Store create(StoreDesc desc, SDBConnection conn)
+                    { return new StoreTriplesNodesHashSQLServer(conn) ; } }) ;
+
+        register(DatabaseType2.Oracle, LayoutType2.LayoutTripleNodesHash,
+                 new StoreMaker() {
+                    public Store create(StoreDesc desc, SDBConnection conn)
+                    { return new StoreTriplesNodesHashOracle(conn) ; } }) ;
+
+        // -- Index layout
+        
+        register(DatabaseType2.Derby, LayoutType2.LayoutTripleNodesIndex,
+                 new StoreMaker() {
+                    public Store create(StoreDesc desc, SDBConnection conn)
+                    { return new StoreTriplesNodesIndexDerby(conn) ; }
+                    }) ;
+        
+        register(DatabaseType2.HSQLDB, LayoutType2.LayoutTripleNodesIndex,
+                 new StoreMaker() {
+                    public Store create(StoreDesc desc, SDBConnection conn)
+                    { return new StoreTriplesNodesIndexHSQL(conn) ; } }) ;
+        
+        register(DatabaseType2.MySQL, LayoutType2.LayoutTripleNodesIndex,
+                 new StoreMaker() {
+                    public Store create(StoreDesc desc, SDBConnection conn)
+                    { return new StoreTriplesNodesIndexMySQL(conn, desc.engineType) ; } }) ;
+
+        register(DatabaseType2.PostgreSQL, LayoutType2.LayoutTripleNodesIndex,
+                 new StoreMaker() {
+                    public Store create(StoreDesc desc, SDBConnection conn)
+                    { return new StoreTriplesNodesIndexPGSQL(conn) ; } }) ;
+
+        register(DatabaseType2.SQLServer, LayoutType2.LayoutTripleNodesIndex,
+                 new StoreMaker() {
+                    public Store create(StoreDesc desc, SDBConnection conn)
+                    { return new StoreTriplesNodesIndexSQLServer(conn) ; } }) ;
+
+        register(DatabaseType2.Oracle, LayoutType2.LayoutTripleNodesIndex,
+                 new StoreMaker() {
+                    public Store create(StoreDesc desc, SDBConnection conn)
+                    { return new StoreTriplesNodesIndexOracle(conn) ; } }) ;
+        
+        // -- Simple layout
+        
+        register(DatabaseType2.Derby, LayoutType2.LayoutSimple,
+                 new StoreMaker() {
+                    public Store create(StoreDesc desc, SDBConnection conn)
+                    { return new StoreSimpleDerby(conn) ; }
+                    }) ;
+        
+        register(DatabaseType2.HSQLDB, LayoutType2.LayoutSimple,
+                 new StoreMaker() {
+                    public Store create(StoreDesc desc, SDBConnection conn)
+                    { return new StoreSimpleHSQL(conn) ; } }) ;
+        
+        register(DatabaseType2.MySQL, LayoutType2.LayoutSimple,
+                 new StoreMaker() {
+                    public Store create(StoreDesc desc, SDBConnection conn)
+                    { return new StoreSimpleMySQL(conn, desc.engineType) ; } }) ;
+
+        register(DatabaseType2.PostgreSQL, LayoutType2.LayoutSimple,
+                 new StoreMaker() {
+                    public Store create(StoreDesc desc, SDBConnection conn)
+                    { return new StoreSimplePGSQL(conn) ; } }) ;
+
+        register(DatabaseType2.SQLServer, LayoutType2.LayoutSimple,
+                 new StoreMaker() {
+                    public Store create(StoreDesc desc, SDBConnection conn)
+                    { return new StoreSimpleSQLServer(conn) ; } }) ;
+
+        register(DatabaseType2.Oracle, LayoutType2.LayoutSimple,
+                 new StoreMaker() {
+                    public Store create(StoreDesc desc, SDBConnection conn)
+                    { return new StoreSimpleOracle(conn) ; } }) ;
     }
     
     // Convenience.
     static class MapK2<K1, K2, V>
     {
-        Map <Pair<K1, K2>, V> map = null ;
+        private Map <Pair<K1, K2>, V> map = null ;
         
-        MapK2() { map = new HashMap<Pair<K1, K2>, V>() ; }
-        MapK2(Map <Pair<K1, K2>, V> map) { this.map = map ; }
+        public MapK2() { map = new HashMap<Pair<K1, K2>, V>() ; }
+        public MapK2(Map <Pair<K1, K2>, V> map) { this.map = map ; }
         
-        
-        V get(K1 key1, K2 key2) { return map.get(new Pair<K1, K2>(key1, key2)) ; }
-        
-        void put(K1 key1, K2 key2, V value) { map.put(new Pair<K1, K2>(key1, key2), value) ; }
-        
-        boolean containsKey(K1 key1, K2 key2) { return map.containsKey(new Pair<K1, K2>(key1, key2)) ; }
-        int size() { return map.size() ; }
-        boolean isEmpty() { return map.isEmpty() ; }
+        public V get(K1 key1, K2 key2) { return map.get(new Pair<K1, K2>(key1, key2)) ; }
+        public void put(K1 key1, K2 key2, V value) { map.put(new Pair<K1, K2>(key1, key2), value) ; }
+        public boolean containsKey(K1 key1, K2 key2) { return map.containsKey(new Pair<K1, K2>(key1, key2)) ; }
+        public boolean containsValue(V value) { return map.containsValue(value) ; }
+        public int size() { return map.size() ; }
+        public boolean isEmpty() { return map.isEmpty() ; }
+        public void clear() { map.clear() ; }
     }
 }
 
