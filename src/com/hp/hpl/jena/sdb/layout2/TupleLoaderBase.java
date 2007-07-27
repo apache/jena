@@ -22,8 +22,8 @@ public abstract class TupleLoaderBase extends com.hp.hpl.jena.sdb.store.TupleLoa
 	
 	PreparedStatement insertTupleLoader;
     PreparedStatement insertNodeLoader;
-    PreparedStatement insertNodes;
-    PreparedStatement insertTuples;
+    String insertNodes;
+    String insertTuples;
     PreparedStatement deleteTuples;
     PreparedStatement clearTupleLoader;
     PreparedStatement clearNodeLoader;
@@ -58,8 +58,8 @@ public abstract class TupleLoaderBase extends com.hp.hpl.jena.sdb.store.TupleLoa
 		// Prepare those statements
 		insertNodeLoader = connection().prepareStatement(getInsertTempNodes());
 		insertTupleLoader = connection().prepareStatement(getInsertTempTuples());
-		insertNodes = connection().prepareStatement(getLoadNodes());
-		insertTuples = connection().prepareStatement(getLoadTuples());
+		insertNodes = getLoadNodes();
+		insertTuples = getLoadTuples();
 		deleteTuples = connection().prepareStatement(getDeleteTuples());
 		if (getClearTempNodes() != null) clearNodeLoader = connection().prepareStatement(getClearTempNodes());
 		if (getClearTempTuples() != null) clearTupleLoader = connection().prepareStatement(getClearTempTuples());
@@ -131,8 +131,8 @@ public abstract class TupleLoaderBase extends com.hp.hpl.jena.sdb.store.TupleLoa
 			if (amLoading) {
 				insertNodeLoader.executeBatch();
 				insertTupleLoader.executeBatch();
-				insertNodes.execute();
-				insertTuples.execute();
+				connection().execUpdate(insertNodes);
+				connection().execUpdate(insertTuples);
 				if (clearNodeLoader != null) clearNodeLoader.execute();
 				if (clearTupleLoader != null) clearTupleLoader.execute();
 			} else {
