@@ -8,6 +8,7 @@ package com.hp.hpl.jena.sparql.resultset;
 
 import com.hp.hpl.jena.query.ResultSet;
 import com.hp.hpl.jena.rdf.model.Model;
+
 /**
  * 
  * The class "ResultSet" is reserved for the SELECT result format.
@@ -76,7 +77,10 @@ public abstract class SPARQLResult
     public boolean isHasBeenSet() { return hasBeenSet; }
     
     protected void set(ResultSet rs)
-    { resultSet = rs ; hasBeenSet = true ; }
+    { 
+        resultSet = rs ;
+        hasBeenSet = true ;
+    }
 
     protected void set(Model m)
     { model = m ; hasBeenSet = true ; }

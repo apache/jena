@@ -178,15 +178,20 @@ public class JSONInput extends SPARQLResult
             return nextSolution();
         }
 
-        public QuerySolution nextSolution() {
+        public QuerySolution nextSolution()
+        {
+            return new ResultBinding(model, nextBinding()) ;
+        }
+        
+        public Binding nextBinding() {
             if (finished)
                 throw new NoSuchElementException("End of JSON Results");
             if (!hasNext())
                 throw new NoSuchElementException("End of JSON Results");
 
-            ResultBinding currentEnv = new ResultBinding(model, binding);
+            Binding r = binding;
             binding = null;
-            return currentEnv;
+            return r ;
         }
 
         public int getRowNumber() {

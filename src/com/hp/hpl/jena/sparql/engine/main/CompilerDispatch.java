@@ -101,10 +101,9 @@ class CompilerDispatch implements OpVisitor
 
     public void visit(OpService opService)
     {
-        throw new ARQNotImplemented("OpService") ;
-//        QueryIterator input = pop() ;
-//        QueryIterator qIter = opCompiler.compile(opService, input) ;
-//        push(qIter) ;
+        QueryIterator input = pop() ;
+        QueryIterator qIter = opCompiler.compile(opService, input) ;
+        push(qIter) ;
     }
 
     public void visit(OpDatasetNames dsNames)

@@ -23,9 +23,7 @@ import com.hp.hpl.jena.sparql.engine.binding.Binding;
  * @version  $Id: ResultSetStream.java,v 1.13 2007/02/06 17:05:47 andy_seaborne Exp $
  */
 
-public class ResultSetStream
-    //implements ResultSetOverBinding
-    implements ResultSet
+public class ResultSetStream implements ResultSet
 {
     // Could use QueryIteratorWrapper 
     QueryIterator queryExecutionIter ;

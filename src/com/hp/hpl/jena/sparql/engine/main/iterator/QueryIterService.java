@@ -1,26 +1,55 @@
 /*
- * (c) Copyright 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
+ * All rights reserved.
  * [See end of file]
  */
 
-/**
- * @author     Andy Seaborne
- * @version    $Id: ResultSetOverBinding.java,v 1.6 2007/02/06 17:05:47 andy_seaborne Exp $
- */
- 
-package com.hp.hpl.jena.sparql.engine;
+package com.hp.hpl.jena.sparql.engine.main.iterator;
 
-import com.hp.hpl.jena.query.ResultSet;
+import com.hp.hpl.jena.sparql.algebra.Op;
+import com.hp.hpl.jena.sparql.algebra.OpSubstitute;
+import com.hp.hpl.jena.sparql.algebra.op.OpService;
+import com.hp.hpl.jena.sparql.engine.ExecutionContext;
+import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
+import com.hp.hpl.jena.sparql.engine.http.Service;
+import com.hp.hpl.jena.sparql.engine.iterator.QueryIterRepeatApply;
 
-public interface ResultSetOverBinding extends ResultSet
+
+public class QueryIterService extends QueryIterRepeatApply
 {
-    public Binding nextBinding() ;
+    OpService opService ;
+    
+    public QueryIterService(QueryIterator input, OpService opService, ExecutionContext context)
+    {
+        super(input, context) ;
+        this.opService = opService ;
+    }
+    
+    protected QueryIterator nextStage(Binding outerBinding)
+    {
+        Op op = OpSubstitute.substitute(opService, outerBinding) ;
+        return Service.exec((OpService)op) ;
+    }
+
+//    private static Node resolve(Binding b, Node n)
+//    {
+////        if (  b == null )
+////            return null ;
+////
+////        if ( n == null )
+////            return n ;
+//        
+//        if ( ! n.isVariable() )
+//            return n ;
+//
+//        return b.get(Var.alloc(n)) ;
+//    }
 }
 
 /*
- *  (c) Copyright 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
- *  All rights reserved.
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
+ * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions

@@ -1,28 +1,35 @@
 /*
- * (c) Copyright 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
+ * All rights reserved.
  * [See end of file]
  */
 
-/**
- * @author     Andy Seaborne
- * @version    $Id: ResultSetRewindable.java,v 1.5 2007/02/08 16:18:44 andy_seaborne Exp $
- */
- 
-package com.hp.hpl.jena.sparql.resultset;
+package com.hp.hpl.jena.sparql.engine.iterator;
 
-public interface ResultSetRewindable extends com.hp.hpl.jena.query.ResultSet
+import com.hp.hpl.jena.query.ResultSet;
+import com.hp.hpl.jena.sparql.engine.binding.Binding;
+import com.hp.hpl.jena.sparql.serializer.SerializationContext;
+import com.hp.hpl.jena.sparql.util.IndentedWriter;
+import com.hp.hpl.jena.sparql.util.Utils;
+
+public class QueryIteratorResultSet extends QueryIteratorBase
 {
-    /** Move back to the start of the iterator for this instance of results of a query. */
-    public void reset() ;
+    private ResultSet resultSet ; 
+    public QueryIteratorResultSet(ResultSet rs) { resultSet = rs ; }
     
-    /** return the number of solutions */ 
-    public int size() ;
+    protected void closeIterator()          { resultSet = null ; }
+    protected boolean hasNextBinding()      { return resultSet.hasNext() ; }
+    protected Binding moveToNextBinding()   { return resultSet.nextBinding() ; }
 
+    public void output(IndentedWriter out, SerializationContext cxt)
+    {
+        out.print(Utils.className(this)) ;
+    }
 }
 
 /*
- *  (c) Copyright 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
- *  All rights reserved.
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
+ * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions

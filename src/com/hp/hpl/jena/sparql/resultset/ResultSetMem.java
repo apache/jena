@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import com.hp.hpl.jena.sparql.core.ResultBinding;
+import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.util.Utils;
 
 import com.hp.hpl.jena.query.QuerySolution;
@@ -84,7 +86,7 @@ public class ResultSetMem implements com.hp.hpl.jena.query.ResultSetRewindable
             varNames = qr.getResultVars();
             while (qr.hasNext())
             {
-                QuerySolution rb = qr.nextSolution();
+                Binding rb = qr.nextBinding();
                 rows.add(rb);
             }
         }
@@ -116,7 +118,9 @@ public class ResultSetMem implements com.hp.hpl.jena.query.ResultSetRewindable
     /** Moves onto the next result possibility.
      */
     
-    public QuerySolution nextSolution()  { rowNumber++ ; return (QuerySolution)iterator.next() ; }
+    public QuerySolution nextSolution()  { return new ResultBinding(null, nextBinding()) ; }
+    
+    public Binding nextBinding()  { rowNumber++ ; return (Binding)iterator.next() ; }
 
     /** Moves onto the next result possibility.
      *  The returned object should be of class QuerySolution

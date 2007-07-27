@@ -31,6 +31,7 @@ import com.hp.hpl.jena.sparql.engine.*;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.binding.Binding1;
 import com.hp.hpl.jena.sparql.engine.binding.BindingRoot;
+import com.hp.hpl.jena.sparql.engine.http.Service;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterConcat;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterPlainWrapper;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterRoot;
@@ -136,8 +137,9 @@ public class Eval
 
         public void visit(OpService opService)
         {
-            throw new QueryExecException("Encountered OpService during execution of reference engine") ;
-            //push(evalGraph(opGraph, evaluator)) ;
+            QueryIterator qIter = Service.exec(opService) ;
+            Table table = TableFactory.create(qIter) ;
+            push(table) ;
         }
 
         public void visit(OpDatasetNames dsNames)

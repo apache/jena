@@ -13,7 +13,10 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 import javax.xml.namespace.QName;
-import javax.xml.stream.*;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamConstants;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -21,15 +24,19 @@ import org.apache.commons.logging.LogFactory;
 import com.hp.hpl.jena.datatypes.RDFDatatype;
 import com.hp.hpl.jena.datatypes.TypeMapper;
 import com.hp.hpl.jena.graph.Node;
-
-import com.hp.hpl.jena.query.*;
-import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.query.ARQ;
+import com.hp.hpl.jena.query.QuerySolution;
+import com.hp.hpl.jena.query.ResultSet;
+import com.hp.hpl.jena.rdf.model.AnonId;
+import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.sparql.ARQConstants;
 import com.hp.hpl.jena.sparql.core.ResultBinding;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.binding.BindingMap;
-import com.hp.hpl.jena.sparql.util.*;
+import com.hp.hpl.jena.sparql.util.GraphUtils;
+import com.hp.hpl.jena.sparql.util.LabelToNodeMap;
+import com.hp.hpl.jena.sparql.util.StringUtils;
 
 /** Code that reads an XML Results format and builds the ARQ structure for the same.
  *  Can read result set and boolean result forms.
@@ -135,7 +142,7 @@ class XMLInputStAX extends SPARQLResult
     // -------- Result Set
 
     
-    class ResultSetStAX  implements ResultSet 
+    class ResultSetStAX  implements ResultSet
     {
         // ResultSet variables
         QuerySolution current = null ; 
@@ -219,15 +226,21 @@ class XMLInputStAX extends SPARQLResult
         return nextSolution() ; 
     }
 
-    public QuerySolution nextSolution()
+    public Binding nextBinding()
     {
         if ( finished )
             throw new NoSuchElementException("End of XML Results") ;
         if ( ! hasNext() )
             throw new NoSuchElementException("End of XML Results") ;
-        
-        ResultBinding currentEnv = new ResultBinding(model, binding) ;
+        Binding r = binding ;
         binding = null ;
+        return r ;
+    }
+    
+    public QuerySolution nextSolution()
+    {
+        Binding r = nextBinding() ;
+        ResultBinding currentEnv = new ResultBinding(model, r) ;
         return currentEnv ; 
     }
 

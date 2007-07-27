@@ -30,7 +30,10 @@ public class SortedResultSet implements ResultSet
     // As we need to unwrap the ResultSet into bindings, we might as well sort at that point,
     // otherwise get two copies - one for downcasting, one for QueryIterSort.
     
-    ResultSet resultSet ;
+    QueryIterator qIter ;
+    int rowNumber = 0 ;
+    List resultVars = null ;
+    
     
     public SortedResultSet(ResultSet rs, List conditions)
     {
@@ -44,43 +47,44 @@ public class SortedResultSet implements ResultSet
         
         for ( ; rs.hasNext() ; )
         {
-            QuerySolution qs = rs.nextSolution() ;
-            Binding b = null ;
-            // Copy if unknown
-            if ( qs instanceof ResultBinding )
-                b = ((ResultBinding)qs).getBinding() ;
-            else
-                b = copyToBinding(qs) ; 
+            Binding b = rs.nextBinding() ;
             sorted.add(b) ;
         }
             
-        QueryIterator qIter = new QueryIterPlainWrapper(sorted.iterator()) ;
-        resultSet = new ResultSetStream(rs.getResultVars(), null, qIter) ;
+        qIter = new QueryIterPlainWrapper(sorted.iterator()) ;
+        resultVars = rs.getResultVars() ;
+        //resultSet = new ResultSetStream(rs.getResultVars(), null, qIter) ;
     }
     
     public boolean hasNext()
     {
-        return resultSet.hasNext() ;
+        return qIter.hasNext() ;
     }
 
     public Object next()
     {
-        return resultSet.next() ;
+        return nextBinding() ;
+    }
+
+    public Binding nextBinding()
+    {
+        rowNumber++ ;
+        return qIter.nextBinding() ;
     }
 
     public QuerySolution nextSolution()
     {
-        return resultSet.nextSolution() ;
+        return new ResultBinding(null, nextBinding()) ;
     }
-
+    
     public int getRowNumber()
     {
-        return resultSet.getRowNumber() ;
+        return rowNumber ;
     }
 
     public List getResultVars()
     {
-        return resultSet.getResultVars() ;
+        return resultVars ;
     }
 
     public boolean isOrdered() { return true ; }

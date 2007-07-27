@@ -8,16 +8,22 @@ package com.hp.hpl.jena.sparql.resultset;
 
 import java.util.ArrayList;
 
-import com.hp.hpl.jena.query.QuerySolution;
-import com.hp.hpl.jena.query.QuerySolutionMap;
-import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.shared.JenaException;
-import com.hp.hpl.jena.shared.PropertyNotFoundException;
-import com.hp.hpl.jena.sparql.vocabulary.ResultSetGraphVocab;
-import com.hp.hpl.jena.vocabulary.RDF;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+
+import com.hp.hpl.jena.rdf.model.Literal;
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.RDFNode;
+import com.hp.hpl.jena.rdf.model.Resource;
+import com.hp.hpl.jena.rdf.model.Statement;
+import com.hp.hpl.jena.rdf.model.StmtIterator;
+import com.hp.hpl.jena.shared.JenaException;
+import com.hp.hpl.jena.shared.PropertyNotFoundException;
+import com.hp.hpl.jena.sparql.core.Var;
+import com.hp.hpl.jena.sparql.engine.binding.Binding;
+import com.hp.hpl.jena.sparql.engine.binding.BindingMap;
+import com.hp.hpl.jena.sparql.vocabulary.ResultSetGraphVocab;
+import com.hp.hpl.jena.vocabulary.RDF;
 
 
 public class RDFInput extends ResultSetMem
@@ -33,7 +39,6 @@ public class RDFInput extends ResultSetMem
     {
         buildFromDumpFormat(model);
     }
-
 
     // Convert from RDF model to in-memory result set
     private void buildFromDumpFormat(Model resultsModel)
@@ -111,7 +116,7 @@ public class RDFInput extends ResultSetMem
                 log.warn("More than one solution: index = "+index) ;
             Resource soln = s.getSubject() ;
 
-            QuerySolution rb = buildBinding(soln) ;
+            Binding rb = buildBinding(soln) ;
             rows.add(rb) ;
             sIter.close() ;
         }
@@ -129,7 +134,7 @@ public class RDFInput extends ResultSetMem
             Resource soln = solnIter.nextStatement().getResource() ;
             count++ ;
 
-            QuerySolution rb = buildBinding(soln) ;
+            Binding rb = buildBinding(soln) ;
             rows.add(rb) ;
         }
         solnIter.close() ;
@@ -144,10 +149,10 @@ public class RDFInput extends ResultSetMem
         }
     }
 
-    private QuerySolution buildBinding(Resource soln)
+    private Binding buildBinding(Resource soln)
     {
         // foreach row
-        QuerySolutionMap rb = new QuerySolutionMap() ;
+        Binding rb = new BindingMap() ;
         
         StmtIterator bindingIter = soln.listProperties(ResultSetGraphVocab.binding) ;
         for ( ; bindingIter.hasNext() ; )
@@ -157,7 +162,7 @@ public class RDFInput extends ResultSetMem
             String var = binding.getRequiredProperty(ResultSetGraphVocab.variable).getString() ;
             try {
                 RDFNode val = binding.getRequiredProperty(ResultSetGraphVocab.value).getObject() ;
-                rb.add(var, val) ;
+                rb.add(Var.alloc(var), val.asNode()) ;
             } catch (PropertyNotFoundException ex)
             {
                 log.warn("Failed to get value for ?"+var) ;

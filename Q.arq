@@ -1,6 +1,12 @@
 PREFIX : <http://example/>
+PREFIX  dc:     <http://purl.org/dc/elements/1.1/>
 
-SELECT ?x
-{ ?s ?p ?o }
-GROUP BY ?s ?p
-HAVING COUNT(?o) > 2
+SELECT ?a
+{
+  ?b dc:title ?title .
+  SERVICE <http://sparql.org/books> { ?s dc:title ?title . ?s dc:creator ?a }
+}
+
+
+## GROUP BY ?s ?p
+## HAVING COUNT(?o) > 2

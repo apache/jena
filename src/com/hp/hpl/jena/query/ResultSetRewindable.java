@@ -10,6 +10,7 @@
  
 package com.hp.hpl.jena.query;
 
+
 public interface ResultSetRewindable extends com.hp.hpl.jena.sparql.resultset.ResultSetRewindable
 {
     /** Move back to the start of the iterator for this instance of results of a query. */

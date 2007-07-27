@@ -8,6 +8,8 @@ package com.hp.hpl.jena.query;
 
 import java.util.* ;
 
+import com.hp.hpl.jena.sparql.engine.binding.Binding;
+
 /** Results from a query in a table-like manner for SELECT queries.
  *  Each row corresponds to a set of bindings which fulfil the conditions
  *  of the query.  Access to the results is by variable name.
@@ -23,6 +25,7 @@ import java.util.* ;
 
 public interface ResultSet extends Iterator
 {
+    // Could have a ResultSetBase that does all the Node=>Resource (= ResultBinding)  
     /**
      * Is there another possibility?
      */
@@ -38,6 +41,9 @@ public interface ResultSet extends Iterator
      */
     
     public QuerySolution nextSolution() ;
+
+    /** Move to the next binding (low level) */
+    public Binding nextBinding() ;
     
     /** Return the "row" number for the current iterator item */
     public int getRowNumber() ;

@@ -1,28 +1,41 @@
 /*
- * (c) Copyright 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
+ * All rights reserved.
  * [See end of file]
  */
 
-/**
- * @author     Andy Seaborne
- * @version    $Id: ResultSetRewindable.java,v 1.5 2007/02/08 16:18:44 andy_seaborne Exp $
- */
- 
-package com.hp.hpl.jena.sparql.resultset;
+package com.hp.hpl.jena.sparql.engine.http;
 
-public interface ResultSetRewindable extends com.hp.hpl.jena.query.ResultSet
+import java.io.InputStream;
+
+import com.hp.hpl.jena.query.Query;
+import com.hp.hpl.jena.query.ResultSet;
+import com.hp.hpl.jena.query.ResultSetFactory;
+import com.hp.hpl.jena.sparql.algebra.OpToSyntax;
+import com.hp.hpl.jena.sparql.algebra.op.OpService;
+import com.hp.hpl.jena.sparql.engine.QueryIterator;
+import com.hp.hpl.jena.sparql.engine.iterator.QueryIteratorResultSet;
+
+/** Execution of OpService */
+
+public class Service
 {
-    /** Move back to the start of the iterator for this instance of results of a query. */
-    public void reset() ;
-    
-    /** return the number of solutions */ 
-    public int size() ;
-
+    public static QueryIterator exec(OpService op)
+    {
+        Query query = OpToSyntax.asQuery(op.getSubOp()) ;
+        
+        HttpQuery httpQuery = new HttpQuery(op.getService().getURI()) ;
+        httpQuery.addParam(HttpParams.pQuery, query.toString() );
+        httpQuery.setAccept(HttpParams.contentTypeResultsXML) ;
+        InputStream in = httpQuery.exec() ;
+        ResultSet rs = ResultSetFactory.fromXML(in) ;
+        return new QueryIteratorResultSet(rs) ; 
+    }
 }
 
 /*
- *  (c) Copyright 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
- *  All rights reserved.
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
+ * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions

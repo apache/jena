@@ -22,6 +22,7 @@ import com.hp.hpl.jena.sparql.engine.main.iterator.QueryIterGraph;
 import com.hp.hpl.jena.sparql.engine.main.iterator.QueryIterJoin;
 import com.hp.hpl.jena.sparql.engine.main.iterator.QueryIterLeftJoin;
 import com.hp.hpl.jena.sparql.engine.main.iterator.QueryIterOptionalIndex;
+import com.hp.hpl.jena.sparql.engine.main.iterator.QueryIterService;
 import com.hp.hpl.jena.sparql.engine.main.iterator.QueryIterUnion;
 import com.hp.hpl.jena.sparql.expr.Expr;
 import com.hp.hpl.jena.sparql.expr.ExprBuild;
@@ -233,6 +234,11 @@ public class OpCompiler
     QueryIterator compile(OpGraph opGraph, QueryIterator input)
     { 
         return new QueryIterGraph(input, opGraph, execCxt) ;
+    }
+    
+    QueryIterator compile(OpService opService, QueryIterator input)
+    {
+        return new QueryIterService(input, opService, execCxt) ;
     }
     
     QueryIterator compile(OpDatasetNames dsNames, QueryIterator input)
