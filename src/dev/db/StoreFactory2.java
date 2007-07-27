@@ -7,6 +7,9 @@
 package dev.db;
 
 import java.util.HashMap;
+import java.util.Map;
+
+import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.sdb.layout2.hash.StoreTriplesNodesHashDerby;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
@@ -28,13 +31,14 @@ public class StoreFactory2
     
     private static Store _create(SDBConnection sdb, DatabaseType dbType, LayoutType2 layoutType)
     {
-        Pair<DatabaseType, LayoutType2> key = new Pair<DatabaseType, LayoutType2>(dbType, layoutType) ;
-        Factory f = registry.get(key) ;
+        StoreMaker f = registry.get(dbType, layoutType) ;
         if ( f == null )
-        {}
+        {
+            LogFactory.getLog(StoreFactory2.class).warn(String.format("No factory for (%s, %s)", dbType, layoutType)) ;
+            return null ;
+        }
         
         return f.create(sdb) ;
-        
     }
     
     // OR
@@ -42,22 +46,20 @@ public class StoreFactory2
     // StoreType:  "Oracle::Layout2/hash"
     // Need to sort out that SDBConnection needs the type as well
     
-    public static void register(DatabaseType dbType, LayoutType2 layoutType, Factory factory)
+    public static void register(DatabaseType dbType, LayoutType2 layoutType, StoreMaker factory)
     {
-        registry.put(
-                     new Pair<DatabaseType, LayoutType2>(dbType, layoutType),
-                     factory) ;
+        registry.put(dbType, layoutType, factory) ;
     }
     
     
-    public static interface Factory
+    public static interface StoreMaker
     {
         Store create(SDBConnection conn) ;
     }
     
     
     static Registry registry = new Registry() ;
-    static class Registry extends HashMap<Pair<DatabaseType, LayoutType2>, Factory>
+    static class Registry extends MapK2<DatabaseType, LayoutType2, StoreMaker>
     {
         
     }
@@ -65,12 +67,28 @@ public class StoreFactory2
     static 
     {
         register(DatabaseType.Derby, LayoutType2.LayoutHash, 
-            new Factory(){
+            new StoreMaker(){
                 public Store create(SDBConnection conn)
                 { return new StoreTriplesNodesHashDerby(conn) ; }} ) ;
     }
     
-    
+    // Convenience.
+    static class MapK2<K1, K2, V>
+    {
+        Map <Pair<K1, K2>, V> map = null ;
+        
+        MapK2() { map = new HashMap<Pair<K1, K2>, V>() ; }
+        MapK2(Map <Pair<K1, K2>, V> map) { this.map = map ; }
+        
+        
+        V get(K1 key1, K2 key2) { return map.get(new Pair<K1, K2>(key1, key2)) ; }
+        
+        void put(K1 key1, K2 key2, V value) { map.put(new Pair<K1, K2>(key1, key2), value) ; }
+        
+        boolean containsKey(K1 key1, K2 key2) { return map.containsKey(new Pair<K1, K2>(key1, key2)) ; }
+        int size() { return map.size() ; }
+        boolean isEmpty() { return map.isEmpty() ; }
+    }
 }
 
 /*
