@@ -19,10 +19,12 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.sdb.SDB;
+import com.hp.hpl.jena.sdb.SDBException;
 import com.hp.hpl.jena.sdb.layout1.*;
 import com.hp.hpl.jena.sdb.layout2.hash.*;
 import com.hp.hpl.jena.sdb.layout2.index.*;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
+import com.hp.hpl.jena.sdb.sql.SDBConnectionFactory;
 import com.hp.hpl.jena.sdb.util.Pair;
 
 /** Construct Stores
@@ -36,21 +38,44 @@ public class StoreFactory
     
     static { SDB.init() ; } 
 
+    /**
+     * Create a store, based on the store description and
+     * connection information read from the file. 
+     * @param filename
+     * @return
+     */
     public static Store create(String filename)
     { return create(null, StoreDesc.read(filename)) ; }
     
+    /**
+     * Create a store, based on the store description.
+     * The store description must include connection details. 
+     * @param desc
+     * @return
+     */
     public static Store create(StoreDesc desc)
     { return create(null, desc) ; }
     
+    /** 
+     * Create a store, based on the store description and connection.
+     * @param sdb
+     * @param desc
+     * @return
+     */
     public static Store create(SDBConnection sdb, StoreDesc desc)
     {
-        Store store = _create(desc, sdb) ;
+        Store store = _create(sdb, desc) ;
         return store ;
     }
     
-    private static Store _create(StoreDesc desc, SDBConnection sdb)
+    private static Store _create(SDBConnection sdb, StoreDesc desc)
     {
-        // Temp translate.
+        if ( sdb == null && desc.connDesc == null )
+            throw new SDBException("StoreFactory: No connection and no connection description") ;
+        
+        if ( sdb == null )
+            sdb = SDBConnectionFactory.create(desc.connDesc) ;
+        
         DatabaseType dbType = desc.getDbType() ;
         LayoutType layoutType = desc.getLayout() ;
         
@@ -71,24 +96,20 @@ public class StoreFactory
     
     // Need to sort out that SDBConnection needs the type as well
     
+    /** Register a new store maker for a given database/layout pair.
+     *  Overwrites any previous StoreMaker for this pair.
+     *  Only used when adding a new database or layout - the standard
+     *  ones are automatically registered.  
+     */ 
     public static void register(DatabaseType dbType, LayoutType layoutType, StoreMaker factory)
     {
         registry.put(dbType, layoutType, factory) ;
     }
     
-    
-    public static interface StoreMaker
-    {
-        Store create(StoreDesc desc, SDBConnection conn) ;
-    }
-    
-    
-    static Registry registry = new Registry() ;
-    static class Registry extends MapK2<DatabaseType, LayoutType, StoreMaker>
-    {}
+    private static class Registry extends MapK2<DatabaseType, LayoutType, StoreMaker> {}
+    private static Registry registry = new Registry() ;
 
     static { setRegistry() ; checkRegistry() ; }
-    
     
     static private void setRegistry()
     {
@@ -209,7 +230,6 @@ public class StoreFactory
                     log.warn(format("Duplicate store maker: (%s, %s)", k1.getName(), k2.getName())) ;
                 seen.add(x) ;
             }
-        
     }
 
     
