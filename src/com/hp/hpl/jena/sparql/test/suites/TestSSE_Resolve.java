@@ -28,6 +28,11 @@ public class TestSSE_Resolve extends TestCase
     {
         TestSuite ts = new TestSuite(TestSSE_Resolve.class) ;
         ts.setName("SSE Resolve") ;
+        
+        SSE.getDefaultPrefixMapRead().removeNsPrefix("") ;
+        SSE.getDefaultPrefixMapRead().removeNsPrefix("ex") ;
+//        SSE.setDefaultPrefixMapRead(null) ;
+//        SSE.setDefaultPrefixMapWrite(null) ;
         return ts ;
     }
 

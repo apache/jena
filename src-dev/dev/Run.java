@@ -35,6 +35,10 @@ public class Run
 {
     public static void main(String[] argv)
     {
+        Item item = SSE.parse("(base <http://example/> (base <urn:host:> <x>))") ;
+        System.out.println();
+        System.out.println(item);
+        System.exit(0) ;
         String []a = { "--query", "Q.arq", "--out=ARQ"
             } ;
         arq.qparse.main(a) ;

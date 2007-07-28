@@ -82,7 +82,7 @@ public abstract class ParseHandlerForm extends ParseHandlerPlain
             item = Item.createNil(list.line, list.column) ;
         
         // And emit a result as a listAdd.
-        // Must go through our listAdd() here. ?? super.listAdd should work?
+        // Must go through our listAdd() here to terminate nested forms.
         
         // item==null : remove Nil code above to allow forms that have no output.
         if ( item != null )
@@ -102,9 +102,9 @@ public abstract class ParseHandlerForm extends ParseHandlerPlain
         ItemList list = listStack.getCurrent() ;
         Frame lastFrame = frameStack.getCurrent()  ;
         
-        boolean sameAsLast = ( lastFrame != null && lastFrame.listItem != list ) ;
+        //boolean sameAsLast = ( lastFrame != null && lastFrame.listItem != list ) ;
         
-        if ( ! inDecl && ! sameAsLast && list.size() == 1 && isForm(list.getFirst() ) ) 
+        if ( ! inDecl && /*! sameAsLast &&*/ list.size() == 1 && isForm(list.getFirst() ) ) 
         {
             startForm(list) ;
             Frame f = new Frame(listStack.getCurrent()) ;
