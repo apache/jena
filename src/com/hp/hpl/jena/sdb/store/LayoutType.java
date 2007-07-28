@@ -20,6 +20,13 @@ public class LayoutType extends Symbol implements Named
 {
     static Set<LayoutType> registeredTypes = new HashSet<LayoutType>() ;
     
+    public static final LayoutType LayoutTripleNodesHash  = new LayoutType("layout2/hash") ;
+    public static final LayoutType LayoutTripleNodesIndex = new LayoutType("layout2/index") ;
+    public static final LayoutType LayoutSimple           = new LayoutType("layout1") ;
+    public static final LayoutType LayoutRDB              = new LayoutType("layoutRDB") ;
+    
+    static { init() ; }
+    
     public static LayoutType fetch(String layoutTypeName)
     {
         if ( layoutTypeName == null )
@@ -52,11 +59,6 @@ public class LayoutType extends Symbol implements Named
         return null ;
     }
     
-    public static final LayoutType LayoutTripleNodesHash  = new LayoutType("layout2/hash") ;
-    public static final LayoutType LayoutTripleNodesIndex = new LayoutType("layout2/index") ;
-    public static final LayoutType LayoutSimple           = new LayoutType("layoutRDB") ;
-    public static final LayoutType LayoutRDB              = new LayoutType("layout1") ;
-    
     static void init()
     {
         register(LayoutTripleNodesHash) ;
@@ -67,11 +69,15 @@ public class LayoutType extends Symbol implements Named
     
     static public void register(String name)
     {
+        if ( name == null )
+            throw new IllegalArgumentException("LayoutType.register(String): null not allowed") ;
         register(new LayoutType(name)) ; 
     }
     
     static public void register(LayoutType layoutType)
     {
+        if ( layoutType == null )
+            throw new IllegalArgumentException("LayoutType.register(LayoutType): null not allowed") ;
         registeredTypes.add(layoutType) ; 
     }
 

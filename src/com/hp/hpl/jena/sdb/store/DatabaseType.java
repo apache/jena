@@ -23,6 +23,15 @@ public class DatabaseType extends Symbol implements Named
     // private static final String BASE = "http://jena.hpl.hp.com/2006/04/store/" ;
     
     static Set<DatabaseType> registeredTypes = new HashSet<DatabaseType>() ;
+
+    public static final DatabaseType Derby           = new DatabaseType("derby") ;
+    public static final DatabaseType HSQLDB          = new DatabaseType("HSQLDB") ;
+    public static final DatabaseType MySQL           = new DatabaseType("MySQL") ;
+    public static final DatabaseType PostgreSQL      = new DatabaseType("PostgreSQL") ;
+    public static final DatabaseType SQLServer       = new DatabaseType("SQLServer") ;
+    public static final DatabaseType Oracle          = new DatabaseType("Oracle") ;
+    
+    static { init() ; }
     
     public static DatabaseType fetch(String databaseTypeName)
     {
@@ -65,14 +74,6 @@ public class DatabaseType extends Symbol implements Named
     
     //private static String[] dbNames = { "Derby", "HSQLDB", "MySQL", "PostgreSQL", "Oracle", "SQLServer" } ;
     
-    public static final DatabaseType Derby           = new DatabaseType("derby") ;
-    public static final DatabaseType HSQLDB          = new DatabaseType("HSQLDB") ;
-
-    public static final DatabaseType MySQL           = new DatabaseType("MySQL") ;
-    public static final DatabaseType PostgreSQL      = new DatabaseType("PostgreSQL") ;
-    public static final DatabaseType SQLServer       = new DatabaseType("SQLServer") ;
-    public static final DatabaseType Oracle          = new DatabaseType("Oracle") ;
-    
     static void init()
     {
         register(Derby) ;
@@ -85,11 +86,15 @@ public class DatabaseType extends Symbol implements Named
     
     static public void register(String name)
     {
+        if ( name == null )
+            throw new IllegalArgumentException("DatabaseType.register(String): null not allowed") ;
         register(new DatabaseType(name)) ; 
     }
     
     static public void register(DatabaseType dbType)
     {
+        if ( dbType == null )
+            throw new IllegalArgumentException("DatabaseType.register(DatabaseType): null not allowed") ;
         registeredTypes.add(dbType) ; 
     }
 
