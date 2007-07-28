@@ -1,49 +1,84 @@
 /*
- * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
 package com.hp.hpl.jena.sdb.store;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import org.apache.commons.logging.LogFactory;
+
 import com.hp.hpl.jena.sparql.util.Named;
+import com.hp.hpl.jena.sparql.util.Symbol;
 
-/** 
- * @author Andy Seaborne
- * @version $Id: Layout.java,v 1.3 2006/05/07 19:19:24 andy_seaborne Exp $
- */
+import com.hp.hpl.jena.sdb.SDBException;
 
-public enum LayoutType implements Named {
-    // The Jena2 database layout
-    LayoutRDB          { public String getName() { return "RDB" ; } } ,          
-    // A database layout that uses a single triple table, with entries being SPARQL-syntax RDF-terms
-    LayoutSimple       { public String getName() { return "Layout1" ; } } ,   
-    // The Triple table/Node table layout 
-    LayoutTripleNodesIndex  { public String getName() { return "TriplesNodes(index)" ; } } , 
-    LayoutTripleNodesHash   { public String getName() { return "TriplesNodes(hash)" ; } } , 
-    ;
+public class LayoutType extends Symbol implements Named
+{
+    static Set<LayoutType> registeredTypes = new HashSet<LayoutType>() ;
     
-    public static LayoutType convert(String s)
+    public static LayoutType convert(String layoutTypeName)
     {
-        if ( s.equalsIgnoreCase(LayoutRDB.getName()) ) return LayoutRDB ;
-        if ( s.equalsIgnoreCase("layoutRDB") ) return LayoutRDB ;
+        // Map common names.
+        if ( layoutTypeName.equalsIgnoreCase(LayoutRDB.getName()) ) return LayoutRDB ;
+        if ( layoutTypeName.equalsIgnoreCase("layoutRDB") ) return LayoutRDB ;
         
-        if ( s.equalsIgnoreCase(LayoutSimple.getName()) ) return LayoutSimple ;
-        if ( s.equalsIgnoreCase("layout1") ) return LayoutSimple ;
+        if ( layoutTypeName.equalsIgnoreCase(LayoutSimple.getName()) ) return LayoutSimple ;
+        if ( layoutTypeName.equalsIgnoreCase("layout1") ) return LayoutSimple ;
         
-        if ( s.equalsIgnoreCase("layout2") ) return LayoutTripleNodesHash ;
-        if ( s.equalsIgnoreCase("layout2/hash") ) return LayoutTripleNodesHash ;
+        if ( layoutTypeName.equalsIgnoreCase("layout2") ) return LayoutTripleNodesHash ;
+        if ( layoutTypeName.equalsIgnoreCase("layout2/hash") ) return LayoutTripleNodesHash ;
         
-        if ( s.equalsIgnoreCase(LayoutTripleNodesIndex.getName()) ) return LayoutTripleNodesIndex ;
-        if ( s.equalsIgnoreCase("layout2/index") ) return LayoutTripleNodesIndex ;
+        if ( layoutTypeName.equalsIgnoreCase(LayoutTripleNodesIndex.getName()) ) return LayoutTripleNodesIndex ;
+        if ( layoutTypeName.equalsIgnoreCase("layout2/index") ) return LayoutTripleNodesIndex ;
         
-        
-        return null ;
+        LayoutType t = new LayoutType(layoutTypeName) ;
+        if ( registeredTypes.contains(t))
+            return t ;
+            
+        LogFactory.getLog(LayoutType.class).warn("Can't turn '"+layoutTypeName+"' into a layout type") ;
+        throw new SDBException("Can't turn '"+layoutTypeName+"' into a layout type") ; 
+    }
+    
+    public static final LayoutType LayoutTripleNodesHash  = new LayoutType("layout2/hash") ;
+    public static final LayoutType LayoutTripleNodesIndex = new LayoutType("layout2/index") ;
+    public static final LayoutType LayoutSimple           = new LayoutType("layoutRDB") ;
+    public static final LayoutType LayoutRDB              = new LayoutType("layout1") ;
+    
+    static void init()
+    {
+        register(LayoutTripleNodesHash) ;
+        register(LayoutTripleNodesIndex) ;
+        register(LayoutSimple) ;
+        register(LayoutRDB) ;
+    }
+    
+    static public void register(String name)
+    {
+        register(new LayoutType(name)) ; 
+    }
+    
+    static public void register(LayoutType layoutType)
+    {
+        registeredTypes.add(layoutType) ; 
+    }
+
+    private LayoutType(String layoutName)
+    {
+        super(layoutName) ;
+    }
+
+    public String getName()
+    {
+        return super.getSymbol() ;
     }
 }
 
 /*
- * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

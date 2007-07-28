@@ -1,75 +1,101 @@
 /*
- * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
 package com.hp.hpl.jena.sdb.store;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.sparql.util.Named;
+import com.hp.hpl.jena.sparql.util.Symbol;
+
 import com.hp.hpl.jena.sdb.SDBException;
 
-/** Symbolic names for databases supported
- *  (can still add new databases without needing
- *  to be in this fixed list).
- *  
- * @author Andy Seaborne
- * @version $Id: DatabaseType.java,v 1.4 2006/05/07 19:19:24 andy_seaborne Exp $
- */
-/*
-public enum DBtype implements Named { 
-    MySQL       { public String getName() { return "MySQL" ; } } ,
-    PostgreSQL  { public String getName() { return "PostgreSQL" ; } } , 
-    HSQL        { public String getName() { return "HSQL" ; } } ,
-    Derby       { public String getName() { return "Derby" ; } } , 
-    SQLServer   { public String getName() { return "SQLServer" ; } } , 
-    Oracle      { public String getName() { return "Oracle" ; } } , 
-} 
- */
-
-public enum DatabaseType implements Named {
-    MySQL       { public String getName() { return "MySQL5" ; } } ,
-//    MySQL41    { public String getName() { return "MySQL41" ; } } ,
-    PostgreSQL  { public String getName() { return "PostgreSQL" ; } } ,
-    Oracle      { public String getName() { return "Oracle10" ; } } ,
-    SQLServer   { public String getName() { return "MSSQLServer" ; } } ,
-    HSQLDB      { public String getName() { return "HSQLDB" ; } } ,
-    Derby       { public String getName() { return "Derby" ; } } ,
-    DB2         { public String getName() { return "DB2" ; } } ,
-    ;
+public class DatabaseType extends Symbol implements Named
+{
+    // URIs.
+    // Share with LayoutType.
+    // private static final String BASE = "http://jena.hpl.hp.com/2006/04/store/" ;
     
-    private DatabaseType() {}
+    static Set<DatabaseType> registeredTypes = new HashSet<DatabaseType>() ;
     
     public static DatabaseType convert(String databaseTypeName)
     {
+        // Map common names.
         if ( databaseTypeName.equalsIgnoreCase("MySQL") )           return MySQL ;
-//        if ( databaseTypeName.equalsIgnoreCase("MySQL4") )        return MySQL41 ;
         if ( databaseTypeName.equalsIgnoreCase("MySQL5") )          return MySQL ;
-        
+
         if ( databaseTypeName.equalsIgnoreCase("PostgreSQL") )      return PostgreSQL ;
         if ( databaseTypeName.equalsIgnoreCase("oracle") )          return Oracle ;
         if ( databaseTypeName.startsWith("oracle:"))                return Oracle ;
         if ( databaseTypeName.equalsIgnoreCase("SQLServer") )       return SQLServer ;
         if ( databaseTypeName.equalsIgnoreCase("MSSQLServer") )     return SQLServer ;
         if ( databaseTypeName.equalsIgnoreCase("MSSQLServerExpress") )   return SQLServer ;
-        
+
         if ( databaseTypeName.equalsIgnoreCase("hsqldb") )          return HSQLDB ;
         if ( databaseTypeName.equalsIgnoreCase("hsqldb:file") )     return HSQLDB ;
         if ( databaseTypeName.equalsIgnoreCase("hsqldb:mem") )      return HSQLDB ;
         if ( databaseTypeName.equalsIgnoreCase("hsql") )            return HSQLDB ;
-        
+
         if ( databaseTypeName.equalsIgnoreCase("Derby") )           return Derby ;
         if ( databaseTypeName.equalsIgnoreCase("JavaDB") )          return Derby ;
         
+        // Symbol provides .equals
+        DatabaseType t = new DatabaseType(databaseTypeName) ;
+        if ( registeredTypes.contains(t) )
+            return t ;
         LogFactory.getLog(DatabaseType.class).warn("Can't turn '"+databaseTypeName+"' into a database type") ;
         throw new SDBException("Can't turn '"+databaseTypeName+"' into a database type") ; 
+    }
+    
+    //private static String[] dbNames = { "Derby", "HSQLDB", "MySQL", "PostgreSQL", "Oracle", "SQLServer" } ;
+    
+    public static final DatabaseType Derby           = new DatabaseType("derby") ;
+    public static final DatabaseType HSQLDB          = new DatabaseType("HSQLDB") ;
+
+    public static final DatabaseType MySQL           = new DatabaseType("MySQL") ;
+    public static final DatabaseType PostgreSQL      = new DatabaseType("PostgreSQL") ;
+    public static final DatabaseType SQLServer       = new DatabaseType("SQLServer") ;
+    public static final DatabaseType Oracle          = new DatabaseType("Oracle") ;
+    
+    static void init()
+    {
+        register(Derby) ;
+        register(HSQLDB) ;
+        register(MySQL) ;
+        register(PostgreSQL) ;
+        register(SQLServer) ;
+        register(Oracle) ;
+    }
+    
+    static public void register(String name)
+    {
+        register(new DatabaseType(name)) ; 
+    }
+    
+    static public void register(DatabaseType dbType)
+    {
+        registeredTypes.add(dbType) ; 
+    }
+
+    private DatabaseType(String layoutName)
+    {
+        super(layoutName) ;
+    }
+
+    public String getName()
+    {
+        return super.getSymbol() ;
     }
 }
 
 /*
- * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

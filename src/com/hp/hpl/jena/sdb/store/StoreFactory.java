@@ -6,31 +6,24 @@
 
 package com.hp.hpl.jena.sdb.store;
 
-import static java.lang.String.format;
+import static com.hp.hpl.jena.sdb.store.DatabaseType.* ;
+import static com.hp.hpl.jena.sdb.store.LayoutType.* ;
+import static java.lang.String.format ;
+
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.hp.hpl.jena.db.DBConnection;
-import com.hp.hpl.jena.db.IDBConnection;
-import com.hp.hpl.jena.db.ModelRDB;
-import com.hp.hpl.jena.db.RDFRDBException;
 import com.hp.hpl.jena.sdb.SDB;
-import com.hp.hpl.jena.sdb.SDBException;
 import com.hp.hpl.jena.sdb.layout1.*;
-import com.hp.hpl.jena.sdb.layout2.hash.StoreTriplesNodesHashDerby;
-import com.hp.hpl.jena.sdb.layout2.hash.StoreTriplesNodesHashHSQL;
-import com.hp.hpl.jena.sdb.layout2.hash.StoreTriplesNodesHashMySQL;
-import com.hp.hpl.jena.sdb.layout2.hash.StoreTriplesNodesHashOracle;
-import com.hp.hpl.jena.sdb.layout2.hash.StoreTriplesNodesHashPGSQL;
-import com.hp.hpl.jena.sdb.layout2.hash.StoreTriplesNodesHashSQLServer;
-import com.hp.hpl.jena.sdb.layout2.index.StoreTriplesNodesIndexDerby;
-import com.hp.hpl.jena.sdb.layout2.index.StoreTriplesNodesIndexHSQL;
-import com.hp.hpl.jena.sdb.layout2.index.StoreTriplesNodesIndexMySQL;
-import com.hp.hpl.jena.sdb.layout2.index.StoreTriplesNodesIndexOracle;
-import com.hp.hpl.jena.sdb.layout2.index.StoreTriplesNodesIndexPGSQL;
-import com.hp.hpl.jena.sdb.layout2.index.StoreTriplesNodesIndexSQLServer;
+import com.hp.hpl.jena.sdb.layout2.hash.*;
+import com.hp.hpl.jena.sdb.layout2.index.*;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
-import com.hp.hpl.jena.sdb.sql.SDBConnectionFactory;
+import com.hp.hpl.jena.sdb.util.Pair;
 
 /** Construct Stores
  * @author Andy Seaborne
@@ -56,104 +49,185 @@ public class StoreFactory
     }
     
     private static Store _create(StoreDesc desc, SDBConnection sdb)
-    {    
-        if ( sdb == null ) 
-            sdb = SDBConnectionFactory.create(desc.connDesc) ;
-
-        if ( desc.getLayout() == null )
+    {
+        // Temp translate.
+        DatabaseType dbType = desc.getDbType() ;
+        LayoutType layoutType = desc.getLayout() ;
+        
+        return _create(desc, sdb, dbType, layoutType) ;
+    }
+    
+    private static Store _create(StoreDesc desc, SDBConnection sdb, DatabaseType dbType, LayoutType layoutType)
+    {
+        StoreMaker f = registry.get(dbType, layoutType) ;
+        if ( f == null )
         {
-            log.warn("Layout is null.") ; 
-            throw new SDBException("No such layout") ;
-        }
-            
-        if ( desc.getLayout() == LayoutType.LayoutSimple )
-        {
-            switch (desc.getDbType())
-            {
-                case MySQL:
-                    return new StoreSimpleMySQL(sdb, desc.engineType) ;
-                case PostgreSQL:
-                    return new StoreSimplePGSQL(sdb) ;
-                case HSQLDB:
-                    return new StoreSimpleHSQL(sdb) ;
-                case Derby:
-                    return new StoreSimpleDerby(sdb) ;
-                case SQLServer:
-                    return new StoreSimpleSQLServer(sdb) ;
-                case Oracle:
-                    return new StoreSimpleOracle(sdb) ;
-                default:
-                    throw new SDBException(format("Unknown or unsupported DB type: %s [layout=%s]",
-                                                  desc.getDbType().getName(), desc.getLayout().getName())) ;
-            }
-        }
-
-        if ( desc.getLayout() == LayoutType.LayoutTripleNodesHash )
-        {
-            switch (desc.getDbType())
-            {
-                case Derby:
-                    return new StoreTriplesNodesHashDerby(sdb) ;
-                case MySQL:
-                    return new StoreTriplesNodesHashMySQL(sdb, desc.engineType) ;
-                case PostgreSQL:
-                    return new StoreTriplesNodesHashPGSQL(sdb) ;
-                case HSQLDB:
-                    return new StoreTriplesNodesHashHSQL(sdb) ;
-                case SQLServer:
-                    return new StoreTriplesNodesHashSQLServer(sdb) ;
-                case Oracle:
-                	return new StoreTriplesNodesHashOracle(sdb) ;
-                default:
-                    throw new SDBException(format("Unknown or unsupported DB type: %s [layout=%s, hash variant]",
-                                                  desc.getDbType().getName(), desc.getLayout().getName())) ;
-            }
+            log.warn(format("No factory for (%s, %s)", dbType.getName(), layoutType.getName())) ;
+            return null ;
         }
         
-        if ( desc.getLayout() == LayoutType.LayoutTripleNodesIndex )
-        {
-            switch (desc.getDbType())
-            {
-                case Derby:
-                    return new StoreTriplesNodesIndexDerby(sdb) ;
-                case MySQL:
-                    return new StoreTriplesNodesIndexMySQL(sdb, desc.engineType) ;
-                case PostgreSQL:
-                    return new StoreTriplesNodesIndexPGSQL(sdb) ;
-                case HSQLDB:
-                    return new StoreTriplesNodesIndexHSQL(sdb) ;
-                case Oracle:
-                	return new StoreTriplesNodesIndexOracle(sdb) ;
-                case SQLServer:
-                    return new StoreTriplesNodesIndexSQLServer(sdb) ;
-                default:
-                    throw new SDBException(format("Unknown or unsupported DB type: %s [layout=%s, index variant]",
-                                                  desc.getDbType().getName(), desc.getLayout().getName())) ;
-            }
-        }
-        
-        if ( desc.getLayout() == LayoutType.LayoutRDB )
-        {
-            try { 
-                IDBConnection conn = new DBConnection(sdb.getSqlConnection(), desc.connDesc.rdbType) ;
-                String mName = desc.rdbModelName ;
-                ModelRDB modelRDB = null ;
-                if ( mName == null || mName.equals("") || mName.equalsIgnoreCase("default") )
-                    modelRDB = ModelRDB.open(conn) ;
-                else
-                    modelRDB = ModelRDB.open(conn, mName) ;
-                StoreRDB store = new StoreRDB(modelRDB) ;
-                return store ;
-            } catch ( RDFRDBException ex)
-            {
-                throw new SDBException(format("Failed to create ModelRDB store (%s, %s): %s", 
-                                              desc.rdbModelName==null?"<default>":desc.rdbModelName,
-                                              desc.rdbModelType, ex.getMessage())) ;
-            }
-        }
+        return f.create(desc, sdb) ;
+    }
+    
+    // Need to sort out that SDBConnection needs the type as well
+    
+    public static void register(DatabaseType dbType, LayoutType layoutType, StoreMaker factory)
+    {
+        registry.put(dbType, layoutType, factory) ;
+    }
+    
+    
+    public static interface StoreMaker
+    {
+        Store create(StoreDesc desc, SDBConnection conn) ;
+    }
+    
+    
+    static Registry registry = new Registry() ;
+    static class Registry extends MapK2<DatabaseType, LayoutType, StoreMaker>
+    {}
 
-        log.warn(format("Can't make (%s, %s)", desc.getLayout().getName(), desc.getDbType())) ; 
-        return null ;
+    static { setRegistry() ; checkRegistry() ; }
+    
+    
+    static private void setRegistry()
+    {
+        // registry.clear() ;
+        // -- Hash layout
+        
+        register(Derby, LayoutTripleNodesHash, 
+            new StoreMaker(){
+                public Store create(StoreDesc desc, SDBConnection conn)
+                { return new StoreTriplesNodesHashDerby(conn) ; } }) ;
+        
+        register(HSQLDB, LayoutTripleNodesHash, 
+                 new StoreMaker(){
+                     public Store create(StoreDesc desc, SDBConnection conn)
+                     { return new StoreTriplesNodesHashHSQL(conn) ; }} ) ;
+        
+        register(MySQL, LayoutTripleNodesHash,
+                 new StoreMaker() {
+                    public Store create(StoreDesc desc, SDBConnection conn)
+                    { return new StoreTriplesNodesHashMySQL(conn, desc.engineType) ; } }) ;
+
+        register(PostgreSQL, LayoutTripleNodesHash,
+                 new StoreMaker() {
+                    public Store create(StoreDesc desc, SDBConnection conn)
+                    { return new StoreTriplesNodesHashPGSQL(conn) ; } }) ;
+
+        register(SQLServer, LayoutTripleNodesHash,
+                 new StoreMaker() {
+                    public Store create(StoreDesc desc, SDBConnection conn)
+                    { return new StoreTriplesNodesHashSQLServer(conn) ; } }) ;
+
+        register(Oracle, LayoutTripleNodesHash,
+                 new StoreMaker() {
+                    public Store create(StoreDesc desc, SDBConnection conn)
+                    { return new StoreTriplesNodesHashOracle(conn) ; } }) ;
+
+        // -- Index layout
+        
+        register(Derby, LayoutTripleNodesIndex,
+                 new StoreMaker() {
+                    public Store create(StoreDesc desc, SDBConnection conn)
+                    { return new StoreTriplesNodesIndexDerby(conn) ; }
+                    }) ;
+        
+        register(HSQLDB, LayoutTripleNodesIndex,
+                 new StoreMaker() {
+                    public Store create(StoreDesc desc, SDBConnection conn)
+                    { return new StoreTriplesNodesIndexHSQL(conn) ; } }) ;
+        
+        register(MySQL, LayoutTripleNodesIndex,
+                 new StoreMaker() {
+                    public Store create(StoreDesc desc, SDBConnection conn)
+                    { return new StoreTriplesNodesIndexMySQL(conn, desc.engineType) ; } }) ;
+
+        register(PostgreSQL, LayoutTripleNodesIndex,
+                 new StoreMaker() {
+                    public Store create(StoreDesc desc, SDBConnection conn)
+                    { return new StoreTriplesNodesIndexPGSQL(conn) ; } }) ;
+
+        register(SQLServer, LayoutTripleNodesIndex,
+                 new StoreMaker() {
+                    public Store create(StoreDesc desc, SDBConnection conn)
+                    { return new StoreTriplesNodesIndexSQLServer(conn) ; } }) ;
+
+        register(Oracle, LayoutTripleNodesIndex,
+                 new StoreMaker() {
+                    public Store create(StoreDesc desc, SDBConnection conn)
+                    { return new StoreTriplesNodesIndexOracle(conn) ; } }) ;
+        
+        // -- Simple layout
+        
+        register(Derby, LayoutSimple,
+                 new StoreMaker() {
+                    public Store create(StoreDesc desc, SDBConnection conn)
+                    { return new StoreSimpleDerby(conn) ; }
+                    }) ;
+        
+        register(HSQLDB, LayoutSimple,
+                 new StoreMaker() {
+                    public Store create(StoreDesc desc, SDBConnection conn)
+                    { return new StoreSimpleHSQL(conn) ; } }) ;
+        
+        register(MySQL, LayoutSimple,
+                 new StoreMaker() {
+                    public Store create(StoreDesc desc, SDBConnection conn)
+                    { return new StoreSimpleMySQL(conn, desc.engineType) ; } }) ;
+
+        register(PostgreSQL, LayoutSimple,
+                 new StoreMaker() {
+                    public Store create(StoreDesc desc, SDBConnection conn)
+                    { return new StoreSimplePGSQL(conn) ; } }) ;
+
+        register(SQLServer, LayoutSimple,
+                 new StoreMaker() {
+                    public Store create(StoreDesc desc, SDBConnection conn)
+                    { return new StoreSimpleSQLServer(conn) ; } }) ;
+
+        register(Oracle, LayoutSimple,
+                 new StoreMaker() {
+                    public Store create(StoreDesc desc, SDBConnection conn)
+                    { return new StoreSimpleOracle(conn) ; } }) ;
+    }
+    
+    static private void checkRegistry()
+    {
+        DatabaseType[] dbTypes = {Derby, HSQLDB, MySQL, PostgreSQL, SQLServer, Oracle} ;
+        LayoutType[] layoutTypes = {LayoutTripleNodesHash, LayoutTripleNodesIndex, LayoutSimple} ;
+        
+        Set <StoreMaker> seen = new HashSet<StoreMaker>() ;
+        
+        for ( DatabaseType k1 : dbTypes )
+            for ( LayoutType k2 : layoutTypes )
+            {
+                if ( ! registry.containsKey(k1, k2) )
+                    log.warn(format("Missing store maker: (%s, %s)", k1.getName(), k2.getName())) ;
+                StoreMaker x = registry.get(k1, k2) ;
+                if ( seen.contains(x) )
+                    log.warn(format("Duplicate store maker: (%s, %s)", k1.getName(), k2.getName())) ;
+                seen.add(x) ;
+            }
+        
+    }
+
+    
+    // Convenience.
+    static class MapK2<K1, K2, V>
+    {
+        private Map <Pair<K1, K2>, V> map = null ;
+        
+        public MapK2() { map = new HashMap<Pair<K1, K2>, V>() ; }
+        public MapK2(Map <Pair<K1, K2>, V> map) { this.map = map ; }
+        
+        public V get(K1 key1, K2 key2) { return map.get(new Pair<K1, K2>(key1, key2)) ; }
+        public void put(K1 key1, K2 key2, V value) { map.put(new Pair<K1, K2>(key1, key2), value) ; }
+        public boolean containsKey(K1 key1, K2 key2) { return map.containsKey(new Pair<K1, K2>(key1, key2)) ; }
+        public boolean containsValue(V value) { return map.containsValue(value) ; }
+        public int size() { return map.size() ; }
+        public boolean isEmpty() { return map.isEmpty() ; }
+        public void clear() { map.clear() ; }
     }
 }
 

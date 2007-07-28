@@ -6,15 +6,9 @@
 
 package dev;
 
-import static sdb.SDBCmd.sdbconfig;
-import static sdb.SDBCmd.sdbload;
-import static sdb.SDBCmd.sdbquery;
-import static sdb.SDBCmd.setExitOnError;
-import static sdb.SDBCmd.setSDBConfig;
-import static sdb.SDBCmd.sparql;
+import static sdb.SDBCmd.*;
 import arq.cmd.CmdUtils;
 
-import com.hp.hpl.jena.query.ARQ;
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryExecution;
 import com.hp.hpl.jena.query.QueryExecutionFactory;
@@ -25,7 +19,6 @@ import com.hp.hpl.jena.sdb.sql.JDBC;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.store.Store;
 import com.hp.hpl.jena.sdb.store.StoreConfig;
-import com.hp.hpl.jena.sparql.engine.main.StageBasic;
 import com.hp.hpl.jena.sparql.resultset.ResultsFormat;
 import com.hp.hpl.jena.sparql.util.QueryExecUtils;
 import com.hp.hpl.jena.util.FileManager;
@@ -37,6 +30,12 @@ public class RunSDB
     {
 //        SDBConnection.logSQLExceptions = true ;
 //        SDBConnection.logSQLStatements = true ;
+        
+        
+        setSDBConfig("sdb.ttl") ;
+        sdbconfig("--create") ;
+        System.exit(0) ;
+        
 //        
 //        sdb.sdbprint.main("--sdb=sdb.ttl",  "--layout=layout2/index", "--query=Q.rq") ;
 //        System.exit(0) ;
@@ -141,7 +140,7 @@ public class RunSDB
 //        sdbload("D.ttl") ;
 
         //sparql("--data="+DIR+"data.ttl","--query="+DIR+"struct-10.rq") ;
-        ARQ.getContext().setFalse(StageBasic.altMatcher) ;
+        //ARQ.getContext().setFalse(StageBasic.altMatcher) ;
         Store store = SDBFactory.connectStore("Store/sdb-hsqldb-mem.ttl") ;
         store.getTableFormatter().create() ;
         Model model = SDBFactory.connectDefaultModel(store) ;
