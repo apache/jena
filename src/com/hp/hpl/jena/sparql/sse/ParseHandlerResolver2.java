@@ -6,6 +6,8 @@
 
 package com.hp.hpl.jena.sparql.sse;
 
+import java.util.Stack;
+
 import com.hp.hpl.jena.n3.IRIResolver;
 import com.hp.hpl.jena.shared.PrefixMapping;
 import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
@@ -37,7 +39,7 @@ public class ParseHandlerResolver2 extends ParseHandlerForm
     private String              topBase         = null ;
     private PrefixMapping       prefixMap ;
     private IRIResolver         resolver ;
-    // Need Prologue stack
+    private Stack               state           = new Stack() ; // Previous proglogues (not the current one)
     
     public ParseHandlerResolver2() { this(null, null) ; }
 
