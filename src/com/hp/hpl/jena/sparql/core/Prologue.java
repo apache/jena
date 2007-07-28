@@ -33,6 +33,11 @@ public class Prologue
     public Prologue(PrefixMapping pmap, String base)
     { this.prefixMap = pmap ; setBaseURI(base) ; }
     
+    public Prologue(PrefixMapping pmap, IRIResolver resolver)
+    {
+        
+    }
+    
     /**
      * @return True if the query has an explicitly set base URI. 
      */
@@ -55,6 +60,16 @@ public class Prologue
         this.baseURI = baseURI;
         this.seenBaseURI = true ;
         this.resolver = new IRIResolver(baseURI) ; 
+    }
+    
+    /**
+     * @param resolver IRI resolver
+     */
+    public void setBaseURI(IRIResolver resolver)
+    {
+        this.baseURI = resolver.getBaseIRI();
+        this.seenBaseURI = true ;
+        this.resolver = resolver ; 
     }
     
     protected void setDefaultBaseIRI() { setDefaultBaseIRI(null) ; }

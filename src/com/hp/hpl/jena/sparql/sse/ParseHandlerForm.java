@@ -59,6 +59,8 @@ public abstract class ParseHandlerForm extends ParseHandlerPlain
         // For later: no exception: ensure this is cleared.
         inDecl = false ;
 
+        finishForm(list) ;
+        
         // Frame
         Frame f = frameStack.pop() ;
         
@@ -100,15 +102,20 @@ public abstract class ParseHandlerForm extends ParseHandlerPlain
         ItemList list = listStack.getCurrent() ;
         Frame lastFrame = frameStack.getCurrent()  ;
         
-        if ( ! inDecl && lastFrame.listItem != list 
-             && list.size() == 1 && isForm(list.getFirst() ) ) 
+        boolean sameAsLast = ( lastFrame != null && lastFrame.listItem != list ) ;
+        
+        if ( ! inDecl && ! sameAsLast && list.size() == 1 && isForm(list.getFirst() ) ) 
         {
+            startForm(list) ;
             Frame f = new Frame(listStack.getCurrent()) ;
             frameStack.push(f) ;
-            inDecl = false ;
+            inDecl = true ;
             return ;
         }
         
+        if ( inDecl )
+            declItem(list, item) ;
+
         if ( endOfDecl(list, item) )
         {
             inDecl = false ;
@@ -116,18 +123,19 @@ public abstract class ParseHandlerForm extends ParseHandlerPlain
             return ;
         }
 
-        if ( inDecl )
-            declItem(list, item) ;
     }
     
     protected boolean inFormDecl()  { return inDecl; }
     
     abstract protected void declItem(ItemList list, Item item) ;
     
+    abstract protected boolean isForm(Item tag) ;
+
     abstract protected boolean endOfDecl(ItemList list, Item item) ;
 
-    abstract protected boolean isForm(Item tag) ;
-    
+    abstract protected void startForm(ItemList list) ;
+    abstract protected void finishForm(ItemList list) ;
+
     protected void setFormResult(Item item)
     {
         if ( frameStack.getCurrent() == null )

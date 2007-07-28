@@ -12,6 +12,8 @@ import com.hp.hpl.jena.n3.IRIResolver;
 import com.hp.hpl.jena.shared.PrefixMapping;
 import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
 import com.hp.hpl.jena.sparql.core.Prologue;
+import com.hp.hpl.jena.sparql.sse.builders.BuilderPrefixMapping;
+import com.hp.hpl.jena.sparql.util.PrefixMapping2;
 
 
 /** Resolve syntacic forms like (base ...) and (prefix...)
@@ -39,7 +41,7 @@ public class ParseHandlerResolver2 extends ParseHandlerForm
     private String              topBase         = null ;
     private PrefixMapping       prefixMap ;
     private IRIResolver         resolver ;
-    private Stack               state           = new Stack() ; // Previous proglogues (not the current one)
+    private Stack               state           = new Stack() ; // Previous prologues (not the current one)
     
     public ParseHandlerResolver2() { this(null, null) ; }
 
@@ -62,19 +64,35 @@ public class ParseHandlerResolver2 extends ParseHandlerForm
     
     protected void declItem(ItemList list, Item item)
     {
-        if ( list.size() > 2 )
-            throwException("(base ...): To many items in form", item) ;
-
-        // Base.
-        if ( ! item.isNode() )
-            throwException("(base ...): not an RDF node for the base.", item) ;
-        if ( ! item.getNode().isURI() )
-            throwException("(base ...): not an IRI for the base.", item) ;
+        boolean isBase = list.get(0).isSymbol(baseTag) ; 
+        boolean isPrefix = list.get(0).isSymbol(prefixTag) ;
         
-        // Push Prologue.
+        // Old state has already been saved.
+        if ( isBase )
+        {        
+            if ( ! item.isNode() )
+                throwException("(base ...): not an RDF node for the base.", item) ;
+            if ( ! item.getNode().isURI() )
+                throwException("(base ...): not an IRI for the base.", item) ;
+    
+            String baseIRI = item.getNode().getURI() ;
+            if ( topBase == null )
+                topBase = baseIRI ; 
+            resolver = new IRIResolver(baseIRI) ;
+            return ;
+        }
         
-        // Prefix.
-        
+        if ( isPrefix )
+        {
+            PrefixMapping newMappings = BuilderPrefixMapping.build(item) ; 
+            PrefixMapping2 ext = new PrefixMapping2(prefixMap, newMappings) ;
+            // Remember first prefix mapping seen. 
+            if( topMap == null )
+                topMap = newMappings ;
+            prefixMap = ext ;
+            return ;
+        }
+        throwException("Inconsistent: "+list.shortString(), list) ;
     }
     
     protected boolean endOfDecl(ItemList list, Item item)
@@ -89,6 +107,22 @@ public class ParseHandlerResolver2 extends ParseHandlerForm
         return tag.isSymbol(baseTag) ;
     }
     
+    protected void startForm(ItemList list)
+    {
+        Prologue oldState = new Prologue(prefixMap, resolver) ;
+        state.push(oldState) ;
+    }
+
+    protected void finishForm(ItemList list)
+    { 
+        // Check list length
+        Prologue p = (Prologue)state.pop() ;
+        prefixMap = p.getPrefixMapping() ;
+        resolver = p.getResolver() ;
+        // Wrong: this may itself be a form.
+        super.setFormResult(list.getLast()) ;
+    }
+
     public void emitIRI(int line, int column, String iriStr)
     { 
         // resolve as normal. No special action.

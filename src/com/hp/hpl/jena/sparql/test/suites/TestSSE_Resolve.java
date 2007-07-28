@@ -31,14 +31,6 @@ public class TestSSE_Resolve extends TestCase
         return ts ;
     }
 
-    // URI resolving.
-    
-    public void testTypedLit_r1()
-    { 
-        Node node = Node.createLiteral("3", null, XSDDatatype.XSDinteger) ; 
-        testItem("'3'^^xsd:integer", Item.createNode(node)) ;
-    }
-
     // ---- Assume ParseHandlerresolver from here on
     
     public void testBase_01()
@@ -116,6 +108,16 @@ public class TestSSE_Resolve extends TestCase
     }
     
     // ----
+    
+    // URI resolving.
+    
+    public void testTypedLit_r1()
+    { 
+        Node node = Node.createLiteral("3", null, XSDDatatype.XSDinteger) ; 
+        testItem("'3'^^xsd:integer", Item.createNode(node)) ;
+    }
+
+
 
     public void testBasePrefix_01()
     { 
