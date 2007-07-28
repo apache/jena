@@ -20,9 +20,24 @@ public class LayoutType extends Symbol implements Named
 {
     static Set<LayoutType> registeredTypes = new HashSet<LayoutType>() ;
     
-    public static LayoutType convert(String layoutTypeName)
+    public static LayoutType fetch(String layoutTypeName)
     {
-        // Map common names.
+        if ( layoutTypeName == null )
+            throw new IllegalArgumentException("LayoutType.convert: null not allowed") ;
+        LayoutType t = commonForm(layoutTypeName) ;
+        if ( t == null )
+            t = new LayoutType(layoutTypeName) ;
+        
+        if ( registeredTypes.contains(t))
+            return t ;
+            
+        LogFactory.getLog(LayoutType.class).warn("Can't turn '"+layoutTypeName+"' into a layout type") ;
+        throw new SDBException("Can't turn '"+layoutTypeName+"' into a layout type") ; 
+    }
+    
+    private static LayoutType commonForm(String layoutTypeName)
+    {
+     // Map common names.
         if ( layoutTypeName.equalsIgnoreCase(LayoutRDB.getName()) ) return LayoutRDB ;
         if ( layoutTypeName.equalsIgnoreCase("layoutRDB") ) return LayoutRDB ;
         
@@ -34,13 +49,7 @@ public class LayoutType extends Symbol implements Named
         
         if ( layoutTypeName.equalsIgnoreCase(LayoutTripleNodesIndex.getName()) ) return LayoutTripleNodesIndex ;
         if ( layoutTypeName.equalsIgnoreCase("layout2/index") ) return LayoutTripleNodesIndex ;
-        
-        LayoutType t = new LayoutType(layoutTypeName) ;
-        if ( registeredTypes.contains(t))
-            return t ;
-            
-        LogFactory.getLog(LayoutType.class).warn("Can't turn '"+layoutTypeName+"' into a layout type") ;
-        throw new SDBException("Can't turn '"+layoutTypeName+"' into a layout type") ; 
+        return null ;
     }
     
     public static final LayoutType LayoutTripleNodesHash  = new LayoutType("layout2/hash") ;

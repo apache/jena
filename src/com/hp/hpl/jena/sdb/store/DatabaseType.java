@@ -24,7 +24,23 @@ public class DatabaseType extends Symbol implements Named
     
     static Set<DatabaseType> registeredTypes = new HashSet<DatabaseType>() ;
     
-    public static DatabaseType convert(String databaseTypeName)
+    public static DatabaseType fetch(String databaseTypeName)
+    {
+        if ( databaseTypeName == null )
+            throw new IllegalArgumentException("DatabaseType.convert: null not allowed") ;
+
+        DatabaseType t = null ; 
+        t = commonForm(databaseTypeName) ;
+        if ( t == null ) 
+            t = new DatabaseType(databaseTypeName) ;
+        
+        if ( registeredTypes.contains(t) )
+            return t ;
+        LogFactory.getLog(DatabaseType.class).warn("Can't turn '"+databaseTypeName+"' into a database type") ;
+        throw new SDBException("Can't turn '"+databaseTypeName+"' into a database type") ; 
+    }
+    
+    private static DatabaseType commonForm(String databaseTypeName)
     {
         // Map common names.
         if ( databaseTypeName.equalsIgnoreCase("MySQL") )           return MySQL ;
@@ -44,13 +60,7 @@ public class DatabaseType extends Symbol implements Named
 
         if ( databaseTypeName.equalsIgnoreCase("Derby") )           return Derby ;
         if ( databaseTypeName.equalsIgnoreCase("JavaDB") )          return Derby ;
-        
-        // Symbol provides .equals
-        DatabaseType t = new DatabaseType(databaseTypeName) ;
-        if ( registeredTypes.contains(t) )
-            return t ;
-        LogFactory.getLog(DatabaseType.class).warn("Can't turn '"+databaseTypeName+"' into a database type") ;
-        throw new SDBException("Can't turn '"+databaseTypeName+"' into a database type") ; 
+        return null ;
     }
     
     //private static String[] dbNames = { "Derby", "HSQLDB", "MySQL", "PostgreSQL", "Oracle", "SQLServer" } ;

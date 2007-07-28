@@ -53,7 +53,7 @@ public class StoreDesc
     
     public StoreDesc(String layoutName, String dbTypeName, FeatureSet featureSet)
     {
-        this(LayoutType.convert(layoutName), DatabaseType.convert(dbTypeName), featureSet) ;
+        this(LayoutType.fetch(layoutName), DatabaseType.fetch(dbTypeName), featureSet) ;
     }
     
     public StoreDesc(LayoutType layout, DatabaseType dbType)

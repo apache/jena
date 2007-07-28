@@ -22,6 +22,8 @@ import com.hp.hpl.jena.sdb.store.DatabaseType;
 
 public class JDBC
 {
+    // TODO Make extensible.
+    
     private static Log log = LogFactory.getLog(JDBC.class) ; 
     // The "well known" not a JDBC connection really scheme
     public static final String jdbcNone = "jdbc:none" ;
@@ -63,7 +65,7 @@ public class JDBC
     
     static public String guessDriver(String type)
     { 
-        return getDriver(DatabaseType.convert(type)) ;
+        return getDriver(DatabaseType.fetch(type)) ;
     }
     
     // This is the only place a driver is created.

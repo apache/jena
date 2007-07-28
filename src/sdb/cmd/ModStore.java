@@ -184,7 +184,7 @@ public class ModStore extends ModBase
         if (cmdLine.contains(argDeclLayout))
         {
             String layoutName = cmdLine.getArg(argDeclLayout).getValue() ;
-            storeDesc.setLayout(LayoutType.convert(layoutName)) ;
+            storeDesc.setLayout(LayoutType.fetch(layoutName)) ;
 
             if ( storeDesc.getLayout() == null )
             {
