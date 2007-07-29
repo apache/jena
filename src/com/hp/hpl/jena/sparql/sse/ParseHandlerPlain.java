@@ -19,11 +19,11 @@ import org.apache.commons.logging.LogFactory;
 
 public class ParseHandlerPlain implements ParseHandler 
 {
-    protected ListStack      listStack   = new ListStack() ;
-    protected Item           currentItem = null ;
-    protected int            depth       = 0 ;
-    protected LabelToNodeMap bNodeLabels = LabelToNodeMap.createBNodeMap() ;
-    protected VarAlloc       varAlloc    = new VarAlloc("") ;
+    private ListStack      listStack   = new ListStack() ;
+    private Item           currentItem = null ;
+    private int            depth       = 0 ;
+    private LabelToNodeMap bNodeLabels = LabelToNodeMap.createBNodeMap() ;
+    private VarAlloc       varAlloc    = new VarAlloc("") ;
     
     public Item getItem()
     {
@@ -43,16 +43,14 @@ public class ParseHandlerPlain implements ParseHandler
     
     public void listStart(int line, int column)
     {
-        depth++ ;
         ItemList list = new ItemList(line, column) ;
-        listStack.push(list) ;
+        pushList(list) ;
         setCurrentItem(Item.createList(list)) ;
     }
 
     public void listFinish(int line, int column)
     {
-        --depth ;
-        ItemList list = listStack.pop() ;
+        ItemList list = popList() ;
         Item item = Item.createList(list) ;
         listAdd(item) ;
     }
@@ -74,7 +72,7 @@ public class ParseHandlerPlain implements ParseHandler
             return ;
         }
         
-        ItemList list = listStack.getCurrent() ;
+        ItemList list = currentList() ;
         list.add(item) ;
         setCurrentItem(item) ;
     }
@@ -133,6 +131,10 @@ public class ParseHandlerPlain implements ParseHandler
         emitIRI(line, column, iriStr) ;
     }
 
+    protected ItemList currentList()        { return (ItemList)listStack.getCurrent() ; }
+    protected ItemList popList()            { depth-- ; return listStack.pop() ; }
+    protected void pushList(ItemList list)  { listStack.push(list) ; depth++ ; }
+    
     protected String resolvePrefixedName(String pname, int line, int column)
     {
         // Not resolving.  Make a strange URI.

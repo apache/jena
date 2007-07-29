@@ -6,51 +6,44 @@
 
 package com.hp.hpl.jena.sparql.sse;
 
-import java.util.Stack;
+import java.util.*;
 
 import com.hp.hpl.jena.n3.IRIResolver;
 import com.hp.hpl.jena.shared.PrefixMapping;
 import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
-import com.hp.hpl.jena.sparql.ARQNotImplemented;
 import com.hp.hpl.jena.sparql.core.Prologue;
 import com.hp.hpl.jena.sparql.sse.builders.BuilderPrefixMapping;
 import com.hp.hpl.jena.sparql.util.PrefixMapping2;
 
-/** Resolve prefixed names in a prefix map and IRIs relative to a base.
- *  Forms: 
- *    (prefix (DECL) TERM) => TERM with prefix names expanded
+
+/** Resolve syntacic forms like (base ...) and (prefix...)
+ *  where the syntax modifies the enclosed sub term.
+ *  
+ *  
+ *  Forms:
+ *    (FORM DECL... TERM) => where TERM is the result.
+ *  Examples 
+ *    (prefix (PREFIXES) TERM) => TERM with prefix names expanded
  *    (base IRI TERM) => TERM with IRIs resolved to absolute IRIs
- * 
+ *  
+ *  The DECL part can not itself have nested, independent forms
+ *  unless a subclass (carefully) manages that. 
  *    
  * @author Andy Seaborne
  * @version $Id$
  */
 
-public class ParseHandlerResolver extends ParseHandlerPlain 
+public class ParseHandlerResolver extends ParseHandlerForm
 {
-    /*  Both forms have a common structure.
-     *    Exactly 3 items long.
-     *    There is a stack of previous settings (i.e. things always nest) 
-     *  During DECL, for prefix, (the 2nd term) processing, we flag that no prefix processing should be done.
-     *  Base can include prefixes, and relative URIs.
-     *  
-     *  The first base and first prefix mapping are remembered.
-     *  Better: look at the first thing ever seen. 
-     */
-    
-    // Maybe more restrictive.  Spot the special form (base BASE (prefix ....))
-    
     private static final String prefixTag       = "prefix" ;
     private static final String baseTag         = "base" ;
-
     private PrefixMapping       topMap          = null ;
     private String              topBase         = null ;
-
-    private boolean             inPrefixDecl    = false ;
-    private boolean             inBaseDecl      = false ;
     private PrefixMapping       prefixMap ;
     private IRIResolver         resolver ;
-    private FrameStack          frameStack      = new FrameStack() ;
+    private ItemList            declList        = null ;
+    private Stack               state           = new Stack() ; // Previous prologues (not the current one)
+    
     public ParseHandlerResolver() { this(null, null) ; }
 
     public ParseHandlerResolver(PrefixMapping pmap) { this(pmap, null) ; }
@@ -69,178 +62,105 @@ public class ParseHandlerResolver extends ParseHandlerPlain
         resolver = prologue.getResolver() ;
     }
 
-    public Prologue getPrologue()
+    
+    protected void declItem(ItemList list, Item item)
     {
-        throw new ARQNotImplemented("getPrologue") ;
-        //return null ;
-    }
-
-
-    public void parseStart()    { super.parseStart() ; }
-
-    public void parseFinish()   { super.parseFinish() ; }
-
-    public void listStart(int line, int column)
-    { super.listStart(line, column) ; }
-
-    public void listFinish(int line, int column)
-    {
-        ItemList list = listStack.getCurrent() ;
-
-        if ( ! frameStack.isCurrent(list) )
-        {
-            // Nothing special - proceed as normal.
-            super.listFinish(line, column) ;
+        if ( list != declList )
+            // Deeper.
+            return ;
+        
+        // Prefix - deeper than one.
+        boolean isBase = list.get(0).isSymbol(baseTag) ; 
+        boolean isPrefix = list.get(0).isSymbol(prefixTag) ;
+        
+        // Old state has already been saved.
+        if ( isBase )
+        {        
+            if ( ! item.isNode() )
+                throwException("(base ...): not an RDF node for the base.", item) ;
+            if ( ! item.getNode().isURI() )
+                throwException("(base ...): not an IRI for the base.", item) ;
+    
+            String baseIRI = item.getNode().getURI() ;
+            if ( topBase == null )
+                topBase = baseIRI ; 
+            resolver = new IRIResolver(baseIRI) ;
             return ;
         }
-
-        // Current frame stack front, is a wrapped form
-        // e.g.. (prefix ...) or (base ...)
-        // Manipulate the stack to return the inner form instead.
-        //
-        // Restore previous state.
-        // Manipulate stack to see inner result by calling this.list(item) ;
-
-        // Frame
-        Frame f = frameStack.pop() ;
-        prefixMap = f.prefixMap ;
-        resolver = f.resolver ;
-
-        // Drop the wrapper list.
-        listStack.pop();
-        --depth ;
-
-        // result
-        Item item = f.result ;  
-        if ( item == null )
-            item = Item.createNil(list.line, list.column) ;
-        // And emit a result as a listAdd.
-        // Must go through our listAdd() here. 
-        listAdd(item) ;
-    }
-
-    protected void listAdd(Item item)
-    {
-        // Always add to the current list, even for (base...) and (prefix...)
-        // Then change the result list later.
-        super.listAdd(item) ;
-        if ( listStack.isEmpty() )
-            // Top level is outside a list.
-            return ;
-
-        ItemList list = listStack.getCurrent() ;
-        if ( list.size() > 2 && ( list.get(0).isSymbol(baseTag) || list.get(0).isSymbol(prefixTag) ) )
-        {
-            // Was it a (prefix...) or (base..)
-            // Is it too long?
-            // The list and frame stacks have not been pop'ed yet
-            if ( list.size() > 3 )
-                throwException("List too long for (base...) or (prefix...) body", item) ;
-            else
-                // Result is this item, the 3rd in (base...) or (prefix...)
-                frameStack.getCurrent().result = item ;
-        }
         
-        
-        // Build the prefix mapping, we continue parsing, to accumulate
-        // a structure with prefixes as "special" symbols.
-        // We parse that anbd continue.
-        
-        // End of declaration
-        if ( list.size() == 2 && list.get(0).isSymbol(prefixTag) )
+        if ( isPrefix )
         {
             PrefixMapping newMappings = BuilderPrefixMapping.build(item) ; 
             PrefixMapping2 ext = new PrefixMapping2(prefixMap, newMappings) ;
             // Remember first prefix mapping seen. 
             if( topMap == null )
                 topMap = newMappings ;
-            Frame f = new Frame(listStack.getCurrent(), ext, resolver) ;
-            frameStack.push(f) ;
             prefixMap = ext ;
-            // End of prefix declaration handled in listFinish. 
-            // List length is checked on next add's
-            inPrefixDecl = false ;
             return ;
         }
-        
-        if ( inBaseDecl )
-        {
-            // At end of base IRI
-            if ( ! item.isNode() )
-                throwException("(base ...): not an RDF node for the base.", item) ;
-            if ( ! item.getNode().isURI() )
-                throwException("(base ...): not an IRI for the base.", item) ;
-            String baseIRI = item.getNode().getURI() ;
-            if ( topBase == null )
-                topBase = baseIRI ; 
-            Frame f = new Frame(listStack.getCurrent(), prefixMap, resolver) ;
-            resolver = new IRIResolver(baseIRI) ;
-            frameStack.push(f) ;
-            // List length is checked on next add's
-            inBaseDecl = false ;
-            return ;
-        }
-
-        // Start of declaration?
-        if ( list.size() == 1 )
-        {
-            if ( item.isSymbol(baseTag) )
-            {
-                inBaseDecl = true ;
-                return ;
-            }
-            if ( item.isSymbol(prefixTag) )
-            {
-                inPrefixDecl = true ;
-                return ;
-            }
-            // Note must be (... body)
-        }
+        throwException("Inconsistent: "+list.shortString(), list) ;
     }
     
-    public void emitSymbol(int line, int column, String symbol)
-    {
-        if ( inPrefixDecl )
-            throwException("Symbols not allows in prefix declarations: "+symbol, line, column) ;
-        super.emitSymbol(line, column, symbol) ;
+    protected boolean endOfDecl(ItemList list, Item item)
+    { 
+        // Both (base...) and (prefix...) have one decl item 
+        if ( declList == list && list.size() == 2 )
+        {
+            declList = null ;
+            return true ;
+        }
+        return false ;
     }
 
-    public void emitVar(int line, int column, String varName)
+    protected boolean isForm(Item tag)
     {
-        if ( inPrefixDecl )
-            throwException("Variables not allowed in prefix declarations: ?"+varName, line, column) ;
-        super.emitVar(line, column, varName) ;
-    }
-
-    public void emitLiteral(int line, int column, String lexicalForm, String langTag, String datatypeIRI, String datatypePN)
-    {
-        if ( inPrefixDecl )
-            throwException("Literals not allowed in prefix declarations", line, column) ;
-        
-        // Super class calls back down via resolvePrefixedName to turn it into a URI.
-        super.emitLiteral(line, column, lexicalForm, langTag, datatypeIRI, datatypePN) ;
+        return tag.isSymbol(baseTag) || tag.isSymbol(prefixTag) ;
     }
     
-    public void emitBNode(int line, int column, String label)
+    protected void startForm(ItemList list)
     {
-        if ( inPrefixDecl )
-            throwException("Blank nodes not allowed in prefix declarations", line, column) ;
-        super.emitBNode(line, column, label) ;
+        // Remember the top of declaration
+        declList = list ;
+        
+        Prologue oldState = new Prologue(prefixMap, resolver) ;
+        state.push(oldState) ;
+    }
+
+    private void dump()
+    {
+        Iterator iter = state.iterator() ;
+        for ( ; iter.hasNext() ; )
+        {
+            Prologue p = (Prologue)iter.next() ;
+            System.out.println("  Prologue: "+p.getBaseURI()) ;
+        }
+        
+    }
+    
+    protected void finishForm(ItemList list)
+    { 
+        // Check list length
+        Prologue p = (Prologue)state.pop() ;
+        // Restore state 
+        prefixMap = p.getPrefixMapping() ;
+        resolver = p.getResolver() ;
+        
+        // Choose the result.
+        Item item = list.getLast() ;
+        super.setFormResult(item) ;
     }
 
     public void emitIRI(int line, int column, String iriStr)
     { 
-        // resolve as normal. No special action.
-        //if ( inPrefixDecl ) {}
         iriStr = resolveIRI(iriStr, line, column) ;
         super.emitIRI(line, column, iriStr) ;
     }
     
     public void emitPName(int line, int column, String pname)
     {
-        if ( inPrefixDecl )
+        if ( inFormDecl() )
         {
-            // Record a faked PName.
+            // Record a faked PName.  Works with BuilderPrefixMapping
             Item item = Item.createSymbol(pname, line, column) ;
             listAdd(item) ;
             return ;
@@ -269,48 +189,7 @@ public class ParseHandlerResolver extends ParseHandlerPlain
             return resolver.resolve(iriStr) ;
         return iriStr ;
     }
-    
-    private static class Frame
-    {
-        ItemList listItem ;
-        Item result ;
-        PrefixMapping prefixMap;
-        IRIResolver resolver ;
-        
-        Frame(ItemList listItem, PrefixMapping pmap, IRIResolver resolver)
-        {
-            this.listItem = listItem ;
-            this.prefixMap = pmap ;
-            this.resolver = resolver ;
-        }
-    }
-
-    // ----------------
-    
-    private static class FrameStack
-    {
-        private Stack frames    = new Stack() ;
-    
-        boolean isCurrent(ItemList list)
-        {
-            if ( frames.size() == 0 )
-                return false ;
-    
-            Frame f = (Frame)frames.peek();
-    
-            return f.listItem == list ;
-        }
-    
-        Frame getCurrent()
-        {
-            if ( frames.size() == 0 )
-                return null ;
-            return (Frame)frames.peek() ;
-        }
-    
-        void push(Frame f) { frames.push(f) ; }
-        Frame pop() { return (Frame)frames.pop() ; }
-    }
+ 
 }
 
 /*

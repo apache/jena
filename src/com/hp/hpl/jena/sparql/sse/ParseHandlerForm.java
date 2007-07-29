@@ -44,7 +44,7 @@ public abstract class ParseHandlerForm extends ParseHandlerPlain
 
     public void listFinish(int line, int column)
     {
-        ItemList list = listStack.getCurrent() ;
+        ItemList list = currentList() ;
 
         if ( ! frameStack.isCurrent(list) )
         {
@@ -65,8 +65,7 @@ public abstract class ParseHandlerForm extends ParseHandlerPlain
         Frame f = frameStack.pop() ;
         
         // Drop the form list.
-        listStack.pop();
-        --depth ;
+        popList() ;
         
         // The result is the last element of the list if not already set.
         Item item = f.result ;
@@ -95,34 +94,38 @@ public abstract class ParseHandlerForm extends ParseHandlerPlain
         // Then change the result list later.
         super.listAdd(item) ;
         
-        if ( listStack.isEmpty() )
+        ItemList list = super.currentList() ;
+        
+        if ( list == null )
             // Top level is outside a list.  Can't be a form.
             return ;
 
-        ItemList list = listStack.getCurrent() ;
         Frame lastFrame = frameStack.getCurrent()  ;
-        
-        //boolean sameAsLast = ( lastFrame != null && lastFrame.listItem != list ) ;
         
         if ( ! inDecl && /*! sameAsLast &&*/ list.size() == 1 && isForm(list.getFirst() ) ) 
         {
             startForm(list) ;
-            Frame f = new Frame(listStack.getCurrent()) ;
+            Frame f = new Frame(list) ;
             frameStack.push(f) ;
             inDecl = true ;
             return ;
         }
-        
+
         if ( inDecl )
-            declItem(list, item) ;
-
-        if ( endOfDecl(list, item) )
         {
-            inDecl = false ;
-            // Already added.
-            return ;
-        }
+            // Only trigger form operations when items at the top of the form are seen.
+            boolean atTopOfDecl = ( lastFrame != null && lastFrame.listItem == list ) ;
+            if ( ! atTopOfDecl )
+                return ;
 
+            declItem(list, item) ;
+            if ( endOfDecl(list, item) )
+            {
+                inDecl = false ;
+                // Already added.
+                return ;
+            }
+        }
     }
     
     protected boolean inFormDecl()  { return inDecl; }

@@ -17,25 +17,29 @@ public class Prologue
 {
     private static Log log = LogFactory.getLog(Prologue.class) ;
 
-    // BASE URI
-    protected boolean seenBaseURI = false ;
+    protected boolean seenBaseURI = false ;     // Implicit or set.
     protected String baseURI = null ;
 
-    // Prefixes
     protected PrefixMapping prefixMap = new PrefixMappingImpl() ;
     protected IRIResolver resolver = new IRIResolver() ;
     
     public Prologue() {}
     
     public Prologue(PrefixMapping pmap)
-    { this.prefixMap = pmap ; }
+    { 
+        this(pmap,  new IRIResolver()) ;
+    }
     
     public Prologue(PrefixMapping pmap, String base)
-    { this.prefixMap = pmap ; setBaseURI(base) ; }
+    { 
+        this.prefixMap = pmap ;
+        setBaseURI(base) ;
+    }
     
     public Prologue(PrefixMapping pmap, IRIResolver resolver)
     {
-        
+        this.prefixMap = pmap ; 
+        this.resolver = resolver ;
     }
     
     /**

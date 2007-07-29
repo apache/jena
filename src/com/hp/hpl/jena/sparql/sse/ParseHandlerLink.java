@@ -13,7 +13,7 @@ import com.hp.hpl.jena.shared.PrefixMapping;
 
 import com.hp.hpl.jena.sparql.core.Prologue;
 
-public class ParseHandlerLink extends ParseHandlerResolver2
+public class ParseHandlerLink extends ParseHandlerResolver
 {
     static final String tagLink = "link@" ;
     static final String tagName = "@name" ;
