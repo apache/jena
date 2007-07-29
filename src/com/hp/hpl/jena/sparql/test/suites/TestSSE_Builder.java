@@ -7,30 +7,45 @@
 package com.hp.hpl.jena.sparql.test.suites;
 
 import com.hp.hpl.jena.sparql.algebra.Op;
+import com.hp.hpl.jena.sparql.algebra.op.OpNull;
 import com.hp.hpl.jena.sparql.sse.SSE;
 
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
-public class TestSSE_Op extends TestCase
+public class TestSSE_Builder extends TestCase
 {
     public static TestSuite suite()
     {
-        TestSuite ts = new TestSuite(TestSSE_Op.class) ;
+        TestSuite ts = new TestSuite(TestSSE_Builder.class) ;
         ts.setName("SSE Op") ;
         return ts ;
     }
     
-    public void testOp_1() { same("(null)") ; }
-
-    public void testOp_2() { same("(bgp [triple ?s ?p ?o])") ; }
+    public void test_01() { SSE.parseTriple("[triple ?s ?p ?o]") ; }
+    public void test_02() { SSE.parseTriple("[?s ?p ?o]") ; }
+    public void test_03() { SSE.parseTriple("[?s ?p ?o]") ; }
+    public void test_04() { SSE.parseTriple("(?s ?p ?o)") ; }
+    public void test_05() { SSE.parseQuad("(_ ?s ?p ?o)") ; }
+    public void test_06() { SSE.parseQuad("(quad _ ?s ?p ?o)") ; }
+    
+    public void test_07() { SSE.parseExpr("1") ; }
+    public void test_08() { SSE.parseExpr("(+ 1 2)") ; }
+    
+    public void testOp_01() { opSame("(null)") ; }
+    public void testOp_02() { opSame("(null)", new OpNull()) ; }
+    public void testOp_03() { opSame("(bgp [triple ?s ?p ?o])") ; }
 
     
-    private static void same(String str)
+    private static void opSame(String str)
     {
-        Op op1 = SSE.parseOp(str) ;
-        Op op2 = SSE.parseOp(str) ;
-        assertEquals(op1, op2) ;
+        opSame(str, SSE.parseOp(str)) ;
+    }
+    
+    private static void opSame(String str , Op other)
+    {
+        Op op = SSE.parseOp(str) ;
+        assertEquals(op, other) ;
     }
 }
 

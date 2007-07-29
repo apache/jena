@@ -16,7 +16,7 @@ public class TS_SSE extends TestSuite
         ts.setName("SSE") ;
         ts.addTest(TestSSE_Basic.suite()) ;
         ts.addTest(TestSSE_Forms.suite()) ;
-        ts.addTest(TestSSE_Op.suite()) ;
+        ts.addTest(TestSSE_Builder.suite()) ;
         return ts ;
     }
 }
