@@ -6,13 +6,14 @@
 
 package com.hp.hpl.jena.sparql.sse.builders;
 
-class BuildException extends RuntimeException
-{
+import com.hp.hpl.jena.sparql.sse.ItemException;
 
-//        public OpBuildException(Throwable cause) { super(cause) ; }
-//        public OpBuildException() { super() ; }
+class BuildException extends ItemException
+{
+//        public BuildException(Throwable cause) { super(cause) ; }
+//        public BuildException() { super() ; }
         public BuildException (String msg) { super(msg) ; }
-//        public OpBuildException (String msg, Throwable cause) { super(msg, cause) ; }
+        public BuildException (String msg, Throwable cause) { super(msg, cause) ; }
     }
 /*
  * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP

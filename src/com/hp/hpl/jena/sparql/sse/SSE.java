@@ -28,6 +28,11 @@ import com.hp.hpl.jena.sparql.expr.Expr;
 import com.hp.hpl.jena.sparql.sse.builders.BuilderExpr;
 import com.hp.hpl.jena.sparql.sse.builders.BuilderGraph;
 import com.hp.hpl.jena.sparql.sse.builders.BuilderTable;
+import com.hp.hpl.jena.sparql.sse.lang.ParseHandler;
+import com.hp.hpl.jena.sparql.sse.lang.ParseHandlerPlain;
+import com.hp.hpl.jena.sparql.sse.lang.ParseHandlerResolver;
+import com.hp.hpl.jena.sparql.sse.lang.SSE_Parser;
+
 import com.hp.hpl.jena.util.FileUtils;
 
 public class SSE

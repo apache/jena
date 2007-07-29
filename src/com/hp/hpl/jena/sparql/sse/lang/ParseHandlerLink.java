@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.sse;
+package com.hp.hpl.jena.sparql.sse.lang;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -12,6 +12,8 @@ import java.util.Map;
 import com.hp.hpl.jena.shared.PrefixMapping;
 
 import com.hp.hpl.jena.sparql.core.Prologue;
+import com.hp.hpl.jena.sparql.sse.Item;
+import com.hp.hpl.jena.sparql.sse.ItemList;
 
 public class ParseHandlerLink extends ParseHandlerResolver
 {

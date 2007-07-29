@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.sse;
+package com.hp.hpl.jena.sparql.sse.lang;
 
 import java.util.Stack;
 
@@ -13,6 +13,8 @@ import com.hp.hpl.jena.shared.PrefixMapping;
 import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
 import com.hp.hpl.jena.sparql.ARQNotImplemented;
 import com.hp.hpl.jena.sparql.core.Prologue;
+import com.hp.hpl.jena.sparql.sse.Item;
+import com.hp.hpl.jena.sparql.sse.ItemList;
 import com.hp.hpl.jena.sparql.sse.builders.BuilderPrefixMapping;
 import com.hp.hpl.jena.sparql.util.PrefixMapping2;
 
@@ -112,7 +114,7 @@ public class ParseHandlerResolverX extends ParseHandlerPlain
         // result
         Item item = f.result ;  
         if ( item == null )
-            item = Item.createNil(list.line, list.column) ;
+            item = Item.createNil(list.getLine(), list.getColumn()) ;
         // And emit a result as a listAdd.
         // Must go through our listAdd() here. 
         listAdd(item) ;

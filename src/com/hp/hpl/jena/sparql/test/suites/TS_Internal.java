@@ -33,7 +33,6 @@ public class TS_Internal extends TestSuite
         addTest(TestList.suite()) ;
         
         addTest(TestRegex.suite()) ;
-        addTest(TestSSE.suite()) ;
     }
 }
 

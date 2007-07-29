@@ -4,10 +4,11 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.sse;
+package com.hp.hpl.jena.sparql.sse.lang;
 
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.sparql.lang.ParserBase;
+import com.hp.hpl.jena.sparql.sse.SSEParseException;
 
 public class ParserSSEBase extends ParserBase
 {

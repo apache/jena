@@ -4,92 +4,97 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.sse;
+package com.hp.hpl.jena.sparql.sse.lang;
 
+import com.hp.hpl.jena.sparql.sse.Item;
 
-/** Tracing parser handler - logs what the core parse sees */ 
+/** Splitter for parser handlers.
+ *  Calls both, first one first.
+ * @author Andy Seaborne
+ * @version $Id$
+ */
 
-public class ParseHandlerDebug implements ParseHandler
+public class ParseHandler2 implements ParseHandler
 {
-    int count = 0 ;
+    private ParseHandler handler1 ;
+    private ParseHandler handler2 ;
     
-    private void indent()
+    public ParseHandler2(ParseHandler handler1, ParseHandler handler2)
     {
-        for ( int i = 0 ; i < count ; i++ ) System.out.print("  ") ;
+        this.handler1 = handler1 ;
+        this.handler2 = handler2 ;
     }
 
-    private void start(int line, int column)
-    { 
-        System.out.print("["+line+", "+column+"]  ") ; 
-        indent() ;
+    public Item getItem()
+    {
+        Item item = handler1.getItem() ;
+        if ( item == null )
+            item = handler2.getItem() ;
+        return item ;
     }
 
-    public Item getItem()       { return null ; }
-    
     public void parseStart()
-    { System.out.println("<<<<") ; }
+    {
+        handler1.parseStart() ;
+        handler2.parseStart() ; 
+        
+    }
 
     public void parseFinish()
-    { System.out.println(">>>>") ; }
+    {
+        handler1.parseFinish() ;
+        handler2.parseFinish() ; 
+    }
 
     public void listStart(int line, int column)
-    { 
-        start(line, column) ;
-        count++ ;
-        System.out.println("(") ;
+    {
+        handler1.listStart(line, column) ;
+        handler2.listStart(line, column) ;
+        
     }
 
     public void listFinish(int line, int column)
     {
-        count-- ;         
-        start(line, column) ;
-        System.out.println(")") ;
+        handler1.listFinish(line, column) ;
+        handler2.listFinish(line, column) ;
     }
-
-
 
     public void emitBNode(int line, int column, String label)
     { 
-        start(line, column) ;
-        System.out.println("BNode: "+label) ;
+        handler1.emitBNode(line, column, label) ;
+        handler2.emitBNode(line, column, label) ;
     }
 
-
     public void emitIRI(int line, int column, String iriStr)
-    { 
-        start(line, column) ;
-        System.out.println("IRI: "+iriStr) ;
+    {
+        handler1.emitIRI(line, column, iriStr) ;
+        handler2.emitIRI(line, column, iriStr) ;
     }
 
     public void emitLiteral(int line, int column, String lex, String lang, String datatype_iri, String datatype_pn)
-    { 
-        start(line, column) ;
-        if ( lang != null )
-            System.out.println("Literal: "+lex+" @"+lang) ;
-        else if ( datatype_iri != null )
-            System.out.println("Literal: "+lex+" ^^"+datatype_iri) ;
-        else if ( datatype_pn != null )
-            System.out.println("Literal: "+lex+" ^^"+datatype_pn) ;
+    {
+        handler1.emitLiteral(line, column, lex, lang, datatype_iri, datatype_pn) ;
+        handler2.emitLiteral(line, column, lex, lang, datatype_iri, datatype_pn) ;
     }
 
     public void emitPName(int line, int column, String pname)
-    { 
-        start(line, column) ;
-        System.out.println("PName: "+pname) ;
+    {
+        handler1.emitPName(line, column, pname) ;
+        handler2.emitPName(line, column, pname) ;
     }
 
     public void emitSymbol(int line, int column, String symbol)
-    { 
-        start(line, column) ;
-        System.out.println("Symbol: "+symbol) ;
+    {
+        handler1.emitSymbol(line, column, symbol) ;
+        handler2.emitSymbol(line, column, symbol) ;
     }
 
     public void emitVar(int line, int column, String varName)
-    { 
-        start(line, column) ;
-        System.out.println("Var: "+varName) ;
+    {
+        handler1.emitVar(line, column, varName) ;
+        handler2.emitVar(line, column, varName) ;
     }
-
+    
 }
 
 /*

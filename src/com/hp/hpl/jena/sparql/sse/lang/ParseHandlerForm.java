@@ -4,9 +4,12 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.sse;
+package com.hp.hpl.jena.sparql.sse.lang;
 
 import java.util.Stack;
+
+import com.hp.hpl.jena.sparql.sse.Item;
+import com.hp.hpl.jena.sparql.sse.ItemList;
 
 /** Resolve syntacic forms like (base ...) and (prefix...)
  *  where the syntax modifies the enclosed sub term.
@@ -78,7 +81,7 @@ public abstract class ParseHandlerForm extends ParseHandlerPlain
             item = list.getLast() ;
         }
         if ( item == null )
-            item = Item.createNil(list.line, list.column) ;
+            item = Item.createNil(list.getLine(), list.getColumn()) ;
         
         // And emit a result as a listAdd.
         // Must go through our listAdd() here to terminate nested forms.

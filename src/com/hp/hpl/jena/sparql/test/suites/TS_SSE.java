@@ -8,7 +8,7 @@ package com.hp.hpl.jena.sparql.test.suites;
 
 import junit.framework.TestSuite;
 
-public class TestSSE extends TestSuite
+public class TS_SSE extends TestSuite
 {
     public static TestSuite suite()
     {

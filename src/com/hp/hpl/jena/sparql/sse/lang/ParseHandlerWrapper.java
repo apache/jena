@@ -4,93 +4,78 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.sse;
+package com.hp.hpl.jena.sparql.sse.lang;
 
-/** Splitter for parser handlers.
+import com.hp.hpl.jena.sparql.sse.Item;
+
+/** Warpper parser handler with pass-through for all operations.
  *  Calls both, first one first.
  * @author Andy Seaborne
  * @version $Id$
  */
 
-public class ParseHandler2 implements ParseHandler
+public class ParseHandlerWrapper implements ParseHandler
 {
-    private ParseHandler handler1 ;
-    private ParseHandler handler2 ;
+    private ParseHandler handler ;
     
-    public ParseHandler2(ParseHandler handler1, ParseHandler handler2)
+    public ParseHandlerWrapper(ParseHandler handler)
     {
-        this.handler1 = handler1 ;
-        this.handler2 = handler2 ;
+        this.handler = handler ;
     }
 
     public Item getItem()
     {
-        Item item = handler1.getItem() ;
-        if ( item == null )
-            item = handler2.getItem() ;
-        return item ;
+        return handler.getItem() ;
     }
 
     public void parseStart()
     {
-        handler1.parseStart() ;
-        handler2.parseStart() ; 
-        
+        handler.parseStart() ;
     }
 
     public void parseFinish()
     {
-        handler1.parseFinish() ;
-        handler2.parseFinish() ; 
+        handler.parseFinish() ;
     }
 
     public void listStart(int line, int column)
     {
-        handler1.listStart(line, column) ;
-        handler2.listStart(line, column) ;
-        
+        handler.listStart(line, column) ;
     }
 
     public void listFinish(int line, int column)
     {
-        handler1.listFinish(line, column) ;
-        handler2.listFinish(line, column) ;
+        handler.listFinish(line, column) ;
     }
 
     public void emitBNode(int line, int column, String label)
     { 
-        handler1.emitBNode(line, column, label) ;
-        handler2.emitBNode(line, column, label) ;
+        handler.emitBNode(line, column, label) ;
     }
 
     public void emitIRI(int line, int column, String iriStr)
     {
-        handler1.emitIRI(line, column, iriStr) ;
-        handler2.emitIRI(line, column, iriStr) ;
+        handler.emitIRI(line, column, iriStr) ;
     }
 
     public void emitLiteral(int line, int column, String lex, String lang, String datatype_iri, String datatype_pn)
     {
-        handler1.emitLiteral(line, column, lex, lang, datatype_iri, datatype_pn) ;
-        handler2.emitLiteral(line, column, lex, lang, datatype_iri, datatype_pn) ;
+        handler.emitLiteral(line, column, lex, lang, datatype_iri, datatype_pn) ;
     }
 
     public void emitPName(int line, int column, String pname)
     {
-        handler1.emitPName(line, column, pname) ;
-        handler2.emitPName(line, column, pname) ;
+        handler.emitPName(line, column, pname) ;
     }
 
     public void emitSymbol(int line, int column, String symbol)
     {
-        handler1.emitSymbol(line, column, symbol) ;
-        handler2.emitSymbol(line, column, symbol) ;
+        handler.emitSymbol(line, column, symbol) ;
     }
 
     public void emitVar(int line, int column, String varName)
     {
-        handler1.emitVar(line, column, varName) ;
-        handler2.emitVar(line, column, varName) ;
+        handler.emitVar(line, column, varName) ;
     }
     
 }

@@ -4,13 +4,14 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.sse;
+package com.hp.hpl.jena.sparql.sse.lang;
 
 import java.io.Reader;
 
-import com.hp.hpl.jena.sparql.sse.parser.ParseException;
-import com.hp.hpl.jena.sparql.sse.parser.SSE_ParserCore;
-import com.hp.hpl.jena.sparql.sse.parser.TokenMgrError;
+import com.hp.hpl.jena.sparql.sse.SSEParseException;
+import com.hp.hpl.jena.sparql.sse.lang.parser.ParseException;
+import com.hp.hpl.jena.sparql.sse.lang.parser.SSE_ParserCore;
+import com.hp.hpl.jena.sparql.sse.lang.parser.TokenMgrError;
 
 /** Public interface to the SSE parser */
 
