@@ -1,6 +1,6 @@
 ==== SSE
 
-+ Builder tidying and testing
++ test another form -- (debug FOO)
 
 + Expr: (exists (pattern ...))
   
