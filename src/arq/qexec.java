@@ -41,7 +41,7 @@ import com.hp.hpl.jena.util.FileUtils;
 public class qexec extends CmdARQ
 {
     // Merging with qparse/sparql
-    // 1 -  split those two into Query and QueryExecution parts
+    // 1 - split those two into Query and QueryExecution parts
     // 2 - This is then calls on the QueryExecution parts
     // 
     
@@ -52,7 +52,6 @@ public class qexec extends CmdARQ
     ModTime       modTime =     new ModTime() ;
     ModEngine     modEngine =   new ModEngine() ;
 
-    
     String queryFilename = null ;
     String queryString   = null ;
     boolean printOp      = false ;

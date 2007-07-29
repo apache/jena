@@ -28,6 +28,8 @@ import com.hp.hpl.jena.sparql.algebra.table.TableWriter;
 import com.hp.hpl.jena.sparql.engine.main.QueryEngineMain;
 import com.hp.hpl.jena.sparql.sse.Item;
 import com.hp.hpl.jena.sparql.sse.SSE;
+import com.hp.hpl.jena.sparql.sse.builders.BuilderExec;
+
 import com.hp.hpl.jena.util.FileManager;
 
 
@@ -35,10 +37,11 @@ public class Run
 {
     public static void main(String[] argv)
     {
-        Item item = SSE.parse("(prefix ((ex: <http://example/>)))") ;
-        System.out.println();
-        System.out.println(item);
-        System.exit(0) ;
+        {
+            String []a = { "--file=SSE/all.sse"} ;
+            BuilderExec.main(a) ;
+            System.exit(0) ;
+        }
         String []a = { "--query", "Q.arq", "--out=ARQ"
             } ;
         arq.qparse.main(a) ;
