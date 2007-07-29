@@ -148,8 +148,11 @@ public class ParseHandlerResolver extends ParseHandlerForm
         resolver = p.getResolver() ;
         
         // Choose the result.
-        Item item = list.getLast() ;
-        super.setFormResult(item) ;
+        if ( list.size() > 2 )
+        {
+            Item item = list.getLast() ;
+            super.setFormResult(item) ;
+        }
     }
 
     public void emitIRI(int line, int column, String iriStr)

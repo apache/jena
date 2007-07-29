@@ -69,25 +69,21 @@ public abstract class ParseHandlerForm extends ParseHandlerPlain
         
         // Drop the form list.
         popList() ;
+        //setCurrentItem(null) ;  // Clear, in case top level item is a form of nothing.
         
-        // The result is the last element of the list if not already set.
+        // Form output skipped if no result registered.
         Item item = f.result ;
-        if ( item == null )
-        {
-            // Checking for explicit setting of the result.
-            // Remove later - needed for 
-            throwException("Inconsistent form: No result", line, column) ;
-            // Defaulting result.
-            item = list.getLast() ;
-        }
-        if ( item == null )
-            item = Item.createNil(list.getLine(), list.getColumn()) ;
+
+        // If all forms at least evaluate to nil.
+//        if ( item == null )
+//            item = Item.createNil(list.getLine(), list.getColumn()) ;
         
         // And emit a result as a listAdd.
-        // Must go through our listAdd() here to terminate nested forms.
+        // Must go through our listAdd() here to handle nested forms.
         
-        // item==null : remove Nil code above to allow forms that have no output.
-        if ( item != null )
+        // item==null : remove nil code above to allow forms that have no output.
+        
+//        if ( item != null )
             listAdd(item) ;
     }
 

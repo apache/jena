@@ -17,7 +17,7 @@ import com.hp.hpl.jena.sparql.sse.Item;
 import com.hp.hpl.jena.sparql.sse.SSE;
 import com.hp.hpl.jena.vocabulary.XSD;
 
-public class TestSSE_Resolve extends TestCase
+public class TestSSE_Forms extends TestCase
 {
     static PrefixMapping pmap = new PrefixMappingImpl() ;
     static { 
@@ -26,7 +26,7 @@ public class TestSSE_Resolve extends TestCase
     }
     public static TestSuite suite()
     {
-        TestSuite ts = new TestSuite(TestSSE_Resolve.class) ;
+        TestSuite ts = new TestSuite(TestSSE_Forms.class) ;
         ts.setName("SSE Resolve") ;
         
         SSE.getDefaultPrefixMapRead().removeNsPrefix("") ;
@@ -36,7 +36,7 @@ public class TestSSE_Resolve extends TestCase
         return ts ;
     }
 
-    // ---- Assume ParseHandlerresolver from here on
+    // ---- Assume ParseHandlerResolver from here on
     
     public void testBase_01()
     { 
@@ -112,6 +112,21 @@ public class TestSSE_Resolve extends TestCase
         testItem("(prefix ((ex: <http://example/>)) ( (prefix ((x: <http://EXAMPLE/>)) ex:abc) ))", r);
     }
     
+    // ---- Form
+    
+    public void testForm_01()
+    { 
+        // Special form of nothing.
+        Item item = SSE.parse("(prefix ((ex: <http://example/>)))") ;
+        assertNull(item) ;
+    }
+    
+    public void testForm_02()
+    { 
+        // Special form of nothing.
+        Item item = SSE.parse("(base <http://example/>)") ;
+        assertNull(item) ;
+    }
     // ----
     
     // URI resolving.

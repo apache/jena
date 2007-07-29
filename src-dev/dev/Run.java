@@ -35,7 +35,7 @@ public class Run
 {
     public static void main(String[] argv)
     {
-        Item item = SSE.parse("(prefix ((ex: <http://example/>)) ex:abc)") ;
+        Item item = SSE.parse("(prefix ((ex: <http://example/>)))") ;
         System.out.println();
         System.out.println(item);
         System.exit(0) ;

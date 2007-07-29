@@ -59,9 +59,6 @@ public class ParseHandlerPlain implements ParseHandler
         listAdd(item) ;
     }
 
-    
-    // Share??
-    
     protected void setCurrentItem(Item item)
     {
         currentItem = item ;
@@ -76,8 +73,11 @@ public class ParseHandlerPlain implements ParseHandler
             return ;
         }
         
-        ItemList list = currentList() ;
-        list.add(item) ;
+        if ( item != null )
+        {
+            ItemList list = currentList() ;
+            list.add(item) ;
+        }
         setCurrentItem(item) ;
     }
     
@@ -136,7 +136,7 @@ public class ParseHandlerPlain implements ParseHandler
     }
 
     protected ItemList currentList()        { return (ItemList)listStack.getCurrent() ; }
-    protected ItemList popList()            { depth-- ; return listStack.pop() ; }
+    protected ItemList popList()            { depth-- ; setCurrentItem(null) ; return listStack.pop() ; }
     protected void pushList(ItemList list)  { listStack.push(list) ; depth++ ; }
     
     protected String resolvePrefixedName(String pname, int line, int column)
