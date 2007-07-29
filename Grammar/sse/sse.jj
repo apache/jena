@@ -19,7 +19,7 @@ PARSER_BEGIN(SSE_ParserCore)
  * All rights reserved.
  */
 
-package com.hp.hpl.jena.sparql.sse.parser ;
+package com.hp.hpl.jena.sparql.sse.lang.parser ;
 
 import com.hp.hpl.jena.sparql.sse.ParserSSEBase ;
     
