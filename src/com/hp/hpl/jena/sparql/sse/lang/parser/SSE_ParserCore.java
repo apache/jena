@@ -6,7 +6,7 @@
 
 package com.hp.hpl.jena.sparql.sse.lang.parser ;
 
-import com.hp.hpl.jena.sparql.sse.ParserSSEBase ;
+import com.hp.hpl.jena.sparql.sse.lang.ParserSSEBase ;
 
 
 public class SSE_ParserCore extends ParserSSEBase implements SSE_ParserCoreConstants {
