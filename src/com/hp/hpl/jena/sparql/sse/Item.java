@@ -58,10 +58,10 @@ public class Item extends ItemLocation implements PrintSerializable
         return item ;
     }
     
-
     public static Item createNil() { return createNil(noLine, noColumn) ; }
     public static Item createNil(int line, int column)
     { 
+        // Not a symbol
         Item item = new Item(noLine, noColumn) ;
         item.isNil = true ;
         return item ;

@@ -6,7 +6,7 @@
 
 package dev;
 
-import arq.qexec;
+import arq.sse_query;
 import arq.qexpr;
 import arq.qparse;
 import arq.sparql;
@@ -91,7 +91,7 @@ public class Run
             System.exit(0) ;
         }
         
-        arq.qexec.main(new String[]{
+        arq.sse_query.main(new String[]{
             //"--engine=ref" ,
             //--data=D.ttl",
             "--query=Q.sse"}) ;
@@ -214,7 +214,7 @@ public class Run
             "--print=plan"
         } ;
         
-        qexec.main(a) ;
+        sse_query.main(a) ;
         System.exit(0) ;
         
     }

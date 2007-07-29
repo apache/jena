@@ -38,7 +38,7 @@ import com.hp.hpl.jena.sparql.util.QueryExecUtils;
 import com.hp.hpl.jena.sparql.util.Utils;
 import com.hp.hpl.jena.util.FileUtils;
 
-public class qexec extends CmdARQ
+public class sse_query extends CmdARQ
 {
     // Merging with qparse/sparql
     // 1 - split those two into Query and QueryExecution parts
@@ -59,10 +59,10 @@ public class qexec extends CmdARQ
     
     public static void main (String [] argv)
     {
-        new qexec(argv).main() ;
+        new sse_query(argv).main() ;
     }
     
-    public qexec(String[] argv)
+    public sse_query(String[] argv)
     {
         super(argv) ;
         super.add(queryFileDecl, "--query=FILE", "Algebra file to execute") ;
