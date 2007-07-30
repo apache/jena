@@ -6,7 +6,7 @@
     <!-- default value useful in Jeremy's development environment -->
     <property name="jena.home" value="../jena2"/>
 
-    <property name="dist.name" value="iri-0.4"/>
+    <property name="dist.name" value="iri-0.5"/>
 	  
 
     <property name="lib.dir" value="lib/"/>

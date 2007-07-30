@@ -126,7 +126,10 @@ public static final int UNKNOWN_SYNTAX = -4;
     }
 
     public IRIFactoryImpl(IRIFactoryImpl template) {
-        backwardCompatibleRelativeRefs = template.backwardCompatibleRelativeRefs;
+        if (backwardCompatibleRelativeRefs.size()==Integer.MAX_VALUE)
+    	   backwardCompatibleRelativeRefs = template.backwardCompatibleRelativeRefs;
+        else 
+        	backwardCompatibleRelativeRefs = new HashSet(backwardCompatibleRelativeRefs);
         encoding = template.encoding;
         errors = template.errors;
         prohibited = template.prohibited;
@@ -385,8 +388,7 @@ private Set backwardCompatibleRelativeRefs = new HashSet();
             return scheme.port;
         }
         public boolean withScheme() {
-            // TODO withScheme()
-            throw new UnsupportedOperationException("Not yet implemented.");
+            return true;
         }
         
     }
