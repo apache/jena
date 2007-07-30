@@ -6,30 +6,18 @@
 
 package dev;
 
-import arq.sse_query;
-import arq.qexpr;
-import arq.qparse;
 import arq.sparql;
 
-import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryExecution;
 import com.hp.hpl.jena.query.QueryExecutionFactory;
 import com.hp.hpl.jena.query.QueryFactory;
-import com.hp.hpl.jena.query.ResultSet;
 import com.hp.hpl.jena.query.ResultSetFormatter;
 import com.hp.hpl.jena.query.larq.IndexBuilderString;
 import com.hp.hpl.jena.query.larq.IndexLARQ;
 import com.hp.hpl.jena.query.larq.LARQ;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.sparql.algebra.Table;
-import com.hp.hpl.jena.sparql.algebra.table.TableWriter;
-import com.hp.hpl.jena.sparql.engine.main.QueryEngineMain;
-import com.hp.hpl.jena.sparql.sse.Item;
-import com.hp.hpl.jena.sparql.sse.SSE;
-import com.hp.hpl.jena.sparql.sse.builders.BuilderExec;
-
 import com.hp.hpl.jena.util.FileManager;
 
 
@@ -37,68 +25,39 @@ public class Run
 {
     public static void main(String[] argv)
     {
-        {
-            String []a = { "--file=SSE/all.sse"} ;
-            BuilderExec.main(a) ;
-            System.exit(0) ;
-        }
-        String []a = { "--query", "Q.arq", "--out=ARQ"
+        String []a = { "/home/afs/W3C/DataAccess/tests/data-r2/ask/ask-1.srx"
             } ;
-        arq.qparse.main(a) ;
+        arq.rset.main(a) ;
         System.exit(0) ;
         
-        //runQExpr() ;
-        //codeSSE() ;
         runQParse() ;
         //execQuery("D.ttl", "Q.rq") ;
-        //exec("D.ttl", "SSE/test.sse") ;
     }
-        
-    private static void codeSSE()
+    
+    private static void runQParse()
     {
-        arq.sse.main(new String[]{"('a'^^<>)"}) ;
-        System.exit(0) ;
+        String []a = { "Q.rq" } ;
+        arq.qparse.main(a) ;
+    }
+    
+    private static void execQuery(String datafile, String queryfile)
+    {
+        //QueryEngineMain.register() ;
+        String a[] = new String[]{
+            //"-v",
+            //"--engine=ref",
+            "--data="+datafile,
+            "-query="+queryfile , 
+        } ;
         
-        System.exit(0) ;
-        
-        // ----
-        
-        if ( false )
-        {
-            Item item = SSE.readFile("SSE/graph.sse") ;
-            System.out.println(item.toString()) ;
-            System.out.println() ;
-        }
-        
-        if ( false )
-        {
-            Graph graph = SSE.readGraph("SSE/graph.sse") ;
-            Model model = ModelFactory.createModelForGraph(graph) ;
-            model.write(System.out, "TTL") ;
-        }
-        //System.exit(0) ;
-        // --------
-        if ( false )
-        {
-            Table table = SSE.readTable("SSE/table.sse") ;
-            ResultSet rs = table.toResultSet() ;
-            ResultSetFormatter.out(rs) ;
-            System.out.println(table) ;
-            
-            Table table2 = SSE.parseTable(TableWriter.asSSE(table));
-            ResultSet rs2 = table2.toResultSet() ;
-            ResultSetFormatter.out(rs2) ;
-            System.exit(0) ;
-        }
-        
-        arq.sse_query.main(new String[]{
-            //"--engine=ref" ,
-            //--data=D.ttl",
-            "--query=Q.sse"}) ;
+        sparql.main(a) ;
         System.exit(0) ;
         
     }
+}
 
+class RunLARQ
+{
     private static void codeLARQ()
     {
         Model model = ModelFactory.createDefaultModel() ;
@@ -175,77 +134,6 @@ public class Run
 //        return model  ;
 //    }
 //    
-    public static void print()
-    {
-        QueryEngineMain.register() ;
-        String a[] = new String[]{
-            //"-v",
-            //"--engine=ref",
-            "--print=query",
-            "--print=op",
-            "--print=plan",
-            "--query=Q.rq" , 
-        } ;
-        qparse.main(a) ;
-    }
-
-    private static void execQuery(String datafile, String queryfile)
-    {
-        //QueryEngineMain.register() ;
-        String a[] = new String[]{
-            //"-v",
-            //"--engine=ref",
-            "--data="+datafile,
-            "-query="+queryfile , 
-        } ;
-        
-        sparql.main(a) ;
-        System.exit(0) ;
-        
-    }
-    
-    private static void exec(String datafile, String queryfile)
-    {
-        String a[] = new String[]{
-            //"-v",
-            //"--engine=ref",
-            "--data="+datafile,
-            "--file="+queryfile ,
-            "--print=plan"
-        } ;
-        
-        sse_query.main(a) ;
-        System.exit(0) ;
-        
-    }
-
-    
-    public static void runQParse()
-    {
-        qparse.main(new String[]{ //"--in=prefix", 
-                                  //"--out=prefix",
-                                  "--print=op",
-                                  //"--print=query",
-                                  //"--engine=ref",
-                                  "--query=Q.rq"
-                                  //"--query=testing/ARQ/Serialization/syntax-general-13.rq" ,
-                                  }) ;
-        System.exit(0) ;
-    }
-
-    static public void runQExpr()
-    {
-        qexpr.main(new String[]{"xsd:double('1.3e0')"}) ;
-//        qexpr.main(new String[]{"(1+3)"}) ;
-//        qexpr.main(new String[]{"(?x+3)"}) ;
-//        System.exit(0) ;
-//        qexpr.main(new String[]{"35.59/1.87715"}) ;
-//        qexpr.main(new String[]{"0.5"}) ;
-//        qexpr.main(new String[]{"1/2"}) ;
-//        qexpr.main(new String[]{"1/3"}) ;
-//        qexpr.main(new String[]{"100*1.0"}) ;
-        System.exit(0) ;
-    }
 }
 
 /*
