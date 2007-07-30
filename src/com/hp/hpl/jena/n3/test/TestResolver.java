@@ -17,7 +17,7 @@ import com.hp.hpl.jena.n3.RelativeURIException;
 /** com.hp.hpl.jena.query.util.test.TestCaseURI
  * 
  * @author Andy Seaborne
- * @version $Id: TestResolver.java,v 1.2 2007-06-22 15:15:45 andy_seaborne Exp $
+ * @version $Id: TestResolver.java,v 1.3 2007-07-30 13:59:47 jeremy_carroll Exp $
  */
 
 public class TestResolver extends TestCase
@@ -84,7 +84,7 @@ public class TestResolver extends TestCase
 
     public void testBaseHash_2() { execTest("x", "http://example.org#", "http://example.org/x") ; }
     
-    public void testBaseHash_3() { execException("#", "base:x", RelativeURIException.class) ; }
+    public void testBaseHash_3() { execTest("#", "base:x", "base:x#") ; }
 
 //    // Java5: exception
 //    // Java6 & GNUclasspath: correctly get "base:#"
@@ -98,11 +98,12 @@ public class TestResolver extends TestCase
     
     public void testScheme_4() { execTestMatch("file:x", null, "^file:///.*/x$") ; }
     
-    public void testURI_file_1()  { execTestMatch("file:x", "http://example.org/ns", "^file:///.*/x$") ; }
+//    public void testURI_file_1()  { execTestMatch("file:x", "http://example.org/ns", "^file:///.*/x$") ; }
 
     public void testURI_file_2()  { execTest("x", "file:///A/B/C", "file:///A/B/x") ; }
 
     public void testURI_file_3()  { execTest("x", "file:///A/B/", "file:///A/B/x") ; }
+
 
     // ---- Absolute URIs are left alone 
     
@@ -133,9 +134,9 @@ public class TestResolver extends TestCase
     
     public void testHierURI_3()   { execTest("../foo", "http://host/dir/", "http://host/foo") ; }
 
-    public void testHierURI_4()   { execTest("../foo", "http://host/", "http://host/../foo") ; }
+    public void testHierURI_4()   { execTest("../foo", "http://host/", "http://host/foo") ; }
     
-    public void testHierURI_5()   { execTest("../foo", "http://host/xyz", "http://host/../foo") ; }
+    public void testHierURI_5()   { execTest("../foo", "http://host/xyz", "http://host/foo") ; }
     
     public void testHierURI_6()   { execTest(".", "http://host/xyz", "http://host/") ; }
 
@@ -152,32 +153,32 @@ public class TestResolver extends TestCase
 
     public void testFileURI_3()   { execFileTest("file:/foo", "file:///foo") ; }
 
-    // ---- Error conditions
     
-    public void testBaseEmpty() { execException("x", "", JenaURIException.class) ; }
+    
+    public void testBaseEmpty() { execTestMatch("x", "", "^file:///.*/x$") ; }
 
     // Resolved against current directory.
     public void testBaseNull() { execTestMatch("x", null, ".*/x" ) ; }
 
-    public void testRelBase_1() { execException("x", "ns", RelativeURIException.class) ; }
+    public void testRelBase_1() {execTestMatch("x", "ns", ".*/x" );  }
     
-    public void testRelBase_2() { execException("x", "/ns", RelativeURIException.class) ; }
+    public void testRelBase_2() { execTestMatch("x", "/ns", ".*/x" ); }
 
     // ---- Opaque
     
-    public void testURI_opaque_1()  { execException("#x", "tag:A", RelativeURIException.class) ; }
+    public void testURI_opaque_1()  { execTest("#x", "tag:A", "tag:A#x") ; }
 
-    public void testURI_opaque_2()  { execException("#x", "urn:x-jena:A", RelativeURIException.class) ; }
+    public void testURI_opaque_2()  { execTest("#x", "urn:x-jena:A", "urn:x-jena:A#x") ; }
     
-    public void testURI_opaque_3()  { execException("#x", "urn:x-jena:A", RelativeURIException.class) ; }
+//    public void testURI_opaque_3()  { execException("#x", "urn:x-jena:A", RelativeURIException.class) ; }
 
     // ---- Opaque file URLs
     
     // Should these be errors? Yes.
     //public void testURI_file_4()  { execTest("x", "file:A", "file:Ax") ; }
-    public void testURI_file_4()  { execException("x", "file:A", RelativeURIException.class) ; }
+    public void testURI_file_4()  {  execTestMatch("x", "file:A","^file:///.*/x") ;}
     
-    public void testURI_file_5()  { execTest("#x", "file:A", "file:A#x") ; }
+    public void testURI_file_5()  { execTestMatch("#x", "file:A","^file:///.*/A#x") ; }
     //public void testURI_file_5()  { execException("#x", "file:A", RelativeURIException.class) ; }
     
     //public void testURI_file_6()   { execTest("foo", "file:///xyz abc/", "file:///xyz abc/foo" ) ; }

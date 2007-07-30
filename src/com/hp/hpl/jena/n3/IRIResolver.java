@@ -11,40 +11,42 @@ import java.io.IOException;
 
 import org.apache.commons.logging.LogFactory;
 
-import com.hp.hpl.jena.n3.RelURI;
+import com.hp.hpl.jena.iri.IRI;
+import com.hp.hpl.jena.iri.IRIFactory;
 import com.hp.hpl.jena.util.FileUtils;
 
 /** A simple class to access IRI resolution */ 
 
 public class IRIResolver
 {
-    private String baseStr = null ;
-
+    final private IRI base;
+    static final private IRI iriF = RelURI.cwd;
+    
+    
+    
     public IRIResolver()
     { this(null) ; }
     
-    public IRIResolver(String base)
+    public IRIResolver(String baseS)
     {
-        if ( base == null )
-            base = chooseBaseURI() ;
-        //baseStr = RelURI.resolve(base) ;
-        baseStr = base ;
-//        if ( base == null )
-//            throw new JenaURIException("Null base IRI") ;
+        if ( baseS == null )
+            baseS = chooseBaseURI() ;
+//        IRI aaa = RelURI.factory.construct(baseS);
+        base  = iriF.construct(baseS);
     }
 
-    public String getBaseIRI() { return baseStr ; }
+    public String getBaseIRI() { return base.toString(); }
     
     public String resolve(String relURI)
     {
-        return RelURI.resolve(relURI, baseStr) ;
+        return base.resolve(relURI).toString();
     }
 
     public static String resolve(String base, String relative)
     {
         //Resolver resolver = new Resolver(base) ;
         //return resolver.resolve(relative) ;
-        return RelURI.resolve(relative, base) ;
+        return iriF.create(base).resolve(relative).toString() ;
     }
 
 

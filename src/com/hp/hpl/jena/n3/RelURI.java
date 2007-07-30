@@ -15,239 +15,139 @@ package com.hp.hpl.jena.n3;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
+import java.net.URL;
 import java.util.regex.Pattern;
 
 import org.apache.commons.logging.LogFactory;
 
+import com.hp.hpl.jena.iri.IRI;
+import com.hp.hpl.jena.iri.IRIException;
+import com.hp.hpl.jena.iri.IRIFactory;
+import com.hp.hpl.jena.shared.JenaException;
 import com.hp.hpl.jena.util.FileUtils;
 import com.hp.hpl.jena.util.cache.Cache;
 
 /** RelURI.  To be replaced by the IRI library.
  * 
  * @author Andy Seaborne
- * @version $Id: RelURI.java,v 1.15 2007-06-07 12:56:22 andy_seaborne Exp $
+ * @version $Id: RelURI.java,v 1.16 2007-07-30 13:59:49 jeremy_carroll Exp $
  */
 
 public class RelURI
 {
-    static private String globalBase = null ;
-    
-    static Cache baseCache = new Cache1() ;
-    static Pattern patternHttp = Pattern.compile("^http://[^/]*/[^/]+") ; 
-    static Pattern patternFile = Pattern.compile("^file:/*[^/]+/") ; 
-    
-    
-    /** Create resolve a URI agaisnt a base.
-     *  Returns null if the result is not absolute. 
-     * @param relStr
-     * @param baseStr
-     * @return String An absolute URI
-     * @throws JenaURIException       Unacceptable base URI string
-     * @throws RelativeURIException   Base is relative or opaque
+	public static class JenaURIException extends JenaException
+	{
+	    public JenaURIException(Exception msg) { super(msg) ; }
+	}
+
+
+	static final private String globalBase;
+	static final IRIFactory factory = new IRIFactory(IRIFactory.jenaImplementation());
+    static {
+    	factory.setSameSchemeRelativeReferences("file");
+    }
+	
+	
+	static final IRI cwd;
+	static {
+		String baseURI;
+		File f = new File(".") ;
+		try {
+			 baseURI = fileToAbsoluteURL(f);
+		} catch (IOException e) {
+			e.printStackTrace();
+			baseURI = "http://example.org/";
+		}
+		globalBase = baseURI;
+		IRI cwdx;
+		try {
+		  cwdx = factory.construct(globalBase);
+		} 
+		catch (IRIException e) {
+			System.err.println("Unexpected IRIException in initializer: "+e.getMessage());
+			cwdx = factory.create("file:///");
+		}
+		cwd = cwdx;
+	}
+	static String fileToAbsoluteURL(File f) throws IOException {
+		String baseURI;
+		baseURI = sanitizeFileURL(f.getCanonicalPath());     
+		if ( f.isDirectory() && ! baseURI.endsWith("/") )
+		    baseURI = baseURI+"/" ;
+		return baseURI;
+	}
+	static String sanitizeFileURL(String s) {
+		String baseURI;
+		s = s.replaceAll("\\\\", "/") ;
+		s = s.replaceAll("%","%25");
+		s = s.replaceAll(" ", "%20") ;
+		if ( s.startsWith("/"))
+		    // Already got one / - UNIX-like
+		    baseURI = "file://"+s ;
+		else
+		    // Absolute name does not start with / - Windows like
+		    baseURI = "file:///"+s ;
+		return baseURI;
+	}
+	/**
+	 * @param baseURI
+	 * @return
+	 */
+	static public String chooseBaseURI(String baseURI)
+    {
+		if (baseURI!=null)
+			return baseURI;
+		
+        return globalBase;
+    }
+    /**
+     * Turn a filename into a well-formed file: URL relative to the working directory.
+     * @param filename
+     * @return String The filename as an absolute URL
      */
-    
-    static public String resolve(String relStr, String baseStr)
-    {
-        // Special case (GNUClassPath workaround)
-        if ( relStr.equals(".") )
-        {
-            if ( baseStr.startsWith("http://") || baseStr.startsWith("file:/") )
-            {
-                if ( baseStr.endsWith("/") )
-                    return baseStr ;
-
-                if ( patternHttp.matcher(baseStr).find() )
-                {
-                    int j = baseStr.lastIndexOf("/") ;
-                    return baseStr.substring(0, j+1) ; 
-                }
-
-                if ( patternFile.matcher(baseStr).find())
-                {
-                    int j = baseStr.lastIndexOf("/") ;
-                    return baseStr.substring(0, j+1) ; 
-                }
-            }
-            // Can't shortcut - drop through anyway.
-        }
-        
-        // Encode spaces (for filenames)
-        baseStr = CodecHex.encode(baseStr) ;
-        relStr = CodecHex.encode(relStr) ;
-        // "Adapt" URIs with spaces
-        String s = _resolve(relStr, baseStr) ;
-        s = CodecHex.decode(s) ;
-        return s ;
-        
-    }
-    
-//    static Pattern patEnc1 = Pattern.compile("_") ;
-//    static String encStr1 = "_5F" ;
-//
-//    static Pattern patEnc2 = Pattern.compile(" ") ;
-//    static String encStr2 = "_20" ;
-//
-//    static public String encode(String s)
-//    {
-//        if ( s == null ) return s ;
-//
-//        s = patEnc1.matcher(s).replaceAll(encStr1) ;
-//        s = patEnc2.matcher(s).replaceAll(encStr2) ;
-//        return s ;
-//    }
-//
-//    static Pattern patDec1 = Pattern.compile("_20") ;
-//    static String decStr1 = " " ;
-//
-//    static Pattern patDec2 = Pattern.compile("_5F") ;
-//    static String decStr2 = "_" ;
-//
-//    static public String decode(String s)
-//    {
-//        s = patDec1.matcher(s).replaceAll(decStr1) ;
-//        s = patDec2.matcher(s).replaceAll(decStr2) ;
-//        return s ;
-//    }
-    
-    static private String _resolve(String relStr, String baseStr)
-    {
-        URI rel = null ;
-        try { rel = new URI(relStr) ; }
-        catch (java.net.URISyntaxException ex)
-        { throw new JenaURIException("Illegal URI: "+relStr) ; }
-        
-        if ( rel.isAbsolute() )
-        {
-            String s = rel.getScheme() ;
-            // Corner case : relStr is the strictly absolute URI with an incomplete 
-            // scheme specific part -- example: "file:x"
-            if ( rel.getScheme().equals("file") )
-                return _resolveFileURL(relStr) ;
-            return relStr ;
-        }
-        
-        if ( baseStr == null )
-        {
-            // Null base - relStr not absolute
-            //return relStr ;
-            if ( rel.isAbsolute() )
-                return relStr ;
-            throw new JenaURIException("Null base for relative URI resolution: "+relStr) ;
-        }
-        
-        if ( baseStr.length() == 0 )
-            throw new JenaURIException("Empty base for relative URI resolution") ;
-        
-//      if ( baseStr.endsWith("#") )
-//      throw new JenaURIException("Base URI ends in #") ;
-        
-        // RFC 3986 says any URI to be used as a base URI is stripped of its fragment.
-        
-        if ( baseStr.indexOf('#') >= 0 )
-        {
-            int i = baseStr.indexOf('#') ;
-            baseStr = baseStr.substring(0,i) ;
-        }
-        
-        // Check for just "scheme:"
-        if ( baseStr.endsWith(":") )
-        {
-            // Slightly confusingly, this leads to a slightly different exception
-            // for ("base:" "#") and ("base:x" "#") 
-            return resolve(baseStr+relStr) ;
-        }
-        
-        if ( relStr.equals("") )
-            return baseStr ;
-        
-        // Cache this?  One slot cache.
-        URI base = (URI)baseCache.get(baseStr) ;
-        
-        if ( base == null )
-        {
-            try {
-                base = new URI(baseStr) ;
-            } catch (java.net.URISyntaxException ex)
-            { throw new JenaURIException("Illegal URI (base): "+baseStr) ; }
-
-            if ( ! base.isAbsolute() )
-                throw new RelativeURIException("Relative URI for base: "+baseStr) ; 
-            
-            if ( base.isOpaque() )
-            {
-                // The case of file:A and #x
-                if ( base.getScheme().equals("file") && relStr.startsWith("#") )
-                    return baseStr+relStr ;
-                
-                // tag: and urn: but also anOther:...
-                //return baseStr+relURI ;
-                throw new RelativeURIException("Can't resolve a relative URI against an opaque URI: rel="+relStr+" : base="+baseStr) ;
-            }
-            
-            baseCache.put(baseStr, base) ;
-        }
-        
-        if ( base.getPath().length() == 0 && !relStr.startsWith("/") )
-        {
-            // No path in base. Unrooted relative string.
-            // Fudge - make base have a slash
-            try {
-                base = new URI(baseStr+"/") ;
-            } catch (java.net.URISyntaxException ex)
-            { 
-                LogFactory.getLog(RelURI.class).fatal("Base now illegal fixing up path-less base URI ("+baseStr+")") ;
-                throw new JenaURIException("Illegal URI (base) ptII: "+baseStr) ;
-            }
-        }
-            
-        URI abs = resolve(rel, base) ;
-        if ( abs == null )
-            return null ;
-
-        // Finally, sort out file URLs
-        // 1 - file:filename => file:///dir/filename
-        // 2 - file:/ => file:///
-
-        // Fix for file names
-        String s = abs.toString() ;
-
-        if ( s.startsWith("file:") )
-            s = _resolveFileURL(s) ;
-        return s ;
-    }
-
-    private static URI resolve(URI rel, URI base)
-    {
-        try {
-            URI abs = base.resolve(rel) ;
-            if ( ! abs.isAbsolute() )
-                return null ;
-            return abs ;
-        } catch (RuntimeException ex)
-        {
-            LogFactory.getLog(RelURI.class).warn("\nException in Java library: "+ex.getMessage()+"\nresolve("+rel.toString()+", "+base.toString()+")") ;
-            throw ex ;
-        }
-    }
-    
+	static public String resolveFileURL(String filename) throws IRIException {
+		IRI r = cwd.resolve(filename);
+		if (!r.getScheme().equalsIgnoreCase("file")) {
+			return resolveFileURL("./"+filename);
+		}
+		return r.toString();
+	}
+	
+    /** Create resolve a URI against a base.
+     *  If baseStr is a relative file IRI then it is first resolved
+     *  against the current working directory.
+     * @param relStr
+     * @param baseStr          Can be null if relStr is absolute
+     * @return String          An absolute URI
+     * @throws IRIException    If result would not be legal, absolute IRI
+     */
+	static public String resolve(String relStr, String baseStr)  throws IRIException {
+	    try {
+		IRI i = factory.create(relStr);
+	    if (i.isAbsolute())
+	    	// removes excess . segments, and throws exceptions:
+	    	return cwd.construct(i).toString();
+	    
+	    IRI base = factory.create(baseStr);
+	    
+	    if ("file".equalsIgnoreCase(base.getScheme()))
+	    	return cwd.create(base).construct(i).toString();
+	    
+	    return base.construct(i).toString();
+	    }
+	    catch (IRIException e) {
+	    	throw new JenaURIException(e);
+	    }
+	    
+	}
     /** Create resolve a URI against the global base.
      *  Returns null if the result is not absolute. 
      *  @param relURI
      */
     
-    static public String resolve(String relURI)
+    static public String resolve(String relURI) throws IRIException
     {
-        if ( globalBase == null )
-            globalBase = chooseBaseURI() ;
         return resolve(relURI, globalBase) ;  
-    }
-
-    static public void setBaseURI(String uriBase)
-    {
-        if ( uriBase != null && uriBase.startsWith("file:/") && ! uriBase.startsWith("file:///") )
-            LogFactory.getLog(RelURI.class).warn("setBaseURI: File URIs should look like 'file:///path' (or at least file://host/path)") ;
-        
-        globalBase = uriBase ;
     }
 
     static public String getBaseURI()
@@ -263,270 +163,9 @@ public class RelURI
     
     static public String chooseBaseURI() { return chooseBaseURI(null) ; }
     
-    /** Choose a baseURI based on a suggestion
-     * 
-    * @return String      Absolute URI
-     */ 
+   
     
-    static public String chooseBaseURI(String baseURI)
-    {
-        if ( baseURI == null )
-            baseURI = "file:." ;
-        String scheme = FileUtils.getScheme(baseURI) ;
-        if ( scheme == null )
-        {
-            scheme = "file" ;
-            baseURI = "file:"+baseURI ;
-        }
-        
-        // Not quite resolveFileURL (e.g. directory canonicalization).
-        if ( scheme.equals("file") )
-        {
-//            if ( baseURI.startsWith("/") )
-//                return "file://"+baseURI ;
-            
-            if ( ! baseURI.startsWith("file:///") )
-            {
-                try {
-                    String tmp = baseURI.substring("file:".length()) ;
-                    File f = new File(tmp) ;
-                    String s = f.getCanonicalPath() ;
-                    s = s.replace('\\', '/') ;
-                    if ( s.indexOf(' ') >= 0 )
-                        s = s.replaceAll(" ", "%20") ;
-                    
-                    if ( s.startsWith("/"))
-                        // Already got one / - UNIX-like
-                        baseURI = "file://"+s ;
-                    else
-                        // Absolute name does not start with / - Windows like
-                        baseURI = "file:///"+s ;
-                    
-                    if ( f.isDirectory() && ! baseURI.endsWith("/") )
-                        baseURI = baseURI+"/" ;
-
-                } catch (IOException ex)
-                {
-                    LogFactory.getLog(RelURI.class).warn("IOException in chooseBase - ignored") ;
-                    return null ;
-                }
-            }
-        }
-        return baseURI ;
-    }
-    
-    // Input, output in _  encoded space
-    static private String _resolveFileURL(String fn)
-    {
-        fn = CodecHex.decode(fn) ;
-        fn = resolveFileURL(fn) ;
-        fn = CodecHex.encode(fn) ;
-        return fn ;
-    }
-    
-    /**
-     * Turn a filename into a well-formed file: URL relative to the working directory.
-     * @param filename
-     * @return String The filename as an absolute URL
-     */
-    
-    static public String resolveFileURL(String filename)
-    {
-        // Works in unencoded space
-        String s = filename ;
-        // Pragmatic windows hack.
-        if ( s.indexOf('\\') > -1 )
-            s = s.replace('\\', '/') ;
-
-        // Absolute path names
-        if ( s.startsWith("file:///"))
-            return s ;
-
-        if ( s.startsWith("file://"))
-            // Strictly legal but the next thing is the host
-            // file://C:/ means host C, default port!
-            return s ;
-
-        if ( s.startsWith("file:/") )
-        {
-            // This converts Java's idea of file: URL
-            // to one with ///
-            s = filename.substring("file:/".length()) ;
-            return "file:///"+s ;
-        }
-
-        // Relative path name.
-        if ( s.startsWith("file:") )
-            s = filename.substring("file:".length()) ;
-
-        s = absFileNameURL(s) ;
-        return s ;
-    }
-    
-    /** Absolute file name */
-    public static String absFileNameURL(String fn)
-    {
-        File f = new File(fn) ;
-        // If it ends in "/" keep it
-        // (don't test for a directory - may not exist, and it costs more)
-        if ( fn.endsWith("/") )
-            fn = f.getAbsolutePath()+"/" ;
-        else
-            try { fn = f.getCanonicalPath() ; }
-            catch (IOException ex)
-            { return null ; }
-                
-        // Windows file name to URI hierarchical paths
-        fn = fn.replace('\\', '/') ;
-
-        // java.net.URI messes up file:/// 
-        if ( fn.startsWith("/"))
-            // Already got one / - UNIX-like
-            fn = "file://"+fn ;
-        else
-            // Absolute name does not start with / - Windows like
-            fn = "file:///"+fn ;
-        return fn ;
-    }
-    
-    /** Like URL encoding but settable char.  Default '_' */ 
-
-    public static class CodecHex
-    {
-        private static char[] chars = { ' ' , '_' } ;
-        
-        static public String encode(String s)
-        {
-            if ( s == null ) return s ;
-        
-            StringBuffer sb = new StringBuffer() ;
-            
-            loop1:
-            for ( int i = 0 ; i < s.length() ; i++ )
-            {
-                char ch = s.charAt(i) ;
-                for ( int j = 0 ; j < chars.length ; j++ )
-                    if ( ch == chars[j] )
-                    {
-                        sb.append('_') ;
-                        // Low codepoints only.
-                        sb.append(Integer.toHexString(((int)ch)&255)) ;
-                        continue loop1;
-                    }
-                sb.append(ch) ;
-            }
-            return sb.toString() ;
-        }
-        
-        
-        static public String decode(String s)
-        {
-            if ( s == null ) return s ;
-
-            StringBuffer sb = new StringBuffer() ;
-            for ( int i = 0 ; i < s.length() ; i++ )
-            {
-                char ch = s.charAt(i) ;
-                if ( ch == '_' ) 
-                {
-                    if ( i >= s.length()-2 )
-                        throw new IllegalArgumentException("Broken encoded string: "+s) ;
-                    i++ ;
-                    char ch2 = s.charAt(i) ;
-                    i++ ;
-                    char ch3 = s.charAt(i) ;
-                    char ch4 = (char)((hexDecode(ch2)<<4)+hexDecode(ch3)) ;
-                    sb.append(ch4) ;
-                    continue ;
-                }
-                sb.append(ch) ;
-            }
-            return sb.toString() ;
-        }
-            
-        static private char hexEncode(int i ) {
-            if (i<10)
-                return  (char)('0' + i);
-            else
-                return (char)('A' + i - 10);
-        }
-        
-        static private int hexDecode(char b ) {
-            switch (b) { 
-                case 'a': case 'b': case 'c': case 'd': case 'e': case 'f':
-                 return (((int)b)&255)-'a'+10;
-                case 'A': case 'B': case 'C': case 'D': case 'E': case 'F': 
-                return b - 'A' + 10;
-                case '0': case '1': case '2': case '3': case '4': case '5': case '6': case '7': case '8': case '9':
-                    return b - '0';
-                    default:
-                        throw new IllegalArgumentException("Bad Hex escape character: " + (((int)b)&255) );
-            }
-        }
-    }
-
-    static class Cache1 implements Cache
-    {
-        boolean isEnabled = true ;
-        Object cacheKey = null ;
-        Object cacheValue = null ;
-        
-        int numGet = 0 ;
-        int numPut = 0 ;
-        int numHits = 0 ;
-        
-        public Object get(Object key)
-        {
-            if ( ! isEnabled )
-                return null ;
-            
-            numGet ++ ;
-            
-            if ( cacheKey == null )
-                return null ;
-            
-            if ( cacheKey.equals(key) )
-            {
-                numHits ++ ;
-                return cacheValue ;
-            }
-            
-            return null ;
-        }
-    
-        public void put(Object key, Object value)
-        {
-            if ( ! isEnabled )
-                return ;
-            numPut ++ ;
-            cacheKey = key ; 
-            cacheValue = value ;
-        }
-    
-        public boolean getEnabled()
-        {
-            return isEnabled ;
-        }
-    
-        public boolean setEnabled(boolean enabled)
-        {
-            boolean b = isEnabled ;
-            isEnabled = enabled ;
-            return b ;
-        }
-    
-        public void clear()
-        {
-            cacheKey = null ;
-            cacheValue = null ;
-        }
-    
-        public long getGets() { return numGet ; }
-    
-        public long getPuts() { return numPut ; }
-    
-        public long getHits() { return numHits ; }
-    }
+ 
 }
 
 /*
