@@ -12,7 +12,6 @@ import java.io.IOException;
 import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.iri.IRI;
-import com.hp.hpl.jena.iri.IRIFactory;
 import com.hp.hpl.jena.util.FileUtils;
 
 /** A simple class to access IRI resolution */ 

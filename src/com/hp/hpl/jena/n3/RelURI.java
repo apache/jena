@@ -14,23 +14,16 @@ package com.hp.hpl.jena.n3;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URI;
-import java.net.URL;
-import java.util.regex.Pattern;
-
-import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.iri.IRI;
 import com.hp.hpl.jena.iri.IRIException;
 import com.hp.hpl.jena.iri.IRIFactory;
 import com.hp.hpl.jena.shared.JenaException;
-import com.hp.hpl.jena.util.FileUtils;
-import com.hp.hpl.jena.util.cache.Cache;
 
 /** RelURI.  To be replaced by the IRI library.
  * 
  * @author Andy Seaborne
- * @version $Id: RelURI.java,v 1.16 2007-07-30 13:59:49 jeremy_carroll Exp $
+ * @version $Id: RelURI.java,v 1.17 2007-07-30 14:26:17 jeremy_carroll Exp $
  */
 
 public class RelURI
