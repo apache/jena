@@ -190,7 +190,6 @@ public class FileUtils
         		&& filename.substring(0,5).equalsIgnoreCase("file:") )
             return filename ;
         
-        File f = new File(filename);
         /**
          * Convert a File, note java.net.URI appears to do the right thing.
          * viz:
@@ -201,7 +200,7 @@ public class FileUtils
          * But has bug in only having one / not three at beginning
            
          */
-		return "file://" + f.toURI().toString().substring(5);
+		return "file://" + new File(filename).toURI().toString().substring(5);
     }
     
     /**

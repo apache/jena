@@ -1,7 +1,7 @@
 /*
  (c) Copyright 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP, all rights reserved.
  [See end of file]
- $Id: TestFileUtils.java,v 1.10 2007-07-31 16:01:09 jeremy_carroll Exp $
+ $Id: TestFileUtils.java,v 1.11 2007-07-31 16:08:24 jeremy_carroll Exp $
  */
 
 package com.hp.hpl.jena.util.test;
@@ -205,6 +205,12 @@ public class TestFileUtils extends TestCase {
 		if (!r.matches("^.*/[^/]*" + match + "[^/]*$"))
 			fail("Converted \"" + fn + "\" to <" + r
 					+ "> which did not match /" + match + "/");
+		if (!r.startsWith("file:///"))
+			fail("Converted \"" + fn + "\" to <" + r
+					+ "> which does not start file:///");
+		if (r.startsWith("file:////"))
+			fail("Converted \"" + fn + "\" to <" + r
+					+ "> which has too many initial /");
 
 	}
 }
