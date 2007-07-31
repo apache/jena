@@ -86,7 +86,7 @@ public class sdbload extends CmdArgsDB
         Model model = modGraph.getModel(getStore()) ;
         Graph graph = model.getGraph() ;    
         
-        if ( isVerbose() )
+        if ( isVerbose() || getModTime().timingEnabled() )
             System.out.println("Start load: "+filename) ;
         if ( getModTime().timingEnabled() )
         {
