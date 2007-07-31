@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: GraphBase.java,v 1.49 2007-07-19 11:28:57 chris-dollin Exp $
+  $Id: GraphBase.java,v 1.50 2007-07-31 10:13:22 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -377,9 +377,14 @@ public abstract class GraphBase implements GraphWithPerform
     protected int graphBaseSize()
         {
 		ExtendedIterator it = GraphUtil.findAll( this );
-        int tripleCount = 0;
-        while (it.hasNext()) { it.next(); tripleCount += 1; }
-        return tripleCount; 
+        try 
+            {
+            int tripleCount = 0;
+            while (it.hasNext()) { it.next(); tripleCount += 1; }
+            return tripleCount;
+            }
+        finally
+            { it.close(); }
         }
 
     /** 

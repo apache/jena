@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            4 Mar 2003
  * Filename           $RCSfile: CompositionBase.java,v $
- * Revision           $Revision: 1.13 $
+ * Revision           $Revision: 1.14 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2007-01-02 11:52:35 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2007-07-31 10:13:20 $
+ *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -41,34 +41,11 @@ import java.util.*;
  *
  * @author Ian Dickinson, moved kers' code from Dyadic to this class, added commentage
  * @author Chris Dollin (kers)
- * @version CVS $Id: CompositionBase.java,v 1.13 2007-01-02 11:52:35 andy_seaborne Exp $
+ * @version CVS $Id: CompositionBase.java,v 1.14 2007-07-31 10:13:20 chris-dollin Exp $
  */
 public abstract class CompositionBase
     extends GraphBase
 {
-    /**
-     * <p>
-     * Answer the number of triples in this graph
-     * </p>
-     * 
-     * @return The integer triple count
-     * @see com.hp.hpl.jena.graph.Graph#size()
-     */
-    public int graphBaseSize()
-        { return countIterator( GraphUtil.findAll( this ) ); }             
-      
-    /**
-     * <p>
-     * Helper to throw an unsupported operation exception. For users whose brains
-     * have been infected by perl.
-     * </p>
-     * 
-     * @param message
-     * @exception Throws {@link UnsupportedOperationException}
-     */
-    protected void die( String message )
-        { throw new UnsupportedOperationException( message ); }
-
     /**
      * <p>
      * Answer a {@link Filter} that will reject any element that is a member of iterator i.
@@ -156,21 +133,6 @@ public abstract class CompositionBase
         Filter seenFilter = new Filter()
             { public boolean accept( Object x ) { return seen.contains( (Triple) x ); } };
         return i.filterDrop( seenFilter );
-        }
-    
-    /**
-     * <p>
-     * Answer the number of items in the closable iterator i. As a side effect, i
-     * is closed.
-     * </p>
-     * 
-     * @param i A closable iterator
-     * @return The number of elements of i
-     */
-    public static int countIterator( ClosableIterator i )
-        {
-        try { int n = 0; while (i.hasNext()) { n += 1; i.next(); } return n; }
-        finally { i.close(); }
         }
   
     /**
