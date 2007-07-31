@@ -12,7 +12,6 @@ import java.nio.charset.Charset;
 import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.JenaRuntime;
-import com.hp.hpl.jena.n3.IRIResolver;
 import com.hp.hpl.jena.shared.JenaException;
 import com.hp.hpl.jena.shared.WrappedIOException;
 
@@ -187,12 +186,30 @@ public class FileUtils
     /** Turn a plain filename into a "file:" URL */
     public static String toURL(String filename)
     {
-        if ( filename.startsWith("file:") )
+        if ( filename.length()>5
+        		&& filename.substring(0,5).equalsIgnoreCase("file:") )
             return filename ;
-        filename = encodeFileName(filename) ;
-        return IRIResolver.resolveFileURL(filename) ;
+        
+        File f = new File(filename);
+        /**
+         * Convert a File, note java.net.URI appears to do the right thing.
+         * viz:
+         *   Convert to absolute path.
+         *   Convert all % to %25.
+         *   then convert all ' ' to %20.
+         *   It quite probably does more e.g. ? #
+         * But has bug in only having one / not three at beginning
+           
+         */
+		return "file://" + f.toURI().toString().substring(5);
     }
     
+    /**
+     * 
+     * @deprecated Broken: use toURL()
+     * @param s
+     * @return
+     */
     public static String encodeFileName(String s)
     {
         int len = s.length();

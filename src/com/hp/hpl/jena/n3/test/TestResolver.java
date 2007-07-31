@@ -10,11 +10,12 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 import com.hp.hpl.jena.n3.IRIResolver;
+import com.hp.hpl.jena.n3.JenaURIException;
 
 /** com.hp.hpl.jena.query.util.test.TestCaseURI
  * 
  * @author Andy Seaborne
- * @version $Id: TestResolver.java,v 1.4 2007-07-30 14:26:16 jeremy_carroll Exp $
+ * @version $Id: TestResolver.java,v 1.5 2007-07-31 16:00:49 jeremy_carroll Exp $
  */
 
 public class TestResolver extends TestCase
@@ -50,6 +51,35 @@ public class TestResolver extends TestCase
         assertNotNull(resolver.getBaseIRI()) ;
         String base = resolver.getBaseIRI() ;
         assertTrue(base.indexOf(':') > 0 ) ; 
+    }
+    
+    public void testBadBase1() {
+    	execException("%G",JenaURIException.class);
+    }
+    public void testBadBase2() {
+    	execException("/%G",JenaURIException.class);
+    }
+    public void testBadBase3() {
+    	execException("file:/%/",JenaURIException.class);
+    }
+    public void testBadBase4() {
+    	execException("http://example.org/%",JenaURIException.class);
+    }
+
+    public void testBadChoice1() {
+    	chooseException("%G",JenaURIException.class);
+    }
+    public void testBadChoice2() {
+    	chooseException("/%G",JenaURIException.class);
+    }
+    public void testBadChoice3() {
+    	chooseException("file:/%/",JenaURIException.class);
+    }
+    public void testChoice1() {
+    	choose("file:a");
+    }
+    public void testChoice2() {
+    	choose("file:a");
     }
     // ---- Basic
     
@@ -151,6 +181,11 @@ public class TestResolver extends TestCase
     public void testFileURI_3()   { execFileTest("file:/foo", "file:///foo") ; }
 
     
+ // Bad.
+    public void testBad_1()   { execException("%G", "http://example.org/", JenaURIException.class); }
+    public void testBad_2()   { execException("foo", "http://example.org/%HH", JenaURIException.class); }
+    public void testBad_3()   { execException("bar", "http://example.org/%3", JenaURIException.class); }
+    
     
     public void testBaseEmpty() { execTestMatch("x", "", "^file:///.*/x$") ; }
 
@@ -241,7 +276,7 @@ public class TestResolver extends TestCase
         assertTrue("Not absolute: ("+fn+"=>"+s+")", s.startsWith("file:///") ) ;
     }
     
-    void execException(String u, String base, Class ex)
+    private void execException(String u, String base, Class ex)
     {
         // 1.5.0-ism
         //String s = ex.getSimpleName() ;
@@ -265,7 +300,52 @@ public class TestResolver extends TestCase
             assertEquals(ex, ex2.getClass()) ;
         }
     }
-    
+    private void execException(String base, Class ex)
+    {
+        // 1.5.0-ism
+        //String s = ex.getSimpleName() ;
+        String s = ex.getName() ;
+        
+        // Tidy it up.
+        int i = s.lastIndexOf('.') ;
+        if ( i >= 0 )
+            s = s.substring(i+1) ;
+        
+        try {
+            new IRIResolver(base) ;
+                 fail("("+base+") => OK :: Expected exception: " +s) ;
+        } catch (Exception ex2)
+        {
+            // Shoudl test whether ex2 is a subclass of ex
+            assertEquals(ex, ex2.getClass()) ;
+        }
+    }
+    private void choose(String base)
+    {
+        
+            IRIResolver.chooseBaseURI(base) ;
+        
+    }
+    private void chooseException(String base, Class ex)
+    {
+        // 1.5.0-ism
+        //String s = ex.getSimpleName() ;
+        String s = ex.getName() ;
+        
+        // Tidy it up.
+        int i = s.lastIndexOf('.') ;
+        if ( i >= 0 )
+            s = s.substring(i+1) ;
+        
+        try {
+            IRIResolver.chooseBaseURI(base) ;
+                 fail("("+base+") => OK :: Expected exception: " +s) ;
+        } catch (Exception ex2)
+        {
+            // Shoudl test whether ex2 is a subclass of ex
+            assertEquals(ex, ex2.getClass()) ;
+        }
+    }
 //    private void execTestGlobal(String u, String result)
 //    {
 //        String res = IRIResolver.resolveGlobal(u) ;
