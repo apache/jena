@@ -12,14 +12,133 @@ import java.io.IOException;
 import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.iri.IRI;
+import com.hp.hpl.jena.iri.IRIException;
+import com.hp.hpl.jena.iri.IRIFactory;
 import com.hp.hpl.jena.util.FileUtils;
 
 /** A simple class to access IRI resolution */ 
 
 public class IRIResolver
 {
+	static final private String globalBase;
+	static final IRIFactory factory = new IRIFactory(IRIFactory.jenaImplementation());
+    static {
+    	factory.setSameSchemeRelativeReferences("file");
+    }
+	
+	
+	static final IRI cwd;
+	static {
+		String baseURI;
+		File f = new File(".") ;
+		try {
+			 baseURI = fileToAbsoluteURL(f);
+		} catch (IOException e) {
+			e.printStackTrace();
+			baseURI = "http://example.org/";
+		}
+		globalBase = baseURI;
+		IRI cwdx;
+		try {
+		  cwdx = factory.construct(globalBase);
+		} 
+		catch (IRIException e) {
+			System.err.println("Unexpected IRIException in initializer: "+e.getMessage());
+			cwdx = factory.create("file:///");
+		}
+		cwd = cwdx;
+	}
+	static String fileToAbsoluteURL(File f) throws IOException {
+		String baseURI;
+		baseURI = sanitizeFileURL(f.getCanonicalPath());     
+		if ( f.isDirectory() && ! baseURI.endsWith("/") )
+		    baseURI = baseURI+"/" ;
+		return baseURI;
+	}
+	static String sanitizeFileURL(String s) {
+		String baseURI;
+		s = s.replaceAll("\\\\", "/") ;
+		s = s.replaceAll("%","%25");
+		s = s.replaceAll(" ", "%20") ;
+		if ( s.startsWith("/"))
+		    // Already got one / - UNIX-like
+		    baseURI = "file://"+s ;
+		else
+		    // Absolute name does not start with / - Windows like
+		    baseURI = "file:///"+s ;
+		return baseURI;
+	}
+//	/**
+//	 * @param baseURI
+//	 * @return
+//	 */
+//	static public String chooseBaseURI(String baseURI)
+//    {
+//		if (baseURI!=null)
+//			return baseURI;
+//		
+//        return globalBase;
+//    }
+    /**
+     * Turn a filename into a well-formed file: URL relative to the working directory.
+     * @param filename
+     * @return String The filename as an absolute URL
+     */
+	static public String resolveFileURL(String filename) throws IRIException {
+		IRI r = cwd.resolve(filename);
+		if (!r.getScheme().equalsIgnoreCase("file")) {
+			return resolveFileURL("./"+filename);
+		}
+		return r.toString();
+	}
+	
+    /** Create resolve a URI against a base.
+     *  If baseStr is a relative file IRI then it is first resolved
+     *  against the current working directory.
+     * @param relStr
+     * @param baseStr          Can be null if relStr is absolute
+     * @return String          An absolute URI
+     * @throws IRIException    If result would not be legal, absolute IRI
+     */
+	static public String resolve(String relStr, String baseStr)  throws IRIException {
+	    try {
+		IRI i = factory.create(relStr);
+	    if (i.isAbsolute())
+	    	// removes excess . segments, and throws exceptions:
+	    	return cwd.construct(i).toString();
+	    
+	    IRI base = factory.create(baseStr);
+	    
+	    if ("file".equalsIgnoreCase(base.getScheme()))
+	    	return cwd.create(base).construct(i).toString();
+	    
+	    return base.construct(i).toString();
+	    }
+	    catch (IRIException e) {
+	    	throw new JenaURIException(e);
+	    }
+	    
+	}
+//    /** Create resolve a URI against the global base.
+//     *  Returns null if the result is not absolute. 
+//     *  @param relURI
+//     */
+//    
+//    static public String resolve(String relURI) throws IRIException
+//    {
+//        return resolve(relURI, globalBase) ;  
+//    }
+
+    static private String getBaseURI()
+    {
+        return globalBase ;
+    }
+    
+    
+    
+   
     final private IRI base;
-    static final private IRI iriF = RelURI.cwd;
+    static final private IRI iriF = cwd;
     
     
     
@@ -41,29 +160,15 @@ public class IRIResolver
         return base.resolve(relURI).toString();
     }
 
-    public static String resolve(String base, String relative)
-    {
-        //Resolver resolver = new Resolver(base) ;
-        //return resolver.resolve(relative) ;
-        return iriF.create(base).resolve(relative).toString() ;
-    }
+    
 
 
     public static String resolveGlobal(String str)
     {
-        return RelURI.resolve(str) ;
+        return iriF.resolve(str).toString() ;
     }
 
-    /**
-     * Turn a filename into a well-formed file: URL relative to the working directory.
-     * @param filename
-     * @return String The filename as an absolute URL
-     */
-
-    static public String resolveFileURL(String filename)
-    {
-        return RelURI.resolveFileURL(filename) ;
-    }
+ 
     
     /** Choose a base URI based on the current directory 
      * 
@@ -97,7 +202,7 @@ public class IRIResolver
              if ( ! baseURI.startsWith("file:///") )
              {
                  try {
-                     String tmp = baseURI.substring("file:".length()) ;
+                     String tmp = baseURI.substring("file:".length()) ;                
                      File f = new File(tmp) ;
                      String s = f.getCanonicalPath() ;
                      s = s.replace('\\', '/') ;
@@ -116,7 +221,7 @@ public class IRIResolver
 
                  } catch (IOException ex)
                  {
-                     LogFactory.getLog(RelURI.class).warn("IOException in chooseBase - ignored") ;
+                     LogFactory.getLog(IRIResolver.class).warn("IOException in chooseBase - ignored") ;
                      return null ;
                  }
              }
