@@ -41,9 +41,9 @@ sub checkOne
  	print "$file: No date or wrong order\n" ;
     }
 
-    if ( ! m!Copyright.*2006 Hewlett-Packard! )
+    if ( ! m!Copyright.*2007 Hewlett-Packard! )
     {
- 	print "$file: Not 2005/2006\n" ;
+ 	print "$file: Not 2007\n" ;
     }
 
     unless ( m/THIS SOFTWARE IS PROVIDED BY THE AUTHOR/ )
