@@ -15,6 +15,7 @@ public class TurtleEventDump implements TurtleEventHandler
     public void triple(int line, int col, Triple triple)
     {
         System.out.print(mark(line, col)) ;
+        System.out.print(" ") ;
         System.out.println(triple.toString()) ;
     }
     
@@ -35,7 +36,8 @@ public class TurtleEventDump implements TurtleEventHandler
     public void prefix(int line, int col, String prefix, String iri)
     { 
         System.out.print(mark(line, col)) ;
-        System.out.println(prefix+" => "+iri) ;
+        System.out.print(" @prefix ") ;
+        System.out.println(prefix+": => "+iri) ;
     }
 }
 
