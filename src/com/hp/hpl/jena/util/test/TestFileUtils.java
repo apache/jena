@@ -1,7 +1,7 @@
 /*
  (c) Copyright 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP, all rights reserved.
  [See end of file]
- $Id: TestFileUtils.java,v 1.11 2007-07-31 16:08:24 jeremy_carroll Exp $
+ $Id: TestFileUtils.java,v 1.12 2007-07-31 16:24:04 jeremy_carroll Exp $
  */
 
 package com.hp.hpl.jena.util.test;
@@ -199,6 +199,9 @@ public class TestFileUtils extends TestCase {
 	}
 	public void testToURL4() {
 		checkToURL("A H","%20");
+	}
+	public void testToURL5() {
+		checkToURL("ü","ü");
 	}
 	private void checkToURL(String fn, String match) {
 		String r = FileUtils.toURL(fn);
