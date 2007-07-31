@@ -23,6 +23,9 @@ import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.ResultSetStream;
 import com.hp.hpl.jena.sparql.resultset.*;
+import com.hp.hpl.jena.sparql.sse.Item;
+import com.hp.hpl.jena.sparql.sse.SSE;
+import com.hp.hpl.jena.sparql.sse.builders.BuilderTable;
 import com.hp.hpl.jena.sparql.util.GraphUtils;
 
 /** ResultSetFactory - make result sets from places other than a query.
@@ -68,20 +71,10 @@ public class ResultSetFactory
             throw new ResultSetException("Can't read a text result set") ;
         }
         
-        if ( format.equals(ResultSetFormat.syntaxXML) || 
-             format.equals(ResultSetFormat.syntaxJSON) || 
-             format.equals(ResultSetFormat.syntaxRDF_N3) ||
-             format.equals(ResultSetFormat.syntaxRDF_XML) ||
-             format.equals(ResultSetFormat.syntaxRDF_TURTLE) )
-        {
-            InputStream in = null ;
-            try { in = new FileInputStream(filenameOrURI) ; }
-            catch (FileNotFoundException ex) { throw new NotFoundException("File: "+filenameOrURI) ; }
-            return load(in, format) ;
-        }
-
-        log.warn("Unknown result set syntax: "+format) ;
-        return null ;
+        InputStream in = null ;
+        try { in = new FileInputStream(filenameOrURI) ; }
+        catch (FileNotFoundException ex) { throw new NotFoundException("File: "+filenameOrURI) ; }
+        return load(in, format) ;
     }
     
     /** Load a result set from input stream into a result set (memory backed).
@@ -260,7 +253,7 @@ public class ResultSetFactory
         return new RDFInput(model) ;
     }
 
-    /** Read  which is the format of the SPARQL result set format.
+    /** Read from an input stream which is the format of the SPARQL result set format in JSON.
      * 
      * @param in    InputStream
      * @return      ResultSet
@@ -268,6 +261,22 @@ public class ResultSetFactory
     public static ResultSet fromJSON(InputStream in)
     {
         return JSONInput.fromJSON(in) ;
+    }
+    
+    /** Read from an input stream which is the format of the SPARQL result set format in SSE.
+     * 
+     * @param in    InputStream
+     * @return      ResultSet
+     */  
+    public static ResultSet fromSSE(InputStream in)
+    {
+        Item item = SSE.parse(in) ;
+        log.warn("Reading SSE result set not full implemented") ;
+        // See SPARQLResult.  Have a level of ResultSetFactory that does "get SPARQLResult".
+        // Or just boolean/result set because those are both srx. etc. 
+        
+        BuilderTable.build(item) ;
+        return null ;
     }
     
     /** Turns an RDF model, with properties and classses from the

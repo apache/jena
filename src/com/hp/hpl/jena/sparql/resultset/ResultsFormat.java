@@ -11,6 +11,7 @@ import com.hp.hpl.jena.sparql.util.TranslationTable;
 
 public class ResultsFormat extends Symbol
 {
+    // c.f ResultSetFormat.
     /* Select formats - full names */
     
     public final static ResultsFormat FMT_RS_RDF   = new ResultsFormat("rs/graph") ;  /** Format of result set is an RDF graph */

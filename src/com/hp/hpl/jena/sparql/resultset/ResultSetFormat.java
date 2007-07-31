@@ -24,6 +24,8 @@ public class ResultSetFormat extends Symbol
     
     public static final ResultSetFormat syntaxText         = new ResultSetFormat("RS_TEXT") ;
     public static final ResultSetFormat syntaxJSON         = new ResultSetFormat("RS_JSON") ;
+    
+    public static final ResultSetFormat syntaxSSE          = new ResultSetFormat("RS_SSE") ;
 
     // Common names to symbol (used by arq.rset)
     protected static TranslationTable syntaxNames = new TranslationTable(true) ;
@@ -39,6 +41,7 @@ public class ResultSetFormat extends Symbol
         syntaxNames.put("text",    ResultSetFormat.syntaxText) ;
         syntaxNames.put("json",    ResultSetFormat.syntaxJSON) ;
         syntaxNames.put("yaml",    ResultSetFormat.syntaxJSON) ;    // The JSON format is a subset of YAML
+        syntaxNames.put("sse",     ResultSetFormat.syntaxSSE) ;
     }
 
     protected ResultSetFormat(String symbol) { super(symbol) ; }
@@ -83,6 +86,10 @@ public class ResultSetFormat extends Symbol
             return ResultSetFormat.syntaxJSON ;
         if ( url.endsWith(".yml") )
             return ResultSetFormat.syntaxJSON ;
+        
+        // -- SSE : http://jena.hpl.hp.com/wiki/SSE
+        if ( url.endsWith(".sse") )
+            return ResultSetFormat.syntaxSSE ;
         
         return defaultFormat ;
     }

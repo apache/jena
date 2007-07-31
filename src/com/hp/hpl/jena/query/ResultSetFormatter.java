@@ -8,6 +8,7 @@ package com.hp.hpl.jena.query;
 import com.hp.hpl.jena.util.*;
 import com.hp.hpl.jena.rdf.model.* ;
 import com.hp.hpl.jena.shared.PrefixMapping;
+import com.hp.hpl.jena.sparql.ARQNotImplemented;
 import com.hp.hpl.jena.sparql.resultset.*;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext;
 
@@ -443,10 +444,10 @@ public class ResultSetFormatter
         return xOut.asString(booleanResult) ;
     }
     
-    // JSON (and YAML)
+    // ---- JSON (and YAML)
     
     /** Output a result set in the JSON format
-     *  Format: <a href="http://www.w3.org/2001/sw/DataAccess/json-sparql/">Serializing SPARQL Query Results in JSON</a> 
+     *  Format: <a href="http://www.w3.org/TR/rdf-sparql-json-res/">Serializing SPARQL Query Results in JSON</a> 
      *  JSON: <a href="http://json.org">http://json.org/</a>
      * @param resultSet     result set
      */
@@ -455,7 +456,7 @@ public class ResultSetFormatter
     { outputAsJSON(System.out, resultSet) ; }
     
     /** Output a result set in the JSON format
-     *  Format: <a href="http://www.w3.org/2001/sw/DataAccess/json-sparql/">Serializing SPARQL Query Results in JSON</a> 
+     *  Format: <a href="http://www.w3.org/TR/rdf-sparql-json-res/">Serializing SPARQL Query Results in JSON</a> 
      *  JSON: <a href="http://json.org">http://json.org/</a>
      *  
      * @param outStream     output stream
@@ -467,19 +468,19 @@ public class ResultSetFormatter
         JSONOutput jOut = new JSONOutput() ;
         jOut.format(outStream, resultSet) ; 
     }
-    
+
     /** Output a result set in the JSON format
-     *  Format: <a href="http://www.w3.org/2001/sw/DataAccess/json-sparql/">Serializing SPARQL Query Results in JSON</a> 
+     *  Format: <a href="http://www.w3.org/TR/rdf-sparql-json-res/">Serializing SPARQL Query Results in JSON</a> 
      *  JSON: <a href="http://json.org">http://json.org/</a>
      *  
      * @param booleanResult The boolean result to encode
      */
-    
+
     static public void outputAsJSON(boolean booleanResult)
     { outputAsJSON(System.out, booleanResult ) ; }
     
     /** Output a result set in the JSON format
-     *  Format: <a href="http://www.w3.org/2001/sw/DataAccess/json-sparql/">Serializing SPARQL Query Results in JSON</a> 
+     *  Format: <a href="http://www.w3.org/TR/rdf-sparql-json-res/">Serializing SPARQL Query Results in JSON</a> 
      *  JSON: <a href="http://json.org">http://json.org/</a>
      *  
      * @param outStream     output stream
@@ -491,7 +492,66 @@ public class ResultSetFormatter
         JSONOutput jOut = new JSONOutput() ;
         jOut.format(outStream, booleanResult) ; 
     }
+    
+    // ---- SSE
+    
+    /** Output a boolean result in the SSE format
+     *  Format: <a href="http://jena.hpl.hp.com/wiki/SSE">SSE</a> 
+     *  
+     * @param booleanResult The boolean result to encode
+     */
+    
+    static public void outputAsSSE(boolean booleanResult)
+    { outputAsSSE(System.out, booleanResult ) ; }
+    
+    /** Output a boolean result in the SSE format
+     *  Format: <a href="http://jena.hpl.hp.com/wiki/SSE">SSE</a> 
+     *  
+     * @param outStream     output stream
+     * @param booleanResult The boolean result to encode
+     */
+    
+    static public void outputAsSSE(OutputStream outStream, boolean booleanResult)
+    {
+        throw new ARQNotImplemented("outputAsSSE") ;
+    }
 
+    /** Output a result set in the SSE format
+     *  Format: <a href="http://jena.hpl.hp.com/wiki/SSE">SSE</a>
+     *  @param resultSet     result set
+     */
+    
+    static public void outputAsSSE(ResultSet resultSet)
+    { outputAsSSE(System.out, resultSet) ; }
+    
+    /** Output a result set in the SSE format
+     *  Format: <a href="http://jena.hpl.hp.com/wiki/SSE">SSE</a>
+     *  @param resultSet     result set
+     */
+    
+    static public void outputAsSSE(ResultSet resultSet, PrefixMapping prefixMap)
+    { outputAsSSE(System.out, resultSet, prefixMap) ; }
+
+    /** Output a result set in the SSE format
+     *  Format: <a href="http://jena.hpl.hp.com/wiki/SSE">SSE</a>
+     * @param resultSet     result set
+     * @param prefixMap     PrefixMapping
+     */
+    
+    static public void outputAsSSE(OutputStream outStream, ResultSet resultSet)
+    { outputAsSSE(outStream, resultSet, null) ; }
+    
+    /** Output a result set in the SSE format
+     *  Format: <a href="http://jena.hpl.hp.com/wiki/SSE">SSE</a>
+     * @param outStream     output stream
+     * @param resultSet     result set
+     * @param prefixMap     PrefixMapping
+     */
+    
+    static public void outputAsSSE(OutputStream outStream, ResultSet resultSet, PrefixMapping prefixMap)
+    {
+        throw new ARQNotImplemented("outputAsSSE") ;
+    }
 }
 
 /*

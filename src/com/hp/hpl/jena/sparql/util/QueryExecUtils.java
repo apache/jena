@@ -127,6 +127,12 @@ public class QueryExecUtils
             done = true ;
         }
 
+        if ( outputFormat.equals(ResultsFormat.FMT_RS_SSE) )
+        {
+            ResultSetFormatter.outputAsSSE(System.out, results, prefixMapping) ;
+            done = true ;
+        }
+        
         if ( outputFormat.equals(ResultsFormat.FMT_TEXT) )
         {
             ResultSetFormatter.out(System.out, results, prefixMapping) ;

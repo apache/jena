@@ -30,6 +30,12 @@
 
 == Core
 
++ ResultsFormat (output)vs ResultSetFormat (input)
+  ResultSetFormatter.oopput as SSE
+  ResultSetFactory input as SSE
+  rset handler boolean and result set XML forms together => sSPARQLResults.
+
+
 + What is "OpDatasetNames" nowadays?
 	A table?  unnecessary?
 + Revisit arq.cmd.QueryUtils for printing.
