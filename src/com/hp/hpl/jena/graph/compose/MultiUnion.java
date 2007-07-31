@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            4 Mar 2003
  * Filename           $RCSfile: MultiUnion.java,v $
- * Revision           $Revision: 1.26 $
+ * Revision           $Revision: 1.27 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2007-01-12 15:01:27 $
+ * Last modified on   $Date: 2007-07-31 09:44:03 $
  *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
@@ -28,7 +28,6 @@ import com.hp.hpl.jena.JenaRuntime;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.impl.SimpleEventManager;
 import com.hp.hpl.jena.graph.query.QueryHandler;
-import com.hp.hpl.jena.rdf.model.JenaConfig;
 import com.hp.hpl.jena.shared.JenaException;
 import com.hp.hpl.jena.util.CollectionFactory;
 import com.hp.hpl.jena.util.iterator.*;
@@ -44,7 +43,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: MultiUnion.java,v 1.26 2007-01-12 15:01:27 chris-dollin Exp $
+ * @version CVS $Id: MultiUnion.java,v 1.27 2007-07-31 09:44:03 chris-dollin Exp $
  */
 public class MultiUnion extends Polyadic
 {
@@ -101,6 +100,9 @@ public class MultiUnion extends Polyadic
         { Graph base = getBaseGraph();
         return base == null ? super.getReifier() : base.getReifier(); }
 
+    protected GraphStatisticsHandler createStatisticsHandler()
+        { return new MultiUnionStatisticsHandler( this ); }
+    
     /**
      * <p>
      * Add the given triple to the union model; the actual component model to
@@ -201,6 +203,31 @@ public class MultiUnion extends Polyadic
             m_subGraphs.add( graph );
         }
     }
+    
+    public static class MultiUnionStatisticsHandler implements GraphStatisticsHandler
+        {
+        protected final MultiUnion mu;
+        
+        public MultiUnionStatisticsHandler( MultiUnion mu )
+            { this.mu = mu; }
+    
+        public long getStatistic( Node S, Node P, Node O )
+            {
+            long result = 0;
+            for (int i = 0; i < mu.m_subGraphs.size(); i += 1)
+                {
+                Graph g = (Graph) mu.m_subGraphs.get( i );
+                GraphStatisticsHandler s = g.getStatisticsHandler();
+                long n = s.getStatistic( S, P, O );
+                if (n < 0) return n;
+                result += n;
+                }
+            return result;
+            }
+
+        public MultiUnion getUnion()
+            { return mu; }
+        }
 
 }
 

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestPackage.java,v 1.9 2007-01-02 11:49:29 andy_seaborne Exp $
+  $Id: TestPackage.java,v 1.10 2007-07-31 09:43:59 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.compose.test;
@@ -12,14 +12,14 @@ package com.hp.hpl.jena.graph.compose.test;
 
 import com.hp.hpl.jena.graph.compose.*;
 
-import junit.framework.TestSuite;
+import junit.framework.*;
 
 /**
  *
  * @author  bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.9 $ $Date: 2007-01-02 11:49:29 $
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.10 $ $Date: 2007-07-31 09:43:59 $
  */
-public class TestPackage extends Object {
+public class TestPackage extends TestCase {
     
     public static TestSuite suite() {
     	TestSuite result = new TestSuite();
@@ -32,6 +32,7 @@ public class TestPackage extends Object {
         result.addTest( TestDisjointUnion.suite() );
         result.addTest( TestDifference.suite() );
         result.addTest( TestIntersection.suite() );
+        result.addTestSuite( TestUnionStatistics.class );
         result.addTest( TestMultiUnion.suite() );
     /* */
         result.addTest( TestPolyadicPrefixMapping.suite() );

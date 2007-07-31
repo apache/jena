@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            4 Mar 2003
  * Filename           $RCSfile: TestMultiUnion.java,v $
- * Revision           $Revision: 1.10 $
+ * Revision           $Revision: 1.11 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2007-01-02 11:49:29 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2007-07-31 09:43:59 $
+ *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -27,6 +27,7 @@ package com.hp.hpl.jena.graph.compose.test;
 
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.compose.*;
+import com.hp.hpl.jena.graph.compose.MultiUnion.MultiUnionStatisticsHandler;
 import com.hp.hpl.jena.graph.test.*;
 import com.hp.hpl.jena.rdf.model.*;
 
@@ -42,7 +43,7 @@ import junit.framework.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestMultiUnion.java,v 1.10 2007-01-02 11:49:29 andy_seaborne Exp $
+ * @version CVS $Id: TestMultiUnion.java,v 1.11 2007-07-31 09:43:59 chris-dollin Exp $
  */
 public class TestMultiUnion
     extends AbstractTestGraph
@@ -87,7 +88,18 @@ public class TestMultiUnion
         assertFalse( "Empty model should not contain another graph", m.dependsOn( g0 ) );
     }
     
-   
+    /**
+        A MultiUnion graph should have a MultiUnionStatisticsHandler, and that
+        handler should point right back to that graph.
+    */
+    public void testMultiUnionHasMultiUnionStatisticsHandler()
+        {
+        MultiUnion mu = new MultiUnion();
+        GraphStatisticsHandler sh = mu.getStatisticsHandler();
+        assertInstanceOf( MultiUnionStatisticsHandler.class, sh );
+        assertSame( mu, ((MultiUnionStatisticsHandler) sh).getUnion() );
+        }
+    
 //    public void testDeferredReifier()
 //        {
 //        Graph g1 = graphWith( "" ), g2 = graphWith( "" );
