@@ -48,8 +48,6 @@ public class Tags
     static public final String tagDistinct      = "distinct" ;
     static public final String tagReduced       = "reduced" ;
     static public final String tagSlice         = "slice" ;
-
-
 }
 
 /*
