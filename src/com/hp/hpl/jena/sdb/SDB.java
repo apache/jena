@@ -73,7 +73,7 @@ public class SDB
         
         SDB.getContext().setIfUndef(useQuadRewrite,        false) ;
         SDB.getContext().setIfUndef(jdbcStream,            true) ;
-        SDB.getContext().setIfUndef(jdbcFetchSize,         10) ;
+        //SDB.getContext().setIfUndef(jdbcFetchSize,         ???) ;
         SDB.getContext().setIfUndef(annotateGeneratedSQL,  true) ;
         //SDB.getContext().setIfUndef(unionDefaultGraph,     false) ;
         
