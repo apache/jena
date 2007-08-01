@@ -62,7 +62,42 @@ public abstract class TupleLoaderOne extends TupleLoaderBase
             loadRow(vals) ;
     }
 
-    private void loadRow(String[] vals)
+    protected String[] prepareNodes(Node[] row)
+    {
+        String[] vals = new String[getTableWidth()] ;
+        for ( int i = 0 ; i < getTableWidth() ; i++ )
+        {
+            vals[i] = ensureNode(row[i]).asSqlString() ;
+        }
+        return vals ;
+    }
+
+    protected boolean entryExists(String[] vals)
+    {
+        String rowValues = whereRow(vals) ;
+        String selectTemplate = "SELECT count(*) FROM %s WHERE %s\n" ;
+        String sqlStmt = String.format(selectTemplate, getTableName(), rowValues) ;
+        
+        try {
+            ResultSet rs = connection().execQuery(sqlStmt) ;
+            rs.next() ;
+            int count = rs.getInt(1) ;
+            RS.close(rs) ;
+    
+            if ( count > 0 )
+            {
+                log.debug("Duplicate tuple detected: count="+count+" :: "+vals) ;
+                return true; 
+            }
+                
+            // Otherwise deos not exist
+            return false ;
+        }
+        catch (SQLException ex)
+        { throw new SDBExceptionSQL(ex) ; }
+    }
+
+    protected void loadRow(String[] vals)
     {
         /*
         INSERT INTO table
@@ -95,7 +130,7 @@ public abstract class TupleLoaderOne extends TupleLoaderBase
         exec(sqlStmt) ;
     }
     
-    private void exec(String sqlStmt)
+    protected void exec(String sqlStmt)
     {
         try
         { connection().exec(sqlStmt) ; } 
@@ -103,16 +138,6 @@ public abstract class TupleLoaderOne extends TupleLoaderBase
         { throw new SDBExceptionSQL(ex) ; }
     }
     
-    private String[] prepareNodes(Node[] row)
-    {
-        String[] vals = new String[getTableWidth()] ;
-        for ( int i = 0 ; i < getTableWidth() ; i++ )
-        {
-            vals[i] = ensureNode(row[i]).asSqlString() ;
-        }
-        return vals ;
-    }
-
     private SqlConstant ensureNode(Node node)
     { 
         try {
@@ -129,31 +154,6 @@ public abstract class TupleLoaderOne extends TupleLoaderBase
         } catch (SQLException ex){
             throw new SDBExceptionSQL("PatternTableLoader.getRefForNode", ex) ;
         }
-    }
-    
-    private boolean entryExists(String[] vals)
-    {
-        String rowValues = whereRow(vals) ;
-        String selectTemplate = "SELECT count(*) FROM %s WHERE %s\n" ;
-        String sqlStmt = String.format(selectTemplate, getTableName(), rowValues) ;
-        
-        try {
-            ResultSet rs = connection().execQuery(sqlStmt) ;
-            rs.next() ;
-            int count = rs.getInt(1) ;
-            RS.close(rs) ;
-
-            if ( count > 0 )
-            {
-                log.debug("Duplicate tuple detected: count="+count+" :: "+vals) ;
-                return true; 
-            }
-                
-            // Otherwise deos not exist
-            return false ;
-        }
-        catch (SQLException ex)
-        { throw new SDBExceptionSQL(ex) ; }
     }
     
     private String whereRow(String[] vals)

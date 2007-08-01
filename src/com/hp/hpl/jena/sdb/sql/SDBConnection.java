@@ -81,9 +81,9 @@ public class SDBConnection
     public TransactionHandler getTransactionHandler() { return transactionHandler ; } 
     
     public ResultSet execQuery(String sqlString) throws SQLException
-    { return execQuery(sqlString, false) ; }
+    { return execQuery(sqlString, -1) ; }
     
-    private ResultSet execQuery(String sqlString, boolean silent) throws SQLException
+    public ResultSet execQuery(String sqlString, int fetchSize) throws SQLException
     {
         if ( loggingSQLStatements() || loggingSQLQueries() )
             writeLog("execQuery", sqlString) ;
@@ -92,6 +92,8 @@ public class SDBConnection
 
         try {
             Statement s = conn.createStatement() ; // Not closed - happens when result set closed
+            if ( fetchSize >= 0 )
+                s.setFetchSize(fetchSize) ;
             return s.executeQuery(sqlString) ;
         } catch (SQLException ex)
         {

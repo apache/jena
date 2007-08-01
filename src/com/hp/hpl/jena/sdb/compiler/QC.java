@@ -18,6 +18,7 @@ import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.SortCondition;
+import com.hp.hpl.jena.sdb.SDB;
 import com.hp.hpl.jena.sdb.core.JoinType;
 import com.hp.hpl.jena.sdb.core.SDBRequest;
 import com.hp.hpl.jena.sdb.core.ScopeEntry;
@@ -168,13 +169,24 @@ public class QC
     
     public static QueryIterator exec(OpSQL opSQL, SDBRequest request, Binding binding, ExecutionContext execCxt)
     {
-        String sqlStmt = toSqlString(opSQL, request) ;
+        int fetchSize = Integer.MIN_VALUE ;
+        
+        String sqlStmtStr = toSqlString(opSQL, request) ;
         
         if ( PrintSQL )
-            System.out.println(sqlStmt) ;
+            System.out.println(sqlStmtStr) ;
+        
+        String str = null ;
+        if ( execCxt != null )
+            str = execCxt.getContext().getAsString(SDB.jdbcFetchSize) ;
+        
+        if ( str != null )
+            try { fetchSize = Integer.parseInt(str) ; }
+            catch (NumberFormatException ex)
+            { log.warn("Bad number for fetch size: "+str) ; }
         
         try {
-            java.sql.ResultSet jdbcResultSet = request.getStore().getConnection().execQuery(sqlStmt) ;
+            java.sql.ResultSet jdbcResultSet = request.getStore().getConnection().execQuery(sqlStmtStr, fetchSize) ;
             try {
                 // And check this is called once per SQL.
                 if ( opSQL.getBridge() == null )

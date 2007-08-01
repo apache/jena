@@ -35,7 +35,9 @@ public class SDB
     public static final Symbol useQuadRewrite           = SDBConstants.allocSymbol("useQuadRewrite") ;
     public static final Symbol unionDefaultGraph        = SDBConstants.allocSymbol("unionDefaultGraph") ;
 
-    public static final Symbol streamJDBC               = SDBConstants.allocSymbol("streamJDBC") ;
+    public static final Symbol jdbcStream               = SDBConstants.allocSymbol("jdbcStream") ;
+    public static final Symbol jdbcFetchSize            = SDBConstants.allocSymbol("jdbcFetchSize") ;
+    
     public static final Symbol annotateGeneratedSQL     = SDBConstants.allocSymbol("annotateGeneratedSQL") ;
     // ----------------------------------
     
@@ -70,7 +72,8 @@ public class SDB
         QueryEngineSDB.register() ;
         
         SDB.getContext().setIfUndef(useQuadRewrite,        false) ;
-        SDB.getContext().setIfUndef(streamJDBC,            true) ;
+        SDB.getContext().setIfUndef(jdbcStream,            true) ;
+        SDB.getContext().setIfUndef(jdbcFetchSize,         10) ;
         SDB.getContext().setIfUndef(annotateGeneratedSQL,  true) ;
         //SDB.getContext().setIfUndef(unionDefaultGraph,     false) ;
         

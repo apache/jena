@@ -10,7 +10,7 @@ SDB Beta 2
 ==========
 
 + Command tidy up; wider use of --time.
-
++ Settable SQL fetchSize : context setting SDB.jdbcFetchSize. 
 
 SDB Beta 1
 ==========
