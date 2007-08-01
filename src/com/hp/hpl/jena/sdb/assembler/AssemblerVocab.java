@@ -23,6 +23,7 @@ public class AssemblerVocab
     public static final Resource QueryAssemblerType             = Vocab.type(NS, "Query") ;
     public static final Resource SDBConnectionAssemblerType     = Vocab.type(NS, "SDBConnection") ;
     public static final Resource StoreAssemblerType             = Vocab.type(NS, "Store") ;
+    public static final Resource DatasetAssemblerType           = Vocab.type(NS, "DatasetStore") ;
     
     // ---- Commands
     public static final Property pSteps         = Vocab.property(NS, "steps") ;
@@ -89,6 +90,7 @@ public class AssemblerVocab
         assemblerClass(QueryAssemblerType,            new QueryAssembler()) ;
         assemblerClass(SDBConnectionAssemblerType,    new SDBConnectionDescAssembler()) ;
         assemblerClass(StoreAssemblerType,            new StoreDescAssembler()) ;
+        assemblerClass(DatasetAssemblerType,          new DatasetStoreAssembler()) ;
         initialized = true ;
     }
     

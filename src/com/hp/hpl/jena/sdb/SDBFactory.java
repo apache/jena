@@ -135,6 +135,14 @@ public class SDBFactory
     { return DatasetStore.create(store) ; }
 
     /**
+     * Connect to the RDF dataset in a store.
+     * @param desc Store description
+     * @return Dataset
+     */
+    public static Dataset connectDataset(StoreDesc desc)
+    { return DatasetStore.create(connectStore(desc)) ; }
+
+    /**
      * Connect to the RDF dataset in a store, using existing SDBConnection and a store description.
      * @param sqlConnection     JDBC connection
      * @param desc              Store description object

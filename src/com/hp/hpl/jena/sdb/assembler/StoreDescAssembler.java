@@ -32,7 +32,7 @@ public class StoreDescAssembler extends AssemblerBase implements Assembler
     private static Log log = LogFactory.getLog(StoreDescAssembler.class) ;
     
     @Override
-    public Object open(Assembler a, Resource root, Mode mode)
+    public StoreDesc open(Assembler a, Resource root, Mode mode)
     {
         SDBConnectionDesc sdbConnDesc = null ;
         Resource c = GraphUtils.getResourceValue(root, AssemblerVocab.pConnection) ;

@@ -13,6 +13,7 @@ import java.util.List;
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.shared.Lock;
+import com.hp.hpl.jena.shared.LockMRSW;
 
 import com.hp.hpl.jena.sparql.core.DatasetGraph;
 
@@ -27,6 +28,7 @@ public class DatasetStoreGraph implements DatasetGraph
     Store store ;
     Graph defaultGraph = null ;
     List<Node> names = new ArrayList<Node>() ;
+    Lock lock = new LockMRSW() ;
     
     public DatasetStoreGraph(Store store)
     {
@@ -55,10 +57,7 @@ public class DatasetStoreGraph implements DatasetGraph
         return names.iterator() ;
     }
 
-    public Lock getLock()
-    {
-        throw new SDBNotImplemented("DatasetStore") ;
-    }
+    public Lock getLock() { return lock ; }
 
     public boolean containsGraph(Node gn)
     {

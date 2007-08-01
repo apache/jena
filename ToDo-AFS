@@ -3,6 +3,9 @@ SDB ToDo list (and general notes)
 
 + Freeze API
 
++ Cursors (at least fetch hints)  
+  Need to see effect on each DB
+
 + Revisit generating SQL for nested DISTINCT
 
 + Setting options for testing.
