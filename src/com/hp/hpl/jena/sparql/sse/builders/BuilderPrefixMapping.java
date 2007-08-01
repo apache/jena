@@ -26,9 +26,6 @@ import com.hp.hpl.jena.sparql.sse.ItemList;
 
 public class BuilderPrefixMapping
 {
-    public static final String symPrefixMap     = "prefixmap" ;
-    public static final String symPrefixMapping = "prefixmapping" ;
-    
     public static PrefixMapping build(Item elt)
     {
         PrefixMapping pmap = new PrefixMappingImpl() ;
@@ -44,7 +41,7 @@ public class BuilderPrefixMapping
         ItemList prefixes = elt.getList() ;
         
         // Strip (prefixmapping  ...)
-        if ( elt.isTaggedIgnoreCase(symPrefixMap) || elt.isTaggedIgnoreCase(symPrefixMapping) )
+        if ( elt.isTaggedIgnoreCase(Tags.tagPrefixMap) || elt.isTaggedIgnoreCase(Tags.tagPrefixMapping) )
         {
             BuilderBase.checkLength(2, elt.getList(), "Not of length 2"+elt.shortString()) ;
             // drop the tag

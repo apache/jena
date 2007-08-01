@@ -20,11 +20,10 @@ import com.hp.hpl.jena.sparql.sse.ItemList;
 
 public class BuilderResultSet
 {
-    static final public String tagResultSet = "resultset" ;
-    
+       
     public static ResultSet build(Item item)
     {
-        BuilderBase.checkTagged(item, tagResultSet, "Not a (resultset ...)") ;
+        BuilderBase.checkTagged(item, Tags.tagResultSet, "Not a (resultset ...)") ;
         
         //SPARQLResult result = new SPARQLResult() ;
         /*

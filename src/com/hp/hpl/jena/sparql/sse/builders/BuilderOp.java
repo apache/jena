@@ -39,25 +39,25 @@ public class BuilderOp
     
     public BuilderOp()
     {
-        dispatch.put(symBGP, buildBGP) ;
-        //dispatch.put(symQuadPattern, buildQuadPattern) ;
-        dispatch.put(symFilter, buildFilter) ;
-        dispatch.put(symGraph, buildGraph) ;
-        dispatch.put(symService, buildService) ;
-        dispatch.put(symJoin, buildJoin) ;
-        dispatch.put(symLeftJoin, buildLeftJoin) ;
-        dispatch.put(symDiff, buildDiff) ;
-        dispatch.put(symUnion, buildUnion) ;
+        dispatch.put(Tags.tagBGP, buildBGP) ;
+        //dispatch.put(Tags.tagQuadPattern, buildQuadPattern) ;
+        dispatch.put(Tags.tagFilter, buildFilter) ;
+        dispatch.put(Tags.tagGraph, buildGraph) ;
+        dispatch.put(Tags.tagService, buildService) ;
+        dispatch.put(Tags.tagJoin, buildJoin) ;
+        dispatch.put(Tags.tagLeftJoin, buildLeftJoin) ;
+        dispatch.put(Tags.tagDiff, buildDiff) ;
+        dispatch.put(Tags.tagUnion, buildUnion) ;
 
-        dispatch.put(symToList, buildToList) ;
-        dispatch.put(symOrderBy, buildOrderBy) ;
-        dispatch.put(symProject, buildProject) ;
-        dispatch.put(symDistinct, buildDistinct) ;
-        dispatch.put(symReduced, buildReduced) ;
-        dispatch.put(symSlice, buildSlice) ;
+        dispatch.put(Tags.tagToList, buildToList) ;
+        dispatch.put(Tags.tagOrderBy, buildOrderBy) ;
+        dispatch.put(Tags.tagProject, buildProject) ;
+        dispatch.put(Tags.tagDistinct, buildDistinct) ;
+        dispatch.put(Tags.tagReduced, buildReduced) ;
+        dispatch.put(Tags.tagSlice, buildSlice) ;
         
-        dispatch.put(symTable, buildTable) ;
-        dispatch.put(symNull, buildNull) ;
+        dispatch.put(Tags.tagTable, buildTable) ;
+        dispatch.put(Tags.tagNull, buildNull) ;
     }
 
     // The main recursive build operation.
@@ -110,29 +110,6 @@ public class BuilderOp
         }
         return null ;
     }
-
-    static protected final String symBase         = "" ;
-
-    static protected final String symBGP          = symBase + "bgp" ;
-    static protected final String symQuadPattern  = symBase + "bqp" ;
-    
-    static protected final String symFilter       = symBase + "filter" ;
-    static protected final String symGraph        = symBase + "graph" ;
-    static protected final String symService      = symBase + "service" ;
-    static protected final String symJoin         = symBase + "join" ;
-    static protected final String symLeftJoin     = symBase + "leftjoin" ;
-    static protected final String symDiff         = symBase + "diff" ;
-    static protected final String symUnion        = symBase + "union" ;
-
-    static protected final String symToList       = symBase + "tolist" ;
-    static protected final String symOrderBy      = symBase + "order" ;
-    static protected final String symProject      = symBase + "project" ;
-    static protected final String symDistinct     = symBase + "distinct" ;
-    static protected final String symReduced      = symBase + "reduced" ;
-    static protected final String symSlice        = symBase + "slice" ;
-    
-    static protected final String symTable        = symBase + "table" ;
-    static protected final String symNull        = symBase + "null" ;
 
     static public interface Build { Op make(ItemList list) ; }
 

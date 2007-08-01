@@ -15,11 +15,9 @@ import com.hp.hpl.jena.sparql.sse.ItemList;
 
 public class BuilderTable
 {
-    static final public String tagTable = "table" ;
-    
     public static Table build(Item item)
     {
-        BuilderBase.checkTagged(item, tagTable, "Not a (table ...)") ;
+        BuilderBase.checkTagged(item, Tags.tagTable, "Not a (table ...)") ;
 
         ItemList list = item.getList() ;
         int start = 1 ;

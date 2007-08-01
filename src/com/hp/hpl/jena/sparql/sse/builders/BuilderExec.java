@@ -22,7 +22,7 @@ public class BuilderExec
         exec(item) ;
     }
     
-    static protected final String symEval        = "exec" ;
+    
     
     static public void exec(Item item)
     {
@@ -32,8 +32,8 @@ public class BuilderExec
         if (item.isSymbol() )
             BuilderBase.broken(item, "Attempt to build evaluation from a bare symbol") ;
 
-        if ( ! item.isTagged(symEval) )
-            throw new BuildException("Wanted ("+symEval+"...) : got: "+item.shortString());
+        if ( ! item.isTagged(Tags.tagExec) )
+            throw new BuildException("Wanted ("+Tags.tagExec+"...) : got: "+item.shortString());
 
         ItemList list = item.getList() ;  // Loose the tag.
         if ( list.size() != 3 )

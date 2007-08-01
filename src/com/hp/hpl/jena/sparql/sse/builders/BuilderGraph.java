@@ -24,14 +24,6 @@ import com.hp.hpl.jena.util.FileManager;
 
 public class BuilderGraph
 {
-    static protected final String symGraph      = "graph" ;
-    static protected final String symLoad       = "graph@" ;
-    static protected final String symTriple     = "triple" ;
-    static protected final String symQuad       = "quad" ;
-
-    static protected final String symDataset    = "dataset" ;
-    static protected final String symDefault    = "default" ;
-    static protected final String symNamedGraph = "namedgraph" ;
 
     public static Graph buildGraph(Item item)
     {
@@ -41,17 +33,17 @@ public class BuilderGraph
         if (item.isSymbol() )
             BuilderBase.broken(item, "Attempt to build graph from a bare symbol") ;
 
-        if ( item.isTagged(symGraph) )
+        if ( item.isTagged(Tags.tagGraph) )
             return buildGraph(item.getList()) ;
-        if ( item.isTagged(symLoad) )
+        if ( item.isTagged(Tags.tagLoad) )
             return loadGraph(item.getList()) ;
-        BuilderBase.broken(item, "Wanted ("+symGraph+"...) or ("+symLoad+"...)");
+        BuilderBase.broken(item, "Wanted ("+Tags.tagGraph+"...) or ("+Tags.tagLoad+"...)");
         return null ;
     }
     
     public static Graph buildGraph(ItemList list)
     {
-        BuilderBase.checkTag(list, symGraph) ;
+        BuilderBase.checkTag(list, Tags.tagGraph) ;
         list = list.cdr();
         Graph graph = Factory.createDefaultGraph() ;
         
@@ -82,28 +74,28 @@ public class BuilderGraph
         if (item.isSymbol() )
             BuilderBase.broken(item, "Attempt to build dataset from a bare symbol") ;
 
-        if ( item.isTagged(BuilderGraph.symGraph) )
+        if ( item.isTagged(Tags.tagGraph) )
         {
             Graph g = BuilderGraph.buildGraph(item.getList()) ;
             DataSourceGraphImpl ds = new DataSourceGraphImpl(g) ;
             return ds ;
         }
         
-        if ( ! item.isTagged(symDataset) )
-            BuilderBase.broken(item, "Wanted ("+symDataset+"...)" );
+        if ( ! item.isTagged(Tags.tagDataset) )
+            BuilderBase.broken(item, "Wanted ("+Tags.tagDataset+"...)" );
         return buildDataset(item.getList()) ;
     }
     
     public static DatasetGraph buildDataset(ItemList list)
     {
-        BuilderBase.checkTag(list, symDataset) ;
+        BuilderBase.checkTag(list, Tags.tagDataset) ;
         list = list.cdr();
         DataSourceGraphImpl ds = new DataSourceGraphImpl((Graph)null) ;
         
         for ( Iterator iter = list.iterator() ; iter.hasNext() ; )
         {
             Item item = (Item)iter.next();
-            if ( item.isTagged(symDefault) )
+            if ( item.isTagged(Tags.tagDefault) )
             {
                 if ( ds.getDefaultGraph() != null )
                     BuilderBase.broken(item, "Multiple default graphs") ;
@@ -113,7 +105,7 @@ public class BuilderGraph
                 ds.setDefaultGraph(g) ;
                 continue ;
             }
-            if ( item.isTagged(symNamedGraph) )
+            if ( item.isTagged(Tags.tagNamedGraph) )
             {
                 ItemList ngList = item.getList() ;
                 BuilderBase.checkLength(3, ngList, "Expected (namedgraph IRI (graph...))") ;
@@ -133,13 +125,13 @@ public class BuilderGraph
     
     private static Graph loadGraph(ItemList list)
     {
-        BuilderBase.checkLength(2, list, symLoad ) ;
+        BuilderBase.checkLength(2, list, Tags.tagLoad ) ;
         Item item = list.get(1) ;
         if ( ! item.isNode() )
-            BuilderBase.broken(item, "Expected: ("+symLoad+" 'filename')") ;
+            BuilderBase.broken(item, "Expected: ("+Tags.tagLoad+" 'filename')") ;
         String s = NodeUtils.stringLiteral(item.getNode()) ;
         if ( s == null )
-            BuilderBase.broken(item, "Expected: ("+symLoad+" 'filename')") ;
+            BuilderBase.broken(item, "Expected: ("+Tags.tagLoad+" 'filename')") ;
         return FileManager.get().loadModel(s).getGraph() ;
     }
     
@@ -149,7 +141,7 @@ public class BuilderGraph
             BuilderBase.broken(list, "Not a triple", list) ;
         if ( list.size() == 4 )
         {
-            if ( ! list.get(0).isSymbol(symTriple) )
+            if ( ! list.get(0).isSymbol(Tags.tagTriple) )
                 BuilderBase.broken(list, "Not a triple") ;
             list = list.cdr() ;
         }
@@ -176,7 +168,7 @@ public class BuilderGraph
             BuilderBase.broken(list, "Not a quad") ;
         if ( list.size() == 5 )
         {
-            if ( ! list.get(0).isSymbol(symQuad) )
+            if ( ! list.get(0).isSymbol(Tags.tagQuad) )
                 BuilderBase.broken(list, "Not a quad") ;
             list = list.cdr() ;
         }
