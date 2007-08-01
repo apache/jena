@@ -9,6 +9,8 @@ Documentation:
 SDB Beta 2
 ==========
 
++ Joseki integration - example joseki-config-sdb.ttl in Joseki CVS.
+  Requires post-3.1 version of Joseki for jar upgrades.
 + Command tidy up; wider use of --time.
 + Settable SQL fetchSize : context setting SDB.jdbcFetchSize. 
 

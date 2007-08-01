@@ -1,10 +1,7 @@
 SDB ToDo list (and general notes)
 =================================
 
-+ Freeze API
-
-+ Cursors (at least fetch hints)  
-  Need to see effect on each DB
++ revise/freeze API
 
 + Revisit generating SQL for nested DISTINCT
 
@@ -19,21 +16,6 @@ SDB ToDo list (and general notes)
 + Transform Join()
 
 + Per store additional context items
-
-+ Improve Joseki integration.
-   Built-in (simple) HTTP from Joseki?
-   Or just Joseki+example config.
-   Joseki needs 
-   
-   Canned joseki-config.ttl
-     
-
-   sdb:SDBConnection ja:assembler "com.hp.hpl.jena.sdb.assembler.SDBConnectionDescAssembler"
-   sdb:Store ja:assembler "com.hp.hpl.jena.sdb.assembler.StoreDescAssembler"
- or 
-   a general initializer:
-   		implements Assembler 
-     sdb:SDB ja:loadClass com.hp.hpl.jena.sdb.SDB
 
 == Pattern table and inference
 
