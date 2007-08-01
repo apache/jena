@@ -7,6 +7,7 @@
 package com.hp.hpl.jena.sparql.sse.builders;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import com.hp.hpl.jena.graph.Node;
@@ -33,6 +34,26 @@ public class BuilderNode
         return Var.alloc(item.getNode()) ;
     }
     
+    public static List buildVarList(Item item)
+    {
+        BuilderBase.checkList(item) ;
+        ItemList list = item.getList() ;
+        return buildVarList(list) ;
+    }
+        
+    public static List buildVarList(ItemList list)
+    {
+        List vars = new ArrayList() ;
+        for ( Iterator iter = list.iterator() ; iter.hasNext(); )
+        {
+            Item x = (Item)iter.next() ;
+            Var v = buildVar(x) ;
+            vars.add(v) ;
+        }
+        
+        return vars ;
+    }
+
     public static String buildSymbol(Item item)
     {
         if ( !item.isSymbol() )

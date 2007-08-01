@@ -6,57 +6,51 @@
 
 package com.hp.hpl.jena.sparql.sse.builders;
 
-import com.hp.hpl.jena.sparql.algebra.Table;
-import com.hp.hpl.jena.sparql.algebra.TableFactory;
-import com.hp.hpl.jena.sparql.algebra.table.TableUnit;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.hp.hpl.jena.query.ResultSet;
+import com.hp.hpl.jena.sparql.core.Var;
+import com.hp.hpl.jena.sparql.engine.QueryIterator;
+import com.hp.hpl.jena.sparql.engine.ResultSetStream;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
+import com.hp.hpl.jena.sparql.engine.iterator.QueryIterPlainWrapper;
 import com.hp.hpl.jena.sparql.sse.Item;
 import com.hp.hpl.jena.sparql.sse.ItemList;
 
-public class BuilderTable
+public class BuilderResultSet
 {
-    static final public String tagTable = "table" ;
+    static final public String tagResultSet = "resultset" ;
     
-    public static Table build(Item item)
+    public static ResultSet build(Item item)
     {
-        BuilderBase.checkTagged(item, tagTable, "Not a (table ...)") ;
-
-        ItemList list = item.getList() ;
-        int start = 1 ;
-        if ( list.size() == 1 )
-            // Null table;
-            return TableFactory.createEmpty() ;
-
-        if ( list.size() == 2 && list.get(1).isSymbol() )
-        {
-            //  Short hand for well known tables
-            String symbol = list.get(1).getSymbol() ;
-            if ( symbol.equals("unit") ) 
-                return new TableUnit() ;
-        }
+        BuilderBase.checkTagged(item, tagResultSet, "Not a (resultset ...)") ;
         
-        Table table = TableFactory.create() ;
+        //SPARQLResult result = new SPARQLResult() ;
+        /*
+         * (resultset (vars) ROWS) <-----
+         * or 
+         * (resultset (vars) ROWS)
+         */
         
-        int count = 0 ;
-        Binding lastBinding = null ;
+        ItemList list = item.getList() ; 
+        
+        List vars = BuilderNode.buildVarList(list.get(1)) ;
+        // skip tag, skip vars.
+        int start = 2 ;
+
+        List bindings = new ArrayList() ;
         for ( int i = start ; i < list.size() ; i++ )
         {
             Item itemRow = list.get(i) ;
             Binding b = BuilderBinding.build(itemRow) ;
-            table.addBinding(b) ;
-            lastBinding = b ;
-            count++ ;
-        }
-        // Was it the unit table?
-        
-        if ( table.size() == 1 )
-        {
-            // One row, no bindings.
-            if ( lastBinding.isEmpty() )
-                return TableFactory.createUnit() ;
+            bindings.add(b) ;
+//            for ( Iterator iter = b.vars() ; iter.hasNext() ; )
+//            { }
         }
         
-        return table ;
+        QueryIterator qIter = new QueryIterPlainWrapper(bindings.listIterator()) ;
+        return new ResultSetStream(Var.varNames(vars), null, qIter) ;
     }
 }
 

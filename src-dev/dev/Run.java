@@ -12,12 +12,16 @@ import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryExecution;
 import com.hp.hpl.jena.query.QueryExecutionFactory;
 import com.hp.hpl.jena.query.QueryFactory;
+import com.hp.hpl.jena.query.ResultSet;
 import com.hp.hpl.jena.query.ResultSetFormatter;
 import com.hp.hpl.jena.query.larq.IndexBuilderString;
 import com.hp.hpl.jena.query.larq.IndexLARQ;
 import com.hp.hpl.jena.query.larq.LARQ;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.sparql.sse.Item;
+import com.hp.hpl.jena.sparql.sse.SSE;
+import com.hp.hpl.jena.sparql.sse.builders.BuilderResultSet;
 import com.hp.hpl.jena.util.FileManager;
 
 
@@ -25,6 +29,12 @@ public class Run
 {
     public static void main(String[] argv)
     {
+        
+        Item item = SSE.readFile("SSE/resultset.sse") ;
+        ResultSet rs = BuilderResultSet.build(item) ;
+        ResultSetFormatter.out(rs) ;
+        System.exit(0) ;
+        
         String []a = { "/home/afs/W3C/DataAccess/tests/data-r2/ask/ask-1.srx"
             } ;
         arq.rset.main(a) ;
