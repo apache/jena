@@ -22,8 +22,7 @@ TOKEN:
    <IRIref: "<" (~[">","<","\u0000"-"\u0020"])* ">" >
 |  <PNAME: (<PN_PREFIX>)? ":" (<PN_LOCAL>)? >
 |  <BLANK_NODE_LABEL: "_:" <PN_LOCAL> >
-|  <VAR1: <HOOK> <VARNAME> >
-|  <VAR2: "$" <VARNAME> >
+|  <VAR: ("?"|"$")(<SYMBOL>)?>
 }
 
 TOKEN :
@@ -70,7 +69,6 @@ TOKEN :
 
 | < LBRACKET:  "[" >
 | < RBRACKET:  "]" >
-| < HOOK:     "?" >
 }
 
 // Specials for literals trailing parts
@@ -107,20 +105,22 @@ TOKEN:
 |
   // With a leading "_", no dot at end of local name.
   <#PN_LOCAL: (<PN_CHARS_U> | ["0"-"9"]) ((<PN_CHARS>|".")* <PN_CHARS>)?  >
-|
-  // NCNAME without "-" and ".", allowing leading digits.
-  <#VARNAME: ( <PN_CHARS_U> | ["0"-"9"] )
-             ( <PN_CHARS_U> | ["0"-"9"] | "\u00B7" |
-               ["\u0300"-"\u036F"] | ["\u203F"-"\u2040"] )* >
+// Variables are more general.
+// |
+//   // NCNAME without "-" and ".", allowing leading digits.
+//   <#VARNAME: ( <PN_CHARS_U> | ["0"-"9"] )
+//              ( <PN_CHARS_U> | ["0"-"9"] | "\u00B7" |
+//                ["\u0300"-"\u036F"] | ["\u203F"-"\u2040"] )* >
+
+
 }
 
 TOKEN:
 {
-  <WORD: <VARNAME> >
-  // Anything that isn't structural
+  // Anything left that isn't structural
   // LPAREN and RPAREN / LBRACKET/RBRACKET
   // Quotes
-| <OP: (~["(", ")", "[", "]", "'", "\"", " ", "\t","\n","\r","\f" ])+ >
+  <SYMBOL: (~["(", ")", "[", "]", "'", "\"", " ", "\t","\n","\r","\f" ])+ >
 }
 
 // Catch-all tokens.  Must be last.  

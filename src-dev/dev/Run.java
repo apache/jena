@@ -33,11 +33,11 @@ public class Run
         {
             Triple t1 = SSE.parseTriple("(?%0 <x:p> _:b)") ;
             Triple t2 = SSE.parseTriple("(?%0 <x:p> _:b)") ;
-            
             System.exit(0) ;
-
         }
 
+        runQParse() ;
+        
         String []a = { "testing/ARQ/PropertyFunctions/manifest.ttl" } ;
         String DIR = "testing/ARQ/PropertyFunctions/" ;
         //arq.qtest.main(a) ;
@@ -48,6 +48,7 @@ public class Run
     {
         String []a = { "--file=Q.rq" } ;
         arq.qparse.main(a) ;
+        System.exit(0) ;
     }
     
     private static void execQuery(String datafile, String queryfile)

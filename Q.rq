@@ -1,8 +1,10 @@
-PREFIX foaf:       <http://xmlns.com/foaf/0.1/>
+PREFIX :    <http://example/>
+PREFIX apf: <http://jena.hpl.hp.com/ARQ/property#>
+PREFIX  list:   <http://jena.hpl.hp.com/ARQ/list#>
 
-SELECT DISTINCT ?name ?nick
+SELECT *
 {
-    ?x foaf:mbox <mailt:person@server> .
-    ?x foaf:name ?name 
-    OPTIONAL { ?x foaf:nick ?nick }
+    ?x list:index (?index ?member) .
+    ?member :p ?a .
+    ?member :q ?a .
 }

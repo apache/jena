@@ -47,8 +47,7 @@ public class SSE_ParserCore extends ParserSSEBase implements SSE_ParserCoreConst
     case IRIref:
     case PNAME:
     case BLANK_NODE_LABEL:
-    case VAR1:
-    case VAR2:
+    case VAR:
     case INTEGER:
     case DECIMAL:
     case DOUBLE:
@@ -56,9 +55,7 @@ public class SSE_ParserCore extends ParserSSEBase implements SSE_ParserCoreConst
     case STRING_LITERAL2:
     case STRING_LITERAL_LONG1:
     case STRING_LITERAL_LONG2:
-    case HOOK:
-    case WORD:
-    case OP:
+    case SYMBOL:
       Term();
       label_2:
       while (true) {
@@ -163,8 +160,7 @@ public class SSE_ParserCore extends ParserSSEBase implements SSE_ParserCoreConst
       case IRIref:
       case PNAME:
       case BLANK_NODE_LABEL:
-      case VAR1:
-      case VAR2:
+      case VAR:
       case INTEGER:
       case DECIMAL:
       case DOUBLE:
@@ -174,9 +170,7 @@ public class SSE_ParserCore extends ParserSSEBase implements SSE_ParserCoreConst
       case STRING_LITERAL_LONG2:
       case LPAREN:
       case LBRACKET:
-      case HOOK:
-      case WORD:
-      case OP:
+      case SYMBOL:
         ;
         break;
       default:
@@ -190,8 +184,7 @@ public class SSE_ParserCore extends ParserSSEBase implements SSE_ParserCoreConst
   final public void Term() throws ParseException {
                 Token t ;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case WORD:
-    case OP:
+    case SYMBOL:
       Symbol();
       break;
     case IRIref:
@@ -200,9 +193,7 @@ public class SSE_ParserCore extends ParserSSEBase implements SSE_ParserCoreConst
     case PNAME:
       PrefixedName();
       break;
-    case VAR1:
-    case VAR2:
-    case HOOK:
+    case VAR:
       Var();
       break;
     case INTEGER:
@@ -226,18 +217,7 @@ public class SSE_ParserCore extends ParserSSEBase implements SSE_ParserCoreConst
 
   final public void Symbol() throws ParseException {
                   Token t ;
-    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case WORD:
-      t = jj_consume_token(WORD);
-      break;
-    case OP:
-      t = jj_consume_token(OP);
-      break;
-    default:
-      jj_la1[10] = jj_gen;
-      jj_consume_token(-1);
-      throw new ParseException();
-    }
+    t = jj_consume_token(SYMBOL);
       emitSymbol(t.beginLine, t.beginColumn, t.image) ;
   }
 
@@ -255,21 +235,10 @@ public class SSE_ParserCore extends ParserSSEBase implements SSE_ParserCoreConst
 
   final public void Var() throws ParseException {
                Token t ;
-    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case VAR1:
-      t = jj_consume_token(VAR1);
-      break;
-    case VAR2:
-      t = jj_consume_token(VAR2);
-      break;
-    case HOOK:
-      t = jj_consume_token(HOOK);
-      break;
-    default:
-      jj_la1[11] = jj_gen;
-      jj_consume_token(-1);
-      throw new ParseException();
-    }
+    // Includes "?" as a variable for anon variables.
+      // Includes special variables from ARQ eg ?%0 
+    //  ( t = <VAR1> | t = <VAR2> | t = <VAR3> | t = <HOOK> )
+      t = jj_consume_token(VAR);
     emitVar(t.beginLine, t.beginColumn, stripChars(t.image, 1)) ;
   }
 
@@ -287,7 +256,7 @@ public class SSE_ParserCore extends ParserSSEBase implements SSE_ParserCoreConst
       NumericLiteral();
       break;
     default:
-      jj_la1[12] = jj_gen;
+      jj_la1[10] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -321,7 +290,7 @@ public class SSE_ParserCore extends ParserSSEBase implements SSE_ParserCoreConst
                                  lex = stripQuotes3(t.image) ;
       break;
     default:
-      jj_la1[13] = jj_gen;
+      jj_la1[11] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -349,19 +318,19 @@ public class SSE_ParserCore extends ParserSSEBase implements SSE_ParserCoreConst
                     dt_pn = t.image ;
           break;
         default:
-          jj_la1[14] = jj_gen;
+          jj_la1[12] = jj_gen;
           jj_consume_token(-1);
           throw new ParseException();
         }
         break;
       default:
-        jj_la1[15] = jj_gen;
+        jj_la1[13] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
       break;
     default:
-      jj_la1[16] = jj_gen;
+      jj_la1[14] = jj_gen;
       ;
     }
     emitLiteral(currLine, currColumn, lex, lang, dt_iri, dt_pn) ;
@@ -383,7 +352,7 @@ public class SSE_ParserCore extends ParserSSEBase implements SSE_ParserCoreConst
      emitLiteralDouble(t.beginLine, t.beginColumn, t.image) ;
       break;
     default:
-      jj_la1[17] = jj_gen;
+      jj_la1[15] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -394,7 +363,7 @@ public class SSE_ParserCore extends ParserSSEBase implements SSE_ParserCoreConst
   public Token token, jj_nt;
   private int jj_ntk;
   private int jj_gen;
-  final private int[] jj_la1 = new int[18];
+  final private int[] jj_la1 = new int[16];
   static private int[] jj_la1_0;
   static private int[] jj_la1_1;
   static {
@@ -402,10 +371,10 @@ public class SSE_ParserCore extends ParserSSEBase implements SSE_ParserCoreConst
       jj_la1_1();
    }
    private static void jj_la1_0() {
-      jj_la1_0 = new int[] {0x2,0x2,0xa3e1df0,0x2,0x2,0x2,0x2,0x2200000,0xa3e1df0,0x81e1df0,0x0,0x8000180,0x1e1c00,0x1e0000,0x30,0x30000000,0x30000000,0x1c00,};
+      jj_la1_0 = new int[] {0x2,0x2,0x11f0ef0,0x2,0x2,0x2,0x2,0x1100000,0x11f0ef0,0xf0ef0,0xf0e00,0xf0000,0x30,0xc000000,0xc000000,0xe00,};
    }
    private static void jj_la1_1() {
-      jj_la1_1 = new int[] {0x0,0x0,0x180,0x0,0x0,0x0,0x0,0x0,0x180,0x180,0x180,0x0,0x0,0x0,0x0,0x0,0x0,0x0,};
+      jj_la1_1 = new int[] {0x0,0x0,0x10,0x0,0x0,0x0,0x0,0x0,0x10,0x10,0x0,0x0,0x0,0x0,0x0,0x0,};
    }
 
   public SSE_ParserCore(java.io.InputStream stream) {
@@ -417,7 +386,7 @@ public class SSE_ParserCore extends ParserSSEBase implements SSE_ParserCoreConst
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 18; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 16; i++) jj_la1[i] = -1;
   }
 
   public void ReInit(java.io.InputStream stream) {
@@ -429,7 +398,7 @@ public class SSE_ParserCore extends ParserSSEBase implements SSE_ParserCoreConst
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 18; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 16; i++) jj_la1[i] = -1;
   }
 
   public SSE_ParserCore(java.io.Reader stream) {
@@ -438,7 +407,7 @@ public class SSE_ParserCore extends ParserSSEBase implements SSE_ParserCoreConst
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 18; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 16; i++) jj_la1[i] = -1;
   }
 
   public void ReInit(java.io.Reader stream) {
@@ -447,7 +416,7 @@ public class SSE_ParserCore extends ParserSSEBase implements SSE_ParserCoreConst
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 18; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 16; i++) jj_la1[i] = -1;
   }
 
   public SSE_ParserCore(SSE_ParserCoreTokenManager tm) {
@@ -455,7 +424,7 @@ public class SSE_ParserCore extends ParserSSEBase implements SSE_ParserCoreConst
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 18; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 16; i++) jj_la1[i] = -1;
   }
 
   public void ReInit(SSE_ParserCoreTokenManager tm) {
@@ -463,7 +432,7 @@ public class SSE_ParserCore extends ParserSSEBase implements SSE_ParserCoreConst
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 18; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 16; i++) jj_la1[i] = -1;
   }
 
   final private Token jj_consume_token(int kind) throws ParseException {
@@ -510,15 +479,15 @@ public class SSE_ParserCore extends ParserSSEBase implements SSE_ParserCoreConst
 
   public ParseException generateParseException() {
     jj_expentries.removeAllElements();
-    boolean[] la1tokens = new boolean[42];
-    for (int i = 0; i < 42; i++) {
+    boolean[] la1tokens = new boolean[38];
+    for (int i = 0; i < 38; i++) {
       la1tokens[i] = false;
     }
     if (jj_kind >= 0) {
       la1tokens[jj_kind] = true;
       jj_kind = -1;
     }
-    for (int i = 0; i < 18; i++) {
+    for (int i = 0; i < 16; i++) {
       if (jj_la1[i] == jj_gen) {
         for (int j = 0; j < 32; j++) {
           if ((jj_la1_0[i] & (1<<j)) != 0) {
@@ -530,7 +499,7 @@ public class SSE_ParserCore extends ParserSSEBase implements SSE_ParserCoreConst
         }
       }
     }
-    for (int i = 0; i < 42; i++) {
+    for (int i = 0; i < 38; i++) {
       if (la1tokens[i]) {
         jj_expentry = new int[1];
         jj_expentry[0] = i;

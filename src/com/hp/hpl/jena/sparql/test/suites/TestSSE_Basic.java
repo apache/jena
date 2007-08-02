@@ -12,6 +12,7 @@ import junit.framework.TestSuite;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.sparql.ARQException;
+import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.sse.Item;
 import com.hp.hpl.jena.sparql.sse.SSE;
 import com.hp.hpl.jena.sparql.sse.SSEParseException;
@@ -82,7 +83,11 @@ public class TestSSE_Basic extends TestCase
     public void testURI_2() { parseBadNode("http://example/baseNoDelimiters") ; }
     public void testURI_3() { parseBadNode("<http://example/ space>") ; }
     
-    public void testVar_1() { testNode("?x") ; }
+    public void testVar_1() { testVar("?x") ; }
+    public void testVar_2() { testVar("?") ; }
+    public void testVar_3() { testVar("$x") ; }
+    public void testVar_4() { testVar("?%0") ; }
+    
     
     public void testWS_1() { parseBadNode("?x ") ; }
     public void testWS_2() { parseBadNode(" ?x") ; }
@@ -230,6 +235,12 @@ public class TestSSE_Basic extends TestCase
     private void testNode(String str)
     {
         Node node = SSE.parseNode(str) ;
+    }
+    
+    private void testVar(String str)
+    {
+        Node node = SSE.parseNode(str) ;
+        assertTrue( node instanceof Var ) ;
     }
     
     private void testNode(String str, Node result)

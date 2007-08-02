@@ -89,8 +89,8 @@ public class splitIRI extends PropertyFunctionBase
         if ( Var.isVar(namespaceNode) ) // .isVariable() )
         {
             b.add(Var.alloc(namespaceNode), Node.createURI(namespace)) ;
-            // Check for the case of (?x ?x) (very unlikely - and even more unlikely to casue a match)
-            // but its' possible for strange URI schemes.
+            // Check for the case of (?x ?x) (very unlikely - and even more unlikely to cause a match)
+            // but it's possible for strange URI schemes.
             if ( localnameNode.isVariable() && namespaceNode.getName() == localnameNode.getName() )
                 localnameNode = Node.createURI(namespace) ;
         }

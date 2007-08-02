@@ -10,3 +10,6 @@
   (assign ((?x expr) (?y expr)) --  (:= ?x expr) [is this SELECT/project?]
      (project ...))
      (project (?x ?y (?z expr)) ...)
+
++ Var token: needs to include bNode variables.
+ 

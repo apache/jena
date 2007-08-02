@@ -1,0 +1,8 @@
+(prefix ((x: <http://example/>))
+  (resultset
+    (?x ?y)
+    (row [?x 1] [?y x:g])
+    (row [?x 1] [?y undef])
+    (row [?x 1] )
+    (row [?z 1] )
+    ))
