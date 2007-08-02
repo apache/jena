@@ -12,4 +12,5 @@
      (project (?x ?y (?z expr)) ...)
 
 + Var token: needs to include bNode variables.
- 
+
++ Start a collection of Writers to go with Builders.
