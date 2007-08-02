@@ -77,16 +77,16 @@ public abstract class SQLBridgeBase implements SQLBridge
     {
         if ( execCxt == null || execCxt.getContext().isTrueOrUndef(SDB.jdbcStream) )
         {
-            if ( ! printFlag )
-            {
-                LogFactory.getLog(SQLBridgeBase.class).info("Stream") ;
-                printFlag = true ;
-            }
+//            if ( ! printFlag )
+//            {
+//                LogFactory.getLog(SQLBridgeBase.class).info("Stream") ;
+//                printFlag = true ;
+//            }
             // Stream
             return new QueryIterSQL(rs, binding, execCxt) ;
         }
         
-        if ( ! printFlag )
+        if ( false /* ! printFlag */ )
         {
             LogFactory.getLog(SQLBridgeBase.class).info("No stream") ;
             printFlag = true ;

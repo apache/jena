@@ -187,12 +187,13 @@ public class QC
             { log.warn("Bad number for fetch size: "+str) ; }
         
         try {
-            if ( ! fetchPrint && fetchSize > 0 )
-            {
-                log.info("Fetch size = "+fetchSize) ;
-                fetchPrint = true ;
-            }
+//            if ( ! fetchPrint && fetchSize > 0 )
+//            {
+//                log.info("Fetch size = "+fetchSize) ;
+//                fetchPrint = true ;
+//            }
             java.sql.ResultSet jdbcResultSet = request.getStore().getConnection().execQuery(sqlStmtStr, fetchSize) ;
+            log.info("After execQuery") ;
             try {
                 // And check this is called once per SQL.
                 if ( opSQL.getBridge() == null )
