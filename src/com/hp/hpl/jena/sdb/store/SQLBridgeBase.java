@@ -8,16 +8,11 @@ package com.hp.hpl.jena.sdb.store;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.*;
-
-import org.apache.commons.logging.LogFactory;
-
-import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.sparql.engine.ExecutionContext;
-import com.hp.hpl.jena.sparql.engine.QueryIterator;
-import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.sparql.engine.iterator.QueryIter;
-import com.hp.hpl.jena.sparql.engine.iterator.QueryIterPlainWrapper;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import com.hp.hpl.jena.sdb.SDB;
 import com.hp.hpl.jena.sdb.SDBException;
@@ -29,6 +24,12 @@ import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlProject;
 import com.hp.hpl.jena.sdb.sql.SDBExceptionSQL;
 import com.hp.hpl.jena.sdb.util.Pair;
+import com.hp.hpl.jena.sparql.core.Var;
+import com.hp.hpl.jena.sparql.engine.ExecutionContext;
+import com.hp.hpl.jena.sparql.engine.QueryIterator;
+import com.hp.hpl.jena.sparql.engine.binding.Binding;
+import com.hp.hpl.jena.sparql.engine.iterator.QueryIter;
+import com.hp.hpl.jena.sparql.engine.iterator.QueryIterPlainWrapper;
 
 /** Convert from whatever results a particular layout returns into
  *  an ARQ QueryIterator of Bindings.  An SQLBridge object
@@ -70,27 +71,15 @@ public abstract class SQLBridgeBase implements SQLBridge
     // Build next row from the JDBC ResultSet
     protected abstract Binding assembleBinding(ResultSet rs, Binding binding) ;
 
-    private static boolean printFlag = false ; 
-    
     final
     public QueryIterator assembleResults(ResultSet rs, Binding binding, ExecutionContext execCxt)
     {
         if ( execCxt == null || execCxt.getContext().isTrueOrUndef(SDB.jdbcStream) )
         {
-            if ( ! printFlag )
-            {
-                LogFactory.getLog(SQLBridgeBase.class).info("Stream") ;
-                printFlag = true ;
-            }
             // Stream
             return new QueryIterSQL(rs, binding, execCxt) ;
         }
         
-        if ( ! printFlag )
-        {
-            LogFactory.getLog(SQLBridgeBase.class).info("No stream") ;
-            printFlag = true ;
-        }
         // Debugging or problems with unreleasing JDBC ResultSets - read all in now.
         QueryIterator qIter = new QueryIterSQL(rs, binding, execCxt) ;
         List<Binding> results = new ArrayList<Binding>() ;
