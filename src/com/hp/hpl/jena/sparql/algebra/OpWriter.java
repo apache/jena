@@ -17,6 +17,7 @@ import com.hp.hpl.jena.shared.PrefixMapping;
 import com.hp.hpl.jena.sparql.ARQConstants;
 import com.hp.hpl.jena.sparql.algebra.op.*;
 import com.hp.hpl.jena.sparql.algebra.table.TableUnit;
+import com.hp.hpl.jena.sparql.core.Prologue;
 import com.hp.hpl.jena.sparql.core.Quad;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.Plan;
@@ -27,6 +28,7 @@ import com.hp.hpl.jena.sparql.serializer.SerializationContext;
 import com.hp.hpl.jena.sparql.util.ExprUtils;
 import com.hp.hpl.jena.sparql.util.FmtUtils;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
+import com.hp.hpl.jena.sparql.util.NodeToLabelMap;
 import com.hp.hpl.jena.sparql.util.PrintUtils;
 
 
@@ -35,25 +37,23 @@ public class OpWriter
     private static final int NL = 1 ;
     private static final int NoNL = -1 ;
     
-    public static void out(OutputStream out, Op op, PrefixMapping pMap)
-    {
-        SerializationContext sCxt = new SerializationContext(pMap) ;
-        out(new IndentedWriter(out), op, sCxt) ;
-    }
-
-    public static void out(OutputStream out, Op op, SerializationContext sCxt)
-    {
-        out(new IndentedWriter(out), op, sCxt) ;
-    }
-
+    public static void out(Op op)
+    { out(System.out, op) ; }
+    
+    public static void out(Op op, PrefixMapping pMap)
+    { out(System.out, op, pMap) ; }
+    
+    public static void out(Op op, Prologue prologue)
+    { out(System.out, op, prologue) ; }
+    
     public static void out(OutputStream out, Op op)
     { out(out, op, ARQConstants.getGlobalPrefixMap()) ; }
 
-    public static void out(IndentedWriter iWriter, Op op, PrefixMapping pMap)
-    {
-        SerializationContext sCxt = new SerializationContext(pMap) ;
-        out(iWriter, op, sCxt) ;
-    }
+    public static void out(OutputStream out, Op op, PrefixMapping pMap)
+    { out(new IndentedWriter(out), op, pMap) ; }
+
+    public static void out(OutputStream out, Op op, Prologue prologue)
+    { out(new IndentedWriter(out), op, prologue) ; }
 
     public static void out(IndentedWriter iWriter, Op op)
     { 
@@ -61,9 +61,42 @@ public class OpWriter
         out(iWriter, op, pmap) ;
     }
 
+    public static void out(IndentedWriter iWriter, Op op, PrefixMapping pMap)
+    {
+        SerializationContext sCxt = new SerializationContext(pMap) ;
+        out(iWriter, op, sCxt) ;
+    }
+
+    public static void out(IndentedWriter iWriter, Op op, Prologue prologue)
+    {
+        SerializationContext sCxt = new SerializationContext(prologue) ;
+        out(iWriter, op, sCxt) ;
+    }
+    
+    // Special version that preserves non-distinguished variables as variables.
+    static class NodeToLabelMapOp extends NodeToLabelMap
+    {
+        public String asString(Node n)
+        {
+            if ( n.isVariable() ) 
+                return "?"+n.getName() ;
+            return super.asString(n) ;
+        }
+    }
+    
+    public static void out(OutputStream out, Op op, SerializationContext sCxt)
+    {
+        out(new IndentedWriter(out), op, sCxt) ;
+    }
+
     // Actual work
     public static void out(IndentedWriter iWriter, Op op, SerializationContext sCxt)
     {
+        // TODO Consider whether this ought to always fix the bNode label map or not.
+        NodeToLabelMap lmap = new NodeToLabelMapOp() ;
+        sCxt.setBNodeMap(lmap) ;
+        
+        
         int closeCount = 0 ;
 //        if ( sCxt.getBaseIRI() != null )
 //        {

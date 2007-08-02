@@ -277,7 +277,6 @@ public class FmtUtils
                 return "_:"+n.getName() ;   // Wild guess
             else
                 return context.getBNodeMap().asString(n) ;
-            
         }
 
         return n.toString() ;

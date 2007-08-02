@@ -46,7 +46,7 @@ public class Run
     
     private static void runQParse()
     {
-        String []a = { "--file=Q.rq" } ;
+        String []a = { "--file=Q.rq", "--print=op" } ;
         arq.qparse.main(a) ;
         System.exit(0) ;
     }

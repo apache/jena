@@ -9,6 +9,7 @@ package arq.cmd;
 import com.hp.hpl.jena.sparql.algebra.Algebra;
 import com.hp.hpl.jena.sparql.algebra.AlgebraGeneratorQuad;
 import com.hp.hpl.jena.sparql.algebra.Op;
+import com.hp.hpl.jena.sparql.algebra.OpWriter;
 import com.hp.hpl.jena.sparql.engine.Plan;
 import com.hp.hpl.jena.sparql.engine.QueryEngineFactory;
 import com.hp.hpl.jena.sparql.engine.QueryEngineRegistry;
@@ -70,8 +71,7 @@ public class QueryUtils
     public static void printOp(IndentedWriter out, Query query)
     {
         Op op = Algebra.compile(query) ;
-        SerializationContext sCxt = new SerializationContext(query) ;
-        op.output(out, sCxt) ;
+        OpWriter.out(out, op, query.getPrefixMapping()) ;
         out.flush();
     }    
 
