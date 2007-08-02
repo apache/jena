@@ -1,24 +1,53 @@
 /*
- 	(c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
- 	All rights reserved - see end of file.
- 	$Id: NoSpecificTypeException.java,v 1.3 2007-08-02 13:33:11 chris-dollin Exp $
+ 	(c) Copyright 2007 Hewlett-Packard Development Company, LP
+ 	All rights reserved.
+ 	$Id: AmbiguousSpecificTypeException.java,v 1.1 2007-08-02 13:33:11 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.exceptions;
 
+import java.util.*;
+
 import com.hp.hpl.jena.rdf.model.Resource;
 
-public class NoSpecificTypeException extends AssemblerException
+/**
+    Exception to throw when an AssemblerGroup has a choice of types
+    from which to try and find an implementation.
+    
+ 	@author kers
+*/
+public class AmbiguousSpecificTypeException extends AssemblerException
     {
-    public NoSpecificTypeException( Resource root )
+    protected final List types;
+    
+    public AmbiguousSpecificTypeException( Resource root, ArrayList types )
         {
-        super( root, "the root " + root + " has no most specific type that is a subclass of ja:Object" );
+        super( root, makeMessage( root, types ) );
+        this.types = types;
         }
+
+    private static String makeMessage( Resource root, List types )
+        { return 
+            "cannot find a most specific type for " + nice( root )
+            + ", which has as possibilities:" + nice( types )
+            + "."; 
+        }
+
+    private static String nice( List types )
+        {
+        StringBuffer result = new StringBuffer();
+        for (int i = 0; i < types.size(); i += 1)
+            result.append( " " ).append( nice( (Resource) types.get(i) ) );
+        return result.toString();
+        }
+
+    public List getTypes()
+        { return types; }
     }
 
 
 /*
- * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestModelExpansion.java,v 1.5 2007-01-02 11:52:50 andy_seaborne Exp $
+ 	$Id: TestModelExpansion.java,v 1.6 2007-08-02 13:33:13 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.test;
@@ -97,7 +97,44 @@ public class TestModelExpansion extends AssemblerTestBase
         Model schema = model( "T rdfs:subClassOf V" );
         Model answer = ModelExpansion.withSchema( base, schema );
         assertIsoModels( model( "a rdf:type T; a rdf:type U; a rdf:type V; T rdfs:subClassOf U; T rdfs:subClassOf V" ), answer );
+        }    
+    public void testSubclassClosureA()
+        {
+        Model m = model( "A rdfs:subClassOf B; B rdfs:subClassOf C" );
+        subClassClosure( m );
+        assertIsoModels( model( "A rdfs:subClassOf B; B rdfs:subClassOf C; A rdfs:subClassOf C" ), m );
         }
+    
+    public void testSubclassClosureB()
+        {
+        Model m = model( "A rdfs:subClassOf B; B rdfs:subClassOf C; X rdfs:subClassOf C" );
+        subClassClosure( m );
+        assertIsoModels( model( "A rdfs:subClassOf B; B rdfs:subClassOf C; A rdfs:subClassOf C; X rdfs:subClassOf C" ), m );
+        }
+    
+    public void testSubclassClosureC()
+        {
+        Model m = model( "A rdfs:subClassOf B; B rdfs:subClassOf C; X rdfs:subClassOf C; Y rdfs:subClassOf X" );
+        subClassClosure( m );
+        assertIsoModels( model( "A rdfs:subClassOf B; B rdfs:subClassOf C; A rdfs:subClassOf C; X rdfs:subClassOf C; Y rdfs:subClassOf X; Y rdfs:subClassOf C" ), m );
+        }
+    
+    public void testSubclassClosureD()
+        {
+        Model m = model( "A rdfs:subClassOf B; B rdfs:subClassOf C; X rdfs:subClassOf C; Y rdfs:subClassOf X; U rdfs:subClassOf A; U rdfs:subClassOf Y" );
+        subClassClosure( m );
+        assertIsoModels( model( "A rdfs:subClassOf B; B rdfs:subClassOf C; A rdfs:subClassOf C; X rdfs:subClassOf C; Y rdfs:subClassOf X; Y rdfs:subClassOf C; U rdfs:subClassOf A; U rdfs:subClassOf B; U rdfs:subClassOf C; U rdfs:subClassOf X; U rdfs:subClassOf Y" ), m );
+        }
+    
+    public void testSubclassClosureE()
+        {
+        Model m = model( "A rdfs:subClassOf B; B rdfs:subClassOf C" );
+        subClassClosure( m );
+        assertIsoModels( model( "A rdfs:subClassOf B; B rdfs:subClassOf C; A rdfs:subClassOf C" ), m );
+        }
+
+    protected void subClassClosure( Model m )
+        { ModelExpansion.addSubClassClosure( m ); }
     }
 
 

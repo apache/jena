@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestAssemblerHelp.java,v 1.11 2007-01-02 11:52:50 andy_seaborne Exp $
+ 	$Id: TestAssemblerHelp.java,v 1.12 2007-08-02 13:33:12 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.test;
@@ -10,7 +10,7 @@ import java.util.*;
 
 import com.hp.hpl.jena.assembler.*;
 import com.hp.hpl.jena.assembler.assemblers.*;
-import com.hp.hpl.jena.assembler.exceptions.NoSpecificTypeException;
+import com.hp.hpl.jena.assembler.exceptions.*;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.shared.*;
 import com.hp.hpl.jena.vocabulary.RDF;
@@ -49,6 +49,25 @@ public class TestAssemblerHelp extends AssemblerTestBase
         testSpecificType( "ja:RDBModel", "x rdf:type ja:RDBModel; x rdf:type ja:Model" );
         }
     
+    public void testFindSpecificTypes()
+        {
+        testFindSpecificTypes( "", "x rdf:type A", "Top" );
+        testFindSpecificTypes( "", "x rdf:type A; x rdf:type B", "Top" );
+        testFindSpecificTypes( "A", "x rdf:type A; A rdfs:subClassOf Top", "Top" );
+        testFindSpecificTypes( "A", "x rdf:type A; x rdf:type B; A rdfs:subClassOf Top", "Top" );
+        testFindSpecificTypes( "A B", "x rdf:type A; x rdf:type B; A rdfs:subClassOf Top; B rdfs:subClassOf Top", "Top" );
+        testFindSpecificTypes( "B", "x rdf:type A; x rdf:type B; A rdfs:subClassOf Top; B rdfs:subClassOf Top; B rdfs:subClassOf A", "Top" );
+        }
+    
+    private void testFindSpecificTypes( String expectedString, String model, String baseString )
+        {
+        Resource root = resourceInModel( model );
+        Resource baseType = resource( baseString );
+        Set expected = resourceSet( expectedString );
+        Set answer = AssemblerHelp.findSpecificTypes( root, baseType );
+        assertEquals( expected, answer );
+        }
+
     public void testFindRootByExplicitType()
         {
         Model model = model( "x rdf:type ja:Object; y rdf:type Irrelevant" );
@@ -106,7 +125,7 @@ public class TestAssemblerHelp extends AssemblerTestBase
             testSpecificType( "xxx", "x rdf:type ja:Model; x rdf:type ja:PrefixMapping" );
             fail( "should trap multiple types" );
             }
-        catch (NoSpecificTypeException e)
+        catch (AmbiguousSpecificTypeException e)
             {
             assertEquals( resource( "x" ), e.getRoot() );
             assertEquals( resources( e.getRoot(), "ja:Model ja:PrefixMapping" ), new HashSet( e.getTypes() ) );
@@ -130,7 +149,6 @@ public class TestAssemblerHelp extends AssemblerTestBase
         assertEquals( resource( root.getModel(), expected ), mst );
         }
 
-    
     public static boolean impIsLoaded = false;
     public static boolean impIsConstructed = false;
     

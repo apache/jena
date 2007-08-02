@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: ModelExpansion.java,v 1.11 2007-04-24 10:37:25 chris-dollin Exp $
+ 	$Id: ModelExpansion.java,v 1.12 2007-08-02 13:33:09 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler;
@@ -10,7 +10,6 @@ import java.util.*;
 
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.util.IteratorCollection;
-import com.hp.hpl.jena.util.iterator.Map1;
 import com.hp.hpl.jena.vocabulary.*;
 
 /**
@@ -36,10 +35,24 @@ import com.hp.hpl.jena.vocabulary.*;
  */
 public class ModelExpansion
     {
+    /**
+        Answer a new model which is the aggregation of
+    <ul>
+        <li>the statements of <code>model</code>
+        <li>the non-bnode subclass statements of <code>schema</code>
+        <li>the subclass closure of those statements
+        <li>the rdf:type statements implied by the rdfs:domain statements
+            of <code>schema</code> and the <code>model</code>
+            statements using that statements property
+        <li>similarly for rdfs:range
+        <li>the rdf:type statements implied by the subclass closure
+    </ul>
+    */
     public static Model withSchema( Model model, Model schema )
         {
         Model result = ModelFactory.createDefaultModel().add( model );
         addSubclassesFrom( result, schema );        
+        addSubClassClosure( result );
         addDomainTypes( result, schema );   
         addRangeTypes( result, schema );
         addIntersections( result, schema );
@@ -56,6 +69,93 @@ public class ModelExpansion
             Statement s = it.nextStatement();
             if (s.getSubject().isURIResource() && s.getObject().isURIResource()) result.add( s ); 
             }
+        }
+    
+    /**
+        Do (limited) subclass closure on <code>m</code>.
+    <p>    
+        Those classes in <code>m</code> that appear in <code>subClassOf</code>
+        statements are given as explicit superclasses all their indirect superclasses.
+    */
+    public static void addSubClassClosure( Model m )
+        {
+        Set roots = selectRootClasses( m, findClassesBySubClassOf( m ) );
+        for (Iterator it = roots.iterator(); it.hasNext();)
+            addSuperClasses( m, (Resource) it.next() );
+        }
+    
+    /**
+        To each subclass X of <code>type</code> add as superclass all the
+        classes between X and <code>type</code>.
+    */
+    private static void addSuperClasses( Model m, Resource type )
+        { addSuperClasses( m, new LinkedSeq( type ) ); }
+
+    /**
+        To each subclass X of <code>parents.item</code> add as superclass
+        all the classes between X and that item and all the items in the 
+        rest of <code>parents</code>.
+    */
+    private static void addSuperClasses( Model m, LinkedSeq parents )
+        {
+        Model toAdd = ModelFactory.createDefaultModel();
+        addSuperClasses( m, parents, toAdd );
+        m.add(  toAdd );
+        }
+    
+    /**
+        Add to <code>toAdd</code> all the superclass statements needed 
+        to note that any indirect subclass of <code>X = parents.item</code> has
+        as superclass all the classes between it and X and all the remaining
+        elements of <code>parents</code>.
+    */
+    private static void addSuperClasses( Model m, LinkedSeq parents, Model toAdd )
+        {
+        Resource type = parents.item;
+        for (StmtIterator it = m.listStatements( null, RDFS.subClassOf, type ); it.hasNext();)
+            {
+            Resource t = it.nextStatement().getSubject();
+            for (LinkedSeq scan = parents.rest; scan != null; scan = scan.rest)
+                toAdd.add( t, RDFS.subClassOf, scan.item );
+            addSuperClasses( m, parents.push( t ), toAdd );
+            }
+        }
+
+    /**
+         Answer the subset of <code>classes</code> which have no
+         superclass in <code>m</code>.
+    */
+    private static Set selectRootClasses( Model m, Set classes )
+        {
+        Set roots = new HashSet();
+        for (Iterator it = classes.iterator(); it.hasNext();)
+            {
+            Resource type = (Resource) it.next();
+            if (!m.contains( type, RDFS.subClassOf, (RDFNode) null ) ) roots.add( type ); 
+            }
+        return roots;
+        }
+
+    /**
+        Answer the set of all classes which appear in <code>m</code> as the
+        subject or object of a <code>rdfs:subClassOf</code> statement.
+    */
+    private static Set findClassesBySubClassOf( Model m )
+        {
+        Set classes = new HashSet();
+        StmtIterator it = m.listStatements( null, RDFS.subClassOf, (RDFNode) null );
+        while (it.hasNext()) addClasses( classes, it.nextStatement() );
+        return classes;
+        }
+
+    /**
+        Add to <code>classes</code> the subject and object of the statement
+        <code>xSubClassOfY</code>.
+    */
+    private static void addClasses( Set classes, Statement xSubClassOfY )
+        {
+        classes.add( xSubClassOfY.getSubject() );
+        classes.add( xSubClassOfY.getObject() );
         }
     
     protected static void addDomainTypes( Model result, Model schema )
@@ -161,6 +261,33 @@ public class ModelExpansion
     private static List asJavaList( Resource resource )
         {
         return ((RDFList) resource.as( RDFList.class )).asJavaList();
+        }
+    
+    /**
+        A Lisp-style linked list. Used because we want non-updating cons
+        operations.
+    */
+    protected static class LinkedSeq
+        {
+        final Resource item;
+        final LinkedSeq rest;
+        
+        LinkedSeq( Resource item ) 
+            { this( item, null ); }
+
+        LinkedSeq( Resource item, LinkedSeq rest ) 
+            { this.item = item; this.rest = rest; }
+        
+        LinkedSeq push( Resource item ) 
+            { return new LinkedSeq( item, this ); }
+        
+        public String toString()
+            {
+            StringBuffer result = new StringBuffer( "[" );
+            LinkedSeq scan = this;
+            while (scan != null) { result.append( scan.item ); scan = scan.rest; result.append( " " ); }
+            return result.append( "]" ).toString();
+            }
         }
     }
 

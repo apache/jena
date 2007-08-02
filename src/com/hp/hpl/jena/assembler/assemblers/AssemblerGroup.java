@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: AssemblerGroup.java,v 1.11 2007-07-20 15:15:03 chris-dollin Exp $
+ 	$Id: AssemblerGroup.java,v 1.12 2007-08-02 13:32:56 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.assemblers;
@@ -93,7 +93,17 @@ public abstract class AssemblerGroup extends AssemblerBase implements Assembler
 
         public Object open( Assembler a, Resource root, Mode mode )
             {
-            Resource type = findSpecificType( root );
+            Set types = AssemblerHelp.findSpecificTypes( root, JA.Object );
+            if (types.size() == 0)
+                throw new NoSpecificTypeException( root );
+            else if (types.size() > 1)
+                throw new AmbiguousSpecificTypeException( root, new ArrayList( types ) );
+            else
+                return openBySpecificType( a, root, mode, (Resource) types.iterator().next() );
+            }
+
+        private Object openBySpecificType( Assembler a, Resource root, Mode mode, Resource type )
+            {
             Assembler toUse = assemblerFor( type );
             Class aClass = toUse == null ? null : toUse.getClass();
             Frame frame = new Frame( root, type, aClass );
@@ -113,12 +123,6 @@ public abstract class AssemblerGroup extends AssemblerBase implements Assembler
                 AssemblerException x = new AssemblerException( root, "caught: " + e.getMessage(), e ); 
                 throw x.pushDoing( frame );
                 }
-            }
-
-        private Resource findSpecificType( Resource root )
-            {
-            try { return AssemblerHelp.findSpecificType( root ); }
-            catch (NoSpecificTypeException e) { return null; }
             }
         
         public AssemblerGroup implementWith( Resource type, Assembler a )

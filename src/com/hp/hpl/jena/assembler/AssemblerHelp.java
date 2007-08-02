@@ -1,7 +1,7 @@
 /*
  (c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  All rights reserved - see end of file.
- $Id: AssemblerHelp.java,v 1.17 2007-07-19 14:23:31 chris-dollin Exp $
+ $Id: AssemblerHelp.java,v 1.18 2007-08-02 13:33:09 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.assembler;
@@ -10,7 +10,7 @@ import java.lang.reflect.*;
 import java.util.*;
 
 import com.hp.hpl.jena.assembler.assemblers.AssemblerGroup;
-import com.hp.hpl.jena.assembler.exceptions.NoSpecificTypeException;
+import com.hp.hpl.jena.assembler.exceptions.*;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.shared.*;
@@ -142,30 +142,44 @@ public class AssemblerHelp
          <code>givenType</code>. If there is more than one type, throw a 
          NoSpecificTypeException.
     */
-    public static Resource findSpecificType( Resource root, Resource givenType )
+    public static Resource findSpecificType( Resource root, Resource baseType )
+        {
+        Set types = findSpecificTypes( root, baseType );
+        if (types.size() == 1)
+            return (Resource) types.iterator().next();
+        if (types.size() == 0)
+            return baseType;
+        throw new AmbiguousSpecificTypeException( root, new ArrayList( types ) );
+        }
+
+    /**
+        Answer all the types of <code>root</code> which are subtypes of
+        <code>baseType</code> and which do not have subtypes which are
+        also types of <code>root</code>.
+    */
+    public static Set findSpecificTypes( Resource root, Resource baseType )
         {
         Model desc = root.getModel();
-        StmtIterator types = root.listProperties( RDF.type );
-        List results = new ArrayList();
-        while (types.hasNext())
+        List types = root.listProperties( RDF.type ).mapWith( Statement.Util.getObject ).toList();
+        Set results = new HashSet();
+        for (int i = 0; i < types.size(); i += 1)
             {
-            Resource type = getResource( types.nextStatement() );
-            if (desc.contains( type, RDFS.subClassOf, givenType ))
-                {
-                boolean allowed = true;
-                for (StmtIterator subs = desc.listStatements( null, RDFS.subClassOf, type ); subs.hasNext(); )
-                    {
-                    Resource sub = subs.nextStatement().getSubject();
-                    if (!sub.equals( type ) && root.hasProperty( RDF.type, sub )) allowed = false;
-                    }
-                if (allowed) results.add( type );
-                }
+            Resource candidate = (Resource) types.get( i );
+            if  (candidate.hasProperty( RDFS.subClassOf, baseType ))
+                if (hasNoCompetingSubclass( types, candidate )) 
+                    results.add( candidate );
             }
-        if (results.size() == 1)
-            return (Resource) results.get(0);
-        if (results.size() == 0)
-            return givenType;
-        throw new NoSpecificTypeException( root, results );
+        return results;
+        }
+
+    private static boolean hasNoCompetingSubclass( List types, Resource candidate )
+        {
+        for (int j = 0; j < types.size(); j += 1)
+            {
+            Resource other = (Resource) types.get( j );
+            if (other.hasProperty( RDFS.subClassOf, candidate ) && !candidate.equals( other )) return false;
+            }
+        return true;
         }
 
     /**
