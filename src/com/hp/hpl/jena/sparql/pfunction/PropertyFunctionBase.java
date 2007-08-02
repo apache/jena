@@ -12,6 +12,9 @@ import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterRepeatApply;
+import com.hp.hpl.jena.sparql.serializer.SerializationContext;
+import com.hp.hpl.jena.sparql.util.FmtUtils;
+import com.hp.hpl.jena.sparql.util.IndentedWriter;
 
 /** Basic property function handler that calls the implementation 
  * subclass one binding at a time
@@ -86,6 +89,17 @@ public abstract class PropertyFunctionBase implements PropertyFunction
             if ( iter == null ) 
                 iter = PFLib.noResults(execCxt) ;
             return iter ;
+        }
+        
+        protected void details(IndentedWriter out, SerializationContext sCxt)
+        {
+            out.print("PropertyFunction ["+FmtUtils.stringForNode(predicate, sCxt)+"]") ;
+            out.print("[") ;
+            argSubject.output(out, sCxt) ;
+            out.print("][") ;
+            argObject.output(out, sCxt) ;
+            out.print("]") ;
+            out.println() ;
         }
     }
     

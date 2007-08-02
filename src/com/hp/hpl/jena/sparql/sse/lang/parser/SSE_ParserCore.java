@@ -46,6 +46,7 @@ public class SSE_ParserCore extends ParserSSEBase implements SSE_ParserCoreConst
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case IRIref:
     case PNAME:
+    case BLANK_NODE_LABEL:
     case VAR1:
     case VAR2:
     case INTEGER:
@@ -161,6 +162,7 @@ public class SSE_ParserCore extends ParserSSEBase implements SSE_ParserCoreConst
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case IRIref:
       case PNAME:
+      case BLANK_NODE_LABEL:
       case VAR1:
       case VAR2:
       case INTEGER:
@@ -211,6 +213,9 @@ public class SSE_ParserCore extends ParserSSEBase implements SSE_ParserCoreConst
     case STRING_LITERAL_LONG1:
     case STRING_LITERAL_LONG2:
       Literal();
+      break;
+    case BLANK_NODE_LABEL:
+      BlankNode();
       break;
     default:
       jj_la1[9] = jj_gen;
@@ -397,7 +402,7 @@ public class SSE_ParserCore extends ParserSSEBase implements SSE_ParserCoreConst
       jj_la1_1();
    }
    private static void jj_la1_0() {
-      jj_la1_0 = new int[] {0x2,0x2,0xa3e1db0,0x2,0x2,0x2,0x2,0x2200000,0xa3e1db0,0x81e1db0,0x0,0x8000180,0x1e1c00,0x1e0000,0x30,0x30000000,0x30000000,0x1c00,};
+      jj_la1_0 = new int[] {0x2,0x2,0xa3e1df0,0x2,0x2,0x2,0x2,0x2200000,0xa3e1df0,0x81e1df0,0x0,0x8000180,0x1e1c00,0x1e0000,0x30,0x30000000,0x30000000,0x1c00,};
    }
    private static void jj_la1_1() {
       jj_la1_1 = new int[] {0x0,0x0,0x180,0x0,0x0,0x0,0x0,0x0,0x180,0x180,0x180,0x0,0x0,0x0,0x0,0x0,0x0,0x0,};

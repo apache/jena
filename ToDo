@@ -28,6 +28,8 @@
   ?? use a factory list, including tests with no recorded results.
   ?? Could simply factory to have .create() return null for "no".
 
++ Initial binding for UpdateRequest
+
 == Core
 
 + ResultsFormat (output)vs ResultSetFormat (input)

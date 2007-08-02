@@ -31,7 +31,7 @@ public class StageGenPropertyFunction implements StageGenerator
      *  those that are property functions and those that are not.
      *  Calls <code>other</code> on each block of non-property function triples.
      *  Merges the results with StagePropertyFunctions to produce an overall
-     *  StageList   
+     *  StageList.
      *  */
     public StageGenPropertyFunction(StageGenerator other)
     {
@@ -43,45 +43,48 @@ public class StageGenPropertyFunction implements StageGenerator
     {
         if ( pattern.isEmpty() )
             return new StageList() ;
-        return process(execCxt.getContext(), pattern) ;
+        
+        boolean doingMagicProperties = execCxt.getContext().isTrue(ARQ.enablePropertyFunctions) ;
+        if ( ! doingMagicProperties )
+            return other.compile(pattern, execCxt) ;
+        
+        return process(pattern, other, execCxt) ;
     }
     
-    // From StageProcessorFunc which can be removed later.
     // ---------------------------------------------------------------------------------
     // Split into Stages of triples and property functions.
     
-    private static StageList process(Context context, BasicPattern pattern)
+    private static StageList process(BasicPattern pattern, StageGenerator other, ExecutionContext execCxt)
     {
-        boolean doingMagicProperties = context.isTrue(ARQ.enablePropertyFunctions) ;
+        Context context = execCxt.getContext() ;
         PropertyFunctionRegistry registry = chooseRegistry(context) ;
     
         // 1/ Find property functions.
-        //   Property functions may involve other triples (for list arguments)
+        //    Property functions may involve other triples (for list arguments)
         // 2/ Make the property function elements, remove associated triples
-        //   (but leave the proprty function triple in-place as a marker)
-        // 3/ For remaining triples, put into blocks.
+        //    (but leave the proprty function triple in-place as a marker)
+        // 3/ For remaining triples, put into blocks, call the other generator for each block.
         
-        StageList stages = new StageList() ;                // The elements of the BGP execution
         List propertyFunctionTriples = new ArrayList() ;    // Property functions seen
         BasicPattern triples = new BasicPattern() ;         // All triples (mutated)
         
-        findPropetryFunctions(context, pattern, 
-                              doingMagicProperties, registry,
-                              triples, propertyFunctionTriples) ;
+        findPropetryFunctions(context, pattern, registry, triples, propertyFunctionTriples) ;
         
         Map pfStages = new HashMap() ;
+        // Removes triples of list arguments.
         makePropetryFunctions(context, registry, pfStages, triples, propertyFunctionTriples) ;
         
-        makeStages(context, stages, pfStages, triples, propertyFunctionTriples) ;
+        StageList stages = new StageList() ;                // The elements of the BGP execution
+        makeStages(context, other, stages, pfStages, triples, propertyFunctionTriples, execCxt) ;
         return stages ;
     }
 
     private static void findPropetryFunctions(Context context, BasicPattern pattern,
-                                              boolean doingMagicProperties,
                                               PropertyFunctionRegistry registry,
                                               BasicPattern triples, List propertyFunctionTriples)
     {
         // Stage 1 : find property functions (if any); collect triples.
+        // Not list arg triples atthis point.
         for ( Iterator iter = pattern.iterator() ; iter.hasNext() ; )
         {
             Object obj = iter.next() ;
@@ -94,7 +97,7 @@ public class StageGenPropertyFunction implements StageGenerator
                 
             Triple t = (Triple)obj ;
             triples.add(t) ;
-            if ( doingMagicProperties && isMagicProperty(registry, t) )
+            if ( isMagicProperty(registry, t) )
                 propertyFunctionTriples.add(t) ;
         }
     }
@@ -103,7 +106,9 @@ public class StageGenPropertyFunction implements StageGenerator
                                               PropertyFunctionRegistry registry, Map pfStages, 
                                               BasicPattern triples, List propertyFunctionTriples)
     {
-        // Stage 2 : for each property function, make element and remove associated triples
+        // Stage 2 : for each property function, make element
+        // Remove associated triples in list arguments; leave the propertyFunction triple itself.
+        // Build map property function triple => stage.
         for ( Iterator iter = propertyFunctionTriples.iterator() ; iter.hasNext(); )
         {
             Triple pf = (Triple)iter.next();
@@ -119,11 +124,11 @@ public class StageGenPropertyFunction implements StageGenerator
         }
     }
 
-    private static void makeStages(Context context,
+    private static void makeStages(Context context, StageGenerator other,
                                    StageList stages, 
                                    Map pfStages, 
                                    BasicPattern triples,
-                                   List propertyFunctionTriples)
+                                   List propertyFunctionTriples, ExecutionContext execCxt)
     {
         // Stage 3 : make line up the stages.
         //   For each property function, insert the implementation 
@@ -136,24 +141,30 @@ public class StageGenPropertyFunction implements StageGenerator
             
             if ( propertyFunctionTriples.contains(t) )
             {
+                flush(pattern, stages, other, execCxt) ;
+                pattern = null ;       // Flush any current BasicPattern
                 // It's a property function stage.
                 Stage stage = (Stage)pfStages.get(t) ;
                 stages.add(stage) ;
-                pattern = null ;       // Unset any current BasicPattern
                 continue ;
             }                
                 
             // Regular triples - make sure there is a basic pattern in progress. 
             if ( pattern == null )
-            {
                 pattern = new BasicPattern() ;
-                Stage basicStage = new StageBasic(pattern) ;
-                stages.add(basicStage) ;
-            }
-            pattern.add(t) ;         // Plain triple
+            pattern.add(t) ;
         }
+        flush(pattern, stages, other, execCxt) ;
     }
     
+    private static void flush(BasicPattern pattern, StageList stages, StageGenerator other, ExecutionContext execCxt)
+    {
+        if ( pattern == null || pattern.isEmpty() )
+            return  ;
+        StageList sl = other.compile(pattern, execCxt) ;
+        stages.addAll(sl) ;
+    }
+
     private static PropertyFunctionRegistry chooseRegistry(Context context)
     {
         PropertyFunctionRegistry registry = PropertyFunctionRegistry.get(context) ;

@@ -136,7 +136,9 @@ public class qparse extends CmdARQ
             //System.err.println(qEx.getMessage()) ;
             throw new CmdException("Query Exeception", qEx) ;
         }
-        catch (JenaException ex) { throw ex ; } 
+        catch (JenaException ex) { 
+            ex.printStackTrace() ;
+            throw ex ; } 
         catch (CmdException ex) { throw ex ; } 
         catch (Exception ex)
         {

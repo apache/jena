@@ -29,8 +29,8 @@ public class StageBuilder
         QueryIterator qIter = sList.build(input, execCxt) ;
         
         // Remove nondistinguished variables here.
-        // Can't do at any one stage because two stages may share a 
-        // nondistinguished variable.
+        // Can't do at any one stage because two stages 
+        // may share a nondistinguished variable.
         if ( hideBNodeVars )
             qIter = new QueryIterDistinguishedVars(qIter, execCxt) ;
         return qIter ;
