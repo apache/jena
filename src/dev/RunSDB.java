@@ -32,8 +32,8 @@ public class RunSDB
 //        SDBConnection.logSQLStatements = true ;
         
         
-        setSDBConfig("sdb.ttl") ;
-        sdbconfig("--create") ;
+        setSDBConfig("../SDB-dev/sdb-LUBM-hash.ttl") ;
+        sdbdump("--set=jdbcStream=true", "--set=jdbcFetchSize=10") ;
         System.exit(0) ;
         
 //        

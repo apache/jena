@@ -170,8 +170,6 @@ public class QC
     
     public static QueryIterator exec(OpSQL opSQL, SDBRequest request, Binding binding, ExecutionContext execCxt)
     {
-        int fetchSize = Integer.MIN_VALUE ;
-        
         String sqlStmtStr = toSqlString(opSQL, request) ;
         
         if ( PrintSQL )
@@ -181,23 +179,19 @@ public class QC
         if ( execCxt != null )
             str = execCxt.getContext().getAsString(SDB.jdbcFetchSize) ;
         
+        int fetchSize = Integer.MIN_VALUE ;
+        
         if ( str != null )
             try { fetchSize = Integer.parseInt(str) ; }
             catch (NumberFormatException ex)
             { log.warn("Bad number for fetch size: "+str) ; }
         
         try {
-//            if ( ! fetchPrint && fetchSize > 0 )
-//            {
-//                log.info("Fetch size = "+fetchSize) ;
-//                fetchPrint = true ;
-//            }
             java.sql.ResultSet jdbcResultSet = request.getStore().getConnection().execQuery(sqlStmtStr, fetchSize) ;
-            log.info("After execQuery") ;
             try {
                 // And check this is called once per SQL.
                 if ( opSQL.getBridge() == null )
-                    System.err.println("Null bridge") ;
+                    log.fatal("Null bridge") ;
                 return opSQL.getBridge().assembleResults(jdbcResultSet, binding, execCxt) ;
             } finally {
                 // ResultSet closed inside assembleResults or by the iterator returned.

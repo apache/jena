@@ -92,11 +92,8 @@ public class SDBConnection
 
         try {
             Statement s = conn.createStatement() ; // Not closed - happens when result set closed
-//            if ( fetchSize >= 0 )
-//            {
-//                log.info("Setting the fetch size") ;
-//                s.setFetchSize(fetchSize) ;
-//            }
+            if ( fetchSize >= 0 )
+                s.setFetchSize(fetchSize) ;
             return s.executeQuery(sqlString) ;
         } catch (SQLException ex)
         {
