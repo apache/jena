@@ -86,6 +86,11 @@ public abstract class SQLBridgeBase implements SQLBridge
             return new QueryIterSQL(rs, binding, execCxt) ;
         }
         
+        if ( ! printFlag )
+        {
+            LogFactory.getLog(SQLBridgeBase.class).info("No stream") ;
+            printFlag = true ;
+        }
         // Debugging or problems with unreleasing JDBC ResultSets - read all in now.
         QueryIterator qIter = new QueryIterSQL(rs, binding, execCxt) ;
         List<Binding> results = new ArrayList<Binding>() ;
