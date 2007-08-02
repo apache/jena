@@ -124,9 +124,9 @@ void PrefixedName() : { Token t ; }
 void Var() : { Token t ; }
 {
   // Includes "?" as a variable for anon variables.
-  // Includes special variables from ARQ eg ?%0 
-//  ( t = <VAR1> | t = <VAR2> | t = <VAR3> | t = <HOOK> )
-  t = <VAR>
+  // Includes non-distinguished variables as ??0
+
+  ( t = <VAR_N> | t = <VAR_ND> )
   { emitVar(t.beginLine, t.beginColumn, stripChars(t.image, 1)) ; }
 }
 

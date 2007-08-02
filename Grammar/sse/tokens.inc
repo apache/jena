@@ -22,7 +22,8 @@ TOKEN:
    <IRIref: "<" (~[">","<","\u0000"-"\u0020"])* ">" >
 |  <PNAME: (<PN_PREFIX>)? ":" (<PN_LOCAL>)? >
 |  <BLANK_NODE_LABEL: "_:" <PN_LOCAL> >
-|  <VAR: ("?"|"$")(<SYMBOL>)?>
+|  <VAR_N:   "?" (<VARNAME>)?>      // Named variable - allows no name
+|  <VAR_ND:  "??"(<VARNAME>)?>      // Non-distinguished variable (BNode in SPARQL)
 }
 
 TOKEN :
@@ -105,12 +106,11 @@ TOKEN:
 |
   // With a leading "_", no dot at end of local name.
   <#PN_LOCAL: (<PN_CHARS_U> | ["0"-"9"]) ((<PN_CHARS>|".")* <PN_CHARS>)?  >
-// Variables are more general.
-// |
-//   // NCNAME without "-" and ".", allowing leading digits.
-//   <#VARNAME: ( <PN_CHARS_U> | ["0"-"9"] )
-//              ( <PN_CHARS_U> | ["0"-"9"] | "\u00B7" |
-//                ["\u0300"-"\u036F"] | ["\u203F"-"\u2040"] )* >
+|
+  // NCNAME without "-" and ".", allowing leading digits.
+  <#VARNAME: ( <PN_CHARS_U> | ["0"-"9"] )
+             ( <PN_CHARS_U> | ["0"-"9"] | "\u00B7" |
+               ["\u0300"-"\u036F"] | ["\u203F"-"\u2040"] )* >
 
 
 }

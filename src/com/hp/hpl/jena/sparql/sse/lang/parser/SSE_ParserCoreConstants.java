@@ -15,37 +15,39 @@ public interface SSE_ParserCoreConstants {
   int IRIref = 4;
   int PNAME = 5;
   int BLANK_NODE_LABEL = 6;
-  int VAR = 7;
-  int DIGITS = 8;
-  int INTEGER = 9;
-  int DECIMAL = 10;
-  int DOUBLE = 11;
-  int EXPONENT = 12;
-  int QUOTE_3D = 13;
-  int QUOTE_3S = 14;
-  int ECHAR = 15;
-  int STRING_LITERAL1 = 16;
-  int STRING_LITERAL2 = 17;
-  int STRING_LITERAL_LONG1 = 18;
-  int STRING_LITERAL_LONG2 = 19;
-  int LPAREN = 20;
-  int RPAREN = 21;
-  int LBRACE = 22;
-  int RBRACE = 23;
-  int LBRACKET = 24;
-  int RBRACKET = 25;
-  int DATATYPE = 26;
-  int LANGTAG = 27;
-  int AT = 28;
-  int A2Z = 29;
-  int A2ZN = 30;
-  int PN_CHARS_BASE = 31;
-  int PN_CHARS_U = 32;
-  int PN_CHARS = 33;
-  int PN_PREFIX = 34;
-  int PN_LOCAL = 35;
-  int SYMBOL = 36;
-  int UNKNOWN = 37;
+  int VAR_N = 7;
+  int VAR_ND = 8;
+  int DIGITS = 9;
+  int INTEGER = 10;
+  int DECIMAL = 11;
+  int DOUBLE = 12;
+  int EXPONENT = 13;
+  int QUOTE_3D = 14;
+  int QUOTE_3S = 15;
+  int ECHAR = 16;
+  int STRING_LITERAL1 = 17;
+  int STRING_LITERAL2 = 18;
+  int STRING_LITERAL_LONG1 = 19;
+  int STRING_LITERAL_LONG2 = 20;
+  int LPAREN = 21;
+  int RPAREN = 22;
+  int LBRACE = 23;
+  int RBRACE = 24;
+  int LBRACKET = 25;
+  int RBRACKET = 26;
+  int DATATYPE = 27;
+  int LANGTAG = 28;
+  int AT = 29;
+  int A2Z = 30;
+  int A2ZN = 31;
+  int PN_CHARS_BASE = 32;
+  int PN_CHARS_U = 33;
+  int PN_CHARS = 34;
+  int PN_PREFIX = 35;
+  int PN_LOCAL = 36;
+  int VARNAME = 37;
+  int SYMBOL = 38;
+  int UNKNOWN = 39;
 
   int DEFAULT = 0;
   int LITERAL = 1;
@@ -58,7 +60,8 @@ public interface SSE_ParserCoreConstants {
     "<IRIref>",
     "<PNAME>",
     "<BLANK_NODE_LABEL>",
-    "<VAR>",
+    "<VAR_N>",
+    "<VAR_ND>",
     "<DIGITS>",
     "<INTEGER>",
     "<DECIMAL>",
@@ -87,6 +90,7 @@ public interface SSE_ParserCoreConstants {
     "<PN_CHARS>",
     "<PN_PREFIX>",
     "<PN_LOCAL>",
+    "<VARNAME>",
     "<SYMBOL>",
     "<UNKNOWN>",
   };
