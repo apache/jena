@@ -5,6 +5,8 @@ SDB ToDo list (and general notes)
 
 + Revisit generating SQL for nested DISTINCT
 
++ JDBC statement management in execQuery
+
 + Setting options for testing.
 + Tests for union graphs. 
 + Use cursors for streaming / PostgreSQL

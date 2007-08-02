@@ -14,7 +14,7 @@ import arq.cmdline.ArgDecl;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.sdb.SDB;
-import com.hp.hpl.jena.sdb.junit.QueryTestSDBFactory;
+import com.hp.hpl.jena.sdb.test.junit.QueryTestSDBFactory;
 import com.hp.hpl.jena.sparql.junit.EarlReport;
 import com.hp.hpl.jena.sparql.junit.QueryTestSuiteFactory;
 import com.hp.hpl.jena.sparql.junit.SimpleTestRunner;
