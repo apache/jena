@@ -10,6 +10,8 @@ import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.Resource;
+import com.hp.hpl.jena.sparql.engine.main.StageGenPropertyFunction;
+import com.hp.hpl.jena.sparql.engine.main.StageGenerator;
 import com.hp.hpl.jena.sparql.util.QueryExecUtils;
 import com.hp.hpl.jena.sparql.util.StringUtils;
 
@@ -46,21 +48,29 @@ public class StageAltMain
         // is cloned when a query execution object (query engine) is
         // created.
         
+        StageGenerator stageGenAlt = new StageGeneratorAlt() ;
+        
+        // Wrap in a stage generator that handles property functions -
+        // stageGenAlt wil be called on sequences of triples that are
+        // not property functions. 
+        
+        StageGenerator stageGenerator = new StageGenPropertyFunction(stageGenAlt) ;
+        
         // The normal stage generator is registerd in the global context.
         // This can be replaced, so that every query execution uses the
         // alternative stage generator, or the cloned context can be
         // alter so that just one query execution is affected.
 
-        // Change teh stage generator for all quereis ...
+        // Change the stage generator for all queries ...
         if ( false )
-            ARQ.getContext().set(ARQ.stageGenerator, new StageGeneratorAlt()) ;
+            ARQ.getContext().set(ARQ.stageGenerator, stageGenerator) ;
         
         Query query = QueryFactory.create( StringUtils.join("\n", queryString)) ;
         QueryExecution engine = QueryExecutionFactory.create(query, makeData()) ;
         
         // ... or set on a per-execution basis.
         if ( true )
-            engine.getContext().set(ARQ.stageGenerator, new StageGeneratorAlt()) ;
+            engine.getContext().set(ARQ.stageGenerator, stageGenerator) ;
         
         QueryExecUtils.executeQuery(query, engine) ;
     }

@@ -17,7 +17,7 @@ import com.hp.hpl.jena.sparql.engine.main.StageGenerator;
 import com.hp.hpl.jena.sparql.engine.main.StageList;
 
 /** Example stage generator that compiles a BasicPattern into a sequence of
- *  individual triple pattern stages.  No property functions considered.
+ *  individual triple pattern stages.
  */   
 
 public class StageGeneratorAlt implements StageGenerator
@@ -29,7 +29,7 @@ public class StageGeneratorAlt implements StageGenerator
         
         if ( false )
         {
-            // Illustrative -- call the usual one (no property functions)
+            // Illustrative -- call the most baic one one (no property functions)
             StageList sList = new StageList() ;
             sList.add(new StageBasic(pattern)) ;
             return sList ;
