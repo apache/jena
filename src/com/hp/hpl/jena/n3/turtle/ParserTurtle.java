@@ -36,10 +36,14 @@ public class ParserTurtle
             parser.setBaseURI(baseURI) ;
             parser.parse() ;
         }
+
         catch (ParseException ex)
         { throw new TurtleParseException(ex.getMessage()) ; }
+
         catch (TokenMgrError tErr)
         { throw new TurtleParseException(tErr.getMessage()) ; }
+
+        catch (TurtleParseException ex) { throw ex ; }
         
         catch (JenaException ex)  { throw new TurtleParseException(ex.getMessage(), ex) ; }
         catch (Error err)

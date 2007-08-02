@@ -177,7 +177,7 @@ public class ParserBase
     protected String resolvePName(String qname, int line, int column)
     {
         String s = prefixMapping.expandPrefix(qname) ;
-        if ( s == null )
+        if ( s == null || s.equals(qname) )
             throwParseException("Unresolved prefixed name: "+qname, line, column) ;
         return s ;
     }

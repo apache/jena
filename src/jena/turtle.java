@@ -6,6 +6,9 @@
 
 package jena;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.io.Reader;
 
 import com.hp.hpl.jena.n3.turtle.TurtleEventDump;
@@ -21,19 +24,51 @@ public class turtle
     /** Run the Turtle parser in debugging mode */  
     public static void main(String[] args)
     {
-        String filename = args[0] ;
-        Reader reader = FileUtils.readerFromURL(filename) ;
 
+        for ( int i = 0 ; i < args.length ; i++ )
+        {
+            String fn = args[i] ;
+            parse(fn, "http://base/") ;
+        }
+    }        
+
+
+    public static void parse(String baseURI, String filename)
+    {
+        InputStream in = null ;
+        try {
+            in = new FileInputStream(filename) ;
+        } catch (FileNotFoundException ex)
+        {
+            System.err.println("File not found: "+filename) ;
+            return ;
+        }
+        parse(baseURI, in) ;
+    }
+
+
+    public static void parse(String baseURI, InputStream in)
+    {
+        Reader reader = FileUtils.asUTF8(in) ;
+        parseDebug(baseURI, reader) ;
+    }
+
+
+    public static void parseDebug(String baseURI, Reader reader)
+    {
+        // Nasty things happen if the reader is not UTF-8.
         try {
             TurtleParser parser = new TurtleParser(reader) ;
             parser.setEventHandler(new TurtleEventDump()) ;
-            parser.setBaseURI(filename) ;
+            parser.setBaseURI(baseURI) ;
             parser.parse() ;
         }
         catch (ParseException ex)
         { throw new TurtleParseException(ex.getMessage()) ; }
         catch (TokenMgrError tErr)
         { throw new TurtleParseException(tErr.getMessage()) ; }
+
+        catch (TurtleParseException ex) { throw ex ; }
 
         catch (JenaException ex)  { throw new TurtleParseException(ex.getMessage(), ex) ; }
         catch (Error err)
