@@ -2,9 +2,9 @@
 <head>
 <title>inside assemblers</title>
 
-<link href="../styles/doc.css" rel="stylesheet" type="text/css"></link>
-<link class="text/css" href="assembler-style.css" rel="stylesheet"></link>
-<script src="library.js" type="text/javascript">
+<link rel="stylesheet" type="text/css" href="../styles/doc.css" />
+<link rel="stylesheet" class="text/css" href="assembler-style.css" />
+<script type="text/javascript" src="library.js">
 </script>
 
 </head>
@@ -15,8 +15,169 @@
 This document describes Jena's built-in assembler classes and
 how to write and integrate your own assemblers. If you just need 
 a quick guide to the common model specifications, see the
-<a href="index.html">assembler quickstart</a>.
+<a href="index.html">assembler quickstart</a>; if you want
+mroe details on writing assembler descriptions, see the
+<a href="assembler-howto.html">assembler howto</a>.
 </p>
+
+<h1>the Assembler interface</h1>
+
+<p>
+An <code>Assembler</code> is an object that builds objects
+(most importantly, <code>Model</code>s) from RDF descriptions.
+
+<pre>
+public Object open( Assembler a, Resource root, Mode mode );
+
+public Object open( Assembler a, Resource root );
+
+public Object open( Resource root );
+
+public Model openModel( Resource root );
+
+public Model openModel( Resource root, Mode mode );
+</pre>
+
+The fundamental method is the first: all the others are 
+shorthands for ways of calling it. The abstract class
+<code>AssemblerBase</code> implements <code>Assembler</code>
+leaving only that method abstract and defining the others
+in terms of it.
+</p>
+
+<p>
+The definition of 
+<code>a.open(Assembler sub, Resource root, Mode mode)</code>
+is that <code>a</code> will construct the object described by
+the properties of <code>root</code>. If this requires the
+construction of sub-objects from descriptions hanging off
+<code>root</code>, <code>sub.open</code> is to be used to construct 
+those. If the object is to be constructed in some persistent
+store, <code>mode</code> defines whether objects can be re-used
+or created: see <a href="#modes">modes</a> for more details.
+</p>
+
+<h1>builtin assemblers</h1>
+
+<p>
+Jena comes with a collection of built-in assemblers: a bunch
+of <i>basic assemblers</i> and a composite <i>general assembler</i>.
+Each of these assemblers has a constant instance declared as a
+field of <code>Assembler</code>.
+</p>
+
+<table class="framed" align="center">
+  <thead>
+    <tr><th>assembler</th><th>result class</th><th>Type</th><th>constant</th></tr>
+  </thead>
+
+
+</table>
+
+<pre>
+ConnectionAssembler
+ContentAssembler
+DefaultModelAssembler
+DocumentManagerAssembler
+FileManagerAssembler
+FileModelAssembler
+InfModelAssembler
+LocationMappingAssembler
+MemoryModelAssembler
+ModelAssemebler
+ModelSourceAssembler
+NamedModelAssembler
+OntModelAssembler
+OntModelSpecAssembler
+PrefixMappingAssembler
+RDBModelAssembler
+ReasonerFactoryAssembler
+RuleSetAssembler
+UnionModelAssembler
+
+AssemblerGroup
+</pre>
+
+<table class='framed' align='center'>
+<thead>
+    <tr><th>produces</th><th>Class</th><th>Type</th><th>constant</th></tr>
+</thead>
+<tbody>
+<tr>
+    <td>default models</td>
+    <td>DefaultModelAssembler</td>
+    <td>ja:DefaultModel</td>
+    <td>defaultModel</td>
+</tr>
+<tr>
+    <td>memory models</td>
+    <td>MemoryModelAssembler</td>
+    <td>ja:MemoryModel</td>
+    <td>memoryModel</td>
+</tr>
+<tr>
+    <td>inference models</td>
+    <td>InfModelAssembler</td>
+    <td>ja:InfModel</td>
+    <td>infModel</td>
+</tr>
+<tr>
+    <td>RDB models</td>
+    <td>RDBModelAssembler</td>
+    <td>ja:RDBModel</td>
+    <td>rdbModel</td>
+</tr>
+<tr>
+    <td>reasoners</td>
+    <td>ReasonerAssembler</td>
+    <td>ja:Reasoner</td>
+    <td>reasoner</td>
+</tr>
+<tr>
+    <td>connection descriptions</td>
+    <td>ConnectionAssembler</td>
+    <td>ja:Connection</td>
+    <td>connection</td>
+</tr>
+<tr>
+    <td>content</td>
+    <td>ContentAssembler</td>
+    <td>ja:Content</td>
+    <td>content</td>
+</tr>
+<tr>
+    <td>ontology models</td>
+    <td>OntModelAssembler</td>
+    <td>ja:OntModel</td>
+    <td>ontModel</td>
+</tr>
+<tr>
+    <td>rules</td>
+    <td>RuleSetAssembler</td>
+    <td>ja:RuleSet</td>
+    <td>rules</td>
+</tr>
+<tr>
+    <td>union models</td>
+    <td>UnionModelAssembler</td>
+    <td>ja:UnionModel</td>
+    <td>unionModel</td>
+</tr>
+<tr>
+    <td>prefix mappings</td>
+    <td>PrefixMappingAssembler</td>
+    <td>ja:PrefixMapping</td>
+    <td>prefixMapping</td>
+</tr>
+<tr>
+    <td>file models</td>
+    <td>FileModelAssembler</td>
+    <td>ja:FileModel</td>
+    <td>fileModel</td>
+</tr>
+</tbody>
+</table>
+
 <h1>inside Assemblers</h1>
 
 <p><code>Assembler.general</code> is a particular implementation of
@@ -25,7 +186,7 @@ how to build the objects -- not just models -- described by an Assembler
 specification. The normal route into an Assembler is through the method:
 
 <ul>
-<li>open( Resource root ) ? Object</li>
+<li>open( Resource root ) &rarr; Object</li>
 </ul>
 
 The Assembler inspects the <code>root</code> resource properties and
@@ -38,7 +199,7 @@ object.
 Assemblers, there is a convenience wrapper method:
 
 <ul>
-<li>openModel( Resource root ) ? Model</li>
+<li>openModel( Resource root ) &rarr; Model</li>
 </ul>
 
 which constructs the object and checks that it's a Model before
@@ -50,7 +211,7 @@ when an InfModel Assembler requires a Reasoner object), it uses the
 method:
 
 <ul>
-<li>open( Assembler sub, Resource root ) ? Model</li>
+<li>open( Assembler sub, Resource root ) &rarr; Model</li>
 </ul>
 
 passing in a suitable Assembler object. In fact the standard implementation
@@ -164,7 +325,7 @@ in <code>Assembler</code> for (an instance of) each of these basic
 assembler classes.
 </p>
 
-<table align="center" class="framed">
+<table class='framed' align='center'>
 <thead>
     <tr><th>produces</th><th>Class</th><th>Type</th><th>constant</th></tr>
 </thead>
@@ -265,7 +426,7 @@ of <code>AssemblerGroup</code>.
 content to models. A Content object has the method:
 
 <ul>
-<li>fill( Model m ) ? m</li>
+<li>fill( Model m ) &rarr; m</li>
 </ul>
 
 Invoking the <code>fill</code> method adds the represented content to
@@ -313,8 +474,8 @@ bundled together and selected by RDF type. AssemblerGroup implements
 Assembler and adds the methods:</p>
 
 <ul>
-<li>implementWith( Resource type, Assembler a ) ? this</li>
-<li>assemblerFor( Resource type ) ? Assembler</li>
+<li>implementWith( Resource type, Assembler a ) &rarr; this</li>
+<li>assemblerFor( Resource type ) &rarr; Assembler</li>
 </ul>
 
 <p>AssemblerGroup's implementation of <code>open(sub,root)</code>
@@ -346,5 +507,5 @@ object, that constructor is used to initialise the class, passing in the
 <code>type</code> subject of the triple. Otherwise the no-argument
 constructor of the class is used.
 </p>
-
-</body></html>
+</body>
+</html>

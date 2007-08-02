@@ -1,6 +1,6 @@
 # (c) Copyright 2005 Hewlett-Packard Development Company, LP
 # All rights reserved.
-# $Id: assembler.n3,v 1.13 2007-07-24 15:32:39 chris-dollin Exp $
+# $Id: assembler.n3,v 1.14 2007-08-02 13:42:03 chris-dollin Exp $
 
 @prefix rdf:        <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs:       <http://www.w3.org/2000/01/rdf-schema#> .
@@ -106,7 +106,7 @@ ja:HasFileManager a rdfs:Class
 	.
 
 ja:Content a rdfs:Class
-    ; rdfs:subClassOf ja:Object, ja:HasFileManager
+    ; rdfs:subClassOf ja:HasFileManager
     ; rdfs:label "Assembler.Content"
     ; rdfs:comment "content to be loaded into a Loadable"
     .
@@ -274,7 +274,6 @@ ja:connection a rdf:Property
     .
 
 ja:ModelSource a rdfs:Class
-    ; rdfs:subClassOf ja:Object
     ; rdfs:subClassOf ja:Connectable
     ; rdfs:label "Assembler.ModelSource"
     ; rdfs:comment "Source of models by name for an OntModelSpec"
@@ -324,7 +323,7 @@ ja:baseModel a rdf:Property
 #
 
 ja:ReasonerFactory a rdfs:Class
-    ; rdfs:subClassOf ja:Object, ja:HasRules
+    ; rdfs:subClassOf ja:HasRules
     ; rdfs:subClassOf [owl:onProperty ja:ReasonerURL; owl:maxCardinality 1]
     ; rdfs:label "Assembler.ReasonerFactory"
     ; rdfs:comment
@@ -376,7 +375,6 @@ ja:HasRules a rdfs:Class
     .
 
 ja:RuleSet a rdfs:Class
-    ; rdfs:subClassOf ja:Object
     ; rdfs:subClassOf ja:HasRules
     ; rdfs:label "Assembler.RuleSet"
     ; rdfs:comment
@@ -446,7 +444,6 @@ ja:locationMapper a rdf:Property
     .
 
 ja:DocumentManager a rdfs:Class
-    ; rdfs:subClassOf ja:Object
 	; rdfs:subClassOf ja:HasFileManager
     ; rdfs:subClassOf [owl:onProperty ja:fileManager; owl:maxCardinality 1]
     ; rdfs:subClassOf [owl:onProperty ja:policyPath; owl:maxCardinality 1]

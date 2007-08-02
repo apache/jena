@@ -3,13 +3,21 @@ Release Notes
 
 ==== Jena 2.5.4
 
+Graph
+    o Graph has grown a new method, getStatisticsHandler
+    o null is an acceptable result
+    o Graphs that extend GraphBase have this defined for them
+    o It is intended for the ARQ optimiser optimising in-memory graphs
+
 Assemblers
     o ContentAssembler now respects the fileManager property for external
       content.
+    o withFullModel now does subclass closure (as it should have done)
+    o the code for findSpecificType is now better
 
 N3 & Turtle Writer
     o Correct writing nested bnodes with no properties to make strict Turtle.
-    o No longer automatcally add default namespace prefix. 
+    o No longer automatically add default namespace prefix. 
     
 Reasoners
     o Added rebindAll() to FBRuleInfGraph    

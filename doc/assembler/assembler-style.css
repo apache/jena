@@ -21,9 +21,16 @@ table.framed
     border-spacing: 2px;
     border-style: solid;
     border-color: black;
-    border-collapse: separate;
+    border-collapse: collapse;
     }
-    
+
+table.framed th
+    { background-color: lightGray
+    }
+
+table.framed td
+    { text-align: left }
+
 .show-property
     {
     text-indent: 2em

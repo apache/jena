@@ -13,10 +13,278 @@
 
 <p>
 This document describes Jena's built-in assembler classes and
-how to write and integrate your own assemblers. If you just need 
+how to write and integrate your own assemblers. If you just need
 a quick guide to the common model specifications, see the
-<a href="index.html">assembler quickstart</a>.
+<a href="index.html">assembler quickstart</a>; if you want
+mroe details on writing assembler descriptions, see the
+<a href="assembler-howto.html">assembler howto</a>.
 </p>
+
+<h1>the Assembler interface</h1>
+
+<p>
+An <code>Assembler</code> is an object that builds objects
+(most importantly, <code>Model</code>s) from RDF descriptions.
+
+<pre>
+public Object open( Assembler a, Resource root, Mode mode );
+
+public Object open( Assembler a, Resource root );
+
+public Object open( Resource root );
+
+public Model openModel( Resource root );
+
+public Model openModel( Resource root, Mode mode );
+</pre>
+
+The fundamental method is the first: all the others are
+shorthands for ways of calling it. The abstract class
+<code>AssemblerBase</code> implements <code>Assembler</code>
+leaving only that method abstract and defining the others
+in terms of it.
+</p>
+
+<p>
+The definition of
+<code>a.open(Assembler sub, Resource root, Mode mode)</code>
+is that <code>a</code> will construct the object described by
+the properties of <code>root</code>. If this requires the
+construction of sub-objects from descriptions hanging off
+<code>root</code>, <code>sub.open</code> is to be used to construct
+those. If the object is to be constructed in some persistent
+store, <code>mode</code> defines whether objects can be re-used
+or created: see <a href="#modes">modes</a> for more details.
+</p>
+
+<h1>builtin assemblers</h1>
+
+<p>
+Jena comes with a collection of built-in assemblers: a bunch
+of <i>basic assemblers</i> and a composite <i>general assembler</i>.
+Each of these assemblers has a constant instance declared as a
+field of <code>Assembler</code>.
+</p>
+
+<table class="framed" align="center">
+  <thead>
+    <tr><th>assembler</th><th>result class</th><th>Type</th><th>constant</th></tr>
+  </thead>
+
+<tr>
+<td rowspan='10'>ConnectionAssembler[Resource root] ja:Connection ConnectionDescription</td><td>  dbUser String</td>
+</tr>
+<tr><td>  dbUser String</td></tr>
+<tr><td>  dbUserProperty String</td></tr>
+<tr><td>  dbPassword String</td></tr>
+<tr><td>  dbPasswordProperty String</td></tr>
+<tr><td>  dbURL String</td></tr>
+<tr><td>  dbURLProperty String</td></tr>
+<tr><td>  dbType String</td></tr>
+<tr><td>  dbTypeProperty</td></tr>
+<tr><td>  dbClass Class</td></tr>
+<tr><td>  dbClassProperty Class</td></tr>
+<tr>
+<td rowspan='5'>ContentAssembler[FileManager fm] ja:Content Content</td><td>  content *Content</td>
+</tr>
+<tr><td>  content *Content</td></tr>
+<tr><td>  externalContent Content</td></tr>
+<tr><td>  quotedContent Content</td></tr>
+<tr><td>  literalContent Content</td></tr>
+<tr><td>  contentEncoding String</td></tr>
+<tr>
+<td rowspan='5'>DefaultModelAssembler ja:DefaultModel Model</td><td>  /see/ ModelAssembler  </td>
+</tr>
+<tr><td>  /see/ ModelAssembler  </td></tr>
+<tr><td>  </td></tr>
+<tr><td>DocumentManagerAssembler ja:DocumentManager OntDocumentManager</td></tr>
+<tr><td>  policyPath String default [OntDocumentManager.DEFAULT_METADATA_PATH]</td></tr>
+<tr><td>  fileManager *FileManager</td></tr>
+<tr>
+<td rowspan='1'>FileManagerAssembler ja:FileManager FileManager</td><td>  locationMapper !LocationMapper</td>
+</tr>
+<tr><td>  locationMapper !LocationMapper</td></tr>
+<tr>
+<td rowspan='4'>FileModelAssembler ja:FileModel FileModel</td><td>  /see/ ModelAssembler</td>
+</tr>
+<tr><td>  /see/ ModelAssembler</td></tr>
+<tr><td>  fileEncoding String</td></tr>
+<tr><td>  mapName boolean</td></tr>
+<tr><td>  directory String</td></tr>
+<tr>
+<td rowspan='2'>InfModelAssembler ja:InfModel InfModel</td><td>  baseModel *Model</td>
+</tr>
+<tr><td>  baseModel *Model</td></tr>
+<tr><td>  reasoner *Reasoner</td></tr>
+<tr>
+<td rowspan='1'>LocationMappingAssembler ja:LocationMapper LocationMapper</td><td>  /see/ LocationMapper</td>
+</tr>
+<tr><td>  /see/ LocationMapper</td></tr>
+<tr>
+<td rowspan='1'>MemoryModelAssembler ja:MemoryModel Model</td><td>  /see/ ModelAssembler</td>
+</tr>
+<tr><td>  /see/ ModelAssembler</td></tr>
+<tr>
+<td rowspan='3'>ModelAssemebler ja:Model Model</td><td>  reificationModel ReificationStyle</td>
+</tr>
+<tr><td>  reificationModel ReificationStyle</td></tr>
+<tr><td>  /see/ PrefixMapping</td></tr>
+<tr><td>  /see/ Content</td></tr>
+<tr>
+<td rowspan='4'>ModelSourceAssembler ja:ModelSource ModelGetter</td><td>  connection *Connection</td>
+</tr>
+<tr><td>  connection *Connection</td></tr>
+<tr><td>  </td></tr>
+<tr><td>NamedModelAssembler [] Model</td></tr>
+<tr><td>  modelName String</td></tr>
+<tr>
+<td rowspan='3'>OntModelAssembler ja:OntModel OntModel</td><td>  /see/ InfModelAssembler</td>
+</tr>
+<tr><td>  /see/ InfModelAssembler</td></tr>
+<tr><td>  subModel *Model</td></tr>
+<tr><td>  ontModelSpec *OntModelSpec</td></tr>
+<tr>
+<td rowspan='5'>OntModelSpecAssembler ja:OntModelSpec OntModelSpec</td><td>  importSource *ModelGetter</td>
+</tr>
+<tr><td>  importSource *ModelGetter</td></tr>
+<tr><td>  ontLanguage String</td></tr>
+<tr><td>  reasonerURL ?ReasonerFactory</td></tr>
+<tr><td>  reasonerFactory *ReasonerFactory</td></tr>
+<tr><td>  documentManager *OntDocumentManager</td></tr>
+<tr>
+<td rowspan='2'>PrefixMappingAssembler ja:PrefixMapping PrefixMapping</td><td>  includes *PrefixMapping</td>
+</tr>
+<tr><td>  includes *PrefixMapping</td></tr>
+<tr><td>  prefix BNODE[prefix, namespace]</td></tr>
+<tr>
+<td rowspan='2'>RDBModelAssembler ja:RDBModel ModelRDB</td><td>  /see/ NamedModelAssembler</td>
+</tr>
+<tr><td>  /see/ NamedModelAssembler</td></tr>
+<tr><td>  connection *ConnectionDescription</td></tr>
+<tr>
+<td rowspan='3'>ReasonerFactoryAssembler ja:ReasonerFactory ReasonerFactory</td><td>  reasonerURL ReasonerFactory</td>
+</tr>
+<tr><td>  reasonerURL ReasonerFactory</td></tr>
+<tr><td>  reasonerClass Class</td></tr>
+<tr><td>  /see/ RuleSetAssembler</td></tr>
+<tr>
+<td rowspan='3'>RuleSetAssembler ja:RuleSet RuleSet</td><td>  rules *RuleSet</td>
+</tr>
+<tr><td>  rules *RuleSet</td></tr>
+<tr><td>  rulesFrom URL for rules</td></tr>
+<tr><td>  rule String rule</td></tr>
+<tr>
+<td rowspan='2'>UnionModelAssembler ja:UnionModel Model</td><td>  rootModel *Model</td>
+</tr>
+<tr><td>  rootModel *Model</td></tr>
+<tr><td>  subModel *Model</td></tr>
+
+</table>
+
+<pre>
+ConnectionAssembler
+ContentAssembler
+DefaultModelAssembler
+DocumentManagerAssembler
+FileManagerAssembler
+FileModelAssembler
+InfModelAssembler
+LocationMappingAssembler
+MemoryModelAssembler
+ModelAssemebler
+ModelSourceAssembler
+NamedModelAssembler
+OntModelAssembler
+OntModelSpecAssembler
+PrefixMappingAssembler
+RDBModelAssembler
+ReasonerFactoryAssembler
+RuleSetAssembler
+UnionModelAssembler
+
+AssemblerGroup
+</pre>
+
+<table class='framed' align='center'>
+<thead>
+    <tr><th>produces</th><th>Class</th><th>Type</th><th>constant</th></tr>
+</thead>
+<tbody>
+<tr>
+    <td>default models</td>
+    <td>DefaultModelAssembler</td>
+    <td>ja:DefaultModel</td>
+    <td>defaultModel</td>
+</tr>
+<tr>
+    <td>memory models</td>
+    <td>MemoryModelAssembler</td>
+    <td>ja:MemoryModel</td>
+    <td>memoryModel</td>
+</tr>
+<tr>
+    <td>inference models</td>
+    <td>InfModelAssembler</td>
+    <td>ja:InfModel</td>
+    <td>infModel</td>
+</tr>
+<tr>
+    <td>RDB models</td>
+    <td>RDBModelAssembler</td>
+    <td>ja:RDBModel</td>
+    <td>rdbModel</td>
+</tr>
+<tr>
+    <td>reasoners</td>
+    <td>ReasonerAssembler</td>
+    <td>ja:Reasoner</td>
+    <td>reasoner</td>
+</tr>
+<tr>
+    <td>connection descriptions</td>
+    <td>ConnectionAssembler</td>
+    <td>ja:Connection</td>
+    <td>connection</td>
+</tr>
+<tr>
+    <td>content</td>
+    <td>ContentAssembler</td>
+    <td>ja:Content</td>
+    <td>content</td>
+</tr>
+<tr>
+    <td>ontology models</td>
+    <td>OntModelAssembler</td>
+    <td>ja:OntModel</td>
+    <td>ontModel</td>
+</tr>
+<tr>
+    <td>rules</td>
+    <td>RuleSetAssembler</td>
+    <td>ja:RuleSet</td>
+    <td>rules</td>
+</tr>
+<tr>
+    <td>union models</td>
+    <td>UnionModelAssembler</td>
+    <td>ja:UnionModel</td>
+    <td>unionModel</td>
+</tr>
+<tr>
+    <td>prefix mappings</td>
+    <td>PrefixMappingAssembler</td>
+    <td>ja:PrefixMapping</td>
+    <td>prefixMapping</td>
+</tr>
+<tr>
+    <td>file models</td>
+    <td>FileModelAssembler</td>
+    <td>ja:FileModel</td>
+    <td>fileModel</td>
+</tr>
+</tbody>
+</table>
+
 <h1>inside Assemblers</h1>
 
 <p><code>Assembler.general</code> is a particular implementation of
@@ -124,7 +392,7 @@ integrated and made nice RSN.)
 
 <pre>
 You have to implement the Assembler interface, most straightforwardly
-done by subclassing AssemblerBase and overriding 
+done by subclassing AssemblerBase and overriding
 
     public Object open( Assembler a, Resource root, Mode mode );
 
@@ -140,7 +408,7 @@ done by subclassing AssemblerBase and overriding
     those to define any sub-objects of the object you're assembling
     (including using `a` for anything that's itself a structured
     object) and then constructing a new result object from those
-    components. 
+    components.
 
     Then you attach this new assembler object to its type in some
     AssemblerGroup using that group's `implementWith` method. You
