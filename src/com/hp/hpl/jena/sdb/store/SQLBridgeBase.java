@@ -10,6 +10,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
 
+import org.apache.commons.logging.LogFactory;
+
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
@@ -68,11 +70,18 @@ public abstract class SQLBridgeBase implements SQLBridge
     // Build next row from the JDBC ResultSet
     protected abstract Binding assembleBinding(ResultSet rs, Binding binding) ;
 
+    private static boolean printFlag = false ; 
+    
     final
     public QueryIterator assembleResults(ResultSet rs, Binding binding, ExecutionContext execCxt)
     {
         if ( execCxt == null || execCxt.getContext().isTrueOrUndef(SDB.jdbcStream) )
         {
+            if ( ! printFlag )
+            {
+                LogFactory.getLog(SQLBridgeBase.class).info("Stream") ;
+                printFlag = true ;
+            }
             // Stream
             return new QueryIterSQL(rs, binding, execCxt) ;
         }
