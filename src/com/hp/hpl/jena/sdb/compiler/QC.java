@@ -165,6 +165,7 @@ public class QC
         return subNode ;
     }
     
+    public static boolean fetchPrint = false ;
     public static boolean PrintSQL = false ;
     
     public static QueryIterator exec(OpSQL opSQL, SDBRequest request, Binding binding, ExecutionContext execCxt)
@@ -186,6 +187,11 @@ public class QC
             { log.warn("Bad number for fetch size: "+str) ; }
         
         try {
+            if ( ! fetchPrint && fetchSize > 0 )
+            {
+                log.info("Fetch size = "+fetchSize) ;
+                fetchPrint = true ;
+            }
             java.sql.ResultSet jdbcResultSet = request.getStore().getConnection().execQuery(sqlStmtStr, fetchSize) ;
             try {
                 // And check this is called once per SQL.
