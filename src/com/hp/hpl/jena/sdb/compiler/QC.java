@@ -27,6 +27,7 @@ import com.hp.hpl.jena.sdb.core.sqlnode.SqlCoalesce;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlJoin;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlRestrict;
+import com.hp.hpl.jena.sdb.sql.ResultSetJDBC;
 import com.hp.hpl.jena.sdb.sql.SDBExceptionSQL;
 import static com.hp.hpl.jena.sdb.util.Alg.* ;
 import com.hp.hpl.jena.sdb.util.alg.Transform;
@@ -187,7 +188,7 @@ public class QC
             { log.warn("Bad number for fetch size: "+str) ; }
         
         try {
-            java.sql.ResultSet jdbcResultSet = request.getStore().getConnection().execQuery(sqlStmtStr, fetchSize) ;
+            ResultSetJDBC jdbcResultSet = request.getStore().getConnection().execQuery(sqlStmtStr, fetchSize) ;
             try {
                 // And check this is called once per SQL.
                 if ( opSQL.getBridge() == null )

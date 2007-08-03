@@ -80,10 +80,10 @@ public class SDBConnection
     
     public TransactionHandler getTransactionHandler() { return transactionHandler ; } 
     
-    public ResultSet execQuery(String sqlString) throws SQLException
+    public ResultSetJDBC execQuery(String sqlString) throws SQLException
     { return execQuery(sqlString, -1) ; }
     
-    public ResultSet execQuery(String sqlString, int fetchSize) throws SQLException
+    public ResultSetJDBC execQuery(String sqlString, int fetchSize) throws SQLException
     {
         if ( loggingSQLStatements() || loggingSQLQueries() )
             writeLog("execQuery", sqlString) ;
@@ -91,10 +91,10 @@ public class SDBConnection
         Connection conn = getSqlConnection() ;
 
         try {
-            Statement s = conn.createStatement() ; // Not closed - happens when result set closed
+            Statement s = conn.createStatement() ; // Managed by ResultSetJDBC
             if ( fetchSize >= 0 )
                 s.setFetchSize(fetchSize) ;
-            return s.executeQuery(sqlString) ;
+            return new ResultSetJDBC(s, s.executeQuery(sqlString)) ;
         } catch (SQLException ex)
         {
             exception("execQuery", ex, sqlString) ;

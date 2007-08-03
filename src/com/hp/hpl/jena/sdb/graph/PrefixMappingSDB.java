@@ -16,7 +16,7 @@ import java.sql.SQLException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.hp.hpl.jena.sdb.sql.RS;
+import com.hp.hpl.jena.sdb.sql.ResultSetJDBC;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.sql.SDBExceptionSQL;
 import com.hp.hpl.jena.shared.PrefixMapping;
@@ -117,7 +117,8 @@ public class PrefixMappingSDB extends PrefixMappingImpl
     {
         try {
             String sqlStmt = "SELECT prefix, uri FROM "+prefixTableName ;
-            ResultSet rs = connection.execQuery(sqlStmt) ;
+            ResultSetJDBC rsx = connection.execQuery(sqlStmt) ;
+            ResultSet rs = rsx.get() ;
             while(rs.next())
             {
                 String p = rs.getString("prefix") ;
@@ -126,7 +127,7 @@ public class PrefixMappingSDB extends PrefixMappingImpl
                 // Load in-memory copy.
                 super.set(p, v) ;
             }
-            RS.close(rs) ;
+            rsx.close() ;
         } catch (SQLException ex)
         { throw new SDBExceptionSQL("Failed to get prefixes", ex) ; }
     }
@@ -138,7 +139,8 @@ public class PrefixMappingSDB extends PrefixMappingImpl
                 "SELECT uri FROM "+prefixTableName,
                 "   WHERE prefix = "+quoteStr(prefix)
                 ) ;
-            ResultSet rs = connection.execQuery(sqlStmt) ;
+            ResultSetJDBC rsx = connection.execQuery(sqlStmt) ;
+            ResultSet rs = rsx.get() ;
             String uri = null ;
             while(rs.next())
             {
@@ -148,7 +150,7 @@ public class PrefixMappingSDB extends PrefixMappingImpl
                     log.warn("Multiple prefix mappings for '"+prefix+"'") ;
                 break ;
             }
-            RS.close(rs) ;
+            rsx.close() ;
             return uri ;
         } catch (SQLException ex)
         { throw new SDBExceptionSQL(format("Failed to read prefix (%s)", prefix), ex) ; }

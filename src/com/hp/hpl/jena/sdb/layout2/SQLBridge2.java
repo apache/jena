@@ -34,6 +34,7 @@ import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExpr;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlRestrict;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlTable;
+import com.hp.hpl.jena.sdb.sql.ResultSetJDBC;
 import com.hp.hpl.jena.sdb.sql.SQLUtils;
 import com.hp.hpl.jena.sdb.store.SQLBridgeBase;
 
@@ -137,9 +138,10 @@ public class SQLBridge2 extends SQLBridgeBase
     }
     
     @Override
-    protected Binding assembleBinding(ResultSet rs, Binding parent)
+    protected Binding assembleBinding(ResultSetJDBC rsHolder, Binding parent)
     {
         Binding b = new BindingMap(parent) ;
+        ResultSet rs = rsHolder.get() ;
         for ( Var v : super.getProject() )
         {
             if ( ! v.isNamedVar() )

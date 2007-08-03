@@ -1,41 +1,55 @@
 /*
- * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.store;
+package com.hp.hpl.jena.sdb.sql;
 
-import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
-import com.hp.hpl.jena.sdb.sql.ResultSetJDBC;
-import com.hp.hpl.jena.sparql.engine.ExecutionContext;
-import com.hp.hpl.jena.sparql.engine.QueryIterator;
-import com.hp.hpl.jena.sparql.engine.binding.Binding;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 
-/** Convert from whatever results a particular layout returns into
- *  an ARQ QueryIterator of Bindings.  An SQLBridge object
- *  is allocated for each SQL query execution. 
- *  
- * @author Andy Seaborne
- * @version $Id$
- */  
+//import org.apache.commons.logging.Log;
+//import org.apache.commons.logging.LogFactory;
 
-public interface SQLBridge
+/* Indirect for possible statement management later.
+ * Currectly, one statement - one result set so close both together. 
+ * Later, prepared statements and or statement reference counting.
+ * But the one result set per statement rule of JDBC may limit gains somewhat.
+ * Also, it hides java.sql declarations. 
+ */
+
+public class ResultSetJDBC
 {
-    /** Actually build the bridge */
-    public void build() ;
+    //static private Log log = LogFactory.getLog(ResultSetJDBC.class) ;
     
-    /** Get the (possibly altered) SqlNode */
-    public SqlNode getSqlNode() ;
+    private Statement statement ;
+    private ResultSet resultSet ;
+    public ResultSetJDBC(Statement s, ResultSet rs)
+    {
+        this.statement = s ;
+        this.resultSet = rs ;
+    }
     
-    /** Process a JDBC result set */
-    public QueryIterator assembleResults(ResultSetJDBC jdbcResultSet, 
-                                         Binding binding,
-                                         ExecutionContext execCtl) ;
+    public ResultSet get() { return resultSet ; }
+    
+    public void close()
+    {
+        try {
+            resultSet.close() ;
+            statement.close() ;
+        }
+        catch (SQLException ex)
+        {
+            throw new SDBExceptionSQL("ResultSetJDBC.close", ex) ;
+        }
+        
+    }
 }
 
 /*
- * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

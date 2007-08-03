@@ -6,7 +6,6 @@
 
 package com.hp.hpl.jena.sdb.store;
 
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -22,6 +21,7 @@ import com.hp.hpl.jena.sdb.core.SDBRequest;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlProject;
+import com.hp.hpl.jena.sdb.sql.ResultSetJDBC;
 import com.hp.hpl.jena.sdb.sql.SDBExceptionSQL;
 import com.hp.hpl.jena.sdb.util.Pair;
 import com.hp.hpl.jena.sparql.core.Var;
@@ -69,10 +69,10 @@ public abstract class SQLBridgeBase implements SQLBridge
     protected abstract void buildProject() ;
 
     // Build next row from the JDBC ResultSet
-    protected abstract Binding assembleBinding(ResultSet rs, Binding binding) ;
+    protected abstract Binding assembleBinding(ResultSetJDBC rs, Binding binding) ;
 
     final
-    public QueryIterator assembleResults(ResultSet rs, Binding binding, ExecutionContext execCxt)
+    public QueryIterator assembleResults(ResultSetJDBC rs, Binding binding, ExecutionContext execCxt)
     {
         if ( execCxt == null || execCxt.getContext().isTrueOrUndef(SDB.jdbcStream) )
         {
@@ -151,10 +151,10 @@ public abstract class SQLBridgeBase implements SQLBridge
     {
         boolean ready = false ;
         boolean hasNext = false ;
-        private ResultSet jdbcResultSet ;
+        private ResultSetJDBC jdbcResultSet ;
         private Binding parent ;
         
-        QueryIterSQL(ResultSet rs, Binding binding, ExecutionContext execCxt)
+        QueryIterSQL(ResultSetJDBC rs, Binding binding, ExecutionContext execCxt)
         {
             super(execCxt) ;
             this.jdbcResultSet = rs ;
@@ -166,8 +166,7 @@ public abstract class SQLBridgeBase implements SQLBridge
         {
             if ( jdbcResultSet == null )
                 return ;
-            try { jdbcResultSet.close(); }
-            catch (SQLException ex) { throw new SDBExceptionSQL(ex) ; }
+            jdbcResultSet.close();
             jdbcResultSet = null ;
         }
 
@@ -176,7 +175,7 @@ public abstract class SQLBridgeBase implements SQLBridge
         {
             if ( ! ready )
             {
-                try { hasNext = jdbcResultSet.next() ; }
+                try { hasNext = jdbcResultSet.get().next() ; }
                 catch (SQLException ex) { throw new SDBExceptionSQL(ex) ; }
                 ready = true ;
             }

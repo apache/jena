@@ -12,8 +12,6 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.logging.LogFactory;
-
 /** SQL Utilities */
 
 public class RS
@@ -28,20 +26,27 @@ public class RS
     static String sep = " | " ;
     static String trail = "| " ;
     
-    public static void close(ResultSet rs) 
+    public static void close(ResultSetJDBC rs)
     {
-        try {
-            Statement s = rs.getStatement() ;
-            if ( s != null )
-                s.close() ;
-            else
-                rs.close() ;
-        } catch (SQLException ex)
-        {
-            LogFactory.getLog(RS.class).warn("Problems closing result set : "+ex.getMessage()) ;
-        }
-        
+        if ( rs != null )
+            rs.close();
     }
+    
+    
+//    public static void close(ResultSet rs) 
+//    {
+//        try {
+//            Statement s = rs.getStatement() ;
+//            if ( s != null )
+//                s.close() ;
+//            else
+//                rs.close() ;
+//        } catch (SQLException ex)
+//        {
+//            LogFactory.getLog(RS.class).warn("Problems closing result set : "+ex.getMessage()) ;
+//        }
+//        
+//    }
 
     public static void consume(ResultSet resultSet) throws SQLException
     {

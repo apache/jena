@@ -9,7 +9,6 @@ package com.hp.hpl.jena.sdb.store;
 import static com.hp.hpl.jena.sdb.util.StrUtils.sqlList;
 import static com.hp.hpl.jena.sdb.util.StrUtils.strjoin;
 
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,10 +17,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.graph.Node;
-
 import com.hp.hpl.jena.sdb.SDBException;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlConstant;
-import com.hp.hpl.jena.sdb.sql.RS;
+import com.hp.hpl.jena.sdb.sql.ResultSetJDBC;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.sql.SDBExceptionSQL;
 
@@ -79,10 +77,10 @@ public abstract class TupleLoaderOne extends TupleLoaderBase
         String sqlStmt = String.format(selectTemplate, getTableName(), rowValues) ;
         
         try {
-            ResultSet rs = connection().execQuery(sqlStmt) ;
-            rs.next() ;
-            int count = rs.getInt(1) ;
-            RS.close(rs) ;
+            ResultSetJDBC rs = connection().execQuery(sqlStmt) ;
+            rs.get().next() ;
+            int count = rs.get().getInt(1) ;
+            rs.close();
     
             if ( count > 0 )
             {

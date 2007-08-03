@@ -6,22 +6,20 @@
 
 package com.hp.hpl.jena.sdb.layout1;
 
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
 import com.hp.hpl.jena.graph.Node;
-
-import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.sparql.engine.binding.BindingMap;
-
 import com.hp.hpl.jena.sdb.core.SDBRequest;
 import com.hp.hpl.jena.sdb.core.ScopeEntry;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
+import com.hp.hpl.jena.sdb.sql.ResultSetJDBC;
 import com.hp.hpl.jena.sdb.sql.SQLUtils;
 import com.hp.hpl.jena.sdb.store.SQLBridgeBase;
+import com.hp.hpl.jena.sparql.core.Var;
+import com.hp.hpl.jena.sparql.engine.binding.Binding;
+import com.hp.hpl.jena.sparql.engine.binding.BindingMap;
 
 public class SQLBridge1 extends SQLBridgeBase
 {
@@ -58,7 +56,7 @@ public class SQLBridge1 extends SQLBridgeBase
     }
     
     @Override
-    protected Binding assembleBinding(ResultSet rs, Binding parent)
+    protected Binding assembleBinding(ResultSetJDBC rs, Binding parent)
     {
         Binding b = new BindingMap(parent) ;
         for ( Var v : getProject() )
@@ -70,7 +68,7 @@ public class SQLBridge1 extends SQLBridgeBase
                 continue ;
             try {
                 // because of encoding into SPARQL terms, this is never the empty string.
-                String s = rs.getString(sqlVarName) ;
+                String s = rs.get().getString(sqlVarName) ;
                 // Same as rs.wasNull() for things that can return Java nulls.
                 if ( s == null )
                     continue ;

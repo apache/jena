@@ -18,8 +18,8 @@ public class TableUtils
     public static void dump(SDBConnection conn, String tableName)
     {
         try {
-            ResultSet tableData = conn.execQuery("SELECT * FROM "+tableName) ;
-            RS.printResultSet(tableData) ;
+            ResultSetJDBC tableData = conn.execQuery("SELECT * FROM "+tableName) ;
+            RS.printResultSet(tableData.get()) ;
             tableData.close() ;
         } catch (SQLException ex)
         { throw new SDBExceptionSQL(ex) ; }

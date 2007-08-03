@@ -20,6 +20,7 @@ import com.hp.hpl.jena.sdb.core.sqlexpr.SqlConstant;
 import com.hp.hpl.jena.sdb.layout2.NodeLayout2;
 import com.hp.hpl.jena.sdb.layout2.TableDescNodes;
 import com.hp.hpl.jena.sdb.sql.RS;
+import com.hp.hpl.jena.sdb.sql.ResultSetJDBC;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.sql.SQLUtils;
 import com.hp.hpl.jena.sdb.store.Store;
@@ -67,7 +68,8 @@ public class TupleLoaderOneIndex extends TupleLoaderOne
             String sqlStmt = strjoinNL(
                 "SELECT id FROM Nodes WHERE hash = "+hashStr
                 ) ;
-            ResultSet rs = conn.execQuery(sqlStmt) ;
+            ResultSetJDBC rsx = conn.execQuery(sqlStmt) ;
+            ResultSet rs = rsx.get();
             try {
                 if ( ! rs.next() )
                 {
@@ -82,7 +84,7 @@ public class TupleLoaderOneIndex extends TupleLoaderOne
                 if ( rs.next() )
                     log.warn("More than one hit for : "+sqlStmt+" (ignored)") ;
                 return id ;    
-            } finally { RS.close(rs) ; }
+            } finally { RS.close(rsx) ; }
         } catch (SQLException ex)
         {
             log.warn("SQLException: "+ex.getMessage()) ;

@@ -8,7 +8,6 @@ package com.hp.hpl.jena.sdb.store;
 
 import java.io.StringReader;
 import java.io.StringWriter;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -18,12 +17,18 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.hp.hpl.jena.sparql.util.GraphUtils;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.ResourceFactory;
-import com.hp.hpl.jena.sdb.sql.*;
+import com.hp.hpl.jena.sdb.sql.RS;
+import com.hp.hpl.jena.sdb.sql.ResultSetJDBC;
+import com.hp.hpl.jena.sdb.sql.SDBConnection;
+import com.hp.hpl.jena.sdb.sql.SDBConnectionHolder;
+import com.hp.hpl.jena.sdb.sql.SDBExceptionSQL;
+import com.hp.hpl.jena.sdb.sql.SQLUtils;
+import com.hp.hpl.jena.sdb.sql.TableUtils;
+import com.hp.hpl.jena.sparql.util.GraphUtils;
 import com.hp.hpl.jena.util.FileUtils;
 
 // Refactor
@@ -215,22 +220,23 @@ class TaggedString extends SDBConnectionHolder
     
     List<String> tags()
     {
+        ResultSetJDBC rs = null ;
         try {
             final String sqlStmt = SQLUtils.sqlStr(
                "SELECT "+columnName,
                "FROM "+stringTableName) ;
-            ResultSet rs = connection().execQuery(sqlStmt) ;
+            rs = connection().execQuery(sqlStmt) ;
             List<String> tags = new ArrayList<String>() ;
-            while ( rs.next() )
+            while ( rs.get().next() )
             {
-                String x = rs.getString(columnName) ;
+                String x = rs.get().getString(columnName) ;
                 tags.add(x) ;
             }
-            RS.close(rs) ;
             return tags ;
         }
         catch (SQLException ex)
         { throw new SDBExceptionSQL("getString", ex) ; }
+        finally { RS.close(rs) ; }
     }
     
     void remove(String tag)
@@ -257,29 +263,26 @@ class TaggedString extends SDBConnectionHolder
     {
         boolean b = connection().loggingSQLExceptions() ;
         connection().setLogSQLExceptions(false) ;
+        ResultSetJDBC rs = null ;
         try {
             final String sqlStmt = SQLUtils.sqlStr(
                "SELECT "+columnData,
                "FROM "+stringTableName,
                "WHERE "+columnName+" = "+SQLUtils.quoteStr(tag)) ;
-            ResultSet rs = connection().execQuery(sqlStmt) ;
-            if ( rs.next() )
-            {
-                String x = rs.getString(columnData) ;
-                RS.close(rs) ;
-                return decode(x) ;
-            }
-            //  No row.
-            RS.close(rs) ;
-            return null ;
-            
+            rs = connection().execQuery(sqlStmt) ;
+            if ( ! rs.get().next() )
+                //  No row.
+                return null ;
+                
+            String x = rs.get().getString(columnData) ;
+            return decode(x) ;
         }
         catch (SQLException ex)
         { 
             //throw new SDBExceptionSQL("getString", ex) ;
             return null ;
         }
-        finally { connection().setLogSQLExceptions(b) ; }
+        finally { connection().setLogSQLExceptions(b) ; RS.close(rs) ; }
     }
     
     // Escape non-7bit bytes. e.g. \ u stuff.
