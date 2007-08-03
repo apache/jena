@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: AssemblerException.java,v 1.5 2007-07-20 15:15:16 chris-dollin Exp $
+ 	$Id: AssemblerException.java,v 1.6 2007-08-03 10:11:54 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.exceptions;
@@ -11,6 +11,7 @@ import java.util.*;
 import com.hp.hpl.jena.assembler.assemblers.AssemblerGroup;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.shared.JenaException;
+import com.hp.hpl.jena.vocabulary.RDFS;
 
 /**
     Assembler Exception class: contains code shared by all the Assembler
@@ -52,8 +53,37 @@ public class AssemblerException extends JenaException
          within an exception message.
     */
     protected static String nice( Resource r )
-        { return r.asNode().toString( r.getModel() ); }
+        {
+        String rString = r.asNode().toString( r.getModel() );
+        return r.isAnon() ? rString + getLabels( r ) : rString; 
+        }
     
+    private static String getLabels( Resource r )
+        {
+        Model m = r.getModel();
+        String labels = "", prefix = "labels: ";
+        for (StmtIterator it = r.listProperties( RDFS.label ); it.hasNext();)
+            {
+            String label = it.nextStatement().getObject().asNode().toString( m, true );
+            labels += prefix + label;
+            prefix = ", ";
+            }
+        return labels.equals( "" ) ? getIncomingProperty( r ) : " [" + labels + "]";
+        }
+
+    private static String getIncomingProperty( Resource r )
+        {
+        String incomings = "", prefix = "";
+        StmtIterator it = r.getModel().listStatements( null, null, r );
+        while (it.hasNext())
+            {
+            Statement s = it.nextStatement();
+            incomings += prefix + nice( s.getPredicate() ) + " of " + nice( s.getSubject() );
+            prefix = ", ";
+            }
+        return incomings.equals( "" ) ? "" : " [" + incomings + "]";
+        }
+
     protected static String nice( RDFNode r )
         { return r.isLiteral() ? r.asNode().toString(): nice( (Resource) r ); }
 
@@ -61,7 +91,11 @@ public class AssemblerException extends JenaException
         { return doing; }
     
     public String toString()
-        { return super.toString() + "\n  doing:\n" + frameStrings(); }
+        { 
+        String parent = super.toString();
+        String frame = frameStrings();
+        return frame.equals(  ""  ) ? parent : parent + "\n  doing:\n" + frame; 
+        }
     
     protected String frameStrings()
         {
