@@ -46,11 +46,13 @@ public class Iterator2<T> implements Iterator<T>, Iterable<T>
 
     public T next()
     {
+        if ( ! hasNext() )
+            throw new NoSuchElementException("Iterator2.next") ;
         if ( iter1 != null )
             return iter1.next();
         if ( iter2 != null )
             return iter2.next();
-        throw new NoSuchElementException("Iterator2.next") ;
+        throw new Error("Iterator2.next") ;
     }
 
     public void remove()
@@ -66,7 +68,7 @@ public class Iterator2<T> implements Iterator<T>, Iterable<T>
             return ;
         }
         throw new NoSuchElementException("Iterator2.remove") ;
-        }
+    }
 
     public Iterator<T> iterator()
     {
