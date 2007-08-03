@@ -15,12 +15,16 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.graph.test.NodeCreateUtils;
+
 import com.hp.hpl.jena.sdb.layout2.TableDescNodes;
+import com.hp.hpl.jena.sdb.sql.ResultSetJDBC;
 import com.hp.hpl.jena.sdb.store.Store;
 import com.hp.hpl.jena.sdb.store.StoreLoaderPlus;
 import com.hp.hpl.jena.sdb.store.TableDesc;
 
-public abstract class TestStoreUpdateBase {
+
+public abstract class TestStoreUpdateBase_ {
 	
 	Store store;
 	StoreLoaderPlus loader;
@@ -39,9 +43,9 @@ public abstract class TestStoreUpdateBase {
 	protected int size(String name) {
 		try {
 			int size = -1;
-			ResultSet result = store.getConnection().execQuery("SELECT COUNT(*) FROM " + name);
-			if (result.next())
-				size = result.getInt(1);
+			ResultSetJDBC result = store.getConnection().execQuery("SELECT COUNT(*) FROM " + name);
+			if (result.get().next())
+				size = result.get().getInt(1);
 			result.close();
 			return size;
 		} catch (SQLException e) {
@@ -50,7 +54,7 @@ public abstract class TestStoreUpdateBase {
 	}
 	
 	protected Node node(String str) {
-		return Node.create(str);
+		return NodeCreateUtils.create(str);
 	}
 	
 	@Before public void init() {
