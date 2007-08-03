@@ -8,7 +8,6 @@ package com.hp.hpl.jena.sdb.test.update;
 
 import static org.junit.Assert.assertEquals;
 
-import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import org.junit.Before;
@@ -16,13 +15,11 @@ import org.junit.Test;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.test.NodeCreateUtils;
-
 import com.hp.hpl.jena.sdb.layout2.TableDescNodes;
 import com.hp.hpl.jena.sdb.sql.ResultSetJDBC;
 import com.hp.hpl.jena.sdb.store.Store;
 import com.hp.hpl.jena.sdb.store.StoreLoaderPlus;
 import com.hp.hpl.jena.sdb.store.TableDesc;
-
 
 public abstract class TestStoreUpdateBase_ {
 	
