@@ -4,7 +4,8 @@ PREFIX  list:   <http://jena.hpl.hp.com/ARQ/list#>
 
 SELECT *
 {
-    ?x list:index (?index ?member) .
-    ?member :p ?a .
-    ?member :q ?a .
+    ?x :p [] .
+##     ?x list:index (?index ?member) .
+##     ?member :p ?a .
+##     ?member :q ?a .
 }
