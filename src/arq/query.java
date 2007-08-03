@@ -102,7 +102,7 @@ public class query extends CmdARQ
             QueryExecUtils.executeQuery(query, qe, modResults.getResultsFormat()) ;
             long time = modTime.endTimer() ;
             if ( modTime.timingEnabled() )
-                System.out.println("Time: "+modTime.timeStr(time)) ;
+                System.out.println("Time: "+modTime.timeStr(time)+" sec") ;
             qe.close() ;
         }
         catch (ARQInternalErrorException intEx)
