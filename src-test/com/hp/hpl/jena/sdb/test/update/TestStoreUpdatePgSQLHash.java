@@ -11,7 +11,7 @@ import junit.framework.JUnit4TestAdapter;
 import com.hp.hpl.jena.sdb.store.Store;
 import com.hp.hpl.jena.sdb.test.StoreCreator;
 
-public class TestStoreUpdatePgSQLHash extends TestStoreUpdateBase_ {
+public class TestStoreUpdatePgSQLHash extends TestStoreUpdateBase {
 	
 	public static junit.framework.Test suite() { 
 	    return new JUnit4TestAdapter(TestStoreUpdatePgSQLHash.class); 

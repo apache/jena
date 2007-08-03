@@ -21,7 +21,7 @@ import com.hp.hpl.jena.sdb.store.Store;
 import com.hp.hpl.jena.sdb.store.StoreLoaderPlus;
 import com.hp.hpl.jena.sdb.store.TableDesc;
 
-public abstract class TestStoreUpdateBase_ {
+public abstract class TestStoreUpdateBase {
 	
 	Store store;
 	StoreLoaderPlus loader;
