@@ -6,14 +6,13 @@
 
 package dev.pldms;
 
-import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import com.hp.hpl.jena.graph.test.NodeCreateUtils;
-
 import com.hp.hpl.jena.sdb.SDBFactory;
 import com.hp.hpl.jena.sdb.layout2.index.StoreTriplesNodesIndexOracle;
 import com.hp.hpl.jena.sdb.sql.JDBC;
+import com.hp.hpl.jena.sdb.sql.ResultSetJDBC;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.sql.SDBConnectionDesc;
 import com.hp.hpl.jena.sdb.store.Store;
@@ -75,10 +74,10 @@ public class Scratch {
         	Integer size = -1;
         	
         	try {
-        		ResultSet result = conn.execQuery("SELECT COUNT(*) AS NUM FROM " + table);
+        		ResultSetJDBC result = conn.execQuery("SELECT COUNT(*) AS NUM FROM " + table);
         		
-        		if (result.next()) {
-        			size = result.getInt("NUM");
+        		if (result.get().next()) {
+        			size = result.get().getInt("NUM");
         		}
 				result.close();
 			} catch (SQLException e) {

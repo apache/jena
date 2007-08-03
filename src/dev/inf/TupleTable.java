@@ -6,7 +6,6 @@
 
 package dev.inf;
 
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +15,7 @@ import com.hp.hpl.jena.query.ResultSetFormatter;
 import com.hp.hpl.jena.sdb.core.SDBRequest;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlTable;
+import com.hp.hpl.jena.sdb.sql.ResultSetJDBC;
 import com.hp.hpl.jena.sdb.sql.SDBExceptionSQL;
 import com.hp.hpl.jena.sdb.store.SQLBridge;
 import com.hp.hpl.jena.sdb.store.Store;
@@ -69,15 +69,16 @@ public class TupleTable
 //            rs.close();
             
             // Need to portable get the column names. 
-            java.sql.ResultSet tableData = 
+            ResultSetJDBC tableData = 
                 store.getConnection().execQuery("SELECT * FROM "+tableName) ;
-            java.sql.ResultSetMetaData meta = tableData.getMetaData() ;
+            java.sql.ResultSetMetaData meta = tableData.get().getMetaData() ;
             int N = meta.getColumnCount() ;
             for ( int i = 1 ; i <= N ; i++ )
             {
                 String colName = meta.getColumnName(i) ;
                 colVars.add(colName) ;
             }
+            tableData.close() ;
             return new TableDesc(tableName, colVars) ;
         } catch (SQLException ex)
         { throw new SDBExceptionSQL(ex) ; }
@@ -104,7 +105,7 @@ public class TupleTable
         try {
             String sqlStr = store.getSQLGenerator().generateSQL(b.getSqlNode()) ;
             //System.out.println(sqlStr) ;
-            ResultSet tableData = store.getConnection().execQuery(sqlStr) ;
+            ResultSetJDBC tableData = store.getConnection().execQuery(sqlStr) ;
             ExecutionContext execCxt = new ExecutionContext(new Context(), null, null) ;
             return b.assembleResults(tableData, BindingRoot.create(), execCxt) ;
         } catch (SQLException ex)
