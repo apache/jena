@@ -10,8 +10,9 @@
 
 + Aggregates: QueryIterGroup
   Parsing : 
-     SELECT list is expressions always (inv vars)
-     Ordered Map [LinkedHashMap?] from name (generated if necessary) to expression.
+     SELECT list is expressions always 
+       A  list or pairs (name expr)
+       Make type safe in the Query class.
      Phase 2 detects inconsistences 
          
 + DateTime arithmetic and durations
