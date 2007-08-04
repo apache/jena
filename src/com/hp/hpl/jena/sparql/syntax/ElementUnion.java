@@ -8,7 +8,7 @@ package com.hp.hpl.jena.sparql.syntax;
 
 import java.util.* ;
 
-import com.hp.hpl.jena.sparql.util.LabelMap;
+import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 
 /** 
  * 
@@ -35,7 +35,7 @@ public class ElementUnion extends Element
     }
 
     //@Override
-   public boolean equalTo(Element el2, LabelMap labelMap)
+   public boolean equalTo(Element el2, NodeIsomorphismMap isoMap)
     {
         if ( el2 == null ) return false ;
 
@@ -48,7 +48,7 @@ public class ElementUnion extends Element
         {
             Element e1 = (Element)getElements().get(i) ;
             Element e2 = (Element)eu2.getElements().get(i) ;
-            if ( ! e1.equalTo(e2, labelMap) )
+            if ( ! e1.equalTo(e2, isoMap) )
                 return true ;
         }
         return true ;

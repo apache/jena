@@ -61,7 +61,6 @@ public class IndentedWriter
     {
         for ( int i = 0 ; i < s.length() ; i++ )
             printChWorker(s.charAt(i)) ;
-            
     }
     
     public void print(char ch) { printChWorker(ch) ; }

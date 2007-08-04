@@ -7,7 +7,7 @@
 package com.hp.hpl.jena.sparql.syntax;
 
 import com.hp.hpl.jena.sparql.core.DatasetGraph;
-import com.hp.hpl.jena.sparql.util.LabelMap;
+import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 
 /** ElementDataset - an association of an RDF Dataset 
  * (graph level version) with a query pattern.
@@ -44,14 +44,14 @@ public class ElementDataset extends Element
         return x ;
     }
     
-    public boolean equalTo(Element el2, LabelMap labelMap)
+    public boolean equalTo(Element el2, NodeIsomorphismMap isoMap)
     {
         if ( el2 == null ) return false ;
         if ( ! ( el2 instanceof ElementDataset ) )
             return false ;
         ElementDataset blk = (ElementDataset)el2 ;
         
-        if ( ! element.equalTo(blk.getPatternElement(), labelMap) )
+        if ( ! element.equalTo(blk.getPatternElement(), isoMap) )
             return false ;
         
         // Dataset both null

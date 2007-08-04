@@ -28,6 +28,7 @@ public class ParseHandlerPlain implements ParseHandler
     private int            depth       = 0 ;
     private LabelToNodeMap bNodeLabels = LabelToNodeMap.createBNodeMap() ;
     private VarAlloc       varAlloc    = new VarAlloc("") ;
+    private VarAlloc       varAllocND  = new VarAlloc("?") ;
     
     public Item getItem()
     {
@@ -91,6 +92,8 @@ public class ParseHandlerPlain implements ParseHandler
         Var var = null ;
         if ( varName.equals("") )
             var = varAlloc.allocVar()  ;
+        else if ( varName.equals("?"))      // "??" 
+            var = varAllocND.allocVar()  ;
         else
             var = Var.alloc(varName) ;
         Item item = Item.createNode(var, line, column) ;

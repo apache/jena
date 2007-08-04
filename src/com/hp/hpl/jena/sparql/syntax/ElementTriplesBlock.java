@@ -11,7 +11,7 @@ import java.util.Iterator;
 import com.hp.hpl.jena.graph.Triple;
 
 import com.hp.hpl.jena.sparql.core.BasicPattern;
-import com.hp.hpl.jena.sparql.util.LabelMap;
+import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 
 /** A SPARQL BasicGraphPattern
  * 
@@ -48,7 +48,7 @@ public class ElementTriplesBlock extends Element implements TripleCollector
     }
 
     //@Override
-    public boolean equalTo(Element el2, LabelMap labelMap)
+    public boolean equalTo(Element el2, NodeIsomorphismMap isoMap)
     {
         if ( el2 == null ) return false ;
 
@@ -57,7 +57,7 @@ public class ElementTriplesBlock extends Element implements TripleCollector
         
         ElementTriplesBlock eg2 = (ElementTriplesBlock)el2 ;
         
-        return this.pattern.equiv(eg2.pattern, labelMap) ; 
+        return this.pattern.equiv(eg2.pattern, isoMap) ; 
     }
 
     public void visit(ElementVisitor v) { v.visit(this) ; }

@@ -7,6 +7,7 @@
 package com.hp.hpl.jena.sparql.serializer;
 
 import com.hp.hpl.jena.shared.PrefixMapping;
+
 import com.hp.hpl.jena.sparql.core.Prologue;
 import com.hp.hpl.jena.sparql.util.NodeToLabelMap;
 
@@ -14,8 +15,8 @@ import com.hp.hpl.jena.sparql.util.NodeToLabelMap;
 
 public class SerializationContext
 {
-    Prologue prologue ;
-    NodeToLabelMap bNodeMap ;
+    private Prologue prologue ;
+    private NodeToLabelMap bNodeMap ;
     
     public SerializationContext(SerializationContext cxt)
     {

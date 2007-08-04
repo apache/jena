@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
@@ -8,102 +8,106 @@ package com.hp.hpl.jena.sparql.util;
 
 import java.util.HashMap;
 import java.util.Map;
-import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.sparql.ARQInternalErrorException;
 
-/** Map from bNode to _:* form. This is not a global mapping - it's "per map".
+/** Map nodes to blank node representations.
  * 
  * @author Andy Seaborne
- * @version $Id: NodeToLabelMap.java,v 1.10 2007/01/02 11:20:04 andy_seaborne Exp $
- */
-
+ * @version $Id$
+ */ 
 public class NodeToLabelMap
 {
+    // Couls abstract again as a node -> label cache + cache miss handler.
     int bNodeCounter = 0 ;
     Map bNodeStrings = new HashMap() ;
     boolean bNodesAsFakeURIs = false ;
     String prefixString = "b" ;
     
-    public NodeToLabelMap() { this("b", false) ; }
+    public NodeToLabelMap() { this("b") ; }
+    
+    public NodeToLabelMap(String prefix) { this(prefix, false) ; }
     
     public NodeToLabelMap(String prefix, boolean bNodesAsFakeURIs)
     {
-        this.bNodesAsFakeURIs = bNodesAsFakeURIs ;
         this.prefixString = "_:"+prefix ;
+        this.bNodesAsFakeURIs = bNodesAsFakeURIs ;
     }
     
+    // Null means not mapped
     public String asString(Node n)
-    {
-        if ( ! n.isBlank() && ! n.isVariable() )
-        {
-            LogFactory.getLog(NodeToLabelMap.class).warn("Not a variable or bNode: "+n) ;
-            return "" ;
-        }
-
+    { 
+        if ( ! n.isBlank() )
+            return null ;
         
+        return mapNode(n) ;
+    }
+
+    protected String mapNode(Node n)
+    {
         String s = (String)bNodeStrings.get(n) ;
         if ( s != null )
             return s ;
         
-        if ( bNodesAsFakeURIs && n.isBlank() )
-            s = "<_:"+n.getBlankNodeId().getLabelString()+">" ;
-        else
-        {
-            s = prefixString+(bNodeCounter++) ;
-            // Could put the fake URIs in - but we don't
-            bNodeStrings.put(n, s) ;
-        }
+        s = genStringForNode(n) ;
+        bNodeStrings.put(n, s) ;
         return s ;
     }
 
-    /**
-     * @return Returns the bNodesAsFakeURIs.
-     */
-    public boolean isBNodesAsFakeURIs()
+    protected String genStringForNode(Node n)
     {
-        return bNodesAsFakeURIs ;
-    }
+        if ( bNodesAsFakeURIs && n.isBlank() )
+            return "<_:"+n.getBlankNodeId().getLabelString()+">" ;
 
-    /**
-     * @param nodesAsFakeURIs The bNodesAsFakeURIs to set.
-     */
-    public void setBNodesAsFakeURIs(boolean nodesAsFakeURIs)
-    {
-        bNodesAsFakeURIs = nodesAsFakeURIs ;
+        return  prefixString+(bNodeCounter++) ;
     }
-
-    /**
-     * @return Returns the prefix.
-     */
-    public String getPrefixString()
-    {
-        return prefixString ;
-    }
-
-    /**
-     * @param prefix The prefix to set.
-     */
-    public void setPrefixString(String prefix)
-    {
-        if ( prefix == null )
-        {
-            LogFactory.getLog(NodeToLabelMap.class).fatal("Prefix string is null") ;
-            throw new ARQInternalErrorException("Prefix string is null") ;
-        }
-        if ( prefix.equals("") )
-        {
-            LogFactory.getLog(NodeToLabelMap.class).fatal("Prefix string is the empty string") ;
-            throw new ARQInternalErrorException("Prefix string is the empty string") ;
-        }
-            
-        this.prefixString = prefix ;
-    }
+    
+//    /**
+//     * @return Returns the bNodesAsFakeURIs.
+//     */
+//    public boolean isBNodesAsFakeURIs()
+//    {
+//        return bNodesAsFakeURIs ;
+//    }
+//
+//    /**
+//     * @param nodesAsFakeURIs The bNodesAsFakeURIs to set.
+//     */
+//    public void setBNodesAsFakeURIs(boolean nodesAsFakeURIs)
+//    {
+//        bNodesAsFakeURIs = nodesAsFakeURIs ;
+//    }
+//
+//    /**
+//     * @return Returns the prefix.
+//     */
+//    public String getPrefixString()
+//    {
+//        return prefixString ;
+//    }
+//
+//    /**
+//     * @param prefix The prefix to set.
+//     */
+//    public void setPrefixString(String prefix)
+//    {
+//        if ( prefix == null )
+//        {
+//            ALog.fatal(this,"Prefix string is null") ;
+//            throw new ARQInternalErrorException("Prefix string is null") ;
+//        }
+//        if ( prefix.equals("") )
+//        {
+//            ALog.fatal(this,"Prefix string is the empty string") ;
+//            throw new ARQInternalErrorException("Prefix string is the empty string") ;
+//        }
+//            
+//        this.prefixString = prefix ;
+//    }
 }
 
 /*
- * (c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

@@ -8,7 +8,7 @@ package com.hp.hpl.jena.sparql.syntax;
 
 import com.hp.hpl.jena.graph.Node;
 
-import com.hp.hpl.jena.sparql.util.LabelMap;
+import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 
 /** Evaluate a query element based on source information in a named collection.
  * 
@@ -46,7 +46,7 @@ public class ElementNamedGraph extends Element
     public int hashCode() { return element.hashCode() ^ sourceNode.hashCode() ; }
 
     //@Override
-    public boolean equalTo(Element el2, LabelMap labelMap)
+    public boolean equalTo(Element el2, NodeIsomorphismMap isoMap)
     {
         if ( el2 == null ) return false ;
 
@@ -55,7 +55,7 @@ public class ElementNamedGraph extends Element
         ElementNamedGraph g2 = (ElementNamedGraph)el2 ;
         if ( ! this.getGraphNameNode().equals(g2.getGraphNameNode()) )
             return false ;
-        if ( ! this.getElement().equalTo(g2.getElement(), labelMap) )
+        if ( ! this.getElement().equalTo(g2.getElement(), isoMap) )
             return false ;
         return true ;
     }

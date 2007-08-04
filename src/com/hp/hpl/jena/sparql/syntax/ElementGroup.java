@@ -10,7 +10,7 @@ import java.util.* ;
 
 import com.hp.hpl.jena.graph.Triple;
 
-import com.hp.hpl.jena.sparql.util.LabelMap;
+import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 
 import org.apache.commons.logging.LogFactory;
 import org.apache.commons.logging.Log;
@@ -86,7 +86,7 @@ public class ElementGroup extends Element
     }
 
     //@Override
-    public boolean equalTo(Element el2, LabelMap labelMap)
+    public boolean equalTo(Element el2, NodeIsomorphismMap isoMap)
     {
         if ( el2 == null ) return false ;
 
@@ -99,7 +99,7 @@ public class ElementGroup extends Element
         {
             Element e1 = (Element)getElements().get(i) ;
             Element e2 = (Element)eg2.getElements().get(i) ;
-            if ( ! e1.equalTo(e2, labelMap) )
+            if ( ! e1.equalTo(e2, isoMap) )
                 return false ;
         }
         return true ;

@@ -6,15 +6,17 @@
 
 package com.hp.hpl.jena.sparql.serializer;
 
-import org.apache.commons.logging.*;
-
 import java.io.OutputStream;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import com.hp.hpl.jena.sparql.util.IndentedLineBuffer;
+import com.hp.hpl.jena.sparql.util.IndentedWriter;
+import com.hp.hpl.jena.sparql.util.NodeToLabelMapBNode;
 
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.Syntax;
-import com.hp.hpl.jena.sparql.util.IndentedLineBuffer;
-import com.hp.hpl.jena.sparql.util.IndentedWriter;
-import com.hp.hpl.jena.sparql.util.NodeToLabelMap;
 
 
 public class Serializer
@@ -163,9 +165,9 @@ public class Serializer
     static public void serializeARQ(Query query, IndentedWriter writer)
     {
         // For the query pattern
-        SerializationContext cxt1 = new SerializationContext(query, new NodeToLabelMap("b", false) ) ;
+        SerializationContext cxt1 = new SerializationContext(query, new NodeToLabelMapBNode("b", false) ) ;
         // For the construct pattern
-        SerializationContext cxt2 = new SerializationContext(query, new NodeToLabelMap("c", false)  ) ;
+        SerializationContext cxt2 = new SerializationContext(query, new NodeToLabelMapBNode("c", false)  ) ;
         
         serializeARQ(query, writer, 
                      new FormatterARQ(writer, cxt1),
@@ -219,7 +221,7 @@ public class Serializer
 
     static public void serializePrefix(Query query, IndentedWriter writer)
     {
-        SerializationContext cxt = new SerializationContext(query, null ) ;
+        SerializationContext cxt = new SerializationContext(query, new NodeToLabelMapBNode() ) ;
         QuerySerializerPrefix serializer = new QuerySerializerPrefix(writer, cxt) ;
         query.visit(serializer) ;
     }

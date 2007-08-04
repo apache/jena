@@ -7,7 +7,7 @@
 package com.hp.hpl.jena.sparql.syntax;
 
 import com.hp.hpl.jena.sparql.expr.Expr;
-import com.hp.hpl.jena.sparql.util.LabelMap;
+import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 
 /** A constraint (Filter) in a query expression.
  * 
@@ -29,7 +29,7 @@ public class ElementFilter extends Element
     public int hashCode() { return expr.hashCode() ; }
     
     //@Override
-    public boolean equalTo(Element el2, LabelMap labelMap)
+    public boolean equalTo(Element el2, NodeIsomorphismMap isoMap)
     {
         if ( el2 == null ) return false ;
 

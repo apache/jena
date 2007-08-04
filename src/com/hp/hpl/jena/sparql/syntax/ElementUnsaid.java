@@ -10,7 +10,7 @@ import java.util.* ;
 
 import com.hp.hpl.jena.query.Dataset;
 
-import com.hp.hpl.jena.sparql.util.LabelMap;
+import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 
 /** A set of constraints in a query expression.
  * 
@@ -32,14 +32,14 @@ public class ElementUnsaid extends Element
     public int hashCode() { return element.hashCode() ^ Element.HashUnsaid ; }
 
     //@Override
-    public boolean equalTo(Element el2, LabelMap labelMap)
+    public boolean equalTo(Element el2, NodeIsomorphismMap isoMap)
     {
         if ( el2 == null ) return false ;
 
         if ( ! ( el2 instanceof ElementUnsaid ) )
             return false ;
         ElementUnsaid unsaid2 = (ElementUnsaid)el2 ;
-        if ( ! this.getElement().equalTo(unsaid2.getElement(), labelMap) )
+        if ( ! this.getElement().equalTo(unsaid2.getElement(), isoMap) )
             return false ;
         return true ;
     }

@@ -9,7 +9,7 @@ package com.hp.hpl.jena.sparql.syntax;
 import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.sparql.util.LabelMap;
+import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 
 /** A SERVICE pattern - access a remote SPARQL service.
  * 
@@ -45,14 +45,14 @@ public class ElementService extends Element
     { return serviceNode.hashCode() ^ element.hashCode(); }
 
     //@Override
-    public boolean equalTo(Element el2, LabelMap labelMap)
+    public boolean equalTo(Element el2, NodeIsomorphismMap isoMap)
     {
         if ( ! ( el2 instanceof ElementService ) )
             return false ;
         ElementService service = (ElementService)el2 ;
         if ( ! serviceNode.equals(service.serviceNode) )
             return false ;
-        if ( ! this.getElement().equalTo(service.getElement(), labelMap) )
+        if ( ! this.getElement().equalTo(service.getElement(), isoMap) )
             return false ;
         return true ;
     }

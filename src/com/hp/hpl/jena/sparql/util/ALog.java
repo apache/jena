@@ -8,26 +8,51 @@ package com.hp.hpl.jena.sparql.util;
 
 import org.apache.commons.logging.LogFactory;
 
+/** Convenience logging for warn and fatal.  Classes don't need to import
+ *  the logging system, or have excessive pirvate static loggers for non-performance
+ *  critical messages.
+ */
+
 public class ALog
 {
     static public void warn(Object caller, String msg)
     {
-        LogFactory.getLog(caller.getClass()).warn(msg) ;
+        warn(caller.getClass(), msg) ;
+    }
+
+    static public void warn(Class cls, String msg)
+    {
+        LogFactory.getLog(cls).warn(msg) ;
     }
 
     static public void warn(Object caller, String msg, Throwable th)
     {
-        LogFactory.getLog(caller.getClass()).warn(msg, th) ;
+        warn(caller.getClass(), msg, th) ;
+    }
+
+    static public void warn(Class cls, String msg, Throwable th)
+    {
+        LogFactory.getLog(cls).warn(msg, th) ;
     }
 
     static public void fatal(Object caller, String msg)
     {
-        LogFactory.getLog(caller.getClass()).fatal(msg) ;
+        fatal(caller.getClass(), msg) ;
+    }
+
+    static public void fatal(Class cls, String msg)
+    {
+        LogFactory.getLog(cls).fatal(msg) ;
     }
 
     static public void fatal(Object caller, String msg, Throwable th)
     {
-        LogFactory.getLog(caller.getClass()).fatal(msg, th) ;
+        fatal(caller.getClass(), msg, th) ;
+    }
+
+    static public void fatal(Class cls, String msg, Throwable th)
+    {
+        LogFactory.getLog(cls).fatal(msg, th) ;
     }
 }
 

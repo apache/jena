@@ -11,7 +11,7 @@ import java.util.Map;
 
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.serializer.FmtTemplateARQ;
-import com.hp.hpl.jena.sparql.util.LabelMap;
+import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 
 
 /**
@@ -28,10 +28,10 @@ public abstract class Template
     
     public abstract int hashCode() ;
     
-    public abstract boolean equalTo(Object temp2, LabelMap labelMap) ;
+    public abstract boolean equalIso(Object temp2, NodeIsomorphismMap labelMap) ;
     
     final public boolean equals(Object temp2)
-    { return equalTo(temp2, null) ; }
+    { return equalIso(temp2, null) ; }
     
     public String toString()
     {

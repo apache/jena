@@ -1,57 +1,49 @@
 /*
- * (c) Copyright 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.syntax;
+package com.hp.hpl.jena.sparql.util;
 
-import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
+import java.util.HashMap;
+import java.util.Map;
 
-/** An optional element in a query.
- * 
+import com.hp.hpl.jena.graph.Node;
+
+/** Map labels (blank node labels) to other labels.
+ *  
  * @author Andy Seaborne
- * @version $Id: ElementOptional.java,v 1.19 2007/01/02 11:20:30 andy_seaborne Exp $
- */
+ * @version $Id: LabelMap.java,v 1.2 2007/01/02 11:20:30 andy_seaborne Exp $
+ */ 
 
-public class ElementOptional extends Element
+public class NodeIsomorphismMap //extends HashMap
 {
-    Element optionalPart ;   // Optional part
-
-    public ElementOptional(Element optionalPart)
-    {
-        this.optionalPart = optionalPart ;
-    }
-
-    //public Element getFixedElement()    { return fixedPart ; }
-
-    public Element getOptionalElement() { return optionalPart ; }
-
-    //@Override
-    public int hashCode()
-    {
-        int hash = Element.HashOptional ;
-        hash = hash ^ getOptionalElement().hashCode() ;
-        return hash ;
-    }
-
-    //@Override
-    public boolean equalTo(Element el2, NodeIsomorphismMap isoMap)
-    {
-        if ( el2 == null ) return false ;
-
-        if ( ! ( el2 instanceof ElementOptional ) ) 
-            return false ;
-        
-        ElementOptional opt2 = (ElementOptional)el2 ;
-        return getOptionalElement().equalTo(opt2.getOptionalElement(), isoMap) ;
-    }
+    private Map map = new HashMap() ;
     
-    public void visit(ElementVisitor v) { v.visit(this) ; }
+    public NodeIsomorphismMap() {}
+    
+    private Node get(Node key) { return (Node)map.get(key) ; }
+    private void put(Node key, Node value) { map.put(key, value) ; }
+    
+    public boolean makeIsomorhpic(Node n1, Node n2)
+    {
+        if ( n1.isBlank() && n2.isBlank() )
+        {
+            Node other = get(n1) ;
+            if ( other == null )
+            {
+                put(n1, n2) ;
+                return true ;
+            }
+            return other.equals(n2) ;
+        }
+        return n1.equals(n2) ;
+    }
 }
 
 /*
- * (c) Copyright 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

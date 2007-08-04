@@ -13,7 +13,8 @@ import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.binding.BindingUtils;
-import com.hp.hpl.jena.sparql.util.LabelMap;
+import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
+import com.hp.hpl.jena.sparql.util.Utils;
 
 
 /** A single triple template.
@@ -80,7 +81,7 @@ public class TemplateTriple extends Template
     }
 
     //@Override
-    public boolean equalTo(Object temp2, LabelMap labelMap)
+    public boolean equalIso(Object temp2, NodeIsomorphismMap labelMap)
     {
         if ( temp2 == null ) return false ;
 
@@ -91,22 +92,24 @@ public class TemplateTriple extends Template
         if ( labelMap == null )
             return this.getTriple().equals(tt2.getTriple()) ;
         
-        Node s1 = this.getTriple().getSubject() ;
-        Node p1 = this.getTriple().getPredicate() ;
-        Node o1 = this.getTriple().getObject() ;
+        return Utils.tripleIso(triple, getTriple(), labelMap) ;
         
-        Node s2 = tt2.getTriple().getSubject() ;
-        Node p2 = tt2.getTriple().getPredicate() ;
-        Node o2 = tt2.getTriple().getObject() ;
-        
-        if ( ! nodeEquals(s1, s2, labelMap) )
-            return false ;
-        if ( ! nodeEquals(p1, p2, labelMap) )
-            return false ;
-        if ( ! nodeEquals(o1, o2, labelMap) )
-            return false ;
-        
-        return true ;
+//        Node s1 = this.getTriple().getSubject() ;
+//        Node p1 = this.getTriple().getPredicate() ;
+//        Node o1 = this.getTriple().getObject() ;
+//        
+//        Node s2 = tt2.getTriple().getSubject() ;
+//        Node p2 = tt2.getTriple().getPredicate() ;
+//        Node o2 = tt2.getTriple().getObject() ;
+//        
+//        if ( ! nodeEquals(s1, s2, labelMap) )
+//            return false ;
+//        if ( ! nodeEquals(p1, p2, labelMap) )
+//            return false ;
+//        if ( ! nodeEquals(o1, o2, labelMap) )
+//            return false ;
+//        
+//        return true ;
     }
     
     
@@ -117,20 +120,10 @@ public class TemplateTriple extends Template
     }
     
     // Map blank nodes.
-    private static boolean nodeEquals(Node n1, Node n2, LabelMap labelMap)
+    private static boolean nodeEquals(Node n1, Node n2, NodeIsomorphismMap isoMap)
     {
         if ( n1.isBlank() && n2.isBlank() )
-        {
-            String label1 = n1.getBlankNodeLabel() ;
-            String label2 = n2.getBlankNodeLabel() ;
-            String maybe = labelMap.get(label1) ;
-            if ( maybe == null )
-            {
-                labelMap.put(label1, label2) ;
-                return true ;
-            }
-            return maybe.equals(label2) ;
-        }
+            return isoMap.makeIsomorhpic(n1, n2) ; 
         return n1.equals(n2) ;
     }
     

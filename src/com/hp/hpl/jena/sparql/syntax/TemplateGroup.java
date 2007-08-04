@@ -10,7 +10,7 @@ import java.util.*;
 
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.sparql.util.LabelMap;
+import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 
 /** A number of templates, grouped together.
  *  Kept as a list so printing maintains order.
@@ -58,7 +58,7 @@ public class TemplateGroup extends Template implements TripleCollector
     }
 
     //@Override
-    public boolean equalTo(Object temp2, LabelMap labelMap)
+    public boolean equalIso(Object temp2, NodeIsomorphismMap labelMap)
     {
         if ( temp2 == null ) return false ;
 
@@ -71,7 +71,7 @@ public class TemplateGroup extends Template implements TripleCollector
         {
             Template t1 = (Template)getTemplates().get(i) ;
             Template t2 = (Template)tg2.getTemplates().get(i) ;
-            if ( ! t1.equalTo(t2, labelMap) )
+            if ( ! t1.equalIso(t2, labelMap) )
                 return false ;
         }
         return true ;

@@ -10,7 +10,7 @@ import java.util.*;
 
 import com.hp.hpl.jena.sparql.core.PatternVars;
 import com.hp.hpl.jena.sparql.serializer.FormatterARQ;
-import com.hp.hpl.jena.sparql.util.LabelMap;
+import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 
 /** Element - abstract class for all pattern elements 
  * 
@@ -32,7 +32,7 @@ public abstract class Element
     public abstract int hashCode() ;
     // If the labeMap is null, do .equals() on nodes, else map from
     // bNode varables in one to bNodes variables in the other 
-    public abstract boolean equalTo(Element el2, LabelMap labelMap) ;
+    public abstract boolean equalTo(Element el2, NodeIsomorphismMap isoMap) ;
     
     final public boolean equals(Object el2)
     { 

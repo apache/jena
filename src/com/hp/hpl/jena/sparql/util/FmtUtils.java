@@ -31,7 +31,7 @@ public class FmtUtils
     public static boolean multiLineExpr = false ;
     public static boolean printOpName = true ;
     
-    static NodeToLabelMap bNodeMap = new NodeToLabelMap("b", false) ;
+    static NodeToLabelMap bNodeMap = new NodeToLabelMapBNode("b", false) ;
     
     // Formatting various items
     public static String stringForTriple(Triple triple)
@@ -130,7 +130,7 @@ public class FmtUtils
         Model m = null ;
         if ( obj instanceof Resource )
             m = ((Resource)obj).getModel() ;
-        return stringForRDFNode(obj, new SerializationContext(m)) ;
+        return stringForRDFNode(obj, newSerializationContext(m)) ;
     }
 
     public static String stringForRDFNode(RDFNode obj, SerializationContext context)
@@ -251,15 +251,16 @@ public class FmtUtils
         if ( n == null )
             return "<<null>>" ;
         
-        if ( n.isBlank() )
+        // mappable?
+        if ( context != null && context.getBNodeMap() != null )
         {
-            if ( context == null )
-                return "[bNode]" ; 
-            if ( context.getBNodeMap() == null )
-                return "[bNode]" ;
-            // The BNodeMap controlls whether this becomes a told bnode or not
-            return context.getBNodeMap().asString(n) ;
+            String str = context.getBNodeMap().asString(n)  ;
+            if ( str != null )
+                return str ;
         }
+        
+        if ( n.isBlank() )
+            return "_:"+n.getBlankNodeLabel() ;
         
         if ( n.isLiteral() )
             return stringForLiteral((Node_Literal)n, context) ;
@@ -269,16 +270,11 @@ public class FmtUtils
             String uri = n.getURI() ;
             return stringForURI(uri, context) ;
         }
+        
         if ( n.isVariable() )
-        {
-            if ( ! Var.isBlankNodeVar(n))
-                return "?"+n.getName() ;
-            if ( context == null )
-                return "_:"+n.getName() ;   // Wild guess
-            else
-                return context.getBNodeMap().asString(n) ;
-        }
+            return "?"+n.getName() ;
 
+        ALog.warn(FmtUtils.class, "Failed to a node to a string: "+n) ;
         return n.toString() ;
     }
 
@@ -441,7 +437,7 @@ public class FmtUtils
         }
     }
     
-    static public void resetBNodeLabels() { bNodeMap = new NodeToLabelMap("b", false) ; }
+    static public void resetBNodeLabels() { bNodeMap = new NodeToLabelMapBNode("b", false) ; }
     
     private static SerializationContext newSerializationContext(PrefixMapping prefixMapping)
     {

@@ -161,7 +161,7 @@ public class Utils
         return Float.toString(f) ;
     }
     
-    public static boolean equals(Triple t1, Triple t2, LabelMap labelMap)
+    public static boolean tripleIso(Triple t1, Triple t2, NodeIsomorphismMap labelMap)
     {
         Node s1 = t1.getSubject() ;
         Node p1 = t1.getPredicate() ;
@@ -171,30 +171,20 @@ public class Utils
         Node p2 = t2.getPredicate() ;
         Node o2 = t2.getObject() ;
         
-        if ( ! nodeEquals(s1, s2, labelMap) )
+        if ( ! nodeIso(s1, s2, labelMap) )
             return false ;
-        if ( ! nodeEquals(p1, p2, labelMap) )
+        if ( ! nodeIso(p1, p2, labelMap) )
             return false ;
-        if ( ! nodeEquals(o1, o2, labelMap) )
+        if ( ! nodeIso(o1, o2, labelMap) )
             return false ;
 
         return true ;
     }
     
-    public static boolean nodeEquals(Node n1, Node n2, LabelMap labelMap)
+    public static boolean nodeIso(Node n1, Node n2, NodeIsomorphismMap isoMap)
     {
-        if ( labelMap != null && Var.isBlankNodeVar(n1) && Var.isBlankNodeVar(n2) )
-        {
-            String label1 = n1.getName();
-            String label2 = n2.getName();
-            String maybe = labelMap.get(label1) ;
-            if ( maybe == null )
-            {
-                labelMap.put(label1, label2) ;
-                return true ;
-            }
-            return maybe.equals(label2) ;
-        }
+        if ( isoMap != null && Var.isBlankNodeVar(n1) && Var.isBlankNodeVar(n2) )
+            return isoMap.makeIsomorhpic(n1, n2) ;
         return n1.equals(n2) ;
     }
 }
