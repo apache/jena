@@ -6,14 +6,12 @@
 
 package com.hp.hpl.jena.sparql.syntax;
 
-import java.util.* ;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.hp.hpl.jena.graph.Triple;
 
 import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
-
-import org.apache.commons.logging.LogFactory;
-import org.apache.commons.logging.Log;
 
 /** A number of graph query elements.
  *  Evaluation is a conjunction(AND) of the elements of the groups  
@@ -24,7 +22,6 @@ import org.apache.commons.logging.Log;
 
 public class ElementGroup extends Element
 {
-    private static Log log = LogFactory.getLog(ElementGroup.class) ;
     List elements = new ArrayList() ;
 
     public ElementGroup()

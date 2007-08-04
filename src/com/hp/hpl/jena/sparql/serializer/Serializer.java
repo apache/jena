@@ -8,9 +8,7 @@ package com.hp.hpl.jena.sparql.serializer;
 
 import java.io.OutputStream;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
+import com.hp.hpl.jena.sparql.util.ALog;
 import com.hp.hpl.jena.sparql.util.IndentedLineBuffer;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
 import com.hp.hpl.jena.sparql.util.NodeToLabelMapBNode;
@@ -22,8 +20,6 @@ import com.hp.hpl.jena.query.Syntax;
 public class Serializer
 {
     static final int BLOCK_INDENT = 2 ;
-    static private Log log = LogFactory.getLog(Serializer.class) ;
-
     /** Output the query
      * 
      * @param query  The query
@@ -159,7 +155,7 @@ public class Serializer
             return ;
         }
 
-        log.warn("Unknown syntax: "+outSyntax) ;
+        ALog.warn(Serializer.class, "Unknown syntax: "+outSyntax) ;
     }
      
     static public void serializeARQ(Query query, IndentedWriter writer)
@@ -215,7 +211,7 @@ public class Serializer
 
     static public void serializeRDQL(Query query, IndentedWriter writer)
     {
-        log.warn("# unparseRDQL: Not implemented - Native syntax instead") ;
+        ALog.warn(Serializer.class, "# unparseRDQL: Not implemented - Native syntax instead") ;
         serializeARQ(query, writer) ;
     }
 

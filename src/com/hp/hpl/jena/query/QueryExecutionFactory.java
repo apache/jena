@@ -6,8 +6,6 @@
 package com.hp.hpl.jena.query;
 import java.util.List;
 
-import org.apache.commons.logging.LogFactory;
-
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.util.FileManager;
@@ -24,6 +22,7 @@ import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.binding.BindingRoot;
 import com.hp.hpl.jena.sparql.engine.http.QueryEngineHTTP;
 import com.hp.hpl.jena.sparql.syntax.Element;
+import com.hp.hpl.jena.sparql.util.ALog;
 import com.hp.hpl.jena.sparql.util.Context;
 
 
@@ -468,9 +467,7 @@ public class QueryExecutionFactory
         QueryEngineFactory f = findFactory(query, dsg, context);
         if ( f == null )
         {
-            LogFactory
-                .getLog(QueryExecutionFactory.class)
-                .warn("Failed to find a QueryEngineFactory for query: "+query) ;
+            ALog.warn(QueryExecutionFactory.class, "Failed to find a QueryEngineFactory for query: "+query) ;
             return null ;
         }
         return new QueryExecutionBase(query, dataset, context, f) ;

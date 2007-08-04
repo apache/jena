@@ -10,17 +10,19 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.apache.commons.logging.LogFactory;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.hp.hpl.jena.query.ARQ;
-import com.hp.hpl.jena.query.QuerySolution;
-import com.hp.hpl.jena.query.ResultSet;
 import com.hp.hpl.jena.rdf.model.Literal;
 import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.Resource;
+
+import com.hp.hpl.jena.sparql.util.ALog;
+
+import com.hp.hpl.jena.query.ARQ;
+import com.hp.hpl.jena.query.QuerySolution;
+import com.hp.hpl.jena.query.ResultSet;
 
 /**
  * JSON Output as a JSON object
@@ -126,7 +128,7 @@ public class JSONObjectResult implements ResultSetProcessor, JSONResults
         if (node instanceof Resource)
             return resourceAsJSON((Resource) node);
         
-        LogFactory.getLog(this.getClass()).warn("Unknown RDFNode type in result set: " + node.getClass());
+        ALog.warn(this, "Unknown RDFNode type in result set: " + node.getClass());
         return jsonValue ;
     }
     

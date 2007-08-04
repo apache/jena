@@ -6,9 +6,9 @@
 
 package com.hp.hpl.jena.sparql.syntax;
 
-import org.apache.commons.logging.LogFactory;
-
 import com.hp.hpl.jena.graph.Node;
+
+import com.hp.hpl.jena.sparql.util.ALog;
 import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 
 /** A SERVICE pattern - access a remote SPARQL service.
@@ -31,7 +31,7 @@ public class ElementService extends Element
     public ElementService(Node n, Element el)
     {
         if ( ! n.isURI() && ! n.isVariable() )
-            LogFactory.getLog(ElementService.class).fatal("Must be a URI (or variable which will be bound) for a service endpoint") ;
+            ALog.fatal(this, "Must be a URI (or variable which will be bound) for a service endpoint") ;
         this.serviceNode = n ;
         this.element = el ;
     }

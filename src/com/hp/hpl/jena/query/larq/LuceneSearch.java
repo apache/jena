@@ -8,14 +8,11 @@ package com.hp.hpl.jena.query.larq;
 
 import java.util.Iterator;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.QueryBuildException;
-import com.hp.hpl.jena.query.QueryExecException;
+import com.hp.hpl.jena.util.iterator.Map1;
+import com.hp.hpl.jena.util.iterator.Map1Iterator;
+
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
@@ -31,17 +28,18 @@ import com.hp.hpl.jena.sparql.pfunction.PFLib;
 import com.hp.hpl.jena.sparql.pfunction.PropFuncArg;
 import com.hp.hpl.jena.sparql.pfunction.PropFuncArgType;
 import com.hp.hpl.jena.sparql.pfunction.PropertyFunctionEval;
+import com.hp.hpl.jena.sparql.util.ALog;
 import com.hp.hpl.jena.sparql.util.IteratorTruncate;
 import com.hp.hpl.jena.sparql.util.NodeFactory;
-import com.hp.hpl.jena.util.iterator.Map1;
-import com.hp.hpl.jena.util.iterator.Map1Iterator;
+
+import com.hp.hpl.jena.query.Query;
+import com.hp.hpl.jena.query.QueryBuildException;
+import com.hp.hpl.jena.query.QueryExecException;
 
 /** Base class for searching a IndexLARQ */
 
 public abstract class LuceneSearch extends PropertyFunctionEval
 {
-    private static Log log = LogFactory.getLog(LuceneSearch.class) ;
-    
     protected LuceneSearch()
     {
         super(PropFuncArgType.PF_ARG_EITHER,
@@ -139,7 +137,7 @@ public abstract class LuceneSearch extends PropertyFunctionEval
         
         if ( qs == null )
         {
-            log.warn("Not a string (it was a moment ago!): "+searchString) ;
+            ALog.warn(this, "Not a string (it was a moment ago!): "+searchString) ;
             return new QueryIterNullIterator(execCxt) ;
         }
         
@@ -161,19 +159,19 @@ public abstract class LuceneSearch extends PropertyFunctionEval
     {
         if ( !searchString.isLiteral() )
         {
-            log.warn("Not a string: "+searchString) ;
+            ALog.warn(LuceneSearch.class, "Not a string: "+searchString) ;
             return false ;
         }
 
         if ( searchString.getLiteralDatatypeURI() != null )
         {
-            log.warn("Not a plain string: "+searchString) ;
+            ALog.warn(LuceneSearch.class, "Not a plain string: "+searchString) ;
             return false ;
         }
 
         if ( searchString.getLiteralLanguage() != null && ! searchString.getLiteralLanguage().equals("") )
         {
-            log.warn("Not a plain string (has lang tag): "+searchString) ;
+            ALog.warn(LuceneSearch.class, "Not a plain string (has lang tag): "+searchString) ;
             return false ;
         }
         return true ;

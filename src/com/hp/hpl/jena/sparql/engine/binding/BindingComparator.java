@@ -9,24 +9,25 @@ package com.hp.hpl.jena.sparql.engine.binding;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import com.hp.hpl.jena.graph.Node;
+
+import com.hp.hpl.jena.sparql.core.Var;
+import com.hp.hpl.jena.sparql.engine.ExecutionContext;
+import com.hp.hpl.jena.sparql.expr.Expr;
+import com.hp.hpl.jena.sparql.expr.ExprEvalException;
+import com.hp.hpl.jena.sparql.expr.NodeValue;
+import com.hp.hpl.jena.sparql.expr.VariableNotBoundException;
+import com.hp.hpl.jena.sparql.function.FunctionEnv;
+import com.hp.hpl.jena.sparql.function.FunctionEnvBase;
+import com.hp.hpl.jena.sparql.util.ALog;
+import com.hp.hpl.jena.sparql.util.NodeUtils;
+
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryExecException;
 import com.hp.hpl.jena.query.SortCondition;
-import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.sparql.engine.ExecutionContext;
-import com.hp.hpl.jena.sparql.expr.*;
-import com.hp.hpl.jena.sparql.function.FunctionEnv;
-import com.hp.hpl.jena.sparql.function.FunctionEnvBase;
-import com.hp.hpl.jena.sparql.util.NodeUtils;
 
 public class BindingComparator implements java.util.Comparator 
 {
-    private Log log = LogFactory.getLog(BindingComparator.class) ;
-
     List conditions ;
     private FunctionEnv env ;
     
@@ -63,12 +64,12 @@ public class BindingComparator implements java.util.Comparator
             try { nv1 = sc.expression.eval(bind1, env) ; }
             catch (VariableNotBoundException ex) {}
             catch (ExprEvalException ex)
-            { log.warn(ex.getMessage()) ; }
+            { ALog.warn(this, ex.getMessage()) ; }
             
             try { nv2 = sc.expression.eval(bind2, env) ; }
             catch (VariableNotBoundException ex) {}
             catch (ExprEvalException ex)
-            { log.warn(ex.getMessage()) ; }
+            { ALog.warn(this, ex.getMessage()) ; }
             
             Node n1 = NodeValue.toNode(nv1) ;
             Node n2 = NodeValue.toNode(nv2) ;

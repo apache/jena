@@ -18,25 +18,25 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import com.hp.hpl.jena.datatypes.RDFDatatype;
 import com.hp.hpl.jena.datatypes.TypeMapper;
 import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.query.ARQ;
-import com.hp.hpl.jena.query.QuerySolution;
-import com.hp.hpl.jena.query.ResultSet;
 import com.hp.hpl.jena.rdf.model.AnonId;
 import com.hp.hpl.jena.rdf.model.Model;
+
 import com.hp.hpl.jena.sparql.ARQConstants;
 import com.hp.hpl.jena.sparql.core.ResultBinding;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.binding.BindingMap;
+import com.hp.hpl.jena.sparql.util.ALog;
 import com.hp.hpl.jena.sparql.util.GraphUtils;
 import com.hp.hpl.jena.sparql.util.LabelToNodeMap;
 import com.hp.hpl.jena.sparql.util.StringUtils;
+
+import com.hp.hpl.jena.query.ARQ;
+import com.hp.hpl.jena.query.QuerySolution;
+import com.hp.hpl.jena.query.ResultSet;
 
 /** Code that reads an XML Results format and builds the ARQ structure for the same.
  *  Can read result set and boolean result forms.
@@ -49,7 +49,6 @@ import com.hp.hpl.jena.sparql.util.StringUtils;
 
 class XMLInputStAX extends SPARQLResult
 {
-    private static Log log = LogFactory.getLog(XMLInputStAX.class) ;
     private static final String XML_NS = ARQConstants.XML_NS ; 
     
     public static ResultSet fromXML(InputStream in)
@@ -199,9 +198,9 @@ class XMLInputStAX extends SPARQLResult
             
         } catch (XMLStreamException ex)
         {
-            log.warn("XMLStreamException: "+ex.getMessage(), ex) ;
+            ALog.warn(this ,"XMLStreamException: "+ex.getMessage(), ex) ;
         }
-        }
+    }
         
     public boolean hasNext()
     {
@@ -329,7 +328,7 @@ class XMLInputStAX extends SPARQLResult
             String s2 = "" ;
             if ( stopElementNames != null )
                 s2 = StringUtils.join(", ",stopElementNames) ;
-            log.warn("Failed to find start of stop of specified elements: "+s1+" :: "+s2) ; 
+            ALog.warn(this, "Failed to find start of stop of specified elements: "+s1+" :: "+s2) ; 
         }
     }
     
@@ -491,13 +490,13 @@ class XMLInputStAX extends SPARQLResult
 
     private void staxError(String msg)
     {
-        log.warn("StAX error: "+msg) ;
+        ALog.warn(this, "StAX error: "+msg) ;
         throw new ResultSetException(msg) ;
     }
 
     private void staxError(String msg, Throwable th)
     {
-        log.warn("StAX error: "+msg, th) ;
+        ALog.warn(this, "StAX error: "+msg, th) ;
         throw new ResultSetException(msg, th) ;
     }
     }

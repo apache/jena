@@ -10,12 +10,11 @@ import java.util.HashSet;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
-import org.apache.commons.logging.LogFactory;
-
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.binding.BindingFixed;
+import com.hp.hpl.jena.sparql.util.ALog;
 import com.hp.hpl.jena.sparql.util.Utils;
 
 /** A QueryIterator that surpresses items already seen. 
@@ -56,9 +55,7 @@ public class QueryIterDistinct extends QueryIter1
                 return null ;
             binding = getInput().nextBinding() ;
             if ( ! ( binding instanceof BindingFixed ) )
-                LogFactory
-                    .getLog(QueryIterDistinct.class)
-                    .warn("Not a fixed Binding (incorrect .hashCode/.equals possible for DISTINCT): "+Utils.className(binding)) ;
+                ALog.warn(this, "Not a fixed Binding (incorrect .hashCode/.equals possible for DISTINCT): "+Utils.className(binding)) ;
             
         } while ( seen.contains(binding) ) ;
         seen.add(binding) ;

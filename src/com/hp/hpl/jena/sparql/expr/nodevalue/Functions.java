@@ -10,12 +10,11 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Calendar;
 
-import org.apache.commons.logging.LogFactory;
-
 import com.hp.hpl.jena.sparql.ARQInternalErrorException;
 import com.hp.hpl.jena.sparql.expr.Expr;
 import com.hp.hpl.jena.sparql.expr.ExprEvalException;
 import com.hp.hpl.jena.sparql.expr.NodeValue;
+import com.hp.hpl.jena.sparql.util.ALog;
 import com.hp.hpl.jena.sparql.util.StringUtils;
 
 /**
@@ -138,7 +137,7 @@ public class Functions
             return d1.divide(d2, DIVIDE_PRECISION, BigDecimal.ROUND_FLOOR) ;
         } catch (ArithmeticException ex)
         {
-            LogFactory.getLog(Functions.class).warn("ArithmeticException in decimal divide - attempting to treat as doubles") ;
+            ALog.warn(Functions.class, "ArithmeticException in decimal divide - attempting to treat as doubles") ;
             return new BigDecimal(d1.doubleValue()/d2.doubleValue()) ;
         }
     }

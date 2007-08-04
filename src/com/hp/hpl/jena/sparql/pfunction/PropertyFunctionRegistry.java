@@ -7,15 +7,15 @@
 package com.hp.hpl.jena.sparql.pfunction;
 import java.util.*;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import com.hp.hpl.jena.vocabulary.RDFS;
 
-import com.hp.hpl.jena.query.ARQ;
 import com.hp.hpl.jena.sparql.ARQConstants;
+import com.hp.hpl.jena.sparql.util.ALog;
 import com.hp.hpl.jena.sparql.util.Context;
 import com.hp.hpl.jena.sparql.util.MappedLoader;
 import com.hp.hpl.jena.sparql.vocabulary.ListPFunction;
-import com.hp.hpl.jena.vocabulary.RDFS;
+
+import com.hp.hpl.jena.query.ARQ;
 
 
 /** 
@@ -25,7 +25,6 @@ import com.hp.hpl.jena.vocabulary.RDFS;
 
 public class PropertyFunctionRegistry
 {
-    static Log log = LogFactory.getLog(PropertyFunctionRegistry.class) ;
     static PropertyFunctionRegistry globalRegistry = null ;
     
     Map registry = new HashMap() ;
@@ -81,7 +80,7 @@ public class PropertyFunctionRegistry
     { 
         if ( ! PropertyFunction.class.isAssignableFrom(extClass) )
         {
-            log.warn("Class "+extClass.getName()+" is not an PropertyFunction" );
+            ALog.warn(this, "Class "+extClass.getName()+" is not an PropertyFunction" );
             return ; 
         }
         

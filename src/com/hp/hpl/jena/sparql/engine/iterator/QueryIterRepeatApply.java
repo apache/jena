@@ -4,13 +4,12 @@
  */
 
 package com.hp.hpl.jena.sparql.engine.iterator;
-import java.util.* ;
-
-import org.apache.commons.logging.*;
+import java.util.NoSuchElementException;
 
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
+import com.hp.hpl.jena.sparql.util.ALog;
 import com.hp.hpl.jena.sparql.util.Utils;
 
 /** Repeatedly execute the subclass operation for each Binding in the input iterator. 
@@ -32,7 +31,7 @@ public abstract class QueryIterRepeatApply extends QueryIter1
         
         if ( input == null )
         {
-            LogFactory.getLog(this.getClass()).fatal("[QueryIterRepeatApply] Repeated application to null input iterator") ;
+            ALog.fatal(this, "[QueryIterRepeatApply] Repeated application to null input iterator") ;
             return ;
         }
     }

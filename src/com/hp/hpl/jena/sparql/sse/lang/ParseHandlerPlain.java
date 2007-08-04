@@ -11,15 +11,15 @@ import java.util.Stack;
 import com.hp.hpl.jena.datatypes.RDFDatatype;
 import com.hp.hpl.jena.datatypes.TypeMapper;
 import com.hp.hpl.jena.graph.Node;
+
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.core.VarAlloc;
 import com.hp.hpl.jena.sparql.sse.Item;
 import com.hp.hpl.jena.sparql.sse.ItemList;
 import com.hp.hpl.jena.sparql.sse.ItemLocation;
 import com.hp.hpl.jena.sparql.sse.SSEParseException;
+import com.hp.hpl.jena.sparql.util.ALog;
 import com.hp.hpl.jena.sparql.util.LabelToNodeMap;
-
-import org.apache.commons.logging.LogFactory;
 
 public class ParseHandlerPlain implements ParseHandler 
 {
@@ -41,7 +41,7 @@ public class ParseHandlerPlain implements ParseHandler
     public void parseFinish()
     {
         if ( depth != 0 )
-            LogFactory.getLog(ParseHandlerPlain.class).warn("Stack error: depth ="+depth+" at end of parse run") ;
+            ALog.warn(this, "Stack error: depth ="+depth+" at end of parse run") ;
         depth = -1 ;
 
     }

@@ -83,18 +83,18 @@ public class GraphContainerUtils
     {
         if ( graph == null )
         {
-            GraphUtils.log.warn("containerMember called with null graph") ;
+            ALog.warn(GraphContainerUtils.class, "containerMember called with null graph") ;
             return 0 ;
         }
         
         if ( container == null )
         {
-            GraphUtils.log.warn("containerMember called with null list") ;
+            ALog.warn(GraphContainerUtils.class, "containerMember called with null list") ;
             return 0 ;
         }
         if ( member == null )
         {
-            GraphUtils.log.warn("containerMember called with null member") ;
+            ALog.warn(GraphContainerUtils.class, "containerMember called with null member") ;
             return 0 ;
         }
         

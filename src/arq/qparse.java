@@ -19,9 +19,6 @@ import com.hp.hpl.jena.sparql.ARQInternalErrorException;
 import com.hp.hpl.jena.sparql.resultset.ResultSetException;
 import com.hp.hpl.jena.sparql.util.Utils;
 
-//import org.apache.commons.logging.Log;
-//import org.apache.commons.logging.LogFactory;
-
 /** A program to parse and print a query.
  *
  * @author  Andy Seaborne

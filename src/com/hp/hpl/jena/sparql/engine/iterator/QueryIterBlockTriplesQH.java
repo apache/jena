@@ -7,8 +7,6 @@ package com.hp.hpl.jena.sparql.engine.iterator;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.apache.commons.logging.LogFactory;
-
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.query.BindingQueryPlan;
 import com.hp.hpl.jena.graph.query.Domain;
@@ -21,6 +19,7 @@ import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.binding.BindingMap;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext;
+import com.hp.hpl.jena.sparql.util.ALog;
 import com.hp.hpl.jena.sparql.util.FmtUtils;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
 import com.hp.hpl.jena.sparql.util.Utils;
@@ -90,7 +89,7 @@ public class QueryIterBlockTriplesQH extends QueryIterRepeatApply
             BindingQueryPlan plan = qh.prepareBindings(graphQuery, projectionVars);
             graphIter = plan.executeBindings() ;
             if ( graphIter == null )
-                LogFactory.getLog(StagePattern.class).warn("Graph Iterator is null") ;
+                ALog.warn(this, "Graph Iterator is null") ;
         }
 
         //@Override

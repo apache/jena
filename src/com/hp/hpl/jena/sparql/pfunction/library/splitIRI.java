@@ -6,11 +6,8 @@
 
 package com.hp.hpl.jena.sparql.pfunction.library;
 
-import org.apache.commons.logging.LogFactory;
-
 import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.query.QueryBuildException;
-import com.hp.hpl.jena.query.QueryException;
+
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
@@ -20,8 +17,12 @@ import com.hp.hpl.jena.sparql.pfunction.PFLib;
 import com.hp.hpl.jena.sparql.pfunction.PropFuncArg;
 import com.hp.hpl.jena.sparql.pfunction.PropFuncArgType;
 import com.hp.hpl.jena.sparql.pfunction.PropertyFunctionBase;
+import com.hp.hpl.jena.sparql.util.ALog;
 import com.hp.hpl.jena.sparql.util.NodeUtils;
 import com.hp.hpl.jena.sparql.util.Utils;
+
+import com.hp.hpl.jena.query.QueryBuildException;
+import com.hp.hpl.jena.query.QueryException;
 
 public class splitIRI extends PropertyFunctionBase
 {
@@ -44,7 +45,7 @@ public class splitIRI extends PropertyFunctionBase
 
     // Implementing .exec requires considering all the cases of variable being
     // bound/constants or unbound variables.  If an unexpected case arises, or
-    // one the implementation can't fulfil, then log a warning and return 
+    // one the implementation can't fulfil, then give warning and return 
     // QueryIterNullIterator or a null.
     //
     // Do not throw an exception except when an internal error situation occurs. 
@@ -68,7 +69,7 @@ public class splitIRI extends PropertyFunctionBase
                 return subjectIsVariable(argSubject.getArg(), argObject, execCxt) ;
         } catch (QueryException ex)
         {
-            LogFactory.getLog(splitIRI.class).warn("Unexpected problems in splitIRI: "+ex.getMessage()) ;
+            ALog.warn(this, "Unexpected problems in splitIRI: "+ex.getMessage()) ;
             return null ;
         }
     }
@@ -125,7 +126,7 @@ public class splitIRI extends PropertyFunctionBase
 
     private QueryIterator subjectIsVariable(Node arg, PropFuncArg argObject, ExecutionContext execCxt)
     {
-        LogFactory.getLog(splitIRI.class).warn("Subject to property function splitURI is not a bound nor a constant.") ;
+        ALog.warn(this, "Subject to property function splitURI is not a bound nor a constant.") ;
         return PFLib.noResults(execCxt) ;
     }
 }

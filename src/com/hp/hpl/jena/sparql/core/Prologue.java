@@ -6,17 +6,14 @@
 
 package com.hp.hpl.jena.sparql.core;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import com.hp.hpl.jena.n3.IRIResolver;
 import com.hp.hpl.jena.shared.PrefixMapping;
 import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
 
+import com.hp.hpl.jena.sparql.util.ALog;
+
 public class Prologue
 {
-    private static Log log = LogFactory.getLog(Prologue.class) ;
-
     protected boolean seenBaseURI = false ;     // Implicit or set.
     protected String baseURI = null ;
 
@@ -95,7 +92,7 @@ public class Prologue
             prefixMap.setNsPrefix(prefix, expansion) ;
         } catch (PrefixMapping.IllegalPrefixException ex)
         {
-            log.warn("Illegal prefix mapping(ignored): "+prefix+"=>"+expansion) ;
+            ALog.warn(this, "Illegal prefix mapping(ignored): "+prefix+"=>"+expansion) ;
         }
     }   
 

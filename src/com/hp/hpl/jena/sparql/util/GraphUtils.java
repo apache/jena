@@ -8,9 +8,6 @@ package com.hp.hpl.jena.sparql.util;
 
 import java.util.*;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.query.ARQ;
 import com.hp.hpl.jena.rdf.model.*;
@@ -23,8 +20,6 @@ import com.hp.hpl.jena.vocabulary.RDF;
 
 public class GraphUtils
 {
-    static Log log = LogFactory.getLog(GraphUtils.class) ;
-    
     private static RefBoolean usePlainGraph = new RefBoolean(ARQ.strictGraph) ;
 
     // These functions control creating models for datasets.

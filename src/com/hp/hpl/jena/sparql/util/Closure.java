@@ -9,14 +9,15 @@
  */
 
 package com.hp.hpl.jena.sparql.util;
-import java.util.* ;
-import com.hp.hpl.jena.rdf.model.* ;
-import org.apache.commons.logging.* ;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+
+import com.hp.hpl.jena.rdf.model.*;
 
 public class Closure
 {
-    private static Log logger = LogFactory.getLog(Closure.class.getName()) ;
-
     /** Calculate the bNode closure from a statement .
      *  The Statement itself does not automatically get included.
      * @param stmt
@@ -65,8 +66,6 @@ public class Closure
 
     public static Model closure(Statement statement, ClosureTest test, Model model)
     {
-        if ( logger.isDebugEnabled() )
-            logger.debug("closure: "+statement) ;
         //Set visited = new HashSet() ;
         List visited = new ArrayList() ;
 
@@ -126,9 +125,6 @@ public class Closure
     public static Model closure(Resource resource, ClosureTest test,
                                 boolean testThisNode, Model results)
     {
-
-        if ( logger.isDebugEnabled() )
-            logger.debug("closure: "+resource) ;
         //Set s = new HashSet() ;
         //Set visited = new HashSet() ;
         List visited = new ArrayList() ;
@@ -148,8 +144,6 @@ public class Closure
                                 Model closureBlob, Collection visited,
                                 ClosureTest test)
     {
-        if ( logger.isDebugEnabled() )
-            logger.trace(stmt.toString()) ;
         if ( test.includeStmt(stmt) )
                 closureBlob.add(stmt) ;
         closure(stmt.getSubject(), closureBlob, visited, test) ;
@@ -162,27 +156,15 @@ public class Closure
                                 ClosureTest test)
     {
         if ( ! ( n instanceof Resource ) )
-        {
-            if ( logger.isTraceEnabled() )
-                logger.trace("  Not a resource: "+n) ;
             return ;
-        }
 
         Resource r = (Resource)n ;
 
         if ( visited.contains(r) )
-        {
-            if ( logger.isTraceEnabled() )
-                logger.trace("  Already visited: "+r) ;
             return ;
-        }
 
         if ( ! test.traverse(r) )
-        {
-            if ( logger.isTraceEnabled() )
-                logger.trace("  End traverse: "+r) ;
             return ;
-        }
 
         closureNoTest(r, closureBlob, visited, test) ;
     }
@@ -192,9 +174,6 @@ public class Closure
                                       Model closureBlob, Collection visited,
                                       ClosureTest test)
     {
-        if (logger.isTraceEnabled() )
-            logger.trace("@ "+r+" :: "+closureBlob.size()+" //"+dbg_string(visited));
-
         visited.add(r) ;
 
         StmtIterator sIter = r.listProperties() ;

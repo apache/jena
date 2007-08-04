@@ -9,8 +9,6 @@ package com.hp.hpl.jena.query.larq;
 
 import java.util.Iterator;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.index.IndexReader;
@@ -34,8 +32,6 @@ import com.hp.hpl.jena.util.iterator.Map1Iterator;
  */
 public class IndexLARQ
 {
-    private static Log log = LogFactory.getLog(IndexLARQ.class) ;
-
     private IndexReader reader = null ;
     private QueryParser luceneQueryParser = null ;
 
@@ -122,9 +118,6 @@ public class IndexLARQ
             
             Query query = luceneQueryParser.parse(queryString) ;
             
-            if ( log.isDebugEnabled() )
-                log.debug("Search: ("+query.toString()+")") ;
-
             Hits hits = searcher.search(query) ;
             
             Map1 converter = new Map1(){

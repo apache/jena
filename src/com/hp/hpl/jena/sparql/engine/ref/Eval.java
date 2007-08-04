@@ -11,12 +11,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Stack;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.query.QueryExecException;
+
 import com.hp.hpl.jena.sparql.ARQInternalErrorException;
 import com.hp.hpl.jena.sparql.ARQNotImplemented;
 import com.hp.hpl.jena.sparql.algebra.Op;
@@ -26,8 +23,11 @@ import com.hp.hpl.jena.sparql.algebra.TableFactory;
 import com.hp.hpl.jena.sparql.algebra.op.*;
 import com.hp.hpl.jena.sparql.algebra.table.TableEmpty;
 import com.hp.hpl.jena.sparql.algebra.table.TableUnit;
-import com.hp.hpl.jena.sparql.core.*;
-import com.hp.hpl.jena.sparql.engine.*;
+import com.hp.hpl.jena.sparql.core.BasicPattern;
+import com.hp.hpl.jena.sparql.core.DatasetGraph;
+import com.hp.hpl.jena.sparql.core.Var;
+import com.hp.hpl.jena.sparql.engine.ExecutionContext;
+import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.binding.Binding1;
 import com.hp.hpl.jena.sparql.engine.binding.BindingRoot;
@@ -36,12 +36,13 @@ import com.hp.hpl.jena.sparql.engine.iterator.QueryIterConcat;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterPlainWrapper;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterRoot;
 import com.hp.hpl.jena.sparql.engine.main.StageBuilder;
+import com.hp.hpl.jena.sparql.util.ALog;
+
+import com.hp.hpl.jena.query.QueryExecException;
 
 
 public class Eval
 {
-    private static Log log = LogFactory.getLog(Eval.class) ;
-    
     public static Table eval(Evaluator evaluator, Op op)
     {
         EvaluatorDispatch ev = new EvaluatorDispatch(evaluator) ;
@@ -73,7 +74,7 @@ public class Eval
         Table getResult()
         {
             if ( stack.size() != 1 )
-                log.warn("Warning: getResult: stack size = "+stack.size()) ;
+                ALog.warn(this, "Warning: getResult: stack size = "+stack.size()) ;
             
             Table table = pop() ;
             return table ;
@@ -211,7 +212,7 @@ public class Eval
         private Table pop()
         { 
             if ( stack.size() == 0 )
-                log.warn("Warning: pop: empty stack") ;
+                ALog.warn(this, "Warning: pop: empty stack") ;
             return (Table)stack.pop() ;
         }
     

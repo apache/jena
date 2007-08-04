@@ -23,8 +23,6 @@ import org.apache.lucene.store.RAMDirectory;
 
 public class IndexBuilderBase implements IndexBuilder 
 {
-    //private static Log log = LogFactory.getLog(IndexBuilderBase.class) ;
-
     private Directory dir = null ;
 
     // Use this for incremental indexing?

@@ -9,7 +9,8 @@ package com.hp.hpl.jena.sparql.resultset;
 import java.io.ByteArrayOutputStream;
 import java.io.UnsupportedEncodingException;
 
-import org.apache.commons.logging.LogFactory;
+import com.hp.hpl.jena.sparql.util.ALog;
+
 
 import com.hp.hpl.jena.query.ResultSet;
 
@@ -23,7 +24,7 @@ public abstract class OutputBase implements OutputFormatter
         try { return new String(arr.toByteArray(), "UTF-8") ; }
         catch (UnsupportedEncodingException e)
         {
-            LogFactory.getLog(OutputBase.class).warn("UnsupportedEncodingException") ;
+            ALog.warn(this, "UnsupportedEncodingException") ;
             return null ;
         }
     }
@@ -35,7 +36,7 @@ public abstract class OutputBase implements OutputFormatter
         try { return new String(arr.toByteArray(), "UTF-8") ; }
         catch (UnsupportedEncodingException e)
         {
-            LogFactory.getLog(OutputBase.class).warn("UnsupportedEncodingException") ;
+            ALog.warn(this, "UnsupportedEncodingException") ;
             return null ;
         }
     }

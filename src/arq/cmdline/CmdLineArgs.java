@@ -10,9 +10,9 @@ import java.util.*;
 
 import arq.cmd.CmdException;
 
-import org.apache.commons.logging.LogFactory;
-
 import com.hp.hpl.jena.util.FileManager;
+
+import com.hp.hpl.jena.sparql.util.ALog;
 
 
 /** Command line, using the common named/positional arguments paradigm
@@ -75,7 +75,7 @@ public class CmdLineArgs extends CommandLineBase
         {
             String name = (String)iter.next();
             if ( argMap.containsKey(name))
-                LogFactory.getLog(CmdLineArgs.class).warn("Argument '"+name+"' already added") ; 
+                ALog.warn(this, "Argument '"+name+"' already added") ; 
             argMap.put(name, arg) ;
         }
         return this ;

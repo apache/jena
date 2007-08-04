@@ -25,8 +25,6 @@ import com.hp.hpl.jena.util.FileUtils;
 
 public class print extends FunctionBase
 {
-    //private static Log log = LogFactory.getLog(F_even.class) ;
-    
     private static PrintWriter out = FileUtils.asPrintWriterUTF8(System.out) ; 
     static public void setStream(PrintStream stream) { out = FileUtils.asPrintWriterUTF8(stream) ; }  
     

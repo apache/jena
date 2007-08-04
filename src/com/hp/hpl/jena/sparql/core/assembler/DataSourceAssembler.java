@@ -9,18 +9,19 @@ package com.hp.hpl.jena.sparql.core.assembler;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.commons.logging.LogFactory;
-
 import com.hp.hpl.jena.assembler.Assembler;
 import com.hp.hpl.jena.assembler.Mode;
 import com.hp.hpl.jena.assembler.assemblers.AssemblerBase;
-import com.hp.hpl.jena.query.DataSource;
-import com.hp.hpl.jena.query.DatasetFactory;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.Resource;
+
+import com.hp.hpl.jena.sparql.util.ALog;
 import com.hp.hpl.jena.sparql.util.FmtUtils;
 import com.hp.hpl.jena.sparql.util.GraphUtils;
+
+import com.hp.hpl.jena.query.DataSource;
+import com.hp.hpl.jena.query.DatasetFactory;
 
 public class DataSourceAssembler extends AssemblerBase implements Assembler
 {
@@ -61,7 +62,7 @@ public class DataSourceAssembler extends AssemblerBase implements Assembler
             {
                 g = GraphUtils.getResourceValue(r, DatasetAssemblerVocab.pGraphAlt) ;
                 if ( g != null )
-                    LogFactory.getLog(DataSourceAssembler.class).warn("Use of old vocabulary: use :graph not :graphData") ;
+                    ALog.warn(this, "Use of old vocabulary: use :graph not :graphData") ;
                 else
                     throw new DatasetAssemblerException(root, "no graph for: "+gName) ;
             }

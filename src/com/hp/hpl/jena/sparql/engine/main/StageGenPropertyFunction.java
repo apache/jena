@@ -8,19 +8,16 @@ package com.hp.hpl.jena.sparql.engine.main;
 
 import java.util.*;
 
-import org.apache.commons.logging.LogFactory;
-
 import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.query.ARQ;
+
 import com.hp.hpl.jena.sparql.ARQInternalErrorException;
 import com.hp.hpl.jena.sparql.core.BasicPattern;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.pfunction.PropFuncArg;
 import com.hp.hpl.jena.sparql.pfunction.PropertyFunctionRegistry;
-import com.hp.hpl.jena.sparql.util.Context;
-import com.hp.hpl.jena.sparql.util.GNode;
-import com.hp.hpl.jena.sparql.util.GraphList;
-import com.hp.hpl.jena.sparql.util.Utils;
+import com.hp.hpl.jena.sparql.util.*;
+
+import com.hp.hpl.jena.query.ARQ;
 
 
 public class StageGenPropertyFunction implements StageGenerator
@@ -91,7 +88,7 @@ public class StageGenPropertyFunction implements StageGenerator
             
             if ( ! ( obj instanceof Triple ) )
             {
-                LogFactory.getLog(StageGenPropertyFunction.class).warn("Don't recognize: ["+Utils.className(obj)+"]") ;
+                ALog.warn(StageGenPropertyFunction.class, "Don't recognize: ["+Utils.className(obj)+"]") ;
                 throw new ARQInternalErrorException("Not a triple pattern: "+obj.toString() ) ;
             }
                 
@@ -117,7 +114,7 @@ public class StageGenPropertyFunction implements StageGenerator
             Stage stage = magicProperty(context, registry, pf, triples) ;
             if ( stage == null )
             {
-                LogFactory.getLog(StageGenPropertyFunction.class).warn("Lost a Stage for a property function") ;
+                ALog.warn(StageGenPropertyFunction.class, "Lost a Stage for a property function") ;
                 continue ;
             }
             pfStages.put(pf, stage) ;

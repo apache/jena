@@ -41,8 +41,6 @@ public class qexpr
     // TODO Convert to extends CmdArgModule 
     static { CmdUtils.setLog4j() ; CmdUtils.setN3Params() ; }
 
-    //static protected Log logger = LogFactory.getLog( arq.class );
-
     public static void main (String [] argv)
     {
         try {

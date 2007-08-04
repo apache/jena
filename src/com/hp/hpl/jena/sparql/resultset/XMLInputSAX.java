@@ -11,28 +11,24 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.xml.sax.Attributes;
-import org.xml.sax.ContentHandler;
-import org.xml.sax.InputSource;
-import org.xml.sax.Locator;
-import org.xml.sax.SAXException;
-import org.xml.sax.XMLReader;
+import org.xml.sax.*;
 import org.xml.sax.helpers.XMLReaderFactory;
 
 import com.hp.hpl.jena.datatypes.RDFDatatype;
 import com.hp.hpl.jena.datatypes.TypeMapper;
-import com.hp.hpl.jena.vocabulary.RDF;
 import com.hp.hpl.jena.graph.Node;
-
 import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.vocabulary.RDF;
+
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.ResultSetStream;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.binding.BindingMap;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterPlainWrapper;
-import com.hp.hpl.jena.sparql.util.*;
+import com.hp.hpl.jena.sparql.util.ALog;
+import com.hp.hpl.jena.sparql.util.FmtUtils;
+import com.hp.hpl.jena.sparql.util.GraphUtils;
+import com.hp.hpl.jena.sparql.util.LabelToNodeMap;
 
 /** Code that reads an XML Result Set and builds the ARQ structure for the same.
  * 
@@ -49,8 +45,6 @@ class XMLInputSAX extends SPARQLResult
     // and we have to build an in-memory structure (or the client application would
     // need to be inside the code path of the SAX handler).  
     
-    static Log log = LogFactory.getLog(XMLInputSAX.class) ;
-
     public XMLInputSAX(InputStream in, Model model)
     {
         worker(new InputSource(in), model) ;
@@ -150,7 +144,6 @@ class XMLInputSAX extends SPARQLResult
         {
             if ( ! ns.equals(namespace) )
             {
-                log.info(qName+": Different namespace: "+ns) ;
                 // Wrong namespace
                 return ;
             }
@@ -226,7 +219,6 @@ class XMLInputSAX extends SPARQLResult
         {
             if ( ! ns.equals(namespace) )
             {
-                //log.info(qName+": Different namespace: "+ns) ;
                 // Wrong namespace
                 return ;
             }
@@ -294,12 +286,12 @@ class XMLInputSAX extends SPARQLResult
             
             if ( varName == null )
             {
-                log.warn("No variable name in scope: "+cxtMsg) ;
+                ALog.warn(this, "No variable name in scope: "+cxtMsg) ;
                 return false ;
             }
             if ( !variables.contains(varName) )
             {
-                log.warn("Variable name '"+varName+"'not declared: "+cxtMsg) ;
+                ALog.warn(this, "Variable name '"+varName+"'not declared: "+cxtMsg) ;
                 return false ;
             }
             return true ;

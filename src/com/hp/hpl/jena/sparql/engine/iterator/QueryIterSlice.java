@@ -6,14 +6,12 @@
 
 package com.hp.hpl.jena.sparql.engine.iterator;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.QueryExecException;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
+
+import com.hp.hpl.jena.query.Query;
+import com.hp.hpl.jena.query.QueryExecException;
 
 /** Iterator until a limit is reached. 
  * 
@@ -23,7 +21,6 @@ import com.hp.hpl.jena.sparql.engine.binding.Binding;
 
 public class QueryIterSlice extends QueryIter1
 {
-    static Log clsLog = LogFactory.getLog(QueryIterSlice.class) ;
     long count = 0 ;
     long limit ;
     long offset ;

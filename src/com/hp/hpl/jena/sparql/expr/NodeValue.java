@@ -9,9 +9,6 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Calendar;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import com.hp.hpl.jena.datatypes.DatatypeFormatException;
 import com.hp.hpl.jena.datatypes.RDFDatatype;
 import com.hp.hpl.jena.datatypes.TypeMapper;
@@ -74,8 +71,6 @@ public abstract class NodeValue extends ExprNode
     //   numeric: number != Nan && number != 0 is true
     // http://www.w3.org/TR/xquery/#dt-ebv
     
-    private static Log log = LogFactory.getLog(NodeValue.class) ;
-    
     // ---- Constants and initializers / public
     
     public static boolean VerboseWarnings = true ;
@@ -115,7 +110,6 @@ public abstract class NodeValue extends ExprNode
 //        if ( v.isDecimal() ) { ... }
 //        if ( v.isString() )  { ... }
 //        if ( v.isDate() )    { ... } 
-//        log.warn("Unknown NodeValue in constructor: "+v) ;
 //    }
 
     // ----------------------------------------------------------------
@@ -200,7 +194,7 @@ public abstract class NodeValue extends ExprNode
         
         if ( langTag != null && datatype != null )
             // raise??
-            log.warn("Both lang tag and datatype defined (lexcial form '"+lexicalForm+"')") ;
+            ALog.warn(NodeValue.class, "Both lang tag and datatype defined (lexcial form '"+lexicalForm+"')") ;
         
         Node n = null ; 
         
@@ -734,7 +728,7 @@ public abstract class NodeValue extends ExprNode
     private static NodeValue nodeToNodeValue(Node node)
     {
         if ( node.isVariable() )
-            log.warn("Variable passed to NodeValue.nodeToNodeValue") ;
+            ALog.warn(NodeValue.class, "Variable passed to NodeValue.nodeToNodeValue") ;
 
         if ( ! node.isLiteral() )
             // Not a literal - no value to extract
@@ -751,9 +745,7 @@ public abstract class NodeValue extends ExprNode
             if ( node.getLiteralDatatypeURI() != null )
             {
                 if ( NodeValue.VerboseWarnings )
-                    log.warn("Lang tag and datatype (datatype ignored)") ;
-                else if ( log.isDebugEnabled() )
-                    log.debug("Lang tag and datatype (datatype ignored)") ; 
+                    ALog.warn(NodeValue.class, "Lang tag and datatype (datatype ignored)") ;
             }
             return new NodeValueNode(node) ;
         }
@@ -767,12 +759,7 @@ public abstract class NodeValue extends ExprNode
             if ( NodeValue.VerboseWarnings )
             {
                 String tmp =  FmtUtils.stringForNode(node) ;
-                log.warn("Datatype format exception: "+tmp) ;
-            }
-            else if ( log.isDebugEnabled() )
-            {
-                String tmp =  FmtUtils.stringForNode(node) ;
-                log.debug("Datatype format exception: "+tmp) ;
+                ALog.warn(NodeValue.class, "Datatype format exception: "+tmp) ;
             }
             // Invalid lexical form.
             return new NodeValueNode(node) ;
@@ -782,9 +769,6 @@ public abstract class NodeValue extends ExprNode
         if ( nv != null )
             return nv ;
             
-        // No idea.  
-        if ( log.isDebugEnabled() )
-            log.debug("Unrecognized literal: "+node) ;
         return new NodeValueNode(node) ;
         //raise(new ExprException("NodeValue.nodeToNodeValue: Unknown Node type: "+n)) ;
              
@@ -895,8 +879,6 @@ public abstract class NodeValue extends ExprNode
     // Point to catch all exceptions.
     public static void raise(ExprException ex)
     {
-        if ( log.isDebugEnabled() )
-            log.debug("Exception: "+ex.getMessage()) ;
         throw ex ; 
     }
 

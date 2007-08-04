@@ -9,10 +9,7 @@ package com.hp.hpl.jena.sparql.util;
 import java.util.* ;
 
 
-import org.apache.commons.logging.LogFactory;
-
-/** com.hp.hpl.jena.query.util.ListUtils
- * 
+/** 
  * @author Andy Seaborne
  * @version $Id: CollectionUtils.java,v 1.5 2007/01/02 11:20:06 andy_seaborne Exp $
  */
@@ -36,7 +33,7 @@ public class CollectionUtils
     {
         if ( c.size() > 5 )
         {
-            LogFactory.getLog(SetUtils.class).warn("Attempt to permute more than 5 items - think again") ;
+            ALog.warn(CollectionUtils.class, "Attempt to permute more than 5 items - think again") ;
             return null ;
         }
         

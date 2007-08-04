@@ -5,19 +5,20 @@
 
 package com.hp.hpl.jena.query;
 
-import com.hp.hpl.jena.util.*;
-import com.hp.hpl.jena.rdf.model.* ;
-import com.hp.hpl.jena.shared.PrefixMapping;
-import com.hp.hpl.jena.sparql.ARQNotImplemented;
-import com.hp.hpl.jena.sparql.resultset.*;
-import com.hp.hpl.jena.sparql.serializer.SerializationContext;
-
-
-import java.io.* ;
+import java.io.OutputStream;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.logging.LogFactory;
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.Resource;
+import com.hp.hpl.jena.shared.PrefixMapping;
+import com.hp.hpl.jena.util.FileUtils;
+
+import com.hp.hpl.jena.sparql.ARQNotImplemented;
+import com.hp.hpl.jena.sparql.resultset.*;
+import com.hp.hpl.jena.sparql.serializer.SerializationContext;
+import com.hp.hpl.jena.sparql.util.ALog;
 
 /** ResultSetFormatter - Convenience ways to call the various output formatters.
  *  in various formats. 
@@ -230,7 +231,7 @@ public class ResultSetFormatter
             return ;
         }
         
-        LogFactory.getLog(ResultSetFormatter.class).warn("Unknown ResultSetFormat: "+rFmt);
+        ALog.warn(ResultSetFormatter.class, "Unknown ResultSetFormat: "+rFmt);
     }
     
     /** Write out an RDF model that encodes the result set

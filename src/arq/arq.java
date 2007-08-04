@@ -16,8 +16,6 @@ import java.util.* ;
 
 public class arq
 {
-    //static protected Log logger = LogFactory.getLog( arq.class );
-
     public static void main (String [] argv)
     {
         List a = new ArrayList() ;

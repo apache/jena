@@ -9,14 +9,9 @@ package com.hp.hpl.jena.sparql.util;
 import com.hp.hpl.jena.sparql.ARQConstants;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 
 public class Loader
 {
-    private static Log log = LogFactory.getLog(Loader.class) ;
-    
     static public Class loadClass(String classNameOrURI) { return loadClass(classNameOrURI, null) ; }
     
     static public Class loadClass(String classNameOrURI, Class requiredClass)
@@ -40,13 +35,13 @@ public class Loader
             classObj = Class.forName(className);
         } catch (ClassNotFoundException ex)
         {
-            log.warn("Class not found: "+className);
+            ALog.warn(Loader.class, "Class not found: "+className);
             return null ;
         }
         
         if ( requiredClass != null && ! requiredClass.isAssignableFrom(classObj) )
         {
-            log.warn("Class '"+className+"' found but not a "+Utils.classShortName(requiredClass)) ;
+            ALog.warn(Loader.class, "Class '"+className+"' found but not a "+Utils.classShortName(requiredClass)) ;
             return null ;
         }
         return classObj ;
@@ -64,7 +59,7 @@ public class Loader
         } catch (Exception ex)
         {
             String className = uri.substring(ARQConstants.javaClassURIScheme.length()) ;
-            log.warn("Exception during instantiation '"+className+"': "+ex.getMessage()) ;
+            ALog.warn(Loader.class, "Exception during instantiation '"+className+"': "+ex.getMessage()) ;
             return null ;
         }
         return module ;

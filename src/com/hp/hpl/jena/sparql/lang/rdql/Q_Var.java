@@ -7,12 +7,14 @@
 
 package com.hp.hpl.jena.sparql.lang.rdql;
 
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.graph.query.*;
-import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.sparql.util.IndentedWriter;
+import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.graph.query.IndexValues;
+import com.hp.hpl.jena.graph.query.Valuator;
+import com.hp.hpl.jena.graph.query.VariableIndexes;
 
-import org.apache.commons.logging.*;
+import com.hp.hpl.jena.sparql.core.Var;
+import com.hp.hpl.jena.sparql.util.ALog;
+import com.hp.hpl.jena.sparql.util.IndentedWriter;
 
 public class Q_Var extends ExprNode implements ExprRDQL
 {
@@ -42,7 +44,7 @@ public class Q_Var extends ExprNode implements ExprRDQL
         com.hp.hpl.jena.graph.Node v = (Node)env.get(index) ;
         if ( v == null )
         {
-            LogFactory.getLog(Q_Var.class).warn("Unbound variable: "+varName) ;
+            ALog.warn(this, "Unbound variable: "+varName) ;
             WorkingVar tmp = new WorkingVar() ;
             tmp.setString("unset: "+varName+"/"+index) ;
             return tmp ;

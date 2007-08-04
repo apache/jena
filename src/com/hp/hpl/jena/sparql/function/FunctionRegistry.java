@@ -7,13 +7,12 @@
 package com.hp.hpl.jena.sparql.function;
 import java.util.*;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import com.hp.hpl.jena.query.ARQ;
 import com.hp.hpl.jena.sparql.ARQConstants;
+import com.hp.hpl.jena.sparql.util.ALog;
 import com.hp.hpl.jena.sparql.util.Context;
 import com.hp.hpl.jena.sparql.util.MappedLoader;
+
+import com.hp.hpl.jena.query.ARQ;
 
 /** 
  * 
@@ -23,8 +22,7 @@ import com.hp.hpl.jena.sparql.util.MappedLoader;
 
 public class FunctionRegistry //extends HashMap<String, Function>
 {
-    // Extrac a Registry class and do casting and initialization here.
-    static Log log = LogFactory.getLog(FunctionRegistry.class) ;
+    // Extract a Registry class and do casting and initialization here.
     Map registry = new HashMap() ;
     Set attemptedLoads = new HashSet() ;
     
@@ -77,7 +75,7 @@ public class FunctionRegistry //extends HashMap<String, Function>
     { 
         if ( ! Function.class.isAssignableFrom(funcClass) )
         {
-            log.warn("Class "+funcClass.getName()+" is not a Function" );
+            ALog.warn(this, "Class "+funcClass.getName()+" is not a Function" );
             return ; 
         }
         

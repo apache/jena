@@ -6,14 +6,14 @@
 package com.hp.hpl.jena.sparql.engine.binding;
 import java.util.Iterator;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.query.QuerySolution;
-import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.rdf.model.RDFNode;
+
 import com.hp.hpl.jena.sparql.core.Var;
+import com.hp.hpl.jena.sparql.util.ALog;
+
+import com.hp.hpl.jena.query.QuerySolution;
 
 
 /**
@@ -23,8 +23,6 @@ import com.hp.hpl.jena.sparql.core.Var;
  
 public class BindingUtils
 {
-    private static Log log = LogFactory.getLog(BindingUtils.class) ;
-  
     public static Triple substituteIntoTriple(Triple t, Binding binding)
     {
         Node subject = substituteNode(t.getSubject(), binding) ;
@@ -45,7 +43,7 @@ public class BindingUtils
             return n ;
 
         if ( ! (n instanceof Var) )
-            log.fatal("Node_Variable, not a Var") ; 
+            ALog.fatal(BindingUtils.class, "Node_Variable, not a Var") ; 
         
         //String name = ((Node_Variable)n).getName() ;
         Var var = Var.alloc(n) ;
@@ -60,7 +58,7 @@ public class BindingUtils
         if ( obj instanceof Node )
             return (Node)obj ;
 
-        LogFactory.getLog(BindingUtils.class).warn("Unknown object in binding: ignored: "+obj.getClass().getName()) ;        
+        ALog.warn(BindingUtils.class, "Unknown object in binding: ignored: "+obj.getClass().getName()) ;        
         return n ;
     }
     

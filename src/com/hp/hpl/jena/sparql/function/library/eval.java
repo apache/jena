@@ -28,8 +28,6 @@ import com.hp.hpl.jena.sparql.function.FunctionEnv;
 
 public class eval implements Function
 {
-    //private static Log log = LogFactory.getLog(eval) ;
-    
     public void build(String uri, ExprList args)
     {
         if ( args.size() != 1 )

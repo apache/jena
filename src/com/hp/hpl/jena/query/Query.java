@@ -11,10 +11,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import com.hp.hpl.jena.graph.Node;
+
 import com.hp.hpl.jena.sparql.core.Prologue;
 import com.hp.hpl.jena.sparql.core.QueryCompare;
 import com.hp.hpl.jena.sparql.core.QueryHashCode;
@@ -24,6 +22,7 @@ import com.hp.hpl.jena.sparql.expr.NodeVar;
 import com.hp.hpl.jena.sparql.serializer.Serializer;
 import com.hp.hpl.jena.sparql.syntax.Element;
 import com.hp.hpl.jena.sparql.syntax.Template;
+import com.hp.hpl.jena.sparql.util.ALog;
 import com.hp.hpl.jena.sparql.util.FmtUtils;
 import com.hp.hpl.jena.sparql.util.IndentedLineBuffer;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
@@ -46,7 +45,6 @@ import com.hp.hpl.jena.sparql.util.IndentedWriter;
 public class Query extends Prologue implements Cloneable
 {
     static { ARQ.init() ; /* Ensure everything has started properly */ }
-    private static Log log = LogFactory.getLog(Query.class) ;
     
     public static final int QueryTypeUnknown    = -123 ;
     public static final int QueryTypeSelect     = 111 ;
@@ -250,10 +248,7 @@ public class Query extends Prologue implements Cloneable
         if ( namedGraphURIs == null )
             namedGraphURIs = new ArrayList() ;
         if ( namedGraphURIs.contains(uri) )
-        {
-            //log.warn("URI already in named graph set: "+uri) ;
             throw new QueryException("URI already in named graph set: "+uri) ;
-        }
         else
             namedGraphURIs.add(uri) ;
     }
@@ -377,15 +372,12 @@ public class Query extends Prologue implements Cloneable
         if ( getQueryPattern() == null )
         {
             if ( ! this.isDescribeType() )
-                log.warn("setResultVars(): no query pattern") ;
+                ALog.warn(this, "setResultVars(): no query pattern") ;
             return ;
         }
         
         if ( resultVars.size() != 0 )
-        {
-            //log.warn("setResultVars(): Result vars already set") ;
             return ;
-        }
         
         if ( isSelectType() )
         {

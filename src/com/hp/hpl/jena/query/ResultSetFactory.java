@@ -11,9 +11,6 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.shared.NotFoundException;
@@ -26,6 +23,7 @@ import com.hp.hpl.jena.sparql.resultset.*;
 import com.hp.hpl.jena.sparql.sse.Item;
 import com.hp.hpl.jena.sparql.sse.SSE;
 import com.hp.hpl.jena.sparql.sse.builders.BuilderTable;
+import com.hp.hpl.jena.sparql.util.ALog;
 import com.hp.hpl.jena.sparql.util.GraphUtils;
 
 /** ResultSetFactory - make result sets from places other than a query.
@@ -36,8 +34,6 @@ import com.hp.hpl.jena.sparql.util.GraphUtils;
 
 public class ResultSetFactory
 {
-    static Log log = LogFactory.getLog(ResultSetFactory.class) ;
-    
     /** Load a result set from file or URL into a result set (memory backed).
      * @param filenameOrURI
      * @return ResultSet
@@ -61,13 +57,13 @@ public class ResultSetFactory
         
         if ( format == null )
         {
-            log.warn("Null format - defaulting to XML") ;
+            ALog.warn(ResultSet.class, "Null format - defaulting to XML") ;
             format = ResultSetFormat.syntaxXML ;
         }
         
         if ( format.equals(ResultSetFormat.syntaxText) )
         {
-            log.fatal("Can't read a text result set") ;
+            ALog.fatal(ResultSet.class, "Can't read a text result set") ;
             throw new ResultSetException("Can't read a text result set") ;
         }
         
@@ -87,13 +83,13 @@ public class ResultSetFactory
     {
         if ( format == null )
         {
-            log.warn("Null format - defaulting to XML") ;
+            ALog.warn(ResultSet.class, "Null format - defaulting to XML") ;
             format = ResultSetFormat.syntaxXML ;
         }
         
         if ( format.equals(ResultSetFormat.syntaxText) )
         {
-            log.fatal("Can't read a text result set") ;
+            ALog.warn(ResultSet.class, "Can't read a text result set") ;
             throw new ResultSetException("Can't read a text result set") ;
         }
         
@@ -126,7 +122,7 @@ public class ResultSetFactory
             return JSONInput.fromJSON(input) ;
         }
         
-        log.warn("Unknown result set syntax: "+format) ;
+        ALog.warn(ResultSet.class, "Unknown result set syntax: "+format) ;
         return null ;
 
     }
@@ -178,13 +174,13 @@ public class ResultSetFactory
         
         if ( format == null )
         {
-            log.warn("Null format - defaulting to XML") ;
+            ALog.warn(ResultSet.class, "Null format - defaulting to XML") ;
             format = ResultSetFormat.syntaxXML ;
         }
         
         if ( format.equals(ResultSetFormat.syntaxText) )
         {
-            log.fatal("Can't read a text result set") ;
+            ALog.fatal(ResultSet.class, "Can't read a text result set") ;
             throw new ResultSetException("Can't read a text result set") ;
         }
         
@@ -216,7 +212,7 @@ public class ResultSetFactory
         if ( format.isCompatibleWith(ResultSetFormat.syntaxRDF_XML) )
             return FileManager.get().readModel(model, filenameOrURI) ;
         
-        log.warn("Unknown result set syntax: "+format) ;
+        ALog.fatal(ResultSet.class, "Unknown result set syntax: "+format) ;
         return null ;
     }
 
@@ -271,7 +267,7 @@ public class ResultSetFactory
     public static ResultSet fromSSE(InputStream in)
     {
         Item item = SSE.parse(in) ;
-        log.warn("Reading SSE result set not full implemented") ;
+        ALog.warn(ResultSet.class, "Reading SSE result set not full implemented") ;
         // See SPARQLResult.  Have a level of ResultSetFactory that does "get SPARQLResult".
         // Or just boolean/result set because those are both srx. etc. 
         

@@ -6,9 +6,8 @@
 
 package com.hp.hpl.jena.query;
 
-import org.apache.commons.logging.LogFactory;
-
 import com.hp.hpl.jena.graph.Node;
+
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.expr.E_Function;
 import com.hp.hpl.jena.sparql.expr.Expr;
@@ -16,10 +15,7 @@ import com.hp.hpl.jena.sparql.expr.ExprVisitor;
 import com.hp.hpl.jena.sparql.expr.NodeVar;
 import com.hp.hpl.jena.sparql.serializer.FmtExprARQ;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext;
-import com.hp.hpl.jena.sparql.util.ExprUtils;
-import com.hp.hpl.jena.sparql.util.IndentedWriter;
-import com.hp.hpl.jena.sparql.util.PrintSerializableBase;
-import com.hp.hpl.jena.sparql.util.Utils;
+import com.hp.hpl.jena.sparql.util.*;
 
 
 public class SortCondition extends PrintSerializableBase
@@ -39,7 +35,7 @@ public class SortCondition extends PrintSerializableBase
         direction = dir ;
         
         if ( dir != Query.ORDER_ASCENDING && dir != Query.ORDER_DESCENDING && dir != Query.ORDER_DEFAULT )
-            LogFactory.getLog(SortCondition.class).fatal("Unknown sort direction") ;
+            ALog.fatal(this, "Unknown sort direction") ;
     }
     
     public void format(ExprVisitor fmt,

@@ -8,11 +8,12 @@ package com.hp.hpl.jena.sparql.pfunction.library;
 
 import java.util.*;
 
-import org.apache.commons.logging.*;
-
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
+import com.hp.hpl.jena.util.iterator.ExtendedIterator;
+import com.hp.hpl.jena.vocabulary.RDF;
+
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
@@ -24,8 +25,6 @@ import com.hp.hpl.jena.sparql.engine.iterator.QueryIterYieldN;
 import com.hp.hpl.jena.sparql.pfunction.PFLib;
 import com.hp.hpl.jena.sparql.pfunction.PFuncSimple;
 import com.hp.hpl.jena.sparql.util.GraphContainerUtils;
-import com.hp.hpl.jena.util.iterator.ExtendedIterator;
-import com.hp.hpl.jena.vocabulary.RDF;
 
 /** container - super class of bag/alt/seq - rdfs:member
  * 
@@ -36,7 +35,6 @@ import com.hp.hpl.jena.vocabulary.RDF;
 
 public class container extends PFuncSimple
 {
-    private static Log log = LogFactory.getLog(container.class) ;
     Node typeNode = null ;      // Null means don't check type.
     
     public container() { this.typeNode = null ; }

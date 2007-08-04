@@ -15,7 +15,7 @@ import com.hp.hpl.jena.query.QueryParseException;
 import com.hp.hpl.jena.query.Syntax;
 import com.hp.hpl.jena.shared.JenaException;
 import com.hp.hpl.jena.sparql.lang.prefix.PrefixParser;
-
+import com.hp.hpl.jena.sparql.util.ALog;
 
 class ParserPrefix extends Parser
 {
@@ -56,7 +56,7 @@ class ParserPrefix extends Parser
         }
         catch (Throwable th)
         {
-            Parser.log.warn("Unexpected throwable: ",th) ;
+            ALog.warn(ParserPrefix.class, "Unexpected throwable: ",th) ;
             throw new QueryException(th.getMessage(), th) ;
         }
     }

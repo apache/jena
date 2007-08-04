@@ -6,9 +6,6 @@
 
 package com.hp.hpl.jena.sparql.lang;
 
-import org.apache.commons.logging.*;
-
-
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryParseException;
 import com.hp.hpl.jena.query.Syntax;
@@ -24,8 +21,6 @@ import com.hp.hpl.jena.query.Syntax;
 
 public abstract class Parser
 {
-    static Log log = LogFactory.getLog(Parser.class) ;
-    
     public abstract Query parse(Query query, String queryString) throws QueryParseException ;
     
     public static boolean canParse(Syntax syntaxURI)

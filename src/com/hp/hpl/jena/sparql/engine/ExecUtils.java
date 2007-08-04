@@ -8,13 +8,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import com.hp.hpl.jena.graph.Triple;
+
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.binding.BindingUtils;
+import com.hp.hpl.jena.sparql.util.ALog;
 
 /**
  * @author     Andy Seaborne
@@ -23,8 +22,6 @@ import com.hp.hpl.jena.sparql.engine.binding.BindingUtils;
  
 public class ExecUtils
 {
-    public static Log log = LogFactory.getLog(ExecUtils.class) ;
-    
     public static void compilePattern(com.hp.hpl.jena.graph.query.Query graphQuery,
                                       List pattern, Binding presets, Set vars)
     {
@@ -49,7 +46,7 @@ public class ExecUtils
     
     public static void compileConstraints(com.hp.hpl.jena.graph.query.Query graphQuery, List constraints)
     {
-        log.warn("Call to compileConstraints for Jena Expressions") ;
+        ALog.warn(ExecUtils.class, "Call to compileConstraints for Jena Expressions") ;
     }
     
     public static Var[] projectionVars(Set vars)

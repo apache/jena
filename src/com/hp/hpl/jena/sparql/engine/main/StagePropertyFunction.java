@@ -6,18 +6,19 @@
 
 package com.hp.hpl.jena.sparql.engine.main;
 
-import org.apache.commons.logging.LogFactory;
-
 import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.query.QueryBuildException;
+
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.pfunction.PropFuncArg;
 import com.hp.hpl.jena.sparql.pfunction.PropertyFunction;
 import com.hp.hpl.jena.sparql.pfunction.PropertyFunctionFactory;
 import com.hp.hpl.jena.sparql.pfunction.PropertyFunctionRegistry;
+import com.hp.hpl.jena.sparql.util.ALog;
 import com.hp.hpl.jena.sparql.util.Context;
 import com.hp.hpl.jena.sparql.util.Utils;
+
+import com.hp.hpl.jena.query.QueryBuildException;
 
 
 public class StagePropertyFunction implements Stage
@@ -56,7 +57,7 @@ public class StagePropertyFunction implements Stage
         // If this fails (e.g. load failure) we need to back out.
         
         if ( input == null )
-            LogFactory.getLog(this.getClass()).fatal("Null input to "+Utils.classShortName(this.getClass())) ;
+            ALog.fatal(this, "Null input to "+Utils.classShortName(this.getClass())) ;
         
         // Create the implementation iterator.
         QueryIterator qIter = propFunc.exec(input, getSubjArgs(), getPredicate(), getObjArgs(), execCxt) ;

@@ -5,11 +5,10 @@
 
 package com.hp.hpl.jena.sparql.expr;
 
-import org.apache.commons.logging.LogFactory;
-
 import com.hp.hpl.jena.query.ARQ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.function.FunctionEnv;
+import com.hp.hpl.jena.sparql.util.ALog;
 import com.hp.hpl.jena.sparql.util.Symbol;
 
 //import java.util.regex.* ;
@@ -33,13 +32,13 @@ public class E_Regex extends ExprFunction
         
         if ( regexImpl == null )
         {
-            LogFactory.getLog(E_Regex.class).warn("Regex implementation some weird setting: default to Java") ;
+            ALog.warn(E_Regex.class, "Regex implementation some weird setting: default to Java") ;
             regexImpl = ARQ.javaRegex;
         }
         if ( !regexImpl.equals(ARQ.javaRegex) &&
              !regexImpl.equals(ARQ.xercesRegex) )
         {
-            LogFactory.getLog(E_Regex.class).warn("Regex implementation not recognized : default to Java") ;
+            ALog.warn(E_Regex.class, "Regex implementation not recognized : default to Java") ;
             regexImpl = ARQ.javaRegex;
         }  
     }

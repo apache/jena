@@ -5,15 +5,15 @@
 
 package com.hp.hpl.jena.sparql.engine.binding;
 
-import java.util.* ;
-
-import org.apache.commons.logging.*;
+import java.util.Iterator;
 
 import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.util.iterator.ConcatenatedIterator;
+
 import com.hp.hpl.jena.sparql.ARQInternalErrorException;
 import com.hp.hpl.jena.sparql.core.Var;
+import com.hp.hpl.jena.sparql.util.ALog;
 import com.hp.hpl.jena.sparql.util.FmtUtils;
-import com.hp.hpl.jena.util.iterator.ConcatenatedIterator;
 
 /** Machinary encapsulating a mapping from a name to a value.
  * 
@@ -24,8 +24,6 @@ import com.hp.hpl.jena.util.iterator.ConcatenatedIterator;
 
 abstract public class BindingBase implements Binding
 {
-    static Log log = LogFactory.getLog(BindingBase.class) ;
-    
     static boolean CHECKING = true ;
     static boolean UNIQUE_NAMES_CHECK = true ;
     
@@ -59,7 +57,7 @@ abstract public class BindingBase implements Binding
     { 
         if ( node == null )
         {
-            log.warn("Binding.add: null value - ignored") ;
+            ALog.warn(this, "Binding.add: null value - ignored") ;
             return ;
         }
         checkAdd(var, node) ;

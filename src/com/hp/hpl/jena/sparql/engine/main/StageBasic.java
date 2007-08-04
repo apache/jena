@@ -6,17 +6,17 @@
 
 package com.hp.hpl.jena.sparql.engine.main;
 
-import org.apache.commons.logging.LogFactory;
-
 import com.hp.hpl.jena.db.impl.DBQueryHandler;
 import com.hp.hpl.jena.graph.query.QueryHandler;
 import com.hp.hpl.jena.mem.GraphMemBaseQueryHandler;
+
 import com.hp.hpl.jena.sparql.ARQConstants;
 import com.hp.hpl.jena.sparql.core.BasicPattern;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterBlockTriples;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterBlockTriplesQH;
+import com.hp.hpl.jena.sparql.util.ALog;
 import com.hp.hpl.jena.sparql.util.Symbol;
 import com.hp.hpl.jena.sparql.util.Utils;
 
@@ -30,7 +30,7 @@ public class StageBasic implements Stage
     public QueryIterator build(QueryIterator input, ExecutionContext execCxt)
     {
         if ( input == null )
-                LogFactory.getLog(this.getClass()).fatal("Null input to "+Utils.classShortName(this.getClass())) ;
+                ALog.fatal(this, "Null input to "+Utils.classShortName(this.getClass())) ;
         QueryIterator cIter = createMatcher(input, pattern, execCxt) ;
         return cIter ;
     }

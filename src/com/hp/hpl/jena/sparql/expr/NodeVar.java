@@ -5,16 +5,13 @@
 
 package com.hp.hpl.jena.sparql.expr;
 
-//import org.apache.commons.logging.LogFactory;
-
-import org.apache.commons.logging.LogFactory;
-
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.function.FunctionEnv;
+import com.hp.hpl.jena.sparql.util.ALog;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
 
 /** A node that is a variable in an expression. */
@@ -55,7 +52,7 @@ public class NodeVar extends ExprNode
         try { return eval(binding, null) ; }
         catch (VariableNotBoundException ex)
         {
-            LogFactory.getLog(NodeVar.class).warn("Failed to eval bound variable");
+            ALog.warn(this, "Failed to eval bound variable");
             throw ex ;
         }
     }

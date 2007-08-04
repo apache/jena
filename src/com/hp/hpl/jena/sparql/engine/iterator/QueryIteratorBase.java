@@ -8,14 +8,14 @@ package com.hp.hpl.jena.sparql.engine.iterator;
 
 import java.util.NoSuchElementException;
 
-import org.apache.commons.logging.LogFactory;
+import com.hp.hpl.jena.sparql.engine.QueryIterator;
+import com.hp.hpl.jena.sparql.engine.binding.Binding;
+import com.hp.hpl.jena.sparql.util.ALog;
+import com.hp.hpl.jena.sparql.util.PrintSerializableBase;
+import com.hp.hpl.jena.sparql.util.Utils;
 
 import com.hp.hpl.jena.query.QueryException;
 import com.hp.hpl.jena.query.QueryFatalException;
-import com.hp.hpl.jena.sparql.engine.QueryIterator;
-import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.sparql.util.PrintSerializableBase;
-import com.hp.hpl.jena.sparql.util.Utils;
 
 /**
  * This class provides the general machinary for iterators.  This includes:
@@ -73,7 +73,7 @@ public abstract class QueryIteratorBase
             return r ;
         } catch (QueryFatalException ex)
         { 
-            LogFactory.getLog(this.getClass()).fatal("Fatal exception: "+ex.getMessage() ) ;
+            ALog.fatal(this, "Fatal exception: "+ex.getMessage() ) ;
             abort() ;       // Abort this iterator.
             throw ex ;      // And pass on up the exception.
         }
@@ -101,7 +101,7 @@ public abstract class QueryIteratorBase
             return obj ;
         } catch (QueryFatalException ex)
         { 
-            LogFactory.getLog(this.getClass()).fatal("QueryFatalException", ex) ; 
+            ALog.fatal(this, "QueryFatalException", ex) ; 
             abort() ;
             throw ex ; 
         }
@@ -110,7 +110,7 @@ public abstract class QueryIteratorBase
     
     public final void remove()
     {
-        LogFactory.getLog(this.getClass()).warn("Call to QueryIterator.remove() : "+Utils.className(this)+".remove") ;
+        ALog.warn(this, "Call to QueryIterator.remove() : "+Utils.className(this)+".remove") ;
         throw new UnsupportedOperationException(Utils.className(this)+".remove") ;
     }
     
@@ -120,7 +120,7 @@ public abstract class QueryIteratorBase
             return ;
         try { closeIterator() ; }
         catch (QueryException ex)
-        { LogFactory.getLog(this.getClass()).warn("QueryException in close()", ex) ; } 
+        { ALog.warn(this, "QueryException in close()", ex) ; } 
         finished = true ;
     }
     

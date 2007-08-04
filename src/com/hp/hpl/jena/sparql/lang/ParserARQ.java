@@ -9,12 +9,15 @@ package com.hp.hpl.jena.sparql.lang;
 import java.io.Reader;
 import java.io.StringReader;
 
+import com.hp.hpl.jena.shared.JenaException;
+
+import com.hp.hpl.jena.sparql.lang.arq.ARQParser;
+import com.hp.hpl.jena.sparql.util.ALog;
+
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryException;
 import com.hp.hpl.jena.query.QueryParseException;
 import com.hp.hpl.jena.query.Syntax;
-import com.hp.hpl.jena.shared.JenaException;
-import com.hp.hpl.jena.sparql.lang.arq.ARQParser;
 
 
 class ParserARQ extends Parser
@@ -55,7 +58,7 @@ class ParserARQ extends Parser
         }
         catch (Throwable th)
         {
-            Parser.log.warn("Unexpected throwable: ",th) ;
+            ALog.warn(ParserARQ.class, "Unexpected throwable: ",th) ;
             throw new QueryException(th.getMessage(), th) ;
         }
 

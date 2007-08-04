@@ -6,26 +6,23 @@
 
 package com.hp.hpl.jena.sparql.pfunction;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import com.hp.hpl.jena.graph.Node;
+
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
+import com.hp.hpl.jena.sparql.util.ALog;
 
 abstract
 class PFuncAssignBase extends PFuncSimple
 {
-    private static Log log = LogFactory.getLog(PFuncAssignBase.class) ;
-
     public QueryIterator execEvaluated(Binding binding, Node subject, Node predicate, Node object, ExecutionContext execCxt)
     {
         try {
             if ( subject.isVariable() )
             {
-                log.warn("Variable found: expected a value: "+subject) ;
+                ALog.warn(this, "Variable found: expected a value: "+subject) ;
                 return PFLib.noResults(execCxt) ;
             }
             
@@ -42,7 +39,7 @@ class PFuncAssignBase extends PFuncSimple
             return PFLib.noResults(execCxt) ;
         }  catch (Exception ex)
         { 
-            log.warn("Exception: "+ex.getMessage(), ex);
+            ALog.warn(this, "Exception: "+ex.getMessage(), ex);
             return null ;
         }
     }

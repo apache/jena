@@ -249,7 +249,7 @@ public class GraphList
             return null ;
         Triple t = (Triple)iter.next() ;
         if ( iter.hasNext() )
-            GraphUtils.log.warn("Unusual list: two arc with same property ("+arc+")") ;
+            ALog.warn(GraphList.class, "Unusual list: two arc with same property ("+arc+")") ;
         NiceIterator.close(iter) ;
         return t ;         
     }

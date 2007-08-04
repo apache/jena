@@ -10,8 +10,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.apache.commons.logging.*;
-
 import com.hp.hpl.jena.graph.query.Expression;
 import com.hp.hpl.jena.graph.query.IndexValues;
 import com.hp.hpl.jena.graph.query.Valuator;
@@ -24,6 +22,7 @@ import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.binding.BindingIndex;
 import com.hp.hpl.jena.sparql.expr.*;
 import com.hp.hpl.jena.sparql.function.FunctionEnv;
+import com.hp.hpl.jena.sparql.util.ALog;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
 
 
@@ -35,8 +34,6 @@ abstract class ExprNode
         Expression , Valuator     // Part of jena.graph.query.*
         , ExprRDQL                    // Part of the RDQL parser package
 {
-    static Log log = LogFactory.getLog(ExprNode.class) ;
-    
     public ExprNode(RDQLParser p, int i) { super(p, i); }
     public ExprNode(int i) { super(i); }
 
@@ -223,7 +220,7 @@ abstract class ExprNode
         }
         catch (Exception e)
         {
-            log.warn("RDQL : general exception!", e) ;
+            ALog.warn(this, "RDQL : general exception!", e) ;
             // Shouldn't happen
             return null ;
         }

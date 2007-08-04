@@ -9,19 +9,20 @@ package com.hp.hpl.jena.sparql.algebra;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.commons.logging.LogFactory;
-
 import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.query.ARQ;
-import com.hp.hpl.jena.query.Query;
+
 import com.hp.hpl.jena.sparql.ARQInternalErrorException;
 import com.hp.hpl.jena.sparql.algebra.op.*;
 import com.hp.hpl.jena.sparql.core.BasicPattern;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.expr.ExprList;
 import com.hp.hpl.jena.sparql.syntax.*;
+import com.hp.hpl.jena.sparql.util.ALog;
 import com.hp.hpl.jena.sparql.util.Context;
 import com.hp.hpl.jena.sparql.util.Utils;
+
+import com.hp.hpl.jena.query.ARQ;
+import com.hp.hpl.jena.query.Query;
 
 
 public class AlgebraGenerator 
@@ -288,7 +289,7 @@ public class AlgebraGenerator
             // Don't project for QueryResultStar so initial bindings show through
             // in SELECT *
             if ( mods.projectVars.size() == 0 && query.isSelectType() )
-                LogFactory.getLog(AlgebraGenerator.class).warn("No project variables") ;
+                ALog.warn(this,"No project variables") ;
             if ( mods.projectVars.size() > 0 ) 
                 op = new OpProject(op, mods.projectVars) ;
         }

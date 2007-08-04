@@ -11,16 +11,17 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.apache.commons.logging.LogFactory;
+import com.hp.hpl.jena.rdf.model.Literal;
+import com.hp.hpl.jena.rdf.model.RDFNode;
+import com.hp.hpl.jena.rdf.model.Resource;
+
+import com.hp.hpl.jena.sparql.ARQConstants;
+import com.hp.hpl.jena.sparql.util.ALog;
+import com.hp.hpl.jena.sparql.util.IndentedWriter;
 
 import com.hp.hpl.jena.query.ARQ;
 import com.hp.hpl.jena.query.QuerySolution;
 import com.hp.hpl.jena.query.ResultSet;
-import com.hp.hpl.jena.rdf.model.Literal;
-import com.hp.hpl.jena.rdf.model.RDFNode;
-import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.sparql.ARQConstants;
-import com.hp.hpl.jena.sparql.util.IndentedWriter;
 
 /** XML Output (ResultSet format)
  * 
@@ -157,7 +158,7 @@ public class XMLOutputResultSet
             return ;
         }
         
-        LogFactory.getLog(this.getClass()).warn("Unknown RDFNode type in result set: "+node.getClass()) ;
+        ALog.warn(this,"Unknown RDFNode type in result set: "+node.getClass()) ;
     }
     
     void printLiteral(Literal literal)

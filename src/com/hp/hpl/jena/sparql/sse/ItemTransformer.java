@@ -11,7 +11,6 @@ import java.util.Stack;
 
 import com.hp.hpl.jena.graph.Node;
 
-//import org.apache.commons.logging.LogFactory;
 
 public class ItemTransformer
 {

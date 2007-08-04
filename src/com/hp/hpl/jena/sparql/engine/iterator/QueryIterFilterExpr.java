@@ -6,15 +6,13 @@
 
 package com.hp.hpl.jena.sparql.engine.iterator;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.expr.Expr;
 import com.hp.hpl.jena.sparql.expr.ExprException;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext;
+import com.hp.hpl.jena.sparql.util.ALog;
 import com.hp.hpl.jena.sparql.util.ExprUtils;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
 import com.hp.hpl.jena.sparql.util.Utils;
@@ -28,7 +26,6 @@ import com.hp.hpl.jena.sparql.util.Utils;
 
 public class QueryIterFilterExpr extends QueryIterFilter
 {
-    private static Log log = LogFactory.getLog(QueryIterFilterExpr.class) ;
     Expr expr ;
     
     public QueryIterFilterExpr(QueryIterator input, Expr expr, ExecutionContext context)
@@ -43,28 +40,17 @@ public class QueryIterFilterExpr extends QueryIterFilter
         try {
             //Binding b = new BindingFixed(binding) ;
             Binding b = binding ;
-            passFilter = expr.isSatisfied(b, super.getExecContext()) ;
+            return expr.isSatisfied(b, super.getExecContext()) ;
         } catch (ExprException ex)
         { // Some evaluation exception
-            passFilter = false ;
+          return false ;
         }
         
         catch (Exception ex)
         {
-            passFilter = false ;
-            log.warn("General exception in "+expr, ex) ;
-        }
-        
-        if ( ! passFilter )
-        {
-			if ( log.isDebugEnabled() )
-				log.debug("Reject: "+expr+" - "+binding) ;
+            ALog.warn(this, "General exception in "+expr, ex) ;
             return false ;
         }
-
-        if (  log.isDebugEnabled() )
-            log.debug("Accept: "+expr+" - "+binding) ;
-        return true ;
     }
 
     protected void details(IndentedWriter out, SerializationContext cxt)

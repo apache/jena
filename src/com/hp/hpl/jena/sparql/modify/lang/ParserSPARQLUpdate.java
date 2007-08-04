@@ -9,13 +9,14 @@ package com.hp.hpl.jena.sparql.modify.lang;
 import java.io.Reader;
 import java.io.StringReader;
 
-import org.apache.commons.logging.LogFactory;
-
-import com.hp.hpl.jena.query.QueryException;
-import com.hp.hpl.jena.query.QueryParseException;
 import com.hp.hpl.jena.shared.JenaException;
 
 import com.hp.hpl.jena.sparql.modify.lang.parser.SPARQLUpdateParser;
+import com.hp.hpl.jena.sparql.util.ALog;
+
+import com.hp.hpl.jena.query.QueryException;
+import com.hp.hpl.jena.query.QueryParseException;
+
 import com.hp.hpl.jena.update.UpdateRequest;
 
 
@@ -54,8 +55,7 @@ public class ParserSPARQLUpdate
         }
         catch (Throwable th)
         {
-            //Parser.log.warn("Unexpected throwable: ",th) ;
-            LogFactory.getLog(this.getClass()).fatal("Unexpected throwable: ",th) ;
+            ALog.fatal(this, "Unexpected throwable: ",th) ;
             throw new QueryException(th.getMessage(), th) ;
         }
     }

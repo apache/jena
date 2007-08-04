@@ -9,8 +9,6 @@ package com.hp.hpl.jena.query.larq;
 import java.io.File;
 import java.util.*;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.IndexWriter;
 
@@ -30,7 +28,6 @@ import com.hp.hpl.jena.sparql.ARQNotImplemented;
 
 public class IndexBuilderSubject extends IndexBuilderModel
 {
-    private static Log log = LogFactory.getLog(IndexBuilderSubject.class) ;
     private Set seen = new HashSet() ;
     Property property ;
     

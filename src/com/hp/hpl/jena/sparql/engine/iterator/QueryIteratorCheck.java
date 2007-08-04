@@ -8,12 +8,10 @@ package com.hp.hpl.jena.sparql.engine.iterator;
 
 import java.util.Iterator;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext;
+import com.hp.hpl.jena.sparql.util.ALog;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
 import com.hp.hpl.jena.sparql.util.Utils;
 
@@ -25,7 +23,6 @@ import com.hp.hpl.jena.sparql.util.Utils;
 
 public class QueryIteratorCheck extends QueryIteratorWrapper
 {
-    private static Log log = LogFactory.getLog(QueryIteratorCheck.class) ;
     private ExecutionContext execCxt ;
     
     private QueryIteratorCheck(QueryIterator qIter, ExecutionContext execCxt)
@@ -96,7 +93,7 @@ public class QueryIteratorCheck extends QueryIteratorWrapper
             if ( x.length() > 0 )
                 str = str+" : "+x ;
         }
-        log.warn(str) ;
+        ALog.warn(QueryIteratorCheck.class, str) ;
     }
 }
 /*

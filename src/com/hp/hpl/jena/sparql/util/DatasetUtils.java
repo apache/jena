@@ -10,9 +10,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.n3.IRIResolver;
 import com.hp.hpl.jena.query.DataSource;
@@ -28,7 +25,6 @@ import com.hp.hpl.jena.util.FileManager;
 
 public class DatasetUtils
 {
-    static private Log log = LogFactory.getLog(DatasetUtils.class) ;
     
     public static Dataset createDataset(String uri, List namedSourceList)
     {
@@ -96,7 +92,6 @@ public class DatasetUtils
                     absURI = IRIResolver.resolve(baseURI, sourceURI) ;
                 else
                     absURI = IRIResolver.resolveGlobal(sourceURI) ;
-                log.debug("Load(unnamed): "+sourceURI) ;
                 fileManager.readModel(ds.getDefaultModel(), sourceURI, absURI, null) ;
             }
         }
@@ -112,7 +107,6 @@ public class DatasetUtils
                     absURI = IRIResolver.resolve(baseURI, sourceURI) ;
                 else
                     absURI = IRIResolver.resolveGlobal(sourceURI) ;
-                log.debug("Load(named): "+sourceURI+" as "+absURI) ;
                 Model m = GraphUtils.makeDefaultModel() ;
                 fileManager.readModel(m, sourceURI, absURI, null) ;
                 ds.addNamedModel(absURI, m) ;
@@ -164,7 +158,6 @@ public class DatasetUtils
                     absURI = IRIResolver.resolve(baseURI, sourceURI) ;
                 else
                     absURI = IRIResolver.resolveGlobal(sourceURI) ;
-                log.debug("Load(unnamed): "+sourceURI) ;
                 // FileManager.readGraph?
                 fileManager.readModel(m, sourceURI, absURI, null) ;
             }
@@ -185,7 +178,6 @@ public class DatasetUtils
                     absURI = IRIResolver.resolve(baseURI, sourceURI) ;
                 else
                     absURI = IRIResolver.resolveGlobal(sourceURI) ;
-                log.debug("Load(named): "+sourceURI+" as "+absURI) ;
                 Model m = fileManager.loadModel(sourceURI, absURI, null) ;
                 Node gn = Node.createURI(sourceURI) ;
                 ds.addGraph(gn, m.getGraph()) ;

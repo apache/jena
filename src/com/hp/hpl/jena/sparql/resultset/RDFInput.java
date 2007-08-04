@@ -8,28 +8,20 @@ package com.hp.hpl.jena.sparql.resultset;
 
 import java.util.ArrayList;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import com.hp.hpl.jena.rdf.model.Literal;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.RDFNode;
-import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.rdf.model.Statement;
-import com.hp.hpl.jena.rdf.model.StmtIterator;
+import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.shared.JenaException;
 import com.hp.hpl.jena.shared.PropertyNotFoundException;
+import com.hp.hpl.jena.vocabulary.RDF;
+
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.binding.BindingMap;
+import com.hp.hpl.jena.sparql.util.ALog;
 import com.hp.hpl.jena.sparql.vocabulary.ResultSetGraphVocab;
-import com.hp.hpl.jena.vocabulary.RDF;
 
 
 public class RDFInput extends ResultSetMem
 {
-    static private Log log = LogFactory.getLog(RDFInput.class) ;
-
     /** Process a result set encoded in RDF according to
      *  <code>@link{http://www.w3.org/2001/sw/DataAccess/tests/result-set}#</code>
      *
@@ -93,7 +85,7 @@ public class RDFInput extends ResultSetMem
         solnIter.close() ;
         if ( indexed > 0 && rows != indexed )
         {
-            log.warn("Rows = "+rows+" but only "+indexed+" indexes" ) ;
+            ALog.warn(this, "Rows = "+rows+" but only "+indexed+" indexes" ) ;
             return rows ;
         }
         if ( indexed > 0 )
@@ -113,7 +105,7 @@ public class RDFInput extends ResultSetMem
                 break ;
             Statement s = sIter.nextStatement() ;
             if ( sIter.hasNext() )
-                log.warn("More than one solution: index = "+index) ;
+                ALog.warn(this, "More than one solution: index = "+index) ;
             Resource soln = s.getSubject() ;
 
             Binding rb = buildBinding(soln) ;
@@ -121,7 +113,7 @@ public class RDFInput extends ResultSetMem
             sIter.close() ;
         }
         if ( rows.size() != count )
-            log.warn("Found "+rows.size()+": expected "+count) ;
+            ALog.warn(this, "Found "+rows.size()+": expected "+count) ;
     }
     
     private void buildRows(Resource root)
@@ -144,7 +136,7 @@ public class RDFInput extends ResultSetMem
             try {
                 int size = root.getRequiredProperty(ResultSetGraphVocab.size).getInt() ;
                 if ( size != count )
-                    log.warn("Warning: Declared size = "+size+" : Count = "+count) ;
+                    ALog.warn(this, "Warning: Declared size = "+size+" : Count = "+count) ;
             } catch (JenaException rdfEx) {}
         }
     }
@@ -165,7 +157,7 @@ public class RDFInput extends ResultSetMem
                 rb.add(Var.alloc(var), val.asNode()) ;
             } catch (PropertyNotFoundException ex)
             {
-                log.warn("Failed to get value for ?"+var) ;
+                ALog.warn(this, "Failed to get value for ?"+var) ;
             }
             
             // We include the value even if it is the marker term "rs:undefined"

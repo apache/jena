@@ -8,9 +8,8 @@ package com.hp.hpl.jena.sparql.algebra;
 
 import java.util.Stack;
 
-import org.apache.commons.logging.LogFactory;
-
 import com.hp.hpl.jena.sparql.algebra.op.*;
+import com.hp.hpl.jena.sparql.util.ALog;
 
 public class Transformer
 {
@@ -20,7 +19,7 @@ public class Transformer
     {
         if ( op == null )
         {
-            LogFactory.getLog(Transformer.class).warn("Attempt to transform a null Op  - ignored") ;
+            ALog.warn(Transformer.class,"Attempt to transform a null Op  - ignored") ;
             return op ;
         }
         
@@ -48,7 +47,7 @@ public class Transformer
         public Op result()
         { 
             if ( stack.size() != 1 )
-                LogFactory.getLog(TransformApply.class).warn("Stack is not aligned") ;
+                ALog.warn(this, "Stack is not aligned") ;
             return pop() ; 
         }
 

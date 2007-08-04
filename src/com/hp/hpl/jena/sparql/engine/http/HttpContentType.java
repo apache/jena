@@ -6,7 +6,6 @@
 package com.hp.hpl.jena.sparql.engine.http;
 
 
-import org.apache.commons.logging.*;
 
 /**
  * Handle HTTP content type
@@ -17,7 +16,6 @@ import org.apache.commons.logging.*;
 
 public class HttpContentType
 {
-    static Log log = LogFactory.getLog(HttpContentType.class);
 
     String mediaType = null;
     String params[] = null;

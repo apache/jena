@@ -6,8 +6,6 @@
 
 package com.hp.hpl.jena.sparql.engine;
 
-import org.apache.commons.logging.LogFactory;
-
 import com.hp.hpl.jena.graph.Graph;
 
 import com.hp.hpl.jena.sparql.ARQConstants;
@@ -17,6 +15,7 @@ import com.hp.hpl.jena.sparql.core.DataSourceGraphImpl;
 import com.hp.hpl.jena.sparql.core.DatasetGraph;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.binding.BindingRoot;
+import com.hp.hpl.jena.sparql.util.ALog;
 import com.hp.hpl.jena.sparql.util.Context;
 import com.hp.hpl.jena.sparql.util.NodeFactory;
 
@@ -58,7 +57,7 @@ public abstract class QueryEngineBase implements OpExec
         this.context = context ;
         if ( input == null )
         {
-            LogFactory.getLog(QueryEngineBase.class).warn("Null initial input") ;
+            ALog.warn(this, "Null initial input") ;
             input = BindingRoot.create() ;
         }
         this.startBinding = input ;
