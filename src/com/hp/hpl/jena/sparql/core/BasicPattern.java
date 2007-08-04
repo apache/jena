@@ -12,7 +12,7 @@ import java.util.ListIterator;
 
 import com.hp.hpl.jena.graph.Triple;
 
-import com.hp.hpl.jena.sparql.util.LabelMap;
+import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 import com.hp.hpl.jena.sparql.util.Utils;
 
 /** A class whose purpose is to give a name to a collection of triples
@@ -47,7 +47,7 @@ public class BasicPattern
         return triples.equals(bp.triples) ;
     }
     
-    public boolean equiv(BasicPattern other, LabelMap labelMap)
+    public boolean equiv(BasicPattern other, NodeIsomorphismMap isoMap)
     { 
         if ( ! ( other instanceof BasicPattern) ) 
             return false ;
@@ -60,8 +60,7 @@ public class BasicPattern
             Triple t1 = get(i) ;
             Triple t2 = bp.get(i) ;
             
-            // Need to be "labelmap same".
-            if ( ! Utils.equals(t1, t2, labelMap) )
+            if ( ! Utils.tripleIso(t1, t2, isoMap) )
                 return false ;
         }
         return true ;

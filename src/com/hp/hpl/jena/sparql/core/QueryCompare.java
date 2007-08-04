@@ -13,7 +13,7 @@ import java.util.Map;
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryVisitor;
 
-import com.hp.hpl.jena.sparql.util.LabelMap;
+import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 import com.hp.hpl.jena.sparql.util.Utils;
 
 // Two queries comparison 
@@ -83,7 +83,7 @@ public class QueryCompare implements QueryVisitor
     {
         check("Not both CONSTRUCT queries", query2.isConstructType()) ;
         check("CONSTRUCT templates", 
-              query1.getConstructTemplate().equalTo(query2.getConstructTemplate(), new LabelMap()) ) ;
+              query1.getConstructTemplate().equalIso(query2.getConstructTemplate(), new NodeIsomorphismMap()) ) ;
     }
 
     public void visitDescribeResultForm(Query query1)
@@ -121,7 +121,7 @@ public class QueryCompare implements QueryVisitor
         // The checking for patterns (elements) involves a potential
         // remapping of system-allocated variable names.
         // Assumes blank node variables only appear in patterns.
-        check("Pattern", query1.getQueryPattern().equalTo(query2.getQueryPattern(), new LabelMap())) ;
+        check("Pattern", query1.getQueryPattern().equalTo(query2.getQueryPattern(), new NodeIsomorphismMap())) ;
     }
 
      public void visitLimit(Query query1)

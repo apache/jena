@@ -16,7 +16,7 @@ import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.syntax.TemplateGroup;
 import com.hp.hpl.jena.sparql.syntax.TemplateTriple;
-import com.hp.hpl.jena.sparql.util.LabelMap;
+import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 
@@ -37,10 +37,10 @@ public class TemplateGraph extends TemplateGroup
     }
 
     //@Override
-    public boolean equalTo(Object other, LabelMap labelMap)
+    public boolean equalIso(Object other, NodeIsomorphismMap labelMap)
     {
         if ( ! ( other instanceof TemplateGraph ) ) return false ;
-        return super.equalTo(other, labelMap) ;
+        return super.equalIso(other, labelMap) ;
     }
 
     //@Override
