@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.test.suites;
+package com.hp.hpl.jena.sparql.suites;
 
 import java.math.BigDecimal;
 import java.util.Calendar;
