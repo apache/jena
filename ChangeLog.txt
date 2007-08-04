@@ -4,6 +4,9 @@ ChangeLog for ARQ
 ARQ 2.1
 -------
 
++ Old "NodeToLabelMap" => "NodeIsomorphismMap"
+  Affects Element and Op ".equalTo" operation signature.
+
 + Added extension : a graph pattern SERVICE <serviceEndPoint> { pattern }
   ARQ syntax only.
   New algebra operation: OpService
