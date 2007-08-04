@@ -13,7 +13,7 @@ import com.hp.hpl.jena.sparql.engine.ref.QueryEngineRef;
 import com.hp.hpl.jena.sparql.expr.E_Function;
 import com.hp.hpl.jena.sparql.expr.NodeValue;
 import com.hp.hpl.jena.sparql.junit.QueryTestSuiteFactory;
-import com.hp.hpl.jena.sparql.test.suites.*;
+import com.hp.hpl.jena.sparql.suites.*;
 
 /**
  * All the ARQ tests 

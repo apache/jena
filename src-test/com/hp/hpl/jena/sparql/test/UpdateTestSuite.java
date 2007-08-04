@@ -8,8 +8,8 @@ package com.hp.hpl.jena.sparql.test;
 
 import junit.framework.TestSuite;
 
-import com.hp.hpl.jena.sparql.test.suites.TestUpdateGraph;
-import com.hp.hpl.jena.sparql.test.suites.TestUpdateGraphMgt;
+import com.hp.hpl.jena.sparql.suites.TestUpdateGraph;
+import com.hp.hpl.jena.sparql.suites.TestUpdateGraphMgt;
 
 public class UpdateTestSuite extends TestSuite
 {
