@@ -5,10 +5,7 @@
 ++ Algebra building src-examples 
 -----
 
-+ OpService
-  SERVICE, (FROM SERVICE - not needed)
-   
-+ OpOrder totake an ExprList
++ OpOrder to take an ExprList
 + ExprList writing an LJ
 
 + Aggregates: QueryIterGroup
@@ -32,11 +29,13 @@
 
 == Core
 
++ FmtUtils and WriterTriple/Node/...
+  NodeToLabel maps.
+
 + ResultsFormat (output)vs ResultSetFormat (input)
   ResultSetFormatter.oopput as SSE
   ResultSetFactory input as SSE
   rset handler boolean and result set XML forms together => sSPARQLResults.
-
 
 + What is "OpDatasetNames" nowadays?
 	A table?  unnecessary?
