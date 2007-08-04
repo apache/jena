@@ -15,6 +15,7 @@
   <property name="dist.name"       value="${Name}-${version}"/>
 
   <property name="src.dir"         value="src"/>
+  <property name="src-test.dir"    value="src-test"/>
   <property name="src-ex.dir"      value="src-examples"/>
   <property name="src.build.dir"         value="bldsrc"/>
   <property name="classes.build.dir"     value="bldbin"/>
@@ -100,6 +101,7 @@
     
     <copy todir="${src.build.dir}">
       <fileset dir="${src.dir}" includes="**"/>
+   	  <fileset dir="${src-test.dir}" includes="**"/>
       <filterset>
         <filterset refid="filters.general"/>
         <filter token="build-time" value="${BUILD_TIME}" />
