@@ -9,7 +9,6 @@ package dev.inf;
 import static com.hp.hpl.jena.sparql.sse.builders.BuilderBase.checkLength;
 import static com.hp.hpl.jena.sparql.sse.builders.BuilderBase.checkList;
 import static com.hp.hpl.jena.sparql.sse.builders.BuilderBase.checkNode;
-import static com.hp.hpl.jena.sparql.sse.builders.BuilderBase.shortPrint;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.sdb.util.Iter;
@@ -32,7 +31,7 @@ class TransGraphNode extends TransGraph<Node>
         {
             checkList(item) ;
             ItemList pair = x.getList() ;
-            checkLength(2, pair, "Not a pair: "+shortPrint(pair)) ;
+            checkLength(2, pair, "Not a pair: "+pair.shortString()) ;
             Item a = pair.get(0) ;
             Item b = pair.get(1) ;
             checkNode(a) ;
@@ -45,7 +44,7 @@ class TransGraphNode extends TransGraph<Node>
     public Item asItem(String tag)
     {
         final Item top = Item.createList() ;
-        top.getList().add(Item.createWord(tag)) ;
+        top.getList().add(Item.createSymbol(tag)) ;
 
         LinkApply<Node> x = new LinkApply<Node>() {
             public void apply(Node i, Node j)

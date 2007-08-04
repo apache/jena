@@ -17,7 +17,7 @@ import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.binding.BindingRoot;
 import com.hp.hpl.jena.sparql.engine.main.OpExtMain;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
-import com.hp.hpl.jena.sparql.util.LabelMap;
+import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 
 public class OpSQL extends OpExtMain
 {
@@ -68,7 +68,7 @@ public class OpSQL extends OpExtMain
     }
 
     @Override
-    public boolean equalTo(Op other, LabelMap labelMap)
+    public boolean equalTo(Op other, NodeIsomorphismMap labelMap)
     {
         // SqlNodes don't provide structural equality (yet?).
         if ( ! ( other instanceof OpSQL ) ) return false ;
