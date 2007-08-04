@@ -9,7 +9,7 @@ package com.hp.hpl.jena.sparql.algebra.op;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.OpVisitor;
 import com.hp.hpl.jena.sparql.algebra.Transform;
-import com.hp.hpl.jena.sparql.util.LabelMap;
+import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 
 public class OpList extends OpModifier
 {
@@ -32,7 +32,7 @@ public class OpList extends OpModifier
         return getSubOp().hashCode() ^ OpBase.HashToList ; 
     }
 
-    public boolean equalTo(Op other, LabelMap labelMap)
+    public boolean equalTo(Op other, NodeIsomorphismMap labelMap)
     {
         if ( ! (other instanceof OpList) ) return false ;
         return getSubOp().equalTo(((OpList)other).getSubOp(), labelMap) ;

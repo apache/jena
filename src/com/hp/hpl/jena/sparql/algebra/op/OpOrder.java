@@ -13,7 +13,7 @@ import com.hp.hpl.jena.sparql.algebra.OpVisitor;
 import com.hp.hpl.jena.sparql.algebra.Table;
 import com.hp.hpl.jena.sparql.algebra.Transform;
 import com.hp.hpl.jena.sparql.engine.ref.Evaluator;
-import com.hp.hpl.jena.sparql.util.LabelMap;
+import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 
 public class OpOrder extends OpModifier
 {
@@ -43,7 +43,7 @@ public class OpOrder extends OpModifier
         return conditions.hashCode() ^ getSubOp().hashCode() ;
     }
 
-    public boolean equalTo(Op other, LabelMap labelMap)
+    public boolean equalTo(Op other, NodeIsomorphismMap labelMap)
     {
         if ( ! (other instanceof OpOrder) ) return false ;
         OpOrder opOrder = (OpOrder)other ;

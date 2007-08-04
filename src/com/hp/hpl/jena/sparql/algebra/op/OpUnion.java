@@ -11,7 +11,7 @@ import com.hp.hpl.jena.sparql.algebra.OpVisitor;
 import com.hp.hpl.jena.sparql.algebra.Table;
 import com.hp.hpl.jena.sparql.algebra.Transform;
 import com.hp.hpl.jena.sparql.engine.ref.Evaluator;
-import com.hp.hpl.jena.sparql.util.LabelMap;
+import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 
 public class OpUnion extends Op2
 {
@@ -31,7 +31,7 @@ public class OpUnion extends Op2
     public Op copy(Op newLeft, Op newRight)
     { return new OpUnion(newLeft, newRight) ; }
     
-    public boolean equalTo(Op op2, LabelMap labelMap)
+    public boolean equalTo(Op op2, NodeIsomorphismMap labelMap)
     {
         if ( ! ( op2 instanceof OpUnion) ) return false ;
         return super.sameAs((Op2)op2, labelMap) ;

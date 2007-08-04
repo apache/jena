@@ -25,11 +25,7 @@ import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.expr.ExprList;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext;
-import com.hp.hpl.jena.sparql.util.ExprUtils;
-import com.hp.hpl.jena.sparql.util.FmtUtils;
-import com.hp.hpl.jena.sparql.util.IndentedWriter;
-import com.hp.hpl.jena.sparql.util.NodeToLabelMap;
-import com.hp.hpl.jena.sparql.util.PrintUtils;
+import com.hp.hpl.jena.sparql.util.*;
 
 
 public class OpWriter
@@ -73,17 +69,6 @@ public class OpWriter
         out(iWriter, op, sCxt) ;
     }
     
-    // Special version that preserves non-distinguished variables as variables.
-    static class NodeToLabelMapOp extends NodeToLabelMap
-    {
-        public String asString(Node n)
-        {
-            if ( n.isVariable() ) 
-                return "?"+n.getName() ;
-            return super.asString(n) ;
-        }
-    }
-    
     public static void out(OutputStream out, Op op, SerializationContext sCxt)
     {
         out(new IndentedWriter(out), op, sCxt) ;
@@ -93,7 +78,7 @@ public class OpWriter
     public static void out(IndentedWriter iWriter, Op op, SerializationContext sCxt)
     {
         // TODO Consider whether this ought to always fix the bNode label map or not.
-        NodeToLabelMap lmap = new NodeToLabelMapOp() ;
+        NodeToLabelMap lmap = new NodeToLabelMap() ;
         sCxt.setBNodeMap(lmap) ;
         
         

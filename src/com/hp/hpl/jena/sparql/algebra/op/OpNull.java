@@ -9,7 +9,7 @@ package com.hp.hpl.jena.sparql.algebra.op;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.OpVisitor;
 import com.hp.hpl.jena.sparql.algebra.Transform;
-import com.hp.hpl.jena.sparql.util.LabelMap;
+import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 
 public class OpNull extends Op0
 {
@@ -30,7 +30,7 @@ public class OpNull extends Op0
     { return OpBase.HashNull ; }
 
 
-    public boolean equalTo(Op other, LabelMap labelMap)
+    public boolean equalTo(Op other, NodeIsomorphismMap labelMap)
     { return ( other instanceof OpNull ) ; }
 }
 

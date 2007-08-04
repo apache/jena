@@ -8,7 +8,7 @@ package com.hp.hpl.jena.sparql.algebra.op;
 
 import com.hp.hpl.jena.sparql.algebra.*;
 import com.hp.hpl.jena.sparql.algebra.table.TableUnit;
-import com.hp.hpl.jena.sparql.util.LabelMap;
+import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 
 public class OpTable extends Op0
 {
@@ -43,7 +43,7 @@ public class OpTable extends Op0
     public int hashCode()
     { return table.hashCode() ; } 
 
-    public boolean equalTo(Op other, LabelMap labelMap)
+    public boolean equalTo(Op other, NodeIsomorphismMap labelMap)
     {
         if ( ! ( other instanceof OpTable) ) return false ;
         OpTable opTable = (OpTable)other ;

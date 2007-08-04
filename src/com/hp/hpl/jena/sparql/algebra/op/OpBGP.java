@@ -10,7 +10,7 @@ import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.OpVisitor;
 import com.hp.hpl.jena.sparql.algebra.Transform;
 import com.hp.hpl.jena.sparql.core.BasicPattern;
-import com.hp.hpl.jena.sparql.util.LabelMap;
+import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 
 public class OpBGP extends Op0
 {
@@ -35,7 +35,7 @@ public class OpBGP extends Op0
     }
 
     //@Override
-    public boolean equalTo(Op op2, LabelMap labelMap)
+    public boolean equalTo(Op op2, NodeIsomorphismMap labelMap)
     {
         if ( ! ( op2 instanceof OpBGP) )
             return false ;

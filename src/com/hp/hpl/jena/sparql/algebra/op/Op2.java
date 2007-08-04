@@ -8,7 +8,7 @@ package com.hp.hpl.jena.sparql.algebra.op;
 
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.Transform;
-import com.hp.hpl.jena.sparql.util.LabelMap;
+import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 
 public abstract class Op2 extends OpBase
 {
@@ -35,7 +35,7 @@ public abstract class Op2 extends OpBase
     }
     
     // equalsTo worker
-    protected boolean sameAs(Op2 op2, LabelMap labelMap)
+    protected boolean sameAs(Op2 op2, NodeIsomorphismMap labelMap)
     {
         return left.equalTo(op2.left, labelMap) && 
                right.equalTo(op2.right, labelMap) ;

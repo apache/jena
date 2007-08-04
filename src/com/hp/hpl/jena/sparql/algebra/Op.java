@@ -6,7 +6,7 @@
 
 package com.hp.hpl.jena.sparql.algebra;
 
-import com.hp.hpl.jena.sparql.util.LabelMap;
+import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 import com.hp.hpl.jena.sparql.util.Named;
 import com.hp.hpl.jena.sparql.util.PrintSerializable;
 import com.hp.hpl.jena.sparql.util.Printable;
@@ -14,7 +14,7 @@ import com.hp.hpl.jena.sparql.util.Printable;
 public interface Op extends PrintSerializable, Printable, Named
 {
     public void visit(OpVisitor opVisitor) ;
-    public boolean equalTo(Op other, LabelMap labelMap) ;
+    public boolean equalTo(Op other, NodeIsomorphismMap labelMap) ;
 }
 
 /*

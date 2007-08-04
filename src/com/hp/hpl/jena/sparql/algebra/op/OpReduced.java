@@ -11,7 +11,7 @@ import com.hp.hpl.jena.sparql.algebra.OpVisitor;
 import com.hp.hpl.jena.sparql.algebra.Table;
 import com.hp.hpl.jena.sparql.algebra.Transform;
 import com.hp.hpl.jena.sparql.engine.ref.Evaluator;
-import com.hp.hpl.jena.sparql.util.LabelMap;
+import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 
 public class OpReduced extends OpModifier
 {
@@ -32,7 +32,7 @@ public class OpReduced extends OpModifier
     public int hashCode()
     { return getSubOp().hashCode() ^ OpBase.HashReduced ; }
     
-    public boolean equalTo(Op other, LabelMap labelMap)
+    public boolean equalTo(Op other, NodeIsomorphismMap labelMap)
     {
         if ( ! (other instanceof OpReduced) ) return false ;
         return getSubOp().equalTo(((OpReduced)other).getSubOp(), labelMap) ;

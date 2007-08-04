@@ -17,7 +17,7 @@ import com.hp.hpl.jena.sparql.algebra.OpVisitor;
 import com.hp.hpl.jena.sparql.algebra.Transform;
 import com.hp.hpl.jena.sparql.core.BasicPattern;
 import com.hp.hpl.jena.sparql.core.Quad;
-import com.hp.hpl.jena.sparql.util.LabelMap;
+import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 
 public class OpQuadPattern extends Op0
 {
@@ -66,7 +66,7 @@ public class OpQuadPattern extends Op0
     public int hashCode()
     { return graphNode.hashCode() ^ triples.hashCode() ; }
 
-    public boolean equalTo(Op other, LabelMap labelMap)
+    public boolean equalTo(Op other, NodeIsomorphismMap labelMap)
     {
         if ( ! ( other instanceof OpQuadPattern ) ) return false ;
         OpQuadPattern opQuad = (OpQuadPattern)other ;

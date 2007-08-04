@@ -10,13 +10,13 @@ import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.OpWriter;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
-import com.hp.hpl.jena.sparql.util.LabelMap;
+import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 import com.hp.hpl.jena.sparql.util.PrintSerializableBase;
 
 public abstract class OpBase extends PrintSerializableBase implements Op
 {
     public abstract int hashCode() ;
-    public abstract boolean equalTo(Op other, LabelMap labelMap) ;
+    public abstract boolean equalTo(Op other, NodeIsomorphismMap labelMap) ;
 
     final public boolean equals(Object other)
     { 

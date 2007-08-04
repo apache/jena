@@ -10,7 +10,7 @@ import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.OpVisitor;
 import com.hp.hpl.jena.sparql.algebra.Transform;
-import com.hp.hpl.jena.sparql.util.LabelMap;
+import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 
 public class OpDatasetNames extends Op0
 {
@@ -31,7 +31,7 @@ public class OpDatasetNames extends Op0
     public int hashCode()
     { return graphNode.hashCode() ; }
 
-    public boolean equalTo(Op op2, LabelMap labelMap)
+    public boolean equalTo(Op op2, NodeIsomorphismMap labelMap)
     {
         if ( ! ( op2 instanceof OpDatasetNames) ) return false ;
         OpDatasetNames other = (OpDatasetNames)op2 ;

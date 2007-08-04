@@ -10,7 +10,7 @@ import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.OpVisitor;
 import com.hp.hpl.jena.sparql.algebra.Transform;
-import com.hp.hpl.jena.sparql.util.LabelMap;
+import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 
 public class OpGraph extends Op1
     // Must override evaluation - need to flip the execution context on the way down
@@ -34,7 +34,7 @@ public class OpGraph extends Op1
     public int hashCode()
     { return node.hashCode() ^ getSubOp().hashCode() ; }
     
-    public boolean equalTo(Op other, LabelMap labelMap)
+    public boolean equalTo(Op other, NodeIsomorphismMap labelMap)
     {
         if ( ! (other instanceof OpGraph) ) return false ;
         OpGraph opGraph = (OpGraph)other ;

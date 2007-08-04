@@ -124,6 +124,7 @@ void PrefixedName() : { Token t ; }
 void Var() : { Token t ; }
 {
   // Includes "?" as a variable for anon variables.
+  // Includes "??" as a variable for anon non-distinguished variables.
   // Includes non-distinguished variables as ??0
 
   ( t = <VAR_N> | t = <VAR_ND> )
