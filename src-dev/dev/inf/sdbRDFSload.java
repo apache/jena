@@ -12,18 +12,20 @@ import java.io.InputStream;
 import java.sql.SQLException;
 
 import com.hp.hpl.jena.graph.Node;
+
+import com.hp.hpl.jena.sparql.sse.Item;
+import com.hp.hpl.jena.sparql.sse.SSE;
+
 import com.hp.hpl.jena.sdb.SDBFactory;
+import com.hp.hpl.jena.sdb.Store;
 import com.hp.hpl.jena.sdb.layout2.hash.StoreTriplesNodesHashHSQL;
 import com.hp.hpl.jena.sdb.layout2.hash.TupleLoaderOneHash;
 import com.hp.hpl.jena.sdb.sql.JDBC;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.sql.SDBExceptionSQL;
-import com.hp.hpl.jena.sdb.store.Store;
 import com.hp.hpl.jena.sdb.store.TableDesc;
 import com.hp.hpl.jena.sdb.store.TupleLoader;
 import com.hp.hpl.jena.sdb.util.Pair;
-import com.hp.hpl.jena.sparql.sse.Item;
-import com.hp.hpl.jena.sparql.sse.SSE;
 
 public class sdbRDFSload
 {
