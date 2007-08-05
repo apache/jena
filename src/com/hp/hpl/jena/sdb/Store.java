@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.store;
+package com.hp.hpl.jena.sdb;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.sdb.compiler.QueryCompilerFactory;
@@ -12,6 +12,7 @@ import com.hp.hpl.jena.sdb.layout2.TableDescNodes;
 import com.hp.hpl.jena.sdb.layout2.TableDescQuads;
 import com.hp.hpl.jena.sdb.layout2.TableDescTriples;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
+import com.hp.hpl.jena.sdb.store.*;
 
 
 /** A Store is one RDF dataset instance - it is the unit of query.

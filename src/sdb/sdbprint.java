@@ -18,11 +18,11 @@ import com.hp.hpl.jena.query.Syntax;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.util.Utils;
 import com.hp.hpl.jena.sdb.SDB;
+import com.hp.hpl.jena.sdb.Store;
+import com.hp.hpl.jena.sdb.StoreDesc;
 import com.hp.hpl.jena.sdb.engine.QueryEngineSDB;
 import com.hp.hpl.jena.sdb.sql.JDBC;
 import com.hp.hpl.jena.sdb.store.LayoutType;
-import com.hp.hpl.jena.sdb.store.Store;
-import com.hp.hpl.jena.sdb.store.StoreDesc;
 import com.hp.hpl.jena.sdb.util.PrintSDB;
 
 

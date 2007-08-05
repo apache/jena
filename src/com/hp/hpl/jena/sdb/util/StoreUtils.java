@@ -8,11 +8,11 @@ package com.hp.hpl.jena.sdb.util;
 
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.sdb.SDBFactory;
+import com.hp.hpl.jena.sdb.Store;
 import com.hp.hpl.jena.sdb.layout1.StoreSimpleHSQL;
 import com.hp.hpl.jena.sdb.layout1.StoreSimplePGSQL;
 import com.hp.hpl.jena.sdb.layout2.hash.StoreTriplesNodesHashPGSQL;
 import com.hp.hpl.jena.sdb.layout2.index.StoreTriplesNodesIndexPGSQL;
-import com.hp.hpl.jena.sdb.store.Store;
 import com.hp.hpl.jena.sdb.store.StoreBaseHSQL;
 import com.hp.hpl.jena.util.FileManager;
 

@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.store;
+package com.hp.hpl.jena.sdb;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -14,30 +14,30 @@ import com.hp.hpl.jena.sparql.util.GraphUtils;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.sdb.SDBException;
 import com.hp.hpl.jena.sdb.assembler.AssemblerVocab;
 import com.hp.hpl.jena.sdb.shared.Env;
 import com.hp.hpl.jena.sdb.sql.MySQLEngineType;
 import com.hp.hpl.jena.sdb.sql.SDBConnectionDesc;
+import com.hp.hpl.jena.sdb.store.DatabaseType;
+import com.hp.hpl.jena.sdb.store.FeatureSet;
+import com.hp.hpl.jena.sdb.store.LayoutType;
 
 
 public class StoreDesc
 {
     private static Log log = LogFactory.getLog(StoreDesc.class) ;
     
-    // Connection + DatabaseType + Layout + Configuration 
-    
-    public SDBConnectionDesc connDesc  = null ;
+    public SDBConnectionDesc connDesc   = null ;
     private DatabaseType dbType         = null ;
     private LayoutType layout           = null ;
-    public FeatureSet featureSet       = null ;
+    private FeatureSet featureSet       = null ;
     
-    // ModelRDB
-    public String rdbModelName         = null ;     // ModelRDB specific
-    public String rdbModelType         = null ;     // ModelRDB specific
+    /** ModelRDB spefic */
+    public String rdbModelName          = null ;
+    public String rdbModelType          = null ;
 
-    // MySQL
-    public MySQLEngineType engineType  = null ;     // MySQL specific
+    /** MySQL specific */
+    public MySQLEngineType engineType   = null ;
 
     
     public static StoreDesc read(String filename)
@@ -68,7 +68,6 @@ public class StoreDesc
             featureSet = new FeatureSet() ;
         this.featureSet = featureSet ;
     }
-    
     
     public LayoutType getLayout() { return layout ; }
     

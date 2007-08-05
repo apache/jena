@@ -12,13 +12,14 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import com.hp.hpl.jena.graph.Node;
+
+import com.hp.hpl.jena.sdb.Store;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlConstant;
 import com.hp.hpl.jena.sdb.layout2.NodeLayout2;
 import com.hp.hpl.jena.sdb.layout2.TableDescNodes;
 import com.hp.hpl.jena.sdb.sql.ResultSetJDBC;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.sql.SQLUtils;
-import com.hp.hpl.jena.sdb.store.Store;
 import com.hp.hpl.jena.sdb.store.TableDesc;
 import com.hp.hpl.jena.sdb.store.TupleLoaderOne;
 

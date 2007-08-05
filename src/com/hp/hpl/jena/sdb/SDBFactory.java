@@ -21,8 +21,6 @@ import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.sql.SDBConnectionDesc;
 import com.hp.hpl.jena.sdb.sql.SDBConnectionFactory;
 import com.hp.hpl.jena.sdb.store.DatasetStore;
-import com.hp.hpl.jena.sdb.store.Store;
-import com.hp.hpl.jena.sdb.store.StoreDesc;
 import com.hp.hpl.jena.sdb.store.StoreFactory;
 
 /** Various operations to create or connect objects to do with SDB:

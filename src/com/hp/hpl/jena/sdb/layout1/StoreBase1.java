@@ -7,6 +7,8 @@
 package com.hp.hpl.jena.sdb.layout1;
 
 import com.hp.hpl.jena.graph.Node;
+
+import com.hp.hpl.jena.sdb.Store;
 import com.hp.hpl.jena.sdb.compiler.QueryCompilerFactory;
 import com.hp.hpl.jena.sdb.core.sqlnode.GenerateSQL;
 import com.hp.hpl.jena.sdb.layout2.TableDescNodes;

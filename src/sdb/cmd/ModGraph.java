@@ -9,7 +9,7 @@ package sdb.cmd;
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.sdb.SDBFactory;
-import com.hp.hpl.jena.sdb.store.Store;
+import com.hp.hpl.jena.sdb.Store;
 
 import arq.cmdline.ArgDecl;
 import arq.cmdline.CmdArgModule;

@@ -18,6 +18,7 @@ import com.hp.hpl.jena.shared.LockMRSW;
 import com.hp.hpl.jena.sparql.core.DatasetGraph;
 
 import com.hp.hpl.jena.sdb.SDBFactory;
+import com.hp.hpl.jena.sdb.Store;
 import com.hp.hpl.jena.sdb.graph.GraphSDB;
 import com.hp.hpl.jena.sdb.layout1.StoreRDB;
 import com.hp.hpl.jena.sdb.shared.SDBNotImplemented;

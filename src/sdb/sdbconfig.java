@@ -14,7 +14,8 @@ import sdb.cmd.CmdArgsDB;
 import sdb.cmd.ModConfig;
 
 import com.hp.hpl.jena.sparql.util.Utils;
-import com.hp.hpl.jena.sdb.store.Store;
+
+import com.hp.hpl.jena.sdb.Store;
 
 /** Configure an SDB database.  Destroys all existing data permanently. */ 
 

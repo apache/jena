@@ -12,7 +12,7 @@ import com.hp.hpl.jena.assembler.assemblers.AssemblerBase;
 import com.hp.hpl.jena.query.Dataset;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.sdb.SDBFactory;
-import com.hp.hpl.jena.sdb.store.StoreDesc;
+import com.hp.hpl.jena.sdb.StoreDesc;
 
 public class DatasetStoreAssembler extends AssemblerBase implements Assembler
 {

@@ -6,6 +6,7 @@
 
 package com.hp.hpl.jena.sdb.layout2;
 
+import com.hp.hpl.jena.sdb.Store;
 import com.hp.hpl.jena.sdb.compiler.QueryCompilerFactory;
 import com.hp.hpl.jena.sdb.core.sqlnode.GenerateSQL;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
@@ -13,7 +14,6 @@ import com.hp.hpl.jena.sdb.sql.SDBConnectionHolder;
 import com.hp.hpl.jena.sdb.sql.TableUtils;
 import com.hp.hpl.jena.sdb.store.SQLBridgeFactory;
 import com.hp.hpl.jena.sdb.store.SQLGenerator;
-import com.hp.hpl.jena.sdb.store.Store;
 import com.hp.hpl.jena.sdb.store.StoreConfig;
 import com.hp.hpl.jena.sdb.store.StoreFormatter;
 import com.hp.hpl.jena.sdb.store.StoreLoader;

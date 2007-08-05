@@ -19,7 +19,7 @@ import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.sdb.SDB;
-import com.hp.hpl.jena.sdb.store.Store;
+import com.hp.hpl.jena.sdb.Store;
 import com.hp.hpl.jena.sdb.store.StoreFactory;
 import com.hp.hpl.jena.sdb.util.Pair;
 import com.hp.hpl.jena.sdb.util.StoreUtils;

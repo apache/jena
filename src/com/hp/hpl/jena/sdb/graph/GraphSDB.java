@@ -32,11 +32,11 @@ import com.hp.hpl.jena.sparql.engine.binding.Binding;
 
 import com.hp.hpl.jena.query.Query;
 
+import com.hp.hpl.jena.sdb.Store;
 import com.hp.hpl.jena.sdb.core.SDBRequest;
 import com.hp.hpl.jena.sdb.engine.QueryEngineSDB;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.store.DatasetStoreGraph;
-import com.hp.hpl.jena.sdb.store.Store;
 import com.hp.hpl.jena.sdb.store.StoreLoader;
 import com.hp.hpl.jena.sdb.store.StoreLoaderPlus;
 

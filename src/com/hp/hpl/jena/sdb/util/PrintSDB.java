@@ -13,9 +13,10 @@ import com.hp.hpl.jena.sparql.algebra.OpWalker;
 import com.hp.hpl.jena.sparql.algebra.op.OpExt;
 import com.hp.hpl.jena.sparql.ARQConstants;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
+
+import com.hp.hpl.jena.sdb.Store;
 import com.hp.hpl.jena.sdb.compiler.OpSQL;
 import com.hp.hpl.jena.sdb.engine.QueryEngineSDB;
-import com.hp.hpl.jena.sdb.store.Store;
 import com.hp.hpl.jena.shared.PrefixMapping;
 
 

@@ -6,6 +6,8 @@
 
 package com.hp.hpl.jena.sdb.store;
 
+import com.hp.hpl.jena.sdb.Store;
+import com.hp.hpl.jena.sdb.StoreDesc;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 
 /** Source of new store objects.  Used by StoreFactory, where there is a registry

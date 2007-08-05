@@ -15,7 +15,7 @@ import arq.cmdline.CmdArgModule;
 import arq.cmdline.CmdGeneral;
 import arq.cmdline.ModBase;
 
-import com.hp.hpl.jena.sdb.store.Store;
+import com.hp.hpl.jena.sdb.Store;
 import com.hp.hpl.jena.sdb.store.TableDesc;
 import com.hp.hpl.jena.sparql.util.Utils;
 

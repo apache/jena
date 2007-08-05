@@ -23,11 +23,11 @@ import com.hp.hpl.jena.sparql.util.Context;
 
 import com.hp.hpl.jena.query.Query;
 
+import com.hp.hpl.jena.sdb.Store;
 import com.hp.hpl.jena.sdb.compiler.OpSQL;
 import com.hp.hpl.jena.sdb.compiler.QueryCompiler;
 import com.hp.hpl.jena.sdb.core.SDBRequest;
 import com.hp.hpl.jena.sdb.store.DatasetStoreGraph;
-import com.hp.hpl.jena.sdb.store.Store;
 import com.hp.hpl.jena.sdb.util.StoreUtils;
 
 

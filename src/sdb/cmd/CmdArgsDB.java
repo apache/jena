@@ -13,8 +13,8 @@ import arq.cmdline.ModSymbol;
 import arq.cmdline.ModTime;
 
 import com.hp.hpl.jena.sdb.SDB;
+import com.hp.hpl.jena.sdb.Store;
 import com.hp.hpl.jena.sdb.assembler.AssemblerVocab;
-import com.hp.hpl.jena.sdb.store.Store;
 
 public abstract class CmdArgsDB extends CmdGeneral
 {

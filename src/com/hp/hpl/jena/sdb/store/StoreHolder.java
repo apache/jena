@@ -6,6 +6,8 @@
 
 package com.hp.hpl.jena.sdb.store;
 
+import com.hp.hpl.jena.sdb.Store;
+
 public class StoreHolder
 {
     // It's so common to take and keep a store, that it is

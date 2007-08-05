@@ -9,7 +9,7 @@ package com.hp.hpl.jena.sdb.layout2.index;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.hp.hpl.jena.sdb.store.Store;
+import com.hp.hpl.jena.sdb.Store;
 
 /** Experimental : cache for int <=> node hash 
  * 

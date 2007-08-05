@@ -8,9 +8,9 @@ package com.hp.hpl.jena.sdb.util;
 
 import java.sql.SQLException;
 
+import com.hp.hpl.jena.sdb.Store;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.sql.SDBExceptionSQL;
-import com.hp.hpl.jena.sdb.store.Store;
 
 public class HSQLUtils
 {

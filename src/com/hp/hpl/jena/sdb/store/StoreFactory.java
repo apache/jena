@@ -20,6 +20,8 @@ import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.sdb.SDB;
 import com.hp.hpl.jena.sdb.SDBException;
+import com.hp.hpl.jena.sdb.Store;
+import com.hp.hpl.jena.sdb.StoreDesc;
 import com.hp.hpl.jena.sdb.layout1.*;
 import com.hp.hpl.jena.sdb.layout2.hash.*;
 import com.hp.hpl.jena.sdb.layout2.index.*;

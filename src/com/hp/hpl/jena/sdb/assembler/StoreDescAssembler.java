@@ -19,11 +19,11 @@ import com.hp.hpl.jena.rdf.model.Resource;
 
 import com.hp.hpl.jena.sdb.SDB;
 import com.hp.hpl.jena.sdb.SDBException;
+import com.hp.hpl.jena.sdb.StoreDesc;
 import com.hp.hpl.jena.sdb.sql.MySQLEngineType;
 import com.hp.hpl.jena.sdb.sql.SDBConnectionDesc;
 import com.hp.hpl.jena.sdb.store.Feature;
 import com.hp.hpl.jena.sdb.store.FeatureSet;
-import com.hp.hpl.jena.sdb.store.StoreDesc;
 
 public class StoreDescAssembler extends AssemblerBase implements Assembler
 {
