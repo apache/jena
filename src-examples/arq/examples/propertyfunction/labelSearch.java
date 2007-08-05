@@ -8,9 +8,6 @@ package arq.examples.propertyfunction;
 
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.rdf.model.Model;
@@ -37,6 +34,7 @@ import com.hp.hpl.jena.sparql.pfunction.PropertyFunctionRegistry;
 import com.hp.hpl.jena.sparql.syntax.ElementFilter;
 import com.hp.hpl.jena.sparql.syntax.ElementGroup;
 import com.hp.hpl.jena.sparql.syntax.ElementTriplesBlock;
+import com.hp.hpl.jena.sparql.util.ALog;
 import com.hp.hpl.jena.sparql.util.NodeUtils;
 import com.hp.hpl.jena.vocabulary.RDFS;
 
@@ -75,8 +73,6 @@ import com.hp.hpl.jena.query.*;
 
 public class labelSearch implements PropertyFunction
 {
-    private static Log log = LogFactory.getLog(labelSearch.class) ;
-    
     List myArgs = null;
     
     public void build(PropFuncArg argSubject, Node predicate, PropFuncArg argObject, ExecutionContext execCxt)
@@ -94,8 +90,6 @@ public class labelSearch implements PropertyFunction
 
     public QueryIterator exec(QueryIterator input, PropFuncArg argSubject, Node predicate, PropFuncArg argObject, ExecutionContext execCxt)
     {
-        log.debug("exec") ;
-        
         // No real need to check the pattern arguments because
         // the replacement triple pattern and regex will cope
         // but we illustrate testing here.
@@ -104,7 +98,7 @@ public class labelSearch implements PropertyFunction
         String pattern = NodeUtils.stringLiteral(argObject.getArg()) ;
         if ( pattern == null )
         {
-            log.warn("Pattern must be a plain literal or xsd:string: "+argObject.getArg()) ;
+            ALog.warn(this, "Pattern must be a plain literal or xsd:string: "+argObject.getArg()) ;
             return new QueryIterNullIterator(execCxt) ;
         }
 

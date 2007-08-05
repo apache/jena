@@ -12,14 +12,12 @@ import java.io.PrintWriter;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.query.*;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.shared.JenaException;
 import com.hp.hpl.jena.sparql.resultset.ResultSetRewindable;
+import com.hp.hpl.jena.sparql.util.ALog;
 import com.hp.hpl.jena.sparql.util.DatasetUtils;
 import com.hp.hpl.jena.sparql.util.GraphUtils;
 import com.hp.hpl.jena.sparql.vocabulary.ResultSetGraphVocab;
@@ -29,8 +27,6 @@ import com.hp.hpl.jena.vocabulary.RDF;
 
 public class QueryTest extends EarlTestCase
 {
-    private static Log log = LogFactory.getLog( QueryTest.class );
-    
     private static int testCounter = 1 ;
     private static boolean printModelsOnFailure = false ;
     // -- Items from construction
@@ -104,7 +100,7 @@ public class QueryTest extends EarlTestCase
                 // Only warn if there are results to test
                 // Syntax tests may have FROM etc and a manifest data file. 
                 if ( testItem.getResultFile() != null )
-                    log.warn(testItem.getName()+" : query data source and also in test file") ; 
+                    ALog.warn(this, testItem.getName()+" : query data source and also in test file") ; 
             }
             
             // In test file?
@@ -122,7 +118,6 @@ public class QueryTest extends EarlTestCase
       
       } catch (JenaException jEx)
       {
-          log.debug("JenaException: "+jEx.getMessage()) ;
           fail("JenaException creating data source: "+jEx.getMessage()) ;
           return null ;
       }
@@ -194,7 +189,6 @@ public class QueryTest extends EarlTestCase
         catch (NullPointerException ex) { throw ex ; }
         catch (Exception ex)
         {
-            log.debug("Exception: "+ex.getMessage(),ex) ;
             ex.printStackTrace(System.err) ;
             fail( "Exception: "+ex.getClass().getName()+": "+ex.getMessage()) ;
         }
@@ -226,7 +220,6 @@ public class QueryTest extends EarlTestCase
             assertTrue("Results do not match: "+testItem.getName(), b) ;
         } catch (Exception ex)
         {
-            log.warn("Exception in result testing", ex) ;
             fail("Exception in result testing: "+ex) ;
         }
     }
@@ -283,8 +276,7 @@ public class QueryTest extends EarlTestCase
                 }
             } catch (Exception ex)
             {
-                log.warn("Exception in result testing (construct)", ex) ;
-                fail("Exception in result testing: "+ex) ;
+                fail("Exception in result testing (construct): "+ex) ;
             }
         }
     }
@@ -303,8 +295,7 @@ public class QueryTest extends EarlTestCase
                 }
             } catch (Exception ex)
             {
-                log.warn("Exception in result testing (describe)", ex) ;
-                fail("Exception in result testing: "+ex) ;
+                fail("Exception in result testing (describe): "+ex) ;
             }
         }
     }
