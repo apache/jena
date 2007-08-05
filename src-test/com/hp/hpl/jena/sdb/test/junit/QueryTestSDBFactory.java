@@ -15,8 +15,8 @@ import junit.framework.TestSuite;
 import com.hp.hpl.jena.query.Syntax;
 import com.hp.hpl.jena.rdf.model.Resource;
 
+import com.hp.hpl.jena.sdb.Store;
 import com.hp.hpl.jena.sdb.shared.StoreList;
-import com.hp.hpl.jena.sdb.store.Store;
 import com.hp.hpl.jena.sdb.util.Pair;
 
 import com.hp.hpl.jena.sparql.core.DataFormat;
