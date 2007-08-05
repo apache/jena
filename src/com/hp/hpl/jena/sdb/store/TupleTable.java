@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package dev.inf;
+package com.hp.hpl.jena.sdb.store;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -25,8 +25,6 @@ import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlTable;
 import com.hp.hpl.jena.sdb.sql.ResultSetJDBC;
 import com.hp.hpl.jena.sdb.sql.SDBExceptionSQL;
-import com.hp.hpl.jena.sdb.store.SQLBridge;
-import com.hp.hpl.jena.sdb.store.TableDesc;
 import com.hp.hpl.jena.sdb.util.Iter;
 
 public class TupleTable

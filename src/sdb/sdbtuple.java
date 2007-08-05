@@ -17,9 +17,10 @@ import arq.cmdline.ModBase;
 
 import com.hp.hpl.jena.sdb.Store;
 import com.hp.hpl.jena.sdb.store.TableDesc;
+import com.hp.hpl.jena.sdb.store.TupleTable;
+
 import com.hp.hpl.jena.sparql.util.Utils;
 
-import dev.inf.TupleTable;
 
 public class sdbtuple extends CmdArgsDB
 {

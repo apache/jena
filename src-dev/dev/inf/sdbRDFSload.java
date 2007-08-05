@@ -25,6 +25,7 @@ import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.sql.SDBExceptionSQL;
 import com.hp.hpl.jena.sdb.store.TableDesc;
 import com.hp.hpl.jena.sdb.store.TupleLoader;
+import com.hp.hpl.jena.sdb.store.TupleTable;
 import com.hp.hpl.jena.sdb.util.Pair;
 
 public class sdbRDFSload
