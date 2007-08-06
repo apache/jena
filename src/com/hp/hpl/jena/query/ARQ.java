@@ -9,6 +9,7 @@ package com.hp.hpl.jena.query;
 import com.hp.hpl.jena.sparql.ARQConstants;
 import com.hp.hpl.jena.sparql.util.Context;
 import com.hp.hpl.jena.sparql.util.Symbol;
+import com.hp.hpl.jena.sparql.engine.optimizer.Optimizer;
 
 /** ARQ - miscellaneous settings
  * 
@@ -168,6 +169,9 @@ public class ARQ
             return ;
         initialized = true ;
         globalContext = defaultSettings() ;
+        
+        // Markus Stocker 08/06/2007
+        Optimizer.enable() ;
     }
     
     private static Context defaultSettings()    
