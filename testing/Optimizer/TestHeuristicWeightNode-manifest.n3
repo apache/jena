@@ -1,0 +1,67 @@
+@prefix dc:		<http://purl.org/dc/elements/1.1/> .
+@prefix rdf:	<http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix :		<http://www.w3.org/2006/03/test-description#> .
+
+<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TC001> 
+	rdf:type 		:TestCase ;
+	dc:contributor 	"Markus Stocker" ;
+	dc:title 		"TC001" ;
+	:heuristic		"BGP_VARIABLE_COUNTING" ;
+	:node			"?s1 ?p1 ?o1" ;
+	:weight	 		"1.0" .
+	
+<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TC002> 
+	rdf:type 		:TestCase ;
+	dc:contributor 	"Markus Stocker" ;
+	dc:title 		"TC002" ;
+	:heuristic		"BGP_VARIABLE_COUNTING" ;
+	:node			":s1 ?p1 ?o1" ;
+	:weight	 		"0.5" .
+	
+<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TC003> 
+	rdf:type 		:TestCase ;
+	dc:contributor 	"Markus Stocker" ;
+	dc:title 		"TC003" ;
+	:heuristic		"BGP_VARIABLE_COUNTING" ;
+	:node			"?s1 :p1 ?o1" ;
+	:weight	 		"0.8333333333333334" .
+	
+<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TC004> 
+	rdf:type 		:TestCase ;
+	dc:contributor 	"Markus Stocker" ;
+	dc:title 		"TC004" ;
+	:heuristic		"BGP_VARIABLE_COUNTING" ;
+	:node			"?s1 ?p1 :o1" ;
+	:weight	 		"0.6666666666666666" .
+	
+<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TC005> 
+	rdf:type 		:TestCase ;
+	dc:contributor 	"Markus Stocker" ;
+	dc:title 		"TC005" ;
+	:heuristic		"BGP_VARIABLE_COUNTING" ;
+	:node			":s1 :p1 ?o1" ;
+	:weight	 		"0.3333333333333333" .
+	
+<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TC006> 
+	rdf:type 		:TestCase ;
+	dc:contributor 	"Markus Stocker" ;
+	dc:title 		"TC006" ;
+	:heuristic		"BGP_VARIABLE_COUNTING" ;
+	:node			":s1 ?p1 :o1" ;
+	:weight	 		"0.16666666666666666" .
+	
+<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TC007> 
+	rdf:type 		:TestCase ;
+	dc:contributor 	"Markus Stocker" ;
+	dc:title 		"TC007" ;
+	:heuristic		"BGP_VARIABLE_COUNTING" ;
+	:node			"?s1 :p1 :o1" ;
+	:weight	 		"0.5" .
+	
+<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TC008> 
+	rdf:type 		:TestCase ;
+	dc:contributor 	"Markus Stocker" ;
+	dc:title 		"TC008" ;
+	:heuristic		"BGP_VARIABLE_COUNTING" ;
+	:node			":s1 :p1 :o1" ;
+	:weight	 		"0.0" .	  			      			  		      			  				      			  

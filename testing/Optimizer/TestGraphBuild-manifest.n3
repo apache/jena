@@ -1,0 +1,824 @@
+@prefix dc:		<http://purl.org/dc/elements/1.1/> .
+@prefix rdf:	<http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix :		<http://www.w3.org/2006/03/test-description#> .
+
+<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TA001> 
+	rdf:type 		:TestCase ;
+	dc:contributor 	"Markus Stocker" ;
+	dc:title 		"TA001" ;
+	:pattern		[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	"?S1 ?P1 ?O1" ] ;
+	:graph			[ rdf:type 	rdf:Seq ;
+				      rdf:_1 	[ :nodes	"1" ;
+				      			  :edges 	"0" ]] .
+				      			  
+<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TA002> 
+	rdf:type 		:TestCase ;
+	dc:contributor 	"Markus Stocker" ;
+	dc:title 		"TA002" ;
+	:pattern		[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	"?s1 ?p1 ?o1" ] ;
+	:graph			[ rdf:type 	rdf:Seq ;
+				      rdf:_1 	[ :nodes	"1" ;
+				      			  :edges 	"0" ]] .
+				      			  
+<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TA003> 
+	rdf:type 		:TestCase ;
+	dc:contributor 	"Markus Stocker" ;
+	dc:title 		"TA003" ;
+	:pattern		[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	"?S1 ?P1 ?O1" ;
+				  	  rdf:_2	"?S2 ?P2 ?O2" ] ;
+	:graph			[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1 	[ :nodes	"1" ;
+				  				  :edges 	"0" ] ;
+				  	  rdf:_2	[ :nodes	"1" ;
+				   				  :edges	"0" ]] .
+				      			  
+<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TA004> 
+	rdf:type 		:TestCase ;
+	dc:contributor 	"Markus Stocker" ;
+	dc:title 		"TA004" ;
+	:pattern		[ rdf:type 	rdf:Seq ;
+					  rdf:_1	"?s1 ?p1 ?o1" ;
+					  rdf:_2	"?s2 ?p2 ?o2" ] ;
+	:graph			[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1 	[ :nodes	"1" ;
+				   				  :edges 	"0" ] ;
+				  	  rdf:_2	[ :nodes	"1" ;
+				   				  :edges	"0" ]] .
+				      			  
+<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TA005> 
+	rdf:type 		:TestCase ;
+	dc:contributor 	"Markus Stocker" ;
+	dc:title 		"TA005" ;
+	:pattern		[ rdf:type 	rdf:Seq ;
+					  rdf:_1	"?s1 ?p1 ?o1" ;
+					  rdf:_2	"?s1 ?p2 ?o2" ] ;
+	:graph			[ rdf:type 	rdf:Seq ;
+				      rdf:_1 	[ :nodes	"2" ;
+				      			  :edges 	"1" ]] .
+				      			  
+<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TA006> 
+	rdf:type 		:TestCase ;
+	dc:contributor 	"Markus Stocker" ;
+	dc:title 		"TA006" ;
+	:pattern		[ rdf:type 	rdf:Seq ;
+					  rdf:_1	"?s1 ?p1 ?o1" ;
+					  rdf:_2	"?s2 ?s1 ?o2" ] ;
+	:graph			[ rdf:type 	rdf:Seq ;
+				      rdf:_1 	[ :nodes	"2" ;
+				      			  :edges 	"1" ]] .
+				      			  
+<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TA007> 
+	rdf:type 		:TestCase ;
+	dc:contributor 	"Markus Stocker" ;
+	dc:title 		"TA007" ;
+	:pattern		[ rdf:type 	rdf:Seq ;
+					  rdf:_1	"?s1 ?p1 ?o1" ;
+					  rdf:_2	"?s2 ?p2 ?s1" ] ;
+	:graph			[ rdf:type 	rdf:Seq ;
+				      rdf:_1 	[ :nodes	"2" ;
+				      			  :edges 	"1" ]] .
+				
+<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TA008> 
+	rdf:type 		:TestCase ;
+	dc:contributor 	"Markus Stocker" ;
+	dc:title 		"TA008" ;
+	:pattern		[ rdf:type 	rdf:Seq ;
+					  rdf:_1	"?s1 ?p1 ?o1" ;
+					  rdf:_2	"?p1 ?p2 ?o2" ] ;
+	:graph			[ rdf:type 	rdf:Seq ;
+				      rdf:_1 	[ :nodes	"2" ;
+				      			  :edges 	"1" ]] .
+				      			  
+<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TA009> 
+	rdf:type 		:TestCase ;
+	dc:contributor 	"Markus Stocker" ;
+	dc:title 		"TA009" ;
+	:pattern		[ rdf:type 	rdf:Seq ;
+					  rdf:_1	"?s1 ?p1 ?o1" ;
+					  rdf:_2	"?s2 ?p1 ?o2" ] ;
+	:graph			[ rdf:type 	rdf:Seq ;
+				      rdf:_1 	[ :nodes	"2" ;
+				      			  :edges 	"1" ]] .
+
+<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TA010> 
+	rdf:type 		:TestCase ;
+	dc:contributor 	"Markus Stocker" ;
+	dc:title 		"TA010" ;
+	:pattern		[ rdf:type 	rdf:Seq ;
+					  rdf:_1	"?s1 ?p1 ?o1" ;
+					  rdf:_2	"?s2 ?p2 ?p1" ] ;
+	:graph			[ rdf:type 	rdf:Seq ;
+				      rdf:_1 	[ :nodes	"2" ;
+				      			  :edges 	"1" ]] .
+				      			  
+<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TA011> 
+	rdf:type 		:TestCase ;
+	dc:contributor 	"Markus Stocker" ;
+	dc:title 		"TA011" ;
+	:pattern		[ rdf:type 	rdf:Seq ;
+					  rdf:_1	"?s1 ?p1 ?o1" ;
+					  rdf:_2	"?o1 ?p2 ?o2" ] ;
+	:graph			[ rdf:type 	rdf:Seq ;
+				      rdf:_1 	[ :nodes	"2" ;
+				      			  :edges 	"1" ]] .
+				      			  
+<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TA012> 
+	rdf:type 		:TestCase ;
+	dc:contributor 	"Markus Stocker" ;
+	dc:title 		"TA012" ;
+	:pattern		[ rdf:type 	rdf:Seq ;
+					  rdf:_1	"?s1 ?p1 ?o1" ;
+					  rdf:_2	"?s2 ?o1 ?o2" ] ;
+	:graph			[ rdf:type 	rdf:Seq ;
+				      rdf:_1 	[ :nodes	"2" ;
+				      			  :edges 	"1" ]] .
+				      			  
+<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TA013> 
+	rdf:type 		:TestCase ;
+	dc:contributor 	"Markus Stocker" ;
+	dc:title 		"TA013" ;
+	:pattern		[ rdf:type 	rdf:Seq ;
+					  rdf:_1	"?s1 ?p1 ?o1" ;
+					  rdf:_2	"?s2 ?p2 ?o1" ] ;
+	:graph			[ rdf:type 	rdf:Seq ;
+				      rdf:_1 	[ :nodes	"2" ;
+				      			  :edges 	"1" ]] .
+				      			  
+<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TA014> 
+	rdf:type 		:TestCase ;
+	dc:contributor 	"Markus Stocker" ;
+	dc:title 		"TA014" ;
+	:pattern		[ rdf:type 	rdf:Seq ;
+					  rdf:_1	"?s1 ?p1 ?o1" ;
+					  rdf:_2	"?s2 :p2 ?o2" ;
+					  rdf:_3	"?s3 :p3 ?o3" ] ;
+	:graph			[ rdf:type 	rdf:Seq ;
+				      rdf:_1 	[ :nodes	"1" ;
+				      			  :edges 	"0" ] ;
+				      rdf:_2 	[ :nodes	"1" ;
+				      			  :edges 	"0" ] ;
+				      rdf:_3 	[ :nodes	"1" ;
+				      			  :edges 	"0" ]] .
+				      			  
+<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TA015> 
+	rdf:type 		:TestCase ;
+	dc:contributor 	"Markus Stocker" ;
+	dc:title 		"TA015" ;
+	:pattern		[ rdf:type 	rdf:Seq ;
+					  rdf:_1	"?s1 ?p1 ?o1" ;
+					  rdf:_2	"?s2 :p2 ?s1" ;
+					  rdf:_3	"?s3 :p3 ?o3" ] ;
+	:graph			[ rdf:type 	rdf:Seq ;
+				      rdf:_1 	[ :nodes	"2" ;
+				      			  :edges 	"1" ] ;
+				      rdf:_2 	[ :nodes	"1" ;
+				      			  :edges 	"0" ]] .
+				      			  
+<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TA016> 
+	rdf:type 		:TestCase ;
+	dc:contributor 	"Markus Stocker" ;
+	dc:title 		"TA016" ;
+	:pattern		[ rdf:type 	rdf:Seq ;
+					  rdf:_1	"?s1 ?p1 ?o1" ;
+					  rdf:_2	"?o1 :p2 ?o2" ;
+					  rdf:_3	"?s2 :p3 ?o3" ] ;
+	:graph			[ rdf:type 	rdf:Seq ;
+				      rdf:_1 	[ :nodes	"2" ;
+				      			  :edges 	"1" ] ;
+				      rdf:_2 	[ :nodes	"1" ;
+				      			  :edges 	"0" ]] .
+				      			  
+<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TA017> 
+	rdf:type 		:TestCase ;
+	dc:contributor 	"Markus Stocker" ;
+	dc:title 		"TA017" ;
+	:pattern		[ rdf:type 	rdf:Seq ;
+					  rdf:_1	"?s1 ?p1 ?o1" ;
+					  rdf:_2	"?s2 :p2 ?o1" ;
+					  rdf:_3	"?s3 :p3 ?o2" ] ;
+	:graph			[ rdf:type 	rdf:Seq ;
+				      rdf:_1 	[ :nodes	"2" ;
+				      			  :edges 	"1" ] ;
+				      rdf:_2 	[ :nodes	"1" ;
+				      			  :edges 	"0" ]] .
+				      			  
+<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TA018> 
+	rdf:type 		:TestCase ;
+	dc:contributor 	"Markus Stocker" ;
+	dc:title 		"TA018" ;
+	:pattern		[ rdf:type 	rdf:Seq ;
+					  rdf:_1	"?s1 ?p1 ?o1" ;
+					  rdf:_2	"?s2 :p2 ?o2" ;
+					  rdf:_3	"?s2 :p3 ?o3" ] ;
+	:graph			[ rdf:type 	rdf:Seq ;
+				      rdf:_1 	[ :nodes	"1" ;
+				      			  :edges 	"0" ] ;
+				      rdf:_2 	[ :nodes	"2" ;
+				      			  :edges 	"1" ]] .
+				      			  
+<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TA019> 
+	rdf:type 		:TestCase ;
+	dc:contributor 	"Markus Stocker" ;
+	dc:title 		"TA019" ;
+	:pattern		[ rdf:type 	rdf:Seq ;
+					  rdf:_1	"?s1 ?p1 ?o1" ;
+					  rdf:_2	"?s2 :p2 ?o2" ;
+					  rdf:_3	"?s3 :p3 ?s2" ] ;
+	:graph			[ rdf:type 	rdf:Seq ;
+				      rdf:_1 	[ :nodes	"1" ;
+				      			  :edges 	"0" ] ;
+				      rdf:_2 	[ :nodes	"2" ;
+				      			  :edges 	"1" ]] .
+				      			  
+<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TA020> 
+	rdf:type 		:TestCase ;
+	dc:contributor 	"Markus Stocker" ;
+	dc:title 		"TA020" ;
+	:pattern		[ rdf:type 	rdf:Seq ;
+					  rdf:_1	"?s1 ?p1 ?o1" ;
+					  rdf:_2	"?s2 :p2 ?o2" ;
+					  rdf:_3	"?o2 :p3 ?o3" ] ;
+	:graph			[ rdf:type 	rdf:Seq ;
+				      rdf:_1 	[ :nodes	"1" ;
+				      			  :edges 	"0" ] ;
+				      rdf:_2 	[ :nodes	"2" ;
+				      			  :edges 	"1" ]] .
+				      			  
+<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TA021> 
+	rdf:type 		:TestCase ;
+	dc:contributor 	"Markus Stocker" ;
+	dc:title 		"TA021" ;
+	:pattern		[ rdf:type 	rdf:Seq ;
+					  rdf:_1	"?s1 ?p1 ?o1" ;
+					  rdf:_2	"?s2 :p2 ?o2" ;
+					  rdf:_3	"?s3 :p3 ?o2" ] ;
+	:graph			[ rdf:type 	rdf:Seq ;
+				      rdf:_1 	[ :nodes	"1" ;
+				      			  :edges 	"0" ] ;
+				      rdf:_2 	[ :nodes	"2" ;
+				      			  :edges 	"1" ]] .
+				      			  
+<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TA022> 
+	rdf:type 		:TestCase ;
+	dc:contributor 	"Markus Stocker" ;
+	dc:title 		"TA022" ;
+	:pattern		[ rdf:type 	rdf:Seq ;
+					  rdf:_1	"?s1 ?p1 ?o1" ;
+					  rdf:_2	"?s2 :p2 ?o2" ;
+					  rdf:_3	"?s1 :p3 ?o3" ] ;
+	:graph			[ rdf:type 	rdf:Seq ;
+				      rdf:_1 	[ :nodes	"2" ;
+				      			  :edges 	"1" ] ;
+				      rdf:_2 	[ :nodes	"1" ;
+				      			  :edges 	"0" ]] .
+				      			  
+<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TA023> 
+	rdf:type 		:TestCase ;
+	dc:contributor 	"Markus Stocker" ;
+	dc:title 		"TA023" ;
+	:pattern		[ rdf:type 	rdf:Seq ;
+					  rdf:_1	"?s1 ?p1 ?o1" ;
+					  rdf:_2	"?s2 :p2 ?o2" ;
+					  rdf:_3	"?s3 :p3 ?s1" ] ;
+	:graph			[ rdf:type 	rdf:Seq ;
+				      rdf:_1 	[ :nodes	"2" ;
+				      			  :edges 	"1" ] ;
+				      rdf:_2 	[ :nodes	"1" ;
+				      			  :edges 	"0" ]] .
+				      			  
+<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TA024> 
+	rdf:type 		:TestCase ;
+	dc:contributor 	"Markus Stocker" ;
+	dc:title 		"TA024" ;
+	:pattern		[ rdf:type 	rdf:Seq ;
+					  rdf:_1	"?s1 ?p1 ?o1" ;
+					  rdf:_2	"?s2 :p2 ?o2" ;
+					  rdf:_3	"?o1 :p3 ?o3" ] ;
+	:graph			[ rdf:type 	rdf:Seq ;
+				      rdf:_1 	[ :nodes	"2" ;
+				      			  :edges 	"1" ] ;
+				      rdf:_2 	[ :nodes	"1" ;
+				      			  :edges 	"0" ]] .
+				      			  
+<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TA025> 
+	rdf:type 		:TestCase ;
+	dc:contributor 	"Markus Stocker" ;
+	dc:title 		"TA025" ;
+	:pattern		[ rdf:type 	rdf:Seq ;
+					  rdf:_1	"?s1 ?p1 ?o1" ;
+					  rdf:_2	"?s2 :p2 ?o2" ;
+					  rdf:_3	"?s3 :p3 ?o1" ] ;
+	:graph			[ rdf:type 	rdf:Seq ;
+				      rdf:_1 	[ :nodes	"2" ;
+				      			  :edges 	"1" ] ;
+				      rdf:_2 	[ :nodes	"1" ;
+				      			  :edges 	"0" ]] .
+				      			  
+<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TA026> 
+	rdf:type 		:TestCase ;
+	dc:contributor 	"Markus Stocker" ;
+	dc:title 		"TA026" ;
+	:pattern		[ rdf:type 	rdf:Seq ;
+					  rdf:_1	"?s1 ?p1 ?o1" ;
+					  rdf:_2	"?s1 :p2 ?o2" ;
+					  rdf:_3	"?s1 :p3 ?o3" ] ;
+	:graph			[ rdf:type 	rdf:Seq ;
+				      rdf:_1 	[ :nodes	"3" ;
+				      			  :edges 	"3" ]] .
+				      			  
+<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TA027> 
+	rdf:type 		:TestCase ;
+	dc:contributor 	"Markus Stocker" ;
+	dc:title 		"TA027" ;
+	:pattern		[ rdf:type 	rdf:Seq ;
+					  rdf:_1	"?s1 ?p1 ?o1" ;
+					  rdf:_2	"?s1 :p2 ?o2" ;
+					  rdf:_3	"?s2 :p3 ?s1" ] ;
+	:graph			[ rdf:type 	rdf:Seq ;
+				      rdf:_1 	[ :nodes	"3" ;
+				      			  :edges 	"3" ]] .
+				      			  
+<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TA028> 
+	rdf:type 		:TestCase ;
+	dc:contributor 	"Markus Stocker" ;
+	dc:title 		"TA028" ;
+	:pattern		[ rdf:type 	rdf:Seq ;
+					  rdf:_1	"?s1 ?p1 ?o1" ;
+					  rdf:_2	"?s2 :p2 ?s1" ;
+					  rdf:_3	"?s1 :p3 ?o3" ] ;
+	:graph			[ rdf:type 	rdf:Seq ;
+				      rdf:_1 	[ :nodes	"3" ;
+				      			  :edges 	"3" ]] .
+				      			  
+<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TA029> 
+	rdf:type 		:TestCase ;
+	dc:contributor 	"Markus Stocker" ;
+	dc:title 		"TA029" ;
+	:pattern		[ rdf:type 	rdf:Seq ;
+					  rdf:_1	"?s1 :p1 ?o1" ;
+					  rdf:_2	"?s2 :p2 ?s1" ;
+					  rdf:_3	"?s3 :p3 ?s1" ] ;
+	:graph			[ rdf:type 	rdf:Seq ;
+				      rdf:_1 	[ :nodes	"3" ;
+				      			  :edges 	"3" ]] .
+				   
+<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TA030> 
+	rdf:type 		:TestCase ;
+	dc:contributor 	"Markus Stocker" ;
+	dc:title 		"TA030" ;
+	:pattern		[ rdf:type 	rdf:Seq ;
+					  rdf:_1	"?s1 :p1 ?o1" ;
+					  rdf:_2	"?o1 :p2 ?o2" ;
+					  rdf:_3	"?o1 :p3 ?o3" ] ;
+	:graph			[ rdf:type 	rdf:Seq ;
+				      rdf:_1 	[ :nodes	"3" ;
+				      			  :edges 	"3" ]] .
+				      			  
+<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TA031> 
+	rdf:type 		:TestCase ;
+	dc:contributor 	"Markus Stocker" ;
+	dc:title 		"TA031" ;
+	:pattern		[ rdf:type 	rdf:Seq ;
+					  rdf:_1	"?s1 :p1 ?o1" ;
+					  rdf:_2	"?o1 :p2 ?o2" ;
+					  rdf:_3	"?s3 :p3 ?o1" ] ;
+	:graph			[ rdf:type 	rdf:Seq ;
+				      rdf:_1 	[ :nodes	"3" ;
+				      			  :edges 	"3" ]] .
+				      			  
+<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TA032> 
+	rdf:type 		:TestCase ;
+	dc:contributor 	"Markus Stocker" ;
+	dc:title 		"TA032" ;
+	:pattern		[ rdf:type 	rdf:Seq ;
+					  rdf:_1	"?s1 :p1 ?o1" ;
+					  rdf:_2	"?s2 :p2 ?o1" ;
+					  rdf:_3	"?s3 :p3 ?o1" ] ;
+	:graph			[ rdf:type 	rdf:Seq ;
+				      rdf:_1 	[ :nodes	"3" ;
+				      			  :edges 	"3" ]] .
+				      			  
+<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TA033> 
+	rdf:type 		:TestCase ;
+	dc:contributor 	"Markus Stocker" ;
+	dc:title 		"TA033" ;
+	:pattern		[ rdf:type 	rdf:Seq ;
+					  rdf:_1	"?s1 :p1 ?o1" ;
+					  rdf:_2	"?s1 :p2 ?o2" ;
+					  rdf:_3	"?o2 :p3 ?o3" ] ;
+	:graph			[ rdf:type 	rdf:Seq ;
+				      rdf:_1 	[ :nodes	"3" ;
+				      			  :edges 	"2" ]] .
+				      			  
+<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TA034> 
+	rdf:type 		:TestCase ;
+	dc:contributor 	"Markus Stocker" ;
+	dc:title 		"TA034" ;
+	:pattern		[ rdf:type 	rdf:Seq ;
+					  rdf:_1	"?s1 :p1 ?o1" ;
+					  rdf:_2	"?o1 :p2 ?o2" ;
+					  rdf:_3	"?o2 :p3 ?o3" ] ;
+	:graph			[ rdf:type 	rdf:Seq ;
+				      rdf:_1 	[ :nodes	"3" ;
+				      			  :edges 	"2" ]] .
+				      			  
+<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TA035> 
+	rdf:type 		:TestCase ;
+	dc:contributor 	"Markus Stocker" ;
+	dc:title 		"TA035" ;
+	:pattern		[ rdf:type 	rdf:Seq ;
+					  rdf:_1	"?s1 :p1 ?o1" ;
+					  rdf:_2	"?s1 :p2 ?o2" ;
+					  rdf:_3	"?s3 :p3 ?o2" ] ;
+	:graph			[ rdf:type 	rdf:Seq ;
+				      rdf:_1 	[ :nodes	"3" ;
+				      			  :edges 	"2" ]] .
+				      			  
+<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TA036> 
+	rdf:type 		:TestCase ;
+	dc:contributor 	"Markus Stocker" ;
+	dc:title 		"TA036" ;
+	:pattern		[ rdf:type 	rdf:Seq ;
+					  rdf:_1	"?s1 :p1 ?o1" ;
+					  rdf:_2	"?o1 :p2 ?o2 " ;
+					  rdf:_3	"?s3 :p3 ?o2" ] ;
+	:graph			[ rdf:type 	rdf:Seq ;
+				      rdf:_1 	[ :nodes	"3" ;
+				      			  :edges 	"2" ]] .
+				      			  
+<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TA037> 
+	rdf:type 		:TestCase ;
+	dc:contributor 	"Markus Stocker" ;
+	dc:title 		"TA037" ;
+	:pattern		[ rdf:type 	rdf:Seq ;
+					  rdf:_1	"?s1 :p1 ?o1" ;
+					  rdf:_2	"?s2 :p2 ?o2" ;
+					  rdf:_3	"?s3 :p3 ?o3" ;
+					  rdf:_4	"?s4 :p4 ?o4" ] ;
+	:graph			[ rdf:type 	rdf:Seq ;
+				      rdf:_1 	[ :nodes	"1" ;
+				      			  :edges 	"0" ] ;
+				      rdf:_2 	[ :nodes	"1" ;
+				      			  :edges 	"0" ] ;
+				      rdf:_3 	[ :nodes	"1" ;
+				      			  :edges 	"0" ] ;
+				      rdf:_4 	[ :nodes	"1" ;
+				      			  :edges 	"0" ]] .
+				      			  
+<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TA038> 
+	rdf:type 		:TestCase ;
+	dc:contributor 	"Markus Stocker" ;
+	dc:title 		"TA038" ;
+	:pattern		[ rdf:type 	rdf:Seq ;
+					  rdf:_1	"?s1 :p1 ?o1" ;
+					  rdf:_2	"?s1 :p2 ?o2" ;
+					  rdf:_3	"?s3 :p3 ?o3" ;
+					  rdf:_4	"?s4 :p4 ?o4" ] ;
+	:graph			[ rdf:type 	rdf:Seq ;
+				      rdf:_1 	[ :nodes	"2" ;
+				      			  :edges 	"1" ] ;
+				      rdf:_2 	[ :nodes	"1" ;
+				      			  :edges 	"0" ] ;
+				      rdf:_3 	[ :nodes	"1" ;
+				      			  :edges 	"0" ]] .
+				      			  
+<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TA039> 
+	rdf:type 		:TestCase ;
+	dc:contributor 	"Markus Stocker" ;
+	dc:title 		"TA039" ;
+	:pattern		[ rdf:type 	rdf:Seq ;
+					  rdf:_1	"?s1 :p1 ?o1" ;
+					  rdf:_2	"?s2 :p2 ?s1" ;
+					  rdf:_3	"?s3 :p3 ?o3" ;
+					  rdf:_4	"?s4 :p4 ?o4" ] ;
+	:graph			[ rdf:type 	rdf:Seq ;
+				      rdf:_1 	[ :nodes	"2" ;
+				      			  :edges 	"1" ] ;
+				      rdf:_2 	[ :nodes	"1" ;
+				      			  :edges 	"0" ] ;
+				      rdf:_3 	[ :nodes	"1" ;
+				      			  :edges 	"0" ]] .
+				      			  
+<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TA040> 
+	rdf:type 		:TestCase ;
+	dc:contributor 	"Markus Stocker" ;
+	dc:title 		"TA040" ;
+	:pattern		[ rdf:type 	rdf:Seq ;
+					  rdf:_1	"?s1 :p1 ?o1" ;
+					  rdf:_2	"?o1 :p2 ?o2" ;
+					  rdf:_3	"?s3 :p3 ?o3" ;
+					  rdf:_4	"?s4 :p4 ?o4" ] ;
+	:graph			[ rdf:type 	rdf:Seq ;
+				      rdf:_1 	[ :nodes	"2" ;
+				      			  :edges 	"1" ] ;
+				      rdf:_2 	[ :nodes	"1" ;
+				      			  :edges 	"0" ] ;
+				      rdf:_3 	[ :nodes	"1" ;
+				      			  :edges 	"0" ]] .
+				      			  
+<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TA041> 
+	rdf:type 		:TestCase ;
+	dc:contributor 	"Markus Stocker" ;
+	dc:title 		"TA041" ;
+	:pattern		[ rdf:type 	rdf:Seq ;
+					  rdf:_1	"?s1 :p1 ?o1" ;
+					  rdf:_2	"?s2 :p2 ?o1" ;
+					  rdf:_3	"?s3 :p3 ?o3" ;
+					  rdf:_4	"?s4 :p4 ?o4" ] ;
+	:graph			[ rdf:type 	rdf:Seq ;
+				      rdf:_1 	[ :nodes	"2" ;
+				      			  :edges 	"1" ] ;
+				      rdf:_2 	[ :nodes	"1" ;
+				      			  :edges 	"0" ] ;
+				      rdf:_3 	[ :nodes	"1" ;
+				      			  :edges 	"0" ]] .
+				      			  
+<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TA042> 
+	rdf:type 		:TestCase ;
+	dc:contributor 	"Markus Stocker" ;
+	dc:title 		"TA042" ;
+	:pattern		[ rdf:type 	rdf:Seq ;
+					  rdf:_1	"?s1 :p1 ?o1" ;
+					  rdf:_2	"?s2 :p2 ?o2" ;
+					  rdf:_3	"?s1 :p3 ?o3" ;
+					  rdf:_4	"?s4 :p4 ?o4" ] ;
+	:graph			[ rdf:type 	rdf:Seq ;
+				      rdf:_1 	[ :nodes	"2" ;
+				      			  :edges 	"1" ] ;
+				      rdf:_2 	[ :nodes	"1" ;
+				      			  :edges 	"0" ] ;
+				      rdf:_3 	[ :nodes	"1" ;
+				      			  :edges 	"0" ]] .
+				      			  
+<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TA043> 
+	rdf:type 		:TestCase ;
+	dc:contributor 	"Markus Stocker" ;
+	dc:title 		"TA043" ;
+	:pattern		[ rdf:type 	rdf:Seq ;
+					  rdf:_1	"?s1 :p1 ?o1" ;
+					  rdf:_2	"?s2 :p2 ?o2" ;
+					  rdf:_3	"?s3 :p3 ?s1" ;
+					  rdf:_4	"?s4 :p4 ?o4" ] ;
+	:graph			[ rdf:type 	rdf:Seq ;
+				      rdf:_1 	[ :nodes	"2" ;
+				      			  :edges 	"1" ] ;
+				      rdf:_2 	[ :nodes	"1" ;
+				      			  :edges 	"0" ] ;
+				      rdf:_3 	[ :nodes	"1" ;
+				      			  :edges 	"0" ]] .
+				      			  
+<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TA044> 
+	rdf:type 		:TestCase ;
+	dc:contributor 	"Markus Stocker" ;
+	dc:title 		"TA044" ;
+	:pattern		[ rdf:type 	rdf:Seq ;
+					  rdf:_1	"?s1 :p1 ?o1" ;
+					  rdf:_2	"?s2 :p2 ?o2" ;
+					  rdf:_3	"?o1 :p3 ?o3" ;
+					  rdf:_4	"?s4 :p4 ?o4" ] ;
+	:graph			[ rdf:type 	rdf:Seq ;
+				      rdf:_1 	[ :nodes	"2" ;
+				      			  :edges 	"1" ] ;
+				      rdf:_2 	[ :nodes	"1" ;
+				      			  :edges 	"0" ] ;
+				      rdf:_3 	[ :nodes	"1" ;
+				      			  :edges 	"0" ]] .
+				      			  
+<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TA045> 
+	rdf:type 		:TestCase ;
+	dc:contributor 	"Markus Stocker" ;
+	dc:title 		"TA045" ;
+	:pattern		[ rdf:type 	rdf:Seq ;
+					  rdf:_1	"?s1 :p1 ?o1" ;
+					  rdf:_2	"?s2 :p2 ?o2" ;
+					  rdf:_3	"?s3 :p3 ?o1" ;
+					  rdf:_4	"?s4 :p4 ?o4" ] ;
+	:graph			[ rdf:type 	rdf:Seq ;
+				      rdf:_1 	[ :nodes	"2" ;
+				      			  :edges 	"1" ] ;
+				      rdf:_2 	[ :nodes	"1" ;
+				      			  :edges 	"0" ] ;
+				      rdf:_3 	[ :nodes	"1" ;
+				      			  :edges 	"0" ]] .
+				      			  
+<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TA046> 
+	rdf:type 		:TestCase ;
+	dc:contributor 	"Markus Stocker" ;
+	dc:title 		"TA046" ;
+	:pattern		[ rdf:type 	rdf:Seq ;
+					  rdf:_1	"?s1 :p1 ?o1" ;
+					  rdf:_2	"?s2 :p2 ?o2" ;
+					  rdf:_3	"?s3 :p3 ?o3" ;
+					  rdf:_4	"?s2 :p4 ?o4" ] ;
+	:graph			[ rdf:type 	rdf:Seq ;
+				      rdf:_1 	[ :nodes	"1" ;
+				      			  :edges 	"0" ] ;
+				      rdf:_2 	[ :nodes	"2" ;
+				      			  :edges 	"1" ] ;
+				      rdf:_3 	[ :nodes	"1" ;
+				      			  :edges 	"0" ]] .
+				      			  
+<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TA047> 
+	rdf:type 		:TestCase ;
+	dc:contributor 	"Markus Stocker" ;
+	dc:title 		"TA047" ;
+	:pattern		[ rdf:type 	rdf:Seq ;
+					  rdf:_1	"?s1 :p1 ?o1" ;
+					  rdf:_2	"?s2 :p2 ?o2" ;
+					  rdf:_3	"?s3 :p3 ?o3" ;
+					  rdf:_4	"?s4 :p4 ?s2" ] ;
+	:graph			[ rdf:type 	rdf:Seq ;
+				      rdf:_1 	[ :nodes	"1" ;
+				      			  :edges 	"0" ] ;
+				      rdf:_2 	[ :nodes	"2" ;
+				      			  :edges 	"1" ] ;
+				      rdf:_3 	[ :nodes	"1" ;
+				      			  :edges 	"0" ]] .
+				      			  
+<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TA048> 
+	rdf:type 		:TestCase ;
+	dc:contributor 	"Markus Stocker" ;
+	dc:title 		"TA048" ;
+	:pattern		[ rdf:type 	rdf:Seq ;
+					  rdf:_1	"?s1 :p1 ?o1" ;
+					  rdf:_2	"?s2 :p2 ?o2" ;
+					  rdf:_3	"?s3 :p3 ?o3" ;
+					  rdf:_4	"?o2 :p4 ?o4" ] ;
+	:graph			[ rdf:type 	rdf:Seq ;
+				      rdf:_1 	[ :nodes	"1" ;
+				      			  :edges 	"0" ] ;
+				      rdf:_2 	[ :nodes	"2" ;
+				      			  :edges 	"1" ] ;
+				      rdf:_3 	[ :nodes	"1" ;
+				      			  :edges 	"0" ]] .
+				      			  
+<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TA049> 
+	rdf:type 		:TestCase ;
+	dc:contributor 	"Markus Stocker" ;
+	dc:title 		"TA049" ;
+	:pattern		[ rdf:type 	rdf:Seq ;
+					  rdf:_1	"?s1 :p1 ?o1" ;
+					  rdf:_2	"?s2 :p2 ?o2" ;
+					  rdf:_3	"?s3 :p3 ?o3" ;
+					  rdf:_4	"?s4 :p4 ?o2" ] ;
+	:graph			[ rdf:type 	rdf:Seq ;
+				      rdf:_1 	[ :nodes	"1" ;
+				      			  :edges 	"0" ] ;
+				      rdf:_2 	[ :nodes	"2" ;
+				      			  :edges 	"1" ] ;
+				      rdf:_3 	[ :nodes	"1" ;
+				      			  :edges 	"0" ]] .
+				      			  
+<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TA050> 
+	rdf:type 		:TestCase ;
+	dc:contributor 	"Markus Stocker" ;
+	dc:title 		"TA050" ;
+	:pattern		[ rdf:type 	rdf:Seq ;
+					  rdf:_1	"?s1 :p1 ?o1" ;
+					  rdf:_2	"?s1 :p2 ?o2" ;
+					  rdf:_3	"?s3 :p3 ?o3" ;
+					  rdf:_4	"?s3 :p4 ?o4" ] ;
+	:graph			[ rdf:type 	rdf:Seq ;
+				      rdf:_1 	[ :nodes	"2" ;
+				      			  :edges 	"1" ] ;
+				      rdf:_2 	[ :nodes	"2" ;
+				      			  :edges 	"1" ]] .
+				      			  
+<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TA051> 
+	rdf:type 		:TestCase ;
+	dc:contributor 	"Markus Stocker" ;
+	dc:title 		"TA051" ;
+	:pattern		[ rdf:type 	rdf:Seq ;
+					  rdf:_1	"?s1 :p1 ?o1" ;
+					  rdf:_2	"?s1 :p2 ?o2" ;
+					  rdf:_3	"?s3 :p3 ?o3" ;
+					  rdf:_4	"?s4 :p4 ?o3" ] ;
+	:graph			[ rdf:type 	rdf:Seq ;
+				      rdf:_1 	[ :nodes	"2" ;
+				      			  :edges 	"1" ] ;
+				      rdf:_2 	[ :nodes	"2" ;
+				      			  :edges 	"1" ]] .
+				      			  
+<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TA052> 
+	rdf:type 		:TestCase ;
+	dc:contributor 	"Markus Stocker" ;
+	dc:title 		"TA052" ;
+	:pattern		[ rdf:type 	rdf:Seq ;
+					  rdf:_1	"?s1 :p1 ?o1" ;
+					  rdf:_2	"?s1 :p2 ?o2" ;
+					  rdf:_3	"?s3 :p3 ?o3" ;
+					  rdf:_4	"?s1 :p4 ?o3" ] ;
+	:graph			[ rdf:type 	rdf:Seq ;
+				      rdf:_1 	[ :nodes	"4" ;
+				      			  :edges 	"4" ]] .
+				      			  
+<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TA053> 
+	rdf:type 		:TestCase ;
+	dc:contributor 	"Markus Stocker" ;
+	dc:title 		"TA053" ;
+	:pattern	[ rdf:type 	rdf:Seq ;
+					  rdf:_1	"?s1 :p1 ?o1" ;
+					  rdf:_2	"?s2 :p2 ?s1" ;
+					  rdf:_3	"?s3 :p3 ?o3" ;
+					  rdf:_4	"?s1 :p4 ?s3" ] ;
+	:graph			[ rdf:type 	rdf:Seq ;
+				      rdf:_1 	[ :nodes	"4" ;
+				      			  :edges 	"4" ]] .
+				      			  
+<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TA054> 
+	rdf:type 		:TestCase ;
+	dc:contributor 	"Markus Stocker" ;
+	dc:title 		"TA054" ;
+	:pattern		[ rdf:type 	rdf:Seq ;
+					  rdf:_1	"?s1 :p1 ?o1" ;
+					  rdf:_2	"?s2 :p2 ?o2" ;
+					  rdf:_3	"?s3 :p3 ?s1" ;
+					  rdf:_4	"?s2 :p4 ?s3" ] ;
+	:graph			[ rdf:type 	rdf:Seq ;
+				      rdf:_1 	[ :nodes	"4" ;
+				      			  :edges 	"3" ]] .
+				      			  
+<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TA055> 
+	rdf:type 		:TestCase ;
+	dc:contributor 	"Markus Stocker" ;
+	dc:title 		"TA055" ;
+	:pattern		[ rdf:type 	rdf:Seq ;
+					  rdf:_1	"?s1 :p1 ?o1" ;
+					  rdf:_2	"?s2 :p2 ?o2" ;
+					  rdf:_3	"?s3 :p3 ?s1" ;
+					  rdf:_4	"?s3 :p4 ?o4" ] ;
+	:graph			[ rdf:type 	rdf:Seq ;
+				      rdf:_1 	[ :nodes	"3" ;
+				      			  :edges 	"2" ] ;
+				      rdf:_2 	[ :nodes	"1" ;
+				      			  :edges 	"0" ]] .
+				      			  
+<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TA056> 
+	rdf:type 		:TestCase ;
+	dc:contributor 	"Markus Stocker" ;
+	dc:title 		"TA056" ;
+	:pattern		[ rdf:type 	rdf:Seq ;
+					  rdf:_1	"?s1 :p1 ?o1" ;
+					  rdf:_2	"?s2 :p2 ?s4" ;
+					  rdf:_3	"?s3 :p3 ?s2" ;
+					  rdf:_4	"?s4 :p4 ?s1" ] ;
+	:graph			[ rdf:type 	rdf:Seq ;
+				      rdf:_1 	[ :nodes	"4" ;
+				      			  :edges 	"3" ]] .
+				      			  
+<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TA057> 
+	rdf:type 		:TestCase ;
+	dc:contributor 	"Markus Stocker" ;
+	dc:title 		"TA057" ;
+	:pattern		[ rdf:type 	rdf:Seq ;
+					  rdf:_1	":s1 :p1 o1" ;
+					  rdf:_2	":s1 :p2 o2" ] ;
+	:graph			[ rdf:type 	rdf:Seq ;
+				      rdf:_1 	[ :nodes	"2" ;
+				      			  :edges 	"1" ]] .
+				      			  
+<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TA058> 
+	rdf:type 		:TestCase ;
+	dc:contributor 	"Markus Stocker" ;
+	dc:title 		"TA058" ;
+	:pattern		[ rdf:type 	rdf:Seq ;
+					  rdf:_1	":s1 :p1 o1" ;
+					  rdf:_2	":s2 :p2 o2" ] ;
+	:graph			[ rdf:type 	rdf:Seq ;
+				      rdf:_1 	[ :nodes	"1" ;
+				      			  :edges 	"0" ] ;
+				      rdf:_2 	[ :nodes	"1" ;
+				      			  :edges 	"0" ]] .
+				      			  
+<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TA059> 
+	rdf:type 		:TestCase ;
+	dc:contributor 	"Markus Stocker" ;
+	dc:title 		"TA059" ;
+	:pattern		[ rdf:type 	rdf:Seq ;
+					  rdf:_1	":s1 :p1 o1" ;
+					  rdf:_2	"o1 :p2 ?s2" ;
+					  rdf:_3	"?s3 ?p3 o1" ;
+					  rdf:_4	"?s2 ?p3 :p1" ] ;
+	:graph			[ rdf:type 	rdf:Seq ;
+				      rdf:_1 	[ :nodes	"4" ;
+				      			  :edges 	"6" ]] .
+				      			  
+<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TA060> 
+	rdf:type 		:TestCase ;
+	dc:contributor 	"Markus Stocker" ;
+	dc:title 		"TA060" ;
+	:pattern		[ rdf:type 	rdf:Seq ;
+					  rdf:_1	":S1 :p1 o1" ;
+					  rdf:_2	"o1 :p2 ?S2" ;
+					  rdf:_3	"?s3 ?p3 o1" ;
+					  rdf:_4	"?s2 ?p3 :p1" ] ;
+	:graph			[ rdf:type 	rdf:Seq ;
+				      rdf:_1 	[ :nodes	"4" ;
+				      			  :edges 	"5" ]] .		      			  		      			  				      			  			      			  				      			  				      			  			      			  			      			  				      			  			      			  			      			  				      			  			      			  				      			  			      			  			      			  				      			  			      			  				      			  				      			  				      			  				      			  			      			  			      			  				      			  		      			  			      			  			      			  		  				      			  		      			  			      			  			      			  			      			  			      			  			      			  
+				      							    					      			  				      			  			      			  				      			  			      			  			      			  				      			  			      			  				      			  			      			  			      			  				      			  			      			  				      			  				      			  				      			  				      			  			      			  			      			  				      			  		      			  			      			  			      			  		  				      			  		      			  			      			  			      			  			      			  			      			  			      			  
+				      							    				      			  			      			  			      			  			      			  				      			  			      			  				      			  				      			  				      			  				      			  			      			  			      			  				      			  		      			  			      			  			      			  		  				      			  		      			  			      			  			      			  			      			  			      			  			      			  
+				      							      			  			      			  		      			  				      			  		      			  				      			  			      			  				      			  				      			  				      			  			      			  				      			  			      			  			      			 			      			  
+				      			  				      			  			      			  		      			  				      			  

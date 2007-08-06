@@ -1,0 +1,116 @@
+@prefix dc:		<http://purl.org/dc/elements/1.1/> .
+@prefix rdf:	<http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:	<http://www.w3.org/2000/01/rdf-schema#> .
+@prefix :		<http://www.w3.org/2006/03/test-description#> .
+
+<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TB001> 
+	rdf:type 		:TestCase ;
+	dc:contributor 	"Markus Stocker" ;
+	dc:title 		"TB001" ;
+	:heuristic		"BGP_VARIABLE_COUNTING" ;
+	:patternIn		[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	"?s1 ?p1 ?o1" ;
+				  	  rdf:_2	"?s1 :p2 :o2" ] ;
+	:patternOut 	[ rdf:type	rdf:Seq ;
+					  rdf:_1	"?s1 :p2 :o2" ;
+					  rdf:_2	"?s1 ?p1 ?o1" ] .
+					  
+<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TB002> 
+	rdf:type 		:TestCase ;
+	dc:contributor 	"Markus Stocker" ;
+	dc:title 		"TB002" ;
+	:heuristic		"BGP_VARIABLE_COUNTING" ;
+	:patternIn		[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	"?s1 :p1 ?o1" ;
+				  	  rdf:_2	"?s1 ?p2 ?o2" ] ;
+	:patternOut 	[ rdf:type	rdf:Seq ;
+					  rdf:_1	"?s1 :p1 ?o1" ;
+					  rdf:_2	"?s1 ?p2 ?o2" ] .
+					  
+<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TB003> 
+	rdf:type 		:TestCase ;
+	dc:contributor 	"Markus Stocker" ;
+	dc:title 		"TB003" ;
+	:heuristic		"BGP_VARIABLE_COUNTING" ;
+	:patternIn		[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	"?s1 :p1 ?o1" ;
+				  	  rdf:_2	"?s1 ?p2 ?o2" ] ;
+	:patternOut 	[ rdf:type	rdf:Seq ;
+					  rdf:_1	"?s1 :p1 ?o1" ;
+					  rdf:_2	"?s1 ?p2 ?o2" ] .
+					  
+<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TB004> 
+	rdf:type 		:TestCase ;
+	rdfs:comment	"There is no optimization for this BGP. Although the order of the triple
+					 patterns may potentially be reordered differently after optimization,
+					 internally triple patterns are processed in the order they are added
+					 to the graph (nodes and edges are lists ordered by OID, not unordered sets,
+					 which is for convenience only, as by definition the set of nodes of an
+					 undirected graph is unordered)" ;
+	dc:contributor 	"Markus Stocker" ;
+	dc:title 		"TB004" ;
+	:heuristic		"BGP_VARIABLE_COUNTING" ;
+	:patternIn		[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	"?s1 ?p1 ?o1" ;
+				  	  rdf:_2	"?s1 ?p2 ?o2" ] ;
+	:patternOut 	[ rdf:type	rdf:Seq ;
+					  rdf:_1	"?s1 ?p1 ?o1" ;
+					  rdf:_2	"?s1 ?p2 ?o2" ] .
+					  
+<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TB005> 
+	rdf:type 		:TestCase ;
+	dc:contributor 	"Markus Stocker" ;
+	dc:title 		"TB005" ;
+	:heuristic		"BGP_VARIABLE_COUNTING" ;
+	:patternIn		[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	"?s1 :p1 ?o1" ;
+				  	  rdf:_2	"?s1 :p2 :o2" ] ;
+	:patternOut 	[ rdf:type	rdf:Seq ;
+					  rdf:_1	"?s1 :p2 :o2" ;
+					  rdf:_2	"?s1 :p1 ?o1" ] .
+					  
+<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TB006> 
+	rdf:type 		:TestCase ;
+	dc:contributor 	"Markus Stocker" ;
+	dc:title 		"TB006" ;
+	:heuristic		"BGP_VARIABLE_COUNTING" ;
+	:patternIn		[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	":s1 :p1 :o1" ;
+				  	  rdf:_2	":s1 :p2 :o2" ] ;
+	:patternOut 	[ rdf:type	rdf:Seq ;
+					  rdf:_1	":s1 :p1 :o1" ;
+					  rdf:_2	":s1 :p2 :o2" ] .
+					  
+<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TB007> 
+	rdf:type 		:TestCase ;
+	dc:contributor 	"Markus Stocker" ;
+	dc:title 		"TB007" ;
+	:heuristic		"BGP_VARIABLE_COUNTING" ;
+	:patternIn		[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	"?s1 :p1 ?o1" ;
+				  	  rdf:_2	"?s2 :p1 :o2" ] ;
+	:patternOut 	[ rdf:type	rdf:Seq ;
+					  rdf:_1	"?s2 :p1 :o2" ;
+					  rdf:_2	"?s1 :p1 ?o1" ] .
+					  
+<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TB008> 
+	rdf:type 		:TestCase ;
+	rdfs:comment	"This example includes the problem of new variable introduction during triple pattern processing.
+					 At no stage, there should be a triple pattern which introduces only new variables and, thus, cannot
+					 be joined with the previous triple patterns. The :s3 join is the most selectivite, thus, it is executed
+					 first. The pattern with subject :s1 is executed last, because at the third position it would not be
+					 joined with the previous patterns." ;
+	dc:contributor 	"Markus Stocker" ;
+	dc:title 		"TB008" ;
+	:heuristic		"BGP_VARIABLE_COUNTING" ;
+	:patternIn		[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	":s1 :p1 :o1" ;
+				  	  rdf:_2	"?s2 :p2 :s1" ;
+				  	  rdf:_3	":s3 :p3 ?s2" ;
+				  	  rdf:_4	":s3 :p4 :o4"] ;
+	:patternOut 	[ rdf:type	rdf:Seq ;
+					  rdf:_1	":s3 :p4 :o4" ;
+					  rdf:_2	":s3 :p3 ?s2" ;
+					  rdf:_3	"?s2 :p2 :s1" ;
+					  rdf:_4	":s1 :p1 :o1"] .
+					    	      			  			      			  		      			  				      			  
