@@ -276,7 +276,7 @@ public class SSE_ParserCore extends ParserSSEBase implements SSE_ParserCoreConst
   final public void BlankNode() throws ParseException {
                      Token t ;
     t = jj_consume_token(BLANK_NODE_LABEL);
-      emitBNode(t.beginLine, t.beginColumn, t.image) ;
+      emitBNode(t.beginLine, t.beginColumn, stripChars(t.image, 2)) ;
   }
 
   final public void RDFLiteral() throws ParseException {

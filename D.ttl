@@ -1,6 +1,6 @@
-@prefix  dc:     <http://purl.org/dc/elements/1.1/> .
 @prefix : <http://example/> .
-@prefix  rdfs:   <http://www.w3.org/2000/01/rdf-schema#> .
 
-:book dc:title "Harry Potter and the Deathly Hallows" .
-:service :p <http://sparql.org/books> .
+:x1 :p "abc"@de-DE .
+:x2 :p "abc"@de-de .
+
+

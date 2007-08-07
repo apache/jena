@@ -20,6 +20,7 @@ import com.hp.hpl.jena.query.larq.IndexLARQ;
 import com.hp.hpl.jena.query.larq.LARQ;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.sparql.sse.Item;
 import com.hp.hpl.jena.sparql.sse.SSE;
 import com.hp.hpl.jena.util.FileManager;
 
@@ -31,17 +32,19 @@ public class Run
 
         if ( false )
         {
+            Item item = SSE.parse("_:") ;
+            System.exit(0) ;
             Triple t1 = SSE.parseTriple("(?%0 <x:p> _:b)") ;
             Triple t2 = SSE.parseTriple("(?%0 <x:p> _:b)") ;
             System.exit(0) ;
         }
 
-        runQParse() ;
+        //runQParse() ;
         
-        String []a = { "testing/ARQ/PropertyFunctions/manifest.ttl" } ;
-        String DIR = "testing/ARQ/PropertyFunctions/" ;
-        //arq.qtest.main(a) ;
-        execQuery(DIR+"data-3.ttl", DIR+"splitIRI-1.rq") ;
+        String []a = { "--strict", "/home/afs/W3C/DataAccess/tests/data-r2/expr-builtin/m1.ttl" } ;
+        arq.qtest.main(a) ;
+        System.exit(0) ;
+        //execQuery(DIR+"data-3.ttl", DIR+"splitIRI-1.rq") ;
     }
     
     private static void runQParse()

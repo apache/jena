@@ -27,8 +27,10 @@ public class ParseHandlerPlain implements ParseHandler
     private Item           currentItem = null ;
     private int            depth       = 0 ;
     private LabelToNodeMap bNodeLabels = LabelToNodeMap.createBNodeMap() ;
-    private VarAlloc       varAlloc    = new VarAlloc("") ;
-    private VarAlloc       varAllocND  = new VarAlloc("?") ;
+    
+    // Allocation of fresh variables.
+    private VarAlloc       varAlloc    = new VarAlloc("_") ;
+    private VarAlloc       varAllocND  = new VarAlloc("?_") ;
     
     public Item getItem()
     {
@@ -43,7 +45,6 @@ public class ParseHandlerPlain implements ParseHandler
         if ( depth != 0 )
             ALog.warn(this, "Stack error: depth ="+depth+" at end of parse run") ;
         depth = -1 ;
-
     }
     
     public void listStart(int line, int column)
@@ -118,9 +119,15 @@ public class ParseHandlerPlain implements ParseHandler
         listAdd(item) ;
     }
 
+    final
     public void emitBNode(int line, int column, String label)
     {
-        Node n = bNodeLabels.asNode(label) ;
+        Node n = null ;
+        if ( label.equals("") )
+            // Fresh anonymous bNode
+            n = Node.createAnon() ; 
+        else
+            n = bNodeLabels.asNode(label) ;
         Item item = Item.createNode(n, line, column) ;
         listAdd(item) ;
     }

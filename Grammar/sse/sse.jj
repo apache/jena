@@ -142,7 +142,7 @@ void Literal() : { }
 void BlankNode() : { Token t ; }
 {
   t = <BLANK_NODE_LABEL>
-    { emitBNode(t.beginLine, t.beginColumn, t.image) ; }  
+    { emitBNode(t.beginLine, t.beginColumn, stripChars(t.image, 2)) ; }  
 //|
 //  t = <LBRACKET> <RBRACKET> { return emitBNode(t.beginLine, t.beginColumn) ; }
 //  t = <ANON> { return emitBNode(t.beginLine, t.beginColumn) ; }
