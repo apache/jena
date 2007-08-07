@@ -11,7 +11,7 @@
 	<classpathentry kind="lib" path="lib/concurrent.jar"/>
 	<classpathentry kind="lib" path="lib/icu4j_3_4.jar"/>
 	<classpathentry kind="lib" path="lib/iri.jar"/>
-	<classpathentry kind="lib" path="lib/jena.jar"/>
+	<classpathentry kind="lib" path="lib/jena.jar" sourcepath="jena-src.zip"/>
 	<classpathentry kind="lib" path="lib/jenatest.jar"/>
 	<classpathentry kind="lib" path="lib/json.jar"/>
 	<classpathentry kind="lib" path="lib/junit.jar"/>
