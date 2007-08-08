@@ -8,7 +8,9 @@ package com.hp.hpl.jena.sparql.engine.optimizer.heuristic;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.sparql.util.Context;
+import com.hp.hpl.jena.sparql.engine.optimizer.util.Constants;
 import com.hp.hpl.jena.sparql.engine.optimizer.heuristic.HeuristicsRegistry;
 
 /**
@@ -25,12 +27,19 @@ import com.hp.hpl.jena.sparql.engine.optimizer.heuristic.HeuristicsRegistry;
 
 public class HeuristicsBroker 
 {
+	private Graph graph = null ;
 	private HeuristicsRegistry registry = null ;
+	private String userDefinedHeuristic = null ;
 	private static Log log = LogFactory.getLog(HeuristicsBroker.class) ;
 		
-	public HeuristicsBroker(Context context)
+	public HeuristicsBroker(Context context, Graph graph)
 	{
-		registry = new HeuristicsRegistry(context) ;
+		registry = new HeuristicsRegistry(context, graph) ;
+		
+		this.graph = graph ;
+		
+		// Get the user defined heuristic set to the context (ARQo.setHeuristic()), if one is specified
+		this.userDefinedHeuristic = (String)context.get(Constants.heuristic) ;
 	}
 	
 	/**
@@ -40,7 +49,13 @@ public class HeuristicsBroker
 	 * @return HeuristicBasicPattern
 	 */
 	public HeuristicBasicPattern getBasicPatternHeuristic()
-	{		
+	{
+		if (registry.isRegistred(userDefinedHeuristic))
+			return getBasicPatternHeuristic(userDefinedHeuristic) ;
+	
+		if (graph.getStatisticsHandler() != null)
+			return getBasicPatternHeuristic(HeuristicsRegistry.BGP_GRAPH_STATISTICS_HANDLER) ;
+		
 		// Default, use the variable counting heuristic
 		return getBasicPatternHeuristic(HeuristicsRegistry.BGP_VARIABLE_COUNTING) ;
 	}

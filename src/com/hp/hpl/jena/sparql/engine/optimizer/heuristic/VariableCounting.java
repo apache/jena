@@ -45,16 +45,11 @@ public class VariableCounting extends HeuristicBasicPattern
 	 */
 	public double getCost(Triple triple1) 
 	{
-		/*
-		 * Example: 
-		 * ?s :p ?o = (3 * 1.0 + 1 * 0.0 + 2 * 1.0) / 6 = 5 / 6 = 0.83
- 		 * :s ?p ?o = (3 * 0.0 + 1 * 1.0 + 2 * 1.0) / 6 = 3 / 6 = 0.5
-		 */
-		double cost = 0d ;
-		int MAX_COST = 6 ;
+		double cost = 1d ;
+		int MAX_COST = 8 ;
 		
 		if (triple1.getSubject().isVariable())
-			cost += 3 ;
+			cost += 4 ;
 		
 		if (triple1.getPredicate().isVariable())
 			cost += 1 ;
@@ -142,7 +137,7 @@ public class VariableCounting extends HeuristicBasicPattern
 				cost -= 1 * 2 ;
 		}
 		
-		return cost / MAX_COST;
+		return cost / MAX_COST * getCost(triple1) * getCost(triple2) ;
 	}
 }
 

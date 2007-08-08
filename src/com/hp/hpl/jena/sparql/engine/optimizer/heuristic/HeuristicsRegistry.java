@@ -9,8 +9,11 @@ import java.util.*;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+
+import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.sparql.util.Context;
 import com.hp.hpl.jena.sparql.engine.optimizer.heuristic.VariableCounting;
+import com.hp.hpl.jena.sparql.engine.optimizer.heuristic.GraphStatisticsHeuristic;
 
 /**
  * The class is a registry for heuristics
@@ -25,13 +28,15 @@ public class HeuristicsRegistry
 	private static Log log = LogFactory.getLog(HeuristicsRegistry.class) ;
 	
 	public static final String BGP_VARIABLE_COUNTING = "BGP_VARIABLE_COUNTING" ;
+	public static final String BGP_GRAPH_STATISTICS_HANDLER = "BGP_GRAPH_STATISTICS_HANDLER" ;
 	
 	public HeuristicsRegistry() {}
 	
 	/** The constructor initializes the registry of available heuristics */
-	public HeuristicsRegistry(Context context)
-	{
+	public HeuristicsRegistry(Context context, Graph graph)
+	{		
 		add(BGP_VARIABLE_COUNTING, new VariableCounting()) ;
+		add(BGP_GRAPH_STATISTICS_HANDLER, new GraphStatisticsHeuristic(graph)) ;
 	}	
 	
 	/**
