@@ -56,8 +56,8 @@ public class StageGenOptimizedBasicPattern implements StageGenerator
 		
 		if (graph instanceof GraphMemFaster)
 		{
-			// Call the BGP optimizer with a specific heuristic
-			BasicPatternOptimizer optimizer = new BasicPatternOptimizer(context, pattern) ;
+			// Do this only for in-memory models
+			BasicPatternOptimizer optimizer = new BasicPatternOptimizer(context, graph, pattern) ;
 			Stage basicStage = new StageBasic(optimizer.optimize()) ;
 			sList.add(basicStage) ;
         
