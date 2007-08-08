@@ -53,8 +53,9 @@ public class QueryEngineRegistry
     /** Locate a suitable factory for this algebra expression
      *  and dataset from the default registry
      * 
-     * @param query   Query 
-     * @param dataset Dataset
+     * @param op   Algebra expression 
+     * @param dataset DatasetGraph
+     * @param context
      * @return A QueryExecutionFactory or null if none accept the request
      */
     
@@ -91,8 +92,10 @@ public class QueryEngineRegistry
     
     /** Locate a suitable factory for this algebra expression and dataset
      * 
-     * @param query   Query 
-     * @param dataset Dataset
+     * @param op   Algebra expression 
+     * @param dataset DatasetGraph
+     * @param context
+     * 
      * @return A QueryExecutionFactory or null if none accept the request
      */
     

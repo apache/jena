@@ -24,7 +24,7 @@ import com.hp.hpl.jena.sparql.util.PrintUtils;
  * 
  *  Blank nodes from the query will be seen as variables.  Most implementations will want to
  *  work with the property function arguments after substitution from the current binding.
- *  See method {@link #evalIfExistsOneArg(Binding)} below.   
+ *  See method {@link #evalIfExists(Binding)} below.   
  *  
  * @author Andy Seaborne
  * @version $Id: PropFuncArg.java,v 1.12 2007/02/06 17:05:54 andy_seaborne Exp $

@@ -535,8 +535,8 @@ public class ResultSetFormatter
 
     /** Output a result set in the SSE format
      *  Format: <a href="http://jena.hpl.hp.com/wiki/SSE">SSE</a>
-     * @param resultSet     result set
-     * @param prefixMap     PrefixMapping
+     * @param outStream  The output stream
+     * @param resultSet     The result set
      */
     
     static public void outputAsSSE(OutputStream outStream, ResultSet resultSet)

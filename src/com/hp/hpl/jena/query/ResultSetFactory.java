@@ -229,7 +229,7 @@ public class ResultSetFactory
     
     /** Read XML which is the format of the SPARQL result set format.
      * 
-     * @param in    String
+     * @param str    String to process
      * @return      ResultSet
      */  
     public static ResultSet fromXML(String str)
