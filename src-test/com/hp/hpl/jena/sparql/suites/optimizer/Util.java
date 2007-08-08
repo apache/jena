@@ -7,6 +7,7 @@ package com.hp.hpl.jena.sparql.suites.optimizer;
 
 import java.io.InputStream;
 
+import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
@@ -61,9 +62,9 @@ public class Util
 	}
 	
 	// Return the heuristic instance corresponding to the heuristic defined by the test case
-	public static Heuristic getHeuristic(String heuristic, Context context)
+	public static Heuristic getHeuristic(String heuristic, Context context, Graph graph)
 	{
-		HeuristicsRegistry registry = new HeuristicsRegistry(context) ;
+		HeuristicsRegistry registry = new HeuristicsRegistry(context, graph) ;
 		return registry.get(heuristic) ;
 	}
 }
