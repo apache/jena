@@ -5,8 +5,7 @@
 
 package com.hp.hpl.jena.sparql.suites.optimizer;
 
-import junit.framework.*;
-import com.hp.hpl.jena.sparql.suites.optimizer.*;
+import junit.framework.TestSuite;
 
 /**
  * All the ARQo tests 

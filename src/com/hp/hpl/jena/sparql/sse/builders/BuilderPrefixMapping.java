@@ -14,6 +14,7 @@ import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
 
 import com.hp.hpl.jena.sparql.sse.Item;
 import com.hp.hpl.jena.sparql.sse.ItemList;
+import com.hp.hpl.jena.sparql.util.StringUtils;
 
 /** Build a prefixmapping, tagged (prefixmap pairs) or (prefixmapping pairs)
  * each pair being a PrefixName, but must end : and an IRI.
@@ -85,7 +86,7 @@ public class BuilderPrefixMapping
             if ( ! prefix.endsWith(":") )
                 BuilderBase.broken(pair, "Prefix part does not end with a ':': "+pair) ;
             prefix = prefix.substring(0, prefix.length()-1) ;
-            if ( prefix.contains(":") )
+            if ( StringUtils.contains(prefix, ":") )
                 BuilderBase.broken(pair, "Prefix itseld contains a ':' : "+pair) ;
             // -- /Prefix
             

@@ -14,6 +14,7 @@ import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.sparql.engine.optimizer.heuristic.Heuristic;
 import com.hp.hpl.jena.sparql.engine.optimizer.heuristic.HeuristicsRegistry;
 import com.hp.hpl.jena.sparql.util.Context;
+import com.hp.hpl.jena.sparql.util.StringUtils;
 import com.hp.hpl.jena.util.FileManager;
 import com.hp.hpl.jena.sparql.engine.optimizer.util.Constants;
 
@@ -47,7 +48,7 @@ public class Util
 	 */
 	public static Node createNode(String element)
 	{
-		if (element.contains("?"))
+		if (StringUtils.contains(element, "?"))
 			return Node.createVariable(element.substring(1, element.length())) ;
 		else if (element.startsWith(":"))
 			return Node.createURI(Constants.localhostNS + element.substring(1, element.length())) ;

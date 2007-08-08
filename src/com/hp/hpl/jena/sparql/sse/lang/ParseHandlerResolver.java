@@ -16,6 +16,7 @@ import com.hp.hpl.jena.sparql.sse.Item;
 import com.hp.hpl.jena.sparql.sse.ItemList;
 import com.hp.hpl.jena.sparql.sse.builders.BuilderPrefixMapping;
 import com.hp.hpl.jena.sparql.util.PrefixMapping2;
+import com.hp.hpl.jena.sparql.util.StringUtils;
 
 
 /** Resolve syntacic forms like (base ...) and (prefix...)
@@ -179,7 +180,7 @@ public class ParseHandlerResolver extends ParseHandlerForm
         if ( prefixMap == null )
             throwException("No prefix mapping for prefixed name: "+pname, line, column) ;
         
-        if ( ! pname.contains(":") )
+        if ( ! StringUtils.contains(pname, ":") )
             throwException("Prefixed name does not have a ':': "+pname, line, column) ;
         
         String uri = prefixMap.expandPrefix(pname) ;

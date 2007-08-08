@@ -15,7 +15,6 @@ import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.query.ARQ;
 import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.shared.PrefixMapping;
 import com.hp.hpl.jena.sparql.algebra.Algebra;
 import com.hp.hpl.jena.sparql.algebra.Op;
@@ -30,7 +29,6 @@ import com.hp.hpl.jena.sparql.engine.optimizer.core.BasicPatternVisitor;
 import com.hp.hpl.jena.sparql.engine.optimizer.core.ConnectedGraph;
 import com.hp.hpl.jena.sparql.engine.optimizer.core.GraphEdge;
 import com.hp.hpl.jena.sparql.engine.optimizer.core.GraphNode;
-import com.hp.hpl.jena.sparql.engine.optimizer.util.Constants;
 import com.hp.hpl.jena.sparql.syntax.Element;
 import com.hp.hpl.jena.sparql.util.Context;
 
