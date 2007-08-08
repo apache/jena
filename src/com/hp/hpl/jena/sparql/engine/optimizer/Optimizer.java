@@ -11,9 +11,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.query.ARQ;
 import com.hp.hpl.jena.query.Query;
+import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.shared.PrefixMapping;
 import com.hp.hpl.jena.sparql.algebra.Algebra;
 import com.hp.hpl.jena.sparql.algebra.Op;
@@ -28,6 +30,7 @@ import com.hp.hpl.jena.sparql.engine.optimizer.core.BasicPatternVisitor;
 import com.hp.hpl.jena.sparql.engine.optimizer.core.ConnectedGraph;
 import com.hp.hpl.jena.sparql.engine.optimizer.core.GraphEdge;
 import com.hp.hpl.jena.sparql.engine.optimizer.core.GraphNode;
+import com.hp.hpl.jena.sparql.engine.optimizer.util.Constants;
 import com.hp.hpl.jena.sparql.syntax.Element;
 import com.hp.hpl.jena.sparql.util.Context;
 
@@ -52,7 +55,7 @@ public class Optimizer
 		
 		if (stageGenerator == null)
 			stageGenerator = StageBuilder.getGenerator() ;
-		
+
 		context.set(ARQ.stageGenerator, new StageGenPropertyFunction(new StageGenOptimizedBasicPattern(stageGenerator))) ;
 	}
 	
@@ -66,10 +69,15 @@ public class Optimizer
 	
 	public static void disable(Context context)
 	{		
+		StageGenerator other = null ;
 		StageGenerator stageGenerator = (StageGenerator)context.get(ARQ.stageGenerator) ;
 		
 		if (stageGenerator instanceof StageGenOptimizedBasicPattern)
-			context.set(ARQ.stageGenerator, ((StageGenOptimizedBasicPattern)stageGenerator).getOther()) ;
+			other = ((StageGenOptimizedBasicPattern)stageGenerator).getOther() ;
+		else
+			other = StageBuilder.getGenerator() ;
+				
+		context.set(ARQ.stageGenerator, other) ;
 	}
 	
 	public static void disable()
@@ -77,12 +85,20 @@ public class Optimizer
 		disable(ARQ.getContext()) ;
 	}
 	
+	/** @deprecated 
+	public static void init(Context context, Model seiModel, Model qpiModel)
+	{		
+		context.set(Constants.SEI, null) ;
+		context.set(Constants.QPI, null) ;
+	}
+	*/
+	
 	/**
 	 * Explain the optimization performed on a query
 	 * 
 	 * @param query
 	 */
-	public static void explain(Context context, Query query)
+	public static void explain(Context context, Graph graph, Query query)
 	{
 		String left = "| " ;
 		String sep = " | " ;
@@ -103,7 +119,7 @@ public class Optimizer
 	    {
 	    	BasicPattern pattern = (BasicPattern)iter.next() ;
 	    	// Optimizer the BGP
-	    	BasicPatternOptimizer optimizer = new BasicPatternOptimizer(context, pattern) ;
+	    	BasicPatternOptimizer optimizer = new BasicPatternOptimizer(context, graph, pattern) ;
 	    	BasicPatternGraph basicPatternGraph = optimizer.getBasicPatternGraph() ;
 	    	basicPatternGraph.optimize() ;
 	    	// Return the BGP graph components
@@ -175,7 +191,7 @@ public class Optimizer
     public static final String VERSION_STATUS = "-alpha-1";
    
     /** The date and time at which this release was built */   
-    public static final String BUILD_DATE = "2007-08-06 13:50 +0000";
+    public static final String BUILD_DATE = "2007-07-02 13:50 +0000";
 }
 
 
