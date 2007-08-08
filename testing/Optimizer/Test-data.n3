@@ -1,0 +1,57 @@
+@prefix dc:		<http://purl.org/dc/elements/1.1/> .
+@prefix rdf:	<http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:	<http://www.w3.org/2000/01/rdf-schema#> .
+@prefix ex:		<http://example.org#> .
+
+# ---------------------------------------------
+# Please treat this data set carefully since
+# most test cases uses it as Jena model.
+# Any change to this model invalidates the 
+# tests, since the selectivity calculations
+# will change.
+#
+# Author: Markus Stocker
+# Version: $Id$
+# ---------------------------------------------
+
+ex:Person1 ex:firstname "First Name 1" .
+ex:Person1 ex:lastname "Last Name 1" .
+ex:Person1 ex:address "Address 1" .
+ex:Person1 ex:birthday "19650403" .
+ex:Person1 ex:email "person1@example.org" .
+ex:Person1 ex:workplace "company1" .
+ex:Person1 ex:phone "xxx-xxx-xxx" .
+ex:Person1 ex:skype "person1a" .
+ex:Person1 ex:skype "person1b" .
+ex:Person1 ex:msn "person1@msn.com" .
+
+ex:Person2 ex:firstname "First Name 2" .
+ex:Person2 ex:lastname "Last Name 2" .
+ex:Person2 ex:address "Address 2" .
+ex:Person2 ex:birthday "19720506" .
+ex:Person2 ex:email "person2@msn.com" .
+ex:Person2 ex:workplace "company2" .
+ex:Person2 ex:phone "xxx-xxx-xxx" .
+ex:Person2 ex:skype "person2" .
+ex:Person2 ex:msn "person2@msn.com" .
+
+ex:Person3 ex:firstname "First Name 3" .
+ex:Person3 ex:lastname "Last Name 3" .
+ex:Person3 ex:address "Address 3" .
+ex:Person3 ex:birthday "19481223" .
+ex:Person3 ex:email "person3@example.org" .
+ex:Person3 ex:workplace "company1" .
+ex:Person3 ex:phone "xxx-xxx-xxx" .
+ex:Person3 ex:skype "person3" .
+ex:Person3 ex:msn "person3@msn.com" .
+
+ex:Person4 ex:firstname "First Name 4" .
+ex:Person4 ex:lastname "Last Name 4" .
+ex:Person4 ex:birthday "19041104" .
+ex:Person4 ex:workplace "company2" .
+ex:Person4 ex:phone "xxx-xxx-xxx" .
+
+ex:Person5 ex:firstname "First Name 5" .
+ex:Person5 ex:lastname "Last Name 5" .
+ex:Person5 ex:workplace "company3" .
+ex:Person5 ex:phone "xxx-xxx-xxx" .

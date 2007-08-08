@@ -1,10 +1,18 @@
 @prefix dc:		<http://purl.org/dc/elements/1.1/> .
 @prefix rdf:	<http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:	<http://www.w3.org/2000/01/rdf-schema#> .
 @prefix :		<http://www.w3.org/2006/03/test-description#> .
+
+# ---------------------------------------------
+# This test cases are based on the dataset
+# data/ontology/Test-data.n3
+# 	
+# Author: Markus Stocker
+# Version: $Id$
+# ---------------------------------------------
 
 <http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TC001> 
 	rdf:type 		:TestCase ;
-	dc:contributor 	"Markus Stocker" ;
 	dc:title 		"TC001" ;
 	:heuristic		"BGP_VARIABLE_COUNTING" ;
 	:node			"?s1 ?p1 ?o1" ;
@@ -12,7 +20,6 @@
 	
 <http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TC002> 
 	rdf:type 		:TestCase ;
-	dc:contributor 	"Markus Stocker" ;
 	dc:title 		"TC002" ;
 	:heuristic		"BGP_VARIABLE_COUNTING" ;
 	:node			":s1 ?p1 ?o1" ;
@@ -20,48 +27,179 @@
 	
 <http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TC003> 
 	rdf:type 		:TestCase ;
-	dc:contributor 	"Markus Stocker" ;
 	dc:title 		"TC003" ;
 	:heuristic		"BGP_VARIABLE_COUNTING" ;
 	:node			"?s1 :p1 ?o1" ;
-	:weight	 		"0.8333333333333334" .
+	:weight	 		"0.875" .
 	
 <http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TC004> 
 	rdf:type 		:TestCase ;
-	dc:contributor 	"Markus Stocker" ;
 	dc:title 		"TC004" ;
 	:heuristic		"BGP_VARIABLE_COUNTING" ;
 	:node			"?s1 ?p1 :o1" ;
-	:weight	 		"0.6666666666666666" .
+	:weight	 		"0.75" .
 	
 <http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TC005> 
 	rdf:type 		:TestCase ;
-	dc:contributor 	"Markus Stocker" ;
 	dc:title 		"TC005" ;
 	:heuristic		"BGP_VARIABLE_COUNTING" ;
 	:node			":s1 :p1 ?o1" ;
-	:weight	 		"0.3333333333333333" .
+	:weight	 		"0.375" .
 	
 <http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TC006> 
 	rdf:type 		:TestCase ;
-	dc:contributor 	"Markus Stocker" ;
 	dc:title 		"TC006" ;
 	:heuristic		"BGP_VARIABLE_COUNTING" ;
 	:node			":s1 ?p1 :o1" ;
-	:weight	 		"0.16666666666666666" .
+	:weight	 		"0.25" .
 	
 <http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TC007> 
 	rdf:type 		:TestCase ;
-	dc:contributor 	"Markus Stocker" ;
 	dc:title 		"TC007" ;
 	:heuristic		"BGP_VARIABLE_COUNTING" ;
 	:node			"?s1 :p1 :o1" ;
-	:weight	 		"0.5" .
+	:weight	 		"0.625" .
 	
 <http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TC008> 
 	rdf:type 		:TestCase ;
-	dc:contributor 	"Markus Stocker" ;
 	dc:title 		"TC008" ;
 	:heuristic		"BGP_VARIABLE_COUNTING" ;
 	:node			":s1 :p1 :o1" ;
-	:weight	 		"0.0" .	  			      			  		      			  				      			  
+	:weight	 		"0.125" .
+	
+<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TC009> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TC009" ;
+	:heuristic		"BGP_GRAPH_STATISTICS_HANDLER" ;
+	:node			"<http://example.org#Person1> ?p1 ?o1" ;
+	:weight	 		"0.2702702702702703" .
+	
+<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TC010> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TC010" ;
+	:heuristic		"BGP_GRAPH_STATISTICS_HANDLER" ;
+	:node			"<http://example.org#Person2> ?p1 ?o1" ;
+	:weight	 		"0.24324324324324326" .
+	
+<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TC011> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TC011" ;
+	:heuristic		"BGP_GRAPH_STATISTICS_HANDLER" ;
+	:node			"<http://example.org#Person5> ?p1 ?o1" ;
+	:weight	 		"0.10810810810810811" .
+	
+<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TC012> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TC012" ;
+	:heuristic		"BGP_GRAPH_STATISTICS_HANDLER" ;
+	:node			"?s1 <http://example.org#firstname> ?o1" ;
+	:weight	 		"0.13513513513513514" .
+	
+<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TC013> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TC013" ;
+	:heuristic		"BGP_GRAPH_STATISTICS_HANDLER" ;
+	:node			"?s1 <http://example.org#lastname> ?o1" ;
+	:weight	 		"0.13513513513513514" .
+	
+<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TC014> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TC014" ;
+	:heuristic		"BGP_GRAPH_STATISTICS_HANDLER" ;
+	:node			"?s1 <http://example.org#skype> ?o1" ;
+	:weight	 		"0.10810810810810811" .
+	
+<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TC015> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TC015" ;
+	:heuristic		"BGP_GRAPH_STATISTICS_HANDLER" ;
+	:node			"?s1 <http://example.org#skype> ?o1" ;
+	:weight	 		"0.10810810810810811" .
+	
+<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TC016> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TC016" ;
+	:heuristic		"BGP_GRAPH_STATISTICS_HANDLER" ;
+	:node			"?s1 ?p1 19650403" ;
+	:weight	 		"0.02702702702702703" .
+	
+<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TC017> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TC017" ;
+	:heuristic		"BGP_GRAPH_STATISTICS_HANDLER" ;
+	:node			"?s1 ?p1 xxx-xxx-xxx" ;
+	:weight	 		"0.13513513513513514" .
+
+<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TC018> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TC018" ;
+	:heuristic		"BGP_GRAPH_STATISTICS_HANDLER" ;
+	:node			"?s1 ?p1 xxx-xxx-xxx" ;
+	:weight	 		"0.13513513513513514" .
+	
+<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TC019> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TC019" ;
+	:heuristic		"BGP_GRAPH_STATISTICS_HANDLER" ;
+	:node			"?s1 ?p1 company1" ;
+	:weight	 		"0.05405405405405406" .	
+
+<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TC020> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TC020" ;
+	:heuristic		"BGP_GRAPH_STATISTICS_HANDLER" ;
+	:node			"?s1 ?p1 ?o1" ;
+	:weight	 		"1.0" .
+	
+<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TC021> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TC021" ;
+	:heuristic		"BGP_GRAPH_STATISTICS_HANDLER" ;
+	:node			"<http://example.org#Person1> <http://example.org#firstname> ?o1" ;
+	:weight	 		"0.03652300949598247" .
+	
+<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TC022> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TC022" ;
+	:heuristic		"BGP_GRAPH_STATISTICS_HANDLER" ;
+	:node			"<http://example.org#Person1> <http://example.org#firstname> ?o1" ;
+	:weight	 		"0.03652300949598247" .
+	
+<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TC023> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TC023" ;
+	:heuristic		"BGP_GRAPH_STATISTICS_HANDLER" ;
+	:node			"<http://example.org#Person1> <http://example.org#skype> ?o1" ;
+	:weight	 		"0.02921840759678598" .
+	
+<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TC024> 
+	rdf:type 		:TestCase ;
+	rdfs:comment	"The effective calculated selectivity is 0.011687363038714390, which is lower than the lowest, return the lowest.
+					 Please note that the effective selectivity ist 0, but our estimations never return 0." ;
+	dc:title 		"TC024" ;
+	:heuristic		"BGP_GRAPH_STATISTICS_HANDLER" ;
+	:node			"<http://example.org#Person5> <http://example.org#skype> ?o1" ;
+	:weight	 		"0.02702702702702703" .
+	
+<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TC025> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TC025" ;
+	rdfs:comment	"The effective calculated selectivity is 0.00730460189919649, return the lowest" ;
+	:heuristic		"BGP_GRAPH_STATISTICS_HANDLER" ;
+	:node			"<http://example.org#Person1> ?p1 19650403" ;
+	:weight	 		"0.02702702702702703" .
+	
+<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TC026> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TC026" ;
+	:heuristic		"BGP_GRAPH_STATISTICS_HANDLER" ;
+	:node			"?s1 <http://example.org#phone> ?o1" ;
+	:weight	 		"0.13513513513513514" .	
+	
+<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TC027> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TC027" ;
+	rdfs:comment	"The effective calculated selectivity is 0.018261504747991235, return the lowest" ;
+	:heuristic		"BGP_GRAPH_STATISTICS_HANDLER" ;
+	:node			"?s1 <http://example.org#phone> xxx-xxx-xxx" ;
+	:weight	 		"0.02702702702702703" .		      			  				      		

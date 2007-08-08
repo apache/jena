@@ -3,9 +3,16 @@
 @prefix rdfs:	<http://www.w3.org/2000/01/rdf-schema#> .
 @prefix :		<http://www.w3.org/2006/03/test-description#> .
 
+# ---------------------------------------------
+# This test cases are based on the dataset
+# data/ontology/Test-data.n3
+# 	
+# Author: Markus Stocker
+# Version: $Id$
+# ---------------------------------------------
+
 <http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TB001> 
 	rdf:type 		:TestCase ;
-	dc:contributor 	"Markus Stocker" ;
 	dc:title 		"TB001" ;
 	:heuristic		"BGP_VARIABLE_COUNTING" ;
 	:patternIn		[ rdf:type 	rdf:Seq ;
@@ -17,7 +24,6 @@
 					  
 <http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TB002> 
 	rdf:type 		:TestCase ;
-	dc:contributor 	"Markus Stocker" ;
 	dc:title 		"TB002" ;
 	:heuristic		"BGP_VARIABLE_COUNTING" ;
 	:patternIn		[ rdf:type 	rdf:Seq ;
@@ -29,14 +35,13 @@
 					  
 <http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TB003> 
 	rdf:type 		:TestCase ;
-	dc:contributor 	"Markus Stocker" ;
 	dc:title 		"TB003" ;
 	:heuristic		"BGP_VARIABLE_COUNTING" ;
 	:patternIn		[ rdf:type 	rdf:Seq ;
-				  	  rdf:_1	"?s1 :p1 ?o1" ;
+				  	  rdf:_1	"?s1 ?p1 :o1" ;
 				  	  rdf:_2	"?s1 ?p2 ?o2" ] ;
 	:patternOut 	[ rdf:type	rdf:Seq ;
-					  rdf:_1	"?s1 :p1 ?o1" ;
+					  rdf:_1	"?s1 ?p1 :o1" ;
 					  rdf:_2	"?s1 ?p2 ?o2" ] .
 					  
 <http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TB004> 
@@ -47,7 +52,6 @@
 					 to the graph (nodes and edges are lists ordered by OID, not unordered sets,
 					 which is for convenience only, as by definition the set of nodes of an
 					 undirected graph is unordered)" ;
-	dc:contributor 	"Markus Stocker" ;
 	dc:title 		"TB004" ;
 	:heuristic		"BGP_VARIABLE_COUNTING" ;
 	:patternIn		[ rdf:type 	rdf:Seq ;
@@ -59,7 +63,6 @@
 					  
 <http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TB005> 
 	rdf:type 		:TestCase ;
-	dc:contributor 	"Markus Stocker" ;
 	dc:title 		"TB005" ;
 	:heuristic		"BGP_VARIABLE_COUNTING" ;
 	:patternIn		[ rdf:type 	rdf:Seq ;
@@ -71,7 +74,6 @@
 					  
 <http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TB006> 
 	rdf:type 		:TestCase ;
-	dc:contributor 	"Markus Stocker" ;
 	dc:title 		"TB006" ;
 	:heuristic		"BGP_VARIABLE_COUNTING" ;
 	:patternIn		[ rdf:type 	rdf:Seq ;
@@ -83,7 +85,6 @@
 					  
 <http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TB007> 
 	rdf:type 		:TestCase ;
-	dc:contributor 	"Markus Stocker" ;
 	dc:title 		"TB007" ;
 	:heuristic		"BGP_VARIABLE_COUNTING" ;
 	:patternIn		[ rdf:type 	rdf:Seq ;
@@ -100,17 +101,404 @@
 					 be joined with the previous triple patterns. The :s3 join is the most selectivite, thus, it is executed
 					 first. The pattern with subject :s1 is executed last, because at the third position it would not be
 					 joined with the previous patterns." ;
-	dc:contributor 	"Markus Stocker" ;
 	dc:title 		"TB008" ;
 	:heuristic		"BGP_VARIABLE_COUNTING" ;
 	:patternIn		[ rdf:type 	rdf:Seq ;
 				  	  rdf:_1	":s1 :p1 :o1" ;
 				  	  rdf:_2	"?s2 :p2 :s1" ;
 				  	  rdf:_3	":s3 :p3 ?s2" ;
-				  	  rdf:_4	":s3 :p4 :o4"] ;
+				  	  rdf:_4	":s3 :p4 :o4" ] ;
 	:patternOut 	[ rdf:type	rdf:Seq ;
 					  rdf:_1	":s3 :p4 :o4" ;
 					  rdf:_2	":s3 :p3 ?s2" ;
 					  rdf:_3	"?s2 :p2 :s1" ;
-					  rdf:_4	":s1 :p1 :o1"] .
+					  rdf:_4	":s1 :p1 :o1" ] .
+					  
+<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TB009> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TB009" ;
+	:heuristic		"BGP_VARIABLE_COUNTING" ;
+	:patternIn		[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	"?s1 ?p1 ?o1" ;
+				  	  rdf:_2	"?s2 ?p2 ?s1"] ;
+	:patternOut 	[ rdf:type	rdf:Seq ;
+				  	  rdf:_1	"?s1 ?p1 ?o1" ;
+				  	  rdf:_2	"?s2 ?p2 ?s1"] .
+				  	  
+<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TB010> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TB010" ;
+	:heuristic		"BGP_VARIABLE_COUNTING" ;
+	:patternIn		[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	"?s1 ?p1 ?o1" ;
+				  	  rdf:_2	"?o1 ?p2 ?o2"] ;
+	:patternOut 	[ rdf:type	rdf:Seq ;
+				  	  rdf:_1	"?s1 ?p1 ?o1" ;
+				  	  rdf:_2	"?o1 ?p2 ?o2"] .
+				  	  
+<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TB011> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TB011" ;
+	:heuristic		"BGP_VARIABLE_COUNTING" ;
+	:patternIn		[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	"?s1 ?p1 ?o1" ;
+				  	  rdf:_2	"?s2 ?p2 ?o1"] ;
+	:patternOut 	[ rdf:type	rdf:Seq ;
+				  	  rdf:_1	"?s1 ?p1 ?o1" ;
+				  	  rdf:_2	"?s2 ?p2 ?o1"] .
+				  	 
+<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TB012> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TB012" ;
+	:heuristic		"BGP_VARIABLE_COUNTING" ;
+	:patternIn		[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	"?s1 ?p1 ?o1" ;
+				  	  rdf:_2	"?s2 ?p1 ?o2"] ;
+	:patternOut 	[ rdf:type	rdf:Seq ;
+				  	  rdf:_1	"?s1 ?p1 ?o1" ;
+				  	  rdf:_2	"?s2 ?p1 ?o2"] .
+				  	  
+<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TB013> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TB013" ;
+	:heuristic		"BGP_VARIABLE_COUNTING" ;
+	:patternIn		[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	"?s1 ?p1 ?o1" ;
+				  	  rdf:_2	"?s2 ?p1 ?o2"] ;
+	:patternOut 	[ rdf:type	rdf:Seq ;
+				  	  rdf:_1	"?s1 ?p1 ?o1" ;
+				  	  rdf:_2	"?s2 ?p1 ?o2"] .
+					  
+<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TB014> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TB014" ;
+	:heuristic		"BGP_GRAPH_STATISTICS_HANDLER" ;
+	:patternIn		[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	"?s1 <http://example.org#firstname> ?o1" ;
+				  	  rdf:_2	"?s1 <http://example.org#msn> ?o2" ] ;
+	:patternOut 	[ rdf:type	rdf:Seq ;
+					  rdf:_1	"?s1 <http://example.org#msn> ?o2" ;
+					  rdf:_2	"?s1 <http://example.org#firstname> ?o1" ] .
+					  
+<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TB015> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TB015" ;
+	:heuristic		"BGP_GRAPH_STATISTICS_HANDLER" ;
+	:patternIn		[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	"?s1 <http://example.org#firstname> ?o1" ;
+				  	  rdf:_2	"?s1 <http://example.org#lastname> ?o2" ] ;
+	:patternOut 	[ rdf:type	rdf:Seq ;
+					  rdf:_1	"?s1 <http://example.org#firstname> ?o1" ;
+					  rdf:_2	"?s1 <http://example.org#lastname> ?o2" ] .
+					  
+<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TB016> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TB016" ;
+	:heuristic		"BGP_GRAPH_STATISTICS_HANDLER" ;
+	:patternIn		[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	"<http://example.org#Person1> <http://example.org#firstname> ?o1" ;
+				  	  rdf:_2	"<http://example.org#Person1> <http://example.org#lastname> ?o2" ] ;
+	:patternOut 	[ rdf:type	rdf:Seq ;
+					  rdf:_1	"<http://example.org#Person1> <http://example.org#firstname> ?o1" ;
+					  rdf:_2	"<http://example.org#Person1> <http://example.org#lastname> ?o2" ] .
+					  
+<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TB017> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TB017" ;
+	:heuristic		"BGP_GRAPH_STATISTICS_HANDLER" ;
+	:patternIn		[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	"<http://example.org#Person1> <http://example.org#firstname> ?o1" ;
+				  	  rdf:_2	"<http://example.org#Person1> <http://example.org#msn> ?o2" ] ;
+	:patternOut 	[ rdf:type	rdf:Seq ;
+					  rdf:_1	"<http://example.org#Person1> <http://example.org#msn> ?o2" ;
+					  rdf:_2	"<http://example.org#Person1> <http://example.org#firstname> ?o1" ] .
+					  
+<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TB018> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TB018" ;
+	:heuristic		"BGP_GRAPH_STATISTICS_HANDLER" ;
+	:patternIn		[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	"?s1 ?p1 ?o1" ;
+				  	  rdf:_2	"?s1 ?p2 xxx-xxx-xxx" ] ;
+	:patternOut 	[ rdf:type	rdf:Seq ;
+					  rdf:_1	"?s1 ?p2 xxx-xxx-xxx" ;
+					  rdf:_2	"?s1 ?p1 ?o1" ] .
+					  
+<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TB019> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TB019" ;
+	:heuristic		"BGP_GRAPH_STATISTICS_HANDLER" ;
+	:patternIn		[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	"?s1 <http://example.org#firstname> ?o1" ;
+				  	  rdf:_2	"?s1 ?p2 xxx-xxx-xxx" ] ;
+	:patternOut 	[ rdf:type	rdf:Seq ;
+					  rdf:_1	"?s1 <http://example.org#firstname> ?o1" ;
+					  rdf:_2	"?s1 ?p2 xxx-xxx-xxx" ] .
+					  
+<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TB020> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TB020" ;
+	:heuristic		"BGP_GRAPH_STATISTICS_HANDLER" ;
+	:patternIn		[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	"?s1 <http://example.org#firstname> ?o1" ;
+				  	  rdf:_2	"?s1 ?p2 person3@msn.com" ] ;
+	:patternOut 	[ rdf:type	rdf:Seq ;
+					  rdf:_1	"?s1 ?p2 person3@msn.com" ;
+					  rdf:_2	"?s1 <http://example.org#firstname> ?o1" ] .
+					  
+<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TB021> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TB021" ;
+	:heuristic		"BGP_GRAPH_STATISTICS_HANDLER" ;
+	:patternIn		[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	"?s1 <http://example.org#phone> ?o1" ;
+				  	  rdf:_2	"?s2 ?p2 ?o1" ] ;
+	:patternOut 	[ rdf:type	rdf:Seq ;
+					  rdf:_1	"?s1 <http://example.org#phone> ?o1" ;
+				  	  rdf:_2	"?s2 ?p2 ?o1" ] .
+				  	  
+<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TB022> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TB022" ;
+	:heuristic		"BGP_GRAPH_STATISTICS_HANDLER" ;
+	:patternIn		[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	"?s1 ?p1 ?o1" ;
+				  	  rdf:_2	"?s2 <http://example.org#phone> ?o1" ] ;
+	:patternOut 	[ rdf:type	rdf:Seq ;
+					  rdf:_1	"?s2 <http://example.org#phone> ?o1" ;
+				  	  rdf:_2	"?s1 ?p1 ?o1" ] .
+				  	  
+<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TB023> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TB023" ;
+	:heuristic		"BGP_GRAPH_STATISTICS_HANDLER" ;
+	:patternIn		[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	"?s1 <http://example.org#phone> xxx-xxx-xxx" ;
+				  	  rdf:_2	"?s2 ?p2 xxx-xxx-xxx" ] ;
+	:patternOut 	[ rdf:type	rdf:Seq ;
+					  rdf:_1	"?s1 <http://example.org#phone> xxx-xxx-xxx" ;
+				  	  rdf:_2	"?s2 ?p2 xxx-xxx-xxx" ] .
+				  	  
+<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TB024> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TB024" ;
+	:heuristic		"BGP_GRAPH_STATISTICS_HANDLER" ;
+	:patternIn		[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	"?s1 ?p1 xxx-xxx-xxx" ;
+				  	  rdf:_2	"?s2 <http://example.org#phone> xxx-xxx-xxx" ] ;
+	:patternOut 	[ rdf:type	rdf:Seq ;
+					  rdf:_1	"?s2 <http://example.org#phone> xxx-xxx-xxx" ;
+				  	  rdf:_2	"?s1 ?p1 xxx-xxx-xxx" ] .
+				  	  
+<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TB025> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TB025" ;
+	:heuristic		"BGP_GRAPH_STATISTICS_HANDLER" ;
+	:patternIn		[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	"?s1 ?p1 ?o1" ;
+				  	  rdf:_2	"?s2 ?p2 ?o2" ;
+				  	  rdf:_3	"?s3 ?p3 ?o3" ] ;
+	:patternOut 	[ rdf:type	rdf:Seq ;
+					  rdf:_1	"?s1 ?p1 ?o1" ;
+				  	  rdf:_2	"?s2 ?p2 ?o2" ;
+				  	  rdf:_3	"?s3 ?p3 ?o3" ] .
+				  	  
+<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TB026> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TB026" ;
+	:heuristic		"BGP_GRAPH_STATISTICS_HANDLER" ;
+	:patternIn		[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	"?s1 ?p1 ?o1" ;
+				  	  rdf:_2	"?s1 ?p2 ?o2" ;
+				  	  rdf:_3	"?s1 ?p3 ?o3" ] ;
+	:patternOut 	[ rdf:type	rdf:Seq ;
+					  rdf:_1	"?s1 ?p1 ?o1" ;
+				  	  rdf:_2	"?s1 ?p2 ?o2" ;
+				  	  rdf:_3	"?s1 ?p3 ?o3" ] .
+				  	  
+<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TB027> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TB027" ;
+	:heuristic		"BGP_GRAPH_STATISTICS_HANDLER" ;
+	:patternIn		[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	"?s1 ?p1 ?o1" ;
+				  	  rdf:_2	"?s1 <http://example.org#firstname> ?o2" ;
+				  	  rdf:_3	"?s1 ?p3 ?o3" ] ;
+	:patternOut 	[ rdf:type	rdf:Seq ;
+					  rdf:_1	"?s1 <http://example.org#firstname> ?o2" ;
+				  	  rdf:_2	"?s1 ?p1 ?o1" ;
+				  	  rdf:_3	"?s1 ?p3 ?o3" ] .
+				  	  
+<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TB028> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TB028" ;
+	:heuristic		"BGP_GRAPH_STATISTICS_HANDLER" ;
+	:patternIn		[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	"?s1 ?p1 ?o1" ;
+				  	  rdf:_2	"?s1 ?p2 ?o2" ;
+				  	  rdf:_3	"?s1 <http://example.org#firstname> ?o3" ] ;
+	:patternOut 	[ rdf:type	rdf:Seq ;
+					  rdf:_1	"?s1 <http://example.org#firstname> ?o3" ;
+				  	  rdf:_2	"?s1 ?p1 ?o1" ;
+				  	  rdf:_3	"?s1 ?p2 ?o2" ] .
+				  	  
+<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TB029> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TB029" ;
+	:heuristic		"BGP_GRAPH_STATISTICS_HANDLER" ;
+	:patternIn		[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	"?s1 ?p1 ?o1" ;
+				  	  rdf:_2	"?s1 <http://example.org#firstname> ?o2" ;
+				  	  rdf:_3	"?s1 <http://example.org#msn> ?o3" ] ;
+	:patternOut 	[ rdf:type	rdf:Seq ;
+					  rdf:_1	"?s1 <http://example.org#msn> ?o3" ;
+				  	  rdf:_2	"?s1 <http://example.org#firstname> ?o2" ;
+				  	  rdf:_3	"?s1 ?p1 ?o1" ] .
+				  	  
+<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TB030> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TB030" ;
+	:heuristic		"BGP_GRAPH_STATISTICS_HANDLER" ;
+	:patternIn		[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	"?s1 <http://example.org#firstname> ?o1" ;
+				  	  rdf:_2	"?s1 ?p2 ?o2" ;
+				  	  rdf:_3	"?s1 <http://example.org#msn> ?o3" ] ;
+	:patternOut 	[ rdf:type	rdf:Seq ;
+					  rdf:_1	"?s1 <http://example.org#msn> ?o3" ;
+				  	  rdf:_2	"?s1 <http://example.org#firstname> ?o1" ;
+				  	  rdf:_3	"?s1 ?p2 ?o2" ] .
+				  	  
+<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TB031> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TB031" ;
+	:heuristic		"BGP_GRAPH_STATISTICS_HANDLER" ;
+	:patternIn		[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	"?s1 <http://example.org#firstname> ?o1" ;
+				  	  rdf:_2	"?s2 ?p2 ?o2" ;
+				  	  rdf:_3	"?s2 <http://example.org#msn> ?o3" ] ;
+	:patternOut 	[ rdf:type	rdf:Seq ;
+					  rdf:_1	"?s1 <http://example.org#firstname> ?o1" ;
+				  	  rdf:_2	"?s2 <http://example.org#msn> ?o3" ;
+				  	  rdf:_3	"?s2 ?p2 ?o2" ] .
+				  	  
+<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TB032> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TB032" ;
+	:heuristic		"BGP_GRAPH_STATISTICS_HANDLER" ;
+	:patternIn		[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	"?s1 <http://example.org#firstname> ?o1" ;
+				  	  rdf:_2	"?s1 <http://example.org#msn> ?o2" ;
+				  	  rdf:_3	"?s2 ?p3 ?o3" ] ;
+	:patternOut 	[ rdf:type	rdf:Seq ;
+					  rdf:_1	"?s1 <http://example.org#msn> ?o2" ;
+				  	  rdf:_2	"?s1 <http://example.org#firstname> ?o1" ;
+				  	  rdf:_3	"?s2 ?p3 ?o3" ] .
+				  	  
+<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TB033> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TB033" ;
+	:heuristic		"BGP_GRAPH_STATISTICS_HANDLER" ;
+	:patternIn		[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	"?s1 <http://example.org#firstname> ?o1" ;
+				  	  rdf:_2	"?s2 <http://example.org#msn> ?s1" ;
+				  	  rdf:_3	"?s3 ?p3 ?o3" ] ;
+	:patternOut 	[ rdf:type	rdf:Seq ;
+					  rdf:_1	"?s2 <http://example.org#msn> ?s1" ;
+				  	  rdf:_2	"?s1 <http://example.org#firstname> ?o1" ;
+				  	  rdf:_3	"?s3 ?p3 ?o3" ] .
+				 
+<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TB034> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TB034" ;
+	:heuristic		"BGP_GRAPH_STATISTICS_HANDLER" ;
+	:patternIn		[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	"?s1 <http://example.org#firstname> ?o1" ;
+				  	  rdf:_2	"?s3 ?p3 ?o3" ;
+				  	  rdf:_3	"?s2 <http://example.org#msn> ?s1" ] ;
+	:patternOut 	[ rdf:type	rdf:Seq ;
+					  rdf:_1	"?s2 <http://example.org#msn> ?s1" ;
+				  	  rdf:_2	"?s1 <http://example.org#firstname> ?o1" ;
+				  	  rdf:_3	"?s3 ?p3 ?o3" ] .
+				  	  
+<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TB035> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TB035" ;
+	:heuristic		"BGP_GRAPH_STATISTICS_HANDLER" ;
+	:patternIn		[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	"?s1 <http://example.org#firstname> ?o1" ;
+				  	  rdf:_2	"?s3 ?p3 ?o3" ;
+				  	  rdf:_3	"?o1 <http://example.org#msn> ?o2" ] ;
+	:patternOut 	[ rdf:type	rdf:Seq ;
+					  rdf:_1	"?o1 <http://example.org#msn> ?o2" ;
+				  	  rdf:_2	"?s1 <http://example.org#firstname> ?o1" ;
+				  	  rdf:_3	"?s3 ?p3 ?o3" ] .
+				  	  
+<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TB036> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TB036" ;
+	:heuristic		"BGP_GRAPH_STATISTICS_HANDLER" ;
+	:patternIn		[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	"?s1 <http://example.org#firstname> ?o1" ;
+				  	  rdf:_2	"?s3 ?p3 ?o3" ;
+				  	  rdf:_3	"?s2 <http://example.org#msn> ?o1" ] ;
+	:patternOut 	[ rdf:type	rdf:Seq ;
+					  rdf:_1	"?s2 <http://example.org#msn> ?o1" ;
+				  	  rdf:_2	"?s1 <http://example.org#firstname> ?o1" ;
+				  	  rdf:_3	"?s3 ?p3 ?o3" ] .
+				  	  
+<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TB037> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TB037" ;
+	rdfs:comment	"This is an interesting example: the ex:msn is more selective than the ex:firstname, hence it is executed first.
+					 However, the ex:firstname pattern does not join with the ex:msn pattern, thus, the less selective pattern is joined
+					 with the ex:msn pattern and the intermediate result set finally with the ex:firstname pattern." ;
+	:heuristic		"BGP_GRAPH_STATISTICS_HANDLER" ;
+	:patternIn		[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	"?s1 <http://example.org#firstname> ?o2" ;
+				  	  rdf:_2	"?s2 ?p2 ?s1" ;
+				  	  rdf:_3	"?s2 <http://example.org#msn> ?o3" ] ;
+	:patternOut 	[ rdf:type	rdf:Seq ;
+					  rdf:_1	"?s2 <http://example.org#msn> ?o3" ;
+				  	  rdf:_2	"?s2 ?p2 ?s1" ;
+				  	  rdf:_3	"?s1 <http://example.org#firstname> ?o2" ] .
+				  	  
+<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TB038> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TB038" ;
+	:heuristic		"BGP_GRAPH_STATISTICS_HANDLER" ;
+	:patternIn		[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	"?s1 <http://example.org#firstname> ?o2" ;
+				  	  rdf:_2	"?s2 ?p2 ?o2" ;
+				  	  rdf:_3	"?s1 <http://example.org#msn> ?o3" ] ;
+	:patternOut 	[ rdf:type	rdf:Seq ;
+					  rdf:_1	"?s1 <http://example.org#msn> ?o3" ;
+				  	  rdf:_2	"?s1 <http://example.org#firstname> ?o2" ;
+				  	  rdf:_3	"?s2 ?p2 ?o2" ] .
+				  	  
+<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TB039> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TB039" ;
+	rdfs:comment	"Note that the first pattern does not join with the rest, i.e. the BGP is a graph with two components." ;
+	:heuristic		"BGP_GRAPH_STATISTICS_HANDLER" ;
+	:patternIn		[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	"?s1 ?p1 ?o1" ;
+				  	  rdf:_2	"?s2 <http://example.org#firstname> ?o2" ;
+				  	  rdf:_3	"?s2 <http://example.org#msn> ?o3" ] ;
+	:patternOut 	[ rdf:type	rdf:Seq ;
+					  rdf:_1	"?s1 ?p1 ?o1" ;
+					  rdf:_2	"?s2 <http://example.org#msn> ?o3" ;
+				  	  rdf:_3	"?s2 <http://example.org#firstname> ?o2" ] .
+				  	  
+<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TB040> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TB040" ;
+	:heuristic		"BGP_GRAPH_STATISTICS_HANDLER" ;
+	:patternIn		[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	"?s2 <http://example.org#firstname> ?o2" ;
+				  	  rdf:_2	"?s1 ?p1 ?o1" ;
+				  	  rdf:_3	"?s2 <http://example.org#msn> ?o3" ] ;
+	:patternOut 	[ rdf:type	rdf:Seq ;
+					  rdf:_1	"?s2 <http://example.org#msn> ?o3" ;
+					  rdf:_2	"?s2 <http://example.org#firstname> ?o2" ;
+				  	  rdf:_3	"?s1 ?p1 ?o1" ] .
 					    	      			  			      			  		      			  				      			  
