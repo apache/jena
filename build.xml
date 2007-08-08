@@ -14,6 +14,9 @@
   <property name="zipfile"         value="${Name}-${version}.zip"/>
 
   <property name="src.dir"         value="src"/>
+  <property name="src-test.dir"    value="src-test"/>
+  <property name="src-ex.dir"      value="src-examples"/>
+
   <property name="src.build.dir"     location="bldsrc"/>
   <property name="classes.build.dir" location="bldbin"/>
   <property name="dist.root"       location="dist"/>
@@ -95,6 +98,9 @@
     
     <copy todir="${src.build.dir}">
       <fileset dir="${src.dir}" includes="**"/>
+      <fileset dir="${src-test.dir}" includes="**"/>
+      <fileset dir="${src-ex.dir}"  includes="**"/>
+
       <filterset>
 	<filterset refid="filters.general"/>
 	<filter token="build-time" value="${BUILD_TIME}" />

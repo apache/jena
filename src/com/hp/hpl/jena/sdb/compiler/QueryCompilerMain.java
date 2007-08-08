@@ -15,12 +15,12 @@ import com.hp.hpl.jena.sparql.algebra.op.OpExt;
 import com.hp.hpl.jena.sparql.algebra.op.OpModifier;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sdb.SDB;
+import com.hp.hpl.jena.sdb.compiler.rewrite.QuadBlockRewriteCompiler;
 import com.hp.hpl.jena.sdb.core.SDBRequest;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 import com.hp.hpl.jena.sdb.store.SQLBridge;
 import com.hp.hpl.jena.sdb.store.SQLBridgeFactory;
 
-import dev.rewrite.QuadBlockRewriteCompiler;
 
 
 public abstract class QueryCompilerMain implements QueryCompiler 

@@ -4,39 +4,14 @@
  * [See end of file]
  */
 
-package dev.rewrite;
+package com.hp.hpl.jena.sdb.compiler.rewrite;
 
 import com.hp.hpl.jena.sdb.compiler.QuadBlock;
-import com.hp.hpl.jena.sdb.compiler.QuadBlockCompiler;
-import com.hp.hpl.jena.sdb.compiler.SlotCompiler;
 import com.hp.hpl.jena.sdb.core.SDBRequest;
-import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 
-public class QuadBlockRewriteCompiler implements QuadBlockCompiler
+public interface QuadBlockRewrite
 {
-    QuadBlockRewrite qbr1 = new QBR_SubType() ;
-    QuadBlockRewrite qbr2 = new QBR_SubProperty() ;
-    private SDBRequest request ;
-    private QuadBlockCompiler baseCompiler ;
-    
-    public QuadBlockRewriteCompiler(SDBRequest request, QuadBlockCompiler baseCompiler)
-    {
-        this.request = request ;
-        this.baseCompiler = baseCompiler ;
-    }
-    
-    public SqlNode compile(QuadBlock quads)
-    {
-        quads = qbr1.rewrite(request, quads) ;
-        if ( false )
-            quads = qbr2.rewrite(request, quads) ;
-        return baseCompiler.compile(quads) ;
-        
-    }
-
-    public SlotCompiler getSlotCompiler()
-    { return baseCompiler.getSlotCompiler() ; }
-
+    public QuadBlock rewrite(SDBRequest request, QuadBlock quadBlock) ;
 }
 
 /*
