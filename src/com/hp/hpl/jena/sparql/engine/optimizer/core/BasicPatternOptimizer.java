@@ -32,7 +32,8 @@ public class BasicPatternOptimizer extends OptimizerBase
 	 * Initialize the BGP optimizer.
 	 * The default heuristic is used (variable counting)
 	 * 
-	 * @param cxt
+	 * @param context
+	 * @param graph
 	 * @param pattern
 	 */
 	public BasicPatternOptimizer(Context context, Graph graph, BasicPattern pattern)
@@ -42,23 +43,6 @@ public class BasicPatternOptimizer extends OptimizerBase
 		this.pattern = pattern ;
 		this.heuristic = broker.getBasicPatternHeuristic() ;
 	}
-	
-	/**
-	 * Init the BGP optimizer with a specific heuristic.
-	 * 
-	 * @param cxt
-	 * @param pattern
-	 * @param heuristic
-	 */
-	/*
-	public BasicPatternOptimizer(Context cxt, BasicPattern pattern, HeuristicBasicPattern heuristic)
-	{
-		super(cxt) ;
-		
-		this.pattern = pattern ;
-		this.heuristic = heuristic ;
-	}
-	*/
 	
 	/**
 	 * Given a BasicPattern, the method abstracts the BasicPattern as a BasicPatternGraph
