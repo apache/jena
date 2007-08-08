@@ -5,6 +5,7 @@
 
 package com.hp.hpl.jena.sparql.engine.optimizer.core;
 
+import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.sparql.util.Context;
 import com.hp.hpl.jena.sparql.engine.optimizer.heuristic.HeuristicsBroker;
 
@@ -21,9 +22,9 @@ public abstract class OptimizerBase
 {
 	protected HeuristicsBroker broker ;
 	
-	public OptimizerBase(Context context)
+	public OptimizerBase(Context context, Graph graph)
 	{
-		broker = new HeuristicsBroker(context) ;
+		broker = new HeuristicsBroker(context, graph) ;
 	}
 }
 

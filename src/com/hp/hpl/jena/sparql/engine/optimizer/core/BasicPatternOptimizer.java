@@ -8,6 +8,7 @@ package com.hp.hpl.jena.sparql.engine.optimizer.core;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.sparql.util.Context;
 import com.hp.hpl.jena.sparql.core.BasicPattern;
 import com.hp.hpl.jena.sparql.engine.optimizer.core.BasicPatternGraph;
@@ -34,9 +35,9 @@ public class BasicPatternOptimizer extends OptimizerBase
 	 * @param cxt
 	 * @param pattern
 	 */
-	public BasicPatternOptimizer(Context context, BasicPattern pattern)
+	public BasicPatternOptimizer(Context context, Graph graph, BasicPattern pattern)
 	{
-		super(context) ;
+		super(context, graph) ;
 		
 		this.pattern = pattern ;
 		this.heuristic = broker.getBasicPatternHeuristic() ;
