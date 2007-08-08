@@ -41,7 +41,7 @@ public class Run
 
         //runQParse() ;
         
-        String []a = { "--strict", "/home/afs/W3C/DataAccess/tests/data-r2/expr-builtin/m1.ttl" } ;
+        String []a = { "--strict", "file:///c:/home/afs/W3C/DataAccess/tests/data-r2/expr-builtin/manifest.ttl" } ;
         arq.qtest.main(a) ;
         System.exit(0) ;
         //execQuery(DIR+"data-3.ttl", DIR+"splitIRI-1.rq") ;
