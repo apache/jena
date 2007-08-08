@@ -63,9 +63,10 @@ public class TestHeuristicWeightNode extends TestCase
 	public static Test suite()
     {
         TestSuite ts = new TestSuite("TestHeuristicWeightNode") ;
-	    Model model = Util.readModel("testing/Optimizer/TestHeuristicWeightNode-manifest.n3") ;
+	    Model testsM = Util.readModel("testing/Optimizer/TestHeuristicWeightNode-manifest.n3") ;
+	    Model graphM = Util.readModel("testing/Optimizer/Test-data.n3") ;
         
-        QueryExecution qe = QueryExecutionFactory.create(queryTestCases(), model);
+        QueryExecution qe = QueryExecutionFactory.create(queryTestCases(), testsM);
         
 		try 
 		{
@@ -76,7 +77,7 @@ public class TestHeuristicWeightNode extends TestCase
 				QuerySolution solution = rs.nextSolution() ;
 				
 				String title = solution.getLiteral("title").getLexicalForm() ;
-				Heuristic heuristic = Util.getHeuristic(solution.getLiteral("heuristic").getLexicalForm(), ARQ.getContext()) ;
+				Heuristic heuristic = Util.getHeuristic(solution.getLiteral("heuristic").getLexicalForm(), ARQ.getContext(), graphM.getGraph()) ;
 				String node = solution.getLiteral("node").getLexicalForm() ;
 				double weight = solution.getLiteral("weight").getDouble() ;
 				BasicPattern pattern = getBasicPattern(node) ;
@@ -88,7 +89,7 @@ public class TestHeuristicWeightNode extends TestCase
 			qe.close() ; 
 		}
 		
-		model.close() ;
+		testsM.close() ;
 
 		return ts ;
     }

@@ -64,9 +64,10 @@ public class TestGraphOptimize extends TestCase
     {
 		Context cxt = ARQ.getContext() ;
         TestSuite ts = new TestSuite("TestGraphOptimize") ;
-	    Model model = Util.readModel("testing/Optimizer/TestGraphOptimize-manifest.n3") ;
+	    Model testsM = Util.readModel("testing/Optimizer/TestGraphOptimize-manifest.n3") ;
+	    Model graphM = Util.readModel("testing/Optimizer/Test-data.n3") ;
         
-        QueryExecution qe = QueryExecutionFactory.create(queryTestCases(), model);
+        QueryExecution qe = QueryExecutionFactory.create(queryTestCases(), testsM);
         
 		try 
 		{
@@ -76,10 +77,10 @@ public class TestGraphOptimize extends TestCase
 			{
 				QuerySolution solution = rs.nextSolution() ;
 				
-				String title = solution.getLiteral("title").getLexicalForm() ;	
-				Heuristic heuristic = Util.getHeuristic(solution.getLiteral("heuristic").getLexicalForm(), cxt) ;
-				Seq patternInR = model.getSeq(solution.getResource("patternIn")) ;
-				Seq patternOutR = model.getSeq(solution.getResource("patternOut")) ;
+				String title = solution.getLiteral("title").getLexicalForm() ;
+				Heuristic heuristic = Util.getHeuristic(solution.getLiteral("heuristic").getLexicalForm(), cxt, graphM.getGraph()) ;
+				Seq patternInR = testsM.getSeq(solution.getResource("patternIn")) ;
+				Seq patternOutR = testsM.getSeq(solution.getResource("patternOut")) ;
 				BasicPattern patternIn = getBasicPattern(patternInR) ;
 				BasicPattern patternOut = getBasicPattern(patternOutR) ;
 				
@@ -90,7 +91,7 @@ public class TestGraphOptimize extends TestCase
 			qe.close() ; 
 		}
 		
-		model.close() ;
+		testsM.close() ;
 
 		return ts ;
     }
@@ -127,6 +128,8 @@ public class TestGraphOptimize extends TestCase
 		   	   "?tc :heuristic ?heuristic ." +
 		   	   "?tc :patternIn ?patternIn ." +
 		   	   "?tc :patternOut ?patternOut ." +
+		   	   "OPTIONAL { ?tc :qpi ?qpi } " +
+		   	   "OPTIONAL { ?tc :sei ?sei } " +
 		   	   "}" +
 		   	   "ORDER BY ASC(?title)" ;
 	}
