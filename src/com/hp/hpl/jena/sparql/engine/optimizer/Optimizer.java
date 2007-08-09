@@ -42,7 +42,7 @@ import com.hp.hpl.jena.sparql.util.Context;
 public class Optimizer 
 {   
 	/**
-	 * Enable the ARQ optimizer.
+	 * Enable the ARQ optimizer usign the context provided
 	 * 
 	 * @param context
 	 */
@@ -57,14 +57,17 @@ public class Optimizer
 		context.set(ARQ.stageGenerator, new StageGenPropertyFunction(new StageGenOptimizedBasicPattern(stageGenerator))) ;
 	}
 	
-	/**
-	 * Enable the ARQ optimizer. The ARQ global context is used.
-	 */
+	/** Enable the ARQ optimizer using the ARQ context */
 	public static void enable()
 	{
 		enable(ARQ.getContext()) ;
 	}
 	
+	/** 
+	 * Disable the ARQ optimizer and reset to the context provided 
+	 * 
+	 * @param context
+	 */
 	public static void disable(Context context)
 	{		
 		StageGenerator other = null ;
@@ -78,22 +81,17 @@ public class Optimizer
 		context.set(ARQ.stageGenerator, other) ;
 	}
 	
+	/** Disable the ARQ optimizer and reset using the ARQ context */
 	public static void disable()
 	{
 		disable(ARQ.getContext()) ;
 	}
 	
-	/** @deprecated 
-	public static void init(Context context, Model seiModel, Model qpiModel)
-	{		
-		context.set(Constants.SEI, null) ;
-		context.set(Constants.QPI, null) ;
-	}
-	*/
-	
 	/**
 	 * Explain the optimization performed on a query
 	 * 
+	 * @param context
+	 * @param graph
 	 * @param query
 	 */
 	public static void explain(Context context, Graph graph, Query query)
