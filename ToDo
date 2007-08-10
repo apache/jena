@@ -14,6 +14,9 @@
        A  list or pairs (name expr)
        Make type safe in the Query class.
      Phase 2 detects inconsistences 
+
++ Check the better code in QueryIterTriplePattern.TripleMapper 
+  Still needs to delay the binding allocation.  
          
 + DateTime arithmetic and durations
   http://www.w3.org/TR/xpath-functions/#dateTime-arithmetic
