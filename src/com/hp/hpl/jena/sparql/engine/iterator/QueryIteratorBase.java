@@ -21,7 +21,7 @@ import com.hp.hpl.jena.query.QueryFatalException;
  * This class provides the general machinary for iterators.  This includes:
  * <ul>
  * <li>autoclose when the iterator runs out</li>
- * <li>ensuring query iterators only contain Bindings.
+ * <li>ensuring query iterators only contain Bindings</li>
  * </ul>
  * 
  * @author Andy Seaborne
@@ -32,6 +32,8 @@ public abstract class QueryIteratorBase
     extends PrintSerializableBase
     implements QueryIterator
 {
+    // Can this keep the next look ahead Binding
+    // so we have only "nextElement()" => null or Binding
     public static boolean traceIterators = false ; 
     private boolean finished = false ;
     Throwable stackTrace = null ; 
