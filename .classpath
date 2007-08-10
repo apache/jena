@@ -17,7 +17,6 @@
 	<classpathentry kind="lib" path="lib/xercesImpl.jar"/>
 	<classpathentry kind="lib" path="lib/xml-apis.jar"/>
 	<classpathentry kind="lib" path="jdbc/hsqldb.jar"/>
-	<classpathentry kind="lib" path="lib/junit-4.1.jar"/>
 	<classpathentry kind="lib" path="lib/commons-logging-1.1.jar"/>
 	<classpathentry kind="lib" path="lib/jenatest.jar"/>
 	<classpathentry kind="lib" path="lib/wstx-asl-3.0.0.jar"/>
@@ -25,5 +24,6 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/JDBC"/>
 	<classpathentry kind="lib" path="lib/arq.jar" sourcepath="arq-src.zip"/>
 	<classpathentry kind="lib" path="lib/arq-extra.jar" sourcepath="C:/home/afs/Projects/SDB/arq-src.zip"/>
+	<classpathentry kind="lib" path="lib/junit-4.4.jar"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>

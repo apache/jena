@@ -7,7 +7,7 @@
 package sdb.junit;
 import java.io.PrintStream;
 
-import org.junit.internal.runners.TextListener;
+import org.junit.internal.TextListener;
 import org.junit.runner.notification.Failure;
 
 // Enable tweaking of the output format.
