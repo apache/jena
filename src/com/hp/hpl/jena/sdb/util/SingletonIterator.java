@@ -9,72 +9,34 @@ package com.hp.hpl.jena.sdb.util;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-/** Iterator2 : the concatenation of two iterators.
- *  Supports Alg.append
- * 
- * @author Andy Seaborne
- * @version $Id$
- */
-
-public class Iterator2<T> implements Iterator<T>, Iterable<T>
+public class SingletonIterator<T> implements Iterator<T>, Iterable<T>
 {
-    private Iterator<? extends T> iter1 ;
-    private Iterator<? extends T> iter2 ;
-
-    public Iterator2(Iterator<? extends T> iter1, Iterator<? extends T> iter2)
-    {
-        this.iter1 = iter1 ;
-        this.iter2 = iter2 ;
-    }
-
+    private T thing = null ;
+    private boolean yielded = false ;
+    
+    public SingletonIterator(T thing) { this.thing = thing ; }
+    
     public boolean hasNext()
     {
-        if ( iter1 != null )
-        {
-            if ( iter1.hasNext() ) return true ;
-            // Iter1 ends
-            iter1 = null ;
-        }
-        
-        if ( iter2 != null )
-        {
-            if ( iter2.hasNext() ) return true ;
-            // Iter2 ends
-            iter2 = null ;
-        }
-        return false ; 
+        return ! yielded ;
     }
 
     public T next()
     {
-        if ( ! hasNext() )
-            throw new NoSuchElementException("Iterator2.next") ;
-        if ( iter1 != null )
-            return iter1.next();
-        if ( iter2 != null )
-            return iter2.next();
-        throw new Error("Iterator2.next") ;
+        if ( yielded )
+            throw new NoSuchElementException("SingletonIterator.next") ;
+        yielded = true ;
+        return thing ;
     }
 
     public void remove()
-    { 
-        if ( iter1 != null )
-        {
-            iter1.remove();
-            return ;
-        }
-        if ( iter2 != null )
-        {
-            iter2.remove();
-            return ;
-        }
-        throw new NoSuchElementException("Iterator2.remove") ;
-    }
+    { throw new NoSuchElementException("SingletonIterator.remove") ;}
 
     public Iterator<T> iterator()
     {
         return this ;
     }
+
 }
 
 /*
