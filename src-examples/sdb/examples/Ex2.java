@@ -34,7 +34,8 @@ public class Ex2
         
         StoreDesc storeDesc = new StoreDesc(LayoutType.LayoutTripleNodesHash, DatabaseType.Derby) ;
         
-        // A convenience operation: JDBC.makeURL("derby", "localhost", "DB/SDB2") ;
+        Connection con = DriverManager.getConnection("jdbc:fred:fredsite.com");
+        
         JDBC.loadDriverDerby() ;
         String jdbcURL = "jdbc:derby:DB/SDB2"; 
         
