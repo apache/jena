@@ -68,6 +68,8 @@
 
 + LARQ assembler
 
++ Implement IndexBuilderLiter.unindexStatement
+
 + LARQ Doc internals
   Fields: index, lex/lang/datatype, uri, bnode
 
