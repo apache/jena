@@ -54,11 +54,18 @@ public class JDBC
     
     static public String getDriver(DatabaseType dbType) { return driver.get(dbType) ; }
     
+    /** Explicitly load the HSQLDB driver */ 
     static public void loadDriverHSQL()  { loadDriver(driver.get(DatabaseType.HSQLDB)) ; }
+    /** Explicitly load the MySQL driver */ 
     static public void loadDriverMySQL() { loadDriver(driver.get(DatabaseType.MySQL)) ; }
+    /** Explicitly load the PostgreSQL driver */ 
     static public void loadDriverPGSQL() { loadDriver(driver.get(DatabaseType.PostgreSQL)); }
+    /** Explicitly load the Derby driver */ 
     static public void loadDriverDerby() { loadDriver(driver.get(DatabaseType.Derby)); }
+    /** Explicitly load the SQLServer driver */ 
     static public void loadDriverSQLServer() { loadDriver(driver.get(DatabaseType.SQLServer)); }
+   
+    /** Explicitly load the Oracle driver */ 
     static public void loadDriverOracle() { loadDriver(driver.get(DatabaseType.Oracle)); }
     
     static public void loadDriver(String className) { loadClass(className) ; }

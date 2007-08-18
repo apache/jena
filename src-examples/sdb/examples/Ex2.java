@@ -34,7 +34,7 @@ public class Ex2
         
         StoreDesc storeDesc = new StoreDesc(LayoutType.LayoutTripleNodesHash, DatabaseType.Derby) ;
         
-        JDBC.loadDriverDerby() ;
+        JDBC.loadDriverDerby() ;    // Multiple choices for Derby - load the embedded driver
         String jdbcURL = "jdbc:derby:DB/SDB2"; 
         
         // Passing null for user and password causes them to be extracted
