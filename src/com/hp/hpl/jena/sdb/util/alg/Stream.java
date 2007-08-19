@@ -8,7 +8,7 @@ package com.hp.hpl.jena.sdb.util.alg;
 
 import java.util.*;
 
-import com.hp.hpl.jena.sdb.util.Alg;
+import com.hp.hpl.jena.sdb.util.IterFunc;
 
 
 
@@ -36,25 +36,25 @@ public class Stream<T> implements Iterable<T>
     { return iterator ; }
 
     public Set<T> toSet()
-    { return Alg.toSet(iterator) ; }
+    { return IterFunc.toSet(iterator) ; }
 
     public List<T> toList()
-    { return Alg.toList(iterator) ; } 
+    { return IterFunc.toList(iterator) ; } 
     
     public <R> R reduce(Accumulate<T, R> aggregator)
-    { return Alg.reduce(iterator, aggregator) ; }
+    { return IterFunc.reduce(iterator, aggregator) ; }
     
     public void apply(Action<T> action)
-    { Alg.apply(iterator, action) ; }
+    { IterFunc.apply(iterator, action) ; }
     
     public Stream<T> filter(Filter<T> filter)
-    { return new Stream<T>(Alg.filter(iterator, filter)) ; }
+    { return new Stream<T>(IterFunc.filter(iterator, filter)) ; }
 
     public <R> Stream<R> map(Transform<T, R> converter)
-    { return new Stream<R>(Alg.map(iterator, converter)) ; }
+    { return new Stream<R>(IterFunc.map(iterator, converter)) ; }
 
     @Override
-    public String toString() { return Alg.asString(iterator()) ; }
+    public String toString() { return IterFunc.asString(iterator()) ; }
     
     // --------
     

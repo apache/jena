@@ -18,7 +18,7 @@ import com.hp.hpl.jena.sparql.util.IndentedLineBuffer;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
 import com.hp.hpl.jena.sparql.util.Printable;
 
-public class Alg
+public class IterFunc
 {
     // ---- Common operations 
     

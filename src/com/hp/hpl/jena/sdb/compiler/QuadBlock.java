@@ -6,7 +6,7 @@
 
 package com.hp.hpl.jena.sdb.compiler;
 
-import static com.hp.hpl.jena.sdb.util.Alg.apply;
+import static com.hp.hpl.jena.sdb.util.IterFunc.apply;
 
 import java.util.ArrayList;
 import java.util.List;

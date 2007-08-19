@@ -29,7 +29,7 @@ import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlRestrict;
 import com.hp.hpl.jena.sdb.sql.ResultSetJDBC;
 import com.hp.hpl.jena.sdb.sql.SDBExceptionSQL;
-import static com.hp.hpl.jena.sdb.util.Alg.* ;
+import static com.hp.hpl.jena.sdb.util.IterFunc.* ;
 import com.hp.hpl.jena.sdb.util.alg.Transform;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.core.Var;

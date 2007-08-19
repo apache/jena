@@ -29,36 +29,36 @@ public class Iter<T> implements Iterable<T>
     
     public Set<T> toSet()
     {
-        return Alg.toSet(iterator) ;
+        return IterFunc.toSet(iterator) ;
     }
 
     public List<T> toList()
     {
-        return Alg.toList(iterator) ;
+        return IterFunc.toList(iterator) ;
     }
 
     public Iter<T> filter(Filter<T> filter)
     {
-        return iter(Alg.filter(iterator, filter)) ;
+        return iter(IterFunc.filter(iterator, filter)) ;
     }
 
     public <R> Iter<R> map(Transform<T, R> converter)
     {
-        return iter(Alg.map(iterator, converter)) ;
+        return iter(IterFunc.map(iterator, converter)) ;
     }
 
     public <R> R reduce(Accumulate<T, R> aggregator)
     {
-        return Alg.reduce(iterator, aggregator) ;
+        return IterFunc.reduce(iterator, aggregator) ;
     }
 
     public void apply(Action<T> action)
     {
-        Alg.apply(iterator, action) ;
+        IterFunc.apply(iterator, action) ;
     }
 
-    public String asString() { return Alg.asString(iterator) ; }
-    public String asString(String sep) { return Alg.asString(iterator, sep) ; }
+    public String asString() { return IterFunc.asString(iterator) ; }
+    public String asString(String sep) { return IterFunc.asString(iterator, sep) ; }
     
     public Iter<T> append(Iter< ? extends T> iter)
     {

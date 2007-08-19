@@ -18,7 +18,7 @@ import com.hp.hpl.jena.graph.query.*;
 import com.hp.hpl.jena.sdb.engine.QueryEngineSDB;
 import com.hp.hpl.jena.sdb.shared.SDBNotImplemented;
 import com.hp.hpl.jena.sdb.store.DatasetStoreGraph;
-import com.hp.hpl.jena.sdb.util.Alg;
+import com.hp.hpl.jena.sdb.util.IterFunc;
 import com.hp.hpl.jena.sdb.util.alg.Transform;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.OpVars;
@@ -98,7 +98,7 @@ public class GraphQueryHandlerSDB extends SimpleQueryHandler
                     return d ;
                 }
             };
-            return WrappedIterator.create(Alg.map(qIter, b2d)) ;
+            return WrappedIterator.create(IterFunc.map(qIter, b2d)) ;
         }
     }
 }

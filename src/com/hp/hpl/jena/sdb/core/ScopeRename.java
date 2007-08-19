@@ -6,8 +6,8 @@
 
 package com.hp.hpl.jena.sdb.core;
 
-import static com.hp.hpl.jena.sdb.util.Alg.map;
-import static com.hp.hpl.jena.sdb.util.Alg.toSet;
+import static com.hp.hpl.jena.sdb.util.IterFunc.map;
+import static com.hp.hpl.jena.sdb.util.IterFunc.toSet;
 
 import java.util.HashMap;
 import java.util.Map;

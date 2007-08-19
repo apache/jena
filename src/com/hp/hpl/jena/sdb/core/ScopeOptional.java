@@ -9,7 +9,7 @@ package com.hp.hpl.jena.sdb.core;
 import java.util.Set;
 
 import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.sdb.util.Alg;
+import com.hp.hpl.jena.sdb.util.IterFunc;
 
 public class ScopeOptional implements Scope
 {
@@ -39,7 +39,7 @@ public class ScopeOptional implements Scope
     public Set<ScopeEntry> findScopes()
     {
         Set<ScopeEntry> x = scope.findScopes() ;
-        Alg.apply(x, ScopeEntry.SetOpt) ;
+        IterFunc.apply(x, ScopeEntry.SetOpt) ;
         return x ;
     }
     

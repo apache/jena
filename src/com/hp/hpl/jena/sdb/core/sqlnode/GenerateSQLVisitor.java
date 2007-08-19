@@ -24,7 +24,7 @@ import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExpr;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExprList;
 import com.hp.hpl.jena.sdb.shared.SDBNotImplemented;
 import com.hp.hpl.jena.sdb.sql.SQLUtils;
-import static com.hp.hpl.jena.sdb.util.Alg.* ;
+import static com.hp.hpl.jena.sdb.util.IterFunc.* ;
 import com.hp.hpl.jena.sdb.util.Pair;
 import com.hp.hpl.jena.sdb.util.alg.Transform;
 import com.hp.hpl.jena.sparql.core.Var;
