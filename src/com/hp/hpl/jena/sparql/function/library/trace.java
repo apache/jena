@@ -57,7 +57,7 @@ public class trace implements Function
         if ( args.size() != 1 )
             throw new ExprEvalException("Function '"+Utils.className(this)+" Wanted 1, got "+args.size()) ;
         
-        Expr expr = (Expr)args.get(0) ;
+        Expr expr = args.get(0) ;
         String s = FmtExprARQSubst.format(expr, binding) ;
         
         try {

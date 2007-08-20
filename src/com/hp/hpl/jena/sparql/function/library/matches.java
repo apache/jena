@@ -37,15 +37,15 @@ public class matches implements Function
         if ( myArgs != args )
             throw new ARQInternalErrorException("matches: Arguments have changed since checking") ;
 
-        Expr expr = (Expr)args.get(0) ;
+        Expr expr = args.get(0) ;
         E_Regex regexEval = regex ;
         
         if ( regexEval == null )
         {
-            Expr e1 = (Expr)args.get(1) ;
+            Expr e1 = args.get(1) ;
             Expr e2 = null ;
             if ( args.size() == 3 )
-                e2 = (Expr)args.get(2) ;
+                e2 = args.get(2) ;
 
             String pattern = e1.eval(binding, env).getString() ;
             String flags = (e2==null)?null : e2.eval(binding, env).getString() ;

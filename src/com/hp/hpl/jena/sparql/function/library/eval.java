@@ -46,7 +46,7 @@ public class eval implements Function
         if ( args.size() != 1 )
             throw new ARQInternalErrorException("function eval: Arg list not of size 1") ;
         
-        Expr ex = (Expr)args.get(0) ;
+        Expr ex = args.get(0) ;
         try {
             NodeValue v = ex.eval(binding, env) ;
             return v ;

@@ -191,7 +191,7 @@ public class OpWriter
             {
                 start(opBGP, NoNL) ;
                 out.print(" ") ;
-                formatTriple((Triple)opBGP.getPattern().get(0)) ;
+                formatTriple(opBGP.getPattern().get(0)) ;
                 finish(opBGP) ;
                 return ;
             }

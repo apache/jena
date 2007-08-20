@@ -49,16 +49,13 @@ public class BasicPattern
     
     public boolean equiv(BasicPattern other, NodeIsomorphismMap isoMap)
     { 
-        if ( ! ( other instanceof BasicPattern) ) 
-            return false ;
-        BasicPattern bp = (BasicPattern)other ;
-        if ( this.triples.size() != bp.triples.size() )
+        if ( this.triples.size() != other.triples.size() )
             return false ;
         
         for ( int i = 0 ; i < this.triples.size() ; i++ )
         {
             Triple t1 = get(i) ;
-            Triple t2 = bp.get(i) ;
+            Triple t2 = other.get(i) ;
             
             if ( ! Utils.tripleIso(t1, t2, isoMap) )
                 return false ;

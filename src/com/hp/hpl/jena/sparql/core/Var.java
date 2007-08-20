@@ -69,7 +69,7 @@ public class Var extends Node_Variable
     { 
         if ( this == other ) return true ;
         if ( ! ( other instanceof Var ) ) return false ;
-        return super.equals((Var)other) ;
+        return super.equals(other) ;
     }
     
 //    //@Override
@@ -124,7 +124,7 @@ public class Var extends Node_Variable
             if ( obj instanceof String )
                 x.add(Var.alloc((String)obj)) ;
             else if ( obj instanceof Var )
-                x.add(((Var)obj)) ;
+                x.add(obj) ;
             else
                 throw new ARQInternalErrorException("Element of a var list is not a string or a var: "+obj) ;
         }
@@ -140,7 +140,7 @@ public class Var extends Node_Variable
             if ( obj instanceof Var )
                 x.add(((Var)obj).getVarName()) ;
             else if ( obj instanceof String )
-                x.add((String)obj) ;
+                x.add(obj) ;
             else
                 throw new ARQInternalErrorException("Element of a var list is not a string or a var: "+obj) ;
         }
@@ -170,7 +170,7 @@ public class Var extends Node_Variable
             if ( obj instanceof Var )
                 x.add(((Var)obj).getVarName()) ;
             else if ( obj instanceof String )
-                x.add((String)obj) ;
+                x.add(obj) ;
             else
                 throw new ARQInternalErrorException("Element of a var list is not a string or a var: "+obj) ;
         }

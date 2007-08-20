@@ -382,7 +382,7 @@ public class Functions
             // No decimal round in Java 1.4
             return (int)Math.round(nv.getDecimal().doubleValue()) ;
         
-        if ( nv.isFloat()   ) return (int)Math.round(nv.getFloat()) ;
+        if ( nv.isFloat()   ) return Math.round(nv.getFloat()) ;
         if ( nv.isDouble()  ) return (int)Math.round(nv.getDouble()) ;
         throw new ExprEvalException("Not a number:"+nv) ;
     }

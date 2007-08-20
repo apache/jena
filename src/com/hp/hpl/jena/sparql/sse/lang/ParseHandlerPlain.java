@@ -145,7 +145,7 @@ public class ParseHandlerPlain implements ParseHandler
         emitIRI(line, column, iriStr) ;
     }
 
-    protected ItemList currentList()        { return (ItemList)listStack.getCurrent() ; }
+    protected ItemList currentList()        { return listStack.getCurrent() ; }
     protected ItemList popList()            { depth-- ; setCurrentItem(null) ; return listStack.pop() ; }
     protected void pushList(ItemList list)  { listStack.push(list) ; depth++ ; }
     

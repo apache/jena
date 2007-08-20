@@ -27,7 +27,7 @@ public abstract class ExprFunctionN extends ExprFunction
         i = i-1 ;
         if ( args.size() <= i )
             return null ;
-        return (Expr)args.get(i) ;
+        return args.get(i) ;
     }
 
     public int numArgs() { return args.size() ; }
@@ -39,7 +39,7 @@ public abstract class ExprFunctionN extends ExprFunction
         ExprList newArgs = new ExprList() ;
         for ( int i = 1 ; i <= numArgs() ; i++ )
         {
-            Expr e = (Expr)getArg(i) ;
+            Expr e = getArg(i) ;
             e = e.copySubstitute(binding, foldConstants) ;
             newArgs.add(e) ;
         }

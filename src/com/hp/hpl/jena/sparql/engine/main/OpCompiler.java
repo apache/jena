@@ -162,7 +162,7 @@ public class OpCompiler
         // Merge a casaded union
         while (opUnion.getRight() instanceof OpUnion)
         {
-            Op opUnionNext = (OpUnion)opUnion.getRight() ;
+            Op opUnionNext = opUnion.getRight() ;
             x.add(opUnionNext) ;
         }
         x.add(opUnion.getRight()) ;
