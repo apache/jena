@@ -40,7 +40,7 @@ public class QuadBlock extends ArrayList<Quad> implements Iterable<Quad>, PrintS
         super() ;
         // Needs two steps to allow the @SuppressWarnings on a statement.
         @SuppressWarnings("unchecked")
-        List<Quad> q = (List<Quad>)quadPattern.getQuads() ;
+        List<Quad> q = quadPattern.getQuads() ;
         this.addAll(q) ;
         graphNode = quadPattern.getGraphNode() ;
     }

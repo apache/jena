@@ -230,12 +230,12 @@ public class QC
             LogFactory.getLog(QC.class).warn("No project variables") ;
         
         // Add the ORDER BY variables
-        List<SortCondition> orderConditions = (List<SortCondition>)query.getOrderBy() ;
+        List<SortCondition> orderConditions = query.getOrderBy() ;
         if ( orderConditions != null )
         {
             for ( SortCondition sc : orderConditions )
             {
-                Set<Var> x = (Set<Var>)sc.getExpression().getVarsMentioned() ;
+                Set<Var> x = sc.getExpression().getVarsMentioned() ;
                 for ( Var v :  x )
                 {
                     if ( ! vars.contains(v) )
