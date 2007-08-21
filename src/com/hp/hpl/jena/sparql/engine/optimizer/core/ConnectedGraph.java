@@ -369,6 +369,7 @@ public class ConnectedGraph
 		while (nodeQEP.size() < this.nodes.size())
 		{
 			edge = getNextEdge(nodeQEP, edges) ;
+			edgeQEP.add(edge) ;
 			edges.remove(edge) ;
 			nodes = edge.nodes() ;
 			Collections.sort(nodes, new NodeComparator()) ;
@@ -379,7 +380,6 @@ public class ConnectedGraph
 				GraphNode node = (GraphNode)iter.next() ;
 			
 				nodeQEP.add(node) ;
-				edgeQEP.add(edge) ;
 			}
 		}
 		

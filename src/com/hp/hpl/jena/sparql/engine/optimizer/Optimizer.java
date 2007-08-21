@@ -69,16 +69,8 @@ public class Optimizer
 	 * @param context
 	 */
 	public static void disable(Context context)
-	{		
-		StageGenerator other = null ;
-		StageGenerator stageGenerator = (StageGenerator)context.get(ARQ.stageGenerator) ;
-		
-		if (stageGenerator instanceof StageGenOptimizedBasicPattern)
-			other = ((StageGenOptimizedBasicPattern)stageGenerator).getOther() ;
-		else
-			other = StageBuilder.getGenerator() ;
-				
-		context.set(ARQ.stageGenerator, other) ;
+	{				
+		context.set(ARQ.stageGenerator, StageBuilder.standardGenerator()) ;
 	}
 	
 	/** Disable the ARQ optimizer and reset using the ARQ context */
