@@ -1,144 +1,84 @@
-==== ARQ 2.0
+==== ARQ 2.1 beta
 
-ARQ 2.0 is a complete implementation of SPARQL including
+ARQ 2.1 beta is a complete implementation of SPARQL including
 support for custom filter function, property functions
-and free text search.
+and free text search.  It also provides an update language
+based on SPARQL.
 
-This release also includes a first implementation of the
-SPARQL/Update language.  The API for this is not yet stable;
-suggestions and feedback on it's utility most welcome.
+We are actively seeking feedback on the new query optimizer.  Please
+let us know if it works for you so we can move from beta to full release.
 
-ARQ 2.0 provides the same external API as ARQ 1.5.  Internally,
-query execution follows the SPARQL algebra, in development by
-the RDF Data Access Working Group.  There has been significant
-reorganisation and renaming of implementation code to align with
-terminology of the SPARQL specification.
+I'd like to thank Markus for his work on the optimizer for ARQ.
 
-This version also makes it easier to reuse and extend ARQ.  
-ARQ can also be used just as a SPARQL parser, as a SPARQL algebra
-generator or as a basis for specialised query engines.
+== Cost-based Optimizer 
 
-As well as custom functions and custom property functions, the 
-SPARQL algebra can be extended with new operators.  There is a 
-new internal language for reading and writing algebra expressions
-directly, allowing experimentation in query optimization or query
-features not available in SPARQL currently.  
+The ARQ-2.1-beta release includes a static cost-based optimizer for
+Basic Graph Patterns for in-memory models. The optimizer uses heuristics
+to estimate the execution cost of triple patterns and reorders the patterns
+of a BGP according to their estimated costs. The optimizer is enabled by
+default in ARQ but may be disabled if this should be required.
+
+Please refer to the documentation for further information.
+
+We are actively seeking feedback about the optimizer. Please don't hesitate to send us any comments or problems.
+
+== Remote query support
+
+The ARQ query language, an extension of SPARQL, includes the ability
+to call a remote SPARQL service using the SERVICE form.  
+
+  SERVICE <serviceEndPoint> { pattern }
+  
+The pattern is sent to and executed at the remote service.  ARQ combines the
+results with the locally part of the query.  The algebra supports a new
+operation, OpService, for this.  Algebra expression can be turned back into
+SPARQL query syntax.
+
+== Links
 
 Download:
-    http://prdownloads.sourceforge.net/jena/ARQ-2.0.zip
+  http://prdownloads.sourceforge.net/jena/ARQ-2.1-beta.zip
+  Use jena.jar in this download - ARQ does not work with Jena.2.5.3
 
 Home page:
-	http://jena.sourceforge.net/ARQ/
+  http://jena.sourceforge.net/ARQ/
 
 ARQ is also available via anonymous SVN:
-https://jena.svn.sourceforge.net/svnroot/jena/ARQ/
+  https://jena.svn.sourceforge.net/svnroot/jena/ARQ/
 
 SPARQL is described in:
   http://www.w3.org/TR/rdf-sparql-query/
-
-== New features
-
-Two new features in this release:
-
-1/ A first cut at a SPARQL/Update API in "com.hp.hpl.jena.update" 
-   This API is not considered stable.  Your comments will be gratefully received.
-   There is code to read and write SPARQL/Update requests.
-   It should meet the latest
-     http://jena.hpl.hp.com/~afs/SPARQL-Update.html
-   which has had a couple of grammar tweaks applied (version 2).
-
-2/ Additonal control for queries with ARQ/Lucene (LARQ)
-   Can now get back the hit score for each match
-   Can now specify limits on scoring and/or hit count just for the Lucene match.
-
-   e.g. all these propert function calls work:
-
-   ?literal pf:textMatch '+text' .
-   (?literal ?score) pf:textMatch '+text' .
-   (?literal ?score) pf:textMatch ('+text' 0.5) .
-   (?literal ?score) pf:textMatch ('+text' 1000 0.5) .
-
-    Either or both of the Lucene limits can be supplied.
-
-== Changes to SPARQL
-
-There are changes to the correct results from SPARQL queries in
-this release to reflect the new SPARQL algebra:
-
-+ {} form scoping delimiters
-  + { FILTER(?v > 3) :z : p ?v } is the same as 
-     { :z : p ?v FILTER(?v > 3) }
-    { :z : p ?v { FILTER (?v > 3) } } 
-  + Variables outside the group are not in scope.
-    { :z : p ?v { FILTER (?v > 3) } } has no solutions.
-    Any extraneous {} around FILTERs may cause different results.
-  + Results from corner cases of doubly nested OPTIONALs change.
-+ Increased characters in prefixed names - leading digits in the local part.
-
-== Changes to applications
   
-The function library and property function library have both moved:
-The correct base URIs are now:
-    Functions: http://jena.hpl.hp.com/ARQ/function#
-    Property functions: http://jena.hpl.hp.com/ARQ/property#
-
-These are the perferred prefix URIs.
-
-The code now resides in packages "com.hp.hpl.jena.sparql.function.library" and
-"com.hp.hpl.jena.sparql.pfunction.library".  Old URIs using the old package
-name and "java:" should work because there is a redirection left in-place.
-
-== Other Enhancements
-
-Preliminary support for SPARQL/Update.  (The API is unstable.)
-
-The Lucene-index property function (LARQ) now includes:
- + access to the matching score 
- + limits, by score and by number of Lucene matches
+SPARQL-Update is described in:
+  http://jena.hpl.hp.com/~afs/SPARQL-Update.html
 
 == Status
 
 The implementation of SPARQL is complete and meets the
-SPARQL current editors' working draft and Last Call design.
+SPARQL current editors' working draft and Candidate Recommendation.
+
+ARQ passes all the DAWG tests.
 
 Latest published:
-http://www.w3.org/TR/rdf-sparql-query/
+  http://www.w3.org/TR/rdf-sparql-query/
 
 Editors' working draft:
-http://www.w3.org/2001/sw/DataAccess/rq23/rq25.html
+  http://www.w3.org/2001/sw/DataAccess/rq23/rq25.html
 
 Definition of SPARQL:
-http://www.w3.org/2001/sw/DataAccess/rq23/rq25.html#sparqlDefinition
+  http://www.w3.org/2001/sw/DataAccess/rq23/rq25.html#sparqlDefinition
 
 == Notes
 
-Several query engines are available:
++ The old ARQ-1 query engine "engine1" has been removed.
 
- + Main query engine for optimization and efficient execution
- + Reference engine for checking functionality
-    (implements the SPARQL evaluation semantics very simply for clarity
-     and validation)
-  + Remote access engine for querying SPARQL endpoints over HTTP.
-  + The query engine from ARQ1, for exact ARQ1 semantics and to assist
-    in migration (deprecated for new applications, it and will be removed
-    sometime
-  + RDQL engine
+== Online Services
 
-
-Not in ARQ 2.0:
-
-Extensions beyond the SPARQL syntax: UNSAID and EXT. 
-OPTIONAL/!bound queries are support.
-
-More details in ChangeLog.txt
-
-== Services
-
-SPARQL validator: 
-http://www.sparql.org/validator.html
+SPARQL syntax validator: 
+  http://www.sparql.org/validator.html
 
 SPARQL processor:
-http://www.sparql.org/sparql.html
+  http://www.sparql.org/sparql.html
 
 == Support and Questions
 
@@ -149,5 +89,5 @@ General questions and comments on SPARQL to jena-dev or
     public-sparql-dev@w3.org
     
 Formal comments specific to the SPARQL query language,
-protocol or result set docuemnts to:
+protocol or result set documents to:
 	public-rdf-dawg-comments@w3.org

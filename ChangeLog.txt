@@ -7,6 +7,8 @@ ARQ 2.1
 + Cost-based optimizer for basic graph patterns on in-memory graphs. 
   ** Uses the version of jena shipped with this release, can't use an earlier one.   
 
++ Convert algebra expressions back into a SPARQL query (see OpToSyntax).
+
 + Old "NodeToLabelMap" => "NodeIsomorphismMap"
   Affects Element and Op ".equalTo" operation signature.
 
