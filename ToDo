@@ -3,6 +3,8 @@
 ++ ** Document "stages"
 ++ ** Document "update API"
 ++ Algebra building src-examples 
+++ javadoc-all in the build = 5M of zip.
+++ SERVICE doc
 -----
 
 + OpOrder to take an ExprList

@@ -1,0 +1,66 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<!--
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+ Firefox gets it wrong (puts a marging at the top) if the declarations as included 
+-->
+
+<head>
+<title>ARQ - Basic Federated SPARQL Query</title>
+<link rel="stylesheet" type="text/css" href="styles/doc.css" />
+</head>
+<body>
+
+<h1>ARQ - Basic Federated SPARQL Query</h1>
+
+			<p>There are already ways to access remote RDF data. The simplest is 
+			to read a document which is an RDF graph and query it. Another way 
+			is with the <a href="http://www.w3.org/TR/rdf-sparql-protocol/">
+			SPARQL protocol</a> which allows a query to be sent to a remote 
+			service endpoint and the results sent back (in RDF, or an
+			<a href="http://www.w3.org/TR/rdf-sparql-XMLres/">XML-based results 
+			format</a> or even a
+			<a href="http://www.w3.org/TR/rdf-sparql-json-res/">JSON one</a>).</p>
+<p>The SERVICE extension adds the ability to make SPARQL protocol calls within a 
+query, not just send the whole query to the remote service.</p>
+			<h2>Syntax</h2>
+			<p>A new keyword <code>SERVICE</code> is added to the extended 
+			SPARQL query language in ARQ. 
+			This keyword causes the sub-pattern to be sent to a named SPARQL 
+			service endpoint, and not matched against a local graph.</p>
+			<pre class="box">PREFIX : &lt;http://example/&gt;
+PREFIX  dc:     &lt;http://purl.org/dc/elements/1.1/&gt;
+
+SELECT ?a
+FROM &lt;mybooks.rdf&gt;
+{
+  ?b dc:title ?title .
+  <b>SERVICE</b> &lt;http://sparql.org/books&gt;
+     { ?s dc:title ?title . ?s dc:creator ?a }
+}</pre>
+			<h2>Algebra</h2>
+			<p>There is a new operator in the algebra.</p>
+			<pre class="box">(prefix ((dc: &lt;http://purl.org/dc/elements/1.1/&gt;))
+  (project (?a)
+    (join
+      (BGP [triple ?b dc:title ?title])
+      (<b>service</b> &lt;http://sparql.org/books&gt;
+          (BGP
+            [triple ?s dc:title ?title]
+            [triple ?s dc:creator ?a]
+          ))
+      )))</pre>
+			<h2>Performance Considerations</h2>
+			<p>This feature is a basic building block to allow remote access in 
+			the middle of a query, not a general solution to the issues in 
+			distributed query evaluation. The algebra operation is executed 
+			without regard to how selective the pattern is. So the order of the 
+			query will affect the speed of execution. Because it involves HTTP 
+			operations, asking the query in the right order matters a lot. Don't 
+			ask for the whole of a bookstore just to find book whose title comes 
+			from a local RDF file - ask the bookshop a query with the title 
+			already bound from earlier in the query.</p>
+			<p class="footnote"><a href="documentation.html">ARQ Documentation Page</a></p>
+</body>
+</html>
