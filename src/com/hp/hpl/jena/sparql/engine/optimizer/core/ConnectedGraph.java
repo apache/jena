@@ -40,9 +40,9 @@ public class ConnectedGraph
 	// The first prime number is ...
 	private int MIN_OID = prime.first() ;
 	// The set of optimized GraphNode objects
-	private Set optGraphNodeList = null ; // Set<GraphNode>
+	private Set optGraphNodeList = new LinkedHashSet() ; // Set<GraphNode>
 	// The set of optimized GraphEdge objects
-	private Set optGraphEdgeList = null ; // Set<GraphEdge>
+	private Set optGraphEdgeList = new LinkedHashSet() ; // Set<GraphEdge>
 	// The list of nodes for the ConnectedGraph, uses the natural sort of OIDs for TreeMaps
 	private Map nodes = new TreeMap() ; // Map<Integer, GraphNode>
 	// The list of edges for the ConnectedGraph, uses the natural sort of OIDs for TreeMaps
@@ -344,16 +344,15 @@ public class ConnectedGraph
 		
 		// The ordered set of nodes which reflect the QEP
 		Set nodeQEP = new LinkedHashSet() ; // Set<GraphNode>
-		Set edgeQEP = new LinkedHashSet() ; // Set<GraphEdge>
-		
 		// Init the set of edges ordered by total cost
 		List edges = new ArrayList() ; // List<GraphEdge>
 		
 		// Create a local copy of the list of edges
 		edges.addAll(this.edges.values()) ;
-		
 		// ... and sort it according to the EdgeComparator
 		Collections.sort(edges, new EdgeComparator()) ;
+		// This is required for the ARQo.explain() method
+		optGraphEdgeList.addAll(edges) ;
 		// Mark the edge as considered by removing it from the list
 		edge = (GraphEdge)edges.remove(0) ;
 		// Get the nodes of the considered edge
@@ -362,14 +361,11 @@ public class ConnectedGraph
 		Collections.sort(nodes, new NodeComparator()) ;
 		// Add the nodes to the QEP
 		nodeQEP.addAll(nodes) ;
-		// Add the edge to the QEP
-		edgeQEP.add(edge) ;
 		
 		// While the QEP does not contain all nodes
 		while (nodeQEP.size() < this.nodes.size())
 		{
 			edge = getNextEdge(nodeQEP, edges) ;
-			edgeQEP.add(edge) ;
 			edges.remove(edge) ;
 			nodes = edge.nodes() ;
 			Collections.sort(nodes, new NodeComparator()) ;
@@ -379,12 +375,10 @@ public class ConnectedGraph
 			{
 				GraphNode node = (GraphNode)iter.next() ;
 			
-				nodeQEP.add(node) ;
+				if (! nodeQEP.contains(node))
+					nodeQEP.add(node) ;
 			}
 		}
-		
-		// This is required for the ARQo.explain() method
-		optGraphEdgeList = edgeQEP ;
 		
 		return nodeQEP ;
 	}
@@ -412,53 +406,6 @@ public class ConnectedGraph
 		
 		return null ;
 	}
-	
-	/*
-	// The more complex case with multiple nodes
-	private List<GraphNode> optimizeMultipleNodes()
-	{
-		log.debug("Optimizing ConnectedGraph with " + nodes.size() + " nodes and " + edges.size() + " edges");
-		
-		// The ordered set of nodes which reflect the QEP
-		List<GraphNode> p = new ArrayList<GraphNode>() ;
-		
-		// Init the set of edges ordered by total cost
-		List<GraphEdge> e = new ArrayList<GraphEdge>() ;
-		
-		// Create the list of edges ...
-		for (Iterator iter = edges.values().iterator(); iter.hasNext(); )
-			e.add((GraphEdge)iter.next()) ;
-		
-		// ... and sort it according to the EdgeComparator
-		Collections.sort(e, new EdgeComparator()) ;
-		
-		// Then step through the ordered list of edges and create 
-		// a sorted list of nodes for each edge. Select the sorted
-		// nodes to the final set p.
-		for (Iterator iter = e.iterator(); iter.hasNext(); )
-		{
-			GraphEdge edge = (GraphEdge)iter.next() ;
-			// Get the nodes for the edge
-			List<GraphNode> n = edge.nodes() ;
-			// Sort the nodes according to the NodeComparator
-			Collections.sort(n, new NodeComparator()) ;
-			// Add the nodes to the QEP, if they are not yet considered
-			for (Iterator it = n.iterator(); it.hasNext(); )
-			{
-				GraphNode node = (GraphNode)it.next() ;
-				if (! p.contains(node))
-					p.add(node);
-			}
-		}
-		
-		if (p.size() != nodes.size())
-			log.error("The optimized set of nodes does not contain each node") ;
-				
-		optGraphEdgeList = e ;
-		
-		return p ;
-	}
-	*/
 	
 	// The class implements a comparator to sort edges according to the total cost
 	class EdgeComparator implements Comparator
