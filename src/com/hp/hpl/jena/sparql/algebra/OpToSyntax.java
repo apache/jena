@@ -11,184 +11,186 @@ import java.util.List;
 import java.util.Stack;
 
 import com.hp.hpl.jena.graph.Triple;
-
+import com.hp.hpl.jena.query.Query;
+import com.hp.hpl.jena.query.QueryFactory;
+import com.hp.hpl.jena.query.SortCondition;
 import com.hp.hpl.jena.sparql.ARQNotImplemented;
 import com.hp.hpl.jena.sparql.algebra.op.*;
 import com.hp.hpl.jena.sparql.core.BasicPattern;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.expr.Expr;
 import com.hp.hpl.jena.sparql.expr.ExprList;
-import com.hp.hpl.jena.sparql.sse.SSE;
-import com.hp.hpl.jena.sparql.syntax.*;
-import com.hp.hpl.jena.sparql.util.StringUtils;
-
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.QueryFactory;
-import com.hp.hpl.jena.query.SortCondition;
+import com.hp.hpl.jena.sparql.syntax.Element;
+import com.hp.hpl.jena.sparql.syntax.ElementFilter;
+import com.hp.hpl.jena.sparql.syntax.ElementGroup;
+import com.hp.hpl.jena.sparql.syntax.ElementNamedGraph;
+import com.hp.hpl.jena.sparql.syntax.ElementOptional;
+import com.hp.hpl.jena.sparql.syntax.ElementTriplesBlock;
+import com.hp.hpl.jena.sparql.syntax.ElementUnion;
 
 /** Convert an Op expression in SPARQL syntax, that is, the reverse of algebra generation */   
 public class OpToSyntax
 {
-    public static void main(String[] argv)
-    {
-        Op op1 = SSE.parseOp("(filter ?x (filter ?o (bgp (?s ?p _:a)) ) )") ;
-        // Not canonicalized: two nested filters.
-        Op op2 = SSE.parseOp("(filter (&& ?o ?x) (bgp (?s ?p _:a)) )") ;
-        // Not canonicalized: Expression list, length 1, (&& ?o ?x)
-        
-        // Canonical:one filter, Expression list, length 2, ?o ?x
-        
-        if ( ! op1.equals(op2) )
-        {
-            System.out.println("**** Different") ;
-            System.out.print(op1) ;
-            System.out.print(op2) ;
-            System.out.println("------------") ;
-        }
-        else
-            System.out.println("Same") ;
-        
-        // Non-canonical: { { .. FILTER } FILTER }
-        System.out.print(asQuery(op1)) ;
-        System.out.print(asQuery(op2)) ;
-
-        System.out.println("------------") ;
-        System.exit(0) ;
-        
-        String [] a1 = new String[]{
-            "PREFIX : <http://example/>",
-            "SELECT ?o",
-            "{ ?s ?p ?o . }"
-        } ;
-
-        String [] a2 = new String[]{
-            "PREFIX : <http://example/>",
-            "SELECT *",
-            "{ ?s ?p ?o . }"
-        } ;
-        
-        String [] a3 = new String[]{
-            "PREFIX : <http://example/>",
-            "SELECT *",
-            "{ ?s ?p ?o . FILTER(?o) FILTER(?z) }"
-        } ;
-
-        String [] a5 = new String[]{
-            "PREFIX : <http://example/>",
-            "SELECT ?s",
-            "{ ?s ?p ?o . ?s ?p ?o2 OPTIONAL { ?s1 ?p1 ?o1} }"
-        } ;
-
-        String [] a6 = new String[]{
-            "PREFIX : <http://example/>",
-            "SELECT ?s1 ?p2",
-            "{ ",
-            "  { ?s1 ?p1 ?o1 } UNION { ?s2 ?p2 ?o2 } ",
-            "  ?a ?b ?c",
-            "}"
-        } ;
-        
-        String [] a7 = new String[]{
-            "PREFIX : <http://example/>",
-            "SELECT ?s1 ?p2",
-            "{ { ?s1 ?p1 ?o1 } UNION { ?s2 ?p2 ?o2 } }" //UNION { ?s3 ?p3 ?o3 } }"
-        } ;
-
-        String [] a8 = new String[]{
-            "PREFIX : <http://example/>",
-            "SELECT ?s1 ?p2",
-            "{ { ?s1 ?p1 ?o1 } UNION { ?s2 ?p2 ?o2 } UNION { ?s3 ?p3 ?o3 } }"
-        } ;
-
-
-        String [] a9 = new String[]{
-            "PREFIX : <http://example/>",
-            "SELECT ?x",
-            " { {?s ?p ?o }",
-            "   UNION {",
-            "     ?s ?p ?o . ",
-            "     FILTER(?o)",
-            "     OPTIONAL{?s :p :z }",
-            "   } UNION { ?a ?b ?c }",
-            "}"
-        } ;
-
-        // Graph
-//        one(a1, false) ;
-//        one(a2, false) ;
-//        one(a3, false) ;
-//        one(a5, false) ;
-//        one(a6, false) ;
-//        one(a7, false) ;
-//        one(a8, false) ;
-//        one(a9, false) ;
-//        System.out.println("====") ;
+//    public static void main(String[] argv)
+//    {
+//        Op op1 = SSE.parseOp("(filter ?x (filter ?o (bgp (?s ?p _:a)) ) )") ;
+//        // Not canonicalized: two nested filters.
+//        Op op2 = SSE.parseOp("(filter (&& ?o ?x) (bgp (?s ?p _:a)) )") ;
+//        // Not canonicalized: Expression list, length 1, (&& ?o ?x)
+//        
+//        // Canonical:one filter, Expression list, length 2, ?o ?x
+//        
+//        if ( ! op1.equals(op2) )
+//        {
+//            System.out.println("**** Different") ;
+//            System.out.print(op1) ;
+//            System.out.print(op2) ;
+//            System.out.println("------------") ;
+//        }
+//        else
+//            System.out.println("Same") ;
+//        
+//        // Non-canonical: { { .. FILTER } FILTER }
+//        System.out.print(asQuery(op1)) ;
+//        System.out.print(asQuery(op2)) ;
+//
+//        System.out.println("------------") ;
 //        System.exit(0) ;
-        
-
-        checkOp("(join (bgp (?s ?p _:a)) (bgp (?s ?p ?o)) )") ;
-    }
-
-    public static void checkOp(String str)
-    {
-        check(SSE.parseOp(str)) ;
-    }
-    
-    public static void check(Op op)
-    {
-        Query query = asQuery(op) ;
-        Op op2 = Algebra.compile(query) ;
-        
-        if ( ! op.equals(op2) )
-        {
-            System.out.println("**** Different algebra expressions after converting to syntax and back") ;
-            System.out.print(op) ;
-            System.out.print(query) ;
-            System.out.print(op2) ;
-            System.out.println("------------") ;
-        }
-    }
-    
-    public static void one(String[] a, boolean verbose)
-    {
-        String qs = StringUtils.join("\n", a) ;
-        
-        Query query = QueryFactory.create(qs) ;
-        
-        Op op = Algebra.compile(query) ;
-        
-        // Check the query.
-        if ( verbose )
-        {
-            System.out.print(op) ;
-            System.out.println() ;
-        }
-        Query query2 = asQuery(op) ;
-        if ( verbose )
-        {
-            System.out.print(query2) ;
-            System.out.println() ;
-        }
-        Op op2 = Algebra.compile(query2) ;
-        if ( verbose )
-            System.out.print(op2) ;
-        
-        if ( ! op.equals(op2) )
-        {
-            System.out.println("**** query algebra expression not equal to it's serialized/parsed form") ;
-            System.out.print(op) ;
-            System.out.print(op2) ;
-            System.out.println("------------") ;
-        }
-        else if ( verbose )
-            System.out.println("------------") ;
-        
-        
-        // Check the Op.
-        check(op) ;
-        
-
-    }
+//        
+//        String [] a1 = new String[]{
+//            "PREFIX : <http://example/>",
+//            "SELECT ?o",
+//            "{ ?s ?p ?o . }"
+//        } ;
+//
+//        String [] a2 = new String[]{
+//            "PREFIX : <http://example/>",
+//            "SELECT *",
+//            "{ ?s ?p ?o . }"
+//        } ;
+//        
+//        String [] a3 = new String[]{
+//            "PREFIX : <http://example/>",
+//            "SELECT *",
+//            "{ ?s ?p ?o . FILTER(?o) FILTER(?z) }"
+//        } ;
+//
+//        String [] a5 = new String[]{
+//            "PREFIX : <http://example/>",
+//            "SELECT ?s",
+//            "{ ?s ?p ?o . ?s ?p ?o2 OPTIONAL { ?s1 ?p1 ?o1} }"
+//        } ;
+//
+//        String [] a6 = new String[]{
+//            "PREFIX : <http://example/>",
+//            "SELECT ?s1 ?p2",
+//            "{ ",
+//            "  { ?s1 ?p1 ?o1 } UNION { ?s2 ?p2 ?o2 } ",
+//            "  ?a ?b ?c",
+//            "}"
+//        } ;
+//        
+//        String [] a7 = new String[]{
+//            "PREFIX : <http://example/>",
+//            "SELECT ?s1 ?p2",
+//            "{ { ?s1 ?p1 ?o1 } UNION { ?s2 ?p2 ?o2 } }" //UNION { ?s3 ?p3 ?o3 } }"
+//        } ;
+//
+//        String [] a8 = new String[]{
+//            "PREFIX : <http://example/>",
+//            "SELECT ?s1 ?p2",
+//            "{ { ?s1 ?p1 ?o1 } UNION { ?s2 ?p2 ?o2 } UNION { ?s3 ?p3 ?o3 } }"
+//        } ;
+//
+//
+//        String [] a9 = new String[]{
+//            "PREFIX : <http://example/>",
+//            "SELECT ?x",
+//            " { {?s ?p ?o }",
+//            "   UNION {",
+//            "     ?s ?p ?o . ",
+//            "     FILTER(?o)",
+//            "     OPTIONAL{?s :p :z }",
+//            "   } UNION { ?a ?b ?c }",
+//            "}"
+//        } ;
+//
+//        // Graph
+////        one(a1, false) ;
+////        one(a2, false) ;
+////        one(a3, false) ;
+////        one(a5, false) ;
+////        one(a6, false) ;
+////        one(a7, false) ;
+////        one(a8, false) ;
+////        one(a9, false) ;
+////        System.out.println("====") ;
+////        System.exit(0) ;
+//        
+//
+//        checkOp("(join (bgp (?s ?p _:a)) (bgp (?s ?p ?o)) )") ;
+//    }
+//
+//    public static void checkOp(String str)
+//    {
+//        check(SSE.parseOp(str)) ;
+//    }
+//    
+//    public static void check(Op op)
+//    {
+//        Query query = asQuery(op) ;
+//        Op op2 = Algebra.compile(query) ;
+//        
+//        if ( ! op.equals(op2) )
+//        {
+//            System.out.println("**** Different algebra expressions after converting to syntax and back") ;
+//            System.out.print(op) ;
+//            System.out.print(query) ;
+//            System.out.print(op2) ;
+//            System.out.println("------------") ;
+//        }
+//    }
+//    
+//    public static void one(String[] a, boolean verbose)
+//    {
+//        String qs = StringUtils.join("\n", a) ;
+//        
+//        Query query = QueryFactory.create(qs) ;
+//        
+//        Op op = Algebra.compile(query) ;
+//        
+//        // Check the query.
+//        if ( verbose )
+//        {
+//            System.out.print(op) ;
+//            System.out.println() ;
+//        }
+//        Query query2 = asQuery(op) ;
+//        if ( verbose )
+//        {
+//            System.out.print(query2) ;
+//            System.out.println() ;
+//        }
+//        Op op2 = Algebra.compile(query2) ;
+//        if ( verbose )
+//            System.out.print(op2) ;
+//        
+//        if ( ! op.equals(op2) )
+//        {
+//            System.out.println("**** query algebra expression not equal to it's serialized/parsed form") ;
+//            System.out.print(op) ;
+//            System.out.print(op2) ;
+//            System.out.println("------------") ;
+//        }
+//        else if ( verbose )
+//            System.out.println("------------") ;
+//        
+//        
+//        // Check the Op.
+//        check(op) ;
+//        
+//
+//    }
     
     public static Query asQuery(Op op)
     {
