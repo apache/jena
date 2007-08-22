@@ -22,6 +22,10 @@ public class Item extends ItemLocation implements PrintSerializable
     protected String symbol = null ;
     protected boolean isNil = false ;
     
+    // Constants
+    public static final Item nil = createNil() ;
+    public static final Item defaultItem = createSymbol("_") ;
+    
     public static Item createList() { return createList(noLine, noColumn) ; }
     public static Item createList(int line, int column)
     {
@@ -58,8 +62,8 @@ public class Item extends ItemLocation implements PrintSerializable
         return item ;
     }
     
-    public static Item createNil() { return createNil(noLine, noColumn) ; }
-    public static Item createNil(int line, int column)
+    private static Item createNil() { return createNil(noLine, noColumn) ; }
+    private static Item createNil(int line, int column)
     { 
         // Not a symbol
         Item item = new Item(noLine, noColumn) ;

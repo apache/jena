@@ -114,13 +114,13 @@ public class TestSSE_Basic extends TestCase
     
     // --- nil
     
-    public void testNil_1()    { testItem("nil", Item.createNil()) ; }
-    public void testNil_2()    { testNotItem("null", Item.createNil()) ; }
-    public void testNil_3()    { testNotItem("()", Item.createNil()) ; }
+    public void testNil_1()    { testItem("nil", Item.nil) ; }
+    public void testNil_2()    { testNotItem("null", Item.nil) ; }
+    public void testNil_3()    { testNotItem("()", Item.nil) ; }
     public void testNil_4()
     { 
         Item x = Item.createList() ;
-        x.getList().add(Item.createNil()) ;
+        x.getList().add(Item.nil) ;
         testItem("(nil)", x) ;
     }
 

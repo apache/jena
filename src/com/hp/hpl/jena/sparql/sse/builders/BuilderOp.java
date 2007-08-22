@@ -20,6 +20,8 @@ import com.hp.hpl.jena.sparql.expr.ExprList;
 import com.hp.hpl.jena.sparql.sse.Item;
 import com.hp.hpl.jena.sparql.sse.ItemList;
 
+import com.hp.hpl.jena.query.Query;
+
 
 public class BuilderOp
 {
@@ -330,8 +332,8 @@ public class BuilderOp
         public Op make(ItemList list)
         {
             BuilderBase.checkLength(4, list, "slice") ;
-            int start = BuilderNode.buildInt(list, 1) ;
-            int length = BuilderNode.buildInt(list, 2) ;
+            long start = BuilderNode.buildInt(list, 1, Query.NOLIMIT) ;
+            long length = BuilderNode.buildInt(list, 2, Query.NOLIMIT) ;
             Op sub = build(list, 3) ;
             return new OpSlice(sub, start, length) ;
         }

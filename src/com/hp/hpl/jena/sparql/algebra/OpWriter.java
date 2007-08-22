@@ -12,6 +12,8 @@ import java.util.Map;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
+
+import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.SortCondition;
 import com.hp.hpl.jena.shared.PrefixMapping;
 import com.hp.hpl.jena.sparql.ARQConstants;
@@ -377,13 +379,22 @@ public class OpWriter
         { 
             start(opSlice, NoNL) ;
             out.print(" ") ;
-            out.print(Long.toString(opSlice.getStart())) ;
+            writeIntOrDefault(opSlice.getStart()) ;
             out.print(" ") ;
-            out.print(Long.toString(opSlice.getLength())) ;
+            writeIntOrDefault(opSlice.getLength()) ;
             out.println() ;
             printOp(opSlice.getSubOp()) ;
-            finish(opSlice) ; }
+            finish(opSlice) ;
+        }
 
+        private void writeIntOrDefault(long value)
+        {
+            String x = "_" ;
+            if ( value != Query.NOLIMIT )
+                x = Long.toString(value) ;
+            out.print(x) ;
+        }
+            
         private void start()
         { out.print(Plan.startMarker) ; }
         

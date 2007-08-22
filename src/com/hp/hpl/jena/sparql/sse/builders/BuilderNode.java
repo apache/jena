@@ -74,9 +74,17 @@ public class BuilderNode
         return x ;
     }
 
-    public static int buildInt(ItemList list, int idx)
+    public static long buildInt(ItemList list, int idx) { return buildInt(list, idx, false, 0) ; }
+    
+    public static long buildInt(ItemList list, int idx, long dft) { return buildInt(list, idx, true, dft) ; }
+    
+    private static long buildInt(ItemList list, int idx, boolean allowDefault, long dft)
     {
         Item item = list.get(idx) ;
+        
+        if ( allowDefault && item.equals(Item.defaultItem) )
+            return dft ;
+        
         if ( !item.isNode() )
             BuilderBase.broken(item, "Not an integer: "+item) ;
         Node node = item.getNode() ;

@@ -65,7 +65,7 @@ public class ItemTransformer
             push(newItem) ;
         }
         public void visitNil()
-        { push(Item.createNil()) ; }
+        { push(Item.nil) ; }
     }
 }
 

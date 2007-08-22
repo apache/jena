@@ -184,7 +184,7 @@ public class BuilderGraph
     private static Quad _buildNode4(ItemList list)
     {
         Node g = null ;
-        if ( "_".equals(list.get(0).getSymbol()) )
+        if ( list.get(0).equals(Item.defaultItem)) 
             g = Quad.defaultGraphNode ;
         else
             g = BuilderNode.buildNode(list.get(0)) ;

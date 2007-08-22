@@ -59,7 +59,7 @@ public class OpSlice extends OpModifier
         OpSlice opSlice = (OpSlice)other ;
         if ( opSlice.start != start || opSlice.length != length )
             return false;
-        return getSubOp().equalTo(opSlice, labelMap) ;
+        return getSubOp().equalTo(opSlice.getSubOp(), labelMap) ;
     }
 }
 
