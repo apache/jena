@@ -330,9 +330,9 @@ public class BuilderOp
         public Op make(ItemList list)
         {
             BuilderBase.checkLength(4, list, "slice") ;
-            Op sub = build(list, 1) ;
-            int start = BuilderNode.buildInt(list, 2) ;
-            int length = BuilderNode.buildInt(list, 3) ;
+            int start = BuilderNode.buildInt(list, 1) ;
+            int length = BuilderNode.buildInt(list, 2) ;
+            Op sub = build(list, 3) ;
             return new OpSlice(sub, start, length) ;
         }
     } ;

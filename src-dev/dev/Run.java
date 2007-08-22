@@ -39,7 +39,7 @@ public class Run
             System.exit(0) ;
         }
 
-        //runQParse() ;
+        runQParse() ;
         
         String []a = { "--strict", "file:///c:/home/afs/W3C/DataAccess/tests/data-r2/expr-builtin/manifest.ttl" } ;
         arq.qtest.main(a) ;
