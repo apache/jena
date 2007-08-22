@@ -4,12 +4,12 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.util.alg;
+package com.hp.hpl.jena.sdb.iterator;
 
 import java.util.HashSet;
 import java.util.Set;
 
-public class SetUtils// extends Alg
+public class SetUtils
 {
      // Set specific operations
     
@@ -36,7 +36,6 @@ public class SetUtils// extends Alg
         s3.addAll(s2) ;
         return s3 ;
     }
-
 
     /** Return is s1 \ s2 */
 

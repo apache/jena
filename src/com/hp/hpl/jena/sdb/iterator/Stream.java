@@ -4,11 +4,10 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.util.alg;
+package com.hp.hpl.jena.sdb.iterator;
 
 import java.util.*;
 
-import com.hp.hpl.jena.sdb.util.IterFunc;
 
 
 
