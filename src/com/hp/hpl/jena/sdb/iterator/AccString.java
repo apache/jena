@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.util.alg;
+package com.hp.hpl.jena.sdb.iterator;
 
 public class AccString<T> implements Accumulate<T, String>
 {
