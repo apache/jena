@@ -26,13 +26,7 @@ import com.hp.hpl.jena.sdb.core.sqlnode.SqlSlice;
 import com.hp.hpl.jena.sdb.layout2.expr.RegexCompiler;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.TransformCopy;
-import com.hp.hpl.jena.sparql.algebra.op.OpBGP;
-import com.hp.hpl.jena.sparql.algebra.op.OpFilter;
-import com.hp.hpl.jena.sparql.algebra.op.OpJoin;
-import com.hp.hpl.jena.sparql.algebra.op.OpLeftJoin;
-import com.hp.hpl.jena.sparql.algebra.op.OpQuadPattern;
-import com.hp.hpl.jena.sparql.algebra.op.OpSlice;
-import com.hp.hpl.jena.sparql.algebra.op.OpTable;
+import com.hp.hpl.jena.sparql.algebra.op.*;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.expr.Expr;
 import com.hp.hpl.jena.sparql.expr.ExprList;
@@ -139,22 +133,41 @@ public class TransformSDB extends TransformCopy
         return super.transform(opTable) ;
     }
     
+    
     @Override
     public Op transform(OpSlice opSlice, Op subOp)
     {
         if ( ! request.LimitOffsetTranslation )
             return super.transform(opSlice, subOp) ;
         
+        List<Var> project = null ; 
+        
+        // Either OpSlice(SQL) or OpSlice(OpProject(SQL))
+        // Note: OpSlice(OpProject(SQL)) => OpProject(OpSlice(SQL))
+        //  iff no other modifiers
+
+        if ( subOp instanceof OpProject )
+        {
+            OpProject p = (OpProject)subOp ;
+            @SuppressWarnings("unchecked")
+            List<Var> pv = (List<Var>)p.getVars() ;
+            project = pv ;
+            subOp = ((OpProject)subOp).getSubOp() ;
+        }
+        
         if ( ! QC.isOpSQL(subOp) )
             return super.transform(opSlice, subOp) ; 
         
         SqlNode sqlSubOp = ((OpSQL)subOp).getSqlNode() ;
         SqlNode sqlSlice = new SqlSlice(sqlSubOp, opSlice.getStart(), opSlice.getLength()) ;
-        return new OpSQL(sqlSlice, opSlice, request) ;
+        
+        Op x = new OpSQL(sqlSlice, opSlice, request) ;
+        if ( project != null )
+            x = new OpProject(x, project) ;
+        return x ;
     }
     
     private boolean translateConstraints = true ;
-    
     
     private SDBConstraint transformFilter(OpFilter opFilter)
     {

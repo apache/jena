@@ -372,9 +372,9 @@ public class GenerateSQLVisitor implements SqlNodeVisitor
         sqlNode.visit(this) ;
         out.ensureStartOfLine() ;
         if ( sqlSlice.getStart() != Query.NOLIMIT )
-            out.println("LIMIT "+sqlSlice.getStart()) ;
+            out.println("LIMIT "+sqlSlice.getLength()) ;
         if ( sqlSlice.getLength() != Query.NOLIMIT )
-            out.println("OFFSET "+sqlSlice.getLength()) ;
+            out.println("OFFSET "+sqlSlice.getStart()) ;
     }
 
     protected void visitJoin(SqlJoin join) { visitJoin(join, join.getJoinType().sqlOperator()) ; }
