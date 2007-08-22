@@ -31,6 +31,13 @@ public class SDBConnectionDesc
     
     public static SDBConnectionDesc blank()
     { return new SDBConnectionDesc() ; }
+    
+    public static SDBConnectionDesc none()
+    {
+        SDBConnectionDesc x = new SDBConnectionDesc() ;
+        x.jdbcURL = JDBC.jdbcNone ;
+        return x ;
+    }
 
     private SDBConnectionDesc() {}
     

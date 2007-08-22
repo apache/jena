@@ -14,14 +14,20 @@ import com.hp.hpl.jena.query.QueryFactory;
 
 import com.hp.hpl.jena.sdb.SDBFactory;
 import com.hp.hpl.jena.sdb.Store;
+import com.hp.hpl.jena.sdb.StoreDesc;
 import com.hp.hpl.jena.sdb.compiler.OpSQL;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlRename;
 import com.hp.hpl.jena.sdb.engine.QueryEngineSDB;
+import com.hp.hpl.jena.sdb.store.DatabaseType;
+import com.hp.hpl.jena.sdb.store.LayoutType;
 import com.hp.hpl.jena.sdb.util.PrintSDB;
 
 // Alt: an SELECT node with disinct, project, order by
 // Distinct(Rename(Project(Order(Having(groupBy(restrict(joins))))))
+
+// SelectBlock.
+
 // 
 // Table-WHERE-GROUPBY-HAVING-ORDERBY-Project-Distinct
 // Table-Restrict-Group-Restrict-Order-Project-Rename-Distinct
@@ -30,28 +36,14 @@ import com.hp.hpl.jena.sdb.util.PrintSDB;
 
 public class RunGen
 {
+    static boolean printOp         = false ;
+    static boolean printSqlNode    = false ;
+    static boolean printSQL        = false ;
+
     public static void main(String...argv)
     {
-        boolean printOp         = false ;
-        boolean printSqlNode    = false ;
-        boolean printSQL        = false ;
-        
-        Query query = QueryFactory.create("SELECT ?x ?v ?w { ?x ?p ?v OPTIONAL { ?x ?q ?w } }") ;
-        System.out.println(query.serialize()) ;
-        String x = query.serialize() ;
-        
-        Store store = SDBFactory.connectStore("sdb.ttl") ;
-        
-        QueryEngineSDB qe = new QueryEngineSDB(store, query) ;
-        Op op = qe.getOp() ;
-        
-        // Check - shouldn't this have been removed as it's part of teh SQL expression? 
-        if ( op instanceof OpProject )
-            op = ((OpProject)op).getSubOp() ;
-        
-        SqlNode sqlNode = ((OpSQL)op).getSqlNode() ;
-        if ( sqlNode.isProject() )
-            sqlNode = sqlNode.asProject().getSubNode() ;
+
+        SqlNode sqlNode = query("SELECT ?x ?v ?w { ?x ?p ?v OPTIONAL { ?x ?q ?w } }") ;
         
         //System.out.println(sqlNode) ;
         
@@ -59,6 +51,23 @@ public class RunGen
 
         System.out.println(sqlNode) ;
         
+    }
+    
+    public static SqlNode query(String queryString)
+    {
+        Query query = QueryFactory.create(queryString) ;
+        StoreDesc sdesc = new StoreDesc(LayoutType.LayoutTripleNodesHash , DatabaseType.PostgreSQL) ;
+        Store store = SDBFactory.connectStore(sdesc) ;
+        QueryEngineSDB qe = new QueryEngineSDB(store, query) ;
+        Op op = qe.getOp() ;
+        if ( op instanceof OpProject )
+            op = ((OpProject)op).getSubOp() ;
+        if ( ! ( op instanceof OpSQL ) )
+        {
+            System.err.println("Not a single SQL node") ;
+            System.err.println(op) ;
+            System.exit(1) ;
+        }
         if ( printOp )
         {
             divider() ;
@@ -75,7 +84,11 @@ public class RunGen
             divider() ;
             PrintSDB.printSQL(op) ;
         }
+
+        return ((OpSQL)op).getSqlNode() ;
     }
+    
+    
     static final String divider = "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -" ;
     static boolean needDivider = false ;
     static private void divider()

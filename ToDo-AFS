@@ -1,8 +1,6 @@
 SDB ToDo list (and general notes)
 =================================
 
-+ revise/freeze API
-
 + Revisit generating SQL for nested DISTINCT
 
 + JDBC statement management in execQuery
@@ -19,7 +17,16 @@ SDB ToDo list (and general notes)
 
 + Per store additional context items
 
+== Alt layouts
+
++ Layout3 : property tables : vertical partition
+   + simple, general version - per propety table - no ?p except by massive union or separate client processing)
+
 == Pattern table and inference
+
++ Cache tables (c.f. Oracle SPMJV) - integrate with inf and rewriter 
+  This unifies two concepts.
+  Also calculated paths : cache tables of (?s,?o) for { ?s :p1 ?x . ?x :p2 ?o }
 
 + Pattern/Inf tables:
   Data:

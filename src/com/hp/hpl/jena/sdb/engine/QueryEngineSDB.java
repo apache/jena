@@ -62,8 +62,8 @@ public class QueryEngineSDB extends QueryEngineBase
         this.request = new SDBRequest(store, query, context) ;
         if ( StoreUtils.isHSQL(store) )
             this.request.LeftJoinTranslation = false ;
-//        if ( StoreUtils.isPostgreSQL(store) )
-//            this.request.LimitOffsetTranslation = true ;
+        if ( StoreUtils.isPostgreSQL(store) )
+            this.request.LimitOffsetTranslation = true ;
         this.queryCompiler = store.getQueryCompilerFactory().createQueryCompiler(request) ;
 
         this.originalOp = getOp() ;

@@ -76,6 +76,12 @@ public class SDBConnection
         transactionHandler = new TransactionHandlerSDB(this) ;
     }
 
+    public static SDBConnection none()
+    {
+        return new SDBConnection(JDBC.jdbcNone, null, null) ;
+    }
+
+    
     public boolean hasSQLConnection() { return sqlConnection != null ; }
     
     public TransactionHandler getTransactionHandler() { return transactionHandler ; } 

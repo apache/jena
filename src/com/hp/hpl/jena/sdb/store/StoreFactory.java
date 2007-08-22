@@ -19,13 +19,13 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.sdb.SDB;
-import com.hp.hpl.jena.sdb.SDBException;
 import com.hp.hpl.jena.sdb.Store;
 import com.hp.hpl.jena.sdb.StoreDesc;
 import com.hp.hpl.jena.sdb.layout1.*;
 import com.hp.hpl.jena.sdb.layout2.hash.*;
 import com.hp.hpl.jena.sdb.layout2.index.*;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
+import com.hp.hpl.jena.sdb.sql.SDBConnectionDesc;
 import com.hp.hpl.jena.sdb.sql.SDBConnectionFactory;
 import com.hp.hpl.jena.sdb.util.Pair;
 
@@ -73,9 +73,12 @@ public class StoreFactory
     private static Store _create(SDBConnection sdb, StoreDesc desc)
     {
         if ( sdb == null && desc.connDesc == null )
-            throw new SDBException("StoreFactory: No connection and no connection description") ;
+            desc.connDesc = SDBConnectionDesc.none() ;
+
+        if ( desc.connDesc.getType() == null && desc.getDbType() != null )
+            desc.connDesc.setType(desc.getDbType().getName()) ;
         
-        if ( sdb == null )
+        if ( sdb == null && desc.connDesc != null)
             sdb = SDBConnectionFactory.create(desc.connDesc) ;
         
         DatabaseType dbType = desc.getDbType() ;

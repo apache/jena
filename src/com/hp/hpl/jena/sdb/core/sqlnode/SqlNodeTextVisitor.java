@@ -27,7 +27,7 @@ public class SqlNodeTextVisitor implements SqlNodeVisitor
     
     final static boolean closeOnSameLine = true ;
     private IndentedWriter out ;
-    private boolean withAnnotations = false ;
+    private boolean withAnnotations = true ;
     private static final int annotationColumn = 40 ; 
 
     public SqlNodeTextVisitor(IndentedWriter out) { this.out = out ; }

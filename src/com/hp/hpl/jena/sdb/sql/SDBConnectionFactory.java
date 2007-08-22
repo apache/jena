@@ -60,12 +60,14 @@ public class SDBConnectionFactory
     /** Create a new, plain JDBC SQL connection from the description. */ 
     public static Connection createSqlConnection(SDBConnectionDesc desc)
     {
-        String driver = desc.getDriver() ;
-        if ( driver == null )
-            driver = JDBC.guessDriver(desc.getType()) ;
-        if ( driver != null )
-            JDBC.loadDriver(driver) ;
-        
+        if ( desc.getJdbcURL().equals(JDBC.jdbcNone) )
+        {
+            String driver = desc.getDriver() ;
+            if ( driver == null )
+                driver = JDBC.guessDriver(desc.getType()) ;
+            if ( driver != null )
+                JDBC.loadDriver(driver) ;
+        }
         return createSqlConnection(desc.getJdbcURL(), desc.getUser(), desc.getPassword()) ;
     }
 

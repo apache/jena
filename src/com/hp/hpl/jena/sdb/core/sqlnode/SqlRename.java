@@ -60,7 +60,7 @@ public class SqlRename extends SqlNodeBase
     {
         if ( scope == null ) return ;
         
-        // Would be nicer if Java didn't impose such asn overhead on writing lambda's/
+        // Would be nicer if Java didn't impose such an overhead on writing lambda's/
 //        Action<Var> action = new Action<Var>(){
 //            public void apply(Var var)
 //            {
@@ -110,20 +110,6 @@ public class SqlRename extends SqlNodeBase
     public ScopeRename getNodeScopeRename() { return nodeScope ; }
     
     public SqlNode getSqlNode()             { return sqlNode ; }
-
-    
-//    // -------- Workers to build a view mapping.
-//    
-//    private static Map<Var, String> mapping(SqlNode sqlNode, Scope scope, Generator gen)
-//    {
-//        if ( scope == null )
-//            return null ;
-//        Map<Var, String> mapping = new HashMap<Var, String>() ;
-//        Set<Var> vars = scope.getVars() ;
-//        for ( Var v : vars)
-//            mapping.put(v, gen.next()) ;
-//        return mapping ;
-//    }
 }
 
 /*
