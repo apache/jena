@@ -239,23 +239,24 @@
   <target name="javadoc" depends="clean-javadoc,build-src,javac-flags"
 	  description="Make the javadoc">
 
-	  <javadoc
-	     sourcepath="${src.build.dir}"
-	     packagenames="com.hp.hpl.jena.query.sdb"
-	     source="${java.source}"
-	     destdir="${javadoc.dir}"
-	     author="true"
-	     version="true"
-	     classpathref="classpath"
-	     windowtitle="${Name} Query Processor"
-	     doctitle="${Name} Query Processor"
-	     Public="true"
-	     Use="true"
-	     bottom="Copyright &#169; 2006, 2007 Hewlett-Packard Development Company, LP"
-	     additionalparam="-breakiterator">
-	      <classpath refid="classpath"/>
-	      <package name="com.hp.hpl.jena.query.sdb"/>
-	  </javadoc>
+    <javadoc
+     sourcepath="${src.build.dir}"
+     packagenames="com.hp.hpl.jena.query.sdb"
+     source="${java.source}"
+     destdir="${javadoc.dir}"
+     author="true"
+     version="true"
+     classpathref="classpath"
+     windowtitle="${Name} Query Processor"
+     doctitle="${Name} Query Processor"
+     Public="true"
+     Use="true"
+     bottom="Copyright &#169; 2006, 2007 Hewlett-Packard Development Company, LP"
+     additionalparam="-breakiterator">
+      <classpath refid="classpath"/>
+      <package name="com.hp.hpl.jena.query.sdb"/>
+      <link href="http://java.sun.com/j2se/1.5.0/docs/api/"/>
+    </javadoc>
   </target>
 
   <!-- Section: Create distribution area -->
