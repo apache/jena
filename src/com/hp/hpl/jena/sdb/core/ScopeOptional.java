@@ -9,7 +9,7 @@ package com.hp.hpl.jena.sdb.core;
 import java.util.Set;
 
 import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.sdb.util.IterFunc;
+import com.hp.hpl.jena.sdb.iterator.IterFunc;
 
 public class ScopeOptional implements Scope
 {

@@ -8,6 +8,7 @@ package com.hp.hpl.jena.sdb.compiler;
 
 import static com.hp.hpl.jena.sdb.core.JoinType.INNER;
 import static com.hp.hpl.jena.sdb.core.JoinType.LEFT;
+import static com.hp.hpl.jena.sdb.iterator.IterFunc.*;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -27,10 +28,9 @@ import com.hp.hpl.jena.sdb.core.sqlnode.SqlCoalesce;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlJoin;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlRestrict;
+import com.hp.hpl.jena.sdb.iterator.Transform;
 import com.hp.hpl.jena.sdb.sql.ResultSetJDBC;
 import com.hp.hpl.jena.sdb.sql.SDBExceptionSQL;
-import static com.hp.hpl.jena.sdb.util.IterFunc.* ;
-import com.hp.hpl.jena.sdb.util.alg.Transform;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;

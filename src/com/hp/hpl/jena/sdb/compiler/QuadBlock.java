@@ -6,7 +6,7 @@
 
 package com.hp.hpl.jena.sdb.compiler;
 
-import static com.hp.hpl.jena.sdb.util.IterFunc.apply;
+import static com.hp.hpl.jena.sdb.iterator.IterFunc.apply;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +20,7 @@ import com.hp.hpl.jena.sparql.util.IndentedWriter;
 import com.hp.hpl.jena.sparql.util.PrintSerializable;
 import com.hp.hpl.jena.sparql.util.PrintUtils;
 
-import com.hp.hpl.jena.sdb.util.alg.Action;
+import com.hp.hpl.jena.sdb.iterator.Action;
 
 public class QuadBlock extends ArrayList<Quad> implements Iterable<Quad>, PrintSerializable
 {

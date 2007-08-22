@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import com.hp.hpl.jena.sdb.util.IterFunc;
+import com.hp.hpl.jena.sdb.iterator.IterFunc;
 
 import org.junit.Test;
 import org.junit.Assert; 

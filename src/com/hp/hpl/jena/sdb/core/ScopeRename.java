@@ -6,8 +6,8 @@
 
 package com.hp.hpl.jena.sdb.core;
 
-import static com.hp.hpl.jena.sdb.util.IterFunc.map;
-import static com.hp.hpl.jena.sdb.util.IterFunc.toSet;
+import static com.hp.hpl.jena.sdb.iterator.IterFunc.map;
+import static com.hp.hpl.jena.sdb.iterator.IterFunc.toSet;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -17,7 +17,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
-import com.hp.hpl.jena.sdb.util.alg.Transform;
+import com.hp.hpl.jena.sdb.iterator.Transform;
 import com.hp.hpl.jena.sparql.core.Var;
 
 public class ScopeRename implements Scope

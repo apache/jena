@@ -8,9 +8,9 @@ package com.hp.hpl.jena.sdb.core;
 
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
-import com.hp.hpl.jena.sdb.util.alg.Action;
-import com.hp.hpl.jena.sdb.util.alg.Filter;
-import com.hp.hpl.jena.sdb.util.alg.Transform;
+import com.hp.hpl.jena.sdb.iterator.Action;
+import com.hp.hpl.jena.sdb.iterator.Filter;
+import com.hp.hpl.jena.sdb.iterator.Transform;
 
 public class ScopeEntry
 {

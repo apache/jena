@@ -13,11 +13,11 @@ import static dev.db.DBSyntax.col;
 
 import java.sql.SQLException;
 
+import com.hp.hpl.jena.sdb.iterator.Transform;
 import com.hp.hpl.jena.sdb.layout2.TableDescNodes;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.sql.SDBExceptionSQL;
 import com.hp.hpl.jena.sdb.store.TableDesc;
-import com.hp.hpl.jena.sdb.util.alg.Transform;
 
 public class FmtStdHash extends StoreFormatterStd
 {

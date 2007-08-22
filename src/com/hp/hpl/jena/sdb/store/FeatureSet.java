@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
 import com.hp.hpl.jena.sparql.util.Printable;
 import com.hp.hpl.jena.sparql.util.PrintableBase;
-import com.hp.hpl.jena.sdb.util.IterFunc;
+import com.hp.hpl.jena.sdb.iterator.IterFunc;
 
 /** A set of features (order retained */
 

@@ -10,10 +10,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import com.hp.hpl.jena.sdb.util.alg.Accumulate;
-import com.hp.hpl.jena.sdb.util.alg.Action;
-import com.hp.hpl.jena.sdb.util.alg.Filter;
-import com.hp.hpl.jena.sdb.util.alg.Transform;
+import com.hp.hpl.jena.sdb.iterator.Accumulate;
+import com.hp.hpl.jena.sdb.iterator.Action;
+import com.hp.hpl.jena.sdb.iterator.Filter;
+import com.hp.hpl.jena.sdb.iterator.IterFunc;
+import com.hp.hpl.jena.sdb.iterator.Iterator2;
+import com.hp.hpl.jena.sdb.iterator.Transform;
 
 public class Iter<T> implements Iterable<T>
 {

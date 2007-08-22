@@ -6,8 +6,10 @@
 
 package com.hp.hpl.jena.sdb.compiler;
 
-import static com.hp.hpl.jena.sdb.util.IterFunc.*;
-import static com.hp.hpl.jena.sdb.util.alg.SetUtils.*;
+import static com.hp.hpl.jena.sdb.iterator.IterFunc.filter;
+import static com.hp.hpl.jena.sdb.iterator.IterFunc.map;
+import static com.hp.hpl.jena.sdb.iterator.IterFunc.toSet;
+import static com.hp.hpl.jena.sdb.iterator.SetUtils.intersection ;
 
 import java.util.List;
 import java.util.Set;
@@ -22,7 +24,6 @@ import com.hp.hpl.jena.sdb.core.ScopeEntry;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlSlice;
 import com.hp.hpl.jena.sdb.layout2.expr.RegexCompiler;
-
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.TransformCopy;
 import com.hp.hpl.jena.sparql.algebra.op.OpBGP;
