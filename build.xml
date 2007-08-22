@@ -241,7 +241,7 @@
 
     <javadoc
      sourcepath="${src.build.dir}"
-     packagenames="com.hp.hpl.jena.query.sdb"
+     packagenames="com.hp.hpl.jena.sdb"
      source="${java.source}"
      destdir="${javadoc.dir}"
      author="true"
