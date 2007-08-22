@@ -6,8 +6,8 @@
 
 package dev.db;
 
+import static com.hp.hpl.jena.sdb.iterator.Iter.iter;
 import static com.hp.hpl.jena.sdb.sql.SQLUtils.sqlStr;
-import static com.hp.hpl.jena.sdb.util.Iter.iter; 
 
 import static dev.db.DBSyntax.col;
 

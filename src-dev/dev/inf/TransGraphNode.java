@@ -11,7 +11,7 @@ import static com.hp.hpl.jena.sparql.sse.builders.BuilderBase.checkList;
 import static com.hp.hpl.jena.sparql.sse.builders.BuilderBase.checkNode;
 
 import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.sdb.util.Iter;
+import com.hp.hpl.jena.sdb.iterator.Iter;
 import com.hp.hpl.jena.sparql.sse.Item;
 import com.hp.hpl.jena.sparql.sse.ItemList;
 import com.hp.hpl.jena.sparql.sse.builders.BuilderBase;
