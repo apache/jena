@@ -22,10 +22,10 @@ import com.hp.hpl.jena.sdb.store.*;
 
 public class StoreBaseHash extends StoreBase
 {
-    public StoreBaseHash(StoreDesc desc, SDBConnection connection, StoreFormatter formatter, StoreLoader loader, QueryCompilerFactory compilerF, SQLBridgeFactory sqlBridgeF, SQLGenerator sqlGenerator)
+    public StoreBaseHash(SDBConnection connection, StoreDesc desc, StoreFormatter formatter, StoreLoader loader, QueryCompilerFactory compilerF, SQLBridgeFactory sqlBridgeF, SQLGenerator sqlGenerator)
     {
-        super(desc, 
-              connection, formatter, loader, compilerF, sqlBridgeF, sqlGenerator,
+        super(connection, desc, 
+              formatter, loader, compilerF, sqlBridgeF, sqlGenerator,
               new TableDescTriples(),
               new TableDescQuads() ,
               new TableNodesHash()) ;

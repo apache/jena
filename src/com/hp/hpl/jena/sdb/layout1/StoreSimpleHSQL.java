@@ -22,16 +22,16 @@ public class StoreSimpleHSQL extends StoreBase1
 {
     boolean currentlyOpen = true ;
     
-    public StoreSimpleHSQL(StoreDesc desc, SDBConnection sdb)
+    public StoreSimpleHSQL(SDBConnection sdb, StoreDesc desc)
     {
-        this(desc, sdb, new TableDescSPO(), new CodecSimple()) ;
+        this(sdb, desc, new TableDescSPO(), new CodecSimple()) ;
     }
     
-    private StoreSimpleHSQL(StoreDesc desc, SDBConnection sdb, TableDescTriples triples, EncoderDecoder codec)
+    private StoreSimpleHSQL(SDBConnection connection, StoreDesc desc, TableDescTriples triples, EncoderDecoder codec)
     {
-        super(desc, sdb, 
-              new FormatterSimpleHSQL(sdb) ,
-              new TupleLoaderSimple(sdb, triples, codec),
+        super(connection, desc, 
+              new FormatterSimpleHSQL(connection) ,
+              new TupleLoaderSimple(connection, triples, codec),
               new QueryCompilerFactory1(codec),
               new SQLBridgeFactory1(codec),
               new GenerateSQL(),

@@ -14,9 +14,9 @@ import com.hp.hpl.jena.sdb.sql.SDBConnection;
 
 public class StoreTriplesNodesHashSQLServer extends StoreBaseHash
 {
-    public StoreTriplesNodesHashSQLServer(StoreDesc desc, SDBConnection connection)
+    public StoreTriplesNodesHashSQLServer(SDBConnection connection, StoreDesc desc)
     {
-        super(desc, connection,
+        super(connection, desc,
               new FmtLayout2HashSQLServer(connection),
               //new LoaderHashSQLServer(connection),
               new LoaderTuplesNodes(connection, TupleLoaderHashSQLServer.class),

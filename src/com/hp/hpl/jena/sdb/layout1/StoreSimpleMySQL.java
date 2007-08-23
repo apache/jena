@@ -21,22 +21,22 @@ import com.hp.hpl.jena.sdb.sql.SDBConnection;
 
 public class StoreSimpleMySQL extends StoreBase1
 {
-    public StoreSimpleMySQL(StoreDesc desc, SDBConnection connection)
+    public StoreSimpleMySQL(SDBConnection connection, StoreDesc desc)
     {
-        this(desc, connection, MySQLEngineType.InnoDB) ;
+        this(connection, desc, MySQLEngineType.InnoDB) ;
     }
     
-    public StoreSimpleMySQL(StoreDesc desc, SDBConnection connection, MySQLEngineType engineType)
+    public StoreSimpleMySQL(SDBConnection connection, StoreDesc desc, MySQLEngineType engineType)
     {
-        this(desc, connection, new TableDescSPO(), engineType, new CodecSimple()) ;
+        this(connection, desc, new TableDescSPO(), engineType, new CodecSimple()) ;
     }
 
-    private StoreSimpleMySQL(StoreDesc desc, SDBConnection connection, 
+    private StoreSimpleMySQL(SDBConnection connection, StoreDesc desc, 
                              TableDescTriples triples, 
                              MySQLEngineType engineType, 
                              EncoderDecoder codec)
     {
-        super(desc, connection,
+        super(connection, desc, 
               new FormatterSimpleMySQL(connection, engineType),
               new TupleLoaderSimple(connection, triples, codec), 
               new QueryCompilerFactory1(codec), 

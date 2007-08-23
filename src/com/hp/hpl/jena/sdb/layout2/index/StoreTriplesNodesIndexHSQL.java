@@ -22,9 +22,9 @@ import com.hp.hpl.jena.sdb.store.StoreBaseHSQL;
 
 public class StoreTriplesNodesIndexHSQL extends StoreBaseHSQL
 {
-    public StoreTriplesNodesIndexHSQL(StoreDesc desc, SDBConnection connection)
+    public StoreTriplesNodesIndexHSQL(SDBConnection connection, StoreDesc desc)
     {
-        super(desc, connection,
+        super(connection, desc,
               new FmtLayout2IndexHSQL(connection),
               new LoaderTuplesNodes(connection, TupleLoaderIndexHSQL.class),
               new QueryCompilerFactoryIndex(),

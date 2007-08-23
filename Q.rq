@@ -1,8 +1,9 @@
 PREFIX :    <http://example/>
+SELECT  *
+WHERE
+  { ?s  ?p  ?o .}
 
-SELECT *
-{ 
-     ?x :q ?a . ?a :pp ?v
-}
-LIMIT 10
-
+## { 
+##      ?x :q ?a . ?a :pp ?v
+## }
+## LIMIT 10

@@ -14,14 +14,14 @@ import com.hp.hpl.jena.sdb.sql.SDBConnection;
 public class StoreSimpleDerby extends StoreBase1
 {
 
-    public StoreSimpleDerby(StoreDesc desc, SDBConnection connection)
+    public StoreSimpleDerby(SDBConnection connection, StoreDesc desc)
     {
-        this(desc, connection , new TableDescSPO(), new CodecSimple()) ;
+        this(connection, desc, new TableDescSPO(), new CodecSimple()) ;
     }
 
-    private StoreSimpleDerby(StoreDesc desc, SDBConnection connection, TableDescTriples triples, EncoderDecoder codec)
+    private StoreSimpleDerby(SDBConnection connection, StoreDesc desc, TableDescTriples triples, EncoderDecoder codec)
     {
-        super(desc, connection,
+        super(connection, desc, 
               new FormatterSimpleDerby(connection) ,
               new TupleLoaderSimple(connection, triples, codec), 
               new QueryCompilerFactory1(codec), 

@@ -14,9 +14,9 @@ import com.hp.hpl.jena.sdb.sql.SDBConnection;
 
 public class StoreTriplesNodesHashPGSQL extends StoreBaseHash
 {
-    public StoreTriplesNodesHashPGSQL(StoreDesc desc, SDBConnection connection)
+    public StoreTriplesNodesHashPGSQL(SDBConnection connection, StoreDesc desc)
     {
-        super(desc, connection,
+        super(connection, desc,
               new FmtLayout2HashPGSQL(connection),
               //new LoaderHashPGSQL(connection),
               new LoaderTuplesNodes(connection, TupleLoaderHashPGSQL.class),

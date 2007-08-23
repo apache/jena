@@ -15,9 +15,9 @@ import com.hp.hpl.jena.sdb.sql.SDBConnection;
 public class StoreTriplesNodesIndexOracle extends StoreBaseIndex
 {
 
-    public StoreTriplesNodesIndexOracle(StoreDesc desc, SDBConnection connection)
+    public StoreTriplesNodesIndexOracle(SDBConnection connection, StoreDesc desc)
     {
-        super(desc, connection,
+        super(connection, desc,
               new FmtLayout2IndexOracle(connection) ,
               new LoaderTuplesNodes(connection, TupleLoaderIndexOracle.class),
               new QueryCompilerFactoryIndex(), 

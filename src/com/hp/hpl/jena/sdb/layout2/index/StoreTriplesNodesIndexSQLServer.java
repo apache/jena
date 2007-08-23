@@ -14,9 +14,9 @@ import com.hp.hpl.jena.sdb.sql.SDBConnection;
 
 public class StoreTriplesNodesIndexSQLServer extends StoreBaseIndex
 {
-    public StoreTriplesNodesIndexSQLServer(StoreDesc desc, SDBConnection connection)
+    public StoreTriplesNodesIndexSQLServer(SDBConnection connection, StoreDesc desc)
     {
-        super(desc, connection,
+        super(connection, desc,
               new FmtLayout2IndexSQLServer(connection),
               new LoaderTuplesNodes(connection, TupleLoaderIndexSQLServer.class),
               new QueryCompilerFactoryIndex(),

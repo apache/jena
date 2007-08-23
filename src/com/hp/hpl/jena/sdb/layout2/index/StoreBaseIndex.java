@@ -25,9 +25,9 @@ import com.hp.hpl.jena.sdb.store.StoreLoader;
 
 public class StoreBaseIndex extends StoreBase
 {
-    public StoreBaseIndex(StoreDesc desc, SDBConnection connection, StoreFormatter formatter, StoreLoader loader, QueryCompilerFactory compilerF, SQLBridgeFactory sqlBridgeF, SQLGenerator sqlGenerator)
+    public StoreBaseIndex(SDBConnection connection, StoreDesc desc, StoreFormatter formatter, StoreLoader loader, QueryCompilerFactory compilerF, SQLBridgeFactory sqlBridgeF, SQLGenerator sqlGenerator)
     {
-        super(desc, connection, 
+        super(connection, desc, 
               formatter, loader, compilerF, sqlBridgeF, sqlGenerator,
               new TableDescTriples(),
               new TableDescQuads(),

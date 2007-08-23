@@ -36,8 +36,7 @@ public abstract class StoreBase
     protected TableDescQuads quadTableDesc = null ;
     protected TableDescNodes nodeTableDesc ;
     
-    public StoreBase(StoreDesc desc, 
-                     SDBConnection connection, 
+    public StoreBase(SDBConnection connection, StoreDesc desc, 
                      StoreFormatter formatter ,
                      StoreLoader loader ,
                      QueryCompilerFactory compilerF ,

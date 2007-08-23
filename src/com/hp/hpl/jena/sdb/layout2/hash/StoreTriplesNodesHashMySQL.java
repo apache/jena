@@ -16,14 +16,14 @@ import com.hp.hpl.jena.sdb.sql.SDBConnection;
 
 public class StoreTriplesNodesHashMySQL extends StoreBaseHash
 {
-    public StoreTriplesNodesHashMySQL(StoreDesc desc, SDBConnection connection)
+    public StoreTriplesNodesHashMySQL(SDBConnection connection, StoreDesc desc)
     {
-        this(desc, connection, null) ;
+        this(connection, desc, null) ;
     }
     
-    public StoreTriplesNodesHashMySQL(StoreDesc desc, SDBConnection connection, MySQLEngineType tableType)
+    public StoreTriplesNodesHashMySQL(SDBConnection connection, StoreDesc desc, MySQLEngineType tableType)
     {
-        super(desc, connection,
+        super(connection, desc,
               new FmtLayout2HashMySQL(connection, 
                                   (tableType!=null)? tableType : MySQLEngineType.InnoDB),
               //new LoaderHashMySQL(connection),

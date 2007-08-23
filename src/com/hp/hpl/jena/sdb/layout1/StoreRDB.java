@@ -34,7 +34,7 @@ public class StoreRDB extends StoreBase1
     
     private StoreRDB(StoreDesc desc, ModelRDB model, TableDescTriples triples, EncoderDecoder codec)
     {
-        super(desc, makeSDBConnection(model),
+        super(makeSDBConnection(model), desc, 
               null, // Formatter.
               null, // Loader
               new QueryCompilerFactory1(codec),

@@ -24,8 +24,7 @@ public abstract class StoreBaseHSQL extends StoreBase
 {
     protected boolean currentlyOpen = true ;
     
-    public StoreBaseHSQL(StoreDesc desc,
-                         SDBConnection connection, 
+    public StoreBaseHSQL(SDBConnection connection, StoreDesc desc,
                          StoreFormatter formatter,
                          StoreLoader loader,
                          QueryCompilerFactory compilerF,
@@ -34,7 +33,7 @@ public abstract class StoreBaseHSQL extends StoreBase
                          TableDescQuads quadTableDesc,
                          TableDescNodes nodeTableDesc)
     {
-        super(desc, connection, formatter, loader, compilerF, sqlBridgeF, 
+        super(connection, desc, formatter, loader, compilerF, sqlBridgeF, 
               new GenerateSQL(), tripleTableDesc, quadTableDesc, nodeTableDesc) ;
     }
 

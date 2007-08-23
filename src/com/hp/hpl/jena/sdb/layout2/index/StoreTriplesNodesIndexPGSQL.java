@@ -14,9 +14,9 @@ import com.hp.hpl.jena.sdb.sql.SDBConnection;
 
 public class StoreTriplesNodesIndexPGSQL extends StoreBaseIndex
 {
-    public StoreTriplesNodesIndexPGSQL(StoreDesc desc, SDBConnection connection)
+    public StoreTriplesNodesIndexPGSQL(SDBConnection connection, StoreDesc desc)
     {
-        super(desc, connection,
+        super(connection, desc,
               new FmtLayout2IndexPGSQL(connection),
               new LoaderTuplesNodes(connection, TupleLoaderIndexPGSQL.class),
               new QueryCompilerFactoryIndex(),

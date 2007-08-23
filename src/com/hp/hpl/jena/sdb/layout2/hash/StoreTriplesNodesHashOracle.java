@@ -15,9 +15,9 @@ import com.hp.hpl.jena.sdb.sql.SDBConnection;
 public class StoreTriplesNodesHashOracle extends StoreBaseHash
 {
 
-    public StoreTriplesNodesHashOracle(StoreDesc desc, SDBConnection connection)
+    public StoreTriplesNodesHashOracle(SDBConnection connection, StoreDesc desc)
     {
-        super(desc, connection,
+        super(connection, desc,
               new FmtLayout2HashOracle(connection) ,
               new LoaderTuplesNodes(connection, TupleLoaderHashOracle.class),
               new QueryCompilerFactoryHash(), 

@@ -23,10 +23,10 @@ import com.hp.hpl.jena.sdb.store.StoreBaseHSQL;
 
 public class StoreTriplesNodesHashHSQL extends StoreBaseHSQL
 {
-    public StoreTriplesNodesHashHSQL(StoreDesc desc, SDBConnection connection)
+    public StoreTriplesNodesHashHSQL(SDBConnection connection, StoreDesc desc)
     {
         // HSQL can't handle complex RHS of a left join so no optional spotting. 
-        super(desc, connection,
+        super(connection, desc,
               new FmtLayout2HashHSQL(connection),
               //new LoaderHashHSQL(connection),
               new LoaderTuplesNodes(connection, TupleLoaderHashHSQL.class),

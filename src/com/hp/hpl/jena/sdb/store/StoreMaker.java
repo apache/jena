@@ -19,7 +19,7 @@ import com.hp.hpl.jena.sdb.sql.SDBConnection;
 public interface StoreMaker
 {
     /** Make a new store object */
-    public Store create(StoreDesc desc, SDBConnection conn) ;
+    public Store create(SDBConnection conn, StoreDesc desc) ;
 }
 
 /*

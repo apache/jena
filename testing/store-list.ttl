@@ -41,10 +41,10 @@ _:x rdf:type sdb:StoreList ;
 ##       [ rdfs:label "MS-SQL-e/Index" ;
 ##         sdb:description <StoreDesc/ms-sql-e-index.ttl> ]
 ## 
-      [ rdfs:label "HSQLDB/Hash" ;
-        sdb:description <StoreDesc/hsqldb-hash.ttl> ]
-
-      [ rdfs:label "HSQLDB/Index" ;
-        sdb:description <StoreDesc/hsqldb-index.ttl> ]
+##       [ rdfs:label "HSQLDB/Hash" ;
+##         sdb:description <StoreDesc/hsqldb-hash.ttl> ]
+## 
+##       [ rdfs:label "HSQLDB/Index" ;
+##         sdb:description <StoreDesc/hsqldb-index.ttl> ]
 
     ) .

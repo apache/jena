@@ -15,9 +15,9 @@ import com.hp.hpl.jena.sdb.sql.SDBConnection;
 public class StoreTriplesNodesIndexDerby extends StoreBaseIndex
 {
 
-    public StoreTriplesNodesIndexDerby(StoreDesc desc, SDBConnection connection)
+    public StoreTriplesNodesIndexDerby(SDBConnection connection, StoreDesc desc)
     {
-        super(desc, connection,
+        super(connection, desc,
               new FmtLayout2IndexDerby(connection) ,
               new LoaderTuplesNodes(connection, TupleLoaderIndexDerby.class),
               new QueryCompilerFactoryIndex(), 

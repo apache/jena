@@ -33,7 +33,7 @@ public class StoreBase1
     protected StoreConfig configuration ;
     protected TableDescTriples tripleTable ;
     
-    public StoreBase1(StoreDesc desc, SDBConnection connection, 
+    public StoreBase1(SDBConnection connection, StoreDesc desc, 
                      StoreFormatter formatter ,
                      TupleLoaderSimple loader ,
                      QueryCompilerFactory compilerF ,

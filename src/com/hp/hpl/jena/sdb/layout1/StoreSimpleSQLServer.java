@@ -14,16 +14,16 @@ import com.hp.hpl.jena.sdb.sql.SDBConnection;
 public class StoreSimpleSQLServer extends StoreBase1
 {
 
-    public StoreSimpleSQLServer(StoreDesc desc, SDBConnection connection)
+    public StoreSimpleSQLServer(SDBConnection connection, StoreDesc desc)
     {
-        this(desc, connection , new TableDescSPO(), new CodecSimple()) ;
+        this(connection, desc , new TableDescSPO(), new CodecSimple()) ;
     }
 
-    private StoreSimpleSQLServer(StoreDesc desc, SDBConnection connection, 
+    private StoreSimpleSQLServer(SDBConnection connection, StoreDesc desc,
                                  TableDescTriples triples,
                                  EncoderDecoder codec)
     {
-        super(desc, connection,
+        super(connection, desc, 
               new FormatterSimpleSQLServer(connection) ,
               new TupleLoaderSimple(connection, triples, codec), 
               new QueryCompilerFactory1(codec), 

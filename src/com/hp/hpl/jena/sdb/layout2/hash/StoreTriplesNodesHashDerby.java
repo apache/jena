@@ -15,10 +15,9 @@ import com.hp.hpl.jena.sdb.sql.SDBConnection;
 public class StoreTriplesNodesHashDerby extends StoreBaseHash
 {
 
-    public StoreTriplesNodesHashDerby(StoreDesc desc, SDBConnection connection)
+    public StoreTriplesNodesHashDerby(SDBConnection connection, StoreDesc desc)
     {
-        super(desc, 
-              connection,
+        super(connection, desc, 
               new FmtLayout2HashDerby(connection) ,
               //new LoaderHashDerby(connection),
               new LoaderTuplesNodes(connection, TupleLoaderHashDerby.class),
