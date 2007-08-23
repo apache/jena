@@ -19,7 +19,7 @@ public class Transformer
     {
         if ( op == null )
         {
-            ALog.warn(Transformer.class,"Attempt to transform a null Op  - ignored") ;
+            ALog.warn(Transformer.class, "Attempt to transform a null Op - ignored") ;
             return op ;
         }
         
