@@ -26,6 +26,16 @@ public class SqlJoinInner extends SqlJoin
     public SqlJoinInner   asInnerJoin()         { return this ; }
     
     public void visit(SqlNodeVisitor visitor) { visitor.visit(this) ; }
+    
+    @Override
+    public SqlNode apply(SqlTransform transform, SqlNode left, SqlNode right)
+    { return transform.transform(this, left, right) ; }
+
+    @Override
+    public SqlNode copy(SqlNode left, SqlNode right)
+    {
+        return new SqlJoinInner(left, right, getAliasName()) ;
+    }
 }
 
 /*

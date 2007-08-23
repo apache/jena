@@ -99,7 +99,7 @@ public class SqlNodeTextVisitor implements SqlNodeVisitor
         out.println(sqlRename.getIdScope().toString()) ;
         out.println(sqlRename.getNodeScope().toString()) ;
         out.decIndent() ;
-        sqlRename.getSqlNode().visit(this) ;
+        sqlRename.getSubNode().visit(this) ;
         finish() ;
     }
     

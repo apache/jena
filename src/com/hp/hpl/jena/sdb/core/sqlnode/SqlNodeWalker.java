@@ -45,7 +45,7 @@ public class SqlNodeWalker
         public void visit(SqlRename sqlNode)
         {
             sqlNode.visit(visitor) ;
-            sqlNode.getSqlNode().visit(this) ;
+            sqlNode.getSubNode().visit(this) ;
         }
 
         public void visit(SqlTable sqlNode)

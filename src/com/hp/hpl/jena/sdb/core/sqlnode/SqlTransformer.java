@@ -6,9 +6,89 @@
 
 package com.hp.hpl.jena.sdb.core.sqlnode;
 
-public interface SqlTransformer
-{
+import java.util.Stack;
 
+import com.hp.hpl.jena.sparql.util.ALog;
+
+public class SqlTransformer
+{
+    public static SqlNode transform(SqlNode sqlNode, SqlTransform transform)
+    {
+        SqlTransformVisitor v = new SqlTransformVisitor(transform) ;
+        sqlNode.visit(v) ;
+        return v.result() ;
+    }
+    
+    private static class SqlTransformVisitor implements SqlNodeVisitor
+    {
+
+        Stack<SqlNode> stack = new Stack<SqlNode>() ;
+        private SqlTransform transform ;
+
+        public SqlTransformVisitor(SqlTransform transform)
+        {
+            this.transform = transform ; 
+        }
+
+        public SqlNode result()
+        {
+            if ( stack.size() != 1 )
+                ALog.warn(this, "Stack is not aligned") ;
+            return stack.pop() ; 
+        }
+
+        private void visit0(SqlNodeBase0 n)
+        {
+            stack.push(n.apply(transform)) ;
+        }
+
+        private void visit1(SqlNodeBase1 n1)
+        {
+            n1.getSubNode().visit(this) ;
+            SqlNode s = stack.pop() ;
+            stack.push(n1.apply(transform, s)) ;
+        }
+        
+        private void visit2(SqlNodeBase2 n2)
+        {
+            n2.getLeft().visit(this) ;
+            SqlNode left = stack.pop() ;
+            n2.getRight().visit(this) ;
+            SqlNode right = stack.pop() ;
+            stack.push(n2.apply(transform, left, right)) ;
+        }
+
+        public void visit(SqlProject sqlProject)
+        {
+            sqlProject.getSubNode().visit(this) ;
+            SqlNode s = stack.pop() ;
+            SqlNode p = transform.transform(sqlProject, s) ;
+            stack.push(p) ;
+        }
+
+        public void visit(SqlRestrict sqlRestrict)
+        { visit1(sqlRestrict) ; }
+        
+        public void visit(SqlTable sqlTable)
+        { visit0(sqlTable) ; }
+
+        public void visit(SqlRename sqlRename)
+        { visit1(sqlRename) ; }
+        
+        public void visit(SqlJoinInner sqlJoin)
+        { visit2(sqlJoin) ; }
+
+        public void visit(SqlJoinLeftOuter sqlJoin)
+        { visit2(sqlJoin) ; }
+
+        public void visit(SqlCoalesce sqlCoalesce)
+        { visit1(sqlCoalesce) ; }
+
+        public void visit(SqlSlice sqlSlice)
+        { visit1(sqlSlice) ; }
+        
+    }
+    
 }
 
 /*

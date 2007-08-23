@@ -8,7 +8,21 @@ package com.hp.hpl.jena.sdb.core.sqlnode;
 
 public interface SqlTransform
 {
+    public SqlNode transform(SqlProject sqlProject, SqlNode subNode) ;
 
+    public SqlNode transform(SqlRestrict sqlRestrict, SqlNode subNode) ;
+
+    public SqlNode transform(SqlRename sqlRename, SqlNode subNode) ;
+
+    public SqlNode transform(SqlSlice sqlSlice, SqlNode subNode) ;
+
+    public SqlNode transform(SqlCoalesce sqlCoalesce, SqlNode subNode) ;
+
+    public SqlNode transform(SqlJoinInner sqlJoinInner, SqlNode left, SqlNode right) ;
+
+    public SqlNode transform(SqlJoinLeftOuter sqlJoinLeftOuter, SqlNode left, SqlNode right) ;
+
+    public SqlNode transform(SqlTable sqlTable) ;
 }
 
 /*

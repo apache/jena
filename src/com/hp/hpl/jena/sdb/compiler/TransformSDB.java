@@ -133,6 +133,13 @@ public class TransformSDB extends TransformCopy
         return super.transform(opTable) ;
     }
     
+    // Modifiers: the structure is:
+    //    slice
+    //      distinct/reduced
+    //      project
+    //        order
+    //          [toList]
+    
     
     @Override
     public Op transform(OpSlice opSlice, Op subOp)

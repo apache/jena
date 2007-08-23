@@ -17,11 +17,11 @@ import com.hp.hpl.jena.sdb.core.*;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
 import com.hp.hpl.jena.sdb.iterator.SetUtils;
 
-public class SqlCoalesce extends SqlNodeBase
+public class SqlCoalesce extends SqlNodeBase1
 {
-    /* A COALESCE is a special kind of LeftJoin where some
-     * variables from the left andf right sides are not equated across
-     * the join but instead merged by a test for "first non NULL".  
+    /* A COALESCE is an operations that takes 
+     * variables from the left and right sides of a join
+     * and finds the first (left to right) that is defined (not NULL).
      * That's COALESCE in many databases.
      */
     
@@ -44,11 +44,16 @@ public class SqlCoalesce extends SqlNodeBase
         return new SqlCoalesce(request, alias, join, coalesceVars) ;
     }
     
-    private SqlCoalesce(SDBRequest request, String alias, SqlJoin join, Set<Var> coalesceVars)
+    private SqlCoalesce(String alias, SqlJoin join, Set<Var> coalesceVars)
     { 
-        super(alias) ;
+        super(alias, join) ;
         this.join = join ;
         this.coalesceVars = coalesceVars ;
+    }
+    
+    private SqlCoalesce(SDBRequest request, String alias, SqlJoin join, Set<Var> coalesceVars)
+    { 
+        this(alias, join, coalesceVars) ;
         Annotation1 annotation = new Annotation1(true) ;
         
         // ScopeCoalesce needed
@@ -102,14 +107,33 @@ public class SqlCoalesce extends SqlNodeBase
     @Override
     public SqlCoalesce  asCoalesce()    { return this ; }
 
+    @Override
     public Scope getIdScope()           { return idScope ; }
     
+    @Override
     public Scope getNodeScope()         { return nodeScope ; }
     
     public SqlJoin getJoinNode()        { return join ; }
     
     public void visit(SqlNodeVisitor visitor)
     { visitor.visit(this) ; }
+
+    @Override
+    public SqlNode apply(SqlTransform transform, SqlNode newSubNode)
+    {
+        return transform.transform(this, newSubNode) ;
+    }
+
+    @Override
+    public SqlNode copy(SqlNode subNode)
+    {
+        // May need to do a deeper copy.
+        SqlCoalesce s = new SqlCoalesce(getAliasName(), subNode.asJoin(), this.coalesceVars) ;
+        s.nonCoalesceVars  = this.nonCoalesceVars ;
+        s.idScope = this.idScope ;
+        s.nodeScope = this.nodeScope ;
+        return s ;
+    }
 }
 
 /*

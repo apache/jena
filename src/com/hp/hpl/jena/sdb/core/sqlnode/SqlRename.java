@@ -18,9 +18,8 @@ import com.hp.hpl.jena.sparql.core.Var;
 
 /** SQL rename */
 
-public class SqlRename extends SqlNodeBase
+public class SqlRename extends SqlNodeBase1
 {
-    private SqlNode sqlNode ;
     private ScopeRename idScope ;
     private ScopeRename nodeScope ;
     private SqlTable here ;
@@ -38,12 +37,20 @@ public class SqlRename extends SqlNodeBase
     
     private SqlRename(String aliasName, SqlNode sqlNode)
     {
-        super(aliasName) ;
-        this.sqlNode = sqlNode ;
-        this.here = new SqlTable(aliasName) ;
-        this.idScope = new ScopeRename(sqlNode.getIdScope()) ;
-        this.nodeScope = new ScopeRename(sqlNode.getNodeScope()) ;
+        this(aliasName, sqlNode,
+             new SqlTable(aliasName),
+             new ScopeRename(sqlNode.getIdScope()),
+             new ScopeRename(sqlNode.getNodeScope())) ;
     }
+    
+    private SqlRename(String aliasName, SqlNode sqlNode, SqlTable here, ScopeRename idScope, ScopeRename nodeScope)
+    {
+        super(aliasName, sqlNode) ;
+        this.here = here ;
+        this.idScope = idScope ;
+        this.nodeScope = nodeScope ;
+    }
+
     
     public SqlRename(String aliasName, SqlNode sqlNode, 
                      Map<Var, String> idRenames,
@@ -53,7 +60,7 @@ public class SqlRename extends SqlNodeBase
         setAliases(here, idRenames, sqlNode.getIdScope(), idScope) ;
         setAliases(here, nodeRenames, sqlNode.getNodeScope(), nodeScope) ;
     }
-
+    
     // Map all vars in the scope to names in the rename.
     private static void setAliasesAll(final SqlTable here, Scope scope, 
                                       final ScopeRename renameScope, final Generator gen)
@@ -98,18 +105,25 @@ public class SqlRename extends SqlNodeBase
         }
     }
     
-    public void visit(SqlNodeVisitor visitor)
-    { visitor.visit(this) ; }
-
-    public Scope getIdScope()   { return idScope ; }
-    
-    public Scope getNodeScope() { return nodeScope ; }
-
     public ScopeRename getIdScopeRename()   { return idScope ; }
     
     public ScopeRename getNodeScopeRename() { return nodeScope ; }
     
-    public SqlNode getSqlNode()             { return sqlNode ; }
+    public void visit(SqlNodeVisitor visitor)
+    { visitor.visit(this) ; }
+
+    @Override
+    public SqlNode apply(SqlTransform transform, SqlNode subNode)
+    {
+        return transform.transform(this, subNode) ;
+    }
+
+    @Override
+    public SqlNode copy(SqlNode subNode)
+    {
+        // Do any subitems need to be copied?
+        return new SqlRename(this.getAliasName(), subNode, this.here, this.idScope, this.nodeScope) ;
+    }
 }
 
 /*

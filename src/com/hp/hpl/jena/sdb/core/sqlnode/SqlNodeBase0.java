@@ -1,41 +1,23 @@
 /*
- * (c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
 package com.hp.hpl.jena.sdb.core.sqlnode;
 
-import com.hp.hpl.jena.sdb.core.JoinType;
 
 
-public class SqlJoinLeftOuter extends SqlJoin
+public abstract class SqlNodeBase0 extends SqlNodeBase 
 {
-    public SqlJoinLeftOuter(SqlNode left, SqlNode right)
-    { super(JoinType.LEFT, left, right) ; }
+    protected SqlNodeBase0(String aliasName) { super(aliasName) ; }
     
-    public SqlJoinLeftOuter(SqlNode left, SqlNode right, String alias)
-    { super(alias, JoinType.LEFT, left, right) ; }
-    
-    @Override 
-    public boolean   isLeftJoin()        { return true ; }
-
-    @Override 
-    public SqlJoinLeftOuter   asLeftJoin()         { return this ; }
-    
-    public void visit(SqlNodeVisitor visitor) { visitor.visit(this) ; }
- 
-    @Override
-    public SqlNode apply(SqlTransform transform, SqlNode left, SqlNode right)
-    { return transform.transform(this, left, right) ; }
-    
-    @Override
-    public SqlNode copy(SqlNode left, SqlNode right)
-    { return new SqlJoinLeftOuter(left, right, getAliasName()) ; }
+    public abstract SqlNode apply(SqlTransform transform) ;
+    public abstract SqlNode copy() ;
 }
 
 /*
- * (c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

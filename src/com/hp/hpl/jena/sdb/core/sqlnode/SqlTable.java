@@ -13,7 +13,7 @@ import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
 
 /** Root of all concrete tables */
 
-public class SqlTable extends SqlNodeBase
+public class SqlTable extends SqlNodeBase0
 {
     private String tableName ;
     protected ScopeBase idScope = null ;
@@ -26,12 +26,17 @@ public class SqlTable extends SqlNodeBase
 
     public SqlTable(String tableName, String aliasName)
     {
-        super(aliasName) ;
-        this.tableName = tableName ;
-        this.idScope = new ScopeBase() ;
-        this.nodeScope = new ScopeBase() ;
+        this(aliasName, tableName, new ScopeBase(), new ScopeBase()) ;
     }
     
+    private SqlTable(String tableName, String aliasName, ScopeBase idScope, ScopeBase nodeScope)
+    {
+        super(aliasName) ;
+        this.tableName = tableName ;
+        this.idScope = idScope ;
+        this.nodeScope = nodeScope ;
+    }
+
     @Override
     public boolean isTable() { return true ; }
     @Override
@@ -91,6 +96,17 @@ public class SqlTable extends SqlNodeBase
         return getAliasName().equals(table.getAliasName()) ;
     }
 
+    @Override
+    public SqlNode apply(SqlTransform transform)
+    {
+        return transform.transform(this) ;
+    }
+
+    @Override
+    public SqlNode copy()
+    {
+        return new SqlTable(getAliasName(), tableName, this.idScope, this.nodeScope) ;
+    }
 }
 
 /*

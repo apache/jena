@@ -27,6 +27,16 @@ public class SqlSlice extends SqlNodeBase1
     
     public void visit(SqlNodeVisitor visitor)
     { visitor.visit(this) ; }
+    
+    @Override
+    public SqlNode apply(SqlTransform transform, SqlNode subNode)
+    { return transform.transform(this, subNode) ; }
+
+    @Override
+    public SqlNode copy(SqlNode subNode)
+    {
+        return new SqlSlice(subNode, this.start, this.length) ;
+    }
 }
 
 /*

@@ -21,7 +21,9 @@ public abstract class SqlNodeBase2 extends SqlNodeBase
         
     public SqlNode   getLeft()   { return left ; }
     public SqlNode   getRight()  { return right ; }
-    
+
+    public abstract SqlNode apply(SqlTransform transform, SqlNode left, SqlNode right) ;
+    public abstract SqlNode copy(SqlNode left, SqlNode right) ;
 }
 
 /*

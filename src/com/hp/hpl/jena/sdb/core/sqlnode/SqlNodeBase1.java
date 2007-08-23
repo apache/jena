@@ -17,7 +17,10 @@ public abstract class SqlNodeBase1 extends SqlNodeBase
     public Scope getIdScope()     { return sqlNode.getIdScope() ; }
     public Scope getNodeScope()  { return sqlNode.getNodeScope() ; }
     
-    public SqlNode getSubNode() { return sqlNode ; } 
+    public SqlNode getSubNode() { return sqlNode ; }
+
+    public abstract SqlNode apply(SqlTransform transform, SqlNode newSubNode) ;
+    public abstract SqlNode copy(SqlNode subNode) ;
 }
 
 /*

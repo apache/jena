@@ -9,9 +9,9 @@ package com.hp.hpl.jena.sdb.core.sqlnode;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
 import com.hp.hpl.jena.sdb.util.Pair;
+import com.hp.hpl.jena.sparql.core.Var;
 
 public class SqlProject extends SqlNodeBase1
 {
@@ -35,9 +35,12 @@ public class SqlProject extends SqlNodeBase1
     private List<Pair<Var, SqlColumn>> cols = null ; 
     
     private SqlProject(SqlNode sqlNode)
+    { this(sqlNode, new ArrayList<Pair<Var, SqlColumn>>()) ; }
+    
+    private SqlProject(SqlNode sqlNode, List<Pair<Var, SqlColumn>> cols)
     { 
         super(sqlNode.getAliasName(), sqlNode) ;
-        this.cols = new ArrayList<Pair<Var, SqlColumn>>() ; 
+        this.cols = cols ; 
     }
     
     @Override
@@ -52,6 +55,16 @@ public class SqlProject extends SqlNodeBase1
 
     public void visit(SqlNodeVisitor visitor)
     { visitor.visit(this) ; }
+    
+    @Override
+    public SqlNode apply(SqlTransform transform, SqlNode subNode)
+    { return transform.transform(this, subNode) ; }
+
+    @Override
+    public SqlNode copy(SqlNode subNode)
+    {
+        return new SqlProject(subNode, this.getCols()) ;
+    }
 }
 
 /*
