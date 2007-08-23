@@ -10,13 +10,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.hp.hpl.jena.sdb.SDBException;
-import com.hp.hpl.jena.sdb.core.sqlnode.SqlJoin;
+import com.hp.hpl.jena.sdb.core.VarCol;
+import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExprList;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNodeBase1;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNodeVisitor;
-import com.hp.hpl.jena.sdb.core.sqlnode.SqlTable;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlTransform;
-import com.hp.hpl.jena.sparql.expr.ExprList;
 
 /** A unit that generates an SQL SELECT Statement.
  *  The SQL generation process is a pass over the SqlNdoe structure to generate SelectBlocks,
@@ -37,6 +36,11 @@ public class SqlSelectBlock extends SqlNodeBase1
     // order
     // limit/offset
     
+    private List<VarCol> cols = new ArrayList<VarCol>() ;
+    private SqlExprList exprs = new SqlExprList() ;
+    private long start = -1 ;
+    private long length = -1 ;
+    
     /**
      * @param aliasName
      * @param sqlNode
@@ -46,22 +50,14 @@ public class SqlSelectBlock extends SqlNodeBase1
         super(aliasName, sqlNode) ;
     }
 
-    //Scope scope = new ScopeBase() ; 
-    List<String> outputCols = new ArrayList<String>() ;
-    
-    public List<String> getCols()       { return null ; }
-    public List<SqlTable> getTables()   { return null ; }
-    public SqlJoin getJoin()            { return null ; }
-    public ExprList exprs()             { return null ; } 
-    
-    private long limit = -1 ;
-    private long offset = -1 ;
-    
-    public long getLimit()              { return limit ; }
-    public void setLimit(long limit)    { this.limit = limit ; }
-    public long getOffset()             { return offset ; }
-    public void setOffset(long offset)  { this.offset = offset ; }
-    
+    public List<VarCol> getCols()       { return cols ; }
+    public SqlExprList getWhere()       { return exprs ; }
+
+    public long getStart()              { return start ; }
+    public void setStart(long start)    { this.start = start ; }
+
+    public long getLength()             { return length ; }
+    public void setLength(long length)  { this.length = length ; }
     
     @Override
     public SqlNode apply(SqlTransform transform, SqlNode newSubNode)

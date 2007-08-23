@@ -17,21 +17,46 @@ public class TransformSelectBlock extends SqlTransformCopy
     
     public TransformSelectBlock() {}
     
+    // Pull-in various features of a SELECT statement. 
+    
     @Override
     public SqlNode transform(SqlProject sqlProject, SqlNode subNode)
     { 
         SqlSelectBlock block = block(subNode) ;
-        //block.addProjectVar(sqlProject.getCols()) ;
+        block.getCols().addAll(sqlProject.getCols()) ;
         return block ;
     }
 
     @Override
     public SqlNode transform(SqlRestrict sqlRestrict, SqlNode subNode)
-    { return null ; }
+    { 
+        SqlSelectBlock block = block(subNode) ;
+        block.getWhere().addAll(sqlRestrict.getConditions()) ;
+        return block ;
+    }
 
     @Override
     public SqlNode transform(SqlSlice sqlSlice, SqlNode subNode)
-    { return null ; }
+    { 
+        SqlSelectBlock block = block(subNode) ;
+        
+        long start = block.getStart() ;
+        if ( start == -1 )
+            start = sqlSlice.getStart() ;           // start was unset.
+        else
+            start = start + sqlSlice.getStart() ;   // start of the underlying sequence 
+        block.setStart(start) ;
+
+            
+        long length = block.getLength() ;
+        if ( length == -1 )
+            length = sqlSlice.getLength() ;         // Length was unset.
+        else
+            length = Math.min(length, sqlSlice.getLength()) ;
+        block.setLength(length) ;
+        
+        return block ;
+    }
 
     @Override
     public SqlNode transform(SqlJoinInner sqlJoinInner, SqlNode left, SqlNode right)
