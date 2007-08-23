@@ -211,6 +211,16 @@ public class SSE
         return item.getSymbol() ;
     }
     
+    public static Item parseItem(String str)
+    {
+        return parse(str, null) ;
+    }
+
+    public static Item parseItem(String str, PrefixMapping pmap)
+    {
+        return parse(new StringReader(str), pmap) ;
+    }
+    
     // --- Parse single elements. 
     
     private static Item parseTerm(Reader reader, PrefixMapping pmap)

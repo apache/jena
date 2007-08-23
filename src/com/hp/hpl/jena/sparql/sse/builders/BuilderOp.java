@@ -332,8 +332,14 @@ public class BuilderOp
         public Op make(ItemList list)
         {
             BuilderBase.checkLength(4, list, "slice") ;
-            long start = BuilderNode.buildInt(list, 1, Query.NOLIMIT) ;
-            long length = BuilderNode.buildInt(list, 2, Query.NOLIMIT) ;
+            long start = BuilderNode.buildInt(list, 1, -1) ;
+            long length = BuilderNode.buildInt(list, 2, -1) ;
+            
+            if ( start == -1 )
+                start = Query.NOLIMIT ;
+            if ( length == -1 )
+                length = Query.NOLIMIT ;
+            
             Op sub = build(list, 3) ;
             return new OpSlice(sub, start, length) ;
         }

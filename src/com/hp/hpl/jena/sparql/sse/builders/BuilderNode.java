@@ -6,6 +6,7 @@
 
 package com.hp.hpl.jena.sparql.sse.builders;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -74,16 +75,12 @@ public class BuilderNode
         return x ;
     }
 
-    public static long buildInt(ItemList list, int idx) { return buildInt(list, idx, false, 0) ; }
-    
-    public static long buildInt(ItemList list, int idx, long dft) { return buildInt(list, idx, true, dft) ; }
-    
-    private static long buildInt(ItemList list, int idx, boolean allowDefault, long dft)
+    private static BigInteger buildInteger(Item item, boolean allowDefault)
     {
-        Item item = list.get(idx) ;
+        //Item item = list.get(idx) ;
         
         if ( allowDefault && item.equals(Item.defaultItem) )
-            return dft ;
+            return null ;
         
         if ( !item.isNode() )
             BuilderBase.broken(item, "Not an integer: "+item) ;
@@ -94,10 +91,32 @@ public class BuilderNode
         NodeValue nv = NodeValue.makeNode(node) ;
         if ( ! nv.isInteger() )
             BuilderBase.broken(item, "Not an integer: "+item) ;
-        return nv.getInteger().intValue() ;
+        return nv.getInteger() ;
     }
 
+    public static int buildInt(Item item)
+    { 
+        BigInteger i = buildInteger(item, false) ;
+        return i.intValue() ;
+    }
+
+    public static int buildInt(Item item, int dft)
+    { 
+        BigInteger i = buildInteger(item, true) ;
+        if ( i == null )
+            return dft ;
+        return i.intValue() ;
+    }
+
+    public static int buildInt(ItemList list, int idx)
+    {
+        return buildInt(list.get(idx)) ;
+    }
     
+    public static int buildInt(ItemList list, int idx, int dft)
+    { 
+        return buildInt(list.get(idx), dft) ;
+    }
 }
 
 /*

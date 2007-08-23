@@ -8,7 +8,9 @@ package com.hp.hpl.jena.sparql.suites;
 
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.op.OpNull;
+import com.hp.hpl.jena.sparql.sse.Item;
 import com.hp.hpl.jena.sparql.sse.SSE;
+import com.hp.hpl.jena.sparql.sse.builders.BuilderNode;
 
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -46,6 +48,27 @@ public class TestSSE_Builder extends TestCase
     {
         Op op = SSE.parseOp(str) ;
         assertEquals(op, other) ;
+    }
+    
+    public void testBuildInt_01()
+    { 
+        Item item = SSE.parseItem("1") ;
+        int i = BuilderNode.buildInt(item) ;
+        assertEquals(1, i) ;
+    }
+
+    public void testBuildInt_02()
+    { 
+        Item item = SSE.parseItem("1") ;
+        int i = BuilderNode.buildInt(item, 23) ;
+        assertEquals(1, i) ;
+    }
+
+    public void testBuildInt_03()
+    { 
+        Item item = SSE.parseItem("_") ;
+        int i = BuilderNode.buildInt(item, 23) ;
+        assertEquals(23, i) ;
     }
 }
 
