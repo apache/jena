@@ -6,3 +6,4 @@ SELECT *
 {
     ?x :p "abc"@de-de .
 }
+LIMIT 3
