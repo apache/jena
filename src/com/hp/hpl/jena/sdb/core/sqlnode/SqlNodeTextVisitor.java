@@ -11,10 +11,10 @@ import static com.hp.hpl.jena.sparql.util.FmtUtils.stringForNode;
 import java.util.Collection;
 
 import com.hp.hpl.jena.sdb.core.Annotations;
+import com.hp.hpl.jena.sdb.core.VarCol;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExpr;
 import com.hp.hpl.jena.sdb.sql.SQLUtils;
-import com.hp.hpl.jena.sdb.util.Pair;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
 
@@ -44,7 +44,7 @@ public class SqlNodeTextVisitor implements SqlNodeVisitor
             boolean first = true ; 
             String currentPrefix = null ; 
             out.incIndent() ;
-            for ( Pair<Var, SqlColumn> c : sqlNode.getCols() )
+            for ( VarCol c : sqlNode.getCols() )
             {
                 if ( ! first ) out.print(" ") ;
                 first = false ;

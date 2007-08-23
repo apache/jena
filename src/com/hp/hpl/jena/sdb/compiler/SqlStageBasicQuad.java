@@ -96,7 +96,7 @@ public class SqlStageBasicQuad implements SqlStage
             alias = request.genId(AliasesSql.QuadTableBase) ;
         }
         
-        SqlTable table = new SqlTable(tableDesc.getTableName(), alias) ;
+        SqlTable table = new SqlTable(alias, tableDesc.getTableName()) ;
         if ( accessStoredDefaultGraph )
             table.addNote(FmtUtils.stringForTriple(quad.getTriple(), request.getPrefixMapping())) ;
         else

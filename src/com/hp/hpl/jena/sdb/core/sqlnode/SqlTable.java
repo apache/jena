@@ -24,12 +24,12 @@ public class SqlTable extends SqlNodeBase0
         this(name, name) ;
     }
 
-    public SqlTable(String tableName, String aliasName)
+    public SqlTable(String aliasName, String tableName)
     {
         this(aliasName, tableName, new ScopeBase(), new ScopeBase()) ;
     }
     
-    private SqlTable(String tableName, String aliasName, ScopeBase idScope, ScopeBase nodeScope)
+    private SqlTable(String aliasName, String tableName, ScopeBase idScope, ScopeBase nodeScope)
     {
         super(aliasName) ;
         this.tableName = tableName ;
@@ -105,7 +105,7 @@ public class SqlTable extends SqlNodeBase0
     @Override
     public SqlNode copy()
     {
-        return new SqlTable(getAliasName(), tableName, this.idScope, this.nodeScope) ;
+        return new SqlTable(tableName, getAliasName(), this.idScope, this.nodeScope) ;
     }
 }
 

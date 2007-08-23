@@ -47,7 +47,7 @@ public class StoreFactory
      * @return
      */
     public static Store create(String filename)
-    { return create(null, StoreDesc.read(filename)) ; }
+    { return create(StoreDesc.read(filename), null) ; }
     
     
     /**
@@ -61,7 +61,7 @@ public class StoreFactory
     public static Store create(SDBConnection sdb, LayoutType layout, DatabaseType dbType)
     { 
         StoreDesc desc = new StoreDesc(layout, dbType) ;
-        return create(sdb, desc) ;
+        return create(desc, sdb) ;
     }
 
     /**
@@ -73,7 +73,7 @@ public class StoreFactory
     public static Store create(LayoutType layout, DatabaseType dbType)
     { 
         StoreDesc desc = new StoreDesc(layout, dbType) ;
-        return create(null, desc) ;
+        return create(desc, null) ;
     }
 
     /**
@@ -83,15 +83,15 @@ public class StoreFactory
      * @return
      */
     public static Store create(StoreDesc desc)
-    { return create(null, desc) ; }
+    { return create(desc, null) ; }
     
     /** 
      * Create a store, based on the store description and connection.
-     * @param sdb
      * @param desc
+     * @param sdb
      * @return
      */
-    public static Store create(SDBConnection sdb, StoreDesc desc)
+    public static Store create(StoreDesc desc, SDBConnection sdb)
     {
         Store store = _create(sdb, desc) ;
         return store ;

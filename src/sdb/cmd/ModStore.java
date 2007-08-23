@@ -224,7 +224,7 @@ public class ModStore extends ModBase
     { 
         if ( store == null )
         {
-            store = StoreFactory.create(getConnection(), storeDesc) ;
+            store = StoreFactory.create(storeDesc, getConnection()) ;
             
             if ( formatFirst )
                 getStore().getTableFormatter().format() ;

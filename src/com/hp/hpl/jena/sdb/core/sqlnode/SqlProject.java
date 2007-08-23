@@ -9,13 +9,12 @@ package com.hp.hpl.jena.sdb.core.sqlnode;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.hp.hpl.jena.sdb.core.VarCol;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
-import com.hp.hpl.jena.sdb.util.Pair;
-import com.hp.hpl.jena.sparql.core.Var;
 
 public class SqlProject extends SqlNodeBase1
 {
-    public static SqlNode project(SqlNode sqlNode, Pair<Var, SqlColumn> col)
+    public static SqlNode project(SqlNode sqlNode, VarCol col)
     {
         SqlProject p = null ;
         if ( sqlNode.isProject() )
@@ -32,12 +31,12 @@ public class SqlProject extends SqlNodeBase1
         return project(sqlNode, null) ;
     }
     
-    private List<Pair<Var, SqlColumn>> cols = null ; 
+    private List<VarCol> cols = null ; 
     
     private SqlProject(SqlNode sqlNode)
-    { this(sqlNode, new ArrayList<Pair<Var, SqlColumn>>()) ; }
+    { this(sqlNode, new ArrayList<VarCol>()) ; }
     
-    private SqlProject(SqlNode sqlNode, List<Pair<Var, SqlColumn>> cols)
+    private SqlProject(SqlNode sqlNode, List<VarCol> cols)
     { 
         super(sqlNode.getAliasName(), sqlNode) ;
         this.cols = cols ; 
@@ -51,7 +50,7 @@ public class SqlProject extends SqlNodeBase1
     @Override 
     public boolean usesColumn(SqlColumn c) { return cols.contains(c) ; }
 
-    public List<Pair<Var, SqlColumn>> getCols() { return cols ; }
+    public List<VarCol> getCols() { return cols ; }
 
     public void visit(SqlNodeVisitor visitor)
     { visitor.visit(this) ; }

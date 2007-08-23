@@ -42,7 +42,7 @@ public class Ex2
         SDBConnection conn = new SDBConnection(jdbcURL, null, null) ; 
 
         // Make store from connection and store description. 
-        Store store = StoreFactory.create(conn, storeDesc) ;
+        Store store = StoreFactory.create(storeDesc, conn) ;
         
         Dataset ds = DatasetStore.create(store) ;
         QueryExecution qe = QueryExecutionFactory.create(query, ds) ;

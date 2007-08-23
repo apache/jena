@@ -9,8 +9,13 @@ package dev.gen;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.hp.hpl.jena.sdb.SDBException;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlJoin;
+import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
+import com.hp.hpl.jena.sdb.core.sqlnode.SqlNodeBase1;
+import com.hp.hpl.jena.sdb.core.sqlnode.SqlNodeVisitor;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlTable;
+import com.hp.hpl.jena.sdb.core.sqlnode.SqlTransform;
 import com.hp.hpl.jena.sparql.expr.ExprList;
 
 /** A unit that generates an SQL SELECT Statement.
@@ -21,7 +26,7 @@ import com.hp.hpl.jena.sparql.expr.ExprList;
  * @version $Id$
  */
 
-public class SqlSelectBlock
+public class SqlSelectBlock extends SqlNodeBase1
 {
     // Mapping of names
     // projection
@@ -32,6 +37,15 @@ public class SqlSelectBlock
     // order
     // limit/offset
     
+    /**
+     * @param aliasName
+     * @param sqlNode
+     */
+    protected SqlSelectBlock(String aliasName, SqlNode sqlNode)
+    {
+        super(aliasName, sqlNode) ;
+    }
+
     //Scope scope = new ScopeBase() ; 
     List<String> outputCols = new ArrayList<String>() ;
     
@@ -47,6 +61,17 @@ public class SqlSelectBlock
     public void setLimit(long limit)    { this.limit = limit ; }
     public long getOffset()             { return offset ; }
     public void setOffset(long offset)  { this.offset = offset ; }
+    
+    
+    @Override
+    public SqlNode apply(SqlTransform transform, SqlNode newSubNode)
+    { throw new SDBException("SqlSelectBlock.apply") ; }
+    @Override
+    public SqlNode copy(SqlNode subNode)
+    { throw new SDBException("SqlSelectBlock.copy") ; }
+    
+    public void visit(SqlNodeVisitor visitor)
+    { throw new SDBException("SqlSelectBlock.visit") ; }
 }
 
 /*

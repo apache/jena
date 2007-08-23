@@ -1,26 +1,26 @@
 /*
- * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
 package com.hp.hpl.jena.sdb.core;
 
-public class AliasesSql
+import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
+import com.hp.hpl.jena.sdb.util.Pair;
+import com.hp.hpl.jena.sparql.core.Var;
+
+public class VarCol extends Pair<Var, SqlColumn>
 {
-    // SQL name generation
-    public static final String NodesConstantAliasBase   = "N" ;
-    public static final String TriplesTableBase         = "T" ;
-    public static final String QuadTableBase            = "Q" ;
-    public static final String CoalesceAliasBase        = "M" ;
-    public static final String NodesResultAliasBase     = "R" ;
-    public static final String VarBase                  = "V" ;
-    public static final String VarCollasce              = "VC" ;
-    public static final String SelectBlock              = "S" ;
+    public VarCol(Var var, SqlColumn col)
+    {
+        super(var, col) ;
+    }
+
 }
 
 /*
- * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

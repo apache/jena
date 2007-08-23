@@ -109,7 +109,7 @@ public class PatternTable extends TableDesc
 
         public SqlNode build(SDBRequest request, SlotCompiler slotCompiler)
         {
-            SqlTable sqlTable = new SqlTable("TABLE", "ALIAS") ;
+            SqlTable sqlTable = new SqlTable("ALIAS", "TABLE") ;
             
             SqlExprList conditions = new SqlExprList() ;
             

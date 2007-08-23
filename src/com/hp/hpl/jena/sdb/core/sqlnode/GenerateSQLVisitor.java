@@ -6,6 +6,8 @@
 
 package com.hp.hpl.jena.sdb.core.sqlnode;
 
+import static com.hp.hpl.jena.sdb.iterator.IterFunc.map;
+import static com.hp.hpl.jena.sdb.iterator.IterFunc.toSet;
 import static com.hp.hpl.jena.sparql.util.StringUtils.str;
 
 import java.util.Set;
@@ -18,6 +20,7 @@ import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.sdb.SDB;
 import com.hp.hpl.jena.sdb.core.Annotations;
 import com.hp.hpl.jena.sdb.core.JoinType;
+import com.hp.hpl.jena.sdb.core.VarCol;
 import com.hp.hpl.jena.sdb.core.sqlexpr.S_Equal;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExpr;
@@ -25,10 +28,6 @@ import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExprList;
 import com.hp.hpl.jena.sdb.iterator.Transform;
 import com.hp.hpl.jena.sdb.shared.SDBNotImplemented;
 import com.hp.hpl.jena.sdb.sql.SQLUtils;
-
-import static com.hp.hpl.jena.sdb.iterator.IterFunc.*;
-
-import com.hp.hpl.jena.sdb.util.Pair;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
 
@@ -73,7 +72,7 @@ public class GenerateSQLVisitor implements SqlNodeVisitor
         String currentPrefix = null ; 
         String splitMarker = SQLUtils.getSQLmark() ;
         
-        for ( Pair<Var, SqlColumn> c : sqlNode.getCols() )
+        for ( VarCol c : sqlNode.getCols() )
         {
             out.print(sep) ;
             sep = ", " ;

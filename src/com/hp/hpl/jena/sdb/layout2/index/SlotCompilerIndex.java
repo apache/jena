@@ -84,8 +84,8 @@ public class SlotCompilerIndex extends SlotCompiler2
             SqlConstant hashValue = new SqlConstant(hash) ;
 
             // Access nodes table.
-            SqlTable nTable = new SqlTable(nodeTableDesc.getTableName(), 
-                                           getRequest().genId(NodeConstBase)) ;
+            SqlTable nTable = new SqlTable(getRequest().genId(NodeConstBase), 
+                                           nodeTableDesc.getTableName()) ;
             
             nTable.addNote("Const: "+FmtUtils.stringForNode(n, getRequest().getPrefixMapping())) ; 
             SqlColumn cHash = new SqlColumn(nTable, nodeTableDesc.getHashColName()) ;

@@ -108,7 +108,7 @@ public class SDBFactory
      * @return Store
      */
     public static Store connectStore(SDBConnection sdbConnection, StoreDesc desc) 
-    { return StoreFactory.create(sdbConnection, desc) ; }
+    { return StoreFactory.create(desc, sdbConnection) ; }
     
     /**
      * Connect to a store, based on an existing JDBC connection and a store description. 
@@ -119,7 +119,7 @@ public class SDBFactory
     public static Store connectStore(Connection sqlConnection, StoreDesc desc) 
     {
         SDBConnection sdb = SDBConnectionFactory.create(sqlConnection) ;
-        return StoreFactory.create(sdb, desc) ;
+        return StoreFactory.create(desc, sdb) ;
     }
 
     // ---- Dataset

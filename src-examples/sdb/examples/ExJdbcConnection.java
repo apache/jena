@@ -61,7 +61,7 @@ public class ExJdbcConnection
 
         SDBConnection conn = new SDBConnection(jdbcConnection) ;
         
-        Store store = StoreFactory.create(conn, storeDesc) ;
+        Store store = StoreFactory.create(storeDesc, conn) ;
         
         Dataset ds = DatasetStore.create(store) ;
         QueryExecution qe = QueryExecutionFactory.create(query, ds) ;

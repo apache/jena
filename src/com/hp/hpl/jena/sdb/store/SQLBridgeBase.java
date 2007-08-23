@@ -18,12 +18,12 @@ import com.hp.hpl.jena.sdb.SDBException;
 import com.hp.hpl.jena.sdb.core.AliasesSql;
 import com.hp.hpl.jena.sdb.core.Annotation1;
 import com.hp.hpl.jena.sdb.core.SDBRequest;
+import com.hp.hpl.jena.sdb.core.VarCol;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlProject;
 import com.hp.hpl.jena.sdb.sql.ResultSetJDBC;
 import com.hp.hpl.jena.sdb.sql.SDBExceptionSQL;
-import com.hp.hpl.jena.sdb.util.Pair;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
@@ -112,12 +112,12 @@ public abstract class SQLBridgeBase implements SQLBridge
     protected void addProject(Var v, SqlColumn col)
     {
         // v is null if there is no renaming going on.
-        sqlNode = SqlProject.project(sqlNode, new Pair<Var, SqlColumn>(v,  col)) ;
+        sqlNode = SqlProject.project(sqlNode, new VarCol(v,  col)) ;
     }
     
     protected void addProject(SqlColumn col)
     { 
-        sqlNode = SqlProject.project(sqlNode, new Pair<Var, SqlColumn>(null,  col)) ;
+        sqlNode = SqlProject.project(sqlNode, new VarCol(null,  col)) ;
     }
     
     protected void addAnnotation(String string)
