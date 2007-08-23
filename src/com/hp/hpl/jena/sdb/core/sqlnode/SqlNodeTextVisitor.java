@@ -18,6 +18,8 @@ import com.hp.hpl.jena.sdb.sql.SQLUtils;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
 
+import dev.gen.SqlSelectBlock;
+
 
 public class SqlNodeTextVisitor implements SqlNodeVisitor
 {
@@ -36,7 +38,7 @@ public class SqlNodeTextVisitor implements SqlNodeVisitor
     
     public void visit(SqlProject sqlNode)
     {
-        start(sqlNode, "Project", null) ;
+        start(sqlNode, "Project", sqlNode.getAliasName()) ;
         if ( sqlNode.getCols().size() == 0 )
             out.println("<no cols>") ;
         else
@@ -164,6 +166,12 @@ public class SqlNodeTextVisitor implements SqlNodeVisitor
         finish() ;
     }
 
+    public void visit(SqlSelectBlock sqlNode)
+    { 
+        start(sqlNode, "SqlSelectBlock", sqlNode.getAliasName()) ;
+        
+        finish() ;
+    }
 
     
     int depth = 0 ;

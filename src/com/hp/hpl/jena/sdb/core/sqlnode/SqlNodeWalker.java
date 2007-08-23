@@ -6,6 +6,8 @@
 
 package com.hp.hpl.jena.sdb.core.sqlnode;
 
+import dev.gen.SqlSelectBlock;
+
 
 public class SqlNodeWalker 
 {
@@ -66,6 +68,8 @@ public class SqlNodeWalker
         public void visit(SqlSlice sqlNode)
         { visit1(sqlNode) ; }
 
+        public void visit(SqlSelectBlock sqlNode)
+        { visit1(sqlNode) ; }
     }
 }
 

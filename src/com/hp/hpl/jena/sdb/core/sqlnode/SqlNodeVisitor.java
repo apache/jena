@@ -6,6 +6,8 @@
 
 package com.hp.hpl.jena.sdb.core.sqlnode;
 
+import dev.gen.SqlSelectBlock;
+
 
 public interface SqlNodeVisitor
 {
@@ -19,6 +21,7 @@ public interface SqlNodeVisitor
     public void visit(SqlCoalesce       sqlCoalesce) ;
     
     public void visit(SqlSlice          sqlSlice) ;
+    public void visit(SqlSelectBlock    sqlSelectBlock) ;
 }
 
 /*

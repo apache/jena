@@ -55,6 +55,11 @@ public class NewGenerateSQLVisitor implements SqlNodeVisitor
     public NewGenerateSQLVisitor(IndentedWriter out)
     { this.out = out ; }
     
+    // XXX This replaces various things below
+    public void visit(SqlSelectBlock sqlSelectBlock)
+    {}
+
+    
     public void visit(SqlProject sqlNode)
     {
         out.print("SELECT ") ;

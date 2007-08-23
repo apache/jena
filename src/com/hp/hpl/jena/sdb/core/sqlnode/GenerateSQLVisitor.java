@@ -18,6 +18,7 @@ import org.apache.commons.logging.LogFactory;
 import com.hp.hpl.jena.query.ARQ;
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.sdb.SDB;
+import com.hp.hpl.jena.sdb.SDBException;
 import com.hp.hpl.jena.sdb.core.Annotations;
 import com.hp.hpl.jena.sdb.core.JoinType;
 import com.hp.hpl.jena.sdb.core.VarCol;
@@ -30,6 +31,8 @@ import com.hp.hpl.jena.sdb.shared.SDBNotImplemented;
 import com.hp.hpl.jena.sdb.sql.SQLUtils;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
+
+import dev.gen.SqlSelectBlock;
 
 // This is not a general purpose SQL writer - it needs only work with the
 // SQL node trees that the SDB compiler generate.
@@ -561,6 +564,9 @@ public class GenerateSQLVisitor implements SqlNodeVisitor
         }
         return !commentSQLStyle || !first ;  
     }
+
+    public void visit(SqlSelectBlock sqlSelectBlock)
+    { throw new SDBException("Not implemented: SqlSelectBlock in old SQL generator") ; }
 }
 
 /*

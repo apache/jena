@@ -67,7 +67,7 @@ public class SqlSelectBlock extends SqlNodeBase1
     { throw new SDBException("SqlSelectBlock.copy") ; }
     
     public void visit(SqlNodeVisitor visitor)
-    { throw new SDBException("SqlSelectBlock.visit") ; }
+    { visitor.visit(this) ; }
 }
 
 /*

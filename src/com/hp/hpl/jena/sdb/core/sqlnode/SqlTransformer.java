@@ -8,7 +8,10 @@ package com.hp.hpl.jena.sdb.core.sqlnode;
 
 import java.util.Stack;
 
+import com.hp.hpl.jena.sdb.SDBException;
 import com.hp.hpl.jena.sparql.util.ALog;
+
+import dev.gen.SqlSelectBlock;
 
 public class SqlTransformer
 {
@@ -86,7 +89,9 @@ public class SqlTransformer
 
         public void visit(SqlSlice sqlSlice)
         { visit1(sqlSlice) ; }
-        
+
+        public void visit(SqlSelectBlock sqlSelectBlock)
+        { throw new SDBException("SqlTransformVisitor/SqlSelectBlock") ; }
     }
     
 }

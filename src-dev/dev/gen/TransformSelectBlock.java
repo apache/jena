@@ -47,32 +47,31 @@ public class TransformSelectBlock extends SqlTransformCopy
             start = start + sqlSlice.getStart() ;   // start of the underlying sequence 
         block.setStart(start) ;
 
-            
+        // Note sure what's the best to do here.  Not that ist should occur.
         long length = block.getLength() ;
         if ( length == -1 )
             length = sqlSlice.getLength() ;         // Length was unset.
         else
             length = Math.min(length, sqlSlice.getLength()) ;
         block.setLength(length) ;
-        
         return block ;
     }
 
-    @Override
-    public SqlNode transform(SqlJoinInner sqlJoinInner, SqlNode left, SqlNode right)
-    { return null ; }
-
-    @Override
-    public SqlNode transform(SqlJoinLeftOuter sqlJoinLeftOuter, SqlNode left, SqlNode right)
-    { return null ; }
-
-    @Override
-    public SqlNode transform(SqlTable sqlTable)
-    { return null ; }
-
-    @Override
-    public SqlNode transform(SqlRename sqlRename, SqlNode subNode)
-    { return null ; }
+//    @Override
+//    public SqlNode transform(SqlJoinInner sqlJoinInner, SqlNode left, SqlNode right)
+//    { return null ; }
+//
+//    @Override
+//    public SqlNode transform(SqlJoinLeftOuter sqlJoinLeftOuter, SqlNode left, SqlNode right)
+//    { return null ; }
+//
+//    @Override
+//    public SqlNode transform(SqlTable sqlTable)
+//    { return null ; }
+//
+//    @Override
+//    public SqlNode transform(SqlRename sqlRename, SqlNode subNode)
+//    { return null ; }
     
     private SqlSelectBlock block(SqlNode sqlNode)
     {
