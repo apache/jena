@@ -9,14 +9,15 @@ package dev.pldms;
 import java.sql.SQLException;
 
 import com.hp.hpl.jena.graph.test.NodeCreateUtils;
-
 import com.hp.hpl.jena.sdb.SDBFactory;
 import com.hp.hpl.jena.sdb.Store;
-import com.hp.hpl.jena.sdb.layout2.index.StoreTriplesNodesIndexOracle;
 import com.hp.hpl.jena.sdb.sql.JDBC;
 import com.hp.hpl.jena.sdb.sql.ResultSetJDBC;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.sql.SDBConnectionDesc;
+import com.hp.hpl.jena.sdb.store.DatabaseType;
+import com.hp.hpl.jena.sdb.store.LayoutType;
+import com.hp.hpl.jena.sdb.store.StoreFactory;
 import com.hp.hpl.jena.sdb.store.StoreLoaderPlus;
 import com.hp.hpl.jena.sdb.store.TableDesc;
 
@@ -40,14 +41,14 @@ public class Scratch {
                 desc.setType("oracle:thin");
                 conn = SDBFactory.createConnection(desc);
                 
-                store = new StoreTriplesNodesIndexOracle(conn);
+                store = StoreFactory.create(conn, LayoutType.LayoutTripleNodesIndex, DatabaseType.Oracle);
                 store.getTableFormatter().format();
                 store.getTableFormatter().addIndexes();
                 store.close();
                 conn.close();
                 
                 conn = SDBFactory.createConnection(desc);
-                store = new StoreTriplesNodesIndexOracle(conn);
+                store = StoreFactory.create(conn, LayoutType.LayoutTripleNodesIndex, DatabaseType.Oracle);
                 
                 StoreLoaderPlus loader = (StoreLoaderPlus) store.getLoader();
                 

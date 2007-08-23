@@ -371,9 +371,9 @@ public class GenerateSQLVisitor implements SqlNodeVisitor
         sqlNode = GenerateSQL.ensureProject(sqlNode) ;
         sqlNode.visit(this) ;
         out.ensureStartOfLine() ;
-        if ( sqlSlice.getStart() != Query.NOLIMIT )
-            out.println("LIMIT "+sqlSlice.getLength()) ;
         if ( sqlSlice.getLength() != Query.NOLIMIT )
+            out.println("LIMIT "+sqlSlice.getLength()) ;
+        if ( sqlSlice.getStart() != Query.NOLIMIT )
             out.println("OFFSET "+sqlSlice.getStart()) ;
     }
 

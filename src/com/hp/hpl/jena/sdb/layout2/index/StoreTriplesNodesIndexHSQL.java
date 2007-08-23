@@ -10,29 +10,21 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.sdb.StoreDesc;
 import com.hp.hpl.jena.sdb.layout2.LoaderTuplesNodes;
 import com.hp.hpl.jena.sdb.layout2.NodeLayout2;
 import com.hp.hpl.jena.sdb.layout2.SQLBridgeFactory2;
 import com.hp.hpl.jena.sdb.layout2.TableDescQuads;
 import com.hp.hpl.jena.sdb.layout2.TableDescTriples;
-import com.hp.hpl.jena.sdb.sql.MySQLEngineType;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.sql.SDBExceptionSQL;
 import com.hp.hpl.jena.sdb.store.StoreBaseHSQL;
 
-
-
 public class StoreTriplesNodesIndexHSQL extends StoreBaseHSQL
 {
-    public StoreTriplesNodesIndexHSQL(SDBConnection connection)
+    public StoreTriplesNodesIndexHSQL(StoreDesc desc, SDBConnection connection)
     {
-        this(connection, null) ;
-    }
-    
-    public StoreTriplesNodesIndexHSQL(SDBConnection connection, MySQLEngineType tableType)
-    {
-        // HSQL can't handle complex RHS of a left join so no optional spotting. 
-        super(connection,
+        super(desc, connection,
               new FmtLayout2IndexHSQL(connection),
               new LoaderTuplesNodes(connection, TupleLoaderIndexHSQL.class),
               new QueryCompilerFactoryIndex(),

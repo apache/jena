@@ -9,42 +9,54 @@ package com.hp.hpl.jena.sdb.util;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.sdb.SDBFactory;
 import com.hp.hpl.jena.sdb.Store;
-import com.hp.hpl.jena.sdb.layout1.StoreSimpleHSQL;
-import com.hp.hpl.jena.sdb.layout1.StoreSimpleMySQL;
-import com.hp.hpl.jena.sdb.layout1.StoreSimplePGSQL;
-import com.hp.hpl.jena.sdb.layout2.hash.StoreTriplesNodesHashMySQL;
-import com.hp.hpl.jena.sdb.layout2.hash.StoreTriplesNodesHashPGSQL;
-import com.hp.hpl.jena.sdb.layout2.index.StoreTriplesNodesIndexMySQL;
-import com.hp.hpl.jena.sdb.layout2.index.StoreTriplesNodesIndexPGSQL;
-import com.hp.hpl.jena.sdb.store.StoreBaseHSQL;
+import com.hp.hpl.jena.sdb.store.DatabaseType;
 import com.hp.hpl.jena.util.FileManager;
 
 public class StoreUtils
 {
-    // Temporary if statements until stores knwo their db/layoyt types better.
     
     public static boolean isHSQL(Store store)
     { 
-        if ( store instanceof StoreBaseHSQL ) return true ;
-        if ( store instanceof StoreSimpleHSQL ) return true ;
-        return false ;
+        return store.getDatabaseType().equals(DatabaseType.HSQLDB) ;
+//        if ( store instanceof StoreBaseHSQL ) return true ;
+//        if ( store instanceof StoreSimpleHSQL ) return true ;
+//        return false ;
     }
+    
+    public static boolean isDerby(Store store)
+    { 
+        return store.getDatabaseType().equals(DatabaseType.Derby) ;
+    }
+    
     
     public static boolean isPostgreSQL(Store store)
     {
-        if ( store instanceof StoreTriplesNodesIndexPGSQL ) return true ;
-        if ( store instanceof StoreTriplesNodesHashPGSQL ) return true ;
-        if ( store instanceof StoreSimplePGSQL ) return true ;
-        return false ;
+        return store.getDatabaseType().equals(DatabaseType.PostgreSQL) ;
+//        if ( store instanceof StoreTriplesNodesIndexPGSQL ) return true ;
+//        if ( store instanceof StoreTriplesNodesHashPGSQL ) return true ;
+//        if ( store instanceof StoreSimplePGSQL ) return true ;
+//        return false ;
     }
 
     public static boolean isMySQL(Store store)
     {
-        if ( store instanceof StoreTriplesNodesIndexMySQL ) return true ;
-        if ( store instanceof StoreTriplesNodesHashMySQL ) return true ;
-        if ( store instanceof StoreSimpleMySQL ) return true ;
-        return false ;
+        return store.getDatabaseType().equals(DatabaseType.MySQL) ;
+//        if ( store instanceof StoreTriplesNodesIndexMySQL ) return true ;
+//        if ( store instanceof StoreTriplesNodesHashMySQL ) return true ;
+//        if ( store instanceof StoreSimpleMySQL ) return true ;
+//        return false ;
     }
+    
+    public static boolean isSQLServer(Store store)
+    {
+        return store.getDatabaseType().equals(DatabaseType.SQLServer) ;
+    }
+    
+    public static boolean isOracle(Store store)
+    {
+        return store.getDatabaseType().equals(DatabaseType.Oracle) ;
+    }
+    
 
     public static void load(Store store, String filename)
     {

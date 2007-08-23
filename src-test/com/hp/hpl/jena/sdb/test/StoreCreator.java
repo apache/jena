@@ -8,6 +8,7 @@ package com.hp.hpl.jena.sdb.test;
 
 import com.hp.hpl.jena.sdb.SDBFactory;
 import com.hp.hpl.jena.sdb.Store;
+import com.hp.hpl.jena.sdb.StoreDesc;
 import com.hp.hpl.jena.sdb.layout2.StoreBase;
 import com.hp.hpl.jena.sdb.layout2.hash.StoreTriplesNodesHashDerby;
 import com.hp.hpl.jena.sdb.layout2.hash.StoreTriplesNodesHashHSQL;
@@ -23,6 +24,8 @@ import com.hp.hpl.jena.sdb.layout2.index.StoreTriplesNodesIndexPGSQL;
 import com.hp.hpl.jena.sdb.layout2.index.StoreTriplesNodesIndexSQLServer;
 import com.hp.hpl.jena.sdb.sql.JDBC;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
+import com.hp.hpl.jena.sdb.store.DatabaseType;
+import com.hp.hpl.jena.sdb.store.LayoutType;
 
 /**
  * A cheap (but not cheerful) class to give access to empty models,
@@ -52,8 +55,9 @@ public class StoreCreator {
 			
 			SDBConnection sdb = SDBFactory.createConnection(
 				"jdbc:mysql://localhost/sdb_test", "jena", "swara");
-		
-			sdbmsi = new StoreTriplesNodesIndexMySQL(sdb);
+			
+			StoreDesc desc = new StoreDesc(LayoutType.LayoutTripleNodesIndex, DatabaseType.MySQL) ;
+			sdbmsi = new StoreTriplesNodesIndexMySQL(desc, sdb);
 			
 			sdbmsi.getTableFormatter().format();
 		}
@@ -70,7 +74,8 @@ public class StoreCreator {
 			SDBConnection sdb = SDBFactory.createConnection(
 				"jdbc:mysql://localhost/sdb_test", "jena", "swara");
 		
-			sdbmsh = new StoreTriplesNodesHashMySQL(sdb);
+			StoreDesc desc = new StoreDesc(LayoutType.LayoutTripleNodesHash, DatabaseType.MySQL) ;
+			sdbmsh = new StoreTriplesNodesHashMySQL(desc, sdb);
 			
 			sdbmsh.getTableFormatter().format();
 		}
@@ -87,7 +92,8 @@ public class StoreCreator {
 			SDBConnection sdb = SDBFactory.createConnection(
 					"jdbc:hsqldb:mem:aname", "sa", "");
 
-			sdbhsi = new StoreTriplesNodesIndexHSQL(sdb);
+			StoreDesc desc = new StoreDesc(LayoutType.LayoutTripleNodesIndex, DatabaseType.HSQLDB) ;
+			sdbhsi = new StoreTriplesNodesIndexHSQL(desc, sdb);
 
 			sdbhsi.getTableFormatter().format();
 		}
@@ -104,7 +110,8 @@ public class StoreCreator {
 			SDBConnection sdb = SDBFactory.createConnection(
 					"jdbc:hsqldb:mem:bname", "sa", "");
 
-			sdbhsh = new StoreTriplesNodesHashHSQL(sdb);
+            StoreDesc desc = new StoreDesc(LayoutType.LayoutTripleNodesHash, DatabaseType.HSQLDB) ;
+			sdbhsh = new StoreTriplesNodesHashHSQL(desc, sdb);
 
 			sdbhsh.getTableFormatter().format();
 		}
@@ -119,7 +126,8 @@ public class StoreCreator {
 			JDBC.loadDriverPGSQL();
 			SDBConnection sdb = SDBFactory.createConnection(
 				"jdbc:postgresql://localhost/sdb_test", "jena", "swara");
-			sdbpgi = new StoreTriplesNodesIndexPGSQL(sdb);
+            StoreDesc desc = new StoreDesc(LayoutType.LayoutTripleNodesIndex, DatabaseType.PostgreSQL) ;
+			sdbpgi = new StoreTriplesNodesIndexPGSQL(desc, sdb);
 			sdbpgi.getTableFormatter().format();
 		}
 		
@@ -133,7 +141,8 @@ public class StoreCreator {
 			JDBC.loadDriverPGSQL();
 			SDBConnection sdb = SDBFactory.createConnection(
 				"jdbc:postgresql://localhost/sdb_test", "jena", "swara");
-			sdbpgh = new StoreTriplesNodesHashPGSQL(sdb);
+            StoreDesc desc = new StoreDesc(LayoutType.LayoutTripleNodesHash, DatabaseType.PostgreSQL) ;
+			sdbpgh = new StoreTriplesNodesHashPGSQL(desc, sdb);
 			sdbpgh.getTableFormatter().format();
 		}
 		
@@ -148,8 +157,9 @@ public class StoreCreator {
 
 			SDBConnection sdb = SDBFactory.createConnection(
 					"jdbc:sqlserver://localhost;databaseName=SWEB", "jena", "@ld1s1774");
-			
-			sdbssi = new StoreTriplesNodesIndexSQLServer(sdb);
+
+            StoreDesc desc = new StoreDesc(LayoutType.LayoutTripleNodesIndex, DatabaseType.SQLServer) ;
+			sdbssi = new StoreTriplesNodesIndexSQLServer(desc, sdb);
 			sdbssi.getTableFormatter().format();
 		}
 		
@@ -165,7 +175,8 @@ public class StoreCreator {
 			SDBConnection sdb = SDBFactory.createConnection(
 					"jdbc:sqlserver://localhost;databaseName=SWEB", "jena", "@ld1s1774");
 			
-			sdbssh = new StoreTriplesNodesHashSQLServer(sdb);
+            StoreDesc desc = new StoreDesc(LayoutType.LayoutTripleNodesHash, DatabaseType.SQLServer) ;
+			sdbssh = new StoreTriplesNodesHashSQLServer(desc, sdb);
 			sdbssh.getTableFormatter().format();
 		}
 
@@ -181,8 +192,9 @@ public class StoreCreator {
 			String url = JDBC.makeURL("derby", "localhost", "DB/test2") ;
 			
 			SDBConnection sdb = new SDBConnection(url, null, null) ;
-			
-			sdbdh = new StoreTriplesNodesHashDerby(sdb);
+            StoreDesc desc = new StoreDesc(LayoutType.LayoutTripleNodesHash, DatabaseType.Derby) ;
+
+			sdbdh = new StoreTriplesNodesHashDerby(desc, sdb);
 			
 			sdbdh.getTableFormatter().format();
 		}
@@ -200,7 +212,8 @@ public class StoreCreator {
 			
 			SDBConnection sdb = new SDBConnection(url, null, null) ;
 			
-			sdbdi = new StoreTriplesNodesIndexDerby(sdb);
+            StoreDesc desc = new StoreDesc(LayoutType.LayoutTripleNodesIndex, DatabaseType.Derby) ;
+			sdbdi = new StoreTriplesNodesIndexDerby(desc, sdb);
 			
 			sdbdi.getTableFormatter().format();
 		}
@@ -218,7 +231,8 @@ public class StoreCreator {
 			
 			SDBConnection sdb = new SDBConnection(url, "jena", "swara") ;
 			
-			sdboh = new StoreTriplesNodesHashOracle(sdb);
+            StoreDesc desc = new StoreDesc(LayoutType.LayoutTripleNodesHash, DatabaseType.Oracle) ;
+			sdboh = new StoreTriplesNodesHashOracle(desc, sdb);
 			
 			sdboh.getTableFormatter().format();
 		}
@@ -236,7 +250,8 @@ public class StoreCreator {
 			
 			SDBConnection sdb = new SDBConnection(url, "jena", "swara") ;
 			
-			sdboi = new StoreTriplesNodesIndexOracle(sdb);
+            StoreDesc desc = new StoreDesc(LayoutType.LayoutTripleNodesIndex, DatabaseType.Oracle) ;
+			sdboi = new StoreTriplesNodesIndexOracle(desc, sdb);
 			
 			sdboi.getTableFormatter().format();
 		}

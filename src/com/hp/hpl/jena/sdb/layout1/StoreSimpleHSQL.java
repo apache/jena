@@ -5,6 +5,7 @@
  */
 
 package com.hp.hpl.jena.sdb.layout1;
+import com.hp.hpl.jena.sdb.StoreDesc;
 import com.hp.hpl.jena.sdb.core.sqlnode.GenerateSQL;
 import com.hp.hpl.jena.sdb.layout2.TableDescTriples;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
@@ -21,14 +22,14 @@ public class StoreSimpleHSQL extends StoreBase1
 {
     boolean currentlyOpen = true ;
     
-    public StoreSimpleHSQL(SDBConnection sdb)
+    public StoreSimpleHSQL(StoreDesc desc, SDBConnection sdb)
     {
-        this(sdb, new TableDescSPO(), new CodecSimple()) ;
+        this(desc, sdb, new TableDescSPO(), new CodecSimple()) ;
     }
     
-    private StoreSimpleHSQL(SDBConnection sdb, TableDescTriples triples, EncoderDecoder codec)
+    private StoreSimpleHSQL(StoreDesc desc, SDBConnection sdb, TableDescTriples triples, EncoderDecoder codec)
     {
-        super(sdb, 
+        super(desc, sdb, 
               new FormatterSimpleHSQL(sdb) ,
               new TupleLoaderSimple(sdb, triples, codec),
               new QueryCompilerFactory1(codec),

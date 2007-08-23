@@ -10,6 +10,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.sdb.StoreDesc;
 import com.hp.hpl.jena.sdb.compiler.QueryCompilerFactory;
 import com.hp.hpl.jena.sdb.layout2.NodeLayout2;
 import com.hp.hpl.jena.sdb.layout2.StoreBase;
@@ -21,9 +22,10 @@ import com.hp.hpl.jena.sdb.store.*;
 
 public class StoreBaseHash extends StoreBase
 {
-    public StoreBaseHash(SDBConnection connection, StoreFormatter formatter, StoreLoader loader, QueryCompilerFactory compilerF, SQLBridgeFactory sqlBridgeF, SQLGenerator sqlGenerator)
+    public StoreBaseHash(StoreDesc desc, SDBConnection connection, StoreFormatter formatter, StoreLoader loader, QueryCompilerFactory compilerF, SQLBridgeFactory sqlBridgeF, SQLGenerator sqlGenerator)
     {
-        super(connection, formatter, loader, compilerF, sqlBridgeF, sqlGenerator,
+        super(desc, 
+              connection, formatter, loader, compilerF, sqlBridgeF, sqlGenerator,
               new TableDescTriples(),
               new TableDescQuads() ,
               new TableNodesHash()) ;

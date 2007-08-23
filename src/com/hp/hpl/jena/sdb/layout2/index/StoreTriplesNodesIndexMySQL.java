@@ -6,6 +6,7 @@
 
 package com.hp.hpl.jena.sdb.layout2.index;
 
+import com.hp.hpl.jena.sdb.StoreDesc;
 import com.hp.hpl.jena.sdb.core.sqlnode.GenerateSQLMySQL;
 import com.hp.hpl.jena.sdb.layout2.LoaderTuplesNodes;
 import com.hp.hpl.jena.sdb.layout2.SQLBridgeFactory2;
@@ -14,14 +15,14 @@ import com.hp.hpl.jena.sdb.sql.SDBConnection;
 
 public class StoreTriplesNodesIndexMySQL extends StoreBaseIndex
 {
-    public StoreTriplesNodesIndexMySQL(SDBConnection connection)
+    public StoreTriplesNodesIndexMySQL(StoreDesc desc, SDBConnection connection)
     {
-        this(connection, null) ;
+        this(desc, connection, null) ;
     }
     
-    public StoreTriplesNodesIndexMySQL(SDBConnection connection, MySQLEngineType tableType)
+    public StoreTriplesNodesIndexMySQL(StoreDesc desc, SDBConnection connection, MySQLEngineType tableType)
     {
-        super(connection,
+        super(desc, connection,
               new FmtLayout2IndexMySQL(connection, 
                                   (tableType!=null)? tableType : MySQLEngineType.InnoDB),
               new LoaderTuplesNodes(connection, TupleLoaderIndexMySQL.class),

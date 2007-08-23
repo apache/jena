@@ -10,6 +10,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 import com.hp.hpl.jena.db.ModelRDB;
+import com.hp.hpl.jena.sdb.StoreDesc;
 import com.hp.hpl.jena.sdb.core.sqlnode.GenerateSQL;
 import com.hp.hpl.jena.sdb.layout2.TableDescTriples;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
@@ -26,14 +27,14 @@ public class StoreRDB extends StoreBase1
 {
     private ModelRDB model ;
 
-    public StoreRDB(ModelRDB model)
+    public StoreRDB(StoreDesc desc, ModelRDB model)
     {
-       this(model, new TableDescRDB(), new CodecRDB(model)) ;
+       this(desc, model, new TableDescRDB(), new CodecRDB(model)) ;
     }    
     
-    private StoreRDB(ModelRDB model, TableDescTriples triples, EncoderDecoder codec)
+    private StoreRDB(StoreDesc desc, ModelRDB model, TableDescTriples triples, EncoderDecoder codec)
     {
-        super(makeSDBConnection(model),
+        super(desc, makeSDBConnection(model),
               null, // Formatter.
               null, // Loader
               new QueryCompilerFactory1(codec),

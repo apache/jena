@@ -6,6 +6,7 @@
 
 package com.hp.hpl.jena.sdb.layout2.index;
 
+import com.hp.hpl.jena.sdb.StoreDesc;
 import com.hp.hpl.jena.sdb.core.sqlnode.GenerateSQL;
 import com.hp.hpl.jena.sdb.layout2.LoaderTuplesNodes;
 import com.hp.hpl.jena.sdb.layout2.SQLBridgeFactory2;
@@ -13,9 +14,9 @@ import com.hp.hpl.jena.sdb.sql.SDBConnection;
 
 public class StoreTriplesNodesIndexPGSQL extends StoreBaseIndex
 {
-    public StoreTriplesNodesIndexPGSQL(SDBConnection connection)
+    public StoreTriplesNodesIndexPGSQL(StoreDesc desc, SDBConnection connection)
     {
-        super(connection,
+        super(desc, connection,
               new FmtLayout2IndexPGSQL(connection),
               new LoaderTuplesNodes(connection, TupleLoaderIndexPGSQL.class),
               new QueryCompilerFactoryIndex(),

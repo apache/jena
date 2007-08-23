@@ -6,6 +6,7 @@
 
 package com.hp.hpl.jena.sdb.layout1;
 
+import com.hp.hpl.jena.sdb.StoreDesc;
 import com.hp.hpl.jena.sdb.core.sqlnode.GenerateSQL_MS;
 import com.hp.hpl.jena.sdb.layout2.TableDescTriples;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
@@ -13,16 +14,16 @@ import com.hp.hpl.jena.sdb.sql.SDBConnection;
 public class StoreSimpleSQLServer extends StoreBase1
 {
 
-    public StoreSimpleSQLServer(SDBConnection connection)
+    public StoreSimpleSQLServer(StoreDesc desc, SDBConnection connection)
     {
-        this(connection , new TableDescSPO(), new CodecSimple()) ;
+        this(desc, connection , new TableDescSPO(), new CodecSimple()) ;
     }
 
-    private StoreSimpleSQLServer(SDBConnection connection, 
+    private StoreSimpleSQLServer(StoreDesc desc, SDBConnection connection, 
                                  TableDescTriples triples,
                                  EncoderDecoder codec)
     {
-        super(connection,
+        super(desc, connection,
               new FormatterSimpleSQLServer(connection) ,
               new TupleLoaderSimple(connection, triples, codec), 
               new QueryCompilerFactory1(codec), 

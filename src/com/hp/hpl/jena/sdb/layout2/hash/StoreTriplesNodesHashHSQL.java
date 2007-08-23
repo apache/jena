@@ -10,12 +10,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.sdb.StoreDesc;
 import com.hp.hpl.jena.sdb.layout2.LoaderTuplesNodes;
 import com.hp.hpl.jena.sdb.layout2.NodeLayout2;
 import com.hp.hpl.jena.sdb.layout2.SQLBridgeFactory2;
 import com.hp.hpl.jena.sdb.layout2.TableDescQuads;
 import com.hp.hpl.jena.sdb.layout2.TableDescTriples;
-import com.hp.hpl.jena.sdb.sql.MySQLEngineType;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.sql.SDBExceptionSQL;
 import com.hp.hpl.jena.sdb.store.StoreBaseHSQL;
@@ -23,15 +23,10 @@ import com.hp.hpl.jena.sdb.store.StoreBaseHSQL;
 
 public class StoreTriplesNodesHashHSQL extends StoreBaseHSQL
 {
-    public StoreTriplesNodesHashHSQL(SDBConnection connection)
-    {
-        this(connection, null) ;
-    }
-    
-    public StoreTriplesNodesHashHSQL(SDBConnection connection, MySQLEngineType tableType)
+    public StoreTriplesNodesHashHSQL(StoreDesc desc, SDBConnection connection)
     {
         // HSQL can't handle complex RHS of a left join so no optional spotting. 
-        super(connection,
+        super(desc, connection,
               new FmtLayout2HashHSQL(connection),
               //new LoaderHashHSQL(connection),
               new LoaderTuplesNodes(connection, TupleLoaderHashHSQL.class),

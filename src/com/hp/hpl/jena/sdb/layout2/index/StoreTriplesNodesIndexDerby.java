@@ -6,6 +6,7 @@
 
 package com.hp.hpl.jena.sdb.layout2.index;
 
+import com.hp.hpl.jena.sdb.StoreDesc;
 import com.hp.hpl.jena.sdb.core.sqlnode.GenerateSQLDerby;
 import com.hp.hpl.jena.sdb.layout2.LoaderTuplesNodes;
 import com.hp.hpl.jena.sdb.layout2.SQLBridgeFactory2;
@@ -14,9 +15,9 @@ import com.hp.hpl.jena.sdb.sql.SDBConnection;
 public class StoreTriplesNodesIndexDerby extends StoreBaseIndex
 {
 
-    public StoreTriplesNodesIndexDerby(SDBConnection connection)
+    public StoreTriplesNodesIndexDerby(StoreDesc desc, SDBConnection connection)
     {
-        super(connection,
+        super(desc, connection,
               new FmtLayout2IndexDerby(connection) ,
               new LoaderTuplesNodes(connection, TupleLoaderIndexDerby.class),
               new QueryCompilerFactoryIndex(), 

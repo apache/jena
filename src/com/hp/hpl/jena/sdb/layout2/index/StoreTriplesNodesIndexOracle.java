@@ -6,6 +6,7 @@
 
 package com.hp.hpl.jena.sdb.layout2.index;
 
+import com.hp.hpl.jena.sdb.StoreDesc;
 import com.hp.hpl.jena.sdb.core.sqlnode.GenerateSQLOracle;
 import com.hp.hpl.jena.sdb.layout2.LoaderTuplesNodes;
 import com.hp.hpl.jena.sdb.layout2.SQLBridgeFactory2;
@@ -14,9 +15,9 @@ import com.hp.hpl.jena.sdb.sql.SDBConnection;
 public class StoreTriplesNodesIndexOracle extends StoreBaseIndex
 {
 
-    public StoreTriplesNodesIndexOracle(SDBConnection connection)
+    public StoreTriplesNodesIndexOracle(StoreDesc desc, SDBConnection connection)
     {
-        super(connection,
+        super(desc, connection,
               new FmtLayout2IndexOracle(connection) ,
               new LoaderTuplesNodes(connection, TupleLoaderIndexOracle.class),
               new QueryCompilerFactoryIndex(), 

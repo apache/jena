@@ -7,8 +7,8 @@
 package com.hp.hpl.jena.sdb.layout1;
 
 import com.hp.hpl.jena.graph.Node;
-
 import com.hp.hpl.jena.sdb.Store;
+import com.hp.hpl.jena.sdb.StoreDesc;
 import com.hp.hpl.jena.sdb.compiler.QueryCompilerFactory;
 import com.hp.hpl.jena.sdb.core.sqlnode.GenerateSQL;
 import com.hp.hpl.jena.sdb.layout2.TableDescNodes;
@@ -19,12 +19,12 @@ import com.hp.hpl.jena.sdb.sql.SDBConnectionHolder;
 import com.hp.hpl.jena.sdb.sql.TableUtils;
 import com.hp.hpl.jena.sdb.store.*;
 
-
-
 public class StoreBase1 
     extends SDBConnectionHolder
     implements Store
 {
+    // This duplicates stuff from StoreBase in layout2 - tidy up 
+    protected StoreDesc storeDescription ;
     protected StoreFormatter formatter ;
     protected StoreLoader loader ;
     protected QueryCompilerFactory compilerF ;
@@ -33,7 +33,7 @@ public class StoreBase1
     protected StoreConfig configuration ;
     protected TableDescTriples tripleTable ;
     
-    public StoreBase1(SDBConnection connection, 
+    public StoreBase1(StoreDesc desc, SDBConnection connection, 
                      StoreFormatter formatter ,
                      TupleLoaderSimple loader ,
                      QueryCompilerFactory compilerF ,
@@ -42,6 +42,8 @@ public class StoreBase1
                      TableDescTriples tripleTable)
     {
         super(connection) ;
+        this.storeDescription = desc ;
+
         this.formatter = formatter ;
         if ( loader.getTableDesc() == null )
             loader.setTableDesc(tripleTable) ;
@@ -69,6 +71,10 @@ public class StoreBase1
     public StoreLoader     getLoader()                          { return loader ; }
 
     public StoreConfig     getConfiguration()                   { return configuration ; }
+    
+    public DatabaseType     getDatabaseType()                   { return storeDescription.getDbType() ; }
+    
+    public LayoutType       getLayoutType()                     { return storeDescription.getLayout() ; }
 
     // Note -- this does not close the JDBC connection, which may be shared.
     // See also StoreBaseHSQL

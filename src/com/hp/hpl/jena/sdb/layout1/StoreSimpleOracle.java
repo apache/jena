@@ -6,6 +6,7 @@
 
 package com.hp.hpl.jena.sdb.layout1;
 
+import com.hp.hpl.jena.sdb.StoreDesc;
 import com.hp.hpl.jena.sdb.core.sqlnode.GenerateSQLOracle;
 import com.hp.hpl.jena.sdb.layout2.TableDescTriples;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
@@ -13,14 +14,14 @@ import com.hp.hpl.jena.sdb.sql.SDBConnection;
 public class StoreSimpleOracle extends StoreBase1
 {
 
-    public StoreSimpleOracle(SDBConnection connection)
+    public StoreSimpleOracle(StoreDesc desc, SDBConnection connection)
     {
-        this(connection , new TableDescSPO(), new CodecSimple()) ;
+        this(desc, connection , new TableDescSPO(), new CodecSimple()) ;
     }
 
-    private StoreSimpleOracle(SDBConnection connection, TableDescTriples triples, EncoderDecoder codec)
+    private StoreSimpleOracle(StoreDesc desc, SDBConnection connection, TableDescTriples triples, EncoderDecoder codec)
     {
-        super(connection,
+        super(desc, connection,
               new FormatterSimpleOracle(connection) ,
               new TupleLoaderSimple(connection, triples, codec), 
               new QueryCompilerFactory1(codec), 

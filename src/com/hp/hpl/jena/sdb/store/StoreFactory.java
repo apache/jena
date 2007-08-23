@@ -49,9 +49,36 @@ public class StoreFactory
     public static Store create(String filename)
     { return create(null, StoreDesc.read(filename)) ; }
     
+    
+    /**
+     * Create a store, based on connection, layout type and database type.
+     *
+     * @param sdb
+     * @param layout
+     * @param dbType
+     * @return Store
+     */
+    public static Store create(SDBConnection sdb, LayoutType layout, DatabaseType dbType)
+    { 
+        StoreDesc desc = new StoreDesc(layout, dbType) ;
+        return create(sdb, desc) ;
+    }
+
     /**
      * Create a store, based on the store description.
-     * The store description must include connection details. 
+     * The store description must include connection details if to be used to actually connect.
+     * @param desc
+     * @return
+     */
+    public static Store create(LayoutType layout, DatabaseType dbType)
+    { 
+        StoreDesc desc = new StoreDesc(layout, dbType) ;
+        return create(null, desc) ;
+    }
+
+    /**
+     * Create a store, based on the store description.
+     * The store description must include connection details if to be used to actually connect.
      * @param desc
      * @return
      */
@@ -124,98 +151,98 @@ public class StoreFactory
         register(Derby, LayoutTripleNodesHash, 
             new StoreMaker(){
                 public Store create(StoreDesc desc, SDBConnection conn)
-                { return new StoreTriplesNodesHashDerby(conn) ; } }) ;
+                { return new StoreTriplesNodesHashDerby(desc, conn) ; } }) ;
         
         register(HSQLDB, LayoutTripleNodesHash, 
                  new StoreMaker(){
                      public Store create(StoreDesc desc, SDBConnection conn)
-                     { return new StoreTriplesNodesHashHSQL(conn) ; }} ) ;
+                     { return new StoreTriplesNodesHashHSQL(desc, conn) ; }} ) ;
         
         register(MySQL, LayoutTripleNodesHash,
                  new StoreMaker() {
                     public Store create(StoreDesc desc, SDBConnection conn)
-                    { return new StoreTriplesNodesHashMySQL(conn, desc.engineType) ; } }) ;
+                    { return new StoreTriplesNodesHashMySQL(desc, conn, desc.engineType) ; } }) ;
 
         register(PostgreSQL, LayoutTripleNodesHash,
                  new StoreMaker() {
                     public Store create(StoreDesc desc, SDBConnection conn)
-                    { return new StoreTriplesNodesHashPGSQL(conn) ; } }) ;
+                    { return new StoreTriplesNodesHashPGSQL(desc, conn) ; } }) ;
 
         register(SQLServer, LayoutTripleNodesHash,
                  new StoreMaker() {
                     public Store create(StoreDesc desc, SDBConnection conn)
-                    { return new StoreTriplesNodesHashSQLServer(conn) ; } }) ;
+                    { return new StoreTriplesNodesHashSQLServer(desc, conn) ; } }) ;
 
         register(Oracle, LayoutTripleNodesHash,
                  new StoreMaker() {
                     public Store create(StoreDesc desc, SDBConnection conn)
-                    { return new StoreTriplesNodesHashOracle(conn) ; } }) ;
+                    { return new StoreTriplesNodesHashOracle(desc, conn) ; } }) ;
 
         // -- Index layout
         
         register(Derby, LayoutTripleNodesIndex,
                  new StoreMaker() {
                     public Store create(StoreDesc desc, SDBConnection conn)
-                    { return new StoreTriplesNodesIndexDerby(conn) ; }
+                    { return new StoreTriplesNodesIndexDerby(desc, conn) ; }
                     }) ;
         
         register(HSQLDB, LayoutTripleNodesIndex,
                  new StoreMaker() {
                     public Store create(StoreDesc desc, SDBConnection conn)
-                    { return new StoreTriplesNodesIndexHSQL(conn) ; } }) ;
+                    { return new StoreTriplesNodesIndexHSQL(desc, conn) ; } }) ;
         
         register(MySQL, LayoutTripleNodesIndex,
                  new StoreMaker() {
                     public Store create(StoreDesc desc, SDBConnection conn)
-                    { return new StoreTriplesNodesIndexMySQL(conn, desc.engineType) ; } }) ;
+                    { return new StoreTriplesNodesIndexMySQL(desc, conn, desc.engineType) ; } }) ;
 
         register(PostgreSQL, LayoutTripleNodesIndex,
                  new StoreMaker() {
                     public Store create(StoreDesc desc, SDBConnection conn)
-                    { return new StoreTriplesNodesIndexPGSQL(conn) ; } }) ;
+                    { return new StoreTriplesNodesIndexPGSQL(desc, conn) ; } }) ;
 
         register(SQLServer, LayoutTripleNodesIndex,
                  new StoreMaker() {
                     public Store create(StoreDesc desc, SDBConnection conn)
-                    { return new StoreTriplesNodesIndexSQLServer(conn) ; } }) ;
+                    { return new StoreTriplesNodesIndexSQLServer(desc, conn) ; } }) ;
 
         register(Oracle, LayoutTripleNodesIndex,
                  new StoreMaker() {
                     public Store create(StoreDesc desc, SDBConnection conn)
-                    { return new StoreTriplesNodesIndexOracle(conn) ; } }) ;
+                    { return new StoreTriplesNodesIndexOracle(desc, conn) ; } }) ;
         
         // -- Simple layout
         
         register(Derby, LayoutSimple,
                  new StoreMaker() {
                     public Store create(StoreDesc desc, SDBConnection conn)
-                    { return new StoreSimpleDerby(conn) ; }
+                    { return new StoreSimpleDerby(desc, conn) ; }
                     }) ;
         
         register(HSQLDB, LayoutSimple,
                  new StoreMaker() {
                     public Store create(StoreDesc desc, SDBConnection conn)
-                    { return new StoreSimpleHSQL(conn) ; } }) ;
+                    { return new StoreSimpleHSQL(desc, conn) ; } }) ;
         
         register(MySQL, LayoutSimple,
                  new StoreMaker() {
                     public Store create(StoreDesc desc, SDBConnection conn)
-                    { return new StoreSimpleMySQL(conn, desc.engineType) ; } }) ;
+                    { return new StoreSimpleMySQL(desc, conn, desc.engineType) ; } }) ;
 
         register(PostgreSQL, LayoutSimple,
                  new StoreMaker() {
                     public Store create(StoreDesc desc, SDBConnection conn)
-                    { return new StoreSimplePGSQL(conn) ; } }) ;
+                    { return new StoreSimplePGSQL(desc, conn) ; } }) ;
 
         register(SQLServer, LayoutSimple,
                  new StoreMaker() {
                     public Store create(StoreDesc desc, SDBConnection conn)
-                    { return new StoreSimpleSQLServer(conn) ; } }) ;
+                    { return new StoreSimpleSQLServer(desc, conn) ; } }) ;
 
         register(Oracle, LayoutSimple,
                  new StoreMaker() {
                     public Store create(StoreDesc desc, SDBConnection conn)
-                    { return new StoreSimpleOracle(conn) ; } }) ;
+                    { return new StoreSimpleOracle(desc, conn) ; } }) ;
     }
     
     static private void checkRegistry()

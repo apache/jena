@@ -6,6 +6,7 @@
 
 package com.hp.hpl.jena.sdb.layout2.hash;
 
+import com.hp.hpl.jena.sdb.StoreDesc;
 import com.hp.hpl.jena.sdb.core.sqlnode.GenerateSQLDerby;
 import com.hp.hpl.jena.sdb.layout2.LoaderTuplesNodes;
 import com.hp.hpl.jena.sdb.layout2.SQLBridgeFactory2;
@@ -14,9 +15,10 @@ import com.hp.hpl.jena.sdb.sql.SDBConnection;
 public class StoreTriplesNodesHashDerby extends StoreBaseHash
 {
 
-    public StoreTriplesNodesHashDerby(SDBConnection connection)
+    public StoreTriplesNodesHashDerby(StoreDesc desc, SDBConnection connection)
     {
-        super(connection,
+        super(desc, 
+              connection,
               new FmtLayout2HashDerby(connection) ,
               //new LoaderHashDerby(connection),
               new LoaderTuplesNodes(connection, TupleLoaderHashDerby.class),

@@ -12,21 +12,21 @@ import java.io.InputStream;
 import java.sql.SQLException;
 
 import com.hp.hpl.jena.graph.Node;
-
-import com.hp.hpl.jena.sparql.sse.Item;
-import com.hp.hpl.jena.sparql.sse.SSE;
-
 import com.hp.hpl.jena.sdb.SDBFactory;
 import com.hp.hpl.jena.sdb.Store;
-import com.hp.hpl.jena.sdb.layout2.hash.StoreTriplesNodesHashHSQL;
 import com.hp.hpl.jena.sdb.layout2.hash.TupleLoaderOneHash;
 import com.hp.hpl.jena.sdb.sql.JDBC;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.sql.SDBExceptionSQL;
+import com.hp.hpl.jena.sdb.store.DatabaseType;
+import com.hp.hpl.jena.sdb.store.LayoutType;
+import com.hp.hpl.jena.sdb.store.StoreFactory;
 import com.hp.hpl.jena.sdb.store.TableDesc;
 import com.hp.hpl.jena.sdb.store.TupleLoader;
 import com.hp.hpl.jena.sdb.store.TupleTable;
 import com.hp.hpl.jena.sdb.util.Pair;
+import com.hp.hpl.jena.sparql.sse.Item;
+import com.hp.hpl.jena.sparql.sse.SSE;
 
 public class sdbRDFSload
 {
@@ -81,8 +81,7 @@ public class sdbRDFSload
 
         SDBConnection sdb = SDBFactory.createConnection(
                 "jdbc:hsqldb:mem:aname", "sa", "");
-
-        Store store = new StoreTriplesNodesHashHSQL(sdb);
+        Store store = StoreFactory.create(sdb, LayoutType.LayoutTripleNodesHash, DatabaseType.HSQLDB) ;
         store.getTableFormatter().format();
         return store ;
     }

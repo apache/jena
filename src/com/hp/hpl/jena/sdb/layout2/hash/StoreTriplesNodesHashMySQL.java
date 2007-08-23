@@ -6,6 +6,7 @@
 
 package com.hp.hpl.jena.sdb.layout2.hash;
 
+import com.hp.hpl.jena.sdb.StoreDesc;
 import com.hp.hpl.jena.sdb.core.sqlnode.GenerateSQLMySQL;
 import com.hp.hpl.jena.sdb.layout2.LoaderTuplesNodes;
 import com.hp.hpl.jena.sdb.layout2.SQLBridgeFactory2;
@@ -15,14 +16,14 @@ import com.hp.hpl.jena.sdb.sql.SDBConnection;
 
 public class StoreTriplesNodesHashMySQL extends StoreBaseHash
 {
-    public StoreTriplesNodesHashMySQL(SDBConnection connection)
+    public StoreTriplesNodesHashMySQL(StoreDesc desc, SDBConnection connection)
     {
-        this(connection, null) ;
+        this(desc, connection, null) ;
     }
     
-    public StoreTriplesNodesHashMySQL(SDBConnection connection, MySQLEngineType tableType)
+    public StoreTriplesNodesHashMySQL(StoreDesc desc, SDBConnection connection, MySQLEngineType tableType)
     {
-        super(connection,
+        super(desc, connection,
               new FmtLayout2HashMySQL(connection, 
                                   (tableType!=null)? tableType : MySQLEngineType.InnoDB),
               //new LoaderHashMySQL(connection),

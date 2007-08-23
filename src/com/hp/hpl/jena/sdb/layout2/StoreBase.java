@@ -7,11 +7,14 @@
 package com.hp.hpl.jena.sdb.layout2;
 
 import com.hp.hpl.jena.sdb.Store;
+import com.hp.hpl.jena.sdb.StoreDesc;
 import com.hp.hpl.jena.sdb.compiler.QueryCompilerFactory;
 import com.hp.hpl.jena.sdb.core.sqlnode.GenerateSQL;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.sql.SDBConnectionHolder;
 import com.hp.hpl.jena.sdb.sql.TableUtils;
+import com.hp.hpl.jena.sdb.store.DatabaseType;
+import com.hp.hpl.jena.sdb.store.LayoutType;
 import com.hp.hpl.jena.sdb.store.SQLBridgeFactory;
 import com.hp.hpl.jena.sdb.store.SQLGenerator;
 import com.hp.hpl.jena.sdb.store.StoreConfig;
@@ -22,6 +25,7 @@ public abstract class StoreBase
     extends SDBConnectionHolder
     implements Store
 {
+    protected StoreDesc storeDescription ;
     protected StoreFormatter formatter ;
     protected StoreLoader loader ;
     protected QueryCompilerFactory compilerF ;
@@ -32,7 +36,8 @@ public abstract class StoreBase
     protected TableDescQuads quadTableDesc = null ;
     protected TableDescNodes nodeTableDesc ;
     
-    public StoreBase(SDBConnection connection, 
+    public StoreBase(StoreDesc desc, 
+                     SDBConnection connection, 
                      StoreFormatter formatter ,
                      StoreLoader loader ,
                      QueryCompilerFactory compilerF ,
@@ -43,6 +48,7 @@ public abstract class StoreBase
                      TableDescNodes      nodeTableDesc)
     {
         super(connection) ;
+        this.storeDescription = desc ;
         this.formatter = formatter ;
         this.loader = loader ;
         this.compilerF = compilerF ;
@@ -70,6 +76,10 @@ public abstract class StoreBase
     public StoreLoader     getLoader()                          { return loader ; }
 
     public StoreConfig     getConfiguration()                   { return configuration ; }
+    
+    public DatabaseType     getDatabaseType()                   { return storeDescription.getDbType() ; }
+    
+    public LayoutType       getLayoutType()                     { return storeDescription.getLayout() ; }
 
     // Note -- this does not close the JDBC connection, which may be shared.
     // See also StoreBaseHSQL

@@ -6,6 +6,7 @@
 
 package com.hp.hpl.jena.sdb.layout1;
 
+import com.hp.hpl.jena.sdb.StoreDesc;
 import com.hp.hpl.jena.sdb.core.sqlnode.GenerateSQL;
 import com.hp.hpl.jena.sdb.layout2.TableDescTriples;
 import com.hp.hpl.jena.sdb.sql.MySQLEngineType;
@@ -20,22 +21,22 @@ import com.hp.hpl.jena.sdb.sql.SDBConnection;
 
 public class StoreSimpleMySQL extends StoreBase1
 {
-    public StoreSimpleMySQL(SDBConnection connection)
+    public StoreSimpleMySQL(StoreDesc desc, SDBConnection connection)
     {
-        this(connection, MySQLEngineType.InnoDB) ;
+        this(desc, connection, MySQLEngineType.InnoDB) ;
     }
     
-    public StoreSimpleMySQL(SDBConnection connection, MySQLEngineType engineType)
+    public StoreSimpleMySQL(StoreDesc desc, SDBConnection connection, MySQLEngineType engineType)
     {
-        this(connection, new TableDescSPO(), engineType, new CodecSimple()) ;
+        this(desc, connection, new TableDescSPO(), engineType, new CodecSimple()) ;
     }
 
-    private StoreSimpleMySQL(SDBConnection connection, 
+    private StoreSimpleMySQL(StoreDesc desc, SDBConnection connection, 
                              TableDescTriples triples, 
                              MySQLEngineType engineType, 
                              EncoderDecoder codec)
     {
-        super(connection,
+        super(desc, connection,
               new FormatterSimpleMySQL(connection, engineType),
               new TupleLoaderSimple(connection, triples, codec), 
               new QueryCompilerFactory1(codec), 

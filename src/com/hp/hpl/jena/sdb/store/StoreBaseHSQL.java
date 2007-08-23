@@ -7,6 +7,7 @@
 package com.hp.hpl.jena.sdb.store;
 
 import com.hp.hpl.jena.sdb.Store;
+import com.hp.hpl.jena.sdb.StoreDesc;
 import com.hp.hpl.jena.sdb.compiler.QueryCompilerFactory;
 import com.hp.hpl.jena.sdb.core.sqlnode.GenerateSQL;
 import com.hp.hpl.jena.sdb.layout2.StoreBase;
@@ -23,7 +24,8 @@ public abstract class StoreBaseHSQL extends StoreBase
 {
     protected boolean currentlyOpen = true ;
     
-    public StoreBaseHSQL(SDBConnection connection, 
+    public StoreBaseHSQL(StoreDesc desc,
+                         SDBConnection connection, 
                          StoreFormatter formatter,
                          StoreLoader loader,
                          QueryCompilerFactory compilerF,
@@ -32,7 +34,7 @@ public abstract class StoreBaseHSQL extends StoreBase
                          TableDescQuads quadTableDesc,
                          TableDescNodes nodeTableDesc)
     {
-        super(connection, formatter, loader, compilerF, sqlBridgeF, 
+        super(desc, connection, formatter, loader, compilerF, sqlBridgeF, 
               new GenerateSQL(), tripleTableDesc, quadTableDesc, nodeTableDesc) ;
     }
 
