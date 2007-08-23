@@ -10,14 +10,19 @@ import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.sdb.SDBFactory;
 import com.hp.hpl.jena.sdb.Store;
 import com.hp.hpl.jena.sdb.layout1.StoreSimpleHSQL;
+import com.hp.hpl.jena.sdb.layout1.StoreSimpleMySQL;
 import com.hp.hpl.jena.sdb.layout1.StoreSimplePGSQL;
+import com.hp.hpl.jena.sdb.layout2.hash.StoreTriplesNodesHashMySQL;
 import com.hp.hpl.jena.sdb.layout2.hash.StoreTriplesNodesHashPGSQL;
+import com.hp.hpl.jena.sdb.layout2.index.StoreTriplesNodesIndexMySQL;
 import com.hp.hpl.jena.sdb.layout2.index.StoreTriplesNodesIndexPGSQL;
 import com.hp.hpl.jena.sdb.store.StoreBaseHSQL;
 import com.hp.hpl.jena.util.FileManager;
 
 public class StoreUtils
 {
+    // Temporary if statements until stores knwo their db/layoyt types better.
+    
     public static boolean isHSQL(Store store)
     { 
         if ( store instanceof StoreBaseHSQL ) return true ;
@@ -26,10 +31,18 @@ public class StoreUtils
     }
     
     public static boolean isPostgreSQL(Store store)
-    { 
+    {
         if ( store instanceof StoreTriplesNodesIndexPGSQL ) return true ;
         if ( store instanceof StoreTriplesNodesHashPGSQL ) return true ;
         if ( store instanceof StoreSimplePGSQL ) return true ;
+        return false ;
+    }
+
+    public static boolean isMySQL(Store store)
+    {
+        if ( store instanceof StoreTriplesNodesIndexMySQL ) return true ;
+        if ( store instanceof StoreTriplesNodesHashMySQL ) return true ;
+        if ( store instanceof StoreSimpleMySQL ) return true ;
         return false ;
     }
 

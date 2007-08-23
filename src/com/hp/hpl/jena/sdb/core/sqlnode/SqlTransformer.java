@@ -1,52 +1,18 @@
 /*
- * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
 package com.hp.hpl.jena.sdb.core.sqlnode;
 
-import java.util.Set;
-
-import com.hp.hpl.jena.sparql.util.Printable;
-import com.hp.hpl.jena.sdb.core.Annotations;
-import com.hp.hpl.jena.sdb.core.Scope;
-
-public interface SqlNode extends Printable, Annotations
+public interface SqlTransformer
 {
-    public String               getAliasName() ;
-    
-    public boolean              isJoin() ;
-    public boolean              isInnerJoin() ;
-    public boolean              isLeftJoin() ;
-//    public boolean              isRightJoin() ;
-//    public boolean              isOuterJoin() ;
-    
-    public SqlJoin              asJoin() ;
-    public SqlJoinLeftOuter     asLeftJoin() ;
-    public SqlJoinInner         asInnerJoin() ;
 
-    public boolean              isCoalesce() ;
-    public SqlCoalesce          asCoalesce() ;
-    public boolean              isRestrict() ;                // isSelect is confusing
-    public SqlRestrict          asRestrict() ;
-    
-    public boolean              isProject() ;
-    public SqlProject           asProject() ;
-    
-    public boolean              isTable() ;
-    public SqlTable             asTable() ;
-
-    public Scope getIdScope() ;
-    public Scope getNodeScope() ;
-    
-    public Set<SqlTable> tablesInvolved() ;
-    
-    public void visit(SqlNodeVisitor visitor) ;
 }
 
 /*
- * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

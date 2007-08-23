@@ -53,6 +53,12 @@ public interface Store
     /** Return the configuration of this Store */
     public StoreConfig      getConfiguration() ;
     
+//    /** Return the database type of the store */
+//    public DatabaseType     getDatabaseType() ;
+//    
+//    /** Return the layout type of the store */
+//    public LayoutType       getLayoutType() ;
+    
     /** Stores should be closed explicitly. 
      *  Some stores may require specific finalization actions (e.g. embedded databases),
      *  and some stores may be able to release system resources.
