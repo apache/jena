@@ -21,6 +21,7 @@ N3 & Turtle Writer
     
 Reasoners
     o Added rebindAll() to FBRuleInfGraph    
+    o Extended OWLMini/full to include validation of maxCardinality(1) over individuals
 
 ==== Jena 2.5.3
 
