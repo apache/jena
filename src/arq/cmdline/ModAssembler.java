@@ -60,7 +60,7 @@ public class ModAssembler extends ModDataset
         //cmdLine.getUsage().startCategory("Dataset") ;
         cmdLine.add(assemblerDescDecl,
                     "--desc=",
-                    "Description of dataset") ;
+                    "Assembler file description of dataset") ;
     }
     
     public Dataset getDataset()
