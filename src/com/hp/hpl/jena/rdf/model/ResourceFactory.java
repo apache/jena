@@ -1,12 +1,16 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ResourceFactory.java,v 1.13 2007-01-02 11:48:35 andy_seaborne Exp $
+  $Id: ResourceFactory.java,v 1.14 2007-08-24 11:14:52 der Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
 
+import java.util.Calendar;
+
 import com.hp.hpl.jena.datatypes.RDFDatatype;
+import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
+import com.hp.hpl.jena.datatypes.xsd.XSDDateTime;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.impl.LiteralLabel;
 import com.hp.hpl.jena.rdf.model.impl.*;
@@ -222,7 +226,14 @@ public class ResourceFactory {
         }
 
         public Literal createTypedLiteral( Object value ) {
-            return new LiteralImpl(Node.createLiteral( new LiteralLabel(value) ), null) ;
+            LiteralLabel ll = null;
+            if (value instanceof Calendar) {
+                Object valuec = new XSDDateTime( (Calendar) value);
+                ll = new LiteralLabel(valuec, "", XSDDatatype.XSDdateTime);
+            } else {
+                ll =  new LiteralLabel(value);
+            }
+            return new LiteralImpl(Node.createLiteral( ll ), null) ;
         }
         
         public Property createProperty(String uriref) {
