@@ -34,7 +34,10 @@ public class SqlJoinInner extends SqlJoin
     @Override
     public SqlNode copy(SqlNode left, SqlNode right)
     {
-        return new SqlJoinInner(left, right, getAliasName()) ;
+        SqlJoin j = new SqlJoinInner(left, right, getAliasName()) ;
+        j.addConditions(this.getConditions()) ;
+        return j ;
+
     }
 }
 

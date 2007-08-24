@@ -6,32 +6,33 @@
 
 package dev.gen;
 
+import static com.hp.hpl.jena.sdb.iterator.IterFunc.map;
+import static com.hp.hpl.jena.sdb.iterator.IterFunc.toSet;
 import static com.hp.hpl.jena.sparql.util.StringUtils.str;
 
+import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.hp.hpl.jena.sparql.core.Var;
+import com.hp.hpl.jena.sparql.util.IndentedWriter;
+import com.hp.hpl.jena.sparql.util.Utils;
+
 import com.hp.hpl.jena.query.ARQ;
-import com.hp.hpl.jena.query.Query;
+
 import com.hp.hpl.jena.sdb.SDB;
+import com.hp.hpl.jena.sdb.SDBException;
 import com.hp.hpl.jena.sdb.core.Annotations;
-import com.hp.hpl.jena.sdb.core.JoinType;
+import com.hp.hpl.jena.sdb.core.VarCol;
 import com.hp.hpl.jena.sdb.core.sqlexpr.S_Equal;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExpr;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExprList;
 import com.hp.hpl.jena.sdb.core.sqlnode.*;
 import com.hp.hpl.jena.sdb.iterator.Transform;
-import com.hp.hpl.jena.sdb.shared.SDBNotImplemented;
 import com.hp.hpl.jena.sdb.sql.SQLUtils;
-
-import static com.hp.hpl.jena.sdb.iterator.IterFunc.*;
-
-import com.hp.hpl.jena.sdb.util.Pair;
-import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.sparql.util.IndentedWriter;
 
 // This is not a general purpose SQL writer - it needs only work with the
 // SQL node trees that the SDB compiler generate.
@@ -55,41 +56,80 @@ public class NewGenerateSQLVisitor implements SqlNodeVisitor
     public NewGenerateSQLVisitor(IndentedWriter out)
     { this.out = out ; }
     
-    // XXX This replaces various things below
-    public void visit(SqlSelectBlock sqlSelectBlock)
-    {}
+    public void visit(SqlProject sqlNode)   { shouldNotSee(sqlNode) ; }
+    public void visit(SqlRestrict sqlNode)  { shouldNotSee(sqlNode) ; }
+    public void visit(SqlSlice sqlNode)     { shouldNotSee(sqlNode) ; }
+    public void visit(SqlRename sqlNode)    { shouldNotSee(sqlNode) ; }
 
-    
-    public void visit(SqlProject sqlNode)
+    private void shouldNotSee(SqlNode sqlNode)
+    { throw new SDBException("Didn't expect: "+Utils.className(sqlNode)) ; }
+
+    public void visit(SqlSelectBlock sqlSelectBlock)
     {
-        out.print("SELECT ") ;
-        annotate(sqlNode) ; 
-        out.ensureStartOfLine() ;
-        out.incIndent() ;
+        // SELECT
+      out.print("SELECT ") ;
+      if ( annotate(sqlSelectBlock) ) 
+          out.ensureStartOfLine() ;
+      out.incIndent() ;
+      print(sqlSelectBlock.getCols()) ;
+      out.decIndent() ;
+      out.ensureStartOfLine() ;
+      
+      // FROM
+      out.print("FROM") ;
+      if ( ! sqlSelectBlock.getSubNode().isTable() )
+          out.println();
+      else
+          out.print(" ");
+      out.incIndent() ;
+      sqlSelectBlock.getSubNode().visit(this) ;
+      out.decIndent() ;
+      out.ensureStartOfLine() ;
+
+      // WHERE
+      if ( sqlSelectBlock.getWhere().size() > 0 )
+      {
+          genWHERE(sqlSelectBlock.getWhere()) ;
+//          out.incIndent() ;
+//          out.println("WHERE") ;
+//          print(sqlSelectBlock.getWhere().size())
+//          out.decIndent() ;
+      }
+      
+      // LIMIT/OFFSET
+      out.ensureStartOfLine() ;
+      if ( sqlSelectBlock.getLength() >= 0 )
+          out.println("LIMIT "+sqlSelectBlock.getLength()) ;
+      if ( sqlSelectBlock.getStart() >= 0 )
+          out.println("OFFSET "+sqlSelectBlock.getStart()) ;
+    }
+
+    private void print(List<VarCol> cols)
+    {
         // SELECT vars
         String sep = "" ;
-        if ( sqlNode.getCols().size() == 0 )
+        if ( cols.size() == 0 )
         {
             // Can happen - e.g. query with no variables.
             //log.info("No SELECT columns") ;
             out.print("*") ;
         }
-        
+
         // Put common prefix on same line
         String currentPrefix = null ; 
         String splitMarker = SQLUtils.getSQLmark() ;
-        
-        for ( Pair<Var, SqlColumn> c : sqlNode.getCols() )
+
+        for ( VarCol c : cols )
         {
             out.print(sep) ;
             sep = ", " ;
-            
+
             if ( c.cdr() == null )
                 log.warn("Null SqlColumn for "+str(c.car())) ;    
 
             Var aliasVar = c.car() ;
             String p = null ;
-            
+
             if ( aliasVar == null )
             {
                 splitMarker = "." ;
@@ -99,7 +139,7 @@ public class NewGenerateSQLVisitor implements SqlNodeVisitor
             }
             // Var name formatting. 
             // V_1_lex, etc etc
-            
+
             int j = p.lastIndexOf(splitMarker) ;
             if ( j == -1 )
                 currentPrefix = null ;
@@ -108,13 +148,13 @@ public class NewGenerateSQLVisitor implements SqlNodeVisitor
                 String x = p.substring(0, j) ;
                 if ( currentPrefix != null && ! x.equals(currentPrefix) )
                     out.println() ;
-                
+
                 currentPrefix = x ;
             }
-            
+
             String projectName = c.cdr().asString() ;
             out.print(projectName) ;
-            
+
             if ( aliasVar != null )
             {
                 String varLabel = c.car().getName() ;
@@ -122,99 +162,103 @@ public class NewGenerateSQLVisitor implements SqlNodeVisitor
                 out.print(varLabel) ;
             }
         }
-        out.decIndent() ;
-        out.println() ;
-        out.println("FROM") ;
-
-        SqlNode sqlNode2 = sqlNode.getSubNode() ;
-        
-        // Project-restrict : can combine 
-        if ( sqlNode2.isRestrict() )
-        {
-            SqlRestrict r = sqlNode.getSubNode().asRestrict() ;
-            // Special Project-Restrict-Node case.
-            out.incIndent() ; 
-            r.getSubNode().visit(this);
-            out.decIndent() ;
-            out.println() ;
-            genWHERE(r.getConditions()) ;
-            return ;
-        }
-        
-        boolean needBrackets = false ;
-        if ( sqlNode2.isCoalesce() )
-            needBrackets = true ;
-        out.incIndent() ; 
-        outputNode(sqlNode2, needBrackets) ;
-        out.decIndent() ; 
-
-//        // Not a project-restrict.
-//        // Generate expression for the FROM
-//        out.incIndent() ;
-//        sqlNode.getSubNode().visit(this) ;
-//        out.decIndent() ;
     }
 
-    public void visit(SqlRestrict sqlNode)
-    {
-        annotate(sqlNode) ;
-        if ( sqlNode.getConditions().size() == 0 )
-        {
-            log.warn("No conditions associated with this restriction") ;
-            sqlNode.getSubNode().visit(this) ;
-            return ;
-        }
-        
-        SqlNode node2 = sqlNode.getSubNode() ;
-        if ( node2.isJoin() && ! node2.asJoin().getJoinType().equals(JoinType.INNER) )
-        {
-            log.warn("restrict/"+node2.asJoin().getJoinType()+" not supported") ;
-            return ;
-        }
-            
-        if ( node2.isJoin() )
-        {
-            // Common with QueryCompilerBase.join?? 
-            // Push condition into the inner join ON clause
-            // Avoid mutating the Join - create a new one and merge the conditions.
-            // (As we do not use the old join, we could reuse it alias)
-            SqlJoin j = node2.asJoin() ;
-            if ( j.getJoinType() != JoinType.INNER )
-                log.warn("Unexpected: restrict on join type "+ j.getJoinType() ) ;
-            
-            //SqlJoin j2 = SqlJoin.create(j.getJoinType(), j.getLeft(), j.getRight(), SDBConstants.gen(j.getAliasName())) ;
-            SqlJoin j2 = SqlJoin.create(j.getJoinType(), j.getLeft(), j.getRight(), j.getAliasName()) ;
-            j2.getConditions().addAll(j.getConditions()) ;
-            j2.getConditions().addAll(sqlNode.getConditions()) ;
-            j2.visit(this) ;
-            return ;
-        }
-        
-        if ( node2.isTable() )
-        {
-            // Only occurs in a JOIN and so the () has already been done.
-            //out.print("( ") ;
-            //out.incIndent() ;
-            out.println("SELECT *") ;
-            out.print("FROM ") ;
-            out.print(node2.asTable().getTableName()) ;
-            out.print(aliasToken()) ;
-            out.print(node2.asTable().getAliasName()) ;
-            annotate(node2.asTable()) ;
-            out.ensureStartOfLine() ;
-            genWHERE(sqlNode.getConditions()) ;
-            //out.println() ;
-            //out.decIndent() ;
-            //out.print(")") ;
-            return ;
-        }
-        
-        log.warn("restrict/unrecognized sub node: \n"+node2) ;
-        return ;
-    }
     
-    public void visit(SqlRename sqlRename)
-    { throw new SDBNotImplemented("SqlRename") ; }
+//    public void visit(SqlProject sqlNode)
+//    {
+//        out.println() ;
+//        out.println("FROM") ;
+//
+//        SqlNode sqlNode2 = sqlNode.getSubNode() ;
+//        
+//        // Project-restrict : can combine 
+//        if ( sqlNode2.isRestrict() )
+//        {
+//            SqlRestrict r = sqlNode.getSubNode().asRestrict() ;
+//            // Special Project-Restrict-Node case.
+//            out.incIndent() ; 
+//            r.getSubNode().visit(this);
+//            out.decIndent() ;
+//            out.println() ;
+//            genWHERE(r.getConditions()) ;
+//            return ;
+//        }
+//        
+//        boolean needBrackets = false ;
+//        if ( sqlNode2.isCoalesce() )
+//            needBrackets = true ;
+//        out.incIndent() ; 
+//        outputNode(sqlNode2, needBrackets) ;
+//        out.decIndent() ; 
+//
+////        // Not a project-restrict.
+////        // Generate expression for the FROM
+////        out.incIndent() ;
+////        sqlNode.getSubNode().visit(this) ;
+////        out.decIndent() ;
+//    }
+//
+//    public void visit(SqlRestrict sqlNode)
+//    {
+//        annotate(sqlNode) ;
+//        if ( sqlNode.getConditions().size() == 0 )
+//        {
+//            log.warn("No conditions associated with this restriction") ;
+//            sqlNode.getSubNode().visit(this) ;
+//            return ;
+//        }
+//        
+//        SqlNode node2 = sqlNode.getSubNode() ;
+//        if ( node2.isJoin() && ! node2.asJoin().getJoinType().equals(JoinType.INNER) )
+//        {
+//            log.warn("restrict/"+node2.asJoin().getJoinType()+" not supported") ;
+//            return ;
+//        }
+//            
+//        if ( node2.isJoin() )
+//        {
+//            // Common with QueryCompilerBase.join?? 
+//            // Push condition into the inner join ON clause
+//            // Avoid mutating the Join - create a new one and merge the conditions.
+//            // (As we do not use the old join, we could reuse it alias)
+//            SqlJoin j = node2.asJoin() ;
+//            if ( j.getJoinType() != JoinType.INNER )
+//                log.warn("Unexpected: restrict on join type "+ j.getJoinType() ) ;
+//            
+//            //SqlJoin j2 = SqlJoin.create(j.getJoinType(), j.getLeft(), j.getRight(), SDBConstants.gen(j.getAliasName())) ;
+//            SqlJoin j2 = SqlJoin.create(j.getJoinType(), j.getLeft(), j.getRight(), j.getAliasName()) ;
+//            j2.getConditions().addAll(j.getConditions()) ;
+//            j2.getConditions().addAll(sqlNode.getConditions()) ;
+//            j2.visit(this) ;
+//            return ;
+//        }
+//        
+//        if ( node2.isTable() )
+//        {
+//            // Only occurs in a JOIN and so the () has already been done.
+//            //out.print("( ") ;
+//            //out.incIndent() ;
+//            out.println("SELECT *") ;
+//            out.print("FROM ") ;
+//            out.print(node2.asTable().getTableName()) ;
+//            out.print(aliasToken()) ;
+//            out.print(node2.asTable().getAliasName()) ;
+//            annotate(node2.asTable()) ;
+//            out.ensureStartOfLine() ;
+//            genWHERE(sqlNode.getConditions()) ;
+//            //out.println() ;
+//            //out.decIndent() ;
+//            //out.print(")") ;
+//            return ;
+//        }
+//        
+//        log.warn("restrict/unrecognized sub node: \n"+node2) ;
+//        return ;
+//    }
+//    
+//    public void visit(SqlRename sqlRename)
+//    { throw new SDBNotImplemented("SqlRename") ; }
 
     private void genTables(SqlNode sqlNode)
     {
@@ -370,18 +414,18 @@ public class NewGenerateSQLVisitor implements SqlNodeVisitor
         // Alias and annotations handled by outputNode
     }
 
-    public void visit(SqlSlice sqlSlice)
-    {
-        //String str = String.format("(%d, %d)", sqlNode.getStart(), sqlNode.getLength()) ;
-        SqlNode sqlNode = sqlSlice.getSubNode() ;
-        sqlNode = NewGenerateSQL.ensureProject(sqlNode) ;
-        sqlNode.visit(this) ;
-        out.ensureStartOfLine() ;
-        if ( sqlSlice.getStart() != Query.NOLIMIT )
-            out.println("LIMIT "+sqlSlice.getStart()) ;
-        if ( sqlSlice.getLength() != Query.NOLIMIT )
-            out.println("OFFSET "+sqlSlice.getLength()) ;
-    }
+//    public void visit(SqlSlice sqlSlice)
+//    {
+//        //String str = String.format("(%d, %d)", sqlNode.getStart(), sqlNode.getLength()) ;
+//        SqlNode sqlNode = sqlSlice.getSubNode() ;
+//        sqlNode = NewGenerateSQL.ensureProject(sqlNode) ;
+//        sqlNode.visit(this) ;
+//        out.ensureStartOfLine() ;
+//        if ( sqlSlice.getStart() != Query.NOLIMIT )
+//            out.println("LIMIT "+sqlSlice.getStart()) ;
+//        if ( sqlSlice.getLength() != Query.NOLIMIT )
+//            out.println("OFFSET "+sqlSlice.getLength()) ;
+//    }
 
     protected void visitJoin(SqlJoin join) { visitJoin(join, join.getJoinType().sqlOperator()) ; }
     protected void visitJoin(SqlJoin join, String joinOperatorName)
@@ -566,7 +610,7 @@ public class NewGenerateSQLVisitor implements SqlNodeVisitor
                 out.print(" /* ") ; out.print(s) ; out.print(" */") ;
             }
         }
-        return !commentSQLStyle || !first ;  
+        return !commentSQLStyle || !first ;
     }
 }
 

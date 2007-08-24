@@ -23,14 +23,21 @@ public class TransformSelectBlock extends SqlTransformCopy
     public SqlNode transform(SqlProject sqlProject, SqlNode subNode)
     { 
         SqlSelectBlock block = block(subNode) ;
+        addNotes(block, sqlProject) ;
         block.getCols().addAll(sqlProject.getCols()) ;
         return block ;
+    }
+
+    private void addNotes(SqlSelectBlock block, SqlNode sqlNode)
+    {
+        block.addNotes(sqlNode.getNotes()) ;
     }
 
     @Override
     public SqlNode transform(SqlRestrict sqlRestrict, SqlNode subNode)
     { 
         SqlSelectBlock block = block(subNode) ;
+        addNotes(block, sqlRestrict) ;
         block.getWhere().addAll(sqlRestrict.getConditions()) ;
         return block ;
     }
@@ -39,6 +46,7 @@ public class TransformSelectBlock extends SqlTransformCopy
     public SqlNode transform(SqlSlice sqlSlice, SqlNode subNode)
     { 
         SqlSelectBlock block = block(subNode) ;
+        addNotes(block, sqlSlice) ;
         
         long start = block.getStart() ;
         if ( start == -1 )

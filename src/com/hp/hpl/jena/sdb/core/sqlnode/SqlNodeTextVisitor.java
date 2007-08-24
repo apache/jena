@@ -9,11 +9,13 @@ package com.hp.hpl.jena.sdb.core.sqlnode;
 import static com.hp.hpl.jena.sparql.util.FmtUtils.stringForNode;
 
 import java.util.Collection;
+import java.util.List;
 
 import com.hp.hpl.jena.sdb.core.Annotations;
 import com.hp.hpl.jena.sdb.core.VarCol;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExpr;
+import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExprList;
 import com.hp.hpl.jena.sdb.sql.SQLUtils;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
@@ -43,55 +45,62 @@ public class SqlNodeTextVisitor implements SqlNodeVisitor
             out.println("<no cols>") ;
         else
         {
-            boolean first = true ; 
-            String currentPrefix = null ; 
-            out.incIndent() ;
-            for ( VarCol c : sqlNode.getCols() )
-            {
-                if ( ! first ) out.print(" ") ;
-                first = false ;
-                
-                String a = null ;
-                String b = "<null>" ;
-                if ( c.car() != null )
-                    a = stringForNode(c.car().asNode()) ;
-                if ( c.cdr() != null )
-                    b = c.cdr().asString() ;
-                
-                if ( a == null )
-                {
-                    out.print(b) ;
-                    currentPrefix = null ;
-                }
-                else
-                {
-                    // Var name formatting. 
-                    String x[] = a.split("\\"+SQLUtils.getSQLmark()) ;
-                    if ( currentPrefix != null && ! x[0].equals(currentPrefix) )
-                        out.println() ;
-                    currentPrefix = x[0] ;
-                    out.print(a+"/"+b) ;
-                }
-            }
-            out.decIndent() ;
+            print(sqlNode.getCols()) ;
             out.println() ; 
         }
         sqlNode.getSubNode().visit(this) ;
         finish() ;
     }
 
+    private void print(List<VarCol> cols)
+    {
+        boolean first = true ; 
+        String currentPrefix = null ; 
+        out.incIndent() ;
+        for ( VarCol c : cols )
+        {
+            if ( ! first ) out.print(" ") ;
+            first = false ;
+            
+            String a = null ;
+            String b = "<null>" ;
+            if ( c.car() != null )
+                a = stringForNode(c.car().asNode()) ;
+            if ( c.cdr() != null )
+                b = c.cdr().asString() ;
+            
+            if ( a == null )
+            {
+                out.print(b) ;
+                currentPrefix = null ;
+            }
+            else
+            {
+                // Var name formatting. 
+                String x[] = a.split("\\"+SQLUtils.getSQLmark()) ;
+                if ( currentPrefix != null && ! x[0].equals(currentPrefix) )
+                    out.println() ;
+                currentPrefix = x[0] ;
+                out.print(a+"/"+b) ;
+            }
+        }
+        out.decIndent() ;
+    }
+    
     public void visit(SqlRestrict sqlNode)
     {
         start(sqlNode, "Restrict", null) ;
-        out.incIndent() ;
-        for ( SqlExpr c : sqlNode.getConditions() )
-        {
-            out.println(c.toString()) ;
-        }
-        out.decIndent() ;
-        
+        print(sqlNode.getConditions());
         sqlNode.getSubNode().visit(this) ;
         finish() ;
+    }
+    
+    private void print(SqlExprList exprs)
+    {
+        out.incIndent() ;
+        for ( SqlExpr c : exprs )
+            out.println(c.toString()) ;
+        out.decIndent() ;
     }
 
     public void visit(SqlRename sqlRename)
@@ -169,7 +178,17 @@ public class SqlNodeTextVisitor implements SqlNodeVisitor
     public void visit(SqlSelectBlock sqlNode)
     { 
         start(sqlNode, "SqlSelectBlock", sqlNode.getAliasName()) ;
+        out.incIndent() ;
+        print(sqlNode.getCols()) ;
+        print(sqlNode.getWhere()) ;
         
+        if ( sqlNode.getStart() >= 0 )
+            out.print(Long.toString(sqlNode.getStart())) ;
+        if ( sqlNode.getLength() >= 0 )
+            out.print(Long.toString(sqlNode.getLength())) ;
+
+        sqlNode.getSubNode().visit(this) ;
+        out.decIndent() ;
         finish() ;
     }
 

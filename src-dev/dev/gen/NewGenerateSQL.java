@@ -9,6 +9,7 @@ package dev.gen;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNodeVisitor;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlProject;
+import com.hp.hpl.jena.sdb.core.sqlnode.SqlTransformer;
 import com.hp.hpl.jena.sdb.store.SQLGenerator;
 import com.hp.hpl.jena.sparql.util.IndentedLineBuffer;
 
@@ -23,6 +24,7 @@ public class NewGenerateSQL implements SQLGenerator
         SqlNodeVisitor v = makeVisitor(buff) ;
         // Top must be a project to cause the SELECT to be written
         sqlNode = ensureProject(sqlNode) ;
+        sqlNode = SqlTransformer.transform(sqlNode, new TransformSelectBlock()) ;
         sqlNode.visit(v) ;
         return buff.asString() ;
     }

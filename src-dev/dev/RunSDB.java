@@ -15,17 +15,23 @@ import static sdb.SDBCmd.setSDBConfig;
 import static sdb.SDBCmd.sparql;
 import arq.cmd.CmdUtils;
 
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.util.FileManager;
+
+import com.hp.hpl.jena.sparql.algebra.Op;
+import com.hp.hpl.jena.sparql.resultset.ResultsFormat;
+import com.hp.hpl.jena.sparql.util.QueryExecUtils;
+
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryExecution;
 import com.hp.hpl.jena.query.QueryExecutionFactory;
 import com.hp.hpl.jena.query.QueryFactory;
-import com.hp.hpl.jena.rdf.model.Model;
+
 import com.hp.hpl.jena.sdb.SDBFactory;
 import com.hp.hpl.jena.sdb.Store;
 import com.hp.hpl.jena.sdb.compiler.OpSQL;
+import com.hp.hpl.jena.sdb.core.sqlnode.GenerateSQL;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
-import com.hp.hpl.jena.sdb.core.sqlnode.SqlTransformCopy;
-import com.hp.hpl.jena.sdb.core.sqlnode.SqlTransformer;
 import com.hp.hpl.jena.sdb.engine.QueryEngineSDB;
 import com.hp.hpl.jena.sdb.sql.JDBC;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
@@ -33,10 +39,8 @@ import com.hp.hpl.jena.sdb.store.DatabaseType;
 import com.hp.hpl.jena.sdb.store.LayoutType;
 import com.hp.hpl.jena.sdb.store.StoreConfig;
 import com.hp.hpl.jena.sdb.store.StoreFactory;
-import com.hp.hpl.jena.sparql.algebra.Op;
-import com.hp.hpl.jena.sparql.resultset.ResultsFormat;
-import com.hp.hpl.jena.sparql.util.QueryExecUtils;
-import com.hp.hpl.jena.util.FileManager;
+
+import dev.gen.NewGenerateSQL;
 
 public class RunSDB
 {
@@ -49,15 +53,26 @@ public class RunSDB
         
         if ( true )
         {
-            Query query = QueryFactory.create("SELECT * { ?s ?p ?o optional { ?s ?p ?v } }") ;
+            Query query = QueryFactory.create("PREFIX : <http://example/> SELECT * { ?s :x ?o }") ;
             Store store = StoreFactory.create(LayoutType.LayoutTripleNodesHash, DatabaseType.PostgreSQL) ;
             QueryEngineSDB qe = new QueryEngineSDB(store, query) ;
             Op op = qe.getOp() ; 
             SqlNode x = ((OpSQL)op).getSqlNode() ;
-            System.out.println(x) ;
+            
+            String str = GenerateSQL.toSQL(x) ;
+            System.out.println(str) ;
+            
             System.out.println() ;
-            SqlNode y = SqlTransformer.transform(x, new SqlTransformCopy()) ;
-            System.out.println(y) ;
+            
+            str = NewGenerateSQL.toSQL(x) ;
+            System.out.println(str) ;
+            
+            //x =  NewGenerateSQL.ensureProject(x) ;
+            //System.out.println(x) ;
+            //System.out.println() ;
+//            SqlNode y = SqlTransformer.transform(x, new TransformSelectBlock()) ;
+//            System.out.println(y) ;
+//            System.out.println() ;
             System.exit(0) ;
         }
         
@@ -82,6 +97,11 @@ public class RunSDB
         run() ;
         System.err.println("Nothing ran!") ;
         System.exit(0) ;
+    }
+
+    private static String oldWay(SqlNode x)
+    {
+        return  GenerateSQL.toSQL(x) ;
     }
 
     private static void _runQuery(String queryFile, String dataFile, String sdbFile)

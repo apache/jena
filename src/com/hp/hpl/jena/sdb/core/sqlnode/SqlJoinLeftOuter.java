@@ -31,7 +31,11 @@ public class SqlJoinLeftOuter extends SqlJoin
     
     @Override
     public SqlNode copy(SqlNode left, SqlNode right)
-    { return new SqlJoinLeftOuter(left, right, getAliasName()) ; }
+    { 
+        SqlJoin j = new SqlJoinLeftOuter(left, right, getAliasName()) ;
+        j.addConditions(this.getConditions()) ;
+        return j ;
+    }
 }
 
 /*

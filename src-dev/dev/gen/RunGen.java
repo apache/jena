@@ -43,7 +43,7 @@ public class RunGen
     public static void main(String...argv)
     {
 
-        SqlNode sqlNode = query("SELECT ?x ?v ?w { ?x ?p ?v OPTIONAL { ?x ?q ?w } }") ;
+        SqlNode sqlNode = query("SELECT ?x { ?x ?p ?v OPTIONAL { ?x ?q ?w } }") ;
         
         //System.out.println(sqlNode) ;
         

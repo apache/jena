@@ -23,6 +23,7 @@ import com.hp.hpl.jena.sdb.core.SDBRequest;
 import com.hp.hpl.jena.sdb.core.ScopeEntry;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlSlice;
+import com.hp.hpl.jena.sdb.iterator.Iter;
 import com.hp.hpl.jena.sdb.layout2.expr.RegexCompiler;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.TransformCopy;
@@ -84,17 +85,25 @@ public class TransformSDB extends TransformCopy
         SqlNode sqlRight = ((OpSQL)right).getSqlNode() ;
         
         // Check for coalesce.
+        // Do optional variables on the right appear only as optional variables on the left?
 
-        // --- Algorithm -- inspired by http://jga.sourceforge.net/
-        // Except we want it working on Sets. 
-        
         Set<ScopeEntry> scopes = sqlLeft.getIdScope().findScopes() ;
-        Set<ScopeEntry> scopes2 = toSet(filter(scopes, ScopeEntry.OptionalFilter)) ;
-
-        // Separate and test!
-        Set<Var> leftOptVars = toSet(map(scopes2, ScopeEntry.ToVar)) ;             // Vars from left optionals.
         
-        Set<Var> rightOptVars = sqlRight.getIdScope().getVars() ;               // Why is this the opt vars?
+        // Find optional-on-left
+        Set<ScopeEntry> scopes2 = toSet(filter(scopes, ScopeEntry.OptionalFilter)) ;
+        Set<Var> leftOptVars = toSet(map(scopes2, ScopeEntry.ToVar)) ;              // Vars from left optionals.
+        
+        if ( false )
+        {
+            Iter<ScopeEntry> iter = Iter.iter(scopes) ;
+            Set<Var> leftOptVars_ = iter.filter(ScopeEntry.OptionalFilter).map(ScopeEntry.ToVar).toSet() ;
+        }
+        
+        // Find optional-on-right (easier - it's all variables) 
+        Set<Var> rightOptVars = sqlRight.getIdScope().getVars() ;
+        
+        // And finally, calculate the intersection of the two.
+        // SetUtils extension - one side could be an iterator  
         Set<Var> coalesceVars = intersection(leftOptVars, rightOptVars) ;
         
         // Future simplification : LeftJoinClassifier.nonLinearVars 
