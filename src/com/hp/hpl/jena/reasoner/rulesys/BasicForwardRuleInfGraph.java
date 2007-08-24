@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: BasicForwardRuleInfGraph.java,v 1.48 2007-01-12 14:13:48 chris-dollin Exp $
+ * $Id: BasicForwardRuleInfGraph.java,v 1.49 2007-08-24 11:19:45 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -32,7 +32,7 @@ import org.apache.commons.logging.LogFactory;
  * can call out to a rule engine and build a real rule engine (e.g. Rete style). </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.48 $ on $Date: 2007-01-12 14:13:48 $
+ * @version $Revision: 1.49 $ on $Date: 2007-08-24 11:19:45 $
  */
 public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRuleInfGraphI {
 
@@ -355,9 +355,18 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRul
    
     /** 
      * Create the graph used to hold the deductions. Can be overridden
-     * by subclasses that need special purpose graph implementations here. 
+     * by subclasses that need special purpose graph implementations here.
+     * Assumes the graph underlying fdeductions can be reused if present. 
      */
     protected Graph createDeductionsGraph() {
+        if (fdeductions != null) {
+            Graph dg = fdeductions.getGraph();
+            if (dg != null) {
+                // Reuse the old graph in order to preserve any listeners
+                dg.getBulkUpdateHandler().removeAll();
+                return dg;
+            }
+        }
         return Factory.createGraphMem( style );
     }
     

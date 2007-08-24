@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestBugs.java,v 1.48 2007-08-24 10:13:41 der Exp $
+ * $Id: TestBugs.java,v 1.49 2007-08-24 11:19:39 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -16,11 +16,11 @@ import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.ontology.*;
 import com.hp.hpl.jena.ontology.daml.DAMLModel;
+import com.hp.hpl.jena.rdf.listeners.StatementListener;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.reasoner.rulesys.*;
 import com.hp.hpl.jena.reasoner.rulesys.builtins.BaseBuiltin;
-import com.hp.hpl.jena.reasoner.rulesys.impl.RDFSCMPPreprocessHook;
 import com.hp.hpl.jena.reasoner.test.TestUtil;
 import com.hp.hpl.jena.util.*;
 import com.hp.hpl.jena.util.iterator.ClosableIterator;
@@ -37,7 +37,7 @@ import java.util.*;
  * Unit tests for reported bugs in the rule system.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.48 $ on $Date: 2007-08-24 10:13:41 $
+ * @version $Revision: 1.49 $ on $Date: 2007-08-24 11:19:39 $
  */
 public class TestBugs extends TestCase {
 
@@ -55,7 +55,7 @@ public class TestBugs extends TestCase {
     public static TestSuite suite() {
         return new TestSuite( TestBugs.class );
 //        TestSuite suite = new TestSuite();
-//        suite.addTest(new TestBugs( "testIndCardValidation" ));
+//        suite.addTest(new TestBugs( "testDeductionListener" ));
 //        return suite;
     }  
 
@@ -867,6 +867,57 @@ public class TestBugs extends TestCase {
         // check if model has become invalid
         assertTrue(aBox.contains(molecule, RDF.type, moleculeClass));
         assertFalse(aBox.validate().isValid()); // fails: why?        
+    }
+    
+    /**
+     * Listeners on deductions graph should be preserved across rebind operations
+     */
+    public void testDeductionListener() {
+        final String NS = PrintUtil.egNS;
+        
+        // Data: (eg:i eg:p 'foo')
+        Model base = ModelFactory.createDefaultModel();
+        Resource i = base.createResource(NS + "i");
+        Property p = base.createProperty(NS + "p");
+        i.addProperty(p, "foo");
+        
+        // Inf model 
+        List rules = Rule.parseRules( "(?x eg:p ?y) -> (?x eg:q ?y). " );
+        GenericRuleReasoner reasoner = new GenericRuleReasoner(rules);
+        InfModel infModel = ModelFactory.createInfModel(reasoner, base);
+        
+        TestListener listener = new TestListener();
+        infModel.getDeductionsModel().register(listener);
+        infModel.rebind(); infModel.prepare();
+        assertEquals("foo", listener.getLastValue());
+        
+        i.removeAll(p);
+        i.addProperty(p, "bar");
+        infModel.rebind(); infModel.prepare();
+        assertEquals("bar", listener.getLastValue());
+    }
+    
+    /**
+     * Listener class used in testing. Decects (* eg:q ?l) patterns
+     * and notes the last value of ?l seen and returns it as a literal string.
+     */
+    private class TestListener extends StatementListener {
+        final Property Q = ResourceFactory.createProperty(PrintUtil.egNS + "q");
+        RDFNode lastValue = null;
+        
+        public Object getLastValue() {
+            if (lastValue != null && lastValue.isLiteral()) {
+                return ((Literal)lastValue).getLexicalForm();
+            } else {
+                return lastValue;
+            }
+        }
+        
+        public void addedStatement( Statement s ) {
+            if (s.getPredicate().equals(Q)) {
+                lastValue = s.getObject();
+            }
+        }
     }
     
     /**
