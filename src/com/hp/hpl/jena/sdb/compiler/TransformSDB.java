@@ -6,9 +6,9 @@
 
 package com.hp.hpl.jena.sdb.compiler;
 
-import static com.hp.hpl.jena.sdb.iterator.IterFunc.filter;
-import static com.hp.hpl.jena.sdb.iterator.IterFunc.map;
-import static com.hp.hpl.jena.sdb.iterator.IterFunc.toSet;
+import static com.hp.hpl.jena.sdb.iterator.Streams.filter;
+import static com.hp.hpl.jena.sdb.iterator.Streams.map;
+import static com.hp.hpl.jena.sdb.iterator.Streams.toSet;
 import static com.hp.hpl.jena.sdb.iterator.SetUtils.intersection ;
 
 import java.util.List;

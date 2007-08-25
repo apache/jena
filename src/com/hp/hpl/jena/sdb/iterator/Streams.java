@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
-public class IterFunc
+public class Streams
 {
     public static <T> String asString(Iterable<T> stream)
     { return reduce(stream, new AccString<T>()) ; }

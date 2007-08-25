@@ -6,14 +6,15 @@
 
 package com.hp.hpl.jena.sdb.store;
 
-import java.util.List;
-import java.util.Iterator;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
 import com.hp.hpl.jena.sparql.util.Printable;
 import com.hp.hpl.jena.sparql.util.PrintableBase;
-import com.hp.hpl.jena.sdb.iterator.IterFunc;
+
+import com.hp.hpl.jena.sdb.iterator.Streams;
 
 /** A set of features (order retained */
 
@@ -48,7 +49,7 @@ public class FeatureSet extends PrintableBase implements Printable, Iterable<Fea
 
     public void output(IndentedWriter out)
     {
-        out.print(IterFunc.asString(features)) ;
+        out.print(Streams.asString(features)) ;
     }
 }
 

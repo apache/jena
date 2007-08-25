@@ -25,36 +25,36 @@ public class Iter<T> implements Iterable<T>
     
     public Set<T> toSet()
     {
-        return IterFunc.toSet(iterator) ;
+        return Streams.toSet(iterator) ;
     }
 
     public List<T> toList()
     {
-        return IterFunc.toList(iterator) ;
+        return Streams.toList(iterator) ;
     }
 
     public Iter<T> filter(Filter<T> filter)
     {
-        return iter(IterFunc.filter(iterator, filter)) ;
+        return iter(Streams.filter(iterator, filter)) ;
     }
 
     public <R> Iter<R> map(Transform<T, R> converter)
     {
-        return iter(IterFunc.map(iterator, converter)) ;
+        return iter(Streams.map(iterator, converter)) ;
     }
 
     public <R> R reduce(Accumulate<T, R> aggregator)
     {
-        return IterFunc.reduce(iterator, aggregator) ;
+        return Streams.reduce(iterator, aggregator) ;
     }
 
     public void apply(Action<T> action)
     {
-        IterFunc.apply(iterator, action) ;
+        Streams.apply(iterator, action) ;
     }
 
-    public String asString() { return IterFunc.asString(iterator) ; }
-    public String asString(String sep) { return IterFunc.asString(iterator, sep) ; }
+    public String asString() { return Streams.asString(iterator) ; }
+    public String asString(String sep) { return Streams.asString(iterator, sep) ; }
     
     public Iter<T> append(Iter< ? extends T> iter)
     {

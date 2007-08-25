@@ -5,9 +5,9 @@
  */
 
 package com.hp.hpl.jena.sdb.print;
-import static com.hp.hpl.jena.sdb.iterator.IterFunc.* ;
+import static com.hp.hpl.jena.sdb.iterator.Streams.* ;
 
-public class IterFuncPrint
+public class StreamsPrint
 {
     // ---- Common operations 
     

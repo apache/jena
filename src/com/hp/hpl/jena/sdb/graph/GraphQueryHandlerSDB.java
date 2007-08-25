@@ -15,11 +15,9 @@ import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.graph.query.*;
-import com.hp.hpl.jena.sdb.engine.QueryEngineSDB;
-import com.hp.hpl.jena.sdb.iterator.IterFunc;
-import com.hp.hpl.jena.sdb.iterator.Transform;
-import com.hp.hpl.jena.sdb.shared.SDBNotImplemented;
-import com.hp.hpl.jena.sdb.store.DatasetStoreGraph;
+import com.hp.hpl.jena.util.iterator.ExtendedIterator;
+import com.hp.hpl.jena.util.iterator.WrappedIterator;
+
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.OpVars;
 import com.hp.hpl.jena.sparql.algebra.op.OpQuadPattern;
@@ -28,8 +26,12 @@ import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.Plan;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.util.iterator.ExtendedIterator;
-import com.hp.hpl.jena.util.iterator.WrappedIterator;
+
+import com.hp.hpl.jena.sdb.engine.QueryEngineSDB;
+import com.hp.hpl.jena.sdb.iterator.Streams;
+import com.hp.hpl.jena.sdb.iterator.Transform;
+import com.hp.hpl.jena.sdb.shared.SDBNotImplemented;
+import com.hp.hpl.jena.sdb.store.DatasetStoreGraph;
 
 public class GraphQueryHandlerSDB extends SimpleQueryHandler
 {
@@ -98,7 +100,7 @@ public class GraphQueryHandlerSDB extends SimpleQueryHandler
                     return d ;
                 }
             };
-            return WrappedIterator.create(IterFunc.map(qIter, b2d)) ;
+            return WrappedIterator.create(Streams.map(qIter, b2d)) ;
         }
     }
 }

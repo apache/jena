@@ -6,8 +6,8 @@
 
 package com.hp.hpl.jena.sdb.core;
 
-import static com.hp.hpl.jena.sdb.iterator.IterFunc.map;
-import static com.hp.hpl.jena.sdb.iterator.IterFunc.toSet;
+import static com.hp.hpl.jena.sdb.iterator.Streams.map;
+import static com.hp.hpl.jena.sdb.iterator.Streams.toSet;
 
 import java.util.HashMap;
 import java.util.Map;
