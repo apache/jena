@@ -1,5 +1,5 @@
 PREFIX :    <http://example/>
-SELECT  *
+SELECT  ?s
 WHERE
   { ?s  ?p  ?o .}
 

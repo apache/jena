@@ -1,28 +1,26 @@
 SDB ToDo list (and general notes)
 =================================
 
-+ Revisit generating SQL for nested DISTINCT
-
-+ Need tests for DISTINCT, Slice, Project, including when not all translated.
++ New SQLgenerator
+    IJ-R-T => IJ(r)-T is done specially in old generator? 
+ 
++ Need tests for DISTINCT, Slice, Project, including when not of a query is translated.
+  TransformSDB: Add OpProject/OpDistinct.
 
 + JDBC statement management in execQuery
 
 + Setting options for testing.
 + Tests for union graphs. 
-+ Use cursors for streaming / PostgreSQL
++ Use cursors for streaming / PostgreSQL [dONE - test]
 
 + StoreLoader => StoreLoaderPlus.
 
 + DB type tables
 
-+ Transform Join()
-
-+ Per store additional context items
-
 == Alt layouts
 
 + Layout3 : property tables : vertical partition
-   + simple, general version - per propety table - no ?p except by massive union or separate client processing)
+   + simple, general version - per propety table - no ?p (except by massive union or separate client processing)
 
 == Pattern table and inference
 
@@ -61,26 +59,18 @@ SDB ToDo list (and general notes)
 
 == Design
 
-+ OpSlice. OpUnion
++ OpProject/OpDistinct/OpUnion
 
 + Filters
 
-+ Extensible factories for new layouts
-  Related to StoreConfig
-  sdb/layoutXXX ; sdb/StoreType ; sdb/store/LayoutType ; sdb/store/StoreFactory
-
-+ Prefixes:  Per graph, not global
-
-+ Per store
-  SQLUtils and quoting.
-  Id generation
-   
 + Tidy DB formatting
     per DB list of column generators (getVarchar, getText etc).
 
 + SPARQL/Update input and control
 
 == Testing
+
++ Project/Slice/Distinct tests, including partial rewrite/integration tests 
 
 + Add query tests :
   /Structure/ { opt ... } JOIN { opt ... } 
@@ -95,8 +85,5 @@ SDB ToDo list (and general notes)
   + SELECT/one table ==> move constraints out (it's just SPJ)
     Put in a SqlNode optimizer stage, just before generation
       IJ-R-T => IJ(r)-T is done specially 
-  + Generalize linearization of InnerJoin-only trees
-  + Be careful about code generation and a right complex expression
-    Use a SELECT for nested expressions?  generalize from COALESCE code generation.
    
 + QueryEngineSDB has duplication with QueryEngineMain - eliminate!
