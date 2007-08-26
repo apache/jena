@@ -32,24 +32,29 @@ public abstract class QueryCompilerMain implements QueryCompiler
         this.request = request ;
     }
     
-    public Op compile(Op op)
+    public Op compile(final Op op)
     {
         QuadBlockCompiler quadCompiler = createQuadBlockCompiler() ;
         if ( request.getContext().isTrue(SDB.useQuadRewrite) )
             quadCompiler = new QuadBlockRewriteCompiler(request, quadCompiler) ;
         
         Transform t = new TransformSDB(request, quadCompiler) ;
-        op = Transformer.transform(t, op) ;
+        Op op2 = Transformer.transform(t, op) ;
         
+        // Wrong: what about 
         // Find the first non-modifier.
-        Op patternOp = op ;
+        Op patternOp = op2 ;
         while ( patternOp instanceof OpModifier )
             patternOp = ((OpModifier)patternOp).getSubOp() ;
         
         boolean patternIsOneSQLStatement = QC.isOpSQL(patternOp) ;
             
-        OpWalker.walk(op, new SqlNodesFinisher(patternIsOneSQLStatement)) ;
-        return op ;
+        // To be removed : project handlign in SqlNodesFinisher:: transform SDB should do this.
+        // See XYZ below
+        
+        // Find all OpSQL nodes and put a bride round them.
+        OpWalker.walk(op2, new SqlNodesFinisher(patternIsOneSQLStatement)) ;
+        return op2 ;
     }
 
     public abstract QuadBlockCompiler createQuadBlockCompiler() ;
@@ -62,7 +67,6 @@ public abstract class QueryCompilerMain implements QueryCompiler
     // Find variables that need to be returned. 
     private class SqlNodesFinisher extends OpVisitorBase
     {
-        
         private boolean justProjectVars ;
         SqlNodesFinisher(boolean justProjectVars)
         { this.justProjectVars = justProjectVars ; }
@@ -78,8 +82,9 @@ public abstract class QueryCompilerMain implements QueryCompiler
             
             OpSQL opSQL = (OpSQL)op ;
 
+            // XYZ
             List<Var> projectVars = null ;
-            
+                        
             if ( justProjectVars && request.getQuery() != null )
                 // Need project vars and also the ORDER BY (for external sorting)
                 projectVars = QC.queryOutVars(request.getQuery()) ;

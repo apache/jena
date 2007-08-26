@@ -149,10 +149,30 @@ public class TransformSDB extends TransformCopy
     //        order
     //          [toList]
     
+//    @Override
+//    public Op transform(OpProject opProject, Op subOp)
+//    { 
+//        if ( ! QC.isOpSQL(subOp) )
+//            return super.transform(opProject, subOp) ;
+//        return super.transform(opProject, subOp) ;
+//    }
+//    
+//    @Override
+//    public Op transform(OpDistinct opDistinct, Op subOp)
+//    { 
+//        if ( ! QC.isOpSQL(subOp) )
+//            return super.transform(opDistinct, subOp) ;
+//        return super.transform(opDistinct, subOp) ;
+//    }
+
+    // Order not yet handled.
     
     @Override
     public Op transform(OpSlice opSlice, Op subOp)
     {
+        if ( ! QC.isOpSQL(subOp) )
+            return super.transform(opSlice, subOp) ;
+        
         if ( ! request.LimitOffsetTranslation )
             return super.transform(opSlice, subOp) ;
         

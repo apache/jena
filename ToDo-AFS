@@ -3,6 +3,8 @@ SDB ToDo list (and general notes)
 
 + Revisit generating SQL for nested DISTINCT
 
++ Need tests for DISTINCT, Slice, Project, including when not all translated.
+
 + JDBC statement management in execQuery
 
 + Setting options for testing.

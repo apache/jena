@@ -51,7 +51,7 @@ public class RunSDB
 //        SDBConnection.logSQLStatements = true ;
         
         
-        if ( true )
+        if ( false )
         {
             Query query = QueryFactory.create("PREFIX : <http://example/> SELECT * { ?s :x ?o }") ;
             Store store = StoreFactory.create(LayoutType.LayoutTripleNodesHash, DatabaseType.PostgreSQL) ;
@@ -76,8 +76,9 @@ public class RunSDB
             System.exit(0) ;
         }
         
-        
-        
+        runPrint() ;
+        System.exit(0) ;
+
         
         setSDBConfig("../SDB-dev/sdb-LUBM-hash.ttl") ;
         sdbdump("--set=jdbcStream=true", "--set=jdbcFetchSize=10") ;
@@ -144,7 +145,7 @@ public class RunSDB
     public static void runPrint(String filename)
     {
         //QueryCompilerBasicPattern.printAbstractSQL = true ;
-        sdb.sdbprint.main("--print=sql", "--print=op", "--sdb=sdb.ttl", "--query="+filename) ;
+        sdb.sdbprint.main("--print=sql", /*"--print=op",*/ "--sdb=sdb.ttl", "--query="+filename) ;
         System.exit(0) ;
     }
     
