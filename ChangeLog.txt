@@ -8,6 +8,7 @@ ARQ 2.1
   Expression in brackets, optionally named with "AS ?var" 
     SELECT (?x+?y) AS ?z  
     SELECT ?x ?y (?x+?y)  # Print a table of sums
+  OpProject can have additional expressions that get added into the table from 'project'   
 
 ARQ 2.1 beta
 ------------
