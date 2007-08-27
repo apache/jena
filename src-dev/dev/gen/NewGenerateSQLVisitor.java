@@ -6,8 +6,8 @@
 
 package dev.gen;
 
-import static com.hp.hpl.jena.sdb.iterator.Streams.map;
-import static com.hp.hpl.jena.sdb.iterator.Streams.toSet;
+import static com.hp.hpl.jena.sdb.iterator.Stream.map;
+import static com.hp.hpl.jena.sdb.iterator.Stream.toSet;
 import static com.hp.hpl.jena.sparql.util.StringUtils.str;
 
 import java.util.List;

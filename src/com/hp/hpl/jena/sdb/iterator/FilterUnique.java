@@ -1,61 +1,33 @@
 /*
- * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.store;
+package com.hp.hpl.jena.sdb.iterator;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
-import com.hp.hpl.jena.sparql.util.IndentedWriter;
-import com.hp.hpl.jena.sparql.util.Printable;
-import com.hp.hpl.jena.sparql.util.PrintableBase;
-
-import com.hp.hpl.jena.sdb.iterator.Stream;
-
-/** A set of features (order retained */
-
-public class FeatureSet extends PrintableBase implements Printable, Iterable<Feature>
+public class FilterUnique<T> implements Filter<T>
 {
-    List <Feature> features = new ArrayList<Feature>() ;
+
+    private Set<T> seen = new HashSet<T>() ;
     
-    public FeatureSet() {}
-    public void addFeature(Feature feature)
-    { 
-        if ( features.contains(feature) )
-            return ;
-        features.add(feature) ;
-    }
+    public FilterUnique() { }
     
-    public boolean hasFeature(Feature feature) { return features.contains(feature) ; } 
-
-    public Feature getFeature(String name)
-    { 
-        for ( Feature f : features )
-            if ( f.getName().equals(name) ) 
-                return f ;
-        return null ;
-    }
-
-    public boolean hasFeature(String name) { return getFeature(name) != null ; }
-    
-    public List <Feature> getFeatures() { return features ; }
-
-    public Iterator<Feature> iterator()
-    { return features.iterator() ; }
-
-    public void output(IndentedWriter out)
+    public boolean accept(T item)
     {
-        out.print(Stream.asString(features)) ;
+        if ( seen.contains(item) )
+            return false ;
+        seen.add(item) ;
+        return true ;
     }
+
 }
 
-
 /*
- * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

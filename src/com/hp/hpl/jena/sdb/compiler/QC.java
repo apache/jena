@@ -8,7 +8,7 @@ package com.hp.hpl.jena.sdb.compiler;
 
 import static com.hp.hpl.jena.sdb.core.JoinType.INNER;
 import static com.hp.hpl.jena.sdb.core.JoinType.LEFT;
-import static com.hp.hpl.jena.sdb.iterator.Streams.*;
+import static com.hp.hpl.jena.sdb.iterator.Stream.*;
 
 import java.sql.SQLException;
 import java.util.List;

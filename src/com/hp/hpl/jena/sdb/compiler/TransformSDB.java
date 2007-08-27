@@ -6,9 +6,9 @@
 
 package com.hp.hpl.jena.sdb.compiler;
 
-import static com.hp.hpl.jena.sdb.iterator.Streams.filter;
-import static com.hp.hpl.jena.sdb.iterator.Streams.map;
-import static com.hp.hpl.jena.sdb.iterator.Streams.toSet;
+import static com.hp.hpl.jena.sdb.iterator.Stream.filter;
+import static com.hp.hpl.jena.sdb.iterator.Stream.map;
+import static com.hp.hpl.jena.sdb.iterator.Stream.toSet;
 import static com.hp.hpl.jena.sdb.iterator.SetUtils.intersection ;
 
 import java.util.List;
@@ -145,9 +145,9 @@ public class TransformSDB extends TransformCopy
     // Modifiers: the structure is:
     //    slice
     //      distinct/reduced
-    //      project
-    //        order
-    //          [toList]
+    //        project
+    //          order
+    //            [toList]
     
 //    @Override
 //    public Op transform(OpProject opProject, Op subOp)

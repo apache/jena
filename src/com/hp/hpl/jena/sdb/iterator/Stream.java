@@ -6,27 +6,10 @@
 
 package com.hp.hpl.jena.sdb.iterator;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Set;
+import java.util.*;
 
-public class Streams
+public class Stream
 {
-    public static <T> String asString(Iterable<T> stream)
-    { return reduce(stream, new AccString<T>()) ; }
-
-    public static <T> String asString(Iterator<T> stream)
-    { return reduce(stream, new AccString<T>()) ; }
-
-    public static <T> String asString(Iterable<T> stream, String sep)
-    { return reduce(stream, new AccString<T>(sep)) ; }
-
-    public static <T> String asString(Iterator<T> stream, String sep)
-    { return reduce(stream, new AccString<T>(sep)) ; }
-
     // ---- Core operations
     // TODO stream merge (2 parallel streams , merge function , nulls for no entry).
     
@@ -63,7 +46,7 @@ public class Streams
     // http://en.wikipedia.org/wiki/Fold_%28higher-order_function%29
     // This reduce is fold-right (take first element, apply to rest of list)
     // which copes with infinite lists.
-    // Fold-left starts combinign from the list tail, is tail recursive (= iterative)
+    // Fold-left starts combining from the list tail.
     
     public static <T, R> R reduce(Iterable<? extends T> stream,
                                       Accumulate<T, R> aggregator)
@@ -94,9 +77,16 @@ public class Streams
             action.apply(item) ;
         }
     }
-
-    public static <T> Iterator<T> filter(Iterable<? extends T> stream,
-                                         Filter<T> filter)
+    
+    // -- Map specific apply.
+    
+    public static <K, V> void apply(Map<K, V> map, ActionKeyValue<K, V> action)
+    {
+        for ( Map.Entry<K,V> entry : map.entrySet() )
+            action.apply(entry.getKey(), entry.getValue()) ;
+    }
+    
+    public static <T> Iterator<T> filter(Iterable<? extends T> stream, Filter<T> filter)
     { return filter(stream.iterator(), filter) ; }
 
     public static <T> Iterator<T> filter(final Iterator<? extends T> stream, final Filter<T> filter)
@@ -190,24 +180,57 @@ public class Streams
         return iter ;
     }
     
-    public static <T> Iterator<T> append(Iterator<T> iter1, Iterator<T> iter2)
-    { return new Iterator2<T>(iter1, iter2); }
-
     public static <T> Iterable<T> append(Iterable<T> iter1, Iterable<T> iter2)
     {
         Iterator<T> _iter1 = (iter1==null) ? null : iter1.iterator() ;
         Iterator<T> _iter2 = (iter2==null) ? null : iter2.iterator() ;
         
-        return new Iterator2<T>(_iter1, _iter2); }
+        return new Iterator2<T>(_iter1, _iter2);
+    }
+
+    public static <T> Iterator<T> append(Iterator<T> iter1, Iterator<T> iter2)
+    { return new Iterator2<T>(iter1, iter2); }
+
+    public static <T> Iterator<T> distinct(Iterable<T> iter)
+    {
+        return distinct(iter.iterator()) ;
+    }
+
+    public static <T> Iterator<T> distinct(Iterator<T> iter)
+    {
+        return filter(iter, new FilterUnique<T>()) ;
+    }
     
-
-    // Helpers from the old world to the new.
-    @SuppressWarnings("unchecked")
-    public static <T> Iter<T> iter(Iterator iterator) { return new Iter<T>((Iterator<T>)iterator) ; }
-
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "cast"})
     public static <T> Iterator<T> convert(Iterator iterator) { return (Iterator<T>)iterator ; }
 
+//    // ---- Closability
+//    
+//    public static <T> void close(Iterator<T> iter)
+//    {
+//        if ( iter instanceof CloseableIterator )
+//            ((CloseableIterator)iter).close() ; 
+//    }
+
+    // ---- String related helpers
+    
+    public static <T> String asString(Iterable<T> stream)
+    { return reduce(stream, new AccString<T>()) ; }
+
+    public static <T> String asString(Iterator<T> stream)
+    { return reduce(stream, new AccString<T>()) ; }
+
+    public static <T> String asString(Iter<T> stream)
+    { return reduce(stream.iterator(), new AccString<T>()) ; }
+
+    public static <T> String asString(Iterable<T> stream, String sep)
+    { return reduce(stream, new AccString<T>(sep)) ; }
+
+    public static <T> String asString(Iterator<T> stream, String sep)
+    { return reduce(stream, new AccString<T>(sep)) ; }
+
+    public static <T> String asString(Iter<T> stream, String sep)
+    { return reduce(stream.iterator(), new AccString<T>(sep)) ; }
 }
 
 /*

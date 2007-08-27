@@ -5,7 +5,7 @@
  */
 
 package com.hp.hpl.jena.sdb.print;
-import static com.hp.hpl.jena.sdb.iterator.Streams.* ;
+import static com.hp.hpl.jena.sdb.iterator.Stream.* ;
 
 public class StreamsPrint
 {

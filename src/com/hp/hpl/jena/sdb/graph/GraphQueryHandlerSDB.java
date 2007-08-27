@@ -28,7 +28,7 @@ import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 
 import com.hp.hpl.jena.sdb.engine.QueryEngineSDB;
-import com.hp.hpl.jena.sdb.iterator.Streams;
+import com.hp.hpl.jena.sdb.iterator.Stream;
 import com.hp.hpl.jena.sdb.iterator.Transform;
 import com.hp.hpl.jena.sdb.shared.SDBNotImplemented;
 import com.hp.hpl.jena.sdb.store.DatasetStoreGraph;
@@ -100,7 +100,7 @@ public class GraphQueryHandlerSDB extends SimpleQueryHandler
                     return d ;
                 }
             };
-            return WrappedIterator.create(Streams.map(qIter, b2d)) ;
+            return WrappedIterator.create(Stream.map(qIter, b2d)) ;
         }
     }
 }

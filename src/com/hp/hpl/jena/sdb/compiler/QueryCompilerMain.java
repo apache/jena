@@ -41,7 +41,13 @@ public abstract class QueryCompilerMain implements QueryCompiler
         Transform t = new TransformSDB(request, quadCompiler) ;
         Op op2 = Transformer.transform(t, op) ;
         
-        // Wrong: what about 
+        // Modifiers: the structure is:
+        //    slice
+        //      distinct/reduced
+        //        project
+        //          order
+        //            [toList]
+        
         // Find the first non-modifier.
         Op patternOp = op2 ;
         while ( patternOp instanceof OpModifier )
@@ -49,7 +55,7 @@ public abstract class QueryCompilerMain implements QueryCompiler
         
         boolean patternIsOneSQLStatement = QC.isOpSQL(patternOp) ;
             
-        // To be removed : project handlign in SqlNodesFinisher:: transform SDB should do this.
+        // To be removed : project handling in SqlNodesFinisher:: transform SDB should do this.
         // See XYZ below
         
         // Find all OpSQL nodes and put a bride round them.

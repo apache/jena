@@ -13,7 +13,7 @@ import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.hp.hpl.jena.sdb.iterator.Streams;
+import com.hp.hpl.jena.sdb.iterator.Stream;
 
 public class TestAlg extends Assert
 {
@@ -33,7 +33,7 @@ public class TestAlg extends Assert
     @Test
     public void append_1()
     {
-        Iterator<String> iter = Streams.append(data1, data0).iterator() ;
+        Iterator<String> iter = Stream.append(data1, data0).iterator() ;
         assertEquals("a", iter.next()) ;
         assertFalse(iter.hasNext()) ;
     }
@@ -42,7 +42,7 @@ public class TestAlg extends Assert
     @Test
     public void append_2()
     {
-        Iterator<String> iter = Streams.append(data0, data1).iterator() ;
+        Iterator<String> iter = Stream.append(data0, data1).iterator() ;
         assertEquals("a", iter.next()) ;
         assertFalse(iter.hasNext()) ;
     }
@@ -50,7 +50,7 @@ public class TestAlg extends Assert
     @Test
     public void append_3()
     {
-        Iterator<String> iter = Streams.append(data1, data2).iterator() ;
+        Iterator<String> iter = Stream.append(data1, data2).iterator() ;
         assertEquals("a", iter.next()) ;
         assertEquals("x", iter.next()) ;
         assertEquals("y", iter.next()) ;
@@ -62,28 +62,28 @@ public class TestAlg extends Assert
     @Test
     public void asString_1() 
     {
-        String x = Streams.asString(data0, "") ;
+        String x = Stream.asString(data0, "") ;
         assertEquals("", x) ;
     }
 
     @Test
     public void asString_2() 
     {
-        String x = Streams.asString(data1, "") ;
+        String x = Stream.asString(data1, "") ;
         assertEquals("a", x) ;
     }
 
     @Test
     public void asString_3() 
     {
-        String x = Streams.asString(data1, "/") ;
+        String x = Stream.asString(data1, "/") ;
         assertEquals("a", x) ;
     }
 
     @Test
     public void asString_4() 
     {
-        String x = Streams.asString(data2, "/") ;
+        String x = Stream.asString(data2, "/") ;
         assertEquals("x/y/z", x) ;
     }
 }

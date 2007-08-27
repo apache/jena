@@ -10,7 +10,7 @@ import java.util.Set;
 
 import com.hp.hpl.jena.sparql.core.Var;
 
-import com.hp.hpl.jena.sdb.iterator.Streams;
+import com.hp.hpl.jena.sdb.iterator.Stream;
 
 public class ScopeOptional implements Scope
 {
@@ -40,7 +40,7 @@ public class ScopeOptional implements Scope
     public Set<ScopeEntry> findScopes()
     {
         Set<ScopeEntry> x = scope.findScopes() ;
-        Streams.apply(x, ScopeEntry.SetOpt) ;
+        Stream.apply(x, ScopeEntry.SetOpt) ;
         return x ;
     }
     

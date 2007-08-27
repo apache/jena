@@ -10,56 +10,95 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-
-public class Iter<T> implements Iterable<T>
+public class Iter<T> implements Iterable<T>, Iterator<T>
 {
-    public static <T> Iter<T> iter(Iterator<T> iterator) { return new Iter<T>(iterator) ; }
-    public static <T> Iter<T> iter(Iterable<T> iterable) { return new Iter<T>(iterable.iterator()) ; }
+    public static <T> Iter<T> iter(Iter<T> iter)
+    { return iter ; }
     
-    @SuppressWarnings("unchecked")
-    public static <T> Iter<T> convert(Iterator iterator) { return new Iter<T>((Iterator<T>)iterator) ; }
+    public static <T> Iter<T> iter(Iterator<T> iterator)
+    { 
+        if ( iterator instanceof Iter )
+            return (Iter<T>)iterator ;
+        return new Iter<T>(iterator) ;
+    }
+    
+    public static <T> Iter<T> iter(Iterable<T> iterable)
+    { 
+        if ( iterable instanceof Iter )
+            return (Iter<T>)iterable ;
+        return new Iter<T>(iterable.iterator()) ;
+    }
+    
+    @SuppressWarnings({"unchecked", "cast"})
+    public static <T> Iter<T> convert(Iterator iterator) { return iter((Iterator<T>)iterator) ; }
     
     private Iterator<T> iterator ;
-    public Iter(Iterator<T> iterator) { this.iterator = iterator ; }
-    public Iterator<T>  iterator() { return iterator ; }
+    private  Iter(Iterator<T> iterator) { this.iterator = iterator ; }
+    
+    
     
     public Set<T> toSet()
     {
-        return Streams.toSet(iterator) ;
+        return Stream.toSet(iterator) ;
     }
 
     public List<T> toList()
     {
-        return Streams.toList(iterator) ;
+        return Stream.toList(iterator) ;
     }
 
     public Iter<T> filter(Filter<T> filter)
     {
-        return iter(Streams.filter(iterator, filter)) ;
+        return iter(Stream.filter(iterator, filter)) ;
     }
 
     public <R> Iter<R> map(Transform<T, R> converter)
     {
-        return iter(Streams.map(iterator, converter)) ;
+        return iter(Stream.map(iterator, converter)) ;
     }
 
     public <R> R reduce(Accumulate<T, R> aggregator)
     {
-        return Streams.reduce(iterator, aggregator) ;
+        return Stream.reduce(iterator, aggregator) ;
     }
 
     public void apply(Action<T> action)
     {
-        Streams.apply(iterator, action) ;
+        Stream.apply(iterator, action) ;
     }
 
-    public String asString() { return Streams.asString(iterator) ; }
-    public String asString(String sep) { return Streams.asString(iterator, sep) ; }
-    
     public Iter<T> append(Iter< ? extends T> iter)
     {
         return new Iter<T>(new Iterator2<T>(iterator, iter.iterator())) ;
     }
+    
+    public Iter<T> append(Iterable<? extends T> iter)
+    {
+        return new Iter<T>(new Iterator2<T>(iterator, iter.iterator())) ;
+    }
+    
+    public Iter<T> append(Iterator<? extends T> iter)
+    {
+        return new Iter<T>(new Iterator2<T>(iterator, iter)) ;
+    }
+
+    public String asString() { return Stream.asString(iterator) ; }
+    public String asString(String sep) { return Stream.asString(iterator, sep) ; }
+    
+    public Iter<T> distinct()
+    {
+        return new Iter<T>(Stream.distinct(iterator())) ;
+    }
+
+    // ---- Iterable
+    public Iterator<T>  iterator() { return iterator ; }
+    
+    // ---- Iterator
+    public boolean hasNext()    { return iterator.hasNext() ; }
+
+    public T next()             { return iterator.next() ; }
+
+    public void remove()        { iterator.remove() ; }
 }
 
 /*

@@ -13,6 +13,7 @@ import static dev.db.DBSyntax.col;
 
 import java.sql.SQLException;
 
+import com.hp.hpl.jena.sdb.iterator.Stream;
 import com.hp.hpl.jena.sdb.iterator.Transform;
 import com.hp.hpl.jena.sdb.layout2.TableDescNodes;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
@@ -72,9 +73,9 @@ public class FmtStdHash extends StoreFormatterStd
         dropTable(tableDesc.getTableName()) ;
         try {
             
-            String cols = iter(tableDesc.getColNames())
-                                .map(getColDeclTransform())
-                                .asString(SEP) ;
+            String cols = Stream.asString(
+                                iter(tableDesc.getColNames())
+                                .map(getColDeclTransform())) ;
             cols = cols + SEP + syntax.primaryKey(tableDesc.getColNames()) ;
             String sql = String.format("CREATE TABLE %s (\n%s\n)", tableDesc.getTableName(), cols) ;
             connection().exec(sql) ;                
