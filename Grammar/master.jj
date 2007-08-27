@@ -104,7 +104,7 @@ void SelectQuery() : { Node v ; }
   (
     ( 
       ( v = Var() { getQuery().addResultVar(v) ; } )
-#if ARQ
+#ifdef ARQ
     |
       ( { Expr expr ; v = null ; }
         expr = BrackettedExpression()
@@ -200,7 +200,7 @@ void WhereClause() : { Element el ; }
 
 void SolutionModifier() : { }
 {
-#if ARQ
+#ifdef ARQ
   ( GroupClause() )?
   ( HavingClause() )?
 #endif
@@ -208,7 +208,7 @@ void SolutionModifier() : { }
   ( LimitOffsetClauses() )? 
 }
 
-#if ARQ
+#ifdef ARQ
 void GroupClause() : { }
 {
   <GROUP> <BY> ( GroupCondition() )+
@@ -458,7 +458,7 @@ void PropertyListNotEmpty(Node s, TripleCollector acc) : { Node p ; }
   p = Verb()
   ObjectList(s, p, acc)
   (<SEMICOLON> (p = Verb() ObjectList(s, p, acc))? )*
-#ifdef ARQ
+#if 0
   |
   Reification(s, acc)
 #endif
@@ -499,7 +499,7 @@ Node TriplesNode(TripleCollector acc) : { Node n ; }
   n = Collection(acc) { return n ; }
  |
   n = BlankNodePropertyList(acc) { return n ; }
-#ifdef ARQ
+#if 0
  |
   n = Reification(null, acc) { return n ; }
 #endif
@@ -513,7 +513,7 @@ Node BlankNodePropertyList(TripleCollector acc) : { }
   <RBRACKET>
     { return n ; }
 }
-#ifdef ARQ
+#if 0
 Node Reification(Node id, TripleCollector acc) : 
     { Node s , p , o ; int mark ; }
 {

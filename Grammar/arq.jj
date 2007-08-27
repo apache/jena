@@ -434,8 +434,8 @@ void PropertyListNotEmpty(Node s, TripleCollector acc) : { Node p ; }
   ObjectList(s, p, acc)
   (<SEMICOLON> (p = Verb() ObjectList(s, p, acc))? )*
 
-  |
-  Reification(s, acc)
+
+
 
 }
 
@@ -475,8 +475,8 @@ Node TriplesNode(TripleCollector acc) : { Node n ; }
  |
   n = BlankNodePropertyList(acc) { return n ; }
 
- |
-  n = Reification(null, acc) { return n ; }
+
+
 
 }
 
@@ -488,31 +488,6 @@ Node BlankNodePropertyList(TripleCollector acc) : { }
   <RBRACKET>
     { return n ; }
 }
-
-Node Reification(Node id, TripleCollector acc) :
-    { Node s , p , o ; int mark ; }
-{
-  // For generality, should be AndNode for s/p/o
-  // Insert reification triple before the resulting subtriples (if any)
-  "<<"
-    { if ( id == null )
-        id = createBNode() ;
-      mark = acc.mark() ; }
-  s = GraphNode(acc)
-    { insert(acc, mark, id, nRDFsubject, s) ;
-      mark = acc.mark() ;
-    }
-  p = GraphNode(acc)
-    { insert(acc, mark, id, nRDFpredicate, p) ;
-      mark = acc.mark() ;
-    }
-  o = GraphNode(acc)
-    { insert(acc, mark, id, nRDFobject, o) ; }
-  ">>"
-    { return id ; }
-}
-
-
 // ------- RDF collections
 
 Node Collection(TripleCollector acc) :
