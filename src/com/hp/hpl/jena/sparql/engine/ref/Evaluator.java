@@ -7,6 +7,7 @@
 package com.hp.hpl.jena.sparql.engine.ref;
 
 import java.util.List;
+import java.util.Map;
 
 import com.hp.hpl.jena.sparql.algebra.Table;
 import com.hp.hpl.jena.sparql.core.BasicPattern;
@@ -30,7 +31,7 @@ public interface Evaluator
     
     public Table order(Table table, List conditions) ;
     public Table groupBy(Table table, List groupVars, List aggregators) ;
-    public Table project(Table table, List vars) ; 
+    public Table project(Table table, List vars, Map exprs) ; 
     public Table distinct(Table table) ;
     public Table reduced(Table table) ;
     public Table slice(Table table, long start, long length) ;

@@ -6,14 +6,22 @@
 
 package com.hp.hpl.jena.sparql.engine.iterator;
 
-import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import com.hp.hpl.jena.graph.Node;
 
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
+import com.hp.hpl.jena.sparql.engine.binding.BindingMap;
 import com.hp.hpl.jena.sparql.engine.binding.BindingProject;
+import com.hp.hpl.jena.sparql.expr.Expr;
+import com.hp.hpl.jena.sparql.expr.ExprEvalException;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext;
+import com.hp.hpl.jena.sparql.util.ALog;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
 import com.hp.hpl.jena.sparql.util.PrintUtils;
 import com.hp.hpl.jena.sparql.util.Utils;
@@ -21,16 +29,52 @@ import com.hp.hpl.jena.sparql.util.Utils;
 
 public class QueryIterProject extends QueryIterConvert
 {
-    Collection projectionVars ;
+    List projectionVars ;
 
-    public QueryIterProject(QueryIterator input, Collection vars, ExecutionContext qCxt)
+    private QueryIterProject(QueryIterator input, List vars, ExecutionContext qCxt)
     {
-        super(input, new Projection(vars), qCxt) ;
+        this(input, vars, null, qCxt) ;
+    }
+    
+    public QueryIterProject(QueryIterator input, List vars, Map exprs, ExecutionContext qCxt)
+    {
+        super(input, new Projection(vars, exprs), qCxt) ;
         Var.checkVarList(vars) ;
+        checkExprs(vars, exprs) ;
         projectionVars = vars ;
     }
 
-    public Collection getProjectionVars()   { return projectionVars ; }
+    public List getProjectionVars()   { return projectionVars ; }
+
+    private void checkExprs(List vars, Map exprs)
+    {
+        if ( exprs == null )
+            return ;
+//        // Initialise to all varables not used as an expression name.
+//        Set scope = new HashSet(vars) ;
+//        scope.removeAll(exprs.keySet()) ;
+//
+//        // For each expression
+//        for ( Iterator iter = exprs.keySet().iterator() ; iter.hasNext() ; )
+//        {
+//            Var v = (Var)iter.next();
+//            Expr ex = (Expr)exprs.get(v) ;
+//            Set eVars = ex.getVarsMentioned() ;
+//            if ( ! scope.containsAll(eVars) )
+//            {
+//                for ( Iterator iter2 = eVars.iterator() ; iter2.hasNext() ; )
+//                {
+//                    Var ev2 = (Var)iter2.next();
+//                    if ( !scope.contains(ev2) )
+//                        throw new QueryException("Expression involves a variable ("+ev2+") not yet mentioned: "+ex) ;
+//                }
+//                // Should not happen
+//                throw new QueryException("Expression involves a variable not yet mentioned: "+ex) ;
+//            }
+//            // Add in the variable of the expression 
+//            scope.add(v) ;
+//        }
+    }
 
     protected void releaseResources()
     {}
@@ -45,14 +89,32 @@ public class QueryIterProject extends QueryIterConvert
     static
     class Projection implements QueryIterConvert.Converter
     {
-        Collection projectionVars ; 
+        List projectionVars ; 
+        Map exprs ;
 
-        Projection(Collection vars) { projectionVars = vars ; }
+        Projection(List vars, Map exprs)
+        { 
+            this.projectionVars = vars ;
+            this.exprs = exprs ;
+        }
 
         public Binding convert(Binding bind)
         {
-            Binding bind2 = new BindingProject(projectionVars, bind) ;
-            return bind2 ;
+            if ( exprs == null || exprs.size() == 0 )
+                return new BindingProject(projectionVars, bind) ;
+            // Create a new binding that wraps the undelying one and adds the expressions.
+            Binding b = new BindingMap(bind) ;
+            for ( Iterator iter = exprs.keySet().iterator() ; iter.hasNext() ; )
+            {
+                Var v = (Var)iter.next();
+                Expr expr = (Expr)exprs.get(v) ;
+                try {
+                    Node n = expr.eval(b, null).asNode() ;
+                    b.add(v, n) ;
+                } catch (ExprEvalException ex)
+                { ALog.warn(this, "Eval failure "+expr+": "+ex.getMessage()) ; }
+            }
+            return new BindingProject(projectionVars, b) ;
         }
     }
 }

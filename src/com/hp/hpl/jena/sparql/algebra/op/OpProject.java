@@ -7,42 +7,39 @@
 package com.hp.hpl.jena.sparql.algebra.op;
 
 import java.util.List;
+import java.util.Map;
 
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.OpVisitor;
-import com.hp.hpl.jena.sparql.algebra.Table;
 import com.hp.hpl.jena.sparql.algebra.Transform;
 import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.sparql.engine.ref.Evaluator;
 import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 
 public class OpProject extends OpModifier
 {
     private List vars ;
+    private Map exprs ;
 
-    public OpProject(Op subOp, List vars)
+    public OpProject(Op subOp, List vars, Map exprs)
     {
         super(subOp) ;
         Var.checkVarList(vars) ;
         //this.vars = Var.varList(vars) ;
         this.vars = vars ;
+        this.exprs = exprs ;
     }
     
     public List getVars() { return vars ; }
+    public Map  getExprs() { return exprs ; }
     
     public Op copy()
     {
         return null ;
     }
 
-    public Table eval_1(Table table, Evaluator evaluator)
-    {
-        return evaluator.project(table, vars) ;
-    }
-
     public String getName() { return "project" ; }
     public void visit(OpVisitor opVisitor)  { opVisitor.visit(this) ; }
-    public Op copy(Op subOp)                { return new OpProject(subOp, vars) ; }
+    public Op copy(Op subOp)                { return new OpProject(subOp, vars, exprs) ; }
 
     public Op apply(Transform transform, Op subOp)
     { return transform.transform(this, subOp) ; }

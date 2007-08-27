@@ -8,6 +8,7 @@ package com.hp.hpl.jena.sparql.engine.ref;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import com.hp.hpl.jena.query.ResultSet;
 import com.hp.hpl.jena.query.ResultSetFormatter;
@@ -133,10 +134,10 @@ class EvaluatorSimple implements Evaluator
         return new TableN(qIter) ;
     }
     
-    public Table project(Table table, List vars)
+    public Table project(Table table, List vars, Map exprs)
     {
         QueryIterator qIter = table.iterator(getExecContext()) ;
-        qIter = new QueryIterProject(qIter, vars, getExecContext()) ;
+        qIter = new QueryIterProject(qIter, vars, exprs, getExecContext()) ;
         return new TableN(qIter) ;
     }
 

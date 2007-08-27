@@ -77,8 +77,18 @@ void SelectQuery() : { Node v ; }
   | <REDUCED> { getQuery().setReduced(true); }
   )?
   (
-    ( v = Var() { getQuery().addResultVar(v) ; } )+
+    (
+      ( v = Var() { getQuery().addResultVar(v) ; } )
+
+    |
+      ( { Expr expr ; v = null ; }
+        expr = BrackettedExpression()
+          ( <AS> v = Var() )?
+        { getQuery().addResultVar(v, expr) ; }
+      )
+
     { getQuery().setQueryResultStar(false) ; }
+   )+
   |
     <STAR> { getQuery().setQueryResultStar(true) ; }
   )

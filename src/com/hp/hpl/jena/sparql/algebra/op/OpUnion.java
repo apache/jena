@@ -8,21 +8,13 @@ package com.hp.hpl.jena.sparql.algebra.op;
 
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.OpVisitor;
-import com.hp.hpl.jena.sparql.algebra.Table;
 import com.hp.hpl.jena.sparql.algebra.Transform;
-import com.hp.hpl.jena.sparql.engine.ref.Evaluator;
 import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 
 public class OpUnion extends Op2
 {
     public OpUnion(Op left, Op right) { super(left, right) ; }
     
-    public Table eval_2(Table tableLeft, Table tableRight, Evaluator evaluator)
-    {
-        // Cope with a tableLeft == null ?  Works with Op2?
-        return evaluator.union(tableLeft, tableRight) ;
-    }
-
     public Op apply(Transform transform, Op left, Op right)
     { return transform.transform(this, left, right) ; }
 

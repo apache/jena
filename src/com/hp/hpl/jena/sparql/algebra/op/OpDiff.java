@@ -8,9 +8,7 @@ package com.hp.hpl.jena.sparql.algebra.op;
 
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.OpVisitor;
-import com.hp.hpl.jena.sparql.algebra.Table;
 import com.hp.hpl.jena.sparql.algebra.Transform;
-import com.hp.hpl.jena.sparql.engine.ref.Evaluator;
 import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 
 public class OpDiff extends Op2
@@ -22,11 +20,6 @@ public class OpDiff extends Op2
     
     private OpDiff(Op left, Op right) { super(left, right) ; }
     
-    public Table eval_2(Table tableLeft, Table tableRight, Evaluator evaluator)
-    {
-        return evaluator.join(tableLeft, tableRight) ;
-    }
-
     public String getName() { return "diff" ; }
 
     public Op apply(Transform transform, Op left, Op right)

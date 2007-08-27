@@ -11,7 +11,6 @@ import com.hp.hpl.jena.sparql.algebra.OpVisitor;
 import com.hp.hpl.jena.sparql.algebra.Table;
 import com.hp.hpl.jena.sparql.algebra.Transform;
 import com.hp.hpl.jena.sparql.algebra.table.TableUnit;
-import com.hp.hpl.jena.sparql.engine.ref.Evaluator;
 import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 
 public class OpJoin extends Op2
@@ -41,11 +40,6 @@ public class OpJoin extends Op2
     
     private OpJoin(Op left, Op right) { super(left, right) ; }
     
-    public Table eval_2(Table tableLeft, Table tableRight, Evaluator evaluator)
-    {
-        return evaluator.join(tableLeft, tableRight) ;
-    }
-
     public String getName() { return "join" ; }
 
     public Op apply(Transform transform, Op left, Op right)

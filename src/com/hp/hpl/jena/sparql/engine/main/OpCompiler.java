@@ -299,7 +299,7 @@ public class OpCompiler
     QueryIterator compile(OpProject opProject, QueryIterator input)
     {
         QueryIterator  qIter = compileOp(opProject.getSubOp(), input) ;
-        qIter = new QueryIterProject(qIter, opProject.getVars(), execCxt) ;
+        qIter = new QueryIterProject(qIter, opProject.getVars(), opProject.getExprs(), execCxt) ;
         return qIter ;
     }
 

@@ -303,7 +303,8 @@ public class BuilderOp
             BuilderBase.checkLength(3, list, "project") ;
             Op sub = build(list, list.size()-1) ;
             List x = BuilderNode.buildVars(list.get(1).getList(), 0) ;
-            return new OpProject(sub, x) ;
+            // Does not cope with expressions
+            return new OpProject(sub, x, null) ;
         }
     } ;
 

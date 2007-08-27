@@ -112,7 +112,8 @@ public class SPARQLParser extends SPARQLParserBase implements SPARQLParserConsta
       label_2:
       while (true) {
         v = Var();
-                  getQuery().addResultVar(v) ;
+                    getQuery().addResultVar(v) ;
+      getQuery().setQueryResultStar(false) ;
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case VAR1:
         case VAR2:
@@ -123,7 +124,6 @@ public class SPARQLParser extends SPARQLParserBase implements SPARQLParserConsta
           break label_2;
         }
       }
-      getQuery().setQueryResultStar(false) ;
       break;
     case STAR:
       jj_consume_token(STAR);

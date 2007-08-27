@@ -1,6 +1,7 @@
 @prefix : <http://example/> .
 
-:x1 :p "abc"@de-DE .
-:x2 :p "abc"@de-de .
+:x1 :p1 4 .
+:x1 :p1 2 .
+:x2 :p2 5 .
 
 

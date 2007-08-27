@@ -2,7 +2,7 @@ PREFIX :    <http://example/>
 PREFIX apf: <http://jena.hpl.hp.com/ARQ/property#>
 PREFIX  list:   <http://jena.hpl.hp.com/ARQ/list#>
 
-SELECT *
+SELECT ?x ?x
 {
     ?x :p "abc"@de-de .
 }

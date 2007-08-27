@@ -1,13 +1,15 @@
 PREFIX : <http://example/>
 PREFIX  dc:     <http://purl.org/dc/elements/1.1/>
 
-SELECT ?a
-FROM <D.ttl>
-{
-  ?b dc:title ?title .
-  SERVICE <http://sparql.org/books>
-     { ?s dc:title ?title . ?s dc:creator ?a }
-}
+SELECT ?x (?x+?y)AS ?z1  (?z+?z)AS?z
+{ ?s1 :p1 ?x . ?s2 :p2 ?y }
+
+
+## {
+##   ?b dc:title ?title .
+##   SERVICE <http://sparql.org/books>
+##      { ?s dc:title ?title . ?s dc:creator ?a }
+## }
 
 
 ## GROUP BY ?s ?p

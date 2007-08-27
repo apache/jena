@@ -22,6 +22,8 @@ import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.sparql.sse.Item;
 import com.hp.hpl.jena.sparql.sse.SSE;
+import com.hp.hpl.jena.sparql.util.ExprUtils;
+
 import com.hp.hpl.jena.util.FileManager;
 
 
@@ -29,7 +31,27 @@ public class Run
 {
     public static void main(String[] argv)
     {
-
+        // SELECT * broken
+        // 1: * => no project => no expressions done.
+        // 2: addResultVar(,Ex
+        
+        
+        
+        Query query = QueryFactory.create("PREFIX : <http://example/> SELECT * { ?s1 :p1 ?x . ?s2 :p2 ?y }") ;
+        // This causes isQuerySelectStar to be false. Opps
+        //query.addResultVars(query.getResultVars()) ;
+        query.addResultVar("z", ExprUtils.parse("?x*?y")) ;
+        
+        Model m = FileManager.get().loadModel("D.ttl") ;
+        QueryExecution qExec = QueryExecutionFactory.create(query, m) ;
+        ResultSetFormatter.out(qExec.execSelect()) ;
+        qExec.close() ;
+        System.exit(0) ;
+        
+        
+        
+        
+        
         if ( false )
         {
             Item item = SSE.parse("_:") ;

@@ -6,10 +6,7 @@
 package com.hp.hpl.jena.query;
 
 import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import com.hp.hpl.jena.graph.Node;
 
@@ -79,11 +76,13 @@ public class Query extends Prologue implements Cloneable
 
     boolean strictQuery = true ;
     
-    // SELECT * / CONSRTUCT * or DESCRIBE * seen
+    // SELECT * / CONSTRUCT * or DESCRIBE * seen
     protected boolean queryResultStar        = false ;
     
     // SELECT
+    protected Map resultExprs                = new HashMap() ;     // Type: Var -> Expr
     // The names of variables wanted by the caller
+    // Variable names.
     protected List resultVars                = new ArrayList() ;     // Type in list: String name
     protected boolean distinct               = false ;
     protected boolean reduced                = false ;
@@ -306,6 +305,36 @@ public class Query extends Prologue implements Cloneable
         return resultVars ;
     }
     
+    /** Return a map of the variables to additional expressions */
+    public Map getResultExprs()
+    { 
+        // Ensure "SELECT *" processed
+        setResultVars() ;
+        return resultExprs ;
+    }
+
+    /** Add a collection of projection variables to a SELECT query */
+    public void addResultVars(Collection vars)
+    {
+        for ( Iterator iter = vars.iterator() ; iter.hasNext() ; )
+        {
+            Object obj = iter.next();
+            if ( obj instanceof String )
+            {
+                this.addResultVar((String)obj) ;
+                continue ;
+            }
+            if ( obj instanceof Var )
+            {
+                this.addResultVar((Var)obj) ;
+                continue ;
+            }
+            throw new QueryException("Not a variable or variable name: "+obj) ;
+        }
+        resultVarsSet = true ;
+    }
+
+    
     /** Add a projection variable to a SELECT query */
     public void addResultVar(String varName)
     {
@@ -322,6 +351,37 @@ public class Query extends Prologue implements Cloneable
         addResultVar(v.getName()) ;
     }
     
+    public void addResultVar(Node v, Expr expr)
+    {
+        if ( v == null )
+        {
+            addResultVar((String)null, expr) ;
+            return ;
+        }
+        if ( !v.isVariable() )
+            throw new QueryException("Not a variable: "+v) ;
+        addResultVar(v.getName(), expr) ;
+    }
+    
+    /** Add an to a SELECT query (a name will be created for it) */
+    public void addResultVar(Expr expr)
+    {
+        addResultVar((String)null, expr) ;
+    }
+
+    /** Add a named expression to a SELECT query */
+    public void addResultVar(String varName, Expr expr)
+    {
+        if ( varName == null )
+            varName = expr.toString() ; 
+        resultExprs.put(Var.alloc(varName), expr) ;
+        // This means you can write SELECT *, add an expression
+        // programmatically and only see that expression
+        // (can reset queryResultStar via API)
+        addResultVar(varName) ;
+        queryResultStar = false ;   
+    }
+
     public void addDescribeNode(Node node)
     {
         if ( node.isVariable() ) { addResultVar(node) ; return ; }
@@ -376,8 +436,9 @@ public class Query extends Prologue implements Cloneable
             return ;
         }
         
-        if ( resultVars.size() != 0 )
-            return ;
+        // May have been added via addResultVar(,Expr)
+//        if ( resultVars.size() != 0 ) 
+//            return ;
         
         if ( isSelectType() )
         {

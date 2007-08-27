@@ -8,9 +8,7 @@ package com.hp.hpl.jena.sparql.algebra.op;
 
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.OpVisitor;
-import com.hp.hpl.jena.sparql.algebra.Table;
 import com.hp.hpl.jena.sparql.algebra.Transform;
-import com.hp.hpl.jena.sparql.engine.ref.Evaluator;
 import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 
 public class OpDistinct extends OpModifier
@@ -18,9 +16,6 @@ public class OpDistinct extends OpModifier
     public OpDistinct(Op subOp)
     { super(subOp) ; }
     
-    public Table eval_1(Table table, Evaluator evaluator)
-    { return evaluator.distinct(table) ; }
-
     public Op apply(Transform transform, Op subOp)
     { return transform.transform(this, subOp) ; }
 

@@ -8,6 +8,7 @@ package com.hp.hpl.jena.sparql.algebra;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import com.hp.hpl.jena.graph.Node;
 
@@ -291,7 +292,7 @@ public class AlgebraGenerator
             if ( mods.projectVars.size() == 0 && query.isSelectType() )
                 ALog.warn(this,"No project variables") ;
             if ( mods.projectVars.size() > 0 ) 
-                op = new OpProject(op, mods.projectVars) ;
+                op = new OpProject(op, mods.projectVars, mods.projectExprs) ;
         }
         
         // ---- DISTINCT
@@ -336,7 +337,8 @@ public class AlgebraGenerator
         public long length ;
         public boolean distinct ;
         public boolean reduced ;
-        public List projectVars ;      // Null for no projection
+        public List projectVars ;       // Null for no projection
+        public Map projectExprs ;       // expressions for variables.
         public List orderConditions ;
 
         public Modifiers(Query query)
@@ -346,6 +348,7 @@ public class AlgebraGenerator
             distinct = query.isDistinct() ;
             reduced = query.isReduced() ;
             projectVars = Var.varList(query.getResultVars()) ;
+            projectExprs = query.getResultExprs() ;
             orderConditions = query.getOrderBy() ;
         }
     }

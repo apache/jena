@@ -4,6 +4,14 @@ ChangeLog for ARQ
 ARQ 2.1
 -------
 
++ (experimental for this release - permanent in next) Expressions in SELECT clause
+  Expression in brackets, optionally named with "AS ?var" 
+    SELECT (?x+?y) AS ?z  
+    SELECT ?x ?y (?x+?y)  # Print a table of sums
+
+ARQ 2.1 beta
+------------
+
 + Cost-based optimizer for basic graph patterns on in-memory graphs. 
   ** Uses the version of jena shipped with this release, can't use an earlier one.   
 

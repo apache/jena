@@ -10,9 +10,7 @@ import java.util.List;
 
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.OpVisitor;
-import com.hp.hpl.jena.sparql.algebra.Table;
 import com.hp.hpl.jena.sparql.algebra.Transform;
-import com.hp.hpl.jena.sparql.engine.ref.Evaluator;
 import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 
 public class OpOrder extends OpModifier
@@ -26,11 +24,6 @@ public class OpOrder extends OpModifier
     
     public List getConditions() { return conditions ; }
     
-    public Table eval_1(Table table, Evaluator evaluator)
-    {
-        return evaluator.order(table, conditions) ;
-    }
-
     public String getName()                 { return "order" ; }
     public void visit(OpVisitor opVisitor)  { opVisitor.visit(this) ; }
     public Op copy(Op subOp)                { return new OpOrder(subOp, conditions) ; }
