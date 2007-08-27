@@ -10,5 +10,5 @@
          <Syntax-SPARQL/manifest.ttl>
          <Syntax-SPARQL2/manifest.ttl>
          <Syntax-SPARQL3/manifest.ttl>
-         <Syntax-ARQ/manifest.ttl>
+##         <Syntax-ARQ/manifest.ttl>
     ) .
