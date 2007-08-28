@@ -22,7 +22,7 @@
   Prefix writing (drop prefix form altogether now we have the algebra?)
   Alt syntax: EXPR(expr,?var)  (expr[,?var]) (expr):?var
     [ ?x+?y , ?z ]
-    ?z = ?x+?y  
+    (?z := ?x+?y)
   
 
 + Optimizer 
