@@ -107,7 +107,7 @@ void SelectQuery() : { Node v ; }
 #ifdef ARQ
     |
       ( { Expr expr ; v = null ; }
-        expr = BrackettedExpression()
+        expr = Constraint()
           ( <AS>  v = Var() )?
         { getQuery().addResultVar(v, expr) ; }
       )

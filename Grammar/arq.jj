@@ -82,7 +82,7 @@ void SelectQuery() : { Node v ; }
 
     |
       ( { Expr expr ; v = null ; }
-        expr = BrackettedExpression()
+        expr = Constraint()
           ( <AS> v = Var() )?
         { getQuery().addResultVar(v, expr) ; }
       )

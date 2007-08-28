@@ -237,12 +237,12 @@ public class QuerySerializer implements QueryVisitor
     
     // ----
     
-    static void appendVarList(Query query, IndentedWriter sb, List vars)
+    void appendVarList(Query query, IndentedWriter sb, List vars)
     {
         appendVarList(query, sb, vars, null) ;
     }
         
-    static void appendVarList(Query query, IndentedWriter sb, List vars, Map exprs)
+    void appendVarList(Query query, IndentedWriter sb, List vars, Map exprs)
     {
         boolean first = true ;
         for ( Iterator iter = vars.iterator() ; iter.hasNext() ; )
@@ -254,8 +254,8 @@ public class QuerySerializer implements QueryVisitor
             if ( exprs != null && exprs.containsKey(var) ) 
             {
                 Expr expr = (Expr)exprs.get(var) ;
-                String str = expr.toString() ;
-                sb.print(str) ;
+                String str = expr.toString() ;  // Canonical form.
+                expr.visit(fmtExpr) ;
                 if ( ! str.equals(varName) )
                 {
                     sb.print(" AS ?") ;
