@@ -2,6 +2,8 @@ PREFIX : <http://example/>
 PREFIX  dc:     <http://purl.org/dc/elements/1.1/>
 
 SELECT  datatype(3) AS ?z1 ?x
+# SELECT  ( ?z1 := datatype(3) ) (?x+?y) ?x
+# Assignment object : 
 {}
 
 
