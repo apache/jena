@@ -41,16 +41,15 @@ public class Run
         // This causes isQuerySelectStar to be false. Opps
         //query.addResultVars(query.getResultVars()) ;
         query.addResultVar("z", ExprUtils.parse("?x*?y")) ;
+
+        System.out.println(query.toString()) ;
+        
         
         Model m = FileManager.get().loadModel("D.ttl") ;
         QueryExecution qExec = QueryExecutionFactory.create(query, m) ;
         ResultSetFormatter.out(qExec.execSelect()) ;
         qExec.close() ;
         System.exit(0) ;
-        
-        
-        
-        
         
         if ( false )
         {

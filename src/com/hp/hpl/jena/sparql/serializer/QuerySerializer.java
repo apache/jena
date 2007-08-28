@@ -9,12 +9,15 @@ package com.hp.hpl.jena.sparql.serializer;
 import java.io.OutputStream;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryVisitor;
 import com.hp.hpl.jena.query.SortCondition;
 import com.hp.hpl.jena.sparql.core.Prologue;
+import com.hp.hpl.jena.sparql.core.Var;
+import com.hp.hpl.jena.sparql.expr.Expr;
 import com.hp.hpl.jena.sparql.syntax.Element;
 import com.hp.hpl.jena.sparql.syntax.ElementGroup;
 import com.hp.hpl.jena.sparql.syntax.Template;
@@ -95,10 +98,7 @@ public class QuerySerializer implements QueryVisitor
         if ( query.isQueryResultStar() )
             out.print("*") ;
         else
-        {
-            appendVarList(query, out, query.getResultVars()) ;
-            //appendURIList(query, sb, resultURIs) ;
-        }
+            appendVarList(query, out, query.getResultVars(), query.getResultExprs()) ;
         out.newline() ;
     }
     
@@ -239,18 +239,38 @@ public class QuerySerializer implements QueryVisitor
     
     static void appendVarList(Query query, IndentedWriter sb, List vars)
     {
+        appendVarList(query, sb, vars, null) ;
+    }
+        
+    static void appendVarList(Query query, IndentedWriter sb, List vars, Map exprs)
+    {
         boolean first = true ;
         for ( Iterator iter = vars.iterator() ; iter.hasNext() ; )
         {
-            String var = (String)iter.next() ;
+            String varName = (String)iter.next() ;
+            Var var = Var.alloc(varName) ;
             if ( ! first )
                 sb.print(" ") ;
-            sb.print("?") ;
-            sb.print(var) ;
+            if ( exprs != null && exprs.containsKey(var) ) 
+            {
+                Expr expr = (Expr)exprs.get(var) ;
+                String str = expr.toString() ;
+                sb.print(str) ;
+                if ( ! str.equals(varName) )
+                {
+                    sb.print(" AS ?") ;
+                    sb.print(varName) ;
+                }
+            }
+            else
+            {
+                sb.print("?") ;
+                sb.print(varName) ;
+            }
             first = false ;
         }
     }
-        
+    
     static void appendURIList(Query query, IndentedWriter sb, List vars)
     {
         SerializationContext cxt = new SerializationContext(query) ;

@@ -16,12 +16,13 @@
        Make type safe in the Query class.
      Phase 2 detects inconsistences 
 
-+ SELECT expressions [DONE - tetsing needed]
++ SELECT expressions [DONE - testsing needed]
   Query.addResultVar(,Expr) commetned out for the moment.
   QueryIterProject has a validity test.
     Move testing to algebra compile time.
 	What happens in eval in error?  Skip row with warning?  In QueryIterProject
   ARQ parser changes
+  Serializer to write SELECT expressions
 
 + Check the better code in QueryIterTriplePattern.TripleMapper 
   Still needs to delay the binding allocation.  

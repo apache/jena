@@ -374,6 +374,8 @@ public class Query extends Prologue implements Cloneable
     {
         if ( varName == null )
             varName = expr.toString() ; 
+        else
+            varName = Var.canonical(varName) ;
         resultExprs.put(Var.alloc(varName), expr) ;
         // This means you can write SELECT *, add an expression
         // programmatically and only see that expression
