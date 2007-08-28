@@ -6,9 +6,6 @@
 
 package com.hp.hpl.jena.sdb.core.sqlnode;
 
-import dev.gen.SqlSelectBlock;
-
-
 public class SqlNodeWalker 
 {
     public SqlNodeVisitor visitor ;

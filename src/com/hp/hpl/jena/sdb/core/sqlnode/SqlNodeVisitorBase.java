@@ -6,8 +6,6 @@
 
 package com.hp.hpl.jena.sdb.core.sqlnode;
 
-import dev.gen.SqlSelectBlock;
-
 public class SqlNodeVisitorBase implements SqlNodeVisitor
 {
     public void visit(SqlProject sqlProject)

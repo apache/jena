@@ -3,6 +3,7 @@ SDB ToDo list (and general notes)
 
 + New SQLgenerator
     IJ-R-T => IJ(r)-T is done specially in old generator? 
+    COALESCE and SqlSelectBlocks
  
 + Need tests for DISTINCT, Slice, Project, including when not of a query is translated.
   TransformSDB: Add OpProject/OpDistinct.

@@ -11,8 +11,6 @@ import java.util.Stack;
 import com.hp.hpl.jena.sdb.SDBException;
 import com.hp.hpl.jena.sparql.util.ALog;
 
-import dev.gen.SqlSelectBlock;
-
 public class SqlTransformer
 {
     public static SqlNode transform(SqlNode sqlNode, SqlTransform transform)

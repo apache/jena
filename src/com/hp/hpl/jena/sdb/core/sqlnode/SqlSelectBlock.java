@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package dev.gen;
+package com.hp.hpl.jena.sdb.core.sqlnode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,7 +45,7 @@ public class SqlSelectBlock extends SqlNodeBase1
      * @param aliasName
      * @param sqlNode
      */
-    protected SqlSelectBlock(String aliasName, SqlNode sqlNode)
+    public SqlSelectBlock(String aliasName, SqlNode sqlNode)
     {
         super(aliasName, sqlNode) ;
     }

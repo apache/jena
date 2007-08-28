@@ -6,20 +6,30 @@
 
 package com.hp.hpl.jena.sdb.core.sqlnode;
 
-import com.hp.hpl.jena.sparql.util.IndentedLineBuffer;
+import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
+import com.hp.hpl.jena.sdb.core.sqlnode.SqlNodeVisitor;
+import com.hp.hpl.jena.sdb.core.sqlnode.SqlProject;
+import com.hp.hpl.jena.sdb.core.sqlnode.SqlTransformer;
 import com.hp.hpl.jena.sdb.store.SQLGenerator;
+import com.hp.hpl.jena.sparql.util.IndentedLineBuffer;
 
 public class GenerateSQL implements SQLGenerator 
 {
+    public static boolean forceOldGenerator = false ; 
+   
     public static String toSQL(SqlNode sqlNode)
     { return new GenerateSQL().generateSQL(sqlNode) ; }
     
     public String generateSQL(SqlNode sqlNode)
     {
+//        if ( forceOldGenerator )
+//            return GenerateSQL_Old.toSQL(sqlNode) ;
+        
         IndentedLineBuffer buff = new IndentedLineBuffer() ;
         SqlNodeVisitor v = makeVisitor(buff) ;
         // Top must be a project to cause the SELECT to be written
         sqlNode = ensureProject(sqlNode) ;
+        sqlNode = SqlTransformer.transform(sqlNode, new TransformSelectBlock()) ;
         sqlNode.visit(v) ;
         return buff.asString() ;
     }
@@ -38,7 +48,7 @@ public class GenerateSQL implements SQLGenerator
 }
 
 /*
- * (c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

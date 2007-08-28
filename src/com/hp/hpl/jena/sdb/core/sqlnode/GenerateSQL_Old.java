@@ -4,19 +4,15 @@
  * [See end of file]
  */
 
-package dev.gen;
+package com.hp.hpl.jena.sdb.core.sqlnode;
 
-import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
-import com.hp.hpl.jena.sdb.core.sqlnode.SqlNodeVisitor;
-import com.hp.hpl.jena.sdb.core.sqlnode.SqlProject;
-import com.hp.hpl.jena.sdb.core.sqlnode.SqlTransformer;
-import com.hp.hpl.jena.sdb.store.SQLGenerator;
 import com.hp.hpl.jena.sparql.util.IndentedLineBuffer;
+import com.hp.hpl.jena.sdb.store.SQLGenerator;
 
-public class NewGenerateSQL implements SQLGenerator 
+public class GenerateSQL_Old implements SQLGenerator 
 {
     public static String toSQL(SqlNode sqlNode)
-    { return new NewGenerateSQL().generateSQL(sqlNode) ; }
+    { return new GenerateSQL_Old().generateSQL(sqlNode) ; }
     
     public String generateSQL(SqlNode sqlNode)
     {
@@ -24,14 +20,13 @@ public class NewGenerateSQL implements SQLGenerator
         SqlNodeVisitor v = makeVisitor(buff) ;
         // Top must be a project to cause the SELECT to be written
         sqlNode = ensureProject(sqlNode) ;
-        sqlNode = SqlTransformer.transform(sqlNode, new TransformSelectBlock()) ;
         sqlNode.visit(v) ;
         return buff.asString() ;
     }
     
     protected SqlNodeVisitor makeVisitor(IndentedLineBuffer buff)
     {
-        return new NewGenerateSQLVisitor(buff.getIndentedWriter()) ;
+        return new GenerateSQLVisitor_Old(buff.getIndentedWriter()) ;
     }
     
     public static SqlNode ensureProject(SqlNode sqlNode)
@@ -43,7 +38,7 @@ public class NewGenerateSQL implements SQLGenerator
 }
 
 /*
- * (c) Copyright 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

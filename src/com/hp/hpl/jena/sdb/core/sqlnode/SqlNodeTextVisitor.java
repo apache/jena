@@ -20,9 +20,6 @@ import com.hp.hpl.jena.sdb.sql.SQLUtils;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
 
-import dev.gen.SqlSelectBlock;
-
-
 public class SqlNodeTextVisitor implements SqlNodeVisitor
 {
     // TODO Use .ensureNewLine and .atStartOfLine more

@@ -15,18 +15,11 @@ import static sdb.SDBCmd.setSDBConfig;
 import static sdb.SDBCmd.sparql;
 import arq.cmd.CmdUtils;
 
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.util.FileManager;
-
-import com.hp.hpl.jena.sparql.algebra.Op;
-import com.hp.hpl.jena.sparql.resultset.ResultsFormat;
-import com.hp.hpl.jena.sparql.util.QueryExecUtils;
-
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryExecution;
 import com.hp.hpl.jena.query.QueryExecutionFactory;
 import com.hp.hpl.jena.query.QueryFactory;
-
+import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.sdb.SDBFactory;
 import com.hp.hpl.jena.sdb.Store;
 import com.hp.hpl.jena.sdb.compiler.OpSQL;
@@ -39,8 +32,10 @@ import com.hp.hpl.jena.sdb.store.DatabaseType;
 import com.hp.hpl.jena.sdb.store.LayoutType;
 import com.hp.hpl.jena.sdb.store.StoreConfig;
 import com.hp.hpl.jena.sdb.store.StoreFactory;
-
-import dev.gen.NewGenerateSQL;
+import com.hp.hpl.jena.sparql.algebra.Op;
+import com.hp.hpl.jena.sparql.resultset.ResultsFormat;
+import com.hp.hpl.jena.sparql.util.QueryExecUtils;
+import com.hp.hpl.jena.util.FileManager;
 
 public class RunSDB
 {
@@ -49,8 +44,6 @@ public class RunSDB
     {
 //        SDBConnection.logSQLExceptions = true ;
 //        SDBConnection.logSQLStatements = true ;
-        
-        
         if ( false )
         {
             Query query = QueryFactory.create("PREFIX : <http://example/> SELECT * { ?s :x ?o }") ;
@@ -64,7 +57,7 @@ public class RunSDB
             
             System.out.println() ;
             
-            str = NewGenerateSQL.toSQL(x) ;
+            str = GenerateSQL.toSQL(x) ;
             System.out.println(str) ;
             
             //x =  NewGenerateSQL.ensureProject(x) ;
@@ -76,7 +69,7 @@ public class RunSDB
             System.exit(0) ;
         }
         
-        runPrint() ;
+        sdb.sdbprint.main("--print=sql", "--print=sqlNode", "--sdb=sdb1.ttl", "--query=testing/Optionals1/opt-coalesce-1.rq") ;
         System.exit(0) ;
 
         

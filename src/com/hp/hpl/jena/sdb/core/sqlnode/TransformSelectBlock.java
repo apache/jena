@@ -4,12 +4,11 @@
  * [See end of file]
  */
 
-package dev.gen;
+package com.hp.hpl.jena.sdb.core.sqlnode;
 
 import com.hp.hpl.jena.sdb.core.AliasesSql;
 import com.hp.hpl.jena.sdb.core.Generator;
 import com.hp.hpl.jena.sdb.core.Gensym;
-import com.hp.hpl.jena.sdb.core.sqlnode.*;
 
 public class TransformSelectBlock extends SqlTransformCopy
 {
@@ -81,12 +80,20 @@ public class TransformSelectBlock extends SqlTransformCopy
 //    public SqlNode transform(SqlRename sqlRename, SqlNode subNode)
 //    { return null ; }
     
+    // XXX Aliasing.  Need to propagate the aliases down if we introduce one. 
+    
     private SqlSelectBlock block(SqlNode sqlNode)
     {
         if ( sqlNode instanceof SqlSelectBlock )
             return (SqlSelectBlock)sqlNode ;
         
-        return new SqlSelectBlock(gen.next(), sqlNode) ;
+        String alias = null ;
+        if ( sqlNode.isTable() )
+            alias = sqlNode.getAliasName() ;
+        else
+            //alias = gen.next() ;
+            alias = sqlNode.getAliasName() ;
+        return new SqlSelectBlock(alias, sqlNode) ;
     }
 }
 

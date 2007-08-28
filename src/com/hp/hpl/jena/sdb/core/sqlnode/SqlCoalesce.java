@@ -25,11 +25,12 @@ public class SqlCoalesce extends SqlNodeBase1
      * That's COALESCE in many databases.
      */
     
-    SqlJoin join ;
-    Set<Var> coalesceVars ;
-    Set<Var> nonCoalesceVars = new HashSet<Var>() ;
-    ScopeRename idScope ;
-    ScopeRename nodeScope ;
+    private SqlJoin join ;
+    private Set<Var> coalesceVars ;
+    private Set<Var> nonCoalesceVars = new HashSet<Var>() ;
+    private ScopeRename idScope ;
+    private ScopeRename nodeScope ;
+    
     private static final String AliasBase = AliasesSql.VarCollasce ;
     
     public static SqlCoalesce create(SDBRequest request, String alias, SqlJoin join, Set<Var>coalesceVars) 
