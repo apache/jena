@@ -20,6 +20,7 @@ import com.hp.hpl.jena.sparql.engine.binding.BindingMap;
 import com.hp.hpl.jena.sparql.engine.binding.BindingProject;
 import com.hp.hpl.jena.sparql.expr.Expr;
 import com.hp.hpl.jena.sparql.expr.ExprEvalException;
+import com.hp.hpl.jena.sparql.function.FunctionEnv;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext;
 import com.hp.hpl.jena.sparql.util.ALog;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
@@ -38,7 +39,7 @@ public class QueryIterProject extends QueryIterConvert
     
     public QueryIterProject(QueryIterator input, List vars, Map exprs, ExecutionContext qCxt)
     {
-        super(input, new Projection(vars, exprs), qCxt) ;
+        super(input, new Projection(vars, exprs, qCxt), qCxt) ;
         Var.checkVarList(vars) ;
         checkExprs(vars, exprs) ;
         projectionVars = vars ;
@@ -89,13 +90,15 @@ public class QueryIterProject extends QueryIterConvert
     static
     class Projection implements QueryIterConvert.Converter
     {
+        FunctionEnv funcEnv ;
         List projectionVars ; 
         Map exprs ;
 
-        Projection(List vars, Map exprs)
+        Projection(List vars, Map exprs, ExecutionContext qCxt)
         { 
             this.projectionVars = vars ;
             this.exprs = exprs ;
+            funcEnv = qCxt ;
         }
 
         public Binding convert(Binding bind)
@@ -109,7 +112,7 @@ public class QueryIterProject extends QueryIterConvert
                 Var v = (Var)iter.next();
                 Expr expr = (Expr)exprs.get(v) ;
                 try {
-                    Node n = expr.eval(b, null).asNode() ;
+                    Node n = expr.eval(b, funcEnv).asNode() ;
                     b.add(v, n) ;
                 } catch (ExprEvalException ex)
                 { ALog.warn(this, "Eval failure "+expr+": "+ex.getMessage()) ; }

@@ -35,20 +35,24 @@ public class Run
         // 1: * => no project => no expressions done.
         // 2: addResultVar(,Ex
         
-        
-        
-        Query query = QueryFactory.create("PREFIX : <http://example/> SELECT * { ?s1 :p1 ?x . ?s2 :p2 ?y }") ;
-        // This causes isQuerySelectStar to be false. Opps
-        //query.addResultVars(query.getResultVars()) ;
-        query.addResultVar("z", ExprUtils.parse("?x*?y")) ;
+        if ( false )
+        {
+            Query query = QueryFactory.create("PREFIX : <http://example/> SELECT * { ?s1 :p1 ?x . ?s2 :p2 ?y }") ;
+            // This causes isQuerySelectStar to be false. Opps
+            //query.addResultVars(query.getResultVars()) ;
+            query.addResultVar("z", ExprUtils.parse("?x*?y")) ;
+    
+            System.out.println(query.toString()) ;
+            
+            
+            Model m = FileManager.get().loadModel("D.ttl") ;
+            QueryExecution qExec = QueryExecutionFactory.create(query, m) ;
+            ResultSetFormatter.out(qExec.execSelect()) ;
+            qExec.close() ;
+            System.exit(0) ;
+        }
 
-        System.out.println(query.toString()) ;
-        
-        
-        Model m = FileManager.get().loadModel("D.ttl") ;
-        QueryExecution qExec = QueryExecutionFactory.create(query, m) ;
-        ResultSetFormatter.out(qExec.execSelect()) ;
-        qExec.close() ;
+        execQuery( "testing/ARQ/SelectExpr/data.ttl", "testing/ARQ/SelectExpr/select-expr-04.arq") ;
         System.exit(0) ;
         
         if ( false )
