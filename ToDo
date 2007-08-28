@@ -17,14 +17,13 @@
        Make type safe in the Query class.
      Phase 2 detects inconsistences 
 
-+ SELECT expressions [DONE - testsing needed]
-  QueryIterProject has a potential validity test.
-     Move testing to algebra compile time.
-	 What happens in eval in error?  Skip row with warning?  In QueryIterProject
-  Op to write OpProject with expressions
-  Builder to read in again.
-  Testing: syntax, serialization, functionality
++ SELECT expressions [DONE - testing needed]
   Document 
+  Prefix writing (drop prefix form altogether now we have the algebra?)
+  Alt syntax: EXPR(expr,?var)  (expr[,?var]) (expr):?var
+    [ ?x+?y , ?z ]
+    ?z = ?x+?y  
+  
 
 + Optimizer 
   

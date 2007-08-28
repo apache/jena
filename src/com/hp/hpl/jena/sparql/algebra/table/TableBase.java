@@ -85,8 +85,7 @@ public abstract class TableBase implements Table
         } finally { qIter.close() ; }
     }
     
-    public int size()
-    { throw new UnsupportedOperationException("Table.size") ; }
+    public abstract int size() ;
     
     public ResultSet toResultSet()
     {

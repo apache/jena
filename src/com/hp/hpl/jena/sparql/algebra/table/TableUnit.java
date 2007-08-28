@@ -40,11 +40,15 @@ public class TableUnit extends TableBase
 
     public void closeTable()    { }
 
+    public int size()           { return 1 ; }
+
     public List getVarNames()   { return new ArrayList() ; }
 
     public List getVars()       { return new ArrayList() ; }
     
     public String toString()    { return "TableUnit" ; }
+    
+
 }
 
 /*

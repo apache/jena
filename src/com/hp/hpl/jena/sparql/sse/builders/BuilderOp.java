@@ -15,6 +15,7 @@ import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.Table;
 import com.hp.hpl.jena.sparql.algebra.op.*;
 import com.hp.hpl.jena.sparql.core.BasicPattern;
+import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.expr.Expr;
 import com.hp.hpl.jena.sparql.expr.ExprList;
 import com.hp.hpl.jena.sparql.sse.Item;
@@ -300,11 +301,28 @@ public class BuilderOp
     {
         public Op make(ItemList list)
         {
-            BuilderBase.checkLength(3, list, "project") ;
-            Op sub = build(list, list.size()-1) ;
+            BuilderBase.checkLength(3, 4, list, "project") ;
+            Op sub = build(list, list.size()-1) ; // index 2 or 3
             List x = BuilderNode.buildVars(list.get(1).getList(), 0) ;
-            // Does not cope with expressions
-            return new OpProject(sub, x, null) ;
+            // List of pairs.
+            Map exprs = null ;
+            if( list.size() == 4)
+            {
+                exprs = new HashMap() ;
+                BuilderBase.checkList(list.get(2),
+                                      "Expressions for project not a list") ;
+                ItemList pairs = list.get(2).getList() ;
+                for ( Iterator iter = pairs.iterator() ; iter.hasNext() ; )
+                {
+                    Item pair = (Item)iter.next() ;
+                    if ( !pair.isList() || pair.getList().size() != 2 )
+                        BuilderBase.broken(pair, "Not a var/expression pair") ;
+                    Var var = BuilderNode.buildVar(pair.getList().get(0)) ;
+                    Expr expr = BuilderExpr.buildExpr(pair.getList().get(1)) ;
+                    exprs.put(var, expr) ;
+                }
+            }
+            return new OpProject(sub, x, exprs) ;
         }
     } ;
 

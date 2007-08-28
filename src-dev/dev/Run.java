@@ -52,9 +52,6 @@ public class Run
             System.exit(0) ;
         }
 
-        execQuery( "testing/ARQ/SelectExpr/data.ttl", "testing/ARQ/SelectExpr/select-expr-04.arq") ;
-        System.exit(0) ;
-        
         if ( false )
         {
             Item item = SSE.parse("_:") ;
@@ -74,7 +71,7 @@ public class Run
     
     private static void runQParse()
     {
-        String []a = { "--file=Q.rq", "--print=op" } ;
+        String []a = { "--file=Q.arq", "--print=op" } ;
         arq.qparse.main(a) ;
         System.exit(0) ;
     }

@@ -89,8 +89,13 @@ public class ModQueryOut implements ArgModuleGeneral
     
     public void checkParse(Query query)
     {
-        checkParseSyntax(query) ;
-        checkOp(query) ;
+        try {
+            checkParseSyntax(query) ;
+            checkOp(query) ;
+        } catch (Exception ex)
+        {
+            ex.printStackTrace(System.err) ;
+        }
     }
 
     public void checkOp(Query query)
