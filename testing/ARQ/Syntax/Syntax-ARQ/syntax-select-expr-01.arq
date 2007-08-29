@@ -1,1 +1,1 @@
-SELECT (?x +?y) AS ?z {}
+SELECT (?x +?y AS ?z) {}

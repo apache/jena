@@ -89,11 +89,11 @@ public class ARQConstants
     
     // If adding to the kinds of variable maker, then need to update tests in Var
     
-    /** Marker for generated variables for non-distiniguished in query patterns (??a etc)*/ 
+    /** Marker for generated variables for non-distinguished in query patterns (??a etc)*/ 
     public static final String anonVarMarker = "?" ;
     
     /** Marker for general temporary variables (not blank node variables) */
-    public static final String allocVarMarker = "@" ;
+    public static final String allocVarMarker = "." ;
 
     // Use alloc vars
 //    /** Marker for generated variables for aggregates and unnamed expressions */ 

@@ -5,14 +5,14 @@
     xmlns="http://www.w3.org/2005/sparql-results#" >
   <head>
     <variable name="v"/>
-    <variable name="( ?v + 10 )"/>
+    <variable name=".0"/>
   </head>
   <results>
     <result>
       <binding name="v">
         <literal datatype="http://www.w3.org/2001/XMLSchema#integer">5</literal>
       </binding>
-      <binding name="( ?v + 10 )">
+      <binding name=".0">
         <literal datatype="http://www.w3.org/2001/XMLSchema#integer">15</literal>
       </binding>
     </result>
@@ -20,7 +20,7 @@
       <binding name="v">
         <literal datatype="http://www.w3.org/2001/XMLSchema#integer">4</literal>
       </binding>
-      <binding name="( ?v + 10 )">
+      <binding name=".0">
         <literal datatype="http://www.w3.org/2001/XMLSchema#integer">14</literal>
       </binding>
     </result>
@@ -28,7 +28,7 @@
       <binding name="v">
         <literal datatype="http://www.w3.org/2001/XMLSchema#integer">3</literal>
       </binding>
-      <binding name="( ?v + 10 )">
+      <binding name=".0">
         <literal datatype="http://www.w3.org/2001/XMLSchema#integer">13</literal>
       </binding>
     </result>
@@ -36,7 +36,7 @@
       <binding name="v">
         <literal datatype="http://www.w3.org/2001/XMLSchema#integer">2</literal>
       </binding>
-      <binding name="( ?v + 10 )">
+      <binding name=".0">
         <literal datatype="http://www.w3.org/2001/XMLSchema#integer">12</literal>
       </binding>
     </result>
@@ -44,7 +44,7 @@
       <binding name="v">
         <literal datatype="http://www.w3.org/2001/XMLSchema#integer">1</literal>
       </binding>
-      <binding name="( ?v + 10 )">
+      <binding name=".0">
         <literal datatype="http://www.w3.org/2001/XMLSchema#integer">11</literal>
       </binding>
     </result>

@@ -80,10 +80,13 @@ void SelectQuery() : { Node v ; }
     (
       ( v = Var() { getQuery().addResultVar(v) ; } )
 
+    // Syntax: ( expr [AS ?v])
     |
       ( { Expr expr ; v = null ; }
-        expr = Constraint()
+        <LPAREN>
+          expr = Expression()
           ( <AS> v = Var() )?
+        <RPAREN>
         { getQuery().addResultVar(v, expr) ; }
       )
 

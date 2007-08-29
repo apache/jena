@@ -29,9 +29,9 @@ public class BuilderNode
     public static Var buildVar(Item item)
     {
         if ( ! item.isNode() || !Var.isVar(item.getNode()) )
-            BuilderBase.broken(item, "Not a variable") ;
-        if ( ! Var.isNamedVar(item.getNode()) )
-            BuilderBase.broken(item, "Not a named variable") ;
+            BuilderBase.broken(item, "Not a variable", item) ;
+//        if ( ! Var.isNamedVar(item.getNode()) )
+//            BuilderBase.broken(item, "Not a named variable", item) ;
         return Var.alloc(item.getNode()) ;
     }
     

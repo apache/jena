@@ -22,6 +22,7 @@ import com.hp.hpl.jena.sparql.algebra.table.TableUnit;
 import com.hp.hpl.jena.sparql.core.Prologue;
 import com.hp.hpl.jena.sparql.core.Quad;
 import com.hp.hpl.jena.sparql.core.Var;
+import com.hp.hpl.jena.sparql.core.VarAlloc;
 import com.hp.hpl.jena.sparql.engine.Plan;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
@@ -136,7 +137,7 @@ public class OpWriter
     {
         private IndentedWriter out ;
         private SerializationContext sContext ;
-        private int varNum = 0 ;        // Only for Select expressions
+        private VarAlloc varAlloc = new VarAlloc("__") ;
         
         
         public OpWriterWorker(IndentedWriter out, SerializationContext sCxt)
@@ -379,15 +380,7 @@ public class OpWriter
                     out.print("(") ;
                     Var v = (Var)iter.next() ;
                     Expr expr = (Expr)opProject.getExprs().get(v) ;
-                    // XXX Problems for illegal names.
-                    // Force allocate a variable!
-                    // fake name : problems 
-                    String vn = expr.toString() ;
-                    if ( vn.equals(v.getVarName()))
-                        vn = "__"+(varNum++) ;
-                    else
-                        vn = v.getVarName() ;
-                    out.print("?"+vn) ;
+                    out.print("?"+v.getVarName()) ;
                     out.print(" ") ;
                     ExprUtils.fmtPrefix(out, expr, sContext.getPrefixMapping()) ;
                     out.print(")") ;

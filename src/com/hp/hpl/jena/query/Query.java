@@ -10,10 +10,12 @@ import java.util.*;
 
 import com.hp.hpl.jena.graph.Node;
 
+import com.hp.hpl.jena.sparql.ARQConstants;
 import com.hp.hpl.jena.sparql.core.Prologue;
 import com.hp.hpl.jena.sparql.core.QueryCompare;
 import com.hp.hpl.jena.sparql.core.QueryHashCode;
 import com.hp.hpl.jena.sparql.core.Var;
+import com.hp.hpl.jena.sparql.core.VarAlloc;
 import com.hp.hpl.jena.sparql.expr.Expr;
 import com.hp.hpl.jena.sparql.expr.NodeVar;
 import com.hp.hpl.jena.sparql.serializer.Serializer;
@@ -99,6 +101,10 @@ public class Query extends Prologue implements Cloneable
     {
         syntax = Syntax.syntaxSPARQL ;
     }
+    
+    // Allocate variables that are unique to this query.
+    private VarAlloc varAlloc = new VarAlloc(ARQConstants.allocVarMarker) ;
+    public Var anonVar() { return varAlloc.allocVar() ; }
     
     public void setQueryType(int qType)         { queryType = qType ; }
     
@@ -339,51 +345,71 @@ public class Query extends Prologue implements Cloneable
     public void addResultVar(String varName)
     {
         varName = Var.canonical(varName) ;
-        if ( !resultVars.contains(varName) )
-            resultVars.add(varName);
-        resultVarsSet = true ;
+        _addResultVar(varName) ;
     }
 
     public void addResultVar(Node v)
     {
         if ( !v.isVariable() )
             throw new QueryException("Not a variable: "+v) ;
-        addResultVar(v.getName()) ;
+        _addResultVar(v.getName()) ;
+    }
+    
+    // Add raw name.
+    private void _addResultVar(String varName)
+    {
+        if ( !resultVars.contains(varName) )
+            resultVars.add(varName);
+        resultVarsSet = true ;
     }
     
     public void addResultVar(Node v, Expr expr)
     {
+        Var var = null ; 
         if ( v == null )
+            var = anonVar() ;
+        else
         {
-            addResultVar((String)null, expr) ;
-            return ;
+            if ( !v.isVariable() )
+                throw new QueryException("Not a variable: "+v) ;
+            var = Var.alloc(v) ;
         }
-        if ( !v.isVariable() )
-            throw new QueryException("Not a variable: "+v) ;
-        addResultVar(v.getName(), expr) ;
+        _addResultVar(var, expr) ;
     }
     
     /** Add an to a SELECT query (a name will be created for it) */
     public void addResultVar(Expr expr)
     {
-        addResultVar((String)null, expr) ;
+        _addResultVar(anonVar(), expr) ;
     }
 
     /** Add a named expression to a SELECT query */
     public void addResultVar(String varName, Expr expr)
     {
+        Var var = null ; 
         if ( varName == null )
-            varName = expr.toString() ; 
+            var = anonVar() ;
         else
+        {
             varName = Var.canonical(varName) ;
-        resultExprs.put(Var.alloc(varName), expr) ;
+            var = Var.alloc(varName) ;
+        }
+        _addResultVar(var, expr) ;
+    }
+
+    private void _addResultVar(Var var, Expr expr)
+    {
+        resultExprs.put(var, expr) ;
         // This means you can write SELECT *, add an expression
         // programmatically and only see that expression
         // (can reset queryResultStar via API)
-        addResultVar(varName) ;
+        _addResultVar(var.getVarName()) ;
         queryResultStar = false ;   
     }
+    
+    
 
+    
     public void addDescribeNode(Node node)
     {
         if ( node.isVariable() ) { addResultVar(node) ; return ; }

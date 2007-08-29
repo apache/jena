@@ -5,9 +5,11 @@ ARQ 2.1
 -------
 
 + (experimental for this release - permanent in next) Expressions in SELECT clause
-  Expression in brackets, optionally named with "AS ?var" 
-    SELECT (?x+?y) AS ?z  
-    SELECT ?x ?y (?x+?y)  # Print a table of sums
+  Expression in brackets, optionally named with "AS ?var"
+  Adding an explict namne is strongly encouraged especially if you use the SPARQL results format
+  because internalvariables variable names are not portable. 
+    SELECT (?x+?y AS ?z) ?y ?x
+    SELECT ?x ?y (?x+?y AS ?sum)  # Print a table of sums
   OpProject can have additional expressions that get added into the table from 'project'   
 
 ARQ 2.1 beta

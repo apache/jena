@@ -22,7 +22,9 @@ TOKEN:
    <IRIref: "<" (~[">","<","\u0000"-"\u0020"])* ">" >
 |  <PNAME: (<PN_PREFIX>)? ":" (<PN_LOCAL>)? >
 |  <BLANK_NODE_LABEL: "_:" (<PN_LOCAL>)? >  // Allows no label
+// Co-ordinate with ARQConstants
 |  <VAR_N:   "?" (<VARNAME>)?>      // Named variable - allows no name
+|  <VAR_A:   "?." (<VARNAME>)?>     // Allocated, internal variable - allows no name
 |  <VAR_ND:  "??"(<VARNAME>)?>      // Non-distinguished variable (BNode in SPARQL)
 }
 

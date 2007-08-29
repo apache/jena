@@ -254,13 +254,15 @@ public class QuerySerializer implements QueryVisitor
             if ( exprs != null && exprs.containsKey(var) ) 
             {
                 Expr expr = (Expr)exprs.get(var) ;
+                out.print("(") ;
                 String str = expr.toString() ;  // Canonical form.
                 expr.visit(fmtExpr) ;
-                if ( ! str.equals(varName) )
+                if ( ! Var.isAllocVarName(varName) )
                 {
                     sb.print(" AS ?") ;
                     sb.print(varName) ;
                 }
+                out.print(")") ;
             }
             else
             {

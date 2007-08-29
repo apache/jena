@@ -20,11 +20,9 @@
 + SELECT expressions [DONE - testing needed]
   Document 
   Prefix writing (drop prefix form altogether now we have the algebra?)
-  Alt syntax: EXPR(expr,?var)  (expr[,?var]) (expr):?var
-    [ ?x+?y , ?z ]
-    (?z := ?x+?y)
   
-
++ Exression printing : expr.toString shoudl not add outer brackets
+ 
 + Optimizer 
   
 + Check the better code in QueryIterTriplePattern.TripleMapper 

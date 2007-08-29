@@ -11,6 +11,7 @@ import junit.framework.TestSuite;
 
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.sparql.ARQConstants;
 import com.hp.hpl.jena.sparql.ARQException;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.sse.Item;
@@ -86,9 +87,14 @@ public class TestSSE_Basic extends TestCase
     public void testVar_1() { testVar("?x") ; }
     public void testVar_2() { testVar("?") ; }
     public void testVar_3() { testVar("?0") ; }
+    // See ARQConstants.anonVarMarker
     public void testVar_4() { testVar("??x") ; }
     public void testVar_5() { testVar("??") ; }
     public void testVar_6() { testVar("??0") ; }
+    
+    // See ARQConstants.allocVarMarker
+    public void testVar_7() { testVar("?"+ARQConstants.allocVarMarker+"0") ; }
+    public void testVar_8() { testVar("?"+ARQConstants.allocVarMarker+"") ; }
     
     //public void testVar_7() { testVar("$x") ; }
     
