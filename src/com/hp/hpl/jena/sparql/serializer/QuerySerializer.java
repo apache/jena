@@ -204,7 +204,7 @@ public class QuerySerializer implements QueryVisitor
                 if ( ! first )
                     out.print(" ") ;
                 SortCondition sc = (SortCondition)iter.next() ;
-                sc.format(fmtExpr, out) ;
+                sc.format(fmtExpr.getVisitor(), out) ;
                 first = false ;
             }
             out.println() ;
@@ -255,8 +255,7 @@ public class QuerySerializer implements QueryVisitor
             {
                 Expr expr = (Expr)exprs.get(var) ;
                 out.print("(") ;
-                String str = expr.toString() ;  // Canonical form.
-                expr.visit(fmtExpr) ;
+                fmtExpr.format(expr, true) ;
                 if ( ! Var.isAllocVarName(varName) )
                 {
                     sb.print(" AS ?") ;

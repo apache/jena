@@ -12,7 +12,7 @@ import com.hp.hpl.jena.sparql.util.IndentedWriter;
 
 /** Output expressions in the syntax that XML form requires */
 
-public class FmtExprXML extends FmtExprARQ
+public class FmtExprXML extends FmtExprARQVisitor
 {
     public FmtExprXML(IndentedWriter writer, SerializationContext cxt)
     {

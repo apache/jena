@@ -38,6 +38,8 @@ public class SortCondition extends PrintSerializableBase
             ALog.fatal(this, "Unknown sort direction") ;
     }
     
+    // Convert to FmtExpr
+    
     public void format(ExprVisitor fmt,
                        IndentedWriter writer)
     {
@@ -129,7 +131,7 @@ public class SortCondition extends PrintSerializableBase
     public void output(IndentedWriter out, SerializationContext sCxt)
     {
         FmtExprARQ fmt = new FmtExprARQ(out, sCxt) ;
-        format(fmt, out) ;
+        format(fmt.getVisitor(), out) ;
     }
 }
 

@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
@@ -7,78 +7,87 @@
 package com.hp.hpl.jena.sparql.serializer;
 
 import com.hp.hpl.jena.shared.PrefixMapping;
+
+import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.expr.*;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
 
-/** Printing of an expr expression in prefix notation */
-
-public class FmtExprPrefix extends FmtExpr implements ExprVisitor 
+public class FmtExprARQVisitor implements ExprVisitor
 {
-    static final boolean ONELINE = true ;
+
     IndentedWriter out ;
     SerializationContext context ;
-    
-    public ExprVisitor getVisitor()
+
+    public FmtExprARQVisitor(IndentedWriter writer, PrefixMapping pmap)
     {
-        return this ;
+        this(writer, new SerializationContext(pmap , null)) ;
     }
 
-    public void format(Expr expr, boolean exprNeedsBrackets)
-    {
-        expr.visit(this) ;
-    }
-    
-    // Make nested inner class.
-    
-    public FmtExprPrefix(IndentedWriter writer, PrefixMapping pm)
-    {
-        this(writer, new SerializationContext(pm , null)) ;
-    }
-    
-    public FmtExprPrefix(IndentedWriter writer, SerializationContext qCxt)
+
+    public FmtExprARQVisitor(IndentedWriter writer, SerializationContext cxt)
     {
         out = writer ;
-        context = qCxt ;
+        context = cxt ;
         if ( context == null )
             context = new SerializationContext() ;
     }
-    
+
     public static void format(IndentedWriter out, SerializationContext cxt, Expr expr)
     {
-        ExprVisitor fmt = new FmtExprPrefix(out, cxt) ;
+        ExprVisitor fmt = new FmtExprARQVisitor(out, cxt) ;
         fmt.startVisit() ;
         expr.visit(fmt) ;
         fmt.finishVisit() ;
     }
-    
-    public void startVisit() {}
-    
+
+    public void startVisit() { }
+
+    private void visitFunction1(ExprFunction1 expr)
+    {
+        out.print("( ") ;
+        out.print( expr.getOpName() ) ;
+        out.print(" ") ;
+        expr.getArg().visit(this) ;
+        out.print(" )");
+    }
+
+    private void visitFunction2(ExprFunction2 expr)
+    {
+        out.print("( ") ;
+        expr.getArg1().visit(this) ;
+        out.print(" ") ;
+        out.print( expr.getOpName() ) ;
+        out.print(" ") ;
+        expr.getArg2().visit(this) ;
+        out.print(" )");
+    }
+
     public void visit(ExprFunction func)
     {
-        out.print("(") ;
-        
-        String n = null ;
-        
-        if ( func.getOpName() != null )
-            n = func.getOpName() ;
-        
-        if ( n == null )
-            n = func.getFunctionPrintName(context) ;
+        if ( func.getOpName() != null && func instanceof ExprFunction2 )
+        {
+            visitFunction2((ExprFunction2)func) ;
+            return ;
+        }
 
-        out.print(n) ;
-        
-        out.incIndent(INDENT) ;
+        if ( func.getOpName() != null && func instanceof ExprFunction1 )
+        {
+            visitFunction1((ExprFunction1)func) ;
+            return ;
+        }
+
+        out.print( func.getFunctionPrintName(context) ) ;
+        out.print("(") ;
         for ( int i = 1 ; ; i++ )
         {
             Expr expr = func.getArg(i) ;
             if ( expr == null )
                 break ; 
-            // endLine() ;
-            out.print(' ') ;
+            if ( i != 1 )
+                out.print(", ") ;
             expr.visit(this) ;
         }
-        out.print(")") ;
-        out.decIndent(INDENT) ;
+        out.print(")");
     }
 
     public void visit(NodeValue nv)
@@ -88,24 +97,26 @@ public class FmtExprPrefix extends FmtExpr implements ExprVisitor
 
     public void visit(NodeVar nv)
     {
-        out.print("?") ;
-        out.print(nv.getVarName()) ;
-    }
-    
-    public void finishVisit() { out.flush() ; }
-    
-    private void endLine()
-    {
-        if ( ONELINE )
-            out.print(' ') ;
+        String s = nv.getVarName() ;
+        if ( Var.isBlankNodeVarName(s) )
+        {
+            // Return to a bNode via the bNode mapping of a variable.
+            Var v = Var.alloc(s) ;
+            out.print(context.getBNodeMap().asString(v) ) ;
+        }
         else
-            out.println() ;
+        {
+            out.print("?") ;
+            out.print(nv.getVarName()) ;
+        }
     }
-    
+
+    public void finishVisit() { out.flush() ; }
 }
 
+
 /*
- * (c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

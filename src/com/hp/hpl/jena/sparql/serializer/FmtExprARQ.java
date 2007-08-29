@@ -7,114 +7,35 @@
 package com.hp.hpl.jena.sparql.serializer;
 
 import com.hp.hpl.jena.shared.PrefixMapping;
-import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.sparql.expr.*;
+
+import com.hp.hpl.jena.sparql.expr.Expr;
+import com.hp.hpl.jena.sparql.expr.ExprVisitor;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
 
 /** Output expressions in the syntax that ARQ expects them */
 
 public class FmtExprARQ extends FmtExpr 
 {
-    IndentedWriter out ;
-    SerializationContext context ;
-    
-    
+    FmtExprARQVisitor visitor ; 
+
     public FmtExprARQ(IndentedWriter writer, PrefixMapping pmap)
     {
-        this(writer, new SerializationContext(pmap , null)) ;
+        visitor = new FmtExprARQVisitor(writer, pmap) ;
     }
-    
 
     public FmtExprARQ(IndentedWriter writer, SerializationContext cxt)
     {
-        out = writer ;
-        context = cxt ;
-        if ( context == null )
-            context = new SerializationContext() ;
+        visitor = new FmtExprARQVisitor(writer, cxt) ;
+
     }
     
-    public static void format(IndentedWriter out, SerializationContext cxt, Expr expr)
-    {
-        ExprVisitor fmt = new FmtExprARQ(out, cxt) ;
-        fmt.startVisit() ;
-        expr.visit(fmt) ;
-        fmt.finishVisit() ;
-    }
+    // temporary workaround - need to rationalise FmtExpr
+    public ExprVisitor getVisitor() { return visitor ; }
     
-    public void startVisit() { }
+    public void format(Expr expr, boolean exprNeedsBrackets)
+    { expr.visit(visitor) ; } 
 
-    private void visitFunction1(ExprFunction1 expr)
-    {
-        out.print("( ") ;
-        out.print( expr.getOpName() ) ;
-        out.print(" ") ;
-        expr.getArg().visit(this) ;
-        out.print(" )");
-    }
-
-    private void visitFunction2(ExprFunction2 expr)
-    {
-        out.print("( ") ;
-        expr.getArg1().visit(this) ;
-        out.print(" ") ;
-        out.print( expr.getOpName() ) ;
-        out.print(" ") ;
-        expr.getArg2().visit(this) ;
-        out.print(" )");
-    }
-
-    public void visit(ExprFunction func)
-    {
-        if ( func.getOpName() != null && func instanceof ExprFunction2 )
-        {
-            visitFunction2((ExprFunction2)func) ;
-            return ;
-        }
-
-        if ( func.getOpName() != null && func instanceof ExprFunction1 )
-        {
-            visitFunction1((ExprFunction1)func) ;
-            return ;
-        }
-        
-        out.print( func.getFunctionPrintName(context) ) ;
-        out.print("(") ;
-        for ( int i = 1 ; ; i++ )
-        {
-            Expr expr = func.getArg(i) ;
-            if ( expr == null )
-                break ; 
-            if ( i != 1 )
-                out.print(", ") ;
-            expr.visit(this) ;
-        }
-        out.print(")");
-    }
-
-    public void visit(NodeValue nv)
-    {
-        out.print(nv.asQuotedString(context)) ;
-    }
-
-    public void visit(NodeVar nv)
-    {
-        String s = nv.getVarName() ;
-        if ( Var.isBlankNodeVarName(s) )
-        {
-            // Return to a bNode via the bNode mapping of a variable.
-            Var v = Var.alloc(s) ;
-            out.print(context.getBNodeMap().asString(v) ) ;
-        }
-        else
-        {
-            out.print("?") ;
-            out.print(nv.getVarName()) ;
-        }
-    }
-
-    public void finishVisit() { out.flush() ; }
 }
-
 /*
  * (c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.

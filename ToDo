@@ -7,6 +7,12 @@
 ++ Reorder documentation - intro, SPARQL, extensions.
 -----
 
++ Remove com.hp.hpl.jena.sparql.function.library.trace
+  And any documentation
+  Remove FmtExprARQSubst?  What happens in a SPARQL query with RepeatApply of filters? 
+
++ Sort out FmtExpr (make a proper interface)
+
 + OpOrder to take an ExprList
 + ExprList writing an LJ
 
@@ -21,7 +27,9 @@
   Document 
   Prefix writing (drop prefix form altogether now we have the algebra?)
   
-+ Exression printing : expr.toString shoudl not add outer brackets
++ Exression printing : expr.toString should not add outer brackets
+  ExprNode.toString => ExprUtils.fmtSPARQL(IndentedWriter, Expr, pmap) => FmtExpr/FmtExprARQ.visit
+     Split FmtExpr in statics and a nested visitor. 
  
 + Optimizer 
   

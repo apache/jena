@@ -6,12 +6,28 @@
 
 package com.hp.hpl.jena.sparql.serializer;
 
+import com.hp.hpl.jena.sparql.expr.Expr;
 import com.hp.hpl.jena.sparql.expr.ExprVisitor;
 
 
-public abstract class FmtExpr implements ExprVisitor
+/** A FmtExpr is a machine to format expressions : the subclasses are
+ *  created with all the context they need.
+ *  Can be reused several times (same prefix mapping)   
+ * 
+ * @author Andy Seaborne
+ * @version $Id$
+ */
+
+public abstract class FmtExpr
 {
     static final int INDENT = 2 ;
+    
+    // Check calls to this and see about brackets.
+    public abstract void format(Expr expr, boolean exprNeedsBrackets) ; 
+    
+    // TODO temporary workaround - need to rationalise FmtExpr
+    public abstract ExprVisitor getVisitor() ;
+    
 }
 
 /*

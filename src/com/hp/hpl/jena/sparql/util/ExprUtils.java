@@ -126,8 +126,8 @@ public class ExprUtils
     
     public static void fmtSPARQL(IndentedWriter iOut, Expr expr, PrefixMapping pmap)
     {
-        ExprVisitor v = new FmtExprARQ(iOut, pmap) ;
-        expr.visit(v) ;
+        FmtExprARQ v = new FmtExprARQ(iOut, pmap) ;
+        v.format(expr, false) ;
     }
     
     public static void fmtSPARQL(IndentedWriter iOut, Expr expr)
@@ -162,14 +162,14 @@ public class ExprUtils
     
     public static void fmtSPARQL(IndentedWriter iOut, ExprList exprs, PrefixMapping pmap)
     {
-        ExprVisitor v = new FmtExprARQ(iOut, pmap) ;
+        FmtExprARQ fmt = new FmtExprARQ(iOut, pmap) ;
         String sep = "" ;
         for ( Iterator iter = exprs.iterator() ; iter.hasNext() ; )
         {
             Expr expr = (Expr)iter.next();
             iOut.print(sep) ;
             sep = " , " ;
-            expr.visit(v) ;
+            fmt.format(expr, true) ;
         }
     }
 

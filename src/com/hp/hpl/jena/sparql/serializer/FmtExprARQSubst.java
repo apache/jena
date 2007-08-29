@@ -22,7 +22,7 @@ import com.hp.hpl.jena.sparql.util.IndentedWriter;
  * @version $Id: FmtExprARQSubst.java,v 1.6 2007/02/06 17:05:52 andy_seaborne Exp $
  */
 
-public class FmtExprARQSubst extends FmtExprARQ
+public class FmtExprARQSubst extends FmtExprARQVisitor
 {
     Binding binding ; 
     ExecutionContext execCxt ;

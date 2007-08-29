@@ -209,7 +209,7 @@ public class QuerySerializerPrefix implements QueryVisitor
             {
                 out.print("(order by ") ;
                 SortCondition sc = (SortCondition)iter.next() ;
-                sc.formatPrefix(fmtExpr, out) ;
+                sc.formatPrefix(fmtExpr.getVisitor(), out) ;
                 out.println(")") ;
             }
         }

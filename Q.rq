@@ -5,5 +5,8 @@ PREFIX  list:   <http://jena.hpl.hp.com/ARQ/list#>
 SELECT ?x ?x
 {
     ?x :p "abc"@de-de .
+    FILTER (?x)
+    FILTER (?x+?y)
 }
+ORDER BY ?x (?x+?y)
 LIMIT 3

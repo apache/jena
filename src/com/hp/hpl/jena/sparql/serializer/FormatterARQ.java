@@ -15,7 +15,6 @@ import com.hp.hpl.jena.graph.Triple;
 
 import com.hp.hpl.jena.sparql.core.BasicPattern;
 import com.hp.hpl.jena.sparql.expr.Expr;
-import com.hp.hpl.jena.sparql.expr.ExprVisitor;
 import com.hp.hpl.jena.sparql.syntax.*;
 import com.hp.hpl.jena.sparql.util.IndentedLineBuffer;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
@@ -133,7 +132,7 @@ public class FormatterARQ extends FormatterBase
     {
         out.print("FILTER ") ;
         Expr expr = el.getExpr() ;
-        ExprVisitor v = new FmtExprARQ(out, context) ;
+        FmtExprARQ v = new FmtExprARQ(out, context) ;
         
         // This assumes that complex expressions are bracketted
         // (parens) as necessary except for some cases:
@@ -147,7 +146,7 @@ public class FormatterARQ extends FormatterBase
         
         if ( addParens )
             out.print("( ") ;
-        expr.visit(v) ;
+        v.format(expr, true) ;
         if ( addParens )
             out.print(" )") ;
     }
