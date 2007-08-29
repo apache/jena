@@ -84,19 +84,42 @@ public class TestSSE_Basic extends TestCase
     public void testURI_2() { parseBadNode("http://example/baseNoDelimiters") ; }
     public void testURI_3() { parseBadNode("<http://example/ space>") ; }
     
-    public void testVar_1() { testVar("?x") ; }
-    public void testVar_2() { testVar("?") ; }
-    public void testVar_3() { testVar("?0") ; }
+    public void testVar_01() { testVar("?x") ; }
+    public void testVar_02() { testVar("?") ; }
+    public void testVar_03() { testVar("?0") ; }
     // See ARQConstants.anonVarMarker
-    public void testVar_4() { testVar("??x") ; }
-    public void testVar_5() { testVar("??") ; }
-    public void testVar_6() { testVar("??0") ; }
+    public void testVar_04() { testVar("??x") ; }
+    public void testVar_05() { testVar("??") ; }
+    public void testVar_06() { testVar("??0") ; }
     
     // See ARQConstants.allocVarMarker
-    public void testVar_7() { testVar("?"+ARQConstants.allocVarMarker+"0") ; }
-    public void testVar_8() { testVar("?"+ARQConstants.allocVarMarker+"") ; }
+    public void testVar_07() { testVar("?"+ARQConstants.allocVarMarker+"0") ; }
+    public void testVar_08() { testVar("?"+ARQConstants.allocVarMarker) ; }
+
+    // Default allocations
+    public void testVar_09()
+    { 
+        Node v = SSE.parseNode("?") ;
+        assertTrue( v instanceof Var ) ;
+        String vn = ((Var)v).getVarName() ;
+        assertFalse(vn.equals("")) ;
+    }
     
-    //public void testVar_7() { testVar("$x") ; }
+    public void testVar_10()
+    { 
+        Node v = SSE.parseNode("?"+ARQConstants.anonVarMarker) ;
+        assertTrue( v instanceof Var ) ;
+        String vn = ((Var)v).getVarName() ;
+        assertFalse(vn.equals(ARQConstants.anonVarMarker)) ;
+    }
+    
+    public void testVar_11()
+    { 
+        Node v = SSE.parseNode("?"+ARQConstants.allocVarMarker) ;
+        assertTrue( v instanceof Var ) ;
+        String vn = ((Var)v).getVarName() ;
+        assertFalse(vn.equals(ARQConstants.allocVarMarker)) ;
+    }
     
     public void testWS_1() { parseBadNode("?x ") ; }
     public void testWS_2() { parseBadNode(" ?x") ; }
