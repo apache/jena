@@ -25,6 +25,8 @@ public abstract class FmtExpr
     // Check calls to this and see about brackets.
     public abstract void format(Expr expr, boolean exprNeedsBrackets) ; 
     
+    // interface <T> Formatter { void format( T thing ) ; }
+    
     // TODO temporary workaround - need to rationalise FmtExpr
     public abstract ExprVisitor getVisitor() ;
     

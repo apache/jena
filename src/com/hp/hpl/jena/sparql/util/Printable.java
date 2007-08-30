@@ -10,6 +10,9 @@ import com.hp.hpl.jena.sparql.util.IndentedWriter;
 
 public interface Printable
 {
+    // There is a dual - interface <T> Formatter { void format( T thing ) ; }
+    // which outputs a thing to some kind of output.  More a Java5 thing.
+    
     public void output(IndentedWriter out) ;
 }
 

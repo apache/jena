@@ -8,8 +8,9 @@ package dev;
 
 import arq.sparql;
 
-
-import com.hp.hpl.jena.graph.Triple;
+import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
+import com.hp.hpl.jena.datatypes.xsd.XSDDateTime;
+import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryExecution;
 import com.hp.hpl.jena.query.QueryExecutionFactory;
@@ -20,10 +21,9 @@ import com.hp.hpl.jena.query.larq.IndexLARQ;
 import com.hp.hpl.jena.query.larq.LARQ;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.sparql.sse.Item;
+import com.hp.hpl.jena.sparql.ARQException;
+import com.hp.hpl.jena.sparql.expr.NodeValue;
 import com.hp.hpl.jena.sparql.sse.SSE;
-import com.hp.hpl.jena.sparql.util.ExprUtils;
-
 import com.hp.hpl.jena.util.FileManager;
 
 
@@ -31,36 +31,22 @@ public class Run
 {
     public static void main(String[] argv)
     {
-        // SELECT * broken
-        // 1: * => no project => no expressions done.
-        // 2: addResultVar(,Ex
-        
-        if ( false )
+        if ( true )
         {
-            Query query = QueryFactory.create("PREFIX : <http://example/> SELECT * { ?s1 :p1 ?x . ?s2 :p2 ?y }") ;
-            // This causes isQuerySelectStar to be false. Opps
-            //query.addResultVars(query.getResultVars()) ;
-            query.addResultVar("z", ExprUtils.parse("?x*?y")) ;
-    
-            System.out.println(query.toString()) ;
+            Node n = SSE.parseNode("'2007-08-30T01:20:30'^^xsd:dateTime") ;
             
+            parseXSDDateTime("2007-08-30T01:20:30") ;
+            System.exit(0) ;
             
-            Model m = FileManager.get().loadModel("D.ttl") ;
-            QueryExecution qExec = QueryExecutionFactory.create(query, m) ;
-            ResultSetFormatter.out(qExec.execSelect()) ;
-            qExec.close() ;
+            XSDDatatype.XSDdateTime.isValid("2007-08-30T01:20:30") ;
+            
+            XSDDateTime xsdDT = (XSDDateTime)n.getLiteralValue() ;
+            System.out.println(xsdDT) ;
+            
+            NodeValue nv = NodeValue.makeNode(n) ;
+            System.out.println(nv) ;
             System.exit(0) ;
         }
-
-        if ( false )
-        {
-            Item item = SSE.parse("_:") ;
-            System.exit(0) ;
-            Triple t1 = SSE.parseTriple("(?%0 <x:p> _:b)") ;
-            Triple t2 = SSE.parseTriple("(?%0 <x:p> _:b)") ;
-            System.exit(0) ;
-        }
-
         runQParse() ;
         
         String []a = { "--strict", "file:///c:/home/afs/W3C/DataAccess/tests/data-r2/expr-builtin/manifest.ttl" } ;
@@ -69,6 +55,89 @@ public class Run
         //execQuery(DIR+"data-3.ttl", DIR+"splitIRI-1.rq") ;
     }
     
+    private static void parseXSDDateTime(String lex)
+    {
+        // The dateTime format is quiote fixed.
+        // '-'? YYYY - MM - DD T hh : mm : ss.sss +TZ
+        // There is no year zero.  No white space.
+        
+        int idx = 0 ;
+        if ( lex.charAt(0) == '-' )
+            idx ++ ;
+        
+        int idx2 = skipDigits(lex, idx) ;
+        if ( idx == idx2 )
+            throw new ARQException("No digits") ;
+        int year = Integer.parseInt(lex.substring(idx, idx2)) ; 
+        check(lex, idx2, '-') ;
+        idx = idx2+1 ;
+        
+        idx2 = skipDigits(lex, idx) ;
+        if ( idx == idx2 )
+            throw new ARQException("No digits") ;
+        int month = Integer.parseInt(lex.substring(idx, idx2)) ;
+        check(lex, idx2, '-') ;
+        idx = idx2+1 ;
+        
+        idx2 = skipDigits(lex, idx) ;
+        if ( idx == idx2 )
+            throw new ARQException("No digits") ;
+        int day = Integer.parseInt(lex.substring(idx, idx2)) ;
+        check(lex, idx2, 'T') ;
+        idx = idx2+1 ;
+        
+        idx2 = skipDigits(lex, idx) ;
+        if ( idx == idx2 )
+            throw new ARQException("No digits") ;
+        int hour = Integer.parseInt(lex.substring(idx, idx2)) ;
+        check(lex, idx2, ':') ;
+        idx = idx2+1 ;
+        
+        idx2 = skipDigits(lex, idx) ;
+        if ( idx == idx2 )
+            throw new ARQException("No digits") ;
+        int min = Integer.parseInt(lex.substring(idx, idx2)) ;
+        check(lex, idx2, ':') ;
+        idx = idx2+1 ;
+
+        // Seconds
+        
+        // Timezone
+
+        System.out.println(year) ;
+        System.out.println(month) ;
+        System.out.println(day) ;
+        System.out.println(hour) ;
+        System.out.println(min) ;
+//        System.out.println(sec) ;
+//        System.out.println(tz) ;
+        
+    }
+    
+    private static int moveOn(String lex, int start, int[] parse, int parseIdx)
+    {
+        return -1 ;
+    }
+    
+    
+    private static void check(String lex, int idx, char c)
+    {
+        if ( lex.charAt(idx) != c )
+            throw new ARQException("dateTime parse error: expected '"+c+"', got '"+lex.charAt(idx)+"' at "+idx+": "+lex) ;
+    }
+
+    private static int skipDigits(String lex, int idx)
+    {
+        for ( int i = idx ; i < lex.length() ; i++ )
+        {
+            char ch =  lex.charAt(i) ;
+            if ( ! Character.isDigit(ch) )
+                return i ;
+        }
+        
+        return lex.length() ;
+    }
+
     private static void runQParse()
     {
         String []a = { "--file=Q.arq", "--out=arq", "--print=op", "--print=query" } ;
