@@ -177,10 +177,11 @@ public class Optimizer
 	 * 
 	 * @param model
 	 * @param query
+	 * @return String
 	 */
-	public static void explain(Model model, Query query)
+	public static String explain(Model model, Query query)
 	{
-		explain(ARQ.getContext(), model, query, null) ;
+		return explain(ARQ.getContext(), model, query, null) ;
 	}
 	
 	/**
