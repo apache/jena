@@ -5,7 +5,7 @@
 
 package com.hp.hpl.jena.sparql.expr;
 
-import com.hp.hpl.jena.sparql.expr.nodevalue.Functions;
+import com.hp.hpl.jena.sparql.expr.nodevalue.XSDFuncOp;
 
 /** 
  * @version $Id: E_Subtract.java,v 1.20 2007/01/02 11:19:16 andy_seaborne Exp $
@@ -21,7 +21,7 @@ public class E_Subtract extends ExprFunction2
         super(left, right, printName, symbol) ;
     }
 
-    public NodeValue eval(NodeValue x, NodeValue y) { return Functions.subtract(x, y) ; }
+    public NodeValue eval(NodeValue x, NodeValue y) { return XSDFuncOp.subtract(x, y) ; }
     
     public Expr copy(Expr e1, Expr e2) {  return new E_Subtract(e1 , e2 ) ; }
 }

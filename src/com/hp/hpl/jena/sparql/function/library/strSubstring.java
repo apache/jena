@@ -12,7 +12,7 @@ import com.hp.hpl.jena.query.QueryBuildException;
 import com.hp.hpl.jena.sparql.expr.ExprEvalException;
 import com.hp.hpl.jena.sparql.expr.ExprList;
 import com.hp.hpl.jena.sparql.expr.NodeValue;
-import com.hp.hpl.jena.sparql.expr.nodevalue.Functions;
+import com.hp.hpl.jena.sparql.expr.nodevalue.XSDFuncOp;
 import com.hp.hpl.jena.sparql.function.FunctionBase;
 import com.hp.hpl.jena.sparql.util.Utils;
 
@@ -42,10 +42,10 @@ public class strSubstring extends FunctionBase
         if ( args.size() == 3 )
         {
             v3 = (NodeValue)args.get(2) ;
-            return Functions.substring(v1, v2, v3) ;
+            return XSDFuncOp.substring(v1, v2, v3) ;
         }
         
-        return Functions.substring(v1, v2) ;
+        return XSDFuncOp.substring(v1, v2) ;
     }
         
 }

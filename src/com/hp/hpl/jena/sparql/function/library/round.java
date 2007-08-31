@@ -7,7 +7,7 @@
 package com.hp.hpl.jena.sparql.function.library;
 
 import com.hp.hpl.jena.sparql.expr.NodeValue;
-import com.hp.hpl.jena.sparql.expr.nodevalue.Functions;
+import com.hp.hpl.jena.sparql.expr.nodevalue.XSDFuncOp;
 import com.hp.hpl.jena.sparql.function.FunctionBase1;
 
 /** round(expression) */ 
@@ -18,7 +18,7 @@ public class round  extends FunctionBase1
     
     //@Override
     public NodeValue exec(NodeValue v)
-    { return Functions.round(v) ; }
+    { return XSDFuncOp.round(v) ; }
 }
 
 /*

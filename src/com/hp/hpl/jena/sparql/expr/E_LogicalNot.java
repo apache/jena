@@ -5,7 +5,7 @@
 
 package com.hp.hpl.jena.sparql.expr;
 
-import com.hp.hpl.jena.sparql.expr.nodevalue.Functions;
+import com.hp.hpl.jena.sparql.expr.nodevalue.XSDFuncOp;
 
 /** 
  * @author Andy Seaborne
@@ -27,7 +27,7 @@ public class E_LogicalNot extends ExprFunction1
 
     public NodeValue eval(NodeValue v)
     {
-        return Functions.not(v) ;
+        return XSDFuncOp.not(v) ;
     }
  
     public Expr copy(Expr expr) { return new E_LogicalNot(expr) ; } 

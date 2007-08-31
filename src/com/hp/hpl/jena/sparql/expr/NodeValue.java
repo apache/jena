@@ -37,20 +37,22 @@ public abstract class NodeValue extends ExprNode
      * 
      * Implementation notes:
      * 
-     * 1. There is little point delaying turning a node into its value.
-     *    Because a NodeValue is being created, it is almost certainly
-     *    going to be used for it's value, so processing the datatype
-     *    can be done at creation time for no loss of efficiency but
-     *    it is clearer.
+     * 1. There is little point delaying turning a node into its value
+     *    because it has to be verified anyway (e.g. illegal literals).
+     *    Because a NodeValue is being created, it is reasonably likely it
+     *    is going to be used for it's value, so processing the datatype
+     *    can be done at creation time where it is clearer.
      *    
-     * 2. Conversely, delaying turing a value into a graph node is
-     *    valuable because intmediates, like the result of 2+3, will not
+     * 2. Conversely, delaying turning a value into a graph node is
+     *    valuable because intermediates, like the result of 2+3, will not
      *    be needed as nodes unless assignment (and there is no assignment
      *    in SPARQL even if there is for ARQ). 
      *    Node level operations like str() don't need a full node.
      *      
-     * 3. The XQuery/Xpath functions and operations are implemented in
-     *    a separate class Function for convenience.
+     * 3. nodevalue.NodeFunctions contains the SPARQL builtin implementations. 
+     *    nodevalue.XSDFuncOp contains the implementation of the XQuery/Xpath
+     *    functions and operations.
+     *    See also NodeUtils.
      *    
      * 4. Note that SPARQL "=" is "known to be sameValueAs". Similarly "!=" is
      *    known to be different.
@@ -65,11 +67,14 @@ public abstract class NodeValue extends ExprNode
      *    Library code Maths1 and Maths2 for maths functions
      */
     
-    // Effective boolean value rules.
-    //   boolean: value of the boolean 
-    //   string: length(string) > 0 is true
-    //   numeric: number != Nan && number != 0 is true
-    // http://www.w3.org/TR/xquery/#dt-ebv
+    /*
+     * Effective boolean value rules.
+     *    boolean: value of the boolean 
+     *    string: length(string) > 0 is true
+     *    numeric: number != Nan && number != 0 is true
+     * ref:  http://www.w3.org/TR/xquery/#dt-ebv
+     * 
+     */
     
     // ---- Constants and initializers / public
     
@@ -148,15 +153,26 @@ public abstract class NodeValue extends ExprNode
 
     public static NodeValue makeDateTime(String lexicalForm)
     { return NodeValue.makeNode(lexicalForm, XSDDatatype.XSDdateTime) ; }
+
+    // Deprecate calendar operations?
+    // makeDateTime(Calendar)
+    // makeDate(Calendar)
+    // makeNodeDateTime(Calendar)
+    // makeNodeDate(Calendar)
     
     public static NodeValue makeDateTime(Calendar cal)
-    { return new NodeValueDateTime(cal) ; }
+    {
+        XSDDateTime xdt = new XSDDateTime(cal) ;
+        return new NodeValueDateTime(xdt) ; }
 
     public static NodeValue makeDate(String lexicalForm)
     { return NodeValue.makeNode(lexicalForm, XSDDatatype.XSDdate) ; }
     
     public static NodeValue makeDate(Calendar cal)
-    { return new NodeValueDate(cal) ; }
+    { 
+        XSDDateTime xdt = new XSDDateTime(cal) ;
+        return new NodeValueDate(xdt) ;
+    }
 
     public static NodeValue makeBoolean(boolean b)
     { return b ? NodeValue.TRUE : NodeValue.FALSE ; }
@@ -340,25 +356,26 @@ public abstract class NodeValue extends ExprNode
     
     // Disjoint value spaces : dateTime and dates are not comparable 
     // Every langtag implies another value space as well.
-    private static final int VSPACE_NUM       = 10 ;
-    private static final int VSPACE_DATETIME  = 20 ;
-    private static final int VSPACE_DATE      = 30 ;
-    private static final int VSPACE_STRING    = 40 ;
-    private static final int VSPACE_LANG      = 50 ;    // Lang tag (valid - no datatype).
-    private static final int VSPACE_BOOLEAN   = 60 ;
-    private static final int VSPACE_NODE      = 70 ;    // RDT Terms that are not literals   
-    private static final int VSPACE_UNKNOWN   = 80 ;    // Nodes - literal unknown value space or wrong in some way.
-    private static final int VSPACE_DIFFERENT = 90 ;    // Known to be different values spaces
     
-//    /** Return true if the two Nodes are known to be the same value
-//     *  return false if known to be different values,
-//     *  throw ExprEvalException if unknown
-//     */
-//    public static boolean sameAs(Node n1, Node n2)
-//    {
-//        return sameAs(NodeValue.makeNode(n1), NodeValue.makeNode(n2)) ;  
-//    }
-
+    // ToDo: dateTime and date are actually two value spaces : with and without timezone.
+    
+    private static final int VSPACE_NUM             = 10 ;
+    private static final int VSPACE_DATETIME     = 20 ; // To go
+    
+    private static final int VSPACE_DATETIME_TZ     = 20 ;
+    private static final int VSPACE_DATETIME_NO_TZ  = 25 ;
+    
+    private static final int VSPACE_DATE         = 30 ; // To go
+    private static final int VSPACE_DATE_TZ         = 30 ;
+    private static final int VSPACE_DATE_NO_TZ      = 35 ;
+    private static final int VSPACE_STRING          = 40 ;
+    
+    private static final int VSPACE_LANG            = 50 ;    // Lang tag (valid - no datatype).
+    private static final int VSPACE_BOOLEAN         = 60 ;
+    private static final int VSPACE_NODE            = 70 ;    // RDT Terms that are not literals   
+    private static final int VSPACE_UNKNOWN         = 80 ;    // Nodes - literal unknown value space or wrong in some way.
+    private static final int VSPACE_DIFFERENT       = 90 ;    // Known to be different values spaces
+    
     /** Return true if the two NodeValues are known to be the same value
      *  return false if known to be different values,
      *  throw ExprEvalException otherwise
@@ -372,11 +389,11 @@ public abstract class NodeValue extends ExprNode
         int compType = classifyValueOp(nv1, nv2) ;
         switch (compType)
         {
-            case VSPACE_NUM:        return Functions.compareNumeric(nv1, nv2) == 0 ;
-            case VSPACE_DATETIME:   return Functions.compareDateTime(nv1, nv2) == 0 ;
-            case VSPACE_DATE:       return Functions.compareDate(nv1, nv2) == 0 ;
-            case VSPACE_STRING:     return Functions.compareString(nv1, nv2) == 0 ;
-            case VSPACE_BOOLEAN:    return Functions.compareBoolean(nv1, nv2) == 0 ;
+            case VSPACE_NUM:        return XSDFuncOp.compareNumeric(nv1, nv2) == 0 ;
+            case VSPACE_DATETIME:   return XSDFuncOp.compareDateTime(nv1, nv2) == 0 ;
+            case VSPACE_DATE:       return XSDFuncOp.compareDate(nv1, nv2) == 0 ;
+            case VSPACE_STRING:     return XSDFuncOp.compareString(nv1, nv2) == 0 ;
+            case VSPACE_BOOLEAN:    return XSDFuncOp.compareBoolean(nv1, nv2) == 0 ;
             
             case VSPACE_LANG:
             {
@@ -488,7 +505,7 @@ public abstract class NodeValue extends ExprNode
      * @param nv1
      * @param nv2
      * @return negative, 0 , or positive for not possible, less than, equal, greater than.
-     * @throws ExprEvalException  
+     * @throws ExprNotComparableException  
      */
     public static int compare(NodeValue nv1, NodeValue nv2)
     {
@@ -523,14 +540,42 @@ public abstract class NodeValue extends ExprNode
         
         int compType = classifyValueOp(nv1, nv2) ;
         
+        // Special case - date/dateTime comparison is affected by timezones and may be
+        // interdeterminate based on the value of the dateTime/date.
+        // Do this first, 
+        
         switch (compType)
         {
-            case VSPACE_NUM:        return Functions.compareNumeric(nv1, nv2) ;
-            case VSPACE_DATETIME:   return Functions.compareDateTime(nv1, nv2) ;
-            case VSPACE_DATE:       return Functions.compareDate(nv1, nv2) ;
+            case VSPACE_DATETIME:
+            {
+                int x = XSDFuncOp.compareDateTime(nv1, nv2) ;
+                if ( x != Expr.CMP_INDETERMINATE )
+                    return x ;
+                // Indeterminate => can't compare as strict values.
+                compType = VSPACE_DIFFERENT ;
+                break ;
+            }
+            case VSPACE_DATE:
+            {
+                int x = XSDFuncOp.compareDate(nv1, nv2) ;
+                if ( x != Expr.CMP_INDETERMINATE )
+                    return x ;
+                // Indeterminate => can't compare as strict values.
+                compType = VSPACE_DIFFERENT ;
+                break ;
+            }
+        }
+            
+        switch (compType)
+        {    
+            case VSPACE_DATETIME:
+            case VSPACE_DATE:
+                throw new ARQInternalErrorException("Still seeing date/dateTime compare type") ;
+            
+            case VSPACE_NUM:        return XSDFuncOp.compareNumeric(nv1, nv2) ;
             case VSPACE_STRING:
             {
-                int cmp = Functions.compareString(nv1, nv2) ;
+                int cmp = XSDFuncOp.compareString(nv1, nv2) ;
                 
                 // Split plain literals and xsd:strings for sorting purposes.
                 if ( ! sortOrderingCompare )
@@ -546,7 +591,7 @@ public abstract class NodeValue extends ExprNode
                     return Expr.CMP_GREATER ;
                 return Expr.CMP_EQUAL;  // Both plain or both xsd:string.
             }
-            case VSPACE_BOOLEAN:    return Functions.compareBoolean(nv1, nv2) ;
+            case VSPACE_BOOLEAN:    return XSDFuncOp.compareBoolean(nv1, nv2) ;
             
             case VSPACE_LANG:
             {
@@ -706,8 +751,8 @@ public abstract class NodeValue extends ExprNode
     public BigDecimal  getDecimal()  { raise(new ExprEvalException("Not a decimal: "+this)) ; return null ; }
     public float       getFloat()    { raise(new ExprEvalException("Not a float: "+this)) ; return Float.NaN ; }
     public double      getDouble()   { raise(new ExprEvalException("Not a double: "+this)) ; return Double.NaN ; }
-    public Calendar    getDateTime() { raise(new ExprEvalException("Not a dateTime: "+this)) ; return null ; }
-    public Calendar    getDate()     { raise(new ExprEvalException("Not a date: "+this)) ; return null ; }
+    public XSDDateTime    getDateTime() { raise(new ExprEvalException("Not a dateTime: "+this)) ; return null ; }
+    public XSDDateTime    getDate()     { raise(new ExprEvalException("Not a date: "+this)) ; return null ; }
 
 //    // ---- Force to a type : Needed? 
 //    
@@ -829,14 +874,14 @@ public abstract class NodeValue extends ExprNode
             if ( XSDDatatype.XSDdateTime.isValidLiteral(lit) ) 
             {
                 XSDDateTime dateTime = (XSDDateTime)lit.getValue() ;
-                return new NodeValueDateTime(dateTime.asCalendar(), node) ;
+                return new NodeValueDateTime(dateTime, node) ;
             }
             
             if ( XSDDatatype.XSDdate.isValidLiteral(lit) )
             {
                 // Jena datatype support works on masked dataTimes. 
                 XSDDateTime dateTime = (XSDDateTime)lit.getValue() ;
-                return new NodeValueDate(dateTime.asCalendar(), node) ;
+                return new NodeValueDate(dateTime, node) ;
             }
             
             if ( XSDDatatype.XSDboolean.isValidLiteral(lit) )

@@ -8,8 +8,8 @@ package com.hp.hpl.jena.sparql.expr.nodevalue;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.Calendar;
 
+import com.hp.hpl.jena.datatypes.xsd.XSDDateTime;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException;
 import com.hp.hpl.jena.sparql.expr.Expr;
 import com.hp.hpl.jena.sparql.expr.ExprEvalException;
@@ -24,7 +24,7 @@ import com.hp.hpl.jena.sparql.util.StringUtils;
  * @author Andy Seaborne
  * @version $Id: Functions.java,v 1.30 2007/01/02 11:19:29 andy_seaborne Exp $
  */
-public class Functions
+public class XSDFuncOp
 {
     // The choice of "24" is arbitrary but more than 18 as required by F&O 
     private static final int DIVIDE_PRECISION = 24 ;
@@ -137,7 +137,7 @@ public class Functions
             return d1.divide(d2, DIVIDE_PRECISION, BigDecimal.ROUND_FLOOR) ;
         } catch (ArithmeticException ex)
         {
-            ALog.warn(Functions.class, "ArithmeticException in decimal divide - attempting to treat as doubles") ;
+            ALog.warn(XSDFuncOp.class, "ArithmeticException in decimal divide - attempting to treat as doubles") ;
             return new BigDecimal(d1.doubleValue()/d2.doubleValue()) ;
         }
     }
@@ -160,7 +160,7 @@ public class Functions
 
     public static NodeValue not(NodeValue nv) // F&O fn:not
     {
-        boolean b = Functions.booleanEffectiveValue(nv) ; 
+        boolean b = XSDFuncOp.booleanEffectiveValue(nv) ; 
         return NodeValue.booleanReturn(!b) ;
     }
     
@@ -579,19 +579,37 @@ public class Functions
     { 
         return compareCal(nv1.getDate(), nv2.getDate()) ;
     }
-    
-    private static int compareCal(Calendar cal1 , Calendar cal2)
+
+    private static int compareCal(XSDDateTime dt1 , XSDDateTime dt2)
     {
-        if ( cal1.after(cal2) )
-            return Expr.CMP_GREATER ; 
-
-        if ( cal1.before(cal2) )
+        // Returns codes are -1/0/1 but also 2 for "Indeterminate"
+        // which occurs when one has a timezone and one does not
+        // and they are less then 14 hours apart.
+        
+        int x = dt1.compare(dt2) ;
+        if ( x == XSDDateTime.EQUAL )
+            return Expr.CMP_EQUAL ;
+        if ( x == XSDDateTime.LESS_THAN )
             return Expr.CMP_LESS ;
-
-        return Expr.CMP_EQUAL ;
-        // Java 1.5.0 , not Java 1.4.2
-        //return cal1.compareTo(cal2) ;
+        if ( x == XSDDateTime.GREATER_THAN )
+            return Expr.CMP_GREATER ;
+        if ( x == XSDDateTime.INDETERMINATE )
+            return Expr.CMP_INDETERMINATE ;
+        throw new ARQInternalErrorException("Unexpected return from XSDDateTime.compare: "+x) ;
     }
+    
+//    private static int compareCal(Calendar cal1 , Calendar cal2)
+//    {
+//        if ( cal1.after(cal2) )
+//            return Expr.CMP_GREATER ; 
+//
+//        if ( cal1.before(cal2) )
+//            return Expr.CMP_LESS ;
+//
+//        return Expr.CMP_EQUAL ;
+//        // Java 1.5.0 , not Java 1.4.2
+//        //return cal1.compareTo(cal2) ;
+//    }
 
     // --------------------------------
     // Boolean operations

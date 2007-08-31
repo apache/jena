@@ -7,7 +7,7 @@
 package com.hp.hpl.jena.sparql.function.library;
 
 import com.hp.hpl.jena.sparql.expr.NodeValue;
-import com.hp.hpl.jena.sparql.expr.nodevalue.Functions;
+import com.hp.hpl.jena.sparql.expr.nodevalue.XSDFuncOp;
 import com.hp.hpl.jena.sparql.function.FunctionBase1;
 
 /** floor(expression) */ 
@@ -18,7 +18,7 @@ public class floor extends FunctionBase1
     
     //@Override
     public NodeValue exec(NodeValue v)
-    { return Functions.floor(v) ; }
+    { return XSDFuncOp.floor(v) ; }
 
 }
 

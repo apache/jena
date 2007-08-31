@@ -7,7 +7,7 @@ package com.hp.hpl.jena.sparql.expr;
 
 import com.hp.hpl.jena.sparql.ARQInternalErrorException;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.sparql.expr.nodevalue.Functions;
+import com.hp.hpl.jena.sparql.expr.nodevalue.XSDFuncOp;
 import com.hp.hpl.jena.sparql.function.FunctionEnv;
 
 /* 
@@ -49,7 +49,7 @@ public class E_LogicalOr extends ExprFunction2
         try {
             NodeValue x = getArg1().eval(binding, env) ;
     
-            if ( Functions.booleanEffectiveValue(x) )
+            if ( XSDFuncOp.booleanEffectiveValue(x) )
     			return NodeValue.TRUE ; 
         } catch (ExprEvalException eee)
         {
@@ -62,7 +62,7 @@ public class E_LogicalOr extends ExprFunction2
         try {
             NodeValue y = getArg2().eval(binding, env) ;
     
-    		if ( Functions.booleanEffectiveValue(y) )
+    		if ( XSDFuncOp.booleanEffectiveValue(y) )
     			return NodeValue.TRUE ;
             
             // RHS is false but was there an error earlier?

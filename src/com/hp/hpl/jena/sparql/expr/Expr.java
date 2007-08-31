@@ -20,6 +20,7 @@ public interface Expr
     public static final int CMP_LESS     = -1 ;
     
     public static final int CMP_UNEQUAL  = -9 ;
+    public static final int CMP_INDETERMINATE  = 2 ;
     
     /** Test whether a Constraint is satisfied, given a set of bindings
      *  Includes error propagtion and Effective Boolean Value rules.

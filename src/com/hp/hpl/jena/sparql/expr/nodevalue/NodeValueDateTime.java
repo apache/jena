@@ -5,32 +5,32 @@
 
 package com.hp.hpl.jena.sparql.expr.nodevalue;
 
-import java.util.Calendar;
-
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
+import com.hp.hpl.jena.datatypes.xsd.XSDDateTime;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.sparql.expr.NodeValue;
-import com.hp.hpl.jena.sparql.util.Utils;
 
 /** XSD dateTime (which is unrelated to XSD date in the datatype hierarchy) */ 
 
 public class NodeValueDateTime extends NodeValue
 {
-    Calendar date ;
+    // GregorianCalendar always has a timezone.
+    XSDDateTime dateTime ;
     
-    public NodeValueDateTime(Calendar cal) { date = cal ; }
-    public NodeValueDateTime(Calendar cal, Node n) { super(n) ; date = cal ; }
+    public NodeValueDateTime(XSDDateTime xdt) { dateTime = xdt ; }
+    public NodeValueDateTime(XSDDateTime xdt, Node n) { super(n) ; dateTime = xdt ; }
     
     //@Override
     public boolean isDateTime() { return true ; }
     //@Override
-    public Calendar getDateTime() { return date ; }
+    public XSDDateTime getDateTime() { return dateTime ; }
     
     //@Override
     protected Node makeNode()
     {
-       String lex = Utils.calendarToXSDDateTimeString(date) ;
-       return Node.createLiteral(lex, null, XSDDatatype.XSDdateTime) ;
+        String lex = dateTime.toString() ;
+        //String lex = Utils.calendarToXSDDateTimeString(date) ;
+        return Node.createLiteral(lex, null, XSDDatatype.XSDdateTime) ;
     }
     
     public void visit(NodeValueVisitor visitor) { visitor.visit(this) ; }

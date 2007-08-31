@@ -5,7 +5,7 @@
 
 package com.hp.hpl.jena.sparql.expr;
 
-import com.hp.hpl.jena.sparql.expr.nodevalue.Functions;
+import com.hp.hpl.jena.sparql.expr.nodevalue.XSDFuncOp;
 
 /** 
  * @author Andy Seaborne
@@ -22,7 +22,7 @@ public class E_UnaryMinus extends ExprFunction1
         super(expr, printName, symbol) ;
     }
     
-    public NodeValue eval(NodeValue v) { return Functions.unaryMinus(v) ; }
+    public NodeValue eval(NodeValue v) { return XSDFuncOp.unaryMinus(v) ; }
     
     public Expr copy(Expr expr) { return new E_UnaryMinus(expr) ; } 
 }

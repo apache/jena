@@ -18,7 +18,7 @@ import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.sparql.expr.ExprEvalException;
 import com.hp.hpl.jena.sparql.expr.NodeValue;
-import com.hp.hpl.jena.sparql.expr.nodevalue.Functions;
+import com.hp.hpl.jena.sparql.expr.nodevalue.XSDFuncOp;
 import com.hp.hpl.jena.sparql.util.Utils;
 
 
@@ -184,7 +184,7 @@ public class TestNodeValue extends TestCase
         assertTrue("Not a dateTime: "+v, v.isDateTime()) ;
         assertFalse("A date: "+v, v.isDate()) ;
         assertTrue("Not a node: "+v, v.hasNode()) ;
-        Calendar cal2 = v.getDateTime() ;
+        Calendar cal2 = v.getDateTime().asCalendar() ;
         assertEquals("Not equal: "+v, cal1, cal2) ;
     }
 
@@ -201,8 +201,6 @@ public class TestNodeValue extends TestCase
             NodeValue.VerboseWarnings = b;
         }
     }
-        
-
     
     public void testDate1()
     {
@@ -210,7 +208,9 @@ public class TestNodeValue extends TestCase
         cal.setTimeZone(TimeZone.getTimeZone("GMT")) ;
         // Clear/ set all fields (milliseconds included).
         cal.setTimeInMillis(0) ;
-        cal.set(2005,01,18,20,39,10) ;          // NB Months from 0, not 1
+        // NB Months from 0, not 1
+        // For a date, must be time = 00:00:00
+        cal.set(2005,01,18,0,0,0) ;          
 
         NodeValue v = NodeValue.makeDate(cal) ;
         assertTrue("Not a date: "+v, v.isDate()) ;
@@ -246,7 +246,7 @@ public class TestNodeValue extends TestCase
         assertTrue("Not a date: "+v, v.isDate()) ;
         assertFalse("A dateTime: "+v, v.isDateTime()) ;
         assertTrue("Not a node: "+v, v.hasNode()) ;
-        Calendar cal2 = v.getDate() ;
+        Calendar cal2 = v.getDate().asCalendar() ;
         assertEquals("Not equal: "+v, cal1, cal2) ;
     }
 
@@ -388,7 +388,7 @@ public class TestNodeValue extends TestCase
         assertTrue("Not a boolean: "+v, v.isBoolean()) ;
         //assertTrue("Not a node: "+v, v.hasNode()) ;
         assertTrue("Not true: "+v, v.getBoolean()) ;
-        assertTrue("Not true: "+v, Functions.booleanEffectiveValue(v)) ;
+        assertTrue("Not true: "+v, XSDFuncOp.booleanEffectiveValue(v)) ;
     }
 
     public void testNodeBool4()
@@ -397,7 +397,7 @@ public class TestNodeValue extends TestCase
         assertTrue("Not a boolean: "+v, v.isBoolean()) ;
         //assertTrue("Not a node: "+v, v.hasNode()) ;
         assertFalse("Not false: "+v, v.getBoolean()) ;
-        assertFalse("Not false: "+v, Functions.booleanEffectiveValue(v)) ;
+        assertFalse("Not false: "+v, XSDFuncOp.booleanEffectiveValue(v)) ;
     }
 
     public void testBadLexcial1()
@@ -457,14 +457,14 @@ public class TestNodeValue extends TestCase
     {
         assertTrue("Not a boolean", NodeValue.TRUE.isBoolean()) ;
         assertTrue("Not true", NodeValue.TRUE.getBoolean()) ;
-        assertTrue("Not true", Functions.booleanEffectiveValue(NodeValue.TRUE)) ;
+        assertTrue("Not true", XSDFuncOp.booleanEffectiveValue(NodeValue.TRUE)) ;
     }
 
     public void testEBV2()
     {
         assertTrue("Not a boolean", NodeValue.FALSE.isBoolean()) ;
         assertFalse("Not false", NodeValue.FALSE.getBoolean()) ;
-        assertFalse("Not false", Functions.booleanEffectiveValue(NodeValue.FALSE)) ;
+        assertFalse("Not false", XSDFuncOp.booleanEffectiveValue(NodeValue.FALSE)) ;
     }
     
     public void testEBV3()
@@ -473,7 +473,7 @@ public class TestNodeValue extends TestCase
         assertFalse("It's a boolean: "+v, v.isBoolean()) ;
         //assertTrue("Not a node: "+v, v.hasNode()) ;
         try { v.getBoolean() ; fail("getBoolean should fail") ; } catch (ExprEvalException e) {}
-        assertTrue("Not EBV true: "+v, Functions.booleanEffectiveValue(v)) ;
+        assertTrue("Not EBV true: "+v, XSDFuncOp.booleanEffectiveValue(v)) ;
     }
     
     public void testEBV4()
@@ -482,7 +482,7 @@ public class TestNodeValue extends TestCase
         assertFalse("It's a boolean: "+v, v.isBoolean()) ;
         //assertTrue("Not a node: "+v, v.hasNode()) ;
         try { v.getBoolean() ; fail("getBoolean should fail") ; } catch (ExprEvalException e) {}
-        assertFalse("Not EBV false: "+v, Functions.booleanEffectiveValue(v)) ;
+        assertFalse("Not EBV false: "+v, XSDFuncOp.booleanEffectiveValue(v)) ;
     }
     
     public void testEBV5()
@@ -491,7 +491,7 @@ public class TestNodeValue extends TestCase
         assertFalse("It's a boolean: "+v, v.isBoolean()) ;
         //assertTrue("Not a node: "+v, v.hasNode()) ;
         try { v.getBoolean() ; fail("getBoolean should fail") ; } catch (ExprEvalException e) {}
-        assertTrue("Not EBV true: "+v, Functions.booleanEffectiveValue(v)) ;
+        assertTrue("Not EBV true: "+v, XSDFuncOp.booleanEffectiveValue(v)) ;
     }
     
     public void testEBV6()
@@ -500,7 +500,7 @@ public class TestNodeValue extends TestCase
         assertFalse("It's a boolean: "+v, v.isBoolean()) ;
         //assertTrue("Not a node: "+v, v.hasNode()) ;
         try { v.getBoolean() ; fail("getBoolean should fail") ; } catch (ExprEvalException e) {}
-        assertFalse("Not EBV false: "+v, Functions.booleanEffectiveValue(v)) ;
+        assertFalse("Not EBV false: "+v, XSDFuncOp.booleanEffectiveValue(v)) ;
     }
     
     public void testFloatDouble1()

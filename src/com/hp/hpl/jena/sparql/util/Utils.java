@@ -13,9 +13,9 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.TimeZone;
 
+import com.hp.hpl.jena.datatypes.xsd.XSDDateTime;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
-
 import com.hp.hpl.jena.sparql.core.Var;
 
 /** Miscellaneous operations - not query specific */
@@ -55,6 +55,9 @@ public class Utils
 //    }
     
     
+    // warning all calendar based operations force the timezone
+    // to the default is not present. 
+    
     public static String nowAsXSDDateTimeString()
     {
         return calendarToXSDDateTimeString(new GregorianCalendar()) ;
@@ -65,6 +68,23 @@ public class Utils
         return calendarToXSDDateString(new GregorianCalendar()) ;
     }
 
+    public static String XSDDateTime2String(XSDDateTime xdt)
+    {
+        return xdt.toString() ;
+    }
+    
+//    public static XSDDateTime calendarToXSDDateTime(Calendar cal)
+//    {
+//        return new XSDDateTime(cal) ;
+//    }
+//
+//    public static XSDDateTime calendarToXSDDate(Calendar cal)
+//    {
+//        // Ensure it is an XSDDate, not a dateTime.
+//        return (XSDDateTime)XSDDatatype.XSDdate.parse(calendarToXSDDateString(cal)) ;
+//    }
+
+    
     public static String calendarToXSDDateTimeString(Calendar cal)
     {
         return calendarToXSDString(cal, "yyyy-MM-dd'T'HH:mm:ss.S") ;

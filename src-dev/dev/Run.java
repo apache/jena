@@ -8,8 +8,6 @@ package dev;
 
 import arq.sparql;
 
-import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
-import com.hp.hpl.jena.datatypes.xsd.XSDDateTime;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryExecution;
@@ -21,7 +19,11 @@ import com.hp.hpl.jena.query.larq.IndexLARQ;
 import com.hp.hpl.jena.query.larq.LARQ;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.sparql.ARQException;
+import com.hp.hpl.jena.sparql.core.Var;
+import com.hp.hpl.jena.sparql.engine.binding.Binding;
+import com.hp.hpl.jena.sparql.engine.binding.BindingMap;
+import com.hp.hpl.jena.sparql.expr.Expr;
+import com.hp.hpl.jena.sparql.expr.ExprNotComparableException;
 import com.hp.hpl.jena.sparql.expr.NodeValue;
 import com.hp.hpl.jena.sparql.sse.SSE;
 import com.hp.hpl.jena.util.FileManager;
@@ -31,112 +33,76 @@ public class Run
 {
     public static void main(String[] argv)
     {
-        if ( true )
-        {
-            Node n = SSE.parseNode("'2007-08-30T01:20:30'^^xsd:dateTime") ;
-            
-            parseXSDDateTime("2007-08-30T01:20:30") ;
-            System.exit(0) ;
-            
-            XSDDatatype.XSDdateTime.isValid("2007-08-30T01:20:30") ;
-            
-            XSDDateTime xsdDT = (XSDDateTime)n.getLiteralValue() ;
-            System.out.println(xsdDT) ;
-            
-            NodeValue nv = NodeValue.makeNode(n) ;
-            System.out.println(nv) ;
-            System.exit(0) ;
-        }
+        code() ; System.exit(0) ;
         runQParse() ;
         
         String []a = { "--strict", "file:///c:/home/afs/W3C/DataAccess/tests/data-r2/expr-builtin/manifest.ttl" } ;
         arq.qtest.main(a) ;
         System.exit(0) ;
-        //execQuery(DIR+"data-3.ttl", DIR+"splitIRI-1.rq") ;
-    }
-    
-    private static void parseXSDDateTime(String lex)
-    {
-        // The dateTime format is quiote fixed.
-        // '-'? YYYY - MM - DD T hh : mm : ss.sss +TZ
-        // There is no year zero.  No white space.
-        
-        int idx = 0 ;
-        if ( lex.charAt(0) == '-' )
-            idx ++ ;
-        
-        int idx2 = skipDigits(lex, idx) ;
-        if ( idx == idx2 )
-            throw new ARQException("No digits") ;
-        int year = Integer.parseInt(lex.substring(idx, idx2)) ; 
-        check(lex, idx2, '-') ;
-        idx = idx2+1 ;
-        
-        idx2 = skipDigits(lex, idx) ;
-        if ( idx == idx2 )
-            throw new ARQException("No digits") ;
-        int month = Integer.parseInt(lex.substring(idx, idx2)) ;
-        check(lex, idx2, '-') ;
-        idx = idx2+1 ;
-        
-        idx2 = skipDigits(lex, idx) ;
-        if ( idx == idx2 )
-            throw new ARQException("No digits") ;
-        int day = Integer.parseInt(lex.substring(idx, idx2)) ;
-        check(lex, idx2, 'T') ;
-        idx = idx2+1 ;
-        
-        idx2 = skipDigits(lex, idx) ;
-        if ( idx == idx2 )
-            throw new ARQException("No digits") ;
-        int hour = Integer.parseInt(lex.substring(idx, idx2)) ;
-        check(lex, idx2, ':') ;
-        idx = idx2+1 ;
-        
-        idx2 = skipDigits(lex, idx) ;
-        if ( idx == idx2 )
-            throw new ARQException("No digits") ;
-        int min = Integer.parseInt(lex.substring(idx, idx2)) ;
-        check(lex, idx2, ':') ;
-        idx = idx2+1 ;
-
-        // Seconds
-        
-        // Timezone
-
-        System.out.println(year) ;
-        System.out.println(month) ;
-        System.out.println(day) ;
-        System.out.println(hour) ;
-        System.out.println(min) ;
-//        System.out.println(sec) ;
-//        System.out.println(tz) ;
-        
-    }
-    
-    private static int moveOn(String lex, int start, int[] parse, int parseIdx)
-    {
-        return -1 ;
+        String DIR = "testing/ARQ/PropertyFunctions/" ;
+        execQuery(DIR+"data-3.ttl", DIR+"splitIRI-1.rq") ;
     }
     
     
-    private static void check(String lex, int idx, char c)
+    public static void code()
     {
-        if ( lex.charAt(idx) != c )
-            throw new ARQException("dateTime parse error: expected '"+c+"', got '"+lex.charAt(idx)+"' at "+idx+": "+lex) ;
+            Node n1 = SSE.parseNode("'2007-08-31'^^xsd:date") ;
+            Node n2 = SSE.parseNode("'2007-08-31Z'^^xsd:date") ;
+            
+            NodeValue nv1 = NodeValue.makeNode(n1) ;
+            NodeValue nv2 = NodeValue.makeNode(n2) ;
+            
+            try {
+                System.out.println(NodeValue.compare(nv1, nv2)) ;
+            } catch (ExprNotComparableException ex)
+            { System.out.println("Can't compare") ; }
+            
+            System.out.println() ;
+            
+            Binding b = new BindingMap() ;
+            b.add(Var.alloc("x"), n1) ;
+            b.add(Var.alloc("y"), n2) ;
+            
+            expr("( < ?x ?y)", b) ;
+            expr("( = ?x ?y)", b) ;
+            expr("( = ?x ?x)", b) ;
+            expr("( = ?y ?y)", b) ;
     }
-
-    private static int skipDigits(String lex, int idx)
-    {
-        for ( int i = idx ; i < lex.length() ; i++ )
-        {
-            char ch =  lex.charAt(i) ;
-            if ( ! Character.isDigit(ch) )
-                return i ;
-        }
+    
         
-        return lex.length() ;
+    private static void expr(String string, Binding b)
+    {
+        Expr expr = SSE.parseExpr(string) ;
+        boolean rc = expr.isSatisfied(b, null) ;
+        System.out.print(string) ;
+        System.out.print(" ==> ") ;
+        System.out.println(rc) ;
     }
+//
+//    // Unused, untested
+//    private static boolean hasTZ(String lex)
+//    {
+//        int idx = "CCYY-MM-DDThh:mm:ss".length() ;
+//        
+//        if ( lex.charAt(idx) == '-' )
+//            idx ++ ;
+//        
+//        if ( lex.charAt(idx) == '.' )
+//        {
+//            // skip fractional seconds.
+//            int i = idx+1 ;
+//            for ( ; i<lex.length() ; i++ )
+//            {
+//                char ch = lex.charAt(i) ;
+//                if ( ! Character.isDigit(ch) )
+//                    break ;
+//            }
+//            idx = i ; 
+//        }
+//
+//        // Anything left is the timezone.
+//        return idx < lex.length() ;
+//    }
 
     private static void runQParse()
     {
@@ -159,6 +125,8 @@ public class Run
         System.exit(0) ;
         
     }
+    
+    
 }
 
 class RunLARQ

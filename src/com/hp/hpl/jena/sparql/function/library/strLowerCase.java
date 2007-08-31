@@ -7,7 +7,7 @@
 package com.hp.hpl.jena.sparql.function.library;
 
 import com.hp.hpl.jena.sparql.expr.NodeValue;
-import com.hp.hpl.jena.sparql.expr.nodevalue.Functions;
+import com.hp.hpl.jena.sparql.expr.nodevalue.XSDFuncOp;
 import com.hp.hpl.jena.sparql.function.FunctionBase1;
 
 /** lowercase */
@@ -19,7 +19,7 @@ public class strLowerCase extends FunctionBase1
     //@Override
     public NodeValue exec(NodeValue str)
     {
-        return Functions.strLowerCase(str) ;
+        return XSDFuncOp.strLowerCase(str) ;
     }
 }
 

@@ -7,7 +7,7 @@
 package com.hp.hpl.jena.sparql.function.library;
 
 import com.hp.hpl.jena.sparql.expr.NodeValue;
-import com.hp.hpl.jena.sparql.expr.nodevalue.Functions;
+import com.hp.hpl.jena.sparql.expr.nodevalue.XSDFuncOp;
 import com.hp.hpl.jena.sparql.function.FunctionBase2;
 
 /** max(expression, expression) */ 
@@ -19,7 +19,7 @@ public class max extends FunctionBase2
     //@Override
     public NodeValue exec(NodeValue nv1, NodeValue nv2)
     {
-        return Functions.max(nv1, nv2) ;
+        return XSDFuncOp.max(nv1, nv2) ;
     }
 }
 

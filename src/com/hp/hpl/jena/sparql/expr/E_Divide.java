@@ -5,7 +5,7 @@
 
 package com.hp.hpl.jena.sparql.expr;
 
-import com.hp.hpl.jena.sparql.expr.nodevalue.Functions;
+import com.hp.hpl.jena.sparql.expr.nodevalue.XSDFuncOp;
 
 /**
  * @author Andy Seaborne
@@ -22,7 +22,7 @@ public class E_Divide extends ExprFunction2
         super(left, right, printName, symbol) ;
     }
     
-    public NodeValue eval(NodeValue x, NodeValue y) { return Functions.divide(x, y) ; }
+    public NodeValue eval(NodeValue x, NodeValue y) { return XSDFuncOp.divide(x, y) ; }
     
     public Expr copy(Expr e1, Expr e2) {  return new E_Divide(e1 , e2 ) ; }
 }

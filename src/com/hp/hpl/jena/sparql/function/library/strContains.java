@@ -7,7 +7,7 @@
 package com.hp.hpl.jena.sparql.function.library;
 
 import com.hp.hpl.jena.sparql.expr.NodeValue;
-import com.hp.hpl.jena.sparql.expr.nodevalue.Functions;
+import com.hp.hpl.jena.sparql.expr.nodevalue.XSDFuncOp;
 import com.hp.hpl.jena.sparql.function.FunctionBase2;
 
 /** string contains - fn:contains */
@@ -19,7 +19,7 @@ public class strContains extends FunctionBase2
     //@Override
     public NodeValue exec(NodeValue str, NodeValue match)
     {
-        return Functions.strContains(str, match) ;
+        return XSDFuncOp.strContains(str, match) ;
     }
 }
 

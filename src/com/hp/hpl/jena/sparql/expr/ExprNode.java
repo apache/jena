@@ -11,7 +11,7 @@ import java.util.Set;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.sparql.expr.nodevalue.Functions;
+import com.hp.hpl.jena.sparql.expr.nodevalue.XSDFuncOp;
 import com.hp.hpl.jena.sparql.function.FunctionEnv;
 import com.hp.hpl.jena.sparql.util.ExprUtils;
 
@@ -30,7 +30,7 @@ public abstract class ExprNode implements Expr
     {
         try {
             NodeValue v = eval(binding, execCxt) ;
-            boolean b = Functions.booleanEffectiveValue(v) ;
+            boolean b = XSDFuncOp.booleanEffectiveValue(v) ;
             return b ;
         }
         catch (ExprEvalException ex)

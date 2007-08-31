@@ -7,7 +7,7 @@
 package com.hp.hpl.jena.sparql.function.library;
 
 import com.hp.hpl.jena.sparql.expr.NodeValue;
-import com.hp.hpl.jena.sparql.expr.nodevalue.Functions;
+import com.hp.hpl.jena.sparql.expr.nodevalue.XSDFuncOp;
 import com.hp.hpl.jena.sparql.function.FunctionBase1;
 
 /** Boolean Equivalent Value
@@ -20,7 +20,7 @@ public class BEV extends FunctionBase1
 {
     public NodeValue exec(NodeValue x)
     {
-        return Functions.booleanEffectiveValueAsNodeValue(x) ;
+        return XSDFuncOp.booleanEffectiveValueAsNodeValue(x) ;
     }
 }
 

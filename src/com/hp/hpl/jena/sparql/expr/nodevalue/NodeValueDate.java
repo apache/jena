@@ -5,41 +5,43 @@
 
 package com.hp.hpl.jena.sparql.expr.nodevalue;
 
-import java.util.Calendar;
-
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
+import com.hp.hpl.jena.datatypes.xsd.XSDDateTime;
 import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.sparql.expr.ExprException;
 import com.hp.hpl.jena.sparql.expr.NodeValue;
-import com.hp.hpl.jena.sparql.util.Utils;
 
 /** XSD Date (which is unrelated to XSD dateTime in the datatype hierarchy) */ 
 
 public class NodeValueDate extends NodeValue
 {
-    // For comparisons - add a time 00:00:00
-    Calendar date ;
+    XSDDateTime date ;      // The initial point of the XSD:date, ie. at 00:00:00 
     
-    public NodeValueDate(Calendar cal)
+    public NodeValueDate(XSDDateTime dt)
     { 
-        date = (Calendar)cal.clone() ;
-        // Force the time to 00:00:00 
-        date.set(Calendar.HOUR, 0) ;
-        date.set(Calendar.MINUTE, 0) ;
-        date.set(Calendar.SECOND, 0) ;
-        date.set(Calendar.MILLISECOND, 0) ;
+        date = dt ;
+//        dt.getHours() ;
+//        dt.getMinutes() ;
+//        dt.getSeconds() ;
+//        dt.getFullSeconds() ;
+        if ( dt.getTimePart() != 0 ) 
+            throw new ExprException("Illegal date: "+dt) ;
     }
-    public NodeValueDate(Calendar cal, Node n) { super(n) ; date = cal ; }
+    
+    public NodeValueDate(XSDDateTime dt, Node n) { super(n) ; date = dt ; }
     
     //@Override
     public boolean isDate() { return true ; }
     //@Override
-    public Calendar getDate()     { return date ; }
+    public XSDDateTime getDate()     { return date ; }
     
     //@Override
     protected Node makeNode()
     {
-       String lex = Utils.calendarToXSDDateString(date) ;
-       return Node.createLiteral(lex, null, XSDDatatype.XSDdate) ;
+        String lex = date.toString() ;
+        // Chop out time part?
+        //String lex = Utils.calendarToXSDDateString(date) ;
+        return Node.createLiteral(lex, null, XSDDatatype.XSDdate) ;
     }
     
     public void visit(NodeValueVisitor visitor) { visitor.visit(this) ; }
