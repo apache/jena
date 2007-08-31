@@ -8,34 +8,27 @@ package com.hp.hpl.jena.sparql.suites.optimizer;
 import junit.framework.*;
 
 /**
- * All the ARQo tests 
+ * The test suite for the probabilistic framework 
  * @author Markus Stocker
  * @version $Id$
  */
 
-public class OptimizerTestSuite extends TestSuite
+public class TestSuiteProbability extends TestSuite
 {    
     static public TestSuite suite()
     {
-        TestSuite ts = new OptimizerTestSuite() ;
+        TestSuite ts = new TestSuiteProbability() ;
  
-        // This test has to be executed first, or the test suite has to assure that the optimizer is enabled per default first
-        ts.addTest(TestEnabled.suite()) ;
-        ts.addTest(TestConfig.suite()) ;
-        ts.addTest(TestAPI.suite()) ;
-        ts.addTest(TestData.suite()) ;
-        ts.addTest(TestIndex.suite()) ;
-        ts.addTest(TestPrimeNumberGen.suite()) ;
-        ts.addTest(TestSuiteGraph.suite()) ;
-        ts.addTest(TestSuiteHeuristic.suite()) ;
-        ts.addTest(TestSuiteProbability.suite()) ;
+        ts.addTest(TestProbabilityDataModel.suite()) ;
+        ts.addTest(TestProbabilityIndexModel.suite()) ;
+        ts.addTest(TestProbabilityDefaultModel.suite()) ;
         
         return ts ;
     }
 
-	private OptimizerTestSuite()
+	private TestSuiteProbability()
 	{
-        super("Optimizer");
+        super("TestSuiteProbability");
 	}
 }
 

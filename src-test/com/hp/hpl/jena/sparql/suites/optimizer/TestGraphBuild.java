@@ -40,6 +40,7 @@ public class TestGraphBuild extends TestCase
 {
 	private BasicPattern pattern ;
 	private List components ; // List<Map<String, Integer>>
+	private static final String testCaseFileName = "testing/Optimizer/TestGraphBuild-manifest.n3" ;
 	
 	public TestGraphBuild(String title, BasicPattern pattern, List components)
 	{		
@@ -70,7 +71,7 @@ public class TestGraphBuild extends TestCase
 	public static Test suite()
     {
         TestSuite ts = new TestSuite("TestGraphBuild") ;
-	    Model model = Util.readModel("testing/Optimizer/TestGraphBuild-manifest.n3") ;
+	    Model model = Util.readModel(testCaseFileName) ;
         
         QueryExecution qe = QueryExecutionFactory.create(queryTestCases(), model);
         
@@ -149,26 +150,7 @@ public class TestGraphBuild extends TestCase
 	
 	// The query to retrieve the test cases with the basic pattern and the graph
 	private static String queryTestCases()
-	{
-		/* The query with ARQ property function
-		 * PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-		 * PREFIX dc: <http://purl.org/dc/elements/1.1/>
-		 * PREFIX : <TEST_NS>
-		 * PREFIX apf: <http://jena.hpl.hp.com/ARQ/property#>
-		 * SELECT ?title ?basicPattern ?graph ?triple ?nodes ?edges
-		 * WHERE {
-		 * ?testCase rdf:type :TestCase .
-		 * ?testCase dc:title ?title .
-		 * ?testCase :basicPattern ?basicPattern .
-		 * ?basicPattern apf:seq ?triple .
-		 * ?testCase :graph ?graph .
-		 * ?graph apf:seq ?component .
-		 * ?component :nodes ?nodes .
-		 * ?component :edges ?edges .
-		 * }
-		 * ORDER BY ASC(?title)
-		 */
-		
+	{		
 		return "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>" +
 		   	   "PREFIX dc: <http://purl.org/dc/elements/1.1/>" +
 		   	   "PREFIX : <" + Util.TEST_NS + ">" +

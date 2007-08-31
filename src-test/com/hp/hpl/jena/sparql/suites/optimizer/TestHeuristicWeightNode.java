@@ -5,6 +5,7 @@
 
 package com.hp.hpl.jena.sparql.suites.optimizer;
 
+import junit.extensions.TestSetup;
 import junit.framework.*;
 
 import com.hp.hpl.jena.graph.Triple;
@@ -15,11 +16,12 @@ import com.hp.hpl.jena.query.ResultSet;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.sparql.core.BasicPattern;
 import com.hp.hpl.jena.sparql.engine.optimizer.core.BasicPatternGraph;
+import com.hp.hpl.jena.sparql.engine.optimizer.probability.ProbabilityFactory;
 import com.hp.hpl.jena.sparql.suites.optimizer.Util;
-import com.hp.hpl.jena.sparql.engine.optimizer.heuristic.Heuristic;
+import com.hp.hpl.jena.sparql.engine.optimizer.util.Constants;
 import com.hp.hpl.jena.sparql.engine.optimizer.core.GraphNode;
+import com.hp.hpl.jena.sparql.util.Context;
 import com.hp.hpl.jena.query.ARQ;
-
 
 /**
  * Test if the estimated weight for a node given a 
@@ -34,11 +36,15 @@ import com.hp.hpl.jena.query.ARQ;
 
 public class TestHeuristicWeightNode extends TestCase
 {
-	private Heuristic heuristic ;
-	private BasicPattern pattern ;
 	private double weight ;
+	private String heuristic ;
+	private BasicPattern pattern ;
+	private static Model testsM, graphM ;
+	private static Context context = ARQ.getContext() ;
+	private static final String testDataFileName = "testing/Optimizer/Test-data.n3" ;
+	private static final String testCaseFileName = "testing/Optimizer/TestHeuristicWeightNode-manifest.n3" ;
 
-	public TestHeuristicWeightNode(String title, Heuristic heuristic, BasicPattern pattern, double weight)
+	public TestHeuristicWeightNode(String title, String heuristic, BasicPattern pattern, double weight)
 	{		
 		super(title) ;
 		
@@ -47,10 +53,22 @@ public class TestHeuristicWeightNode extends TestCase
 		this.weight = weight ;
 	}
 	
+	public static void oneTimeSetUp()
+	{
+		context.set(Constants.PF, 
+					ProbabilityFactory.createDefaultModel(Util.readModel(testDataFileName), null)) ;
+	}
+	
+	public static void oneTimeTearDown()
+	{
+		graphM.close() ;
+		testsM.close() ;
+	}
+	
 	// Run the dynamically loaded test cases
 	public void runTest()
 	{	
-		BasicPatternGraph graph = new BasicPatternGraph(pattern, heuristic) ;
+		BasicPatternGraph graph = new BasicPatternGraph(pattern, Util.getHeuristic(heuristic, context, graphM.getGraph())) ;
 		
 		// Extract the node from the graph (there is only one node specified for each test case)
 		GraphNode node = (GraphNode)graph.getComponent(0).getNodes().iterator().next() ;
@@ -63,8 +81,8 @@ public class TestHeuristicWeightNode extends TestCase
 	public static Test suite()
     {
         TestSuite ts = new TestSuite("TestHeuristicWeightNode") ;
-	    Model testsM = Util.readModel("testing/Optimizer/TestHeuristicWeightNode-manifest.n3") ;
-	    Model graphM = Util.readModel("testing/Optimizer/Test-data.n3") ;
+	    testsM = Util.readModel(testCaseFileName) ;
+	    graphM = Util.readModel(testDataFileName) ;
         
         QueryExecution qe = QueryExecutionFactory.create(queryTestCases(), testsM);
         
@@ -77,7 +95,7 @@ public class TestHeuristicWeightNode extends TestCase
 				QuerySolution solution = rs.nextSolution() ;
 				
 				String title = solution.getLiteral("title").getLexicalForm() ;
-				Heuristic heuristic = Util.getHeuristic(solution.getLiteral("heuristic").getLexicalForm(), ARQ.getContext(), graphM.getGraph()) ;
+				String heuristic = solution.getLiteral("heuristic").getLexicalForm() ;
 				String node = solution.getLiteral("node").getLexicalForm() ;
 				double weight = solution.getLiteral("weight").getDouble() ;
 				BasicPattern pattern = getBasicPattern(node) ;
@@ -89,9 +107,21 @@ public class TestHeuristicWeightNode extends TestCase
 			qe.close() ; 
 		}
 		
-		testsM.close() ;
+		 // Wrapper for the test suite including the test cases which executes the setup only once
+		TestSetup wrapper = new TestSetup(ts) 
+		{
+			protected void setUp() 
+			{
+				oneTimeSetUp();
+			}
 
-		return ts ;
+			protected void tearDown() 
+			{
+				oneTimeTearDown();
+			}
+		};
+		
+		return wrapper ;
     }
 	
 	// Given the basicPattern RDF node (blank node), create a BasicPattern object of the triples

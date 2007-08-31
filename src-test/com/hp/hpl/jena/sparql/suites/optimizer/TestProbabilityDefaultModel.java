@@ -5,142 +5,144 @@
 
 package com.hp.hpl.jena.sparql.suites.optimizer;
 
-import java.util.*;
-
-import junit.extensions.TestSetup;
 import junit.framework.*;
-
+import junit.extensions.TestSetup;
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.Property;
+import com.hp.hpl.jena.rdf.model.RDFNode;
+import com.hp.hpl.jena.rdf.model.Resource;
+import com.hp.hpl.jena.rdf.model.Statement;
+import com.hp.hpl.jena.rdf.model.StmtIterator;
+import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.query.QueryExecution;
 import com.hp.hpl.jena.query.QueryExecutionFactory;
 import com.hp.hpl.jena.query.QuerySolution;
 import com.hp.hpl.jena.query.ResultSet;
-import com.hp.hpl.jena.rdf.model.Literal;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.Seq;
-import com.hp.hpl.jena.sparql.core.BasicPattern;
-import com.hp.hpl.jena.sparql.engine.optimizer.core.BasicPatternGraph;
+import com.hp.hpl.jena.sparql.engine.optimizer.probability.Probability;
 import com.hp.hpl.jena.sparql.engine.optimizer.probability.ProbabilityFactory;
 import com.hp.hpl.jena.sparql.suites.optimizer.Util;
-import com.hp.hpl.jena.sparql.engine.optimizer.util.Constants;
-import com.hp.hpl.jena.sparql.util.Context;
-import com.hp.hpl.jena.query.ARQ;
 
 /**
- * This test case allows testing of multiple heuristics 
- * to check whether the returned optimized BasicPattern 
- * is the same as defined by the test case.
+ * Probability test case. The test class is based on the TestProbability-manifest.
  * 
  * @author Markus Stocker
  * @version $Id$
  */
 
-public class TestGraphOptimize extends TestCase
+public class TestProbabilityDefaultModel extends TestCase
 {
-	private String heuristic ;
-	private BasicPattern patternIn ;
-	private BasicPattern patternOut ;
-	private static Model testsM, graphM ;
-	private static Context context = ARQ.getContext() ;
+	private Triple triple1 ;
+	private Triple triple2 ;
+	private double probability ;
+	private double selectivity ;
+	private static Probability statistics ;
+	private static Model graphM, testsM, dataM, indexM ;
 	private static final String testDataFileName = "testing/Optimizer/Test-data.n3" ;
-	private static final String testCaseFileName = "testing/Optimizer/TestGraphOptimize-manifest.n3" ;
+	private static final String testCaseFileName = "testing/Optimizer/TestProbabilityDefaultModel-manifest.n3" ;
 	
-	public TestGraphOptimize(String title, String heuristic, BasicPattern patternIn, BasicPattern patternOut)
+	public TestProbabilityDefaultModel(String title, Triple triple1, Triple triple2, double probability, double selectivity)
 	{		
 		super(title) ;
-		
-		this.heuristic = heuristic ;
-		this.patternIn = patternIn ;
-		this.patternOut = patternOut ;
+
+		this.triple1 = triple1 ;
+		this.triple2 = triple2 ;
+		this.probability = probability ;
+		this.selectivity = selectivity ;
 	}
 	
 	// Run the dynamically loaded test cases
-	public void runTest()
-	{			
-		BasicPatternGraph graph = new BasicPatternGraph(patternIn, Util.getHeuristic(heuristic, context, graphM.getGraph())) ;
-		BasicPattern patternOpt = graph.optimize() ;
-	    
-		// Test if the optimized pattern equals to the out pattern specified by the test
-		assertTrue(patternOpt.equals(patternOut)) ;
+	protected void runTest()
+	{
+		assertTrue(statistics.getProbability(triple1, triple2) == probability) ;
+		assertTrue(statistics.getSelectivity(triple1, triple2) == selectivity) ;
 	}
 	
 	public static void oneTimeSetUp()
 	{
-		context.set(Constants.PF, ProbabilityFactory.createDefaultModel(Util.readModel(testDataFileName), null)) ;
+		dataM = Util.readModel(testDataFileName) ;
+		indexM = ProbabilityFactory.createIndex(dataM) ;
+		statistics = ProbabilityFactory.loadDefaultModel(dataM, indexM, null) ;
 	}
 	
 	public static void oneTimeTearDown()
 	{
+		dataM.close() ;
+		indexM.close() ;
 		graphM.close() ;
-		testsM.close() ;
+		dataM.close() ;
 	}
 	
 	// Build the test suite
 	public static Test suite()
     {
-        TestSuite ts = new TestSuite("TestGraphOptimize") ;
-		
-        testsM = Util.readModel(testCaseFileName) ;
-	    graphM = Util.readModel(testDataFileName) ;
-        
+        TestSuite ts = new TestSuite("TestProbabilityDefaultModel") ;
+        graphM = Util.readModel(testDataFileName) ;
+    	testsM = Util.readModel(testCaseFileName) ;
+    	
         QueryExecution qe = QueryExecutionFactory.create(queryTestCases(), testsM);
-        
+
 		try 
 		{
 			ResultSet rs = qe.execSelect() ;
-			
 			while (rs.hasNext()) 
 			{
+				Triple triple1 = null, triple2 = null ;
 				QuerySolution solution = rs.nextSolution() ;
 				
 				String title = solution.getLiteral("title").getLexicalForm() ;
-				String heuristic = solution.getLiteral("heuristic").getLexicalForm() ;
-				Seq patternInR = testsM.getSeq(solution.getResource("patternIn")) ;
-				Seq patternOutR = testsM.getSeq(solution.getResource("patternOut")) ;
-				BasicPattern patternIn = getBasicPattern(patternInR) ;
-				BasicPattern patternOut = getBasicPattern(patternOutR) ;
+				double probability = solution.getLiteral("probability").getDouble() ;
+				double selectivity = solution.getLiteral("selectivity").getDouble() ;
 				
-				// Add a new test to the test suite
-				ts.addTest(new TestGraphOptimize(title, heuristic, patternIn, patternOut)) ;
+				triple1 = getTriple(solution.getResource("triple1")) ;
+				
+				if (solution.getResource("triple2") != null)
+					triple2 = getTriple(solution.getResource("triple2")) ;
+				
+				ts.addTest(new TestProbabilityDefaultModel(title, triple1, triple2, probability, selectivity)) ;
 			}
 		} finally { 
 			qe.close() ; 
 		}
 		
-        // Wrapper for the test suite including the test cases which executes the setup only once
+		graphM.close() ;
+		testsM.close() ;
+    	
+		// Wrapper for the test suite including the test cases which executes the setup only once
 		TestSetup wrapper = new TestSetup(ts) 
 		{
 			protected void setUp() 
-			{
-				oneTimeSetUp();
-			}
+			{ oneTimeSetUp(); }
 
 			protected void tearDown() 
-			{
-				oneTimeTearDown();
-			}
+			{ oneTimeTearDown(); }
 		};
 		
 		return wrapper ;
     }
 	
-	// Given the basicPattern RDF node (blank node), create a BasicPattern object of the triples
-	private static BasicPattern getBasicPattern(Seq patternR)
+	private static Triple getTriple(Resource resource)
 	{
-		BasicPattern pattern = new BasicPattern() ;
+		Node s = null, p = null, o = null ;
+		StmtIterator stmtIter = testsM.listStatements(resource, (Property)null, (RDFNode)null) ;
 		
-		// Given a pattern resource, identify the triples
-		for (Iterator iter = patternR.iterator(); iter.hasNext(); )
+		while (stmtIter.hasNext())
 		{
-			// Get the rdf:li (i.e. the triple pattern), split by space
-			String[] triple = ((Literal)iter.next()).getLexicalForm().split(" ") ;
-			// Create a BasicPattern (list of Triples) from the string representation of the BGP
-			pattern.add(new Triple(Util.createNode(triple[0]), 
-								   Util.createNode(triple[1]), 
-								   Util.createNode(triple[2]))) ;
+			Statement stmt = stmtIter.nextStatement() ;
+			Property predicate = stmt.getPredicate() ;
+			String predicateURI = predicate.getURI() ;
+			
+			if (predicateURI.equals(Util.TEST_NS + "subject"))
+				s = Util.createNode(stmt.getObject().asNode().getLiteralLexicalForm()) ;
+			else if (predicateURI.equals(Util.TEST_NS + "predicate"))
+				p = Util.createNode(stmt.getObject().asNode().getLiteralLexicalForm()) ;
+			else if (predicateURI.equals(Util.TEST_NS + "object"))
+				o = Util.createNode(stmt.getObject().asNode().getLiteralLexicalForm()) ;
 		}
 		
-		return pattern ;
+		stmtIter.close() ;
+			
+		return new Triple(s, p, o) ;
 	}
 	
 	// The query to retrieve the test cases with the basic pattern and the graph
@@ -149,13 +151,14 @@ public class TestGraphOptimize extends TestCase
 		return "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>" +
 		   	   "PREFIX dc: <http://purl.org/dc/elements/1.1/>" +
 		   	   "PREFIX : <" + Util.TEST_NS + ">" +
-		   	   "SELECT ?title ?heuristic ?patternIn ?patternOut " +
+		   	   "SELECT ?title ?triple1 ?triple2 ?probability ?selectivity " +
 		   	   "WHERE {" +
 		   	   "?tc rdf:type :TestCase ." +
 		   	   "?tc dc:title ?title ." +
-		   	   "?tc :heuristic ?heuristic ." +
-		   	   "?tc :patternIn ?patternIn ." +
-		   	   "?tc :patternOut ?patternOut ." +
+		   	   "?tc :triple1 ?triple1 ." +
+		   	   "OPTIONAL { ?tc :triple2 ?triple2 } " + 
+		   	   "?tc :probability ?probability ." +
+		   	   "?tc :selectivity ?selectivity ." + 
 		   	   "}" +
 		   	   "ORDER BY ASC(?title)" ;
 	}

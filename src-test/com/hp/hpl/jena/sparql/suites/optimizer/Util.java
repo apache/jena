@@ -14,7 +14,6 @@ import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.sparql.engine.optimizer.heuristic.Heuristic;
 import com.hp.hpl.jena.sparql.engine.optimizer.heuristic.HeuristicsRegistry;
 import com.hp.hpl.jena.sparql.util.Context;
-import com.hp.hpl.jena.sparql.util.StringUtils;
 import com.hp.hpl.jena.util.FileManager;
 import com.hp.hpl.jena.sparql.engine.optimizer.util.Constants;
 
@@ -48,7 +47,7 @@ public class Util
 	 */
 	public static Node createNode(String element)
 	{
-		if (StringUtils.contains(element, "?"))
+		if (element.contains("?"))
 			return Node.createVariable(element.substring(1, element.length())) ;
 		else if (element.startsWith(":"))
 			return Node.createURI(Constants.localhostNS + element.substring(1, element.length())) ;
@@ -64,8 +63,9 @@ public class Util
 	
 	// Return the heuristic instance corresponding to the heuristic defined by the test case
 	public static Heuristic getHeuristic(String heuristic, Context context, Graph graph)
-	{
+	{			
 		HeuristicsRegistry registry = new HeuristicsRegistry(context, graph) ;
+		
 		return registry.get(heuristic) ;
 	}
 }
