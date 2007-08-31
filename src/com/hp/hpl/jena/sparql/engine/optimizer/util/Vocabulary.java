@@ -83,16 +83,23 @@ public class Vocabulary
 	 * http://jena.hpl.hp.com/ARQo#upperBound */
 	public static final Property upperBound = property("upperBound") ;
 	/**
+	 * Property to flag if the BGP is enabled and running,
+	 * http://jena.hpl.hp.com/ARQo#isEnabled */
+	public static final Property isEnabled = property("isEnabled") ;
+	/**
 	 * The class of SEI resources, 
-	 * http://jena.hpl.hp.com/ARQo#SEI */
+	 * http://jena.hpl.hp.com/ARQo#SEI 
+	 * @deprecated */
 	public static final Resource SEI = resource("SEI") ;
     /**
      * The class of QPI resources, 
-     * http://jena.hpl.hp.com/ARQo#QPI */
+     * http://jena.hpl.hp.com/ARQo#QPI 
+     * @deprecated */
 	public static final Resource QPI = resource("QPI") ;
 	/**
 	 * The class of PI resources, 
-	 * http://jena.hpl.hp.com/ARQo#PI */
+	 * http://jena.hpl.hp.com/ARQo#PI 
+	 * @deprecated */
 	public static final Resource PI = resource("PI") ;
 	/**
 	 * The class of PF resources,

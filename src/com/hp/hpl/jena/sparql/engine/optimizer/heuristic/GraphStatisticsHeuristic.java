@@ -66,6 +66,10 @@ public class GraphStatisticsHeuristic extends HeuristicBasicPattern
 		log.debug("Cost: " + pc + ", " + p) ;
 		log.debug("Cost: " + oc + ", " + o) ;
 		
+		// If one of them is 0, believe it and return 0
+		if (sc == 0d || pc == 0d || oc == 0d)
+			return 0d ;
+		
 		double c = sc * pc * oc ;
 		
 		if (c > minCost)

@@ -3,39 +3,76 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.engine.optimizer.util;
-
-import com.hp.hpl.jena.sparql.ARQConstants;
-import com.hp.hpl.jena.sparql.util.Symbol;
-import com.hp.hpl.jena.sparql.engine.optimizer.util.Vocabulary;
+package com.hp.hpl.jena.sparql.engine.optimizer.probability;
 
 /**
- * The class contains some constants used in ARQo.
+ * The class represents a histogram class
  * 
  * @author Markus Stocker
  * @version $Id$
  */
 
-public class Constants 
+public class HistogramClass 
 {
-	/** IRI for ARQo */  
-    public static final String arqOptimizerIRI = "http://jena.hpl.hp.com/#arqo" ;
-    /** Root of ARQo-defined parameter names */  
-    public static final String arqOptimizerNS = "http://jena.hpl.hp.com/ARQo#" ;
-	/** The basic pattern join name space */
-	public static final String joinTypeNS  = "http://jena.hpl.hp.com/ARQo/join#" ;
-	/** The localhost name space */
-	public static final String localhostNS = "http://localhost/#" ;
-	/** @deprecated The QPI Symbol used for the ARQ context */
-	public static final Symbol QPI = ARQConstants.allocSymbol(Vocabulary.QPI.getURI()) ;
-	/** @deprecated The SEI Symbol used for the ARQ context */
-	public static final Symbol SEI = ARQConstants.allocSymbol(Vocabulary.SEI.getURI()) ;
-	/** Check flag if the BGP optimizer is enabled */
-	public static final Symbol isEnabled = ARQConstants.allocSymbol(Vocabulary.isEnabled.getURI()) ;
-	/** The Probabilistic Framework Symbol used for the ARQ context */
-	public static final Symbol PF = ARQConstants.allocSymbol(Vocabulary.PF.getURI()) ;
-	/** The heuristic Symbol used for the ARQ context */
-	public static final Symbol heuristic = ARQConstants.allocSymbol(Vocabulary.heuristic.getURI()) ;
+	private double lowerBound ;
+	private long frequency ;
+	
+	public HistogramClass()
+	{
+		frequency = 0L ;
+	}
+	
+	/**
+	 * The histogram class lower bound.
+	 * In our case it is a hash code integer.
+	 * 
+	 * @param lowerBound
+	 */
+	public void setLowerBound(double lowerBound)
+	{
+		this.lowerBound = lowerBound ;
+	}
+	
+	/**
+	 * Increment the histogram class,
+	 * i.e. increment the frequency by one.
+	 */
+	public void increment()
+	{
+		frequency++ ;
+	}
+	
+	/**
+	 * Return the histogram class lower bound
+	 * 
+	 * @return double
+	 */
+	public double getLowerBound()
+	{
+		return this.lowerBound ;
+	}
+	
+	/**
+	 * Return the histogram class frequency
+	 * 
+	 * @return long
+	 */
+	public long getFrequency()
+	{
+		return this.frequency ;
+	}
+	
+	/**
+	 * Set the histogram class frequency
+	 * 
+	 * @param frequency
+	 */
+	public void setFrequency(long frequency)
+	{
+		this.frequency = frequency ;
+	}
+	
+	
 }
 
 

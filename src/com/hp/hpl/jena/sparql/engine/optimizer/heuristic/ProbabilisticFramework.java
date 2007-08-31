@@ -3,39 +3,60 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.engine.optimizer.util;
+package com.hp.hpl.jena.sparql.engine.optimizer.heuristic;
 
-import com.hp.hpl.jena.sparql.ARQConstants;
-import com.hp.hpl.jena.sparql.util.Symbol;
-import com.hp.hpl.jena.sparql.engine.optimizer.util.Vocabulary;
+import com.hp.hpl.jena.graph.Triple;
+import com.hp.hpl.jena.sparql.engine.optimizer.util.Constants;
+import com.hp.hpl.jena.sparql.engine.optimizer.heuristic.HeuristicBasicPattern;
+import com.hp.hpl.jena.sparql.engine.optimizer.probability.Probability; 
+import com.hp.hpl.jena.sparql.util.Context;
 
 /**
- * The class contains some constants used in ARQo.
- * 
+ * The heuristics is a wrapper to the probabilistic framework.
+ *
  * @author Markus Stocker
  * @version $Id$
  */
 
-public class Constants 
-{
-	/** IRI for ARQo */  
-    public static final String arqOptimizerIRI = "http://jena.hpl.hp.com/#arqo" ;
-    /** Root of ARQo-defined parameter names */  
-    public static final String arqOptimizerNS = "http://jena.hpl.hp.com/ARQo#" ;
-	/** The basic pattern join name space */
-	public static final String joinTypeNS  = "http://jena.hpl.hp.com/ARQo/join#" ;
-	/** The localhost name space */
-	public static final String localhostNS = "http://localhost/#" ;
-	/** @deprecated The QPI Symbol used for the ARQ context */
-	public static final Symbol QPI = ARQConstants.allocSymbol(Vocabulary.QPI.getURI()) ;
-	/** @deprecated The SEI Symbol used for the ARQ context */
-	public static final Symbol SEI = ARQConstants.allocSymbol(Vocabulary.SEI.getURI()) ;
-	/** Check flag if the BGP optimizer is enabled */
-	public static final Symbol isEnabled = ARQConstants.allocSymbol(Vocabulary.isEnabled.getURI()) ;
-	/** The Probabilistic Framework Symbol used for the ARQ context */
-	public static final Symbol PF = ARQConstants.allocSymbol(Vocabulary.PF.getURI()) ;
-	/** The heuristic Symbol used for the ARQ context */
-	public static final Symbol heuristic = ARQConstants.allocSymbol(Vocabulary.heuristic.getURI()) ;
+public class ProbabilisticFramework extends HeuristicBasicPattern
+{	
+	private Probability probability ;
+	
+	public ProbabilisticFramework(Context context)
+	{
+		probability = (Probability)context.get(Constants.PF) ;
+	}
+	
+	/**
+	 * This method returns the cost for the triple pattern as the
+	 * probability returned by the probabilistic framework.
+	 * 
+	 * @param triple1
+	 * @return double
+	 */
+	public double getCost(Triple triple1) 
+	{			
+		if (probability == null)
+			throw new NullPointerException("The probability framework has not been set to the ARQ context!") ;
+		
+		return probability.getProbability(triple1) ;
+	}
+	
+	/**
+	 * This method returns the cost for the triple patterns as the
+	 * probability returned by the probabilistic framework. 
+	 * 
+	 * @param triple1
+	 * @param triple2
+	 * @return double
+	 */
+	public double getCost(Triple triple1, Triple triple2)
+	{	
+		if (probability == null)
+			throw new NullPointerException("The probability framework has not been set to the ARQ context!") ;
+		
+		return probability.getProbability(triple1, triple2) ;
+	}
 }
 
 

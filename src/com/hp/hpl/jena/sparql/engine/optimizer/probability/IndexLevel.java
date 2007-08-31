@@ -3,39 +3,21 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.engine.optimizer.util;
-
-import com.hp.hpl.jena.sparql.ARQConstants;
-import com.hp.hpl.jena.sparql.util.Symbol;
-import com.hp.hpl.jena.sparql.engine.optimizer.util.Vocabulary;
+package com.hp.hpl.jena.sparql.engine.optimizer.probability;
 
 /**
- * The class contains some constants used in ARQo.
+ * The class defines different index levels
  * 
  * @author Markus Stocker
  * @version $Id$
  */
 
-public class Constants 
+public class IndexLevel 
 {
-	/** IRI for ARQo */  
-    public static final String arqOptimizerIRI = "http://jena.hpl.hp.com/#arqo" ;
-    /** Root of ARQo-defined parameter names */  
-    public static final String arqOptimizerNS = "http://jena.hpl.hp.com/ARQo#" ;
-	/** The basic pattern join name space */
-	public static final String joinTypeNS  = "http://jena.hpl.hp.com/ARQo/join#" ;
-	/** The localhost name space */
-	public static final String localhostNS = "http://localhost/#" ;
-	/** @deprecated The QPI Symbol used for the ARQ context */
-	public static final Symbol QPI = ARQConstants.allocSymbol(Vocabulary.QPI.getURI()) ;
-	/** @deprecated The SEI Symbol used for the ARQ context */
-	public static final Symbol SEI = ARQConstants.allocSymbol(Vocabulary.SEI.getURI()) ;
-	/** Check flag if the BGP optimizer is enabled */
-	public static final Symbol isEnabled = ARQConstants.allocSymbol(Vocabulary.isEnabled.getURI()) ;
-	/** The Probabilistic Framework Symbol used for the ARQ context */
-	public static final Symbol PF = ARQConstants.allocSymbol(Vocabulary.PF.getURI()) ;
-	/** The heuristic Symbol used for the ARQ context */
-	public static final Symbol heuristic = ARQConstants.allocSymbol(Vocabulary.heuristic.getURI()) ;
+	/** This creates an index which supports probability estimation for single triple patterns */
+	public static final int LIGHTWEIGHT = 0 ;
+	/** This creates an index which supports probability estimation for joined triple patterns */
+	public static final int FULL = 1 ;
 }
 
 

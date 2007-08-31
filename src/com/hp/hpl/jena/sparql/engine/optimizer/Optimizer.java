@@ -5,7 +5,6 @@
 
 package com.hp.hpl.jena.sparql.engine.optimizer;
 
-import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -15,6 +14,7 @@ import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.query.ARQ;
 import com.hp.hpl.jena.query.Query;
+import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.shared.PrefixMapping;
 import com.hp.hpl.jena.sparql.algebra.Algebra;
 import com.hp.hpl.jena.sparql.algebra.Op;
@@ -22,13 +22,17 @@ import com.hp.hpl.jena.sparql.algebra.OpWalker;
 import com.hp.hpl.jena.sparql.core.BasicPattern;
 import com.hp.hpl.jena.sparql.engine.main.StageBuilder;
 import com.hp.hpl.jena.sparql.engine.main.StageGenPropertyFunction;
-import com.hp.hpl.jena.sparql.engine.main.StageGenerator;
+import com.hp.hpl.jena.sparql.engine.optimizer.StageGenOptimizedBasicPattern;
 import com.hp.hpl.jena.sparql.engine.optimizer.core.BasicPatternGraph;
 import com.hp.hpl.jena.sparql.engine.optimizer.core.BasicPatternOptimizer;
 import com.hp.hpl.jena.sparql.engine.optimizer.core.BasicPatternVisitor;
 import com.hp.hpl.jena.sparql.engine.optimizer.core.ConnectedGraph;
 import com.hp.hpl.jena.sparql.engine.optimizer.core.GraphEdge;
 import com.hp.hpl.jena.sparql.engine.optimizer.core.GraphNode;
+import com.hp.hpl.jena.sparql.engine.optimizer.probability.Probability;
+import com.hp.hpl.jena.sparql.engine.optimizer.probability.ProbabilityFactory;
+import com.hp.hpl.jena.sparql.engine.optimizer.util.Constants;
+import com.hp.hpl.jena.sparql.engine.optimizer.util.Config;
 import com.hp.hpl.jena.sparql.syntax.Element;
 import com.hp.hpl.jena.sparql.util.Context;
 
@@ -40,27 +44,88 @@ import com.hp.hpl.jena.sparql.util.Context;
  */
 
 public class Optimizer 
-{   
-	/**
-	 * Enable the ARQ optimizer usign the context provided
-	 * 
-	 * @param context
+{   	
+	/** 
+	 * Enable the default ARQ optimizer, 
+	 * no special configuration and globally enabled in the ARQ context 
 	 */
-	public static void enable(Context context)
-	{
-		// Set the ARQo stage generator to the context, either local or global
-		StageGenerator stageGenerator = (StageGenerator)context.get(ARQ.stageGenerator) ;
-		
-		if (stageGenerator == null)
-			stageGenerator = StageBuilder.getGenerator() ;
-
-		context.set(ARQ.stageGenerator, new StageGenPropertyFunction(new StageGenOptimizedBasicPattern(stageGenerator))) ;
-	}
-	
-	/** Enable the ARQ optimizer using the ARQ context */
 	public static void enable()
 	{
-		enable(ARQ.getContext()) ;
+		enable(ARQ.getContext(), new Config()) ;
+	}
+	
+	/**
+	 * Enable the ARQ optimizer using the specified configuration
+	 * and globally enabled in the ARQ context
+	 * 
+	 * @param config
+	 */
+	public static void enable(Config config)
+	{
+		enable(ARQ.getContext(), config) ;
+	}
+
+	/**
+	 * Enable the ARQ optimizer with the specialized RDF index 
+	 * and globally enabled in the ARQ context
+	 *  
+	 * @param data
+	 * @param index
+	 */
+	public static void enable(Model data, Model index)
+	{
+		enable(ARQ.getContext(), data, index, null) ;
+	}
+	
+	/**
+	 * Enable the ARQ optimizer with the specialized RDF index 
+	 * using the specified configuration options and globally
+	 * enable the optimizer in the ARQ context
+	 *  
+	 * @param data
+	 * @param index
+	 * @param config
+	 */
+	public static void enable(Model data, Model index, Config config)
+	{
+		enable(ARQ.getContext(), data, index, config) ;
+	}
+	
+	/**
+	 * Enable the ARQ optimizer with the specialized RDF index
+	 * using the specified configuration options and enabled
+	 * in the context provided (may be a local context)
+	 * 
+	 * @param context
+	 * @param data
+	 * @param index
+	 * @param config
+	 */
+	public static void enable(Context context, Model data, Model index, Config config)
+	{				
+		Probability probability = ProbabilityFactory.loadDefaultModel(data, index, config) ;
+		context.set(Constants.PF, probability) ;
+		enable(context, config) ;
+	}
+	
+	/**
+	 * Enable the ARQ optimizer using the specified configuration options
+	 * enabled in the context provided
+	 * 
+	 * @param context
+	 * @param config
+	 */
+	public static void enable(Context context, Config config)
+	{		
+		/*
+		 * Note that the StageGenOptimizedBasicPattern has to set the flag true in order to check if the 
+		 * optimizer is REALLY executed. The flag is mainly for testing purpose (TestEnabled)
+		 */
+		context.set(Constants.isEnabled, false) ;
+		context.set(ARQ.stageGenerator, new StageGenPropertyFunction(
+											new StageGenOptimizedBasicPattern(
+												StageBuilder.getGenerator(),
+												config))) ;
 	}
 	
 	/** 
@@ -70,6 +135,7 @@ public class Optimizer
 	 */
 	public static void disable(Context context)
 	{				
+		context.set(Constants.isEnabled, false) ;
 		context.set(ARQ.stageGenerator, StageBuilder.standardGenerator()) ;
 	}
 	
@@ -80,17 +146,74 @@ public class Optimizer
 	}
 	
 	/**
+	 * Create and return the Jena model of the specialized RDF index
+	 * required for the probabilistic index model. The full index
+	 * is constructed.
+	 * 
+	 * @param data
+	 * @return Model
+	 */
+	public static Model index(Model data)
+	{
+		return index(data, null) ;
+	}
+	
+	/**
+	 * Create and return the Jena model of the specialized RDF index
+	 * required for the probabilistic index model. The method takes 
+	 * a configuration to specify user specific options.
+	 * 
+	 * @param data
+	 * @param config
+	 * @return Model
+	 */
+	public static Model index(Model data, Config config)
+	{		
+		return ProbabilityFactory.createIndex(data, config) ;
+	}
+	
+	/**
 	 * Explain the optimization performed on a query
 	 * 
-	 * @param context
-	 * @param graph
+	 * @param model
 	 * @param query
 	 */
-	public static void explain(Context context, Graph graph, Query query)
+	public static void explain(Model model, Query query)
+	{
+		explain(ARQ.getContext(), model, query, null) ;
+	}
+	
+	/**
+	 * Explain the optimization performed on a query using a specific heuristic.
+	 * Specific options may be set by the config parameter.
+	 * 
+	 * @param model
+	 * @param query
+	 * @param config
+	 * @return String
+	 */
+	public static String explain(Model model, Query query, Config config)
+	{
+		return explain(ARQ.getContext(), model, query, config) ;
+	}
+	
+	/**
+	 * Explain the optimization performed on a query. The heuristic ID parameter
+	 * may be used to specify a heuristic (use the HeuristicsRegistry). The
+	 * parameter can be null.
+	 * 
+	 * @param context
+	 * @param model
+	 * @param query
+	 * @param config
+	 * @return String
+	 */
+	public static String explain(Context context, Model model, Query query, Config config)
 	{
 		String left = "| " ;
 		String sep = " | " ;
-		PrintStream out = System.out ;
+		StringBuffer out = new StringBuffer() ;
+		Graph graph = model.getGraph() ;
 		List rowsTable1 = new ArrayList() ; // List<List>
 		List rowsTable2 = new ArrayList() ; // List<List>
 		PrefixMapping prefix = query.getPrefixMapping() ;
@@ -107,7 +230,7 @@ public class Optimizer
 	    {
 	    	BasicPattern pattern = (BasicPattern)iter.next() ;
 	    	// Optimizer the BGP
-	    	BasicPatternOptimizer optimizer = new BasicPatternOptimizer(context, graph, pattern) ;
+	    	BasicPatternOptimizer optimizer = new BasicPatternOptimizer(context, graph, pattern, config) ;
 	    	BasicPatternGraph basicPatternGraph = optimizer.getBasicPatternGraph() ;
 	    	basicPatternGraph.optimize() ;
 	    	// Return the BGP graph components
@@ -145,13 +268,14 @@ public class Optimizer
 	    }
 	    
     	ExplainFormatter.printTable(out, new String[] {"S" , "P", "O", "C"}, rowsTable1, left, sep) ;
-    	out.println("") ;
+    	
+    	out.append("\n") ;
     	
     	// The edges table might be empty (if the query has only one triple pattern, i.e. the graph no edges
     	if (rowsTable2.size() > 0)
     		ExplainFormatter.printTable(out, new String[] {"TP-1", "TP-2", "C"}, rowsTable2, left, sep) ;
-		
-    	out.flush() ;
+    	
+    	return out.toString() ;
 	}
 	
 	/** The root package name for ARQo */   
@@ -166,20 +290,20 @@ public class Optimizer
     /** The ARQo web site : see also http://jena.sourceforge.net*/   
     public static final String WEBSITE = "http://jena.sourceforge.net/ARQ-Optimizer/";
    
-    /** The full name of the current ARQo version */   
+    /* The full name of the current ARQo version, required to flag the index ontology with a version number! */   
     public static final String VERSION = "0.0-alpha-1";
    
-    /** The major version number for this release of ARQo (ie '2' for ARQo 2.0) */
-    public static final String MAJOR_VERSION = "0";
+    /* The major version number for this release of ARQo (ie '2' for ARQo 2.0) */
+    //public static final String MAJOR_VERSION = "0";
    
-    /** The minor version number for this release of ARQo (ie '0' for ARQo 2.0) */
-    public static final String MINOR_VERSION = "0";
+    /* The minor version number for this release of ARQo (ie '0' for ARQo 2.0) */
+    //public static final String MINOR_VERSION = "0";
    
-    /** The version status for this release of ARQo (eg '-beta1' or the empty string) */
-    public static final String VERSION_STATUS = "-alpha-1";
+    /* The version status for this release of ARQo (eg '-beta1' or the empty string) */
+    //public static final String VERSION_STATUS = "-alpha-1";
    
-    /** The date and time at which this release was built */   
-    public static final String BUILD_DATE = "2007-07-02 13:50 +0000";
+    /* The date and time at which this release was built */   
+    //public static final String BUILD_DATE = "2007-07-02 13:50 +0000";
 }
 
 

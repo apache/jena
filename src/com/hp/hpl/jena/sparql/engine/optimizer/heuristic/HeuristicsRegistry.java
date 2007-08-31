@@ -13,6 +13,7 @@ import org.apache.commons.logging.LogFactory;
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.sparql.util.Context;
 import com.hp.hpl.jena.sparql.engine.optimizer.heuristic.VariableCounting;
+import com.hp.hpl.jena.sparql.engine.optimizer.heuristic.ProbabilisticFramework;
 import com.hp.hpl.jena.sparql.engine.optimizer.heuristic.GraphStatisticsHeuristic;
 
 /**
@@ -28,7 +29,9 @@ public class HeuristicsRegistry
 	private static Log log = LogFactory.getLog(HeuristicsRegistry.class) ;
 	
 	public static final String BGP_VARIABLE_COUNTING = "BGP_VARIABLE_COUNTING" ;
+	public static final String BGP_PROBABILISTIC_FRAMEWORK = "BGP_PROBABILISTIC_FRAMEWORK" ;
 	public static final String BGP_GRAPH_STATISTICS_HANDLER = "BGP_GRAPH_STATISTICS_HANDLER" ;
+	public static final String BGP_VARIABLE_COUNTING_UNBOUND = "BGP_VARIABLE_COUNTING_UNBOUND" ;
 	
 	public HeuristicsRegistry() {}
 	
@@ -36,7 +39,9 @@ public class HeuristicsRegistry
 	public HeuristicsRegistry(Context context, Graph graph)
 	{		
 		add(BGP_VARIABLE_COUNTING, new VariableCounting()) ;
+		add(BGP_PROBABILISTIC_FRAMEWORK, new ProbabilisticFramework(context)) ;
 		add(BGP_GRAPH_STATISTICS_HANDLER, new GraphStatisticsHeuristic(graph)) ;
+		add(BGP_VARIABLE_COUNTING_UNBOUND, new VariableCountingUnbound()) ;
 	}	
 	
 	/**

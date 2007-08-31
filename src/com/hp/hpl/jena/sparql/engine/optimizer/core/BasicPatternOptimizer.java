@@ -13,6 +13,7 @@ import com.hp.hpl.jena.sparql.util.Context;
 import com.hp.hpl.jena.sparql.core.BasicPattern;
 import com.hp.hpl.jena.sparql.engine.optimizer.core.BasicPatternGraph;
 import com.hp.hpl.jena.sparql.engine.optimizer.heuristic.HeuristicBasicPattern;
+import com.hp.hpl.jena.sparql.engine.optimizer.util.Config;
 
 /**
  * Implementation of basic graph pattern optimizer.
@@ -30,19 +31,33 @@ public class BasicPatternOptimizer extends OptimizerBase
 	
 	/**
 	 * Initialize the BGP optimizer.
-	 * The default heuristic is used (variable counting)
 	 * 
-	 * @param context
+	 * @param cxt
 	 * @param graph
 	 * @param pattern
+	 * @param config
 	 */
-	public BasicPatternOptimizer(Context context, Graph graph, BasicPattern pattern)
+	public BasicPatternOptimizer(Context context, Graph graph, BasicPattern pattern, Config config)
 	{
 		super(context, graph) ;
 		
 		this.pattern = pattern ;
-		this.heuristic = broker.getBasicPatternHeuristic() ;
+		
+		if (config == null)
+			this.heuristic = broker.getBasicPatternHeuristic() ;
+		else
+			this.heuristic = broker.getBasicPatternHeuristic(config.getBasicPatternHeuristic()) ;
 	}
+	
+	/**
+	 * Return the initialized basic pattern heuristic, which is selected by the
+	 * broker during initialization of the BasicPatternOptimizer.
+	 * This method was added for testing purposes (see TestConfig).
+	 * 
+	 * @return HeuristicBasicPattern
+	 */
+	public HeuristicBasicPattern getHeuristicBasicPattern()
+	{ return heuristic ; }
 	
 	/**
 	 * Given a BasicPattern, the method abstracts the BasicPattern as a BasicPatternGraph

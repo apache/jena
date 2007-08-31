@@ -15,6 +15,8 @@ import com.hp.hpl.jena.sparql.engine.main.StageGenerator;
 import com.hp.hpl.jena.sparql.engine.main.StageList;
 import com.hp.hpl.jena.sparql.util.Context;
 import com.hp.hpl.jena.sparql.engine.optimizer.core.BasicPatternOptimizer;
+import com.hp.hpl.jena.sparql.engine.optimizer.util.Constants;
+import com.hp.hpl.jena.sparql.engine.optimizer.util.Config;
 
 /**
  * The class implements the ARQ optimizer for basic graph patterns.
@@ -28,15 +30,12 @@ import com.hp.hpl.jena.sparql.engine.optimizer.core.BasicPatternOptimizer;
 public class StageGenOptimizedBasicPattern implements StageGenerator 
 {
 	private StageGenerator other = null ;
+	private Config config = null ;
 	
-	public StageGenOptimizedBasicPattern(StageGenerator other)
+	public StageGenOptimizedBasicPattern(StageGenerator other, Config config)
 	{	
 		this.other = other ;
-	}
-	
-	public StageGenerator getOther()
-	{
-		return other ;
+		this.config = config ;
 	}
 	
 	/**
@@ -54,15 +53,19 @@ public class StageGenOptimizedBasicPattern implements StageGenerator
 		Context context = execCxt.getContext() ;
 		Graph graph = execCxt.getActiveGraph() ;
 		
+		// Do this only for in-memory models
 		if (graph instanceof GraphMemFaster)
 		{
-			// Do this only for in-memory models
-			BasicPatternOptimizer optimizer = new BasicPatternOptimizer(context, graph, pattern) ;
+			// This is mainly for test cases (TestEnabled)
+			context.set(Constants.isEnabled, true) ;
+			BasicPatternOptimizer optimizer = new BasicPatternOptimizer(context, graph, pattern, config) ;
 			Stage basicStage = new StageBasic(optimizer.optimize()) ;
 			sList.add(basicStage) ;
         
 			return sList ;
 		}
+		
+		context.set(Constants.isEnabled, false) ;
 		
 		return other.compile(pattern, execCxt) ;
 	}

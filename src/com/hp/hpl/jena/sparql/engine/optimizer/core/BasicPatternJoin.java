@@ -221,6 +221,28 @@ public class BasicPatternJoin
 	}
 	
 	/**
+	 * The method returns the first identified join type between the triples,
+	 * ignoring the specific uPP or bPP join type.
+	 * 
+	 * @param triple1
+	 * @param triple2
+	 * @return String
+	 */
+	public static String specificTypeIgnorePP(Triple triple1, Triple triple2)
+	{
+		List types = specificTypes(triple1, triple2) ; // List<String>
+		
+		for (Iterator iter = types.iterator(); iter.hasNext(); )
+		{
+			String type = (String)iter.next() ;
+			if (!(type.equals(uPP) || (type.equals(bPP))))
+				return type ;
+		}
+		
+		return null ;
+	}
+	
+	/**
 	 * The method returns generic types, i.e. it doesn't consider
 	 * if the joins are bound or unbound.
 	 * 
@@ -271,6 +293,28 @@ public class BasicPatternJoin
 		
 		if (types.size() > 0)
 			return (String)types.get(0) ;
+		
+		return null ;
+	}
+	
+	/**
+	 * The method returns the first identified generic join type,
+	 * by ignoring PP join types
+	 * 
+	 * @param triple1
+	 * @param triple2
+	 * @return String
+	 */
+	public static String genericTypeIgnorePP(Triple triple1, Triple triple2)
+	{
+		List types = genericTypes(triple1, triple2) ; // List<String>
+		
+		for (Iterator iter = types.iterator(); iter.hasNext(); )
+		{
+			String type = (String)iter.next() ;
+			if (! type.equals(PP))
+				return type ;
+		}
 		
 		return null ;
 	}

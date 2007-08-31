@@ -5,7 +5,6 @@
 
 package com.hp.hpl.jena.sparql.engine.optimizer;
 
-import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -15,16 +14,24 @@ import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.shared.PrefixMapping;
 
 /**
- * The class takes care of pretty formatting of the ARQo explain method
+ * The class takes care of pretty formatting of the Optimizer explain method
  * 
  * @author Markus Stocker
  * @version $Id$
  */
 
-
 public class ExplainFormatter 
 {
-	public static void printTable(PrintStream out, String[] header, List rows, String left, String sep)
+	/**
+	 * Print out a table including frame lines, header and rows
+	 * 
+	 * @param out
+	 * @param header
+	 * @param rows
+	 * @param left
+	 * @param sep
+	 */
+	public static void printTable(StringBuffer out, String[] header, List rows, String left, String sep)
 	{
 		int[] colWidths = colWidths(header, rows) ;
 		
@@ -51,12 +58,23 @@ public class ExplainFormatter
 				bf.append(sep) ;
 			}
 			
-			out.println(bf) ;
+			out.append(bf + "\n") ;
 		}
 		
 		printLine(out, colWidths, left, sep) ;
 	}
 	
+	/**
+	 * Return a list with the formatted columns for a single row with joined triple patterns.
+	 * The method takes care of formatting rows for the table which displays the estimated
+	 * cost of joined triple patterns.
+	 * 
+	 * @param prefix
+	 * @param triple1
+	 * @param triple2
+	 * @param cost
+	 * @return List
+	 */
 	public static List formatCols(PrefixMapping prefix, Triple triple1, Triple triple2, double cost)
 	{
 		List cols = new ArrayList() ;
@@ -76,6 +94,16 @@ public class ExplainFormatter
 		return cols ;
 	}
 	
+	/**
+	 * Return a list with the formatted columns for a single row with one triple pattern.
+	 * The method takes care of formatting rows for the table which displays the estimated
+	 * cost of single triple patterns.
+	 * 
+	 * @param prefix
+	 * @param triple
+	 * @param cost
+	 * @return List
+	 */
 	public static List formatCols(PrefixMapping prefix, Triple triple, double cost)
 	{
 		List cols = new ArrayList() ;
@@ -88,7 +116,16 @@ public class ExplainFormatter
 		return cols ;   
 	}
 	
-	private static void printHeader(PrintStream out, String[] header, int[] colWidths, String left, String sep)
+	/*
+	 * Print the table header columns
+	 * 
+	 * @param out
+	 * @param header
+	 * @param colWidths
+	 * @param left
+	 * @param sep
+	 */
+	private static void printHeader(StringBuffer out, String[] header, int[] colWidths, String left, String sep)
 	{
 		StringBuffer bf = new StringBuffer(120) ;
 		
@@ -106,26 +143,39 @@ public class ExplainFormatter
 			bf.append(sep) ;
 		}
 		
-		out.println(bf) ;
+		out.append(bf + "\n") ;
 	}
 	
-	private static void printLine(PrintStream out, int[] colWidths, String left, String sep)
+	/*
+	 * Print a horizontal frame line for the table
+	 * 
+	 * @param out
+	 * @param colWidths
+	 * @param left
+	 * @param sep
+	 */
+	private static void printLine(StringBuffer out, int[] colWidths, String left, String sep)
 	{
 		StringBuffer bf = new StringBuffer(120) ;
 		int tableLength = left.length() ;
 		
 		for (int i = 0; i < colWidths.length; i++ )
-		{
 			tableLength += colWidths[i] + sep.length() ;
-		}
 		
 		// -1 correction for the last sep of length 3, ' | '
 		for (int i = 0; i < tableLength - 1; i++)
 			bf.append('-') ;
 		
-		out.println(bf) ;
+		out.append(bf + "\n") ;
 	}
 	
+	/*
+	 * Return an array which contains the width for each table column
+	 * 
+	 * @param header
+	 * @param rows
+	 * @return int[]
+	 */
 	private static int[] colWidths(String[] header, List rows)
 	{
 		 int[] colWidths = new int[header.length] ;
@@ -146,6 +196,13 @@ public class ExplainFormatter
 		 return colWidths ;
 	}
 	
+	/*
+	 * Pretty print a node (with prefix mapping, ? and <URI>
+	 * 
+	 * @param header
+	 * @param rows
+	 * @return int[]
+	 */
 	private static String formatNode(PrefixMapping prefixMapping, Node node)
 	{
 		if (node.isVariable())
@@ -169,6 +226,9 @@ public class ExplainFormatter
 		return null ;
 	}
 	
+	/*
+	 * Format a double cost value as a string (returns NaN if the cost is > 1d)
+	 */
 	private static String formatCost(double cost)
 	{
 		if (cost <= 1d)

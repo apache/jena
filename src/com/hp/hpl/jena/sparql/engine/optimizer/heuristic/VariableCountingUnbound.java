@@ -15,26 +15,19 @@ import com.hp.hpl.jena.sparql.engine.optimizer.core.BasicPatternJoin;
 import com.hp.hpl.jena.sparql.engine.optimizer.heuristic.HeuristicBasicPattern;
 
 /**
- * This heuristic implements a simple variable counting technique to estimate
- * the execution cost of edges and nodes of graphs (i.e. BasicPatterns).
- * If a node of a triple pattern is an unbound variable, the cost 1.0 is 
- * assigned to the node. Else, the node is bound and the cost 0.0 is
- * assigned. Futher, S/P/O nodes are weighted. The subject is weighted
- * with 3, the predicate with 1 and the object with 2. The weight considers
- * that subjects are generally more selective than predicates. Thus,
- * the pattern ?s :p ?o should have a heigher cost than the 
- * pattern :s ?p ?o.
- * 
- * This heuristic is executed if more sophisticated techniques cannot be 
- * used because of the lack of indexes.
+ * This heuristic is very similar to the variable counting heuristic, though
+ * it gives weight 1.0 to bound predicate joins. The idea is to avoid that
+ * patterns like ?x rdf:type ub:GraduateStudent . ?y rdf:type ub:Department
+ * are considered to be good during optimization. By weighting them badly
+ * the optimizer considers other joins better choices.
  * 
  * @author Markus Stocker
  * @version $Id$
  */
 
-public class VariableCounting extends HeuristicBasicPattern
+public class VariableCountingUnbound extends HeuristicBasicPattern
 {	
-	private static Log log = LogFactory.getLog(VariableCounting.class) ;
+	private static Log log = LogFactory.getLog(VariableCountingUnbound.class) ;
 	
 	/**
 	 * This method returns the cost for the triple based
@@ -61,22 +54,10 @@ public class VariableCounting extends HeuristicBasicPattern
 	}
 	
 	/**
-	 * The method returns the cost for the join between
-	 * two triples for this heuristic, since there is no 
-	 * joined triple pattern concept for variable counting.
-	 * The more joins two triple patterns define, the less
-	 * is their execution cost, since they are more selective.
-	 * Further a join over SO or OS is for instance less
-	 * selective as a join over SS. Exotic joins like
-	 * SP, PS, PP, PO, OP are considered high selective.
-	 * This is probably very domain dependent, as most
-	 * domains rarely define such exotic join types. 
-	 * Moreover, unbound joins are calculated to be 
-	 * less selective than bound joins, e.g. for
-	 * (1) ?s1 ?p1 ?o1 . ?s1 ?p2 ?o2
-	 * (2) :s1 ?p1 ?o1 . :s1 ?p2 ?o2
-	 * (2) is more selective. This method may be fine tuned
-	 * for specific domains.
+	 * The method estimates the execution cost of joined triple patterns
+	 * based on simple heuristics. Note that the bound predicate-predicate join
+	 * is explicitely weighted 1.0 to avoid that the optimizer choses certain
+	 * patterns as "good" optimizations.
 	 * 
 	 * @param triple1
 	 * @param triple2
@@ -98,6 +79,10 @@ public class VariableCounting extends HeuristicBasicPattern
 		for (Iterator iter = joins.iterator(); iter.hasNext(); )
 		{
 			String type = (String)iter.next() ;
+		
+			// Weight bound PP joins with 1.0, always
+			if (type.equals(BasicPatternJoin.bPP))
+				return cost / MAX_COST ;
 			
 			if (type.equals(BasicPatternJoin.uSS))
 				cost -= 2 ;
@@ -125,8 +110,6 @@ public class VariableCounting extends HeuristicBasicPattern
 				cost -= 1 * 2 ;
 			else if (type.equals(BasicPatternJoin.bPS))
 				cost -= 3 * 2 ;
-			else if (type.equals(BasicPatternJoin.bPP))
-				cost -= 0 ;
 			else if (type.equals(BasicPatternJoin.bPO))
 				cost -= 3 * 2 ;
 			else if (type.equals(BasicPatternJoin.bOS))
