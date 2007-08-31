@@ -11,177 +11,177 @@
 # Version: $Id$
 # ---------------------------------------------
 
-<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TC001> 
+<http://jena.hpl.hp.com/ARQo/test/#TC001> 
 	rdf:type 		:TestCase ;
 	dc:title 		"TC001" ;
 	:heuristic		"BGP_VARIABLE_COUNTING" ;
 	:node			"?s1 ?p1 ?o1" ;
 	:weight	 		"1.0" .
 	
-<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TC002> 
+<http://jena.hpl.hp.com/ARQo/test/#TC002> 
 	rdf:type 		:TestCase ;
 	dc:title 		"TC002" ;
 	:heuristic		"BGP_VARIABLE_COUNTING" ;
 	:node			":s1 ?p1 ?o1" ;
 	:weight	 		"0.5" .
 	
-<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TC003> 
+<http://jena.hpl.hp.com/ARQo/test/#TC003> 
 	rdf:type 		:TestCase ;
 	dc:title 		"TC003" ;
 	:heuristic		"BGP_VARIABLE_COUNTING" ;
 	:node			"?s1 :p1 ?o1" ;
 	:weight	 		"0.875" .
 	
-<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TC004> 
+<http://jena.hpl.hp.com/ARQo/test/#TC004> 
 	rdf:type 		:TestCase ;
 	dc:title 		"TC004" ;
 	:heuristic		"BGP_VARIABLE_COUNTING" ;
 	:node			"?s1 ?p1 :o1" ;
 	:weight	 		"0.75" .
 	
-<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TC005> 
+<http://jena.hpl.hp.com/ARQo/test/#TC005> 
 	rdf:type 		:TestCase ;
 	dc:title 		"TC005" ;
 	:heuristic		"BGP_VARIABLE_COUNTING" ;
 	:node			":s1 :p1 ?o1" ;
 	:weight	 		"0.375" .
 	
-<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TC006> 
+<http://jena.hpl.hp.com/ARQo/test/#TC006> 
 	rdf:type 		:TestCase ;
 	dc:title 		"TC006" ;
 	:heuristic		"BGP_VARIABLE_COUNTING" ;
 	:node			":s1 ?p1 :o1" ;
 	:weight	 		"0.25" .
 	
-<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TC007> 
+<http://jena.hpl.hp.com/ARQo/test/#TC007> 
 	rdf:type 		:TestCase ;
 	dc:title 		"TC007" ;
 	:heuristic		"BGP_VARIABLE_COUNTING" ;
 	:node			"?s1 :p1 :o1" ;
 	:weight	 		"0.625" .
 	
-<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TC008> 
+<http://jena.hpl.hp.com/ARQo/test/#TC008> 
 	rdf:type 		:TestCase ;
 	dc:title 		"TC008" ;
 	:heuristic		"BGP_VARIABLE_COUNTING" ;
 	:node			":s1 :p1 :o1" ;
 	:weight	 		"0.125" .
 	
-<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TC009> 
+<http://jena.hpl.hp.com/ARQo/test/#TC009> 
 	rdf:type 		:TestCase ;
 	dc:title 		"TC009" ;
 	:heuristic		"BGP_GRAPH_STATISTICS_HANDLER" ;
 	:node			"<http://example.org#Person1> ?p1 ?o1" ;
 	:weight	 		"0.2702702702702703" .
 	
-<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TC010> 
+<http://jena.hpl.hp.com/ARQo/test/#TC010> 
 	rdf:type 		:TestCase ;
 	dc:title 		"TC010" ;
 	:heuristic		"BGP_GRAPH_STATISTICS_HANDLER" ;
 	:node			"<http://example.org#Person2> ?p1 ?o1" ;
 	:weight	 		"0.24324324324324326" .
 	
-<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TC011> 
+<http://jena.hpl.hp.com/ARQo/test/#TC011> 
 	rdf:type 		:TestCase ;
 	dc:title 		"TC011" ;
 	:heuristic		"BGP_GRAPH_STATISTICS_HANDLER" ;
 	:node			"<http://example.org#Person5> ?p1 ?o1" ;
 	:weight	 		"0.10810810810810811" .
 	
-<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TC012> 
+<http://jena.hpl.hp.com/ARQo/test/#TC012> 
 	rdf:type 		:TestCase ;
 	dc:title 		"TC012" ;
 	:heuristic		"BGP_GRAPH_STATISTICS_HANDLER" ;
 	:node			"?s1 <http://example.org#firstname> ?o1" ;
 	:weight	 		"0.13513513513513514" .
 	
-<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TC013> 
+<http://jena.hpl.hp.com/ARQo/test/#TC013> 
 	rdf:type 		:TestCase ;
 	dc:title 		"TC013" ;
 	:heuristic		"BGP_GRAPH_STATISTICS_HANDLER" ;
 	:node			"?s1 <http://example.org#lastname> ?o1" ;
 	:weight	 		"0.13513513513513514" .
 	
-<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TC014> 
+<http://jena.hpl.hp.com/ARQo/test/#TC014> 
 	rdf:type 		:TestCase ;
 	dc:title 		"TC014" ;
 	:heuristic		"BGP_GRAPH_STATISTICS_HANDLER" ;
 	:node			"?s1 <http://example.org#skype> ?o1" ;
 	:weight	 		"0.10810810810810811" .
 	
-<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TC015> 
+<http://jena.hpl.hp.com/ARQo/test/#TC015> 
 	rdf:type 		:TestCase ;
 	dc:title 		"TC015" ;
 	:heuristic		"BGP_GRAPH_STATISTICS_HANDLER" ;
-	:node			"?s1 <http://example.org#skype> ?o1" ;
+	:node			"?s1 <http://example.org#birthday> ?o1" ;
 	:weight	 		"0.10810810810810811" .
 	
-<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TC016> 
+<http://jena.hpl.hp.com/ARQo/test/#TC016> 
 	rdf:type 		:TestCase ;
 	dc:title 		"TC016" ;
 	:heuristic		"BGP_GRAPH_STATISTICS_HANDLER" ;
 	:node			"?s1 ?p1 19650403" ;
 	:weight	 		"0.02702702702702703" .
 	
-<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TC017> 
+<http://jena.hpl.hp.com/ARQo/test/#TC017> 
 	rdf:type 		:TestCase ;
 	dc:title 		"TC017" ;
 	:heuristic		"BGP_GRAPH_STATISTICS_HANDLER" ;
 	:node			"?s1 ?p1 xxx-xxx-xxx" ;
 	:weight	 		"0.13513513513513514" .
 
-<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TC018> 
+<http://jena.hpl.hp.com/ARQo/test/#TC018> 
 	rdf:type 		:TestCase ;
 	dc:title 		"TC018" ;
 	:heuristic		"BGP_GRAPH_STATISTICS_HANDLER" ;
-	:node			"?s1 ?p1 xxx-xxx-xxx" ;
-	:weight	 		"0.13513513513513514" .
+	:node			"?s1 ?p1 xxx-xxx-xx" ;
+	:weight	 		"0.0" .
 	
-<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TC019> 
+<http://jena.hpl.hp.com/ARQo/test/#TC019> 
 	rdf:type 		:TestCase ;
 	dc:title 		"TC019" ;
 	:heuristic		"BGP_GRAPH_STATISTICS_HANDLER" ;
 	:node			"?s1 ?p1 company1" ;
 	:weight	 		"0.05405405405405406" .	
 
-<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TC020> 
+<http://jena.hpl.hp.com/ARQo/test/#TC020> 
 	rdf:type 		:TestCase ;
 	dc:title 		"TC020" ;
 	:heuristic		"BGP_GRAPH_STATISTICS_HANDLER" ;
 	:node			"?s1 ?p1 ?o1" ;
 	:weight	 		"1.0" .
 	
-<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TC021> 
+<http://jena.hpl.hp.com/ARQo/test/#TC021> 
 	rdf:type 		:TestCase ;
 	dc:title 		"TC021" ;
 	:heuristic		"BGP_GRAPH_STATISTICS_HANDLER" ;
 	:node			"<http://example.org#Person1> <http://example.org#firstname> ?o1" ;
 	:weight	 		"0.03652300949598247" .
 	
-<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TC022> 
+<http://jena.hpl.hp.com/ARQo/test/#TC022> 
 	rdf:type 		:TestCase ;
 	dc:title 		"TC022" ;
 	:heuristic		"BGP_GRAPH_STATISTICS_HANDLER" ;
 	:node			"<http://example.org#Person1> <http://example.org#firstname> ?o1" ;
 	:weight	 		"0.03652300949598247" .
 	
-<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TC023> 
+<http://jena.hpl.hp.com/ARQo/test/#TC023> 
 	rdf:type 		:TestCase ;
 	dc:title 		"TC023" ;
 	:heuristic		"BGP_GRAPH_STATISTICS_HANDLER" ;
 	:node			"<http://example.org#Person1> <http://example.org#skype> ?o1" ;
 	:weight	 		"0.02921840759678598" .
 	
-<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TC024> 
+<http://jena.hpl.hp.com/ARQo/test/#TC024> 
 	rdf:type 		:TestCase ;
 	rdfs:comment	"The effective calculated selectivity is 0.011687363038714390, which is lower than the lowest, return the lowest.
-					 Please note that the effective selectivity ist 0, but our estimations never return 0." ;
+					 Please note that the effective selectivity ist 0, but we return 0 only if at least one of SPO element is 0" ;
 	dc:title 		"TC024" ;
 	:heuristic		"BGP_GRAPH_STATISTICS_HANDLER" ;
 	:node			"<http://example.org#Person5> <http://example.org#skype> ?o1" ;
 	:weight	 		"0.02702702702702703" .
 	
-<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TC025> 
+<http://jena.hpl.hp.com/ARQo/test/#TC025> 
 	rdf:type 		:TestCase ;
 	dc:title 		"TC025" ;
 	rdfs:comment	"The effective calculated selectivity is 0.00730460189919649, return the lowest" ;
@@ -189,17 +189,157 @@
 	:node			"<http://example.org#Person1> ?p1 19650403" ;
 	:weight	 		"0.02702702702702703" .
 	
-<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TC026> 
+<http://jena.hpl.hp.com/ARQo/test/#TC026> 
 	rdf:type 		:TestCase ;
 	dc:title 		"TC026" ;
 	:heuristic		"BGP_GRAPH_STATISTICS_HANDLER" ;
 	:node			"?s1 <http://example.org#phone> ?o1" ;
 	:weight	 		"0.13513513513513514" .	
 	
-<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TC027> 
+<http://jena.hpl.hp.com/ARQo/test/#TC027> 
 	rdf:type 		:TestCase ;
 	dc:title 		"TC027" ;
 	rdfs:comment	"The effective calculated selectivity is 0.018261504747991235, return the lowest" ;
 	:heuristic		"BGP_GRAPH_STATISTICS_HANDLER" ;
 	:node			"?s1 <http://example.org#phone> xxx-xxx-xxx" ;
-	:weight	 		"0.02702702702702703" .		      			  				      		
+	:weight	 		"0.02702702702702703" .
+	
+<http://jena.hpl.hp.com/ARQo/test/#TC028> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TC028" ;
+	:heuristic		"BGP_PROBABILISTIC_FRAMEWORK" ;
+	:node			"?s1 ?p1 ?o1" ;
+	:weight	 		"1.0" .
+	
+<http://jena.hpl.hp.com/ARQo/test/#TC029> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TC029" ;
+	:heuristic		"BGP_PROBABILISTIC_FRAMEWORK" ;
+	:node			"<http://example.org#Person1> ?p1 ?o1" ;
+	:weight	 		"0.2702702702702703" .
+	
+<http://jena.hpl.hp.com/ARQo/test/#TC030> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TC030" ;
+	:heuristic		"BGP_PROBABILISTIC_FRAMEWORK" ;
+	:node			"<http://example.org#Person2> ?p1 ?o1" ;
+	:weight	 		"0.24324324324324326" .
+	
+<http://jena.hpl.hp.com/ARQo/test/#TC031> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TC031" ;
+	:heuristic		"BGP_PROBABILISTIC_FRAMEWORK" ;
+	:node			"<http://example.org#Person5> ?p1 ?o1" ;
+	:weight	 		"0.10810810810810811" .	
+	
+<http://jena.hpl.hp.com/ARQo/test/#TC032> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TC032" ;
+	:heuristic		"BGP_PROBABILISTIC_FRAMEWORK" ;
+	:node			"?s1 <http://example.org#firstname> ?o1" ;
+	:weight	 		"0.13513513513513514" .
+	
+<http://jena.hpl.hp.com/ARQo/test/#TC033> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TC033" ;
+	:heuristic		"BGP_PROBABILISTIC_FRAMEWORK" ;
+	:node			"?s1 <http://example.org#lastname> ?o1" ;
+	:weight	 		"0.13513513513513514" .
+	
+<http://jena.hpl.hp.com/ARQo/test/#TC034> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TC034" ;
+	:heuristic		"BGP_PROBABILISTIC_FRAMEWORK" ;
+	:node			"?s1 <http://example.org#skype> ?o1" ;
+	:weight	 		"0.10810810810810811" .
+	
+<http://jena.hpl.hp.com/ARQo/test/#TC035> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TC035" ;
+	:heuristic		"BGP_PROBABILISTIC_FRAMEWORK" ;
+	:node			"?s1 <http://example.org#birthday> ?o1" ;
+	:weight	 		"0.10810810810810811" .   
+
+<http://jena.hpl.hp.com/ARQo/test/#TC036> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TC036" ;
+	:heuristic		"BGP_PROBABILISTIC_FRAMEWORK" ;
+	:node			"?s1 ?p1 19650403" ;
+	:weight	 		"0.02702702702702703" .
+	
+<http://jena.hpl.hp.com/ARQo/test/#TC037> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TC037" ;
+	:heuristic		"BGP_PROBABILISTIC_FRAMEWORK" ;
+	:node			"?s1 ?p1 xxx-xxx-xxx" ;
+	:weight	 		"0.13513513513513514" .
+
+<http://jena.hpl.hp.com/ARQo/test/#TC038> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TC038" ;
+	:heuristic		"BGP_PROBABILISTIC_FRAMEWORK" ;
+	:node			"?s1 ?p1 xxx-xxx-xx" ;
+	:weight	 		"0.0" .
+	
+<http://jena.hpl.hp.com/ARQo/test/#TC039> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TC039" ;
+	:heuristic		"BGP_PROBABILISTIC_FRAMEWORK" ;
+	:node			"?s1 ?p1 company1" ;
+	:weight	 		"0.05405405405405406" .
+	
+<http://jena.hpl.hp.com/ARQo/test/#TC040> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TC040" ;
+	:heuristic		"BGP_PROBABILISTIC_FRAMEWORK" ;
+	:node			"<http://example.org#Person1> <http://example.org#firstname> ?o1" ;
+	:weight	 		"0.03652300949598247" .
+	
+<http://jena.hpl.hp.com/ARQo/test/#TC041> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TC041" ;
+	:heuristic		"BGP_PROBABILISTIC_FRAMEWORK" ;
+	:node			"<http://example.org#Person1> <http://example.org#firstname> ?o1" ;
+	:weight	 		"0.03652300949598247" .
+	
+<http://jena.hpl.hp.com/ARQo/test/#TC042> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TC042" ;
+	:heuristic		"BGP_PROBABILISTIC_FRAMEWORK" ;
+	:node			"<http://example.org#Person1> <http://example.org#skype> ?o1" ;
+	:weight	 		"0.02921840759678598" .
+	
+<http://jena.hpl.hp.com/ARQo/test/#TC043> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TC043" ;
+	:heuristic		"BGP_PROBABILISTIC_FRAMEWORK" ;
+	:node			"<http://example.org#Person5> <http://example.org#skype> ?o1" ;
+	:weight	 		"0.02702702702702703" .
+	
+<http://jena.hpl.hp.com/ARQo/test/#TC044> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TC044" ;
+	:heuristic		"BGP_PROBABILISTIC_FRAMEWORK" ;
+	:node			"<http://example.org#Person1> ?p1 19650403" ;
+	:weight	 		"0.02702702702702703" .
+	
+<http://jena.hpl.hp.com/ARQo/test/#TC045> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TC045" ;
+	:heuristic		"BGP_PROBABILISTIC_FRAMEWORK" ;
+	:node			"<http://example.org#Person1> ?p1 1965040" ;
+	:weight	 		"0.0" .
+	
+<http://jena.hpl.hp.com/ARQo/test/#TC046> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TC046" ;
+	:heuristic		"BGP_PROBABILISTIC_FRAMEWORK" ;
+	:node			"<http://example.org#Person7> ?p1 19650403" ;
+	:weight	 		"0.0" .
+	
+<http://jena.hpl.hp.com/ARQo/test/#TC047> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TC047" ;
+	:heuristic		"BGP_PROBABILISTIC_FRAMEWORK" ;
+	:node			"<http://example.org#Person1> <http://example.org#Workplace> company1" ;
+	:weight	 		"0.0" .				      		
