@@ -33,14 +33,14 @@ public class Run
 {
     public static void main(String[] argv)
     {
-        code() ; System.exit(0) ;
-        runQParse() ;
+        //code() ; System.exit(0) ;
+        //runQParse() ;
         
-        String []a = { "--strict", "file:///c:/home/afs/W3C/DataAccess/tests/data-r2/expr-builtin/manifest.ttl" } ;
-        arq.qtest.main(a) ;
-        System.exit(0) ;
-        String DIR = "testing/ARQ/PropertyFunctions/" ;
-        execQuery(DIR+"data-3.ttl", DIR+"splitIRI-1.rq") ;
+//        String []a = { "--strict", "file:///c:/home/afs/W3C/DataAccess/tests/data-r2/expr-builtin/manifest.ttl" } ;
+//        arq.qtest.main(a) ;
+//        System.exit(0) ;
+        String DIR = "testing/ARQ/OpenWorld/" ;
+        execQuery(DIR+"data-3.ttl", DIR+"date-2.rq") ;
     }
     
     
