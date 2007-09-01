@@ -105,7 +105,7 @@ public class Query extends Prologue implements Cloneable
     
     // Allocate variables that are unique to this query.
     private VarAlloc varAlloc = new VarAlloc(ARQConstants.allocVarMarker) ;
-    public Var anonVar() { return varAlloc.allocVar() ; }
+    public Var allocInternVar() { return varAlloc.allocVar() ; }
     
     public void setQueryType(int qType)         { queryType = qType ; }
     
@@ -368,7 +368,7 @@ public class Query extends Prologue implements Cloneable
     {
         Var var = null ; 
         if ( v == null )
-            var = anonVar() ;
+            var = allocInternVar() ;
         else
         {
             if ( !v.isVariable() )
@@ -381,7 +381,7 @@ public class Query extends Prologue implements Cloneable
     /** Add an to a SELECT query (a name will be created for it) */
     public void addResultVar(Expr expr)
     {
-        _addResultVar(anonVar(), expr) ;
+        _addResultVar(allocInternVar(), expr) ;
     }
 
     /** Add a named expression to a SELECT query */
@@ -389,7 +389,7 @@ public class Query extends Prologue implements Cloneable
     {
         Var var = null ; 
         if ( varName == null )
-            var = anonVar() ;
+            var = allocInternVar() ;
         else
         {
             varName = Var.canonical(varName) ;
@@ -410,17 +410,18 @@ public class Query extends Prologue implements Cloneable
     
     // GROUP/HAVING
     
-    protected List groupVars = new ArrayList() ;
-    protected List groupExprs = new ArrayList() ;
-    protected List havingExprs = new ArrayList() ;
-    static boolean implMask = false ;
+    protected List groupVars = new ArrayList() ;    // Var
+    protected Map groupExprs = new HashMap() ;      // Var -> Expr
+    protected List havingExprs = new ArrayList() ;  // Expressions
+    
+    static boolean implMask = true ;
 
     public boolean hasGroupBy()     { return groupVars != null && groupVars.size() > 0 ; }
     public boolean hasHaving()      { return havingExprs != null && havingExprs.size() > 0 ; }
     
     public List getGroupVars()      { return groupVars ; }
     
-    public List getGroupExprs()     { return groupExprs ; }
+    public Map getGroupExprs()     { return groupExprs ; }
     
     public List getHavingExprs()    { return havingExprs ; }
     
@@ -435,18 +436,21 @@ public class Query extends Prologue implements Cloneable
     {
         if ( implMask ) throw new ARQNotImplemented("In progress: GROUP and aggregates" ) ;
         groupVars.add(v) ;
-        _addGroupByExpr(new NodeVar(v)) ;
     }
 
     public void addGroupBy(Expr expr)
     {
-        _addGroupByExpr(expr) ;
-    }
-
-    private void _addGroupByExpr(Expr expr)
-    {
         if ( implMask ) throw new ARQNotImplemented("In progress: GROUP and aggregates" ) ;
-        groupExprs.add(expr) ;
+        if ( expr.isVariable() )
+        {
+            // It was (?x) - keep the name by adding by variable.
+            addGroupBy(expr.getVarName()) ;
+            return ;
+        }
+        
+        Var v = allocInternVar() ;
+        groupVars.add(v) ;
+        groupExprs.put(v, expr) ;
     }
 
     public void addHavingCondition(Expr expr)

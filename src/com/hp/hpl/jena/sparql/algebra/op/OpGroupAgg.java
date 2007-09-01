@@ -7,6 +7,7 @@
 package com.hp.hpl.jena.sparql.algebra.op;
 
 import java.util.List;
+import java.util.Map;
 
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.OpVisitor;
@@ -19,11 +20,13 @@ public class OpGroupAgg extends OpModifier
 {
     private List groupVars ;
     private List aggregators ;
+    private Map groupExprs ;
 
-    public OpGroupAgg(Op subOp, List groupVars, List aggregators)
+    public OpGroupAgg(Op subOp, List groupVars, Map groupExprs, List aggregators)
     { 
         super(subOp) ;
         this.groupVars  = groupVars ;
+        this.groupExprs = groupExprs ;
         this.aggregators = aggregators ;
     }
     
@@ -34,7 +37,7 @@ public class OpGroupAgg extends OpModifier
 
     public String getName()                 { return "group" ; }
     public void visit(OpVisitor opVisitor)  { opVisitor.visit(this) ; }
-    public Op copy(Op subOp)                { return new OpGroupAgg(subOp, groupVars, aggregators) ; }
+    public Op copy(Op subOp)                { return new OpGroupAgg(subOp, groupVars, groupExprs, aggregators) ; }
 
     public Op apply(Transform transform, Op subOp)
     { return transform.transform(this, subOp) ; }

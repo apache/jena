@@ -34,7 +34,7 @@ public class Run
     public static void main(String[] argv)
     {
         //code() ; System.exit(0) ;
-        //runQParse() ;
+        runQParseARQ()  ;
         
 //        String []a = { "--strict", "file:///c:/home/afs/W3C/DataAccess/tests/data-r2/expr-builtin/manifest.ttl" } ;
 //        arq.qtest.main(a) ;
@@ -106,11 +106,19 @@ public class Run
 
     private static void runQParse()
     {
+        String []a = { "--file=Q.rq", "--print=op", "--print=query" } ;
+        arq.qparse.main(a) ;
+        System.exit(0) ;
+    }
+    
+    private static void runQParseARQ()
+    {
         String []a = { "--file=Q.arq", "--out=arq", "--print=op", "--print=query" } ;
         arq.qparse.main(a) ;
         System.exit(0) ;
     }
     
+
     private static void execQuery(String datafile, String queryfile)
     {
         //QueryEngineMain.register() ;
