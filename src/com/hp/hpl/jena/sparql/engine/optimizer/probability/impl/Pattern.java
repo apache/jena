@@ -79,7 +79,7 @@ public class Pattern
  	/**
  	 * Override the equals method for objects
  	 * 
- 	 * @param Object
+ 	 * @param o
  	 */
  	public boolean equals(Object o)
  	{
