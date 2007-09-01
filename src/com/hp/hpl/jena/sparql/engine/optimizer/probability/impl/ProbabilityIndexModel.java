@@ -64,7 +64,6 @@ public class ProbabilityIndexModel extends ProbabilityBase
 	 * The config parameter allows to set specific configurations.
 	 * 
 	 * @param dataModel
-	 * @param indexLevel
 	 * @param config
 	 */
 	public void create(Model dataModel, Config config)

@@ -32,7 +32,7 @@ public class BasicPatternOptimizer extends OptimizerBase
 	/**
 	 * Initialize the BGP optimizer.
 	 * 
-	 * @param cxt
+	 * @param context
 	 * @param graph
 	 * @param pattern
 	 * @param config

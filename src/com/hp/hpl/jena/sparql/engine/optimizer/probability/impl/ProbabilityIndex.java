@@ -106,9 +106,7 @@ public class ProbabilityIndex
 	 * This parameter might be null.
 	 * 
 	 * @param dataModel
-	 * @param indexLevel
-	 * @param exProperty
-	 * @param indexLevel
+	 * @param config
 	 */
 	public void create(Model dataModel, Config config)
 	{

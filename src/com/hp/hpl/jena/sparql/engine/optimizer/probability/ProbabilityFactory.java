@@ -96,8 +96,7 @@ public class ProbabilityFactory
 	 * parameter may be null.
 	 * 
 	 * @param dataModel
-	 * @param indexLevel
-	 * @param exProperty
+	 * @param config
 	 * @return Model
 	 */
 	public static Model createIndex(Model dataModel, Config config)
@@ -112,7 +111,7 @@ public class ProbabilityFactory
 	 * required for the probabilistic framework.
 	 * 
 	 * @param dataModel
-	 * @return
+	 * @return Model
 	 */
 	public static Model createIndex(Model dataModel)
 	{
@@ -124,8 +123,8 @@ public class ProbabilityFactory
 	 * required for the probabilistic framework. The index level 1 is
 	 * used.
 	 * 
-	 * @param dataModel
-	 * @return
+	 * @param dataGraph
+	 * @return Model
 	 */
 	public static Model createIndex(Graph dataGraph)
 	{
