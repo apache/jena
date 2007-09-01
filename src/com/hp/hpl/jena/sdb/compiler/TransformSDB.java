@@ -147,7 +147,9 @@ public class TransformSDB extends TransformCopy
     //      distinct/reduced
     //        project
     //          order
-    //            [toList]
+    //            having
+    //              group
+    //                [toList]
     
 //    @Override
 //    public Op transform(OpProject opProject, Op subOp)
