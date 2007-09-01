@@ -195,9 +195,9 @@ void GroupClause() : { }
 void GroupCondition() : { Node v = null ; Expr expr = null ; }
 {
   ( expr = Constraint()
-    //{ getQuery().addOrderBy(expr) ; }
+    { getQuery().addGroupBy(expr) ; }
   | v = Var()
-    //{ getQuery().addOrderBy(v) ; }
+    { getQuery().addGroupBy(v) ; }
   )
 }
 
@@ -209,6 +209,7 @@ void HavingClause() : { }
 void HavingCondition() : { Expr c ; }
 {
    c = Constraint()
+   { getQuery().addHavingCondition(c) ; }
 }
 
 

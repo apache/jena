@@ -5,7 +5,11 @@
 ++ Algebra building src-examples 
 ++ javadoc-all in the build = 5M of zip.
 ++ Reorder documentation - intro, SPARQL, extensions.
+
+++ Query compare: expressions
+
 -----
++ Old serializations: prefix and XML -- time to delete
 
 + Remove com.hp.hpl.jena.sparql.function.library.trace
   And any documentation
@@ -18,10 +22,8 @@
 
 + Aggregates: QueryIterGroup
   Parsing : 
-     SELECT list is expressions always 
-       A  list or pairs (name expr)
-       Make type safe in the Query class.
-     Phase 2 detects inconsistences 
+     Phase 2 detects inconsistences
+     ToDo GROUP BY expr 
 
 + SELECT expressions [DONE - testing needed]
   Document 

@@ -36,20 +36,17 @@ public abstract class Parser
         
 //        if (syntaxURI.equals(Syntax.syntaxSPARQLdev))
 //            return new ParserSPARQLdev() ;
-        if (syntaxURI.equals(Syntax.syntaxPrefix))
-            return new ParserPrefix() ;
-        
-        if (syntaxURI.equals(Syntax.syntaxSPARQL_X))
-            return new ParserXML() ;
+//        if (syntaxURI.equals(Syntax.syntaxPrefix))
+//            return new ParserPrefix() ;
+//        
+//        if (syntaxURI.equals(Syntax.syntaxSPARQL_X))
+//            return new ParserXML() ;
 
         if (syntaxURI.equals(Syntax.syntaxARQ))
             return new ParserARQ() ;
 
         if (syntaxURI.equals(Syntax.syntaxRDQL))
             return new ParserRDQL();
-
-        if (syntaxURI.equals(Syntax.syntaxN3QL))
-            return new ParserN3QL();
 
         return null;
     }

@@ -88,9 +88,9 @@ do
           grammar arq.jj arq ARQ
           ;;
 
-      prefix|prefix.jj)
-          grammar prefix.jj prefix Prefix
-	  ;; 
+##       prefix|prefix.jj)
+##           grammar prefix.jj prefix Prefix
+## 	  ;; 
       rdql) echo "Tread carefully" 1>&2
           rdqlGrammar
           ;;

@@ -8,7 +8,6 @@ package com.hp.hpl.jena.sparql.algebra;
 
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import com.hp.hpl.jena.graph.Node;
 
@@ -269,30 +268,44 @@ public class AlgebraGenerator
     public Op compileModifiers(Query query, Op pattern)
     {
         Op op = pattern ;
-        Modifiers mods = new Modifiers(query) ;
+        //Modifiers mods = new Modifiers(query) ;
         
         // ---- ToList
         if ( context.isTrue(ARQ.generateToList) )
             // Listify it.
             op = new OpList(op) ;
         
+        // GROUP BY
+        if ( query.getGroupVars().size() > 0 )
+        {
+            // query.getGroupExprs().size() <  query.getGroupVars().size() ;
+            // Wrong.
+            // 1 - need to pass in expressions for grouping, not vars.
+            // 2 - No aggregates yet
+            //op = new OpGroupAgg(op, query.getGroupVars(), null) ;
+        }
+        
+        // HAVING
+        // query.getHavingExprs() ;
+        
         // ---- ORDER BY
-        if ( mods.orderConditions != null )
-            op = new OpOrder(op, mods.orderConditions) ;
+        if ( query.getOrderBy() != null )
+            op = new OpOrder(op, query.getOrderBy()) ;
         
         // ---- PROJECT
         // (ORDER may involve an unselected variable)
         // No projection => initial variables are exposed.
         // Needed for CONSTRUCT and initial bindings + SELECT *
         
-        if ( mods.projectVars != null && ! query.isQueryResultStar())
+        List projectVars = Var.varList(query.getResultVars()) ;
+        if ( projectVars != null && ! query.isQueryResultStar())
         {
             // Don't project for QueryResultStar so initial bindings show through
             // in SELECT *
-            if ( mods.projectVars.size() == 0 && query.isSelectType() )
+            if ( projectVars.size() == 0 && query.isSelectType() )
                 ALog.warn(this,"No project variables") ;
-            if ( mods.projectVars.size() > 0 ) 
-                op = new OpProject(op, mods.projectVars, mods.projectExprs) ;
+            if ( projectVars.size() > 0 ) 
+                op = new OpProject(op, projectVars, query.getResultExprs()) ;
         }
         
         // ---- DISTINCT
@@ -305,7 +318,7 @@ public class AlgebraGenerator
         
         // ---- LIMIT/OFFSET
         if ( query.hasLimit() || query.hasOffset() )
-            op = new OpSlice(op, mods.start, mods.length) ;
+            op = new OpSlice(op, query.getOffset() /*start*/, query.getLimit()/*length*/) ;
         
         return op ;
     }
@@ -319,38 +332,6 @@ public class AlgebraGenerator
     {
         System.err.println("AlgebraCompiler: "+msg) ;
         throw new ARQInternalErrorException(msg) ;
-    }
-    
-//    protected Modifiers getModifiers()
-//    {
-//        Modifiers mods = new Modifiers(query) ;
-//        if ( query.isConstructType() )
-//            // Need to expose the initial bindings - no projection at all. 
-//            mods.projectVars = null ;
-//        return mods ;
-//    }
-
-    private static class Modifiers
-    {
-        // And construct needs to avoid a projection.
-        public long start ;
-        public long length ;
-        public boolean distinct ;
-        public boolean reduced ;
-        public List projectVars ;       // Null for no projection
-        public Map projectExprs ;       // expressions for variables.
-        public List orderConditions ;
-
-        public Modifiers(Query query)
-        {
-            start = query.getOffset() ;
-            length = query.getLimit() ;
-            distinct = query.isDistinct() ;
-            reduced = query.isReduced() ;
-            projectVars = Var.varList(query.getResultVars()) ;
-            projectExprs = query.getResultExprs() ;
-            orderConditions = query.getOrderBy() ;
-        }
     }
 }
 

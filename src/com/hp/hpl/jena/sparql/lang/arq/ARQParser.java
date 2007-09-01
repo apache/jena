@@ -425,10 +425,12 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     case SAME_TERM:
     case LPAREN:
       expr = Constraint();
+      getQuery().addGroupBy(expr) ;
       break;
     case VAR1:
     case VAR2:
       v = Var();
+      getQuery().addGroupBy(v) ;
       break;
     default:
       jj_la1[23] = jj_gen;
@@ -470,6 +472,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
   final public void HavingCondition() throws ParseException {
                            Expr c ;
     c = Constraint();
+     getQuery().addHavingCondition(c) ;
   }
 
   final public void OrderClause() throws ParseException {

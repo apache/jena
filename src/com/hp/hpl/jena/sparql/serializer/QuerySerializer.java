@@ -193,6 +193,18 @@ public class QuerySerializer implements QueryVisitor
         }
     }
     
+    public void visitGroupBy(Query query)
+    {
+        if ( query.hasGroupBy() )
+        {}
+    }
+
+    public void visitHaving(Query query)
+    {
+        if ( query.hasHaving() )
+        {}
+    }
+
     public void visitOrderBy(Query query)
     {
         if ( query.hasOrderBy() )

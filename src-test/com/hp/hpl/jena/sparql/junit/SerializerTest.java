@@ -55,11 +55,6 @@ public class SerializerTest extends EarlTestCase
         
         // Whatever was read in.
         runTestWorker(query, query.getSyntax()) ;
-        // Prefix version
-        // Not all ARQ extensions are done.
-        if ( query.getSyntax().equals(Syntax.syntaxSPARQL) )
-            runTestWorker(query, Syntax.syntaxPrefix) ;
-
     }
     
     protected void runTestWorker(Query query, Syntax syntax)

@@ -11,6 +11,7 @@ import java.util.*;
 import com.hp.hpl.jena.graph.Node;
 
 import com.hp.hpl.jena.sparql.ARQConstants;
+import com.hp.hpl.jena.sparql.ARQNotImplemented;
 import com.hp.hpl.jena.sparql.core.Prologue;
 import com.hp.hpl.jena.sparql.core.QueryCompare;
 import com.hp.hpl.jena.sparql.core.QueryHashCode;
@@ -210,7 +211,7 @@ public class Query extends Prologue implements Cloneable
 
     public List getOrderBy()           { return orderBy ; }
     
-    
+    // ---- 
     
     /** Answer whether the query had SELECT/DESCRIBE/CONSTRUCT *
      * @return boolean as to whether a * result form was seen
@@ -407,8 +408,54 @@ public class Query extends Prologue implements Cloneable
         queryResultStar = false ;   
     }
     
+    // GROUP/HAVING
     
+    protected List groupVars = new ArrayList() ;
+    protected List groupExprs = new ArrayList() ;
+    protected List havingExprs = new ArrayList() ;
+    static boolean implMask = false ;
 
+    public boolean hasGroupBy()     { return groupVars != null && groupVars.size() > 0 ; }
+    public boolean hasHaving()      { return havingExprs != null && havingExprs.size() > 0 ; }
+    
+    public List getGroupVars()      { return groupVars ; }
+    
+    public List getGroupExprs()     { return groupExprs ; }
+    
+    public List getHavingExprs()    { return havingExprs ; }
+    
+    public void addGroupBy(String varName)
+    {
+        varName = Var.canonical(varName) ;
+        Var v = Var.alloc(varName) ;
+        addGroupBy(v) ;
+    }
+
+    public void addGroupBy(Node v)
+    {
+        if ( implMask ) throw new ARQNotImplemented("In progress: GROUP and aggregates" ) ;
+        groupVars.add(v) ;
+        _addGroupByExpr(new NodeVar(v)) ;
+    }
+
+    public void addGroupBy(Expr expr)
+    {
+        _addGroupByExpr(expr) ;
+    }
+
+    private void _addGroupByExpr(Expr expr)
+    {
+        if ( implMask ) throw new ARQNotImplemented("In progress: GROUP and aggregates" ) ;
+        groupExprs.add(expr) ;
+    }
+
+    public void addHavingCondition(Expr expr)
+    {
+        if ( implMask ) throw new ARQNotImplemented("In progress: HAVING" ) ;
+        havingExprs.add(expr) ;
+    }
+
+    // ---- DESCRIBE
     
     public void addDescribeNode(Node node)
     {
@@ -523,6 +570,8 @@ public class Query extends Prologue implements Cloneable
             visitor.visitAskResultForm(this) ;
         visitor.visitDatasetDecl(this) ;
         visitor.visitQueryPattern(this) ;
+        visitor.visitGroupBy(this) ;
+        visitor.visitHaving(this) ;
         visitor.visitOrderBy(this) ;
         visitor.visitOffset(this) ;
         visitor.visitLimit(this) ;

@@ -17,29 +17,15 @@ public class Syntax extends Symbol
     public static final Syntax syntaxSPARQL
                 = new Syntax("http://jena.hpl.hp.com/2003/07/query/SPARQL") ;
 
-//    /** Development version of the working group gramamr */ 
-//    public static final Syntax syntaxSPARQLdev
-//                = new Syntax("http://jena.hpl.hp.com/2003/07/query/SPARQLdev") ;
-
     public static final Syntax syntaxARQ
                 = new Syntax("http://jena.hpl.hp.com/2003/07/query/ARQ") ;
 
     public static final Syntax syntaxRDQL
                 = new Syntax("http://jena.hpl.hp.com/2003/07/query/RDQL") ;
 
-    /** SPARQL in XML */
-    public static final Syntax syntaxSPARQL_X
-                = new Syntax("http://jena.hpl.hp.com/2003/07/query/SPARQL-X") ;
-    
-    /** Prefix (lisp-ish) syntax of a query */ 
-    public static final Syntax syntaxPrefix
-                = new Syntax("http://jena.hpl.hp.com/2003/07/query/prefix") ;
-    
-    public static final Syntax syntaxDebug
-                = new Syntax("http://jena.hpl.hp.com/2003/07/query/debug") ;
-    
-    public static final Syntax syntaxN3QL
-                = new Syntax("http://jena.hpl.hp.com/2003/07/query/N3QL") ;
+//    /** SPARQL in XML */
+//    public static final Syntax syntaxSPARQL_X
+//                = new Syntax("http://jena.hpl.hp.com/2003/07/query/SPARQL-X") ;
 
     public static final Syntax syntaxAlgebra
                 = new Syntax("http://jena.hpl.hp.com/2003/07/query/SPARQL_Algebra") ;
@@ -47,17 +33,11 @@ public class Syntax extends Symbol
     public static TranslationTable querySyntaxNames = new TranslationTable(true) ;
     static {
         querySyntaxNames.put("sparql",      Syntax.syntaxSPARQL) ;
-//        querySyntaxNames.put("sparqldev",   Syntax.syntaxSPARQLdev) ;
-        querySyntaxNames.put("sparql-x",    Syntax.syntaxSPARQL_X) ;
-        //querySyntaxNames.put("sparql-alt",  Syntax.syntaxSPARQL_alt) ;
+//        querySyntaxNames.put("sparql-x",    Syntax.syntaxSPARQL_X) ;
         querySyntaxNames.put("arq",         Syntax.syntaxARQ) ;
         querySyntaxNames.put("rdql",        Syntax.syntaxRDQL) ;
-        querySyntaxNames.put("n3ql",        Syntax.syntaxN3QL) ;
-        querySyntaxNames.put("prefix",      Syntax.syntaxPrefix) ;
         querySyntaxNames.put("alg",         Syntax.syntaxAlgebra) ;
         querySyntaxNames.put("op",          Syntax.syntaxAlgebra) ;
-        querySyntaxNames.put("debug",       Syntax.syntaxDebug) ;
-        querySyntaxNames.put("plain",       Syntax.syntaxDebug) ;
     }
 
     /** The name of the default query language for query parsing.
@@ -81,10 +61,7 @@ public class Syntax extends Symbol
         if ( sym.equals(syntaxRDQL) )        return syntaxRDQL ;
         if ( sym.equals(syntaxSPARQL) )      return syntaxSPARQL ;
         
-        if ( sym.equals(syntaxSPARQL_X) )    return syntaxSPARQL_X ;
-        if ( sym.equals(syntaxPrefix) )      return syntaxPrefix ;
-        if ( sym.equals(syntaxDebug) )       return syntaxDebug ;
-        if ( sym.equals(syntaxN3QL) )        return syntaxN3QL ;
+//        if ( sym.equals(syntaxSPARQL_X) )    return syntaxSPARQL_X ;
         if ( sym.equals(syntaxAlgebra) )    return syntaxAlgebra ;
         return null ;
     }
@@ -101,10 +78,8 @@ public class Syntax extends Symbol
             return Syntax.syntaxARQ ;
         if ( url.endsWith(".rq") )
             return Syntax.syntaxSPARQL ;
-        if ( url.endsWith(".rqp") )
-            return Syntax.syntaxPrefix ;
-        if ( url.endsWith(".rqx") )
-            return Syntax.syntaxSPARQL_X ;
+//        if ( url.endsWith(".rqx") )
+//            return Syntax.syntaxSPARQL_X ;
         if ( url.endsWith(".rdql") )
             return Syntax.syntaxRDQL ;
         if ( url.endsWith(".sse") )

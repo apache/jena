@@ -7,14 +7,13 @@
 package com.hp.hpl.jena.sparql.core ;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.QueryVisitor;
 
 import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 import com.hp.hpl.jena.sparql.util.Utils;
+
+import com.hp.hpl.jena.query.Query;
+import com.hp.hpl.jena.query.QueryVisitor;
 
 // Two queries comparison 
 
@@ -73,10 +72,10 @@ public class QueryCompare implements QueryVisitor
               query1.isDistinct() == query2.isDistinct()) ;
         check("SELECT *", query1.isQueryResultStar() == query2.isQueryResultStar()) ;
         
-        List v1 = query1.getResultVars() ;
-        List v2 = query2.getResultVars() ;
-        check("Result variables",
-              query1.getResultVars(), query2.getResultVars() ) ;
+        check("Result variables",   query1.getResultVars(), query2.getResultVars() ) ;
+        
+        check("Result expressions", query1.getResultExprs(), query2.getResultExprs()) ;
+        
     }
 
     public void visitConstructResultForm(Query query1)
@@ -124,7 +123,18 @@ public class QueryCompare implements QueryVisitor
         check("Pattern", query1.getQueryPattern().equalTo(query2.getQueryPattern(), new NodeIsomorphismMap())) ;
     }
 
-     public void visitLimit(Query query1)
+    public void visitGroupBy(Query query1)
+    {
+        check("GROUP BY variables", query1.getGroupVars(), query2.getGroupVars()) ;
+        check("GROUP BY expressions", query1.getGroupExprs(), query2.getGroupExprs()) ;
+    }
+    
+    public void visitHaving(Query query1) 
+    {
+        check("HAVING", query1.getHavingExprs(), query2.getHavingExprs()) ;
+    }
+    
+    public void visitLimit(Query query1)
     {
         check("LIMIT", query1.getLimit() == query2.getLimit() ) ;
     }
@@ -134,7 +144,7 @@ public class QueryCompare implements QueryVisitor
          check("ORDER BY", query1.getOrderBy(), query2.getOrderBy() ) ;
      }
 
-   public void visitOffset(Query query1)
+     public void visitOffset(Query query1)
     {
         check("OFFSET", query1.getOffset() == query2.getOffset() ) ;
     }

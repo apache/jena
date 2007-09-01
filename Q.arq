@@ -1,8 +1,10 @@
 PREFIX : <http://example/>
 PREFIX  dc:     <http://purl.org/dc/elements/1.1/>
 
-SELECT  (datatype(3) AS ?z1) ((((?x+?y))))  ?x
-{}
+SELECT ?x #count(?v)
+{ ?x :p ?v }
+GROUP BY ?x
+## HAVING
 
 
 ## {

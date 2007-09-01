@@ -4,13 +4,22 @@ ChangeLog for ARQ
 ARQ 2.1
 -------
 
-+ (experimental for this release - permanent in next) Expressions in SELECT clause
++ (experimental for this release - permanent in next) 
+  Expressions in SELECT clause
   Expression in brackets, optionally named with "AS ?var"
-  Adding an explict namne is strongly encouraged especially if you use the SPARQL results format
-  because internalvariables variable names are not portable. 
+  Adding an explict namne is strongly encouraged especially if you use
+  the SPARQL results format because internal variables variable names
+  are not portable. 
     SELECT (?x+?y AS ?z) ?y ?x
     SELECT ?x ?y (?x+?y AS ?sum)  # Print a table of sums
-  OpProject can have additional expressions that get added into the table from 'project'   
+  OpProject can have additional expressions that get added into the
+    table from 'project'
+  
++ removed old-style (and out of date) writers for internal forms: prefix,
+  plain and XML forms of a SPARQL query.  The XML form was incomplete
+  anyway.  (This does not affect algebra output which is what replaces
+  these syntax-based forms).
+    
 
 ARQ 2.1 beta
 ------------

@@ -101,13 +101,6 @@ public class Serializer
             return ;
         }
         
-        if (outSyntax.equals(Syntax.syntaxRDQL))
-        {
-            serializeRDQL(query, writer) ;
-            writer.flush() ;
-            return ;
-        }
-        
         if (outSyntax.equals(Syntax.syntaxSPARQL))
         {
             serializeSPARQL(query, writer) ;
@@ -115,20 +108,13 @@ public class Serializer
             return ;
         }
 
-        if (outSyntax.equals(Syntax.syntaxSPARQL_X))
-        {
-            serializeSPARQL_X(query, writer) ;
-            writer.flush() ;
-            return ;
-        }
-
-//        if (outSyntax.equals(Syntax.syntaxSPARQL_alt))
+//        if (outSyntax.equals(Syntax.syntaxSPARQL_X))
 //        {
-//            serializeSPARQL_alt(query, writer) ;
+//            serializeSPARQL_X(query, writer) ;
 //            writer.flush() ;
 //            return ;
 //        }
-        
+
         if (outSyntax.equals(Syntax.syntaxSPARQL))
         {
             serializeSPARQL(query, writer) ;
@@ -136,25 +122,6 @@ public class Serializer
             return ;
         }
         
-        if (outSyntax.equals(Syntax.syntaxN3QL))
-        {
-            serializeN3QL(query, writer) ;
-            writer.flush() ;
-            return ;
-        }
-        
-        if (outSyntax.equals(Syntax.syntaxPrefix))
-        {
-            serializePrefix(query, writer) ;
-            return ;
-        }
-
-        if (outSyntax.equals(Syntax.syntaxDebug))
-        {
-            serializePlain(query, writer) ;
-            return ;
-        }
-
         ALog.warn(Serializer.class, "Unknown syntax: "+outSyntax) ;
     }
      
@@ -187,54 +154,12 @@ public class Serializer
         serializeARQ(query, writer) ;
     }
 
-    static public void serializeSPARQL_X(Query query, IndentedWriter writer)
-    {
-        SerializationContext cxt = new SerializationContext(query, null ) ;
-        QuerySerializerXML serilizer = new QuerySerializerXML(writer, cxt) ;
-        query.visit(serilizer) ;
-    }
-
-//    static public void serializeSPARQL_alt(Query query, IndentedWriter writer)
+//    static public void serializeSPARQL_X(Query query, IndentedWriter writer)
 //    {
-//        // For the query pattern
-//        SerializationContext cxt1 = new SerializationContext(query, query.getPrefixMapping(), new NodeToLabelMap("b", true) ) ;
-//        // For the construct pattern
-//        SerializationContext cxt2 = new SerializationContext(query, query.getPrefixMapping(),  new NodeToLabelMap("c", false)  ) ;
-//        
-//        
-//        // THESE ARE WRONG - wating to remove forever.    
-//        serializeARQ(query, writer, 
-//                     new FmtElementARQ(writer, cxt1),
-//                     new FmtExprARQ(writer, cxt1),
-//                     new FmtTemplateARQ(writer, cxt2)) ;
+//        SerializationContext cxt = new SerializationContext(query, null ) ;
+//        QuerySerializerXML serilizer = new QuerySerializerXML(writer, cxt) ;
+//        query.visit(serilizer) ;
 //    }
-
-    static public void serializeRDQL(Query query, IndentedWriter writer)
-    {
-        ALog.warn(Serializer.class, "# unparseRDQL: Not implemented - Native syntax instead") ;
-        serializeARQ(query, writer) ;
-    }
-
-    static public void serializePrefix(Query query, IndentedWriter writer)
-    {
-        SerializationContext cxt = new SerializationContext(query, new NodeToLabelMapBNode() ) ;
-        QuerySerializerPrefix serializer = new QuerySerializerPrefix(writer, cxt) ;
-        query.visit(serializer) ;
-    }
-    
-    static public void serializePlain(Query query, IndentedWriter writer)
-    {
-        SerializationContext cxt = new SerializationContext(query, null ) ;
-        QuerySerializerPlain serializer = new QuerySerializerPlain(writer, cxt) ;
-        query.visit(serializer) ;
-    }
-    
-
-    static public void serializeN3QL(Query query, IndentedWriter writer)
-    {
-        throw new UnsupportedOperationException("Not implemented: Formatting a query in N3QL syntax") ; 
-    }
-    
 }
 
 /*

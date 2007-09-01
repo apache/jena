@@ -24,6 +24,8 @@ public interface QueryVisitor
     public void visitDatasetDecl(Query query) ;
     public void visitQueryPattern(Query query) ;
     
+    public void visitGroupBy(Query query) ;
+    public void visitHaving(Query query) ;
     public void visitOrderBy(Query query) ;
     public void visitLimit(Query query) ;
     public void visitOffset(Query query) ;
