@@ -44,6 +44,7 @@ public class Tags
 
     static public final String tagToList        = "tolist" ;
     static public final String tagOrderBy       = "order" ;
+    static public final String tagGroupBy       = "group" ;
     static public final String tagProject       = "project" ;
     static public final String tagDistinct      = "distinct" ;
     static public final String tagReduced       = "reduced" ;

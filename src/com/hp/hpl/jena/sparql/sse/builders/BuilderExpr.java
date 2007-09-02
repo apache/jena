@@ -53,6 +53,7 @@ public class BuilderExpr
 
     public static Expr buildExpr(Item item)
     {
+        // If this (bob) is stateless, we can have one and use always.
         BuilderExpr bob = new BuilderExpr() ;
         return bob.buildItem(item) ;
     }

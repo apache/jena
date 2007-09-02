@@ -7,9 +7,12 @@
 ++ Reorder documentation - intro, SPARQL, extensions.
 
 ++ Query compare: expressions
-
+See ToDoSSE
 -----
-+ Old serializations: prefix and XML -- time to delete
++ insert op write/read test into serialization tests
++ (project ...) and (order ...) are inconsistent
+  
+
 
 + Remove com.hp.hpl.jena.sparql.function.library.trace
   And any documentation
@@ -21,15 +24,17 @@
 + ExprList writing an LJ
 
 + Aggregates: QueryIterGroup
+  Parsing and serialization done.
+  Need OpWriter/Builder update.
+  
   Parsing : 
      Phase 2 detects inconsistences
-     ToDo GROUP BY expr 
+     Check on query compile?
 
-+ SELECT expressions [DONE - testing needed]
++ SELECT expressions [Impl DONE]
   Document 
-  Prefix writing (drop prefix form altogether now we have the algebra?)
   
-+ Exression printing : expr.toString should not add outer brackets
++ Expression printing : expr.toString should not add outer brackets
   ExprNode.toString => ExprUtils.fmtSPARQL(IndentedWriter, Expr, pmap) => FmtExpr/FmtExprARQ.visit
      Split FmtExpr in statics and a nested visitor. 
  

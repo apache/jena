@@ -69,24 +69,6 @@ public class SortCondition extends PrintSerializableBase
             writer.print(")") ;
     }
 
-    // Neater would be a pair of explicit SortCondition formatter
-    public void formatPrefix(ExprVisitor fmt,
-                       IndentedWriter writer)
-    {
-        boolean close = true ;
-        
-        if ( direction != Query.ORDER_DEFAULT ) 
-        {            
-            if ( direction == Query.ORDER_ASCENDING )
-                writer.print("asc ") ;
-        
-            if ( direction == Query.ORDER_DESCENDING )
-                writer.print("desc ") ;
-        }
-        
-        expression.visit(fmt) ;
-    }
-
     /** @return Returns the direction. */
     public int getDirection()
     {

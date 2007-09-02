@@ -10,7 +10,7 @@ import java.io.PrintStream;
 import java.util.Iterator;
 
 import arq.cmd.CmdException;
-import arq.cmd.QueryUtils;
+import arq.cmd.QueryPrintUtils;
 import arq.cmdline.*;
 
 import com.hp.hpl.jena.query.*;
@@ -110,7 +110,7 @@ public class qparse extends CmdARQ
             { divider() ; modOutput.outputQuad(query) ; }
             
             if ( printPlan )
-            { divider() ; QueryUtils.printPlan(query, qExec) ; }
+            { divider() ; QueryPrintUtils.printPlan(query, qExec) ; }
         }
         catch (ARQInternalErrorException intEx)
         {

@@ -19,8 +19,8 @@ import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 public class OpGroupAgg extends OpModifier
 {
     private List groupVars ;
-    private List aggregators ;
     private Map groupExprs ;
+    private List aggregators ;
 
     public OpGroupAgg(Op subOp, List groupVars, Map groupExprs, List aggregators)
     { 
@@ -36,6 +36,10 @@ public class OpGroupAgg extends OpModifier
     }
 
     public String getName()                 { return "group" ; }
+    public List getGroupVars()              { return groupVars ; }
+    public Map getGroupExprs()              { return groupExprs ; }
+    public List getAggregators()            { return aggregators ; }
+
     public void visit(OpVisitor opVisitor)  { opVisitor.visit(this) ; }
     public Op copy(Op subOp)                { return new OpGroupAgg(subOp, groupVars, groupExprs, aggregators) ; }
 
@@ -43,18 +47,18 @@ public class OpGroupAgg extends OpModifier
     { return transform.transform(this, subOp) ; }
 
     public int hashCode()
-    { return getSubOp().hashCode() ^ groupVars.hashCode() ^ aggregators.hashCode() ; }
+    { return getSubOp().hashCode() ^ groupVars.hashCode() ^ groupExprs.hashCode() ^ aggregators.hashCode() ; }
 
     public boolean equalTo(Op other, NodeIsomorphismMap labelMap)
     {
         if ( ! (other instanceof OpGroupAgg) ) return false ;
-        OpGroupAgg opAgg = (OpGroupAgg)other ;
-        if ( ! groupVars.equals(opAgg.groupVars) ||
-             ! aggregators.equals(opAgg.aggregators) )
+        OpGroupAgg opGroup = (OpGroupAgg)other ;
+        if ( ! groupVars.equals(opGroup.groupVars) ||
+             ! groupExprs.equals(opGroup.groupExprs) ||
+             ! aggregators.equals(opGroup.aggregators) )
             return false ;
-        return getSubOp().equalTo(opAgg.getSubOp(), labelMap) ;
+        return getSubOp().equalTo(opGroup.getSubOp(), labelMap) ;
     }
-
 
 }
 

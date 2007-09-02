@@ -34,7 +34,7 @@ public class Run
     public static void main(String[] argv)
     {
         //code() ; System.exit(0) ;
-        runQParseARQ()  ;
+        runQParse()  ;
         
 //        String []a = { "--strict", "file:///c:/home/afs/W3C/DataAccess/tests/data-r2/expr-builtin/manifest.ttl" } ;
 //        arq.qtest.main(a) ;

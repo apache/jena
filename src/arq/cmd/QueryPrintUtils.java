@@ -29,7 +29,7 @@ import com.hp.hpl.jena.query.Syntax;
  * @version $Id: QueryUtils.java,v 1.20 2007/02/08 18:05:01 andy_seaborne Exp $
  */
 
-public class QueryUtils
+public class QueryPrintUtils
 {
     public static void printPlan(Query query, QueryExecution qe)
     {

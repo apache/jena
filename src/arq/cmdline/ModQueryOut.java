@@ -6,7 +6,7 @@
 
 package arq.cmdline;
 
-import arq.cmd.QueryUtils;
+import arq.cmd.QueryPrintUtils;
 
 import com.hp.hpl.jena.sparql.algebra.Algebra;
 import com.hp.hpl.jena.sparql.algebra.Op;
@@ -72,19 +72,19 @@ public class ModQueryOut implements ArgModuleGeneral
     { output(out(), query) ; }
     
     public void output(IndentedWriter out, Query query)
-    { QueryUtils.printQuery(out, query, outputSyntax) ; }
+    { QueryPrintUtils.printQuery(out, query, outputSyntax) ; }
     
     public void outputOp(Query query)
     { outputOp(out(), query) ; }
 
     public void outputOp(IndentedWriter out, Query query)
-    { QueryUtils.printOp(out, query) ; }
+    { QueryPrintUtils.printOp(out, query) ; }
     
     public void outputQuad(Query query)
     { outputQuad(out(), query) ; }
     
     public void outputQuad(IndentedWriter out, Query query)
-    { QueryUtils.printQuad(out, query) ; }
+    { QueryPrintUtils.printQuad(out, query) ; }
     
     
     public void checkParse(Query query)
@@ -109,6 +109,8 @@ public class ModQueryOut implements ArgModuleGeneral
         {
             System.out.println() ;
             System.out.println("**** Check failed : reparsed algebra expression hashCode does not equal algebra from query") ;
+//            System.out.println(op) ;
+//            System.out.println(op2) ;
         }
         if ( ! op.equals(op2) )
         {
@@ -117,7 +119,6 @@ public class ModQueryOut implements ArgModuleGeneral
 
         }
     }
-
     
     public void checkParseSyntax(Query query)
     {

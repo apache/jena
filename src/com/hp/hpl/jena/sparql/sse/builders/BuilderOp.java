@@ -22,6 +22,7 @@ import com.hp.hpl.jena.sparql.sse.Item;
 import com.hp.hpl.jena.sparql.sse.ItemList;
 
 import com.hp.hpl.jena.query.Query;
+import com.hp.hpl.jena.query.SortCondition;
 
 
 public class BuilderOp
@@ -39,7 +40,7 @@ public class BuilderOp
     }
 
     protected Map dispatch = new HashMap() ;
-    
+
     public BuilderOp()
     {
         dispatch.put(Tags.tagBGP, buildBGP) ;
@@ -53,12 +54,13 @@ public class BuilderOp
         dispatch.put(Tags.tagUnion, buildUnion) ;
 
         dispatch.put(Tags.tagToList, buildToList) ;
+        dispatch.put(Tags.tagGroupBy, buildGroupBy) ;
         dispatch.put(Tags.tagOrderBy, buildOrderBy) ;
         dispatch.put(Tags.tagProject, buildProject) ;
         dispatch.put(Tags.tagDistinct, buildDistinct) ;
         dispatch.put(Tags.tagReduced, buildReduced) ;
         dispatch.put(Tags.tagSlice, buildSlice) ;
-        
+
         dispatch.put(Tags.tagTable, buildTable) ;
         dispatch.put(Tags.tagNull, buildNull) ;
     }
@@ -68,10 +70,10 @@ public class BuilderOp
     {
         if ( list == null )
             list = null ;
-    
+
         Item head = list.get(0) ;
         String tag = head.getSymbol() ;
-    
+
         Build bob = findBuild(tag) ;
         if ( bob != null )
             return bob.make(list) ;
@@ -79,16 +81,17 @@ public class BuilderOp
             BuilderBase.broken(head, "Unrecognized algebra operation: "+tag) ;
         return null ;
     }
-    
+
     public static Expr buildExpr(Item item)
     {
         return BuilderExpr.buildExpr(item) ;
     }
 
-    public static List buildExpr(ItemList list, int start)
+    // Build a list of expressions.
+    public static List buildExpr(ItemList list)
     {
         List x = new ArrayList() ;
-        for ( int i = start ; i < list.size() ; i++ )
+        for ( int i = 0 ; i < list.size() ; i++ )
         {
             Item itemExpr = list.get(i) ;
             Expr expr = buildExpr(itemExpr) ;
@@ -125,7 +128,7 @@ public class BuilderOp
             return OpTable.create(table) ;
         }
     } ;
-    
+
     final protected Build buildBGP = new Build()
     {
         public Op make(ItemList list)
@@ -182,20 +185,6 @@ public class BuilderOp
             Op op = build(itemOp.getList()) ;
             ExprList exprList = BuilderExpr.buildExprOrExprList(itemExpr) ;
             return OpFilter.filter(exprList, op) ;
-
-//            // No filter
-//            if ( itemExpr.isList() ) 
-//            {
-//                if (itemExpr.getList().size() == 0 )
-//                    return OpFilter.filter(new ExprList(), op) ;
-//                // Maybe an exprlist
-//                if ( itemExpr.isTagged(BuilderExpr.symExprList) )
-//                {}
-//            }
-//            
-//            
-//            Expr expr = buildExpr(itemExpr) ;
-//            return OpFilter.filter(expr, op) ;
         }
     } ;
 
@@ -285,18 +274,65 @@ public class BuilderOp
         }
     } ;
 
-    final protected Build buildOrderBy = new Build()
+
+    final protected Build buildGroupBy = new Build()
     {
         public Op make(ItemList list)
         {
-            //checkList(list, 3, "OrderBy") ;
-            Op sub = build(list, 1) ;
-            List x = buildExpr(list, 2) ;
+            BuilderBase.checkLength(3, list,  "Group") ;
+            List x = buildExpr(list.get(1).getList()) ;
+            Op sub = build(list, 2) ;
             Op op = new OpOrder(sub, x) ;
             return op ;
         }
     } ;
 
+
+    final protected Build buildOrderBy = new Build()
+    {
+        public Op make(ItemList list)
+        {
+            BuilderBase.checkLength(3, list,  "Order") ;
+            ItemList conditions = list.get(1).getList() ;
+            
+            // Maybe tagged (asc, (desc or a raw expression)
+            List x = new ArrayList() ;
+            
+            for ( int i = 0 ; i < conditions.size() ; i++ )
+            {
+                int direction = Query.ORDER_DEFAULT ;
+                Item item = conditions.get(i) ;
+                SortCondition sc = scBuilder(item) ;
+                x.add(sc) ;
+            }
+            Op sub = build(list, 2) ;
+            Op op = new OpOrder(sub, x) ;
+            return op ;
+        }
+    } ;
+
+    SortCondition scBuilder(Item item)
+    {
+        int direction = Query.ORDER_DEFAULT ;
+        if ( item.isTagged("asc") || item.isTagged("desc") )
+        {
+            
+            BuilderBase.checkList(item) ;
+            BuilderBase.checkLength(2, item.getList(), "Direction corrupt") ;
+            if ( item.isTagged("asc") )
+                direction = Query.ORDER_ASCENDING ;
+            else
+                direction = Query.ORDER_DESCENDING ;
+            item = item.getList().get(1) ; 
+        }
+        Expr expr = BuilderExpr.buildExpr(item) ;
+        if ( expr.isVariable() )
+            return  new SortCondition(expr.getNodeVar().asVar(), direction) ;
+        else
+            return new SortCondition(expr, direction) ;
+    }
+    
+    
     final protected Build buildProject = new Build()
     {
         public Op make(ItemList list)
@@ -353,17 +389,17 @@ public class BuilderOp
             BuilderBase.checkLength(4, list, "slice") ;
             long start = BuilderNode.buildInt(list, 1, -1) ;
             long length = BuilderNode.buildInt(list, 2, -1) ;
-            
+
             if ( start == -1 )
                 start = Query.NOLIMIT ;
             if ( length == -1 )
                 length = Query.NOLIMIT ;
-            
+
             Op sub = build(list, 3) ;
             return new OpSlice(sub, start, length) ;
         }
     } ;
-    
+
     final protected Build buildNull = new Build()
     {
         public Op make(ItemList list)
@@ -372,7 +408,7 @@ public class BuilderOp
             return new OpNull() ;
         }
     } ;
-    
+
 }
 /*
  * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP

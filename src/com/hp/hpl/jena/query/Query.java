@@ -414,7 +414,7 @@ public class Query extends Prologue implements Cloneable
     protected Map groupExprs = new HashMap() ;      // Var -> Expr
     protected List havingExprs = new ArrayList() ;  // Expressions
     
-    static boolean implMask = true ;
+    static boolean implMask = false ;
 
     public boolean hasGroupBy()     { return groupVars != null && groupVars.size() > 0 ; }
     public boolean hasHaving()      { return havingExprs != null && havingExprs.size() > 0 ; }

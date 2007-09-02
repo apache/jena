@@ -12,10 +12,8 @@ import java.util.Map;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
-
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.SortCondition;
 import com.hp.hpl.jena.shared.PrefixMapping;
+
 import com.hp.hpl.jena.sparql.ARQConstants;
 import com.hp.hpl.jena.sparql.algebra.op.*;
 import com.hp.hpl.jena.sparql.algebra.table.TableUnit;
@@ -28,8 +26,12 @@ import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.expr.Expr;
 import com.hp.hpl.jena.sparql.expr.ExprList;
+import com.hp.hpl.jena.sparql.serializer.FmtExprPrefix;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext;
 import com.hp.hpl.jena.sparql.util.*;
+
+import com.hp.hpl.jena.query.Query;
+import com.hp.hpl.jena.query.SortCondition;
 
 
 public class OpWriter
@@ -138,12 +140,13 @@ public class OpWriter
         private IndentedWriter out ;
         private SerializationContext sContext ;
         private VarAlloc varAlloc = new VarAlloc("__") ;
-        
+        private FmtExprPrefix fmtExpr ; 
         
         public OpWriterWorker(IndentedWriter out, SerializationContext sCxt)
         { 
             this.sContext = sCxt ;
             this.out = out ;
+            this.fmtExpr = new FmtExprPrefix(out, sCxt) ;
         }
         
         private void visitOp2(Op2 op, ExprList exprs)
@@ -330,29 +333,77 @@ public class OpWriter
             visitOp1(opList) ;
         }
         
-        public void visit(OpGroupAgg opGroupAgg)
+        public void visit(OpGroupAgg opGroup)
         {
-            start(opGroupAgg, NoNL) ;
-            finish(opGroupAgg) ;
+            start(opGroup, NoNL) ;
+            out.print(" (") ;
+            boolean first = true ;
+            for ( Iterator iter = opGroup.getGroupVars().iterator() ; iter.hasNext() ; )
+            {
+                if ( ! first )
+                    out.print(" ") ;
+                first = false ;
+                Var v = (Var)iter.next() ;
+                Expr expr = (Expr)opGroup.getGroupExprs().get(v) ;
+                if ( expr == null )
+                    out.print(v.toString()) ;
+                else
+                {
+                    // Pair : var name (may be internal and expression)  
+                    out.print("(") ;
+                    out.print(v.toString()) ;
+                    out.print(" ") ;
+                    ExprUtils.fmtPrefix(out, expr, sContext.getPrefixMapping()) ;
+                    out.print(")") ;
+                    ExprUtils.fmtPrefix(out, expr, sContext.getPrefixMapping()) ;
+                }
+            }
+            out.println(")");
+            printOp(opGroup.getSubOp()) ;
+            finish(opGroup) ;
         }
         
         public void visit(OpOrder opOrder)
         { 
             start(opOrder, NoNL) ;
-            if ( opOrder.getConditions().size() > 0 )
+            out.print(" (") ;
+
+            boolean first = true ;
+            for ( Iterator iter = opOrder.getConditions().iterator() ; iter.hasNext(); )
             {
-                String sep = " " ;
-                for ( Iterator iter = opOrder.getConditions().iterator() ; iter.hasNext(); )
-                {
-                    SortCondition sc = (SortCondition)iter.next() ;
-                    out.print(sep) ;
-                    sc.output(out, sContext) ;
-                }
+                if ( ! first )
+                    out.print(" ") ;
+                first = false ;
+                SortCondition sc = (SortCondition)iter.next() ;
+                formatSortCondition(sc) ;
             }
-            out.println();
+            out.println(")") ;
             printOp(opOrder.getSubOp()) ;
             finish(opOrder) ;
         }
+        
+        
+        // Neater would be a pair of explicit SortCondition formatter
+        public void formatSortCondition(SortCondition sc)
+        {
+            boolean close = true ;
+            
+            if ( sc.getDirection() != Query.ORDER_DEFAULT ) 
+            {            
+                if ( sc.getDirection() == Query.ORDER_ASCENDING )
+                    out.print("(asc ") ;
+            
+                if ( sc.getDirection() == Query.ORDER_DESCENDING )
+                    out.print("(desc ") ;
+            }
+            
+            fmtExpr.format(sc.getExpression(), true) ;
+            
+            if ( sc.getDirection() != Query.ORDER_DEFAULT )
+                out.print(")") ;
+        }
+
+
 
         public void visit(OpProject opProject)
         { 
