@@ -23,7 +23,7 @@ public class AggregatorCount extends AggregatorBase
     public static class AccCount implements Accumulator
     {
         long count = 0 ;
-        // Count rows indistinctly
+        // Count rows in group indistinctly
         // For distinct, feed with a distinct iterator 
         public AccCount() 
         { }
