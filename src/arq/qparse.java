@@ -10,13 +10,15 @@ import java.io.PrintStream;
 import java.util.Iterator;
 
 import arq.cmd.CmdException;
-import arq.cmd.QueryPrintUtils;
 import arq.cmdline.*;
 
 import com.hp.hpl.jena.query.*;
 import com.hp.hpl.jena.shared.JenaException;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException;
+import com.hp.hpl.jena.sparql.core.QueryCheckException;
 import com.hp.hpl.jena.sparql.resultset.ResultSetException;
+import com.hp.hpl.jena.sparql.util.PrintUtils;
+import com.hp.hpl.jena.sparql.util.QueryUtils;
 import com.hp.hpl.jena.sparql.util.Utils;
 
 /** A program to parse and print a query.
@@ -96,7 +98,15 @@ public class qparse extends CmdARQ
             QueryExecution qExec = QueryExecutionFactory.create(query, DatasetFactory.create()) ;
 
             // Check the query.
-            modOutput.checkParse(query) ;
+            try {
+                QueryUtils.checkParse(query) ;
+            } catch (QueryCheckException ex)
+            {
+                System.err.println() ;
+                System.err.println("**** Check failure: "+ex.getMessage()) ;
+                if ( ex.getCause() != null )
+                    ex.getCause().printStackTrace(System.err) ;
+            }
             
             // Print the query out in some syntax
             if ( printQuery )
@@ -110,7 +120,7 @@ public class qparse extends CmdARQ
             { divider() ; modOutput.outputQuad(query) ; }
             
             if ( printPlan )
-            { divider() ; QueryPrintUtils.printPlan(query, qExec) ; }
+            { divider() ; PrintUtils.printPlan(query, qExec) ; }
         }
         catch (ARQInternalErrorException intEx)
         {

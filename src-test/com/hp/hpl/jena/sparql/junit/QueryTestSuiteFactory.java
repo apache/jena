@@ -80,7 +80,7 @@ public class QueryTestSuiteFactory extends TestFactoryManifest
                 test = new SyntaxTest(testName, results, item, false) ;
             
             if ( item.getTestType().equals(TestManifestX.TestSerialization) )
-                test = new SerializerTest(testName, results, item) ;
+                test = new TestSerialization(testName, results, item) ;
             
             if ( item.getTestType().equals(TestManifest.QueryEvaluationTest)
                 || item.getTestType().equals(TestManifestX.TestQuery) )

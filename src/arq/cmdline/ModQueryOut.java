@@ -6,19 +6,11 @@
 
 package arq.cmdline;
 
-import arq.cmd.QueryPrintUtils;
 
-import com.hp.hpl.jena.sparql.algebra.Algebra;
-import com.hp.hpl.jena.sparql.algebra.Op;
-import com.hp.hpl.jena.sparql.algebra.OpWriter;
-import com.hp.hpl.jena.sparql.lang.Parser;
-import com.hp.hpl.jena.sparql.sse.SSE;
-import com.hp.hpl.jena.sparql.util.IndentedLineBuffer;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
+import com.hp.hpl.jena.sparql.util.PrintUtils;
 
 import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.QueryException;
-import com.hp.hpl.jena.query.QueryFactory;
 import com.hp.hpl.jena.query.Syntax;
 
 public class ModQueryOut implements ArgModuleGeneral
@@ -72,102 +64,19 @@ public class ModQueryOut implements ArgModuleGeneral
     { output(out(), query) ; }
     
     public void output(IndentedWriter out, Query query)
-    { QueryPrintUtils.printQuery(out, query, outputSyntax) ; }
+    { PrintUtils.printQuery(out, query, outputSyntax) ; }
     
     public void outputOp(Query query)
     { outputOp(out(), query) ; }
 
     public void outputOp(IndentedWriter out, Query query)
-    { QueryPrintUtils.printOp(out, query) ; }
+    { PrintUtils.printOp(out, query) ; }
     
     public void outputQuad(Query query)
     { outputQuad(out(), query) ; }
     
     public void outputQuad(IndentedWriter out, Query query)
-    { QueryPrintUtils.printQuad(out, query) ; }
-    
-    
-    public void checkParse(Query query)
-    {
-        try {
-            checkParseSyntax(query) ;
-            checkOp(query) ;
-        } catch (Exception ex)
-        {
-            ex.printStackTrace(System.err) ;
-        }
-    }
-
-    public void checkOp(Query query)
-    {
-        IndentedLineBuffer buff = new IndentedLineBuffer() ;
-        Op op = Algebra.compile(query) ;
-        OpWriter.out(buff.getIndentedWriter(), op) ;
-        String str = buff.getBuffer().toString() ;
-        Op op2 = SSE.parseOp(str) ;
-        if ( op.hashCode() != op2.hashCode() )
-        {
-            System.out.println() ;
-            System.out.println("**** Check failed : reparsed algebra expression hashCode does not equal algebra from query") ;
-//            System.out.println(op) ;
-//            System.out.println(op2) ;
-        }
-        if ( ! op.equals(op2) )
-        {
-            System.out.println() ;
-            System.out.println("**** Check failed : reparsed algebra expression does not equal query algebra") ;
-
-        }
-    }
-    
-    public void checkParseSyntax(Query query)
-    {
-        if ( ! Parser.canParse(outputSyntax) )
-            return ;
-        
-        IndentedLineBuffer buff = new IndentedLineBuffer() ;
-        query.serialize(buff, outputSyntax) ;
-        
-        String tmp = buff.toString() ;
-        
-        Query query2 = null ;
-        try {
-            String baseURI = null ;
-            if ( ! query.explicitlySetBaseURI() )
-                // Not in query - use the same one (e.g. file read from) .  
-                baseURI = query.getBaseURI() ;
-            
-            query2 = QueryFactory.create(tmp, baseURI, outputSyntax) ;
-            
-            if ( query2 == null )
-                return ;
-        } catch (UnsupportedOperationException ex)
-        {
-            // No parser after all.
-            return ;
-        }
-        catch (QueryException ex)
-        {
-            System.out.println() ;
-            System.out.println("**** Check failed : could not parse output query:: ") ;
-            System.out.println("**** "+ex.getMessage()) ;
-            return ;
-        }
-        
-        if ( query.hashCode() != query2.hashCode() )
-        {
-            System.out.println() ;
-            System.out.println("**** Check failed : reparsed query hashCode does not equal parsed input query") ;
-            //return ;
-        }
-        
-        if ( ! query.equals(query2) ) 
-        {
-            System.out.println() ;
-            System.out.println("**** Check failed : reparsed output does not equal parsed input") ;
-            return ;
-        }
-    }
+    { PrintUtils.printQuad(out, query) ; }
     
     private IndentedWriter out()
     {

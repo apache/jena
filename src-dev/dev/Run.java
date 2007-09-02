@@ -9,16 +9,10 @@ package dev;
 import arq.sparql;
 
 import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.QueryExecution;
-import com.hp.hpl.jena.query.QueryExecutionFactory;
-import com.hp.hpl.jena.query.QueryFactory;
-import com.hp.hpl.jena.query.ResultSetFormatter;
-import com.hp.hpl.jena.query.larq.IndexBuilderString;
-import com.hp.hpl.jena.query.larq.IndexLARQ;
-import com.hp.hpl.jena.query.larq.LARQ;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.util.FileManager;
+
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.binding.BindingMap;
@@ -26,47 +20,49 @@ import com.hp.hpl.jena.sparql.expr.Expr;
 import com.hp.hpl.jena.sparql.expr.ExprNotComparableException;
 import com.hp.hpl.jena.sparql.expr.NodeValue;
 import com.hp.hpl.jena.sparql.sse.SSE;
-import com.hp.hpl.jena.util.FileManager;
+
+import com.hp.hpl.jena.query.*;
+import com.hp.hpl.jena.query.larq.IndexBuilderString;
+import com.hp.hpl.jena.query.larq.IndexLARQ;
+import com.hp.hpl.jena.query.larq.LARQ;
 
 
 public class Run
 {
     public static void main(String[] argv)
     {
-        //code() ; System.exit(0) ;
-        runQParse()  ;
         
-//        String []a = { "--strict", "file:///c:/home/afs/W3C/DataAccess/tests/data-r2/expr-builtin/manifest.ttl" } ;
-//        arq.qtest.main(a) ;
-//        System.exit(0) ;
-        String DIR = "testing/ARQ/OpenWorld/" ;
-        execQuery(DIR+"data-3.ttl", DIR+"date-2.rq") ;
+        Query.enableGroupByImpl = true ;
+        //runQParse()  ;
+        
+        String DIR = "" ;
+        execQuery(DIR+"D.ttl", DIR+"Q.arq") ;
     }
     
     
     public static void code()
     {
-            Node n1 = SSE.parseNode("'2007-08-31'^^xsd:date") ;
-            Node n2 = SSE.parseNode("'2007-08-31Z'^^xsd:date") ;
-            
-            NodeValue nv1 = NodeValue.makeNode(n1) ;
-            NodeValue nv2 = NodeValue.makeNode(n2) ;
-            
-            try {
-                System.out.println(NodeValue.compare(nv1, nv2)) ;
-            } catch (ExprNotComparableException ex)
-            { System.out.println("Can't compare") ; }
-            
-            System.out.println() ;
-            
-            Binding b = new BindingMap() ;
-            b.add(Var.alloc("x"), n1) ;
-            b.add(Var.alloc("y"), n2) ;
-            
-            expr("( < ?x ?y)", b) ;
-            expr("( = ?x ?y)", b) ;
-            expr("( = ?x ?x)", b) ;
-            expr("( = ?y ?y)", b) ;
+        Node n1 = SSE.parseNode("'2007-08-31'^^xsd:date") ;
+        Node n2 = SSE.parseNode("'2007-08-31Z'^^xsd:date") ;
+
+        NodeValue nv1 = NodeValue.makeNode(n1) ;
+        NodeValue nv2 = NodeValue.makeNode(n2) ;
+
+        try {
+            System.out.println(NodeValue.compare(nv1, nv2)) ;
+        } catch (ExprNotComparableException ex)
+        { System.out.println("Can't compare") ; }
+
+        System.out.println() ;
+
+        Binding b = new BindingMap() ;
+        b.add(Var.alloc("x"), n1) ;
+        b.add(Var.alloc("y"), n2) ;
+
+        expr("( < ?x ?y)", b) ;
+        expr("( = ?x ?y)", b) ;
+        expr("( = ?x ?x)", b) ;
+        expr("( = ?y ?y)", b) ;
     }
     
         

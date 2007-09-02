@@ -1,5 +1,9 @@
 ==== SSE
 
++ Literals and @
+  Include @ into literal terminator 
+  Currently, symbols can't start with a @ or ^ 
+
 + Anon bNodes "_:"
 
 + test another form -- (debug FOO)

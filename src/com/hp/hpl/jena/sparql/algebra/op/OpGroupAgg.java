@@ -11,9 +11,7 @@ import java.util.Map;
 
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.OpVisitor;
-import com.hp.hpl.jena.sparql.algebra.Table;
 import com.hp.hpl.jena.sparql.algebra.Transform;
-import com.hp.hpl.jena.sparql.engine.ref.Evaluator;
 import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 
 public class OpGroupAgg extends OpModifier
@@ -30,11 +28,6 @@ public class OpGroupAgg extends OpModifier
         this.aggregators = aggregators ;
     }
     
-    public Table eval_1(Table table, Evaluator evaluator)
-    {
-        return evaluator.groupBy(table, groupVars, aggregators) ;
-    }
-
     public String getName()                 { return "group" ; }
     public List getGroupVars()              { return groupVars ; }
     public Map getGroupExprs()              { return groupExprs ; }

@@ -4,34 +4,16 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.algebra.op;
+package com.hp.hpl.jena.sparql.core;
 
-import com.hp.hpl.jena.sparql.algebra.Op;
-import com.hp.hpl.jena.sparql.algebra.OpVisitor;
-import com.hp.hpl.jena.sparql.algebra.Transform;
-import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
+import com.hp.hpl.jena.query.QueryException;
 
-public class OpNull extends Op0
+public class QueryCheckException extends QueryException
 {
-
-    public Op apply(Transform transform)
-    { return transform.transform(this) ; }
-
-    public Op copy() { return this ; }
-
-    public void visit(OpVisitor opVisitor) { opVisitor.visit(this) ; }
-
-    public String getName()
-    {
-        return "null" ;
-    }
-
-    public int hashCode()
-    { return OpBase.HashNull ; }
-
-
-    public boolean equalTo(Op other, NodeIsomorphismMap labelMap)
-    { return ( other instanceof OpNull ) ; }
+    public QueryCheckException() { super() ; }
+    public QueryCheckException(Throwable cause) { super(cause) ; }
+    public QueryCheckException(String msg) { super(msg) ; }
+    public QueryCheckException(String msg, Throwable cause) { super(msg, cause) ; }
 }
 
 /*

@@ -47,11 +47,12 @@ public interface SSE_ParserCoreConstants {
   int PN_PREFIX = 36;
   int PN_LOCAL = 37;
   int VARNAME = 38;
-  int SYMBOL = 39;
-  int UNKNOWN = 40;
+  int SYM = 39;
+  int SYM1 = 40;
+  int SYMBOL = 41;
+  int UNKNOWN = 42;
 
   int DEFAULT = 0;
-  int LITERAL = 1;
 
   String[] tokenImage = {
     "<EOF>",
@@ -93,6 +94,8 @@ public interface SSE_ParserCoreConstants {
     "<PN_PREFIX>",
     "<PN_LOCAL>",
     "<VARNAME>",
+    "<SYM>",
+    "<SYM1>",
     "<SYMBOL>",
     "<UNKNOWN>",
   };

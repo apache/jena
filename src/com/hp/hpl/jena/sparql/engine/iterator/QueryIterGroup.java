@@ -6,17 +6,14 @@
 
 package com.hp.hpl.jena.sparql.engine.iterator;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.sparql.ARQNotImplemented;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.aggregate.Aggregator;
+import com.hp.hpl.jena.sparql.engine.aggregate.AggregatorCount;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.binding.Binding0;
 import com.hp.hpl.jena.sparql.engine.binding.BindingKey;
@@ -28,32 +25,38 @@ public class QueryIterGroup extends QueryIterPlainWrapper
     
     public QueryIterGroup(QueryIterator qIter, 
                           List groupVars,
+                          Map groupExprs,
                           List aggregators,
                           ExecutionContext execCxt)
     {
         super(calc(qIter, groupVars, aggregators),
               execCxt) ;
-        throw new ARQNotImplemented("QueryIterGroup") ;
     }
 
-    protected void closeIterator()
-    {
-    }
-
-    protected boolean hasNextBinding()
-    {
-        return false ;
-    }
-
-    protected Binding moveToNextBinding()
-    {
-        return null ;
-    }
+//    protected void closeIterator()
+//    {
+//    }
+//
+//    protected boolean hasNextBinding()
+//    {
+//        return false ;
+//    }
+//
+//    protected Binding moveToNextBinding()
+//    {
+//        return null ;
+//    }
     
     private static Iterator calc(QueryIterator iter, List groupVars, List aggregators)
     {
-        if ( true )
-            throw new ARQNotImplemented("QueryIterGroup.calc: magic happens") ;
+        // Fakery
+        if ( aggregators == null )
+        {
+            Var count = Var.alloc("count") ;
+            Aggregator agg = new AggregatorCount(count) ;
+            aggregators = new ArrayList() ;
+            aggregators.add(agg) ;
+        }
         
         // Stage 1 : assign bindings to buckets by key and pump through the aggregrators.
         
@@ -69,11 +72,13 @@ public class QueryIterGroup extends QueryIterPlainWrapper
             if ( ! buckets.containsKey(key) )
                 buckets.put(key, key.getBinding()) ;
             
-            for ( Iterator aggIter = aggregators.iterator() ; aggIter.hasNext() ; )
-            {
-                Aggregator agg = (Aggregator)aggIter.next();
-                agg.accumulate(key, b) ;
-            }
+            // Assumes an aggregator is a per-execution mutable thingy
+            if ( aggregators != null )
+                for ( Iterator aggIter = aggregators.iterator() ; aggIter.hasNext() ; )
+                {
+                    Aggregator agg = (Aggregator)aggIter.next();
+                    agg.accumulate(key, b) ;
+                }
         }
         
         // Stage 2 : for each bucket, get binding, add aggregator values
@@ -84,14 +89,15 @@ public class QueryIterGroup extends QueryIterPlainWrapper
             BindingKey key = (BindingKey)bIter.next();
             Binding binding = (Binding)buckets.get(key) ; // == key.getBinding() ;
             
-            for ( Iterator aggIter = aggregators.iterator() ; aggIter.hasNext() ; )
-            {
-                Aggregator agg = (Aggregator)aggIter.next();
-                Var v = agg.getVariable() ;
-                Node value =  agg.getValue(key) ;
-                // Extend with the aggregations.
-                binding.add(v, value) ;
-            }
+            if ( aggregators != null )
+                for ( Iterator aggIter = aggregators.iterator() ; aggIter.hasNext() ; )
+                {
+                    Aggregator agg = (Aggregator)aggIter.next();
+                    Var v = agg.getVariable() ;
+                    Node value =  agg.getValue(key) ;
+                    // Extend with the aggregations.
+                    binding.add(v, value) ;
+                }
         }
 
         // Results - the binding modified by the aggregations.

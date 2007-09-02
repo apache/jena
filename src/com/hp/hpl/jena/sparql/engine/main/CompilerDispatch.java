@@ -8,7 +8,6 @@ package com.hp.hpl.jena.sparql.engine.main;
 
 import java.util.Stack;
 
-import com.hp.hpl.jena.sparql.ARQNotImplemented;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.OpVisitor;
 import com.hp.hpl.jena.sparql.algebra.op.*;
@@ -173,7 +172,11 @@ class CompilerDispatch implements OpVisitor
     }
     
     public void visit(OpGroupAgg opGroupAgg)
-    { throw new ARQNotImplemented("Compile OpGroupAgg") ; }
+    { 
+        QueryIterator input = pop() ;
+        QueryIterator qIter = opCompiler.compile(opGroupAgg, input) ;
+        push(qIter) ;
+    }
     
     private void push(QueryIterator qIter)  { stack.push(qIter) ; }
     private QueryIterator pop()

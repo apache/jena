@@ -1,9 +1,14 @@
 PREFIX : <http://example/>
 PREFIX  dc:     <http://purl.org/dc/elements/1.1/>
 
-SELECT ?x #count(?v)
-{ ?x :p ?v }
-GROUP BY ?x
+SELECT ?v ?w ?count #count(?v)
+{
+  ?x :p ?v .
+  ?x :q ?w .
+  ?x :r ?r .
+}
+
+GROUP BY ?v ?w
 ## HAVING
 
 

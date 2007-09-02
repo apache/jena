@@ -76,7 +76,7 @@ TOKEN :
 
 // Specials for literals trailing parts
 // Otherwise include in Symbol() rule for when out of position.
-<LITERAL> TOKEN :
+TOKEN :
 {
   < DATATYPE: "^^" >
 |  <LANGTAG: <AT> (<A2Z>)+("-" (<A2ZN>)+)* > : DEFAULT
@@ -122,7 +122,12 @@ TOKEN:
   // Anything left that isn't structural
   // LPAREN and RPAREN / LBRACKET/RBRACKET
   // Quotes
-  <SYMBOL: (~["(", ")", "[", "]", "'", "\"", " ", "\t","\n","\r","\f" ])+ >
+  <#SYM:  (~["(", ")", "[", "]", "'", "\"", " ", "\t","\n","\r","\f" ])>
+|
+  <#SYM1: (~["^", "@", 
+             "(", ")", "[", "]", "'", "\"", " ", "\t","\n","\r","\f" ])>
+|
+  <SYMBOL: <SYM1> (<SYM>)*>
 }
 
 // Catch-all tokens.  Must be last.  

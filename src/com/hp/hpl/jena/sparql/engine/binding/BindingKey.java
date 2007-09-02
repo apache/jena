@@ -11,7 +11,7 @@ import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.sparql.core.Var;
 
 /** A binding helper that can be a key in a Set or Map.
- *  Changing the key binding while in such a structure is  not supported.  
+ *  Changing the key binding while in such a structure is not supported.  
  * 
  * @author   Andy Seaborne
  * @version  $Id: BindingWrapped.java,v 1.1 2007/02/06 17:06:05 andy_seaborne Exp $
@@ -69,7 +69,7 @@ public class BindingKey
                 continue ;
             // Must be independent of variable order.
             calcHashCode = calcHashCode^n.hashCode()^var.hashCode() ; 
-            binding.add(var, n) ;
+            //binding.add(var, n) ;
         }
         return calcHashCode ;
     }    

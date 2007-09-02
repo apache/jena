@@ -49,7 +49,7 @@ public class OpWriter
     { out(System.out, op, prologue) ; }
     
     public static void out(OutputStream out, Op op)
-    { out(out, op, ARQConstants.getGlobalPrefixMap()) ; }
+    { out(out, op, (PrefixMapping)null) ; }
 
     public static void out(OutputStream out, Op op, PrefixMapping pMap)
     { out(new IndentedWriter(out), op, pMap) ; }
@@ -125,7 +125,7 @@ public class OpWriter
         }
         
         op.visit(new OpWriterWorker(iWriter, sCxt)) ;
-        for ( int i = 0 ; i < closeCount ; i++) ;
+        for ( int i = 0 ; i < closeCount ; i++)
         {
             iWriter.print(")") ;
             iWriter.decIndent() ;
@@ -355,7 +355,6 @@ public class OpWriter
                     out.print(" ") ;
                     ExprUtils.fmtPrefix(out, expr, sContext.getPrefixMapping()) ;
                     out.print(")") ;
-                    ExprUtils.fmtPrefix(out, expr, sContext.getPrefixMapping()) ;
                 }
             }
             out.println(")");

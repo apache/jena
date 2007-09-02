@@ -312,7 +312,7 @@ public class SSE_ParserCore extends ParserSSEBase implements SSE_ParserCoreConst
       throw new ParseException();
     }
     currLine = t.beginLine ; currColumn = t.beginColumn ;
-    token_source.SwitchTo(LITERAL) ;
+    lex = unescapeStr(lex, currLine, currColumn) ;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case DATATYPE:
     case LANGTAG:
@@ -320,11 +320,9 @@ public class SSE_ParserCore extends ParserSSEBase implements SSE_ParserCoreConst
       case LANGTAG:
         t = jj_consume_token(LANGTAG);
                      lang = stripChars(t.image, 1) ;
-        token_source.SwitchTo(DEFAULT) ;
         break;
       case DATATYPE:
         jj_consume_token(DATATYPE);
-      token_source.SwitchTo(DEFAULT) ;
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case IRIref:
           t = jj_consume_token(IRIref);
@@ -391,7 +389,7 @@ public class SSE_ParserCore extends ParserSSEBase implements SSE_ParserCoreConst
       jj_la1_0 = new int[] {0x2,0x2,0x47c3bf0,0x2,0x2,0x2,0x2,0x4400000,0x47c3bf0,0x3c3bf0,0x380,0x3c3800,0x3c0000,0x30,0x30000000,0x30000000,0x3800,};
    }
    private static void jj_la1_1() {
-      jj_la1_1 = new int[] {0x0,0x0,0x80,0x0,0x0,0x0,0x0,0x0,0x80,0x80,0x0,0x0,0x0,0x0,0x0,0x0,0x0,};
+      jj_la1_1 = new int[] {0x0,0x0,0x200,0x0,0x0,0x0,0x0,0x0,0x200,0x200,0x0,0x0,0x0,0x0,0x0,0x0,0x0,};
    }
 
   public SSE_ParserCore(java.io.InputStream stream) {
@@ -496,8 +494,8 @@ public class SSE_ParserCore extends ParserSSEBase implements SSE_ParserCoreConst
 
   public ParseException generateParseException() {
     jj_expentries.removeAllElements();
-    boolean[] la1tokens = new boolean[41];
-    for (int i = 0; i < 41; i++) {
+    boolean[] la1tokens = new boolean[43];
+    for (int i = 0; i < 43; i++) {
       la1tokens[i] = false;
     }
     if (jj_kind >= 0) {
@@ -516,7 +514,7 @@ public class SSE_ParserCore extends ParserSSEBase implements SSE_ParserCoreConst
         }
       }
     }
-    for (int i = 0; i < 41; i++) {
+    for (int i = 0; i < 43; i++) {
       if (la1tokens[i]) {
         jj_expentry = new int[1];
         jj_expentry[0] = i;

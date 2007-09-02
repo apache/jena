@@ -414,7 +414,8 @@ public class Query extends Prologue implements Cloneable
     protected Map groupExprs = new HashMap() ;      // Var -> Expr
     protected List havingExprs = new ArrayList() ;  // Expressions
     
-    static boolean implMask = false ;
+    /** Enable in-development GroupBy */ 
+    public static boolean enableGroupByImpl = true ;
 
     public boolean hasGroupBy()     { return groupVars != null && groupVars.size() > 0 ; }
     public boolean hasHaving()      { return havingExprs != null && havingExprs.size() > 0 ; }
@@ -434,13 +435,13 @@ public class Query extends Prologue implements Cloneable
 
     public void addGroupBy(Node v)
     {
-        if ( implMask ) throw new ARQNotImplemented("In progress: GROUP and aggregates" ) ;
+        if ( ! enableGroupByImpl ) throw new ARQNotImplemented("In progress: GROUP and aggregates" ) ;
         groupVars.add(v) ;
     }
 
     public void addGroupBy(Expr expr)
     {
-        if ( implMask ) throw new ARQNotImplemented("In progress: GROUP and aggregates" ) ;
+        if ( ! enableGroupByImpl ) throw new ARQNotImplemented("In progress: GROUP and aggregates" ) ;
         if ( expr.isVariable() )
         {
             // It was (?x) - keep the name by adding by variable.
@@ -455,7 +456,7 @@ public class Query extends Prologue implements Cloneable
 
     public void addHavingCondition(Expr expr)
     {
-        if ( implMask ) throw new ARQNotImplemented("In progress: HAVING" ) ;
+        if ( ! enableGroupByImpl ) throw new ARQNotImplemented("In progress: HAVING" ) ;
         havingExprs.add(expr) ;
     }
 

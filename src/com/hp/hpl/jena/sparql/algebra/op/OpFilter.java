@@ -8,9 +8,7 @@ package com.hp.hpl.jena.sparql.algebra.op;
 
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.OpVisitor;
-import com.hp.hpl.jena.sparql.algebra.Table;
 import com.hp.hpl.jena.sparql.algebra.Transform;
-import com.hp.hpl.jena.sparql.engine.ref.Evaluator;
 import com.hp.hpl.jena.sparql.expr.E_LogicalAnd;
 import com.hp.hpl.jena.sparql.expr.Expr;
 import com.hp.hpl.jena.sparql.expr.ExprList;
@@ -95,11 +93,6 @@ public class OpFilter extends Op1
         expressions = exprs ;
     }
     
-    public Table eval_1(Table table, Evaluator evaluator)
-    {
-        return evaluator.filter(expressions, table) ;
-    }
-
     // Compress a filter(filter(filter(op)))) into one filter(op) 
     public static OpFilter tidy(OpFilter base)
     {

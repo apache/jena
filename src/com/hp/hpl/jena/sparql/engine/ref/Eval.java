@@ -15,7 +15,6 @@ import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
 
 import com.hp.hpl.jena.sparql.ARQInternalErrorException;
-import com.hp.hpl.jena.sparql.ARQNotImplemented;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.OpVisitor;
 import com.hp.hpl.jena.sparql.algebra.Table;
@@ -205,7 +204,9 @@ public class Eval
 
         public void visit(OpGroupAgg opGroupAgg)
         {
-            throw new ARQNotImplemented("Eval OpGroupAgg") ;
+            Table table = eval(opGroupAgg.getSubOp()) ;
+            table = evaluator.groupBy(table, opGroupAgg.getGroupVars(), opGroupAgg.getGroupExprs(), opGroupAgg.getAggregators()) ;
+            push(table) ;
         }
 
         private void push(Table table)  { stack.push(table) ; }

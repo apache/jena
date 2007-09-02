@@ -158,16 +158,15 @@ void RDFLiteral() : { Token t = null ; int currLine ; int currColumn ;
   | t = <STRING_LITERAL_LONG1> { lex = stripQuotes3(t.image) ; }
   | t = <STRING_LITERAL_LONG2> { lex = stripQuotes3(t.image) ; }
   )
-  { currLine = t.beginLine ; currColumn = t.beginColumn ; }
-  { token_source.SwitchTo(LITERAL) ; }
+  { currLine = t.beginLine ; currColumn = t.beginColumn ;
+    lex = unescapeStr(lex, currLine, currColumn) ;
+  }
 
   // Optional lang tag and datatype.
   (
      t = <LANGTAG> { lang = stripChars(t.image, 1) ; }
-      { token_source.SwitchTo(DEFAULT) ; }
   |
     <DATATYPE> 
-    { token_source.SwitchTo(DEFAULT) ; }
     ( t = <IRIref> { dt_iri  = stripQuotes(t.image) ; }
     | t = <PNAME>  { dt_pn = t.image ; }
     )

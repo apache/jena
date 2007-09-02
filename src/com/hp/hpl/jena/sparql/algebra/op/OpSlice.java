@@ -8,9 +8,7 @@ package com.hp.hpl.jena.sparql.algebra.op;
 
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.OpVisitor;
-import com.hp.hpl.jena.sparql.algebra.Table;
 import com.hp.hpl.jena.sparql.algebra.Transform;
-import com.hp.hpl.jena.sparql.engine.ref.Evaluator;
 import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 
 public class OpSlice extends OpModifier
@@ -31,11 +29,6 @@ public class OpSlice extends OpModifier
     public Op copy()
     {
         return null ;
-    }
-
-    public Table eval_1(Table table, Evaluator evaluator)
-    {
-        return evaluator.slice(table, start, length) ;
     }
 
 //    public Op apply(Transform transform, Op subOp)

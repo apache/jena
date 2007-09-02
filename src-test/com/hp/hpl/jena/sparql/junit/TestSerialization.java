@@ -7,16 +7,20 @@
 package com.hp.hpl.jena.sparql.junit;
 
 
-import com.hp.hpl.jena.query.*;
+import com.hp.hpl.jena.sparql.sse.SSEParseException;
 import com.hp.hpl.jena.sparql.util.IndentedLineBuffer;
+import com.hp.hpl.jena.sparql.util.QueryUtils;
 
-public class SerializerTest extends EarlTestCase
+import com.hp.hpl.jena.query.Query;
+import com.hp.hpl.jena.query.Syntax;
+
+public class TestSerialization extends EarlTestCase
 {
     static int count = 0 ;
     String queryString ;
     TestItem testItem ;
     
-    public SerializerTest(String testName, EarlReport earl, TestItem t)
+    public TestSerialization(String testName, EarlReport earl, TestItem t)
     {
         super(testName, t.getURI(), earl) ;
         testItem = t ;
@@ -67,12 +71,29 @@ public class SerializerTest extends EarlTestCase
             // Not in query - use the same one (e.g. file read from) .  
             baseURI = query.getBaseURI() ;
         
-        Query query2 = QueryFactory.create(buff.toString(), baseURI, syntax) ;
+        // Query syntax and algebra tests. 
         
-        if ( ! query.equals(query2) )
-            baseURI = null ;
+        try {
+            QueryUtils.checkParse(query) ;
+        } 
+        catch (RuntimeException ex)
+        {
+            System.err.println("**** Test: "+getName()) ;
+            System.err.println("** "+ex.getMessage()) ;
+            System.err.println(query) ;
+            throw ex ; 
+        }
+
+        try {
+            QueryUtils.checkOp(query) ;
+        } catch (SSEParseException ex)
+        {
+            System.err.println("**** Test: "+getName()) ; 
+            System.err.println("** Algebra error: "+ex.getMessage()) ;
+        }
         
-        assertEquals("Query.equals", query, query2) ;
+//        Query query2 = QueryFactory.create(buff.toString(), baseURI, syntax) ;
+//        assertEquals("Query.equals", query, query2) ;
     }
 
 }

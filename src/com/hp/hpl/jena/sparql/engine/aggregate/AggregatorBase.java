@@ -6,6 +6,7 @@
 
 package com.hp.hpl.jena.sparql.engine.aggregate;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import com.hp.hpl.jena.graph.Node;
@@ -16,7 +17,7 @@ import com.hp.hpl.jena.sparql.engine.binding.BindingKey;
 
 public abstract class AggregatorBase implements Aggregator
 {
-    private Map buckets ;       // Key => accumulator
+    private Map buckets = new HashMap() ;
     private Var var ;
 
     public AggregatorBase(Var var)

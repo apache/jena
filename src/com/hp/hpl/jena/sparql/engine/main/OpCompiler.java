@@ -308,8 +308,15 @@ public class OpCompiler
         QueryIterator qIter = compileOp(opSlice.getSubOp(), input) ;
         qIter = new QueryIterSlice(qIter, opSlice.getStart(), opSlice.getLength(), execCxt) ;
         return qIter ;
-        }
-
+    }
+    
+    QueryIterator compile(OpGroupAgg opGroupAgg, QueryIterator input)
+    { 
+        QueryIterator qIter = compileOp(opGroupAgg.getSubOp(), input) ;
+        qIter = new QueryIterGroup(qIter, opGroupAgg.getGroupVars(), opGroupAgg.getGroupExprs(), opGroupAgg.getAggregators(), execCxt) ;
+        return qIter ;
+    }
+    
     QueryIterator compile(OpDistinct opDistinct, QueryIterator input)
     {
         QueryIterator qIter = compileOp(opDistinct.getSubOp(), input) ;
