@@ -76,7 +76,13 @@ public class TestSSE_Basic extends TestCase
     public void testLit_08() { parseBad("'\"") ; }
     public void testLit_09() { parseBad("'''") ; } 
     public void testLit_10() { parseBad("''@") ; }
-    public void testLit_11() { testNode("'''abc\ndef'''") ; }
+    public void testLit_11() { testNode("'''abc\\ndef'''") ; }
+    
+    public void testLit_12()
+    { 
+        Node n = Node.createLiteral("A\tB") ;
+        testNode("'''A\\tB'''", n) ;
+    }
     
     public void testNum_1() { testNode("1") ; }
     public void testNum_2() { testNode("1.1") ; }
