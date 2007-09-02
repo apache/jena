@@ -12,7 +12,7 @@ import java.util.Set;
 
 public class ExprVars
 {
-    interface Action { void var(Collection acc, NodeVar nv) ; }
+    interface Action { void var(Collection acc, ExprVar nv) ; }
     
     public static Set getVarsMentioned(Expr expr)
     {
@@ -25,7 +25,7 @@ public class ExprVars
     {
         ExprVars.Action action =
             new ExprVars.Action(){
-                public void var(Collection acc, NodeVar nv)
+                public void var(Collection acc, ExprVar nv)
                 {
                     acc.add(nv.asVar()) ;
                 }
@@ -45,7 +45,7 @@ public class ExprVars
     {
         ExprVars.Action action =
             new ExprVars.Action(){
-                public void var(Collection acc, NodeVar nv)
+                public void var(Collection acc, ExprVar nv)
                 {
                     acc.add(nv.getVarName()) ;
                 }
@@ -62,7 +62,7 @@ public class ExprVars
         public Worker(Collection acc, Action action)
         { this.acc = acc ; this.action = action ; }
         
-        public void visit(NodeVar nv)
+        public void visit(ExprVar nv)
         { action.var(acc, nv) ; }
     }
 }

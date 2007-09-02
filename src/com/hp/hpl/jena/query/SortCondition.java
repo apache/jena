@@ -12,7 +12,7 @@ import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.expr.E_Function;
 import com.hp.hpl.jena.sparql.expr.Expr;
 import com.hp.hpl.jena.sparql.expr.ExprVisitor;
-import com.hp.hpl.jena.sparql.expr.NodeVar;
+import com.hp.hpl.jena.sparql.expr.ExprVar;
 import com.hp.hpl.jena.sparql.serializer.FmtExprARQ;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext;
 import com.hp.hpl.jena.sparql.util.*;
@@ -24,7 +24,7 @@ public class SortCondition extends PrintSerializableBase
     public int direction = 0 ;
 
     public SortCondition(Var var, int dir)
-    { this(new NodeVar(var),dir) ; } 
+    { this(new ExprVar(var),dir) ; } 
   
     public SortCondition(Node var, int dir)
     { this(ExprUtils.nodeToExpr(var), dir) ; }

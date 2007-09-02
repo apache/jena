@@ -14,7 +14,7 @@ public class ExprVisitorBase implements ExprVisitor
     
     public void visit(ExprFunction func)    {}
     public void visit(NodeValue nv)         {}
-    public void visit(NodeVar nv)           {}
+    public void visit(ExprVar nv)           {}
 
     public void finishVisit()               {}
 }

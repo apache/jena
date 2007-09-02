@@ -14,6 +14,7 @@ import com.hp.hpl.jena.sparql.engine.binding.BindingKey;
 
 public interface Aggregator
 {
+//    public Accumulator createAccumulator() ;
     public void accumulate(BindingKey key, Binding b) ;
 
     public Var  getVariable() ;

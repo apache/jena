@@ -65,8 +65,10 @@ public abstract class ExprNode implements Expr
     
     // ---- Default implementations
     public boolean isVariable()        { return false ; }
-    public String getVarName()         { return null ; } //throw new ExprException("Expr.getVarName called on non-variable") ; } 
-    public NodeVar getNodeVar()        { return null ; } //throw new ExprException("Expr.getVar called on non-variable") ; }
+    public String getVarName()         { return null ; } //throw new ExprException("Expr.getVarName called on non-variable") ; }
+    /** @deprecated Use getExprVar */
+    final public ExprVar getNodeVar()        { return getExprVar() ; }
+    public ExprVar getExprVar()        { return null ; } //throw new ExprException("Expr.getVar called on non-variable") ; }
     public Var asVar()                 { return null ; } //throw new ExprException("Expr.getVar called on non-variable") ; }
     
     public boolean isConstant()        { return false ; }

@@ -27,7 +27,7 @@ import com.hp.hpl.jena.sparql.engine.iterator.QueryIterNullIterator;
 import com.hp.hpl.jena.sparql.engine.main.OpCompiler;
 import com.hp.hpl.jena.sparql.expr.E_Regex;
 import com.hp.hpl.jena.sparql.expr.Expr;
-import com.hp.hpl.jena.sparql.expr.NodeVar;
+import com.hp.hpl.jena.sparql.expr.ExprVar;
 import com.hp.hpl.jena.sparql.pfunction.PropFuncArg;
 import com.hp.hpl.jena.sparql.pfunction.PropertyFunction;
 import com.hp.hpl.jena.sparql.pfunction.PropertyFunctionRegistry;
@@ -115,7 +115,7 @@ public class labelSearch implements PropertyFunction
         bp.add(t) ;
         OpBGP op = new OpBGP(bp) ;
         
-        Expr regex = new E_Regex(new NodeVar(var2.getName()), pattern, "i") ;
+        Expr regex = new E_Regex(new ExprVar(var2.getName()), pattern, "i") ;
         OpFilter filter = OpFilter.filter(regex, op) ;
 
         // ---- Evaluation
@@ -146,7 +146,7 @@ public class labelSearch implements PropertyFunction
         elementBGP.addTriple(t) ;
         
         // Regular expression for  regex(?hiddenVar, "pattern", "i") 
-        Expr regex = new E_Regex(new NodeVar(var2.getName()), pattern, "i") ;
+        Expr regex = new E_Regex(new ExprVar(var2.getName()), pattern, "i") ;
         
         ElementGroup elementGroup = new ElementGroup() ;
         elementGroup.addElement(elementBGP) ;

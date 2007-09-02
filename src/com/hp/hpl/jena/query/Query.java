@@ -18,7 +18,7 @@ import com.hp.hpl.jena.sparql.core.QueryHashCode;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.core.VarAlloc;
 import com.hp.hpl.jena.sparql.expr.Expr;
-import com.hp.hpl.jena.sparql.expr.NodeVar;
+import com.hp.hpl.jena.sparql.expr.ExprVar;
 import com.hp.hpl.jena.sparql.serializer.Serializer;
 import com.hp.hpl.jena.sparql.syntax.Element;
 import com.hp.hpl.jena.sparql.syntax.Template;
@@ -205,7 +205,7 @@ public class Query extends Prologue implements Cloneable
     public void addOrderBy(String varName, int direction)
     { 
         varName = Var.canonical(varName) ;
-        SortCondition sc = new SortCondition(new NodeVar(varName), direction) ;
+        SortCondition sc = new SortCondition(new ExprVar(varName), direction) ;
         addOrderBy(sc) ;
     }
 

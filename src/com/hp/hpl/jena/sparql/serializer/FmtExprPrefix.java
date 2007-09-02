@@ -86,7 +86,7 @@ public class FmtExprPrefix extends FmtExpr implements ExprVisitor
         out.print(nv.asQuotedString(context)) ;
     }
 
-    public void visit(NodeVar nv)
+    public void visit(ExprVar nv)
     {
         out.print("?") ;
         out.print(nv.getVarName()) ;

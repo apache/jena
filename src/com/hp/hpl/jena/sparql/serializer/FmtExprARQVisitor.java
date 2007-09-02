@@ -95,7 +95,7 @@ public class FmtExprARQVisitor implements ExprVisitor
         out.print(nv.asQuotedString(context)) ;
     }
 
-    public void visit(NodeVar nv)
+    public void visit(ExprVar nv)
     {
         String s = nv.getVarName() ;
         if ( Var.isBlankNodeVarName(s) )

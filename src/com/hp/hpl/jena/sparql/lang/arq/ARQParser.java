@@ -1834,7 +1834,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
       jj_consume_token(LPAREN);
       gn = Var();
       jj_consume_token(RPAREN);
-      {if (true) return new E_Bound(new NodeVar(gn)) ;}
+      {if (true) return new E_Bound(new ExprVar(gn)) ;}
       break;
     case SAME_TERM:
       jj_consume_token(SAME_TERM);

@@ -93,7 +93,7 @@ public class BuilderExpr
         if ( item.isNode() )
         {
             if ( Var.isVar(item.getNode()) )
-                return new NodeVar(Var.alloc(item.getNode())) ;
+                return new ExprVar(Var.alloc(item.getNode())) ;
             return NodeValue.makeNode(item.getNode()) ;
         }
     

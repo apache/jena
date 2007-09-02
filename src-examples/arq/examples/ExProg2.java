@@ -14,7 +14,7 @@ import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.expr.E_Regex;
 import com.hp.hpl.jena.sparql.expr.Expr;
-import com.hp.hpl.jena.sparql.expr.NodeVar;
+import com.hp.hpl.jena.sparql.expr.ExprVar;
 import com.hp.hpl.jena.sparql.syntax.ElementFilter;
 import com.hp.hpl.jena.sparql.syntax.ElementGroup;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
@@ -49,7 +49,7 @@ public class ExProg2
         elg.addTriplePattern(t1) ;
         
         // Adds a filter.  Need to wrap variable in a NodeVar.
-        Expr expr = new E_Regex(new NodeVar(varTitle), "sparql", "i") ;
+        Expr expr = new E_Regex(new ExprVar(varTitle), "sparql", "i") ;
         ElementFilter filter = new  ElementFilter(expr) ;
         elg.addElementFilter(filter) ;
         

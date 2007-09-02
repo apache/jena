@@ -10,7 +10,7 @@ import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.expr.Expr;
 import com.hp.hpl.jena.sparql.expr.NodeValue;
-import com.hp.hpl.jena.sparql.expr.NodeVar;
+import com.hp.hpl.jena.sparql.expr.ExprVar;
 import com.hp.hpl.jena.sparql.expr.VariableNotBoundException;
 import com.hp.hpl.jena.sparql.util.IndentedLineBuffer;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
@@ -55,7 +55,7 @@ public class FmtExprARQSubst extends FmtExprARQVisitor
         return buff.toString() ;
     }
     
-    public void visit(NodeVar nv)
+    public void visit(ExprVar nv)
     {
         try {
             NodeValue r = nv.eval(binding, null) ;

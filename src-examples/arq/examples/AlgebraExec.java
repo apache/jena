@@ -25,7 +25,7 @@ import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.expr.E_LessThan;
 import com.hp.hpl.jena.sparql.expr.Expr;
 import com.hp.hpl.jena.sparql.expr.NodeValue;
-import com.hp.hpl.jena.sparql.expr.NodeVar;
+import com.hp.hpl.jena.sparql.expr.ExprVar;
 import com.hp.hpl.jena.sparql.util.FmtUtils;
 
 import com.hp.hpl.jena.query.ResultSet;
@@ -46,7 +46,7 @@ public class AlgebraExec
         bp.add(new Triple(var_x, Node.createURI(BASE+"p"), var_z)) ;
         Op op = new OpBGP(bp) ;
         //Expr expr = ExprUtils.parse("?z < 2 ") ;
-        Expr expr = new E_LessThan(new NodeVar(var_z), NodeValue.makeNodeInteger(2)) ;
+        Expr expr = new E_LessThan(new ExprVar(var_z), NodeValue.makeNodeInteger(2)) ;
         op = OpFilter.filter(expr, op) ;
 
         // ---- Example setup

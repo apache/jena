@@ -19,6 +19,9 @@ ARQ 2.1
   plain and XML forms of a SPARQL query.  The XML form was incomplete
   anyway.  (This does not affect algebra output which is what replaces
   these syntax-based forms).
+  
++ NodeVar renamed ExprVar (more consistent naming)
+  Deprecated tombstones left for next release 
     
 
 ARQ 2.1 beta

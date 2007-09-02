@@ -35,7 +35,7 @@ public class ExprUtils
     public static Expr nodeToExpr(Node n)
     {
         if ( n.isVariable() )
-            return new NodeVar(n) ;
+            return new ExprVar(n) ;
         return NodeValue.makeNode(n) ;
     }
     

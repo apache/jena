@@ -14,7 +14,7 @@ public interface ExprVisitor
     void visit(ExprFunction expr) ;
     
     void visit(NodeValue nv) ;
-    void visit(NodeVar nv) ;
+    void visit(ExprVar nv) ;
 
     void finishVisit() ;
 }

@@ -53,7 +53,7 @@ public class ExprWalker //implements ExprVisitor
         }
         
         public void visit(NodeValue nv)   { nv.visit(visitor) ; }
-        public void visit(NodeVar nv)     { nv.visit(visitor) ; }
+        public void visit(ExprVar nv)     { nv.visit(visitor) ; }
         
         public void finishVisit() { }
     }

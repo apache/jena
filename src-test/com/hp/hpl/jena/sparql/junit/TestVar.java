@@ -8,7 +8,7 @@ package com.hp.hpl.jena.sparql.junit;
 
 import com.hp.hpl.jena.sparql.expr.Expr;
 import com.hp.hpl.jena.sparql.expr.NodeValue;
-import com.hp.hpl.jena.sparql.expr.NodeVar;
+import com.hp.hpl.jena.sparql.expr.ExprVar;
 
 
 public class TestVar extends TestExpr
@@ -33,7 +33,7 @@ public class TestVar extends TestExpr
     void checkExpr(Expr expr)
     {
         assertTrue("Not a NodeVar: "+expr, expr.isVariable()) ;
-        NodeVar v = (NodeVar)expr ;
+        ExprVar v = (ExprVar)expr ;
         assertEquals("Different variable names", rightVarName, v.getVarName()) ;
     }
 

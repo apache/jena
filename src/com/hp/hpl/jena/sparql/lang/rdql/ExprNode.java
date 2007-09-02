@@ -57,7 +57,7 @@ abstract class ExprNode
     public com.hp.hpl.jena.sparql.expr.NodeValue getConstant()
     { return null ; }
 
-    public NodeVar getNodeVar() { return null ; }
+    public ExprVar getNodeVar() { return null ; }
 
     public String getVarName()  { return null ; }
     
