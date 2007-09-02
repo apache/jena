@@ -9,6 +9,7 @@ package com.hp.hpl.jena.sparql.engine.iterator;
 import java.util.*;
 
 import com.hp.hpl.jena.graph.Node;
+
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
@@ -34,9 +35,13 @@ public class QueryIterGroup extends QueryIterPlainWrapper
 
     // Phase 1 : Consume the input iterator, assigning groups (keys) 
     //           and push rows through the aggregator function. 
-    // Phase 2 : Go over the group bindings and assign the value of each aggregation. 
+    
+    // Phase 2 : Go over the group bindings and assign the value of each aggregation.
+    
     private static Iterator calc(QueryIterator iter, List groupVars, List aggregators)
     {
+//        boolean debug = true ;
+        
         // Fakery
         if ( aggregators == null )
         {
@@ -56,17 +61,25 @@ public class QueryIterGroup extends QueryIterPlainWrapper
             Binding b = iter.nextBinding() ;
             BindingKey key = genKey(groupVars, b) ;
             
+//            if ( debug )
+//            {
+//                System.out.println("Binding: "+b) ;
+//                System.out.println("Key    : "+key.getKey()) ;
+//            }
+
             // Assumes key binding has value based .equals/.hashCode. 
             if ( ! buckets.containsKey(key) )
                 buckets.put(key, key.getBinding()) ;
             
             // Assumes an aggregator is a per-execution mutable thingy
             if ( aggregators != null )
+            {
                 for ( Iterator aggIter = aggregators.iterator() ; aggIter.hasNext() ; )
                 {
                     Aggregator agg = (Aggregator)aggIter.next();
                     agg.accumulate(key, b) ;
                 }
+            }
         }
         
         // Stage 2 : for each bucket, get binding, add aggregator values

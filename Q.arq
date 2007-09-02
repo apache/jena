@@ -1,23 +1,12 @@
 PREFIX : <http://example/>
 PREFIX  dc:     <http://purl.org/dc/elements/1.1/>
 
-SELECT ?v ?w ?count #count(?v)
+SELECT ?p ?q ?count # COUNT(?x)
 {
-  ?x :p ?v .
-  ?x :q ?w .
-  ?x :r ?r .
+    ?x :r ?r .
+    OPTIONAL { ?x :p ?p . }
+    OPTIONAL { ?x :q ?q . }
 }
-
-GROUP BY ?v ?w
-## HAVING
-
-
-## {
-##   ?b dc:title ?title .
-##   SERVICE <http://sparql.org/books>
-##      { ?s dc:title ?title . ?s dc:creator ?a }
-## }
-
-
-## GROUP BY ?s ?p
-## HAVING COUNT(?o) > 2
+GROUP BY ?p ?q
+# HAVING (?count > 1)
+ORDER BY ?q ?count
