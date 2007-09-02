@@ -651,7 +651,7 @@ Expr BuiltInCall() : { Expr expr ; Expr expr1, expr2 ; Node gn ; Token t ;}
     { return new E_Datatype(expr) ; }
 
   | <BOUND> <LPAREN> gn = Var() <RPAREN>
-    { return new E_Bound(new NodeVar(gn)) ; }
+    { return new E_Bound(new ExprVar(gn)) ; }
 
   | <SAME_TERM> <LPAREN> expr1 = Expression() <COMMA> expr2 = Expression() <RPAREN>
     { return new E_SameTerm(expr1, expr2) ; }
