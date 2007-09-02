@@ -34,7 +34,10 @@ public class QueryIterPlainWrapper extends QueryIter
         iterator = iter ;
     }
 
-    /** Preferrable to use a constructor - but somtimes that is inconvenient */ 
+    /** Preferrable to use a constructor - but sometimes that is inconvenient 
+     *  so pass null in the constructor and then call this before the iterator is
+     *  used.   
+     */
     public void setIterator(Iterator iterator) { this.iterator = iterator ; }
     
     protected boolean hasNextBinding() { return iterator.hasNext() ; } 

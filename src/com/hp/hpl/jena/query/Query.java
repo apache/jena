@@ -412,7 +412,7 @@ public class Query extends Prologue implements Cloneable
     
     protected List groupVars = new ArrayList() ;    // Var
     protected Map groupExprs = new HashMap() ;      // Var -> Expr
-    protected List havingExprs = new ArrayList() ;  // Expressions
+    protected List havingExprs = new ArrayList() ;  // Expressions : Make an ExprList?
     
     /** Enable in-development GroupBy */ 
     public static boolean enableGroupByImpl = true ;
@@ -422,7 +422,7 @@ public class Query extends Prologue implements Cloneable
     
     public List getGroupVars()      { return groupVars ; }
     
-    public Map getGroupExprs()     { return groupExprs ; }
+    public Map getGroupExprs()      { return groupExprs ; }
     
     public List getHavingExprs()    { return havingExprs ; }
     

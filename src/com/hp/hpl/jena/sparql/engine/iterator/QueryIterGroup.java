@@ -21,32 +21,20 @@ import com.hp.hpl.jena.sparql.engine.binding.BindingMap;
 
 public class QueryIterGroup extends QueryIterPlainWrapper
 {
-    // Aggregators as subpackage of iterators?
-    
     public QueryIterGroup(QueryIterator qIter, 
                           List groupVars,
                           Map groupExprs,
                           List aggregators,
                           ExecutionContext execCxt)
     {
-        super(calc(qIter, groupVars, aggregators),
-              execCxt) ;
+        super(null, execCxt) ;
+        Iterator iter = calc(qIter, groupVars, aggregators) ;
+        setIterator(iter) ;
     }
 
-//    protected void closeIterator()
-//    {
-//    }
-//
-//    protected boolean hasNextBinding()
-//    {
-//        return false ;
-//    }
-//
-//    protected Binding moveToNextBinding()
-//    {
-//        return null ;
-//    }
-    
+    // Phase 1 : Consume the input iterator, assigning groups (keys) 
+    //           and push rows through the aggregator function. 
+    // Phase 2 : Go over the group bindings and assign the value of each aggregation. 
     private static Iterator calc(QueryIterator iter, List groupVars, List aggregators)
     {
         // Fakery
@@ -84,12 +72,13 @@ public class QueryIterGroup extends QueryIterPlainWrapper
         // Stage 2 : for each bucket, get binding, add aggregator values
         // (Key is the first binding we saw for the group (projected to the group vars)).
         
-        for ( Iterator bIter = buckets.keySet().iterator() ; bIter.hasNext(); )
+        // If it is null, nothing to do.
+        if ( aggregators != null )
         {
-            BindingKey key = (BindingKey)bIter.next();
-            Binding binding = (Binding)buckets.get(key) ; // == key.getBinding() ;
-            
-            if ( aggregators != null )
+            for ( Iterator bIter = buckets.keySet().iterator() ; bIter.hasNext(); )
+            {
+                BindingKey key = (BindingKey)bIter.next();
+                Binding binding = (Binding)buckets.get(key) ; // == key.getBinding() ;
                 for ( Iterator aggIter = aggregators.iterator() ; aggIter.hasNext() ; )
                 {
                     Aggregator agg = (Aggregator)aggIter.next();
@@ -98,6 +87,7 @@ public class QueryIterGroup extends QueryIterPlainWrapper
                     // Extend with the aggregations.
                     binding.add(v, value) ;
                 }
+            }
         }
 
         // Results - the binding modified by the aggregations.

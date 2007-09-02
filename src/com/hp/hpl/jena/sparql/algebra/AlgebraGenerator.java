@@ -15,6 +15,7 @@ import com.hp.hpl.jena.sparql.ARQInternalErrorException;
 import com.hp.hpl.jena.sparql.algebra.op.*;
 import com.hp.hpl.jena.sparql.core.BasicPattern;
 import com.hp.hpl.jena.sparql.core.Var;
+import com.hp.hpl.jena.sparql.expr.Expr;
 import com.hp.hpl.jena.sparql.expr.ExprList;
 import com.hp.hpl.jena.sparql.syntax.*;
 import com.hp.hpl.jena.sparql.util.ALog;
@@ -275,8 +276,8 @@ public class AlgebraGenerator
             // Listify it.
             op = new OpList(op) ;
         
-        // GROUP BY
-        if ( query.getGroupVars().size() > 0 )
+        // ---- GROUP BY
+        if ( query.hasGroupBy() )
         {
             // query.getGroupExprs().size() <  query.getGroupVars().size() ;
             // Wrong.
@@ -285,8 +286,15 @@ public class AlgebraGenerator
             op = new OpGroupAgg(op, query.getGroupVars(), query.getGroupExprs(), null) ;
         }
         
-        // HAVING
-        // query.getHavingExprs() ;
+        // ---- HAVING
+        if ( query.hasHaving() )
+        {
+            for ( Iterator iter = query.getHavingExprs().iterator() ; iter.hasNext() ; )
+            {
+                Expr expr = (Expr)iter.next() ;
+                op = OpFilter.filter(expr , op) ;    
+            }
+        }
         
         // ---- ORDER BY
         if ( query.getOrderBy() != null )
