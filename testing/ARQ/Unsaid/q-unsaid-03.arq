@@ -1,7 +1,0 @@
-PREFIX : <http://example.org/x#>
-
-# No solutions by definition.
-SELECT ?x 
-{ :a :b ?x .
-  UNSAID{ :a :b ?x }
-}
