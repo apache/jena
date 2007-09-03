@@ -285,7 +285,14 @@ public class AlgebraGenerator
             // 2 - No aggregates yet
             op = new OpGroupAgg(op, query.getGroupVars(), query.getGroupExprs(), query.getAggregators()) ;
         }
-        
+        else
+        {
+            if ( query.getAggregators().size() > 0 )
+                // No GroupBy but there are some aggregates.
+                // This is a group of no variables.
+                op = new OpGroupAgg(op, query.getGroupVars(), query.getGroupExprs(), query.getAggregators()) ;
+            // Fold into above when certainit works
+        }
         // ---- HAVING
         if ( query.hasHaving() )
         {

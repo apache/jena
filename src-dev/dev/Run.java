@@ -31,9 +31,9 @@ public class Run
 {
     public static void main(String[] argv)
     {
-        String []a = { "--file=Q.arq", "--out=arq", "--print=op", "--print=query" } ;
-        arq.qparse.main(a) ;
-        System.out.println();
+//        String []a = { "--file=Q.arq", "--out=arq", "--print=op", "--print=query" } ;
+//        arq.qparse.main(a) ;
+//        System.out.println();
         Query.enableGroupByImpl = true ;
         //runQParse()  ;
         

@@ -48,12 +48,7 @@ public class ARQTestRefEngine extends TestCase
     
     private static TestSuite suiteMaker()
     {
-        if ( false )
-            return QueryTestSuiteFactory.make("testing/ARQ/Algebra/manifest.ttl") ;
-        if ( false )
-            return QueryTestSuiteFactory.make("testing/ARQ/dataset/manifest.n3") ;
-        
-        return QueryTestSuiteFactory.make("testing/ARQ/manifest-engine2.ttl") ; // All tests for engine 2
+        return QueryTestSuiteFactory.make("testing/ARQ/manifest-arq.ttl") ; // All tests for engine 2
     }
     
 }

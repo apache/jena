@@ -25,7 +25,37 @@
         mf:result  <group-2.srx>
       ]
 
+      [  mf:name    "Count - 1 - No Group" ;
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <count-1.arq> ;
+              qt:data   <data-1.ttl> ] ;
+        mf:result  <count-1.srx>
+      ]
 
+      [  mf:name    "Count - 2 - No Group" ;
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <count-1.arq> ;
+              qt:data   <data-1.ttl> ] ;
+        mf:result  <count-1.srx>
+      ]
 
-        # Partial data
+      [  mf:name    "Count - 3" ;
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <count-1.arq> ;
+              qt:data   <data-1.ttl> ] ;
+        mf:result  <count-1.srx>
+      ]
+
+      [  mf:name    "Count - 4" ;
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <count-1.arq> ;
+              qt:data   <data-1.ttl> ] ;
+        mf:result  <count-1.srx>
+      ]
+
+        # Now with partial data
     ).

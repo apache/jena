@@ -12,11 +12,11 @@ import java.util.List;
 import java.util.Map;
 
 import com.hp.hpl.jena.graph.Node;
+
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.sparql.engine.binding.Binding0;
 import com.hp.hpl.jena.sparql.engine.binding.BindingKey;
 import com.hp.hpl.jena.sparql.engine.binding.BindingMap;
 import com.hp.hpl.jena.sparql.expr.E_Aggregator;
@@ -100,9 +100,7 @@ public class QueryIterGroup extends QueryIterPlainWrapper
     static private Binding copyProject(List vars, Binding binding)
     {
         // No group vars (implicit or explicit) => working on whole result set. 
-        if ( vars.size() == 0 )
-        { return new Binding0() ; }
-        
+        // Still need a BindingMap to assign to later.
         Binding x = new BindingMap() ;
         for ( Iterator iter = vars.listIterator() ; iter.hasNext() ; )
         {

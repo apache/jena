@@ -1,12 +1,12 @@
 PREFIX : <http://example/>
 PREFIX  dc:     <http://purl.org/dc/elements/1.1/>
 
-SELECT ?p ?q (count(*) AS ?count) # ?count # COUNT(?x)
+SELECT (count(*) AS ?count) # ?count # COUNT(?x)
 {
-    ?x :r ?r .
-    OPTIONAL { ?x :p ?p . }
-    OPTIONAL { ?x :q ?q . }
+    ?x a :X .
+##     OPTIONAL { ?x :p ?p . }
+##     OPTIONAL { ?x :q ?q . }
 }
-GROUP BY ?p ?q
-HAVING (count(*) > 1)
+# GROUP BY ?p ?q
+#HAVING (count(*) > 1)
 # ORDER BY ?q ?count
