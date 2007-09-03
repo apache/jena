@@ -14,7 +14,7 @@ import com.hp.hpl.jena.sparql.ARQInternalErrorException;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.binding.BindingKey;
 
-public abstract class AggregatorBaseX implements Aggregator
+public abstract class AggregatorBase implements Aggregator
 {
     private Map buckets = new HashMap() ;
 //    private Var var ;
