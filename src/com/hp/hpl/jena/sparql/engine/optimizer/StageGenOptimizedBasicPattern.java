@@ -5,8 +5,11 @@
 
 package com.hp.hpl.jena.sparql.engine.optimizer;
 
+import java.util.List;
+
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.mem.faster.GraphMemFaster;
+import com.hp.hpl.jena.sparql.ARQException;
 import com.hp.hpl.jena.sparql.core.BasicPattern;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.main.Stage;
@@ -59,7 +62,18 @@ public class StageGenOptimizedBasicPattern implements StageGenerator
 			// This is mainly for test cases (TestEnabled)
 			context.set(Constants.isEnabled, true) ;
 			BasicPatternOptimizer optimizer = new BasicPatternOptimizer(context, graph, pattern, config) ;
-			Stage basicStage = new StageBasic(optimizer.optimize()) ;
+			BasicPattern optimized = optimizer.optimize() ;
+			
+			/*
+			 * Check for consistency between the original and the optimized pattern.
+			 * The two patterns are consistent iff the optimized pattern contains every 
+			 * triple contained in the original pattern and the size of the two patterns
+			 * is equal.
+			 */
+			if (! isConsistent(pattern, optimized))
+				throw new ARQException("Optimizer returned an inconsistent pattern: " + pattern + " " + optimized) ;
+			
+			Stage basicStage = new StageBasic(optimized) ;
 			sList.add(basicStage) ;
         
 			return sList ;
@@ -68,6 +82,17 @@ public class StageGenOptimizedBasicPattern implements StageGenerator
 		context.set(Constants.isEnabled, false) ;
 		
 		return other.compile(pattern, execCxt) ;
+	}
+	
+	private boolean isConsistent(BasicPattern pattern, BasicPattern optimized)
+	{
+		List patternL = pattern.getList() ;
+		List optimizedL = optimized.getList() ;
+		
+		if (patternL.size() == optimizedL.size() && patternL.containsAll(optimizedL))
+			return true ;
+		
+		return false ;
 	}
 }
 
