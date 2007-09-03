@@ -89,7 +89,7 @@ public class StageGenOptimizedBasicPattern implements StageGenerator
 		List patternL = pattern.getList() ;
 		List optimizedL = optimized.getList() ;
 		
-		if (patternL.size() == optimizedL.size() && patternL.containsAll(optimizedL))
+		if (patternL.containsAll(optimizedL))
 			return true ;
 		
 		return false ;
