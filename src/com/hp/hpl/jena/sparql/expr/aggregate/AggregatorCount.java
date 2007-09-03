@@ -9,25 +9,25 @@ package com.hp.hpl.jena.sparql.expr.aggregate;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.expr.NodeValue;
 
-public class AggregatorCountX implements AggregateFactory
+public class AggregatorCount implements AggregateFactory
 {
-    private static AggregatorCountX singleton = new AggregatorCountX() ;
+    private static AggregatorCount singleton = new AggregatorCount() ;
     public static AggregateFactory get() { return singleton ; }
     
-    private AggregatorCountX() {} 
+    private AggregatorCount() {} 
     
     public Aggregator create()
     {
-        return new AggCountWorkerX() ;
+        return new AggCountWorker() ;
     }
     
     public String toString() { return "count(*)" ; }
 }
 
 
-class AggCountWorkerX extends AggregatorBase
+class AggCountWorker extends AggregatorBase
 {
-    public AggCountWorkerX()
+    public AggCountWorker()
     {
         super() ;
     }
