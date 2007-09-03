@@ -11,7 +11,7 @@ import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.binding.BindingKey;
 
 
-public interface AggregatorX
+public interface Aggregator
 {
     // Note: .equals 
 //    public Accumulator createAccumulator() ;
