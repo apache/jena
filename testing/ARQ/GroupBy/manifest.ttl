@@ -57,5 +57,13 @@
         mf:result  <count-1.srx>
       ]
 
+      [  mf:name    "Having - 1" ;
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <having-1.arq> ;
+              qt:data   <data-1.ttl> ] ;
+        mf:result  <having-1.srx>
+      ]
+
         # Now with partial data
     ).
