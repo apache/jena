@@ -106,8 +106,8 @@ public class FmtExprARQVisitor implements ExprVisitor
         }
         else
         {
-            out.print("?") ;
-            out.print(nv.getVarName()) ;
+            // Print in variable form or as an aggrgegtior
+            out.print(nv.toExprString()) ;
         }
     }
 

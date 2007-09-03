@@ -5,13 +5,12 @@
 
 package com.hp.hpl.jena.sparql.expr;
 
-import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.function.FunctionEnv;
-import com.hp.hpl.jena.sparql.util.ALog;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
 
 /** An expression that is a variable in an expression. */
@@ -29,9 +28,9 @@ public class ExprVar extends ExprNode
         varNode = Var.alloc(n) ;
     }
     
-    public ExprVar(Var n)
+    public ExprVar(Var v)
     { 
-        varNode = n ;
+        varNode = v ;
     }
     
     public NodeValue eval(Binding binding, FunctionEnv env)
@@ -48,15 +47,16 @@ public class ExprVar extends ExprNode
     public Expr copySubstitute(Binding binding, boolean foldConstants)
     {
         if ( binding == null || !binding.contains(varNode) )
-            return new ExprVar(varNode.getVarName()) ;
-            
-        try { return eval(binding, null) ; }
-        catch (VariableNotBoundException ex)
-        {
-            ALog.warn(this, "Failed to eval bound variable");
-            throw ex ;
-        }
+            return copy() ;
+        return eval(binding, null) ;
+//        catch (VariableNotBoundException ex)
+//        {
+//            ALog.warn(this, "Failed to eval bound variable (was bound earlier!)");
+//            throw ex ;
+//        }
     }
+    
+    public Expr copy()  { return new ExprVar(varNode) ; }
     
     public void visit(ExprVisitor visitor) { visitor.visit(this) ; }
     
@@ -85,10 +85,11 @@ public class ExprVar extends ExprNode
     public Var asVar()          { return varNode ; }
     public Node getAsNode()     { return varNode ; }
     
-    public String toString()
-    {
-        return "?"+varNode.getName() ;
-    }
+    public String toPrefixString()  { return varNode.toString() ; }
+    // As an expression (aggregators override this).
+    public String toExprString()    { return  varNode.toString() ; }
+
+    public String toString()        { return varNode.toString() ; }
 }
 
 /*

@@ -13,6 +13,7 @@ import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.OpVisitor;
 import com.hp.hpl.jena.sparql.algebra.Transform;
 import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
+import com.hp.hpl.jena.sparql.util.Utils;
 
 public class OpGroupAgg extends OpModifier
 {
@@ -40,15 +41,24 @@ public class OpGroupAgg extends OpModifier
     { return transform.transform(this, subOp) ; }
 
     public int hashCode()
-    { return getSubOp().hashCode() ^ groupVars.hashCode() ^ groupExprs.hashCode() ^ aggregators.hashCode() ; }
+    { 
+        int x = getSubOp().hashCode() ;
+        if ( groupVars != null ) 
+            x ^= groupVars.hashCode() ; 
+        if ( groupExprs != null ) 
+            x ^= groupExprs.hashCode() ; 
+        if ( aggregators != null ) 
+            x ^= aggregators.hashCode() ; 
+        return x ;
+    }
 
     public boolean equalTo(Op other, NodeIsomorphismMap labelMap)
     {
         if ( ! (other instanceof OpGroupAgg) ) return false ;
         OpGroupAgg opGroup = (OpGroupAgg)other ;
-        if ( ! groupVars.equals(opGroup.groupVars) ||
-             ! groupExprs.equals(opGroup.groupExprs) ||
-             ! aggregators.equals(opGroup.aggregators) )
+        if ( ! Utils.eq(groupVars, opGroup.groupVars) ||
+             ! Utils.eq(groupExprs, opGroup.groupExprs) ||
+             ! Utils.eq(aggregators, opGroup.aggregators) )
             return false ;
         return getSubOp().equalTo(opGroup.getSubOp(), labelMap) ;
     }

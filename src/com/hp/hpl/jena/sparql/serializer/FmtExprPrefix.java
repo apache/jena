@@ -88,8 +88,7 @@ public class FmtExprPrefix extends FmtExpr implements ExprVisitor
 
     public void visit(ExprVar nv)
     {
-        out.print("?") ;
-        out.print(nv.getVarName()) ;
+        out.print(nv.toPrefixString()) ;
     }
     
     public void finishVisit() { out.flush() ; }

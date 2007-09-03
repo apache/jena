@@ -16,6 +16,8 @@ import com.hp.hpl.jena.sparql.util.IndentedWriter;
 
 public class FmtExprARQ extends FmtExpr 
 {
+    // Rename as ExprWriter, move to expr.
+    
     FmtExprARQVisitor visitor ; 
 
     public FmtExprARQ(IndentedWriter writer, PrefixMapping pmap)

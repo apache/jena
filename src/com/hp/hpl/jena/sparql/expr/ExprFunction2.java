@@ -82,21 +82,6 @@ public abstract class ExprFunction2 extends ExprFunction
     }
 
     public abstract Expr copy(Expr arg1, Expr arg2) ;
-    
-    // Avoid reflection later
-    // Assumes a constructor of (Expr, Expr)
-//    final public Expr copy(Expr left, Expr right)
-//    {
-//        try
-//        {
-//            Constructor c = this.getClass().getConstructor(new Class[]{Expr.class, Expr.class}) ;
-//            Object obj = c.newInstance(new Object[]{left, right}) ;
-//            return (Expr)obj ; 
-//        } catch (Exception ex)
-//        {
-//            throw new ARQInternalErrorException("Failed to clone '"+this+"': "+ex.getMessage()) ;
-//        }
-//    }
 }
 
 /*

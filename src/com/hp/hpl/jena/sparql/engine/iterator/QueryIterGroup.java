@@ -6,19 +6,20 @@
 
 package com.hp.hpl.jena.sparql.engine.iterator;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 import com.hp.hpl.jena.graph.Node;
-
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
-import com.hp.hpl.jena.sparql.engine.aggregate.Aggregator;
-import com.hp.hpl.jena.sparql.engine.aggregate.AggregatorCount;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.binding.Binding0;
 import com.hp.hpl.jena.sparql.engine.binding.BindingKey;
 import com.hp.hpl.jena.sparql.engine.binding.BindingMap;
+import com.hp.hpl.jena.sparql.expr.E_Aggregator;
 
 public class QueryIterGroup extends QueryIterPlainWrapper
 {
@@ -40,17 +41,6 @@ public class QueryIterGroup extends QueryIterPlainWrapper
     
     private static Iterator calc(QueryIterator iter, List groupVars, List aggregators)
     {
-//        boolean debug = true ;
-        
-        // Fakery
-        if ( aggregators == null )
-        {
-            Var count = Var.alloc("count") ;
-            Aggregator agg = new AggregatorCount(count) ;
-            aggregators = new ArrayList() ;
-            aggregators.add(agg) ;
-        }
-        
         // Stage 1 : assign bindings to buckets by key and pump through the aggregrators.
         
         // Could also be a Set key=>binding because BindingKey has the necessary entry-like quality. 
@@ -61,12 +51,6 @@ public class QueryIterGroup extends QueryIterPlainWrapper
             Binding b = iter.nextBinding() ;
             BindingKey key = genKey(groupVars, b) ;
             
-//            if ( debug )
-//            {
-//                System.out.println("Binding: "+b) ;
-//                System.out.println("Key    : "+key.getKey()) ;
-//            }
-
             // Assumes key binding has value based .equals/.hashCode. 
             if ( ! buckets.containsKey(key) )
                 buckets.put(key, key.getBinding()) ;
@@ -76,8 +60,8 @@ public class QueryIterGroup extends QueryIterPlainWrapper
             {
                 for ( Iterator aggIter = aggregators.iterator() ; aggIter.hasNext() ; )
                 {
-                    Aggregator agg = (Aggregator)aggIter.next();
-                    agg.accumulate(key, b) ;
+                    E_Aggregator agg = (E_Aggregator)aggIter.next();
+                    agg.getAggregator().accumulate(key, b) ;
                 }
             }
         }
@@ -94,9 +78,9 @@ public class QueryIterGroup extends QueryIterPlainWrapper
                 Binding binding = (Binding)buckets.get(key) ; // == key.getBinding() ;
                 for ( Iterator aggIter = aggregators.iterator() ; aggIter.hasNext() ; )
                 {
-                    Aggregator agg = (Aggregator)aggIter.next();
-                    Var v = agg.getVariable() ;
-                    Node value =  agg.getValue(key) ;
+                    E_Aggregator agg = (E_Aggregator)aggIter.next();
+                    Var v = agg.asVar() ;
+                    Node value =  agg.getAggregator().getValue(key) ;
                     // Extend with the aggregations.
                     binding.add(v, value) ;
                 }

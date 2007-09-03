@@ -98,8 +98,9 @@ public class qparse extends CmdARQ
             QueryExecution qExec = QueryExecutionFactory.create(query, DatasetFactory.create()) ;
 
             // Check the query.
+            
             try {
-                QueryUtils.checkParse(query) ;
+                QueryUtils.checkQuery(query) ;
             } catch (QueryCheckException ex)
             {
                 System.err.println() ;

@@ -31,8 +31,12 @@ import com.hp.hpl.jena.query.* ;
 import com.hp.hpl.jena.sparql.syntax.* ;
 import com.hp.hpl.jena.sparql.expr.* ;
 
+
+
+
 public class SPARQLParser extends SPARQLParserBase
 {
+    boolean allowAggregatesInExpressions = false ;
 }
 PARSER_END(SPARQLParser)
 
@@ -69,13 +73,14 @@ void PrefixDecl() : { Token t ; String iri ; }
 
 // ---- Query type clauses
 
-void SelectQuery() : { Node v ; }
+void SelectQuery() : { Node v ; Expr expr ; }
 {
   <SELECT>
     { getQuery().setQuerySelectType() ; }
   ( <DISTINCT> { getQuery().setDistinct(true);}
   | <REDUCED> { getQuery().setReduced(true); }
   )?
+  { allowAggregatesInExpressions = true ; }
   (
     (
       ( v = Var() { getQuery().addResultVar(v) ; } )
@@ -84,7 +89,7 @@ void SelectQuery() : { Node v ; }
   |
     <STAR> { getQuery().setQueryResultStar(true) ; }
   )
-
+  { allowAggregatesInExpressions = false ; }
   ( DatasetClause() )*
   WhereClause()
   SolutionModifier()
@@ -625,6 +630,9 @@ Expr PrimaryExpression() : { Expr expr ; Node gn ; }
   | gn = NumericLiteral() { return asExpr(gn) ; }
   | gn = BooleanLiteral() { return asExpr(gn) ; }
   | gn = Var() { return asExpr(gn) ; }
+
+
+
   )
 }
 

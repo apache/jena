@@ -11,7 +11,11 @@ import com.hp.hpl.jena.query.* ;
 import com.hp.hpl.jena.sparql.syntax.* ;
 import com.hp.hpl.jena.sparql.expr.* ;
 
+
+
+
 public class SPARQLParser extends SPARQLParserBase implements SPARQLParserConstants {
+    boolean allowAggregatesInExpressions = false ;
 
   final public void CompilationUnit() throws ParseException {
     Query();
@@ -81,7 +85,7 @@ public class SPARQLParser extends SPARQLParserBase implements SPARQLParserConsta
 
 // ---- Query type clauses
   final public void SelectQuery() throws ParseException {
-                       Node v ;
+                       Node v ; Expr expr ;
     jj_consume_token(SELECT);
       getQuery().setQuerySelectType() ;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -106,6 +110,7 @@ public class SPARQLParser extends SPARQLParserBase implements SPARQLParserConsta
       jj_la1[4] = jj_gen;
       ;
     }
+    allowAggregatesInExpressions = true ;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case VAR1:
     case VAR2:
@@ -134,6 +139,7 @@ public class SPARQLParser extends SPARQLParserBase implements SPARQLParserConsta
       jj_consume_token(-1);
       throw new ParseException();
     }
+    allowAggregatesInExpressions = false ;
     label_3:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {

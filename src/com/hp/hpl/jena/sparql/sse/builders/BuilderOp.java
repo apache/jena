@@ -277,12 +277,28 @@ public class BuilderOp
 
     final protected Build buildGroupBy = new Build()
     {
+        // See buildProject
         public Op make(ItemList list)
         {
-            BuilderBase.checkLength(3, list,  "Group") ;
+            BuilderBase.checkLength(3, 4, list,  "Group") ;
             List x = buildExpr(list.get(1).getList()) ;
-            Op sub = build(list, 2) ;
-            Op op = new OpOrder(sub, x) ;
+            Map exprs = null ;
+            List aggregators = new ArrayList() ;
+            if ( list.size() == 4)
+            {
+                System.err.println("Skip Group aggregators") ;
+                if ( false )
+                {
+                    BuilderBase.checkList(list.get(2),
+                                          "Expressions for project not a list") ;
+                    ItemList pairs = list.get(2).getList() ;
+                    exprs = namedExpressions(pairs) ;
+                    aggregators.addAll(exprs.values()) ;
+                }
+            }
+            
+            Op sub = build(list, list.size()-1) ;
+            Op op = new OpGroupAgg(sub, x, exprs, aggregators) ;
             return op ;
         }
     } ;
@@ -342,26 +358,32 @@ public class BuilderOp
             List x = BuilderNode.buildVars(list.get(1).getList(), 0) ;
             // List of pairs.
             Map exprs = null ;
-            if( list.size() == 4)
+            if ( list.size() == 4)
             {
-                exprs = new HashMap() ;
                 BuilderBase.checkList(list.get(2),
                                       "Expressions for project not a list") ;
                 ItemList pairs = list.get(2).getList() ;
-                for ( Iterator iter = pairs.iterator() ; iter.hasNext() ; )
-                {
-                    Item pair = (Item)iter.next() ;
-                    if ( !pair.isList() || pair.getList().size() != 2 )
-                        BuilderBase.broken(pair, "Not a var/expression pair") ;
-                    Var var = BuilderNode.buildVar(pair.getList().get(0)) ;
-                    Expr expr = BuilderExpr.buildExpr(pair.getList().get(1)) ;
-                    exprs.put(var, expr) ;
-                }
+                exprs = namedExpressions(pairs) ;
             }
             return new OpProject(sub, x, exprs) ;
         }
     } ;
 
+    Map namedExpressions(ItemList pairs)
+    {
+        Map exprs = new HashMap() ;
+        for ( Iterator iter = pairs.iterator() ; iter.hasNext() ; )
+        {
+            Item pair = (Item)iter.next() ;
+            if ( !pair.isList() || pair.getList().size() != 2 )
+                BuilderBase.broken(pair, "Not a var/expression pair") ;
+            Var var = BuilderNode.buildVar(pair.getList().get(0)) ;
+            Expr expr = BuilderExpr.buildExpr(pair.getList().get(1)) ;
+            exprs.put(var, expr) ;
+        }
+        return exprs ;
+    }
+    
     final protected Build buildDistinct = new Build()
     {
         public Op make(ItemList list)

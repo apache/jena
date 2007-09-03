@@ -10,6 +10,7 @@ package com.hp.hpl.jena.sparql.lang.arq ;
 
 
 
+
 public class ARQParserTokenManager implements ARQParserConstants
 {
   public  java.io.PrintStream debugStream = System.out;

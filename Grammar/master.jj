@@ -55,9 +55,13 @@ import com.hp.hpl.jena.graph.* ;
 import com.hp.hpl.jena.query.* ;
 import com.hp.hpl.jena.sparql.syntax.* ;
 import com.hp.hpl.jena.sparql.expr.* ;
+#ifdef ARQ
+import com.hp.hpl.jena.sparql.expr.aggregate.* ;
+#endif
 
 public class CLASS extends PARSERBASE
 {
+    boolean allowAggregatesInExpressions = false ;
 }
 PARSER_END(CLASS)
 
@@ -94,22 +98,27 @@ void PrefixDecl() : { Token t ; String iri ; }
 
 // ---- Query type clauses
 
-void SelectQuery() : { Node v ; }
+void SelectQuery() : {  Node v ; Expr expr ; }
 {  
   <SELECT>
     { getQuery().setQuerySelectType() ; }
   ( <DISTINCT> { getQuery().setDistinct(true);} 
   | <REDUCED>  { getQuery().setReduced(true); }
   )? 
+  { allowAggregatesInExpressions = true ; }
   (
     ( 
       ( v = Var() { getQuery().addResultVar(v) ; } )
 #ifdef ARQ
-    // Syntax: ( expr [AS ?v])
+    | 
+      expr = AggExpression() 
+      { getQuery().addResultVar((Node)null, expr) ; }
+    // Syntax: ( expr [AS ?var] )
     |
-      ( { Expr expr ; v = null ; }
+      (
+        { v = null ; }
         <LPAREN>
-          expr = Expression()      
+          expr = Expression() 
           ( <AS>  v = Var() )?
         <RPAREN>
         { getQuery().addResultVar(v, expr) ; }
@@ -120,7 +129,7 @@ void SelectQuery() : { Node v ; }
   |
     <STAR> { getQuery().setQueryResultStar(true) ; }
   )
-
+  { allowAggregatesInExpressions = false ; }
   ( DatasetClause() )*
   WhereClause()
   SolutionModifier()
@@ -228,7 +237,9 @@ void GroupCondition() : { Node v = null ; Expr expr = null ; }
 
 void HavingClause() : { }
 {
+    { allowAggregatesInExpressions = true ; }
     <HAVING> (HavingCondition())+
+    { allowAggregatesInExpressions = false ; }
 }
 
 void HavingCondition() : { Expr c ; }
@@ -725,6 +736,9 @@ Expr PrimaryExpression() : { Expr expr ; Node gn ; }
   | gn = NumericLiteral()  { return asExpr(gn) ; }
   | gn = BooleanLiteral()  { return asExpr(gn) ; }
   | gn = Var()             { return asExpr(gn) ; }
+#ifdef ARQ
+  | expr = AggExpression() { return expr ; }
+#endif
   )
 }
 
@@ -784,20 +798,46 @@ Expr RegexExpression() :
       { return new E_Regex(expr, patExpr, flagsExpr) ; }
 }
 
-#if ARQ
-void Aggregate() : { Expr expr ;  ExprList args ; }
+#ifdef ARQ
+Expr AggExpression() : { Expr expr ; AggregateFactory aggFactory ; }
 {
-  (  <AGG> <LPAREN> IRIref()
-     { args = new ExprList() ; }
-     (<COMMA> expr = Expression() { args.add(expr) ; } )*
-     <RPAREN>
-  |  <COUNT> <LPAREN> (<DISTINCT>)? (<STAR>| Var()) <RPAREN>
-  |  <MIN>  BrackettedExpression()
-  |  <MAX>  BrackettedExpression()
-  |  <SUM>  BrackettedExpression()
-  |  <AVG>  BrackettedExpression()
-  |  <STDDEV> BrackettedExpression()
-  )
+    aggFactory = Aggregate()
+    { expr = getQuery().allocAggregate(aggFactory) ;
+      return expr ; }
+}
+
+AggregateFactory Aggregate() : { Expr expr ;  Aggregator agg ; ExprList args ; 
+                                 boolean distinct = false ; Node v ; Token t ; }
+{
+    // Basic implementation.
+    t = <COUNT> <LPAREN> <STAR> <RPAREN> 
+    { 
+      if ( ! allowAggregatesInExpressions )
+        throwParseException("Aggregates expression not legal at this point", t.beginLine, t.beginColumn) ;
+      return AggregatorCount.get() ; 
+    }
+
+//     <COUNT> <LPAREN> 
+//     ( <DISTINCT>   { distinct = true ; } )?
+//     ( <STAR>       { agg = new AggregatorCount(distinct
+//     | v = Var()    { }
+//     )
+//     { expr = query.allocAggregate(agg) ; }
+//     <RPAREN>
+
+
+// #if 0
+//   ( <AGG> <LPAREN> IRIref()
+//     { args = new ExprList() ; }
+//     (<COMMA> expr = Expression() { args.add(expr) ; } )*
+//     <RPAREN>
+//   |  <MIN>  BrackettedExpression()
+//   |  <MAX>  BrackettedExpression()
+//   |  <SUM>  BrackettedExpression()
+//   |  <AVG>  BrackettedExpression()
+//   |  <STDDEV> BrackettedExpression()
+// #endif
+//   )
 }
 #endif
 

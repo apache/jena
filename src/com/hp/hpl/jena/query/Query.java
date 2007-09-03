@@ -6,10 +6,15 @@
 package com.hp.hpl.jena.query;
 
 import java.io.OutputStream;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import com.hp.hpl.jena.graph.Node;
-
 import com.hp.hpl.jena.sparql.ARQConstants;
 import com.hp.hpl.jena.sparql.ARQNotImplemented;
 import com.hp.hpl.jena.sparql.core.Prologue;
@@ -17,8 +22,10 @@ import com.hp.hpl.jena.sparql.core.QueryCompare;
 import com.hp.hpl.jena.sparql.core.QueryHashCode;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.core.VarAlloc;
+import com.hp.hpl.jena.sparql.expr.E_Aggregator;
 import com.hp.hpl.jena.sparql.expr.Expr;
 import com.hp.hpl.jena.sparql.expr.ExprVar;
+import com.hp.hpl.jena.sparql.expr.aggregate.AggregateFactory;
 import com.hp.hpl.jena.sparql.serializer.Serializer;
 import com.hp.hpl.jena.sparql.syntax.Element;
 import com.hp.hpl.jena.sparql.syntax.Template;
@@ -460,6 +467,29 @@ public class Query extends Prologue implements Cloneable
         havingExprs.add(expr) ;
     }
 
+    // ---- Aggregates
+
+    // Record allocated aggregations.
+    // Later: The same aggregation expression used in a query 
+    // will always lead to the same aggregator.
+    // For now, allocate a fresh one each time (cause the calcutation
+    // to be done multiple times but (1) it's unusual to have repeated 
+    // aggregators normally and (2) the actual calculation is cheap. 
+        
+    // Unlike SELECT expressions, here the expression itself (E_Aggregator knows its a variable)
+    // Commoniality?
+    
+    private List aggregators = new ArrayList() ;            // List of factories.
+    public List getAggregators() { return aggregators ; }
+    
+    public E_Aggregator allocAggregate(AggregateFactory agg)
+    {
+        Var v = allocInternVar() ;
+        E_Aggregator expr = new E_Aggregator(v, agg.create()) ;
+        aggregators.add(expr) ;
+        return expr ;
+    }
+    
     // ---- DESCRIBE
     
     public void addDescribeNode(Node node)

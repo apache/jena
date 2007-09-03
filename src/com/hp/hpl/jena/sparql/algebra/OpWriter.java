@@ -24,6 +24,7 @@ import com.hp.hpl.jena.sparql.core.VarAlloc;
 import com.hp.hpl.jena.sparql.engine.Plan;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
+import com.hp.hpl.jena.sparql.expr.E_Aggregator;
 import com.hp.hpl.jena.sparql.expr.Expr;
 import com.hp.hpl.jena.sparql.expr.ExprList;
 import com.hp.hpl.jena.sparql.serializer.FmtExprPrefix;
@@ -357,7 +358,30 @@ public class OpWriter
                     out.print(")") ;
                 }
             }
-            out.println(")");
+            out.print(")");
+            if ( opGroup.getAggregators() != null && opGroup.getAggregators().size() > 0 )
+            {
+                out.print(" (") ;
+                out.incIndent() ;
+                first = true ;
+                for ( Iterator iter = opGroup.getAggregators().iterator() ; iter.hasNext() ; )
+                {
+                    if ( ! first )
+                        out.print(" ") ;
+                    first = false ;
+                    E_Aggregator agg = (E_Aggregator)iter.next();
+                    Var v = agg.asVar() ;
+                    String str = agg.getAggregator().toPrefixString() ;
+                    out.print("(") ;
+                    out.print(v.toString()) ;
+                    out.print(" ") ;
+                    out.print(str) ;
+                    out.print(")") ;
+                }
+                out.print(")") ;
+                out.decIndent() ;
+            }
+            out.println() ;
             printOp(opGroup.getSubOp()) ;
             finish(opGroup) ;
         }
@@ -415,12 +439,13 @@ public class OpWriter
                     return ((Var)thing).toString() ;
                 }} ;
             PrintUtils.printList(out, opProject.getVars(), " ", fmt) ;
-            out.println(")");
-            
+            out.print(")");
+
+            // There is a common pattern here with group. 
             if ( opProject.getExprs() != null )
             {
                 // List of pairs - var name and expression
-                out.print("(") ;
+                out.print(" (") ;
                 boolean first = true ;
                 for ( Iterator iter = opProject.getExprs().keySet().iterator() ; iter.hasNext() ; )
                 {
@@ -430,14 +455,15 @@ public class OpWriter
                     out.print("(") ;
                     Var v = (Var)iter.next() ;
                     Expr expr = (Expr)opProject.getExprs().get(v) ;
-                    out.print("?"+v.getVarName()) ;
+                    out.print(v.toString()) ;
                     out.print(" ") ;
                     ExprUtils.fmtPrefix(out, expr, sContext.getPrefixMapping()) ;
                     out.print(")") ;
                 }
-                out.println(")") ;
+                out.print(")") ;
             }
             
+            out.println();
             printOp(opProject.getSubOp()) ;
             finish(opProject) ;
         }

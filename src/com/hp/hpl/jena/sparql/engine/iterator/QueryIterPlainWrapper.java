@@ -55,7 +55,6 @@ public class QueryIterPlainWrapper extends QueryIter
     
     public void output(IndentedWriter out, SerializationContext sCxt)
     { out.print(Utils.className(this)) ; }
-
 }
 
 /*

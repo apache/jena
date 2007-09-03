@@ -283,7 +283,7 @@ public class AlgebraGenerator
             // Wrong.
             // 1 - need to pass in expressions for grouping, not vars.
             // 2 - No aggregates yet
-            op = new OpGroupAgg(op, query.getGroupVars(), query.getGroupExprs(), null) ;
+            op = new OpGroupAgg(op, query.getGroupVars(), query.getGroupExprs(), query.getAggregators()) ;
         }
         
         // ---- HAVING
