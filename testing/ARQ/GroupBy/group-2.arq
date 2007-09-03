@@ -1,0 +1,11 @@
+PREFIX : <http://example/>
+PREFIX rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+
+SELECT ?p ?q
+{
+    ?x rdf:type :X .
+    ?x :p ?p .
+    ?x :q ?q .
+    ?x :n ?n .
+}
+GROUP BY ?p ?q

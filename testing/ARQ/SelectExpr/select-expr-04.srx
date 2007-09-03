@@ -8,6 +8,15 @@
   </head>
   <results>
     <result>
+    </result>
+    <result>
+      <binding name="byte">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#byte">2</literal>
+      </binding>
+    </result>
+    <result>
+    </result>
+    <result>
       <binding name="byte">
         <literal datatype="http://www.w3.org/2001/XMLSchema#byte">5</literal>
       </binding>

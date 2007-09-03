@@ -22,7 +22,6 @@ import com.hp.hpl.jena.sparql.expr.Expr;
 import com.hp.hpl.jena.sparql.expr.ExprEvalException;
 import com.hp.hpl.jena.sparql.function.FunctionEnv;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext;
-import com.hp.hpl.jena.sparql.util.ALog;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
 import com.hp.hpl.jena.sparql.util.PrintUtils;
 import com.hp.hpl.jena.sparql.util.Utils;
@@ -115,7 +114,8 @@ public class QueryIterProject extends QueryIterConvert
                     Node n = expr.eval(b, funcEnv).asNode() ;
                     b.add(v, n) ;
                 } catch (ExprEvalException ex)
-                { ALog.warn(this, "Eval failure "+expr+": "+ex.getMessage()) ; }
+                //{ ALog.warn(this, "Eval failure "+expr+": "+ex.getMessage()) ; }
+                { }
             }
             return new BindingProject(projectionVars, b) ;
         }

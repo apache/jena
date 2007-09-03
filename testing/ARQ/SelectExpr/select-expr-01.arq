@@ -1,3 +1,8 @@
 PREFIX : <http://example/> 
 
-SELECT ?v (?v+10) { ?x :p ?v }
+SELECT ?v (?v+10) 
+{
+  ?x a :X .
+  OPTIONAL { ?x :p ?v }
+}
+
