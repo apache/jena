@@ -387,13 +387,31 @@ public abstract class NodeValue extends ExprNode
             new ARQInternalErrorException("Attempt to sameValueAs on a null") ;
         
         int compType = classifyValueOp(nv1, nv2) ;
+        
+        // XXX Why is this different from compare?
+        
+        // Special case - date/dateTime comparison is affected by timezones and may be
+        // interdeterminate based on the value of the dateTime/date.
+
         switch (compType)
         {
-            case VSPACE_NUM:        return XSDFuncOp.compareNumeric(nv1, nv2) == 0 ;
-            case VSPACE_DATETIME:   return XSDFuncOp.compareDateTime(nv1, nv2) == 0 ;
-            case VSPACE_DATE:       return XSDFuncOp.compareDate(nv1, nv2) == 0 ;
-            case VSPACE_STRING:     return XSDFuncOp.compareString(nv1, nv2) == 0 ;
-            case VSPACE_BOOLEAN:    return XSDFuncOp.compareBoolean(nv1, nv2) == 0 ;
+            case VSPACE_NUM:        return XSDFuncOp.compareNumeric(nv1, nv2) == Expr.CMP_EQUAL ;
+            case VSPACE_DATETIME:   
+            {
+                int x = XSDFuncOp.compareDateTime(nv1, nv2) ; 
+                if ( x == Expr.CMP_INDETERMINATE )
+                    throw new ExprNotComparableException("Indeterminate dateTime comparison") ;
+                return  x == Expr.CMP_EQUAL ;
+            }
+            case VSPACE_DATE:
+            {
+                int x = XSDFuncOp.compareDate(nv1, nv2) ; 
+                if ( x == Expr.CMP_INDETERMINATE )
+                    throw new ExprNotComparableException("Indeterminate date comparison") ;
+                return  x == Expr.CMP_EQUAL ;
+            }
+            case VSPACE_STRING:     return XSDFuncOp.compareString(nv1, nv2) == Expr.CMP_EQUAL ;
+            case VSPACE_BOOLEAN:    return XSDFuncOp.compareBoolean(nv1, nv2) == Expr.CMP_EQUAL ;
             
             case VSPACE_LANG:
             {

@@ -31,9 +31,10 @@ public class Run
 {
     public static void main(String[] argv)
     {
-//        String []a = { "--file=Q.arq", "--out=arq", "--print=op", "--print=query" } ;
-//        arq.qparse.main(a) ;
-//        System.out.println();
+        expr("'2006-08-23'^^xsd:date != '2006-08-23+02:00'^^xsd:date") ;
+        expr("'2006-08-23'^^xsd:date = '2006-08-23+02:00'^^xsd:date") ;
+        System.exit(0) ;
+        System.out.println();
         Query.enableGroupByImpl = true ;
         //runQParse()  ;
         
@@ -41,6 +42,13 @@ public class Run
         execQuery(DIR+"D.ttl", DIR+"Q.arq") ;
     }
     
+    
+    public static void expr(String expr)
+    {
+        String []a = new String[]{expr} ;
+        System.out.println("Eval: "+expr) ;
+        arq.qexpr.execAndReturn(a) ;
+    }
     
     public static void code()
     {

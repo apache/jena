@@ -55,6 +55,20 @@ public class qexpr
         }
         
     }
+    
+    public static void execAndReturn(String [] argv)
+    {
+        try {
+            main2(argv) ;
+        }
+        catch (TerminationException ex) { return ; }
+        catch (CmdException ex)
+        {
+            System.err.println(ex.getMessage()) ;
+            if ( ex.getCause() != null )
+                ex.getCause().printStackTrace(System.err) ;
+        }
+    }
         
     public static void main2(String [] argv)
     {

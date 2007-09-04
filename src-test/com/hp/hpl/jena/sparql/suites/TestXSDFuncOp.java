@@ -439,7 +439,7 @@ public class TestXSDFuncOp extends TestCase
     }
     
 
-    public void testSame1()
+    public void testSameUnknown_1()
     {
         NodeValue nv1 = NodeValue.makeNode(Node.createURI("test:abc")) ; 
         NodeValue nv2 = NodeValue.makeNode(Node.createURI("test:abc")) ;
@@ -454,7 +454,7 @@ public class TestXSDFuncOp extends TestCase
             
     }
     
-    public void testSame2()
+    public void testSameUnknown_2()
     {
         NodeValue nv1 = NodeValue.makeNode(Node.createAnon()) ; 
         NodeValue nv2 = NodeValue.makeNode(Node.createURI("test:abc")) ;
@@ -468,6 +468,105 @@ public class TestXSDFuncOp extends TestCase
         { /* expected */}
     }
 
+    // ---- sameValueAs -- xsd:dateTime
+
+    // SameValue and compare of date and dateTimes
+    // Timezone tricknesses - if one has a TZ and the other has not, then a difference of 14 hours
+    // is needed for a comparison.  
+
+    public void testSameDateTime_1()
+    {
+        NodeValue nv1 = NodeValue.makeDateTime("2007-09-04T09:22:03") ;
+        NodeValue nv2 = NodeValue.makeDateTime("2007-09-04T09:22:03") ;
+        
+        assertTrue(NodeValue.sameAs(nv1, nv2)) ;
+        assertFalse(NodeValue.notSameAs(nv1, nv2)) ;
+    }
+    
+    public void testSameDateTime_2()
+    {
+        NodeValue nv1 = NodeValue.makeDateTime("2007-09-04T09:22:03") ;
+        NodeValue nv2 = NodeValue.makeDateTime("2007-09-04T19:00:00") ;
+        
+        assertFalse(NodeValue.sameAs(nv1, nv2)) ;
+        assertTrue(NodeValue.notSameAs(nv1, nv2)) ;
+    }
+
+    
+    public void testSameDateTime_3()
+    {
+        // These are the same.
+        NodeValue nv1 = NodeValue.makeDateTime("2007-09-04T10:22:03+01:00") ;
+        NodeValue nv2 = NodeValue.makeDateTime("2007-09-04T09:22:03Z") ;
+        
+        assertTrue(NodeValue.sameAs(nv1, nv2)) ;
+        assertFalse(NodeValue.notSameAs(nv1, nv2)) ;
+    }
+    
+    public void testSameDateTime_4()
+    {
+        // These are not the same.
+        NodeValue nv1 = NodeValue.makeDateTime("2007-09-04T10:22:03+01:00") ;
+        NodeValue nv2 = NodeValue.makeDateTime("2007-09-04T10:22:03Z") ;
+        
+        assertFalse(NodeValue.sameAs(nv1, nv2)) ;
+        assertTrue(NodeValue.notSameAs(nv1, nv2)) ;
+    }
+
+    public void testSameDateTime_5()
+    {
+        NodeValue nv1 = NodeValue.makeDateTime("2007-09-04T10:22:03+01:00") ;
+        NodeValue nv2 = NodeValue.makeDateTime("2007-09-04T09:22:03") ;     // No timezone
+        
+        try { 
+            NodeValue.sameAs(nv1, nv2) ;
+            fail("Should not sameValueAs (but did) "+nv1+" & "+nv2) ;
+        } catch (ExprEvalException ex) {}
+        
+        try { 
+            NodeValue.notSameAs(nv1, nv2) ;
+            fail("Should not notSameValueAs (but did) "+nv1+" & "+nv2) ;
+        } catch (ExprEvalException ex) {}
+    }
+    
+    // ---- sameValueAs -- xsd:date
+    
+    public void testSameDate_1()
+    {
+        NodeValue nv1 = NodeValue.makeDate("2007-09-04") ;
+        NodeValue nv2 = NodeValue.makeDate("2007-09-04") ;
+        
+        assertTrue(NodeValue.sameAs(nv1, nv2)) ;
+        assertFalse(NodeValue.notSameAs(nv1, nv2)) ;
+    }
+    
+    public void testSameDate_2()
+    {
+        NodeValue nv1 = NodeValue.makeDate("2007-09-04Z") ;
+        NodeValue nv2 = NodeValue.makeDate("2007-09-04+00:00") ;
+        
+        assertTrue(NodeValue.sameAs(nv1, nv2)) ;
+        assertFalse(NodeValue.notSameAs(nv1, nv2)) ;
+    }
+    
+    
+    public void testSameDate_3()
+    {
+        NodeValue nv1 = NodeValue.makeDate("2007-09-04Z") ;
+        NodeValue nv2 = NodeValue.makeDate("2007-09-04") ;     // No timezone
+        
+        try { 
+            NodeValue.sameAs(nv1, nv2) ;
+            fail("Should not sameValueAs (but did) "+nv1+" & "+nv2) ;
+        } catch (ExprEvalException ex) {}
+        
+        try { 
+            NodeValue.notSameAs(nv1, nv2) ;
+            fail("Should not notSameValueAs (but did) "+nv1+" & "+nv2) ;
+        } catch (ExprEvalException ex) {}
+    }
+    
+    
     // General comparisons for sorting.
     
     // bnodes < URIs < literals

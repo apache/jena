@@ -26,22 +26,6 @@
     </result>
     <result>
       <binding name="x">
-        <uri>http://example/d3</uri>
-      </binding>
-      <binding name="v">
-        <literal datatype="http://www.w3.org/2001/XMLSchema#date">2006-08-23+00:00</literal>
-      </binding>
-    </result>
-    <result>
-      <binding name="x">
-        <uri>http://example/d2</uri>
-      </binding>
-      <binding name="v">
-        <literal datatype="http://www.w3.org/2001/XMLSchema#date">2006-08-23Z</literal>
-      </binding>
-    </result>
-    <result>
-      <binding name="x">
         <uri>http://example/dt1</uri>
       </binding>
       <binding name="v">
