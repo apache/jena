@@ -476,14 +476,18 @@ public class Query extends Prologue implements Cloneable
     // to be done multiple times but (1) it's unusual to have repeated 
     // aggregators normally and (2) the actual calculation is cheap. 
         
-    // Unlike SELECT expressions, here the expression itself (E_Aggregator knows its a variable)
-    // Commoniality?
+    // Unlike SELECT expressions, here the expression itself (E_Aggregator) knows its variable
+    // Commonality?
     
-    private List aggregators = new ArrayList() ;            // List of factories.
+    private List aggregators = new ArrayList() ;            // List of E_Aggregator
     public List getAggregators() { return aggregators ; }
     
     public E_Aggregator allocAggregate(AggregateFactory agg)
     {
+        // XXX ToDo make sure the same aggregator is occurs once (e.g. count(*) used twice
+        // maybe once in having, maybe twice in SELECT.
+        // Multiple E_Aggregator, same  agg.create()
+        // ?? Query-wide AggregateFactory=>Aggregator
         Var v = allocInternVar() ;
         E_Aggregator expr = new E_Aggregator(v, agg.create()) ;
         aggregators.add(expr) ;

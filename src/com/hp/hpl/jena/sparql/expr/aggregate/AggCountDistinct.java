@@ -6,19 +6,46 @@
 
 package com.hp.hpl.jena.sparql.expr.aggregate;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.expr.NodeValue;
 
-/** An Accumulator is the processor for each section of a group, so
- *  there is one Accumulator for each group key.
- * @author Andy Seaborne
- * @version $Id$
- */
-
-public interface Accumulator
+public class AggCountDistinct implements AggregateFactory
 {
-    public void accumulate(Binding binding) ;
-    public NodeValue getValue() ;
+    private static AggCountDistinct singleton = new AggCountDistinct() ;
+    public static AggregateFactory get() { return singleton ; }
+
+    private AggCountDistinct() {} 
+
+    public Aggregator create()
+    {
+        return new AggCountDistinctWorker() ;
+    }
+
+    static class AggCountDistinctWorker extends AggregatorBase
+    {
+        public AggCountDistinctWorker() { super() ; }
+
+        public String toString()        { return "count(distinct *)" ; }
+        public String toPrefixString()  { return "(count distinct)" ; }
+
+        protected Accumulator createAccumulator()
+        { 
+            return new AccCountDistinct() ; 
+        }
+    }
+
+    // ---- COUNT(DISTINCT *)
+    static class AccCountDistinct implements Accumulator
+    {
+        private Set rows = new HashSet() ;
+        public AccCountDistinct()               { } 
+        // The group key part of binding will be the same for all elements of the group.
+        public void accumulate(Binding binding) { rows.add(binding) ; }
+        public NodeValue getValue()             { return NodeValue.makeInteger(rows.size()) ; }
+    }
 }
 
 /*

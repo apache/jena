@@ -14,14 +14,16 @@ import com.hp.hpl.jena.sparql.ARQInternalErrorException;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.binding.BindingKey;
 
+/** Splits bindings by their keys and manages one accumulator per key
+ * 
+ * @author Andy Seaborne
+ * @version $Id$
+ */
+
 public abstract class AggregatorBase implements Aggregator
 {
-    private Map buckets = new HashMap() ;
-//    private Var var ;
-//
-//    public AggregatorBase(Var var)
-//    { this.var = var ; }
-    
+    private Map buckets = new HashMap() ;   // Bindingkey => Accumulator
+
     final
     public void accumulate(BindingKey key, Binding binding)
     {
@@ -34,21 +36,15 @@ public abstract class AggregatorBase implements Aggregator
         acc.accumulate(binding) ;
     }
 
-    public abstract int hashCode() ;
-    public abstract boolean equals(Object other) ;
-    
     protected abstract Accumulator createAccumulator() ;
 
     public Node getValue(BindingKey key)
     {
         Accumulator acc = (Accumulator)buckets.get(key) ;
         if ( acc == null )
-            throw new ARQInternalErrorException("Null for accumuator") ;
+            throw new ARQInternalErrorException("Null for accumulator") ;
         return acc.getValue().asNode() ;
     }
-
-//    public Var getVariable()
-//    { return var ; }
 }
 
 /*

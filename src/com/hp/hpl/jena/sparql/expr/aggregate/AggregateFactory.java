@@ -6,6 +6,11 @@
 
 package com.hp.hpl.jena.sparql.expr.aggregate;
 
+
+//-- AggregatorFactory : global factory for Aggregators
+//-- Aggregator - per query (strictly, one per SELECT level)
+//-- Accumulator - per group section processors (from AggregatorBase)
+
 public interface AggregateFactory
 {
     public Aggregator create() ; 

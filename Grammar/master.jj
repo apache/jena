@@ -806,25 +806,25 @@ Expr AggExpression() : { Expr expr ; AggregateFactory aggFactory ; }
       return expr ; }
 }
 
-AggregateFactory Aggregate() : { Expr expr ;  Aggregator agg ; ExprList args ; 
-                                 boolean distinct = false ; Node v ; Token t ; }
+AggregateFactory Aggregate() : { AggregateFactory agg ;
+                                 boolean distinct = false ;
+                                 Node v ; Token t ; }
 {
     // Basic implementation.
-    t = <COUNT> <LPAREN> <STAR> <RPAREN> 
+    t = <COUNT> <LPAREN> 
     { 
-      if ( ! allowAggregatesInExpressions )
-        throwParseException("Aggregates expression not legal at this point", t.beginLine, t.beginColumn) ;
-      return AggregatorCount.get() ; 
+          if ( ! allowAggregatesInExpressions )
+            throwParseException("Aggregates expression not legal at this point",
+                               t.beginLine, t.beginColumn) ;
     }
 
-//     <COUNT> <LPAREN> 
-//     ( <DISTINCT>   { distinct = true ; } )?
-//     ( <STAR>       { agg = new AggregatorCount(distinct
-//     | v = Var()    { }
-//     )
-//     { expr = query.allocAggregate(agg) ; }
-//     <RPAREN>
-
+    ( <STAR> 
+        { agg = AggCount.get() ; }
+    | <DISTINCT> <STAR> 
+        { agg = AggCountDistinct.get() ; }
+    )
+    <RPAREN>
+    { return agg ; }
 
 // #if 0
 //   ( <AGG> <LPAREN> IRIref()

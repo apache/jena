@@ -18,6 +18,7 @@ See ToDoSSE
     Only complete data test done. Need partial versions.
   Query cosistency tests.
     Need to test consistency of variables used at algebra compile time.
+  SELECT * GROUP BY => GROUP BY vars
 
 + Remove com.hp.hpl.jena.sparql.function.library.trace
   And any documentation

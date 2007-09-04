@@ -6,82 +6,49 @@
 
 package com.hp.hpl.jena.sparql.expr.aggregate;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.expr.NodeValue;
 
-public class AggregatorCount implements AggregateFactory
+public class AggCount implements AggregateFactory
 {
-    private static AggregatorCount singleton = new AggregatorCount() ;
+    // ---- AggregatorFactory
+    private static AggCount singleton = new AggCount() ;
     public static AggregateFactory get() { return singleton ; }
-    
-    private AggregatorCount() {} 
-    
+
+    private AggCount() {} 
+
     public Aggregator create()
     {
+        // One per each time there is an aggregation.
+        // For count(*) - one per group operator (so shared with having clause)
         return new AggCountWorker() ;
     }
     
-    public String toString() { return "count(*)" ; }
-}
-
-// There must be one too many level of indirection and class here.
-// -- AggregatorCount global factory for engines.
-// -- AggCountWorker per query (strictly SELECT level) factory/engine.
-// -- AccCount worker - one per group element.
-// ==> all needed in some form.
-
-class AggCountWorker extends AggregatorBase
-{
-    static boolean distinct = false ;
-    
-    public AggCountWorker()
+    // ---- Aggregator
+    static class AggCountWorker extends AggregatorBase
     {
-        super() ;
-    }
+        public AggCountWorker()
+        {
+            super() ;
+        }
 
-    public int hashCode() { return "(count *)".hashCode() ; }
-    public boolean equals(Object other)
-    {
-        return other instanceof AggCountWorker ;
-    }
-    
-    
-    public String toString() { return "count(*)" ; }
-    public String toPrefixString() { return "(count *)" ; }
-    
-    protected Accumulator createAccumulator()
-    { 
-        if ( distinct )
-            return new AccCountDistinct() ; 
-        else
+        public String toString() { return "count(*)" ; }
+        public String toPrefixString() { return "(count)" ; }
+
+        protected Accumulator createAccumulator()
+        { 
             return new AccCount() ;
+        }
     }
-    
-    // ---- COUNT(*)
-    public static class AccCount implements Accumulator
+
+    // ---- Accumulator
+    static class AccCount implements Accumulator
     {
         private long count = 0 ;
         public AccCount()   { }
         public void accumulate(Binding binding) { count++ ; }
         public NodeValue getValue()             { return NodeValue.makeInteger(count) ; }
     }
-    
-    // ---- COUNT(DISTINCT *)
-    public static class AccCountDistinct implements Accumulator
-    {
-        private Set rows = new HashSet() ;
-        public AccCountDistinct()               { } 
-        // The group key part of binding will be the same for all elements of the group.
-        public void accumulate(Binding binding) { rows.add(binding) ; }
-        public NodeValue getValue()             { return NodeValue.makeInteger(rows.size()) ; }
-    }
-
-    // ---- COUNT(?var)
-    // ---- COUNT( DISTINCT ?var)
-
 }
 
 /*

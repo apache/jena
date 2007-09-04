@@ -4,7 +4,7 @@
 # Complete data in :p and :q
 # :p: 2,2,4,5,5
 # :q: "a" and "b"
-# :n: Sue for multiplicity
+# :n: Use for multiplicity
 # All :r different
 # All have type :X
 
