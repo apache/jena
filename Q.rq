@@ -1,18 +1,10 @@
 ## PREFIX :    <http://example/>
 ## PREFIX apf: <http://jena.hpl.hp.com/ARQ/property#>
-## PREFIX  list:   <http://jena.hpl.hp.com/ARQ/list#>
+## PREFIX list:   <http://jena.hpl.hp.com/ARQ/list#>
 ## 
-## SELECT ?x ?x
-## {
-##     ?x :p "abc"@de-de .
-## ##     FILTER (?x)
-## ##     FILTER (?x+?y)
-## }
-## ORDER BY desc(?x) asc(?x+?y)
-## LIMIT 3
 
-SELECT  *
-WHERE
-  { <file:///C:/home/afs/Projects/ARQ/testing/ARQ/Serialization/x>
-              <file:///C:/home/afs/Projects/ARQ/testing/ARQ/Serialization/p>  "	" .
-  }
+SELECT *
+{
+  ?s ?p ?o .
+  ?s ?p ?o 
+}
