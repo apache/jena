@@ -31,12 +31,12 @@ public class Run
 {
     public static void main(String[] argv)
     {
-        expr("'2006-08-23'^^xsd:date != '2006-08-23+02:00'^^xsd:date") ;
-        expr("'2006-08-23'^^xsd:date = '2006-08-23+02:00'^^xsd:date") ;
-        System.exit(0) ;
-        System.out.println();
+//        expr("'2006-08-23'^^xsd:date != '2006-08-23+02:00'^^xsd:date") ;
+//        expr("'2006-08-23'^^xsd:date = '2006-08-23+02:00'^^xsd:date") ;
+//        System.exit(0) ;
+//        System.out.println();
         Query.enableGroupByImpl = true ;
-        //runQParse()  ;
+        //runQParseARQ()  ;
         
         String DIR = "" ;
         execQuery(DIR+"D.ttl", DIR+"Q.arq") ;

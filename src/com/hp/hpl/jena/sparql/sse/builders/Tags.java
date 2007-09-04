@@ -49,6 +49,46 @@ public class Tags
     static public final String tagDistinct      = "distinct" ;
     static public final String tagReduced       = "reduced" ;
     static public final String tagSlice         = "slice" ;
+    
+    // Expressions
+    // sym => swiggly thing, tag => word-ish thing
+    
+    static public final String tagExpr          = "expr" ;
+    static public final String tagExprList      = "exprlist" ;
+
+    static public final String symEQ            = "=" ;
+    static public final String symNE            = "!=" ;
+    static public final String symGT            = ">" ;
+    static public final String symLT            = "<" ;
+    static public final String symLE            = "<=" ;
+    static public final String symGE            = ">=" ;
+    static public final String symOr            = "||" ;
+    static public final String tagOr            = "or" ;
+    static public final String symAnd           = "&&" ;
+    static public final String tagAnd           = "and" ;
+    static public final String symPlus          = "+" ;
+    static public final String symMinus         = "-" ;
+    static public final String symMult          = "*" ;
+    static public final String symDiv           = "/" ;
+    static public final String symNot           = "!" ;
+    static public final String tagNot           = "not" ;
+    static public final String tagStr           = "str" ;
+    static public final String tagLang          = "lang" ;
+    static public final String tagLangMatches   = "langmatches" ;
+    static public final String tagSameTerm      = "sameterm" ;
+    static public final String tagDatatype      = "datatype" ;
+    static public final String tagBound         = "bound" ;
+    static public final String tagIRI           = "isIRI" ;
+    static public final String tagURI           = "isURI" ;
+    static public final String tagIsBlank       = "isBlank" ;
+    static public final String tagIsLiteral     = "isLiteral" ;
+    static public final String tagRegex         = "regex" ;
+
+    static public final String tagTrue          = "true" ;
+    static public final String tagFalse         = "false" ;
+    
+    static public final String tagCount         = "count" ;
+
 }
 
 /*

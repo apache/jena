@@ -286,15 +286,12 @@ public class BuilderOp
             List aggregators = new ArrayList() ;
             if ( list.size() == 4)
             {
-                System.err.println("Skip Group aggregators") ;
-                if ( false )
-                {
-                    BuilderBase.checkList(list.get(2),
+                BuilderBase.checkList(list.get(2),
                                           "Expressions for project not a list") ;
-                    ItemList pairs = list.get(2).getList() ;
-                    exprs = namedExpressions(pairs) ;
-                    aggregators.addAll(exprs.values()) ;
-                }
+                ItemList pairs = list.get(2).getList() ;
+                exprs = namedExpressions(pairs) ;
+                // Check all aggregators
+                aggregators.addAll(exprs.values()) ;
             }
             
             Op sub = build(list, list.size()-1) ;

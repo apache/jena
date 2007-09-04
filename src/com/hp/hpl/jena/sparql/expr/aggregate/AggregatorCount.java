@@ -6,6 +6,9 @@
 
 package com.hp.hpl.jena.sparql.expr.aggregate;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.expr.NodeValue;
 
@@ -24,9 +27,16 @@ public class AggregatorCount implements AggregateFactory
     public String toString() { return "count(*)" ; }
 }
 
+// There must be one too many level of indirection and class here.
+// -- AggregatorCount global factory for engines.
+// -- AggCountWorker per query (strictly SELECT level) factory/engine.
+// -- AccCount worker - one per group element.
+// ==> all needed in some form.
 
 class AggCountWorker extends AggregatorBase
 {
+    static boolean distinct = false ;
+    
     public AggCountWorker()
     {
         super() ;
@@ -43,24 +53,35 @@ class AggCountWorker extends AggregatorBase
     public String toPrefixString() { return "(count *)" ; }
     
     protected Accumulator createAccumulator()
-    { return new AccCount() ; }
+    { 
+        if ( distinct )
+            return new AccCountDistinct() ; 
+        else
+            return new AccCount() ;
+    }
     
+    // ---- COUNT(*)
     public static class AccCount implements Accumulator
     {
-        long count = 0 ;
-        // Count rows in group indistinctly
-        // For distinct, feed with a distinct iterator 
-        public AccCount() 
-        { }
-        
-        public void accumulate(Binding binding)
-        { count++ ; }
-        
-        public NodeValue getValue()
-        {
-            return NodeValue.makeInteger(count) ;
-        }
+        private long count = 0 ;
+        public AccCount()   { }
+        public void accumulate(Binding binding) { count++ ; }
+        public NodeValue getValue()             { return NodeValue.makeInteger(count) ; }
     }
+    
+    // ---- COUNT(DISTINCT *)
+    public static class AccCountDistinct implements Accumulator
+    {
+        private Set rows = new HashSet() ;
+        public AccCountDistinct()               { } 
+        // The group key part of binding will be the same for all elements of the group.
+        public void accumulate(Binding binding) { rows.add(binding) ; }
+        public NodeValue getValue()             { return NodeValue.makeInteger(rows.size()) ; }
+    }
+
+    // ---- COUNT(?var)
+    // ---- COUNT( DISTINCT ?var)
+
 }
 
 /*

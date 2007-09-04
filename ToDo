@@ -11,8 +11,13 @@ See ToDoSSE
 -----
 + insert op write/read test into serialization tests
 + (project ...) and (order ...) are inconsistent
-  
 
++ GROUP BY
+    COUNT(*) done, not COUNT distinct or count(var) or count distinct var
+  GROUP BY tests
+    Only complete data test done. Need partial versions.
+  Query cosistency tests.
+    Need to test consistency of variables used at algebra compile time.
 
 + Remove com.hp.hpl.jena.sparql.function.library.trace
   And any documentation

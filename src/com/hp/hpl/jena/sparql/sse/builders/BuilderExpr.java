@@ -10,25 +10,19 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.expr.*;
 import com.hp.hpl.jena.sparql.sse.Item;
 import com.hp.hpl.jena.sparql.sse.ItemList;
-import com.hp.hpl.jena.sparql.sse.builders.BuilderBase;
-import com.hp.hpl.jena.sparql.sse.builders.BuilderExpr;
 
 public class BuilderExpr
 {
-    final static String symExpr         = "expr" ;
-    final static String symExprList     = "exprlist" ;
-
     // Build an expr list when they may also be a singe expression. 
     public static ExprList buildExprOrExprList(Item item)
     {
-        if ( item.isTagged(symExprList) )
+        if ( item.isTagged(Tags.tagExprList) )
             return buildExprList(item) ;
         Expr expr = buildExpr(item) ; 
         ExprList exprList = new ExprList(expr) ;
@@ -37,8 +31,8 @@ public class BuilderExpr
 
     public static ExprList buildExprList(Item item)
     {
-        if ( ! item.isTagged(symExprList) )
-            BuilderBase.broken(item, "Not tagged exprlist") ;
+        if ( ! item.isTagged(Tags.tagExprList) )
+            BuilderBase.broken(item, "Not Tags.tagged exprlist") ;
         ItemList list = item.getList() ;
         list = list.cdr();
         ExprList exprList = new ExprList() ;
@@ -78,7 +72,7 @@ public class BuilderExpr
                 BuilderBase.broken(item, "Head is a list") ;
             else if ( head.isSymbol() )
             {
-                if ( item.isTagged(symExpr) )
+                if ( item.isTagged(Tags.tagExpr) )
                 {
                     BuilderBase.checkLength(2, list, "Wrong length: "+item.shortString()) ;
                     item = list.get(1) ;
@@ -97,9 +91,9 @@ public class BuilderExpr
             return NodeValue.makeNode(item.getNode()) ;
         }
     
-        if ( item.isSymbolIgnoreCase(symTrue) )
+        if ( item.isSymbolIgnoreCase(Tags.tagTrue) )
             return NodeValue.TRUE ;
-        if ( item.isSymbolIgnoreCase(symFalse) )
+        if ( item.isSymbolIgnoreCase(Tags.tagFalse) )
             return NodeValue.FALSE ;
         
         BuilderBase.broken(item, "Not a list or a node or recognized symbol: "+item) ;
@@ -108,66 +102,37 @@ public class BuilderExpr
 
     public BuilderExpr()
     {
-        dispatch.put(symRegex, buildRegex) ;
-        dispatch.put(symEQ, buildEQ) ;
-        dispatch.put(symNE, buildNE) ;
-        dispatch.put(symGT, buildGT) ;
-        dispatch.put(symLT, buildLT) ;
-        dispatch.put(symLE, buildLE) ;
-        dispatch.put(symGE, buildGE) ;
-        dispatch.put(symOrSym, buildOrSym) ;
-        dispatch.put(symOr, buildOr) ;
-        dispatch.put(symAndSym, buildAndSym) ;
-        dispatch.put(symAnd, buildAnd) ;
-        dispatch.put(symPlus, buildPlus) ;
-        dispatch.put(symMinus, buildMinus) ;
-        dispatch.put(symMult, buildMult) ;
-        dispatch.put(symDiv, buildDiv) ;
-        dispatch.put(symNot, buildNot) ;
-        dispatch.put(symNotSym, buildNotSym) ;
-        dispatch.put(symStr, buildStr) ;
-        dispatch.put(symLang, buildLang) ;
-        dispatch.put(symLangMatches, buildLangMatches) ;
-        dispatch.put(symSameTerm, buildSameTerm) ;
-        dispatch.put(symDatatype, buildDatatype) ;
-        dispatch.put(symBound, buildBound) ;
-        dispatch.put(symIRI, buildIRI) ;
-        dispatch.put(symURI, buildURI) ;
-        dispatch.put(symIsBlank, buildIsBlank) ;
-        dispatch.put(symIsLiteral, buildIsLiteral) ;
+        dispatch.put(Tags.tagRegex, buildRegex) ;
+        dispatch.put(Tags.symEQ, buildEQ) ;
+        dispatch.put(Tags.symNE, buildNE) ;
+        dispatch.put(Tags.symGT, buildGT) ;
+        dispatch.put(Tags.symLT, buildLT) ;
+        dispatch.put(Tags.symLE, buildLE) ;
+        dispatch.put(Tags.symGE, buildGE) ;
+        dispatch.put(Tags.symOr, buildOr) ;     // Same builders for (or ..) and (|| ..)
+        dispatch.put(Tags.tagOr, buildOr) ;
+        dispatch.put(Tags.symAnd, buildAnd) ;   // Same builders for (and ..) and (&& ..)
+        dispatch.put(Tags.tagAnd, buildAnd) ;
+        dispatch.put(Tags.symPlus, buildPlus) ;
+        dispatch.put(Tags.symMinus, buildMinus) ;
+        dispatch.put(Tags.symMult, buildMult) ;
+        dispatch.put(Tags.symDiv, buildDiv) ;
+        dispatch.put(Tags.tagNot, buildNot) ;   // Same builders for (not ..) and (! ..)
+        dispatch.put(Tags.symNot, buildNot) ;
+        dispatch.put(Tags.tagStr, buildStr) ;
+        dispatch.put(Tags.tagLang, buildLang) ;
+        dispatch.put(Tags.tagLangMatches, buildLangMatches) ;
+        dispatch.put(Tags.tagSameTerm, buildSameTerm) ;
+        dispatch.put(Tags.tagDatatype, buildDatatype) ;
+        dispatch.put(Tags.tagBound, buildBound) ;
+        dispatch.put(Tags.tagIRI, buildIRI) ;
+        dispatch.put(Tags.tagURI, buildURI) ;
+        dispatch.put(Tags.tagIsBlank, buildIsBlank) ;
+        dispatch.put(Tags.tagIsLiteral, buildIsLiteral) ;
+        dispatch.put(Tags.tagCount, buildCount) ;
     }
 
     // See exprbuilder.rb
-    final static String symEQ = "=" ;
-    final static String symNE = "!=" ;
-    final static String symGT = ">" ;
-    final static String symLT = "<" ;
-    final static String symLE = "<=" ;
-    final static String symGE = ">=" ;
-    final static String symOr = "||" ;
-    final static String symOrSym = "or" ;
-    final static String symAnd = "&&" ;
-    final static String symAndSym = "and" ;
-    final static String symPlus = "+" ;
-    final static String symMinus = "-" ;
-    final static String symMult = "*" ;
-    final static String symDiv = "/" ;
-    final static String symNot = "!" ;
-    final static String symNotSym = "!" ;
-    final static String symStr = "str" ;
-    final static String symLang = "lang" ;
-    final static String symLangMatches = "langmatches" ;
-    final static String symSameTerm = "sameterm" ;
-    final static String symDatatype = "datatype" ;
-    final static String symBound = "bound" ;
-    final static String symIRI = "isIRI" ;
-    final static String symURI = "isURI" ;
-    final static String symIsBlank = "isBlank" ;
-    final static String symIsLiteral = "isLiteral" ;
-    final static String symRegex = "regex" ;
-    
-    final static String symTrue = "true" ;
-    final static String symFalse = "false" ;
 
     static public interface Build { Expr make(ItemList list) ; }
     
@@ -223,6 +188,7 @@ public class BuilderExpr
     }
 
     // ---- Dispatch objects
+    // Can assume the tag is right (i.e. dispatched correctly) 
     // Specials
     
     final protected Build buildRegex = new Build()
@@ -274,8 +240,6 @@ public class BuilderExpr
             return new E_Subtract(left, right) ;
         }
     };
-
-
     
     final protected Build buildEQ = new Build()
     {
@@ -343,17 +307,6 @@ public class BuilderExpr
         }
     };
 
-    final protected Build buildOrSym = new Build()
-    {
-        public Expr make(ItemList list)
-        {
-            BuilderBase.checkLength(3, list, "or: wanted 2 arguments: got :"+list.size()) ;
-            Expr left = buildExpr(list.get(1)) ;
-            Expr right = buildExpr(list.get(2)) ;
-            return new E_LogicalOr(left, right) ;
-        }
-    };
-
     final protected Build buildOr = new Build()
     {
         public Expr make(ItemList list)
@@ -362,17 +315,6 @@ public class BuilderExpr
             Expr left = buildExpr(list.get(1)) ;
             Expr right = buildExpr(list.get(2)) ;
             return new E_LogicalOr(left, right) ;
-        }
-    };
-
-    final protected Build buildAndSym = new Build()
-    {
-        public Expr make(ItemList list)
-        {
-            BuilderBase.checkLength(3, list, "and: wanted 2 arguments: got :"+list.size()) ;
-            Expr left = buildExpr(list.get(1)) ;
-            Expr right = buildExpr(list.get(2)) ;
-            return new E_LogicalAnd(left, right) ;
         }
     };
 
@@ -414,16 +356,6 @@ public class BuilderExpr
         public Expr make(ItemList list)
         {
             BuilderBase.checkLength(2, list, "!: wanted 1 arguments: got :"+list.size()) ;
-            Expr ex = buildExpr(list.get(1)) ;
-            return new E_LogicalNot(ex) ;
-        }
-    };
-
-    final protected Build buildNotSym = new Build()
-    {
-        public Expr make(ItemList list)
-        {
-            BuilderBase.checkLength(2, list, "not: wanted 1 arguments: got :"+list.size()) ;
             Expr ex = buildExpr(list.get(1)) ;
             return new E_LogicalNot(ex) ;
         }
@@ -528,6 +460,26 @@ public class BuilderExpr
             BuilderBase.checkLength(2, list, "isLiteral: wanted 1 arguments: got :"+list.size()) ;
             Expr ex = buildExpr(list.get(1)) ;
             return new E_IsLiteral(ex) ;
+        }
+    };
+    
+    // ---- Aggregate functions
+    // (count)
+    // (count distinct)
+    // (count ?var)
+    // (count distinct ?var)
+    
+    final protected Build buildCount = new Build()
+    {
+        public Expr make(ItemList list)
+        {
+            BuilderBase.msg(list, "Not implemented: "+list.shortString()) ;
+            return  NodeValue.FALSE ;
+            //System.err.println("(count ...) not implemnted  throw new ARQNotImplemented() ;
+            
+//            BuilderBase.checkLength(2, list, "isLiteral: wanted 1 arguments: got :"+list.size()) ;
+//            Expr ex = buildExpr(list.get(1)) ;
+//            return new E_IsLiteral(ex) ;
         }
     };
 }

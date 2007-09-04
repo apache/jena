@@ -110,7 +110,6 @@ public class BuilderBase
         exception(msg) ;
     }
     
-    
     public static void exception(String msg)
     {
         throw new ExprBuildException(msg) ;
