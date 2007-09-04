@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: XSDDateTime.java,v 1.23 2007-04-04 15:58:45 der Exp $
+ * $Id: XSDDateTime.java,v 1.24 2007-09-04 16:33:57 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.datatypes.xsd;
 
@@ -20,7 +20,7 @@ import com.hp.hpl.jena.datatypes.xsd.impl.XSDAbstractDateTimeType;
  * checks whether a given field is legal in the current circumstances.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.23 $ on $Date: 2007-04-04 15:58:45 $
+ * @version $Revision: 1.24 $ on $Date: 2007-09-04 16:33:57 $
  */
 public class XSDDateTime extends AbstractDateTime {
     /** Mask to indicate whether year is present */
@@ -258,6 +258,10 @@ public class XSDDateTime extends AbstractDateTime {
             buff.append("T");
             buff.append(timeLexicalForm());
         }
+
+        if ( data[utc] != 0 )
+            buff.append("Z");
+
         return buff.toString();
     }
     
@@ -266,22 +270,21 @@ public class XSDDateTime extends AbstractDateTime {
      */
     public String timeLexicalForm() {
         StringBuffer buff = new StringBuffer();
-            if(data[h]<10) buff.append("0");
-            buff.append(data[h]);
-            
-            buff.append(":");
-            if(data[m]<10) buff.append("0");
-            buff.append(data[m]);
-            
-            buff.append(":");
-            if(data[s]<10) buff.append("0");
-            buff.append(data[s]);
-             
-            if (data[ms] != 0) {
-                buff.append(".");
-                XSDAbstractDateTimeType.appendFractionalTime(buff, data[ms], data[msscale]);
-            }
-            buff.append("Z");
+        if(data[h]<10) buff.append("0");
+        buff.append(data[h]);
+
+        buff.append(":");
+        if(data[m]<10) buff.append("0");
+        buff.append(data[m]);
+
+        buff.append(":");
+        if(data[s]<10) buff.append("0");
+        buff.append(data[s]);
+
+        if (data[ms] != 0) {
+            buff.append(".");
+            XSDAbstractDateTimeType.appendFractionalTime(buff, data[ms], data[msscale]);
+        }
         return buff.toString();
     }
     
