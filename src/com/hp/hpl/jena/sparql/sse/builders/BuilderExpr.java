@@ -53,6 +53,34 @@ public class BuilderExpr
         return bob.buildItem(item) ;
     }
 
+    public static NamedExprList buildNamedExprList(ItemList list)
+    {
+        NamedExprList x = new NamedExprList() ;
+
+        for ( Iterator iter = list.iterator() ; iter.hasNext() ; )
+        {
+            Item item = (Item)iter.next() ;
+            if ( item.isNode() )
+            {
+                Var v = BuilderNode.buildVar(item) ;
+                x.add(v) ;
+                continue ;
+            }
+            
+            if ( !item.isList() || item.getList().size() != 2 )
+                    BuilderBase.broken(item, "Not a var or var/expression pair") ;
+            
+            
+            Var var = BuilderNode.buildVar(item.getList().get(0)) ;
+            Expr expr = BuilderExpr.buildExpr(item.getList().get(1)) ;
+            // XXX HACK
+            if ( expr instanceof E_Aggregator )
+                ((E_Aggregator)expr).setVar(var) ;
+            x.add(var, expr) ;
+            }
+        return x ;
+    }
+    
     protected Map dispatch = new HashMap() ;
     public Expr buildItem(Item item)
     {

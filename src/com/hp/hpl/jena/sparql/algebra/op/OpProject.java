@@ -12,25 +12,23 @@ import java.util.Map;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.OpVisitor;
 import com.hp.hpl.jena.sparql.algebra.Transform;
-import com.hp.hpl.jena.sparql.core.Var;
+import com.hp.hpl.jena.sparql.expr.NamedExprList;
 import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
+import com.hp.hpl.jena.sparql.util.Utils;
 
 public class OpProject extends OpModifier
 {
-    private List vars ;
+    private NamedExprList project ;
     private Map exprs ;
 
-    public OpProject(Op subOp, List vars, Map exprs)
+    public OpProject(Op subOp, NamedExprList project)
     {
         super(subOp) ;
-        Var.checkVarList(vars) ;
-        //this.vars = Var.varList(vars) ;
-        this.vars = vars ;
-        this.exprs = exprs ;
+        this.project = project ;
     }
     
-    public List getVars() { return vars ; }
-    public Map  getExprs() { return exprs ; }
+    public List getVars() { return project.getVars() ; }
+    public NamedExprList getProject() { return project ; }
     
     public Op copy()
     {
@@ -39,21 +37,21 @@ public class OpProject extends OpModifier
 
     public String getName() { return "project" ; }
     public void visit(OpVisitor opVisitor)  { opVisitor.visit(this) ; }
-    public Op copy(Op subOp)                { return new OpProject(subOp, vars, exprs) ; }
+    public Op copy(Op subOp)                { return new OpProject(subOp, project) ; }
 
     public Op apply(Transform transform, Op subOp)
     { return transform.transform(this, subOp) ; }
 
     public int hashCode()
     {
-        return vars.hashCode() ^ getSubOp().hashCode() ;
+        return project.hashCode() ^ getSubOp().hashCode() ;
     }
 
     public boolean equalTo(Op other, NodeIsomorphismMap labelMap)
     {
         if ( ! (other instanceof OpProject) ) return false ;
         OpProject opProject = (OpProject)other ;
-        if ( ! vars.equals(opProject.vars) )
+        if ( ! Utils.eq(project, opProject.project ) )
             return false ;
         return getSubOp().equalTo(opProject.getSubOp(), labelMap) ;
     }

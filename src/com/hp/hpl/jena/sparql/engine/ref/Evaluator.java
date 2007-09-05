@@ -7,12 +7,12 @@
 package com.hp.hpl.jena.sparql.engine.ref;
 
 import java.util.List;
-import java.util.Map;
 
 import com.hp.hpl.jena.sparql.algebra.Table;
 import com.hp.hpl.jena.sparql.core.BasicPattern;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.expr.ExprList;
+import com.hp.hpl.jena.sparql.expr.NamedExprList;
 
 public interface Evaluator
 {
@@ -30,8 +30,8 @@ public interface Evaluator
     public Table list(Table table) ;
     
     public Table order(Table table, List conditions) ;
-    public Table groupBy(Table table, List groupVars, Map groupExprs, List aggregators) ;
-    public Table project(Table table, List vars, Map exprs) ; 
+    public Table groupBy(Table table, NamedExprList groupVars, List aggregators) ;
+    public Table project(Table table, NamedExprList project) ; 
     public Table distinct(Table table) ;
     public Table reduced(Table table) ;
     public Table slice(Table table, long start, long length) ;

@@ -24,6 +24,7 @@ import com.hp.hpl.jena.sparql.core.VarAlloc;
 import com.hp.hpl.jena.sparql.expr.E_Aggregator;
 import com.hp.hpl.jena.sparql.expr.Expr;
 import com.hp.hpl.jena.sparql.expr.ExprVar;
+import com.hp.hpl.jena.sparql.expr.NamedExprList;
 import com.hp.hpl.jena.sparql.expr.aggregate.AggregateFactory;
 import com.hp.hpl.jena.sparql.expr.aggregate.Aggregator;
 import com.hp.hpl.jena.sparql.serializer.Serializer;
@@ -89,11 +90,6 @@ public class Query extends Prologue implements Cloneable
     // SELECT * / CONSTRUCT * or DESCRIBE * seen
     protected boolean queryResultStar        = false ;
     
-    // SELECT
-    protected Map resultExprs                = new HashMap() ;     // Type: Var -> Expr
-    // The names of variables wanted by the caller
-    // Variable names.
-    protected List resultVars                = new ArrayList() ;     // Type in list: String name
     protected boolean distinct               = false ;
     protected boolean reduced                = false ;
     
@@ -311,24 +307,25 @@ public class Query extends Prologue implements Cloneable
     
     // ---- SELECT
 
+    protected NamedExprList projectVars = new NamedExprList() ;
+//    protected Map resultExprs = new HashMap() ;
+//    protected List resultVars = new ArrayList() ;
+
     /** Return a list of the variables requested (SELECT) */
     public List getResultVars()
     { 
         // Ensure "SELECT *" processed
         setResultVars() ;
-        return resultVars ;
+        return Var.varNames(projectVars.getVars()) ;
     }
     
-    /** Return a map of the variables to additional expressions */
-    public Map getResultExprs()
-    { 
-        // Ensure "SELECT *" processed
-        setResultVars() ;
-        return resultExprs ;
+    public NamedExprList getProject()
+    {
+        return projectVars ;
     }
-
+    
     /** Add a collection of projection variables to a SELECT query */
-    public void addResultVars(Collection vars)
+    public void addProjectVars(Collection vars)
     {
         for ( Iterator iter = vars.iterator() ; iter.hasNext() ; )
         {
@@ -366,8 +363,7 @@ public class Query extends Prologue implements Cloneable
     // Add raw name.
     private void _addResultVar(String varName)
     {
-        if ( !resultVars.contains(varName) )
-            resultVars.add(varName);
+        projectVars.add(Var.alloc(varName)) ;
         resultVarsSet = true ;
     }
     
@@ -407,39 +403,30 @@ public class Query extends Prologue implements Cloneable
 
     private void _addResultVar(Var var, Expr expr)
     {
-        resultExprs.put(var, expr) ;
-        // This means you can write SELECT *, add an expression
-        // programmatically and only see that expression
-        // (can reset queryResultStar via API)
-        _addResultVar(var.getVarName()) ;
-        queryResultStar = false ;   
+        projectVars.add(var, expr) ;
     }
     
     // GROUP/HAVING
     
-    protected List groupVars = new ArrayList() ;    // Var
-    protected Map groupExprs = new HashMap() ;      // Var -> Expr
+    protected NamedExprList groupVars = new NamedExprList() ;
     protected List havingExprs = new ArrayList() ;  // Expressions : Make an ExprList?
     
-    public boolean hasGroupBy()     { return groupVars != null && groupVars.size() > 0 ; }
+    public boolean hasGroupBy()     { return ! groupVars.isEmpty() ; }
     public boolean hasHaving()      { return havingExprs != null && havingExprs.size() > 0 ; }
     
-    public List getGroupVars()      { return groupVars ; }
-    
-    public Map getGroupExprs()      { return groupExprs ; }
+    public NamedExprList getGroupBy()      { return groupVars ; }
     
     public List getHavingExprs()    { return havingExprs ; }
     
     public void addGroupBy(String varName)
     {
         varName = Var.canonical(varName) ;
-        Var v = Var.alloc(varName) ;
-        addGroupBy(v) ;
+        groupVars.add(Var.alloc(varName)) ;
     }
 
     public void addGroupBy(Node v)
     {
-        groupVars.add(v) ;
+        groupVars.add(Var.alloc(v)) ;
     }
 
     public void addGroupBy(Expr expr)
@@ -447,13 +434,12 @@ public class Query extends Prologue implements Cloneable
         if ( expr.isVariable() )
         {
             // It was (?x) - keep the name by adding by variable.
-            addGroupBy(expr.getVarName()) ;
+            addGroupBy(expr.asVar()) ;
             return ;
         }
         
         Var v = allocInternVar() ;
-        groupVars.add(v) ;
-        groupExprs.put(v, expr) ;
+        groupVars.add(v, expr) ;
     }
 
     public void addHavingCondition(Expr expr)

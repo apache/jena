@@ -20,17 +20,17 @@ import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.binding.BindingKey;
 import com.hp.hpl.jena.sparql.engine.binding.BindingMap;
 import com.hp.hpl.jena.sparql.expr.E_Aggregator;
+import com.hp.hpl.jena.sparql.expr.NamedExprList;
 
 public class QueryIterGroup extends QueryIterPlainWrapper
 {
     public QueryIterGroup(QueryIterator qIter, 
-                          List groupVars,
-                          Map groupExprs,
+                          NamedExprList groupVars,
                           List aggregators,
                           ExecutionContext execCxt)
     {
         super(null, execCxt) ;
-        Iterator iter = calc(qIter, groupVars, aggregators) ;
+        Iterator iter = calc(qIter, groupVars, aggregators, execCxt) ;
         setIterator(iter) ;
     }
 
@@ -39,7 +39,9 @@ public class QueryIterGroup extends QueryIterPlainWrapper
     
     // Phase 2 : Go over the group bindings and assign the value of each aggregation.
     
-    private static Iterator calc(QueryIterator iter, List groupVars, List aggregators)
+    private static Iterator calc(QueryIterator iter, 
+                                 NamedExprList groupVars, List aggregators,
+                                 ExecutionContext execCxt)
     {
         // Stage 1 : assign bindings to buckets by key and pump through the aggregrators.
         
@@ -49,7 +51,7 @@ public class QueryIterGroup extends QueryIterPlainWrapper
         for ( ; iter.hasNext() ; )
         {
             Binding b = iter.nextBinding() ;
-            BindingKey key = genKey(groupVars, b) ;
+            BindingKey key = genKey(groupVars, b, execCxt) ;
             
             // Assumes key binding has value based .equals/.hashCode. 
             if ( ! buckets.containsKey(key) )
@@ -92,20 +94,20 @@ public class QueryIterGroup extends QueryIterPlainWrapper
         return buckets.values().iterator() ;
     }
     
-    static private BindingKey genKey(List vars, Binding binding) 
+    static private BindingKey genKey(NamedExprList vars, Binding binding, ExecutionContext execCxt) 
     {
-        return new BindingKey(copyProject(vars, binding)) ;
+        return new BindingKey(copyProject(vars, binding, execCxt)) ;
     }
     
-    static private Binding copyProject(List vars, Binding binding)
+    static private Binding copyProject(NamedExprList vars, Binding binding, ExecutionContext execCxt)
     {
         // No group vars (implicit or explicit) => working on whole result set. 
         // Still need a BindingMap to assign to later.
         Binding x = new BindingMap() ;
-        for ( Iterator iter = vars.listIterator() ; iter.hasNext() ; )
+        for ( Iterator iter = vars.getVars().iterator() ; iter.hasNext() ; )
         {
             Var var = (Var)iter.next() ;
-            Node node = binding.get(var) ;
+            Node node = vars.get(var, binding, execCxt) ;
             if ( node != null )
                 x.add(var, node) ;
         }

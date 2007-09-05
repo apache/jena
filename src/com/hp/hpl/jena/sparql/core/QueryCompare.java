@@ -71,11 +71,7 @@ public class QueryCompare implements QueryVisitor
         check("DISTINCT modifier",
               query1.isDistinct() == query2.isDistinct()) ;
         check("SELECT *", query1.isQueryResultStar() == query2.isQueryResultStar()) ;
-        
-        check("Result variables",   query1.getResultVars(), query2.getResultVars() ) ;
-        
-        check("Result expressions", query1.getResultExprs(), query2.getResultExprs()) ;
-        
+        check("Result variables",   query1.getProject(), query2.getProject() ) ;
     }
 
     public void visitConstructResultForm(Query query1)
@@ -125,8 +121,7 @@ public class QueryCompare implements QueryVisitor
 
     public void visitGroupBy(Query query1)
     {
-        check("GROUP BY variables", query1.getGroupVars(), query2.getGroupVars()) ;
-        check("GROUP BY expressions", query1.getGroupExprs(), query2.getGroupExprs()) ;
+        check("GROUP BY", query1.getGroupBy(), query2.getGroupBy()) ;
     }
     
     public void visitHaving(Query query1) 

@@ -84,16 +84,13 @@ public class TestSerialization extends EarlTestCase
             throw ex ; 
         }
 
-        try {
-            QueryUtils.checkOp(query) ;
-        } catch (SSEParseException ex)
-        {
-            System.err.println("**** Test: "+getName()) ; 
-            System.err.println("** Algebra error: "+ex.getMessage()) ;
-        }
-        
-//        Query query2 = QueryFactory.create(buff.toString(), baseURI, syntax) ;
-//        assertEquals("Query.equals", query, query2) ;
+//        try {
+//            QueryUtils.checkOp(query) ;
+//        } catch (SSEParseException ex)
+//        {
+//            System.err.println("**** Test: "+getName()) ; 
+//            System.err.println("** Algebra error: "+ex.getMessage()) ;
+//        }
     }
 
 }

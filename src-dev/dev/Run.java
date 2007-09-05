@@ -31,12 +31,8 @@ public class Run
 {
     public static void main(String[] argv)
     {
-//        expr("'2006-08-23'^^xsd:date != '2006-08-23+02:00'^^xsd:date") ;
-//        expr("'2006-08-23'^^xsd:date = '2006-08-23+02:00'^^xsd:date") ;
-//        System.exit(0) ;
-//        System.out.println();
         String []a = { "--file=Q.arq", "--out=arq", "--print=op", "--print=query"} ;
-        arq.qparse.main(a) ;
+//        arq.qparse.main(a) ;
         System.out.println() ;
         String DIR = "" ;
         execQuery(DIR+"D.ttl", DIR+"Q.arq") ;

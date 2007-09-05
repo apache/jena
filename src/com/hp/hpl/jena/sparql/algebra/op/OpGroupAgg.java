@@ -7,35 +7,32 @@
 package com.hp.hpl.jena.sparql.algebra.op;
 
 import java.util.List;
-import java.util.Map;
 
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.OpVisitor;
 import com.hp.hpl.jena.sparql.algebra.Transform;
+import com.hp.hpl.jena.sparql.expr.NamedExprList;
 import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 import com.hp.hpl.jena.sparql.util.Utils;
 
 public class OpGroupAgg extends OpModifier
 {
-    private List groupVars ;
-    private Map groupExprs ;
+    private NamedExprList groupVars ;
     private List aggregators ;
 
-    public OpGroupAgg(Op subOp, List groupVars, Map groupExprs, List aggregators)
+    public OpGroupAgg(Op subOp, NamedExprList groupVars, List aggregators)
     { 
         super(subOp) ;
         this.groupVars  = groupVars ;
-        this.groupExprs = groupExprs ;
         this.aggregators = aggregators ;
     }
     
     public String getName()                 { return "group" ; }
-    public List getGroupVars()              { return groupVars ; }
-    public Map getGroupExprs()              { return groupExprs ; }
+    public NamedExprList getGroupVars()     { return groupVars ; }
     public List getAggregators()            { return aggregators ; }
 
     public void visit(OpVisitor opVisitor)  { opVisitor.visit(this) ; }
-    public Op copy(Op subOp)                { return new OpGroupAgg(subOp, groupVars, groupExprs, aggregators) ; }
+    public Op copy(Op subOp)                { return new OpGroupAgg(subOp, groupVars, aggregators) ; }
 
     public Op apply(Transform transform, Op subOp)
     { return transform.transform(this, subOp) ; }
@@ -45,8 +42,6 @@ public class OpGroupAgg extends OpModifier
         int x = getSubOp().hashCode() ;
         if ( groupVars != null ) 
             x ^= groupVars.hashCode() ; 
-        if ( groupExprs != null ) 
-            x ^= groupExprs.hashCode() ; 
         if ( aggregators != null ) 
             x ^= aggregators.hashCode() ; 
         return x ;
@@ -57,8 +52,6 @@ public class OpGroupAgg extends OpModifier
         if ( ! (other instanceof OpGroupAgg) ) return false ;
         OpGroupAgg opGroup = (OpGroupAgg)other ;
         if ( ! Utils.eq(groupVars, opGroup.groupVars) ) 
-            return false ;
-        if ( ! Utils.eq(groupExprs, opGroup.groupExprs) )
             return false ;
         if ( ! Utils.eq(aggregators, opGroup.aggregators) )
             return false ;

@@ -134,6 +134,7 @@ public class Var extends Node_Variable
         return x ;
     }
     
+    /** return a list of String names */ 
     public static List varNames(Collection vars)
     {
         List x = new ArrayList() ;

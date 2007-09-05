@@ -27,9 +27,13 @@ import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.expr.E_Aggregator;
 import com.hp.hpl.jena.sparql.expr.Expr;
 import com.hp.hpl.jena.sparql.expr.ExprList;
+import com.hp.hpl.jena.sparql.expr.NamedExprList;
 import com.hp.hpl.jena.sparql.serializer.FmtExprPrefix;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext;
-import com.hp.hpl.jena.sparql.util.*;
+import com.hp.hpl.jena.sparql.util.ExprUtils;
+import com.hp.hpl.jena.sparql.util.FmtUtils;
+import com.hp.hpl.jena.sparql.util.IndentedWriter;
+import com.hp.hpl.jena.sparql.util.NodeToLabelMap;
 
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.SortCondition;
@@ -336,57 +340,28 @@ public class OpWriter
         
         public void visit(OpGroupAgg opGroup)
         {
-            // XXX Write (group (vars) (exprs) (aggs))
-            // Abstract: writeNamedExprssions(List vars, Map exprs) 
-            // share with visit(OpProject)
-            
             start(opGroup, NoNL) ;
+            writeNamedExprList(opGroup.getGroupVars()) ;
+            // --- Aggregators
             out.print(" (") ;
+            out.incIndent() ;
             boolean first = true ;
-            for ( Iterator iter = opGroup.getGroupVars().iterator() ; iter.hasNext() ; )
+            for ( Iterator iter = opGroup.getAggregators().iterator() ; iter.hasNext() ; )
             {
                 if ( ! first )
                     out.print(" ") ;
                 first = false ;
-                Var v = (Var)iter.next() ;
-                Expr expr = (Expr)opGroup.getGroupExprs().get(v) ;
-                if ( expr == null )
-                    out.print(v.toString()) ;
-                else
-                {
-                    // Pair : var name (may be internal and expression)  
-                    out.print("(") ;
-                    out.print(v.toString()) ;
-                    out.print(" ") ;
-                    ExprUtils.fmtPrefix(out, expr, sContext.getPrefixMapping()) ;
-                    out.print(")") ;
-                }
-            }
-            out.print(")");
-            
-            if ( opGroup.getAggregators() != null && opGroup.getAggregators().size() > 0 )
-            {
-                out.print(" (") ;
-                out.incIndent() ;
-                first = true ;
-                for ( Iterator iter = opGroup.getAggregators().iterator() ; iter.hasNext() ; )
-                {
-                    if ( ! first )
-                        out.print(" ") ;
-                    first = false ;
-                    E_Aggregator agg = (E_Aggregator)iter.next();
-                    Var v = agg.asVar() ;
-                    String str = agg.getAggregator().toPrefixString() ;
-                    out.print("(") ;
-                    out.print(v.toString()) ;
-                    out.print(" ") ;
-                    out.print(str) ;
-                    out.print(")") ;
-                }
+                E_Aggregator agg = (E_Aggregator)iter.next();
+                Var v = agg.asVar() ;
+                String str = agg.getAggregator().toPrefixString() ;
+                out.print("(") ;
+                out.print(v.toString()) ;
+                out.print(" ") ;
+                out.print(str) ;
                 out.print(")") ;
-                out.decIndent() ;
             }
-            out.println() ;
+            out.println(")") ;
+            out.decIndent() ;
             printOp(opGroup.getSubOp()) ;
             finish(opGroup) ;
         }
@@ -436,38 +411,8 @@ public class OpWriter
         public void visit(OpProject opProject)
         { 
             start(opProject, NoNL) ;
-            
-            out.print(" (") ;
-            PrintUtils.Fmt fmt = new PrintUtils.Fmt(){
-                public String fmt(Object thing)
-                {
-                    return ((Var)thing).toString() ;
-                }} ;
-            PrintUtils.printList(out, opProject.getVars(), " ", fmt) ;
-            out.print(")");
-
-            // There is a common pattern here with group. 
-            if ( opProject.getExprs() != null )
-            {
-                // List of pairs - var name and expression
-                out.print(" (") ;
-                boolean first = true ;
-                for ( Iterator iter = opProject.getExprs().keySet().iterator() ; iter.hasNext() ; )
-                {
-                    if ( ! first )
-                        out.print(" ") ;
-                    first = false ;
-                    out.print("(") ;
-                    Var v = (Var)iter.next() ;
-                    Expr expr = (Expr)opProject.getExprs().get(v) ;
-                    out.print(v.toString()) ;
-                    out.print(" ") ;
-                    ExprUtils.fmtPrefix(out, expr, sContext.getPrefixMapping()) ;
-                    out.print(")") ;
-                }
-                out.print(")") ;
-            }
-            
+            out.print(" ") ;
+            writeNamedExprList(opProject.getProject()) ;
             out.println();
             printOp(opProject.getSubOp()) ;
             finish(opProject) ;
@@ -531,8 +476,31 @@ public class OpWriter
                 op.visit(this) ;
         }
         
-        
-        
+        private void writeNamedExprList(NamedExprList project)
+        {
+            out.print("(") ;
+            boolean first = true ;
+            for ( Iterator iter = project.getVars().iterator() ; iter.hasNext() ; )
+            {
+                if ( ! first )
+                  out.print(" ") ;
+                first = false ;
+                Var v = (Var)iter.next() ;
+                Expr expr = project.getExpr(v) ;
+                if ( expr != null )
+                {
+                    out.print("(") ;
+                    out.print(v.toString()) ;
+                    out.print(" ") ;
+                    ExprUtils.fmtPrefix(out, expr, sContext.getPrefixMapping()) ;
+                    out.print(")") ;
+                }
+                else
+                    out.print(v.toString()) ;
+            }
+            out.print(")") ;
+        }
+
         private void formatTriple(Triple tp)
         {
             out.print(Plan.startMarker2) ; 

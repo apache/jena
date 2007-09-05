@@ -44,7 +44,7 @@ public class QueryHashCode
 
         public void visitSelectResultForm(Query query)
         { 
-            x^= query.getResultVars().hashCode() ;
+            x^= query.getProject().hashCode() ;
         }
 
         public void visitConstructResultForm(Query query)
@@ -75,12 +75,7 @@ public class QueryHashCode
         public void visitGroupBy(Query query)
         {
             if ( query.hasGroupBy() )
-            {
-                if ( query.getGroupVars() != null )
-                    x ^= query.getGroupVars().hashCode() ;
-                if ( query.getGroupExprs() != null )
-                    x ^= query.getGroupExprs().hashCode() ;
-            }
+                x ^= query.getGroupBy().hashCode() ;
         }
         
         public void visitHaving(Query query) 

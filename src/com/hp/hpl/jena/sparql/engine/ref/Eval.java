@@ -177,7 +177,7 @@ public class Eval
         public void visit(OpProject opProject)
         {
             Table table = eval(opProject.getSubOp()) ;
-            table = evaluator.project(table, opProject.getVars(), opProject.getExprs()) ;
+            table = evaluator.project(table, opProject.getProject()) ;
             push(table) ;
         }
 
@@ -205,7 +205,7 @@ public class Eval
         public void visit(OpGroupAgg opGroupAgg)
         {
             Table table = eval(opGroupAgg.getSubOp()) ;
-            table = evaluator.groupBy(table, opGroupAgg.getGroupVars(), opGroupAgg.getGroupExprs(), opGroupAgg.getAggregators()) ;
+            table = evaluator.groupBy(table, opGroupAgg.getGroupVars(), opGroupAgg.getAggregators()) ;
             push(table) ;
         }
 

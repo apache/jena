@@ -7,16 +7,15 @@
 package com.hp.hpl.jena.sparql.algebra;
 
 import java.util.Iterator;
-import java.util.List;
 
 import com.hp.hpl.jena.graph.Node;
 
 import com.hp.hpl.jena.sparql.ARQInternalErrorException;
 import com.hp.hpl.jena.sparql.algebra.op.*;
 import com.hp.hpl.jena.sparql.core.BasicPattern;
-import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.expr.Expr;
 import com.hp.hpl.jena.sparql.expr.ExprList;
+import com.hp.hpl.jena.sparql.expr.NamedExprList;
 import com.hp.hpl.jena.sparql.syntax.*;
 import com.hp.hpl.jena.sparql.util.ALog;
 import com.hp.hpl.jena.sparql.util.Context;
@@ -283,14 +282,14 @@ public class AlgebraGenerator
             // Wrong.
             // 1 - need to pass in expressions for grouping, not vars.
             // 2 - No aggregates yet
-            op = new OpGroupAgg(op, query.getGroupVars(), query.getGroupExprs(), query.getAggregators()) ;
+            op = new OpGroupAgg(op, query.getGroupBy(), query.getAggregators()) ;
         }
         else
         {
             if ( query.getAggregators().size() > 0 )
                 // No GroupBy but there are some aggregates.
                 // This is a group of no variables.
-                op = new OpGroupAgg(op, query.getGroupVars(), query.getGroupExprs(), query.getAggregators()) ;
+                op = new OpGroupAgg(op,  query.getGroupBy(), query.getAggregators()) ;
             // Fold into above when certainit works
         }
         // ---- HAVING
@@ -312,15 +311,15 @@ public class AlgebraGenerator
         // No projection => initial variables are exposed.
         // Needed for CONSTRUCT and initial bindings + SELECT *
         
-        List projectVars = Var.varList(query.getResultVars()) ;
-        if ( projectVars != null && ! query.isQueryResultStar())
+        NamedExprList projectVars = query.getProject() ;
+        if ( ! projectVars.isEmpty() && ! query.isQueryResultStar())
         {
             // Don't project for QueryResultStar so initial bindings show through
             // in SELECT *
             if ( projectVars.size() == 0 && query.isSelectType() )
                 ALog.warn(this,"No project variables") ;
             if ( projectVars.size() > 0 ) 
-                op = new OpProject(op, projectVars, query.getResultExprs()) ;
+                op = new OpProject(op, query.getProject()) ;
         }
         
         // ---- DISTINCT

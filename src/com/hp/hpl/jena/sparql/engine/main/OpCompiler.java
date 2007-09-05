@@ -24,10 +24,7 @@ import com.hp.hpl.jena.sparql.engine.main.iterator.QueryIterLeftJoin;
 import com.hp.hpl.jena.sparql.engine.main.iterator.QueryIterOptionalIndex;
 import com.hp.hpl.jena.sparql.engine.main.iterator.QueryIterService;
 import com.hp.hpl.jena.sparql.engine.main.iterator.QueryIterUnion;
-import com.hp.hpl.jena.sparql.expr.Expr;
-import com.hp.hpl.jena.sparql.expr.ExprBuild;
-import com.hp.hpl.jena.sparql.expr.ExprList;
-import com.hp.hpl.jena.sparql.expr.ExprWalker;
+import com.hp.hpl.jena.sparql.expr.*;
 
 
 public class OpCompiler
@@ -299,7 +296,7 @@ public class OpCompiler
     QueryIterator compile(OpProject opProject, QueryIterator input)
     {
         QueryIterator  qIter = compileOp(opProject.getSubOp(), input) ;
-        qIter = new QueryIterProject(qIter, opProject.getVars(), opProject.getExprs(), execCxt) ;
+        qIter = new QueryIterProject(qIter, opProject.getProject(), execCxt) ;
         return qIter ;
     }
 
@@ -313,7 +310,7 @@ public class OpCompiler
     QueryIterator compile(OpGroupAgg opGroupAgg, QueryIterator input)
     { 
         QueryIterator qIter = compileOp(opGroupAgg.getSubOp(), input) ;
-        qIter = new QueryIterGroup(qIter, opGroupAgg.getGroupVars(), opGroupAgg.getGroupExprs(), opGroupAgg.getAggregators(), execCxt) ;
+        qIter = new QueryIterGroup(qIter, opGroupAgg.getGroupVars(), opGroupAgg.getAggregators(), execCxt) ;
         return qIter ;
     }
     

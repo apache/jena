@@ -9,20 +9,22 @@ package com.hp.hpl.jena.sparql.serializer;
 import java.io.OutputStream;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.QueryVisitor;
-import com.hp.hpl.jena.query.SortCondition;
+
 import com.hp.hpl.jena.sparql.core.Prologue;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.expr.Expr;
+import com.hp.hpl.jena.sparql.expr.NamedExprList;
 import com.hp.hpl.jena.sparql.syntax.Element;
 import com.hp.hpl.jena.sparql.syntax.ElementGroup;
 import com.hp.hpl.jena.sparql.syntax.Template;
 import com.hp.hpl.jena.sparql.util.FmtUtils;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
+
+import com.hp.hpl.jena.query.Query;
+import com.hp.hpl.jena.query.QueryVisitor;
+import com.hp.hpl.jena.query.SortCondition;
 
 /** Serialize a query into SPARQL or ARQ formats */
 
@@ -98,7 +100,7 @@ public class QuerySerializer implements QueryVisitor
         if ( query.isQueryResultStar() )
             out.print("*") ;
         else
-            appendVarList(query, out, query.getResultVars(), query.getResultExprs()) ;
+            appendNamedExprList(query, out, query.getProject()) ;
         out.newline() ;
     }
     
@@ -197,19 +199,20 @@ public class QuerySerializer implements QueryVisitor
     {
         if ( query.hasGroupBy() )
         {
-            out.print("GROUP BY") ;
-            for ( Iterator iter = query.getGroupVars().iterator() ; iter.hasNext() ; )
-            {
-                out.print(" ") ;
-                Var v = (Var)iter.next();
-                Expr expr = (Expr)query.getGroupExprs().get(v) ;
-                
-                if ( Var.isAllocVar(v)  )
-                    // expressions have internal variables allocated for them 
-                    fmtExpr.format(expr, true) ;
-                else
-                    out.print(v.toString()) ;
-            }
+            out.print("GROUP BY ") ;
+            appendNamedExprList(query, out, query.getGroupBy()) ;
+//            for ( Iterator iter = query.getGroupBy().iterator() ; iter.hasNext() ; )
+//            {
+//                out.print(" ") ;
+//                Var v = (Var)iter.next();
+//                Expr expr = (Expr)query.getGroupExprs().get(v) ;
+//                
+//                if ( Var.isAllocVar(v)  )
+//                    // expressions have internal variables allocated for them 
+//                    fmtExpr.format(expr, true) ;
+//                else
+//                    out.print(v.toString()) ;
+//            }
             out.println();
         }
     }
@@ -275,11 +278,6 @@ public class QuerySerializer implements QueryVisitor
     
     void appendVarList(Query query, IndentedWriter sb, List vars)
     {
-        appendVarList(query, sb, vars, null) ;
-    }
-        
-    void appendVarList(Query query, IndentedWriter sb, List vars, Map exprs)
-    {
         boolean first = true ;
         for ( Iterator iter = vars.iterator() ; iter.hasNext() ; )
         {
@@ -287,22 +285,36 @@ public class QuerySerializer implements QueryVisitor
             Var var = Var.alloc(varName) ;
             if ( ! first )
                 sb.print(" ") ;
-            if ( exprs != null && exprs.containsKey(var) ) 
+            sb.print(var.toString()) ;
+            first = false ;
+        }
+
+    }
+        
+    void appendNamedExprList(Query query, IndentedWriter sb, NamedExprList namedExprs)
+    {
+        boolean first = true ;
+        for ( Iterator iter = namedExprs.getVars().iterator() ; iter.hasNext() ; )
+        {
+            Var var = (Var)iter.next();
+            Expr expr = namedExprs.getExpr(var) ;
+            if ( ! first )
+                sb.print(" ") ;
+            
+            if ( expr != null ) 
             {
-                Expr expr = (Expr)exprs.get(var) ;
                 out.print("(") ;
                 fmtExpr.format(expr, true) ;
-                if ( ! Var.isAllocVarName(varName) )
+                if ( ! Var.isAllocVar(var) )
                 {
-                    sb.print(" AS ?") ;
-                    sb.print(varName) ;
+                    sb.print(" AS ") ;
+                    sb.print(var.toString()) ;
                 }
                 out.print(")") ;
             }
             else
             {
-                sb.print("?") ;
-                sb.print(varName) ;
+                sb.print(var.toString()) ;
             }
             first = false ;
         }

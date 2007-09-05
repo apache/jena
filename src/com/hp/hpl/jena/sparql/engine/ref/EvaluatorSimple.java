@@ -8,10 +8,7 @@ package com.hp.hpl.jena.sparql.engine.ref;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
-import com.hp.hpl.jena.query.ResultSet;
-import com.hp.hpl.jena.query.ResultSetFormatter;
 import com.hp.hpl.jena.sparql.algebra.Table;
 import com.hp.hpl.jena.sparql.algebra.TableFactory;
 import com.hp.hpl.jena.sparql.algebra.table.TableN;
@@ -23,7 +20,11 @@ import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.iterator.*;
 import com.hp.hpl.jena.sparql.engine.main.StageBuilder;
 import com.hp.hpl.jena.sparql.expr.ExprList;
+import com.hp.hpl.jena.sparql.expr.NamedExprList;
 import com.hp.hpl.jena.sparql.util.Utils;
+
+import com.hp.hpl.jena.query.ResultSet;
+import com.hp.hpl.jena.query.ResultSetFormatter;
 
 
 class EvaluatorSimple implements Evaluator
@@ -127,17 +128,17 @@ class EvaluatorSimple implements Evaluator
         return new TableN(qIter) ;
     }
 
-    public Table groupBy(Table table, List groupVars, Map groupExprs, List aggregators)
+    public Table groupBy(Table table, NamedExprList groupVars, List aggregators)
     {
         QueryIterator qIter = table.iterator(getExecContext()) ;
-        qIter = new QueryIterGroup(qIter, groupVars, groupExprs, aggregators, getExecContext()) ;
+        qIter = new QueryIterGroup(qIter, groupVars, aggregators, getExecContext()) ;
         return new TableN(qIter) ;
     }
     
-    public Table project(Table table, List vars, Map exprs)
+    public Table project(Table table, NamedExprList project)
     {
         QueryIterator qIter = table.iterator(getExecContext()) ;
-        qIter = new QueryIterProject(qIter, vars, exprs, getExecContext()) ;
+        qIter = new QueryIterProject(qIter, project, getExecContext()) ;
         return new TableN(qIter) ;
     }
 
