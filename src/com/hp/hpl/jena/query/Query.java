@@ -481,6 +481,7 @@ public class Query extends Prologue implements Cloneable
     public E_Aggregator allocAggregate(AggregateFactory agg)
     {
         // XXX E_Aggregator == Aggregator ??
+        // ?? Special case adding a E_Aggregator in result vcars to stop the renaming.
         Aggregator a = agg.create() ;
         String key = a.key() ;
         E_Aggregator expr = (E_Aggregator)aggregatorsAllocated.get(key); 

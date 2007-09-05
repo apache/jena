@@ -476,9 +476,9 @@ public class BuilderExpr
     {
         public Expr make(final ItemList list)
         {
-            ItemList x = list.cdr();
+            ItemList x = list.cdr();    // drop "count"
             boolean distinct = false ;
-            if ( x.car().isSymbol(Tags.tagDistinct) )
+            if ( x.size() > 0 && x.car().isSymbol(Tags.tagDistinct) )
             {
                 distinct = true ;
                 x = x.cdr();

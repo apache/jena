@@ -197,12 +197,10 @@ public class QuerySerializer implements QueryVisitor
     {
         if ( query.hasGroupBy() )
         {
-            out.print("GROUP BY ") ;
-            boolean first = true ;
-            for (Iterator iter = query.getGroupVars().iterator() ; iter.hasNext() ; )
+            out.print("GROUP BY") ;
+            for ( Iterator iter = query.getGroupVars().iterator() ; iter.hasNext() ; )
             {
-                if ( ! first )
-                    out.print(" ") ;
+                out.print(" ") ;
                 Var v = (Var)iter.next();
                 Expr expr = (Expr)query.getGroupExprs().get(v) ;
                 
@@ -211,9 +209,19 @@ public class QuerySerializer implements QueryVisitor
                     fmtExpr.format(expr, true) ;
                 else
                     out.print(v.toString()) ;
-                first = false ;
             }
             out.println();
+        }
+        if ( query.hasHaving() )
+        {
+            out.print("HAVING") ;
+            for ( Iterator iter = query.getHavingExprs().iterator() ; iter.hasNext() ; )
+            {
+                out.print(" ") ;
+                Expr expr = (Expr)iter.next() ;
+                fmtExpr.format(expr, true) ;
+            }
+            out.println() ;
         }
     }
 
