@@ -8,6 +8,7 @@ package com.hp.hpl.jena.sparql.lang.sparql ;
 
 import com.hp.hpl.jena.graph.* ;
 import com.hp.hpl.jena.query.* ;
+import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.syntax.* ;
 import com.hp.hpl.jena.sparql.expr.* ;
 
@@ -85,7 +86,7 @@ public class SPARQLParser extends SPARQLParserBase implements SPARQLParserConsta
 
 // ---- Query type clauses
   final public void SelectQuery() throws ParseException {
-                       Node v ; Expr expr ;
+                       Var v ; Expr expr ;
     jj_consume_token(SELECT);
       getQuery().setQuerySelectType() ;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -1230,8 +1231,8 @@ public class SPARQLParser extends SPARQLParserBase implements SPARQLParserConsta
     throw new Error("Missing return statement in function");
   }
 
-  final public Node Var() throws ParseException {
-               Token t ;
+  final public Var Var() throws ParseException {
+              Token t ;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case VAR1:
       t = jj_consume_token(VAR1);

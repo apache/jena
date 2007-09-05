@@ -7,10 +7,10 @@
 package com.hp.hpl.jena.sparql.expr;
 
 import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.sparql.ARQInternalErrorException;
 import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.expr.aggregate.Aggregator;
-import com.hp.hpl.jena.sparql.function.FunctionEnv;
+import com.hp.hpl.jena.sparql.util.Utils;
 
 /** Group aggregation functions calculate a value during grouping and
  *  place it in the output binding.  This class is relationship of 
@@ -26,53 +26,59 @@ public class E_Aggregator extends ExprVar
     public E_Aggregator(Node n, Aggregator agg)         { super(n) ; aggregator = agg ; }
     public E_Aggregator(Var v, Aggregator agg)          { super(v) ; aggregator = agg ; }
     
+    public void setVar(Var var)
+    { 
+        if ( super.varNode != null )
+            throw new ARQInternalErrorException(Utils.className(this)+": Attempt to set variable to "+var+" when already set as "+super.varNode) ;
+        super.varNode = var ;
+    }
+    
     public Aggregator getAggregator()   { return aggregator ; }
     
     public String toExprString()        { return aggregator.toString(); }
 }
 
-class A extends ExprNode
-{
-    protected ExprVar varNode = null ;
-    protected Aggregator aggregator ;
-    
-    public A(String name, Aggregator agg)    { varNode = new ExprVar(name) ; aggregator = agg ; }
-    public A(Node n, Aggregator agg)         { varNode = new ExprVar(n) ; aggregator = agg ; }
-    public A(Var v, Aggregator agg)          { varNode= new ExprVar(v) ; aggregator = agg ; }
-    
-
-    // Fake 
-    public boolean isVariable() { return true ; }
-    public String getVarName()  { return varNode.getVarName() ; }
-    public ExprVar getExprVar() { return varNode ; }
-    public Var asVar()          { return varNode.asVar() ; }
-    public Node getAsNode()     { return varNode.getAsNode() ; }
-
-    
-    public Expr copySubstitute(Binding binding, boolean foldConstants)
-    {
-        return null ;
-    }
-
-    public NodeValue eval(Binding binding, FunctionEnv env)
-    {
-        return null ;
-    }
-
-    public int hashCode()
-    {
-        return 0 ;
-    }
-
-    public boolean equals(Object other)
-    {
-        return false ;
-    }
-
-    public void visit(ExprVisitor visitor)
-    {}
-    
-}
+//class A extends ExprNode
+//{
+//    protected ExprVar varNode = null ;
+//    protected Aggregator aggregator ;
+//    
+//    public A(String name, Aggregator agg)    { varNode = new ExprVar(name) ; aggregator = agg ; }
+//    public A(Node n, Aggregator agg)         { varNode = new ExprVar(n) ; aggregator = agg ; }
+//    public A(Var v, Aggregator agg)          { varNode= new ExprVar(v) ; aggregator = agg ; }
+//    
+//
+//    // Fake 
+//    public boolean isVariable() { return true ; }
+//    public String getVarName()  { return varNode.getVarName() ; }
+//    public ExprVar getExprVar() { return varNode ; }
+//    public Var asVar()          { return varNode.asVar() ; }
+//    public Node getAsNode()     { return varNode.getAsNode() ; }
+//
+//    
+//    public Expr copySubstitute(Binding binding, boolean foldConstants)
+//    {
+//        return null ;
+//    }
+//
+//    public NodeValue eval(Binding binding, FunctionEnv env)
+//    {
+//        return null ;
+//    }
+//
+//    public int hashCode()
+//    {
+//        return 0 ;
+//    }
+//
+//    public boolean equals(Object other)
+//    {
+//        return false ;
+//    }
+//
+//    public void visit(ExprVisitor visitor)
+//    {}
+//}
 
 /*
  * (c) Copyright 2007 Hewlett-Packard Development Company, LP

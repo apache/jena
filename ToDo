@@ -19,6 +19,7 @@ See ToDoSSE
   Query cosistency tests.
     Need to test consistency of variables used at algebra compile time.
   SELECT * GROUP BY => GROUP BY vars
+  GROUP BY ... WITH ...
 
 + Remove com.hp.hpl.jena.sparql.function.library.trace
   And any documentation

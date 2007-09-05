@@ -28,6 +28,7 @@ package com.hp.hpl.jena.sparql.lang.sparql ;
 
 import com.hp.hpl.jena.graph.* ;
 import com.hp.hpl.jena.query.* ;
+import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.syntax.* ;
 import com.hp.hpl.jena.sparql.expr.* ;
 
@@ -73,7 +74,7 @@ void PrefixDecl() : { Token t ; String iri ; }
 
 // ---- Query type clauses
 
-void SelectQuery() : { Node v ; Expr expr ; }
+void SelectQuery() : { Var v ; Expr expr ; }
 {
   <SELECT>
     { getQuery().setQuerySelectType() ; }
@@ -496,7 +497,7 @@ Node VarOrIRIref() : {Node n = null ; String iri ; }
   { return n ; }
 }
 
-Node Var() : { Token t ;}
+Var Var() : { Token t ;}
 {
     ( t = <VAR1> | t = <VAR2> )
     { return createVariable(t.image, t.beginLine, t.beginColumn) ; }

@@ -14,6 +14,7 @@ import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.expr.*;
+import com.hp.hpl.jena.sparql.expr.aggregate.* ;
 import com.hp.hpl.jena.sparql.sse.Item;
 import com.hp.hpl.jena.sparql.sse.ItemList;
 
@@ -468,18 +469,43 @@ public class BuilderExpr
     // (count distinct)
     // (count ?var)
     // (count distinct ?var)
+    // Need a canonical name for the variable that wil be set by the aggregation.
+    // Aggregator.getVarName.
     
     final protected Build buildCount = new Build()
     {
-        public Expr make(ItemList list)
+        public Expr make(final ItemList list)
         {
-            BuilderBase.msg(list, "Not implemented: "+list.shortString()) ;
-            return  NodeValue.FALSE ;
-            //System.err.println("(count ...) not implemnted  throw new ARQNotImplemented() ;
+            ItemList x = list.cdr();
+            boolean distinct = false ;
+            if ( x.car().isSymbol(Tags.tagDistinct) )
+            {
+                distinct = true ;
+                x = x.cdr();
+            }
             
-//            BuilderBase.checkLength(2, list, "isLiteral: wanted 1 arguments: got :"+list.size()) ;
-//            Expr ex = buildExpr(list.get(1)) ;
-//            return new E_IsLiteral(ex) ;
+            AggregateFactory agg = null ;
+            
+            if ( x.size() > 1 )
+                BuilderBase.broken(list, "Broken syntax: "+list.shortString()) ;
+            
+            if ( x.size() == 0 )
+            {
+                
+                if ( ! distinct )
+                    agg = AggCount.get() ;
+                else
+                    agg = AggCountDistinct.get() ;
+            }
+            else
+            {
+                Var v = BuilderNode.buildVar(x.get(0)) ;
+                if ( ! distinct )
+                    agg = new AggCountVar(v) ;
+                else
+                    agg = new AggCountVarDistinct(v) ;
+            }
+            return new E_Aggregator((Var)null, agg.create()) ; 
         }
     };
 }

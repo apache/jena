@@ -35,8 +35,8 @@ public class Run
 //        expr("'2006-08-23'^^xsd:date = '2006-08-23+02:00'^^xsd:date") ;
 //        System.exit(0) ;
 //        System.out.println();
-        Query.enableGroupByImpl = true ;
-        //runQParseARQ()  ;
+        runQParseARQ()  ;
+        System.exit(0) ;
         
         String DIR = "" ;
         execQuery(DIR+"D.ttl", DIR+"Q.arq") ;

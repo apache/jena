@@ -53,6 +53,7 @@ package com.hp.hpl.jena.sparql.PACKAGE ;
 
 import com.hp.hpl.jena.graph.* ;
 import com.hp.hpl.jena.query.* ;
+import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.syntax.* ;
 import com.hp.hpl.jena.sparql.expr.* ;
 #ifdef ARQ
@@ -98,7 +99,7 @@ void PrefixDecl() : { Token t ; String iri ; }
 
 // ---- Query type clauses
 
-void SelectQuery() : {  Node v ; Expr expr ; }
+void SelectQuery() : {  Var v ; Expr expr ; }
 {  
   <SELECT>
     { getQuery().setQuerySelectType() ; }
@@ -112,7 +113,7 @@ void SelectQuery() : {  Node v ; Expr expr ; }
 #ifdef ARQ
     | 
       expr = AggExpression() 
-      { getQuery().addResultVar((Node)null, expr) ; }
+      { getQuery().addResultVar((Var)null, expr) ; }
     // Syntax: ( expr [AS ?var] )
     |
       (
@@ -226,7 +227,7 @@ void GroupClause() : { }
   <GROUP> <BY> ( GroupCondition() )+
 }
 
-void GroupCondition() : { Node v = null ; Expr expr = null ; }
+void GroupCondition() : { Var v = null ; Expr expr = null ; }
 {
   ( expr = Constraint()
     { getQuery().addGroupBy(expr) ; }
@@ -602,7 +603,7 @@ Node VarOrIRIref() : {Node n = null ; String iri ; }
   { return n ; }
 }
 
-Node Var() : { Token t ;}
+Var Var() : { Token t ;}
 {
     ( t = <VAR1> | t = <VAR2> )
     { return createVariable(t.image, t.beginLine, t.beginColumn) ; }
@@ -808,9 +809,8 @@ Expr AggExpression() : { Expr expr ; AggregateFactory aggFactory ; }
 
 AggregateFactory Aggregate() : { AggregateFactory agg ;
                                  boolean distinct = false ;
-                                 Node v ; Token t ; }
+                                 Var v ; Token t ; }
 {
-    // Basic implementation.
     t = <COUNT> <LPAREN> 
     { 
           if ( ! allowAggregatesInExpressions )
@@ -818,10 +818,12 @@ AggregateFactory Aggregate() : { AggregateFactory agg ;
                                t.beginLine, t.beginColumn) ;
     }
 
-    ( <STAR> 
-        { agg = AggCount.get() ; }
-    | <DISTINCT> <STAR> 
-        { agg = AggCountDistinct.get() ; }
+    ( <STAR>        { agg = AggCount.get() ; }
+    | v = Var()     { agg = new AggCountVar(v) ; }
+    | <DISTINCT> 
+      ( <STAR>      { agg = AggCountDistinct.get() ; }
+      | v = Var()   { agg = new AggCountVarDistinct(v) ; }
+      )
     )
     <RPAREN>
     { return agg ; }

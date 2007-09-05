@@ -85,11 +85,13 @@ public class ExprVar extends ExprNode
     public Var asVar()          { return varNode ; }
     public Node getAsNode()     { return varNode ; }
     
+    
     public String toPrefixString()  { return varNode.toString() ; }
     // As an expression (aggregators override this).
     public String toExprString()    { return  varNode.toString() ; }
 
-    public String toString()        { return varNode.toString() ; }
+//    // ??? Just use format?
+//    public String toString()        { return varNode.toString() ; }
 }
 
 /*

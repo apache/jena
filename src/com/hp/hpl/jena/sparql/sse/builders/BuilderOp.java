@@ -16,6 +16,7 @@ import com.hp.hpl.jena.sparql.algebra.Table;
 import com.hp.hpl.jena.sparql.algebra.op.*;
 import com.hp.hpl.jena.sparql.core.BasicPattern;
 import com.hp.hpl.jena.sparql.core.Var;
+import com.hp.hpl.jena.sparql.expr.E_Aggregator;
 import com.hp.hpl.jena.sparql.expr.Expr;
 import com.hp.hpl.jena.sparql.expr.ExprList;
 import com.hp.hpl.jena.sparql.sse.Item;
@@ -376,6 +377,9 @@ public class BuilderOp
                 BuilderBase.broken(pair, "Not a var/expression pair") ;
             Var var = BuilderNode.buildVar(pair.getList().get(0)) ;
             Expr expr = BuilderExpr.buildExpr(pair.getList().get(1)) ;
+            // XXX HACK
+            if ( expr instanceof E_Aggregator )
+                ((E_Aggregator)expr).setVar(var) ;
             exprs.put(var, expr) ;
         }
         return exprs ;

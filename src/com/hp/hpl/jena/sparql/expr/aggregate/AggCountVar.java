@@ -17,7 +17,7 @@ public class AggCountVar implements AggregateFactory
     // ---- AggregatorFactory
     private Var var ;
 
-    private AggCountVar(Var var) { this.var = var ; } 
+    public AggCountVar(Var var) { this.var = var ; } 
 
     public Aggregator create()
     {

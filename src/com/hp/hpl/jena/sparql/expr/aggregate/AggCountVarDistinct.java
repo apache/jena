@@ -20,7 +20,7 @@ public class AggCountVarDistinct implements AggregateFactory
     private Var var ;
 
     // ---- AggregatorFactory
-    private AggCountVarDistinct(Var var) { this.var = var ; } 
+    public AggCountVarDistinct(Var var) { this.var = var ; } 
 
     public Aggregator create()
     {
