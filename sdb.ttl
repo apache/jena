@@ -5,6 +5,7 @@
 
 _:c rdf:type sdb:SDBConnection ;
 
+##      sdb:sdbHost        "localhost" ;
 ##      sdb:sdbType        "derby" ;
 ##      sdb:sdbName        "DB/SDB2" ;
 
