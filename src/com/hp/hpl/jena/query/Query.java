@@ -25,6 +25,7 @@ import com.hp.hpl.jena.sparql.expr.E_Aggregator;
 import com.hp.hpl.jena.sparql.expr.Expr;
 import com.hp.hpl.jena.sparql.expr.ExprVar;
 import com.hp.hpl.jena.sparql.expr.aggregate.AggregateFactory;
+import com.hp.hpl.jena.sparql.expr.aggregate.Aggregator;
 import com.hp.hpl.jena.sparql.serializer.Serializer;
 import com.hp.hpl.jena.sparql.syntax.Element;
 import com.hp.hpl.jena.sparql.syntax.Template;
@@ -473,17 +474,25 @@ public class Query extends Prologue implements Cloneable
     // Commonality?
     
     private List aggregators = new ArrayList() ;            // List of E_Aggregator
+    private Map aggregatorsAllocated = new HashMap() ;      // Note any E_Aggregator created for reuse.
+    
     public List getAggregators() { return aggregators ; }
     
     public E_Aggregator allocAggregate(AggregateFactory agg)
     {
-        // XXX ToDo make sure the same aggregator is occurs once (e.g. count(*) used twice
-        // maybe once in having, maybe twice in SELECT.
-        // Multiple E_Aggregator, same  agg.create()
-        // ?? Query-wide AggregateFactory=>Aggregator
-        Var v = allocInternVar() ;
-        E_Aggregator expr = new E_Aggregator(v, agg.create()) ;
-        aggregators.add(expr) ;
+        // XXX E_Aggregator == Aggregator ??
+        Aggregator a = agg.create() ;
+        String key = a.key() ;
+        E_Aggregator expr = (E_Aggregator)aggregatorsAllocated.get(key); 
+        
+        if ( expr == null )
+        {
+            // Not see before.  Build the expression. 
+            Var v = allocInternVar() ;
+            expr = new E_Aggregator(v, agg.create()) ;
+            aggregatorsAllocated.put(key, expr) ;
+            aggregators.add(expr) ;
+        }
         return expr ;
     }
     

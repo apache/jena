@@ -35,9 +35,9 @@ public class Run
 //        expr("'2006-08-23'^^xsd:date = '2006-08-23+02:00'^^xsd:date") ;
 //        System.exit(0) ;
 //        System.out.println();
-        runQParseARQ()  ;
-        System.exit(0) ;
-        
+        String []a = { "--file=Q.arq", "--out=arq", "--print=op"} ;
+        arq.qparse.main(a) ;
+        System.out.println() ;
         String DIR = "" ;
         execQuery(DIR+"D.ttl", DIR+"Q.arq") ;
     }
