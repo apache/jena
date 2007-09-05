@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: AbstractTestGraph.java,v 1.77 2007-07-19 11:29:05 chris-dollin Exp $i
+  $Id: AbstractTestGraph.java,v 1.78 2007-09-05 14:36:34 jeremy_carroll Exp $i
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -10,8 +10,12 @@ import com.hp.hpl.jena.util.CollectionFactory;
 import com.hp.hpl.jena.util.iterator.*;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.query.*;
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.shared.*;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.*;
 
 /**
@@ -867,7 +871,52 @@ public/* abstract */class AbstractTestGraph extends GraphTestBase
                 }
         }
     
-    protected void add( Graph toUpdate, Graph toAdd )
+    /** testIsomorphism from file data 
+     * @throws FileNotFoundException */
+    public void testIsomorphismFile() throws FileNotFoundException {
+    	testIsomorphismXMLFile(1,true);
+    	testIsomorphismXMLFile(2,true);
+    	testIsomorphismXMLFile(3,true);
+    	testIsomorphismXMLFile(4,true);
+    	testIsomorphismXMLFile(5,false);
+    	testIsomorphismXMLFile(6,false);
+    	testIsomorphismNTripleFile(7,true);
+    	testIsomorphismNTripleFile(8,false);
+    	
+    }
+    private void testIsomorphismNTripleFile(int i, boolean result) throws FileNotFoundException {
+		testIsomorphismFile(i,"N-TRIPLE","nt",result);
+	}
+
+	private void testIsomorphismXMLFile(int i, boolean result) throws FileNotFoundException {
+		testIsomorphismFile(i,"RDF/XML","rdf",result);
+		
+	}
+
+    String  filebase = "testing/regression/testModelEquals/";
+	private void testIsomorphismFile(int n, String lang, String suffix, boolean result) throws FileNotFoundException {
+
+		Graph g1 = getGraph();
+		Graph g2 = getGraph();
+		Model m1 = ModelFactory.createModelForGraph(g1);
+		Model m2 = ModelFactory.createModelForGraph(g2);
+		  m1.read(
+          		new FileInputStream(filebase + Integer.toString(n) + "-1."+suffix),
+              "http://www.example.org/",lang);
+          m2.read(
+          		new FileInputStream(filebase + Integer.toString(n) + "-2."+suffix),
+              "http://www.example.org/",lang);
+          boolean rslt = g1.isIsomorphicWith(g2) == result;
+          if (!rslt) {
+            System.out.println("g1:");
+            m1.write(System.out, "N-TRIPLE");
+            System.out.println("g2:");
+            m2.write(System.out, "N-TRIPLE");
+        }
+        assertTrue("Isomorphism test failed",rslt);
+	}
+
+	protected void add( Graph toUpdate, Graph toAdd )
         {
         toUpdate.getBulkUpdateHandler().add( toAdd );
         }
@@ -877,6 +926,7 @@ public/* abstract */class AbstractTestGraph extends GraphTestBase
         toUpdate.getBulkUpdateHandler().delete( toRemove );
         return toUpdate;
         }
+    
     
     protected Graph copy( Graph g )
         {
