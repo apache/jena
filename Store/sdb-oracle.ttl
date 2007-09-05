@@ -8,6 +8,7 @@ _:c rdf:type sdb:SDBConnection ;
     sdb:sdbType        "oracle" ;
     sdb:sdbHost        "localhost" ;
     sdb:sdbName        "XE" ;       # Oracle SID
+    sdb:driver         "oracle.jdbc.driver.OracleDriver" ;
 
     # With OracleXE, it can be useful to use the user/password
     # to give multiple stores in the same installation.
