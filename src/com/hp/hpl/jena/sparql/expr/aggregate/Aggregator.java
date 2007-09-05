@@ -21,6 +21,7 @@ public interface Aggregator
     public void accumulate(BindingKey key, Binding b) ;
     public Node getValue(BindingKey key) ;
     public String toPrefixString()  ;
+    public String key() ;
 }
 
 /*

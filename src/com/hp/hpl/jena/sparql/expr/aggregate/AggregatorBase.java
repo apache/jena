@@ -45,6 +45,8 @@ public abstract class AggregatorBase implements Aggregator
             throw new ARQInternalErrorException("Null for accumulator") ;
         return acc.getValue().asNode() ;
     }
+    
+    public String key() { return toPrefixString() ; }
 }
 
 /*
