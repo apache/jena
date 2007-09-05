@@ -6,50 +6,57 @@
 
 package com.hp.hpl.jena.sparql.expr.aggregate;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.expr.NodeValue;
 
-public class AggCount implements AggregateFactory
+public class AggCountVarDistinct implements AggregateFactory
 {
-    // ---- COUNT(*)
+    // ---- COUNT(DISTINCT ?var)
+    private Var var ;
 
     // ---- AggregatorFactory
-    private static AggCount singleton = new AggCount() ;
-    public static AggregateFactory get() { return singleton ; }
-
-    private AggCount() {} 
+    private AggCountVarDistinct(Var var) { this.var = var ; } 
 
     public Aggregator create()
     {
-        // One per each time there is an aggregation.
-        // For count(*) - one per group operator (so shared with having clause)
-        return new AggCountWorker() ;
+        return new AggCountDistinctWorker() ;
     }
-    
-    // ---- Aggregator
-    static class AggCountWorker extends AggregatorBase
-    {
-        public AggCountWorker()
-        {
-            super() ;
-        }
 
-        public String toString() { return "count(*)" ; }
-        public String toPrefixString() { return "(count)" ; }
+    // ---- Aggregator
+    class AggCountDistinctWorker extends AggregatorBase
+    {
+        public AggCountDistinctWorker() { super() ; }
+
+        public String toString()        { return "count(distinct "+var+")" ; }
+        public String toPrefixString()  { return "(count distinct "+var+")" ; }
 
         protected Accumulator createAccumulator()
         { 
-            return new AccCount() ;
+            return new AccCountDistinct() ; 
         }
     }
 
     // ---- Accumulator
-    static class AccCount implements Accumulator
+    class AccCountDistinct implements Accumulator
     {
-        private long count = 0 ;
-        public AccCount()   { }
-        public void accumulate(Binding binding) { count++ ; }
-        public NodeValue getValue()             { return NodeValue.makeInteger(count) ; }
+        private Set/*<Node>*/ seen = new HashSet() ;
+        public AccCountDistinct()               { } 
+        // The group key part of binding will be the same for all elements of the group.
+        public void accumulate(Binding binding)
+        { 
+            Node n = binding.get(var) ;
+            if ( n == null )
+                return ;
+            seen.add(n) ;
+        }
+        
+        public NodeValue getValue()            
+        { return NodeValue.makeInteger(seen.size()) ; }
     }
 }
 

@@ -7,9 +7,9 @@
 package com.hp.hpl.jena.query;
 
 import com.hp.hpl.jena.sparql.ARQConstants;
+import com.hp.hpl.jena.sparql.engine.optimizer.Optimizer;
 import com.hp.hpl.jena.sparql.util.Context;
 import com.hp.hpl.jena.sparql.util.Symbol;
-import com.hp.hpl.jena.sparql.engine.optimizer.Optimizer;
 
 /** ARQ - miscellaneous settings
  * 
@@ -106,11 +106,18 @@ public class ARQ
     
     public static final Symbol regexImpl =  ARQConstants.allocSymbol("regexImpl") ;
     
+        
     /** Symbol to name java.util.regex regular expression engine */ 
     public static final Symbol javaRegex =  ARQConstants.allocSymbol("javaRegex") ;
     /** Symbol to name the Xerces-J regular expression engine */ 
     public static final Symbol xercesRegex =  ARQConstants.allocSymbol("xercesRegex") ;
     
+    /** 
+     *  Context key controlling whether the main query engine moves filters to the "best" place.
+     *  Default is "true" - filte rplacement is done.
+     */  
+    public static final Symbol filterPlacement = ARQConstants.allocSymbol("filterPlacement") ;
+   
     /**
      * Use a simple (and non-scalable) graph implementation that does no
      * value testing.  Needed for DAWG tests where matching is exact
@@ -148,6 +155,7 @@ public class ARQ
         context.set(enablePropertyFunctions,    false) ;
         context.set(generateToList,             true) ;
         context.set(regexImpl,                  xercesRegex) ;
+        context.set(filterPlacement,            false) ;
     }
     
     //public static boolean getStrictMode()       { return strictMode ; }
@@ -190,6 +198,8 @@ public class ARQ
         context.set(regexImpl,                     javaRegex) ;
 //        if (  getContext().isTrue(romanNumeralsAsFirstClassDatatypes) )
 //            RomanNumeralDatatype.enableAsFirstClassDatatype() ; // Wires into the TypeMapper.
+        context.set(filterPlacement,                true) ;
+
         return context ;
     }
     

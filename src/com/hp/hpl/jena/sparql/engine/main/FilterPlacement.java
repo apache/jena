@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Set;
 
 import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.sparql.ARQConstants;
+import com.hp.hpl.jena.query.ARQ;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.OpVars;
 import com.hp.hpl.jena.sparql.algebra.op.OpBGP;
@@ -22,7 +22,6 @@ import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterFilterExpr;
 import com.hp.hpl.jena.sparql.expr.Expr;
 import com.hp.hpl.jena.sparql.expr.ExprList;
-import com.hp.hpl.jena.sparql.util.Symbol;
 import com.hp.hpl.jena.sparql.util.VarUtils;
 
 public class FilterPlacement
@@ -31,9 +30,7 @@ public class FilterPlacement
     private OpCompiler compiler ;
     private ExecutionContext execCxt ;
     
-    static final Symbol safePlacement = ARQConstants.allocSymbol("safeFilterPlacement") ;
-    
-    boolean doSafePlacement = true ;
+    boolean doFilterPlacement = false ;
 
     // Put filter in best place
     // Beware of 
@@ -45,7 +42,7 @@ public class FilterPlacement
     {
         this.compiler = compiler ;
         this.execCxt = execCxt ;
-        doSafePlacement = execCxt.getContext().isTrue(safePlacement) ;
+        doFilterPlacement = execCxt.getContext().isTrueOrUndef(ARQ.filterPlacement) ;
     }
     
     // --------------------------------
@@ -53,6 +50,13 @@ public class FilterPlacement
     
     public QueryIterator placeFiltersBGP(ExprList exprs, BasicPattern pattern, QueryIterator input)
     {
+        if ( ! doFilterPlacement )
+        {
+            QueryIterator qIter = StageBuilder.compile(pattern, input, execCxt) ;
+            return buildFilter(exprs, qIter) ;
+        }
+        
+        // Destructive use of exprs - copy it.
         exprs = new ExprList(exprs) ;
         QueryIterator qIter = placeFiltersWorker(exprs, pattern, input) ;
         // any remaining filters
@@ -65,8 +69,6 @@ public class FilterPlacement
         BasicPattern accPattern = new BasicPattern() ;
         Set patternVarsScope = new HashSet() ;
         QueryIterator qIter = input ;
-        
-        //OpVars.patternVars(op) ;
         
         qIter = insertAnyFilter(exprs, patternVarsScope, accPattern, qIter) ;
         if ( qIter == null )

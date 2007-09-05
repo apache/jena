@@ -14,6 +14,8 @@ import com.hp.hpl.jena.sparql.expr.NodeValue;
 
 public class AggCountDistinct implements AggregateFactory
 {
+    // ---- COUNT(DISTINCT *)
+
     private static AggCountDistinct singleton = new AggCountDistinct() ;
     public static AggregateFactory get() { return singleton ; }
 

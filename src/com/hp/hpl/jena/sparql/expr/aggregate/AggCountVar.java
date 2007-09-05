@@ -6,18 +6,18 @@
 
 package com.hp.hpl.jena.sparql.expr.aggregate;
 
+import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.expr.NodeValue;
 
-public class AggCount implements AggregateFactory
+public class AggCountVar implements AggregateFactory
 {
-    // ---- COUNT(*)
-
+    // ---- COUNT(?var)
+    
     // ---- AggregatorFactory
-    private static AggCount singleton = new AggCount() ;
-    public static AggregateFactory get() { return singleton ; }
+    private Var var ;
 
-    private AggCount() {} 
+    private AggCountVar(Var var) { this.var = var ; } 
 
     public Aggregator create()
     {
@@ -27,15 +27,15 @@ public class AggCount implements AggregateFactory
     }
     
     // ---- Aggregator
-    static class AggCountWorker extends AggregatorBase
+    class AggCountWorker extends AggregatorBase
     {
         public AggCountWorker()
         {
             super() ;
         }
 
-        public String toString() { return "count(*)" ; }
-        public String toPrefixString() { return "(count)" ; }
+        public String toString() { return "count("+var+")" ; }
+        public String toPrefixString() { return "(count "+var+")" ; }
 
         protected Accumulator createAccumulator()
         { 
@@ -44,11 +44,15 @@ public class AggCount implements AggregateFactory
     }
 
     // ---- Accumulator
-    static class AccCount implements Accumulator
+    class AccCount implements Accumulator
     {
         private long count = 0 ;
         public AccCount()   { }
-        public void accumulate(Binding binding) { count++ ; }
+        public void accumulate(Binding binding)
+        { 
+            if ( binding.contains(var) )
+                count++ ;
+        }
         public NodeValue getValue()             { return NodeValue.makeInteger(count) ; }
     }
 }

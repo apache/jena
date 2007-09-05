@@ -29,10 +29,16 @@ public class StageGeneratorAlt implements StageGenerator
         
         if ( false )
         {
-            // Illustrative -- call the most baic one one (no property functions)
+            // Illustrative -- call the most basic one one (no property functions)
             StageList sList = new StageList() ;
             sList.add(new StageBasic(pattern)) ;
             return sList ;
+        }
+
+        
+        if ( false )
+        {
+         // Illustrative -- call the most basic one one (no property functions)
         }
         
         StageList sList = new StageList() ;
