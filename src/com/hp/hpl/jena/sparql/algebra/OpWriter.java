@@ -337,6 +337,8 @@ public class OpWriter
         public void visit(OpGroupAgg opGroup)
         {
             // XXX Write (group (vars) (exprs) (aggs))
+            // Abstract: writeNamedExprssions(List vars, Map exprs) 
+            // share with visit(OpProject)
             
             start(opGroup, NoNL) ;
             out.print(" (") ;
