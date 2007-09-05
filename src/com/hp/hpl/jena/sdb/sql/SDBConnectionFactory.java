@@ -49,8 +49,6 @@ public class SDBConnectionFactory
     private static SDBConnection worker(SDBConnectionDesc desc)
     {
         java.sql.Connection sqlConnection = createSqlConnection(desc) ;
-        if ( desc.getDriver() != null )
-            JDBC.loadDriver(desc.getDriver()) ;
         SDBConnection c = new SDBConnection(sqlConnection) ;
         if ( desc.getLabel() != null )
             c.setLabel(desc.getLabel()) ;
@@ -60,7 +58,9 @@ public class SDBConnectionFactory
     /** Create a new, plain JDBC SQL connection from the description. */ 
     public static Connection createSqlConnection(SDBConnectionDesc desc)
     {
-        if ( desc.getJdbcURL().equals(JDBC.jdbcNone) )
+        if ( desc.getDriver() != null )
+            JDBC.loadDriver(desc.getDriver()) ;
+        else if ( ! desc.getJdbcURL().equals(JDBC.jdbcNone) )
         {
             String driver = desc.getDriver() ;
             if ( driver == null )
@@ -68,6 +68,7 @@ public class SDBConnectionFactory
             if ( driver != null )
                 JDBC.loadDriver(driver) ;
         }
+        
         return createSqlConnection(desc.getJdbcURL(), desc.getUser(), desc.getPassword()) ;
     }
 

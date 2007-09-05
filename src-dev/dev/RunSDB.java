@@ -68,14 +68,20 @@ public class RunSDB
 //            System.out.println() ;
             System.exit(0) ;
         }
-        
-        sdb.sdbprint.main("--print=sql", "--print=sqlNode", "--sdb=sdb1.ttl", "--query=testing/Optionals1/opt-coalesce-1.rq") ;
-        System.exit(0) ;
 
-        
-        setSDBConfig("../SDB-dev/sdb-LUBM-hash.ttl") ;
-        sdbdump("--set=jdbcStream=true", "--set=jdbcFetchSize=10") ;
+        if ( false )
+        {
+            sdb.sdbprint.main("--print=sql", "--print=sqlNode", "--sdb=sdb1.ttl", "--query=testing/Optionals1/opt-coalesce-1.rq") ;
+            System.exit(0) ;
+        }
+
+        setSDBConfig("sdb.ttl") ;
+        sdbdump() ;
         System.exit(0) ;
+        
+//        setSDBConfig("../SDB-dev/sdb-LUBM-hash.ttl") ;
+//        sdbdump("--set=jdbcStream=true", "--set=jdbcFetchSize=10") ;
+//        System.exit(0) ;
         
 //        
 //        sdb.sdbprint.main("--sdb=sdb.ttl",  "--layout=layout2/index", "--query=Q.rq") ;
