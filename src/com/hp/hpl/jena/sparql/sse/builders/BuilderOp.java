@@ -281,8 +281,12 @@ public class BuilderOp
         // See buildProject
         public Op make(ItemList list)
         {
+            // XXX WRONG.
+            // namedExpressions has to build the agregators.
+            // What about (group) expressions.
+            
             BuilderBase.checkLength(3, 4, list,  "Group") ;
-            List x = buildExpr(list.get(1).getList()) ;
+            List x = BuilderNode.buildVarList(list.get(1)) ;
             Map exprs = null ;
             List aggregators = new ArrayList() ;
             if ( list.size() == 4)

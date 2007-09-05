@@ -336,6 +336,8 @@ public class OpWriter
         
         public void visit(OpGroupAgg opGroup)
         {
+            // XXX Write (group (vars) (exprs) (aggs))
+            
             start(opGroup, NoNL) ;
             out.print(" (") ;
             boolean first = true ;
@@ -359,6 +361,7 @@ public class OpWriter
                 }
             }
             out.print(")");
+            
             if ( opGroup.getAggregators() != null && opGroup.getAggregators().size() > 0 )
             {
                 out.print(" (") ;

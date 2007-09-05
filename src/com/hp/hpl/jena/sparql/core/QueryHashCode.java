@@ -74,15 +74,18 @@ public class QueryHashCode
 
         public void visitGroupBy(Query query)
         {
-            if ( query.getGroupVars() != null )
-                x ^= query.getGroupVars().hashCode() ;
-            if ( query.getGroupExprs() != null )
-                x ^= query.getGroupExprs().hashCode() ;
+            if ( query.hasGroupBy() )
+            {
+                if ( query.getGroupVars() != null )
+                    x ^= query.getGroupVars().hashCode() ;
+                if ( query.getGroupExprs() != null )
+                    x ^= query.getGroupExprs().hashCode() ;
+            }
         }
         
         public void visitHaving(Query query) 
         {
-            if ( query.getHavingExprs() != null )
+            if ( query.hasHaving() )
                 x ^= query.getHavingExprs().hashCode() ;
         }
         

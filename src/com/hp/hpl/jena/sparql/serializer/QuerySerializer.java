@@ -212,6 +212,10 @@ public class QuerySerializer implements QueryVisitor
             }
             out.println();
         }
+    }
+
+    public void visitHaving(Query query)
+    {
         if ( query.hasHaving() )
         {
             out.print("HAVING") ;
@@ -223,12 +227,6 @@ public class QuerySerializer implements QueryVisitor
             }
             out.println() ;
         }
-    }
-
-    public void visitHaving(Query query)
-    {
-        if ( query.hasHaving() )
-        {}
     }
 
     public void visitOrderBy(Query query)

@@ -56,10 +56,13 @@ public class OpGroupAgg extends OpModifier
     {
         if ( ! (other instanceof OpGroupAgg) ) return false ;
         OpGroupAgg opGroup = (OpGroupAgg)other ;
-        if ( ! Utils.eq(groupVars, opGroup.groupVars) ||
-             ! Utils.eq(groupExprs, opGroup.groupExprs) ||
-             ! Utils.eq(aggregators, opGroup.aggregators) )
+        if ( ! Utils.eq(groupVars, opGroup.groupVars) ) 
             return false ;
+        if ( ! Utils.eq(groupExprs, opGroup.groupExprs) )
+            return false ;
+        if ( ! Utils.eq(aggregators, opGroup.aggregators) )
+            return false ;
+            
         return getSubOp().equalTo(opGroup.getSubOp(), labelMap) ;
     }
 
