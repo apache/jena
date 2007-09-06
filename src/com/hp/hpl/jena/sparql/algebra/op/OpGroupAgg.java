@@ -11,7 +11,7 @@ import java.util.List;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.OpVisitor;
 import com.hp.hpl.jena.sparql.algebra.Transform;
-import com.hp.hpl.jena.sparql.expr.VarExprList;
+import com.hp.hpl.jena.sparql.core.VarExprList;
 import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 import com.hp.hpl.jena.sparql.util.Utils;
 

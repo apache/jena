@@ -10,9 +10,9 @@ import java.util.List;
 
 import com.hp.hpl.jena.sparql.algebra.Table;
 import com.hp.hpl.jena.sparql.core.BasicPattern;
+import com.hp.hpl.jena.sparql.core.VarExprList;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.expr.ExprList;
-import com.hp.hpl.jena.sparql.expr.VarExprList;
 
 public interface Evaluator
 {

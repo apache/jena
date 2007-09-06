@@ -12,12 +12,12 @@ import java.util.List;
 import com.hp.hpl.jena.graph.Node;
 
 import com.hp.hpl.jena.sparql.core.Var;
+import com.hp.hpl.jena.sparql.core.VarExprList;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.binding.BindingMap;
 import com.hp.hpl.jena.sparql.engine.binding.BindingProject;
-import com.hp.hpl.jena.sparql.expr.VarExprList;
 import com.hp.hpl.jena.sparql.function.FunctionEnv;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;

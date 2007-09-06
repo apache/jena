@@ -15,6 +15,7 @@ import com.hp.hpl.jena.sparql.algebra.Table;
 import com.hp.hpl.jena.sparql.algebra.TableFactory;
 import com.hp.hpl.jena.sparql.algebra.table.TableN;
 import com.hp.hpl.jena.sparql.core.BasicPattern;
+import com.hp.hpl.jena.sparql.core.VarExprList;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.ResultSetStream;
@@ -22,7 +23,6 @@ import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.iterator.*;
 import com.hp.hpl.jena.sparql.engine.main.StageBuilder;
 import com.hp.hpl.jena.sparql.expr.ExprList;
-import com.hp.hpl.jena.sparql.expr.VarExprList;
 import com.hp.hpl.jena.sparql.util.Utils;
 
 

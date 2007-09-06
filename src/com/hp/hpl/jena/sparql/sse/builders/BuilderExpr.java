@@ -13,6 +13,7 @@ import java.util.Map;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException;
 import com.hp.hpl.jena.sparql.core.Var;
+import com.hp.hpl.jena.sparql.core.VarExprList;
 import com.hp.hpl.jena.sparql.expr.*;
 import com.hp.hpl.jena.sparql.expr.aggregate.AggCount;
 import com.hp.hpl.jena.sparql.expr.aggregate.AggCountDistinct;

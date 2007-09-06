@@ -20,9 +20,9 @@ import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.Table;
 import com.hp.hpl.jena.sparql.algebra.op.*;
 import com.hp.hpl.jena.sparql.core.BasicPattern;
+import com.hp.hpl.jena.sparql.core.VarExprList;
 import com.hp.hpl.jena.sparql.expr.Expr;
 import com.hp.hpl.jena.sparql.expr.ExprList;
-import com.hp.hpl.jena.sparql.expr.VarExprList;
 import com.hp.hpl.jena.sparql.sse.Item;
 import com.hp.hpl.jena.sparql.sse.ItemList;
 
