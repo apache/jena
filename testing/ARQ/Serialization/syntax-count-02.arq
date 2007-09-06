@@ -1,0 +1,5 @@
+PREFIX : <http://example/>
+
+SELECT (COUNT(DISTINCT *) AS ?count)
+{ ?x :p ?p }
+GROUP BY ?p

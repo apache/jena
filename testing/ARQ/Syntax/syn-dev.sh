@@ -271,7 +271,7 @@ N=$((N+1)) ; testBad $(fname "syn-bad-" $N) <<EOF
 # "longest token rule" means this isn't a "<" and "&&"
 PREFIX :   <http://example/ns#>
 SELECT * WHERE
-{ FILTER (?x<?a&&?b>?y)
+{ FILTER (?x<?a&&?b>?y) }
 EOF
 
 N=$((N+1)) ; testBad $(fname "syn-bad-" $N) <<EOF

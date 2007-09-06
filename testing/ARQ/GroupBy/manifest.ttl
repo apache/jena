@@ -1,0 +1,103 @@
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:	<http://www.w3.org/2000/01/rdf-schema#> .
+@prefix mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix mfx:    <http://jena.hpl.hp.com/2005/05/test-manifest-extra#> .
+@prefix qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#> .
+
+<>  rdf:type mf:Manifest ;
+    rdfs:label "GROUP BY" ;
+    mf:entries
+    ( 
+        # Complete data
+      [  mf:name    "Group By - 1" ;
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <group-1.arq> ;
+              qt:data   <data-1.ttl> ] ;
+        mf:result  <group-1.srx>
+      ]
+
+      [  mf:name    "Group By - 2" ;
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <group-2.arq> ;
+              qt:data   <data-1.ttl> ] ;
+        mf:result  <group-2.srx>
+      ]
+
+      [  mf:name    "Group By - 3 (Group var does not occur)" ;
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <group-3.arq> ;
+              qt:data   <data-1.ttl> ] ;
+        mf:result  <group-3.srx>
+      ]
+
+      [  mf:name    "Group By - 4 (Group expression)" ;
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <group-4.arq> ;
+              qt:data   <data-1.ttl> ] ;
+        mf:result  <group-4.srx>
+      ]
+
+      [  mf:name    "Count - 1 - No Group" ;
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <count-1.arq> ;
+              qt:data   <data-1.ttl> ] ;
+        mf:result  <count-1.srx>
+      ]
+
+      [  mf:name    "Count - 2 - No Group" ;
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <count-2.arq> ;
+              qt:data   <data-1.ttl> ] ;
+        mf:result  <count-2.srx>
+      ]
+
+      [  mf:name    "Count - 3" ;
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <count-3.arq> ;
+              qt:data   <data-1.ttl> ] ;
+        mf:result  <count-3.srx>
+      ]
+
+      [  mf:name    "Count - 4" ;
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <count-4.arq> ;
+              qt:data   <data-1.ttl> ] ;
+        mf:result  <count-4.srx>
+      ]
+
+      [  mf:name    "Count - 5 - count(distinct)" ;
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <count-5.arq> ;
+              qt:data   <data-1.ttl> ] ;
+        mf:result  <count-5.srx>
+      ]
+
+      [  mf:name    "Count - 6 - count(?var) / count(distinct ?var)" ;
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <count-6.arq> ;
+              qt:data   <data-1.ttl> ] ;
+        mf:result  <count-6.srx>
+      ]
+
+      [  mf:name    "Having - 1" ;
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <having-1.arq> ;
+              qt:data   <data-1.ttl> ] ;
+        mf:result  <having-1.srx>
+      ]
+
+    
+
+        # Now with partial data
+    ).

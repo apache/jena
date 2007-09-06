@@ -64,8 +64,9 @@ Searching the web is also very helpful.</p>
 
 <p>
 The <code>QueryExecutionFactory</code> has methods for creating a
-<code>QueryExecution</code> object for remote use.  The ARQ system includes
-a package for a remote engine in <code>com.hp.hpl.jena.sparql.engine.http</code>.</p>
+<code>QueryExecution</code> object for remote use.  <code>QueryExecutionFactory.sparqlService</code></p>
+<p>
+These methods build a query execution object that uses the query engine in <code>com.hp.hpl.jena.sparql.engine.http</code>.</p>
 <p>The remote request is made when the <code>execSelect</code>,
 <code>execConstruct</code>, <code>execDescribe</code> or <code>execAsk</code>
 method is called.

@@ -8,9 +8,6 @@ package arq.examples.propertyfunction;
 
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.rdf.model.Model;
@@ -30,13 +27,14 @@ import com.hp.hpl.jena.sparql.engine.iterator.QueryIterNullIterator;
 import com.hp.hpl.jena.sparql.engine.main.OpCompiler;
 import com.hp.hpl.jena.sparql.expr.E_Regex;
 import com.hp.hpl.jena.sparql.expr.Expr;
-import com.hp.hpl.jena.sparql.expr.NodeVar;
+import com.hp.hpl.jena.sparql.expr.ExprVar;
 import com.hp.hpl.jena.sparql.pfunction.PropFuncArg;
 import com.hp.hpl.jena.sparql.pfunction.PropertyFunction;
 import com.hp.hpl.jena.sparql.pfunction.PropertyFunctionRegistry;
 import com.hp.hpl.jena.sparql.syntax.ElementFilter;
 import com.hp.hpl.jena.sparql.syntax.ElementGroup;
 import com.hp.hpl.jena.sparql.syntax.ElementTriplesBlock;
+import com.hp.hpl.jena.sparql.util.ALog;
 import com.hp.hpl.jena.sparql.util.NodeUtils;
 import com.hp.hpl.jena.vocabulary.RDFS;
 
@@ -70,13 +68,11 @@ import com.hp.hpl.jena.query.*;
  *  indexing or external structure.
  *  
  * @author Andy Seaborne
- * @version $Id: labelSearch.java,v 1.3 2007-06-07 13:09:47 andy_seaborne Exp $
+ * @version $Id: labelSearch.java,v 1.4 2007-09-06 15:12:12 andy_seaborne Exp $
  */ 
 
 public class labelSearch implements PropertyFunction
 {
-    private static Log log = LogFactory.getLog(labelSearch.class) ;
-    
     List myArgs = null;
     
     public void build(PropFuncArg argSubject, Node predicate, PropFuncArg argObject, ExecutionContext execCxt)
@@ -94,8 +90,6 @@ public class labelSearch implements PropertyFunction
 
     public QueryIterator exec(QueryIterator input, PropFuncArg argSubject, Node predicate, PropFuncArg argObject, ExecutionContext execCxt)
     {
-        log.debug("exec") ;
-        
         // No real need to check the pattern arguments because
         // the replacement triple pattern and regex will cope
         // but we illustrate testing here.
@@ -104,7 +98,7 @@ public class labelSearch implements PropertyFunction
         String pattern = NodeUtils.stringLiteral(argObject.getArg()) ;
         if ( pattern == null )
         {
-            log.warn("Pattern must be a plain literal or xsd:string: "+argObject.getArg()) ;
+            ALog.warn(this, "Pattern must be a plain literal or xsd:string: "+argObject.getArg()) ;
             return new QueryIterNullIterator(execCxt) ;
         }
 
@@ -121,7 +115,7 @@ public class labelSearch implements PropertyFunction
         bp.add(t) ;
         OpBGP op = new OpBGP(bp) ;
         
-        Expr regex = new E_Regex(new NodeVar(var2.getName()), pattern, "i") ;
+        Expr regex = new E_Regex(new ExprVar(var2.getName()), pattern, "i") ;
         OpFilter filter = OpFilter.filter(regex, op) ;
 
         // ---- Evaluation
@@ -136,7 +130,7 @@ public class labelSearch implements PropertyFunction
             return Algebra.exec(op2, execCxt.getDataset()) ;
         }        
         
-        // Use the default, optimizing query engine. 
+        // Use the default, optimizing query engine.
         return OpCompiler.compile(filter, input, execCxt) ;
     }
 
@@ -152,7 +146,7 @@ public class labelSearch implements PropertyFunction
         elementBGP.addTriple(t) ;
         
         // Regular expression for  regex(?hiddenVar, "pattern", "i") 
-        Expr regex = new E_Regex(new NodeVar(var2.getName()), pattern, "i") ;
+        Expr regex = new E_Regex(new ExprVar(var2.getName()), pattern, "i") ;
         
         ElementGroup elementGroup = new ElementGroup() ;
         elementGroup.addElement(elementBGP) ;

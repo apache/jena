@@ -7,10 +7,52 @@
     rdfs:label "ASK" ;
     mf:entries
     ( 
-##       [  mf:name    "NAME" ;
-##          mf:action
-##             [ qt:query  <QUERY> ;
-##               qt:data   <DATA> ] ;
-##         mf:result  <RESULT>
-##       ]
+      [  mf:name    "ASK-1" ;
+         mf:action
+            [ qt:query  <ask-1.rq> ;
+              qt:data   <data.ttl> ] ;
+        mf:result  <ask-1.srx>
+      ]
+      [  mf:name    "ASK-2" ;
+         mf:action
+            [ qt:query  <ask-2.rq> ;
+              qt:data   <data.ttl> ] ;
+        mf:result  <ask-2.srj>
+      ]
+      [  mf:name    "ASK-3" ;
+         mf:action
+            [ qt:query  <ask-3.rq> ;
+              qt:data   <data.ttl> ] ;
+        mf:result  <ask-3.ttl>
+      ]
+      [  mf:name    "ASK-4" ;
+         mf:action
+            [ qt:query  <ask-4.rq> ;
+              qt:data   <data.ttl> ] ;
+        mf:result  <ask-4.srx>
+      ]
+      [  mf:name    "ASK-5" ;
+         mf:action
+            [ qt:query  <ask-5.rq> ;
+              qt:data   <data.ttl> ] ;
+        mf:result  <ask-5.srj>
+      ]
+      [  mf:name    "ASK-6" ;
+         mf:action
+            [ qt:query  <ask-6.rq> ;
+              qt:data   <data.ttl> ] ;
+        mf:result  <ask-6.ttl>
+      ]
+      [  mf:name    "ASK-7" ;
+         mf:action
+            [ qt:query  <ask-7.rq> ;
+              qt:data   <data.ttl> ] ;
+        mf:result  <ask-7.srx>
+      ]
+      [  mf:name    "ASK-8" ;
+         mf:action
+            [ qt:query  <ask-8.rq> ;
+              qt:data   <data.ttl> ] ;
+        mf:result  <ask-8.srx>
+      ]
     ).

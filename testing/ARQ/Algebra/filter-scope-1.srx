@@ -8,7 +8,7 @@
     <variable name="w"/>
     <variable name="v2"/>
   </head>
-  <results ordered="false" distinct="false">
+  <results>
     <result>
       <binding name="v">
         <literal datatype="http://www.w3.org/2001/XMLSchema#integer">4</literal>

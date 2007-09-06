@@ -1,0 +1,388 @@
+@prefix dc:		<http://purl.org/dc/elements/1.1/> .
+@prefix rdf:	<http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:	<http://www.w3.org/2000/01/rdf-schema#> .
+@prefix :		<http://www.w3.org/2006/03/test-description#> .
+
+# ---------------------------------------------
+# This test cases are based on the dataset
+# data/ontology/Test-data.n3
+# 	
+# Author: Markus Stocker
+# Version: $Id: TestProbabilityDefaultModel-manifest.n3,v 1.1 2007-09-06 15:11:32 andy_seaborne Exp $
+# ---------------------------------------------
+	
+<http://jena.hpl.hp.com/ARQo/test/#TJ001> 
+	rdf:type 				:TestCase ;
+	rdfs:comment			"The pattern matches everything" ;
+	dc:title 				"TJ001" ;
+	:triple1				[ :subject		"?x" ;
+							  :predicate 	"?y" ;
+							  :object		"?z" ] ;
+	:probability			"1.0" ;
+	:selectivity			"1.0" .
+	
+<http://jena.hpl.hp.com/ARQo/test/#TJ002> 
+	rdf:type 				:TestCase ;
+	rdfs:comment			"The cartesian product between two result sets of the ontology size" ;
+	dc:title 				"TJ002" ;
+	:triple1				[ :subject		"?x1" ;
+						 	  :predicate 	"?y1" ;
+							  :object		"?z1" ] ;
+	:triple2				[ :subject		"?x2" ;
+						 	  :predicate 	"?y2" ;
+							  :object		"?z2" ] ;
+	:probability			"1.0" ;
+	:selectivity			"1.0" .
+	
+<http://jena.hpl.hp.com/ARQo/test/#TJ003> 
+	rdf:type 				:TestCase ;
+	rdfs:comment			"The cartesian product between two result sets joined by a SS variable. 
+							 This is the upper bound for joined triple patterns joined by a SS.
+							 The specialized RDF index provides exact information about this." ;
+	dc:title 				"TJ003" ;
+	:triple1				[ :subject		"?x1" ;
+						 	  :predicate 	"?y1" ;
+							  :object		"?z1" ] ;
+	:triple2				[ :subject		"?x1" ;
+						 	  :predicate 	"?y2" ;
+							  :object		"?z2" ] ;
+	:probability			"0.22132943754565376" ;
+	:selectivity			"0.22132943754565376" .
+	
+<http://jena.hpl.hp.com/ARQo/test/#TJ004> 
+	rdf:type 				:TestCase ;
+	rdfs:comment			"The cartesian product between two result sets joined by a SO variable. 
+							 This is the upper bound for joined triple patterns joined by a SO.
+							 The specialized RDF index provides exact information about this." ;
+	dc:title 				"TJ004" ;
+	:triple1				[ :subject		"?x1" ;
+						 	  :predicate 	"?y1" ;
+							  :object		"?z1" ] ;
+	:triple2				[ :subject		"?x2" ;
+						 	  :predicate 	"?y2" ;
+							  :object		"?x1" ] ;
+	:probability			"0.0" ;
+	:selectivity			"0.0" .
+	
+<http://jena.hpl.hp.com/ARQo/test/#TJ005> 
+	rdf:type 				:TestCase ;
+	rdfs:comment			"The cartesian product between two result sets joined by a OS variable. 
+							 This is the upper bound for joined triple patterns joined by a OS.
+							 The specialized RDF index provides exact information about this." ;
+	dc:title 				"TJ005" ;
+	:triple1				[ :subject		"?x1" ;
+						 	  :predicate 	"?y1" ;
+							  :object		"?z1" ] ;
+	:triple2				[ :subject		"?z1" ;
+						 	  :predicate 	"?y2" ;
+							  :object		"?z2" ] ;
+	:probability			"0.0" ;
+	:selectivity			"0.0" .
+	
+<http://jena.hpl.hp.com/ARQo/test/#TJ006> 
+	rdf:type 				:TestCase ;
+	rdfs:comment			"The cartesian product between two result sets joined by a OO variable. 
+							 This is the upper bound for joined triple patterns joined by a OO.
+							 The specialized RDF index provides exact information about this." ;
+	dc:title 				"TJ006" ;
+	:triple1				[ :subject		"?x1" ;
+						 	  :predicate 	"?y1" ;
+							  :object		"?z1" ] ;
+	:triple2				[ :subject		"?x2" ;
+						 	  :predicate 	"?y2" ;
+							  :object		"?z1" ] ;
+	:probability			"0.04601899196493791" ;
+	:selectivity			"0.04601899196493791" .
+	
+<http://jena.hpl.hp.com/ARQo/test/#TJ007> 
+	rdf:type 				:TestCase ;
+	dc:title 				"TJ007" ;
+	:triple1				[ :subject		"<http://example.org#Person1>" ;
+						 	  :predicate 	"?y1" ;
+							  :object		"?z1" ] ;
+	:triple2				[ :subject		"<http://example.org#Person1>" ;
+						 	  :predicate 	"?y2" ;
+							  :object		"?z2" ] ;
+	:probability			"0.0017706355003652306" ;
+	:selectivity			"0.07304601899196493" .
+	
+<http://jena.hpl.hp.com/ARQo/test/#TJ008> 
+	rdf:type 				:TestCase ;
+	dc:title 				"TJ008" ;
+	:triple1				[ :subject		"<http://example.org#Person1>" ;
+						 	  :predicate 	"?y1" ;
+							  :object		"?z1" ] ;
+	:triple2				[ :subject		"?x2" ;
+						 	  :predicate 	"?y2" ;
+							  :object		"<http://example.org#Person1>" ] ;
+	:probability			"0.0" ;
+	:selectivity			"0.0" .
+	
+<http://jena.hpl.hp.com/ARQo/test/#TJ009> 
+	rdf:type 				:TestCase ;
+	dc:title 				"TJ009" ;
+	:triple1				[ :subject		"?x1" ;
+						 	  :predicate 	"?y1" ;
+							  :object		"person1@msn.com" ] ;
+	:triple2				[ :subject		"person1@msn.com" ;
+						 	  :predicate 	"?y2" ;
+							  :object		"?z2" ] ;
+	:probability			"0.0" ;
+	:selectivity			"0.0" .
+	
+<http://jena.hpl.hp.com/ARQo/test/#TJ010> 
+	rdf:type 				:TestCase ;
+	dc:title 				"TJ010" ;
+	:triple1				[ :subject		"?x1" ;
+						 	  :predicate 	"?y1" ;
+							  :object		"xxx-xxx-xxx" ] ;
+	:triple2				[ :subject		"?x2" ;
+						 	  :predicate 	"?y2" ;
+							  :object		"xxx-xxx-xxx" ] ;
+	:probability			"0.0007304601899196494" ;
+	:selectivity			"0.018261504747991233" .
+	
+<http://jena.hpl.hp.com/ARQo/test/#TJ011> 
+	rdf:type 				:TestCase ;
+	dc:title 				"TJ011" ;
+	:triple1				[ :subject		"?x1" ;
+						 	  :predicate 	"<http://example.org#firstname>" ;
+							  :object		"?z1" ] ;
+	:triple2				[ :subject		"?x1" ;
+						 	  :predicate 	"<http://example.org#lastname>" ;
+							  :object		"?z2" ] ;
+	:probability			"0.003652300949598247" ;
+	:selectivity			"0.003652300949598247" .
+	
+<http://jena.hpl.hp.com/ARQo/test/#TJ012> 
+	rdf:type 				:TestCase ;
+	dc:title 				"TJ012" ;
+	rdfs:comment			"Person1 has two skype properties, hence the result set is not of size 3 but 4" ;
+	:triple1				[ :subject		"?x1" ;
+						 	  :predicate 	"<http://example.org#skype>" ;
+							  :object		"?z1" ] ;
+	:triple2				[ :subject		"?x1" ;
+						 	  :predicate 	"<http://example.org#msn>" ;
+							  :object		"?z2" ] ;
+	:probability			"0.0029218407596785976" ;
+	:selectivity			"0.0029218407596785976" .
+	
+<http://jena.hpl.hp.com/ARQo/test/#TJ013> 
+	rdf:type 				:TestCase ;
+	dc:title 				"TJ013" ;
+	:triple1				[ :subject		"?x1" ;
+						 	  :predicate 	"<http://example.org#msn>" ;
+							  :object		"?z1" ] ;
+	:triple2				[ :subject		"?x1" ;
+						 	  :predicate 	"<http://example.org#phone>" ;
+							  :object		"?z2" ] ;
+	:probability			"0.002191380569758948" ;
+	:selectivity			"0.002191380569758948" .
+	
+<http://jena.hpl.hp.com/ARQo/test/#TJ014> 
+	rdf:type 				:TestCase ;
+	dc:title 				"TJ014" ;
+	:triple1				[ :subject		"<http://example.org#Person1>" ;
+						 	  :predicate 	"<http://example.org#msn>" ;
+							  :object		"?z1" ] ;
+	:triple2				[ :subject		"<http://example.org#Person1>" ;
+						 	  :predicate 	"<http://example.org#skype>" ;
+							  :object		"?z2" ] ;
+	:probability			"0.0007304601899196494" ;
+	:selectivity			"0.0014609203798392988" .
+	
+<http://jena.hpl.hp.com/ARQo/test/#TJ015> 
+	rdf:type 				:TestCase ;
+	dc:title 				"TJ015" ;
+	:triple1				[ :subject		"<http://example.org#Person1>" ;
+						 	  :predicate 	"<http://example.org#msn>" ;
+							  :object		"?z1" ] ;
+	:triple2				[ :subject		"<http://example.org#Person1>" ;
+						 	  :predicate 	"<http://example.org#phone>" ;
+							  :object		"?z2" ] ;
+	:probability			"0.0007304601899196494" ;
+	:selectivity			"0.0007304601899196494" .
+	
+<http://jena.hpl.hp.com/ARQo/test/#TJ016> 
+	rdf:type 				:TestCase ;
+	dc:title 				"TJ016" ;
+	:triple1				[ :subject		"<http://example.org#Person1>" ;
+						 	  :predicate 	"<http://example.org#msn>" ;
+							  :object		"?z1" ] ;
+	:triple2				[ :subject		"<http://example.org#Person1>" ;
+						 	  :predicate 	"<http://example.org#skype>" ;
+							  :object		"person1b" ] ;
+	:probability			"0.0007304601899196494" ;
+	:selectivity			"0.0007304601899196494" .
+	
+<http://jena.hpl.hp.com/ARQo/test/#TJ017> 
+	rdf:type 				:TestCase ;
+	dc:title 				"TJ017" ;
+	:triple1				[ :subject		"<http://example.org#Person1>" ;
+						 	  :predicate 	"<http://example.org#msn>" ;
+							  :object		"person1@msn.com" ] ;
+	:triple2				[ :subject		"<http://example.org#Person1>" ;
+						 	  :predicate 	"<http://example.org#phone>" ;
+							  :object		"?z2" ] ;
+	:probability			"0.0007304601899196494" ;
+	:selectivity			"0.0007304601899196494" .
+	
+<http://jena.hpl.hp.com/ARQo/test/#TJ018> 
+	rdf:type 				:TestCase ;
+	dc:title 				"TJ018" ;
+	:triple1				[ :subject		"<http://example.org#Person1>" ;
+						 	  :predicate 	"<http://example.org#msn>" ;
+							  :object		"person2@msn.com" ] ;
+	:triple2				[ :subject		"<http://example.org#Person1>" ;
+						 	  :predicate 	"<http://example.org#phone>" ;
+							  :object		"xxx-xxx-xxx" ] ;
+	:probability			"0.0007304601899196494" ;
+	:selectivity			"0.0" .
+	
+<http://jena.hpl.hp.com/ARQo/test/#TJ019> 
+	rdf:type 				:TestCase ;
+	dc:title 				"TJ019" ;
+	rdfs:comment			"No join, there is no corresponding pattern in the index" ;
+	:triple1				[ :subject		"?x1" ;
+						 	  :predicate 	"<http://example.org#phone>" ;
+							  :object		"?z1" ] ;
+	:triple2				[ :subject		"?x2" ;
+						 	  :predicate 	"<http://example.org#phone>" ;
+							  :object		"?z2" ] ;
+	:probability			"0.018261504747991236" ;
+	:selectivity			"0.018261504747991233" .
+	
+<http://jena.hpl.hp.com/ARQo/test/#TJ020> 
+	rdf:type 				:TestCase ;
+	dc:title 				"TJ020" ;
+	rdfs:comment			"No join, there is no corresponding pattern in the index" ;
+	:triple1				[ :subject		"?x1" ;
+						 	  :predicate 	"<http://example.org#firstname>" ;
+							  :object		"?z1" ] ;
+	:triple2				[ :subject		"?x2" ;
+						 	  :predicate 	"<http://example.org#lastname>" ;
+							  :object		"?z2" ] ;
+	:probability			"0.018261504747991233" ;
+	:selectivity			"0.018261504747991233" .
+	
+<http://jena.hpl.hp.com/ARQo/test/#TJ021> 
+	rdf:type 				:TestCase ;
+	dc:title 				"TJ021" ;
+	rdfs:comment			"No join, there is no corresponding pattern in the index" ;
+	:triple1				[ :subject		"?x1" ;
+						 	  :predicate 	"<http://example.org#address>" ;
+							  :object		"?z1" ] ;
+	:triple2				[ :subject		"?x2" ;
+						 	  :predicate 	"<http://example.org#msn>" ;
+							  :object		"?z2" ] ;
+	:probability			"0.006574141709276844" ;
+	:selectivity			"0.006574141709276844" .
+	
+<http://jena.hpl.hp.com/ARQo/test/#TJ022> 
+	rdf:type 				:TestCase ;
+	dc:title 				"TJ022" ;
+	:triple1				[ :subject		"?x1" ;
+						 	  :predicate 	"<http://example.org#phone>" ;
+							  :object		"?z1" ] ;
+	:triple2				[ :subject		"?x2" ;
+						 	  :predicate 	"<http://example.org#phone>" ;
+							  :object		"?z1" ] ;
+	:probability			"0.018261504747991233" ;
+	:selectivity			"0.018261504747991233" .
+	
+<http://jena.hpl.hp.com/ARQo/test/#TJ023> 
+	rdf:type 				:TestCase ;
+	dc:title 				"TJ023" ;
+	:triple1				[ :subject		"?x1" ;
+						 	  :predicate 	"<http://example.org#phone>" ;
+							  :object		"?z1" ] ;
+	:triple2				[ :subject		"?x2" ;
+						 	  :predicate 	"<http://example.org#msn>" ;
+							  :object		"?x1" ] ;
+	:probability			"0.0" ;
+	:selectivity			"0.0" .
+	
+<http://jena.hpl.hp.com/ARQo/test/#TJ024> 
+	rdf:type 				:TestCase ;
+	dc:title 				"TJ024" ;
+	:triple1				[ :subject		"?z2" ;
+						 	  :predicate 	"<http://example.org#phone>" ;
+							  :object		"?z1" ] ;
+	:triple2				[ :subject		"?x2" ;
+						 	  :predicate 	"<http://example.org#msn>" ;
+							  :object		"?z2" ] ;
+	:probability			"0.0" ;
+	:selectivity			"0.0" .
+	
+<http://jena.hpl.hp.com/ARQo/test/#TJ025> 
+	rdf:type 				:TestCase ;
+	dc:title 				"TJ025" ;
+	:triple1				[ :subject		"?x1" ;
+						 	  :predicate 	"<http://example.org#firstname>" ;
+							  :object		"?z1" ] ;
+	:probability			"0.13513513513513514" ;
+	:selectivity			"0.13513513513513514" .
+	
+<http://jena.hpl.hp.com/ARQo/test/#TJ026> 
+	rdf:type 				:TestCase ;
+	dc:title 				"TJ026" ;
+	:triple1				[ :subject		"?x1" ;
+						 	  :predicate 	"<http://example.org#msn>" ;
+							  :object		"?z1" ] ;
+	:probability			"0.08108108108108109" ;
+	:selectivity			"0.08108108108108109" .
+	
+<http://jena.hpl.hp.com/ARQo/test/#TJ027> 
+	rdf:type 				:TestCase ;
+	dc:title 				"TJ027" ;
+	:triple1				[ :subject		"<http://example.org#Person1>" ;
+						 	  :predicate 	"?y1" ;
+							  :object		"?z1" ] ;
+	:probability			"0.2702702702702703" ;
+	:selectivity			"0.2702702702702703" .
+	
+<http://jena.hpl.hp.com/ARQo/test/#TJ028> 
+	rdf:type 				:TestCase ;
+	dc:title 				"TJ028" ;
+	:triple1				[ :subject		"<http://example.org#Person5>" ;
+						 	  :predicate 	"?y1" ;
+							  :object		"?z1" ] ;
+	:probability			"0.10810810810810811" ;
+	:selectivity			"0.10810810810810811" .
+	
+<http://jena.hpl.hp.com/ARQo/test/#TJ029> 
+	rdf:type 				:TestCase ;
+	dc:title 				"TJ029" ;
+	:triple1				[ :subject		"?x1" ;
+						 	  :predicate 	"?y1" ;
+							  :object		"xxx-xxx-xxx" ] ;
+	:probability			"0.13513513513513514" ;
+	:selectivity			"0.13513513513513514" .
+	
+<http://jena.hpl.hp.com/ARQo/test/#TJ030> 
+	rdf:type 				:TestCase ;
+	dc:title 				"TJ030" ;
+	:triple1				[ :subject		"<http://example.org#Person1>" ;
+						 	  :predicate 	"<http://example.org#skype>" ;
+							  :object		"?z1" ] ;
+	:probability			"0.02921840759678598" ;
+	:selectivity			"0.05405405405405406" .
+	
+<http://jena.hpl.hp.com/ARQo/test/#TJ031> 
+	rdf:type 				:TestCase ;
+	dc:title 				"TJ031" ;
+	:triple1				[ :subject		"<http://example.org#Person1>" ;
+						 	  :predicate 	"<http://example.org#msn>" ;
+							  :object		"?z1" ] ;
+	:probability			"0.02702702702702703" ;
+	:selectivity			"0.02702702702702703" .
+	
+<http://jena.hpl.hp.com/ARQo/test/#TJ032> 
+	rdf:type 				:TestCase ;
+	dc:title 				"TJ032" ;
+	:triple1				[ :subject		"<http://example.org#Person1>" ;
+						 	  :predicate 	"<http://example.org#phone>" ;
+							  :object		"xxx-xxx-xxx" ] ;
+	:probability			"0.02702702702702703" ;
+	:selectivity			"0.02702702702702703" .
+	

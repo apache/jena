@@ -1,72 +1,84 @@
 #!/bin/bash
 
-## Reification
+## ---- Expressions in SELECT
+
 N=0
 
-N=$((N+1)) ; testGood $(fname "syntax-reif-arq-" $N arq) <<EOF
-SELECT *
-{ ?id << ?x ?y ?z >> }
+N=$((N+1)) ; testGood $(fname "syntax-select-expr-" $N arq) <<EOF
+SELECT (?x +?y AS ?z) {}
 EOF
 
-N=$((N+1)) ; testGood $(fname "syntax-reif-arq-" $N arq) <<EOF
-SELECT *
-{ << ?x ?y ?z >> }
+N=$((N+1)) ; testGood $(fname "syntax-select-expr-" $N arq) <<EOF
+SELECT (?x +?y) {}
 EOF
 
-N=$((N+1)) ; testGood $(fname "syntax-reif-arq-" $N arq) <<EOF
-SELECT *
-{ [] << ?x ?y ?z >> }
+N=$((N+1)) ; testGood $(fname "syntax-select-expr-" $N arq) <<EOF
+SELECT ?x ?y (?x +?y AS ?z) {}
 EOF
 
-N=$((N+1)) ; testGood $(fname "syntax-reif-arq-" $N arq) <<EOF
-PREFIX : <http://example.org/ns#>
-SELECT * WHERE
-{  << ?s ?p ?o >> :p "" } # reification as subject
+N=$((N+1)) ; testGood $(fname "syntax-select-expr-" $N arq) <<EOF
+SELECT (datatype(?x +?y) AS ?z) {}
 EOF
 
-N=$((N+1)) ; testGood $(fname "syntax-reif-arq-" $N arq) <<EOF
-PREFIX : <http://example.org/ns#>
-SELECT * WHERE
-{  << ?s ?p ?o >> :p << ?s ?p ?o >> } # reification as subject and object
+N=$((N+1)) ; testGood $(fname "syntax-select-expr-" $N arq) <<EOF
+PREFIX : <http://example/>
+SELECT (:function(?x +?y)) ?z {}
 EOF
 
-## Mixed forms
+## ---- SERVICE
+
 N=0
 
-N=$((N+1)) ; testGood $(fname "syntax-forms-arq-" $N arq) <<EOF
+N=$((N+1)) ; testGood $(fname "syntax-service-" $N arq) <<EOF
+PREFIX : <http://example/>
 SELECT *
-{ [ << ?x ?y ?z >> ] } # Same as [] << ?x ?y ?z >>
+{ SERVICE <http://host/service> {} }
 EOF
 
-N=$((N+1)) ; testGood $(fname "syntax-forms-arq-" $N arq) <<EOF
-CONSTRUCT { [] << ?s ?p ?o >> } WHERE { ?s ?p ?o }
-EOF
+## ---- GROUP BY
 
-N=$((N+1)) ; testGood $(fname "syntax-forms-arq-" $N arq) <<EOF
-CONSTRUCT { [ << ?s ?p ?o >> ] } WHERE { ?s ?p ?o }
-EOF
+N=0
 
-N=$((N+1)) ; testGood $(fname "syntax-forms-arq-" $N arq) <<EOF
-CONSTRUCT { ?s ?p ?o } WHERE { [ << ?s ?p ?o >> ] }
-EOF
-
-N=$((N+1)) ; testGood $(fname "syntax-forms-arq-" $N arq) <<EOF
-# Not a common query
-CONSTRUCT { ?s ?p ?o } WHERE { ( [ << ?s ?p ?o >> ] ) }
-EOF
-
-
-# Silly but legal
-
-N=$((N+1)) ; testGood $(fname "syntax-forms-arq-" $N arq) <<EOF
-PREFIX : <http://example.org/ns#>
+N=$((N+1)) ; testGood $(fname "syntax-group-" $N arq) <<EOF
+PREFIX : <http://example/>
 SELECT *
-WHERE
-{
-  [] << (?s) [ :pp :qq ] << :s :p :o >> >> .
-  ( [ :p () ] ) . 
-  ( [ :p << ?s ?p ?o >> ] ) .  # reification-as-object
-  { ( [ << ?s ?p ?o >> ] ) } .
-  { ( [ << [:p :q ] << 1 2 3 >> [a [] ] >> ] ) } .
-}
+{ ?x :p ?p .}
+GROUP BY ?p
 EOF
+
+N=$((N+1)) ; testGood $(fname "syntax-group-" $N arq) <<EOF
+PREFIX : <http://example/>
+
+SELECT * { ?x :p ?p .}
+GROUP BY ?p ?q (?p*?q)
+HAVING (?p*?q > 1)
+EOF
+
+## ---- COUNT
+
+N=0
+
+N=$((N+1)) ; testGood $(fname "syntax-count-" $N arq) <<EOF
+PREFIX : <http://example/>
+
+SELECT count(*) { ?x :p ?p .}
+EOF
+
+N=$((N+1)) ; testGood $(fname "syntax-count-" $N arq) <<EOF
+PREFIX : <http://example/>
+
+SELECT (count(distinct *) AS ?count) { ?x :p ?p .}
+EOF
+
+N=$((N+1)) ; testGood $(fname "syntax-count-" $N arq) <<EOF
+PREFIX : <http://example/>
+
+SELECT (count(?x) AS ?count) { ?x :p ?p .}
+EOF
+
+N=$((N+1)) ; testGood $(fname "syntax-count-" $N arq) <<EOF
+PREFIX : <http://example/>
+
+SELECT (COUNT(DISTINCT ?x) AS ?count) { ?x :p ?p .}
+EOF
+

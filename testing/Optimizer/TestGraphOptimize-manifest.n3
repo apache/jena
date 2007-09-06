@@ -1,0 +1,900 @@
+@prefix dc:		<http://purl.org/dc/elements/1.1/> .
+@prefix rdf:	<http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:	<http://www.w3.org/2000/01/rdf-schema#> .
+@prefix :		<http://www.w3.org/2006/03/test-description#> .
+
+# ---------------------------------------------
+# This test cases are based on the dataset
+# data/ontology/Test-data.n3
+# 	
+# Author: Markus Stocker
+# Version: $Id: TestGraphOptimize-manifest.n3,v 1.1 2007-09-06 15:11:32 andy_seaborne Exp $
+# ---------------------------------------------
+
+<http://jena.hpl.hp.com/ARQo/test/#TB001> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TB001" ;
+	:heuristic		"BGP_VARIABLE_COUNTING" ;
+	:patternIn		[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	"?s1 ?p1 ?o1" ;
+				  	  rdf:_2	"?s1 :p2 :o2" ] ;
+	:patternOut 	[ rdf:type	rdf:Seq ;
+					  rdf:_1	"?s1 :p2 :o2" ;
+					  rdf:_2	"?s1 ?p1 ?o1" ] .
+					  
+<http://jena.hpl.hp.com/ARQo/test/#TB002> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TB002" ;
+	:heuristic		"BGP_VARIABLE_COUNTING" ;
+	:patternIn		[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	"?s1 :p1 ?o1" ;
+				  	  rdf:_2	"?s1 ?p2 ?o2" ] ;
+	:patternOut 	[ rdf:type	rdf:Seq ;
+					  rdf:_1	"?s1 :p1 ?o1" ;
+					  rdf:_2	"?s1 ?p2 ?o2" ] .
+					  
+<http://jena.hpl.hp.com/ARQo/test/#TB003> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TB003" ;
+	:heuristic		"BGP_VARIABLE_COUNTING" ;
+	:patternIn		[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	"?s1 ?p1 :o1" ;
+				  	  rdf:_2	"?s1 ?p2 ?o2" ] ;
+	:patternOut 	[ rdf:type	rdf:Seq ;
+					  rdf:_1	"?s1 ?p1 :o1" ;
+					  rdf:_2	"?s1 ?p2 ?o2" ] .
+					  
+<http://jena.hpl.hp.com/ARQo/test/#TB004> 
+	rdf:type 		:TestCase ;
+	rdfs:comment	"There is no optimization for this BGP. Although the order of the triple
+					 patterns may potentially be reordered differently after optimization,
+					 internally triple patterns are processed in the order they are added
+					 to the graph (nodes and edges are lists ordered by OID, not unordered sets,
+					 which is for convenience only, as by definition the set of nodes of an
+					 undirected graph is unordered)" ;
+	dc:title 		"TB004" ;
+	:heuristic		"BGP_VARIABLE_COUNTING" ;
+	:patternIn		[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	"?s1 ?p1 ?o1" ;
+				  	  rdf:_2	"?s1 ?p2 ?o2" ] ;
+	:patternOut 	[ rdf:type	rdf:Seq ;
+					  rdf:_1	"?s1 ?p1 ?o1" ;
+					  rdf:_2	"?s1 ?p2 ?o2" ] .
+					  
+<http://jena.hpl.hp.com/ARQo/test/#TB005> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TB005" ;
+	:heuristic		"BGP_VARIABLE_COUNTING" ;
+	:patternIn		[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	"?s1 :p1 ?o1" ;
+				  	  rdf:_2	"?s1 :p2 :o2" ] ;
+	:patternOut 	[ rdf:type	rdf:Seq ;
+					  rdf:_1	"?s1 :p2 :o2" ;
+					  rdf:_2	"?s1 :p1 ?o1" ] .
+					  
+<http://jena.hpl.hp.com/ARQo/test/#TB006> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TB006" ;
+	:heuristic		"BGP_VARIABLE_COUNTING" ;
+	:patternIn		[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	":s1 :p1 :o1" ;
+				  	  rdf:_2	":s1 :p2 :o2" ] ;
+	:patternOut 	[ rdf:type	rdf:Seq ;
+					  rdf:_1	":s1 :p1 :o1" ;
+					  rdf:_2	":s1 :p2 :o2" ] .
+					  
+<http://jena.hpl.hp.com/ARQo/test/#TB007> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TB007" ;
+	:heuristic		"BGP_VARIABLE_COUNTING" ;
+	:patternIn		[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	"?s1 :p1 ?o1" ;
+				  	  rdf:_2	"?s2 :p1 :o2" ] ;
+	:patternOut 	[ rdf:type	rdf:Seq ;
+					  rdf:_1	"?s2 :p1 :o2" ;
+					  rdf:_2	"?s1 :p1 ?o1" ] .
+					  
+<http://jena.hpl.hp.com/ARQo/test/#TB008> 
+	rdf:type 		:TestCase ;
+	rdfs:comment	"This example includes the problem of new variable introduction during triple pattern processing.
+					 At no stage, there should be a triple pattern which introduces only new variables and, thus, cannot
+					 be joined with the previous triple patterns. The :s3 join is the most selectivite, thus, it is executed
+					 first. The pattern with subject :s1 is executed last, because at the third position it would not be
+					 joined with the previous patterns." ;
+	dc:title 		"TB008" ;
+	:heuristic		"BGP_VARIABLE_COUNTING" ;
+	:patternIn		[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	":s1 :p1 :o1" ;
+				  	  rdf:_2	"?s2 :p2 :s1" ;
+				  	  rdf:_3	":s3 :p3 ?s2" ;
+				  	  rdf:_4	":s3 :p4 :o4" ] ;
+	:patternOut 	[ rdf:type	rdf:Seq ;
+					  rdf:_1	":s3 :p4 :o4" ;
+					  rdf:_2	":s3 :p3 ?s2" ;
+					  rdf:_3	"?s2 :p2 :s1" ;
+					  rdf:_4	":s1 :p1 :o1" ] .
+					  
+<http://jena.hpl.hp.com/ARQo/test/#TB009> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TB009" ;
+	:heuristic		"BGP_VARIABLE_COUNTING" ;
+	:patternIn		[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	"?s1 ?p1 ?o1" ;
+				  	  rdf:_2	"?s2 ?p2 ?s1"] ;
+	:patternOut 	[ rdf:type	rdf:Seq ;
+				  	  rdf:_1	"?s1 ?p1 ?o1" ;
+				  	  rdf:_2	"?s2 ?p2 ?s1"] .
+				  	  
+<http://jena.hpl.hp.com/ARQo/test/#TB010> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TB010" ;
+	:heuristic		"BGP_VARIABLE_COUNTING" ;
+	:patternIn		[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	"?s1 ?p1 ?o1" ;
+				  	  rdf:_2	"?o1 ?p2 ?o2"] ;
+	:patternOut 	[ rdf:type	rdf:Seq ;
+				  	  rdf:_1	"?s1 ?p1 ?o1" ;
+				  	  rdf:_2	"?o1 ?p2 ?o2"] .
+				  	  
+<http://jena.hpl.hp.com/ARQo/test/#TB011> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TB011" ;
+	:heuristic		"BGP_VARIABLE_COUNTING" ;
+	:patternIn		[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	"?s1 ?p1 ?o1" ;
+				  	  rdf:_2	"?s2 ?p2 ?o1"] ;
+	:patternOut 	[ rdf:type	rdf:Seq ;
+				  	  rdf:_1	"?s1 ?p1 ?o1" ;
+				  	  rdf:_2	"?s2 ?p2 ?o1"] .
+				  	 
+<http://jena.hpl.hp.com/ARQo/test/#TB012> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TB012" ;
+	:heuristic		"BGP_VARIABLE_COUNTING" ;
+	:patternIn		[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	"?s1 ?p1 ?o1" ;
+				  	  rdf:_2	"?s2 ?p1 ?o2"] ;
+	:patternOut 	[ rdf:type	rdf:Seq ;
+				  	  rdf:_1	"?s1 ?p1 ?o1" ;
+				  	  rdf:_2	"?s2 ?p1 ?o2"] .
+				  	  
+<http://jena.hpl.hp.com/ARQo/test/#TB013> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TB013" ;
+	:heuristic		"BGP_VARIABLE_COUNTING" ;
+	:patternIn		[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	"?s1 ?p1 ?o1" ;
+				  	  rdf:_2	"?s2 ?p1 ?o2"] ;
+	:patternOut 	[ rdf:type	rdf:Seq ;
+				  	  rdf:_1	"?s1 ?p1 ?o1" ;
+				  	  rdf:_2	"?s2 ?p1 ?o2"] .
+					  
+<http://jena.hpl.hp.com/ARQo/test/#TB014> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TB014" ;
+	:heuristic		"BGP_GRAPH_STATISTICS_HANDLER" ;
+	:patternIn		[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	"?s1 <http://example.org#firstname> ?o1" ;
+				  	  rdf:_2	"?s1 <http://example.org#msn> ?o2" ] ;
+	:patternOut 	[ rdf:type	rdf:Seq ;
+					  rdf:_1	"?s1 <http://example.org#msn> ?o2" ;
+					  rdf:_2	"?s1 <http://example.org#firstname> ?o1" ] .
+					  
+<http://jena.hpl.hp.com/ARQo/test/#TB015> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TB015" ;
+	:heuristic		"BGP_GRAPH_STATISTICS_HANDLER" ;
+	:patternIn		[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	"?s1 <http://example.org#firstname> ?o1" ;
+				  	  rdf:_2	"?s1 <http://example.org#lastname> ?o2" ] ;
+	:patternOut 	[ rdf:type	rdf:Seq ;
+					  rdf:_1	"?s1 <http://example.org#firstname> ?o1" ;
+					  rdf:_2	"?s1 <http://example.org#lastname> ?o2" ] .
+					  
+<http://jena.hpl.hp.com/ARQo/test/#TB016> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TB016" ;
+	:heuristic		"BGP_GRAPH_STATISTICS_HANDLER" ;
+	:patternIn		[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	"<http://example.org#Person1> <http://example.org#firstname> ?o1" ;
+				  	  rdf:_2	"<http://example.org#Person1> <http://example.org#lastname> ?o2" ] ;
+	:patternOut 	[ rdf:type	rdf:Seq ;
+					  rdf:_1	"<http://example.org#Person1> <http://example.org#firstname> ?o1" ;
+					  rdf:_2	"<http://example.org#Person1> <http://example.org#lastname> ?o2" ] .
+					  
+<http://jena.hpl.hp.com/ARQo/test/#TB017> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TB017" ;
+	:heuristic		"BGP_GRAPH_STATISTICS_HANDLER" ;
+	:patternIn		[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	"<http://example.org#Person1> <http://example.org#firstname> ?o1" ;
+				  	  rdf:_2	"<http://example.org#Person1> <http://example.org#msn> ?o2" ] ;
+	:patternOut 	[ rdf:type	rdf:Seq ;
+					  rdf:_1	"<http://example.org#Person1> <http://example.org#msn> ?o2" ;
+					  rdf:_2	"<http://example.org#Person1> <http://example.org#firstname> ?o1" ] .
+					  
+<http://jena.hpl.hp.com/ARQo/test/#TB018> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TB018" ;
+	:heuristic		"BGP_GRAPH_STATISTICS_HANDLER" ;
+	:patternIn		[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	"?s1 ?p1 ?o1" ;
+				  	  rdf:_2	"?s1 ?p2 xxx-xxx-xxx" ] ;
+	:patternOut 	[ rdf:type	rdf:Seq ;
+					  rdf:_1	"?s1 ?p2 xxx-xxx-xxx" ;
+					  rdf:_2	"?s1 ?p1 ?o1" ] .
+					  
+<http://jena.hpl.hp.com/ARQo/test/#TB019> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TB019" ;
+	:heuristic		"BGP_GRAPH_STATISTICS_HANDLER" ;
+	:patternIn		[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	"?s1 <http://example.org#firstname> ?o1" ;
+				  	  rdf:_2	"?s1 ?p2 xxx-xxx-xxx" ] ;
+	:patternOut 	[ rdf:type	rdf:Seq ;
+					  rdf:_1	"?s1 <http://example.org#firstname> ?o1" ;
+					  rdf:_2	"?s1 ?p2 xxx-xxx-xxx" ] .
+					  
+<http://jena.hpl.hp.com/ARQo/test/#TB020> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TB020" ;
+	:heuristic		"BGP_GRAPH_STATISTICS_HANDLER" ;
+	:patternIn		[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	"?s1 <http://example.org#firstname> ?o1" ;
+				  	  rdf:_2	"?s1 ?p2 person3@msn.com" ] ;
+	:patternOut 	[ rdf:type	rdf:Seq ;
+					  rdf:_1	"?s1 ?p2 person3@msn.com" ;
+					  rdf:_2	"?s1 <http://example.org#firstname> ?o1" ] .
+					  
+<http://jena.hpl.hp.com/ARQo/test/#TB021> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TB021" ;
+	:heuristic		"BGP_GRAPH_STATISTICS_HANDLER" ;
+	:patternIn		[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	"?s1 <http://example.org#phone> ?o1" ;
+				  	  rdf:_2	"?s2 ?p2 ?o1" ] ;
+	:patternOut 	[ rdf:type	rdf:Seq ;
+					  rdf:_1	"?s1 <http://example.org#phone> ?o1" ;
+				  	  rdf:_2	"?s2 ?p2 ?o1" ] .
+				  	  
+<http://jena.hpl.hp.com/ARQo/test/#TB022> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TB022" ;
+	:heuristic		"BGP_GRAPH_STATISTICS_HANDLER" ;
+	:patternIn		[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	"?s1 ?p1 ?o1" ;
+				  	  rdf:_2	"?s2 <http://example.org#phone> ?o1" ] ;
+	:patternOut 	[ rdf:type	rdf:Seq ;
+					  rdf:_1	"?s2 <http://example.org#phone> ?o1" ;
+				  	  rdf:_2	"?s1 ?p1 ?o1" ] .
+				  	  
+<http://jena.hpl.hp.com/ARQo/test/#TB023> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TB023" ;
+	:heuristic		"BGP_GRAPH_STATISTICS_HANDLER" ;
+	:patternIn		[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	"?s1 <http://example.org#phone> xxx-xxx-xxx" ;
+				  	  rdf:_2	"?s2 ?p2 xxx-xxx-xxx" ] ;
+	:patternOut 	[ rdf:type	rdf:Seq ;
+					  rdf:_1	"?s1 <http://example.org#phone> xxx-xxx-xxx" ;
+				  	  rdf:_2	"?s2 ?p2 xxx-xxx-xxx" ] .
+				  	  
+<http://jena.hpl.hp.com/ARQo/test/#TB024> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TB024" ;
+	:heuristic		"BGP_GRAPH_STATISTICS_HANDLER" ;
+	:patternIn		[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	"?s1 ?p1 xxx-xxx-xxx" ;
+				  	  rdf:_2	"?s2 <http://example.org#phone> xxx-xxx-xxx" ] ;
+	:patternOut 	[ rdf:type	rdf:Seq ;
+					  rdf:_1	"?s2 <http://example.org#phone> xxx-xxx-xxx" ;
+				  	  rdf:_2	"?s1 ?p1 xxx-xxx-xxx" ] .
+				  	  
+<http://jena.hpl.hp.com/ARQo/test/#TB025> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TB025" ;
+	:heuristic		"BGP_GRAPH_STATISTICS_HANDLER" ;
+	:patternIn		[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	"?s1 ?p1 ?o1" ;
+				  	  rdf:_2	"?s2 ?p2 ?o2" ;
+				  	  rdf:_3	"?s3 ?p3 ?o3" ] ;
+	:patternOut 	[ rdf:type	rdf:Seq ;
+					  rdf:_1	"?s1 ?p1 ?o1" ;
+				  	  rdf:_2	"?s2 ?p2 ?o2" ;
+				  	  rdf:_3	"?s3 ?p3 ?o3" ] .
+				  	  
+<http://jena.hpl.hp.com/ARQo/test/#TB026> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TB026" ;
+	:heuristic		"BGP_GRAPH_STATISTICS_HANDLER" ;
+	:patternIn		[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	"?s1 ?p1 ?o1" ;
+				  	  rdf:_2	"?s1 ?p2 ?o2" ;
+				  	  rdf:_3	"?s1 ?p3 ?o3" ] ;
+	:patternOut 	[ rdf:type	rdf:Seq ;
+					  rdf:_1	"?s1 ?p1 ?o1" ;
+				  	  rdf:_2	"?s1 ?p2 ?o2" ;
+				  	  rdf:_3	"?s1 ?p3 ?o3" ] .
+				  	  
+<http://jena.hpl.hp.com/ARQo/test/#TB027> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TB027" ;
+	:heuristic		"BGP_GRAPH_STATISTICS_HANDLER" ;
+	:patternIn		[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	"?s1 ?p1 ?o1" ;
+				  	  rdf:_2	"?s1 <http://example.org#firstname> ?o2" ;
+				  	  rdf:_3	"?s1 ?p3 ?o3" ] ;
+	:patternOut 	[ rdf:type	rdf:Seq ;
+					  rdf:_1	"?s1 <http://example.org#firstname> ?o2" ;
+				  	  rdf:_2	"?s1 ?p1 ?o1" ;
+				  	  rdf:_3	"?s1 ?p3 ?o3" ] .
+				  	  
+<http://jena.hpl.hp.com/ARQo/test/#TB028> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TB028" ;
+	:heuristic		"BGP_GRAPH_STATISTICS_HANDLER" ;
+	:patternIn		[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	"?s1 ?p1 ?o1" ;
+				  	  rdf:_2	"?s1 ?p2 ?o2" ;
+				  	  rdf:_3	"?s1 <http://example.org#firstname> ?o3" ] ;
+	:patternOut 	[ rdf:type	rdf:Seq ;
+					  rdf:_1	"?s1 <http://example.org#firstname> ?o3" ;
+				  	  rdf:_2	"?s1 ?p1 ?o1" ;
+				  	  rdf:_3	"?s1 ?p2 ?o2" ] .
+				  	  
+<http://jena.hpl.hp.com/ARQo/test/#TB029> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TB029" ;
+	:heuristic		"BGP_GRAPH_STATISTICS_HANDLER" ;
+	:patternIn		[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	"?s1 ?p1 ?o1" ;
+				  	  rdf:_2	"?s1 <http://example.org#firstname> ?o2" ;
+				  	  rdf:_3	"?s1 <http://example.org#msn> ?o3" ] ;
+	:patternOut 	[ rdf:type	rdf:Seq ;
+					  rdf:_1	"?s1 <http://example.org#msn> ?o3" ;
+				  	  rdf:_2	"?s1 <http://example.org#firstname> ?o2" ;
+				  	  rdf:_3	"?s1 ?p1 ?o1" ] .
+				  	  
+<http://jena.hpl.hp.com/ARQo/test/#TB030> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TB030" ;
+	:heuristic		"BGP_GRAPH_STATISTICS_HANDLER" ;
+	:patternIn		[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	"?s1 <http://example.org#firstname> ?o1" ;
+				  	  rdf:_2	"?s1 ?p2 ?o2" ;
+				  	  rdf:_3	"?s1 <http://example.org#msn> ?o3" ] ;
+	:patternOut 	[ rdf:type	rdf:Seq ;
+					  rdf:_1	"?s1 <http://example.org#msn> ?o3" ;
+				  	  rdf:_2	"?s1 <http://example.org#firstname> ?o1" ;
+				  	  rdf:_3	"?s1 ?p2 ?o2" ] .
+				  	  
+<http://jena.hpl.hp.com/ARQo/test/#TB031> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TB031" ;
+	:heuristic		"BGP_GRAPH_STATISTICS_HANDLER" ;
+	:patternIn		[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	"?s1 <http://example.org#firstname> ?o1" ;
+				  	  rdf:_2	"?s2 ?p2 ?o2" ;
+				  	  rdf:_3	"?s2 <http://example.org#msn> ?o3" ] ;
+	:patternOut 	[ rdf:type	rdf:Seq ;
+					  rdf:_1	"?s1 <http://example.org#firstname> ?o1" ;
+				  	  rdf:_2	"?s2 <http://example.org#msn> ?o3" ;
+				  	  rdf:_3	"?s2 ?p2 ?o2" ] .
+				  	  
+<http://jena.hpl.hp.com/ARQo/test/#TB032> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TB032" ;
+	:heuristic		"BGP_GRAPH_STATISTICS_HANDLER" ;
+	:patternIn		[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	"?s1 <http://example.org#firstname> ?o1" ;
+				  	  rdf:_2	"?s1 <http://example.org#msn> ?o2" ;
+				  	  rdf:_3	"?s2 ?p3 ?o3" ] ;
+	:patternOut 	[ rdf:type	rdf:Seq ;
+					  rdf:_1	"?s1 <http://example.org#msn> ?o2" ;
+				  	  rdf:_2	"?s1 <http://example.org#firstname> ?o1" ;
+				  	  rdf:_3	"?s2 ?p3 ?o3" ] .
+				  	  
+<http://jena.hpl.hp.com/ARQo/test/#TB033> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TB033" ;
+	:heuristic		"BGP_GRAPH_STATISTICS_HANDLER" ;
+	:patternIn		[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	"?s1 <http://example.org#firstname> ?o1" ;
+				  	  rdf:_2	"?s2 <http://example.org#msn> ?s1" ;
+				  	  rdf:_3	"?s3 ?p3 ?o3" ] ;
+	:patternOut 	[ rdf:type	rdf:Seq ;
+					  rdf:_1	"?s2 <http://example.org#msn> ?s1" ;
+				  	  rdf:_2	"?s1 <http://example.org#firstname> ?o1" ;
+				  	  rdf:_3	"?s3 ?p3 ?o3" ] .
+				 
+<http://jena.hpl.hp.com/ARQo/test/#TB034> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TB034" ;
+	:heuristic		"BGP_GRAPH_STATISTICS_HANDLER" ;
+	:patternIn		[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	"?s1 <http://example.org#firstname> ?o1" ;
+				  	  rdf:_2	"?s3 ?p3 ?o3" ;
+				  	  rdf:_3	"?s2 <http://example.org#msn> ?s1" ] ;
+	:patternOut 	[ rdf:type	rdf:Seq ;
+					  rdf:_1	"?s2 <http://example.org#msn> ?s1" ;
+				  	  rdf:_2	"?s1 <http://example.org#firstname> ?o1" ;
+				  	  rdf:_3	"?s3 ?p3 ?o3" ] .
+				  	  
+<http://jena.hpl.hp.com/ARQo/test/#TB035> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TB035" ;
+	:heuristic		"BGP_GRAPH_STATISTICS_HANDLER" ;
+	:patternIn		[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	"?s1 <http://example.org#firstname> ?o1" ;
+				  	  rdf:_2	"?s3 ?p3 ?o3" ;
+				  	  rdf:_3	"?o1 <http://example.org#msn> ?o2" ] ;
+	:patternOut 	[ rdf:type	rdf:Seq ;
+					  rdf:_1	"?o1 <http://example.org#msn> ?o2" ;
+				  	  rdf:_2	"?s1 <http://example.org#firstname> ?o1" ;
+				  	  rdf:_3	"?s3 ?p3 ?o3" ] .
+				  	  
+<http://jena.hpl.hp.com/ARQo/test/#TB036> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TB036" ;
+	:heuristic		"BGP_GRAPH_STATISTICS_HANDLER" ;
+	:patternIn		[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	"?s1 <http://example.org#firstname> ?o1" ;
+				  	  rdf:_2	"?s3 ?p3 ?o3" ;
+				  	  rdf:_3	"?s2 <http://example.org#msn> ?o1" ] ;
+	:patternOut 	[ rdf:type	rdf:Seq ;
+					  rdf:_1	"?s2 <http://example.org#msn> ?o1" ;
+				  	  rdf:_2	"?s1 <http://example.org#firstname> ?o1" ;
+				  	  rdf:_3	"?s3 ?p3 ?o3" ] .
+				  	  
+<http://jena.hpl.hp.com/ARQo/test/#TB037> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TB037" ;
+	rdfs:comment	"This is an interesting example: the ex:msn is more selective than the ex:firstname, hence it is executed first.
+					 However, the ex:firstname pattern does not join with the ex:msn pattern, thus, the less selective pattern is joined
+					 with the ex:msn pattern and the intermediate result set finally with the ex:firstname pattern." ;
+	:heuristic		"BGP_GRAPH_STATISTICS_HANDLER" ;
+	:patternIn		[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	"?s1 <http://example.org#firstname> ?o2" ;
+				  	  rdf:_2	"?s2 ?p2 ?s1" ;
+				  	  rdf:_3	"?s2 <http://example.org#msn> ?o3" ] ;
+	:patternOut 	[ rdf:type	rdf:Seq ;
+					  rdf:_1	"?s2 <http://example.org#msn> ?o3" ;
+				  	  rdf:_2	"?s2 ?p2 ?s1" ;
+				  	  rdf:_3	"?s1 <http://example.org#firstname> ?o2" ] .
+				  	  
+<http://jena.hpl.hp.com/ARQo/test/#TB038> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TB038" ;
+	:heuristic		"BGP_GRAPH_STATISTICS_HANDLER" ;
+	:patternIn		[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	"?s1 <http://example.org#firstname> ?o2" ;
+				  	  rdf:_2	"?s2 ?p2 ?o2" ;
+				  	  rdf:_3	"?s1 <http://example.org#msn> ?o3" ] ;
+	:patternOut 	[ rdf:type	rdf:Seq ;
+					  rdf:_1	"?s1 <http://example.org#msn> ?o3" ;
+				  	  rdf:_2	"?s1 <http://example.org#firstname> ?o2" ;
+				  	  rdf:_3	"?s2 ?p2 ?o2" ] .
+				  	  
+<http://jena.hpl.hp.com/ARQo/test/#TB039> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TB039" ;
+	rdfs:comment	"Note that the first pattern does not join with the rest, i.e. the BGP is a graph with two components." ;
+	:heuristic		"BGP_GRAPH_STATISTICS_HANDLER" ;
+	:patternIn		[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	"?s1 ?p1 ?o1" ;
+				  	  rdf:_2	"?s2 <http://example.org#firstname> ?o2" ;
+				  	  rdf:_3	"?s2 <http://example.org#msn> ?o3" ] ;
+	:patternOut 	[ rdf:type	rdf:Seq ;
+					  rdf:_1	"?s1 ?p1 ?o1" ;
+					  rdf:_2	"?s2 <http://example.org#msn> ?o3" ;
+				  	  rdf:_3	"?s2 <http://example.org#firstname> ?o2" ] .
+				  	  
+<http://jena.hpl.hp.com/ARQo/test/#TB040> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TB040" ;
+	:heuristic		"BGP_GRAPH_STATISTICS_HANDLER" ;
+	:patternIn		[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	"?s2 <http://example.org#firstname> ?o2" ;
+				  	  rdf:_2	"?s1 ?p1 ?o1" ;
+				  	  rdf:_3	"?s2 <http://example.org#msn> ?o3" ] ;
+	:patternOut 	[ rdf:type	rdf:Seq ;
+					  rdf:_1	"?s2 <http://example.org#msn> ?o3" ;
+					  rdf:_2	"?s2 <http://example.org#firstname> ?o2" ;
+				  	  rdf:_3	"?s1 ?p1 ?o1" ] .
+				  	  
+<http://jena.hpl.hp.com/ARQo/test/#TB041> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TB041" ;
+	:heuristic		"BGP_PROBABILISTIC_FRAMEWORK" ;
+	:patternIn		[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	"?s1 ?p1 ?o1" ] ;
+	:patternOut 	[ rdf:type	rdf:Seq ;
+				  	  rdf:_1	"?s1 ?p1 ?o1" ] .
+				  	  
+<http://jena.hpl.hp.com/ARQo/test/#TB042> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TB042" ;
+	:heuristic		"BGP_PROBABILISTIC_FRAMEWORK" ;
+	:patternIn		[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	"?s1 <http://example.org#firstname> ?o1" ] ;
+	:patternOut 	[ rdf:type	rdf:Seq ;
+				  	  rdf:_1	"?s1 <http://example.org#firstname> ?o1" ] .
+				  	  
+<http://jena.hpl.hp.com/ARQo/test/#TB043> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TB043" ;
+	:heuristic		"BGP_PROBABILISTIC_FRAMEWORK" ;
+	:patternIn		[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	"<http://example.org#Person1> ?p1 ?o1" ] ;
+	:patternOut 	[ rdf:type	rdf:Seq ;
+				  	  rdf:_1	"<http://example.org#Person1> ?p1 ?o1" ] .
+				  	  
+<http://jena.hpl.hp.com/ARQo/test/#TB044> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TB044" ;
+	:heuristic		"BGP_PROBABILISTIC_FRAMEWORK" ;
+	:patternIn		[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	"?s1 ?p1 xxx-xxx-xxx" ] ;
+	:patternOut 	[ rdf:type	rdf:Seq ;
+				  	  rdf:_1	"?s1 ?p1 xxx-xxx-xxx" ] .
+				  	  
+<http://jena.hpl.hp.com/ARQo/test/#TB045> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TB045" ;
+	:heuristic		"BGP_PROBABILISTIC_FRAMEWORK" ;
+	:patternIn		[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	"<http://example.org#Person1> ?p1 xxx-xxx-xxx" ] ;
+	:patternOut 	[ rdf:type	rdf:Seq ;
+				  	  rdf:_1	"<http://example.org#Person1> ?p1 xxx-xxx-xxx" ] .
+				  	  
+<http://jena.hpl.hp.com/ARQo/test/#TB046> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TB046" ;
+	:heuristic		"BGP_PROBABILISTIC_FRAMEWORK" ;
+	:patternIn		[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	"<http://example.org#Person1> <http://example.org#phone> xxx-xxx-xxx" ] ;
+	:patternOut 	[ rdf:type	rdf:Seq ;
+				  	  rdf:_1	"<http://example.org#Person1> <http://example.org#phone> xxx-xxx-xxx" ] .
+				  	  
+<http://jena.hpl.hp.com/ARQo/test/#TB047> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TB047" ;
+	:heuristic		"BGP_PROBABILISTIC_FRAMEWORK" ;
+	:patternIn		[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	"?s1 ?p1 ?o1" ;
+				  	  rdf:_1	"?s2 ?p2 ?o2" ] ;
+	:patternOut 	[ rdf:type	rdf:Seq ;
+				  	  rdf:_1	"?s1 ?p1 ?o1" ;
+				  	  rdf:_1	"?s2 ?p2 ?o2" ] .
+				  	  
+<http://jena.hpl.hp.com/ARQo/test/#TB048> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TB048" ;
+	:heuristic		"BGP_PROBABILISTIC_FRAMEWORK" ;
+	:patternIn		[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	"?s1 ?p1 ?o1" ;
+				  	  rdf:_1	"?s1 ?p2 ?o2" ] ;
+	:patternOut 	[ rdf:type	rdf:Seq ;
+				  	  rdf:_1	"?s1 ?p1 ?o1" ;
+				  	  rdf:_1	"?s1 ?p2 ?o2" ] .
+				  	
+<http://jena.hpl.hp.com/ARQo/test/#TB049> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TB049" ;
+	:heuristic		"BGP_PROBABILISTIC_FRAMEWORK" ;
+	:patternIn		[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	"?s1 ?p1 ?o1" ;
+				  	  rdf:_1	"?s2 ?p2 ?s1" ] ;
+	:patternOut 	[ rdf:type	rdf:Seq ;
+				  	  rdf:_1	"?s1 ?p1 ?o1" ;
+				  	  rdf:_1	"?s2 ?p2 ?s1" ] .
+				  	  
+<http://jena.hpl.hp.com/ARQo/test/#TB050> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TB050" ;
+	:heuristic		"BGP_PROBABILISTIC_FRAMEWORK" ;
+	:patternIn		[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	"?s1 ?p1 ?o1" ;
+				  	  rdf:_1	"?o1 ?p2 ?o2" ] ;
+	:patternOut 	[ rdf:type	rdf:Seq ;
+				  	  rdf:_1	"?s1 ?p1 ?o1" ;
+				  	  rdf:_1	"?o1 ?p2 ?o2" ] .
+				  	  
+<http://jena.hpl.hp.com/ARQo/test/#TB051> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TB051" ;
+	:heuristic		"BGP_PROBABILISTIC_FRAMEWORK" ;
+	:patternIn		[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	"?s1 ?p1 ?o1" ;
+				  	  rdf:_1	"?s2 ?p2 ?o1" ] ;
+	:patternOut 	[ rdf:type	rdf:Seq ;
+				  	  rdf:_1	"?s1 ?p1 ?o1" ;
+				  	  rdf:_1	"?s2 ?p2 ?o1" ] .
+				  	  
+<http://jena.hpl.hp.com/ARQo/test/#TB052> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TB052" ;
+	:heuristic		"BGP_PROBABILISTIC_FRAMEWORK" ;
+	:patternIn		[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	"?s1 ?p1 ?o1" ;
+				  	  rdf:_1	"?s2 ?p1 ?o2" ] ;
+	:patternOut 	[ rdf:type	rdf:Seq ;
+				  	  rdf:_1	"?s1 ?p1 ?o1" ;
+				  	  rdf:_1	"?s2 ?p1 ?o2" ] .
+				  	  
+<http://jena.hpl.hp.com/ARQo/test/#TB053> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TB053" ;
+	:heuristic		"BGP_PROBABILISTIC_FRAMEWORK" ;
+	:patternIn		[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	"?s1 ?p1 ?o1" ;
+				  	  rdf:_1	"?s2 ?s1 ?o2" ] ;
+	:patternOut 	[ rdf:type	rdf:Seq ;
+				  	  rdf:_1	"?s1 ?p1 ?o1" ;
+				  	  rdf:_1	"?s2 ?s1 ?o2" ] .
+				  	  
+<http://jena.hpl.hp.com/ARQo/test/#TB054> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TB054" ;
+	:heuristic		"BGP_PROBABILISTIC_FRAMEWORK" ;
+	:patternIn		[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	"?s1 ?p1 ?o1" ;
+				  	  rdf:_1	"?s2 ?o1 ?o2" ] ;
+	:patternOut 	[ rdf:type	rdf:Seq ;
+				  	  rdf:_1	"?s1 ?p1 ?o1" ;
+				  	  rdf:_1	"?s2 ?o1 ?o2" ] .
+				  	  
+<http://jena.hpl.hp.com/ARQo/test/#TB055> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TB055" ;
+	:heuristic		"BGP_PROBABILISTIC_FRAMEWORK" ;
+	:patternIn		[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	"?s1 ?s2 ?o1" ;
+				  	  rdf:_1	"?s2 ?p2 ?o2" ] ;
+	:patternOut 	[ rdf:type	rdf:Seq ;
+				  	  rdf:_1	"?s1 ?s2 ?o1" ;
+				  	  rdf:_1	"?s2 ?p2 ?o2" ] .
+				
+<http://jena.hpl.hp.com/ARQo/test/#TB056> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TB056" ;
+	:heuristic		"BGP_PROBABILISTIC_FRAMEWORK" ;
+	:patternIn		[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	"?s1 ?o2 ?o1" ;
+				  	  rdf:_1	"?s2 ?p2 ?o2" ] ;
+	:patternOut 	[ rdf:type	rdf:Seq ;
+				  	  rdf:_1	"?s1 ?o2 ?o1" ;
+				  	  rdf:_1	"?s2 ?p2 ?o2" ] .
+				  	  
+<http://jena.hpl.hp.com/ARQo/test/#TB057> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TB057" ;
+	:heuristic		"BGP_PROBABILISTIC_FRAMEWORK" ;
+	:patternIn		[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	"?s1 ?o2 ?o1" ;
+				  	  rdf:_1	"?s2 ?p2 ?o2" ] ;
+	:patternOut 	[ rdf:type	rdf:Seq ;
+				  	  rdf:_1	"?s1 ?o2 ?o1" ;
+				  	  rdf:_1	"?s2 ?p2 ?o2" ] .
+				  	  
+<http://jena.hpl.hp.com/ARQo/test/#TB058> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TB058" ;
+	:heuristic		"BGP_PROBABILISTIC_FRAMEWORK" ;
+	:patternIn		[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	"?s1 ?p1 ?o1" ;
+				  	  rdf:_2	"?s2 ?p2 ?o2" ;
+				  	  rdf:_3	"?s3 ?p3 ?o3" ] ;
+	:patternOut 	[ rdf:type	rdf:Seq ;
+					  rdf:_1	"?s1 ?p1 ?o1" ;
+				  	  rdf:_2	"?s2 ?p2 ?o2" ;
+				  	  rdf:_3	"?s3 ?p3 ?o3" ] .
+				  	  
+<http://jena.hpl.hp.com/ARQo/test/#TB059> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TB059" ;
+	:heuristic		"BGP_PROBABILISTIC_FRAMEWORK" ;
+	:patternIn		[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	"?s1 ?p1 ?o1" ;
+				  	  rdf:_2	"?s1 ?p2 ?o2" ;
+				  	  rdf:_3	"?s1 ?p3 ?o3" ] ;
+	:patternOut 	[ rdf:type	rdf:Seq ;
+					  rdf:_1	"?s1 ?p1 ?o1" ;
+				  	  rdf:_2	"?s1 ?p2 ?o2" ;
+				  	  rdf:_3	"?s1 ?p3 ?o3" ] .
+				  	  
+<http://jena.hpl.hp.com/ARQo/test/#TB060> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TB060" ;
+	:heuristic		"BGP_PROBABILISTIC_FRAMEWORK" ;
+	:patternIn		[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	"?s1 ?p1 ?o1" ;
+				  	  rdf:_2	"?s2 ?p2 ?s1" ;
+				  	  rdf:_3	"?s3 ?s1 ?o3" ] ;
+	:patternOut 	[ rdf:type	rdf:Seq ;
+					  rdf:_1	"?s1 ?p1 ?o1" ;
+				  	  rdf:_2	"?s2 ?p2 ?s1" ;
+				  	  rdf:_3	"?s3 ?s1 ?o3" ] .
+				  	  
+<http://jena.hpl.hp.com/ARQo/test/#TB061> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TB061" ;
+	:heuristic		"BGP_PROBABILISTIC_FRAMEWORK" ;
+	:patternIn		[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	"?s1 <http://example.org#firstname> ?o1" ;
+				  	  rdf:_2	"?s2 <http://example.org#lastname> ?o2" ] ;
+	:patternOut 	[ rdf:type	rdf:Seq ;
+					  rdf:_1	"?s1 <http://example.org#firstname> ?o1" ;
+				  	  rdf:_2	"?s2 <http://example.org#lastname> ?o2" ] .
+				  	  
+<http://jena.hpl.hp.com/ARQo/test/#TB062> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TB062" ;
+	:heuristic		"BGP_PROBABILISTIC_FRAMEWORK" ;
+	:patternIn		[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	"?s1 <http://example.org#firstname> ?o1" ;
+				  	  rdf:_2	"?s2 <http://example.org#msn> ?o2" ] ;
+	:patternOut 	[ rdf:type	rdf:Seq ;
+					  rdf:_1	"?s1 <http://example.org#firstname> ?o1" ;
+				  	  rdf:_2	"?s2 <http://example.org#msn> ?o2" ] .
+				  	  
+<http://jena.hpl.hp.com/ARQo/test/#TB063> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TB063" ;
+	:heuristic		"BGP_PROBABILISTIC_FRAMEWORK" ;
+	:patternIn		[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	"?s1 <http://example.org#firstname> ?o1" ;
+				  	  rdf:_2	"?s1 <http://example.org#lastname> ?o2" ] ;
+	:patternOut 	[ rdf:type	rdf:Seq ;
+					  rdf:_1	"?s1 <http://example.org#firstname> ?o1" ;
+				  	  rdf:_2	"?s1 <http://example.org#lastname> ?o2" ] .
+				  	
+<http://jena.hpl.hp.com/ARQo/test/#TB064> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TB064" ;
+	:heuristic		"BGP_PROBABILISTIC_FRAMEWORK" ;
+	:patternIn		[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	"?s1 <http://example.org#firstname> ?o1" ;
+				  	  rdf:_2	"?s1 <http://example.org#msn> ?o2" ] ;
+	:patternOut 	[ rdf:type	rdf:Seq ;
+					  rdf:_1	"?s1 <http://example.org#msn> ?o2" ;
+				  	  rdf:_2	"?s1 <http://example.org#firstname> ?o1" ] .
+				  	  
+<http://jena.hpl.hp.com/ARQo/test/#TB065> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TB065" ;
+	:heuristic		"BGP_PROBABILISTIC_FRAMEWORK" ;
+	:patternIn		[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	"?s1 <http://example.org#firstname> ?o1" ;
+				  	  rdf:_2	"?o1 <http://example.org#msn> ?o2" ] ;
+	:patternOut 	[ rdf:type	rdf:Seq ;
+					  rdf:_1	"?o1 <http://example.org#msn> ?o2" ;
+				  	  rdf:_2	"?s1 <http://example.org#firstname> ?o1" ] .
+				  	  
+<http://jena.hpl.hp.com/ARQo/test/#TB066> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TB066" ;
+	:heuristic		"BGP_PROBABILISTIC_FRAMEWORK" ;
+	:patternIn		[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	"?s1 <http://example.org#firstname> ?o1" ;
+				  	  rdf:_2	"?s2 <http://example.org#msn> ?o1" ] ;
+	:patternOut 	[ rdf:type	rdf:Seq ;
+					  rdf:_1	"?s2 <http://example.org#msn> ?o1" ;
+				  	  rdf:_2	"?s1 <http://example.org#firstname> ?o1" ] .
+				  	  
+<http://jena.hpl.hp.com/ARQo/test/#TB067> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TB067" ;
+	:heuristic		"BGP_PROBABILISTIC_FRAMEWORK" ;
+	:patternIn		[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	"?s1 <http://example.org#firstname> ?o1" ;
+				  	  rdf:_2	"?s2 <http://example.org#msn> ?o2" ;
+				  	  rdf:_3	"?s3 <http://example.org#skype> ?o3" ] ;
+	:patternOut 	[ rdf:type	rdf:Seq ;
+				  	  rdf:_1	"?s1 <http://example.org#firstname> ?o1" ;
+				  	  rdf:_2	"?s2 <http://example.org#msn> ?o2" ;
+				  	  rdf:_3	"?s3 <http://example.org#skype> ?o3" ] .
+				  	  
+<http://jena.hpl.hp.com/ARQo/test/#TB068> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TB068" ;
+	rdfs:comment	"The join msn-firstname has the smalles cost, which is why skype is executed at last" ;
+	:heuristic		"BGP_PROBABILISTIC_FRAMEWORK" ;
+	:patternIn		[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	"?s1 <http://example.org#firstname> ?o1" ;
+				  	  rdf:_2	"?s1 <http://example.org#msn> ?o2" ;
+				  	  rdf:_3	"?s1 <http://example.org#skype> ?o3" ] ;
+	:patternOut 	[ rdf:type	rdf:Seq ;
+				  	  rdf:_1	"?s1 <http://example.org#msn> ?o2" ;
+				  	  rdf:_2	"?s1 <http://example.org#firstname> ?o1" ;
+				  	  rdf:_3	"?s1 <http://example.org#skype> ?o3" ] .
+				  	
+<http://jena.hpl.hp.com/ARQo/test/#TB069> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TB069" ;
+	:heuristic		"BGP_PROBABILISTIC_FRAMEWORK" ;
+	:patternIn		[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	"?s1 <http://example.org#firstname> ?o1" ;
+				  	  rdf:_2	"?s1 <http://example.org#msn> ?o2" ;
+				  	  rdf:_3	"?s1 <http://example.org#birthday> ?o3" ] ;
+	:patternOut 	[ rdf:type	rdf:Seq ;
+				  	  rdf:_1	"?s1 <http://example.org#msn> ?o2" ;
+				  	  rdf:_2	"?s1 <http://example.org#firstname> ?o1" ;
+				  	  rdf:_3	"?s1 <http://example.org#birthday> ?o3" ] .
+				  	  
+<http://jena.hpl.hp.com/ARQo/test/#TB070> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TB070" ;
+	:heuristic		"BGP_PROBABILISTIC_FRAMEWORK" ;
+	:patternIn		[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	"?s1 <http://example.org#firstname> ?o1" ;
+				  	  rdf:_2	"?s1 <http://example.org#msn> ?o2" ;
+				  	  rdf:_3	"?s3 <http://example.org#birthday> ?s1" ] ;
+	:patternOut 	[ rdf:type	rdf:Seq ;
+				  	  rdf:_1	"?s3 <http://example.org#birthday> ?s1" ;
+				  	  rdf:_2	"?s1 <http://example.org#firstname> ?o1" ;
+				  	  rdf:_3	"?s1 <http://example.org#msn> ?o2" ] .
+				  	  
+<http://jena.hpl.hp.com/ARQo/test/#TB071> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TB071" ;
+	:heuristic		"BGP_PROBABILISTIC_FRAMEWORK" ;
+	:patternIn		[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	"<http://example.org#Person1> <http://example.org#phone> ?o1" ;
+				  	  rdf:_2	"<http://example.org#Person1> <http://example.org#msn> ?o2" ] ;
+	:patternOut 	[ rdf:type	rdf:Seq ;
+				  	  rdf:_1	"<http://example.org#Person1> <http://example.org#msn> ?o2" ;
+				  	  rdf:_2	"<http://example.org#Person1> <http://example.org#phone> ?o1" ] .
+				  	  
+<http://jena.hpl.hp.com/ARQo/test/#TB072> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TB072" ;
+	:heuristic		"BGP_PROBABILISTIC_FRAMEWORK" ;
+	:patternIn		[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	"<http://example.org#Person1> <http://example.org#phone> ?o1" ;
+				  	  rdf:_2	"<http://example.org#Person4> <http://example.org#phone> ?o2" ] ;
+	:patternOut 	[ rdf:type	rdf:Seq ;
+				  	  rdf:_1	"<http://example.org#Person4> <http://example.org#phone> ?o2" ;
+				  	  rdf:_2	"<http://example.org#Person1> <http://example.org#phone> ?o1" ] .
+				  	  
+<http://jena.hpl.hp.com/ARQo/test/#TB073> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TB073" ;
+	:heuristic		"BGP_PROBABILISTIC_FRAMEWORK" ;
+	:patternIn		[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	"<http://example.org#Person1> <http://example.org#phone> ?o1" ;
+				  	  rdf:_2	"<http://example.org#Person4> <http://example.org#phone> ?o1" ] ;
+	:patternOut 	[ rdf:type	rdf:Seq ;
+				  	  rdf:_1	"<http://example.org#Person4> <http://example.org#phone> ?o1" ;
+				  	  rdf:_2	"<http://example.org#Person1> <http://example.org#phone> ?o1" ] .
+				  	  
+<http://jena.hpl.hp.com/ARQo/test/#TB074> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TB074" ;
+	:heuristic		"BGP_PROBABILISTIC_FRAMEWORK" ;
+	:patternIn		[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	"?s1 <http://example.org#firstname> ?o1" ;
+				  	  rdf:_2	"?s1 <http://example.org#phone> ?o2" ;
+				  	  rdf:_3	"?s3 <http://example.org#msn> ?o3" ;
+				  	  rdf:_4	"?s3 <http://example.org#phone> ?o2" ] ;
+	:patternOut 	[ rdf:type	rdf:Seq ;
+				  	  rdf:_1	"?s3 <http://example.org#msn> ?o3" ;
+				  	  rdf:_2	"?s3 <http://example.org#phone> ?o2" ;
+				  	  rdf:_3	"?s1 <http://example.org#phone> ?o2" ;
+					  rdf:_4	"?s1 <http://example.org#firstname> ?o1" ] .
+					  
+<http://jena.hpl.hp.com/ARQo/test/#TB075> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TB075" ;
+	rdfs:comment	"This is different to the variable counting heuristic. The bound join between the two predicates is weighted 1.0
+					 and, hence, the query is optimized differently" ;
+	:heuristic		"BGP_VARIABLE_COUNTING_UNBOUND" ;
+	:patternIn		[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	"?s1 <http://example.org#phone> xxx-xxx-xxx" ;
+				  	  rdf:_2	"?s2 <http://example.org#phone> xxx-xxx-xxx" ;
+				  	  rdf:_3	"?s1 <http://example.org#msn> ?o3" ] ;
+	:patternOut 	[ rdf:type	rdf:Seq ;
+				  	  rdf:_1	"?s1 <http://example.org#phone> xxx-xxx-xxx" ;
+				  	  rdf:_2	"?s1 <http://example.org#msn> ?o3" ;
+				  	  rdf:_3	"?s2 <http://example.org#phone> xxx-xxx-xxx" ] .
+					    	      			  			      			  		      			  				      			  

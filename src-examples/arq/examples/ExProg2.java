@@ -14,16 +14,17 @@ import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.expr.E_Regex;
 import com.hp.hpl.jena.sparql.expr.Expr;
-import com.hp.hpl.jena.sparql.expr.NodeVar;
+import com.hp.hpl.jena.sparql.expr.ExprVar;
 import com.hp.hpl.jena.sparql.syntax.ElementFilter;
 import com.hp.hpl.jena.sparql.syntax.ElementGroup;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
 import com.hp.hpl.jena.vocabulary.DC;
 
-/** Example : Build a query with a filter programmatically 
+/** Example : Build a query with a filter programmatically.
+ *  Note: it may be better to build and execute an algebra expression.  See other examples.
  * 
  * @author Andy Seaborne
- * @version $Id: ExProg2.java,v 1.9 2007-06-07 13:09:41 andy_seaborne Exp $
+ * @version $Id: ExProg2.java,v 1.10 2007-09-06 15:12:10 andy_seaborne Exp $
  */
 
 public class ExProg2
@@ -48,7 +49,7 @@ public class ExProg2
         elg.addTriplePattern(t1) ;
         
         // Adds a filter.  Need to wrap variable in a NodeVar.
-        Expr expr = new E_Regex(new NodeVar(varTitle), "sparql", "i") ;
+        Expr expr = new E_Regex(new ExprVar(varTitle), "sparql", "i") ;
         ElementFilter filter = new  ElementFilter(expr) ;
         elg.addElementFilter(filter) ;
         

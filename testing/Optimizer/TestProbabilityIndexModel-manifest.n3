@@ -1,0 +1,239 @@
+@prefix dc:		<http://purl.org/dc/elements/1.1/> .
+@prefix rdf:	<http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:	<http://www.w3.org/2000/01/rdf-schema#> .
+@prefix :		<http://www.w3.org/2006/03/test-description#> .
+
+# ---------------------------------------------
+# This test cases are based on the dataset
+# data/ontology/Test-data.n3
+# 	
+# Author: Markus Stocker
+# Version: $Id: TestProbabilityIndexModel-manifest.n3,v 1.1 2007-09-06 15:11:31 andy_seaborne Exp $
+# ---------------------------------------------
+
+<http://jena.hpl.hp.com/ARQo/test/#TI001> 
+	rdf:type 				:TestCase ;
+	dc:title 				"TI001" ;
+	:minProbability			"0.02702702702702703" ;
+	:minJoinedProbability	"0.0007304601899196494" ;
+	:dataGraphSize			"37" ;
+	:indexedSize			"37" ;
+	:squaredDataGraphSize 	"1369" ;
+	:squaredIndexedSize		"1369" .
+	
+<http://jena.hpl.hp.com/ARQo/test/#TI002> 
+	rdf:type 				:TestCase ;
+	rdfs:comment			"The pattern matches everything" ;
+	dc:title 				"TI002" ;
+	:triple1				[ :subject		"?x" ;
+							  :predicate 	"?y" ;
+							  :object		"?z" ] ;
+	:probability			"1.0" ;
+	:selectivity			"1.0" .
+	
+<http://jena.hpl.hp.com/ARQo/test/#TI003> 
+	rdf:type 				:TestCase ;
+	rdfs:comment			"The cartesian product between two result sets of the ontology size" ;
+	dc:title 				"TI003" ;
+	:triple1				[ :subject		"?x1" ;
+						 	  :predicate 	"?y1" ;
+							  :object		"?z1" ] ;
+	:triple2				[ :subject		"?x2" ;
+						 	  :predicate 	"?y2" ;
+							  :object		"?z2" ] ;
+	:probability			"1.0" ;
+	:selectivity			"1.0" .
+	
+<http://jena.hpl.hp.com/ARQo/test/#TI004> 
+	rdf:type 				:TestCase ;
+	rdfs:comment			"The pattern matches 10 triples (subject probability is estimated by 1 / |R|)" ;
+	dc:title 				"TI004" ;
+	:triple1				[ :subject		"<http://example.org#Person1>" ;
+							  :predicate 	"?y" ;
+							  :object		"?z" ] ;
+	:probability			"0.2" ;
+	:selectivity			"0.2702702702702703" .
+	
+<http://jena.hpl.hp.com/ARQo/test/#TI005> 
+	rdf:type 				:TestCase ;
+	rdfs:comment			"The pattern matches 4 triples (the estimation assumes uniformly distributed triples per resource)" ;
+	dc:title 				"TI005" ;
+	:triple1				[ :subject		"<http://example.org#Person5>" ;
+							  :predicate 	"?y" ;
+							  :object		"?z" ] ;
+	:probability			"0.2" ;
+	:selectivity			"0.10810810810810811" .
+	
+<http://jena.hpl.hp.com/ARQo/test/#TI006> 
+	rdf:type 				:TestCase ;
+	rdfs:comment			"The pattern matches 5 triples (the estimation of predicates is exact with the index)" ;
+	dc:title 				"TI006" ;
+	:triple1				[ :subject		"?x" ;
+							  :predicate 	"<http://example.org#lastname>" ;
+							  :object		"?z" ] ;
+	:probability			"0.13513513513513514" ;
+	:selectivity			"0.13513513513513514" .
+	
+<http://jena.hpl.hp.com/ARQo/test/#TI007> 
+	rdf:type 				:TestCase ;
+	rdfs:comment			"The pattern matches 4 triples" ;
+	dc:title 				"TI007" ;
+	:triple1				[ :subject		"?x" ;
+							  :predicate 	"<http://example.org#birthday>" ;
+							  :object		"?z" ] ;
+	:probability			"0.10810810810810811" ;
+	:selectivity			"0.10810810810810811" .
+	
+<http://jena.hpl.hp.com/ARQo/test/#TI008> 
+	rdf:type 				:TestCase ;
+	rdfs:comment			"The pattern matches 2 triples (the object is estimated using the histogram distribution)" ;
+	dc:title 				"TI008" ;
+	:triple1				[ :subject		"?x" ;
+							  :predicate 	"?y" ;
+							  :object		"company1" ] ;
+	:probability			"0.13513513513513514" ;
+	:selectivity			"0.05405405405405406" .
+	
+<http://jena.hpl.hp.com/ARQo/test/#TI009> 
+	rdf:type 				:TestCase ;
+	rdfs:comment			"The pattern matches 1 triple" ;
+	dc:title 				"TI009" ;
+	:triple1				[ :subject		"?x" ;
+							  :predicate 	"?y" ;
+							  :object		"person1@msn.com" ] ;
+	:probability			"0.02702702702702703" ;
+	:selectivity			"0.02702702702702703" .
+	
+<http://jena.hpl.hp.com/ARQo/test/#TI010> 
+	rdf:type 				:TestCase ;
+	rdfs:comment			"The pattern matches 3 triple" ;
+	dc:title 				"TI010" ;
+	:triple1				[ :subject		"?x" ;
+							  :predicate 	"<http://example.org#address>" ;
+							  :object		"?z" ] ;
+	:probability			"0.08108108108108109" ;
+	:selectivity			"0.08108108108108109" .
+
+<http://jena.hpl.hp.com/ARQo/test/#TI011> 
+	rdf:type 				:TestCase ;
+	rdfs:comment			"The pattern matches 1 triple (the effective probability is lower, 0.016216216216216218)" ;
+	dc:title 				"TI011" ;
+	:triple1				[ :subject		"<http://example.org#Person1>" ;
+							  :predicate 	"<http://example.org#address>" ;
+							  :object		"?z" ] ;
+	:probability			"0.02702702702702703" ;
+	:selectivity			"0.02702702702702703" .
+	
+<http://jena.hpl.hp.com/ARQo/test/#TI012> 
+	rdf:type 				:TestCase ;
+	rdfs:comment			"The pattern matches 2 triple" ;
+	dc:title 				"TI012" ;
+	:triple1				[ :subject		"?x" ;
+							  :predicate 	"?y" ;
+							  :object		"person2@msn.com" ] ;
+	:probability			"0.10810810810810811" ;
+	:selectivity			"0.05405405405405406" .
+	
+<http://jena.hpl.hp.com/ARQo/test/#TI013> 
+	rdf:type 				:TestCase ;
+	rdfs:comment			"The pattern matches 2 triple (the effective probability is lower than the min: 0.013148283418553)" ;
+	dc:title 				"TI013" ;
+	:triple1				[ :subject		"<http://example.org#Person2>" ;
+							  :predicate 	"?y" ;
+							  :object		"person2@msn.com" ] ;
+	:probability			"0.02702702702702703" ;
+	:selectivity			"0.05405405405405406" .
+
+<http://jena.hpl.hp.com/ARQo/test/#TI014> 
+	rdf:type 				:TestCase ;
+	rdfs:comment			"The pattern result set size is 100" ;
+	dc:title 				"TI014" ;
+	:triple1				[ :subject		"<http://example.org#Person1>" ;
+							  :predicate 	"?y1" ;
+							  :object		"?z1" ] ;
+	:triple2				[ :subject		"<http://example.org#Person1>" ;
+							  :predicate 	"?y2" ;
+							  :object		"?z2" ] ;
+	:probability			"0.0017706355003652306" ;
+	:selectivity			"0.073046018991964937910883856829803" .
+	
+<http://jena.hpl.hp.com/ARQo/test/#TI015> 
+	rdf:type 				:TestCase ;
+	rdfs:comment			"The pattern result set size is 5 (the index provides exact selectivity for this pattern)" ;
+	dc:title 				"TI015" ;
+	:triple1				[ :subject		"?x" ;
+							  :predicate 	"<http://example.org#firstname>" ;
+							  :object		"?z1" ] ;
+	:triple2				[ :subject		"?x" ;
+							  :predicate 	"<http://example.org#lastname>" ;
+							  :object		"?z2" ] ;
+	:probability			"0.003652300949598247" ;
+	:selectivity			"0.003652300949598247" .
+	
+<http://jena.hpl.hp.com/ARQo/test/#TI016> 
+	rdf:type 				:TestCase ;
+	rdfs:comment			"The pattern result set size is 1" ;
+	dc:title 				"TI016" ;
+	:triple1				[ :subject		"<http://example.org#Person1>" ;
+							  :predicate 	"<http://example.org#firstname>" ;
+							  :object		"?z1" ] ;
+	:triple2				[ :subject		"<http://example.org#Person1>" ;
+							  :predicate 	"<http://example.org#lastname>" ;
+							  :object		"?z2" ] ;
+	:probability			"0.0007304601899196494" ;
+	:selectivity			"0.0007304601899196494" .
+	
+<http://jena.hpl.hp.com/ARQo/test/#TI017> 
+	rdf:type 				:TestCase ;
+	rdfs:comment			"The pattern result set size is 1 (the correct estimated probability is 5.335720890574504E-7, less than the min probability)" ;
+	dc:title 				"TI017" ;
+	:triple1				[ :subject		"<http://example.org#Person1>" ;
+							  :predicate 	"<http://example.org#firstname>" ;
+							  :object		"First Name 1" ] ;
+	:triple2				[ :subject		"<http://example.org#Person1>" ;
+							  :predicate 	"<http://example.org#lastname>" ;
+							  :object		"Last Name 1" ] ;
+	:probability			"0.0007304601899196494" ;
+	:selectivity			"0.0007304601899196494" .
+	
+<http://jena.hpl.hp.com/ARQo/test/#TI018> 
+	rdf:type 				:TestCase ;
+	dc:title 				"TI018" ;
+	rdfs:comment			"It's workplace not Workpace" ;
+	:triple1				[ :subject		"?x" ;
+							  :predicate 	"<http://example.org#Workplace>" ;
+							  :object		"?z" ] ;
+	:probability			"0.0" ;
+	:selectivity			"0.0" .
+	
+<http://jena.hpl.hp.com/ARQo/test/#TI019> 
+	rdf:type 				:TestCase ;
+	dc:title 				"TI019" ;
+	rdfs:comment			"It's xxx-xxx-xxx not xxx-xxx, the element is not contained in any histogram" ;
+	:triple1				[ :subject		"?x" ;
+							  :predicate 	"?y" ;
+							  :object		"xxx-xxx" ] ;
+	:probability			"0.0" ;
+	:selectivity			"0.0" .
+	
+<http://jena.hpl.hp.com/ARQo/test/#TI020> 
+	rdf:type 				:TestCase ;
+	dc:title 				"TI020" ;
+	rdfs:comment			"It's xxx-xxx-xxx not xxx-xxx, the element is not contained in any histogram" ;
+	:triple1				[ :subject		"?x" ;
+							  :predicate 	"<http://example.org#phone>" ;
+							  :object		"xxx-xxx" ] ;
+	:probability			"0.0" ;
+	:selectivity			"0.0" .
+	
+<http://jena.hpl.hp.com/ARQo/test/#TI021> 
+	rdf:type 				:TestCase ;
+	dc:title 				"TI021" ;
+	:triple1				[ :subject		"<http://example.org#Person1>" ;
+							  :predicate 	"?p1" ;
+							  :object		"?o1" ] ;
+	:triple2				[ :subject		"?s2" ;
+							  :predicate 	"?p2" ;
+							  :object		"<http://example.org#Person1>" ] ;
+	:probability			"0.0" ;
+	:selectivity			"0.0" .

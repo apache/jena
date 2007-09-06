@@ -6,6 +6,6 @@
   <head>
     <variable name="v"/>
   </head>
-  <results ordered="false" distinct="false">
+  <results>
   </results>
 </sparql>

@@ -1,0 +1,275 @@
+@prefix dc:		<http://purl.org/dc/elements/1.1/> .
+@prefix rdf:	<http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:	<http://www.w3.org/2000/01/rdf-schema#> .
+@prefix :		<http://www.w3.org/2006/03/test-description#> .
+
+# ---------------------------------------------
+# This test cases are based on the dataset
+# data/ontology/Test-data.n3
+# 	
+# Author: Markus Stocker
+# Version: $Id: TestHeuristicWeightEdge-manifest.n3,v 1.1 2007-09-06 15:11:32 andy_seaborne Exp $
+# ---------------------------------------------
+
+<http://jena.hpl.hp.com/ARQo/test/#TD001> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TD001" ;
+	:heuristic		"BGP_VARIABLE_COUNTING" ;
+	:edge			[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	"?s1 ?p1 ?o1" ;
+				  	  rdf:_2	"?s1 ?p2 ?o2" ] ;
+	:weight	 		"0.9375" .
+	
+<http://jena.hpl.hp.com/ARQo/test/#TD002> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TD002" ;
+	:heuristic		"BGP_VARIABLE_COUNTING" ;
+	:edge			[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	":s1 ?p1 ?o1" ;
+				  	  rdf:_2	":s1 ?p2 ?o2" ] ;
+	:weight	 		"0.21875" . 
+	
+<http://jena.hpl.hp.com/ARQo/test/#TD003> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TD003" ;
+	:heuristic		"BGP_VARIABLE_COUNTING" ;
+	:edge			[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	"?s1 ?p1 ?o1" ;
+				  	  rdf:_2	"?s2 ?p2 ?s1" ] ;
+	:weight	 		"0.96875" .
+	
+<http://jena.hpl.hp.com/ARQo/test/#TD004> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TD004" ;
+	:heuristic		"BGP_VARIABLE_COUNTING" ;
+	:edge			[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	":s1 ?p1 ?o1" ;
+				  	  rdf:_2	"?s2 ?p2 :s1" ] ;
+	:weight	 		"0.3515625" .
+	
+<http://jena.hpl.hp.com/ARQo/test/#TD005> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TD005" ;
+	:heuristic		"BGP_VARIABLE_COUNTING" ;
+	:edge			[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	"?s1 ?p1 ?o1" ;
+				  	  rdf:_2	"?o1 ?p2 ?o2" ] ;
+	:weight	 		"0.96875" .
+	
+<http://jena.hpl.hp.com/ARQo/test/#TD006> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TD006" ;
+	:heuristic		"BGP_VARIABLE_COUNTING" ;
+	:edge			[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	"?s1 ?p1 :o1" ;
+				  	  rdf:_2	":o1 ?p2 ?o2" ] ;
+	:weight	 		"0.3515625" .
+	
+<http://jena.hpl.hp.com/ARQo/test/#TD007> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TD007" ;
+	:heuristic		"BGP_VARIABLE_COUNTING" ;
+	:edge			[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	"?s1 ?p1 ?o1" ;
+				  	  rdf:_2	"?s2 ?p2 ?o1" ] ;
+	:weight	 		"0.96875" .
+	
+<http://jena.hpl.hp.com/ARQo/test/#TD008> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TD008" ;
+	:heuristic		"BGP_VARIABLE_COUNTING" ;
+	:edge			[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	"?s1 ?p1 :o1" ;
+				  	  rdf:_2	"?s2 ?p2 :o1" ] ;
+	:weight	 		"0.52734375" .
+	
+<http://jena.hpl.hp.com/ARQo/test/#TD009> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TD009" ;
+	:heuristic		"BGP_VARIABLE_COUNTING" ;
+	:edge			[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	":s1 ?p1 :o1" ;
+				  	  rdf:_2	":s1 ?p2 :o1" ] ;
+	:weight	 		"0.05078125" .
+	
+<http://jena.hpl.hp.com/ARQo/test/#TD010> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TD010" ;
+	:heuristic		"BGP_VARIABLE_COUNTING" ;
+	:edge			[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	":s1 :p1 :o1" ;
+				  	  rdf:_2	":s1 :p2 :o2" ] ;
+	:weight	 		"0.013671875" .
+	
+<http://jena.hpl.hp.com/ARQo/test/#TD011> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TD011" ;
+	:heuristic		"BGP_GRAPH_STATISTICS_HANDLER" ;
+	:edge			[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	"?s1 ?p1 ?o1" ;
+				  	  rdf:_2	"?s1 ?p2 ?o2" ] ;
+	:weight	 		"0.9375" .
+	
+<http://jena.hpl.hp.com/ARQo/test/#TD012> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TD012" ;
+	:heuristic		"BGP_GRAPH_STATISTICS_HANDLER" ;
+	:edge			[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	"<http://example.org#Person1> ?p1 ?o1" ;
+				  	  rdf:_2	"<http://example.org#Person1> ?p2 ?o2" ] ;
+	:weight	 		"0.21875" . 
+	
+<http://jena.hpl.hp.com/ARQo/test/#TD013> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TD013" ;
+	rdfs:comment	"A rather bad estimation, in fact this pattern does not match anything. The probabilistic framework as 
+					 accurate index information about this pattern." ;
+	:heuristic		"BGP_GRAPH_STATISTICS_HANDLER" ;
+	:edge			[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	"?s1 ?p1 ?o1" ;
+				  	  rdf:_2	"?s2 ?p2 ?s1" ] ;
+	:weight	 		"0.96875" .
+	
+<http://jena.hpl.hp.com/ARQo/test/#TD014> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TD014" ;
+	:heuristic		"BGP_GRAPH_STATISTICS_HANDLER" ;
+	:edge			[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	"<http://example.org#Person1> ?p1 ?o1" ;
+				  	  rdf:_2	"?s2 ?p2 <http://example.org#Person1>" ] ;
+	:weight	 		"0.3515625" .
+	
+<http://jena.hpl.hp.com/ARQo/test/#TD015> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TD015" ;
+	:heuristic		"BGP_GRAPH_STATISTICS_HANDLER" ;
+	:edge			[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	"?s1 ?p1 ?o1" ;
+				  	  rdf:_2	"?o1 ?p2 ?o2" ] ;
+	:weight	 		"0.96875" .
+	
+<http://jena.hpl.hp.com/ARQo/test/#TD016> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TD016" ;
+	:heuristic		"BGP_GRAPH_STATISTICS_HANDLER" ;
+	:edge			[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	"?s1 ?p1 <http://example.org#Person5>" ;
+				  	  rdf:_2	"<http://example.org#Person5> ?p2 ?o2" ] ;
+	:weight	 		"0.3515625" .
+	
+<http://jena.hpl.hp.com/ARQo/test/#TD017> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TD017" ;
+	:heuristic		"BGP_GRAPH_STATISTICS_HANDLER" ;
+	:edge			[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	"?s1 ?p1 ?o1" ;
+				  	  rdf:_2	"?s2 ?p2 ?o1" ] ;
+	:weight	 		"0.96875" .
+	
+<http://jena.hpl.hp.com/ARQo/test/#TD018> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TD018" ;
+	:heuristic		"BGP_GRAPH_STATISTICS_HANDLER" ;
+	:edge			[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	"?s1 ?p1 xxx-xxx-xxx" ;
+				  	  rdf:_2	"?s2 ?p2 xxx-xxx-xxx" ] ;
+	:weight	 		"0.52734375" .
+	
+<http://jena.hpl.hp.com/ARQo/test/#TD019> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TD019" ;
+	:heuristic		"BGP_GRAPH_STATISTICS_HANDLER" ;
+	:edge			[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	"<http://example.org#Person1> ?p1 person1a" ;
+				  	  rdf:_2	"<http://example.org#Person1> ?p2 person1a" ] ;
+	:weight	 		"0.05078125" .
+	
+<http://jena.hpl.hp.com/ARQo/test/#TD020> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TD020" ;
+	:heuristic		"BGP_GRAPH_STATISTICS_HANDLER" ;
+	:edge			[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	"<http://example.org#Person1> <http://example.org#skype> person1a" ;
+				  	  rdf:_2	"<http://example.org#Person1> <http://example.org#msn> person1@msn.com" ] ;
+	:weight	 		"0.013671875" .
+	
+<http://jena.hpl.hp.com/ARQo/test/#TD021> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TD021" ;
+	:heuristic		"BGP_PROBABILISTIC_FRAMEWORK" ;
+	:edge			[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	"?s1 ?p1 ?o1" ;
+				  	  rdf:_2	"?s2 ?p2 ?o2" ] ;
+	:weight	 		"0.0" .
+	
+<http://jena.hpl.hp.com/ARQo/test/#TD022> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TD022" ;
+	:heuristic		"BGP_PROBABILISTIC_FRAMEWORK" ;
+	:edge			[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	"?s1 ?p1 ?o1" ;
+				  	  rdf:_2	"?s1 ?p2 ?o2" ] ;
+	:weight	 		"0.22132943754565376" .
+	
+<http://jena.hpl.hp.com/ARQo/test/#TD023> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TD023" ;
+	:heuristic		"BGP_PROBABILISTIC_FRAMEWORK" ;
+	:edge			[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	"<http://example.org#Person1> ?p1 ?o1" ;
+				  	  rdf:_2	"<http://example.org#Person1> ?p2 ?o2" ] ;
+	:weight	 		"0.0017706355003652306" . 
+	
+<http://jena.hpl.hp.com/ARQo/test/#TD024> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TD024" ;
+	:heuristic		"BGP_PROBABILISTIC_FRAMEWORK" ;
+	:edge			[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	"?s1 ?p1 ?o1" ;
+				  	  rdf:_2	"?s2 ?p2 ?s1" ] ;
+	:weight	 		"0.0" .
+	
+<http://jena.hpl.hp.com/ARQo/test/#TD025> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TD025" ;
+	:heuristic		"BGP_PROBABILISTIC_FRAMEWORK" ;
+	:edge			[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	"<http://example.org#Person1> ?p1 ?o1" ;
+				  	  rdf:_2	"?s2 ?p2 <http://example.org#Person1>" ] ;
+	:weight	 		"0.0" .
+	
+<http://jena.hpl.hp.com/ARQo/test/#TD026> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TD026" ;
+	:heuristic		"BGP_PROBABILISTIC_FRAMEWORK" ;
+	:edge			[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	"?s1 <http://example.org#phone> ?o1" ;
+				  	  rdf:_2	"?s2 <http://example.org#phone> ?o1" ] ;
+	:weight	 		"0.018261504747991233" .
+	
+<http://jena.hpl.hp.com/ARQo/test/#TD027> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TD027" ;
+	:heuristic		"BGP_PROBABILISTIC_FRAMEWORK" ;
+	:edge			[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	"?s1 <http://example.org#phone> ?o1" ;
+				  	  rdf:_2	"?s2 <http://example.org#workplace> ?o1" ] ;
+	:weight	 		"0.0" .
+	
+<http://jena.hpl.hp.com/ARQo/test/#TD028> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TD028" ;
+	:heuristic		"BGP_PROBABILISTIC_FRAMEWORK" ;
+	:edge			[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	"?s1 <http://example.org#phone> xxx-xxx-xxx" ;
+				  	  rdf:_2	"?s2 <http://example.org#workplace> xxx-xxx-xxx" ] ;
+	:weight	 		"0.0" .	
+	
+<http://jena.hpl.hp.com/ARQo/test/#TD029> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TD029" ;
+	:heuristic		"BGP_PROBABILISTIC_FRAMEWORK" ;
+	:edge			[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	"?s1 <http://example.org#phone> xxx-xxx-xxx" ;
+				  	  rdf:_2	"?s2 <http://example.org#phone> xxx-xxx-xxx" ] ;
+	:weight	 		"0.0007304601899196494" . 				      			  

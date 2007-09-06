@@ -1,4 +1,4 @@
-# $Id: tP.ttl,v 1.7 2007-05-21 11:13:29 andy_seaborne Exp $
+# $Id: tP.ttl,v 1.8 2007-09-06 15:11:34 andy_seaborne Exp $
 
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .

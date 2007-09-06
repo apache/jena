@@ -16,10 +16,11 @@ import com.hp.hpl.jena.sparql.syntax.ElementGroup;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
 import com.hp.hpl.jena.vocabulary.DC;
 
-/** Example : Build a query programmatically.
+/** Example : Build a query synatx programmatically.
+ *  Note: it may be better to build and execute an algebra expression.  See other examples.
  * 
  * @author Andy Seaborne
- * @version $Id: ExProg1.java,v 1.9 2007-06-07 13:09:41 andy_seaborne Exp $
+ * @version $Id: ExProg1.java,v 1.10 2007-09-06 15:12:10 andy_seaborne Exp $
  */
 
 public class ExProg1

@@ -85,6 +85,10 @@ If your query has a syntax error, a message is printed but no query is printed.
 If a query is printed then you get a syntax error message, then your
 query was syntactically correct but the ARQ serialization is broken.</p>
 
+<p>The command <code>arq.qparse --print=op --file <i>queryFile</i> </code>will print the
+SPARQL algebra for the query in <a href="http://jena.hpl.hp.com/wiki/SSE">SSE format</a>.</p>
+
+
 <h3><a id="arq.test" name="arq.test"><code>arq.qtest</code></a></h3>
 <p>Execute a test set. In the ARQ directory, <code>qtest --all</code> runs
 the whole ARQ test suite.</p>

@@ -17,7 +17,7 @@ function createManifest
     ( 
 EOF
     # Queries good syntax
-    for f in *.rq
+    for f in *.rq *.arq
       do
       cat >> manifest.ttl <<EOF
       [  mf:name    "$f" ;

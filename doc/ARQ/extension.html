@@ -1,7 +1,6 @@
 <!--<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 Firefox puts space in with this  -->
 <html xmlns="http://www.w3.org/1999/xhtml"><head>
-  <meta name="generator" content="Microsoft FrontPage 6.0" />
 
   <title>Extensions in ARQ</title><link rel="stylesheet" type="text/css" href="styles/doc.css" /></head>
 
@@ -58,9 +57,9 @@ Firefox puts space in with this  -->
   <p>The ARQ function library uses this mechanism.&nbsp; The
   namespace of the ARQ function library is
   &lt;<code>http://jena.hpl.hp.com/function#&gt;</code>.</p>
-  <pre class="box">PREFIX jfn: &lt;<code>http://jena.hpl.hp.com/function#</code>&gt;<br />PREFIX dc: &lt;http://purl.org/dc/elements/1.1/&gt;<br />SELECT ?v<br />{ ?x dc:date ?date .<br /> FILTER (?date &lt; jfn:now() )<br />}<br /></pre>
+  <pre class="box">PREFIX afn: &lt;<code>http://jena.hpl.hp.com/function#</code>&gt;<br />PREFIX dc: &lt;http://purl.org/dc/elements/1.1/&gt;<br />SELECT ?v<br />{ ?x dc:date ?date .<br /> FILTER (?date &lt; afn:now() )<br />}<br /></pre>
 
-  <p>The <kbd>jfn:now</kbd> returns the time the query started.</p>
+  <p>The <kbd>afn:now</kbd> returns the time the query started.</p>
 
   <p>The filter functions in the ARQ distribution are described
   on the <a href="library-function.html">filter function library page</a>.</p>

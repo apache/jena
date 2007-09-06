@@ -1,0 +1,53 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<!--
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+ Firefox gets it wrong (puts a marging at the top) if the declarations as included 
+-->
+
+<head>
+<title>ARQ Optimizer</title>
+<link rel="stylesheet" type="text/css" href="styles/doc.css" />
+</head>
+<body>
+
+<h1>ARQ - Optimizer</h1>
+<h2>Overview</h2>
+<p>The ARQ-Optimizer is a cost based <a href="http://www.w3.org/TR/rdf-sparql-query/#BasicGraphPatterns">Basic Graph Pattern</a>
+(BGP) optimizer for <a href="http://jena.sourceforge.net/ARQ/">ARQ</a> and <a href="http://jena.sourceforge.net">Jena</a> in-memory models. The optimizer fits into the query execution process and is executed during BGP 
+stage generation. Hence, BGPs defined in the input query are analysed and optimized using heuristics for cost estimation of joined 
+triple patterns.</p>
+<p>Optimization is achieved by reordering the triple patterns of a BGP in a way that the intermediate result set sizes are minimized.
+The ARQ-Optimizer implements an algorithm which identifies the optimized execution order of the BGP triple patterns based on different
+heuristics which estimate the execution cost of joined triple patterns.</p>
+
+<h2>Usage</h2>
+<p>The ARQ-Optimizer is turned on by default in ARQ. Hence, for Jena in-memory models, BGPs are automatically optimized. Depending on the
+query execution context, the optimizer automatically identifies the best heuristic to use for cost estimation. Hence, in a generic
+setting, users should not be required to interact with the optimizer.</p>
+<p>The optimizer code is organized in the following Java namespace</p>
+<pre>com.hp.hpl.jena.sparql.engine.optimizer</pre>
+<p>and provides the class</p>
+<pre>com.hp.hpl.jena.sparql.engine.optimizer.Optimizer</pre>
+<p>with static methods to enable and disable the optimizer. The optimizer can be disabled at any time in user applications by calling</p>
+<pre>Optimizer.disable()</pre>
+<p>either with or without the ARQ context. Disabling the optimizer will reset the context to the one specified and essentially override 
+the BGP stage generator used by the optimizer in order that the optimizer is not executed any longer during BGP stage generation. 
+The optimizer can, of course, be enabled by calling</p>
+<pre>Optimizer.enable()</pre>
+<p>either with or without the ARQ context. Note that providing the context to the methods allows to globally or locally enable or disable
+the optimizer, i.e. globally for every query executed by ARQ in an application or locally only for the query executed within a query
+execution.</p>
+
+<h2>Acknowledgments</h2>
+<p>The following people greatly influenced the development of ARQo
+  <ul>
+    <li><a href="http://www.ifi.uzh.ch/ddis/people/markus-stocker/">Markus Stocker</a>, who developed in his MSc thesis <i>The Fundamentals of iSPARQL</i> at the <a href="http://www.ifi.uzh.ch">Department of Informatics</a>, <a href="http://www.uzh.ch">University of Zurich</a> together with <a href="http://www.ifi.uzh.ch/ddis/people/bernstein/">Prof. Abraham Bernstein</a> and his assistant <a href="http://www.ifi.unizh.ch/ddis/people/christophkiefer/">Christoph Kiefer</a> the approach of selectivity estimation for static SPARQL query optimization. This work is partially published as <a href="http://www.ifi.uzh.ch/ddis/staff/goehring/btw/files/ifi-2007.03.pdf">technical report</a> by Bernstein et al.</li>
+    <li>Andy Seaborne, who constantly assisted the author with useful discussions and advices</li>
+    <li>The author, Markus Stocker, for the implementation</li>
+</ul>
+</p>
+<p class="footnote"><a href="documentation.html">ARQ Documentation Page</a></p>
+</body>
+</html>

@@ -7,7 +7,7 @@
     <variable name="x"/>
     <variable name="v"/>
   </head>
-  <results ordered="false" distinct="false">
+  <results>
     <result>
       <binding name="x">
         <uri>http://example/d5</uri>

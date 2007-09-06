@@ -1,5 +1,5 @@
 # Canonical format of TRUE
-# $Id: boolean-true-canonical.rq,v 1.7 2007-05-21 11:13:13 andy_seaborne Exp $
+# $Id: boolean-true-canonical.rq,v 1.8 2007-09-06 15:11:18 andy_seaborne Exp $
 
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>

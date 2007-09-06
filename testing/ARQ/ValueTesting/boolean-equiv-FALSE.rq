@@ -1,5 +1,5 @@
 # FALSE = legal boolean values
-# $Id: boolean-equiv-FALSE.rq,v 1.7 2007-05-21 11:13:11 andy_seaborne Exp $
+# $Id: boolean-equiv-FALSE.rq,v 1.8 2007-09-06 15:11:18 andy_seaborne Exp $
 
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>

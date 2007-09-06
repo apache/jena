@@ -5,7 +5,7 @@
 @prefix qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#> .
 
 <>  rdf:type mf:Manifest ;
-    rdfs:comment "Serialization tests" ;
+    rdfs:comment "Serialization tests Serialization" ;
     mf:entries
     ( 
       [  mf:name    "syn-01.rq" ;
@@ -556,4 +556,45 @@
          rdf:type   mfx:TestSerialization ;
          mf:action  <syntax-union-02.rq> ; 
       ]
+      [  mf:name    "syntax-select-expr-01.arq" ;
+         rdf:type   mfx:TestSerialization ;
+         mf:action  <syntax-select-expr-01.arq> ; 
+      ]
+      [  mf:name    "syntax-select-expr-02.arq" ;
+         rdf:type   mfx:TestSerialization ;
+         mf:action  <syntax-select-expr-02.arq> ; 
+      ]
+      [  mf:name    "syntax-select-expr-03.arq" ;
+         rdf:type   mfx:TestSerialization ;
+         mf:action  <syntax-select-expr-03.arq> ; 
+      ]
+      [  mf:name    "syntax-group-01.arq" ;
+         rdf:type   mfx:TestSerialization ;
+         mf:action  <syntax-group-01.arq> ; 
+      ]
+      [  mf:name    "syntax-group-02.arq" ;
+         rdf:type   mfx:TestSerialization ;
+         mf:action  <syntax-group-01.arq> ; 
+      ]
+      [  mf:name    "syntax-count-01.arq" ;
+         rdf:type   mfx:TestSerialization ;
+         mf:action  <syntax-count-01.arq> ; 
+      ]
+      [  mf:name    "syntax-count-02.arq" ;
+         rdf:type   mfx:TestSerialization ;
+         mf:action  <syntax-count-02.arq> ; 
+      ]
+      [  mf:name    "syntax-count-03.arq" ;
+         rdf:type   mfx:TestSerialization ;
+         mf:action  <syntax-count-03.arq> ; 
+      ]
+      [  mf:name    "syntax-count-04.arq" ;
+         rdf:type   mfx:TestSerialization ;
+         mf:action  <syntax-count-04.arq> ; 
+      ]
+
+     [  mf:name    "syntax-service-01.arq" ;
+         rdf:type   mfx:TestSerialization ;
+         mf:action  <syntax-service-01.arq> ; 
+     ]
     ) .
