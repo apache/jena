@@ -274,86 +274,7 @@ Firefox puts space in with this  --><html xmlns="http://www.w3.org/1999/xhtml">
   </div>
 
 
-<!--
-	<p align="center"><b>RDF Graph Functions</b></p>
 
-  <div style="margin-left: 5%; margin-right: 5%;">
-    <table style="border-style: solid; border-collapse: collapse;"
-    border="1" cellpadding="0" cellspacing="1" width="90%">
-      <tbody>
-        <tr>
-          <th style="text-align: left;" bgcolor="#C0C0C0" width=
-          "40%">Function name</th>
-
-          <th bgcolor="#C0C0C0" width="60%">Description</th>
-        </tr>
-
-        <tr>
-          <td style="text-align: left;">
-          <code>jfn:listMember(<i>list</i>,
-          <i>resource</i>)</code></td>
-
-          <td style="text-align: left;">Test whether a resource is
-          a member of an RDF collection (AKA list)</td>
-        </tr>
-
-        <tr>
-          <td style="text-align: left;">
-          <code>jfn:listIndex(<i>list</i>,
-          <i>resource</i>)</code></td>
-
-          <td style="text-align: left;">Return the index of the
-          resource in the RDF collection. Cause an evaluation
-          exception if not a member (and so the expression will not
-          pass the filter unless inside a value disjunction).</td>
-        </tr>
-
-        <tr>
-          <td style="text-align: left;">
-          <code>jfn:bagMember(<i>bag</i>,
-          <i>resource</i>)</code></td>
-
-          <td style="text-align: left;">Test whether a resource is
-          a member of an RDF bag</td>
-        </tr>
-
-        <tr>
-          <td style="text-align: left;">
-          <code>jfn:seqMember(<i>bag</i>,
-          <i>resource</i>)</code></td>
-
-          <td style="text-align: left;">Test whether a resource is
-          a member of an RDF seq</td>
-        </tr>
-
-        <tr>
-          <td style="text-align: left;">
-          <code>jfn:altMember(<i>bag</i>,
-          <i>resource</i>)</code></td>
-
-          <td style="text-align: left;">Test whether a resource is
-          a member of an RDF alt</td>
-        </tr>
-
-        <tr>
-          <td style="text-align: left;">
-          <code>jfn:langeq(<i>literal</i>, <i>lang</i>)</code></td>
-
-          <td style="text-align: left;">Compare the language tag of
-          the literal with a language tag. Comparison reflects
-          language tag rules so "foo"@en matches "EN-gb".</td>
-        </tr>
-        <tr>
-          <td style="text-align: left;">
-          <code>jfn:bnode(?x)</code></td>
-
-          <td style="text-align: left;">Return the blank node label
-          if ?x is a blank node.</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
--->
 
   <p align="center"><b>String Functions</b></p>
 
@@ -469,59 +390,6 @@ Firefox puts space in with this  --><html xmlns="http://www.w3.org/1999/xhtml">
       </tbody>
     </table>
   </div>
-
-  <p align="center"><b>Debugging Functions</b></p>
-
-  <p>Debugging functions can be inserted into queries as extra
-  <code>FILTER</code> clauses.&nbsp; They don't affect query
-  results (they always return true) but they print information that
-  can be helpful in understanding what's happening.</p>
-
-  <div style="margin-left: 5%; margin-right: 5%;">
-    <table style="border-style: solid; border-collapse: collapse;"
-    id="table1" border="1" cellpadding="0" cellspacing="1" width=
-    "90%">
-      <tbody>
-        <tr>
-          <th style="text-align: left;" bgcolor="#C0C0C0" width=
-          "40%">Function name</th>
-
-          <th bgcolor="#C0C0C0" width="60%">Description</th>
-        </tr>
-
-        <tr>
-          <td style="text-align: left;"><code>afn:print(expr,
-          ...)</code></td>
-
-          <td style="text-align: left;">Print the evaluated
-          expressions. With no arguments, prints the current
-          solution. Always returns true.</td>
-        </tr>
-
-        <tr>
-          <td style="text-align: left;">
-          <code>afn:trace(expr)</code></td>
-
-          <td style="text-align: left;">Print the expression with
-          values substituted for variables if the variable is set
-          and print result of evaluation, including whether there
-          was an evaluation exception. Always returns true so it
-          does not filter based on the expression.</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-
-  <p>Example:</p>
-  <pre class="box">
-{
-   ...
-   FILTER afn:print() # Print the solution
-   FILTER afn:trace(<i>expression</i>) # Evaluate and print the expression
-   FILTER <i>expression</i> # Now use the expression to filter solutions
-   ...
-}
-</pre>
 
   <p class="footnote"><a href="documentation.html">ARQ
   Documentation Page</a></p>

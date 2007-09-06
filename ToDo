@@ -3,42 +3,24 @@
 ++ ** Document "stages"
 ++ ** Document "update API"
 ++ Algebra building src-examples 
-++ javadoc-all in the build = 5M of zip.
 ++ Reorder documentation - intro, SPARQL, extensions.
 
-++ Query compare: expressions
 See ToDoSSE
 -----
-+ insert op write/read test into serialization tests
-+ (project ...) and (order ...) are inconsistent
++ Document:
+  SELECT expr
+  GROUP BY etc
 
-+ GROUP BY
-    COUNT(*) done, not COUNT distinct or count(var) or count distinct var
-  GROUP BY tests
-    Only complete data test done. Need partial versions.
-  Query cosistency tests.
-    Need to test consistency of variables used at algebra compile time.
-  SELECT * GROUP BY => GROUP BY vars
-  GROUP BY ... WITH ...
++ GROUP BY tests. Need partial versions.
+  Better syntax as well as SQL-like: GROUP BY ... WITH ... ??
 
-+ Remove com.hp.hpl.jena.sparql.function.library.trace
-  And any documentation
-  Remove FmtExprARQSubst?  What happens in a SPARQL query with RepeatApply of filters? 
++ Remove FmtExprARQSubst? Not used in q subtitution. 
 
 + Sort out FmtExpr (make a proper interface)
 
 + OpOrder to take an ExprList
 + ExprList writing an LJ
 
-+ Aggregates: QueryIterGroup
-  Parsing and serialization done.
-  Need OpWriter/Builder update.
-  
-  Parsing : 
-     Phase 2 detects inconsistences
-     Check on query compile?
-
-+ SELECT expressions [Impl DONE]
   Document 
   
 + Expression printing : expr.toString should not add outer brackets
@@ -52,8 +34,6 @@ See ToDoSSE
          
 + DateTime arithmetic and durations
   http://www.w3.org/TR/xpath-functions/#dateTime-arithmetic
-
-+ Quads - independent quads?  Or retain blocking structure?
 
 + Remote update over HTTP
 
