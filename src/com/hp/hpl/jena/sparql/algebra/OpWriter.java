@@ -12,8 +12,9 @@ import java.util.Map;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
+import com.hp.hpl.jena.query.Query;
+import com.hp.hpl.jena.query.SortCondition;
 import com.hp.hpl.jena.shared.PrefixMapping;
-
 import com.hp.hpl.jena.sparql.ARQConstants;
 import com.hp.hpl.jena.sparql.algebra.op.*;
 import com.hp.hpl.jena.sparql.algebra.table.TableUnit;
@@ -27,16 +28,13 @@ import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.expr.E_Aggregator;
 import com.hp.hpl.jena.sparql.expr.Expr;
 import com.hp.hpl.jena.sparql.expr.ExprList;
-import com.hp.hpl.jena.sparql.expr.NamedExprList;
+import com.hp.hpl.jena.sparql.expr.VarExprList;
 import com.hp.hpl.jena.sparql.serializer.FmtExprPrefix;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext;
 import com.hp.hpl.jena.sparql.util.ExprUtils;
 import com.hp.hpl.jena.sparql.util.FmtUtils;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
 import com.hp.hpl.jena.sparql.util.NodeToLabelMap;
-
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.SortCondition;
 
 
 public class OpWriter
@@ -476,7 +474,7 @@ public class OpWriter
                 op.visit(this) ;
         }
         
-        private void writeNamedExprList(NamedExprList project)
+        private void writeNamedExprList(VarExprList project)
         {
             out.print("(") ;
             boolean first = true ;

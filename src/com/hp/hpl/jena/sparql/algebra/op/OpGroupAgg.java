@@ -11,16 +11,16 @@ import java.util.List;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.OpVisitor;
 import com.hp.hpl.jena.sparql.algebra.Transform;
-import com.hp.hpl.jena.sparql.expr.NamedExprList;
+import com.hp.hpl.jena.sparql.expr.VarExprList;
 import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 import com.hp.hpl.jena.sparql.util.Utils;
 
 public class OpGroupAgg extends OpModifier
 {
-    private NamedExprList groupVars ;
+    private VarExprList groupVars ;
     private List aggregators ;
 
-    public OpGroupAgg(Op subOp, NamedExprList groupVars, List aggregators)
+    public OpGroupAgg(Op subOp, VarExprList groupVars, List aggregators)
     { 
         super(subOp) ;
         this.groupVars  = groupVars ;
@@ -28,7 +28,7 @@ public class OpGroupAgg extends OpModifier
     }
     
     public String getName()                 { return "group" ; }
-    public NamedExprList getGroupVars()     { return groupVars ; }
+    public VarExprList getGroupVars()     { return groupVars ; }
     public List getAggregators()            { return aggregators ; }
 
     public void visit(OpVisitor opVisitor)  { opVisitor.visit(this) ; }

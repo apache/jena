@@ -11,20 +11,18 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.hp.hpl.jena.graph.Node;
-
+import com.hp.hpl.jena.query.Query;
+import com.hp.hpl.jena.query.QueryVisitor;
+import com.hp.hpl.jena.query.SortCondition;
 import com.hp.hpl.jena.sparql.core.Prologue;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.expr.Expr;
-import com.hp.hpl.jena.sparql.expr.NamedExprList;
+import com.hp.hpl.jena.sparql.expr.VarExprList;
 import com.hp.hpl.jena.sparql.syntax.Element;
 import com.hp.hpl.jena.sparql.syntax.ElementGroup;
 import com.hp.hpl.jena.sparql.syntax.Template;
 import com.hp.hpl.jena.sparql.util.FmtUtils;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
-
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.QueryVisitor;
-import com.hp.hpl.jena.query.SortCondition;
 
 /** Serialize a query into SPARQL or ARQ formats */
 
@@ -291,7 +289,7 @@ public class QuerySerializer implements QueryVisitor
 
     }
         
-    void appendNamedExprList(Query query, IndentedWriter sb, NamedExprList namedExprs)
+    void appendNamedExprList(Query query, IndentedWriter sb, VarExprList namedExprs)
     {
         boolean first = true ;
         for ( Iterator iter = namedExprs.getVars().iterator() ; iter.hasNext() ; )

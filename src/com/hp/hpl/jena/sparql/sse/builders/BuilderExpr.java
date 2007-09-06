@@ -14,7 +14,11 @@ import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.expr.*;
-import com.hp.hpl.jena.sparql.expr.aggregate.* ;
+import com.hp.hpl.jena.sparql.expr.aggregate.AggCount;
+import com.hp.hpl.jena.sparql.expr.aggregate.AggCountDistinct;
+import com.hp.hpl.jena.sparql.expr.aggregate.AggCountVar;
+import com.hp.hpl.jena.sparql.expr.aggregate.AggCountVarDistinct;
+import com.hp.hpl.jena.sparql.expr.aggregate.AggregateFactory;
 import com.hp.hpl.jena.sparql.sse.Item;
 import com.hp.hpl.jena.sparql.sse.ItemList;
 
@@ -53,9 +57,9 @@ public class BuilderExpr
         return bob.buildItem(item) ;
     }
 
-    public static NamedExprList buildNamedExprList(ItemList list)
+    public static VarExprList buildNamedExprList(ItemList list)
     {
-        NamedExprList x = new NamedExprList() ;
+        VarExprList x = new VarExprList() ;
 
         for ( Iterator iter = list.iterator() ; iter.hasNext() ; )
         {

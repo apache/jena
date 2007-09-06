@@ -6,23 +6,25 @@
 
 package com.hp.hpl.jena.sparql.sse.builders;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
-
+import com.hp.hpl.jena.query.Query;
+import com.hp.hpl.jena.query.SortCondition;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.Table;
 import com.hp.hpl.jena.sparql.algebra.op.*;
 import com.hp.hpl.jena.sparql.core.BasicPattern;
 import com.hp.hpl.jena.sparql.expr.Expr;
 import com.hp.hpl.jena.sparql.expr.ExprList;
-import com.hp.hpl.jena.sparql.expr.NamedExprList;
+import com.hp.hpl.jena.sparql.expr.VarExprList;
 import com.hp.hpl.jena.sparql.sse.Item;
 import com.hp.hpl.jena.sparql.sse.ItemList;
-
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.SortCondition;
 
 
 public class BuilderOp
@@ -283,10 +285,10 @@ public class BuilderOp
             System.err.println("buildGroupBy: unfinished") ; 
             BuilderBase.checkLength(3, 4, list,  "Group") ;
             // GroupBy
-            NamedExprList vars = BuilderExpr.buildNamedExprList(list.get(1).getList()) ;
+            VarExprList vars = BuilderExpr.buildNamedExprList(list.get(1).getList()) ;
 
             // Aggregations : assume that the exprs are legal.
-            NamedExprList y = BuilderExpr.buildNamedExprList(list.get(1).getList()) ;
+            VarExprList y = BuilderExpr.buildNamedExprList(list.get(1).getList()) ;
             List aggregators = new ArrayList(y.getExprs().values()) ;
             Op sub = build(list, list.size()-1) ;
             Op op = new OpGroupAgg(sub,vars, aggregators) ;
@@ -345,7 +347,7 @@ public class BuilderOp
         public Op make(ItemList list)
         {
             BuilderBase.checkLength(3, list, "project") ;
-            NamedExprList x = BuilderExpr.buildNamedExprList(list.get(1).getList()) ; 
+            VarExprList x = BuilderExpr.buildNamedExprList(list.get(1).getList()) ; 
             Op sub = build(list, 2) ;
             return new OpProject(sub, x) ;
         }

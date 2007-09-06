@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.Map;
 
 import com.hp.hpl.jena.graph.Node;
-
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
@@ -20,12 +19,12 @@ import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.binding.BindingKey;
 import com.hp.hpl.jena.sparql.engine.binding.BindingMap;
 import com.hp.hpl.jena.sparql.expr.E_Aggregator;
-import com.hp.hpl.jena.sparql.expr.NamedExprList;
+import com.hp.hpl.jena.sparql.expr.VarExprList;
 
 public class QueryIterGroup extends QueryIterPlainWrapper
 {
     public QueryIterGroup(QueryIterator qIter, 
-                          NamedExprList groupVars,
+                          VarExprList groupVars,
                           List aggregators,
                           ExecutionContext execCxt)
     {
@@ -40,7 +39,7 @@ public class QueryIterGroup extends QueryIterPlainWrapper
     // Phase 2 : Go over the group bindings and assign the value of each aggregation.
     
     private static Iterator calc(QueryIterator iter, 
-                                 NamedExprList groupVars, List aggregators,
+                                 VarExprList groupVars, List aggregators,
                                  ExecutionContext execCxt)
     {
         // Stage 1 : assign bindings to buckets by key and pump through the aggregrators.
@@ -94,12 +93,12 @@ public class QueryIterGroup extends QueryIterPlainWrapper
         return buckets.values().iterator() ;
     }
     
-    static private BindingKey genKey(NamedExprList vars, Binding binding, ExecutionContext execCxt) 
+    static private BindingKey genKey(VarExprList vars, Binding binding, ExecutionContext execCxt) 
     {
         return new BindingKey(copyProject(vars, binding, execCxt)) ;
     }
     
-    static private Binding copyProject(NamedExprList vars, Binding binding, ExecutionContext execCxt)
+    static private Binding copyProject(VarExprList vars, Binding binding, ExecutionContext execCxt)
     {
         // No group vars (implicit or explicit) => working on whole result set. 
         // Still need a BindingMap to assign to later.

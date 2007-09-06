@@ -12,23 +12,31 @@ import java.util.Map;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.OpVisitor;
 import com.hp.hpl.jena.sparql.algebra.Transform;
-import com.hp.hpl.jena.sparql.expr.NamedExprList;
+import com.hp.hpl.jena.sparql.core.Var;
+import com.hp.hpl.jena.sparql.expr.VarExprList;
 import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 import com.hp.hpl.jena.sparql.util.Utils;
 
 public class OpProject extends OpModifier
 {
-    private NamedExprList project ;
+    private VarExprList project ;
     private Map exprs ;
 
-    public OpProject(Op subOp, NamedExprList project)
+    public OpProject(Op subOp, List vars)
+    {
+        super(subOp) ;
+        Var.checkVarList(vars) ;
+        project = new VarExprList(vars) ;
+    }
+    
+    public OpProject(Op subOp, VarExprList project)
     {
         super(subOp) ;
         this.project = project ;
     }
     
     public List getVars() { return project.getVars() ; }
-    public NamedExprList getProject() { return project ; }
+    public VarExprList getProject() { return project ; }
     
     public Op copy()
     {

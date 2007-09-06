@@ -9,20 +9,18 @@ package com.hp.hpl.jena.sparql.algebra;
 import java.util.Iterator;
 
 import com.hp.hpl.jena.graph.Node;
-
+import com.hp.hpl.jena.query.ARQ;
+import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException;
 import com.hp.hpl.jena.sparql.algebra.op.*;
 import com.hp.hpl.jena.sparql.core.BasicPattern;
 import com.hp.hpl.jena.sparql.expr.Expr;
 import com.hp.hpl.jena.sparql.expr.ExprList;
-import com.hp.hpl.jena.sparql.expr.NamedExprList;
+import com.hp.hpl.jena.sparql.expr.VarExprList;
 import com.hp.hpl.jena.sparql.syntax.*;
 import com.hp.hpl.jena.sparql.util.ALog;
 import com.hp.hpl.jena.sparql.util.Context;
 import com.hp.hpl.jena.sparql.util.Utils;
-
-import com.hp.hpl.jena.query.ARQ;
-import com.hp.hpl.jena.query.Query;
 
 
 public class AlgebraGenerator 
@@ -311,7 +309,7 @@ public class AlgebraGenerator
         // No projection => initial variables are exposed.
         // Needed for CONSTRUCT and initial bindings + SELECT *
         
-        NamedExprList projectVars = query.getProject() ;
+        VarExprList projectVars = query.getProject() ;
         if ( ! projectVars.isEmpty() && ! query.isQueryResultStar())
         {
             // Don't project for QueryResultStar so initial bindings show through

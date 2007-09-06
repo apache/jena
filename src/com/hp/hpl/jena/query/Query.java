@@ -24,7 +24,7 @@ import com.hp.hpl.jena.sparql.core.VarAlloc;
 import com.hp.hpl.jena.sparql.expr.E_Aggregator;
 import com.hp.hpl.jena.sparql.expr.Expr;
 import com.hp.hpl.jena.sparql.expr.ExprVar;
-import com.hp.hpl.jena.sparql.expr.NamedExprList;
+import com.hp.hpl.jena.sparql.expr.VarExprList;
 import com.hp.hpl.jena.sparql.expr.aggregate.AggregateFactory;
 import com.hp.hpl.jena.sparql.expr.aggregate.Aggregator;
 import com.hp.hpl.jena.sparql.serializer.Serializer;
@@ -307,7 +307,7 @@ public class Query extends Prologue implements Cloneable
     
     // ---- SELECT
 
-    protected NamedExprList projectVars = new NamedExprList() ;
+    protected VarExprList projectVars = new VarExprList() ;
 //    protected Map resultExprs = new HashMap() ;
 //    protected List resultVars = new ArrayList() ;
 
@@ -319,7 +319,7 @@ public class Query extends Prologue implements Cloneable
         return Var.varNames(projectVars.getVars()) ;
     }
     
-    public NamedExprList getProject()
+    public VarExprList getProject()
     {
         return projectVars ;
     }
@@ -408,13 +408,13 @@ public class Query extends Prologue implements Cloneable
     
     // GROUP/HAVING
     
-    protected NamedExprList groupVars = new NamedExprList() ;
+    protected VarExprList groupVars = new VarExprList() ;
     protected List havingExprs = new ArrayList() ;  // Expressions : Make an ExprList?
     
     public boolean hasGroupBy()     { return ! groupVars.isEmpty() ; }
     public boolean hasHaving()      { return havingExprs != null && havingExprs.size() > 0 ; }
     
-    public NamedExprList getGroupBy()      { return groupVars ; }
+    public VarExprList getGroupBy()      { return groupVars ; }
     
     public List getHavingExprs()    { return havingExprs ; }
     

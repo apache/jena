@@ -16,20 +16,32 @@ import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
+import com.hp.hpl.jena.sparql.expr.Expr;
+import com.hp.hpl.jena.sparql.expr.ExprEvalException;
+import com.hp.hpl.jena.sparql.expr.NodeValue;
 import com.hp.hpl.jena.sparql.function.FunctionEnv;
 import com.hp.hpl.jena.sparql.util.Utils;
 
-public class NamedExprList
+public class VarExprList
 {
-    private List vars = new ArrayList() ;
-    private Map exprs = new HashMap() ;
+    private List vars  ;
+    private Map exprs  ;
     
-    public NamedExprList() { }
+    public VarExprList(List vars)
+    {
+        this.vars = vars ;
+        this.exprs = new HashMap() ;
+    }
     
-    public List getVars()
-    { return vars ; }
+    public VarExprList()
+    {
+        this.vars = new ArrayList() ;
+        this.exprs = new HashMap() ;
+    }
+    
+    public List getVars() { return vars ; }
     public Map getExprs() { return exprs ; }
-
+    
     public boolean contains(Var var) { return vars.contains(var) ; }
     public boolean hasExpr(Var var) { return exprs.containsKey(var) ; }
     
@@ -77,9 +89,9 @@ public class NamedExprList
     
     public boolean equals(Object other)
     {
-        if ( ! ( other instanceof NamedExprList ) )
+        if ( ! ( other instanceof VarExprList ) )
             return false ;
-        NamedExprList x = (NamedExprList)other ;
+        VarExprList x = (VarExprList)other ;
         return Utils.eq(vars, x.vars) &&  Utils.eq(exprs, x.exprs) ;
     }
 }

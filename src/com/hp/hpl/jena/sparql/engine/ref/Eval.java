@@ -13,7 +13,7 @@ import java.util.Stack;
 
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
-
+import com.hp.hpl.jena.query.QueryExecException;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.OpVisitor;
@@ -36,8 +36,6 @@ import com.hp.hpl.jena.sparql.engine.iterator.QueryIterPlainWrapper;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterRoot;
 import com.hp.hpl.jena.sparql.engine.main.StageBuilder;
 import com.hp.hpl.jena.sparql.util.ALog;
-
-import com.hp.hpl.jena.query.QueryExecException;
 
 
 public class Eval

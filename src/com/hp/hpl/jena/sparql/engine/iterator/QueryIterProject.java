@@ -17,7 +17,7 @@ import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.binding.BindingMap;
 import com.hp.hpl.jena.sparql.engine.binding.BindingProject;
-import com.hp.hpl.jena.sparql.expr.NamedExprList;
+import com.hp.hpl.jena.sparql.expr.VarExprList;
 import com.hp.hpl.jena.sparql.function.FunctionEnv;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
@@ -27,15 +27,15 @@ import com.hp.hpl.jena.sparql.util.Utils;
 
 public class QueryIterProject extends QueryIterConvert
 {
-    NamedExprList projectionVars ;
+    VarExprList projectionVars ;
 
-    public QueryIterProject(QueryIterator input, NamedExprList vars, ExecutionContext qCxt)
+    public QueryIterProject(QueryIterator input, VarExprList vars, ExecutionContext qCxt)
     {
         super(input, project(vars, qCxt), qCxt) ;
         projectionVars = vars ;
     }
 
-    static QueryIterConvert.Converter project(NamedExprList vars, ExecutionContext qCxt)
+    static QueryIterConvert.Converter project(VarExprList vars, ExecutionContext qCxt)
     {
         if ( vars.getExprs().isEmpty() )
             return new Projection(vars.getVars(), qCxt) ;
@@ -43,7 +43,7 @@ public class QueryIterProject extends QueryIterConvert
             return new ProjectionExpr(vars, qCxt) ;
     }
     
-    public NamedExprList getProjectionVars()   { return projectionVars ; }
+    public VarExprList getProjectionVars()   { return projectionVars ; }
 
     protected void releaseResources()
     {}
@@ -75,9 +75,9 @@ public class QueryIterProject extends QueryIterConvert
     class ProjectionExpr implements QueryIterConvert.Converter
     {
         FunctionEnv funcEnv ;
-        NamedExprList projectionVars ; 
+        VarExprList projectionVars ; 
 
-        ProjectionExpr(NamedExprList vars, ExecutionContext qCxt)
+        ProjectionExpr(VarExprList vars, ExecutionContext qCxt)
         { 
             this.projectionVars = vars ;
             funcEnv = qCxt ;
@@ -89,8 +89,11 @@ public class QueryIterProject extends QueryIterConvert
             for ( Iterator iter = projectionVars.getVars().iterator() ; iter.hasNext(); )
             {
                 Var v = (Var)iter.next();
+                // Only add those variables that have expressions associated with them
+                // The parent, bind, already has bound variables for the non-expressions. 
                 if ( ! projectionVars.hasExpr(v) )
                     continue ;
+                
                 Node n = projectionVars.get(v, bind, funcEnv) ;
                 if ( n != null )
                     b.add(v, n) ;
