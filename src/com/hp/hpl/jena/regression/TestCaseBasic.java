@@ -23,7 +23,7 @@
  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * 
- * $Id: TestCaseBasic.java,v 1.10 2007-01-02 11:49:22 andy_seaborne Exp $
+ * $Id: TestCaseBasic.java,v 1.11 2007-09-06 12:26:43 jeremy_carroll Exp $
  */
 
 package com.hp.hpl.jena.regression;
@@ -32,7 +32,6 @@ import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.test.JenaTestBase;
 
 
-import junit.framework.TestCase;
 
 /**
  * <p>
@@ -53,7 +52,7 @@ import junit.framework.TestCase;
  * </p>
  * 
  * @author bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.10 $ $Date: 2007-01-02 11:49:22 $
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.11 $ $Date: 2007-09-06 12:26:43 $
  */
 public class TestCaseBasic extends JenaTestBase {
 
@@ -329,16 +328,6 @@ public class TestCaseBasic extends JenaTestBase {
 				return cache[i++];
 			}
 		};
-	}
-	public void testModelEquals() {
-		try {
-			testModelEquals test = new testModelEquals();
-			test.test(getGetModel());
-			assertTrue(!test.getErrors());
-		} catch (Exception e) {
-			System.out.println(e);
-			assertTrue(false);
-		}
 	}
 	public void testMatch() {
 		try {

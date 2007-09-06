@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: RandomizedTestSuiteRegression.java,v 1.4 2007-01-02 11:53:14 andy_seaborne Exp $
+ * $Id: RandomizedTestSuiteRegression.java,v 1.5 2007-09-06 12:26:47 jeremy_carroll Exp $
  */
 
 package com.hp.hpl.jena.shared.test;
@@ -34,7 +34,7 @@ import junit.framework.*;
 /**
  *
  * @author  bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.4 $ $Date: 2007-01-02 11:53:14 $
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.5 $ $Date: 2007-09-06 12:26:47 $
  */
 public class RandomizedTestSuiteRegression extends Object {
 
@@ -67,9 +67,7 @@ public class RandomizedTestSuiteRegression extends Object {
         //      suite.addTest(new TestCaseBasic("test20"));
         suite.addTest(new RandomizedTestCaseBasic("test97"));
 
-        suite.addTest(new RandomizedTestCaseBasic("testModelEquals"));
-        
-   
+
         suite.addTest(new RandomizedTestCaseBasic("testMatch"));
         //    suite.addTest(new TestCaseBasic("testWriterAndReader"));
         suite.addTest(new RandomizedTestCaseBasic("testNTripleReader"));

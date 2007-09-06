@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestPackage.java,v 1.10 2007-07-31 09:43:59 chris-dollin Exp $
+  $Id: TestPackage.java,v 1.11 2007-09-06 12:26:34 jeremy_carroll Exp $
 */
 
 package com.hp.hpl.jena.graph.compose.test;
@@ -17,7 +17,7 @@ import junit.framework.*;
 /**
  *
  * @author  bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.10 $ $Date: 2007-07-31 09:43:59 $
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.11 $ $Date: 2007-09-06 12:26:34 $
  */
 public class TestPackage extends TestCase {
     
@@ -62,7 +62,6 @@ public class TestPackage extends TestCase {
 //        suite.addTest(new TestCaseBasic("test20"));
         suite.addTest(new TestCaseBasic("test97",c));
         
-        suite.addTest(new TestCaseBasic("testModelEquals",c));
         suite.addTest(new TestCaseBasic("testMatch",c));
         // suite.addTest(new TestCaseBasic("testWriterAndReader",c));
         // suite.addTest(new TestCaseBasic("testNTripleReader",c));
