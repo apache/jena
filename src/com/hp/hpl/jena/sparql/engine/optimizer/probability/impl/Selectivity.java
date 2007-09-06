@@ -110,7 +110,7 @@ public class Selectivity
 	public long calculate(BasicPattern bp)
 	{
 		if (model == null)
-		{ log.warn("The graph model is required to calculate the selectivity") ; return -1L ; }
+		{ log.debug("The graph model is required to calculate the selectivity") ; return -1L ; }
 		
 		Query q = QueryFactory.make() ;
 		q.setQuerySelectType() ;

@@ -195,7 +195,7 @@ public class ProbabilityDataModel extends ProbabilityBase
 		
 		if (graphStatisticsHandler == null)
 		{
-			log.warn("GraphStatisticsHandler required!") ;
+			log.debug("GraphStatisticsHandler required!") ;
 			return s ;
 		}
 		

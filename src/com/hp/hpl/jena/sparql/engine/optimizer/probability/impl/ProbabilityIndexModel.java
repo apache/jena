@@ -172,7 +172,7 @@ public class ProbabilityIndexModel extends ProbabilityBase
 		
 		if (! index.allowsJoinedProbability())
 		{
-			log.warn("The index does not support joined probability estimation (return 1.0") ;
+			log.debug("The index does not support joined probability estimation (return 1.0") ;
 			return 1d ;
 		}
 		
@@ -252,7 +252,7 @@ public class ProbabilityIndexModel extends ProbabilityBase
 			}
 			else 
 				// The pattern is not contained in the index, could be something like ?x1 :p ?y1 . ?x2 :p ?y2, i.e. PP join
-				log.warn("Pattern not found in index: " + pattern) ;
+				log.debug("Pattern not found in index: " + pattern) ;
 		}
 
 		// Joined, but index lookup is not possibile because predicates are not given
@@ -423,7 +423,7 @@ public class ProbabilityIndexModel extends ProbabilityBase
 			}
 			else
 			{
-				log.warn("The predicate has no corresponding histogram, is it in exclusion list? (return " + size + "): " + predicate) ;
+				log.debug("The predicate has no corresponding histogram, is it in exclusion list? (return " + size + "): " + predicate) ;
 				return size ;
 			}
 		}
