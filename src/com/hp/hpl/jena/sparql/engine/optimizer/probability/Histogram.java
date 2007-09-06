@@ -109,7 +109,7 @@ public class Histogram
 			return histogramClass.getFrequency() ;
 		}
 		
-		log.warn("The element is not contained in this histogram (return 0): " + element + " (" + lowerBound + ", " + upperBound + ")") ;
+		log.debug("The element is not contained in this histogram (return 0): " + element + " (" + lowerBound + ", " + upperBound + ")") ;
 		
 		return 0L ;
 	}
