@@ -27,8 +27,8 @@ function copyDir
     mkdir -p "$DST"
     # No CVS or other junk
     (   cd $SRC ;
+	# Add 	    -name ".svn" -prune  -or   for CVS
 	find . \
-	    -name "CVS" -prune  -or      \
 	    -name .\?\?\*   -prune  -or  \
 	    -print  | cpio -p "$DST"     )
 }
@@ -47,8 +47,7 @@ cp -R doc/javadoc $JENAROOT/doc/ARQ/javadoc
 ## cp -R doc/javadoc-all
 
 
-
-# 3 -- Documentation (avoid CVS directories and files)
+# 3 -- Documentation (avoid CVS/SVN directories and files)
 
 # Remove destination files first
 rm    $JENAROOT/doc/ARQ/*.*
@@ -61,6 +60,9 @@ rm $JENAROOT/doc/ARQ/Tutorial/*.*
 cp doc/Tutorial/*.*  $JENAROOT/doc/ARQ/Tutorial
 
 ## # 4 -- Test suite
+
+echo "Run testing/exportToJena"
+
 ## 
 ## copyDir testing/ARQ            $JENAROOT/testing/ARQ
 ## copyDir testing/RDQL-ARQ       $JENAROOT/testing/RDQL-ARQ
@@ -68,6 +70,8 @@ cp doc/Tutorial/*.*  $JENAROOT/doc/ARQ/Tutorial
 ## copyDir testing/DAWG-Approved  $JENAROOT/testing/DAWG-Approved 
 
 # 5 -- Examples
+
+copyDir src-examples/arq $JENAROOT/src-examples
 
 ## # Clean a directory - removes files - leaves CVS info intact
 ## function cleanDir

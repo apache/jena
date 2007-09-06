@@ -8,7 +8,7 @@
   <!-- The major and minor version numbers  -->
   <property name="version-major"   value="2"/>
   <property name="version-minor"   value="1"/>
-  <property name="version-status"  value="-beta"/>
+  <property name="version-status"  value="-RC-0"/>
   <property name="version"
             value="${version-major}.${version-minor}${version-status}"/>
 
@@ -222,8 +222,9 @@
 
   <!-- Section: Create distribution area -->
 
+  <!-- Does not include javadoc-all which is 5m (zipped) -->
   <target name="package"
-          depends="make-jars,javadoc,javadoc-all,distribution-init,copy,zip"/>
+          depends="make-jars,javadoc,distribution-init,copy,zip"/>
 
   <target name="distribution-init">
     <mkdir dir="${dist.dir}"/>

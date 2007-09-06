@@ -1,6 +1,6 @@
 #!/bin/bash
 
-D=$(find ARQ Update LARQ ! -name . ! -name .. ! \( -name .svn -prune \) -type d)
+D=$(find ARQ Optimizer Update LARQ ! -name . ! -name .. ! \( -name .svn -prune \) -type d)
 
 MISSING=0
 for d in $D
@@ -32,7 +32,7 @@ for d in $D
   fi
 done
 
-#cp ARQ/manifest-*.ttl ~/Projects/Jena2/testing/ARQ/
+cp ARQ/manifest-*.ttl ~/Projects/Jena2/testing/ARQ/
 
 #echo "** Check ../LARQ"
 #echo "** Check ../Update"
