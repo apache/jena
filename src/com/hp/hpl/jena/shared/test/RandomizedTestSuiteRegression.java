@@ -24,17 +24,19 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: RandomizedTestSuiteRegression.java,v 1.5 2007-09-06 12:26:47 jeremy_carroll Exp $
+ * $Id: RandomizedTestSuiteRegression.java,v 1.6 2007-09-06 13:16:11 jeremy_carroll Exp $
  */
 
 package com.hp.hpl.jena.shared.test;
+
+import com.hp.hpl.jena.mem.test.TestSuiteRegression;
 
 import junit.framework.*;
 
 /**
  *
  * @author  bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.5 $ $Date: 2007-09-06 12:26:47 $
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.6 $ $Date: 2007-09-06 13:16:11 $
  */
 public class RandomizedTestSuiteRegression extends Object {
 
@@ -45,36 +47,9 @@ public class RandomizedTestSuiteRegression extends Object {
     }
 
     public static TestSuite suite(TestSuite suite) {
-        suite.addTest(new RandomizedTestCaseBasic("test1"));
-        suite.addTest(new RandomizedTestCaseBasic("test2"));
-        suite.addTest(new RandomizedTestCaseBasic("test3"));
-        suite.addTest(new RandomizedTestCaseBasic("test4"));
-        suite.addTest(new RandomizedTestCaseBasic("test5"));
-        suite.addTest(new RandomizedTestCaseBasic("test6"));
-        suite.addTest(new RandomizedTestCaseBasic("test7"));
-        suite.addTest(new RandomizedTestCaseBasic("test8"));
-        suite.addTest(new RandomizedTestCaseBasic("test9"));
-        suite.addTest(new RandomizedTestCaseBasic("test10"));
-        suite.addTest(new RandomizedTestCaseBasic("test11"));
-        suite.addTest(new RandomizedTestCaseBasic("test12"));
-        suite.addTest(new RandomizedTestCaseBasic("test13"));
-        suite.addTest(new RandomizedTestCaseBasic("test14"));
-        suite.addTest(new RandomizedTestCaseBasic("test15"));
-        suite.addTest(new RandomizedTestCaseBasic("test16"));
-        suite.addTest(new RandomizedTestCaseBasic("test17"));
-        suite.addTest(new RandomizedTestCaseBasic("test18"));
-        suite.addTest(new RandomizedTestCaseBasic("test19"));
-        //      suite.addTest(new TestCaseBasic("test20"));
-        suite.addTest(new RandomizedTestCaseBasic("test97"));
-
-
-        suite.addTest(new RandomizedTestCaseBasic("testMatch"));
-        //    suite.addTest(new TestCaseBasic("testWriterAndReader"));
-        suite.addTest(new RandomizedTestCaseBasic("testNTripleReader"));
-        //    suite.addTest(new TestCaseBasic("testWriterInterface"));
-        suite.addTest(new RandomizedTestCaseBasic("testReaderInterface"));
-
-      
+    	for (int i=0;i<TestSuiteRegression.testNames.length;i++)
+            suite.addTest(new RandomizedTestCaseBasic(TestSuiteRegression.testNames[i]));
+     	
         return suite;
     }
 }
