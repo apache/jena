@@ -21,6 +21,7 @@ import com.hp.hpl.jena.sparql.algebra.Table;
 import com.hp.hpl.jena.sparql.algebra.op.*;
 import com.hp.hpl.jena.sparql.core.BasicPattern;
 import com.hp.hpl.jena.sparql.core.VarExprList;
+import com.hp.hpl.jena.sparql.expr.E_Aggregator;
 import com.hp.hpl.jena.sparql.expr.Expr;
 import com.hp.hpl.jena.sparql.expr.ExprList;
 import com.hp.hpl.jena.sparql.sse.Item;
@@ -282,14 +283,23 @@ public class BuilderOp
         // See buildProject
         public Op make(ItemList list)
         {
-            System.err.println("buildGroupBy: unfinished") ; 
             BuilderBase.checkLength(3, 4, list,  "Group") ;
             // GroupBy
             VarExprList vars = BuilderExpr.buildNamedExprList(list.get(1).getList()) ;
-
-            // Aggregations : assume that the exprs are legal.
-            VarExprList y = BuilderExpr.buildNamedExprList(list.get(1).getList()) ;
-            List aggregators = new ArrayList(y.getExprs().values()) ;
+            List aggregators = new ArrayList() ;
+            
+            if ( list.size() == 4 )
+            {
+                // Aggregations : assume that the exprs are legal.
+                VarExprList y = BuilderExpr.buildNamedExprList(list.get(2).getList()) ;
+                aggregators.addAll(y.getExprs().values()) ;
+                for ( Iterator iter = aggregators.iterator() ; iter.hasNext() ; )
+                {
+                    Expr expr = (Expr)iter.next() ;
+                    if ( ! ( expr instanceof E_Aggregator ) )
+                        BuilderBase.broken(list, "Not a aggregate expression: "+expr) ;
+                }
+            }
             Op sub = build(list, list.size()-1) ;
             Op op = new OpGroupAgg(sub,vars, aggregators) ;
             return op ;

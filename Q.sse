@@ -1,17 +1,3 @@
-(
- (prefix ((: <http://example/ns1#>))
-   (tag 
-     (triple :x :p 1)
-     (triple :x :p 2)
-     (prefix ((: <http://example/INNER#>)
-	       (x: <http://example/X#>))
-       (triple x:x :p 2)
-       ))
-   )
- (prefix ((: <http://example/ns2#>))
-   :x
-   )
- (prefix ((: <http://example/ns3#>))
-   )
- )
- 
+(project (?p (?cd ?.0))
+  (group() ((?.0 (count distinct ?t)))
+    (table unit)))

@@ -16,8 +16,8 @@ public interface Plan extends PrintSerializable
     public static final String finishMarker = ")" ;
 
     // Used for small things.
-    public static final String startMarker2 = "[" ;
-    public static final String finishMarker2 = "]" ;
+    public static final String startMarker2 = "(" ;
+    public static final String finishMarker2 = ")" ;
     
     public Op getOp() ;
     public QueryIterator iterator() ;

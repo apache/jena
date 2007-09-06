@@ -89,11 +89,12 @@ public class OpWriter
         // TODO Consider whether this ought to always fix the bNode label map or not.
         NodeToLabelMap lmap = new NodeToLabelMap() ;
         sCxt.setBNodeMap(lmap) ;
-        
-        
+
         int closeCount = 0 ;
+        
 //        if ( sCxt.getBaseIRI() != null )
 //        {
+              // And serialize URIs based on base
 //            iWriter.print("(base <") ;
 //            iWriter.print(sCxt.getBaseIRI()) ;
 //            iWriter.println(">") ;
@@ -339,27 +340,32 @@ public class OpWriter
         public void visit(OpGroupAgg opGroup)
         {
             start(opGroup, NoNL) ;
+            out.print(" ") ;
             writeNamedExprList(opGroup.getGroupVars()) ;
-            // --- Aggregators
-            out.print(" (") ;
-            out.incIndent() ;
-            boolean first = true ;
-            for ( Iterator iter = opGroup.getAggregators().iterator() ; iter.hasNext() ; )
+            if ( ! opGroup.getAggregators().isEmpty() )
             {
-                if ( ! first )
+                // --- Aggregators
+                out.print(" (") ;
+                out.incIndent() ;
+                boolean first = true ;
+                for ( Iterator iter = opGroup.getAggregators().iterator() ; iter.hasNext() ; )
+                {
+                    if ( ! first )
+                        out.print(" ") ;
+                    first = false ;
+                    E_Aggregator agg = (E_Aggregator)iter.next();
+                    Var v = agg.asVar() ;
+                    String str = agg.getAggregator().toPrefixString() ;
+                    out.print("(") ;
+                    out.print(v.toString()) ;
                     out.print(" ") ;
-                first = false ;
-                E_Aggregator agg = (E_Aggregator)iter.next();
-                Var v = agg.asVar() ;
-                String str = agg.getAggregator().toPrefixString() ;
-                out.print("(") ;
-                out.print(v.toString()) ;
-                out.print(" ") ;
-                out.print(str) ;
+                    out.print(str) ;
+                    out.print(")") ;
+                }
                 out.print(")") ;
+                out.decIndent() ;
             }
-            out.println(")") ;
-            out.decIndent() ;
+            out.println() ;
             printOp(opGroup.getSubOp()) ;
             finish(opGroup) ;
         }

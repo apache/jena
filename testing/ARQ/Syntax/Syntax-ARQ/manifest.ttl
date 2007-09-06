@@ -28,4 +28,32 @@
          rdf:type   mfx:TestSyntax ;
          mf:action  <syntax-select-expr-05.arq> ; 
       ]
+      [  mf:name    "syntax-service-01.arq" ;
+         rdf:type   mfx:TestSyntax ;
+         mf:action  <syntax-service-01.arq> ; 
+      ]
+      [  mf:name    "syntax-group-01.arq" ;
+         rdf:type   mfx:TestSyntax ;
+         mf:action  <syntax-group-01.arq> ; 
+      ]
+      [  mf:name    "syntax-group-02.arq" ;
+         rdf:type   mfx:TestSyntax ;
+         mf:action  <syntax-group-02.arq> ; 
+      ]
+      [  mf:name    "syntax-count-01.arq" ;
+         rdf:type   mfx:TestSyntax ;
+         mf:action  <syntax-count-01.arq> ; 
+      ]
+      [  mf:name    "syntax-count-02.arq" ;
+         rdf:type   mfx:TestSyntax ;
+         mf:action  <syntax-count-02.arq> ; 
+      ]
+      [  mf:name    "syntax-count-03.arq" ;
+         rdf:type   mfx:TestSyntax ;
+         mf:action  <syntax-count-03.arq> ; 
+      ]
+      [  mf:name    "syntax-count-04.arq" ;
+         rdf:type   mfx:TestSyntax ;
+         mf:action  <syntax-count-04.arq> ; 
+      ]
     ) .
