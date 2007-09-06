@@ -33,6 +33,14 @@
         mf:result  <group-3.srx>
       ]
 
+      [  mf:name    "Group By - 4 (Group expression)" ;
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <group-4.arq> ;
+              qt:data   <data-1.ttl> ] ;
+        mf:result  <group-4.srx>
+      ]
+
       [  mf:name    "Count - 1 - No Group" ;
          rdf:type   mfx:TestQuery ; 
          mf:action
@@ -73,7 +81,13 @@
         mf:result  <count-5.srx>
       ]
 
-    
+      [  mf:name    "Count - 6 - count(?var) / count(distinct ?var)" ;
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <count-6.arq> ;
+              qt:data   <data-1.ttl> ] ;
+        mf:result  <count-6.srx>
+      ]
 
       [  mf:name    "Having - 1" ;
          rdf:type   mfx:TestQuery ; 

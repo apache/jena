@@ -568,4 +568,28 @@
          rdf:type   mfx:TestSerialization ;
          mf:action  <syntax-select-expr-03.arq> ; 
       ]
+      [  mf:name    "syntax-group-01.arq" ;
+         rdf:type   mfx:TestSerialization ;
+         mf:action  <syntax-group-01.arq> ; 
+      ]
+      [  mf:name    "syntax-group-02.arq" ;
+         rdf:type   mfx:TestSerialization ;
+         mf:action  <syntax-group-01.arq> ; 
+      ]
+##       [  mf:name    "syntax-count-01.arq" ;
+##          rdf:type   mfx:TestSerialization ;
+##          mf:action  <syntax-count-01.arq> ; 
+##       ]
+##       [  mf:name    "syntax-count-02.arq" ;
+##          rdf:type   mfx:TestSerialization ;
+##          mf:action  <syntax-count-02.arq> ; 
+##       ]
+##       [  mf:name    "syntax-count-03.arq" ;
+##          rdf:type   mfx:TestSerialization ;
+##          mf:action  <syntax-count-03.arq> ; 
+##       ]
+##       [  mf:name    "syntax-count-04.arq" ;
+##          rdf:type   mfx:TestSerialization ;
+##          mf:action  <syntax-count-04.arq> ; 
+##       ]
     ) .
