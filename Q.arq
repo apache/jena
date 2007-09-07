@@ -11,5 +11,5 @@ SELECT ?p ( 2*count(distinct ?t) AS ?cd)
     OPTIONAL { ?x :r ?r . }
 }
 GROUP BY ?p
-## HAVING (count(*) > 1)
+HAVING (count(*) > 1)
 ## # ORDER BY ?q ?count
