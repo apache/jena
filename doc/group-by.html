@@ -14,6 +14,7 @@
 
 <h1>ARQ - GROUP BY</h1>
 <p>ARQ includes support for GROUP BY and counting.</p>
+<p><i>Experimental feature.</i></p>
 <p>This involves is syntactic extension and is available is the query is parsed 
 with language <code>Syntax.syntaxARQ</code>.</p>
 <h2>GROUP BY</h2>
@@ -27,6 +28,17 @@ SELECT ?p ?q
 { . . .
 }
 GROUP BY ?p ?q</pre>
+<h2>HAVING</h2>
+<p>A query may specify a HAVING clause to apply a filter to the result set after 
+grouping. The filter may involve variables from the <code>GROUP BY</code> clause 
+or aggregations.</p>
+<pre class="box">PREFIX
+
+SELECT ?p ?q
+{ . . .
+}
+GROUP BY ?p ?q
+HAVING (count(distinct *) &gt; 1)</pre>
 <h2>Aggregation</h2>
 <p>Currently supported aggregations:</p>
 
