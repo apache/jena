@@ -2,14 +2,10 @@
 
 ++ ** Document "stages"
 ++ ** Document "update API"
-++ Algebra building src-examples 
-++ Reorder documentation - intro, SPARQL, extensions.
+++ Algebra building src-examples
+++ Tutorial on update 
 
 See ToDoSSE
------
-+ Document:
-  SELECT expr
-  GROUP BY etc
 
 ----
 + Better syntax as well as SQL-like: GROUP BY ... WITH ... ??
@@ -21,21 +17,15 @@ See ToDoSSE
 + OpOrder to take an ExprList
 + ExprList writing an LJ
 
-  Document 
-  
 + Expression printing : expr.toString should not add outer brackets
   ExprNode.toString => ExprUtils.fmtSPARQL(IndentedWriter, Expr, pmap) => FmtExpr/FmtExprARQ.visit
      Split FmtExpr in statics and a nested visitor. 
  
-+ Optimizer 
-  
 + Check the better code in QueryIterTriplePattern.TripleMapper 
   Still needs to delay the binding allocation.  
          
-+ DateTime arithmetic and durations
++ More dateTime arithmetic and durations
   http://www.w3.org/TR/xpath-functions/#dateTime-arithmetic
-
-+ Remote update over HTTP
 
 + testing QE/ref and QE/main in the same run
   ?? use a factory list, including tests with no recorded results.
