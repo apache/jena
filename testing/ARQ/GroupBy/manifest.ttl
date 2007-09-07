@@ -100,4 +100,53 @@
     
 
         # Now with partial data
+      [  mf:name    "Group By - 10" ;
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <group-10.arq> ;
+              qt:data   <data-2.ttl> ] ;
+        mf:result  <group-10.srx>
+      ]
+
+      [  mf:name    "Group By - 11" ;
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <group-11.arq> ;
+              qt:data   <data-2.ttl> ] ;
+        mf:result  <group-11.srx>
+      ]
+
+      [  mf:name    "Count - 10 - No group" ;
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <count-10.arq> ;
+              qt:data   <data-2.ttl> ] ;
+        mf:result  <count-10.srx>
+      ]
+
+      [  mf:name    "Count - 11 - No group - count(distinct ?var)" ;
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <count-11.arq> ;
+              qt:data   <data-2.ttl> ] ;
+        mf:result  <count-11.srx>
+      ]
+
+      [  mf:name    "Count - 12 - count(?var)" ;
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <count-12.arq> ;
+              qt:data   <data-2.ttl> ] ;
+        mf:result  <count-12.srx>
+      ]
+
+      [  mf:name    "Count - 13 - count(?var) - empty" ;
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <count-13.arq> ;
+              qt:data   <data-2.ttl> ] ;
+        mf:result  <count-13.srx>
+      ]
+
+
     ).

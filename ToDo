@@ -11,8 +11,9 @@ See ToDoSSE
   SELECT expr
   GROUP BY etc
 
-+ GROUP BY tests. Need partial versions.
-  Better syntax as well as SQL-like: GROUP BY ... WITH ... ??
+
+----
++ Better syntax as well as SQL-like: GROUP BY ... WITH ... ??
 
 + Remove FmtExprARQSubst? Not used in q subtitution. 
 
