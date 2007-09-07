@@ -12,6 +12,7 @@ _:c rdf:type sdb:SDBConnection ;
     sdb:sdbType        "postgresql" ;
     sdb:sdbHost        "localhost" ;
     sdb:sdbName        "SDB2" ;
+    sdb:driver         "org.apache.derby.jdbc.EmbeddedDriver" ;
 
 ##     sdb:sdbType        "MSSQLServerExpress" ;
 ##     sdb:sdbHost        "localhost" ;
