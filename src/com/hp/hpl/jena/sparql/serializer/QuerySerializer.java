@@ -224,7 +224,7 @@ public class QuerySerializer implements QueryVisitor
             {
                 out.print(" ") ;
                 Expr expr = (Expr)iter.next() ;
-                fmtExpr.format(expr, true) ;
+                fmtExpr.format(expr) ;
             }
             out.println() ;
         }
@@ -241,7 +241,7 @@ public class QuerySerializer implements QueryVisitor
                 if ( ! first )
                     out.print(" ") ;
                 SortCondition sc = (SortCondition)iter.next() ;
-                sc.format(fmtExpr.getVisitor(), out) ;
+                sc.format(fmtExpr, out) ;
                 first = false ;
             }
             out.println() ;
@@ -302,7 +302,7 @@ public class QuerySerializer implements QueryVisitor
             if ( expr != null ) 
             {
                 out.print("(") ;
-                fmtExpr.format(expr, true) ;
+                fmtExpr.format(expr) ;
                 if ( ! Var.isAllocVar(var) )
                 {
                     sb.print(" AS ") ;

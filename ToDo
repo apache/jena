@@ -10,10 +10,6 @@ See ToDoSSE
 ----
 + Better syntax as well as SQL-like: GROUP BY ... WITH ... ??
 
-+ Remove FmtExprARQSubst? Not used in q subtitution. 
-
-+ Sort out FmtExpr (make a proper interface)
-
 + OpOrder to take an ExprList
 + ExprList writing an LJ
 
@@ -39,7 +35,7 @@ See ToDoSSE
   NodeToLabel maps.
 
 + ResultsFormat (output)vs ResultSetFormat (input)
-  ResultSetFormatter.oopput as SSE
+  ResultSetFormatter.output as SSE
   ResultSetFactory input as SSE
   rset handler boolean and result set XML forms together => sSPARQLResults.
 

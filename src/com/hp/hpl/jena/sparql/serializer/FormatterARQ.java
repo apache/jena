@@ -146,7 +146,7 @@ public class FormatterARQ extends FormatterBase
         
         if ( addParens )
             out.print("( ") ;
-        v.format(expr, true) ;
+        v.format(expr) ;
         if ( addParens )
             out.print(" )") ;
     }

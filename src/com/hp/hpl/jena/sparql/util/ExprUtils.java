@@ -16,6 +16,7 @@ import com.hp.hpl.jena.shared.PrefixMapping;
 import com.hp.hpl.jena.sparql.ARQConstants;
 import com.hp.hpl.jena.sparql.expr.*;
 import com.hp.hpl.jena.sparql.lang.sparql.*;
+import com.hp.hpl.jena.sparql.serializer.FmtExpr;
 import com.hp.hpl.jena.sparql.serializer.FmtExprARQ;
 import com.hp.hpl.jena.sparql.serializer.FmtExprPrefix;
 
@@ -127,7 +128,7 @@ public class ExprUtils
     public static void fmtSPARQL(IndentedWriter iOut, Expr expr, PrefixMapping pmap)
     {
         FmtExprARQ v = new FmtExprARQ(iOut, pmap) ;
-        v.format(expr, false) ;
+        v.format(expr) ;
     }
     
     public static void fmtSPARQL(IndentedWriter iOut, Expr expr)
@@ -144,8 +145,7 @@ public class ExprUtils
 
     public static void fmtPrefix(IndentedWriter iOut, Expr expr, PrefixMapping pmap)
     {
-        ExprVisitor v = new FmtExprPrefix(iOut, pmap) ;
-        expr.visit(v) ;
+        FmtExprPrefix.format(iOut, pmap, expr) ;
     }
 
     public static void fmtPrefix(IndentedWriter iOut, Expr expr)
@@ -169,7 +169,7 @@ public class ExprUtils
             Expr expr = (Expr)iter.next();
             iOut.print(sep) ;
             sep = " , " ;
-            fmt.format(expr, true) ;
+            fmt.format(expr) ;
         }
     }
 
@@ -187,7 +187,7 @@ public class ExprUtils
 
     public static void fmtPrefix(IndentedWriter iOut, ExprList exprs, PrefixMapping pmap)
     {
-        ExprVisitor v = new FmtExprPrefix(iOut, pmap) ;
+        FmtExpr fmt = new FmtExprPrefix(iOut, pmap) ;
         
         if ( exprs.size() == 0 )
         {
@@ -197,7 +197,7 @@ public class ExprUtils
         
         if ( exprs.size() == 1 )
         {
-            exprs.get(0).visit(v) ;
+            fmt.format(exprs.get(0)) ;
             return ;
         }
         
@@ -205,7 +205,7 @@ public class ExprUtils
         for ( int i = 0 ; i < exprs.size() ;  i++ )
         {
             iOut.print(" ") ;
-            exprs.get(i).visit(v)  ;
+            fmt.format(exprs.get(i)) ;
         }
         iOut.print(")") ;
     }

@@ -11,8 +11,8 @@ import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.expr.E_Function;
 import com.hp.hpl.jena.sparql.expr.Expr;
-import com.hp.hpl.jena.sparql.expr.ExprVisitor;
 import com.hp.hpl.jena.sparql.expr.ExprVar;
+import com.hp.hpl.jena.sparql.serializer.FmtExpr;
 import com.hp.hpl.jena.sparql.serializer.FmtExprARQ;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext;
 import com.hp.hpl.jena.sparql.util.*;
@@ -38,9 +38,7 @@ public class SortCondition extends PrintSerializableBase
             ALog.fatal(this, "Unknown sort direction") ;
     }
     
-    // Convert to FmtExpr
-    
-    public void format(ExprVisitor fmt,
+    public void format(FmtExpr fmt,
                        IndentedWriter writer)
     {
         boolean explicitDirection = false ;
@@ -63,7 +61,7 @@ public class SortCondition extends PrintSerializableBase
         if ( needParens )
             writer.print("(") ;
         
-        expression.visit(fmt) ;
+        fmt.format(expression) ;
         
         if ( needParens )
             writer.print(")") ;
@@ -113,7 +111,7 @@ public class SortCondition extends PrintSerializableBase
     public void output(IndentedWriter out, SerializationContext sCxt)
     {
         FmtExprARQ fmt = new FmtExprARQ(out, sCxt) ;
-        format(fmt.getVisitor(), out) ;
+        format(fmt, out) ;
     }
 }
 

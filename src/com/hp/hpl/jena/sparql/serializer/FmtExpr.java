@@ -7,7 +7,6 @@
 package com.hp.hpl.jena.sparql.serializer;
 
 import com.hp.hpl.jena.sparql.expr.Expr;
-import com.hp.hpl.jena.sparql.expr.ExprVisitor;
 
 
 /** A FmtExpr is a machine to format expressions : the subclasses are
@@ -18,18 +17,12 @@ import com.hp.hpl.jena.sparql.expr.ExprVisitor;
  * @version $Id$
  */
 
-public abstract class FmtExpr
+public interface FmtExpr
 {
     static final int INDENT = 2 ;
-    
-    // Check calls to this and see about brackets.
-    public abstract void format(Expr expr, boolean exprNeedsBrackets) ; 
+    public abstract void format(Expr expr) ; 
     
     // interface <T> Formatter { void format( T thing ) ; }
-    
-    // TODO temporary workaround - need to rationalise FmtExpr
-    public abstract ExprVisitor getVisitor() ;
-    
 }
 
 /*

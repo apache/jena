@@ -4,6 +4,10 @@ ChangeLog for ARQ
 ARQ 2.1
 -------
 
++ (experimental for this release - permanent in next)
+  GROUP BY, HAVING
+  count(*), count(?x), count(distinct *), count(distinct ?x)
+
 + (experimental for this release - permanent in next) 
   Expressions in SELECT clause
   Expression in brackets, optionally named with "AS ?var"
@@ -15,14 +19,13 @@ ARQ 2.1
   OpProject can have additional expressions that get added into the
     table from 'project'
   
-+ removed old-style (and out of date) writers for internal forms: prefix,
++ removed old-style (and out-of-date) writers for internal forms: prefix,
   plain and XML forms of a SPARQL query.  The XML form was incomplete
   anyway.  (This does not affect algebra output which is what replaces
   these syntax-based forms).
   
 + NodeVar renamed ExprVar (more consistent naming)
   Deprecated tombstones left for next release 
-    
 
 ARQ 2.1 beta
 ------------

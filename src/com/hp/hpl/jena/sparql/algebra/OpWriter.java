@@ -404,7 +404,7 @@ public class OpWriter
                     out.print("(desc ") ;
             }
             
-            fmtExpr.format(sc.getExpression(), true) ;
+            fmtExpr.format(sc.getExpression()) ;
             
             if ( sc.getDirection() != Query.ORDER_DEFAULT )
                 out.print(")") ;

@@ -12,95 +12,111 @@ import com.hp.hpl.jena.sparql.util.IndentedWriter;
 
 /** Printing of an expr expression in prefix notation */
 
-public class FmtExprPrefix extends FmtExpr implements ExprVisitor 
+public class FmtExprPrefix  implements FmtExpr 
 {
     static final boolean ONELINE = true ;
     IndentedWriter out ;
     SerializationContext context ;
     
-    public ExprVisitor getVisitor()
+    FmtExprPrefixVisitor visitor ; 
+    
+    public FmtExprPrefix(IndentedWriter writer, PrefixMapping pmap)
     {
-        return this ;
+        visitor = new FmtExprPrefixVisitor(writer, pmap) ;
     }
 
-    public void format(Expr expr, boolean exprNeedsBrackets)
+    public FmtExprPrefix(IndentedWriter writer, SerializationContext cxt)
     {
-        expr.visit(this) ;
+        visitor = new FmtExprPrefixVisitor(writer, cxt) ;
+
     }
     
-    // Make nested inner class.
+//    public ExprVisitor getVisitor()
+//    {
+//        return this ;
+//    }
+
+    public void format(Expr expr)
+    { expr.visit(visitor) ; }
     
-    public FmtExprPrefix(IndentedWriter writer, PrefixMapping pm)
+    public static void format(IndentedWriter out, PrefixMapping pmap, Expr expr)
     {
-        this(writer, new SerializationContext(pm , null)) ;
+        FmtExpr fmt = new FmtExprPrefix(out, new SerializationContext(pmap)) ;
+        fmt.format(expr) ;
     }
-    
-    public FmtExprPrefix(IndentedWriter writer, SerializationContext qCxt)
-    {
-        out = writer ;
-        context = qCxt ;
-        if ( context == null )
-            context = new SerializationContext() ;
-    }
-    
+
     public static void format(IndentedWriter out, SerializationContext cxt, Expr expr)
     {
-        ExprVisitor fmt = new FmtExprPrefix(out, cxt) ;
-        fmt.startVisit() ;
-        expr.visit(fmt) ;
-        fmt.finishVisit() ;
+        FmtExpr fmt = new FmtExprPrefix(out, cxt) ;
+        fmt.format(expr) ;
     }
     
-    public void startVisit() {}
-    
-    public void visit(ExprFunction func)
-    {
-        out.print("(") ;
-        
-        String n = null ;
-        
-        if ( func.getOpName() != null )
-            n = func.getOpName() ;
-        
-        if ( n == null )
-            n = func.getFunctionPrintName(context) ;
 
-        out.print(n) ;
-        
-        out.incIndent(INDENT) ;
-        for ( int i = 1 ; ; i++ )
+    class FmtExprPrefixVisitor implements ExprVisitor
+    {
+        public FmtExprPrefixVisitor(IndentedWriter writer, PrefixMapping pm)
         {
-            Expr expr = func.getArg(i) ;
-            if ( expr == null )
-                break ; 
-            // endLine() ;
-            out.print(' ') ;
-            expr.visit(this) ;
+            this(writer, new SerializationContext(pm , null)) ;
         }
-        out.print(")") ;
-        out.decIndent(INDENT) ;
-    }
 
-    public void visit(NodeValue nv)
-    {
-        out.print(nv.asQuotedString(context)) ;
-    }
+        public FmtExprPrefixVisitor(IndentedWriter writer, SerializationContext qCxt)
+        {
+            out = writer ;
+            context = qCxt ;
+            if ( context == null )
+                context = new SerializationContext() ;
+        }
 
-    public void visit(ExprVar nv)
-    {
-        out.print(nv.toPrefixString()) ;
+        public void startVisit() {}
+
+        public void visit(ExprFunction func)
+        {
+            out.print("(") ;
+
+            String n = null ;
+
+            if ( func.getOpName() != null )
+                n = func.getOpName() ;
+
+            if ( n == null )
+                n = func.getFunctionPrintName(context) ;
+
+            out.print(n) ;
+
+            out.incIndent(INDENT) ;
+            for ( int i = 1 ; ; i++ )
+            {
+                Expr expr = func.getArg(i) ;
+                if ( expr == null )
+                    break ; 
+                // endLine() ;
+                out.print(' ') ;
+                expr.visit(this) ;
+            }
+            out.print(")") ;
+            out.decIndent(INDENT) ;
+        }
+
+        public void visit(NodeValue nv)
+        {
+            out.print(nv.asQuotedString(context)) ;
+        }
+
+        public void visit(ExprVar nv)
+        {
+            out.print(nv.toPrefixString()) ;
+        }
+
+        public void finishVisit() { out.flush() ; }
+
+        private void endLine()
+        {
+            if ( ONELINE )
+                out.print(' ') ;
+            else
+                out.println() ;
+        }
     }
-    
-    public void finishVisit() { out.flush() ; }
-    
-    private void endLine()
-    {
-        if ( ONELINE )
-            out.print(' ') ;
-        else
-            out.println() ;
-    }
-    
 }
 
 /*
