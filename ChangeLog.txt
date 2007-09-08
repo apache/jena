@@ -6,7 +6,7 @@ ARQ 2.1
 
 + (experimental for this release - permanent in next)
   GROUP BY, HAVING
-  count(*), count(?x), count(distinct *), count(distinct ?x)
+  Aggregates: count(*), count(?x), count(distinct *), count(distinct ?x)
 
 + (experimental for this release - permanent in next) 
   Expressions in SELECT clause
