@@ -28,6 +28,21 @@ SELECT ?p ?q
 { . . .
 }
 GROUP BY ?p ?q</pre>
+<p><code>SELECT *</code> will include variables from the <code>GROUP BY</code> 
+but no others. This ensures that results are always the same - including other 
+variables from the pattern would involve choosing some value that was not 
+constant across each section of the group and so lead to indeterminate results.</p>
+<p>The <code>GROUP BY</code> clause can involve an expression. If the expression 
+is named, then the value is included in the columns, before projection. An 
+unnamed expression is used for grouping but the value is not placed in the 
+result set formed by the <code>GROUP BY</code> clause.</p>
+<pre class="box">PREFIX
+
+SELECT ?productId ?cost
+{ . . .
+}
+GROUP BY ?productId (?num * ?price AS ?cost)</pre>
+<p>&nbsp;</p>
 <h2>HAVING</h2>
 <p>A query may specify a HAVING clause to apply a filter to the result set after 
 grouping. The filter may involve variables from the <code>GROUP BY</code> clause 
