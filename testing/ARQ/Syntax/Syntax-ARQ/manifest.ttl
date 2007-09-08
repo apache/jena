@@ -28,6 +28,14 @@
          rdf:type   mfx:TestSyntax ;
          mf:action  <syntax-select-expr-05.arq> ; 
       ]
+      [  mf:name    "syntax-select-expr-06.arq" ;
+         rdf:type   mfx:TestSyntax ;
+         mf:action  <syntax-select-expr-06.arq> ; 
+      ]
+      [  mf:name    "syntax-select-expr-07.arq" ;
+         rdf:type   mfx:TestSyntax ;
+         mf:action  <syntax-select-expr-07.arq> ; 
+      ]
       [  mf:name    "syntax-service-01.arq" ;
          rdf:type   mfx:TestSyntax ;
          mf:action  <syntax-service-01.arq> ; 
@@ -39,6 +47,14 @@
       [  mf:name    "syntax-group-02.arq" ;
          rdf:type   mfx:TestSyntax ;
          mf:action  <syntax-group-02.arq> ; 
+      ]
+      [  mf:name    "syntax-group-03.arq" ;
+         rdf:type   mfx:TestSyntax ;
+         mf:action  <syntax-group-03.arq> ; 
+      ]
+      [  mf:name    "syntax-group-04.arq" ;
+         rdf:type   mfx:TestSyntax ;
+         mf:action  <syntax-group-04.arq> ; 
       ]
       [  mf:name    "syntax-count-01.arq" ;
          rdf:type   mfx:TestSyntax ;

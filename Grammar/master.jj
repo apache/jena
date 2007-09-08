@@ -112,8 +112,13 @@ void SelectQuery() : {  Var v ; Expr expr ; }
       ( v = Var() { getQuery().addResultVar(v) ; } )
 #ifdef ARQ
     | 
+      // Similar to GROUP BY - adds to a different VarExprList
+      // Add BuiltInCall() & FunctionCall()
       expr = AggExpression() 
       { getQuery().addResultVar((Var)null, expr) ; }
+    | expr = BuiltInCall()   { getQuery().addResultVar((Var)null, expr) ; }
+    | expr = FunctionCall()  { getQuery().addResultVar((Var)null, expr) ; }
+
     // Syntax: ( expr [AS ?var] )
     |
       (
@@ -229,8 +234,14 @@ void GroupClause() : { }
 
 void GroupCondition() : { Var v = null ; Expr expr = null ; }
 {
-  ( expr = Constraint()
-    { getQuery().addGroupBy(expr) ; }
+  ( expr = BuiltInCall()   { getQuery().addGroupBy((Var)null, expr) ; }
+  | expr = FunctionCall()  { getQuery().addGroupBy((Var)null, expr) ; }
+  |
+    <LPAREN>
+      expr = Expression() 
+    ( <AS>  v = Var() )?
+    <RPAREN>
+    { getQuery().addGroupBy(v ,expr) ; }
   | v = Var()
     { getQuery().addGroupBy(v) ; }
   )

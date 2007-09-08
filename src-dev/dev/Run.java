@@ -33,6 +33,7 @@ public class Run
     {
         String []a = { "--file=Q.arq", "--out=arq", "--print=op", "--print=query"} ;
         arq.qparse.main(a) ;
+        System.exit(0) ;
         System.out.println() ;
         String DIR = "" ;
         execQuery(DIR+"D.ttl", DIR+"Q.arq") ;

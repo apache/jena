@@ -84,7 +84,10 @@ public class VarExprList
     public boolean isEmpty() { return vars.isEmpty() ; } 
     
     public int hashCode()
-    { return vars.hashCode() ^ exprs.hashCode() ; }
+    { 
+        int x = vars.hashCode() ^ exprs.hashCode() ;
+        
+        return vars.hashCode() ^ exprs.hashCode() ; }
     
     public boolean equals(Object other)
     {

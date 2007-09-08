@@ -30,7 +30,7 @@ public class QueryHashCode
         {}
 
         public void startVisit(Query query)
-        {  }  
+        { } 
 
         public void visitResultForm(Query query)
         { }
@@ -44,7 +44,9 @@ public class QueryHashCode
 
         public void visitSelectResultForm(Query query)
         { 
-            x^= query.getProject().hashCode() ;
+            //query.setResultVars() ;
+            if ( ! query.isQueryResultStar() )
+                x^= query.getProject().hashCode() ;
         }
 
         public void visitConstructResultForm(Query query)

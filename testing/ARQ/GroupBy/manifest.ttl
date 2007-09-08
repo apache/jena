@@ -41,6 +41,24 @@
         mf:result  <group-4.srx>
       ]
 
+      [  mf:name    "Group By - 5 (Named group expression)" ;
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <group-5.arq> ;
+              qt:data   <data-1.ttl> ] ;
+        mf:result  <group-5.srx>
+      ]
+
+      [  mf:name    "Group By - 6 (Named group expression)" ;
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <group-6.arq> ;
+              qt:data   <data-1.ttl> ] ;
+        mf:result  <group-6.srx>
+      ]
+
+
+
       [  mf:name    "Count - 1 - No Group" ;
          rdf:type   mfx:TestQuery ; 
          mf:action
@@ -114,6 +132,14 @@
             [ qt:query  <group-11.arq> ;
               qt:data   <data-2.ttl> ] ;
         mf:result  <group-11.srx>
+      ]
+
+      [  mf:name    "Group By - 12" ;
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <group-12.arq> ;
+              qt:data   <data-2.ttl> ] ;
+        mf:result  <group-12.srx>
       ]
 
       [  mf:name    "Count - 10 - No group" ;

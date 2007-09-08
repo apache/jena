@@ -95,7 +95,7 @@ public class qparse extends CmdARQ
     {
         try{
             Query query = modQuery.getQuery() ;
-            QueryExecution qExec = QueryExecutionFactory.create(query, DatasetFactory.create()) ;
+            //QueryExecution qExec = QueryExecutionFactory.create(query, DatasetFactory.create()) ;
 
             // Check the query.
             
@@ -121,7 +121,12 @@ public class qparse extends CmdARQ
             { divider() ; modOutput.outputQuad(query) ; }
             
             if ( printPlan )
-            { divider() ; PrintUtils.printPlan(query, qExec) ; }
+            { 
+                divider() ;
+                // This forces internal query initialization - must be after QueryUtils.checkQuery
+                QueryExecution qExec = QueryExecutionFactory.create(query, DatasetFactory.create()) ;
+                PrintUtils.printPlan(query, qExec) ; 
+            }
         }
         catch (ARQInternalErrorException intEx)
         {

@@ -459,6 +459,7 @@ public class QueryExecutionFactory
     
     static private QueryExecution make(Query query, Dataset dataset, Context context)
     {
+        query.validate() ;
         if ( context == null )
             context = new Context(ARQ.getContext()) ;
         DatasetGraph dsg = null ;

@@ -429,16 +429,20 @@ public class Query extends Prologue implements Cloneable
         groupVars.add(Var.alloc(v)) ;
     }
 
-    public void addGroupBy(Expr expr)
+    public void addGroupBy(Expr expr) { addGroupBy(null, expr) ; }
+    
+    public void addGroupBy(Var v, Expr expr)
     {
-        if ( expr.isVariable() )
+        if ( v == null )
+            v = allocInternVar() ;
+        
+        if ( expr.isVariable() && v.isAllocVar() )
         {
-            // It was (?x) - keep the name by adding by variable.
+            // It was (?x) with no AS - keep the name by adding by variable.
             addGroupBy(expr.asVar()) ;
             return ;
         }
         
-        Var v = allocInternVar() ;
         groupVars.add(v, expr) ;
     }
 
@@ -462,12 +466,12 @@ public class Query extends Prologue implements Cloneable
     private List aggregators = new ArrayList() ;            // List of E_Aggregator
     private Map aggregatorsAllocated = new HashMap() ;      // Note any E_Aggregator created for reuse.
     
+    public boolean hasAggregators() { return aggregators.size() != 0  ; }
     public List getAggregators() { return aggregators ; }
     
     public E_Aggregator allocAggregate(AggregateFactory agg)
     {
         // XXX E_Aggregator == Aggregator ??
-        // ?? Special case adding a E_Aggregator in result vcars to stop the renaming.
         Aggregator a = agg.create() ;
         String key = a.key() ;
         E_Aggregator expr = (E_Aggregator)aggregatorsAllocated.get(key); 
@@ -570,12 +574,20 @@ public class Query extends Prologue implements Cloneable
     
     private void findAndAddNamedVars()
     {
-        // All query variables, including ones from bNodes in the query.
-        Set queryVars = this.getQueryPattern().varsMentioned() ;
-        
-        for ( Iterator iter = queryVars.iterator() ; iter.hasNext() ; )
+        Iterator varIter = null ;
+        if ( hasGroupBy() )
+            varIter = groupVars.getVars().iterator() ;
+        else
         {
-            Object obj = iter.next() ;
+            Set queryVars = this.getQueryPattern().varsMentioned() ;
+            varIter = queryVars.iterator() ;
+        }
+        
+        // All query variables, including ones from bNodes in the query.
+        
+        for ( ; varIter.hasNext() ; )
+        {
+            Object obj = varIter.next() ;
             //Var var = (Var)iter.next() ;
             Var var = (Var)obj ;
             if ( var.isNamedVar() )
@@ -631,6 +643,21 @@ public class Query extends Prologue implements Cloneable
     
     /** Must align with .equals */
     private int hashcode = -1 ;
+    
+    /** Perform some check on the query */ 
+    public void validate()
+    {
+        setResultVars() ;
+        
+        if ( hasGroupBy() )
+        {}
+        
+        if ( hasAggregators() )
+        {}
+        
+        //if has select expressions
+    }
+
     public int hashCode()
     { 
         if ( hashcode == -1 )
