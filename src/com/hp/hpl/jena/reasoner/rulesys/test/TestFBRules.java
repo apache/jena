@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestFBRules.java,v 1.49 2007-07-13 11:06:46 der Exp $
+ * $Id: TestFBRules.java,v 1.50 2007-09-08 11:27:49 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -35,7 +35,7 @@ import org.apache.commons.logging.LogFactory;
  * Test suite for the hybrid forward/backward rule system.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.49 $ on $Date: 2007-07-13 11:06:46 $
+ * @version $Revision: 1.50 $ on $Date: 2007-09-08 11:27:49 $
  */
 public class TestFBRules extends TestCase {
     
@@ -96,6 +96,21 @@ public class TestFBRules extends TestCase {
         reasoner.tablePredicate(p);
         return reasoner;
     }
+    
+    /**
+     * Assemble a test infGraph from a rule source and starting data
+     */
+    public InfGraph createInfGraph(String rules, Graph data) {
+        return createReasoner( Rule.parseRules(rules) ).bind(data);
+    }
+
+    
+    /**
+     * Assemble a test infGraph from a rule source and empty data
+     */
+    public InfGraph createInfGraph(String rules) {
+        return createReasoner( Rule.parseRules(rules) ).bind(Factory.createGraphMem());
+    }
 
     /**
      * Check parser extension for f/b distinction.
@@ -115,9 +130,8 @@ public class TestFBRules extends TestCase {
                        "[r2: (?a p ?b), (?b p ?c) -> (?a, p, ?c)]" +
                        "[r3: (?a p ?a), (n1 p ?c), (n1, p, ?a) -> (?a, p, ?c)]" +
                        "[r4: (n4 ?p ?a) -> (n4, ?a, ?p)]";
-        List ruleList = Rule.parseRules(rules);
         
-        InfGraph infgraph = createReasoner(ruleList).bind(Factory.createGraphMem());
+        InfGraph infgraph = createInfGraph(rules);
         infgraph.add(new Triple(n1, p, n2));
         infgraph.add(new Triple(n2, p, n3));
         infgraph.add(new Triple(n2, q, n3));
@@ -145,7 +159,6 @@ public class TestFBRules extends TestCase {
                        "[ (?x eg:prop functor(eg:bar, ?v)) -> (?x eg:propbar ?v) ]" +
                        "[ (?x eg:prop functor(?v, ?*)) -> (?x eg:propfunc ?v) ]" +
                        "";
-        List ruleList = Rule.parseRules(rules);
         
         Model data = ModelFactory.createDefaultModel();
         Resource R1 = data.createResource(PrintUtil.egNS + "R1");
@@ -157,8 +170,7 @@ public class TestFBRules extends TestCase {
           .addProperty(OWL.onProperty, p)
           .addProperty(OWL.allValuesFrom, D);
         
-        Reasoner reasoner =  createReasoner(ruleList);
-        InfGraph infgraph = reasoner.bind(data.getGraph());
+        InfGraph infgraph = createInfGraph(rules, data.getGraph());
         Model infModel = ModelFactory.createModelForGraph(infgraph);
         Resource foo = infModel.createResource(PrintUtil.egNS + "foo");
         
@@ -185,9 +197,8 @@ public class TestFBRules extends TestCase {
                        "[axiom1: -> (n1 p 1)]" +
                        "[axiom2: -> (n1 p 4)]" +
                        "";
-        List ruleList = Rule.parseRules(rules);
-        
-        InfGraph infgraph = createReasoner(ruleList).bind(Factory.createGraphMem());
+
+        InfGraph infgraph = createInfGraph(rules);
         TestUtil.assertIteratorValues(this, infgraph.find(n1, q, null),
             new Triple[] {
                 new Triple(n1, q, Util.makeIntNode(2)),
@@ -239,9 +250,8 @@ public class TestFBRules extends TestCase {
         String rules =  
                        "[rule1: (?x p ?y), (?x q ?y) -> remove(0)]" +
                        "";
-        List ruleList = Rule.parseRules(rules);
 
-        InfGraph infgraph = createReasoner(ruleList).bind(Factory.createGraphMem());
+        InfGraph infgraph = createInfGraph(rules);
         infgraph.add(new Triple(n1, p, Util.makeIntNode(1)));
         infgraph.add(new Triple(n1, p, Util.makeIntNode(2)));
         infgraph.add(new Triple(n1, q, Util.makeIntNode(2)));
@@ -259,10 +269,9 @@ public class TestFBRules extends TestCase {
      */
     public void testRebind() {
         String rules = "[rule1: (?x p ?y) -> (?x q ?y)]";
-        List ruleList = Rule.parseRules(rules);
         Graph data = Factory.createGraphMem();
         data.add(new Triple(n1, p, n2));
-        InfGraph infgraph = createReasoner(ruleList).bind(data);
+        InfGraph infgraph = createInfGraph(rules, data);
         TestUtil.assertIteratorValues(this, infgraph.find(n1, null, null),
             new Triple[] {
                 new Triple(n1, p, n2),
@@ -331,10 +340,9 @@ public class TestFBRules extends TestCase {
      */
     public void testClose() {
         String rules = "[rule1: (?x p ?y) -> (?x q ?y)]";
-        List ruleList = Rule.parseRules(rules);
         Graph data = Factory.createGraphMem();
         data.add(new Triple(n1, p, n2));
-        InfGraph infgraph = createReasoner(ruleList).bind(data);
+        InfGraph infgraph = createInfGraph(rules, data);
         TestUtil.assertIteratorValues(this, infgraph.find(n1, null, null),
             new Triple[] {
                 new Triple(n1, p, n2),
@@ -360,15 +368,13 @@ public class TestFBRules extends TestCase {
         data.add(new Triple(C1, sC, C2));
         data.add(new Triple(C2, sC, C3));
         data.add(new Triple(a, ty, C1));
-        List rules = Rule.parseRules(
+        String rules = 
         "[rdfs8:  (?a rdfs:subClassOf ?c) <- (?a rdfs:subClassOf ?b), (?b rdfs:subClassOf ?c)]" + 
         "[rdfs9:  (?a rdf:type ?y) <- (?x rdfs:subClassOf ?y), (?a rdf:type ?x)]" +
         "[-> (rdf:type rdfs:range rdfs:Class)]" +
         "[rdfs3:  (?y rdf:type ?c) <- (?x ?p ?y), (?p rdfs:range ?c)]" +
-        "[rdfs7:  (?a rdfs:subClassOf ?a) <- (?a rdf:type rdfs:Class)]"
-                        );        
-        Reasoner reasoner =  createReasoner(rules);
-        InfGraph infgraph = reasoner.bind(data);
+        "[rdfs7:  (?a rdfs:subClassOf ?a) <- (?a rdf:type rdfs:Class)]";
+        InfGraph infgraph = createInfGraph(rules, data);
         TestUtil.assertIteratorValues(this, 
             infgraph.find(a, ty, null), 
             new Object[] {
@@ -388,22 +394,18 @@ public class TestFBRules extends TestCase {
     public void testBackchain2() {    
         Graph data = Factory.createGraphMem();
         data.add(new Triple(c, q, d));
-        List rules = Rule.parseRules(
+        String rules = 
             "[r1: (c r ?x) <- (?x p f(?x b))]" +
-            "[r2: (?y p f(a ?y)) <- (c q ?y)]"
-                          );        
-        Reasoner reasoner =  createReasoner(rules);
-        InfGraph infgraph = reasoner.bind(data);
+            "[r2: (?y p f(a ?y)) <- (c q ?y)]";
+        InfGraph infgraph = createInfGraph(rules, data);
         TestUtil.assertIteratorValues(this, 
               infgraph.find(c, r, null), new Object[] { } );
               
         data.add(new Triple(c, q, a));
-        rules = Rule.parseRules(
+        rules = 
         "[r1: (c r ?x) <- (?x p f(?x a))]" +
-        "[r2: (?y p f(a ?y)) <- (c q ?y)]"
-                          );        
-        reasoner =  createReasoner(rules);
-        infgraph = reasoner.bind(data);
+        "[r2: (?y p f(a ?y)) <- (c q ?y)]";
+        infgraph = createInfGraph(rules, data);
         TestUtil.assertIteratorValues(this, 
               infgraph.find(c, r, null), 
               new Object[] {
@@ -416,24 +418,20 @@ public class TestFBRules extends TestCase {
         data.add(new Triple(a, q, c));
         data.add(new Triple(b, q, d));
         data.add(new Triple(b, q, b));
-        rules = Rule.parseRules(
+        rules = 
           "[r1: (c r ?x) <- (?x p ?x)]" +
-          "[r2: (?x p ?y) <- (a q ?x), (b q ?y)]"
-                          );        
-        reasoner =  createReasoner(rules);
-        infgraph = reasoner.bind(data);
+          "[r2: (?x p ?y) <- (a q ?x), (b q ?y)]";
+        infgraph = createInfGraph(rules, data);
         TestUtil.assertIteratorValues(this, 
               infgraph.find(c, r, null), 
               new Object[] {
                   new Triple(c, r, b)
               } );
               
-        rules = Rule.parseRules(
+        rules = 
           "[r1: (c r ?x) <- (?x p ?x)]" +
-          "[r2: (a p ?x) <- (a q ?x)]"
-                          );        
-        reasoner =  createReasoner(rules);
-        infgraph = reasoner.bind(data);
+          "[r2: (a p ?x) <- (a q ?x)]" ;
+        infgraph = createInfGraph(rules, data);
         TestUtil.assertIteratorValues(this, 
               infgraph.find(c, r, null), 
               new Object[] {
@@ -452,14 +450,12 @@ public class TestFBRules extends TestCase {
         data.add(new Triple(C1, ty, OWL.Restriction.asNode()));
         data.add(new Triple(C1, OWL.onProperty.asNode(), p));
         data.add(new Triple(C1, OWL.allValuesFrom.asNode(), c));
-        List rules = Rule.parseRules(
+        String rules = 
     "[rdfs9:   (?a rdf:type ?y) <- (?x rdfs:subClassOf ?y) (?a rdf:type ?x)]" +
     "[restriction2: (?C owl:equivalentClass all(?P, ?D)) <- (?C rdf:type owl:Restriction), (?C owl:onProperty ?P), (?C owl:allValuesFrom ?D)]" +
     "[rs2: (?X rdf:type all(?P,?C)) <- (?D owl:equivalentClass all(?P,?C)), (?X rdf:type ?D)]" +
-    "[rp4: (?Y rdf:type ?C) <- (?X rdf:type all(?P, ?C)), (?X ?P ?Y)]"
-                          );        
-        Reasoner reasoner =  createReasoner(rules);
-        InfGraph infgraph = reasoner.bind(data);
+    "[rp4: (?Y rdf:type ?C) <- (?X rdf:type all(?P, ?C)), (?X ?P ?Y)]";
+        InfGraph infgraph = createInfGraph(rules, data);
         TestUtil.assertIteratorValues(this, 
               infgraph.find(b, ty, c), new Object[] {
                   new Triple(b, ty, c)
@@ -473,11 +469,9 @@ public class TestFBRules extends TestCase {
         Graph data = Factory.createGraphMem();
         data.add(new Triple(a, p, b));
         data.add(new Triple(p, ty, s));
-        List rules = Rule.parseRules(
-        "[r1: (?p rdf:type s) -> [r1b: (?x ?p ?y) <- (?y ?p ?x)]]"
-                          );        
-        Reasoner reasoner =  createReasoner(rules);
-        InfGraph infgraph = reasoner.bind(data);
+        String rules =
+        "[r1: (?p rdf:type s) -> [r1b: (?x ?p ?y) <- (?y ?p ?x)]]";
+        InfGraph infgraph = createInfGraph(rules, data);
         TestUtil.assertIteratorValues(this, 
               infgraph.find(null, p, null), new Object[] {
                   new Triple(a, p, b),
@@ -492,14 +486,12 @@ public class TestFBRules extends TestCase {
         Graph data = Factory.createGraphMem();
         data.add(new Triple(a, r, b));
         data.add(new Triple(p, ty, s));
-        List rules = Rule.parseRules(
+        String rules = 
         "[a1: -> (a rdf:type t)]" +
         "[r0: (?x r ?y) -> (?x p ?y)]" +
         "[r1: (?p rdf:type s) -> [r1b: (?x ?p ?y) <- (?y ?p ?x)]]" +
-        "[r2: (?p rdf:type s) -> [r2b: (?x ?p ?x) <- (?x rdf:type t)]]"
-                          );        
-        Reasoner reasoner =  createReasoner(rules);
-        FBRuleInfGraph infgraph = (FBRuleInfGraph) reasoner.bind(data);
+        "[r2: (?p rdf:type s) -> [r2b: (?x ?p ?x) <- (?x rdf:type t)]]";
+        FBRuleInfGraph infgraph = (FBRuleInfGraph) createInfGraph(rules, data);
         infgraph.setDerivationLogging(true);
         infgraph.prepare();
         assertTrue("Forward rule count", infgraph.getNRulesFired() == 3);
@@ -529,7 +521,7 @@ public class TestFBRules extends TestCase {
         Graph data = Factory.createGraphMem();
         data.add(new Triple(a, p, b));
         data.add(new Triple(p, RDFS.range.asNode(), C1));
-        List rules = Rule.parseRules(
+        String rules = 
     "[rdfs2:  (?p rdfs:domain ?c) -> [(?x rdf:type ?c) <- (?x ?p ?y)] ]" +
     "[rdfs3:  (?p rdfs:range ?c)  -> [(?y rdf:type ?c) <- (?x ?p ?y)] ]" + 
     "[rdfs5a: (?a rdfs:subPropertyOf ?b), (?b rdfs:subPropertyOf ?c) -> (?a rdfs:subPropertyOf ?c)]" + 
@@ -537,10 +529,8 @@ public class TestFBRules extends TestCase {
     "[rdfs6:  (?p rdfs:subPropertyOf ?q) -> [ (?a ?q ?b) <- (?a ?p ?b)] ]" + 
     "[rdfs7:  (?a rdf:type rdfs:Class) -> (?a rdfs:subClassOf ?a)]" +
     "[rdfs8:  (?a rdfs:subClassOf ?b), (?b rdfs:subClassOf ?c) -> (?a rdfs:subClassOf ?c)]" + 
-    "[rdfs9:  (?x rdfs:subClassOf ?y) -> [ (?a rdf:type ?y) <- (?a rdf:type ?x)] ]" +
-                          "" );        
-        Reasoner reasoner =  createReasoner(rules);
-        InfGraph infgraph = reasoner.bind(data);
+    "[rdfs9:  (?x rdfs:subClassOf ?y) -> [ (?a rdf:type ?y) <- (?a rdf:type ?x)] ]" ;
+        InfGraph infgraph = createInfGraph(rules, data);
 //        ((FBRuleInfGraph)infgraph).setTraceOn(true);
         TestUtil.assertIteratorValues(this, 
               infgraph.find(b, ty, null), new Object[] {
@@ -556,12 +546,10 @@ public class TestFBRules extends TestCase {
         data.add(new Triple(a, p, b));
         data.add(new Triple(p, sP, r));
         data.add(new Triple(r, RDFS.range.asNode(), C1));
-        List rules = Rule.parseRules(
+        String rules = 
     "[rdfs3:  (?p rdfs:range ?c)  -> [(?y rdf:type ?c) <- (?x ?p ?y)] ]" + 
-    "[rdfs6:  (?p rdfs:subPropertyOf ?q) -> [ (?a ?q ?b) <- (?a ?p ?b)] ]" + 
-                          "" );        
-        Reasoner reasoner =  createReasoner(rules);
-        InfGraph infgraph = reasoner.bind(data);
+    "[rdfs6:  (?p rdfs:subPropertyOf ?q) -> [ (?a ?q ?b) <- (?a ?p ?b)] ]" ; 
+        InfGraph infgraph = createInfGraph(rules, data);
 //        ((FBRuleInfGraph)infgraph).setTraceOn(true);
         TestUtil.assertIteratorValues(this, 
               infgraph.find(b, ty, C1), new Object[] {
@@ -575,12 +563,10 @@ public class TestFBRules extends TestCase {
     public void testMakeInstance() {
         Graph data = Factory.createGraphMem();
         data.add(new Triple(a, ty, C1));
-        List rules = Rule.parseRules(
+        String rules = 
         "[r1:  (?x p ?t) <- (?x rdf:type C1), makeInstance(?x, p, C2, ?t)]" +
-        "[r2:  (?t rdf:type C2) <- (?x rdf:type C1), makeInstance(?x, p, C2, ?t)]" +
-                          "" );        
-        Reasoner reasoner =  createReasoner(rules);
-        InfGraph infgraph = reasoner.bind(data);
+        "[r2:  (?t rdf:type C2) <- (?x rdf:type C1), makeInstance(?x, p, C2, ?t)]" ;
+        InfGraph infgraph = createInfGraph(rules, data);
         
         Node valueInstance = getValue(infgraph, a, p);
         assertNotNull(valueInstance);
@@ -596,11 +582,9 @@ public class TestFBRules extends TestCase {
     public void testMakeInstances() {
         Graph data = Factory.createGraphMem();
         data.add(new Triple(a, ty, C1));
-        List rules = Rule.parseRules(
-        "[r1:  (?x p ?t) <- (?x rdf:type C1), makeInstance(?x, p, ?t)]" +
-                          "" );        
-        Reasoner reasoner =  createReasoner(rules);
-        InfGraph infgraph = reasoner.bind(data);
+        String rules = 
+        "[r1:  (?x p ?t) <- (?x rdf:type C1), makeInstance(?x, p, ?t)]" ;
+        InfGraph infgraph = createInfGraph(rules, data);
         
         Node valueInstance = getValue(infgraph, a, p);
         assertNotNull(valueInstance);
@@ -615,13 +599,12 @@ public class TestFBRules extends TestCase {
         Graph data = Factory.createGraphMem();
         data.add(new Triple(a, ty, r));
         data.add(new Triple(r, sC, Functor.makeFunctorNode("some", new Node[] {p, C1})));
-        List rules = Rule.parseRules(
+        String rules = 
         "[some1: (?C rdfs:subClassOf some(?P, ?D)) ->"
         + "[some1b: (?X ?P ?T) <- (?X rdf:type ?C), unbound(?T), noValue(?X, ?P), makeInstance(?X, ?P, ?D, ?T) ]" 
         + "[some1b2: (?T rdf:type ?D) <- (?X rdf:type ?C), bound(?T), makeInstance(?X, ?P, ?D, ?T) ]"
-        + "]");
-        Reasoner reasoner =  createReasoner(rules);
-        InfGraph infgraph = reasoner.bind(data);
+        + "]";
+        InfGraph infgraph = createInfGraph(rules, data);
         
         Node valueInstance = getValue(infgraph, a, p);
         assertNotNull(valueInstance);
@@ -638,14 +621,13 @@ public class TestFBRules extends TestCase {
         "[r1: (?x p f(a, ?x)) -> (?x q f(?x)) ]" +
         "[r1: (?x p f(a, 0)) -> (?x s res) ]" +
                        "";
-        List ruleList = Rule.parseRules(rules);
         Graph data = Factory.createGraphMem();
         data.add(new Triple(n1, p, Util.makeIntNode(2)) );
         data.add(new Triple(n2, p, Functor.makeFunctorNode("f", new Node[] {
                                         a, Util.makeIntNode(0)  })));
         data.add(new Triple(n3, p, Functor.makeFunctorNode("f", new Node[] {
                a, Node.createLiteral( "0", "", XSDDatatype.XSDnonNegativeInteger ) } )));
-        InfGraph infgraph = createReasoner(ruleList).bind(data);
+        InfGraph infgraph = createInfGraph(rules, data);
         
         TestUtil.assertIteratorValues(this, infgraph.find(null, s, null),
             new Triple[] {
@@ -673,12 +655,11 @@ public class TestFBRules extends TestCase {
         "[r5: (?x q ?vx), (?y q ?vy), notEqual(?vx, ?vy) -> (?x ne ?y)]" +
         "[r6: (?x q ?vx), (?y q ?vy), equal(?vx, ?vy) -> (?x eq ?y)]" +
                        "";
-        List ruleList = Rule.parseRules(rules);
         Graph data = Factory.createGraphMem();
         data.add(new Triple(n1, q, Util.makeIntNode(2)) );
         data.add(new Triple(n2, q, Util.makeIntNode(2)) );
         data.add(new Triple(n3, q, Util.makeIntNode(3)) );
-        InfGraph infgraph = createReasoner(ruleList).bind(data);
+        InfGraph infgraph = createInfGraph(rules, data);
         
         TestUtil.assertIteratorValues(this, infgraph.find(n1, null, n2),
             new Triple[] {
@@ -704,7 +685,7 @@ public class TestFBRules extends TestCase {
         data.add(new Triple(n1, q, Util.makeIntNode(2)) );
         data.add(new Triple(n2, q, Util.makeDoubleNode(2.2)) );
         data.add(new Triple(n3, q, Util.makeDoubleNode(2.3)) );
-        infgraph = createReasoner(ruleList).bind(data);
+        infgraph = createInfGraph(rules, data);
         
         TestUtil.assertIteratorValues(this, infgraph.find(n1, null, n2),
             new Triple[] {
@@ -725,7 +706,7 @@ public class TestFBRules extends TestCase {
         data.add(new Triple(n1, q, Node.createLiteral("2000-03-04T20:00:00Z", "", XSDDatatype.XSDdateTime)));
         data.add(new Triple(n2, q, Node.createLiteral("2001-03-04T20:00:00Z", "", XSDDatatype.XSDdateTime)));
         data.add(new Triple(n3, q, Node.createLiteral("2002-03-04T20:00:00Z", "", XSDDatatype.XSDdateTime)));
-        infgraph = createReasoner(ruleList).bind(data);
+        infgraph = createInfGraph(rules, data);
                
         TestUtil.assertIteratorValues(this, infgraph.find(n1, null, n2),
             new Triple[] {
@@ -752,6 +733,18 @@ public class TestFBRules extends TestCase {
                 new Triple(n3, gt, n2),
             });
                     
+        // Support for now(?x)
+        rules = "[r1: now(?x) -> (a p ?x)]";
+        infgraph = createInfGraph(rules);
+        infgraph.prepare();
+        Graph result = infgraph.getDeductionsGraph();
+        assertEquals(1, result.size());
+        Triple tr = (Triple)result.find(null, null, null).next();
+        Node nowN = tr.getObject();
+        assertTrue(nowN.isLiteral());
+        Object nowO = nowN.getLiteralValue();
+        assertTrue(nowO instanceof XSDDateTime);
+        
         // Arithmetic            
         rules =  
         "[r1: (?x p ?a), (?x q ?b), sum(?a, ?b, ?c) -> (?x s ?c)]" +
@@ -761,11 +754,10 @@ public class TestFBRules extends TestCase {
         "[r4: (?x p ?a), (?x q ?b), min(?b, ?a, ?c) -> (?x r ?c)]" +
         "[r4: (?x p ?a), (?x q ?b), max(?b, ?a, ?c) -> (?x x ?c)]" +
                        "";
-        ruleList = Rule.parseRules(rules);
         data = Factory.createGraphMem();
         data.add(new Triple(n1, p, Util.makeIntNode(3)) );
         data.add(new Triple(n1, q, Util.makeIntNode(5)) );
-        infgraph = createReasoner(ruleList).bind(data);
+        infgraph = createInfGraph(rules, data);
         
         TestUtil.assertIteratorValues(this, infgraph.find(n1, null, null),
             new Triple[] {
@@ -786,12 +778,11 @@ public class TestFBRules extends TestCase {
         "[r1: (?x p ?y), isBNode(?y) -> (?x s 'bNode')]" +
         "[r1: (?x p ?y), notBNode(?y) -> (?x s 'notBNode')]" +
                        "";
-        ruleList = Rule.parseRules(rules);
         data = Factory.createGraphMem();
         data.add(new Triple(n1, p, Util.makeIntNode(3)) );
         data.add(new Triple(n2, p, res));
         data.add(new Triple(n3, p, Node.createAnon()));
-        infgraph = createReasoner(ruleList).bind(data);
+        infgraph = createInfGraph(rules, data);
         
         TestUtil.assertIteratorValues(this, infgraph.find(n1, s, null),
             new Triple[] {
@@ -818,14 +809,13 @@ public class TestFBRules extends TestCase {
         "[r1: (?x p ?y), notDType(?y, http://www.w3.org/2001/XMLSchema#int) -> (?x s 'notXSDInt')]" +
         "[r1: (?x p ?y), notDType(?y, http://www.w3.org/2001/XMLSchema#string) -> (?x s 'notXSDString')]" +
                        "";
-        ruleList = Rule.parseRules(rules);
         data = Factory.createGraphMem();
         data.add(new Triple(n1, p, Util.makeIntNode(3)) );
         data.add(new Triple(n2, p, Node.createLiteral("foo", "", null)) );
         data.add(new Triple(n3, p, Node.createLiteral("foo", "", XSDDatatype.XSDstring)) );
         data.add(new Triple(n4, p, n4));
         data.add(new Triple(n5, p, Node.createLiteral("-1", "", XSDDatatype.XSDnonNegativeInteger)) );
-        infgraph = createReasoner(ruleList).bind(data);
+        infgraph = createInfGraph(rules, data);
         
         TestUtil.assertIteratorValues(this, infgraph.find(null, s, null),
             new Triple[] {
@@ -852,13 +842,12 @@ public class TestFBRules extends TestCase {
             
         // Literal counting
         rules = "[r1: (?x p ?y), countLiteralValues(?x, p, ?c) -> (?x s ?c)]";
-        ruleList = Rule.parseRules(rules);
         data = Factory.createGraphMem();
         data.add(new Triple(n1, p, Util.makeIntNode(2)) );
         data.add(new Triple(n1, p, Util.makeIntNode(2)) );
         data.add(new Triple(n1, p, Util.makeIntNode(3)) );
         data.add(new Triple(n1, p, n2) );
-        infgraph = createReasoner(ruleList).bind(data);
+        infgraph = createInfGraph(rules, data);
         TestUtil.assertIteratorValues(this, infgraph.find(n1, s, null),
             new Triple[] {
                 new Triple(n1, s, Util.makeIntNode(2)),
@@ -867,10 +856,9 @@ public class TestFBRules extends TestCase {
         // Map list operation
         rules = "[r1: (n1 p ?l) -> listMapAsSubject(?l, q, C1)]" +
                 "[r2: (n1 p ?l) -> listMapAsObject ( a, q, ?l)]";
-        ruleList = Rule.parseRules(rules);
         data = Factory.createGraphMem();
         data.add(new Triple(n1, p, Util.makeList(new Node[]{b, c, d}, data) ));
-        infgraph = createReasoner(ruleList).bind(data);
+        infgraph = createInfGraph(rules, data);
         TestUtil.assertIteratorValues(this, infgraph.find(null, q, null),
             new Triple[] {
                 new Triple(b, q, C1),
@@ -890,10 +878,9 @@ public class TestFBRules extends TestCase {
             "[r1: (?x p ?y) strConcat(?y, rdf:type, 'foo', ?z) -> (?x q ?z) ] \n" + 
             "[r1: (?x p ?y) strConcat(?z) -> (?x q ?z) ] \n" + 
             "[r2: (?x p ?y) uriConcat('http://jena.hpl.hp.com/test#', ?y, ?z) -> (?x q ?z) ]";
-        List ruleList = Rule.parseRules(rules);
         Graph data = Factory.createGraphMem();
         data.add(new Triple(n1, p, Node.createLiteral("test")) );
-        InfGraph infgraph = createReasoner(ruleList).bind(data);
+        InfGraph infgraph = createInfGraph(rules, data);
         
         TestUtil.assertIteratorValues(this, infgraph.find(null, q, null),
             new Triple[] {
@@ -906,11 +893,10 @@ public class TestFBRules extends TestCase {
             "[r1: (?x p ?y) regex(?y, '(.*)\\\\s(.*) (f.*)') -> (?x q 'ok') ] \n" +
             "[r2: (?x p ?y) regex(?y, '(.*)\\\\s(.*) (f.*)', ?m1, ?m2, ?m3) -> (?x r ?m2) ] \n" +
             "";
-        ruleList = Rule.parseRules(rules);
         data = Factory.createGraphMem();
         data.add(new Triple(n1, p, Node.createLiteral("foo bar foo")) );
         data.add(new Triple(n2, p, Node.createLiteral("foo bar baz")) );
-        infgraph = createReasoner(ruleList).bind(data);
+        infgraph = createInfGraph(rules, data);
         TestUtil.assertIteratorValues(this, infgraph.find(null, q, null),
                 new Triple[] {
                 new Triple(n1, q, Node.createLiteral("ok")),
@@ -942,13 +928,12 @@ public class TestFBRules extends TestCase {
         String rules =  
             "[r1: (?x p ?a), (?x q ?b), (?x r ?c) " + op + "(?a, ?b, ?c) -> (?x s ?c)]\n " +
             "[r2: (?x p ?a), (?x q ?b), (?x t ?c) " + op + "(?a, ?b, ?c) -> (?x u ?c)]";
-        List ruleList = Rule.parseRules(rules);
         Graph data = Factory.createGraphMem();
         data.add(new Triple(n1, p, Util.makeIntNode(arg1)) );
         data.add(new Triple(n1, q, Util.makeIntNode(arg2)) );
         data.add(new Triple(n1, r, Util.makeIntNode(expected)) );
         data.add(new Triple(n1, t, Util.makeIntNode(expected+1)) );
-        InfGraph infgraph = createReasoner(ruleList).bind(data);
+        InfGraph infgraph = createInfGraph(rules, data);
         assertTrue( infgraph.contains(n1, s, Util.makeIntNode(expected)));     
         assertFalse( infgraph.contains(n1, u, Node.ANY) );        
     }

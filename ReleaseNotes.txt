@@ -24,6 +24,7 @@ Reasoners
     o Extended OWLMini/full to include validation of maxCardinality(1) over individuals
     o The (forward) deductions model is now preserved across rebind() operations 
       so that listeners on deductions models are safe
+    o added now(?x) builtin to return the current xsd:dateTime
       
 Misc
     o Extended ResourceFactory.createTypedLiteral to handle Calendar objects      
