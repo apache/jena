@@ -4,8 +4,6 @@
   Include @ into literal terminator 
   Currently, symbols can't start with a @ or ^ 
 
-+ Anon bNodes "_:"
-
 + test another form -- (debug FOO)
 
 + Expr: (exists (pattern ...))
@@ -15,8 +13,7 @@
 +  Assignment:
   (assign ((?x expr) (?y expr)) --  (:= ?x expr) [is this SELECT/project?]
      (project ...))
-     (project (?x ?y (?z expr)) ...)
-
-+ Var token: needs to include bNode variables.
+  VarExprLists      
 
 + Start a collection of Writers to go with Builders.
+  Move out OpWriter , break up into pieces.

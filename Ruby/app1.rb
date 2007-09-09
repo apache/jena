@@ -19,7 +19,7 @@ qs = <<-'END'
 ##   q.close
 ## end
 
-Query.select(qs, model).each{|row| puts row.s}
+Query.select(qs, model).each{|row| puts "?s=#{row.s} ?p=#{row.p} ?o=#{row.o}" }
 
 ## Query and dump
 Query.new(qs,model).put_select

@@ -327,6 +327,11 @@
       <fileset dir="Ruby"/>
     </copy>
     
+    <!-- Lisp library -->
+     <copy todir="${dist.dir}/Lisp">
+       <fileset dir="Lisp"/>
+     </copy>
+  	
     <!-- Exclude any zips of the ARQ test scripts -->
     <copy todir="${dist.dir}/${test.dir}">
       <fileset dir="${test.dir}"

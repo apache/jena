@@ -1,0 +1,11 @@
+#!/bin/bash
+export CLASSPATH="$(arq_path)"
+export SISC_HOME="$HOME/jlib/sisc-1.16.6"
+
+if [ ! -e "$SISC_HOME" ]
+then
+    echo "No SISC_HOME ($SISC_HOME)" 1>&2
+    exit 1
+    fi
+
+exec sisc -x arq.scm

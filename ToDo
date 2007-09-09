@@ -14,8 +14,6 @@ See ToDoSSE
 + ExprList writing an LJ
 
 + Expression printing : expr.toString should not add outer brackets
-  ExprNode.toString => ExprUtils.fmtSPARQL(IndentedWriter, Expr, pmap) => FmtExpr/FmtExprARQ.visit
-     Split FmtExpr in statics and a nested visitor. 
  
 + Check the better code in QueryIterTriplePattern.TripleMapper 
   Still needs to delay the binding allocation.  
