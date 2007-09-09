@@ -10,7 +10,7 @@ based on SPARQL.
   * Cost-based Optimizer
   * GROUP BY
   * Counting
-  * SERVICE
+  * SERVICE - call-out to another query service 
   * Expressions in the SELECT clause 
 
 == Cost-based Optimizer 
@@ -51,7 +51,7 @@ of a pattern.
       ?x a :p .
       ?x :p ?p .
       ?x :q ?q .
-   } GROUP BY ?p
+  } GROUP BY ?p
 
 == Remote query support
 
@@ -65,7 +65,7 @@ results with the locally part of the query.  The algebra supports a new
 operation, OpService, for this.  Algebra expression can be turned back into
 SPARQL query syntax.
 
-= SELECT expressions
+== SELECT expressions
 
 Expressions, as well as plain variables, can be given in the SELECT clause.
 
