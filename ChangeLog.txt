@@ -24,6 +24,9 @@ ARQ 2.1
   anyway.  (This does not affect algebra output which is what replaces
   these syntax-based forms).
   
++ Added examples of using Lisp (SISC - A Java-based scheme interpreter). 
+  See the directory Lisp/. 
+  
 + NodeVar renamed ExprVar (more consistent naming)
   Deprecated tombstones left for next release 
 
