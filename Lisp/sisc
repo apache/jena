@@ -1,0 +1,4 @@
+#!/bin/sh
+
+export SISC_HOME="$HOME/jlib/sisc-1.16.6"
+exec "${SISC_HOME}/sisc" "$@"
