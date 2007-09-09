@@ -1,9 +1,13 @@
 (import s2j)
 
-;; Notes:
-;; Calls to static would work as (out <ResultSetFormatter> rs)
-;; according to the documentation but I seem to need java-null
-;; (out (java-null <ResultSetFormatter>) rs)
+;; Notes: calls to statics:
+;; need a object of the righ tclass or a suiabely typed null.
+;; That is, 
+;;   (out (java-null <ResultSetFormatter>) rs)
+;; Not that clean but it woudl be better to have a library that presented ARQ in a scheme-like
+;; way, not have plain calls to the Java world.
+;; Work-in-progress 
+
 
 (java-class '|java.lang.String|)
 
