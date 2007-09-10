@@ -26,11 +26,25 @@
 (define-generic-java-method execSelect |execSelect|)
 (define-generic-java-method out |out|)
 
-;; Query query = QueryFactory.create(queryString) ;
-(define query (jCreate (java-null <QueryFactory>) str))
+;;--- Define factories.  One argument method.
+(define (QueryFactory method arg)
+  (method (java-null <QueryFactory>) arg))
+
+(define (QueryExecutionFactory method arg)
+  (method (java-null <QueryExecutionFactory>) arg))
+
+(define (ResultSetFormatter method args)
+  (method (java-null <ResultSetFormatter>) args))
+
+;; Better: a "static method" mechanism.
+
+
+;; ----
+
+(define query (QueryFactory jCreate str))
 
 ;; QueryExecution qexec = QueryExecutionFactory.create(query) ;
-(define qExec (jCreate (java-null <QueryExecutionFactory>) query))
+(define qExec (QueryExecutionFactory jCreate query))
 
 (define rs (execSelect qExec))
 
@@ -51,7 +65,9 @@
 (newline)
 
 ;; And again, then use the resultSetFormatter.
-(set! qExec (jCreate (java-null <QueryExecutionFactory>) query))
+(set! qExec (QueryExecutionFactory jCreate query))
 (set! rs (execSelect qExec))
-(out (java-null <ResultSetFormatter>) rs)
-;;(out <ResultSetFormatter> rs)
+(ResultSetFormatter out rs)
+
+
+
