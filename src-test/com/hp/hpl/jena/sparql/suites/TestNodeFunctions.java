@@ -10,6 +10,7 @@ import junit.framework.*;
 
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.sparql.expr.ExprEvalException;
 import com.hp.hpl.jena.sparql.expr.ExprTypeException;
 import com.hp.hpl.jena.sparql.expr.NodeValue;
 import com.hp.hpl.jena.sparql.expr.nodevalue.*;
@@ -60,6 +61,46 @@ public class TestNodeFunctions extends TestCase
         Node n1 = Node.createLiteral("xyz") ;
         Node n2 = Node.createLiteral("xyz", null, XSDDatatype.XSDstring) ;
         assertFalse(NodeFunctions.sameTerm(n1, n2)) ;
+    }
+    
+    public void testSameTerm5()
+    {
+        Node n1 = Node.createLiteral("xyz", "en", null) ;
+        Node n2 = Node.createLiteral("xyz", null, null) ;
+        assertFalse(NodeFunctions.sameTerm(n1, n2)) ;
+    }
+    
+    public void testSameTerm6()
+    {
+        Node n1 = Node.createLiteral("xyz", "en", null) ;
+        Node n2 = Node.createLiteral("xyz", "EN", null) ;
+        assertTrue(NodeFunctions.sameTerm(n1, n2)) ;
+    }
+    
+    public void testRDFtermEquals1()
+    {
+        Node n1 = Node.createURI("xyz") ;
+        Node n2 = Node.createLiteral("xyz", null, null) ;
+        assertFalse(NodeFunctions.rdfTermEquals(n1, n2)) ;
+    }
+    
+    public void testRDFtermEquals3()
+    {
+        // Unextended - no language tag  
+        Node n1 = Node.createLiteral("xyz") ;
+        Node n2 = Node.createLiteral("xyz", "en", null) ;
+        try {
+            NodeFunctions.rdfTermEquals(n1, n2) ;
+            fail("Expected an exception from rdfTermEquals") ;
+        } catch (ExprEvalException ex) {}
+    }
+    
+
+    public void testRDFtermEquals2()
+    {
+        Node n1 = Node.createLiteral("xyz", "en", null) ;
+        Node n2 = Node.createLiteral("xyz", "EN", null) ;
+        assertTrue(NodeFunctions.rdfTermEquals(n1, n2)) ;
     }
     
     public void testStr1()

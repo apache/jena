@@ -432,25 +432,22 @@ public abstract class NodeValue extends ExprNode
                 Node node1 = nv1.getNode() ;
                 Node node2 = nv2.getNode() ;
                 
-                if ( ! VALUE_EXTENSIONS && ( node1.isLiteral() && node2.isLiteral() ) )
-                {
+                if ( ! VALUE_EXTENSIONS )
+                    // No value extensions => raw rdfTermEquals
                     return NodeFunctions.rdfTermEquals(node1, node2) ;
-//                    if ( NodeFunctions.sameTerm(node1, node2) )
-//                        return true ;
-//                    else
-//                        raise(new ExprNotComparableException("Unknown equality test: "+nv1+" and "+nv2)) ;
-                }
+
+                // Some "value spaces" are know to be not equal (no overlap).
+                // Like one literal with a language tag, and one without can't be sameAs.
                 
-                // Zero or one non-literal (not both non-literals), that's case VSPACE_NODE)
                 if ( ! node1.isLiteral() || ! node2.isLiteral() )
-                    // So it's false? node1 can't be same form as node2.
+                    // One or other not a literal => not sameAs
                     return false ;
-                    //return NodeFunctions.sameTerm(node1, node2) ;
+
+                // Two literals at this point.
                 
-                // Two literals
                 if ( NodeFunctions.sameTerm(node1, node2) )
                     return true ;
-                
+
                 if ( ! node1.getLiteralLanguage().equals("") ||
                      ! node2.getLiteralLanguage().equals("") )
                     // One had lang tags but weren't sameNode => not equals
@@ -991,12 +988,14 @@ public abstract class NodeValue extends ExprNode
     
     public boolean equals(Object other)
     {
+        // This is the equality condition Jena uses - lang tags are different by case. 
         if ( this == other ) return true ;
 
         if ( ! ( other instanceof NodeValue ) )
             return false ;
         NodeValue nv = (NodeValue)other ;
-        return NodeFunctions.sameTerm(this.asNode(), nv.asNode()) ;
+        return asNode().equals(nv.asNode()) ;
+        // Not NodeFunctions.sameTerm (which smooshes language tags by case
     }
 
     public abstract void visit(NodeValueVisitor visitor) ;

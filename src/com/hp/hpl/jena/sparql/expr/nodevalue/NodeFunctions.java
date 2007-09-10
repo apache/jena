@@ -27,18 +27,70 @@ public class NodeFunctions
     { return NodeValue.booleanReturn(sameTerm(nv1.asNode(), nv2.asNode())) ; }
     
     public static boolean sameTerm(Node n1, Node n2)
-    { return n1.equals(n2) ; }
-    
+    { 
+        if ( n1.equals(n2) )
+            return true ;
+        if ( n1.isLiteral() && n2.isLiteral() )
+        {
+            // But language tags are case insensitive.
+            String lang1 =  n1.getLiteralLanguage() ;
+            String lang2 =  n2.getLiteralLanguage() ;
+            
+            if ( ! lang1.equals("") && lang1.equalsIgnoreCase(lang2) )
+            {
+                // Two language tags, equal by case insensitivity.
+                boolean b = n1.getLiteralLexicalForm().equals(n2.getLiteralLexicalForm()) ;
+                if ( b )
+                    return true ;
+            }
+        }
+        return false ;
+    }
+//    
+//    private static boolean sameTermLiterals(Node n1, Node n2)
+//    {
+//        // But language tags are case insensitive.
+//        String lang1 =  n1.getLiteralLanguage() ;
+//        String lang2 =  n2.getLiteralLanguage() ;
+//        
+//        if ( ! lang1.equals("") && lang1.equalsIgnoreCase(lang2) )
+//        {
+//            // Two language tags, equal by case insensitivity.
+//            return n1.getLiteralLexicalForm().equals(n2.getLiteralLexicalForm()) ;
+//            if ( b )
+//                return true ;
+//        }
+//        return false ; 
+//    }
+        
     // -------- RDFterm-equals
     
     public static NodeValue rdfTermEquals(NodeValue nv1, NodeValue nv2)
     { return NodeValue.booleanReturn(rdfTermEquals(nv1.asNode(), nv2.asNode())) ; }
     
+    // Exactl as defined by SPARQl spec.
     public static boolean rdfTermEquals(Node n1, Node n2)
     { 
         if ( n1.equals(n2) )
             return true ;
-        NodeValue.raise(new ExprEvalException("Not RDF term equals: "+n1+", "+n2)) ;
+        
+        if ( n1.isLiteral() && n2.isLiteral() )
+        {
+            // Two literals, may be sameTerm by language tag case insensitivity.
+            String lang1 =  n1.getLiteralLanguage() ;
+            String lang2 =  n2.getLiteralLanguage() ;
+                
+            if ( ! lang1.equals("") && lang1.equalsIgnoreCase(lang2) )
+            {
+                // Two language tags, equal by case insensitivity.
+                boolean b = n1.getLiteralLexicalForm().equals(n2.getLiteralLexicalForm()) ;
+                if ( b )
+                    return true ;
+            }
+            // Two literals, different terms, different language tags. 
+            NodeValue.raise(new ExprEvalException("Mismatch in RDFterm-equals: "+n1+", "+n2)) ;
+        }
+        // One or both not a literal.
         return false ;
     }
     
