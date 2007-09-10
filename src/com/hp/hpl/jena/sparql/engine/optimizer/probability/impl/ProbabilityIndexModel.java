@@ -356,12 +356,10 @@ public class ProbabilityIndexModel extends ProbabilityBase
 	// Return the estimated size of the subject
 	private long getSubjectSize(Triple triple)
 	{ 
-		// If variable, the subject matches everything
-		if (triple.getSubject().isVariable())
-			return indexedNumRes ;
-		
-		// If not, it matches it matches one resource
-		return 1L ;
+		if (triple.getSubject().isConcrete())
+			return 1L ;
+
+		return indexedNumRes ;
 	}
 	
 	// Return the probability of the predicate
@@ -383,7 +381,7 @@ public class ProbabilityIndexModel extends ProbabilityBase
 	{
 		Node predicate = triple.getPredicate() ;
 		
-		if (predicate.isVariable())
+		if (! predicate.isConcrete())
 			return indexedSize ;
 		
 		return index.lookup(ResourceFactory.createProperty(predicate.getURI())) ;
@@ -404,8 +402,8 @@ public class ProbabilityIndexModel extends ProbabilityBase
 	private long getObjectSize(Triple triple)
 	{
 		Node object = triple.getObject() ;
-		
-		if (object.isVariable())
+
+		if (! object.isConcrete())
 			return indexedSize ;
 		
 		long size = 0L ;
