@@ -26,7 +26,7 @@
 (define-generic-java-method execSelect |execSelect|)
 (define-generic-java-method out |out|)
 
-;;--- Define factories.  One argument method.
+;;--- Define factories.  One argument methods only.
 (define (QueryFactory method arg)
   (method (java-null <QueryFactory>) arg))
 
