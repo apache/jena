@@ -38,48 +38,41 @@ public class DateTimeStruct
         return x ; 
     }
     
-    static String pattern = "(-?)(\\d{4})-(\\d{2})-(\\d{2})T.*"+        // year-month-day
-                            "(\\d{2}):(\\d{2}):(\\d{2}(?:\\.\\d+)?)" +  // hour:minute:second
-                            "(Z|(?:(?:\\+|-)\\d{2}:\\d{2}))?" ;         // Timezone
-    static Pattern p = Pattern.compile(pattern);
+    public static final String patDate      = "(-?)(\\d{4})-(\\d{2})-(\\d{2})" ;
+    public static final String patTime      = "(\\d{2}):(\\d{2}):(\\d{2}(?:\\.\\d+)?)" ;
+    public static final String patTZ        = "(Z|(?:(?:\\+|-)\\d{2}:\\d{2}))?" ;
+    public static final String patXSDDateTime  = patDate+"T"+patTime+patTZ ;
+    public static final String patXSDDate      = patDate+patTZ ;
+    
+    public static final Pattern p = Pattern.compile(patXSDDateTime);
+    
     private static DateTimeStruct parseDateTime(String str)
     {
         Matcher m = p.matcher(str) ;
 
-        if ( m.matches() )
-        {
-//          System.out.println("Group count: "+m.groupCount()) ;
-////        8, including the -
-//          for ( int i = 0 ; i <= m.groupCount() ; i++ )
-//          {
-//          System.out.println("("+m.start(i)+","+m.end(i)+")") ;
-//          String s = "" ;
-//          if ( m.start(i) != -1 )
-//          s = str.substring(m.start(i), m.end(i)) ;
-//          System.out.println(i+">>"+s) ;
-//          }
-            DateTimeStruct DateTimeParser = new DateTimeStruct() ;
+        if ( ! m.matches() ) 
+            throw new DateTimeParseException() ;
 
-            DateTimeParser.neg = str(str, m, 1) ;
-            DateTimeParser.year = str(str, m, 2) ;
-            DateTimeParser.month = str(str, m, 3) ;
-            DateTimeParser.day = str(str, m, 4) ;
-            DateTimeParser.hour = str(str, m, 5) ;
-            DateTimeParser.minute = str(str,m,6) ;
-            DateTimeParser.second = str(str,m,7) ;
-            DateTimeParser.timezone = str(str,m,8) ;
-            return DateTimeParser ;
-        }
-        return null ;
-
+        DateTimeStruct DateTimeParser = new DateTimeStruct() ;
+        DateTimeParser.neg      = matchStr(str, m, 1) ;
+        DateTimeParser.year     = matchStr(str, m, 2) ;
+        DateTimeParser.month    = matchStr(str, m, 3) ;
+        DateTimeParser.day      = matchStr(str, m, 4) ;
+        DateTimeParser.hour     = matchStr(str, m, 5) ;
+        DateTimeParser.minute   = matchStr(str, m, 6) ;
+        DateTimeParser.second   = matchStr(str, m, 7) ;
+        DateTimeParser.timezone = matchStr(str, m, 8) ;
+        return DateTimeParser ;
     }
 
-    private static String str(String str, Matcher m, int i)
+    private static String matchStr(String str, Matcher m, int i)
     {
         if ( m.start(i) == -1 ) return "" ;
         return str.substring(m.start(i), m.end(i)) ;
     }
 
+    // --------
+    // Alternative parser.  Enables better error messages.
     private static DateTimeStruct _parseDateTime(String str)
     {
         // -? YYYY-MM-DD T hh:mm:ss.ss TZ
