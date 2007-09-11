@@ -77,6 +77,7 @@ public class SqlStageBasicQuad implements SqlStage
             // "named" access to the union of the named graphs
             accessStoredDefaultGraph = false ;
             accessUnionGraph = true ;
+            // Add DISTINCT over the join of SqlStageBasicQuad for RDF merge 
         }
         
         // ---- Choose the table to access
