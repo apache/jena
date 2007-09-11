@@ -38,23 +38,6 @@ public class Utils
     // javax.xml.datatype.XMLGregorianCalendar
     // javax.xml.datatype.DatatypeFactory.newXMLGregorianCalendar 
 
-    // Check this!
-//    public static String calendarToXSDDateTimeString_JAVA5(Calendar cal)
-//    {
-//        try {
-//            GregorianCalendar gCal = new GregorianCalendar() ;
-//            gCal.setTime(new Date()) ;
-//            XMLGregorianCalendar xCal = DatatypeFactory.newInstance().newXMLGregorianCalendar(gCal) ;
-//            return xCal.toXMLFormat() ;
-//        } catch (Exception ex)
-//        {
-//            System.err.println(ex.getMessage());
-//            ex.printStackTrace(System.err) ;
-//            return null ;
-//        }
-//    }
-    
-    
     // warning all calendar based operations force the timezone
     // to the default is not present. 
     

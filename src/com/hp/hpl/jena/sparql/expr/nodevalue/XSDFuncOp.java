@@ -568,24 +568,42 @@ public class XSDFuncOp
     // Date/DateTime operations
     // http://www.w3.org/TR/xpath-functions/#comp.duration.datetime
     //  dateTimeCompare
-    // works for dates as well but 
+    // works for dates as well because they are implemented as dateTimes on their start point.
 
     public static int compareDateTime(NodeValue nv1, NodeValue nv2)
     { 
-        return compareCal(nv1.getDateTime(), nv2.getDateTime()) ;
+        return compareDateTime(nv1.getDateTime(), nv2.getDateTime()) ;
     }
 
     public static int compareDate(NodeValue nv1, NodeValue nv2)
     { 
-        return compareCal(nv1.getDate(), nv2.getDate()) ;
+        return compareDateTime(nv1.getDate(), nv2.getDate()) ;
     }
 
-    private static int compareCal(XSDDateTime dt1 , XSDDateTime dt2)
+    static boolean strictFO = false ;
+    
+    private static int compareDateTimeFO(XSDDateTime dt1, XSDDateTime dt2)
+    {
+        int x =  compareDateTime(dt1, dt2) ;
+        if ( x == XSDDateTime.INDETERMINATE && strictFO )
+        {
+            // TODO
+            // Fake timezone, try again. But that is not very semantic web - can
+            // get different answers to same query, same web data.
+            // "quietly" do the XML schema thing for now.
+        }
+        return x ;
+        
+    }
+    
+    private static int compareDateTime(XSDDateTime dt1 , XSDDateTime dt2)
     {
         // Returns codes are -1/0/1 but also 2 for "Indeterminate"
         // which occurs when one has a timezone and one does not
         // and they are less then 14 hours apart.
         
+        // F&O has an "implicit timezone" - this code implements the XMLSchema compare algorithm.  
+
         int x = dt1.compare(dt2) ;
         if ( x == XSDDateTime.EQUAL )
             return Expr.CMP_EQUAL ;
