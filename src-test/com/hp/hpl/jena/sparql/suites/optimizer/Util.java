@@ -47,7 +47,7 @@ public class Util
 	 */
 	public static Node createNode(String element)
 	{
-		if (element.contains("?"))
+		if (element.startsWith("?"))
 			return Node.createVariable(element.substring(1, element.length())) ;
 		else if (element.startsWith(":"))
 			return Node.createURI(Constants.localhostNS + element.substring(1, element.length())) ;
