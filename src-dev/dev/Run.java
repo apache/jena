@@ -9,16 +9,10 @@ package dev;
 import arq.sparql;
 
 import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.QueryExecution;
-import com.hp.hpl.jena.query.QueryExecutionFactory;
-import com.hp.hpl.jena.query.QueryFactory;
-import com.hp.hpl.jena.query.ResultSetFormatter;
-import com.hp.hpl.jena.query.larq.IndexBuilderString;
-import com.hp.hpl.jena.query.larq.IndexLARQ;
-import com.hp.hpl.jena.query.larq.LARQ;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.util.FileManager;
+
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.binding.BindingMap;
@@ -26,7 +20,11 @@ import com.hp.hpl.jena.sparql.expr.Expr;
 import com.hp.hpl.jena.sparql.expr.ExprNotComparableException;
 import com.hp.hpl.jena.sparql.expr.NodeValue;
 import com.hp.hpl.jena.sparql.sse.SSE;
-import com.hp.hpl.jena.util.FileManager;
+
+import com.hp.hpl.jena.query.*;
+import com.hp.hpl.jena.query.larq.IndexBuilderString;
+import com.hp.hpl.jena.query.larq.IndexLARQ;
+import com.hp.hpl.jena.query.larq.LARQ;
 
 
 public class Run
@@ -55,15 +53,10 @@ public class Run
     private static void runParseDateTime(String str)
     {
         System.out.println(str) ; 
-        try {
-            DT dt = parseDateTime(str) ;
-            System.out.println(str + " ==> " + dt) ;
-            if ( ! str.equals(dt.toString())) 
-                System.out.println("*** Different") ;
-        } catch (DateTimeParseException ex)
-        {
-            ex.printStackTrace(System.err) ;
-        }
+        DateTimeParser dt = DateTimeParser.parse(str) ;
+        System.out.println(str + " ==> " + dt) ;
+        if ( ! str.equals(dt.toString())) 
+            System.out.println("*** Different") ;
     }
 
     public static void expr(String expr)
@@ -108,142 +101,6 @@ public class Run
         System.out.println(rc) ;
     }
     
-    static class DT
-    {
-        String neg = null ;         // Null if none. 
-        String year = null ;
-        String month = null ;
-        String day = null ;
-        String hour = null ;
-        String minute = null ;
-        String seconds = null ;     // Inc. fractional parts
-        String timezone = null ;    // Null if none.
-        
-        public String toString()
-        { 
-            String ySep = "-" ;
-            String tSep = ":" ;
-            String x = year+ySep+month+ySep+day+"T"+hour+tSep+minute+tSep+seconds ;
-            if ( neg != null )
-                x = neg+x ;
-            if ( timezone != null )
-                x = x+timezone ;
-            return x ; 
-        }
-    }
-    
-    static class DateTimeParseException extends RuntimeException
-    {}
-    
-    private static DT parseDateTime(String str)
-    {
-        // -? YYYY-MM-DD T hh:mm:ss.ss TZ
-        DT dt = new DT() ;
-        int idx = 0 ;
-        
-        if ( str.startsWith("-") )
-        {
-            dt.neg = "-" ;
-            idx = 1 ;
-        }
-        
-        // ---- Year-Month-Day
-        dt.year = getDigits(4, str, idx) ;
-        idx += 4 ;
-        check(str, idx, '-') ;
-        idx += 1 ;
-        
-        dt.month = getDigits(2, str, idx) ;
-        idx += 2 ;
-        check(str, idx, '-') ;
-        idx += 1 ;
-        
-        dt.day = getDigits(2, str, idx) ;
-        idx += 2 ;
-        // ---- 
-        check(str, idx, 'T') ;
-        idx += 1 ;
-        
-        // ---- 
-        // Hour-minute-seconds
-        dt.hour = getDigits(2, str, idx) ;
-        idx += 2 ;
-        check(str, idx, ':') ;
-        idx += 1 ;
-        
-        dt.minute = getDigits(2, str, idx) ;
-        idx += 2 ;
-        check(str, idx, ':') ;
-        idx += 1 ;
-        
-        // seconds
-        dt.seconds = getDigits(2, str, idx) ;
-        idx += 2 ;
-        if ( idx < str.length() && str.charAt(idx) == '.' )
-        {
-            idx += 1 ;
-            int idx2 = idx ;
-            for ( ; idx2 < str.length() ; idx2++ )
-            {
-                char ch = str.charAt(idx) ;
-                if ( ! Character.isDigit(ch) )
-                    break ;
-            }
-            if ( idx == idx2 )
-                throw new DateTimeParseException() ;
-            dt.seconds = dt.seconds+'.'+str.substring(idx, idx2) ;
-            idx = idx2 ;
-        }
-
-        // timezone. Z or +/- 00:00
-        
-        if ( idx < str.length() )
-        {
-            if ( str.charAt(idx) == 'Z' )
-            {
-                dt.timezone = "Z" ;
-                idx += 1 ;
-            }
-            else
-            {
-                boolean signPlus = false ;
-                if ( str.charAt(idx) == '+' )
-                    signPlus = true ;
-                else if ( str.charAt(idx) == '-' )
-                    signPlus = false ;
-                else
-                    throw new DateTimeParseException() ;
-                dt.timezone = getDigits(2, str, idx) ;
-                check(str, idx, ':') ;
-                dt.timezone = dt.timezone+':'+getDigits(2, str, idx) ;
-                idx += 5 ;
-                 
-            }
-        }
-        
-        if ( idx != str.length() )
-            throw new DateTimeParseException() ;
-        return dt ;
-    }
-    
-    
-    private static String getDigits(int num, String string, int start)
-    {
-        for ( int i = start ; i < (start+num) ; i++ )
-        {
-            char ch = string.charAt(i) ;
-            if ( ! Character.isDigit(ch) )
-                throw new DateTimeParseException() ;
-            continue ;
-        }
-        return string.substring(start, start+num) ;
-    }
-    
-    private static void check(String string, int start, char x)
-    {
-        if ( string.charAt(start) != x ) 
-            throw new DateTimeParseException() ;
-    }
 //
 //    // Unused, untested
 //    private static boolean hasTZ(String lex)
