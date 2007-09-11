@@ -53,7 +53,7 @@ public class Run
     private static void runParseDateTime(String str)
     {
         System.out.println(str) ; 
-        DateTimeParser dt = DateTimeParser.parse(str) ;
+        DateTimeStruct dt = DateTimeStruct.parse(str) ;
         System.out.println(str + " ==> " + dt) ;
         if ( ! str.equals(dt.toString())) 
             System.out.println("*** Different") ;

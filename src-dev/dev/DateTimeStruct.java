@@ -9,7 +9,7 @@ package dev;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class DateTimeParser
+public class DateTimeStruct
 {
     String neg = null ;         // Null if none. 
     String year = null ;
@@ -20,8 +20,8 @@ public class DateTimeParser
     String second = null ;     // Inc. fractional parts
     String timezone = null ;    // Null if none.
 
-    private DateTimeParser() {}
-    static DateTimeParser parse(String str) { return parseDateTime(str) ; }
+    private DateTimeStruct() {}
+    static DateTimeStruct parse(String str) { return parseDateTime(str) ; }
     
     static class DateTimeParseException extends RuntimeException
     {}
@@ -42,7 +42,7 @@ public class DateTimeParser
                             "(\\d{2}):(\\d{2}):(\\d{2}(?:\\.\\d+)?)" +  // hour:minute:second
                             "(Z|(?:(?:\\+|-)\\d{2}:\\d{2}))?" ;         // Timezone
     static Pattern p = Pattern.compile(pattern);
-    private static DateTimeParser parseDateTime(String str)
+    private static DateTimeStruct parseDateTime(String str)
     {
         Matcher m = p.matcher(str) ;
 
@@ -58,7 +58,7 @@ public class DateTimeParser
 //          s = str.substring(m.start(i), m.end(i)) ;
 //          System.out.println(i+">>"+s) ;
 //          }
-            DateTimeParser DateTimeParser = new DateTimeParser() ;
+            DateTimeStruct DateTimeParser = new DateTimeStruct() ;
 
             DateTimeParser.neg = str(str, m, 1) ;
             DateTimeParser.year = str(str, m, 2) ;
@@ -80,10 +80,10 @@ public class DateTimeParser
         return str.substring(m.start(i), m.end(i)) ;
     }
 
-    private static DateTimeParser _parseDateTime(String str)
+    private static DateTimeStruct _parseDateTime(String str)
     {
         // -? YYYY-MM-DD T hh:mm:ss.ss TZ
-        DateTimeParser DateTimeParser = new DateTimeParser() ;
+        DateTimeStruct DateTimeParser = new DateTimeStruct() ;
         int idx = 0 ;
         
         if ( str.startsWith("-") )
