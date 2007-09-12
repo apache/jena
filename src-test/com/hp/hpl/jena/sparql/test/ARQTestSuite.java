@@ -8,6 +8,7 @@ package com.hp.hpl.jena.sparql.test;
 
 import junit.framework.TestSuite;
 
+import com.hp.hpl.jena.query.ARQ;
 import com.hp.hpl.jena.sparql.engine.main.QueryEngineMain;
 import com.hp.hpl.jena.sparql.engine.ref.QueryEngineRef;
 import com.hp.hpl.jena.sparql.expr.E_Function;
@@ -75,6 +76,7 @@ public class ARQTestSuite extends TestSuite
 	private ARQTestSuite()
 	{
         super("ARQ");
+        ARQ.init() ;
         // Tests should be silent.
         NodeValue.VerboseWarnings = false ;
         E_Function.WarnOnUnknownFunction = false ;

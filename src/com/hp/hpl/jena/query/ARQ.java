@@ -8,6 +8,7 @@ package com.hp.hpl.jena.query;
 
 import com.hp.hpl.jena.sparql.ARQConstants;
 import com.hp.hpl.jena.sparql.engine.optimizer.Optimizer;
+import com.hp.hpl.jena.sparql.expr.nodevalue.XSDFuncOp;
 import com.hp.hpl.jena.sparql.util.Context;
 import com.hp.hpl.jena.sparql.util.Symbol;
 
@@ -147,6 +148,8 @@ public class ARQ
     public static void setStrictMode(Context context)
     {
         strictMode = true ;
+        XSDFuncOp.strictDateTimeFO = true ;
+        
         context.set(hideNonDistiguishedVariables, true) ;
         context.set(strictGraph,                true) ;
         context.set(strictSPARQL,               true) ;
@@ -156,16 +159,42 @@ public class ARQ
         context.set(generateToList,             true) ;
         context.set(regexImpl,                  xercesRegex) ;
         context.set(filterPlacement,            false) ;
+//        XSDFuncOp.strictDateTimeFO = false ;
     }
     
     //public static boolean getStrictMode()       { return strictMode ; }
     
-    private static Context globalContext = null ;
+    public static void setNormalMode() { setNormalMode(ARQ.getContext()) ; }
+        
+    public static void setNormalMode(Context context)
+    {
+        strictMode = false ;
+        XSDFuncOp.strictDateTimeFO = false ;
+
+        //context.set(hideNonDistiguishedVariables, true) ;
+        context.set(strictSPARQL,                  "false") ; 
+        context.set(constantBNodeLabels,           "true") ;
+        context.set(enablePropertyFunctions,       "true") ;
+        context.set(strictGraph,                   "false") ;
+        
+        //context.set(useSAX,                        "false") ;
+        context.set(enableRomanNumerals,           "false") ;
+        // enableBlankNodeLabels() ;
+        context.set(regexImpl,                     javaRegex) ;
+//        if (  getContext().isTrue(romanNumeralsAsFirstClassDatatypes) )
+//            RomanNumeralDatatype.enableAsFirstClassDatatype() ; // Wires into the TypeMapper.
+        context.set(filterPlacement,                true) ;
+    }
     
-    private static boolean initialized = false ;
     // Force a call
     static { init() ; }
-    
+
+    private static boolean initialized = false ;
+
+
+    private static Context globalContext = null ;
+
+
     /** Ensure things have started - applications do not need call this.
      * The method is public so any part of ARQ can call it.
      */
@@ -181,30 +210,20 @@ public class ARQ
         // Markus Stocker 08/06/2007
         Optimizer.enable() ;
     }
-    
+
     private static Context defaultSettings()    
     {
         Context context = new Context() ;
-        
-        //context.set(hideNonDistiguishedVariables, true) ;
-        context.set(strictSPARQL,                  "false") ; 
-        context.set(constantBNodeLabels,           "true") ;
-        context.set(enablePropertyFunctions,       "true") ;
-        context.set(strictGraph,                   "false") ;
-        
-        //context.set(useSAX,                        "false") ;
-        context.set(enableRomanNumerals,           "false") ;
-        // enableBlankNodeLabels() ;
-        context.set(regexImpl,                     javaRegex) ;
-//        if (  getContext().isTrue(romanNumeralsAsFirstClassDatatypes) )
-//            RomanNumeralDatatype.enableAsFirstClassDatatype() ; // Wires into the TypeMapper.
-        context.set(filterPlacement,                true) ;
+        setNormalMode(context) ;
+        return context ; 
+    }
 
-        return context ;
+    public static Context getContext()
+    { 
+        ARQ.init() ;
+        return globalContext ;
     }
     
-    public static Context getContext() { return globalContext ; }
-//    
     // Convenience call-throughs
     public static void set(Symbol symbol, boolean value)  { getContext().set(symbol, value) ; }
     public static void setTrue(Symbol symbol)             { getContext().setTrue(symbol) ; }

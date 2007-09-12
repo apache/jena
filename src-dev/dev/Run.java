@@ -19,7 +19,9 @@ import com.hp.hpl.jena.sparql.engine.binding.BindingMap;
 import com.hp.hpl.jena.sparql.expr.Expr;
 import com.hp.hpl.jena.sparql.expr.ExprNotComparableException;
 import com.hp.hpl.jena.sparql.expr.NodeValue;
+import com.hp.hpl.jena.sparql.expr.nodevalue.XSDFuncOp;
 import com.hp.hpl.jena.sparql.sse.SSE;
+import com.hp.hpl.jena.sparql.util.DateTimeStruct;
 
 import com.hp.hpl.jena.query.*;
 import com.hp.hpl.jena.query.larq.IndexBuilderString;
@@ -31,16 +33,18 @@ public class Run
 {
     public static void main(String[] argv)
     {
+        XSDFuncOp.strictDateTimeFO = true ;
+        String [] aa = {"'2007-09-12'^^xsd:date = '2007-09-12Z'^^xsd:date"} ;
+        arq.qexpr.main(aa) ;
+        aa = new String[]{"'2007-09-12T10:11:12'^^xsd:dateTime = '2007-09-12T10:11:12+00:00'^^xsd:dateTime"} ;
+        arq.qexpr.main(aa) ;
         
-        if ( true )
-        {
-            runParseDateTime("2007-08-31T12:34:56Z") ;
-            runParseDateTime("2007-08-31T12:34:56") ;
-            runParseDateTime("2007-08-31T12:34:56.003") ;
-            runParseDateTime("2007-08-31T12:34:56.003+05:00") ;
-            runParseDateTime("-2007-08-31T12:34:56.003-05:00") ;
-            System.exit(0) ;
-        }
+        
+        
+        
+        
+        
+        System.exit(0) ;
         
         String []a = { "--file=Q.arq", "--out=arq", "--print=op", "--print=query"} ;
         arq.qparse.main(a) ;
@@ -53,7 +57,7 @@ public class Run
     private static void runParseDateTime(String str)
     {
         System.out.println(str) ; 
-        DateTimeStruct dt = DateTimeStruct.parse(str) ;
+        DateTimeStruct dt = DateTimeStruct.parseDateTime(str) ;
         System.out.println(str + " ==> " + dt) ;
         if ( ! str.equals(dt.toString())) 
             System.out.println("*** Different") ;
