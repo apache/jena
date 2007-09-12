@@ -14,12 +14,19 @@ import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.shared.PrefixMapping;
 
 import com.hp.hpl.jena.sparql.ARQConstants;
+import com.hp.hpl.jena.sparql.engine.ExecutionContext;
+import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.expr.*;
+import com.hp.hpl.jena.sparql.function.FunctionEnv;
 import com.hp.hpl.jena.sparql.lang.sparql.*;
 import com.hp.hpl.jena.sparql.serializer.FmtExpr;
 import com.hp.hpl.jena.sparql.serializer.FmtExprARQ;
 import com.hp.hpl.jena.sparql.serializer.FmtExprPrefix;
+import com.hp.hpl.jena.sparql.sse.SSE;
+import com.hp.hpl.jena.sparql.sse.SSEParseException;
+import com.hp.hpl.jena.sparql.sse.builders.ExprBuildException;
 
+import com.hp.hpl.jena.query.ARQ;
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryFactory;
 import com.hp.hpl.jena.query.QueryParseException;
@@ -251,12 +258,66 @@ public class ExprUtils
             case Expr.CMP_GREATER:   return "GT" ;
             case Expr.CMP_EQUAL:     return "EQ" ;
             case Expr.CMP_LESS:      return "LT" ;
+            case Expr.CMP_INDETERMINATE:      return "indeterminate" ;
             default:            return "??" ;
         }
     }
     
-
+    // Command line evaluation
     
+    public static void expr(String exprStr) { expr(exprStr, null) ; }
+    public static void expr(String exprStr, Binding binding)
+    {
+        try {
+            Expr expr = ExprUtils.parse(exprStr, ARQConstants.getGlobalPrefixMap()) ;
+            eval(expr, binding) ;
+        }
+        catch (QueryParseException ex)
+        {
+            System.err.println("Parse error: "+ex.getMessage()) ;
+            return ;
+        }
+    }
+    
+    public static void exprPrefix(String exprStr)
+    {
+        exprPrefix(exprStr, null) ;
+    }
+
+    public static void eval(Expr expr, Binding binding) // throws exceptions
+    {
+        try {
+            ARQ.getContext().set(ARQConstants.sysCurrentTime, NodeFactory.nowAsDateTime()) ;
+            FunctionEnv env = new ExecutionContext(ARQ.getContext(), null, null) ; 
+            NodeValue r = expr.eval(binding, env) ;
+            //System.out.println(r.asQuotedString()) ;
+            Node n = r.asNode() ;
+            String s = FmtUtils.stringForNode(n) ;
+            System.out.println(s) ;
+        } catch (ExprEvalException ex)
+        {
+            System.out.println("Exception: "+ex.getMessage()) ;
+            return ;
+        }
+        catch (ExprBuildException ex)
+        {
+            System.err.println("Build exception: "+ex.getMessage()) ;
+            return ;
+        }
+    }
+
+    public static void exprPrefix(String string, Binding binding)
+    {
+        try {
+            Expr expr = SSE.parseExpr(string) ;
+            eval(expr, binding) ;
+        }
+        catch (SSEParseException ex)
+        {
+            System.err.println("Parse error: "+ex.getMessage()) ;
+            return ;
+        }  
+    }
 }
 
 /*

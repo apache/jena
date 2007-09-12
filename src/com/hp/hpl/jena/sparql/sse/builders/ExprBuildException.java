@@ -8,7 +8,7 @@ package com.hp.hpl.jena.sparql.sse.builders;
 
 import com.hp.hpl.jena.sparql.sse.builders.BuildException;
 
-class ExprBuildException extends BuildException
+public class ExprBuildException extends BuildException
     {
 
 //        public OpBuildException(Throwable cause) { super(cause) ; }

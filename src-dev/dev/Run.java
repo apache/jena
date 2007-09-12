@@ -9,47 +9,46 @@ package dev;
 import arq.sparql;
 
 import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.QueryExecution;
-import com.hp.hpl.jena.query.QueryExecutionFactory;
-import com.hp.hpl.jena.query.QueryFactory;
-import com.hp.hpl.jena.query.ResultSetFormatter;
-import com.hp.hpl.jena.query.larq.IndexBuilderString;
-import com.hp.hpl.jena.query.larq.IndexLARQ;
-import com.hp.hpl.jena.query.larq.LARQ;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.util.FileManager;
+
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.binding.BindingMap;
-import com.hp.hpl.jena.sparql.expr.Expr;
 import com.hp.hpl.jena.sparql.expr.ExprNotComparableException;
 import com.hp.hpl.jena.sparql.expr.NodeValue;
 import com.hp.hpl.jena.sparql.sse.SSE;
 import com.hp.hpl.jena.sparql.util.DateTimeStruct;
-import com.hp.hpl.jena.util.FileManager;
+import com.hp.hpl.jena.sparql.util.ExprUtils;
+
+import com.hp.hpl.jena.query.*;
+import com.hp.hpl.jena.query.larq.IndexBuilderString;
+import com.hp.hpl.jena.query.larq.IndexLARQ;
+import com.hp.hpl.jena.query.larq.LARQ;
 
 
 public class Run
 {
     public static void main(String[] argv)
     {
+        if ( false )
         {
-        String DIR = "/home/afs/W3C/DataAccess/tests/data-r2/expr-equals/" ;
-        String []a1 = { "--strict", "--data="+DIR+"data-eq.ttl",
-          "--query="+DIR+"query-eq2-2.rq",
-          "--result="+DIR+"result-eq2-2.ttl"} ;
+            String DIR = "/home/afs/W3C/DataAccess/tests/data-r2/expr-equals/" ;
+            String []a1 = { "--strict", "--data="+DIR+"data-eq.ttl",
+                "--query="+DIR+"query-eq2-2.rq",
+                "--result="+DIR+"result-eq2-2.ttl"} ;
 
-        String []a2 = { "--strict", "--data="+DIR+"data-eq.ttl",
-            "--query="+DIR+"query-eq2-graph-1.rq",
-            "--result="+DIR+"result-eq2-graph-1.ttl"} ;
+            String []a2 = { "--strict", "--data="+DIR+"data-eq.ttl",
+                "--query="+DIR+"query-eq2-graph-1.rq",
+                "--result="+DIR+"result-eq2-graph-1.ttl"} ;
 
-        
-        arq.qtest.main(a1) ;
-        System.exit(0 ) ; 
+            arq.qtest.main(a1) ;
+            System.exit(0 ) ; 
         }
         
-        arq.qexpr.execAndReturn(new String[]{"'2007-09-12T10:11:12'^^xsd:dateTime = '2007-09-12T10:11:12+00:00'^^xsd:dateTime"}) ;
+        ExprUtils.expr("1+2+3") ;
+        ExprUtils.exprPrefix("(+ 1 (+ 4 12.56))") ;
         System.exit(0) ;
         
         String []a = { "--file=Q.arq", "--out=arq", "--print=op", "--print=query"} ;
@@ -69,12 +68,8 @@ public class Run
             System.out.println("*** Different") ;
     }
 
-    public static void expr(String expr)
-    {
-        String []a = new String[]{expr} ;
-        System.out.println("Eval: "+expr) ;
-        arq.qexpr.execAndReturn(a) ;
-    }
+    
+    
     
     public static void code()
     {
@@ -95,47 +90,11 @@ public class Run
         b.add(Var.alloc("x"), n1) ;
         b.add(Var.alloc("y"), n2) ;
 
-        expr("( < ?x ?y)", b) ;
-        expr("( = ?x ?y)", b) ;
-        expr("( = ?x ?x)", b) ;
-        expr("( = ?y ?y)", b) ;
+        ExprUtils.exprPrefix("( < ?x ?y)", b) ;
+        ExprUtils.exprPrefix("( = ?x ?y)", b) ;
+        ExprUtils.exprPrefix("( = ?x ?x)", b) ;
+        ExprUtils.exprPrefix("( = ?y ?y)", b) ;
     }
-    
-        
-    private static void expr(String string, Binding b)
-    {
-        Expr expr = SSE.parseExpr(string) ;
-        boolean rc = expr.isSatisfied(b, null) ;
-        System.out.print(string) ;
-        System.out.print(" ==> ") ;
-        System.out.println(rc) ;
-    }
-    
-//
-//    // Unused, untested
-//    private static boolean hasTZ(String lex)
-//    {
-//        int idx = "CCYY-MM-DDThh:mm:ss".length() ;
-//        
-//        if ( lex.charAt(idx) == '-' )
-//            idx ++ ;
-//        
-//        if ( lex.charAt(idx) == '.' )
-//        {
-//            // skip fractional seconds.
-//            int i = idx+1 ;
-//            for ( ; i<lex.length() ; i++ )
-//            {
-//                char ch = lex.charAt(i) ;
-//                if ( ! Character.isDigit(ch) )
-//                    break ;
-//            }
-//            idx = i ; 
-//        }
-//
-//        // Anything left is the timezone.
-//        return idx < lex.length() ;
-//    }
 
     private static void runQParse()
     {
