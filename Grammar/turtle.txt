@@ -5,6 +5,7 @@ NON-TERMINALS
 	parse	:=	( Statement )* <EOF>
 	Statement	:=	( Directive | TriplesSameSubject ) <DOT>
 	Directive	:=	<PREFIX> <PNAME_NS> IRI_REF
+		|	<BASE> IRI_REF
 // N3
 
 // ---- TRIPLES

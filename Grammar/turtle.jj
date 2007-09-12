@@ -61,6 +61,9 @@ void Directive() : { Token t ; String iri ; }
     <PREFIX> t = <PNAME_NS> iri = IRI_REF()
     { String s = fixupPrefix(t.image, t.beginLine, t.beginColumn) ;
       setPrefix(t.beginLine, t.beginColumn, s, iri) ; }
+ |
+    t = <BASE> iri = IRI_REF()
+    { setBase(iri, t.beginLine, t.beginColumn) ; }
 }
 
 // -------- PATH
@@ -128,7 +131,7 @@ Node Verb() : { Node p ; String iri ;}
    | <ARROW> 
       { p = nLogImplies ;
         if ( strictTurtle )
-          raiseException("=> (log:implies) not legal in Turtle",
+          throwParseException("=> (log:implies) not legal in Turtle",
                           token.beginLine, token.beginColumn ) ;
       }
     )

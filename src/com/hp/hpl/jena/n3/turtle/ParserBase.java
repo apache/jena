@@ -43,12 +43,21 @@ public class ParserBase
     
     public ParserBase() {}
     
-    
+    PrefixMapping prefixMapping = new PrefixMappingImpl() ;
     IRIResolver resolver = new IRIResolver() ;
     
     protected String getBaseURI()       { return resolver.getBaseIRI() ; }
-    public void setBaseURI(String u)    { resolver = new IRIResolver(u) ; }
-    PrefixMapping prefixMapping = new PrefixMappingImpl() ;
+    public void setBaseURI(String u)
+    {
+        resolver = new IRIResolver(u) ;
+    }
+    
+    protected void setBase(String iriStr , int line, int column)
+    {
+        // Already resolved.
+        setBaseURI(iriStr) ;
+    }
+    
     public PrefixMapping getPrefixMapping() { return prefixMapping ; }
     
     // label => bNode for construct templates patterns
@@ -159,18 +168,20 @@ public class ParserBase
         return resolveIRI(iriStr, line, column) ;
     }
     
-    protected String resolveIRI(String iriStr ,int line, int column)
+    protected String resolveIRI(String iriStr , int line, int column)
     {
         if ( isBNodeIRI(iriStr) )
             return iriStr ;
         
         if ( resolver != null )
-        {
-                try {
-                    iriStr = resolver.resolve(iriStr) ;
-                } catch (JenaURIException ex)
-                { throwParseException(ex.getMessage(), line, column) ; }
-        }
+            iriStr = _resolveIRI(iriStr, line, column) ;
+        return iriStr ;
+    }
+    
+    private String _resolveIRI(String iriStr , int line, int column)
+    {
+        try { iriStr = resolver.resolve(iriStr) ; }
+        catch (JenaURIException ex) { throwParseException(ex.getMessage(), line, column) ; }
         return iriStr ;
     }
     
