@@ -9,41 +9,32 @@ package dev;
 import arq.sparql;
 
 import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.query.Query;
+import com.hp.hpl.jena.query.QueryExecution;
+import com.hp.hpl.jena.query.QueryExecutionFactory;
+import com.hp.hpl.jena.query.QueryFactory;
+import com.hp.hpl.jena.query.ResultSetFormatter;
+import com.hp.hpl.jena.query.larq.IndexBuilderString;
+import com.hp.hpl.jena.query.larq.IndexLARQ;
+import com.hp.hpl.jena.query.larq.LARQ;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.util.FileManager;
-
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.binding.BindingMap;
 import com.hp.hpl.jena.sparql.expr.Expr;
 import com.hp.hpl.jena.sparql.expr.ExprNotComparableException;
 import com.hp.hpl.jena.sparql.expr.NodeValue;
-import com.hp.hpl.jena.sparql.expr.nodevalue.XSDFuncOp;
 import com.hp.hpl.jena.sparql.sse.SSE;
 import com.hp.hpl.jena.sparql.util.DateTimeStruct;
-
-import com.hp.hpl.jena.query.*;
-import com.hp.hpl.jena.query.larq.IndexBuilderString;
-import com.hp.hpl.jena.query.larq.IndexLARQ;
-import com.hp.hpl.jena.query.larq.LARQ;
+import com.hp.hpl.jena.util.FileManager;
 
 
 public class Run
 {
     public static void main(String[] argv)
     {
-        XSDFuncOp.strictDateTimeFO = true ;
-        String [] aa = {"'2007-09-12'^^xsd:date = '2007-09-12Z'^^xsd:date"} ;
-        arq.qexpr.main(aa) ;
-        aa = new String[]{"'2007-09-12T10:11:12'^^xsd:dateTime = '2007-09-12T10:11:12+00:00'^^xsd:dateTime"} ;
-        arq.qexpr.main(aa) ;
-        
-        
-        
-        
-        
-        
+        arq.qexpr.execAndReturn(new String[]{"'2007-09-12T10:11:12'^^xsd:dateTime = '2007-09-12T10:11:12+00:00'^^xsd:dateTime"}) ;
         System.exit(0) ;
         
         String []a = { "--file=Q.arq", "--out=arq", "--print=op", "--print=query"} ;

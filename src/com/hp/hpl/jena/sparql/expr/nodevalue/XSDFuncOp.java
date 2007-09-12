@@ -571,6 +571,11 @@ public class XSDFuncOp
     //  dateTimeCompare
     // works for dates as well because they are implemented as dateTimes on their start point.
 
+    /**
+     * Under strict F&O, dateTimes and dates with no timezone have one magcially applied. This default tiemzoine is impementation dependent and can lead to different answers to queries depending on the timezone. Normally, ARQ uses XMLSchema dateTime comparions, which an yield "indeterminate", which in turn is an evaluation error. F&O insists on true/false so can lkead to false positves and negatives. 
+     */
+    public static boolean strictDateTimeFO = false ;
+
     public static int compareDateTime(NodeValue nv1, NodeValue nv2)
     { 
         if ( strictDateTimeFO )
@@ -585,17 +590,6 @@ public class XSDFuncOp
         return compareXSDDateTime(nv1.getDate(), nv2.getDate()) ;
     }
 
-    /** Under strict F&O, dateTimes and dates with no timezone have one magcially applied.
-     *   This default tiemzoine is impementation dependent and can lead to different
-     *   answers to queries depending on the timezone.
-     *   
-     *   Normally, ARQ uses XMLSchema dateTime comparions, which an yield "indeterminate",
-     *   which in turn is an evaluation error.
-     *   
-     *   F&O insists on true/false so can lkead to false positves and negatives. 
-     */ 
-    public static boolean strictDateTimeFO = false ;
-    
     public static String defaultTimezone = "Z" ;
     
     private static int compareDateTimeFO(NodeValue nv1, NodeValue nv2)

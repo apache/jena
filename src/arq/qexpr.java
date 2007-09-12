@@ -122,7 +122,7 @@ public class qexpr
         boolean quiet = cl.contains(quietDecl) ;
 
         if ( cl.contains(strictDecl) )
-            ARQ.getContext().set(ARQ.extensionValueTypes, false) ; 
+            ARQ.setStrictMode() ;
         
         boolean actionCopySubstitute = cl.contains(reduceDecl) ;
         boolean actionPrintPrefix = false ;

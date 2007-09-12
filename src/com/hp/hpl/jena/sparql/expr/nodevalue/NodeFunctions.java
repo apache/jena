@@ -68,7 +68,7 @@ public class NodeFunctions
     public static NodeValue rdfTermEquals(NodeValue nv1, NodeValue nv2)
     { return NodeValue.booleanReturn(rdfTermEquals(nv1.asNode(), nv2.asNode())) ; }
     
-    // Exactl as defined by SPARQl spec.
+    // Exact as defined by SPARQL spec.
     public static boolean rdfTermEquals(Node n1, Node n2)
     { 
         if ( n1.equals(n2) )
