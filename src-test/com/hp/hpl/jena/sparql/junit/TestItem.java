@@ -110,7 +110,7 @@ public class TestItem
     public String getName() { return name ; }
     public String getURI()
     { 
-        if ( testResource.isURIResource() )
+        if ( testResource != null && testResource.isURIResource() )
             return testResource.getURI();
         return fakeURI() ;
     }

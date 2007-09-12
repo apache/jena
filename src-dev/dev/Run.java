@@ -34,6 +34,21 @@ public class Run
 {
     public static void main(String[] argv)
     {
+        {
+        String DIR = "/home/afs/W3C/DataAccess/tests/data-r2/expr-equals/" ;
+        String []a1 = { "--strict", "--data="+DIR+"data-eq.ttl",
+          "--query="+DIR+"query-eq2-2.rq",
+          "--result="+DIR+"result-eq2-2.ttl"} ;
+
+        String []a2 = { "--strict", "--data="+DIR+"data-eq.ttl",
+            "--query="+DIR+"query-eq2-graph-1.rq",
+            "--result="+DIR+"result-eq2-graph-1.ttl"} ;
+
+        
+        arq.qtest.main(a1) ;
+        System.exit(0 ) ; 
+        }
+        
         arq.qexpr.execAndReturn(new String[]{"'2007-09-12T10:11:12'^^xsd:dateTime = '2007-09-12T10:11:12+00:00'^^xsd:dateTime"}) ;
         System.exit(0) ;
         
