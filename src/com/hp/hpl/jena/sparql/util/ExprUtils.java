@@ -263,14 +263,14 @@ public class ExprUtils
         }
     }
     
-    // Command line evaluation
+    // --- Debugging : evaluate and print
     
     public static void expr(String exprStr) { expr(exprStr, null) ; }
     public static void expr(String exprStr, Binding binding)
     {
         try {
             Expr expr = ExprUtils.parse(exprStr, ARQConstants.getGlobalPrefixMap()) ;
-            eval(expr, binding) ;
+            evalPrint(expr, binding) ;
         }
         catch (QueryParseException ex)
         {
@@ -284,7 +284,7 @@ public class ExprUtils
         exprPrefix(exprStr, null) ;
     }
 
-    public static void eval(Expr expr, Binding binding) // throws exceptions
+    public static void evalPrint(Expr expr, Binding binding)
     {
         try {
             ARQ.getContext().set(ARQConstants.sysCurrentTime, NodeFactory.nowAsDateTime()) ;
@@ -310,7 +310,7 @@ public class ExprUtils
     {
         try {
             Expr expr = SSE.parseExpr(string) ;
-            eval(expr, binding) ;
+            evalPrint(expr, binding) ;
         }
         catch (SSEParseException ex)
         {
