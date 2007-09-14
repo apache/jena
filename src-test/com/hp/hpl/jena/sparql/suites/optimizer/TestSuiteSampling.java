@@ -7,36 +7,21 @@ package com.hp.hpl.jena.sparql.suites.optimizer;
 
 import junit.framework.*;
 
-/**
- * All the ARQo tests 
- * @author Markus Stocker
- * @version $Id$
- */
-
-public class OptimizerTestSuite extends TestSuite
+public class TestSuiteSampling extends TestSuite
 {    
     static public TestSuite suite()
     {
-        TestSuite ts = new OptimizerTestSuite() ;
- 
-        // This test has to be executed first, or the test suite has to assure that the optimizer is enabled per default first
-        ts.addTest(TestEnabled.suite()) ;
-        ts.addTest(TestConfig.suite()) ;
-        ts.addTest(TestAPI.suite()) ;
-        ts.addTest(TestData.suite()) ;
-        ts.addTest(TestIndex.suite()) ;
-        ts.addTest(TestPrimeNumberGen.suite()) ;
-        ts.addTest(TestSuiteGraph.suite()) ;
-        ts.addTest(TestSuiteHeuristic.suite()) ;
-        ts.addTest(TestSuiteProbability.suite()) ;
-        ts.addTest(TestSuiteSampling.suite()) ;
+        TestSuite ts = new TestSuiteSampling() ;
+
+        ts.addTest(TestSamplingStatic.suite()) ;
+        ts.addTest(TestSamplingDynamic.suite()) ;
         
         return ts ;
     }
 
-	private OptimizerTestSuite()
+	private TestSuiteSampling()
 	{
-        super("Optimizer");
+        super("TestSuiteSampling");
 	}
 }
 

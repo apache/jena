@@ -23,7 +23,6 @@ public class Vocabulary
 	 * The ARQo name space, 
 	 * http://jena.hpl.hp.com/ARQo# */
 	public static final String URI = Constants.arqOptimizerNS ;
-
 	/** 
 	 * Property for manually specified heuristics, 
 	 * http://jena.hpl.hp.com/ARQo#heuristic */
@@ -86,21 +85,6 @@ public class Vocabulary
 	 * Property to flag if the BGP is enabled and running,
 	 * http://jena.hpl.hp.com/ARQo#isEnabled */
 	public static final Property isEnabled = property("isEnabled") ;
-	/**
-	 * The class of SEI resources, 
-	 * http://jena.hpl.hp.com/ARQo#SEI 
-	 * @deprecated */
-	public static final Resource SEI = resource("SEI") ;
-    /**
-     * The class of QPI resources, 
-     * http://jena.hpl.hp.com/ARQo#QPI 
-     * @deprecated */
-	public static final Resource QPI = resource("QPI") ;
-	/**
-	 * The class of PI resources, 
-	 * http://jena.hpl.hp.com/ARQo#PI 
-	 * @deprecated */
-	public static final Resource PI = resource("PI") ;
 	/**
 	 * The class of PF resources,
 	 * http://jena.hpl.hp.com/ARQo#PF */

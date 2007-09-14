@@ -223,6 +223,11 @@ public class ProbabilityDataModel extends ProbabilityBase
 				// The min probability should not be constrained
 				this.minProbability = Double.MIN_VALUE ;
 		}
+		
+		if (dataModel != null)
+			isLoaded = true ;
+		else
+			log.debug("The probabilistic data model requires the model of the ontology") ;
 	}
 }
 

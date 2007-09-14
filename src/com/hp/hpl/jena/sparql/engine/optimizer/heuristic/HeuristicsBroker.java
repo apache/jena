@@ -48,7 +48,7 @@ public class HeuristicsBroker
 		if (probability != null)
 			return getBasicPatternHeuristic(HeuristicsRegistry.BGP_PROBABILISTIC_FRAMEWORK) ;
 		
-		if (graph.getStatisticsHandler() != null)
+		if (graph != null && graph.getStatisticsHandler() != null)
 			return getBasicPatternHeuristic(HeuristicsRegistry.BGP_GRAPH_STATISTICS_HANDLER) ;
 		
 		// Default, use the variable counting heuristic

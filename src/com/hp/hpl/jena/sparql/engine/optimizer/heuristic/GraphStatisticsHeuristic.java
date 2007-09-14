@@ -33,6 +33,12 @@ public class GraphStatisticsHeuristic extends HeuristicBasicPattern
 	
 	public GraphStatisticsHeuristic(Graph graph)
 	{
+		if (graph == null)
+		{
+			log.debug("The graph statistics handler requires the model of the ontology (use variable counting instead)") ;
+			return ;
+		}
+		
 		this.size = graph.size() ;
 		this.minCost = 1d / size ;
 		this.graphStatisticsHandler = graph.getStatisticsHandler() ;

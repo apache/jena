@@ -20,6 +20,7 @@ import com.hp.hpl.jena.sparql.engine.optimizer.probability.IndexLevel;
 
 public class Config 
 {
+	private double samplingFactor = 1.0 ;
 	private int indexLevel = IndexLevel.FULL ;
 	private Set exProperty = new HashSet() ;
 	private String basicPatternHeuristic = null ;
@@ -91,6 +92,26 @@ public class Config
 		this.indexLevel = indexLevel ;
 		this.exProperty = exProperty ;
 	}
+	
+	/**
+	 * Set the sampling factor which is a value of the
+	 * intervall [0,1] and represents the percentage
+	 * of the ontology used for index.
+	 * 
+	 * NOT YET IMPLEMENTED, setting this will not have any effect!
+	 * 
+	 * @param double
+	 */
+	public void setSamplingFactor(double samplingFactor)
+	{ this.samplingFactor = samplingFactor ; }
+	
+	/**
+	 * Return the sampling factor.
+	 * 
+	 * @return double
+	 */
+	public double getSamplingFactor()
+	{ return samplingFactor ; }
 	
 	/**
 	 * Set the index level. Use the static fields of IndexLevel

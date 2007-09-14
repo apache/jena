@@ -26,10 +26,6 @@ public class Constants
 	public static final String joinTypeNS  = "http://jena.hpl.hp.com/ARQo/join#" ;
 	/** The localhost name space */
 	public static final String localhostNS = "http://localhost/#" ;
-	/** @deprecated The QPI Symbol used for the ARQ context */
-	public static final Symbol QPI = ARQConstants.allocSymbol(Vocabulary.QPI.getURI()) ;
-	/** @deprecated The SEI Symbol used for the ARQ context */
-	public static final Symbol SEI = ARQConstants.allocSymbol(Vocabulary.SEI.getURI()) ;
 	/** Check flag if the BGP optimizer is enabled */
 	public static final Symbol isEnabled = ARQConstants.allocSymbol(Vocabulary.isEnabled.getURI()) ;
 	/** The Probabilistic Framework Symbol used for the ARQ context */

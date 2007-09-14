@@ -82,7 +82,7 @@ public class ProbabilityDefaultModel implements Probability
 	 * @param config
 	 */
 	public void load(Model dataModel, Model indexModel, Config config)
-	{		
+	{
 		probabilityDataModel.load(dataModel, indexModel, config) ;
 		probabilityIndexModel.load(dataModel, indexModel, config) ;
 	}
@@ -125,7 +125,10 @@ public class ProbabilityDefaultModel implements Probability
 	 */
 	public double getProbability(Resource resource)
 	{
-		double p = probabilityDataModel.getProbability(resource) ;
+		double p = -1 ;
+
+		if (probabilityDataModel.isLoaded())
+			p = probabilityDataModel.getProbability(resource) ;
 		
 		if (p < 0)
 			p = probabilityIndexModel.getProbability(resource) ;
@@ -152,7 +155,10 @@ public class ProbabilityDefaultModel implements Probability
 	 */
 	public double getProbability(Property property)
 	{
-		double p = probabilityDataModel.getProbability(property) ;
+		double p = -1;
+		
+		if (probabilityDataModel.isLoaded())
+			p = probabilityDataModel.getProbability(property) ;
 		
 		if (p < 0)
 			p = probabilityIndexModel.getProbability(property) ;
@@ -181,7 +187,10 @@ public class ProbabilityDefaultModel implements Probability
 	 */
 	public double getProbability(Triple triple)
 	{		
-		double p = probabilityDataModel.getProbability(triple) ;
+		double p = -1 ;
+		
+		if (probabilityDataModel.isLoaded())
+			p = probabilityDataModel.getProbability(triple) ;
 		
 		if (p < 0)
 			p = probabilityIndexModel.getProbability(triple) ;

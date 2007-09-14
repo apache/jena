@@ -5,7 +5,7 @@
 
 # ---------------------------------------------
 # This test cases are based on the dataset
-# data/ontology/Test-data.n3
+# testing/Optimizer/Test-data.n3
 # 	
 # Author: Markus Stocker
 # Version: $Id$

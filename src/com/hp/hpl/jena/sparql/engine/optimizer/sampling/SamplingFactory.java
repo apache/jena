@@ -3,42 +3,54 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.suites.optimizer;
+package com.hp.hpl.jena.sparql.engine.optimizer.sampling;
 
-import junit.framework.*;
+import com.hp.hpl.jena.graph.Graph;
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.sparql.engine.optimizer.sampling.impl.RandomSampling;
 
 /**
- * All the ARQo tests 
+ * The factory is the main entry point to use sampling 
+ * techniques and, thus, given a Jena graph model sample
+ * it according to specific sampling techniques and
+ * a sampling percentage.
+ * 
+ * Sampling is a transformation function on Jena graph models.
+ * Such functions have to be implemented and are subclasses
+ * of SamplingBase, hence, they need to implement the 
+ * Sampling interface.
+ * 
  * @author Markus Stocker
  * @version $Id$
  */
 
-public class OptimizerTestSuite extends TestSuite
-{    
-    static public TestSuite suite()
-    {
-        TestSuite ts = new OptimizerTestSuite() ;
- 
-        // This test has to be executed first, or the test suite has to assure that the optimizer is enabled per default first
-        ts.addTest(TestEnabled.suite()) ;
-        ts.addTest(TestConfig.suite()) ;
-        ts.addTest(TestAPI.suite()) ;
-        ts.addTest(TestData.suite()) ;
-        ts.addTest(TestIndex.suite()) ;
-        ts.addTest(TestPrimeNumberGen.suite()) ;
-        ts.addTest(TestSuiteGraph.suite()) ;
-        ts.addTest(TestSuiteHeuristic.suite()) ;
-        ts.addTest(TestSuiteProbability.suite()) ;
-        ts.addTest(TestSuiteSampling.suite()) ;
-        
-        return ts ;
-    }
-
-	private OptimizerTestSuite()
+public class SamplingFactory 
+{
+	/**
+	 * Return the sampled graph using the default sampling method.
+	 * 
+	 * @param model
+	 * @param factor
+	 * @return Sampling
+	 */
+	public static Graph defaultSamplingMethod(Model model, double factor)
+	{ return defaultSamplingMethod(model.getGraph(), factor) ; }
+	
+	/**
+	 * Return the sampled graph using the default sampling method.
+	 * 
+	 * @param graph
+	 * @param factor
+	 * @return Sampling
+	 */
+	public static Graph defaultSamplingMethod(Graph graph, double factor)
 	{
-        super("Optimizer");
+		Sampling sampling = new RandomSampling(graph, factor) ;
+		
+		return sampling.sample() ;
 	}
 }
+
 
 /*
  *  (c) Copyright 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP

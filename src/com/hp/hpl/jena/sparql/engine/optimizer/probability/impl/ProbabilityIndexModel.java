@@ -489,6 +489,8 @@ public class ProbabilityIndexModel extends ProbabilityBase
 				this.minJoinedProbability = Double.MIN_VALUE ;
 			}
 		}
+		
+		isLoaded = true ;
 	}
 }
 

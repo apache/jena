@@ -1,0 +1,75 @@
+@prefix dc:		<http://purl.org/dc/elements/1.1/> .
+@prefix rdf:	<http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix :		<http://www.w3.org/2006/03/test-description#> .
+
+# ---------------------------------------------
+# This test cases are based on the dataset
+# testing/Optimizer/Test-data.n3
+# 	
+# Author: Markus Stocker
+# Version: $Id$
+# ---------------------------------------------
+
+<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TK001> 
+	rdf:type 	:TestCase ;
+	dc:title 	"TK001" ;
+	:method		"RANDOM_SAMPLING" ;
+	:factor		1.0 ;
+	:size		37 .
+	
+<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TK002> 
+	rdf:type 	:TestCase ;
+	dc:title 	"TK002" ;
+	:method		"RANDOM_SAMPLING" ;
+	:factor		0.0 ;
+	:size		0 .
+	
+<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TK003> 
+	rdf:type 	:TestCase ;
+	dc:title 	"TK003" ;
+	:method		"RANDOM_SAMPLING" ;
+	:factor		0.1 ;
+	:size		3 .
+	
+<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TK004> 
+	rdf:type 	:TestCase ;
+	dc:title 	"TK004" ;
+	:method		"RANDOM_SAMPLING" ;
+	:factor		0.11 ;
+	:size		4 .
+	
+<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TK005> 
+	rdf:type 	:TestCase ;
+	dc:title 	"TK005" ;
+	:method		"RANDOM_SAMPLING" ;
+	:factor		0.5 ;
+	:size		18 .
+
+<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TK006> 
+	rdf:type 	:TestCase ;
+	dc:title 	"TK006" ;
+	:method		"RANDOM_SAMPLING" ;
+	:factor		0.2 ;
+	:size		7 .
+	
+<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TK007> 
+	rdf:type 	:TestCase ;
+	dc:title 	"TK007" ;
+	:method		"RANDOM_SAMPLING" ;
+	:factor		0.99 ;
+	:size		36 .
+	
+<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TK008> 
+	rdf:type 	:TestCase ;
+	dc:title 	"TK008" ;
+	:method		"RANDOM_SAMPLING" ;
+	:factor		0 ;
+	:size		0 .
+	
+<http://www.hpl.hp.com/jena/sparql/engine/optimizer/test/#TK009> 
+	rdf:type 	:TestCase ;
+	dc:title 	"TK009" ;
+	:method		"RANDOM_SAMPLING" ;
+	:factor		1 ;
+	:size		37 .
+				      			    			  				      			  			      			  		      			  				      			  

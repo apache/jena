@@ -173,6 +173,19 @@ public class Optimizer
 	}
 	
 	/**
+	 * Create and return the Jena model of the specialized RDF index
+	 * required for the probabilistic index model.
+	 * 
+	 * @param data
+	 * @param config
+	 * @return Model
+	 */
+	public static Model index(Graph data, Config config)
+	{
+		return ProbabilityFactory.createIndex(data, config) ;
+	}
+	
+	/**
 	 * Explain the optimization performed on a query
 	 * 
 	 * @param model
@@ -211,10 +224,10 @@ public class Optimizer
 	 */
 	public static String explain(Context context, Model model, Query query, Config config)
 	{
+		Graph graph = null ;
 		String left = "| " ;
 		String sep = " | " ;
 		StringBuffer out = new StringBuffer() ;
-		Graph graph = model.getGraph() ;
 		List rowsTable1 = new ArrayList() ; // List<List>
 		List rowsTable2 = new ArrayList() ; // List<List>
 		PrefixMapping prefix = query.getPrefixMapping() ;
@@ -222,6 +235,9 @@ public class Optimizer
 		Element el = query.getQueryPattern() ;
 		Op op = Algebra.compile(el) ;
 		OpWalker.walk(op, visitor) ;
+		
+		if (model != null)
+			graph = model.getGraph() ;
 	
 	    // The list of BGP defined in the query
 	    List patterns = visitor.getPatterns() ; // List<BasicPattern>

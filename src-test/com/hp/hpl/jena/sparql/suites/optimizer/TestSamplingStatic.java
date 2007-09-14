@@ -7,37 +7,56 @@ package com.hp.hpl.jena.sparql.suites.optimizer;
 
 import junit.framework.*;
 
+import com.hp.hpl.jena.graph.Graph;
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.sparql.suites.optimizer.Util;
+import com.hp.hpl.jena.sparql.engine.optimizer.sampling.SamplingFactory;
+
 /**
- * All the ARQo tests 
+ * Some static tests for sampling techniques (e.g. isomorph test for
+ * sampling of 100%)
+ * 
  * @author Markus Stocker
  * @version $Id$
  */
 
-public class OptimizerTestSuite extends TestSuite
-{    
-    static public TestSuite suite()
-    {
-        TestSuite ts = new OptimizerTestSuite() ;
- 
-        // This test has to be executed first, or the test suite has to assure that the optimizer is enabled per default first
-        ts.addTest(TestEnabled.suite()) ;
-        ts.addTest(TestConfig.suite()) ;
-        ts.addTest(TestAPI.suite()) ;
-        ts.addTest(TestData.suite()) ;
-        ts.addTest(TestIndex.suite()) ;
-        ts.addTest(TestPrimeNumberGen.suite()) ;
-        ts.addTest(TestSuiteGraph.suite()) ;
-        ts.addTest(TestSuiteHeuristic.suite()) ;
-        ts.addTest(TestSuiteProbability.suite()) ;
-        ts.addTest(TestSuiteSampling.suite()) ;
-        
-        return ts ;
-    }
-
-	private OptimizerTestSuite()
+public class TestSamplingStatic extends TestCase
+{
+	private static Graph graph ;
+	private static Model model ;
+	private static final String testDataFileName = "testing/Optimizer/Test-data.n3" ;
+	
+	public TestSamplingStatic(String title)
 	{
-        super("Optimizer");
+		super(title) ;
 	}
+	
+	public void testIsomorphism()
+	{
+		Graph g = SamplingFactory.defaultSamplingMethod(model, 1.0) ;
+		assertTrue(g.isIsomorphicWith(graph) == true) ;
+	}
+	
+	public void testEmpty()
+	{
+		Graph g = SamplingFactory.defaultSamplingMethod(model, 0.0) ;
+		assertTrue(g.isEmpty() == true) ;
+	}
+	
+	// Build the test suite
+	public static Test suite()
+    {
+        TestSuite ts = new TestSuite("TestSamplingStatic") ;
+		
+	    model = Util.readModel(testDataFileName) ;
+	    graph = model.getGraph() ;
+	    
+        // Some static tests
+        ts.addTest(new TestSamplingStatic("testIsomorphism")) ;
+        ts.addTest(new TestSamplingStatic("testEmpty")) ;
+        
+		return ts ;
+    }
 }
 
 /*

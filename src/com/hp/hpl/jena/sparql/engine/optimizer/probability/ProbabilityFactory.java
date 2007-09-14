@@ -120,6 +120,18 @@ public class ProbabilityFactory
 	
 	/**
 	 * Create and return the full specialized Jena model of the index
+	 * required for the probabilistic framework. 
+	 * 
+	 * @param dataGraph
+	 * @return Model
+	 */
+	public static Model createIndex(Graph dataGraph, Config config)
+	{
+		return createIndex(ModelFactory.createModelForGraph(dataGraph), config) ;
+	}
+	
+	/**
+	 * Create and return the full specialized Jena model of the index
 	 * required for the probabilistic framework. The index level 1 is
 	 * used.
 	 * 

@@ -3,42 +3,39 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.suites.optimizer;
+package com.hp.hpl.jena.sparql.engine.optimizer.sampling;
 
-import junit.framework.*;
+import com.hp.hpl.jena.graph.Graph;
+import com.hp.hpl.jena.graph.Triple;
 
 /**
- * All the ARQo tests 
+ * Interface for sampling techniques. The interface is implemented by SamplingBase.
+ * 
  * @author Markus Stocker
  * @version $Id$
  */
 
-public class OptimizerTestSuite extends TestSuite
-{    
-    static public TestSuite suite()
-    {
-        TestSuite ts = new OptimizerTestSuite() ;
- 
-        // This test has to be executed first, or the test suite has to assure that the optimizer is enabled per default first
-        ts.addTest(TestEnabled.suite()) ;
-        ts.addTest(TestConfig.suite()) ;
-        ts.addTest(TestAPI.suite()) ;
-        ts.addTest(TestData.suite()) ;
-        ts.addTest(TestIndex.suite()) ;
-        ts.addTest(TestPrimeNumberGen.suite()) ;
-        ts.addTest(TestSuiteGraph.suite()) ;
-        ts.addTest(TestSuiteHeuristic.suite()) ;
-        ts.addTest(TestSuiteProbability.suite()) ;
-        ts.addTest(TestSuiteSampling.suite()) ;
-        
-        return ts ;
-    }
-
-	private OptimizerTestSuite()
-	{
-        super("Optimizer");
-	}
+public interface Sampling 
+{
+	/**
+	 * This method is implemented by the abstract SamplingBase class
+	 * providing the iteration logic over the graph to produce the sample.
+	 * 
+	 * @return Graph
+	 */
+	public Graph sample() ;
+	
+	/**
+	 * Return the next triple of the sampling process.
+	 * The method is implemented by specific sampling techniques
+	 * who have to decide how to select the next triple to
+	 * add to the sampled graph.
+	 * 
+	 * @return Triple
+	 */
+	public Triple getNextTriple() ;
 }
+
 
 /*
  *  (c) Copyright 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP

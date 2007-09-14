@@ -100,7 +100,7 @@ public class Histogram
 	{
 		// Get the node hash code, calculate it's lower bound and get the histogram class
 		Double element = toElement(node) ;
-		
+
 		// Look for the element only if it fits in the histogram boundaries
 		if (element.doubleValue() >= lowerBound && element.doubleValue() <= upperBound)
 		{

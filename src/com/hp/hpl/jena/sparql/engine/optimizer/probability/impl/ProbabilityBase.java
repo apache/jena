@@ -39,6 +39,8 @@ public abstract class ProbabilityBase implements Probability
 	protected Selectivity selectivity = null ;
 	/* The Jena graph of the ontology */
 	protected Graph dataGraph = null ;
+	/* Flag to check whether or not the framework is loaded */
+	protected boolean isLoaded = false ;
 	/* The Jena graph statistics handler for accurate size information about SPO */
 	protected GraphStatisticsHandler graphStatisticsHandler = null ;
 	
@@ -49,6 +51,9 @@ public abstract class ProbabilityBase implements Probability
 	 */
 	public void create(Model dataModel) 
 	{ 
+		if (dataModel == null)
+			return ;
+		
 		this.dataModel = dataModel ;
 		this.dataGraph = dataModel.getGraph();
 		this.dataGraphSize = getSize(dataModel) ;
@@ -64,6 +69,9 @@ public abstract class ProbabilityBase implements Probability
 	 */
 	public void load(Model dataModel) 
 	{		
+		if (dataModel == null)
+			return ;
+		
 		this.dataModel = dataModel ;
 		this.dataGraph = dataModel.getGraph() ;
 		this.dataGraphSize = dataGraph.size() ;
@@ -143,6 +151,15 @@ public abstract class ProbabilityBase implements Probability
 	 */
 	public long getSquaredDataGraphSize() 
 	{ return squaredDataGraphSize ; }
+	
+	/**
+	 * Returns true if the probabilistic framework is loaded
+	 * 
+	 * @return boolean
+	 */
+	public boolean isLoaded()
+	{ return isLoaded ; }
+
 	
 	/*
 	 * The probability for a triple with SPO, modeled as 
