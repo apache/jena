@@ -130,12 +130,6 @@ public class sdbprint extends CmdArgsDB
             query.serialize(System.out, Syntax.syntaxARQ) ;
         }
         
-        if ( printPrefix )
-        {
-            divider() ;
-            query.serialize(System.out, Syntax.syntaxPrefix) ;
-        }
-
         QueryEngineSDB qe = new QueryEngineSDB(store, query) ;
         Op op = qe.getOp() ;
 

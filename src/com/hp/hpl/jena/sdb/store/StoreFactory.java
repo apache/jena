@@ -102,7 +102,7 @@ public class StoreFactory
         if ( sdb == null && desc.connDesc == null )
             desc.connDesc = SDBConnectionDesc.none() ;
 
-        if ( desc.connDesc.getType() == null && desc.getDbType() != null )
+        if ( sdb == null && desc.connDesc.getType() == null && desc.getDbType() != null )
             desc.connDesc.setType(desc.getDbType().getName()) ;
         
         if ( sdb == null && desc.connDesc != null)

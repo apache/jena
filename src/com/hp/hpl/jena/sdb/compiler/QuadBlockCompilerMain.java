@@ -64,8 +64,15 @@ public class QuadBlockCompilerMain implements QuadBlockCompiler
         
         // Insert DISTINCT if accessing the RDF merge of all named graphs.
         // An RDF Merge is the DISTINCT results of query over the union of all graphs.
-        // XXX
         // Or in TransformSDB
+
+        boolean needDistinct = false ;
+        if ( quads.getGraphNode().equals(Quad.unionGraph) )
+            needDistinct = true ;
+//        if ( needDistinct )
+//            sqlNode = new SqlDistinct(sqlNode) ;
+        
+
         
         return sqlNode ;
     }

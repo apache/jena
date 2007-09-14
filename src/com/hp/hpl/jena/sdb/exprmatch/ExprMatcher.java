@@ -156,7 +156,7 @@ class MatchVisitor implements ExprVisitor
      * 2/ Invoke default action. 
      */
     
-    public void visit(NodeVar patternVar)
+    public void visit(ExprVar patternVar)
     {
         Var vn = patternVar.asVar() ;
         Action a = aMap.get(vn) ; 

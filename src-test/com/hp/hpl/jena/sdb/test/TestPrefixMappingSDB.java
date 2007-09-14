@@ -8,7 +8,6 @@ package com.hp.hpl.jena.sdb.test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import junit.framework.JUnit4TestAdapter;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -26,10 +25,10 @@ public class TestPrefixMappingSDB
     static final String hsql = "jdbc:hsqldb:mem:aname" ;
     static final String defaultPrefixURI  = "" ; //"urn:x-sdb:prefifdefault" ;
 
-    public static junit.framework.Test suite() { 
-        return new JUnit4TestAdapter(TestPrefixMappingSDB.class); 
-    }
-    
+//    public static junit.framework.Test suite() { 
+//        return new JUnit4TestAdapter(TestPrefixMappingSDB.class); 
+//    }
+//    
     static SDBConnection sdb = null ;
     
     @BeforeClass

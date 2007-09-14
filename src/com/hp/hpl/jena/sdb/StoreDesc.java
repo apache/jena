@@ -10,9 +10,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.assembler.assemblers.AssemblerBase;
-import com.hp.hpl.jena.sparql.util.GraphUtils;
 import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.sdb.assembler.AssemblerVocab;
 import com.hp.hpl.jena.sdb.shared.Env;
@@ -21,6 +19,7 @@ import com.hp.hpl.jena.sdb.sql.SDBConnectionDesc;
 import com.hp.hpl.jena.sdb.store.DatabaseType;
 import com.hp.hpl.jena.sdb.store.FeatureSet;
 import com.hp.hpl.jena.sdb.store.LayoutType;
+import com.hp.hpl.jena.sparql.util.GraphUtils;
 
 
 public class StoreDesc
@@ -43,9 +42,9 @@ public class StoreDesc
     public static StoreDesc read(String filename)
     {
         Model m = Env.fileManager().loadModel(filename) ;
-        return worker(m) ;
+        return read(m) ;
     }
-        
+    
     public StoreDesc(String layoutName, String dbTypeName)
     {
         this(layoutName, dbTypeName, null) ;
@@ -76,17 +75,16 @@ public class StoreDesc
         this.layout = layout ;
     }
 
-    private static StoreDesc extract(Model m)
-    {
-        Model mDup = ModelFactory.createDefaultModel() ;
-        return worker(mDup) ;
-    }
-
-    private static StoreDesc worker(Model m)
+    public static StoreDesc read(Model m)
     {
         Resource r = GraphUtils.getResourceByType(m, AssemblerVocab.StoreAssemblerType) ;
         if ( r == null )
             throw new SDBException("Can't find store description") ;
+        return read(r) ;
+    }
+
+    public static StoreDesc read(Resource r)
+    {
         return (StoreDesc)AssemblerBase.general.open(r) ;
     }
 
