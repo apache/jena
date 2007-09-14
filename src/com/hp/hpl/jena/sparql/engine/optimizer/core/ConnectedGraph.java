@@ -402,9 +402,7 @@ public class ConnectedGraph
 			}
 		}
 		
-		log.error("No edge found which conntects to previous nodes in the QEP, return null") ;
-		
-		return null ;
+		throw new NullPointerException("FATAL. No edge found which connects to previous nodes in the QEP") ;
 	}
 	
 	// The class implements a comparator to sort edges according to the total cost
