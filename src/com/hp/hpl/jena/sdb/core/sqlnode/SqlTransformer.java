@@ -67,6 +67,9 @@ public class SqlTransformer
             stack.push(p) ;
         }
 
+        public void visit(SqlDistinct sqlDistinct)
+        { visit1(sqlDistinct) ; }
+
         public void visit(SqlRestrict sqlRestrict)
         { visit1(sqlRestrict) ; }
         

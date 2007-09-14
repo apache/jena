@@ -56,6 +56,7 @@ public class GenerateSQLVisitor implements SqlNodeVisitor
     { this.out = out ; }
     
     public void visit(SqlProject sqlNode)   { shouldNotSee(sqlNode) ; }
+    public void visit(SqlDistinct sqlNode)  { shouldNotSee(sqlNode) ; }
     public void visit(SqlRestrict sqlNode)  { shouldNotSee(sqlNode) ; }
     public void visit(SqlSlice sqlNode)     { shouldNotSee(sqlNode) ; }
     public void visit(SqlRename sqlNode)    { shouldNotSee(sqlNode) ; }

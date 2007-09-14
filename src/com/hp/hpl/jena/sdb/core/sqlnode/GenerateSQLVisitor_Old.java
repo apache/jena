@@ -54,6 +54,11 @@ public class GenerateSQLVisitor_Old implements SqlNodeVisitor
     public GenerateSQLVisitor_Old(IndentedWriter out)
     { this.out = out ; }
     
+    public void visit(SqlDistinct sqlDistinct)
+    {
+        throw new SDBNotImplemented("visit(SqlDistinct)") ;
+    }
+
     public void visit(SqlProject sqlNode)
     {
         out.print("SELECT ") ;

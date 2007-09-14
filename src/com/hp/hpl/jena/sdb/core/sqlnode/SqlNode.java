@@ -28,11 +28,15 @@ public interface SqlNode extends Printable, Annotations
 
     public boolean              isCoalesce() ;
     public SqlCoalesce          asCoalesce() ;
+    
     public boolean              isRestrict() ;                // isSelect is confusing
     public SqlRestrict          asRestrict() ;
     
     public boolean              isProject() ;
     public SqlProject           asProject() ;
+    
+    public boolean              isDistinct() ;
+    public SqlDistinct          asDistinct() ;
     
     public boolean              isTable() ;
     public SqlTable             asTable() ;

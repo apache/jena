@@ -1,46 +1,66 @@
 /*
- * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
 package com.hp.hpl.jena.sdb.core.sqlnode;
 
-public class SqlNodeVisitorBase implements SqlNodeVisitor
+import java.util.List;
+
+import com.hp.hpl.jena.sdb.core.VarCol;
+import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
+
+public class SqlDistinct extends SqlNodeBase1
 {
-    public void visit(SqlProject sqlProject)
-    {}
+    public static SqlNode distinct(SqlNode sqlNode, String alias)
+    {
+        SqlDistinct p = null ;
+        if ( sqlNode.isDistinct() )
+            p = sqlNode.asDistinct() ;
+        else
+            p = new SqlDistinct(sqlNode, alias) ;
+        return p ;
+    }
+    
+    public static SqlNode project(SqlNode sqlNode)
+    {
+        return distinct(sqlNode, null) ;
+    }
+    
+    private List<VarCol> cols = null ; 
+    
+    private SqlDistinct(SqlNode sqlNode, String alias)
+    {
+        super(alias, sqlNode) ;
+    }
+    
+    @Override
+    public boolean isDistinct() { return true ; }
+    @Override
+    public SqlDistinct asDistinct() { return this ; }
+    
+    @Override 
+    public boolean usesColumn(SqlColumn c) { return cols.contains(c) ; }
 
-    public void visit(SqlDistinct sqlDistinct)
-    {}
+    public List<VarCol> getCols() { return cols ; }
 
-    public void visit(SqlRestrict sqlRestrict)
-    {}
+    public void visit(SqlNodeVisitor visitor)
+    { visitor.visit(this) ; }
+    
+    @Override
+    public SqlNode apply(SqlTransform transform, SqlNode subNode)
+    { return transform.transform(this, subNode) ; }
 
-    public void visit(SqlRename sqlRename)
-    {}
-
-    public void visit(SqlTable sqlTable)
-    {}
-
-    public void visit(SqlJoinInner sqlJoin)
-    {}
-
-    public void visit(SqlJoinLeftOuter sqlJoin)
-    {}
-
-    public void visit(SqlCoalesce sqlCoalesce)
-    {}
-
-    public void visit(SqlSlice sqlSlice)
-    {}
-
-    public void visit(SqlSelectBlock sqlSelectBlock)
-    {}
+    @Override
+    public SqlNode copy(SqlNode subNode)
+    {
+        return new SqlDistinct(subNode, this.getAliasName()) ;
+    }
 }
 
 /*
- * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

@@ -84,6 +84,13 @@ public class SqlNodeTextVisitor implements SqlNodeVisitor
         out.decIndent() ;
     }
     
+    public void visit(SqlDistinct sqlNode)
+    {
+        start(sqlNode, "Distinct", sqlNode.getAliasName()) ;
+        sqlNode.getSubNode().visit(this) ;
+        finish() ;
+    }
+    
     public void visit(SqlRestrict sqlNode)
     {
         start(sqlNode, "Restrict", null) ;

@@ -19,6 +19,9 @@ public class SqlTransformCopy implements SqlTransform
     public SqlNode transform(SqlProject sqlProject, SqlNode subNode)
     { return xform(sqlProject, subNode) ; }
 
+    public SqlNode transform(SqlDistinct sqlDistinct, SqlNode subNode)
+    { return xform(sqlDistinct, subNode) ; }
+
     public SqlNode transform(SqlRestrict sqlRestrict, SqlNode subNode)
     { return xform(sqlRestrict, subNode) ; }
 

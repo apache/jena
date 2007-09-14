@@ -38,6 +38,9 @@ public class SqlNodeWalker
         public void visit(SqlProject sqlNode)
         { visit1(sqlNode) ; }
     
+        public void visit(SqlDistinct sqlNode)
+        { visit1(sqlNode) ; }
+
         public void visit(SqlRestrict sqlNode)
         { visit1(sqlNode) ; }
         

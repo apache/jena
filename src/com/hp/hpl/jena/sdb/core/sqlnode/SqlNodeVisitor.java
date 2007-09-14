@@ -10,6 +10,7 @@ public interface SqlNodeVisitor
 {
     public void visit(SqlProject        sqlProject) ;
     public void visit(SqlRestrict       sqlRestrict) ;
+    public void visit(SqlDistinct       sqlDistinct) ;
     public void visit(SqlTable          sqlTable) ;
     public void visit(SqlRename         sqlRename) ;
     

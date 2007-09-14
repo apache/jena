@@ -40,6 +40,7 @@ public class SqlSelectBlock extends SqlNodeBase1
     private SqlExprList exprs = new SqlExprList() ;
     private long start = -1 ;
     private long length = -1 ;
+    private boolean distinct = false ;
     
     /**
      * @param aliasName
@@ -68,6 +69,17 @@ public class SqlSelectBlock extends SqlNodeBase1
     
     public void visit(SqlNodeVisitor visitor)
     { visitor.visit(this) ; }
+
+    
+    public boolean isDistinctSet()
+    {
+        return distinct ;
+    }
+
+    public void setDistinct(boolean isDistinct)
+    {
+        this.distinct = isDistinct ;
+    }
 }
 
 /*

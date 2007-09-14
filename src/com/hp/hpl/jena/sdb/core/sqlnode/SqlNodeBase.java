@@ -38,6 +38,9 @@ public abstract class SqlNodeBase extends AnnotationsBase implements SqlNode
     public boolean      isProject()     { return false ; }
     public SqlProject   asProject()     { classError(SqlProject.class) ; return null  ; }
 
+    public boolean      isDistinct()     { return false ; }
+    public SqlDistinct  asDistinct()     { classError(SqlDistinct.class) ; return null  ; }
+
     public boolean      isTable()       { return false ; }
     public SqlTable     asTable()       { classError(SqlTable.class) ; return null  ; }
 
