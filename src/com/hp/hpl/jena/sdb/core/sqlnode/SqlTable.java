@@ -11,7 +11,7 @@ import com.hp.hpl.jena.sdb.core.Scope;
 import com.hp.hpl.jena.sdb.core.ScopeBase;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
 
-/** Root of all concrete tables */
+/** Root of all tables (roughly, a group of columns) */
 
 public class SqlTable extends SqlNodeBase0
 {

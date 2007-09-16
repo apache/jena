@@ -12,10 +12,6 @@ import java.util.List;
 import com.hp.hpl.jena.sdb.SDBException;
 import com.hp.hpl.jena.sdb.core.VarCol;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExprList;
-import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
-import com.hp.hpl.jena.sdb.core.sqlnode.SqlNodeBase1;
-import com.hp.hpl.jena.sdb.core.sqlnode.SqlNodeVisitor;
-import com.hp.hpl.jena.sdb.core.sqlnode.SqlTransform;
 
 /** A unit that generates an SQL SELECT Statement.
  *  The SQL generation process is a pass over the SqlNdoe structure to generate SelectBlocks,
@@ -27,6 +23,12 @@ import com.hp.hpl.jena.sdb.core.sqlnode.SqlTransform;
 
 public class SqlSelectBlock extends SqlNodeBase1
 {
+    // Need: code to take an SqlNode and produce a rename map. 
+    // Already in SqlRename.  Use SqlRename.view.
+    // SqlRename is currently unused.
+    // Is SqlRename > SqlProject?
+    //   with Map<Var, String> = List<VarCol>
+    
     // Mapping of names
     // projection
     // Joins (inner and left)
@@ -71,7 +73,7 @@ public class SqlSelectBlock extends SqlNodeBase1
     { visitor.visit(this) ; }
 
     
-    public boolean isDistinctSet()
+    public boolean distinct()
     {
         return distinct ;
     }

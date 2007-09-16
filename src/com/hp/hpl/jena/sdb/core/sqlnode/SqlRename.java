@@ -9,6 +9,7 @@ package com.hp.hpl.jena.sdb.core.sqlnode;
 import java.util.Map;
 import java.util.Set;
 
+import com.hp.hpl.jena.sdb.SDBException;
 import com.hp.hpl.jena.sdb.core.Generator;
 import com.hp.hpl.jena.sdb.core.Gensym;
 import com.hp.hpl.jena.sdb.core.Scope;
@@ -22,50 +23,47 @@ public class SqlRename extends SqlNodeBase1
 {
     private ScopeRename idScope ;
     private ScopeRename nodeScope ;
-    private SqlTable here ;
+    private SqlTable vTable ;       // Our column naming space.
 
     public static SqlRename view(String alias, SqlNode sqlNode)
     { 
-        SqlRename rename = new SqlRename(alias, sqlNode) ;
-        Generator gen = Gensym.create("X") ;
-
-        setAliasesAll(rename.here, sqlNode.getIdScope(), rename.idScope, gen) ;
-        setAliasesAll(rename.here, sqlNode.getNodeScope(), rename.nodeScope, gen) ;
+        SqlTable table = new SqlTable(alias) ;
+        Generator gen = Gensym.create("X") ;    // Column names.  Not global.
         
+        ScopeRename idScope = calcRename(table, sqlNode.getIdScope(), gen) ;
+        ScopeRename nodeScope = calcRename(table, sqlNode.getNodeScope(), gen) ;
+
+        SqlRename rename = new SqlRename(table, sqlNode, idScope, nodeScope) ;
+
         return rename ;
     }
     
-    private SqlRename(String aliasName, SqlNode sqlNode)
+    private SqlRename(SqlTable here, SqlNode sqlNode, ScopeRename idScope, ScopeRename nodeScope)
     {
-        this(aliasName, sqlNode,
-             new SqlTable(aliasName),
-             new ScopeRename(sqlNode.getIdScope()),
-             new ScopeRename(sqlNode.getNodeScope())) ;
-    }
-    
-    private SqlRename(String aliasName, SqlNode sqlNode, SqlTable here, ScopeRename idScope, ScopeRename nodeScope)
-    {
-        super(aliasName, sqlNode) ;
-        this.here = here ;
+        super(here.getAliasName(), sqlNode) ;
+        this.vTable = here ;
         this.idScope = idScope ;
         this.nodeScope = nodeScope ;
     }
-
-    
-    public SqlRename(String aliasName, SqlNode sqlNode, 
-                     Map<Var, String> idRenames,
-                     Map<Var, String> nodeRenames)
-    {
-        this(aliasName, sqlNode) ;
-        setAliases(here, idRenames, sqlNode.getIdScope(), idScope) ;
-        setAliases(here, nodeRenames, sqlNode.getNodeScope(), nodeScope) ;
-    }
+//
+//    
+//    private SqlRename(String aliasName, SqlNode sqlNode, 
+//                     Map<Var, String> idRenames,
+//                     Map<Var, String> nodeRenames)
+//    {
+//        this(aliasName, sqlNode) ;
+//        setAliases(here, idRenames, sqlNode.getIdScope(), idScope) ;
+//        setAliases(here, nodeRenames, sqlNode.getNodeScope(), nodeScope) ;
+//    }
     
     // Map all vars in the scope to names in the rename.
-    private static void setAliasesAll(final SqlTable here, Scope scope, 
-                                      final ScopeRename renameScope, final Generator gen)
+    private static ScopeRename calcRename(final SqlTable table, Scope scope, 
+                                          final Generator gen)
     {
-        if ( scope == null ) return ;
+        if ( scope == null )
+            throw new SDBException("calcRename: Scope is null") ;
+        
+        ScopeRename renameScope = new ScopeRename(scope) ;
         
         // Would be nicer if Java didn't impose such an overhead on writing lambda's/
 //        Action<Var> action = new Action<Var>(){
@@ -82,9 +80,10 @@ public class SqlRename extends SqlNodeBase1
         for ( Var v : vars)
         {
             String colName = gen.next() ;
-            SqlColumn col = new SqlColumn(here, colName) ;
+            SqlColumn col = new SqlColumn(table, colName) ;
             renameScope.setAlias(v, col) ;
         }
+        return renameScope ;
     }
 
     // Map certain vars into the rename
@@ -122,7 +121,7 @@ public class SqlRename extends SqlNodeBase1
     public SqlNode copy(SqlNode subNode)
     {
         // Do any subitems need to be copied?
-        return new SqlRename(this.getAliasName(), subNode, this.here, this.idScope, this.nodeScope) ;
+        return new SqlRename(this.vTable, subNode, this.idScope, this.nodeScope) ;
     }
 }
 

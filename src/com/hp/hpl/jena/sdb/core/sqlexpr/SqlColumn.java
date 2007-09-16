@@ -8,9 +8,12 @@ package com.hp.hpl.jena.sdb.core.sqlexpr;
 
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlTable;
 
-
+/** A table column, whether in an expression or a column name of a table */ 
 public class SqlColumn extends SqlExprBase
 {
+    // If we had multiple inheritance, the two concepts migh tbe worth separating ...
+    // We don't so the slight pun is a worthwhile convenience.  
+
     SqlTable  table ;
     String columnName ;
     public SqlColumn(SqlTable sqlTable, String colName) { this.table = sqlTable ; this.columnName = colName ; }

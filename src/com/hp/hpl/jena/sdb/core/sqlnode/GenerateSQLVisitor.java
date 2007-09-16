@@ -68,6 +68,8 @@ public class GenerateSQLVisitor implements SqlNodeVisitor
     {
         // SELECT
       out.print("SELECT ") ;
+      if ( sqlSelectBlock.distinct() )
+          out.print("DISTINCT ") ;
       if ( annotate(sqlSelectBlock) ) 
           out.ensureStartOfLine() ;
       out.incIndent() ;
@@ -165,117 +167,6 @@ public class GenerateSQLVisitor implements SqlNodeVisitor
         }
     }
 
-    
-//    public void visit(SqlProject sqlNode)
-//    {
-//        out.println() ;
-//        out.println("FROM") ;
-//
-//        SqlNode sqlNode2 = sqlNode.getSubNode() ;
-//        
-//        // Project-restrict : can combine 
-//        if ( sqlNode2.isRestrict() )
-//        {
-//            SqlRestrict r = sqlNode.getSubNode().asRestrict() ;
-//            // Special Project-Restrict-Node case.
-//            out.incIndent() ; 
-//            r.getSubNode().visit(this);
-//            out.decIndent() ;
-//            out.println() ;
-//            genWHERE(r.getConditions()) ;
-//            return ;
-//        }
-//        
-//        boolean needBrackets = false ;
-//        if ( sqlNode2.isCoalesce() )
-//            needBrackets = true ;
-//        out.incIndent() ; 
-//        outputNode(sqlNode2, needBrackets) ;
-//        out.decIndent() ; 
-//
-////        // Not a project-restrict.
-////        // Generate expression for the FROM
-////        out.incIndent() ;
-////        sqlNode.getSubNode().visit(this) ;
-////        out.decIndent() ;
-//    }
-//
-//    public void visit(SqlRestrict sqlNode)
-//    {
-//        annotate(sqlNode) ;
-//        if ( sqlNode.getConditions().size() == 0 )
-//        {
-//            log.warn("No conditions associated with this restriction") ;
-//            sqlNode.getSubNode().visit(this) ;
-//            return ;
-//        }
-//        
-//        SqlNode node2 = sqlNode.getSubNode() ;
-//        if ( node2.isJoin() && ! node2.asJoin().getJoinType().equals(JoinType.INNER) )
-//        {
-//            log.warn("restrict/"+node2.asJoin().getJoinType()+" not supported") ;
-//            return ;
-//        }
-//            
-//        if ( node2.isJoin() )
-//        {
-//            // Common with QueryCompilerBase.join?? 
-//            // Push condition into the inner join ON clause
-//            // Avoid mutating the Join - create a new one and merge the conditions.
-//            // (As we do not use the old join, we could reuse it alias)
-//            SqlJoin j = node2.asJoin() ;
-//            if ( j.getJoinType() != JoinType.INNER )
-//                log.warn("Unexpected: restrict on join type "+ j.getJoinType() ) ;
-//            
-//            //SqlJoin j2 = SqlJoin.create(j.getJoinType(), j.getLeft(), j.getRight(), SDBConstants.gen(j.getAliasName())) ;
-//            SqlJoin j2 = SqlJoin.create(j.getJoinType(), j.getLeft(), j.getRight(), j.getAliasName()) ;
-//            j2.getConditions().addAll(j.getConditions()) ;
-//            j2.getConditions().addAll(sqlNode.getConditions()) ;
-//            j2.visit(this) ;
-//            return ;
-//        }
-//        
-//        if ( node2.isTable() )
-//        {
-//            // Only occurs in a JOIN and so the () has already been done.
-//            //out.print("( ") ;
-//            //out.incIndent() ;
-//            out.println("SELECT *") ;
-//            out.print("FROM ") ;
-//            out.print(node2.asTable().getTableName()) ;
-//            out.print(aliasToken()) ;
-//            out.print(node2.asTable().getAliasName()) ;
-//            annotate(node2.asTable()) ;
-//            out.ensureStartOfLine() ;
-//            genWHERE(sqlNode.getConditions()) ;
-//            //out.println() ;
-//            //out.decIndent() ;
-//            //out.print(")") ;
-//            return ;
-//        }
-//        
-//        log.warn("restrict/unrecognized sub node: \n"+node2) ;
-//        return ;
-//    }
-//    
-//    public void visit(SqlRename sqlRename)
-//    { throw new SDBNotImplemented("SqlRename") ; }
-
-    private void genTables(SqlNode sqlNode)
-    {
-        log.warn("genTables called: \n--\n"+sqlNode+"\n--") ;
-//        Collection<SqlTable> tables = sqlNode.tablesInvolved() ;
-//        String sep = "" ;
-//        for ( SqlTable table : tables )
-//        {
-//            out.print(sep) ;
-//            sep = " " ;
-//            out.print(table.getTableName()) ;
-//            out.print(aliasToken()) ;
-//            out.print(table.getAliasName())) ;
-//        }
-    }
-    
     private void genWHERE(SqlExprList conditions)
     {
         out.print("WHERE") ;
