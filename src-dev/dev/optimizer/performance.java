@@ -39,7 +39,7 @@ public class performance
 	private static String reasoner = null ;
 	private static int tests = 5 ;
 	private static int loops = 10 ;
-	private static int ignore = 20 ;
+	private static int ignore = 0 ;
 	private static String heuristic = null ;
 	private static Model model ;
 	private static String log = null ;
@@ -55,7 +55,7 @@ public class performance
 	{			
 		int resultSetSize = 0 ;
 		List durations = new ArrayList() ; // List<Long>
-		List runs = new ArrayList() ;
+		List runs = new ArrayList() ; // List<Double>
 		
 		try
 		{
@@ -126,23 +126,29 @@ public class performance
 					runs.add(new Double(duration)) ;
 			}
 			
-			try 
-			{
-				BufferedWriter out = new BufferedWriter(new FileWriter(log)) ;
-			
-				for (Iterator iter = runs.iterator(); iter.hasNext(); )
-				{
-					out.write(((Double)iter.next()).toString() + newline) ;
-				}
-			
-				out.write("Timing in ms" + newline) ;
-				out.write("Result set size: " + resultSetSize + newline) ;
-				out.close() ;
-			} 
-			catch (FileNotFoundException e) { e.printStackTrace() ; } 
-			catch (IOException e) { e.printStackTrace() ;  }
+			if (log != null)
+				writeLog(runs, resultSetSize) ;
 		}
 		catch (Exception e) { e.printStackTrace() ; }
+	}
+	
+	private static void writeLog(List runs, int resultSetSize)
+	{
+		try 
+		{
+			BufferedWriter out = new BufferedWriter(new FileWriter(log)) ;
+		
+			for (Iterator iter = runs.iterator(); iter.hasNext(); )
+			{
+				out.write(((Double)iter.next()).toString() + newline) ;
+			}
+		
+			out.write("Timing in ms" + newline) ;
+			out.write("Result set size: " + resultSetSize + newline) ;
+			out.close() ;
+		} 
+		catch (FileNotFoundException e) { e.printStackTrace() ; } 
+		catch (IOException e) { e.printStackTrace() ;  }
 	}
 	
 	private static double getAvgElapsedTimeInMillis(List durations)
