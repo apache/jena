@@ -2,7 +2,7 @@
 
 source syn-func.sh
 
-# DAWG core set
+# DAWG core set,in 3 parts
 (   source syn-func.sh 
     cd Syntax-SPARQL   
     clean 
@@ -10,7 +10,6 @@ source syn-func.sh
     createManifest "Syntax-SPARQL"
 )
 
-# DAWG extended
 (   source syn-func.sh  
     cd Syntax-SPARQL2  
     clean 
@@ -18,7 +17,6 @@ source syn-func.sh
     createManifest "Syntax-SPARQL2"
 )
 
-# Development
 (   source syn-func.sh  
     cd Syntax-SPARQL3
     clean

@@ -1,0 +1,4 @@
+PREFIX : <http://example/>
+
+SELECT * { ?x :p ?p .}
+GROUP BY ?p ?q (?p*?q AS ?z)

@@ -1,5 +1,5 @@
 # Only opaque types with identical lexical and datatypes can be tested for = .
-# $Id: extendedType-eq-pass-result.n3,v 1.8 2007-09-06 15:11:18 andy_seaborne Exp $
+# $Id: extendedType-eq-pass-result.n3,v 1.9 2007-09-17 17:40:51 andy_seaborne Exp $
 
 @prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rs:      <http://www.w3.org/2001/sw/DataAccess/tests/result-set#> .

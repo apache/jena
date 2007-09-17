@@ -5,10 +5,10 @@
 
 # ---------------------------------------------
 # This test cases are based on the dataset
-# data/ontology/Test-data.n3
+# testing/Optimizer/Test-data.n3
 # 	
 # Author: Markus Stocker
-# Version: $Id: TestHeuristicWeightNode-manifest.n3,v 1.1 2007-09-06 15:11:32 andy_seaborne Exp $
+# Version: $Id: TestHeuristicWeightNode-manifest.n3,v 1.2 2007-09-17 17:40:54 andy_seaborne Exp $
 # ---------------------------------------------
 
 <http://jena.hpl.hp.com/ARQo/test/#TC001> 

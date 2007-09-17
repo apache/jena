@@ -1,5 +1,5 @@
 # Positive test: product of type promotion within the xsd:decimal type tree.
-# $Id: tP-short-decimal.rq,v 1.8 2007-09-06 15:11:35 andy_seaborne Exp $
+# $Id: tP-short-decimal.rq,v 1.9 2007-09-17 17:40:56 andy_seaborne Exp $
 
 PREFIX t: <http://www.w3.org/2001/sw/DataAccess/tests/data/TypePromotion/tP-0#>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
