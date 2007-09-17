@@ -22,6 +22,7 @@ of a BGP according to their estimated costs. The optimizer is enabled by
 default in ARQ but may be disabled if this should be required.
 
 Please refer to the documentation for further information.
+http://jena.sourceforge.net/ARQ/bgp-optimization.html
 
 == GROUP BY
 

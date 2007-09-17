@@ -1,10 +1,7 @@
-## PREFIX :    <http://example/>
-## PREFIX apf: <http://jena.hpl.hp.com/ARQ/property#>
-## PREFIX list:   <http://jena.hpl.hp.com/ARQ/list#>
-## 
+PREFIX :  <http://example/pastrtSupplier> 
 
-SELECT *
+SELECT ?supplier
 {
-  ?s ?p ?o .
-  ?s ?p ?o 
+    ?supplier   :suppliesPart   ?part . 
+    ?part   :size   ?s . FILTER ( ?s >  10 ) 
 }

@@ -99,7 +99,7 @@ public class QueryFactory
      * @param query            Existing, uninitialized query
      * @param queryString      The query string
      * @param baseURI          URI for relative URI expansion
-     * @param syntaxURI          URI for the syntax
+     * @param syntaxURI        URI for the syntax
      * @throws QueryException  Thrown when a parse error occurs
      */
     
