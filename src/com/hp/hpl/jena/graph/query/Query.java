@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Query.java,v 1.39 2007-07-24 15:32:36 chris-dollin Exp $
+  $Id: Query.java,v 1.40 2007-09-17 10:31:25 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -128,7 +128,7 @@ public class Query
         Answer a list of the triples that have been added to this query.
         (Note: ignores "named triples").
         
-     	@return
+     	@return List
     */
     public List getPattern()
         { return new ArrayList( triplePattern ); }
@@ -182,7 +182,6 @@ public class Query
     
     /**
         @deprecated use getPattern for the raw triples
-     	@return
      */
     public NamedTripleBunches getTriples()
         { return triples; }

@@ -206,8 +206,6 @@ public class FileUtils
     /**
      * 
      * @deprecated Broken: use toURL()
-     * @param s
-     * @return
      */
     public static String encodeFileName(String s)
     {
