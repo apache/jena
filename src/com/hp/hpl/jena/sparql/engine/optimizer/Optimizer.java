@@ -186,7 +186,22 @@ public class Optimizer
 	}
 	
 	/**
-	 * Explain the optimization performed on a query
+	 * Explain the optimization performed on a query.
+	 * The returned string can be used for further processing,
+	 * for example to print it out on console or in a log file.
+	 * 
+	 * @param query
+	 * @return String
+	 */
+	public static String explain(Query query)
+	{
+		return explain(ARQ.getContext(), null, query, null) ;
+	}
+	
+	/**
+	 * Explain the optimization performed on a query.
+	 * For some heuristics the model is required
+	 * (e.g. Jena graph statistics handler)
 	 * 
 	 * @param model
 	 * @param query
@@ -198,8 +213,8 @@ public class Optimizer
 	}
 	
 	/**
-	 * Explain the optimization performed on a query using a specific heuristic.
-	 * Specific options may be set by the config parameter.
+	 * Explain the optimization performed on a query using a specific configuration.
+	 * For some heuristics the model is required (e.g. Jena graph statistics handler)
 	 * 
 	 * @param model
 	 * @param query
@@ -212,9 +227,8 @@ public class Optimizer
 	}
 	
 	/**
-	 * Explain the optimization performed on a query. The heuristic ID parameter
-	 * may be used to specify a heuristic (use the HeuristicsRegistry). The
-	 * parameter can be null.
+	 * Explain the optimization performed on a query. This method allows settings
+	 * a specific context. The model and confic parameter can be null.
 	 * 
 	 * @param context
 	 * @param model
@@ -305,10 +319,10 @@ public class Optimizer
     public static final String ACRONYM = "ARQo" ;
    
     /** The ARQo web site : see also http://jena.sourceforge.net*/   
-    public static final String WEBSITE = "http://jena.sourceforge.net/ARQ-Optimizer/";
+    public static final String WEBSITE = "http://jena.sourceforge.net/ARQ/bgp-optimization.html";
    
     /* The full name of the current ARQo version, required to flag the index ontology with a version number! */   
-    public static final String VERSION = "0.0-alpha-1";
+    public static final String VERSION = "0.2";
    
     /* The major version number for this release of ARQo (ie '2' for ARQo 2.0) */
     //public static final String MAJOR_VERSION = "0";
