@@ -1,8 +1,9 @@
 ChangeLog for ARQ
 =================
 
-ARQ 2.1
--------
+==== ARQ 2.2
+
+==== ARQ 2.1
 
 + (experimental for this release - permanent in next)
   GROUP BY, HAVING
@@ -30,8 +31,7 @@ ARQ 2.1
 + NodeVar renamed ExprVar (more consistent naming)
   Deprecated tombstones left for next release 
 
-ARQ 2.1 beta
-------------
+==== ARQ 2.1 beta
 
 + Cost-based optimizer for basic graph patterns on in-memory graphs. 
   ** Uses the version of jena shipped with this release, can't use an earlier one.   
@@ -61,8 +61,7 @@ ARQ 2.1 beta
   
 + VarsMentionedVisitor removed - convert to an algebra expression and use OpVars.allVars instead.
 
-ARQ 2.0
--------
+==== ARQ 2.0
 
 This version uses the SPARQL algebra directly,
 then produces an execution scheme that uses streaming
