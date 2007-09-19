@@ -1,6 +1,8 @@
 Release Notes
 =============
 
+==== Jena 2.5.5
+
 ==== Jena 2.5.4
 
 Graph
