@@ -13,6 +13,7 @@ import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.util.FileManager;
 
+import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.binding.BindingMap;
@@ -32,6 +33,11 @@ public class Run
 {
     public static void main(String[] argv)
     {
+        
+        Op op = SSE.parseOp("(quadpattern (?g ?s ?p ?o))") ;
+        System.out.println(op);
+        System.exit(0) ;
+        
         if ( false )
         {
             String DIR = "/home/afs/W3C/DataAccess/tests/data-r2/expr-equals/" ;

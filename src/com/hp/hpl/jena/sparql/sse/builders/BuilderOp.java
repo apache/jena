@@ -20,6 +20,7 @@ import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.Table;
 import com.hp.hpl.jena.sparql.algebra.op.*;
 import com.hp.hpl.jena.sparql.core.BasicPattern;
+import com.hp.hpl.jena.sparql.core.Quad;
 import com.hp.hpl.jena.sparql.core.VarExprList;
 import com.hp.hpl.jena.sparql.expr.E_Aggregator;
 import com.hp.hpl.jena.sparql.expr.Expr;
@@ -47,7 +48,7 @@ public class BuilderOp
     public BuilderOp()
     {
         dispatch.put(Tags.tagBGP, buildBGP) ;
-        //dispatch.put(Tags.tagQuadPattern, buildQuadPattern) ;
+        dispatch.put(Tags.tagQuadPattern, buildQuadPattern) ;
         dispatch.put(Tags.tagFilter, buildFilter) ;
         dispatch.put(Tags.tagGraph, buildGraph) ;
         dispatch.put(Tags.tagService, buildService) ;
@@ -153,27 +154,27 @@ public class BuilderOp
     {
         public Op make(ItemList list)
         {
-            BuilderBase.broken("Quad pattern not implemented") ;
-            return null ;
-//          Node g = null ;
-//          QuadPattern quads = new QuadPattern() ;
-//          for ( int i = 1 ; i < list.size() ; i++ )
-//          {
-//          Item item = list.get(i) ;
-//          if ( ! item.isList() )
-//          BuilderUtils.broken(item, "Not a quad structure") ;
-//          Quad quad = buildQuad(item.getList()) ;
-//          if ( g == null )
-//          g = quad.getGraph() ;
-//          else
-//          {
-//          if ( !g.equals(quad.getGraph()) )
-//          BuilderUtils.broken(item, "Quad pattern is not using the same graph node everywhere") ;
-//          }
-
-//          quads.add(quad) ; 
-//          }
-//          return new OpQuadPattern(quads., g) ;
+            Node g = null ;
+            BasicPattern bp = new BasicPattern() ;
+            for ( int i = 1 ; i < list.size() ; i++ )
+            {
+                Item item = list.get(i) ;
+                if ( ! item.isList() )
+                    BuilderBase.broken(item, "Not a quad structure") ;
+                Quad q = BuilderGraph.buildQuad(item.getList()) ;
+                if ( g == null )
+                    g = q.getGraph() ;
+                else
+                {
+                    if ( ! g.equals(q.getGraph()) )
+                        BuilderBase.broken(item, "Quad has different graph node in quadapttern: "+q) ;
+                }
+                bp.add(q.getTriple()) ;
+                
+            }
+            
+            OpQuadPattern op = new OpQuadPattern(g, bp) ;
+            return op ;
         }
     } ;
 

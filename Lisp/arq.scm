@@ -4,7 +4,8 @@
 ;; need a object of the righ tclass or a suiabely typed null.
 ;; That is, 
 ;;   (out (java-null <ResultSetFormatter>) rs)
-;; Not that clean but it woudl be better to have a library that presented ARQ in a scheme-like
+;; Not that clean but it would be better to have a library that
+;; presented ARQ in a scheme-like
 ;; way, not have plain calls to the Java world.
 ;; Work-in-progress 
 

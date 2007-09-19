@@ -32,7 +32,7 @@ public class Tags
 
     // SPARQL algebra
     static public final String tagBGP           = "bgp" ;
-    static public final String tagQuadPattern   = "bqp" ;
+    static public final String tagQuadPattern   = "quadpattern" ;
 
     static public final String tagFilter        = "filter" ;
     // static public final String tagGraph = "graph" ;
