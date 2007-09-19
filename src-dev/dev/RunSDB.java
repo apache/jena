@@ -20,6 +20,7 @@ import com.hp.hpl.jena.util.FileManager;
 
 import com.hp.hpl.jena.sparql.algebra.Algebra;
 import com.hp.hpl.jena.sparql.algebra.Op;
+import com.hp.hpl.jena.sparql.core.Prologue;
 import com.hp.hpl.jena.sparql.core.Quad;
 import com.hp.hpl.jena.sparql.resultset.ResultsFormat;
 import com.hp.hpl.jena.sparql.sse.SSE;
@@ -51,43 +52,8 @@ public class RunSDB
     {
 //        SDBConnection.logSQLExceptions = true ;
 //        SDBConnection.logSQLStatements = true ;
-        if ( true  )
-        {
-            SDB.getContext().setTrue(SDB.unionDefaultGraph) ;
-            Query query = QueryFactory.create("PREFIX : <http://example/> SELECT * { ?s :x ?o }") ;
-            Op op = Algebra.compileQuad(query) ;
-            Store store = StoreFactory.create(LayoutType.LayoutTripleNodesHash, DatabaseType.PostgreSQL) ;
 
-            if ( false )
-            {
-                op = SDBUtils.compile(store, op) ;
-                SqlNode x = ((OpSQL)op).getSqlNode() ;
-                System.out.println(GenerateSQL.toSQL(x)) ;
-    //            System.out.println(str) ;
-    //            System.out.println() ;
-            }
-
-            // Quad compilation not done.  Issues about quad blocks.
-            // Better? Op =? Quad compile rewrite.
-            {
-                query.getPrefixMapping().setNsPrefix("u", Quad.unionGraph.getURI()) ;
-                op = SSE.parseOp("(quadpattern [u: ?s :x ?o])", query.getPrefixMapping()) ;
-                //System.out.println(op) ;
-                op = SDBUtils.compile(store, op) ;
-                SqlNode x = ((OpSQL)op).getSqlNode() ;
-                //System.out.println(op) ;
-                System.out.println(GenerateSQL.toSQL(x)) ;
-            }
-            
-                        
-            //x =  NewGenerateSQL.ensureProject(x) ;
-            //System.out.println(x) ;
-            //System.out.println() ;
-//            SqlNode y = SqlTransformer.transform(x, new TransformSelectBlock()) ;
-//            System.out.println(y) ;
-//            System.out.println() ;
-            System.exit(0) ;
-        }
+        devSelectBlock() ; System.exit(0) ;
 
         if ( false )
         {
@@ -102,6 +68,43 @@ public class RunSDB
         System.err.println("Nothing ran!") ;
         System.exit(0) ;
     }
+    
+    public static void devSelectBlock()
+    {
+
+        if ( true  )
+        {
+            SDB.getContext().setTrue(SDB.unionDefaultGraph) ;
+            Store store = StoreFactory.create(LayoutType.LayoutTripleNodesHash, DatabaseType.PostgreSQL) ;
+
+            if ( false )
+            {
+                Query query = QueryFactory.create("PREFIX : <http://example/> SELECT * { ?s :x ?o }") ;
+                Op op = Algebra.compileQuad(query) ;
+                op = SDBUtils.compile(store, op) ;
+                SqlNode x = ((OpSQL)op).getSqlNode() ;
+                System.out.println(GenerateSQL.toSQL(x)) ;
+//              System.out.println(str) ;
+//              System.out.println() ;
+            }
+
+            {
+                Prologue prologue = new Prologue() ;
+                prologue.setPrefix("u", Quad.unionGraph.getURI()) ;
+                prologue.setPrefix("", "http://example/") ;
+                prologue.setBaseURI("http://example/") ;
+                
+                Op op = SSE.parseOp("(quadpattern [u: ?s :x ?o])", prologue.getPrefixMapping()) ;
+                //System.out.println(op) ;
+                op = SDBUtils.compile(store, op) ;
+                SqlNode x = ((OpSQL)op).getSqlNode() ;
+                //System.out.println(op) ;
+                System.out.println(GenerateSQL.toSQL(x)) ;
+            }
+        }
+        System.exit(0) ;
+    }
+    
     private static void _runQuery(String queryFile, String dataFile, String sdbFile)
         {
 
