@@ -20,6 +20,9 @@ SDB ToDo list (and general notes)
 
 + DB type tables
 
++ Tests for dataset assembler and pure Jena/ARQ code.
++ Document assembler for dataset on wiki
+
 == Alt layouts
 
 + Layout3 : property tables : vertical partition

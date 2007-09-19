@@ -15,27 +15,34 @@ import static sdb.SDBCmd.setSDBConfig;
 import static sdb.SDBCmd.sparql;
 import arq.cmd.CmdUtils;
 
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.util.FileManager;
+
+import com.hp.hpl.jena.sparql.algebra.Algebra;
+import com.hp.hpl.jena.sparql.algebra.Op;
+import com.hp.hpl.jena.sparql.core.Quad;
+import com.hp.hpl.jena.sparql.resultset.ResultsFormat;
+import com.hp.hpl.jena.sparql.sse.SSE;
+import com.hp.hpl.jena.sparql.util.QueryExecUtils;
+
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryExecution;
 import com.hp.hpl.jena.query.QueryExecutionFactory;
 import com.hp.hpl.jena.query.QueryFactory;
-import com.hp.hpl.jena.rdf.model.Model;
+
+import com.hp.hpl.jena.sdb.SDB;
 import com.hp.hpl.jena.sdb.SDBFactory;
 import com.hp.hpl.jena.sdb.Store;
 import com.hp.hpl.jena.sdb.compiler.OpSQL;
 import com.hp.hpl.jena.sdb.core.sqlnode.GenerateSQL;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
-import com.hp.hpl.jena.sdb.engine.QueryEngineSDB;
 import com.hp.hpl.jena.sdb.sql.JDBC;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.store.DatabaseType;
 import com.hp.hpl.jena.sdb.store.LayoutType;
 import com.hp.hpl.jena.sdb.store.StoreConfig;
 import com.hp.hpl.jena.sdb.store.StoreFactory;
-import com.hp.hpl.jena.sparql.algebra.Op;
-import com.hp.hpl.jena.sparql.resultset.ResultsFormat;
-import com.hp.hpl.jena.sparql.util.QueryExecUtils;
-import com.hp.hpl.jena.util.FileManager;
+import com.hp.hpl.jena.sdb.util.SDBUtils;
 
 public class RunSDB
 {
@@ -44,22 +51,35 @@ public class RunSDB
     {
 //        SDBConnection.logSQLExceptions = true ;
 //        SDBConnection.logSQLStatements = true ;
-        if ( false )
+        if ( true  )
         {
+            SDB.getContext().setTrue(SDB.unionDefaultGraph) ;
             Query query = QueryFactory.create("PREFIX : <http://example/> SELECT * { ?s :x ?o }") ;
+            Op op = Algebra.compileQuad(query) ;
             Store store = StoreFactory.create(LayoutType.LayoutTripleNodesHash, DatabaseType.PostgreSQL) ;
-            QueryEngineSDB qe = new QueryEngineSDB(store, query) ;
-            Op op = qe.getOp() ; 
-            SqlNode x = ((OpSQL)op).getSqlNode() ;
+
+            if ( false )
+            {
+                op = SDBUtils.compile(store, op) ;
+                SqlNode x = ((OpSQL)op).getSqlNode() ;
+                System.out.println(GenerateSQL.toSQL(x)) ;
+    //            System.out.println(str) ;
+    //            System.out.println() ;
+            }
+
+            // Quad compilation not done.  Issues about quad blocks.
+            // Better? Op =? Quad compile rewrite.
+            {
+                query.getPrefixMapping().setNsPrefix("u", Quad.unionGraph.getURI()) ;
+                op = SSE.parseOp("(quadpattern [u: ?s :x ?o])", query.getPrefixMapping()) ;
+                //System.out.println(op) ;
+                op = SDBUtils.compile(store, op) ;
+                SqlNode x = ((OpSQL)op).getSqlNode() ;
+                //System.out.println(op) ;
+                System.out.println(GenerateSQL.toSQL(x)) ;
+            }
             
-            String str = GenerateSQL.toSQL(x) ;
-            System.out.println(str) ;
-            
-            System.out.println() ;
-            
-            str = GenerateSQL.toSQL(x) ;
-            System.out.println(str) ;
-            
+                        
             //x =  NewGenerateSQL.ensureProject(x) ;
             //System.out.println(x) ;
             //System.out.println() ;
@@ -79,31 +99,9 @@ public class RunSDB
         sdbdump() ;
         System.exit(0) ;
         
-//        setSDBConfig("../SDB-dev/sdb-LUBM-hash.ttl") ;
-//        sdbdump("--set=jdbcStream=true", "--set=jdbcFetchSize=10") ;
-//        System.exit(0) ;
-        
-//        
-//        sdb.sdbprint.main("--sdb=sdb.ttl",  "--layout=layout2/index", "--query=Q.rq") ;
-//        System.exit(0) ;
-        
-        //SDBConnection.logSQLQueries = true ;
-        //SDBConnection.logSQLStatements = true ;
-        
-        //runPrint() ;
-        //runScript() ;
-        
-        //runInMem("Q.rq", "D.ttl") ;
-        run() ;
         System.err.println("Nothing ran!") ;
         System.exit(0) ;
     }
-
-    private static String oldWay(SqlNode x)
-    {
-        return  GenerateSQL.toSQL(x) ;
-    }
-
     private static void _runQuery(String queryFile, String dataFile, String sdbFile)
         {
 
