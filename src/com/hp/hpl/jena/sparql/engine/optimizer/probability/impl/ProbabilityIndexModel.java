@@ -219,8 +219,6 @@ public class ProbabilityIndexModel extends ProbabilityBase
 			{
 				double correction = 1d ;
 				double indexProbability = ((Long)patterns.get(pattern)).doubleValue() / squaredIndexedSize ;
-				// Override the specific join type ignore PP joins
-				specificJoinType = BasicPatternJoin.genericTypeIgnorePP(triple1, triple2) ;
 				
 				// Consider bound elements
 				if (specificJoinType.equals(BasicPatternJoin.bSS))
@@ -233,8 +231,8 @@ public class ProbabilityIndexModel extends ProbabilityBase
 					correction = getObjectProbability(triple1) * getSubjectProbability(triple1) * getSubjectProbability(triple2) ;
 				else
 					correction = getSubjectProbability(triple1) * getObjectProbability(triple1) * getSubjectProbability(triple2) * getObjectProbability(triple2) ;
-				
-				double correctedProbability = indexProbability  * correction ;
+
+				double correctedProbability = indexProbability * correction ;
 				
 				// If the index returns 0, believe it, do not check the minimum
 				if (correctedProbability == 0)
@@ -247,7 +245,7 @@ public class ProbabilityIndexModel extends ProbabilityBase
 				log.debug("Correction: " + correction) ;
 				log.debug("Corrected probability: " +  correctedProbability) ;
 				log.debug("Checked probability: " + p + " [" + triple1 + ", " + triple2 + "]") ;
-				
+
 				return p ;
 			}
 			else 
