@@ -180,7 +180,7 @@
 	:triple2				[ :subject		"<http://example.org#Person1>" ;
 							  :predicate 	"<http://example.org#lastname>" ;
 							  :object		"?z2" ] ;
-	:probability			"0.0007304601899196494" ;
+	:probability			"0.0007304601899196495" ;
 	:selectivity			"0.0007304601899196494" .
 	
 <http://jena.hpl.hp.com/ARQo/test/#TI017> 
