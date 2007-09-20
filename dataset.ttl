@@ -1,0 +1,32 @@
+@prefix rdfs:   <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xsd:    <http://www.w3.org/2001/XMLSchema#> .
+
+@prefix ja:     <http://jena.hpl.hp.com/2005/11/Assembler#> .
+@prefix sdb:    <http://jena.hpl.hp.com/2007/sdb#> .
+
+## See also SDB documentation -- http://jena.hpl.hp.com/wiki/SDB
+## Special declarations to cause SDB to be used.
+## Initialize SDB.
+
+[] ja:loadClass "com.hp.hpl.jena.sdb.SDB" .
+
+## Tell the system that sdb:DatasetStore is an implementation of ja:RDFDataset .
+
+sdb:DatasetStore rdfs:subClassOf ja:RDFDataset .
+
+_:books rdf:type sdb:DatasetStore ;     # , ja:RDFDataset ;
+    rdfs:label      "Books" ;
+    sdb:layout      "layout2" ;
+    sdb:connection 
+    [ rdf:type sdb:SDBConnection ;
+      sdb:sdbType        "derby" ;
+      sdb:sdbHost        "localhost" ;
+      sdb:sdbName        "DB/SDB2" ;
+    ]
+    .
+
+# Local Variables:        
+# tab-width: 4
+# indent-tabs-mode: nil
+# End:

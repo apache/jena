@@ -65,7 +65,7 @@ public class SDB
         // Default is 1000 4Kpages.
         DerbyUtils.setDerbyPageCacheSize(10000) ;
         
-        // Also done if the assember includes the righ ja:assembler property
+        // Also done if the assember includes the right ja:assembler property
         AssemblerVocab.init() ;
         
         // Wire in the SDB query engne

@@ -5,7 +5,7 @@ SDB ToDo list (and general notes)
     IJ-R-T => IJ(r)-T is done specially in old generator? 
     COALESCE and SqlSelectBlocks
  
-+ See the effect of "enable_seqscan = off" for PostgreSQL 
++ See the effect of "enable_seqscan = off" for PostgreSQL
  
 + Need tests for DISTINCT, Slice, Project, including when not of a query is translated.
   TransformSDB: Add OpProject/OpDistinct.

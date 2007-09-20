@@ -5,14 +5,14 @@
 
 _:c rdf:type sdb:SDBConnection ;
 
-##      sdb:sdbHost        "localhost" ;
-##      sdb:sdbType        "derby" ;
-##      sdb:sdbName        "DB/SDB2" ;
+     sdb:sdbHost        "localhost" ;
+     sdb:sdbType        "derby" ;
+     sdb:sdbName        "DB/SDB2" ;
 
-    sdb:sdbType        "postgresql" ;
-    sdb:sdbHost        "localhost" ;
-    sdb:sdbName        "SDB2" ;
-    sdb:driver         "org.apache.derby.jdbc.EmbeddedDriver" ;
+##     sdb:sdbType        "postgresql" ;
+##     sdb:sdbHost        "localhost" ;
+##     sdb:sdbName        "SDB2" ;
+##     sdb:driver         "org.apache.derby.jdbc.EmbeddedDriver" ;
 
 ##     sdb:sdbType        "MSSQLServerExpress" ;
 ##     sdb:sdbHost        "localhost" ;
@@ -22,5 +22,10 @@ _:c rdf:type sdb:SDBConnection ;
 
 [] rdf:type sdb:Store ;
     sdb:layout         "layout2" ;
-    sdb:connection     _:c ;
+    sdb:connection
+    [
+        sdb:sdbHost        "localhost" ;
+        sdb:sdbType        "derby" ;
+        sdb:sdbName        "DB/SDB2" ;
+    ]
 .
