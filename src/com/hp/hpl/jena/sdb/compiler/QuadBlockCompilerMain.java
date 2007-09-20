@@ -62,7 +62,7 @@ public class QuadBlockCompilerMain implements QuadBlockCompiler
         sqlNode = QC.innerJoin(request, sqlNode, sqlStages) ;
         sqlNode = slotCompiler.finish(sqlNode, quads) ;
         
-        // Insert DISTINCT if accessing the RDF merge of all named graphs.
+        // Insert DISTINCT if accessing the RDF merge of all named graphs
         // An RDF Merge is the DISTINCT results of query over the union of all graphs.
         // Or in TransformSDB
 

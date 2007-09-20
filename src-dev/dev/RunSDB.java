@@ -98,7 +98,8 @@ public class RunSDB
                 //System.out.println(op) ;
                 op = SDBUtils.compile(store, op) ;
                 SqlNode x = ((OpSQL)op).getSqlNode() ;
-                //System.out.println(op) ;
+                System.out.println(op) ;
+                System.out.println() ;
                 System.out.println(GenerateSQL.toSQL(x)) ;
             }
         }
