@@ -56,14 +56,17 @@ public class TestProbabilityIndexModel extends TestCase
 	// Run the dynamically loaded test cases
 	protected void runTest()
 	{
+		double p = statistics.getProbability(triple1, triple2) ;
+		double s = statistics.getSelectivity(triple1, triple2) ;
+		
 		assertTrue(statistics.getMinProbability() == minProbability) ;
 		assertTrue(statistics.getMinJoinedProbability() == minJoinedProbability) ;
 		assertTrue(statistics.getDataGraphSize() == dataGraphSize) ;
 		assertTrue(statistics.getIndexedSize() == indexedSize) ;
 		assertTrue(statistics.getSquaredDataGraphSize() == squaredDataGraphSize) ;
 		assertTrue(statistics.getSquaredIndexedSize() == squaredIndexedSize) ;
-		assertTrue(statistics.getProbability(triple1, triple2) == probability) ;
-		assertTrue(statistics.getSelectivity(triple1, triple2) == selectivity) ;
+		assertTrue("Actual: " + p + " Target: " + probability, p == probability) ;
+		assertTrue("Actual: " + s + " Target: " + selectivity, s == selectivity) ;
 	}
 	
 	public static void oneTimeSetUp()
