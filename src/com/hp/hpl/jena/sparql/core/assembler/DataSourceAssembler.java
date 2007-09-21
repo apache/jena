@@ -15,46 +15,17 @@ import com.hp.hpl.jena.assembler.assemblers.AssemblerBase;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.util.FileManager;
 
-import com.hp.hpl.jena.sparql.util.*;
+import com.hp.hpl.jena.sparql.util.ALog;
+import com.hp.hpl.jena.sparql.util.FmtUtils;
+import com.hp.hpl.jena.sparql.util.GraphUtils;
 
-import com.hp.hpl.jena.query.*;
+import com.hp.hpl.jena.query.DataSource;
+import com.hp.hpl.jena.query.DatasetFactory;
 
 public class DataSourceAssembler extends AssemblerBase implements Assembler
 {
     public static Resource getType() { return DatasetAssemblerVocab.tDataset ; }
-    
-    public static Dataset create(String filename)
-    {
-        Model model = FileManager.get().loadModel(filename) ;
-        return create(model) ;
-    }
-    
-    public static Dataset create(Model model)
-    {
-        // ----
-        String s = StringUtils.join("\n", new String[]{
-            "PREFIX  rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>" ,
-            "PREFIX  rdfs:   <http://www.w3.org/2000/01/rdf-schema#>",
-            "SELECT DISTINCT ?root { { ?root rdf:type ?ATYPE } UNION { ?root rdf:type ?t . ?t rdfs:subClassOf ?ATYPE } }"
-        }) ;
-        Query q = QueryFactory.create(s) ;
-        QuerySolutionMap qsm = new QuerySolutionMap() ;
-        qsm.add("ATYPE", getType()) ;
-
-        QueryExecution qExec = QueryExecutionFactory.create(q, model, qsm);
-        Resource r = (Resource)QueryExecUtils.getExactlyOne(qExec, "root") ;
-        return create(r) ;
-    }
-        
-    public static Dataset create(Resource r)
-    {
-        // Wokraround: loadClass happens after type->implementation binding.
-        try { AssemblerBase.general.open(r) ; } catch ( Exception ex) { }
-        Dataset ds = (Dataset)AssemblerBase.general.open(r) ;
-        return ds ;
-    }
     
     public Object open(Assembler a, Resource root, Mode mode)
     {

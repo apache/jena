@@ -6,12 +6,20 @@
 
 package com.hp.hpl.jena.query;
 
-import java.util.* ;
+import java.util.List;
 
+import com.hp.hpl.jena.assembler.Assembler;
+import com.hp.hpl.jena.assembler.AssemblerHelp;
+import com.hp.hpl.jena.assembler.assemblers.AssemblerGroup.ExpandingAssemblerGroup;
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.util.FileManager;
-import com.hp.hpl.jena.rdf.model.Model ;
+
 import com.hp.hpl.jena.sparql.core.DataSourceImpl;
+import com.hp.hpl.jena.sparql.core.assembler.DataSourceAssembler;
 import com.hp.hpl.jena.sparql.util.DatasetUtils;
+import com.hp.hpl.jena.sparql.util.QueryExecUtils;
+import com.hp.hpl.jena.sparql.util.StringUtils;
 
 /** Make Datasets and DataSources in various ways   
  * 
@@ -175,6 +183,61 @@ public class DatasetFactory
         ds2.setDefaultModel(defaultModel) ;
         return ds2 ; 
     }
+    
+    // Assembler.
+    /** Assembler a dataset from the model in a file
+     * 
+     * @param filename      The filename 
+     * @return Dataset
+     */
+    public static Dataset assemble(String filename)
+    {
+        Model model = FileManager.get().loadModel(filename) ;
+        return assemble(model) ;
+    }
+    
+    /** Assembler a dataset from the model
+     * 
+     * @param model
+     * @return Dataset
+     */
+    public static Dataset assemble(Model model)
+    {
+        // ----
+        String s = StringUtils.join("\n", new String[]{
+            "PREFIX  rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>" ,
+            "PREFIX  rdfs:   <http://www.w3.org/2000/01/rdf-schema#>",
+            "SELECT DISTINCT ?root { { ?root rdf:type ?ATYPE } UNION { ?root rdf:type ?t . ?t rdfs:subClassOf ?ATYPE } }"
+        }) ;
+        Query q = QueryFactory.create(s) ;
+        QuerySolutionMap qsm = new QuerySolutionMap() ;
+        qsm.add("ATYPE", DataSourceAssembler.getType()) ;
+
+        QueryExecution qExec = QueryExecutionFactory.create(q, model, qsm);
+        Resource r = (Resource)QueryExecUtils.getExactlyOne(qExec, "root") ;
+        return assemble(r) ;
+    }
+        
+    /** Assembler a dataset from a resource
+     * 
+     * @param Resource
+     * @return Dataset
+     */
+    
+    public static Dataset assemble(Resource r)
+    {
+        // Workaround: loadClass happens after type->implementation binding.
+        //try { Assembler.general.open(r) ; } catch ( Exception ex) { }
+        
+        ExpandingAssemblerGroup g = (ExpandingAssemblerGroup)Assembler.general ;
+        Resource root = AssemblerHelp.withFullModel( r );
+        g.loadClasses( root.getModel() );
+        
+        Dataset ds = (Dataset)Assembler.general.open(r) ;
+        return ds ;
+    }
+    
+
 
 }
 
