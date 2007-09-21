@@ -6,6 +6,8 @@
 
 package com.hp.hpl.jena.sdb.test;
 
+import com.hp.hpl.jena.sdb.test.iterator.TestAlg;
+
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -13,9 +15,11 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
+    TestAssembler.class,
     TestExprMatch.class,
     TestRegex.class,
-    TestPrefixMappingSDB.class
+    TestPrefixMappingSDB.class,
+    TestAlg.class
 } )
 
 public class SDBTestMisc

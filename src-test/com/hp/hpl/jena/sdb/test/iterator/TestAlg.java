@@ -10,12 +10,12 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.junit.Assert;
+import static org.junit.Assert.* ;
 import org.junit.Test;
 
 import com.hp.hpl.jena.sdb.iterator.Stream;
 
-public class TestAlg extends Assert
+public class TestAlg
 {
     List<String> data0 = new ArrayList<String>() ;
     List<String> data1 = new ArrayList<String>() ;
