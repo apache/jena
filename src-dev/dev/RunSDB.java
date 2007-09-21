@@ -36,7 +36,6 @@ import com.hp.hpl.jena.query.*;
 import com.hp.hpl.jena.sdb.SDB;
 import com.hp.hpl.jena.sdb.SDBFactory;
 import com.hp.hpl.jena.sdb.Store;
-import com.hp.hpl.jena.sdb.assembler.AssemblerVocab;
 import com.hp.hpl.jena.sdb.compiler.OpSQL;
 import com.hp.hpl.jena.sdb.core.sqlnode.GenerateSQL;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
@@ -116,7 +115,7 @@ public class RunSDB
         // Asseembler bug:
         // ja:loadClass called after type determination so adding vocab/implementWith does not get seen.
         
-        AssemblerVocab.init() ;
+        //AssemblerVocab.init() ;
         
         Model assem = FileManager.get().loadModel("dataset.ttl") ;
         
@@ -138,12 +137,28 @@ public class RunSDB
             System.err.println("Not found") ;
             System.exit(0) ;
         }
+     
+        try { AssemblerBase.general.open(r) ; } catch ( Exception ex) { System.err.println("exception") ; }
         
         Dataset ds = (Dataset)AssemblerBase.general.open(r) ;
         ds.getDefaultModel().write(System.out, "TTL") ;
     }
     
     // To QueryExecUtils
+    
+    private static RDFNode getExactlyOne(String qs, Model model)
+    { return getExactlyOne(qs, DatasetFactory.create(model)) ; }
+    
+    private static RDFNode getExactlyOne(String qs, Dataset ds)
+    {
+        Query q = QueryFactory.create(qs) ;
+        if ( q.getResultVars().size() != 1 )
+            throw new ARQException("getExactlyOne: Must have exactly one result columns") ;
+        String varname = (String)q.getResultVars().get(0) ;
+        QueryExecution qExec = QueryExecutionFactory.create(q, ds);
+        return getExactlyOne(qExec, varname) ;
+    }
+    
     private static RDFNode getExactlyOne(QueryExecution qExec, String varname)
     {
         try {
