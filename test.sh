@@ -15,7 +15,7 @@ json.jar
 junit.jar
 iri.jar
 log4j-1.2.12.jar
-lucene-core-2.0.0.jar
+lucene-core-2.2.0.jar
 wstx-asl-3.0.0.jar
 stax-api-1.0.jar
 xercesImpl.jar

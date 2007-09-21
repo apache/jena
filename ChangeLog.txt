@@ -3,6 +3,9 @@ ChangeLog for ARQ
 
 ==== ARQ 2.2
 
++ Upgrade lucene-core-2.0.0.jar to lucense-2.2.0.jar
+  Lucene chnages means that can't mix ARQ 2.1 and before with Lucene 2.1.0 or later.
+
 ==== ARQ 2.1
 
 + (experimental for this release - permanent in next)
