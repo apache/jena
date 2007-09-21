@@ -15,18 +15,14 @@ import static sdb.SDBCmd.setSDBConfig;
 import static sdb.SDBCmd.sparql;
 import arq.cmd.CmdUtils;
 
-import com.hp.hpl.jena.assembler.assemblers.AssemblerBase;
 import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.RDFNode;
-import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.util.FileManager;
 
-import com.hp.hpl.jena.sparql.ARQException;
 import com.hp.hpl.jena.sparql.algebra.Algebra;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.core.Prologue;
 import com.hp.hpl.jena.sparql.core.Quad;
-import com.hp.hpl.jena.sparql.core.assembler.DatasetAssemblerVocab;
+import com.hp.hpl.jena.sparql.core.assembler.DatasetAssembler;
 import com.hp.hpl.jena.sparql.resultset.ResultsFormat;
 import com.hp.hpl.jena.sparql.sse.SSE;
 import com.hp.hpl.jena.sparql.util.QueryExecUtils;
@@ -46,7 +42,6 @@ import com.hp.hpl.jena.sdb.store.LayoutType;
 import com.hp.hpl.jena.sdb.store.StoreConfig;
 import com.hp.hpl.jena.sdb.store.StoreFactory;
 import com.hp.hpl.jena.sdb.util.SDBUtils;
-import com.hp.hpl.jena.sdb.util.StrUtils;
 
 public class RunSDB
 {
@@ -117,66 +112,11 @@ public class RunSDB
         
         //AssemblerVocab.init() ;
         
-        Model assem = FileManager.get().loadModel("dataset.ttl") ;
-        
-        // ----
-        String s = StrUtils.strjoin("\n",
-                                     "PREFIX  rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>" ,
-                                     "PREFIX  rdfs:   <http://www.w3.org/2000/01/rdf-schema#>",
-                                     "SELECT DISTINCT ?root { { ?root rdf:type ?ATYPE } UNION { ?root rdf:type ?t . ?t rdfs:subClassOf ?ATYPE } }" ) ;
-        Query q = QueryFactory.create(s) ;
-        // ----
-        QuerySolutionMap qsm = new QuerySolutionMap() ;
-        qsm.add("ATYPE", DatasetAssemblerVocab.tDataset) ;  // Generic "dataset" type.
-        
-        QueryExecution qExec = QueryExecutionFactory.create(q, assem, qsm);
-        Resource r = (Resource)getExactlyOne(qExec, "root") ;
-
-        if ( r == null )
-        {
-            System.err.println("Not found") ;
-            System.exit(0) ;
-        }
-     
-        try { AssemblerBase.general.open(r) ; } catch ( Exception ex) { System.err.println("exception") ; }
-        
-        Dataset ds = (Dataset)AssemblerBase.general.open(r) ;
+        Dataset ds = DatasetAssembler.create("dataset.ttl") ;
         ds.getDefaultModel().write(System.out, "TTL") ;
     }
     
-    // To QueryExecUtils
-    
-    private static RDFNode getExactlyOne(String qs, Model model)
-    { return getExactlyOne(qs, DatasetFactory.create(model)) ; }
-    
-    private static RDFNode getExactlyOne(String qs, Dataset ds)
-    {
-        Query q = QueryFactory.create(qs) ;
-        if ( q.getResultVars().size() != 1 )
-            throw new ARQException("getExactlyOne: Must have exactly one result columns") ;
-        String varname = (String)q.getResultVars().get(0) ;
-        QueryExecution qExec = QueryExecutionFactory.create(q, ds);
-        return getExactlyOne(qExec, varname) ;
-    }
-    
-    private static RDFNode getExactlyOne(QueryExecution qExec, String varname)
-    {
-        try {
-            ResultSet rs = qExec.execSelect() ;
-            
-            //ResultSetFormatter.out(rs) ;
-            
-            if ( ! rs.hasNext() )
-                throw new ARQException("Not found: var ?"+varname) ;
 
-            QuerySolution qs = rs.nextSolution() ;
-            RDFNode r = qs.get(varname) ;
-            if ( rs.hasNext() )
-                throw new ARQException("More than one: var ?"+varname) ;
-            return r ;
-        } finally { qExec.close() ; }
-    }
-    
     private static void _runQuery(String queryFile, String dataFile, String sdbFile)
         {
 
