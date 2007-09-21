@@ -21,27 +21,6 @@ import com.hp.hpl.jena.sparql.util.DatasetUtils;
 
 public class DatasetFactory
 {
-    /** Create a single, merged graph Dataset from a list of URIs
-     * @deprecated Use create(List uriList)
-     * @param uriList
-     * @return Dataset
-     */
-    
-    public static Dataset merge(List uriList) { return merge(uriList, null) ; }
-    
-    /** Create a single, merged graph Dataset from a list of URIs
-     * @deprecated Use create(List uriList, FileManager fileManager)
-     * @param uriList
-     * @param fileManager
-     * @return Dataset
-     */
-    
-    public static Dataset merge(List uriList, FileManager fileManager)
-    {
-        return create(uriList, null, fileManager, null) ;
-    }
-    
-
     /** Create a Dataset
      * 
      * @return DataSource
