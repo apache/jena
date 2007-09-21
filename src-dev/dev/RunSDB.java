@@ -22,7 +22,6 @@ import com.hp.hpl.jena.sparql.algebra.Algebra;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.core.Prologue;
 import com.hp.hpl.jena.sparql.core.Quad;
-import com.hp.hpl.jena.sparql.core.assembler.DatasetAssembler;
 import com.hp.hpl.jena.sparql.resultset.ResultsFormat;
 import com.hp.hpl.jena.sparql.sse.SSE;
 import com.hp.hpl.jena.sparql.util.QueryExecUtils;
@@ -107,12 +106,7 @@ public class RunSDB
     
     private static void devAssembler()
     {
-        // Asseembler bug:
-        // ja:loadClass called after type determination so adding vocab/implementWith does not get seen.
-        
-        //AssemblerVocab.init() ;
-        
-        Dataset ds = DatasetAssembler.create("dataset.ttl") ;
+        Dataset ds = DatasetFactory.assemble("dataset.ttl") ;
         ds.getDefaultModel().write(System.out, "TTL") ;
     }
     

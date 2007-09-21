@@ -45,7 +45,7 @@ public class SDB
     public static Context getContext() { return ARQ.getContext() ; }
     
     static { initWorker() ; }
-    public static void init() {}
+    public static void init() { }
     
     private static boolean initialized = false ;
     private static synchronized void initWorker()

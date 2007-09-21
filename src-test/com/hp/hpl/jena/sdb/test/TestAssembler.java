@@ -6,16 +6,17 @@
 
 package com.hp.hpl.jena.sdb.test;
 
-import static org.junit.Assert.* ;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.sql.Connection;
 
 import org.junit.Test;
 
 import com.hp.hpl.jena.sparql.core.DatasetGraph;
-import com.hp.hpl.jena.sparql.core.assembler.DatasetAssembler;
 
 import com.hp.hpl.jena.query.Dataset;
+import com.hp.hpl.jena.query.DatasetFactory;
 
 import com.hp.hpl.jena.sdb.SDBFactory;
 import com.hp.hpl.jena.sdb.Store;
@@ -28,7 +29,7 @@ public class TestAssembler
     
     @Test public void dataset_1()
     {
-        Dataset ds = DatasetAssembler.create(dir+"dataset.ttl") ;
+        Dataset ds = DatasetFactory.assemble(dir+"dataset.ttl") ;
         assertNotNull(ds) ;
         // Check it will be dispatched to SDB
         DatasetGraph dsg = ds.asDatasetGraph() ;
