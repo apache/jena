@@ -10,11 +10,13 @@ package com.hp.hpl.jena.sparql.util;
 import java.util.List;
 
 import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.RDFWriter;
 import com.hp.hpl.jena.shared.PrefixMapping;
 import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
 
 import com.hp.hpl.jena.sparql.ARQConstants;
+import com.hp.hpl.jena.sparql.ARQException;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.OpVars;
 import com.hp.hpl.jena.sparql.algebra.op.OpProject;
@@ -266,6 +268,41 @@ public class QueryExecUtils
 
         System.err.println("Unknown format: "+outputFormat.getSymbol()) ;
     }
+    
+    /** Execute a query, expecting the result to be one row, one column.  Return that one RDFNode */
+    public static RDFNode getExactlyOne(String qs, Model model)
+    { return getExactlyOne(qs, DatasetFactory.create(model)) ; }
+    
+    /** Execute a query, expecting the result to be one row, one column.  Return that one RDFNode */
+    public static RDFNode getExactlyOne(String qs, Dataset ds)
+    {
+        Query q = QueryFactory.create(qs) ;
+        if ( q.getResultVars().size() != 1 )
+            throw new ARQException("getExactlyOne: Must have exactly one result columns") ;
+        String varname = (String)q.getResultVars().get(0) ;
+        QueryExecution qExec = QueryExecutionFactory.create(q, ds);
+        return getExactlyOne(qExec, varname) ;
+    }
+    
+    /** Execute, expecting the result to be one row, one column.  Return that one RDFNode */
+    public static RDFNode getExactlyOne(QueryExecution qExec, String varname)
+    {
+        try {
+            ResultSet rs = qExec.execSelect() ;
+            
+            //ResultSetFormatter.out(rs) ;
+            
+            if ( ! rs.hasNext() )
+                throw new ARQException("Not found: var ?"+varname) ;
+
+            QuerySolution qs = rs.nextSolution() ;
+            RDFNode r = qs.get(varname) ;
+            if ( rs.hasNext() )
+                throw new ARQException("More than one: var ?"+varname) ;
+            return r ;
+        } finally { qExec.close() ; }
+    }
+        
 
 }
 
