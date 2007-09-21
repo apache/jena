@@ -14,7 +14,7 @@ SDB ToDo list (and general notes)
 
 + Setting options for testing.
 + Tests for union graphs. 
-+ Use cursors for streaming / PostgreSQL [dONE - test]
++ Use cursors for streaming / PostgreSQL [DONE - test]
 
 + StoreLoader => StoreLoaderPlus.
 
