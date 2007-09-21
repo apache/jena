@@ -54,7 +54,7 @@ public class IndexBuilderBase implements IndexBuilder
     public IndexBuilderBase(File fileDir)
     {
         try {
-            dir = FSDirectory.getDirectory(fileDir, true);
+            dir = FSDirectory.getDirectory(fileDir);
             makeIndex() ;
         } catch (Exception ex)
         { throw new ARQLuceneException("IndexBuilderLARQ", ex) ; }
@@ -66,7 +66,7 @@ public class IndexBuilderBase implements IndexBuilder
     public IndexBuilderBase(String fileDir)
     {
         try {
-            dir = FSDirectory.getDirectory(fileDir, true);
+            dir = FSDirectory.getDirectory(fileDir);
             makeIndex() ;
         } catch (Exception ex)
         { throw new ARQLuceneException("IndexBuilderLARQ", ex) ; }
