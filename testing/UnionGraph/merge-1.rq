@@ -5,4 +5,4 @@ SELECT *
 {
     GRAPH <UnionGraph> { ?s ?p ?o }
 }
-    
+
