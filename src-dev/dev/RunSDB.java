@@ -10,6 +10,7 @@ import static sdb.SDBCmd.sdbconfig;
 import static sdb.SDBCmd.sdbdump;
 import static sdb.SDBCmd.sdbload;
 import static sdb.SDBCmd.sdbquery;
+import static sdb.SDBCmd.sdbprint;
 import static sdb.SDBCmd.setExitOnError;
 import static sdb.SDBCmd.setSDBConfig;
 import static sdb.SDBCmd.sparql;
@@ -18,7 +19,7 @@ import arq.cmd.CmdUtils;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.util.FileManager;
 
-import com.hp.hpl.jena.sparql.algebra.Algebra;
+import com.hp.hpl.jena.sparql.algebra.AlgebraGeneratorQuad;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.core.Prologue;
 import com.hp.hpl.jena.sparql.core.Quad;
@@ -32,15 +33,15 @@ import com.hp.hpl.jena.sdb.SDB;
 import com.hp.hpl.jena.sdb.SDBFactory;
 import com.hp.hpl.jena.sdb.Store;
 import com.hp.hpl.jena.sdb.compiler.OpSQL;
-import com.hp.hpl.jena.sdb.core.sqlnode.GenerateSQL;
-import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
+import com.hp.hpl.jena.sdb.compiler.QuadBlockCompilerMain;
+import com.hp.hpl.jena.sdb.core.sqlnode.*;
+import com.hp.hpl.jena.sdb.engine.QueryEngineSDB;
 import com.hp.hpl.jena.sdb.sql.JDBC;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.store.DatabaseType;
 import com.hp.hpl.jena.sdb.store.LayoutType;
 import com.hp.hpl.jena.sdb.store.StoreConfig;
 import com.hp.hpl.jena.sdb.store.StoreFactory;
-import com.hp.hpl.jena.sdb.util.SDBUtils;
 
 public class RunSDB
 {
@@ -50,9 +51,20 @@ public class RunSDB
 //        SDBConnection.logSQLExceptions = true ;
 //        SDBConnection.logSQLStatements = true ;
 
-        devAssembler() ; System.exit(0) ;
-        devSelectBlock() ; System.exit(0) ;
+        if ( false ) { devAssembler() ; System.exit(0) ; }
+        if ( false ) { devSelectBlock() ; System.exit(0) ; }
+        if ( true ) { devRename() ; System.exit(0) ; }
 
+        // Testing proper RDF merge of named graphs.
+        QuadBlockCompilerMain.attemptMerge = true ;
+        setSDBConfig("sdb.ttl") ;
+        sdbconfig("--create") ;
+        sdbload("--graph=file:data1", "D1.ttl") ;
+        sdbload("--graph=file:data2", "D2.ttl") ;
+        sdbquery("--query=Q.rq") ;
+        System.exit(0) ;
+        
+        
         if ( false )
         {
             sdb.sdbprint.main("--print=sql", "--print=sqlNode", "--sdb=sdb1.ttl", "--query=testing/Optionals1/opt-coalesce-1.rq") ;
@@ -69,39 +81,70 @@ public class RunSDB
     
     public static void devSelectBlock()
     {
+        QuadBlockCompilerMain.attemptMerge = true ;
 
-        if ( true  )
+        SDB.getContext().setTrue(SDB.unionDefaultGraph) ;
+        Store store = StoreFactory.create(LayoutType.LayoutTripleNodesHash, DatabaseType.PostgreSQL) ;
+
+        Prologue prologue = new Prologue() ;
+        prologue.setPrefix("u", Quad.unionGraph.getURI()) ;
+        prologue.setPrefix("", "http://example/") ;
+        prologue.setBaseURI("http://example/") ;
+
+        Op op = SSE.parseOp("(distinct (quadpattern [u: ?s :x ?o] [u: ?o :z ?z]))", prologue.getPrefixMapping()) ;
+        //System.out.println(op) ;
+        op = QueryEngineSDB.compile(store, op) ;
+        
+        SqlNode x = ((OpSQL)op).getSqlNode() ;
+//      System.out.println(op) ;
+//      System.out.println() ;
+
+        SqlNode x2 = SqlTransformer.transform(x, new TransformSelectBlock()) ;
+        System.out.println(x2) ;
+        System.out.println() ;
+
+        System.out.println(GenerateSQL.toPartSQL(x)) ;
+    }
+    
+    @SuppressWarnings("unchecked")
+    public static void devRename()
+    {
+        Store store = StoreFactory.create(LayoutType.LayoutTripleNodesHash, DatabaseType.PostgreSQL) ;
+        Prologue prologue = new Prologue() ;
+        prologue.setPrefix("u", Quad.unionGraph.getURI()) ;
+        prologue.setPrefix("", "http://example/") ;
+        prologue.setBaseURI("http://example/") ;
+        
+        String qs = "PREFIX : <http://example/> SELECT * { ?s :x ?o }" ;
+        
+        if ( false )
         {
-            SDB.getContext().setTrue(SDB.unionDefaultGraph) ;
-            Store store = StoreFactory.create(LayoutType.LayoutTripleNodesHash, DatabaseType.PostgreSQL) ;
-
-            if ( false )
-            {
-                Query query = QueryFactory.create("PREFIX : <http://example/> SELECT * { ?s :x ?o }") ;
-                Op op = Algebra.compileQuad(query) ;
-                op = SDBUtils.compile(store, op) ;
-                SqlNode x = ((OpSQL)op).getSqlNode() ;
-                System.out.println(GenerateSQL.toSQL(x)) ;
-//              System.out.println(str) ;
-//              System.out.println() ;
-            }
-
-            {
-                Prologue prologue = new Prologue() ;
-                prologue.setPrefix("u", Quad.unionGraph.getURI()) ;
-                prologue.setPrefix("", "http://example/") ;
-                prologue.setBaseURI("http://example/") ;
-                
-                Op op = SSE.parseOp("(quadpattern [u: ?s :x ?o])", prologue.getPrefixMapping()) ;
-                //System.out.println(op) ;
-                op = SDBUtils.compile(store, op) ;
-                SqlNode x = ((OpSQL)op).getSqlNode() ;
-                System.out.println(op) ;
-                System.out.println() ;
-                System.out.println(GenerateSQL.toSQL(x)) ;
-            }
-        }
-        System.exit(0) ;
+            setSDBConfig("sdb.ttl") ;
+            sdbprint(qs) ;
+        }            
+        
+        Query query = QueryFactory.create(qs) ;
+        Op op = AlgebraGeneratorQuad.compileQuery(query) ;
+        
+        // Gets the project wrong - puts the variables into the select.
+        //Op op = SSE.parseOp("(quadpattern [_ ?s :x ?o])", prologue.getPrefixMapping()) ;
+        //Op op = SSE.parseOp("(quadpattern [u: ?s :x ?o] [u: ?o :z ?z])", prologue.getPrefixMapping()) ;
+        op = QueryEngineSDB.compile(store, op) ;
+        
+        SqlNode x = ((OpSQL)op).getSqlNode() ;
+        
+        // Bug : puts all var/cols into the project
+        x = SqlRename.view("ZZ", x) ;
+        
+//        System.out.println(x) ;
+//        System.out.println() ;
+        
+        SqlNode x2 = SqlTransformer.transform(x, new TransformSelectBlock()) ;
+        System.out.println(x2) ;
+        System.out.println() ;
+        
+        System.out.println(GenerateSQL.toSQL(x)) ;
+        
     }
     
     private static void devAssembler()

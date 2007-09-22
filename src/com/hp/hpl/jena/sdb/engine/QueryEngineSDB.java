@@ -23,6 +23,7 @@ import com.hp.hpl.jena.sparql.util.Context;
 
 import com.hp.hpl.jena.query.Query;
 
+import com.hp.hpl.jena.sdb.SDB;
 import com.hp.hpl.jena.sdb.Store;
 import com.hp.hpl.jena.sdb.compiler.OpSQL;
 import com.hp.hpl.jena.sdb.compiler.QueryCompiler;
@@ -36,7 +37,6 @@ public class QueryEngineSDB extends QueryEngineBase
     private static Log log = LogFactory.getLog(QueryEngineSDB.class) ; 
     private Store store ;
     private SDBRequest request = null ;
-    private QueryCompiler queryCompiler = null ;
     private Op originalOp = null ;
 
     public QueryEngineSDB(Store store, Query q)
@@ -60,30 +60,56 @@ public class QueryEngineSDB extends QueryEngineBase
     {
         this.store = dsg.getStore() ;
         this.request = new SDBRequest(store, query, context) ;
-        if ( StoreUtils.isHSQL(store) )
-            this.request.LeftJoinTranslation = false ;
-        if ( StoreUtils.isPostgreSQL(store) || StoreUtils.isMySQL(store) )
-            this.request.LimitOffsetTranslation = true ;
-        
-        this.queryCompiler = store.getQueryCompilerFactory().createQueryCompiler(request) ;
-
         this.originalOp = getOp() ;
-        // Can compile now - makes it accessible for printing. 
-        Op op = queryCompiler.compile(originalOp) ;
+        
+        // Convenience - compile now even though it would get done on execution.    
+        Op op = compile(store, originalOp, null, context, request) ;
         setOp(op) ;
     }
     
+    // -----
+    // Utilities.
+    public static Op compile(Store store, Op op)
+    {
+        return compile(store, op, null) ;
+    }
+    
+    public static Op compile(Store store, Op op, Context context)
+    {
+        if ( context == null )
+            context = SDB.getContext() ;
+        
+        SDBRequest request = new SDBRequest(store, null, context) ;
+        return compile(store, op, null, context, request) ;
+    }
+    
+    // and the main compilation algorithm.
+    // QueryCompilerMain does the bridge generation.
+    private static Op compile(Store store, Op op, Binding binding, Context context, SDBRequest request)
+    {
+        if ( binding != null && ! binding.isEmpty() )
+            op = OpSubstitute.substitute(op, binding) ;
+        
+        if ( StoreUtils.isHSQL(store) )
+            request.LeftJoinTranslation = false ;
+        if ( StoreUtils.isPostgreSQL(store) || StoreUtils.isMySQL(store) )
+            request.LimitOffsetTranslation = true ;
+
+        QueryCompiler queryCompiler = store.getQueryCompilerFactory().createQueryCompiler(request) ;
+        Op op2 = queryCompiler.compile(op) ;
+        return op2 ;
+    }
+    
+    // -----    
     public SDBRequest getRequest()      { return request ; }
 
     @Override
     public QueryIterator eval(Op op, DatasetGraph dsg, Binding binding, Context context)
     {
         if ( ! binding.isEmpty() )
-        {
             // Assumes we compiled in the constructor.
-            op = OpSubstitute.substitute(originalOp, binding) ;
-            op = queryCompiler.compile(op) ;
-        }
+            // Substitute and recompile.
+            op = compile(store, op, binding, context, request) ;
         
         ExecutionContext execCxt = new ExecutionContext(context, dsg.getDefaultGraph(), dsg) ;
         
@@ -93,7 +119,7 @@ public class QueryEngineSDB extends QueryEngineBase
             // Not top - invoke the main query engine as a framework to
             // put all the sub-opSQL parts together.
             QueryIterator input = new QueryIterSingleton(binding, execCxt) ;
-            QueryIterator qIter = OpCompiler.compile(op, input, execCxt) ;
+            QueryIterator qIter = OpCompiler.compile(op, input, execCxt) ;  // OpCompiler from main query engine.
             qIter = QueryIteratorCheck.check(qIter, execCxt) ;
             return qIter ;
           }

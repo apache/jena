@@ -6,10 +6,13 @@
 
 package com.hp.hpl.jena.sdb.compiler;
 
+import com.hp.hpl.jena.sparql.core.Quad;
+
 import com.hp.hpl.jena.sdb.SDBException;
 import com.hp.hpl.jena.sdb.core.SDBRequest;
+import com.hp.hpl.jena.sdb.core.sqlnode.SqlDistinct;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
-import com.hp.hpl.jena.sparql.core.Quad;
+import com.hp.hpl.jena.sdb.core.sqlnode.SqlRename;
 
 public class QuadBlockCompilerMain implements QuadBlockCompiler
 {
@@ -27,6 +30,8 @@ public class QuadBlockCompilerMain implements QuadBlockCompiler
     public SlotCompiler getSlotCompiler()
     { return slotCompiler ; }
 
+    public static boolean attemptMerge = false ; 
+    
     //@Override
     public SqlNode compile(QuadBlock quads)
     {
@@ -69,10 +74,15 @@ public class QuadBlockCompilerMain implements QuadBlockCompiler
         boolean needDistinct = false ;
         if ( quads.getGraphNode().equals(Quad.unionGraph) )
             needDistinct = true ;
-//        if ( needDistinct )
-//            sqlNode = new SqlDistinct(sqlNode) ;
         
-
+        if ( needDistinct && attemptMerge )
+        {
+            // DISTINCT -- over the names variables but not * (which includes the graph node).
+            
+            // Get a single table.  This projects only the variables, not the unnamed graph node column. 
+            sqlNode = SqlRename.view("A", sqlNode) ;
+            sqlNode = SqlDistinct.distinct(sqlNode) ;
+        }
         
         return sqlNode ;
     }

@@ -58,7 +58,7 @@ public abstract class QueryCompilerMain implements QueryCompiler
         // To be removed : project handling in SqlNodesFinisher:: transform SDB should do this.
         // See XYZ below
         
-        // Find all OpSQL nodes and put a bride round them.
+        // Find all OpSQL nodes and put a bridge round them.
         OpWalker.walk(op2, new SqlNodesFinisher(patternIsOneSQLStatement)) ;
         return op2 ;
     }

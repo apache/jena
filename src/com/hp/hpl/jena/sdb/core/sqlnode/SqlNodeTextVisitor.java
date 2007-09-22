@@ -41,10 +41,7 @@ public class SqlNodeTextVisitor implements SqlNodeVisitor
         if ( sqlNode.getCols().size() == 0 )
             out.println("<no cols>") ;
         else
-        {
             print(sqlNode.getCols()) ;
-            out.println() ; 
-        }
         sqlNode.getSubNode().visit(this) ;
         finish() ;
     }
@@ -53,14 +50,13 @@ public class SqlNodeTextVisitor implements SqlNodeVisitor
     {
         boolean first = true ; 
         String currentPrefix = null ; 
-        out.incIndent() ;
         for ( VarCol c : cols )
         {
             if ( ! first ) out.print(" ") ;
             first = false ;
             
-            String a = null ;
-            String b = "<null>" ;
+            String a = null ;       // Variable name
+            String b = "<null>" ;   // column name
             if ( c.car() != null )
                 a = stringForNode(c.car().asNode()) ;
             if ( c.cdr() != null )
@@ -74,14 +70,21 @@ public class SqlNodeTextVisitor implements SqlNodeVisitor
             else
             {
                 // Var name formatting. 
-                String x[] = a.split("\\"+SQLUtils.getSQLmark()) ;
-                if ( currentPrefix != null && ! x[0].equals(currentPrefix) )
-                    out.println() ;
-                currentPrefix = x[0] ;
+                int j = a.lastIndexOf(SQLUtils.getSQLmark()) ;
+                if ( j == -1 )
+                    currentPrefix = null ;
+                else
+                {
+                    String x = b.substring(0, j) ;
+                    if ( currentPrefix != null && ! x.equals(currentPrefix) )
+                        out.println() ;
+
+                    currentPrefix = x ;
+                }
                 out.print(a+"/"+b) ;
             }
         }
-        out.decIndent() ;
+        out.ensureStartOfLine() ;
     }
     
     public void visit(SqlDistinct sqlNode)
@@ -101,18 +104,18 @@ public class SqlNodeTextVisitor implements SqlNodeVisitor
     
     private void print(SqlExprList exprs)
     {
-        out.incIndent() ;
         for ( SqlExpr c : exprs )
             out.println(c.toString()) ;
-        out.decIndent() ;
     }
 
     public void visit(SqlRename sqlRename)
     {
         start(sqlRename, "Rename", sqlRename.getAliasName()) ;
         out.incIndent() ;
-        out.println(sqlRename.getIdScope().toString()) ;
-        out.println(sqlRename.getNodeScope().toString()) ;
+        if ( ! sqlRename.getIdScope().isEmpty() )
+            out.println(sqlRename.getIdScope().toString()) ;
+        if ( ! sqlRename.getNodeScope().isEmpty() )
+            out.println(sqlRename.getNodeScope().toString()) ;
         out.decIndent() ;
         sqlRename.getSubNode().visit(this) ;
         finish() ;
@@ -182,9 +185,13 @@ public class SqlNodeTextVisitor implements SqlNodeVisitor
     public void visit(SqlSelectBlock sqlNode)
     { 
         start(sqlNode, "SqlSelectBlock", sqlNode.getAliasName()) ;
+        if ( sqlNode.getDistinct() )
+            out.println("Distinct") ;
+
         out.incIndent() ;
         print(sqlNode.getCols()) ;
         print(sqlNode.getWhere()) ;
+        out.decIndent() ;
         
         if ( sqlNode.getStart() >= 0 )
             out.print(Long.toString(sqlNode.getStart())) ;
@@ -192,7 +199,6 @@ public class SqlNodeTextVisitor implements SqlNodeVisitor
             out.print(Long.toString(sqlNode.getLength())) ;
 
         sqlNode.getSubNode().visit(this) ;
-        out.decIndent() ;
         finish() ;
     }
 

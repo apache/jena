@@ -1,9 +1,10 @@
-PREFIX :    <http://example/>
-SELECT  ?s
-WHERE
-  { ?s  ?p  ?o .}
+PREFIX :    <http://example>
+PREFIX arq: <urn:x-arq:>
 
-## { 
-##      ?x :q ?a . ?a :pp ?v
-## }
-## LIMIT 10
+SELECT *
+{
+  ?s ?p ?o
+#    GRAPH arq:UnionGraph { ?s ?p ?o }
+#    GRAPH arq:UnionGraph { :y :q ?x . ?x :p ?v }
+}
+

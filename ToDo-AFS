@@ -1,9 +1,23 @@
 SDB ToDo list (and general notes)
 =================================
 
+----
+Union => Merge
+
+1/ SqlSelectBlock needs to properly remap scopes through it, and have an alias
+   Currently, just passes to a subnode which works for one triple patern, not more.
+   SqlSelectBlock == SqlRename effectively?
+   Bug is in SqlRename
+   
+2/ SqlSelectBlock printing: SELECT AS uses subcol AS varname - instead, must use scopes.  
+----
+
 + New SQLgenerator
     IJ-R-T => IJ(r)-T is done specially in old generator? 
     COALESCE and SqlSelectBlocks
+
++ Sort out VarCols - can we use them more widely?
+  relates to ScopeEntries (which have a status - inherit?)
  
 + See the effect of "enable_seqscan = off" for PostgreSQL
  

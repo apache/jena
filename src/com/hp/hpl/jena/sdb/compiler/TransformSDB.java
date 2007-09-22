@@ -21,6 +21,7 @@ import com.hp.hpl.jena.sdb.SDBException;
 import com.hp.hpl.jena.sdb.core.AliasesSql;
 import com.hp.hpl.jena.sdb.core.SDBRequest;
 import com.hp.hpl.jena.sdb.core.ScopeEntry;
+import com.hp.hpl.jena.sdb.core.sqlnode.SqlDistinct;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlSlice;
 import com.hp.hpl.jena.sdb.iterator.Iter;
@@ -159,13 +160,14 @@ public class TransformSDB extends TransformCopy
 //        return super.transform(opProject, subOp) ;
 //    }
 //    
-//    @Override
-//    public Op transform(OpDistinct opDistinct, Op subOp)
-//    { 
-//        if ( ! QC.isOpSQL(subOp) )
-//            return super.transform(opDistinct, subOp) ;
-//        return super.transform(opDistinct, subOp) ;
-//    }
+    @Override
+    public Op transform(OpDistinct opDistinct, Op subOp)
+    { 
+        if ( ! QC.isOpSQL(subOp) )
+            return super.transform(opDistinct, subOp) ;
+        SqlNode sqlNode = ((OpSQL)subOp).getSqlNode() ;
+        return new OpSQL(SqlDistinct.distinct(sqlNode), opDistinct, request) ;
+    }
 
     // Order not yet handled.
     

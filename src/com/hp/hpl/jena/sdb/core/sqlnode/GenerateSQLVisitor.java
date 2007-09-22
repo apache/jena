@@ -68,7 +68,7 @@ public class GenerateSQLVisitor implements SqlNodeVisitor
     {
         // SELECT
       out.print("SELECT ") ;
-      if ( sqlSelectBlock.distinct() )
+      if ( sqlSelectBlock.getDistinct() )
           out.print("DISTINCT ") ;
       if ( annotate(sqlSelectBlock) ) 
           out.ensureStartOfLine() ;

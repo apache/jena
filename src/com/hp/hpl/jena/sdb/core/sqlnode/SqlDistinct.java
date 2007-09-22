@@ -23,7 +23,7 @@ public class SqlDistinct extends SqlNodeBase1
         return p ;
     }
     
-    public static SqlNode project(SqlNode sqlNode)
+    public static SqlNode distinct(SqlNode sqlNode)
     {
         return distinct(sqlNode, null) ;
     }

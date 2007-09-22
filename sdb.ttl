@@ -3,7 +3,7 @@
 @prefix ja:       <http://jena.hpl.hp.com/2005/11/Assembler#> .
 @prefix sdb:      <http://jena.hpl.hp.com/2007/sdb#> .
 
-_:c rdf:type sdb:SDBConnection ;
+<conn> rdf:type sdb:SDBConnection ;
 
      sdb:sdbHost        "localhost" ;
      sdb:sdbType        "derby" ;
@@ -17,13 +17,12 @@ _:c rdf:type sdb:SDBConnection ;
 ##     sdb:sdbType        "MSSQLServerExpress" ;
 ##     sdb:sdbHost        "localhost" ;
 ##     sdb:sdbName        "test2-hash" ;
-
      .
 
-[] rdf:type sdb:Store ;
+<store> rdf:type sdb:Store ;
     sdb:layout         "layout2" ;
     sdb:connection
-    [
+    [   rdf:type sdb:SDBConnection ;
         sdb:sdbHost        "localhost" ;
         sdb:sdbType        "derby" ;
         sdb:sdbName        "DB/SDB2" ;

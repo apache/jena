@@ -20,16 +20,31 @@ public class GenerateSQL implements SQLGenerator
     public static String toSQL(SqlNode sqlNode)
     { return new GenerateSQL().generateSQL(sqlNode) ; }
     
+    public static String toPartSQL(SqlNode sqlNode)
+    { return new GenerateSQL().generatePartSQL(sqlNode) ; }
+    
+    /** Generate an SQL statement for the node - force the outer level to be a SELECT */
     public String generateSQL(SqlNode sqlNode)
     {
 //        if ( forceOldGenerator )
 //            return GenerateSQL_Old.toSQL(sqlNode) ;
-        
-        IndentedLineBuffer buff = new IndentedLineBuffer() ;
-        SqlNodeVisitor v = makeVisitor(buff) ;
         // Top must be a project to cause the SELECT to be written
         sqlNode = ensureProject(sqlNode) ;
+        return generatePartSQL(sqlNode) ;
+    }
+    
+    /** Generate an SQL string for the node - which may no tbe legal SQL (e.g. no outer SELECT).*/  
+    public String generatePartSQL(SqlNode sqlNode)
+    {
+        IndentedLineBuffer buff = new IndentedLineBuffer() ;
+        
+        // Step one - rewrite the SQL node tree to have SelectBlocks, not the various SqlNodes
+        // that contribute to a SELECt statement.
         sqlNode = SqlTransformer.transform(sqlNode, new TransformSelectBlock()) ;
+        
+        // Step two - turn teh SqlNode tree, withg SqlSelectBlocks in it,
+        // in an SQL string.
+        SqlNodeVisitor v = makeVisitor(buff) ;
         sqlNode.visit(v) ;
         return buff.asString() ;
     }

@@ -29,7 +29,7 @@ public class ModGraph extends ModBase
     public void registerWith(CmdGeneral cmdLine)
     {
         cmdLine.add(argDeclGraphName,
-                    "--graph", "Graph name") ;
+                    "--graph=URI", "Graph name") ;
     }
 
     public void processArgs(CmdArgModule cmdLine)

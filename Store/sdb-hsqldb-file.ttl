@@ -3,8 +3,6 @@
 @prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix ja:     <http://jena.hpl.hp.com/2005/11/Assembler#> .
 
-## For HSQL, in memory, need data loading as well.
-
 _:c rdf:type sdb:SDBConnection ;
     sdb:sdbType      "hsqldb" ;
     sdb:sdbHost      "file" ;

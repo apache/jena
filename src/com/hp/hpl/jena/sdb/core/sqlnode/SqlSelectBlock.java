@@ -72,8 +72,8 @@ public class SqlSelectBlock extends SqlNodeBase1
     public void visit(SqlNodeVisitor visitor)
     { visitor.visit(this) ; }
 
-    
-    public boolean distinct()
+    // Not "isDistinct" 
+    public boolean getDistinct()
     {
         return distinct ;
     }

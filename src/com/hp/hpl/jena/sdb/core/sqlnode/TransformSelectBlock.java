@@ -6,9 +6,7 @@
 
 package com.hp.hpl.jena.sdb.core.sqlnode;
 
-import com.hp.hpl.jena.sdb.core.AliasesSql;
-import com.hp.hpl.jena.sdb.core.Generator;
-import com.hp.hpl.jena.sdb.core.Gensym;
+import com.hp.hpl.jena.sdb.core.*;
 
 public class TransformSelectBlock extends SqlTransformCopy
 {
@@ -32,6 +30,15 @@ public class TransformSelectBlock extends SqlTransformCopy
         block.addNotes(sqlNode.getNotes()) ;
     }
 
+    @Override
+    public SqlNode transform(SqlDistinct sqlDistinct, SqlNode subNode)
+    {
+        SqlSelectBlock block = block(subNode) ;
+        addNotes(block, sqlDistinct) ;
+        block.setDistinct(true) ;
+        return block ;
+    }
+    
     @Override
     public SqlNode transform(SqlRestrict sqlRestrict, SqlNode subNode)
     { 
@@ -76,9 +83,24 @@ public class TransformSelectBlock extends SqlTransformCopy
 //    public SqlNode transform(SqlTable sqlTable)
 //    { return null ; }
 //
-//    @Override
-//    public SqlNode transform(SqlRename sqlRename, SqlNode subNode)
-//    { return null ; }
+    @Override
+    public SqlNode transform(SqlRename sqlRename, SqlNode subNode)
+    { 
+        SqlSelectBlock block = block(subNode) ;
+        addNotes(block, sqlRename) ;
+        addProject(block, sqlRename.getIdScope()) ;
+        addProject(block, sqlRename.getNodeScope()) ;
+        return block ;
+    }
+    
+    private void addProject(SqlSelectBlock block, Scope scope)
+    {
+        for ( ScopeEntry e : scope.findScopes() )
+        {
+            VarCol varCol = new VarCol(e.getVar(), e.getColumn()) ;
+            block.getCols().add(varCol) ;
+        }
+    }
     
     // XXX Aliasing.  Need to propagate the aliases down if we introduce one. 
     
@@ -91,8 +113,9 @@ public class TransformSelectBlock extends SqlTransformCopy
         if ( sqlNode.isTable() )
             alias = sqlNode.getAliasName() ;
         else
-            //alias = gen.next() ;
             alias = sqlNode.getAliasName() ;
+        if ( alias == null )
+            alias = gen.next() ;
         return new SqlSelectBlock(alias, sqlNode) ;
     }
 }
