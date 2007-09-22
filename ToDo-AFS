@@ -7,7 +7,7 @@ Union => Merge
 1/ SqlSelectBlock needs to properly remap scopes through it, and have an alias
    Currently, just passes to a subnode which works for one triple patern, not more.
    SqlSelectBlock == SqlRename effectively?
-   Bug is in SqlRename
+   Bug is in SqlRename or TransformSelectBlock.transform(SqlRename)
    
 2/ SqlSelectBlock printing: SELECT AS uses subcol AS varname - instead, must use scopes.  
 ----

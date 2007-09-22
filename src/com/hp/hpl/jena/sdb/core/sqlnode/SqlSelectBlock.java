@@ -7,6 +7,7 @@
 package com.hp.hpl.jena.sdb.core.sqlnode;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import com.hp.hpl.jena.sdb.SDBException;
@@ -54,6 +55,10 @@ public class SqlSelectBlock extends SqlNodeBase1
     }
 
     public List<VarCol> getCols()       { return cols ; }
+    public void add(VarCol vc)          { cols.add(vc) ; }
+    public void addAll(Collection<VarCol> vc)    
+    { cols.addAll(vc) ; }
+    
     public SqlExprList getWhere()       { return exprs ; }
 
     public long getStart()              { return start ; }

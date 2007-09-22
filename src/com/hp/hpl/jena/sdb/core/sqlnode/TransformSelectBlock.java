@@ -21,7 +21,7 @@ public class TransformSelectBlock extends SqlTransformCopy
     { 
         SqlSelectBlock block = block(subNode) ;
         addNotes(block, sqlProject) ;
-        block.getCols().addAll(sqlProject.getCols()) ;
+        block.addAll(sqlProject.getCols()) ;
         return block ;
     }
 
@@ -88,6 +88,7 @@ public class TransformSelectBlock extends SqlTransformCopy
     { 
         SqlSelectBlock block = block(subNode) ;
         addNotes(block, sqlRename) ;
+        // This cause propagation all the way out.  Which is wrong.
         addProject(block, sqlRename.getIdScope()) ;
         addProject(block, sqlRename.getNodeScope()) ;
         return block ;
@@ -98,7 +99,7 @@ public class TransformSelectBlock extends SqlTransformCopy
         for ( ScopeEntry e : scope.findScopes() )
         {
             VarCol varCol = new VarCol(e.getVar(), e.getColumn()) ;
-            block.getCols().add(varCol) ;
+            block.add(varCol) ;
         }
     }
     
