@@ -24,6 +24,16 @@ public class SqlRename extends SqlNodeBase1
     private ScopeRename idScope ;
     private ScopeRename nodeScope ;
     private SqlTable vTable ;       // Our column naming space.
+    
+    // --- Development/debugging.
+    
+    public static ScopeRename calc(Scope scope)
+    {
+        SqlTable table = new SqlTable("REN") ;
+        Generator gen = Gensym.create("X") ;
+        return calcRename(table, scope, gen) ;
+    }
+    //---
 
     public static SqlRename view(String alias, SqlNode sqlNode)
     { 
@@ -34,7 +44,6 @@ public class SqlRename extends SqlNodeBase1
         ScopeRename nodeScope = calcRename(table, sqlNode.getNodeScope(), gen) ;
 
         SqlRename rename = new SqlRename(table, sqlNode, idScope, nodeScope) ;
-
         return rename ;
     }
     
@@ -45,8 +54,7 @@ public class SqlRename extends SqlNodeBase1
         this.idScope = idScope ;
         this.nodeScope = nodeScope ;
     }
-//
-//    
+
 //    private SqlRename(String aliasName, SqlNode sqlNode, 
 //                     Map<Var, String> idRenames,
 //                     Map<Var, String> nodeRenames)
@@ -104,9 +112,10 @@ public class SqlRename extends SqlNodeBase1
         }
     }
     
-    public ScopeRename getIdScopeRename()   { return idScope ; }
-    
-    public ScopeRename getNodeScopeRename() { return nodeScope ; }
+    @Override
+    public ScopeRename getIdScope()   { return idScope ; }
+    @Override
+    public ScopeRename getNodeScope() { return nodeScope ; }
     
     public void visit(SqlNodeVisitor visitor)
     { visitor.visit(this) ; }

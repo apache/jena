@@ -133,6 +133,7 @@ public class GenerateSQLVisitor implements SqlNodeVisitor
             Var aliasVar = c.car() ;
             String p = null ;
 
+            // ?? 
             if ( aliasVar == null )
             {
                 splitMarker = "." ;

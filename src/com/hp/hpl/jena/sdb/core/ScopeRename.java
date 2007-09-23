@@ -6,19 +6,18 @@
 
 package com.hp.hpl.jena.sdb.core;
 
-import static com.hp.hpl.jena.sdb.iterator.Stream.map;
-import static com.hp.hpl.jena.sdb.iterator.Stream.toSet;
-
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.hp.hpl.jena.sparql.core.Var;
+
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
 import com.hp.hpl.jena.sdb.iterator.Transform;
-import com.hp.hpl.jena.sparql.core.Var;
 
 public class ScopeRename implements Scope
 {
@@ -29,6 +28,8 @@ public class ScopeRename implements Scope
     public ScopeRename(Scope oldScope)
     { this.scope = oldScope ; }
 
+    // See ScopeBase for commonality of code
+    
     public void setAlias(Var var, SqlColumn col)
     {
         if ( ! scope.hasColumnForVar(var) )
@@ -40,17 +41,30 @@ public class ScopeRename implements Scope
     public ScopeEntry findScopeForVar(Var var)
     {
         check(var) ;
-        ScopeEntry e = scope.findScopeForVar(var) ;
-        if ( e == null )
+        if ( ! frame.containsKey(var) )
             return null ;
-        return converter.convert(e) ;
+        
+        ScopeEntry e = new ScopeEntry(var, frame.get(var) ) ;
+        e.setStatus(scope.findScopeForVar(var).getStatus()) ;
+        return e ;
+//        ScopeEntry e = scope.findScopeForVar(var) ;
+//        if ( e == null )
+//            return null ;
+//        return converter.convert(e) ;
     }
 
     public Set<ScopeEntry> findScopes()
     {
-        Set<ScopeEntry> x = scope.findScopes() ;
-        x = toSet(map(x, converter)) ;
+        Set<ScopeEntry> x = new HashSet<ScopeEntry>() ;
+        for ( Var v : frame.keySet() )
+        {
+            ScopeEntry e = findScopeForVar(v) ;
+            x.add(e) ;
+        }
         return x ;
+//        Set<ScopeEntry> x = scope.findScopes() ;
+//        x = toSet(map(x, converter)) ;
+//        return x ;
     }
 
     public boolean isEmpty()
@@ -90,6 +104,7 @@ public class ScopeRename implements Scope
         new Transform<ScopeEntry, ScopeEntry>(){
             public ScopeEntry convert(ScopeEntry entry)
             {
+                entry = new ScopeEntry(entry.getVar(), entry.getColumn()) ;
                 Var var = entry.getVar() ;
                 SqlColumn col = frame.get(var) ;
                 if ( col == null && entry != null )
@@ -105,8 +120,10 @@ public class ScopeRename implements Scope
                 
                 if ( entry == null )
                     return null ;
-                entry.reset(var, col, entry.getStatus()) ;
-                return entry ;
+                ScopeEntry entry2 = new ScopeEntry(entry.getVar(), entry.getColumn()) ;
+                entry2.setStatus(entry.getStatus()) ;
+                //entry.reset(var, col, entry.getStatus()) ;
+                return entry2 ;
             }} ;
 }
 

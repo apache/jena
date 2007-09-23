@@ -11,8 +11,11 @@ import java.util.Collection;
 import java.util.List;
 
 import com.hp.hpl.jena.sdb.SDBException;
+import com.hp.hpl.jena.sdb.core.Scope;
 import com.hp.hpl.jena.sdb.core.VarCol;
+import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExprList;
+import com.hp.hpl.jena.sdb.util.Pair;
 
 /** A unit that generates an SQL SELECT Statement.
  *  The SQL generation process is a pass over the SqlNdoe structure to generate SelectBlocks,
@@ -40,10 +43,17 @@ public class SqlSelectBlock extends SqlNodeBase1
     // limit/offset
     
     private List<VarCol> cols = new ArrayList<VarCol>() ;
+    
+    // ColAlias?
+    private List<Pair<SqlColumn, SqlColumn>> _cols = new ArrayList<Pair<SqlColumn, SqlColumn>>() ;
+    
     private SqlExprList exprs = new SqlExprList() ;
     private long start = -1 ;
     private long length = -1 ;
     private boolean distinct = false ;
+    
+    private Scope idScope = null ;      // Scopes are as the wrapped SqlNode unless explicitly changed.
+    private Scope nodeScope = null ;
     
     /**
      * @param aliasName
@@ -55,9 +65,19 @@ public class SqlSelectBlock extends SqlNodeBase1
     }
 
     public List<VarCol> getCols()       { return cols ; }
-    public void add(VarCol vc)          { cols.add(vc) ; }
+    public void add(VarCol c)           { cols.add(c) ; }
     public void addAll(Collection<VarCol> vc)    
     { cols.addAll(vc) ; }
+    
+    public void _add(SqlColumn col,  SqlColumn aliasCol)
+    { 
+        if ( aliasCol.getTable().getAliasName().equals(getAliasName()) )
+            throw new SDBException("Attempt to project to a column with different alias: "+col+" -> "+aliasCol) ;
+        Pair<SqlColumn, SqlColumn> p = new Pair<SqlColumn, SqlColumn>(col, aliasCol) ;
+        _cols.add(p) ;
+    }    
+    
+    public List<Pair<SqlColumn, SqlColumn>> _getCols()       { return _cols ; }
     
     public SqlExprList getWhere()       { return exprs ; }
 
@@ -66,6 +86,15 @@ public class SqlSelectBlock extends SqlNodeBase1
 
     public long getLength()             { return length ; }
     public void setLength(long length)  { this.length = length ; }
+    
+    @Override
+    public Scope getIdScope()           { return idScope != null ? idScope : super.getIdScope() ; } 
+
+    @Override
+    public Scope getNodeScope()         { return nodeScope != null ? nodeScope : super.getNodeScope() ; } 
+
+    public void setIdScope(Scope scope)     { idScope = scope ; }
+    public void setNodeScope(Scope scope)   { nodeScope = scope ; }
     
     @Override
     public SqlNode apply(SqlTransform transform, SqlNode newSubNode)

@@ -9,8 +9,8 @@ package dev;
 import static sdb.SDBCmd.sdbconfig;
 import static sdb.SDBCmd.sdbdump;
 import static sdb.SDBCmd.sdbload;
-import static sdb.SDBCmd.sdbquery;
 import static sdb.SDBCmd.sdbprint;
+import static sdb.SDBCmd.sdbquery;
 import static sdb.SDBCmd.setExitOnError;
 import static sdb.SDBCmd.setSDBConfig;
 import static sdb.SDBCmd.sparql;
@@ -19,7 +19,6 @@ import arq.cmd.CmdUtils;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.util.FileManager;
 
-import com.hp.hpl.jena.sparql.algebra.AlgebraGeneratorQuad;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.core.Prologue;
 import com.hp.hpl.jena.sparql.core.Quad;
@@ -34,6 +33,7 @@ import com.hp.hpl.jena.sdb.SDBFactory;
 import com.hp.hpl.jena.sdb.Store;
 import com.hp.hpl.jena.sdb.compiler.OpSQL;
 import com.hp.hpl.jena.sdb.compiler.QuadBlockCompilerMain;
+import com.hp.hpl.jena.sdb.core.ScopeRename;
 import com.hp.hpl.jena.sdb.core.sqlnode.*;
 import com.hp.hpl.jena.sdb.engine.QueryEngineSDB;
 import com.hp.hpl.jena.sdb.sql.JDBC;
@@ -52,8 +52,8 @@ public class RunSDB
 //        SDBConnection.logSQLStatements = true ;
 
         if ( false ) { devAssembler() ; System.exit(0) ; }
-        if ( false ) { devSelectBlock() ; System.exit(0) ; }
-        if ( true ) { devRename() ; System.exit(0) ; }
+        if ( true ) { devSelectBlock() ; System.exit(0) ; }
+        if ( false ) { devRename() ; System.exit(0) ; }
 
         // Testing proper RDF merge of named graphs.
         QuadBlockCompilerMain.attemptMerge = true ;
@@ -96,8 +96,8 @@ public class RunSDB
         op = QueryEngineSDB.compile(store, op) ;
         
         SqlNode x = ((OpSQL)op).getSqlNode() ;
-//      System.out.println(op) ;
-//      System.out.println() ;
+        System.out.println(op) ;
+        System.out.println() ;
 
         SqlNode x2 = SqlTransformer.transform(x, new TransformSelectBlock()) ;
         System.out.println(x2) ;
@@ -115,7 +115,8 @@ public class RunSDB
         prologue.setPrefix("", "http://example/") ;
         prologue.setBaseURI("http://example/") ;
         
-        String qs = "PREFIX : <http://example/> SELECT * { ?s :x ?o }" ;
+        //String qs = "PREFIX : <http://example/> SELECT * { ?s :x ?o }" ;
+        String qs = "PREFIX : <http://example/> SELECT * { ?s :x ?o . ?o :z ?z }" ;
         
         if ( false )
         {
@@ -124,14 +125,23 @@ public class RunSDB
         }            
         
         Query query = QueryFactory.create(qs) ;
-        Op op = AlgebraGeneratorQuad.compileQuery(query) ;
+        //Op op = AlgebraGeneratorQuad.compileQuery(query) ;
         
-        // Gets the project wrong - puts the variables into the select.
         //Op op = SSE.parseOp("(quadpattern [_ ?s :x ?o])", prologue.getPrefixMapping()) ;
-        //Op op = SSE.parseOp("(quadpattern [u: ?s :x ?o] [u: ?o :z ?z])", prologue.getPrefixMapping()) ;
+        Op op = SSE.parseOp("(quadpattern [u: ?s :x ?o] [u: ?o :z ?z])", prologue.getPrefixMapping()) ;
         op = QueryEngineSDB.compile(store, op) ;
         
         SqlNode x = ((OpSQL)op).getSqlNode() ;
+        
+        if ( false )
+        {
+            System.out.println(x) ;
+            ScopeRename r1 = SqlRename.calc(x.getIdScope()) ;
+            System.out.println("Id: "+r1) ;
+            ScopeRename r2 = SqlRename.calc(x.getNodeScope()) ;
+            System.out.println("Node: "+r2) ;
+            return ;
+        }
         
         // Bug : puts all var/cols into the project
         x = SqlRename.view("ZZ", x) ;

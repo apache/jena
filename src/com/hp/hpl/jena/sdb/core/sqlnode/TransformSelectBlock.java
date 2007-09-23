@@ -6,6 +6,7 @@
 
 package com.hp.hpl.jena.sdb.core.sqlnode;
 
+import com.hp.hpl.jena.sdb.SDBException;
 import com.hp.hpl.jena.sdb.core.*;
 
 public class TransformSelectBlock extends SqlTransformCopy
@@ -88,16 +89,29 @@ public class TransformSelectBlock extends SqlTransformCopy
     { 
         SqlSelectBlock block = block(subNode) ;
         addNotes(block, sqlRename) ;
-        // This cause propagation all the way out.  Which is wrong.
-        addProject(block, sqlRename.getIdScope()) ;
-        addProject(block, sqlRename.getNodeScope()) ;
+        block.setIdScope(sqlRename.getIdScope()) ;
+        block.setNodeScope(sqlRename.getNodeScope()) ;
+        
+        // Need to add X AS Y
+        // for X as subnode and Y as rename. 
+        
+        
+        // ??
+        addProject(block, sqlRename.getIdScope(), sqlRename.getSubNode().getIdScope()) ;
+        addProject(block, sqlRename.getNodeScope(), sqlRename.getSubNode().getNodeScope()) ;
         return block ;
     }
     
-    private void addProject(SqlSelectBlock block, Scope scope)
+    private void addProject(SqlSelectBlock block, Scope scope, Scope subScope)
     {
         for ( ScopeEntry e : scope.findScopes() )
         {
+            ScopeEntry sub = subScope.findScopeForVar(e.getVar()) ;
+            if ( sub == null )
+                throw new SDBException("Internal error: column for renamed var not found: "+e.getVar()) ;
+            
+            System.err.println(e.getVar()+" : "+sub.getColumn()+ " AS "+ e.getColumn()) ;
+            
             VarCol varCol = new VarCol(e.getVar(), e.getColumn()) ;
             block.add(varCol) ;
         }
