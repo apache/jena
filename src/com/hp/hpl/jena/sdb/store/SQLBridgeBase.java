@@ -115,10 +115,10 @@ public abstract class SQLBridgeBase implements SQLBridge
         sqlNode = SqlProject.project(sqlNode, new VarCol(v,  col)) ;
     }
     
-    protected void addProject(SqlColumn col)
-    { 
-        sqlNode = SqlProject.project(sqlNode, new VarCol(null,  col)) ;
-    }
+//    protected void addProject(SqlColumn col)
+//    { 
+//        sqlNode = SqlProject.project(sqlNode, new VarCol(null,  col)) ;
+//    }
     
     protected void addAnnotation(String string)
     {

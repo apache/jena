@@ -78,8 +78,11 @@ public class SQLBridge2 extends SQLBridgeBase
             SqlTable table = vCol.getTable() ;
             String sqlVarName = allocSqlName(v) ;
             
-            // Need to allocate aliases because other wise we need to access
+            // Need to allocate aliases because otherwise we need to access
             // "table.column" as a label and "." is illegal in a label
+            
+            // XXX sqlVarName => SqlColumn, not a Var.  A hack that fails. 
+            
             Var vLex = Var.alloc(SQLUtils.gen(sqlVarName,"lex")) ;
             SqlColumn cLex = new SqlColumn(table, "lex") ;
     
@@ -96,6 +99,7 @@ public class SQLBridge2 extends SQLBridgeBase
             addProject(vDatatype, cDatatype) ;
             addProject(vLang, cLang) ;
             addProject(vType, cType) ;
+            
             addAnnotation(sqlVarName+"="+v.toString()) ;
         }
         setAnnotation() ; 
