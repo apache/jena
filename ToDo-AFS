@@ -4,8 +4,9 @@ SDB ToDo list (and general notes)
 ----
 Union => Merge
 
-1/ ?? Rename does not intercept and redirect scope requests. 
-  ScopeRename does not look in frame
+1/ Project neds to work on Col -. Alias
+   VarCol => ColAlias(SqlColumn -> SqlColumn)
+   
    
 2/ (Related?) SqlSelectBlock printing: SELECT AS uses subcol AS varname - instead, must use scopes.  
 ----
