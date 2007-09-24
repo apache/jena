@@ -1,6 +1,8 @@
 SDB ToDo list (and general notes)
 =================================
 
++ Break out the merge query section into a separate wiki page.
+
 + New alias policy : only have when a new consolidation nodes
     SqlTable, SqlProject/SqlRename, SqlCoalesce, SqlSelectBlock 
     Never on joins.
