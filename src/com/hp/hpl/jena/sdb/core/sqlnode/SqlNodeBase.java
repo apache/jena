@@ -18,7 +18,7 @@ import com.hp.hpl.jena.sparql.util.Utils;
 
 public abstract class SqlNodeBase extends AnnotationsBase implements SqlNode
 {
-    private String aliasName ;
+    protected String aliasName ;
     
     public SqlNodeBase(String aliasName) { this.aliasName = aliasName ; }
     

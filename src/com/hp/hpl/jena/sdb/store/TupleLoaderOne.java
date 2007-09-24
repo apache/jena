@@ -17,8 +17,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.sdb.SDBException;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlConstant;
+import com.hp.hpl.jena.sdb.shared.SDBInternalError;
 import com.hp.hpl.jena.sdb.sql.ResultSetJDBC;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.sql.SDBExceptionSQL;
@@ -49,7 +49,7 @@ public abstract class TupleLoaderOne extends TupleLoaderBase
         {
             String fmt = "TupleLoaderOne(%s) Expected row length: %d but got %d" ;
             String msg = String.format(fmt, getTableName(), getTableWidth(), row.length) ;
-            throw new SDBException(msg) ;
+            throw new SDBInternalError(msg) ;
         }
 
         // Process nodes.

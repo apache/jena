@@ -1,15 +1,13 @@
 SDB ToDo list (and general notes)
 =================================
 
-----
-Union => Merge
++ New alias policy : only have when a new consolidation nodes
+    SqlTable, SqlProject/SqlRename, SqlCoalesce, SqlSelectBlock 
+    Never on joins.
 
-1/ Project neds to work on Col -. Alias
-   VarCol => ColAlias(SqlColumn -> SqlColumn)
-   
-   
-2/ (Related?) SqlSelectBlock printing: SELECT AS uses subcol AS varname - instead, must use scopes.  
-----
++ QC and QueryEngineSDB statics - merge
+
++ SqlProject/SqlRename are now highly related - merge 
 
 + What about bulk add/delete of whole graphs? 
   esp removal of a complete named graph.

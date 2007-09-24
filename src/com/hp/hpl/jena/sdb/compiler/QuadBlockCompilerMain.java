@@ -6,13 +6,12 @@
 
 package com.hp.hpl.jena.sdb.compiler;
 
-import com.hp.hpl.jena.sparql.core.Quad;
-
-import com.hp.hpl.jena.sdb.SDBException;
 import com.hp.hpl.jena.sdb.core.SDBRequest;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlDistinct;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlRename;
+import com.hp.hpl.jena.sdb.shared.SDBInternalError;
+import com.hp.hpl.jena.sparql.core.Quad;
 
 public class QuadBlockCompilerMain implements QuadBlockCompiler
 {
@@ -51,7 +50,7 @@ public class QuadBlockCompilerMain implements QuadBlockCompiler
                 if ( stage != null )
                 {
                     if ( quads.get(i) == q )
-                        throw new SDBException("Pattern table returned a stage but did not remove the first quad") ;
+                        throw new SDBInternalError("Pattern table returned a stage but did not remove the first quad") ;
                     sList.add(stage) ;
                     continue ;
                 }

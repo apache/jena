@@ -6,11 +6,6 @@
 
 package com.hp.hpl.jena.sdb.core.sqlnode;
 
-import java.util.List;
-
-import com.hp.hpl.jena.sdb.core.VarCol;
-import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
-
 public class SqlDistinct extends SqlNodeBase1
 {
     public static SqlNode distinct(SqlNode sqlNode, String alias)
@@ -28,8 +23,6 @@ public class SqlDistinct extends SqlNodeBase1
         return distinct(sqlNode, null) ;
     }
     
-    private List<VarCol> cols = null ; 
-    
     private SqlDistinct(SqlNode sqlNode, String alias)
     {
         super(alias, sqlNode) ;
@@ -40,11 +33,6 @@ public class SqlDistinct extends SqlNodeBase1
     @Override
     public SqlDistinct asDistinct() { return this ; }
     
-    @Override 
-    public boolean usesColumn(SqlColumn c) { return cols.contains(c) ; }
-
-    public List<VarCol> getCols() { return cols ; }
-
     public void visit(SqlNodeVisitor visitor)
     { visitor.visit(this) ; }
     

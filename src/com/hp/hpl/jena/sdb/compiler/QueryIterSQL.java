@@ -6,6 +6,7 @@
 
 package com.hp.hpl.jena.sdb.compiler;
 
+import com.hp.hpl.jena.sdb.shared.SDBInternalError;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.OpSubstitute;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
@@ -13,7 +14,6 @@ import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterRepeatApply;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
-import com.hp.hpl.jena.sdb.SDBException;
 
 public class QueryIterSQL extends QueryIterRepeatApply
 {
@@ -41,7 +41,7 @@ public class QueryIterSQL extends QueryIterRepeatApply
             if ( op instanceof OpSQL )
                 execSQL = (OpSQL)op ;
             else
-                throw new SDBException("Failed to recompile the OpSQL to an OpSQL") ;
+                throw new SDBInternalError("Failed to recompile the OpSQL to an OpSQL") ;
         }
 
         return execSQL.exec(binding, getExecContext()) ;

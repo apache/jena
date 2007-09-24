@@ -6,8 +6,12 @@
 
 package com.hp.hpl.jena.sdb.core.sqlnode;
 
-import com.hp.hpl.jena.sdb.SDBException;
-import com.hp.hpl.jena.sdb.core.*;
+import com.hp.hpl.jena.sdb.core.AliasesSql;
+import com.hp.hpl.jena.sdb.core.Generator;
+import com.hp.hpl.jena.sdb.core.Gensym;
+import com.hp.hpl.jena.sdb.core.Scope;
+import com.hp.hpl.jena.sdb.core.ScopeEntry;
+import com.hp.hpl.jena.sdb.shared.SDBInternalError;
 
 public class TransformSelectBlock extends SqlTransformCopy
 {
@@ -88,15 +92,15 @@ public class TransformSelectBlock extends SqlTransformCopy
     public SqlNode transform(SqlRename sqlRename, SqlNode subNode)
     { 
         SqlSelectBlock block = block(subNode) ;
+
+        if ( sqlRename.getAliasName() != null )
+            block.setBlockAlias(sqlRename.getAliasName()) ;
         addNotes(block, sqlRename) ;
         block.setIdScope(sqlRename.getIdScope()) ;
         block.setNodeScope(sqlRename.getNodeScope()) ;
         
         // Need to add X AS Y
         // for X as subnode and Y as rename. 
-        
-        
-        // ??
         addProject(block, sqlRename.getIdScope(), sqlRename.getSubNode().getIdScope()) ;
         addProject(block, sqlRename.getNodeScope(), sqlRename.getSubNode().getNodeScope()) ;
         return block ;
@@ -108,12 +112,10 @@ public class TransformSelectBlock extends SqlTransformCopy
         {
             ScopeEntry sub = subScope.findScopeForVar(e.getVar()) ;
             if ( sub == null )
-                throw new SDBException("Internal error: column for renamed var not found: "+e.getVar()) ;
-            
-            System.err.println(e.getVar()+" : "+sub.getColumn()+ " AS "+ e.getColumn()) ;
-            
-            VarCol varCol = new VarCol(e.getVar(), e.getColumn()) ;
-            block.add(varCol) ;
+                throw new SDBInternalError("Internal error: column for renamed var not found: "+e.getVar()) ;
+            ColAlias colAlias = new ColAlias(sub.getColumn(), e.getColumn()) ;
+            colAlias.check(block.getAliasName()) ;
+            block.add(colAlias) ;
         }
     }
     
@@ -124,13 +126,9 @@ public class TransformSelectBlock extends SqlTransformCopy
         if ( sqlNode instanceof SqlSelectBlock )
             return (SqlSelectBlock)sqlNode ;
         
-        String alias = null ;
-        if ( sqlNode.isTable() )
-            alias = sqlNode.getAliasName() ;
-        else
-            alias = sqlNode.getAliasName() ;
-        if ( alias == null )
-            alias = gen.next() ;
+        String alias = sqlNode.getAliasName() ;
+//        if ( alias == null )
+//            alias = gen.next() ;
         return new SqlSelectBlock(alias, sqlNode) ;
     }
 }

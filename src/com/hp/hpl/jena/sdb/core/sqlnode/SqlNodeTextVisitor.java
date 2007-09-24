@@ -6,17 +6,13 @@
 
 package com.hp.hpl.jena.sdb.core.sqlnode;
 
-import static com.hp.hpl.jena.sparql.util.FmtUtils.stringForNode;
-
 import java.util.Collection;
 import java.util.List;
 
 import com.hp.hpl.jena.sdb.core.Annotations;
-import com.hp.hpl.jena.sdb.core.VarCol;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExpr;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExprList;
-import com.hp.hpl.jena.sdb.sql.SQLUtils;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
 
@@ -46,42 +42,35 @@ public class SqlNodeTextVisitor implements SqlNodeVisitor
         finish() ;
     }
 
-    private void print(List<VarCol> cols)
+    private void print(List<ColAlias> cols)
     {
         boolean first = true ; 
         String currentPrefix = null ; 
-        for ( VarCol c : cols )
+        for ( ColAlias c : cols )
         {
             if ( ! first ) out.print(" ") ;
             first = false ;
             
-            String a = null ;       // Variable name
-            String b = "<null>" ;   // column name
-            if ( c.car() != null )
-                a = stringForNode(c.car().asNode()) ;
-            if ( c.cdr() != null )
-                b = c.cdr().asString() ;
-            
-            if ( a == null )
-            {
-                out.print(b) ;
+            // Choose split points.
+            String cn = c.getColumn().getFullColumnName() ;
+            int j = cn.lastIndexOf(".") ;
+            if ( j == -1 )
                 currentPrefix = null ;
-            }
             else
             {
-                // Var name formatting. 
-                int j = a.lastIndexOf(SQLUtils.getSQLmark()) ;
-                if ( j == -1 )
-                    currentPrefix = null ;
-                else
-                {
-                    String x = b.substring(0, j) ;
-                    if ( currentPrefix != null && ! x.equals(currentPrefix) )
-                        out.println() ;
+                String x = cn.substring(0, j) ;
+                if ( currentPrefix != null && ! x.equals(currentPrefix) )
+                    out.println() ;
 
-                    currentPrefix = x ;
-                }
-                out.print(a+"/"+b) ;
+                currentPrefix = x ;
+            }
+            
+            // Print
+            out.print(c.getColumn().getFullColumnName()) ;
+            if ( c.getAlias() != null )
+            {
+                out.print("/") ;
+                out.print(c.getAlias().getColumnName()) ;
             }
         }
         out.ensureStartOfLine() ;

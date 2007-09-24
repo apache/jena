@@ -8,7 +8,6 @@ package com.hp.hpl.jena.sdb.core.sqlnode;
 
 import static com.hp.hpl.jena.sdb.iterator.Stream.map;
 import static com.hp.hpl.jena.sdb.iterator.Stream.toSet;
-import static com.hp.hpl.jena.sparql.util.StringUtils.str;
 
 import java.util.List;
 import java.util.Set;
@@ -16,22 +15,18 @@ import java.util.Set;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.sparql.util.IndentedWriter;
-import com.hp.hpl.jena.sparql.util.Utils;
-
 import com.hp.hpl.jena.query.ARQ;
-
 import com.hp.hpl.jena.sdb.SDB;
-import com.hp.hpl.jena.sdb.SDBException;
 import com.hp.hpl.jena.sdb.core.Annotations;
-import com.hp.hpl.jena.sdb.core.VarCol;
 import com.hp.hpl.jena.sdb.core.sqlexpr.S_Equal;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExpr;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExprList;
 import com.hp.hpl.jena.sdb.iterator.Transform;
-import com.hp.hpl.jena.sdb.sql.SQLUtils;
+import com.hp.hpl.jena.sdb.shared.SDBInternalError;
+import com.hp.hpl.jena.sparql.core.Var;
+import com.hp.hpl.jena.sparql.util.IndentedWriter;
+import com.hp.hpl.jena.sparql.util.Utils;
 
 // This is not a general purpose SQL writer - it needs only work with the
 // SQL node trees that the SDB compiler generate.
@@ -62,7 +57,7 @@ public class GenerateSQLVisitor implements SqlNodeVisitor
     public void visit(SqlRename sqlNode)    { shouldNotSee(sqlNode) ; }
 
     private void shouldNotSee(SqlNode sqlNode)
-    { throw new SDBException("Didn't expect: "+Utils.className(sqlNode)) ; }
+    { throw new SDBInternalError("Didn't expect: "+Utils.className(sqlNode)) ; }
 
     public void visit(SqlSelectBlock sqlSelectBlock)
     {
@@ -105,9 +100,11 @@ public class GenerateSQLVisitor implements SqlNodeVisitor
           out.println("LIMIT "+sqlSelectBlock.getLength()) ;
       if ( sqlSelectBlock.getStart() >= 0 )
           out.println("OFFSET "+sqlSelectBlock.getStart()) ;
+      
+      
     }
 
-    private void print(List<VarCol> cols)
+    private void print(List<ColAlias> cols)
     {
         // SELECT vars
         String sep = "" ;
@@ -120,52 +117,82 @@ public class GenerateSQLVisitor implements SqlNodeVisitor
 
         // Put common prefix on same line
         String currentPrefix = null ; 
-        String splitMarker = SQLUtils.getSQLmark() ;
+        String splitMarker = "." ;
 
-        for ( VarCol c : cols )
+        for ( ColAlias c : cols )
         {
             out.print(sep) ;
-            sep = ", " ;
-
-            if ( c.cdr() == null )
-                log.warn("Null SqlColumn for "+str(c.car())) ;    
-
-            Var aliasVar = c.car() ;
-            String p = null ;
-
-            // ?? 
-            if ( aliasVar == null )
-            {
-                splitMarker = "." ;
-                p = c.cdr().asString() ;
-            } else {
-                p = aliasVar.getName() ;
-            }
-            // Var name formatting. 
-            // V_1_lex, etc etc
-
-            int j = p.lastIndexOf(splitMarker) ;
+            
+            // Choose split points.
+            String cn = c.getColumn().getFullColumnName() ;
+            int j = cn.lastIndexOf(splitMarker) ;
             if ( j == -1 )
                 currentPrefix = null ;
             else
             {
-                String x = p.substring(0, j) ;
+                String x = cn.substring(0, j) ;
                 if ( currentPrefix != null && ! x.equals(currentPrefix) )
                     out.println() ;
 
                 currentPrefix = x ;
             }
 
-            String projectName = c.cdr().asString() ;
-            out.print(projectName) ;
-
-            if ( aliasVar != null )
+            
+            
+            sep = ", " ;
+            out.print(c.getColumn().getFullColumnName()) ;
+          
+            if ( c.getAlias() != null )
             {
-                String varLabel = c.car().getName() ;
                 out.print(aliasToken()) ;
-                out.print(varLabel) ;
+                out.print(c.getAlias().getColumnName()) ;
             }
         }
+//        
+//        for ( VarCol c : cols )
+//        {
+//            out.print(sep) ;
+//            sep = ", " ;
+//
+//            if ( c.cdr() == null )
+//                log.warn("Null SqlColumn for "+str(c.car())) ;    
+//
+//            Var aliasVar = c.car() ;
+//            String p = null ;
+//
+//            // ?? 
+//            if ( aliasVar == null )
+//            {
+//                splitMarker = "." ;
+//                p = c.cdr().asString() ;
+//            } else {
+//                p = aliasVar.getName() ;
+//            }
+//            // Var name formatting. 
+//            // V_1_lex, etc etc
+//
+//            int j = p.lastIndexOf(splitMarker) ;
+//            if ( j == -1 )
+//                currentPrefix = null ;
+//            else
+//            {
+//                String x = p.substring(0, j) ;
+//                if ( currentPrefix != null && ! x.equals(currentPrefix) )
+//                    out.println() ;
+//
+//                currentPrefix = x ;
+//            }
+//
+//            String projectName = c.cdr().asString() ;
+//            out.print(projectName) ;
+//
+//            if ( aliasVar != null )
+//            {
+//                String varLabel = c.car().getName() ;
+//                out.print(aliasToken()) ;
+//                out.print(varLabel) ;
+//            }
+//        }
     }
 
     private void genWHERE(SqlExprList conditions)

@@ -9,8 +9,7 @@ package com.hp.hpl.jena.sdb.store;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
-
-import com.hp.hpl.jena.sdb.SDBException;
+import com.hp.hpl.jena.sdb.shared.SDBInternalError;
 import com.hp.hpl.jena.sdb.shared.SDBNotImplemented;
 
 /** Adapter from a tuple loader to a graph loader.*/ 
@@ -22,12 +21,12 @@ public class TupleGraphLoader implements StoreLoader
     public TupleGraphLoader(TupleLoader loader)
     { 
         if ( loader.getTableDesc() == null )
-            throw new SDBException("No table description for loader") ;
+            throw new SDBInternalError("No table description for loader") ;
         if ( loader.getTableDesc().getWidth() != 3 ) 
         {
             String x = String.format("Table description width is %d, not 3",
                                      loader.getTableDesc().getWidth()) ;
-            throw new SDBException(x) ;
+            throw new SDBInternalError(x) ;
         }
         this.loader = loader ;
     }

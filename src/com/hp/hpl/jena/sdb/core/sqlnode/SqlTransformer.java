@@ -8,7 +8,7 @@ package com.hp.hpl.jena.sdb.core.sqlnode;
 
 import java.util.Stack;
 
-import com.hp.hpl.jena.sdb.SDBException;
+import com.hp.hpl.jena.sdb.shared.SDBInternalError;
 import com.hp.hpl.jena.sparql.util.ALog;
 
 public class SqlTransformer
@@ -92,7 +92,7 @@ public class SqlTransformer
         { visit1(sqlSlice) ; }
 
         public void visit(SqlSelectBlock sqlSelectBlock)
-        { throw new SDBException("SqlTransformVisitor/SqlSelectBlock") ; }
+        { throw new SDBInternalError("SqlTransformVisitor/SqlSelectBlock") ; }
     }
     
 }

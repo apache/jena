@@ -42,7 +42,7 @@ public class TransactionHandlerSDB implements TransactionHandler
         if ( inTransaction )
         {
             log.warn("beginTransaction: Already in a transaction") ;
-            throw new SDBException("Already intransaction") ;
+            throw new SDBException("Already in transaction") ;
         }
         try {
             sqlConnection.setAutoCommit(false) ;

@@ -10,12 +10,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import com.hp.hpl.jena.sdb.SDBException;
 import com.hp.hpl.jena.sdb.core.Scope;
-import com.hp.hpl.jena.sdb.core.VarCol;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExprList;
-import com.hp.hpl.jena.sdb.util.Pair;
+import com.hp.hpl.jena.sdb.shared.SDBInternalError;
 
 /** A unit that generates an SQL SELECT Statement.
  *  The SQL generation process is a pass over the SqlNdoe structure to generate SelectBlocks,
@@ -42,10 +40,7 @@ public class SqlSelectBlock extends SqlNodeBase1
     // order
     // limit/offset
     
-    private List<VarCol> cols = new ArrayList<VarCol>() ;
-    
-    // ColAlias?
-    private List<Pair<SqlColumn, SqlColumn>> _cols = new ArrayList<Pair<SqlColumn, SqlColumn>>() ;
+    private List<ColAlias> cols = new ArrayList<ColAlias>() ;
     
     private SqlExprList exprs = new SqlExprList() ;
     private long start = -1 ;
@@ -62,22 +57,29 @@ public class SqlSelectBlock extends SqlNodeBase1
     public SqlSelectBlock(String aliasName, SqlNode sqlNode)
     {
         super(aliasName, sqlNode) ;
+        
     }
 
-    public List<VarCol> getCols()       { return cols ; }
-    public void add(VarCol c)           { cols.add(c) ; }
-    public void addAll(Collection<VarCol> vc)    
-    { cols.addAll(vc) ; }
+    public void setBlockAlias(String alias)      { super.aliasName = alias ; }
     
-    public void _add(SqlColumn col,  SqlColumn aliasCol)
+    public List<ColAlias> getCols()       { return cols ; }
+    public void add(ColAlias c)           { _add(c) ; }
+    public void addAll(Collection<ColAlias> vc)    
     { 
-        if ( aliasCol.getTable().getAliasName().equals(getAliasName()) )
-            throw new SDBException("Attempt to project to a column with different alias: "+col+" -> "+aliasCol) ;
-        Pair<SqlColumn, SqlColumn> p = new Pair<SqlColumn, SqlColumn>(col, aliasCol) ;
-        _cols.add(p) ;
-    }    
+        for ( ColAlias c : vc )
+            _add(c) ;
+    }
     
-    public List<Pair<SqlColumn, SqlColumn>> _getCols()       { return _cols ; }
+    private void _add(ColAlias c)
+    { 
+        SqlColumn col = c.getColumn() ;
+        SqlColumn aliasCol = c.getAlias() ;
+        c.check(getAliasName()) ;
+//        
+//        if ( aliasCol.getTable() != null && aliasCol.getTable().getAliasName().equals(getAliasName()) )
+//            throw new SDBInternalError("Attempt to project to a column with different alias: "+col+" -> "+aliasCol) ;
+        cols.add(c) ;
+    }    
     
     public SqlExprList getWhere()       { return exprs ; }
 
@@ -98,10 +100,10 @@ public class SqlSelectBlock extends SqlNodeBase1
     
     @Override
     public SqlNode apply(SqlTransform transform, SqlNode newSubNode)
-    { throw new SDBException("SqlSelectBlock.apply") ; }
+    { throw new SDBInternalError("SqlSelectBlock.apply") ; }
     @Override
     public SqlNode copy(SqlNode subNode)
-    { throw new SDBException("SqlSelectBlock.copy") ; }
+    { throw new SDBInternalError("SqlSelectBlock.copy") ; }
     
     public void visit(SqlNodeVisitor visitor)
     { visitor.visit(this) ; }

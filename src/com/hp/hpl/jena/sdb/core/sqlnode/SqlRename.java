@@ -9,7 +9,6 @@ package com.hp.hpl.jena.sdb.core.sqlnode;
 import java.util.Map;
 import java.util.Set;
 
-import com.hp.hpl.jena.sdb.SDBException;
 import com.hp.hpl.jena.sdb.core.Generator;
 import com.hp.hpl.jena.sdb.core.Gensym;
 import com.hp.hpl.jena.sdb.core.Scope;
@@ -53,8 +52,23 @@ public class SqlRename extends SqlNodeBase1
         this.vTable = here ;
         this.idScope = idScope ;
         this.nodeScope = nodeScope ;
+        notes(idScope) ;
+        notes(nodeScope) ;
     }
 
+    private void notes(ScopeRename scope)
+    {
+        String x = "" ;
+        String sep = "" ;
+        for ( Var v : scope.getVars() )
+        {
+            SqlColumn c = scope.findScopeForVar(v).getColumn() ;
+            x = x+sep+c+"="+v ;
+            sep = " " ;
+        }
+        if ( ! x.isEmpty() )
+            addNote(x) ;
+    }
 //    private SqlRename(String aliasName, SqlNode sqlNode, 
 //                     Map<Var, String> idRenames,
 //                     Map<Var, String> nodeRenames)
@@ -68,9 +82,6 @@ public class SqlRename extends SqlNodeBase1
     private static ScopeRename calcRename(final SqlTable table, Scope scope, 
                                           final Generator gen)
     {
-        if ( scope == null )
-            throw new SDBException("calcRename: Scope is null") ;
-        
         ScopeRename renameScope = new ScopeRename(scope) ;
         
         // Would be nicer if Java didn't impose such an overhead on writing lambda's/

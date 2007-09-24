@@ -6,10 +6,10 @@
 
 package com.hp.hpl.jena.sdb.compiler;
 
+import static com.hp.hpl.jena.sdb.iterator.SetUtils.intersection;
 import static com.hp.hpl.jena.sdb.iterator.Stream.filter;
 import static com.hp.hpl.jena.sdb.iterator.Stream.map;
 import static com.hp.hpl.jena.sdb.iterator.Stream.toSet;
-import static com.hp.hpl.jena.sdb.iterator.SetUtils.intersection ;
 
 import java.util.List;
 import java.util.Set;
@@ -17,7 +17,6 @@ import java.util.Set;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.hp.hpl.jena.sdb.SDBException;
 import com.hp.hpl.jena.sdb.core.AliasesSql;
 import com.hp.hpl.jena.sdb.core.SDBRequest;
 import com.hp.hpl.jena.sdb.core.ScopeEntry;
@@ -26,6 +25,7 @@ import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlSlice;
 import com.hp.hpl.jena.sdb.iterator.Iter;
 import com.hp.hpl.jena.sdb.layout2.expr.RegexCompiler;
+import com.hp.hpl.jena.sdb.shared.SDBInternalError;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.TransformCopy;
 import com.hp.hpl.jena.sparql.algebra.op.*;
@@ -48,7 +48,7 @@ public class TransformSDB extends TransformCopy
     
     @Override
     public Op transform(OpBGP opBGP)
-    { throw new SDBException("OpBGP should not appear") ; }
+    { throw new SDBInternalError("OpBGP should not appear") ; }
 
     @Override
     public Op transform(OpQuadPattern quadPattern)

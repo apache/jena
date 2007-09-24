@@ -83,16 +83,16 @@ public class SQLBridge2 extends SQLBridgeBase
             
             // XXX sqlVarName => SqlColumn, not a Var.  A hack that fails. 
             
-            Var vLex = Var.alloc(SQLUtils.gen(sqlVarName,"lex")) ;
+            String vLex = SQLUtils.gen(sqlVarName,"lex") ;
             SqlColumn cLex = new SqlColumn(table, "lex") ;
     
-            Var vDatatype = Var.alloc(SQLUtils.gen(sqlVarName,"datatype")) ;
+            String vDatatype = SQLUtils.gen(sqlVarName,"datatype") ;
             SqlColumn cDatatype = new SqlColumn(table, "datatype") ;
     
-            Var vLang = Var.alloc(SQLUtils.gen(sqlVarName,"lang")) ;
+            String vLang = SQLUtils.gen(sqlVarName,"lang") ;
             SqlColumn cLang = new SqlColumn(table, "lang") ;
     
-            Var vType = Var.alloc(SQLUtils.gen(sqlVarName,"type")) ;
+            String vType = SQLUtils.gen(sqlVarName,"type") ;
             SqlColumn cType = new SqlColumn(table, "type") ;
     
             addProject(vLex, cLex) ;

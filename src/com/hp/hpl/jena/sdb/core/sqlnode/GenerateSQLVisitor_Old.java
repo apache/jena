@@ -8,7 +8,6 @@ package com.hp.hpl.jena.sdb.core.sqlnode;
 
 import static com.hp.hpl.jena.sdb.iterator.Stream.map;
 import static com.hp.hpl.jena.sdb.iterator.Stream.toSet;
-import static com.hp.hpl.jena.sparql.util.StringUtils.str;
 
 import java.util.Set;
 
@@ -21,7 +20,6 @@ import com.hp.hpl.jena.sdb.SDB;
 import com.hp.hpl.jena.sdb.SDBException;
 import com.hp.hpl.jena.sdb.core.Annotations;
 import com.hp.hpl.jena.sdb.core.JoinType;
-import com.hp.hpl.jena.sdb.core.VarCol;
 import com.hp.hpl.jena.sdb.core.sqlexpr.S_Equal;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExpr;
@@ -78,49 +76,62 @@ public class GenerateSQLVisitor_Old implements SqlNodeVisitor
         String currentPrefix = null ; 
         String splitMarker = SQLUtils.getSQLmark() ;
         
-        for ( VarCol c : sqlNode.getCols() )
+        for ( ColAlias c : sqlNode.getCols() )
         {
             out.print(sep) ;
             sep = ", " ;
-            
-            if ( c.cdr() == null )
-                log.warn("Null SqlColumn for "+str(c.car())) ;    
-
-            Var aliasVar = c.car() ;
-            String p = null ;
-            
-            if ( aliasVar == null )
+            out.print(c.getColumn().getFullColumnName()) ;
+          
+            if ( c.getAlias() != null )
             {
-                splitMarker = "." ;
-                p = c.cdr().asString() ;
-            } else {
-                p = aliasVar.getName() ;
-            }
-            // Var name formatting. 
-            // V_1_lex, etc etc
-            
-            int j = p.lastIndexOf(splitMarker) ;
-            if ( j == -1 )
-                currentPrefix = null ;
-            else
-            {
-                String x = p.substring(0, j) ;
-                if ( currentPrefix != null && ! x.equals(currentPrefix) )
-                    out.println() ;
-                
-                currentPrefix = x ;
-            }
-            
-            String projectName = c.cdr().asString() ;
-            out.print(projectName) ;
-            
-            if ( aliasVar != null )
-            {
-                String varLabel = c.car().getName() ;
                 out.print(aliasToken()) ;
-                out.print(varLabel) ;
+                out.print(c.getAlias().getColumnName()) ;
             }
         }
+        
+//        for ( VarCol c : sqlNode.getCols() )
+//        {
+//            out.print(sep) ;
+//            sep = ", " ;
+//            
+//            if ( c.cdr() == null )
+//                log.warn("Null SqlColumn for "+str(c.car())) ;    
+//
+//            Var aliasVar = c.car() ;
+//            String p = null ;
+//            
+//            if ( aliasVar == null )
+//            {
+//                splitMarker = "." ;
+//                p = c.cdr().asString() ;
+//            } else {
+//                p = aliasVar.getName() ;
+//            }
+//            // Var name formatting. 
+//            // V_1_lex, etc etc
+//            
+//            int j = p.lastIndexOf(splitMarker) ;
+//            if ( j == -1 )
+//                currentPrefix = null ;
+//            else
+//            {
+//                String x = p.substring(0, j) ;
+//                if ( currentPrefix != null && ! x.equals(currentPrefix) )
+//                    out.println() ;
+//                
+//                currentPrefix = x ;
+//            }
+//            
+//            String projectName = c.cdr().asString() ;
+//            out.print(projectName) ;
+//            
+//            if ( aliasVar != null )
+//            {
+//                String varLabel = c.car().getName() ;
+//                out.print(aliasToken()) ;
+//                out.print(varLabel) ;
+//            }
+//        }
         out.decIndent() ;
         out.println() ;
         out.println("FROM") ;

@@ -14,14 +14,14 @@ import java.util.List;
 import java.util.Map;
 
 import com.hp.hpl.jena.sdb.SDB;
-import com.hp.hpl.jena.sdb.SDBException;
 import com.hp.hpl.jena.sdb.core.AliasesSql;
 import com.hp.hpl.jena.sdb.core.Annotation1;
 import com.hp.hpl.jena.sdb.core.SDBRequest;
-import com.hp.hpl.jena.sdb.core.VarCol;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
+import com.hp.hpl.jena.sdb.core.sqlnode.ColAlias;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlProject;
+import com.hp.hpl.jena.sdb.shared.SDBInternalError;
 import com.hp.hpl.jena.sdb.sql.ResultSetJDBC;
 import com.hp.hpl.jena.sdb.sql.SDBExceptionSQL;
 import com.hp.hpl.jena.sparql.core.Var;
@@ -96,7 +96,7 @@ public abstract class SQLBridgeBase implements SQLBridge
     private void setProjectVars(Collection<Var> projectVars)
     {
         if ( this.projectVars != null )
-            throw new SDBException("SQLBridgeBase: Project vars already set") ;
+            throw new SDBInternalError("SQLBridgeBase: Project vars already set") ;
         this.projectVars = projectVars ;
     }
     
@@ -109,10 +109,12 @@ public abstract class SQLBridgeBase implements SQLBridge
     
     // ---- project support
     
-    protected void addProject(Var v, SqlColumn col)
+    protected void addProject(String alias, SqlColumn col)
     {
         // v is null if there is no renaming going on.
-        sqlNode = SqlProject.project(sqlNode, new VarCol(v,  col)) ;
+        SqlColumn asCol = new SqlColumn(null, alias) ; 
+        ColAlias colAlias = new ColAlias(col, asCol) ;
+        sqlNode = SqlProject.project(sqlNode, colAlias) ;
     }
     
 //    protected void addProject(SqlColumn col)

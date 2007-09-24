@@ -1,26 +1,22 @@
 /*
- * (c) Copyright 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.core;
+package com.hp.hpl.jena.sdb.shared;
 
-import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
-import com.hp.hpl.jena.sdb.util.Pair;
-import com.hp.hpl.jena.sparql.core.Var;
+import com.hp.hpl.jena.sdb.SDBException;
 
-public class VarCol extends Pair<Var, SqlColumn>
+
+public class SDBInternalError extends SDBException
 {
-    public VarCol(Var var, SqlColumn col)
-    {
-        super(var, col) ;
-    }
-
+    public SDBInternalError(String msg) { super(msg) ; }
+    public SDBInternalError(String msg, Throwable th) { super(msg, th) ; }
 }
 
 /*
- * (c) Copyright 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

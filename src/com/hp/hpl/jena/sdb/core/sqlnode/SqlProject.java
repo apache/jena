@@ -9,20 +9,23 @@ package com.hp.hpl.jena.sdb.core.sqlnode;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.hp.hpl.jena.sdb.core.VarCol;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
 
 public class SqlProject extends SqlNodeBase1
 {
-    public static SqlNode project(SqlNode sqlNode, VarCol col)
+    List <ColAlias> cols = null ; 
+    
+    // ---- Factory methods
+    /** make sure this node is a projection - add the column */
+    public static SqlNode project(SqlNode sqlNode, ColAlias col)
     {
-        SqlProject p = null ;
-        if ( sqlNode.isProject() )
-            p = sqlNode.asProject() ;
-        else
-            p = new SqlProject(sqlNode) ;
+        SqlProject p = ensure(sqlNode) ;
+
         if ( col != null )
+        {
+            col.check(sqlNode.getAliasName()) ;
             p.cols.add(col) ;
+        }
         return p ;
     }
     
@@ -31,13 +34,22 @@ public class SqlProject extends SqlNodeBase1
         return project(sqlNode, null) ;
     }
     
-    private List<VarCol> cols = null ; 
+    private static SqlProject ensure(SqlNode sqlNode)
+    {
+        if ( sqlNode.isProject() )
+            return sqlNode.asProject() ;
+        else
+            return new SqlProject(sqlNode) ;
+    }
+    
+    // ----
     
     private SqlProject(SqlNode sqlNode)
-    { this(sqlNode, new ArrayList<VarCol>()) ; }
+    { this(sqlNode, new ArrayList<ColAlias>()) ; }
     
-    private SqlProject(SqlNode sqlNode, List<VarCol> cols)
+    private SqlProject(SqlNode sqlNode, List<ColAlias> cols)
     { 
+        // Same alias as the underlying node.
         super(sqlNode.getAliasName(), sqlNode) ;
         this.cols = cols ; 
     }
@@ -50,7 +62,7 @@ public class SqlProject extends SqlNodeBase1
     @Override 
     public boolean usesColumn(SqlColumn c) { return cols.contains(c) ; }
 
-    public List<VarCol> getCols() { return cols ; }
+    public List<ColAlias> getCols() { return cols ; }
 
     public void visit(SqlNodeVisitor visitor)
     { visitor.visit(this) ; }

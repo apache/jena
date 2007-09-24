@@ -1,50 +1,49 @@
 /*
- * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.core;
+package com.hp.hpl.jena.sdb.core.sqlnode;
 
-import com.hp.hpl.jena.sdb.exprmatch.Action;
-import com.hp.hpl.jena.sdb.exprmatch.ExprMatcher;
-import com.hp.hpl.jena.sdb.exprmatch.MapAction;
-import com.hp.hpl.jena.sdb.exprmatch.MapResult;
+import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
 import com.hp.hpl.jena.sdb.shared.SDBInternalError;
-import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.sparql.expr.Expr;
-import com.hp.hpl.jena.sparql.util.ExprUtils;
 
-public class ExprPattern
+public class ColAlias
 {
-    Expr pattern ;
-    MapAction mapAction;
+    // "extends Pair" does not give nice names.
+    private SqlColumn column ;
+    private SqlColumn alias ;
     
-    public ExprPattern(String pattern ,
-                       Var[] vars,
-                       Action[] actions)
+    public ColAlias(SqlColumn column, SqlColumn alias)
     {
-        this.pattern = ExprUtils.parse(pattern) ;
-        if ( vars.length != actions.length )
-            throw new SDBInternalError("Variable and action arrays are different lengths") ;  
-        mapAction = new MapAction() ;
-        for ( int i = 0 ; i < vars.length ; i++ )
-        {
-            Var var = vars[i] ;
-            Action a = actions[i] ;
-            mapAction.put(var, a) ;
-        }
+        this.column = column ;
+        this.alias = alias ;
+    }
+
+    public SqlColumn getColumn()
+    {
+        return column ;
+    }
+
+    public SqlColumn getAlias()
+    {
+        return alias ;
     }
     
-    public MapResult match(Expr expression)
+    public void check(String requiredName)
     {
-        return ExprMatcher.match(expression, pattern, mapAction) ;
+        if ( getAlias() == null )
+            return ;
+        if ( getAlias().getTable() == null )
+            return ;
+        if ( ! getAlias().getTable().getAliasName().equals(requiredName) )
+            throw new SDBInternalError("Alias name error: "+getColumn()+"/"+getAlias()+": required: "+requiredName) ;
     }
-    
 }
 
 /*
- * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
