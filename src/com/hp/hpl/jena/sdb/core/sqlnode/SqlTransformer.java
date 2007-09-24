@@ -85,6 +85,9 @@ public class SqlTransformer
         public void visit(SqlJoinLeftOuter sqlJoin)
         { visit2(sqlJoin) ; }
 
+        public void visit(SqlUnion sqlUnion)
+        { visit2(sqlUnion) ; }
+
         public void visit(SqlCoalesce sqlCoalesce)
         { visit1(sqlCoalesce) ; }
 

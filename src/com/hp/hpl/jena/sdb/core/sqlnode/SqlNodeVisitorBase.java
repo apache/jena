@@ -29,6 +29,9 @@ public class SqlNodeVisitorBase implements SqlNodeVisitor
     public void visit(SqlJoinLeftOuter sqlJoin)
     {}
 
+    public void visit(SqlUnion sqlUnion)
+    {}
+    
     public void visit(SqlCoalesce sqlCoalesce)
     {}
 

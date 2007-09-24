@@ -59,6 +59,9 @@ public class SqlNodeWalker
         public void visit(SqlJoinLeftOuter sqlNode)
         { visit2(sqlNode) ; }
 
+        public void visit(SqlUnion sqlNode)
+        { visit2(sqlNode) ; }
+
         public void visit(SqlCoalesce sqlNode)
         {
             sqlNode.visit(visitor) ;

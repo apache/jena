@@ -9,12 +9,13 @@ package com.hp.hpl.jena.sdb.core.sqlnode;
 import java.util.Collection;
 import java.util.List;
 
+import com.hp.hpl.jena.sparql.core.Var;
+import com.hp.hpl.jena.sparql.util.IndentedWriter;
+
 import com.hp.hpl.jena.sdb.core.Annotations;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExpr;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExprList;
-import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.sparql.util.IndentedWriter;
 
 public class SqlNodeTextVisitor implements SqlNodeVisitor
 {
@@ -127,6 +128,22 @@ public class SqlNodeTextVisitor implements SqlNodeVisitor
  
     public void visit(SqlJoinLeftOuter sqlJoin)
     { visitJoin(sqlJoin) ; }
+    
+    public void visit(SqlUnion sqlUnion)
+    {
+        out.ensureStartOfLine() ;
+        start(sqlUnion, "Union", sqlUnion.getAliasName()) ;
+        if ( sqlUnion.getLeft() == null )
+            out.println("<null>") ;
+        else
+            sqlUnion.getLeft().visit(this) ;
+        out.println() ;
+        if ( sqlUnion.getRight() == null )
+            out.println("<null>") ;
+        else
+            sqlUnion.getRight().visit(this) ;
+        finish() ;
+    }
     
     public void visit(SqlCoalesce sqlNode)
     {

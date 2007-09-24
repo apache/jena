@@ -24,6 +24,8 @@ import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExpr;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExprList;
 import com.hp.hpl.jena.sdb.iterator.Transform;
 import com.hp.hpl.jena.sdb.shared.SDBInternalError;
+import com.hp.hpl.jena.sdb.shared.SDBNotImplemented;
+
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
 import com.hp.hpl.jena.sparql.util.Utils;
@@ -334,6 +336,10 @@ public class GenerateSQLVisitor implements SqlNodeVisitor
         // Alias and annotations handled by outputNode
     }
 
+    public void visit(SqlUnion sqlUnion)
+    { throw new SDBNotImplemented("SQL generation of SqlUnion") ; }
+
+    
 //    public void visit(SqlSlice sqlSlice)
 //    {
 //        //String str = String.format("(%d, %d)", sqlNode.getStart(), sqlNode.getLength()) ;

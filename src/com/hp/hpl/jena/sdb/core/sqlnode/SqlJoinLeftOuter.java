@@ -13,10 +13,7 @@ public class SqlJoinLeftOuter extends SqlJoin
 {
     public SqlJoinLeftOuter(SqlNode left, SqlNode right)
     { super(JoinType.LEFT, left, right) ; }
-    
-    public SqlJoinLeftOuter(SqlNode left, SqlNode right, String alias)
-    { super(alias, JoinType.LEFT, left, right) ; }
-    
+     
     @Override 
     public boolean   isLeftJoin()        { return true ; }
 
@@ -32,7 +29,7 @@ public class SqlJoinLeftOuter extends SqlJoin
     @Override
     public SqlNode copy(SqlNode left, SqlNode right)
     { 
-        SqlJoin j = new SqlJoinLeftOuter(left, right, getAliasName()) ;
+        SqlJoin j = new SqlJoinLeftOuter(left, right) ;
         j.addConditions(this.getConditions()) ;
         return j ;
     }

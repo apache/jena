@@ -24,6 +24,8 @@ public interface SqlTransform
 
     public SqlNode transform(SqlJoinLeftOuter sqlJoinLeftOuter, SqlNode left, SqlNode right) ;
 
+    public SqlNode transform(SqlUnion sqlUnion, SqlNode left, SqlNode right) ;
+
     public SqlNode transform(SqlTable sqlTable) ;
 }
 

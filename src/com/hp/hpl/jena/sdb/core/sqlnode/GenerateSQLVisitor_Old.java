@@ -193,7 +193,7 @@ public class GenerateSQLVisitor_Old implements SqlNodeVisitor
                 log.warn("Unexpected: restrict on join type "+ j.getJoinType() ) ;
             
             //SqlJoin j2 = SqlJoin.create(j.getJoinType(), j.getLeft(), j.getRight(), SDBConstants.gen(j.getAliasName())) ;
-            SqlJoin j2 = SqlJoin.create(j.getJoinType(), j.getLeft(), j.getRight(), j.getAliasName()) ;
+            SqlJoin j2 = SqlJoin.create(j.getJoinType(), j.getLeft(), j.getRight()) ;
             j2.getConditions().addAll(j.getConditions()) ;
             j2.getConditions().addAll(sqlNode.getConditions()) ;
             j2.visit(this) ;
@@ -326,6 +326,9 @@ public class GenerateSQLVisitor_Old implements SqlNodeVisitor
         return toSet(map(cols, colToTable)) ;
     }
 
+    public void visit(SqlUnion sqlUnion) { throw new SDBNotImplemented("Writing SqlUnion in old generator") ; }
+
+    
     public void visit(SqlJoinLeftOuter join)    { visitJoin(join) ; }
 
     public void visit(SqlCoalesce sqlNode)

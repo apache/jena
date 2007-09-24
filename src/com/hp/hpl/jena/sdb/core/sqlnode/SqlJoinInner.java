@@ -14,11 +14,6 @@ public class SqlJoinInner extends SqlJoin
     public SqlJoinInner(SqlNode left, SqlNode right)
     { super(JoinType.INNER, left, right) ; }
     
-    public SqlJoinInner(SqlNode left, SqlNode right, String alias)
-    {
-        super(alias, JoinType.INNER, left, right) ;
-    }
-    
     @Override 
     public boolean   isInnerJoin()        { return true ; }
 
@@ -34,7 +29,7 @@ public class SqlJoinInner extends SqlJoin
     @Override
     public SqlNode copy(SqlNode left, SqlNode right)
     {
-        SqlJoin j = new SqlJoinInner(left, right, getAliasName()) ;
+        SqlJoin j = new SqlJoinInner(left, right) ;
         j.addConditions(this.getConditions()) ;
         return j ;
 

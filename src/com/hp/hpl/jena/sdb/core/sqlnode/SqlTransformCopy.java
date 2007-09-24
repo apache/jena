@@ -34,6 +34,9 @@ public class SqlTransformCopy implements SqlTransform
     public SqlNode transform(SqlJoinLeftOuter sqlJoinLeftOuter, SqlNode left, SqlNode right)
     { return xform(sqlJoinLeftOuter, left, right) ; }
 
+    public SqlNode transform(SqlUnion sqlUnion, SqlNode left, SqlNode right)
+    { return xform(sqlUnion, left, right) ; } 
+
     public SqlNode transform(SqlTable sqlTable)
     { return xform(sqlTable) ; }
 

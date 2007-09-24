@@ -146,7 +146,7 @@ public class QC
             }
         }
         
-        SqlJoin join = SqlJoin.create(joinType, left, right, null) ;
+        SqlJoin join = SqlJoin.create(joinType, left, right) ;
         join.addConditions(conditions) ;
         return join ;
     }

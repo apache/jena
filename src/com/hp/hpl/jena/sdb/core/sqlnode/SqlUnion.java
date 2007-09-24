@@ -6,40 +6,36 @@
 
 package com.hp.hpl.jena.sdb.core.sqlnode;
 
-public class SqlDistinct extends SqlNodeBase1
+import com.hp.hpl.jena.sdb.core.Scope;
+
+public class SqlUnion extends SqlNodeBase2
 {
-    public static SqlNode distinct(SqlNode sqlNode)
+    public SqlUnion(SqlNode left, SqlNode right)
     {
-        SqlDistinct p = null ;
-        if ( sqlNode.isDistinct() )
-            p = sqlNode.asDistinct() ;
-        else
-            p = new SqlDistinct(sqlNode) ;
-        return p ;
+        super(null, left, right) ;
     }
-    
-    public SqlDistinct(SqlNode sqlNode)
+
+    public Scope getIdScope()
     {
-        super(null, sqlNode) ;
+        return null ;
     }
-    
-    @Override
-    public boolean isDistinct() { return true ; }
-    @Override
-    public SqlDistinct asDistinct() { return this ; }
-    
-    public void visit(SqlNodeVisitor visitor)
-    { visitor.visit(this) ; }
-    
-    @Override
-    public SqlNode apply(SqlTransform transform, SqlNode subNode)
-    { return transform.transform(this, subNode) ; }
+
+    public Scope getNodeScope()
+    {
+        return null ;
+    }
 
     @Override
-    public SqlNode copy(SqlNode subNode)
+    public SqlNode apply(SqlTransform transform, SqlNode left, SqlNode right)
+    { return transform.transform(this, left, right) ; }
+
+    @Override
+    public SqlNode copy(SqlNode left, SqlNode right)
     {
-        return new SqlDistinct(subNode) ;
+        return new SqlUnion(left, right) ;
     }
+
+    public void visit(SqlNodeVisitor visitor)   { visitor.visit(this) ; }
 }
 
 /*

@@ -25,12 +25,12 @@ public abstract class SqlJoin extends SqlNodeBase2
 //    public static SqlJoin create(JoinType joinType, SqlNode left, SqlNode right)
 //    { return create(joinType, left, right) ; }
     
-    public static SqlJoin create(JoinType joinType, SqlNode left, SqlNode right, String alias)
+    public static SqlJoin create(JoinType joinType, SqlNode left, SqlNode right)
     {
         switch (joinType)
         {
-            case INNER: return new SqlJoinInner(left, right, alias) ;
-            case LEFT: return new SqlJoinLeftOuter(left, right, alias) ;
+            case INNER: return new SqlJoinInner(left, right) ;
+            case LEFT: return new SqlJoinLeftOuter(left, right) ;
         }
         LogFactory.getLog(SqlJoin.class).warn("Unknown join type: "+joinType.printName()) ;
         return null ;
@@ -38,11 +38,9 @@ public abstract class SqlJoin extends SqlNodeBase2
 
 
     protected SqlJoin(JoinType joinType, SqlNode left, SqlNode right)
-    { this(null, joinType, left, right) ; }
-
-    protected SqlJoin(String alias, JoinType joinType, SqlNode left, SqlNode right)
     { 
-        super(alias, left, right) ;
+        // Does not have an alias.
+        super(null, left, right) ;
         this.joinType = joinType ;
         
         if ( joinType == JoinType.LEFT )
