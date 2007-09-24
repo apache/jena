@@ -1,8 +1,11 @@
 SDB ToDo list (and general notes)
 =================================
 
+== Wiki
++ Document assembler for dataset on wiki
 + Break out the merge query section into a separate wiki page.
 
+== Development
 + New alias policy : only have when a new consolidation nodes
     SqlTable, SqlProject/SqlRename, SqlCoalesce, SqlSelectBlock 
     Never on joins.
@@ -20,14 +23,8 @@ SDB ToDo list (and general notes)
     IJ-R-T => IJ(r)-T is done specially in old generator? 
     COALESCE and SqlSelectBlocks
 
-+ Sort out VarCols - can we use them more widely?
-  relates to ScopeEntries (which have a status - inherit?)
- 
 + See the effect of "enable_seqscan = off" for PostgreSQL
  
-+ Need tests for DISTINCT, Slice, Project, including when not of a query is translated.
-  TransformSDB: Add OpProject/OpDistinct.
-
 + JDBC statement management in execQuery
 
 + Setting options for testing.
@@ -38,8 +35,11 @@ SDB ToDo list (and general notes)
 
 + DB type tables
 
-+ Tests for dataset assembler and pure Jena/ARQ code.
-+ Document assembler for dataset on wiki
++ OpUnion
+
+== Tests
++ DISTINCT, Slice, Project, including when not of a query is translated.
++ Merge tests.
 
 == Alt layouts
 
@@ -48,7 +48,7 @@ SDB ToDo list (and general notes)
 
 == Pattern table and inference
 
-+ Cache tables (c.f. Oracle SPMJV) - integrate with inf and rewriter 
++ Cache tables - integrate with inf and rewriter 
   This unifies two concepts.
   Also calculated paths : cache tables of (?s,?o) for { ?s :p1 ?x . ?x :p2 ?o }
 
@@ -82,8 +82,6 @@ SDB ToDo list (and general notes)
   Isolate QC2.insertValueGetter
 
 == Design
-
-+ OpProject/OpDistinct/OpUnion
 
 + Filters
 
