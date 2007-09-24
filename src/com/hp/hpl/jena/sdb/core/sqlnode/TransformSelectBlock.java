@@ -6,17 +6,12 @@
 
 package com.hp.hpl.jena.sdb.core.sqlnode;
 
-import com.hp.hpl.jena.sdb.core.AliasesSql;
-import com.hp.hpl.jena.sdb.core.Generator;
-import com.hp.hpl.jena.sdb.core.Gensym;
 import com.hp.hpl.jena.sdb.core.Scope;
 import com.hp.hpl.jena.sdb.core.ScopeEntry;
 import com.hp.hpl.jena.sdb.shared.SDBInternalError;
 
 public class TransformSelectBlock extends SqlTransformCopy
 {
-    Generator gen = Gensym.create(AliasesSql.SelectBlock) ;
-    
     public TransformSelectBlock() {}
     
     // Pull-in various features of a SELECT statement. 
@@ -119,9 +114,19 @@ public class TransformSelectBlock extends SqlTransformCopy
         }
     }
     
-    // XXX Aliasing.  Need to propagate the aliases down if we introduce one. 
-    
     private SqlSelectBlock block(SqlNode sqlNode)
+    {
+        SqlSelectBlock block = block2(sqlNode) ;
+        if ( sqlNode.getAliasName() != null )
+        {
+            if ( !block.getAliasName().equals(sqlNode.getAliasName()) )
+                System.err.println("Block alias: "+block.getAliasName()+" overridden by "+sqlNode.getAliasName()) ;
+            block.setBlockAlias(sqlNode.getAliasName()) ;
+        }
+        return block ;
+    }
+    
+    private SqlSelectBlock block2(SqlNode sqlNode)
     {
         if ( sqlNode instanceof SqlSelectBlock )
             return (SqlSelectBlock)sqlNode ;
