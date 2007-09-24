@@ -16,32 +16,37 @@ import static sdb.SDBCmd.setSDBConfig;
 import static sdb.SDBCmd.sparql;
 import arq.cmd.CmdUtils;
 
+import com.hp.hpl.jena.query.Dataset;
+import com.hp.hpl.jena.query.DatasetFactory;
+import com.hp.hpl.jena.query.Query;
+import com.hp.hpl.jena.query.QueryExecution;
+import com.hp.hpl.jena.query.QueryExecutionFactory;
+import com.hp.hpl.jena.query.QueryFactory;
 import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.util.FileManager;
-
-import com.hp.hpl.jena.sparql.algebra.Op;
-import com.hp.hpl.jena.sparql.core.Prologue;
-import com.hp.hpl.jena.sparql.core.Quad;
-import com.hp.hpl.jena.sparql.resultset.ResultsFormat;
-import com.hp.hpl.jena.sparql.sse.SSE;
-import com.hp.hpl.jena.sparql.util.QueryExecUtils;
-
-import com.hp.hpl.jena.query.*;
-
 import com.hp.hpl.jena.sdb.SDB;
 import com.hp.hpl.jena.sdb.SDBFactory;
 import com.hp.hpl.jena.sdb.Store;
 import com.hp.hpl.jena.sdb.compiler.OpSQL;
-import com.hp.hpl.jena.sdb.compiler.QuadBlockCompilerMain;
+import com.hp.hpl.jena.sdb.compiler.QC;
 import com.hp.hpl.jena.sdb.core.ScopeRename;
-import com.hp.hpl.jena.sdb.core.sqlnode.*;
-import com.hp.hpl.jena.sdb.engine.QueryEngineSDB;
+import com.hp.hpl.jena.sdb.core.sqlnode.GenerateSQL;
+import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
+import com.hp.hpl.jena.sdb.core.sqlnode.SqlRename;
+import com.hp.hpl.jena.sdb.core.sqlnode.SqlTransformer;
+import com.hp.hpl.jena.sdb.core.sqlnode.TransformSelectBlock;
 import com.hp.hpl.jena.sdb.sql.JDBC;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.store.DatabaseType;
 import com.hp.hpl.jena.sdb.store.LayoutType;
 import com.hp.hpl.jena.sdb.store.StoreConfig;
 import com.hp.hpl.jena.sdb.store.StoreFactory;
+import com.hp.hpl.jena.sparql.algebra.Op;
+import com.hp.hpl.jena.sparql.core.Prologue;
+import com.hp.hpl.jena.sparql.core.Quad;
+import com.hp.hpl.jena.sparql.resultset.ResultsFormat;
+import com.hp.hpl.jena.sparql.sse.SSE;
+import com.hp.hpl.jena.sparql.util.QueryExecUtils;
+import com.hp.hpl.jena.util.FileManager;
 
 public class RunSDB
 {
@@ -56,7 +61,6 @@ public class RunSDB
         if ( false ) { devRename() ; System.exit(0) ; }
 
         // Testing proper RDF merge of named graphs.
-        QuadBlockCompilerMain.attemptMerge = true ;
         setSDBConfig("sdb.ttl") ;
         sdbconfig("--create") ;
         sdbload("--graph=file:data1", "D1.ttl") ;
@@ -81,8 +85,6 @@ public class RunSDB
     
     public static void devSelectBlock()
     {
-        QuadBlockCompilerMain.attemptMerge = true ;
-
         SDB.getContext().setTrue(SDB.unionDefaultGraph) ;
         Store store = StoreFactory.create(LayoutType.LayoutTripleNodesHash, DatabaseType.PostgreSQL) ;
 
@@ -91,13 +93,17 @@ public class RunSDB
         prologue.setPrefix("", "http://example/") ;
         prologue.setBaseURI("http://example/") ;
 
-        Op op = SSE.parseOp("(distinct (quadpattern [u: ?s :x ?o] [u: ?o :z ?z]))", prologue.getPrefixMapping()) ;
+        //Op op = SSE.parseOp("(distinct (quadpattern [u: ?s :x ?o] [u: ?o :z ?z]))", prologue.getPrefixMapping()) ;
+        Op op = SSE.parseOp("(distinct (quadpattern [u: ?s :x ?o]))", prologue.getPrefixMapping()) ;
         //System.out.println(op) ;
-        op = QueryEngineSDB.compile(store, op) ;
+        op = QC.compile(store, op) ;
         
         SqlNode x = ((OpSQL)op).getSqlNode() ;
-        System.out.println(op) ;
-        System.out.println() ;
+        if ( false )
+        {
+            System.out.println(op) ;
+            System.out.println() ;
+        }
 
         SqlNode x2 = SqlTransformer.transform(x, new TransformSelectBlock()) ;
         System.out.println(x2) ;
@@ -129,7 +135,7 @@ public class RunSDB
         
         //Op op = SSE.parseOp("(quadpattern [_ ?s :x ?o])", prologue.getPrefixMapping()) ;
         Op op = SSE.parseOp("(quadpattern [u: ?s :x ?o] [u: ?o :z ?z])", prologue.getPrefixMapping()) ;
-        op = QueryEngineSDB.compile(store, op) ;
+        op = QC.compile(store, op) ;
         
         SqlNode x = ((OpSQL)op).getSqlNode() ;
         

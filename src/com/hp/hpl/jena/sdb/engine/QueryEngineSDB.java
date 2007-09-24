@@ -9,27 +9,27 @@ package com.hp.hpl.jena.sdb.engine;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.hp.hpl.jena.query.Query;
+import com.hp.hpl.jena.sdb.Store;
+import com.hp.hpl.jena.sdb.compiler.OpSQL;
+import com.hp.hpl.jena.sdb.compiler.QC;
+import com.hp.hpl.jena.sdb.core.SDBRequest;
+import com.hp.hpl.jena.sdb.store.DatasetStoreGraph;
 import com.hp.hpl.jena.sparql.algebra.AlgebraGeneratorQuad;
 import com.hp.hpl.jena.sparql.algebra.Op;
-import com.hp.hpl.jena.sparql.algebra.OpSubstitute;
 import com.hp.hpl.jena.sparql.core.DatasetGraph;
-import com.hp.hpl.jena.sparql.engine.*;
+import com.hp.hpl.jena.sparql.engine.ExecutionContext;
+import com.hp.hpl.jena.sparql.engine.Plan;
+import com.hp.hpl.jena.sparql.engine.QueryEngineBase;
+import com.hp.hpl.jena.sparql.engine.QueryEngineFactory;
+import com.hp.hpl.jena.sparql.engine.QueryEngineRegistry;
+import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.binding.BindingRoot;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterSingleton;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIteratorCheck;
 import com.hp.hpl.jena.sparql.engine.main.OpCompiler;
 import com.hp.hpl.jena.sparql.util.Context;
-
-import com.hp.hpl.jena.query.Query;
-
-import com.hp.hpl.jena.sdb.SDB;
-import com.hp.hpl.jena.sdb.Store;
-import com.hp.hpl.jena.sdb.compiler.OpSQL;
-import com.hp.hpl.jena.sdb.compiler.QueryCompiler;
-import com.hp.hpl.jena.sdb.core.SDBRequest;
-import com.hp.hpl.jena.sdb.store.DatasetStoreGraph;
-import com.hp.hpl.jena.sdb.util.StoreUtils;
 
 
 public class QueryEngineSDB extends QueryEngineBase
@@ -63,44 +63,10 @@ public class QueryEngineSDB extends QueryEngineBase
         this.originalOp = getOp() ;
         
         // Convenience - compile now even though it would get done on execution.    
-        Op op = compile(store, originalOp, null, context, request) ;
+        Op op = QC.compile(store, originalOp, null, context, request) ;
         setOp(op) ;
     }
     
-    // -----
-    // Utilities.
-    public static Op compile(Store store, Op op)
-    {
-        return compile(store, op, null) ;
-    }
-    
-    public static Op compile(Store store, Op op, Context context)
-    {
-        if ( context == null )
-            context = SDB.getContext() ;
-        
-        SDBRequest request = new SDBRequest(store, null, context) ;
-        return compile(store, op, null, context, request) ;
-    }
-    
-    // and the main compilation algorithm.
-    // QueryCompilerMain does the bridge generation.
-    private static Op compile(Store store, Op op, Binding binding, Context context, SDBRequest request)
-    {
-        if ( binding != null && ! binding.isEmpty() )
-            op = OpSubstitute.substitute(op, binding) ;
-        
-        if ( StoreUtils.isHSQL(store) )
-            request.LeftJoinTranslation = false ;
-        if ( StoreUtils.isPostgreSQL(store) || StoreUtils.isMySQL(store) )
-            request.LimitOffsetTranslation = true ;
-
-        QueryCompiler queryCompiler = store.getQueryCompilerFactory().createQueryCompiler(request) ;
-        Op op2 = queryCompiler.compile(op) ;
-        return op2 ;
-    }
-    
-    // -----    
     public SDBRequest getRequest()      { return request ; }
 
     @Override
@@ -109,7 +75,7 @@ public class QueryEngineSDB extends QueryEngineBase
         if ( ! binding.isEmpty() )
             // Assumes we compiled in the constructor.
             // Substitute and recompile.
-            op = compile(store, op, binding, context, request) ;
+            op = QC.compile(store, op, binding, context, request) ;
         
         ExecutionContext execCxt = new ExecutionContext(context, dsg.getDefaultGraph(), dsg) ;
         
@@ -166,7 +132,7 @@ public class QueryEngineSDB extends QueryEngineBase
             return qe.getPlan() ;
         }
 
-    } 
+    }
 }
 
 /*

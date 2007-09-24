@@ -11,7 +11,8 @@ SDB ToDo list (and general notes)
 
 + What about bulk add/delete of whole graphs? 
   esp removal of a complete named graph.
-  Does bulk delete of a named graph work efficiently?
+  Does bulk delete of a named graph work more efficiently? Is it worth it?
+    Generalize: delect by BGP.
 
 + New SQLgenerator
     IJ-R-T => IJ(r)-T is done specially in old generator? 

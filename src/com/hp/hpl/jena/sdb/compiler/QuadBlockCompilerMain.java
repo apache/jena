@@ -29,8 +29,6 @@ public class QuadBlockCompilerMain implements QuadBlockCompiler
     public SlotCompiler getSlotCompiler()
     { return slotCompiler ; }
 
-    public static boolean attemptMerge = false ; 
-    
     //@Override
     public SqlNode compile(QuadBlock quads)
     {
@@ -74,7 +72,7 @@ public class QuadBlockCompilerMain implements QuadBlockCompiler
         if ( quads.getGraphNode().equals(Quad.unionGraph) )
             needDistinct = true ;
         
-        if ( needDistinct && attemptMerge )
+        if ( needDistinct )
         {
             // DISTINCT -- over the names variables but not * (which includes the graph node).
             

@@ -20,6 +20,7 @@ import org.apache.commons.logging.LogFactory;
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.SortCondition;
 import com.hp.hpl.jena.sdb.SDB;
+import com.hp.hpl.jena.sdb.Store;
 import com.hp.hpl.jena.sdb.core.JoinType;
 import com.hp.hpl.jena.sdb.core.SDBRequest;
 import com.hp.hpl.jena.sdb.core.ScopeEntry;
@@ -31,24 +32,59 @@ import com.hp.hpl.jena.sdb.core.sqlnode.SqlRestrict;
 import com.hp.hpl.jena.sdb.iterator.Transform;
 import com.hp.hpl.jena.sdb.sql.ResultSetJDBC;
 import com.hp.hpl.jena.sdb.sql.SDBExceptionSQL;
+import com.hp.hpl.jena.sdb.util.StoreUtils;
 import com.hp.hpl.jena.sparql.algebra.Op;
+import com.hp.hpl.jena.sparql.algebra.OpSubstitute;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
+import com.hp.hpl.jena.sparql.util.Context;
 
 public class QC
 {
     private static Log log = LogFactory.getLog(QC.class) ;
+    
+    // ----- Compilation : Op -> SQL
+    public static Op compile(Store store, Op op)
+    {
+        return compile(store, op, null) ;
+    }
+    
+    public static Op compile(Store store, Op op, Context context)
+    {
+        if ( context == null )
+            context = SDB.getContext() ;
+        
+        SDBRequest request = new SDBRequest(store, null, context) ;
+        return compile(store, op, null, context, request) ;
+    }
+    
+    // And the main compilation algorithm.
+    // QueryCompilerMain does the bridge generation.
+    public static Op compile(Store store, Op op, Binding binding, Context context, SDBRequest request)
+    {
+        if ( binding != null && ! binding.isEmpty() )
+            op = OpSubstitute.substitute(op, binding) ;
+        
+        if ( StoreUtils.isHSQL(store) )
+            request.LeftJoinTranslation = false ;
+        if ( StoreUtils.isPostgreSQL(store) || StoreUtils.isMySQL(store) )
+            request.LimitOffsetTranslation = true ;
+
+        QueryCompiler queryCompiler = store.getQueryCompilerFactory().createQueryCompiler(request) ;
+        Op op2 = queryCompiler.compile(op) ;
+        return op2 ;
+    }
+    
+    // -----  Making join nodes
     
     public static SqlNode innerJoin(SDBRequest request, SqlNode left, SqlNode right)
     {
         if ( left == null )
             return right ; 
         
-        
         // Try to make things a left tree join(join(table, table), table)
-        
         return join(request, INNER, left, right, null) ; 
     }
 
@@ -136,6 +172,8 @@ public class QC
         return c ;
     }
     
+    // ---- Expressions
+    
     private static SqlExpr makeOr(SqlExpr c, SqlExpr expr)
     {
         if ( c == null )
@@ -168,6 +206,8 @@ public class QC
     
     public static boolean fetchPrint = false ;
     public static boolean PrintSQL = false ;
+    
+    // ---- Execute an OpSQL.
     
     public static QueryIterator exec(OpSQL opSQL, SDBRequest request, Binding binding, ExecutionContext execCxt)
     {

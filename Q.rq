@@ -1,10 +1,10 @@
-PREFIX :    <http://example>
+PREFIX :    <http://example/>
 PREFIX arq: <urn:x-arq:>
 
 SELECT *
 {
-  ?s ?p ?o
+#  { ?s ?p ?o } UNION { GRAPH ?g { ?s ?p ?o } }
 #    GRAPH arq:UnionGraph { ?s ?p ?o }
-#    GRAPH arq:UnionGraph { :y :q ?x . ?x :p ?v }
+   GRAPH arq:UnionGraph { :y :q ?x . ?x :p ?v }
 }
 
