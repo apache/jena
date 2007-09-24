@@ -17,7 +17,7 @@ iri.jar
 jenatest.jar
 junit.jar
 log4j-1.2.12.jar
-lucene-core-2.0.0.jar
+lucene-core-2.2.0.jar
 xercesImpl.jar
 xml-apis.jar
 stax-api-1.0.jar
