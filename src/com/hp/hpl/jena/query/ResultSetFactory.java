@@ -6,16 +6,12 @@
 
 package com.hp.hpl.jena.query;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.List;
 
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.shared.NotFoundException;
-import com.hp.hpl.jena.util.FileManager;
-
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.ResultSetStream;
@@ -25,6 +21,7 @@ import com.hp.hpl.jena.sparql.sse.SSE;
 import com.hp.hpl.jena.sparql.sse.builders.BuilderTable;
 import com.hp.hpl.jena.sparql.util.ALog;
 import com.hp.hpl.jena.sparql.util.GraphUtils;
+import com.hp.hpl.jena.util.FileManager;
 
 /** ResultSetFactory - make result sets from places other than a query.
  * 
@@ -67,9 +64,9 @@ public class ResultSetFactory
             throw new ResultSetException("Can't read a text result set") ;
         }
         
-        InputStream in = null ;
-        try { in = new FileInputStream(filenameOrURI) ; }
-        catch (FileNotFoundException ex) { throw new NotFoundException("File: "+filenameOrURI) ; }
+        InputStream in = FileManager.get().open(filenameOrURI) ;
+        if ( in == null )
+            throw new NotFoundException("Not found: "+filenameOrURI) ;
         return load(in, format) ;
     }
     
@@ -157,7 +154,9 @@ public class ResultSetFactory
     public static Model loadAsModel(String filenameOrURI, ResultSetFormat format)
     { return loadAsModel(null, filenameOrURI, format) ; }
     
-    /** Load a result set (or any other model) from file or URL
+    /** Load a result set (or any other model) from file or URL.
+     *  Does not have to be a result set (e.g. CONSTRUCt results) 
+     *  but it does interpret the ResultSetFormat possibilities.
      * @param model     Load into this model (returned)
      * @param filenameOrURI
      * @param format

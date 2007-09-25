@@ -21,8 +21,12 @@ do
 ## rm -f lib/arq-sse.jar
 
 rm -f arq-src.zip
-find src src-dev -name test -prune -o -name .svn -prune -o -print | \
-    xargs -n 200 zip -q arq-src.zip
+for d in src src-dev src-test
+do
+  ( cd $d ; find . -name test -prune -o -name .svn -prune -o -print | \
+    xargs -n 200 zip -q ../arq-src.zip
+  )
+  done
 
 for d in SDB
 do

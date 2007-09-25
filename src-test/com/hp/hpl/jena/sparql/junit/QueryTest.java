@@ -68,7 +68,7 @@ public class QueryTest extends EarlTestCase
         // Sort out data.
         // Not here - done during test execution because it needs to look in the query for source URIs
         
-        resultsModel = constructResultsModel(testItem.getResultFile()) ;
+        resultsModel = testItem.getResultModel() ;
     }
     
     protected void tearDown() throws Exception
@@ -78,19 +78,7 @@ public class QueryTest extends EarlTestCase
         super.tearDown() ;
     }
     
-    private Model constructResultsModel(String filename)
-    {
-        if ( filename == null )
-            return null ;
-        //Model model = GraphUtils.makeDefaultModel() ;
-        Model model = GraphUtils.makeJenaDefaultModel() ;
-        // Like ResultSetFactory.loadAsModel(filename) except we have control of the model type.
-        
-        ResultSetFactory.loadAsModel(model, filename) ;
-        return model ; 
-    }
-    
-    private Dataset setUpDataset(Query query, TestItem testItem)
+     private Dataset setUpDataset(Query query, TestItem testItem)
     {
         try {
             //testItem.requiresTextIndex()

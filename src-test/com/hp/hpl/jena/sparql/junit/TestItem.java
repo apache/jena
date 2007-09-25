@@ -6,9 +6,12 @@
  
 package com.hp.hpl.jena.sparql.junit;
 
+import com.hp.hpl.jena.query.ResultSet;
+import com.hp.hpl.jena.query.ResultSetFactory;
 import com.hp.hpl.jena.query.Syntax;
 import com.hp.hpl.jena.rdf.model.* ;
 import com.hp.hpl.jena.sparql.core.DataFormat;
+import com.hp.hpl.jena.sparql.util.GraphUtils;
 import com.hp.hpl.jena.sparql.vocabulary.TestManifest;
 import com.hp.hpl.jena.sparql.vocabulary.TestManifestX;
 import com.hp.hpl.jena.sparql.vocabulary.VocabTestQuery;
@@ -107,6 +110,28 @@ public class TestItem
     public void setQueryFileSyntax(Syntax syntax) { queryFileSyntax = syntax ; }
 
     public String getResultFile() { return resultFile ; }
+    
+    /** Load a model that is the results - need not be a result set */ 
+    public Model getResultModel()
+    {
+        if ( resultFile == null )
+            return null ;
+        //Model model = GraphUtils.makeDefaultModel() ;
+        Model model = GraphUtils.makeJenaDefaultModel() ;
+        // Like ResultSetFactory.loadAsModel(filename) except we have control of the model type.
+        ResultSetFactory.loadAsModel(model, resultFile) ;
+        return model ; 
+    }
+    
+    /** Load results as a ResultSet */ 
+    public ResultSet getResultSet()
+    {
+        if ( resultFile == null )
+            return null ;
+        ResultSet rs = ResultSetFactory.load(resultFile) ;
+        return rs ;
+    }
+
     public String getName() { return name ; }
     public String getURI()
     { 
