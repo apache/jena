@@ -127,8 +127,12 @@ public class QueryTestSDB extends EarlTestCase
         
         ResultSet rs = item.getResultSet() ;
         ResultSetRewindable rs1 = null ;
+        String expectedLabel = "" ;
         if ( rs != null )
+        {
             rs1 = ResultSetFactory.makeRewindable(rs) ;
+            expectedLabel = "Results file" ;
+        }
         else
         {
             System.err.println("Old way") ;
@@ -136,6 +140,7 @@ public class QueryTestSDB extends EarlTestCase
             QueryExecution qExec1 = new QueryExecutionBase(query, ds, null, f) ;
             rs1 = ResultSetFactory.makeRewindable(qExec1.execSelect()) ;
             qExec1.close() ;
+            expectedLabel = "Standard engine" ;
         }
         
         // ---- Second, execute in DB
@@ -155,7 +160,7 @@ public class QueryTestSDB extends EarlTestCase
                 rs1.reset() ;
                 rs2.reset() ;
                 System.out.println("------------------- "+this.getName());
-                System.out.println("**** Expected (standard engine)") ;
+                System.out.printf("**** Expected (%s)", expectedLabel) ;
                 ResultSetFormatter.out(System.out, rs1) ; 
                 System.out.println("**** Got (SDB engine)") ;
                 ResultSetFormatter.out(System.out, rs2) ;
