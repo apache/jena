@@ -60,8 +60,6 @@ public class RunSDB
         if ( true ) { devSelectBlock() ; System.exit(0) ; }
         if ( false ) { devRename() ; System.exit(0) ; }
 
-        // Testing proper RDF merge of named graphs.
-        setSDBConfig("sdb.ttl") ;
         sdbconfig("--create") ;
         sdbload("--graph=file:data1", "D1.ttl") ;
         sdbload("--graph=file:data2", "D2.ttl") ;

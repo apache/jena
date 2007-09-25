@@ -13,7 +13,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.query.*;
-
 import com.hp.hpl.jena.sdb.Store;
 import com.hp.hpl.jena.sdb.engine.QueryEngineSDB;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
@@ -28,7 +27,6 @@ import com.hp.hpl.jena.sparql.junit.EarlTestCase;
 import com.hp.hpl.jena.sparql.junit.TestItem;
 import com.hp.hpl.jena.sparql.resultset.RSCompare;
 import com.hp.hpl.jena.sparql.resultset.ResultSetRewindable;
-import com.hp.hpl.jena.util.FileManager;
 
 public class QueryTestSDB extends EarlTestCase
 {
@@ -42,11 +40,6 @@ public class QueryTestSDB extends EarlTestCase
         super(testName, item.getURI(), report) ;
         this.store = store ;
         this.item = item ;
-    }
-
-    public QueryTestSDB(Store store, String testName, EarlReport report, FileManager fileManager, TestItem item)
-    {
-        this(store, testName, report, item) ;
     }
 
     // NB static.
@@ -94,6 +87,7 @@ public class QueryTestSDB extends EarlTestCase
             }}) ;
         lastDftLoaded = filenamesDft ;
         lastNamedLoaded = filenamesNamed ;
+        
     }
     
     @Override
@@ -115,7 +109,8 @@ public class QueryTestSDB extends EarlTestCase
 //            fail("Only one data graph supported") ;
         
         Query query = QueryFactory.read(item.getQueryFile()) ;
-            
+        
+        // If null, then compare to running ARQ in-memory 
         if ( VERBOSE )
         {
             System.out.println("Test: "+this.getName()) ;
@@ -128,11 +123,20 @@ public class QueryTestSDB extends EarlTestCase
         Dataset ds = DatasetFactory.create(item.getDefaultGraphURIs(), item.getNamedGraphURIs()) ;
         ARQ.getContext().set(ARQ.strictGraph, oldValue) ;
         
-        // ---- First, execute in-memory.
-        QueryEngineFactory f = QueryEngineRef.getFactory() ;
-        QueryExecution qExec1 = new QueryExecutionBase(query, ds, null, f) ;
-        ResultSetRewindable rs1 = ResultSetFactory.makeRewindable(qExec1.execSelect()) ;
-        qExec1.close() ;
+        // ---- First, execute in-memory or from a results file.
+        
+        ResultSet rs = item.getResultSet() ;
+        ResultSetRewindable rs1 = null ;
+        if ( rs != null )
+            rs1 = ResultSetFactory.makeRewindable(rs) ;
+        else
+        {
+            System.err.println("Old way") ;
+            QueryEngineFactory f = QueryEngineRef.getFactory() ;
+            QueryExecution qExec1 = new QueryExecutionBase(query, ds, null, f) ;
+            rs1 = ResultSetFactory.makeRewindable(qExec1.execSelect()) ;
+            qExec1.close() ;
+        }
         
         // ---- Second, execute in DB
 
@@ -140,7 +144,6 @@ public class QueryTestSDB extends EarlTestCase
         ds = DatasetStore.create(store) ;
         QueryExecution qExec2 = new QueryExecutionBase(query, ds, null, f2) ;
         
-        ResultSet rs = null;
         try {
             SDBConnection.logSQLExceptions = true ;
             rs = qExec2.execSelect() ;

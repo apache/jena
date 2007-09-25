@@ -14,18 +14,15 @@ import junit.framework.TestSuite;
 
 import com.hp.hpl.jena.query.Syntax;
 import com.hp.hpl.jena.rdf.model.Resource;
-
 import com.hp.hpl.jena.sdb.Store;
 import com.hp.hpl.jena.sdb.shared.StoreList;
 import com.hp.hpl.jena.sdb.util.Pair;
-
 import com.hp.hpl.jena.sparql.core.DataFormat;
 import com.hp.hpl.jena.sparql.junit.EarlReport;
 import com.hp.hpl.jena.sparql.junit.QueryTestException;
 import com.hp.hpl.jena.sparql.junit.SurpressedTest;
 import com.hp.hpl.jena.sparql.junit.TestItem;
 import com.hp.hpl.jena.sparql.vocabulary.TestManifestX;
-import com.hp.hpl.jena.util.FileManager;
 import com.hp.hpl.jena.util.junit.TestFactoryManifest;
 
 
@@ -62,11 +59,8 @@ public class QueryTestSDBFactory extends TestFactoryManifest
         return ts ;
     }
 
-    FileManager fileManager = FileManager.get() ;
     Store store ;
     private String testRootName ;
-    
-    
     
     private QueryTestSDBFactory(Store store, String testRootName)
     {
@@ -104,7 +98,7 @@ public class QueryTestSDBFactory extends TestFactoryManifest
             if ( testItem.getTestType() != null )
             {
                 if ( testItem.getTestType().equals(TestManifestX.TestQuery) )
-                    test = new QueryTestSDB(store, testName, results, fileManager, testItem) ;
+                    test = new QueryTestSDB(store, testName, results, testItem) ;
                 
                 if ( testItem.getTestType().equals(TestManifestX.TestSurpressed) )
                     test = new SurpressedTest(testName, results, testItem) ;
@@ -114,7 +108,7 @@ public class QueryTestSDBFactory extends TestFactoryManifest
             }
             // Default 
             if ( test == null )
-                test = new QueryTestSDB(store, testName, results, fileManager, testItem) ;
+                test = new QueryTestSDB(store, testName, results, testItem) ;
 
             Resource action2 = testItem.getAction() ;
             if ( action2.hasProperty(TestManifestX.option))

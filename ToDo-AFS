@@ -7,12 +7,9 @@ SDB ToDo list (and general notes)
 
 == Development
 + New alias policy : only have when a new consolidation nodes
-    SqlTable, SqlProject/SqlRename, SqlCoalesce, SqlSelectBlock 
-    Never on joins.
+  Shodul this be scope-managed?
 
-+ QC and QueryEngineSDB statics - merge
-
-+ SqlProject/SqlRename are now highly related - merge 
++ SqlProject/SqlRename are now highly related - merge - or simplifiy. 
 
 + What about bulk add/delete of whole graphs? 
   esp removal of a complete named graph.
