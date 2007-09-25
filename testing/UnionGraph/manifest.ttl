@@ -20,7 +20,7 @@
       [  mf:name    "Merge-2" ;
          rdf:type   mfx:TestQuery ; 
          mf:action
-            [ qt:query  <merge-1.rq> ;
+            [ qt:query  <merge-2.rq> ;
               qt:graphData <data-1.ttl> ;
               qt:graphData <data-2.ttl> ;
             ] ;
