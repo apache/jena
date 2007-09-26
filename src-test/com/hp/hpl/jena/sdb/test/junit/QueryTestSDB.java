@@ -123,7 +123,7 @@ public class QueryTestSDB extends EarlTestCase
         Dataset ds = DatasetFactory.create(item.getDefaultGraphURIs(), item.getNamedGraphURIs()) ;
         ARQ.getContext().set(ARQ.strictGraph, oldValue) ;
         
-        // ---- First, execute in-memory or from a results file.
+        // ---- First, get the expected results by executing in-memory or from a results file.
         
         ResultSet rs = item.getResultSet() ;
         ResultSetRewindable rs1 = null ;
@@ -135,7 +135,6 @@ public class QueryTestSDB extends EarlTestCase
         }
         else
         {
-            System.err.println("Old way") ;
             QueryEngineFactory f = QueryEngineRef.getFactory() ;
             QueryExecution qExec1 = new QueryExecutionBase(query, ds, null, f) ;
             rs1 = ResultSetFactory.makeRewindable(qExec1.execSelect()) ;

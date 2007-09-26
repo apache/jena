@@ -75,9 +75,8 @@ public class QuadBlockCompilerMain implements QuadBlockCompiler
         if ( needDistinct )
         {
             // DISTINCT -- over the names variables but not * (which includes the graph node).
-            
-            // Get a single table.  This projects only the variables, not the unnamed graph node column. 
-            sqlNode = SqlRename.view("A", sqlNode) ;
+            String renameName = request.genId("A") ;
+            sqlNode = SqlRename.view(renameName, sqlNode) ;
             sqlNode = SqlDistinct.distinct(sqlNode) ;
         }
         

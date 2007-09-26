@@ -26,4 +26,13 @@
             ] ;
          mf:result <merge-2-results.srx>
       ]
+      [  mf:name    "Merge-3" ;
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <merge-3.rq> ;
+              qt:graphData <data-1.ttl> ;
+              qt:graphData <data-2.ttl> ;
+            ] ;
+         mf:result <merge-3-results.srx>
+      ]
     ).
