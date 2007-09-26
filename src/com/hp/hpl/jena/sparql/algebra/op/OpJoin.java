@@ -17,18 +17,20 @@ public class OpJoin extends Op2
 {
     public static Op create(Op left, Op right)
     { 
-        if ( left == null )
-            return right ;
-        if ( isJoinIdentify(left) )
-            return right ;
-
-        if ( isJoinIdentify(right) )
-            return left ;
+        // This is the SPARQL simplification step done inline.
+        // Which is wrong IMHO
+//        if ( left == null )
+//            return right ;
+//        if ( isJoinIdentify(left) )
+//            return right ;
+//
+//        if ( isJoinIdentify(right) )
+//            return left ;
 
         return new OpJoin(left, right) ;
     }
     
-    private static boolean isJoinIdentify(Op op)
+    public static boolean isJoinIdentify(Op op)
     {
         if ( ! ( op instanceof OpTable ) )
             return false ;

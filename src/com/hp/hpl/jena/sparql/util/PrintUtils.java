@@ -11,10 +11,12 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
+import com.hp.hpl.jena.query.ARQ;
+import com.hp.hpl.jena.query.Query;
+import com.hp.hpl.jena.query.QueryExecution;
+import com.hp.hpl.jena.query.Syntax;
 import com.hp.hpl.jena.shared.PrefixMapping;
-
 import com.hp.hpl.jena.sparql.algebra.Algebra;
-import com.hp.hpl.jena.sparql.algebra.AlgebraGeneratorQuad;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.OpWriter;
 import com.hp.hpl.jena.sparql.engine.Plan;
@@ -22,11 +24,6 @@ import com.hp.hpl.jena.sparql.engine.QueryEngineFactory;
 import com.hp.hpl.jena.sparql.engine.QueryEngineRegistry;
 import com.hp.hpl.jena.sparql.engine.binding.BindingRoot;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext;
-
-import com.hp.hpl.jena.query.ARQ;
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.QueryExecution;
-import com.hp.hpl.jena.query.Syntax;
 
 public class PrintUtils
 {
@@ -163,7 +160,7 @@ public class PrintUtils
 
     public static void printQuad(IndentedWriter out, Query query)
     {
-        Op op = AlgebraGeneratorQuad.compileQuery(query) ;
+        Op op = Algebra.compileQuad(query) ;
         SerializationContext sCxt = new SerializationContext(query) ;
         op.output(out, sCxt) ;
     }

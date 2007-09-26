@@ -33,6 +33,7 @@ public class Run
 {
     public static void main(String[] argv)
     {
+        runQParse() ;
         
         Op op = SSE.parseOp("(quadpattern (?g ?s ?p ?o))") ;
         System.out.println(op);

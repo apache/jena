@@ -41,45 +41,55 @@ public class AlgebraGenerator
     
     public Op compile(Query query)
     {
-        Op pattern = compile(query.getQueryPattern()) ;
+        Op pattern = compile(query.getQueryPattern()) ;  // Not compileElement - need to apply simplification.
         Op op = compileModifiers(query, pattern) ;
         return op ;
     }
     
+    static Transform transform = new TransformSimplify() ;
     // Compile any structural element
     public Op compile(Element elt)
     {
-      if ( elt instanceof ElementUnion )
-          return compile((ElementUnion)elt) ;
-    
-      if ( elt instanceof ElementGroup )
-          return compile((ElementGroup)elt) ;
-    
-      if ( elt instanceof ElementNamedGraph )
-          return compile((ElementNamedGraph)elt) ; 
-    
-      if ( elt instanceof ElementService )
-          return compile((ElementService)elt) ; 
-
-      // This is only here for queries built programmatically
-      // (triple patterns not in a group) 
-      if ( elt instanceof ElementTriplesBlock )
-          return compile(((ElementTriplesBlock)elt).getTriples()) ;
-
-      if ( elt == null )
-          return new OpNull() ;
-
-      broken("compile(Element)/Not a structural element: "+Utils.className(elt)) ;
-      return null ;
+        Op op = compileElement(elt) ;
+        op = Transformer.transform(transform, op) ;
+        return op ;
     }
 
-    protected Op compile(ElementUnion el)
+    // This is the operation to call for recursive application of step 4.
+    private Op compileElement(Element elt)
+    {
+        if ( elt instanceof ElementUnion )
+            return compileElementUnion((ElementUnion)elt) ;
+      
+        if ( elt instanceof ElementGroup )
+            return compileElementGroup((ElementGroup)elt) ;
+      
+        if ( elt instanceof ElementNamedGraph )
+            return compileElementGraph((ElementNamedGraph)elt) ; 
+      
+        if ( elt instanceof ElementService )
+            return compileElementService((ElementService)elt) ; 
+
+        // This is only here for queries built programmatically
+        // (triple patterns not in a group) 
+        if ( elt instanceof ElementTriplesBlock )
+            return compile(((ElementTriplesBlock)elt).getTriples()) ;
+
+        if ( elt == null )
+            return new OpNull() ;
+
+        broken("compile(Element)/Not a structural element: "+Utils.className(elt)) ;
+        return null ;
+        
+    }
+    
+    protected Op compileElementUnion(ElementUnion el)
     { 
         if ( el.getElements().size() == 1 )
         {
             Element subElt = (Element)el.getElements().get(0) ;
             ElementGroup elg = (ElementGroup)subElt ;
-            return compile(elg) ;
+            return compileElement(elg) ;
         }
         
         Op current = null ;
@@ -88,7 +98,7 @@ public class AlgebraGenerator
         {
             Element subElt = (Element)iter.next() ;
             ElementGroup elg = (ElementGroup)subElt ;
-            Op op = compile(elg) ;
+            Op op = compileElement(elg) ;
             if ( current == null )
                 current = op ;
             else
@@ -97,7 +107,7 @@ public class AlgebraGenerator
         return current ;
     }
     
-    protected Op compile(ElementGroup groupElt)
+    protected Op compileElementGroup(ElementGroup groupElt)
     {
         if ( fixedFilterPosition )
             return compileFixed(groupElt) ;
@@ -154,7 +164,7 @@ public class AlgebraGenerator
                  elt instanceof ElementService ||
                  elt instanceof ElementUnion )
             {
-                Op op = compile(elt) ;
+                Op op = compileElement(elt) ;
                 current = join(current, op) ;
                 continue ;
             }
@@ -169,20 +179,36 @@ public class AlgebraGenerator
             current = join(current, op) ;
         }
         
+//        // With bug in SPARQL CR document.
+//        if ( ! filters.isEmpty() )
+//        {
+//            if ( current instanceof OpLeftJoin )
+//            {
+//                OpLeftJoin op = (OpLeftJoin)current ;
+//                current = OpLeftJoin.create(op.getLeft(), op.getRight(), filters) ;
+//            }
+//            else
+//            {
+//                if ( current == null )
+//                    current = OpTable.unit() ;
+//                current = OpFilter.filter(filters, current) ;
+//            }
+//        }
+        
         if ( ! filters.isEmpty() )
         {
             if ( current == null )
                 current = OpTable.unit() ;
             current = OpFilter.filter(filters, current) ;
         }
-        
+
         return current ;
     }
 
     protected Op compile(ElementOptional eltOpt, Op current)
     {
         Element subElt = eltOpt.getOptionalElement() ;
-        Op op = compile(subElt) ;
+        Op op = compileElement(subElt) ;
         ExprList exprs = null ;
         if ( op instanceof OpFilter )
         {
@@ -203,17 +229,17 @@ public class AlgebraGenerator
         return new OpBGP(pattern) ;
     }
     
-    protected Op compile(ElementNamedGraph eltGraph)
+    protected Op compileElementGraph(ElementNamedGraph eltGraph)
     {
         Node graphNode = eltGraph.getGraphNameNode() ;
-        Op sub = compile(eltGraph.getElement()) ;
+        Op sub = compileElement(eltGraph.getElement()) ;
         return new OpGraph(graphNode, sub) ;
     }
 
-    protected Op compile(ElementService eltService)
+    protected Op compileElementService(ElementService eltService)
     {
         Node serviceNode = eltService.getServiceNode() ;
-        Op sub = compile(eltService.getElement()) ;
+        Op sub = compileElement(eltService.getElement()) ;
         return new OpService(serviceNode, sub) ;
     }
 
@@ -254,7 +280,7 @@ public class AlgebraGenerator
              elt instanceof ElementNamedGraph ||
              elt instanceof ElementUnion )
         {
-            Op op = compile(elt) ;
+            Op op = compileElement(elt) ;
             return join(current, op) ;
         }
         

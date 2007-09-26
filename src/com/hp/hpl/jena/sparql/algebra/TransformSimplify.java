@@ -1,55 +1,27 @@
 /*
- * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
 package com.hp.hpl.jena.sparql.algebra;
 
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.sparql.algebra.op.OpDatasetNames;
-import com.hp.hpl.jena.sparql.algebra.op.OpQuadPattern;
-import com.hp.hpl.jena.sparql.core.BasicPattern;
-import com.hp.hpl.jena.sparql.core.Quad;
-import com.hp.hpl.jena.sparql.syntax.ElementGroup;
-import com.hp.hpl.jena.sparql.syntax.ElementNamedGraph;
-import com.hp.hpl.jena.sparql.util.Context;
+import com.hp.hpl.jena.sparql.algebra.op.OpJoin;
 
-public class AlgebraGeneratorQuad extends AlgebraGenerator 
+public class TransformSimplify extends TransformCopy
 {
-    
-    private Node currentGraph = Quad.defaultGraphNode ;
-    
-    public AlgebraGeneratorQuad(Context context) { super(context) ; }
-    public AlgebraGeneratorQuad()                { super() ; }
-    
-    protected Op compile(BasicPattern pattern)
+    public Op transform(OpJoin opJoin, Op left, Op right)
     {
-        return new OpQuadPattern(currentGraph, pattern) ;
-    }
-
-    protected Op compile(ElementNamedGraph eltGraph)
-    {
-        Node graphNode = eltGraph.getGraphNameNode() ;
-        Node g = currentGraph ;
-        currentGraph = graphNode ;
-        
-        if ( eltGraph.getElement() instanceof ElementGroup )
-        {
-            if ( ((ElementGroup)eltGraph.getElement()).isEmpty() )
-            {
-                // GRAPH ?g {} or GRAPH <v> {}
-                return new OpDatasetNames(graphNode) ;
-            }
-        }
-        Op sub = compile(eltGraph.getElement()) ;
-        currentGraph = g ;
-        return sub ;
+        if ( OpJoin.isJoinIdentify(left) )
+            return right ;
+        if ( OpJoin.isJoinIdentify(right) )
+            return left ;
+        return super.transform(opJoin, left, right) ;
     }
 }
 
 /*
- * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
