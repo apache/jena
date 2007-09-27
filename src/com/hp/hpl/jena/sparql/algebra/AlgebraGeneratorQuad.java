@@ -28,7 +28,7 @@ public class AlgebraGeneratorQuad extends AlgebraGenerator
         return new OpQuadPattern(currentGraph, pattern) ;
     }
 
-    protected Op compile(ElementNamedGraph eltGraph)
+    protected Op compileElementGraph(ElementNamedGraph eltGraph)
     {
         Node graphNode = eltGraph.getGraphNameNode() ;
         Node g = currentGraph ;
