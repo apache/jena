@@ -66,7 +66,7 @@ class EvaluatorSimple implements Evaluator
             dump(tableLeft) ;
             dump(tableRight) ;
             if ( exprs != null )
-                System.out.println(exprs.toString()) ;
+                System.out.println(exprs) ;
         }
 
         return joinWorker(tableLeft, tableRight, true, exprs) ;
@@ -88,7 +88,7 @@ class EvaluatorSimple implements Evaluator
         if ( debug )
         {
             System.out.println("Restriction") ;
-            System.out.println(expressions.toString()) ;
+            System.out.println(expressions) ;
             dump(table) ;
         }
         QueryIterator iter = table.iterator(execCxt) ;

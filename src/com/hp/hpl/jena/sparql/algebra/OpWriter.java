@@ -357,7 +357,7 @@ public class OpWriter
                     Var v = agg.asVar() ;
                     String str = agg.getAggregator().toPrefixString() ;
                     out.print("(") ;
-                    out.print(v.toString()) ;
+                    out.print(v) ;
                     out.print(" ") ;
                     out.print(str) ;
                     out.print(")") ;

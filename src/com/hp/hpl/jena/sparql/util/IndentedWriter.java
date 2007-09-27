@@ -57,15 +57,16 @@ public class IndentedWriter
     // On output, we use the platform PrintWriter.println()
     // public void print(String s) { lineStart() ; out.print(s) ; column += s.length() ; }
     
-    public void print(String s) 
+    public void print(Object obj) 
     {
+        String s = obj.toString() ;
         for ( int i = 0 ; i < s.length() ; i++ )
             printChWorker(s.charAt(i)) ;
     }
     
     public void print(char ch) { printChWorker(ch) ; }
     
-    public void println(String s) { print(s) ; newline() ; }
+    public void println(Object obj) { print(obj) ; newline() ; }
     public void println(char ch)  { print(ch) ; newline() ; }
 
     public void println() { newline() ; }

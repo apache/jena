@@ -173,7 +173,7 @@ public class qexpr
                     if ( actionCopySubstitute )
                     {
                         Expr e = expr.copySubstitute(new BindingMap(), true) ;
-                        System.out.println(e.toString()) ;
+                        System.out.println(e) ;
                     }
                     else
                     {

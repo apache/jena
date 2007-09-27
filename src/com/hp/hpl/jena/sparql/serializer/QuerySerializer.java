@@ -199,18 +199,6 @@ public class QuerySerializer implements QueryVisitor
         {
             out.print("GROUP BY ") ;
             appendNamedExprList(query, out, query.getGroupBy()) ;
-//            for ( Iterator iter = query.getGroupBy().iterator() ; iter.hasNext() ; )
-//            {
-//                out.print(" ") ;
-//                Var v = (Var)iter.next();
-//                Expr expr = (Expr)query.getGroupExprs().get(v) ;
-//                
-//                if ( Var.isAllocVar(v)  )
-//                    // expressions have internal variables allocated for them 
-//                    fmtExpr.format(expr, true) ;
-//                else
-//                    out.print(v.toString()) ;
-//            }
             out.println();
         }
     }
