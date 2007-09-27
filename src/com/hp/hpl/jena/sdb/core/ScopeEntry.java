@@ -54,6 +54,12 @@ public class ScopeEntry
         this.status = status ;
     }
     
+    public ScopeEntry duplicate()
+    {
+        return new ScopeEntry(var, column, status) ;
+    }
+    
+    
     public SqlColumn getColumn()
     {
         return column ;

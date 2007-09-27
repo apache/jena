@@ -6,9 +6,6 @@ SDB ToDo list (and general notes)
 + Break out the merge query section into a separate wiki page.
 
 == Development
-+ New alias policy : only have when a new consolidation nodes
-  Shodul this be scope-managed?
-
 + SqlProject/SqlRename are now highly related - merge - or simplifiy. 
 
 + What about bulk add/delete of whole graphs? 
@@ -25,7 +22,6 @@ SDB ToDo list (and general notes)
 + JDBC statement management in execQuery
 
 + Setting options for testing.
-+ Tests for union graphs. 
 + Use cursors for streaming / PostgreSQL [DONE - test]
 
 + StoreLoader => StoreLoaderPlus.
@@ -35,8 +31,7 @@ SDB ToDo list (and general notes)
 + OpUnion
 
 == Tests
-+ DISTINCT, Slice, Project, including when not of a query is translated.
-+ Merge tests.
++ DISTINCT, Slice, Project, including when not all of a query is translated.
 
 == Alt layouts
 

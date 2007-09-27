@@ -17,6 +17,7 @@ public class ScopeOptional implements Scope
     private Scope scope ;
     private ScopeStatus scopeStatus = ScopeStatus.OPTIONAL ;
 
+    // May be better to copy this and mutate the scopen status 
     public ScopeOptional(Scope subScope)
     { this.scope = subScope ; }
     
@@ -25,6 +26,7 @@ public class ScopeOptional implements Scope
         ScopeEntry e = scope.findScopeForVar(var) ;
         if ( e == null )
             return null ;
+        e = e.duplicate() ; // Copy - we're going to mutate it.
         e.setStatus(scopeStatus) ;
         return e ;
     }
