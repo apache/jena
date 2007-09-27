@@ -12,8 +12,6 @@ See ToDoSSE
 ----
 + Better syntax as well as SQL-like: GROUP BY ... WITH ... ??
 
-+ IndentedWriter: print obejcts, not strings.
-
 + Results set to note when finished and warn on attempted continued use.
 
 + OpOrder to take an ExprList
