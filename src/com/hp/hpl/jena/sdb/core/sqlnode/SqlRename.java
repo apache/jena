@@ -6,84 +6,58 @@
 
 package com.hp.hpl.jena.sdb.core.sqlnode;
 
-import java.util.Map;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
-import com.hp.hpl.jena.sdb.core.Generator;
-import com.hp.hpl.jena.sdb.core.Gensym;
-import com.hp.hpl.jena.sdb.core.Scope;
-import com.hp.hpl.jena.sdb.core.ScopeRename;
-import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
 import com.hp.hpl.jena.sparql.core.Var;
+
+import com.hp.hpl.jena.sdb.core.*;
+import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
 
 /** SQL rename */
 
 public class SqlRename extends SqlNodeBase1
 {
-    private ScopeRename idScope ;
-    private ScopeRename nodeScope ;
+    private ScopeBase idScope ;
+    private ScopeBase nodeScope ;
     private SqlTable vTable ;       // Our column naming space.
+    private List<ColAlias> columns ;
     
-    // --- Development/debugging.
-    
-    public static ScopeRename calc(Scope scope)
-    {
-        SqlTable table = new SqlTable("REN") ;
-        Generator gen = Gensym.create("X") ;
-        return calcRename(table, scope, gen) ;
-    }
     //---
 
     public static SqlRename view(String alias, SqlNode sqlNode)
     { 
-        if ( true ) return SqlProjectRename.view(alias, sqlNode) ;
-        
         SqlTable table = new SqlTable(alias) ;
         Generator gen = Gensym.create("X") ;    // Column names.  Not global.
         
-        ScopeRename idScope = calcRename(table, sqlNode.getIdScope(), gen) ;
-        ScopeRename nodeScope = calcRename(table, sqlNode.getNodeScope(), gen) ;
-
-        SqlRename rename = new SqlRename(table, sqlNode, idScope, nodeScope) ;
+        SqlRename rename = new SqlRename(table, sqlNode) ;
+        rename.merge(sqlNode.getIdScope(), rename.idScope, gen) ;
+        rename.merge(sqlNode.getNodeScope(), rename.nodeScope, gen) ;
         return rename ;
     }
     
-    private SqlRename(SqlTable here, SqlNode sqlNode, ScopeRename idScope, ScopeRename nodeScope)
+    private SqlRename(SqlTable here, SqlNode sqlNode)
     {
         super(here.getAliasName(), sqlNode) ;
         this.vTable = here ;
-        this.idScope = idScope ;
-        this.nodeScope = nodeScope ;
-        notes(idScope) ;
-        notes(nodeScope) ;
+        this.idScope = new ScopeBase() ;
+        this.nodeScope = new ScopeBase() ;
+        this.columns = new ArrayList<ColAlias>() ;
+        
     }
 
-    protected SqlRename(String alias, SqlNode sqlNode)
+    private SqlRename(SqlRename other)
     {
-        // Pass-through
-        super(alias, sqlNode) ;
-    }
-    
-    private void notes(ScopeRename scope)
-    {
-        String x = "" ;
-        String sep = "" ;
-        for ( Var v : scope.getVars() )
-        {
-            SqlColumn c = scope.findScopeForVar(v).getColumn() ;
-            x = x+sep+c+"="+v ;
-            sep = " " ;
-        }
-        if ( ! x.isEmpty() )
-            addNote(x) ;
+        super(other.vTable.getAliasName(), other.getSubNode()) ;
+        this.vTable = other.vTable ;
+        this.idScope = other.idScope ;
+        this.nodeScope = other.nodeScope ;
+        this.columns = new ArrayList<ColAlias>(other.columns) ;
     }
 
     // Map all vars in the scope to names in the rename.
-    private static ScopeRename calcRename(final SqlTable table, Scope scope, 
-                                          final Generator gen)
+    private void merge(Scope scope, ScopeBase newScope, Generator gen)
     {
-        ScopeRename renameScope = new ScopeRename(scope) ;
-        
         // Would be nicer if Java didn't impose such an overhead on writing lambda's/
 //        Action<Var> action = new Action<Var>(){
 //            public void apply(Var var)
@@ -95,34 +69,25 @@ public class SqlRename extends SqlNodeBase1
 //        } ;
 //        Alg.apply(scope.getVars(), action) ;
             
-        Set<Var> vars = scope.getVars() ;
-        for ( Var v : vars)
+        String x = "" ;
+        String sep = "" ;
+
+        for ( ScopeEntry e : scope.findScopes() )
         {
+            SqlColumn oldCol = e.getColumn() ;
+            Var v = e.getVar() ;
             String colName = gen.next() ;
-            SqlColumn col = new SqlColumn(table, colName) ;
-            renameScope.setAlias(v, col) ;
+            SqlColumn newCol = new SqlColumn(vTable, colName) ;
+            columns.add(new ColAlias(oldCol, newCol)) ;
+            newScope.setColumnForVar(v, newCol) ;
+            // Annotations
+            x = String.format("%s%s%s:(%s=>%s)", x, sep, v, oldCol, newCol) ;
+            sep = " " ;
         }
-        return renameScope ;
+        if ( ! x.isEmpty() )
+            addNote(x) ;
     }
 
-    // Map certain vars into the rename
-    private static void setAliases(final SqlTable here, final Map<Var, String> renames,
-                                   final Scope subScope, final ScopeRename scope)
-    {
-        if ( renames == null )
-            return ;
-        
-        for ( Var v : renames.keySet() )
-        {
-            String colName = renames.get(v) ;
-            if ( subScope.hasColumnForVar(v) )
-            {
-                SqlColumn col = new SqlColumn(here, colName) ;
-                scope.setAlias(v, col) ;
-            }
-        }
-    }
-    
     @Override
     public Scope getIdScope()   { return idScope ; }
     @Override
@@ -133,17 +98,139 @@ public class SqlRename extends SqlNodeBase1
 
     @Override
     public SqlNode apply(SqlTransform transform, SqlNode subNode)
-    {
-        return transform.transform(this, subNode) ;
-    }
+    { return transform.transform(this, subNode) ; }
 
     @Override
     public SqlNode copy(SqlNode subNode)
-    {
-        // Do any subitems need to be copied?
-        return new SqlRename(this.vTable, subNode, this.idScope, this.nodeScope) ;
-    }
+    { return new SqlRename(this) ; }
 }
+
+//public class SqlRename extends SqlNodeBase1
+//{
+//    private ScopeRename idScope ;
+//    private ScopeRename nodeScope ;
+//    private SqlTable vTable ;       // Our column naming space.
+//    
+//    // --- Development/debugging.
+//    
+//    public static ScopeRename calc(Scope scope)
+//    {
+//        SqlTable table = new SqlTable("REN") ;
+//        Generator gen = Gensym.create("X") ;
+//        return calcRename(table, scope, gen) ;
+//    }
+//    //---
+//
+//    public static SqlRename view(String alias, SqlNode sqlNode)
+//    { 
+//        if ( true ) return SqlProjectRename.view(alias, sqlNode) ;
+//        
+//        SqlTable table = new SqlTable(alias) ;
+//        Generator gen = Gensym.create("X") ;    // Column names.  Not global.
+//        
+//        ScopeRename idScope = calcRename(table, sqlNode.getIdScope(), gen) ;
+//        ScopeRename nodeScope = calcRename(table, sqlNode.getNodeScope(), gen) ;
+//
+//        SqlRename rename = new SqlRename(table, sqlNode, idScope, nodeScope) ;
+//        return rename ;
+//    }
+//    
+//    private SqlRename(SqlTable here, SqlNode sqlNode, ScopeRename idScope, ScopeRename nodeScope)
+//    {
+//        super(here.getAliasName(), sqlNode) ;
+//        this.vTable = here ;
+//        this.idScope = idScope ;
+//        this.nodeScope = nodeScope ;
+//        notes(idScope) ;
+//        notes(nodeScope) ;
+//    }
+//
+//    protected SqlRename(String alias, SqlNode sqlNode)
+//    {
+//        // Pass-through
+//        super(alias, sqlNode) ;
+//    }
+//    
+//    private void notes(ScopeRename scope)
+//    {
+//        String x = "" ;
+//        String sep = "" ;
+//        for ( Var v : scope.getVars() )
+//        {
+//            SqlColumn c = scope.findScopeForVar(v).getColumn() ;
+//            x = x+sep+c+"="+v ;
+//            sep = " " ;
+//        }
+//        if ( ! x.isEmpty() )
+//            addNote(x) ;
+//    }
+//
+//    // Map all vars in the scope to names in the rename.
+//    private static ScopeRename calcRename(final SqlTable table, Scope scope, 
+//                                          final Generator gen)
+//    {
+//        ScopeRename renameScope = new ScopeRename(scope) ;
+//        
+//        // Would be nicer if Java didn't impose such an overhead on writing lambda's/
+////        Action<Var> action = new Action<Var>(){
+////            public void apply(Var var)
+////            {
+////                String colName = gen.next() ;
+////                SqlColumn col = new SqlColumn(here, colName) ;
+////                renameScope.setAlias(var, col) ;
+////            }
+////        } ;
+////        Alg.apply(scope.getVars(), action) ;
+//            
+//        Set<Var> vars = scope.getVars() ;
+//        for ( Var v : vars)
+//        {
+//            String colName = gen.next() ;
+//            SqlColumn col = new SqlColumn(table, colName) ;
+//            renameScope.setAlias(v, col) ;
+//        }
+//        return renameScope ;
+//    }
+//
+//    // Map certain vars into the rename
+//    private static void setAliases(final SqlTable here, final Map<Var, String> renames,
+//                                   final Scope subScope, final ScopeRename scope)
+//    {
+//        if ( renames == null )
+//            return ;
+//        
+//        for ( Var v : renames.keySet() )
+//        {
+//            String colName = renames.get(v) ;
+//            if ( subScope.hasColumnForVar(v) )
+//            {
+//                SqlColumn col = new SqlColumn(here, colName) ;
+//                scope.setAlias(v, col) ;
+//            }
+//        }
+//    }
+//    
+//    @Override
+//    public Scope getIdScope()   { return idScope ; }
+//    @Override
+//    public Scope getNodeScope() { return nodeScope ; }
+//    
+//    public void visit(SqlNodeVisitor visitor)
+//    { visitor.visit(this) ; }
+//
+//    @Override
+//    public SqlNode apply(SqlTransform transform, SqlNode subNode)
+//    {
+//        return transform.transform(this, subNode) ;
+//    }
+//
+//    @Override
+//    public SqlNode copy(SqlNode subNode)
+//    {
+//        // Do any subitems need to be copied?
+//        return new SqlRename(this.vTable, subNode, this.idScope, this.nodeScope) ;
+//    }
+//}
 
 /*
  * (c) Copyright 2007 Hewlett-Packard Development Company, LP
