@@ -36,7 +36,6 @@ public abstract class SqlJoin extends SqlNodeBase2
         return null ;
     }
 
-
     protected SqlJoin(JoinType joinType, SqlNode left, SqlNode right)
     { 
         // Does not have an alias.

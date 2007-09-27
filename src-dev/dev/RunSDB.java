@@ -16,37 +16,30 @@ import static sdb.SDBCmd.setSDBConfig;
 import static sdb.SDBCmd.sparql;
 import arq.cmd.CmdUtils;
 
-import com.hp.hpl.jena.query.Dataset;
-import com.hp.hpl.jena.query.DatasetFactory;
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.QueryExecution;
-import com.hp.hpl.jena.query.QueryExecutionFactory;
-import com.hp.hpl.jena.query.QueryFactory;
 import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.sdb.SDB;
-import com.hp.hpl.jena.sdb.SDBFactory;
-import com.hp.hpl.jena.sdb.Store;
-import com.hp.hpl.jena.sdb.compiler.OpSQL;
-import com.hp.hpl.jena.sdb.compiler.QC;
-import com.hp.hpl.jena.sdb.core.ScopeRename;
-import com.hp.hpl.jena.sdb.core.sqlnode.GenerateSQL;
-import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
-import com.hp.hpl.jena.sdb.core.sqlnode.SqlRename;
-import com.hp.hpl.jena.sdb.core.sqlnode.SqlTransformer;
-import com.hp.hpl.jena.sdb.core.sqlnode.TransformSelectBlock;
-import com.hp.hpl.jena.sdb.sql.JDBC;
-import com.hp.hpl.jena.sdb.sql.SDBConnection;
-import com.hp.hpl.jena.sdb.store.DatabaseType;
-import com.hp.hpl.jena.sdb.store.LayoutType;
-import com.hp.hpl.jena.sdb.store.StoreConfig;
-import com.hp.hpl.jena.sdb.store.StoreFactory;
+import com.hp.hpl.jena.util.FileManager;
+
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.core.Prologue;
 import com.hp.hpl.jena.sparql.core.Quad;
 import com.hp.hpl.jena.sparql.resultset.ResultsFormat;
 import com.hp.hpl.jena.sparql.sse.SSE;
 import com.hp.hpl.jena.sparql.util.QueryExecUtils;
-import com.hp.hpl.jena.util.FileManager;
+
+import com.hp.hpl.jena.query.*;
+
+import com.hp.hpl.jena.sdb.SDB;
+import com.hp.hpl.jena.sdb.SDBFactory;
+import com.hp.hpl.jena.sdb.Store;
+import com.hp.hpl.jena.sdb.compiler.OpSQL;
+import com.hp.hpl.jena.sdb.compiler.QC;
+import com.hp.hpl.jena.sdb.core.sqlnode.*;
+import com.hp.hpl.jena.sdb.sql.JDBC;
+import com.hp.hpl.jena.sdb.sql.SDBConnection;
+import com.hp.hpl.jena.sdb.store.DatabaseType;
+import com.hp.hpl.jena.sdb.store.LayoutType;
+import com.hp.hpl.jena.sdb.store.StoreConfig;
+import com.hp.hpl.jena.sdb.store.StoreFactory;
 
 public class RunSDB
 {
@@ -137,15 +130,15 @@ public class RunSDB
         
         SqlNode x = ((OpSQL)op).getSqlNode() ;
         
-        if ( false )
-        {
-            System.out.println(x) ;
-            ScopeRename r1 = SqlRename.calc(x.getIdScope()) ;
-            System.out.println("Id: "+r1) ;
-            ScopeRename r2 = SqlRename.calc(x.getNodeScope()) ;
-            System.out.println("Node: "+r2) ;
-            return ;
-        }
+//        if ( false )
+//        {
+//            System.out.println(x) ;
+//            ScopeRename r1 = SqlRename.calc(x.getIdScope()) ;
+//            System.out.println("Id: "+r1) ;
+//            ScopeRename r2 = SqlRename.calc(x.getNodeScope()) ;
+//            System.out.println("Node: "+r2) ;
+//            return ;
+//        }
         
         // Bug : puts all var/cols into the project
         x = SqlRename.view("ZZ", x) ;
