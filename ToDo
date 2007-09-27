@@ -12,6 +12,8 @@ See ToDoSSE
 ----
 + Better syntax as well as SQL-like: GROUP BY ... WITH ... ??
 
++ Results set to note when finished and warn on attempted continued use.
+
 + OpOrder to take an ExprList
 + ExprList writing an LJ
 
