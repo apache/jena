@@ -6,7 +6,7 @@
 
 package com.hp.hpl.jena.sdb.core;
 
-import com.hp.hpl.jena.sdb.exprmatch.Action;
+import com.hp.hpl.jena.sdb.exprmatch.ActionMatch;
 import com.hp.hpl.jena.sdb.exprmatch.ExprMatcher;
 import com.hp.hpl.jena.sdb.exprmatch.MapAction;
 import com.hp.hpl.jena.sdb.exprmatch.MapResult;
@@ -22,7 +22,7 @@ public class ExprPattern
     
     public ExprPattern(String pattern ,
                        Var[] vars,
-                       Action[] actions)
+                       ActionMatch[] actions)
     {
         this.pattern = ExprUtils.parse(pattern) ;
         if ( vars.length != actions.length )
@@ -31,7 +31,7 @@ public class ExprPattern
         for ( int i = 0 ; i < vars.length ; i++ )
         {
             Var var = vars[i] ;
-            Action a = actions[i] ;
+            ActionMatch a = actions[i] ;
             mapAction.put(var, a) ;
         }
     }

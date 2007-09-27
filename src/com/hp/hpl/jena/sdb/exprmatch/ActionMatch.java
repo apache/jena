@@ -17,7 +17,7 @@ import com.hp.hpl.jena.sparql.expr.Expr;
  * 
  */
 
-public interface Action
+public interface ActionMatch
 {
     boolean match(Var var, Expr expr, MapResult resultMap) ;
 }

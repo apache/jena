@@ -10,7 +10,7 @@ import java.util.HashMap;
 
 import com.hp.hpl.jena.sparql.core.Var;
 
-public class MapAction extends HashMap<Var, Action> {}
+public class MapAction extends HashMap<Var, ActionMatch> {}
 
 /*
  * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP

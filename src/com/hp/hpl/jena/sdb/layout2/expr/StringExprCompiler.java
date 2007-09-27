@@ -17,7 +17,7 @@ import com.hp.hpl.jena.sdb.compiler.SDBConstraint;
 import com.hp.hpl.jena.sdb.core.ExprPattern;
 import com.hp.hpl.jena.sdb.core.Scope;
 import com.hp.hpl.jena.sdb.core.sqlexpr.*;
-import com.hp.hpl.jena.sdb.exprmatch.Action;
+import com.hp.hpl.jena.sdb.exprmatch.ActionMatch;
 import com.hp.hpl.jena.sdb.exprmatch.ActionMatchString;
 import com.hp.hpl.jena.sdb.exprmatch.ActionMatchVar;
 import com.hp.hpl.jena.sdb.exprmatch.MapResult;
@@ -27,12 +27,12 @@ public class StringExprCompiler implements ConditionCompiler
 {
     private static ExprPattern equalsString1 = new ExprPattern("?a1 = ?a2",
                                                                new Var[]{ Var.alloc("a1") , Var.alloc("a2") },
-                                                               new Action[]{ new ActionMatchVar() ,
+                                                               new ActionMatch[]{ new ActionMatchVar() ,
                                                                              new ActionMatchString()}) ;
     // As equalsString1 but reverse the arguments.
     private static ExprPattern equalsString2 = new ExprPattern("?a2 = ?a1",
                                                                new Var[]{ Var.alloc("a1") , Var.alloc("a2") },
-                                                               new Action[]{ new ActionMatchVar() ,
+                                                               new ActionMatch[]{ new ActionMatchVar() ,
                                                                              new ActionMatchString()}) ;
 //    private static ExprPattern equalsString3 = new ExprPattern("str(?a1) = ?a2",
 //                                                               new Var[]{ Var.alloc("a1") , Var.alloc("a2") },

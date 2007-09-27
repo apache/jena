@@ -7,9 +7,8 @@ SDB ToDo list (and general notes)
 
 == Development
 
-+ SDB.getContext().setTrue(SDB.unionDefaultGraph) ;
-  cause GRAPH arq:UnionGraph to go wrong?
-  tests-with-context
++ Tests with SDB.getContext().setTrue(SDB.unionDefaultGraph) ;
+  --set in manifest?
 
 + SqlProject/SqlRename are now highly related - merge - or simplifiy. 
 

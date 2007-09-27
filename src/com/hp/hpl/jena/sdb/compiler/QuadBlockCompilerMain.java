@@ -6,6 +6,7 @@
 
 package com.hp.hpl.jena.sdb.compiler;
 
+import com.hp.hpl.jena.sdb.SDB;
 import com.hp.hpl.jena.sdb.core.SDBRequest;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlDistinct;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
@@ -69,8 +70,14 @@ public class QuadBlockCompilerMain implements QuadBlockCompiler
         // Or in TransformSDB
 
         boolean needDistinct = false ;
+        // Either it's the uniongraph ...
         if ( quads.getGraphNode().equals(Quad.unionGraph) )
             needDistinct = true ;
+        // or it's the union graph via redirected defaultGraph
+        if ( quads.getGraphNode().equals(Quad.defaultGraphNode) &&
+             request.getContext().isTrue(SDB.unionDefaultGraph))
+            needDistinct = true ;
+        
         
         if ( needDistinct )
         {

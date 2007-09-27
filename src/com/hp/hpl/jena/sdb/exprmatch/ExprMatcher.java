@@ -77,7 +77,7 @@ class MatchVisitor implements ExprVisitor
     private MapCallout cMap ;
 
     // Default action is to accept anything - i.e. pattern variables are any expression
-    static Action defaultAction = new ActionMatchBind() ;
+    static ActionMatch defaultAction = new ActionMatchBind() ;
     
     MatchVisitor(Expr target, MapAction aMap, MapCallout cMap, MapResult rMap)
     { 
@@ -159,7 +159,7 @@ class MatchVisitor implements ExprVisitor
     public void visit(ExprVar patternVar)
     {
         Var vn = patternVar.asVar() ;
-        Action a = aMap.get(vn) ; 
+        ActionMatch a = aMap.get(vn) ; 
         if ( a == null )
             a = defaultAction ;
         

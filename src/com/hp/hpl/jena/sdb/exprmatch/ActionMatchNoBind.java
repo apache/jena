@@ -9,7 +9,7 @@ package com.hp.hpl.jena.sdb.exprmatch;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.expr.Expr;
 
-public class ActionMatchNoBind implements Action
+public class ActionMatchNoBind implements ActionMatch
 {
     public boolean match(Var var, Expr expr, MapResult resultMap)
     { return true ; }

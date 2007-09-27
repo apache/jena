@@ -17,7 +17,7 @@ import com.hp.hpl.jena.sdb.compiler.SDBConstraint;
 import com.hp.hpl.jena.sdb.core.ExprPattern;
 import com.hp.hpl.jena.sdb.core.Scope;
 import com.hp.hpl.jena.sdb.core.sqlexpr.*;
-import com.hp.hpl.jena.sdb.exprmatch.Action;
+import com.hp.hpl.jena.sdb.exprmatch.ActionMatch;
 import com.hp.hpl.jena.sdb.exprmatch.ActionMatchString;
 import com.hp.hpl.jena.sdb.exprmatch.ActionMatchVar;
 import com.hp.hpl.jena.sdb.exprmatch.MapResult;
@@ -30,12 +30,12 @@ public class RegexCompiler implements ConditionCompiler
     // Map of meta variable to action? 
     private static ExprPattern regex1 = new ExprPattern("regex(?a1, ?a2)",
                                                         new Var[]{ Var.alloc("a1") , Var.alloc("a2") },
-                                                        new Action[]{ new ActionMatchVar() ,
+                                                        new ActionMatch[]{ new ActionMatchVar() ,
                                                                       new ActionMatchString()}) ;
     
     private static ExprPattern regex1_i = new ExprPattern("regex(?a1, ?a2, 'i')",
                                                           new Var[]{ Var.alloc("a1") , Var.alloc("a2") },
-                                                          new Action[]{ new ActionMatchVar() ,
+                                                          new ActionMatch[]{ new ActionMatchVar() ,
                                                                         new ActionMatchString()}) ;
 
     
