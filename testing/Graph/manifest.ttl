@@ -10,7 +10,6 @@
     ( 
 
       [  mf:name    "Quads-1" ;
-         # TestSyntax, TestSerialization, TestBadSyntax, TestQuery
          rdf:type   mfx:TestQuery ; 
          mf:action
             [ qt:query  <quad-1.rq> ;
@@ -20,7 +19,6 @@
       ]
 
       [  mf:name    "Quads-2" ;
-         # TestSyntax, TestSerialization, TestBadSyntax, TestQuery
          rdf:type   mfx:TestQuery ; 
          mf:action
             [ qt:query  <quad-2.rq> ;
@@ -30,7 +28,6 @@
       ]
 
       [  mf:name    "Quads-2a" ;
-         # TestSyntax, TestSerialization, TestBadSyntax, TestQuery
          rdf:type   mfx:TestQuery ; 
          mf:action
             [ qt:query  <quad-2.rq> ;

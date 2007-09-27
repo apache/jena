@@ -6,6 +6,11 @@ SDB ToDo list (and general notes)
 + Break out the merge query section into a separate wiki page.
 
 == Development
+
++ SDB.getContext().setTrue(SDB.unionDefaultGraph) ;
+  cause GRAPH arq:UnionGraph to go wrong?
+  tests-with-context
+
 + SqlProject/SqlRename are now highly related - merge - or simplifiy. 
 
 + What about bulk add/delete of whole graphs? 

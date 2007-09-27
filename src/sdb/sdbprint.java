@@ -155,7 +155,7 @@ public class sdbprint extends CmdArgsDB
         if ( printPlan )
         {
             divider() ;
-            System.out.print(qe.getPlan().toString()) ;
+            System.out.print(qe.getPlan()) ;
         }
     }
 

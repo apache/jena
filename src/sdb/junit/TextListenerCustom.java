@@ -61,7 +61,7 @@ public class TextListenerCustom extends TextListener
         for ( int i = start ; i < finish  ; i++ )
         {
             StackTraceElement el = stackTrace[i] ;
-            fWriter.println("    "+el.toString()) ;
+            fWriter.println("    "+el) ;
         }
     }
 }

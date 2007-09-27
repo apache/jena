@@ -46,6 +46,11 @@ public class RunSDB
     static { CmdUtils.setLog4j() ; CmdUtils.setN3Params() ; }
     public static void main(String[]argv)
     {
+        // SDB.getContext().setTrue(SDB.unionDefaultGraph) ;
+        
+        
+        
+        runPrint() ;
 //        SDBConnection.logSQLExceptions = true ;
 //        SDBConnection.logSQLStatements = true ;
 
@@ -201,7 +206,7 @@ public class RunSDB
     public static void runPrint(String filename)
     {
         //QueryCompilerBasicPattern.printAbstractSQL = true ;
-        sdb.sdbprint.main("--print=sql", /*"--print=op",*/ "--sdb=sdb.ttl", "--query="+filename) ;
+        sdb.sdbprint.main("--print=sql", "--print=op","--sdb=sdb.ttl", "--query="+filename) ;
         System.exit(0) ;
     }
     
