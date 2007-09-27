@@ -1,7 +1,6 @@
-PREFIX :  <http://example/pastrtSupplier> 
+PREFIX : <http://example/>
 
-SELECT ?supplier
-{
-    ?supplier   :suppliesPart   ?part . 
-    ?part   :size   ?s . FILTER ( ?s >  10 ) 
+SELECT *
+{ 
+   ?x :r ?y OPTIONAL { { ?x :p ?q FILTER (?q < 34) } }
 }
