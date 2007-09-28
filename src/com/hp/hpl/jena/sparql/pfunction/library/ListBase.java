@@ -55,6 +55,14 @@ public abstract class ListBase extends PropertyFunctionEval
         return qIter ;
     }
     
+    /**
+     * @param binding     current binding as input
+     * @param listNode    the list; maybe a variable.
+     * @param predicate   the predicate used to invoke this property function 
+     * @param object      the object of the property function; maybe a variable 
+     * @param execCxt     Execution context
+     * @return QueryIterator    
+     */
     protected abstract
     QueryIterator execOneList(Binding binding, Node listNode, Node predicate, PropFuncArg object, ExecutionContext execCxt) ;
 }
