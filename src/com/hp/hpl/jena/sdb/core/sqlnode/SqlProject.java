@@ -10,30 +10,56 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
+import com.hp.hpl.jena.sdb.shared.SDBInternalError;
 
 public class SqlProject extends SqlNodeBase1
 {
     List <ColAlias> cols = null ; 
     
     // ---- Factory methods
-    /** make sure this node is a projection - add the column */
-    public static SqlNode project(SqlNode sqlNode, ColAlias col)
-    {
-        SqlProject p = ensure(sqlNode) ;
-
-        if ( col != null )
-        {
-            col.check(sqlNode.getAliasName()) ;
-            p.cols.add(col) ;
-        }
-        return p ;
-    }
+    
+    // Also: 
+    
+    /** make sure this node is a projection */
     
     public static SqlNode project(SqlNode sqlNode)
     {
         return project(sqlNode, null) ;
     }
     
+    /** make sure this node is a projection and add a column */
+
+    public static SqlNode project(SqlNode sqlNode, SqlColumn col, String colOutName)
+    {
+        SqlColumn asCol = new SqlColumn(null, colOutName) ; 
+        ColAlias colAlias = new ColAlias(col, asCol) ;
+        return SqlProject.project(sqlNode, colAlias) ;
+    }
+    
+    /** make sure this node is a projection and add a column */
+
+    public static SqlNode project(SqlNode sqlNode, ColAlias col)
+    {
+        SqlProject p = ensure(sqlNode) ;
+        
+        if ( col != null )
+        {
+            verify(p, col) ;
+            col.check(sqlNode.getAliasName()) ;
+            p.cols.add(col) ;
+        }
+        return p ;
+    }
+    
+    private static void verify(SqlProject p, ColAlias col)
+    {
+        String newColName = col.getAlias().getColumnName() ;
+        
+        for ( ColAlias a : p.getCols() )
+            if ( a.getAlias().getColumnName().equals(newColName) )
+                throw new SDBInternalError("Attempt to use same alias twice") ;
+    }
+
     private static SqlProject ensure(SqlNode sqlNode)
     {
         if ( sqlNode.isProject() )

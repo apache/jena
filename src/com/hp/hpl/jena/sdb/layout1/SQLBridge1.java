@@ -49,7 +49,7 @@ public class SQLBridge1 extends SQLBridgeBase
                 continue ;
             SqlColumn c = e.getColumn() ;
             String sqlVarName = allocSqlName(v) ;
-            addProject(sqlVarName, c) ;
+            addProject(c, sqlVarName) ;
             addAnnotation(sqlVarName+"="+v.toString()) ;
         }
         setAnnotation() ;

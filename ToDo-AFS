@@ -10,7 +10,8 @@ SDB ToDo list (and general notes)
 + Tests with SDB.getContext().setTrue(SDB.unionDefaultGraph) ;
   --set in manifest?
 
-+ SqlProject/SqlRename are now highly related - merge - or simplifiy. 
++ SqlProject/SqlRename are now highly related - merge - or simplifiy.
+  [Partial - need to consider a "pure" SqlProject]  
 
 + What about bulk add/delete of whole graphs? 
   esp removal of a complete named graph.

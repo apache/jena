@@ -95,10 +95,10 @@ public class SQLBridge2 extends SQLBridgeBase
             String vType = SQLUtils.gen(sqlVarName,"type") ;
             SqlColumn cType = new SqlColumn(table, "type") ;
     
-            addProject(vLex, cLex) ;
-            addProject(vDatatype, cDatatype) ;
-            addProject(vLang, cLang) ;
-            addProject(vType, cType) ;
+            addProject(cLex, vLex) ;
+            addProject(cDatatype, vDatatype) ;
+            addProject(cLang, vLang) ;
+            addProject(cType, vType) ;
             
             addAnnotation(sqlVarName+"="+v.toString()) ;
         }

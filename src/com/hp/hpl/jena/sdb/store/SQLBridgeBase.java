@@ -18,7 +18,6 @@ import com.hp.hpl.jena.sdb.core.AliasesSql;
 import com.hp.hpl.jena.sdb.core.Annotation1;
 import com.hp.hpl.jena.sdb.core.SDBRequest;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
-import com.hp.hpl.jena.sdb.core.sqlnode.ColAlias;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlProject;
 import com.hp.hpl.jena.sdb.shared.SDBInternalError;
@@ -109,18 +108,10 @@ public abstract class SQLBridgeBase implements SQLBridge
     
     // ---- project support
     
-    protected void addProject(String alias, SqlColumn col)
+    protected void addProject(SqlColumn col, String colOutName)
     {
-        // v is null if there is no renaming going on.
-        SqlColumn asCol = new SqlColumn(null, alias) ; 
-        ColAlias colAlias = new ColAlias(col, asCol) ;
-        sqlNode = SqlProject.project(sqlNode, colAlias) ;
+        sqlNode = SqlProject.project(sqlNode, col, colOutName) ;
     }
-    
-//    protected void addProject(SqlColumn col)
-//    { 
-//        sqlNode = SqlProject.project(sqlNode, new VarCol(null,  col)) ;
-//    }
     
     protected void addAnnotation(String string)
     {
@@ -132,8 +123,6 @@ public abstract class SQLBridgeBase implements SQLBridge
         annotation.setAnnotation(sqlNode) ;
     }
 
-
-    
     // ---- Var allocation
     
     protected String allocSqlName(Var v)
