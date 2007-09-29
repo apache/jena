@@ -14,6 +14,11 @@ import com.hp.hpl.jena.sdb.shared.SDBInternalError;
 
 public class SqlProject extends SqlNodeBase1
 {
+    // Development:
+    // + SqlRename is an alias and just SqlProject of pre-calculated
+    //   columns because SQL uses SELECT for both.
+    // + SqlCoalesce is a SqlProject with a COALESCE function 
+    
     List <ColAlias> cols = null ; 
     
     // ---- Factory methods
@@ -75,8 +80,7 @@ public class SqlProject extends SqlNodeBase1
     
     private SqlProject(SqlNode sqlNode, List<ColAlias> cols)
     { 
-        // Same alias as the underlying node.
-        super(sqlNode.getAliasName(), sqlNode) ;
+        super(null, sqlNode) ;
         this.cols = cols ; 
     }
     

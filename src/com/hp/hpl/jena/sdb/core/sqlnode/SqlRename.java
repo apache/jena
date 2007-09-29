@@ -43,7 +43,6 @@ public class SqlRename extends SqlNodeBase1
         this.idScope = new ScopeBase() ;
         this.nodeScope = new ScopeBase() ;
         this.columns = new ArrayList<ColAlias>() ;
-        
     }
 
     private SqlRename(SqlRename other)

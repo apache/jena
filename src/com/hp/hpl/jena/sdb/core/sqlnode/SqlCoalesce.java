@@ -22,7 +22,7 @@ public class SqlCoalesce extends SqlNodeBase1
     /* A COALESCE is an operations that takes 
      * variables from the left and right sides of a join
      * and finds the first (left to right) that is defined (not NULL).
-     * That's COALESCE in many databases.
+     * That's the COALESCE function in many SQL databases.
      */
     
     private SqlJoin join ;
@@ -37,7 +37,7 @@ public class SqlCoalesce extends SqlNodeBase1
     {
         // This is not actually true in general.
         // But at the moment, it is a restriction so we test for it for now 
-        // as a snaity check. Remove the test when the new situation arises 
+        // as a sanity check. Remove the test when the new situation arises 
         // as this class then needs to be checked. 
         if ( ! join.isLeftJoin() )
             LogFactory.getLog(SqlCoalesce.class).warn("SqlCoalesce node is not a LeftJoin") ;
