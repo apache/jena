@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: XSDBaseNumericType.java,v 1.17 2007-01-02 11:48:24 andy_seaborne Exp $
+ * $Id: XSDBaseNumericType.java,v 1.18 2007-09-30 17:39:11 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.datatypes.xsd.impl;
 
@@ -21,7 +21,7 @@ import com.hp.hpl.jena.shared.impl.JenaParameters;
  * that float and double are not included in this set.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.17 $ on $Date: 2007-01-02 11:48:24 $
+ * @version $Revision: 1.18 $ on $Date: 2007-09-30 17:39:11 $
  */
 public class XSDBaseNumericType extends XSDDatatype {
 
@@ -122,7 +122,7 @@ public class XSDBaseNumericType extends XSDDatatype {
         if (value1.getDatatype() instanceof XSDBaseNumericType && value2.getDatatype() instanceof XSDBaseNumericType) {
             Number n1 = (Number)value1.getValue();
             Number n2 = (Number)value2.getValue();
-            return n1.longValue() == n2.longValue();
+            return n1.equals(n2);
         } else {
             // At least one arg is not part of the integer hierarchy
             return false;
