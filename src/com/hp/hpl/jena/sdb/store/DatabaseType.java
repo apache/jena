@@ -39,8 +39,7 @@ public class DatabaseType extends Symbol implements Named
         if ( databaseTypeName == null )
             throw new IllegalArgumentException("DatabaseType.convert: null not allowed") ;
 
-        DatabaseType t = null ; 
-        t = commonForm(databaseTypeName) ;
+        DatabaseType t = commonForm(databaseTypeName) ;
         if ( t == null ) 
             t = new DatabaseType(databaseTypeName) ;
         
