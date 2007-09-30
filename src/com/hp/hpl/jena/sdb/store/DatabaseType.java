@@ -30,6 +30,7 @@ public class DatabaseType extends Symbol implements Named
     public static final DatabaseType PostgreSQL      = new DatabaseType("PostgreSQL") ;
     public static final DatabaseType SQLServer       = new DatabaseType("SQLServer") ;
     public static final DatabaseType Oracle          = new DatabaseType("Oracle") ;
+    public static final DatabaseType DB2             = new DatabaseType("DB2") ;
     
     static { init() ; }
     
@@ -58,6 +59,9 @@ public class DatabaseType extends Symbol implements Named
         if ( databaseTypeName.equalsIgnoreCase("PostgreSQL") )      return PostgreSQL ;
         if ( databaseTypeName.equalsIgnoreCase("oracle") )          return Oracle ;
         if ( databaseTypeName.startsWith("oracle:"))                return Oracle ;
+        
+        if ( databaseTypeName.equalsIgnoreCase("DB2"))              return DB2 ;
+        
         if ( databaseTypeName.equalsIgnoreCase("SQLServer") )       return SQLServer ;
         if ( databaseTypeName.equalsIgnoreCase("MSSQLServer") )     return SQLServer ;
         if ( databaseTypeName.equalsIgnoreCase("MSSQLServerExpress") )   return SQLServer ;
@@ -72,8 +76,6 @@ public class DatabaseType extends Symbol implements Named
         return null ;
     }
     
-    //private static String[] dbNames = { "Derby", "HSQLDB", "MySQL", "PostgreSQL", "Oracle", "SQLServer" } ;
-    
     static void init()
     {
         register(Derby) ;
@@ -82,6 +84,7 @@ public class DatabaseType extends Symbol implements Named
         register(PostgreSQL) ;
         register(SQLServer) ;
         register(Oracle) ;
+        register(DB2) ;
     }
     
     static public void register(String name)
