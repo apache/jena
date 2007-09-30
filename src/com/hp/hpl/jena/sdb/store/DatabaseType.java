@@ -78,10 +78,15 @@ public class DatabaseType extends Symbol implements Named
     
     static void init()
     {
+        // Java databases
         register(Derby) ;
         register(HSQLDB) ;
+        
+        // Open source DBs
         register(MySQL) ;
         register(PostgreSQL) ;
+        
+        // Commercial DBs
         register(SQLServer) ;
         register(Oracle) ;
         register(DB2) ;
