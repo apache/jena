@@ -17,11 +17,10 @@ import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 public class OpFilter extends Op1
 {
     // Canonicalization turns "&&" into multiple expr lists items
-    // 
     private static boolean canonicalize = false ;
     ExprList expressions ;
     
-    public static OpFilter filter(Expr expr, Op op)
+    public static Op filter(Expr expr, Op op)
     {
         if ( op instanceof OpFilter )
         {
@@ -29,21 +28,15 @@ public class OpFilter extends Op1
             f.getExprs().add(expr) ;
             return f ;
         }
+        // Canonicalize
         ExprList exprList = asExprList(expr) ;
         return new OpFilter(exprList, op) ;
-        
-//        ExprList x = asExprList(expr) ;
-//        if ( /*canonicalize &&*/ ( op instanceof OpFilter ) )
-//        {
-//            OpFilter f = (OpFilter)op ;
-//            f.getExprs().addAll(x) ;
-//            return f ;
-//        }
-//        return new OpFilter(x, op) ;
     }
     
-    public static OpFilter filter(ExprList exprs, Op op)
+    public static Op filter(ExprList exprs, Op op)
     {
+        if ( exprs.isEmpty() )
+            return op ;
         if ( op instanceof OpFilter )
         {
             OpFilter f = (OpFilter)op ;
@@ -93,7 +86,7 @@ public class OpFilter extends Op1
         expressions = exprs ;
     }
     
-    // Compress a filter(filter(filter(op)))) into one filter(op) 
+    /** Compress multipel filters:  (filter (filter (filter op)))) into one (filter op) */ 
     public static OpFilter tidy(OpFilter base)
     {
         ExprList exprs = new ExprList() ;
@@ -106,20 +99,8 @@ public class OpFilter extends Op1
             //expr = new E_LogicalAnd(expr, f.getExpr()) ;
             op = f.getSubOp() ;
         }
-        return OpFilter.filter(exprs, op) ;
+        return new OpFilter(exprs, op) ;
     }
-    
-//    // Drill down a chain of OpFilters.
-//    public Op underlyingOp()
-//    {
-//        Op sub = this ;
-//        while ( sub instanceof OpFilter )
-//        {
-//            OpFilter f = (OpFilter)sub ;
-//            sub = f.getSubOp() ;
-//        }
-//        return sub ;
-//    }
     
     public ExprList getExprs() { return expressions ; }
     

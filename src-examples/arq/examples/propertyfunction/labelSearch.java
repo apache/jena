@@ -116,7 +116,7 @@ public class labelSearch implements PropertyFunction
         OpBGP op = new OpBGP(bp) ;
         
         Expr regex = new E_Regex(new ExprVar(var2.getName()), pattern, "i") ;
-        OpFilter filter = OpFilter.filter(regex, op) ;
+        Op filter = OpFilter.filter(regex, op) ;
 
         // ---- Evaluation
         if ( true )

@@ -243,20 +243,45 @@ public class AlgebraGenerator
         return new OpService(serviceNode, sub) ;
     }
 
+    // Produce the algebra for a single group.
+    // http://www.w3.org/TR/rdf-sparql-query/#convertGraphPattern
+    //
+    // We do some of the steps recursively as we go along. 
+    // The only step that must be done after the others to get
+    // the right results is simplification.
+    //
+    // Step 0: (URI resolving and triple pattern syntax forms) was done during parsing
+    // Step 1: (BGPs) Done in this code
+    // Step 2: (Groups and unions) Was done during parsing to get ElementUnion.
+    // Step 3: (GRAPH) Done in this code.
+    // Step 4: (Filter extraction and OPTIONAL) Done in this code
+    // Simplicifation: Done later 
+    // If simplicifation is done now, it changes OPTIONAL { { ?x :p ?w . FILTER(?w>23) } } because it removes the
+    //   (join Z (filter...)) that in turn stops the filter getting moved into the LeftJoin.  
+    //   It need a depth of 2 or more {{ }} for this to happen. 
+    
+
     private Op compileFixed(ElementGroup groupElt)
     {
         Op current = OpTable.unit() ;
+        ExprList exprList = new ExprList() ;
+        
         for (Iterator iter = groupElt.getElements().listIterator() ; iter.hasNext() ; )
         {
             Element elt = (Element)iter.next() ;
-            current = compileDirect(elt, current) ;
+            current = compileDirect(elt, current, exprList) ;
         }
             
+        // Filters collected from the group. 
+        if ( ! exprList.isEmpty() )
+            current = OpFilter.filter(exprList, current) ;
+        
         return current ;
     }
 
-    private Op compileDirect(Element elt, Op current)
+    private Op compileDirect(Element elt, Op current, ExprList exprList)
     {
+        // Replace triple patterns by OpBGP (i.e. SPARQL translation step 1)
         if ( elt instanceof ElementTriplesBlock )
         {
             ElementTriplesBlock etb = (ElementTriplesBlock)elt ;
@@ -264,18 +289,22 @@ public class AlgebraGenerator
             return join(current, op) ;
         }
         
+        // Collect filters
         if (  elt instanceof ElementFilter )
         {
             ElementFilter f = (ElementFilter)elt ; 
-            return OpFilter.filter(new ExprList(f.getExpr()), current) ;
+            exprList.add(f.getExpr()) ;
+            return current ;
         }
     
+        // Optional: recurse
         if ( elt instanceof ElementOptional )
         {
             ElementOptional eltOpt = (ElementOptional)elt ;
             return compile(eltOpt, current) ;
         }
         
+        // All other elements: compile the element and then join on to the current group expression.
         if ( elt instanceof ElementGroup || 
              elt instanceof ElementNamedGraph ||
              elt instanceof ElementUnion )
