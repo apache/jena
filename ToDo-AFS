@@ -7,6 +7,16 @@ SDB ToDo list (and general notes)
 
 == Development
 
++ Generalise target table beyond triples/quads (e.g. the metatable)
+  URI => handler(table name, special code)
+ 
++ Graph management:
+    Graphs loaded
+    Delete graph
+    Add new graph (and load of unknown graph fails?)
+    Replace graph
+  
+ 
 + Tests with SDB.getContext().setTrue(SDB.unionDefaultGraph) ;
   --set in manifest?
 
