@@ -12,6 +12,7 @@
          rdf:type   mfx:TestQuery ; 
          mf:action
             [ qt:query  <merge-1.rq> ;
+              qt:data <data-dft.ttl> ;
               qt:graphData <data-1.ttl> ;
               qt:graphData <data-2.ttl> ;
             ] ;
@@ -21,6 +22,7 @@
          rdf:type   mfx:TestQuery ; 
          mf:action
             [ qt:query  <merge-2.rq> ;
+              qt:data <data-dft.ttl> ;
               qt:graphData <data-1.ttl> ;
               qt:graphData <data-2.ttl> ;
             ] ;
@@ -30,9 +32,40 @@
          rdf:type   mfx:TestQuery ; 
          mf:action
             [ qt:query  <merge-3.rq> ;
+              qt:data <data-dft.ttl> ;
               qt:graphData <data-1.ttl> ;
               qt:graphData <data-2.ttl> ;
             ] ;
          mf:result <merge-3-results.srx>
+      ]
+      [  mf:name    "Merge-4" ;
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <merge-4.rq> ;
+              qt:data <data-dft.ttl> ;
+              qt:graphData <data-1.ttl> ;
+              qt:graphData <data-2.ttl> ;
+            ] ;
+         mf:result <merge-4-results.srx>
+      ]
+      [  mf:name    "Merge-5" ;
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <merge-5.rq> ;
+              qt:data <data-dft.ttl> ;
+              qt:graphData <data-1.ttl> ;
+              qt:graphData <data-2.ttl> ;
+            ] ;
+         mf:result <merge-5-results.srx>
+      ]
+      [  mf:name    "Merge-6" ;
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <merge-6.rq> ;
+              qt:data <data-dft.ttl> ;
+              qt:graphData <data-1.ttl> ;
+              qt:graphData <data-2.ttl> ;
+            ] ;
+         mf:result <merge-6-results.srx>
       ]
     ).
