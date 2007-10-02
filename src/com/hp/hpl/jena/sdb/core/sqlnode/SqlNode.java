@@ -41,6 +41,9 @@ public interface SqlNode extends Printable, Annotations
     public boolean              isTable() ;
     public SqlTable             asTable() ;
 
+    public boolean              isSelectBlock() ;
+    public SqlSelectBlock       asSelectBlock() ;
+
     public Scope getIdScope() ;
     public Scope getNodeScope() ;
     

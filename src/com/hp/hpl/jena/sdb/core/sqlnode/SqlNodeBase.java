@@ -41,12 +41,15 @@ public abstract class SqlNodeBase extends AnnotationsBase implements SqlNode
     public boolean      isDistinct()     { return false ; }
     public SqlDistinct  asDistinct()     { classError(SqlDistinct.class) ; return null  ; }
 
-    public boolean      isTable()       { return false ; }
-    public SqlTable     asTable()       { classError(SqlTable.class) ; return null  ; }
-
     public boolean      isCoalesce()    { return false ; }
     public SqlCoalesce  asCoalesce()    { classError(SqlCoalesce.class) ; return null  ; }
     
+    public boolean      isTable()       { return false ; }
+    public SqlTable     asTable()       { classError(SqlTable.class) ; return null  ; }
+
+    public boolean         isSelectBlock() { return false ; }
+    public SqlSelectBlock  asSelectBlock() { classError(SqlSelectBlock.class) ; return null  ; }
+
     public void output(IndentedWriter out)  { output(out, true) ; }
     
     public void output(IndentedWriter out, boolean withAnnotations)

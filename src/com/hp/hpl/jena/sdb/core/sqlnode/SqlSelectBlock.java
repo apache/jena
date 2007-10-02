@@ -60,6 +60,12 @@ public class SqlSelectBlock extends SqlNodeBase1
         
     }
 
+    @Override
+    public boolean         isSelectBlock() { return true ; }
+    @Override
+    public SqlSelectBlock  asSelectBlock() { return this  ; }
+
+    
     public void setBlockAlias(String alias)      { super.aliasName = alias ; }
     
     public List<ColAlias> getCols()       { return cols ; }
