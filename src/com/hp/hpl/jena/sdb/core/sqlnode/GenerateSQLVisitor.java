@@ -63,7 +63,6 @@ public class GenerateSQLVisitor implements SqlNodeVisitor
 
     public void visit(SqlSelectBlock sqlSelectBlock)
     {
-        // SELECT
       out.print("SELECT ") ;
       if ( sqlSelectBlock.getDistinct() )
           out.print("DISTINCT ") ;
@@ -108,7 +107,6 @@ public class GenerateSQLVisitor implements SqlNodeVisitor
 
     private void print(List<ColAlias> cols)
     {
-        // SELECT vars
         String sep = "" ;
         if ( cols.size() == 0 )
         {
@@ -489,13 +487,15 @@ public class GenerateSQLVisitor implements SqlNodeVisitor
 
         level ++ ;
         // 
-        if ( mayNeedBrackets )
+        boolean brackets = ( mayNeedBrackets && ( sqlNode instanceof SqlSelectBlock || sqlNode.isCoalesce() ) ) ;
+        
+        if ( brackets )
         {
             out.print("( ") ;
             out.incIndent() ;
         }
         sqlNode.visit(this) ;
-        if ( mayNeedBrackets )
+        if ( brackets )
         {
             out.decIndent() ;
             out.ensureStartOfLine() ;
