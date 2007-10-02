@@ -80,7 +80,7 @@ public class GenerateSQLVisitor implements SqlNodeVisitor
       else
           out.print(" ");
       out.incIndent() ;
-      outputNode(sqlSelectBlock.getSubNode(), true) ;
+      outputNode(sqlSelectBlock.getSubNode()) ;
       //sqlSelectBlock.getSubNode().visit(this) ;
       out.decIndent() ;
       out.ensureStartOfLine() ;
@@ -337,69 +337,38 @@ public class GenerateSQLVisitor implements SqlNodeVisitor
     public void visit(SqlUnion sqlUnion)
     { throw new SDBNotImplemented("SQL generation of SqlUnion") ; }
 
-    
-//    public void visit(SqlSlice sqlSlice)
-//    {
-//        //String str = String.format("(%d, %d)", sqlNode.getStart(), sqlNode.getLength()) ;
-//        SqlNode sqlNode = sqlSlice.getSubNode() ;
-//        sqlNode = NewGenerateSQL.ensureProject(sqlNode) ;
-//        sqlNode.visit(this) ;
-//        out.ensureStartOfLine() ;
-//        if ( sqlSlice.getStart() != Query.NOLIMIT )
-//            out.println("LIMIT "+sqlSlice.getStart()) ;
-//        if ( sqlSlice.getLength() != Query.NOLIMIT )
-//            out.println("OFFSET "+sqlSlice.getLength()) ;
-//    }
-
     protected void visitJoin(SqlJoin join) { visitJoin(join, join.getJoinType().sqlOperator()) ; }
     protected void visitJoin(SqlJoin join, String joinOperatorName)
     {
+        // TODO revisit this code.  Is it now needless complex?
         SqlNode left = join.getLeft() ;
         SqlNode right = join.getRight() ;
         
-//        if ( left.isTable() || right.isTable() )
-//        {
-//            // Special cases  Join(Table, Join) and  Join(Join, Table)
-//            if ( left.isTable() && join.isInnerJoin() && right.isInnerJoin() )
-//            {
-//                join.getConditions() ;
-//            }
-//            
-//            if ( right.isTable() ) {}
-//        }
-        
-        // can we linearise the format? (drop the () and indentation)
-        if ( left.isJoin() &&
-            // assume left join is same precedence and left-associative with inner join
-             //left.asJoin().getJoinType() == join.getJoinType() && 
-             left.getAliasName() == null ) 
-            outputNode(left, false) ;
+        // Appearance: stop nesting too much.
+        // Can we linearise the format? (drop indentation)
+        if ( left.isJoin() && left.getAliasName() == null ) 
+            outputNode(left) ;
         else
         {
             out.incIndent() ;
-            outputNode(left, true) ;
+            outputNode(left) ;
             out.decIndent() ;
         }
+        
         out.println() ;
-        //out.print(" ") ;
         
         out.print(joinOperatorName) ;
+        
         annotate(join) ;
         out.println() ;
 
         // Aliasing and scoping - may need sub-SELECT - or just don't generate
         // such SqlNode structures, leaving only COALESCE as the sub-SELECT case
         
-        boolean bracketsRight = true ;
-//        if ( right.isInnerJoin() && join.isInnerJoin() && no conditions )
-//            bracketsRight = false ;
+        out.incIndent() ;
+        outputNode(right) ;
+        out.decIndent() ;
         
-        if ( bracketsRight )
-            // Why?
-            out.incIndent() ;
-        outputNode(right, bracketsRight) ;
-        if ( bracketsRight )
-            out.decIndent() ;
         out.println() ;
         out.print("ON ") ;
         if ( join.getConditions().size() > 0 )
@@ -476,8 +445,7 @@ public class GenerateSQLVisitor implements SqlNodeVisitor
         }
     }
     
-    
-    private void outputNode(SqlNode sqlNode, boolean mayNeedBrackets)
+    private void outputNode(SqlNode sqlNode)
     {
         if ( sqlNode.isTable() )
         {
@@ -486,8 +454,7 @@ public class GenerateSQLVisitor implements SqlNodeVisitor
         }
 
         level ++ ;
-        // 
-        boolean brackets = ( mayNeedBrackets && ( sqlNode instanceof SqlSelectBlock || sqlNode.isCoalesce() ) ) ;
+        boolean brackets = ( sqlNode.isSelectBlock() || sqlNode.isCoalesce() ) ;
         
         if ( brackets )
         {
