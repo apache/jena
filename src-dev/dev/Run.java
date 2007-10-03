@@ -34,6 +34,11 @@ public class Run
 {
     public static void main(String[] argv)
     {
+        String[] a = {"--data=D.ttl", "--query=Q.sse" } ;
+        
+        arq.sse_query.main(a) ;
+        System.exit(0) ; 
+        
         runQParse() ;
         
         String DIR = "" ;

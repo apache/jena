@@ -6,23 +6,12 @@
 
 package arq;
 
-import java.io.IOException;
 import java.util.Iterator;
 
 import arq.cmd.CmdException;
 import arq.cmd.TerminationException;
-import arq.cmdline.ArgDecl;
-import arq.cmdline.CmdARQ;
-import arq.cmdline.ModAssembler;
-import arq.cmdline.ModDataset;
-import arq.cmdline.ModEngine;
-import arq.cmdline.ModResultsOut;
-import arq.cmdline.ModTime;
+import arq.cmdline.*;
 
-import com.hp.hpl.jena.query.Dataset;
-import com.hp.hpl.jena.query.QueryException;
-import com.hp.hpl.jena.shared.JenaException;
-import com.hp.hpl.jena.sparql.ARQInternalErrorException;
 import com.hp.hpl.jena.sparql.algebra.Algebra;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.core.DataSourceGraphImpl;
@@ -31,12 +20,11 @@ import com.hp.hpl.jena.sparql.core.DatasetGraph;
 import com.hp.hpl.jena.sparql.engine.Plan;
 import com.hp.hpl.jena.sparql.engine.PlanOp;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
-import com.hp.hpl.jena.sparql.resultset.ResultSetException;
-import com.hp.hpl.jena.sparql.sse.SSE;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
 import com.hp.hpl.jena.sparql.util.QueryExecUtils;
 import com.hp.hpl.jena.sparql.util.Utils;
-import com.hp.hpl.jena.util.FileUtils;
+
+import com.hp.hpl.jena.query.Dataset;
 
 public class sse_query extends CmdARQ
 {
@@ -45,15 +33,14 @@ public class sse_query extends CmdARQ
     // 2 - This is then calls on the QueryExecution parts
     // 
     
-    protected final ArgDecl queryFileDecl = new ArgDecl(ArgDecl.HasValue, "query", "file") ;
     protected final ArgDecl printDecl  = new ArgDecl(ArgDecl.HasValue, "print") ;
-    ModDataset    modDataset =  new ModAssembler() ;    // extends ModDataset
+    
+    ModAlgebra    modAlgebra =  new ModAlgebra() ;
+    ModDataset    modDataset =  new ModAssembler() ;
     ModResultsOut modResults =  new ModResultsOut() ;
     ModTime       modTime =     new ModTime() ;
     ModEngine     modEngine =   new ModEngine() ;
 
-    String queryFilename = null ;
-    String queryString   = null ;
     boolean printOp      = false ;
     boolean printPlan    = false ;
     
@@ -65,8 +52,8 @@ public class sse_query extends CmdARQ
     public sse_query(String[] argv)
     {
         super(argv) ;
-        super.add(queryFileDecl, "--query=FILE", "Algebra file to execute") ;
         super.add(printDecl, "--print=op/plan",  "Print details") ;
+        super.addModule(modAlgebra) ;
         super.addModule(modResults) ;
         super.addModule(modDataset) ;
         super.addModule(modTime) ;
@@ -76,9 +63,7 @@ public class sse_query extends CmdARQ
     protected void processModulesAndArgs()
     {
         super.processModulesAndArgs() ;
-        if ( contains(queryFileDecl) )
-            queryFilename = super.getValue(queryFileDecl) ;
-        
+
         for ( Iterator iter = getValues(printDecl).iterator() ; iter.hasNext() ; )
         {
             String arg = (String)iter.next() ;
@@ -107,111 +92,78 @@ public class sse_query extends CmdARQ
     
     protected void exec()
     {
-        // This could all be neatened up and integrate with query/qparse.
-        // But I need the tool now!
-        try {
-            // ModAlgebra?
+        Op op = modAlgebra.getOp() ;
 
-            Op op = null ;
-
-            if ( queryFilename != null )
-            {
-                if ( queryFilename.equals("-") )
-                {
-                    try {
-                        // Stderr?
-                        queryString  = FileUtils.readWholeFileAsUTF8(System.in) ;
-                        // And drop into next if
-                    } catch (IOException ex)
-                    { throw new CmdException("Error reading stdin", ex) ; }
-                }
-                else
-                    op = SSE.readOp(queryFilename) ;
-            }
-
-            if ( queryString != null )
-            {
-                op = SSE.parseOp(queryString) ;
-                if ( op == null )
-                    System.err.println("Faile to parse : "+queryString) ;
-                throw new TerminationException(9) ;
-            }
-
-            if ( op == null )
-            {
-                System.err.println("No query expression to execute") ;
-                throw new TerminationException(9) ;
-            }
-
-            Dataset dataset = modDataset.getDataset() ;
-            // Check there is a dataset
-            if ( dataset == null )
-            {
-                dataset = new DataSourceImpl();
-//              System.err.println("No dataset") ;
-//              throw new TerminationException(1) ;
-            }
-
-            modTime.startTimer() ;
-            DatasetGraph dsg = new DataSourceGraphImpl(dataset) ;
-
-
-            if ( printOp || printPlan )
-            {
-                if ( printOp )
-                {
-                    divider() ;
-                    IndentedWriter out = new IndentedWriter(System.out, true) ;
-                    op.output(out) ;
-                    out.flush();
-                }
-
-                if ( printPlan )
-                {
-                    QueryIterator qIter = Algebra.exec(op, dsg) ;
-                    Plan plan = new PlanOp(op, qIter) ;
-                    divider() ;
-                    IndentedWriter out = new IndentedWriter(System.out, false) ;
-                    plan.output(out) ;
-                    out.flush();
-                }
-                return ;
-            }
-
-            QueryExecUtils.executeAlgebra(op, dsg, modResults.getResultsFormat()) ;
-
-            long time = modTime.endTimer() ;
-            if ( modTime.timingEnabled() )
-                System.out.println("Time: "+modTime.timeStr(time)) ;
-
-        }
-        catch (ARQInternalErrorException intEx)
+        if ( op == null )
         {
-            System.err.println(intEx.getMessage()) ;
-            if ( intEx.getCause() != null )
+            System.err.println("No query expression to execute") ;
+            throw new TerminationException(9) ;
+        }
+
+        Dataset dataset = modDataset.getDataset() ;
+        // Check there is a dataset.
+        if ( dataset == null )
+            dataset = new DataSourceImpl();
+
+        modTime.startTimer() ;
+        DatasetGraph dsg = new DataSourceGraphImpl(dataset) ;
+
+        if ( printOp || printPlan )
+        {
+            if ( printOp )
             {
-                System.err.println("Cause:") ;
-                intEx.getCause().printStackTrace(System.err) ;
-                System.err.println() ;
+                divider() ;
+                IndentedWriter out = new IndentedWriter(System.out, true) ;
+                op.output(out) ;
+                out.flush();
             }
-            intEx.printStackTrace(System.err) ;
+
+            if ( printPlan )
+            {
+                QueryIterator qIter = Algebra.exec(op, dsg) ;
+                Plan plan = new PlanOp(op, qIter) ;
+                divider() ;
+                IndentedWriter out = new IndentedWriter(System.out, false) ;
+                plan.output(out) ;
+                out.flush();
+            }
+            return ;
         }
-        catch (ResultSetException ex)
-        {
-            System.err.println(ex.getMessage()) ;
-            ex.printStackTrace(System.err) ;
-        }
-        catch (QueryException qEx)
-        {
-            //System.err.println(qEx.getMessage()) ;
-            throw new CmdException("Query Exeception", qEx) ;
-        }
-        catch (JenaException ex) { throw ex ; } 
-        catch (CmdException ex) { throw ex ; } 
-        catch (Exception ex)
-        {
-            throw new CmdException("Exception", ex) ;
-        }
+
+        QueryExecUtils.executeAlgebra(op, dsg, modResults.getResultsFormat()) ;
+
+        long time = modTime.endTimer() ;
+        if ( modTime.timingEnabled() )
+            System.out.println("Time: "+modTime.timeStr(time)) ;
+
+//        }
+//        catch (ARQInternalErrorException intEx)
+//        {
+//            System.err.println(intEx.getMessage()) ;
+//            if ( intEx.getCause() != null )
+//            {
+//                System.err.println("Cause:") ;
+//                intEx.getCause().printStackTrace(System.err) ;
+//                System.err.println() ;
+//            }
+//            intEx.printStackTrace(System.err) ;
+//        }
+//        catch (ResultSetException ex)
+//        {
+//            System.err.println(ex.getMessage()) ;
+//            ex.printStackTrace(System.err) ;
+//        }
+//        catch (QueryException qEx)
+//        {
+//            //System.err.println(qEx.getMessage()) ;
+//            throw new CmdException("Query Exeception", qEx) ;
+//        }
+//        catch (JenaException ex) { throw ex ; } 
+//        catch (CmdException ex) { throw ex ; } 
+//        catch (Exception ex)
+//        {
+//            throw new CmdException("Exception", ex) ;
+//        }
     }    
 
 }

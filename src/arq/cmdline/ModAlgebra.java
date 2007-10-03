@@ -4,41 +4,62 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.sse.builders;
+package arq.cmdline;
+
+import com.hp.hpl.jena.util.FileManager;
 
 import com.hp.hpl.jena.sparql.algebra.Op;
-import com.hp.hpl.jena.sparql.core.DatasetGraph;
-import com.hp.hpl.jena.sparql.resultset.ResultsFormat;
-import com.hp.hpl.jena.sparql.sse.Item;
-import com.hp.hpl.jena.sparql.sse.ItemList;
 import com.hp.hpl.jena.sparql.sse.SSE;
-import com.hp.hpl.jena.sparql.util.QueryExecUtils;
 
-public class BuilderExec
+public class ModAlgebra implements ArgModuleGeneral
 {
-    static public void main(String[] argv)
+    protected final ArgDecl queryFileDecl = new ArgDecl(ArgDecl.HasValue, "query", "file") ;
+
+    private String queryFilename   = null ;
+    private String queryString = null ;
+    private Op op = null ;
+    
+    public void registerWith(CmdGeneral cmdLine)
     {
-        Item item = SSE.readFile("SSE/all.sse") ;
-        exec(item) ;
+        cmdLine.getUsage().startCategory("Query") ;
+        cmdLine.add(queryFileDecl,
+                    "--query, --file",
+                    "File containing an algebra query") ;
+    }
+
+    public void processArgs(CmdArgModule cmdLine)
+    {
+        if ( cmdLine.contains(queryFileDecl) )
+        {
+            queryFilename = cmdLine.getValue(queryFileDecl) ;
+            queryString = FileManager.get().readWholeFileAsUTF8(queryFilename) ;
+        }
+    
+        if ( cmdLine.getNumPositional() == 0 && queryFilename == null )
+            cmdLine.cmdError("No query string or query file") ;
+
+        if ( cmdLine.getNumPositional() > 1 )
+            cmdLine.cmdError("Only one query string allowed") ;
+    
+        if ( cmdLine.getNumPositional() == 1 && queryFilename != null )
+            cmdLine.cmdError("Either query string or query file - not both") ;
+
+        
+        if ( queryFilename == null )
+        {
+            String qs = cmdLine.getPositionalArg(0) ;
+            queryString = cmdLine.indirect(qs) ;
+        }
     }
     
-    static public void exec(Item item)
+    public Op getOp()
     {
-        if (item.isNode() )
-            BuilderBase.broken(item, "Attempt to build evaluation from a plain node") ;
-
-        if (item.isSymbol() )
-            BuilderBase.broken(item, "Attempt to build evaluation from a bare symbol") ;
-
-        if ( ! item.isTagged(Tags.tagExec) )
-            throw new BuildException("Wanted ("+Tags.tagExec+"...) : got: "+item.shortString());
-
-        ItemList list = item.getList() ;
-        BuilderBase.checkLength(3, list, item.shortString()+ " does not have 2 components");
-        
-        DatasetGraph dsg = BuilderGraph.buildDataset(list.get(1)) ;
-        Op op = BuilderOp.build(list.get(2)) ;
-        QueryExecUtils.executeAlgebra(op, dsg, ResultsFormat.FMT_TEXT) ;
+        if ( op != null )
+            return op ;
+        op = SSE.parseOp(queryString) ;
+        if ( op == null )
+            System.err.println("Failed to parse : "+queryString) ;
+        return op ;
     }
 }
 

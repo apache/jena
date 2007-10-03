@@ -6,9 +6,36 @@
 
 package arq;
 
-public class sse_exec
-{
+import com.hp.hpl.jena.sparql.sse.Item;
+import com.hp.hpl.jena.sparql.util.Utils;
 
+import arq.cmdline.CmdARQ;
+import arq.cmdline.ModItem;
+
+public class sse_exec  extends CmdARQ
+{
+    ModItem modItem = new ModItem() ; 
+    
+    public static void main (String [] argv)
+    {
+        new sse_exec(argv).main() ;
+    }
+    
+    public sse_exec(String[] argv)
+    {
+        super(argv) ;
+        super.addModule(modItem) ;
+    }
+    
+    protected String getCommandName() { return Utils.className(this) ; }
+    
+    protected String getSummary() { return getCommandName()+" [--file<file> | string]" ; }
+
+    protected void exec()
+    {
+        Item item = modItem.getItem() ;
+        System.out.println(item) ;
+    }
 }
 
 /*
