@@ -3,6 +3,6 @@ PREFIX arq: <urn:x-arq:>
 
 SELECT *
 {
-   ?s :p ?o . #?o :q ?w
+   ?s :p ?o .
 }
 
