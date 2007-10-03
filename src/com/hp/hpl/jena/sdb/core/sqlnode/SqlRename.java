@@ -72,7 +72,7 @@ public class SqlRename extends SqlNodeBase1
             x = String.format("%s%s%s:(%s=>%s)", x, sep, v, oldCol, newCol) ;
             sep = " " ;
         }
-        if ( ! x.isEmpty() )
+        if ( x.length() > 0 )
             addNote(x) ;
     }
 

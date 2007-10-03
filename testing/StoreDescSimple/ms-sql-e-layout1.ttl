@@ -5,6 +5,8 @@
 @prefix ja:       <http://jena.hpl.hp.com/2005/11/Assembler#> .
 @prefix sdb:      <http://jena.hpl.hp.com/2007/sdb#> .
 
+## Database must have a binary collation sequence, else upper and lower case are the same.
+
 _:c rdf:type sdb:SDBConnection ;
     sdb:sdbType        "MSSQLServerExpress" ;
     sdb:sdbHost        "localhost" ;
