@@ -19,6 +19,10 @@ SDB ToDo list (and general notes)
     Add new graph (and load of unknown graph fails?)
     Replace graph
   
++ LoaderTuplesNodes uses reflection on constructors.
+   Each loader has many TupleLoader instances - per table to be loaded.
+   ==> TupleLoaderFactory 
+   Combine StoreLoader and StoreLoaderPlus
  
 + Tests with SDB.getContext().setTrue(SDB.unionDefaultGraph) ;
   --set in manifest?
