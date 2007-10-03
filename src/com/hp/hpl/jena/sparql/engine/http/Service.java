@@ -12,7 +12,7 @@ import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryExecException;
 import com.hp.hpl.jena.query.ResultSet;
 import com.hp.hpl.jena.query.ResultSetFactory;
-import com.hp.hpl.jena.sparql.algebra.OpToSyntax;
+import com.hp.hpl.jena.sparql.algebra.OpAsQuery;
 import com.hp.hpl.jena.sparql.algebra.op.OpService;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIteratorResultSet;
@@ -23,7 +23,7 @@ public class Service
 {
     public static QueryIterator exec(OpService op)
     {
-        Query query = OpToSyntax.asQuery(op.getSubOp()) ;
+        Query query = OpAsQuery.asQuery(op.getSubOp()) ;
         
         if ( ! op.getService().isURI() )
             throw new QueryExecException("Service URI not bound: "+op.getService()) ; 

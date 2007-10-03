@@ -19,12 +19,9 @@ import com.hp.hpl.jena.query.larq.IndexLARQ;
 import com.hp.hpl.jena.query.larq.LARQ;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.sparql.algebra.Op;
-import com.hp.hpl.jena.sparql.algebra.op.OpLeftJoin;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.binding.BindingMap;
-import com.hp.hpl.jena.sparql.engine.main.LeftJoinClassifier;
 import com.hp.hpl.jena.sparql.expr.ExprNotComparableException;
 import com.hp.hpl.jena.sparql.expr.NodeValue;
 import com.hp.hpl.jena.sparql.sse.SSE;
@@ -37,13 +34,7 @@ public class Run
 {
     public static void main(String[] argv)
     {
-        Op op = SSE.readOp("Q.sse") ;
-        System.out.println(op) ;
-        OpLeftJoin opLJ = (OpLeftJoin)op ;
-        boolean b = LeftJoinClassifier.isLinear(opLJ) ;
-        System.out.println("Linear = "+b) ;
-        System.exit(0); 
-        
+        runQParse() ;
         
         String DIR = "" ;
         execQuery(DIR+"D.ttl", DIR+"Q.sse") ;
@@ -57,8 +48,6 @@ public class Run
         if ( ! str.equals(dt.toString())) 
             System.out.println("*** Different") ;
     }
-
-    
     
     
     public static void code()

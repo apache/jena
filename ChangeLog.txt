@@ -3,6 +3,9 @@ ChangeLog for ARQ
 
 ==== ARQ 2.2
 
++ Track DAWG: Effect of OPTIONAL {{ ... FILTER }} (must be 2 or more {{}}) chnages
+  Inner {} now protect the FILTER from becoming part of the LeftJoin.  
+
 + Upgrade lucene-core-2.0.0.jar to lucense-2.2.0.jar
   Lucene change means that users can't mix ARQ 2.1, and before,
   with Lucene 2.1.0 or later.

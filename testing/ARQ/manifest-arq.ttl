@@ -17,6 +17,8 @@
         <Optional/manifest.ttl>
         <Union/manifest.ttl>
 
+        <Algebra/manifest.ttl>
+
         <Select/manifest.ttl>
         <Construct/manifest.ttl>
         <Describe/manifest.ttl>

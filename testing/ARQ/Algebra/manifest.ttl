@@ -12,6 +12,7 @@
         <#opt-filter-1> 
         <#opt-filter-2> 
         <#opt-filter-3> 
+        <#opt-filter-4> 
         <#filter-place-1> 
         <#filter-place-2> 
         <#filter-place-3> 

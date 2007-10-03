@@ -26,7 +26,7 @@ import com.hp.hpl.jena.sparql.util.Utils;
 public class AlgebraGenerator 
 {
     // Fixed filter position means leave exactly where it is syntactically (illegal SPARQL)
-    // Helpful only to write exactly what you mean and test the full query compiler).
+    // Helpful only to write exactly what you mean and test the full query compiler.
     boolean fixedFilterPosition = false ;
     private Context context ;
 
@@ -77,7 +77,7 @@ public class AlgebraGenerator
         // This is only here for queries built programmatically
         // (triple patterns not in a group) 
         if ( elt instanceof ElementTriplesBlock )
-            return compile(((ElementTriplesBlock)elt).getTriples()) ;
+            return compileBasicPattern(((ElementTriplesBlock)elt).getTriples()) ;
 
         if ( elt == null )
             return new OpNull() ;
@@ -111,142 +111,6 @@ public class AlgebraGenerator
         return current ;
     }
     
-    protected Op compileElementGroup(ElementGroup groupElt)
-    {
-        if ( fixedFilterPosition )
-            return compileFixed(groupElt) ;
-        
-        ExprList filters = new ExprList() ;
-        Op current = OpTable.unit() ;
-        
-        // TriplesBlock => BGP
-        // If adjacent triples blocks after filters extracted, then merge.
-        // Simpler : extract filters first?
-        
-        BasicPattern currentPattern = null ;
-        
-        for (Iterator iter = groupElt.getElements().listIterator() ; iter.hasNext() ; )
-        {
-            Element elt = (Element)iter.next() ;
-            
-            if ( elt instanceof ElementTriplesBlock )
-            {
-                ElementTriplesBlock etb = (ElementTriplesBlock)elt ;
-                // Accumulate triples.
-                if  ( currentPattern == null )
-                    currentPattern = new BasicPattern() ;
-                currentPattern.addAll(etb.getTriples()) ;
-                continue ;
-            }
-            
-            if (  elt instanceof ElementFilter )
-            {
-                ElementFilter f = (ElementFilter)elt ; 
-                filters.add(f.getExpr()) ;
-                continue ;
-            }
-            
-            // At this point, whatever it is, break up any BGP in progress
-
-            if ( currentPattern != null )
-            {
-                Op op = compile(currentPattern) ;
-                current = join(current, op) ;
-            }
-
-            currentPattern = null ;
-
-            if ( elt instanceof ElementOptional )
-            {
-                ElementOptional eltOpt = (ElementOptional)elt ;
-                current = compile(eltOpt, current) ;
-                continue ;
-            }
-            
-            if ( elt instanceof ElementGroup || 
-                 elt instanceof ElementNamedGraph ||
-                 elt instanceof ElementService ||
-                 elt instanceof ElementUnion )
-            {
-                Op op = compileElement(elt) ;
-                current = join(current, op) ;
-                continue ;
-            }
-            
-            broken("compile/group: not a fixed element, optional or filter: "+Utils.className(elt)) ;
-        }
-        
-        // Any trailing basic pattern
-        if ( currentPattern != null )
-        {
-            Op op = compile(currentPattern) ;
-            current = join(current, op) ;
-        }
-        
-//        // With bug in SPARQL CR document.
-//        if ( ! filters.isEmpty() )
-//        {
-//            if ( current instanceof OpLeftJoin )
-//            {
-//                OpLeftJoin op = (OpLeftJoin)current ;
-//                current = OpLeftJoin.create(op.getLeft(), op.getRight(), filters) ;
-//            }
-//            else
-//            {
-//                if ( current == null )
-//                    current = OpTable.unit() ;
-//                current = OpFilter.filter(filters, current) ;
-//            }
-//        }
-        
-        if ( ! filters.isEmpty() )
-        {
-            if ( current == null )
-                current = OpTable.unit() ;
-            current = OpFilter.filter(filters, current) ;
-        }
-
-        return current ;
-    }
-
-    protected Op compile(ElementOptional eltOpt, Op current)
-    {
-        Element subElt = eltOpt.getOptionalElement() ;
-        Op op = compileElement(subElt) ;
-        ExprList exprs = null ;
-        if ( op instanceof OpFilter )
-        {
-            OpFilter f = (OpFilter)op ;
-            //f = OpFilter.tidy(f) ;  // Collapse filter(filter(..))
-            Op sub = f.getSubOp() ;
-            if ( sub instanceof OpFilter )
-                broken("compile/Optional/nested filters - unfinished") ; 
-            exprs = f.getExprs() ;
-            op = sub ;
-        }
-        current = OpLeftJoin.create(current, op, exprs) ;
-        return current ;
-    }
-    
-    protected Op compile(BasicPattern pattern)
-    {
-        return new OpBGP(pattern) ;
-    }
-    
-    protected Op compileElementGraph(ElementNamedGraph eltGraph)
-    {
-        Node graphNode = eltGraph.getGraphNameNode() ;
-        Op sub = compileElement(eltGraph.getElement()) ;
-        return new OpGraph(graphNode, sub) ;
-    }
-
-    protected Op compileElementService(ElementService eltService)
-    {
-        Node serviceNode = eltService.getServiceNode() ;
-        Op sub = compileElement(eltService.getElement()) ;
-        return new OpService(serviceNode, sub) ;
-    }
-
     // Produce the algebra for a single group.
     // http://www.w3.org/TR/rdf-sparql-query/#convertGraphPattern
     //
@@ -265,7 +129,7 @@ public class AlgebraGenerator
     //   It need a depth of 2 or more {{ }} for this to happen. 
     
 
-    private Op compileFixed(ElementGroup groupElt)
+    protected Op compileElementGroup(ElementGroup groupElt)
     {
         Op current = OpTable.unit() ;
         ExprList exprList = new ExprList() ;
@@ -273,7 +137,7 @@ public class AlgebraGenerator
         for (Iterator iter = groupElt.getElements().listIterator() ; iter.hasNext() ; )
         {
             Element elt = (Element)iter.next() ;
-            current = compileDirect(elt, current, exprList) ;
+            current = compileOneInGroup(elt, current, exprList) ;
         }
             
         // Filters collected from the group. 
@@ -283,20 +147,24 @@ public class AlgebraGenerator
         return current ;
     }
 
-    private Op compileDirect(Element elt, Op current, ExprList exprList)
+    private Op compileOneInGroup(Element elt, Op current, ExprList exprList)
     {
         // Replace triple patterns by OpBGP (i.e. SPARQL translation step 1)
         if ( elt instanceof ElementTriplesBlock )
         {
             ElementTriplesBlock etb = (ElementTriplesBlock)elt ;
-            Op op =  compile(etb.getTriples()) ;
+            Op op =  compileBasicPattern(etb.getTriples()) ;
             return join(current, op) ;
         }
         
         // Collect filters
         if (  elt instanceof ElementFilter )
         {
-            ElementFilter f = (ElementFilter)elt ; 
+            ElementFilter f = (ElementFilter)elt ;
+            if ( fixedFilterPosition )
+                // Not SPARQL.
+                return OpFilter.filter(f.getExpr(), current) ;
+             
             exprList.add(f.getExpr()) ;
             return current ;
         }
@@ -305,12 +173,13 @@ public class AlgebraGenerator
         if ( elt instanceof ElementOptional )
         {
             ElementOptional eltOpt = (ElementOptional)elt ;
-            return compile(eltOpt, current) ;
+            return compileElementOptional(eltOpt, current) ;
         }
         
         // All other elements: compile the element and then join on to the current group expression.
         if ( elt instanceof ElementGroup || 
              elt instanceof ElementNamedGraph ||
+             elt instanceof ElementService ||
              elt instanceof ElementUnion )
         {
             Op op = compileElement(elt) ;
@@ -320,6 +189,45 @@ public class AlgebraGenerator
         broken("compileDirect/Element not recognized: "+Utils.className(elt)) ;
         return null ;
     }
+
+    protected Op compileElementOptional(ElementOptional eltOpt, Op current)
+    {
+        Element subElt = eltOpt.getOptionalElement() ;
+        Op op = compileElement(subElt) ;
+        ExprList exprs = null ;
+        if ( op instanceof OpFilter )
+        {
+            OpFilter f = (OpFilter)op ;
+            //f = OpFilter.tidy(f) ;  // Collapse filter(filter(..))
+            Op sub = f.getSubOp() ;
+            if ( sub instanceof OpFilter )
+                broken("compile/Optional/nested filters - unfinished") ; 
+            exprs = f.getExprs() ;
+            op = sub ;
+        }
+        current = OpLeftJoin.create(current, op, exprs) ;
+        return current ;
+    }
+    
+    protected Op compileBasicPattern(BasicPattern pattern)
+    {
+        return new OpBGP(pattern) ;
+    }
+    
+    protected Op compileElementGraph(ElementNamedGraph eltGraph)
+    {
+        Node graphNode = eltGraph.getGraphNameNode() ;
+        Op sub = compileElement(eltGraph.getElement()) ;
+        return new OpGraph(graphNode, sub) ;
+    }
+
+    protected Op compileElementService(ElementService eltService)
+    {
+        Node serviceNode = eltService.getServiceNode() ;
+        Op sub = compileElement(eltService.getElement()) ;
+        return new OpService(serviceNode, sub) ;
+    }
+
     
     /** Compile query modifiers */
     public Op compileModifiers(Query query, Op pattern)

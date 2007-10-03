@@ -23,7 +23,7 @@ public class AlgebraGeneratorQuad extends AlgebraGenerator
     public AlgebraGeneratorQuad(Context context) { super(context) ; }
     public AlgebraGeneratorQuad()                { super() ; }
     
-    protected Op compile(BasicPattern pattern)
+    protected Op compileBasicPattern(BasicPattern pattern)
     {
         return new OpQuadPattern(currentGraph, pattern) ;
     }
