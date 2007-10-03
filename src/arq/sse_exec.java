@@ -7,6 +7,7 @@
 package arq;
 
 import com.hp.hpl.jena.sparql.sse.Item;
+import com.hp.hpl.jena.sparql.sse.builders.BuilderExec;
 import com.hp.hpl.jena.sparql.util.Utils;
 
 import arq.cmdline.CmdARQ;
@@ -34,7 +35,7 @@ public class sse_exec  extends CmdARQ
     protected void exec()
     {
         Item item = modItem.getItem() ;
-        System.out.println(item) ;
+        BuilderExec.exec(item) ;
     }
 }
 
