@@ -80,20 +80,14 @@ public class GenerateSQLVisitor implements SqlNodeVisitor
       else
           out.print(" ");
       out.incIndent() ;
-      outputNode(sqlSelectBlock.getSubNode()) ;
+      outputNode(sqlSelectBlock.getSubNode(), true) ;
       //sqlSelectBlock.getSubNode().visit(this) ;
       out.decIndent() ;
       out.ensureStartOfLine() ;
 
       // WHERE
       if ( sqlSelectBlock.getWhere().size() > 0 )
-      {
           genWHERE(sqlSelectBlock.getWhere()) ;
-//          out.incIndent() ;
-//          out.println("WHERE") ;
-//          print(sqlSelectBlock.getWhere().size())
-//          out.decIndent() ;
-      }
       
       // LIMIT/OFFSET
       out.ensureStartOfLine() ;
@@ -341,34 +335,41 @@ public class GenerateSQLVisitor implements SqlNodeVisitor
     protected void visitJoin(SqlJoin join, String joinOperatorName)
     {
         // TODO revisit this code.  Is it now needless complex?
+        // Check brackets for more general SQL generation (safe mode - i.e. always bracketted?)
         SqlNode left = join.getLeft() ;
         SqlNode right = join.getRight() ;
         
         // Appearance: stop nesting too much.
         // Can we linearise the format? (drop indentation)
         if ( left.isJoin() && left.getAliasName() == null ) 
-            outputNode(left) ;
+            outputNode(left, false) ;
         else
         {
             out.incIndent() ;
-            outputNode(left) ;
+            outputNode(left, true) ;
             out.decIndent() ;
         }
         
         out.println() ;
+        //out.print(" ") ;
         
         out.print(joinOperatorName) ;
-        
         annotate(join) ;
         out.println() ;
 
         // Aliasing and scoping - may need sub-SELECT - or just don't generate
         // such SqlNode structures, leaving only COALESCE as the sub-SELECT case
         
-        out.incIndent() ;
-        outputNode(right) ;
-        out.decIndent() ;
+        boolean bracketsRight = true ;
+//        if ( right.isInnerJoin() && join.isInnerJoin() && no conditions )
+//            bracketsRight = false ;
         
+        if ( bracketsRight )
+            // Why?
+            out.incIndent() ;
+        outputNode(right, bracketsRight) ;
+        if ( bracketsRight )
+            out.decIndent() ;
         out.println() ;
         out.print("ON ") ;
         if ( join.getConditions().size() > 0 )
@@ -445,7 +446,8 @@ public class GenerateSQLVisitor implements SqlNodeVisitor
         }
     }
     
-    private void outputNode(SqlNode sqlNode)
+    
+    private void outputNode(SqlNode sqlNode, boolean mayNeedBrackets)
     {
         if ( sqlNode.isTable() )
         {
@@ -453,8 +455,13 @@ public class GenerateSQLVisitor implements SqlNodeVisitor
             return ;
         }
 
+        
         level ++ ;
-        boolean brackets = ( sqlNode.isSelectBlock() || sqlNode.isCoalesce() ) ;
+        
+        // Why do we need this (mayNeedBrackets) flag?
+        boolean brackets = ( mayNeedBrackets && ( sqlNode.isSelectBlock() || sqlNode.isCoalesce() ) ) ;
+        
+        // Need brackets if the subpart is a SELECT
         
         if ( brackets )
         {
