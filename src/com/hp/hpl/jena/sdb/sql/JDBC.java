@@ -170,6 +170,12 @@ public class JDBC
             return s;
         }
         
+        if ( type.equals("db2") )
+        {
+            String s = String.format("jdbc:%s://%s/%s", type, host, dbName) ;
+            return s;
+        }
+
         if ( type.equals("none") )
             return jdbcNone ;
         

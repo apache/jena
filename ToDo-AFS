@@ -7,6 +7,9 @@ SDB ToDo list (and general notes)
 
 == Development
 
++ LayoutType, DatabaseType have a common concept
+  And it should be regexp matching.
+
 + Generalise target table beyond triples/quads (e.g. the metatable)
   URI => handler(table name, special code)
  

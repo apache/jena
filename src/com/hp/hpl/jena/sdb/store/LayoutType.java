@@ -73,7 +73,7 @@ public class LayoutType extends Symbol implements Named
     static public void registerName(String layoutName, LayoutType layoutType)
     {
         if ( layoutType == null )
-            throw new IllegalArgumentException("LayoutType.register(LayoutType): null not allowed") ;
+            throw new IllegalArgumentException("LayoutType.registerName: null not allowed") ;
         registeredNames.put(layoutName, layoutType) ; 
     }
 

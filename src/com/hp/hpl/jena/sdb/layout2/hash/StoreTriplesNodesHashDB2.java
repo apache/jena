@@ -1,0 +1,80 @@
+/*
+ * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * All rights reserved.
+ * [See end of file]
+ */
+
+package com.hp.hpl.jena.sdb.layout2.hash;
+
+import com.hp.hpl.jena.sdb.StoreDesc;
+import com.hp.hpl.jena.sdb.core.sqlnode.GenerateSQLDerby;
+import com.hp.hpl.jena.sdb.layout2.LoaderTuplesNodes;
+import com.hp.hpl.jena.sdb.layout2.SQLBridgeFactory2;
+import com.hp.hpl.jena.sdb.layout2.TableDescTriples;
+import com.hp.hpl.jena.sdb.sql.SDBConnection;
+import com.hp.hpl.jena.sdb.store.StoreLoader;
+import com.hp.hpl.jena.sdb.store.TupleGraphLoader;
+import com.hp.hpl.jena.sdb.store.TupleLoader;
+
+public class StoreTriplesNodesHashDB2 extends StoreBaseHash
+{
+
+    public StoreTriplesNodesHashDB2(SDBConnection connection, StoreDesc desc)
+    {
+        // One tuple at a time, default graph only, loader.
+        super(connection, desc, 
+              new FmtLayout2HashDB2(connection) ,
+              //loaderSimple(connection),
+              new LoaderTuplesNodes(connection, TupleLoaderHashDB2.class),
+              new QueryCompilerFactoryHash(), 
+              new SQLBridgeFactory2(),
+              new GenerateSQLDerby()) ;
+        
+        // Not for simple loading.
+        ((LoaderTuplesNodes) this.getLoader()).setStore(this);
+    }
+    
+    static StoreLoader loaderSimple(SDBConnection connection)
+    {
+        // Temporary - simple loader for development. 
+        //new LoaderTuplesNodes(connection, TupleLoaderHashDerby.class),
+        TupleLoader tLoader = new TupleLoaderOneHash(connection, new TableDescTriples()) ;
+        StoreLoader sLoader = new TupleGraphLoader(tLoader) ;
+        return sLoader ;
+    }
+    
+//    static StoreLoader loaderFull(SDBConnection connection)
+//    {
+//        StoreLoader sLoader = new LoaderTuplesNodes(connection, TupleLoaderHashDB2.class) ;
+//        ((LoaderTuplesNodes) this.getLoader()).setStore(this);
+//        return sLoader ;
+//    }
+    
+}
+
+/*
+ * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ * 3. The name of the author may not be used to endorse or promote products
+ *    derived from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
+ * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+ * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+ * IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
+ * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+ * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+ * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */

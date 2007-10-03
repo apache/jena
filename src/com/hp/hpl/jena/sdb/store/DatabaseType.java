@@ -6,7 +6,9 @@
 
 package com.hp.hpl.jena.sdb.store;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.logging.LogFactory;
@@ -16,6 +18,7 @@ import com.hp.hpl.jena.sparql.util.Symbol;
 
 import com.hp.hpl.jena.sdb.SDBException;
 
+// Common super class with LayoutType
 public class DatabaseType extends Symbol implements Named
 {
     // URIs.
@@ -23,6 +26,7 @@ public class DatabaseType extends Symbol implements Named
     // private static final String BASE = "http://jena.hpl.hp.com/2006/04/store/" ;
     
     static Set<DatabaseType> registeredTypes = new HashSet<DatabaseType>() ;
+    static Map<String, DatabaseType> registeredNames = new HashMap<String, DatabaseType>() ;
 
     public static final DatabaseType Derby           = new DatabaseType("derby") ;
     public static final DatabaseType HSQLDB          = new DatabaseType("HSQLDB") ;
@@ -39,55 +43,70 @@ public class DatabaseType extends Symbol implements Named
         if ( databaseTypeName == null )
             throw new IllegalArgumentException("DatabaseType.convert: null not allowed") ;
 
-        DatabaseType t = commonForm(databaseTypeName) ;
-        if ( t == null ) 
-            t = new DatabaseType(databaseTypeName) ;
+        for ( String name: registeredNames.keySet() )
+        {
+            if ( databaseTypeName.equalsIgnoreCase(name) )
+                return registeredNames.get(name) ;
+        }
         
-        if ( registeredTypes.contains(t) )
-            return t ;
+        // Hack?
+        if ( databaseTypeName.startsWith("oracle:") )
+            return Oracle ;
+
         LogFactory.getLog(DatabaseType.class).warn("Can't turn '"+databaseTypeName+"' into a database type") ;
         throw new SDBException("Can't turn '"+databaseTypeName+"' into a database type") ; 
     }
     
-    private static DatabaseType commonForm(String databaseTypeName)
-    {
-        // Map common names.
-        if ( databaseTypeName.equalsIgnoreCase("MySQL") )           return MySQL ;
-        if ( databaseTypeName.equalsIgnoreCase("MySQL5") )          return MySQL ;
-
-        if ( databaseTypeName.equalsIgnoreCase("PostgreSQL") )      return PostgreSQL ;
-        if ( databaseTypeName.equalsIgnoreCase("oracle") )          return Oracle ;
-        if ( databaseTypeName.startsWith("oracle:"))                return Oracle ;
-        
-        if ( databaseTypeName.equalsIgnoreCase("DB2"))              return DB2 ;
-        
-        if ( databaseTypeName.equalsIgnoreCase("SQLServer") )       return SQLServer ;
-        if ( databaseTypeName.equalsIgnoreCase("MSSQLServer") )     return SQLServer ;
-        if ( databaseTypeName.equalsIgnoreCase("MSSQLServerExpress") )   return SQLServer ;
-
-        if ( databaseTypeName.equalsIgnoreCase("hsqldb") )          return HSQLDB ;
-        if ( databaseTypeName.equalsIgnoreCase("hsqldb:file") )     return HSQLDB ;
-        if ( databaseTypeName.equalsIgnoreCase("hsqldb:mem") )      return HSQLDB ;
-        if ( databaseTypeName.equalsIgnoreCase("hsql") )            return HSQLDB ;
-
-        if ( databaseTypeName.equalsIgnoreCase("Derby") )           return Derby ;
-        if ( databaseTypeName.equalsIgnoreCase("JavaDB") )          return Derby ;
-        return null ;
-    }
+//    private static DatabaseType commonForm(String databaseTypeName)
+//    {
+//        // Map common names.
+//        if ( databaseTypeName.equalsIgnoreCase("MySQL") )           return MySQL ;
+//        if ( databaseTypeName.equalsIgnoreCase("MySQL5") )          return MySQL ;
+//
+//        if ( databaseTypeName.equalsIgnoreCase("PostgreSQL") )      return PostgreSQL ;
+//        if ( databaseTypeName.equalsIgnoreCase("oracle") )          return Oracle ;
+//        if ( databaseTypeName.startsWith("oracle:"))                return Oracle ;
+//        
+//        if ( databaseTypeName.equalsIgnoreCase("DB2"))              return DB2 ;
+//        
+//        if ( databaseTypeName.equalsIgnoreCase("SQLServer") )       return SQLServer ;
+//        if ( databaseTypeName.equalsIgnoreCase("MSSQLServer") )     return SQLServer ;
+//        if ( databaseTypeName.equalsIgnoreCase("MSSQLServerExpress") )   return SQLServer ;
+//
+//        if ( databaseTypeName.equalsIgnoreCase("hsqldb") )          return HSQLDB ;
+//        if ( databaseTypeName.equalsIgnoreCase("hsqldb:file") )     return HSQLDB ;
+//        if ( databaseTypeName.equalsIgnoreCase("hsqldb:mem") )      return HSQLDB ;
+//        if ( databaseTypeName.equalsIgnoreCase("hsql") )            return HSQLDB ;
+//
+//        if ( databaseTypeName.equalsIgnoreCase("Derby") )           return Derby ;
+//        if ( databaseTypeName.equalsIgnoreCase("JavaDB") )          return Derby ;
+//        return null ;
+//    }
     
     static void init()
     {
         // Java databases
         register(Derby) ;
+        registerName("JavaDB", Derby) ;
+        
         register(HSQLDB) ;
+        registerName("hsqldb:file", HSQLDB) ;
+        registerName("hsqldb:mem", HSQLDB) ;
+        registerName("hsql", HSQLDB) ;
         
         // Open source DBs
         register(MySQL) ;
+        registerName("MySQL5", HSQLDB) ;
+        
         register(PostgreSQL) ;
         
         // Commercial DBs
         register(SQLServer) ;
+        registerName("MSSQLServer" , SQLServer) ;
+        registerName("MSSQLServerExpress" , SQLServer) ;
+        
         register(Oracle) ;
+        
         register(DB2) ;
     }
     
@@ -103,8 +122,16 @@ public class DatabaseType extends Symbol implements Named
         if ( dbType == null )
             throw new IllegalArgumentException("DatabaseType.register(DatabaseType): null not allowed") ;
         registeredTypes.add(dbType) ; 
+        registerName(dbType.getName(), dbType) ;
     }
 
+    static public void registerName(String databaseName, DatabaseType dbType)
+    {
+        if ( dbType == null )
+            throw new IllegalArgumentException("DatabaseType.registerName: null not allowed") ;
+        registeredNames.put(databaseName, dbType) ; 
+    }
+    
     private DatabaseType(String layoutName)
     {
         super(layoutName) ;

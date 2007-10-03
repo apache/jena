@@ -178,6 +178,11 @@ public class StoreFactory
                     public Store create(SDBConnection conn, StoreDesc desc)
                     { return new StoreTriplesNodesHashOracle(conn, desc) ; } }) ;
 
+        register(DB2, LayoutTripleNodesHash,
+                 new StoreMaker() {
+                    public Store create(SDBConnection conn, StoreDesc desc)
+                    { return new StoreTriplesNodesHashDB2(conn, desc) ; } }) ;
+
         // -- Index layout
         
         register(Derby, LayoutTripleNodesIndex,

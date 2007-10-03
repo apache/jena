@@ -14,6 +14,9 @@ import static sdb.SDBCmd.sdbquery;
 import static sdb.SDBCmd.setExitOnError;
 import static sdb.SDBCmd.setSDBConfig;
 import static sdb.SDBCmd.sparql;
+
+import java.sql.Connection;
+
 import arq.cmd.CmdUtils;
 
 import com.hp.hpl.jena.rdf.model.Model;
@@ -46,6 +49,10 @@ public class RunSDB
     static { CmdUtils.setLog4j() ; CmdUtils.setN3Params() ; }
     public static void main(String[]argv)
     {
+        setSDBConfig("Store/sdb-db2.ttl") ;
+        sdbload("D.ttl") ;
+        System.exit(0) ;
+        
         SDB.getContext().setTrue(SDB.unionDefaultGraph) ;
         runPrint() ;
 //        SDBConnection.logSQLExceptions = true ;
@@ -246,6 +253,22 @@ public class RunSDB
     
     public static void run()
     {
+        
+        
+        
+        try {
+            Class.forName("com.ibm.db2.jcc.DB2Driver") ;
+            String url = "jdbc:db2://sweb-sdb-4:50000/TEST" ;
+                
+            Connection conn = JDBC.createConnection(url, "user", "password") ;
+            System.out.println("Happy") ;
+        
+        } catch (Exception ex)
+        {
+            ex.printStackTrace(System.err) ;
+        }
+        
+        System.exit(0) ;
 //        setSDBConfig("Store/sdb-hsqldb-mem.ttl") ;
 //        sdbconfig("--create") ;
 //        sdbload("D.ttl") ;
