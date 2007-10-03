@@ -15,18 +15,22 @@ import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 
 public class OpJoin extends Op2
 {
+    // This is the SPARQL simplification step done inline.
+    // Which is wrong IMHO
+//    private static boolean simplifyEarly = false ; 
+    
     public static Op create(Op left, Op right)
     { 
-        // This is the SPARQL simplification step done inline.
-        // Which is wrong IMHO
-//        if ( left == null )
-//            return right ;
-//        if ( isJoinIdentify(left) )
-//            return right ;
+//        // Inline simplification (too early - changes SPARQL for OPTIONAL {{ FILTER }} 
+//        if ( simplifyEarly )
+//        {
+//            if ( isJoinIdentify(left) )
+//                return right ;
 //
-//        if ( isJoinIdentify(right) )
-//            return left ;
-
+//            if ( isJoinIdentify(right) )
+//                return left ;
+//        }
+        
         return new OpJoin(left, right) ;
     }
     
