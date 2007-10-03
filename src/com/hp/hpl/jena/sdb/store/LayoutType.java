@@ -6,7 +6,9 @@
 
 package com.hp.hpl.jena.sdb.store;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.logging.LogFactory;
@@ -19,6 +21,7 @@ import com.hp.hpl.jena.sdb.SDBException;
 public class LayoutType extends Symbol implements Named
 {
     static Set<LayoutType> registeredTypes = new HashSet<LayoutType>() ;
+    static Map<String, LayoutType> registeredNames = new HashMap<String, LayoutType>() ;
     
     public static final LayoutType LayoutTripleNodesHash  = new LayoutType("layout2/hash") ;
     public static final LayoutType LayoutTripleNodesIndex = new LayoutType("layout2/index") ;
@@ -31,37 +34,22 @@ public class LayoutType extends Symbol implements Named
     {
         if ( layoutTypeName == null )
             throw new IllegalArgumentException("LayoutType.convert: null not allowed") ;
-        LayoutType t = commonForm(layoutTypeName) ;
-        if ( t == null )
-            t = new LayoutType(layoutTypeName) ;
         
-        if ( registeredTypes.contains(t))
-            return t ;
-            
+        for ( String name: registeredNames.keySet() )
+        {
+            if ( layoutTypeName.equalsIgnoreCase(name) )
+                return registeredNames.get(name) ;
+        }
+
         LogFactory.getLog(LayoutType.class).warn("Can't turn '"+layoutTypeName+"' into a layout type") ;
         throw new SDBException("Can't turn '"+layoutTypeName+"' into a layout type") ; 
-    }
-    
-    private static LayoutType commonForm(String layoutTypeName)
-    {
-     // Map common names.
-        if ( layoutTypeName.equalsIgnoreCase(LayoutRDB.getName()) ) return LayoutRDB ;
-        if ( layoutTypeName.equalsIgnoreCase("layoutRDB") ) return LayoutRDB ;
-        
-        if ( layoutTypeName.equalsIgnoreCase(LayoutSimple.getName()) ) return LayoutSimple ;
-        if ( layoutTypeName.equalsIgnoreCase("layout1") ) return LayoutSimple ;
-        
-        if ( layoutTypeName.equalsIgnoreCase("layout2") ) return LayoutTripleNodesHash ;
-        if ( layoutTypeName.equalsIgnoreCase("layout2/hash") ) return LayoutTripleNodesHash ;
-        
-        if ( layoutTypeName.equalsIgnoreCase(LayoutTripleNodesIndex.getName()) ) return LayoutTripleNodesIndex ;
-        if ( layoutTypeName.equalsIgnoreCase("layout2/index") ) return LayoutTripleNodesIndex ;
-        return null ;
     }
     
     static void init()
     {
         register(LayoutTripleNodesHash) ;
+        registerName("layout2",  LayoutTripleNodesHash) ;
+        
         register(LayoutTripleNodesIndex) ;
         register(LayoutSimple) ;
         register(LayoutRDB) ;
@@ -79,6 +67,14 @@ public class LayoutType extends Symbol implements Named
         if ( layoutType == null )
             throw new IllegalArgumentException("LayoutType.register(LayoutType): null not allowed") ;
         registeredTypes.add(layoutType) ; 
+        registerName(layoutType.getName(), layoutType) ;
+    }
+
+    static public void registerName(String layoutName, LayoutType layoutType)
+    {
+        if ( layoutType == null )
+            throw new IllegalArgumentException("LayoutType.register(LayoutType): null not allowed") ;
+        registeredNames.put(layoutName, layoutType) ; 
     }
 
     private LayoutType(String layoutName)
