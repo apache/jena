@@ -1,3 +1,7 @@
-(project (?p (?cd ?.0))
-  (group() ((?.0 (count distinct ?t)))
-    (table unit)))
+(prefix ((dc: <http://purl.org/dc/elements/1.1/>)
+         (x: <http://example.org/ns#>))
+    (leftjoin
+      (BGP (triple ?book dc:title ?title))
+      (filter (= ?title "TITLE 2")
+        (BGP (triple ?book x:price ?price)))
+    ))

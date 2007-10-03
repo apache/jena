@@ -32,7 +32,12 @@ public class VarFinder
         return VarUsageVisitor.apply(op).defines ;
     }
     
-   
+    
+    public static Set filter(Op op)
+    {
+        return VarUsageVisitor.apply(op).filterMentions ;
+    }
+
     VarUsageVisitor varUsageVisitor ;
     
     public VarFinder(Op op)

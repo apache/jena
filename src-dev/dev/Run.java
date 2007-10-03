@@ -9,61 +9,44 @@ package dev;
 import arq.sparql;
 
 import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.query.Query;
+import com.hp.hpl.jena.query.QueryExecution;
+import com.hp.hpl.jena.query.QueryExecutionFactory;
+import com.hp.hpl.jena.query.QueryFactory;
+import com.hp.hpl.jena.query.ResultSetFormatter;
+import com.hp.hpl.jena.query.larq.IndexBuilderString;
+import com.hp.hpl.jena.query.larq.IndexLARQ;
+import com.hp.hpl.jena.query.larq.LARQ;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.util.FileManager;
-
 import com.hp.hpl.jena.sparql.algebra.Op;
+import com.hp.hpl.jena.sparql.algebra.op.OpLeftJoin;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.binding.BindingMap;
+import com.hp.hpl.jena.sparql.engine.main.LeftJoinClassifier;
 import com.hp.hpl.jena.sparql.expr.ExprNotComparableException;
 import com.hp.hpl.jena.sparql.expr.NodeValue;
 import com.hp.hpl.jena.sparql.sse.SSE;
 import com.hp.hpl.jena.sparql.util.DateTimeStruct;
 import com.hp.hpl.jena.sparql.util.ExprUtils;
-
-import com.hp.hpl.jena.query.*;
-import com.hp.hpl.jena.query.larq.IndexBuilderString;
-import com.hp.hpl.jena.query.larq.IndexLARQ;
-import com.hp.hpl.jena.query.larq.LARQ;
+import com.hp.hpl.jena.util.FileManager;
 
 
 public class Run
 {
     public static void main(String[] argv)
     {
-        runQParse() ;
+        Op op = SSE.readOp("Q.sse") ;
+        System.out.println(op) ;
+        OpLeftJoin opLJ = (OpLeftJoin)op ;
+        boolean b = LeftJoinClassifier.isLinear(opLJ) ;
+        System.out.println("Linear = "+b) ;
+        System.exit(0); 
         
-        Op op = SSE.parseOp("(quadpattern (?g ?s ?p ?o))") ;
-        System.out.println(op);
-        System.exit(0) ;
         
-        if ( false )
-        {
-            String DIR = "/home/afs/W3C/DataAccess/tests/data-r2/expr-equals/" ;
-            String []a1 = { "--strict", "--data="+DIR+"data-eq.ttl",
-                "--query="+DIR+"query-eq2-2.rq",
-                "--result="+DIR+"result-eq2-2.ttl"} ;
-
-            String []a2 = { "--strict", "--data="+DIR+"data-eq.ttl",
-                "--query="+DIR+"query-eq2-graph-1.rq",
-                "--result="+DIR+"result-eq2-graph-1.ttl"} ;
-
-            arq.qtest.main(a1) ;
-            System.exit(0 ) ; 
-        }
-        
-        ExprUtils.expr("1+2+3") ;
-        ExprUtils.exprPrefix("(+ 1 (+ 4 12.56))") ;
-        System.exit(0) ;
-        
-        String []a = { "--file=Q.arq", "--out=arq", "--print=op", "--print=query"} ;
-        arq.qparse.main(a) ;
-        System.exit(0) ;
-        System.out.println() ;
         String DIR = "" ;
-        execQuery(DIR+"D.ttl", DIR+"Q.arq") ;
+        execQuery(DIR+"D.ttl", DIR+"Q.sse") ;
     }
     
     private static void runParseDateTime(String str)
@@ -117,6 +100,21 @@ public class Run
         System.exit(0) ;
     }
     
+    private static void runQTest()
+    {
+        String DIR = "/home/afs/W3C/DataAccess/tests/data-r2/expr-equals/" ;
+        String []a1 = { "--strict", "--data="+DIR+"data-eq.ttl",
+            "--query="+DIR+"query-eq2-2.rq",
+            "--result="+DIR+"result-eq2-2.ttl"} ;
+
+        String []a2 = { "--strict", "--data="+DIR+"data-eq.ttl",
+            "--query="+DIR+"query-eq2-graph-1.rq",
+            "--result="+DIR+"result-eq2-graph-1.ttl"} ;
+
+        arq.qtest.main(a1) ;
+        System.exit(0 ) ; 
+  
+    }
 
     private static void execQuery(String datafile, String queryfile)
     {

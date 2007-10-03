@@ -62,7 +62,17 @@
             [ qt:query  <opt-filter-3.rq> ;
               qt:data   <opt-filter-3.ttl>  ] ;
         mf:result  <opt-filter-3.srx> .
+
+## Extra test      
+<#opt-filter-4> rdf:type mf:QueryEvaluationTest ;
+         mf:name    "Optional-filter - scope with {{}}" ;
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <opt-filter-4.rq> ;
+              qt:data   <opt-filter-4.ttl>  ] ;
+        mf:result  <opt-filter-4.srx> .
       
+
 
 <#filter-place-1> rdf:type mf:QueryEvaluationTest ;
          mf:name    "Filter-placement - 1" ;

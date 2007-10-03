@@ -42,7 +42,7 @@ public class AlgebraGeneratorQuad extends AlgebraGenerator
                 return new OpDatasetNames(graphNode) ;
             }
         }
-        Op sub = compile(eltGraph.getElement()) ;
+        Op sub = compileElement(eltGraph.getElement()) ;
         currentGraph = g ;
         return sub ;
     }

@@ -39,6 +39,9 @@ public class AlgebraGenerator
     
     public AlgebraGenerator() { this(null) ; } 
     
+    //-- Public operations.  Do not call recursively (call compileElement).
+    // These operations apply the simplification step which is done, once, at the end.
+    
     public Op compile(Query query)
     {
         Op pattern = compile(query.getQueryPattern()) ;  // Not compileElement - need to apply simplification.
@@ -46,17 +49,18 @@ public class AlgebraGenerator
         return op ;
     }
     
-    static Transform transform = new TransformSimplify() ;
+    static Transform simplify = new TransformSimplify() ;
     // Compile any structural element
     public Op compile(Element elt)
     {
         Op op = compileElement(elt) ;
-        op = Transformer.transform(transform, op) ;
+        if ( simplify != null )
+            op = Transformer.transform(simplify, op) ;
         return op ;
     }
 
     // This is the operation to call for recursive application of step 4.
-    private Op compileElement(Element elt)
+    protected Op compileElement(Element elt)
     {
         if ( elt instanceof ElementUnion )
             return compileElementUnion((ElementUnion)elt) ;

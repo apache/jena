@@ -17,24 +17,31 @@ public class LeftJoinClassifier
 {
     // Test for the "well-formed" criterion of left joins whereby they can
     // be executed against a current set of bindings.  If not, the left join
-    // has to be done by execution the left, executing the right without
+    // has to be done by execution of the left, executing the right without
     // the left (so no substitution/additional indexing), then
-    // left-join-ed.  ANd that can be expensive - luckily, it only occurs
-    // in doubly, or more more, nested OPTIONAL expressions. 
+    // left-join-ed.  AND that can be expensive - luckily, it only occurs
+    // in OPTIONALs with a pattern depth of 2 or more. 
 
     // This amounts to testing whether there are any optional variables in the 
     // RHS pattern (hence they are nested in someway) that also occur in the LHS
-    // of the LefyJoin being considered.  
+    // of the LeftJoin being considered.
+    
+    // Need also worry about filters in the right (not in the LJ condidtion)
+    // which use vars from the left. 
 
     static public boolean isLinear(OpLeftJoin op)
     {
         Op left = JoinClassifier.effectiveOp(op.getLeft()) ;
         Op right = JoinClassifier.effectiveOp(op.getRight()) ;
         Set leftVars = OpVars.patternVars(left) ;
-        Set optRight = VarFinder.optDefined(right) ;
+        
+        VarFinder vf = new VarFinder(right) ;
+        
+        Set optRight = vf.getOpt() ;
+        Set filterVarsRight = vf.getFilter() ; 
 
         // Safe for linear execution if there are no  
-        return ! SetUtils.intersectionP(leftVars, optRight) ;
+        return ! SetUtils.intersectionP(leftVars, optRight) && ! SetUtils.intersectionP(leftVars, filterVarsRight) ;
     }
     
     static public Set nonLinearVars(OpLeftJoin op)

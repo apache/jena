@@ -12,6 +12,11 @@ See ToDoSSE
 ----
 + Better syntax as well as SQL-like: GROUP BY ... WITH ... ??
 
++ Tidy up : arq.sse_ commands need finishing
+  Except sse_query which needs the Q parsing moved into ModQueryIn.
+  ModQueryIn needs to work on algebra expressions?
+  Or a "Query" that is the algebra wrapped up. 
+
 + Results set to note when finished and warn on attempted continued use.
 
 + OpOrder to take an ExprList
