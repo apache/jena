@@ -31,7 +31,7 @@ public class TupleLoaderIndexDB2 extends TupleLoaderIndexBase {
 	}
 	
 	public String[] getCreateTempTable() {
-		return new String[] { "CREATE TABLE " , " " };
+		return new String[] { "CREATE TABLE " , " CCSID UNICODE" };
 	}
 	
 	@Override

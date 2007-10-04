@@ -80,7 +80,7 @@ public class FmtLayout2IndexDB2 extends FmtLayout2
                                        "   datatype VARCHAR("+TableDescNodes.DatatypeUriLength+"),",
                                        "   type INTEGER  NOT NULL,",
                                        "   PRIMARY KEY (id)",
-                                       ")"
+                                       ")  CCSID UNICODE"
                     )) ;
             //connection().exec("CREATE UNIQUE INDEX Hash ON " + TableNodes.tableName + " (hash)");
 

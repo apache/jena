@@ -43,13 +43,14 @@ public class JDBC
 
     private static Map<DatabaseType, String> driver = new HashMap<DatabaseType, String>() ;
     static {
-        driver.put(DatabaseType.MySQL,       "com.mysql.jdbc.Driver") ;
-        driver.put(DatabaseType.PostgreSQL,  "org.postgresql.Driver") ;
-        driver.put(DatabaseType.HSQLDB,        "org.hsqldb.jdbcDriver") ;
-        driver.put(DatabaseType.Derby,       "org.apache.derby.jdbc.EmbeddedDriver") ;
+        driver.put(DatabaseType.MySQL,      "com.mysql.jdbc.Driver") ;
+        driver.put(DatabaseType.PostgreSQL, "org.postgresql.Driver") ;
+        driver.put(DatabaseType.HSQLDB,     "org.hsqldb.jdbcDriver") ;
+        driver.put(DatabaseType.Derby,      "org.apache.derby.jdbc.EmbeddedDriver") ;
         //driver.put(DatabaseType.Derby,       "org.apache.derby.jdbc.ClientDriver") ;
-        driver.put(DatabaseType.SQLServer,   "com.microsoft.sqlserver.jdbc.SQLServerDriver") ;
-        driver.put(DatabaseType.Oracle,      "oracle.jdbc.driver.OracleDriver") ;
+        driver.put(DatabaseType.SQLServer,  "com.microsoft.sqlserver.jdbc.SQLServerDriver") ;
+        driver.put(DatabaseType.Oracle,     "oracle.jdbc.driver.OracleDriver") ;
+        driver.put(DatabaseType.DB2,        "com.ibm.db2.jcc.DB2Driver") ;
     }
     
     static public String getDriver(DatabaseType dbType) { return driver.get(dbType) ; }
@@ -64,9 +65,10 @@ public class JDBC
     static public void loadDriverDerby() { loadDriver(driver.get(DatabaseType.Derby)); }
     /** Explicitly load the SQLServer driver */ 
     static public void loadDriverSQLServer() { loadDriver(driver.get(DatabaseType.SQLServer)); }
-   
     /** Explicitly load the Oracle driver */ 
     static public void loadDriverOracle() { loadDriver(driver.get(DatabaseType.Oracle)); }
+    /** Explicitly load the DB2 driver */ 
+    static public void loadDriverDB2() { loadDriver(driver.get(DatabaseType.DB2)); }
     
     static public void loadDriver(String className) { loadClass(className) ; }
     

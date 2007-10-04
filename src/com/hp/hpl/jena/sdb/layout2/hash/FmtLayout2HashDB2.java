@@ -80,7 +80,7 @@ public class FmtLayout2HashDB2 extends FmtLayout2
                                        "   datatype VARCHAR("+TableDescNodes.DatatypeUriLength+"),",
                                        "   type INTEGER  NOT NULL,",
                                        "   PRIMARY KEY (hash)",
-                                       ")"
+                                       ") CCSID UNICODE"
                     )) ;
         } catch (SQLException ex)
         {

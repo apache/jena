@@ -6,9 +6,9 @@
 _:c rdf:type sdb:SDBConnection ;
     sdb:sdbType        "DB2" ;
     sdb:sdbHost        "sweb-sdb-4:50000" ;
-    sdb:sdbName        "TEST" ;
+    sdb:sdbName        "SDB2" ;
     # Universal
-    sdb:driver         "com.ibm.db2.jcc.DB2Driver" ;
+    # sdb:driver         "com.ibm.db2.jcc.DB2Driver" ;
     .
 
 [] rdf:type sdb:Store ;

@@ -58,7 +58,7 @@ public class FormatterSimpleDB2 extends FormatterSimple
                     "    prefix VARCHAR ("+TablePrefixes.prefixColWidth+") NOT NULL ,",
                     "    uri VARCHAR("+TablePrefixes.uriColWidth+") NOT NULL ,", 
                     "  PRIMARY KEY(prefix)",
-                    ")"
+                    ") CCSID UNICODE"
                 )) ;
             if ( loadPrefixes )
             {
@@ -93,7 +93,7 @@ public class FormatterSimpleDB2 extends FormatterSimple
                     "  o "+colDecl,
                     // Too long.  Use an SP index below.
                     //"  PRIMARY KEY (s,p,o)",
-                    ")"
+                    ") CCSID UNICODE"
                 )) ;
         } catch (SQLException ex)
         {
