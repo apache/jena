@@ -54,7 +54,7 @@ public class SDBFactory
 
     /**
      * Create a connection to a database from a JDBC connection. 
-     * @param desc              SDB connection description
+     * @param  conn              JDBC connection
      * @return SDBConnection
      */
     public static SDBConnection createConnection(java.sql.Connection conn)
@@ -142,7 +142,7 @@ public class SDBFactory
 
     /**
      * Connect to the RDF dataset in a store, using existing SDBConnection and a store description.
-     * @param sqlConnection     JDBC connection
+     * @param sdbConnection     SDB connection
      * @param desc              Store description object
      * @return Dataset
      */
@@ -177,7 +177,7 @@ public class SDBFactory
 
     /**
      * Connect to the default graph in a store, based on a Store description.
-     * @param configFile
+     * @param store    The store containing the dataset for the default graph
      * @return Graph
      */
     public static Graph connectDefaultGraph(Store store)
@@ -214,7 +214,7 @@ public class SDBFactory
      * Connect to a named graph in a store, based on a store description file. 
      * @param configFile
      * @param node
-     * @return
+     * @return Graph
      */
     public static Graph connectNamedGraph(String configFile, Node node)
     { return connectNamedGraph(StoreFactory.create(configFile), node) ; }
@@ -223,7 +223,7 @@ public class SDBFactory
      * Connect to a named graph in a store, based on a store description. 
      * @param desc
      * @param node
-     * @return
+     * @return Graph
      */
     public static Graph connectNamedGraph(StoreDesc desc, Node node)
     { return connectNamedGraph(StoreFactory.create(desc), node) ; }
@@ -232,7 +232,7 @@ public class SDBFactory
      * Connect to a named graph in a store.
      * @param store
      * @param node
-     * @return
+     * @return Graph
      */
     public static Graph connectNamedGraph(Store store, Node node)
     { return new GraphSDB(store, node) ; }
