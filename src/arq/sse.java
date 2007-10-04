@@ -13,9 +13,9 @@ import java.util.List;
 import arq.cmd.TerminationException;
 import arq.cmdline.ArgDecl;
 import arq.cmdline.CmdARQ;
-import arq.cmdline.CmdGeneral;
 
 import com.hp.hpl.jena.shared.PrefixMapping;
+
 import com.hp.hpl.jena.sparql.ARQInternalErrorException;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext;
 import com.hp.hpl.jena.sparql.sse.Item;
