@@ -1,7 +1,9 @@
 /*
- * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
+ * 
+ * Customization for DB2 contributed by Venkat Krishnamurthy 
  */
 
 package com.hp.hpl.jena.sdb.layout2.hash;
@@ -53,7 +55,7 @@ public class StoreTriplesNodesHashDB2 extends StoreBaseHash
 }
 
 /*
- * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

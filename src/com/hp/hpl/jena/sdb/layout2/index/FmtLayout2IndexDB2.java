@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.layout2.hash;
+package com.hp.hpl.jena.sdb.layout2.index;
 
 import static com.hp.hpl.jena.sdb.sql.SQLUtils.sqlStr;
 
@@ -19,12 +19,12 @@ import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.sql.SDBExceptionSQL;
 
 
-public class FmtLayout2HashDB2 extends FmtLayout2
+public class FmtLayout2IndexDB2 extends FmtLayout2
 {
     //static private Log log = LogFactory.getLog(FmtLayout2Derby.class) ;
-    
-    public FmtLayout2HashDB2(SDBConnection connection)
-    { 
+
+    public FmtLayout2IndexDB2(SDBConnection connection)
+    {
         super(connection) ;
     }
 
@@ -32,56 +32,69 @@ public class FmtLayout2HashDB2 extends FmtLayout2
     protected void formatTableTriples()
     {
         dropTable(TableDescTriples.name()) ;
-        try { 
+        try {
             connection().exec(sqlStr(
                                  "CREATE TABLE "+TableDescTriples.name()+" (",
-                                 "    s BIGINT NOT NULL,",
-                                 "    p BIGINT NOT NULL,",
-                                 "    o BIGINT NOT NULL,",
+                                 "    s INT NOT NULL,",
+                                 "    p INT NOT NULL,",
+                                 "    o INT NOT NULL,",
                                  "    PRIMARY KEY (s, p, o)",
-                                 ")"                
+                                 ")"
                     )) ;
         } catch (SQLException ex)
         {
             throw new SDBExceptionSQL("SQLException formatting table '"+TableDescTriples.name()+"'",ex) ;
         }
     }
-    
+
     @Override
     protected void formatTableQuads()
     {
         dropTable(TableDescQuads.name()) ;
-        try { 
+        try {
             connection().exec(sqlStr(
                                  "CREATE TABLE "+TableDescQuads.name()+" (",
-                                 "    g BIGINT NOT NULL,",
-                                 "    s BIGINT NOT NULL,",
-                                 "    p BIGINT NOT NULL,",
-                                 "    o BIGINT NOT NULL,",
+                                 "    g INT NOT NULL,",
+                                 "    s INT NOT NULL,",
+                                 "    p INT NOT NULL,",
+                                 "    o INT NOT NULL,",
                                  "    PRIMARY KEY (g, s, p, o)",
-                                 ")"                
+                                 ")"
                     )) ;
         } catch (SQLException ex)
         {
             throw new SDBExceptionSQL("SQLException formatting table '"+TableDescTriples.name()+"'",ex) ;
         }
     }
-    
+
     @Override
     protected void formatTableNodes()
     {
         dropTable(TableDescNodes.name()) ;
-        try { 
+        try {
             connection().exec(sqlStr ("CREATE TABLE "+TableDescNodes.name()+" (",
-                                       //"   id int generated always as identity ,",
+                                       "   id INT NOT NULL ,",
                                        "   hash BIGINT NOT NULL,",
                                        "   lex CLOB NOT NULL,",
                                        "   lang VARCHAR(10),",
                                        "   datatype VARCHAR("+TableDescNodes.DatatypeUriLength+"),",
                                        "   type INTEGER  NOT NULL,",
-                                       "   PRIMARY KEY (hash)",
+                                       "   PRIMARY KEY (id)",
                                        ")"
                     )) ;
+            //connection().exec("CREATE UNIQUE INDEX Hash ON " + TableNodes.tableName + " (hash)");
+
+            // Urgh. How do we find out if a sequence exists?
+            connection().execSilent("DROP SEQUENCE nodeid");
+
+            connection().exec(sqlStr ("CREATE SEQUENCE nodeid AS INT",
+                                      "START WITH 1",
+                                      "INCREMENT BY 1",
+                                      "CACHE 5000",
+                                      "ORDER",
+                                      "NO MAXVALUE",
+                                      "NO CYCLE"
+            		));
         } catch (SQLException ex)
         {
             throw new SDBExceptionSQL("SQLException resetting table '"+TableDescNodes.name()+"'",ex) ;
@@ -92,26 +105,26 @@ public class FmtLayout2HashDB2 extends FmtLayout2
     protected void formatTablePrefixes()
     {
         dropTable(TablePrefixes.name()) ;
-        try { 
+        try {
             connection().exec(sqlStr(
                                       "CREATE TABLE "+TablePrefixes.name()+" (",
                                       "    prefix VARCHAR("+TablePrefixes.prefixColWidth+") NOT NULL,",
-                                      "    uri VARCHAR("+TablePrefixes.uriColWidth+") ,", 
+                                      "    uri VARCHAR("+TablePrefixes.uriColWidth+") ,",
                                       "    PRIMARY KEY  (prefix)",
-                                      ")"            
+                                      ")"
                     )) ;
         } catch (SQLException ex)
         {
             throw new SDBExceptionSQL("SQLException resetting table '"+TablePrefixes.name()+"'",ex) ;
         }
     }
-    
+
     /* Use truncate */
     @Override
     protected void truncateTable(String tableName)
     {
-        try { 
-            //Truncate doesnt work for db2 - have to do kludgy delete from
+        try {
+        	//Truncate doesnt work for db2 - have to do kludgy delete from
             connection().exec("DELETE FROM "+tableName) ;
         } catch (SQLException ex)
         { throw new SDBExceptionSQL("SQLException truncating table: "+tableName,ex) ; }

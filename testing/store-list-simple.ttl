@@ -13,9 +13,9 @@ _:x rdf:type sdb:StoreList ;
       [ rdfs:label "Derby/Simple" ;
         sdb:description <StoreDescSimple/derby-layout1.ttl> ]
 
-      [ rdfs:label "PGSQL/Simple" ;
-        sdb:description <StoreDescSimple/pgsql-layout1.ttl> ]
-
+##       [ rdfs:label "PGSQL/Simple" ;
+##         sdb:description <StoreDescSimple/pgsql-layout1.ttl> ]
+## 
 ##       [ rdfs:label "MySQL/Simple" ;
 ##         sdb:description <StoreDescSimple/mysql-layout1.ttl> ]
 ## 
@@ -24,6 +24,9 @@ _:x rdf:type sdb:StoreList ;
 ## 
 ##       [ rdfs:label "MS-SQL-e/Simple" ;
 ##         sdb:description <StoreDescSimple/ms-sql-e-layout1.ttl> ]
+## 
+##       [ rdfs:label "DB2/Simple" ;
+##         sdb:description <StoreDescSimple/db2-layout1.ttl> ]
 ## 
       [ rdfs:label "HSQLDB/Simple" ;
         sdb:description <StoreDescSimple/hsqldb-layout1.ttl> ]

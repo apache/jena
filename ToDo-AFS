@@ -5,6 +5,9 @@ SDB ToDo list (and general notes)
 + Document assembler for dataset on wiki
 + Break out the merge query section into a separate wiki page.
 
+== Tests
++ DISTINCT, Slice, Project, including when not all of a query is translated.
+
 == Development
 
 + LayoutType, DatabaseType have a common concept
@@ -19,10 +22,10 @@ SDB ToDo list (and general notes)
     Add new graph (and load of unknown graph fails?)
     Replace graph
   
++ StoreLoader => StoreLoaderPlus.
 + LoaderTuplesNodes uses reflection on constructors.
    Each loader has many TupleLoader instances - per table to be loaded.
    ==> TupleLoaderFactory 
-   Combine StoreLoader and StoreLoaderPlus
  
 + Tests with SDB.getContext().setTrue(SDB.unionDefaultGraph) ;
   --set in manifest?
@@ -46,14 +49,9 @@ SDB ToDo list (and general notes)
 + Setting options for testing.
 + Use cursors for streaming / PostgreSQL [DONE - test]
 
-+ StoreLoader => StoreLoaderPlus.
-
 + DB type tables
 
 + OpUnion
-
-== Tests
-+ DISTINCT, Slice, Project, including when not all of a query is translated.
 
 == Alt layouts
 

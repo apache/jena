@@ -216,6 +216,11 @@ public class StoreFactory
                     public Store create(SDBConnection conn, StoreDesc desc)
                     { return new StoreTriplesNodesIndexOracle(conn, desc) ; } }) ;
         
+        register(DB2, LayoutTripleNodesIndex,
+                 new StoreMaker() {
+                    public Store create(SDBConnection conn, StoreDesc desc)
+                    { return new StoreTriplesNodesIndexDB2(conn, desc) ; } }) ;
+        
         // -- Simple layout
         
         register(Derby, LayoutSimple,
@@ -248,6 +253,11 @@ public class StoreFactory
                  new StoreMaker() {
                     public Store create(SDBConnection conn, StoreDesc desc)
                     { return new StoreSimpleOracle(conn, desc) ; } }) ;
+
+        register(DB2, LayoutSimple,
+                 new StoreMaker() {
+                    public Store create(SDBConnection conn, StoreDesc desc)
+                    { return new StoreSimpleDB2(conn, desc) ; } }) ;
     }
     
     static private void checkRegistry()

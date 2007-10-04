@@ -2,39 +2,34 @@
  * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
+ * Customization for DB2 contributed by Venkat Krishnamurthy 
  */
 
-package com.hp.hpl.jena.sdb.core.sqlnode;
+package com.hp.hpl.jena.sdb.layout1;
 
-import com.hp.hpl.jena.sparql.util.IndentedLineBuffer;
-import com.hp.hpl.jena.sparql.util.IndentedWriter;
+import com.hp.hpl.jena.sdb.StoreDesc;
+import com.hp.hpl.jena.sdb.core.sqlnode.GenerateSQLDB2;
+import com.hp.hpl.jena.sdb.layout2.TableDescTriples;
+import com.hp.hpl.jena.sdb.sql.SDBConnection;
 
-public class GenerateSQLDB2 extends GenerateSQL
+public class StoreSimpleDB2 extends StoreBase1
 {
-    @Override
-    protected SqlNodeVisitor makeVisitor(IndentedLineBuffer buff)
-    {
-        return new GeneratorVisitorDB2(buff.getIndentedWriter()) ;
-    }
-}
 
-class GeneratorVisitorDB2 extends GenerateSQLVisitor
-{
-    // XXX Check these
-    public GeneratorVisitorDB2(IndentedWriter out)
-    { super(out) ; }
-
-    // No "AS" in DB2
-    @Override
-    protected String aliasToken()
+    public StoreSimpleDB2(SDBConnection connection, StoreDesc desc)
     {
-        return " " ;
+        this(connection, desc , new TableDescSPO(), new CodecSimple()) ;
     }
-    
-    // No "true" in DB2
-    @Override
-    protected String leftJoinNoConditionsString()
-    { return "1=1" ; }
+
+    private StoreSimpleDB2(SDBConnection connection, StoreDesc desc, TableDescTriples triples, EncoderDecoder codec)
+    {
+        super(connection, desc,
+              new FormatterSimpleDB2(connection) ,
+              new TupleLoaderSimple(connection, triples, codec), 
+              new QueryCompilerFactory1(codec), 
+              new SQLBridgeFactory1(codec),
+              new GenerateSQLDB2(),
+              triples) ;
+    }
 }
 
 /*

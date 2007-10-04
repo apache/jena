@@ -49,8 +49,8 @@ public class RunSDB
     static { CmdUtils.setLog4j() ; CmdUtils.setN3Params() ; }
     public static void main(String[]argv)
     {
-        setSDBConfig("Store/sdb-db2.ttl") ;
-        sdbload("D.ttl") ;
+        setSDBConfig("testing/StoreDescSimple/db2-layout1.ttl") ;
+        sdbconfig("--create") ;
         System.exit(0) ;
         
         SDB.getContext().setTrue(SDB.unionDefaultGraph) ;

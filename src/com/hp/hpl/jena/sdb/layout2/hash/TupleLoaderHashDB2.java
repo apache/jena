@@ -23,11 +23,11 @@ public class TupleLoaderHashDB2 extends TupleLoaderHashBase {
     }
     
     public String[] getNodeColTypes() {
-        return new String[] {"NUMERIC(30)", "CLOB", "VARCHAR(10)", "VARCHAR("+TableDescNodes.DatatypeUriLength+")", "INTEGER"};
+        return new String[] {"BIGINT", "CLOB", "VARCHAR(10)", "VARCHAR("+TableDescNodes.DatatypeUriLength+")", "INTEGER"};
     }
     
     public String getTupleColType() {
-        return "NUMERIC(30)";
+        return "BIGINT";
     }
     
     public String[] getCreateTempTable() {

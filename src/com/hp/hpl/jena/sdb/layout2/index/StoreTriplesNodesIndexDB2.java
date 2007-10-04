@@ -2,39 +2,32 @@
  * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
+ * 
+ * Customization for DB2 contributed by Venkat Krishnamurthy 
  */
 
-package com.hp.hpl.jena.sdb.core.sqlnode;
+package com.hp.hpl.jena.sdb.layout2.index;
 
-import com.hp.hpl.jena.sparql.util.IndentedLineBuffer;
-import com.hp.hpl.jena.sparql.util.IndentedWriter;
+import com.hp.hpl.jena.sdb.StoreDesc;
+import com.hp.hpl.jena.sdb.core.sqlnode.GenerateSQLDB2;
+import com.hp.hpl.jena.sdb.layout2.LoaderTuplesNodes;
+import com.hp.hpl.jena.sdb.layout2.SQLBridgeFactory2;
+import com.hp.hpl.jena.sdb.sql.SDBConnection;
 
-public class GenerateSQLDB2 extends GenerateSQL
+public class StoreTriplesNodesIndexDB2 extends StoreBaseIndex
 {
-    @Override
-    protected SqlNodeVisitor makeVisitor(IndentedLineBuffer buff)
-    {
-        return new GeneratorVisitorDB2(buff.getIndentedWriter()) ;
-    }
-}
 
-class GeneratorVisitorDB2 extends GenerateSQLVisitor
-{
-    // XXX Check these
-    public GeneratorVisitorDB2(IndentedWriter out)
-    { super(out) ; }
-
-    // No "AS" in DB2
-    @Override
-    protected String aliasToken()
+    public StoreTriplesNodesIndexDB2(SDBConnection connection, StoreDesc desc)
     {
-        return " " ;
+        super(connection, desc,
+              new FmtLayout2IndexDB2(connection) ,
+              new LoaderTuplesNodes(connection, TupleLoaderIndexDB2.class),
+              new QueryCompilerFactoryIndex(),
+              new SQLBridgeFactory2(),
+              new GenerateSQLDB2()) ;
+
+        ((LoaderTuplesNodes) this.getLoader()).setStore(this);
     }
-    
-    // No "true" in DB2
-    @Override
-    protected String leftJoinNoConditionsString()
-    { return "1=1" ; }
 }
 
 /*
