@@ -21,7 +21,7 @@ public abstract class CmdARQ_SSE extends CmdARQ
     
     protected String getSummary() { return getCommandName()+" [--file<file> | string]" ; }
 
-    protected void exec()
+    final protected void exec()
     {
         Item item = modItem.getItem() ;
         exec(item) ;

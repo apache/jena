@@ -7,27 +7,23 @@
 package arq;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import arq.cmd.TerminationException;
 import arq.cmdline.ArgDecl;
-import arq.cmdline.CmdARQ;
+import arq.cmdline.CmdARQ_SSE;
 
 import com.hp.hpl.jena.shared.PrefixMapping;
 
-import com.hp.hpl.jena.sparql.ARQInternalErrorException;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext;
 import com.hp.hpl.jena.sparql.sse.Item;
 import com.hp.hpl.jena.sparql.sse.ItemWriter;
 import com.hp.hpl.jena.sparql.sse.SSE;
-import com.hp.hpl.jena.sparql.sse.SSEParseException;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
 import com.hp.hpl.jena.sparql.util.Utils;
 
-public class sse extends CmdARQ
+public class sse extends CmdARQ_SSE
 {
-    protected final ArgDecl fileDecl        = new ArgDecl(ArgDecl.HasValue, "file") ;
     protected final ArgDecl numberDecl      = new ArgDecl(ArgDecl.HasValue, "num", "number") ;
     protected final ArgDecl noPrintDecl     = new ArgDecl(ArgDecl.NoValue, "n") ;
     protected final ArgDecl noResolveDecl   = new ArgDecl(ArgDecl.NoValue, "raw") ;
@@ -45,8 +41,6 @@ public class sse extends CmdARQ
     public sse(String[] argv)
     {
         super(argv) ;
-        super.getUsage().startCategory("SSE") ;
-        super.add(fileDecl,         "--file=FILE",      "Algebra file to parse") ;
         super.add(noPrintDecl,      "-n",               "Don't print the expression") ;
         super.add(numberDecl,       "--num [on|off]",   "Numbers") ;
         super.add(noResolveDecl,    "--raw", "Don't handle base or prefix names specially") ;
@@ -54,8 +48,7 @@ public class sse extends CmdARQ
 
     protected void processModulesAndArgs()
     {
-        if ( contains(fileDecl) )
-            filenames = getValues(fileDecl) ;
+        super.processModulesAndArgs() ;
         if ( filenames == null )
             filenames = new ArrayList() ;
 
@@ -81,57 +74,7 @@ public class sse extends CmdARQ
         needDivider = true ;
     }
 
-    protected void exec()
-    {
-        try {
-
-            for ( Iterator iter = filenames.iterator() ; iter.hasNext() ; )
-            {
-                String fn = (String)iter.next() ;
-                execFilename(fn) ;
-            }
-
-            for ( Iterator iter = super.getPositional().listIterator() ; iter.hasNext();)
-            {
-                String str = (String)iter.next() ;
-                execString(str) ;
-            }
-        }
-        catch (SSEParseException sseEx)
-        {
-            System.err.println(sseEx.getMessage()) ;
-            throw new TerminationException(99) ;
-        }
-        catch (ARQInternalErrorException intEx)
-        {
-            System.err.println(intEx.getMessage()) ;
-            if ( intEx.getCause() != null )
-            {
-                System.err.println("Cause:") ;
-                intEx.getCause().printStackTrace(System.err) ;
-                System.err.println() ;
-            }
-            intEx.printStackTrace(System.err) ;
-        }
-    }
-
-    protected void execFilename(String filename)
-    {
-        Item item = null ;
-        if ( filename.equals("-") )
-            item = SSE.parse(System.in) ;
-        else
-            item = SSE.readFile(filename) ;
-        print(item) ;
-    }
-
-    protected void execString(String string)
-    {
-        Item item = SSE.parse(string) ;
-        print(item) ;
-    }
-
-    protected void print(Item item)
+    protected void exec(Item item)
     {
         if ( ! print )
             return ;
