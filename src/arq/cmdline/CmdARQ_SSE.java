@@ -1,42 +1,37 @@
 /*
- * (c) Copyright 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package arq;
-
-import arq.cmdline.CmdARQ_SSE;
+package arq.cmdline;
 
 import com.hp.hpl.jena.sparql.sse.Item;
-import com.hp.hpl.jena.sparql.sse.builders.BuilderExec;
-import com.hp.hpl.jena.sparql.util.Utils;
 
-public class sse_exec extends CmdARQ_SSE
+/** Root of read an SSE file and do something */
+public abstract class CmdARQ_SSE extends CmdARQ
 {
+    protected ModItem modItem = new ModItem() ; 
     
-    public static void main (String [] argv)
-    {
-        new sse_exec(argv).main() ;
-    }
-    
-    public sse_exec(String[] argv)
+    public CmdARQ_SSE(String[] argv)
     {
         super(argv) ;
+        super.addModule(modItem) ;
     }
-    
-    protected String getCommandName() { return Utils.className(this) ; }
     
     protected String getSummary() { return getCommandName()+" [--file<file> | string]" ; }
 
-    protected void exec(Item item)
+    protected void exec()
     {
-        BuilderExec.exec(item) ;
+        Item item = modItem.getItem() ;
+        exec(item) ;
     }
+    
+    protected abstract void exec(Item item) ;
 }
 
 /*
- * (c) Copyright 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
