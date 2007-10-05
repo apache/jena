@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestAssemblerHelp.java,v 1.12 2007-08-02 13:33:12 chris-dollin Exp $
+ 	$Id: TestAssemblerHelp.java,v 1.13 2007-10-05 13:00:57 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.test;
@@ -189,7 +189,7 @@ public class TestAssemblerHelp extends AssemblerTestBase
         AssemblerGroup group = AssemblerGroup.create();
         Model m = model( "eh:Wossname ja:assembler '" + className + "'" );
         assertEquals( false, impIsLoaded );
-        AssemblerHelp.loadClasses( group, m );
+        AssemblerHelp.loadAssemblerClasses( group, m );
         assertEquals( true, impIsLoaded );
         assertEquals( true, impIsConstructed );
         assertEquals( className, group.assemblerFor( resource( "eh:Wossname" ) ).getClass().getName() );
@@ -200,7 +200,7 @@ public class TestAssemblerHelp extends AssemblerTestBase
         AssemblerGroup group = AssemblerGroup.create();
         Model m = model( "eh:Wossname ja:assembler 'com.hp.hpl.jena.assembler.test.TestAssemblerHelp$Gremlin'" );
         assertEquals( false, gremlinInvoked );
-        AssemblerHelp.loadClasses( group, m );
+        AssemblerHelp.loadAssemblerClasses( group, m );
         assertEquals( true, gremlinInvoked );
         }
     }

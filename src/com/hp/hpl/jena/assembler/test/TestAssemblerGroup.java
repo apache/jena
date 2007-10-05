@@ -1,13 +1,14 @@
 /*
  	(c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestAssemblerGroup.java,v 1.10 2007-08-02 13:33:13 chris-dollin Exp $
+ 	$Id: TestAssemblerGroup.java,v 1.11 2007-10-05 13:00:57 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.test;
 
 import com.hp.hpl.jena.assembler.*;
 import com.hp.hpl.jena.assembler.assemblers.*;
+import com.hp.hpl.jena.assembler.assemblers.AssemblerGroup.ExpandingAssemblerGroup;
 import com.hp.hpl.jena.assembler.exceptions.*;
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.mem.GraphMemBase;
@@ -107,7 +108,7 @@ public class TestAssemblerGroup extends AssemblerTestBase
         assertMemoryModel( g.open( resourceInModel( "x rdf:type ja:MemoryModel" ) ) );
         }
     
-    private Assembler mockAssembler = new AssemblerBase() 
+    private static Assembler mockAssembler = new AssemblerBase() 
         {
         public Object open( Assembler a, Resource root, Mode mode )
             { return null; }
@@ -127,6 +128,24 @@ public class TestAssemblerGroup extends AssemblerTestBase
         g.open( root );    
         assertTrue( fullModel[0].contains( typeA, RDFS.subClassOf, JA.Object ) );
         assertTrue( fullModel[0].contains( typeB, RDFS.subClassOf, JA.Object ) );
+        }
+    
+    public static class ImplementsSPOO 
+        {
+        public static void whenRequiredByAssembler( AssemblerGroup g )
+            {
+            g.implementWith( resource( "SPOO" ), mockAssembler );
+            }
+        }
+    
+    public void testClassesLoadedBeforeAddingTypes()
+        {
+        String className = ImplementsSPOO.class.getName();
+        Resource root = resourceInModel( "_root rdf:type ja:MemoryModel; _x ja:loadClass '" + className + "'" );
+        ExpandingAssemblerGroup g = new AssemblerGroup.ExpandingAssemblerGroup();
+        g.implementWith( resource( "ja:MemoryModel" ), mockAssembler );
+        g.open( root );
+        assertEquals( resourceSet( "SPOO ja:MemoryModel" ), g.implementsTypes() );
         }
     
     protected void assertMemoryModel( Object object )

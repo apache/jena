@@ -1,7 +1,7 @@
 /*
  (c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  All rights reserved - see end of file.
- $Id: AssemblerHelp.java,v 1.18 2007-08-02 13:33:09 chris-dollin Exp $
+ $Id: AssemblerHelp.java,v 1.19 2007-10-05 13:00:59 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.assembler;
@@ -26,6 +26,11 @@ import com.hp.hpl.jena.vocabulary.*;
 */
 public class AssemblerHelp
     {
+    /**
+        A useful constant for <code>listStatements(S, P, O)</code>. 
+    */
+    protected static Property ANY = null;
+    
     /**
         Answer a Resource .equals() to <code>root</code>, but in the expanded
         model.
@@ -64,18 +69,24 @@ public class AssemblerHelp
         Load all the classes which are objects of any (t, ja:loadClass, S) 
         statements in <code>m</code>. The order in which the classes are 
         loaded is not specified, and loading stops immediately if any class 
-        cannot be loaded
+        cannot be loaded. 
     <p>    
         Contrast with <code>loadClasses(AssemblerGroup,Model)</code>, 
         which loads classes and assumes that those classes are assemblers to 
         be added to the group.
      */
-    public static void loadClasses( Model m )
+    public static void loadArbitraryClasses( AssemblerGroup g, Model m )
         {
-        Property ANY = null;
         StmtIterator it = m.listStatements( null, JA.loadClass, ANY );
-        while (it.hasNext()) loadClass( it.nextStatement() );
+        while (it.hasNext()) loadArbitraryClass( g, it.nextStatement() );        
         }
+    
+    /**
+        @deprecated. Use <code>loadAssemblerClasses</code> instead
+            (since it's explicit in what kinds of classes it loads).
+    */
+    public static void loadClasses( AssemblerGroup group, Model m )
+        { loadAssemblerClasses( group, m ); }
     
     /**
          Load all the classes which are objects of any (t, ja:assembler, S) statements 
@@ -84,35 +95,66 @@ public class AssemblerHelp
          by <code>S</code>. The order in which the classes are loaded is not
          specified, and loading stops immediately if any class cannot be loaded.
     */
-    public static void loadClasses( AssemblerGroup group, Model m )
+    public static void loadAssemblerClasses( AssemblerGroup group, Model m )
         {
-        Property ANY = null;
-        StmtIterator it = m.listStatements( null, JA.assembler, ANY );
-        while (it.hasNext()) loadClass( group, it.nextStatement() );
-        }
-
-    private static void loadClass( Statement statement )
-        {
-        try { Class.forName( getString( statement ) ); }
-        catch (Exception e) { throw new JenaException( e ); }        
+        StmtIterator it = m.listStatements( ANY, JA.assembler, ANY );
+        while (it.hasNext()) loadAssemblerClass( group, it.nextStatement() );
         }
     
-    private static void loadClass( AssemblerGroup group, Statement statement )
+    /**
+        Load the class named by the object of <code>s</code>, run its
+        <code>whenRequiredByAssembler</code> method if any, and
+        register an <code>implementWith</code> for the subject of
+        <code>s</code> and an instance of the class.
+    */
+    private static void loadAssemblerClass( AssemblerGroup group, Statement s )
+        {
+        Class c = loadArbitraryClass( group, s );
+        runAnyAssemblerConstructor( group, s, c );
+        }
+    
+    /**
+        Load the class named by the object of <code>s</code> if necessary.
+        If that class has a static method <code>whenRequiredByAssembler</code>
+        with an <code>AssemblerGroup</code> argument, call that method
+        passing it <code>ag</code>.
+    */
+    private static Class loadArbitraryClass( AssemblerGroup ag, Statement s )
+        {
+        Class loaded = loadClassNamedBy( s ); 
+        try 
+            { 
+            Method m = loaded.getDeclaredMethod( "whenRequiredByAssembler", new Class[] {AssemblerGroup.class} );
+            m.invoke( null, new Object[] {ag} );
+            }
+        catch (NoSuchMethodException e)
+            { /* that's OK */ }
+        catch (Exception e) 
+            { throw new JenaException( e ); }       
+        return loaded;
+        }
+    
+    private static Class loadClassNamedBy( Statement s )
+        {
+        try { return Class.forName( getString( s ) ); }
+        catch (Exception e) { throw new JenaException( e ); }
+        }
+
+    private static void runAnyAssemblerConstructor( AssemblerGroup group,  Statement s, Class c )
         {
         try
             {
-            Resource type = statement.getSubject();
-            Class c = Class.forName( getString( statement ) );
+            Resource type = s.getSubject();
             Constructor con = getResourcedConstructor( c );
             if (con == null)
                 establish( group, type, c.newInstance() );
             else
-                establish( group, type, con.newInstance( new Object[] { statement.getSubject() } ) );
+                establish( group, type, con.newInstance( new Object[] { s.getSubject() } ) );
             }
         catch (Exception e)
             { throw new JenaException( e ); }
         }
-
+    
     private static void establish( AssemblerGroup group, Resource type, Object x )
         {
         if (x instanceof Assembler)

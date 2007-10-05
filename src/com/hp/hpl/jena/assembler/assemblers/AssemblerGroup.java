@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: AssemblerGroup.java,v 1.12 2007-08-02 13:32:56 chris-dollin Exp $
+ 	$Id: AssemblerGroup.java,v 1.13 2007-10-05 13:00:29 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.assemblers;
@@ -65,15 +65,15 @@ public abstract class AssemblerGroup extends AssemblerBase implements Assembler
             {
             List doing = new ArrayList();
             Resource root = AssemblerHelp.withFullModel( suppliedRoot );
-            root.getModel().add( implementTypes );
             loadClasses( root.getModel() );
+            root.getModel().add( implementTypes );
             return internal.open( a, root, mode );
             }
 
         public void loadClasses( Model model )
             {
-            AssemblerHelp.loadClasses( model );
-            AssemblerHelp.loadClasses( this, model ); 
+            AssemblerHelp.loadArbitraryClasses( this, model );
+            AssemblerHelp.loadAssemblerClasses( this, model ); 
             }
 
         public AssemblerGroup implementWith( Resource type, Assembler a )
@@ -85,7 +85,11 @@ public abstract class AssemblerGroup extends AssemblerBase implements Assembler
 
         public Assembler assemblerFor( Resource type )
             { return internal.assemblerFor( type ); }
-        }
+        
+        public Set implementsTypes()
+            { 
+            return implementTypes.listStatements().mapWith( Statement.Util.getSubject ).toSet(); }
+            }
     
     static class PlainAssemblerGroup extends AssemblerGroup
         {
