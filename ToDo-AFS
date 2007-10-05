@@ -10,9 +10,7 @@ SDB ToDo list (and general notes)
 
 == Development
 
-+ LayoutType, DatabaseType have a common concept
-  And it should be regexp matching.
-
+(Post v1.0)
 + Generalise target table beyond triples/quads (e.g. the metatable)
   URI => handler(table name, special code)
  
@@ -31,7 +29,8 @@ SDB ToDo list (and general notes)
   --set in manifest?
 
 + SqlProject/SqlRename are now highly related - merge - or simplifiy.
-  [Partial - need to consider a "pure" SqlProject]  
+  [Partial - need to consider a "pure" SqlProject]
+  [Need a null-introduction operator]  
 
 + What about bulk add/delete of whole graphs? 
   esp removal of a complete named graph.
