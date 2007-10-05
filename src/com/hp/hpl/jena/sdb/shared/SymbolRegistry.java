@@ -1,35 +1,56 @@
 /*
- * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.test;
+package com.hp.hpl.jena.sdb.shared;
 
-import com.hp.hpl.jena.sdb.test.iterator.TestAlg;
-import com.hp.hpl.jena.sdb.test.shared.TestRegistry;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import com.hp.hpl.jena.sparql.util.Symbol;
 
-// Collect the misc tests together.
-
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-    TestAssembler.class,
-    TestExprMatch.class,
-    TestRegex.class,
-    TestPrefixMappingSDB.class,
-    TestAlg.class,
-    TestRegistry.class
-} )
-
-public class SDBTestMisc
+public class SymbolRegistry<T extends Symbol>
 {
+    protected Set<T> registeredSymbols = new HashSet<T>() ;
+    protected Map<String, T> registeredNames = new HashMap<String, T>() ;
+    
+    public void register(T symbol)
+    {
+        register(null, symbol) ;
+    }
+    
+    public void register(String name, T symbol)
+    {
+        if ( name == null )
+            name = symbol.getSymbol() ;
+        registeredSymbols.add(symbol) ;
+        registeredNames.put(name, symbol) ;
+    }
+    
+    public T lookup(String symName)
+    {
+        for ( String name: registeredNames.keySet() )
+        {
+            if ( symName.equalsIgnoreCase(name) )
+                return registeredNames.get(name) ;
+        }
+        return null ;
+    }
+    
+    public List<String> allNames()
+    { return new ArrayList<String>(registeredNames.keySet()) ; }
+
+    public List<T> allSymbols() { return new ArrayList<T>(registeredSymbols) ; }
 }
 
 /*
- * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

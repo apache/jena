@@ -6,28 +6,23 @@
 
 package com.hp.hpl.jena.sdb.store;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.List;
 
 import org.apache.commons.logging.LogFactory;
 
+import com.hp.hpl.jena.sdb.SDBException;
+import com.hp.hpl.jena.sdb.shared.SymbolRegistry;
 import com.hp.hpl.jena.sparql.util.Named;
 import com.hp.hpl.jena.sparql.util.Symbol;
 
-import com.hp.hpl.jena.sdb.SDBException;
-
 public class LayoutType extends Symbol implements Named
 {
-    static Set<LayoutType> registeredTypes = new HashSet<LayoutType>() ;
-    static Map<String, LayoutType> registeredNames = new HashMap<String, LayoutType>() ;
-    
     public static final LayoutType LayoutTripleNodesHash  = new LayoutType("layout2/hash") ;
     public static final LayoutType LayoutTripleNodesIndex = new LayoutType("layout2/index") ;
     public static final LayoutType LayoutSimple           = new LayoutType("layout1") ;
     public static final LayoutType LayoutRDB              = new LayoutType("layoutRDB") ;
     
+    static SymbolRegistry<LayoutType> registry = new SymbolRegistry<LayoutType>() ;
     static { init() ; }
     
     public static LayoutType fetch(String layoutTypeName)
@@ -35,11 +30,9 @@ public class LayoutType extends Symbol implements Named
         if ( layoutTypeName == null )
             throw new IllegalArgumentException("LayoutType.convert: null not allowed") ;
         
-        for ( String name: registeredNames.keySet() )
-        {
-            if ( layoutTypeName.equalsIgnoreCase(name) )
-                return registeredNames.get(name) ;
-        }
+        LayoutType t = registry.lookup(layoutTypeName) ;
+        if ( t != null )
+            return t ;
 
         LogFactory.getLog(LayoutType.class).warn("Can't turn '"+layoutTypeName+"' into a layout type") ;
         throw new SDBException("Can't turn '"+layoutTypeName+"' into a layout type") ; 
@@ -55,6 +48,9 @@ public class LayoutType extends Symbol implements Named
         register(LayoutRDB) ;
     }
     
+    static public List<String> allNames() { return registry.allNames() ; }
+    static public List<LayoutType> allTypes() { return registry.allSymbols() ; }
+    
     static public void register(String name)
     {
         if ( name == null )
@@ -66,15 +62,14 @@ public class LayoutType extends Symbol implements Named
     {
         if ( layoutType == null )
             throw new IllegalArgumentException("LayoutType.register(LayoutType): null not allowed") ;
-        registeredTypes.add(layoutType) ; 
-        registerName(layoutType.getName(), layoutType) ;
+        registry.register(layoutType) ; 
     }
 
     static public void registerName(String layoutName, LayoutType layoutType)
     {
         if ( layoutType == null )
             throw new IllegalArgumentException("LayoutType.registerName: null not allowed") ;
-        registeredNames.put(layoutName, layoutType) ; 
+        registry.register(layoutName, layoutType) ; 
     }
 
     private LayoutType(String layoutName)

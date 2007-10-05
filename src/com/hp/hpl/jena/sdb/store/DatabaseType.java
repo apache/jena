@@ -6,28 +6,18 @@
 
 package com.hp.hpl.jena.sdb.store;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.List;
 
 import org.apache.commons.logging.LogFactory;
 
+import com.hp.hpl.jena.sdb.SDBException;
+import com.hp.hpl.jena.sdb.shared.SymbolRegistry;
 import com.hp.hpl.jena.sparql.util.Named;
 import com.hp.hpl.jena.sparql.util.Symbol;
-
-import com.hp.hpl.jena.sdb.SDBException;
 
 // Common super class with LayoutType
 public class DatabaseType extends Symbol implements Named
 {
-    // URIs.
-    // Share with LayoutType.
-    // private static final String BASE = "http://jena.hpl.hp.com/2006/04/store/" ;
-    
-    static Set<DatabaseType> registeredTypes = new HashSet<DatabaseType>() ;
-    static Map<String, DatabaseType> registeredNames = new HashMap<String, DatabaseType>() ;
-
     public static final DatabaseType Derby           = new DatabaseType("derby") ;
     public static final DatabaseType HSQLDB          = new DatabaseType("HSQLDB") ;
     public static final DatabaseType MySQL           = new DatabaseType("MySQL") ;
@@ -36,6 +26,7 @@ public class DatabaseType extends Symbol implements Named
     public static final DatabaseType Oracle          = new DatabaseType("Oracle") ;
     public static final DatabaseType DB2             = new DatabaseType("DB2") ;
     
+    static SymbolRegistry<DatabaseType> registry = new SymbolRegistry<DatabaseType>() ;
     static { init() ; }
     
     public static DatabaseType fetch(String databaseTypeName)
@@ -43,11 +34,9 @@ public class DatabaseType extends Symbol implements Named
         if ( databaseTypeName == null )
             throw new IllegalArgumentException("DatabaseType.convert: null not allowed") ;
 
-        for ( String name: registeredNames.keySet() )
-        {
-            if ( databaseTypeName.equalsIgnoreCase(name) )
-                return registeredNames.get(name) ;
-        }
+        DatabaseType t = registry.lookup(databaseTypeName) ;
+        if ( t != null )
+            return t ;
         
         // Hack?
         if ( databaseTypeName.startsWith("oracle:") )
@@ -56,32 +45,6 @@ public class DatabaseType extends Symbol implements Named
         LogFactory.getLog(DatabaseType.class).warn("Can't turn '"+databaseTypeName+"' into a database type") ;
         throw new SDBException("Can't turn '"+databaseTypeName+"' into a database type") ; 
     }
-    
-//    private static DatabaseType commonForm(String databaseTypeName)
-//    {
-//        // Map common names.
-//        if ( databaseTypeName.equalsIgnoreCase("MySQL") )           return MySQL ;
-//        if ( databaseTypeName.equalsIgnoreCase("MySQL5") )          return MySQL ;
-//
-//        if ( databaseTypeName.equalsIgnoreCase("PostgreSQL") )      return PostgreSQL ;
-//        if ( databaseTypeName.equalsIgnoreCase("oracle") )          return Oracle ;
-//        if ( databaseTypeName.startsWith("oracle:"))                return Oracle ;
-//        
-//        if ( databaseTypeName.equalsIgnoreCase("DB2"))              return DB2 ;
-//        
-//        if ( databaseTypeName.equalsIgnoreCase("SQLServer") )       return SQLServer ;
-//        if ( databaseTypeName.equalsIgnoreCase("MSSQLServer") )     return SQLServer ;
-//        if ( databaseTypeName.equalsIgnoreCase("MSSQLServerExpress") )   return SQLServer ;
-//
-//        if ( databaseTypeName.equalsIgnoreCase("hsqldb") )          return HSQLDB ;
-//        if ( databaseTypeName.equalsIgnoreCase("hsqldb:file") )     return HSQLDB ;
-//        if ( databaseTypeName.equalsIgnoreCase("hsqldb:mem") )      return HSQLDB ;
-//        if ( databaseTypeName.equalsIgnoreCase("hsql") )            return HSQLDB ;
-//
-//        if ( databaseTypeName.equalsIgnoreCase("Derby") )           return Derby ;
-//        if ( databaseTypeName.equalsIgnoreCase("JavaDB") )          return Derby ;
-//        return null ;
-//    }
     
     static void init()
     {
@@ -110,6 +73,9 @@ public class DatabaseType extends Symbol implements Named
         register(DB2) ;
     }
     
+    static public List<String> allNames() { return registry.allNames() ; }
+    static public List<DatabaseType> allTypes() { return registry.allSymbols() ; }
+    
     static public void register(String name)
     {
         if ( name == null )
@@ -121,15 +87,14 @@ public class DatabaseType extends Symbol implements Named
     {
         if ( dbType == null )
             throw new IllegalArgumentException("DatabaseType.register(DatabaseType): null not allowed") ;
-        registeredTypes.add(dbType) ; 
-        registerName(dbType.getName(), dbType) ;
+        registry.register(dbType) ;
     }
 
     static public void registerName(String databaseName, DatabaseType dbType)
     {
         if ( dbType == null )
             throw new IllegalArgumentException("DatabaseType.registerName: null not allowed") ;
-        registeredNames.put(databaseName, dbType) ; 
+        registry.register(databaseName, dbType) ; 
     }
     
     private DatabaseType(String layoutName)
