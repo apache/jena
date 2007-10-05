@@ -25,6 +25,8 @@ public class AssemblerVocab
     public static final Resource SDBConnectionAssemblerType     = Vocab.type(NS, "SDBConnection") ;
     public static final Resource StoreAssemblerType             = Vocab.type(NS, "Store") ;
     public static final Resource DatasetAssemblerType           = Vocab.type(NS, "DatasetStore") ;
+    public static final Resource ModelType                      = Vocab.type(NS, "Model") ;
+    public static final Resource GraphType                      = Vocab.type(NS, "Graph") ;
     
     // ---- Commands
     public static final Property pSteps         = Vocab.property(NS, "steps") ;
@@ -44,6 +46,7 @@ public class AssemblerVocab
     public static final Property pDataset            = Vocab.property(NS, "dataset") ;
     public static final Property pGraphData          = Vocab.property(NS, "graph") ;
     public static final Property pNamedGraphData     = Vocab.property(NS, "namedGraph") ;
+    public static final Property pGraphURI           = Vocab.property(NS, "graphName") ;
     
     public static final Property pOutputFormat       = Vocab.property(NS, "outputFormat") ;
     //public static final Property pCustomizerClass    = Vocab.property(NS, "customizer") ;
@@ -98,6 +101,8 @@ public class AssemblerVocab
         assemblerClass(g, SDBConnectionAssemblerType,    new SDBConnectionDescAssembler()) ;
         assemblerClass(g, StoreAssemblerType,            new StoreDescAssembler()) ;
         assemblerClass(g, DatasetAssemblerType,          new DatasetStoreAssembler()) ;
+        assemblerClass(g, ModelType,                     new SDBModelAssembler()) ;
+        assemblerClass(g, GraphType,                     new SDBModelAssembler()) ;
     }
     
     private static void assemblerClass(AssemblerGroup g, Resource r, Assembler a)

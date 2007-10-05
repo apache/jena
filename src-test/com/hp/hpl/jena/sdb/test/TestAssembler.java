@@ -13,13 +13,20 @@ import java.sql.Connection;
 
 import org.junit.Test;
 
+import com.hp.hpl.jena.assembler.Assembler;
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.Resource;
+import com.hp.hpl.jena.util.FileManager;
+
 import com.hp.hpl.jena.sparql.core.DatasetGraph;
+import com.hp.hpl.jena.sparql.core.assembler.AssemblerUtils;
 
 import com.hp.hpl.jena.query.Dataset;
 import com.hp.hpl.jena.query.DatasetFactory;
 
 import com.hp.hpl.jena.sdb.SDBFactory;
 import com.hp.hpl.jena.sdb.Store;
+import com.hp.hpl.jena.sdb.assembler.AssemblerVocab;
 import com.hp.hpl.jena.sdb.store.DatasetStoreGraph;
 
 
@@ -46,6 +53,22 @@ public class TestAssembler
     {
         Store store = SDBFactory.connectStore(dir+"store.ttl") ;
         assertNotNull(store) ;
+    }
+    
+    @Test public void model_1()
+    {
+        Model assem = FileManager.get().loadModel(dir+"graph-dft.ttl") ;
+        Resource root = AssemblerUtils.findRootByType(assem, AssemblerVocab.ModelType) ;
+        Model model = (Model)Assembler.general.openModel(root) ;
+        assertNotNull(model) ;
+    }
+
+    @Test public void model_2()
+    {
+        Model assem = FileManager.get().loadModel(dir+"graph-named.ttl") ;
+        Resource root = AssemblerUtils.findRootByType(assem, AssemblerVocab.ModelType) ;
+        Model model = (Model)Assembler.general.openModel(root) ;
+        assertNotNull(model) ;
     }
 }
 

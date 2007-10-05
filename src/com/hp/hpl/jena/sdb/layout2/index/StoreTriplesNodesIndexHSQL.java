@@ -51,12 +51,12 @@ public class StoreTriplesNodesIndexHSQL extends StoreBaseHSQL
 
         long hash = NodeLayout2.hash(lex, lang, datatype, typeId);
         try {
-        	ResultSet res = getConnection().exec("SELECT id FROM Nodes WHERE hash = " + hash);
+        	ResultSet res = getConnection().exec("SELECT id FROM Nodes WHERE hash = " + hash).get();
         	int id = -1;
         	if (res.next()) id = res.getInt(1);
         	else {res.close(); return 0;} // no graph, size == 0
         	res.close();
-        	res = getConnection().exec("SELECT COUNT(*) FROM " + getQuadTableDesc().getTableName() + " WHERE g = " + id);
+        	res = getConnection().exec("SELECT COUNT(*) FROM " + getQuadTableDesc().getTableName() + " WHERE g = " + id).get();
         	res.next();
         	long result = res.getLong(1);
         	res.close();

@@ -48,7 +48,7 @@ public class StoreBaseHash extends StoreBase
 
         long hash = NodeLayout2.hash(lex, lang, datatype, typeId);
         try {
-        	ResultSet res = getConnection().exec("SELECT COUNT(*) FROM " + getQuadTableDesc().getTableName() + " WHERE g = " + hash);
+        	ResultSet res = getConnection().exec("SELECT COUNT(*) FROM " + getQuadTableDesc().getTableName() + " WHERE g = " + hash).get() ;
         	res.next();
         	long result = res.getLong(1);
         	res.close();

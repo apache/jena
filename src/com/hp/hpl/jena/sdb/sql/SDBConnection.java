@@ -8,7 +8,6 @@ package com.hp.hpl.jena.sdb.sql;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
@@ -19,11 +18,11 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.graph.TransactionHandler;
+import com.hp.hpl.jena.shared.Command;
 
 import com.hp.hpl.jena.sdb.core.Generator;
 import com.hp.hpl.jena.sdb.core.Gensym;
 import com.hp.hpl.jena.sdb.graph.TransactionHandlerSDB;
-import com.hp.hpl.jena.shared.Command;
 
 /*
  * An SDBConnection is the abstraction of the link between client
@@ -143,7 +142,7 @@ public class SDBConnection
     }
 
     /** Execute a statement, return the result set if there was one, else null */
-    public ResultSet exec(String sqlString) throws SQLException
+    public ResultSetJDBC exec(String sqlString) throws SQLException
     {
         if ( loggingSQLStatements() )
             writeLog("exec", sqlString) ;
@@ -154,7 +153,7 @@ public class SDBConnection
             Statement s = conn.createStatement() ;
             boolean r = s.execute(sqlString) ;
             if ( r )
-                return s.getResultSet() ; 
+                return new ResultSetJDBC(s, s.getResultSet()) ; 
             s.close() ;
             return null ;
         }
@@ -171,7 +170,7 @@ public class SDBConnection
     }
 
     /** Execute a statement, return the result set if there was one, else null.  Runtime exception. */
-    public ResultSet execSilent(String sqlString)
+    public ResultSetJDBC execSilent(String sqlString)
     {
         if ( loggingSQLStatements() )
             writeLog("execSilent", sqlString) ;
@@ -182,7 +181,7 @@ public class SDBConnection
             Statement s = conn.createStatement() ;
             boolean r = s.execute(sqlString) ;
             if ( r )
-                return s.getResultSet() ; 
+                return new ResultSetJDBC(s, s.getResultSet()) ; 
             s.close() ;
             return null ;
         } catch (SQLException ex)

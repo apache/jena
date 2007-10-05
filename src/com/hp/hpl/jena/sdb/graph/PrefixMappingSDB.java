@@ -117,7 +117,10 @@ public class PrefixMappingSDB extends PrefixMappingImpl
     {
         try {
             String sqlStmt = "SELECT prefix, uri FROM "+prefixTableName ;
-            ResultSetJDBC rsx = connection.execQuery(sqlStmt) ;
+            
+            ResultSetJDBC rsx = connection.execSilent(sqlStmt) ;
+            if ( rsx == null || rsx.get() == null )
+                return ;
             ResultSet rs = rsx.get() ;
             while(rs.next())
             {
