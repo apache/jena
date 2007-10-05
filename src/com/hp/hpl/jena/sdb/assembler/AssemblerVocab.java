@@ -7,6 +7,7 @@
 package com.hp.hpl.jena.sdb.assembler;
 
 import com.hp.hpl.jena.assembler.Assembler;
+import com.hp.hpl.jena.assembler.assemblers.AssemblerGroup;
 import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.sdb.SDB;
@@ -79,24 +80,31 @@ public class AssemblerVocab
     
     private static boolean initialized = false ; 
     
-    static { init() ; } 
+    static { init() ; }
     
     static public void init()
     {
         if ( initialized )
             return ;
-        // Wire in the extension assemblers (extensions relative to the Jena assembler framework)
-        //assemblerClass(CommandAssemblerType,          new CommandAssembler()) ;
-        assemblerClass(QueryAssemblerType,            new QueryAssembler()) ;
-        assemblerClass(SDBConnectionAssemblerType,    new SDBConnectionDescAssembler()) ;
-        assemblerClass(StoreAssemblerType,            new StoreDescAssembler()) ;
-        assemblerClass(DatasetAssemblerType,          new DatasetStoreAssembler()) ;
+        register(Assembler.general) ;
         initialized = true ;
     }
     
-    private static void assemblerClass(Resource r, Assembler a)
+    static public void register(AssemblerGroup g)
     {
-        Assembler.general.implementWith(r, a) ;
+        // Wire in the extension assemblers (extensions relative to the Jena assembler framework)
+        //assemblerClass(CommandAssemblerType,          new CommandAssembler()) ;
+        assemblerClass(g, QueryAssemblerType,            new QueryAssembler()) ;
+        assemblerClass(g, SDBConnectionAssemblerType,    new SDBConnectionDescAssembler()) ;
+        assemblerClass(g, StoreAssemblerType,            new StoreDescAssembler()) ;
+        assemblerClass(g, DatasetAssemblerType,          new DatasetStoreAssembler()) ;
+    }
+    
+    private static void assemblerClass(AssemblerGroup g, Resource r, Assembler a)
+    {
+        if ( g == null )
+            g = Assembler.general ;
+        g.implementWith(r, a) ;
         //**assemblerAssertions.add(r, RDFS.subClassOf, JA.Object) ;
     }
 }

@@ -6,6 +6,7 @@
 
 package com.hp.hpl.jena.sdb;
 
+import com.hp.hpl.jena.assembler.assemblers.AssemblerGroup;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.query.ARQ;
 import com.hp.hpl.jena.shared.PrefixMapping;
@@ -47,6 +48,12 @@ public class SDB
     static { initWorker() ; }
     public static void init() { }
     
+    /** Used by Jena assemblers for registration */ 
+    public static void whenRequiredByAssembler( AssemblerGroup g )
+    {
+        AssemblerVocab.register(g) ;
+    }
+    
     private static boolean initialized = false ;
     private static synchronized void initWorker()
     {
@@ -65,9 +72,6 @@ public class SDB
         // Default is 1000 4Kpages.
         DerbyUtils.setDerbyPageCacheSize(10000) ;
         
-        // Also done if the assember includes the right ja:assembler property
-        AssemblerVocab.init() ;
-        
         // Wire in the SDB query engne
         QueryEngineSDB.register() ;
         
@@ -76,7 +80,6 @@ public class SDB
         //SDB.getContext().setIfUndef(jdbcFetchSize,         ???) ;
         SDB.getContext().setIfUndef(annotateGeneratedSQL,  true) ;
         //SDB.getContext().setIfUndef(unionDefaultGraph,     false) ;
-        
     }
     
     /** RDF namespace prefix */
