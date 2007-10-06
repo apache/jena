@@ -22,10 +22,20 @@ public class DatasetStore extends DataSourceImpl
     
     public static Dataset create(Store store)
     { 
-        DatasetGraph dsg = new DatasetStoreGraph(store) ;
+        DatasetGraph dsg = createDatasetGraph(store) ;
         return new DatasetImpl(dsg) ;
     }
     
+    public static DatasetGraph createDatasetGraph(Store store)
+    { 
+        return createDatasetStoreGraph(store) ;
+    }
+    
+    public static DatasetStoreGraph createDatasetStoreGraph(Store store)
+    { 
+        return new DatasetStoreGraph(store) ;
+    }
+
     private DatasetStore() {}
 }
 

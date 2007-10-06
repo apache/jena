@@ -14,7 +14,6 @@ import com.hp.hpl.jena.rdf.model.Resource;
 
 import com.hp.hpl.jena.sparql.util.GraphUtils;
 
-import com.hp.hpl.jena.sdb.SDBException;
 import com.hp.hpl.jena.sdb.SDBFactory;
 import com.hp.hpl.jena.sdb.StoreDesc;
 
@@ -26,18 +25,31 @@ public class SDBModelAssembler extends AssemblerBase implements Assembler
     public Model open(Assembler a, Resource root, Mode mode)
     {
         // Make a model.
-        StoreDesc desc = storeAssem.open(a, root, mode) ;
-        Resource x = GraphUtils.getResourceValue(root, AssemblerVocab.pGraphURI) ;
+        // [] rdf:type sdb:Graph ;
+        //    sdb:dataset <dataset> ;
+        //    sdb:graphName <someURI> .
         
+        // A model (graph) is a (dataset, name) pair where the name can be absent
+        // meaning the default graph of the dataset.
+        
+        Resource dataset = GraphUtils.getResourceValue(root, AssemblerVocab.pDataset) ;
+        if ( dataset == null )
+            throw new MissingException(root, "No dataset for model or graph") ;
+        
+        // Attempt to find a graph name - may be absent.
+        Resource x = GraphUtils.getResourceValue(root, AssemblerVocab.pNamedGraph) ;
+        if ( x != null && ! x.isURIResource() )
+            throw new BadDescriptionException(root, "Graph name not a URI: "+x) ;
+
+        // dataset == Store. The assembler does not check the type.
+        // Recurse
+        StoreDesc desc = (StoreDesc)storeAssem.open(a, dataset, mode) ;
+
         // No name - default model.
         if ( x == null )
             return SDBFactory.connectDefaultModel(desc) ;
-        
-        if ( ! x.isURIResource() )
-            throw new SDBException("Not a URI: "+x) ;
-        
-        String graphName = x.getURI() ;
-        return SDBFactory.connectNamedModel(desc, graphName) ;
+        // Named graph
+        return SDBFactory.connectNamedModel(desc, x.getURI()) ;
     }
 }
 

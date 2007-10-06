@@ -45,8 +45,7 @@ public class AssemblerVocab
 
     public static final Property pDataset            = Vocab.property(NS, "dataset") ;
     public static final Property pGraphData          = Vocab.property(NS, "graph") ;
-    public static final Property pNamedGraphData     = Vocab.property(NS, "namedGraph") ;
-    public static final Property pGraphURI           = Vocab.property(NS, "graphName") ;
+    public static final Property pNamedGraph         = Vocab.property(NS, "namedGraph") ;
     
     public static final Property pOutputFormat       = Vocab.property(NS, "outputFormat") ;
     //public static final Property pCustomizerClass    = Vocab.property(NS, "customizer") ;

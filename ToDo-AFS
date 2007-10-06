@@ -3,6 +3,7 @@ SDB ToDo list (and general notes)
 
 == Wiki
 + Document assembler for dataset on wiki
+  And model assembler
 + Break out the merge query section into a separate wiki page.
 
 == Tests
