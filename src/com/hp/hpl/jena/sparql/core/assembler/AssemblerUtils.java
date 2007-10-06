@@ -8,6 +8,7 @@ package com.hp.hpl.jena.sparql.core.assembler;
 
 
 import com.hp.hpl.jena.assembler.Assembler;
+import com.hp.hpl.jena.assembler.assemblers.AssemblerGroup;
 import com.hp.hpl.jena.rdf.model.*;
 
 import com.hp.hpl.jena.sparql.util.QueryExecUtils;
@@ -27,13 +28,19 @@ private static boolean initialized = false ;
         if ( initialized )
             return ;
         // Wire in the extension assemblers (extensions relative to the Jena assembler framework)
-        assemblerClass(DataSourceAssembler.getType(),               new DataSourceAssembler()) ;
+        register(Assembler.general) ;
         initialized = true ;
     }
     
-    private static void assemblerClass(Resource r, Assembler a)
+    static public void register(AssemblerGroup g)
     {
-        Assembler.general.implementWith(r, a) ;
+        // Wire in the extension assemblers (extensions relative to the Jena assembler framework)
+        g.implementWith(DataSourceAssembler.getType(), new DataSourceAssembler()) ;
+    }
+    
+    private static void assemblerClass(AssemblerGroup g, Resource r, Assembler a)
+    {
+        g.implementWith(r, a) ;
         //**assemblerAssertions.add(r, RDFS.subClassOf, JA.Object) ;
     }
     
