@@ -1,0 +1,8 @@
+PREFIX : <http://example/>
+
+SELECT *
+{ ?x :p ?v .
+  ?x :q ?v .
+}
+OFFSET 3
+LIMIT 1

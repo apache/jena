@@ -22,7 +22,7 @@ SDB ToDo list (and general notes)
     Replace graph
   
 + StoreLoader => StoreLoaderPlus.
-+ LoaderTuplesNodes uses reflection on constructors.
++ LoaderTuplesNodes uses reflection on constructors.  OneTuple loader broken by this.
    Each loader has many TupleLoader instances - per table to be loaded.
    ==> TupleLoaderFactory 
  
