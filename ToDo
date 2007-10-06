@@ -12,13 +12,9 @@ See ToDoSSE
 ----
 + Better syntax as well as SQL-like: GROUP BY ... WITH ... ??
 
-+ Tidy up : arq.sse_* commands need finishing
-  ModQueryIn needs to work on algebra expressions as well?
++ FILTER(?x = "abc")
 
 + Results set to note when finished and warn on attempted continued use.
-
-+ OpOrder to take an ExprList
-+ ExprList writing an LJ
 
 + Expression printing : expr.toString should not add outer brackets
  
@@ -35,6 +31,9 @@ See ToDoSSE
 + Initial binding for UpdateRequest
 
 == Core
+
++ OpOrder to take an ExprList 
+  Query has a list of sort conditions so need turn SortCondition into an expression
 
 + FmtUtils and WriterTriple/Node/...
   NodeToLabel maps.

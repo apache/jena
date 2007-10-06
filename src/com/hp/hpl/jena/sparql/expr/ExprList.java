@@ -24,7 +24,6 @@ public class ExprList
         expressions.add(expr) ;
     }
     
-    
     public boolean isSatisfied(Binding binding, ExecutionContext execCxt)
     {
         // Dream of generics
