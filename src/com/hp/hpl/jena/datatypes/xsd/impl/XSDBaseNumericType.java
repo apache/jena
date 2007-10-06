@@ -5,9 +5,12 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: XSDBaseNumericType.java,v 1.18 2007-09-30 17:39:11 der Exp $
+ * $Id: XSDBaseNumericType.java,v 1.19 2007-10-06 15:28:19 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.datatypes.xsd.impl;
+
+import java.math.BigDecimal;
+import java.math.BigInteger;
 
 import com.hp.hpl.jena.datatypes.*;
 import com.hp.hpl.jena.datatypes.xsd.*;
@@ -21,7 +24,7 @@ import com.hp.hpl.jena.shared.impl.JenaParameters;
  * that float and double are not included in this set.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.18 $ on $Date: 2007-09-30 17:39:11 $
+ * @version $Revision: 1.19 $ on $Date: 2007-10-06 15:28:19 $
  */
 public class XSDBaseNumericType extends XSDDatatype {
 
@@ -89,7 +92,35 @@ public class XSDBaseNumericType extends XSDDatatype {
      * subclasses to ensure that indexing of typed literals works. 
      */
     public Object cannonicalise( Object value ) {
+        
+        if (value instanceof BigInteger) {
+            return cannonicalizeInteger( (BigInteger)value );
+        } else if (value instanceof BigDecimal) {
+            return cannonicalizeDecimal( (BigDecimal)value );
+        }
         return suitableInteger( ((Number)value).longValue() );
+    }
+    
+    /**
+     * Cannonicalize a big decimal
+     */
+    private Object cannonicalizeDecimal( BigDecimal value) {
+        try {
+            return cannonicalizeInteger( value.toBigIntegerExact() );
+        } catch (ArithmeticException e) {
+            return value;
+        }
+    }
+    
+    /**
+     * Cannonicalize a big integer
+     */
+    private Object cannonicalizeInteger( BigInteger value) {
+        if (value.bitLength() > 63) {
+            return value;
+        } else {
+            return suitableInteger( value.longValue() );
+        }
     }
    
     /**

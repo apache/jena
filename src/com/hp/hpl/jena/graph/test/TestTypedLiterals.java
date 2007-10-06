@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestTypedLiterals.java,v 1.63 2007-09-30 17:39:40 der Exp $
+ * $Id: TestTypedLiterals.java,v 1.64 2007-10-06 15:28:25 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.graph.test;
 
@@ -34,7 +34,7 @@ import org.apache.xerces.impl.dv.util.HexBin;
  * TypeMapper and LiteralLabel.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.63 $ on $Date: 2007-09-30 17:39:40 $
+ * @version $Revision: 1.64 $ on $Date: 2007-10-06 15:28:25 $
  */
 public class TestTypedLiterals extends TestCase {
               
@@ -399,6 +399,29 @@ public class TestTypedLiterals extends TestCase {
         Literal lDecimal = m.createTypedLiteral("5.5", XSDDatatype.XSDdecimal);
         Literal lDecimal2 = m.createTypedLiteral("5.6", XSDDatatype.XSDdecimal);
         assertDiffer("decimal inequality", lDecimal, lDecimal2);
+    }
+    
+    /**
+     * Check basic handling of big integers and decimals
+     */
+    public void testBigNums() {
+        Literal l1 = m.createTypedLiteral("12345678901234567890", XSDDatatype.XSDinteger);
+        Literal l2 = m.createTypedLiteral("12345678901234567891", XSDDatatype.XSDinteger);
+        assertDiffer("Big integer equality", l1, l2);
+        
+        BigInteger bigint1 = new BigInteger("12345678901234567890");
+        Literal lb1 = m.createTypedLiteral(bigint1, XSDDatatype.XSDinteger);
+        assertSameValueAs("big integer creation equality", l1, lb1);
+        
+        BigDecimal bigdec1 = new BigDecimal("12345678901234567890.00");
+        Literal ld1 = m.createTypedLiteral(bigdec1, XSDDatatype.XSDdecimal);
+        BigDecimal bigdec1b = new BigDecimal("12345678901234567890.0");
+        Literal ld1b = m.createTypedLiteral(bigdec1, XSDDatatype.XSDdecimal);
+        BigDecimal bigdec2 = new BigDecimal("12345678901234567890.1");
+        Literal ld2 = m.createTypedLiteral(bigdec2, XSDDatatype.XSDdecimal);
+        assertSameValueAs("big decimal equality check", ld1, ld1b);
+        assertSameValueAs("big decimal equality check", ld1, lb1);
+        assertDiffer("Decimal equality", ld1, ld2);
     }
     
     /**

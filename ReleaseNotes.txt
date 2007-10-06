@@ -7,7 +7,9 @@ Jar change:
     o lucene-core has been upgraded from lucene-core-2.0.0 to lucene-2.2.0.jar.
 
 Typed literals:
-    o Fixed bug in equality checking of instances of xsd:decimal.
+    o Fixed bug in equality checking of instances of xsd:decimal,
+      and creation of xsd:decimal or xsd:integer instances from BigDecimal
+      or BitInteger instances
     
 ==== Jena 2.5.4
 
