@@ -49,11 +49,6 @@ public class RunSDB
     static { CmdUtils.setLog4j() ; CmdUtils.setN3Params() ; }
     public static void main(String[]argv)
     {
-        setSDBConfig("testing/StoreDescSimple/db2-layout1.ttl") ;
-        sdbconfig("--create") ;
-        System.exit(0) ;
-        
-        SDB.getContext().setTrue(SDB.unionDefaultGraph) ;
         runPrint() ;
 //        SDBConnection.logSQLExceptions = true ;
 //        SDBConnection.logSQLStatements = true ;

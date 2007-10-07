@@ -21,8 +21,6 @@ import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 import com.hp.hpl.jena.sdb.store.SQLBridge;
 import com.hp.hpl.jena.sdb.store.SQLBridgeFactory;
 
-
-
 public abstract class QueryCompilerMain implements QueryCompiler 
 {
     protected SDBRequest request ;

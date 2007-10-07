@@ -34,7 +34,7 @@ public class SDBRequest extends StoreHolder
     // Per request unique variables.
     private VarAlloc varAlloc = new VarAlloc(AliasesSparql.VarBase) ;
     
-    // See TransformSDB
+    // See TransformSDB for details of these two.
     public boolean LeftJoinTranslation = true ;
     public boolean LimitOffsetTranslation = false ;
     

@@ -17,6 +17,13 @@ import java.util.Set;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.hp.hpl.jena.sparql.algebra.Op;
+import com.hp.hpl.jena.sparql.algebra.TransformCopy;
+import com.hp.hpl.jena.sparql.algebra.op.*;
+import com.hp.hpl.jena.sparql.core.Var;
+import com.hp.hpl.jena.sparql.expr.Expr;
+import com.hp.hpl.jena.sparql.expr.ExprList;
+
 import com.hp.hpl.jena.sdb.core.AliasesSql;
 import com.hp.hpl.jena.sdb.core.SDBRequest;
 import com.hp.hpl.jena.sdb.core.ScopeEntry;
@@ -26,12 +33,6 @@ import com.hp.hpl.jena.sdb.core.sqlnode.SqlSlice;
 import com.hp.hpl.jena.sdb.iterator.Iter;
 import com.hp.hpl.jena.sdb.layout2.expr.RegexCompiler;
 import com.hp.hpl.jena.sdb.shared.SDBInternalError;
-import com.hp.hpl.jena.sparql.algebra.Op;
-import com.hp.hpl.jena.sparql.algebra.TransformCopy;
-import com.hp.hpl.jena.sparql.algebra.op.*;
-import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.sparql.expr.Expr;
-import com.hp.hpl.jena.sparql.expr.ExprList;
 
 public class TransformSDB extends TransformCopy
 {
@@ -151,15 +152,26 @@ public class TransformSDB extends TransformCopy
     //            having
     //              group
     //                [toList]
+
+    // modifier : having
+    // modifier : group
     
 //    @Override
-//    public Op transform(OpProject opProject, Op subOp)
+//    public Op transform(OpOrder opOrder, Op subOp)
 //    { 
 //        if ( ! QC.isOpSQL(subOp) )
-//            return super.transform(opProject, subOp) ;
-//        return super.transform(opProject, subOp) ;
+//            return super.transform(opOrder, subOp) ;
+//        return super.transform(opOrder, subOp) ;
 //    }
-//    
+    
+//  @Override
+//  public Op transform(OpProject opProject, Op subOp)
+//  { 
+//      if ( ! QC.isOpSQL(subOp) )
+//          return super.transform(opProject, subOp) ;
+//      return super.transform(opProject, subOp) ;
+//  }
+  
     @Override
     public Op transform(OpDistinct opDistinct, Op subOp)
     { 
@@ -168,12 +180,12 @@ public class TransformSDB extends TransformCopy
         SqlNode sqlNode = ((OpSQL)subOp).getSqlNode() ;
         return new OpSQL(SqlDistinct.distinct(sqlNode), opDistinct, request) ;
     }
-
-    // Order not yet handled.
     
     @Override
     public Op transform(OpSlice opSlice, Op subOp)
     {
+        // Currently off - need to abstract syntax 
+        
         if ( ! QC.isOpSQL(subOp) )
             return super.transform(opSlice, subOp) ;
         

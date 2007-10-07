@@ -7,7 +7,6 @@ SDB ToDo list (and general notes)
 + Break out the merge query section into a separate wiki page.
 
 == Tests
-+ DISTINCT, Slice, Project, including when not all of a query is translated.
 
 == Development
 
@@ -15,6 +14,8 @@ SDB ToDo list (and general notes)
 + Generalise target table beyond triples/quads (e.g. the metatable)
   URI => handler(table name, special code)
  
++ Slice - need to abstract syntax for different DBs
+
 + Graph management:
     Graphs loaded
     Delete graph

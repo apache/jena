@@ -179,7 +179,15 @@ public class SqlNodeTextVisitor implements SqlNodeVisitor
 
     public void visit(SqlSlice sqlNode)
     {
-        String str = String.format("(%d, %d)", sqlNode.getStart(), sqlNode.getLength()) ;
+        String startStr = "--" ;
+        String lengthStr = "--" ;
+        
+        if ( sqlNode.getStart() >= 0 )
+            startStr = Long.toString(sqlNode.getStart()) ;
+        if ( sqlNode.getLength() >= 0 )
+            lengthStr = Long.toString(sqlNode.getLength()) ;
+        
+        String str = String.format("(%s, %s)", startStr, lengthStr) ;
         
         start(sqlNode, "Slice "+str, null) ;
         out.incIndent() ;
