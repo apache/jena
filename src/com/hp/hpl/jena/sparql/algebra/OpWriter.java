@@ -61,13 +61,12 @@ public class OpWriter
     { out(new IndentedWriter(out), op, prologue) ; }
 
     public static void out(IndentedWriter iWriter, Op op)
-    { 
-        PrefixMapping pmap = ARQConstants.getGlobalPrefixMap() ;
-        out(iWriter, op, pmap) ;
-    }
+    { out(iWriter, op, (PrefixMapping)null) ; }
 
     public static void out(IndentedWriter iWriter, Op op, PrefixMapping pMap)
     {
+        if ( pMap == null )
+            pMap = OpPrefixesUsed.used(op, ARQConstants.getGlobalPrefixMap()) ;
         SerializationContext sCxt = new SerializationContext(pMap) ;
         out(iWriter, op, sCxt) ;
     }

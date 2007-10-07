@@ -135,35 +135,6 @@ public class sse_query extends CmdARQ
         long time = modTime.endTimer() ;
         if ( modTime.timingEnabled() )
             System.out.println("Time: "+modTime.timeStr(time)) ;
-
-//        }
-//        catch (ARQInternalErrorException intEx)
-//        {
-//            System.err.println(intEx.getMessage()) ;
-//            if ( intEx.getCause() != null )
-//            {
-//                System.err.println("Cause:") ;
-//                intEx.getCause().printStackTrace(System.err) ;
-//                System.err.println() ;
-//            }
-//            intEx.printStackTrace(System.err) ;
-//        }
-//        catch (ResultSetException ex)
-//        {
-//            System.err.println(ex.getMessage()) ;
-//            ex.printStackTrace(System.err) ;
-//        }
-//        catch (QueryException qEx)
-//        {
-//            //System.err.println(qEx.getMessage()) ;
-//            throw new CmdException("Query Exeception", qEx) ;
-//        }
-//        catch (JenaException ex) { throw ex ; } 
-//        catch (CmdException ex) { throw ex ; } 
-//        catch (Exception ex)
-//        {
-//            throw new CmdException("Exception", ex) ;
-//        }
     }    
 
 }

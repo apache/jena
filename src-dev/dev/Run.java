@@ -9,18 +9,12 @@ package dev;
 import arq.sparql;
 
 import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.query.DataSource;
-import com.hp.hpl.jena.query.DatasetFactory;
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.QueryExecution;
-import com.hp.hpl.jena.query.QueryExecutionFactory;
-import com.hp.hpl.jena.query.QueryFactory;
-import com.hp.hpl.jena.query.ResultSetFormatter;
-import com.hp.hpl.jena.query.larq.IndexBuilderString;
-import com.hp.hpl.jena.query.larq.IndexLARQ;
-import com.hp.hpl.jena.query.larq.LARQ;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.util.FileManager;
+
+import com.hp.hpl.jena.sparql.algebra.Op;
+import com.hp.hpl.jena.sparql.algebra.OpWriter;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.binding.BindingMap;
@@ -29,27 +23,19 @@ import com.hp.hpl.jena.sparql.expr.NodeValue;
 import com.hp.hpl.jena.sparql.sse.SSE;
 import com.hp.hpl.jena.sparql.util.DateTimeStruct;
 import com.hp.hpl.jena.sparql.util.ExprUtils;
-import com.hp.hpl.jena.util.FileManager;
 
+import com.hp.hpl.jena.query.*;
+import com.hp.hpl.jena.query.larq.IndexBuilderString;
+import com.hp.hpl.jena.query.larq.IndexLARQ;
+import com.hp.hpl.jena.query.larq.LARQ;
 
 public class Run
 {
     public static void main(String[] argv)
     {
-        Model m = FileManager.get().loadModel("D.ttl") ;
-        DataSource ds = DatasetFactory.create() ;
-        ds.addNamedModel("http://example/", m) ;
-        ds.setDefaultModel(m) ;
-        Query q = QueryFactory.create("PREFIX : <http://example/> SELECT * { ?s :p :o . GRAPH <http://example/> { ?s :p :o } }" ) ;
-        QueryExecution qExec = QueryExecutionFactory.create(q, ds) ;
-        ResultSetFormatter.out(qExec.execSelect()) ;
-        System.exit(0) ; 
-        
-        
-        String[] a = {"--data=D.ttl", "--query=Q.sse" } ;
-        
-        arq.sse_query.main(a) ;
-        System.exit(0) ; 
+        Op op = SSE.parseOp("(graph <x> (bgp (?x rdf:type ?z)))") ;
+        OpWriter.out(System.out, op) ;
+        System.exit(0) ;
         
         runQParse() ;
         
