@@ -32,7 +32,10 @@ SDB ToDo list (and general notes)
 
 + SqlProject/SqlRename are now highly related - merge - or simplifiy.
   [Partial - need to consider a "pure" SqlProject]
-  [Need a null-introduction operator]  
+  [Need a null-introduction operator]
+    SqlProject - pure project (just a pair of Scopes)
+    SqlRename - rename, aliasing but also only some cols 
+  See TransformSDB for more. 
 
 + What about bulk add/delete of whole graphs? 
   esp removal of a complete named graph.

@@ -27,9 +27,7 @@ import com.hp.hpl.jena.sparql.expr.ExprList;
 import com.hp.hpl.jena.sdb.core.AliasesSql;
 import com.hp.hpl.jena.sdb.core.SDBRequest;
 import com.hp.hpl.jena.sdb.core.ScopeEntry;
-import com.hp.hpl.jena.sdb.core.sqlnode.SqlDistinct;
-import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
-import com.hp.hpl.jena.sdb.core.sqlnode.SqlSlice;
+import com.hp.hpl.jena.sdb.core.sqlnode.*;
 import com.hp.hpl.jena.sdb.iterator.Iter;
 import com.hp.hpl.jena.sdb.layout2.expr.RegexCompiler;
 import com.hp.hpl.jena.sdb.shared.SDBInternalError;
@@ -164,13 +162,31 @@ public class TransformSDB extends TransformCopy
 //        return super.transform(opOrder, subOp) ;
 //    }
     
-//  @Override
-//  public Op transform(OpProject opProject, Op subOp)
-//  { 
-//      if ( ! QC.isOpSQL(subOp) )
-//          return super.transform(opProject, subOp) ;
-//      return super.transform(opProject, subOp) ;
-//  }
+//    @Override
+//    public Op transform(OpProject opProject, Op subOp)
+//    { 
+//        if ( ! QC.isOpSQL(subOp) )
+//            return super.transform(opProject, subOp) ;
+//
+//        @SuppressWarnings("unchecked")
+//        List<Var> vars = opProject.getVars() ;
+//        
+//        SqlNode sqlNode = ((OpSQL)subOp).getSqlNode() ; 
+//        SqlNode n = sqlNode ;
+//        
+//        // Something wrong in the design of SqlProject and SqlRename
+//        
+//        for ( Var v : vars )
+//        {
+//            ScopeEntry idScope = sqlNode.getIdScope().findScopeForVar(v) ;
+//            ScopeEntry nScope = sqlNode.getNodeScope().findScopeForVar(v) ;
+//            if ( idScope != null )
+//            {}
+//            if ( nScope != null )
+//            {}
+//        }
+//        return super.transform(opProject, subOp) ;
+//    }
   
     @Override
     public Op transform(OpDistinct opDistinct, Op subOp)
