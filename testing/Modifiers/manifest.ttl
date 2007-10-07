@@ -8,24 +8,24 @@
     rdfs:label "Unicode" ;
     mf:entries
     ( 
-       [  mf:name   "Slice 1" ;
-          mf:action [ qt:query <slice-1.rq> ; qt:data <data-1.ttl> ] ;
-       ]
-       [  mf:name   "Slice 2" ;
-          mf:action [ qt:query <slice-2.rq> ; qt:data <data-1.ttl> ] ;
-       ]
-       [  mf:name   "Slice 3" ;
-          mf:action [ qt:query <slice-3.rq> ; qt:data <data-1.ttl> ] ;
-       ]
-       [  mf:name   "Slice 4" ;
-          mf:action [ qt:query <slice-4.rq> ; qt:data <data-1.ttl> ] ;
-       ]
-       [  mf:name   "Slice 5" ;
-          mf:action [ qt:query <slice-5.rq> ; qt:data <data-1.ttl> ] ;
-       ]
-       [  mf:name   "Slice 6" ;
-          mf:action [ qt:query <slice-6.rq> ; qt:data <data-1.ttl> ] ;
-       ]
+##        [  mf:name   "Slice 1" ;
+##           mf:action [ qt:query <slice-1.rq> ; qt:data <data-1.ttl> ] ;
+##        ]
+##        [  mf:name   "Slice 2" ;
+##           mf:action [ qt:query <slice-2.rq> ; qt:data <data-1.ttl> ] ;
+##        ]
+##        [  mf:name   "Slice 3" ;
+##           mf:action [ qt:query <slice-3.rq> ; qt:data <data-1.ttl> ] ;
+##        ]
+##        [  mf:name   "Slice 4" ;
+##           mf:action [ qt:query <slice-4.rq> ; qt:data <data-1.ttl> ] ;
+##        ]
+##        [  mf:name   "Slice 5" ;
+##           mf:action [ qt:query <slice-5.rq> ; qt:data <data-1.ttl> ] ;
+##        ]
+##        [  mf:name   "Slice 6" ;
+##           mf:action [ qt:query <slice-6.rq> ; qt:data <data-1.ttl> ] ;
+##        ]
        [  mf:name   "Distinct 1" ;
           mf:action [ qt:query <distinct-1.rq> ; qt:data <data-1.ttl> ] ;
        ]

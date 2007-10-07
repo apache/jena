@@ -8,7 +8,9 @@ package com.hp.hpl.jena.sdb.util;
 
 import com.hp.hpl.jena.shared.PrefixMapping;
 
+import com.hp.hpl.jena.sparql.ARQConstants;
 import com.hp.hpl.jena.sparql.algebra.Op;
+import com.hp.hpl.jena.sparql.algebra.OpPrefixesUsed;
 import com.hp.hpl.jena.sparql.algebra.OpVisitorBase;
 import com.hp.hpl.jena.sparql.algebra.OpWalker;
 import com.hp.hpl.jena.sparql.algebra.op.OpExt;
@@ -42,6 +44,8 @@ public class PrintSDB
     
     public static void print(Op op, PrefixMapping pmap)
     {
+        if ( pmap == null )
+            pmap = OpPrefixesUsed.used(op, ARQConstants.getGlobalPrefixMap()) ;
         System.out.print(op.toString(pmap)) ;
     }
     
