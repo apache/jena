@@ -1,9 +1,9 @@
 PREFIX :    <http://example/>
 PREFIX arq: <urn:x-arq:>
 
-SELECT DISTINCT ?o
+SELECT *
 {
-   ?s :p ?o . ?o :q ?x .
+   ?s :p ?o OPTIONAL { ?s :q ?q }
 }
 
 
