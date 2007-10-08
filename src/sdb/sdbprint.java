@@ -43,7 +43,6 @@ public class sdbprint extends CmdArgsDB
     ArgDecl argDeclPrint = new ArgDecl(ArgDecl.HasValue, "print") ;
 
     boolean printQuery = false ;
-    boolean printPrefix = false ;
     boolean printOp = false ;
     boolean printSqlNode = false ;
     boolean printPlan = false ;
@@ -59,7 +58,7 @@ public class sdbprint extends CmdArgsDB
         super.addModule(modQuery) ;
         super.getUsage().startCategory("SQL") ;
         super.add(argDeclPrintSQL, "--sql", "Print SQL") ;
-        super.add(argDeclPrint, "--print=", "Print any of query, prefix, op, sqlnode, SQL, plan") ;
+        super.add(argDeclPrint, "--print=", "Print any of 'query', 'op', 'sqlnode', 'SQL', 'plan'") ;
     }
 
     @Override
@@ -84,7 +83,6 @@ public class sdbprint extends CmdArgsDB
         for ( String arg : strList )
         {
             if ( arg.equalsIgnoreCase("query"))         { printQuery = true ; }
-            else if ( arg.equalsIgnoreCase("prefix"))   { printPrefix = true ; }
             else if ( arg.equalsIgnoreCase("Op"))       { printOp = true ; }
             else if ( arg.equalsIgnoreCase("SqlNode"))  { printSqlNode = true ; }
             else if ( arg.equalsIgnoreCase("sql"))      { printSQL = true ; }
@@ -112,13 +110,12 @@ public class sdbprint extends CmdArgsDB
     {
         SDB.getContext().set(SDB.annotateGeneratedSQL, true) ;
         
-        if ( !printQuery && ! printPrefix && ! printOp && ! printSqlNode && ! printSQL && ! printPlan )
+        if ( !printQuery && ! printOp && ! printSqlNode && ! printSQL && ! printPlan )
             printSQL = true ;
         
         if ( isVerbose() )
         {
             //printQuery = true ;
-            printPrefix = true ;
             printOp = true ;
             //printSqlNode = true ;
             printSQL = true ;
