@@ -16,9 +16,13 @@ public class GraphStoreFactory
 {
     public static GraphStore create() { return new GraphStoreBasic() ; }
     
+    public static GraphStore create(Dataset ds) { return new GraphStoreBasic(ds) ; }
+    
     private static class GraphStoreBasic extends DataSourceGraphImpl implements GraphStore
     {
         public GraphStoreBasic() { super.setDefaultGraph(GraphUtils.makeDefaultGraph()) ; }
+        
+        public GraphStoreBasic(Dataset ds) { super(ds) ; }
         
         public void execute(UpdateRequest request)
         { request.exec(this) ; }

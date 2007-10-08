@@ -10,15 +10,15 @@ import com.hp.hpl.jena.query.Dataset;
 
 public abstract class ModDataset extends ModBase
 {
-    boolean createAtempted = false ;
+    boolean createAttempted = false ;
     Dataset dataset = null ;
     
     final
     public Dataset getDataset()
     {
-        if ( ! createAtempted )
+        if ( ! createAttempted )
             dataset = createDataset() ;
-        createAtempted = true ;
+        createAttempted = true ;
         return dataset ;
     }
     

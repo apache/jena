@@ -33,6 +33,11 @@ public class Run
 {
     public static void main(String[] argv)
     {
+        String a[] = {"--update=update.ru"} ;
+        
+        arq.update.main(a) ;
+        System.exit(0) ;
+        
         Op op = SSE.parseOp("(graph <x> (bgp (?x rdf:type ?z)))") ;
         OpWriter.out(System.out, op) ;
         System.exit(0) ;
