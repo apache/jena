@@ -1,8 +1,4 @@
-PREFIX  dc: <http://purl.org/dc/elements/1.1/>
-PREFIX  x: <http://example.org/ns#>
-SELECT  ?title ?price
-WHERE
-    { ?book dc:title ?title .
-      FILTER(?title = "fred") 
-      ?book x:price ?price .
-    }
+PREFIX : <http://example/>
+
+SELECT *
+{ ?x :p ?o }
