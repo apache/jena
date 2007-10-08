@@ -471,7 +471,6 @@ public class Query extends Prologue implements Cloneable
     
     public E_Aggregator allocAggregate(AggregateFactory agg)
     {
-        // XXX E_Aggregator == Aggregator ??
         Aggregator a = agg.create() ;
         String key = a.key() ;
         E_Aggregator expr = (E_Aggregator)aggregatorsAllocated.get(key); 

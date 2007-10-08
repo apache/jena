@@ -36,7 +36,7 @@ public class sse_query extends CmdARQ
     protected final ArgDecl printDecl  = new ArgDecl(ArgDecl.HasValue, "print") ;
     
     ModAlgebra    modAlgebra =  new ModAlgebra() ;
-    ModDataset    modDataset =  new ModAssembler() ;
+    ModDatasetGeneral    modDataset =  new ModAssembler() ;
     ModResultsOut modResults =  new ModResultsOut() ;
     ModTime       modTime =     new ModTime() ;
     ModEngine     modEngine =   new ModEngine() ;

@@ -22,7 +22,7 @@ import com.hp.hpl.jena.sparql.util.TypeNotUniqueException;
 import com.hp.hpl.jena.util.FileManager;
 
 
-public class ModAssembler extends ModDataset
+public class ModAssembler extends ModDatasetGeneral
 {
     protected final 
     ArgDecl assemblerDescDecl = new ArgDecl(ArgDecl.HasValue, "desc", "dataset") ;
@@ -63,12 +63,10 @@ public class ModAssembler extends ModDataset
                     "Assembler file description of dataset") ;
     }
     
-    public Dataset getDataset()
+    public Dataset createDataset()
     {
-        if ( dataset != null )
-            return dataset ;
         if ( assemblerFile == null )
-            return super.getDataset() ;
+            return super.createDataset() ;
 
         DataSource ds = null ;
 

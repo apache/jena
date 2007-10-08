@@ -10,6 +10,9 @@
 See ToDoSSE
 
 ----
++ SPARQL/Update - command line tools
+  ModAssembler should work with SDB - test
+
 + Better syntax as well as SQL-like: GROUP BY ... WITH ... ??
 
 + FILTER(?x = "abc")

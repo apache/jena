@@ -1,120 +1,32 @@
 /*
- * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
 package arq.cmdline;
 
-import java.util.List;
-
-import arq.cmd.CmdException;
-
-import com.hp.hpl.jena.query.DataSource;
 import com.hp.hpl.jena.query.Dataset;
-import com.hp.hpl.jena.query.DatasetFactory;
-import com.hp.hpl.jena.query.LabelExistsException;
-import com.hp.hpl.jena.shared.JenaException;
-import com.hp.hpl.jena.sparql.core.DataFormat;
-import com.hp.hpl.jena.sparql.util.DatasetUtils;
-import com.hp.hpl.jena.util.FileManager;
-import com.hp.hpl.jena.util.LocationMapper;
 
-/** ModDataset: arguments to build a dataset - see also ModAssembler which extends ModDataset with a description parameter.
- * 
- * @author Andy Seaborne
- * @version $Id: ModDataset.java,v 1.13 2007/01/02 11:19:14 andy_seaborne Exp $
- */ 
-
-public class ModDataset extends ModBase
+public abstract class ModDataset extends ModBase
 {
-    // See also ModAssembler which extends ModDataset
-    protected final ArgDecl graphDecl      = new ArgDecl(ArgDecl.HasValue, "graph", "data") ;
-    protected final ArgDecl namedGraphDecl = new ArgDecl(ArgDecl.HasValue, "named", "namedgraph", "namedGraph", "namedData", "nameddata") ;
-    //protected final ArgDecl dataFmtDecl    = new ArgDecl(ArgDecl.HasValue, "fmt", "format") ;
-    //protected final ArgDecl dirDecl        = new ArgDecl(ArgDecl.HasValue, "dir") ;
-    protected final ArgDecl lmapDecl       = new ArgDecl(ArgDecl.HasValue, "lmap") ;
- 
-    private List graphURLs               = null ;
-    private List namedGraphURLs          = null ;
-    private DataFormat dataSyntax        = null ;
-    protected Dataset dataset = null ;
-    private FileManager fileManager     = FileManager.get() ;    
-
-    public void registerWith(CmdGeneral cl)
-    {
-        cl.getUsage().startCategory("Dataset") ;
-        cl.add(graphDecl,
-               "--graph",
-               "Graph for default graph of the datset") ;
-        cl.add(namedGraphDecl,
-               "--namedGraph",
-               "Add a graph into the dataset as a named graph") ;
-        //cl.add(dirDecl) ;
-        //cl.add(dataFmtDecl) ;
-        cl.add(lmapDecl,
-               "--lmap",
-               "Specify a location mapping file") ;
-    }
+    boolean createAtempted = false ;
+    Dataset dataset = null ;
     
-    public void processArgs(CmdArgModule cmdLine)
-    {
-        graphURLs = cmdLine.getValues(graphDecl) ;
-        namedGraphURLs = cmdLine.getValues(namedGraphDecl) ;
-        
-        
-        if ( cmdLine.contains(lmapDecl) )
-        {
-            String lmapFile = cmdLine.getValue(lmapDecl) ;
-            LocationMapper locMap = new LocationMapper(lmapFile) ;
-            fileManager = new FileManager(locMap) ;
-        }
-    }
-    
+    final
     public Dataset getDataset()
     {
-        if ( dataset != null )
-            return dataset ;
-        // If nothing specified to the module.  Leave alone and hope the queyr has FROM/FROM NAMED
-        if ( (graphURLs == null || graphURLs.size() == 0) &&
-              (namedGraphURLs == null || namedGraphURLs.size() == 0 ) )
-            return null ;
-        
-        DataSource ds = DatasetFactory.create() ;
-        addGraphs(ds) ;
-        dataset = ds ;
+        if ( ! createAtempted )
+            dataset = createDataset() ;
+        createAtempted = true ;
         return dataset ;
     }
-        
-    protected void addGraphs(DataSource ds)
-    {
-        try {
-            if ( (graphURLs != null) || (namedGraphURLs != null) )
-                dataset = 
-                    DatasetUtils.addInGraphs(ds, graphURLs, namedGraphURLs, fileManager, null) ;
-        } 
-        catch (LabelExistsException ex)
-        { throw new CmdException(ex.getMessage()) ; }
-        catch (JenaException ex)
-        { throw ex ; }
-        catch (Exception ex)
-        { throw new CmdException("Error creating dataset", ex) ; }
-    }
-
-    public List getGraphURLs()
-    {
-        return graphURLs ;
-    }
-
-    public List getNamedGraphURLs()
-    {
-        return namedGraphURLs ;
-    }
+    
+    public abstract Dataset createDataset() ; 
 }
 
-
 /*
- * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

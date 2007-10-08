@@ -10,11 +10,13 @@ import arq.cmd.CmdException;
 import arq.cmd.TerminationException;
 import arq.cmdline.*;
 
-import com.hp.hpl.jena.query.*;
+import com.hp.hpl.jena.query.Dataset;
+import com.hp.hpl.jena.query.Query;
+import com.hp.hpl.jena.query.QueryException;
+import com.hp.hpl.jena.query.QueryExecution;
+import com.hp.hpl.jena.query.QueryExecutionFactory;
 import com.hp.hpl.jena.shared.JenaException;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException;
-import com.hp.hpl.jena.sparql.engine.http.HttpQuery;
-import com.hp.hpl.jena.sparql.engine.http.QueryExceptionHTTP;
 import com.hp.hpl.jena.sparql.resultset.ResultSetException;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
 import com.hp.hpl.jena.sparql.util.QueryExecUtils;
@@ -23,15 +25,13 @@ import com.hp.hpl.jena.sparql.util.Utils;
 public class query extends CmdARQ
 {
     ArgDecl argRepeat = new ArgDecl(ArgDecl.HasValue, "repeat") ;
-    int repeatCount = 1 ; 
+    protected int repeatCount = 1 ; 
     
-    ModTime       modTime =     new ModTime() ;
-    ModQueryIn    modQuery =    new ModQueryIn() ;
-    //ModDataset    modDataset =  new ModDataset() ;
-    ModDataset    modDataset =  new ModAssembler() ;    // extends ModDataset
-    ModResultsOut modResults =  new ModResultsOut() ;
-    ModRemote     modRemote =   new ModRemote() ;
-    ModEngine     modEngine =   new ModEngine() ;
+    protected ModTime       modTime =     new ModTime() ;
+    protected ModQueryIn    modQuery =    new ModQueryIn() ;
+    protected ModDataset    modDataset =  null ;
+    protected ModResultsOut modResults =  new ModResultsOut() ;
+    protected ModEngine     modEngine =   new ModEngine() ;
     
     public static void main (String [] argv)
     {
@@ -41,10 +41,10 @@ public class query extends CmdARQ
     public query(String[] argv)
     {
         super(argv) ;
+        modDataset = setModDataset() ;
         super.addModule(modQuery) ;
         super.addModule(modResults) ;
         super.addModule(modDataset) ;
-        super.addModule(modRemote) ;
         super.addModule(modEngine) ;
         super.addModule(modTime) ;
         super.add(argRepeat) ;
@@ -62,22 +62,22 @@ public class query extends CmdARQ
             }
     }
     
+    protected ModDataset setModDataset()
+    {
+        return new ModAssembler() ;
+    }
+    
     protected void exec()
     {
         for ( int i = 0 ; i < repeatCount ; i++ )
-        {
-            if ( modRemote.getServiceURL() == null )
-                queryExecLocal() ;
-            else
-                queryExecRemote() ;
-        }
+            queryExec() ;
     }
 
     protected String getCommandName() { return Utils.className(this) ; }
     
     protected String getSummary() { return getCommandName()+" --data=<file> --query=<query>" ; }
     
-    private void queryExecLocal()
+    private void queryExec()
     {
         try{
             Query query = modQuery.getQuery() ;
@@ -133,32 +133,6 @@ public class query extends CmdARQ
             throw new CmdException("Exception", ex) ;
         }
     }    
-    
-    private void queryExecRemote()
-    {
-        Query query = modQuery.getQuery() ;
-        
-        try {
-            String serviceURL = modRemote.getServiceURL() ;
-            QueryExecution qe = QueryExecutionFactory.sparqlService(serviceURL, query,
-                                                                    modDataset.getGraphURLs(),
-                                                                    modDataset.getNamedGraphURLs()) ;
-            
-            if ( modRemote.usePost() )
-                HttpQuery.urlLimit = 0 ;
-            
-            QueryExecUtils.executeQuery(query, qe, modResults.getResultsFormat()) ;
-        } catch (QueryExceptionHTTP ex)
-        {
-            throw new CmdException("HTTP Exeception", ex) ;
-        }
-        catch (Exception ex)
-        {
-            System.out.flush() ;
-            ex.printStackTrace(System.err) ;
-        }
-    }
-
 }
 
 /*
