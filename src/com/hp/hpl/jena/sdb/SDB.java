@@ -8,7 +8,6 @@ package com.hp.hpl.jena.sdb;
 
 import com.hp.hpl.jena.assembler.assemblers.AssemblerGroup;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
-import com.hp.hpl.jena.query.ARQ;
 import com.hp.hpl.jena.shared.PrefixMapping;
 import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
 import com.hp.hpl.jena.vocabulary.OWL;
@@ -18,6 +17,8 @@ import com.hp.hpl.jena.vocabulary.RDFS;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException;
 import com.hp.hpl.jena.sparql.util.Context;
 import com.hp.hpl.jena.sparql.util.Symbol;
+
+import com.hp.hpl.jena.query.ARQ;
 
 import com.hp.hpl.jena.sdb.assembler.AssemblerVocab;
 import com.hp.hpl.jena.sdb.core.SDBConstants;

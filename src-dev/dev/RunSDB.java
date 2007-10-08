@@ -49,11 +49,18 @@ public class RunSDB
     static { CmdUtils.setLog4j() ; CmdUtils.setN3Params() ; }
     public static void main(String[]argv)
     {
-        runPrint() ;
+        SDBConnection.logSQLStatements = true ;
+        sdb.query.main(new String[]{"--sdb=sdb.ttl", "--query=Q.rq"}) ;
+        System.exit(0) ;
+        
+        
+        //runPrint() ;
 //        SDBConnection.logSQLExceptions = true ;
 //        SDBConnection.logSQLStatements = true ;
 
-        if ( false ) { devAssembler() ; System.exit(0) ; }
+        
+
+        
         if ( true ) { devSelectBlock() ; System.exit(0) ; }
         if ( false ) { devRename() ; System.exit(0) ; }
 

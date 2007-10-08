@@ -77,7 +77,14 @@ public class StoreDesc
 
     public static StoreDesc read(Model m)
     {
-        Resource r = GraphUtils.getResourceByType(m, AssemblerVocab.StoreAssemblerType) ;
+        // Does not mind store descriptions or dataset descriptions
+        Resource r1 = GraphUtils.getResourceByType(m, AssemblerVocab.StoreAssemblerType) ;
+        Resource r2 = GraphUtils.getResourceByType(m, AssemblerVocab.DatasetAssemblerType) ;
+        Resource r = r1 ; 
+        
+        if ( r == null )
+            r = r2 ;
+        
         if ( r == null )
             throw new SDBException("Can't find store description") ;
         return read(r) ;
