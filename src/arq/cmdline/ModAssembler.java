@@ -9,17 +9,19 @@ package arq.cmdline;
 import arq.cmd.CmdException;
 
 import com.hp.hpl.jena.assembler.Assembler;
-import com.hp.hpl.jena.query.DataSource;
-import com.hp.hpl.jena.query.Dataset;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.shared.JenaException;
 import com.hp.hpl.jena.shared.NotFoundException;
+import com.hp.hpl.jena.util.FileManager;
+
 import com.hp.hpl.jena.sparql.core.assembler.AssemblerUtils;
 import com.hp.hpl.jena.sparql.core.assembler.DatasetAssemblerVocab;
 import com.hp.hpl.jena.sparql.util.GraphUtils;
 import com.hp.hpl.jena.sparql.util.TypeNotUniqueException;
-import com.hp.hpl.jena.util.FileManager;
+
+import com.hp.hpl.jena.query.DataSource;
+import com.hp.hpl.jena.query.Dataset;
 
 
 public class ModAssembler extends ModDatasetGeneral
@@ -68,8 +70,6 @@ public class ModAssembler extends ModDatasetGeneral
         if ( assemblerFile == null )
             return super.createDataset() ;
 
-        DataSource ds = null ;
-
         try {
             Model spec = null ;
             try {
@@ -79,7 +79,7 @@ public class ModAssembler extends ModDatasetGeneral
 
             Resource root = null ;
             try {
-                root = GraphUtils.getResourceByType(spec, DatasetAssemblerVocab.tDataset) ;
+                root = GraphUtils.findRootByType(spec, DatasetAssemblerVocab.tDataset) ;
                 if ( root == null )
                 {
                     String s = spec.shortForm(DatasetAssemblerVocab.tDataset.getURI()) ;
@@ -88,7 +88,7 @@ public class ModAssembler extends ModDatasetGeneral
             } catch (TypeNotUniqueException ex)
             { throw new CmdException("Multiple types for: "+DatasetAssemblerVocab.tDataset) ; }
 
-            ds = (DataSource)Assembler.general.open(root) ;
+            dataset = (Dataset)Assembler.general.open(root) ;
         }
         catch (CmdException ex) { throw ex; }
         catch (NotFoundException ex)
@@ -97,9 +97,9 @@ public class ModAssembler extends ModDatasetGeneral
         { throw ex ; }
         catch (Exception ex)
         { throw new CmdException("Error creating dataset", ex) ; }
-        
-        dataset = ds ;
-        super.addGraphs(ds) ;
+
+        if ( dataset instanceof DataSource )
+            super.addGraphs((DataSource)dataset) ;
         return dataset ;
     }
 }

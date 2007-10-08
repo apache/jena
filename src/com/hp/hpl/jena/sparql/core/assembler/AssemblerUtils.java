@@ -9,12 +9,7 @@ package com.hp.hpl.jena.sparql.core.assembler;
 
 import com.hp.hpl.jena.assembler.Assembler;
 import com.hp.hpl.jena.assembler.assemblers.AssemblerGroup;
-import com.hp.hpl.jena.rdf.model.*;
-
-import com.hp.hpl.jena.sparql.util.QueryExecUtils;
-import com.hp.hpl.jena.sparql.util.StringUtils;
-
-import com.hp.hpl.jena.query.*;
+import com.hp.hpl.jena.rdf.model.Resource;
 
 
 public class AssemblerUtils
@@ -43,23 +38,6 @@ private static boolean initialized = false ;
         g.implementWith(r, a) ;
         //**assemblerAssertions.add(r, RDFS.subClassOf, JA.Object) ;
     }
-    
-    static public Resource findRootByType(Model model, Resource atype)
-    {
-        String s = StringUtils.join("\n", new String[]{
-            "PREFIX  rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>" ,
-            "PREFIX  rdfs:   <http://www.w3.org/2000/01/rdf-schema#>",
-            "SELECT DISTINCT ?root { { ?root rdf:type ?ATYPE } UNION { ?root rdf:type ?t . ?t rdfs:subClassOf ?ATYPE } }"
-        }) ;
-        Query q = QueryFactory.create(s) ;
-        QuerySolutionMap qsm = new QuerySolutionMap() ;
-        qsm.add("ATYPE", atype) ;
-
-        QueryExecution qExec = QueryExecutionFactory.create(q, model, qsm);
-        Resource r = (Resource)QueryExecUtils.getExactlyOne(qExec, "root") ;
-        return r;
-    }
-
 }
 
 /*

@@ -9,7 +9,8 @@ package com.hp.hpl.jena.sparql.util;
 import java.util.*;
 
 import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.query.ARQ;
+import com.hp.hpl.jena.query.*;
+
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.vocabulary.RDF;
 
@@ -149,6 +150,7 @@ public class GraphUtils
 
     public static Resource getResourceByType(Model model, Resource type)
     {
+        // See also 
         StmtIterator sIter = model.listStatements(null, RDF.type, type) ;
         if ( ! sIter.hasNext() )
             return null ;
@@ -157,7 +159,24 @@ public class GraphUtils
             throw new TypeNotUniqueException(r) ;
         return r ;
     }
+    
+    public static Resource findRootByType(Model model, Resource atype)
+    {
+        String s = StringUtils.join("\n", new String[]{
+            "PREFIX  rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>" ,
+            "PREFIX  rdfs:   <http://www.w3.org/2000/01/rdf-schema#>",
+            "SELECT DISTINCT ?root { { ?root rdf:type ?ATYPE } UNION { ?root rdf:type ?t . ?t rdfs:subClassOf ?ATYPE } }"
+        }) ;
+        Query q = QueryFactory.create(s) ;
+        QuerySolutionMap qsm = new QuerySolutionMap() ;
+        qsm.add("ATYPE", atype) ;
 
+        QueryExecution qExec = QueryExecutionFactory.create(q, model, qsm);
+        Resource r = (Resource)QueryExecUtils.getExactlyOne(qExec, "root") ;
+        return r;
+    }
+    
+    
     public static String fmtURI(Resource r)
     { return r.getModel().shortForm(r.getURI()) ;  }
 

@@ -14,9 +14,9 @@ import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.util.FileManager;
 
 import com.hp.hpl.jena.sparql.core.DataSourceImpl;
-import com.hp.hpl.jena.sparql.core.assembler.AssemblerUtils;
 import com.hp.hpl.jena.sparql.core.assembler.DataSourceAssembler;
 import com.hp.hpl.jena.sparql.util.DatasetUtils;
+import com.hp.hpl.jena.sparql.util.GraphUtils;
 
 /** Make Datasets and DataSources in various ways   
  * 
@@ -200,21 +200,8 @@ public class DatasetFactory
      */
     public static Dataset assemble(Model model)
     {
-        Resource r = AssemblerUtils.findRootByType(model, DataSourceAssembler.getType()) ;
+        Resource r = GraphUtils.findRootByType(model, DataSourceAssembler.getType()) ;
         return assemble(r) ;
-//        // ----
-//        String s = StringUtils.join("\n", new String[]{
-//            "PREFIX  rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>" ,
-//            "PREFIX  rdfs:   <http://www.w3.org/2000/01/rdf-schema#>",
-//            "SELECT DISTINCT ?root { { ?root rdf:type ?ATYPE } UNION { ?root rdf:type ?t . ?t rdfs:subClassOf ?ATYPE } }"
-//        }) ;
-//        Query q = QueryFactory.create(s) ;
-//        QuerySolutionMap qsm = new QuerySolutionMap() ;
-//        qsm.add("ATYPE", DataSourceAssembler.getType()) ;
-//
-//        QueryExecution qExec = QueryExecutionFactory.create(q, model, qsm);
-//        Resource r = (Resource)QueryExecUtils.getExactlyOne(qExec, "root") ;
-//        return assemble(r) ;
     }
         
     /** Assembler a dataset from a resource
