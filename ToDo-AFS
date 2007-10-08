@@ -13,7 +13,11 @@ SDB ToDo list (and general notes)
 (Post v1.0)
 + Generalise target table beyond triples/quads (e.g. the metatable)
   URI => handler(table name, special code)
- 
+
++ Merge commands with ARQ
+    Update commands from SPARQL/Update
+    sdbquery extends query?  Replaces ModDataset with ModStore? 
+
 + Slice - need to abstract syntax for different DBs
 
 + Graph management:
