@@ -4,61 +4,46 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.test.shared;
+package com.hp.hpl.jena.sdb.test.setup;
 
-import com.hp.hpl.jena.sdb.store.DatabaseType;
-import com.hp.hpl.jena.sdb.store.LayoutType;
+import java.sql.Connection;
 
 import org.junit.Test;
-import static org.junit.Assert.*;
 
-public class TestRegistry
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.Property;
+import com.hp.hpl.jena.rdf.model.Resource;
+import com.hp.hpl.jena.sdb.SDBFactory;
+import com.hp.hpl.jena.sdb.Store;
+import com.hp.hpl.jena.sdb.StoreDesc;
+import com.hp.hpl.jena.sdb.sql.SDBConnection;
+import com.hp.hpl.jena.sdb.store.StoreFactory;
+import com.hp.hpl.jena.sdb.test.SDBTest;
+
+
+public class TestConnection
 {
-    String[] databaseNames = {  "derby", "HSQLDB",
-                                "MySQL", "PostgreSQL", 
-                                "SQLServer", "Oracle", "DB2" } ;
-    
-    String[] layoutNames = {    "layout2/hash" , "layout2", 
-                                "layout2/index", 
-                                "layout1",
-                                "layoutRDB" } ;
-    
-    @Test public void reg_database_1()
+    @Test public void connection_1()
     {
-        // Tests default configuration.
-        for ( String s : databaseNames )
-            assertNotNull(DatabaseType.fetch(s)) ;
-    }
-
-    @Test public void reg_database_2()
-    {
-        for ( String s : DatabaseType.allNames() )
-            assertNotNull(DatabaseType.fetch(s)) ;
-    }
-    
-    @Test public void reg_database_3()
-    {
-        for ( DatabaseType t : DatabaseType.allTypes() )
-            assertNotNull(DatabaseType.fetch(t.getName())) ;
-    }
-
-    @Test public void reg_layout_1()
-    {
-        // Tests default configuration.
-        for ( String s : layoutNames )
-            assertNotNull(LayoutType.fetch(s)) ;
-    }
-
-    @Test public void reg_layout_2()
-    {
-        for ( String s : LayoutType.allNames() )
-            assertNotNull(LayoutType.fetch(s)) ;
-    }
-    
-    @Test public void reg_layout_3()
-    {
-        for ( LayoutType t : LayoutType.allTypes() )
-            assertNotNull(LayoutType.fetch(t.getName())) ;
+        String desc = SDBTest.testDirSDB+"StoreDesc/mysql-hash.ttl" ;
+        StoreDesc sDesc = StoreDesc.read(desc) ;
+        
+        Connection c = SDBFactory.createSqlConnection(desc) ;
+        
+        SDBConnection conn1 = SDBFactory.createConnection(c) ;
+        Store store1 = StoreFactory.create(sDesc, conn1) ;
+        
+        SDBConnection conn2 = SDBFactory.createConnection(c) ;
+        Store store2 = StoreFactory.create(sDesc, conn2) ;
+        
+        Model model1 = SDBFactory.connectDefaultModel(store1) ;
+        Model model2 = SDBFactory.connectDefaultModel(store2) ;
+        
+        Resource s = model1.createResource() ;
+        Property p = model1.createProperty("http://example/p") ;
+        
+        model1.add(s, p, "model1") ;
+        model2.add(s, p, "model2") ;
     }
 }
 
