@@ -47,27 +47,27 @@ public class StoreList
             "}") ;
     
     
-    List<Pair<Store, String>> storeList ;
+    List<Pair<String, Store>> storeList ;
     
     public StoreList(String filename)
     {
         storeList = storesByQuery(filename) ;
     }
     
-    public List<Pair<Store, String>> get()
+    public List<Pair<String, Store>> get()
     {
         return storeList ;
     }
     
-    public static List<Pair<Store, String>> stores(String fn)
+    public static List<Pair<String, Store>> stores(String fn)
     {
         return storesByQuery(fn) ;
     }
     
-    private static List<Pair<Store, String>> storesByQuery(String fn)
+    private static List<Pair<String, Store>> storesByQuery(String fn)
     {
         Model model = FileManager.get().loadModel(fn) ;
-        List<Pair<Store, String>> stores = new ArrayList<Pair<Store,String>>();
+        List<Pair<String, Store>> stores = new ArrayList<Pair<String, Store>>();
         Query query = QueryFactory.create(queryString) ;
         QueryExecution qExec = QueryExecutionFactory.create(query, model) ;
         try {
@@ -84,13 +84,13 @@ public class StoreList
         return stores ;
     }
     
-    private static void worker(List<Pair<Store, String>> data, String label, String storeDescFile)
+    private static void worker(List<Pair<String, Store>> data, String label, String storeDescFile)
     {
         Store store = StoreFactory.create(storeDescFile) ;
         if ( formatStores || StoreUtils.isHSQL(store) )
             // HSQL (in memory) needs formatting always.
             store.getTableFormatter().create() ;
-        Pair<Store, String> e = new Pair<Store, String>(store, label) ;
+        Pair<String, Store> e = new Pair<String, Store>(label, store) ;
         data.add(e) ;
     }
 }

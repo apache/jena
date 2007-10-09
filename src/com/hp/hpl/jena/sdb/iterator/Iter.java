@@ -6,6 +6,7 @@
 
 package com.hp.hpl.jena.sdb.iterator;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -14,6 +15,11 @@ public class Iter<T> implements Iterable<T>, Iterator<T>
 {
     public static <T> Iter<T> iter(Iter<T> iter)
     { return iter ; }
+    
+    public static <T> Iter<T> iter(Collection<T> collection)
+    {
+        return Iter.iter(collection.iterator()) ;
+    }
     
     public static <T> Iter<T> iter(Iterator<T> iterator)
     { 
@@ -34,8 +40,6 @@ public class Iter<T> implements Iterable<T>, Iterator<T>
     
     private Iterator<T> iterator ;
     private  Iter(Iterator<T> iterator) { this.iterator = iterator ; }
-    
-    
     
     public Set<T> toSet()
     {

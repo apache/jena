@@ -25,7 +25,6 @@ import com.hp.hpl.jena.sparql.junit.TestItem;
 import com.hp.hpl.jena.sparql.vocabulary.TestManifestX;
 import com.hp.hpl.jena.util.junit.TestFactoryManifest;
 
-
 public class QueryTestSDBFactory extends TestFactoryManifest
 {
     public static EarlReport results = null ;
@@ -39,13 +38,13 @@ public class QueryTestSDBFactory extends TestFactoryManifest
     
     public static void make(TestSuite ts, String storeList, String manifestFile)
     {
-        for ( Pair<Store, String> p : StoreList.stores(storeList) )
+        for ( Pair<String, Store> p : StoreList.stores(storeList) )
         {
-            Store store = p.car() ;
-            String label = p.cdr();
+            String label = p.car();
+            Store store = p.cdr() ;
             if ( label != null && !label.equals("") )
                 label = label+" - " ;
-            TestSuite ts2 = QueryTestSDBFactory.make(store, manifestFile, label) ;
+            TestSuite ts2 = make(store, manifestFile, label) ;
             ts.addTest(ts2) ;
         }
     }
