@@ -7,11 +7,7 @@
 package com.hp.hpl.jena.sparql.junit;
 
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
-import com.hp.hpl.jena.rdf.model.Literal;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.rdf.model.ResourceFactory;
+import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.sparql.util.Utils;
 import com.hp.hpl.jena.sparql.vocabulary.EARL;
 import com.hp.hpl.jena.sparql.vocabulary.FOAF;
@@ -43,13 +39,17 @@ public class EarlReport
      * Optional: dc:hasVersion, dc:description, homepage
      */
     
-    public EarlReport(String title, String version, String homepage)
+    public EarlReport(String name, String version, String homepage)
     {
+        String doapNS= "http://usefulinc.com/ns/doap#" ; 
         earl = ModelFactory.createDefaultModel() ;
         earl.setNsPrefix("earl", EARL.getURI()) ;
         earl.setNsPrefix("foaf", FOAF.getURI()) ;
+        earl.setNsPrefix("doap", doapNS) ;
         earl.setNsPrefix("rdf", RDF.getURI()) ;
         earl.setNsPrefix("dc", DC.getURI()) ;
+        
+        Property doapName = earl.createProperty(doapNS+"name") ;
         
         /*
         <earl:Software rdf:about="#tool">
@@ -62,8 +62,8 @@ public class EarlReport
         
         // Utils.
         system = earl.createResource(EARL.Software);
-        if ( title != null )
-            system.addProperty(DC.title, title);
+        if ( name != null )
+            system.addProperty(doapName, name);
         if ( version != null )
             system.addProperty(DCTerms.hasVersion, version);
         if ( homepage != null )
