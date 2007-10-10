@@ -9,6 +9,7 @@ package arq;
 import java.util.Iterator;
 import java.util.List;
 
+import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.rdf.model.Model;
@@ -34,6 +35,7 @@ import arq.cmdline.ModDataset;
 public class update extends CmdARQ
 {
     ArgDecl updateArg = new ArgDecl(ArgDecl.HasValue, "--update") ;
+    ArgDecl outArg = new ArgDecl(ArgDecl.HasValue, "--out") ;
     ModDataset dataset = new ModAssembler() ;
     List requests = null ;
     
@@ -50,12 +52,13 @@ public class update extends CmdARQ
     protected void processModulesAndArgs()
     {
         requests = getValues(updateArg) ;
+        
         super.processModulesAndArgs() ;
     }
     
     protected String getCommandName() { return Utils.className(this) ; }
     
-    protected String getSummary() { return getCommandName()+" --data=file --update=<query> [--out=<file>]" ; }
+    protected String getSummary() { return getCommandName()+" --data=file --update=<query>" ; }
 
     protected void exec()
     {
@@ -74,10 +77,6 @@ public class update extends CmdARQ
             execOne(filename, store) ;
         }
         
-        // Write DS
-        //ds = store.toDataset() ;
-        //DatasetGraph dsg = ds.asDatasetGraph() ;
-        
         // Writer
         IndentedWriter out = new IndentedWriter(System.out) ;
         writeDataset(out, ds) ;
@@ -88,7 +87,7 @@ public class update extends CmdARQ
     {
         out.println("(dataset") ;
         out.incIndent() ;
-        writeGraph(out, null, ds.getDefaultModel()) ;
+        writeGraph(out, ds.getDefaultModel()) ;
         for ( Iterator iter = ds.listNames() ; iter.hasNext() ; )
         {
             String uri = (String)iter.next() ;  
@@ -99,7 +98,16 @@ public class update extends CmdARQ
         out.println(")") ;
     }
     
+    private void writeGraph(IndentedWriter out, Model m)
+    { writeGraph(out, null, m.getGraph()) ; }
+    
+    private void writeGraph(IndentedWriter out, Graph g)
+    { writeGraph(out, null, g) ; }
+
     private void writeGraph(IndentedWriter out, String uri, Model m)
+    { writeGraph(out, uri, m.getGraph()) ; }
+    
+    private void writeGraph(IndentedWriter out, String uri, Graph g)
     {
         out.print("(graph") ;
         if ( uri != null )
@@ -110,7 +118,7 @@ public class update extends CmdARQ
         out.println() ;
         out.incIndent() ;
         boolean first = true ; 
-        for ( Iterator iter = m.getGraph().find(Node.ANY, Node.ANY, Node.ANY) ; iter.hasNext() ; )
+        for ( Iterator iter = g.find(Node.ANY, Node.ANY, Node.ANY) ; iter.hasNext() ; )
         {
             if ( ! first )
                 out.println();
