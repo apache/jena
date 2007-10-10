@@ -6,10 +6,6 @@
 
 package com.hp.hpl.jena.sdb.core.sqlnode;
 
-import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
-import com.hp.hpl.jena.sdb.core.sqlnode.SqlNodeVisitor;
-import com.hp.hpl.jena.sdb.core.sqlnode.SqlProject;
-import com.hp.hpl.jena.sdb.core.sqlnode.SqlTransformer;
 import com.hp.hpl.jena.sdb.store.SQLGenerator;
 import com.hp.hpl.jena.sparql.util.IndentedLineBuffer;
 
@@ -58,6 +54,7 @@ public class GenerateSQL implements SQLGenerator
     {
         if ( ! sqlNode.isProject() )
             sqlNode = SqlProject.project(sqlNode) ;
+            
         return sqlNode ;
     }
 }

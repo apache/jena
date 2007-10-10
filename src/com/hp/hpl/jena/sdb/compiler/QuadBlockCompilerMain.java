@@ -73,11 +73,10 @@ public class QuadBlockCompilerMain implements QuadBlockCompiler
         // Either it's the uniongraph ...
         if ( quads.getGraphNode().equals(Quad.unionGraph) )
             needDistinct = true ;
-        // or it's the union graph via redirected defaultGraph
-        if ( quads.getGraphNode().equals(Quad.defaultGraphNode) &&
-             request.getContext().isTrue(SDB.unionDefaultGraph))
+        // Or it's the union graph via redirected defaultGraph
+        else if ( quads.getGraphNode().equals(Quad.defaultGraphNode) &&
+                  request.getContext().isTrue(SDB.unionDefaultGraph))
             needDistinct = true ;
-        
         
         if ( needDistinct )
         {
