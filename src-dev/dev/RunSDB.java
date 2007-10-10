@@ -20,6 +20,7 @@ import java.sql.Connection;
 import arq.cmd.CmdUtils;
 
 import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.util.FileManager;
 
 import com.hp.hpl.jena.sparql.algebra.Op;
@@ -49,9 +50,9 @@ public class RunSDB
     static { CmdUtils.setLog4j() ; CmdUtils.setN3Params() ; }
     public static void main(String[]argv)
     {
-        SDBConnection.logSQLStatements = true ;
-        sdb.query.main(new String[]{"--sdb=sdb.ttl", "--query=Q.rq"}) ;
-        System.exit(0) ;
+//        SDBConnection.logSQLStatements = true ;
+//        sdb.query.main(new String[]{"--sdb=sdb.ttl", "--query=Q.rq"}) ;
+//        System.exit(0) ;
         
         // ensureProject
         //Query query = QueryFactory.create("SELECT * { ?s ?p ?o}") ;
@@ -62,7 +63,7 @@ public class RunSDB
 //        SDBConnection.logSQLExceptions = true ;
 //        SDBConnection.logSQLStatements = true ;
 
-        
+        if ( true ) { devEnsureProject() ; System.exit(0) ; }
         if ( true ) { devSelectBlock() ; System.exit(0) ; }
         if ( false ) { devRename() ; System.exit(0) ; }
 
@@ -89,7 +90,12 @@ public class RunSDB
     
     public static void devEnsureProject()
     {
-        Query query = QueryFactory.create("SELECT * { ?s <p> ?o}") ;
+        // Hit ensureProject?
+        // Constructors to read file and get a model.
+        Store store = SDBFactory.connectStore("sdb.ttl") ;
+        Model model = SDBFactory.connectDefaultModel(store) ;
+        System.out.println(model.contains(null, null, (RDFNode)null)) ;
+        System.exit(0) ;
     }
     
     public static void devSelectBlock()
