@@ -38,7 +38,7 @@ public class GenerateSQL implements SQLGenerator
         // that contribute to a SELECt statement.
         sqlNode = SqlTransformer.transform(sqlNode, new TransformSelectBlock()) ;
         
-        // Step two - turn teh SqlNode tree, withg SqlSelectBlocks in it,
+        // Step two - turn the SqlNode tree, with SqlSelectBlocks in it,
         // in an SQL string.
         SqlNodeVisitor v = makeVisitor(buff) ;
         sqlNode.visit(v) ;
