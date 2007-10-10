@@ -1,7 +1,5 @@
 ==== SSE
 
-+ Writing models
-
 + Literals and @
   Include @ into literal terminator 
   Currently, symbols can't start with a @ or ^ 
@@ -10,14 +8,7 @@
 
 + Expr: (exists (pattern ...))
   
-+ (group (vars) aggregate)
-  
-+  Assignment:
-  (assign ((?x expr) (?y expr)) --  (:= ?x expr) [is this SELECT/project?]
-     (project ...))
-  VarExprLists      
-
 + Start a collection of Writers to go with Builders.
-  Move out OpWriter , break up into pieces.
+  Move out OpWriter, break up into pieces.
   
 + SSE.parseXXX(, Prologue)

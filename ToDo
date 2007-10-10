@@ -2,7 +2,6 @@
 
 ++ ** Document "stages"
 
-
 ++ ** Document "update API"
 ++ Algebra building src-examples
 ++ Tutorial on update 
@@ -12,7 +11,7 @@ See ToDoSSE
 ----
 + SPARQL/Update - command line tools - arq.update
   ModAssembler should work with SDB - test
-  yes - but can't a Store and a DatasetStore (two possible things created).
+  yes
 
 + Better syntax as well as SQL-like: GROUP BY ... WITH ... ??
 
