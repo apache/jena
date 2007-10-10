@@ -6,16 +6,14 @@
 [] ja:loadClass "com.hp.hpl.jena.sdb.SDB" .
 sdb:DatasetStore rdfs:subClassOf ja:RDFDataset .
 
-<dataset> rdf:type sdb:DatasetStore ;
+<#dataset> rdf:type sdb:DatasetStore ;
+    sdb:store <#store> .
+
+<#store> rdf:type sdb:Store ;
     sdb:layout         "layout2" ;
-    sdb:connection     <conn> .
+    sdb:connection     <#conn> .
 
-
-<store> rdf:type sdb:Store ;
-    sdb:layout         "layout2" ;
-    sdb:connection     <conn> .
-
-<conn> rdf:type sdb:SDBConnection ;
+<#conn> rdf:type sdb:SDBConnection ;
 
      sdb:sdbHost        "localhost" ;
      sdb:sdbType        "derby" ;

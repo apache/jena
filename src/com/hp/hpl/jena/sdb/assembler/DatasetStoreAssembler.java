@@ -11,6 +11,9 @@ import com.hp.hpl.jena.assembler.Mode;
 import com.hp.hpl.jena.assembler.assemblers.AssemblerBase;
 import com.hp.hpl.jena.query.Dataset;
 import com.hp.hpl.jena.rdf.model.Resource;
+
+import com.hp.hpl.jena.sparql.util.GraphUtils;
+
 import com.hp.hpl.jena.sdb.SDBFactory;
 import com.hp.hpl.jena.sdb.StoreDesc;
 
@@ -21,7 +24,8 @@ public class DatasetStoreAssembler extends AssemblerBase implements Assembler
     @Override
     public Dataset open(Assembler a, Resource root, Mode mode)
     {
-        StoreDesc desc = storeAssem.open(a, root, mode) ;
+        Resource s = GraphUtils.getResourceValue(root, AssemblerVocab.pStore) ;
+        StoreDesc desc = storeAssem.open(a, s, mode) ;
         Dataset ds = SDBFactory.connectDataset(desc) ;
         return ds ;
     }

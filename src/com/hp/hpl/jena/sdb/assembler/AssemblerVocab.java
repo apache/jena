@@ -20,13 +20,20 @@ public class AssemblerVocab
     private static final String NS = SDB.namespace ;
     
     public static String getURI() { return NS ; } 
-    
-    public static final Resource QueryAssemblerType             = Vocab.type(NS, "Query") ;
+
+    // Types
     public static final Resource SDBConnectionAssemblerType     = Vocab.type(NS, "SDBConnection") ;
     public static final Resource StoreAssemblerType             = Vocab.type(NS, "Store") ;
     public static final Resource DatasetAssemblerType           = Vocab.type(NS, "DatasetStore") ;
     public static final Resource ModelType                      = Vocab.type(NS, "Model") ;
     public static final Resource GraphType                      = Vocab.type(NS, "Graph") ;
+
+    public static final Property pStore              = Vocab.property(NS, "store") ;
+    public static final Property pDataset            = Vocab.property(NS, "dataset") ;
+    public static final Property pGraphData          = Vocab.property(NS, "graph") ;
+    public static final Property pNamedGraph         = Vocab.property(NS, "namedGraph") ;
+
+    // ---- Experimental
     
     // ---- Commands
     public static final Property pSteps         = Vocab.property(NS, "steps") ;
@@ -39,14 +46,12 @@ public class AssemblerVocab
     public static final Property pArgValue      = Vocab.property(NS, "value") ;
 
     // Other
+    public static final Resource QueryAssemblerType             = Vocab.type(NS, "Query") ;
+
     public static final Property pQuery              = Vocab.property(NS, "query") ;
     public static final Property pQueryFile          = Vocab.property(NS, "queryFile") ;
     public static final Property pQueryString        = Vocab.property(NS, "queryString") ;
 
-    public static final Property pDataset            = Vocab.property(NS, "dataset") ;
-    public static final Property pGraphData          = Vocab.property(NS, "graph") ;
-    public static final Property pNamedGraph         = Vocab.property(NS, "namedGraph") ;
-    
     public static final Property pOutputFormat       = Vocab.property(NS, "outputFormat") ;
     //public static final Property pCustomizerClass    = Vocab.property(NS, "customizer") ;
 

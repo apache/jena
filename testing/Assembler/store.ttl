@@ -9,7 +9,7 @@
 
 [] ja:loadClass "com.hp.hpl.jena.sdb.SDB" .
 
-<store> rdf:type sdb:Store ;
+<#store> rdf:type sdb:Store ;
     sdb:layout      "layout2" ;
     sdb:connection 
     [ rdf:type sdb:SDBConnection ;

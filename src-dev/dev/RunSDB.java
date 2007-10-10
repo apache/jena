@@ -53,12 +53,14 @@ public class RunSDB
         sdb.query.main(new String[]{"--sdb=sdb.ttl", "--query=Q.rq"}) ;
         System.exit(0) ;
         
+        // ensureProject
+        //Query query = QueryFactory.create("SELECT * { ?s ?p ?o}") ;
+        
+        
         
         //runPrint() ;
 //        SDBConnection.logSQLExceptions = true ;
 //        SDBConnection.logSQLStatements = true ;
-
-        
 
         
         if ( true ) { devSelectBlock() ; System.exit(0) ; }
@@ -83,6 +85,11 @@ public class RunSDB
         
         System.err.println("Nothing ran!") ;
         System.exit(0) ;
+    }
+    
+    public static void devEnsureProject()
+    {
+        Query query = QueryFactory.create("SELECT * { ?s <p> ?o}") ;
     }
     
     public static void devSelectBlock()

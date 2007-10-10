@@ -6,22 +6,15 @@
 
 package sdb.cmd;
 
-import arq.cmd.CmdException;
 import arq.cmd.TerminationException;
 import arq.cmdline.ArgDecl;
 import arq.cmdline.CmdArgModule;
 import arq.cmdline.CmdGeneral;
 import arq.cmdline.ModDataset;
 
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.util.FileManager;
-import com.hp.hpl.jena.vocabulary.RDF;
-
 import com.hp.hpl.jena.query.Dataset;
-import com.hp.hpl.jena.query.DatasetFactory;
 
 import com.hp.hpl.jena.sdb.SDBFactory;
-import com.hp.hpl.jena.sdb.assembler.AssemblerVocab;
 
 public class ModDatasetStore extends ModDataset
 {
@@ -32,13 +25,7 @@ public class ModDatasetStore extends ModDataset
     @Override
     public Dataset createDataset()
     {
-        Model model = FileManager.get().loadModel(filename) ;
-
-        if ( model.contains(null, RDF.type, AssemblerVocab.DatasetAssemblerType) )
-            return DatasetFactory.assemble(model) ;
-        if ( model.contains(null, RDF.type, AssemblerVocab.StoreAssemblerType) )
-            return SDBFactory.connectDataset(filename) ;
-        throw new CmdException("Can't find description in "+filename) ;
+        return SDBFactory.connectDataset(filename) ;
     }
 
     public void registerWith(CmdGeneral cmdLine)

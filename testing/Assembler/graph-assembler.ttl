@@ -14,17 +14,22 @@ sdb:DatasetStore rdfs:subClassOf ja:RDFDataset .
 ## Description: default graph of an SDB store.
 
 data:graphDft rdf:type sdb:Model ;
-    sdb:dataset <dataset> .
+    sdb:dataset <#dataset> .
 
 ## Description: Named graph
 
 data:graphNamed rdf:type sdb:Model ;
     sdb:namedGraph   data:graph1 ;
-    sdb:dataset <dataset> .
+    sdb:dataset <#dataset> .
 
-## Assembler: Dataset and connection
+## Assembler: Dataset
 
-<dataset> rdf:type sdb:DatasetStore ;
+<#dataset> rdf:type sdb:DatasetStore ;
+    sdb:store <#store> .
+
+## Assembler: store and connection
+
+<#store> rdf:type sdb:Store ;
     sdb:layout      "layout2" ;
     sdb:connection 
     [ rdf:type sdb:SDBConnection ;
