@@ -6,6 +6,9 @@
 
 package com.hp.hpl.jena.sparql.engine.iterator;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
@@ -15,44 +18,32 @@ import com.hp.hpl.jena.sparql.engine.binding.Binding;
  * @version $Id: QueryIterDistinct.java,v 1.4 2007/01/02 11:19:31 andy_seaborne Exp $
  */
 
-public class QueryIterReduced extends QueryIter1
+public class QueryIterReduced extends QueryIterDistinctReduced
 {
-    Binding lastSeen = null ;
-    Binding slot = null ;       // ready to go.
+    List window = new ArrayList() ;
+    int N = 1 ;
     
     public QueryIterReduced(QueryIterator iter, ExecutionContext context)
-    { super(QueryIterFixed.create(iter, context), context)  ; }
+    { super(iter, context)  ; }
 
     protected void releaseResources()
-    { slot = null ; lastSeen = null ; }
-
-    protected boolean hasNextBinding()
     {
-        // Already waiting to go.
-        if ( slot != null )
-            return true ;
-        
-        // Always moves.
-        for ( ; getInput().hasNext() ; )
-        {
-            Binding b = getInput().nextBinding() ;
-            if ( lastSeen == null || ! b.equals(lastSeen) )
-            {
-                lastSeen = b ;
-                slot = b ;
-                return true ;
-            }
-        }
-        lastSeen = null ;
-        return false ;
+        window = null ;
+        super.releaseResources() ;
     }
 
-    protected Binding moveToNextBinding()
+    protected boolean isDuplicate(Binding b)
     {
-        Binding r = slot ;
-        slot = null ;
-        return r ;
+        return window.contains(b) ; 
     }
+    
+    protected void remember(Binding b)
+    {
+        if ( window.size() >= N )
+            window.remove(window.size()-1) ;
+        window.add(0, b) ;
+    }
+    
 }
 
 /*

@@ -1,54 +1,68 @@
 /*
- * (c) Copyright 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
 package com.hp.hpl.jena.sparql.engine.iterator;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 
-/** A QueryIterator that surpresses items already seen. 
- * Like com.hp.hpl.jena.util.iterators.UniqueExtendedIterator
- * except this one works on QueryIterators (and hence ClosableIterators)  
- * 
+/** Implementation skeleton for DISTINCT and REDUCED.
  * @author Andy Seaborne
  * @version $Id: QueryIterDistinct.java,v 1.4 2007/01/02 11:19:31 andy_seaborne Exp $
  */
 
-public class QueryIterDistinct extends QueryIterDistinctReduced
+public abstract class QueryIterDistinctReduced extends QueryIter1
 {
-    private Set seen = new HashSet() ;
+    Binding slot = null ;       // ready to go.
     
-    public QueryIterDistinct(QueryIterator iter, ExecutionContext context)
-    {
-        super(iter, context)  ;
-    }
+    public QueryIterDistinctReduced(QueryIterator iter, ExecutionContext context)
+    { super(QueryIterFixed.create(iter, context), context)  ; }
 
+    // Subclasses will want to implement this as well. 
     protected void releaseResources()
+    { slot = null ; }
+
+    final
+    protected boolean hasNextBinding()
     {
-        seen = null ;
-        super.releaseResources() ;
+        // Already waiting to go.
+        if ( slot != null )
+            return true ;
+        
+        // Always moves.
+        for ( ; getInput().hasNext() ; )
+        {
+            Binding b = getInput().nextBinding() ;
+            if ( ! isDuplicate(b) )
+            {
+                // new - remember and return
+                remember(b) ;
+                slot = b ;
+                return true ;
+            }
+        }
+        return false ;
     }
 
-    protected boolean isDuplicate(Binding binding)
+    final
+    protected Binding moveToNextBinding()
     {
-        return seen.contains(binding) ;
+        Binding r = slot ;
+        slot = null ;
+        return r ;
     }
-
-    protected void remember(Binding binding)
-    {
-        seen.add(binding) ;
-    }
+    
+    protected abstract boolean isDuplicate(Binding binding) ;
+    
+    protected abstract void remember(Binding binding) ;
 }
 
 /*
- * (c) Copyright 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

@@ -29,6 +29,7 @@ public class AlgebraGenerator
     // Helpful only to write exactly what you mean and test the full query compiler.
     boolean fixedFilterPosition = false ;
     private Context context ;
+    boolean simplifyEarly = false ;
 
     public AlgebraGenerator(Context context)
     { 
@@ -54,7 +55,7 @@ public class AlgebraGenerator
     public Op compile(Element elt)
     {
         Op op = compileElement(elt) ;
-        if ( simplify != null )
+        if ( ! simplifyEarly && simplify != null )
             op = Transformer.transform(simplify, op) ;
         return op ;
     }
@@ -305,7 +306,17 @@ public class AlgebraGenerator
     // -------- 
     
     protected Op join(Op current, Op newOp)
-    { return OpJoin.create(current, newOp) ; }
+    { 
+        if ( simplifyEarly )
+        {
+            if ( OpJoin.isJoinIdentify(current) )
+                return newOp ;
+            if ( OpJoin.isJoinIdentify(newOp) )
+                return current ;
+        }
+        
+        return OpJoin.create(current, newOp) ;
+    }
 
     private void broken(String msg)
     {

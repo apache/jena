@@ -1,4 +1,4 @@
 PREFIX : <http://example/>
 
-SELECT *
+SELECT DISTINCT ?o
 { ?x :p ?o }
