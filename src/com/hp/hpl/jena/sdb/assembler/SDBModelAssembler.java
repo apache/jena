@@ -11,14 +11,12 @@ import com.hp.hpl.jena.assembler.Mode;
 import com.hp.hpl.jena.assembler.assemblers.AssemblerBase;
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.Resource;
 
 import com.hp.hpl.jena.sparql.util.GraphUtils;
 
-import com.hp.hpl.jena.query.Dataset;
-
-import com.hp.hpl.jena.sdb.store.DatasetStoreGraph;
+import com.hp.hpl.jena.sdb.SDBFactory;
+import com.hp.hpl.jena.sdb.StoreDesc;
 
 public class SDBModelAssembler extends AssemblerBase implements Assembler
 {
@@ -38,26 +36,20 @@ public class SDBModelAssembler extends AssemblerBase implements Assembler
         Resource dataset = GraphUtils.getResourceValue(root, AssemblerVocab.pDataset) ;
         if ( dataset == null )
             throw new MissingException(root, "No dataset for model or graph") ;
-        
+        StoreDesc storeDesc = datasetAssem.openStore(a, dataset, mode) ;
+
         // Attempt to find a graph name - may be absent.
         Resource x = GraphUtils.getResourceValue(root, AssemblerVocab.pNamedGraph) ;
         if ( x != null && ! x.isURIResource() )
             throw new BadDescriptionException(root, "Graph name not a URI: "+x) ;
-
-        // Is there a better way? 
         
-        Dataset ds = (Dataset)datasetAssem.open(a, dataset, mode) ;
-        DatasetStoreGraph dsg = (DatasetStoreGraph)ds.asDatasetGraph() ;
         
         // No name - default model.
         Graph g = null ;
         if ( x == null )
-            g = dsg.getDefaultGraph() ;
+            return SDBFactory.connectDefaultModel(storeDesc) ;
         else
-            g = dsg.getGraph(x.asNode()) ;
-        
-        // Named graph
-        return ModelFactory.createModelForGraph(g) ;
+            return SDBFactory.connectNamedModel(storeDesc, x) ;
     }
 }
 

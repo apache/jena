@@ -9,25 +9,38 @@ package com.hp.hpl.jena.sdb.assembler;
 import com.hp.hpl.jena.assembler.Assembler;
 import com.hp.hpl.jena.assembler.Mode;
 import com.hp.hpl.jena.assembler.assemblers.AssemblerBase;
-import com.hp.hpl.jena.query.Dataset;
 import com.hp.hpl.jena.rdf.model.Resource;
 
 import com.hp.hpl.jena.sparql.util.GraphUtils;
+
+import com.hp.hpl.jena.query.Dataset;
 
 import com.hp.hpl.jena.sdb.SDBFactory;
 import com.hp.hpl.jena.sdb.StoreDesc;
 
 public class DatasetStoreAssembler extends AssemblerBase implements Assembler
 {
-    StoreDescAssembler storeAssem = new StoreDescAssembler() ;
+    static StoreDescAssembler storeAssem = new StoreDescAssembler() ;
     
     @Override
     public Dataset open(Assembler a, Resource root, Mode mode)
     {
-        Resource s = GraphUtils.getResourceValue(root, AssemblerVocab.pStore) ;
-        StoreDesc desc = storeAssem.open(a, s, mode) ;
+        StoreDesc desc = openStore(a, root, mode) ;
         Dataset ds = SDBFactory.connectDataset(desc) ;
         return ds ;
+    }
+    
+    /** Get the StoreDesc for this dataset */ 
+    public StoreDesc openStore(Assembler a, Resource root, Mode mode)
+    {
+        Resource s = storeResource(root) ;
+        StoreDesc desc = storeAssem.open(a, s, mode) ;
+        return desc ;
+    }
+    
+    static Resource storeResource(Resource dsAssem)
+    {
+        return GraphUtils.getResourceValue(dsAssem, AssemblerVocab.pStore) ;
     }
 }
 
