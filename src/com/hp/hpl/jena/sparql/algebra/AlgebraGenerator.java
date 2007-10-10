@@ -29,7 +29,10 @@ public class AlgebraGenerator
     // Helpful only to write exactly what you mean and test the full query compiler.
     boolean fixedFilterPosition = false ;
     private Context context ;
-    boolean simplifyEarly = false ;
+    
+    // SimplifyEarly=true is the alternative reading of the DAWG
+    // algebra translation algorithm
+    boolean simplifyEarly = false ;         // False is correct setting. 
 
     public AlgebraGenerator(Context context)
     { 

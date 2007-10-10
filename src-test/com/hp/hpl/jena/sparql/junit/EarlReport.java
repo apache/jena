@@ -7,14 +7,17 @@
 package com.hp.hpl.jena.sparql.junit;
 
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
-import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.rdf.model.Literal;
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.rdf.model.Resource;
+import com.hp.hpl.jena.rdf.model.ResourceFactory;
 import com.hp.hpl.jena.sparql.util.Utils;
 import com.hp.hpl.jena.sparql.vocabulary.EARL;
 import com.hp.hpl.jena.sparql.vocabulary.FOAF;
 import com.hp.hpl.jena.vocabulary.DC;
 import com.hp.hpl.jena.vocabulary.DCTerms;
 import com.hp.hpl.jena.vocabulary.RDF;
-import com.hp.hpl.jena.vocabulary.XSD;
 
 public class EarlReport
 {
@@ -42,19 +45,13 @@ public class EarlReport
     
     public EarlReport(String name, String version, String homepage)
     {
-        String doapNS= "http://usefulinc.com/ns/doap#" ; 
-        
         earl = ModelFactory.createDefaultModel() ;
         
         earl.setNsPrefix("earl", EARL.getURI()) ;
         earl.setNsPrefix("foaf", FOAF.getURI()) ;
-        earl.setNsPrefix("doap", doapNS) ;
         earl.setNsPrefix("rdf", RDF.getURI()) ;
         earl.setNsPrefix("dc", DC.getURI()) ;
-        earl.setNsPrefix("xsd", XSD.getURI()) ;
-        
-        Property doapName = earl.createProperty(doapNS+"name") ;
-        
+        earl.setNsPrefix("dct", DCTerms.getURI()) ;
         /*
         <earl:Software rdf:about="#tool">
           <dc:title xml:lang="en">Cool Tool</dc:title>
@@ -67,10 +64,7 @@ public class EarlReport
         // Utils.
         system = earl.createResource(EARL.Software);
         if ( name != null )
-        {
-            system.addProperty(doapName, name);
             system.addProperty(DC.title, name);
-        }
         if ( version != null )
             system.addProperty(DCTerms.hasVersion, version);
         if ( homepage != null )

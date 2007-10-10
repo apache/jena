@@ -16,8 +16,10 @@ import arq.cmd.TerminationException;
 import arq.cmdline.ArgDecl;
 import arq.cmdline.CmdLineArgs;
 
+import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.n3.IRIResolver;
 import com.hp.hpl.jena.query.ARQ;
+import com.hp.hpl.jena.rdf.model.Literal;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.sparql.engine.ref.QueryEngineQuad;
@@ -28,12 +30,16 @@ import com.hp.hpl.jena.sparql.junit.EarlReport;
 import com.hp.hpl.jena.sparql.junit.QueryTestSuiteFactory;
 import com.hp.hpl.jena.sparql.junit.SimpleTestRunner;
 import com.hp.hpl.jena.sparql.test.ARQTestSuite;
+import com.hp.hpl.jena.sparql.util.NodeFactory;
 import com.hp.hpl.jena.sparql.util.Symbol;
 import com.hp.hpl.jena.sparql.util.Utils;
+import com.hp.hpl.jena.sparql.vocabulary.DOAP;
 import com.hp.hpl.jena.sparql.vocabulary.FOAF;
 import com.hp.hpl.jena.sparql.vocabulary.TestManifest;
 import com.hp.hpl.jena.vocabulary.DC;
 import com.hp.hpl.jena.vocabulary.DCTerms;
+import com.hp.hpl.jena.vocabulary.RDF;
+import com.hp.hpl.jena.vocabulary.XSD;
 
 
 /** A program to execute query test suites
@@ -243,8 +249,13 @@ public class qtest
     
     static void oneManifestEarl(String testManifest)
     {
+        String name =  "ARQ" ;
+        String releaseName =  "ARQ2" ;
+        String version = "ARQ-2.2-dev" ; //ARQ.VERSION ;
+        String homepage = "http://jena.sf.net/ARQ" ;
+        
         // Include information later.
-        EarlReport report = new EarlReport("ARQ", ARQ.VERSION, "http://jena.sf.net/ARQ") ;
+        EarlReport report = new EarlReport(name, version, homepage) ;
         QueryTestSuiteFactory.results = report ;
         
         Model model = report.getModel() ;
@@ -259,12 +270,31 @@ public class qtest
                         .addProperty(DCTerms.isPartOf, jena) ;
         
         // Andy wrote the test software (updates the thing being tested as well as they are the same). 
-        Resource who = report.getModel().createResource(FOAF.Person)
+        Resource who = model.createResource(FOAF.Person)
                                 .addProperty(FOAF.name, "Andy Seaborne")
                                 .addProperty(FOAF.homepage, 
-                                             model.createResource("http://www.hpl.hp.com/people/afs")) ; 
+                                             model.createResource("http://www.hpl.hp.com/people/afs")) ;
+        
         Resource reporter = report.getReporter() ;
         reporter.addProperty(DC.creator, who) ;
+
+        model.setNsPrefix("doap", DOAP.getURI()) ; 
+        model.setNsPrefix("xsd", XSD.getURI()) ;
+        
+        // DAWG specific stuff.
+        Resource system = report.getSystem() ;
+        system.addProperty(RDF.type, DOAP.Project) ;
+        system.addProperty(DOAP.name, name) ;
+        system.addProperty(DOAP.homepage, homepage) ;
+        system.addProperty(DOAP.maintainer, who) ;
+        
+        Resource release = model.createResource(DOAP.Version) ;
+        system.addProperty(DOAP.release, release) ;
+        
+        Node today_node = NodeFactory.todayAsDate() ;
+        Literal today = model.createTypedLiteral(today_node.getLiteralLexicalForm(), today_node.getLiteralDatatype()) ;
+        release.addProperty(DOAP.created, today) ;
+        release.addProperty(DOAP.name, releaseName) ;      // Again
         
         TestSuite suite = QueryTestSuiteFactory.make(testManifest) ;
         SimpleTestRunner.runSilent(suite) ;
