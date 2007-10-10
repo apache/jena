@@ -52,6 +52,7 @@ public class GenerateSQL implements SQLGenerator
     
     public static SqlNode ensureProject(SqlNode sqlNode)
     {
+        // Merge with SqlSelectBlock?
         if ( ! sqlNode.isProject() )
             sqlNode = SqlProject.project(sqlNode) ;
             
