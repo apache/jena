@@ -277,8 +277,8 @@ public class HttpQuery extends Params
     public String toString()
     {
         String s = httpString() ;
-        if ( s != null || s.length() > 0 )
-            return serviceURL+"?"+httpString() ;
+        if ( s != null && s.length() > 0 )
+            return serviceURL+"?"+s ;
         return serviceURL ;
     }
 }
