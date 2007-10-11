@@ -23,4 +23,7 @@
        [  mf:name    "Coalesce - 2" ;
           mf:action [ qt:query <opt-coalesce-2.rq> ; qt:data <data-2.ttl> ] ;
        ]
+       [  mf:name    "Coalesce - 3" ;
+          mf:action [ qt:query <opt-coalesce-3.rq> ; qt:data <data-2.ttl> ] ;
+       ]
     ).
