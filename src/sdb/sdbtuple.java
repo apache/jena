@@ -88,11 +88,11 @@ public class sdbtuple extends CmdArgsDB
             cmdError("No tables specified", true) ;
         
         @SuppressWarnings("unchecked")
-        List<String>x = (List<String>)getPositional() ;
+        List<String>x = getPositional() ;
         tables.addAll(x) ;
         
         @SuppressWarnings("unchecked")
-        List<String>y = (List<String>)getValues(argDeclCmdTable) ;
+        List<String>y = getValues(argDeclCmdTable) ;
         tables.addAll(y) ;
         
         cmdPrint = contains(argDeclCmdPrint) ;

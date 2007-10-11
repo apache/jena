@@ -218,7 +218,7 @@ public class TransformSDB extends TransformCopy
         {
             OpProject p = (OpProject)subOp ;
             @SuppressWarnings("unchecked")
-            List<Var> pv = (List<Var>)p.getVars() ;
+            List<Var> pv = p.getVars() ;
             project = pv ;
             subOp = ((OpProject)subOp).getSubOp() ;
         }
@@ -244,7 +244,7 @@ public class TransformSDB extends TransformCopy
         
         ExprList exprs = opFilter.getExprs() ;
         @SuppressWarnings("unchecked")
-        List<Expr> x = (List<Expr>)exprs.getList() ;
+        List<Expr> x = exprs.getList() ;
         for ( Expr  expr : x )
         {
             ConditionCompiler cc = new RegexCompiler() ;
@@ -258,7 +258,7 @@ public class TransformSDB extends TransformCopy
     private Set<Var> getVarsInFilter(Expr expr)
     {
         @SuppressWarnings("unchecked")
-        Set<Var> vars = (Set<Var>)expr.getVarsMentioned() ;
+        Set<Var> vars = expr.getVarsMentioned() ;
         return vars ;
     }
 }

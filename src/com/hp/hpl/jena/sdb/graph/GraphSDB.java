@@ -214,7 +214,7 @@ public class GraphSDB extends GraphBase implements Graph
         
         @Override
         public void remove()
-        { delete((Triple)current) ; }
+        { delete(current) ; }
     }
     
     public StoreLoader getBulkLoader() { return store.getLoader() ; }

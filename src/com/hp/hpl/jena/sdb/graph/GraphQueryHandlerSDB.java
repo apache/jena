@@ -6,10 +6,7 @@
 
 package com.hp.hpl.jena.sdb.graph;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
@@ -77,10 +74,11 @@ public class GraphQueryHandlerSDB extends SimpleQueryHandler
     class BindingQueryPlanSDB implements BindingQueryPlan
     {
         // Iterator of domain objects
-        @SuppressWarnings("unchecked")
+        
         public ExtendedIterator executeBindings()
         {
-            Set<Var> vars = (Set<Var>)OpVars.allVars(op) ;
+            @SuppressWarnings("unchecked")
+            Set<Var> vars = OpVars.allVars(op) ;
             Plan plan = QueryEngineSDB.getFactory().create(op, datasetStore, null, null) ;
             QueryIterator qIter = plan.iterator() ;
 
@@ -100,7 +98,9 @@ public class GraphQueryHandlerSDB extends SimpleQueryHandler
                     return d ;
                 }
             };
-            return WrappedIterator.create(Stream.map(qIter, b2d)) ;
+            @SuppressWarnings("unchecked")
+            Iterator it = Stream.map(qIter, b2d) ;
+            return WrappedIterator.create(it) ;
         }
     }
 }

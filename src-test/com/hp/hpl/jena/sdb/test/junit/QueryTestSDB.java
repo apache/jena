@@ -64,9 +64,9 @@ public class QueryTestSDB extends EarlTestCase
         currentTestName = getName() ;
         
         @SuppressWarnings("unchecked")
-        final List<String> filenamesDft = (List<String>)item.getDefaultGraphURIs() ;
+        final List<String> filenamesDft = item.getDefaultGraphURIs() ;
         @SuppressWarnings("unchecked")
-        final List<String> filenamesNamed = (List<String>)item.getNamedGraphURIs() ;
+        final List<String> filenamesNamed = item.getNamedGraphURIs() ;
         
         // Same as last time - skip.
         if ( lastDftLoaded.equals(filenamesDft) && lastNamedLoaded.equals(filenamesNamed) )

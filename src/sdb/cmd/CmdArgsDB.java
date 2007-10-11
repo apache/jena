@@ -56,7 +56,7 @@ public abstract class CmdArgsDB extends CmdGeneral
         SDB.init() ;                // Gets called anyway by Store assembler processing.
         AssemblerVocab.init() ;     // Call to install the assemblers
         @SuppressWarnings("unchecked")
-        List<String> positionalArgs = (List<String>)super.getPositional() ;
+        List<String> positionalArgs = super.getPositional() ;
         try {
             execCmd(positionalArgs) ;
         }

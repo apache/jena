@@ -43,7 +43,7 @@ public class VarFinder
         {
             slot(quadPattern.getGraphNode()) ;
             @SuppressWarnings("unchecked")
-            List<Quad> quads = (List<Quad>)quadPattern.getQuads() ;
+            List<Quad> quads = quadPattern.getQuads() ;
             for ( Quad quad : quads )
             {
                 //slot(quad.getGraph()) ;
@@ -131,7 +131,7 @@ public class VarFinder
         public void visit(OpQuadPattern quadPattern)
         {
             @SuppressWarnings("unchecked")
-            List<Quad> quads = (List<Quad>)quadPattern.getQuads() ;
+            List<Quad> quads = quadPattern.getQuads() ;
             for ( Quad quad : quads )
             {
                 if ( quad.getGraph().equals(var) )      { result = true ; return ; }

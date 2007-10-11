@@ -79,7 +79,7 @@ public class sdbprint extends CmdArgsDB
         
         printSQL = contains(argDeclPrintSQL) ;
         @SuppressWarnings("unchecked")
-        List<String> strList = (List<String>)getValues(argDeclPrint) ;
+        List<String> strList = getValues(argDeclPrint) ;
         for ( String arg : strList )
         {
             if ( arg.equalsIgnoreCase("query"))         { printQuery = true ; }
