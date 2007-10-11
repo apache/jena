@@ -133,7 +133,7 @@ abstract class ExprNode
         {
             Q_Var v = (Q_Var)this ;
             // Convert to Var as used by the rest of ARQ
-            acc.add(Var.alloc(((Q_Var)v).getName())) ;
+            acc.add(Var.alloc(v.getName())) ;
             return ;
         }
 
