@@ -2,14 +2,8 @@ PREFIX  rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX  :       <http://example/>
 PREFIX  dc:     <http://purl.org/dc/elements/1.1/>
 
-SELECT * # ?p ( 2*count(distinct ?t) AS ?cd) 
+SELECT (?p*4 AS ?q) (count(*) AS ?cd) 
 {
-    # :x2 has :p = 2 so UNION is asymmetric in what it generates
-    { ?x rdf:type :X . } UNION { ?x rdf:type :X . FILTER (?x != :x2 )}
-    ?x rdf:type ?t .
-    OPTIONAL { ?x :p ?p . }
+    :x :p ?p
     OPTIONAL { ?x :r ?r . }
 }
-GROUP BY ?p (1/?p AS ?q)
-#HAVING (count(*) > 1)
-## # ORDER BY ?q ?count
