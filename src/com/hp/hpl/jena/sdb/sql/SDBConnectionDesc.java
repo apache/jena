@@ -9,7 +9,6 @@ package com.hp.hpl.jena.sdb.sql;
 
 import com.hp.hpl.jena.assembler.assemblers.AssemblerBase;
 import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.sdb.SDBException;
 import com.hp.hpl.jena.sdb.assembler.AssemblerVocab;
@@ -47,10 +46,9 @@ public class SDBConnectionDesc
         return worker(m) ;
     }
     
-    private static SDBConnectionDesc extract(Model m)
+    public static SDBConnectionDesc read(Model m)
     {
-        Model mDup = ModelFactory.createDefaultModel() ;
-        return worker(mDup) ;
+        return worker(m) ;
     }
     
     private static SDBConnectionDesc worker(Model m)

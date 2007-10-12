@@ -1,31 +1,62 @@
 SDB ToDo list (and general notes)
 =================================
 
-== Wiki
+==== Wiki
 + Document assembler for dataset on wiki
   And model assembler
 + Break out the merge query section into a separate wiki page.
 
-== Tests
+==== Tests
 
-== Development
+?? Restruct as run-per-store
+?? Run-per-store for all non-Q tests.
+   May need to hack JUnit 4 to get naming to work.
+   TestEnv.getStore() -> Store
+   For load-general?
++ Test: Dataset description + JDBC connection for pooling.
+
+==== Development
+
++ Dataset description+connection for pooling.
+
+== Major
 
 (Post v1.0)
 + Generalise target table beyond triples/quads (e.g. the metatable)
   URI => handler(table name, special code)
+  Reduce to one table per property => vertical!!
+  S/P=>O
 
-+ Merge commands with ARQ
-    arq.update -- Update commands from SPARQL/Update
-      Store as GraphStore
-    sdb.query -- --set and --sdb?
++ Loader with wacky "rules"
+
++ "External" graphs vs external indexes.
+  e.g. document store graph
+  Order matters more as graphs.
 
 + Slice - need to abstract syntax for different DBs
 
 + Graph management:
     Graphs loaded
-    Delete graph
+    Delete graph (can we make this anymore efficient?)
     Add new graph (and load of unknown graph fails?)
     Replace graph
+      Delete model, Clear model, Create model
+      Only load is model exists?
+      Check in GraphSDB
+    Need a "graph ids" table
+    
++ Value testing (?? role)
+  Target FILTER and generative indexes
+ 
+== Minor
+
++ Test sorting out
+
+
++ Merge commands with ARQ
+    arq.update -- Update commands from SPARQL/Update
+      Store as GraphStore
+    sdb.query -- --set and --sdb?
   
 + StoreLoader => StoreLoaderPlus.
 + LoaderTuplesNodes uses reflection on constructors.  OneTuple loader broken by this.
@@ -42,11 +73,6 @@ SDB ToDo list (and general notes)
     SqlRename - rename, aliasing but also only some cols 
   See TransformSDB for more. 
 
-+ What about bulk add/delete of whole graphs? 
-  esp removal of a complete named graph.
-  Does bulk delete of a named graph work more efficiently? Is it worth it?
-    Generalize: delect by BGP.
-
 + New SQLgenerator
     IJ-R-T => IJ(r)-T is done specially in old generator? 
     COALESCE and SqlSelectBlocks
@@ -62,10 +88,7 @@ SDB ToDo list (and general notes)
 
 + OpUnion
 
-== Alt layouts
-
-+ Layout3 : property tables : vertical partition
-   + simple, general version - per propety table - no ?p (except by massive union or separate client processing)
+==== Notes
 
 == Pattern table and inference
 
@@ -81,13 +104,6 @@ SDB ToDo list (and general notes)
     Else need SELECT DISTINCT subquery.
   Reduce data?  is there always a minimum?  No - but synthetic?
   Or nested SELECT DISTINCT in SQL.
-
-== Graph Management
-
-  Delete model, Clear model, Create model
-    Only load is model exists?
-    Check in GraphSDB
-  Need a "graph ids" table
 
 == Value tables and FILTERs
 

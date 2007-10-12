@@ -85,6 +85,14 @@ public class SDBFactory
     { return SDBConnectionFactory.createJDBC(configFile) ; }
     
     /**
+     * Create JDBC connection associated with the SDB connection description in a model.
+     * @param model        Model
+     * @return Connection
+     */
+    public static Connection createSqlConnection(Model model)
+    { return SDBConnectionFactory.createJDBC(model) ; }
+    
+    /**
      * Connect to a store, based on store and connection descriptions in a file. 
      * @param configFile        Filename for assembler for Store and SDBConenction
      * @return Store
@@ -148,6 +156,15 @@ public class SDBFactory
      */
     public static Dataset connectDataset(SDBConnection sdbConnection, StoreDesc desc)
     { return DatasetStore.create(connectStore(sdbConnection, desc)) ; }
+    
+    /**
+     * Connect to the RDF dataset in a store, using existing JDBC connection and a store description.
+     * @param jdbcConnection    JDBC connection
+     * @param desc              Store description object
+     * @return Dataset
+     */
+    public static Dataset connectDataset(Connection jdbcConnection, StoreDesc desc)
+    { return DatasetStore.create(connectStore(jdbcConnection, desc)) ; }
     
     /**
      * Connect to the RDF dataset in a store, based on a Store assembler file.
