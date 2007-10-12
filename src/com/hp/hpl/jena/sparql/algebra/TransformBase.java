@@ -26,7 +26,6 @@ public class TransformBase implements Transform
     
     public Op transform(OpExt opExt)                        { return opExt ; }
     public Op transform(OpNull opNull)                      { return opNull ; }
-    public Op transform(OpAssign opAssign)                  { return opAssign ; }
     
     public Op transform(OpList opList, Op subOp)            { return opList ; }
     public Op transform(OpOrder opOrder, Op subOp)          { return opOrder ; }
@@ -34,6 +33,7 @@ public class TransformBase implements Transform
     public Op transform(OpDistinct opDistinct, Op subOp)    { return opDistinct ; }
     public Op transform(OpReduced opReduced, Op subOp)      { return opReduced ; }
     public Op transform(OpSlice opSlice, Op subOp)          { return opSlice ; }
+    public Op transform(OpAssign opAssign, Op subOp)        { return opAssign ; }
     public Op transform(OpGroupAgg opGroupAgg, Op subOp)    { return opGroupAgg ; }
 }
 

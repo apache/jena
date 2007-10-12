@@ -15,7 +15,6 @@ public interface Transform
     public Op transform(OpDatasetNames dsNames) ;
     public Op transform(OpQuadPattern quadPattern) ;
     public Op transform(OpNull opNull) ;
-    public Op transform(OpAssign opAssign) ;
     
     public Op transform(OpFilter opFilter, Op subOp) ;
     public Op transform(OpGraph opGraph, Op subOp) ;
@@ -31,6 +30,7 @@ public interface Transform
     public Op transform(OpList opList, Op subOp) ;
     public Op transform(OpOrder opOrder, Op subOp) ;
     public Op transform(OpProject opProject, Op subOp) ;
+    public Op transform(OpAssign opAssign, Op subOp) ;
     public Op transform(OpDistinct opDistinct, Op subOp) ;
     public Op transform(OpReduced opReduced, Op subOp) ;
     public Op transform(OpSlice opSlice, Op subOp) ;

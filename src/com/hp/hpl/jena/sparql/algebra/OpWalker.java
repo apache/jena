@@ -80,7 +80,7 @@ public class OpWalker
         { visit0(opNull) ; }
 
         public void visit(OpAssign opAssign)
-        { visit0(opAssign) ; }
+        { visit1(opAssign) ; }
 
         public void visit(OpList opList)
         { visit1(opList) ; }

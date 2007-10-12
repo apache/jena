@@ -109,9 +109,6 @@ public class Transformer
         public void visit(OpNull opNull)
         { visit0(opNull) ; }
         
-        public void visit(OpAssign opAssign)
-        { visit0(opAssign) ; }
-        
         public void visit(OpList opList)
         { visit1(opList) ; }
         
@@ -126,6 +123,9 @@ public class Transformer
         
         public void visit(OpReduced opReduced)
         { visit1(opReduced) ; }
+        
+        public void visit(OpAssign opAssign)
+        { visit1(opAssign) ; }
         
         public void visit(OpSlice opSlice)
         { visit1(opSlice) ; }

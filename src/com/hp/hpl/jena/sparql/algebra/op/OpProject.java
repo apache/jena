@@ -29,6 +29,7 @@ public class OpProject extends OpModifier
         project = new VarExprList(vars) ;
     }
     
+    // Split into (OpProject (OpAssign ...))
     public OpProject(Op subOp, VarExprList project)
     {
         super(subOp) ;
