@@ -63,6 +63,8 @@ public class BuilderOp
         dispatch.put(Tags.tagProject, buildProject) ;
         dispatch.put(Tags.tagDistinct, buildDistinct) ;
         dispatch.put(Tags.tagReduced, buildReduced) ;
+        dispatch.put(Tags.tagAssign, buildAssign) ;
+        dispatch.put(Tags.symAssign, buildAssign) ;
         dispatch.put(Tags.tagSlice, buildSlice) ;
 
         dispatch.put(Tags.tagTable, buildTable) ;
@@ -384,6 +386,19 @@ public class BuilderOp
             return new OpReduced(sub) ;
         }
     } ;
+
+    final protected Build buildAssign = new Build()
+    {
+        public Op make(ItemList list)
+        {
+            BuilderBase.checkLength(3, list, "assign") ;
+            VarExprList x = BuilderExpr.buildNamedExprList(list.get(1).getList()) ; 
+            Op sub = build(list, 2) ;
+            return new OpAssign(sub, x) ;
+        }
+    } ;
+
+    
 
     final protected Build buildSlice = new Build()
     {

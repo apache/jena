@@ -14,13 +14,20 @@ import com.hp.hpl.jena.sparql.core.VarExprList;
 import com.hp.hpl.jena.sparql.expr.Expr;
 import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 
-public class OpAssign extends OpModifier // Op1?
+public class OpAssign extends Op1
 {
-    private VarExprList assignments = new VarExprList() ;
+    private VarExprList assignments ;
     
-    private OpAssign(Op subOp)
+    public OpAssign(Op subOp)
     {
         super(subOp) ;
+        assignments = new VarExprList() ;
+    }
+    
+    public OpAssign(Op subOp, VarExprList exprs)
+    {
+        super(subOp) ;
+        assignments = exprs ;
     }
     
     public String getName() { return ":=" ; }
@@ -31,18 +38,14 @@ public class OpAssign extends OpModifier // Op1?
     public VarExprList getVarExprList() { return assignments ; }
 
     public int hashCode()
-    {
-        return 0 ;
-    }
+    { return assignments.hashCode() ; }
 
     public void visit(OpVisitor opVisitor)
-    //{ opVisitor.visit(this) ; }
-    {}
+    { opVisitor.visit(this) ; }
 
     public Op copy(Op subOp)
     {
-        OpAssign op = new OpAssign(subOp) ;
-        op.assignments.addAll(getVarExprList()) ;
+        OpAssign op = new OpAssign(subOp, new VarExprList(getVarExprList())) ;
         return op ;
     }
 

@@ -48,6 +48,8 @@ public class Tags
     static public final String tagProject       = "project" ;
     static public final String tagDistinct      = "distinct" ;
     static public final String tagReduced       = "reduced" ;
+    static public final String tagAssign        = "assign" ;
+    static public final String symAssign        = ":=" ;
     static public final String tagSlice         = "slice" ;
     
     // Expressions

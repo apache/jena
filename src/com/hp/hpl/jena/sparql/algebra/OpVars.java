@@ -123,8 +123,11 @@ public class OpVars
             acc.clear() ;
             acc.addAll(opProject.getVars()) ;
         }
-
-
+        
+        public void visit(OpAssign opAssign)
+        {
+            acc.addAll(opAssign.getVarExprList().getVars()) ;
+        }
     }
 
     private static void addVarsFromTriple(Set acc, Triple t)

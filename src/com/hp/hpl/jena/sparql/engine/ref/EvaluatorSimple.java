@@ -162,6 +162,13 @@ class EvaluatorSimple implements Evaluator
         return new TableN(qIter) ;
     }
 
+    public Table assign(Table table, VarExprList exprs)
+    {
+        QueryIterator qIter = table.iterator(getExecContext()) ;
+        qIter = new QueryIterExtend(qIter, exprs, getExecContext()) ;
+        return new TableN(qIter) ;
+    }
+
     public Table unit()
     {
         return TableFactory.createUnit() ;

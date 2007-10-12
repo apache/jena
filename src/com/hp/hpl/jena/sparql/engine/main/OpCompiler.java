@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import com.hp.hpl.jena.query.QueryExecException;
 import com.hp.hpl.jena.sparql.ARQNotImplemented;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.op.*;
@@ -18,13 +17,13 @@ import com.hp.hpl.jena.sparql.core.BasicPattern;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.iterator.*;
-import com.hp.hpl.jena.sparql.engine.main.iterator.QueryIterGraph;
-import com.hp.hpl.jena.sparql.engine.main.iterator.QueryIterJoin;
-import com.hp.hpl.jena.sparql.engine.main.iterator.QueryIterLeftJoin;
-import com.hp.hpl.jena.sparql.engine.main.iterator.QueryIterOptionalIndex;
-import com.hp.hpl.jena.sparql.engine.main.iterator.QueryIterService;
-import com.hp.hpl.jena.sparql.engine.main.iterator.QueryIterUnion;
-import com.hp.hpl.jena.sparql.expr.*;
+import com.hp.hpl.jena.sparql.engine.main.iterator.*;
+import com.hp.hpl.jena.sparql.expr.Expr;
+import com.hp.hpl.jena.sparql.expr.ExprBuild;
+import com.hp.hpl.jena.sparql.expr.ExprList;
+import com.hp.hpl.jena.sparql.expr.ExprWalker;
+
+import com.hp.hpl.jena.query.QueryExecException;
 
 
 public class OpCompiler
@@ -331,8 +330,7 @@ public class OpCompiler
     QueryIterator compile(OpAssign opAssign, QueryIterator input)
     {
         QueryIterator qIter = compileOp(opAssign.getSubOp(), input) ;
-        if ( true ) new ARQNotImplemented("Compile OpAssign") ;
-        //qIter = new QueryIterReduced(qIter, execCxt) ;
+        qIter = new QueryIterExtend(qIter, opAssign.getVarExprList(), execCxt) ;
         return qIter ;
     }
 

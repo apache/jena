@@ -33,6 +33,12 @@ public class VarExprList
         this.exprs = new HashMap() ;
     }
     
+    public VarExprList(VarExprList other)
+    {
+        this.vars = new ArrayList(other.vars) ; 
+        this.exprs = new HashMap(other.exprs) ;
+    }
+
     public VarExprList()
     {
         this.vars = new ArrayList() ;
