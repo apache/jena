@@ -26,6 +26,7 @@ public class TransformBase implements Transform
     
     public Op transform(OpExt opExt)                        { return opExt ; }
     public Op transform(OpNull opNull)                      { return opNull ; }
+    public Op transform(OpAssign opAssign)                  { return opAssign ; }
     
     public Op transform(OpList opList, Op subOp)            { return opList ; }
     public Op transform(OpOrder opOrder, Op subOp)          { return opOrder ; }

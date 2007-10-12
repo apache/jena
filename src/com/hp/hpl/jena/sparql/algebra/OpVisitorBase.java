@@ -51,6 +51,9 @@ public class OpVisitorBase implements OpVisitor
     public void visit(OpNull opNull)
     {}
 
+    public void visit(OpAssign opAssign)
+    {}
+
     public void visit(OpList opList)
     {}
 

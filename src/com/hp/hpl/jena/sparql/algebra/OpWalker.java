@@ -22,84 +22,86 @@ public class OpWalker
 
         public Walker(OpVisitor visitor) { this.visitor = visitor ; }
         
-        protected void visitX(Op2 op)
+        protected void visit2(Op2 op)
         {
             op.getLeft().visit(this) ;
             op.getRight().visit(this) ;
             op.visit(visitor) ;        
         }
         
-        protected void visitX(Op1 op)
+        protected void visit1(Op1 op)
         {
             op.getSubOp().visit(this) ;
             op.visit(visitor) ;        
         }
         
-        protected void visitX(Op0 op)         
+        protected void visit0(Op0 op)         
         {  
             op.visit(visitor) ; 
         }
         
         public void visit(OpBGP opBGP)
-        { visitX(opBGP) ; }
+        { visit0(opBGP) ; }
 
         public void visit(OpJoin opJoin)
-        { visitX(opJoin) ; }
-        
+        { visit2(opJoin) ; }
 
         public void visit(OpLeftJoin opLeftJoin)
-        { visitX(opLeftJoin) ; }
+        { visit2(opLeftJoin) ; }
 
         public void visit(OpDiff opDiff)
-        { visitX(opDiff) ; }
+        { visit2(opDiff) ; }
 
         public void visit(OpUnion opUnion)
-        { visitX(opUnion) ; }
+        { visit2(opUnion) ; }
 
         public void visit(OpFilter opFilter)
-        { visitX(opFilter) ; }
+        { visit1(opFilter) ; }
 
         public void visit(OpGraph opGraph)
-        { visitX(opGraph) ; }
+        { visit1(opGraph) ; }
 
         public void visit(OpService opService)
-        { visitX(opService) ; }
+        { visit1(opService) ; }
 
         public void visit(OpQuadPattern quadPattern)
-        { visitX(quadPattern) ; }
+        { visit0(quadPattern) ; }
 
         public void visit(OpDatasetNames dsNames)
-        { visitX(dsNames) ; }
+        { visit0(dsNames) ; }
 
         public void visit(OpTable opUnit)
-        { opUnit.visit(visitor) ; }
+        { visit0(opUnit) ; }
 
         public void visit(OpExt opExt)
         { opExt.visit(visitor) ; }
 
         public void visit(OpNull opNull)
-        { opNull.visit(visitor) ; }
+        { visit0(opNull) ; }
+
+        public void visit(OpAssign opAssign)
+        { visit0(opAssign) ; }
 
         public void visit(OpList opList)
-        { visitX(opList) ; }
+        { visit1(opList) ; }
 
         public void visit(OpOrder opOrder)
-        { visitX(opOrder) ; }
+        { visit1(opOrder) ; }
 
         public void visit(OpProject opProject)
-        { visitX(opProject) ; }
+        { visit1(opProject) ; }
 
         public void visit(OpReduced opReduced)
-        { visitX(opReduced) ; }
+        { visit1(opReduced) ; }
 
         public void visit(OpDistinct opDistinct)
-        { visitX(opDistinct) ; }
+        { visit1(opDistinct) ; }
 
         public void visit(OpSlice opSlice)
-        { visitX(opSlice) ; }
+        { visit1(opSlice) ; }
 
         public void visit(OpGroupAgg opGroupAgg)
-        { visitX(opGroupAgg) ; }
+        { visit1(opGroupAgg) ; }
     }
 }
 

@@ -201,6 +201,9 @@ public class OpAsQuery
         public void visit(OpNull opNull)
         { throw new ARQNotImplemented("OpNull") ; }
 
+        public void visit(OpAssign opAssign)
+        { throw new ARQNotImplemented("OpAssign") ; }
+
         public void visit(OpList opList)
         { /* No action */ }
 

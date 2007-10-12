@@ -35,17 +35,13 @@ public class OpAssign extends Op0
         return 0 ;
     }
 
-//  public Op apply(Transform transform)
-//  { return transform.transform(this) ; }
-//
-//  public void visit(OpVisitor opVisitor)
-//  { opVisitor.visit(this) ; }
-
     public Op apply(Transform transform)
-    { return null ; }
+    { return transform.transform(this) ; }
+    //{ return null ; }
 
     public void visit(OpVisitor opVisitor)
-    { }
+    //{ opVisitor.visit(this) ; }
+    {}
 
     public Op copy()
     {

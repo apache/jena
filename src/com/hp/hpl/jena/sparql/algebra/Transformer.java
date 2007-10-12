@@ -109,6 +109,9 @@ public class Transformer
         public void visit(OpNull opNull)
         { visit0(opNull) ; }
         
+        public void visit(OpAssign opAssign)
+        { visit0(opAssign) ; }
+        
         public void visit(OpList opList)
         { visit1(opList) ; }
         
