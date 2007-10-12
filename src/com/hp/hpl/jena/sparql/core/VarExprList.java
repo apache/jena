@@ -8,6 +8,7 @@ package com.hp.hpl.jena.sparql.core;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -78,6 +79,16 @@ public class VarExprList
             throw new ARQInternalErrorException("Attempt to assign an expression again") ;
         add(var) ; 
         exprs.put(var, expr) ;
+    }
+    
+    public void addAll(VarExprList other)
+    {
+        for ( Iterator iter = other.vars.iterator() ; iter.hasNext() ; )
+        {
+            Var v = (Var)iter.next () ;
+            Expr e = other.getExpr(v) ;
+            add(v, e) ;
+        }
     }
 
     public int size() { return vars.size() ; }

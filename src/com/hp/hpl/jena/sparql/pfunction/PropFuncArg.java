@@ -36,7 +36,9 @@ public class PropFuncArg extends PrintSerializableBase
     private Node arg = null ;
     
     public PropFuncArg(List argList, Node arg)
-    { 
+    {
+        // arg is always the argument, which may be a list in argList.
+        // If it's a list, remember that.
         if ( argList == null )
         {
             this.arg = arg ;
