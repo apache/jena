@@ -15,6 +15,7 @@ import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.query.QueryExecException;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException;
+import com.hp.hpl.jena.sparql.ARQNotImplemented;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.OpVisitor;
 import com.hp.hpl.jena.sparql.algebra.Table;
@@ -197,6 +198,14 @@ public class Eval
         {
             Table table = eval(opSlice.getSubOp()) ;
             table = evaluator.slice(table, opSlice.getStart(), opSlice.getLength()) ;
+            push(table) ;
+        }
+
+        public void visit(OpAssign opAssign)
+        {
+            Table table = eval(opAssign.getSubOp()) ;
+            if ( true ) throw new ARQNotImplemented("OpAssign") ;
+            //table = evaluator.assign(table) ;
             push(table) ;
         }
 

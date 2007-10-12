@@ -24,7 +24,6 @@ public interface OpVisitor
     public void visit(OpTable opTable) ;
     public void visit(OpExt opExt) ;
     public void visit(OpNull opNull) ;
-    //public void visit(OpAssign opAssign) ;
     
     public void visit(OpList opList) ;
     public void visit(OpOrder opOrder) ;
@@ -32,6 +31,7 @@ public interface OpVisitor
     public void visit(OpReduced opReduced) ;
     public void visit(OpDistinct opDistinct) ;
     public void visit(OpSlice opSlice) ;
+    public void visit(OpAssign opAssign) ;
     public void visit(OpGroupAgg opGroupAgg) ;
     
 }

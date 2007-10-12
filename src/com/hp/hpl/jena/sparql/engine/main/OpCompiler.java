@@ -328,6 +328,14 @@ public class OpCompiler
         return qIter ;
     }
 
+    QueryIterator compile(OpAssign opAssign, QueryIterator input)
+    {
+        QueryIterator qIter = compileOp(opAssign.getSubOp(), input) ;
+        if ( true ) new ARQNotImplemented("Compile OpAssign") ;
+        //qIter = new QueryIterReduced(qIter, execCxt) ;
+        return qIter ;
+    }
+
     static QueryIterator root(ExecutionContext execCxt)
     {
         return QueryIterRoot.create(execCxt) ;

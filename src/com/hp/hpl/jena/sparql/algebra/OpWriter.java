@@ -431,6 +431,13 @@ public class OpWriter
             visitOp1(opReduced) ;
         }
         
+        public void visit(OpAssign opAssign)
+        {
+            start(opAssign, NoNL) ;
+            writeNamedExprList(opAssign.getVarExprList()) ;
+            finish(opAssign) ;
+        }
+        
         public void visit(OpSlice opSlice)
         { 
             start(opSlice, NoNL) ;

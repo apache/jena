@@ -4,6 +4,8 @@
   Include @ into literal terminator 
   Currently, symbols can't start with a @ or ^ 
 
++ OpAssign
+
 + test another form -- (debug FOO)
 
 + Expr: (exists (pattern ...))
