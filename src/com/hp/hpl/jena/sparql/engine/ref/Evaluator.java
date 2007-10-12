@@ -31,7 +31,7 @@ public interface Evaluator
     
     public Table order(Table table, List conditions) ;
     public Table groupBy(Table table, VarExprList groupVars, List aggregators) ;
-    public Table project(Table table, VarExprList project) ; 
+    public Table project(Table table, List projectVars) ; 
     public Table distinct(Table table) ;
     public Table reduced(Table table) ;
     public Table slice(Table table, long start, long length) ;

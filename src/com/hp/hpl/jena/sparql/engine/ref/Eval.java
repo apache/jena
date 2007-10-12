@@ -177,7 +177,7 @@ public class Eval
         public void visit(OpProject opProject)
         {
             Table table = eval(opProject.getSubOp()) ;
-            table = evaluator.project(table, opProject.getProject()) ;
+            table = evaluator.project(table, opProject.getVars()) ;
             push(table) ;
         }
 

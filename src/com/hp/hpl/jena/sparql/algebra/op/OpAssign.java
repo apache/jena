@@ -13,6 +13,7 @@ import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.core.VarExprList;
 import com.hp.hpl.jena.sparql.expr.Expr;
 import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
+import com.hp.hpl.jena.sparql.util.Utils;
 
 public class OpAssign extends Op1
 {
@@ -38,7 +39,7 @@ public class OpAssign extends Op1
     public VarExprList getVarExprList() { return assignments ; }
 
     public int hashCode()
-    { return assignments.hashCode() ; }
+    { return assignments.hashCode() ^ getSubOp().hashCode() ; }
 
     public void visit(OpVisitor opVisitor)
     { opVisitor.visit(this) ; }
@@ -54,7 +55,10 @@ public class OpAssign extends Op1
         if ( ! ( other instanceof OpAssign) )
             return false ;
         OpAssign assign = (OpAssign)other ;
-        return assignments.equals(assign.assignments) ;
+        
+        if ( ! Utils.eq(assignments, assign.assignments) )
+            return false ;
+        return getSubOp().equalTo(assign.getSubOp(), labelMap) ;
     }
 
     public Op apply(Transform transform, Op subOp)

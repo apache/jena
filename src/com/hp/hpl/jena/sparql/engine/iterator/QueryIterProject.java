@@ -6,19 +6,12 @@
 
 package com.hp.hpl.jena.sparql.engine.iterator;
 
-import java.util.Iterator;
 import java.util.List;
 
-import com.hp.hpl.jena.graph.Node;
-
-import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.sparql.core.VarExprList;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.sparql.engine.binding.BindingMap;
 import com.hp.hpl.jena.sparql.engine.binding.BindingProject;
-import com.hp.hpl.jena.sparql.function.FunctionEnv;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
 import com.hp.hpl.jena.sparql.util.PrintUtils;
@@ -27,23 +20,20 @@ import com.hp.hpl.jena.sparql.util.Utils;
 
 public class QueryIterProject extends QueryIterConvert
 {
-    VarExprList projectionVars ;
+    List projectionVars ;
 
-    public QueryIterProject(QueryIterator input, VarExprList vars, ExecutionContext qCxt)
+    public QueryIterProject(QueryIterator input, List vars, ExecutionContext qCxt)
     {
         super(input, project(vars, qCxt), qCxt) ;
         projectionVars = vars ;
     }
 
-    static QueryIterConvert.Converter project(VarExprList vars, ExecutionContext qCxt)
+    static QueryIterConvert.Converter project(List vars, ExecutionContext qCxt)
     {
-        if ( vars.getExprs().isEmpty() )
-            return new Projection(vars.getVars(), qCxt) ;
-        else
-            return new ProjectionExpr(vars, qCxt) ;
+        return new Projection(vars, qCxt) ;
     }
     
-    public VarExprList getProjectionVars()   { return projectionVars ; }
+    public List getProjectionVars()   { return projectionVars ; }
 
     protected void releaseResources()
     {}
@@ -52,7 +42,7 @@ public class QueryIterProject extends QueryIterConvert
     {
         out.print(Utils.className(this)) ;
         out.print(" ") ;
-        PrintUtils.printList(out, projectionVars.getVars()) ;
+        PrintUtils.printList(out, projectionVars) ;
     }
     
     static
@@ -70,37 +60,37 @@ public class QueryIterProject extends QueryIterConvert
             return new BindingProject(projectionVars, bind) ;
         }
     }
-    
-    static
-    class ProjectionExpr implements QueryIterConvert.Converter
-    {
-        FunctionEnv funcEnv ;
-        VarExprList projectionVars ; 
-
-        ProjectionExpr(VarExprList vars, ExecutionContext qCxt)
-        { 
-            this.projectionVars = vars ;
-            funcEnv = qCxt ;
-        }
-
-        public Binding convert(Binding bind)
-        {
-            Binding b = new BindingMap(bind) ;
-            for ( Iterator iter = projectionVars.getVars().iterator() ; iter.hasNext(); )
-            {
-                Var v = (Var)iter.next();
-                // Only add those variables that have expressions associated with them
-                // The parent, bind, already has bound variables for the non-expressions. 
-                if ( ! projectionVars.hasExpr(v) )
-                    continue ;
-                
-                Node n = projectionVars.get(v, bind, funcEnv) ;
-                if ( n != null )
-                    b.add(v, n) ;
-            }
-            return new BindingProject(projectionVars.getVars(), b) ;
-        }
-    }
+//    
+//    static
+//    class ProjectionExpr implements QueryIterConvert.Converter
+//    {
+//        FunctionEnv funcEnv ;
+//        VarExprList projectionVars ; 
+//
+//        ProjectionExpr(VarExprList vars, ExecutionContext qCxt)
+//        { 
+//            this.projectionVars = vars ;
+//            funcEnv = qCxt ;
+//        }
+//
+//        public Binding convert(Binding bind)
+//        {
+//            Binding b = new BindingMap(bind) ;
+//            for ( Iterator iter = projectionVars.getVars().iterator() ; iter.hasNext(); )
+//            {
+//                Var v = (Var)iter.next();
+//                // Only add those variables that have expressions associated with them
+//                // The parent, bind, already has bound variables for the non-expressions. 
+//                if ( ! projectionVars.hasExpr(v) )
+//                    continue ;
+//                
+//                Node n = projectionVars.get(v, bind, funcEnv) ;
+//                if ( n != null )
+//                    b.add(v, n) ;
+//            }
+//            return new BindingProject(projectionVars.getVars(), b) ;
+//        }
+//    }
 }
 
 /*

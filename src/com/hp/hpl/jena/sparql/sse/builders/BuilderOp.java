@@ -360,7 +360,7 @@ public class BuilderOp
         public Op make(ItemList list)
         {
             BuilderBase.checkLength(3, list, "project") ;
-            VarExprList x = BuilderExpr.buildNamedExprList(list.get(1).getList()) ; 
+            List x = BuilderNode.buildVars(list.get(1).getList()) ; 
             Op sub = build(list, 2) ;
             return new OpProject(sub, x) ;
         }

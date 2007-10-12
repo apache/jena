@@ -6,7 +6,9 @@
 
 package com.hp.hpl.jena.sparql.algebra;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.query.ARQ;
@@ -14,6 +16,7 @@ import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException;
 import com.hp.hpl.jena.sparql.algebra.op.*;
 import com.hp.hpl.jena.sparql.core.BasicPattern;
+import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.core.VarExprList;
 import com.hp.hpl.jena.sparql.expr.Expr;
 import com.hp.hpl.jena.sparql.expr.ExprList;
@@ -287,8 +290,24 @@ public class AlgebraGenerator
             // in SELECT *
             if ( projectVars.size() == 0 && query.isSelectType() )
                 ALog.warn(this,"No project variables") ;
-            if ( projectVars.size() > 0 ) 
-                op = new OpProject(op, query.getProject()) ;
+            
+            // Separate assignments and variable projection.
+            VarExprList exprs = new VarExprList() ;
+            List vars = new ArrayList() ;
+            for ( Iterator iter = query.getProject().getVars().iterator() ; iter.hasNext(); )
+            {
+                Var v = (Var)iter.next() ;
+                Expr e = query.getProject().getExpr(v) ;
+                if ( e != null )
+                    exprs.add(v, e) ;
+                // Include in project
+                vars.add(v) ;
+            }
+            
+            if ( ! exprs.isEmpty() )
+                op = new OpAssign(op, exprs) ;
+            if ( vars.size() > 0 )
+                op = new OpProject(op, vars) ;
         }
         
         // ---- DISTINCT

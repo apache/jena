@@ -8,6 +8,7 @@ package com.hp.hpl.jena.sparql.algebra;
 
 import java.io.OutputStream;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import com.hp.hpl.jena.graph.Node;
@@ -415,7 +416,7 @@ public class OpWriter
         { 
             start(opProject, NoNL) ;
             out.print(" ") ;
-            writeNamedExprList(opProject.getProject()) ;
+            writeVarList(opProject.getVars()) ;
             out.println();
             printOp(opProject.getSubOp()) ;
             finish(opProject) ;
@@ -434,7 +435,10 @@ public class OpWriter
         public void visit(OpAssign opAssign)
         {
             start(opAssign, NoNL) ;
+            out.print(" ") ;
             writeNamedExprList(opAssign.getVarExprList()) ;
+            out.println();
+            printOp(opAssign.getSubOp()) ;
             finish(opAssign) ;
         }
         
@@ -484,6 +488,21 @@ public class OpWriter
                 out.print("(null)") ;
             else
                 op.visit(this) ;
+        }
+        
+        private void writeVarList(List vars)
+        {
+            out.print("(") ;
+            boolean first = true ;
+            for ( Iterator iter = vars.iterator() ; iter.hasNext() ; )
+            {
+                if ( ! first )
+                  out.print(" ") ;
+                first = false ;
+                Var v = (Var)iter.next() ;
+                out.print(v.toString()) ;
+            }
+            out.print(")") ;
         }
         
         private void writeNamedExprList(VarExprList project)

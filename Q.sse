@@ -1,7 +1,4 @@
-(prefix ((dc: <http://purl.org/dc/elements/1.1/>)
-         (x: <http://example.org/ns#>))
-    (leftjoin
-      (BGP (triple ?book dc:title ?title))
-      (filter (= ?title "TITLE 2")
-        (BGP (triple ?book x:price ?price)))
-    ))
+(prefix ((: <http://example/>))
+    (assign ((?x (+ ?y 1)))
+      (BGP (triple ?z :p ?y))
+      ))

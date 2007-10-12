@@ -134,10 +134,10 @@ class EvaluatorSimple implements Evaluator
         return new TableN(qIter) ;
     }
     
-    public Table project(Table table, VarExprList project)
+    public Table project(Table table, List projectVars)
     {
         QueryIterator qIter = table.iterator(getExecContext()) ;
-        qIter = new QueryIterProject(qIter, project, getExecContext()) ;
+        qIter = new QueryIterProject(qIter, projectVars, getExecContext()) ;
         return new TableN(qIter) ;
     }
 

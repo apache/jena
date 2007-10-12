@@ -62,11 +62,10 @@ public class BuilderNode
         return item.getSymbol() ;
     }
     
-
-    public static List buildVars(ItemList list, int start)
+    public static List buildVars(ItemList list)
     {
         List x = new ArrayList() ;
-        for ( int i = start ; i < list.size() ; i++ )
+        for ( int i = 0 ; i < list.size() ; i++ )
         {
             Item item = list.get(i) ;
             Var var = BuilderNode.buildVar(item) ;
