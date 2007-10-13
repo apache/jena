@@ -4,10 +4,19 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.sse.builders;
+package com.hp.hpl.jena.sparql.sse;
 
 public class Tags
 {
+    static public final String LPAREN         = "(" ;
+    static public final String RPAREN         = ")" ;
+    
+    static public final String LBRACKET       = "[" ;
+    static public final String RBRACKET       = "]" ;
+    
+    static public final String LBRACE         = "{" ;
+    static public final String RBRACE         = "}" ;
+    
     // -- Common terms
     static public final String tagUndef         = "undef" ;
     static public final String tagNull          = "null" ;
@@ -88,9 +97,12 @@ public class Tags
 
     static public final String tagTrue          = "true" ;
     static public final String tagFalse         = "false" ;
+
+    static public final String tagAsc           = "asc" ;
+    static public final String tagDesc          = "desc" ;
     
     static public final String tagCount         = "count" ;
-
+    
 }
 
 /*

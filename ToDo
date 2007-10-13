@@ -9,9 +9,10 @@
 See ToDoSSE
 
 ----
++ Remove OpDatasetNames?? - only needed in quad compilation for GRAPH ?g {}
+  Use a table!
+
 + SPARQL/Update - command line tools - arq.update
-  ModAssembler should work with SDB - test
-  yes
 
 + Better syntax as well as SQL-like: GROUP BY ... WITH ... ??
 

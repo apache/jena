@@ -22,6 +22,7 @@ import com.hp.hpl.jena.sparql.expr.aggregate.AggCountVarDistinct;
 import com.hp.hpl.jena.sparql.expr.aggregate.AggregateFactory;
 import com.hp.hpl.jena.sparql.sse.Item;
 import com.hp.hpl.jena.sparql.sse.ItemList;
+import com.hp.hpl.jena.sparql.sse.Tags;
 
 public class BuilderExpr
 {

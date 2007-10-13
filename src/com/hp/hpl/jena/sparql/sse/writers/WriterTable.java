@@ -4,66 +4,62 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.algebra.op;
+package com.hp.hpl.jena.sparql.sse.writers;
 
-import com.hp.hpl.jena.sparql.algebra.Op;
-import com.hp.hpl.jena.sparql.algebra.OpVisitor;
-import com.hp.hpl.jena.sparql.algebra.Transform;
+import java.util.Iterator;
+
+import com.hp.hpl.jena.graph.Node;
+
+import com.hp.hpl.jena.sparql.algebra.Table;
 import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.sparql.core.VarExprList;
-import com.hp.hpl.jena.sparql.expr.Expr;
+import com.hp.hpl.jena.sparql.engine.QueryIterator;
+import com.hp.hpl.jena.sparql.engine.binding.Binding;
+import com.hp.hpl.jena.sparql.serializer.SerializationContext;
 import com.hp.hpl.jena.sparql.sse.Tags;
-import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
-import com.hp.hpl.jena.sparql.util.Utils;
+import com.hp.hpl.jena.sparql.util.FmtUtils;
+import com.hp.hpl.jena.sparql.util.IndentedWriter;
 
-public class OpAssign extends Op1
+public class WriterTable
 {
-    private VarExprList assignments ;
-    
-    public OpAssign(Op subOp)
+    public static void out(IndentedWriter out, Table table, SerializationContext sCxt)
     {
-        super(subOp) ;
-        assignments = new VarExprList() ;
+        WriterLib.start(out, Tags.tagTable, WriterLib.NL) ;
+        outNoTag(out, table, sCxt) ;
+        WriterLib.finish(out, Tags.tagTable) ;
     }
     
-    public OpAssign(Op subOp, VarExprList exprs)
+    public static void outNoTag(IndentedWriter out, Table table, SerializationContext sCxt)
     {
-        super(subOp) ;
-        assignments = exprs ;
+        // TODO No tag here - should be?
+        QueryIterator qIter = table.iterator(null) ; 
+        for ( ; qIter.hasNext(); )
+        {
+            Binding b = qIter.nextBinding() ;
+            out(out, b, sCxt) ;
+            out.println() ;
+        }
+        qIter.close() ;
     }
     
-    public String getName() { return Tags.tagAssign ; }
+    public static void out(IndentedWriter out, Binding binding, SerializationContext sCxt )
+    {
+        WriterLib.start(out, Tags.tagRow, WriterLib.NoSP) ;
+        Iterator iter = binding.vars() ;
+        for ( ; iter.hasNext() ; )
+        {
+            Var v = (Var)iter.next() ;
+            Node n = binding.get(v) ;
+            out.print(" ") ;
+            WriterLib.start2(out) ;
+            out.print(FmtUtils.stringForNode(v, sCxt)) ;
+            out.print(" ") ;
+            out.print(FmtUtils.stringForNode(n, sCxt)) ;
+            WriterLib.finish2(out) ;
+        }
+        WriterLib.finish(out, Tags.tagRow) ;
+    }
     
-    public void add(Var var, Expr expr)
-    { assignments.add(var, expr) ; }
 
-    public VarExprList getVarExprList() { return assignments ; }
-
-    public int hashCode()
-    { return assignments.hashCode() ^ getSubOp().hashCode() ; }
-
-    public void visit(OpVisitor opVisitor)
-    { opVisitor.visit(this) ; }
-
-    public Op copy(Op subOp)
-    {
-        OpAssign op = new OpAssign(subOp, new VarExprList(getVarExprList())) ;
-        return op ;
-    }
-
-    public boolean equalTo(Op other, NodeIsomorphismMap labelMap)
-    {
-        if ( ! ( other instanceof OpAssign) )
-            return false ;
-        OpAssign assign = (OpAssign)other ;
-        
-        if ( ! Utils.eq(assignments, assign.assignments) )
-            return false ;
-        return getSubOp().equalTo(assign.getSubOp(), labelMap) ;
-    }
-
-    public Op apply(Transform transform, Op subOp)
-    { return transform.transform(this, subOp) ; }
 }
 
 /*

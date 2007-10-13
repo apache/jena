@@ -14,6 +14,7 @@ import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
 
 import com.hp.hpl.jena.sparql.sse.Item;
 import com.hp.hpl.jena.sparql.sse.ItemList;
+import com.hp.hpl.jena.sparql.sse.Tags;
 import com.hp.hpl.jena.sparql.util.StringUtils;
 
 /** Build a prefixmapping, tagged (prefixmap pairs) or (prefixmapping pairs)

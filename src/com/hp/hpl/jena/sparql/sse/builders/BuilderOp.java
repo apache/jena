@@ -27,6 +27,7 @@ import com.hp.hpl.jena.sparql.expr.Expr;
 import com.hp.hpl.jena.sparql.expr.ExprList;
 import com.hp.hpl.jena.sparql.sse.Item;
 import com.hp.hpl.jena.sparql.sse.ItemList;
+import com.hp.hpl.jena.sparql.sse.Tags;
 
 
 public class BuilderOp

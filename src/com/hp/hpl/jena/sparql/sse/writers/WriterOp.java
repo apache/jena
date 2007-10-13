@@ -4,44 +4,50 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.algebra;
+package com.hp.hpl.jena.sparql.sse.writers;
 
 import java.io.OutputStream;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.SortCondition;
 import com.hp.hpl.jena.shared.PrefixMapping;
+
 import com.hp.hpl.jena.sparql.ARQConstants;
+import com.hp.hpl.jena.sparql.algebra.Op;
+import com.hp.hpl.jena.sparql.algebra.OpPrefixesUsed;
+import com.hp.hpl.jena.sparql.algebra.OpVisitor;
 import com.hp.hpl.jena.sparql.algebra.op.*;
 import com.hp.hpl.jena.sparql.algebra.table.TableUnit;
 import com.hp.hpl.jena.sparql.core.Prologue;
 import com.hp.hpl.jena.sparql.core.Quad;
 import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.sparql.core.VarAlloc;
 import com.hp.hpl.jena.sparql.core.VarExprList;
-import com.hp.hpl.jena.sparql.engine.Plan;
-import com.hp.hpl.jena.sparql.engine.QueryIterator;
-import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.expr.E_Aggregator;
 import com.hp.hpl.jena.sparql.expr.Expr;
 import com.hp.hpl.jena.sparql.expr.ExprList;
 import com.hp.hpl.jena.sparql.serializer.FmtExprPrefix;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext;
+import com.hp.hpl.jena.sparql.sse.Tags;
 import com.hp.hpl.jena.sparql.util.ExprUtils;
 import com.hp.hpl.jena.sparql.util.FmtUtils;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
 import com.hp.hpl.jena.sparql.util.NodeToLabelMap;
 
+import com.hp.hpl.jena.query.Query;
+import com.hp.hpl.jena.query.SortCondition;
 
-public class OpWriter
+
+// ToDo extract write of:
+// Table
+// Triple and quads
+
+public class WriterOp
 {
-    private static final int NL = 1 ;
-    private static final int NoNL = -1 ;
+    private static final int NL = WriterLib.NL ;
+    private static final int NoNL = WriterLib.NoNL ;
+    private static final int NoSP = WriterLib.NoSP ;
     
     public static void out(Op op)
     { out(System.out, op) ; }
@@ -86,8 +92,8 @@ public class OpWriter
     // Actual work
     public static void out(IndentedWriter iWriter, Op op, SerializationContext sCxt)
     {
-        NodeToLabelMap lmap = new NodeToLabelMap() ;
-        sCxt.setBNodeMap(lmap) ;
+        if ( sCxt.getBNodeMap() == null )
+            sCxt.setBNodeMap(new NodeToLabelMap()) ;
 
         int closeCount = 0 ;
         
@@ -100,6 +106,8 @@ public class OpWriter
 //            iWriter.incIndent() ;
 //            closeCount ++ ;
 //        }
+        
+        // TODO Tidy up
         if ( sCxt.getPrefixMapping() != null )
         {
             Map m = sCxt.getPrefixMapping().getNsPrefixMap() ;
@@ -138,11 +146,11 @@ public class OpWriter
     }
 
     
-    static class OpWriterWorker implements OpVisitor
+    private static class OpWriterWorker implements OpVisitor
     {
         private IndentedWriter out ;
         private SerializationContext sContext ;
-        private VarAlloc varAlloc = new VarAlloc("__") ;
+//        private VarAlloc varAlloc = new VarAlloc("__") ;
         private FmtExprPrefix fmtExpr ; 
         
         public OpWriterWorker(IndentedWriter out, SerializationContext sCxt)
@@ -182,13 +190,11 @@ public class OpWriter
             if ( opQuadP.getQuads().size() == 1 )
             {
                 start(opQuadP, NoNL) ;
-                out.print(" ") ;
                 formatQuad((Quad)opQuadP.getQuads().get(0)) ;
                 finish(opQuadP) ;
                 return ;
             }
             start(opQuadP, NL) ;
-            //boolean first
             for ( Iterator iter = opQuadP.getQuads().listIterator() ; iter.hasNext() ;)
             {
                Quad quad = (Quad)iter.next() ;
@@ -203,7 +209,6 @@ public class OpWriter
             if ( opBGP.getPattern().size() == 1 )
             {
                 start(opBGP, NoNL) ;
-                out.print(" ") ;
                 formatTriple(opBGP.getPattern().get(0)) ;
                 finish(opBGP) ;
                 return ;
@@ -234,12 +239,10 @@ public class OpWriter
         public void visit(OpFilter opFilter)
         { 
             start(opFilter, NoNL) ;
-            out.print(" ") ;
             ExprList exprs = opFilter.getExprs() ;
             if ( exprs == null )
-                out.print("()") ;
+            { start() ; finish() ; }
             else
-                //ExprUtils.fmtSPARQL(out, exprs, sContext.getPrefixMapping()) ;
                 ExprUtils.fmtPrefix(out, exprs, sContext.getPrefixMapping()) ;
             out.println();
             printOp(opFilter.getSubOp()) ;
@@ -249,7 +252,6 @@ public class OpWriter
         public void visit(OpGraph opGraph)
         {
             start(opGraph, NoNL) ;
-            out.print(" ") ;
             out.println(FmtUtils.stringForNode(opGraph.getNode())) ;
             out.incIndent() ;
             opGraph.getSubOp().visit(this) ;
@@ -259,7 +261,6 @@ public class OpWriter
         public void visit(OpService opService)
         {
             start(opService, NoNL) ;
-            out.print(" ") ;
             out.println(FmtUtils.stringForNode(opService.getService())) ;
             out.incIndent() ;
             opService.getSubOp().visit(this) ;
@@ -271,65 +272,32 @@ public class OpWriter
             if ( TableUnit.isJoinUnit(opTable.getTable()) )
             {
                 start(opTable, NoNL) ;
-                out.print(" unit") ;
+                out.print("unit") ;
                 finish(opTable) ;
                 return ;
             }
             
             start(opTable, NL) ;
-            outputTable(opTable.getTable());
+            WriterTable.outNoTag(out, opTable.getTable(), sContext);
             finish(opTable) ;
         }
 
-        private void outputTable(Table table)
-        {
-            QueryIterator qIter = table.iterator(null) ; 
-            for ( ; qIter.hasNext(); )
-            {
-                Binding b = qIter.nextBinding() ;
-                outputRow(b) ;
-                out.println() ;
-            }
-            qIter.close() ;
-        }
-        
-        private void outputRow(Binding binding)
-        {
-            out.print(Plan.startMarker) ;
-            out.print("row") ;
-            Iterator iter = binding.vars() ;
-            for ( ; iter.hasNext() ; )
-            {
-                Var v = (Var)iter.next() ;
-                Node n = binding.get(v) ;
-                out.print(" ") ;
-                out.print(Plan.startMarker2) ;
-                out.print(FmtUtils.stringForNode(v, sContext)) ;
-                out.print(" ") ;
-                out.print(FmtUtils.stringForNode(n, sContext)) ;
-                out.print(Plan.finishMarker2) ;
-            }
-            out.print(Plan.finishMarker) ;
-        }
-        
         public void visit(OpDatasetNames dsNames)
         {
-            start() ;
-            out.print("TableDatasetNames") ;
-            out.print(" "); 
-            out.print(slotToString(dsNames.getGraphNode())) ;
-            finish() ;
+            start(dsNames, NoNL) ;
+            WriterNode.out(out, dsNames.getGraphNode(), sContext) ;
+            finish(dsNames) ;
         }
 
         public void visit(OpExt opExt)
         {
-            //start("OpExt") ;
+            //start(opExt, NL) ;
             opExt.output(out, sContext) ;
-            //finish() ;
+            //finish(opExt) ;
         }
 
         public void visit(OpNull opNull)
-        { start(opNull, NoNL) ; finish() ; } 
+        { start(opNull, NoSP) ; finish(opNull) ; } 
 
         public void visit(OpList opList)
         {
@@ -339,12 +307,12 @@ public class OpWriter
         public void visit(OpGroupAgg opGroup)
         {
             start(opGroup, NoNL) ;
-            out.print(" ") ;
             writeNamedExprList(opGroup.getGroupVars()) ;
             if ( ! opGroup.getAggregators().isEmpty() )
             {
                 // --- Aggregators
-                out.print(" (") ;
+                out.print(" ") ;
+                start() ;
                 out.incIndent() ;
                 boolean first = true ;
                 for ( Iterator iter = opGroup.getAggregators().iterator() ; iter.hasNext() ; )
@@ -355,13 +323,13 @@ public class OpWriter
                     E_Aggregator agg = (E_Aggregator)iter.next();
                     Var v = agg.asVar() ;
                     String str = agg.getAggregator().toPrefixString() ;
-                    out.print("(") ;
+                    start() ;
                     out.print(v) ;
                     out.print(" ") ;
                     out.print(str) ;
-                    out.print(")") ;
+                    finish() ;
                 }
-                out.print(")") ;
+                finish() ;
                 out.decIndent() ;
             }
             out.println() ;
@@ -372,7 +340,9 @@ public class OpWriter
         public void visit(OpOrder opOrder)
         { 
             start(opOrder, NoNL) ;
-            out.print(" (") ;
+            
+            // Write conditions
+            start() ;
 
             boolean first = true ;
             for ( Iterator iter = opOrder.getConditions().iterator() ; iter.hasNext(); )
@@ -383,7 +353,7 @@ public class OpWriter
                 SortCondition sc = (SortCondition)iter.next() ;
                 formatSortCondition(sc) ;
             }
-            out.println(")") ;
+            finish() ;
             printOp(opOrder.getSubOp()) ;
             finish(opOrder) ;
         }
@@ -393,20 +363,28 @@ public class OpWriter
         public void formatSortCondition(SortCondition sc)
         {
             boolean close = true ;
+            String tag = null ;
             
             if ( sc.getDirection() != Query.ORDER_DEFAULT ) 
             {            
                 if ( sc.getDirection() == Query.ORDER_ASCENDING )
-                    out.print("(asc ") ;
+                {
+                    tag = Tags.tagAsc ; 
+                    WriterLib.start(out, tag, NoNL) ;
+                }
             
                 if ( sc.getDirection() == Query.ORDER_DESCENDING )
-                    out.print("(desc ") ;
+                {
+                    tag = Tags.tagDesc ; 
+                    WriterLib.start(out, tag, NoNL) ;
+                }
+                
             }
             
             fmtExpr.format(sc.getExpression()) ;
             
-            if ( sc.getDirection() != Query.ORDER_DEFAULT )
-                out.print(")") ;
+            if ( tag != null )
+                WriterLib.finish(out, tag) ;
         }
 
 
@@ -414,7 +392,6 @@ public class OpWriter
         public void visit(OpProject opProject)
         { 
             start(opProject, NoNL) ;
-            out.print(" ") ;
             writeVarList(opProject.getVars()) ;
             out.println();
             printOp(opProject.getSubOp()) ;
@@ -434,7 +411,6 @@ public class OpWriter
         public void visit(OpAssign opAssign)
         {
             start(opAssign, NoNL) ;
-            out.print(" ") ;
             writeNamedExprList(opAssign.getVarExprList()) ;
             out.println();
             printOp(opAssign.getSubOp()) ;
@@ -444,7 +420,6 @@ public class OpWriter
         public void visit(OpSlice opSlice)
         { 
             start(opSlice, NoNL) ;
-            out.print(" ") ;
             writeIntOrDefault(opSlice.getStart()) ;
             out.print(" ") ;
             writeIntOrDefault(opSlice.getLength()) ;
@@ -461,37 +436,34 @@ public class OpWriter
             out.print(x) ;
         }
             
-        private void start()
-        { out.print(Plan.startMarker) ; }
-        
         private void start(Op op, int newline)
         {
-            start() ;
-            out.print(op.getName()) ;
-            if ( newline == NL ) out.println();
-            out.incIndent() ;
+            WriterLib.start(out, op.getName(), newline) ;
         }
         
-        private void finish()
-        { out.print(Plan.finishMarker) ; }
-
         private void finish(Op op)
         {
-            out.decIndent() ;
-            finish();
+            WriterLib.finish(out, op.getName()) ;
         }
+
+        private void start()    { WriterLib.start(out) ; }
+        private void finish()   { WriterLib.finish(out) ; }
+
         
         private void printOp(Op op)
         {
             if ( op == null )
-                out.print("(null)") ;
+            {
+                WriterLib.start(out, Tags.tagNull, NoSP) ;
+                WriterLib.finish(out, Tags.tagNull) ;
+            }
             else
                 op.visit(this) ;
         }
         
         private void writeVarList(List vars)
         {
-            out.print("(") ;
+            start() ;
             boolean first = true ;
             for ( Iterator iter = vars.iterator() ; iter.hasNext() ; )
             {
@@ -501,12 +473,12 @@ public class OpWriter
                 Var v = (Var)iter.next() ;
                 out.print(v.toString()) ;
             }
-            out.print(")") ;
+            finish() ;
         }
         
         private void writeNamedExprList(VarExprList project)
         {
-            out.print("(") ;
+            start() ;
             boolean first = true ;
             for ( Iterator iter = project.getVars().iterator() ; iter.hasNext() ; )
             {
@@ -517,49 +489,40 @@ public class OpWriter
                 Expr expr = project.getExpr(v) ;
                 if ( expr != null )
                 {
-                    out.print("(") ;
+                    start() ;
                     out.print(v.toString()) ;
                     out.print(" ") ;
                     ExprUtils.fmtPrefix(out, expr, sContext.getPrefixMapping()) ;
-                    out.print(")") ;
+                    finish() ;
                 }
                 else
                     out.print(v.toString()) ;
             }
-            out.print(")") ;
+            finish() ;
         }
 
         private void formatTriple(Triple tp)
         {
-            out.print(Plan.startMarker2) ; 
-            out.print("triple") ;
+            WriterLib.start(out, Tags.tagTriple, NoNL) ;
+            WriterNode.out(out, tp.getSubject(), sContext) ;
             out.print(" ") ;
-            out.print(slotToString(tp.getSubject())) ;
+            WriterNode.out(out, tp.getPredicate(), sContext) ;
             out.print(" ") ;
-            out.print(slotToString(tp.getPredicate())) ;
-            out.print(" ") ;
-            out.print(slotToString(tp.getObject())) ;
-            out.print(Plan.finishMarker2) ; 
+            WriterNode.out(out, tp.getObject(), sContext) ;
+            WriterLib.finish(out, Tags.tagTriple) ;
         }
 
         private void formatQuad(Quad qp)
         {
-            out.print(Plan.startMarker2) ; 
-            out.print("quad") ;
+            WriterLib.start(out, Tags.tagQuad, NoNL) ;
+            WriterNode.out(out, qp.getGraph(), sContext) ;
             out.print(" ") ;
-            out.print(slotToString(qp.getGraph())) ;
+            WriterNode.out(out, qp.getSubject(), sContext) ;
             out.print(" ") ;
-            out.print(slotToString(qp.getSubject())) ;
+            WriterNode.out(out, qp.getPredicate(), sContext) ;
             out.print(" ") ;
-            out.print(slotToString(qp.getPredicate())) ;
-            out.print(" ") ;
-            out.print(slotToString(qp.getObject())) ;
-            out.print(Plan.finishMarker2) ;
-        }
-
-        private String slotToString(Node n)
-        {
-            return FmtUtils.stringForNode(n, sContext) ;
+            WriterNode.out(out, qp.getObject(), sContext) ;
+            WriterLib.finish(out, Tags.tagQuad) ;
         }
     }
 }

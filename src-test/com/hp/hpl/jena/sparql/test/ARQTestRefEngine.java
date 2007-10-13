@@ -42,13 +42,13 @@ public class ARQTestRefEngine extends TestCase
     {
         QueryEngineQuad.register() ;
         TestSuite ts = suiteMaker() ;
-        //QueryEngineQuad.unregister() ;
+        QueryEngineQuad.unregister() ;
         return ts ;
     }
     
     private static TestSuite suiteMaker()
     {
-        return QueryTestSuiteFactory.make("testing/ARQ/manifest-arq.ttl") ; // All tests for engine 2
+        return QueryTestSuiteFactory.make("testing/ARQ/manifest-arq.ttl") ;
     }
     
 }

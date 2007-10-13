@@ -7,6 +7,7 @@
 package com.hp.hpl.jena.sparql.algebra;
 
 import com.hp.hpl.jena.graph.Node;
+
 import com.hp.hpl.jena.sparql.algebra.op.OpDatasetNames;
 import com.hp.hpl.jena.sparql.algebra.op.OpQuadPattern;
 import com.hp.hpl.jena.sparql.core.BasicPattern;
@@ -38,6 +39,7 @@ public class AlgebraGeneratorQuad extends AlgebraGenerator
         {
             if ( ((ElementGroup)eltGraph.getElement()).isEmpty() )
             {
+                // Ths case of ...
                 // GRAPH ?g {} or GRAPH <v> {}
                 return new OpDatasetNames(graphNode) ;
             }
