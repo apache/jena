@@ -32,6 +32,7 @@ import com.hp.hpl.jena.sparql.expr.Expr;
 import com.hp.hpl.jena.sparql.expr.ExprList;
 import com.hp.hpl.jena.sparql.serializer.FmtExprPrefix;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext;
+import com.hp.hpl.jena.sparql.sse.writers.WriterOp;
 import com.hp.hpl.jena.sparql.util.ExprUtils;
 import com.hp.hpl.jena.sparql.util.FmtUtils;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
@@ -83,8 +84,15 @@ public class OpWriter
         out(new IndentedWriter(out), op, sCxt) ;
     }
 
-    // Actual work
+    // New way
     public static void out(IndentedWriter iWriter, Op op, SerializationContext sCxt)
+    {
+        WriterOp.out(iWriter, op, sCxt) ;
+    }
+    
+    
+    // Actual work - old way
+    private static void __out(IndentedWriter iWriter, Op op, SerializationContext sCxt)
     {
         NodeToLabelMap lmap = new NodeToLabelMap() ;
         sCxt.setBNodeMap(lmap) ;

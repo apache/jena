@@ -9,12 +9,13 @@ package arq;
 import java.util.Iterator;
 import java.util.List;
 
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.rdf.model.Model;
+import arq.cmd.CmdException;
+import arq.cmdline.ArgDecl;
+import arq.cmdline.CmdARQ;
+import arq.cmdline.ModAssembler;
+import arq.cmdline.ModDataset;
 
-import com.hp.hpl.jena.sparql.util.FmtUtils;
+import com.hp.hpl.jena.sparql.sse.writers.WriterSSE;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
 import com.hp.hpl.jena.sparql.util.Utils;
 
@@ -25,12 +26,6 @@ import com.hp.hpl.jena.update.GraphStore;
 import com.hp.hpl.jena.update.GraphStoreFactory;
 import com.hp.hpl.jena.update.UpdateFactory;
 import com.hp.hpl.jena.update.UpdateRequest;
-
-import arq.cmd.CmdException;
-import arq.cmdline.ArgDecl;
-import arq.cmdline.CmdARQ;
-import arq.cmdline.ModAssembler;
-import arq.cmdline.ModDataset;
 
 public class update extends CmdARQ
 {
@@ -79,60 +74,10 @@ public class update extends CmdARQ
         
         // Writer
         IndentedWriter out = new IndentedWriter(System.out) ;
-        writeDataset(out, ds) ;
+        WriterSSE.out(out, ds.asDatasetGraph()) ;
         out.flush();
     }
 
-    private void writeDataset(IndentedWriter out, Dataset ds)
-    {
-        out.println("(dataset") ;
-        out.incIndent() ;
-        writeGraph(out, ds.getDefaultModel()) ;
-        for ( Iterator iter = ds.listNames() ; iter.hasNext() ; )
-        {
-            String uri = (String)iter.next() ;  
-            Model m = ds.getNamedModel(uri) ;
-            writeGraph(out, uri, m) ;
-        }
-        out.decIndent() ;
-        out.println(")") ;
-    }
-    
-    private void writeGraph(IndentedWriter out, Model m)
-    { writeGraph(out, null, m.getGraph()) ; }
-    
-    private void writeGraph(IndentedWriter out, Graph g)
-    { writeGraph(out, null, g) ; }
-
-    private void writeGraph(IndentedWriter out, String uri, Model m)
-    { writeGraph(out, uri, m.getGraph()) ; }
-    
-    private void writeGraph(IndentedWriter out, String uri, Graph g)
-    {
-        out.print("(graph") ;
-        if ( uri != null )
-        {
-            out.print(" ") ;
-            out.print(FmtUtils.stringForURI(uri)) ;
-        }
-        out.println() ;
-        out.incIndent() ;
-        boolean first = true ; 
-        for ( Iterator iter = g.find(Node.ANY, Node.ANY, Node.ANY) ; iter.hasNext() ; )
-        {
-            if ( ! first )
-                out.println();
-            first = false ;
-            Triple triple = (Triple)iter.next();
-            out.print("(") ;
-            out.print(FmtUtils.stringForTriple(triple)) ;
-            out.print(")") ;
-        }
-        out.decIndent() ;
-        if ( ! first ) out.println();
-        out.print(")") ;
-        // No newline.
-    }
 
     private void execOne(String filename, GraphStore store)
     {

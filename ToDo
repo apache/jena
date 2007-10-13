@@ -9,6 +9,8 @@
 See ToDoSSE
 
 ----
++ OpGroup: needs both parts? 
+
 + Remove OpDatasetNames?? - only needed in quad compilation for GRAPH ?g {}
   Use a table!
 

@@ -7,11 +7,8 @@
 package com.hp.hpl.jena.sparql.sse.writers;
 
 import com.hp.hpl.jena.sparql.ARQInternalErrorException;
-import com.hp.hpl.jena.sparql.serializer.SerializationContext;
 import com.hp.hpl.jena.sparql.sse.Tags;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
-
-import com.hp.hpl.jena.query.Dataset;
 
 public class WriterLib
 {
@@ -20,11 +17,9 @@ public class WriterLib
     public static final int NoNL = -1 ;
     public static final int NoSP = -2 ;
     
-    // Maybe a call through to every writer here.
-    public static void out(IndentedWriter out, Dataset dataset, SerializationContext sCxt)
-    {}
-    
     // ---- Support
+    
+    // -- Normal markers
     
     /** Start a tagged item - usual bracketting */
     public static void start(IndentedWriter out, String tag, int linePolicy)
@@ -32,7 +27,7 @@ public class WriterLib
     
     /** Finish a taggeditem - usual bracketting */
     public static void finish(IndentedWriter out, String tag)
-    { _finish(out, Tags.RPAREN) ; }
+    { _finish(out, tag, Tags.RPAREN) ; }
 
     /** Start an item - no tag - usual bracketting */
     public static void start(IndentedWriter out)
@@ -42,7 +37,7 @@ public class WriterLib
     public static void finish(IndentedWriter out)
     {  _finish(out, Tags.RPAREN) ;  }
 
-    // --
+    // -- With the other markers (conventionally, short things)
     
     /** Start an item - alternative bracketting */
     public static void start2(IndentedWriter out, String tag, int linePolicy)
@@ -50,7 +45,7 @@ public class WriterLib
     
     /** Finish an item - alternative bracketting */
     public static void finish2(IndentedWriter out, String tag)
-    { _finish(out, Tags.RBRACKET) ;  }
+    { _finish(out, tag, Tags.RBRACKET) ;  }
     
     /** Start an item - no tag - alternative bracketting */
     public static void start2(IndentedWriter out)
@@ -77,7 +72,7 @@ public class WriterLib
         out.incIndent() ;
     }
     
-    private static void finish(IndentedWriter out, String tag, String finishMarker)
+    private static void _finish(IndentedWriter out, String tag, String finishMarker)
     {
         out.decIndent() ;
         _finish(out, finishMarker) ;

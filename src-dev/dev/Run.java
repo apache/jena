@@ -13,8 +13,6 @@ import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.util.FileManager;
 
-import com.hp.hpl.jena.sparql.algebra.Op;
-import com.hp.hpl.jena.sparql.algebra.OpWriter;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.binding.BindingMap;
@@ -33,17 +31,17 @@ public class Run
 {
     public static void main(String[] argv)
     {
-//        String a[] = {"--update=update.ru"} ;
-//        arq.update.main(a) ;
-//        System.exit(0) ;
+        String a[] = {"--update=update.ru"} ;
+        arq.update.main(a) ;
+        System.exit(0) ;
 
-        String a[] = {"--data=D.ttl", "--query=Q.sse" } ;
-        arq.sse_query.main(a) ;
-        System.exit(0) ;
+//        String a[] = {"--data=D.ttl", "--query=Q.sse" } ;
+//        arq.sse_query.main(a) ;
+//        System.exit(0) ;
         
-        Op op = SSE.parseOp("(graph <x> (bgp (?x rdf:type ?z)))") ;
-        OpWriter.out(System.out, op) ;
-        System.exit(0) ;
+//        Op op = SSE.parseOp("(graph <x> (bgp (?x rdf:type ?z)))") ;
+//        OpWriter.out(System.out, op) ;
+//        System.exit(0) ;
         
         runQParse() ;
         
@@ -88,7 +86,7 @@ public class Run
 
     private static void runQParse()
     {
-        String []a = { "--file=Q.rq", "--print=quad", "--print=query" } ;
+        String []a = { "--file=Q.rq", "--print=op", "--print=query" } ;
         arq.qparse.main(a) ;
         System.exit(0) ;
     }
