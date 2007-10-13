@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
@@ -95,27 +95,32 @@ public class WriterOp
         if ( sCxt.getBNodeMap() == null )
             sCxt.setBNodeMap(new NodeToLabelMap()) ;
 
-        int closeCount = 0 ;
+        boolean closeBase = false ;
+        boolean closePrefix = false ;
+        boolean printBase = false ;
         
-//        if ( sCxt.getBaseIRI() != null )
-//        {
-              // And serialize URIs based on base
-//            iWriter.print("(base <") ;
-//            iWriter.print(sCxt.getBaseIRI()) ;
-//            iWriter.println(">") ;
-//            iWriter.incIndent() ;
-//            closeCount ++ ;
-//        }
+        // TODO Abbreviation of URIs by base
+        if ( printBase && sCxt.getBaseIRI() != null )
+        {
+            WriterLib.start(iWriter, Tags.tagBase, NoNL) ;        
+            iWriter.print("<") ;
+            iWriter.print(sCxt.getBaseIRI()) ;
+            iWriter.println(">") ;
+            closeBase = true ;
+        }
         
-        // TODO Tidy up
         if ( sCxt.getPrefixMapping() != null )
         {
             Map m = sCxt.getPrefixMapping().getNsPrefixMap() ;
             if ( ! m.isEmpty() )
             {
-                String tagStr = "(prefix (" ;
-                int len = tagStr.length() ;
-                iWriter.print(tagStr) ;
+                int s = iWriter.getCol() ;
+                WriterLib.start(iWriter, Tags.tagPrefix, NoNL) ;
+                WriterLib.start(iWriter) ;
+                
+                // Indent to this col.
+                int len = iWriter.getCurrentOffset() ;
+                
                 iWriter.incIndent(len) ;
                 Iterator iter = m.keySet().iterator();
                 boolean first = true ;
@@ -126,21 +131,25 @@ public class WriterOp
                     first = false ;
                     String prefix = (String)iter.next();
                     String uri = sCxt.getPrefixMapping().getNsPrefixURI(prefix) ;
-                    iWriter.print("("+prefix+": <"+uri+">)") ;
+                    WriterLib.start(iWriter) ;
+                    iWriter.print(prefix) ;
+                    iWriter.print(": ") ;
+                    iWriter.print("<"+uri+">") ;
+                    WriterLib.finish(iWriter) ;
                 }
-                iWriter.println(")") ;
                 iWriter.decIndent(len) ;
-                iWriter.incIndent() ;
-                closeCount ++ ;
+                WriterLib.finish(iWriter) ;
+                
+                iWriter.ensureStartOfLine() ;
+                closePrefix = true ;
             }
         }
         
         op.visit(new OpWriterWorker(iWriter, sCxt)) ;
-        for ( int i = 0 ; i < closeCount ; i++)
-        {
-            iWriter.print(")") ;
-            iWriter.decIndent() ;
-        }
+        if ( closeBase )
+            WriterLib.finish(iWriter, Tags.tagBase) ;
+        if ( closePrefix )
+            WriterLib.finish(iWriter, Tags.tagPrefix) ;
         iWriter.ensureStartOfLine() ;
         iWriter.flush();
     }

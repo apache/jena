@@ -31,9 +31,9 @@ public class Run
 {
     public static void main(String[] argv)
     {
-        String a[] = {"--update=update.ru"} ;
-        arq.update.main(a) ;
-        System.exit(0) ;
+//        String a[] = {"--update=update.ru"} ;
+//        arq.update.main(a) ;
+//        System.exit(0) ;
 
 //        String a[] = {"--data=D.ttl", "--query=Q.sse" } ;
 //        arq.sse_query.main(a) ;

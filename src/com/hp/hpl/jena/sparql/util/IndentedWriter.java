@@ -178,6 +178,10 @@ public class IndentedWriter
     public int getCol() { return column ; }
     public int getIndent() { return currentIndent ; }
     
+    /** Position past current indent */ 
+    public int getCurrentOffset() { return getCol() - getIndent() ; }
+    
+    
     public void incIndent(int x) { currentIndent += x ; }
     public void incIndent()      { incIndent(unitIndent) ; }
     public void decIndent(int x) { currentIndent -= x ; }

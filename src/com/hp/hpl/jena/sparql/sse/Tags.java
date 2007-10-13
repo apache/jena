@@ -29,6 +29,9 @@ public class Tags
     static public final String tagLoad          = "graph@" ;
     static public final String tagTriple        = "triple" ;
     static public final String tagQuad          = "quad" ;
+    
+    static public final String tagBase          = "base" ;
+    static public final String tagPrefix        = "prefix" ;
     static public final String tagPrefixMap     = "prefixmap" ;
     static public final String tagPrefixMapping = "prefixmapping" ;
 

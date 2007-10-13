@@ -57,8 +57,6 @@ public class WriterTable
         }
         WriterLib.finish(out, Tags.tagRow) ;
     }
-    
-
 }
 
 /*
