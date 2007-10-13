@@ -30,7 +30,6 @@ public class WriterTable
     
     public static void outNoTag(IndentedWriter out, Table table, SerializationContext sCxt)
     {
-        // TODO No tag here - should be?
         QueryIterator qIter = table.iterator(null) ; 
         for ( ; qIter.hasNext(); )
         {

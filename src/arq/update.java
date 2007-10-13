@@ -15,7 +15,7 @@ import arq.cmdline.CmdARQ;
 import arq.cmdline.ModAssembler;
 import arq.cmdline.ModDataset;
 
-import com.hp.hpl.jena.sparql.sse.writers.WriterSSE;
+import com.hp.hpl.jena.sparql.sse.WriterSSE;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
 import com.hp.hpl.jena.sparql.util.Utils;
 

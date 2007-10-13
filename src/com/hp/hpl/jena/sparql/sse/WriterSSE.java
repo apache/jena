@@ -4,13 +4,14 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.sse.writers;
+package com.hp.hpl.jena.sparql.sse;
 
 import com.hp.hpl.jena.graph.Graph;
 
 import com.hp.hpl.jena.sparql.ARQConstants;
 import com.hp.hpl.jena.sparql.core.DatasetGraph;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext;
+import com.hp.hpl.jena.sparql.sse.writers.WriterGraph;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
 
 public class WriterSSE

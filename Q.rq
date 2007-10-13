@@ -1,4 +1,4 @@
 PREFIX : <http://example/>
 
 SELECT DISTINCT ?o
-{ ?x :p ?o }
+{ {?x :p ?o } UNION { ?x :r ?r . } }
