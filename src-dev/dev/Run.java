@@ -8,19 +8,12 @@ package dev;
 
 import arq.sparql;
 
-import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.util.FileManager;
 
-import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.sparql.engine.binding.BindingMap;
-import com.hp.hpl.jena.sparql.expr.ExprNotComparableException;
-import com.hp.hpl.jena.sparql.expr.NodeValue;
-import com.hp.hpl.jena.sparql.sse.SSE;
 import com.hp.hpl.jena.sparql.util.DateTimeStruct;
-import com.hp.hpl.jena.sparql.util.ExprUtils;
+import com.hp.hpl.jena.sparql.util.FmtUtils;
 
 import com.hp.hpl.jena.query.*;
 import com.hp.hpl.jena.query.larq.IndexBuilderString;
@@ -31,6 +24,8 @@ public class Run
 {
     public static void main(String[] argv)
     {
+        code() ; System.exit(0) ;
+        
 //        String a[] = {"--update=update.ru"} ;
 //        arq.update.main(a) ;
 //        System.exit(0) ;
@@ -61,27 +56,25 @@ public class Run
     
     public static void code()
     {
-        Node n1 = SSE.parseNode("'2007-08-31'^^xsd:date") ;
-        Node n2 = SSE.parseNode("'2007-08-31Z'^^xsd:date") ;
-
-        NodeValue nv1 = NodeValue.makeNode(n1) ;
-        NodeValue nv2 = NodeValue.makeNode(n2) ;
-
-        try {
-            System.out.println(NodeValue.compare(nv1, nv2)) ;
-        } catch (ExprNotComparableException ex)
-        { System.out.println("Can't compare") ; }
-
-        System.out.println() ;
-
-        Binding b = new BindingMap() ;
-        b.add(Var.alloc("x"), n1) ;
-        b.add(Var.alloc("y"), n2) ;
-
-        ExprUtils.exprPrefix("( < ?x ?y)", b) ;
-        ExprUtils.exprPrefix("( = ?x ?y)", b) ;
-        ExprUtils.exprPrefix("( = ?x ?x)", b) ;
-        ExprUtils.exprPrefix("( = ?y ?y)", b) ;
+        code1("http://example/", "http://example/") ;
+        code1("http://example/x", "http://example/") ;
+        code1("http://example/x", "http://example/ns#") ;
+        code1("http://example/ns#x", "http://example/ns#") ;
+        code1("http://example/ns#x", "http://example/ns") ;
+        code1("http://example/x/y", "http://example/x") ;
+        code1("http://example/x/y", "http://example/x/") ;
+        code1("urn:x", "http://example/ns#") ;
+        code1("urn:x#foo", "urn:x") ;
+        code1("urn:x/y", "urn:x") ;
+    }
+    
+    public static void code1(String uri, String base)
+    {
+        String x = FmtUtils.abbrevByBase(uri, base) ;
+        if ( x != null )
+            x = "<"+x+">" ;
+        System.out.println(uri+" "+base+" ==> "+x) ;
+        
     }
 
     private static void runQParse()

@@ -16,3 +16,4 @@
 + SSE.parseXXX(, Prologue)
 
 + FmtUtils - Base URI abbreviation
+  See _stringForURI

@@ -14,11 +14,14 @@ import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.shared.PrefixMapping;
+import com.hp.hpl.jena.vocabulary.XSD;
+
 import com.hp.hpl.jena.sparql.ARQConstants;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException;
-import com.hp.hpl.jena.sparql.core.*;
+import com.hp.hpl.jena.sparql.core.BasicPattern;
+import com.hp.hpl.jena.sparql.core.Prologue;
+import com.hp.hpl.jena.sparql.core.Quad;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext;
-import com.hp.hpl.jena.vocabulary.XSD;
 
 /**
  * @author   Andy Seaborne
@@ -281,15 +284,35 @@ public class FmtUtils
     static public String stringForURI(String uri)
     { return "<"+stringEsc(uri)+">" ; }
 
+    static public String stringForURI(String uri, Prologue prologue)
+    {
+        return _stringForURI(uri, prologue.getBaseURI(), prologue.getPrefixMapping()) ;
+    }
+
+    
     static public String stringForURI(String uri, SerializationContext context)
     {
         if ( context == null )
-            return stringForURI(uri, (PrefixMapping)null) ;
-        return stringForURI(uri, context.getPrefixMapping()) ;
+            return _stringForURI(uri, null, null) ;
+        return _stringForURI(uri, context.getBaseIRI(), context.getPrefixMapping()) ;
     }
 
     static public String stringForURI(String uri, PrefixMapping mapping)
+    { return _stringForURI(uri, null, mapping) ; }
+    
+    
+    static private String _stringForURI(String uri, String base, PrefixMapping mapping)
     {
+        // TODO Abbreviate relative to a base
+        // http:
+        // Case: base is a substring of uri and uri then starts #
+        // Case: base is a substring of uri and base ends # or /
+        if ( false && base != null )
+        {
+            String x = abbrevByBase(uri, base) ;
+            if ( x != null ) 
+                return "<"+x+">" ;
+        }
         if ( mapping != null )
         {
             String pname = prefixFor(uri, mapping) ;
@@ -299,6 +322,43 @@ public class FmtUtils
         return stringForURI(uri) ; 
     }
     
+    static public String abbrevByBase(String uri, String base)
+    {
+        // Assumes hierarchical scheme.
+        if ( ! uri.startsWith(base) )
+            return null ;
+        int x = base.length() ;
+        if ( uri.length() == base.length() )
+            return "" ;
+        if ( uri.charAt(x) == '#' ) 
+            return uri.substring(x) ;
+        if ( base.charAt(x-1) == '#' )
+            return uri.substring(x) ;
+        
+        // Hierachical scheme.
+        if ( base.charAt(x-1) == '/' )
+        {
+            if ( isHierarchical(base) )
+                return uri.substring(x) ;
+        }
+        // Does not cover the case of hierarchical scheme and back to last "/"
+        return null ;
+    }
+    
+    
+    private static boolean isHierarchical(String uri)
+    {
+//        String scheme = FileUtils.getScheme(uri) ;
+//        if ( scheme.equals("http") ) return true ; 
+//        if ( scheme.equals("https") ) return true ; 
+//        if ( scheme.equals("file") ) return true ;
+        if ( uri.startsWith("http:") ) return true ;
+        if ( uri.startsWith("https:") ) return true ;
+        if ( uri.startsWith("file:") ) return true ;
+        return false ;
+    }
+
+
     private static String prefixFor(String uri, PrefixMapping mapping)
     {
         if ( mapping == null ) return null ;

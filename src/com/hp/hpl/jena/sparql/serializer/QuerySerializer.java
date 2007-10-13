@@ -151,7 +151,7 @@ public class QuerySerializer implements QueryVisitor
             {
                 String uri = (String)iter.next() ;
                 out.print("FROM ") ;
-                out.print(FmtUtils.stringForURI(uri, query.getPrefixMapping())) ;
+                out.print(FmtUtils.stringForURI(uri, query)) ;
                 out.newline() ;
             }
         }
@@ -162,7 +162,7 @@ public class QuerySerializer implements QueryVisitor
                 // One per line
                 String uri = (String)iter.next() ;
                 out.print("FROM NAMED ") ;
-                out.print(FmtUtils.stringForURI(uri, query.getPrefixMapping())) ;
+                out.print(FmtUtils.stringForURI(uri, query)) ;
                 out.newline() ;
             }
         }
