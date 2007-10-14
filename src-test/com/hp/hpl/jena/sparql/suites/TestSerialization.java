@@ -35,97 +35,97 @@ public class TestSerialization extends TestCase
     
     // Simple stuff
     public void test_URI_1() // Not in the map
-    { fmtURI("http://elsewhere/", "<http://elsewhere/>", pmap1) ; }
+    { fmtURI_Prefix("http://elsewhere/", "<http://elsewhere/>", pmap1) ; }
 
     public void test_URI_2() // Too short
-    { fmtURI("http://example/", "<http://example/>", pmap1) ; }
+    { fmtURI_Prefix("http://example/", "<http://example/>", pmap1) ; }
     
     public void test_URI_3() // No prefix mapping
-    { fmtURI("http://default/", "<http://default/>", (PrefixMapping)null) ; }
+    { fmtURI_Prefix("http://default/", "<http://default/>", (PrefixMapping)null) ; }
 
     public void test_URI_4()
-    { fmtURI("http://example/", "<http://example/>", (String)null ) ; }
+    { fmtURI_Base("http://example/", "<http://example/>", (String)null ) ; }
     
     public void test_URI_5()
-    { fmtURI("http://example/x", "<x>", "http://example/") ; }
+    { fmtURI_Base("http://example/x", "<x>", "http://example/") ; }
 
     public void test_URI_6()
-    { fmtURI("http://example/x", "<http://example/x>","http://example/ns#") ; }
+    { fmtURI_Base("http://example/x", "<http://example/x>","http://example/ns#") ; }
     
     public void test_URI_7()
-    { fmtURI("http://example/ns#x", "<x>", "http://example/ns#") ; }
+    { fmtURI_Base("http://example/ns#x", "<x>", "http://example/ns#") ; }
     
     public void test_URI_8()
-    { fmtURI("http://example/ns#x", "<#x>", "http://example/ns") ; }
+    { fmtURI_Base("http://example/ns#x", "<#x>", "http://example/ns") ; }
     
     public void test_URI_9()
-    { fmtURI("http://example/x/y", "<y>", "http://example/x/") ; }
+    { fmtURI_Base("http://example/x/y", "<y>", "http://example/x/") ; }
     
     public void test_URI_10()
-    { fmtURI("http://example/x/y", "<http://example/x/y>", "http://example/x") ; }
+    { fmtURI_Base("http://example/x/y", "<http://example/x/y>", "http://example/x") ; }
     
     public void test_URI_11()
-    { fmtURI("urn:x", "<urn:x>", "http://example/ns#") ; }
+    { fmtURI_Base("urn:x", "<urn:x>", "http://example/ns#") ; }
     
     public void test_URI_12()
-    { fmtURI("urn:x#foo", "<#foo>", "urn:x") ; }
+    { fmtURI_Base("urn:x#foo", "<#foo>", "urn:x") ; }
     
     public void test_URI_13()
-    { fmtURI("urn:x/y", "<urn:x/y>",  "urn:x") ; }
+    { fmtURI_Base("urn:x/y", "<urn:x/y>",  "urn:x") ; }
     
     public void test_URI_14()
-    { fmtURI("urn:x:y", "<y>",  "urn:x:") ; }
+    { fmtURI_Base("urn:x:y", "<y>",  "urn:x:") ; }
     
     public void test_PName_1() 
-    { fmtURI("http://example/x#abc", "ex:abc", pmap1) ; }
+    { fmtURI_Prefix("http://example/x#abc", "ex:abc", pmap1) ; }
 
     public void test_PName_2() 
-    { fmtURI("http://example/x#", "ex:", pmap1) ; }
+    { fmtURI_Prefix("http://example/x#", "ex:", pmap1) ; }
 
     public void test_PName_3()
-    { fmtURI("http://default/x", ":x", pmap1) ; }
+    { fmtURI_Prefix("http://default/x", ":x", pmap1) ; }
 
     public void test_PName_4()
-    { fmtURI("http://default/", ":", pmap1) ; }
+    { fmtURI_Prefix("http://default/", ":", pmap1) ; }
 
     public void test_PName_5() // Prefixed names with a leading number in the local part
-    { fmtURI("http://default/0", ":0", pmap1) ; }
+    { fmtURI_Prefix("http://default/0", ":0", pmap1) ; }
     
     public void test_PName_6()
-    { fmtURI("http://example/x#x-1", "ex:x-1", pmap1) ; }
+    { fmtURI_Prefix("http://example/x#x-1", "ex:x-1", pmap1) ; }
     
     // Things that can't be prefixed names
 
     public void test_PName_Bad_1()
-    { fmtURI("http://other/x", "<http://other/x>", pmap1) ; }
+    { fmtURI_Prefix("http://other/x", "<http://other/x>", pmap1) ; }
 
     public void test_PName_Bad_2()
-    { fmtURI("http://other/x#a", "<http://other/x#a>", pmap1) ; }
+    { fmtURI_Prefix("http://other/x#a", "<http://other/x#a>", pmap1) ; }
     
     public void test_PName_Bad_3()
-    { fmtURI("http://example/x##", "<http://example/x##>", pmap1) ; }
+    { fmtURI_Prefix("http://example/x##", "<http://example/x##>", pmap1) ; }
 
     public void test_PName_Bad_4() 
-    { fmtURI("http://default/x#a", "<http://default/x#a>", pmap1) ; }
+    { fmtURI_Prefix("http://default/x#a", "<http://default/x#a>", pmap1) ; }
 
     public void test_PName_Bad_5() 
-    { fmtURI("http://default/#a", "<http://default/#a>", pmap1) ; }
+    { fmtURI_Prefix("http://default/#a", "<http://default/#a>", pmap1) ; }
 
     public void test_PName_Bad_6()
-    { fmtURI("http://example/x/a", "<http://example/x/a>", pmap1) ; }
+    { fmtURI_Prefix("http://example/x/a", "<http://example/x/a>", pmap1) ; }
     
     public void test_PName_Bad_7() 
-    { fmtURI("http://example/x.", "<http://example/x.>", pmap1) ; }
+    { fmtURI_Prefix("http://example/x.", "<http://example/x.>", pmap1) ; }
     
     // Dots
     public void test_Dots_1() // Internal DOT 
-    { fmtURI("http://example/x#a.b", "ex:a.b", pmap1) ; }
+    { fmtURI_Prefix("http://example/x#a.b", "ex:a.b", pmap1) ; }
     
     public void test_Dots_2() // Trailing DOT
-    { fmtURI("http://example/x#a.b.", "<http://example/x#a.b.>", pmap1) ; }
+    { fmtURI_Prefix("http://example/x#a.b.", "<http://example/x#a.b.>", pmap1) ; }
 
     public void test_Dots_3() // Leading DOT
-    { fmtURI("http://example/x#.b", "<http://example/x#.b>", pmap1) ; }
+    { fmtURI_Prefix("http://example/x#.b", "<http://example/x#.b>", pmap1) ; }
 
     public void testQueryPattern1()
     { test("SELECT * { ?s ?p ?o }", 
@@ -200,7 +200,7 @@ public class TestSerialization extends TestCase
          
     }
     
-    private void fmtURI(String uriStr, String expected, PrefixMapping pmap)
+    private void fmtURI_Prefix(String uriStr, String expected, PrefixMapping pmap)
     {
         String actual = FmtUtils.stringForURI(uriStr, pmap) ;
         //assertEquals(expected, actual) ;
@@ -210,7 +210,7 @@ public class TestSerialization extends TestCase
             fail(expected + " => " +actual) ;
     }
     
-    private void fmtURI(String uriStr, String expected, String base)
+    private void fmtURI_Base(String uriStr, String expected, String base)
     {
         String actual = FmtUtils.stringForURI(uriStr, base, null) ;
         //assertEquals(expected, actual) ;
