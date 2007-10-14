@@ -100,12 +100,11 @@ public class WriterOp
         boolean printBase = false ;
         
         // TODO Abbreviation of URIs by base
+        // Currently, does not get set except to the CWD
         if ( printBase && sCxt.getBaseIRI() != null )
         {
-            WriterLib.start(iWriter, Tags.tagBase, NoNL) ;        
-            iWriter.print("<") ;
-            iWriter.print(sCxt.getBaseIRI()) ;
-            iWriter.println(">") ;
+            WriterLib.start(iWriter, Tags.tagBase, NoNL) ;   
+            iWriter.print(FmtUtils.stringForURI(sCxt.getBaseIRI())) ;
             closeBase = true ;
         }
         
