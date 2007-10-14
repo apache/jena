@@ -30,6 +30,8 @@ import com.hp.hpl.jena.sparql.serializer.SerializationContext;
 
 public class FmtUtils
 {
+    // Long terms - Prologue and tighter integration with IRI.relativize.
+    
     static final String indentPrefix = "  " ;
     public static boolean multiLineExpr = false ;
     public static boolean printOpName = true ;
@@ -286,66 +288,80 @@ public class FmtUtils
 
     static public String stringForURI(String uri, Prologue prologue)
     {
-        return _stringForURI(uri, prologue.getBaseURI(), prologue.getPrefixMapping()) ;
+        return stringForURI(uri, prologue.getBaseURI(), prologue.getPrefixMapping()) ;
     }
 
-    
     static public String stringForURI(String uri, SerializationContext context)
     {
         if ( context == null )
-            return _stringForURI(uri, null, null) ;
-        return _stringForURI(uri, context.getBaseIRI(), context.getPrefixMapping()) ;
+            return stringForURI(uri, null, null) ;
+        return stringForURI(uri, context.getBaseIRI(), context.getPrefixMapping()) ;
     }
 
     static public String stringForURI(String uri, PrefixMapping mapping)
-    { return _stringForURI(uri, null, mapping) ; }
+    { return stringForURI(uri, null, mapping) ; }
     
-    
-    static private String _stringForURI(String uri, String base, PrefixMapping mapping)
+    static public String stringForURI(String uri, String base, PrefixMapping mapping)
     {
-        // TODO Abbreviate relative to a base
-        // http:
-        // Case: base is a substring of uri and uri then starts #
-        // Case: base is a substring of uri and base ends # or /
-        if ( false && base != null )
-        {
-            String x = abbrevByBase(uri, base) ;
-            if ( x != null ) 
-                return "<"+x+">" ;
-        }
         if ( mapping != null )
         {
             String pname = prefixFor(uri, mapping) ;
             if ( pname != null )
                 return pname ;
         }
+        if ( base != null )
+        {
+            String x = abbrevByBase(uri, base) ;
+            if ( x != null ) 
+                return "<"+x+">" ;
+        }
         return stringForURI(uri) ; 
     }
     
+    // Case: base is a substring of uri and uri then starts #
+    // Case: base is a substring of uri and base ends # or /
+    // Assumes legal URI.
     static public String abbrevByBase(String uri, String base)
     {
-        // Assumes hierarchical scheme.
+        // Too expensive?  Too savage?
+//        if ( true )
+//        {
+//            // Better IRI.relativize
+//            IRI iri = IRIFactory.jenaImplementation().construct(base) ;
+//            iri.relativize(uri) ;
+//        }
         if ( ! uri.startsWith(base) )
             return null ;
+
         int x = base.length() ;
         if ( uri.length() == base.length() )
             return "" ;
-        if ( uri.charAt(x) == '#' ) 
-            return uri.substring(x) ;
+
+        // Fragments
         if ( base.charAt(x-1) == '#' )
             return uri.substring(x) ;
         
-        // Hierachical scheme.
+        if ( uri.charAt(x) == '#' ) 
+            return uri.substring(x) ;
+        
+        // Hierarchical scheme
         if ( base.charAt(x-1) == '/' )
         {
             if ( isHierarchical(base) )
+                return uri.substring(x) ;
+        }
+        
+        // URN.
+        if ( base.charAt(x-1) == ':' )
+        {
+            if ( uri.startsWith("urn:") ) 
                 return uri.substring(x) ;
         }
         // Does not cover the case of hierarchical scheme and back to last "/"
         return null ;
     }
     
-    
+    // Scheme specific rules.
     private static boolean isHierarchical(String uri)
     {
 //        String scheme = FileUtils.getScheme(uri) ;

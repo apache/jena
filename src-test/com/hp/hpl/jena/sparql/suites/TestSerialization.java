@@ -41,8 +41,41 @@ public class TestSerialization extends TestCase
     { fmtURI("http://example/", "<http://example/>", pmap1) ; }
     
     public void test_URI_3() // No prefix mapping
-    { fmtURI("http://default/", "<http://default/>", null) ; }
+    { fmtURI("http://default/", "<http://default/>", (PrefixMapping)null) ; }
 
+    public void test_URI_4()
+    { fmtURI("http://example/", "<http://example/>", (String)null ) ; }
+    
+    public void test_URI_5()
+    { fmtURI("http://example/x", "<x>", "http://example/") ; }
+
+    public void test_URI_6()
+    { fmtURI("http://example/x", "<http://example/x>","http://example/ns#") ; }
+    
+    public void test_URI_7()
+    { fmtURI("http://example/ns#x", "<x>", "http://example/ns#") ; }
+    
+    public void test_URI_8()
+    { fmtURI("http://example/ns#x", "<#x>", "http://example/ns") ; }
+    
+    public void test_URI_9()
+    { fmtURI("http://example/x/y", "<y>", "http://example/x/") ; }
+    
+    public void test_URI_10()
+    { fmtURI("http://example/x/y", "<http://example/x/y>", "http://example/x") ; }
+    
+    public void test_URI_11()
+    { fmtURI("urn:x", "<urn:x>", "http://example/ns#") ; }
+    
+    public void test_URI_12()
+    { fmtURI("urn:x#foo", "<#foo>", "urn:x") ; }
+    
+    public void test_URI_13()
+    { fmtURI("urn:x/y", "<urn:x/y>",  "urn:x") ; }
+    
+    public void test_URI_14()
+    { fmtURI("urn:x:y", "<y>",  "urn:x:") ; }
+    
     public void test_PName_1() 
     { fmtURI("http://example/x#abc", "ex:abc", pmap1) ; }
 
@@ -170,7 +203,17 @@ public class TestSerialization extends TestCase
     private void fmtURI(String uriStr, String expected, PrefixMapping pmap)
     {
         String actual = FmtUtils.stringForURI(uriStr, pmap) ;
-        assertEquals(expected, actual) ;
+        //assertEquals(expected, actual) ;
+        
+        // Better error message this way?
+        if ( ! expected.equals(actual) )
+            fail(expected + " => " +actual) ;
+    }
+    
+    private void fmtURI(String uriStr, String expected, String base)
+    {
+        String actual = FmtUtils.stringForURI(uriStr, base, null) ;
+        //assertEquals(expected, actual) ;
         
         // Better error message this way?
         if ( ! expected.equals(actual) )

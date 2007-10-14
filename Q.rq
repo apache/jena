@@ -1,5 +1,6 @@
+BASE   <http://example.org/>
 PREFIX : <http://example/>
 PREFIX z: <http://example/z#>
 
 SELECT DISTINCT ?o
-{ {?x :p ?o } UNION { ?x :r ?r . } }
+{ {?x :p ?o } UNION { ?x <fred> ?r . } }

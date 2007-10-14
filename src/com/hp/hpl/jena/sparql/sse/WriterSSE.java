@@ -16,7 +16,9 @@ import com.hp.hpl.jena.sparql.util.IndentedWriter;
 
 public class WriterSSE
 {
-
+    // No need for SerializationContext forms because these are the external intefraces
+    // PrintStream [, Base] [, PrefixMap]
+    
     public static void out(IndentedWriter out, Graph g)
     { WriterGraph.out(out, g, sCxt()) ; }
     
