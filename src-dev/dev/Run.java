@@ -13,7 +13,6 @@ import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.util.FileManager;
 
 import com.hp.hpl.jena.sparql.util.DateTimeStruct;
-import com.hp.hpl.jena.sparql.util.FmtUtils;
 
 import com.hp.hpl.jena.query.*;
 import com.hp.hpl.jena.query.larq.IndexBuilderString;
@@ -56,25 +55,6 @@ public class Run
     
     public static void code()
     {
-        code1("http://example/", "http://example/") ;
-        code1("http://example/x", "http://example/") ;
-        code1("http://example/x", "http://example/ns#") ;
-        code1("http://example/ns#x", "http://example/ns#") ;
-        code1("http://example/ns#x", "http://example/ns") ;
-        code1("http://example/x/y", "http://example/x") ;
-        code1("http://example/x/y", "http://example/x/") ;
-        code1("urn:x", "http://example/ns#") ;
-        code1("urn:x#foo", "urn:x") ;
-        code1("urn:x/y", "urn:x") ;
-    }
-    
-    public static void code1(String uri, String base)
-    {
-        String x = FmtUtils.abbrevByBase(uri, base) ;
-        if ( x != null )
-            x = "<"+x+">" ;
-        System.out.println(uri+" "+base+" ==> "+x) ;
-        
     }
 
     private static void runQParse()

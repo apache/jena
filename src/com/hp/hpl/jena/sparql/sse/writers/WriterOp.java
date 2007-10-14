@@ -510,29 +510,36 @@ public class WriterOp
             finish() ;
         }
 
-        private void formatTriple(Triple tp)
-        {
-            WriterLib.start(out, Tags.tagTriple, NoNL) ;
-            WriterNode.out(out, tp.getSubject(), sContext) ;
-            out.print(" ") ;
-            WriterNode.out(out, tp.getPredicate(), sContext) ;
-            out.print(" ") ;
-            WriterNode.out(out, tp.getObject(), sContext) ;
-            WriterLib.finish(out, Tags.tagTriple) ;
-        }
 
+        private void formatTriple(Triple tp)
+        { WriterNode.out(out, tp, sContext) ; }
+        
         private void formatQuad(Quad qp)
-        {
-            WriterLib.start(out, Tags.tagQuad, NoNL) ;
-            WriterNode.out(out, qp.getGraph(), sContext) ;
-            out.print(" ") ;
-            WriterNode.out(out, qp.getSubject(), sContext) ;
-            out.print(" ") ;
-            WriterNode.out(out, qp.getPredicate(), sContext) ;
-            out.print(" ") ;
-            WriterNode.out(out, qp.getObject(), sContext) ;
-            WriterLib.finish(out, Tags.tagQuad) ;
-        }
+        { WriterNode.out(out, qp, sContext) ; }
+        
+//        private void formatTriple(Triple tp)
+//        {
+//            WriterLib.start(out, Tags.tagTriple, NoNL) ;
+//            WriterNode.out(out, tp.getSubject(), sContext) ;
+//            out.print(" ") ;
+//            WriterNode.out(out, tp.getPredicate(), sContext) ;
+//            out.print(" ") ;
+//            WriterNode.out(out, tp.getObject(), sContext) ;
+//            WriterLib.finish(out, Tags.tagTriple) ;
+//        }
+//
+//        private void formatQuad(Quad qp)
+//        {
+//            WriterLib.start(out, Tags.tagQuad, NoNL) ;
+//            WriterNode.out(out, qp.getGraph(), sContext) ;
+//            out.print(" ") ;
+//            WriterNode.out(out, qp.getSubject(), sContext) ;
+//            out.print(" ") ;
+//            WriterNode.out(out, qp.getPredicate(), sContext) ;
+//            out.print(" ") ;
+//            WriterNode.out(out, qp.getObject(), sContext) ;
+//            WriterLib.finish(out, Tags.tagQuad) ;
+//        }
     }
 }
 

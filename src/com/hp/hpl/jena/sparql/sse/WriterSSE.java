@@ -7,17 +7,31 @@
 package com.hp.hpl.jena.sparql.sse;
 
 import com.hp.hpl.jena.graph.Graph;
+import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.graph.Triple;
 
 import com.hp.hpl.jena.sparql.ARQConstants;
+import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.core.DatasetGraph;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext;
 import com.hp.hpl.jena.sparql.sse.writers.WriterGraph;
+import com.hp.hpl.jena.sparql.sse.writers.WriterNode;
+import com.hp.hpl.jena.sparql.sse.writers.WriterOp;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
 
 public class WriterSSE
 {
     // No need for SerializationContext forms because these are the external intefraces
     // PrintStream [, Base] [, PrefixMap]
+    
+    public static void out(IndentedWriter out, Node node)
+    { WriterNode.out(out, node, sCxt()) ; }
+    
+    public static void out(IndentedWriter out, Triple triple)
+    { WriterNode.out(out, triple, sCxt()) ; }
+
+    public static void out(IndentedWriter out, Op op)
+    { WriterOp.out(out, op, sCxt()) ; }
     
     public static void out(IndentedWriter out, Graph g)
     { WriterGraph.out(out, g, sCxt()) ; }

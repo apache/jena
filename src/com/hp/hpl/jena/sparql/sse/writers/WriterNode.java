@@ -9,24 +9,59 @@ package com.hp.hpl.jena.sparql.sse.writers;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 
+import com.hp.hpl.jena.sparql.core.Quad;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext;
+import com.hp.hpl.jena.sparql.sse.Tags;
 import com.hp.hpl.jena.sparql.util.FmtUtils;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
 
 public class WriterNode
 {
+    private static final int NL = WriterLib.NL ;
+    private static final int NoNL = WriterLib.NoNL ;
+    private static final int NoSP = WriterLib.NoSP ;
+    
+    public static void out(IndentedWriter out, Triple triple, SerializationContext sCxt)
+    {
+        WriterLib.start(out, Tags.tagTriple, NoNL) ;
+        WriterNode.out(out, triple.getSubject(), sCxt) ;
+        out.print(" ") ;
+        WriterNode.out(out, triple.getPredicate(), sCxt) ;
+        out.print(" ") ;
+        WriterNode.out(out, triple.getObject(), sCxt) ;
+        WriterLib.finish(out, Tags.tagTriple) ;
+    }
+    
+    public static void outPlain(IndentedWriter out, Triple triple, SerializationContext sCxt)
+    {
+        // No tag
+        WriterLib.start(out) ;
+        WriterNode.out(out, triple.getSubject(), sCxt) ;
+        out.print(" ") ;
+        WriterNode.out(out, triple.getPredicate(), sCxt) ;
+        out.print(" ") ;
+        WriterNode.out(out, triple.getObject(), sCxt) ;
+        WriterLib.finish(out) ;
+    }
+    
+    public static void out(IndentedWriter out, Quad qp, SerializationContext sCxt)
+    {
+        WriterLib.start(out, Tags.tagQuad, NoNL) ;
+        WriterNode.out(out, qp.getGraph(), sCxt) ;
+        out.print(" ") ;
+        WriterNode.out(out, qp.getSubject(), sCxt) ;
+        out.print(" ") ;
+        WriterNode.out(out, qp.getPredicate(), sCxt) ;
+        out.print(" ") ;
+        WriterNode.out(out, qp.getObject(), sCxt) ;
+        WriterLib.finish(out, Tags.tagQuad) ;
+    }
+    
+    
     public static void out(IndentedWriter out, Node node, SerializationContext sCxt)
     {
         out.print(FmtUtils.stringForNode(node, sCxt)) ;
     }
-    
-    public static void out(IndentedWriter out, Triple triple, SerializationContext sCxt)
-    {
-        FmtUtils.formatTriple(out, triple, sCxt) ;
-    }
-    
-
-
 }
 
 /*
