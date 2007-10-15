@@ -36,4 +36,13 @@
             ] ;
       ]
 
+##       [  mf:name    "Quads-3" ;
+##          rdf:type   mfx:TestQuery ; 
+##          mf:action
+##             [ qt:query  <quad-3.rq> ;
+##               qt:data   <data-2.ttl> ;
+##               qt:graphData   <data-1.ttl> ;
+##               qt:graphData   <data-2.ttl> ;
+##             ] ;
+##       ]
     ).
