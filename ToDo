@@ -9,11 +9,12 @@
 See ToDoSSE
 
 ----
-+ ResultSetFormatter.out - need Proglogue usuage.
++ ResultSetFormatter.out - need Proglogue usage.
     Look for PrefixMapping and update to use Prologue
     Leave only in API
+    Prologue => IRIContext?
   
-+ LARQ. IndexLAR - add : reopenForWriting
++ LARQ. IndexLARQ - add : reopenForWriting
   IndexBuilderModel has a seen cache - is it not-cache safe?
 
 + Remove OpDatasetNames?? - only needed in quad compilation for GRAPH ?g {}
