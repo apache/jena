@@ -50,10 +50,14 @@ public abstract class TupleLoaderBase extends com.hp.hpl.jena.sdb.store.TupleLoa
 	
 	protected void init() throws SQLException {
 		// Create the temporary tables
-		if (!TableUtils.hasTable(connection().getSqlConnection(), getNodeLoader())) // Can happen with Oracle
-			connection().exec(getCreateTempNodes());
-		if (!TableUtils.hasTable(connection().getSqlConnection(), getTupleLoader()))
-			connection().exec(getCreateTempTuples());
+		try {
+			if (!TableUtils.hasTable(connection().getSqlConnection(), getNodeLoader()))
+				connection().exec(getCreateTempNodes());
+			if (!TableUtils.hasTable(connection().getSqlConnection(), getTupleLoader()))
+				connection().exec(getCreateTempTuples());
+		} catch (SQLException e) { // Work around for MySQL issue, which won't say if temp table exists
+			if (!e.getMessage().matches("Table.*already exists")) throw e;
+		}
 		
 		// Prepare those statements
 		insertNodeLoader = connection().prepareStatement(getInsertTempNodes());
