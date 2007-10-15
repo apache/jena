@@ -9,10 +9,13 @@
 See ToDoSSE
 
 ----
-+ OpGroup: needs both parts? 
++ ResultSetFormatter.out - need Proglogue usuage.
+    Look for PrefixMapping and update to use Prologue
+    Leave only in API
+  
 
 + Remove OpDatasetNames?? - only needed in quad compilation for GRAPH ?g {}
-  Use a table!
+  Special iterator for OpCompiler? 
 
 + SPARQL/Update - command line tools - arq.update
 

@@ -12,6 +12,7 @@ import java.util.List;
 
 import com.hp.hpl.jena.sparql.ARQNotImplemented;
 import com.hp.hpl.jena.sparql.algebra.Op;
+import com.hp.hpl.jena.sparql.algebra.Table;
 import com.hp.hpl.jena.sparql.algebra.op.*;
 import com.hp.hpl.jena.sparql.core.BasicPattern;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
@@ -238,7 +239,16 @@ public class OpCompiler
     }
     
     QueryIterator compile(OpDatasetNames dsNames, QueryIterator input)
-    { throw new ARQNotImplemented("OpDatasetNames") ; }
+    { 
+        if ( true ) throw new ARQNotImplemented("OpDatasetNames") ;
+        
+        // Augment (join) iterator with a table.
+        Table t = null ;
+        Op left = null ; 
+        Op right = OpTable.create(t) ;
+        Op opJoin = OpJoin.create(left, right) ;
+        return compileOp(opJoin , input) ;    //??
+    }
 
     QueryIterator compile(OpTable opTable, QueryIterator input)
     { 

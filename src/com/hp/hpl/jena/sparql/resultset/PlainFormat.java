@@ -12,7 +12,7 @@ import java.io.PrintWriter;
 import com.hp.hpl.jena.query.QuerySolution;
 import com.hp.hpl.jena.query.ResultSet;
 import com.hp.hpl.jena.rdf.model.RDFNode;
-import com.hp.hpl.jena.shared.PrefixMapping;
+import com.hp.hpl.jena.sparql.core.Prologue;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext;
 import com.hp.hpl.jena.sparql.util.FmtUtils;
 import com.hp.hpl.jena.util.FileUtils;
@@ -30,11 +30,10 @@ public class PlainFormat implements ResultSetProcessor
         this.out = FileUtils.asPrintWriterUTF8(outStream) ;
         this.context = context ;
     }
-
     
-    public PlainFormat(OutputStream outStream, PrefixMapping prefixMapping)
+    public PlainFormat(OutputStream outStream, Prologue prologue)
     {
-        this(outStream, new SerializationContext(prefixMapping)) ;
+        this(outStream, new SerializationContext(prologue)) ;
     }
     
     public void start(ResultSet rs) {}

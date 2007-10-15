@@ -21,6 +21,7 @@ import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.OpVars;
 import com.hp.hpl.jena.sparql.algebra.op.OpProject;
 import com.hp.hpl.jena.sparql.core.DatasetGraph;
+import com.hp.hpl.jena.sparql.core.Prologue;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.Plan;
 import com.hp.hpl.jena.sparql.engine.QueryEngineFactory;
@@ -85,11 +86,11 @@ public class QueryExecUtils
         outputResultSet(results, null, outputFormat) ;
      }
     
-    public static void outputResultSet(ResultSet results, PrefixMapping prefixMapping, ResultsFormat outputFormat)
+    public static void outputResultSet(ResultSet results, Prologue prologue, ResultsFormat outputFormat)
     {
         boolean done = false ;
-        if ( prefixMapping == null )
-            prefixMapping = globalPrefixMap ;
+        if ( prologue == null )
+            prologue = new Prologue(globalPrefixMap) ;
 
         if ( outputFormat.equals(ResultsFormat.FMT_UNKNOWN) )
             outputFormat = ResultsFormat.FMT_TEXT ;
@@ -110,7 +111,7 @@ public class QueryExecUtils
              outputFormat.equals(ResultsFormat.FMT_RDF_TTL) )
         {
             Model m = ResultSetFormatter.toModel(results) ;
-            m.setNsPrefixes(prefixMapping) ;
+            m.setNsPrefixes(prologue.getPrefixMapping()) ;
             RDFWriter rdfw = m.getWriter("TURTLE") ;
             m.setNsPrefix("rs", ResultSetGraphVocab.getURI()) ;
             rdfw.write(m, System.out, null) ;
@@ -131,19 +132,19 @@ public class QueryExecUtils
 
         if ( outputFormat.equals(ResultsFormat.FMT_RS_SSE) )
         {
-            ResultSetFormatter.outputAsSSE(System.out, results, prefixMapping) ;
+            ResultSetFormatter.outputAsSSE(System.out, results, prologue) ;
             done = true ;
         }
         
         if ( outputFormat.equals(ResultsFormat.FMT_TEXT) )
         {
-            ResultSetFormatter.out(System.out, results, prefixMapping) ;
+            ResultSetFormatter.out(System.out, results, prologue) ;
             done = true ;
         }
 
         if ( outputFormat.equals(ResultsFormat.FMT_TUPLES) )
         {
-            PlainFormat pFmt = new PlainFormat(System.out, prefixMapping) ;
+            PlainFormat pFmt = new PlainFormat(System.out, prologue) ;
             ResultSetApply a = new ResultSetApply(results, pFmt) ;
             a.apply() ;
             done = true ;
@@ -161,7 +162,7 @@ public class QueryExecUtils
         if ( outputFormat == null || outputFormat == ResultsFormat.FMT_UNKNOWN )
             outputFormat = ResultsFormat.FMT_TEXT ; 
         ResultSet results = qe.execSelect() ;
-        outputResultSet(results, query.getPrefixMapping(), outputFormat) ;
+        outputResultSet(results, query, outputFormat) ;
     }
 
 

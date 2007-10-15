@@ -6,6 +6,8 @@
 
 package dev;
 
+import java.net.MalformedURLException;
+
 import arq.sparql;
 
 import com.hp.hpl.jena.rdf.model.Model;
@@ -14,6 +16,9 @@ import com.hp.hpl.jena.util.FileManager;
 
 import com.hp.hpl.jena.sparql.util.DateTimeStruct;
 
+import com.hp.hpl.jena.iri.IRI;
+import com.hp.hpl.jena.iri.IRIFactory;
+import com.hp.hpl.jena.iri.IRIRelativize;
 import com.hp.hpl.jena.query.*;
 import com.hp.hpl.jena.query.larq.IndexBuilderString;
 import com.hp.hpl.jena.query.larq.IndexLARQ;
@@ -55,6 +60,38 @@ public class Run
     
     public static void code()
     {
+//        code1("http://example/x/z", "http://example/x/y") ;
+//        code1("http://example/x/z1/z2", "http://example/x/y") ;
+        
+//        code1("http://example/x", "http://example/") ;
+//        code1("http://example/x", "http://example/ns#") ; //"<http://example/x>", "<x>"
+        
+        
+        code1("http://example/ns#x", "http://example/ns#") ; //"<x>",
+        
+        
+        
+//        code1("http://example/x/y", "http://example/x/") ; // "<y>"
+//        code1("http://example/x/y", "http://example/x") ; //, "<http://example/x/y>") ; 
+//        code1("http://example/x/y", "http://example/") ; //, "<x/y>") ; }
+
+    }
+
+    private static void code1(String uri, String base)
+    {
+        int relFlags = IRIRelativize.SAMEDOCUMENT | IRIRelativize.CHILD ;
+        IRI baseIRI = IRIFactory.jenaImplementation().construct(base) ;
+        IRI rel = baseIRI.relativize(uri, relFlags) ;
+        
+        String s = null ; 
+        try { s = rel.toASCIIString() ; }
+        catch (MalformedURLException  ex) { s = rel.toString() ; }
+            
+        System.out.println("("+uri+" ["+base+"]) ==> <"+s+">") ;
+        
+        String s2 = baseIRI.create(s).toString() ;
+        System.out.println("     "+s2) ;
+        
     }
 
     private static void runQParse()

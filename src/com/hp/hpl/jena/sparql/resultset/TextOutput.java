@@ -13,6 +13,7 @@ import com.hp.hpl.jena.query.QuerySolution;
 import com.hp.hpl.jena.query.ResultSet;
 import com.hp.hpl.jena.rdf.model.* ;
 import com.hp.hpl.jena.shared.PrefixMapping;
+import com.hp.hpl.jena.sparql.core.Prologue;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext;
 import com.hp.hpl.jena.sparql.util.FmtUtils;
 
@@ -37,6 +38,9 @@ public class TextOutput extends OutputBase
     
     //static final String notThere = "<<unset>>" ;
     static final String notThere = " " ;
+    
+    public TextOutput(Prologue prologue)
+    { context = new SerializationContext(prologue) ; }
     
     public TextOutput(PrefixMapping pMap)
     { context = new SerializationContext(pMap) ; }

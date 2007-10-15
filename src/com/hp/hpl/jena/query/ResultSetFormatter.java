@@ -16,6 +16,7 @@ import com.hp.hpl.jena.shared.PrefixMapping;
 import com.hp.hpl.jena.util.FileUtils;
 
 import com.hp.hpl.jena.sparql.ARQNotImplemented;
+import com.hp.hpl.jena.sparql.core.Prologue;
 import com.hp.hpl.jena.sparql.resultset.*;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext;
 import com.hp.hpl.jena.sparql.util.ALog;
@@ -47,19 +48,27 @@ public class ResultSetFormatter
     /**
      * Output a result set in a text format.
      * @param qresults   result set
-     * @param query      May be used to abbreviate URIs 
+     * @param Query   May be used to abbreviate URIs 
      */
     public static void out(ResultSet qresults, Query query)
-    { out(System.out, qresults, query.getPrefixMapping()) ; }
+    { out(System.out, qresults, query) ; }
     
     /**
      * Output a result set in a text format.
-     * @param out        OutputStream
      * @param qresults   result set
-     * @param query      May be used to abbreviate URIs 
+     * @param Progloue   May be used to abbreviate URIs 
      */
-    public static void out(OutputStream out, ResultSet qresults, Query query)
-    { out(out, qresults, query.getPrefixMapping()) ; }
+    public static void out(ResultSet qresults, Prologue prologue)
+    { out(System.out, qresults, prologue) ; }
+
+    //    /**
+//     * Output a result set in a text format.
+//     * @param out        OutputStream
+//     * @param qresults   result set
+//     * @param query      May be used to abbreviate URIs 
+//     */
+//    public static void out(OutputStream out, ResultSet qresults, Query query)
+//    { out(out, qresults, query.getPrefixMapping()) ; }
     
     /**
      * Output a result set in a text format.
@@ -80,6 +89,19 @@ public class ResultSetFormatter
         TextOutput tFmt = new TextOutput(pmap) ;
         tFmt.format(out, qresults) ;
     }
+
+    /**
+     * Output a result set in a text format.
+     * @param out       OutputStream
+     * @param qresults  result set
+     * @param Prologue  Prologue
+     */
+    public static void out(OutputStream out, ResultSet qresults, Prologue prologue)
+    {
+        TextOutput tFmt = new TextOutput(prologue) ;
+        tFmt.format(out, qresults) ;
+    }
+
 
     /**
      * Output an ASK answer
@@ -530,8 +552,8 @@ public class ResultSetFormatter
      *  @param resultSet     result set
      */
     
-    static public void outputAsSSE(ResultSet resultSet, PrefixMapping prefixMap)
-    { outputAsSSE(System.out, resultSet, prefixMap) ; }
+    static public void outputAsSSE(ResultSet resultSet, Prologue prologue)
+    { outputAsSSE(System.out, resultSet, prologue) ; }
 
     /** Output a result set in the SSE format
      *  Format: <a href="http://jena.hpl.hp.com/wiki/SSE">SSE</a>
@@ -549,7 +571,7 @@ public class ResultSetFormatter
      * @param prefixMap     PrefixMapping
      */
     
-    static public void outputAsSSE(OutputStream outStream, ResultSet resultSet, PrefixMapping prefixMap)
+    static public void outputAsSSE(OutputStream outStream, ResultSet resultSet, Prologue prologue)
     {
         throw new ARQNotImplemented("outputAsSSE") ;
     }

@@ -5,11 +5,15 @@
 
 package com.hp.hpl.jena.sparql.util;
 
+import java.net.MalformedURLException;
 import java.util.Iterator;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Node_Literal;
 import com.hp.hpl.jena.graph.Triple;
+import com.hp.hpl.jena.iri.IRI;
+import com.hp.hpl.jena.iri.IRIFactory;
+import com.hp.hpl.jena.iri.IRIRelativize;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.Resource;
@@ -318,63 +322,19 @@ public class FmtUtils
         return stringForURI(uri) ; 
     }
     
-    // Case: base is a substring of uri and uri then starts #
-    // Case: base is a substring of uri and base ends # or /
-    // Assumes legal URI.
+    
+    static private int relFlags = IRIRelativize.SAMEDOCUMENT | IRIRelativize.CHILD ;
+    
     static public String abbrevByBase(String uri, String base)
     {
-        // Too expensive?  Too savage?
-//        if ( true )
-//        {
-//            // Better IRI.relativize
-//            IRI iri = IRIFactory.jenaImplementation().construct(base) ;
-//            iri.relativize(uri) ;
-//        }
-        if ( ! uri.startsWith(base) )
-            return null ;
-
-        int x = base.length() ;
-        if ( uri.length() == base.length() )
-            return "" ;
-
-        // Fragments
-        if ( base.charAt(x-1) == '#' )
-            return uri.substring(x) ;
-        
-        if ( uri.charAt(x) == '#' ) 
-            return uri.substring(x) ;
-        
-        // Hierarchical scheme
-        if ( base.charAt(x-1) == '/' )
-        {
-            if ( isHierarchical(base) )
-                return uri.substring(x) ;
-        }
-        
-        // URN.
-        if ( base.charAt(x-1) == ':' )
-        {
-            if ( uri.startsWith("urn:") ) 
-                return uri.substring(x) ;
-        }
-        // Does not cover the case of hierarchical scheme and back to last "/"
-        return null ;
+        IRI baseIRI = IRIFactory.jenaImplementation().construct(base) ;
+        IRI rel = baseIRI.relativize(uri, relFlags) ;
+        String r = null ;
+        try { r = rel.toASCIIString() ; }
+        catch (MalformedURLException  ex) { r = rel.toString() ; }
+        return r ;
     }
     
-    // Scheme specific rules.
-    private static boolean isHierarchical(String uri)
-    {
-//        String scheme = FileUtils.getScheme(uri) ;
-//        if ( scheme.equals("http") ) return true ; 
-//        if ( scheme.equals("https") ) return true ; 
-//        if ( scheme.equals("file") ) return true ;
-        if ( uri.startsWith("http:") ) return true ;
-        if ( uri.startsWith("https:") ) return true ;
-        if ( uri.startsWith("file:") ) return true ;
-        return false ;
-    }
-
-
     private static String prefixFor(String uri, PrefixMapping mapping)
     {
         if ( mapping == null ) return null ;

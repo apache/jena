@@ -44,38 +44,32 @@ public class TestSerialization extends TestCase
     { fmtURI_Prefix("http://default/", "<http://default/>", (PrefixMapping)null) ; }
 
     public void test_URI_4()
-    { fmtURI_Base("http://example/", "<http://example/>", (String)null ) ; }
+    { fmtURI_Base("http://example/", (String)null, "<http://example/>" ) ; }
     
     public void test_URI_5()
-    { fmtURI_Base("http://example/x", "<x>", "http://example/") ; }
+    { fmtURI_Base("http://example/x", "http://example/", "<x>") ; }
 
     public void test_URI_6()
-    { fmtURI_Base("http://example/x", "<http://example/x>","http://example/ns#") ; }
+    { fmtURI_Base("http://example/x", "http://example/ns#","<x>") ; }
     
     public void test_URI_7()
-    { fmtURI_Base("http://example/ns#x", "<x>", "http://example/ns#") ; }
+    { fmtURI_Base("http://example/ns#x", "http://example/ns#", "<#x>") ; }
     
     public void test_URI_8()
-    { fmtURI_Base("http://example/ns#x", "<#x>", "http://example/ns") ; }
+    { fmtURI_Base("http://example/ns#x", "http://example/ns", "<#x>") ; }
     
     public void test_URI_9()
-    { fmtURI_Base("http://example/x/y", "<y>", "http://example/x/") ; }
+    { fmtURI_Base("http://example/x/y", "http://example/x/", "<y>") ; }
     
     public void test_URI_10()
-    { fmtURI_Base("http://example/x/y", "<http://example/x/y>", "http://example/x") ; }
+    { fmtURI_Base("http://example/x/y", "http://example/x", "<x/y>") ; }
     
     public void test_URI_11()
-    { fmtURI_Base("urn:x", "<urn:x>", "http://example/ns#") ; }
-    
-    public void test_URI_12()
-    { fmtURI_Base("urn:x#foo", "<#foo>", "urn:x") ; }
-    
-    public void test_URI_13()
-    { fmtURI_Base("urn:x/y", "<urn:x/y>",  "urn:x") ; }
-    
-    public void test_URI_14()
-    { fmtURI_Base("urn:x:y", "<y>",  "urn:x:") ; }
-    
+    { fmtURI_Base("http://example/x/y", "http://example/", "<x/y>") ; }
+
+//    public void test_URI_12()
+//    { fmtURI_Base("http://example/x/y", "http://example/z", "<x/y>") ; }
+
     public void test_PName_1() 
     { fmtURI_Prefix("http://example/x#abc", "ex:abc", pmap1) ; }
 
@@ -210,14 +204,14 @@ public class TestSerialization extends TestCase
             fail(expected + " => " +actual) ;
     }
     
-    private void fmtURI_Base(String uriStr, String expected, String base)
+    private void fmtURI_Base(String uriStr, String base, String expected)
     {
         String actual = FmtUtils.stringForURI(uriStr, base, null) ;
         //assertEquals(expected, actual) ;
         
         // Better error message this way?
         if ( ! expected.equals(actual) )
-            fail(expected + " => " +actual) ;
+            fail(uriStr + "["+base+"] => Got: "+actual+" Expected: "+expected) ;
     }
 }
 

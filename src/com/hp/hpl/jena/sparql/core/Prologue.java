@@ -17,14 +17,15 @@ public class Prologue
     protected boolean seenBaseURI = false ;     // Implicit or set.
     protected String baseURI = null ;
 
-    protected PrefixMapping prefixMap = new PrefixMappingImpl() ;
-    protected IRIResolver resolver = new IRIResolver() ;
+    protected PrefixMapping prefixMap = null ;
+    protected IRIResolver resolver = null ;
     
-    public Prologue() {}
+    public Prologue() { prefixMap = new PrefixMappingImpl() ; }
     
     public Prologue(PrefixMapping pmap)
     { 
-        this(pmap,  new IRIResolver()) ;
+        this.prefixMap = pmap ; 
+        this.resolver = null ;
     }
     
     public Prologue(PrefixMapping pmap, String base)
@@ -49,8 +50,8 @@ public class Prologue
      */
     public String getBaseURI()
     {
-        if ( baseURI == null )
-            setDefaultBaseIRI() ;
+//        if ( baseURI == null )
+//            setDefaultBaseIRI() ;
         return baseURI;
     }
     /**

@@ -8,7 +8,7 @@ package arq.cmdline;
 
 
 import com.hp.hpl.jena.query.ResultSet;
-import com.hp.hpl.jena.shared.PrefixMapping;
+import com.hp.hpl.jena.sparql.core.Prologue;
 import com.hp.hpl.jena.sparql.resultset.ResultsFormat;
 import com.hp.hpl.jena.sparql.util.QueryExecUtils;
 
@@ -41,9 +41,9 @@ public class ModResultsOut implements ArgModuleGeneral
     public void checkCommandLine(CmdArgModule cmdLine)
     {}
 
-    public void printResultSet(ResultSet resultSet, PrefixMapping prefixMapping)
+    public void printResultSet(ResultSet resultSet, Prologue prologue)
     {
-        QueryExecUtils.outputResultSet(resultSet, prefixMapping, resultsFormat) ;
+        QueryExecUtils.outputResultSet(resultSet, prologue, resultsFormat) ;
     }
     
     public ResultsFormat getResultsFormat() { return resultsFormat ; }
