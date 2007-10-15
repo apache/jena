@@ -13,6 +13,8 @@ See ToDoSSE
     Look for PrefixMapping and update to use Prologue
     Leave only in API
   
++ LARQ. IndexLAR - add : reopenForWriting
+  IndexBuilderModel has a seen cache - is it not-cache safe?
 
 + Remove OpDatasetNames?? - only needed in quad compilation for GRAPH ?g {}
   Special iterator for OpCompiler? 
