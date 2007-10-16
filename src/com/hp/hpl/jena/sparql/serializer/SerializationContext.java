@@ -91,6 +91,12 @@ public class SerializationContext
     public void setBaseIRI(String baseIRI) { prologue.setBaseURI(baseIRI) ; }
     
     public String getBaseIRI() { return prologue.getBaseURI() ; }
+
+    
+    public Prologue getPrologue()
+    {
+        return prologue ;
+    }
     
 //    /**
 //     * @return Returns the query.

@@ -247,8 +247,7 @@ public class OpWriter
             if ( exprs == null )
                 out.print("()") ;
             else
-                //ExprUtils.fmtSPARQL(out, exprs, sContext.getPrefixMapping()) ;
-                ExprUtils.fmtPrefix(out, exprs, sContext.getPrefixMapping()) ;
+                ExprUtils.fmtPrefix(out, exprs, sContext) ;
             out.println();
             printOp(opFilter.getSubOp()) ;
             finish(opFilter) ;
@@ -528,7 +527,7 @@ public class OpWriter
                     out.print("(") ;
                     out.print(v.toString()) ;
                     out.print(" ") ;
-                    ExprUtils.fmtPrefix(out, expr, sContext.getPrefixMapping()) ;
+                    ExprUtils.fmtPrefix(out, expr, sContext) ;
                     out.print(")") ;
                 }
                 else

@@ -17,3 +17,8 @@
 
 + FmtUtils - Base URI abbreviation
   See _stringForURI
+
++ Writing.
+  writer.WriterX does not add (base (prefix ...)) - it is the nested code
+  WriterSSE.out(...) is the top level call. 
+   Extract - hardwired to use for Op.  Now Graph, Dataset, ...

@@ -1,69 +1,35 @@
 /*
- * (c) Copyright 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.engine.iterator;
+package com.hp.hpl.jena.sparql.sse.writers;
 
-import com.hp.hpl.jena.sparql.engine.ExecutionContext;
-import com.hp.hpl.jena.sparql.engine.QueryIterator;
-import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.expr.Expr;
-import com.hp.hpl.jena.sparql.expr.ExprException;
+import com.hp.hpl.jena.sparql.expr.ExprList;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext;
-import com.hp.hpl.jena.sparql.util.ALog;
 import com.hp.hpl.jena.sparql.util.ExprUtils;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
-import com.hp.hpl.jena.sparql.util.Utils;
 
-/** 
- *  Filter a stream of bindings by a constraint.  
- * 
- * @author Andy Seaborne
- * @version $Id: QueryIterFilterExpr.java,v 1.3 2007/02/06 17:06:01 andy_seaborne Exp $
- */
-
-public class QueryIterFilterExpr extends QueryIterFilter
+public class WriterExpr
 {
-    Expr expr ;
+    // With and without(base (prefix ...)) wraping.  
     
-    public QueryIterFilterExpr(QueryIterator input, Expr expr, ExecutionContext context)
+    public static void out(IndentedWriter out, ExprList exprs, SerializationContext sCxt)
     {
-        super(input, context) ;
-        this.expr = expr ;
+        ExprUtils.fmtPrefix(out, exprs, sCxt) ;
     }
     
-    public boolean accept(Binding binding)
+    public static void out(IndentedWriter out, Expr expr, SerializationContext sCxt)
     {
-        boolean passFilter = false ;
-        try {
-            //Binding b = new BindingFixed(binding) ;
-            Binding b = binding ;
-            return expr.isSatisfied(b, super.getExecContext()) ;
-        } catch (ExprException ex)
-        { // Some evaluation exception
-          return false ;
-        }
-        
-        catch (Exception ex)
-        {
-            ALog.warn(this, "General exception in "+expr, ex) ;
-            return false ;
-        }
+        ExprUtils.fmtPrefix(out, expr, sCxt) ;
     }
 
-    protected void details(IndentedWriter out, SerializationContext cxt)
-    { 
-        out.print(Utils.className(this)) ;
-        out.print(" ") ;
-        ExprUtils.fmtSPARQL(out, expr, cxt) ;
-    }
-       
 }
 
 /*
- * (c) Copyright 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

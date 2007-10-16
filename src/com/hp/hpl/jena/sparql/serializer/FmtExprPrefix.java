@@ -12,7 +12,7 @@ import com.hp.hpl.jena.sparql.util.IndentedWriter;
 
 /** Printing of an expr expression in prefix notation */
 
-public class FmtExprPrefix  implements FmtExpr 
+public class FmtExprPrefix implements FmtExpr 
 {
     static final boolean ONELINE = true ;
     IndentedWriter out ;
@@ -39,13 +39,13 @@ public class FmtExprPrefix  implements FmtExpr
     public void format(Expr expr)
     { expr.visit(visitor) ; }
     
-    public static void format(IndentedWriter out, PrefixMapping pmap, Expr expr)
+    public static void format(IndentedWriter out, Expr expr, PrefixMapping pmap)
     {
         FmtExpr fmt = new FmtExprPrefix(out, new SerializationContext(pmap)) ;
         fmt.format(expr) ;
     }
 
-    public static void format(IndentedWriter out, SerializationContext cxt, Expr expr)
+    public static void format(IndentedWriter out, Expr expr, SerializationContext cxt)
     {
         FmtExpr fmt = new FmtExprPrefix(out, cxt) ;
         fmt.format(expr) ;

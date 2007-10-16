@@ -9,7 +9,6 @@ package com.hp.hpl.jena.sparql.sse.writers;
 import java.io.OutputStream;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.shared.PrefixMapping;
@@ -33,11 +32,9 @@ import com.hp.hpl.jena.sparql.sse.Tags;
 import com.hp.hpl.jena.sparql.util.ExprUtils;
 import com.hp.hpl.jena.sparql.util.FmtUtils;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
-import com.hp.hpl.jena.sparql.util.NodeToLabelMap;
 
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.SortCondition;
-
 
 // ToDo extract write of:
 // Table
@@ -90,69 +87,14 @@ public class WriterOp
     }
 
     // Actual work
-    public static void out(IndentedWriter iWriter, Op op, SerializationContext sCxt)
+    public static void out(final IndentedWriter iWriter, final Op op, final SerializationContext sCxt)
     {
-        if ( sCxt.getBNodeMap() == null )
-            sCxt.setBNodeMap(new NodeToLabelMap()) ;
-
-        boolean closeBase = false ;
-        boolean closePrefix = false ;
-        boolean printBase = false ;
-        
-        // TODO Abbreviation of URIs by base
-        // Currently, does not get set except to the CWD
-        if ( printBase && sCxt.getBaseIRI() != null )
-        {
-            WriterLib.start(iWriter, Tags.tagBase, NoNL) ;   
-            iWriter.print(FmtUtils.stringForURI(sCxt.getBaseIRI())) ;
-            closeBase = true ;
-        }
-        
-        if ( sCxt.getPrefixMapping() != null )
-        {
-            Map m = sCxt.getPrefixMapping().getNsPrefixMap() ;
-            if ( ! m.isEmpty() )
-            {
-                int s = iWriter.getCol() ;
-                WriterLib.start(iWriter, Tags.tagPrefix, NoNL) ;
-                WriterLib.start(iWriter) ;
-                
-                // Indent to this col.
-                int len = iWriter.getCurrentOffset() ;
-                
-                iWriter.incIndent(len) ;
-                Iterator iter = m.keySet().iterator();
-                boolean first = true ;
-                for ( ; iter.hasNext() ; )
-                {
-                    if ( ! first )
-                        iWriter.println() ;
-                    first = false ;
-                    String prefix = (String)iter.next();
-                    String uri = sCxt.getPrefixMapping().getNsPrefixURI(prefix) ;
-                    WriterLib.start(iWriter) ;
-                    iWriter.print(prefix) ;
-                    iWriter.print(": ") ;
-                    iWriter.print("<"+uri+">") ;
-                    WriterLib.finish(iWriter) ;
-                }
-                iWriter.decIndent(len) ;
-                WriterLib.finish(iWriter) ;
-                
-                iWriter.ensureStartOfLine() ;
-                closePrefix = true ;
-            }
-        }
-        
-        op.visit(new OpWriterWorker(iWriter, sCxt)) ;
-        if ( closeBase )
-            WriterLib.finish(iWriter, Tags.tagBase) ;
-        if ( closePrefix )
-            WriterLib.finish(iWriter, Tags.tagPrefix) ;
-        iWriter.ensureStartOfLine() ;
-        iWriter.flush();
-    }
-
+        WriterBasePrefix.Fmt fmt = 
+            new WriterBasePrefix.Fmt() {
+                public void format() {op.visit(new OpWriterWorker(iWriter, sCxt)) ;}
+                } ;
+        WriterBasePrefix.out(iWriter, fmt, sCxt.getPrologue()) ;
+    }        
     
     private static class OpWriterWorker implements OpVisitor
     {
@@ -251,7 +193,7 @@ public class WriterOp
             if ( exprs == null )
             { start() ; finish() ; }
             else
-                ExprUtils.fmtPrefix(out, exprs, sContext.getPrefixMapping()) ;
+                ExprUtils.fmtPrefix(out, exprs, sContext) ;
             out.println();
             printOp(opFilter.getSubOp()) ;
             finish(opFilter) ;
@@ -500,7 +442,7 @@ public class WriterOp
                     start() ;
                     out.print(v.toString()) ;
                     out.print(" ") ;
-                    ExprUtils.fmtPrefix(out, expr, sContext.getPrefixMapping()) ;
+                    ExprUtils.fmtPrefix(out, expr, sContext) ;
                     finish() ;
                 }
                 else

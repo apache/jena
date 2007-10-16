@@ -20,10 +20,10 @@ public class FmtExprARQ implements FmtExpr
     
     FmtExprARQVisitor visitor ; 
 
-    public FmtExprARQ(IndentedWriter writer, PrefixMapping pmap)
-    {
-        visitor = new FmtExprARQVisitor(writer, pmap) ;
-    }
+//    public FmtExprARQ(IndentedWriter writer, PrefixMapping pmap)
+//    {
+//        visitor = new FmtExprARQVisitor(writer, pmap) ;
+//    }
 
     public FmtExprARQ(IndentedWriter writer, SerializationContext cxt)
     {

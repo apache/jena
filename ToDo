@@ -18,6 +18,9 @@ See ToDoSSE
 + LARQ. IndexLARQ - add : reopenForWriting
   IndexBuilderModel has a seen cache - is it not-cache safe?
   See Lucene 2.2.0 relese notes for shadow update
+    Flush control on IndexWriter - so have both an IndexReader and IndexWriter active
+      explicit "finish batch update"
+      Change examples.
 
 + Remove OpDatasetNames?? - only needed in quad compilation for GRAPH ?g {}
   Special iterator for OpCompiler? 
@@ -27,6 +30,7 @@ See ToDoSSE
 + Better syntax as well as SQL-like: GROUP BY ... WITH ... ??
 
 + FILTER(?x = "abc")
+  Extract from exprlist.
 
 + Results set to note when finished and warn on attempted continued use.
 

@@ -42,6 +42,16 @@ public class FmtUtils
     
     static NodeToLabelMap bNodeMap = new NodeToLabelMapBNode("b", false) ;
     
+    public static SerializationContext sCxt()
+    { 
+        return sCxt(ARQConstants.getGlobalPrefixMap()) ;
+    }
+    
+    public static SerializationContext sCxt(PrefixMapping pmap)
+    { 
+        return new SerializationContext(pmap) ; 
+    }
+
     // Formatting various items
     public static String stringForTriple(Triple triple)
     {

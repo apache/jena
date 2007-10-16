@@ -7,19 +7,23 @@
 package dev;
 
 import java.net.MalformedURLException;
-import java.net.URI;
 
 import arq.sparql;
-
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.util.FileManager;
-
-import com.hp.hpl.jena.sparql.util.DateTimeStruct;
 
 import com.hp.hpl.jena.iri.IRI;
 import com.hp.hpl.jena.iri.IRIFactory;
 import com.hp.hpl.jena.iri.IRIRelativize;
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.util.FileManager;
+
+import com.hp.hpl.jena.sparql.algebra.Algebra;
+import com.hp.hpl.jena.sparql.algebra.Op;
+import com.hp.hpl.jena.sparql.algebra.OpVisitorBase;
+import com.hp.hpl.jena.sparql.algebra.OpWalker;
+import com.hp.hpl.jena.sparql.algebra.op.OpFilter;
+import com.hp.hpl.jena.sparql.util.DateTimeStruct;
+
 import com.hp.hpl.jena.query.*;
 import com.hp.hpl.jena.query.larq.IndexBuilderString;
 import com.hp.hpl.jena.query.larq.IndexLARQ;
@@ -29,14 +33,7 @@ public class Run
 {
     public static void main(String[] argv) throws Exception
     {
-        URI uri = new URI("java:/a/b/..") ;
-        uri = uri.normalize() ;
-        System.out.println(uri.isOpaque()) ;
-        System.out.println(uri.toString()) ;
-        System.exit(0) ;
-        
-        
-        code() ; System.exit(0) ;
+//        code() ; System.exit(0) ;
         
 //        String a[] = {"--update=update.ru"} ;
 //        arq.update.main(a) ;
@@ -68,23 +65,21 @@ public class Run
     
     public static void code()
     {
-//        code1("http://example/x/z", "http://example/x/y") ;
-//        code1("http://example/x/z1/z2", "http://example/x/y") ;
+        Query q = QueryFactory.create("SELECT * { ?s ?p ?o FILTER(?o = 3) }") ;
+        Op op = Algebra.compile(q) ;
+        OpWalker.walk(op, new F()) ;
         
-//        code1("http://example/x", "http://example/") ;
-//        code1("http://example/x", "http://example/ns#") ; //"<http://example/x>", "<x>"
-        
-        
-        code1("http://example/ns#x", "http://example/ns#") ; //"<x>",
-        
-        
-        
-//        code1("http://example/x/y", "http://example/x/") ; // "<y>"
-//        code1("http://example/x/y", "http://example/x") ; //, "<http://example/x/y>") ; 
-//        code1("http://example/x/y", "http://example/") ; //, "<x/y>") ; }
-
     }
 
+    static class F extends OpVisitorBase
+    {
+        public void visit(OpFilter opFilter)
+        {
+            //WriteropFilter.getExprs()
+        }
+    }
+    
+    
     private static void code1(String uri, String base)
     {
         int relFlags = IRIRelativize.SAMEDOCUMENT | IRIRelativize.CHILD ;

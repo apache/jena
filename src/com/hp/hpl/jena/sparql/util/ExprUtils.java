@@ -22,6 +22,7 @@ import com.hp.hpl.jena.sparql.lang.sparql.*;
 import com.hp.hpl.jena.sparql.serializer.FmtExpr;
 import com.hp.hpl.jena.sparql.serializer.FmtExprARQ;
 import com.hp.hpl.jena.sparql.serializer.FmtExprPrefix;
+import com.hp.hpl.jena.sparql.serializer.SerializationContext;
 import com.hp.hpl.jena.sparql.sse.SSE;
 import com.hp.hpl.jena.sparql.sse.SSEParseException;
 import com.hp.hpl.jena.sparql.sse.builders.ExprBuildException;
@@ -132,15 +133,15 @@ public class ExprUtils
         return nv ;
     }
     
-    public static void fmtSPARQL(IndentedWriter iOut, Expr expr, PrefixMapping pmap)
+    public static void fmtSPARQL(IndentedWriter iOut, Expr expr, SerializationContext sCxt)
     {
-        FmtExprARQ v = new FmtExprARQ(iOut, pmap) ;
+        FmtExprARQ v = new FmtExprARQ(iOut, sCxt) ;
         v.format(expr) ;
     }
     
     public static void fmtSPARQL(IndentedWriter iOut, Expr expr)
     {
-        fmtSPARQL(iOut, expr, ARQConstants.getGlobalPrefixMap()) ;
+        fmtSPARQL(iOut, expr, FmtUtils.sCxt()) ;
     }
     
     public static String fmtSPARQL(Expr expr)
@@ -150,14 +151,14 @@ public class ExprUtils
         return buff.toString() ; 
     }
 
-    public static void fmtPrefix(IndentedWriter iOut, Expr expr, PrefixMapping pmap)
+    public static void fmtPrefix(IndentedWriter iOut, Expr expr, SerializationContext pmap)
     {
-        FmtExprPrefix.format(iOut, pmap, expr) ;
+        FmtExprPrefix.format(iOut, expr, pmap) ;
     }
 
     public static void fmtPrefix(IndentedWriter iOut, Expr expr)
     {
-        fmtPrefix(iOut, expr, ARQConstants.getGlobalPrefixMap()) ;
+        fmtPrefix(iOut, expr, FmtUtils.sCxt()) ;
     }
     
     public static String fmtPrefix(Expr expr)
@@ -167,7 +168,9 @@ public class ExprUtils
         return buff.toString() ; 
     }
     
-    public static void fmtSPARQL(IndentedWriter iOut, ExprList exprs, PrefixMapping pmap)
+    // ExprLists
+    
+    public static void fmtSPARQL(IndentedWriter iOut, ExprList exprs, SerializationContext pmap)
     {
         FmtExprARQ fmt = new FmtExprARQ(iOut, pmap) ;
         String sep = "" ;
@@ -182,7 +185,7 @@ public class ExprUtils
 
     public static void fmtSPARQL(IndentedWriter iOut, ExprList exprs)
     {
-        fmtSPARQL(iOut, exprs, ARQConstants.getGlobalPrefixMap()) ;
+        fmtSPARQL(iOut, exprs, FmtUtils.sCxt()) ;
     }
 
     public static String fmtSPARQL(ExprList exprs)
@@ -192,9 +195,9 @@ public class ExprUtils
         return buff.toString() ; 
     }
 
-    public static void fmtPrefix(IndentedWriter iOut, ExprList exprs, PrefixMapping pmap)
+    public static void fmtPrefix(IndentedWriter iOut, ExprList exprs, SerializationContext sCxt)
     {
-        FmtExpr fmt = new FmtExprPrefix(iOut, pmap) ;
+        FmtExpr fmt = new FmtExprPrefix(iOut, sCxt) ;
         
         if ( exprs.size() == 0 )
         {
@@ -241,7 +244,7 @@ public class ExprUtils
         
     public static void fmtPrefix(IndentedWriter iOut, ExprList exprs)
     {
-        fmtPrefix(iOut, exprs, ARQConstants.getGlobalPrefixMap()) ;
+        fmtPrefix(iOut, exprs, FmtUtils.sCxt()) ;
     }
 
     public static String fmtPrefix(ExprList exprs)

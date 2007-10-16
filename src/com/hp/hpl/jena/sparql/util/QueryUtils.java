@@ -40,7 +40,9 @@ public class QueryUtils
             if ( ! op.equals(op2) )
                 throw new QueryCheckException("reparsed algebra expression does not equal query algebra") ;
         } catch (SSEParseException ex)
-        { throw ex ; }      // Breakpoint
+        { 
+            System.err.println(str);
+            throw ex ; }      // Breakpoint
     }
     
     public static void checkParse(Query query)
