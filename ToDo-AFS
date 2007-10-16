@@ -52,6 +52,7 @@ SDB ToDo list (and general notes)
 
 + Test sorting out
 
++ Table description language
 
 + Merge commands with ARQ
     arq.update -- Update commands from SPARQL/Update

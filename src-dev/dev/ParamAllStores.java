@@ -61,7 +61,8 @@ public class ParamAllStores
         System.out.println("Name = "+x.cdr()) ;
     }
 
-    @Test public void foo() {} 
+    @Test public void foo1() {} 
+    @Test public void foo2() {}
 
 }
 
