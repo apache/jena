@@ -17,7 +17,7 @@ import com.hp.hpl.jena.rdf.model.Statement;
 import com.hp.hpl.jena.rdf.model.StmtIterator;
 
 /** Root class for index creation from a graph or model.  This class
- *  a Model listener interface to index while loading data.  It also
+ *  can be used as a Model listener to index while loading data.  It also
  *  provides the ability to index from a StmtIterator.
  *  Once completed, the index builder should be closed for writing,
  *  then the getIndex() called.

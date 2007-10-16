@@ -64,7 +64,6 @@ public abstract class IndexBuilderLiteral extends IndexBuilderModel
                 {
                     if ( indexThisLiteral(s.getLiteral()))
                     {
-                        // TODO Same as code in IndexBuilderExt - inherit from that. 
                         Document doc = new Document() ;
                         LARQ.store(doc, node) ;
                         LARQ.index(doc, node) ;
