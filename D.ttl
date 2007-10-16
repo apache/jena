@@ -1,5 +1,7 @@
+@base <http://example/BASE/OTHER> .
 @prefix : <http://example/> .
 
+[] :p <x> .
 [] :p 1 .
 [] :p 2 .
 [] :p "3" .
