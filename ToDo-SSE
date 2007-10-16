@@ -26,3 +26,4 @@
   WriterSSE.out(...) is the top level call. 
    Extract - hardwired to use for Op.  Now Graph, Dataset, ...
     WriterBasePrefix.out(iWriter, new WriterFOO(), prologue) 
+  WriterFOO implements Format { void format() ; }
