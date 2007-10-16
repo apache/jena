@@ -12,6 +12,7 @@
 + test another form -- (debug FOO)
 
 + Expr: (exists (pattern ...))
+  Tidy expr writing - consolidate in WriterExpr
   
 + SSE.parseXXX(, Prologue)
 
@@ -19,6 +20,9 @@
   See _stringForURI
 
 + Writing.
+  Need an architecture.
+  
   writer.WriterX does not add (base (prefix ...)) - it is the nested code
   WriterSSE.out(...) is the top level call. 
    Extract - hardwired to use for Op.  Now Graph, Dataset, ...
+    WriterBasePrefix.out(iWriter, new WriterFOO(), prologue) 

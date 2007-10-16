@@ -3,4 +3,6 @@ PREFIX : <http://example/>
 PREFIX z: <http://example/z#>
 
 SELECT DISTINCT ?o
-{ ?s ?p ?o . FILTER(?s = <x>) . FILTER (?o = <y>) }
+{ ?s ?p ?o . 
+    FILTER(?s = <x>) . FILTER (?o = <y>) 
+}
