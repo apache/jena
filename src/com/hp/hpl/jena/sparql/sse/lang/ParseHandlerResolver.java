@@ -6,16 +6,14 @@
 
 package com.hp.hpl.jena.sparql.sse.lang;
 
-import java.util.*;
+import java.util.Iterator;
+import java.util.Stack;
 
-import com.hp.hpl.jena.n3.IRIResolver;
 import com.hp.hpl.jena.shared.PrefixMapping;
-import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
 import com.hp.hpl.jena.sparql.core.Prologue;
 import com.hp.hpl.jena.sparql.sse.Item;
 import com.hp.hpl.jena.sparql.sse.ItemList;
 import com.hp.hpl.jena.sparql.sse.builders.BuilderPrefixMapping;
-import com.hp.hpl.jena.sparql.util.PrefixMapping2;
 import com.hp.hpl.jena.sparql.util.StringUtils;
 
 
@@ -42,34 +40,20 @@ public class ParseHandlerResolver extends ParseHandlerForm
     private static final String baseTag         = "base" ;
     private PrefixMapping       topMap          = null ;
     private String              topBase         = null ;
-    private PrefixMapping       prefixMap ;
-    private IRIResolver         resolver ;
+    private Prologue            prologue        = null ; 
     private ItemList            declList        = null ;
     private Stack               state           = new Stack() ; // Previous prologues (not the current one)
     
-    public ParseHandlerResolver() { this(null, null) ; }
-
-    public ParseHandlerResolver(PrefixMapping pmap) { this(pmap, null) ; }
-    
-    public ParseHandlerResolver(PrefixMapping pmap, String base)
-    { 
-        if ( pmap == null )
-            pmap = new PrefixMappingImpl() ;
-        prefixMap = pmap ;
-        resolver = new IRIResolver(base) ;
-    }
-    
-    public ParseHandlerResolver(Prologue prologue)
+    public ParseHandlerResolver(Prologue p)
     {
-        prefixMap = prologue.getPrefixMapping() ;
-        resolver = prologue.getResolver() ;
+        prologue = p ;
     }
 
     
     protected void declItem(ItemList list, Item item)
     {
         if ( list != declList )
-            // Deeper.
+            // Deeper
             return ;
         
         // Prefix - deeper than one.
@@ -85,20 +69,20 @@ public class ParseHandlerResolver extends ParseHandlerForm
                 throwException("(base ...): not an IRI for the base.", item) ;
     
             String baseIRI = item.getNode().getURI() ;
+            prologue = prologue.sub(baseIRI) ;
+            // Remeber first base seen 
             if ( topBase == null )
-                topBase = baseIRI ; 
-            resolver = new IRIResolver(baseIRI) ;
+                topBase = baseIRI ;
             return ;
         }
         
         if ( isPrefix )
         {
             PrefixMapping newMappings = BuilderPrefixMapping.build(item) ; 
-            PrefixMapping2 ext = new PrefixMapping2(prefixMap, newMappings) ;
+            prologue = prologue.sub(newMappings) ;
             // Remember first prefix mapping seen. 
             if( topMap == null )
                 topMap = newMappings ;
-            prefixMap = ext ;
             return ;
         }
         throwException("Inconsistent: "+list.shortString(), list) ;
@@ -124,9 +108,7 @@ public class ParseHandlerResolver extends ParseHandlerForm
     {
         // Remember the top of declaration
         declList = list ;
-        
-        Prologue oldState = new Prologue(prefixMap, resolver) ;
-        state.push(oldState) ;
+        state.push(prologue) ;
     }
 
     private void dump()
@@ -137,16 +119,13 @@ public class ParseHandlerResolver extends ParseHandlerForm
             Prologue p = (Prologue)iter.next() ;
             System.out.println("  Prologue: "+p.getBaseURI()) ;
         }
-        
     }
     
     protected void finishForm(ItemList list)
     { 
         // Check list length
-        Prologue p = (Prologue)state.pop() ;
+        prologue = (Prologue)state.pop() ;
         // Restore state 
-        prefixMap = p.getPrefixMapping() ;
-        resolver = p.getResolver() ;
         
         // Choose the result.
         if ( list.size() > 2 )
@@ -177,13 +156,13 @@ public class ParseHandlerResolver extends ParseHandlerForm
 
     protected String resolvePrefixedName(String pname, int line, int column)
     { 
-        if ( prefixMap == null )
+        if ( prologue.getPrefixMapping() == null )
             throwException("No prefix mapping for prefixed name: "+pname, line, column) ;
         
         if ( ! StringUtils.contains(pname, ":") )
             throwException("Prefixed name does not have a ':': "+pname, line, column) ;
         
-        String uri = prefixMap.expandPrefix(pname) ;
+        String uri =  prologue.getPrefixMapping().expandPrefix(pname) ;
         if ( uri == null || uri.equals(pname) )
             throwException("Can't resolve prefixed name: "+pname, line, column) ;
         return uri ;
@@ -191,8 +170,8 @@ public class ParseHandlerResolver extends ParseHandlerForm
     
     private String resolveIRI(String iriStr, int line, int column) 
     {
-        if ( resolver != null )
-            return resolver.resolve(iriStr) ;
+        if ( prologue.getResolver() != null )
+            return prologue.getResolver().resolve(iriStr) ;
         return iriStr ;
     }
  

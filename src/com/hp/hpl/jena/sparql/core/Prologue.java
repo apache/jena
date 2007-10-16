@@ -9,13 +9,13 @@ package com.hp.hpl.jena.sparql.core;
 import com.hp.hpl.jena.n3.IRIResolver;
 import com.hp.hpl.jena.shared.PrefixMapping;
 import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
-
 import com.hp.hpl.jena.sparql.util.ALog;
+import com.hp.hpl.jena.sparql.util.PrefixMapping2;
 
 public class Prologue
 {
     protected boolean seenBaseURI = false ;     // Implicit or set.
-    protected String baseURI = null ;
+//    protected String baseURI = null ;
 
     protected PrefixMapping prefixMap = null ;
     protected IRIResolver resolver = null ;
@@ -40,6 +40,35 @@ public class Prologue
         this.resolver = resolver ;
     }
     
+    public Prologue(Prologue other)
+    {
+        this.prefixMap = other.prefixMap ; 
+        this.resolver = other.resolver ;
+    }
+
+    public Prologue copy()
+    {
+        PrefixMapping prefixMap = new PrefixMappingImpl() ;
+        prefixMap.setNsPrefixes(this.prefixMap) ;
+        return new Prologue(prefixMap, resolver.getBaseIRI()) ;
+    }
+    
+    public Prologue sub(PrefixMapping newMappings) { return sub(newMappings, null) ; }
+    public Prologue sub(String base) { return sub(null, base) ; }
+    
+    public Prologue sub(PrefixMapping newMappings, String base)
+    {
+        // New prefix mappings
+        PrefixMapping ext = getPrefixMapping() ;
+        if ( newMappings != null )
+            ext = new PrefixMapping2(ext, newMappings) ;
+        // New base.
+        IRIResolver r = resolver ;
+        if ( base != null )
+            r = new IRIResolver(base) ;
+        return new Prologue(ext, r) ;
+    }
+    
     /**
      * @return True if the query has an explicitly set base URI. 
      */
@@ -50,16 +79,18 @@ public class Prologue
      */
     public String getBaseURI()
     {
+        if ( resolver == null )
+            return null ;
+        
 //        if ( baseURI == null )
 //            setDefaultBaseIRI() ;
-        return baseURI;
+        return resolver.getBaseIRI();
     }
     /**
      * @param baseURI The baseURI to set.
      */
     public void setBaseURI(String baseURI)
     {
-        this.baseURI = baseURI;
         this.seenBaseURI = true ;
         this.resolver = new IRIResolver(baseURI) ; 
     }
@@ -69,20 +100,19 @@ public class Prologue
      */
     public void setBaseURI(IRIResolver resolver)
     {
-        this.baseURI = resolver.getBaseIRI();
         this.seenBaseURI = true ;
         this.resolver = resolver ; 
     }
     
-    protected void setDefaultBaseIRI() { setDefaultBaseIRI(null) ; }
-    
-    protected void setDefaultBaseIRI(String base)
-    {
-        if ( baseURI != null )
-            return ;
-        
-        baseURI = IRIResolver.chooseBaseURI(base) ;
-    }
+//    protected void setDefaultBaseIRI() { setDefaultBaseIRI(null) ; }
+//    
+//    protected void setDefaultBaseIRI(String base)
+//    {
+//        if ( baseURI != null )
+//            return ;
+//        
+//        baseURI = IRIResolver.chooseBaseURI(base) ;
+//    }
     
     // ---- Query prefixes
     

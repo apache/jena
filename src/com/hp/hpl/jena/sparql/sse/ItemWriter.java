@@ -33,7 +33,7 @@ public class ItemWriter
     public static void write(PrintStream out, Item item)
     {
         IndentedWriter iw = new IndentedWriter(out) ;
-        item.output(iw) ;
+        write(iw, item , null) ;
         iw.ensureStartOfLine() ;
         iw.flush();
     }

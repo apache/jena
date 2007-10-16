@@ -7,6 +7,7 @@
 package dev;
 
 import java.net.MalformedURLException;
+import java.net.URI;
 
 import arq.sparql;
 
@@ -26,8 +27,15 @@ import com.hp.hpl.jena.query.larq.LARQ;
 
 public class Run
 {
-    public static void main(String[] argv)
+    public static void main(String[] argv) throws Exception
     {
+        URI uri = new URI("java:/a/b/..") ;
+        uri = uri.normalize() ;
+        System.out.println(uri.isOpaque()) ;
+        System.out.println(uri.toString()) ;
+        System.exit(0) ;
+        
+        
         code() ; System.exit(0) ;
         
 //        String a[] = {"--update=update.ru"} ;

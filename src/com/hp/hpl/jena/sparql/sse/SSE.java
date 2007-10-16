@@ -23,6 +23,7 @@ import com.hp.hpl.jena.sparql.ARQException;
 import com.hp.hpl.jena.sparql.algebra.Algebra;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.Table;
+import com.hp.hpl.jena.sparql.core.Prologue;
 import com.hp.hpl.jena.sparql.core.Quad;
 import com.hp.hpl.jena.sparql.expr.Expr;
 import com.hp.hpl.jena.sparql.sse.builders.BuilderExpr;
@@ -190,7 +191,10 @@ public class SSE
     private static ParseHandler createParseHandler(PrefixMapping pmap)
     {
         if ( useResolver )
-            return new ParseHandlerResolver(pmap) ;
+        {
+            Prologue prologue = new Prologue(pmap) ;
+            return new ParseHandlerResolver(prologue) ;
+        }
         else
             return new ParseHandlerPlain() ;
     }

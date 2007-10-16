@@ -17,6 +17,7 @@ See ToDoSSE
   
 + LARQ. IndexLARQ - add : reopenForWriting
   IndexBuilderModel has a seen cache - is it not-cache safe?
+  See Lucene 2.2.0 relese notes for shadow update
 
 + Remove OpDatasetNames?? - only needed in quad compilation for GRAPH ?g {}
   Special iterator for OpCompiler? 
