@@ -7,7 +7,7 @@
 
 /**
  * @author   Andy Seaborne
- * @version  $Id: juuid.java,v 1.2 2007-01-02 11:51:15 andy_seaborne Exp $
+ * @version  $Id: juuid.java,v 1.3 2007-10-17 09:32:05 andy_seaborne Exp $
  */
 
 package jena;
@@ -21,13 +21,6 @@ import arq.cmdline.ModBase;
 
 public class juuid extends CmdGeneral
 {
-    static ArgDecl argDeclNum      = new ArgDecl(ArgDecl.HasValue,  "num", "n") ;
-    static ArgDecl argDeclReset    = new ArgDecl(ArgDecl.NoValue,   "reset") ;
-    static ArgDecl argDeclGen      = new ArgDecl(ArgDecl.HasValue,  "gen", "scheme", "version") ;
-    static ArgDecl argDeclURN      = new ArgDecl(ArgDecl.NoValue,   "urn") ;
-    static ArgDecl argDeclURI      = new ArgDecl(ArgDecl.NoValue,   "uri") ;
-    static ArgDecl argDeclPlain    = new ArgDecl(ArgDecl.NoValue,   "plain") ;
-
     ModJUUID modJUUID = new ModJUUID() ;
     int number = 1 ;
     boolean resetEachTime = false ;
@@ -36,8 +29,6 @@ public class juuid extends CmdGeneral
     boolean asURI = false ;
     boolean asPlain = false ;
 
-    
-    
     public static void main (String [] argv)
     {
         new juuid(argv).mainAndExit() ;
@@ -89,9 +80,15 @@ public class juuid extends CmdGeneral
         
     }
     
+    static ArgDecl argDeclNum      = new ArgDecl(ArgDecl.HasValue,  "num", "n") ;
+    static ArgDecl argDeclReset    = new ArgDecl(ArgDecl.NoValue,   "reset") ;
+    static ArgDecl argDeclGen      = new ArgDecl(ArgDecl.HasValue,  "gen", "scheme") ;
+    static ArgDecl argDeclURN      = new ArgDecl(ArgDecl.NoValue,   "urn") ;
+    static ArgDecl argDeclURI      = new ArgDecl(ArgDecl.NoValue,   "uri") ;
+    static ArgDecl argDeclPlain    = new ArgDecl(ArgDecl.NoValue,   "plain") ;
+
     class ModJUUID extends ModBase
     {
-        
         public void registerWith(CmdGeneral cmdLine)
         {
             cmdLine.add(argDeclNum) ;
