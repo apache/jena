@@ -32,6 +32,8 @@ public class IndentedWriter
     protected boolean lineNumbers = false ;
     protected boolean startingNewLine = true ;
     
+    public IndentedWriter() { this(System.out, false) ; }
+    
     public IndentedWriter(OutputStream outStream) { this(outStream, false) ; }
     
     public IndentedWriter(OutputStream outStream, boolean withLineNumbers)
@@ -182,6 +184,16 @@ public class IndentedWriter
     public int getCurrentOffset() { return getCol() - getIndent() ; }
     
     
+    public boolean hasLineNumbers()
+    {
+        return lineNumbers ;
+    }
+
+    public void setLineNumbers(boolean lineNumbers)
+    {
+        this.lineNumbers = lineNumbers ;
+    }
+
     public void incIndent(int x) { currentIndent += x ; }
     public void incIndent()      { incIndent(unitIndent) ; }
     public void decIndent(int x) { currentIndent -= x ; }

@@ -21,9 +21,10 @@
 
 + Writing.
   Need an architecture.
+  All writing on one context object
+    "OutputContext" (inherits IndentedWriter?)
+      Adds print(Node)?
+    Prologue
+    BNode map
+    Replaces SerialziationContext . 
   
-  writer.WriterX does not add (base (prefix ...)) - it is the nested code
-  WriterSSE.out(...) is the top level call. 
-   Extract - hardwired to use for Op.  Now Graph, Dataset, ...
-    WriterBasePrefix.out(iWriter, new WriterFOO(), prologue) 
-  WriterFOO implements Format { void format() ; }
