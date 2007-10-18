@@ -6,11 +6,6 @@
 
 + Reader-writer tests
 
-+ OpAssign
-  Make assignment property functions generate an opAssign.
-
-+ test another form -- (debug FOO)
-
 + Expr: (exists (pattern ...))
   Tidy expr writing - consolidate in WriterExpr
   
@@ -20,18 +15,4 @@
   See _stringForURI
 
 + Writing.
-  Need an architecture.
-    Template:
-    WriterXXX.output(IndentWriter, T, SerializationContext)
-    
-  
-  Output: bundle
-    IndentedWriter, Prologue, BNode map
-    Prologue+BNodemap => SerializationContext
-      rename SerializationContext => NameContext    
-
-   Transfer FmtExprPrefix
-     WriterExpr to include ExprList
-   Remove OpWriter - (or stub)
-   ExprUtils.fmtPrefix => WriterExpr.out(Expr), .out(ExprList)
    

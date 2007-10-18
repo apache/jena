@@ -70,7 +70,7 @@ public class FmtUtils
             stringForNode(triple.getObject(), prefixMap) ;
     }
     
-    // To a Writer
+    // To a Writer?
     public static void formatTriple(IndentedWriter out, Triple triple, SerializationContext sCxt)
     {
         out.print(stringForNode(triple.getSubject(), sCxt)) ;

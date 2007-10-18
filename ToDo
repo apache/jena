@@ -10,11 +10,6 @@
 See ToDoSSE
 
 ----
-+ ResultSetFormatter.out - need Proglogue usage.
-    Look for PrefixMapping and update to use Prologue
-    Leave only in API
-    Prologue => IRIContext?
-  
 + LARQ. IndexLARQ - add : reopenForWriting
   IndexBuilderModel has a seen cache - is it not-cache safe?
   See Lucene 2.2.0 relese notes for shadow update
