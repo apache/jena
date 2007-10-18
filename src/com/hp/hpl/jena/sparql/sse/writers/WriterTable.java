@@ -21,26 +21,26 @@ import com.hp.hpl.jena.sparql.util.IndentedWriter;
 
 public class WriterTable
 {
-    public static void out(IndentedWriter out, Table table, SerializationContext sCxt)
+    public static void output(IndentedWriter out, Table table, SerializationContext sCxt)
     {
         WriterLib.start(out, Tags.tagTable, WriterLib.NL) ;
-        outNoTag(out, table, sCxt) ;
+        outputPlain(out, table, sCxt) ;
         WriterLib.finish(out, Tags.tagTable) ;
     }
     
-    public static void outNoTag(IndentedWriter out, Table table, SerializationContext sCxt)
+    public static void outputPlain(IndentedWriter out, Table table, SerializationContext sCxt)
     {
         QueryIterator qIter = table.iterator(null) ; 
         for ( ; qIter.hasNext(); )
         {
             Binding b = qIter.nextBinding() ;
-            out(out, b, sCxt) ;
+            output(out, b, sCxt) ;
             out.println() ;
         }
         qIter.close() ;
     }
     
-    public static void out(IndentedWriter out, Binding binding, SerializationContext sCxt )
+    public static void output(IndentedWriter out, Binding binding, SerializationContext sCxt )
     {
         WriterLib.start(out, Tags.tagRow, WriterLib.NoSP) ;
         Iterator iter = binding.vars() ;

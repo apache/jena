@@ -15,6 +15,8 @@ import com.hp.hpl.jena.sparql.util.NodeToLabelMap;
 
 public class SerializationContext
 {
+    // ?? Interface : WriterContext
+    
     private Prologue prologue ;
     private NodeToLabelMap bNodeMap ;
     
@@ -51,8 +53,8 @@ public class SerializationContext
             this.prologue = new Prologue() ;
         
         bNodeMap = bMap ;
-        if ( bMap == null )
-            bNodeMap = new NodeToLabelMap("b", false) ;
+//        if ( bMap == null )
+//            bNodeMap = new NodeToLabelMap("b", false) ;
     }
     
     /**
@@ -97,23 +99,6 @@ public class SerializationContext
     {
         return prologue ;
     }
-    
-//    /**
-//     * @return Returns the query.
-//     */
-//    public Query getQuery()
-//    {
-//        return query;
-//    }
-//    
-//    /**
-//     * @param query The query to set.
-//     */
-//    public void setQuery(Query query)
-//    {
-//        this.query = query;
-//    }
-    
 }
 
 /*

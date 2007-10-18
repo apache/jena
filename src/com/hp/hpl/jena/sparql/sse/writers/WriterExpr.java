@@ -7,25 +7,108 @@
 package com.hp.hpl.jena.sparql.sse.writers;
 
 import com.hp.hpl.jena.sparql.expr.Expr;
+import com.hp.hpl.jena.sparql.expr.ExprFunction;
 import com.hp.hpl.jena.sparql.expr.ExprList;
+import com.hp.hpl.jena.sparql.expr.ExprVar;
+import com.hp.hpl.jena.sparql.expr.ExprVisitor;
+import com.hp.hpl.jena.sparql.expr.NodeValue;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext;
-import com.hp.hpl.jena.sparql.util.ExprUtils;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
 
 public class WriterExpr
 {
-    // With and without(base (prefix ...)) wraping.  
-    
-    public static void out(IndentedWriter out, ExprList exprs, SerializationContext sCxt)
+    public static void output(IndentedWriter out, ExprList exprs, SerializationContext sCxt)
     {
-        ExprUtils.fmtPrefix(out, exprs, sCxt) ;
+        if ( exprs.size() == 0 )
+        {
+            out.print("()") ;
+            return ;
+        }
+        
+        if ( exprs.size() == 1 )
+        {
+            output(out, exprs.get(0), sCxt) ;
+            return ;
+        }
+        
+        out.print("(exprlist") ;
+        for ( int i = 0 ; i < exprs.size() ;  i++ )
+        {
+            out.print(" ") ;
+            output(out, exprs.get(i), sCxt) ;
+        }
+        out.print(")") ;
     }
     
-    public static void out(IndentedWriter out, Expr expr, SerializationContext sCxt)
+    public static void output(IndentedWriter out, Expr expr, SerializationContext sCxt)
     {
-        ExprUtils.fmtPrefix(out, expr, sCxt) ;
+        FmtExprPrefixVisitor fmt = new FmtExprPrefixVisitor(out, sCxt) ;
+        expr.visit(fmt) ;
     }
 
+    // ----
+    static final boolean ONELINE = true ;
+    static class FmtExprPrefixVisitor implements ExprVisitor
+    {
+        IndentedWriter out ;
+        SerializationContext context ;
+        
+        public FmtExprPrefixVisitor(IndentedWriter writer, SerializationContext cxt)
+        {
+            out = writer ;
+            context = cxt ;
+        }
+
+        public void startVisit() {}
+
+        public void visit(ExprFunction func)
+        {
+            out.print("(") ;
+
+            String n = null ;
+
+            if ( func.getOpName() != null )
+                n = func.getOpName() ;
+
+            if ( n == null )
+                n = func.getFunctionPrintName(context) ;
+
+            out.print(n) ;
+
+            out.incIndent() ;
+            for ( int i = 1 ; ; i++ )
+            {
+                Expr expr = func.getArg(i) ;
+                if ( expr == null )
+                    break ; 
+                // endLine() ;
+                out.print(' ') ;
+                expr.visit(this) ;
+            }
+            out.print(")") ;
+            out.decIndent() ;
+        }
+
+        public void visit(NodeValue nv)
+        {
+            out.print(nv.asQuotedString(context)) ;
+        }
+
+        public void visit(ExprVar nv)
+        {
+            out.print(nv.toPrefixString()) ;
+        }
+
+        public void finishVisit() { out.flush() ; }
+
+        private void endLine()
+        {
+            if ( ONELINE )
+                out.print(' ') ;
+            else
+                out.println() ;
+        }
+    }
 }
 
 /*

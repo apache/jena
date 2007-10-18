@@ -15,13 +15,11 @@ import arq.cmdline.CmdARQ;
 import arq.cmdline.ModAssembler;
 import arq.cmdline.ModDataset;
 
+import com.hp.hpl.jena.query.Dataset;
+import com.hp.hpl.jena.query.DatasetFactory;
 import com.hp.hpl.jena.sparql.sse.WriterSSE;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
 import com.hp.hpl.jena.sparql.util.Utils;
-
-import com.hp.hpl.jena.query.Dataset;
-import com.hp.hpl.jena.query.DatasetFactory;
-
 import com.hp.hpl.jena.update.GraphStore;
 import com.hp.hpl.jena.update.GraphStoreFactory;
 import com.hp.hpl.jena.update.UpdateFactory;
@@ -74,7 +72,7 @@ public class update extends CmdARQ
         
         // Writer
         IndentedWriter out = new IndentedWriter(System.out) ;
-        WriterSSE.out(out, ds.asDatasetGraph()) ;
+        WriterSSE.out(out, ds.asDatasetGraph(), null) ;
         out.flush();
     }
 

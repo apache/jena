@@ -266,6 +266,9 @@ public class FmtUtils
     public static String stringForNode(Node n, PrefixMapping prefixMap)
     { return stringForNode(n, newSerializationContext(prefixMap)) ; }
     
+    public static String stringForNode(Node n, Prologue prologue)
+    { return stringForNode(n, newSerializationContext(prologue)) ; }
+
     public static String stringForNode(Node n, SerializationContext context)
     {
         if ( n == null )
@@ -351,7 +354,7 @@ public class FmtUtils
         if ( mapping == null ) return null ;
         
         String pname = mapping.shortForm(uri) ;
-        if ( pname != null && checkValidPrefixName(pname) )
+        if ( pname != uri && checkValidPrefixName(pname) )
             return pname ;
         pname = mapping.qnameFor(uri) ;
         if ( pname != null && checkValidPrefixName(pname) )
@@ -490,6 +493,12 @@ public class FmtUtils
     {
         return new SerializationContext(prefixMapping, bNodeMap) ;
     }
+    
+    private static SerializationContext newSerializationContext(Prologue prologue)
+    {
+        return new SerializationContext(prologue, bNodeMap) ;
+    }
+
 }
 
 /*

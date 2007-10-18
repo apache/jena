@@ -11,7 +11,6 @@ import java.util.Iterator;
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
-
 import com.hp.hpl.jena.sparql.core.DatasetGraph;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext;
 import com.hp.hpl.jena.sparql.sse.Tags;
@@ -24,46 +23,46 @@ public class WriterGraph
     public static final int NoNL = WriterLib.NoNL ;
     public static final int NoSP = WriterLib.NoSP ;
     
-    public static void out(IndentedWriter out, Graph graph, SerializationContext sCxt)
-    { out(out, graph, null, sCxt) ; }
+    public static void output(IndentedWriter out, Graph graph, SerializationContext naming)
+    { output(out, graph, null, naming) ; }
     
-    public static void out(IndentedWriter out, Graph graph, String uri, SerializationContext sCxt)
-    { writeGraph(out, graph, uri, sCxt) ; }
+    public static void output(IndentedWriter out, Graph graph, String uri, SerializationContext naming)
+    { writeGraph(out, graph, uri, naming) ; }
 
-    public static void out(IndentedWriter out, DatasetGraph dataset, SerializationContext sCxt)
-    { writeDataset(out, dataset, sCxt) ; }
+    public static void output(IndentedWriter out, DatasetGraph dataset, SerializationContext naming)
+    { writeDataset(out, dataset, naming) ; }
 
     // ---- Workers
     
-    private static void writeDataset(IndentedWriter out, DatasetGraph ds, SerializationContext sCxt)
+    private static void writeDataset(IndentedWriter out, DatasetGraph ds, SerializationContext naming)
     {
         WriterLib.start(out, Tags.tagDataset, NL) ;
-        writeGraph(out, ds.getDefaultGraph(), sCxt) ;
+        writeGraph(out, ds.getDefaultGraph(), naming) ;
         for ( Iterator iter = ds.listGraphNodes() ; iter.hasNext() ; )
         {
             Node node = (Node)iter.next() ;  
             Graph g = ds.getGraph(node) ;
-            writeGraph(out, g, node, sCxt) ;
+            writeGraph(out, g, node, naming) ;
         }
         WriterLib.finish(out, Tags.tagDataset) ;
     }
     
-//    private static void writeModel(IndentedWriter out, Model m, SerializationContext sCxt)
-//    { writeGraph(out, m.getGraph(), null, sCxt) ; }
+//    private static void writeModel(OutputContext out, Model m)
+//    { writeGraph(out, m.getGraph(), null) ; }
     
-    private static void writeGraph(IndentedWriter out, Graph g, SerializationContext sCxt)
-    { _writeGraph(out, g,  null, sCxt) ; }
+    private static void writeGraph(IndentedWriter out, Graph g, SerializationContext naming)
+    { _writeGraph(out, g,  null, naming) ; }
 
-//    private static void writeGraph(IndentedWriter out, Model m, String uri, SerializationContext sCxt)
-//    { writeGraph(out, m.getGraph(), uri, sCxt) ; }
+//    private static void writeGraph(OutputContext out, Model m, String uri)
+//    { writeGraph(out, m.getGraph(), uri) ; }
     
-    private static void writeGraph(IndentedWriter out, Graph g, String uri, SerializationContext sCxt)
-    { _writeGraph(out, g, FmtUtils.stringForURI(uri), sCxt) ; }
+    private static void writeGraph(IndentedWriter out, Graph g, String uri, SerializationContext naming)
+    { _writeGraph(out, g, FmtUtils.stringForURI(uri), naming) ; }
     
-    private static void writeGraph(IndentedWriter out, Graph g, Node node, SerializationContext sCxt)
-    { _writeGraph(out, g, FmtUtils.stringForNode(node), sCxt) ; }
+    private static void writeGraph(IndentedWriter out, Graph g, Node node, SerializationContext naming)
+    { _writeGraph(out, g, FmtUtils.stringForNode(node), naming) ; }
 
-    private static void _writeGraph(IndentedWriter out, Graph g, String label, SerializationContext sCxt)
+    private static void _writeGraph(IndentedWriter out, Graph g, String label, SerializationContext naming)
     {
         WriterLib.start(out, Tags.tagGraph, NoSP) ;
         if ( label != null )
@@ -80,7 +79,7 @@ public class WriterGraph
                 out.println();
             first = false ;
             Triple triple = (Triple)iter.next();
-            WriterNode.out(out, triple, sCxt) ;
+            WriterNode.output(out, triple, naming) ;
         }
         out.decIndent() ;
         if ( ! first ) out.println();

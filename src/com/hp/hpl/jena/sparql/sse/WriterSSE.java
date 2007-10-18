@@ -9,11 +9,11 @@ package com.hp.hpl.jena.sparql.sse;
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
-
-import com.hp.hpl.jena.sparql.ARQConstants;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.core.DatasetGraph;
+import com.hp.hpl.jena.sparql.expr.Expr;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext;
+import com.hp.hpl.jena.sparql.sse.writers.WriterExpr;
 import com.hp.hpl.jena.sparql.sse.writers.WriterGraph;
 import com.hp.hpl.jena.sparql.sse.writers.WriterNode;
 import com.hp.hpl.jena.sparql.sse.writers.WriterOp;
@@ -24,26 +24,24 @@ public class WriterSSE
     // No need for SerializationContext forms because these are the external intefraces
     // PrintStream [, Base] [, PrefixMap]
     
-    public static void out(IndentedWriter out, Node node)
-    { WriterNode.out(out, node, sCxt()) ; }
+    public static void out(IndentedWriter out, Node node, SerializationContext context)
+    { WriterNode.output(out, node, context) ; }
     
-    public static void out(IndentedWriter out, Triple triple)
-    { WriterNode.out(out, triple, sCxt()) ; }
+    public static void out(IndentedWriter out, Triple triple, SerializationContext context)
+    { WriterNode.output(out, triple, context) ; }
 
-    public static void out(IndentedWriter out, Op op)
-    { WriterOp.out(out, op, sCxt()) ; }
-    
-    public static void out(IndentedWriter out, Graph g)
-    { WriterGraph.out(out, g, sCxt()) ; }
-    
-    public static void out(IndentedWriter out, DatasetGraph dsg)
-    { WriterGraph.out(out, dsg, sCxt()) ; }
+    public static void out(IndentedWriter out, Expr expr, SerializationContext context)
+    { WriterExpr.output(out, expr, context) ; }
 
-    private static SerializationContext sCxt()
-    {
-        return new SerializationContext(ARQConstants.getGlobalPrefixMap()) ;
-    }
+    public static void out(IndentedWriter out, Op op, SerializationContext context)
+    { WriterOp.output(out, op, context) ; }
     
+    public static void out(IndentedWriter out, Graph g, SerializationContext context)
+    { WriterGraph.output(out, g, context) ; }
+    
+    public static void out(IndentedWriter out, DatasetGraph dsg, SerializationContext context)
+    { WriterGraph.output(out, dsg, context) ; }
+
 }
 
 /*

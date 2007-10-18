@@ -6,6 +6,8 @@
 
 package com.hp.hpl.jena.sparql.util;
 import java.io.* ; 
+
+import com.hp.hpl.jena.sparql.ARQInternalErrorException;
 import com.hp.hpl.jena.util.FileUtils ;
 
 /** A writer that records what the current indentation level is, and
@@ -33,6 +35,16 @@ public class IndentedWriter
     protected boolean startingNewLine = true ;
     
     public IndentedWriter() { this(System.out, false) ; }
+    
+    // Temp: Adaption from old world to new -
+    protected IndentedWriter(IndentedWriter other)
+    { 
+        out = other.out ;
+        lineNumbers = other.lineNumbers ;
+        if ( other.column != column || other.row != row )
+            throw new ARQInternalErrorException("Can only clone am unstarted IndentedWriter") ;
+        
+    }
     
     public IndentedWriter(OutputStream outStream) { this(outStream, false) ; }
     

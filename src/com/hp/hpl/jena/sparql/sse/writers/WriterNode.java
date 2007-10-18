@@ -8,7 +8,6 @@ package com.hp.hpl.jena.sparql.sse.writers;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
-
 import com.hp.hpl.jena.sparql.core.Quad;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext;
 import com.hp.hpl.jena.sparql.sse.Tags;
@@ -21,46 +20,44 @@ public class WriterNode
     private static final int NoNL = WriterLib.NoNL ;
     private static final int NoSP = WriterLib.NoSP ;
     
-    public static void out(IndentedWriter out, Triple triple, SerializationContext sCxt)
+    public static void output(IndentedWriter out, Triple triple, SerializationContext naming)
     {
         WriterLib.start(out, Tags.tagTriple, NoNL) ;
-        WriterNode.out(out, triple.getSubject(), sCxt) ;
-        out.print(" ") ;
-        WriterNode.out(out, triple.getPredicate(), sCxt) ;
-        out.print(" ") ;
-        WriterNode.out(out, triple.getObject(), sCxt) ;
+        outputPlain(out, triple, naming) ;
         WriterLib.finish(out, Tags.tagTriple) ;
     }
     
-    public static void outPlain(IndentedWriter out, Triple triple, SerializationContext sCxt)
+    public static void outputPlain(IndentedWriter out, Triple triple, SerializationContext naming)
     {
         // No tag
-        WriterLib.start(out) ;
-        WriterNode.out(out, triple.getSubject(), sCxt) ;
+        output(out, triple.getSubject(), naming) ;
         out.print(" ") ;
-        WriterNode.out(out, triple.getPredicate(), sCxt) ;
+        output(out, triple.getPredicate(), naming) ;
         out.print(" ") ;
-        WriterNode.out(out, triple.getObject(), sCxt) ;
-        WriterLib.finish(out) ;
+        output(out, triple.getObject(), naming) ;
     }
     
-    public static void out(IndentedWriter out, Quad qp, SerializationContext sCxt)
+    public static void output(IndentedWriter out, Quad qp, SerializationContext naming)
     {
         WriterLib.start(out, Tags.tagQuad, NoNL) ;
-        WriterNode.out(out, qp.getGraph(), sCxt) ;
-        out.print(" ") ;
-        WriterNode.out(out, qp.getSubject(), sCxt) ;
-        out.print(" ") ;
-        WriterNode.out(out, qp.getPredicate(), sCxt) ;
-        out.print(" ") ;
-        WriterNode.out(out, qp.getObject(), sCxt) ;
+        outputPlain(out, qp, naming) ;
         WriterLib.finish(out, Tags.tagQuad) ;
     }
     
-    
-    public static void out(IndentedWriter out, Node node, SerializationContext sCxt)
+    private static void outputPlain(IndentedWriter out, Quad qp, SerializationContext naming)
     {
-        out.print(FmtUtils.stringForNode(node, sCxt)) ;
+        output(out, qp.getGraph(), naming) ;
+        out.print(" ") ;
+        output(out, qp.getSubject(), naming) ;
+        out.print(" ") ;
+        output(out, qp.getPredicate(), naming) ;
+        out.print(" ") ;
+        output(out, qp.getObject(), naming) ;
+    }
+    
+    public static void output(IndentedWriter out, Node node, SerializationContext naming)
+    {
+        out.print(FmtUtils.stringForNode(node, naming)) ;
     }
 }
 

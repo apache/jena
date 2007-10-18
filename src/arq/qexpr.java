@@ -26,8 +26,11 @@ import com.hp.hpl.jena.sparql.expr.Expr;
 import com.hp.hpl.jena.sparql.expr.ExprEvalException;
 import com.hp.hpl.jena.sparql.expr.NodeValue;
 import com.hp.hpl.jena.sparql.function.FunctionEnv;
+import com.hp.hpl.jena.sparql.serializer.SerializationContext;
+import com.hp.hpl.jena.sparql.sse.WriterSSE;
 import com.hp.hpl.jena.sparql.util.ExprUtils;
 import com.hp.hpl.jena.sparql.util.FmtUtils;
+import com.hp.hpl.jena.sparql.util.IndentedWriter;
 import com.hp.hpl.jena.sparql.util.NodeFactory;
 
 /** A program to execute expressions from the command line.
@@ -165,7 +168,10 @@ public class qexpr
                     if ( actionPrintSPARQL )
                         System.out.println(ExprUtils.fmtSPARQL(expr)) ;
                     if ( actionPrintPrefix )
-                        System.out.println(ExprUtils.fmtPrefix(expr)) ;
+                    {
+                        SerializationContext sCxt = new SerializationContext(pmap) ;
+                        WriterSSE.out(new IndentedWriter(System.out), expr, sCxt) ;
+                    }
                     continue ;
                 }
                 

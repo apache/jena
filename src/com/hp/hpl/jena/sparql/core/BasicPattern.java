@@ -37,6 +37,7 @@ public class BasicPattern
     
     public List getList() { return triples ; } 
     
+    // Need to be careful about bnodes here.
     public int hashCode() { return triples.hashCode() ; } 
     
     public boolean equals(Object other)

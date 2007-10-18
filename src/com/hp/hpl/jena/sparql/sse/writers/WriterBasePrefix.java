@@ -22,7 +22,7 @@ public class WriterBasePrefix
 
     public static interface Fmt { void format() ; }
 
-    public static void out(IndentedWriter iWriter, Fmt fmt, Prologue prologue)
+    public static void output(IndentedWriter iWriter, Fmt fmt, Prologue prologue)
     {
         boolean closeBase = false ;
         boolean closePrefix = false ;

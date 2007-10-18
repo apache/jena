@@ -11,8 +11,9 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.hp.hpl.jena.graph.Triple;
+import com.hp.hpl.jena.query.Query;
+import com.hp.hpl.jena.query.SortCondition;
 import com.hp.hpl.jena.shared.PrefixMapping;
-
 import com.hp.hpl.jena.sparql.ARQConstants;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.OpPrefixesUsed;
@@ -26,15 +27,10 @@ import com.hp.hpl.jena.sparql.core.VarExprList;
 import com.hp.hpl.jena.sparql.expr.E_Aggregator;
 import com.hp.hpl.jena.sparql.expr.Expr;
 import com.hp.hpl.jena.sparql.expr.ExprList;
-import com.hp.hpl.jena.sparql.serializer.FmtExprPrefix;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext;
 import com.hp.hpl.jena.sparql.sse.Tags;
-import com.hp.hpl.jena.sparql.util.ExprUtils;
 import com.hp.hpl.jena.sparql.util.FmtUtils;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
-
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.SortCondition;
 
 // ToDo extract write of:
 // Table
@@ -46,54 +42,54 @@ public class WriterOp
     private static final int NoNL = WriterLib.NoNL ;
     private static final int NoSP = WriterLib.NoSP ;
     
-    public static void out(Op op)
-    { out(System.out, op) ; }
+    public static void output(Op op)
+    { output(System.out, op) ; }
     
-    public static void out(Op op, PrefixMapping pMap)
-    { out(System.out, op, pMap) ; }
+    public static void output(Op op, PrefixMapping pMap)
+    { output(System.out, op, pMap) ; }
     
-    public static void out(Op op, Prologue prologue)
-    { out(System.out, op, prologue) ; }
+    public static void output(Op op, Prologue prologue)
+    { output(System.out, op, prologue) ; }
     
-    public static void out(OutputStream out, Op op)
-    { out(out, op, (PrefixMapping)null) ; }
+    public static void output(OutputStream out, Op op)
+    { output(out, op, (PrefixMapping)null) ; }
 
-    public static void out(OutputStream out, Op op, PrefixMapping pMap)
-    { out(new IndentedWriter(out), op, pMap) ; }
+    public static void output(OutputStream out, Op op, PrefixMapping pMap)
+    { output(new IndentedWriter(out), op, pMap) ; }
 
-    public static void out(OutputStream out, Op op, Prologue prologue)
-    { out(new IndentedWriter(out), op, prologue) ; }
+    public static void output(OutputStream out, Op op, Prologue prologue)
+    { output(new IndentedWriter(out), op, prologue) ; }
 
     public static void out(IndentedWriter iWriter, Op op)
-    { out(iWriter, op, (PrefixMapping)null) ; }
+    { output(iWriter, op, (PrefixMapping)null) ; }
 
-    public static void out(IndentedWriter iWriter, Op op, PrefixMapping pMap)
+    public static void output(IndentedWriter iWriter, Op op, PrefixMapping pMap)
     {
         if ( pMap == null )
             pMap = OpPrefixesUsed.used(op, ARQConstants.getGlobalPrefixMap()) ;
         SerializationContext sCxt = new SerializationContext(pMap) ;
-        out(iWriter, op, sCxt) ;
+        output(iWriter, op, sCxt) ;
     }
 
-    public static void out(IndentedWriter iWriter, Op op, Prologue prologue)
+    public static void output(IndentedWriter iWriter, Op op, Prologue prologue)
     {
         SerializationContext sCxt = new SerializationContext(prologue) ;
-        out(iWriter, op, sCxt) ;
+        output(iWriter, op, sCxt) ;
     }
     
     public static void out(OutputStream out, Op op, SerializationContext sCxt)
     {
-        out(new IndentedWriter(out), op, sCxt) ;
+        output(new IndentedWriter(out), op, sCxt) ;
     }
 
     // Actual work
-    public static void out(final IndentedWriter iWriter, final Op op, final SerializationContext sCxt)
+    public static void output(final IndentedWriter iWriter, final Op op, final SerializationContext sCxt)
     {
         WriterBasePrefix.Fmt fmt = 
             new WriterBasePrefix.Fmt() {
                 public void format() {op.visit(new OpWriterWorker(iWriter, sCxt)) ;}
                 } ;
-        WriterBasePrefix.out(iWriter, fmt, sCxt.getPrologue()) ;
+        WriterBasePrefix.output(iWriter, fmt, sCxt.getPrologue()) ;
     }        
     
     private static class OpWriterWorker implements OpVisitor
@@ -101,13 +97,11 @@ public class WriterOp
         private IndentedWriter out ;
         private SerializationContext sContext ;
 //        private VarAlloc varAlloc = new VarAlloc("__") ;
-        private FmtExprPrefix fmtExpr ; 
         
         public OpWriterWorker(IndentedWriter out, SerializationContext sCxt)
         { 
             this.sContext = sCxt ;
             this.out = out ;
-            this.fmtExpr = new FmtExprPrefix(out, sCxt) ;
         }
         
         private void visitOp2(Op2 op, ExprList exprs)
@@ -124,7 +118,7 @@ public class WriterOp
             //out.println() ; 
 
             if ( exprs != null )
-                ExprUtils.fmtPrefix(out, exprs) ;
+                WriterExpr.output(out, exprs, sContext) ;
             finish(op) ;
         }
 
@@ -193,7 +187,7 @@ public class WriterOp
             if ( exprs == null )
             { start() ; finish() ; }
             else
-                ExprUtils.fmtPrefix(out, exprs, sContext) ;
+                WriterExpr.output(out, exprs, sContext) ;
             out.println();
             printOp(opFilter.getSubOp()) ;
             finish(opFilter) ;
@@ -228,14 +222,14 @@ public class WriterOp
             }
             
             start(opTable, NL) ;
-            WriterTable.outNoTag(out, opTable.getTable(), sContext);
+            WriterTable.outputPlain(out, opTable.getTable(), sContext);
             finish(opTable) ;
         }
 
         public void visit(OpDatasetNames dsNames)
         {
             start(dsNames, NoNL) ;
-            WriterNode.out(out, dsNames.getGraphNode(), sContext) ;
+            WriterNode.output(out, dsNames.getGraphNode(), sContext) ;
             finish(dsNames) ;
         }
 
@@ -331,7 +325,7 @@ public class WriterOp
                 
             }
             
-            fmtExpr.format(sc.getExpression()) ;
+            WriterExpr.output(out, sc.getExpression(), sContext) ;
             
             if ( tag != null )
                 WriterLib.finish(out, tag) ;
@@ -442,7 +436,7 @@ public class WriterOp
                     start() ;
                     out.print(v.toString()) ;
                     out.print(" ") ;
-                    ExprUtils.fmtPrefix(out, expr, sContext) ;
+                    WriterExpr.output(out, expr, sContext) ;
                     finish() ;
                 }
                 else
@@ -451,36 +445,11 @@ public class WriterOp
             finish() ;
         }
 
-
         private void formatTriple(Triple tp)
-        { WriterNode.out(out, tp, sContext) ; }
+        { WriterNode.output(out, tp, sContext) ; }
         
         private void formatQuad(Quad qp)
-        { WriterNode.out(out, qp, sContext) ; }
-        
-//        private void formatTriple(Triple tp)
-//        {
-//            WriterLib.start(out, Tags.tagTriple, NoNL) ;
-//            WriterNode.out(out, tp.getSubject(), sContext) ;
-//            out.print(" ") ;
-//            WriterNode.out(out, tp.getPredicate(), sContext) ;
-//            out.print(" ") ;
-//            WriterNode.out(out, tp.getObject(), sContext) ;
-//            WriterLib.finish(out, Tags.tagTriple) ;
-//        }
-//
-//        private void formatQuad(Quad qp)
-//        {
-//            WriterLib.start(out, Tags.tagQuad, NoNL) ;
-//            WriterNode.out(out, qp.getGraph(), sContext) ;
-//            out.print(" ") ;
-//            WriterNode.out(out, qp.getSubject(), sContext) ;
-//            out.print(" ") ;
-//            WriterNode.out(out, qp.getPredicate(), sContext) ;
-//            out.print(" ") ;
-//            WriterNode.out(out, qp.getObject(), sContext) ;
-//            WriterLib.finish(out, Tags.tagQuad) ;
-//        }
+        { WriterNode.output(out, qp, sContext) ; }
     }
 }
 

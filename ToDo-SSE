@@ -21,10 +21,17 @@
 
 + Writing.
   Need an architecture.
-  All writing on one context object
-    "OutputContext" (inherits IndentedWriter?)
-      Adds print(Node)?
-    Prologue
-    BNode map
-    Replaces SerialziationContext . 
+    Template:
+    WriterXXX.output(IndentWriter, T, SerializationContext)
+    
   
+  Output: bundle
+    IndentedWriter, Prologue, BNode map
+    Prologue+BNodemap => SerializationContext
+      rename SerializationContext => NameContext    
+
+   Transfer FmtExprPrefix
+     WriterExpr to include ExprList
+   Remove OpWriter - (or stub)
+   ExprUtils.fmtPrefix => WriterExpr.out(Expr), .out(ExprList)
+   

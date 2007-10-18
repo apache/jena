@@ -11,26 +11,30 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.shared.PrefixMapping;
-
-import com.hp.hpl.jena.sparql.ARQConstants;
-import com.hp.hpl.jena.sparql.engine.ExecutionContext;
-import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.sparql.expr.*;
-import com.hp.hpl.jena.sparql.function.FunctionEnv;
-import com.hp.hpl.jena.sparql.lang.sparql.*;
-import com.hp.hpl.jena.sparql.serializer.FmtExpr;
-import com.hp.hpl.jena.sparql.serializer.FmtExprARQ;
-import com.hp.hpl.jena.sparql.serializer.FmtExprPrefix;
-import com.hp.hpl.jena.sparql.serializer.SerializationContext;
-import com.hp.hpl.jena.sparql.sse.SSE;
-import com.hp.hpl.jena.sparql.sse.SSEParseException;
-import com.hp.hpl.jena.sparql.sse.builders.ExprBuildException;
-
 import com.hp.hpl.jena.query.ARQ;
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryFactory;
 import com.hp.hpl.jena.query.QueryParseException;
+import com.hp.hpl.jena.shared.PrefixMapping;
+import com.hp.hpl.jena.sparql.ARQConstants;
+import com.hp.hpl.jena.sparql.engine.ExecutionContext;
+import com.hp.hpl.jena.sparql.engine.binding.Binding;
+import com.hp.hpl.jena.sparql.expr.Expr;
+import com.hp.hpl.jena.sparql.expr.ExprEvalException;
+import com.hp.hpl.jena.sparql.expr.ExprList;
+import com.hp.hpl.jena.sparql.expr.ExprVar;
+import com.hp.hpl.jena.sparql.expr.NodeValue;
+import com.hp.hpl.jena.sparql.function.FunctionEnv;
+import com.hp.hpl.jena.sparql.lang.sparql.ParseException;
+import com.hp.hpl.jena.sparql.lang.sparql.SPARQLParser;
+import com.hp.hpl.jena.sparql.lang.sparql.SPARQLParserTokenManager;
+import com.hp.hpl.jena.sparql.lang.sparql.Token;
+import com.hp.hpl.jena.sparql.lang.sparql.TokenMgrError;
+import com.hp.hpl.jena.sparql.serializer.FmtExprARQ;
+import com.hp.hpl.jena.sparql.serializer.SerializationContext;
+import com.hp.hpl.jena.sparql.sse.SSE;
+import com.hp.hpl.jena.sparql.sse.SSEParseException;
+import com.hp.hpl.jena.sparql.sse.builders.ExprBuildException;
 
 
 /** Misc support for Expr
@@ -150,23 +154,6 @@ public class ExprUtils
         fmtSPARQL(buff.getIndentedWriter(), expr) ;
         return buff.toString() ; 
     }
-
-    public static void fmtPrefix(IndentedWriter iOut, Expr expr, SerializationContext pmap)
-    {
-        FmtExprPrefix.format(iOut, expr, pmap) ;
-    }
-
-    public static void fmtPrefix(IndentedWriter iOut, Expr expr)
-    {
-        fmtPrefix(iOut, expr, FmtUtils.sCxt()) ;
-    }
-    
-    public static String fmtPrefix(Expr expr)
-    {
-        IndentedLineBuffer buff = new IndentedLineBuffer() ;
-        fmtPrefix(buff.getIndentedWriter(), expr) ;
-        return buff.toString() ; 
-    }
     
     // ExprLists
     
@@ -192,65 +179,6 @@ public class ExprUtils
     {
         IndentedLineBuffer buff = new IndentedLineBuffer() ;
         fmtSPARQL(buff.getIndentedWriter(), exprs) ;
-        return buff.toString() ; 
-    }
-
-    public static void fmtPrefix(IndentedWriter iOut, ExprList exprs, SerializationContext sCxt)
-    {
-        FmtExpr fmt = new FmtExprPrefix(iOut, sCxt) ;
-        
-        if ( exprs.size() == 0 )
-        {
-            iOut.print("()") ;
-            return ;
-        }
-        
-        if ( exprs.size() == 1 )
-        {
-            fmt.format(exprs.get(0)) ;
-            return ;
-        }
-        
-        iOut.print("(exprlist") ;
-        for ( int i = 0 ; i < exprs.size() ;  i++ )
-        {
-            iOut.print(" ") ;
-            fmt.format(exprs.get(i)) ;
-        }
-        iOut.print(")") ;
-    }
-    
-    
-//    private static void fmtPrefixAsLogAnd(IndentedWriter iOut, ExprList exprs, int i, PrefixMapping pmap)
-//    {
-//        ExprVisitor v = new FmtExprPrefix(iOut, pmap) ;
-//        
-//        if ( exprs.size() <= i )
-//            throw new ARQInternalErrorException("ExprList too short (Size:"+exprs.size()+"<="+i+")") ;
-//        
-//        if ( exprs.size() == (i+1) )
-//        { 
-//            // End.  Just the last expression.
-//            exprs.get(i).visit(v) ;
-//            return ;
-//        }
-//        
-//        iOut.print("(&& ") ;
-//        exprs.get(i).visit(v) ;
-//        iOut.print(" ") ;
-//        fmtPrefix(iOut, exprs, i+1, pmap) ;
-//        iOut.print(")") ;
-//    }
-        
-    public static void fmtPrefix(IndentedWriter iOut, ExprList exprs)
-    {
-        fmtPrefix(iOut, exprs, FmtUtils.sCxt()) ;
-    }
-
-    public static String fmtPrefix(ExprList exprs)
-    {
-        IndentedLineBuffer buff = new IndentedLineBuffer() ;
-        fmtPrefix(buff.getIndentedWriter(), exprs) ;
         return buff.toString() ; 
     }
 
