@@ -148,7 +148,7 @@ public class PrintUtils
     public static void printOp(IndentedWriter out, Query query)
     {
         Op op = Algebra.compile(query) ;
-        OpWriter.out(out, op, query.getPrefixMapping()) ;
+        OpWriter.out(out, op, query) ;
         out.flush();
     }
 

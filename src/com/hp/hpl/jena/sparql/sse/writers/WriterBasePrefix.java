@@ -9,6 +9,7 @@ package com.hp.hpl.jena.sparql.sse.writers;
 import java.util.Iterator;
 import java.util.Map;
 
+import com.hp.hpl.jena.shared.PrefixMapping;
 import com.hp.hpl.jena.sparql.core.Prologue;
 import com.hp.hpl.jena.sparql.sse.Tags;
 import com.hp.hpl.jena.sparql.util.FmtUtils;
@@ -24,20 +25,42 @@ public class WriterBasePrefix
 
     public static void output(IndentedWriter iWriter, Fmt fmt, Prologue prologue)
     {
-        boolean closeBase = false ;
-        boolean closePrefix = false ;
         boolean printBase = false ;
 
-        if ( printBase && prologue.getBaseURI() != null )
+        boolean closeBase = printBase(iWriter, prologue) ;
+        boolean closePrefix = printPrefix(iWriter, prologue) ;
+        
+        fmt.format() ;
+
+        if ( closeBase )
+            WriterLib.finish(iWriter, Tags.tagBase) ;
+        if ( closePrefix )
+            WriterLib.finish(iWriter, Tags.tagPrefix) ;
+        iWriter.ensureStartOfLine() ;
+        iWriter.flush();
+    }
+    
+    private static boolean printBase(IndentedWriter iWriter, Prologue prologue)
+    {
+        String baseURI = prologue.getBaseURI() ;
+        
+        if ( baseURI != null )
         {
             WriterLib.start(iWriter, Tags.tagBase, NoNL) ;   
-            iWriter.print(FmtUtils.stringForURI(prologue.getBaseURI())) ;
-            closeBase = true ;
+            iWriter.print(FmtUtils.stringForURI(baseURI)) ;
+            iWriter.println();
+            return true ;
         }
+        return false ;
+    }
+    
+    private static boolean printPrefix(IndentedWriter iWriter, Prologue prologue)
+    {
+        PrefixMapping prefixMapping = prologue.getPrefixMapping() ;
 
-        if ( prologue.getPrefixMapping() != null )
+        if ( prefixMapping != null )
         {
-            Map m = prologue.getPrefixMapping().getNsPrefixMap() ;
+            Map m = prefixMapping.getNsPrefixMap() ;
             if ( ! m.isEmpty() )
             {
                 int s = iWriter.getCol() ;
@@ -56,29 +79,23 @@ public class WriterBasePrefix
                         iWriter.println() ;
                     first = false ;
                     String prefix = (String)iter.next();
-                    String uri = prologue.getPrefixMapping().getNsPrefixURI(prefix) ;
+                    String uri = prefixMapping.getNsPrefixURI(prefix) ;
+                    // Base relative URI = but not prefix mappings!
+                    uri = FmtUtils.stringForURI(uri, prologue.getBaseURI()) ;
                     WriterLib.start(iWriter) ;
                     iWriter.print(prefix) ;
                     iWriter.print(": ") ;
-                    iWriter.print("<"+uri+">") ;
+                    iWriter.print(uri) ;
                     WriterLib.finish(iWriter) ;
                 }
                 iWriter.decIndent(len) ;
                 WriterLib.finish(iWriter) ;
 
                 iWriter.ensureStartOfLine() ;
-                closePrefix = true ;
+                return true ;
             }
         }
-
-        fmt.format() ;
-
-        if ( closeBase )
-            WriterLib.finish(iWriter, Tags.tagBase) ;
-        if ( closePrefix )
-            WriterLib.finish(iWriter, Tags.tagPrefix) ;
-        iWriter.ensureStartOfLine() ;
-        iWriter.flush();
+        return false ;
     }
 }
 

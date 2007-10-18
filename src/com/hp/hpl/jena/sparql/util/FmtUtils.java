@@ -309,6 +309,11 @@ public class FmtUtils
         return stringForURI(uri, prologue.getBaseURI(), prologue.getPrefixMapping()) ;
     }
 
+    static public String stringForURI(String uri, String baseIRI)
+    {
+        return stringForURI(uri, baseIRI, null) ;
+    }
+    
     static public String stringForURI(String uri, SerializationContext context)
     {
         if ( context == null )
