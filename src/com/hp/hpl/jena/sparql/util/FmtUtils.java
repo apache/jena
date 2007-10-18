@@ -18,14 +18,12 @@ import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.shared.PrefixMapping;
-import com.hp.hpl.jena.vocabulary.XSD;
-
 import com.hp.hpl.jena.sparql.ARQConstants;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException;
 import com.hp.hpl.jena.sparql.core.BasicPattern;
 import com.hp.hpl.jena.sparql.core.Prologue;
-import com.hp.hpl.jena.sparql.core.Quad;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext;
+import com.hp.hpl.jena.vocabulary.XSD;
 
 /**
  * @author   Andy Seaborne
@@ -34,8 +32,6 @@ import com.hp.hpl.jena.sparql.serializer.SerializationContext;
 
 public class FmtUtils
 {
-    // Long terms - Prologue and tighter integration with IRI.relativize.
-    
     static final String indentPrefix = "  " ;
     public static boolean multiLineExpr = false ;
     public static boolean printOpName = true ;
@@ -71,7 +67,7 @@ public class FmtUtils
     }
     
     // To a Writer?
-    public static void formatTriple(IndentedWriter out, Triple triple, SerializationContext sCxt)
+    private static void formatTriple(IndentedWriter out, Triple triple, SerializationContext sCxt)
     {
         out.print(stringForNode(triple.getSubject(), sCxt)) ;
         out.print(" ") ;
@@ -94,43 +90,43 @@ public class FmtUtils
         }
     }
     
-    public static String stringForQuad(Quad quad)
-    {
-        return stringForQuad(quad, ARQConstants.getGlobalPrefixMap()) ;
-    }
-    
-    
-    public static String stringForQuad(Quad quad, PrefixMapping prefixMap)
-    {
-        StringBuffer buff = new StringBuffer() ;
-        
-        if ( ! quad.isDefaultGraph() )
-        {
-            if ( quad.isUnionGraph() )
-                buff.append("*") ;
-            else
-                buff.append(stringForNode(quad.getGraph(), prefixMap)) ;
-            buff.append(" ") ;
-        }
-        buff.append(stringForNode(quad.getSubject(), prefixMap)) ;
-        buff.append(" ") ;
-        buff.append(stringForNode(quad.getPredicate(), prefixMap)) ;
-        buff.append(" ") ;
-        buff.append(stringForNode(quad.getObject(), prefixMap)) ;
-        return buff.toString() ;
-    }
-    
-    public void formatQuad(IndentedWriter out, Quad quad, SerializationContext sCxt)
-    {
-        out.print(stringForNode(quad.getGraph(), sCxt)) ;
-        out.print(" ") ;
-        out.print(stringForNode(quad.getSubject(), sCxt)) ;
-        out.print(" ") ;
-        out.print(stringForNode(quad.getPredicate(), sCxt)) ;
-        out.print(" ") ;
-        out.print(stringForNode(quad.getObject(), sCxt)) ;
-        out.print(" .") ;
-    }
+//    private static String stringForQuad(Quad quad)
+//    {
+//        return stringForQuad(quad, ARQConstants.getGlobalPrefixMap()) ;
+//    }
+//    
+//    
+//    private static String stringForQuad(Quad quad, PrefixMapping prefixMap)
+//    {
+//        StringBuffer buff = new StringBuffer() ;
+//        
+//        if ( ! quad.isDefaultGraph() )
+//        {
+//            if ( quad.isUnionGraph() )
+//                buff.append("*") ;
+//            else
+//                buff.append(stringForNode(quad.getGraph(), prefixMap)) ;
+//            buff.append(" ") ;
+//        }
+//        buff.append(stringForNode(quad.getSubject(), prefixMap)) ;
+//        buff.append(" ") ;
+//        buff.append(stringForNode(quad.getPredicate(), prefixMap)) ;
+//        buff.append(" ") ;
+//        buff.append(stringForNode(quad.getObject(), prefixMap)) ;
+//        return buff.toString() ;
+//    }
+//    
+//    public void formatQuad(IndentedWriter out, Quad quad, SerializationContext sCxt)
+//    {
+//        out.print(stringForNode(quad.getGraph(), sCxt)) ;
+//        out.print(" ") ;
+//        out.print(stringForNode(quad.getSubject(), sCxt)) ;
+//        out.print(" ") ;
+//        out.print(stringForNode(quad.getPredicate(), sCxt)) ;
+//        out.print(" ") ;
+//        out.print(stringForNode(quad.getObject(), sCxt)) ;
+//        out.print(" .") ;
+//    }
     
     public static String stringForObject(Object obj)
     {
