@@ -5,7 +5,7 @@
 @prefix qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#> .
 
 <>  rdf:type mf:Manifest ;
-    rdfs:comment "Serialization tests Serialization" ;
+    rdfs:comment "Serialization tests" ;
     mf:entries
     ( 
       [  mf:name    "syn-01.rq" ;

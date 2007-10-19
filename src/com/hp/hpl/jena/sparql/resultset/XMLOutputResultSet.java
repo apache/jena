@@ -11,17 +11,14 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import com.hp.hpl.jena.rdf.model.Literal;
-import com.hp.hpl.jena.rdf.model.RDFNode;
-import com.hp.hpl.jena.rdf.model.Resource;
-
-import com.hp.hpl.jena.sparql.ARQConstants;
-import com.hp.hpl.jena.sparql.util.ALog;
-import com.hp.hpl.jena.sparql.util.IndentedWriter;
-
 import com.hp.hpl.jena.query.ARQ;
 import com.hp.hpl.jena.query.QuerySolution;
 import com.hp.hpl.jena.query.ResultSet;
+import com.hp.hpl.jena.rdf.model.Literal;
+import com.hp.hpl.jena.rdf.model.RDFNode;
+import com.hp.hpl.jena.rdf.model.Resource;
+import com.hp.hpl.jena.sparql.util.ALog;
+import com.hp.hpl.jena.sparql.util.IndentedWriter;
 
 /** XML Output (ResultSet format)
  * 
@@ -64,15 +61,20 @@ public class XMLOutputResultSet
             out.println("<?xml-stylesheet type=\"text/xsl\" href=\""+stylesheetURL+"\"?>") ;
         
         // ---- Root
-        out.println("<"+dfRootTag) ;
-        out.incIndent(INDENT) ;
-        out.incIndent(INDENT) ;
-        out.println("xmlns:rdf=\""+ARQConstants.rdfPrefix+"\"") ;
-        out.println("xmlns:xs=\""+ARQConstants.XML_SCHEMA_NS+"\"") ;
-        out.println("xmlns=\""+dfNamespace+"\" >") ;
-        out.decIndent(INDENT) ;
-        out.decIndent(INDENT) ;
+        out.print("<"+dfRootTag) ;
+        out.print(" ") ;
+        out.println("xmlns=\""+dfNamespace+"\">") ;
+
+        // Remove this next you see it.
+//       out.incIndent(INDENT) ;
+//       out.incIndent(INDENT) ;
+//       out.println("xmlns:rdf=\""+ARQConstants.rdfPrefix+"\"") ;
+//       out.println("xmlns:xs=\""+ARQConstants.XML_SCHEMA_NS+"\"") ;
+//       out.println("xmlns=\""+dfNamespace+"\" >") ;
+//       out.decIndent(INDENT) ;
+//       out.decIndent(INDENT) ;
         // ---- Header
+
         out.incIndent(INDENT) ;
         out.println("<"+dfHead+">") ;
         
