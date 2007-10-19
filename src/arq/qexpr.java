@@ -144,7 +144,6 @@ public class qexpr
                 throw new TerminationException(0) ;
             }
         }
-        
 
         // ==== Do it
         
