@@ -20,13 +20,13 @@ import com.hp.hpl.jena.query.ARQ;
 import com.hp.hpl.jena.query.QueryParseException;
 import com.hp.hpl.jena.shared.PrefixMapping;
 import com.hp.hpl.jena.sparql.ARQConstants;
+import com.hp.hpl.jena.sparql.core.Prologue;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.binding.BindingMap;
 import com.hp.hpl.jena.sparql.expr.Expr;
 import com.hp.hpl.jena.sparql.expr.ExprEvalException;
 import com.hp.hpl.jena.sparql.expr.NodeValue;
 import com.hp.hpl.jena.sparql.function.FunctionEnv;
-import com.hp.hpl.jena.sparql.serializer.SerializationContext;
 import com.hp.hpl.jena.sparql.sse.WriterSSE;
 import com.hp.hpl.jena.sparql.util.ExprUtils;
 import com.hp.hpl.jena.sparql.util.FmtUtils;
@@ -168,10 +168,7 @@ public class qexpr
                     if ( actionPrintSPARQL )
                         System.out.println(ExprUtils.fmtSPARQL(expr)) ;
                     if ( actionPrintPrefix )
-                    {
-                        SerializationContext sCxt = new SerializationContext(pmap) ;
-                        WriterSSE.out(new IndentedWriter(System.out), expr, sCxt) ;
-                    }
+                        WriterSSE.out(new IndentedWriter(System.out), expr, new Prologue(pmap)) ;
                     continue ;
                 }
                 

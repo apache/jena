@@ -8,14 +8,10 @@ package com.hp.hpl.jena.sparql.sse;
 
 
 import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.shared.PrefixMapping;
-import com.hp.hpl.jena.sparql.serializer.SerializationContext;
 import com.hp.hpl.jena.sparql.util.FmtUtils;
-import com.hp.hpl.jena.sparql.util.IndentedWriter;
-import com.hp.hpl.jena.sparql.util.PrintSerializable;
-import com.hp.hpl.jena.sparql.util.PrintUtils;
+import com.hp.hpl.jena.sparql.util.IndentedLineBuffer;
 
-public class Item extends ItemLocation implements PrintSerializable
+public class Item extends ItemLocation
 {
     protected ItemList list = null ;
     protected Node node = null ;
@@ -212,27 +208,21 @@ public class Item extends ItemLocation implements PrintSerializable
             System.err.println("broken item") ;
         return null ;
     }
-    
-    public String toString(PrefixMapping pmap)
-    { return PrintUtils.toString(this, pmap) ; }
 
+    public String toString()
+    {
+        IndentedLineBuffer iBuff = new IndentedLineBuffer() ;
+        ItemWriter.write(iBuff.getIndentedWriter(), this, null) ;
+        iBuff.getIndentedWriter().ensureStartOfLine() ;
+        iBuff.getIndentedWriter().flush() ;
+        return iBuff.asString() ;
+    }
+    
     public String shortString()
     {
         if ( isSymbol() ) return getSymbol();
         if ( isNode() ) return FmtUtils.stringForNode(getNode());
         return getList().shortString() ;
-    }
-    
-    //@Override
-    public String toString()
-    { return PrintUtils.toString(this) ; }
-    
-    public void output(IndentedWriter out)
-    { output(out, null) ; }
-    
-    public void output(IndentedWriter out, SerializationContext sCxt)
-    {
-        ItemWriter.write(out, this, sCxt) ;
     }
 }
 

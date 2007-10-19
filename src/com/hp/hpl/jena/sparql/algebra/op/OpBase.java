@@ -7,8 +7,9 @@
 package com.hp.hpl.jena.sparql.algebra.op;
 
 import com.hp.hpl.jena.sparql.algebra.Op;
-import com.hp.hpl.jena.sparql.algebra.OpWriter;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext;
+import com.hp.hpl.jena.sparql.sse.WriterSSE;
+import com.hp.hpl.jena.sparql.sse.writers.WriterOp;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
 import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 import com.hp.hpl.jena.sparql.util.PrintSerializableBase;
@@ -27,16 +28,15 @@ public abstract class OpBase extends PrintSerializableBase implements Op
         return equalTo((Op)other, null) ;
     }
 
-
     public void output(IndentedWriter out)
     {
-        OpWriter.out(out, this) ;
+        WriterSSE.out(out, this, null) ;
     }
 
     public void output(IndentedWriter out, SerializationContext sCxt)
     {
         int line = out.getRow() ;
-        OpWriter.out(out, this, sCxt) ;
+        WriterOp.output(out, this, sCxt) ;
         if ( line != out.getRow() )
             out.ensureStartOfLine() ;
     }

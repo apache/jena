@@ -93,7 +93,6 @@ public class ItemWriter
                 out.decIndent() ;
             }
         }
-
         
         public void visit(Item item, Node node)
         { out.print(FmtUtils.stringForNode(node, sCxt)) ; }

@@ -16,7 +16,7 @@ import com.hp.hpl.jena.sparql.sse.writers.WriterOp;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
 
 
-public class OpWriter
+ class OpWriter
 {
     private static final int NL = 1 ;
     private static final int NoNL = -1 ;

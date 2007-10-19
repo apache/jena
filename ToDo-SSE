@@ -11,8 +11,9 @@
   
 + SSE.parseXXX(, Prologue)
 
-+ FmtUtils - Base URI abbreviation
-  See _stringForURI
++ Item writeing and .toString.
++ Op toString.
 
-+ Writing.
-   
++ PrintSerializable does nto really work because it assumes one serialization form.
+  Ok for human readable but that's about it.
+  Pssoible remove output(, SerializationContext) form and leave as support for toString.
