@@ -1,8 +1,7 @@
-BASE   <http://example/y>
+BASE   <http://example/>
 PREFIX : <http://example/ns#>
 PREFIX z: <http://example/z#>
 
 SELECT DISTINCT ?o
 { ?s ?p ?o . 
-    FILTER(?s = <x>) . FILTER (?o = <y#ff>) 
 }

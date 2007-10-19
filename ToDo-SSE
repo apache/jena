@@ -15,5 +15,5 @@
 + Op toString.
 
 + PrintSerializable does nto really work because it assumes one serialization form.
-  Ok for human readable but that's about it.
-  Pssoible remove output(, SerializationContext) form and leave as support for toString.
+  OK for human readable but that's about it.
+  Possible remove "output(, SerializationContext)" form and leave as support for toString.
