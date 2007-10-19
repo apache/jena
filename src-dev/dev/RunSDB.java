@@ -50,6 +50,8 @@ public class RunSDB
     static { CmdUtils.setLog4j() ; CmdUtils.setN3Params() ; }
     public static void main(String[]argv)
     {
+        sdb.sdbload.main(new String[]{"--sdb=sdb.ttl", "D.ttl"}) ;
+        
         sdb.query.main(new String[]{"--sdb=sdb.ttl", "SELECT * { GRAPH ?g {} }"}) ;
         System.exit(0) ;
         
