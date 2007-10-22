@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: Rule.java,v 1.46 2007-03-07 10:27:19 der Exp $
+ * $Id: Rule.java,v 1.47 2007-10-22 09:03:41 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -48,7 +48,10 @@ import org.apache.commons.logging.LogFactory;
  * represent builtin predicates; in TriplePatterns they represent embedded
  * structured literals that are used to cache matched subgraphs such as
  * restriction specifications. </p>
- *<p>
+ * <p>
+ * The equality contract for rules is that two rules are equal if each of terms
+ * (ClauseEntry objects) are equals and they have the same name, if any.
+ * </p>
  * We include a trivial, recursive descent parser but this is just there
  * to allow rules to be embedded in code. External rule syntax based on N3
  * and RDF could be developed. The embedded syntax supports rules such as:
@@ -62,7 +65,7 @@ import org.apache.commons.logging.LogFactory;
  * embedded rule, commas are ignore and can be freely used as separators. Functor names
  * may not end in ':'.
  * </p>
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.46 $ on $Date: 2007-03-07 10:27:19 $ 
+ * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.47 $ on $Date: 2007-10-22 09:03:41 $ 
  */
 public class Rule implements ClauseEntry {
     
@@ -1035,6 +1038,12 @@ public class Rule implements ClauseEntry {
         }
         for (int i = 0; i < head.length; i++) {
             if (! ((ClauseEntry)head[i]).sameAs((ClauseEntry)other.head[i]) ) return false;
+        }
+        // Also include the rule name in the equality contract
+        if (name != null) {
+            if ( !name.equals(other.name) ) return false;
+        } else {
+            if (other.name != null) return false;
         }
         return true;
     }

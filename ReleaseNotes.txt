@@ -10,7 +10,10 @@ Typed literals:
     o Fixed bug in equality checking of instances of xsd:decimal,
       and creation of xsd:decimal or xsd:integer instances from BigDecimal
       or BitInteger instances
-    
+
+Reasoners:
+    o Changed the equality contract of Rule objects to include the rule name.
+        
 ==== Jena 2.5.4
 
 Graph
