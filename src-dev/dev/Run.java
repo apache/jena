@@ -13,6 +13,7 @@ import arq.sparql;
 import com.hp.hpl.jena.iri.IRI;
 import com.hp.hpl.jena.iri.IRIFactory;
 import com.hp.hpl.jena.iri.IRIRelativize;
+import com.hp.hpl.jena.query.ARQ;
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryExecution;
 import com.hp.hpl.jena.query.QueryExecutionFactory;
@@ -35,27 +36,13 @@ public class Run
 {
     public static void main(String[] argv) throws Exception
     {
-//        code() ; System.exit(0) ;
-        Query q = QueryFactory.create("SELECT * { [] ?p [] }") ;
-        Op op = Algebra.compile(q) ;
-        System.out.println(op) ;
-        System.exit(0) ;
-        
-        String a[] = {"--update=update.ru"} ;
-        arq.update.main(a) ;
-        System.exit(0) ;
+//      code() ; System.exit(0) ;
 
-//        String a[] = {"--data=D.ttl", "--query=Q.sse" } ;
-//        arq.sse_query.main(a) ;
-//        System.exit(0) ;
-        
-//        Op op = SSE.parseOp("(graph <x> (bgp (?x rdf:type ?z)))") ;
-//        OpWriter.out(System.out, op) ;
-//        System.exit(0) ;
+        String DIR = "" ;
+        ARQ.getContext().set(ARQ.filterPlacement, false) ;
+        execQuery(DIR+"D.rdf", DIR+"Q.rq") ;
         
         runQParse() ;
-        
-        String DIR = "" ;
         execQuery(DIR+"D.ttl", DIR+"Q.sse") ;
     }
     
@@ -67,6 +54,8 @@ public class Run
         if ( ! str.equals(dt.toString())) 
             System.out.println("*** Different") ;
     }
+    
+    
     
     
     public static void code()
@@ -114,6 +103,13 @@ public class Run
     {
         String []a = { "--file=Q.arq", "--out=arq", "--print=op", "--print=query" } ;
         arq.qparse.main(a) ;
+        System.exit(0) ;
+    }
+    
+    private static void runUpdate()
+    {
+        String a[] = {"--update=update.ru"} ;
+        arq.update.main(a) ;
         System.exit(0) ;
     }
     

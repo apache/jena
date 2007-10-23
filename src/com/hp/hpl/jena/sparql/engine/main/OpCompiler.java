@@ -174,6 +174,7 @@ public class OpCompiler
         
         Op base = opFilter.getSubOp() ;
         
+        // Leigh reports ...
         if ( base instanceof OpBGP )
             return filterPlacement.placeFiltersBGP(exprs, ((OpBGP)base).getPattern(), input) ;
 

@@ -52,8 +52,7 @@ public class ARQTestSuite extends TestSuite
 //        ts.addTest(QueryTestSuiteFactory.make(testDirARQ+"/manifest-ext.ttl")) ;
         
         // The DAWG official tests (some may be duplicated in ARQ test suite
-        // but this should be the untouched versions, just changes to
-        // the manifests for rdfs:labels).
+        // but this should be the untouched versions)
         ts.addTest(TS_DAWG.suite()) ;
       
         // The RDQL engine ported to ARQ

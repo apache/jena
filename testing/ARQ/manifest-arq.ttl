@@ -54,6 +54,10 @@
         <Sort/manifest.ttl>
         <Examples/manifest.ttl>
 
+    ## Engines
+        <EngineRef/manifest.ttl>
+        <EngineMain/manifest.ttl>
+
     ## ARQ extensions
         <SelectExpr/manifest.ttl>
         <GroupBy/manifest.ttl>

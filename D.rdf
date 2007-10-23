@@ -1,0 +1,46 @@
+<rdf:RDF   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+  xmlns:dc="http://purl.org/dc/elements/1.1/"
+  xmlns:prism="http://prismstandard.org/namespaces/1.2/basic/"
+  xmlns:xsd = "http://www.w3.org/2001/XMLSchema#"
+  xmlns="http://oecd.metastore.ingenta.com/ns/"
+  xml:base="http://oecd.metastore.ingenta.com/content/"
+  >
+
+<Survey rdf:about="survey/ecosurvey-9789264027376">
+
+      <isPartOf>
+        <Journal rdf:about="journal/03766438"/>
+      </isPartOf>
+
+      <isbn>9789264027376</isbn>
+      <dc:title>Economic survey of Korea 2005</dc:title>
+
+      <articles rdf:parseType="Collection">
+        <Chapter rdf:about="chapter/ecosurvey-kor-1"/>
+        <Chapter rdf:about="chapter/ecosurvey-kor-2"/>
+      </articles>
+
+</Survey>
+
+<Chapter rdf:about="chapter/ecosurvey-kor-1">
+
+  <!-- isPartOf -->
+  <isPartOf>
+    <Survey rdf:about="survey/ecosurvey-9789264027376"/>
+  </isPartOf>
+
+</Chapter>
+
+
+<Chapter rdf:about="chapter/ecosurvey-kor-2">
+
+  <!-- isPartOf -->
+  <isPartOf>
+    <Survey rdf:about="survey/ecosurvey-9789264027375"/>
+  </isPartOf>
+
+</Chapter>
+
+
+
+</rdf:RDF>

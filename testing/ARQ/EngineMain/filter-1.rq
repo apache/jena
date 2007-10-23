@@ -4,8 +4,5 @@ PREFIX list: <http://jena.hpl.hp.com/ARQ/list#>
 SELECT *
 {
   ?list list:index (?index "B")
-  OPTIONAL {
-     ?list list:index (?nextIndex ?next).
-     FILTER (?nextIndex = (?index + 1))
-  }
+  FILTER (?index = 1)
 }

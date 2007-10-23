@@ -1,7 +1,10 @@
 ==== ARQ ToDo
 
-++ ** Document "stages"
+++ Filter placement and property functions.
+   PFs as OpBGP => OpBGP/OpPF?, rather than stages
+   Filter placement in stages?
 
+++ ** Document "stages"
 ++ ** Document "update API"
 ++ Algebra building src-examples
 ++ Tutorial on update 
