@@ -82,7 +82,7 @@ public abstract class StoreBase
 
     // Note -- this does not close the JDBC connection, which may be shared.
     // See also StoreBaseHSQL
-    public void close()                              { }
+    public void close() { getLoader().close(); }
     
     /** Default implementation: get size of Triples table **/
     public long getSize()
