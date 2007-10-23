@@ -43,6 +43,7 @@ public abstract class StoreBaseHSQL extends StoreBase
         if ( currentlyOpen )
             HSQLUtils.shutdown(getConnection()) ;
         currentlyOpen = false ; 
+        super.close();
     }
 
     public static void close(Store store)
