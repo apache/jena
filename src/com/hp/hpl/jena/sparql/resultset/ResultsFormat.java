@@ -27,7 +27,7 @@ public class ResultsFormat extends Symbol
     public final static ResultsFormat FMT_COUNT    = new ResultsFormat("count") ;      /** Output the number of rows of a SELECT query */
     
     /* Construct and describe formats as well */ 
-    public final static ResultsFormat FMT_RDF_XML  = new ResultsFormat("RDF/XML-ABBREV") ;
+    public final static ResultsFormat FMT_RDF_XML  = new ResultsFormat("RDF/XML") ;
     public final static ResultsFormat FMT_RDF_N3   = new ResultsFormat("N3") ;
     public final static ResultsFormat FMT_RDF_TTL  = new ResultsFormat("Turtle") ;
     public final static ResultsFormat FMT_RDF_NT   = new ResultsFormat("N-TRIPLES") ;
