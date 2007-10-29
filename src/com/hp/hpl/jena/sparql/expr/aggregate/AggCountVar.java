@@ -6,6 +6,7 @@
 
 package com.hp.hpl.jena.sparql.expr.aggregate;
 
+import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.expr.NodeValue;
@@ -23,13 +24,13 @@ public class AggCountVar implements AggregateFactory
     {
         // One per each time there is an aggregation.
         // For count(*) - one per group operator (so shared with having clause)
-        return new AggCountWorker() ;
+        return new AggCountVarWorker() ;
     }
     
     // ---- Aggregator
-    class AggCountWorker extends AggregatorBase
+    class AggCountVarWorker extends AggregatorBase
     {
-        public AggCountWorker()
+        public AggCountVarWorker()
         {
             super() ;
         }
@@ -39,15 +40,17 @@ public class AggCountVar implements AggregateFactory
 
         protected Accumulator createAccumulator()
         { 
-            return new AccCount() ;
+            return new AccCountVar() ;
         }
+        
+        public Node getValueEmpty()     { return NodeValue.nodeIntZERO ; } 
     }
 
     // ---- Accumulator
-    class AccCount implements Accumulator
+    class AccCountVar implements Accumulator
     {
         private long count = 0 ;
-        public AccCount()   { }
+        public AccCountVar()   { }
         public void accumulate(Binding binding)
         { 
             if ( binding.contains(var) )

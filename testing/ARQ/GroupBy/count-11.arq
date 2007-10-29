@@ -1,11 +1,8 @@
-PREFIX : <http://example/>
-PREFIX rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX  rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX  :       <http://example/>
 
-SELECT count(distinct ?p)
+SELECT (count(distinct *) AS ?c)
 {
-    # UNION is asymmetric in what it generates
-    { ?x rdf:type :X . } UNION { ?x rdf:type :X . FILTER (?x != :x2 )}
-    # and :x2 :p 2 with ":p 2" occuring twice.
-    OPTIONAL { ?x :p ?p . }
-    OPTIONAL { ?x :n ?n . }
+    :xx :noMatch ?z .
 }
+GROUP BY ?z

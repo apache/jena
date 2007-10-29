@@ -93,6 +93,11 @@ public abstract class NodeValue extends ExprNode
     public static final NodeValue TRUE   = NodeValue.makeNode("true", XSDDatatype.XSDboolean) ;
     public static final NodeValue FALSE  = NodeValue.makeNode("false", XSDDatatype.XSDboolean) ;
     
+    public static final Node nodeIntZERO = Node.createLiteral("0", null, XSDDatatype.XSDinteger) ;
+    public static final NodeValue nvZERO = NodeValue.makeNode(nodeIntZERO) ;
+    
+    public static final Node nodeIntONE = Node.createLiteral("1", null, XSDDatatype.XSDinteger) ;
+    public static final NodeValue nvONE = NodeValue.makeNode(nodeIntONE) ;
     
     // Initialization
 //    static

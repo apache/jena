@@ -8,14 +8,13 @@ package com.hp.hpl.jena.sparql.engine.iterator;
 
 import java.util.NoSuchElementException;
 
+import com.hp.hpl.jena.query.QueryException;
+import com.hp.hpl.jena.query.QueryFatalException;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.util.ALog;
 import com.hp.hpl.jena.sparql.util.PrintSerializableBase;
 import com.hp.hpl.jena.sparql.util.Utils;
-
-import com.hp.hpl.jena.query.QueryException;
-import com.hp.hpl.jena.query.QueryFatalException;
 
 /**
  * This class provides the general machinary for iterators.  This includes:

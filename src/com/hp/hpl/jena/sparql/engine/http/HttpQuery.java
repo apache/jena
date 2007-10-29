@@ -5,13 +5,18 @@
 
 package com.hp.hpl.jena.sparql.engine.http;
 
-import java.net.* ;
-import java.io.* ;
-import java.util.* ;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Iterator;
 
-import org.apache.commons.logging.* ;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
-import com.hp.hpl.jena.shared.* ;
+import com.hp.hpl.jena.shared.JenaException;
 import com.hp.hpl.jena.sparql.util.Convert;
 
 /** Create an execution object for performing a query on a model
@@ -176,14 +181,9 @@ public class HttpQuery extends Params
             }
         }
         catch (java.net.ConnectException connEx)
-        {
-            throw new QueryExceptionHTTP(QueryExceptionHTTP.NoServer, "Failed to connect to remote server");
-        }
-
+        { throw new QueryExceptionHTTP(QueryExceptionHTTP.NoServer, "Failed to connect to remote server"); }
         catch (IOException ioEx)
-        {
-            throw new QueryExceptionHTTP(ioEx);
-        }
+        { throw new QueryExceptionHTTP(ioEx); }
     }
     
     // Better (now) - turn into an HttpExec and use that engine  
@@ -219,19 +219,10 @@ public class HttpQuery extends Params
             httpConnection.connect() ;
             return execCommon() ;
         }
-        catch (JenaException rdfEx)
-        {
-            throw new QueryExceptionHTTP(-1, "Failed to create RDF request");
-        }
         catch (java.net.ConnectException connEx)
-        {
-            throw new QueryExceptionHTTP(-1, "Failed to connect to remote server");
-        }
-
+        { throw new QueryExceptionHTTP(-1, "Failed to connect to remote server"); }
         catch (IOException ioEx)
-        {
-            throw new QueryExceptionHTTP(ioEx);
-        }
+        { throw new QueryExceptionHTTP(ioEx); }
     }
     
     private InputStream execCommon() throws QueryExceptionHTTP

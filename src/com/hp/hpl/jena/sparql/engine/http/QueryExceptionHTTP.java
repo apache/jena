@@ -25,7 +25,7 @@ public class QueryExceptionHTTP extends QueryException
     public static final int NoServer = -404 ;
 
     /**
-     * Constructor for HttpException.
+     * Constructor for QueryExceptionHTTP.
      * @param responseCode
      * @param responseMessage
      */
@@ -38,7 +38,7 @@ public class QueryExceptionHTTP extends QueryException
     
 
     /**
-     * Constructor for HttpException.
+     * Constructor for QueryExceptionHTTP.
      * @param responseCode
      */
     public QueryExceptionHTTP(int responseCode)

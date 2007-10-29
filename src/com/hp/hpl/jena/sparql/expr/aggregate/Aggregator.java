@@ -20,6 +20,8 @@ public interface Aggregator
 {
     public void accumulate(BindingKey key, Binding b) ;
     public Node getValue(BindingKey key) ;
+    /** Value if there are no elements in any group : return null for no result */
+    public Node getValueEmpty() ;
     public String toPrefixString()  ;
     public String key() ;
 }

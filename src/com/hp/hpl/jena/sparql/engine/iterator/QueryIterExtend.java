@@ -9,7 +9,7 @@ package com.hp.hpl.jena.sparql.engine.iterator;
 import java.util.Iterator;
 
 import com.hp.hpl.jena.graph.Node;
-
+import com.hp.hpl.jena.query.QueryExecException;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.core.VarExprList;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
@@ -17,8 +17,6 @@ import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.binding.BindingMap;
 import com.hp.hpl.jena.sparql.function.FunctionEnv;
-
-import com.hp.hpl.jena.query.QueryExecException;
 
 /** Extend each soluytion by an expression */ 
 

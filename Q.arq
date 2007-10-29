@@ -2,8 +2,9 @@ PREFIX  rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX  :       <http://example/>
 PREFIX  dc:     <http://purl.org/dc/elements/1.1/>
 
-SELECT (?p*4 AS ?q) (count(*) AS ?cd) 
+SELECT (count(*) as ?c)
+#SELECT *
 {
-    :x :p ?p
-    OPTIONAL { ?x :r ?r . }
+    :xxx :ppp ?z .
 }
+GROUP BY ?z

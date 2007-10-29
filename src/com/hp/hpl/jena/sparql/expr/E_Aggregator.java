@@ -38,48 +38,6 @@ public class E_Aggregator extends ExprVar
     public String toExprString()        { return aggregator.toString(); }
 }
 
-//class A extends ExprNode
-//{
-//    protected ExprVar varNode = null ;
-//    protected Aggregator aggregator ;
-//    
-//    public A(String name, Aggregator agg)    { varNode = new ExprVar(name) ; aggregator = agg ; }
-//    public A(Node n, Aggregator agg)         { varNode = new ExprVar(n) ; aggregator = agg ; }
-//    public A(Var v, Aggregator agg)          { varNode= new ExprVar(v) ; aggregator = agg ; }
-//    
-//
-//    // Fake 
-//    public boolean isVariable() { return true ; }
-//    public String getVarName()  { return varNode.getVarName() ; }
-//    public ExprVar getExprVar() { return varNode ; }
-//    public Var asVar()          { return varNode.asVar() ; }
-//    public Node getAsNode()     { return varNode.getAsNode() ; }
-//
-//    
-//    public Expr copySubstitute(Binding binding, boolean foldConstants)
-//    {
-//        return null ;
-//    }
-//
-//    public NodeValue eval(Binding binding, FunctionEnv env)
-//    {
-//        return null ;
-//    }
-//
-//    public int hashCode()
-//    {
-//        return 0 ;
-//    }
-//
-//    public boolean equals(Object other)
-//    {
-//        return false ;
-//    }
-//
-//    public void visit(ExprVisitor visitor)
-//    {}
-//}
-
 /*
  * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.

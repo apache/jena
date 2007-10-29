@@ -13,7 +13,6 @@ import arq.sparql;
 import com.hp.hpl.jena.iri.IRI;
 import com.hp.hpl.jena.iri.IRIFactory;
 import com.hp.hpl.jena.iri.IRIRelativize;
-import com.hp.hpl.jena.query.ARQ;
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryExecution;
 import com.hp.hpl.jena.query.QueryExecutionFactory;
@@ -39,11 +38,11 @@ public class Run
 //      code() ; System.exit(0) ;
 
         String DIR = "" ;
-        ARQ.getContext().set(ARQ.filterPlacement, false) ;
-        execQuery(DIR+"D.rdf", DIR+"Q.rq") ;
-        
-        runQParse() ;
-        execQuery(DIR+"D.ttl", DIR+"Q.sse") ;
+//        ARQ.getContext().set(ARQ.filterPlacement, false) ;
+//        execQuery(DIR+"D.rdf", DIR+"Q.rq") ;
+       
+//        runQParse() ;
+        execQuery(DIR+"D.ttl", DIR+"Q.arq") ;
     }
     
     private static void runParseDateTime(String str)

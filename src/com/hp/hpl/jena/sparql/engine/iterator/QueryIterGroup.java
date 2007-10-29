@@ -42,9 +42,7 @@ public class QueryIterGroup extends QueryIterPlainWrapper
                                  VarExprList groupVars, List aggregators,
                                  ExecutionContext execCxt)
     {
-        // Stage 1 : assign bindings to buckets by key and pump through the aggregrators.
-        
-        // Could also be a Set key=>binding because BindingKey has the necessary entry-like quality. 
+        // Phase 1 : assign bindings to buckets by key and pump through the aggregrators.
         Map buckets = new HashMap() ;    
         
         for ( ; iter.hasNext() ; )
@@ -67,16 +65,54 @@ public class QueryIterGroup extends QueryIterPlainWrapper
             }
         }
         
-        // Stage 2 : for each bucket, get binding, add aggregator values
-        // (Key is the first binding we saw for the group (projected to the group vars)).
         
-        // If it is null, nothing to do.
+        
+        // Phase 2 : Empty input
+        
+        // If there are no binding from the input stage, two things can happen.
+        //   If there are no aggregators, there are no groups.
+        //   If there are aggregators, then they may have a default value. 
+        
+        if ( buckets.isEmpty() )
+        {
+            // The answer of an empty pattern. 
+            boolean valueExists = false ;
+            Binding binding = new BindingMap() ;
+            
+            if ( aggregators != null )
+            {
+                for ( Iterator aggIter = aggregators.iterator() ; aggIter.hasNext() ; )
+                {
+                    E_Aggregator agg = (E_Aggregator)aggIter.next();
+                    Var v = agg.asVar() ;
+                    Node value = agg.getAggregator().getValueEmpty() ;
+                    if ( value != null )
+                    {
+                        binding.add(v, value) ;
+                        valueExists = true ;
+                    }
+                }
+            }
+            
+            if ( valueExists )
+                return new QueryIterSingleton(binding, execCxt) ;
+            else 
+                return new QueryIterNullIterator(execCxt) ;
+        }
+        
+        
+        // Phase 2 : There was input and so there are some groups.
+        
+        // For each bucket, get binding, add aggregator values to the binding.
         if ( aggregators != null )
         {
             for ( Iterator bIter = buckets.keySet().iterator() ; bIter.hasNext(); )
             {
                 BindingKey key = (BindingKey)bIter.next();
+                
+                // Maybe null
                 Binding binding = (Binding)buckets.get(key) ; // == key.getBinding() ;
+                
                 for ( Iterator aggIter = aggregators.iterator() ; aggIter.hasNext() ; )
                 {
                     E_Aggregator agg = (E_Aggregator)aggIter.next();

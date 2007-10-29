@@ -6,6 +6,7 @@
 
 package com.hp.hpl.jena.sparql.expr.aggregate;
 
+import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.expr.NodeValue;
 
@@ -41,6 +42,8 @@ public class AggCount implements AggregateFactory
         { 
             return new AccCount() ;
         }
+
+        public Node getValueEmpty()     { return NodeValue.nodeIntZERO ; } 
     }
 
     // ---- Accumulator

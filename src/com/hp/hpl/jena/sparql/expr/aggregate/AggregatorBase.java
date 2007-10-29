@@ -37,6 +37,8 @@ public abstract class AggregatorBase implements Aggregator
     }
 
     protected abstract Accumulator createAccumulator() ;
+    
+    public abstract Node getValueEmpty() ;      // Return null for no answer. 
 
     public Node getValue(BindingKey key)
     {

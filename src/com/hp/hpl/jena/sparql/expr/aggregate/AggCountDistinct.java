@@ -9,6 +9,7 @@ package com.hp.hpl.jena.sparql.expr.aggregate;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.expr.NodeValue;
 
@@ -37,6 +38,8 @@ public class AggCountDistinct implements AggregateFactory
         { 
             return new AccCountDistinct() ; 
         }
+        
+        public Node getValueEmpty()     { return NodeValue.nodeIntZERO ; } 
     }
 
     // ---- COUNT(DISTINCT *)
