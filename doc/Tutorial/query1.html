@@ -48,8 +48,9 @@ one of ARQ's command line applications.</p>
 <h2>Executing the query</h2>
 
 <p>There are <a href="../cmds.html">helper scripts</a>
-in the ARQ <code>bat/</code> and <code>bin/</code> directories.
-You should check these before use.
+in the ARQ <code>bat/</code> and <code>bin/</code> directories of the ARQ 
+distribution.
+They may not be in a Jena distribution. You should check these scripts before use.
 </p>
 
 
@@ -96,14 +97,17 @@ classpath to include <em>all</em> the jar files in the ARQ
 
 <p>For example, on Windows:</p>
 <pre class="box">
-<i>ARQdir</i>\lib\antlr-2.7.5.jar;<i>ARQdir</i>\lib\arq.jar;<i>ARQdir</i>\lib\commons-logging.jar;
-<i>ARQdir</i>\lib\concurrent.jar;<i>ARQdir</i>\lib\icu4j_3_4.jar;<i>ARQdir</i>\lib\jakarta-oro-2.0.8.jar;
-<i>ARQdir</i>\lib\jena.jar;<i>ARQdir</i>\lib\junit.jar;<i>ARQdir</i>\lib\log4j-1.2.12.jar;
-<i>ARQdir</i>\lib\xercesImpl.jar;<i>ARQdir</i>\lib\xml-apis.jar
+<i>ARQdir</i>\lib\antlr-2.7.5.jar;<i>ARQdir</i>\lib\arq-extra.jar;<i>ARQdir</i>\lib\arq.jar;
+<i>ARQdir</i>\lib\commons-logging-1.1.jar;<i>ARQdir</i>\lib\concurrent.jar;<i>ARQdir</i>\lib\icu4j_3_4.jar;<i>
+ARQdir</i>\lib\iri.jar;<i>ARQdir</i>\lib\jena.jar;<i>ARQdir</i>\lib\jenatest.jar;<i>
+ARQdir</i>\lib\json.jar;<i>ARQdir</i>\lib\junit.jar;<i>ARQdir</i>\lib\log4j-1.2.12.jar;<i>
+ARQdir</i>\lib\lucene-core-2.2.0.jar;<i>ARQdir</i>\lib\stax-api-1.0.jar;<i>
+ARQdir</i>\lib\wstx-asl-3.0.0.jar;<i>ARQdir</i>\lib\xercesImpl.jar;<i>ARQdir</i>\lib\xml-apis.jar
+
 </pre>
 <p>where <code><i>ARQdir</i></code> is where you unpacked ARQ.
 This must be all one line.</p>
-<p>The names of jar files sometimes changes - do check this list with your 
+<p>The names of jar files sometimes changes and new jar files do get added - do check this list with your 
 version of ARQ.</p>
 
 <p>The commands themselves are in the <code>arq</code> package.</p>

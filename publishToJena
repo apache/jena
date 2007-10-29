@@ -82,5 +82,13 @@ copyDir src-examples/arq $JENAROOT/src-examples
 ##     Not CVS 
 ## }
 
+# 6 -- bin and bat
+
+cp bin/{arq,arq_path,make_classpath,arq_version,qexpr,qparse,qtest,query,sparql,rset} $JENAROOT/bin
+
+cp bat/*.bat $JENAROOT/bat
+
+##
+
 echo "Check to see if jena.jar is newer than the Jena distribution"
 

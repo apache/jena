@@ -21,6 +21,7 @@ See ToDoSSE
       Change examples.
 
 + Remove OpDatasetNames?? - only needed in quad compilation for GRAPH ?g {}
+  Do that a betetr way (join of all names).
   Special iterator for OpCompiler? 
 
 + SPARQL/Update - command line tools - arq.update
