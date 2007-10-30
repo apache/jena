@@ -1,29 +1,42 @@
 /*
- * (c) Copyright 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
 package com.hp.hpl.jena.util;
 
+import java.io.InputStream;
 
-/**
- *  Interface to things that open streams by some string reference
- * 
- * @author Andy Seaborne
- * @version $Id: Locator.java,v 1.5 2007-10-30 20:43:31 andy_seaborne Exp $
- */
-
-public interface Locator
-{
-    public TypedStream open(String filenameOrURI) ;
-    // Too expensive for LocatorURL - just try to open the thing!
-    //public boolean exists(String filenameOrURI) ;
-    public String getName() ;
+public class TypedStream
+{ 
+    private InputStream input ;
+    private String mimeType = null ;
+    private String charset = null ;
+    
+    public TypedStream(InputStream in)
+    { this(in, null, null) ; }
+    
+    public TypedStream(InputStream in, String header)
+    { 
+        input = in ;
+        // Parse header.
+//        mimeType = t ; 
+//        charset = c ;
+    }
+    
+    public TypedStream(InputStream in, String t, String c)
+    { input = in ; mimeType = t ; charset = c ; }
+    
+    public InputStream getInput()               { return input ; }
+    public String getMimeType()                 { return mimeType ; }
+    public String getCharset()                  { return charset ; }
+    
+    // Parser for content-type header
+     
 }
-
 /*
- * (c) Copyright 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

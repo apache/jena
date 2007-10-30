@@ -14,7 +14,7 @@ import org.apache.commons.logging.*;
 /** Location files in a zip file
  *  
  * @author Andy Seaborne
- * @version $Id: LocatorZip.java,v 1.5 2007-01-02 11:52:14 andy_seaborne Exp $
+ * @version $Id: LocatorZip.java,v 1.6 2007-10-30 20:43:31 andy_seaborne Exp $
  */
  
 
@@ -35,7 +35,7 @@ class LocatorZip implements Locator
         }
     }
     
-    public InputStream open(String filenameOrURI)
+    public TypedStream open(String filenameOrURI)
     {
         ZipEntry entry = zipFile.getEntry(filenameOrURI) ;
         if ( entry == null )
@@ -58,7 +58,7 @@ class LocatorZip implements Locator
             
             if ( FileManager.logAllLookups  && log.isTraceEnabled() )
                 log.trace("Found: "+filenameOrURI) ;
-            return in;
+            return new TypedStream(in) ;
         }
         catch (IOException ex)
         {

@@ -32,7 +32,7 @@ public class LocatorClassLoader  implements Locator
     public int hashCode()
         { return classLoader.hashCode(); }
     
-    public InputStream open(String filenameOrURI)
+    public TypedStream open(String filenameOrURI)
     {
         if ( classLoader == null )
             return null ;
@@ -49,14 +49,14 @@ public class LocatorClassLoader  implements Locator
         {
             if ( FileManager.logAllLookups && log.isTraceEnabled() )
                 log.trace("Failed to open: "+filenameOrURI) ;
-            return in ;
+            return null ;
         }
         
         if ( FileManager.logAllLookups  && log.isTraceEnabled() )
             log.trace("Found: "+filenameOrURI) ;
         
         // base = classLoader.getResource(fn).toExternalForm ;       
-        return in ;
+        return new TypedStream(in) ;
     }
     public String getName() { return "ClassLoaderLocator" ; }
 }

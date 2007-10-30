@@ -53,7 +53,7 @@ import com.hp.hpl.jena.shared.*;
  * 
  * 
  * @author     Andy Seaborne
- * @version    $Id: FileManager.java,v 1.39 2007-06-07 12:56:29 andy_seaborne Exp $
+ * @version    $Id: FileManager.java,v 1.40 2007-10-30 20:43:31 andy_seaborne Exp $
  */
  
 public class FileManager
@@ -370,15 +370,22 @@ public class FileManager
                 log.debug("Syntax guess: "+syntax);
         }
 
-        InputStream in = openNoMapOrNull(mappedURI) ;
+        TypedStream in = openNoMapOrNull(mappedURI) ;
         if ( in == null )
         {
             if ( log.isDebugEnabled() )
                 log.debug("Failed to locate '"+mappedURI+"'") ;
             throw new NotFoundException("Not found: "+filenameOrURI) ;
         }
-        model.read(in, baseURI, syntax) ;
-        try { in.close(); } catch (IOException ex) {}
+        if ( in.getMimeType() != null )
+        {
+            // XXX
+            //syntax
+        }
+        
+        
+        model.read(in.getInput(), baseURI, syntax) ;
+        try { in.getInput().close(); } catch (IOException ex) {}
         return model ;
     }
 
@@ -492,10 +499,12 @@ public class FileManager
      *  but without location mapping */ 
     public InputStream openNoMap(String filenameOrURI)
     {
-        InputStream in = openNoMapOrNull(filenameOrURI) ;
+        TypedStream in = openNoMapOrNull(filenameOrURI) ;
+        if ( in == null )
+            return null ;
 //        if ( in == null )
 //            throw new NotFoundException(filenameOrURI) ;
-        return in ;
+        return in.getInput() ;
     }
     
     /** Open a file using the locators of this FileManager 
@@ -503,12 +512,12 @@ public class FileManager
      *  Return null if not found
      */ 
     
-    public InputStream openNoMapOrNull(String filenameOrURI)
+    public TypedStream openNoMapOrNull(String filenameOrURI)
     {
         for ( Iterator iter = handlers.iterator() ; iter.hasNext() ; )
         {
             Locator loc = (Locator)iter.next() ;
-            InputStream in = loc.open(filenameOrURI) ;
+            TypedStream in = loc.open(filenameOrURI) ;
             if ( in != null )
             {
                 if ( log.isDebugEnabled() )
