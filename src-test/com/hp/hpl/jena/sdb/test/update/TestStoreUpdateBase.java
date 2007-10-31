@@ -7,6 +7,7 @@
 package com.hp.hpl.jena.sdb.test.update;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.sql.SQLException;
 
@@ -16,11 +17,14 @@ import org.junit.Test;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.test.NodeCreateUtils;
 
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.sdb.SDBFactory;
 import com.hp.hpl.jena.sdb.Store;
 import com.hp.hpl.jena.sdb.layout2.TableDescNodes;
 import com.hp.hpl.jena.sdb.sql.ResultSetJDBC;
 import com.hp.hpl.jena.sdb.store.StoreLoaderPlus;
 import com.hp.hpl.jena.sdb.store.TableDesc;
+import com.hp.hpl.jena.vocabulary.RDF;
 
 public abstract class TestStoreUpdateBase {
 	
@@ -198,6 +202,29 @@ public abstract class TestStoreUpdateBase {
 		assertEquals("Triple size right", 2l, store.getSize());
 		assertEquals("Quad size right", 1l, store.getSize(node("A")));
 		assertEquals("Quad size (2) right", 3l, store.getSize(node("B")));
+	}
+	
+	@Test public void rollback() {
+		Model model = SDBFactory.connectDefaultModel(store);
+		
+		assertTrue("Initially empty", model.isEmpty());
+		System.err.println("-----------------");
+		model.begin();
+		System.err.println("NO END HERE?");
+		model.add(RDF.type, RDF.type, RDF.type);
+		System.err.println("WE SHALL SEE");
+		model.abort();
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		System.err.println(model);
+		model.commit();
+		System.err.println(model);
+		
+		assertTrue("Nothing was added, the add aborted", model.isEmpty());
 	}
 }
 
