@@ -30,6 +30,7 @@ public class HeuristicsRegistry
 	
 	public static final String BGP_VARIABLE_COUNTING = "BGP_VARIABLE_COUNTING" ;
 	public static final String BGP_PROBABILISTIC_FRAMEWORK = "BGP_PROBABILISTIC_FRAMEWORK" ;
+	public static final String BGP_PROBABILISTIC_FRAMEWORK_JOIN = "BGP_PROBABILISTIC_FRAMEWORK_JOIN" ;
 	public static final String BGP_GRAPH_STATISTICS_HANDLER = "BGP_GRAPH_STATISTICS_HANDLER" ;
 	public static final String BGP_VARIABLE_COUNTING_UNBOUND = "BGP_VARIABLE_COUNTING_UNBOUND" ;
 	
@@ -40,6 +41,7 @@ public class HeuristicsRegistry
 	{		
 		add(BGP_VARIABLE_COUNTING, new VariableCounting()) ;
 		add(BGP_PROBABILISTIC_FRAMEWORK, new ProbabilisticFramework(context)) ;
+		add(BGP_PROBABILISTIC_FRAMEWORK_JOIN, new ProbabilisticFrameworkJoin(context)) ;
 		add(BGP_GRAPH_STATISTICS_HANDLER, new GraphStatisticsHeuristic(graph)) ;
 		add(BGP_VARIABLE_COUNTING_UNBOUND, new VariableCountingUnbound()) ;
 	}	
