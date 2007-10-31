@@ -1,5 +1,10 @@
 ==== ARQ ToDo
 
++  FROM <.....n3>
+   but it's application/rdf+xml
+   believe MIME type.
+   Jena change: FileManager/MimeStream
+
 ++ Filter placement and property functions.
    PFs as OpBGP => OpBGP/OpPF?, rather than stages
    Filter placement in stages?
