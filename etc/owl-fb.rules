@@ -8,7 +8,7 @@
 # It includes an experimental forward version of the equality reasoning which
 # not yet scalable.
 #
-# $Id: owl-fb.rules,v 1.56 2007-08-24 10:14:28 der Exp $
+# $Id: owl-fb.rules,v 1.57 2007-10-31 16:05:51 chris-dollin Exp $
 #------------------------------------------------------------------
 
 #------------------------------------------------------------------
@@ -203,8 +203,7 @@
 # Identify restriction assertions
 #------------------------------------------------------------------
 
-[restriction1: (?C rdf:type owl:Restriction), (?C owl:onProperty ?P), (?C owl:someValuesFrom ?D)
-						-> (?C owl:equivalentClass some(?P, ?D))]
+[restriction1: (?C owl:onProperty ?P), (?C owl:someValuesFrom ?D) -> (?C owl:equivalentClass some(?P, ?D))]
 		
 [restriction2: (?C rdf:type owl:Restriction), (?C owl:onProperty ?P), (?C owl:allValuesFrom ?D)
 						-> (?C owl:equivalentClass all(?P, ?D))]
