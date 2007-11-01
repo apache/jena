@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestFBRules.java,v 1.50 2007-09-08 11:27:49 der Exp $
+ * $Id: TestFBRules.java,v 1.51 2007-11-01 16:07:32 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -35,7 +35,7 @@ import org.apache.commons.logging.LogFactory;
  * Test suite for the hybrid forward/backward rule system.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.50 $ on $Date: 2007-09-08 11:27:49 $
+ * @version $Revision: 1.51 $ on $Date: 2007-11-01 16:07:32 $
  */
 public class TestFBRules extends TestCase {
     
@@ -153,7 +153,7 @@ public class TestFBRules extends TestCase {
      * Test functor handling
      */
     public void testEmbeddedFunctors() {
-        String rules = "(?C rdf:type owl:Restriction), (?C owl:onProperty ?P), (?C owl:allValuesFrom ?D) -> (?C rb:restriction all(?P, ?D))." +
+        String rules = "(?C owl:onProperty ?P), (?C owl:allValuesFrom ?D) -> (?C rb:restriction all(?P, ?D))." +
                         "(?C rb:restriction all(eg:p, eg:D)) -> (?C rb:restriction 'allOK')." +
                        "[ -> (eg:foo eg:prop functor(eg:bar, 1)) ]" +
                        "[ (?x eg:prop functor(eg:bar, ?v)) -> (?x eg:propbar ?v) ]" +
@@ -166,9 +166,7 @@ public class TestFBRules extends TestCase {
         Property p = data.createProperty(PrintUtil.egNS, "p");
         Property propbar = data.createProperty(PrintUtil.egNS, "propbar");
         Property rbr = data.createProperty(ReasonerVocabulary.RBNamespace, "restriction");
-        R1.addProperty(RDF.type, OWL.Restriction)
-          .addProperty(OWL.onProperty, p)
-          .addProperty(OWL.allValuesFrom, D);
+        R1.addProperty(OWL.onProperty, p).addProperty(OWL.allValuesFrom, D);
         
         InfGraph infgraph = createInfGraph(rules, data.getGraph());
         Model infModel = ModelFactory.createModelForGraph(infgraph);

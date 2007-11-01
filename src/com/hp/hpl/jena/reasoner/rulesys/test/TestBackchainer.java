@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestBackchainer.java,v 1.36 2007-01-02 11:50:31 andy_seaborne Exp $
+ * $Id: TestBackchainer.java,v 1.37 2007-11-01 16:07:30 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -33,7 +33,7 @@ import junit.framework.TestSuite;
  * LP engine, though the bulk of such tests are really done by TestBasicLP.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.36 $ on $Date: 2007-01-02 11:50:31 $
+ * @version $Revision: 1.37 $ on $Date: 2007-11-01 16:07:30 $
  */
 public class TestBackchainer extends TestCase {
     
@@ -758,12 +758,11 @@ public class TestBackchainer extends TestCase {
         data.add(new Triple(a, ty, r));
         data.add(new Triple(a, p, b));
         data.add(new Triple(r, sC, C1));
-        data.add(new Triple(C1, ty, OWL.Restriction.asNode()));
         data.add(new Triple(C1, OWL.onProperty.asNode(), p));
         data.add(new Triple(C1, OWL.allValuesFrom.asNode(), c));
         List rules = Rule.parseRules(
     "[rdfs9:  (?x rdfs:subClassOf ?y) (?a rdf:type ?x) -> (?a rdf:type ?y)]" +
-    "[restriction2: (?C rdf:type owl:Restriction), (?C owl:onProperty ?P), (?C owl:allValuesFrom ?D) -> (?C owl:equivalentClass all(?P, ?D))]" +
+    "[restriction2: (?C owl:onProperty ?P), (?C owl:allValuesFrom ?D) -> (?C owl:equivalentClass all(?P, ?D))]" +
     "[rs2: (?D owl:equivalentClass all(?P,?C)), (?X rdf:type ?D) -> (?X rdf:type all(?P,?C))]" +
     "[rp4: (?X rdf:type all(?P, ?C)), (?X ?P ?Y) -> (?Y rdf:type ?C)]"
                           );        

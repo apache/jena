@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestBasicLP.java,v 1.16 2007-01-11 17:18:18 der Exp $
+ * $Id: TestBasicLP.java,v 1.17 2007-11-01 16:07:30 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -29,7 +29,7 @@ import junit.framework.TestSuite;
  * To be moved to a test directory once the code is working.
  * </p>
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.16 $ on $Date: 2007-01-11 17:18:18 $
+ * @version $Revision: 1.17 $ on $Date: 2007-11-01 16:07:30 $
  */
 public class TestBasicLP  extends TestCase {
     
@@ -1017,7 +1017,7 @@ public class TestBasicLP  extends TestCase {
     public void testProblem6() {
         String ruleSrc = 
         "[rdfs9:   (?a rdf:type ?y) <- (?x rdfs:subClassOf ?y), (?a rdf:type ?x)]" +
-        "[restriction2: (?C owl:equivalentClass all(?P, ?D)) <- (?C rdf:type owl:Restriction), (?C owl:onProperty ?P), (?C owl:allValuesFrom ?D)]" +
+        "[restriction2: (?C owl:equivalentClass all(?P, ?D)) <- (?C owl:onProperty ?P), (?C owl:allValuesFrom ?D)]" +
         "[rs2: (?X rdf:type all(?P,?C)) <- (?D owl:equivalentClass all(?P,?C)), (?X rdf:type ?D)]" +
         "[rp4: (?Y rdf:type ?C) <- (?X rdf:type all(?P, ?C)), (?X ?P ?Y)]";
         doTest( ruleSrc,
@@ -1026,7 +1026,6 @@ public class TestBasicLP  extends TestCase {
                     new Triple(a, ty, r),
                     new Triple(a, p, b),
                     new Triple(r, sC, C1),
-                    new Triple(C1, ty, OWL.Restriction.asNode()),
                     new Triple(C1, OWL.onProperty.asNode(), p),
                     new Triple(C1, OWL.allValuesFrom.asNode(), c)
                 },

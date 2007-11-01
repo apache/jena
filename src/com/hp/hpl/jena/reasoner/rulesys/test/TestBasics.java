@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestBasics.java,v 1.39 2007-03-07 10:27:24 der Exp $
+ * $Id: TestBasics.java,v 1.40 2007-11-01 16:07:32 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -27,7 +27,7 @@ import java.io.*;
  * Unit tests for simple infrastructure pieces of the rule systems.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.39 $ on $Date: 2007-03-07 10:27:24 $
+ * @version $Revision: 1.40 $ on $Date: 2007-11-01 16:07:32 $
  */
 public class TestBasics extends TestCase  {
     
@@ -374,7 +374,7 @@ public class TestBasics extends TestCase  {
      * Test functor handling
      */
     public void testEmbeddedFunctors() {
-        String rules = "(?C rdf:type owl:Restriction), (?C owl:onProperty ?P), (?C owl:allValuesFrom ?D) -> (?C rb:restriction all(?P, ?D))." +
+        String rules = "(?C owl:onProperty ?P), (?C owl:allValuesFrom ?D) -> (?C rb:restriction all(?P, ?D))." +
                        "(?C rb:restriction all(eg:p, eg:D)) -> (?C rb:restriction 'allOK')." +
                        "[ -> (eg:foo eg:prop functor(eg:bar, 1)) ]" +
                        "[ (?x eg:prop functor(eg:bar, ?v)) -> (?x eg:propbar ?v) ]" +
@@ -390,9 +390,7 @@ public class TestBasics extends TestCase  {
         Property propbar = data.createProperty(PrintUtil.egNS, "propbar");
         Property propfunc = data.createProperty(PrintUtil.egNS, "propfunc");
         Property rbr = data.createProperty(ReasonerVocabulary.RBNamespace, "restriction");
-        R1.addProperty(RDF.type, OWL.Restriction)
-          .addProperty(OWL.onProperty, p)
-          .addProperty(OWL.allValuesFrom, D);
+        R1.addProperty(OWL.onProperty, p).addProperty(OWL.allValuesFrom, D);
         
         Reasoner reasoner =  new BasicForwardRuleReasoner(ruleList);
         InfGraph infgraph = reasoner.bind(data.getGraph());
