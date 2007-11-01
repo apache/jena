@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2007 Hewlett-Packard Development Company, LP
  	All rights reserved.
- 	$Id: TestRestrictionsDontNeedTyping.java,v 1.2 2007-11-01 12:14:15 chris-dollin Exp $
+ 	$Id: TestRestrictionsDontNeedTyping.java,v 1.3 2007-11-01 15:36:41 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.reasoner.rulesys.test;
@@ -21,6 +21,8 @@ import com.hp.hpl.jena.vocabulary.*;
 */
 public class TestRestrictionsDontNeedTyping extends ModelTestBase
     {
+    static final Property ANY = null;
+    
     public TestRestrictionsDontNeedTyping( String name )
         { super( name ); }
 
@@ -57,6 +59,22 @@ public class TestRestrictionsDontNeedTyping extends ModelTestBase
         Model m = model( "V owl:equivalentClass _R; _R owl:onProperty P; _R owl:someValuesFrom T; X P t; t rdf:type T" );
         OntModel ont = ModelFactory.createOntologyModel( owlSpec, m );
         assertTrue( ont.contains( resource( "X" ), RDF.type, resource( "V" ) ) );
+        }
+    
+    public void testCardinalityFullRules()
+        { testCardinality( OntModelSpec.OWL_MEM_RULE_INF ); }
+    
+//    public void testCardinalityMiniRules()
+//        { testCardinality( OntModelSpec.OWL_MEM_MINI_RULE_INF ); }
+//    
+//    public void testCardinalityMicroRules()
+//        { testCardinality( OntModelSpec.OWL_MEM_MICRO_RULE_INF ); }
+
+    private void testCardinality( OntModelSpec owlSpec )
+        {
+        Model m = model( "V owl:equivalentClass _R; _R rdf:type owl:Restriction; _R owl:onProperty P; _R owl:cardinality 1; X rdf:type V" );
+        OntModel ont = ModelFactory.createOntologyModel( owlSpec, m );
+        assertEquals( 1, ont.listStatements( resource( "X" ), property( "P" ), ANY ).toList().size() );
         }
     
     Model model( String statements )

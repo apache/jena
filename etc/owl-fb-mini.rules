@@ -209,21 +209,21 @@
 #------------------------------------------------------------------
 
 [restriction1: (?C owl:onProperty ?P), (?C owl:someValuesFrom ?D)
-						-> (?C owl:equivalentClass some(?P, ?D))]
+	-> (?C owl:equivalentClass some(?P, ?D))]
 		
 [restriction2: (?C owl:onProperty ?P), (?C owl:allValuesFrom ?D)
-						-> (?C owl:equivalentClass all(?P, ?D))]
+	-> (?C owl:equivalentClass all(?P, ?D))]
 		
-[restriction3: (?C rdf:type owl:Restriction), (?C owl:onProperty ?P), (?C owl:minCardinality ?X)
-						-> (?C owl:equivalentClass min(?P, ?X))]
+[restriction3: (?C owl:onProperty ?P), (?C owl:minCardinality ?X)
+	-> (?C owl:equivalentClass min(?P, ?X))]
 		
-[restriction4: (?C rdf:type owl:Restriction), (?C owl:onProperty ?P), (?C owl:maxCardinality ?X)
-						-> (?C owl:equivalentClass max(?P, ?X)) ]
+[restriction4: (?C owl:onProperty ?P), (?C owl:maxCardinality ?X)
+	-> (?C owl:equivalentClass max(?P, ?X)) ]
 		
-[restriction5: (?C rdf:type owl:Restriction), (?C owl:onProperty ?P), (?C owl:cardinality ?X)
-						-> (?C owl:equivalentClass card(?P, ?X)), 
-						   (?C rdfs:subClassOf min(?P, ?X)), 
-						   (?C rdfs:subClassOf max(?P, ?X)) ]
+[restriction5: (?C owl:onProperty ?P), (?C owl:cardinality ?X)
+	-> (?C owl:equivalentClass card(?P, ?X)), 
+	   (?C rdfs:subClassOf min(?P, ?X)), 
+	   (?C rdfs:subClassOf max(?P, ?X)) ]
 		
 [restriction6: (?C rdfs:subClassOf min(?P, ?X)), (?C rdfs:subClassOf max(?P, ?X)) 
        					-> (?C rdfs:subClassOf card(?P, ?X))]
