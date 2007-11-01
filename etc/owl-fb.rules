@@ -8,7 +8,7 @@
 # It includes an experimental forward version of the equality reasoning which
 # not yet scalable.
 #
-# $Id: owl-fb.rules,v 1.57 2007-10-31 16:05:51 chris-dollin Exp $
+# $Id: owl-fb.rules,v 1.58 2007-11-01 12:14:04 chris-dollin Exp $
 #------------------------------------------------------------------
 
 #------------------------------------------------------------------
@@ -205,7 +205,7 @@
 
 [restriction1: (?C owl:onProperty ?P), (?C owl:someValuesFrom ?D) -> (?C owl:equivalentClass some(?P, ?D))]
 		
-[restriction2: (?C rdf:type owl:Restriction), (?C owl:onProperty ?P), (?C owl:allValuesFrom ?D)
+[restriction2: (?C owl:onProperty ?P), (?C owl:allValuesFrom ?D)
 						-> (?C owl:equivalentClass all(?P, ?D))]
 		
 [restriction3: (?C rdf:type owl:Restriction), (?C owl:onProperty ?P), (?C owl:minCardinality ?X)

@@ -322,10 +322,10 @@
 # Identify restriction assertions
 #------------------------------------------------------------------
 
-[restriction1: (?C rdf:type owl:Restriction), (?C owl:onProperty ?P), (?C owl:someValuesFrom ?D)
+[restriction1: (?C owl:onProperty ?P), (?C owl:someValuesFrom ?D)
 						-> (?C owl:equivalentClass some(?P, ?D))]
 		
-[restriction2: (?C rdf:type owl:Restriction), (?C owl:onProperty ?P), (?C owl:allValuesFrom ?D)
+[restriction2: (?C owl:onProperty ?P), (?C owl:allValuesFrom ?D)
 						-> (?C owl:equivalentClass all(?P, ?D))]
 		
 [restriction3: (?C rdf:type owl:Restriction), (?C owl:onProperty ?P), (?C owl:minCardinality ?X)
