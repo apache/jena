@@ -17,12 +17,9 @@ import javax.sql.DataSource;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.hp.hpl.jena.graph.TransactionHandler;
-import com.hp.hpl.jena.shared.Command;
-
 import com.hp.hpl.jena.sdb.core.Generator;
 import com.hp.hpl.jena.sdb.core.Gensym;
-import com.hp.hpl.jena.sdb.graph.TransactionHandlerSDB;
+import com.hp.hpl.jena.shared.Command;
 
 /*
  * An SDBConnection is the abstraction of the link between client
@@ -37,7 +34,6 @@ public class SDBConnection
 
     private Connection sqlConnection = null ;
     boolean inTransaction = false ;
-    TransactionHandler transactionHandler = null ;
     String label = gen.next() ;
     
     // ??(here or TransactionHandler) counting transactions.
@@ -72,7 +68,6 @@ public class SDBConnection
     public SDBConnection(Connection jdbcConnection)
     { 
         sqlConnection = jdbcConnection ;
-        transactionHandler = new TransactionHandlerSDB(this) ;
     }
 
     public static SDBConnection none()
@@ -82,8 +77,6 @@ public class SDBConnection
 
     
     public boolean hasSQLConnection() { return sqlConnection != null ; }
-    
-    public TransactionHandler getTransactionHandler() { return transactionHandler ; } 
     
     public ResultSetJDBC execQuery(String sqlString) throws SQLException
     { return execQuery(sqlString, -1) ; }
@@ -109,7 +102,19 @@ public class SDBConnection
         { throw ex ; }
     }
 
-    public Object executeInTransaction(Command c) { return getTransactionHandler().executeInTransaction(c) ; }
+    public Object executeInTransaction(Command c) {
+    	try {
+    		boolean inAcMode = getSqlConnection().getAutoCommit();
+    		if (inAcMode) getSqlConnection().setAutoCommit(false);
+    		Object result = c.execute();
+    		getSqlConnection().commit();
+    		if (inAcMode) getSqlConnection().setAutoCommit(true);
+    		return result;
+    	} catch (SQLException ex) {
+    		exception("execInTransaction", ex);
+    		throw new SDBExceptionSQL(ex);
+    	}
+    }
     
     public Object executeSQL(final SQLCommand c)
     {

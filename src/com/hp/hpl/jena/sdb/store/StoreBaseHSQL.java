@@ -39,9 +39,12 @@ public abstract class StoreBaseHSQL extends StoreBase
 
     @Override 
     public void close()
-    { 
-        if ( currentlyOpen )
+    {
+        if ( currentlyOpen ) {
+        	super.close() ;
             HSQLUtils.shutdown(getConnection()) ;
+        }
+        
         currentlyOpen = false ; 
         super.close();
     }

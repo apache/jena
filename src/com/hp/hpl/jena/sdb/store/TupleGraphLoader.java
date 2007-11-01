@@ -54,7 +54,10 @@ public class TupleGraphLoader implements StoreLoader
 
     public void finishBulkUpdate()
     { loader.finish() ; }
-
+    
+    public void abortBulkUpdate()
+    { throw new SDBNotImplemented("TupleGraphLoader.abortBulkUpdate") ; }
+    
     public int getChunkSize()
     { throw new SDBNotImplemented("TupleGraphLoader.getChunkSize") ; }
     

@@ -60,6 +60,11 @@ public abstract class TupleLoaderBase
     {
     	finish(); // make sure we're done
     }
+    
+    public void abort()
+    {
+    	
+    }
 }
 
 /*

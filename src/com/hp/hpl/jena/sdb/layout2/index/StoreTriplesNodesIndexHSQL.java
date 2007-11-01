@@ -34,7 +34,6 @@ public class StoreTriplesNodesIndexHSQL extends StoreBaseHSQL
     }
 
     public long getSize(Node node) {
-    	System.err.println(node);
 		String lex = NodeLayout2.nodeToLex(node);
         int typeId = NodeLayout2.nodeToType(node);
 

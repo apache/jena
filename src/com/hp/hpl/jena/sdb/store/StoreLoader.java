@@ -14,6 +14,7 @@ public interface StoreLoader
 	public void addTriple(Triple triple);
     public void deleteTriple(Triple triple);
     public void finishBulkUpdate() ;
+    public void abortBulkUpdate() ;
     public void close() ;
     
 	public void setChunkSize(int chunks);

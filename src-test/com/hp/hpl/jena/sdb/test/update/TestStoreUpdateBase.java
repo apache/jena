@@ -208,23 +208,18 @@ public abstract class TestStoreUpdateBase {
 		Model model = SDBFactory.connectDefaultModel(store);
 		
 		assertTrue("Initially empty", model.isEmpty());
-		System.err.println("-----------------");
 		model.begin();
-		System.err.println("NO END HERE?");
 		model.add(RDF.type, RDF.type, RDF.type);
-		System.err.println("WE SHALL SEE");
 		model.abort();
-		try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		System.err.println(model);
-		model.commit();
-		System.err.println(model);
-		
+		model.commit();	
 		assertTrue("Nothing was added, the add aborted", model.isEmpty());
+		model.add(RDF.type, RDF.type, RDF.type);
+		assertEquals("Model contains 1 triple", 1l, model.size());
+		model.begin();
+		model.remove(RDF.type, RDF.type, RDF.type);
+		model.abort();
+		model.commit();
+		assertEquals("Model still contains 1 triple", 1l, model.size());
 	}
 }
 

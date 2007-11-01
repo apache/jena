@@ -69,6 +69,16 @@ public abstract class TupleLoaderBase extends com.hp.hpl.jena.sdb.store.TupleLoa
 		if (getClearTempTuples() != null) clearTupleLoader = connection().prepareStatement(getClearTempTuples());
 	}
 	
+	@Override
+	public void abort() {
+		try {
+			this.insertNodeLoader.clearBatch();
+			this.insertTupleLoader.clearBatch();
+			this.deleteTuples.clearBatch();
+		}
+		catch (SQLException e) { throw new SDBException("Abort failed", e); } 
+	}
+	
 	public int getArity() {
 		return this.getTableWidth();
 	}
@@ -271,7 +281,7 @@ public abstract class TupleLoaderBase extends com.hp.hpl.jena.sdb.store.TupleLoa
         PreparedNode(Node node, boolean computeVals)
         {
             lex = NodeLayout2.nodeToLex(node);
-            ValueType vType = ValueType.lookup(node);
+            //ValueType vType = ValueType.lookup(node);
             typeId = NodeLayout2.nodeToType(node);
 
             lang = "";
