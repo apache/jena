@@ -5,7 +5,7 @@
 
 _:c rdf:type sdb:SDBConnection ;
     sdb:sdbType        "DB2" ;
-    sdb:sdbHost        "localhost:50000" ;
+    sdb:sdbHost        "sweb-sdb-4:50000" ;
     sdb:sdbName        "TEST1" ;
     # Universal
     sdb:driver         "com.ibm.db2.jcc.DB2Driver" ;
