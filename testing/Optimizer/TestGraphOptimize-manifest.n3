@@ -897,4 +897,84 @@
 				  	  rdf:_1	"?s1 <http://example.org#phone> xxx-xxx-xxx" ;
 				  	  rdf:_2	"?s1 <http://example.org#msn> ?o3" ;
 				  	  rdf:_3	"?s2 <http://example.org#phone> xxx-xxx-xxx" ] .
+				  	  
+<http://jena.hpl.hp.com/ARQo/test/#TB076> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TB076" ;
+	:heuristic		"BGP_OPTIMAL_NO_STATS" ;
+	:patternIn		[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	"?s1 ?p1 ?o1" ] ;
+	:patternOut 	[ rdf:type	rdf:Seq ;
+					  rdf:_1	"?s1 ?p1 ?o1" ] .
+					  
+<http://jena.hpl.hp.com/ARQo/test/#TB077> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TB077" ;
+	:heuristic		"BGP_OPTIMAL_NO_STATS" ;
+	:patternIn		[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	"?s1 ?p1 ?o1" ;
+				  	  rdf:_2	"?s1 <http://example.org#phone> xxx-xxx-xxx" ] ;
+	:patternOut 	[ rdf:type	rdf:Seq ;
+					  rdf:_1	"?s1 <http://example.org#phone> xxx-xxx-xxx" ;
+					  rdf:_2	"?s1 ?p1 ?o1" ] .
+					  
+<http://jena.hpl.hp.com/ARQo/test/#TB078> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TB078" ;
+	rdfs:comment	"Bound predicates are weighted as unselective (1.0) however, they create a join, and thus the join is optimized" ;
+	:heuristic		"BGP_OPTIMAL_NO_STATS" ;
+	:patternIn		[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	"?s1 <http://example.org#phone> ?o2" ;
+				  	  rdf:_2	"?s2 <http://example.org#phone> xxx-xxx-xxx" ] ;
+	:patternOut 	[ rdf:type	rdf:Seq ;
+					  rdf:_1	"?s2 <http://example.org#phone> xxx-xxx-xxx" ;
+					  rdf:_2	"?s1 <http://example.org#phone> ?o2" ] .
+					 
+<http://jena.hpl.hp.com/ARQo/test/#TB079> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TB079" ;
+	:heuristic		"BGP_OPTIMAL_NO_STATS" ;
+	:patternIn		[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	"?s1 <http://example.org#phone> ?o2" ;
+				  	  rdf:_2	"?s1 <http://example.org#msn> :o2" ] ;
+	:patternOut 	[ rdf:type	rdf:Seq ;
+					  rdf:_1	"?s1 <http://example.org#msn> :o2" ;
+					  rdf:_2	"?s1 <http://example.org#phone> ?o2" ] .
+					  
+<http://jena.hpl.hp.com/ARQo/test/#TB080> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TB080" ;
+	rdfs:comment	"Here we have no join, hence no reorder" ;
+	:heuristic		"BGP_OPTIMAL_NO_STATS" ;
+	:patternIn		[ rdf:type 	rdf:Seq ;
+				  	  rdf:_1	"?s1 <http://example.org#phone> ?o2" ;
+				  	  rdf:_2	"?s2 <http://example.org#msn> :o2" ] ;
+	:patternOut 	[ rdf:type	rdf:Seq ;
+					  rdf:_1	"?s1 <http://example.org#phone> ?o2" ;
+					  rdf:_2	"?s2 <http://example.org#msn> :o2" ] .
+					  
+<http://jena.hpl.hp.com/ARQo/test/#TB081> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TB081" ;
+	rdfs:comment 	"The PP msn join is considered unselective" ;
+	:heuristic		"BGP_OPTIMAL_NO_STATS" ;
+	:patternIn		[ rdf:type 	rdf:Seq ;
+					  rdf:_1	"?s1 <http://example.org#msn> person1@msn.com" ;
+				  	  rdf:_2	"?s2 <http://example.org#msn> ?o2" ;
+				  	  rdf:_3	"?s2 <http://example.org#phone> ?o3" ] ;
+	:patternOut 	[ rdf:type	rdf:Seq ;
+					  rdf:_1	"?s2 <http://example.org#msn> ?o2" ;
+					  rdf:_2	"?s2 <http://example.org#phone> ?o3" ;
+					  rdf:_3	"?s1 <http://example.org#msn> person1@msn.com" ] .
+					  
+<http://jena.hpl.hp.com/ARQo/test/#TB082> 
+	rdf:type 		:TestCase ;
+	dc:title 		"TB082" ;
+	:heuristic		"BGP_OPTIMAL_NO_STATS" ;
+	:patternIn		[ rdf:type 	rdf:Seq ;
+					  rdf:_1	"?s1 <http://example.org#msn> ?o1" ;
+				  	  rdf:_2	"?s1 <http://example.org#msn> person1@msn.com" ] ;
+	:patternOut 	[ rdf:type	rdf:Seq ;
+					  rdf:_1	"?s1 <http://example.org#msn> person1@msn.com" ;
+					  rdf:_2	"?s1 <http://example.org#msn> ?o1"  ] .
 					    	      			  			      			  		      			  				      			  
