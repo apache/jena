@@ -5,8 +5,15 @@
 
 package dev.optimizer;
 
-import java.util.*;
-import java.io.*;
+import java.io.BufferedWriter;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Triple;
@@ -14,15 +21,13 @@ import com.hp.hpl.jena.query.ARQ;
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryExecution;
 import com.hp.hpl.jena.query.QueryExecutionFactory;
+import com.hp.hpl.jena.query.QueryFactory;
 import com.hp.hpl.jena.query.ResultSet;
 import com.hp.hpl.jena.query.ResultSetFormatter;
 import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.reasoner.ReasonerRegistry;
 import com.hp.hpl.jena.sparql.algebra.Algebra;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.OpWalker;
-import com.hp.hpl.jena.sparql.algebra.op.OpBGP;
 import com.hp.hpl.jena.sparql.core.BasicPattern;
 import com.hp.hpl.jena.sparql.engine.optimizer.Optimizer;
 import com.hp.hpl.jena.sparql.engine.optimizer.core.BasicPatternOptimizer;
@@ -31,12 +36,10 @@ import com.hp.hpl.jena.sparql.engine.optimizer.probability.Probability;
 import com.hp.hpl.jena.sparql.engine.optimizer.probability.ProbabilityFactory;
 import com.hp.hpl.jena.sparql.engine.optimizer.util.Config;
 import com.hp.hpl.jena.sparql.engine.optimizer.util.Constants;
-import com.hp.hpl.jena.util.FileManager;
-import com.hp.hpl.jena.query.QueryFactory;
 import com.hp.hpl.jena.sparql.syntax.Element;
-import com.hp.hpl.jena.sparql.syntax.ElementGroup;
 import com.hp.hpl.jena.sparql.syntax.ElementTriplesBlock;
 import com.hp.hpl.jena.sparql.util.Context;
+import com.hp.hpl.jena.util.FileManager;
 
 /**
  * Search the best execution plan, i.e. execute them all
