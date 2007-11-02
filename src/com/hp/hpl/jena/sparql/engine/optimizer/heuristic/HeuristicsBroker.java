@@ -25,7 +25,7 @@ import com.hp.hpl.jena.sparql.engine.optimizer.heuristic.HeuristicsRegistry;
 
 public class HeuristicsBroker 
 {
-	private Graph graph = null ;
+	//private Graph graph = null ;
 	private Probability probability = null ;
 	private HeuristicsRegistry registry = null ;
 		
@@ -33,7 +33,7 @@ public class HeuristicsBroker
 	{
 		registry = new HeuristicsRegistry(context, graph) ;
 		
-		this.graph = graph ;
+		//this.graph = graph ;
 		this.probability = (Probability)context.get(Constants.PF) ;
 	}
 	
@@ -48,11 +48,11 @@ public class HeuristicsBroker
 		if (probability != null)
 			return getBasicPatternHeuristic(HeuristicsRegistry.BGP_PROBABILISTIC_FRAMEWORK) ;
 		
-		if (graph != null && graph.getStatisticsHandler() != null)
-			return getBasicPatternHeuristic(HeuristicsRegistry.BGP_GRAPH_STATISTICS_HANDLER) ;
+		//if (graph != null && graph.getStatisticsHandler() != null)
+			//return getBasicPatternHeuristic(HeuristicsRegistry.BGP_GRAPH_STATISTICS_HANDLER) ;
 		
 		// Default, use the variable counting heuristic
-		return getBasicPatternHeuristic(HeuristicsRegistry.BGP_VARIABLE_COUNTING) ;
+		return getBasicPatternHeuristic(HeuristicsRegistry.BGP_OPTIMAL_NO_STATS) ;
 	}
 	
 	/**

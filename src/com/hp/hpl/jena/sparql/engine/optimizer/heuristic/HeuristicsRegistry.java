@@ -33,6 +33,7 @@ public class HeuristicsRegistry
 	public static final String BGP_PROBABILISTIC_FRAMEWORK_JOIN = "BGP_PROBABILISTIC_FRAMEWORK_JOIN" ;
 	public static final String BGP_GRAPH_STATISTICS_HANDLER = "BGP_GRAPH_STATISTICS_HANDLER" ;
 	public static final String BGP_VARIABLE_COUNTING_UNBOUND = "BGP_VARIABLE_COUNTING_UNBOUND" ;
+	public static final String BGP_OPTIMAL_NO_STATS = "BGP_OPTIMAL_NO_STATS" ;
 	
 	public HeuristicsRegistry() {}
 	
@@ -44,6 +45,7 @@ public class HeuristicsRegistry
 		add(BGP_PROBABILISTIC_FRAMEWORK_JOIN, new ProbabilisticFrameworkJoin(context)) ;
 		add(BGP_GRAPH_STATISTICS_HANDLER, new GraphStatisticsHeuristic(graph)) ;
 		add(BGP_VARIABLE_COUNTING_UNBOUND, new VariableCountingUnbound()) ;
+		add(BGP_OPTIMAL_NO_STATS, new OptimalNoStats(graph)) ;
 	}	
 	
 	/**
