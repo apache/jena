@@ -6,11 +6,15 @@
 
 package com.hp.hpl.jena.sdb.graph;
 
+import java.sql.Connection;
+import java.sql.SQLException;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.graph.TransactionHandler;
 import com.hp.hpl.jena.sdb.SDBException;
+import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.sql.SDBExceptionSQL;
 import com.hp.hpl.jena.shared.Command;
 import com.hp.hpl.jena.shared.JenaException;
@@ -20,12 +24,12 @@ public class TransactionHandlerSDB implements TransactionHandler
 {
     static private Log log = LogFactory.getLog(TransactionHandlerSDB.class) ;
 
-    GraphSDB graph ;
+    Connection sqlConnection ;
     boolean inTransaction ;
     
-    public TransactionHandlerSDB(GraphSDB graph)
+    public TransactionHandlerSDB(SDBConnection connection)
     { 
-        this.graph = graph ;
+        this.sqlConnection = connection.getSqlConnection() ;
         this.inTransaction = false ;
     }
     
@@ -40,8 +44,10 @@ public class TransactionHandlerSDB implements TransactionHandler
             log.warn("beginTransaction: Already in a transaction") ;
             throw new SDBException("Already in transaction") ;
         }
-        inTransaction = true;
-        graph.startBulkUpdate();
+        try {
+            sqlConnection.setAutoCommit(false) ;
+            inTransaction = true ;
+        } catch (SQLException ex) { new SDBExceptionSQL("begin", ex) ; }
     }
     
     public synchronized void commit()
@@ -51,8 +57,11 @@ public class TransactionHandlerSDB implements TransactionHandler
             log.warn("commit: Not in a transaction") ;
             return ;
         }
-        graph.finishBulkUpdate();
-        inTransaction = false;
+        try {
+            sqlConnection.commit() ;
+            sqlConnection.setAutoCommit(true) ;
+            inTransaction = false ;
+        } catch (SQLException ex) { new SDBExceptionSQL("commit", ex) ; }
     } 
     
     public synchronized void abort()
@@ -62,9 +71,11 @@ public class TransactionHandlerSDB implements TransactionHandler
             log.warn("abort: Not in a transaction") ;
             return ;
         }
-        graph.getStore().getLoader().abortBulkUpdate();
-        graph.finishBulkUpdate();
-        inTransaction = false;
+        try {
+            sqlConnection.rollback() ;
+            sqlConnection.setAutoCommit(true) ;
+            inTransaction = false ;
+        } catch (SQLException ex) { new SDBExceptionSQL("abort", ex) ; }
     }
 
     public synchronized void abortFinally()

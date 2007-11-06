@@ -210,6 +210,7 @@ public abstract class TestStoreUpdateBase {
 		assertTrue("Initially empty", model.isEmpty());
 		model.begin();
 		model.add(RDF.type, RDF.type, RDF.type);
+		assertTrue("Uncommited triple can be seen", model.contains(RDF.type, RDF.type, RDF.type));
 		model.abort();
 		model.commit();	
 		assertTrue("Nothing was added, the add aborted", model.isEmpty());

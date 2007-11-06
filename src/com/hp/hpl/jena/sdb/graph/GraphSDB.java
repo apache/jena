@@ -54,8 +54,6 @@ public class GraphSDB extends GraphBase implements Graph
     
     protected Node graphNode = Quad.defaultGraphNode ;
     protected DatasetStoreGraph datasetStore = null ;
-
-	protected TransactionHandler transactionHandler;
     
     public GraphSDB(Store store, String uri)
     { 
@@ -75,7 +73,7 @@ public class GraphSDB extends GraphBase implements Graph
 
         this.store = store ;
         this.graphNode = graphNode ;
-        this.transactionHandler = new TransactionHandlerSDB(this);
+        
         // Avoid looping here : DatasetStoreGraph can make GraphSDB's
         datasetStore = new DatasetStoreGraph(store, this) ;
         
@@ -276,7 +274,7 @@ public class GraphSDB extends GraphBase implements Graph
     public void finishBulkUpdate() { inBulkUpdate -= 1 ; if (inBulkUpdate == 0) store.getLoader().finishBulkUpdate();}
     
     @Override
-    public TransactionHandler getTransactionHandler() { return transactionHandler; }
+    public TransactionHandler getTransactionHandler() { return store.getConnection().getTransactionHandler() ; }
     
     @Override
     public int graphBaseSize() { return (int) ((graphNode == Quad.defaultGraphNode) ? store.getSize() : store.getSize(graphNode)); }

@@ -47,11 +47,6 @@ public interface TupleLoader
 //    public void setChunkSize(int chunks) ;
 //    public int getChunkSize() ;
     
-    /**
-     * Abort additions since start (rollback)
-     */
-	public void abort();
-    
 //    public void setUseThreading(boolean useThreading);
 //    public boolean getUseThreading();
 

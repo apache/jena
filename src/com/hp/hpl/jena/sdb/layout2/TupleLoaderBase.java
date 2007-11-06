@@ -8,7 +8,6 @@ package com.hp.hpl.jena.sdb.layout2;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -65,18 +64,8 @@ public abstract class TupleLoaderBase extends com.hp.hpl.jena.sdb.store.TupleLoa
 		insertNodes = getLoadNodes();
 		insertTuples = getLoadTuples();
 		deleteTuples = connection().prepareStatement(getDeleteTuples());
-		if (getClearTempNodes() != null) clearNodeLoader = connection().prepareStatement(getClearTempNodes());
-		if (getClearTempTuples() != null) clearTupleLoader = connection().prepareStatement(getClearTempTuples());
-	}
-	
-	@Override
-	public void abort() {
-		try {
-			this.insertNodeLoader.clearBatch();
-			this.insertTupleLoader.clearBatch();
-			this.deleteTuples.clearBatch();
-		}
-		catch (SQLException e) { throw new SDBException("Abort failed", e); } 
+		clearNodeLoader = connection().prepareStatement(getClearTempNodes());
+		clearTupleLoader = connection().prepareStatement(getClearTempTuples());
 	}
 	
 	public int getArity() {
@@ -119,7 +108,7 @@ public abstract class TupleLoaderBase extends com.hp.hpl.jena.sdb.store.TupleLoa
 		
 		try {
 			for (int i = 0; i < row.length; i++) {
-				PreparedNode pNode = new PreparedNode(row[i], false);
+				PreparedNode pNode = new PreparedNode(row[i]); //, false);
 				deleteTuples.setLong(i + 1, pNode.hash);
 			}
 			deleteTuples.addBatch();
@@ -139,27 +128,39 @@ public abstract class TupleLoaderBase extends com.hp.hpl.jena.sdb.store.TupleLoa
 	
 	protected void flush() {
 		if (tupleNum == 0) return;
+		
+		boolean handleTransaction = false; // is somebody handling transactions already?
 		try {
-			boolean autoCommitState = connection().getSqlConnection().getAutoCommit();
-			if (autoCommitState) connection().getSqlConnection().setAutoCommit(false); // turn off if needed
+			handleTransaction = connection().getSqlConnection().getAutoCommit();
+		} catch (SQLException e) {
+			throw new SDBException("Failed to get autocommit status", e);
+		}
+		
+		try {
+			if (handleTransaction) connection().getSqlConnection().setAutoCommit(false); // turn off if needed
 			if (amLoading) {
 				insertNodeLoader.executeBatch();
 				insertTupleLoader.executeBatch();
 				connection().execUpdate(insertNodes);
 				connection().execUpdate(insertTuples);
-				if (clearNodeLoader != null) clearNodeLoader.execute();
-				if (clearTupleLoader != null) clearTupleLoader.execute();
+				if (!handleTransaction || !clearsOnCommit()) {
+					clearNodeLoader.execute();
+					clearTupleLoader.execute();
+				}
 			} else {
 				deleteTuples.executeBatch();
 			}
-			connection().getSqlConnection().commit();
-			if (autoCommitState) connection().getSqlConnection().setAutoCommit(true); // back on if we changed it
-		} catch (SQLException e) {
-			try {
-				connection().getSqlConnection().rollback();
-			} catch (SQLException e1) {
-				e1.printStackTrace();
+			if (handleTransaction) {
+				connection().getSqlConnection().commit();
+				connection().getSqlConnection().setAutoCommit(true); // back on
 			}
+		} catch (SQLException e) {
+			if (handleTransaction)
+				try {
+					connection().getSqlConnection().rollback();
+				} catch (SQLException e1) {
+					e1.printStackTrace();
+				}
 			throw new SDBException("Exception flushing", e);
 		} finally {
 			tupleNum = 0;
@@ -260,6 +261,8 @@ public abstract class TupleLoaderBase extends com.hp.hpl.jena.sdb.store.TupleLoa
 		return "DELETE FROM " + getTupleLoader();
 	}
 	
+	public boolean clearsOnCommit() { return false; }
+	
 	/* Encapsulate the gory internals of breaking up nodes for the database */
 	
 	public static class PreparedNode
@@ -269,16 +272,16 @@ public abstract class TupleLoaderBase extends com.hp.hpl.jena.sdb.store.TupleLoa
         public String lang;
         public String datatype;
         public int typeId;
-        public Integer valInt;
-        public Double valDouble;
-        public Timestamp valDateTime;
+        //public Integer valInt;
+        //public Double valDouble;
+        //public Timestamp valDateTime;
         
-        PreparedNode(Node node)
-        {
-        	this(node, true);
-        }
+        //PreparedNode(Node node)
+        //{
+        //	this(node, true);
+        //}
         
-        PreparedNode(Node node, boolean computeVals)
+        PreparedNode(Node node) //, boolean computeVals)
         {
             lex = NodeLayout2.nodeToLex(node);
             //ValueType vType = ValueType.lookup(node);

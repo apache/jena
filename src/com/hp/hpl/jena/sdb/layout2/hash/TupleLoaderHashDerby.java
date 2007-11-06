@@ -46,14 +46,7 @@ public class TupleLoaderHashDerby extends TupleLoaderHashBase {
 	}
 	
 	@Override
-	public String getClearTempNodes() {
-		return null;
-	}
-	
-	@Override
-	public String getClearTempTuples() {
-		return null;
-	}
+	public boolean clearsOnCommit() { return true; }
 }
 
 /*

@@ -14,6 +14,7 @@ public interface TupleLoaderBasics {
 	public String getDeleteTuples();
 	public String getClearTempNodes();
 	public String getClearTempTuples();
+	public boolean clearsOnCommit();
 }
 
 /*

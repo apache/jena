@@ -42,7 +42,6 @@ public class LoaderTuplesNodes
     Thread commitThread = null ; // The loader thread
     final static TupleChange flushSignal = new TupleChange(); // Signal to thread to commit
     final static TupleChange finishSignal = new TupleChange(); // Signal to thread to finish
-    final static TupleChange abortSignal = new TupleChange(); // Signal to thread to abort
     ArrayBlockingQueue<TupleChange> queue ; // Pipeline to loader thread
     AtomicReference<Throwable> threadException ; // Placeholder for problems thrown in the thread
     Object threadFlushing = new Object(); // We lock on this when flushing
@@ -50,6 +49,7 @@ public class LoaderTuplesNodes
     Map<String, TupleLoader> tupleLoaders;
     TupleLoader currentLoader;
     
+    int count;
     int chunkSize = 20000;
     
 	private Class<? extends TupleLoader> tupleLoaderClass;
@@ -75,34 +75,7 @@ public class LoaderTuplesNodes
 	{
 		flushTriples() ;
 	}
-	
-	public void abortBulkUpdate()
-	{
-		if (threading)
-	    {
-	        checkThreadStatus();
-	        try
-	        {
-	        	queue.put(abortSignal);
-	        }
-	        catch (InterruptedException e)
-	        {
-	        	log.error("Issue signalling to abort: " + e.getMessage());
-	        	throw new SDBException("Issue singalling to abort" + e.getMessage(), e);
-	        }
-	    }
-	    else
-	    {
-			abort();
-	    }
-	}
-	
-	private void abort()
-	{
-		if (this.currentLoader != null)
-			currentLoader.abort();
-	}
-	
+
 	/**
      * Close this loader and finish the thread (if required)
      *
@@ -239,6 +212,8 @@ public class LoaderTuplesNodes
 	    tupleLoaders = new HashMap<String, TupleLoader>();
 	    currentLoader = null;
 	    
+	    count = 0;
+	    
 	    if (threading)
 	    {
 	        queue = new ArrayBlockingQueue<TupleChange>(chunkSize);
@@ -345,10 +320,6 @@ public class LoaderTuplesNodes
             			} catch (Throwable e) { handleIssue(e); }
             			
             			break;
-            		}
-            		else if (tuple == abortSignal)
-            		{
-            			abort();
             		}
             		else
             		{
