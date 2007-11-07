@@ -9,13 +9,14 @@ package com.hp.hpl.jena.sdb.test;
 import com.hp.hpl.jena.sdb.SDBFactory;
 import com.hp.hpl.jena.sdb.Store;
 import com.hp.hpl.jena.sdb.StoreDesc;
-import com.hp.hpl.jena.sdb.layout2.StoreBase;
+import com.hp.hpl.jena.sdb.layout2.hash.StoreTriplesNodesHashDB2;
 import com.hp.hpl.jena.sdb.layout2.hash.StoreTriplesNodesHashDerby;
 import com.hp.hpl.jena.sdb.layout2.hash.StoreTriplesNodesHashHSQL;
 import com.hp.hpl.jena.sdb.layout2.hash.StoreTriplesNodesHashMySQL;
 import com.hp.hpl.jena.sdb.layout2.hash.StoreTriplesNodesHashOracle;
 import com.hp.hpl.jena.sdb.layout2.hash.StoreTriplesNodesHashPGSQL;
 import com.hp.hpl.jena.sdb.layout2.hash.StoreTriplesNodesHashSQLServer;
+import com.hp.hpl.jena.sdb.layout2.index.StoreTriplesNodesIndexDB2;
 import com.hp.hpl.jena.sdb.layout2.index.StoreTriplesNodesIndexDerby;
 import com.hp.hpl.jena.sdb.layout2.index.StoreTriplesNodesIndexHSQL;
 import com.hp.hpl.jena.sdb.layout2.index.StoreTriplesNodesIndexMySQL;
@@ -46,8 +47,10 @@ public class StoreCreator {
 	private static StoreTriplesNodesHashHSQL sdbhsh;
 	private static StoreTriplesNodesHashDerby sdbdh;
 	private static StoreTriplesNodesIndexDerby sdbdi;
-	private static StoreBase sdboh;
+	private static StoreTriplesNodesHashOracle sdboh;
 	private static StoreTriplesNodesIndexOracle sdboi;
+	private static StoreTriplesNodesIndexDB2 sdbdb2i;
+	private static StoreTriplesNodesHashDB2 sdbdb2h;
 
 	public static Store getIndexMySQL() {
 		if (sdbmsi == null) {
@@ -259,6 +262,44 @@ public class StoreCreator {
 		sdboi.getTableFormatter().truncate();
 			
 		return sdboi;
+	}
+	
+	public static Store getHashDB2() {
+		if (sdbdb2h == null) {
+			JDBC.loadDriverDB2() ;
+			
+			String url = JDBC.makeURL("db2", "sweb-sdb-4:50000", "TEST2H") ;
+			
+			SDBConnection sdb = new SDBConnection(url, "jena", "swara") ;
+			
+            StoreDesc desc = new StoreDesc(LayoutType.LayoutTripleNodesHash, DatabaseType.DB2) ;
+			sdbdb2h = new StoreTriplesNodesHashDB2(sdb, desc);
+			
+			sdbdb2h.getTableFormatter().format();
+		}
+		
+		sdbdb2h.getTableFormatter().truncate();
+			
+		return sdbdb2h;
+	}
+	
+	public static Store getIndexDB2() {
+		if (sdbdb2i == null) {
+			JDBC.loadDriverDB2() ;
+			
+			String url = JDBC.makeURL("db2", "sweb-sdb-4:50000", "TEST2I") ;
+			
+			SDBConnection sdb = new SDBConnection(url, "jena", "swara") ;
+			
+            StoreDesc desc = new StoreDesc(LayoutType.LayoutTripleNodesIndex, DatabaseType.DB2) ;
+			sdbdb2i = new StoreTriplesNodesIndexDB2(sdb, desc);
+			
+			sdbdb2i.getTableFormatter().format();
+		}
+		
+		sdbdb2i.getTableFormatter().truncate();
+			
+		return sdbdb2i;
 	}
 }
 
