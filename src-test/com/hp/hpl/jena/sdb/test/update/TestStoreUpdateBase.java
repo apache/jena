@@ -59,8 +59,9 @@ public abstract class TestStoreUpdateBase {
 		return NodeCreateUtils.create(str);
 	}
 	
-	@Before public void init() {
+	@Before public void init() throws SQLException {
 		this.store = getStore();
+		this.store.getConnection().getSqlConnection().setAutoCommit(true);
 		this.loader = (StoreLoaderPlus) store.getLoader();
 		this.nodeT = store.getNodeTableDesc();
 	}
@@ -212,14 +213,12 @@ public abstract class TestStoreUpdateBase {
 		model.add(RDF.type, RDF.type, RDF.type);
 		assertTrue("Uncommited triple can be seen", model.contains(RDF.type, RDF.type, RDF.type));
 		model.abort();
-		model.commit();	
 		assertTrue("Nothing was added, the add aborted", model.isEmpty());
 		model.add(RDF.type, RDF.type, RDF.type);
 		assertEquals("Model contains 1 triple", 1l, model.size());
 		model.begin();
 		model.remove(RDF.type, RDF.type, RDF.type);
 		model.abort();
-		model.commit();
 		assertEquals("Model still contains 1 triple", 1l, model.size());
 	}
 }
