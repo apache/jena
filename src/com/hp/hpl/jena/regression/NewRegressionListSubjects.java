@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: NewRegressionListSubjects.java,v 1.4 2007-01-02 11:49:22 andy_seaborne Exp $
+ 	$Id: NewRegressionListSubjects.java,v 1.5 2007-11-07 16:15:00 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.regression;
@@ -69,9 +69,9 @@ public class NewRegressionListSubjects extends ModelTestBase
 
         assertEquiv( subjectsTo( subjectPrefix, 2 ), m.listSubjectsWithProperty( predicates[0] ) );
         
-        assertEquiv( subjectsTo( subjectPrefix, 2 ), m.listSubjectsWithProperty( predicates[0], tvBooleans[0] ) );
+        assertEquiv( subjectsTo( subjectPrefix, 2 ), m.listSubjectsWithProperty( predicates[0], m.createTypedLiteral( tvBooleans[0] ) ) );
 
-        assertEquiv( subjectsTo( subjectPrefix, 0 ), m.listSubjectsWithProperty( predicates[0], tvBooleans[1] ) );
+        assertEquiv( subjectsTo( subjectPrefix, 0 ), m.listSubjectsWithProperty( predicates[0], m.createTypedLiteral( tvBooleans[1] ) ) );
 
         assertEquiv( subjectsTo( subjectPrefix, 2 ), m.listSubjectsWithProperty( predicates[0], (byte) tvLongs[0] ) );
 
@@ -153,7 +153,7 @@ public class NewRegressionListSubjects extends ModelTestBase
         
         objects = new RDFNode[]
             {
-            m.createLiteral( tvBooleans[1] ),
+            m.createTypedLiteral( tvBooleans[1] ),
             m.createLiteral( tvLongs[1] ),
             m.createLiteral( tvChars[1] ),
             m.createLiteral( tvFloats[1] ),
@@ -180,7 +180,7 @@ public class NewRegressionListSubjects extends ModelTestBase
             {
             for (int j = 0; j < 2; j += 1) 
                 {
-                m.add(subjects[i], predicates[j], tvBooleans[j] );
+                m.add(subjects[i], predicates[j], m.createTypedLiteral( tvBooleans[j] ) );
                 m.add(subjects[i], predicates[j], tvLongs[j] );
                 m.add(subjects[i], predicates[j], tvChars[j] );
                 m.add(subjects[i], predicates[j], tvFloats[j] );

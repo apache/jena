@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
     [See end of file]
-    $Id: Regression.java,v 1.25 2007-01-02 11:49:22 andy_seaborne Exp $
+    $Id: Regression.java,v 1.26 2007-11-07 16:15:00 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.regression;
@@ -24,7 +24,7 @@ import org.apache.commons.logging.LogFactory;
  * NewRegression suite; kers.]
  *
  * @author  bwm
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.25 $' Date='$Date: 2007-01-02 11:49:22 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.26 $' Date='$Date: 2007-11-07 16:15:00 $'
  */
 public class Regression extends Object {
 
@@ -104,8 +104,8 @@ public class Regression extends Object {
         try {
             {
                 n = 100;
-                n++; if (! m.createLiteral(true).getBoolean()) error(test, n);
-                n++; if (  m.createLiteral(false).getBoolean()) error(test, n);
+                n++; if (! m.createTypedLiteral(true).getBoolean()) error(test, n);
+                n++; if (  m.createTypedLiteral(false).getBoolean()) error(test, n);
             }
 
             {
@@ -665,7 +665,7 @@ public class Regression extends Object {
                 }
 
                 try {
-                    Literal tv = m.createLiteral(true);
+                    Literal tv = m.createTypedLiteral(true);
                     n=420;
                     n++; s = m.createStatement(r, p, tv);
                     n++; if (! s.getSubject().getURI().equals(subjURI))
@@ -1365,7 +1365,7 @@ public class Regression extends Object {
             for (int i=0; i<2; i++) {
                 for (int j=0; j<2; j++) {
                     stmt = m.createStatement(subject[i], predicate[j],
-                                            tvBoolean[j]);
+                                            m.createTypedLiteral( tvBoolean[j] ) );
                     m.add(stmt);
                     stmt = m.createStatement(subject[i], predicate[j],
                                              tvLong[j]);
@@ -1393,7 +1393,7 @@ public class Regression extends Object {
                     m.add(stmt);
                 }
             }
-            object[0] = m.createLiteral(tvBoolean[1]);
+            object[0] = m.createTypedLiteral(tvBoolean[1]);
             object[1] = m.createLiteral(tvLong[1]);
             object[2] = m.createLiteral(tvChar[1]);
             object[3] = m.createLiteral(tvFloat[1]);
@@ -1466,7 +1466,7 @@ public class Regression extends Object {
                 subjf[i] = false;
             }
             found = false;
-            rIter = m.listSubjectsWithProperty(predicate[0], tvBoolean[0]);
+            rIter = m.listSubjectsWithProperty(predicate[0], m.createTypedLiteral( tvBoolean[0] ) );
             while (rIter.hasNext()) {
                 Resource subj = rIter.nextResource();
                 found = false;
@@ -1491,7 +1491,7 @@ public class Regression extends Object {
                 subjf[i] = false;
             }
             found = false;
-            rIter = m.listSubjectsWithProperty(predicate[0], tvBoolean[1]);
+            rIter = m.listSubjectsWithProperty(predicate[0], m.createTypedLiteral( tvBoolean[1] ) );
             while (rIter.hasNext()) {
                 Resource subj = rIter.nextResource();
                 found = false;
@@ -4871,5 +4871,5 @@ public class Regression extends Object {
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: Regression.java,v 1.25 2007-01-02 11:49:22 andy_seaborne Exp $
+ * $Id: Regression.java,v 1.26 2007-11-07 16:15:00 chris-dollin Exp $
  */

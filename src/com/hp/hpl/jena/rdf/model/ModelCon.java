@@ -57,8 +57,8 @@ import com.hp.hpl.jena.graph.Node;
  *    enhanced resources.</p>
  * @author bwm
  * @version Release='$Name: not supported by cvs2svn $'
-            Revision='$Revision: 1.20 $'
-            Date='$Date: 2007-01-02 11:48:34 $'
+            Revision='$Revision: 1.21 $'
+            Date='$Date: 2007-11-07 16:14:57 $'
  */
 public interface ModelCon {
 
@@ -226,15 +226,15 @@ public interface ModelCon {
  */
     public Property createProperty(String uri) ;
 
-    /** create a literal from a boolean value.
-     *
-     * <p> The value is converted to a string using its <CODE>toString</CODE>
-     * method. </p>
-     * @param v the value of the literal
-     * @return a new literal representing the value v
-     * @deprecated Applications should use typed literals
-     */
-    public Literal createLiteral(boolean v) ; 
+//    /** create a literal from a boolean value.
+//     *
+//     * <p> The value is converted to a string using its <CODE>toString</CODE>
+//     * method. </p>
+//     * @param v the value of the literal
+//     * @return a new literal representing the value v
+//     * @deprecated Applications should use typed literals
+//     */
+//    public Literal createTypedLiteral(boolean v) ; 
     /** create a literal from an integer value.
      *
      * @param v the value of the literal

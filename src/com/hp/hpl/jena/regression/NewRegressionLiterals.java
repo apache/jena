@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: NewRegressionLiterals.java,v 1.4 2007-01-02 11:49:22 andy_seaborne Exp $
+ 	$Id: NewRegressionLiterals.java,v 1.5 2007-11-07 16:15:00 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.regression;
@@ -25,8 +25,8 @@ public class NewRegressionLiterals extends NewRegressionBase
     public void testBooleans()
         {
         Model m = getModel();
-        assertTrue( m.createLiteral( true ).getBoolean() );
-        assertFalse( m.createLiteral( false ).getBoolean() );
+        assertTrue( m.createTypedLiteral( true ).getBoolean() );
+        assertFalse( m.createTypedLiteral( false ).getBoolean() );
         }
 
     public void testByteLiterals()

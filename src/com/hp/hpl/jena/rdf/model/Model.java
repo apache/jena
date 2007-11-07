@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Model.java,v 1.68 2007-01-15 12:41:14 jeremy_carroll Exp $
+  $Id: Model.java,v 1.69 2007-11-07 16:14:57 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
@@ -61,7 +61,7 @@ import java.util.*;
  * </pre></code>
  *
  * @author bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.68 $Date: 2007/01/02 11:48:34 $'
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.69 $Date: 2007/01/15 12:41:14 $'
  */
 public interface Model
     extends ModelCon, ModelGraphInterface,
@@ -204,19 +204,19 @@ public interface Model
 
 	public Literal createLiteral(String v, String language);
 
-    /**
-     * @deprecated since Jena2. It is no longer legal to have a language
-     * tag on a well-formed XMLLiteral. Use the 2-argument form of
-     * {@link #createLiteral(String, boolean) createLiteral} instead.
-     *
-     *   Create a literal from a String value with a specified language. An existing literal
-     *   of the right value may be returned, or a fresh one created.
-     *  @param v the lexical form of the literal
-     *  @param language the language associated with the literal
-     *  @param wellFormed true if the Literal is well formed XML
-     *  @return a new literal representing the value v with the given language
-     */
-    public Literal createLiteral(String v, String language, boolean wellFormed);
+//    /**
+//     * @deprecated since Jena2. It is no longer legal to have a language
+//     * tag on a well-formed XMLLiteral. Use the 2-argument form of
+//     * {@link #createLiteral(String, boolean) createLiteral} instead.
+//     *
+//     *   Create a literal from a String value with a specified language. An existing literal
+//     *   of the right value may be returned, or a fresh one created.
+//     *  @param v the lexical form of the literal
+//     *  @param language the language associated with the literal
+//     *  @param wellFormed true if the Literal is well formed XML
+//     *  @return a new literal representing the value v with the given language
+//     */
+//    public Literal createLiteral(String v, String language, boolean wellFormed);
 
     /**
         Create a literal from a String value. An existing literal
@@ -929,14 +929,14 @@ public interface Model
 	 */
 	public void close();
 
-    /** Get the model lock for this model.
-     *  See also the convenience operations enterCriticalSection and leaveCriticalSection.
-     *
-     * @see ModelLock
-     * @return The ModelLock object associated with this model
-     * @deprecated Applications should use {@link #getLock()}
-     */
-    public ModelLock getModelLock() ;
+//    /** Get the model lock for this model.
+//     *  See also the convenience operations enterCriticalSection and leaveCriticalSection.
+//     *
+//     * @see ModelLock
+//     * @return The ModelLock object associated with this model
+//     * @deprecated Applications should use {@link #getLock()}
+//     */
+//    public ModelLock getModelLock() ;
 
     /** Get the model lock for this model.
      *  See also the convenience operations enterCriticalSection and leaveCriticalSection.
@@ -1017,5 +1017,5 @@ public interface Model
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: Model.java,v 1.68 2007-01-15 12:41:14 jeremy_carroll Exp $
+ * $Id: Model.java,v 1.69 2007-11-07 16:14:57 chris-dollin Exp $
  */
