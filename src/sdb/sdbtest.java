@@ -37,7 +37,7 @@ import com.hp.hpl.jena.vocabulary.DCTerms;
  
 public class sdbtest extends CmdArgsDB
 {
-    public static final String usage = "sdbtest --sdb <SPEC> --schema schemaName [--direct] [manifest]" ;
+    public static final String usage = "sdbtest --sdb <SPEC> [--earl] [--direct] [manifest]" ;
     static ArgDecl earlDecl = new ArgDecl(ArgDecl.NoValue, "earl") ;
     boolean earlReport = false ;
     
