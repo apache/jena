@@ -57,8 +57,8 @@ import com.hp.hpl.jena.graph.Node;
  *    enhanced resources.</p>
  * @author bwm
  * @version Release='$Name: not supported by cvs2svn $'
-            Revision='$Revision: 1.21 $'
-            Date='$Date: 2007-11-07 16:14:57 $'
+            Revision='$Revision: 1.22 $'
+            Date='$Date: 2007-11-09 12:22:29 $'
  */
 public interface ModelCon {
 
@@ -249,20 +249,20 @@ public interface ModelCon {
      * @deprecated Applications should use typed literals
      */
     public Literal createLiteral(char v) ;
-    /** create a literal from a float value.
-     *
-     * @param v the value of the literal
-     * @return a new literal representing the value v
-     * @deprecated Applications should use typed literals
-     */
-    public Literal createLiteral(float v) ;
-    /** create a literal from a double value.
-     *
-     * @param v the value of the literal
-     * @return a new literal representing the value v
-     * @deprecated Applications should use typed literals
-     */
-    public Literal createLiteral(double v) ;
+//    /** create a literal from a float value.
+//     *
+//     * @param v the value of the literal
+//     * @return a new literal representing the value v
+//     * @deprecated Applications should use typed literals
+//     */
+//    public Literal createLiteral(float v) ;
+//    /** create a literal from a double value.
+//     *
+//     * @param v the value of the literal
+//     * @return a new literal representing the value v
+//     * @deprecated Applications should use typed literals
+//     */
+//    public Literal createLiteral(double v) ;
     
     /** create a literal from a String value.
      *
@@ -421,37 +421,37 @@ public interface ModelCon {
      */
     public Statement createStatement(Resource s, Property p, char o) ;
     
-    /** Create a Statement instance.
-     *
-     * <p>Subsequent operations on the statement or any of its parts may
-     * modify this model.</p>
-     * <p>Creating a statement does not add it to the set of statements in the
-     * model. </p>
-     * <p>The value o will be converted to a Literal.</P>
-     * @deprecated Applications should use typed literals 
-     * @param s the subject of the statement
-     * @param p the predicate of the statement
-     * @param o is the value to be the object of the statement
-     
-     * @return the new statement
-     */
-    public Statement createStatement(Resource s, Property p, float o) ;
-    
-    /** Create a Statement instance.
-     *
-     * <p>Subsequent operations on the statement or any of its parts may
-     * modify this model.</p>
-     * <p>Creating a statement does not add it to the set of statements in the
-     * model. </p>
-     * <p>The value o will be converted to a Literal.</P>
-     * @deprecated Applications should use typed literals 
-     * @param s the subject of the statement
-     * @param p the predicate of the statement
-     * @param o is the value to be the object of the statement
-     
-     * @return the new statement
-     */
-    public Statement createStatement(Resource s, Property p, double o) ;
+//    /** Create a Statement instance.
+//     *
+//     * <p>Subsequent operations on the statement or any of its parts may
+//     * modify this model.</p>
+//     * <p>Creating a statement does not add it to the set of statements in the
+//     * model. </p>
+//     * <p>The value o will be converted to a Literal.</P>
+//     * @deprecated Applications should use typed literals 
+//     * @param s the subject of the statement
+//     * @param p the predicate of the statement
+//     * @param o is the value to be the object of the statement
+//     
+//     * @return the new statement
+//     */
+//    public Statement createStatement(Resource s, Property p, float o) ;
+//    
+//    /** Create a Statement instance.
+//     *
+//     * <p>Subsequent operations on the statement or any of its parts may
+//     * modify this model.</p>
+//     * <p>Creating a statement does not add it to the set of statements in the
+//     * model. </p>
+//     * <p>The value o will be converted to a Literal.</P>
+//     * @deprecated Applications should use typed literals 
+//     * @param s the subject of the statement
+//     * @param p the predicate of the statement
+//     * @param o is the value to be the object of the statement
+//     
+//     * @return the new statement
+//     */
+//    public Statement createStatement(Resource s, Property p, double o) ;
     
     /** Create a Statement instance.
      *
@@ -913,23 +913,23 @@ public interface ModelCon {
     ResIterator listSubjectsWithProperty(Property p, char o)
                                           ;
 
-/** List all subjects with a given property and property value.
- * @deprecated Applications should use typed literals 
- * @return an iterator over the subjects
- * @param p The predicate sought
- * @param o The value sought
- 
- */ 
-    ResIterator listSubjectsWithProperty(Property p, float o)
-                                           ;
-/** lists all subjects with a given property and property value.
- * @deprecated Applications should use typed literals 
- * @return an iterator over the set of subjects
- * @param p The property sought.
- * @param o The property value sought.
- 
- */ 
-    ResIterator listSubjectsWithProperty(Property p, double o)
+///** List all subjects with a given property and property value.
+// * @deprecated Applications should use typed literals 
+// * @return an iterator over the subjects
+// * @param p The predicate sought
+// * @param o The value sought
+// 
+// */ 
+//    ResIterator listSubjectsWithProperty(Property p, float o)
+//                                           ;
+///** lists all subjects with a given property and property value.
+// * @deprecated Applications should use typed literals 
+// * @return an iterator over the set of subjects
+// * @param p The property sought.
+// * @param o The property value sought.
+// 
+// */ 
+//    ResIterator listSubjectsWithProperty(Property p, double o)
                                            ;
 /** lists all subjects with a given property and property value.
  * @return an iterator over the set of subjects

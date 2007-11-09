@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: NewRegressionStatements.java,v 1.4 2007-01-02 11:49:22 andy_seaborne Exp $
+ 	$Id: NewRegressionStatements.java,v 1.5 2007-11-09 12:22:54 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.regression;
@@ -92,7 +92,7 @@ public class NewRegressionStatements extends ModelTestBase
     
     public void testCreateStatementFloat()
         {
-        Statement s = m.createStatement( r, p, 123.456f );
+        Statement s = m.createStatement( r, p, m.createTypedLiteral( 123.456f ) );
         assertEquals( r, s.getSubject() );
         assertEquals( p, s.getPredicate() );
         assertEquals( 123.456f, s.getFloat(), 0.0005 );
@@ -100,7 +100,7 @@ public class NewRegressionStatements extends ModelTestBase
     
     public void testCreateStatementDouble()
         {
-        Statement s = m.createStatement( r, p, 12345.67890d );
+        Statement s = m.createStatement( r, p, m.createTypedLiteral( 12345.67890d ) );
         assertEquals( r, s.getSubject() );
         assertEquals( p, s.getPredicate() );
         assertEquals( 12345.67890d, s.getDouble(), 0.0000005 );

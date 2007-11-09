@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: NewRegressionStatementMethods.java,v 1.3 2007-01-02 11:49:22 andy_seaborne Exp $
+ 	$Id: NewRegressionStatementMethods.java,v 1.4 2007-11-09 12:22:54 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.regression;
@@ -86,12 +86,12 @@ public class NewRegressionStatementMethods extends NewRegressionBase
     
     public void testFloat()
         {
-        assertEquals( tvFloat, m.createStatement( r, RDF.value, tvFloat ).getFloat(), fDelta );
+        assertEquals( tvFloat, m.createStatement( r, RDF.value, m.createTypedLiteral( tvFloat ) ).getFloat(), fDelta );
         }
     
     public void testDouble()
         {
-        assertEquals( tvDouble, m.createStatement( r, RDF.value, tvDouble ).getDouble(), dDelta );
+        assertEquals( tvDouble, m.createStatement( r, RDF.value, m.createTypedLiteral(  tvDouble ) ).getDouble(), dDelta );
         }
     
     public void testString()

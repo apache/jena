@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
     [See end of file]
-    $Id: Regression.java,v 1.26 2007-11-07 16:15:00 chris-dollin Exp $
+    $Id: Regression.java,v 1.27 2007-11-09 12:22:54 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.regression;
@@ -24,7 +24,7 @@ import org.apache.commons.logging.LogFactory;
  * NewRegression suite; kers.]
  *
  * @author  bwm
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.26 $' Date='$Date: 2007-11-07 16:15:00 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.27 $' Date='$Date: 2007-11-09 12:22:54 $'
  */
 public class Regression extends Object {
 
@@ -269,23 +269,23 @@ public class Regression extends Object {
                 n = 600;
 
                 tv = (float) 0.0;
-                l = m.createLiteral(tv);
+                l = m.createTypedLiteral(tv);
                 n++; if (java.lang.Math.abs(l.getFloat() - tv) >= maxerror) error(test, n);
 
                 tv = (float) -1.0;
-                l = m.createLiteral(tv);
+                l = m.createTypedLiteral(tv);
                 n++; if (java.lang.Math.abs(l.getFloat() - tv) >= maxerror) error(test, n);
 
                 tv = (float) 12345.6789;
-                l = m.createLiteral(tv);
+                l = m.createTypedLiteral(tv);
                 n++; if (java.lang.Math.abs(l.getFloat() - tv) >= maxerror) error(test, n);
 
                 tv = Float.MAX_VALUE;
-                l = m.createLiteral(tv);
+                l = m.createTypedLiteral(tv);
                 n++; if (java.lang.Math.abs(l.getFloat() - tv) >= maxerror) error(test, n);
 
                 tv = Float.MIN_VALUE;
-                l = m.createLiteral(tv);
+                l = m.createTypedLiteral(tv);
                 n++; if (java.lang.Math.abs(l.getFloat() - tv) >= maxerror) error(test, n);
             }
             {
@@ -294,23 +294,23 @@ public class Regression extends Object {
                 n = 700;
 
                 tv = (double) 0.0;
-                l = m.createLiteral(tv);
+                l = m.createTypedLiteral(tv);
                 n++; if (java.lang.Math.abs(l.getDouble() - tv) >= maxerror) error(test, n);
 
                 tv = (double) -1.0;
-                l = m.createLiteral(tv);
+                l = m.createTypedLiteral(tv);
                 n++; if (java.lang.Math.abs(l.getDouble() - tv) >= maxerror) error(test, n);
 
                 tv = (double) 12345.67890;
-                l = m.createLiteral(tv);
+                l = m.createTypedLiteral(tv);
                 n++; if (java.lang.Math.abs(l.getDouble() - tv) >= maxerror) error(test, n);
 
                 tv = Double.MAX_VALUE;
-                l = m.createLiteral(tv);
+                l = m.createTypedLiteral(tv);
                 n++; if (java.lang.Math.abs(l.getDouble() - tv) >= maxerror) error(test, n);
 
                 tv = Double.MIN_VALUE;
-                l = m.createLiteral(tv);
+                l = m.createTypedLiteral(tv);
                 n++; if (java.lang.Math.abs(l.getDouble() - tv) >= maxerror) error(test, n);
             }
 
@@ -596,7 +596,7 @@ public class Regression extends Object {
                 try {
                     float tv = (float) 123.456;
                     n=370;
-                    n++; s = m.createStatement(r, p, tv);
+                    n++; s = m.createStatement( r, p, m.createTypedLiteral( tv ) );
                     n++; if (! s.getSubject().getURI().equals(subjURI))
                     error(test,n);
                     n++; if (! s.getPredicate().getURI().equals(predURI))
@@ -609,7 +609,7 @@ public class Regression extends Object {
                 try {
                     double tv = 12345.67890;
                     n=380;
-                    n++; s = m.createStatement(r, p, tv);
+                    n++; s = m.createStatement(r, p, m.createTypedLiteral( tv ) );
                     n++; if (! s.getSubject().getURI().equals(subjURI))
                     error(test,n);
                     n++; if (! s.getPredicate().getURI().equals(predURI))
@@ -1373,12 +1373,12 @@ public class Regression extends Object {
                     stmt = m.createStatement(subject[i], predicate[j],
                                              tvChar[j]);
                     m.add(stmt);
-                    stmt = m.createStatement(subject[i], predicate[j],
-                                             tvFloat[j]);
+                    
+                    stmt = m.createStatement( subject[i], predicate[j], m.createTypedLiteral( tvFloat[j] ) );
                     m.add(stmt);
-                    stmt = m.createStatement(subject[i], predicate[j],
-                                             tvDouble[j]);
+                    stmt = m.createStatement(subject[i], predicate[j], m.createTypedLiteral( tvDouble[j] ) );
                     m.add(stmt);
+                    
                     stmt = m.createStatement(subject[i], predicate[j],
                                             tvString[j]);
                     m.add(stmt);
@@ -1396,8 +1396,8 @@ public class Regression extends Object {
             object[0] = m.createTypedLiteral(tvBoolean[1]);
             object[1] = m.createLiteral(tvLong[1]);
             object[2] = m.createLiteral(tvChar[1]);
-            object[3] = m.createLiteral(tvFloat[1]);
-            object[4] = m.createLiteral(tvDouble[1]);
+            object[3] = m.createTypedLiteral(tvFloat[1]);
+            object[4] = m.createTypedLiteral(tvDouble[1]);
             object[5] = m.createLiteral(tvString[1]);
             object[6] = m.createLiteral(tvString[1], lang[1]);
             object[7] = tvLitObj[1];
@@ -1757,7 +1757,7 @@ public class Regression extends Object {
                 subjf[i] = false;
             }
             found = false;
-            rIter = m.listSubjectsWithProperty(predicate[0], tvDouble[0]);
+            rIter = m.listSubjectsWithProperty(predicate[0], m.createTypedLiteral( tvDouble[0] ) );
             while (rIter.hasNext()) {
                 Resource subj = rIter.nextResource();
                 found = false;
@@ -1782,7 +1782,7 @@ public class Regression extends Object {
                 subjf[i] = false;
             }
             found = false;
-            rIter = m.listSubjectsWithProperty(predicate[0], tvDouble[1]);
+            rIter = m.listSubjectsWithProperty(predicate[0], m.createTypedLiteral( tvDouble[1] ) );
             while (rIter.hasNext()) {
                 Resource subj = rIter.nextResource();
                 found = false;
@@ -1805,7 +1805,7 @@ public class Regression extends Object {
                 subjf[i] = false;
             }
             found = false;
-            rIter = m.listSubjectsWithProperty(predicate[0], tvDouble[0]);
+            rIter = m.listSubjectsWithProperty(predicate[0], m.createTypedLiteral( tvDouble[0] ) );
             while (rIter.hasNext()) {
                 Resource subj = rIter.nextResource();
                 found = false;
@@ -1830,7 +1830,7 @@ public class Regression extends Object {
                 subjf[i] = false;
             }
             found = false;
-            rIter = m.listSubjectsWithProperty(predicate[0], tvDouble[1]);
+            rIter = m.listSubjectsWithProperty(predicate[0], m.createTypedLiteral(  tvDouble[1] ) );
             while (rIter.hasNext()) {
                 Resource subj = rIter.nextResource();
                 found = false;
@@ -2119,8 +2119,7 @@ public class Regression extends Object {
                     stmt = m.createStatement(subject[i], predicate[j],
                                              tvChar[j]);
                     m.add(stmt);
-                    stmt = m.createStatement(subject[i], predicate[j],
-                                             tvDouble[j]);
+                    stmt = m.createStatement(subject[i], predicate[j], m.createTypedLiteral( tvDouble[j] ) );
                     m.add(stmt);
                     stmt = m.createStatement(subject[i], predicate[j],
                                             tvString[j]);
@@ -2271,8 +2270,7 @@ public class Regression extends Object {
                     stmt = m.createStatement(subject[i], predicate[j],
                                              tvChar[j]);
                     m.add(stmt);
-                    stmt = m.createStatement(subject[i], predicate[j],
-                                             tvDouble[j]);
+                    stmt = m.createStatement(subject[i], predicate[j], m.createTypedLiteral( tvDouble[j] ) );
                     m.add(stmt);
                     stmt = m.createStatement(subject[i], predicate[j],
                                             tvString[j]);
@@ -2664,9 +2662,9 @@ public class Regression extends Object {
                          .getLong()==tvLong)) error(test,n);
             n++; if (! (m.createStatement(r, RDF.value, tvChar)
                          .getChar()==tvChar)) error(test,n);
-            n++; if (! (m.createStatement(r, RDF.value, tvFloat)
+            n++; if (! (m.createStatement(r, RDF.value, m.createTypedLiteral( tvFloat ) )
                          .getFloat()==tvFloat)) error(test,n);
-            n++; if (! (m.createStatement(r, RDF.value, tvDouble)
+            n++; if (! (m.createStatement(r, RDF.value, m.createTypedLiteral( tvDouble) )
                          .getDouble()==tvDouble)) error(test,n);
             n++; if (! (m.createStatement(r, RDF.value, tvString)
                          .getString().equals(tvString))) error(test,n);
@@ -4871,5 +4869,5 @@ public class Regression extends Object {
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: Regression.java,v 1.26 2007-11-07 16:15:00 chris-dollin Exp $
+ * $Id: Regression.java,v 1.27 2007-11-09 12:22:54 chris-dollin Exp $
  */
