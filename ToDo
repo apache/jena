@@ -72,8 +72,6 @@ See ToDoSSE
 + Alternative indexes
   LARQ idea - extracted.  Object ==> node/subject
   
-+ REDUCED tests :-(
-
 + Commands
   + qtest to use modules (and qexpr)
     ModVersion
