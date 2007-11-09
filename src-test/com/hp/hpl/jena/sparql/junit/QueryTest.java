@@ -9,17 +9,17 @@ package com.hp.hpl.jena.sparql.junit;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.io.PrintWriter;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.query.*;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.Property;
-import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.rdf.model.Statement;
-import com.hp.hpl.jena.rdf.model.StmtIterator;
+import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.shared.JenaException;
+
+import com.hp.hpl.jena.sparql.engine.QueryIterator;
+import com.hp.hpl.jena.sparql.engine.ResultSetStream;
+import com.hp.hpl.jena.sparql.engine.binding.Binding;
+import com.hp.hpl.jena.sparql.engine.iterator.QueryIterPlainWrapper;
 import com.hp.hpl.jena.sparql.resultset.ResultSetRewindable;
 import com.hp.hpl.jena.sparql.util.ALog;
 import com.hp.hpl.jena.sparql.util.DatasetUtils;
@@ -198,12 +198,34 @@ public class QueryTest extends EarlTestCase
             checkResults(query, results, resultsModel) ;
         else
         {
-            // Mess round.  Make both result sets distinct and then compare.
-            System.err.println("**** Compare REDUCED query results") ; 
-            checkResults(query, results, resultsModel) ;
+            // Unfortunately, we turned the result set into a model. 
+            // Turn into a ResultSet-uniqueify-turn back into a model.
+            // Excessive copying.  Only for small results in teh DAWG test suite.
+            ResultSetRewindable x = ResultSetFactory.makeRewindable(resultsModel) ;
+            x = unique(x) ;
+            results = unique(results) ;
+            checkResults(query, results, ResultSetFormatter.toModel(x)) ;
         }
     }
     
+    private static ResultSetRewindable unique(ResultSetRewindable results)
+    {
+        // VERY crude.  Utilises the fact that bindings have value equality.
+        List x = new ArrayList() ;
+        Set seen = new HashSet() ;
+        for ( ; results.hasNext() ; )
+        {
+            Binding b = results.nextBinding() ;
+            if ( seen.contains(b) )
+                continue ;
+            seen.add(b) ;
+            x.add(b) ;
+        }
+        QueryIterator qIter = new QueryIterPlainWrapper(x.iterator()) ;
+        ResultSet rs = new ResultSetStream(results.getResultVars(), ModelFactory.createDefaultModel(), qIter) ;
+        return ResultSetFactory.makeRewindable(rs) ;
+    }
+
     private void checkResults(Query query, ResultSetRewindable results, Model resultsModel)
     {
         if ( resultsModel == null )
