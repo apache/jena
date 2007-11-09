@@ -66,6 +66,15 @@
     rdfs:range   :TestStatus ;
     .
 
+:requires rdf:type rdf:Property ;
+    rdfs:comment "Required functionality for execution of this test" ;
+    rdfs:domain :ManifestEntry ;
+    rdfs:range	:Requirement .
+
+:notable rdf:type rdf:Property ;
+    rdfs:comment "Notable feature of this test (advisory)" ;
+    rdfs:domain :ManifestEntry .
+
 ## ---- Test Case Type ---
 
 :PositiveSyntaxTest rdf:type rdfs:Class ;
@@ -87,9 +96,20 @@
       testing. Query evaluation tests are required to have an associated
       input dataset, a query, and an expected output dataset." .
 
+:ReducedCardinalityTest  rdf:type rdfs:Class ;
+      rdfs:label "Query Evaluation Test (REDUCDED)" ;
+      rdfs:comment
+"""The given mf:result for a mf:ReducedCardinalityTest is the results as 
+if the REDUCED keyword were omitted. To pass a 
+mf:ReducedCardinalityTest, an implementation must produce a result set 
+with each solution in the expected results appearing at least once and 
+no more than the number of times it appears in the expected results. Of 
+course, there must also be no results produced that are not in the 
+expected results.""" .
+
 ## ---- Test Statuses ----
 
-:TestStatus rdf:type rdf:Class ;
+:TestStatus rdf:type rdfs:Class ;
     rdfs:comment "Statuses a test can have" ;
     .
 
@@ -104,3 +124,29 @@
 :rejected rdf:type :TestStatus ;
     rdfs:label "rejected" ;
     .
+
+## ---- Required functions ----
+
+:Requirement rdf:type rdfs:Class ;
+     rdfs:comment "Requirements for a  particular test" .
+
+:Notable rdf:type rdfs:Class ;
+     rdfs:comment "Requirements for a  particular test" .
+
+
+:XsdDateOperations	rdf:type :Requirement ;
+    rdfs:comment "Tests that require xsd:date operations" .
+	
+:StringSimpleLiteralCmp	rdf:type :Requirement ;
+    rdfs:comment "Tests that require simple literal is the same value as an xsd:string of the same lexicial form" .
+    
+:KnownTypesDefault2Neq	rdf:type :Requirement ;
+    rdfs:comment "Values in disjoint value spaces are not equal" .
+    
+:LangTagAwareness	rdf:type :Requirement ;
+    rdfs:comment "Tests that require langauge tag handling in FILTERs" .
+
+## ---- Notable features ----
+
+:IllFormedLiterals	rdf:type :Notable ;
+    rdfs:comment "Tests that involve lexical forms which are illegal for the datatype" .

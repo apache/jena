@@ -27,7 +27,8 @@ function proc
 }
 
 ## syntaxCheck test-manifest-x.n3
-## syntaxCheck test-manifest.n3
+syntaxCheck test-manifest.n3
+
 ## syntaxCheck test-query.n3
 ## syntaxCheck test-dawg.n3
 
@@ -35,9 +36,9 @@ function proc
 ##  proc result-set.n3 Result~/Projects/ARQ/vocabularies/SetGraphVocab \
 ##      'http://www.w3.org/2001/sw/DataAccess/tests/result-set#'
  
-## syntaxCheck test-manifest.n3
-## proc test-manifest.n3 TestManifest \
-##     "http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#"
+syntaxCheck test-manifest.n3
+proc test-manifest.n3 TestManifest \
+    "http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#"
 
 
 ## syntaxCheck test-manifest-x.n3
@@ -62,5 +63,5 @@ function proc
 ## syntaxCheck  FOAF.ttl
 ## proc FOAF.ttl FOAF "http://xmlns.com/foaf/0.1/"
 
-syntaxCheck  doap.ttl
-proc doap.ttl DOAP "http://usefulinc.com/ns/doap#"
+## syntaxCheck  doap.ttl
+## proc doap.ttl DOAP "http://usefulinc.com/ns/doap#"

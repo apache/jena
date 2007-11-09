@@ -83,7 +83,12 @@ public class QueryTestSuiteFactory extends TestFactoryManifest
                 test = new TestSerialization(testName, results, item) ;
             
             if ( item.getTestType().equals(TestManifest.QueryEvaluationTest)
-                || item.getTestType().equals(TestManifestX.TestQuery) )
+                || item.getTestType().equals(TestManifestX.TestQuery)
+                )
+                test = new QueryTest(testName, results, fileManager, item) ;
+            
+            // Reduced is funny.
+            if ( item.getTestType().equals(TestManifest.ReducedCardinalityTest) )
                 test = new QueryTest(testName, results, fileManager, item) ;
             
             if ( item.getTestType().equals(TestManifestX.TestSurpressed) )

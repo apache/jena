@@ -14,7 +14,11 @@ import java.util.List;
 
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.query.*;
-import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.Property;
+import com.hp.hpl.jena.rdf.model.Resource;
+import com.hp.hpl.jena.rdf.model.Statement;
+import com.hp.hpl.jena.rdf.model.StmtIterator;
 import com.hp.hpl.jena.shared.JenaException;
 import com.hp.hpl.jena.sparql.resultset.ResultSetRewindable;
 import com.hp.hpl.jena.sparql.util.ALog;
@@ -190,9 +194,14 @@ public class QueryTest extends EarlTestCase
         // Turn into a resettable version
         ResultSetRewindable results = ResultSetFactory.makeRewindable(resultsActual) ;
         qe.close() ;
-        resultsActual = null ;
-        checkResults(query, results, resultsModel) ;
-        
+        if ( ! query.isReduced() )
+            checkResults(query, results, resultsModel) ;
+        else
+        {
+            // Mess round.  Make both result sets distinct and then compare.
+            System.err.println("**** Compare REDUCED query results") ; 
+            checkResults(query, results, resultsModel) ;
+        }
     }
     
     private void checkResults(Query query, ResultSetRewindable results, Model resultsModel)
