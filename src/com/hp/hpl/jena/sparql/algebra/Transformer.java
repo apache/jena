@@ -82,6 +82,9 @@ public class Transformer
         public void visit(OpBGP op)
         { visit0(op); } 
         
+        public void visit(OpPropFunc op)
+        { visit0(op); }
+        
         public void visit(OpJoin opJoin)
         { visit2(opJoin) ; }
 

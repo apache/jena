@@ -7,7 +7,9 @@
 
 ++ Filter placement and property functions.
    PFs as OpBGP => OpBGP/OpPF?, rather than stages
-   Filter placement in stages?
+   OpPropFunc - started.
+     Or subclass of OpBGP? OpAltBGP?
+     OpCustom == OpExt? OpExt needs printing.
 
 ++ ** Document "stages"
 ++ ** Document "update API"

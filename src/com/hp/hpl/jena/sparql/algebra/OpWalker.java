@@ -42,6 +42,9 @@ public class OpWalker
         
         public void visit(OpBGP opBGP)
         { visit0(opBGP) ; }
+        
+        public void visit(OpPropFunc opPropFunc)
+        { visit0(opPropFunc) ; }
 
         public void visit(OpJoin opJoin)
         { visit2(opJoin) ; }

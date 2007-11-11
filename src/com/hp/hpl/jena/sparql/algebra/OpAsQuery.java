@@ -81,6 +81,12 @@ public class OpAsQuery
             currentGroup().addElement(process(opBGP.getPattern())) ;
         }
 
+        public void visit(OpPropFunc opPropFunc)
+        {
+            OpBGP opBGP = opPropFunc.getBGP() ;
+            currentGroup().addElement(process(opBGP.getPattern())) ;
+        }
+        
         private ElementTriplesBlock process(BasicPattern pattern)
         {
             ElementTriplesBlock e = new ElementTriplesBlock() ;

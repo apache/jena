@@ -4,38 +4,55 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.algebra;
+package com.hp.hpl.jena.sparql.algebra.op;
 
-import com.hp.hpl.jena.sparql.algebra.op.*;
+import com.hp.hpl.jena.sparql.algebra.Op;
+import com.hp.hpl.jena.sparql.algebra.OpVisitor;
+import com.hp.hpl.jena.sparql.algebra.Transform;
+import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 
-public interface OpVisitor
+/** Property functions (or any OpBGP replacement)
+ *  Execution will be per-engine specific
+ * @author Andy Seaborne
+ * @version $Id$
+ */
+public class OpPropFunc extends Op0
 {
-    public void visit(OpBGP opBGP) ;
-    //public void visit(OpPropFunc opPropFunc) ;
-    public void visit(OpQuadPattern quadPattern) ;
-    public void visit(OpJoin opJoin) ;
-    public void visit(OpLeftJoin opLeftJoin) ;
-    public void visit(OpDiff opDiff) ;
-    public void visit(OpUnion opUnion) ;
-    public void visit(OpFilter opFilter) ;
-    public void visit(OpGraph opGraph) ;
-    public void visit(OpService opService) ;
-    public void visit(OpDatasetNames dsNames) ;
-    
-    public void visit(OpTable opTable) ;
-    public void visit(OpExt opExt) ;
-    public void visit(OpNull opNull) ;
-    
-    public void visit(OpList opList) ;
-    public void visit(OpOrder opOrder) ;
-    public void visit(OpProject opProject) ;
-    public void visit(OpReduced opReduced) ;
-    public void visit(OpDistinct opDistinct) ;
-    public void visit(OpSlice opSlice) ;
-    public void visit(OpAssign opAssign) ;
-    public void visit(OpGroupAgg opGroupAgg) ;
-    
+
+    public Op apply(Transform transform)
+    {
+        return null ;
+    }
+
+    public Op copy()
+    {
+        return null ;
+    }
+
+    public boolean equalTo(Op other, NodeIsomorphismMap labelMap)
+    {
+        return false ;
+    }
+
+    public int hashCode()
+    {
+        return 0 ;
+    }
+
+    public void visit(OpVisitor opVisitor)
+    {} // { opVisitor.visit(this) ; }
+
+    public String getName()
+    {
+        return null ;
+    }
+
+    public OpBGP getBGP()
+    {
+        return null ;
+    } 
 }
+
 
 /*
  * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP

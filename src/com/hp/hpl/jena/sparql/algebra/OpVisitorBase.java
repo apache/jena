@@ -15,6 +15,9 @@ public class OpVisitorBase implements OpVisitor
     public void visit(OpBGP opBGP)
     {}
 
+    public void visit(OpPropFunc opPropFunc)
+    {}
+
     public void visit(OpJoin opJoin)
     {}
 

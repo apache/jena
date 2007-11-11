@@ -168,6 +168,12 @@ public class WriterOp
             finish(opBGP) ;
         }
         
+        public void visit(OpPropFunc opPropFunc)
+        { 
+            // TODO Temporary
+            visit(opPropFunc.getBGP()) ;
+        }
+        
         public void visit(OpJoin opJoin)
         { visitOp2(opJoin, null) ; }
 
