@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestSimpleListStatements.java,v 1.16 2007-11-12 12:11:51 chris-dollin Exp $
+  $Id: TestSimpleListStatements.java,v 1.17 2007-11-12 15:36:38 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -43,7 +43,7 @@ public class TestSimpleListStatements extends ModelTestBase
         model.createResource("http://example.org/char")
              .addProperty(RDF.value, charValue);             
         model.createResource("http://example.org/long")             
-             .addProperty(RDF.value, longValue);              
+             .addTypedProperty(RDF.value, longValue);              
         model.createResource("http://example.org/float")
              .addTypedProperty(RDF.value, floatValue);            
         model.createResource("http://example.org/double")
@@ -83,7 +83,7 @@ public class TestSimpleListStatements extends ModelTestBase
     }
     
     public void testLong() {
-        StmtIterator iter = model.listStatements(null, null, longValue);
+        StmtIterator iter = model.listStatements(null, null, model.createTypedLiteral( longValue ) );
         int i =0;
         while (iter.hasNext()) {
             i++;

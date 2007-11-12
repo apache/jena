@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ResourceImpl.java,v 1.40 2007-11-12 12:11:39 chris-dollin Exp $
+  $Id: ResourceImpl.java,v 1.41 2007-11-12 15:36:35 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -15,7 +15,7 @@ import com.hp.hpl.jena.graph.*;
 /** An implementation of Resource.
  *
  * @author  bwm
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.40 $' Date='$Date: 2007-11-12 12:11:39 $'
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.41 $' Date='$Date: 2007-11-12 15:36:35 $'
  */
 
 public class ResourceImpl extends EnhNode implements Resource {
@@ -162,6 +162,13 @@ public class ResourceImpl extends EnhNode implements Resource {
         return this;
     }
     
+    public Resource addTypedProperty( Property p, long o ) 
+        {
+        Model m = mustHaveModel();
+        m.add( this, p, m.createTypedLiteral( o ) );
+        return this;
+        }
+    
     public Resource addProperty(Property p, char o)  {
         mustHaveModel().add( this, p, o );
         return this;
@@ -225,20 +232,18 @@ public class ResourceImpl extends EnhNode implements Resource {
     public boolean hasProperty(Property p, boolean o)  {
         return mustHaveModel().contains( this, p, o );
     }
+    
+    public boolean hasTypedProperty( Property p, long o ) 
+        {
+        ModelCom m = mustHaveModel();
+        return m.contains( this, p, m.createTypedLiteral( o ) );
+        }
 
     public boolean hasProperty(Property p, long o) {
         return mustHaveModel().contains( this, p, o );
     }
 
     public boolean hasProperty(Property p, char o)  {
-        return mustHaveModel().contains( this, p, o );
-    }
-
-    public boolean hasProperty(Property p, float o)  {
-        return mustHaveModel().contains( this, p, o );
-    }
-
-    public boolean hasProperty(Property p, double o) {
         return mustHaveModel().contains( this, p, o );
     }
     

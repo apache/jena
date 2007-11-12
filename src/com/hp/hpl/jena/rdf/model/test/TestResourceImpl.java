@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: TestResourceImpl.java,v 1.8 2007-11-12 12:11:51 chris-dollin Exp $
+  $Id: TestResourceImpl.java,v 1.9 2007-11-12 15:36:38 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -93,6 +93,72 @@ public class TestResourceImpl extends ModelTestBase
         Resource r = m.createResource();
         r.addTypedProperty( RDF.value, 1.0f );
         assertTrue( r.hasTypedProperty( RDF.value, 1.0f ) );       
+        }
+    
+    public void testAddTypedPropertyLong()
+        {
+        Model m = ModelFactory.createDefaultModel();
+        Resource r = m.createResource();
+        r.addTypedProperty( RDF.value, 1L );
+        assertEquals( m.createTypedLiteral( 1L ), r.getProperty( RDF.value ).getLiteral() );
+        }
+    
+    public void testHasTypedPropertyLong()
+        {
+        Model m = ModelFactory.createDefaultModel();
+        Resource r = m.createResource();
+        r.addTypedProperty( RDF.value, 1L );
+        assertTrue( r.hasTypedProperty( RDF.value, 1L ) );       
+        }
+    
+    public void testAddTypedPropertyInt()
+        {
+        
+        }
+    
+    public void testHasTypedPropertyInt()
+        {
+        
+        }
+    
+    public void testAddTypedPropertyChar()
+        {
+        
+        }
+    
+    public void testHasTypedPropertyChar()
+        {
+        
+        }
+    
+    public void testAddTypedPropertyBoolean()
+        {
+        
+        }
+    
+    public void testHasTypedPropertyBoolean()
+        {
+        
+        }
+    
+    public void testAddTypedPropertyString()
+        {
+        
+        }
+    
+    public void testHasTypedPropertyString()
+        {
+        
+        }
+    
+    public void testAddTypedPropertyObject()
+        {
+        
+        }
+    
+    public void testHasTypedPropertyObject()
+        {
+        
         }
     
     }    

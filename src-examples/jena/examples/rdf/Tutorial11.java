@@ -2,7 +2,7 @@
  * (c) Copyright 2003, 2004, Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
- * $Id: Tutorial11.java,v 1.3 2005-10-06 17:49:05 andy_seaborne Exp $
+ * $Id: Tutorial11.java,v 1.4 2007-11-12 15:36:44 chris-dollin Exp $
  */
 package jena.examples.rdf ;
 
@@ -14,7 +14,7 @@ import java.io.PrintWriter;
 /** Tutorial 11 - more on literals
  *
  * @author  bwm - updated by kers/Daniel
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.3 $' Date='$Date: 2005-10-06 17:49:05 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.4 $' Date='$Date: 2007-11-12 15:36:44 $'
  */
 public class Tutorial11 extends Object {
     
@@ -42,7 +42,7 @@ public class Tutorial11 extends Object {
 
       // add the property
       r.addProperty(RDFS.label, "11")
-       .addProperty(RDFS.label, 11);
+       .addTypedProperty(RDFS.label, 11);
       
       // write out the graph
       model.write( System.out, "N-TRIPLE");
