@@ -1,12 +1,13 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: TestResourceImpl.java,v 1.7 2007-01-02 11:48:26 andy_seaborne Exp $
+  $Id: TestResourceImpl.java,v 1.8 2007-11-12 12:11:51 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
 
 import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.vocabulary.RDF;
 
 import junit.framework.*;
 
@@ -60,6 +61,38 @@ public class TestResourceImpl extends ModelTestBase
         assertTrue( resource( "eh:xyz" ).hasURI( "eh:xyz" ) );
         assertFalse( resource( "eh:xyz" ).hasURI( "eh:1yz" ) );
         assertFalse( ResourceFactory.createResource().hasURI( "42" ) );
+        }
+    
+    public void testAddTypedPropertyDouble()
+        {
+        Model m = ModelFactory.createDefaultModel();
+        Resource r = m.createResource();
+        r.addTypedProperty( RDF.value, 1.0d );
+        assertEquals( m.createTypedLiteral( 1.0d ), r.getProperty( RDF.value ).getLiteral() );
+        }
+    
+    public void testAddTypedPropertyFloat()
+        {
+        Model m = ModelFactory.createDefaultModel();
+        Resource r = m.createResource();
+        r.addTypedProperty( RDF.value, 1.0f );
+        assertEquals( m.createTypedLiteral( 1.0f ), r.getProperty( RDF.value ).getLiteral() );
+        }
+    
+    public void testHasTypedPropertyDouble()
+        {
+        Model m = ModelFactory.createDefaultModel();
+        Resource r = m.createResource();
+        r.addTypedProperty( RDF.value, 1.0d );
+        assertTrue( r.hasTypedProperty( RDF.value, 1.0d ) );       
+        }
+    
+    public void testHasTypedPropertyFloat()
+        {
+        Model m = ModelFactory.createDefaultModel();
+        Resource r = m.createResource();
+        r.addTypedProperty( RDF.value, 1.0f );
+        assertTrue( r.hasTypedProperty( RDF.value, 1.0f ) );       
         }
     
     }    

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestSimpleListStatements.java,v 1.15 2007-01-02 11:48:26 andy_seaborne Exp $
+  $Id: TestSimpleListStatements.java,v 1.16 2007-11-12 12:11:51 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -45,9 +45,9 @@ public class TestSimpleListStatements extends ModelTestBase
         model.createResource("http://example.org/long")             
              .addProperty(RDF.value, longValue);              
         model.createResource("http://example.org/float")
-             .addProperty(RDF.value, floatValue);            
+             .addTypedProperty(RDF.value, floatValue);            
         model.createResource("http://example.org/double")
-             .addProperty(RDF.value, doubleValue);             
+             .addTypedProperty(RDF.value, doubleValue);             
         model.createResource("http://example.org/string")
              .addProperty(RDF.value, stringValue);             
         model.createResource("http://example.org/langString")
@@ -94,7 +94,7 @@ public class TestSimpleListStatements extends ModelTestBase
     }
     
     public void testFloat() {
-        StmtIterator iter = model.listStatements(null, null, floatValue);
+        StmtIterator iter = model.listStatements(null, null, model.createTypedLiteral( floatValue ) );
         int i =0;
         while (iter.hasNext()) {
             i++;
@@ -105,7 +105,7 @@ public class TestSimpleListStatements extends ModelTestBase
     }
     
     public void testDouble() {
-        StmtIterator iter = model.listStatements(null, null, doubleValue);
+        StmtIterator iter = model.listStatements(null, null, model.createTypedLiteral( doubleValue ) );
         int i =0;
         while (iter.hasNext()) {
             i++;

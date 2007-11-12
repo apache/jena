@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: NewRegressionResources.java,v 1.6 2007-04-24 10:37:30 chris-dollin Exp $
+ 	$Id: NewRegressionResources.java,v 1.7 2007-11-12 12:11:58 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.regression;
@@ -167,8 +167,8 @@ public class NewRegressionResources extends NewRegressionBase
         assertTrue( r.addProperty( RDF.value, tvInt ).hasProperty( RDF.value, tvInt ) );
         assertTrue( r.addProperty( RDF.value, tvLong ).hasProperty( RDF.value, tvLong ) );
         assertTrue( r.addProperty( RDF.value, tvChar ).hasProperty( RDF.value, tvChar ) );
-        assertTrue( r.addProperty( RDF.value, tvFloat ).hasProperty( RDF.value, tvFloat ) );
-        assertTrue( r.addProperty( RDF.value, tvDouble ).hasProperty( RDF.value, tvDouble ) );
+        assertTrue( r.addTypedProperty( RDF.value, tvFloat ).hasTypedProperty( RDF.value, tvFloat ) );
+        assertTrue( r.addTypedProperty( RDF.value, tvDouble ).hasTypedProperty( RDF.value, tvDouble ) );
         assertTrue( r.addProperty( RDF.value, tvString ).hasProperty( RDF.value, tvString ) );
         assertTrue( r.addProperty( RDF.value, tvString, lang ).hasProperty( RDF.value, tvString, lang ) );
         assertTrue( r.addProperty( RDF.value, tvObject ).hasProperty( RDF.value, tvObject ) );

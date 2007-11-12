@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            16-Jun-2003
  * Filename           $RCSfile: TestBugReports.java,v $
- * Revision           $Revision: 1.83 $
+ * Revision           $Revision: 1.84 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2007-01-29 13:25:04 $
+ * Last modified on   $Date: 2007-11-12 12:11:21 $
  *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
@@ -447,25 +447,25 @@ public class TestBugReports
 
         Statement st = model1.createStatement(sub, pred, obj);
         model1.add(st);
-        st.createReifiedStatement().addProperty(probabilityP, 0.9);
+        st.createReifiedStatement().addTypedProperty(probabilityP, 0.9);
         assertTrue("st should be reified", st.isReified());
 
         Statement st2 = model2.createStatement(sub, pred, obj);
         model2.add(st2);
-        st2.createReifiedStatement().addProperty(probabilityP, 0.3);
+        st2.createReifiedStatement().addTypedProperty(probabilityP, 0.3);
         assertTrue("st2 should be reified", st2.isReified());
 
-        sub.addProperty(probabilityP, 0.3);
-        sub.removeAll(probabilityP).addProperty(probabilityP, 0.3); //!!!
+        sub.addTypedProperty(probabilityP, 0.3);
+        sub.removeAll(probabilityP).addTypedProperty(probabilityP, 0.3); //!!!
                                                                     // exception
 
         // Part B - exception in remove All
         Individual sub2 = model2.createIndividual("http://mytest#i1", model1.getProfile().CLASS());
 
-        sub.addProperty(probabilityP, 0.3);
+        sub.addTypedProperty(probabilityP, 0.3);
         sub.removeAll(probabilityP); //!!! exception
 
-        sub2.addProperty(probabilityP, 0.3);
+        sub2.addTypedProperty(probabilityP, 0.3);
         sub2.removeAll(probabilityP); //!!! exception
 
     }

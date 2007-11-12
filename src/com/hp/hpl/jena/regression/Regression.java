@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
     [See end of file]
-    $Id: Regression.java,v 1.27 2007-11-09 12:22:54 chris-dollin Exp $
+    $Id: Regression.java,v 1.28 2007-11-12 12:11:59 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.regression;
@@ -24,7 +24,7 @@ import org.apache.commons.logging.LogFactory;
  * NewRegression suite; kers.]
  *
  * @author  bwm
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.27 $' Date='$Date: 2007-11-09 12:22:54 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.28 $' Date='$Date: 2007-11-12 12:11:59 $'
  */
 public class Regression extends Object {
 
@@ -2540,10 +2540,10 @@ public class Regression extends Object {
                         .hasProperty(RDF.value, tvLong)) error(test, n);
             n++; if (! r.addProperty(RDF.value, tvChar)
                         .hasProperty(RDF.value, tvChar)) error(test, n);
-            n++; if (! r.addProperty(RDF.value, tvFloat)
-                        .hasProperty(RDF.value, tvFloat)) error(test, n);
-            n++; if (! r.addProperty(RDF.value, tvDouble)
-                        .hasProperty(RDF.value, tvDouble)) error(test, n);
+            n++; if (! r.addTypedProperty(RDF.value, tvFloat)
+                        .hasTypedProperty(RDF.value, tvFloat)) error(test, n);
+            n++; if (! r.addTypedProperty(RDF.value, tvDouble)
+                        .hasTypedProperty(RDF.value, tvDouble)) error(test, n);
             n++; if (! r.addProperty(RDF.value, tvString)
                         .hasProperty(RDF.value, tvString)) error(test, n);
             n++; if (! r.addProperty(RDF.value, tvString, lang)
@@ -3959,10 +3959,10 @@ public class Regression extends Object {
                         .hasProperty(RDF.value, tvLong)) error(test, n);
             n++; if (! r.addProperty(RDF.value, tvChar)
                         .hasProperty(RDF.value, tvChar)) error(test, n);
-            n++; if (! r.addProperty(RDF.value, tvFloat)
-                        .hasProperty(RDF.value, tvFloat)) error(test, n);
-            n++; if (! r.addProperty(RDF.value, tvDouble)
-                        .hasProperty(RDF.value, tvDouble)) error(test, n);
+            n++; if (! r.addTypedProperty(RDF.value, tvFloat)
+                        .hasTypedProperty(RDF.value, tvFloat)) error(test, n);
+            n++; if (! r.addTypedProperty(RDF.value, tvDouble)
+                        .hasTypedProperty(RDF.value, tvDouble)) error(test, n);
             n++; if (! r.addProperty(RDF.value, tvString)
                         .hasProperty(RDF.value, tvString)) error(test, n);
             n++; if (! r.addProperty(RDF.value, tvString, lang)
@@ -4869,5 +4869,5 @@ public class Regression extends Object {
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: Regression.java,v 1.27 2007-11-09 12:22:54 chris-dollin Exp $
+ * $Id: Regression.java,v 1.28 2007-11-12 12:11:59 chris-dollin Exp $
  */

@@ -63,7 +63,7 @@ import com.hp.hpl.jena.graph.Node;
      the extra behaviour.  Factory objects are used to construct such
      enhanced resources.</p>
   @author bwm
-  @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.22 $' Date='$Date: 2007-01-02 11:48:35 $'
+  @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.23 $' Date='$Date: 2007-11-12 12:11:27 $'
 */
 public interface Resource extends RDFNode {
 
@@ -206,32 +206,37 @@ public interface Resource extends RDFNode {
      */
     public Resource addProperty( Property p, char o );
 
-    /** Add a property to this resource.
-     *
-     * <p>A statement with this resource as the subject, p as the predicate and o
-     * as the object is added to the model associated with this resource.</p>
-     * <p> o is converted to a string by calling its <CODE>toString()</CODE>
-     * method.</p>
-     * @deprecated Applications should use typed literals 
-     * @param p The property to be added.
-     * @param o The value of the property to be added.
-     * @return This resource to allow cascading calls.
-     */
-    public Resource addProperty( Property p, float o );
+//    /** Add a property to this resource.
+//     *
+//     * <p>A statement with this resource as the subject, p as the predicate and o
+//     * as the object is added to the model associated with this resource.</p>
+//     * <p> o is converted to a string by calling its <CODE>toString()</CODE>
+//     * method.</p>
+//     * @deprecated Applications should use typed literals 
+//     * @param p The property to be added.
+//     * @param o The value of the property to be added.
+//     * @return This resource to allow cascading calls.
+//     */
+//    public Resource addProperty( Property p, float o );
+//
+//    /** Add a property to this resource.
+//     *
+//     * <p>A statement with this resource as the subject, p as the predicate and o
+//     * as the object is added to the model associated with this resource.</p>
+//     * <p> o is converted to a string by calling its <CODE>toString()</CODE>
+//     * method.</p>
+//     * @deprecated Applications should use typed literals 
+//     * @param p The property to be added.
+//     * @param o The value of the property to be added.
+//     * @return This resource to allow cascading calls.
+//     */
+//    public Resource addProperty( Property p, double o );
 
-    /** Add a property to this resource.
-     *
-     * <p>A statement with this resource as the subject, p as the predicate and o
-     * as the object is added to the model associated with this resource.</p>
-     * <p> o is converted to a string by calling its <CODE>toString()</CODE>
-     * method.</p>
-     * @deprecated Applications should use typed literals 
-     * @param p The property to be added.
-     * @param o The value of the property to be added.
-     * @return This resource to allow cascading calls.
-     */
-    public Resource addProperty( Property p, double o );
 
+    public Resource addTypedProperty( Property value, double d );
+
+    public Resource addTypedProperty( Property value, float d );
+    
     /** Add a property to this resource.
      *
      * <p>A statement with this resource as the subject, p as the predicate and o
@@ -339,6 +344,10 @@ public interface Resource extends RDFNode {
      * value o.
      */
     public boolean hasProperty( Property p, double o );
+    
+    public boolean hasTypedProperty( Property p, double o );
+    
+    public boolean hasTypedProperty( Property p, float o );
 
     /** Test if this resource has a given property with a given value.
      * @param p The property sought.
