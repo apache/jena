@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestTrialOWLRules.java,v 1.13 2007-01-02 11:50:31 andy_seaborne Exp $
+ * $Id: TestTrialOWLRules.java,v 1.14 2007-11-12 16:17:03 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -27,7 +27,7 @@ import java.util.*;
  * included in the master regression test suite.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.13 $ on $Date: 2007-01-02 11:50:31 $
+ * @version $Revision: 1.14 $ on $Date: 2007-11-12 16:17:03 $
  */
 public class TestTrialOWLRules extends TestCase {
 
@@ -48,7 +48,7 @@ public class TestTrialOWLRules extends TestCase {
         configuration = m.createResource(GenericRuleReasonerFactory.URI);
         configuration.addProperty(ReasonerVocabulary.PROPruleMode, "hybrid");
         configuration.addProperty(ReasonerVocabulary.PROPruleSet, "etc/owl-fb-test.rules");
-        configuration.addProperty(ReasonerVocabulary.PROPenableOWLTranslation, true);
+        configuration.addProperty(ReasonerVocabulary.PROPenableOWLTranslation, "true" );
     }
     
     /**

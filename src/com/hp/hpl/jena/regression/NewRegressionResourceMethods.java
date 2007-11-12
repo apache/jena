@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: NewRegressionResourceMethods.java,v 1.5 2007-11-12 15:36:41 chris-dollin Exp $
+ 	$Id: NewRegressionResourceMethods.java,v 1.6 2007-11-12 16:17:07 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.regression;
@@ -40,11 +40,12 @@ public class NewRegressionResourceMethods extends NewRegressionBase
         tvResource = m.createResource();
         r = 
             m.createResource()
+            .addTypedProperty( RDF.value, tvBoolean )
             .addTypedProperty( RDF.value, tvByte )
             .addTypedProperty( RDF.value, tvShort )
             .addTypedProperty( RDF.value, tvInt )
             .addTypedProperty( RDF.value, tvLong )
-            .addProperty( RDF.value, tvChar )
+            .addTypedProperty( RDF.value, tvChar )
             .addTypedProperty( RDF.value, tvFloat )
             .addTypedProperty( RDF.value, tvDouble )
             .addProperty( RDF.value, tvString )
@@ -54,6 +55,9 @@ public class NewRegressionResourceMethods extends NewRegressionBase
             .addProperty( RDF.value, tvResource )
             ;
         }
+    
+    public void testBoolean()
+        { assertTrue( r.hasTypedProperty( RDF.value, tvBoolean ) ); }
     
     public void testByte()
         { assertTrue( r.hasTypedProperty( RDF.value, tvByte ) ); }
@@ -68,7 +72,7 @@ public class NewRegressionResourceMethods extends NewRegressionBase
         { assertTrue( r.hasTypedProperty( RDF.value, tvLong ) ); }
     
     public void testChar()
-        { assertTrue( r.hasProperty( RDF.value, tvChar ) ); }
+        { assertTrue( r.hasTypedProperty( RDF.value, tvChar ) ); }
     
     public void testFloat()
         { assertTrue( r.hasTypedProperty( RDF.value, tvFloat ) ); }
@@ -114,8 +118,8 @@ public class NewRegressionResourceMethods extends NewRegressionBase
     
     public void testCountsCorrect()
         {
-        assertEquals( 12, iteratorToList( m.listStatements() ).size() );
-        assertEquals( 12, iteratorToList( r.listProperties( RDF.value ) ).size() );
+        assertEquals( 13, iteratorToList( m.listStatements() ).size() );
+        assertEquals( 13, iteratorToList( r.listProperties( RDF.value ) ).size() );
         assertEquals( 0, iteratorToList( r.listProperties( RDF.type ) ).size() );
         }
     

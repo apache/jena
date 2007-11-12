@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: NewRegressionResources.java,v 1.8 2007-11-12 15:36:41 chris-dollin Exp $
+ 	$Id: NewRegressionResources.java,v 1.9 2007-11-12 16:17:08 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.regression;
@@ -162,11 +162,12 @@ public class NewRegressionResources extends NewRegressionBase
         Resource tvResource = m.createResource();
         String lang = "fr";
     //
+        assertTrue( r.addTypedProperty( RDF.value, tvBoolean ).hasTypedProperty( RDF.value, tvBoolean ) );
         assertTrue( r.addTypedProperty( RDF.value, tvByte ).hasTypedProperty( RDF.value, tvByte ) );
         assertTrue( r.addTypedProperty( RDF.value, tvShort ).hasTypedProperty( RDF.value, tvShort ) );
         assertTrue( r.addTypedProperty( RDF.value, tvInt ).hasTypedProperty( RDF.value, tvInt ) );
         assertTrue( r.addTypedProperty( RDF.value, tvLong ).hasTypedProperty( RDF.value, tvLong ) );
-        assertTrue( r.addProperty( RDF.value, tvChar ).hasProperty( RDF.value, tvChar ) );
+        assertTrue( r.addTypedProperty( RDF.value, tvChar ).hasTypedProperty( RDF.value, tvChar ) );
         assertTrue( r.addTypedProperty( RDF.value, tvFloat ).hasTypedProperty( RDF.value, tvFloat ) );
         assertTrue( r.addTypedProperty( RDF.value, tvDouble ).hasTypedProperty( RDF.value, tvDouble ) );
         assertTrue( r.addProperty( RDF.value, tvString ).hasProperty( RDF.value, tvString ) );
@@ -180,13 +181,13 @@ public class NewRegressionResources extends NewRegressionBase
         try {r.getRequiredProperty( p ); fail( "should detect missing property" ); }
         catch (PropertyNotFoundException e) { pass(); }
     //
-        assertEquals( 12, iteratorToSet( r.listProperties( RDF.value ) ).size() );
+        assertEquals( 13, iteratorToSet( r.listProperties( RDF.value ) ).size() );
         assertEquals( setOf( r ), iteratorToSet( r.listProperties( RDF.value ).mapWith( Statement.Util.getSubject ) ) );
     //
         assertEquals( 0, iteratorToSet( r.listProperties( p ) ).size() );
         assertEquals( new HashSet(), iteratorToSet( r.listProperties( p ).mapWith( Statement.Util.getSubject ) ) );
     //
-        assertEquals( 12 + numProps, iteratorToSet( r.listProperties() ).size() );
+        assertEquals( 13 + numProps, iteratorToSet( r.listProperties() ).size() );
         assertEquals( setOf( r ), iteratorToSet( r.listProperties().mapWith( Statement.Util.getSubject ) ) );
     //
         r.removeProperties();

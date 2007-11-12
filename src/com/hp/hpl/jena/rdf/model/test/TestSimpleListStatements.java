@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestSimpleListStatements.java,v 1.17 2007-11-12 15:36:38 chris-dollin Exp $
+  $Id: TestSimpleListStatements.java,v 1.18 2007-11-12 16:17:01 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -39,9 +39,9 @@ public class TestSimpleListStatements extends ModelTestBase
         
     	model = ModelFactory.createDefaultModel();
     	model.createResource("http://example.org/boolean")
-    	     .addProperty(RDF.value, booleanValue);             
+    	     .addTypedProperty(RDF.value, booleanValue);             
         model.createResource("http://example.org/char")
-             .addProperty(RDF.value, charValue);             
+             .addTypedProperty(RDF.value, charValue);             
         model.createResource("http://example.org/long")             
              .addTypedProperty(RDF.value, longValue);              
         model.createResource("http://example.org/float")
@@ -61,7 +61,7 @@ public class TestSimpleListStatements extends ModelTestBase
     }
     
     public void testBoolean() {
-        StmtIterator iter = model.listStatements(null, null, booleanValue);
+        StmtIterator iter = model.listStatements(null, null, model.createTypedLiteral( booleanValue ) );
         int i =0;
         while (iter.hasNext()) {
             i++;
@@ -72,7 +72,7 @@ public class TestSimpleListStatements extends ModelTestBase
     }
     
     public void testChar() {
-        StmtIterator iter = model.listStatements(null, null, charValue);
+        StmtIterator iter = model.listStatements(null, null, model.createTypedLiteral( charValue ) );
         int i =0;
         while (iter.hasNext()) {
             i++;

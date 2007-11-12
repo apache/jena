@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestRDFSReasoners.java,v 1.16 2007-01-02 11:50:50 andy_seaborne Exp $
+ * $Id: TestRDFSReasoners.java,v 1.17 2007-11-12 16:17:05 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.test;
 
@@ -29,7 +29,7 @@ import org.apache.commons.logging.LogFactory;
  * Test the set of admissable RDFS reasoners.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.16 $ on $Date: 2007-01-02 11:50:50 $
+ * @version $Revision: 1.17 $ on $Date: 2007-11-12 16:17:05 $
  */
 public class TestRDFSReasoners extends ReasonerTestBase {
     
@@ -61,7 +61,7 @@ public class TestRDFSReasoners extends ReasonerTestBase {
 //            constructRDFWGtests(suite, RDFSFBRuleReasonerFactory.theInstance(), null);
             constructQuerytests(suite, "rdfs/manifest-nodirect-noresource.rdf", RDFSFBRuleReasonerFactory.theInstance(), null);
             
-            Resource config = newResource().addProperty(ReasonerVocabulary.PROPenableCMPScan, true);
+            Resource config = newResource().addProperty(ReasonerVocabulary.PROPenableCMPScan, "true" ); // TODO make boolean value work
 //            config.addProperty(ReasonerVocabulary.PROPtraceOn, true);
             constructRDFWGtests(suite, RDFSRuleReasonerFactory.theInstance(), null);
             constructQuerytests(suite, "rdfs/manifest-standard.rdf", RDFSRuleReasonerFactory.theInstance(), config);
