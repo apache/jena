@@ -234,6 +234,20 @@
           <test name="com.hp.hpl.jena.sdb.test.update.TestStoreUpdateOracleIndex"/>
         </junit>
       </target>
+  
+  <target name="test-db2" depends="jar">
+ 	<junit printsummary="on">
+ 	  <formatter type="plain"/>
+ 	  <classpath>
+ 	    <fileset dir="${lib.dir}" includes="*.jar"/>
+ 	    <fileset dir="jdbc" includes="*.jar"/>
+ 	  </classpath>
+ 	  <test name="com.hp.hpl.jena.sdb.test.graph.TestDB2Graph"/>
+ 	  <test name="com.hp.hpl.jena.sdb.test.model.TestDB2Model"/>
+ 	  <test name="com.hp.hpl.jena.sdb.test.update.TestStoreUpdateDB2Hash"/>
+ 	  <test name="com.hp.hpl.jena.sdb.test.update.TestStoreUpdateDB2Index"/>
+ 	</junit>
+  </target>
   <!-- Section: Javadoc -->
 
   <target name="javadoc" depends="clean-javadoc,build-src,javac-flags"

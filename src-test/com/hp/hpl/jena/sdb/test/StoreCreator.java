@@ -270,7 +270,7 @@ public class StoreCreator {
 			
 			String url = JDBC.makeURL("db2", "sweb-sdb-4:50000", "TEST2H") ;
 			
-			SDBConnection sdb = new SDBConnection(url, "jena", "swara") ;
+			SDBConnection sdb = new SDBConnection(url, "user", "password") ;
 			
             StoreDesc desc = new StoreDesc(LayoutType.LayoutTripleNodesHash, DatabaseType.DB2) ;
 			sdbdb2h = new StoreTriplesNodesHashDB2(sdb, desc);
@@ -289,7 +289,7 @@ public class StoreCreator {
 			
 			String url = JDBC.makeURL("db2", "sweb-sdb-4:50000", "TEST2I") ;
 			
-			SDBConnection sdb = new SDBConnection(url, "jena", "swara") ;
+			SDBConnection sdb = new SDBConnection(url, "user", "password") ;
 			
             StoreDesc desc = new StoreDesc(LayoutType.LayoutTripleNodesIndex, DatabaseType.DB2) ;
 			sdbdb2i = new StoreTriplesNodesIndexDB2(sdb, desc);

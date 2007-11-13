@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<rdf:RDF xmlns:rdf  = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:rdfs = "http://www.w3.org/2000/01/rdf-schema#"
+         xmlns:foo  = "http://example.org/foo">
+
+<foo:bar>
+  <foo:p1 rdf:parseType="daml:collection">
+    <foo:mem rdf:about="m1"/>
+    <foo:mem rdf:about="m2">
+       <foo:bar>foobar</foo:bar>
+    </foo:mem>
+    <foo:mem rdf:about="m2">
+      <foo:r rdf:parseType="daml:collection">
+        <foo:mem rdf:about="m3"/>
+        <foo:mem rdf:about="m4">
+          <foo:q>barfoo</foo:q>
+        </foo:mem>
+        <rdf:Description/>
+      </foo:r>
+    </foo:mem>
+  </foo:p1>
+</foo:bar>
+ 
+
+</rdf:RDF>
+
+
