@@ -57,10 +57,20 @@ public class WriterGraph
 //    { writeGraph(out, m.getGraph(), uri) ; }
     
     private static void writeGraph(IndentedWriter out, Graph g, String uri, SerializationContext naming)
-    { _writeGraph(out, g, FmtUtils.stringForURI(uri), naming) ; }
+    {
+        String x = null ;
+        if ( uri != null )
+            x = FmtUtils.stringForURI(uri) ;
+        _writeGraph(out, g, x, naming) ;
+    }
     
     private static void writeGraph(IndentedWriter out, Graph g, Node node, SerializationContext naming)
-    { _writeGraph(out, g, FmtUtils.stringForNode(node), naming) ; }
+    { 
+        String x = null ;
+        if ( node != null )
+            x = FmtUtils.stringForNode(node) ;
+        _writeGraph(out, g, x, naming) ;
+    }
 
     private static void _writeGraph(IndentedWriter out, Graph g, String label, SerializationContext naming)
     {
