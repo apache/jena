@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: NewRegressionResourceMethods.java,v 1.6 2007-11-12 16:17:07 chris-dollin Exp $
+ 	$Id: NewRegressionResourceMethods.java,v 1.7 2007-11-13 09:46:38 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.regression;
@@ -50,7 +50,7 @@ public class NewRegressionResourceMethods extends NewRegressionBase
             .addTypedProperty( RDF.value, tvDouble )
             .addProperty( RDF.value, tvString )
             .addProperty( RDF.value, tvString , lang )
-            .addProperty( RDF.value, tvObject )
+            .addTypedProperty( RDF.value, tvObject )
             .addProperty( RDF.value, tvLiteral )
             .addProperty( RDF.value, tvResource )
             ;
@@ -87,7 +87,7 @@ public class NewRegressionResourceMethods extends NewRegressionBase
         { assertTrue( r.hasProperty( RDF.value, tvString, lang ) ); }
     
     public void testObject()
-        { assertTrue( r.hasProperty( RDF.value, tvObject ) ); }
+        { assertTrue( r.hasTypedProperty( RDF.value, tvObject ) ); }
     
     public void testLiteral()
         { assertTrue( r.hasProperty( RDF.value, tvLiteral ) ); }

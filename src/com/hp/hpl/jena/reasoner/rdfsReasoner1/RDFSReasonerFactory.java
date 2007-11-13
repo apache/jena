@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: RDFSReasonerFactory.java,v 1.18 2007-01-02 11:48:52 andy_seaborne Exp $
+ * $Id: RDFSReasonerFactory.java,v 1.19 2007-11-13 09:46:35 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rdfsReasoner1;
 
@@ -22,7 +22,7 @@ import com.hp.hpl.jena.vocabulary.*;
  * {@link com.hp.hpl.jena.reasoner.rulesys.RDFSRuleReasonerFactory}.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.18 $ on $Date: 2007-01-02 11:48:52 $
+ * @version $Revision: 1.19 $ on $Date: 2007-11-13 09:46:35 $
  */
 public class RDFSReasonerFactory implements ReasonerFactory {
     
@@ -75,8 +75,8 @@ public class RDFSReasonerFactory implements ReasonerFactory {
                 .addProperty(ReasonerVocabulary.supportsP, RDFS.member)
                 .addProperty(ReasonerVocabulary.supportsP, RDFS.range)
                 .addProperty(ReasonerVocabulary.supportsP, RDFS.domain)
-                .addProperty(ReasonerVocabulary.supportsP, TransitiveReasoner.directSubClassOf)
-                .addProperty(ReasonerVocabulary.supportsP, TransitiveReasoner.directSubPropertyOf)
+                .addProperty(ReasonerVocabulary.supportsP, TransitiveReasoner.directSubClassOf.toString() ) // TODO -- typing
+                .addProperty(ReasonerVocabulary.supportsP, TransitiveReasoner.directSubPropertyOf.toString() ) // TODO -- typing
                 .addProperty(ReasonerVocabulary.versionP, "0.1");
         }
         return capabilities;

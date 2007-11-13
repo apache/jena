@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: NewRegressionResources.java,v 1.9 2007-11-12 16:17:08 chris-dollin Exp $
+ 	$Id: NewRegressionResources.java,v 1.10 2007-11-13 09:46:39 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.regression;
@@ -172,7 +172,7 @@ public class NewRegressionResources extends NewRegressionBase
         assertTrue( r.addTypedProperty( RDF.value, tvDouble ).hasTypedProperty( RDF.value, tvDouble ) );
         assertTrue( r.addProperty( RDF.value, tvString ).hasProperty( RDF.value, tvString ) );
         assertTrue( r.addProperty( RDF.value, tvString, lang ).hasProperty( RDF.value, tvString, lang ) );
-        assertTrue( r.addProperty( RDF.value, tvObject ).hasProperty( RDF.value, tvObject ) );
+        assertTrue( r.addTypedProperty( RDF.value, tvObject ).hasTypedProperty( RDF.value, tvObject ) );
         assertTrue( r.addProperty( RDF.value, tvLiteral ).hasProperty( RDF.value, tvLiteral ) );
         assertTrue( r.addProperty( RDF.value, tvResource ).hasProperty( RDF.value, tvResource ) );
         assertTrue( r.getRequiredProperty( RDF.value ).getSubject().equals( r ) );

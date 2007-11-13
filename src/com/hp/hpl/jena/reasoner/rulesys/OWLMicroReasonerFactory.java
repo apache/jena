@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP, all rights reserved.
  * [See end of file]
- * $Id: OWLMicroReasonerFactory.java,v 1.9 2007-01-02 11:50:57 andy_seaborne Exp $
+ * $Id: OWLMicroReasonerFactory.java,v 1.10 2007-11-13 09:46:37 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -30,7 +30,7 @@ import com.hp.hpl.jena.vocabulary.*;
  * should not be relied on at this point.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.9 $ on $Date: 2007-01-02 11:50:57 $
+ * @version $Revision: 1.10 $ on $Date: 2007-11-13 09:46:37 $
  */
 public class OWLMicroReasonerFactory implements ReasonerFactory {
     
@@ -87,8 +87,8 @@ public class OWLMicroReasonerFactory implements ReasonerFactory {
                 .addProperty(ReasonerVocabulary.supportsP, RDFS.member)
                 .addProperty(ReasonerVocabulary.supportsP, RDFS.range)
                 .addProperty(ReasonerVocabulary.supportsP, RDFS.domain)
-                .addProperty(ReasonerVocabulary.supportsP, TransitiveReasoner.directSubClassOf)
-                .addProperty(ReasonerVocabulary.supportsP, TransitiveReasoner.directSubPropertyOf)
+                .addProperty(ReasonerVocabulary.supportsP, TransitiveReasoner.directSubClassOf.toString() ) // TODO -- typing
+                .addProperty(ReasonerVocabulary.supportsP, TransitiveReasoner.directSubPropertyOf.toString() ) // TODO -- typing
                 // TODO - add OWL elements supported
                 .addProperty(ReasonerVocabulary.supportsP, OWL.ObjectProperty )
                 .addProperty(ReasonerVocabulary.supportsP, OWL.DatatypeProperty)

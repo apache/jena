@@ -63,7 +63,7 @@ import com.hp.hpl.jena.graph.Node;
      the extra behaviour.  Factory objects are used to construct such
      enhanced resources.</p>
   @author bwm
-  @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.25 $' Date='$Date: 2007-11-12 16:16:41 $'
+  @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.26 $' Date='$Date: 2007-11-13 09:46:23 $'
 */
 public interface Resource extends RDFNode {
 
@@ -167,14 +167,44 @@ public interface Resource extends RDFNode {
      */
     public StmtIterator listProperties();
     
+    /**
+        Add the property <code>p</code> with the typed-literal value <code>o</code>
+        to this resource, <i>ie</i> add (this, p, typed(o)) to this's model. Answer
+        this resource. The typed literal is equal to one constructed by using
+        <code>this.getModel().createTypedLiteral(o)</code>.
+    */
     public Resource addTypedProperty( Property p, boolean o );
     
+    /**
+        Add the property <code>p</code> with the typed-literal value <code>o</code>
+        to this resource, <i>ie</i> add (this, p, typed(o)) to this's model. Answer
+        this resource. The typed literal is equal to one constructed by using
+        <code>this.getModel().createTypedLiteral(o)</code>.
+    */
     public Resource addTypedProperty( Property p, long o );
     
-    public Resource addTypedProperty( Property p, char o );
+    /**
+        Add the property <code>p</code> with the typed-literal value <code>o</code>
+        to this resource, <i>ie</i> add (this, p, typed(o)) to this's model. Answer
+        this resource. The typed literal is equal to one constructed by using
+        <code>this.getModel().createTypedLiteral(o)</code>.
+    */
+   public Resource addTypedProperty( Property p, char o );
 
+   /**
+       Add the property <code>p</code> with the typed-literal value <code>o</code>
+       to this resource, <i>ie</i> add (this, p, typed(o)) to this's model. Answer
+       this resource. The typed literal is equal to one constructed by using
+       <code>this.getModel().createTypedLiteral(o)</code>.
+    */
     public Resource addTypedProperty( Property value, double d );
 
+        /**
+        Add the property <code>p</code> with the typed-literal value <code>o</code>
+        to this resource, <i>ie</i> add (this, p, typed(o)) to this's model. Answer
+        this resource. The typed literal is equal to one constructed by using
+        <code>this.getModel().createTypedLiteral(o)</code>.
+        */
     public Resource addTypedProperty( Property value, float d );
     
     /** Add a property to this resource.
@@ -210,18 +240,20 @@ public interface Resource extends RDFNode {
    public Resource addProperty( Property p, String lexicalForm, RDFDatatype datatype );
 
 
-   /** Add a property to this resource.
-     *
-     * <p>A statement with this resource as the subject, p as the predicate and o
-     * as the object is added to the model associated with this resource.</p>
-     * <p> o is converted to a string by calling its <CODE>toString()</CODE>
-     * method.</p>
-     * @deprecated Applications should use typed literals 
-     * @param p The property to be added.
-     * @param o The value of the property to be added.
-     * @return This resource to allow cascading calls.
-     */
-    public Resource addProperty( Property p, Object o );
+//   /** Add a property to this resource.
+//     *
+//     * <p>A statement with this resource as the subject, p as the predicate and o
+//     * as the object is added to the model associated with this resource.</p>
+//     * <p> o is converted to a string by calling its <CODE>toString()</CODE>
+//     * method.</p>
+//     * @deprecated Applications should use typed literals 
+//     * @param p The property to be added.
+//     * @param o The value of the property to be added.
+//     * @return This resource to allow cascading calls.
+////     */
+//    public Resource addProperty( Property p, Object o );
+    
+    public Resource addTypedProperty( Property p, Object o );
 
     /** Add a property to this resource.
      *
@@ -240,14 +272,39 @@ public interface Resource extends RDFNode {
      */
     public boolean hasProperty( Property p );
     
+    /**
+        Answer true iff this resource has the value <code>o</code> for
+        property <code>p</code>. <code>o</code> is interpreted as
+        a typed literal with the appropriate RDF type.
+    */
     public boolean hasTypedProperty( Property p, boolean o );
     
+    /**
+        Answer true iff this resource has the value <code>o</code> for
+        property <code>p</code>. <code>o</code> is interpreted as
+        a typed literal with the appropriate RDF type.
+    */
     public boolean hasTypedProperty( Property p, long o );
-    
+
+    /**
+        Answer true iff this resource has the value <code>o</code> for
+        property <code>p</code>. <code>o</code> is interpreted as
+        a typed literal with the appropriate RDF type.
+    */
     public boolean hasTypedProperty( Property p, char o );
     
+    /**
+        Answer true iff this resource has the value <code>o</code> for
+        property <code>p</code>. <code>o</code> is interpreted as
+        a typed literal with the appropriate RDF type.
+    */
     public boolean hasTypedProperty( Property p, double o );
     
+    /**
+        Answer true iff this resource has the value <code>o</code> for
+        property <code>p</code>. <code>o</code> is interpreted as
+        a typed literal with the appropriate RDF type.
+     */
     public boolean hasTypedProperty( Property p, float o );
 
     /** Test if this resource has a given property with a given value.
@@ -267,14 +324,16 @@ public interface Resource extends RDFNode {
      */
     public boolean hasProperty( Property p, String o, String l );
 
-    /** Test if this resource has a given property with a given value.
-     * @deprecated Applications should use typed literals 
-     * @param p The property sought.
-     * @param o The value of the property sought.
-     * @return true if and only if this resource has property p with
-     * value o.
-     */
-    public boolean hasProperty( Property p, Object o );
+//    /** Test if this resource has a given property with a given value.
+//     * @deprecated Applications should use typed literals 
+//     * @param p The property sought.
+//     * @param o The value of the property sought.
+//     * @return true if and only if this resource has property p with
+//     * value o.
+//     */
+//    public boolean hasProperty( Property p, Object o );
+    
+    public boolean hasTypedProperty( Property p, Object o );
 
     /** Test if this resource has a given property with a given value.
      * @param p The property sought.
