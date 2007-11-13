@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2007 Hewlett-Packard Development Company, LP
  	All rights reserved.
- 	$Id: TestLiteralsInModel.java,v 1.1 2007-11-13 10:38:38 chris-dollin Exp $
+ 	$Id: TestLiteralsInModel.java,v 1.2 2007-11-13 14:38:41 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -13,12 +13,20 @@ public class TestLiteralsInModel extends ModelTestBase
     public TestLiteralsInModel( String name )
         { super( name ); }
 
+    protected final Model m = getModel();
+    
     protected Model getModel()
         { return ModelFactory.createDefaultModel(); }
     
-    public void testMT()
+    static final Resource X = resource( "X" );
+    
+    static final Property P = property( "P" );
+    
+    public void testAddWithFloatObject()
         {
-        Model m = getModel();
+        m.addTyped( X, P, 14.0f );
+        assertTrue( m.contains( X, P, m.createTypedLiteral( 14.0f ) ) );
+        assertTrue( m.containsTyped( X, P, 14.0f ) );
         }
     }
 

@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
     [See end of file]
-    $Id: Regression.java,v 1.31 2007-11-13 09:46:39 chris-dollin Exp $
+    $Id: Regression.java,v 1.32 2007-11-13 14:38:43 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.regression;
@@ -24,7 +24,7 @@ import org.apache.commons.logging.LogFactory;
  * NewRegression suite; kers.]
  *
  * @author  bwm
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.31 $' Date='$Date: 2007-11-13 09:46:39 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.32 $' Date='$Date: 2007-11-13 14:38:43 $'
  */
 public class Regression extends Object {
 
@@ -823,8 +823,8 @@ public class Regression extends Object {
 
             try {
                 n=170;
-                n++; m.add(subject, RDF.value, tvFloat);
-                n++; if (! m.contains(subject,RDF.value,tvFloat))
+                n++; m.addTyped(subject, RDF.value, tvFloat);
+                n++; if (! m.containsTyped(subject,RDF.value,tvFloat))
                 error(test,n);
             } catch (Exception e) {
                 error(test, n, e);
@@ -2754,11 +2754,11 @@ public class Regression extends Object {
             n++; stmt = m.createStatement(m.createResource(),
                                           RDF.value, tvBoolean);
             n++; m.add(stmt);
-            n++; stmt = stmt.changeObject(tvFloat);
+            n++; stmt = stmt.changeTypedObject(tvFloat);
             n++;  if (! ((stmt.getFloat()-tvFloat)<0.00005)) error(test,n);
             n++;  if (  m.contains(stmt.getSubject(), RDF.value, tvBoolean))
                         error(test,n);
-            n++;  if (! m.contains(stmt.getSubject(), RDF.value, tvFloat))
+            n++;  if (! m.containsTyped(stmt.getSubject(), RDF.value, tvFloat))
                        error(test,n);
 
             n=370;
@@ -4779,6 +4779,7 @@ public class Regression extends Object {
         + testName + " "
         + testNum  + " ");
         errors = true;
+        throw new RuntimeException( "BOOM BOOM BOOM" );
     }
 
     public void error(String testName, int testNum, long v) {
@@ -4787,6 +4788,7 @@ public class Regression extends Object {
         + testNum  + " "
         + Long.toString(v));
         errors = true;
+        throw new RuntimeException( "BOOM BOOM BOOM" );
     }
 
     public void error(String testName, int testNum, Exception e) {
@@ -4795,6 +4797,7 @@ public class Regression extends Object {
         + testNum  + " "
         + e.toString());
         errors = true;
+        throw new RuntimeException( "BOOM BOOM BOOM" );
     }
 
     public boolean getErrors() {
@@ -4868,5 +4871,5 @@ public class Regression extends Object {
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: Regression.java,v 1.31 2007-11-13 09:46:39 chris-dollin Exp $
+ * $Id: Regression.java,v 1.32 2007-11-13 14:38:43 chris-dollin Exp $
  */

@@ -1,7 +1,7 @@
 /*
 	(c) Copyright 2000-2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
 	[See end of file]
-	$Id: Statement.java,v 1.16 2007-04-24 10:37:11 chris-dollin Exp $
+	$Id: Statement.java,v 1.17 2007-11-13 14:37:56 chris-dollin Exp $
 */
 
 
@@ -28,7 +28,7 @@ import com.hp.hpl.jena.util.iterator.Map1;
  *    for application objects.</p>
  
  * @author bwm; additions by kers
- * @version $Name: not supported by cvs2svn $ $Revision: 1.16 $ $Date: 2007-04-24 10:37:11 $
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.17 $ $Date: 2007-11-13 14:37:56 $
  */
 
 public interface Statement extends FrontsTriple
@@ -294,7 +294,7 @@ public interface Statement extends FrontsTriple
      *
      * @return the new (S, P, o) statement.
      */
-    public Statement changeObject(float o) ;
+    public Statement changeTypedObject( float o );
     
     /** change the object of the statement (S, P, X) to (S, P, o).
      *  <p>The statement with the old value is removed from the model and 

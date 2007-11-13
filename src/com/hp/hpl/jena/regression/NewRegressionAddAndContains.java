@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: NewRegressionAddAndContains.java,v 1.4 2007-01-02 11:49:22 andy_seaborne Exp $
+ 	$Id: NewRegressionAddAndContains.java,v 1.5 2007-11-13 14:38:43 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.regression;
@@ -46,7 +46,7 @@ public class NewRegressionAddAndContains extends NewRegressionBase
         assertFalse( m.contains( S, P, tvInt ) );
         assertFalse( m.contains( S, P, tvLong ) );
         assertFalse( m.contains( S, P, tvChar ) );
-        assertFalse( m.contains( S, P, tvFloat ) );
+        assertFalse( m.containsTyped( S, P, tvFloat ) );
         assertFalse( m.contains( S, P, tvDouble ) );
         assertFalse( m.contains( S, P, new LitTestObj( 12345 ) ) );
         assertFalse( m.contains( S, P, "test string" ) );
@@ -98,8 +98,8 @@ public class NewRegressionAddAndContains extends NewRegressionBase
     
     public void testAddContainsFloat()
         {
-        m.add( S, P, tvFloat );
-        assertTrue( m.contains( S, P, tvFloat ) );
+        m.addTyped( S, P, tvFloat );
+        assertTrue( m.containsTyped( S, P, tvFloat ) );
         }
     
     public void testAddContainsDouble()

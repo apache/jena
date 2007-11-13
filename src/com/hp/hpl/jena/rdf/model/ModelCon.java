@@ -57,8 +57,8 @@ import com.hp.hpl.jena.graph.Node;
  *    enhanced resources.</p>
  * @author bwm
  * @version Release='$Name: not supported by cvs2svn $'
-            Revision='$Revision: 1.22 $'
-            Date='$Date: 2007-11-09 12:22:29 $'
+            Revision='$Revision: 1.23 $'
+            Date='$Date: 2007-11-13 14:37:56 $'
  */
 public interface ModelCon {
 
@@ -636,15 +636,13 @@ public interface ModelCon {
  */ 
     Model add(Resource s, Property p, char o) ;
     
-/** add a statement to this model.
- *
- * @return this model
- * @param s the subject of the statement to add
- * @param p the predicate of the statement to add
- * @param o the object of the statement to add
- * @deprecated Applications should use typed literals 
- */ 
-    Model add(Resource s, Property p, float o) ;
+    /** 
+        Add the statement (s, p, o') to the model, where o' is the typed
+        literal corresponding to o. Answer this model.
+     */ 
+        
+    Model addTyped( Resource s, Property p, float o );
+    
 /** add a statement to this model.
  *
  * @return this model
@@ -990,15 +988,11 @@ public interface ModelCon {
  */ 
     boolean contains(Resource s, Property p, char o) ;
 
-/** Determine if a statement is present in this model.
- * @return true if the statement with subject s, property p and object o
- * is in the model, false otherwise
- * @param s The subject of the statment tested.
- * @param p The predicate of the statement tested.
- * @param o The object of the statement tested.
- * @deprecated Applications should use typed literals   
- */ 
-    boolean contains(Resource s, Property p, float o) ;
+    /** 
+        Answer true iff this model contains (s, p, o') where o' is the typed
+        literal corresponding to o.
+    */ 
+    boolean containsTyped( Resource s, Property p, float o );
 
 /** Determine if a statement is present in this model.
  * @return true if the statement with subject s, property p and object o

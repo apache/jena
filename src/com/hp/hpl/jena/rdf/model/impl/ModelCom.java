@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
     [See end of file]
-    $Id: ModelCom.java,v 1.117 2007-01-02 11:48:30 andy_seaborne Exp $
+    $Id: ModelCom.java,v 1.118 2007-11-13 14:38:38 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -105,9 +105,8 @@ public class ModelCom
         return add(s, p, String.valueOf( o ) );
     }
     
-    public Model add(Resource s, Property p, float o)  {
-        return add(s, p, String.valueOf( o ) );
-    }
+    public Model addTyped( Resource s, Property p, float o )  
+        { return add( s, p, createTypedLiteral( o ) ); }
     
     public Model add(Resource s, Property p, double o)  {
         return add(s, p, String.valueOf( o ) );
@@ -335,8 +334,8 @@ public class ModelCom
     public boolean contains( Resource s, Property p, char o )
         { return contains(s, p, String.valueOf( o ) ); }
     
-    public boolean contains( Resource s, Property p, float o )
-        { return contains(s, p, String.valueOf( o ) ); }
+    public boolean containsTyped( Resource s, Property p, float o )
+        { return contains(s, p, createTypedLiteral( o ) ); }
     
     public boolean contains( Resource s, Property p, double o )
         { return contains(s, p, String.valueOf( o ) ); }

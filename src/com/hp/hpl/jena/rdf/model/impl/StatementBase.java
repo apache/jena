@@ -1,7 +1,7 @@
 /*
 	 (c) Copyright 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
 	 [See end of file]
-	 $Id: StatementBase.java,v 1.9 2007-01-02 11:48:30 andy_seaborne Exp $
+	 $Id: StatementBase.java,v 1.10 2007-11-13 14:38:38 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -75,8 +75,8 @@ public abstract class StatementBase
 	public Statement changeObject( char o )
 		{ return stringReplace( String.valueOf( o ) ); }
 
-	public Statement changeObject( float o )
-		{ return stringReplace( String.valueOf( o ) ); }
+	public Statement changeTypedObject( float o )
+		{ return changeObject( model.createTypedLiteral( o ) ); }
 
 	public Statement changeObject( double o )
 		{ return stringReplace( String.valueOf( o ) ); }

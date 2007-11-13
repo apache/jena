@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: NewRegressionStatementMethods.java,v 1.4 2007-11-09 12:22:54 chris-dollin Exp $
+ 	$Id: NewRegressionStatementMethods.java,v 1.5 2007-11-13 14:38:43 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.regression;
@@ -198,11 +198,11 @@ public class NewRegressionStatementMethods extends NewRegressionBase
     public void testChangeObjectFloat()
         {
         Statement sTrue = loadInitialStatement();
-        Statement changed = sTrue.changeObject( tvFloat );
+        Statement changed = sTrue.changeTypedObject( tvFloat );
         checkChangedStatementSP( changed );
         assertEquals( tvFloat, changed.getFloat(), fDelta );
         checkCorrectStatements( sTrue, changed );
-        assertTrue( m.contains( r, RDF.value, tvFloat ) );
+        assertTrue( m.containsTyped( r, RDF.value, tvFloat ) );
         }
 
     public void testChangeObjectDouble()
