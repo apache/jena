@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
     [See end of file]
-    $Id: ModelCom.java,v 1.118 2007-11-13 14:38:38 chris-dollin Exp $
+    $Id: ModelCom.java,v 1.119 2007-11-13 16:05:54 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -93,24 +93,23 @@ public class ModelCom
         }
     }
     
-    public Model add(Resource s, Property p, boolean o)  {
-        return add(s, p, String.valueOf( o ) );
-    }
+    public Model addTyped( Resource s, Property p, boolean o )  
+        { return add(s, p, createTypedLiteral( o ) ); }
     
-    public Model add(Resource s, Property p, long o)  {
-        return add(s, p, String.valueOf( o ) );
-    }
+    public Model addTyped( Resource s, Property p, long o )  
+        { return add(s, p, createTypedLiteral( o ) ); }
     
-    public Model add(Resource s, Property p, char o)  {
-        return add(s, p, String.valueOf( o ) );
-    }
+    public Model addTyped( Resource s, Property p, int o )  
+        { return add(s, p, createTypedLiteral( o ) ); }
+    
+    public Model addTyped( Resource s, Property p, char o )  
+        { return add(s, p, createTypedLiteral( o ) ); }
     
     public Model addTyped( Resource s, Property p, float o )  
         { return add( s, p, createTypedLiteral( o ) ); }
     
-    public Model add(Resource s, Property p, double o)  {
-        return add(s, p, String.valueOf( o ) );
-    }
+    public Model addTyped( Resource s, Property p, double o )  
+        { return add(s, p, createTypedLiteral( o ) ); }
     
     public Model add(Resource s, Property p, String o)  {
         return add( s, p, o, "", false );
@@ -325,20 +324,23 @@ public class ModelCom
         return this;
         }
         
-    public boolean contains( Resource s, Property p, boolean o )
-        { return contains(s, p, String.valueOf( o ) ); }
+    public boolean containsTyped( Resource s, Property p, boolean o )
+        { return contains(s, p, createTypedLiteral( o ) ); }
     
-    public boolean contains( Resource s, Property p, long o )
-        { return contains(s, p, String.valueOf( o ) ); }
+    public boolean containsTyped( Resource s, Property p, long o )
+        { return contains(s, p, createTypedLiteral( o ) ); }
     
-    public boolean contains( Resource s, Property p, char o )
-        { return contains(s, p, String.valueOf( o ) ); }
+    public boolean containsTyped( Resource s, Property p, int o )
+        { return contains(s, p, createTypedLiteral( o ) ); }
+    
+    public boolean containsTyped( Resource s, Property p, char o )
+        { return contains(s, p, createTypedLiteral( o ) ); }
     
     public boolean containsTyped( Resource s, Property p, float o )
         { return contains(s, p, createTypedLiteral( o ) ); }
     
-    public boolean contains( Resource s, Property p, double o )
-        { return contains(s, p, String.valueOf( o ) ); }
+    public boolean containsTyped( Resource s, Property p, double o )
+        { return contains(s, p, createTypedLiteral( o ) ); }
     
     public boolean contains( Resource s, Property p, String o )
         { return contains( s, p, o, "" ); }
@@ -635,6 +637,9 @@ public class ModelCom
     
     public Statement createStatement( Resource r, Property p, long o )
         { return createStatement( r, p, createLiteral( o ) ); }
+    
+    public Statement createTypedStatement( Resource r, Property p, int o )
+        { return createStatement( r, p, createTypedLiteral( o ) ); }
     
     public Statement createStatement( Resource r, Property p, char o )
         { return createStatement( r, p, createLiteral( o ) ); }

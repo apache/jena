@@ -1,7 +1,7 @@
 /*
 	(c) Copyright 2000-2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
 	[See end of file]
-	$Id: Statement.java,v 1.17 2007-11-13 14:37:56 chris-dollin Exp $
+	$Id: Statement.java,v 1.18 2007-11-13 16:05:53 chris-dollin Exp $
 */
 
 
@@ -28,7 +28,7 @@ import com.hp.hpl.jena.util.iterator.Map1;
  *    for application objects.</p>
  
  * @author bwm; additions by kers
- * @version $Name: not supported by cvs2svn $ $Revision: 1.17 $ $Date: 2007-11-13 14:37:56 $
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.18 $ $Date: 2007-11-13 16:05:53 $
  */
 
 public interface Statement extends FrontsTriple
@@ -267,7 +267,10 @@ public interface Statement extends FrontsTriple
      * @param o The new value to be set.
      *
      */
-    public Statement changeObject(boolean o) ;
+    public Statement changeTypedObject( boolean o );
+    
+    /** @deprecated use changeTypedObject etc */
+    public Statement changeObject( boolean o );
     
     /** change the object of the statement (S, P, X) to (S, P, o).
      *  <p>The statement with the old value is removed from the model and 
@@ -276,7 +279,10 @@ public interface Statement extends FrontsTriple
      *
      * @return the new (S, P, o) statement.
      */
-    public Statement changeObject(long o) ;
+    public Statement changeTypedObject( long o );
+
+    /** @deprecated use changeTypedObject etc */
+    public Statement changeObject( long o );
     
     /** change the object of the statement (S, P, X) to (S, P, o).
      *  <p>The statement with the old value is removed from the model and 
@@ -296,6 +302,10 @@ public interface Statement extends FrontsTriple
      */
     public Statement changeTypedObject( float o );
     
+    /** @deprecated use changeTypedObject etc */
+    public Statement changeObject( float o );
+    
+    
     /** change the object of the statement (S, P, X) to (S, P, o).
      *  <p>The statement with the old value is removed from the model and 
      *  a new statement with the new value added and returned.</p>
@@ -303,7 +313,10 @@ public interface Statement extends FrontsTriple
      *
      * @return the new (S, P, o) statement.
      */
-    public Statement changeObject(double o) ;
+    public Statement changeTypedObject( double o );
+    
+    /** @deprecated use changeTypedObject etc */
+    public Statement changeObject( double o );
     
     /** change the object of the statement (S, P, X) to (S, P, o).
      *  <p>The statement with the old value is removed from the model and 

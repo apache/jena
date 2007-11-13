@@ -23,7 +23,7 @@
  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * 
- * $Id: TestCaseBasic.java,v 1.11 2007-09-06 12:26:43 jeremy_carroll Exp $
+ * $Id: TestCaseBasic.java,v 1.12 2007-11-13 16:05:58 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.regression;
@@ -52,7 +52,7 @@ import com.hp.hpl.jena.test.JenaTestBase;
  * </p>
  * 
  * @author bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.11 $ $Date: 2007-09-06 12:26:43 $
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.12 $ $Date: 2007-11-13 16:05:58 $
  */
 public class TestCaseBasic extends JenaTestBase {
 
@@ -142,14 +142,16 @@ public class TestCaseBasic extends JenaTestBase {
 		}
 	}
 
-	public void test6() {
+	public void test6() throws Exception {
 		try {
 			Regression test = new Regression();
 			test.test6(m1);
 			assertTrue(!test.getErrors());
 		} catch (Exception e) {
-			System.out.println(e);
-			assertTrue(false);
+//			System.out.println(e);
+//			assertTrue(false);
+	      System.err.println( "PONGLE" );
+	      throw e;
 		}
 	}
 
@@ -271,6 +273,8 @@ public class TestCaseBasic extends JenaTestBase {
 		} catch (Exception e) {
 			System.out.println(e);
 			assertTrue(false);
+//		System.err.println( "PONGLE" );
+//		throw new RuntimeException( e );
 		}
 	}
 

@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            4 Mar 2003
  * Filename           $RCSfile: TestOntDocumentManager.java,v $
- * Revision           $Revision: 1.24 $
+ * Revision           $Revision: 1.25 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2007-02-14 10:53:19 $
+ * Last modified on   $Date: 2007-11-13 16:05:40 $
  *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
@@ -47,7 +47,7 @@ import com.hp.hpl.jena.vocabulary.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestOntDocumentManager.java,v 1.24 2007-02-14 10:53:19 chris-dollin Exp $
+ * @version CVS $Id: TestOntDocumentManager.java,v 1.25 2007-11-13 16:05:40 chris-dollin Exp $
  */
 public class TestOntDocumentManager
     extends TestCase
@@ -224,7 +224,7 @@ public class TestOntDocumentManager
         Model m = ModelFactory.createDefaultModel();
         Resource policy = m.createResource();
         m.add( policy, RDF.type, OntDocManagerVocab.DocumentManagerPolicy );
-        m.add( policy, OntDocManagerVocab.cacheModels, false );
+        m.addTyped( policy, OntDocManagerVocab.cacheModels, false );
 
         OntDocumentManager mgr = new OntDocumentManager( (String) null );
         assertTrue( mgr.getCacheModels() );

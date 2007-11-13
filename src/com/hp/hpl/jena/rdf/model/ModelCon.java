@@ -57,8 +57,8 @@ import com.hp.hpl.jena.graph.Node;
  *    enhanced resources.</p>
  * @author bwm
  * @version Release='$Name: not supported by cvs2svn $'
-            Revision='$Revision: 1.23 $'
-            Date='$Date: 2007-11-13 14:37:56 $'
+            Revision='$Revision: 1.24 $'
+            Date='$Date: 2007-11-13 16:05:53 $'
  */
 public interface ModelCon {
 
@@ -405,6 +405,8 @@ public interface ModelCon {
      */
     public Statement createStatement(Resource s, Property p, long o) ;
     
+    public Statement createTypedStatement( Resource s, Property p, int o );
+    
     /** Create a Statement instance.
      *
      * <p>Subsequent operations on the statement or any of its parts may
@@ -612,9 +614,9 @@ public interface ModelCon {
  * @param s the subject of the statement to add
  * @param p the predicate of the statement to add
  * @param o the object of the statement to add
- * @deprecated Applications should use typed literals 
+ * deprecated Applications should use typed literals 
  */ 
-    Model add(Resource s, Property p, boolean o) ;
+    Model addTyped(Resource s, Property p, boolean o) ;
     
 /** add a statement to this model.
  *
@@ -622,9 +624,11 @@ public interface ModelCon {
  * @param s the subject of the statement to add
  * @param p the predicate of the statement to add
  * @param o the object of the statement to add
- * @deprecated Applications should use typed literals 
+ * dprecated Applications should use typed literals 
  */ 
-    Model add(Resource s, Property p, long o) ;
+    Model addTyped( Resource s, Property p, long o );
+    
+    Model addTyped( Resource s, Property p, int o );
     
 /** add a statement to this model.
  *
@@ -632,26 +636,21 @@ public interface ModelCon {
  * @param s the subject of the statement to add
  * @param p the predicate of the statement to add
  * @param o the object of the statement to add
- * @deprecated Applications should use typed literals 
+ * deprecated Applications should use typed literals 
  */ 
-    Model add(Resource s, Property p, char o) ;
+    Model addTyped( Resource s, Property p, char o ) ;
     
     /** 
         Add the statement (s, p, o') to the model, where o' is the typed
         literal corresponding to o. Answer this model.
-     */ 
-        
+    */ 
     Model addTyped( Resource s, Property p, float o );
-    
-/** add a statement to this model.
- *
- * @return this model
- * @param s the subject of the statement to add
- * @param p the predicate of the statement to add
- * @param o the object of the statement to add
- * @deprecated Applications should use typed literals
- */ 
-    Model add(Resource s, Property p, double o) ;
+
+    /** 
+        Add the statement (s, p, o') to the model, where o' is the typed
+        literal corresponding to o. Answer this model.
+     */ 
+    Model addTyped( Resource s, Property p, double o ) ;
 
 /** add a statement to this model.
  *
@@ -964,9 +963,9 @@ public interface ModelCon {
  * @param s The subject of the statment tested.
  * @param p The predicate of the statement tested.
  * @param o The object of the statement tested.
- * @deprecated Applications should use typed literals  
+ * deprecated Applications should use typed literals  
   */ 
-    boolean contains(Resource s, Property p, boolean o) ;
+    boolean containsTyped( Resource s, Property p, boolean o );
 
 /** Determine if a statement is present in this model.
  * @return true if the statement with subject s, property p and object o
@@ -974,9 +973,11 @@ public interface ModelCon {
  * @param s The subject of the statment tested.
  * @param p The predicate of the statement tested.
  * @param o The object of the statement tested.
- * @deprecated Applications should use typed literals  
+ * deprecated Applications should use typed literals  
  */ 
-    boolean contains(Resource s, Property p, long o) ;
+    boolean containsTyped( Resource s, Property p, long o );
+    
+    boolean containsTyped( Resource s, Property p, int o );
 
 /** Determine if a statement is present in this model.
  * @return true if the statement with subject s, property p and object o
@@ -984,9 +985,9 @@ public interface ModelCon {
  * @param s The subject of the statment tested.
  * @param p The predicate of the statement tested.
  * @param o The object of the statement tested.
- * @deprecated Applications should use typed literals   
+ * deprecated Applications should use typed literals   
  */ 
-    boolean contains(Resource s, Property p, char o) ;
+    boolean containsTyped( Resource s, Property p, char o );
 
     /** 
         Answer true iff this model contains (s, p, o') where o' is the typed
@@ -1000,9 +1001,9 @@ public interface ModelCon {
  * @param s The subject of the statment tested.
  * @param p The predicate of the statement tested.
  * @param o The object of the statement tested.
- * @deprecated Applications should use typed literals  
+ * deprecated Applications should use typed literals  
  */ 
-    boolean contains(Resource s, Property p, double o) ;
+    boolean containsTyped(Resource s, Property p, double o) ;
 
 /** Determine if a statement is present in this model.
  * @return true if the statement with subject s, property p and object o
