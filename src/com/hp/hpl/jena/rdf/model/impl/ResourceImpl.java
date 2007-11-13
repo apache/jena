@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ResourceImpl.java,v 1.43 2007-11-13 09:46:32 chris-dollin Exp $
+  $Id: ResourceImpl.java,v 1.44 2007-11-13 10:12:49 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -15,7 +15,7 @@ import com.hp.hpl.jena.graph.*;
 /** An implementation of Resource.
  *
  * @author  bwm
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.43 $' Date='$Date: 2007-11-13 09:46:32 $'
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.44 $' Date='$Date: 2007-11-13 10:12:49 $'
  */
 
 public class ResourceImpl extends EnhNode implements Resource {
@@ -218,11 +218,6 @@ public class ResourceImpl extends EnhNode implements Resource {
         return this ;
     }
 
-    public Resource addProperty(Property p, Object o) {
-        mustHaveModel().add( this, p, o );
-        return this;
-    }
-
     public Resource addTypedProperty( Property p, Object o ) 
         {
         ModelCom m = mustHaveModel();
@@ -250,10 +245,6 @@ public class ResourceImpl extends EnhNode implements Resource {
         ModelCom m = mustHaveModel();
         return m.contains( this, p, m.createTypedLiteral( o ) );
         }
-
-    public boolean hasProperty(Property p, long o) {
-        return mustHaveModel().contains( this, p, o );
-    }
     
     public boolean hasTypedProperty( Property p, char o )  
         {
@@ -279,10 +270,6 @@ public class ResourceImpl extends EnhNode implements Resource {
 
     public boolean hasProperty(Property p, String o, String l) {
         return mustHaveModel().contains( this, p, o, l );
-    }
-
-    public boolean hasProperty(Property p, Object o) {
-        return mustHaveModel().contains( this, p, o );
     }
 
     public boolean hasTypedProperty( Property p, Object o ) 
