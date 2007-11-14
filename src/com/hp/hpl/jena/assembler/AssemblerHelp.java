@@ -1,7 +1,7 @@
 /*
  (c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  All rights reserved - see end of file.
- $Id: AssemblerHelp.java,v 1.19 2007-10-05 13:00:59 chris-dollin Exp $
+ $Id: AssemblerHelp.java,v 1.20 2007-11-14 15:29:46 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.assembler;
@@ -277,7 +277,7 @@ public class AssemblerHelp
         which <i>must</i> be a subtype of <code>ja:Object</code>.
     */
     public static Set findAssemblerRoots( Model model, Resource type )
-        { return fullModel( model ).listSubjectsWithProperty( RDF.type, type ).toSet(); }
+        { return fullModel( model ).listResourcesWithProperty( RDF.type, type ).toSet(); }
 
     /**
          Answer the single resource in <code>singleRoot</code> of type

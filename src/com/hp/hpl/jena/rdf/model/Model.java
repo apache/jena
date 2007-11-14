@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Model.java,v 1.69 2007-11-07 16:14:57 chris-dollin Exp $
+  $Id: Model.java,v 1.70 2007-11-14 15:30:14 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
@@ -61,7 +61,7 @@ import java.util.*;
  * </pre></code>
  *
  * @author bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.69 $Date: 2007/01/15 12:41:14 $'
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.70 $Date: 2007/11/07 16:14:57 $'
  */
 public interface Model
     extends ModelCon, ModelGraphInterface,
@@ -592,22 +592,32 @@ public interface Model
     */
     Statement getProperty( Resource s, Property p );
 
-	/** List all subjects with a given property. .remove() is not implemented on
-     *  this iterator.
-	 * @return an iterator over the subjects
-	 * @param p the property sought.
-
+	/** 
+	    An alias for <code>istResourcesWithProperty(Property)</code>,
+	    retained for backward compatability. It may be deprecated in later
+	    releases.
 	 */
-	ResIterator listSubjectsWithProperty(Property p) ;
+	ResIterator listSubjectsWithProperty( Property p );
+	
+	/**
+	    Answer an iterator [with no duplicates] over all the resources in this 
+	    model that have property <code>p</code>. <code>remove()</code>
+	    is not implemented on this iterator.
+	*/
+	ResIterator listResourcesWithProperty( Property p );
 
-	/** List all subjects with a given property and property value.  .remove() is not
-     *  implemented on this iterator.
-	 * @return an iterator over the subjects
-	 * @param p The predicate sought
-	 * @param o The value sought
-	 */
-	ResIterator listSubjectsWithProperty(Property p, RDFNode o)
-		;
+	/** 
+	   An alias for <code>listResourcesWithProperty</code>, retained for
+	   backward compatability. It may be deprecated in later releases.
+	*/
+	ResIterator listSubjectsWithProperty( Property p, RDFNode o );
+	
+	/**
+        Answer an iterator [with no duplicates] over all the resources in this 
+        model that have property <code>p</code> with value <code>o</code>.
+        <code>remove()</code> is not implemented on this iterator. 
+    */
+	ResIterator listResourcesWithProperty( Property p, RDFNode o );
 
 	/** List all objects in a model.
 	 * @return an iterator over the objects.  .remove() is not implemented on this iterator.
@@ -1017,5 +1027,5 @@ public interface Model
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: Model.java,v 1.69 2007-11-07 16:14:57 chris-dollin Exp $
+ * $Id: Model.java,v 1.70 2007-11-14 15:30:14 chris-dollin Exp $
  */

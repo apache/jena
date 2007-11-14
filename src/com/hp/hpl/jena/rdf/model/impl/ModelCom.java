@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
     [See end of file]
-    $Id: ModelCom.java,v 1.122 2007-11-14 12:29:53 chris-dollin Exp $
+    $Id: ModelCom.java,v 1.123 2007-11-14 15:30:16 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -420,44 +420,51 @@ public class ModelCom
                 :  listStatements( S, P, Node.createLiteral( O, L, false ) ); 
     }
     
-    public StmtIterator listStatements( Resource S, Property P, boolean O )
-        { return listStatements( S, P, String.valueOf( O ) ); }
+    public StmtIterator listLiteralStatements( Resource S, Property P, boolean O )
+        { return listStatements( S, P, createTypedLiteral( O ) ); }
     
-    public StmtIterator listStatements( Resource S, Property P, long O )
-        { return listStatements( S, P, String.valueOf( O ) ); }
+    public StmtIterator listLiteralStatements( Resource S, Property P, long O )
+        { return listStatements( S, P, createTypedLiteral( O ) ); }
     
-    public StmtIterator listStatements( Resource S, Property P, char  O )
-        { return listStatements( S, P, String.valueOf( O ) ); }
+    public StmtIterator listLiteralStatements( Resource S, Property P, char  O )
+        { return listStatements( S, P, createTypedLiteral( O ) ); }
     
-    public StmtIterator listStatements( Resource S, Property P, float O )
-         { return listStatements( S, P, String.valueOf( O ) ); }
+    public StmtIterator listlLiteralStatements( Resource S, Property P, float O )
+         { return listStatements( S, P, createTypedLiteral( O ) ); }
     
-    public StmtIterator listStatements( Resource S, Property P, double  O )
-        { return listStatements( S, P, String.valueOf( O ) ); }
+    public StmtIterator listLiteralStatements( Resource S, Property P, double  O )
+        { return listStatements( S, P, createTypedLiteral( O ) ); }
+    
+    /*
+         list resources with property [was: list subjects with property]
+    */
         
-    public ResIterator listSubjectsWithProperty( Property p, boolean o )
-        { return listSubjectsWithProperty(p, String.valueOf( o ) ); }
+    public ResIterator listResourcesWithProperty( Property p, boolean o )
+        { return listResourcesWithProperty(p, createTypedLiteral( o ) ); }
     
-    public ResIterator listSubjectsWithProperty( Property p, long o )
-        { return listSubjectsWithProperty(p, String.valueOf( o ) ); }
+    public ResIterator listResourcesWithProperty( Property p, char o )
+        { return listResourcesWithProperty(p, createTypedLiteral( o ) ); }
     
-    public ResIterator listSubjectsWithProperty( Property p, char o )
-        { return listSubjectsWithProperty(p, String.valueOf( o ) ); }
+    public ResIterator listResourcesWithProperty( Property p, long o )
+        { return listResourcesWithProperty(p, createTypedLiteral( o ) ); }
     
-    public ResIterator listSubjectsWithProperty( Property p, float o )
-        { return listSubjectsWithProperty(p, String.valueOf( o ) ); }
+    public ResIterator listResourcesWithProperty( Property p, float o )
+        { return listResourcesWithProperty(p, createTypedLiteral( o ) ); }
     
-    public ResIterator listSubjectsWithProperty( Property p, double o )
-        { return listSubjectsWithProperty(p, String.valueOf( o ) ); }
+    public ResIterator listResourcesWithProperty( Property p, double o )
+        { return listResourcesWithProperty(p, createTypedLiteral( o ) ); }
+    
+    public ResIterator listResourcesWithProperty( Property p, Object o )
+        { return listResourcesWithProperty( p, createTypedLiteral( o ) ); }
+    
+    public ResIterator listSubjectsWithProperty( Property p, RDFNode o )
+        { return listResourcesWithProperty( p, o ); }
     
     public ResIterator listSubjectsWithProperty( Property p, String o )
         { return listSubjectsWithProperty( p, o, "" ); }
     
     public ResIterator listSubjectsWithProperty( Property p, String o, String l )
-        { return listSubjectsWithProperty(p, literal( o, l, false ) ); }
-    
-    public ResIterator listSubjectsWithProperty( Property p, Object o )
-        { return listSubjectsWithProperty( p, ensureRDFNode( o ) ); }
+        { return listResourcesWithProperty(p, literal( o, l, false ) ); }
     
     public Resource createResource( Resource type )  
         { return createResource().addProperty( RDF.type, type ); }
@@ -1071,10 +1078,13 @@ public class ModelCom
     public ResIterator listSubjects()  
         { return listSubjectsFor( null, null ); }
     
-    public ResIterator listSubjectsWithProperty(Property p)
+    public ResIterator listResourcesWithProperty(Property p)
         { return listSubjectsFor( p, null ); }
     
-    public ResIterator listSubjectsWithProperty(Property p, RDFNode o)
+    public ResIterator listSubjectsWithProperty(Property p)
+        { return listResourcesWithProperty( p ); }
+    
+    public ResIterator listResourcesWithProperty(Property p, RDFNode o)
         { return listSubjectsFor( p, o ); }
     
     public NodeIterator listObjects()  

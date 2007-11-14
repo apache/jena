@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestSimpleListStatements.java,v 1.19 2007-11-14 09:51:53 chris-dollin Exp $
+  $Id: TestSimpleListStatements.java,v 1.20 2007-11-14 15:30:19 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -9,6 +9,8 @@ package com.hp.hpl.jena.rdf.model.test;
 /**
 	@author bwm out of kers
 */
+
+import java.util.List;
 
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.vocabulary.*;
@@ -60,60 +62,50 @@ public class TestSimpleListStatements extends ModelTestBase
         model = null;
     }
     
-    public void testBoolean() {
-        StmtIterator iter = model.listStatements(null, null, model.createTypedLiteral( booleanValue ) );
-        int i =0;
-        while (iter.hasNext()) {
-            i++;
-            assertEquals(iter.nextStatement().getSubject().getURI(),
-                         "http://example.org/boolean");
+    public void testBoolean() 
+        {
+        List got = model.listLiteralStatements( null, null, booleanValue ).toList();
+        assertEquals( 1, got.size() );
+        Statement it = (Statement) got.get( 0 );
+        assertEquals( resource( "http://example.org/boolean" ), it.getSubject() );
+        assertEquals( model.createTypedLiteral( booleanValue ), it.getObject() );
         }
-        assertEquals(1, i);
-    }
     
-    public void testChar() {
-        StmtIterator iter = model.listStatements(null, null, model.createTypedLiteral( charValue ) );
-        int i =0;
-        while (iter.hasNext()) {
-            i++;
-            assertEquals(iter.nextStatement().getSubject().getURI(),
-                         "http://example.org/char");
+    public void testChar() 
+        {
+        List got = model.listLiteralStatements( null, null, charValue ).toList();
+        assertEquals( 1, got.size() );
+        Statement it = (Statement) got.get( 0 );
+        assertEquals( resource( "http://example.org/char" ), it.getSubject() );
+        assertEquals( model.createTypedLiteral( charValue ), it.getObject() );
         }
-        assertEquals(1, i);
-    }
     
-    public void testLong() {
-        StmtIterator iter = model.listStatements(null, null, model.createTypedLiteral( longValue ) );
-        int i =0;
-        while (iter.hasNext()) {
-            i++;
-            assertEquals(iter.nextStatement().getSubject().getURI(),
-                         "http://example.org/long");
+    public void testLong() 
+        {
+        List got = model.listLiteralStatements( null, null, longValue ).toList();
+        assertEquals( 1, got.size() );
+        Statement it = (Statement) got.get( 0 );
+        assertEquals( resource( "http://example.org/long" ), it.getSubject() );
+        assertEquals( model.createTypedLiteral( longValue ), it.getObject() );
         }
-        assertEquals(1, i);
-    }
     
-    public void testFloat() {
-        StmtIterator iter = model.listStatements(null, null, model.createTypedLiteral( floatValue ) );
-        int i =0;
-        while (iter.hasNext()) {
-            i++;
-            assertEquals(iter.nextStatement().getSubject().getURI(),
-                         "http://example.org/float");
+    public void testFloat() 
+        {
+        List got = model.listlLiteralStatements( null, null, floatValue ).toList();
+        assertEquals( 1, got.size() );
+        Statement it = (Statement) got.get( 0 );
+        assertEquals( resource( "http://example.org/float" ), it.getSubject() );
+        assertEquals( model.createTypedLiteral( floatValue ), it.getObject() );
         }
-        assertEquals(1, i);
-    }
     
-    public void testDouble() {
-        StmtIterator iter = model.listStatements(null, null, model.createTypedLiteral( doubleValue ) );
-        int i =0;
-        while (iter.hasNext()) {
-            i++;
-            assertEquals(iter.nextStatement().getSubject().getURI(),
-                         "http://example.org/double");
+    public void testDouble() 
+        {
+        List got = model.listLiteralStatements( null, null, doubleValue ).toList();
+        assertEquals( 1, got.size() );
+        Statement it = (Statement) got.get( 0 );
+        assertEquals( resource( "http://example.org/double" ), it.getSubject() );
+        assertEquals( model.createTypedLiteral( doubleValue ), it.getObject() );
         }
-        assertEquals(1, i);
-    }
     
     public void testString() {
         StmtIterator iter = model.listStatements(null, null, stringValue);

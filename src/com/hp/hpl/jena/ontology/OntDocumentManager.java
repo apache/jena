@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OntDocumentManager.java,v $
- * Revision           $Revision: 1.59 $
+ * Revision           $Revision: 1.60 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2007-01-15 10:36:25 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2007-11-14 15:30:10 $
+ *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -64,7 +64,7 @@ import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
  * list</a>.</p>
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntDocumentManager.java,v 1.59 2007-01-15 10:36:25 ian_dickinson Exp $
+ * @version CVS $Id: OntDocumentManager.java,v 1.60 2007-11-14 15:30:10 chris-dollin Exp $
  */
 public class OntDocumentManager
 {
@@ -1033,7 +1033,7 @@ public class OntDocumentManager
         getFileManager().getLocationMapper().processConfig( metadata );
 
         // first we process the general policy statements for this document manager
-        for (ResIterator i = metadata.listSubjectsWithProperty( RDF.type, DOC_MGR_POLICY ); i.hasNext(); ) {
+        for (ResIterator i = metadata.listResourcesWithProperty( RDF.type, DOC_MGR_POLICY ); i.hasNext(); ) {
             Resource policy = i.nextResource();
 
             // iterate over each policy statement
@@ -1057,7 +1057,7 @@ public class OntDocumentManager
         }
 
         // then we look up individual meta-data for particular ontologies
-        for (ResIterator i = metadata.listSubjectsWithProperty( RDF.type, ONTOLOGY_SPEC ); i.hasNext(); ) {
+        for (ResIterator i = metadata.listResourcesWithProperty( RDF.type, ONTOLOGY_SPEC ); i.hasNext(); ) {
             Resource root = i.nextResource();
 
             Statement s = root.getProperty( PUBLIC_URI );

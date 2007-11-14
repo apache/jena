@@ -2,7 +2,7 @@
  *  (c)     Copyright 2000, 2001, 2002, 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  *   All rights reserved.
  * [See end of file]
- *  $Id: Unparser.java,v 1.42 2007-01-11 11:09:39 jeremy_carroll Exp $
+ *  $Id: Unparser.java,v 1.43 2007-11-14 15:30:30 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.xmloutput.impl;
@@ -82,7 +82,7 @@ import com.hp.hpl.jena.vocabulary.*;
 /**
  * An Unparser will output a model in the abbreviated syntax. *
  * 
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.42 $' Date='$Date:
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.43 $' Date='$Date:
  *          2005/07/13 15:33:51 $'
  * 
  */
@@ -137,7 +137,7 @@ class Unparser {
                             .hasProperty(RDF.predicate)) ? r : null;
 
                 }
-            }, model.listSubjectsWithProperty(RDF.type, RDF.Statement));
+            }, model.listResourcesWithProperty(RDF.type, RDF.Statement));
             while (reified.hasNext()) {
                 Resource r = (Resource) reified.next();
                 try {

@@ -6,11 +6,11 @@
  * Package            Jena
  * Created            11 Sept 2001
  * Filename           $RCSfile: PropertyIterator.java,v $
- * Revision           $Revision: 1.17 $
+ * Revision           $Revision: 1.18 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2007-01-08 14:40:52 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2007-11-14 15:30:12 $
+ *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -56,7 +56,7 @@ import com.hp.hpl.jena.vocabulary.DAML_OIL;
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: PropertyIterator.java,v 1.17 2007-01-08 14:40:52 ian_dickinson Exp $
+ * @version CVS info: $Id: PropertyIterator.java,v 1.18 2007-11-14 15:30:12 chris-dollin Exp $
  * @since Jena 1.3.0 (was previously in package com.hp.hpl.jena.ontology.daml.impl).
  * @deprecated The DAML API is scheduled to be removed from Jena 2.6 onwards. Please use the DAML profile in the main ontology API
  */
@@ -481,7 +481,7 @@ public class PropertyIterator
             // don't use equivalents
             if (m_model != null) {
                 // we have a model to query, so use it to get the subject of the triple
-                i = m_model.listSubjectsWithProperty( m_inverse, res );
+                i = m_model.listResourcesWithProperty( m_inverse, res );
             }
             else {
                 // no model (can occur when using built-in constants from vocab)

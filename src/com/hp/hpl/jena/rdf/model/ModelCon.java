@@ -57,8 +57,8 @@ import com.hp.hpl.jena.graph.Node;
  *    enhanced resources.</p>
  * @author bwm
  * @version Release='$Name: not supported by cvs2svn $'
-            Revision='$Revision: 1.27 $'
-            Date='$Date: 2007-11-14 12:29:21 $'
+            Revision='$Revision: 1.28 $'
+            Date='$Date: 2007-11-14 15:30:14 $'
  */
 public interface ModelCon {
 
@@ -687,112 +687,59 @@ public interface ModelCon {
     */
     Model remove( Model m, boolean suppressReifications );
 
-/** Find all the statements matching a pattern.
- * <p>Return an iterator over all the statements in a model
- *  that match a pattern.  The statements selected are those
- *  whose subject matches the <code>subject</code> argument,
- *  whose predicate matches the <code>predicate</code> argument
- *  and whose object matchesthe <code>object</code> argument.</p>
- * @deprecated Applications should use typed literals 
- * @return an iterator over the subjects
- * @param subject   The subject sought
- * @param predicate The predicate sought
- * @param object    The value sought
- 
- */ 
-    StmtIterator listStatements(Resource subject,
-                                Property predicate,
-                                boolean object)
-                                           ;
+    /** 
+        Answer a statement iterator that will iterate over all the statements
+        (S, P, O) in this model where S matches <code>subject</code>, P
+        matches <code>predicate</code>, and O matches the typed literal
+        corresponding to <code>object</code>.
+    */ 
+    StmtIterator listLiteralStatements( Resource subject, Property predicate, boolean object );
 
-/** Find all the statements matching a pattern.
- * <p>Return an iterator over all the statements in a model
- *  that match a pattern.  The statements selected are those
- *  whose subject matches the <code>subject</code> argument,
- *  whose predicate matches the <code>predicate</code> argument
- *  and whose object matchesthe <code>object</code> argument.</p>
- * @deprecated Applications should use typed literals 
- * @return an iterator over the subjects
- * @param subject   The subject sought
- * @param predicate The predicate sought
- * @param object    The value sought
- 
- */ 
-    StmtIterator listStatements(Resource subject,
-                                Property predicate,
-                                long     object)
-                                           ;
+    /** 
+        Answer a statement iterator that will iterate over all the statements
+        (S, P, O) in this model where S matches <code>subject</code>, P
+        matches <code>predicate</code>, and O matches the typed literal
+        corresponding to <code>object</code>.
+    */ 
+    StmtIterator listLiteralStatements( Resource subject, Property predicate, char object );
 
-/** Find all the statements matching a pattern.
- * <p>Return an iterator over all the statements in a model
- *  that match a pattern.  The statements selected are those
- *  whose subject matches the <code>subject</code> argument,
- *  whose predicate matches the <code>predicate</code> argument
- *  and whose object matchesthe <code>object</code> argument.</p>
- * @deprecated Applications should use typed literals 
- * @return an iterator over the subjects
- * @param subject   The subject sought
- * @param predicate The predicate sought
- * @param object    The value sought
- 
- */ 
-    StmtIterator listStatements(Resource subject,
-                                Property predicate,
-                                char    object)
-                                           ;
+    /** 
+        Answer a statement iterator that will iterate over all the statements
+        (S, P, O) in this model where S matches <code>subject</code>, P
+        matches <code>predicate</code>, and O matches the typed literal
+        corresponding to <code>object</code>.
+    */ 
+    StmtIterator listLiteralStatements(Resource subject, Property predicate, long object );
 
-/** Find all the statements matching a pattern.
- * <p>Return an iterator over all the statements in a model
- *  that match a pattern.  The statements selected are those
- *  whose subject matches the <code>subject</code> argument,
- *  whose predicate matches the <code>predicate</code> argument
- *  and whose object matchesthe <code>object</code> argument.</p>
- * @deprecated Applications should use typed literals 
- * @return an iterator over the subjects
- * @param subject   The subject sought
- * @param predicate The predicate sought
- * @param object    The value sought
- 
- */ 
-    StmtIterator listStatements(Resource subject,
-                                Property predicate,
-                                float    object)
-                                           ;
+    /** 
+        Answer a statement iterator that will iterate over all the statements
+        (S, P, O) in this model where S matches <code>subject</code>, P
+        matches <code>predicate</code>, and O matches the typed literal
+        corresponding to <code>object</code>.
+    */ 
+    StmtIterator listlLiteralStatements( Resource subject, Property predicate, float object );
 
-/** Find all the statements matching a pattern.
- * <p>Return an iterator over all the statements in a model
- *  that match a pattern.  The statements selected are those
- *  whose subject matches the <code>subject</code> argument,
- *  whose predicate matches the <code>predicate</code> argument
- *  and whose object matchesthe <code>object</code> argument.</p>
- * @deprecated Applications should use typed literals 
- * @return an iterator over the subjects
- * @param subject   The subject sought
- * @param predicate The predicate sought
- * @param object    The value sought
- 
- */ 
-    StmtIterator listStatements(Resource subject,
-                                Property predicate,
-                                double  object)
-                                           ;
+    /** 
+        Answer a statement iterator that will iterate over all the statements
+        (S, P, O) in this model where S matches <code>subject</code>, P
+        matches <code>predicate</code>, and O matches the typed literal
+        corresponding to <code>object</code>.
+    */ 
+    StmtIterator listLiteralStatements(Resource subject, Property predicate, double  object );
 
-/** Find all the statements matching a pattern.
- * <p>Return an iterator over all the statements in a model
- *  that match a pattern.  The statements selected are those
- *  whose subject matches the <code>subject</code> argument,
- *  whose predicate matches the <code>predicate</code> argument
- *  and whose object matchesthe <code>object</code> argument.</p>
- * @return an iterator over the subjects
- * @param subject   The subject sought
- * @param predicate The predicate sought
- * @param object    The value sought
- 
- */ 
-    StmtIterator listStatements(Resource subject,
-                                Property predicate,
-                                String   object)
-                                           ;
+    /** Find all the statements matching a pattern.
+     * <p>Return an iterator over all the statements in a model
+     *  that match a pattern.  The statements selected are those
+     *  whose subject matches the <code>subject</code> argument,
+     *  whose predicate matches the <code>predicate</code> argument
+     *  and whose object matchesthe <code>object</code> argument.</p>
+     * @return an iterator over the subjects
+     * @param subject   The subject sought
+     * @param predicate The predicate sought
+     * @param object    The value sought
+     
+     */ 
+    StmtIterator listStatements( Resource subject, Property predicate, String  object );
 
 /** Find all the statements matching a pattern.
  * <p>Return an iterator over all the statements in a model
@@ -814,88 +761,70 @@ public interface ModelCon {
                                 String   lang)
                                            ;
 
-/** List all subjects with a given property and property value.
- * @deprecated Applications should use typed literals 
- * @return an iterator over the subjects
- * @param p The predicate sought
- * @param o The value sought
- 
- */ 
-    ResIterator listSubjectsWithProperty(Property p, boolean o)
-                                           ;
+    /**
+        Answer an iterator [without duplicates] over all the resources in this
+        model which have value o' for property p, where o' is the typed literal
+        corresponding to o.
+    */
+    ResIterator listResourcesWithProperty( Property p, boolean o );
 
-/** List all the subjects with a given property and property value.
- * @deprecated Applications should use typed literals 
- * @return an iterator over the subjects
- * @param p The predicate sought
- * @param o The value sought
- 
- */ 
-    ResIterator listSubjectsWithProperty(Property p, long o)
-                                           ;
+    /**
+        Answer an iterator [without duplicates] over all the resources in this
+        model which have value o' for property p, where o' is the typed literal
+        corresponding to o.
+    */
+    ResIterator listResourcesWithProperty( Property p, long o );
 
-/** List all subjects with a given property and property value.
- * @deprecated Applications should use typed literals 
- * @return an iterator over the subjects
- * @param p The predicate sought
- * @param o The value sought
- 
- */ 
-    ResIterator listSubjectsWithProperty(Property p, char o)
-                                          ;
+    /**
+        Answer an iterator [without duplicates] over all the resources in this
+        model which have value o' for property p, where o' is the typed literal
+        corresponding to o.
+    */
+    ResIterator listResourcesWithProperty( Property p, char o );
 
-///** List all subjects with a given property and property value.
-// * @deprecated Applications should use typed literals 
-// * @return an iterator over the subjects
-// * @param p The predicate sought
-// * @param o The value sought
-// 
-// */ 
-//    ResIterator listSubjectsWithProperty(Property p, float o)
-//                                           ;
-///** lists all subjects with a given property and property value.
-// * @deprecated Applications should use typed literals 
-// * @return an iterator over the set of subjects
-// * @param p The property sought.
-// * @param o The property value sought.
-// 
-// */ 
-//    ResIterator listSubjectsWithProperty(Property p, double o)
-                                           ;
-/** lists all subjects with a given property and property value.
- * @return an iterator over the set of subjects
- * @param p The predicate sought.
- * @param o The property value sought.
- 
- */ 
-    ResIterator listSubjectsWithProperty(Property p, String o)
-                                          ;
-/** lists all subjects with a given property and property value.
- 
- * @return an iterator over the set of subjects
- * @param p The predicate sought.
- * @param o The property value sought.
- * @param l the language associated with the object
- 
- */ 
-    ResIterator listSubjectsWithProperty(Property p, String o, String l)
-                                          ;
+    /**
+        Answer an iterator [without duplicates] over all the resources in this
+        model which have value o' for property p, where o' is the typed literal
+        corresponding to o.
+    */
+    ResIterator listResourcesWithProperty( Property p, float o );
+    
+    /**
+        Answer an iterator [without duplicates] over all the resources in this
+        model which have value o' for property p, where o' is the typed literal
+        corresponding to o.
+    */
+    ResIterator listResourcesWithProperty( Property p, double o );
 
-/** List all subjects with a given property and property value.
- * @deprecated Applications should use typed literals 
- * @return an iterator over the subjects
- * @param p The predicate sought
- * @param o The value sought
- 
- */ 
-    ResIterator listSubjectsWithProperty(Property p, Object o);
+    /**
+        Answer an iterator [without duplicates] over all the resources in this
+        model which have value o' for property p, where o' is the typed literal
+        corresponding to o.
+    */
+    ResIterator listResourcesWithProperty( Property p, Object o );
+
+    /** lists all subjects with a given property and property value.
+     * @return an iterator over the set of subjects
+     * @param p The predicate sought.
+     * @param o The property value sought.
+     */ 
+    ResIterator listSubjectsWithProperty( Property p, String o );
+    
+    /** lists all subjects with a given property and property value.
+     
+     * @return an iterator over the set of subjects
+     * @param p The predicate sought.
+     * @param o The property value sought.
+     * @param l the language associated with the object
+     
+     */ 
+    ResIterator listSubjectsWithProperty( Property p, String o, String l );
                                            
     /**
         Answer true iff this model contains the statement (s, p, o') where
         o' is the typed literal corresponding to the value o.
     */
     boolean containsLiteral( Resource s, Property p, boolean o );
-
 
     /**
         Answer true iff this model contains the statement (s, p, o') where

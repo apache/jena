@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: ReasonerTester.java,v 1.29 2007-01-02 11:50:50 andy_seaborne Exp $
+ * $Id: ReasonerTester.java,v 1.30 2007-11-14 15:30:23 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.test;
 
@@ -44,7 +44,7 @@ import java.io.*;
  * form "var:x".</p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.29 $ on $Date: 2007-01-02 11:50:50 $
+ * @version $Revision: 1.30 $ on $Date: 2007-11-14 15:30:23 $
  */
 public class ReasonerTester {
 
@@ -207,7 +207,7 @@ public class ReasonerTester {
      */
     public List listTests() {
         List testList = new ArrayList();
-        ResIterator tests = testManifest.listSubjectsWithProperty(RDF.type, testClass);
+        ResIterator tests = testManifest.listResourcesWithProperty(RDF.type, testClass);
         while (tests.hasNext()) {
             testList.add(tests.next().toString());
         }

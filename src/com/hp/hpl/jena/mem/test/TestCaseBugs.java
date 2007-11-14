@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: TestCaseBugs.java,v 1.10 2007-11-14 09:51:37 chris-dollin Exp $
+ * $Id: TestCaseBugs.java,v 1.11 2007-11-14 15:30:06 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.mem.test;
@@ -34,7 +34,7 @@ import com.hp.hpl.jena.rdf.model.*;
 
 /**
     @author  bwm
-    @version $Name: not supported by cvs2svn $ $Revision: 1.10 $ $Date: 2007-11-14 09:51:37 $
+    @version $Name: not supported by cvs2svn $ $Revision: 1.11 $ $Date: 2007-11-14 15:30:06 $
 */
 public class TestCaseBugs 
             extends TestCaseBasic {
@@ -66,7 +66,7 @@ public class TestCaseBugs
                              .getObject();
             assertInstanceOf(Resource.class, n );
             
-            assertTrue(model.listSubjectsWithProperty(RDF.type, oc).hasNext());
+            assertTrue(model.listResourcesWithProperty(RDF.type, oc).hasNext());
             
             assertTrue(model.containsLiteral(r, RDF.type, oc));  
          }

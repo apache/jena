@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: NewRegressionListSubjects.java,v 1.8 2007-11-14 09:51:55 chris-dollin Exp $
+ 	$Id: NewRegressionListSubjects.java,v 1.9 2007-11-14 15:30:25 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.regression;
@@ -63,45 +63,53 @@ public class NewRegressionListSubjects extends ModelTestBase
         return result;
         }
     
+    public void testListResourcesOnObject()
+        {
+        Object d = new Date();
+        Model m = modelWithStatements( "" );
+        m.addLiteral( resource( "S" ), property( "P" ), d );
+        m.addLiteral( resource( "X" ), property( "P" ), new Object() );
+        List answers = m.listResourcesWithProperty( property( "P" ), d ).toList();
+        assertEquals( listOfOne( resource( "S" ) ), answers );
+        }
+    
     public void test8()  
         {
-        assertEquiv( subjectsTo( subjectPrefix, 5 ), m.listSubjectsWithProperty( predicates[4] ) );
+        assertEquiv( subjectsTo( subjectPrefix, 5 ), m.listResourcesWithProperty( predicates[4] ) );
 
-        assertEquiv( subjectsTo( subjectPrefix, 2 ), m.listSubjectsWithProperty( predicates[0] ) );
+        assertEquiv( subjectsTo( subjectPrefix, 2 ), m.listResourcesWithProperty( predicates[0] ) );
         
-        assertEquiv( subjectsTo( subjectPrefix, 2 ), m.listSubjectsWithProperty( predicates[0], m.createTypedLiteral( tvBooleans[0] ) ) );
+        assertEquiv( subjectsTo( subjectPrefix, 2 ), m.listResourcesWithProperty( predicates[0], tvBooleans[0] ) );
 
-        assertEquiv( subjectsTo( subjectPrefix, 0 ), m.listSubjectsWithProperty( predicates[0], m.createTypedLiteral( tvBooleans[1] ) ) );
+        assertEquiv( subjectsTo( subjectPrefix, 0 ), m.listResourcesWithProperty( predicates[0], tvBooleans[1] ) );
+       
+        assertEquiv( subjectsTo( subjectPrefix, 2 ), m.listResourcesWithProperty( predicates[0], tvChars[0] ) );
 
-        System.err.println( "Warning: some test8 tests suppressed pending deprecations for listSubjectsWithProperty" );
+        assertEquiv( subjectsTo( subjectPrefix, 0 ), m.listResourcesWithProperty( predicates[0], tvChars[1] ) );
         
-//        assertEquiv( subjectsTo( subjectPrefix, 2 ), m.listSubjectsWithProperty( predicates[0], (byte) tvLongs[0] ) );
-//
-//        assertEquiv( subjectsTo( subjectPrefix, 0 ), m.listSubjectsWithProperty( predicates[0], (byte) tvLongs[1] ) );
-//
-//        assertEquiv( subjectsTo( subjectPrefix, 2 ), m.listSubjectsWithProperty( predicates[0], (short) tvLongs[0] ) );
-//
-//        assertEquiv( subjectsTo( subjectPrefix, 0 ), m.listSubjectsWithProperty( predicates[0], (short) tvLongs[1] ) );
-//
-//        assertEquiv( subjectsTo( subjectPrefix, 2 ), m.listSubjectsWithProperty( predicates[0], (int) tvLongs[0] ) );
-//
-//        assertEquiv( subjectsTo( subjectPrefix, 0 ), m.listSubjectsWithProperty( predicates[0], (int) tvLongs[1] ) );
-//
-//        assertEquiv( subjectsTo( subjectPrefix, 2 ), m.listSubjectsWithProperty( predicates[0], (long) tvLongs[0] ) );
-//
-//        assertEquiv( subjectsTo( subjectPrefix, 0 ), m.listSubjectsWithProperty( predicates[0], (long) tvLongs[1] ) );
-//
-//        assertEquiv( subjectsTo( subjectPrefix, 2 ), m.listSubjectsWithProperty( predicates[0], tvChars[0] ) );
-//
-//        assertEquiv( subjectsTo( subjectPrefix, 0 ), m.listSubjectsWithProperty( predicates[0], tvChars[1] ) );
+        assertEquiv( subjectsTo( subjectPrefix, 2 ), m.listResourcesWithProperty( predicates[0], tvLongs[0] ) );
+    
+        assertEquiv( subjectsTo( subjectPrefix, 0 ), m.listResourcesWithProperty( predicates[0], tvLongs[1] ) );
 
-        assertEquiv( subjectsTo( subjectPrefix, 2 ), m.listSubjectsWithProperty( predicates[0], m.createTypedLiteral( tvFloats[0] ) ) );
+        assertEquiv( subjectsTo( subjectPrefix, 2 ), m.listResourcesWithProperty( predicates[0], tvFloats[0] ) );
 
-        assertEquiv( subjectsTo( subjectPrefix, 0 ), m.listSubjectsWithProperty( predicates[0], m.createTypedLiteral(  tvFloats[1] ) ) );
+        assertEquiv( subjectsTo( subjectPrefix, 0 ), m.listResourcesWithProperty( predicates[0], tvFloats[1] ) );
 
-        assertEquiv( subjectsTo( subjectPrefix, 2 ), m.listSubjectsWithProperty( predicates[0], m.createTypedLiteral( tvDoubles[0] ) ) );
+        assertEquiv( subjectsTo( subjectPrefix, 2 ), m.listResourcesWithProperty( predicates[0], tvDoubles[0] ) );
 
-        assertEquiv( subjectsTo( subjectPrefix, 0 ), m.listSubjectsWithProperty( predicates[0], m.createTypedLiteral( tvDoubles[1] ) ) );
+        assertEquiv( subjectsTo( subjectPrefix, 0 ), m.listResourcesWithProperty( predicates[0], tvDoubles[1] ) );
+        
+        assertEquiv( subjectsTo( subjectPrefix, 2 ), m.listResourcesWithProperty( predicates[0], (byte) tvLongs[0] ) );
+
+        assertEquiv( subjectsTo( subjectPrefix, 0 ), m.listResourcesWithProperty( predicates[0], (byte) tvLongs[1] ) );
+
+        assertEquiv( subjectsTo( subjectPrefix, 2 ), m.listResourcesWithProperty( predicates[0], (short) tvLongs[0] ) );
+
+        assertEquiv( subjectsTo( subjectPrefix, 0 ), m.listResourcesWithProperty( predicates[0], (short) tvLongs[1] ) );
+
+        assertEquiv( subjectsTo( subjectPrefix, 2 ), m.listResourcesWithProperty( predicates[0], (int) tvLongs[0] ) );
+
+        assertEquiv( subjectsTo( subjectPrefix, 0 ), m.listResourcesWithProperty( predicates[0], (int) tvLongs[1] ) );
 
         assertEquiv( subjectsTo( subjectPrefix, 2 ), m.listSubjectsWithProperty( predicates[0], tvStrings[0] ) );
 
@@ -115,13 +123,13 @@ public class NewRegressionListSubjects extends ModelTestBase
 
         assertEquiv( subjectsTo( subjectPrefix, 0 ), m.listSubjectsWithProperty( predicates[0], tvStrings[1], langs[1] ) );
 
-        assertEquiv( subjectsTo( subjectPrefix, 2 ), m.listSubjectsWithProperty( predicates[0], tvLitObjs[0] ) );
+        assertEquiv( subjectsTo( subjectPrefix, 2 ), m.listResourcesWithProperty( predicates[0], tvLitObjs[0] ) );
 
-        assertEquiv( subjectsTo( subjectPrefix, 0 ), m.listSubjectsWithProperty( predicates[0], tvLitObjs[1] ) );
+        assertEquiv( subjectsTo( subjectPrefix, 0 ), m.listResourcesWithProperty( predicates[0], tvLitObjs[1] ) );
 
-        assertEquiv( subjectsTo( subjectPrefix, 2 ), m.listSubjectsWithProperty( predicates[0], tvResObjs[0] ) );
+        assertEquiv( subjectsTo( subjectPrefix, 2 ), m.listResourcesWithProperty( predicates[0], tvResObjs[0] ) );
 
-        assertEquiv( subjectsTo( subjectPrefix, 0 ), m.listSubjectsWithProperty( predicates[0], tvResObjs[1] ) );
+        assertEquiv( subjectsTo( subjectPrefix, 0 ), m.listResourcesWithProperty( predicates[0], tvResObjs[1] ) );
 
         // assertEquiv( new HashSet( Arrays.asList( objects ) ), m.listObjectsOfProperty( predicates[1] ) );
         }
@@ -156,8 +164,8 @@ public class NewRegressionListSubjects extends ModelTestBase
         objects = new RDFNode[]
             {
             m.createTypedLiteral( tvBooleans[1] ),
-            m.createLiteral( tvLongs[1] ),
-            m.createLiteral( tvChars[1] ),
+            m.createTypedLiteral( tvLongs[1] ),
+            m.createTypedLiteral( tvChars[1] ),
             m.createTypedLiteral( tvFloats[1] ),
             m.createTypedLiteral( tvDoubles[1] ),
             m.createLiteral( tvStrings[1] ),

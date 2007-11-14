@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: OWLWGTester.java,v 1.25 2007-01-02 11:50:29 andy_seaborne Exp $
+ * $Id: OWLWGTester.java,v 1.26 2007-11-14 15:30:21 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -38,7 +38,7 @@ import java.util.*;
  * some code rationalization might be once once that stabilizes. </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.25 $ on $Date: 2007-01-02 11:50:29 $
+ * @version $Revision: 1.26 $ on $Date: 2007-11-14 15:30:21 $
  */
 public class OWLWGTester {
     /** The base URI in which the files are purported to reside */
@@ -121,12 +121,12 @@ public class OWLWGTester {
     public boolean runTests(String manifestFile, boolean log, boolean stats) throws IOException {
         // Load up the manifest
         Model manifest = FileManager.get().loadModel(baseDir + manifestFile);
-        ResIterator tests = manifest.listSubjectsWithProperty(RDF.type, PositiveEntailmentTest);
+        ResIterator tests = manifest.listResourcesWithProperty(RDF.type, PositiveEntailmentTest);
         while (tests.hasNext()) {
             Resource test = tests.nextResource();
             if (!runTest(test, log, stats)) return false;
         }
-        tests = manifest.listSubjectsWithProperty(RDF.type, NegativeEntailmentTest);
+        tests = manifest.listResourcesWithProperty(RDF.type, NegativeEntailmentTest);
         while (tests.hasNext()) {
             Resource test = tests.nextResource();
             if (!runTest(test, log, stats)) return false;

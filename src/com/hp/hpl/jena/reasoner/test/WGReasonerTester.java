@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: WGReasonerTester.java,v 1.28 2007-01-02 11:50:50 andy_seaborne Exp $
+ * $Id: WGReasonerTester.java,v 1.29 2007-11-14 15:30:23 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.test;
 
@@ -43,7 +43,7 @@ import java.net.*;
  * and check that at least one trile is missing. </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.28 $ on $Date: 2007-01-02 11:50:50 $
+ * @version $Revision: 1.29 $ on $Date: 2007-11-14 15:30:23 $
  */
 public class WGReasonerTester {
 
@@ -210,11 +210,11 @@ public class WGReasonerTester {
      */
     public List listTests() {
         List testList = new ArrayList();
-        ResIterator tests = testManifest.listSubjectsWithProperty(RDF.type, PositiveEntailmentTest);
+        ResIterator tests = testManifest.listResourcesWithProperty(RDF.type, PositiveEntailmentTest);
         while (tests.hasNext()) {
             testList.add(tests.next().toString());
         }
-        tests = testManifest.listSubjectsWithProperty(RDF.type, NegativeEntailmentTest);
+        tests = testManifest.listResourcesWithProperty(RDF.type, NegativeEntailmentTest);
         while (tests.hasNext()) {
             testList.add(tests.next().toString());
         }
