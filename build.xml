@@ -269,7 +269,9 @@
      additionalparam="-breakiterator">
       <classpath refid="classpath"/>
       <package name="com.hp.hpl.jena.query.sdb"/>
-      <link href="http://java.sun.com/j2se/1.5.0/docs/api/"/>
+      <!-- How to get ant/javadoc to tunnel through the firewall -->h
+      <!-- <link href="http://java.sun.com/j2se/1.5.0/docs/api/"/> -->
+
     </javadoc>
   </target>
 
