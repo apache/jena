@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: TestResourceImpl.java,v 1.11 2007-11-13 09:46:33 chris-dollin Exp $
+  $Id: TestResourceImpl.java,v 1.12 2007-11-14 09:51:53 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -67,7 +67,7 @@ public class TestResourceImpl extends ModelTestBase
         {
         Model m = ModelFactory.createDefaultModel();
         Resource r = m.createResource();
-        r.addTypedProperty( RDF.value, 1.0d );
+        r.addLiteral( RDF.value, 1.0d );
         assertEquals( m.createTypedLiteral( 1.0d ), r.getProperty( RDF.value ).getLiteral() );
         }
     
@@ -75,7 +75,7 @@ public class TestResourceImpl extends ModelTestBase
         {
         Model m = ModelFactory.createDefaultModel();
         Resource r = m.createResource();
-        r.addTypedProperty( RDF.value, 1.0f );
+        r.addLiteral( RDF.value, 1.0f );
         assertEquals( m.createTypedLiteral( 1.0f ), r.getProperty( RDF.value ).getLiteral() );
         }
     
@@ -83,23 +83,23 @@ public class TestResourceImpl extends ModelTestBase
         {
         Model m = ModelFactory.createDefaultModel();
         Resource r = m.createResource();
-        r.addTypedProperty( RDF.value, 1.0d );
-        assertTrue( r.hasTypedProperty( RDF.value, 1.0d ) );       
+        r.addLiteral( RDF.value, 1.0d );
+        assertTrue( r.hasLiteral( RDF.value, 1.0d ) );       
         }
     
     public void testHasTypedPropertyFloat()
         {
         Model m = ModelFactory.createDefaultModel();
         Resource r = m.createResource();
-        r.addTypedProperty( RDF.value, 1.0f );
-        assertTrue( r.hasTypedProperty( RDF.value, 1.0f ) );       
+        r.addLiteral( RDF.value, 1.0f );
+        assertTrue( r.hasLiteral( RDF.value, 1.0f ) );       
         }
     
     public void testAddTypedPropertyLong()
         {
         Model m = ModelFactory.createDefaultModel();
         Resource r = m.createResource();
-        r.addTypedProperty( RDF.value, 1L );
+        r.addLiteral( RDF.value, 1L );
         assertEquals( m.createTypedLiteral( 1L ), r.getProperty( RDF.value ).getLiteral() );
         }
     
@@ -107,8 +107,8 @@ public class TestResourceImpl extends ModelTestBase
         {
         Model m = ModelFactory.createDefaultModel();
         Resource r = m.createResource();
-        r.addTypedProperty( RDF.value, 1L );
-        assertTrue( r.hasTypedProperty( RDF.value, 1L ) );       
+        r.addLiteral( RDF.value, 1L );
+        assertTrue( r.hasLiteral( RDF.value, 1L ) );       
         }
     
     public void testAddTypedPropertyInt()
@@ -125,7 +125,7 @@ public class TestResourceImpl extends ModelTestBase
         {
         Model m = ModelFactory.createDefaultModel();
         Resource r = m.createResource();
-        r.addTypedProperty( RDF.value, 'x' );
+        r.addLiteral( RDF.value, 'x' );
         assertEquals( m.createTypedLiteral( 'x' ), r.getProperty( RDF.value ).getLiteral() );
         }
     
@@ -133,15 +133,15 @@ public class TestResourceImpl extends ModelTestBase
         {
         Model m = ModelFactory.createDefaultModel();
         Resource r = m.createResource();
-        r.addTypedProperty( RDF.value, 'x' );
-        assertTrue( r.hasTypedProperty( RDF.value, 'x' ) );     
+        r.addLiteral( RDF.value, 'x' );
+        assertTrue( r.hasLiteral( RDF.value, 'x' ) );     
         }
     
     public void testAddTypedPropertyBoolean()
         {
         Model m = ModelFactory.createDefaultModel();
         Resource r = m.createResource();
-        r.addTypedProperty( RDF.value, true );
+        r.addLiteral( RDF.value, true );
         assertEquals( m.createTypedLiteral( true ), r.getProperty( RDF.value ).getLiteral() );
         }
     
@@ -149,8 +149,8 @@ public class TestResourceImpl extends ModelTestBase
         {
         Model m = ModelFactory.createDefaultModel();
         Resource r = m.createResource();
-        r.addTypedProperty( RDF.value, false );
-        assertTrue( r.hasTypedProperty( RDF.value, false ) ); 
+        r.addLiteral( RDF.value, false );
+        assertTrue( r.hasLiteral( RDF.value, false ) ); 
         }
     
     public void testAddTypedPropertyString()
@@ -168,7 +168,7 @@ public class TestResourceImpl extends ModelTestBase
         Object z = new Object();
         Model m = ModelFactory.createDefaultModel();
         Resource r = m.createResource();
-        r.addTypedProperty( RDF.value, z );
+        r.addLiteral( RDF.value, z );
         assertEquals( m.createTypedLiteral( z ), r.getProperty( RDF.value ).getLiteral() );
         }
     
@@ -177,8 +177,8 @@ public class TestResourceImpl extends ModelTestBase
         Object z = new Object();
         Model m = ModelFactory.createDefaultModel();
         Resource r = m.createResource();
-        r.addTypedProperty( RDF.value, z );
-        assertTrue( r.hasTypedProperty( RDF.value, z ) ); 
+        r.addLiteral( RDF.value, z );
+        assertTrue( r.hasLiteral( RDF.value, z ) ); 
         }
     
     }    

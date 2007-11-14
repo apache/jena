@@ -57,8 +57,8 @@ import com.hp.hpl.jena.graph.Node;
  *    enhanced resources.</p>
  * @author bwm
  * @version Release='$Name: not supported by cvs2svn $'
-            Revision='$Revision: 1.24 $'
-            Date='$Date: 2007-11-13 16:05:53 $'
+            Revision='$Revision: 1.25 $'
+            Date='$Date: 2007-11-14 09:51:50 $'
  */
 public interface ModelCon {
 
@@ -404,8 +404,8 @@ public interface ModelCon {
      * @return the new statement
      */
     public Statement createStatement(Resource s, Property p, long o) ;
-    
-    public Statement createTypedStatement( Resource s, Property p, int o );
+
+    public Statement createLiteralStatement( Resource s, Property p, int o );
     
     /** Create a Statement instance.
      *
@@ -518,9 +518,8 @@ public interface ModelCon {
      
      * @return the new statement
      */
-    public Statement createStatement(Resource s, Property p, String o, String l,
-                                     boolean wellFormed) ;
-    
+    public Statement createStatement(Resource s, Property p, String o, String l, boolean wellFormed) ;
+
     /** Create a Statement instance.
      *
      * <p>Subsequent operations on the statement or any of its parts may
@@ -528,14 +527,14 @@ public interface ModelCon {
      * <p>Creating a statement does not add it to the set of statements in the
      * model. </p>
      * <p>The value o will be converted to a Literal.</P>
-     * @deprecated Applications should use typed literals 
+     * deprecated Applications should use typed literals 
      * @param s the subject of the statement
      * @param p the predicate of the statement
      * @param o is the value to be the object of the statement
      
      * @return the new statement
      */
-    public Statement createStatement(Resource s, Property p, Object o)   ;
+    public Statement createLiteralStatement( Resource s, Property p, Object o );
     
     /** Create a new anonymous bag.
      *
@@ -608,57 +607,49 @@ public interface ModelCon {
  */ 
     Model add(Resource s, Property p, RDFNode o)     ;
 
-/** add a statement to this model.
- *
- * @return this model
- * @param s the subject of the statement to add
- * @param p the predicate of the statement to add
- * @param o the object of the statement to add
- * deprecated Applications should use typed literals 
- */ 
-    Model addTyped(Resource s, Property p, boolean o) ;
+    /** 
+        Add the statement (s, p, createTypedLiteral( o )) to this model and
+        answer this model.
+    */ 
+    Model addLiteral( Resource s, Property p, boolean o );
     
-/** add a statement to this model.
- *
- * @return this model
- * @param s the subject of the statement to add
- * @param p the predicate of the statement to add
- * @param o the object of the statement to add
- * dprecated Applications should use typed literals 
- */ 
-    Model addTyped( Resource s, Property p, long o );
+    /**
+        Add the statement (s, p, createTypedLiteral( o )) to this model and
+        answer this model.
+     */ 
+    Model addLiteral( Resource s, Property p, long o );
     
-    Model addTyped( Resource s, Property p, int o );
+    /**
+        Add the statement (s, p, createTypedLiteral( o )) to this model and
+        answer this model.
+     */     
+    Model addLiteral( Resource s, Property p, int o );
     
-/** add a statement to this model.
- *
- * @return this model
- * @param s the subject of the statement to add
- * @param p the predicate of the statement to add
- * @param o the object of the statement to add
- * deprecated Applications should use typed literals 
- */ 
-    Model addTyped( Resource s, Property p, char o ) ;
+    /**
+        Add the statement (s, p, createTypedLiteral( o )) to this model and
+        answer this model.
+    */ 
+    Model addLiteral( Resource s, Property p, char o ) ;
     
     /** 
         Add the statement (s, p, o') to the model, where o' is the typed
         literal corresponding to o. Answer this model.
     */ 
-    Model addTyped( Resource s, Property p, float o );
+    Model addLiteral( Resource s, Property p, float o );
 
     /** 
         Add the statement (s, p, o') to the model, where o' is the typed
         literal corresponding to o. Answer this model.
      */ 
-    Model addTyped( Resource s, Property p, double o ) ;
+    Model addLiteral( Resource s, Property p, double o ) ;
 
-/** add a statement to this model.
- *
- * @return this model
- * @param s the subject of the statement to add
- * @param p the predicate of the statement to add
- * @param o the object of the statement to add
- */ 
+    /** add a statement to this model.
+     *
+     * @return this model
+     * @param s the subject of the statement to add
+     * @param p the predicate of the statement to add
+     * @param o the object of the statement to add
+     */ 
     Model add(Resource s, Property p, String o) ;
 
     /** add a statement to this model.
@@ -681,8 +672,7 @@ public interface ModelCon {
  * @param o the object of the statement to add
  * @param wellFormed true if o is well formed XML
  */ 
-    Model add(Resource s, Property p, String o, boolean wellFormed)
-      ;
+    Model add(Resource s, Property p, String o, boolean wellFormed);
 
 /** add a statement to this model.
  *
@@ -710,8 +700,7 @@ public interface ModelCon {
  * @param wellFormed true if o is well formed XML
  
  */ 
-    Model add(Resource s, Property p, String o, String l, boolean wellFormed)
-      ;
+    Model add(Resource s, Property p, String o, String l, boolean wellFormed);
 
 /** add a statement to this model.
  *
@@ -719,22 +708,22 @@ public interface ModelCon {
  * @param s the subject of the statement to add
  * @param p the predicate of the statement to add
  * @param o the object of the statement to add
- * @deprecated Applications should use typed literals 
+ * deprecated Applications should use typed literals 
  */ 
-    Model add(Resource s, Property p, Object o) ;
+    Model addLiteral( Resource s, Property p, Object o );
 
-/**
- * remove the statement <code>(s, p, o)</code> from this model and
- * answer this model. None of <code>s, p, o</code> are permitted to
- * be <code>null</code>: for wildcard removal, see <code>removeAll</code>.
- */
+    /**
+        remove the statement <code>(s, p, o)</code> from this model and
+        answer this model. None of <code>s, p, o</code> are permitted to
+        be <code>null</code>: for wildcard removal, see <code>removeAll</code>.
+    */
     Model remove( Resource s, Property p, RDFNode o );
     
-/** Remove all the Statements returned by an iterator.
- * @return this model
- * @param iter the iterator which returns the statements to be removed.
- 
- */ 
+    /** Remove all the Statements returned by an iterator.
+     * @return this model
+     * @param iter the iterator which returns the statements to be removed.
+     
+     */ 
     Model remove(StmtIterator iter) ;
 
 /** Remove all the Statements in a given model, including reified statements
@@ -954,65 +943,59 @@ public interface ModelCon {
  * @param o The value sought
  
  */ 
-    ResIterator listSubjectsWithProperty(Property p, Object o)
-                                           ;
+    ResIterator listSubjectsWithProperty(Property p, Object o);
+                                           
+    /**
+        Answer true iff this model contains the statement (s, p, o') where
+        o' is the typed literal corresponding to the value o.
+    */
+    boolean containsLiteral( Resource s, Property p, boolean o );
 
-/** Determine if a statement is present in this model.
- * @return true if the statement with subject s, property p and object o
- * is in the model, false otherwise
- * @param s The subject of the statment tested.
- * @param p The predicate of the statement tested.
- * @param o The object of the statement tested.
- * deprecated Applications should use typed literals  
-  */ 
-    boolean containsTyped( Resource s, Property p, boolean o );
 
-/** Determine if a statement is present in this model.
- * @return true if the statement with subject s, property p and object o
- * is in the model, false otherwise
- * @param s The subject of the statment tested.
- * @param p The predicate of the statement tested.
- * @param o The object of the statement tested.
- * deprecated Applications should use typed literals  
- */ 
-    boolean containsTyped( Resource s, Property p, long o );
-    
-    boolean containsTyped( Resource s, Property p, int o );
+    /**
+        Answer true iff this model contains the statement (s, p, o') where
+        o' is the typed literal corresponding to the value o.
+    */
+    boolean containsLiteral( Resource s, Property p, long o );
 
-/** Determine if a statement is present in this model.
- * @return true if the statement with subject s, property p and object o
- * is in the model, false otherwise
- * @param s The subject of the statment tested.
- * @param p The predicate of the statement tested.
- * @param o The object of the statement tested.
- * deprecated Applications should use typed literals   
- */ 
-    boolean containsTyped( Resource s, Property p, char o );
+    /**
+        Answer true iff this model contains the statement (s, p, o') where
+        o' is the typed literal corresponding to the value o.
+    */
+    boolean containsLiteral( Resource s, Property p, int o );
+
+    /**
+        Answer true iff this model contains the statement (s, p, o') where
+        o' is the typed literal corresponding to the value o.
+    */
+    boolean containsLiteral( Resource s, Property p, char o );
 
     /** 
         Answer true iff this model contains (s, p, o') where o' is the typed
         literal corresponding to o.
     */ 
-    boolean containsTyped( Resource s, Property p, float o );
+    boolean containsLiteral( Resource s, Property p, float o );
 
+    /**
+        Answer true iff this model contains the statement (s, p, o') where
+        o' is the typed literal corresponding to the value o.
+    */
+    boolean containsLiteral( Resource s, Property p, double o );
+
+    /**
+        Answer true iff this model contains the statement (s, p, o') where
+        o' is the typed literal corresponding to the value o.
+    */
+    boolean containsLiteral( Resource s, Property p, Object o );
+    
 /** Determine if a statement is present in this model.
  * @return true if the statement with subject s, property p and object o
  * is in the model, false otherwise
  * @param s The subject of the statment tested.
  * @param p The predicate of the statement tested.
  * @param o The object of the statement tested.
- * deprecated Applications should use typed literals  
  */ 
-    boolean containsTyped(Resource s, Property p, double o) ;
-
-/** Determine if a statement is present in this model.
- * @return true if the statement with subject s, property p and object o
- * is in the model, false otherwise
- * @param s The subject of the statment tested.
- * @param p The predicate of the statement tested.
- * @param o The object of the statement tested.
- */ 
-    boolean contains(Resource s, Property p, String o) ;
+    boolean contains( Resource s, Property p, String o );
 
 /** Determine if a statement is present in this model.
  * @return true if the statement with subject s, property p and object o
@@ -1022,16 +1005,5 @@ public interface ModelCon {
  * @param o The object of the statement tested.
  * @param l the language associated with the object
  */ 
-    boolean contains(Resource s, Property p, String o, String l)
-       ;
-
-/** Determine if a statement is present in this model.
- * @return true if the statement with subject s, property p and object o
- * is in the model, false otherwise
- * @param s The subject of the statment tested.
- * @param p The predicate of the statement tested.
- * @param o The object of the statement tested.
- * @deprecated Applications should use typed literals   
- */ 
-    boolean contains(Resource s, Property p, Object o) ;
+    boolean contains( Resource s, Property p, String o, String l );
 }

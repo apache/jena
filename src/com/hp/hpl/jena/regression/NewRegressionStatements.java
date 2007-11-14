@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: NewRegressionStatements.java,v 1.5 2007-11-09 12:22:54 chris-dollin Exp $
+ 	$Id: NewRegressionStatements.java,v 1.6 2007-11-14 09:51:55 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.regression;
@@ -130,7 +130,7 @@ public class NewRegressionStatements extends ModelTestBase
     public void testCreateStatementFactory()
         {
         LitTestObj tv = new LitTestObj( Long.MIN_VALUE );
-        Statement s = m.createStatement( r, p, tv );
+        Statement s = m.createLiteralStatement( r, p, tv );
         assertEquals( r, s.getSubject() );
         assertEquals( p, s.getPredicate() );
         assertEquals( tv, s.getObject( new LitTestObjF() ) );

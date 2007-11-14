@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestSimpleListStatements.java,v 1.18 2007-11-12 16:17:01 chris-dollin Exp $
+  $Id: TestSimpleListStatements.java,v 1.19 2007-11-14 09:51:53 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -39,15 +39,15 @@ public class TestSimpleListStatements extends ModelTestBase
         
     	model = ModelFactory.createDefaultModel();
     	model.createResource("http://example.org/boolean")
-    	     .addTypedProperty(RDF.value, booleanValue);             
+    	     .addLiteral(RDF.value, booleanValue);             
         model.createResource("http://example.org/char")
-             .addTypedProperty(RDF.value, charValue);             
+             .addLiteral(RDF.value, charValue);             
         model.createResource("http://example.org/long")             
-             .addTypedProperty(RDF.value, longValue);              
+             .addLiteral(RDF.value, longValue);              
         model.createResource("http://example.org/float")
-             .addTypedProperty(RDF.value, floatValue);            
+             .addLiteral(RDF.value, floatValue);            
         model.createResource("http://example.org/double")
-             .addTypedProperty(RDF.value, doubleValue);             
+             .addLiteral(RDF.value, doubleValue);             
         model.createResource("http://example.org/string")
              .addProperty(RDF.value, stringValue);             
         model.createResource("http://example.org/langString")

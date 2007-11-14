@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: NewRegressionSelector.java,v 1.4 2007-11-13 16:05:58 chris-dollin Exp $
+ 	$Id: NewRegressionSelector.java,v 1.5 2007-11-14 09:51:55 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.regression;
@@ -69,10 +69,10 @@ public class NewRegressionSelector extends ModelTestBase
             {
             for (int j = 0; j < num; j++) 
                 {
-                m.addTyped( subject[i], predicate[j], tvBooleans[j] );
-                m.addTyped( subject[i], predicate[j], tvLongs[j] );
-                m.addTyped( subject[i], predicate[j], tvChars[j] );
-                m.addTyped( subject[i], predicate[j], tvDoubles[j] );
+                m.addLiteral( subject[i], predicate[j], tvBooleans[j] );
+                m.addLiteral( subject[i], predicate[j], tvLongs[j] );
+                m.addLiteral( subject[i], predicate[j], tvChars[j] );
+                m.addLiteral( subject[i], predicate[j], tvDoubles[j] );
                 m.add( subject[i], predicate[j], tvStrings[j] );
                 m.add( subject[i], predicate[j], tvStrings[j], langs[j] );
                 m.add( subject[i], predicate[j], tvLitObjs[j] );

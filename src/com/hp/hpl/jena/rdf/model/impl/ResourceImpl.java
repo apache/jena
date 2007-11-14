@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ResourceImpl.java,v 1.45 2007-11-13 16:05:55 chris-dollin Exp $
+  $Id: ResourceImpl.java,v 1.46 2007-11-14 09:51:52 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -15,7 +15,7 @@ import com.hp.hpl.jena.graph.*;
 /** An implementation of Resource.
  *
  * @author  bwm
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.45 $' Date='$Date: 2007-11-13 16:05:55 $'
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.46 $' Date='$Date: 2007-11-14 09:51:52 $'
  */
 
 public class ResourceImpl extends EnhNode implements Resource {
@@ -151,7 +151,15 @@ public class ResourceImpl extends EnhNode implements Resource {
     public StmtIterator listProperties() 
     	{ return mustHaveModel().listStatements( this, null, (RDFNode) null ); }	
     
+    /**
+     * @deprecated Use {@link #addLiteral(Property,boolean)} instead
+     */
     public Resource addTypedProperty( Property p, boolean o ) 
+        {
+            return addLiteral( p, o );
+            }
+
+    public Resource addLiteral( Property p, boolean o ) 
         {
         ModelCom m = mustHaveModel();
         m.add( this, p, m.createTypedLiteral( o ) );
@@ -159,18 +167,18 @@ public class ResourceImpl extends EnhNode implements Resource {
         }
 
     public Resource addProperty(Property p, long o)  {
-        mustHaveModel().addTyped( this, p, o );
+        mustHaveModel().addLiteral( this, p, o );
         return this;
     }
     
-    public Resource addTypedProperty( Property p, long o ) 
+    public Resource addLiteral( Property p, long o ) 
         {
         Model m = mustHaveModel();
         m.add( this, p, m.createTypedLiteral( o ) );
         return this;
         }
     
-    public Resource addTypedProperty( Property p, char o )  
+    public Resource addLiteral( Property p, char o )  
         {
         ModelCom m = mustHaveModel();
         m.add( this, p, m.createTypedLiteral( o ) );
@@ -178,23 +186,23 @@ public class ResourceImpl extends EnhNode implements Resource {
         }
 
     public Resource addProperty(Property p, float o) {
-        mustHaveModel().addTyped( this, p, o );
+        mustHaveModel().addLiteral( this, p, o );
         return this;
     }
 
     public Resource addProperty(Property p, double o) {
-        mustHaveModel().addTyped( this, p, o );
+        mustHaveModel().addLiteral( this, p, o );
         return this;
     }
     
-    public Resource addTypedProperty( Property p, double o ) 
+    public Resource addLiteral( Property p, double o ) 
         {
         Model m = mustHaveModel();
         m.add( this, p, m.createTypedLiteral( o ) );
         return this;
         }
     
-    public Resource addTypedProperty( Property p, float o ) 
+    public Resource addLiteral( Property p, float o ) 
         {
         Model m = mustHaveModel();
         m.add( this, p, m.createTypedLiteral( o ) );
@@ -218,7 +226,15 @@ public class ResourceImpl extends EnhNode implements Resource {
         return this ;
     }
 
+    /**
+     * @deprecated Use {@link #addLiteral(Property,Object)} instead
+     */
     public Resource addTypedProperty( Property p, Object o ) 
+        {
+            return addLiteral( p, o );
+            }
+
+    public Resource addLiteral( Property p, Object o ) 
         {
         ModelCom m = mustHaveModel();
         m.add( this, p, m.createTypedLiteral( o ) );
@@ -234,31 +250,39 @@ public class ResourceImpl extends EnhNode implements Resource {
         return mustHaveModel().contains( this, p );
     }
     
+    /**
+     * @deprecated Use {@link #hasLiteral(Property,boolean)} instead
+     */
     public boolean hasTypedProperty( Property p, boolean o )  
         {
-        ModelCom m = mustHaveModel();
-        return m.contains( this, p, m.createTypedLiteral( o ) );
-        }
-    
-    public boolean hasTypedProperty( Property p, long o ) 
+            return hasLiteral( p, o );
+            }
+
+    public boolean hasLiteral( Property p, boolean o )  
         {
         ModelCom m = mustHaveModel();
         return m.contains( this, p, m.createTypedLiteral( o ) );
         }
     
-    public boolean hasTypedProperty( Property p, char o )  
+    public boolean hasLiteral( Property p, long o ) 
         {
         ModelCom m = mustHaveModel();
         return m.contains( this, p, m.createTypedLiteral( o ) );
         }
     
-    public boolean hasTypedProperty( Property p, double o ) 
+    public boolean hasLiteral( Property p, char o )  
         {
         ModelCom m = mustHaveModel();
         return m.contains( this, p, m.createTypedLiteral( o ) );
         }
     
-    public boolean hasTypedProperty( Property p, float o ) 
+    public boolean hasLiteral( Property p, double o ) 
+        {
+        ModelCom m = mustHaveModel();
+        return m.contains( this, p, m.createTypedLiteral( o ) );
+        }
+    
+    public boolean hasLiteral( Property p, float o ) 
         {
         ModelCom m = mustHaveModel();
         return m.contains( this, p, m.createTypedLiteral( o ) );
@@ -272,7 +296,7 @@ public class ResourceImpl extends EnhNode implements Resource {
         return mustHaveModel().contains( this, p, o, l );
     }
 
-    public boolean hasTypedProperty( Property p, Object o ) 
+    public boolean hasLiteral( Property p, Object o ) 
         {
         ModelCom m = mustHaveModel();
         return m.contains( this, p, m.createTypedLiteral( o ) );

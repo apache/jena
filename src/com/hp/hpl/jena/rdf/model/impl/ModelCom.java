@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
     [See end of file]
-    $Id: ModelCom.java,v 1.119 2007-11-13 16:05:54 chris-dollin Exp $
+    $Id: ModelCom.java,v 1.120 2007-11-14 09:51:51 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -93,22 +93,30 @@ public class ModelCom
         }
     }
     
+    /**
+     * @deprecated Use {@link #addLiteral(Resource,Property,boolean)} instead
+     */
     public Model addTyped( Resource s, Property p, boolean o )  
+        {
+            return addLiteral( s, p, o );
+            }
+
+    public Model addLiteral( Resource s, Property p, boolean o )  
         { return add(s, p, createTypedLiteral( o ) ); }
     
-    public Model addTyped( Resource s, Property p, long o )  
+    public Model addLiteral( Resource s, Property p, long o )  
         { return add(s, p, createTypedLiteral( o ) ); }
     
-    public Model addTyped( Resource s, Property p, int o )  
+    public Model addLiteral( Resource s, Property p, int o )  
         { return add(s, p, createTypedLiteral( o ) ); }
     
-    public Model addTyped( Resource s, Property p, char o )  
+    public Model addLiteral( Resource s, Property p, char o )  
         { return add(s, p, createTypedLiteral( o ) ); }
     
-    public Model addTyped( Resource s, Property p, float o )  
+    public Model addLiteral( Resource s, Property p, float o )  
         { return add( s, p, createTypedLiteral( o ) ); }
     
-    public Model addTyped( Resource s, Property p, double o )  
+    public Model addLiteral( Resource s, Property p, double o )  
         { return add(s, p, createTypedLiteral( o ) ); }
     
     public Model add(Resource s, Property p, String o)  {
@@ -155,10 +163,20 @@ public class ModelCom
             ;
         }
         
-    public Model add(Resource s, Property p, Object o)  {
-        return add( s, p, ensureRDFNode( o ) );
-    }
+    /**
+     * @deprecated Use {@link #addLiteral(Resource,Property,Object)} instead
+     */
+    public Model addTyped( Resource s, Property p, Object o )  
+        {
+            return addLiteral( s, p, o );
+            }
+
+    public Model addLiteral( Resource s, Property p, Object o )  
+        { return add( s, p, asObject( o ) ); }
     
+    private RDFNode asObject( Object o )
+        { return o instanceof RDFNode ? (RDFNode) o : createTypedLiteral( o ); }
+
     public Model add( StmtIterator iter )  {
         try { getBulkUpdateHandler().add( asTriples( iter ) ); }
         finally { iter.close(); }
@@ -324,22 +342,30 @@ public class ModelCom
         return this;
         }
         
+    /**
+     * @deprecated Use {@link #containsLiteral(Resource,Property,boolean)} instead
+     */
     public boolean containsTyped( Resource s, Property p, boolean o )
+        {
+            return containsLiteral( s, p, o );
+            }
+
+    public boolean containsLiteral( Resource s, Property p, boolean o )
         { return contains(s, p, createTypedLiteral( o ) ); }
     
-    public boolean containsTyped( Resource s, Property p, long o )
+    public boolean containsLiteral( Resource s, Property p, long o )
         { return contains(s, p, createTypedLiteral( o ) ); }
     
-    public boolean containsTyped( Resource s, Property p, int o )
+    public boolean containsLiteral( Resource s, Property p, int o )
         { return contains(s, p, createTypedLiteral( o ) ); }
     
-    public boolean containsTyped( Resource s, Property p, char o )
+    public boolean containsLiteral( Resource s, Property p, char o )
         { return contains(s, p, createTypedLiteral( o ) ); }
     
-    public boolean containsTyped( Resource s, Property p, float o )
+    public boolean containsLiteral( Resource s, Property p, float o )
         { return contains(s, p, createTypedLiteral( o ) ); }
     
-    public boolean containsTyped( Resource s, Property p, double o )
+    public boolean containsLiteral( Resource s, Property p, double o )
         { return contains(s, p, createTypedLiteral( o ) ); }
     
     public boolean contains( Resource s, Property p, String o )
@@ -348,8 +374,8 @@ public class ModelCom
     public boolean contains( Resource s, Property p, String o, String l )
         { return contains( s, p, literal( o, l, false ) ); }
     
-    public boolean contains(Resource s, Property p, Object o)
-        { return contains( s, p, ensureRDFNode( o ) ); }
+    public boolean containsLiteral(Resource s, Property p, Object o)
+        { return contains( s, p, asObject( o ) ); }
     
     public boolean containsAny( Model model ) 
         { return containsAnyThenClose( model.listStatements() ); }
@@ -638,7 +664,15 @@ public class ModelCom
     public Statement createStatement( Resource r, Property p, long o )
         { return createStatement( r, p, createLiteral( o ) ); }
     
+    /**
+     * @deprecated Use {@link #createLiteralStatement(Resource,Property,int)} instead
+     */
     public Statement createTypedStatement( Resource r, Property p, int o )
+        {
+            return createLiteralStatement( r, p, o );
+            }
+
+    public Statement createLiteralStatement( Resource r, Property p, int o )
         { return createStatement( r, p, createTypedLiteral( o ) ); }
     
     public Statement createStatement( Resource r, Property p, char o )
@@ -653,8 +687,16 @@ public class ModelCom
     public Statement createStatement( Resource r, Property p, String o )
         { return createStatement( r, p, createLiteral( o ) ); }
     
-    public Statement createStatement(Resource r, Property p, Object o)
-        { return createStatement( r, p, ensureRDFNode( o ) ); }
+    /**
+     * @deprecated Use {@link #createLiteralStatement(Resource,Property,Object)} instead
+     */
+    public Statement createTypedStatement( Resource r, Property p, Object o )
+        {
+            return createLiteralStatement( r, p, o );
+            }
+
+    public Statement createLiteralStatement( Resource r, Property p, Object o )
+        { return createStatement( r, p, asObject( o ) ); }
     
     public Statement createStatement
         ( Resource r, Property p, String o, boolean wellFormed )  

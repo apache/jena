@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: NewRegressionAddAndContains.java,v 1.6 2007-11-13 16:05:58 chris-dollin Exp $
+ 	$Id: NewRegressionAddAndContains.java,v 1.7 2007-11-14 09:51:55 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.regression;
@@ -39,16 +39,16 @@ public class NewRegressionAddAndContains extends NewRegressionBase
     
     public void testEmpty() 
         {
-        assertFalse( m.containsTyped( S, P, tvBoolean ) );
+        assertFalse( m.containsLiteral( S, P, tvBoolean ) );
         assertFalse( m.contains( S, P, m.createResource() ) );
-        assertFalse( m.containsTyped( S, P, tvByte ) );
-        assertFalse( m.containsTyped( S, P, tvShort ) );
-        assertFalse( m.containsTyped( S, P, tvInt ) );
-        assertFalse( m.containsTyped( S, P, tvLong ) );
-        assertFalse( m.containsTyped( S, P, tvChar ) );
-        assertFalse( m.containsTyped( S, P, tvFloat ) );
-        assertFalse( m.containsTyped( S, P, tvDouble ) );
-        assertFalse( m.contains( S, P, new LitTestObj( 12345 ) ) );
+        assertFalse( m.containsLiteral( S, P, tvByte ) );
+        assertFalse( m.containsLiteral( S, P, tvShort ) );
+        assertFalse( m.containsLiteral( S, P, tvInt ) );
+        assertFalse( m.containsLiteral( S, P, tvLong ) );
+        assertFalse( m.containsLiteral( S, P, tvChar ) );
+        assertFalse( m.containsLiteral( S, P, tvFloat ) );
+        assertFalse( m.containsLiteral( S, P, tvDouble ) );
+        assertFalse( m.containsLiteral( S, P, new LitTestObj( 12345 ) ) );
         assertFalse( m.contains( S, P, "test string" ) );
         assertFalse( m.contains( S, P, "test string", "en" ) );
         }
@@ -62,57 +62,57 @@ public class NewRegressionAddAndContains extends NewRegressionBase
     
     public void testAddContainsBoolean()
         {
-        m.addTyped( S, P, tvBoolean );
-        assertTrue( m.containsTyped( S, P, tvBoolean ) );
+        m.addLiteral( S, P, tvBoolean );
+        assertTrue( m.containsLiteral( S, P, tvBoolean ) );
         }
     
     public void testAddContainsByte()
         {
-        m.addTyped( S, P, tvByte );
-        assertTrue( m.containsTyped( S, P, tvByte ) );
+        m.addLiteral( S, P, tvByte );
+        assertTrue( m.containsLiteral( S, P, tvByte ) );
         }
     
     public void testAddContainsShort()
         {
-        m.addTyped( S, P, tvShort );
-        assertTrue( m.containsTyped( S, P, tvShort ) );
+        m.addLiteral( S, P, tvShort );
+        assertTrue( m.containsLiteral( S, P, tvShort ) );
         }    
     
     public void testAddContainsInt()
         {
-        m.addTyped( S, P, tvInt );
-        assertTrue( m.containsTyped( S, P, tvInt ) );
+        m.addLiteral( S, P, tvInt );
+        assertTrue( m.containsLiteral( S, P, tvInt ) );
         }
     
     public void testAddContainsLong()
         {
-        m.addTyped( S, P, tvLong );
-        assertTrue( m.containsTyped( S, P, tvLong ) );
+        m.addLiteral( S, P, tvLong );
+        assertTrue( m.containsLiteral( S, P, tvLong ) );
         }
     
     public void testAddContainsChar()
         {
-        m.addTyped( S, P, tvChar );
-        assertTrue( m.containsTyped( S, P, tvChar ) );
+        m.addLiteral( S, P, tvChar );
+        assertTrue( m.containsLiteral( S, P, tvChar ) );
         }
     
     public void testAddContainsFloat()
         {
-        m.addTyped( S, P, tvFloat );
-        assertTrue( m.containsTyped( S, P, tvFloat ) );
+        m.addLiteral( S, P, tvFloat );
+        assertTrue( m.containsLiteral( S, P, tvFloat ) );
         }
     
     public void testAddContainsDouble()
         {
-        m.addTyped( S, P, tvDouble );
-        assertTrue( m.containsTyped( S, P, tvDouble ) );
+        m.addLiteral( S, P, tvDouble );
+        assertTrue( m.containsLiteral( S, P, tvDouble ) );
         }
 
     public void testAddContainsObject()
         {
         LitTestObj O = new LitTestObj( 12345 );
-        m.add( S, P, O );
-        assertTrue( m.contains( S, P, O ) );
+        m.addLiteral( S, P, O );
+        assertTrue( m.containsLiteral( S, P, O ) );
         }
     
     public void testAddContainsPlainString()

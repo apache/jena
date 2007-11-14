@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: NewRegressionListSubjects.java,v 1.7 2007-11-13 16:05:58 chris-dollin Exp $
+ 	$Id: NewRegressionListSubjects.java,v 1.8 2007-11-14 09:51:55 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.regression;
@@ -176,15 +176,15 @@ public class NewRegressionListSubjects extends ModelTestBase
             }
         
         for (int i = 0; i < num; i += 1) 
-            m.addTyped(subjects[i], predicates[4], false );
+            m.addLiteral(subjects[i], predicates[4], false );
         
         for (int i = 0; i < 2 ; i += 1) 
             {
             for (int j = 0; j < 2; j += 1) 
                 {
                 m.add(subjects[i], predicates[j], m.createTypedLiteral( tvBooleans[j] ) );
-                m.addTyped(subjects[i], predicates[j], tvLongs[j] );
-                m.addTyped(subjects[i], predicates[j], tvChars[j] );
+                m.addLiteral(subjects[i], predicates[j], tvLongs[j] );
+                m.addLiteral(subjects[i], predicates[j], tvChars[j] );
                 m.add(subjects[i], predicates[j], m.createTypedLiteral( tvFloats[j] ) );
                 m.add(subjects[i], predicates[j], m.createTypedLiteral( tvDoubles[j] ) );
                 m.add(subjects[i], predicates[j], tvStrings[j] );

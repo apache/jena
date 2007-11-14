@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: NewRegressionResourceMethods.java,v 1.7 2007-11-13 09:46:38 chris-dollin Exp $
+ 	$Id: NewRegressionResourceMethods.java,v 1.8 2007-11-14 09:51:55 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.regression;
@@ -40,45 +40,45 @@ public class NewRegressionResourceMethods extends NewRegressionBase
         tvResource = m.createResource();
         r = 
             m.createResource()
-            .addTypedProperty( RDF.value, tvBoolean )
-            .addTypedProperty( RDF.value, tvByte )
-            .addTypedProperty( RDF.value, tvShort )
-            .addTypedProperty( RDF.value, tvInt )
-            .addTypedProperty( RDF.value, tvLong )
-            .addTypedProperty( RDF.value, tvChar )
-            .addTypedProperty( RDF.value, tvFloat )
-            .addTypedProperty( RDF.value, tvDouble )
+            .addLiteral( RDF.value, tvBoolean )
+            .addLiteral( RDF.value, tvByte )
+            .addLiteral( RDF.value, tvShort )
+            .addLiteral( RDF.value, tvInt )
+            .addLiteral( RDF.value, tvLong )
+            .addLiteral( RDF.value, tvChar )
+            .addLiteral( RDF.value, tvFloat )
+            .addLiteral( RDF.value, tvDouble )
             .addProperty( RDF.value, tvString )
             .addProperty( RDF.value, tvString , lang )
-            .addTypedProperty( RDF.value, tvObject )
+            .addLiteral( RDF.value, tvObject )
             .addProperty( RDF.value, tvLiteral )
             .addProperty( RDF.value, tvResource )
             ;
         }
     
     public void testBoolean()
-        { assertTrue( r.hasTypedProperty( RDF.value, tvBoolean ) ); }
+        { assertTrue( r.hasLiteral( RDF.value, tvBoolean ) ); }
     
     public void testByte()
-        { assertTrue( r.hasTypedProperty( RDF.value, tvByte ) ); }
+        { assertTrue( r.hasLiteral( RDF.value, tvByte ) ); }
     
     public void testShort()
-        { assertTrue( r.hasTypedProperty( RDF.value, tvShort ) ); }
+        { assertTrue( r.hasLiteral( RDF.value, tvShort ) ); }
     
     public void testInt()
-        { assertTrue( r.hasTypedProperty( RDF.value, tvInt ) ); }
+        { assertTrue( r.hasLiteral( RDF.value, tvInt ) ); }
     
     public void testLong()
-        { assertTrue( r.hasTypedProperty( RDF.value, tvLong ) ); }
+        { assertTrue( r.hasLiteral( RDF.value, tvLong ) ); }
     
     public void testChar()
-        { assertTrue( r.hasTypedProperty( RDF.value, tvChar ) ); }
+        { assertTrue( r.hasLiteral( RDF.value, tvChar ) ); }
     
     public void testFloat()
-        { assertTrue( r.hasTypedProperty( RDF.value, tvFloat ) ); }
+        { assertTrue( r.hasLiteral( RDF.value, tvFloat ) ); }
     
     public void testDouble()
-        { assertTrue( r.hasTypedProperty( RDF.value, tvDouble ) ); }
+        { assertTrue( r.hasLiteral( RDF.value, tvDouble ) ); }
     
     public void testString()
         { assertTrue( r.hasProperty( RDF.value, tvString ) ); }
@@ -87,7 +87,7 @@ public class NewRegressionResourceMethods extends NewRegressionBase
         { assertTrue( r.hasProperty( RDF.value, tvString, lang ) ); }
     
     public void testObject()
-        { assertTrue( r.hasTypedProperty( RDF.value, tvObject ) ); }
+        { assertTrue( r.hasLiteral( RDF.value, tvObject ) ); }
     
     public void testLiteral()
         { assertTrue( r.hasProperty( RDF.value, tvLiteral ) ); }

@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: NewRegressionObjects.java,v 1.4 2007-11-13 16:05:58 chris-dollin Exp $
+ 	$Id: NewRegressionObjects.java,v 1.5 2007-11-14 09:51:55 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.regression;
@@ -85,7 +85,7 @@ public class NewRegressionObjects extends ModelTestBase
         {
         int size = 10;
         Resource s = m.createResource();
-        for (int i = 0; i < size; i += 1) m.addTyped( s, RDF.value, i );
+        for (int i = 0; i < size; i += 1) m.addLiteral( s, RDF.value, i );
         List L = iteratorToList( m.listObjectsOfProperty( s, RDF.value ) );
         assertEquals( size, L.size() );
         Set wanted = literalsUpto( size );
@@ -134,7 +134,7 @@ public class NewRegressionObjects extends ModelTestBase
         for (int i = 0; i < numberSubjects; i += 1)
             for (int j = 0; j < numberPredicates; j += 1)
                 {
-                Statement s = m.createTypedStatement
+                Statement s = m.createLiteralStatement
                     ( resource( subjectPrefix + i ), 
                     property( predicatePrefix + j + "/p" ), 
                     i * numberPredicates + j );

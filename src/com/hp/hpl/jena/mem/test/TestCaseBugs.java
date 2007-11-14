@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: TestCaseBugs.java,v 1.9 2007-01-02 11:51:11 andy_seaborne Exp $
+ * $Id: TestCaseBugs.java,v 1.10 2007-11-14 09:51:37 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.mem.test;
@@ -34,7 +34,7 @@ import com.hp.hpl.jena.rdf.model.*;
 
 /**
     @author  bwm
-    @version $Name: not supported by cvs2svn $ $Revision: 1.9 $ $Date: 2007-01-02 11:51:11 $
+    @version $Name: not supported by cvs2svn $ $Revision: 1.10 $ $Date: 2007-11-14 09:51:37 $
 */
 public class TestCaseBugs 
             extends TestCaseBasic {
@@ -54,13 +54,13 @@ public class TestCaseBugs
             Object   oc   = RDFS.Class;
             Object   op   = RDF.Property;
             
-            Statement s = model.createStatement(r, RDF.type, oc);
+            Statement s = model.createLiteralStatement(r, RDF.type, oc);
             assertInstanceOf(Resource.class, s.getObject() );
             
             s.changeObject(op);
             assertInstanceOf(Resource.class, s.getObject() );
             
-            model.add(r, RDF.type, oc);
+            model.addLiteral(r, RDF.type, oc);
             RDFNode n = model.listStatements()
                              .nextStatement()
                              .getObject();
@@ -68,6 +68,6 @@ public class TestCaseBugs
             
             assertTrue(model.listSubjectsWithProperty(RDF.type, oc).hasNext());
             
-            assertTrue(model.contains(r, RDF.type, oc));  
+            assertTrue(model.containsLiteral(r, RDF.type, oc));  
          }
 }
