@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: NewRegressionStatementMethods.java,v 1.7 2007-11-14 09:51:55 chris-dollin Exp $
+ 	$Id: NewRegressionStatementMethods.java,v 1.8 2007-11-14 10:52:27 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.regression;
@@ -39,13 +39,13 @@ public class NewRegressionStatementMethods extends NewRegressionBase
     
     public void testGetResourceFailure()
         {
-        try { m.createStatement( r, RDF.value, false ).getResource(); fail( "should trap non-resource object" ); }
+        try { m.createLiteralStatement( r, RDF.value, false ).getResource(); fail( "should trap non-resource object" ); }
         catch (ResourceRequiredException e) { pass(); }
         }
     
     public void testGetTrueBoolean()
         {
-        assertEquals( true, m.createStatement( r, RDF.value, true ).getLiteral().getBoolean() );
+        assertEquals( true, m.createLiteralStatement( r, RDF.value, true ).getLiteral().getBoolean() );
         }
     
     public void testGetLiteralFailure()
@@ -56,32 +56,38 @@ public class NewRegressionStatementMethods extends NewRegressionBase
     
     public void testBoolean()
         {
-        assertEquals( true, m.createStatement( r, RDF.value, true ).getBoolean() );
+        Statement s = m.createLiteralStatement( r, RDF.value, true );
+        assertEquals( m.createTypedLiteral( true ), s.getObject() );
+        assertEquals( true, s.getBoolean() );
         }
     
     public void testByte()
         {
-        assertEquals( tvByte, m.createStatement( r, RDF.value, tvByte ).getByte() );
+        assertEquals( tvByte, m.createLiteralStatement( r, RDF.value, tvByte ).getByte() );
         }
     
     public void testShort()
         {
-        assertEquals( tvShort, m.createStatement( r, RDF.value, tvShort ).getShort() );
+        assertEquals( tvShort, m.createLiteralStatement( r, RDF.value, tvShort ).getShort() );
         }
     
     public void testInt()
         {
-        assertEquals( tvInt, m.createStatement( r, RDF.value, tvInt ).getInt() );
+        assertEquals( tvInt, m.createLiteralStatement( r, RDF.value, tvInt ).getInt() );
         }
     
     public void testLong()
         {
-        assertEquals( tvLong, m.createStatement( r, RDF.value, tvLong ).getLong() );
+        Statement s = m.createLiteralStatement( r, RDF.value, tvLong );
+        assertEquals( m.createTypedLiteral( tvLong ), s.getObject() );
+        assertEquals( tvLong, s.getLong() );
         }
     
     public void testChar()
         {
-        assertEquals( tvChar, m.createStatement( r, RDF.value, tvChar ).getChar() );
+        Statement s = m.createLiteralStatement( r, RDF.value, tvChar );
+        assertEquals( m.createTypedLiteral( tvChar ), s.getObject() );
+        assertEquals( tvChar, s.getChar() );
         }
     
     public void testFloat()
@@ -281,7 +287,7 @@ public class NewRegressionStatementMethods extends NewRegressionBase
 
     protected Statement loadInitialStatement()
         {
-        Statement sTrue = m.createStatement( r, RDF.value, true );
+        Statement sTrue = m.createLiteralStatement( r, RDF.value, true );
         m.add( sTrue );
         return sTrue;
         }

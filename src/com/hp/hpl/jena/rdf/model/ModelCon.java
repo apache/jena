@@ -57,8 +57,8 @@ import com.hp.hpl.jena.graph.Node;
  *    enhanced resources.</p>
  * @author bwm
  * @version Release='$Name: not supported by cvs2svn $'
-            Revision='$Revision: 1.25 $'
-            Date='$Date: 2007-11-14 09:51:50 $'
+            Revision='$Revision: 1.26 $'
+            Date='$Date: 2007-11-14 10:52:23 $'
  */
 public interface ModelCon {
 
@@ -373,87 +373,35 @@ public interface ModelCon {
      */
     public Literal createTypedLiteral(Object value, String typeURI);
     
-    /** Create a Statement instance.
-     *
-     * <p>Subsequent operations on the statement or any of its parts may
-     * modify this model.</p>
-     * <p>Creating a statement does not add it to the set of statements in the
-     * model. </p>
-     * <p>The value o will be converted to a Literal.</P>
-     * @deprecated Applications should use typed literals 
-     * @param s the subject of the statement
-     * @param p the predicate of the statement
-     * @param o is the value to be the object of the statement
-     
-     * @return the new statement
-     */
-    public Statement createStatement(Resource s, Property p, boolean o)  ;
+    /** 
+        Answer a new Statement object (s, p, o') where o' is the typed literal
+        corresponding to o using createTypedLiteral.
+    */
+    public Statement createLiteralStatement( Resource s, Property p, boolean o );
     
-    /** Create a Statement instance.
-     *
-     * <p>Subsequent operations on the statement or any of its parts may
-     * modify this model.</p>
-     * <p>Creating a statement does not add it to the set of statements in the
-     * model. </p>
-     * <p>The value o will be converted to a Literal.</P>
-     * @deprecated Applications should use typed literals 
-     * @param s the subject of the statement
-     * @param p the predicate of the statement
-     * @param o is the value to be the object of the statement
-     
-     * @return the new statement
-     */
-    public Statement createStatement(Resource s, Property p, long o) ;
-
+    /** 
+        Answer a new Statement object (s, p, o') where o' is the typed literal
+        corresponding to o using createTypedLiteral.
+    */
+    public Statement createLiteralStatement( Resource s, Property p, long o );
+    
+    /** 
+        Answer a new Statement object (s, p, o') where o' is the typed literal
+        corresponding to o using createTypedLiteral.
+    */
     public Statement createLiteralStatement( Resource s, Property p, int o );
     
-    /** Create a Statement instance.
-     *
-     * <p>Subsequent operations on the statement or any of its parts may
-     * modify this model.</p>
-     * <p>Creating a statement does not add it to the set of statements in the
-     * model. </p>
-     * <p>The value o will be converted to a Literal.</P>
-     * @deprecated Applications should use typed literals 
-     * @param s the subject of the statement
-     * @param p the predicate of the statement
-     * @param o is the value to be the object of the statement
-     
-     * @return the new statement
-     */
-    public Statement createStatement(Resource s, Property p, char o) ;
-    
-//    /** Create a Statement instance.
-//     *
-//     * <p>Subsequent operations on the statement or any of its parts may
-//     * modify this model.</p>
-//     * <p>Creating a statement does not add it to the set of statements in the
-//     * model. </p>
-//     * <p>The value o will be converted to a Literal.</P>
-//     * @deprecated Applications should use typed literals 
-//     * @param s the subject of the statement
-//     * @param p the predicate of the statement
-//     * @param o is the value to be the object of the statement
-//     
-//     * @return the new statement
-//     */
-//    public Statement createStatement(Resource s, Property p, float o) ;
-//    
-//    /** Create a Statement instance.
-//     *
-//     * <p>Subsequent operations on the statement or any of its parts may
-//     * modify this model.</p>
-//     * <p>Creating a statement does not add it to the set of statements in the
-//     * model. </p>
-//     * <p>The value o will be converted to a Literal.</P>
-//     * @deprecated Applications should use typed literals 
-//     * @param s the subject of the statement
-//     * @param p the predicate of the statement
-//     * @param o is the value to be the object of the statement
-//     
-//     * @return the new statement
-//     */
-//    public Statement createStatement(Resource s, Property p, double o) ;
+    /** 
+        Answer a new Statement object (s, p, o') where o' is the typed literal
+        corresponding to o using createTypedLiteral.
+    */
+    public Statement createLiteralStatement( Resource s, Property p, char o );
+
+    /** 
+        Answer a new Statement object (s, p, o') where o' is the typed literal
+        corresponding to o using createTypedLiteral.
+    */
+    public Statement createLiteralStatement( Resource s, Property p, Object o );
     
     /** Create a Statement instance.
      *
@@ -520,21 +468,6 @@ public interface ModelCon {
      */
     public Statement createStatement(Resource s, Property p, String o, String l, boolean wellFormed) ;
 
-    /** Create a Statement instance.
-     *
-     * <p>Subsequent operations on the statement or any of its parts may
-     * modify this model.</p>
-     * <p>Creating a statement does not add it to the set of statements in the
-     * model. </p>
-     * <p>The value o will be converted to a Literal.</P>
-     * deprecated Applications should use typed literals 
-     * @param s the subject of the statement
-     * @param p the predicate of the statement
-     * @param o is the value to be the object of the statement
-     
-     * @return the new statement
-     */
-    public Statement createLiteralStatement( Resource s, Property p, Object o );
     
     /** Create a new anonymous bag.
      *

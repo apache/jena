@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: NewRegressionStatements.java,v 1.6 2007-11-14 09:51:55 chris-dollin Exp $
+ 	$Id: NewRegressionStatements.java,v 1.7 2007-11-14 10:52:28 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.regression;
@@ -44,7 +44,7 @@ public class NewRegressionStatements extends ModelTestBase
     
     public void testCreateStatementTrue()
         {
-        Statement s = m.createStatement( r, p, true );
+        Statement s = m.createLiteralStatement( r, p, true );
         assertEquals( r, s.getSubject() );
         assertEquals( p, s.getPredicate() );
         assertEquals( true, s.getBoolean() );
@@ -52,7 +52,7 @@ public class NewRegressionStatements extends ModelTestBase
 
     public void testCreateStatementByteMax()
         {
-        Statement s = m.createStatement( r, p, Byte.MAX_VALUE );
+        Statement s = m.createLiteralStatement( r, p, Byte.MAX_VALUE );
         assertEquals( r, s.getSubject() );
         assertEquals( p, s.getPredicate() );
         assertEquals( Byte.MAX_VALUE, s.getByte() );
@@ -60,7 +60,7 @@ public class NewRegressionStatements extends ModelTestBase
     
     public void testCreateStatementShortMax()
         {
-        Statement s = m.createStatement( r, p, Short.MAX_VALUE );
+        Statement s = m.createLiteralStatement( r, p, Short.MAX_VALUE );
         assertEquals( r, s.getSubject() );
         assertEquals( p, s.getPredicate() );
         assertEquals( Short.MAX_VALUE, s.getShort() );
@@ -68,7 +68,7 @@ public class NewRegressionStatements extends ModelTestBase
     
     public void testCreateStatementIntMax()
         {
-        Statement s = m.createStatement( r, p, Integer.MAX_VALUE );
+        Statement s = m.createLiteralStatement( r, p, Integer.MAX_VALUE );
         assertEquals( r, s.getSubject() );
         assertEquals( p, s.getPredicate() );
         assertEquals( Integer.MAX_VALUE, s.getInt() );
@@ -76,7 +76,7 @@ public class NewRegressionStatements extends ModelTestBase
     
     public void testCreateStatementLongMax()
         {
-        Statement s = m.createStatement( r, p, Long.MAX_VALUE );
+        Statement s = m.createLiteralStatement( r, p, Long.MAX_VALUE );
         assertEquals( r, s.getSubject() );
         assertEquals( p, s.getPredicate() );
         assertEquals( Long.MAX_VALUE, s.getLong() );
@@ -84,7 +84,7 @@ public class NewRegressionStatements extends ModelTestBase
     
     public void testCreateStatementChar()
         {
-        Statement s = m.createStatement( r, p, '$' );
+        Statement s = m.createLiteralStatement( r, p, '$' );
         assertEquals( r, s.getSubject() );
         assertEquals( p, s.getPredicate() );
         assertEquals( '$', s.getChar() );
