@@ -1,7 +1,7 @@
 /*
 	 (c) Copyright 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
 	 [See end of file]
-	 $Id: StatementBase.java,v 1.11 2007-11-13 16:05:55 chris-dollin Exp $
+	 $Id: StatementBase.java,v 1.12 2007-11-14 12:29:53 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -66,7 +66,7 @@ public abstract class StatementBase
 	protected StatementImpl stringReplace( String s )
 		{ return stringReplace( s, "", false ); }
 
-	public Statement changeTypedObject( boolean o )
+	public Statement changeLiteralObject( boolean o )
 		{ return changeObject( model.createTypedLiteral( o ) ); }
 	
     public Statement changeObject( boolean o )
@@ -75,14 +75,20 @@ public abstract class StatementBase
 	public Statement changeObject( long o )
 		{ return stringReplace( String.valueOf( o ) ); }
 	
-    public Statement changeTypedObject( long o )
+    public Statement changeLiteralObject( long o )
         { return changeObject( model.createTypedLiteral( o ) ); }
 
-	public Statement changeObject( char o )
-		{ return stringReplace( String.valueOf( o ) ); }
-
-	public Statement changeTypedObject( float o )
+	public Statement changeLiteralObject( char o )
 		{ return changeObject( model.createTypedLiteral( o ) ); }
+
+    public Statement changeLiteralObject( double o )
+        { return changeObject( model.createTypedLiteral( o ) ); }
+    
+	public Statement changeLiteralObject( float o )
+		{ return changeObject( model.createTypedLiteral( o ) ); }
+	
+    public Statement changeLiteralObject( int o )
+        { return changeObject( model.createTypedLiteral( o ) ); }
 	
     public Statement changeObject( float o )
         { return changeObject( String.valueOf( o ) ); }

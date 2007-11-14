@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
     [See end of file]
-    $Id: ModelCom.java,v 1.121 2007-11-14 10:52:26 chris-dollin Exp $
+    $Id: ModelCom.java,v 1.122 2007-11-14 12:29:53 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -670,22 +670,14 @@ public class ModelCom
     public Statement createLiteralStatement( Resource r, Property p, char o )
         { return createStatement( r, p, createTypedLiteral( o ) ); }
     
-    public Statement createStatement( Resource r, Property p, float o )
-        { return createStatement( r, p, createLiteral( o ) ); }
+    public Statement createLiteralStatement( Resource r, Property p, float o )
+        { return createStatement( r, p, createTypedLiteral( o ) ); }
     
-    public Statement createStatement( Resource r, Property p, double o )
-        { return createStatement( r, p, createLiteral( o ) ); }
+    public Statement createLiteralStatement( Resource r, Property p, double o )
+        { return createStatement( r, p, createTypedLiteral( o ) ); }
     
     public Statement createStatement( Resource r, Property p, String o )
         { return createStatement( r, p, createLiteral( o ) ); }
-    
-    /**
-     * @deprecated Use {@link #createLiteralStatement(Resource,Property,Object)} instead
-     */
-    public Statement createTypedStatement( Resource r, Property p, Object o )
-        {
-            return createLiteralStatement( r, p, o );
-            }
 
     public Statement createLiteralStatement( Resource r, Property p, Object o )
         { return createStatement( r, p, asObject( o ) ); }

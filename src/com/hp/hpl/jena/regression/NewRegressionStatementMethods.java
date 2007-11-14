@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: NewRegressionStatementMethods.java,v 1.8 2007-11-14 10:52:27 chris-dollin Exp $
+ 	$Id: NewRegressionStatementMethods.java,v 1.9 2007-11-14 12:29:55 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.regression;
@@ -63,17 +63,23 @@ public class NewRegressionStatementMethods extends NewRegressionBase
     
     public void testByte()
         {
-        assertEquals( tvByte, m.createLiteralStatement( r, RDF.value, tvByte ).getByte() );
+        Statement s = m.createLiteralStatement( r, RDF.value, tvByte );
+        assertEquals( m.createTypedLiteral( tvByte ), s.getObject() );
+        assertEquals( tvByte, s.getLong() );
         }
     
     public void testShort()
         {
-        assertEquals( tvShort, m.createLiteralStatement( r, RDF.value, tvShort ).getShort() );
+        Statement s = m.createLiteralStatement( r, RDF.value, tvShort );
+        assertEquals( m.createTypedLiteral( tvShort ), s.getObject() );
+        assertEquals( tvShort, s.getShort() );
         }
     
     public void testInt()
         {
-        assertEquals( tvInt, m.createLiteralStatement( r, RDF.value, tvInt ).getInt() );
+        Statement s = m.createLiteralStatement( r, RDF.value, tvInt );
+        assertEquals( m.createTypedLiteral( tvInt ), s.getObject() );
+        assertEquals( tvInt, s.getInt() );
         }
     
     public void testLong()
@@ -92,12 +98,16 @@ public class NewRegressionStatementMethods extends NewRegressionBase
     
     public void testFloat()
         {
-        assertEquals( tvFloat, m.createStatement( r, RDF.value, m.createTypedLiteral( tvFloat ) ).getFloat(), fDelta );
+        Statement s = m.createLiteralStatement( r, RDF.value, tvFloat );
+        assertEquals( m.createTypedLiteral( tvFloat ), s.getObject() );
+        assertEquals( tvFloat, s.getFloat(), fDelta );
         }
     
     public void testDouble()
         {
-        assertEquals( tvDouble, m.createStatement( r, RDF.value, m.createTypedLiteral(  tvDouble ) ).getDouble(), dDelta );
+        Statement s = m.createLiteralStatement( r, RDF.value, tvDouble );
+        assertEquals( m.createTypedLiteral( tvDouble ), s.getObject() );
+        assertEquals( tvDouble, s.getDouble(), dDelta );
         }
     
     public void testString()
@@ -144,8 +154,9 @@ public class NewRegressionStatementMethods extends NewRegressionBase
     public void testChangeObjectBoolean()
         {
         Statement sTrue = loadInitialStatement();
-        Statement sFalse = sTrue.changeTypedObject( false );
+        Statement sFalse = sTrue.changeLiteralObject( false );
         checkChangedStatementSP( sFalse );
+        assertEquals( m.createTypedLiteral( false ), sFalse.getObject() );
         assertEquals( false, sFalse.getBoolean() );
         checkCorrectStatements( sTrue, sFalse );
         assertTrue( m.containsLiteral( r, RDF.value, false ) );
@@ -154,8 +165,9 @@ public class NewRegressionStatementMethods extends NewRegressionBase
     public void testChangeObjectByte()
         {
         Statement sTrue = loadInitialStatement();
-        Statement changed = sTrue.changeTypedObject( tvByte );
+        Statement changed = sTrue.changeLiteralObject( tvByte );
         checkChangedStatementSP( changed );
+        assertEquals( m.createTypedLiteral( tvByte ), changed.getObject() );
         assertEquals( tvByte, changed.getByte() );
         checkCorrectStatements( sTrue, changed );
         assertTrue( m.containsLiteral( r, RDF.value, tvByte ) );
@@ -164,8 +176,9 @@ public class NewRegressionStatementMethods extends NewRegressionBase
     public void testChangeObjectShort()
         {
         Statement sTrue = loadInitialStatement();
-        Statement changed = sTrue.changeTypedObject( tvShort );
+        Statement changed = sTrue.changeLiteralObject( tvShort );
         checkChangedStatementSP( changed );
+        assertEquals( m.createTypedLiteral( tvShort ), changed.getObject() );
         assertEquals( tvShort, changed.getShort() );
         checkCorrectStatements( sTrue, changed );
         assertTrue( m.containsLiteral( r, RDF.value, tvShort ) );
@@ -174,8 +187,9 @@ public class NewRegressionStatementMethods extends NewRegressionBase
     public void testChangeObjectInt()
         {
         Statement sTrue = loadInitialStatement();
-        Statement changed = sTrue.changeTypedObject( tvInt );
+        Statement changed = sTrue.changeLiteralObject( tvInt );
         checkChangedStatementSP( changed );
+        assertEquals( m.createTypedLiteral( tvInt ), changed.getObject() );
         assertEquals( tvInt, changed.getInt() );
         checkCorrectStatements( sTrue, changed );
         assertTrue( m.containsLiteral( r, RDF.value, tvInt ) );
@@ -184,8 +198,9 @@ public class NewRegressionStatementMethods extends NewRegressionBase
     public void testChangeObjectLong()
         {
         Statement sTrue = loadInitialStatement();
-        Statement changed = sTrue.changeTypedObject( tvLong );
+        Statement changed = sTrue.changeLiteralObject( tvLong );
         checkChangedStatementSP( changed );
+        assertEquals( m.createTypedLiteral( tvLong ), changed.getObject() );
         assertEquals( tvLong, changed.getLong() );
         checkCorrectStatements( sTrue, changed );
         assertTrue( m.containsLiteral( r, RDF.value, tvLong ) );
@@ -194,9 +209,10 @@ public class NewRegressionStatementMethods extends NewRegressionBase
     public void testChangeObjectChar()
         {
         Statement sTrue = loadInitialStatement();
-        Statement changed = sTrue.changeObject( tvChar );
+        Statement changed = sTrue.changeLiteralObject( tvChar );
         checkChangedStatementSP( changed );
         assertEquals( tvChar, changed.getChar() );
+        assertEquals( m.createTypedLiteral( tvChar ), changed.getObject() );
         checkCorrectStatements( sTrue, changed );
         assertTrue( m.containsLiteral( r, RDF.value, tvChar ) );
         }
@@ -204,8 +220,9 @@ public class NewRegressionStatementMethods extends NewRegressionBase
     public void testChangeObjectFloat()
         {
         Statement sTrue = loadInitialStatement();
-        Statement changed = sTrue.changeTypedObject( tvFloat );
+        Statement changed = sTrue.changeLiteralObject( tvFloat );
         checkChangedStatementSP( changed );
+        assertEquals( m.createTypedLiteral( tvFloat ), changed.getObject() );
         assertEquals( tvFloat, changed.getFloat(), fDelta );
         checkCorrectStatements( sTrue, changed );
         assertTrue( m.containsLiteral( r, RDF.value, tvFloat ) );
@@ -214,8 +231,9 @@ public class NewRegressionStatementMethods extends NewRegressionBase
     public void testChangeObjectDouble()
         {
         Statement sTrue = loadInitialStatement();
-        Statement changed = sTrue.changeTypedObject( tvDouble );
+        Statement changed = sTrue.changeLiteralObject( tvDouble );
         checkChangedStatementSP( changed );
+        assertEquals( m.createTypedLiteral( tvDouble ), changed.getObject() );
         assertEquals( tvDouble, changed.getDouble(), dDelta );
         checkCorrectStatements( sTrue, changed );
         assertTrue( m.containsLiteral( r, RDF.value, tvDouble ) );
@@ -265,7 +283,7 @@ public class NewRegressionStatementMethods extends NewRegressionBase
     public void testChangeObjectYByte()
         {
         Statement sTrue = loadInitialStatement();
-        Statement changed = sTrue.changeTypedObject( tvByte );
+        Statement changed = sTrue.changeLiteralObject( tvByte );
         checkChangedStatementSP( changed );
         assertEquals( tvByte, changed.getByte() );
         checkCorrectStatements( sTrue, changed );

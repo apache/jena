@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
     [See end of file]
-    $Id: Regression.java,v 1.35 2007-11-14 10:52:28 chris-dollin Exp $
+    $Id: Regression.java,v 1.36 2007-11-14 12:29:55 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.regression;
@@ -24,7 +24,7 @@ import org.apache.commons.logging.LogFactory;
  * NewRegression suite; kers.]
  *
  * @author  bwm
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.35 $' Date='$Date: 2007-11-14 10:52:28 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.36 $' Date='$Date: 2007-11-14 12:29:55 $'
  */
 public class Regression extends Object {
 
@@ -2691,7 +2691,7 @@ public class Regression extends Object {
             n++; stmt = m.createLiteralStatement(m.createResource(),
                                           RDF.value, tvBoolean);
             n++; m.add(stmt);
-            n++; stmt = stmt.changeTypedObject(!tvBoolean);
+            n++; stmt = stmt.changeLiteralObject(!tvBoolean);
             n++;  if (! (stmt.getBoolean() == !tvBoolean)) error(test,n);
             n++;  if (  m.containsLiteral(stmt.getSubject(), RDF.value, tvBoolean))
                         error(test,n);
@@ -2702,7 +2702,7 @@ public class Regression extends Object {
             n++; stmt = m.createLiteralStatement(m.createResource(),
                                           RDF.value, tvBoolean);
             n++; m.add(stmt);
-            n++; stmt = stmt.changeTypedObject(tvByte);
+            n++; stmt = stmt.changeLiteralObject(tvByte);
             n++;  if (! (stmt.getByte() == tvByte)) error(test,n);
             n++;  if (  m.containsLiteral(stmt.getSubject(), RDF.value, tvBoolean))
                         error(test,n);
@@ -2713,7 +2713,7 @@ public class Regression extends Object {
             n++; stmt = m.createLiteralStatement(m.createResource(),
                                           RDF.value, tvBoolean);
             n++; m.add(stmt);
-            n++; stmt = stmt.changeTypedObject(tvShort);
+            n++; stmt = stmt.changeLiteralObject(tvShort);
             n++;  if (! (stmt.getShort() == tvShort)) error(test,n);
             n++;  if (  m.containsLiteral(stmt.getSubject(), RDF.value, tvBoolean))
                         error(test,n);
@@ -2724,7 +2724,7 @@ public class Regression extends Object {
             n++; stmt = m.createLiteralStatement(m.createResource(),
                                           RDF.value, tvBoolean);
             n++; m.add(stmt);
-            n++; stmt = stmt.changeTypedObject(tvInt);
+            n++; stmt = stmt.changeLiteralObject(tvInt);
             n++;  if (! (stmt.getInt() == tvInt)) error(test,n);
             n++;  if (  m.containsLiteral(stmt.getSubject(), RDF.value, tvBoolean))
                         error(test,n);
@@ -2735,7 +2735,7 @@ public class Regression extends Object {
             n++; stmt = m.createLiteralStatement(m.createResource(),
                                           RDF.value, tvBoolean);
             n++; m.add(stmt);
-            n++; stmt = stmt.changeTypedObject(tvLong);
+            n++; stmt = stmt.changeLiteralObject(tvLong);
             n++;  if (! (stmt.getLong() == tvLong)) error(test,n);
             n++;  if (  m.containsLiteral(stmt.getSubject(), RDF.value, tvBoolean))
                         error(test,n);
@@ -2746,7 +2746,7 @@ public class Regression extends Object {
             n++; stmt = m.createLiteralStatement(m.createResource(),
                                           RDF.value, tvBoolean);
             n++; m.add(stmt);
-            n++; stmt = stmt.changeObject(tvChar);
+            n++; stmt = stmt.changeLiteralObject(tvChar);
             n++;  if (! (stmt.getChar() == tvChar)) error(test,n);
             n++;  if (  m.containsLiteral(stmt.getSubject(), RDF.value, tvBoolean))
                         error(test,n);
@@ -2757,7 +2757,7 @@ public class Regression extends Object {
             n++; stmt = m.createLiteralStatement(m.createResource(),
                                           RDF.value, tvBoolean);
             n++; m.add(stmt);
-            n++; stmt = stmt.changeTypedObject(tvFloat);
+            n++; stmt = stmt.changeLiteralObject(tvFloat);
             n++;  if (! ((stmt.getFloat()-tvFloat)<0.00005)) error(test,n);
             n++;  if (  m.containsLiteral(stmt.getSubject(), RDF.value, tvBoolean))
                         error(test,n);
@@ -2768,7 +2768,7 @@ public class Regression extends Object {
             n++; stmt = m.createLiteralStatement(m.createResource(),
                                           RDF.value, tvBoolean);
             n++; m.add(stmt);
-            n++; stmt = stmt.changeTypedObject(tvDouble);
+            n++; stmt = stmt.changeLiteralObject(tvDouble);
             n++;  if (! ((stmt.getDouble()-tvDouble)<0.0005)) error(test,n);
             n++;  if (  m.containsLiteral(stmt.getSubject(), RDF.value, tvBoolean))
                         error(test,n);
@@ -4874,5 +4874,5 @@ public class Regression extends Object {
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: Regression.java,v 1.35 2007-11-14 10:52:28 chris-dollin Exp $
+ * $Id: Regression.java,v 1.36 2007-11-14 12:29:55 chris-dollin Exp $
  */

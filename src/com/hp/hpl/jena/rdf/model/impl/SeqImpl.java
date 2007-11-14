@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: SeqImpl.java,v 1.23 2007-11-13 16:05:55 chris-dollin Exp $
+  $Id: SeqImpl.java,v 1.24 2007-11-14 12:29:53 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -15,7 +15,7 @@ import com.hp.hpl.jena.enhanced.*;
 /** An implementation of Seq
  *
  * @author  bwm
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.23 $' Date='$Date: 2007-11-13 16:05:55 $' 
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.24 $' Date='$Date: 2007-11-14 12:29:53 $' 
 */
 
 public class SeqImpl extends ContainerImpl implements Seq {
@@ -140,31 +140,31 @@ public class SeqImpl extends ContainerImpl implements Seq {
     
     public Seq set(int index, boolean o)  {
         checkIndex(index);
-        getRequiredProperty(RDF.li(index)).changeTypedObject(o);
+        getRequiredProperty(RDF.li(index)).changeLiteralObject(o);
         return this;
     }
     
     public Seq set(int index, long o)  {
         checkIndex(index);
-        getRequiredProperty(RDF.li(index)).changeTypedObject(o);
+        getRequiredProperty(RDF.li(index)).changeLiteralObject(o);
         return this;
     }
     
     public Seq set(int index, float o)  {
         checkIndex(index);
-        getRequiredProperty(RDF.li(index)).changeTypedObject(o);
+        getRequiredProperty(RDF.li(index)).changeLiteralObject(o);
         return this;
     }
     
     public Seq set(int index, double o)  {
         checkIndex(index);
-        getRequiredProperty(RDF.li(index)).changeTypedObject(o);
+        getRequiredProperty(RDF.li(index)).changeLiteralObject(o);
         return this;
     }
     
     public Seq set(int index, char o)  {
         checkIndex(index);
-        getRequiredProperty(RDF.li(index)).changeObject(o);
+        getRequiredProperty(RDF.li(index)).changeLiteralObject(o);
         return this;
     }
     

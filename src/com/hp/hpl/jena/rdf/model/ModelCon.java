@@ -57,8 +57,8 @@ import com.hp.hpl.jena.graph.Node;
  *    enhanced resources.</p>
  * @author bwm
  * @version Release='$Name: not supported by cvs2svn $'
-            Revision='$Revision: 1.26 $'
-            Date='$Date: 2007-11-14 10:52:23 $'
+            Revision='$Revision: 1.27 $'
+            Date='$Date: 2007-11-14 12:29:21 $'
  */
 public interface ModelCon {
 
@@ -378,6 +378,18 @@ public interface ModelCon {
         corresponding to o using createTypedLiteral.
     */
     public Statement createLiteralStatement( Resource s, Property p, boolean o );
+    
+    /** 
+        Answer a new Statement object (s, p, o') where o' is the typed literal
+        corresponding to o using createTypedLiteral.
+    */
+    public Statement createLiteralStatement( Resource s, Property p, float o );
+    
+    /** 
+        Answer a new Statement object (s, p, o') where o' is the typed literal
+        corresponding to o using createTypedLiteral.
+    */
+    public Statement createLiteralStatement( Resource s, Property p, double o );
     
     /** 
         Answer a new Statement object (s, p, o') where o' is the typed literal
