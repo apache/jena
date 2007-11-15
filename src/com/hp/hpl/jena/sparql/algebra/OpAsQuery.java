@@ -106,19 +106,9 @@ public class OpAsQuery
 
         public void visit(OpJoin opJoin)
         {
-            // XXX Amalgamate adjacent BGPs? No bnodes variables by now.
-            
-            // start/stop subgroups - no - joins are linear groups.
-            // Have option to explicitly {} sub elements.
-            
             // Keep things clearly separated.
             Element eLeft = asElement(opJoin.getLeft()) ;
             Element eRight = asElementGroup(opJoin.getRight()) ;
-            
-//            // Allow adjacent BGPs to merge
-//            Element eLeft = asElement(opJoin.getLeft()) ;
-//            Element eRight = asElement(opJoin.getRight()) ;
-            
             
             ElementGroup g = currentGroup() ;
             g.addElement(eLeft) ;
@@ -165,7 +155,6 @@ public class OpAsQuery
 
         public void visit(OpFilter opFilter)
         {
-            // XXX
             // (filter .. (filter ( ... ))   (non-canonicalizing OpFilters)
             // Inner gets Grouped unnecessarily. 
             Element e = asElement(opFilter.getSubOp()) ;
@@ -222,6 +211,7 @@ public class OpAsQuery
                 SortCondition sc = (SortCondition)iter.next();
                 query.addOrderBy(sc);
             }
+            opOrder.getSubOp().visit(this) ;
         }
 
         public void visit(OpProject opProject)
@@ -237,10 +227,16 @@ public class OpAsQuery
         }
 
         public void visit(OpReduced opReduced)
-        { query.setReduced(true) ; }
+        { 
+            query.setReduced(true) ;
+            opReduced.getSubOp().visit(this) ;
+        }
 
         public void visit(OpDistinct opDistinct)
-        { query.setDistinct(true) ; }
+        { 
+            query.setDistinct(true) ;
+            opDistinct.getSubOp().visit(this) ;
+        }
 
         public void visit(OpSlice opSlice)
         {
@@ -248,6 +244,7 @@ public class OpAsQuery
                 query.setOffset(opSlice.getStart()) ;
             if ( opSlice.getLength() != Query.NOLIMIT )
                 query.setLimit(opSlice.getLength()) ;
+            opSlice.getSubOp().visit(this) ;
         }
 
         public void visit(OpGroupAgg opGroupAgg)
