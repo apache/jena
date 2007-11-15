@@ -53,8 +53,8 @@ public class SerializationContext
             this.prologue = new Prologue() ;
         
         bNodeMap = bMap ;
-//        if ( bMap == null )
-//            bNodeMap = new NodeToLabelMap("b", false) ;
+        if ( bMap == null )
+            bNodeMap = new NodeToLabelMap("b", false) ;
     }
     
     /**

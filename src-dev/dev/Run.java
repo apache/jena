@@ -10,6 +10,7 @@ import java.net.MalformedURLException;
 
 import arq.sparql;
 
+import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.iri.IRI;
 import com.hp.hpl.jena.iri.IRIFactory;
 import com.hp.hpl.jena.iri.IRIRelativize;
@@ -28,13 +29,19 @@ import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.OpVisitorBase;
 import com.hp.hpl.jena.sparql.algebra.OpWalker;
 import com.hp.hpl.jena.sparql.algebra.op.OpFilter;
+import com.hp.hpl.jena.sparql.sse.SSE;
 import com.hp.hpl.jena.sparql.util.DateTimeStruct;
+import com.hp.hpl.jena.sparql.util.FmtUtils;
 import com.hp.hpl.jena.util.FileManager;
 
 public class Run
 {
     public static void main(String[] argv) throws Exception
     {
+        Node n = SSE.parseNode("_:a") ;
+        System.out.println(FmtUtils.stringForNode(n)) ;
+        //System.exit(0) ;
+        
 //      code() ; System.exit(0) ;
 
         String DIR = "" ;

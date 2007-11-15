@@ -267,6 +267,9 @@ public class FmtUtils
 
     public static String stringForNode(Node n, SerializationContext context)
     {
+//        if ( context == null )
+//            context = new SerializationContext() ;
+        
         if ( n == null )
             return "<<null>>" ;
         
