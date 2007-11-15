@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            16-Jun-2003
  * Filename           $RCSfile: TestBugReports.java,v $
- * Revision           $Revision: 1.85 $
+ * Revision           $Revision: 1.86 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2007-11-14 09:51:48 $
+ * Last modified on   $Date: 2007-11-15 15:42:59 $
  *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
@@ -386,7 +386,7 @@ public class TestBugReports
 
         ObjectProperty p = m.createObjectProperty(NS + "p");
         Restriction r = m.createRestriction(p);
-        HasValueRestriction hv = r.convertToHasValueRestriction(m.createLiteral(1));
+        HasValueRestriction hv = r.convertToHasValueRestriction(m.createTypedLiteral(1));
 
         RDFNode n = hv.getHasValue();
         assertFalse("Should not be able to convert literal to individual", n.canAs(Individual.class));

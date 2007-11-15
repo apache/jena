@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: NewRegressionAddAndContains.java,v 1.7 2007-11-14 09:51:55 chris-dollin Exp $
+ 	$Id: NewRegressionAddAndContains.java,v 1.8 2007-11-15 15:43:06 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.regression;
@@ -131,7 +131,7 @@ public class NewRegressionAddAndContains extends NewRegressionBase
     
     public void testAddContainLiteralByStatement()
         {
-        Literal L = m.createLiteral( 210 );
+        Literal L = m.createTypedLiteral( 210 );
         Statement s = m.createStatement( S, RDF.value, L );
         assertTrue( m.add( s ).contains( s ) );
         assertTrue( m.contains( S, RDF.value ) );

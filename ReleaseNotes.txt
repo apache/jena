@@ -1,6 +1,48 @@
 Release Notes
 =============
 
+Change of Behaviour in getByte/Short/Int on typed literals
+
+    o The methods getByte(), getShort(), and getInt(), when applied to
+      typed literals whose value is out of range, delivered a truncated
+      value [as opposed to those methods on plain literals, which throw
+      an exception]. This was deemed to be an error, and those methods
+      will now throw IllegalArgumentExceptions.
+
+    o These methods may be deprecated & removed in later releases.
+
+Deprecated Method Removal Frenzy
+
+    o A bunch of methods in Resource, Model, ModelCon, and Statement have
+      for a while now been marked as deprecated. These methods took literal 
+      values for the object of a statement and used the old treat-it-as-a-string
+      approach rather than the newer typed-literal approach.
+
+    o These deprecated methods have been removed. However, to allow migrators
+      an easier life and to avoid requiring many many calls of 
+      createTypedLiteral (which needs a model, not always conveniently to hand),
+      typed-literal versions of these methods have been added to the interfaces.
+
+    o Model has grown:
+
+      * addLiteral( Resource, Property, Various )
+      * listResourcesWithProperty( Property, Various )
+      * createLiteralStatement( Resource, Property, Various )
+      * listLiteralStatements( Resource, Property, Various )
+      * listResourcesWithProperty( Property, Various )
+
+    o Resource has grown:
+
+      * addLiteral( Property, Various )
+      * hasLiteral( Property, Various )
+
+    o Statement has grown:
+
+      * changeObject( Various )
+
+    where `Various` is one of float, double, long,boolean, char, short, 
+    int, or object [short & int may be missing in some cases].
+
 Assemblers
     o When the Assembler system (ie AssemblerGroup et al) load a class,
       that class is loaded before any of the implementsWith of that

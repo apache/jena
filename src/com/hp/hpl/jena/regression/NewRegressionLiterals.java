@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: NewRegressionLiterals.java,v 1.6 2007-11-09 12:22:54 chris-dollin Exp $
+ 	$Id: NewRegressionLiterals.java,v 1.7 2007-11-15 15:43:06 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.regression;
@@ -137,7 +137,7 @@ public class NewRegressionLiterals extends NewRegressionBase
 
     protected void testByte( Model m, byte tv )
         {
-        Literal l = m.createLiteral( tv );
+        Literal l = m.createTypedLiteral( tv );
         assertEquals( tv, l.getByte() );
         assertEquals( tv, l.getShort() );
         assertEquals( tv, l.getInt() );
@@ -146,9 +146,10 @@ public class NewRegressionLiterals extends NewRegressionBase
     
     protected void testShort( Model m, short tv )
         {
-        Literal l = m.createLiteral( tv );
+        Literal l = m.createTypedLiteral( tv );
         try { assertEquals( tv, l.getByte() ); assertInRange( Byte.MIN_VALUE, tv, Byte.MAX_VALUE ); }
         catch (NumberFormatException e) { assertOutsideRange( Byte.MIN_VALUE, tv, Byte.MAX_VALUE ); }
+        catch (IllegalArgumentException e) { assertOutsideRange( Byte.MIN_VALUE, tv, Byte.MAX_VALUE ); }
         assertEquals( tv, l.getShort() );
         assertEquals( tv, l.getInt() );
         assertEquals( tv, l.getLong() );
@@ -156,24 +157,29 @@ public class NewRegressionLiterals extends NewRegressionBase
     
     protected void testInt( Model m, int tv )
         {
-        Literal l = m.createLiteral( tv );
+        Literal l = m.createTypedLiteral( tv );
         try { assertEquals( tv, l.getByte() ); assertInRange( Byte.MIN_VALUE, tv, Byte.MAX_VALUE ); }
         catch (NumberFormatException e) { assertOutsideRange( Byte.MIN_VALUE, tv, Byte.MAX_VALUE ); }
+        catch (IllegalArgumentException e) { assertOutsideRange( Byte.MIN_VALUE, tv, Byte.MAX_VALUE ); }
         try { assertEquals( tv, l.getShort() ); assertInRange( Short.MIN_VALUE, tv, Short.MAX_VALUE ); }
         catch (NumberFormatException e) { assertOutsideRange( Short.MIN_VALUE, tv, Short.MAX_VALUE ); }
+        catch (IllegalArgumentException e) { assertOutsideRange( Short.MIN_VALUE, tv, Short.MAX_VALUE ); }
         assertEquals( tv, l.getInt() );
         assertEquals( tv, l.getLong() );
         }
     
     protected void testLong( Model m, long tv )
         {
-        Literal l = m.createLiteral( tv );
+        Literal l = m.createTypedLiteral( tv );
         try { assertEquals( tv, l.getByte() ); assertInRange( Byte.MIN_VALUE, tv, Byte.MAX_VALUE ); }
         catch (NumberFormatException e) { assertOutsideRange( Byte.MIN_VALUE, tv, Byte.MAX_VALUE ); }
+        catch (IllegalArgumentException e) { assertOutsideRange( Byte.MIN_VALUE, tv, Byte.MAX_VALUE ); }
         try { assertEquals( tv, l.getShort() ); assertInRange( Short.MIN_VALUE, tv, Short.MAX_VALUE ); }
         catch (NumberFormatException e) { assertOutsideRange( Short.MIN_VALUE, tv, Short.MAX_VALUE ); }
+        catch (IllegalArgumentException e) { assertOutsideRange( Short.MIN_VALUE, tv, Short.MAX_VALUE ); }
         try { assertEquals( tv, l.getInt() ); assertInRange( Integer.MIN_VALUE, tv, Integer.MAX_VALUE ); }
         catch (NumberFormatException e) { assertOutsideRange( Integer.MIN_VALUE, tv, Integer.MAX_VALUE ); }
+        catch (IllegalArgumentException e) { assertOutsideRange( Integer.MIN_VALUE, tv, Integer.MAX_VALUE ); }
         assertEquals( tv, l.getLong() );
         }
     
@@ -204,7 +210,7 @@ public class NewRegressionLiterals extends NewRegressionBase
     
     protected void testCharacter( Model m, char tv )
         {
-        assertEquals( tv, m.createLiteral( tv ).getChar() );
+        assertEquals( tv, m.createTypedLiteral( tv ).getChar() );
         }
 
     protected void testLanguagedString( Model m, String tv, String lang )
@@ -227,7 +233,7 @@ public class NewRegressionLiterals extends NewRegressionBase
         {
         LitTestObj tv = new LitTestObj( x );
         LitTestObjF factory = new LitTestObjF();
-        assertEquals( tv, m.createLiteral( tv ).getObject( factory ) );
+        assertEquals( tv, m.createTypedLiteral( tv ).getObject( factory ) );
         }
     }
 

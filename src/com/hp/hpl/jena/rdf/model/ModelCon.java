@@ -57,8 +57,8 @@ import com.hp.hpl.jena.graph.Node;
  *    enhanced resources.</p>
  * @author bwm
  * @version Release='$Name: not supported by cvs2svn $'
-            Revision='$Revision: 1.28 $'
-            Date='$Date: 2007-11-14 15:30:14 $'
+            Revision='$Revision: 1.29 $'
+            Date='$Date: 2007-11-15 15:43:00 $'
  */
 public interface ModelCon {
 
@@ -225,59 +225,13 @@ public interface ModelCon {
  * @return a property instance
  */
     public Property createProperty(String uri) ;
-
-//    /** create a literal from a boolean value.
-//     *
-//     * <p> The value is converted to a string using its <CODE>toString</CODE>
-//     * method. </p>
-//     * @param v the value of the literal
-//     * @return a new literal representing the value v
-//     * @deprecated Applications should use typed literals
-//     */
-//    public Literal createTypedLiteral(boolean v) ; 
-    /** create a literal from an integer value.
-     *
-     * @param v the value of the literal
-     * @return a new literal representing the value v
-     * @deprecated Applications should use typed literals
-     */   
-    public Literal createLiteral(long v) ;
-    /** create a literal from a char value.
-     *
-     * @param v the value of the literal
-     * @return a new literal representing the value v
-     * @deprecated Applications should use typed literals
-     */
-    public Literal createLiteral(char v) ;
-//    /** create a literal from a float value.
-//     *
-//     * @param v the value of the literal
-//     * @return a new literal representing the value v
-//     * @deprecated Applications should use typed literals
-//     */
-//    public Literal createLiteral(float v) ;
-//    /** create a literal from a double value.
-//     *
-//     * @param v the value of the literal
-//     * @return a new literal representing the value v
-//     * @deprecated Applications should use typed literals
-//     */
-//    public Literal createLiteral(double v) ;
     
     /** create a literal from a String value.
      *
      * @param v the value of the literal
      * @return a new literal representing the value v
      */
-    public Literal createLiteral(String v) ;
-    
-    /** create a literal from an Object.
-     *
-     * @return a new literal representing the value v
-     * @param v the value of the literal.
-     * @deprecated Applications should use typed literals
-     */
-    public Literal createLiteral(Object v) ;
+    public Literal createLiteral( String v );
  
     /** create a type literal from a boolean value.
      *

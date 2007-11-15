@@ -1,7 +1,7 @@
 /*
 	(c) Copyright 2000-2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
 	[See end of file]
-	$Id: Statement.java,v 1.19 2007-11-14 12:29:21 chris-dollin Exp $
+	$Id: Statement.java,v 1.20 2007-11-15 15:43:01 chris-dollin Exp $
 */
 
 
@@ -28,7 +28,7 @@ import com.hp.hpl.jena.util.iterator.Map1;
  *    for application objects.</p>
  
  * @author bwm; additions by kers
- * @version $Name: not supported by cvs2svn $ $Revision: 1.19 $ $Date: 2007-11-14 12:29:21 $
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.20 $ $Date: 2007-11-15 15:43:01 $
  */
 
 public interface Statement extends FrontsTriple
@@ -243,17 +243,7 @@ public interface Statement extends FrontsTriple
      * 
      * @return the language of the object of the statement
      */    
-    public String getLanguage() ;
-    
-    /** Return whether the Literal object is well formed XML as would result
-     *         from parsing a property element with parseType="Literal".
-     *
-     * <p>An exception will be thrown if the object is not a Literal.</p>
-     * 
-     * @return true if the Literal object is well formed
-     * @deprecated use hasWellFormedXML instead.
-     */    
-    public boolean getWellFormed() ;
+    public String getLanguage();
 
     /**
         Answer true iff the Literal object of this statement is well-formed XML
@@ -264,42 +254,42 @@ public interface Statement extends FrontsTriple
     
     /** 
          Remove this statement (s, p, x) from the model that contains it. Create a
-         new statement (s, p, o'), where o' is tye typed literal corresponding to
+         new statement (s, p, o'), where o' is the typed literal corresponding to
          o, add it to the model, and answer it.
     */
     public Statement changeLiteralObject( boolean o );
     
     /** 
          Remove this statement (s, p, x) from the model that contains it. Create a
-         new statement (s, p, o'), where o' is tye typed literal corresponding to
+         new statement (s, p, o'), where o' is the typed literal corresponding to
          o, add it to the model, and answer it.
     */
     public Statement changeLiteralObject( long o );
     
     /** 
          Remove this statement (s, p, x) from the model that contains it. Create a
-         new statement (s, p, o'), where o' is tye typed literal corresponding to
+         new statement (s, p, o'), where o' is the typed literal corresponding to
          o, add it to the model, and answer it.
     */
     public Statement changeLiteralObject( int o );
     
     /** 
          Remove this statement (s, p, x) from the model that contains it. Create a
-         new statement (s, p, o'), where o' is tye typed literal corresponding to
+         new statement (s, p, o'), where o' is the typed literal corresponding to
          o, add it to the model, and answer it.
     */
     public Statement changeLiteralObject(char o) ;
     
     /** 
          Remove this statement (s, p, x) from the model that contains it. Create a
-         new statement (s, p, o'), where o' is tye typed literal corresponding to
+         new statement (s, p, o'), where o' is the typed literal corresponding to
          o, add it to the model, and answer it.
     */
     public Statement changeLiteralObject( float o );
     
     /** 
          Remove this statement (s, p, x) from the model that contains it. Create a
-         new statement (s, p, o'), where o' is tye typed literal corresponding to
+         new statement (s, p, o'), where o' is the typed literal corresponding to
          o, add it to the model, and answer it.
     */
     public Statement changeLiteralObject( double o );

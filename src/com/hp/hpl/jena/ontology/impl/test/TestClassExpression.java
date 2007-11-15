@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            27-May-2003
  * Filename           $RCSfile: TestClassExpression.java,v $
- * Revision           $Revision: 1.34 $
+ * Revision           $Revision: 1.35 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2007-01-02 11:51:54 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2007-11-15 15:42:59 $
+ *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -41,7 +41,7 @@ import junit.framework.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestClassExpression.java,v 1.34 2007-01-02 11:51:54 andy_seaborne Exp $
+ * @version CVS $Id: TestClassExpression.java,v 1.35 2007-11-15 15:42:59 chris-dollin Exp $
  */
 public class TestClassExpression
     extends OntTestBase
@@ -401,8 +401,8 @@ public class TestClassExpression
             new OntTestCase( "AllValuesFromRestriction.allValuesFrom.datarange", true, false, false, false ) {
                 public void ontTest( OntModel m ) throws Exception {
                     Profile prof = m.getProfile();
-                    Literal x = m.createLiteral( 1 );
-                    Literal y = m.createLiteral( 2 );
+                    Literal x = m.createTypedLiteral( 1 );
+                    Literal y = m.createTypedLiteral( 2 );
                     DataRange dr = m.createDataRange( m.createList( new RDFNode[] {x, y} ) );
                     OntProperty p = m.createObjectProperty( NS + "p" );
 
@@ -518,8 +518,8 @@ public class TestClassExpression
             new OntTestCase( "SomeValuesFromRestriction.SomeValuesFrom.datarange", true, false, false, false ) {
                 public void ontTest( OntModel m ) throws Exception {
                     Profile prof = m.getProfile();
-                    Literal x = m.createLiteral( 1 );
-                    Literal y = m.createLiteral( 2 );
+                    Literal x = m.createTypedLiteral( 1 );
+                    Literal y = m.createTypedLiteral( 2 );
                     DataRange dr = m.createDataRange( m.createList( new RDFNode[] {x, y} ) );
                     OntProperty p = m.createObjectProperty( NS + "p" );
 

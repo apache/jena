@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
     [See end of file]
-    $Id: Regression.java,v 1.37 2007-11-14 15:30:28 chris-dollin Exp $
+    $Id: Regression.java,v 1.38 2007-11-15 15:43:06 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.regression;
@@ -24,7 +24,7 @@ import org.apache.commons.logging.LogFactory;
  * NewRegression suite; kers.]
  *
  * @author  bwm
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.37 $' Date='$Date: 2007-11-14 15:30:28 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.38 $' Date='$Date: 2007-11-15 15:43:06 $'
  */
 public class Regression extends Object {
 
@@ -112,28 +112,28 @@ public class Regression extends Object {
                 n = 200;
                 byte tv = 0;
 
-                l = m.createLiteral(tv);
+                l = m.createTypedLiteral(tv);
                 n++; if (l.getByte() != tv) error(test, n);
                 n++; if (l.getShort() != tv) error(test, n);
                 n++; if (l.getInt() != tv) error(test, n);
                 n++; if (l.getLong() != tv) error(test, n);
 
                 tv = -1;
-                l = m.createLiteral(tv);
+                l = m.createTypedLiteral(tv);
                 n++; if (l.getByte() != tv) error(test, n);
                 n++; if (l.getShort() != tv) error(test, n);
                 n++; if (l.getInt() != tv) error(test, n);
                 n++; if (l.getLong() != tv) error(test, n);
 
                 tv = Byte.MIN_VALUE;
-                l = m.createLiteral(tv);
+                l = m.createTypedLiteral(tv);
                 n++; if (l.getByte() != tv) error(test, n);
                 n++; if (l.getShort() != tv) error(test, n);
                 n++; if (l.getInt() != tv) error(test, n);
                 n++; if (l.getLong() != tv) error(test, n);
 
                 tv = Byte.MAX_VALUE;
-                l = m.createLiteral(tv);
+                l = m.createTypedLiteral(tv);
                 n++; if (l.getByte() != tv) error(test, n);
                 n++; if (l.getShort() != tv) error(test, n);
                 n++; if (l.getInt() != tv) error(test, n);
@@ -145,33 +145,35 @@ public class Regression extends Object {
                 short tv;
 
                 tv = 0;
-                l = m.createLiteral(tv);
+                l = m.createTypedLiteral(tv);
                 n++; if (l.getByte() != tv) error(test, n);
                 n++; if (l.getShort() != tv) error(test, n);
                 n++; if (l.getInt() != tv) error(test, n);
                 n++; if (l.getLong() != tv) error(test, n);
 
                 tv = -1;
-                l = m.createLiteral(tv);
+                l = m.createTypedLiteral(tv);
                 n++; if (l.getByte() != tv) error(test, n);
                 n++; if (l.getShort() != tv) error(test, n);
                 n++; if (l.getInt() != tv) error(test, n);
                 n++; if (l.getLong() != tv) error(test, n);
 
                 tv = Short.MIN_VALUE;
-                l = m.createLiteral(tv);
+                l = m.createTypedLiteral(tv);
                 try {
                     n++; if (l.getByte() != tv) error(test, n);
             } catch (NumberFormatException e) {}
+            catch (IllegalArgumentException e) {}
                 n++; if (l.getShort() != tv) error(test, n);
                 n++; if (l.getInt() != tv) error(test, n);
                 n++; if (l.getLong() != tv) error(test, n);
 
                 tv = Short.MAX_VALUE;
-                l = m.createLiteral(tv);
+                l = m.createTypedLiteral(tv);
                 try {
                     n++; if (l.getByte() != tv) error(test, n);
             } catch (NumberFormatException e) {}
+            catch (IllegalArgumentException e) {}
                 n++; if (l.getShort() != tv) error(test, n);
                 n++; if (l.getInt() != tv) error(test, n);
                 n++; if (l.getLong() != tv) error(test, n);
@@ -182,38 +184,42 @@ public class Regression extends Object {
                 int tv;
 
                 tv = 0;
-                l = m.createLiteral(tv);
+                l = m.createTypedLiteral(tv);
                 n++; if (l.getByte() != tv) error(test, n);
                 n++; if (l.getShort() != tv) error(test, n);
                 n++; if (l.getInt() != tv) error(test, n);
                 n++; if (l.getLong() != tv) error(test, n);
 
                 tv = -1;
-                l = m.createLiteral(tv);
+                l = m.createTypedLiteral(tv);
                 n++; if (l.getByte() != tv) error(test, n);
                 n++; if (l.getShort() != tv) error(test, n);
                 n++; if (l.getInt() != tv) error(test, n);
                 n++; if (l.getLong() != tv) error(test, n);
 
                 tv = Integer.MIN_VALUE;
-                l = m.createLiteral(tv);
+                l = m.createTypedLiteral(tv);
                 try {
                     n++; if (l.getByte() != tv) error(test, n);
             } catch (NumberFormatException e) {}
+            catch (IllegalArgumentException e) {}
                 try {
                     n++; if (l.getShort() != tv) error(test, n);
             } catch (NumberFormatException e) {}
+            catch (IllegalArgumentException e) {}
                 n++; if (l.getInt() != tv) error(test, n);
                 n++; if (l.getLong() != tv) error(test, n);
 
                 tv = Integer.MAX_VALUE;
-                l = m.createLiteral(tv);
+                l = m.createTypedLiteral(tv);
                 try {
                     n++; if (l.getByte() != tv) error(test, n);
             } catch (NumberFormatException e) {}
+            catch (IllegalArgumentException e) {}
                 try {
                     n++; if (l.getShort() != tv) error(test, n);
             } catch (NumberFormatException e) {}
+            catch (IllegalArgumentException e) {}
                 n++; if (l.getInt() != tv) error(test, n);
                 n++; if (l.getLong() != tv) error(test, n);
             }
@@ -223,43 +229,49 @@ public class Regression extends Object {
                 long tv;
 
                 tv = 0;
-                l = m.createLiteral(tv);
+                l = m.createTypedLiteral(tv);
                 n++; if (l.getByte() != tv) error(test, n);
                 n++; if (l.getShort() != tv) error(test, n);
                 n++; if (l.getInt() != tv) error(test, n);
                 n++; if (l.getLong() != tv) error(test, n);
 
                 tv = -1;
-                l = m.createLiteral(tv);
+                l = m.createTypedLiteral(tv);
                 n++; if (l.getByte() != tv) error(test, n);
                 n++; if (l.getShort() != tv) error(test, n);
                 n++; if (l.getInt() != tv) error(test, n);
                 n++; if (l.getLong() != tv) error(test, n);
 
                 tv = Long.MIN_VALUE;
-                l = m.createLiteral(tv);
+                l = m.createTypedLiteral(tv);
                 try {
                     n++; if (l.getByte() != tv) error(test, n);
             } catch (NumberFormatException e) {}
+            catch (IllegalArgumentException e) {}
                 try {
                     n++; if (l.getShort() != tv) error(test, n);
             } catch (NumberFormatException e) {}
+            catch (IllegalArgumentException e) {}
                 try {
                     n++; if (l.getInt() != tv) error(test, n);
             } catch (NumberFormatException e) {}
+            catch (IllegalArgumentException e) {}
                 n++; if (l.getLong() != tv) error(test, n);
 
                 tv = Long.MAX_VALUE;
-                l = m.createLiteral(tv);
+                l = m.createTypedLiteral(tv);
                 try {
                     n++; if (l.getByte() != tv) error(test, n);
             } catch (NumberFormatException e) {}
+            catch (IllegalArgumentException e) {}
                 try {
                     n++; if (l.getShort() != tv) error(test, n);
             } catch (NumberFormatException e) {}
+            catch (IllegalArgumentException e) {}
                 try {
                     n++; if (l.getInt() != tv) error(test, n);
             } catch (NumberFormatException e) {}
+            catch (IllegalArgumentException e) {}
                 n++; if (l.getLong() != tv) error(test, n);
             }
 
@@ -319,16 +331,16 @@ public class Regression extends Object {
                 n = 800;
 
                 tv = 'A';
-                n++; if (m.createLiteral(tv).getChar() != tv) error(test, n);
+                n++; if (m.createTypedLiteral(tv).getChar() != tv) error(test, n);
 
                 tv = 'a';
-                n++; if (m.createLiteral(tv).getChar() != tv) error(test, n);
+                n++; if (m.createTypedLiteral(tv).getChar() != tv) error(test, n);
 
                 tv = '#';
-                n++; if (m.createLiteral(tv).getChar() != tv) error(test, n);
+                n++; if (m.createTypedLiteral(tv).getChar() != tv) error(test, n);
 
                 tv = '@';
-                n++; if (m.createLiteral(tv).getChar() != tv) error(test, n);
+                n++; if (m.createTypedLiteral(tv).getChar() != tv) error(test, n);
             }
 
             {
@@ -362,15 +374,15 @@ public class Regression extends Object {
                 n = 1000;
 
                 tv = new LitTestObj(0);
-                n++; if (! m.createLiteral(tv).getObject(factory)
+                n++; if (! m.createTypedLiteral(tv).getObject(factory)
                 .equals(tv)) error(test, n);
 
                 tv = new LitTestObj(12345);
-                n++; if (! m.createLiteral(tv).getObject(factory)
+                n++; if (! m.createTypedLiteral(tv).getObject(factory)
                 .equals(tv)) error(test, n);
 
                 tv = new LitTestObj(-67890);
-                n++; if (! m.createLiteral(tv).getObject(factory)
+                n++; if (! m.createTypedLiteral(tv).getObject(factory)
                 .equals(tv)) error(test, n);
             }
         } catch (Exception e) {
@@ -864,7 +876,7 @@ public class Regression extends Object {
 
             try {
                 n=210;
-                n++; tvLiteral = m.createLiteral(n);
+                n++; tvLiteral = m.createTypedLiteral(n);
                 n++; Statement stmt = m.createStatement(subject,
                 RDF.value, tvLiteral);
                 n++; m.add(stmt);
@@ -1352,8 +1364,8 @@ public class Regression extends Object {
         // System.out.println("Beginning " + test);
 
         try {
-            Literal     tvLitObj[]  = { m.createLiteral(new LitTestObjF()),
-                                        m.createLiteral(new LitTestObjF()) };
+            Literal     tvLitObj[]  = { m.createTypedLiteral(new LitTestObjF()),
+                                        m.createTypedLiteral(new LitTestObjF()) };
             Resource    tvResObj[]  = { m.createResource(new ResTestObjF()),
                                         m.createResource(new ResTestObjF()) };
 
@@ -1398,7 +1410,7 @@ public class Regression extends Object {
             }
             object[0] = m.createTypedLiteral( tvBoolean[1] );
             object[1] = m.createTypedLiteral( tvLong[1] );
-            object[2] = m.createLiteral( tvChar[1] );
+            object[2] = m.createTypedLiteral( tvChar[1] );
             object[3] = m.createTypedLiteral( tvFloat[1] );
             object[4] = m.createTypedLiteral( tvDouble[1] );
             object[5] = m.createLiteral( tvString[1] );
@@ -2100,8 +2112,8 @@ public class Regression extends Object {
 //        System.out.println("Beginning " + test);
 
         try {
-            Literal     tvLitObj[]  = { m.createLiteral(new LitTestObjF()),
-                                        m.createLiteral(new LitTestObjF()) };
+            Literal     tvLitObj[]  = { m.createTypedLiteral(new LitTestObjF()),
+                                        m.createTypedLiteral(new LitTestObjF()) };
             Resource    tvResObj[]  = { m.createResource(new ResTestObjF()),
                                         m.createResource(new ResTestObjF()) };
 
@@ -2251,8 +2263,8 @@ public class Regression extends Object {
 
         try {
             Literal     tvLitObj[]  =
-                                     { m.createLiteral(new LitTestObj(1)),
-                                       m.createLiteral(new LitTestObj(2))};
+                                     { m.createTypedLiteral(new LitTestObj(1)),
+                                       m.createTypedLiteral(new LitTestObj(2))};
             Resource    tvResObj[]  = { m.createResource(new ResTestObjF()),
                                         m.createResource(new ResTestObjF()) };
 
@@ -4874,5 +4886,5 @@ public class Regression extends Object {
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: Regression.java,v 1.37 2007-11-14 15:30:28 chris-dollin Exp $
+ * $Id: Regression.java,v 1.38 2007-11-15 15:43:06 chris-dollin Exp $
  */

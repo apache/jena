@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: NewRegressionSelector.java,v 1.5 2007-11-14 09:51:55 chris-dollin Exp $
+ 	$Id: NewRegressionSelector.java,v 1.6 2007-11-15 15:43:06 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.regression;
@@ -54,8 +54,8 @@ public class NewRegressionSelector extends ModelTestBase
                                    "test8 testing string 2" };
         String     langs[]      = { "en", "fr" };
 
-        Literal     tvLitObjs[]  = { m.createLiteral(new LitTestObjF()),
-                                    m.createLiteral(new LitTestObjF()) };
+        Literal     tvLitObjs[]  = { m.createTypedLiteral(new LitTestObjF()),
+                                    m.createTypedLiteral(new LitTestObjF()) };
         Resource    tvResObjs[]  = { m.createResource(new ResTestObjF()),
                                     m.createResource(new ResTestObjF()) };
 

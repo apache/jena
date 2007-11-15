@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: NewRegressionListSubjects.java,v 1.9 2007-11-14 15:30:25 chris-dollin Exp $
+ 	$Id: NewRegressionListSubjects.java,v 1.10 2007-11-15 15:43:06 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.regression;
@@ -154,8 +154,8 @@ public class NewRegressionListSubjects extends ModelTestBase
         {
         final int num = 5;
         tvLitObjs = new Literal[] 
-            { m.createLiteral( new LitTestObjF() ),
-            m.createLiteral( new LitTestObjF() ) };
+            { m.createTypedLiteral( new LitTestObjF() ),
+            m.createTypedLiteral( new LitTestObjF() ) };
         
         tvResObjs  = new Resource[] 
             { m.createResource( new ResTestObjF() ),

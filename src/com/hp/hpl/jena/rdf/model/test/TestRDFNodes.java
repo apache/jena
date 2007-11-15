@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestRDFNodes.java,v 1.11 2007-01-02 11:48:26 andy_seaborne Exp $
+  $Id: TestRDFNodes.java,v 1.12 2007-11-15 15:43:04 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -105,7 +105,7 @@ public class TestRDFNodes extends ModelTestBase
         Model m = modelWithStatements( "" );
         assertEquals( false, m.createResource( "eh:/foo" ).isAnon() );
         assertEquals( true, m.createResource().isAnon() );
-        assertEquals( false, m.createLiteral( 17 ).isAnon() );
+        assertEquals( false, m.createTypedLiteral( 17 ).isAnon() );
         assertEquals( false, m.createTypedLiteral( "hello" ).isAnon() );
         }  
     
@@ -114,7 +114,7 @@ public class TestRDFNodes extends ModelTestBase
         Model m = modelWithStatements( "" );
         assertEquals( false, m.createResource( "eh:/foo" ).isLiteral() );
         assertEquals( false, m.createResource().isLiteral() );
-        assertEquals( true, m.createLiteral( 17 ).isLiteral() );
+        assertEquals( true, m.createTypedLiteral( 17 ).isLiteral() );
         assertEquals( true, m.createTypedLiteral( "hello" ).isLiteral() );
         }
     
@@ -123,7 +123,7 @@ public class TestRDFNodes extends ModelTestBase
         Model m = modelWithStatements( "" );
         assertEquals( true, m.createResource( "eh:/foo" ).isURIResource() );
         assertEquals( false, m.createResource().isURIResource() );
-        assertEquals( false, m.createLiteral( 17 ).isURIResource() );
+        assertEquals( false, m.createTypedLiteral( 17 ).isURIResource() );
         assertEquals( false, m.createTypedLiteral( "hello" ).isURIResource() );
         }
     
@@ -132,7 +132,7 @@ public class TestRDFNodes extends ModelTestBase
         Model m = modelWithStatements( "" );
         assertEquals( true, m.createResource( "eh:/foo" ).isResource() );
         assertEquals( true, m.createResource().isResource() );
-        assertEquals( false, m.createLiteral( 17 ).isResource() );
+        assertEquals( false, m.createTypedLiteral( 17 ).isResource() );
         assertEquals( false, m.createTypedLiteral( "hello" ).isResource() );
         }
     }

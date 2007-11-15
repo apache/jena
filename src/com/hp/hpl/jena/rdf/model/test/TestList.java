@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            24 Jan 2003
  * Filename           $RCSfile: TestList.java,v $
- * Revision           $Revision: 1.13 $
+ * Revision           $Revision: 1.14 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2007-01-02 11:48:26 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2007-11-15 15:43:04 $
+ *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -51,7 +51,7 @@ import com.hp.hpl.jena.vocabulary.*;
  * 
  * @author Ian Dickinson, HP Labs 
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestList.java,v 1.13 2007-01-02 11:48:26 andy_seaborne Exp $
+ * @version CVS $Id: TestList.java,v 1.14 2007-11-15 15:43:04 chris-dollin Exp $
  */
 public class TestList
     extends TestCase
@@ -297,7 +297,7 @@ public class TestList
             
             assertEquals( "List head should be 'fred'", "fred", ((Literal) l1.getHead()).getString() );
             
-            l1.setHead( m.createLiteral( 42 ) );
+            l1.setHead( m.createTypedLiteral( 42 ) );
             checkValid( "sethead2", l1, true );
             assertEquals( "List head should be '42'", 42, ((Literal) l1.getHead()).getInt() );
             
