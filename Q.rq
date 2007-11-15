@@ -1,6 +1,7 @@
-PREFIX : <>
-SELECT *
-{
-   FILTER (?v < 15)
-   {?x :p ?v }
-}
+PREFIX  xsd:    <http://www.w3.org/2001/XMLSchema#>
+SELECT  ?s ?d
+WHERE
+   { ?s  ?p  ?d .
+    FILTER ( ?d > "2005-01-01"^^xsd:date )
+   }
+#LIMIT   10

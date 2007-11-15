@@ -26,6 +26,7 @@ import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.sparql.algebra.Algebra;
 import com.hp.hpl.jena.sparql.algebra.Op;
+import com.hp.hpl.jena.sparql.algebra.OpAsQuery;
 import com.hp.hpl.jena.sparql.algebra.OpVisitorBase;
 import com.hp.hpl.jena.sparql.algebra.OpWalker;
 import com.hp.hpl.jena.sparql.algebra.op.OpFilter;
@@ -38,6 +39,13 @@ public class Run
 {
     public static void main(String[] argv) throws Exception
     {
+        Query query = QueryFactory.read("Q.rq") ;
+        Op op = Algebra.compile(query) ;
+        System.out.println(op) ;
+        Query query2 = OpAsQuery.asQuery(op) ;
+        System.out.println(query2) ;
+        System.exit(0) ;
+        
         Node n = SSE.parseNode("_:a") ;
         System.out.println(FmtUtils.stringForNode(n)) ;
         //System.exit(0) ;
