@@ -4,4 +4,4 @@ WHERE
    { ?s  ?p  ?d .
     FILTER ( ?d > "2005-01-01"^^xsd:date )
    }
-#LIMIT   10
+LIMIT   10
