@@ -6,7 +6,7 @@
   <!-- The major and minor version numbers  -->
   <property name="version-major"   value="1"/>
   <property name="version-minor"   value="0"/>
-  <property name="version-status"  value="-rc-1"/>
+  <property name="version-status"  value=""/>
   <property name="version"
 	    value="${version-major}.${version-minor}${version-status}"/>
 
@@ -249,6 +249,9 @@
  	</junit>
   </target>
   <!-- Section: Javadoc -->
+      <!-- How to get ant/javadoc to tunnel through the firewall -->
+      <!-- <link href="http://java.sun.com/j2se/1.5.0/docs/api/"/> -->
+
 
   <target name="javadoc" depends="clean-javadoc,build-src,javac-flags"
 	  description="Make the javadoc">
@@ -269,9 +272,6 @@
      additionalparam="-breakiterator">
       <classpath refid="classpath"/>
       <package name="com.hp.hpl.jena.query.sdb"/>
-      <!-- How to get ant/javadoc to tunnel through the firewall -->h
-      <!-- <link href="http://java.sun.com/j2se/1.5.0/docs/api/"/> -->
-
     </javadoc>
   </target>
 
