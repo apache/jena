@@ -283,8 +283,8 @@ public class ParserBase
         
         // Dump the initial part straight into the string buffer
         StringBuffer sb = new StringBuffer(s.substring(0,i)) ;
-        
-        for ( ; i < s.length() ; i++ )
+        int len = s.length() ;
+        for ( ; i < len ; i++ )
         {
             char ch = s.charAt(i) ;
             // Keep line and column numbers.
@@ -307,7 +307,7 @@ public class ParserBase
             }
                 
             // Escape
-            if ( i >= s.length()-1 )
+            if ( i >= len-1 )
                 throw new TurtleParseException(exMsg("Illegal escape at end of string", line, column)) ;
             char ch2 = s.charAt(i+1) ;
             column = column+1 ;
@@ -317,7 +317,7 @@ public class ParserBase
             if ( ch2 == 'u' )
             {
                 // i points to the \ so i+6 is next character
-                if ( i+4 >= s.length() )
+                if ( i+4 >= len )
                     throw new TurtleParseException(exMsg("\\u escape too short", line, column)) ;
                 int x = hex(s, i+1, 4, line, column) ;
                 sb.append((char)x) ;
@@ -329,7 +329,7 @@ public class ParserBase
             if ( ch2 == 'U' )
             {
                 // i points to the \ so i+6 is next character
-                if ( i+8 >= s.length() )
+                if ( i+8 >= len )
                     throw new TurtleParseException(exMsg("\\U escape too short", line, column)) ;
                 int x = hex(s, i+1, 8, line, column) ;
                 sb.append((char)x) ;
@@ -373,10 +373,10 @@ public class ParserBase
     // Line and column that started the escape
     static private int hex(String s, int i, int len, int line, int column)
     {
-        if ( i+len >= s.length() )
-        {
-            
-        }
+//        if ( i+len >= s.length() )
+//        {
+//            
+//        }
         int x = 0 ;
         for ( int j = i ; j < i+len ; j++ )
         {
