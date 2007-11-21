@@ -437,7 +437,8 @@ public class FmtUtils
 
     public static void stringEsc(StringBuffer sbuff, String s, boolean singleLineString)
     {
-        for (int i = 0; i < s.length(); i++) {
+        int len = s.length() ;
+        for (int i = 0; i < len; i++) {
             char c = s.charAt(i);
 
             // Escape escapes and quotes
