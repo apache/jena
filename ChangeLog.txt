@@ -6,6 +6,13 @@ Homepage:
 Documentation:
     http://jena.hpl.hp.com/wiki/SDB
 
+SDB v1.0
+==========
+
++ DB2 support
++ Fix: Transaction handling
++ More testing
+
 SDB Beta 2
 ==========
 
