@@ -20,6 +20,12 @@ import com.hp.hpl.jena.util.FileUtils ;
 
 public class IndentedWriter
 {
+    // Static for IndentedWriter(System.out)
+    // Static for IndentedWriter(System.err)
+    
+    public static final IndentedWriter stdout = new IndentedWriter(System.out) ; 
+    public static final IndentedWriter stderr = new IndentedWriter(System.err) ;
+    
     // Note cases:
     // 1/ incIndent - decIndent with no output should not cause any padding
     // 2/ newline() then no text, then finish should not cause a line number.
