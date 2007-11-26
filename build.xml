@@ -1,4 +1,4 @@
- <!-- CVS: $Id: build.xml,v 1.138 2007-09-19 11:26:05 andy_seaborne Exp $ -->
+ <!-- CVS: $Id: build.xml,v 1.139 2007-11-26 12:21:33 andy_seaborne Exp $ -->
 
 <project name="jena" default="main" basedir=".">
 
@@ -38,6 +38,9 @@
   <property name="javadoc.dir"     value="doc/javadoc"/>
   <property name="etc.dir"         value="etc"/>
   <property name="test.dir"        value="testing"/>
+
+  <property name="bin.dir"        value="bin"/>
+  <property name="bat.dir"        value="bat"/>
 
   <!-- Vocabulary generation -->
   <property name="vocab.java"      value="src/com/hp/hpl/jena/vocabulary" />
@@ -369,6 +372,14 @@
     <copy todir="${dist.dir}/${etc.dir}">
       <fileset dir="${etc.dir}" includes="**"/>
     </copy>
+    <!-- Scripts -->
+    <copy todir="${dist.dir}/${bin.dir}">
+      <fileset dir="${bin.dir}" includes="**"/>
+    </copy>
+    <copy todir="${dist.dir}/${bat.dir}">
+      <fileset dir="${bat.dir}" includes="**"/>
+    </copy>
+    
     <!-- Documentation : Try to be clear here -->
     <!-- Javadoc is part of the documentation directory -->
     <copy todir="${dist.dir}/${doc.dir}">

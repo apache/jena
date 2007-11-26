@@ -26,7 +26,7 @@ import java.text.* ;
 /** Common framework for implementing N3 writers.
  *
  * @author		Andy Seaborne
- * @version 	$Id: N3JenaWriterCommon.java,v 1.38 2007-07-09 17:23:01 andy_seaborne Exp $
+ * @version 	$Id: N3JenaWriterCommon.java,v 1.39 2007-11-26 12:21:28 andy_seaborne Exp $
  */
 
 public class N3JenaWriterCommon implements RDFWriter
@@ -335,6 +335,9 @@ public class N3JenaWriterCommon implements RDFWriter
 //        if (baseURIref != null && !baseURIref.equals("") )
 //            out.println("# Base: " + baseURIref);
     }
+    
+    protected IndentedWriter getOutput() { return out ; }
+    protected Map getPrefixes() { return prefixMap ; }
     
     protected void writePrefixes(Model model)
     {
