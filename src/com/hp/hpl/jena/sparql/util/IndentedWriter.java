@@ -20,10 +20,9 @@ import com.hp.hpl.jena.util.FileUtils ;
 
 public class IndentedWriter
 {
-    // Static for IndentedWriter(System.out)
-    // Static for IndentedWriter(System.err)
-    
+    /** Stdout wrapped in an IndentedWriter - no line numbers */
     public static final IndentedWriter stdout = new IndentedWriter(System.out) ; 
+    /** Stderr wrapped in an IndentedWriter - no line numbers */
     public static final IndentedWriter stderr = new IndentedWriter(System.err) ;
     
     // Note cases:

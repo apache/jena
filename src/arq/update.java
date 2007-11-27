@@ -71,7 +71,7 @@ public class update extends CmdARQ
         }
         
         // Writer
-        IndentedWriter out = new IndentedWriter(System.out) ;
+        IndentedWriter out = IndentedWriter.stdout ;
         WriterSSE.out(out, ds.asDatasetGraph(), null) ;
         out.flush();
     }

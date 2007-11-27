@@ -116,7 +116,7 @@ public class PrintUtils
         
         Plan plan = f.create(query, qe.getDataset().asDatasetGraph(), BindingRoot.create(), ARQ.getContext()) ;
         SerializationContext sCxt = new SerializationContext(query) ;
-        IndentedWriter out = new IndentedWriter(System.out) ;
+        IndentedWriter out = IndentedWriter.stdout ;
     
         plan.output(out, sCxt) ;
         out.flush();

@@ -167,7 +167,7 @@ public class qexpr
                     if ( actionPrintSPARQL )
                         System.out.println(ExprUtils.fmtSPARQL(expr)) ;
                     if ( actionPrintPrefix )
-                        WriterSSE.out(new IndentedWriter(System.out), expr, new Prologue(pmap)) ;
+                        WriterSSE.out(IndentedWriter.stdout, expr, new Prologue(pmap)) ;
                     continue ;
                 }
                 

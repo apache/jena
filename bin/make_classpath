@@ -47,6 +47,8 @@ for jar in "$LIBDIR"/*.jar
   first=0
 done
 
+## CP="$CP$SEP$LIBDIR/*"
+
 # Prepend any classes/ directory
 
 if [ -e "$CPDIR" ]
