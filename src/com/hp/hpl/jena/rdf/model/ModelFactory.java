@@ -1,27 +1,28 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ModelFactory.java,v 1.52 2007-02-09 12:09:00 chris-dollin Exp $
+  $Id: ModelFactory.java,v 1.53 2007-11-29 12:27:09 ian_dickinson Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
 
 import java.util.Set;
 
-import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.graph.compose.Union;
-import com.hp.hpl.jena.graph.impl.*;
 import com.hp.hpl.jena.assembler.Assembler;
 import com.hp.hpl.jena.assembler.AssemblerHelp;
 import com.hp.hpl.jena.db.*;
-import com.hp.hpl.jena.db.impl.*;
+import com.hp.hpl.jena.db.impl.GraphRDBMaker;
+import com.hp.hpl.jena.graph.Factory;
+import com.hp.hpl.jena.graph.Graph;
+import com.hp.hpl.jena.graph.compose.Union;
+import com.hp.hpl.jena.graph.impl.FileGraphMaker;
+import com.hp.hpl.jena.graph.impl.SimpleGraphMaker;
+import com.hp.hpl.jena.ontology.*;
+import com.hp.hpl.jena.ontology.impl.OntModelImpl;
 import com.hp.hpl.jena.rdf.model.impl.*;
 import com.hp.hpl.jena.reasoner.*;
-import com.hp.hpl.jena.shared.*;
-import com.hp.hpl.jena.ontology.*;
-import com.hp.hpl.jena.ontology.daml.DAMLModel;
-import com.hp.hpl.jena.ontology.daml.impl.DAMLModelImpl;
-import com.hp.hpl.jena.ontology.impl.OntModelImpl;
+import com.hp.hpl.jena.shared.PrefixMapping;
+import com.hp.hpl.jena.shared.ReificationStyle;
 
 /**
     ModelFactory provides methods for creating standard kinds of Model.
@@ -65,8 +66,8 @@ public class ModelFactory extends ModelFactoryBase
         When a Model is created from an existing Graph, the prefixes of that Graph
         are not disturbed; only ones not present in the Graph are added.
 
-     	@param pm the default prefixes to use
-     	@return the previous default prefix mapping
+         @param pm the default prefixes to use
+         @return the previous default prefix mapping
     */
     public static PrefixMapping setDefaultModelPrefixes( PrefixMapping pm )
         { return ModelCom.setDefaultModelPrefixes( pm ); }
@@ -409,20 +410,6 @@ public class ModelFactory extends ModelFactoryBase
     public static OntModel createOntologyModel( OntModelSpec spec )
         { return new OntModelImpl( spec ); }
 
-
-    /**
-     * <p>Answer a model for processing DAML+OIL, using the legacy Jena1 DAML API.  Users are encouraged
-     * to switch from the DAML-specific API to the new generic ontology API
-     * (see {@link #createOntologyModel(OntModelSpec, Model)}).  The continuation of the DAML-specific
-     * API in Jena is not assured beyond Jena version 2.</p>
-     *
-     * @return A model for in-memory processing of DAML objects.
-     * @deprecated The legacy DAML API is deprecated and scheduled for removal in Jena 2.6. Please
-     * use the main ontology API with a DAML profile instead.
-     */
-    public static DAMLModel createDAMLModel() {
-        return new DAMLModelImpl( OntModelSpec.getDefaultSpec( ProfileRegistry.DAML_LANG ), null );
-    }
 
     /**
          Answer a new model that is the dynamic union of two other models. By

@@ -14,12 +14,12 @@ Change of Behaviour in getByte/Short/Int on typed literals
 Deprecated Method Removal Frenzy
 
     o A bunch of methods in Resource, Model, ModelCon, and Statement have
-      for a while now been marked as deprecated. These methods took literal 
+      for a while now been marked as deprecated. These methods took literal
       values for the object of a statement and used the old treat-it-as-a-string
       approach rather than the newer typed-literal approach.
 
     o These deprecated methods have been removed. However, to allow migrators
-      an easier life and to avoid requiring many many calls of 
+      an easier life and to avoid requiring many many calls of
       createTypedLiteral (which needs a model, not always conveniently to hand),
       typed-literal versions of these methods have been added to the interfaces.
 
@@ -40,8 +40,12 @@ Deprecated Method Removal Frenzy
 
       * changeObject( Various )
 
-    where `Various` is one of float, double, long,boolean, char, short, 
-    int, or object [short & int may be missing in some cases].
+      where `Various` is one of float, double, long,boolean, char, short,
+      int, or object [short & int may be missing in some cases].
+
+    o As signalled in the Jena 2.5 release, the dedicated DAML API has
+      now been removed. Users who still process DAML+OIL ontologies should
+      switch to using the generic OntModel with the DAML profile.
 
 Assemblers
     o When the Assembler system (ie AssemblerGroup et al) load a class,
@@ -74,7 +78,7 @@ Typed literals:
 
 Reasoners:
     o Changed the equality contract of Rule objects to include the rule name.
-        
+
 ==== Jena 2.5.4
 
 Graph
@@ -91,17 +95,17 @@ Assemblers
 
 N3 & Turtle Writer
     o Correct writing nested bnodes with no properties to make strict Turtle.
-    o No longer automatically add default namespace prefix. 
-    
+    o No longer automatically add default namespace prefix.
+
 Reasoners
-    o Added rebindAll() to FBRuleInfGraph    
+    o Added rebindAll() to FBRuleInfGraph
     o Extended OWLMini/full to include validation of maxCardinality(1) over individuals
-    o The (forward) deductions model is now preserved across rebind() operations 
+    o The (forward) deductions model is now preserved across rebind() operations
       so that listeners on deductions models are safe
     o added now(?x) builtin to return the current xsd:dateTime
-      
+
 Misc
-    o Extended ResourceFactory.createTypedLiteral to handle Calendar objects      
+    o Extended ResourceFactory.createTypedLiteral to handle Calendar objects
 
 ==== Jena 2.5.3
 
@@ -124,12 +128,12 @@ Assembler modification-and-fix
       that constant provides the default. This gives the intended
       behaviour of "I specified no properties" and additionally
       allows specs to be specified as tweaks-to-a-constant.
-      
+
       ContentAssemblers can now be constructed with default FileManager
       arguments. External content is loaded using that FileManager.
       The object of an externalContent statement can be a string
       literal or a URI.
-      
+
       AssemblerGroups (which includes the instance Assembler.general)
       now support a `copy` method which makes a new group initialised
       with the same mapping.
@@ -145,24 +149,24 @@ ModelSpec and family REMOVED
       introduced.
 
       OntModelSpec now extends OntModelSpecObsolete, which holds (almost)
-      all of the OntModelSpec's deprecated ModelSpec-oriented machinery. 
-      OMSO will vanish after the next Jena release, when the remaining 
+      all of the OntModelSpec's deprecated ModelSpec-oriented machinery.
+      OMSO will vanish after the next Jena release, when the remaining
       ModelSpec code will evaporate.
 
-Deprecated XSD.NS in favour of XSD.getURI() which reports namespace with a 
+Deprecated XSD.NS in favour of XSD.getURI() which reports namespace with a
       trailing # character.
-      
+
 Reasoners:
     o Extended rule syntax to accept URIs wrapped in <..> and file: uris
 
 Typed literals
-    o Fixed problem which prevented Calendars being used to instantiate 
+    o Fixed problem which prevented Calendars being used to instantiate
       XSDDates rather than full XSDDateTimes
-      
+
 IRI
     o Fixed conformance problem with mailto:
     o Rewrote relativize code, fixing a #frag bug.
-      
+
 ==== Jena 2.5.2
 
 RDQL support now in ARQ
@@ -175,13 +179,13 @@ RDFException removed
       subclasses are now subclasses of JenaException.
 
 rdfcat tool
-	o The handling of command line arguments to rdfcat has changed slightly.
-	  The input format (N3, RDF/XML, n-triple) argument, -n, -x and -t
-	  respectively, now *only* affect the following argument. In previous
-	  versions, the format was 'sticky' in that it persisted until another
-	  input format argument was supplied. To set the default input format,
-	  a new parameter -in has been added. See the rdfcat Javadoc for full
-	  details.
+    o The handling of command line arguments to rdfcat has changed slightly.
+      The input format (N3, RDF/XML, n-triple) argument, -n, -x and -t
+      respectively, now *only* affect the following argument. In previous
+      versions, the format was 'sticky' in that it persisted until another
+      input format argument was supplied. To set the default input format,
+      a new parameter -in has been added. See the rdfcat Javadoc for full
+      details.
 
 ==== Jena 2.5.1
 

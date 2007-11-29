@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            16-Jun-2003
  * Filename           $RCSfile: TestBugReports.java,v $
- * Revision           $Revision: 1.86 $
+ * Revision           $Revision: 1.87 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2007-11-15 15:42:59 $
- *               by   $Author: chris-dollin $
+ * Last modified on   $Date: 2007-11-29 12:27:18 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -28,17 +28,20 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.*;
 
+import junit.framework.TestCase;
+
 import com.hp.hpl.jena.enhanced.EnhGraph;
 import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.graph.impl.*;
-import com.hp.hpl.jena.graph.query.*;
+import com.hp.hpl.jena.graph.impl.SimpleGraphMaker;
+import com.hp.hpl.jena.graph.impl.SimpleTransactionHandler;
+import com.hp.hpl.jena.graph.query.SimpleQueryHandler;
 import com.hp.hpl.jena.mem.faster.GraphMemFasterQueryHandler;
 import com.hp.hpl.jena.ontology.*;
-import com.hp.hpl.jena.ontology.daml.*;
 import com.hp.hpl.jena.ontology.impl.OntClassImpl;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.rdf.model.impl.ModelMakerImpl;
-import com.hp.hpl.jena.reasoner.*;
+import com.hp.hpl.jena.reasoner.Reasoner;
+import com.hp.hpl.jena.reasoner.ReasonerRegistry;
 import com.hp.hpl.jena.reasoner.dig.*;
 import com.hp.hpl.jena.reasoner.rulesys.GenericRuleReasoner;
 import com.hp.hpl.jena.reasoner.rulesys.Rule;
@@ -46,10 +49,7 @@ import com.hp.hpl.jena.reasoner.test.TestUtil;
 import com.hp.hpl.jena.shared.ClosedException;
 import com.hp.hpl.jena.util.FileUtils;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
-import com.hp.hpl.jena.util.iterator.Map1;
 import com.hp.hpl.jena.vocabulary.*;
-
-import junit.framework.*;
 
 /**
  * <p>
@@ -763,19 +763,6 @@ public class TestBugReports
         }
     }
 
-    /** Bug report by Paulo Pinheiro da Silva [pp@ksl.stanford.edu] - exception while accessing PropertyAccessor.getDAMLValue */
-    public void test_ppds_01() {
-        DAMLModel m = ModelFactory.createDAMLModel();
-        DAMLClass c = m.createDAMLClass( NS + "C" );
-        DAMLInstance x = m.createDAMLInstance( c, NS + "x" );
-        DAMLProperty p = m.createDAMLProperty( NS + "p" );
-
-        x.addProperty( p, "(s (s 0))" );
-
-        PropertyAccessor a = x.accessProperty( p );
-        assertNull( "Property accessor value should be null", a.getDAMLValue() );
-    }
-
     /** Bug report by anon at SourceForge - Bug ID 887409 */
     public void test_anon_0() {
         String NS = "http://example.org/foo#";
@@ -857,27 +844,6 @@ public class TestBugReports
             //System.err.println( "prop " + i.next() );
             i.next();
         }
-    }
-
-    /* Bug reprort by E. Johnson ejohnson@carolina.rr.com - ill formed list in writer */
-    public void test_ej_01() {
-        String BASE  = "http://jena.hpl.hp.com/testing/ontology";
-        String NS = BASE + "#";
-
-        DAMLModel m = ModelFactory.createDAMLModel();
-        DAMLClass A = m.createDAMLClass(NS + "A");
-        DAMLClass B = m.createDAMLClass(NS + "B");
-        DAMLClass C = m.createDAMLClass(NS + "C");
-        DAMLList l = m.createDAMLList(new RDFNode[] {A, B, C});
-
-        assertTrue( l.isValid() );
-
-        Model baseModel = m.getBaseModel();
-        RDFWriter writer = baseModel.getWriter("RDF/XML-ABBREV");
-
-        // will generate warnings, so suppress until Jeremy has fixed
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        writer.write(baseModel, out, BASE );
     }
 
     /** Bug report by Harry Chen - closed exception when reading many models */

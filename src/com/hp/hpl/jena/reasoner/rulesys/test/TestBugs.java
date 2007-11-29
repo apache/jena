@@ -2,52 +2,51 @@
  * File:        TestBugs.java
  * Created by:  Dave Reynolds
  * Created on:  22-Aug-2003
- * 
+ *
  * (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestBugs.java,v 1.49 2007-08-24 11:19:39 der Exp $
+ * $Id: TestBugs.java,v 1.50 2007-11-29 12:27:20 ian_dickinson Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
 import java.io.*;
+import java.util.*;
+
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
 
 import com.hp.hpl.jena.datatypes.TypeMapper;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.ontology.*;
-import com.hp.hpl.jena.ontology.daml.DAMLModel;
 import com.hp.hpl.jena.rdf.listeners.StatementListener;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.reasoner.rulesys.*;
 import com.hp.hpl.jena.reasoner.rulesys.builtins.BaseBuiltin;
 import com.hp.hpl.jena.reasoner.test.TestUtil;
-import com.hp.hpl.jena.util.*;
+import com.hp.hpl.jena.util.FileManager;
+import com.hp.hpl.jena.util.PrintUtil;
 import com.hp.hpl.jena.util.iterator.ClosableIterator;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 import com.hp.hpl.jena.vocabulary.*;
 
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
-
-import java.util.*;
-
 
 /**
  * Unit tests for reported bugs in the rule system.
- * 
+ *
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.49 $ on $Date: 2007-08-24 11:19:39 $
+ * @version $Revision: 1.50 $ on $Date: 2007-11-29 12:27:20 $
  */
 public class TestBugs extends TestCase {
 
     /**
      * Boilerplate for junit
-     */ 
+     */
     public TestBugs( String name ) {
-        super( name ); 
+        super( name );
     }
-    
+
     /**
      * Boilerplate for junit.
      * This is its own test suite
@@ -57,13 +56,13 @@ public class TestBugs extends TestCase {
 //        TestSuite suite = new TestSuite();
 //        suite.addTest(new TestBugs( "testDeductionListener" ));
 //        return suite;
-    }  
+    }
 
     public void setUp() {
         // ensure the ont doc manager is in a consistent state
         OntDocumentManager.getInstance().reset( true );
     }
-    
+
     /**
      * Report of NPE during processing on an ontology with a faulty intersection list,
      * from Hugh Winkler.
@@ -81,7 +80,7 @@ public class TestBugs extends TestCase {
         }
         assertTrue("Correctly detected the illegal list", foundBadList);
     }
-    
+
     /**
      * Report of problems with cardinality v. maxCardinality usage in classification,
      * from Hugh Winkler.
@@ -95,7 +94,7 @@ public class TestBugs extends TestCase {
         Resource documentType = test.getResource(NAMESPACE + "Document");
         assertTrue("Cardinality-based classification", test.contains(aDocument, RDF.type, documentType));
     }
-    
+
     /**
      * Report of functor literals leaking out of inference graphs and raising CCE
      * in iterators.
@@ -107,13 +106,13 @@ public class TestBugs extends TestCase {
 
         boolean b = anyInstancesOfNothing(test);
         ResIterator rIter = test.listSubjects();
-        while (rIter.hasNext()) { 
+        while (rIter.hasNext()) {
             Resource res = rIter.nextResource();
         }
     }
-    
+
     /** Helper function used in testFunctorCCE */
-    private boolean anyInstancesOfNothing(Model model) { 
+    private boolean anyInstancesOfNothing(Model model) {
         boolean hasAny = false;
         try {
             ExtendedIterator it = model.listStatements(null, RDF.type, OWL.Nothing);
@@ -124,28 +123,11 @@ public class TestBugs extends TestCase {
         }
         return hasAny;
     }
-    
-    /**
-     * Report of functor literals leaking out in DAML processing as well.
-     */
-    public void testDAMLCCE() {
-        DAMLModel m = ModelFactory.createDAMLModel();
-        m.getDocumentManager().setMetadataSearchPath( "file:etc/ont-policy-test.rdf", true );
-        m.read( "file:testing/reasoners/bugs/literalLeak.daml", 
-                "http://www.daml.org/2001/03/daml+oil-ex",  null );
-        ResIterator rIter = m.listSubjects();
-        while (rIter.hasNext()) { 
-            Resource res = rIter.nextResource();
-            if (res.asNode().isLiteral()) {
-                assertTrue("Error in resource " + res, false);
-            }
-        }
-    }
-    
+
     public static final String INPUT_SUBCLASS =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
         "" +
-        "<rdf:RDF" + 
+        "<rdf:RDF" +
         "    xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"" +
         "    xmlns:rdfs=\"http://www.w3.org/2000/01/rdf-schema#\"" +
         "    xmlns:daml=\"http://www.daml.org/2001/03/daml+oil#\"" +
@@ -164,21 +146,21 @@ public class TestBugs extends TestCase {
         "</rdf:RDF>";
 
     /**
-     * This test exposes an apparent problem in the reasoners.  If the input data is 
-     * changed from daml:subClassOf to rdfs:subClassOf, the asserts all pass.  As is, 
+     * This test exposes an apparent problem in the reasoners.  If the input data is
+     * changed from daml:subClassOf to rdfs:subClassOf, the asserts all pass.  As is,
      * the assert for res has rdf:type cls1 fails.
      */
     public void testSubClass() {
         OntModel model = ModelFactory.createOntologyModel(OntModelSpec.DAML_MEM_RDFS_INF, null);
         model.getDocumentManager().setMetadataSearchPath( "file:etc/ont-policy-test.rdf", true );
-        
+
         String base = "http://localhost:8080/axis/daml/a.daml#";
         model.read( new ByteArrayInputStream( INPUT_SUBCLASS.getBytes() ), base );
         OntResource res = (OntResource) model.getResource( base+"test").as(OntResource.class);
-            
+
         OntClass cls1 = (OntClass) model.getResource(base+"cls1").as(OntClass.class);
         OntClass cls2 = (OntClass) model.getResource(base+"cls2").as(OntClass.class);
-        
+
         assertTrue( "cls2 should be a super-class of cls1", cls2.hasSuperClass( cls1 ) );
         assertTrue( "res should have rdf:type cls1", res.hasRDFType( cls1 ) );
         assertTrue( "res should have rdf:type cls2", res.hasRDFType( cls2 ) );
@@ -187,7 +169,7 @@ public class TestBugs extends TestCase {
     public static final String INPUT_SUBPROPERTY =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
         "" +
-        "<rdf:RDF" + 
+        "<rdf:RDF" +
         "    xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"" +
         "    xmlns:rdfs=\"http://www.w3.org/2000/01/rdf-schema#\"" +
         "    xmlns:daml=\"http://www.daml.org/2001/03/daml+oil#\"" +
@@ -212,22 +194,22 @@ public class TestBugs extends TestCase {
         "</rdf:RDF>";
 
     /**
-     * This test exposes an apparent problem in the reasoners.  If the input data is 
-     * changed from daml:subPropertyOf to rdfs:subPropertyOf, the asserts all pass.  As is, 
+     * This test exposes an apparent problem in the reasoners.  If the input data is
+     * changed from daml:subPropertyOf to rdfs:subPropertyOf, the asserts all pass.  As is,
      * the assert for a1 p a0 fails.
      */
     public void testSubProperty() {
         OntModel model = ModelFactory.createOntologyModel(OntModelSpec.DAML_MEM_RDFS_INF, null);
-        
+
         String base = "urn:x-hp-jena:test#";
         model.read( new ByteArrayInputStream( INPUT_SUBPROPERTY.getBytes() ), base );
-        
+
         OntResource a0 = (OntResource) model.getResource( base+"a0").as(OntResource.class);
         OntResource a1 = (OntResource) model.getResource( base+"a1").as(OntResource.class);
-            
+
         ObjectProperty p = model.getObjectProperty( base+"p" );
         ObjectProperty q = model.getObjectProperty( base+"q" );
-        
+
         assertTrue("subProp relation present", q.hasProperty(RDFS.subPropertyOf, p));
         assertTrue( "a1 q a0", a1.hasProperty( q, a0 ) );   // asserted
         assertTrue( "a1 p a0", a1.hasProperty( p, a0 ) );   // entailed
@@ -269,7 +251,7 @@ public class TestBugs extends TestCase {
         assertTrue("property class axioms", infmodel.contains(tp, RDF.type,  OWL.ObjectProperty));
         assertTrue("property class axioms", infmodel.contains(sp, RDF.type,  OWL.ObjectProperty));
     }
-    
+
     /**
      * Test for a reported bug in delete
      */
@@ -284,7 +266,7 @@ public class TestBugs extends TestCase {
         it.close();
         assertTrue(ok);
       }
-    
+
     /**
      * Test bug caused by caching of deductions models.
      */
@@ -305,7 +287,7 @@ public class TestBugs extends TestCase {
         assertFalse(im.contains(r, RDF.type, B));
         assertFalse(im.getDeductionsModel().contains(r, RDF.type, B));
     }
-    
+
     /**
      * Test looping on recursive someValuesFrom.
      */
@@ -338,7 +320,7 @@ public class TestBugs extends TestCase {
 //        infmodel.write(System.out);
 //        System.out.flush();
     }
-    
+
     /**
      * Test bug with leaking variables which results in an incorrect "range = Nothing" deduction.
      */
@@ -353,7 +335,7 @@ public class TestBugs extends TestCase {
         Statement s = omodel.createStatement(surname, RDFS.range, OWL.Nothing);
         assertTrue(! omodel.contains(s));
     }
-    
+
     /**
      * Test change of RDF specs to allow plain literals w/o lang and XSD string to be the same.
      */
@@ -363,9 +345,9 @@ public class TestBugs extends TestCase {
         Reasoner r = ReasonerRegistry.getOWLReasoner();
         InfModel infmodel = ModelFactory.createInfModel(r, model);
         ValidityReport validity = infmodel.validate();
-        assertTrue (validity.isValid());                
+        assertTrue (validity.isValid());
     }
-    
+
     /**
      * Test that prototype nodes are now hidden
      */
@@ -379,7 +361,7 @@ public class TestBugs extends TestCase {
             m.createStatement(i, RDF.type, c)
         });
     }
-    
+
     /**
      * Also want to have hidden rb:xsdRange
      */
@@ -402,7 +384,7 @@ public class TestBugs extends TestCase {
             }
         }
     }
-    
+
     /**
      * Test problem with bindSchema not interacting properly with validation.
      */
@@ -410,7 +392,7 @@ public class TestBugs extends TestCase {
         Reasoner reasoner = ReasonerRegistry.getOWLReasoner();
         Model schema = FileManager.get().loadModel("file:testing/reasoners/bugs/sbug.owl");
         Model data = FileManager.get().loadModel("file:testing/reasoners/bugs/sbug.rdf");
-        
+
         // Union version
         InfModel infu = ModelFactory.createInfModel(reasoner, data.union(schema));
         ValidityReport validity = infu.validate();
@@ -419,13 +401,13 @@ public class TestBugs extends TestCase {
 //        for (Iterator i = validity.getReports(); i.hasNext(); ) {
 //            System.out.println(" - " + i.next());
 //        }
-        
+
         // bindSchema version
         InfModel inf = ModelFactory.createInfModel(reasoner.bindSchema(schema), data);
         validity = inf.validate();
         assertTrue( ! validity.isValid());
     }
-    
+
     /**
      * Delete bug in generic rule reasoner.
      */
@@ -448,7 +430,7 @@ public class TestBugs extends TestCase {
         inf.remove(sy);
         TestUtil.assertIteratorLength(inf.listStatements(y, null, (RDFNode)null), 0);
     }
-    
+
     /**
      * RETE incremental processing bug.
      */
@@ -468,7 +450,7 @@ public class TestBugs extends TestCase {
        m.remove(s1);
        assertIsProperty(m, prop);
     }
-    
+
     /**
      * RETE incremental processing bug.
      */
@@ -492,8 +474,8 @@ public class TestBugs extends TestCase {
     private void assertIsProperty(Model m, Property prop) {
         assertTrue(m.contains(prop, RDF.type, RDF.Property));
     }
-       
-    
+
+
     /**
      * Bug that exposed prototypes of owl:Thing despite hiding being switched on.
      */
@@ -504,7 +486,7 @@ public class TestBugs extends TestCase {
         StmtIterator things = inf.listStatements(null, RDF.type, OWL.Thing);
         TestUtil.assertIteratorLength(things, 0);
     }
-    
+
     /**
      * Limitation of someValuesFrom applied to datatype properties.
      */
@@ -513,22 +495,22 @@ public class TestBugs extends TestCase {
         String filename = "testing/xsd/daml+oil-ex-dt.xsd";
         TypeMapper tm = TypeMapper.getInstance();
         XSDDatatype.loadUserDefined(uri, new FileReader(filename), null, tm);
-        
+
         Model data = ModelFactory.createDefaultModel();
         data.read("file:testing/reasoners/bugs/userDatatypes.owl");
         InfModel inf = ModelFactory.createInfModel(ReasonerRegistry.getOWLReasoner(), data);
-        
+
         String egNS = "http://jena.hpl.hp.com/eg#";
         Resource meR = inf.getResource(egNS + "me");
         Resource TestR = inf.getResource(egNS + "Test");
         assertTrue("somevalues inf for datatypes", inf.contains(meR, RDF.type, TestR));
-        
+
         Resource Test2R = inf.getResource(egNS + "Test2");
         Resource me2R = inf.getResource(egNS + "me2");
         assertTrue("somevalues inf for datatypes", inf.contains(me2R, RDF.type, Test2R));
         assertTrue("somevalues inf for user datatypes", inf.contains(meR, RDF.type, Test2R));
     }
-    
+
     /* Report on jena-dev that DAMLMicroReasoner infmodels don't support daml:subClassOf, etc */
     public void testDAMLMicroReasonerSupports() {
         Reasoner r = DAMLMicroReasonerFactory.theInstance().create( null );
@@ -537,7 +519,7 @@ public class TestBugs extends TestCase {
         assertTrue( "Should support daml:domain", r.supportsProperty( DAML_OIL.domain ));
         assertTrue( "Should support daml:range", r.supportsProperty( DAML_OIL.range ));
     }
-    
+
     /**
      * Utility function.
      * Create a model from an N3 string with OWL and EG namespaces defined.
@@ -552,7 +534,7 @@ public class TestBugs extends TestCase {
         result.read(new StringReader(fullSource), "", "N3");
         return result;
     }
-    
+
     /** Bug report from Ole Hjalmar - direct subClassOf not reporting correct result with rule reasoner */
     public void test_oh_01() {
         String NS = "http://www.idi.ntnu.no/~herje/ja/";
@@ -565,13 +547,13 @@ public class TestBugs extends TestCase {
                 ResourceFactory.createResource( NS+"restaurant.owl#UteDoRestaurant" ),
                 ResourceFactory.createResource( NS+"restaurant.owl#SkogRestaurant" ),
             };
-        
+
         test_oh_01scan( OntModelSpec.OWL_MEM, "No inf", expected );
         test_oh_01scan( OntModelSpec.OWL_MEM_MINI_RULE_INF, "Mini rule inf", expected );
         test_oh_01scan( OntModelSpec.OWL_MEM_MICRO_RULE_INF, "Micro rule inf", expected );
         test_oh_01scan( OntModelSpec.OWL_MEM_RULE_INF, "Full rule inf", expected );
     }
-    
+
     /** Problem with bindSchema and validation rules */
     public void test_der_validation() {
         Model abox = FileManager.get().loadModel("file:testing/reasoners/owl/nondetbug.rdf");
@@ -583,7 +565,7 @@ public class TestBugs extends TestCase {
             assertTrue("failed on count " + i, im.contains(null, ReasonerVocabulary.RB_VALIDATION_REPORT, (RDFNode)null));
         }
     }
-    
+
     // Temporary for debug
     private void test_oh_01scan( OntModelSpec s, String prompt, Resource[] expected ) {
         String NS = "http://www.idi.ntnu.no/~herje/ja/reiseliv.owl#";
@@ -592,28 +574,28 @@ public class TestBugs extends TestCase {
 
 //        System.out.println( prompt );
         OntClass r = m.getOntClass( NS + "Reiseliv" );
-        
+
         List q = new ArrayList();
         Set seen = new HashSet();
         q.add( r );
-        
+
         while (!q.isEmpty()) {
             OntClass c = (OntClass) q.remove( 0 );
             seen.add( c );
-            
+
             for (Iterator i = c.listSubClasses( true ); i.hasNext(); ) {
                 OntClass sub = (OntClass) i.next();
                 if (!seen.contains( sub )) {
                     q.add( sub );
                 }
             }
-            
+
 //            System.out.println( "  Seen class " + c );
         }
 
         // check we got all classes
         int mask = (1 << expected.length) - 1;
-        
+
         for (int j = 0;  j < expected.length; j++) {
             if (seen.contains( expected[j] )) {
                 mask &= ~(1 << j);
@@ -622,7 +604,7 @@ public class TestBugs extends TestCase {
 //                System.out.println( "Expected but did not see " + expected[j] );
             }
         }
-        
+
         for (Iterator k = seen.iterator();  k.hasNext(); ) {
             Resource res = (Resource) k.next();
             boolean isExpected = false;
@@ -633,10 +615,10 @@ public class TestBugs extends TestCase {
 //                System.out.println( "Got unexpected result " + res );
             }
         }
-        
+
         assertEquals( "Some expected results were not seen", 0, mask );
     }
-    
+
     /**
      * Bug report from David A Bigwood
      */
@@ -665,8 +647,8 @@ public class TestBugs extends TestCase {
         TestUtil.assertIteratorValues(this,  uc.listOperands(), new Object[] { c1, c2, c3} );
         // add union class as domain of a property
         p1.addDomain(uc);
-    }    
-    
+    }
+
     /**
      * Bug report on bad conflict resolution between two non-monotonic rules.
      */
@@ -684,7 +666,7 @@ public class TestBugs extends TestCase {
         Iterator values = inf.listObjectsOfProperty(i, scoreA);
         TestUtil.assertIteratorValues(this, values, new Object[] { data.createTypedLiteral(173)});
     }
-    
+
     /**
      * Bug report - intersection processing does not work incrementally.
      */
@@ -692,30 +674,30 @@ public class TestBugs extends TestCase {
         OntModel ontmodel = ModelFactory.createOntologyModel(
                 OntModelSpec.OWL_MEM_MINI_RULE_INF );
        String homeuri = "http://abc/bcd/";
-       
+
        Individual ind[] = new Individual[6];
        OntClass classb = ontmodel.createClass(homeuri + "C");
        for (int i = 0; i < 6; i++){
            ind[i] = classb.createIndividual(homeuri + String.valueOf(i));
-       }        
+       }
        Individual subind[] = new Individual[] {ind[0], ind[1], ind[2]};
-       
-       EnumeratedClass class1 = ontmodel.createEnumeratedClass( 
+
+       EnumeratedClass class1 = ontmodel.createEnumeratedClass(
                homeuri+"C1", ontmodel.createList(subind) );
-       EnumeratedClass class2 = ontmodel.createEnumeratedClass( 
+       EnumeratedClass class2 = ontmodel.createEnumeratedClass(
                homeuri+"C2", ontmodel.createList(ind));
 
        RDFList list = ontmodel.createList(new RDFNode[] { class1, class2 });
        IntersectionClass classI = ontmodel.createIntersectionClass(null, list);
        UnionClass classU = ontmodel.createUnionClass(null, list);
-       
+
        // Works with rebind, bug is that it doesn't work without rebind
 //       ontmodel.rebind();
 
        TestUtil.assertIteratorValues(this, classI.listInstances(), subind);
-       TestUtil.assertIteratorValues(this, classU.listInstances(), ind);  
+       TestUtil.assertIteratorValues(this, classU.listInstances(), ind);
     }
-    
+
     /**
      * Fact rules with non-empty bodyies failed to fire.
      */
@@ -748,7 +730,7 @@ public class TestBugs extends TestCase {
         List rules = Rule.parseRules(
                 "-> tableAll(). \n" +
                 "[rdfs6:  (?p rdfs:subPropertyOf ?q), notEqual(?p,?q) -> [ (?a ?q ?b) <- (?a ?p ?b)] ] \n" +
-                 "-> (eg:range rdfs:subPropertyOf rdfs:range). \n" + 
+                 "-> (eg:range rdfs:subPropertyOf rdfs:range). \n" +
                  "-> (rdfs:range rdfs:subPropertyOf eg:range). \n" );
         GenericRuleReasoner reasoner = new GenericRuleReasoner(rules);
         reasoner.setTransitiveClosureCaching(true);
@@ -758,7 +740,7 @@ public class TestBugs extends TestCase {
                     inf.listStatements(null, egRange, (RDFNode)null),
                     new Object[] {inf.createStatement(mother, egRange, female)} );
     }
-    
+
     /**
      * test remove operator in case with empty data.
      */
@@ -771,10 +753,10 @@ public class TestBugs extends TestCase {
         InfModel im = ModelFactory.createInfModel(reasoner, ModelFactory.createDefaultModel());
         Resource i = im.createResource(PrintUtil.egNS + "i");
         Property guard = im.createProperty(PrintUtil.egNS + "guard");
-        TestUtil.assertIteratorValues(this, 
+        TestUtil.assertIteratorValues(this,
                 im.listStatements(), new Object[] {im.createStatement(i, guard, "done")});
     }
-    
+
     /**
      * test duplicate removal when using pure backward rules
      */
@@ -789,13 +771,13 @@ public class TestBugs extends TestCase {
         base.add(i, p, a);
         base.add(i, q, a);
         List rules = Rule.parseRules(
-                "(eg:i eg:r eg:a) <- (eg:i eg:p eg:a). (eg:i eg:r eg:a) <- (eg:i eg:q eg:a)."); 
+                "(eg:i eg:r eg:a) <- (eg:i eg:p eg:a). (eg:i eg:r eg:a) <- (eg:i eg:q eg:a).");
         GenericRuleReasoner reasoner = new GenericRuleReasoner(rules);
         reasoner.setMode(GenericRuleReasoner.BACKWARD);
         InfModel im = ModelFactory.createInfModel(reasoner, base);
         TestUtil.assertIteratorLength(im.listStatements(i, r, a), 1);
     }
-    
+
     /**
      * Test closure of grounded choice points
      */
@@ -804,7 +786,7 @@ public class TestBugs extends TestCase {
         BuiltinRegistry.theRegistry.register(myFlag);
         String NS = "http://ont.com/";
         PrintUtil.registerPrefix("ns", NS);
-        String rules = 
+        String rules =
             "[r1: (ns:a ns:p ns:b) <- (ns:a ns:p ns:a)] " +
             "[r2: (ns:a ns:p ns:b) <- flag()] " +
             "[rt: (?a ns:q ?b) <- (?a ns:p ?b)] ";
@@ -819,7 +801,7 @@ public class TestBugs extends TestCase {
         assertTrue( infModel.contains(a, q, b) );
         assertTrue( ! myFlag.fired );
     }
-    
+
     /**
      * Test case for a reported CME bug in the transitive reasoner
      */
@@ -828,7 +810,7 @@ public class TestBugs extends TestCase {
             ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM_TRANS_INF);
         model.read("file:testing/reasoners/bugs/tgcCMEbug.owl");
     }
-    
+
     /**
      * Test case for reported problem in detecting cardinality violations
      */
@@ -866,37 +848,37 @@ public class TestBugs extends TestCase {
 
         // check if model has become invalid
         assertTrue(aBox.contains(molecule, RDF.type, moleculeClass));
-        assertFalse(aBox.validate().isValid()); // fails: why?        
+        assertFalse(aBox.validate().isValid()); // fails: why?
     }
-    
+
     /**
      * Listeners on deductions graph should be preserved across rebind operations
      */
     public void testDeductionListener() {
         final String NS = PrintUtil.egNS;
-        
+
         // Data: (eg:i eg:p 'foo')
         Model base = ModelFactory.createDefaultModel();
         Resource i = base.createResource(NS + "i");
         Property p = base.createProperty(NS + "p");
         i.addProperty(p, "foo");
-        
-        // Inf model 
+
+        // Inf model
         List rules = Rule.parseRules( "(?x eg:p ?y) -> (?x eg:q ?y). " );
         GenericRuleReasoner reasoner = new GenericRuleReasoner(rules);
         InfModel infModel = ModelFactory.createInfModel(reasoner, base);
-        
+
         TestListener listener = new TestListener();
         infModel.getDeductionsModel().register(listener);
         infModel.rebind(); infModel.prepare();
         assertEquals("foo", listener.getLastValue());
-        
+
         i.removeAll(p);
         i.addProperty(p, "bar");
         infModel.rebind(); infModel.prepare();
         assertEquals("bar", listener.getLastValue());
     }
-    
+
     /**
      * Listener class used in testing. Decects (* eg:q ?l) patterns
      * and notes the last value of ?l seen and returns it as a literal string.
@@ -904,7 +886,7 @@ public class TestBugs extends TestCase {
     private class TestListener extends StatementListener {
         final Property Q = ResourceFactory.createProperty(PrintUtil.egNS + "q");
         RDFNode lastValue = null;
-        
+
         public Object getLastValue() {
             if (lastValue != null && lastValue.isLiteral()) {
                 return ((Literal)lastValue).getLexicalForm();
@@ -912,14 +894,14 @@ public class TestBugs extends TestCase {
                 return lastValue;
             }
         }
-        
+
         public void addedStatement( Statement s ) {
             if (s.getPredicate().equals(Q)) {
                 lastValue = s.getObject();
             }
         }
     }
-    
+
     /**
      * Builtin which just records whether it has been called.
      * Used in implementing testGroundClosure.
@@ -928,19 +910,19 @@ public class TestBugs extends TestCase {
         public String getName() {  return "flag";  }
         public boolean fired = false;
         public boolean bodyCall(Node[] args, int length, RuleContext context) {
-            fired = true; 
+            fired = true;
             return true;
         }
     }
-    
+
     // debug assistant
 //    private void tempList(Model m, Resource s, Property p, RDFNode o) {
 //        System.out.println("Listing of " + PrintUtil.print(s) + " " + PrintUtil.print(p) + " " + PrintUtil.print(o));
 //        for (StmtIterator i = m.listStatements(s, p, o); i.hasNext(); ) {
 //            System.out.println(" - " + i.next());
 //        }
-//    }   
-    
+//    }
+
 }
 
 /*
