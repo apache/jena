@@ -1,6 +1,10 @@
 Release Notes
 =============
 
+Ontology API updates
+    o Added methods to Individual to allow testing and manipulation of the classes
+      to which an invididual belongs.
+
 Change of Behaviour in getByte/Short/Int on typed literals
 
     o The methods getByte(), getShort(), and getInt(), when applied to

@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OntResource.java,v $
- * Revision           $Revision: 1.39 $
+ * Revision           $Revision: 1.40 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2007-01-14 21:27:11 $
+ * Last modified on   $Date: 2007-11-29 16:43:15 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
@@ -38,7 +38,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntResource.java,v 1.39 2007-01-14 21:27:11 ian_dickinson Exp $
+ * @version CVS $Id: OntResource.java,v 1.40 2007-11-29 16:43:15 ian_dickinson Exp $
  */
 public interface OntResource
     extends Resource
@@ -54,7 +54,7 @@ public interface OntResource
     /**
      * <p>Answer the model that this resource is attached to, assuming that it
      * is an {@link OntModel}. If this resource is not attached to any model,
-     * or is (unusally) attached to a model that is not an <code>OntModel</code>,
+     * or is (unusually) attached to a model that is not an <code>OntModel</code>,
      * answer null.</p>
      * @return The ont model that this resource is attached to, or null.
      */
@@ -109,7 +109,7 @@ public interface OntResource
 
     /**
      * <p>Answer an iterator over all of the resources that are declared to be the same as
-     * this resource. Each elemeent of the iterator will be an {@link OntResource}.</p>
+     * this resource. Each element of the iterator will be an {@link OntResource}.</p>
      * @return An iterator over the resources equivalent to this resource.
      * @exception OntProfileException If the {@link Profile#SAME_AS()} property is not supported in the current language profile.
      */
@@ -157,7 +157,7 @@ public interface OntResource
 
     /**
      * <p>Answer an iterator over all of the resources that are declared to be different from
-     * this resource. Each elemeent of the iterator will be an {@link OntResource}.</p>
+     * this resource. Each element of the iterator will be an {@link OntResource}.</p>
      * @return An iterator over the resources different from this resource.
      * @exception OntProfileException If the {@link Profile#DIFFERENT_FROM()} property is not supported in the current language profile.
      */
@@ -348,7 +348,7 @@ public interface OntResource
      * <p>Answer the label string for this object. If there is
      * more than one such resource, an arbitrary selection is made.</p>
      * @param lang The language attribute for the desired label (EN, FR, etc) or null for don't care. Will
-     * attempt to retreive the most specific label matching the given language</p>
+     * attempt to retrieve the most specific label matching the given language</p>
      * @return A label string matching the given language, or null if there is no matching label.
      * @exception OntProfileException If the {@link Profile#LABEL()} property is not supported in the current language profile.
      */
@@ -356,7 +356,7 @@ public interface OntResource
 
     /**
      * <p>Answer an iterator over all of the label literals for this resource.</p>
-     * @param lang The language tag to restric the listed comments to, or null to select all comments
+     * @param lang The language tag to restrict the listed comments to, or null to select all comments
      * @return An iterator over RDF {@link Literal}'s.
      * @exception OntProfileException If the {@link Profile#LABEL()} property is not supported in the current language profile.
      */
@@ -424,7 +424,7 @@ public interface OntResource
      * <p>Answer the comment string for this object. If there is
      * more than one such resource, an arbitrary selection is made.</p>
      * @param lang The language attribute for the desired comment (EN, FR, etc) or null for don't care. Will
-     * attempt to retreive the most specific comment matching the given language</p>
+     * attempt to retrieve the most specific comment matching the given language</p>
      * @return A comment string matching the given language, or null if there is no matching comment.
      * @exception OntProfileException If the {@link Profile#COMMENT()} property is not supported in the current language profile.
      */
@@ -432,7 +432,7 @@ public interface OntResource
 
     /**
      * <p>Answer an iterator over all of the comment literals for this resource.</p>
-     * @param lang The language tag to restric the listed comments to, or null to select all comments
+     * @param lang The language tag to restrict the listed comments to, or null to select all comments
      * @return An iterator over RDF {@link Literal}'s.
      * @exception OntProfileException If the {@link Profile#COMMENT()} property is not supported in the current language profile.
      */
@@ -474,12 +474,13 @@ public interface OntResource
     // rdf:type
 
     /**
-     * <p>Set the RDF type (ie the class) for this resource, replacing any
+     * <p>Set the RDF type (i.e. the class) for this resource, replacing any
      * existing <code>rdf:type</code> property. Any existing statements for the RDF type
      * will first be removed.</p>
      *
      * @param cls The RDF resource denoting the new value for the <code>rdf:type</code> property,
      *                 which will replace any existing type property.
+     * @see Individual#setOntClass(Resource)
      */
     public void setRDFType( Resource cls );
 
@@ -487,6 +488,7 @@ public interface OntResource
      * <p>Add the given class as one of the <code>rdf:type</code>'s for this resource.</p>
      *
      * @param cls An RDF resource denoting a new value for the <code>rdf:type</code> property.
+     * @see Individual#addOntClass(Resource
      */
     public void addRDFType( Resource cls );
 
@@ -500,12 +502,13 @@ public interface OntResource
      *
      * @return A resource that is the rdf:type for this resource, or one of them if
      * more than one is defined.
+     * @see Individual#getOntClass()
      */
     public Resource getRDFType();
 
     /**
      * <p>
-     * Answer the <code>rdf:type</code> (ie the class) of this resource. If there
+     * Answer the <code>rdf:type</code> (i.e. the class) of this resource. If there
      * is more than one type for this resource, the return value will be one of
      * the values, but it is not specified which one (nor that it will consistently
      * be the same one each time).
@@ -515,6 +518,7 @@ public interface OntResource
      * the super-classes of the type(s).
      * @return A resource that is the rdf:type for this resource, or one of them if
      * more than one is defined.
+     * @see Individual#getOntClass(boolean)
      */
     public Resource getRDFType( boolean direct );
 
@@ -529,6 +533,7 @@ public interface OntResource
      * of the iteration will be an {@link Resource}.  Use
      * <code>.as(&nbsp;OntClass.class&nbsp;)</code> to map this resource to
      * an OntClass.
+     * @see Individual#listOntClasses(boolean)
      */
     public ExtendedIterator listRDFTypes( boolean direct );
 
@@ -542,6 +547,7 @@ public interface OntResource
      * @param direct If true, only consider the direct types of this resource, ignoring
      * the super-classes of the stated types.
      * @return True if this resource has the given class as one of its <code>rdf:type</code>'s.
+     * @see Individual#hasOntClass(Resource, boolean)
      */
     public boolean hasRDFType( Resource ontClass, boolean direct );
 
@@ -556,6 +562,7 @@ public interface OntResource
      *
      * @param ontClass Denotes a class to which this value may belong
      * @return True if this resource has the given class as one of its <code>rdf:type</code>'s.
+     * @see Individual#hasOntClass(Resource)
      */
     public boolean hasRDFType( Resource ontClass );
 
@@ -563,6 +570,7 @@ public interface OntResource
      * <p>Remove the statement that this resource is of the given RDF type.  If this statement
      * is not true of the current model, nothing happens.</p>
      * @param cls A resource denoting a class that that is to be removed from the classes of this resource
+     * @see Individual#removeOntClass(Resource)
      */
     public void removeRDFType( Resource cls );
 
@@ -573,6 +581,7 @@ public interface OntResource
      *
      * @param uri Denotes the URI of a class to which this value may belong
      * @return True if this resource has the given class as one of its <code>rdf:type</code>'s.
+     * @see Individual#hasOntClass(String)
      */
     public boolean hasRDFType( String uri );
 

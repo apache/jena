@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            25-Mar-2003
  * Filename           $RCSfile: OntResourceImpl.java,v $
- * Revision           $Revision: 1.65 $
+ * Revision           $Revision: 1.66 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2007-01-21 16:26:28 $
+ * Last modified on   $Date: 2007-11-29 16:43:19 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
@@ -50,7 +50,7 @@ import org.apache.commons.logging.LogFactory;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntResourceImpl.java,v 1.65 2007-01-21 16:26:28 ian_dickinson Exp $
+ * @version CVS $Id: OntResourceImpl.java,v 1.66 2007-11-29 16:43:19 ian_dickinson Exp $
  */
 public class OntResourceImpl
     extends ResourceImpl
@@ -59,7 +59,7 @@ public class OntResourceImpl
     // Constants
     //////////////////////////////////
 
-    /** List of namespaces that are reserved for known ontology langauges */
+    /** List of namespaces that are reserved for known ontology languages */
     public static final String[] KNOWN_LANGUAGES = new String[] {OWL.NS,
                                                                  RDF.getURI(),
                                                                  RDFS.getURI(),
@@ -117,7 +117,7 @@ public class OntResourceImpl
     /**
      * <p>Answer the model that this resource is attached to, assuming that it
      * is an {@link OntModel}. If this resource is not attached to any model,
-     * or is (unusally) attached to a model that is not an <code>OntModel</code>,
+     * or is (unusually) attached to a model that is not an <code>OntModel</code>,
      * answer null.</p>
      * @return The ont model that this resource is attached to, or null.
      */
@@ -197,7 +197,7 @@ public class OntResourceImpl
 
     /**
      * <p>Answer an iterator over all of the resources that are declared to be the same as
-     * this resource. Each elemeent of the iterator will be an {@link OntResource}.</p>
+     * this resource. Each element of the iterator will be an {@link OntResource}.</p>
      * @return An iterator over the resources equivalent to this resource.
      * @exception OntProfileException If the {@link Profile#SAME_AS()} property is not supported in the current language profile.
      */
@@ -256,7 +256,7 @@ public class OntResourceImpl
 
     /**
      * <p>Answer an iterator over all of the resources that are declared to be different from
-     * this resource. Each elemeent of the iterator will be an {@link OntResource}.</p>
+     * this resource. Each element of the iterator will be an {@link OntResource}.</p>
      * @return An iterator over the resources different from this resource.
      * @exception OntProfileException If the {@link Profile#DIFFERENT_FROM()} property is not supported in the current language profile.
      */
@@ -723,7 +723,7 @@ public class OntResourceImpl
     // rdf:type
 
     /**
-     * <p>Set the RDF type (ie the class) for this resource, replacing any
+     * <p>Set the RDF type (i.e. the class) for this resource, replacing any
      * existing <code>rdf:type</code> property. Any existing statements for the RDF type
      * will first be removed.</p>
      *
@@ -793,11 +793,10 @@ public class OntResourceImpl
      * will be a {@link Resource}.
      */
     public ExtendedIterator listRDFTypes( boolean direct ) {
-        Iterator i = listDirectPropertyValues( RDF.type, "rdf:type", null, getProfile().SUB_CLASS_OF(), direct, false );
-        ExtendedIterator j = WrappedIterator.create( i );
+        ExtendedIterator i = listDirectPropertyValues( RDF.type, "rdf:type", null, getProfile().SUB_CLASS_OF(), direct, false );
 
         // we only want each result once
-        return UniqueExtendedIterator.create( j );
+        return UniqueExtendedIterator.create( i );
     }
 
     /**
@@ -1419,7 +1418,7 @@ public class OntResourceImpl
      * @param direct If true, only return the direct (adjacent) values
      * @param inverse If true, use the inverse of p rather than p
      * @return An iterator of nodes that are in relation p to this resource (possibly inverted), which
-     * have been mapped to the facet denoted by cls.
+     * have been mapped to the facet denoted by <code>cls</code>.
      */
     protected ExtendedIterator listDirectPropertyValues( Property p, String name, Class cls, Property orderRel, boolean direct, boolean inverse ) {
         Iterator i = null;
