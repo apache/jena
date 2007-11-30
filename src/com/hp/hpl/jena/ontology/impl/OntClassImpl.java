@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            27-Mar-2003
  * Filename           $RCSfile: OntClassImpl.java,v $
- * Revision           $Revision: 1.53 $
+ * Revision           $Revision: 1.54 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2007-01-02 11:49:47 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2007-11-30 00:05:31 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -44,7 +44,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntClassImpl.java,v 1.53 2007-01-02 11:49:47 andy_seaborne Exp $
+ * @version CVS $Id: OntClassImpl.java,v 1.54 2007-11-30 00:05:31 ian_dickinson Exp $
  */
 public class OntClassImpl
     extends OntResourceImpl
@@ -677,6 +677,18 @@ public class OntClassImpl
      */
     public Individual createIndividual( String uri ) {
         return ((OntModel) getModel()).createIndividual( uri, this );
+    }
+
+
+    /**
+     * <p>Remove the given individual from the set of instances that are members of
+     * this class. This is effectively equivalent to the {@link Individual#removeOntClass} method,
+     * but invoked via the class resource rather than via the individual resource.</p>
+     * @param individual A resource denoting an individual that is no longer to be a member
+     * of this class
+     */
+    public void dropIndividual( Resource individual ) {
+        getModel().remove( individual, RDF.type, this );
     }
 
 

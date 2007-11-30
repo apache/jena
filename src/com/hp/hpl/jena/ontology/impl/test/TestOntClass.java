@@ -7,11 +7,11 @@
  * Web site           http://jena.sourceforge.net
  * Created            07-Dec-2004
  * Filename           $RCSfile: TestOntClass.java,v $
- * Revision           $Revision: 1.8 $
+ * Revision           $Revision: 1.9 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2007-01-02 11:51:55 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2007-11-30 00:05:33 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -38,7 +38,7 @@ import com.hp.hpl.jena.vocabulary.*;
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version CVS $Id: TestOntClass.java,v 1.8 2007-01-02 11:51:55 andy_seaborne Exp $
+ * @version CVS $Id: TestOntClass.java,v 1.9 2007-11-30 00:05:33 ian_dickinson Exp $
  */
 public class TestOntClass
     extends ModelTestBase
@@ -188,7 +188,6 @@ public class TestOntClass
         OntClass c = m.getOntClass( NS + "C" );
         OntClass d = m.getOntClass( NS + "D" );
         OntClass e = m.getOntClass( NS + "E" );
-        OntClass f = m.getOntClass( NS + "F" );
 
         TestUtil.assertIteratorValues( this, a.listSubClasses(), new Object[] {b,c} );
         TestUtil.assertIteratorValues( this, a.listSubClasses( false ), new Object[] {b,c} );
@@ -234,9 +233,7 @@ public class TestOntClass
         OntClass a = m.getOntClass( NS + "A" );
         OntClass b = m.getOntClass( NS + "B" );
         OntClass c = m.getOntClass( NS + "C" );
-        OntClass d = m.getOntClass( NS + "D" );
         OntClass e = m.getOntClass( NS + "E" );
-        OntClass f = m.getOntClass( NS + "F" );
 
         TestUtil.assertIteratorValues( this, e.listSuperClasses(), new Object[] {b,c} );
         TestUtil.assertIteratorValues( this, e.listSuperClasses( false ), new Object[] {b,c} );
@@ -250,9 +247,7 @@ public class TestOntClass
         OntClass a = m.getOntClass( NS + "A" );
         OntClass b = m.getOntClass( NS + "B" );
         OntClass c = m.getOntClass( NS + "C" );
-        OntClass d = m.getOntClass( NS + "D" );
         OntClass e = m.getOntClass( NS + "E" );
-        OntClass f = m.getOntClass( NS + "F" );
 
         TestUtil.assertIteratorValues( this, e.listSuperClasses(), new Object[] {b,c,a,RDFS.Resource,OWL.Thing} );
         TestUtil.assertIteratorValues( this, e.listSuperClasses( false ), new Object[] {b,c,a,RDFS.Resource,OWL.Thing} );
@@ -266,9 +261,7 @@ public class TestOntClass
         OntClass a = m.getOntClass( NS + "A" );
         OntClass b = m.getOntClass( NS + "B" );
         OntClass c = m.getOntClass( NS + "C" );
-        OntClass d = m.getOntClass( NS + "D" );
         OntClass e = m.getOntClass( NS + "E" );
-        OntClass f = m.getOntClass( NS + "F" );
 
         TestUtil.assertIteratorValues( this, e.listSuperClasses(), new Object[] {b,c,a,OWL.Thing} );
         TestUtil.assertIteratorValues( this, e.listSuperClasses( false ), new Object[] {b,c,a,OWL.Thing} );
@@ -281,16 +274,9 @@ public class TestOntClass
         OntModel m = createABCDEFModel( OntModelSpec.OWL_MEM );
         OntClass a = m.getOntClass( NS + "A" );
         OntClass b = m.getOntClass( NS + "B" );
-        OntClass c = m.getOntClass( NS + "C" );
-        OntClass d = m.getOntClass( NS + "D" );
-        OntClass e = m.getOntClass( NS + "E" );
-        OntClass f = m.getOntClass( NS + "F" );
 
         Individual ia = a.createIndividual();
         Individual ib = b.createIndividual();
-        Individual ic = c.createIndividual();
-        Individual id = d.createIndividual();
-        Individual ie = e.createIndividual();
 
         TestUtil.assertIteratorValues( this, a.listInstances(), new Object[] {ia} );
         TestUtil.assertIteratorValues( this, b.listInstances(), new Object[] {ib} );
@@ -307,7 +293,6 @@ public class TestOntClass
         OntClass c = m.getOntClass( NS + "C" );
         OntClass d = m.getOntClass( NS + "D" );
         OntClass e = m.getOntClass( NS + "E" );
-        OntClass f = m.getOntClass( NS + "F" );
 
         Individual ia = a.createIndividual(NS + "iA");
         Individual ib = b.createIndividual(NS + "iB");
@@ -330,7 +315,6 @@ public class TestOntClass
         OntClass c = m.getOntClass( NS + "C" );
         OntClass d = m.getOntClass( NS + "D" );
         OntClass e = m.getOntClass( NS + "E" );
-        OntClass f = m.getOntClass( NS + "F" );
 
         Individual ia = a.createIndividual(NS + "iA");
         Individual ib = b.createIndividual(NS + "iB");
@@ -344,6 +328,36 @@ public class TestOntClass
         TestUtil.assertIteratorValues( this, a.listInstances(true), new Object[] {ia} );
         TestUtil.assertIteratorValues( this, b.listInstances(true), new Object[] {ib} );
     }
+
+    public void testDropIndividual() {
+        OntModel m = createABCDEFModel( OntModelSpec.OWL_MEM );
+        OntClass a = m.getOntClass( NS + "A" );
+        OntClass b = m.getOntClass( NS + "B" );
+        Individual ia = a.createIndividual(NS + "iA");
+        ia.addOntClass( b );
+
+        assertTrue( ia.hasOntClass( a ) );
+        assertTrue( ia.hasOntClass( b ) );
+
+        // drop ia from the extension of A
+        a.dropIndividual( ia );
+
+        assertFalse( ia.hasOntClass( a ) );
+        assertTrue( ia.hasOntClass( b ) );
+
+        // do it again - should be a no-op
+        a.dropIndividual( ia );
+
+        assertFalse( ia.hasOntClass( a ) );
+        assertTrue( ia.hasOntClass( b ) );
+
+        // drop ia from the extension of b
+        b.dropIndividual( ia );
+
+        assertFalse( ia.hasOntClass( a ) );
+        assertFalse( ia.hasOntClass( b ) );
+    }
+
 
     // Internal implementation methods
     //////////////////////////////////

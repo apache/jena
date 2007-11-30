@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OntClass.java,v $
- * Revision           $Revision: 1.28 $
+ * Revision           $Revision: 1.29 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2007-01-02 11:48:48 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2007-11-30 00:05:15 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -37,7 +37,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntClass.java,v 1.28 2007-01-02 11:48:48 andy_seaborne Exp $
+ * @version CVS $Id: OntClass.java,v 1.29 2007-11-30 00:05:15 ian_dickinson Exp $
  */
 public interface OntClass
     extends OntResource
@@ -79,7 +79,7 @@ public interface OntClass
     public OntClass getSuperClass();
 
     /**
-     * <p>Answer an iterator over all of the classes that are declared to be super-classes of
+     * <p>Answer an iterator over all of the classes that are super-classes of
      * this class. Each element of the iterator will be an {@link OntClass}.</p>
      * @return An iterator over the super-classes of this class.
      * @exception OntProfileException If the {@link Profile#SUB_CLASS_OF()} property is not supported in the current language profile.
@@ -87,13 +87,13 @@ public interface OntClass
     public ExtendedIterator listSuperClasses();
 
     /**
-     * <p>Answer an iterator over all of the classes that are declared to be super-classes of
+     * <p>Answer an iterator over all of the classes that are super-classes of
      * this class. Each element of the iterator will be an {@link OntClass}.
      * See {@link #listSubClasses( boolean )} for a full explanation of the <em>direct</em>
      * parameter.
      * </p>
      *
-     * @param direct If true, only answer the direcly adjacent classes in the
+     * @param direct If true, only answer the directly adjacent classes in the
      * super-class relation: i&#046;e&#046; eliminate any class for which there is a longer route
      * to reach that child under the super-class relation.
      * @return an iterator over the resources representing this class's sub-classes.
@@ -206,13 +206,13 @@ public interface OntClass
      * parameter <code>closed</code> to compute the closure over transitivity and equivalence
      * of sub-classes.  The closure capability in Jena2 is determined by the inference engine
      * that is wrapped with the ontology model.  The direct parameter is provided to allow,
-     * for exmaple, a level-by-level traversal of the class hierarchy, starting at some given
+     * for example, a level-by-level traversal of the class hierarchy, starting at some given
      * root. Observe that in Jena 1, passing <code>true</code> will tend to increase the number of
      * results returned; in Jena 2 passing <code>true</code> will tend to reduce the number
      * of results.
      * </p>
      *
-     * @param direct If true, only answer the direcly adjacent classes in the
+     * @param direct If true, only answer the directly adjacent classes in the
      * sub-class relation: i&#046;e&#046; eliminate any class for which there is a longer route
      * to reach that child under the sub-class relation.
      * @return an iterator over the resources representing this class's sub-classes
@@ -444,6 +444,16 @@ public interface OntClass
 
 
     /**
+     * <p>Remove the given individual from the set of instances that are members of
+     * this class. This is effectively equivalent to the {@link Individual#removeOntClass} method,
+     * but invoked via the class resource rather than via the individual resource.</p>
+     * @param individual A resource denoting an individual that is no longer to be a member
+     * of this class
+     */
+    public void dropIndividual( Resource individual );
+
+
+    /**
      * <p>Answer true if this class is one of the roots of the local class hierarchy.
      * This will be true if either (i) this class has <code>owl:Thing</code>
      * (or <code>daml:Thing</code>) as a direct super-class, or (ii) it has
@@ -460,7 +470,7 @@ public interface OntClass
      * <p>Answer a view of this class as an enumerated class</p>
      * @return This class, but viewed as an EnumeratedClass facet
      * @exception ConversionException if the class cannot be converted to an enumerated class
-     * given the lanuage profile and the current state of the underlying model.
+     * given the language profile and the current state of the underlying model.
      */
     public EnumeratedClass asEnumeratedClass();
 
@@ -468,7 +478,7 @@ public interface OntClass
      * <p>Answer a view of this class as a union class</p>
      * @return This class, but viewed as a UnionClass facet
      * @exception ConversionException if the class cannot be converted to a union class
-     * given the lanuage profile and the current state of the underlying model.
+     * given the language profile and the current state of the underlying model.
      */
     public UnionClass asUnionClass();
 
@@ -476,7 +486,7 @@ public interface OntClass
      * <p>Answer a view of this class as an intersection class</p>
      * @return This class, but viewed as an IntersectionClass facet
      * @exception ConversionException if the class cannot be converted to an intersection class
-     * given the lanuage profile and the current state of the underlying model.
+     * given the language profile and the current state of the underlying model.
      */
     public IntersectionClass asIntersectionClass();
 
@@ -484,7 +494,7 @@ public interface OntClass
      * <p>Answer a view of this class as a complement class</p>
      * @return This class, but viewed as a ComplementClass facet
      * @exception ConversionException if the class cannot be converted to a complement class
-     * given the lanuage profile and the current state of the underlying model.
+     * given the language profile and the current state of the underlying model.
      */
     public ComplementClass asComplementClass();
 
@@ -492,7 +502,7 @@ public interface OntClass
      * <p>Answer a view of this class as a restriction class expression</p>
      * @return This class, but viewed as a Restriction facet
      * @exception ConversionException if the class cannot be converted to a restriction
-     * given the lanuage profile and the current state of the underlying model.
+     * given the language profile and the current state of the underlying model.
      */
     public Restriction asRestriction();
 
@@ -555,13 +565,13 @@ public interface OntClass
 
     /**
      * <p>Answer a view of this class as an complement of the given class.</p>
-     * @param cls An ontology classs that will be operand of the complement
+     * @param cls An ontology class that will be operand of the complement
      * @return This ontology class, converted to an complement of the given class
      */
     public ComplementClass convertToComplementClass( Resource cls );
 
     /**
-     * <p>Answer a view of this class as an resriction on the given property.</p>
+     * <p>Answer a view of this class as an restriction on the given property.</p>
      * @param prop A property this is the subject of a property restriction class expression
      * @return This ontology class, converted to a restriction on the given property
      */
