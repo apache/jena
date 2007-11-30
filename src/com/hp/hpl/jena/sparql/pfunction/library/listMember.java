@@ -14,7 +14,7 @@ import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.sparql.engine.iterator.QueryIterExtendBinding;
+import com.hp.hpl.jena.sparql.engine.iterator.QueryIterExtendByVar;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterYieldN;
 import com.hp.hpl.jena.sparql.expr.ExprEvalException;
 import com.hp.hpl.jena.sparql.pfunction.PropFuncArg;
@@ -62,7 +62,7 @@ public class listMember extends ListBase
     private QueryIterator members(Binding binding, Node listNode, Var itemVar, ExecutionContext execCxt)
     {
         List members = GraphList.members(new GNode(execCxt.getActiveGraph(), listNode)) ;
-        return new QueryIterExtendBinding(binding, itemVar, members.iterator(), execCxt) ;
+        return new QueryIterExtendByVar(binding, itemVar, members.iterator(), execCxt) ;
     }
     
     private QueryIterator verify(Binding binding, Node listNode, Node member, ExecutionContext execCxt)

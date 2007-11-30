@@ -1,46 +1,57 @@
 /*
- * (c) Copyright 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.engine.main.iterator;
+package com.hp.hpl.jena.sparql.engine.iterator;
 
-import com.hp.hpl.jena.sparql.algebra.Op;
-import com.hp.hpl.jena.sparql.algebra.OpSubstitute;
-import com.hp.hpl.jena.sparql.algebra.op.OpService;
+import java.util.Iterator;
+
+import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
-import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.sparql.engine.http.Service;
-import com.hp.hpl.jena.sparql.engine.iterator.QueryIterCommonParent;
-import com.hp.hpl.jena.sparql.engine.iterator.QueryIterRepeatApply;
+import com.hp.hpl.jena.sparql.engine.binding.Binding1;
 
-
-public class QueryIterService extends QueryIterRepeatApply
+/**
+ * Yield new bindings, with a fixed parent, with values from an iterator. 
+ */
+public class QueryIterExtendByVar extends QueryIter
 {
-    OpService opService ;
+    Binding binding ;
+    Var var ;
+    Iterator members ;
     
-    public QueryIterService(QueryIterator input, OpService opService, ExecutionContext context)
+    public QueryIterExtendByVar(Binding binding, Var var, Iterator members, ExecutionContext execCxt)
     {
-        super(input, context) ;
-        this.opService = opService ;
+        super(execCxt) ;
+        this.binding = binding ;
+        this.var = var ;
+        this.members = members ;
     }
-    
-    protected QueryIterator nextStage(Binding outerBinding)
+
+    //@Override
+    protected boolean hasNextBinding()
     {
-        Op op = OpSubstitute.substitute(opService, outerBinding) ;
-        QueryIterator qIter = Service.exec((OpService)op) ;
-        // Need to put the outerBinding as parent to every binding of the service call.
-        // There should be no variables in common because of the OpSubstitute.substitute 
-        QueryIterator qIter2 = new QueryIterCommonParent(qIter, outerBinding, getExecContext()) ;
-        return qIter2 ;
+        return members.hasNext() ;
     }
+
+    //@Override
+    protected Binding moveToNextBinding()
+    {
+        Node n = (Node)members.next() ;
+        Binding b = new Binding1(binding, var, n) ;
+        return b ;
+    }
+
+    //@Override
+    protected void closeIterator()
+    { }
 }
- 
 
 /*
- * (c) Copyright 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

@@ -9,45 +9,63 @@ package com.hp.hpl.jena.sparql.engine.iterator;
 import java.util.Iterator;
 
 import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.sparql.ARQInternalErrorException;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
+import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.sparql.engine.binding.Binding1;
+import com.hp.hpl.jena.sparql.engine.binding.BindingMap;
+import com.hp.hpl.jena.sparql.engine.iterator.QueryIterConvert;
+import com.hp.hpl.jena.sparql.util.ALog;
 
 /**
  * Yield new bindings, with a fixed parent, with values from an iterator. 
+ * Parent must not have variables in common with the iterator stream.
  */
-public class QueryIterExtendBinding extends QueryIter
+public class QueryIterCommonParent extends QueryIterConvert
 {
-    Binding binding ;
-    Var var ;
-    Iterator members ;
-    
-    public QueryIterExtendBinding(Binding binding, Var var, Iterator members, ExecutionContext execCxt)
+    public QueryIterCommonParent(QueryIterator input, Binding binding, ExecutionContext execCxt)
     {
-        super(execCxt) ;
-        this.binding = binding ;
-        this.var = var ;
-        this.members = members ;
+        super(input, new ConverterExtent(binding) , execCxt) ;
     }
 
-    //@Override
-    protected boolean hasNextBinding()
+    // Extend (with checking) an iterator stream of binding to have a common parent. 
+    static class ConverterExtent implements QueryIterConvert.Converter
     {
-        return members.hasNext() ;
-    }
+        private Binding parentBinding ;
+        
+        ConverterExtent(Binding parent) { parentBinding = parent ; }
+        
+        public Binding convert(Binding b)
+        {
+            if ( parentBinding == null || parentBinding.isEmpty() )
+                return b ;
+        
+            // This is the result.  Could have BindingBase.setParent etc.  
+            BindingMap b2 = new BindingMap(parentBinding) ;
 
-    //@Override
-    protected Binding moveToNextBinding()
-    {
-        Node n = (Node)members.next() ;
-        Binding b = new Binding1(binding, var, n) ;
-        return b ;
+            // Copy the resultSet bindings to the combined result binding with checking. 
+            Iterator iter = b.vars() ;
+            for ( ; iter.hasNext(); )
+            {
+                Var v = (Var)iter.next();
+                Node n = b.get(v) ;
+                if ( b2.contains(v) )
+                {
+                    Node n2 = b2.get(v) ;
+                    if ( n2.equals(n) )
+                        ALog.warn(this, "Binding already for "+v+" (same value)" ) ;
+                    else
+                    {
+                        ALog.fatal(this, "Binding already for "+v+" (different values)" ) ;
+                        throw new ARQInternalErrorException("QueryIteratorResultSet: Incompatible bindings for "+v) ;
+                    }
+                }
+                b2.add(v, n) ;
+            }
+            return b2 ;
+        }
     }
-
-    //@Override
-    protected void closeIterator()
-    { }
 }
 
 /*

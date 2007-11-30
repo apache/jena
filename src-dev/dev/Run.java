@@ -10,7 +10,6 @@ import java.net.MalformedURLException;
 
 import arq.sparql;
 
-import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.iri.IRI;
 import com.hp.hpl.jena.iri.IRIFactory;
 import com.hp.hpl.jena.iri.IRIRelativize;
@@ -30,27 +29,24 @@ import com.hp.hpl.jena.sparql.algebra.OpAsQuery;
 import com.hp.hpl.jena.sparql.algebra.OpVisitorBase;
 import com.hp.hpl.jena.sparql.algebra.OpWalker;
 import com.hp.hpl.jena.sparql.algebra.op.OpFilter;
-import com.hp.hpl.jena.sparql.sse.SSE;
 import com.hp.hpl.jena.sparql.util.DateTimeStruct;
-import com.hp.hpl.jena.sparql.util.FmtUtils;
 import com.hp.hpl.jena.util.FileManager;
 
 public class Run
 {
     public static void main(String[] argv) throws Exception
     {
-        Query query = QueryFactory.read("Q.rq") ;
-        Op op = Algebra.compile(query) ;
-        System.out.println(op) ;
-        Query query2 = OpAsQuery.asQuery(op) ;
-        System.out.println(query2) ;
-        System.exit(0) ;
-        
-        Node n = SSE.parseNode("_:a") ;
-        System.out.println(FmtUtils.stringForNode(n)) ;
-        //System.exit(0) ;
-        
-//      code() ; System.exit(0) ;
+        //socksProxyHost=socks-server
+        System.setProperty("socksProxyHost", "socks-server") ;
+        if ( false )
+        {
+            Query query = QueryFactory.read("Q.rq") ;
+            Op op = Algebra.compile(query) ;
+            System.out.println(op) ;
+            Query query2 = OpAsQuery.asQuery(op) ;
+            System.out.println(query2) ;
+            System.exit(0) ;
+        }
 
         String DIR = "" ;
 //        ARQ.getContext().set(ARQ.filterPlacement, false) ;

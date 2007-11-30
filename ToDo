@@ -1,5 +1,7 @@
 ==== ARQ ToDo
 
++ OpService in ref QE.
+
 +  FROM <.....n3>
    but it's application/rdf+xml
    believe MIME type.

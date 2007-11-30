@@ -28,7 +28,7 @@ abstract public class BindingBase implements Binding
     static boolean UNIQUE_NAMES_CHECK = true ;
     
     // This is a set of bindings, each binding being one pair (var, value).
-    Binding parent ;
+    protected Binding parent ;
     
     // Tracking children is for flexiblity.
     

@@ -18,7 +18,7 @@ import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.binding.BindingMap;
 import com.hp.hpl.jena.sparql.function.FunctionEnv;
 
-/** Extend each soluytion by an expression */ 
+/** Extend each solution by an expression */ 
 
 public class QueryIterExtend extends QueryIterConvert
 {
