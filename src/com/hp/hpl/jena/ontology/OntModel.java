@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OntModel.java,v $
- * Revision           $Revision: 1.52 $
+ * Revision           $Revision: 1.53 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2007-01-09 17:06:14 $
+ * Last modified on   $Date: 2007-11-30 15:31:58 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
@@ -70,7 +70,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModel.java,v 1.52 2007-01-09 17:06:14 ian_dickinson Exp $
+ * @version CVS $Id: OntModel.java,v 1.53 2007-11-30 15:31:58 ian_dickinson Exp $
  */
 public interface OntModel
     extends InfModel
@@ -107,8 +107,18 @@ public interface OntModel
      * provided as a common super-type for the more specific {@link ObjectProperty} and
      * {@link DatatypeProperty} property types.
      * </p>
+     * <p><strong>Note</strong> This method searches for nodes in the underlying model whose
+     * <code>rdf:type</code> is <code>rdf:Property</code>. This type is <em>entailed</em> by
+     * specific property sub-types, such as <code>owl:ObjectProperty</code>. An important
+     * consequence of this is that in <em>models without an attached reasoner</em> (e.g. in the
+     * <code>OWL_MEM</code> {@link OntModelSpec}), the entailed type will not be present
+     * and this method will omit such properties from the returned iterator. <br />
+     * <strong>Solution</strong> There are two
+     * ways to address to this issue: either use a reasoning engine to ensure that type entailments
+     * are taking place correctly, or call {@link #listAllOntProperties()}. Note
+     * that <code>listAllOntProperties</code> is potentially less efficient than this method.</p>
      * <p>
-     * Specifically, the resources in this iterator will those whose type corresponds
+     * The resources returned by this iterator will those whose type corresponds
      * to the value given in the ontology vocabulary associated with this model.
      * </p>
      *
@@ -116,6 +126,21 @@ public interface OntModel
      */
     public ExtendedIterator listOntProperties();
 
+
+    /**
+     * <p>Answer an iterator over all of the ontology properties in this model, including
+     * object properties, datatype properties, annotation properties, etc. This method
+     * takes a different approach to calculating the set of property resources to return,
+     * and is robust against the absence of a reasoner attached to the model (see note
+     * in {@link #listOntProperties()} for explanation). However, the calculation used by
+     * this method is potentially less efficient than the alternative <code>listOntProperties()</code>.
+     * Users whose models have an attached reasoner are recommended to use
+     * {@link #listOntProperties()}.</p>
+     * @return An iterator over all available properties in a model, irrespective of
+     * whether a reasoner is available to perform <code>rdf:type</code> entailments.
+     * Each property will appear exactly once in the iterator.
+     */
+    public ExtendedIterator listAllOntProperties();
 
     /**
      * <p>
@@ -379,11 +404,11 @@ public interface OntModel
     /**
      * <p>
      * Answer a resource that represents an ontology description node in this model. If a resource
-     * with the given uri exists in the model, and can be viewed as an Ontology, return the
+     * with the given URI exists in the model, and can be viewed as an Ontology, return the
      * Ontology facet, otherwise return null.
      * </p>
      *
-     * @param uri The uri for the ontology node. Conventionally, this corresponds to the base URI
+     * @param uri The URI for the ontology node. Conventionally, this corresponds to the base URI
      * of the document itself.
      * @return An Ontology resource or null.
      */
@@ -393,11 +418,11 @@ public interface OntModel
     /**
      * <p>
      * Answer a resource that represents an Individual node in this model. If a resource
-     * with the given uri exists in the model, and can be viewed as an Individual, return the
+     * with the given URI exists in the model, and can be viewed as an Individual, return the
      * Individual facet, otherwise return null.
      * </p>
      *
-     * @param uri The URI for the requried individual
+     * @param uri The URI for the required individual
      * @return An Individual resource or null.
      */
     public Individual getIndividual( String uri );
@@ -406,11 +431,11 @@ public interface OntModel
     /**
      * <p>
      * Answer a resource representing an generic property in this model. If a property
-     * with the given uri exists in the model, return the
+     * with the given URI exists in the model, return the
      * OntProperty facet, otherwise return null.
      * </p>
      *
-     * @param uri The uri for the property.
+     * @param uri The URI for the property.
      * @return An OntProperty resource or null.
      */
     public OntProperty getOntProperty( String uri );
@@ -419,11 +444,11 @@ public interface OntModel
     /**
      * <p>
      * Answer a resource representing an object property in this model. If a resource
-     * with the given uri exists in the model, and can be viewed as an ObjectProperty, return the
+     * with the given URI exists in the model, and can be viewed as an ObjectProperty, return the
      * ObjectProperty facet, otherwise return null.
      * </p>
      *
-     * @param uri The uri for the object property. May not be null.
+     * @param uri The URI for the object property. May not be null.
      * @return An ObjectProperty resource or null.
      */
     public ObjectProperty getObjectProperty( String uri );
@@ -431,9 +456,9 @@ public interface OntModel
 
     /**
      * <p>Answer a resource representing a transitive property. If a resource
-     * with the given uri exists in the model, and can be viewed as a TransitiveProperty, return the
+     * with the given URI exists in the model, and can be viewed as a TransitiveProperty, return the
      * TransitiveProperty facet, otherwise return null. </p>
-     * @param uri The uri for the property. May not be null.
+     * @param uri The URI for the property. May not be null.
      * @return A TransitiveProperty resource or null
      */
     public TransitiveProperty getTransitiveProperty( String uri );
@@ -441,9 +466,9 @@ public interface OntModel
 
     /**
      * <p>Answer a resource representing a symmetric property. If a resource
-     * with the given uri exists in the model, and can be viewed as a SymmetricProperty, return the
+     * with the given URI exists in the model, and can be viewed as a SymmetricProperty, return the
      * SymmetricProperty facet, otherwise return null. </p>
-     * @param uri The uri for the property. May not be null.
+     * @param uri The URI for the property. May not be null.
      * @return A SymmetricProperty resource or null
      */
     public SymmetricProperty getSymmetricProperty( String uri );
@@ -451,9 +476,9 @@ public interface OntModel
 
     /**
      * <p>Answer a resource representing an inverse functional property. If a resource
-     * with the given uri exists in the model, and can be viewed as a InverseFunctionalProperty, return the
+     * with the given URI exists in the model, and can be viewed as a InverseFunctionalProperty, return the
      * InverseFunctionalProperty facet, otherwise return null. </p>
-     * @param uri The uri for the property. May not be null.
+     * @param uri The URI for the property. May not be null.
      * @return An InverseFunctionalProperty resource or null
      */
     public InverseFunctionalProperty getInverseFunctionalProperty( String uri );
@@ -462,11 +487,11 @@ public interface OntModel
     /**
      * <p>
      * Answer a resource that represents datatype property in this model. . If a resource
-     * with the given uri exists in the model, and can be viewed as a DatatypeProperty, return the
+     * with the given URI exists in the model, and can be viewed as a DatatypeProperty, return the
      * DatatypeProperty facet, otherwise return null.
      * </p>
      *
-     * @param uri The uri for the datatype property. May not be null.
+     * @param uri The URI for the datatype property. May not be null.
      * @return A DatatypeProperty resource or null
      */
     public DatatypeProperty getDatatypeProperty( String uri );
@@ -475,11 +500,11 @@ public interface OntModel
     /**
      * <p>
      * Answer a resource that represents an annotation property in this model. If a resource
-     * with the given uri exists in the model, and can be viewed as an AnnotationProperty, return the
+     * with the given URI exists in the model, and can be viewed as an AnnotationProperty, return the
      * AnnotationProperty facet, otherwise return null.
      * </p>
      *
-     * @param uri The uri for the annotation property. May not be null.
+     * @param uri The URI for the annotation property. May not be null.
      * @return An AnnotationProperty resource or null
      */
     public AnnotationProperty getAnnotationProperty( String uri );
@@ -504,11 +529,11 @@ public interface OntModel
     /**
      * <p>
      * Answer a resource that represents a class description node in this model. If a resource
-     * with the given uri exists in the model, and can be viewed as an OntClass, return the
+     * with the given URI exists in the model, and can be viewed as an OntClass, return the
      * OntClass facet, otherwise return null.
      * </p>
      *
-     * @param uri The uri for the class node, or null for an anonymous class.
+     * @param uri The URI for the class node, or null for an anonymous class.
      * @return An OntClass resource or null.
      */
     public OntClass getOntClass( String uri );
@@ -516,7 +541,7 @@ public interface OntModel
 
     /**
      * <p>Answer a resource representing the class that is the complement of another class. If a resource
-     * with the given uri exists in the model, and can be viewed as a ComplementClass, return the
+     * with the given URI exists in the model, and can be viewed as a ComplementClass, return the
      * ComplementClass facet, otherwise return null. </p>
      * @param uri The URI of the new complement class.
      * @return A complement class or null
@@ -526,7 +551,7 @@ public interface OntModel
 
     /**
      * <p>Answer a resource representing the class that is the enumeration of a list of individuals. If a resource
-     * with the given uri exists in the model, and can be viewed as an EnumeratedClass, return the
+     * with the given URI exists in the model, and can be viewed as an EnumeratedClass, return the
      * EnumeratedClass facet, otherwise return null. </p>
      * @param uri The URI of the new enumeration class.
      * @return An enumeration class or null
@@ -535,8 +560,8 @@ public interface OntModel
 
 
     /**
-     * <p>Answer a resource representing the class that is the union of a list of class desctiptions. If a resource
-     * with the given uri exists in the model, and can be viewed as a UnionClass, return the
+     * <p>Answer a resource representing the class that is the union of a list of class descriptions. If a resource
+     * with the given URI exists in the model, and can be viewed as a UnionClass, return the
      * UnionClass facet, otherwise return null. </p>
      * @param uri The URI of the new union class.
      * @return A union class description or null
@@ -546,7 +571,7 @@ public interface OntModel
 
     /**
      * <p>Answer a resource representing the class that is the intersection of a list of class descriptions. If a resource
-     * with the given uri exists in the model, and can be viewed as a IntersectionClass, return the
+     * with the given URI exists in the model, and can be viewed as a IntersectionClass, return the
      * IntersectionClass facet, otherwise return null. </p>
      * @param uri The URI of the new intersection class.
      * @return An intersection class description or null
@@ -557,11 +582,11 @@ public interface OntModel
     /**
      * <p>
      * Answer a resource that represents a property restriction in this model. If a resource
-     * with the given uri exists in the model, and can be viewed as a Restriction, return the
+     * with the given URI exists in the model, and can be viewed as a Restriction, return the
      * Restriction facet, otherwise return null.
      * </p>
      *
-     * @param uri The uri for the restriction node.
+     * @param uri The URI for the restriction node.
      * @return A Restriction resource or null
      */
     public Restriction getRestriction( String uri );
@@ -570,7 +595,7 @@ public interface OntModel
     /**
      * <p>Answer a class description defined as the class of those individuals that have the given
      * resource as the value of the given property. If a resource
-     * with the given uri exists in the model, and can be viewed as a HasValueRestriction, return the
+     * with the given URI exists in the model, and can be viewed as a HasValueRestriction, return the
      * HasValueRestriction facet, otherwise return null. </p>
      *
      * @param uri The URI for the restriction
@@ -582,7 +607,7 @@ public interface OntModel
     /**
      * <p>Answer a class description defined as the class of those individuals that have at least
      * one property with a value belonging to the given class. If a resource
-     * with the given uri exists in the model, and can be viewed as a SomeValuesFromRestriction, return the
+     * with the given URI exists in the model, and can be viewed as a SomeValuesFromRestriction, return the
      * SomeValuesFromRestriction facet, otherwise return null. </p>
      *
      * @param uri The URI for the restriction
@@ -594,7 +619,7 @@ public interface OntModel
     /**
      * <p>Answer a class description defined as the class of those individuals for which all values
      * of the given property belong to the given class. If a resource
-     * with the given uri exists in the model, and can be viewed as an AllValuesFromResriction, return the
+     * with the given URI exists in the model, and can be viewed as an AllValuesFromResriction, return the
      * AllValuesFromRestriction facet, otherwise return null. </p>
      *
      * @param uri The URI for the restriction
@@ -606,7 +631,7 @@ public interface OntModel
     /**
      * <p>Answer a class description defined as the class of those individuals that have exactly
      * the given number of values for the given property. If a resource
-     * with the given uri exists in the model, and can be viewed as a CardinalityRestriction, return the
+     * with the given URI exists in the model, and can be viewed as a CardinalityRestriction, return the
      * CardinalityRestriction facet, otherwise return null. </p>
      *
      * @param uri The URI for the restriction
@@ -618,11 +643,11 @@ public interface OntModel
     /**
      * <p>Answer a class description defined as the class of those individuals that have at least
      * the given number of values for the given property. If a resource
-     * with the given uri exists in the model, and can be viewed as a MinCardinalityRestriction, return the
+     * with the given URI exists in the model, and can be viewed as a MinCardinalityRestriction, return the
      * MinCardinalityRestriction facet, otherwise return null. </p>
      *
      * @param uri The URI for the restriction
-     * @return A resource representing a min-cardinality restriction, or null
+     * @return A resource representing a minimum cardinality restriction, or null
      */
     public MinCardinalityRestriction getMinCardinalityRestriction( String uri );
 
@@ -630,7 +655,7 @@ public interface OntModel
     /**
      * <p>Answer a class description defined as the class of those individuals that have at most
      * the given number of values for the given property. If a resource
-     * with the given uri exists in the model, and can be viewed as a MaxCardinalityRestriction, return the
+     * with the given URI exists in the model, and can be viewed as a MaxCardinalityRestriction, return the
      * MaxCardinalityRestriction facet, otherwise return null.</p>
      *
      * @param uri The URI for the restriction
@@ -643,7 +668,7 @@ public interface OntModel
      * <p>Answer a class description defined as the class of those individuals that have a property
      * p, all values of which are members of a given class. Typically used with a cardinality constraint.
      * If a resource
-     * with the given uri exists in the model, and can be viewed as a QualifiedRestriction, return the
+     * with the given URI exists in the model, and can be viewed as a QualifiedRestriction, return the
      * QualifiedRestriction facet, otherwise return null.</p>
      *
      * @param uri The URI for the restriction
@@ -656,7 +681,7 @@ public interface OntModel
      * <p>Answer a class description defined as the class of those individuals that have a property
      * p, with cardinality N, all values of which are members of a given class.
      * If a resource
-     * with the given uri exists in the model, and can be viewed as a CardinalityQRestriction, return the
+     * with the given URI exists in the model, and can be viewed as a CardinalityQRestriction, return the
      * CardinalityQRestriction facet, otherwise return null.</p>
      *
      * @param uri The URI for the restriction
@@ -667,13 +692,13 @@ public interface OntModel
 
     /**
      * <p>Answer a class description defined as the class of those individuals that have a property
-     * p, with min cardinality N, all values of which are members of a given class.
+     * p, with minimum cardinality N, all values of which are members of a given class.
      * If a resource
-     * with the given uri exists in the model, and can be viewed as a MinCardinalityQRestriction, return the
+     * with the given URI exists in the model, and can be viewed as a MinCardinalityQRestriction, return the
      * MinCardinalityQRestriction facet, otherwise return null.</p>
      *
      * @param uri The URI for the restriction
-     * @return A resource representing a qualified min cardinality restriction, or null
+     * @return A resource representing a qualified minimum cardinality restriction, or null
      */
     public MinCardinalityQRestriction getMinCardinalityQRestriction( String uri );
 
@@ -682,7 +707,7 @@ public interface OntModel
      * <p>Answer a class description defined as the class of those individuals that have a property
      * p, with max cardinality N, all values of which are members of a given class.
      * If a resource
-     * with the given uri exists in the model, and can be viewed as a MaxCardinalityQRestriction, return the
+     * with the given URI exists in the model, and can be viewed as a MaxCardinalityQRestriction, return the
      * MaxCardinalityQRestriction facet, otherwise return null.</p>
      *
      * @param uri The URI for the restriction
@@ -694,11 +719,11 @@ public interface OntModel
     /**
      * <p>
      * Answer a resource that represents an ontology description node in this model. If a resource
-     * with the given uri exists in the model, it will be re-used.  If not, a new one is created in
-     * the updateable sub-model of the ontology model.
+     * with the given URI exists in the model, it will be re-used.  If not, a new one is created in
+     * the writable sub-model of the ontology model.
      * </p>
      *
-     * @param uri The uri for the ontology node. Conventionally, this corresponds to the base URI
+     * @param uri The URI for the ontology node. Conventionally, this corresponds to the base URI
      * of the document itself.
      * @return An Ontology resource.
      */
@@ -707,12 +732,12 @@ public interface OntModel
 
     /**
      * <p>
-     * Answer a resource that represents an Indvidual node in this model. A new anonymous resource
-     * will be created in the updateable sub-model of the ontology model.
+     * Answer a resource that represents an <code>Individual</code> node in this model. A new anonymous resource
+     * will be created in the writable sub-model of the ontology model.
      * </p>
      *
      * @param cls Resource representing the ontology class to which the individual belongs
-     * @return A new anoymous Individual of the given class.
+     * @return A new anonymous Individual of the given class.
      */
     public Individual createIndividual( Resource cls );
 
@@ -720,12 +745,12 @@ public interface OntModel
     /**
      * <p>
      * Answer a resource that represents an Individual node in this model. If a resource
-     * with the given uri exists in the model, it will be re-used.  If not, a new one is created in
-     * the updateable sub-model of the ontology model.
+     * with the given URI exists in the model, it will be re-used.  If not, a new one is created in
+     * the writable sub-model of the ontology model.
      * </p>
      *
      * @param cls Resource representing the ontology class to which the individual belongs
-     * @param uri The uri for the individual, or null for an anonymous individual.
+     * @param uri The URI for the individual, or null for an anonymous individual.
      * @return An Individual resource.
      */
     public Individual createIndividual( String uri, Resource cls );
@@ -739,7 +764,7 @@ public interface OntModel
      * a property's position in the property hierarchy, domain, range, etc.
      * </p>
      *
-     * @param uri The uri for the property. May not be null.
+     * @param uri The URI for the property. May not be null.
      * @return An OntProperty resource.
      */
     public OntProperty createOntProperty( String uri );
@@ -751,7 +776,7 @@ public interface OntModel
      * and that is not a functional property.
      * </p>
      *
-     * @param uri The uri for the object property. May not be null.
+     * @param uri The URI for the object property. May not be null.
      * @return An ObjectProperty resource.
      * @see #createObjectProperty( String, boolean )
      */
@@ -763,11 +788,11 @@ public interface OntModel
      * Answer a resource that represents an object property in this model.  An object property
      * is defined to have a range of individuals, rather than datatypes.
      * If a resource
-     * with the given uri exists in the model, it will be re-used.  If not, a new one is created in
-     * the updateable sub-model of the ontology model.
+     * with the given URI exists in the model, it will be re-used.  If not, a new one is created in
+     * the writable sub-model of the ontology model.
      * </p>
      *
-     * @param uri The uri for the object property. May not be null.
+     * @param uri The URI for the object property. May not be null.
      * @param functional If true, the resource will also be typed as a {@link FunctionalProperty},
      * that is, a property that has a unique range value for any given domain value.
      * @return An ObjectProperty resource, optionally also functional.
@@ -777,7 +802,7 @@ public interface OntModel
 
     /**
      * <p>Answer a resource representing a transitive property</p>
-     * @param uri The uri for the property. May not be null.
+     * @param uri The URI for the property. May not be null.
      * @return An TransitiveProperty resource
      * @see #createTransitiveProperty( String, boolean )
      */
@@ -787,9 +812,9 @@ public interface OntModel
     /**
      * <p>Answer a resource representing a transitive property, which is optionally
      * also functional. <strong>Note:</strong> although it is permitted in OWL full
-     * to have functional transitive properties, it makes the language undecideable.
-     * Functional transitive properties are not permitted in OWL Lite or OWL DL.</p>
-     * @param uri The uri for the property. May not be null.
+     * to have functional transitive properties, it makes the language undecidable.
+     * Functional transitive properties are not permitted in OWL-Lite or OWL DL.</p>
+     * @param uri The URI for the property. May not be null.
      * @param functional If true, the property is also functional
      * @return An TransitiveProperty resource, optionally also functional.
      */
@@ -798,7 +823,7 @@ public interface OntModel
 
     /**
      * <p>Answer a resource representing a symmetric property</p>
-     * @param uri The uri for the property. May not be null.
+     * @param uri The URI for the property. May not be null.
      * @return An SymmetricProperty resource
      * @see #createSymmetricProperty( String, boolean )
      */
@@ -808,7 +833,7 @@ public interface OntModel
     /**
      * <p>Answer a resource representing a symmetric property, which is optionally
      * also functional.</p>
-     * @param uri The uri for the property. May not be null.
+     * @param uri The URI for the property. May not be null.
      * @param functional If true, the property is also functional
      * @return An SymmetricProperty resource, optionally also functional.
      */
@@ -817,7 +842,7 @@ public interface OntModel
 
     /**
      * <p>Answer a resource representing an inverse functional property</p>
-     * @param uri The uri for the property. May not be null.
+     * @param uri The URI for the property. May not be null.
      * @return An InverseFunctionalProperty resource
      * @see #createInverseFunctionalProperty( String, boolean )
      */
@@ -827,7 +852,7 @@ public interface OntModel
     /**
      * <p>Answer a resource representing an inverse functional property, which is optionally
      * also functional.</p>
-     * @param uri The uri for the property. May not be null.
+     * @param uri The URI for the property. May not be null.
      * @param functional If true, the property is also functional
      * @return An InverseFunctionalProperty resource, optionally also functional.
      */
@@ -839,7 +864,7 @@ public interface OntModel
      * not a functional property.
      * </p>
      *
-     * @param uri The uri for the datatype property. May not be null.
+     * @param uri The URI for the datatype property. May not be null.
      * @return A DatatypeProperty resource.
      * @see #createDatatypeProperty( String, boolean )
      */
@@ -851,11 +876,11 @@ public interface OntModel
      * Answer a resource that represents datatype property in this model. A datatype property
      * is defined to have a range that is a concrete datatype, rather than an individual.
      * If a resource
-     * with the given uri exists in the model, it will be re-used.  If not, a new one is created in
-     * the updateable sub-model of the ontology model.
+     * with the given URI exists in the model, it will be re-used.  If not, a new one is created in
+     * the writable sub-model of the ontology model.
      * </p>
      *
-     * @param uri The uri for the datatype property. May not be null.
+     * @param uri The URI for the datatype property. May not be null.
      * @param functional If true, the resource will also be typed as a {@link FunctionalProperty},
      * that is, a property that has a unique range value for any given domain value.
      * @return A DatatypeProperty resource.
@@ -866,11 +891,11 @@ public interface OntModel
     /**
      * <p>
      * Answer a resource that represents an annotation property in this model. If a resource
-     * with the given uri exists in the model, it will be re-used.  If not, a new one is created in
-     * the updateable sub-model of the ontology model.
+     * with the given URI exists in the model, it will be re-used.  If not, a new one is created in
+     * the writable sub-model of the ontology model.
      * </p>
      *
-     * @param uri The uri for the annotation property. May not be null.
+     * @param uri The URI for the annotation property. May not be null.
      * @return An AnnotationProperty resource.
      */
     public AnnotationProperty createAnnotationProperty( String uri );
@@ -891,11 +916,11 @@ public interface OntModel
     /**
      * <p>
      * Answer a resource that represents a class description node in this model. If a resource
-     * with the given uri exists in the model, it will be re-used.  If not, a new one is created in
-     * the updateable sub-model of the ontology model.
+     * with the given URI exists in the model, it will be re-used.  If not, a new one is created in
+     * the writable sub-model of the ontology model.
      * </p>
      *
-     * @param uri The uri for the class node, or null for an anonymous class.
+     * @param uri The URI for the class node, or null for an anonymous class.
      * @return A Class resource.
      */
     public OntClass createClass( String uri );
@@ -920,7 +945,7 @@ public interface OntModel
 
 
     /**
-     * <p>Answer a resource representing the class that is the union of the given list of class desctiptions</p>
+     * <p>Answer a resource representing the class that is the union of the given list of class descriptions</p>
      * @param uri The URI of the new union class, or null for an anonymous class description.
      * @param members A list of resources denoting the classes that comprise the union
      * @return A union class description
@@ -953,10 +978,10 @@ public interface OntModel
      * <p>
      * Answer a resource that represents a property restriction in this model. If a resource
      * with the given uri exists in the model, it will be re-used.  If not, a new one is created in
-     * the updateable sub-model of the ontology model.
+     * the writable sub-model of the ontology model.
      * </p>
      *
-     * @param uri The uri for the restriction node, or null for an anonymous restriction.
+     * @param URI The URI for the restriction node, or null for an anonymous restriction.
      * @param p The property that is restricted by this restriction, or null to omit from the restriction
      * @return A Restriction resource.
      */
@@ -1010,7 +1035,7 @@ public interface OntModel
      * should be the normal case)
      * @param prop The property the restriction applies to
      * @param cardinality The exact cardinality of the property
-     * @return A new resource representing a has-value restriction
+     * @return A new resource representing a cardinality restriction
      */
     public CardinalityRestriction createCardinalityRestriction( String uri, Property prop, int cardinality );
 
@@ -1036,7 +1061,7 @@ public interface OntModel
      * should be the normal case)
      * @param prop The property the restriction applies to
      * @param cardinality The maximum cardinality of the property
-     * @return A new resource representing a mas-cardinality restriction
+     * @return A new resource representing a max-cardinality restriction
      */
     public MaxCardinalityRestriction createMaxCardinalityRestriction( String uri, Property prop, int cardinality );
 
@@ -1051,7 +1076,7 @@ public interface OntModel
      * @param prop The property the restriction applies to
      * @param cardinality The maximum cardinality of the property
      * @param cls The class to which all values of the restricted property should belong
-     * @return A new resource representing a mas-cardinality restriction
+     * @return A new resource representing a max-cardinality-q restriction
      */
     public MaxCardinalityQRestriction createMaxCardinalityQRestriction( String uri, Property prop, int cardinality, OntClass cls );
 
@@ -1064,9 +1089,9 @@ public interface OntModel
      * @param uri The optional URI for the restriction, or null for an anonymous restriction (which
      * should be the normal case)
      * @param prop The property the restriction applies to
-     * @param cardinality The minimun cardinality of the property
+     * @param cardinality The minimum cardinality of the property
      * @param cls The class to which all values of the restricted property should belong
-     * @return A new resource representing a mas-cardinality restriction
+     * @return A new resource representing a min-cardinality-q restriction
      */
     public MinCardinalityQRestriction createMinCardinalityQRestriction( String uri, Property prop, int cardinality, OntClass cls );
 
@@ -1081,7 +1106,7 @@ public interface OntModel
      * @param prop The property the restriction applies to
      * @param cardinality The cardinality of the property
      * @param cls The class to which all values of the restricted property should belong
-     * @return A new resource representing a mas-cardinality restriction
+     * @return A new resource representing a cardinality-q restriction
      */
     public CardinalityQRestriction createCardinalityQRestriction( String uri, Property prop, int cardinality, OntClass cls );
 
@@ -1101,7 +1126,7 @@ public interface OntModel
      * <p>
      * Answer a new, anonymous node representing the fact that a given set of classes are all
      * pair-wise distinct.  <code>AllDifferent</code> is a feature of OWL only, and is something
-     * of an anomoly in that it exists only to give a place to anchor the <code>distinctMembers</code>
+     * of an anomaly in that it exists only to give a place to anchor the <code>distinctMembers</code>
      * property, which is the actual expression of the fact.
      * </p>
      *
@@ -1114,7 +1139,7 @@ public interface OntModel
      * <p>
      * Answer a new, anonymous node representing the fact that a given set of classes are all
      * pair-wise distinct.  <code>AllDifferent</code> is a feature of OWL only, and is something
-     * of an anomoly in that it exists only to give a place to anchor the <code>distinctMembers</code>
+     * of an anomaly in that it exists only to give a place to anchor the <code>distinctMembers</code>
      * property, which is the actual expression of the fact.
      * </p>
      * @param differentMembers A list of the class expressions that denote a set of mutually disjoint classes
@@ -1126,8 +1151,8 @@ public interface OntModel
     /**
      * <p>
      * Answer a resource that represents a generic ontology node in this model. If a resource
-     * with the given uri exists in the model, it will be re-used.  If not, a new one is created in
-     * the updateable sub-model of the ontology model.
+     * with the given URI exists in the model, it will be re-used.  If not, a new one is created in
+     * the writable sub-model of the ontology model.
      * </p>
      * <p>
      * This is a generic method for creating any known ontology value.  The selector that determines
@@ -1143,7 +1168,7 @@ public interface OntModel
      * @param javaClass The Java class object that represents the ontology abstraction to create
      * @param rdfType Optional resource denoting the ontology class to which an individual or
      * axiom belongs, if that is the type of resource being created.
-     * @param uri The uri for the ontology resource, or null for an anonymous resource.
+     * @param uri The URI for the ontology resource, or null for an anonymous resource.
      * @return An ontology resource, of the type specified by the <code>javaClass</code>
      */
     public OntResource createOntResource( Class javaClass, Resource rdfType, String uri );
@@ -1151,7 +1176,7 @@ public interface OntModel
     /**
      * <p>Answer a resource presenting the {@link OntResource} facet, which has the
      * given URI.</p>
-     * @param uri The URI of the resource, or null for an anonymous resource (aka bNode)
+     * @param uri The URI of the resource, or null for an anonymous resource (i.e. <em>bNode</em>)
      * @return An OntResource with the given URI
      */
     public OntResource createOntResource( String uri );
@@ -1169,7 +1194,7 @@ public interface OntModel
     /**
      * <p>
      * Answer a list of the imported URI's in this ontology model. Detection of <code>imports</code>
-     * statments will be according to the local language profile.  Note that, in order to allow this
+     * statements will be according to the local language profile.  Note that, in order to allow this
      * method to be called during the imports closure process, we <b>only query the base model</b>,
      * thus side-stepping the any attached reasoner.
      * </p>
@@ -1185,11 +1210,11 @@ public interface OntModel
      * <p>
      * Answer a list of the imported URI's in this ontology model, and optionally in the closure
      * of this model's imports. Detection of <code>imports</code>
-     * statments will be according to the local language profile.  Note that, in order to allow this
+     * statements will be according to the local language profile.  Note that, in order to allow this
      * method to be called during the imports closure process, we <b>only query the base model</b>,
      * thus side-stepping the any attached reasoner.
      * </p>
-     * @param closure If true, the set of uri's returned will include not only those directly
+     * @param closure If true, the set of URI's returned will include not only those directly
      * imported by this model, but those imported by the model's imports, and so on transitively.
      * @return A set of imported ontology URIs. Note that since the underlying graph is
      * not ordered, the order of values in the list in successive calls to this method is
@@ -1376,7 +1401,7 @@ public interface OntModel
     /**
      * <p>
      * Add the given model as one of the sub-models of the enclosed ontology union model.    Will
-     * cause the associated infererence engine (if any) to update, so this may be
+     * cause the associated inference engine (if any) to update, so this may be
      * an expensive operation in some cases.
      * </p>
      *
@@ -1401,7 +1426,7 @@ public interface OntModel
     /**
      * <p>
      * Remove the given model as one of the sub-models of the enclosed ontology union model.    Will
-     * cause the associated infererence engine (if any) to update, so this may be
+     * cause the associated inference engine (if any) to update, so this may be
      * an expensive operation in some cases.
      * </p>
      *
@@ -1425,7 +1450,7 @@ public interface OntModel
 
     /**
      * <p>Answer true if the given node is a member of the base model of this ontology model.
-     * This is an important distiction, because only the base model receives updates when the
+     * This is an important distinction, because only the base model receives updates when the
      * ontology model is updated. Thus, removing properties of a resource that is not in the base
      * model will not actually side-effect the overall model.</p>
      * @param node An RDF node (Resource, Property or Literal) to test
@@ -1436,7 +1461,7 @@ public interface OntModel
 
     /**
      * <p>Answer true if the given statement is defined in the base model of this ontology model.
-     * This is an important distiction, because only the base model receives updates when the
+     * This is an important distinction, because only the base model receives updates when the
      * ontology model is updated. Thus, removing a statement that is not in the base
      * model will not actually side-effect the overall model.</p>
      * @param stmt A statement to test
@@ -1530,16 +1555,16 @@ public interface OntModel
      * <p>If this OntModel is presenting an OWL model, answer the minimum OWL language
      * level that the constructs
      * used in this model lie entirely within.
-     * This method requires that the separately downloadable
-     * owlsyntax.jar is on the classpath.
+     * This method requires that the separate download
+     * <code>owlsyntax.jar</code> is on the Java classpath.
      * The three possible return values are
      * {@link com.hp.hpl.jena.vocabulary.OWL#FULL_LANG FULL_LANG} for OWL-full,
      * {@link com.hp.hpl.jena.vocabulary.OWL#DL_LANG DL_LANG} for OWL-DL or
-     * {@link com.hp.hpl.jena.vocabulary.OWL#LITE_LANG LITE_LANG} for OWL-lite.
+     * {@link com.hp.hpl.jena.vocabulary.OWL#LITE_LANG LITE_LANG} for OWL-Lite.
      * Note that these URI's are <strong>not</strong> officially sanctioned by the WebOnt
      * working group.  For unknown reasons, the working group chose not to assign official
      * URI's to represent the different OWL language levels. There is a slim chance that this
-     * may change in future, in which case these return values will change apropriately.
+     * may change in future, in which case these return values will change appropriately.
      * In addition to the method return value,
      * the given <code>problems</problems> list, if non-null, will be filled with the syntax
      * problems detected by the syntax checker.
@@ -1552,7 +1577,7 @@ public interface OntModel
      * test for constructs that lie in OWL-DL or OWL-Full and hence outside in OWL-Lite.
      * </p>
      * <p>
-     * <strong>Note</strong> that peforming this test requires every statement in the model
+     * <strong>Note</strong> that performing this test requires every statement in the model
      * to be examined, so it can be quite an expensive operation on large models, or on
      * persistent database models.
      * </p>
@@ -1583,7 +1608,7 @@ public interface OntModel
     public Model write( Writer writer ) ;
 
     /**
-     * <p>Write a serialized represention of a model in a specified language.
+     * <p>Write a serialized representation of a model in a specified language.
      * It is often better to use an OutputStream rather than a Writer, since this
      * will avoid character encoding errors.
      * <strong>Note:</strong> This method is adapted for the ontology
@@ -1602,7 +1627,7 @@ public interface OntModel
     public Model write( Writer writer, String lang ) ;
 
     /**
-     * <p>Write a serialized represention of a model in a specified language.
+     * <p>Write a serialized representation of a model in a specified language.
      * It is often better to use an OutputStream rather than a Writer,
      * since this will avoid character encoding errors.
      * <strong>Note:</strong> This method is adapted for the ontology
@@ -1615,7 +1640,7 @@ public interface OntModel
      * "RDF/XML-ABBREV", "N-TRIPLE" and "N3".  The default value,
      * represented by <code>null</code>, is "RDF/XML".</p>
      * @param writer The output writer
-     * @param base The base uri for relative URI calculations.
+     * @param base The base URI for relative URI calculations.
      * <code>null</code> means use only absolute URI's.
      * @param lang The language in which the RDF should be written
      * @return this model
@@ -1639,7 +1664,7 @@ public interface OntModel
     public Model write( OutputStream out );
 
     /**
-     * <p>Write a serialized represention of this model in a specified language.
+     * <p>Write a serialized representation of this model in a specified language.
      * <strong>Note:</strong> This method is adapted for the ontology
      * model to write out only the base model (which contains the asserted data).  To write
      * all triples, including imported data and inferred triples, use
@@ -1650,13 +1675,13 @@ public interface OntModel
      * "RDF/XML-ABBREV", "N-TRIPLE" and "N3".  The default value,
      * represented by <code>null</code>, is "RDF/XML".</p>
      * @param out The output stream to which the RDF is written
-     * @param lang The output langauge
+     * @param lang The output language
      * @return This model
      */
     public Model write( OutputStream out, String lang );
 
     /**
-     * <p>Write a serialized represention of a model in a specified language.
+     * <p>Write a serialized representation of a model in a specified language.
      * <strong>Note:</strong> This method is adapted for the ontology
      * model to write out only the base model (which contains the asserted data).  To write
      * all triples, including imported data and inferred triples, use
@@ -1667,7 +1692,7 @@ public interface OntModel
      * "RDF/XML-ABBREV", "N-TRIPLE" and "N3".  The default value,
      * represented by <code>null</code>, is "RDF/XML".</p>
      * @param out The output stream to which the RDF is written
-     * @param base The base uri to use when writing relative URI's. <code>null</code>
+     * @param base The base URI to use when writing relative URI's. <code>null</code>
      * means use only absolute URI's.
      * @param lang The language in which the RDF should be written
      * @return This model
@@ -1675,7 +1700,7 @@ public interface OntModel
     public Model write( OutputStream out, String lang, String base );
 
     /**
-     * <p>Write a serialized represention of all of the contents of the model,
+     * <p>Write a serialized representation of all of the contents of the model,
      * including inferred statements and statements imported from other
      * documents.  To write only the data asserted in the base model, use
      * {@link #write( Writer, String, String ) write}.
@@ -1687,7 +1712,7 @@ public interface OntModel
      * "RDF/XML-ABBREV", "N-TRIPLE" and "N3".  The default value,
      * represented by <code>null</code>, is "RDF/XML".</p>
      * @param writer The output writer
-     * @param base The base uri for relative URI calculations.
+     * @param base The base URI for relative URI calculations.
      * <code>null</code> means use only absolute URI's.
      * @param lang The language in which the RDF should be written
      * @return This model
@@ -1695,7 +1720,7 @@ public interface OntModel
     public Model writeAll( Writer writer, String lang, String base );
 
     /**
-     * <p>Write a serialized represention of all of the contents of the model,
+     * <p>Write a serialized representation of all of the contents of the model,
      * including inferred statements and statements imported from other
      * documents.  To write only the data asserted in the base model, use
      * {@link #write( OutputStream, String, String ) write}.
@@ -1705,7 +1730,7 @@ public interface OntModel
      * "RDF/XML-ABBREV", "N-TRIPLE" and "N3".  The default value,
      * represented by <code>null</code>, is "RDF/XML".</p>
      * @param out The output stream to which the RDF is written
-     * @param base The base uri to use when writing relative URI's. <code>null</code>
+     * @param base The base URI to use when writing relative URI's. <code>null</code>
      * means use only absolute URI's.
      * @param lang The language in which the RDF should be written
      * @return This model

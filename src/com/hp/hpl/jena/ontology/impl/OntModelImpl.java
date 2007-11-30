@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            22 Feb 2003
  * Filename           $RCSfile: OntModelImpl.java,v $
- * Revision           $Revision: 1.99 $
+ * Revision           $Revision: 1.100 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2007-01-26 12:11:40 $
+ * Last modified on   $Date: 2007-11-30 15:31:55 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
@@ -54,7 +54,7 @@ import org.apache.commons.logging.LogFactory;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModelImpl.java,v 1.99 2007-01-26 12:11:40 ian_dickinson Exp $
+ * @version CVS $Id: OntModelImpl.java,v 1.100 2007-11-30 15:31:55 ian_dickinson Exp $
  */
 public class OntModelImpl
     extends ModelCom
@@ -94,7 +94,7 @@ public class OntModelImpl
     /** The union graph that contains the imports closure - there is always one of these, which may also be _the_ graph for the model */
     protected MultiUnion m_union = new MultiUnion();
 
-    /** The listener that detects dynamically added or removed imports statments */
+    /** The listener that detects dynamically added or removed imports statements */
     protected ImportsListener m_importsListener = null;
 
     /** The event manager for ontology events on this model */
@@ -216,23 +216,63 @@ public class OntModelImpl
      * provided as a common super-type for the more specific {@link ObjectProperty} and
      * {@link DatatypeProperty} property types.
      * </p>
+     * <p><strong>Note</strong> This method searches for nodes in the underlying model whose
+     * <code>rdf:type</code> is <code>rdf:Property</code>. This type is <em>entailed</em> by
+     * specific property sub-types, such as <code>owl:ObjectProperty</code>. An important
+     * consequence of this is that in <em>models without an attached reasoner</em> (e.g. in the
+     * <code>OWL_MEM</code> {@link OntModelSpec}), the entailed type will not be present
+     * and this method will omit such properties from the returned iterator. <br />
+     * <strong>Solution</strong> There are two
+     * ways to address to this issue: either use a reasoning engine to ensure that type entailments
+     * are taking place correctly, or call {@link #listAllOntProperties()}. Note
+     * that <code>listAllOntProperties</code> is potentially less efficient than this method.</p>
      * <p>
-     * Specifically, the resources in this iterator will those whose type corresponds
+     * The resources returned by this iterator will those whose type corresponds
      * to the value given in the ontology vocabulary associated with this model.
-     * </p>
-     * <p>
-     * <strong>Note:</strong> the number of nodes returned by this iterator will vary according to
-     * the completeness of the deductive extension of the underlying graph.  See class
-     * overview for more details.
      * </p>
      *
      * @return An iterator over property resources.
      */
     public ExtendedIterator listOntProperties() {
-        return UniqueExtendedIterator.create(
-            findByTypeAs( RDF.Property, OntProperty.class ) );
+        ExtendedIterator i = UniqueExtendedIterator.create(
+                                findByTypeAs( RDF.Property, OntProperty.class ) );
+
+        // if we are in OWL_FULL, the properties should also include the annotation properties
+        Profile p = getProfile();
+        if (getReasoner() != null  && getProfile().equals( ProfileRegistry.getInstance().getProfile( ProfileRegistry.OWL_LANG ) )) {
+            // we are using a reasoner, and in OWL Full
+            // so add the annotation properties too
+            i = i.andThen( listAnnotationProperties() );
+        }
+
+        return i;
     }
 
+    /**
+     * <p>Answer an iterator over all of the ontology properties in this model, including
+     * object properties, datatype properties, annotation properties, etc. This method
+     * takes a different approach to calculating the set of property resources to return,
+     * and is robust against the absence of a reasoner attached to the model (see note
+     * in {@link #listOntProperties()} for explanation). However, the calculation used by
+     * this method is potentially less efficient than the alternative <code>listOntProperties()</code>.
+     * Users whose models have an attached reasoner are recommended to use
+     * {@link #listOntProperties()}.</p>
+     * @return An iterator over all available properties in a model, irrespective of
+     * whether a reasoner is available to perform <code>rdf:type</code> entailments.
+     * Each property will appear exactly once in the iterator.
+     */
+    public ExtendedIterator listAllOntProperties() {
+        ExtendedIterator i = findByTypeAs( RDF.Property, OntProperty.class )
+                                                   .andThen( listObjectProperties() )
+                                                   .andThen( listDatatypeProperties() )
+                                                   .andThen( listAnnotationProperties() )
+                                                   .andThen( listFunctionalProperties() )
+                                                   .andThen( listTransitiveProperties() )
+                                                   .andThen( listSymmetricProperties() );
+
+        // we must filter for uniqueness
+        return UniqueExtendedIterator.create( i );
+    }
 
     /**
      * <p>
@@ -2752,7 +2792,7 @@ public class OntModelImpl
             try {
                 return (Resource) getNodeAs( n, asKey );
             }
-            catch (ConversionException ignore) {}
+            catch (ConversionException ignore) {/**/}
         }
 
         // not present, or cannot be as'ed to the desired facet

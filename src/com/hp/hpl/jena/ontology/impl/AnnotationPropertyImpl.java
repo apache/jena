@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            01-Apr-2003
  * Filename           $RCSfile: AnnotationPropertyImpl.java,v $
- * Revision           $Revision: 1.9 $
+ * Revision           $Revision: 1.10 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2007-01-02 11:49:47 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2007-11-30 15:31:55 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -37,11 +37,11 @@ import com.hp.hpl.jena.rdf.model.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: AnnotationPropertyImpl.java,v 1.9 2007-01-02 11:49:47 andy_seaborne Exp $
+ * @version CVS $Id: AnnotationPropertyImpl.java,v 1.10 2007-11-30 15:31:55 ian_dickinson Exp $
  */
 public class AnnotationPropertyImpl
-    extends OntResourceImpl
-    implements AnnotationProperty 
+    extends OntPropertyImpl
+    implements AnnotationProperty
 {
     // Constants
     //////////////////////////////////
@@ -51,19 +51,19 @@ public class AnnotationPropertyImpl
 
     /**
      * A factory for generating AnnotationProperty facets from nodes in enhanced graphs.
-     * Note: should not be invoked directly by user code: use 
+     * Note: should not be invoked directly by user code: use
      * {@link com.hp.hpl.jena.rdf.model.RDFNode#as as()} instead.
      */
     public static Implementation factory = new Implementation() {
-        public EnhNode wrap( Node n, EnhGraph eg ) { 
+        public EnhNode wrap( Node n, EnhGraph eg ) {
             if (canWrap( n, eg )) {
                 return new AnnotationPropertyImpl( n, eg );
             }
             else {
                 throw new ConversionException( "Cannot convert node " + n + " to AnnotationProperty");
-            } 
+            }
         }
-        
+
         public boolean canWrap( Node node, EnhGraph eg ) {
             // node will support being an AnnotationProperty facet if it has rdf:type owl:AnnotationProperty or equivalent
             Profile profile = (eg instanceof OntModel) ? ((OntModel) eg).getProfile() : null;
@@ -79,15 +79,15 @@ public class AnnotationPropertyImpl
      * <p>
      * Construct an ontology resource represented by the given node in the given graph.
      * </p>
-     * 
+     *
      * @param n The node that represents the resource
      * @param g The enh graph that contains n
      */
     public AnnotationPropertyImpl( Node n, EnhGraph g ) {
         super( n, g );
     }
-    
-    
+
+
     // Constructors
     //////////////////////////////////
 
@@ -98,22 +98,22 @@ public class AnnotationPropertyImpl
      * <p>
      * Answer true to indicate that this resource is an RDF property.
      * </p>
-     * 
+     *
      * @return True.
      */
     public boolean isProperty() {
         return true;
     }
-    
-    
+
+
     /**
      * @see Property#getOrdinal()
      */
     public int getOrdinal() {
         return ((Property) as( Property.class )).getOrdinal();
     }
-    
-    
+
+
     // Internal implementation methods
     //////////////////////////////////
 

@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            02-Apr-2003
  * Filename           $RCSfile: TestListSyntaxCategories.java,v $
- * Revision           $Revision: 1.27 $
+ * Revision           $Revision: 1.28 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2007-01-02 11:51:55 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2007-11-30 15:31:57 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -44,7 +44,7 @@ import org.apache.commons.logging.LogFactory;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestListSyntaxCategories.java,v 1.27 2007-01-02 11:51:55 andy_seaborne Exp $
+ * @version CVS $Id: TestListSyntaxCategories.java,v 1.28 2007-11-30 15:31:57 ian_dickinson Exp $
  */
 public class TestListSyntaxCategories
     extends TestCase
@@ -80,7 +80,19 @@ public class TestListSyntaxCategories
             }
         },
         // Properties
-        new DoListTest( "OWL list properties",  "file:testing/ontology/owl/list-syntax/test.rdf",  OntModelSpec.OWL_MEM_TRANS_INF,  1,
+        new DoListTest( "OWL list properties",  "file:testing/ontology/owl/list-syntax/test.rdf",  OntModelSpec.OWL_MEM_TRANS_INF,  7,
+                        new String[] {NS+"p",RDFS.label.getURI(),OWL.versionInfo.getURI(),RDFS.seeAlso.getURI(),
+                                      RDFS.comment.getURI(),RDFS.isDefinedBy.getURI(),NS+"karma"} )
+        {
+            public Iterator doList( OntModel m ) {
+                return m.listOntProperties();
+            }
+            public boolean test( Resource r ) {
+                return r instanceof OntProperty &&
+                       r instanceof Property;
+            }
+        },
+        new DoListTest( "OWL list properties",  "file:testing/ontology/owl/list-syntax/test.rdf",  OntModelSpec.OWL_MEM,  1,
                         new String[] {NS+"p"} )
         {
             public Iterator doList( OntModel m ) {
@@ -481,7 +493,7 @@ public class TestListSyntaxCategories
             }
         },
         // Properties
-        new DoListTest( "OWL+import list properties",  "file:testing/ontology/owl/list-syntax/test-with-import.rdf",  OntModelSpec.OWL_MEM_TRANS_INF,  40,
+        new DoListTest( "OWL+import list properties",  "file:testing/ontology/owl/list-syntax/test-with-import.rdf",  OntModelSpec.OWL_MEM_TRANS_INF,  46,
                         null )
         {
             public Iterator doList( OntModel m ) {
@@ -675,6 +687,7 @@ public class TestListSyntaxCategories
 
 
         public void runTest() {
+            Log logger = LogFactory.getLog( getClass() );
             OntModel m = ModelFactory.createOntologyModel( m_spec, null );
             m.getDocumentManager().setMetadataSearchPath( "file:etc/ont-policy-test.rdf", true );
 
@@ -712,6 +725,7 @@ public class TestListSyntaxCategories
                             if (!res.isAnon()) {
                                 // since we can't list expected anon resources, we ignore them in this check
                                 extraneous++;
+                                logger.debug( "found extraneous result: " + res );
                             }
                         }
                     }
@@ -719,14 +733,12 @@ public class TestListSyntaxCategories
 
                 // debugging
                 if (m_count != actual.size()) {
-                    Log logger = LogFactory.getLog( getClass() );
                     logger.debug( getName() + " - expected " + m_count + " results, actual = " + actual.size() );
                     for (Iterator j = actual.iterator(); j.hasNext(); ) {
                         logger.debug( getName() + " - saw actual: " + j.next() );
                     }
                 }
                 if (expected != null && !expected.isEmpty()) {
-                    Log logger = LogFactory.getLog( getClass() );
                     for (Iterator j = expected.iterator(); j.hasNext(); ) {
                         logger.debug( getName() + " - expected but did not find: " + j.next() );
                     }

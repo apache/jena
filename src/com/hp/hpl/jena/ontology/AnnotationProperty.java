@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            01-Apr-2003
  * Filename           $RCSfile: AnnotationProperty.java,v $
- * Revision           $Revision: 1.6 $
+ * Revision           $Revision: 1.7 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2007-01-02 11:48:48 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2007-11-30 15:31:59 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -33,16 +33,16 @@ import com.hp.hpl.jena.rdf.model.*;
  * language.  Annotation properties are distinguished in some languages (such as
  * OWL) - in order to maintain theoretical properties of the language, which depend
  * on clean separation of syntactic categories.  Annotation properties may not be
- * used in property expressions. There is no guarantee that a given langauge will
+ * used in property expressions. There is no guarantee that a given language will
  * have any annotation properties.
  * </p>
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: AnnotationProperty.java,v 1.6 2007-01-02 11:48:48 andy_seaborne Exp $
+ * @version CVS $Id: AnnotationProperty.java,v 1.7 2007-11-30 15:31:59 ian_dickinson Exp $
  */
-public interface AnnotationProperty 
-    extends OntResource, Property
+public interface AnnotationProperty
+    extends OntProperty, Property
 {
     // Constants
     //////////////////////////////////

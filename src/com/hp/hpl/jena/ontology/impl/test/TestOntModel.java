@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            21-Jun-2003
  * Filename           $RCSfile: TestOntModel.java,v $
- * Revision           $Revision: 1.24 $
+ * Revision           $Revision: 1.25 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2007-01-09 17:06:22 $
+ * Last modified on   $Date: 2007-11-30 15:31:57 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
@@ -46,7 +46,7 @@ import com.hp.hpl.jena.vocabulary.RDF;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestOntModel.java,v 1.24 2007-01-09 17:06:22 ian_dickinson Exp $
+ * @version CVS $Id: TestOntModel.java,v 1.25 2007-11-30 15:31:57 ian_dickinson Exp $
  */
 public class TestOntModel
     extends ModelTestBase
@@ -548,6 +548,135 @@ public class TestOntModel
         assertEquals( "Wrong number of sub-model imports", 2, nImports );
     }
 
+    public void testListOntProperties0() {
+        OntModel m = ModelFactory.createOntologyModel( OntModelSpec.OWL_MEM );
+        ObjectProperty op = m.createObjectProperty( NS + "op" );
+        DatatypeProperty dp = m.createDatatypeProperty( NS + "dp" );
+        AnnotationProperty ap = m.createAnnotationProperty( NS + "ap" );
+        OntProperty ontp = m.createOntProperty( NS + "ontp" );
+        Property rdfp = m.createProperty( NS + "rdfp" );
+        rdfp.addProperty( RDF.type, RDF.Property );
+
+        // no rdf:type entailment, so we don't find most properties ...
+
+        assertFalse( iteratorContains( m.listOntProperties(), op ) );
+        assertFalse( iteratorContains( m.listOntProperties(), dp ) );
+        assertFalse( iteratorContains( m.listOntProperties(), ap ) );
+        assertTrue( iteratorContains( m.listOntProperties(), ontp ) );
+        assertTrue( iteratorContains( m.listOntProperties(), rdfp ) );
+    }
+
+    public void testListOntProperties1() {
+        OntModel m = ModelFactory.createOntologyModel( OntModelSpec.OWL_MEM_MICRO_RULE_INF);
+        ObjectProperty op = m.createObjectProperty( NS + "op" );
+        DatatypeProperty dp = m.createDatatypeProperty( NS + "dp" );
+        AnnotationProperty ap = m.createAnnotationProperty( NS + "ap" );
+        OntProperty ontp = m.createOntProperty( NS + "ontp" );
+        Property rdfp = m.createProperty( NS + "rdfp" );
+        rdfp.addProperty( RDF.type, RDF.Property );
+
+        assertTrue( iteratorContains( m.listOntProperties(), op ) );
+        assertTrue( iteratorContains( m.listOntProperties(), dp ) );
+
+        // note that owl:AnnotationProperty is an rdf:Property in OWL Full
+        assertTrue( iteratorContains( m.listOntProperties(), ap ) );
+        assertTrue( iteratorContains( m.listOntProperties(), ontp ) );
+        assertTrue( iteratorContains( m.listOntProperties(), rdfp ) );
+    }
+
+    public void testListOntProperties2() {
+        OntModelSpec owlDLReasoner = new OntModelSpec( OntModelSpec.OWL_DL_MEM );
+        owlDLReasoner.setReasoner( OntModelSpec.OWL_MEM_MICRO_RULE_INF.getReasoner() );
+        OntModel m = ModelFactory.createOntologyModel( owlDLReasoner );
+        ObjectProperty op = m.createObjectProperty( NS + "op" );
+        DatatypeProperty dp = m.createDatatypeProperty( NS + "dp" );
+        AnnotationProperty ap = m.createAnnotationProperty( NS + "ap" );
+        OntProperty ontp = m.createOntProperty( NS + "ontp" );
+        Property rdfp = m.createProperty( NS + "rdfp" );
+        rdfp.addProperty( RDF.type, RDF.Property );
+
+        assertTrue( iteratorContains( m.listOntProperties(), op ) );
+        assertTrue( iteratorContains( m.listOntProperties(), dp ) );
+
+        // note that owl:AnnotationProperty not an rdf:Property in OWL DL
+        assertFalse( iteratorContains( m.listOntProperties(), ap ) );
+        assertTrue( iteratorContains( m.listOntProperties(), ontp ) );
+        assertTrue( iteratorContains( m.listOntProperties(), rdfp ) );
+    }
+
+
+    public void testListAllOntProperties0() {
+        OntModel m = ModelFactory.createOntologyModel( OntModelSpec.OWL_MEM );
+        ObjectProperty op = m.createObjectProperty( NS + "op" );
+        DatatypeProperty dp = m.createDatatypeProperty( NS + "dp" );
+        AnnotationProperty ap = m.createAnnotationProperty( NS + "ap" );
+        OntProperty ontp = m.createOntProperty( NS + "ontp" );
+        Property rdfp = m.createProperty( NS + "rdfp" );
+        rdfp.addProperty( RDF.type, RDF.Property );
+
+        // no rdf:type entailment, so we don't find most properties ...
+
+        assertTrue( iteratorContains( m.listAllOntProperties(), op ) );
+        assertTrue( iteratorContains( m.listAllOntProperties(), dp ) );
+        assertTrue( iteratorContains( m.listAllOntProperties(), ap ) );
+        assertTrue( iteratorContains( m.listAllOntProperties(), ontp ) );
+        assertTrue( iteratorContains( m.listAllOntProperties(), rdfp ) );
+    }
+
+    public void testListObjectProperties0() {
+        OntModel m = ModelFactory.createOntologyModel( OntModelSpec.OWL_MEM );
+        ObjectProperty op = m.createObjectProperty( NS + "op" );
+        DatatypeProperty dp = m.createDatatypeProperty( NS + "dp" );
+        AnnotationProperty ap = m.createAnnotationProperty( NS + "ap" );
+        OntProperty ontp = m.createOntProperty( NS + "ontp" );
+        Property rdfp = m.createProperty( NS + "rdfp" );
+        rdfp.addProperty( RDF.type, RDF.Property );
+
+        // no rdf:type entailment, so we don't find most properties ...
+
+        assertTrue( iteratorContains( m.listObjectProperties(), op ) );
+        assertFalse( iteratorContains( m.listObjectProperties(), dp ) );
+        assertFalse( iteratorContains( m.listObjectProperties(), ap ) );
+        assertFalse( iteratorContains( m.listObjectProperties(), ontp ) );
+        assertFalse( iteratorContains( m.listObjectProperties(), rdfp ) );
+    }
+
+    public void testListDatatypeProperties0() {
+        OntModel m = ModelFactory.createOntologyModel( OntModelSpec.OWL_MEM );
+        ObjectProperty op = m.createObjectProperty( NS + "op" );
+        DatatypeProperty dp = m.createDatatypeProperty( NS + "dp" );
+        AnnotationProperty ap = m.createAnnotationProperty( NS + "ap" );
+        OntProperty ontp = m.createOntProperty( NS + "ontp" );
+        Property rdfp = m.createProperty( NS + "rdfp" );
+        rdfp.addProperty( RDF.type, RDF.Property );
+
+        // no rdf:type entailment, so we don't find most properties ...
+
+        assertFalse( iteratorContains( m.listDatatypeProperties(), op ) );
+        assertTrue( iteratorContains( m.listDatatypeProperties(), dp ) );
+        assertFalse( iteratorContains( m.listDatatypeProperties(), ap ) );
+        assertFalse( iteratorContains( m.listDatatypeProperties(), ontp ) );
+        assertFalse( iteratorContains( m.listDatatypeProperties(), rdfp ) );
+    }
+
+    public void testListAnnotationProperties0() {
+        OntModel m = ModelFactory.createOntologyModel( OntModelSpec.OWL_MEM );
+        ObjectProperty op = m.createObjectProperty( NS + "op" );
+        DatatypeProperty dp = m.createDatatypeProperty( NS + "dp" );
+        AnnotationProperty ap = m.createAnnotationProperty( NS + "ap" );
+        OntProperty ontp = m.createOntProperty( NS + "ontp" );
+        Property rdfp = m.createProperty( NS + "rdfp" );
+        rdfp.addProperty( RDF.type, RDF.Property );
+
+        // no rdf:type entailment, so we don't find most properties ...
+
+        assertFalse( iteratorContains( m.listAnnotationProperties(), op ) );
+        assertFalse( iteratorContains( m.listAnnotationProperties(), dp ) );
+        assertTrue( iteratorContains( m.listAnnotationProperties(), ap ) );
+        assertFalse( iteratorContains( m.listAnnotationProperties(), ontp ) );
+        assertFalse( iteratorContains( m.listAnnotationProperties(), rdfp ) );
+    }
+
     public void testListSubModels0() {
         OntModel m = ModelFactory.createOntologyModel();
         m.read( "file:testing/ontology/testImport6/a.owl" );
@@ -856,6 +985,18 @@ public class TestOntModel
 
     // Internal implementation methods
     //////////////////////////////////
+
+    /**
+     * Answer true iff an iterator contains a given value.
+     */
+    private boolean iteratorContains( Iterator i, Object x ) {
+        boolean found = false;
+        while (i.hasNext()) {
+            found = i.next().equals( x ) || found;
+        }
+        return found;
+    }
+
 
     //==============================================================================
     // Inner class definitions
