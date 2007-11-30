@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OntProperty.java,v $
- * Revision           $Revision: 1.19 $
+ * Revision           $Revision: 1.20 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2007-01-02 11:48:50 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2007-11-30 16:30:52 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * footer for full conditions)
@@ -40,7 +40,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntProperty.java,v 1.19 2007-01-02 11:48:50 andy_seaborne Exp $
+ * @version CVS $Id: OntProperty.java,v 1.20 2007-11-30 16:30:52 ian_dickinson Exp $
  */
 public interface OntProperty
     extends OntResource, Property
@@ -88,7 +88,7 @@ public interface OntProperty
     /**
      * <p>Answer an iterator over all of the properties that are declared to be super-properties of
      * this property. Each element of the iterator will be an {@link OntProperty}.</p>
-     * @param direct If true, only answer the direcly adjacent properties in the
+     * @param direct If true, only answer the directly adjacent properties in the
      * property hierarchy: i&#046;e&#046; eliminate any property for which there is a longer route
      * to reach that child under the super-property relation.
      * @return An iterator over the super-properties of this property.
@@ -99,7 +99,7 @@ public interface OntProperty
     /**
      * <p>Answer true if the given property is a super-property of this property.</p>
      * @param prop A property to test.
-     * @param direct If true, only consider the direcly adjacent properties in the
+     * @param direct If true, only consider the directly adjacent properties in the
      * property hierarchy
      * @return True if the given property is a super-property of this property.
      * @exception OntProfileException If the {@link Profile#SUB_PROPERTY_OF()} property is not supported in the current language profile.
@@ -148,7 +148,7 @@ public interface OntProperty
     /**
      * <p>Answer an iterator over all of the properties that are declared to be sub-properties of
      * this property. Each element of the iterator will be an {@link OntProperty}.</p>
-     * @param direct If true, only answer the direcly adjacent properties in the
+     * @param direct If true, only answer the directly adjacent properties in the
      * property hierarchy: i&#046;e&#046; eliminate any property for which there is a longer route
      * to reach that child under the sub-property relation.
      * @return An iterator over the sub-properties of this property.
@@ -159,7 +159,7 @@ public interface OntProperty
     /**
      * <p>Answer true if the given property is a sub-property of this property.</p>
      * @param prop A property to test.
-     * @param direct If true, only consider the direcly adjacent properties in the
+     * @param direct If true, only consider the directly adjacent properties in the
      * property hierarchy
      * @return True if the given property is a sub-property of this property.
      * @exception OntProfileException If the {@link Profile#SUB_PROPERTY_OF()} property is not supported in the current language profile.
@@ -394,7 +394,7 @@ public interface OntProperty
      * <p>Answer a view of this property as a functional property</p>
      * @return This property, but viewed as a FunctionalProperty node
      * @exception ConversionException if the resource cannot be converted to a functional property
-     * given the lanuage profile and the current state of the underlying model.
+     * given the language profile and the current state of the underlying model.
      */
     public FunctionalProperty asFunctionalProperty();
 
@@ -402,7 +402,7 @@ public interface OntProperty
      * <p>Answer a view of this property as a datatype property</p>
      * @return This property, but viewed as a DatatypeProperty node
      * @exception ConversionException if the resource cannot be converted to a datatype property
-     * given the lanuage profile and the current state of the underlying model.
+     * given the language profile and the current state of the underlying model.
      */
     public DatatypeProperty asDatatypeProperty();
 
@@ -410,7 +410,7 @@ public interface OntProperty
      * <p>Answer a view of this property as an object property</p>
      * @return This property, but viewed as an ObjectProperty node
      * @exception ConversionException if the resource cannot be converted to an object property
-     * given the lanuage profile and the current state of the underlying model.
+     * given the language profile and the current state of the underlying model.
      */
     public ObjectProperty asObjectProperty();
 
@@ -418,7 +418,7 @@ public interface OntProperty
      * <p>Answer a view of this property as a transitive property</p>
      * @return This property, but viewed as a TransitiveProperty node
      * @exception ConversionException if the resource cannot be converted to a transitive property
-     * given the lanuage profile and the current state of the underlying model.
+     * given the language profile and the current state of the underlying model.
      */
     public TransitiveProperty asTransitiveProperty();
 
@@ -426,7 +426,7 @@ public interface OntProperty
      * <p>Answer a view of this property as an inverse functional property</p>
      * @return This property, but viewed as an InverseFunctionalProperty node
      * @exception ConversionException if the resource cannot be converted to an inverse functional property
-     * given the lanuage profile and the current state of the underlying model.
+     * given the language profile and the current state of the underlying model.
      */
     public InverseFunctionalProperty asInverseFunctionalProperty();
 
@@ -434,7 +434,7 @@ public interface OntProperty
      * <p>Answer a view of this property as a symmetric property</p>
      * @return This property, but viewed as a SymmetricProperty node
      * @exception ConversionException if the resource cannot be converted to a symmetric property
-     * given the lanuage profile and the current state of the underlying model.
+     * given the language profile and the current state of the underlying model.
      */
     public SymmetricProperty asSymmetricProperty();
 
@@ -562,7 +562,7 @@ public interface OntProperty
      * properties in {@link OntClass#listDeclaredProperties()}. This
      * simulates a frame-like view of properties and classes; for more
      * details see the <a href="../../../../../../how-to/rdf-frames.html">
-     * RDF frames howto</a>.</p>
+     * RDF frames how-to</a>.</p>
      * @return An iterator of the classes having this property as one
      * of their declared properties
      */
@@ -574,13 +574,31 @@ public interface OntProperty
      * properties in {@link OntClass#listDeclaredProperties(boolean)}. This
      * simulates a frame-like view of properties and classes; for more
      * details see the <a href="../../../../../../how-to/rdf-frames.html">
-     * RDF frames howto</a>.</p>
+     * RDF frames how-to</a>.</p>
      * @param direct If true, use only </em>direct</em> associations between classes
      * and properties
      * @return An iterator of the classes having this property as one
      * of their declared properties
      */
     public ExtendedIterator listDeclaringClasses( boolean direct );
+
+    /**
+     * <p>Answer an iterator over any restrictions that mention this property as
+     * the property that the restriction is adding some constraint to. For example:</p>
+     * <code><pre>&lt;owl:Restriction&gt;
+     *     &lt;owl:onProperty rdf:resource=&quot;#childOf&quot; /&gt;
+     *     &lt;owl:hasValue rdf:resource=&quot;#ian&quot; /&gt;
+     * &lt;/owl:Restriction&gt;</pre></code>
+     * <p><strong>Note</strong> that any such restrictions do not affect the global
+     * semantics of this property itself. Restrictions define new class expressions,
+     * and the property constraints are local to that class expression. This method
+     * is provided as a convenience to assist callers to navigate the relationships
+     * in the model.</p>
+     * @return An iterator whose values are the restrictions from the local
+     * model that reference this property.
+     */
+    public ExtendedIterator listReferringRestrictions();
+
 }
 
 

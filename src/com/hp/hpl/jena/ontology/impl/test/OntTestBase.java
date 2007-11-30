@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            23-May-2003
  * Filename           $RCSfile: OntTestBase.java,v $
- * Revision           $Revision: 1.14 $
+ * Revision           $Revision: 1.15 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2007-01-02 11:51:54 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2007-11-30 16:30:54 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -40,9 +40,9 @@ import junit.framework.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntTestBase.java,v 1.14 2007-01-02 11:51:54 andy_seaborne Exp $
+ * @version CVS $Id: OntTestBase.java,v 1.15 2007-11-30 16:30:54 ian_dickinson Exp $
  */
-public abstract class OntTestBase 
+public abstract class OntTestBase
     extends TestSuite
 {
     // Constants
@@ -50,27 +50,27 @@ public abstract class OntTestBase
 
     public static final String BASE = "http://jena.hpl.hp.com/testing/ontology";
     public static final String NS = BASE + "#";
-    
-    
+
+
     // Static variables
     //////////////////////////////////
 
     // Instance variables
     //////////////////////////////////
 
-    
+
     // Constructors
     //////////////////////////////////
 
     public OntTestBase( String name ) {
         super( name );
         TestCase[] tc = getTests();
-        
+
         for (int i = 0;  i < tc.length;  i++) {
             addTest( tc[i] );
         }
     }
-    
+
     // External signature methods
     //////////////////////////////////
 
@@ -82,8 +82,8 @@ public abstract class OntTestBase
     protected  OntTestCase[] getTests() {
         return null;
     }
-    
-    
+
+
     //==============================================================================
     // Inner class definitions
     //==============================================================================
@@ -115,57 +115,65 @@ public abstract class OntTestBase
         {
             // we don't want inferencing for these unit tests
             runTest( ModelFactory.createOntologyModel( OntModelSpec.OWL_MEM, null ), m_inOWL );
-            
+
             m_owlLiteLang = true;
-            
+
             runTest( ModelFactory.createOntologyModel( OntModelSpec.OWL_LITE_MEM, null ), m_inOWLLite );
-            
+
             // now DAML
             m_owlLang = false;
             m_owlLiteLang = false;
             m_damlLang = true;
-            
+
             runTest( ModelFactory.createOntologyModel( OntModelSpec.DAML_MEM, null ), m_inDAML );
-            
+
             // now RDFS
-            
+
             m_rdfsLang = true;
             m_damlLang = false;
             runTest( ModelFactory.createOntologyModel( OntModelSpec.RDFS_MEM, null ), m_inRDFS);
         }
-    
+
         protected void runTest( OntModel m, boolean inModel )
-            throws Exception 
+            throws Exception
         {
             boolean profileEx = false;
-        
+
             try {
                 ontTest( m );
             }
             catch (ProfileException e) {
                 profileEx = true;
             }
-        
+
             assertEquals( "language element " + m_langElement + " was " + (inModel ? "" : "not") + " expected in model " + m.getProfile().getLabel(), inModel, !profileEx );
         }
-    
+
         /** Does the work in the test sub-class */
         protected abstract void ontTest( OntModel m ) throws Exception;
-    
+
         /** Test that an iterator delivers the expected values */
         protected void iteratorTest( Iterator i, Object[] expected ) {
             TestUtil.assertIteratorValues( this, i, expected );
         }
-    
+
         public void setUp() {
             // ensure the ont doc manager is in a consistent state
             OntDocumentManager.getInstance().reset( true );
         }
-        
+
         protected boolean owlFull() {
             return m_owlLang && !m_owlLiteLang;
         }
-        
+
+        /** Answer true if an iterator contains a given value */
+        protected boolean iteratorContains( Iterator i, Object target ) {
+            boolean found = false;
+            while (i.hasNext()) {
+                found = i.next().equals( target ) || found;
+            }
+            return found;
+        }
     }
 }
 

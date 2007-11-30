@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            31-Mar-2003
  * Filename           $RCSfile: OntPropertyImpl.java,v $
- * Revision           $Revision: 1.24 $
+ * Revision           $Revision: 1.25 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2007-01-02 11:49:47 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2007-11-30 16:30:44 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -43,7 +43,7 @@ import com.hp.hpl.jena.util.iterator.Filter;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntPropertyImpl.java,v 1.24 2007-01-02 11:49:47 andy_seaborne Exp $
+ * @version CVS $Id: OntPropertyImpl.java,v 1.25 2007-11-30 16:30:44 ian_dickinson Exp $
  */
 public class OntPropertyImpl
     extends OntResourceImpl
@@ -153,7 +153,7 @@ public class OntPropertyImpl
 
     /**
      * <p>Answer an iterator over all of the properties that are declared to be super-properties of
-     * this property. Each elemeent of the iterator will be an {@link OntProperty}.</p>
+     * this property. Each element of the iterator will be an {@link OntProperty}.</p>
      * @return An iterator over the super-properties of this property.
      * @exception OntProfileException If the {@link Profile#SUB_PROPERTY_OF()} property is not supported in the current language profile.
      */
@@ -163,7 +163,7 @@ public class OntPropertyImpl
 
     /**
      * <p>Answer an iterator over all of the properties that are declared to be super-properties of
-     * this property. Each elemeent of the iterator will be an {@link OntProperty}.</p>
+     * this property. Each element of the iterator will be an {@link OntProperty}.</p>
      * @param direct If true, only answer the direcly adjacent properties in the
      * property hierarchy: i&#046;e&#046; eliminate any property for which there is a longer route
      * to reach that child under the super-property relation.
@@ -312,7 +312,7 @@ public class OntPropertyImpl
 
     /**
      * <p>Answer an iterator over all of the declared domain classes of this property.
-     * Each elemeent of the iterator will be an {@link OntResource}.</p>
+     * Each element of the iterator will be an {@link OntResource}.</p>
      * @return An iterator over the classes that form the domain of this property.
      * @exception OntProfileException If the {@link Profile#DOMAIN()} property is not supported in the current language profile.
      */
@@ -373,7 +373,7 @@ public class OntPropertyImpl
 
     /**
      * <p>Answer an iterator over all of the declared range classes of this property.
-     * Each elemeent of the iterator will be an {@link OntResource}.</p>
+     * Each element of the iterator will be an {@link OntResource}.</p>
      * @return An iterator over the classes that form the range of this property.
      * @exception OntProfileException If the {@link Profile#RANGE()} property is not supported in the current language profile.
      */
@@ -436,7 +436,7 @@ public class OntPropertyImpl
 
     /**
      * <p>Answer an iterator over all of the properties that are declared to be equivalent properties to
-     * this property. Each elemeent of the iterator will be an {@link OntProperty}.</p>
+     * this property. Each element of the iterator will be an {@link OntProperty}.</p>
      * @return An iterator over the properties equivalent to this property.
      * @exception OntProfileException If the {@link Profile#EQUIVALENT_PROPERTY()} property is not supported in the current language profile.
      */
@@ -497,7 +497,7 @@ public class OntPropertyImpl
 
     /**
      * <p>Answer an iterator over all of the properties that are declared to be inverse properties of
-     * this property. Each elemeent of the iterator will be an {@link OntProperty}.</p>
+     * this property. Each element of the iterator will be an {@link OntProperty}.</p>
      * @return An iterator over the properties inverse to this property.
      * @exception OntProfileException If the {@link Profile#INVERSE_OF()} property is not supported in the current language profile.
      */
@@ -529,7 +529,7 @@ public class OntPropertyImpl
      * <p>Answer a view of this property as a functional property</p>
      * @return This property, but viewed as a FunctionalProperty node
      * @exception ConversionException if the resource cannot be converted to a functional property
-     * given the lanuage profile and the current state of the underlying model.
+     * given the language profile and the current state of the underlying model.
      */
     public FunctionalProperty asFunctionalProperty() {
         return (FunctionalProperty) as( FunctionalProperty.class );
@@ -539,7 +539,7 @@ public class OntPropertyImpl
      * <p>Answer a view of this property as a datatype property</p>
      * @return This property, but viewed as a DatatypeProperty node
      * @exception ConversionException if the resource cannot be converted to a datatype property
-     * given the lanuage profile and the current state of the underlying model.
+     * given the language profile and the current state of the underlying model.
      */
     public DatatypeProperty asDatatypeProperty() {
         return (DatatypeProperty) as( DatatypeProperty.class );
@@ -549,7 +549,7 @@ public class OntPropertyImpl
      * <p>Answer a view of this property as an object property</p>
      * @return This property, but viewed as an ObjectProperty node
      * @exception ConversionException if the resource cannot be converted to an object property
-     * given the lanuage profile and the current state of the underlying model.
+     * given the language profile and the current state of the underlying model.
      */
     public ObjectProperty asObjectProperty() {
         return (ObjectProperty) as( ObjectProperty.class );
@@ -559,7 +559,7 @@ public class OntPropertyImpl
      * <p>Answer a view of this property as a transitive property</p>
      * @return This property, but viewed as a TransitiveProperty node
      * @exception ConversionException if the resource cannot be converted to a transitive property
-     * given the lanuage profile and the current state of the underlying model.
+     * given the language profile and the current state of the underlying model.
      */
     public TransitiveProperty asTransitiveProperty() {
         return (TransitiveProperty) as( TransitiveProperty.class );
@@ -569,7 +569,7 @@ public class OntPropertyImpl
      * <p>Answer a view of this property as an inverse functional property</p>
      * @return This property, but viewed as an InverseFunctionalProperty node
      * @exception ConversionException if the resource cannot be converted to an inverse functional property
-     * given the lanuage profile and the current state of the underlying model.
+     * given the language profile and the current state of the underlying model.
      */
     public InverseFunctionalProperty asInverseFunctionalProperty() {
         return (InverseFunctionalProperty) as( InverseFunctionalProperty.class );
@@ -579,7 +579,7 @@ public class OntPropertyImpl
      * <p>Answer a view of this property as a symmetric property</p>
      * @return This property, but viewed as a SymmetricProperty node
      * @exception ConversionException if the resource cannot be converted to a symmetric property
-     * given the lanuage profile and the current state of the underlying model.
+     * given the language profile and the current state of the underlying model.
      */
     public SymmetricProperty asSymmetricProperty() {
         return (SymmetricProperty) as( SymmetricProperty.class );
@@ -792,6 +792,27 @@ public class OntPropertyImpl
             return WrappedIterator.create( cands.iterator() )
                                   .filterKeep( new FilterDeclaringClass( this, direct ));
         }
+    }
+
+
+    /**
+     * <p>Answer an iterator over any restrictions that mention this property as
+     * the property that the restriction is adding some constraint to. For example:</p>
+     * <code><pre>&lt;owl:Restriction&gt;
+     *     &lt;owl:onProperty rdf:resource=&quot;#childOf&quot; /&gt;
+     *     &lt;owl:hasValue rdf:resource=&quot;#ian&quot; /&gt;
+     * &lt;/owl:Restriction&gt;</pre></code>
+     * <p><strong>Note</strong> that any such restrictions do not affect the global
+     * semantics of this property itself. Restrictions define new class expressions,
+     * and the property constraints are local to that class expression. This method
+     * is provided as a convenience to assist callers to navigate the relationships
+     * in the model.</p>
+     * @return An iterator whose values are the restrictions from the local
+     * model that reference this property.
+     */
+    public ExtendedIterator listReferringRestrictions() {
+        return getModel().listStatements( null, getProfile().ON_PROPERTY(), this )
+                         .mapWith( new SubjectAsMapper( Restriction.class ) );
     }
 
 

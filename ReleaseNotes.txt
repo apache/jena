@@ -2,8 +2,15 @@ Release Notes
 =============
 
 Ontology API updates
-    o Added methods to Individual to allow testing and manipulation of the classes
-      to which an invididual belongs.
+    o Added methods to Individual to allow testing and manipulation of the
+      classes to which an individual belongs.
+
+    o Added a method to OntProperty to list the Restrictions that mention
+      the property
+
+    o Clarified the contract of OntModel.listOntProperties, and added a new
+      method OntModel.listAllOntProperties that is more robust in the
+      absence of a reasoner, but potentially slower.
 
 Change of Behaviour in getByte/Short/Int on typed literals
 
