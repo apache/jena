@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            21-Jun-2003
  * Filename           $RCSfile: TestOntModel.java,v $
- * Revision           $Revision: 1.25 $
+ * Revision           $Revision: 1.26 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2007-11-30 15:31:57 $
+ * Last modified on   $Date: 2007-11-30 15:50:10 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
@@ -34,6 +34,7 @@ import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.rdf.model.test.*;
 import com.hp.hpl.jena.reasoner.test.TestUtil;
 import com.hp.hpl.jena.shared.PrefixMapping;
+import com.hp.hpl.jena.vocabulary.OWL;
 import com.hp.hpl.jena.vocabulary.RDF;
 
 
@@ -46,7 +47,7 @@ import com.hp.hpl.jena.vocabulary.RDF;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestOntModel.java,v 1.25 2007-11-30 15:31:57 ian_dickinson Exp $
+ * @version CVS $Id: TestOntModel.java,v 1.26 2007-11-30 15:50:10 ian_dickinson Exp $
  */
 public class TestOntModel
     extends ModelTestBase
@@ -241,6 +242,23 @@ public class TestOntModel
         assertNull( "result of get q", m.getIndividual( NS+"q") );
     }
 
+    /** User requested: allow null arguments when creating individuals */
+    public void testCreateIndividual() {
+        OntModel m = ModelFactory.createOntologyModel( OntModelSpec.OWL_MEM );
+        Resource i0 = m.createIndividual( OWL.Thing );
+        Resource i1 = m.createIndividual( null );
+        Resource i2 = m.createIndividual( NS + "i2", OWL.Thing );
+        Resource i3 = m.createIndividual( NS + "i3", null );
+        Resource i4 = m.createIndividual( null, OWL.Thing );
+        Resource i5 = m.createIndividual( null, null );
+
+        assertNotNull( i0 );
+        assertNotNull( i1 );
+        assertNotNull( i2 );
+        assertNotNull( i3 );
+        assertNotNull( i4 );
+        assertNotNull( i5 );
+    }
 
     public void testGetOntProperty() {
         OntModel m = ModelFactory.createOntologyModel();
@@ -519,34 +537,12 @@ public class TestOntModel
         assertTrue( "d should be imported ", c.contains( "file:testing/ontology/testImport6/d.owl" ));
     }
 
-    public void testListImportedModels() {
-        OntModel m = ModelFactory.createOntologyModel();
-        m.read( "file:testing/ontology/testImport6/a.owl" );
-        assertEquals( "Marker count not correct", 4, TestOntDocumentManager.countMarkers( m ) );
+    /* Test removed: superseded by testListSubmodelsN (below)
+    //    public void testListImportedModels() {
+     *
+     */
 
-        List importModels = new ArrayList();
-        for (Iterator j = m.listImportedModels(); j.hasNext(); importModels.add( j.next() ));
-
-        assertEquals( "n import models should be ", 3, importModels.size() );
-
-        boolean isOntModel = true;
-        int nImports = 0;
-
-        for (Iterator i = importModels.iterator(); i.hasNext(); ) {
-            Object x = i.next();
-            if (!(x instanceof OntModel)) {
-                isOntModel = false;
-            }
-            else {
-                // count the number of imports of each sub-model
-                OntModel mi = (OntModel) x;
-                nImports += mi.listImportedOntologyURIs().size();
-            }
-        }
-
-        assertTrue( "All import models should be OntModels", isOntModel );
-        assertEquals( "Wrong number of sub-model imports", 2, nImports );
-    }
+    /** Some tests for listing properties. See also {@link TestListSyntaxCategories} */
 
     public void testListOntProperties0() {
         OntModel m = ModelFactory.createOntologyModel( OntModelSpec.OWL_MEM );
