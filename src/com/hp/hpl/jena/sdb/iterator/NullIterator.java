@@ -23,7 +23,7 @@ public class NullIterator<T> implements Iterator<T>, Iterable<T>
     }
 
     public void remove()
-    { throw new NoSuchElementException("Iterator.remove") ;}
+    { throw new NoSuchElementException("NullIterator.remove") ;}
 
     public Iterator<T> iterator()
     {

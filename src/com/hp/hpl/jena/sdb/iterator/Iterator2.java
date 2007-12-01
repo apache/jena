@@ -10,7 +10,6 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 /** Iterator2 : the concatenation of two iterators.
- *  Supports Alg.append
  * 
  * @author Andy Seaborne
  * @version $Id$

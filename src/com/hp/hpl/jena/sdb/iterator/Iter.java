@@ -13,6 +13,9 @@ import java.util.Set;
 
 public class Iter<T> implements Iterable<T>, Iterator<T>
 {
+    // Th emaster copy of this package is in the Scratch/AFS area because it is being used
+    // and refined in another project. 
+    
     public static <T> Iter<T> iter(Iter<T> iter)
     { return iter ; }
     
