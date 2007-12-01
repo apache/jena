@@ -94,26 +94,25 @@ public class QueryExecutionBase implements QueryExecution
         
         // Prefixes for result
         insertPrefixesInto(model) ;
-        Set set = new HashSet() ;
         Template template = query.getConstructTemplate() ;
 
         // Build each template substitution as triples.
         for ( ; queryIterator.hasNext() ; )
         {
+            Set set = new HashSet() ;
             Map bNodeMap = new HashMap() ;
             Binding binding = queryIterator.nextBinding() ;
             template.subst(set, bNodeMap, binding) ; 
-        }
 
-        // Convert and merge into Model.
-        for ( Iterator iter = set.iterator() ; iter.hasNext() ; )
-        {
-            Triple t = (Triple)iter.next() ;
-            Statement stmt = ModelUtils.tripleToStatement(model, t) ;
-            if ( stmt != null )
-                model.add(stmt) ;
+            // Convert and merge into Model.
+            for ( Iterator iter = set.iterator() ; iter.hasNext() ; )
+            {
+                Triple t = (Triple)iter.next() ;
+                Statement stmt = ModelUtils.tripleToStatement(model, t) ;
+                if ( stmt != null )
+                    model.add(stmt) ;
+            }
         }
-
         this.close() ;
         return model ;
     }
