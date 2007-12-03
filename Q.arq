@@ -1,20 +1,6 @@
 PREFIX dc: <http://purl.org/dc/elements/1.1/>
 
-SELECT ?book ?who
+SELECT regex("pattern", ?title) ?book count(?title)
 {
-    SERVICE <http://sparql.org/books>
-    { ?book dc:title ?title }
-    SERVICE <http://sparql.org/books>
-    { ?book dc:creator ?who . FILTER isLiteral(?who) }
+     ?book dc:title ?title
 }
-## 
-## PREFIX  rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-## PREFIX  :       <http://example/>
-## PREFIX  dc:     <http://purl.org/dc/elements/1.1/>
-## 
-## SELECT (count(*) as ?c)
-## #SELECT *
-## {
-##     :xxx :ppp ?z .
-## }
-## GROUP BY ?z

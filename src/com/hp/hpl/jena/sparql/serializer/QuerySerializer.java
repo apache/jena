@@ -289,14 +289,33 @@ public class QuerySerializer implements QueryVisitor
             
             if ( expr != null ) 
             {
-                out.print("(") ;
+                // The following are safe to write without () 
+                // Compare/merge with fmtExpr.format
+                boolean needParens = true ; 
+                
+                if ( expr.isFunction() )
+                    needParens = false ;
+//                else if ( expr instanceof E_Aggregator )
+//                    // Aggregators are variables (the function maps to an internal variable 
+//                    // that is accesses by the E_Aggregator
+//                    needParens = false ;
+                else if ( expr.isVariable() )
+                    needParens = false ;
+                
+                if ( ! Var.isAllocVar(var) )
+                    // AS ==> need parens
+                    needParens = true  ;
+                
+                if ( needParens ) 
+                    out.print("(") ;
                 fmtExpr.format(expr) ;
                 if ( ! Var.isAllocVar(var) )
                 {
                     sb.print(" AS ") ;
                     sb.print(var.toString()) ;
                 }
-                out.print(")") ;
+                if ( needParens ) 
+                    out.print(")") ;
             }
             else
             {
