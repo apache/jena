@@ -7,15 +7,17 @@
 package dev;
 
 import java.net.MalformedURLException;
-import java.util.Iterator;
 
 import arq.sparql;
 
 import com.hp.hpl.jena.iri.IRI;
 import com.hp.hpl.jena.iri.IRIFactory;
 import com.hp.hpl.jena.iri.IRIRelativize;
-
-import com.hp.hpl.jena.query.*;
+import com.hp.hpl.jena.query.Query;
+import com.hp.hpl.jena.query.QueryExecution;
+import com.hp.hpl.jena.query.QueryExecutionFactory;
+import com.hp.hpl.jena.query.QueryFactory;
+import com.hp.hpl.jena.query.ResultSetFormatter;
 import com.hp.hpl.jena.query.larq.IndexBuilderString;
 import com.hp.hpl.jena.query.larq.IndexLARQ;
 import com.hp.hpl.jena.query.larq.LARQ;
@@ -34,30 +36,7 @@ public class Run
 {
     public static void main(String[] argv) throws Exception
     {
-        DataSource dataSource = DatasetFactory.create() ;
-        dataSource.addNamedModel(":data", ModelFactory.createDefaultModel()) ;
-        dataSource.addNamedModel(":schema", ModelFactory.createDefaultModel()) ;
-        for ( Iterator iter = dataSource.listNames() ; iter.hasNext() ; )
-        {
-            String str = (String)iter.next() ;
-            System.out.println(str) ;
-        }
-        
-        Query q = QueryFactory.create("SELECT * { GRAPH ?g {} }") ;
-        QueryExecution qe = QueryExecutionFactory.create(q, dataSource) ; 
-        ResultSetFormatter.out(qe.execSelect()) ;
-        qe.close() ;
-    }
-        
-    public static void main2(String[] argv) throws Exception
-    {
-        System.exit(0) ;
-        
-//        and
-//
-//        dataSource.addNamedModel(":data", data)
-//        dataSource.addNamedModel(":schema", schema)
-        
+        runQParseARQ() ;
         
         //socksProxyHost=socks-server
         System.setProperty("socksProxyHost", "socks-server") ;
