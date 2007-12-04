@@ -7,7 +7,7 @@ rm -f lib/arq.jar lib/arq-extra.jar
 ##     fi
 ant jar
 
-for d in SDB # Joseki3
+for d in SDB Joseki3
 do
   echo "Moving ARQ jars to project $d"
   cp -u lib/arq.jar ../$d/lib
@@ -21,6 +21,7 @@ do
 ## rm -f lib/arq-sse.jar
 
 rm -f arq-src.zip
+
 for d in src src-dev src-test
 do
   ( cd $d ; find . -name test -prune -o -name .svn -prune -o -print | \

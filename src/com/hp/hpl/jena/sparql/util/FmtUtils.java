@@ -22,6 +22,7 @@ import com.hp.hpl.jena.sparql.ARQConstants;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException;
 import com.hp.hpl.jena.sparql.core.BasicPattern;
 import com.hp.hpl.jena.sparql.core.Prologue;
+import com.hp.hpl.jena.sparql.core.Quad;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext;
 import com.hp.hpl.jena.vocabulary.XSD;
 
@@ -64,6 +65,26 @@ public class FmtUtils
             stringForNode(triple.getSubject(), prefixMap)+" "+
             stringForNode(triple.getPredicate(), prefixMap)+" "+
             stringForNode(triple.getObject(), prefixMap) ;
+    }
+    
+    // Formatting various items
+    public static String stringForQuad(Quad quad)
+    {
+        return
+            stringForNode(quad.getGraph())+" "+
+            stringForNode(quad.getSubject())+" "+
+            stringForNode(quad.getPredicate())+" "+
+            stringForNode(quad.getObject()) ;
+    }
+    
+    
+    public static String stringForQuad(Quad quad, PrefixMapping prefixMap)
+    {
+        return
+            stringForNode(quad.getGraph(), prefixMap)+" "+
+            stringForNode(quad.getSubject(), prefixMap)+" "+
+            stringForNode(quad.getPredicate(), prefixMap)+" "+
+            stringForNode(quad.getObject(), prefixMap) ;
     }
     
     // To a Writer?
