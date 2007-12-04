@@ -11,6 +11,7 @@ import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.sparql.sse.Item;
+import com.hp.hpl.jena.sparql.sse.ItemWriter;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
 import com.hp.hpl.jena.util.FileManager;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
@@ -27,7 +28,7 @@ public class sdbRDFSexpand
         Item itemC = make(TAG_CLASS, RDFS.subClassOf.asNode(), m.getGraph()) ;
         
         IndentedWriter out = new IndentedWriter(System.out) ;
-        itemC.output(out) ;
+        ItemWriter.write(out, itemC, null) ;
         out.flush() ;
         //Item itemP = make(TAG_PROP, RDFS.subPropertyOf.asNode(), m.getGraph()) ;
     }
