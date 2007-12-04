@@ -12,7 +12,7 @@ package com.hp.hpl.jena.sdb.store;
 
 public interface StoreFormatter
 {
-    /** Create the main tables with primary indexes only */
+    /** Create the main tables and all indexes */
     public void create() ;
     
     /** Add indexes - these are kept upto date for any future additions or deletions of data */
@@ -21,7 +21,7 @@ public interface StoreFormatter
     /** Drop indexes for triple/node tables */
     void dropIndexes() ;
     
-    /** Format the store - create tables, create secondary indexes */ 
+    /** Format the store - create tables but not secondary indexes */ 
     void format() ;
     
     /** Truncate tables - clearing the store but leaving all indexes inplace */
