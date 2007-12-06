@@ -71,7 +71,7 @@ public class OntTools
      * </p>
      * <ul>
      * <li>is transitively closed over the <code>subClassOf</code> relation</li>
-     * <li>can cheaply determine <em>direct sub-class<em> relations</li>
+     * <li>can cheaply determine <em>direct sub-class</em> relations</li>
      * </ul>
      * <p>Both of these conditions are true of the built-in Jena OWL reasoners,
      * such as {@link OntModelSpec#OWL_MEM_MICRO_RULE_INF}, and external DL
@@ -426,8 +426,6 @@ public class OntTools
     /**
      * Simple data structure mapping RDF nodes to disjoint sets, and
      * pairs of resources to their LCA.
-     * @author ijd
-     *
      */
     public static class LCAIndex
     {
@@ -473,7 +471,7 @@ public class OntTools
     /**
      * A path is an application of {@link java.util.List} containing only {@link Statement}
      * objects, and in which for all adjacent elements <code>S<sub>i-1</sub></code>
-     * and  <code>S<sub>i</sub></code> where <code>i &gt; 0</code>, it is true that:
+     * and  <code>S<sub>i</sub></code>, where <code>i &gt; 0</code>, it is true that:
      * <code><pre>S<sub>i-1</sub>.getObject().equals( S<sub>i</sub>.getSubject() )</pre></code>
      */
     public static class Path
