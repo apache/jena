@@ -426,7 +426,8 @@
 #------------------------------------------------------------------
 
 # hasValue
-[hasValueRec: (?C owl:equivalentClass hasValue(?P, ?V)) -> 
+[hasValueIF: (?C owl:equivalentClass hasValue(?P, ?V)) -> 
+								[ (?x ?P ?V) <- (?x rdf:type ?C) ]
 								[ (?x rdf:type ?C) <- (?x ?P ?V) ]
 								]
 

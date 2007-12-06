@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP, all rights reserved.
  * [See end of file]
- * $Id: OWLUnitTest.java,v 1.13 2007-01-02 11:50:30 andy_seaborne Exp $
+ * $Id: OWLUnitTest.java,v 1.14 2007-12-06 12:24:27 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -23,7 +23,7 @@ import java.io.IOException;
  * Version of the OWL unit tests used during development of the mini ruleset.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.13 $ on $Date: 2007-01-02 11:50:30 $
+ * @version $Revision: 1.14 $ on $Date: 2007-12-06 12:24:27 $
  */
 public class OWLUnitTest extends TestCase {
     
@@ -133,6 +133,9 @@ public class OWLUnitTest extends TestCase {
         new TestDef("I5.24/Manifest003-mod.rdf", FB | MICRO | MINI),
         new TestDef("cardinality/Manifest005-mod.rdf", FB | MINI),
         new TestDef("cardinality/Manifest006-mod.rdf", FB | MINI),
+        
+        new TestDef("localtests/ManifestHv1.rdf", FB | MINI | MICRO),
+        new TestDef("localtests/ManifestHv2.rdf", FB | MINI | MICRO),
         
         // Needs bNode creation rule
         new TestDef("someValuesFrom/Manifest001.rdf", FB ),

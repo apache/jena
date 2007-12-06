@@ -12,6 +12,9 @@ Ontology API updates
       method OntModel.listAllOntProperties that is more robust in the
       absence of a reasoner, but potentially slower.
 
+Reasoners:
+    o Extended OWLMicro to include support for hasValue to match documentation.
+    
 Change of Behaviour in getByte/Short/Int on typed literals
 
     o The methods getByte(), getShort(), and getInt(), when applied to
