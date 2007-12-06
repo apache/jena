@@ -50,7 +50,7 @@ public class HttpQuery extends Params
     boolean forcePOST = false ;
     String queryString = null ;
     
-    static final String ENC_UTF8 = "UTF-8" ;
+    //static final String ENC_UTF8 = "UTF-8" ;
     
     /** Create a execution object for a whole model GET
      * @param serviceURL     The model
