@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            13-May-2003
  * Filename           $RCSfile: OntModelSpec.java,v $
- * Revision           $Revision: 1.51 $
+ * Revision           $Revision: 1.52 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2007-03-08 15:24:16 $
- *               by   $Author: chris-dollin $
+ * Last modified on   $Date: 2007-12-06 11:58:53 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 204, Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -26,16 +26,15 @@ package com.hp.hpl.jena.ontology;
 // Imports
 ///////////////
 
-import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.rdf.model.impl.*;
-import com.hp.hpl.jena.reasoner.*;
-import com.hp.hpl.jena.reasoner.rulesys.*;
-import com.hp.hpl.jena.reasoner.rulesys.impl.WrappedReasonerFactory;
 import com.hp.hpl.jena.assembler.*;
-import com.hp.hpl.jena.ontology.impl.*;
-import com.hp.hpl.jena.vocabulary.*;
+import com.hp.hpl.jena.ontology.impl.OntModelImpl;
+import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.reasoner.Reasoner;
+import com.hp.hpl.jena.reasoner.ReasonerFactory;
+import com.hp.hpl.jena.reasoner.rulesys.*;
 import com.hp.hpl.jena.reasoner.transitiveReasoner.TransitiveReasonerFactory;
-import com.hp.hpl.jena.shared.*;
+import com.hp.hpl.jena.shared.JenaException;
+import com.hp.hpl.jena.vocabulary.JenaModelSpec;
 
 
 /**
@@ -46,7 +45,7 @@ import com.hp.hpl.jena.shared.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModelSpec.java,v 1.51 2007-03-08 15:24:16 chris-dollin Exp $
+ * @version CVS $Id: OntModelSpec.java,v 1.52 2007-12-06 11:58:53 ian_dickinson Exp $
  */
 public class OntModelSpec extends OntModelSpecObsolete implements ModelSpec {
     // Constants
@@ -141,7 +140,7 @@ public class OntModelSpec extends OntModelSpecObsolete implements ModelSpec {
 
     /** the name of the base model in the baseModelMaker, if specified */
     protected String m_baseModelName;
-    
+
     /** the ModelGetter which will be used - eventually - for imports */
     protected ModelGetter importModelGetter;
 
@@ -220,17 +219,17 @@ public class OntModelSpec extends OntModelSpecObsolete implements ModelSpec {
 
     public boolean equals( Object other )
         { return other instanceof OntModelSpec && same( (OntModelSpec) other );}
-    
+
     private boolean same( OntModelSpec other )
         {
-        return 
+        return
             getLanguage().equals( other.getLanguage() )
             && sameReasonerFactory( other )
             && getDocumentManager().equals( other.getDocumentManager() )
             && getImportModelGetter().equals( other.getImportModelGetter() )
             ;
         }
-        
+
     private boolean sameReasonerFactory( OntModelSpec other )
         {
         ReasonerFactory rf = getReasonerFactory();
@@ -253,7 +252,7 @@ public class OntModelSpec extends OntModelSpecObsolete implements ModelSpec {
     public ModelMaker getBaseModelMaker() {
         return super.getModelMaker();
     }
-    
+
     public ModelGetter getImportModelGetter() {
         if (importModelGetter == null) importModelGetter = m_importsMaker; //  fabricateModelGetter();
         return importModelGetter;
@@ -284,7 +283,7 @@ public class OntModelSpec extends OntModelSpecObsolete implements ModelSpec {
     public void setImportModelGetter( ModelGetter mg ) {
         importModelGetter = mg;
     }
-    
+
     /**
      * <p>Initialise an OntModelSpec from an RDF description using the JenaModelSpec vocabulary. See
      * <a href="../../../../../doc/howto/modelspec.html">the modelspec howto</a>
@@ -319,7 +318,7 @@ public class OntModelSpec extends OntModelSpecObsolete implements ModelSpec {
               getReasonerFactory( description, root ),
               getLanguage( description, root )  );
     }
-    
+
     /**
         Answer the OntModelSpec described using the Jena Assembler vocabulary
         properties of <code>root</code>. If the assembled resource is not
@@ -328,11 +327,11 @@ public class OntModelSpec extends OntModelSpecObsolete implements ModelSpec {
     public static OntModelSpec assemble( Resource root )
         {
         Object assembled = Assembler.general.open( root );
-        if (!(assembled instanceof OntModelSpec)) 
+        if (!(assembled instanceof OntModelSpec))
             throw new JenaException( "assemble: expected an OntModelSpec, but got a " + assembled.getClass().getName() );
         return (OntModelSpec) assembled;
         }
-    
+
     /**
          Answer the OntModelSpec described using the Jena Assembler vocabulary
         properties of the single resource in <code>model</code> of type
@@ -466,7 +465,7 @@ public class OntModelSpec extends OntModelSpecObsolete implements ModelSpec {
     }
 
     /**
-     * <p>Answer the URI of the ontology lanuage to use when constructing
+     * <p>Answer the URI of the ontology language to use when constructing
      * models from this specification.  Well known language URI's are
      * available from the {@link ProfileRegistry}</p>
      * @return The ontology language URI
@@ -492,7 +491,7 @@ public class OntModelSpec extends OntModelSpecObsolete implements ModelSpec {
 
     /**
      * <p>Answer the language profile for this ontology specification</p>
-     * @return An ontology langauge profile object
+     * @return An ontology language profile object
      */
     public Profile getProfile() {
         return m_profile;
@@ -517,7 +516,7 @@ public class OntModelSpec extends OntModelSpecObsolete implements ModelSpec {
     public Model implementCreateModelOver( String name ) {
         return new OntModelImpl( this, maker.createModel( name, false ) );
     }
-    
+
     /**
         Add the description of this OntModelSpec to the given model under the given
         resource. This same description can be used to create an equivalent OntModelSpec.
@@ -526,16 +525,16 @@ public class OntModelSpec extends OntModelSpecObsolete implements ModelSpec {
         TODO allow the DocumentManager to be [de]serialised
         @deprecated ModelSpecs are obsolete
     */
-    public Model addDescription( Model d, Resource self )  
+    public Model addDescription( Model d, Resource self )
         {
         return addDescription
-            ( d, self, m_importsMaker, m_languageURI, 
+            ( d, self, m_importsMaker, m_languageURI,
             getDocumentManager(), m_rFactory );
         }
 
     /**
-         Answer a base model constructed according to this specificiation. This is used for the
-         "base" (ie non-imported) model for an OntModel.
+         Answer a base model constructed according to this specification. This is used for the
+         &quot;base&quot; (i.e. non-imported) model for an OntModel.
     */
     public Model createBaseModel()  {
         return ModelFactory.createDefaultModel();
