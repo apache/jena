@@ -1,0 +1,21 @@
+<rdf:RDF
+  xmlns:rdf ="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+  xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+  xmlns:owl ="http://www.w3.org/2002/07/owl#"
+  xmlns ="http://jena.hpl.hp.com/2003/03/testont"
+  xmlns:mark  ="http://jena.hpl.hp.com/2003/03/testont#"
+>
+
+<owl:Class rdf:about="#A">
+</owl:Class>
+
+<owl:Class rdf:about="#B">
+    <rdfs:subClassOf rdf:resource="#A" />
+</owl:Class>
+
+<owl:Class rdf:about="#C">
+    <rdfs:subClassOf rdf:resource="#B" />
+</owl:Class>
+
+
+</rdf:RDF>
