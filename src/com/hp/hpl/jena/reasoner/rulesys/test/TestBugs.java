@@ -5,7 +5,7 @@
  *
  * (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestBugs.java,v 1.50 2007-11-29 12:27:20 ian_dickinson Exp $
+ * $Id: TestBugs.java,v 1.51 2007-12-07 09:59:35 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -36,7 +36,7 @@ import com.hp.hpl.jena.vocabulary.*;
  * Unit tests for reported bugs in the rule system.
  *
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.50 $ on $Date: 2007-11-29 12:27:20 $
+ * @version $Revision: 1.51 $ on $Date: 2007-12-07 09:59:35 $
  */
 public class TestBugs extends TestCase {
 
@@ -54,7 +54,7 @@ public class TestBugs extends TestCase {
     public static TestSuite suite() {
         return new TestSuite( TestBugs.class );
 //        TestSuite suite = new TestSuite();
-//        suite.addTest(new TestBugs( "testDeductionListener" ));
+//        suite.addTest(new TestBugs( "testOntModelGetDeductions" ));
 //        return suite;
     }
 
@@ -902,6 +902,26 @@ public class TestBugs extends TestCase {
         }
     }
 
+    /**
+     * Problems with getDeductionsModel not rerunning prepare  at OntModel level
+     */
+    public void testOntModelGetDeductions() {
+        List rules = Rule.parseRules( "(?x rdfs:subClassOf ?y) (?i rdf:type ?x) -> (?i rdf:type ?y)." );
+        GenericRuleReasoner reasoner = new GenericRuleReasoner(rules);
+        OntModelSpec spec = new OntModelSpec(OntModelSpec.OWL_MEM);
+        spec.setReasoner(reasoner);
+        OntModel om = ModelFactory.createOntologyModel(spec);
+        OntClass A = om.createClass(PrintUtil.egNS + "A");
+        OntClass B = om.createClass(PrintUtil.egNS + "B");
+        OntResource i = om.createOntResource(PrintUtil.egNS + "i");
+        A.addSuperClass(B);
+        i.addRDFType(A);
+        Model deductions = om.getDeductionsModel();
+        i.removeRDFType(A);
+        deductions = om.getDeductionsModel();
+        assertFalse("Deductions model updating correctly", deductions.contains(i, RDF.type, B));
+    }
+    
     /**
      * Builtin which just records whether it has been called.
      * Used in implementing testGroundClosure.
