@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: FBRuleInfGraph.java,v 1.65 2007-07-13 11:06:50 der Exp $
+ * $Id: FBRuleInfGraph.java,v 1.66 2007-12-07 11:31:00 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -38,7 +38,7 @@ import org.apache.commons.logging.LogFactory;
  * for future reference).
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.65 $ on $Date: 2007-07-13 11:06:50 $
+ * @version $Revision: 1.66 $ on $Date: 2007-12-07 11:31:00 $
  */
 public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements BackwardRuleInfGraphI {
     
@@ -670,20 +670,22 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
      * the default brute force implementation by one that can reuse some of the
      * existing deductions.
      */
-    public InfGraph cloneWithPremises(Graph premises) {
-        prepare();
-        FBRuleInfGraph graph = new FBRuleInfGraph(getReasoner(), rawRules, this);
-        if (useTGCCaching) graph.setUseTGCCache();
-        graph.setDerivationLogging(recordDerivations);
-        graph.setTraceOn(traceOn);
-        // Implementation note:  whilst current tests pass its not clear that 
-        // the nested passing of FBRuleInfGraph's will correctly handle all
-        // cases of indirectly bound schema data. If we do uncover a problem here
-        // then either include the raw schema in a Union with the premises or
-        // revert of a more brute force version. 
-        graph.rebind(premises);
-        return graph;
-    }
+    // This implementatin was incomplete. By commenting it out we revert to
+    // the global brute force solution of cloning the full graph
+//    public InfGraph cloneWithPremises(Graph premises) {
+//        prepare();
+//        FBRuleInfGraph graph = new FBRuleInfGraph(getReasoner(), rawRules, this);
+//        if (useTGCCaching) graph.setUseTGCCache();
+//        graph.setDerivationLogging(recordDerivations);
+//        graph.setTraceOn(traceOn);
+//        // Implementation note:  whilst current tests pass its not clear that 
+//        // the nested passing of FBRuleInfGraph's will correctly handle all
+//        // cases of indirectly bound schema data. If we do uncover a problem here
+//        // then either include the raw schema in a Union with the premises or
+//        // revert of a more brute force version. 
+//        graph.rebind(premises);
+//        return graph;
+//    }
     
     /** 
      * Free all resources, any further use of this Graph is an error.

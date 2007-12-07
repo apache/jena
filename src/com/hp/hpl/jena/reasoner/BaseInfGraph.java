@@ -5,11 +5,12 @@
  *
  * (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: BaseInfGraph.java,v 1.46 2007-01-12 10:42:34 chris-dollin Exp $
+ * $Id: BaseInfGraph.java,v 1.47 2007-12-07 11:30:41 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner;
 
 import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.graph.compose.MultiUnion;
 import com.hp.hpl.jena.graph.compose.Union;
 import com.hp.hpl.jena.graph.impl.*;
 import com.hp.hpl.jena.shared.*;
@@ -20,7 +21,7 @@ import java.util.Iterator;
  * A base level implementation of the InfGraph interface.
  *
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.46 $ on $Date: 2007-01-12 10:42:34 $
+ * @version $Revision: 1.47 $ on $Date: 2007-12-07 11:30:41 $
  */
 public abstract class BaseInfGraph extends GraphBase implements InfGraph {
 
@@ -455,7 +456,23 @@ public abstract class BaseInfGraph extends GraphBase implements InfGraph {
      * may be able to a more efficient job.
      */
     public InfGraph cloneWithPremises(Graph premises) {
-        return getReasoner().bindSchema(getSchemaGraph()).bind(new Union(getRawGraph(), premises));
+        MultiUnion union = new MultiUnion();
+        Graph raw = getRawGraph();
+        union.addGraph( raw );
+        union.setBaseGraph( raw );
+        union.addGraph( premises );
+        Graph schema = getSchemaGraph();
+        if (schema != null) {
+            if (schema instanceof BaseInfGraph) {
+                BaseInfGraph ischema = (BaseInfGraph)schema;
+                Graph sschema = ischema.getSchemaGraph();
+                if (sschema != null) union.addGraph( sschema );
+                Graph rschema = ischema.getRawGraph();
+                if (rschema != null) union.addGraph( rschema );
+            }
+            
+        }
+        return getReasoner().bind(union);
     }
 
     /**
