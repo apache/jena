@@ -30,6 +30,7 @@ public class Timer
         inTimer = true ;
     }
 
+    /** Return time in millisecods */
     public long endTimer()
     { 
         if ( ! inTimer )
