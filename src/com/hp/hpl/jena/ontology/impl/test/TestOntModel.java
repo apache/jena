@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            21-Jun-2003
  * Filename           $RCSfile: TestOntModel.java,v $
- * Revision           $Revision: 1.27 $
+ * Revision           $Revision: 1.28 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2007-12-07 09:49:32 $
+ * Last modified on   $Date: 2007-12-07 10:52:01 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
@@ -32,6 +32,7 @@ import com.hp.hpl.jena.ontology.*;
 import com.hp.hpl.jena.ontology.impl.*;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.rdf.model.test.*;
+import com.hp.hpl.jena.reasoner.rulesys.test.TestBugs;
 import com.hp.hpl.jena.reasoner.test.TestUtil;
 import com.hp.hpl.jena.shared.PrefixMapping;
 import com.hp.hpl.jena.vocabulary.*;
@@ -46,7 +47,7 @@ import com.hp.hpl.jena.vocabulary.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestOntModel.java,v 1.27 2007-12-07 09:49:32 ian_dickinson Exp $
+ * @version CVS $Id: TestOntModel.java,v 1.28 2007-12-07 10:52:01 ian_dickinson Exp $
  */
 public class TestOntModel
     extends ModelTestBase
@@ -1021,7 +1022,9 @@ public class TestOntModel
         assertTrue( m.contains( c, RDFS.subClassOf, a ) );
     }
 
-    /** Getting the deductions model of an OntModel */
+    /** Getting the deductions model of an OntModel
+     * see also {@link TestBugs#testOntModelGetDeductions()}
+     * */
     public void testGetDeductionsModel0() {
         OntModel m = ModelFactory.createOntologyModel( OntModelSpec.OWL_MEM_MICRO_RULE_INF );
         OntClass a = m.createClass( NS + "A" );
@@ -1031,7 +1034,6 @@ public class TestOntModel
         b.addSubClass( c );
 
         // we see the entailments only in the deductions model
-        System.out.println( "Before:" );
         Model dm = m.getDeductionsModel();
         assertTrue( dm.contains( OWL.Nothing, RDFS.subClassOf, a ) );
         assertTrue( dm.contains( OWL.Nothing, RDFS.subClassOf, c ) );
@@ -1042,7 +1044,6 @@ public class TestOntModel
 
         dm = m.getDeductionsModel();
 
-        // prior to fixing bugrep 1835879, this test would fail
         assertFalse( dm.contains( OWL.Nothing, RDFS.subClassOf, a ) );
         assertTrue( dm.contains( OWL.Nothing, RDFS.subClassOf, c ) );
     }

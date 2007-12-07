@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            22 Feb 2003
  * Filename           $RCSfile: OntModelImpl.java,v $
- * Revision           $Revision: 1.102 $
+ * Revision           $Revision: 1.103 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2007-12-07 09:59:33 $
- *               by   $Author: der $
+ * Last modified on   $Date: 2007-12-07 10:52:03 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -54,7 +54,7 @@ import org.apache.commons.logging.LogFactory;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModelImpl.java,v 1.102 2007-12-07 09:59:33 der Exp $
+ * @version CVS $Id: OntModelImpl.java,v 1.103 2007-12-07 10:52:03 ian_dickinson Exp $
  */
 public class OntModelImpl
     extends ModelCom
@@ -2662,31 +2662,22 @@ public class OntModelImpl
      * @return The derivations model, if one is defined, or else null
      */
     public Model getDeductionsModel() {
-        // old code - can be pruned once we have the unit test sorted out
-        // TODO: complete the unit test for bug 1835879
-//        if (m_deductionsModel == null) {
-//            InfGraph infGraph = getInfGraph();
-//            if (infGraph != null) {
-//                Graph deductionsGraph = infGraph.getDeductionsGraph();
-//                if (deductionsGraph != null) {
-//                    m_deductionsModel = ModelFactory.createModelForGraph( deductionsGraph );
-//                }
-//            }
-//        }
-//        return m_deductionsModel;
-        Model deductions = null;
-
-        InfGraph infGraph = getInfGraph();
-        if (infGraph != null) {
-            Graph deductionsGraph = infGraph.getDeductionsGraph();
-            if (deductionsGraph != null) {
-                deductions = ModelFactory.createModelForGraph( deductionsGraph );
+        if (m_deductionsModel == null) {
+            InfGraph infGraph = getInfGraph();
+            if (infGraph != null) {
+                Graph deductionsGraph = infGraph.getDeductionsGraph();
+                if (deductionsGraph != null) {
+                    m_deductionsModel = ModelFactory.createModelForGraph( deductionsGraph );
+                }
             }
-        } else {
+        }
+        else {
+            // ensure that the cached model sees the updated changes from the
+            // underlying reasoner graph
             getInfGraph().prepare();
         }
 
-        return deductions;
+        return m_deductionsModel;
     }
 
 
