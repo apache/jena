@@ -14,6 +14,8 @@ Ontology API updates
 
 Reasoners:
     o Extended OWLMicro to include support for hasValue to match documentation.
+    o Fixed problem with OntModel.getDeductionsModel not always triggering prepare.
+    o Fixed problem with reasoner configuration when using typed literals
     
 Change of Behaviour in getByte/Short/Int on typed literals
 

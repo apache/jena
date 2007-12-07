@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestGenericRules.java,v 1.23 2007-01-02 11:50:31 andy_seaborne Exp $
+ * $Id: TestGenericRules.java,v 1.24 2007-12-07 12:00:02 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -34,7 +34,7 @@ import org.apache.commons.logging.LogFactory;
  * enough to validate the packaging.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.23 $ on $Date: 2007-01-02 11:50:31 $
+ * @version $Revision: 1.24 $ on $Date: 2007-12-07 12:00:02 $
  */
 public class TestGenericRules extends TestCase {
     
@@ -267,6 +267,24 @@ public class TestGenericRules extends TestCase {
         assertTrue("TGC enabled correctly", im.contains(Ac, RDFS.subClassOf, Cc));
         
      }
+    
+    /**
+     * Check that the use of typed literals in the configuration also works
+     */
+    public void testTypedConfigParameters() {
+        Model m = ModelFactory.createDefaultModel();
+        Resource configuration= m.createResource(GenericRuleReasonerFactory.URI);
+        configuration.addProperty(ReasonerVocabulary.PROPenableTGCCaching, m.createTypedLiteral(Boolean.TRUE));
+        
+        GenericRuleReasoner reasoner = (GenericRuleReasoner)GenericRuleReasonerFactory.theInstance().create(configuration);
+        InfModel im = ModelFactory.createInfModel(reasoner, ModelFactory.createDefaultModel());
+        Resource Ac = im.createResource(PrintUtil.egNS + "A");
+        Resource Bc = im.createResource(PrintUtil.egNS + "B");
+        Resource Cc = im.createResource(PrintUtil.egNS + "C");
+        im.add(Ac, RDFS.subClassOf, Bc);
+        im.add(Bc, RDFS.subClassOf, Cc);
+        assertTrue("TGC enabled correctly", im.contains(Ac, RDFS.subClassOf, Cc));
+    }
     
     /**
      * Test control of functor filtering
