@@ -1797,6 +1797,15 @@ and the call will fail. Only useable in rule bodies.</div>
         should be tabled by the backward engine.</div>
     </td>
   </tr>
+  <tr> 
+    <td width="41%">hide(p)</td>
+    <td width="59%"> 
+      <div align="left">Declares that statements involving the predicate p should be hidden.
+Queries to the model will not report such statements. This is useful to enable non-monotonic
+forward rules to define flag predicates which are only used for inference control and
+do not "pollute" the inference results.</div>
+    </td>
+  </tr>
 </table>
 <p>[<a href="#rules">Rule index</a>] [<a href="#index">main index</a>]</p>
 <h2></h2>
@@ -2053,7 +2062,7 @@ while (i.hasNext()) {
 <hr>
 <p>
   <i>Author: Dave Reynolds<br>
-  Last modification: $Id: index.html,v 1.37 2007-09-19 07:53:13 der Exp $</i>
+  Last modification: $Id: index.html,v 1.38 2007-12-07 12:14:17 der Exp $</i>
 </p>
 </body>
 </html>
