@@ -78,7 +78,9 @@ public class IndentedWriter
     
     public void print(Object obj) 
     {
-        String s = obj.toString() ;
+        String s = "null" ;
+        if ( obj != null )
+            s = obj.toString() ;
         for ( int i = 0 ; i < s.length() ; i++ )
             printChWorker(s.charAt(i)) ;
     }
