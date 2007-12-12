@@ -1,9 +1,8 @@
-PREFIX :    <http://example/>
-PREFIX arq: <urn:x-arq:>
+SELECT DISTINCT *
+    WHERE
+    {
 
-SELECT *
-{
-   ?s :p ?o .
-}
-
-
+                ?a a <http://purl.org/dc/dcmitype/Collection> .
+                ?b a <http://purl.org/dc/dcmitype/Collection> .
+                OPTIONAL { ?a ?link_type ?b . }
+    }
