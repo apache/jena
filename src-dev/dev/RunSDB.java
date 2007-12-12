@@ -19,37 +19,112 @@ import java.sql.Connection;
 
 import arq.cmd.CmdUtils;
 
+import com.hp.hpl.jena.query.Dataset;
+import com.hp.hpl.jena.query.DatasetFactory;
+import com.hp.hpl.jena.query.Query;
+import com.hp.hpl.jena.query.QueryExecution;
+import com.hp.hpl.jena.query.QueryExecutionFactory;
+import com.hp.hpl.jena.query.QueryFactory;
+import com.hp.hpl.jena.query.ResultSetFormatter;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.RDFNode;
-import com.hp.hpl.jena.util.FileManager;
-
-import com.hp.hpl.jena.sparql.algebra.Op;
-import com.hp.hpl.jena.sparql.core.Prologue;
-import com.hp.hpl.jena.sparql.core.Quad;
-import com.hp.hpl.jena.sparql.resultset.ResultsFormat;
-import com.hp.hpl.jena.sparql.sse.SSE;
-import com.hp.hpl.jena.sparql.util.QueryExecUtils;
-
-import com.hp.hpl.jena.query.*;
-
 import com.hp.hpl.jena.sdb.SDB;
 import com.hp.hpl.jena.sdb.SDBFactory;
 import com.hp.hpl.jena.sdb.Store;
 import com.hp.hpl.jena.sdb.compiler.OpSQL;
 import com.hp.hpl.jena.sdb.compiler.QC;
-import com.hp.hpl.jena.sdb.core.sqlnode.*;
+import com.hp.hpl.jena.sdb.core.sqlnode.GenerateSQL;
+import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
+import com.hp.hpl.jena.sdb.core.sqlnode.SqlRename;
+import com.hp.hpl.jena.sdb.core.sqlnode.SqlTransformer;
+import com.hp.hpl.jena.sdb.core.sqlnode.TransformSelectBlock;
 import com.hp.hpl.jena.sdb.sql.JDBC;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.store.DatabaseType;
 import com.hp.hpl.jena.sdb.store.LayoutType;
 import com.hp.hpl.jena.sdb.store.StoreConfig;
 import com.hp.hpl.jena.sdb.store.StoreFactory;
+import com.hp.hpl.jena.sdb.util.StrUtils;
+import com.hp.hpl.jena.sparql.algebra.Op;
+import com.hp.hpl.jena.sparql.core.Prologue;
+import com.hp.hpl.jena.sparql.core.Quad;
+import com.hp.hpl.jena.sparql.resultset.ResultsFormat;
+import com.hp.hpl.jena.sparql.sse.SSE;
+import com.hp.hpl.jena.sparql.util.QueryExecUtils;
+import com.hp.hpl.jena.update.GraphStore;
+import com.hp.hpl.jena.update.GraphStoreFactory;
+import com.hp.hpl.jena.update.UpdateFactory;
+import com.hp.hpl.jena.update.UpdateRequest;
+import com.hp.hpl.jena.util.FileManager;
 
 public class RunSDB
 {
     static { CmdUtils.setLog4j() ; CmdUtils.setN3Params() ; }
     public static void main(String[]argv)
     {
+        sdb.sdbscript.main("script.rb") ; System.exit(0) ;
+        
+        
+        String updateCmd = StrUtils.strjoin("\n",
+            "DELETE { <http://en.wikipedia.org/wiki/Tony_Benn> <http://purl.org/dc/elements/1.1/publisher> ?all  }" ,
+            "WHERE { <http://en.wikipedia.org/wiki/Tony_Benn>  <http://purl.org/dc/elements/1.1/publisher> ?all . }" ,
+            "INSERT { <http://en.wikipedia.org/wiki/Tony_Benn> <http://purl.org/dc/elements/1.1/publisher> 'MyWikipedia'^^<http://www.w3.org/2001/XMLSchema#string>  }");
+
+        Store store = StoreFactory.create("sdb.ttl") ;
+        store.getTableFormatter().truncate() ;
+        
+        Model model = SDBFactory.connectNamedModel(store, "http://test.com/test.rdf") ;
+        FileManager.get().readModel(model, "D.rdf") ;
+        
+        Dataset ds = SDBFactory.connectDataset(store) ;
+        
+        //Query query = QueryFactory.create("SELECT ?g ?s ?p ?o { GRAPH ?g {?s ?p ?o} }") ;
+        
+        if ( true )
+        {
+            System.out.println("After load: dump quads") ;
+            Query query = QueryFactory.create("SELECT ?g ?s ?p ?o { GRAPH ?g {?s ?p ?o} }") ;
+            QueryExecution qExec = QueryExecutionFactory.create(query, ds) ;
+            ResultSetFormatter.out(qExec.execSelect()) ;
+            qExec.close();
+        }
+        if ( true )
+        {
+            System.out.println("After load: dump model") ;
+            Query query = QueryFactory.create("SELECT ?s ?p ?o { ?s ?p ?o }") ;
+            QueryExecution qExec = QueryExecutionFactory.create(query, model) ;
+            ResultSetFormatter.out(qExec.execSelect()) ;
+            qExec.close();
+        }
+        
+        GraphStore graphStore = GraphStoreFactory.create() ;
+        graphStore.setDefaultGraph(model.getGraph()) ;
+        UpdateRequest update = UpdateFactory.create(updateCmd) ;
+        update.exec(graphStore) ;
+        
+        if ( true )
+        {
+            System.out.println("After update: dump quads") ;
+            Query query = QueryFactory.create("SELECT ?g ?s ?p ?o { GRAPH ?g {?s ?p ?o} }") ;
+            QueryExecution qExec = QueryExecutionFactory.create(query, ds) ;
+            ResultSetFormatter.out(qExec.execSelect()) ;
+            qExec.close();
+        }
+        if ( true )
+        {
+            System.out.println("After update: dump model") ;
+            Query query = QueryFactory.create("SELECT ?s ?p ?o { ?s ?p ?o }") ;
+            QueryExecution qExec = QueryExecutionFactory.create(query, model) ;
+            ResultSetFormatter.out(qExec.execSelect()) ;
+            qExec.close();
+        }
+        
+        
+        
+        
+        store.close() ;
+        System.exit(0) ;
+        
         sdb.sdbload.main(new String[]{"--sdb=sdb.ttl", "D.ttl"}) ;
         
         sdb.query.main(new String[]{"--sdb=sdb.ttl", "SELECT * { GRAPH ?g {} }"}) ;

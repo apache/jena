@@ -15,14 +15,17 @@ sdb:DatasetStore rdfs:subClassOf ja:RDFDataset .
 
 <#conn> rdf:type sdb:SDBConnection ;
 
-     sdb:sdbHost        "localhost" ;
-     sdb:sdbType        "derby" ;
-     sdb:sdbName        "DB/SDB2" ;
+##      sdb:sdbHost        "localhost" ;
+##      sdb:sdbType        "derby" ;
+##      sdb:sdbName        "DB/SDB2" ;
+
+    sdb:sdbType       "MySQL" ;
+    sdb:sdbHost       "localhost" ;
+    sdb:sdbName       "SDB2" ;
 
 ##     sdb:sdbType        "postgresql" ;
 ##     sdb:sdbHost        "localhost" ;
 ##     sdb:sdbName        "SDB2" ;
-##     sdb:driver         "org.apache.derby.jdbc.EmbeddedDriver" ;
 
 ##     sdb:sdbType        "MSSQLServerExpress" ;
 ##     sdb:sdbHost        "localhost" ;
