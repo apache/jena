@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            14-Apr-2003
  * Filename           $RCSfile: schemagen.java,v $
- * Revision           $Revision: 1.52 $
+ * Revision           $Revision: 1.53 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2007-12-13 15:39:12 $
+ * Last modified on   $Date: 2007-12-13 17:33:38 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
@@ -52,7 +52,7 @@ import com.hp.hpl.jena.shared.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: schemagen.java,v 1.52 2007-12-13 15:39:12 ian_dickinson Exp $
+ * @version CVS $Id: schemagen.java,v 1.53 2007-12-13 17:33:38 ian_dickinson Exp $
  */
 public class schemagen {
     // Constants
@@ -187,6 +187,9 @@ public class schemagen {
     /** Option to exclude instances of classes in the allowed namespaces, where the individuals themselves are in other namespaces; use <code>--strictIndividuals</code> on command line; use <code>sgen:strictIndividuals</code> in config file */
     protected static final Object OPT_STRICT_INDIVIDUALS = new Object();
 
+    /** Option to include the ontology source code in the generated file */
+    protected static final Object OPT_INCLUDE_SOURCE = new Object();
+
     /** List of Java reserved keywords, see <a href="http://java.sun.com/docs/books/tutorial/java/nutsandbolts/_keywords.html">this list</a>. */
     public static final String[] JAVA_KEYWORDS = {
         "abstract",    "continue",    "for",         "new",         "switch",
@@ -265,6 +268,7 @@ public class schemagen {
         {OPT_DOS,                 new OptionDefinition( "--dos", "dos" )},
         {OPT_USE_INF,             new OptionDefinition( "--inference", "inference" )},
         {OPT_STRICT_INDIVIDUALS,  new OptionDefinition( "--strictIndividuals", "strictIndividuals" )},
+        {OPT_INCLUDE_SOURCE,      new OptionDefinition( "--includeSource", "includeSource" )},
     };
 
     /** Stack of replacements to apply */
@@ -470,6 +474,9 @@ public class schemagen {
             if (isTrue( OPT_ONTOLOGY )) {
                 writeln( 0, "import com.hp.hpl.jena.ontology.*;" );
             }
+            if (isTrue( OPT_INCLUDE_SOURCE)) {
+                writeln( 0, "import java.io.ByteArrayInputStream;" );
+            }
         }
     }
 
@@ -669,6 +676,12 @@ public class schemagen {
 
         if (useOntology()) {
             buf.append( "import com.hp.hpl.jena.ontology.*;" );
+            buf.append( m_nl );
+        }
+
+        if (includeSource()) {
+            buf.append( "import java.io.ByteArrayInputStream;" );
+            buf.append( m_nl );
         }
 
         return buf.toString();
@@ -724,6 +737,11 @@ public class schemagen {
         return isTrue( OPT_NO_COMMENTS );
     }
 
+    /** Answer true if ontology source code is to be included */
+    protected boolean includeSource() {
+        return isTrue( OPT_INCLUDE_SOURCE );
+    }
+
     /** Convert s to a legal Java identifier; capitalise first char if cap is true */
     protected String asLegalJavaID( String s, boolean cap ) {
         StringBuffer buf = new StringBuffer();
@@ -774,6 +792,7 @@ public class schemagen {
     /** Write the declarations at the head of the class */
     protected void writeInitialDeclarations() {
         writeModelDeclaration();
+        writeSource();
         writeNamespace();
 
         if (hasValue( OPT_DECLARATIONS )) {
@@ -800,6 +819,42 @@ public class schemagen {
         }
 
         writeln( 1 );
+    }
+
+    /** Write the source code of the input model into the file itself */
+    protected void writeSource() {
+        if (includeSource()) {
+            // first save a copy of the source in compact form into a buffer
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            m_source.write( bos, "N3" );
+            String output = bos.toString();
+
+            // now we embed each line of the source in the output
+            writeln( 1, "private static final String SOURCE = " );
+            boolean first = true;
+
+            StringTokenizer st = new StringTokenizer( output, m_nl );
+            while (st.hasMoreTokens()) {
+                write( 2, first ? "   " : " + " );
+                writeln( 2, protectQuotes( st.nextToken() ) );
+                first = false;
+            }
+
+            // then we reference the string constant when reading the source
+            // note that we avoid StringReader due to charset encoding issues
+            writeln( 1, ";" );
+            writeln( 0, "" );
+            writeln( 1, "/** Read the ontology definition into the source model */ " );
+            writeln( 1, "static { " );
+            writeln( 2, "m_model.read( new ByteArrayInputStream( SOURCE.getBytes() ), null, \"N3\" );" );
+            writeln( 1, "}" );
+            writeln( 0, "" );
+        }
+    }
+
+    /** Protect any double quotes in the given string so that it's a legal Java String */
+    private String protectQuotes( String s ) {
+        return "\"" + s.replaceAll( "\"", "\\\\\"" ) + "\\n\"";
     }
 
     /** Write the string and resource that represent the namespace */

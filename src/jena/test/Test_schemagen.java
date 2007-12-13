@@ -6,10 +6,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            8 Sep 2006
  * Filename           $RCSfile: Test_schemagen.java,v $
- * Revision           $Revision: 1.6 $
+ * Revision           $Revision: 1.7 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2007-12-13 15:39:09 $
+ * Last modified on   $Date: 2007-12-13 17:33:29 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
@@ -46,7 +46,7 @@ import com.hp.hpl.jena.util.FileUtils;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: Test_schemagen.java,v 1.6 2007-12-13 15:39:09 ian_dickinson Exp $
+ * @version CVS $Id: Test_schemagen.java,v 1.7 2007-12-13 17:33:29 ian_dickinson Exp $
  */
 public class Test_schemagen
     extends TestCase
@@ -76,7 +76,6 @@ public class Test_schemagen
     /** This test used to fail with an abort, but we now guess the NS based on prevalence */
     public void testNoBaseURI0() throws Exception {
         String SOURCE = PREFIX + "ex:A a owl:Class .";
-        boolean ex = false;
         testSchemagenOutput( SOURCE, null,
                              new String[] {},
                              new String[] {".*public static final Resource A =.*"},
@@ -430,6 +429,23 @@ public class Test_schemagen
                              new String[] {".*[^\r]"} );
     }
 
+    public void testIncludeSource0() throws Exception {
+        String SOURCE = PREFIX + "ex:A a owl:Class . ex:i a ex:A . ex:p a owl:ObjectProperty .";
+        testSchemagenOutput( SOURCE, null,
+                             new String[] {"-a", "http://example.com/sg#", "--owl", "--includeSource"},
+                             new String[] {".*private static final String SOURCE.*",
+                                           ".*ex:A *a *owl:Class.*"},
+                             new String[] {} );
+    }
+
+    public void testIncludeSource1() throws Exception {
+        String SOURCE = PREFIX + "ex:A a owl:Class ; rdfs:comment \"comment\".";
+        testSchemagenOutput( SOURCE, null,
+                             new String[] {"-a", "http://example.com/sg#", "--owl", "--includeSource"},
+                             new String[] {".*\\\\\"comment\\\\\".*\""},
+                             new String[] {} );
+    }
+
 
     // Internal implementation methods
     //////////////////////////////////
@@ -580,6 +596,7 @@ public class Test_schemagen
         // override the behaviours from schemagen
         protected void selectInput() {
             m_source.add( m_auxSource );
+            m_source.setNsPrefixes( m_auxSource );
         }
         protected void selectOutput() {
             // call super to allow option processing
