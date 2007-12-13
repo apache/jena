@@ -1,6 +1,11 @@
 Release Notes
 =============
 
+Schemagen
+    o Member variables (i.e. for classes, properties and individuals) are now
+      lexically sorted to create more stability in change-sets when generated
+      Java classes are placed under source code control.
+
 Ontology API updates
     o Added methods to Individual to allow testing and manipulation of the
       classes to which an individual belongs.

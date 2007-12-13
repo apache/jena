@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            14-Apr-2003
  * Filename           $RCSfile: schemagen.java,v $
- * Revision           $Revision: 1.50 $
+ * Revision           $Revision: 1.51 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2007-06-11 13:34:47 $
- *               by   $Author: chris-dollin $
+ * Last modified on   $Date: 2007-12-13 13:47:28 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -37,6 +37,7 @@ import org.apache.xerces.util.XMLChar;
 import com.hp.hpl.jena.ontology.*;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.util.FileManager;
+import com.hp.hpl.jena.util.iterator.*;
 import com.hp.hpl.jena.vocabulary.*;
 import com.hp.hpl.jena.shared.*;
 
@@ -51,7 +52,7 @@ import com.hp.hpl.jena.shared.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: schemagen.java,v 1.50 2007-06-11 13:34:47 chris-dollin Exp $
+ * @version CVS $Id: schemagen.java,v 1.51 2007-12-13 13:47:28 ian_dickinson Exp $
  */
 public class schemagen {
     // Constants
@@ -302,7 +303,7 @@ public class schemagen {
 
     /** Read the configuration parameters and do setup */
     protected void go( String[] args ) {
-        // save the command line params
+        // save the command line parameters
         m_cmdLineArgs = Arrays.asList( args );
 
         // check for user requesting help
@@ -322,7 +323,7 @@ public class schemagen {
             FileManager.get().readModel( m_config, configURL );
         }
         catch (Exception e) {
-            // if the user left the default config uri in place, it's not an error to fail to read it
+            // if the user left the default config URI in place, it's not an error to fail to read it
             if (!configURL.equals( DEFAULT_CONFIG_URI )) {
                 abort( "Failed to read configuration from URI " + configURL, e );
             }
@@ -377,7 +378,7 @@ public class schemagen {
     protected void determineLanguage() {
         OntModelSpec s = null;
         if (isTrue( OPT_LANG_DAML )) {
-            // daml language specified
+            // DAML language specified
             if (isTrue( OPT_USE_INF )) {
                 s = OntModelSpec.DAML_MEM_RULE_INF;
             }
@@ -386,7 +387,7 @@ public class schemagen {
             }
         }
         else if (isTrue( OPT_LANG_RDFS )) {
-            // rdfs language specified
+            // RDFS language specified
             if (isTrue( OPT_USE_INF )) {
                 s = OntModelSpec.RDFS_MEM_RDFS_INF;
             }
@@ -409,7 +410,7 @@ public class schemagen {
         m_source.getDocumentManager().setProcessImports( false );
     }
 
-    /** Identify the URL that is to be read in and translated to a vocab file, and load the source into the source model */
+    /** Identify the URL that is to be read in and translated to a vocabulary file, and load the source into the source model */
     protected void selectInput() {
         if (!hasResourceValue( OPT_INPUT )) {
             usage();
@@ -551,7 +552,7 @@ public class schemagen {
         for (Iterator i = m_cmdLineArgs.iterator(); i.hasNext(); ) {
             String s = (String) i.next();
             if (s.equals( opt.m_cmdLineForm )) {
-                // next iter value is the arg value
+                // next iterator value is the arg value
                 values.add( i.next() );
             }
         }
@@ -673,7 +674,7 @@ public class schemagen {
         return buf.toString();
     }
 
-    /** Determine the class name of the vocabulary from the uri */
+    /** Determine the class name of the vocabulary from the URI */
     protected String getClassName() {
         // if a class name is given, just use that
         if (hasValue( OPT_CLASSNAME )) {
@@ -728,9 +729,9 @@ public class schemagen {
         StringBuffer buf = new StringBuffer();
         int i = 0;
 
-        // treat the first character specially - must be able to start a Java ID, may have to upcase
+        // treat the first character specially - must be able to start a Java ID, may have to up-case
         try {
-            for (; !Character.isJavaIdentifierStart( s.charAt( i )); i++) {}
+            for (; !Character.isJavaIdentifierStart( s.charAt( i )); i++) { /**/ }
         }
         catch (StringIndexOutOfBoundsException e) {
             System.err.println( "Could not identify legal Java identifier start character in '" + s + "', replacing with __" );
@@ -857,7 +858,7 @@ public class schemagen {
             boolean endsWithNCNameCh = XMLChar.isNCName( ch );
             uri = endsWithNCNameCh ? uri + "#" : uri;
 
-            // save the namespace URI as the main included uri for the filter
+            // save the namespace URI as the main included URI for the filter
             m_includeURI.add( uri );
 
             return uri;
@@ -898,7 +899,7 @@ public class schemagen {
         String template = hasValue( OPT_PROP_TEMPLATE ) ?  getValue( OPT_PROP_TEMPLATE ) : DEFAULT_TEMPLATE;
 
         if (!isTrue( OPT_LANG_RDFS )) {
-            for (Iterator i = m_source.listObjectProperties(); i.hasNext(); ) {
+            for (Iterator i = sorted( m_source.listObjectProperties() ); i.hasNext(); ) {
                 writeValue( (Resource) i.next(), template, "ObjectProperty", "createObjectProperty", "_PROP" );
             }
         }
@@ -909,7 +910,7 @@ public class schemagen {
         String template = hasValue( OPT_PROP_TEMPLATE ) ?  getValue( OPT_PROP_TEMPLATE ) : DEFAULT_TEMPLATE;
 
         if (!isTrue( OPT_LANG_RDFS )) {
-            for (Iterator i = m_source.listDatatypeProperties(); i.hasNext(); ) {
+            for (Iterator i = sorted( m_source.listDatatypeProperties() ); i.hasNext(); ) {
                 writeValue( (Resource) i.next(), template, "DatatypeProperty", "createDatatypeProperty", "_PROP" );
             }
         }
@@ -920,7 +921,7 @@ public class schemagen {
         String template = hasValue( OPT_PROP_TEMPLATE ) ?  getValue( OPT_PROP_TEMPLATE ) : DEFAULT_TEMPLATE;
 
         if (!isTrue( OPT_LANG_RDFS )) {
-            for (Iterator i = m_source.listAnnotationProperties(); i.hasNext(); ) {
+            for (Iterator i = sorted( m_source.listAnnotationProperties() ); i.hasNext(); ) {
                 writeValue( (Resource) i.next(), template, "AnnotationProperty", "createAnnotationProperty", "_PROP" );
             }
         }
@@ -943,11 +944,17 @@ public class schemagen {
             props = new Resource[] {RDF.Property};
         }
 
-        // now write the properties
+        // collect the properties to be written
+        List propertyResources = new ArrayList();
         for (int j = 0;  j < props.length; j++) {
             for (StmtIterator i = m_source.listStatements( null, RDF.type, props[j] ); i.hasNext(); ) {
-                writeValue( i.nextStatement().getSubject(), template, propType, "create" + propType, "_PROP" );
+                propertyResources.add( i.nextStatement().getSubject() );
             }
+        }
+
+        // now write the properties
+        for (Iterator i = sorted( propertyResources ); i.hasNext(); ) {
+            writeValue( (Resource) i.next(), template, propType, "create" + propType, "_PROP" );
         }
     }
 
@@ -973,7 +980,7 @@ public class schemagen {
     protected void writeOntClasses() {
         String template = hasValue( OPT_CLASS_TEMPLATE ) ?  getValue( OPT_CLASS_TEMPLATE ) : DEFAULT_TEMPLATE;
 
-        for (Iterator i = m_source.listClasses(); i.hasNext(); ) {
+        for (Iterator i = sorted( m_source.listClasses() ); i.hasNext(); ) {
             writeValue( (Resource) i.next(), template, "OntClass", "createClass", "_CLASS" );
         }
     }
@@ -991,8 +998,15 @@ public class schemagen {
             cls = RDFS.Class;
         }
 
-        for (StmtIterator i = m_source.listStatements( null, RDF.type, cls ); i.hasNext(); ) {
-            writeValue( i.nextStatement().getSubject(), template, "Resource", "createResource", "_CLASS" );
+        // collect the classes to list
+        List classes = m_source.listStatements( null, RDF.type, cls ).mapWith( new Map1() {
+                                                public Object map1( Object o ) {
+                                                    return ((Statement) o).getSubject();
+                                                }}
+                                              ).toList();
+
+        for (Iterator i = sorted( classes ); i.hasNext(); ) {
+            writeValue( (Resource) i.next(), template, "Resource", "createResource", "_CLASS" );
         }
     }
 
@@ -1018,34 +1032,21 @@ public class schemagen {
     protected void writeOntIndividuals() {
         String template = hasValue( OPT_INDIVIDUAL_TEMPLATE ) ?  getValue( OPT_INDIVIDUAL_TEMPLATE ) : DEFAULT_INDIVIDUAL_TEMPLATE;
 
-        for (StmtIterator i = m_source.listStatements( null, RDF.type, (RDFNode) null ); i.hasNext(); ) {
-            Statement candidate = i.nextStatement();
+        for (Iterator i = selectIndividuals(); i.hasNext(); ) {
+            Individual ind = (Individual) ((Resource) i.next()).as( Individual.class );
 
-            if (candidate.getObject() instanceof Resource) {
-                Resource candObj = (Resource)candidate.getObject();
+            // do we have a local class resource
+            Resource cls = ind.getOntClass();
+            if (cls == null) { cls = OWL.Thing; }
 
-                if (!candObj.isAnon()) {
-                    String uri = candObj.getURI();
+            String varName = (String) m_resourcesToNames.get( cls );
+            String valType = (varName != null) ? varName : "m_model.createClass( \"" + cls.getURI() + "\" )";
 
-                    for (Iterator j = m_includeURI.iterator();  j.hasNext(); ) {
-                        if (uri.startsWith( (String) j.next() )) {
-                            // the subject has an included type
-                            Resource ind = candidate.getSubject();
+            // push the individuals type onto the stack
+            addReplacementPattern( "valtype", valType );
+            writeValue( ind, template, "Individual", "createIndividual", "_INSTANCE" );
+            pop( 1 );
 
-                            // do we have a local class resource
-                            String varName = (String) m_resourcesToNames.get( candidate.getObject() );
-                            String valType = (varName != null) ? varName : "m_model.createClass( \"" + uri + "\" )";
-
-                            // push the individuals type onto the stack
-                            addReplacementPattern( "valtype", valType );
-                            writeValue( ind, template, "Individual", "createIndividual", "_INSTANCE" );
-                            pop( 1 );
-
-                            break;
-                        }
-                    }
-                }
-            }
         }
     }
 
@@ -1053,26 +1054,49 @@ public class schemagen {
     protected void writeRDFIndividuals() {
         String template = hasValue( OPT_INDIVIDUAL_TEMPLATE ) ?  getValue( OPT_INDIVIDUAL_TEMPLATE ) : DEFAULT_TEMPLATE;
 
+        for (Iterator i = selectIndividuals(); i.hasNext(); ) {
+            writeValue( (Resource) i.next(), template, "Resource", "createResource", "_INSTANCE" );
+        }
+    }
+
+    /** Answer an iterator over the individuals selected for output */
+    protected ExtendedIterator selectIndividuals() {
+        List candidates = new ArrayList();
         for (StmtIterator i = m_source.listStatements( null, RDF.type, (RDFNode) null ); i.hasNext(); ) {
             Statement candidate = i.nextStatement();
 
-            if (candidate.getObject() instanceof Resource) {
+            if (candidate.getObject().isResource()) {
                 Resource candObj = candidate.getResource();
+                Resource candSubj = candidate.getSubject();
 
-                if (!candObj.isAnon()) {
-                    String uri = candObj.getURI();
-
-                    for (Iterator j = m_includeURI.iterator();  j.hasNext(); ) {
-                        if (uri.startsWith( (String) j.next() )) {
-                            // the subject of the sentence has a type that's on our include list
-                            writeValue( candidate.getSubject(), template, "Resource", "createResource", "_INSTANCE" );
-
-                            break;
-                        }
-                    }
+                // note that whether candSubj is included is tested later on by {@link #filter}
+                if (!candSubj.isAnon() && isIncluded( candObj )) {
+                    candidates.add( candSubj );
                 }
             }
         }
+
+        return sorted( candidates );
+    }
+
+    /**
+     * Answer true if the given resource is accepted for presentation in the output, which
+     * is true iff it is a URI node, whose namespace is one of the accepted namespaces in
+     * {@link #m_includeURI}.
+     * @param r A resource to test
+     * @return True if the resource is to be included in the generated output
+     */
+    protected boolean isIncluded( Resource r ) {
+        boolean accepted = false;
+
+        if (!r.isAnon()) {
+            String uri = r.getURI();
+            for (Iterator j = m_includeURI.iterator();  !accepted && j.hasNext(); ) {
+                accepted = uri.startsWith( (String) j.next() );
+            }
+        }
+
+        return accepted;
     }
 
     /** Write the value declaration out using the given template, optionally creating comments */
@@ -1102,13 +1126,12 @@ public class schemagen {
         return r.hasProperty( RDFS.comment )  || r.hasProperty( DAML_OIL.comment );
     }
 
-    /** Answer all of the commentage on the given resource, as a string */
+    /** Answer all of the commentary on the given resource, as a string */
     protected String getComment( Resource r ) {
         StringBuffer comment = new StringBuffer();
 
         // collect any RDFS or DAML comments attached to the node
         for (NodeIterator ni = m_source.listObjectsOfProperty( r, RDFS.comment );  ni.hasNext(); ) {
-            //comment.append( ((Literal) ni.nextNode()).getLexicalForm().trim() );
             RDFNode n = ni.nextNode();
             if (n instanceof Literal) {
                 comment.append( ((Literal) n).getLexicalForm().trim() );
@@ -1226,7 +1249,7 @@ public class schemagen {
             }
         }
 
-        // we allow individuals whose class is in the included NS's, unless opt strict-invdividuals is true */
+        // we allow individuals whose class is not in the included NS's, unless opt strict-individuals is true */
         if (!isTrue( OPT_STRICT_INDIVIDUALS )) {
             for (StmtIterator j = r.listProperties( RDF.type ); j.hasNext(); ) {
                 // we search the rdf:types of this resource
@@ -1267,7 +1290,7 @@ public class schemagen {
             attempt++;
         }
 
-        // record this name so that we don't use it again (which will stop the vocab compiling)
+        // record this name so that we don't use it again (which will stop the vocabulary from compiling)
         m_usedNames.add( name );
 
         // record the mapping from resource to name
@@ -1331,6 +1354,51 @@ public class schemagen {
         return url;
     }
 
+    /** Answer an iterator that contains the elements of the given list, but sorted by URI */
+    protected ExtendedIterator sorted( ExtendedIterator i ) {
+        return sorted( i.toList() );
+    }
+
+    /** Answer an iterator that contains the elements of the given iterator, but sorted by URI */
+    protected ExtendedIterator sorted( List members ) {
+        Collections.sort( members, new Comparator() {
+            public int compare( Object arg0, Object arg1 ) {
+                RDFNode n0 = (RDFNode) arg0;
+                RDFNode n1 = (RDFNode) arg1;
+
+                if (n0.isLiteral() || n1.isLiteral()) {
+                    if (n0.isLiteral() && n1.isLiteral()) {
+                        // two literals
+                        Literal l0 = (Literal) n0;
+                        Literal l1 = (Literal) n1;
+                        return l0.getLexicalForm().compareTo( l1.getLexicalForm() );
+                    }
+                    else {
+                        return n0.isLiteral() ? -1 : 1;
+                    }
+                }
+                else {
+                    Resource r0 = (Resource) n0;
+                    Resource r1 = (Resource) n1;
+                    if (r0.isAnon() && r1.isAnon()) {
+                        // two anonID's - the order is important as long as its consistent
+                        return r0.getId().toString().compareTo( r1.getId().toString() );
+                    }
+                    else if (r0.isAnon()) {
+                        return -1;
+                    }
+                    else if (r1.isAnon()) {
+                        return 1;
+                    }
+                    else {
+                        // two named resources
+                        return r0.getURI().compareTo( r1.getURI() );
+                    }
+                }
+            }} );
+
+        return WrappedIterator.create( members.iterator() );
+    }
 
     //==============================================================================
     // Inner class definitions
@@ -1386,13 +1454,11 @@ public class schemagen {
             }
 
             if (m_prop != null  &&  m_root.hasProperty( m_prop )) {
-                // Was: (fixed der 19/6/06)
-                // return m_root.getRequiredProperty( m_prop ).getString();
                 RDFNode val = m_root.getRequiredProperty( m_prop ).getObject();
-                if (val instanceof Literal) {
-                    return ((Literal)val).getLexicalForm();
+                if (val.isLiteral()) {
+                    return ((Literal) val).getLexicalForm();
                 } else {
-                    return ((Resource)val).getURI().toString();
+                    return ((Resource) val).getURI().toString();
                 }
             }
 
