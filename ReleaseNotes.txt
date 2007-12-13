@@ -4,19 +4,22 @@ Release Notes
 Ontology API updates
     o Added methods to Individual to allow testing and manipulation of the
       classes to which an individual belongs.
-
     o Added a method to OntProperty to list the Restrictions that mention
       the property
-
     o Clarified the contract of OntModel.listOntProperties, and added a new
       method OntModel.listAllOntProperties that is more robust in the
       absence of a reasoner, but potentially slower.
+    o Added a utility class of basic ontology manipulation tools,
+      com.hp.hpl.jena.ontology.OntTools. So far, this includes:
+         * compute the lowest common ancestor of two classes
+         * compute minimum path between two nodes
+         * compute the named roots of a class hierarchy
 
 Reasoners:
     o Extended OWLMicro to include support for hasValue to match documentation.
     o Fixed problem with OntModel.getDeductionsModel not always triggering prepare.
     o Fixed problem with reasoner configuration when using typed literals
-    
+
 Change of Behaviour in getByte/Short/Int on typed literals
 
     o The methods getByte(), getShort(), and getInt(), when applied to

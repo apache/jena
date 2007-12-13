@@ -18,6 +18,7 @@ package com.hp.hpl.jena.ontology.impl.test;
 // Imports
 ///////////////
 import java.util.Iterator;
+import java.util.List;
 
 import junit.framework.TestCase;
 
@@ -337,6 +338,61 @@ public class TestOntTools
         testPath( OntTools.findShortestPath( m_model, m_a, ResourceFactory.createPlainLiteral( "arnie" ),
                                              new OntTools.PredicatesFilter( new Property[] {p,q} ) ),
                 new Property[] {p,q,p,q} );
+    }
+
+    /** Tests on {@link OntTools#namedHierarchyRoots(OntModel)} */
+
+    public void testNamedHierarchyRoots0() {
+        m_a.addSubClass( m_b );
+        m_b.addSubClass( m_c );
+        m_c.addSubClass( m_d );
+        m_e.addSubClass( m_e );
+        m_e.addSubClass( m_f );
+
+        List nhr = OntTools.namedHierarchyRoots( m_model );
+        assertEquals( 3, nhr.size() );
+        assertTrue( nhr.contains( m_a ));
+        assertTrue( nhr.contains( m_e ));
+        assertTrue( nhr.contains( m_g ));
+    }
+
+    public void testNamedHierarchyRoots1() {
+        m_a.addSubClass( m_b );
+        m_b.addSubClass( m_c );
+        m_c.addSubClass( m_d );
+        m_e.addSubClass( m_e );
+        m_e.addSubClass( m_f );
+
+        OntClass anon0 = m_model.createClass();
+        anon0.addSubClass( m_a );
+        anon0.addSubClass( m_e );
+
+        List nhr = OntTools.namedHierarchyRoots( m_model );
+        assertEquals( 3, nhr.size() );
+        assertTrue( nhr.contains( m_a ));
+        assertTrue( nhr.contains( m_e ));
+        assertTrue( nhr.contains( m_g ));
+    }
+
+    public void testNamedHierarchyRoots2() {
+        OntClass anon0 = m_model.createClass();
+        OntClass anon1 = m_model.createClass();
+        anon0.addSubClass( m_a );
+        anon0.addSubClass( m_e );
+        anon0.addSubClass( anon1 );
+        anon1.addSubClass( m_g );
+
+        m_a.addSubClass( m_b );
+        m_b.addSubClass( m_c );
+        m_c.addSubClass( m_d );
+        m_e.addSubClass( m_e );
+        m_e.addSubClass( m_f );
+
+        List nhr = OntTools.namedHierarchyRoots( m_model );
+        assertEquals( 3, nhr.size() );
+        assertTrue( nhr.contains( m_a ));
+        assertTrue( nhr.contains( m_e ));
+        assertTrue( nhr.contains( m_g ));
     }
 
 

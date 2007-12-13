@@ -190,6 +190,35 @@ public class OntTools
     }
 
 
+    /**
+     * Answer a list of the named hierarchy roots of a given {@link OntModel}. This
+     * will be similar to the results of {@link OntModel#listHierarchyRootClasses()},
+     * with the added constraint that every member of the returned iterator will be a
+     * named class, not an anonymous class expression. The named root classes are
+     * calculated from the root classes, by recursively replacing every anonymous class
+     * with its direct sub-classes. Thus it can be seen that the values in the list
+     * consists of the shallowest fringe of named classes in the hierarchy.
+     * @param m An ontology model
+     * @return A list of classes whose members are the named root classes of the
+     * class hierarchy in <code>m</code>
+     */
+    public static List namedHierarchyRoots( OntModel m ) {
+        List nhr = new ArrayList();         // named roots
+        List ahr = new ArrayList();         // anon roots
+
+        // do the initial partition of the root classes
+        partitionByNamed( m.listHierarchyRootClasses(), nhr, ahr );
+
+        // now push the fringe down until we have only named classes
+        while (!ahr.isEmpty()) {
+            OntClass c = (OntClass) ahr.remove( 0 );
+            partitionByNamed( c.listSubClasses( true ), nhr, ahr );
+        }
+
+        return nhr;
+    }
+
+
     // Internal implementation methods
     //////////////////////////////////
 
@@ -272,6 +301,21 @@ public class OntTools
         }
 
     }
+
+    /**
+     * Partition the members of an iterator into two lists, according to whether
+     * they are named or anonymous classes
+     * @param i An iterator to partition
+     * @param named A list of named classes
+     * @param anon A list of anonymous classes
+     */
+    protected static void partitionByNamed( Iterator i, List named, List anon ) {
+        while (i.hasNext()) {
+            OntClass c = (OntClass) i.next();
+            (c.isAnon() ? anon : named).add( c );
+        }
+    }
+
 
     //==============================================================================
     // Inner class definitions
