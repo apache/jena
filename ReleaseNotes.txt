@@ -5,6 +5,10 @@ Schemagen
     o Member variables (i.e. for classes, properties and individuals) are now
       lexically sorted to create more stability in change-sets when generated
       Java classes are placed under source code control.
+    o Now tries to guess the namespace of an ontology file in the absence of
+      specific hints (hints such as: an option, prefix binding for the empty
+      prefix, or an owl:Ontology or daml:Ontology resource). The algorithm
+      is to look for the most prevalent URI that is not owl:, rdf: etc.
 
 Ontology API updates
     o Added methods to Individual to allow testing and manipulation of the

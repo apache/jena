@@ -6,11 +6,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            8 Sep 2006
  * Filename           $RCSfile: Test_schemagen.java,v $
- * Revision           $Revision: 1.5 $
+ * Revision           $Revision: 1.6 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2007-06-11 13:34:44 $
- *               by   $Author: chris-dollin $
+ * Last modified on   $Date: 2007-12-13 15:39:09 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * [See end of file]
@@ -46,7 +46,7 @@ import com.hp.hpl.jena.util.FileUtils;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: Test_schemagen.java,v 1.5 2007-06-11 13:34:44 chris-dollin Exp $
+ * @version CVS $Id: Test_schemagen.java,v 1.6 2007-12-13 15:39:09 ian_dickinson Exp $
  */
 public class Test_schemagen
     extends TestCase
@@ -73,21 +73,14 @@ public class Test_schemagen
     // External signature methods
     //////////////////////////////////
 
+    /** This test used to fail with an abort, but we now guess the NS based on prevalence */
     public void testNoBaseURI0() throws Exception {
         String SOURCE = PREFIX + "ex:A a owl:Class .";
         boolean ex = false;
-        try {
-            testSchemagenOutput( SOURCE, null,
-                                 new String[] {},
-                                 new String[] {},
-                                 new String[] {} );
-        }
-        catch (RuntimeException e) {
-            assertEquals( "Could not determine the base URI for the input vocabulary", e.getMessage() );
-            ex = true;
-        }
-
-        assertTrue( "Expected abort", ex );
+        testSchemagenOutput( SOURCE, null,
+                             new String[] {},
+                             new String[] {".*public static final Resource A =.*"},
+                             new String[] {} );
     }
 
     public void testClass0() throws Exception {

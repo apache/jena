@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            14-Apr-2003
  * Filename           $RCSfile: schemagen.java,v $
- * Revision           $Revision: 1.51 $
+ * Revision           $Revision: 1.52 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2007-12-13 13:47:28 $
+ * Last modified on   $Date: 2007-12-13 15:39:12 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
@@ -52,7 +52,7 @@ import com.hp.hpl.jena.shared.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: schemagen.java,v 1.51 2007-12-13 13:47:28 ian_dickinson Exp $
+ * @version CVS $Id: schemagen.java,v 1.52 2007-12-13 15:39:12 ian_dickinson Exp $
  */
 public class schemagen {
     // Constants
@@ -823,52 +823,115 @@ public class schemagen {
 
     /** Determine what the namespace URI for this vocabulary is */
     protected String determineNamespaceURI() {
-        // easy: it was set by the user
-        if (hasResourceValue( OPT_NAMESPACE )) {
-            String ns = getResource( OPT_NAMESPACE ).getURI();
-
-            // save the namespace URI as the main included uri for the filter
-            m_includeURI.add( ns );
-
-            return ns;
+        // we have a sequence of strategies for determining the ontology namespace
+        String ns = getOptionNamespace();
+        if (ns == null) {
+            ns = getDefaultPrefixNamespace();
+        }
+        if (ns == null) {
+            ns = getOntologyElementNamespace();
+        }
+        if (ns == null) {
+            ns = guessNamespace();
         }
 
+        // did we get one?
+        if (ns == null) {
+            abort( "Could not determine the base URI for the input vocabulary", null );
+        }
+
+        m_includeURI.add( ns );
+        return ns;
+    }
+
+    /** User has set namespace via a schemagen option */
+    protected String getOptionNamespace() {
+        return hasResourceValue( OPT_NAMESPACE ) ? getResource( OPT_NAMESPACE ).getURI() : null;
+    }
+
+    /** Document has set an empty prefix for the model */
+    protected String getDefaultPrefixNamespace() {
         // alternatively, the default namespace may be set in the prefix mapping read from the input document
         String defaultNS = m_source.getNsPrefixURI( "" );
         if (defaultNS == null) {
             defaultNS = m_source.getBaseModel().getNsPrefixURI( "" );
         }
 
-        if (defaultNS != null) {
-            m_includeURI.add( defaultNS );
-            return defaultNS;
-        }
+        return defaultNS;
+    }
 
+    /** Document has an owl:Ontology or daml:Ontology element */
+    protected String getOntologyElementNamespace() {
         // if we are using an ontology model, we can get the namespace URI from the ontology element
-        try {
-            Resource ont = m_source.getBaseModel()
-                                   .listStatements( null, RDF.type, m_source.getProfile().ONTOLOGY() )
-                                   .nextStatement()
-                                   .getSubject();
+        String uri = null;
 
-            String uri = ont.getURI();
+        StmtIterator i = m_source.getBaseModel()
+                                 .listStatements( null, RDF.type, m_source.getProfile().ONTOLOGY() );
 
-            // ensure ends with namespace sep char
+        if (i.hasNext()) {
+            Resource ont = i.nextStatement().getSubject();
+            uri = ont.getURI();
+
+            // ensure ends with namespace separator char
             char ch = uri.charAt( uri.length() - 1 );
             boolean endsWithNCNameCh = XMLChar.isNCName( ch );
             uri = endsWithNCNameCh ? uri + "#" : uri;
-
-            // save the namespace URI as the main included URI for the filter
-            m_includeURI.add( uri );
-
-            return uri;
         }
-        catch (Exception e) {
-            abort( "Could not determine the base URI for the input vocabulary", null );
-            return null;
-        }
+
+        return uri;
     }
 
+    /** Guess the URI from the most prevalent URI */
+    protected String guessNamespace() {
+        Map nsCount = new HashMap();
+
+        // count all of the namespaces used in the model
+        for (StmtIterator i = m_source.listStatements(); i.hasNext(); ) {
+            Statement s = (Statement) i.next();
+            countNamespace( s.getSubject(), nsCount );
+            countNamespace( s.getPredicate(), nsCount );
+            if (s.getObject().isResource()) {
+                countNamespace( s.getResource(), nsCount );
+            }
+        }
+
+        // now find the maximal element
+        String ns = null;
+        int max = 0;
+        for (Iterator i = nsCount.keySet().iterator(); i.hasNext(); ) {
+            String nsKey = (String) i.next();
+
+            // we ignore the usual suspects
+            if (! (OWL.getURI().equals( nsKey ) ||
+                   RDF.getURI().equals( nsKey ) ||
+                   RDFS.getURI().equals( nsKey ) ||
+                   XSD.getURI().equals( nsKey ))) {
+                // not an ignorable namespace
+                int count = ((Integer) nsCount.get( nsKey )).intValue();
+
+                if (count > max) {
+                    // highest count seen so far
+                    max = count;
+                    ns = nsKey;
+                }
+            }
+        }
+
+        return ns;
+    }
+
+    /** Record a use of the given namespace in the count map */
+    private void countNamespace( Resource r, Map nsCount ) {
+        if (!r.isAnon()) {
+            String ns = r.getNameSpace();
+
+            // increment the count for this namespace
+            Integer count = nsCount.containsKey( ns ) ? (Integer) nsCount.get( ns ) : new Integer( 0 );
+            Integer count1 = new Integer( count.intValue() + 1 );
+
+            nsCount.put( ns, count1 );
+        }
+    }
 
     /** Write the list of properties */
     protected void writeProperties() {
