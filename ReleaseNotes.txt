@@ -94,10 +94,9 @@ Assemblers
       they might have expected when other assembler groups are
       being used.
 
-==== Jena 2.5.5
-
 Jar change:
     o lucene-core has been upgraded from lucene-core-2.0.0 to lucene-2.2.0.jar.
+    o logging-commons-1.1.jar upgraded to logging-commons-1.1.1.jar 
 
 Typed literals:
     o Fixed bug in equality checking of instances of xsd:decimal,
