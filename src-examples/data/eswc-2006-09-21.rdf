@@ -1,0 +1,719 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rdf:RDF
+  xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+  xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+  xmlns:owl="http://www.w3.org/2002/07/owl#"
+  xmlns:dc="http://purl.org/dc/elements/1.1/"
+  xml:base="http://www.eswc2006.org/technologies/ontology">
+
+
+<owl:Ontology rdf:about="" />
+
+<!-- this header commented out, otherwise the ontology 
+     mysteriously moves to OWL Full. Solutions/insights welcomed! -->
+<owl:Ontology rdf:about="http://www.eswc2006.org/technologies/ontology#"
+  dc:title="The ESWC2006 Conference Ontology"
+  dc:date="$Date: 2007-12-14 19:22:50 $"
+  dc:creator="Tom Heath"
+  dc:contributor="ESWC2006 Organising Committee">
+  <dc:description>An ontology for describing academic conferences, designed to support the 3rd European Semantic Web Conference (ESWC2006)"</dc:description>
+<rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+</owl:Ontology>
+<!-- -->
+
+<!-- outstanding issues:
+- formalise inverse relationships now ontology is in owl
+-->
+
+
+<owl:Class rdf:ID="Artefact">
+  <rdfs:subClassOf rdf:resource="http://xmlns.com/wordnet/1.6/Document"/>
+  <rdfs:label>Artefact</rdfs:label>
+</owl:Class>
+
+
+  <owl:ObjectProperty rdf:ID="relatedToEvent">
+    <rdfs:domain rdf:resource="#Artefact"/>
+    <rdfs:range rdf:resource="#AcademicEvent"/>
+    <rdfs:label>related to event</rdfs:label>
+  </owl:ObjectProperty>
+
+  <owl:DatatypeProperty rdf:ID="biblioReference">
+    <rdfs:domain rdf:resource="#Artefact"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdfs:label>bibliographic reference</rdfs:label>
+  </owl:DatatypeProperty>
+
+
+  <owl:Class rdf:ID="Programme">
+    <rdfs:subClassOf rdf:resource="#Artefact"/>
+    <rdfs:label>Programme</rdfs:label>
+  </owl:Class>
+
+  <owl:Class rdf:ID="Proceedings">
+    <rdfs:subClassOf rdf:resource="#Artefact"/>
+    <rdfs:label>Proceedings</rdfs:label>
+  </owl:Class>
+
+  <owl:Class rdf:ID="Paper">
+    <rdfs:subClassOf rdf:resource="#Artefact"/>
+    <rdfs:label>Paper</rdfs:label>
+  </owl:Class>
+
+    <owl:ObjectProperty rdf:ID="influencedBy">
+      <rdfs:domain rdf:resource="#Paper"/>
+      <rdfs:range rdf:resource="http://xmlns.com/wordnet/1.6/Document"/>
+      <rdfs:label>influenced by</rdfs:label>
+    </owl:ObjectProperty>
+
+    <owl:ObjectProperty rdf:ID="evidenceFor">
+      <rdfs:domain rdf:resource="#Paper"/>
+      <rdfs:range rdf:resource="http://xmlns.com/wordnet/1.6/Document"/>
+      <rdfs:label>evidence for</rdfs:label>
+    </owl:ObjectProperty>
+
+    <owl:ObjectProperty rdf:ID="evidenceAgainst">
+      <rdfs:domain rdf:resource="#Paper"/>
+      <rdfs:range rdf:resource="http://xmlns.com/wordnet/1.6/Document"/>
+      <rdfs:label>evidence against</rdfs:label>
+    </owl:ObjectProperty>
+
+    <owl:ObjectProperty rdf:ID="agreesWith">
+      <rdfs:domain rdf:resource="#Paper"/>
+      <rdfs:range rdf:resource="http://xmlns.com/wordnet/1.6/Document"/>
+      <rdfs:label>agrees with</rdfs:label>
+    </owl:ObjectProperty>
+
+    <owl:ObjectProperty rdf:ID="disagreesWith">
+      <rdfs:domain rdf:resource="#Paper"/>
+      <rdfs:range rdf:resource="http://xmlns.com/wordnet/1.6/Document"/>
+      <rdfs:label>disagrees with</rdfs:label>
+    </owl:ObjectProperty>
+
+    <owl:ObjectProperty rdf:ID="implements">
+      <rdfs:domain rdf:resource="#Paper"/>
+      <rdfs:range rdf:resource="http://xmlns.com/wordnet/1.6/Document"/>
+      <rdfs:label>implements</rdfs:label>
+    </owl:ObjectProperty>
+
+    <owl:ObjectProperty rdf:ID="extends">
+      <rdfs:domain rdf:resource="#Paper"/>
+      <rdfs:range rdf:resource="http://xmlns.com/wordnet/1.6/Document"/>
+      <rdfs:label>extends</rdfs:label>
+    </owl:ObjectProperty>
+
+  <owl:Class rdf:ID="Poster">
+    <rdfs:subClassOf rdf:resource="#Artefact"/>
+    <rdfs:label>Poster</rdfs:label>
+  </owl:Class>
+
+  <owl:Class rdf:ID="SlideSet">
+    <rdfs:subClassOf rdf:resource="#Artefact"/>
+    <rdfs:label>Slide Set</rdfs:label>
+  </owl:Class>
+
+
+
+<owl:Class rdf:ID="Call">
+  <rdfs:subClassOf rdf:resource="http://xmlns.com/wordnet/1.6/Announcement"/>
+  <rdfs:label>Call</rdfs:label>
+</owl:Class>
+
+  <owl:ObjectProperty rdf:ID="forEvent">
+    <rdfs:domain rdf:resource="#Call"/>
+    <rdfs:range rdf:resource="#AcademicEvent"/>
+    <rdfs:label>for event</rdfs:label>
+    <!-- inverse of hasCall -->
+  </owl:ObjectProperty>
+
+  <owl:DatatypeProperty rdf:ID="hasSubmissionDeadline">
+    <rdfs:domain rdf:resource="#Call"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#dateTime"/>
+    <rdfs:label>has submission deadline</rdfs:label>
+  </owl:DatatypeProperty>
+
+  <owl:DatatypeProperty rdf:ID="hasSubmissionInstructions">
+    <rdfs:domain rdf:resource="#Call"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdfs:label>has submission instructions</rdfs:label>
+  </owl:DatatypeProperty>
+
+  <owl:DatatypeProperty rdf:ID="hasNotificationDeadline">
+    <rdfs:domain rdf:resource="#Call"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#dateTime"/>
+    <rdfs:label>has notification deadline</rdfs:label>
+  </owl:DatatypeProperty>
+
+  <owl:DatatypeProperty rdf:ID="hasCameraReadyDeadline">
+    <rdfs:domain rdf:resource="#Call"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#dateTime"/>
+    <rdfs:label>has camera-ready deadline</rdfs:label>
+  </owl:DatatypeProperty>
+
+  <owl:Class rdf:ID="CallForParticipation">
+    <rdfs:subClassOf rdf:resource="#Call"/>
+    <rdfs:label>Call For Participation</rdfs:label>
+  </owl:Class>
+
+  <owl:Class rdf:ID="CallForProposals">
+    <rdfs:subClassOf rdf:resource="#Call"/>
+    <rdfs:label>Call For Proposals</rdfs:label>
+  </owl:Class>
+
+  <owl:Class rdf:ID="CallForPapers">
+    <rdfs:subClassOf rdf:resource="#Call"/>
+    <rdfs:label>Call For Papers</rdfs:label>
+  </owl:Class>
+
+  <owl:Class rdf:ID="CallForPosters">
+    <rdfs:subClassOf rdf:resource="#Call"/>
+    <rdfs:label>Call For Posters</rdfs:label>
+  </owl:Class>
+
+  <owl:Class rdf:ID="CallForDemos">
+    <rdfs:subClassOf rdf:resource="#Call"/>
+    <rdfs:label>Call For Demos</rdfs:label>
+  </owl:Class>
+
+
+<owl:Class rdf:ID="Event">
+  <rdfs:subClassOf rdf:resource="http://xmlns.com/wordnet/1.6/Event-1"/>
+  <rdfs:label>Event</rdfs:label>
+</owl:Class>
+
+  <owl:Class rdf:ID="OrganisedEvent">
+    <rdfs:subClassOf rdf:resource="#Event"/>
+    <rdfs:label>Organised Event</rdfs:label>
+  </owl:Class>
+
+  <owl:ObjectProperty rdf:ID="hasLocation">
+    <rdfs:domain rdf:resource="#OrganisedEvent"/>
+    <rdfs:range rdf:resource="#Place"/>
+    <rdfs:label>has location</rdfs:label>
+    <!-- has inverse isLocationFor -->
+  </owl:ObjectProperty>
+
+  <owl:DatatypeProperty rdf:ID="hasStartDateTime">
+    <rdfs:domain rdf:resource="#OrganisedEvent"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#dateTime"/>
+    <rdfs:label>has start date and time</rdfs:label>
+  </owl:DatatypeProperty>
+
+  <owl:DatatypeProperty rdf:ID="hasEndDateTime">
+    <rdfs:domain rdf:resource="#OrganisedEvent"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#dateTime"/>
+    <rdfs:label>has end date and time</rdfs:label>
+  </owl:DatatypeProperty>
+
+<!--
+  <owl:DatatypeProperty rdf:ID="hasProgramme">
+    <rdfs:domain rdf:resource="#OrganisedEvent"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#anyURI"/>
+    <rdfs:label>has programme</rdfs:label>
+  </owl:DatatypeProperty>
+-->
+
+  <owl:ObjectProperty rdf:ID="hasProgramme">
+    <rdfs:domain rdf:resource="#OrganisedEvent"/>
+    <rdfs:range rdf:resource="#Programme"/>
+    <rdfs:label>has programme</rdfs:label>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:ID="hasSponsorship">
+    <rdfs:domain rdf:resource="#OrganisedEvent"/>
+    <rdfs:range rdf:resource="#Sponsorship"/>
+    <rdfs:label>has sponsorship</rdfs:label>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:ID="plansToAttend">
+    <rdfs:domain rdf:resource="http://xmlns.com/foaf/0.1/Person"/>
+    <rdfs:range rdf:resource="#OrganisedEvent"/>
+    <rdfs:label>plans to attend</rdfs:label>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:ID="hasAttendee">
+    <rdfs:domain rdf:resource="#OrganisedEvent"/>
+    <rdfs:range rdf:resource="http://xmlns.com/foaf/0.1/Person"/>
+    <rdfs:label>has attendee</rdfs:label>
+    <!-- inverse of #attendeeAt -->
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:ID="attendeeAt">
+    <!-- deliberately avoids tense -->
+    <rdfs:domain rdf:resource="http://xmlns.com/foaf/0.1/Person"/>
+    <rdfs:range rdf:resource="#OrganisedEvent"/>
+    <rdfs:label>attendee at</rdfs:label>
+    <!-- inverse of #hasAttendee -->
+  </owl:ObjectProperty>
+
+
+
+<owl:Class rdf:ID="AcademicEvent">
+  <rdfs:subClassOf rdf:resource="#OrganisedEvent"/>
+  <rdfs:label>Academic Event</rdfs:label>
+</owl:Class>
+
+  <owl:ObjectProperty rdf:ID="hasRole">
+    <rdfs:domain rdf:resource="#AcademicEvent"/>
+    <rdfs:range rdf:resource="#Role"/>
+    <rdfs:label>has role</rdfs:label>
+    <!-- inverse of #isRoleAt -->
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:ID="hasRelatedArtefact">
+    <rdfs:domain rdf:resource="#AcademicEvent"/>
+    <rdfs:range rdf:resource="#Artefact"/>
+    <rdfs:label>has related artefact</rdfs:label>
+    <!-- inverse of #relatedToEvent -->
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:ID="hasCall">
+    <rdfs:domain rdf:resource="#AcademicEvent"/>
+    <rdfs:range rdf:resource="#Call"/>
+    <rdfs:label>has call</rdfs:label>
+  </owl:ObjectProperty>
+
+
+
+  <owl:Class rdf:ID="ConferenceEvent">
+    <rdfs:subClassOf rdf:resource="#AcademicEvent"/>
+    <rdfs:label>Conference Event</rdfs:label>
+  </owl:Class>
+
+  <owl:Class rdf:ID="WorkshopEvent">
+    <rdfs:subClassOf rdf:resource="#AcademicEvent"/>
+    <rdfs:label>Workshop Event</rdfs:label>
+  </owl:Class>
+
+  <owl:Class rdf:ID="TutorialEvent">
+    <rdfs:subClassOf rdf:resource="#AcademicEvent"/>
+    <rdfs:label>Tutorial Event</rdfs:label>
+  </owl:Class>
+
+  <owl:Class rdf:ID="TrackEvent">
+    <rdfs:subClassOf rdf:resource="#AcademicEvent"/>
+    <rdfs:label>Track Event</rdfs:label>
+  </owl:Class>
+
+    <owl:Class rdf:ID="IndustrialTrack">
+      <rdfs:subClassOf rdf:resource="#TrackEvent"/>
+      <rdfs:label>Industrial Track</rdfs:label>
+    </owl:Class>
+
+    <owl:Class rdf:ID="ResearchTrack">
+      <rdfs:subClassOf rdf:resource="#TrackEvent"/>
+      <rdfs:label>Research Track</rdfs:label>
+    </owl:Class>
+
+
+  <owl:Class rdf:ID="SessionEvent">
+    <rdfs:subClassOf rdf:resource="#AcademicEvent"/>
+    <rdfs:label>Session Event</rdfs:label>
+  </owl:Class>
+
+    <owl:Class rdf:ID="PaperSession">
+      <rdfs:subClassOf rdf:resource="#SessionEvent"/>
+      <rdfs:label>Paper Session</rdfs:label>
+    </owl:Class>
+
+    <owl:Class rdf:ID="PosterSession">
+       <rdfs:subClassOf rdf:resource="#SessionEvent"/>
+       <rdfs:label>Poster Session</rdfs:label>
+    </owl:Class>
+
+    <owl:Class rdf:ID="DemoSession">
+      <rdfs:subClassOf rdf:resource="#SessionEvent"/>
+      <rdfs:label>Demo Session</rdfs:label>
+    </owl:Class>
+
+
+  <owl:Class rdf:ID="TalkEvent">
+    <rdfs:subClassOf rdf:resource="#AcademicEvent"/>
+    <rdfs:label>Talk Event</rdfs:label>
+  </owl:Class>
+
+    <owl:Class rdf:ID="WelcomeTalk">
+      <rdfs:subClassOf rdf:resource="#TalkEvent"/>
+      <rdfs:label>Welcome Talk</rdfs:label>
+    </owl:Class>
+
+    <owl:Class rdf:ID="KeynoteTalk">
+      <rdfs:subClassOf rdf:resource="#TalkEvent"/>
+      <rdfs:label>Keynote Talk</rdfs:label>
+    </owl:Class>
+
+    <owl:Class rdf:ID="PaperPresentation">
+      <rdfs:subClassOf rdf:resource="#TalkEvent"/>
+      <rdfs:label>Paper Presentation</rdfs:label>
+    </owl:Class>
+
+    <owl:Class rdf:ID="PosterPresentation">
+      <rdfs:subClassOf rdf:resource="#TalkEvent"/>
+      <rdfs:label>Poster Presentation</rdfs:label>
+    </owl:Class>
+
+    <owl:Class rdf:ID="DemoPresentation">
+      <rdfs:subClassOf rdf:resource="#TalkEvent"/>
+      <rdfs:label>Demo Presentation</rdfs:label>
+    </owl:Class>
+
+
+<owl:Class rdf:ID="NonAcademicEvent">
+  <rdfs:subClassOf rdf:resource="#OrganisedEvent"/>
+  <rdfs:label>Non-Academic Event</rdfs:label>
+</owl:Class>
+
+
+  <owl:Class rdf:ID="BreakEvent">
+    <rdfs:subClassOf rdf:resource="#NonAcademicEvent"/>
+    <rdfs:label>Break Event</rdfs:label>
+  </owl:Class>
+
+    <owl:Class rdf:ID="CoffeeBreak">
+      <rdfs:subClassOf rdf:resource="#BreakEvent"/>
+     <rdfs:label>Coffee Break</rdfs:label>
+    </owl:Class>
+
+    <owl:Class rdf:ID="MealBreak">
+      <rdfs:subClassOf rdf:resource="#BreakEvent"/>
+      <rdfs:label>Meal Break</rdfs:label>
+    </owl:Class>
+
+    <owl:Class rdf:ID="FreeTimeBreak">
+      <rdfs:subClassOf rdf:resource="#BreakEvent"/>
+      <rdfs:label>Free Time Break</rdfs:label>
+    </owl:Class>
+
+  <owl:Class rdf:ID="SocialEvent">
+    <rdfs:subClassOf rdf:resource="#NonAcademicEvent"/>
+    <rdfs:label>Social Event</rdfs:label>
+  </owl:Class>
+
+    <owl:Class rdf:ID="Excursion">
+      <rdfs:subClassOf rdf:resource="#SocialEvent"/>
+      <rdfs:label>Excursion</rdfs:label>
+    </owl:Class>
+
+    <owl:Class rdf:ID="Reception">
+      <rdfs:subClassOf rdf:resource="#SocialEvent"/>
+      <rdfs:label>Reception</rdfs:label>
+    </owl:Class>
+
+    <owl:Class rdf:ID="ConferenceDinner">
+      <rdfs:subClassOf rdf:resource="#SocialEvent"/>
+      <rdfs:subClassOf rdf:resource="#MealEvent"/>
+      <rdfs:label>Conference Dinner</rdfs:label>
+    </owl:Class>
+
+  <owl:Class rdf:ID="MealEvent">
+    <rdfs:subClassOf rdf:resource="#NonAcademicEvent"/>
+    <rdfs:label>Meal Event</rdfs:label>
+  </owl:Class>
+
+    <owl:ObjectProperty rdf:ID="hasMenu">
+      <rdfs:domain rdf:resource="#MealEvent"/>
+      <rdfs:range rdf:resource="http://xmlns.com/wordnet/1.6/Menu"/>
+      <rdfs:label>has menu</rdfs:label>
+    </owl:ObjectProperty>
+    
+
+
+<owl:Class rdf:ID="Place">
+  <rdfs:subClassOf rdf:resource="http://www.w3.org/2003/01/geo/wgs84_pos#SpatialThing"/>
+  <rdfs:label>Place</rdfs:label>
+</owl:Class>
+
+  <owl:Class rdf:ID="ConferenceVenuePlace">
+    <rdfs:subClassOf rdf:resource="#Place"/>
+    <rdfs:label>Conference Venue Place</rdfs:label>
+  </owl:Class>
+
+  <owl:Class rdf:ID="MeetingRoomPlace">
+    <rdfs:subClassOf rdf:resource="#Place"/>
+    <rdfs:label>Meeting Room Place</rdfs:label>
+  </owl:Class>
+
+  <owl:Class rdf:ID="CommunalPlace">
+    <rdfs:subClassOf rdf:resource="#Place"/>
+    <rdfs:label>Communal Place</rdfs:label>
+  </owl:Class>
+
+  <owl:Class rdf:ID="AccommodationPlace">
+    <rdfs:subClassOf rdf:resource="#Place"/>
+    <rdfs:label>Accommodation Place</rdfs:label>
+  </owl:Class>
+
+  <owl:Class rdf:ID="DrinkingPlace">
+    <rdfs:subClassOf rdf:resource="#Place"/>
+    <rdfs:label>Drinking Place</rdfs:label>
+  </owl:Class>
+
+  <owl:Class rdf:ID="EatingPlace">
+    <rdfs:subClassOf rdf:resource="#Place"/>
+    <rdfs:label>Eating Place</rdfs:label>
+  </owl:Class>
+
+
+  <owl:ObjectProperty rdf:ID="isLocationFor">
+    <rdfs:domain rdf:resource="#Place"/>
+    <rdfs:range rdf:resource="#OrganisedEvent"/>
+    <rdfs:label>is location of</rdfs:label>
+  </owl:ObjectProperty>
+
+
+
+
+<owl:Class rdf:ID="Role">
+  <rdfs:subClassOf rdf:resource="http://xmlns.com/wordnet/1.6/Role-1"/>
+  <rdfs:label>Role</rdfs:label>
+</owl:Class>
+
+  <owl:ObjectProperty rdf:ID="isRoleAt">
+    <rdfs:domain rdf:resource="#Role"/>
+    <rdfs:range rdf:resource="#AcademicEvent"/>
+    <rdfs:label>is role at</rdfs:label>
+    <!-- has inverse #hasRole -->
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:ID="heldBy">
+    <rdfs:domain rdf:resource="#Role"/>
+    <rdfs:range rdf:resource="http://xmlns.com/foaf/0.1/Person"/>
+    <rdfs:label>held by</rdfs:label>
+    <!-- has inverse #holdsRole -->
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:ID="holdsRole">
+    <rdfs:domain rdf:resource="http://xmlns.com/foaf/0.1/Person"/>
+    <rdfs:range rdf:resource="#Role"/>
+    <rdfs:label>holds role</rdfs:label>
+    <!-- has inverse #heldBy -->
+  </owl:ObjectProperty>
+
+
+
+  <owl:Class rdf:ID="ConferenceChair">
+    <rdfs:subClassOf rdf:resource="#Role"/>
+    <rdfs:label>Conference Chair</rdfs:label>
+  </owl:Class>
+
+  <owl:Class rdf:ID="ProgrammeChair">
+    <rdfs:subClassOf rdf:resource="#Role"/>
+    <rdfs:label>Programme Chair</rdfs:label>
+  </owl:Class>
+
+  <owl:Class rdf:ID="WorkshopsChair">
+    <rdfs:subClassOf rdf:resource="#Role"/>
+    <rdfs:label>Workshops Chair</rdfs:label>
+  </owl:Class>
+
+  <owl:Class rdf:ID="TutorialsChair">
+    <rdfs:subClassOf rdf:resource="#Role"/>
+    <rdfs:label>Tutorials Chair</rdfs:label>
+  </owl:Class>
+
+  <owl:Class rdf:ID="PostersChair">
+    <rdfs:subClassOf rdf:resource="#Role"/>
+    <rdfs:label>Posters Chair</rdfs:label>
+  </owl:Class>
+
+  <owl:Class rdf:ID="DemosChair">
+    <rdfs:subClassOf rdf:resource="#Role"/>
+    <rdfs:label>Demos Chair</rdfs:label>
+  </owl:Class>
+
+  <owl:Class rdf:ID="IndustryChair">
+    <rdfs:subClassOf rdf:resource="#Role"/>
+    <rdfs:label>Industry Chair</rdfs:label>
+  </owl:Class>
+
+  <owl:Class rdf:ID="SponsorshipChair">
+    <rdfs:subClassOf rdf:resource="#Role"/>
+    <rdfs:label>Sponsorship Chair</rdfs:label>
+  </owl:Class>
+
+  <owl:Class rdf:ID="PublicityChair">
+    <rdfs:subClassOf rdf:resource="#Role"/>
+    <rdfs:label>Publicity Chair</rdfs:label>
+  </owl:Class>
+
+  <owl:Class rdf:ID="SubmissionsChair">
+    <rdfs:subClassOf rdf:resource="#Role"/>
+    <rdfs:label>Submissions Chair</rdfs:label>
+  </owl:Class>
+
+  <owl:Class rdf:ID="LocalOrganiser">
+    <rdfs:subClassOf rdf:resource="#Role"/>
+    <rdfs:label>Local Organiser</rdfs:label>
+  </owl:Class>
+
+  <owl:Class rdf:ID="Administrator">
+    <rdfs:subClassOf rdf:resource="#Role"/>
+    <rdfs:label>Administrator</rdfs:label>
+  </owl:Class>
+
+  <owl:Class rdf:ID="Webmaster">
+    <rdfs:subClassOf rdf:resource="#Role"/>
+    <rdfs:label>Webmaster</rdfs:label>
+  </owl:Class>
+
+  <owl:Class rdf:ID="DogfoodTsar">
+    <rdfs:subClassOf rdf:resource="#Role"/>
+    <rdfs:label>Dogfood Tsar</rdfs:label>
+    <rdfs:comment>A role that is only relevant in relation to the topic of the conference e.g. Semantic 
+    Web Technologies Coordinator at a Semantic Web Conference.</rdfs:comment>
+  </owl:Class>
+
+  <owl:Class rdf:ID="OrganisingCommitteeMember">
+    <rdfs:subClassOf rdf:resource="#Role"/>
+    <rdfs:label>Organising Committee Member</rdfs:label>
+  </owl:Class>
+
+  <owl:Class rdf:ID="ProgrammeCommitteeMember">
+    <rdfs:subClassOf rdf:resource="#Role"/>
+    <rdfs:label>Programme Committee Member</rdfs:label>
+  </owl:Class>
+
+  <owl:Class rdf:ID="SessionChair">
+    <rdfs:subClassOf rdf:resource="#Role"/>
+    <rdfs:label>Session Chair</rdfs:label>
+  </owl:Class>
+
+  <owl:Class rdf:ID="Tutor">
+    <rdfs:subClassOf rdf:resource="#Role"/>
+    <rdfs:label>Tutor</rdfs:label>
+  </owl:Class>
+
+  <owl:Class rdf:ID="Presenter">
+    <rdfs:subClassOf rdf:resource="#Role"/>
+    <rdfs:label>Presenter</rdfs:label>
+  </owl:Class>
+
+  <owl:Class rdf:ID="Reviewer">
+    <rdfs:subClassOf rdf:resource="#Role"/>
+    <rdfs:label>Reviewer</rdfs:label>
+  </owl:Class>
+
+  <owl:Class rdf:ID="AdditionalReviewer">
+    <rdfs:subClassOf rdf:resource="#Role"/>
+    <rdfs:label>Additional Reviewer</rdfs:label>
+  </owl:Class>
+
+  <owl:Class rdf:ID="Delegate">
+    <rdfs:subClassOf rdf:resource="#Role"/>
+    <rdfs:label>Delegate</rdfs:label>
+  </owl:Class>
+
+
+<owl:Class rdf:ID="Sponsorship">
+  <rdfs:subClassOf rdf:resource="http://xmlns.com/wordnet/1.6/Sponsorship"/>
+  <rdfs:label>Sponsorship</rdfs:label>
+</owl:Class>
+
+  <owl:ObjectProperty rdf:ID="isProviderOf">
+    <rdfs:domain rdf:resource="http://xmlns.com/foaf/0.1/Organisation"/>
+    <rdfs:range rdf:resource="#Sponsorship"/>
+    <rdfs:label>is provider of</rdfs:label>
+    <!-- inverse of #sProvidedBy -->
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:ID="isProvidedBy">
+    <rdfs:domain rdf:resource="#Sponsorship"/>
+    <rdfs:range rdf:resource="http://xmlns.com/foaf/0.1/Organisation"/>
+    <rdfs:label>is provided by</rdfs:label>
+    <!-- inverse of #isProviderOf -->
+  </owl:ObjectProperty>
+
+  <owl:DatatypeProperty rdf:ID="hasCostAmount">
+    <rdfs:domain rdf:resource="#Sponsorship"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#integer"/>
+    <rdfs:label>has cost amount</rdfs:label>
+  </owl:DatatypeProperty>
+
+  <owl:DatatypeProperty rdf:ID="hasCostCurrency">
+    <rdfs:domain rdf:resource="#Sponsorship"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdfs:label>has cost currency</rdfs:label>
+  </owl:DatatypeProperty>
+
+
+
+<!-- additional generic properties -->
+
+<!-- Artefacts, Events, Places expected to use hasPart/isPartOf relations -->
+  <owl:ObjectProperty rdf:ID="hasPart">
+    <rdfs:domain rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+    <rdfs:label>has part</rdfs:label>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:ID="isPartOf">
+    <rdfs:domain rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+    <rdfs:label>is part of</rdfs:label>
+  </owl:ObjectProperty>
+
+
+<!-- Artefacts, AcademicEvents, Calls expected to use hasTopic/isTopicOf relations -->
+  <owl:ObjectProperty rdf:ID="isTopicOf">
+    <rdfs:domain rdf:resource="http://swrc.ontoware.org/ontology#ResearchTopic"/>
+    <rdfs:label>is topic of</rdfs:label>
+    <!-- range deliberately left blank -->
+    <!-- inverse of #hasTopic -->
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:ID="hasTopic">
+    <!-- domain deliberately left blank -->
+    <rdfs:range rdf:resource="http://swrc.ontoware.org/ontology#ResearchTopic"/>
+    <rdfs:label>has topic</rdfs:label>
+    <!-- inverse of #isTopicOf -->
+  </owl:ObjectProperty>
+
+<!-- end of additional properties -->
+
+<!-- OWL hacks -->
+  <owl:Class rdf:about="http://swrc.ontoware.org/ontology#ResearchTopic"/>
+  <owl:Class rdf:about="http://www.w3.org/2001/XMLSchema#anyURI"/>
+  <owl:Class rdf:about="http://www.w3.org/2001/XMLSchema#dateTime"/>
+  <owl:Class rdf:about="http://www.w3.org/2001/XMLSchema#integer"/>
+  <owl:Class rdf:about="http://www.w3.org/2003/01/geo/wgs84_pos#SpatialThing"/>
+  <owl:Class rdf:about="http://xmlns.com/foaf/0.1/Organisation"/>
+  <owl:Class rdf:about="http://xmlns.com/foaf/0.1/Person"/>
+  <owl:Class rdf:about="http://xmlns.com/wordnet/1.6/Announcement"/>
+  <owl:Class rdf:about="http://xmlns.com/wordnet/1.6/Document"/>
+  <owl:Class rdf:about="http://xmlns.com/wordnet/1.6/Event-1"/>
+  <owl:Class rdf:about="http://xmlns.com/wordnet/1.6/Menu"/>
+  <owl:Class rdf:about="http://xmlns.com/wordnet/1.6/Role-1"/>
+  <owl:Class rdf:about="http://xmlns.com/wordnet/1.6/Sponsorship"/>
+
+  <owl:DatatypeProperty rdf:about="http://purl.org/dc/elements/1.1/contributor"/>
+  <owl:DatatypeProperty rdf:about="http://purl.org/dc/elements/1.1/creator"/>
+  <owl:DatatypeProperty rdf:about="http://purl.org/dc/elements/1.1/date"/>
+  <owl:DatatypeProperty rdf:about="http://purl.org/dc/elements/1.1/description"/>
+  <owl:DatatypeProperty rdf:about="http://purl.org/dc/elements/1.1/title"/> 
+<!-- -->
+
+<!-- OWL/RDFS compatibility hacks by Denny Vrandecic
+     (so RDFS only tools can handle OWL ontologies)
+     deploy where necessary
+The following three axioms provide a mapping of the OWL terms to the RDFS terms. So
+if a tool is not able to read the OWL ontology as it is, uncomment these axioms
+(or better, load an ontology with only these three axioms and merge them) and if the tool
+fulfills the RDFS specification it will magically be able to deal with the whole ontology.
+Mind you, you may not add this tool to the OWL ontology, or else you move to OWL Full.
+-->
+<!--
+    <owl:Class rdf:about="http://www.w3.org/2002/07/owl#Class">
+      <rdfs:subClassOf rdf:resource="http://www.w3.org/2000/01/rdf-schema#Class" />
+    </owl:Class>
+
+    <rdfs:Property rdf:about="http://www.w3.org/2002/07/owl#DatatypeProperty">
+      <rdfs:subPropertyOf rdf:resource="http://www.w3.org/2000/01/rdf-schema#Property" />
+    </rdfs:Property>
+
+    <rdfs:Property rdf:about="http://www.w3.org/2002/07/owl#ObjectProperty">
+      <rdfs:subPropertyOf rdf:resource="http://www.w3.org/2000/01/rdf-schema#Property" />
+    </rdfs:Property>
+-->
+
+
+</rdf:RDF>

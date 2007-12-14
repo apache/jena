@@ -1,5 +1,5 @@
 /* Style sheet for Jena user manual documents */
-/* CVS $Id: doc.css,v 1.3 2005-04-07 13:56:54 chris-dollin Exp $ */
+/* CVS $Id: doc.css,v 1.4 2007-12-14 19:22:51 ian_dickinson Exp $ */
 
 /* Media-specific rules */
 
@@ -15,10 +15,10 @@
 /* Non media-specific rules */
 
 body {
-	font-family: Verdana, Arial, Helvetica, sans-serif ;
-	font-size: 10pt ;
-	color: black;
-	background: white ;
+    font-family: Verdana, Arial, Helvetica, sans-serif ;
+    font-size: 10pt ;
+    color: black;
+    background: white ;
 }
 
 /* Broswer CSS2 table support is rather "individual" */
@@ -93,13 +93,16 @@ A:link { color: rgb(0, 0, 255) }        /* for unvisited links */
 A:hover { color: rgb(255, 0, 0) }       /* when mouse is over link */
 
 /* No extra space between paragraphs : inherits from body */
-pre {
+.codesample {
     font-family: monospace;
     font-size: 10pt ;
+}
+
+pre {
     margin-top: 1 ;
     margin-bottom: 1 ;
     margin-left: 5ex ;
-    }
+}
 
 /* Some general utility definitions */
 .centered {
@@ -119,3 +122,9 @@ code {
     font-size: smaller;
     border-top: thin solid gray;
 }
+
+td {
+   text-align: left;
+   padding-left: 0.5em;
+}
+
