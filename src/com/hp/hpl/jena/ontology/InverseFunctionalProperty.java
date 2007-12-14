@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: InverseFunctionalProperty.java,v $
- * Revision           $Revision: 1.7 $
+ * Revision           $Revision: 1.8 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2007-01-02 11:48:48 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2007-12-14 18:32:51 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -30,15 +30,19 @@ package com.hp.hpl.jena.ontology;
  * <p>
  * Interface encapsulating the class of properties that are inverse functional:
  * that is, properties in which a given given range value has a unique value in
- * the domain (effectively, a key).  Both {@link DatatypeProperty datatype} and
- * {@link ObjectProperty object} properties may be inverse functional, so this
- * interface is defined to extend the general super-interface {@link
- * OntProperty}.
+ * the domain (effectively, a key). In OWL DL and OWL Lite, an inverse functional
+ * property cannot be a datatype property, whereas OWL Full does permit this
+ * (see the relevant section of
+ * <a href="http://www.w3.org/TR/2004/REC-owl-ref-20040210/#InverseFunctionalProperty-def">the
+ * OWL reference</a> for details). We conservatively model this in Jena by
+ * having this interface extend {@link ObjectProperty}. Users who wish to represent
+ * inverse functional datatype properties in OWL Full may have to switch
+ * off strict checking in <code>OntModel</code> (see {@link OntModel#setStrictMode(boolean)}.
  * </p>
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: InverseFunctionalProperty.java,v 1.7 2007-01-02 11:48:48 andy_seaborne Exp $
+ * @version CVS $Id: InverseFunctionalProperty.java,v 1.8 2007-12-14 18:32:51 ian_dickinson Exp $
  */
 public interface InverseFunctionalProperty
     extends ObjectProperty
