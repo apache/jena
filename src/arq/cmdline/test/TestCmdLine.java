@@ -12,7 +12,6 @@ import junit.framework.*;
 
 /** 
  * @author Andy Seaborne
- * @version $Id: TestCmdLine.java,v 1.8 2007/01/02 11:20:51 andy_seaborne Exp $
  */
 
 public class TestCmdLine extends TestCase

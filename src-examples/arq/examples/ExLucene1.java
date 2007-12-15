@@ -21,7 +21,6 @@ import com.hp.hpl.jena.util.FileManager;
  * then execute a SPARQL query with a Lucene search in it.
  * 
  * @author Andy Seaborne
- * @version $Id: ExLucene1.java,v 1.9 2007/01/02 11:46:47 andy_seaborne Exp $
  */
 
 public class ExLucene1

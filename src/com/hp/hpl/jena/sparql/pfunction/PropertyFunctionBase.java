@@ -19,7 +19,6 @@ import com.hp.hpl.jena.sparql.util.IndentedWriter;
 /** Basic property function handler that calls the implementation 
  * subclass one binding at a time
  * @author Andy Seaborne
- * @version $Id: PropertyFunctionBase.java,v 1.9 2007/02/06 17:05:54 andy_seaborne Exp $
  */ 
 
 public abstract class PropertyFunctionBase implements PropertyFunction

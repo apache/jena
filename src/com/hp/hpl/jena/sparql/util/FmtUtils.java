@@ -28,7 +28,6 @@ import com.hp.hpl.jena.vocabulary.XSD;
 
 /**
  * @author   Andy Seaborne
- * @version  $Id: FmtUtils.java,v 1.37 2007/02/05 17:11:25 andy_seaborne Exp $
  */
 
 public class FmtUtils

@@ -32,7 +32,6 @@ import com.hp.hpl.jena.sparql.engine.optimizer.core.BasicPatternJoin;
  * data model for the probability estimation of triple patterns.
  * 
  * @author Markus Stocker
- * @version $Id$
  */
 
 public class ProbabilityIndexModel extends ProbabilityBase

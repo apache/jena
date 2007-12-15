@@ -17,7 +17,6 @@ import com.hp.hpl.jena.sparql.util.Context;
  * can be dynamically added to the registry.
  * 
  * @author Andy Seaborne
- * @version $Id: QueryEngineFactory.java,v 1.4 2007/01/02 11:19:35 andy_seaborne Exp $
  */ 
 public interface QueryEngineFactory
 {

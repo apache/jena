@@ -24,7 +24,6 @@ import com.hp.hpl.jena.sparql.util.Utils;
 /** A program to parse and print a query.
  *
  * @author  Andy Seaborne
- * @version $Id: qparse.java,v 1.60 2007/02/06 17:06:27 andy_seaborne Exp $
  */
 
 public class qparse extends CmdARQ

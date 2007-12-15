@@ -21,7 +21,6 @@ import com.hp.hpl.jena.vocabulary.DC;
  * then execute a SPARQL query with a Lucene search in it.
  * 
  * @author Andy Seaborne
- * @version $Id: ExLucene4.java,v 1.3 2007/01/02 11:46:47 andy_seaborne Exp $
  */
 
 public class ExLucene4

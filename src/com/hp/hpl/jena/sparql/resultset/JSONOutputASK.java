@@ -15,7 +15,6 @@ import org.json.JSONStringer;
 /** JSON Output (ASK format)
  * 
  * @author Elias Torres (<a href="mailto:elias@torrez.us">elias@torrez.us</a>)
- * @version $Id: JSONOutputASK.java,v 1.4 2007/01/02 11:19:19 andy_seaborne Exp $
  */
 
 

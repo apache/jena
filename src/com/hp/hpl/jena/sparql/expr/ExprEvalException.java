@@ -11,7 +11,6 @@ package com.hp.hpl.jena.sparql.expr;
  *  See also QueryFatalException which aborts the whole query execution.
  * 
  * @author Andy Seaborne
- * @version $Id: ExprEvalException.java,v 1.5 2007/01/02 11:19:16 andy_seaborne Exp $
  */
 
 public class ExprEvalException extends ExprException

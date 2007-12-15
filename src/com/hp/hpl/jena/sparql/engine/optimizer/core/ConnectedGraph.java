@@ -22,7 +22,6 @@ import com.hp.hpl.jena.sparql.engine.optimizer.core.PrimeNumberGen;
  * node and edge costs. 
  * 
  * @author Markus Stocker
- * @version $Id$
  */
 
 public class ConnectedGraph 

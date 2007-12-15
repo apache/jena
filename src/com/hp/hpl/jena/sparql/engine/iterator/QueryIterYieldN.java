@@ -17,7 +17,6 @@ import com.hp.hpl.jena.sparql.util.Utils;
 /** A query iterator that yields the same thing N times. 
  * 
  * @author Andy Seaborne
- * @version $Id: QueryIterYieldN.java,v 1.10 2007/02/06 17:06:03 andy_seaborne Exp $
  */
 
 public class QueryIterYieldN extends QueryIter

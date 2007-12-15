@@ -10,7 +10,6 @@ import com.hp.hpl.jena.query.QueryException;
 /** Exception class for all operations in the Joseki client library.
  *  Error codes are as HTTP statsus codes.
  * 
- * @version     $Id: QueryExceptionHTTP.java,v 1.3 2007/01/02 11:19:41 andy_seaborne Exp $
  * @author      Andy Seaborne
  */
 public class QueryExceptionHTTP extends QueryException

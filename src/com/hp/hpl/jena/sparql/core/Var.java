@@ -20,7 +20,6 @@ import com.hp.hpl.jena.sparql.expr.ExprVar;
 /** A SPARQL variable
  * 
  * @author Andy Seaborne
- * @version $Id: Var.java,v 1.16 2007/02/03 21:07:08 andy_seaborne Exp $
  */
 
 public class Var extends Node_Variable

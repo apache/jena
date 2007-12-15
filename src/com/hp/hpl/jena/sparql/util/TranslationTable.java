@@ -11,7 +11,6 @@ import java.util.*; ;
 /** Maps string to string for use with convenience names.
  * 
  * @author Andy Seaborne
- * @version $Id: TranslationTable.java,v 1.4 2007/01/02 11:20:08 andy_seaborne Exp $
  */
 
 public class TranslationTable

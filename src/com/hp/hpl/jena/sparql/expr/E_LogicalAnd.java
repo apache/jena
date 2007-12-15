@@ -12,7 +12,6 @@ import com.hp.hpl.jena.sparql.function.FunctionEnv;
 
 /**
  * @author Andy Seaborne
- * @version $Id: E_LogicalAnd.java,v 1.26 2007/02/06 17:05:51 andy_seaborne Exp $
  */ 
 
 public class E_LogicalAnd extends ExprFunction2

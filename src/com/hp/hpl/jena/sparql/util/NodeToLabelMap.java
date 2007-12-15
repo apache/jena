@@ -14,7 +14,6 @@ import com.hp.hpl.jena.graph.Node;
 /** Map nodes to blank node representations.
  * 
  * @author Andy Seaborne
- * @version $Id$
  */ 
 public class NodeToLabelMap
 {

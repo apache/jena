@@ -16,7 +16,6 @@ import com.hp.hpl.jena.sparql.util.Symbol;
 /** Indirect to the choosen regular expression implementation. 
  * 
  * @author Andy Seaborne
- * @version $Id: E_Regex.java,v 1.25 2007/02/06 17:05:51 andy_seaborne Exp $
  */
 
 public class E_Regex extends ExprFunction

@@ -17,7 +17,6 @@ import com.hp.hpl.jena.sparql.engine.binding.BindingKey;
 /** Splits bindings by their keys and manages one accumulator per key
  * 
  * @author Andy Seaborne
- * @version $Id$
  */
 
 public abstract class AggregatorBase implements Aggregator

@@ -9,7 +9,6 @@ package com.hp.hpl.jena.sparql.engine.optimizer.core;
  * The class is a prime number generator.
  * 
  * @author Markus Stocker
- * @version $Id$
  */
 
 public class PrimeNumberGen 

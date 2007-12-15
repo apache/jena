@@ -13,7 +13,6 @@ import com.hp.hpl.jena.util.iterator.ClosableIterator;
 /** Root of query iterators in ARQ.
  *
  * @author Andy Seaborne
- * @version $Id: QueryIterator.java,v 1.13 2007/02/06 17:05:47 andy_seaborne Exp $
  */
 
 public interface QueryIterator extends ClosableIterator, PrintSerializable

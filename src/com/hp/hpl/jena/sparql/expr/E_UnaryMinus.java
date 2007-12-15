@@ -9,7 +9,6 @@ import com.hp.hpl.jena.sparql.expr.nodevalue.XSDFuncOp;
 
 /** 
  * @author Andy Seaborne
- * @version $Id: E_UnaryMinus.java,v 1.14 2007/01/02 11:19:17 andy_seaborne Exp $
  */
 
 public class E_UnaryMinus extends ExprFunction1

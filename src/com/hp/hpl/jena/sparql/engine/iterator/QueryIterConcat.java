@@ -22,7 +22,6 @@ import com.hp.hpl.jena.sparql.util.Utils;
  * A query iterator that joins two or more iterators into a single iterator.
  * 
  * @author Andy Seaborne
- * @version $Id: QueryIterConcat.java,v 1.7 2007/02/06 17:06:03 andy_seaborne Exp $
  */ 
 
 public class QueryIterConcat extends QueryIter

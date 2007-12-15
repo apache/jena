@@ -29,7 +29,6 @@ import com.hp.hpl.jena.query.ResultSet;
  * (Converted from a JSONStringer output writer by Elias Torres (<a href="mailto:elias@torrez.us">elias@torrez.us</a>)
 
  * @author Andy Seaborne 
- * @version $Id: JSONObjectResult.java,v 1.2 2007/01/02 11:19:19 andy_seaborne Exp $
  */
 
 public class JSONObjectResult implements ResultSetProcessor, JSONResults

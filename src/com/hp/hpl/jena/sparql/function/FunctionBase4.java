@@ -16,7 +16,6 @@ import com.hp.hpl.jena.sparql.util.Utils;
 
 /** Support for a function of one argument. 
  * @author Andy Seaborne
- * @version $Id: FunctionBase4.java,v 1.6 2007/01/02 11:20:49 andy_seaborne Exp $
  */
 
 public abstract class FunctionBase4 extends FunctionBase

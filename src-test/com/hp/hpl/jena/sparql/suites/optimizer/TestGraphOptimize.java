@@ -32,7 +32,6 @@ import com.hp.hpl.jena.query.ARQ;
  * is the same as defined by the test case.
  * 
  * @author Markus Stocker
- * @version $Id$
  */
 
 public class TestGraphOptimize extends TestCase

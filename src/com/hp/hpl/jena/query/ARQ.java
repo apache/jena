@@ -18,7 +18,6 @@ import com.hp.hpl.jena.sparql.util.Symbol;
 /** ARQ - miscellaneous settings
  * 
  * @author Andy Seaborne
- * @version $Id: ARQ.java,v 1.46 2007/02/06 18:21:51 andy_seaborne Exp $
  */
 
 public class ARQ

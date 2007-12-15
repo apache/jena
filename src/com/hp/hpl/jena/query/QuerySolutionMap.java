@@ -18,7 +18,6 @@ import com.hp.hpl.jena.sparql.util.FmtUtils;
 /** Implementation of QuerySolution that is backed by an in-memory map.
  * 
  * @author Andy Seaborne
- * @version $Id: QuerySolutionMap.java,v 1.6 2007/01/02 11:20:16 andy_seaborne Exp $
  */ 
 
 public class QuerySolutionMap extends QuerySolutionBase

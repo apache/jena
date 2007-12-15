@@ -39,7 +39,6 @@ import com.hp.hpl.jena.sparql.engine.optimizer.core.BasicPatternJoin;
  * when using this class is to either load() or create() the index.
  * 
  * @author Markus Stocker
- * @version $Id$
  */
 
 public class ProbabilityIndex 

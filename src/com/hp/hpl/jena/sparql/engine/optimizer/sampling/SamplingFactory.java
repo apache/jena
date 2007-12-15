@@ -21,7 +21,6 @@ import com.hp.hpl.jena.sparql.engine.optimizer.sampling.impl.RandomSampling;
  * Sampling interface.
  * 
  * @author Markus Stocker
- * @version $Id$
  */
 
 public class SamplingFactory 

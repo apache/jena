@@ -29,7 +29,6 @@ import com.hp.hpl.jena.sparql.engine.optimizer.util.Config;
  * integrate the best from both worlds.
  * 
  * @author Markus Stocker
- * @version $Id$
  */
 
 

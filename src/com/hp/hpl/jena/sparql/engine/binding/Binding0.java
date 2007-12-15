@@ -14,7 +14,6 @@ import com.hp.hpl.jena.util.iterator.NullIterator;
 /** Special purpose binding for nothing. 
  * 
  * @author   Andy Seaborne
- * @version  $Id: Binding0.java,v 1.1 2007/02/06 17:06:05 andy_seaborne Exp $
  */
 
 public class Binding0 extends BindingBase

@@ -1,24 +1,68 @@
 /*
- * (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
+ * All rights reserved.
  * [See end of file]
  */
 
-/** Specific exception for a type mismatch in the expression evaluation.
- * @author		Andy Seaborne
+package com.hp.hpl.jena.sparql.algebra.op;
+
+import java.util.List;
+
+import com.hp.hpl.jena.sparql.algebra.Op;
+import com.hp.hpl.jena.sparql.algebra.OpVisitor;
+import com.hp.hpl.jena.sparql.algebra.Transform;
+import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
+
+/** General procedure in graph pattern evaluation (a stored procedure facility)
+ * 
+ * @author Andy Seaborne
  */
-
-package com.hp.hpl.jena.sparql.lang.rdql;
-
-
-/*public*/ class RDQLEvalTypeException extends RDQLEvalFailureException
+public class OpProc extends Op0
 {
-    public RDQLEvalTypeException() { super() ; }
-    public RDQLEvalTypeException(String msg) { super(msg) ; }
+
+    private String iri ;
+    private List args ;
+
+    public OpProc(String iri, List args)
+    {
+        this.args = args ;
+        this.iri = iri ;
+        
+    }
+    
+    public Op apply(Transform transform)
+    {
+        return null ;
+    }
+
+    public Op copy()
+    {
+        return null ;
+    }
+
+    public boolean equalTo(Op other, NodeIsomorphismMap labelMap)
+    {
+        return false ;
+    }
+
+    public int hashCode()
+    {
+        return 0 ;
+    }
+
+    public void visit(OpVisitor opVisitor)
+    {}
+
+    public String getName()
+    {
+        return "function" ;
+    }
+
 }
 
 /*
- *  (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
- *  All rights reserved.
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
+ * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions

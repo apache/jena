@@ -15,7 +15,6 @@ import com.hp.hpl.jena.sparql.util.GraphUtils;
 /** com.hp.hpl.jena.query.test.TestMisc
  * 
  * @author Andy Seaborne
- * @version $Id: TestAPI.java,v 1.3 2007/01/02 11:18:17 andy_seaborne Exp $
  */
 
 public class TestAPI extends TestCase

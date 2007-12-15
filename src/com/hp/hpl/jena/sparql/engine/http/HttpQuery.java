@@ -27,7 +27,6 @@ import com.hp.hpl.jena.sparql.util.Convert;
  *  If the query string is large, then HTTP POST is used.
 
  * @author  Andy Seaborne
- * @version $Id: HttpQuery.java,v 1.13 2007/01/14 19:11:50 andy_seaborne Exp $
  */
 public class HttpQuery extends Params
 {

@@ -15,7 +15,6 @@ import com.hp.hpl.jena.sparql.engine.optimizer.util.Constants;
  * required for the probabilistic index model
  * 
  * @author Markus Stocker
- * @version $Id$
  */
 
 public class Vocabulary 

@@ -14,7 +14,6 @@ import com.hp.hpl.jena.sparql.core.Var;
  *  Changing the key binding while in such a structure is not supported.  
  * 
  * @author   Andy Seaborne
- * @version  $Id: BindingWrapped.java,v 1.1 2007/02/06 17:06:05 andy_seaborne Exp $
  */
 
 public class BindingKey

@@ -18,7 +18,6 @@ import org.apache.lucene.store.RAMDirectory;
 /** Root class for index creation.
  *  
  * @author Andy Seaborne
- * @version $Id: IndexBuilderBase.java,v 1.6 2007/01/02 11:19:52 andy_seaborne Exp $
  */
 
 public class IndexBuilderBase implements IndexBuilder 

@@ -26,7 +26,6 @@ import com.hp.hpl.jena.util.FileManager;
 /** ResultSetFactory - make result sets from places other than a query.
  * 
  * @author Andy Seaborne
- * @version $Id: ResultSetFactory.java,v 1.29 2007/01/02 11:20:16 andy_seaborne Exp $
  */
 
 public class ResultSetFactory

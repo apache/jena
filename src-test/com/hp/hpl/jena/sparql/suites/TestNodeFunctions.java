@@ -19,7 +19,6 @@ import com.hp.hpl.jena.vocabulary.XSD;
 
 /**
  * @author Andy Seaborne
- * @version $Id: TestNodeFunctions.java,v 1.7 2007/01/02 11:18:18 andy_seaborne Exp $
  */
 
 public class TestNodeFunctions extends TestCase

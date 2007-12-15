@@ -15,7 +15,6 @@ import com.hp.hpl.jena.sparql.core.Var;
  *  "equality" means Node.equals, not Node.sameValueAs).
  * 
  * @author   Andy Seaborne
- * @version  $Id: BindingImmutable.java,v 1.1 2007/02/06 17:06:05 andy_seaborne Exp $
  */
 
 

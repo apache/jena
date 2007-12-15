@@ -14,7 +14,6 @@ import com.hp.hpl.jena.rdf.model.Resource;
  * result set size of the corresponding pattern.
  * 
  * @author Markus Stocker
- * @version $Id$
  */
 
 public class Pattern 

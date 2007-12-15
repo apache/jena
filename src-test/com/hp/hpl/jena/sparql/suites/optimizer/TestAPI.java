@@ -37,7 +37,6 @@ import com.hp.hpl.jena.sparql.engine.optimizer.probability.IndexLevel;
  * something goes wrong while calling the API with the parameters.
  * 
  * @author Markus Stocker
- * @version $Id$
  */
 
 public class TestAPI extends TestCase

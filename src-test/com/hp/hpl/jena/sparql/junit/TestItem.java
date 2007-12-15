@@ -29,7 +29,6 @@ import java.util.* ;
  *  test query vocabulary.
  *  
  *  @author      Andy Seaborne
- *  @version     $Id: TestItem.java,v 1.20 2007/01/09 16:58:07 andy_seaborne Exp $
  */
 public class TestItem
 {

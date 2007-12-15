@@ -17,7 +17,6 @@ import com.hp.hpl.jena.sparql.util.Utils;
 /** Closable empty query iterator
  * 
  * @author Andy Seaborne
- * @version $Id: QueryIterNullIterator.java,v 1.3 2007/02/06 17:06:01 andy_seaborne Exp $
  */
 
 public class QueryIterNullIterator extends QueryIter

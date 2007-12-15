@@ -7,7 +7,6 @@ package com.hp.hpl.jena.sparql.expr;
 
 /** 
  * @author Andy Seaborne
- * @version $Id: E_Equals.java,v 1.8 2007/01/02 11:19:16 andy_seaborne Exp $
  */
 
 public class E_Equals extends ExprFunction2

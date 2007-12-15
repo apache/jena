@@ -20,7 +20,6 @@ import com.hp.hpl.jena.sparql.util.Context;
 /** Interface to value-testing extensions to the expression evaluator.
  * 
  * @author Andy Seaborne
- * @version $Id: FunctionBase.java,v 1.21 2007/02/06 17:06:08 andy_seaborne Exp $
  */
 
 public abstract class FunctionBase implements Function

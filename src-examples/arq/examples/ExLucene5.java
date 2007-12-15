@@ -19,7 +19,6 @@ import com.hp.hpl.jena.sparql.util.Utils;
  *  Pattern 3. 
  * 
  * @author Andy Seaborne
- * @version $Id: ExLucene4.java,v 1.3 2007/01/02 11:46:47 andy_seaborne Exp $
  */
 
 public class ExLucene5

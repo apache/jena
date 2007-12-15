@@ -19,7 +19,6 @@ import java.util.regex.Pattern;
 
  * 
  * @author Andy Seaborne
- * @version $Id: RomanNumeral.java,v 1.5 2007/01/02 11:20:08 andy_seaborne Exp $
  */
 
 public class RomanNumeral

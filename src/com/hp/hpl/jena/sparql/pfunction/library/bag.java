@@ -11,7 +11,6 @@ import com.hp.hpl.jena.vocabulary.RDF;
 
 /** Bag membership 
  * @author Andy Seaborne
- * @version $Id: bag.java,v 1.2 2007/01/02 11:20:22 andy_seaborne Exp $
  */ 
 
 public class bag extends container

@@ -15,7 +15,6 @@ import com.hp.hpl.jena.sparql.engine.binding.Binding;
  * subclass one binding at a time after evaluating the arguments (if bound).
  * 
  * @author Andy Seaborne
- * @version $Id: PropertyFunctionEval.java,v 1.6 2007/02/06 17:05:54 andy_seaborne Exp $
  */ 
 
 public abstract class PropertyFunctionEval extends PropertyFunctionBase

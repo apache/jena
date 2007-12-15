@@ -68,7 +68,6 @@ import com.hp.hpl.jena.query.*;
  *  indexing or external structure.
  *  
  * @author Andy Seaborne
- * @version $Id: labelSearch.java,v 1.12 2007/02/02 16:51:02 andy_seaborne Exp $
  */ 
 
 public class labelSearch implements PropertyFunction

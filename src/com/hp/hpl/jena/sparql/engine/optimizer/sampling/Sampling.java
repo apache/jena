@@ -12,7 +12,6 @@ import com.hp.hpl.jena.graph.Triple;
  * Interface for sampling techniques. The interface is implemented by SamplingBase.
  * 
  * @author Markus Stocker
- * @version $Id$
  */
 
 public interface Sampling 

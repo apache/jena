@@ -15,7 +15,6 @@ import com.hp.hpl.jena.sparql.function.FunctionBase2;
 /** Function that concatenates two strings.
  * 
  * @author Andy Seaborne
- * @version $Id: strJoin.java,v 1.2 2007/01/02 11:19:12 andy_seaborne Exp $
  */
 
 public class strJoin extends FunctionBase2

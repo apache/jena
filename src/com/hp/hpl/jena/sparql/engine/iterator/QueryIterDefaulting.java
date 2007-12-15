@@ -16,7 +16,6 @@ import com.hp.hpl.jena.sparql.util.Utils;
  *  or a default value (once) if the wrapped iterator returns nothing.
  * 
  * @author Andy Seaborne
- * @version $Id: QueryIterDefaulting.java,v 1.6 2007/02/06 17:06:03 andy_seaborne Exp $
  */ 
 
 public class QueryIterDefaulting extends QueryIter

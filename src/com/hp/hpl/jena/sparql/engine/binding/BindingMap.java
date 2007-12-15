@@ -17,7 +17,6 @@ import com.hp.hpl.jena.sparql.core.Var;
  *  then trying the parent is not found. 
  * 
  * @author   Andy Seaborne
- * @version  $Id: BindingMap.java,v 1.1 2007/02/06 17:06:05 andy_seaborne Exp $
  */
 
 

@@ -14,7 +14,6 @@ import com.hp.hpl.jena.util.junit.TestUtils;
 /** com.hp.hpl.jena.query.test.TestUtils
  * 
  * @author Andy Seaborne
- * @version $Id: TestUtils.java,v 1.10 2007/01/09 16:58:04 andy_seaborne Exp $
  */
 
 public class TestQueryUtils

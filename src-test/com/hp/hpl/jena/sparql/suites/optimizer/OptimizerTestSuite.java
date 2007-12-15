@@ -10,7 +10,6 @@ import junit.framework.*;
 /**
  * All the ARQo tests 
  * @author Markus Stocker
- * @version $Id$
  */
 
 public class OptimizerTestSuite extends TestSuite

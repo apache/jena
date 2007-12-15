@@ -12,7 +12,6 @@ import com.hp.hpl.jena.util.FileManager;
 /** A interface for a single execution of a query.
  *
  * @author   Andy Seaborne
- * @version  $Id: QueryExecution.java,v 1.23 2007/01/02 11:20:16 andy_seaborne Exp $
  */
 
 

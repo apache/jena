@@ -22,7 +22,6 @@ import com.hp.hpl.jena.sparql.engine.optimizer.heuristic.HeuristicBasicPattern;
  * the optimizer considers other joins better choices.
  * 
  * @author Markus Stocker
- * @version $Id$
  */
 
 public class VariableCountingUnbound extends HeuristicBasicPattern

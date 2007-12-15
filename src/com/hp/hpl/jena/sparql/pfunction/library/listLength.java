@@ -21,7 +21,6 @@ import com.hp.hpl.jena.sparql.util.NodeFactory;
 /** List length : property function to get the length of a list.
  * 
  * @author Andy Seaborne
- * @version $Id: listLength.java,v 1.5 2007/02/06 17:05:59 andy_seaborne Exp $
  */ 
 
 public class listLength extends ListBase1

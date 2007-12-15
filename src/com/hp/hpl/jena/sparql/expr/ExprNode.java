@@ -21,7 +21,6 @@ import com.hp.hpl.jena.sparql.util.ExprUtils;
  * of all Expr classes that provides the Constraint machinary.
  * 
  * @author Andy Seaborne
- * @version $Id: ExprNode.java,v 1.42 2007/02/06 17:05:51 andy_seaborne Exp $
  */
  
 public abstract class ExprNode implements Expr

@@ -16,7 +16,6 @@ import com.hp.hpl.jena.sparql.util.Utils;
  * This class marks a QueryIter that takes one QueryIterator as input.
  * 
  * @author Andy Seaborne
- * @version $Id: QueryIter1.java,v 1.6 2007/02/05 18:28:05 andy_seaborne Exp $
  */
 public abstract class QueryIter1 extends QueryIter
 {

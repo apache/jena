@@ -15,7 +15,6 @@ import com.hp.hpl.jena.util.iterator.SingletonIterator;
 /** Special purpose binding for adding just one name/value slot. 
  * 
  * @author   Andy Seaborne
- * @version  $Id: Binding1.java,v 1.1 2007/02/06 17:06:05 andy_seaborne Exp $
  */
 
 

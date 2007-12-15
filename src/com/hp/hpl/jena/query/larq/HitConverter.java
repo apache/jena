@@ -16,7 +16,6 @@ import com.hp.hpl.jena.util.iterator.Map1;
  *  Hides the Lucene classes from the rest of ARQ.
  *  
  * @author Andy Seaborne
- * @version $Id$
  */ 
 
 class HitConverter implements Map1

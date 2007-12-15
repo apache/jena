@@ -11,7 +11,6 @@ import com.hp.hpl.jena.sparql.sse.Item;
 /** Warpper parser handler with pass-through for all operations.
  *  Calls both, first one first.
  * @author Andy Seaborne
- * @version $Id$
  */
 
 public class ParseHandlerWrapper implements ParseHandler

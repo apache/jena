@@ -20,7 +20,7 @@ import com.hp.hpl.jena.sparql.ARQNotImplemented;
 
 /** 
  * Base class for indexing literals (i.e. index is a literal and the 
- * index return the literal)
+ * index returns the literal)
  *
  */
 

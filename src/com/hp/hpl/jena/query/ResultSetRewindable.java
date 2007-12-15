@@ -5,7 +5,6 @@
 
 /**
  * @author     Andy Seaborne
- * @version    $Id: ResultSetRewindable.java,v 1.5 2007/02/08 16:18:44 andy_seaborne Exp $
  */
  
 package com.hp.hpl.jena.query;

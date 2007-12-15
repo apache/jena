@@ -20,7 +20,6 @@ import com.hp.hpl.jena.sparql.util.IndentedWriter;
 
 /** 
  * @author Automatically generated class: Operator: Modulus
- * @version $Id: Q_Modulus.java,v 1.4 2007/01/02 11:18:58 andy_seaborne Exp $
  */
 
 public class Q_Modulus extends ExprNode implements ExprRDQL, ExprNumeric

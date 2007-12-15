@@ -10,7 +10,6 @@ package arq.cmd;
  *  Use instead of System.exit so that a wrapper can catch (else a command server
  *  wil exit wrongly). 
  * @author Andy Seaborne
- * @version $Id: TerminationException.java,v 1.4 2007/01/02 11:20:12 andy_seaborne Exp $
  */
 
 public class TerminationException extends CmdException

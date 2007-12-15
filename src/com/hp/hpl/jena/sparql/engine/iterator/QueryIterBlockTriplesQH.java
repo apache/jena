@@ -29,7 +29,6 @@ import com.hp.hpl.jena.util.iterator.ClosableIterator;
 /** An Iterator that takes a binding and executes a pattern.
  * 
  * @author     Andy Seaborne
- * @version    $Id: QueryIterBlockTriples.java,v 1.18 2007/02/06 17:06:02 andy_seaborne Exp $
  */
  
 public class QueryIterBlockTriplesQH extends QueryIterRepeatApply

@@ -19,7 +19,6 @@ import com.hp.hpl.jena.sparql.engine.optimizer.util.Config;
  * Implementation of basic graph pattern optimizer.
  * 
  * @author Markus Stocker
- * @version $Id$
  */
 
 public class BasicPatternOptimizer extends OptimizerBase 

@@ -22,7 +22,6 @@ import arq.cmd.TerminationException;
  *  which should not call System.exit anywhere
  *    
  * @author Andy Seaborne
- * @version $Id: CmdMain.java,v 1.10 2007/02/03 20:27:19 andy_seaborne Exp $
  */
 
 public abstract class CmdMain extends CmdLineArgs

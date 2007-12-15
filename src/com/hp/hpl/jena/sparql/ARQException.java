@@ -5,7 +5,6 @@
  
 /** Hopefully, you won't see this!
  * @author   Andy Seaborne
- * @version  $Id: ARQInternalErrorException.java,v 1.5 2007/01/02 11:20:30 andy_seaborne Exp $
  */
 
 package com.hp.hpl.jena.sparql;

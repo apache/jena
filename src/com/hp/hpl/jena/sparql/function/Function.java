@@ -14,7 +14,6 @@ import com.hp.hpl.jena.sparql.expr.NodeValue;
 /** Interface to value-testing extensions to the expression evaluator.
  * 
  * @author Andy Seaborne
- * @version $Id: Function.java,v 1.18 2007/02/06 17:06:08 andy_seaborne Exp $
  */
 
 public interface Function

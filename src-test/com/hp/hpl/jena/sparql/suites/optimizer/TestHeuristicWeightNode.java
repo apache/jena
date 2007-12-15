@@ -31,7 +31,6 @@ import com.hp.hpl.jena.query.ARQ;
  * triple pattern (i.e. a basic pattern with one element).
  * 
  * @author Markus Stocker
- * @version $Id$
  */
 
 public class TestHeuristicWeightNode extends TestCase

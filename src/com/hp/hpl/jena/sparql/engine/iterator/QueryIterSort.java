@@ -21,7 +21,6 @@ import com.hp.hpl.jena.sparql.engine.binding.BindingComparator;
  * iterators that can be handled.
  * 
  * @author Andy Seaborne
- * @version $Id: QueryIterSort.java,v 1.8 2007/02/06 17:06:03 andy_seaborne Exp $
  */
 
 public class QueryIterSort

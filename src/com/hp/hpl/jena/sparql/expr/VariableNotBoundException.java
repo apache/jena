@@ -9,7 +9,6 @@ package com.hp.hpl.jena.sparql.expr;
 /** Exception for an undefined expression (including unbound variable)
  * 
  * @author Andy Seaborne
- * @version $Id: VariableNotBoundException.java,v 1.4 2007/01/02 11:19:16 andy_seaborne Exp $
  */
 
 public class VariableNotBoundException extends ExprUndefException

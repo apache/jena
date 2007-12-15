@@ -23,7 +23,6 @@ import com.hp.hpl.jena.sparql.util.StringUtils;
  * Can also just a list of pairs.
  * 
  * @author Andy Seaborne
- * @version $Id$
  */
 
 public class BuilderPrefixMapping

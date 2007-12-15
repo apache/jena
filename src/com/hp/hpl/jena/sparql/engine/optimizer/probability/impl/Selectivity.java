@@ -29,7 +29,6 @@ import com.hp.hpl.jena.sparql.syntax.ElementTriplesBlock;
  * by executing a corresponding SPARQL query.
  * 
  * @author Markus Stocker
- * @version $Id$
  */
 
 public class Selectivity 

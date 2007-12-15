@@ -17,7 +17,6 @@ import com.hp.hpl.jena.sparql.junit.QueryTestSuiteFactory;
 
 /**
  * @author Andy Seaborne
- * @version $Id: TestReferenceEngine.java,v 1.11 2007/01/29 17:59:19 andy_seaborne Exp $
  */
 
 public class ARQTestQuadEngine extends TestCase

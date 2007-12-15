@@ -9,7 +9,6 @@ import com.hp.hpl.jena.graph.Node ;
 
 /** 
  * @author Andy Seaborne
- * @version $Id: E_IsLiteral.java,v 1.18 2007/01/02 11:19:17 andy_seaborne Exp $
  */
 
 public class E_IsLiteral extends ExprFunction1

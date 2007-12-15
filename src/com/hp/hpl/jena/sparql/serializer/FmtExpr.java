@@ -14,7 +14,6 @@ import com.hp.hpl.jena.sparql.expr.Expr;
  *  Can be reused several times (same prefix mapping)   
  * 
  * @author Andy Seaborne
- * @version $Id$
  */
 
 public interface FmtExpr

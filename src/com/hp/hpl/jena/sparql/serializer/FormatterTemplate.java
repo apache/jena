@@ -9,7 +9,6 @@ import com.hp.hpl.jena.sparql.syntax.TemplateVisitor;
 
 /** 
  * @author Andy Seaborne
- * @version $Id: FormatterTemplate.java,v 1.5 2007/01/02 11:19:49 andy_seaborne Exp $
  */
 
 public interface FormatterTemplate extends TemplateVisitor 

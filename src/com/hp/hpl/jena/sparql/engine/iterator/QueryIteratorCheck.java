@@ -18,7 +18,6 @@ import com.hp.hpl.jena.sparql.util.Utils;
 /** Query iterator that checks everything was closed correctly 
  * 
  * @author Andy Seaborne
- * @version $Id$
  */
 
 public class QueryIteratorCheck extends QueryIteratorWrapper

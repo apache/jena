@@ -28,7 +28,6 @@ import com.hp.hpl.jena.sparql.function.FunctionEnv;
 
 /**
  * @author Andy Seaborne
- * @version $Id: E_LogicalOr.java,v 1.29 2007/02/06 17:05:51 andy_seaborne Exp $
  */ 
 
 

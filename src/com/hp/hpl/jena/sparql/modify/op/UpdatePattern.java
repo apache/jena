@@ -28,7 +28,6 @@ import com.hp.hpl.jena.update.UpdateException;
 
 /**
  * @author Andy Seaborne
- * @version $Id$
  */ 
 
 public abstract class UpdatePattern extends GraphUpdateN

@@ -9,7 +9,6 @@ package com.hp.hpl.jena.sparql.junit;
  *  not a failure of the test itself (e.g. manifest problems)
  *  
  * @author		Andy Seaborne
- * @version 	$Id: QueryTestException.java,v 1.4 2007/01/02 11:20:20 andy_seaborne Exp $
  */
 
 

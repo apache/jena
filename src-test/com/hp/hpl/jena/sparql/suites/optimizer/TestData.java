@@ -17,7 +17,6 @@ import com.hp.hpl.jena.sparql.suites.optimizer.Util;
  * Test the probabilistic data build process based on the model provided
  * 
  * @author Markus Stocker
- * @version $Id$
  */
 
 public class TestData extends TestCase

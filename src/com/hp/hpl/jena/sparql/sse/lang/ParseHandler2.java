@@ -11,7 +11,6 @@ import com.hp.hpl.jena.sparql.sse.Item;
 /** Splitter for parser handlers.
  *  Calls both, first one first.
  * @author Andy Seaborne
- * @version $Id$
  */
 
 public class ParseHandler2 implements ParseHandler

@@ -15,7 +15,6 @@ import com.hp.hpl.jena.sparql.util.IndentedWriter;
 /** XML Output (ASK format)
  * 
  * @author Andy Seaborne
- * @version $Id: XMLOutputASK.java,v 1.9 2007/01/02 11:19:19 andy_seaborne Exp $
  */
 
 

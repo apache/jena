@@ -31,7 +31,6 @@ import com.hp.hpl.jena.sparql.syntax.*;
  * The ElementWalker is like implementing endElement.</p>
  *
  * @author Andy Seaborne
- * @version $Id: RecursiveVisitor.java,v 1.15 2007/01/31 13:01:25 andy_seaborne Exp $ 
  */
 
 public class RecursiveElementVisitor implements ElementVisitor

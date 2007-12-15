@@ -17,7 +17,6 @@ import com.hp.hpl.jena.sparql.expr.NodeValue;
 /** com.hp.hpl.jena.query.test.TestMisc
  * 
  * @author Andy Seaborne
- * @version $Id: TestRegex.java,v 1.5 2007/01/02 11:18:17 andy_seaborne Exp $
  */
 
 public class TestRegex extends TestCase

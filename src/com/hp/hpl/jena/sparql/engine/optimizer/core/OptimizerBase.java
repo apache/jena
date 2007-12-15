@@ -15,7 +15,6 @@ import com.hp.hpl.jena.sparql.engine.optimizer.heuristic.HeuristicsBroker;
  * basic graph patterns which extends this abstract class.
  * 
  * @author Markus Stocker
- * @version $Id$
  */
 
 public abstract class OptimizerBase 

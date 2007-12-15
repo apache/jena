@@ -13,7 +13,6 @@ import com.hp.hpl.jena.rdf.model.* ;
  * A single answer from a SELECT query.
  * 
  * @author Andy Seaborne
- * @version $Id: QuerySolution.java,v 1.8 2007/01/02 11:20:16 andy_seaborne Exp $
  */
 
 public interface QuerySolution

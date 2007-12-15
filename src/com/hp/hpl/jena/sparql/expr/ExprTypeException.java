@@ -9,7 +9,6 @@ package com.hp.hpl.jena.sparql.expr;
 /** Exception for a dynamic evaluation exception caused by a type mismatch.
  * 
  * @author Andy Seaborne
- * @version $Id: ExprTypeException.java,v 1.3 2007/01/02 11:19:16 andy_seaborne Exp $
  */
 
 public class ExprTypeException extends ExprEvalException

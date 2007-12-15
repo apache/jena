@@ -34,7 +34,6 @@ import com.hp.hpl.jena.query.ARQ;
  * Some tests to test if the configuration settings behave as expected
  * 
  * @author Markus Stocker
- * @version $Id$
  */
 
 public class TestConfig extends TestCase

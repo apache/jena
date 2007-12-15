@@ -15,7 +15,6 @@ import com.hp.hpl.jena.sparql.util.Utils;
 /** Wrap a QueryIterator so it can have some/all of it's methods intercepted. 
  * 
  * @author Andy Seaborne
- * @version $Id: QueryIteratorWrapper.java,v 1.3 2007/02/06 17:06:01 andy_seaborne Exp $
  */
 
 public class QueryIteratorWrapper extends QueryIteratorBase

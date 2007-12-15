@@ -20,7 +20,6 @@ import com.hp.hpl.jena.sparql.engine.binding.Binding;
  * @see ResultSet
  * 
  * @author   Andy Seaborne
- * @version  $Id: ResultSet.java,v 1.13 2007/01/02 11:20:16 andy_seaborne Exp $
  */
 
 public interface ResultSet extends Iterator

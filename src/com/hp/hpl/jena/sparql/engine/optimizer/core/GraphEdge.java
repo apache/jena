@@ -17,7 +17,6 @@ import org.apache.commons.logging.LogFactory;
  * used as abstraction of the join between two triple patterns.
  * 
  * @author Markus Stocker
- * @version $Id$
  */
 
 public class GraphEdge 

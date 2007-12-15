@@ -20,7 +20,6 @@ import com.hp.hpl.jena.sparql.suites.optimizer.OptimizerTestSuite;
 /**
  * All the ARQ tests 
  * @author		Andy Seaborne
- * @version 	$Id: ARQTestSuite.java,v 1.42 2007/01/29 09:43:04 andy_seaborne Exp $
  */
 
 public class ARQTestSuite extends TestSuite

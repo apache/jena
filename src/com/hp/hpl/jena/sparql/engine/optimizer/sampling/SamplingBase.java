@@ -18,7 +18,6 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
  * implementations (e.g. settings the size of the graph)
  * 
  * @author Markus Stocker
- * @version $Id$
  */
 
 public abstract class SamplingBase implements Sampling 

@@ -8,7 +8,6 @@ package com.hp.hpl.jena.sparql.engine.binding;
 /** Special purpose binding for the root of all bindings.
  * 
  * @author   Andy Seaborne
- * @version  $Id: BindingRoot.java,v 1.2 2007/02/08 16:19:02 andy_seaborne Exp $
  */
 
 

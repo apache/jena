@@ -11,7 +11,6 @@ import java.util.* ;
 /** A program to execute queries from the command line in ARQ mode.
   *
  * @author  Andy Seaborne
- * @version $Id: rdql.java,v 1.6 2007/01/02 11:20:14 andy_seaborne Exp $
  */
 
 public class rdql

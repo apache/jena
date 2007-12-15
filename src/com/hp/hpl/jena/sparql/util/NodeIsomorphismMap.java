@@ -14,7 +14,6 @@ import com.hp.hpl.jena.graph.Node;
 /** Map nodes to nodes.
  *  
  * @author Andy Seaborne
- * @version $Id: LabelMap.java,v 1.2 2007/01/02 11:20:30 andy_seaborne Exp $
  */ 
 
 public class NodeIsomorphismMap //extends HashMap

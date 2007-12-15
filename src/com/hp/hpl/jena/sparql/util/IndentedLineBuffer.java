@@ -17,7 +17,6 @@ import java.io.* ;
  *  so could switch to that (exxept we are really using a StringWriter)  
  * 
  * @author Andy Seaborne
- * @version $Id: IndentedLineBuffer.java,v 1.7 2007/01/02 11:20:05 andy_seaborne Exp $
  */
 
 public class IndentedLineBuffer

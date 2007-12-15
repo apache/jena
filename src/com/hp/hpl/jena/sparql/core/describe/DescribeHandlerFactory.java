@@ -9,7 +9,6 @@ package com.hp.hpl.jena.sparql.core.describe;
 
 /** Factory for describe handlers
  * @author Andy Seaborne
- * @version $Id: DescribeHandlerFactory.java,v 1.1 2007/01/25 16:38:53 andy_seaborne Exp $
  */
 
 public interface DescribeHandlerFactory

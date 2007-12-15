@@ -53,7 +53,6 @@ import com.hp.hpl.jena.vocabulary.XSD;
  * </pre>
  * 
  * @author  Andy Seaborne
- * @version $Id: qtest.java,v 1.32 2007/01/12 16:01:12 andy_seaborne Exp $
  */
 
 public class qtest

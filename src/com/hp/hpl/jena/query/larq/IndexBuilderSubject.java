@@ -23,7 +23,6 @@ import com.hp.hpl.jena.sparql.ARQNotImplemented;
  * additional property to further restrict what gets indexed.
  *    
  * @author Andy Seaborne
- * @version $Id: IndexBuilderSubject.java,v 1.7 2007/01/02 11:19:52 andy_seaborne Exp $
  */
 
 public class IndexBuilderSubject extends IndexBuilderModel

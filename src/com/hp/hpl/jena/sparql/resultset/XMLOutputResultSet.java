@@ -23,7 +23,6 @@ import com.hp.hpl.jena.sparql.util.IndentedWriter;
 /** XML Output (ResultSet format)
  * 
  * @author Andy Seaborne
- * @version $Id: XMLOutputResultSet.java,v 1.16 2007/01/02 11:19:19 andy_seaborne Exp $
  */
 
 

@@ -5,7 +5,6 @@
 
 /**
  * @author   Andy Seaborne
- * @version  $Id: NodeValueSettable.java,v 1.3 2007/01/02 11:18:58 andy_seaborne Exp $
  */
 
 package com.hp.hpl.jena.sparql.lang.rdql;

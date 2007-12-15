@@ -30,7 +30,6 @@ import com.hp.hpl.jena.sparql.util.GraphContainerUtils;
  * 
  * 
  * @author Andy Seaborne
- * @version $Id: container.java,v 1.16 2007/02/06 17:05:59 andy_seaborne Exp $
  */ 
 
 public class container extends PFuncSimple

@@ -15,7 +15,6 @@ import com.hp.hpl.jena.sparql.engine.binding.Binding;
 
 /** 
  * @author Andy Seaborne
- * @version $Id: QueryIterDistinct.java,v 1.4 2007/01/02 11:19:31 andy_seaborne Exp $
  */
 
 public class QueryIterReduced extends QueryIterDistinctReduced

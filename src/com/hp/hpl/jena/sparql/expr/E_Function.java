@@ -17,7 +17,6 @@ import com.hp.hpl.jena.sparql.util.FmtUtils;
 
 /** SPARQL filter function
  * @author Andy Seaborne
- * @version $Id: E_Function.java,v 1.40 2007/02/06 17:05:51 andy_seaborne Exp $
  */
 
 public class E_Function extends ExprFunctionN

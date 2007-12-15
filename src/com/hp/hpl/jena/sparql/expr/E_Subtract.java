@@ -8,7 +8,6 @@ package com.hp.hpl.jena.sparql.expr;
 import com.hp.hpl.jena.sparql.expr.nodevalue.XSDFuncOp;
 
 /** 
- * @version $Id: E_Subtract.java,v 1.20 2007/01/02 11:19:16 andy_seaborne Exp $
  */
 
 public class E_Subtract extends ExprFunction2

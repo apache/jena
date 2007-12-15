@@ -20,7 +20,6 @@ import com.hp.hpl.jena.sparql.util.IndentedWriter;
 
 /** 
  * @author Automatically generated class: Operator: BitAnd
- * @version $Id: Q_BitAnd.java,v 1.4 2007/01/02 11:18:58 andy_seaborne Exp $
  */
 
 public class Q_BitAnd extends ExprNode implements ExprRDQL, ExprNumeric

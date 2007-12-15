@@ -15,7 +15,6 @@ import com.hp.hpl.jena.sparql.function.FunctionEnv;
 /** Function for XPath fn:matches
  * 
  * @author Andy Seaborne
- * @version $Id: matches.java,v 1.18 2007/02/06 17:06:15 andy_seaborne Exp $
  */
 
 public class matches implements Function

@@ -15,7 +15,6 @@ import com.hp.hpl.jena.sparql.engine.optimizer.heuristic.HeuristicBasicPattern;
  * any pre-computed statistics
  * 
  * @author Markus Stocker
- * @version $Id$
  */
 
 public class OptimalNoStats extends HeuristicBasicPattern

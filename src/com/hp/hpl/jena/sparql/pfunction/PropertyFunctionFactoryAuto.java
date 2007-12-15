@@ -13,7 +13,6 @@ import com.hp.hpl.jena.sparql.util.Utils;
 /** PropertyFunction factory that instantiates a class each time.
  * 
  * @author Andy Seaborne
- * @version $Id: PropertyFunctionFactoryAuto.java,v 1.2 2007/01/02 11:20:27 andy_seaborne Exp $
  */ 
 
 class PropertyFunctionFactoryAuto implements PropertyFunctionFactory

@@ -25,7 +25,6 @@ import com.hp.hpl.jena.sparql.sse.ItemList;
  *  unless a subclass (carefully) manages that. 
  *    
  * @author Andy Seaborne
- * @version $Id$
  */
 
 public abstract class ParseHandlerForm extends ParseHandlerPlain 

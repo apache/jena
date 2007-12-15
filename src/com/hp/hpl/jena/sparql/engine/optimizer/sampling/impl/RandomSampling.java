@@ -20,7 +20,6 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
  * of a given number of statements in a Jena graph.
  * 
  * @author Markus Stocker
- * @version $Id$
  */
 
 public class RandomSampling extends SamplingBase 

@@ -16,7 +16,6 @@ import com.hp.hpl.jena.sparql.util.IndentedWriter;
 
 /**
  * @author   Andy Seaborne
- * @version  $Id: RDQLQueryPrintUtils.java,v 1.4 2007/01/02 11:18:58 andy_seaborne Exp $
  */
 
 public class RDQLQueryPrintUtils

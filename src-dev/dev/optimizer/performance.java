@@ -25,7 +25,6 @@ import com.hp.hpl.jena.query.QueryFactory;
  * Measure the performance of queries
  *  
  * @author Markus Stocker
- * @version $Id$
  */
 
 public class performance 

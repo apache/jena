@@ -13,7 +13,6 @@ import com.hp.hpl.jena.sparql.expr.NodeValue;
  *  Unrecognized literals includes ones with a known type but wrong lexical form
  * 
  * @author Andy Seaborne
- * @version $Id: NodeValueNode.java,v 1.5 2007/02/03 20:59:55 andy_seaborne Exp $
  */
 
 public class NodeValueNode extends NodeValue

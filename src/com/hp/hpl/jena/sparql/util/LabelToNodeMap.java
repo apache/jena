@@ -18,7 +18,6 @@ import com.hp.hpl.jena.sparql.core.VarAlloc;
 /** Map from _:* form to bNodes
  * 
  * @author Andy Seaborne
- * @version $Id: LabelToNodeMap.java,v 1.14 2007/01/27 16:59:11 andy_seaborne Exp $
  */
 
 public class LabelToNodeMap

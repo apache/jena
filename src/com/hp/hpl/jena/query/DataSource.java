@@ -13,7 +13,6 @@ import com.hp.hpl.jena.rdf.model.Model;
 /** A DataSource is a Dataset that has modification operations.
  * 
  * @author Andy Seaborne
- * @version $Id: DataSource.java,v 1.7 2007/01/02 11:20:16 andy_seaborne Exp $
  */
 
 public interface DataSource extends Dataset

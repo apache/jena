@@ -33,7 +33,6 @@ import com.hp.hpl.jena.sparql.util.LabelToNodeMap;
 /** Code that reads an XML Result Set and builds the ARQ structure for the same.
  * 
  * @author Andy Seaborne
- * @version $Id: XMLInputSAX.java,v 1.13 2007/02/06 17:05:57 andy_seaborne Exp $
  */
 
 

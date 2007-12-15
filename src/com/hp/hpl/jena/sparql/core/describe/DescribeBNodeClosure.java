@@ -16,7 +16,6 @@ import com.hp.hpl.jena.sparql.util.Context;
  *  a bNode, it recursively includes its statements.
  * 
  * @author Andy Seaborne
- * @version $Id: DescribeBNodeClosure.java,v 1.6 2007/02/02 16:23:33 andy_seaborne Exp $
  */
 
 public class DescribeBNodeClosure implements DescribeHandler

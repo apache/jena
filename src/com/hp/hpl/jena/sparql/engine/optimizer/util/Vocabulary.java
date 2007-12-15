@@ -14,7 +14,6 @@ import com.hp.hpl.jena.sparql.engine.optimizer.util.Constants;
  * Implements the ARQo vocabulary
  * 
  * @author Markus Stocker
- * @version $Id$
  */
 
 public class Vocabulary 

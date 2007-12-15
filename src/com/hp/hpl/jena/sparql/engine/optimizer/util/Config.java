@@ -15,7 +15,6 @@ import com.hp.hpl.jena.sparql.engine.optimizer.probability.IndexLevel;
  * Jena graph models)
  * 
  * @author Markus Stocker
- * @version $Id$
  */
 
 public class Config 

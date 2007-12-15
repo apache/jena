@@ -12,7 +12,6 @@ import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 /** A constraint (Filter) in a query expression.
  * 
  * @author Andy Seaborne
- * @version $Id: ElementFilter.java,v 1.11 2007/01/02 11:20:30 andy_seaborne Exp $
  */
 
 public class ElementFilter extends Element

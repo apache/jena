@@ -11,7 +11,6 @@ package com.hp.hpl.jena.sparql.engine.http;
  * Handle HTTP content type
  * 
  * @author Andy Seaborne
- * @version $Id: HttpContentType.java,v 1.5 2007/01/02 11:19:41 andy_seaborne Exp $
  */
 
 public class HttpContentType

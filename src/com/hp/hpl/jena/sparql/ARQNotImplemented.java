@@ -5,7 +5,6 @@
  
 /** Hopefully, you won't see this!
  * @author   Andy Seaborne
- * @version  $Id: ARQNotImplemented.java,v 1.2 2007/01/02 11:20:30 andy_seaborne Exp $
  */
 
 package com.hp.hpl.jena.sparql;

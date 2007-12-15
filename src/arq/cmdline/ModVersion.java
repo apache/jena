@@ -52,10 +52,6 @@ public class ModVersion implements ArgModuleGeneral
 //        public static final String PATH = "com.hp.hpl.jena.query";
 //        public static final String NAME = "@name@";
 //        public static final String WEBSITE = "@website@";
-//        public static final String VERSION = "@version@";
-//        public static final String MAJOR_VERSION = "@version-major@";
-//        public static final String MINOR_VERSION = "@version-minor@";
-//        public static final String VERSION_STATUS = "@version-status@";
 //        public static final String BUILD_DATE = "@build-time@";
         
     private static String[] fields = { "NAME", "VERSION", "BUILD_DATE" } ;

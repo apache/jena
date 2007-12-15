@@ -23,7 +23,6 @@ import com.hp.hpl.jena.sparql.util.StringUtils;
  * http://www.w3.org/TR/xpath-functions/
  * 
  * @author Andy Seaborne
- * @version $Id: Functions.java,v 1.30 2007/01/02 11:19:29 andy_seaborne Exp $
  */
 public class XSDFuncOp
 {

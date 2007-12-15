@@ -27,7 +27,6 @@ import com.hp.hpl.jena.sparql.util.ExprUtils;
 /** An expression test.
  * 
  * @author Andy Seaborne
- * @version $Id: TestExpr.java,v 1.19 2007/02/06 17:06:13 andy_seaborne Exp $
  */
 
 public abstract class TestExpr extends TestCase

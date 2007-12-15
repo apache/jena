@@ -16,7 +16,6 @@ import com.hp.hpl.jena.query.Syntax;
  *  and using QueryException exceptions for problems.    
  * 
  * @author Andy Seaborne
- * @version $Id: Parser.java,v 1.10 2007/01/02 11:19:09 andy_seaborne Exp $
  */
 
 public abstract class Parser

@@ -18,7 +18,6 @@ import com.hp.hpl.jena.sparql.util.Utils;
  *  to each object that is returned by .next()
  * 
  * @author Andy Seaborne
- * @version $Id: QueryIterConvert.java,v 1.4 2007/02/06 17:06:01 andy_seaborne Exp $
  */
 
 public class QueryIterConvert extends QueryIter1

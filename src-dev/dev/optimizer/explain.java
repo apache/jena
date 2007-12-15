@@ -16,7 +16,6 @@ import com.hp.hpl.jena.rdf.model.Model;
  * Explain example
  *  
  * @author Markus Stocker
- * @version $Id$
  */
 
 public class explain 

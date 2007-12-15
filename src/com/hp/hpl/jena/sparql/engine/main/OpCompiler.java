@@ -169,12 +169,13 @@ public class OpCompiler
 
     QueryIterator compile(OpFilter opFilter, QueryIterator input)
     {
+        // Has this got all filters by this point ...???
         ExprList exprs = opFilter.getExprs() ;
         exprs.prepareExprs(execCxt.getContext()) ;
         
         Op base = opFilter.getSubOp() ;
         
-        // Leigh reports ...
+        // Leigh reports ... need to split on PF, then place.
         if ( base instanceof OpBGP )
             return filterPlacement.placeFiltersBGP(exprs, ((OpBGP)base).getPattern(), input) ;
 

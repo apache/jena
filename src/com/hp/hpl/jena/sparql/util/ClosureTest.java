@@ -6,7 +6,6 @@
 /**
  * Test whether a 
  * @author     Andy Seaborne
- * @version    $Id: ClosureTest.java,v 1.3 2007/01/02 11:20:03 andy_seaborne Exp $
  */
  
 package com.hp.hpl.jena.sparql.util;

@@ -22,7 +22,6 @@ import com.hp.hpl.jena.sparql.util.IndentedWriter;
 
 /**
  * @author Andy Seaborne
- * @version $Id: FormatterARQ.java,v 1.30 2007/02/05 17:11:29 andy_seaborne Exp $
  */
 
 public class FormatterARQ extends FormatterBase

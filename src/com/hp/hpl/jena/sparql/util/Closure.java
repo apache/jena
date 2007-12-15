@@ -5,7 +5,6 @@
 
 /** Code to calculate the transitive-bNode closures
  * @author     Andy Seaborne
- * @version    $Id: Closure.java,v 1.4 2007/01/02 11:20:04 andy_seaborne Exp $
  */
 
 package com.hp.hpl.jena.sparql.util;

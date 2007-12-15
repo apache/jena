@@ -37,7 +37,6 @@ import com.hp.hpl.jena.util.FileManager;
 /** com.hp.hpl.jena.query.test.TestResultSet
  * 
  * @author Andy Seaborne
- * @version $Id: TestResultSet.java,v 1.21 2007/02/06 17:06:30 andy_seaborne Exp $
  */
 
 public class TestResultSet extends TestCase

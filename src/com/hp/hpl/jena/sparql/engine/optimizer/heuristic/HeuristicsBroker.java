@@ -20,7 +20,6 @@ import com.hp.hpl.jena.sparql.engine.optimizer.heuristic.HeuristicsRegistry;
  * on the context (availability of indexes) and the query (complexity).
  * 
  * @author Markus Stocker
- * @version $Id$
  */
 
 public class HeuristicsBroker 

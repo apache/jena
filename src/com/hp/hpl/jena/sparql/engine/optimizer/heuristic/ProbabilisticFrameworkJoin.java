@@ -18,7 +18,6 @@ import com.hp.hpl.jena.sparql.util.Context;
  * The heuristics is a wrapper to the probabilistic framework.
  *
  * @author Markus Stocker
- * @version $Id$
  */
 
 public class ProbabilisticFrameworkJoin extends HeuristicBasicPattern

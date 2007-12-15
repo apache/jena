@@ -25,7 +25,6 @@ import com.hp.hpl.jena.rdf.model.RDFNode;
  *  need to be recreated and registered.  
  *        
  * @author Andy Seaborne
- * @version $Id: IndexBuilderExt.java,v 1.2 2007/01/02 11:19:52 andy_seaborne Exp $
  */
 
 public class IndexBuilderExt extends IndexBuilderBase

@@ -18,7 +18,6 @@ import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
  * Templates : patterns in the CONSTRUCT clause 
  * 
  * @author Andy Seaborne
- * @version $Id: Template.java,v 1.13 2007/02/06 17:05:56 andy_seaborne Exp $
  */
 
 public abstract class Template

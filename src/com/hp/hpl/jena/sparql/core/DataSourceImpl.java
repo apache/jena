@@ -30,7 +30,6 @@ import com.hp.hpl.jena.util.iterator.WrappedIterator;
  *  more) named graphs with graphs as Models. 
  * 
  * @author Andy Seaborne
- * @version $Id: DataSourceImpl.java,v 1.14 2007/02/05 17:11:39 andy_seaborne Exp $
  */
 
 public class DataSourceImpl implements DataSource

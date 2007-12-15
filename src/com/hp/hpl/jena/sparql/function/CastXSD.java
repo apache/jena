@@ -12,7 +12,6 @@ import com.hp.hpl.jena.sparql.expr.NodeValue;
 
 /** 
  * @author Andy Seaborne
- * @version $Id: CastXSD.java,v 1.10 2007/01/02 11:20:49 andy_seaborne Exp $
  */
 
 public class CastXSD implements FunctionFactory

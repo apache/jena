@@ -13,7 +13,6 @@ import com.hp.hpl.jena.sparql.engine.optimizer.util.Vocabulary;
  * The class contains some constants used in ARQo.
  * 
  * @author Markus Stocker
- * @version $Id$
  */
 
 public class Constants 

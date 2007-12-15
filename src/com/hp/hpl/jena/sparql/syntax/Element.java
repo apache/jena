@@ -15,7 +15,6 @@ import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 /** Element - abstract class for all pattern elements 
  * 
  * @author Andy Seaborne
- * @version $Id: Element.java,v 1.29 2007/01/08 18:25:41 andy_seaborne Exp $
  */
 
 public abstract class Element

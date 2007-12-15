@@ -13,7 +13,6 @@ import com.hp.hpl.jena.sparql.engine.optimizer.heuristic.Heuristic;
  * cost estimators for BasicPatterns.
  * 
  * @author Markus Stocker
- * @version $Id$
  */
 
 public abstract class HeuristicBasicPattern extends Heuristic

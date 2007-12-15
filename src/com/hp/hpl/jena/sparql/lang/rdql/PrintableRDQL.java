@@ -5,7 +5,6 @@
 
 /**
  * @author		Andy Seaborne
- * @version 	$Id: PrintableRDQL.java,v 1.1 2007/02/04 19:08:57 andy_seaborne Exp $
  */
 
 package com.hp.hpl.jena.sparql.lang.rdql;

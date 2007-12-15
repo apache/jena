@@ -21,7 +21,6 @@ import com.hp.hpl.jena.sparql.util.FmtUtils;
  *  If both are bound, it degenerates to a test of RDF term equality.
  *   
  * @author Andy Seaborne
- * @version $Id: assign.java,v 1.9 2007/02/06 17:05:59 andy_seaborne Exp $
  */
 
 public class assign extends PFuncSimple

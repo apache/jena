@@ -15,7 +15,6 @@ import junit.framework.TestSuite;
 /** com.hp.hpl.jena.query.util.test.TestContext
  * 
  * @author Andy Seaborne
- * @version $Id: TestContext.java,v 1.3 2007/01/02 11:18:17 andy_seaborne Exp $
  */
 
 public class TestContext extends TestCase

@@ -17,7 +17,6 @@ import com.hp.hpl.jena.sparql.util.IndentedWriter;
  *  This includes tracking open iterators.
  * 
  * @author Andy Seaborne
- * @version $Id: QueryIter.java,v 1.5 2007/02/05 18:14:33 andy_seaborne Exp $
  */
 public abstract class QueryIter extends QueryIteratorBase
 {

@@ -10,7 +10,6 @@ package com.hp.hpl.jena.sparql.function;
 /** Interface for function factories.
  * 
  * @author Andy Seaborne
- * @version $Id: FunctionFactory.java,v 1.3 2007/01/02 11:20:49 andy_seaborne Exp $
  */ 
 
 public interface FunctionFactory

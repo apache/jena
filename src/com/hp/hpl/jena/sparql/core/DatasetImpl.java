@@ -27,7 +27,6 @@ import com.hp.hpl.jena.query.Dataset;
 /**Wrapper around a DatasetGraph. See also DataSourceImpl.
  * 
  * @author Andy Seaborne
- * @version $Id: DataSourceImpl.java,v 1.14 2007/02/05 17:11:39 andy_seaborne Exp $
  */
 
 public class DatasetImpl implements Dataset

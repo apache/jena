@@ -27,7 +27,6 @@ import com.hp.hpl.jena.sparql.util.NodeFactory;
 /** List membership with index : property function to access list using index  
  *  Usage: ?list :listIndex (?index ?member)
  * @author Andy Seaborne
- * @version $Id: listIndex.java,v 1.6 2007/02/06 17:05:59 andy_seaborne Exp $
  */
 
 public class listIndex extends ListBaseList

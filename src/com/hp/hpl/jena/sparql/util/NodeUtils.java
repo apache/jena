@@ -15,7 +15,6 @@ import com.hp.hpl.jena.sparql.expr.Expr;
 
 /** Node utilities. 
  * @author Andy Seaborne
- * @version $Id: NodeUtils.java,v 1.30 2007/01/12 15:01:38 andy_seaborne Exp $
  */ 
 
 

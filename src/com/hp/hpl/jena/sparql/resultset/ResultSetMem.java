@@ -21,7 +21,6 @@ import com.hp.hpl.jena.query.ResultSet;
  * keep the result set in memory.
  *  
  * @author      Andy Seaborne
- * @version     $Id: ResultSetMem.java,v 1.13 2007/02/08 16:18:44 andy_seaborne Exp $
  */
 
 

@@ -17,7 +17,6 @@ import com.hp.hpl.jena.sparql.util.ALog;
 
 /**
  * @author     Andy Seaborne
- * @version    $Id: QueryEngineUtils.java,v 1.14 2007/02/06 17:06:06 andy_seaborne Exp $
  */
  
 public class ExecUtils

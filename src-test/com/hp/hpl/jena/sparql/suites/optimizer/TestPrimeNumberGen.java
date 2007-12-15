@@ -13,7 +13,6 @@ import com.hp.hpl.jena.sparql.engine.optimizer.core.PrimeNumberGen;
  * the first 58 prime numbers.
  * 
  * @author Markus Stocker
- * @version $Id$
  */
 
 public class TestPrimeNumberGen extends TestCase

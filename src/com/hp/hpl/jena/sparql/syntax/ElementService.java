@@ -14,7 +14,6 @@ import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 /** A SERVICE pattern - access a remote SPARQL service.
  * 
  * @author Andy Seaborne
- * @version $Id: ElementUnsaid.java,v 1.16 2007/01/02 11:20:30 andy_seaborne Exp $
  */
 
 public class ElementService extends Element

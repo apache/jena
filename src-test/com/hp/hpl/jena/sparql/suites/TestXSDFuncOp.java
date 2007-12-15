@@ -18,7 +18,6 @@ import com.hp.hpl.jena.sparql.util.Utils;
 /** com.hp.hpl.jena.query.test.TestNodeValue
  * 
  * @author Andy Seaborne
- * @version $Id: TestFunctions.java,v 1.12 2007/01/02 11:18:17 andy_seaborne Exp $
  */
 
 public class TestXSDFuncOp extends TestCase

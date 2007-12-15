@@ -15,7 +15,6 @@ import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 /** A set of constraints in a query expression.
  * 
  * @author Andy Seaborne
- * @version $Id: ElementUnsaid.java,v 1.16 2007/01/02 11:20:30 andy_seaborne Exp $
  */
 
 public class ElementUnsaid extends Element

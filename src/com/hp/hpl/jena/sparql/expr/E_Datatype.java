@@ -9,7 +9,6 @@ import com.hp.hpl.jena.sparql.expr.nodevalue.NodeFunctions;
 
 /** 
  * @author Andy Seaborne
- * @version $Id: E_Datatype.java,v 1.17 2007/01/02 11:19:17 andy_seaborne Exp $
  */
 
 public class E_Datatype extends ExprFunction1

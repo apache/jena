@@ -11,7 +11,6 @@ import java.io.File;
 /** Odds and ends
  * 
  * @author Andy Seaborne
- * @version $Id: CmdUtils.java,v 1.5 2007/01/02 11:20:12 andy_seaborne Exp $
  */
 
 public class CmdUtils

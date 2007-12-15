@@ -11,20 +11,15 @@ import com.hp.hpl.jena.sparql.algebra.Op;
 /** Marker for extension points
  *  Execution will be per-engine specific
  * @author Andy Seaborne
- * @version $Id$
  */
 public interface OpExt extends Op
 { 
-    // TODO Have boolean linearSafe(???) - Join and LeftJoin separate?
-    // TODO Have explicit (from OpExtMain)
-    // public abstract QueryIterator eval(QueryIterator input, ExecutionContext execCxt) ;
-    
     /** A copy - immutable OpExt subclasses can return 'this' */
     public OpExt copy() ;
     
     /** Return an op that will used by query processing algorithms such as 
      * optimization.  This method returns a non-extension Op expression that
-     * is the equivalent SPARQL expression.  Normally, this is the Op replaced
+     * is the equivalent SPARQL expression.  For example, this is the Op replaced
      * by this extension node.   
      */ 
     public Op effectiveOp() ;

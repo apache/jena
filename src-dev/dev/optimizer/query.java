@@ -20,7 +20,6 @@ import com.hp.hpl.jena.sparql.engine.optimizer.util.Config;
  * Explain example
  *  
  * @author Markus Stocker
- * @version $Id$
  */
 
 public class query 

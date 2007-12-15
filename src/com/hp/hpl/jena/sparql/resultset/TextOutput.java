@@ -27,7 +27,6 @@ import com.hp.hpl.jena.sparql.util.FmtUtils;
  * @see com.hp.hpl.jena.query.ResultSetFormatter for convenience ways to call this formatter
  * 
  * @author   Andy Seaborne
- * @version  $Id: TextOutput.java,v 1.9 2007/01/02 11:19:19 andy_seaborne Exp $
  */
 
 public class TextOutput extends OutputBase

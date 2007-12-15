@@ -20,7 +20,6 @@ import com.hp.hpl.jena.sparql.engine.optimizer.heuristic.VariableCounting;
  * which returns exact selectivities for SPO.
  * 
  * @author Markus Stocker
- * @version $Id$
  */
 
 public class GraphStatisticsHeuristic extends HeuristicBasicPattern

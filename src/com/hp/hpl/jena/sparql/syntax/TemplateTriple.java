@@ -21,7 +21,6 @@ import com.hp.hpl.jena.sparql.util.Utils;
  *  bNodes are "magic" in that they are duplicated on substitution.  
  * 
  * @author Andy Seaborne
- * @version $Id: TemplateTriple.java,v 1.15 2007/02/06 17:05:55 andy_seaborne Exp $
  */
 
 public class TemplateTriple extends Template

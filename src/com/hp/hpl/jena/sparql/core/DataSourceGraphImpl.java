@@ -27,7 +27,6 @@ import com.hp.hpl.jena.query.Dataset;
  *  @see com.hp.hpl.jena.query.Dataset
  * 
  * @author Andy Seaborne
- * @version $Id: DataSourceGraphImpl.java,v 1.7 2007/01/02 11:20:30 andy_seaborne Exp $
  */
 
 public class DataSourceGraphImpl implements DataSourceGraph

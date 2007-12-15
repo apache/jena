@@ -17,7 +17,6 @@ import com.hp.hpl.jena.sparql.util.Context;
 /** Registry of DescribeHandlers.     
  * 
  * @author Andy Seaborne
- * @version $Id: DescribeHandlerRegistry.java,v 1.5 2007/01/25 16:38:53 andy_seaborne Exp $
  */
 
 public class DescribeHandlerRegistry

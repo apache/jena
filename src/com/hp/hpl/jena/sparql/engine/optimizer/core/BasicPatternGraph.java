@@ -25,7 +25,6 @@ import com.hp.hpl.jena.sparql.engine.optimizer.heuristic.HeuristicBasicPattern;
  * as ConnectedGraphs.
  * 
  * @author Markus Stocker
- * @version $Id$
  */
 
 public class BasicPatternGraph 

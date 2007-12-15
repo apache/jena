@@ -29,7 +29,6 @@ import com.hp.hpl.jena.sparql.util.Context;
 /** Place to make QueryExecution objects from Query objects or a string.   
  *  
  * @author     Andy Seaborne
- * @version    $Id: QueryExecutionFactory.java,v 1.19 2007/01/02 11:20:16 andy_seaborne Exp $
  */
  
 public class QueryExecutionFactory

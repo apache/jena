@@ -28,7 +28,6 @@ import com.hp.hpl.jena.util.iterator.Map1Iterator;
 /** ARQ wrapper for a Lucene index.
  * 
  * @author Andy Seaborne
- * @version $Id: IndexLARQ.java,v 1.6 2007/01/14 20:00:23 andy_seaborne Exp $
  */
 public class IndexLARQ
 {

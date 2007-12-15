@@ -9,7 +9,6 @@ import com.hp.hpl.jena.sparql.expr.nodevalue.NodeFunctions;
 
 /** 
  * @author Andy Seaborne
- * @version $Id: E_SameTerm.java,v 1.2 2007/01/02 11:19:17 andy_seaborne Exp $
  */
 
 public class E_SameTerm extends ExprFunction2

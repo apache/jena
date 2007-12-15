@@ -27,7 +27,6 @@ import com.hp.hpl.jena.sparql.suites.optimizer.Util;
  * Test the probabilistic index build process based on the model provided
  * 
  * @author Markus Stocker
- * @version $Id$
  */
 
 public class TestIndex extends TestCase

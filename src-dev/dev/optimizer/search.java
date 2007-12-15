@@ -45,7 +45,6 @@ import com.hp.hpl.jena.util.FileManager;
  * Search the best execution plan, i.e. execute them all
  *  
  * @author Markus Stocker
- * @version $Id$
  */
 
 public class search 

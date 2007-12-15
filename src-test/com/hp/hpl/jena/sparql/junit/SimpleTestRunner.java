@@ -15,7 +15,6 @@ import java.util.*;
 /** apps.SimpleRunnerAlt
  * 
  * @author Andy Seaborne
- * @version $Id: SimpleTestRunner.java,v 1.4 2007/01/02 11:20:20 andy_seaborne Exp $
  */
 
 public class SimpleTestRunner extends BaseTestRunner

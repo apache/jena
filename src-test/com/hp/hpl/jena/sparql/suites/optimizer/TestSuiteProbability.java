@@ -10,7 +10,6 @@ import junit.framework.*;
 /**
  * The test suite for the probabilistic framework 
  * @author Markus Stocker
- * @version $Id$
  */
 
 public class TestSuiteProbability extends TestSuite

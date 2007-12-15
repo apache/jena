@@ -17,7 +17,6 @@ import com.hp.hpl.jena.sparql.util.Context;
  *  that is to be the result of the query.     
  * 
  * @author Andy Seaborne
- * @version $Id: DescribeHandler.java,v 1.5 2007/02/02 16:23:33 andy_seaborne Exp $
  */
 
 public interface DescribeHandler

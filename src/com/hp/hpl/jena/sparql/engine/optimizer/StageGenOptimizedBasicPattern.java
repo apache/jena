@@ -27,7 +27,6 @@ import com.hp.hpl.jena.sparql.engine.optimizer.util.Config;
  * compiled out of the optimized BasicPattern.
  * 
  * @author Markus Stocker
- * @version $Id$
  */
 
 public class StageGenOptimizedBasicPattern implements StageGenerator 

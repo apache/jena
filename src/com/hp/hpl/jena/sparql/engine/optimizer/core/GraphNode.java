@@ -17,7 +17,6 @@ import com.hp.hpl.jena.graph.Triple;
  * object IDs and mapped by OID with the triple pattern.
  * 
  * @author Markus Stocker
- * @version $Id$
  */
 
 public class GraphNode 

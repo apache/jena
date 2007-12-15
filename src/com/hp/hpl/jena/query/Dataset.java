@@ -17,7 +17,6 @@ import java.util.* ;
  *  graph or unnamed graph). 
  * 
  * @author Andy Seaborne
- * @version $Id: Dataset.java,v 1.7 2007/01/02 11:20:16 andy_seaborne Exp $
  */
 
 public interface Dataset

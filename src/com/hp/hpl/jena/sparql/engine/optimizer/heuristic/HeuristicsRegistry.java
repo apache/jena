@@ -20,7 +20,6 @@ import com.hp.hpl.jena.sparql.engine.optimizer.heuristic.GraphStatisticsHeuristi
  * The class is a registry for heuristics
  * 
  * @author Markus Stocker
- * @version $Id$
  */
 
 public class HeuristicsRegistry 

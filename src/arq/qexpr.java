@@ -36,7 +36,6 @@ import com.hp.hpl.jena.sparql.util.NodeFactory;
 /** A program to execute expressions from the command line.
   *
  * @author  Andy Seaborne
- * @version $Id: qexpr.java,v 1.18 2007/02/06 17:06:27 andy_seaborne Exp $
  */
 
 public class qexpr

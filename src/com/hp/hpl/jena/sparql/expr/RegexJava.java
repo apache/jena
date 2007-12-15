@@ -9,7 +9,6 @@ import java.util.regex.* ;
 
 /** 
  * @author Andy Seaborne
- * @version $Id: RegexJava.java,v 1.4 2007/01/02 11:19:16 andy_seaborne Exp $
  */
 
 public class RegexJava implements RegexEngine

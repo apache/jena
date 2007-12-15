@@ -14,7 +14,6 @@ import java.util.* ;
 /** A class to walk a result set.
  * 
  * @author Andy Seaborne
- * @version $Id: ResultSetApply.java,v 1.5 2007/01/02 11:19:19 andy_seaborne Exp $
  */
 
 public class ResultSetApply

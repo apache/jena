@@ -13,7 +13,6 @@ import java.util.Iterator;
  *  at each Element traversed.
  *  Bottom-up walk - apply to subelements before applying to current element.
  * @author Andy Seaborne
- * @version $Id: ElementWalker.java,v 1.19 2007/01/31 13:01:25 andy_seaborne Exp $
  */
 
 public class ElementWalker 

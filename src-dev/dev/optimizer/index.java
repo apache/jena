@@ -32,7 +32,6 @@ import com.hp.hpl.jena.sparql.engine.optimizer.sampling.SamplingFactory;
  * for the probabilistic index model.
  * 
  * @author Markus Stocker
- * @version $Id$
  */
 
 public class index 

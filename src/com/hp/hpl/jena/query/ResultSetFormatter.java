@@ -25,7 +25,6 @@ import com.hp.hpl.jena.sparql.util.ALog;
  *  in various formats. 
  * 
  * @author   Andy Seaborne
- * @version  $Id: ResultSetFormatter.java,v 1.42 2007/01/02 11:20:16 andy_seaborne Exp $
  */
 
 public class ResultSetFormatter

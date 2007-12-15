@@ -14,7 +14,6 @@ import com.hp.hpl.jena.query.ResultSet;
  * Interface for all formatters of result sets.
  * 
  * @author Andy Seaborne
- * @version $Id: OutputFormatter.java,v 1.6 2007/01/02 11:19:19 andy_seaborne Exp $
  */
 
 public interface OutputFormatter

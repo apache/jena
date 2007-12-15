@@ -19,7 +19,6 @@ import com.hp.hpl.jena.rdf.model.Statement;
  *  which have a datatype of XSD string.  
  * 
  * @author Andy Seaborne
- * @version $Id: IndexBuilderString.java,v 1.5 2007/01/02 11:19:52 andy_seaborne Exp $
  */
 public class IndexBuilderString extends IndexBuilderLiteral
 {

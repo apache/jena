@@ -9,7 +9,6 @@ package com.hp.hpl.jena.sparql.engine.optimizer.probability;
  * The class represents a histogram class
  * 
  * @author Markus Stocker
- * @version $Id$
  */
 
 public class HistogramClass 

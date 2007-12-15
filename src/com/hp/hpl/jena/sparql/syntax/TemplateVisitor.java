@@ -9,7 +9,6 @@ package com.hp.hpl.jena.sparql.syntax;
 /** 
  * 
  * @author Andy Seaborne
- * @version $Id: TemplateVisitor.java,v 1.4 2007/01/02 11:20:30 andy_seaborne Exp $
  */
 
 public interface TemplateVisitor

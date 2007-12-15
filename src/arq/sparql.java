@@ -9,7 +9,6 @@ package arq;
 /** A program to execute queries from the command line in SPARQL mode.
   *
  * @author  Andy Seaborne
- * @version $Id: sparql.java,v 1.10 2007/01/02 11:20:14 andy_seaborne Exp $
  */
 
 public class sparql

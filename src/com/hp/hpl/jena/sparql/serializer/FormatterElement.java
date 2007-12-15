@@ -9,7 +9,6 @@ import com.hp.hpl.jena.sparql.syntax.ElementVisitor;
 
 /** 
  * @author Andy Seaborne
- * @version $Id: FormatterElement.java,v 1.6 2007/01/02 11:19:49 andy_seaborne Exp $
  */
 
 public interface FormatterElement extends ElementVisitor 

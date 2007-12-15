@@ -32,7 +32,6 @@ import com.hp.hpl.jena.query.ResultSet;
  * JSON: <a href="http://json.org">http://json.org/</a>
  * 
  * @author Andy Seaborne
- * @version $Id: JSONOutputResultSet.java,v 1.12 2007/01/02 11:19:19 andy_seaborne Exp $
  */
 
 public class JSONOutputResultSet implements ResultSetProcessor, JSONResults

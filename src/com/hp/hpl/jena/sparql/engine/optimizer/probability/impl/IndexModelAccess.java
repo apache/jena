@@ -41,7 +41,6 @@ import com.hp.hpl.jena.sparql.engine.optimizer.Optimizer;
  * representing the index.
  * 
  * @author Markus Stocker
- * @version $Id$
  */
 
 public class IndexModelAccess 

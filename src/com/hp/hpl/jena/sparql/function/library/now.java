@@ -13,7 +13,6 @@ import com.hp.hpl.jena.sparql.ARQConstants;
 /** Function that accesses the current time (the time the query started).
  * 
  * @author Andy Seaborne
- * @version $Id: now.java,v 1.8 2007/01/02 11:19:11 andy_seaborne Exp $
  */
 
 public class now extends SystemVar

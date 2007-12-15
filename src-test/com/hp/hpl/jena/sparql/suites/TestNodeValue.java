@@ -25,7 +25,6 @@ import com.hp.hpl.jena.sparql.util.Utils;
 /** com.hp.hpl.jena.query.test.TestNodeValue
  * 
  * @author Andy Seaborne
- * @version $Id: TestNodeValue.java,v 1.23 2007/01/02 11:18:18 andy_seaborne Exp $
  */
 
 public class TestNodeValue extends TestCase

@@ -26,7 +26,6 @@ import com.hp.hpl.jena.rdf.model.StmtIterator;
  *  need to be recreated and registered.  
  *        
  * @author Andy Seaborne
- * @version $Id: IndexBuilderModel.java,v 1.3 2007/01/14 20:00:23 andy_seaborne Exp $
  */
 
 public abstract class IndexBuilderModel extends StatementListener

@@ -17,7 +17,6 @@ import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
  *  Evaluation is a conjunction(AND) of the elements of the groups  
  * 
  * @author Andy Seaborne
- * @version $Id: ElementGroup.java,v 1.36 2007/01/31 13:01:25 andy_seaborne Exp $
  */
 
 public class ElementGroup extends Element

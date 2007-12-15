@@ -16,7 +16,6 @@ import com.hp.hpl.jena.sparql.engine.binding.Binding;
 /** Intercept and print iterator operations  
  * 
  * @author Andy Seaborne
- * @version $Id: QueryIteratorLogging.java,v 1.2 2007/02/06 17:06:01 andy_seaborne Exp $
  */ 
 
 public class QueryIteratorLogging extends QueryIteratorWrapper

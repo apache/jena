@@ -14,7 +14,6 @@ import com.hp.hpl.jena.sparql.function.FunctionBase1;
 /** Example function - checks for even integers.
  * 
  * @author Andy Seaborne
- * @version $Id: evenInteger.java,v 1.6 2007/01/02 11:19:11 andy_seaborne Exp $
  */
 
 public class evenInteger extends FunctionBase1

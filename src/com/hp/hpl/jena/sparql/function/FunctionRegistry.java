@@ -17,7 +17,6 @@ import com.hp.hpl.jena.query.ARQ;
 /** 
  * 
  * @author Andy Seaborne
- * @version $Id: FunctionRegistry.java,v 1.21 2007/01/02 11:20:49 andy_seaborne Exp $
  */
 
 public class FunctionRegistry //extends HashMap<String, Function>

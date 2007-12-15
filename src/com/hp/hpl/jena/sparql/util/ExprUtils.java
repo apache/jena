@@ -39,7 +39,6 @@ import com.hp.hpl.jena.sparql.sse.builders.ExprBuildException;
 
 /** Misc support for Expr
  * @author Andy Seaborne
- * @version $Id: ExprUtils.java,v 1.24 2007/02/10 21:02:40 andy_seaborne Exp $
  */
 
 public class ExprUtils

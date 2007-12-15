@@ -11,7 +11,6 @@ import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 /** An optional element in a query.
  * 
  * @author Andy Seaborne
- * @version $Id: ElementOptional.java,v 1.19 2007/01/02 11:20:30 andy_seaborne Exp $
  */
 
 public class ElementOptional extends Element

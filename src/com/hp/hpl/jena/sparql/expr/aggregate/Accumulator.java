@@ -12,7 +12,6 @@ import com.hp.hpl.jena.sparql.expr.NodeValue;
 /** An Accumulator is the processor for each section of a group, so
  *  there is one Accumulator for each group key.
  * @author Andy Seaborne
- * @version $Id$
  */
 
 public interface Accumulator

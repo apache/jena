@@ -25,7 +25,6 @@ import com.hp.hpl.jena.sparql.function.FunctionBase1;
  *    FILTER ext:classify(3+?x)
  *  <pre>
  * @author Andy Seaborne
- * @version $Id$
  */ 
 
 public class classify extends FunctionBase1

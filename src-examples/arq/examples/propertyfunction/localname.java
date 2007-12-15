@@ -48,7 +48,6 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
  * 
  * 
  * @author Andy Seaborne
- * @version $Id: localname.java,v 1.13 2007/02/06 17:06:24 andy_seaborne Exp $
  */ 
 
 public class localname extends PFuncSimple

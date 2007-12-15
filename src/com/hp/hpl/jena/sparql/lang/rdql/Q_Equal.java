@@ -20,7 +20,6 @@ import com.hp.hpl.jena.sparql.util.IndentedWriter;
 
 /** 
  * @author Automatically generated class: Operator: Equal
- * @version $Id: Q_Equal.java,v 1.4 2007/01/02 11:18:56 andy_seaborne Exp $
  */
 
 public class Q_Equal extends ExprNode implements ExprRDQL, ExprBoolean

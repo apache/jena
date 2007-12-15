@@ -9,7 +9,6 @@ package com.hp.hpl.jena.sparql.engine.optimizer.heuristic;
  * This is the top abstract class for heuristic implementations
  * 
  * @author Markus Stocker
- * @version $Id$
  */
 
 public abstract class Heuristic { }

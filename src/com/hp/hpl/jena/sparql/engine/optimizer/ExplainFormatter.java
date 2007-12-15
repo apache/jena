@@ -17,7 +17,6 @@ import com.hp.hpl.jena.shared.PrefixMapping;
  * The class takes care of pretty formatting of the Optimizer explain method
  * 
  * @author Markus Stocker
- * @version $Id$
  */
 
 public class ExplainFormatter 

@@ -18,7 +18,6 @@ import com.hp.hpl.jena.sparql.util.ALog;
 /** Command line, using the common named/positional arguments paradigm
  *  (also called options/arguments).
  * @author Andy Seaborne
- * @version $Id: CmdLineArgs.java,v 1.9 2007/02/03 20:27:19 andy_seaborne Exp $
  */
 public class CmdLineArgs extends CommandLineBase
 {

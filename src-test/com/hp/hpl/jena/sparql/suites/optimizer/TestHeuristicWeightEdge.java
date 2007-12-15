@@ -39,7 +39,6 @@ import com.hp.hpl.jena.query.ARQ;
  * one common variable in order to define an edge.
  * 
  * @author Markus Stocker
- * @version $Id$
  */
 
 public class TestHeuristicWeightEdge extends TestCase

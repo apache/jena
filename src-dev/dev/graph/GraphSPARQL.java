@@ -31,7 +31,6 @@ import com.hp.hpl.jena.sparql.engine.binding.BindingRoot;
  *  It enables the full Jena API to be used with data only accessible
  *  via a Dataset.
  * @author Andy Seaborne
- * @version $Id$
  */
 
 public class GraphSPARQL extends GraphBase implements Graph

@@ -5,7 +5,6 @@
 
 /** Exception for things going wrong in the evaluation of a filter expression
  * @author		Andy Seaborne
- * @version 	$Id: RDQLEvalFailureException.java,v 1.3 2007/01/02 11:18:58 andy_seaborne Exp $
  */
 
 

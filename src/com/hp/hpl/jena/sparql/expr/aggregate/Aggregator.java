@@ -13,7 +13,6 @@ import com.hp.hpl.jena.sparql.engine.binding.BindingKey;
 /** An Aggregator is the processor for the whole result stream.
  *  BindingKeys identify which section of a group we're in. 
  * @author Andy Seaborne
- * @version $Id$
  */ 
 
 public interface Aggregator

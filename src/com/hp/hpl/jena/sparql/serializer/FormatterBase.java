@@ -13,7 +13,6 @@ import com.hp.hpl.jena.sparql.util.IndentedWriter;
 
 /** 
  * @author Andy Seaborne
- * @version $Id: FormatterBase.java,v 1.10 2007/02/05 17:11:29 andy_seaborne Exp $
  */
 
 public abstract class FormatterBase

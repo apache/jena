@@ -47,7 +47,6 @@ import com.hp.hpl.jena.sparql.util.IndentedWriter;
  * @see ResultSet
  * 
  * @author		Andy Seaborne
- * @version 	$Id: Query.java,v 1.91 2007/01/27 16:59:13 andy_seaborne Exp $
  */
 
 public class Query extends Prologue implements Cloneable

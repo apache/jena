@@ -9,7 +9,6 @@ package arq.cmd;
 /**
  * Indicate that something went wrong - while executing the command or processing the request.
  * @author Andy Seaborne
- * @version $Id: CmdException.java,v 1.3 2007/01/02 11:20:12 andy_seaborne Exp $
  */
 
 public class CmdException extends RuntimeException

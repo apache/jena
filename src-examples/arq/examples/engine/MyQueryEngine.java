@@ -28,7 +28,6 @@ import com.hp.hpl.jena.query.Query;
  *  see the arq.examples.extend.bgp package 
  * 
  * @author Andy Seaborne
- * @version $Id$
  */
 
 public class MyQueryEngine extends QueryEngineMain

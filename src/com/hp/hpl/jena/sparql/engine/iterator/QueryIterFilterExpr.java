@@ -21,7 +21,6 @@ import com.hp.hpl.jena.sparql.util.Utils;
  *  Filter a stream of bindings by a constraint.  
  * 
  * @author Andy Seaborne
- * @version $Id: QueryIterFilterExpr.java,v 1.3 2007/02/06 17:06:01 andy_seaborne Exp $
  */
 
 public class QueryIterFilterExpr extends QueryIterFilter

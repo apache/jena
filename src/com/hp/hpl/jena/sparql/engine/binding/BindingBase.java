@@ -18,7 +18,6 @@ import com.hp.hpl.jena.sparql.util.FmtUtils;
 /** Machinary encapsulating a mapping from a name to a value.
  * 
  * @author   Andy Seaborne
- * @version  $Id: BindingBase.java,v 1.1 2007/02/06 17:06:05 andy_seaborne Exp $
  */
 
 

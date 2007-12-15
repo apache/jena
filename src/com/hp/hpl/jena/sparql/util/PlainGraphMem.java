@@ -18,7 +18,6 @@ import com.hp.hpl.jena.util.iterator.*;
  * Suitable for small graph only (no indexing of s/p/o)
  * 
  * @author Andy Seaborne
- * @version $Id: PlainGraphMem.java,v 1.6 2007/01/02 11:20:08 andy_seaborne Exp $
  */
 
 public class PlainGraphMem extends SmallGraphMem

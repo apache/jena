@@ -13,7 +13,6 @@ import com.hp.hpl.jena.update.GraphStore;
 
 /**
  * @author Andy Seaborne
- * @version $Id$
  */ 
 
 public abstract class GraphUpdate1 extends Update

@@ -40,7 +40,6 @@ import com.hp.hpl.jena.sparql.util.Context;
  * The class provides static methods for handling with the optimizer 
  * 
  * @author Markus Stocker
- * @version $Id$
  */
 
 public class Optimizer 

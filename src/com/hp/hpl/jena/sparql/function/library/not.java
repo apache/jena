@@ -13,7 +13,6 @@ import com.hp.hpl.jena.sparql.function.FunctionBase1;
 /** Boolean Equivalent Value
  * 
  * @author Andy Seaborne
- * @version $Id: not.java,v 1.2 2007/01/02 11:19:12 andy_seaborne Exp $
  */
 
 public class not extends FunctionBase1

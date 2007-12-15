@@ -19,7 +19,6 @@ import com.hp.hpl.jena.sparql.engine.binding.Binding;
  *  </ul> 
  * 
  * @author Andy Seaborne
- * @version $Id: PFuncSimpleAndList.java,v 1.3 2007/02/06 17:05:54 andy_seaborne Exp $
  */
 
 public abstract

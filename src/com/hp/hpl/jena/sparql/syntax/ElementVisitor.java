@@ -8,7 +8,6 @@ package com.hp.hpl.jena.sparql.syntax;
 
 /** 
  * @author Andy Seaborne
- * @version $Id: ElementVisitor.java,v 1.15 2007/01/31 13:01:25 andy_seaborne Exp $
  */
 
 public interface ElementVisitor

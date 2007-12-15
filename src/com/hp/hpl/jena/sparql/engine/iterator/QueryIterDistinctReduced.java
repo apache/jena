@@ -12,7 +12,6 @@ import com.hp.hpl.jena.sparql.engine.binding.Binding;
 
 /** Implementation skeleton for DISTINCT and REDUCED.
  * @author Andy Seaborne
- * @version $Id: QueryIterDistinct.java,v 1.4 2007/01/02 11:19:31 andy_seaborne Exp $
  */
 
 public abstract class QueryIterDistinctReduced extends QueryIter1

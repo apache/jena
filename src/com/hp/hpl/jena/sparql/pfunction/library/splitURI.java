@@ -9,7 +9,6 @@ package com.hp.hpl.jena.sparql.pfunction.library;
 /** Alternative name for splitIRI
  * 
  * @author Andy Seaborne
- * @version $Id: splitURI.java,v 1.2 2007/01/02 11:20:22 andy_seaborne Exp $
  */
 public class splitURI extends splitIRI
 { }

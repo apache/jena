@@ -15,7 +15,6 @@ import com.hp.hpl.jena.sparql.engine.binding.Binding;
 /** Iterator until a limit is reached. 
  * 
  * @author Andy Seaborne
- * @version $Id: QueryIterLimitOffset.java,v 1.6 2007/01/02 11:19:31 andy_seaborne Exp $
  */
 
 public class QueryIterSlice extends QueryIter1

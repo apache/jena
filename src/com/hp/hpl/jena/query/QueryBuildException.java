@@ -9,7 +9,6 @@ package com.hp.hpl.jena.query;
  *  execution construction.
  *  
  * @author		Andy Seaborne
- * @version 	$Id: QueryBuildException.java,v 1.4 2007/01/02 11:20:16 andy_seaborne Exp $
  */
 
 

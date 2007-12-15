@@ -5,7 +5,6 @@
 
 /**
  * @author   Andy Seaborne
- * @version  $Id: WorkingVar.java,v 1.3 2007/01/02 11:18:58 andy_seaborne Exp $
  */
 
 

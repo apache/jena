@@ -21,7 +21,6 @@ import com.hp.hpl.jena.sparql.util.ModelUtils;
  *  A wrapper around the graph level Binding.
  * 
  * @author   Andy Seaborne
- * @version  $Id: ResultBinding.java,v 1.18 2007/02/06 17:05:56 andy_seaborne Exp $
  */
 
 

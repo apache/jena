@@ -16,7 +16,6 @@ import com.hp.hpl.jena.sparql.util.RefBoolean;
 /** Code that reads an XML Result Set and builds the ARQ structure for the same.
  * 
  * @author Andy Seaborne
- * @version $Id: XMLInput.java,v 1.11 2007/01/02 11:19:19 andy_seaborne Exp $
  */
 
 

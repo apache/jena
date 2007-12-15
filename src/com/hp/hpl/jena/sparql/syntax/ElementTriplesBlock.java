@@ -16,7 +16,6 @@ import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 /** A SPARQL BasicGraphPattern
  * 
  * @author Andy Seaborne
- * @version $Id: ElementTriplesBlock.java,v 1.2 2007/01/31 17:41:22 andy_seaborne Exp $
  */
 
 public class ElementTriplesBlock extends Element implements TripleCollector

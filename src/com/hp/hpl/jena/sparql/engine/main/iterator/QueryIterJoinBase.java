@@ -21,7 +21,6 @@ import com.hp.hpl.jena.sparql.expr.ExprList;
  *  from one side into the other.  
  * 
  * @author Andy Seaborne
- * @version $Id$
  */ 
 public abstract class QueryIterJoinBase extends QueryIter2
 {

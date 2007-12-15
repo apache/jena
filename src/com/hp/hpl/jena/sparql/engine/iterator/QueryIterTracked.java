@@ -14,7 +14,6 @@ import com.hp.hpl.jena.util.iterator.NiceIterator;
 /** Track a QueryIterator
  * 
  * @author Andy Seaborne
- * @version $Id: QueryIterTracked.java,v 1.6 2007/02/06 17:06:03 andy_seaborne Exp $
  */
 
 public class QueryIterTracked extends QueryIter

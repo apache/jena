@@ -15,7 +15,6 @@ import com.hp.hpl.jena.sparql.util.Utils;
 /** Repeatedly execute the subclass operation for each Binding in the input iterator. 
  * 
  * @author     Andy Seaborne
- * @version    $Id: QueryIterRepeatApply.java,v 1.4 2007/02/06 17:06:01 andy_seaborne Exp $
  */
  
 public abstract class QueryIterRepeatApply extends QueryIter1

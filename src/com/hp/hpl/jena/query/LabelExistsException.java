@@ -9,7 +9,6 @@ import com.hp.hpl.jena.shared.JenaException;
 
 /** LabelExists in a named composite data source 
  * @author		Andy Seaborne
- * @version 	$Id: LabelExistsException.java,v 1.4 2007/01/02 11:20:16 andy_seaborne Exp $
  */
 
 

@@ -22,7 +22,6 @@ import com.hp.hpl.jena.sparql.engine.optimizer.util.Constants;
  * for the test classes, e.g. model loading.
  * 
  * @author Markus Stocker
- * @version $Id$
  */
 
 public class Util 

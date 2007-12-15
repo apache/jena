@@ -10,7 +10,6 @@ import java.net.URLDecoder;
 import java.io.UnsupportedEncodingException ;
 
 /**
- * @version     $Id: Convert.java,v 1.3 2007/01/02 11:20:03 andy_seaborne Exp $
  * @author      Andy Seaborne
  */
 public class Convert

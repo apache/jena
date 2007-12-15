@@ -18,7 +18,6 @@ import com.hp.hpl.jena.query.QuerySolution;
 
 /**
  * @author     Andy Seaborne
- * @version    $Id: QueryEngineUtils.java,v 1.14 2007/02/06 17:06:06 andy_seaborne Exp $
  */
  
 public class BindingUtils

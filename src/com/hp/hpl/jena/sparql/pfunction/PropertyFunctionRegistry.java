@@ -20,7 +20,6 @@ import com.hp.hpl.jena.query.ARQ;
 
 /** 
  * @author Andy Seaborne
- * @version $Id: PropertyFunctionRegistry.java,v 1.7 2007/01/15 14:23:34 andy_seaborne Exp $
  */
 
 public class PropertyFunctionRegistry

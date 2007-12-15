@@ -27,7 +27,6 @@ import com.hp.hpl.jena.sparql.util.PrintUtils;
  *  See method {@link #evalIfExists(Binding)} below.   
  *  
  * @author Andy Seaborne
- * @version $Id: PropFuncArg.java,v 1.12 2007/02/06 17:05:54 andy_seaborne Exp $
  */
 
 public class PropFuncArg extends PrintSerializableBase

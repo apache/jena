@@ -10,7 +10,6 @@ import java.util.* ;
 /** 
  * Incoming String[] to a list of argument/values + items.
  * @author Andy Seaborne
- * @version $Id: CommandLineBase.java,v 1.5 2007/01/02 11:19:14 andy_seaborne Exp $
  */
 
 

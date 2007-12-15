@@ -15,7 +15,6 @@ import com.hp.hpl.jena.vocabulary.XSD;
 /**
  * Implementation of node-centric functions.  
  * @author Andy Seaborne
- * @version $Id: NodeFunctions.java,v 1.11 2007/01/02 11:19:29 andy_seaborne Exp $
  */
 public class NodeFunctions
 {

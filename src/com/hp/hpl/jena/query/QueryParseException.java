@@ -9,7 +9,6 @@ package com.hp.hpl.jena.query;
  *  from the various parsers where the error is to do with the syntax of a query.
  *  
  * @author		Andy Seaborne
- * @version 	$Id: QueryParseException.java,v 1.7 2007/01/02 11:20:16 andy_seaborne Exp $
  */
 
 

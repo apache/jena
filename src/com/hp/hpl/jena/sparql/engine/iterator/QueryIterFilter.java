@@ -17,7 +17,6 @@ import com.hp.hpl.jena.sparql.util.Utils;
 /** An iterator that applying a condition.
  * 
  * @author Andy Seaborne
- * @version $Id: QueryIterFilter.java,v 1.2 2007/02/06 17:06:01 andy_seaborne Exp $
  */
 
 public abstract class QueryIterFilter extends QueryIter1

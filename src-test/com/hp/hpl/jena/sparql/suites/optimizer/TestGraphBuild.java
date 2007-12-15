@@ -33,7 +33,6 @@ import com.hp.hpl.jena.sparql.suites.optimizer.Util;
  * BasicPattern with a subset of joined triple patterns.
  * 
  * @author Markus Stocker
- * @version $Id$
  */
 
 public class TestGraphBuild extends TestCase

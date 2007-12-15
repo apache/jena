@@ -20,7 +20,6 @@ import com.hp.hpl.jena.sparql.util.Utils;
  *   
  * 
  * @author Andy Seaborne
- * @version $Id: SystemVar.java,v 1.4 2007/01/02 11:19:12 andy_seaborne Exp $
  */
 
 public class SystemVar extends FunctionBase0

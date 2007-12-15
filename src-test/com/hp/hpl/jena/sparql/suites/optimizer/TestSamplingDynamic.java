@@ -21,7 +21,6 @@ import com.hp.hpl.jena.sparql.engine.optimizer.sampling.SamplingFactory;
  * index process of the optimizer
  * 
  * @author Markus Stocker
- * @version $Id$
  */
 
 public class TestSamplingDynamic extends TestCase

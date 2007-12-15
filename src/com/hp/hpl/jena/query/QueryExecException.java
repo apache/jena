@@ -9,7 +9,6 @@ package com.hp.hpl.jena.query;
  *  query evaluation.
  *  
  * @author		Andy Seaborne
- * @version 	$Id: QueryExecException.java,v 1.3 2007/01/02 11:20:16 andy_seaborne Exp $
  */
 
 

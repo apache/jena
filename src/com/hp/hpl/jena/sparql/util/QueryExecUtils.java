@@ -38,7 +38,6 @@ import com.hp.hpl.jena.query.*;
 /** Some utilities for query processing. 
  * 
  * @author Andy Seaborne
- * @version $Id: QueryCmdUtils.java,v 1.5 2007/01/29 14:14:49 andy_seaborne Exp $
  */
 public class QueryExecUtils
 {

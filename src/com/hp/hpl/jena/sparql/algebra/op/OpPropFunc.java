@@ -14,7 +14,6 @@ import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 /** Property functions (or any OpBGP replacement)
  *  Execution will be per-engine specific
  * @author Andy Seaborne
- * @version $Id$
  */
 public class OpPropFunc extends Op0
 {

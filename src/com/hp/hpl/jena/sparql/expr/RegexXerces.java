@@ -10,7 +10,6 @@ import org.apache.xerces.impl.xpath.regex.ParseException;
 
 /** 
  * @author Andy Seaborne
- * @version $Id: RegexXerces.java,v 1.2 2007/01/02 11:19:16 andy_seaborne Exp $
  */
 
 public class RegexXerces implements RegexEngine

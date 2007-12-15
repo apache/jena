@@ -31,7 +31,6 @@ import com.hp.hpl.jena.sparql.util.StringUtils;
  *  unless a subclass (carefully) manages that. 
  *    
  * @author Andy Seaborne
- * @version $Id$
  */
 
 public class ParseHandlerResolver extends ParseHandlerForm

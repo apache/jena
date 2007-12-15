@@ -13,7 +13,6 @@ import java.util.*;
  *  interfaces.
  *  
  *  @author  Andy Seaborne
- *  @version $Id: Context.java,v 1.12 2007/01/29 14:14:45 andy_seaborne Exp $
  */  
 
 public class Context

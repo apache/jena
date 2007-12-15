@@ -37,7 +37,6 @@ import junit.framework.*;
  * turned on, the first test will fail.
  * 
  * @author Markus Stocker
- * @version $Id$
  */
 
 public class TestEnabled extends TestCase

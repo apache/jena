@@ -18,7 +18,6 @@ import com.hp.hpl.jena.sparql.engine.optimizer.probability.HistogramClass;
  * value distribution for a predicate.
  * 
  * @author Markus Stocker
- * @version $Id$
  */
 
 public class Histogram 

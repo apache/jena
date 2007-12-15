@@ -27,7 +27,6 @@ import com.hp.hpl.jena.sparql.suites.optimizer.Util;
  * Probability test case. The test class is based on the TestProbability-manifest.
  * 
  * @author Markus Stocker
- * @version $Id$
  */
 
 public class TestProbabilityIndexModel extends TestCase

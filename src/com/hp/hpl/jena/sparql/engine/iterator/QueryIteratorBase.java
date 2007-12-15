@@ -24,7 +24,6 @@ import com.hp.hpl.jena.sparql.util.Utils;
  * </ul>
  * 
  * @author Andy Seaborne
- * @version $Id: QueryIteratorBase.java,v 1.4 2007/02/06 17:06:01 andy_seaborne Exp $
  */
 
 public abstract class QueryIteratorBase 

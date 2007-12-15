@@ -19,7 +19,6 @@ import com.hp.hpl.jena.sparql.util.IndentedWriter;
 /** com.hp.hpl.jena.query.core.FormatterARQ
  * 
  * @author Andy Seaborne
- * @version $Id: FmtTemplateARQ.java,v 1.6 2007/01/31 17:41:17 andy_seaborne Exp $
  */
 
 public class FmtTemplateARQ extends FormatterBase

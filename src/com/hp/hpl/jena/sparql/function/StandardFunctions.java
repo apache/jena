@@ -13,7 +13,6 @@ import com.hp.hpl.jena.sparql.function.library.*;
 /** Standard function library.
  * 
  * @author Andy Seaborne
- * @version $Id: StandardFunctions.java,v 1.12 2007/01/02 11:20:49 andy_seaborne Exp $
  */
 
 public class StandardFunctions

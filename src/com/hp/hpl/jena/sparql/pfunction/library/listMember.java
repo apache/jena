@@ -27,7 +27,6 @@ import com.hp.hpl.jena.vocabulary.RDF;
 /** List membership : property function implementation of list:member. 
  * 
  * @author Andy Seaborne
- * @version $Id: listMember.java,v 1.3 2007/02/06 17:05:59 andy_seaborne Exp $
  */ 
 
 public class listMember extends ListBase

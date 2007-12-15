@@ -11,7 +11,6 @@ import com.hp.hpl.jena.shared.PrefixMapping;
 /** Simple implementation of PrintSerializable.  Subclasses should override
  * output(IndentedWriter, SerializationContext) or output(IndentedWriter).
  * @author Andy Seaborne
- * @version $Id: PrintSerializableBase.java,v 1.5 2007/02/05 18:14:51 andy_seaborne Exp $
  */
 
 public abstract class PrintSerializableBase implements PrintSerializable

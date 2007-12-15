@@ -8,7 +8,6 @@ package com.hp.hpl.jena.sparql.expr;
 /** Interface to abstract away from specific regular expression systsms
  *  (ORO and java.util.regex) 
  * @author Andy Seaborne
- * @version $Id: RegexEngine.java,v 1.4 2007/01/02 11:19:16 andy_seaborne Exp $
  */
 
 public interface RegexEngine

@@ -43,7 +43,6 @@ import com.hp.hpl.jena.query.ResultSet;
  *  This is a streaming implementation.
  * 
  * @author Andy Seaborne
- * @version $Id: XMLInputStAX.java,v 1.22 2007/02/06 17:05:57 andy_seaborne Exp $
  */
 
 

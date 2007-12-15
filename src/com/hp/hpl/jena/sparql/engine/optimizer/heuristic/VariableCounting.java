@@ -29,7 +29,6 @@ import com.hp.hpl.jena.sparql.engine.optimizer.heuristic.HeuristicBasicPattern;
  * used because of the lack of indexes.
  * 
  * @author Markus Stocker
- * @version $Id$
  */
 
 public class VariableCounting extends HeuristicBasicPattern

@@ -17,7 +17,6 @@ import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
  *  Lookup looks in the local copy before the global copy.
  * 
  * @author Andy Seaborne
- * @version $Id: PrefixMapping2.java,v 1.7 2007/01/02 11:20:04 andy_seaborne Exp $
  */
 
 public class PrefixMapping2 implements PrefixMapping

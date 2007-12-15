@@ -17,7 +17,6 @@ import com.hp.hpl.jena.sparql.engine.optimizer.sampling.SamplingFactory;
  * sampling of 100%)
  * 
  * @author Markus Stocker
- * @version $Id$
  */
 
 public class TestSamplingStatic extends TestCase

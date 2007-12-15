@@ -13,7 +13,6 @@ import com.hp.hpl.jena.graph.Node ;
  * 
  * 
  * @author Andy Seaborne
- * @version $Id: NodeValue.java,v 1.4 2007/02/04 19:08:57 andy_seaborne Exp $
  */
 
 public interface RDQL_NodeValue extends PrintableRDQL

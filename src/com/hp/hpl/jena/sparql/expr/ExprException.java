@@ -10,7 +10,6 @@ import com.hp.hpl.jena.query.QueryException;
 /** The root of all expression exceptions
  * 
  * @author Andy Seaborne
- * @version $Id: ExprException.java,v 1.4 2007/01/02 11:19:17 andy_seaborne Exp $
  */
 
 public class ExprException extends QueryException

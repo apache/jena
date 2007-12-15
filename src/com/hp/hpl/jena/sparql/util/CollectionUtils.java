@@ -11,7 +11,6 @@ import java.util.* ;
 
 /** 
  * @author Andy Seaborne
- * @version $Id: CollectionUtils.java,v 1.5 2007/01/02 11:20:06 andy_seaborne Exp $
  */
 
 public class CollectionUtils

@@ -13,7 +13,6 @@ import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 /** Evaluate a query element based on source information in a named collection.
  * 
  * @author Andy Seaborne
- * @version $Id: ElementNamedGraph.java,v 1.17 2007/01/02 11:20:30 andy_seaborne Exp $
  */
 
 public class ElementNamedGraph extends Element

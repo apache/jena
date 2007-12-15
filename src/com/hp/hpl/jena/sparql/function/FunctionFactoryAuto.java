@@ -11,7 +11,6 @@ import com.hp.hpl.jena.query.QueryBuildException;
 /** Extension factory that instantiates a class each time.
  * 
  * @author Andy Seaborne
- * @version $Id: FunctionFactoryAuto.java,v 1.5 2007/01/02 11:20:49 andy_seaborne Exp $
  */ 
 
 class FunctionFactoryAuto implements FunctionFactory

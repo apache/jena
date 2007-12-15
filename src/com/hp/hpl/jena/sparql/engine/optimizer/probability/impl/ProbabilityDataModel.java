@@ -25,7 +25,6 @@ import com.hp.hpl.jena.sparql.engine.optimizer.util.Config;
  * ontology graph implements a Jena graph statistics handler.
  * 
  * @author Markus Stocker
- * @version $Id$
  */
 
 public class ProbabilityDataModel extends ProbabilityBase

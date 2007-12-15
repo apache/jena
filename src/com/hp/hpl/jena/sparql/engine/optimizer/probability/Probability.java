@@ -17,7 +17,6 @@ import com.hp.hpl.jena.sparql.engine.optimizer.util.Config;
  * (2) the probabilistic data model.
  * 
  * @author Markus Stocker
- * @version $Id$
  */
 
 public interface Probability 

@@ -16,7 +16,6 @@ import com.hp.hpl.jena.rdf.model.Resource;
 /** Implementation of QuerySolution that contains the canonicalization and casting code.
  * 
  * @author Andy Seaborne
- * @version $Id: QuerySolutionBase.java,v 1.6 2007/01/02 11:20:30 andy_seaborne Exp $
  */ 
 
 public abstract class QuerySolutionBase implements QuerySolution

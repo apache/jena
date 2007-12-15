@@ -20,7 +20,6 @@ import com.hp.hpl.jena.sparql.core.Var;
  *  and Jena's old style internal graph format. 
  * 
  * @author Andy Seaborne
- * @version $Id: BindingIndex.java,v 1.1 2007/02/06 17:06:05 andy_seaborne Exp $
  */
 
 public class BindingIndex implements VariableIndexes, IndexValues

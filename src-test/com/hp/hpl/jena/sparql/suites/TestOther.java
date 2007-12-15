@@ -19,7 +19,6 @@ import com.hp.hpl.jena.util.FileManager;
 /**
  * Tests of programmatically controlled features.
  * @author Andy Seaborne
- * @version $Id: TestOther.java,v 1.2 2007/01/02 11:18:18 andy_seaborne Exp $
  */
 
 public class TestOther extends TestCase

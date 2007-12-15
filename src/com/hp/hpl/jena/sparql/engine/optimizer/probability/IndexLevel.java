@@ -9,7 +9,6 @@ package com.hp.hpl.jena.sparql.engine.optimizer.probability;
  * The class defines different index levels
  * 
  * @author Markus Stocker
- * @version $Id$
  */
 
 public class IndexLevel 

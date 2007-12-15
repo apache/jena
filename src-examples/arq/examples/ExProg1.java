@@ -20,7 +20,6 @@ import com.hp.hpl.jena.vocabulary.DC;
  *  Note: it may be better to build and execute an algebra expression.  See other examples.
  * 
  * @author Andy Seaborne
- * @version $Id: ExProg1.java,v 1.15 2007/01/02 11:46:47 andy_seaborne Exp $
  */
 
 public class ExProg1

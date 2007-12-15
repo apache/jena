@@ -13,7 +13,6 @@ import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
  * (graph level version) with a query pattern.
  * 
  * @author Andy Seaborne
- * @version $Id: ElementDataset.java,v 1.3 2007/01/02 11:20:30 andy_seaborne Exp $
  */
 
 public class ElementDataset extends Element

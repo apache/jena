@@ -18,7 +18,6 @@ import com.hp.hpl.jena.util.iterator.NiceIterator;
 /** Turn an normal java.util.Iterator (of Bindings) into a QueryIterator
  * 
  * @author Andy Seaborne
- * @version $Id: QueryIterPlainWrapper.java,v 1.3 2007/02/06 17:06:01 andy_seaborne Exp $
  */
 
 public class QueryIterPlainWrapper extends QueryIter

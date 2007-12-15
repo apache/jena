@@ -11,7 +11,6 @@ import com.hp.hpl.jena.sparql.util.IteratorTruncate;
 /** Class to provide the truncation limit based on hit score
  * 
  * @author Andy Seaborne
- * @version $Id$
  */
 
 class ScoreTest implements IteratorTruncate.Test

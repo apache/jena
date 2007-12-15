@@ -21,7 +21,6 @@ import com.hp.hpl.jena.sparql.util.*;
 
 /** 
  * @author Automatically generated class: Operator: Add
- * @version $Id: Q_Add.java,v 1.4 2007/01/02 11:18:58 andy_seaborne Exp $
  */
 
 public class Q_Add extends ExprNode implements ExprRDQL, ExprNumeric

@@ -15,7 +15,6 @@ import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 /** A number of templates, grouped together.
  *  Kept as a list so printing maintains order.
  * @author Andy Seaborne
- * @version $Id: TemplateGroup.java,v 1.16 2007/02/06 17:05:56 andy_seaborne Exp $
  */
 
 public class TemplateGroup extends Template implements TripleCollector

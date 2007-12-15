@@ -10,7 +10,6 @@ import java.util.* ;
 /** A command line argument specification.
  *
  * @author  Andy Seaborne
- * @version $Id: ArgDecl.java,v 1.7 2007/01/02 11:19:14 andy_seaborne Exp $
  */
 public class ArgDecl
 {

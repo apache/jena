@@ -21,7 +21,6 @@ import com.hp.hpl.jena.query.ARQ;
  * Internal constants - configuration is in class ARQ
  * 
  * @author Andy Seaborne
- * @version $Id: ARQConstants.java,v 1.5 2007/02/06 18:21:33 andy_seaborne Exp $
  */
 public class ARQConstants
 {
