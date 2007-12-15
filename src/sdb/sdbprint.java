@@ -29,7 +29,6 @@ import com.hp.hpl.jena.sdb.util.PrintSDB;
 /**
  * Compile and print the SQL for a SPARQL query.
  * @author Andy Seaborne
- * @version $Id: sdbprint.java,v 1.12 2006/04/24 17:31:26 andy_seaborne Exp $
  */
 
 public class sdbprint extends CmdArgsDB

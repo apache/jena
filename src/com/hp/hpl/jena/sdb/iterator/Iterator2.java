@@ -12,7 +12,6 @@ import java.util.NoSuchElementException;
 /** Iterator2 : the concatenation of two iterators.
  * 
  * @author Andy Seaborne
- * @version $Id$
  */
 
 public class Iterator2<T> implements Iterator<T>, Iterable<T>

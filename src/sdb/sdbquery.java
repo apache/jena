@@ -34,7 +34,6 @@ import com.hp.hpl.jena.sparql.util.Utils;
   *  </p>
   * 
   * @author Andy Seaborne
-  * @version $Id: sdbquery.java,v 1.30 2006/04/22 19:51:11 andy_seaborne Exp $
   */ 
  
 public class sdbquery extends CmdArgsDB

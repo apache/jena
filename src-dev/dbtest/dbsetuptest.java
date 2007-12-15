@@ -16,7 +16,6 @@ import java.util.Iterator;
  * It does notrun the RDF tests. 
  * 
  * @author Andy Seaborne
- * @version $Id: dbsetuptest.java,v 1.1 2007/02/15 14:28:12 andy_seaborne Exp $
  */
 
 public class dbsetuptest

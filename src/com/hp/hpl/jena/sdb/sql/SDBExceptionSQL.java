@@ -13,7 +13,6 @@ import com.hp.hpl.jena.sdb.SDBException;
 /** Wrapper SQLException 
  * 
  * @author Andy Seaborne
- * @version $Id: SDBExceptionSQL.java,v 1.2 2006/02/01 10:20:06 andy_seaborne Exp $
  */
 public class SDBExceptionSQL extends SDBException
 {

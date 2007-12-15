@@ -32,7 +32,6 @@ import com.hp.hpl.jena.vocabulary.DCTerms;
   *  </p>
   * 
   * @author Andy Seaborne
-  * @version $Id: sdbtest.java,v 1.9 2006/04/22 19:51:11 andy_seaborne Exp $
   */ 
  
 public class sdbtest extends CmdArgsDB

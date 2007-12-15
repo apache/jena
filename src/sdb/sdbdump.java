@@ -27,7 +27,6 @@ import com.hp.hpl.jena.sparql.util.Utils;
   *  </p>
   * 
   * @author Andy Seaborne
-  * @version $Id: sdbdump.java,v 1.14 2006/04/22 19:51:11 andy_seaborne Exp $
   */ 
  
 public class sdbdump extends CmdArgsDB

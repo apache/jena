@@ -10,7 +10,6 @@ import com.hp.hpl.jena.sdb.layout2.TableDescNodes;
 
 /**
  * @author Andy Seaborne
- * @version $Id: TableNodes.java,v 1.2 2006/04/19 17:23:32 andy_seaborne Exp $
  */
 
 public class TableNodesIndex extends TableDescNodes

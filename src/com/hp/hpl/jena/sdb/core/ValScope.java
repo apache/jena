@@ -11,7 +11,6 @@ import com.hp.hpl.jena.sparql.core.Var;
 /** Precondition for a condition
  * 
  * @author Andy Seaborne
- * @version $Id$
  */
 
 

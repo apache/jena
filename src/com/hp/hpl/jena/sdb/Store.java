@@ -27,7 +27,6 @@ import com.hp.hpl.jena.sdb.store.*;
  *  yet SQL generation of query is more standard.       
  * 
  * @author Andy Seaborne
- * @version $Id: Store.java,v 1.12 2006/04/22 19:51:12 andy_seaborne Exp $
  */
 
 public interface Store

@@ -11,7 +11,6 @@ import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 /** Collect some notes into a single annoation.
  * 
  * @author Andy Seaborne
- * @version $Id$
  */
 public class Annotation1
 {

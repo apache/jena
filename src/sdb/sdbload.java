@@ -32,7 +32,6 @@ import com.hp.hpl.jena.util.FileUtils;
   *  </p>
   * 
   * @author Andy Seaborne
-  * @version $Id: sdbload.java,v 1.27 2006/04/22 19:51:11 andy_seaborne Exp $
   */ 
  
 public class sdbload extends CmdArgsDB

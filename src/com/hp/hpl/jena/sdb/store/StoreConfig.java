@@ -45,7 +45,6 @@ import com.hp.hpl.jena.util.FileUtils;
  * be a design that will not change. 
  * 
  * @author Andy Seaborne
- * @version $Id: StoreConfig.java,v 1.3 2006/04/23 21:24:41 andy_seaborne Exp $
  */
 
 

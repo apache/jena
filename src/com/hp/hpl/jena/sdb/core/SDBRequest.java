@@ -23,7 +23,6 @@ import com.hp.hpl.jena.sparql.util.Context;
  * and execution from SPARQL to SQL.
  * 
  * @author Andy Seaborne
- * @version $Id: SDBRequest.java,v 1.14 2006/04/17 11:55:35 andy_seaborne Exp $
  */
 
 public class SDBRequest extends StoreHolder

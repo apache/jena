@@ -19,7 +19,6 @@ import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
  *  is allocated for each query execution. 
  *  
  * @author Andy Seaborne
- * @version $Id$
  */  
 
 public interface SQLBridgeFactory

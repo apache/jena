@@ -16,7 +16,6 @@ import com.hp.hpl.jena.util.FileUtils;
  *  It can also insert line numbers at the beginning of lines.
  * 
  * @author Andy Seaborne
- * @version $Id: IndentedWriter.java,v 1.15 2007/01/02 11:20:03 andy_seaborne Exp $
  */
 
 public class IndentedWriter

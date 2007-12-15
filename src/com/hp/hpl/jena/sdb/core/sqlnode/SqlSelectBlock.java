@@ -20,7 +20,6 @@ import com.hp.hpl.jena.sdb.shared.SDBInternalError;
  *  then to generate the SQL strings.
  * 
  * @author Andy Seaborne
- * @version $Id$
  */
 
 public class SqlSelectBlock extends SqlNodeBase1

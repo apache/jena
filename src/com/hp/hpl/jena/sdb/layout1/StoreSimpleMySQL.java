@@ -16,7 +16,6 @@ import com.hp.hpl.jena.sdb.sql.SDBConnection;
 /** Store class for the simple layout (i.e. one triple table)
  * 
  * @author Andy Seaborne
- * @version $Id: StoreSimpleMySQL.java,v 1.6 2006/04/24 17:31:26 andy_seaborne Exp $
  */
 
 public class StoreSimpleMySQL extends StoreBase1

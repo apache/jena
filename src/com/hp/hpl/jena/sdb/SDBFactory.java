@@ -28,7 +28,6 @@ import com.hp.hpl.jena.sdb.store.StoreFactory;
  *  Convenience calls.
  *  
  * @author Andy Seaborne
- * @version $Id$
  */
 
 public class SDBFactory

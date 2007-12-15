@@ -20,7 +20,6 @@ import com.hp.hpl.jena.sdb.sql.SDBExceptionSQL;
  *  not update via this route (use ModelRDB as normal). 
  * 
  * @author Andy Seaborne
- * @version $Id: StoreRDB.java,v 1.2 2006/04/27 21:43:48 andy_seaborne Exp $
  */
 
 public class StoreRDB extends StoreBase1

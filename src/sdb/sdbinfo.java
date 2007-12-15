@@ -27,7 +27,6 @@ import com.hp.hpl.jena.sdb.store.StoreConfig;
   *  </p>
   * 
   * @author Andy Seaborne
-  * @version $Id: sdbinfo.java,v 1.2 2006/04/23 21:24:21 andy_seaborne Exp $
   */ 
  
 public class sdbinfo extends CmdArgsDB

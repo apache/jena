@@ -17,7 +17,6 @@ import com.hp.hpl.jena.sparql.engine.binding.Binding;
  *  is allocated for each SQL query execution. 
  *  
  * @author Andy Seaborne
- * @version $Id$
  */  
 
 public interface SQLBridge

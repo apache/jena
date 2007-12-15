@@ -10,7 +10,6 @@ import com.hp.hpl.jena.sdb.layout2.TableDescTriples;
 
 /**
  * @author Andy Seaborne
- * @version $Id: TripleTableDescSPO.java,v 1.1 2006/04/27 21:43:48 andy_seaborne Exp $
  */
 
 public class TableDescSPO extends TableDescTriples

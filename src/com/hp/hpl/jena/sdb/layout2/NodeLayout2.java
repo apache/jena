@@ -19,7 +19,6 @@ import com.hp.hpl.jena.sdb.SDBException;
 /** Operations associated with nodes and layout 2 (the Triples+Nodes layout)
  * 
  * @author Andy Seaborne
- * @version $Id$
  */
 
 public class NodeLayout2

@@ -25,7 +25,6 @@ import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
 /** A prefix mapping that is backed by a database table
  * 
  * @author Andy Seaborne
- * @version $Id: PrefixMappingSDB.java,v 1.1 2006/04/23 18:40:12 andy_seaborne Exp $
  */
 
 @SuppressWarnings("deprecation")

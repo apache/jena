@@ -11,7 +11,6 @@ import java.sql.SQLException;
 /** Interface to setting up the bulk loader environment.
  * 
  * @author Andy Seaborne
- * @version $Id: LoaderFmt.java,v 1.1 2006/04/21 12:40:20 andy_seaborne Exp $
  */
 public interface LoaderFmt
 {

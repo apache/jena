@@ -9,7 +9,6 @@ package com.hp.hpl.jena.sdb.sql;
 /** Common container for SDBConnections 
  *  
  * @author Andy Seaborne
- * @version $Id: SDBConnectionHolder.java,v 1.1 2006/04/21 12:40:30 andy_seaborne Exp $
  */
 public class SDBConnectionHolder
 {

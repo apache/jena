@@ -10,7 +10,6 @@ import com.hp.hpl.jena.sdb.store.TableDesc;
 
 /**
  * @author Andy Seaborne
- * @version $Id: TableTriples.java,v 1.2 2006/04/19 17:23:32 andy_seaborne Exp $
  */
 
 public class TableDescQuads extends TableDesc

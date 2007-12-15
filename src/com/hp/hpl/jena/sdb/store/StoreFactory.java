@@ -31,7 +31,6 @@ import com.hp.hpl.jena.sdb.util.Pair;
 
 /** Construct Stores
  * @author Andy Seaborne
- * @version $Id: StoreFactory.java,v 1.5 2006/04/22 19:51:12 andy_seaborne Exp $
  */
 
 public class StoreFactory

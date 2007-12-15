@@ -15,7 +15,6 @@ import java.util.List;
  *  to be overrided by each database type.
  *  
  * @author Andy Seaborne
- * @version $Id$
  */ 
 public class DBSyntax
 {

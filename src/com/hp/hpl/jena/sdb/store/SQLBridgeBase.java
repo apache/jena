@@ -35,7 +35,6 @@ import com.hp.hpl.jena.sparql.engine.iterator.QueryIterPlainWrapper;
  *  is allocated for each query execution. 
  *  
  * @author Andy Seaborne
- * @version $Id$
  */  
 
 public abstract class SQLBridgeBase implements SQLBridge

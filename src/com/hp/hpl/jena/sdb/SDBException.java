@@ -11,7 +11,6 @@ import com.hp.hpl.jena.sparql.ARQException;
 /** Root of all exceptions in SDB
  * 
  * @author Andy Seaborne
- * @version $Id: SDBException.java,v 1.3 2006/02/01 10:20:04 andy_seaborne Exp $
  */
 
 public class SDBException extends ARQException
