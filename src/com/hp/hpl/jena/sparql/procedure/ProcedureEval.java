@@ -5,65 +5,46 @@
  */
 
 package com.hp.hpl.jena.sparql.procedure ;
+import java.util.Iterator;
+
 import com.hp.hpl.jena.graph.Node;
 
+import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.sparql.engine.iterator.QueryIterRepeatApply;
+import com.hp.hpl.jena.sparql.expr.Expr;
 import com.hp.hpl.jena.sparql.expr.ExprList;
-import com.hp.hpl.jena.sparql.serializer.SerializationContext;
-import com.hp.hpl.jena.sparql.sse.writers.WriterExpr;
-import com.hp.hpl.jena.sparql.util.FmtUtils;
-import com.hp.hpl.jena.sparql.util.IndentedWriter;
+import com.hp.hpl.jena.sparql.expr.NodeValue;
 
-public abstract class ProcedureBase implements Procedure
+public abstract class ProcedureEval extends ProcedureBase
 {
-    private Node procId ;
-    private ExprList args ;
-
-
-    
-    public void build(Node procId, ExprList args, ExecutionContext execCxt)
+    public QueryIterator exec(Binding binding, Node name, ExprList args, ExecutionContext execCxt)
     {
-        this.procId = procId ;
-        this.args = args ;
-    }
- 
-    public final QueryIterator proc(QueryIterator input, ExecutionContext execCxt)
-    {
-        return new RepeatApplyIterator(input, execCxt) ;
-    }
-    
-    public abstract QueryIterator exec(Binding binding, Node name, ExprList args, ExecutionContext execCxt) ;
-    
-    
-    class RepeatApplyIterator extends QueryIterRepeatApply
-    {
-        private ExecutionContext execCxt ;
-        private Node name ;
-        
-       public RepeatApplyIterator(QueryIterator input, ExecutionContext execCxt)
-       { 
-           super(input, execCxt) ;
-       }
-
-        //@Override
-        protected QueryIterator nextStage(Binding binding)
+        // Eval if possible.
+        ExprList evalArgs = new ExprList() ;
+        for ( Iterator iter = args.iterator() ; iter.hasNext() ; )
         {
-            QueryIterator iter = exec(binding, name, args, super.getExecContext()) ;
-            if ( iter == null ) 
-                iter = ProcLib.noResults(execCxt) ;
-            return iter ;
+            Expr e = (Expr)iter.next() ;
+            if ( e.isVariable() )
+            {
+                Var v = e.getNodeVar().asVar() ;
+                // Special case - allow unevaluated variables.
+                if ( binding.contains(v) )
+                    evalArgs.add(e.eval(binding, execCxt)) ;
+                else
+                    evalArgs.add(e) ;
+            }
+            else
+            {
+                NodeValue x = e.eval(binding, execCxt) ;
+                evalArgs.add(x) ;
+            }
         }
-        
-        protected void details(IndentedWriter out, SerializationContext sCxt)
-        {
-            out.print("Procedure ["+FmtUtils.stringForNode(name, sCxt)+"]") ;
-            WriterExpr.output(out, args, sCxt) ;
-            out.println() ;
-        }
+        return execEval(binding, evalArgs, execCxt) ;
     }
+    
+    public abstract QueryIterator execEval(Binding binding, ExprList args, ExecutionContext execCxt) ;
 
 }
 

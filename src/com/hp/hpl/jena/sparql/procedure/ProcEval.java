@@ -17,9 +17,11 @@ public class ProcEval
 {
     public static Procedure build(Node procId, ExprList args, ExecutionContext execCxt)
     {
-        ProcedureRegistry reg = chooseRegistry(execCxt.getContext()) ;
+        Context context = execCxt.getContext() ;
+        ProcedureRegistry reg = chooseRegistry(context) ;
         ProcedureFactory f = reg.get(procId.getURI()) ;
         Procedure proc = f.create(procId.getURI()) ;
+        args.prepareExprs(context) ;        // Allow args to build as well.
         proc.build(procId, args, execCxt) ;
         return proc ;
         //throw new ARQNotImplemented("ProcEval.build") ;

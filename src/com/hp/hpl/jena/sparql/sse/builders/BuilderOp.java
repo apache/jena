@@ -279,7 +279,7 @@ public class BuilderOp
             BuilderBase.checkLength(4, list, "proc") ;
             Node procId = BuilderNode.buildNode(list.get(1)) ;
             // Arguments
-            ExprList args = BuilderExpr.buildArgs(list.get(2).getList(), 0) ;
+            ExprList args = BuilderExpr.buildExprListUntagged(list.get(2).getList()) ;
             if ( ! procId.isURI() && ! procId.isVariable() )
                 BuilderBase.broken(list, "Procedure name must be a URI") ;
             Op sub  = build(list, 3) ;

@@ -52,6 +52,22 @@ public class BuilderExpr
         return exprList ;
     }
 
+    public static ExprList buildExprListUntagged(ItemList list)
+    {
+       return buildExprListUntagged(list, 0) ;
+    }
+    
+    private static ExprList buildExprListUntagged(ItemList list, int idx)
+    {
+        ExprList exprList = new ExprList() ;
+        for ( int i = idx ; i < list.size() ; i++ )
+        {
+            Item item = list.get(i) ;
+            exprList.add(buildExpr(item)) ;
+        }
+        return exprList ;
+    }
+    
     public static Expr buildExpr(Item item)
     {
         // If this (bob) is stateless, we can have one and use always.
@@ -206,21 +222,12 @@ public class BuilderExpr
             BuilderBase.broken(head, "Blank node for function call!") ;
         if ( node.isLiteral() )
             BuilderBase.broken(head, "Literal node for function call!") ;
-        ExprList args = buildArgs(list, 1) ;
+        ExprList args = buildExprListUntagged(list, 1) ;
         // Args
         return new E_Function(node.getURI(), args) ;
     }
 
-    public static ExprList buildArgs(ItemList list, int idx)
-    {
-        ExprList exprList = new ExprList() ;
-        for ( int i = idx ; i < list.size() ; i++ )
-        {
-            Item item = list.get(i) ;
-            exprList.add(buildExpr(item)) ;
-        }
-        return exprList ;
-    }
+ 
 
     // ---- Dispatch objects
     // Can assume the tag is right (i.e. dispatched correctly) 

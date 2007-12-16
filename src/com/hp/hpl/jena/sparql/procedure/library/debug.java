@@ -6,26 +6,28 @@
 
 package com.hp.hpl.jena.sparql.procedure.library;
 
-import com.hp.hpl.jena.graph.Node;
-
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
+import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.expr.ExprList;
-import com.hp.hpl.jena.sparql.procedure.Procedure;
+import com.hp.hpl.jena.sparql.procedure.ProcLib;
+import com.hp.hpl.jena.sparql.procedure.ProcedureEval;
 
-public class debug implements Procedure
+public class debug extends ProcedureEval
 {
 
-    public void build(Node procId, ExprList args, ExecutionContext execCxt)
+    public QueryIterator execEval(Binding binding, ExprList args, ExecutionContext execCxt)
     {
-        System.out.println("DebugProc.build") ;
+        System.out.println(args.toString()) ;
+        return ProcLib.result(binding, execCxt) ;
     }
+    
+//    public void build(Node procId, ExprList args, ExecutionContext execCxt)
+//    {
+//        System.out.println("DebugProc.build") ;
+//    }
 
-    public QueryIterator proc(QueryIterator input, ExecutionContext execCxt)
-    {
-        System.out.println("DebugProc.proc") ;
-        return input;
-    }
+ 
 
 }
 
