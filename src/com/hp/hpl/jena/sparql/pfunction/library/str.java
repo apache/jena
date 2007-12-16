@@ -13,7 +13,7 @@ import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.expr.nodevalue.NodeFunctions;
-import com.hp.hpl.jena.sparql.pfunction.PFLib;
+import com.hp.hpl.jena.sparql.pfunction.ProcLib;
 import com.hp.hpl.jena.sparql.pfunction.PFuncSimple;
 import com.hp.hpl.jena.sparql.pfunction.PropFuncArg;
 
@@ -36,7 +36,7 @@ public class str extends PFuncSimple
     {
         // Subject bound to something other a literal. 
         if ( subject.isURI() || subject.isBlank() )
-            return PFLib.noResults(execCxt) ;
+            return ProcLib.noResults(execCxt) ;
 
         if ( Var.isVar(subject) && Var.isVar(object) )
             throw new QueryExecException("str: Both subject and object are unbound variables") ;
@@ -50,13 +50,13 @@ public class str extends PFuncSimple
         Node strValue =  Node.createLiteral(NodeFunctions.str(object)) ;
         
         if ( Var.isVar(subject) )
-            return PFLib.oneResult(binding, Var.alloc(subject), strValue, execCxt) ;
+            return ProcLib.oneResult(binding, Var.alloc(subject), strValue, execCxt) ;
         else
         {
             // Subject bound : check it.
             if ( subject.equals(strValue) )
-                return PFLib.result(binding, execCxt) ;
-            return PFLib.noResults(execCxt) ;
+                return ProcLib.result(binding, execCxt) ;
+            return ProcLib.noResults(execCxt) ;
         }
     }
 }

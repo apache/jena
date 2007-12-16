@@ -24,7 +24,7 @@ import com.hp.hpl.jena.sparql.engine.iterator.QueryIterSingleton;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterSlice;
 import com.hp.hpl.jena.sparql.expr.ExprEvalException;
 import com.hp.hpl.jena.sparql.expr.NodeValue;
-import com.hp.hpl.jena.sparql.pfunction.PFLib;
+import com.hp.hpl.jena.sparql.pfunction.ProcLib;
 import com.hp.hpl.jena.sparql.pfunction.PropFuncArg;
 import com.hp.hpl.jena.sparql.pfunction.PropFuncArgType;
 import com.hp.hpl.jena.sparql.pfunction.PropertyFunctionEval;
@@ -131,7 +131,7 @@ public abstract class LuceneSearch extends PropertyFunctionEval
         }
         
         if ( !isValidSearchString(searchString) )
-            return PFLib.noResults(execCxt) ;
+            return ProcLib.noResults(execCxt) ;
 
         String qs = asString(searchString) ;
         
@@ -233,7 +233,7 @@ public abstract class LuceneSearch extends PropertyFunctionEval
             return new QueryIterNullIterator(execCxt) ;
         if ( score == null ) 
             return new QueryIterSingleton(binding, execCxt) ;
-        return PFLib.oneResult(binding, score, NodeFactory.floatToNode(hit.getScore()), execCxt) ;
+        return ProcLib.oneResult(binding, score, NodeFactory.floatToNode(hit.getScore()), execCxt) ;
     }
 
     static private String asString(Node node)

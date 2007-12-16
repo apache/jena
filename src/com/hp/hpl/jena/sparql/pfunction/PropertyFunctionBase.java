@@ -86,7 +86,7 @@ public abstract class PropertyFunctionBase implements PropertyFunction
         {
             QueryIterator iter = exec(binding, argSubject, predicate, argObject, super.getExecContext()) ;
             if ( iter == null ) 
-                iter = PFLib.noResults(execCxt) ;
+                iter = ProcLib.noResults(execCxt) ;
             return iter ;
         }
         

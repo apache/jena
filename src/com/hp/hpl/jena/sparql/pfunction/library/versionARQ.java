@@ -38,7 +38,7 @@ public class versionARQ extends PropertyFunctionEval
         
         Node subj = subject.getArg() ;
         
-        if ( ! isSameOrVar(subj, arq) ) PFLib.noResults(execCxt) ;
+        if ( ! isSameOrVar(subj, arq) ) ProcLib.noResults(execCxt) ;
         if ( subj.isVariable() )
             b.add(Var.alloc(subj), arq) ;
         
@@ -46,7 +46,7 @@ public class versionARQ extends PropertyFunctionEval
         {
             Node obj = object.getArg() ;
             
-            if ( ! isSameOrVar(obj, version) ) PFLib.noResults(execCxt) ;
+            if ( ! isSameOrVar(obj, version) ) ProcLib.noResults(execCxt) ;
             if ( obj.isVariable() )
                 b.add(Var.alloc(obj), version) ;
         }
@@ -54,18 +54,18 @@ public class versionARQ extends PropertyFunctionEval
         {
             List x = object.getArgList() ;
             if ( x.size() != 2)
-                return PFLib.noResults(execCxt) ;
+                return ProcLib.noResults(execCxt) ;
             Node major = object.getArg(0) ;
             Node minor = object.getArg(1) ;
-            if ( ! isSameOrVar(major, versionMajor) ) PFLib.noResults(execCxt) ;
+            if ( ! isSameOrVar(major, versionMajor) ) ProcLib.noResults(execCxt) ;
             if ( major.isVariable() )
                 b.add(Var.alloc(major), versionMajor) ;
-            if ( ! isSameOrVar(minor, versionMinor) ) PFLib.noResults(execCxt) ;
+            if ( ! isSameOrVar(minor, versionMinor) ) ProcLib.noResults(execCxt) ;
             if ( major.isVariable() )
                 b.add(Var.alloc(minor), versionMinor) ;
         }
         
-        return PFLib.result(b, execCxt) ;
+        return ProcLib.result(b, execCxt) ;
     }
 
     private boolean isSameOrVar(Node var, Node value)

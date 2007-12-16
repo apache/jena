@@ -23,20 +23,20 @@ class PFuncAssignBase extends PFuncSimple
             if ( subject.isVariable() )
             {
                 ALog.warn(this, "Variable found: expected a value: "+subject) ;
-                return PFLib.noResults(execCxt) ;
+                return ProcLib.noResults(execCxt) ;
             }
             
             Node r = calc(subject) ;
             
             // Variable bound? 
             if ( Var.isVar(object) ) //object.isVariable() )
-                return PFLib.oneResult(binding, Var.alloc(object), r, execCxt) ;
+                return ProcLib.oneResult(binding, Var.alloc(object), r, execCxt) ;
             
             // Variable already bound - test same value.
             if ( r.equals(object) )
-                return PFLib.result(binding, execCxt) ;
+                return ProcLib.result(binding, execCxt) ;
             
-            return PFLib.noResults(execCxt) ;
+            return ProcLib.noResults(execCxt) ;
         }  catch (Exception ex)
         { 
             ALog.warn(this, "Exception: "+ex.getMessage(), ex);

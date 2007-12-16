@@ -13,7 +13,7 @@ import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.binding.BindingMap;
-import com.hp.hpl.jena.sparql.pfunction.PFLib;
+import com.hp.hpl.jena.sparql.pfunction.ProcLib;
 import com.hp.hpl.jena.sparql.pfunction.PropFuncArg;
 import com.hp.hpl.jena.sparql.pfunction.PropFuncArgType;
 import com.hp.hpl.jena.sparql.pfunction.PropertyFunctionBase;
@@ -59,7 +59,7 @@ public class splitIRI extends PropertyFunctionBase
             // Subject bound to something other a URI. 
             if ( argSubject.getArg().isLiteral() || argSubject.getArg().isBlank() )
                 // Only split IRIs
-                return PFLib.noResults(execCxt) ;
+                return ProcLib.noResults(execCxt) ;
     
             if ( argSubject.getArg().isURI() )
                 // Case 1 : subject is a fixed URI or a variable bount to a URI. 
@@ -104,7 +104,7 @@ public class splitIRI extends PropertyFunctionBase
             if ( namespaceNode.isLiteral() )
                 ns = NodeUtils.stringLiteral(namespaceNode) ;
             if ( ns == null || ! ns.equals(namespace) )
-                return PFLib.noResults(execCxt) ;
+                return ProcLib.noResults(execCxt) ;
             // Fall through and proceed to localname 
         }
         
@@ -117,17 +117,17 @@ public class splitIRI extends PropertyFunctionBase
             // Only string literals (plain strings or datatype xsd:string) 
             String lc = NodeUtils.stringLiteral(localnameNode) ;
             if ( lc == null || ! lc.equals(localname) )
-                return PFLib.noResults(execCxt) ;
+                return ProcLib.noResults(execCxt) ;
         }
         if ( b == null )
             b = binding ;
-        return PFLib.result(b, execCxt) ;
+        return ProcLib.result(b, execCxt) ;
     }
 
     private QueryIterator subjectIsVariable(Node arg, PropFuncArg argObject, ExecutionContext execCxt)
     {
         ALog.warn(this, "Subject to property function splitURI is not a bound nor a constant.") ;
-        return PFLib.noResults(execCxt) ;
+        return ProcLib.noResults(execCxt) ;
     }
 }
 

@@ -12,7 +12,7 @@ import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.sparql.pfunction.PFLib;
+import com.hp.hpl.jena.sparql.pfunction.ProcLib;
 import com.hp.hpl.jena.sparql.pfunction.PFuncSimple;
 import com.hp.hpl.jena.sparql.util.FmtUtils;
 
@@ -31,15 +31,15 @@ public class assign extends PFuncSimple
             throw new QueryExecException("Both subject and object are unbound variables: "+FmtUtils.stringForNode(predicate)) ;
         if ( subject.isVariable() )
             // Object not a variable or already bound
-            return PFLib.oneResult(binding, Var.alloc(subject), object, execCxt) ;
+            return ProcLib.oneResult(binding, Var.alloc(subject), object, execCxt) ;
         if ( object.isVariable() )
             // Subjects not a variable or already bound
-            return PFLib.oneResult(binding, Var.alloc(object), subject, execCxt) ;
+            return ProcLib.oneResult(binding, Var.alloc(object), subject, execCxt) ;
         // Both bound.  Must be the same.
         if ( subject.sameValueAs(object) )
-            return PFLib.result(binding, execCxt) ;
+            return ProcLib.result(binding, execCxt) ;
         // different
-        return PFLib.noResults(execCxt) ;
+        return ProcLib.noResults(execCxt) ;
     }
 
 }

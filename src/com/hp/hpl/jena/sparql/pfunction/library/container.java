@@ -22,7 +22,7 @@ import com.hp.hpl.jena.sparql.engine.binding.Binding1;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterConcat;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterPlainWrapper;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterYieldN;
-import com.hp.hpl.jena.sparql.pfunction.PFLib;
+import com.hp.hpl.jena.sparql.pfunction.ProcLib;
 import com.hp.hpl.jena.sparql.pfunction.PFuncSimple;
 import com.hp.hpl.jena.sparql.util.GraphContainerUtils;
 
@@ -48,7 +48,7 @@ public class container extends PFuncSimple
         {
             // Container a ground term.
             if ( ! GraphContainerUtils.isContainer(execCxt.getActiveGraph(), containerNode, typeNode) )
-                return PFLib.noResults(execCxt) ;
+                return ProcLib.noResults(execCxt) ;
             return oneContainer(binding, containerNode, member, execCxt) ;
         }            
         
@@ -93,7 +93,7 @@ public class container extends PFuncSimple
         Collection x = GraphContainerUtils.containerMembers(execCxt.getActiveGraph(), containerNode, typeNode) ;
         if ( x == null )
             // Wrong type.
-            return PFLib.noResults(execCxt) ;
+            return ProcLib.noResults(execCxt) ;
 
         List bindings = new ArrayList() ;
         for ( Iterator iter = x.iterator() ; iter.hasNext() ; )

@@ -18,7 +18,7 @@ import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.binding.BindingMap;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterPlainWrapper;
 import com.hp.hpl.jena.sparql.expr.ExprEvalException;
-import com.hp.hpl.jena.sparql.pfunction.PFLib;
+import com.hp.hpl.jena.sparql.pfunction.ProcLib;
 import com.hp.hpl.jena.sparql.pfunction.PropFuncArg;
 import com.hp.hpl.jena.sparql.util.GNode;
 import com.hp.hpl.jena.sparql.util.GraphList;
@@ -65,12 +65,12 @@ public class listIndex extends ListBaseList
     {
         int i = NodeFactory.nodeToInt(indexNode) ;
         if ( i < 0 )
-            return PFLib.noResults(execCxt) ;
+            return ProcLib.noResults(execCxt) ;
 
         Node n = GraphList.get(new GNode(graph, listNode), i) ;
         if ( n == null )
-            return PFLib.noResults(execCxt) ;
-        return PFLib.oneResult(binding, varMember, n, execCxt) ; 
+            return ProcLib.noResults(execCxt) ;
+        return ProcLib.oneResult(binding, varMember, n, execCxt) ; 
     }
 
     private static QueryIterator testSlotValue(Graph graph, Binding binding,
@@ -79,14 +79,14 @@ public class listIndex extends ListBaseList
     {
         int i = NodeFactory.nodeToInt(indexNode) ;
         if ( i < 0 )
-            return PFLib.noResults(execCxt) ;
+            return ProcLib.noResults(execCxt) ;
         Node n = GraphList.get(new GNode(graph, listNode), i) ;
         if ( n == null )
-            return PFLib.noResults(execCxt) ;
+            return ProcLib.noResults(execCxt) ;
         if ( n.equals(memberNode) )
-            return PFLib.result(binding, execCxt) ; 
+            return ProcLib.result(binding, execCxt) ; 
         else
-            return PFLib.noResults(execCxt) ;
+            return ProcLib.noResults(execCxt) ;
     }
 
     private static QueryIterator findIndex(Graph graph, Binding binding,
@@ -96,9 +96,9 @@ public class listIndex extends ListBaseList
         // Find index of member.
         int i = GraphList.index(new GNode(graph, listNode), member) ;
         if ( i < 0 )
-            return PFLib.noResults(execCxt) ;
+            return ProcLib.noResults(execCxt) ;
         Node idx = NodeFactory.intToNode(i) ;
-        return PFLib.oneResult(binding, var, idx, execCxt) ; 
+        return ProcLib.oneResult(binding, var, idx, execCxt) ; 
     }
 
     private static QueryIterator findIndexMember(Graph graph, Binding binding, 
