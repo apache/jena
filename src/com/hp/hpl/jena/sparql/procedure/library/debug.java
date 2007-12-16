@@ -18,17 +18,9 @@ public class debug extends ProcedureEval
 
     public QueryIterator execEval(Binding binding, ExprList args, ExecutionContext execCxt)
     {
-        System.out.println(args.toString()) ;
+        System.out.println("Debug: "+args.toString()) ;
         return ProcLib.result(binding, execCxt) ;
     }
-    
-//    public void build(Node procId, ExprList args, ExecutionContext execCxt)
-//    {
-//        System.out.println("DebugProc.build") ;
-//    }
-
- 
-
 }
 
 /*
