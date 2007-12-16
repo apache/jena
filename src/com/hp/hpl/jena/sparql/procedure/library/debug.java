@@ -6,15 +6,17 @@
 
 package com.hp.hpl.jena.sparql.procedure.library;
 
-import com.hp.hpl.jena.sparql.algebra.op.OpProcedure;
+import com.hp.hpl.jena.graph.Node;
+
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
+import com.hp.hpl.jena.sparql.expr.ExprList;
 import com.hp.hpl.jena.sparql.procedure.Procedure;
 
 public class debug implements Procedure
 {
 
-    public void build(OpProcedure opProc, ExecutionContext execCxt)
+    public void build(Node procId, ExprList args, ExecutionContext execCxt)
     {
         System.out.println("DebugProc.build") ;
     }

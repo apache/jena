@@ -11,15 +11,27 @@ import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.expr.ExprList;
+import com.hp.hpl.jena.sparql.util.Context;
 
 public class ProcEval
 {
     public static Procedure build(Node procId, ExprList args, ExecutionContext execCxt)
     {
-        // XXX Is this right?  See E_Function code.
-        ProcedureFactory f = ProcedureRegistry.get(execCxt.getContext()).get(procId.getURI()) ;
-        return f.create(procId.getURI()) ;
+        ProcedureRegistry reg = chooseRegistry(execCxt.getContext()) ;
+        ProcedureFactory f = reg.get(procId.getURI()) ;
+        Procedure proc = f.create(procId.getURI()) ;
+        proc.build(procId, args, execCxt) ;
+        return proc ;
         //throw new ARQNotImplemented("ProcEval.build") ;
+    }
+    
+    private static ProcedureRegistry chooseRegistry(Context context)
+    {
+        ProcedureRegistry registry = ProcedureRegistry.get(context) ;
+        // Else global
+        if ( registry == null )
+            registry = ProcedureRegistry.get() ;
+        return registry ;
     }
     
     /** Evaluate a procedure */

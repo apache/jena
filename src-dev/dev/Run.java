@@ -157,7 +157,7 @@ public class Run
     
     private static void execQuerySSE(String datafile, String queryfile)
     {
-        //QueryEngineMain.register() ;
+        //com.hp.hpl.jena.sparql.engine.ref.QueryEngineRef.register() ;
         String a[] = new String[]{
             //"-v",
             //"--engine=ref",

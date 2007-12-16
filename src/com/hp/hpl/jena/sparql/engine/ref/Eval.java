@@ -15,7 +15,6 @@ import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
 
 import com.hp.hpl.jena.sparql.ARQInternalErrorException;
-import com.hp.hpl.jena.sparql.ARQNotImplemented;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.OpVisitor;
 import com.hp.hpl.jena.sparql.algebra.Table;
@@ -96,8 +95,7 @@ public class Eval
             Table table = eval(opProc.getSubOp()) ;
             table = evaluator.procedure(table, opProc.getProcId(), opProc.getArgs()) ;
             push(table) ;
-            
-            throw new ARQNotImplemented("EvalDispatch/OpProcedure") ;}
+        }
 
         public void visit(OpJoin opJoin)
         {

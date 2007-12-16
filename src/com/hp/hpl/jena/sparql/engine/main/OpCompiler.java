@@ -98,7 +98,7 @@ public class OpCompiler
     {
         Procedure procedure = ProcEval.build(opProc.getProcId(), opProc.getArgs(), execCxt) ;
         QueryIterator qIter = compileOp(opProc.getSubOp(), input) ;
-        return procedure.proc(input, execCxt) ;
+        return procedure.proc(qIter, execCxt) ;
     }
 
     QueryIterator compile(OpJoin opJoin, QueryIterator input)

@@ -5,9 +5,11 @@
  */
 
 package com.hp.hpl.jena.sparql.procedure ;
-import com.hp.hpl.jena.sparql.algebra.op.OpProcedure;
+import com.hp.hpl.jena.graph.Node;
+
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
+import com.hp.hpl.jena.sparql.expr.ExprList;
 
 public interface Procedure
 {
@@ -15,12 +17,14 @@ public interface Procedure
      * Called during query plan construction immediately after the construction
      * of the property function instance.
      * 
-     * @param opProc
-     *            The procedure operator
+     * @param procId
+     *            The procedure identifier (usually a URI)
+     * @param args
+     *            The argument list (unevaluated expressions)
      * @param execCxt
      *            Execution context
      */
-    public void build(OpProcedure opProc, ExecutionContext execCxt) ;
+    public void build(Node procId, ExprList args, ExecutionContext execCxt) ;
 
     /**
      * Call the procedure, with an input iterator of bindings.
