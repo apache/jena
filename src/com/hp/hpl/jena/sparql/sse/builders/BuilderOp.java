@@ -53,6 +53,7 @@ public class BuilderOp
         dispatch.put(Tags.tagFilter, buildFilter) ;
         dispatch.put(Tags.tagGraph, buildGraph) ;
         dispatch.put(Tags.tagService, buildService) ;
+        dispatch.put(Tags.tagProc, buildProcedure) ;
         dispatch.put(Tags.tagJoin, buildJoin) ;
         dispatch.put(Tags.tagLeftJoin, buildLeftJoin) ;
         dispatch.put(Tags.tagDiff, buildDiff) ;
@@ -267,6 +268,22 @@ public class BuilderOp
                 BuilderBase.broken(list, "Service must provide a URI or variable") ;
             Op sub  = build(list, 2) ;
             return new OpService(service, sub) ;
+        }
+    } ;
+    
+    final protected Build buildProcedure = new Build()
+    {
+        public Op make(ItemList list)
+        {
+            // (proc <foo> (args) form)
+            BuilderBase.checkLength(3, list, "proc") ;
+            Node procId = BuilderNode.buildNode(list.get(1)) ;
+            // Arguments
+            ExprList args = BuilderExpr.buildArgs(list, 2) ;
+            if ( ! procId.isURI() && ! procId.isVariable() )
+                BuilderBase.broken(list, "Procedure name must be a URI") ;
+            Op sub  = build(list, 3) ;
+            return new OpProcedure(procId, args, sub) ;
         }
     } ;
 

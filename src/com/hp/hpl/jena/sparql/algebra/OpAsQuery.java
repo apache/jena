@@ -81,10 +81,15 @@ public class OpAsQuery
             currentGroup().addElement(process(opBGP.getPattern())) ;
         }
 
-        public void visit(OpPropFunc opPropFunc)
+//        public void visit(OpPropFunc opPropFunc)
+//        {
+//            OpBGP opBGP = opPropFunc.getBGP() ;
+//            currentGroup().addElement(process(opBGP.getPattern())) ;
+//        }
+        
+        public void visit(OpProcedure opProcedure)
         {
-            OpBGP opBGP = opPropFunc.getBGP() ;
-            currentGroup().addElement(process(opBGP.getPattern())) ;
+            throw new ARQNotImplemented("OpProcedure") ;
         }
         
         private ElementTriplesBlock process(BasicPattern pattern)

@@ -4,58 +4,34 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.algebra.op;
+package com.hp.hpl.jena.sparql.proc;
 
-import java.util.List;
+import com.hp.hpl.jena.graph.Node;
 
-import com.hp.hpl.jena.sparql.algebra.Op;
-import com.hp.hpl.jena.sparql.algebra.OpVisitor;
-import com.hp.hpl.jena.sparql.algebra.Transform;
-import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
+import com.hp.hpl.jena.sparql.ARQNotImplemented;
+import com.hp.hpl.jena.sparql.engine.ExecutionContext;
+import com.hp.hpl.jena.sparql.engine.QueryIterator;
+import com.hp.hpl.jena.sparql.expr.ExprList;
 
-/** General procedure in graph pattern evaluation (a stored procedure facility)
- * 
- * @author Andy Seaborne
- */
-public class OpProc extends Op0
+public class ProcEval
 {
-
-    private String iri ;
-    private List args ;
-
-    public OpProc(String iri, List args)
+    
+    public static Procedure build(Node procId, ExprList args)
     {
-        this.args = args ;
-        this.iri = iri ;
-        
+        throw new ARQNotImplemented("ProcEval.build") ;
+        //return null ;
     }
     
-    public Op apply(Transform transform)
+    /** Evaluate a procedure */
+    public static QueryIterator eval(QueryIterator queryIterator, Procedure proc)
     {
-        return null ;
+        return eval(queryIterator, proc, null) ;
     }
 
-    public Op copy()
+    /** Evaluate a procedure */
+    public static QueryIterator eval(QueryIterator queryIterator, Procedure proc, ExecutionContext execCxt)
     {
-        return null ;
-    }
-
-    public boolean equalTo(Op other, NodeIsomorphismMap labelMap)
-    {
-        return false ;
-    }
-
-    public int hashCode()
-    {
-        return 0 ;
-    }
-
-    public void visit(OpVisitor opVisitor)
-    {}
-
-    public String getName()
-    {
-        return "function" ;
+        return proc.proc(queryIterator, execCxt) ;
     }
 
 }

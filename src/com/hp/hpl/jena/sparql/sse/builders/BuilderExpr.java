@@ -211,7 +211,7 @@ public class BuilderExpr
         return new E_Function(node.getURI(), args) ;
     }
 
-    protected static ExprList buildArgs(ItemList list, int idx)
+    public static ExprList buildArgs(ItemList list, int idx)
     {
         ExprList exprList = new ExprList() ;
         for ( int i = idx ; i < list.size() ; i++ )

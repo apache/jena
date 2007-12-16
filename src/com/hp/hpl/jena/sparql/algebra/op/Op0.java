@@ -9,6 +9,8 @@ package com.hp.hpl.jena.sparql.algebra.op;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.Transform;
 
+/** Super class for operators that do not combine other operators */
+
 public abstract class Op0 extends OpBase
 {
     public abstract Op apply(Transform transform) ;

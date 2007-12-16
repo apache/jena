@@ -15,6 +15,7 @@ import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
 
 import com.hp.hpl.jena.sparql.ARQInternalErrorException;
+import com.hp.hpl.jena.sparql.ARQNotImplemented;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.OpVisitor;
 import com.hp.hpl.jena.sparql.algebra.Table;
@@ -88,8 +89,15 @@ public class Eval
         public void visit(OpQuadPattern quadPattern)
         {
             push(evalQuadPattern(quadPattern, evaluator)) ;
-            //throw new ARQNotImplemented("EvaDispatch/quadPattern") ;
         }
+
+        public void visit(OpProcedure opProc)
+        {
+            Table table = eval(opProc.getSubOp()) ;
+            table = evaluator.procedure(table, opProc.getProcId(), opProc.getArgs()) ;
+            push(table) ;
+            
+            throw new ARQNotImplemented("EvalDispatch/OpProcedure") ;}
 
         public void visit(OpJoin opJoin)
         {

@@ -49,6 +49,7 @@ public class Tags
     static public final String tagFilter        = "filter" ;
     // static public final String tagGraph = "graph" ;
     static public final String tagService       = "service" ;
+    static public final String tagProc          = "proc" ;
     static public final String tagJoin          = "join" ;
     static public final String tagLeftJoin      = "leftjoin" ;
     static public final String tagDiff          = "diff" ;

@@ -12,6 +12,8 @@ public class TransformBase implements Transform
 {
     public Op transform(OpTable opTable)            { return opTable ; }
     public Op transform(OpBGP opBGP)                { return opBGP ; }
+    public Op transform(OpProcedure opProc, Op subOp)   { return opProc ; }
+
     public Op transform(OpDatasetNames dsNames)     { return dsNames ; }
     public Op transform(OpQuadPattern quadPattern)  { return quadPattern ; }
     

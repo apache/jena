@@ -9,6 +9,8 @@ package com.hp.hpl.jena.sparql.engine.ref;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.hp.hpl.jena.graph.Node;
+
 import com.hp.hpl.jena.query.ResultSet;
 import com.hp.hpl.jena.query.ResultSetFormatter;
 import com.hp.hpl.jena.sparql.algebra.Table;
@@ -23,6 +25,8 @@ import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.iterator.*;
 import com.hp.hpl.jena.sparql.engine.main.StageBuilder;
 import com.hp.hpl.jena.sparql.expr.ExprList;
+import com.hp.hpl.jena.sparql.proc.ProcEval;
+import com.hp.hpl.jena.sparql.proc.Procedure;
 import com.hp.hpl.jena.sparql.util.Utils;
 
 
@@ -44,6 +48,13 @@ class EvaluatorSimple implements Evaluator
     public Table basicPattern(BasicPattern pattern)
     {
         QueryIterator qIter = StageBuilder.compile(pattern, QueryIterRoot.create(execCxt), execCxt) ;
+        return TableFactory.create(qIter) ;
+    }
+
+    public Table procedure(Table table, Node procId, ExprList args)
+    {
+        Procedure proc = ProcEval.build(procId, args) ;
+        QueryIterator qIter = ProcEval.eval(table.iterator(execCxt), proc, execCxt) ;
         return TableFactory.create(qIter) ;
     }
 

@@ -86,6 +86,8 @@ public class BuilderBase
         broken(list, msg) ;
     }
     
+    
+    
     public static void checkLength(int len, ItemList list, String msg)
     {
         if ( list.size() == len )
@@ -98,6 +100,17 @@ public class BuilderBase
         broken(list, msg) ;
     }
 
+    public static void checkLengthAtLeast(int len, ItemList list, String msg)
+    {
+        if ( list.size()>= len )
+            return ;
+        
+        if ( msg == null )
+            msg =  "Too few arguments: want > "+len+" :got : "+list.size()+" : "+list.shortString() ;
+        else
+            msg = msg+" : "+list.shortString() ;
+        broken(list, msg) ;
+    }
     
     public static void broken(Item item, String msg)
     {

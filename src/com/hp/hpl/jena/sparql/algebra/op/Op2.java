@@ -10,6 +10,8 @@ import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.Transform;
 import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 
+/** Super class for operators that combine two sub-operators */
+
 public abstract class Op2 extends OpBase
 {
     private Op left ;

@@ -82,6 +82,9 @@ public class Transformer
         public void visit(OpBGP op)
         { visit0(op); } 
         
+        public void visit(OpProcedure opProc)
+        { visit1(opProc) ; }
+        
         public void visit(OpPropFunc op)
         { visit0(op); }
         

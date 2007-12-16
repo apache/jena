@@ -11,7 +11,7 @@ import com.hp.hpl.jena.sparql.algebra.OpVisitorBase;
 import com.hp.hpl.jena.sparql.algebra.op.OpBGP;
 
 /**
- * The visitor is used to ispect the BGP of a query pattern element.
+ * The visitor is used to inspect the BGP of a query pattern element.
  * 
  * @author Markus Stocker
  */

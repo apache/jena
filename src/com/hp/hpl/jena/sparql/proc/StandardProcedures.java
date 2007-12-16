@@ -1,91 +1,22 @@
 /*
- * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.algebra;
-
-import com.hp.hpl.jena.sparql.algebra.op.*;
+package com.hp.hpl.jena.sparql.proc;
 
 
-public class OpVisitorBase implements OpVisitor
+public class StandardProcedures
 {
-
-    public void visit(OpBGP opBGP)
-    {}
-
-    public void visit(OpQuadPattern quadPattern)
-    {}
-
-
-    
-    public void visit(OpPropFunc opPropFunc)
-    {}
-
-    public void visit(OpProcedure opProc)
-    {}
-    
-    public void visit(OpJoin opJoin)
-    {}
-
-    public void visit(OpLeftJoin opLeftJoin)
-    {}
-
-    public void visit(OpDiff opDiff)
-    {}
-    
-    public void visit(OpUnion opUnion)
-    {}
-
-    public void visit(OpFilter opFilter)
-    {}
-
-    public void visit(OpGraph opGraph)
-    {}
-
-    public void visit(OpService opService)
-    {}
-
-    public void visit(OpDatasetNames dsNames)
-    {}
-
-    public void visit(OpTable opUnit)
-    {}
-
-    public void visit(OpExt opExt)
-    {}
-
-    public void visit(OpNull opNull)
-    {}
-
-    public void visit(OpAssign opAssign)
-    {}
-
-    public void visit(OpList opList)
-    {}
-
-    public void visit(OpOrder opOrder)
-    {}
-
-    public void visit(OpProject opProject)
-    {}
-
-    public void visit(OpDistinct opDistinct)
-    {}
-
-    public void visit(OpReduced opReduced)
-    {}
-
-    public void visit(OpSlice opSlice)
-    {}
-
-    public void visit(OpGroupAgg opGroupAgg)
-    {}
+    public static void loadStdDefs(ProcedureRegistry registry)
+    {
+        registry.put("debug:proc", DebugProc.class) ;
+    }
 }
 
 /*
- * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

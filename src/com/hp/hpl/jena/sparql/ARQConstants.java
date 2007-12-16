@@ -127,6 +127,10 @@ public class ARQConstants
     public static final Symbol registryFunctions =
         ARQConstants.allocSymbol("registryFunctions") ;
     
+    /** The function library registry key */
+    public static final Symbol registryProcedures =
+        ARQConstants.allocSymbol("registryProcedures") ;
+    
     /** The extension library registry key */
     public static final Symbol registryExtensions =
         ARQConstants.allocSymbol("registryExtensions") ;

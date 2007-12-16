@@ -168,10 +168,14 @@ public class WriterOp
             finish(opBGP) ;
         }
         
-        public void visit(OpPropFunc opPropFunc)
-        { 
-            // TODO Temporary
-            visit(opPropFunc.getBGP()) ;
+        public void visit(OpProcedure opProc)
+        {
+            start(opProc, NoNL) ;
+            WriterNode.output(out, opProc.getProcId(), sContext) ;
+            out.println();
+            out.incIndent() ;
+            printOp(opProc.getSubOp()) ;
+            finish(opProc) ;
         }
         
         public void visit(OpJoin opJoin)

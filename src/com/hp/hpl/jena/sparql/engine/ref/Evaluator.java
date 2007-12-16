@@ -8,6 +8,8 @@ package com.hp.hpl.jena.sparql.engine.ref;
 
 import java.util.List;
 
+import com.hp.hpl.jena.graph.Node;
+
 import com.hp.hpl.jena.sparql.algebra.Table;
 import com.hp.hpl.jena.sparql.core.BasicPattern;
 import com.hp.hpl.jena.sparql.core.VarExprList;
@@ -19,6 +21,7 @@ public interface Evaluator
     public ExecutionContext getExecContext() ;
     
     public Table basicPattern(BasicPattern pattern) ;
+    public Table procedure(Table table, Node procId, ExprList args) ;
     
     public Table join(Table tableLeft, Table tableRight) ;
     public Table leftJoin(Table tableLeft, Table tableRight, ExprList expr) ;
@@ -36,6 +39,7 @@ public interface Evaluator
     public Table reduced(Table table) ;
     public Table slice(Table table, long start, long length) ;
     public Table assign(Table table, VarExprList exprs) ;
+
 }
 
 /*

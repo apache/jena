@@ -11,8 +11,12 @@ import com.hp.hpl.jena.sparql.algebra.op.*;
 public interface OpVisitor
 {
     public void visit(OpBGP opBGP) ;
-    //public void visit(OpPropFunc opPropFunc) ;
     public void visit(OpQuadPattern quadPattern) ;
+    
+    // Separate of the same?
+    //public void visit(OpPropFunc opPropFunc) ;
+    public void visit(OpProcedure opProc) ;
+    
     public void visit(OpJoin opJoin) ;
     public void visit(OpLeftJoin opLeftJoin) ;
     public void visit(OpDiff opDiff) ;

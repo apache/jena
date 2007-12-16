@@ -1,91 +1,41 @@
 /*
- * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.algebra;
+package com.hp.hpl.jena.sparql.proc;
 
-import com.hp.hpl.jena.sparql.algebra.op.*;
+import com.hp.hpl.jena.query.QueryBuildException;
 
+/** Extension factory that instantiates a class each time.
+ * 
+ * @author Andy Seaborne
+ */ 
 
-public class OpVisitorBase implements OpVisitor
+class ProcedureFactoryAuto implements ProcedureFactory
 {
-
-    public void visit(OpBGP opBGP)
-    {}
-
-    public void visit(OpQuadPattern quadPattern)
-    {}
-
-
+    Class extClass ;
     
-    public void visit(OpPropFunc opPropFunc)
-    {}
-
-    public void visit(OpProcedure opProc)
-    {}
+    ProcedureFactoryAuto(Class xClass)
+    {
+        extClass = xClass ;
+    }
     
-    public void visit(OpJoin opJoin)
-    {}
-
-    public void visit(OpLeftJoin opLeftJoin)
-    {}
-
-    public void visit(OpDiff opDiff)
-    {}
-    
-    public void visit(OpUnion opUnion)
-    {}
-
-    public void visit(OpFilter opFilter)
-    {}
-
-    public void visit(OpGraph opGraph)
-    {}
-
-    public void visit(OpService opService)
-    {}
-
-    public void visit(OpDatasetNames dsNames)
-    {}
-
-    public void visit(OpTable opUnit)
-    {}
-
-    public void visit(OpExt opExt)
-    {}
-
-    public void visit(OpNull opNull)
-    {}
-
-    public void visit(OpAssign opAssign)
-    {}
-
-    public void visit(OpList opList)
-    {}
-
-    public void visit(OpOrder opOrder)
-    {}
-
-    public void visit(OpProject opProject)
-    {}
-
-    public void visit(OpDistinct opDistinct)
-    {}
-
-    public void visit(OpReduced opReduced)
-    {}
-
-    public void visit(OpSlice opSlice)
-    {}
-
-    public void visit(OpGroupAgg opGroupAgg)
-    {}
+    public Procedure create(String uri)
+    {
+        try
+        {
+            return (Procedure)extClass.newInstance() ;
+        } catch (Exception e)
+        {
+            throw new QueryBuildException("Can't instantiate procedure for "+uri, e) ;
+        } 
+    }
 }
 
 /*
- * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

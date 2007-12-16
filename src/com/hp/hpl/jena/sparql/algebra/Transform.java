@@ -14,6 +14,7 @@ public interface Transform
     public Op transform(OpBGP opBGP) ;
     public Op transform(OpDatasetNames dsNames) ;
     public Op transform(OpQuadPattern quadPattern) ;
+    public Op transform(OpProcedure opProcedure, Op subOp) ;
     public Op transform(OpNull opNull) ;
     
     public Op transform(OpFilter opFilter, Op subOp) ;

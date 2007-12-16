@@ -16,7 +16,7 @@ public class OpWalker
         op.visit(new Walker(visitor)) ;
     }
     
-    public static class Walker implements OpVisitor
+    private static class Walker implements OpVisitor
     {
         private OpVisitor visitor ;
 
@@ -43,8 +43,11 @@ public class OpWalker
         public void visit(OpBGP opBGP)
         { visit0(opBGP) ; }
         
-        public void visit(OpPropFunc opPropFunc)
-        { visit0(opPropFunc) ; }
+        public void visit(OpQuadPattern quadPattern)
+        { visit0(quadPattern) ; }
+
+        public void visit(OpProcedure opProcedure)
+        { visit1(opProcedure) ; }
 
         public void visit(OpJoin opJoin)
         { visit2(opJoin) ; }
@@ -66,9 +69,6 @@ public class OpWalker
 
         public void visit(OpService opService)
         { visit1(opService) ; }
-
-        public void visit(OpQuadPattern quadPattern)
-        { visit0(quadPattern) ; }
 
         public void visit(OpDatasetNames dsNames)
         { visit0(dsNames) ; }
