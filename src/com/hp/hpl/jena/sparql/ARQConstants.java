@@ -56,14 +56,17 @@ public class ARQConstants
     /** The ARQ property function library URI space */
     public static final String ARQPropertyFunctionLibraryURI = "http://jena.hpl.hp.com/ARQ/property#" ;
     
+    /** The ARQ procedure library URI space */
+    public static final String ARQProcedureLibraryURI = "http://jena.hpl.hp.com/ARQ/procedure#" ;
+    
     /** The ARQ function library */
     public static final String ARQFunctionLibrary = javaClassURIScheme+"com.hp.hpl.jena.sparql.function.library." ;
     
     /** The ARQ property function library */
     public static final String ARQPropertyFunctionLibrary = javaClassURIScheme+"com.hp.hpl.jena.sparql.pfunction.library." ;
 
-    //    /** The ARQ extensions library */
-//    public static final String ARQExtensionLibrary = javaClassURIScheme+"com.hp.hpl.jena.sparql.extension.library." ;
+    /** The ARQ property function library */
+    public static final String ARQProcedureLibrary = javaClassURIScheme+"com.hp.hpl.jena.sparql.procedure.library." ;
 
     /** Common prefixes */
     protected static PrefixMapping globalPrefixMap = new PrefixMappingImpl() ;

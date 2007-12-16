@@ -1,4 +1,4 @@
 #!/bin/bash
 
 find src* -name \*java -print -o -name .svn -prune | \
- xargs perl -i.bak -e 'while(<>) { print unless /\@version/i }'
+ xargs perl -i.bak -e 'while(<>) { print unless /[^"]\@version/i }'

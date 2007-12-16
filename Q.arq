@@ -1,6 +1,7 @@
-PREFIX dc: <http://purl.org/dc/elements/1.1/>
+PREFIX proc:     <http://jena.hpl.hp.com/ARQ/procedure#>
 
-SELECT regex("pattern", ?title) ?book count(?title)
+SELECT *
 {
-     ?book dc:title ?title
+    ?s ?p ?o
+    CALL proc:debug(?s,?p,?o)
 }

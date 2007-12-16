@@ -1,4 +1,4 @@
-(prefix ((: <http://example/>))
-    (assign ((?x (+ ?y 1)))
-      (BGP (triple ?z :p ?y))
-      ))
+(prefix ((proc: <http://jena.hpl.hp.com/ARQ/procedure#>))
+  (proc proc:debug (?s ?p ?o)
+    (BGP (triple ?z :p ?y))
+    ))
