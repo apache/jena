@@ -276,10 +276,10 @@ public class BuilderOp
         public Op make(ItemList list)
         {
             // (proc <foo> (args) form)
-            BuilderBase.checkLength(3, list, "proc") ;
+            BuilderBase.checkLength(4, list, "proc") ;
             Node procId = BuilderNode.buildNode(list.get(1)) ;
             // Arguments
-            ExprList args = BuilderExpr.buildArgs(list, 2) ;
+            ExprList args = BuilderExpr.buildArgs(list.get(2).getList(), 0) ;
             if ( ! procId.isURI() && ! procId.isVariable() )
                 BuilderBase.broken(list, "Procedure name must be a URI") ;
             Op sub  = build(list, 3) ;

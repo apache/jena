@@ -16,7 +16,7 @@ import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.binding.BindingMap;
 import com.hp.hpl.jena.sparql.expr.NodeValue;
 import com.hp.hpl.jena.sparql.pfunction.*;
-import com.hp.hpl.jena.sparql.proc.ProcLib;
+import com.hp.hpl.jena.sparql.procedure.ProcLib;
 
 import com.hp.hpl.jena.query.ARQ;
 

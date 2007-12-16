@@ -4,38 +4,16 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.pfunction;
+package com.hp.hpl.jena.sparql.procedure;
 
-import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.sparql.procedure.library.debug;
 
-import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.sparql.engine.ExecutionContext;
-import com.hp.hpl.jena.sparql.engine.QueryIterator;
-import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.sparql.procedure.ProcLib;
 
-/** Backwards compatibility. 
- * @deprecated Use {@link com.hp.hpl.jena.sparql.procedure.ProcLib} 
- * @author Andy Seaborne
- */
-public class PFLib
+public class StandardProcedures
 {
-    /** @deprecated Use ProcLib.noResults */
-    public static QueryIterator noResults(ExecutionContext execCxt)
+    public static void loadStdDefs(ProcedureRegistry registry)
     {
-        return ProcLib.noResults(execCxt) ;
-    }
-    
-    /** @deprecated Use ProcLib.oneResult */
-    public static QueryIterator oneResult(Binding binding, Var var, Node value, ExecutionContext execCxt)
-    {
-        return ProcLib.oneResult(binding, var, value, execCxt) ;
-    }
-    
-    /** @deprecated Use ProcLib.result */
-    public static QueryIterator result(Binding binding, ExecutionContext execCxt)
-    {
-        return ProcLib.result(binding, execCxt) ;
+        registry.put("debug:proc", debug.class) ;
     }
 }
 

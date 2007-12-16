@@ -23,7 +23,7 @@ import com.hp.hpl.jena.sparql.engine.iterator.QueryIterConcat;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterPlainWrapper;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterYieldN;
 import com.hp.hpl.jena.sparql.pfunction.PFuncSimple;
-import com.hp.hpl.jena.sparql.proc.ProcLib;
+import com.hp.hpl.jena.sparql.procedure.ProcLib;
 import com.hp.hpl.jena.sparql.util.GraphContainerUtils;
 
 /** container - super class of bag/alt/seq - rdfs:member

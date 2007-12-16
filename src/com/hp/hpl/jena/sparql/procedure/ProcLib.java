@@ -4,16 +4,31 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.proc;
+package com.hp.hpl.jena.sparql.procedure;
 
-import com.hp.hpl.jena.sparql.proc.library.DebugProc;
+import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.sparql.core.Var;
+import com.hp.hpl.jena.sparql.engine.ExecutionContext;
+import com.hp.hpl.jena.sparql.engine.QueryIterator;
+import com.hp.hpl.jena.sparql.engine.binding.Binding;
+import com.hp.hpl.jena.sparql.engine.iterator.QueryIterNullIterator;
+import com.hp.hpl.jena.sparql.engine.iterator.QueryIterSingleton;
 
-
-public class StandardProcedures
+public class ProcLib
 {
-    public static void loadStdDefs(ProcedureRegistry registry)
+    public static QueryIterator noResults(ExecutionContext execCxt)
     {
-        registry.put("debug:proc", DebugProc.class) ;
+        return new QueryIterNullIterator(execCxt) ;
+    }
+    
+    public static QueryIterator oneResult(Binding binding, Var var, Node value, ExecutionContext execCxt)
+    {
+        return QueryIterSingleton.create(binding, var, value, execCxt) ;
+    }
+    
+    public static QueryIterator result(Binding binding, ExecutionContext execCxt)
+    {
+        return new QueryIterSingleton(binding, execCxt) ;
     }
 }
 

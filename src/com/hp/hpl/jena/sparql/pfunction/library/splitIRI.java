@@ -16,7 +16,7 @@ import com.hp.hpl.jena.sparql.engine.binding.BindingMap;
 import com.hp.hpl.jena.sparql.pfunction.PropFuncArg;
 import com.hp.hpl.jena.sparql.pfunction.PropFuncArgType;
 import com.hp.hpl.jena.sparql.pfunction.PropertyFunctionBase;
-import com.hp.hpl.jena.sparql.proc.ProcLib;
+import com.hp.hpl.jena.sparql.procedure.ProcLib;
 import com.hp.hpl.jena.sparql.util.ALog;
 import com.hp.hpl.jena.sparql.util.NodeUtils;
 import com.hp.hpl.jena.sparql.util.Utils;

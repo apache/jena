@@ -4,32 +4,27 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.proc;
+package com.hp.hpl.jena.sparql.procedure.library;
 
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.sparql.core.Var;
+import com.hp.hpl.jena.sparql.algebra.op.OpProcedure;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
-import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.sparql.engine.iterator.QueryIterNullIterator;
-import com.hp.hpl.jena.sparql.engine.iterator.QueryIterSingleton;
+import com.hp.hpl.jena.sparql.procedure.Procedure;
 
-public class ProcLib
+public class debug implements Procedure
 {
-    public static QueryIterator noResults(ExecutionContext execCxt)
+
+    public void build(OpProcedure opProc, ExecutionContext execCxt)
     {
-        return new QueryIterNullIterator(execCxt) ;
+        System.out.println("DebugProc.build") ;
     }
-    
-    public static QueryIterator oneResult(Binding binding, Var var, Node value, ExecutionContext execCxt)
+
+    public QueryIterator proc(QueryIterator input, ExecutionContext execCxt)
     {
-        return QueryIterSingleton.create(binding, var, value, execCxt) ;
+        System.out.println("DebugProc.proc") ;
+        return input;
     }
-    
-    public static QueryIterator result(Binding binding, ExecutionContext execCxt)
-    {
-        return new QueryIterSingleton(binding, execCxt) ;
-    }
+
 }
 
 /*

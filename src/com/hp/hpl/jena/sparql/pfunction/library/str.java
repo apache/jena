@@ -15,7 +15,7 @@ import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.expr.nodevalue.NodeFunctions;
 import com.hp.hpl.jena.sparql.pfunction.PFuncSimple;
 import com.hp.hpl.jena.sparql.pfunction.PropFuncArg;
-import com.hp.hpl.jena.sparql.proc.ProcLib;
+import com.hp.hpl.jena.sparql.procedure.ProcLib;
 
 /** Property function to turn an RDF term (but not a blank node) into a string
       <pre>

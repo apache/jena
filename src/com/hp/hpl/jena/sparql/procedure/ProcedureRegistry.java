@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.proc;
+package com.hp.hpl.jena.sparql.procedure;
 
 import java.util.*;
 

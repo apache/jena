@@ -19,7 +19,7 @@ import com.hp.hpl.jena.sparql.engine.binding.BindingMap;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterPlainWrapper;
 import com.hp.hpl.jena.sparql.expr.ExprEvalException;
 import com.hp.hpl.jena.sparql.pfunction.PropFuncArg;
-import com.hp.hpl.jena.sparql.proc.ProcLib;
+import com.hp.hpl.jena.sparql.procedure.ProcLib;
 import com.hp.hpl.jena.sparql.util.GNode;
 import com.hp.hpl.jena.sparql.util.GraphList;
 import com.hp.hpl.jena.sparql.util.NodeFactory;

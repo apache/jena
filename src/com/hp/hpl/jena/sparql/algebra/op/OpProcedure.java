@@ -58,8 +58,7 @@ public class OpProcedure extends Op1
     }
 
     public void visit(OpVisitor opVisitor)
-    {}
-    //{ opVisitor.visit(this) ; }
+    { opVisitor.visit(this) ; }
 
     public Op apply(Transform transform, Op subOp)
     {

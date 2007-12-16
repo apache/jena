@@ -13,7 +13,7 @@ import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.sparql.proc.ProcLib;
+import com.hp.hpl.jena.sparql.procedure.ProcLib;
 import com.hp.hpl.jena.sparql.util.GNode;
 import com.hp.hpl.jena.sparql.util.GraphList;
 import com.hp.hpl.jena.sparql.util.NodeFactory;

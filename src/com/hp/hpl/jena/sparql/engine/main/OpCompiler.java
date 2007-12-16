@@ -23,8 +23,8 @@ import com.hp.hpl.jena.sparql.expr.Expr;
 import com.hp.hpl.jena.sparql.expr.ExprBuild;
 import com.hp.hpl.jena.sparql.expr.ExprList;
 import com.hp.hpl.jena.sparql.expr.ExprWalker;
-import com.hp.hpl.jena.sparql.proc.ProcEval;
-import com.hp.hpl.jena.sparql.proc.Procedure;
+import com.hp.hpl.jena.sparql.procedure.ProcEval;
+import com.hp.hpl.jena.sparql.procedure.Procedure;
 
 import com.hp.hpl.jena.query.QueryExecException;
 
@@ -96,7 +96,7 @@ public class OpCompiler
 
     QueryIterator compile(OpProcedure opProc, QueryIterator input)
     {
-        Procedure procedure = ProcEval.build(opProc.getProcId(), opProc.getArgs()) ;
+        Procedure procedure = ProcEval.build(opProc.getProcId(), opProc.getArgs(), execCxt) ;
         QueryIterator qIter = compileOp(opProc.getSubOp(), input) ;
         return procedure.proc(input, execCxt) ;
     }

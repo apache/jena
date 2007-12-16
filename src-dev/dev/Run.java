@@ -9,6 +9,7 @@ package dev;
 import java.net.MalformedURLException;
 
 import arq.sparql;
+import arq.sse_query;
 
 import com.hp.hpl.jena.iri.IRI;
 import com.hp.hpl.jena.iri.IRIFactory;
@@ -36,7 +37,7 @@ public class Run
 {
     public static void main(String[] argv) throws Exception
     {
-        runQParseARQ() ;
+//        runQParseARQ() ;
         
         //socksProxyHost=socks-server
         System.setProperty("socksProxyHost", "socks-server") ;
@@ -55,7 +56,8 @@ public class Run
 //        execQuery(DIR+"D.rdf", DIR+"Q.rq") ;
        
 //        runQParse() ;
-        execQuery(DIR+"D.ttl", DIR+"Q.arq") ;
+//        execQuery(DIR+"D.ttl", DIR+"Q.arq") ;
+        execQuerySSE(DIR+"D.ttl", DIR+"Q.sse") ;
     }
     
     private static void runParseDateTime(String str)
@@ -66,9 +68,6 @@ public class Run
         if ( ! str.equals(dt.toString())) 
             System.out.println("*** Different") ;
     }
-    
-    
-    
     
     public static void code()
     {
@@ -156,6 +155,20 @@ public class Run
         
     }
     
+    private static void execQuerySSE(String datafile, String queryfile)
+    {
+        //QueryEngineMain.register() ;
+        String a[] = new String[]{
+            //"-v",
+            //"--engine=ref",
+            "--data="+datafile,
+            "-query="+queryfile , 
+        } ;
+        
+        sse_query.main(a) ;
+        System.exit(0) ;
+        
+    }
     
 }
 

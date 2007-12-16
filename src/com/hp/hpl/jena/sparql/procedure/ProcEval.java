@@ -1,24 +1,43 @@
 /*
- * (c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.proc;
+package com.hp.hpl.jena.sparql.procedure;
 
+import com.hp.hpl.jena.graph.Node;
 
-/** Interface for procedure factories.
- * 
- * @author Andy Seaborne
- */ 
+import com.hp.hpl.jena.sparql.engine.ExecutionContext;
+import com.hp.hpl.jena.sparql.engine.QueryIterator;
+import com.hp.hpl.jena.sparql.expr.ExprList;
 
-public interface ProcedureFactory
+public class ProcEval
 {
-    public Procedure create(String uri) ;
+    public static Procedure build(Node procId, ExprList args, ExecutionContext execCxt)
+    {
+        // XXX Is this right?  See E_Function code.
+        ProcedureFactory f = ProcedureRegistry.get(execCxt.getContext()).get(procId.getURI()) ;
+        return f.create(procId.getURI()) ;
+        //throw new ARQNotImplemented("ProcEval.build") ;
+    }
+    
+    /** Evaluate a procedure */
+    public static QueryIterator eval(QueryIterator queryIterator, Procedure proc)
+    {
+        return eval(queryIterator, proc, null) ;
+    }
+
+    /** Evaluate a procedure */
+    public static QueryIterator eval(QueryIterator queryIterator, Procedure proc, ExecutionContext execCxt)
+    {
+        return proc.proc(queryIterator, execCxt) ;
+    }
+
 }
 
 /*
- * (c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
