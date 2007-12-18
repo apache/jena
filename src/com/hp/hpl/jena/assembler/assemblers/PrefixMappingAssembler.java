@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: PrefixMappingAssembler.java,v 1.6 2007-01-02 11:52:55 andy_seaborne Exp $
+ 	$Id: PrefixMappingAssembler.java,v 1.7 2007-12-18 16:01:31 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.assemblers;
@@ -44,7 +44,6 @@ public class PrefixMappingAssembler extends AssemblerBase implements Assembler
             result.setNsPrefix( prefix.getLexicalForm(), namespace.getLexicalForm() );
             }
         }
-
     }
 
 
