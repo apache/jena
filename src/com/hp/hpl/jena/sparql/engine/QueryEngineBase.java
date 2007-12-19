@@ -38,6 +38,7 @@ public abstract class QueryEngineBase implements OpExec
                               Context context)
     {
         this(dataset, input, context) ;
+        this.context.put(ARQConstants.sysCurrentQuery, query) ;
         // Build the Op.
         query.setResultVars() ;
         setOp(createOp(query, gen)) ;
@@ -101,7 +102,11 @@ public abstract class QueryEngineBase implements OpExec
     public QueryIterator eval(Op op, DatasetGraph dsg, Binding binding, Context context) ;
     
     public Op getOp() { return queryOp ; }
-    protected void setOp(Op op) { queryOp = op ; }
+    protected void setOp(Op op)
+    { 
+        queryOp = op ;
+        context.put(ARQConstants.sysCurrentAlgebra, op) ;
+    }
 }
 
 /*

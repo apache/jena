@@ -9,33 +9,53 @@ package com.hp.hpl.jena.sparql.algebra.op;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.OpVisitor;
 import com.hp.hpl.jena.sparql.algebra.Transform;
+import com.hp.hpl.jena.sparql.pfunction.PropFuncArg;
 import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 
 /** Property functions (or any OpBGP replacement)
  *  Execution will be per-engine specific
  * @author Andy Seaborne
  */
-public class OpPropFunc extends Op0
+public class OpPropFunc extends Op0 // implements OpExt???
 {
+    private String uri ;
+    private PropFuncArg args1 ;
+    private PropFuncArg args2 ;
 
+    public OpPropFunc(String uri, PropFuncArg args1 , PropFuncArg args2)
+    {
+        this.uri = uri ;
+        this.args1 = args1 ;
+        this.args2 = args2 ;
+    }
+    
+    public OpBGP getBGP()
+    {
+        return null ;
+    } 
+    
     public Op apply(Transform transform)
     {
+        //transform.transform(this) ;
         return null ;
     }
 
     public Op copy()
     {
-        return null ;
+        return new OpPropFunc(uri, args1, args2) ;
+    }
+
+    // XXX
+    public int hashCode()
+    {
+        return getBGP().hashCode() ;
     }
 
     public boolean equalTo(Op other, NodeIsomorphismMap labelMap)
     {
-        return false ;
-    }
-
-    public int hashCode()
-    {
-        return 0 ;
+        if ( ! ( other instanceof OpPropFunc ) ) return false ;
+        OpPropFunc procFunc = (OpPropFunc)other ;
+        return getBGP().equalTo(procFunc.getBGP(), labelMap) ;
     }
 
     public void visit(OpVisitor opVisitor)
@@ -45,11 +65,6 @@ public class OpPropFunc extends Op0
     {
         return null ;
     }
-
-    public OpBGP getBGP()
-    {
-        return null ;
-    } 
 }
 
 

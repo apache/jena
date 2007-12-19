@@ -105,11 +105,20 @@ public class ARQConstants
     /** Marker for system symbols */
     public static final String systemVarNS = "http://jena.hpl.hp.com/ARQ/system#" ;
     
+    /** Context key for the query for the current query execution 
+     * (may be null if was not created from a query string )
+     * */
+    public static final Symbol sysCurrentQuery  = Symbol.create(systemVarNS+"query") ;
+    
+    /** Context key for the algebra expression of the query execution */
+    public static final Symbol sysCurrentAlgebra  = Symbol.create(systemVarNS+"algebra") ;
+
     /** Context key for the current time of query execution */
     public static final Symbol sysCurrentTime  = Symbol.create(systemVarNS+"now") ;
     
     /** Context key for ARQ version */
     public static final Symbol sysVersionARQ   = Symbol.create(systemVarNS+"version/ARQ") ;
+    
     /** Context key for Jena version */
     public static final Symbol sysVersionJena  = Symbol.create(systemVarNS+"version/Jena") ;
 

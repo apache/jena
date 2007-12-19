@@ -28,7 +28,7 @@ import com.hp.hpl.jena.sparql.util.*;
 
 import com.hp.hpl.jena.query.*;
 
-/** All the SPARQL query result forms made form a graph-level execution object */ 
+/** All the SPARQL query result forms made from a graph-level execution object */ 
 
 public class QueryExecutionBase implements QueryExecution
 {
@@ -46,7 +46,6 @@ public class QueryExecutionBase implements QueryExecution
     private FileManager        fileManager = FileManager.get() ;
     private QuerySolution      initialBinding = null ;      
 
-    // Make this on the way out.
     public QueryExecutionBase(Query query, 
                               Dataset dataset,
                               Context context,

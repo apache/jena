@@ -20,7 +20,7 @@ import com.hp.hpl.jena.sparql.util.PrintSerializableBase;
 import com.hp.hpl.jena.sparql.util.PrintUtils;
 
 /** Class representing an argument (subject or object position) of a property function.
- *  Such an argument can be a graph node (variable, IRI,  
+ *  Such an argument can be a graph node (variable, IRI, literal).
  * 
  *  Blank nodes from the query will be seen as variables.  Most implementations will want to
  *  work with the property function arguments after substitution from the current binding.
