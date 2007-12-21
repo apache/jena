@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: ModelAssembler.java,v 1.8 2007-12-18 16:01:31 chris-dollin Exp $
+ 	$Id: ModelAssembler.java,v 1.9 2007-12-21 12:21:57 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.assemblers;
@@ -21,8 +21,10 @@ public abstract class ModelAssembler extends AssemblerBase implements Assembler
     
     public Object open( Assembler a, Resource root, Mode mode )
         { 
+        Content initial = getInitialContent( a, root );
         Model m = openModel( a, root, mode );
         Content c = getContent( a, root );
+        // addContent( root, m, initial );
         addContent( root, m, c );
         m.setNsPrefixes( getPrefixMapping( a, root ) );
         return m; 
@@ -63,6 +65,18 @@ public abstract class ModelAssembler extends AssemblerBase implements Assembler
     public Model openModel( Resource root, Mode mode )
         { return (Model) open( this, root, mode ); }
 
+    protected Content getInitialContent( Assembler a, Resource root )
+        {
+        if (true) return new Content();
+        Model m = ModelFactory.createDefaultModel();
+        Resource r = m.createResource();
+        Map1 replace = replaceSubjectMap( m, r );
+        m.add( copyProperties( root, replace, JA.initialContent ) );
+        Resource it = completedClone( root, r, m );
+        if (!m.isEmpty()) it.getModel().write( System.err, "N3" );
+        return m.isEmpty() ? new Content() : (Content) a.open( it );
+        }
+    
     protected Content getContent( Assembler a, Resource root )
         {
         final Resource newRoot = oneLevelClone( root );

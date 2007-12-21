@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: JA.java,v 1.13 2007-07-24 15:32:32 chris-dollin Exp $
+ 	$Id: JA.java,v 1.14 2007-12-21 12:22:25 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler;
@@ -110,6 +110,8 @@ public class JA
     public static final Property quotedContent = property( "quotedContent" );
 
     public static final Property contentEncoding = property( "contentEncoding" );
+
+    public static final Property initialContent = property( "initialContent" );
 
     public static final Resource RuleSet = resource( "RuleSet" );
 

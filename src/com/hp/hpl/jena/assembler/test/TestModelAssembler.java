@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestModelAssembler.java,v 1.5 2007-01-02 11:52:50 andy_seaborne Exp $
+ 	$Id: TestModelAssembler.java,v 1.6 2007-12-21 12:22:23 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.test;
@@ -9,13 +9,19 @@ package com.hp.hpl.jena.assembler.test;
 import java.util.*;
 
 import com.hp.hpl.jena.assembler.*;
-import com.hp.hpl.jena.assembler.assemblers.ModelAssembler;
+import com.hp.hpl.jena.assembler.assemblers.*;
 import com.hp.hpl.jena.assembler.exceptions.UnknownStyleException;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.shared.*;
 
 public class TestModelAssembler extends AssemblerTestBase
     {
+    protected static final class FakeModelAssembler extends ModelAssembler
+        {
+        protected Model openModel( Assembler a, Resource root, Mode mode )
+            { return ModelFactory.createDefaultModel(); }
+        }
+
     public TestModelAssembler( String name )
         { super( name ); }
 
@@ -30,14 +36,18 @@ public class TestModelAssembler extends AssemblerTestBase
         assertType( JA.ReificationMode, JA.standard );
         assertType( JA.ReificationMode, JA.convenient );
         }
+
+    public void testContent()
+        {
+//        Resource root = resourceInModel( "x rdf:type ja:DefaultModel; x ja:initialContent c; c ja:quotedContent A; A P B" );
+//        root.getModel().write( System.err, "N3"  );
+//        Model m = (Model) new FakeModelAssembler().open( new ContentAssembler(), root, Mode.ANY );
+//        assertIsoModels( modelWithStatements( "A P B" ), m );
+        }
     
     public void testGetsPrefixMappings()
         { 
-        Assembler a = new ModelAssembler() 
-            {
-            protected Model openModel( Assembler a, Resource root, Mode irrelevant )
-                { return ModelFactory.createDefaultModel(); }
-            };
+        Assembler a = new FakeModelAssembler();
         PrefixMapping wanted = PrefixMapping.Factory.create()
             .setNsPrefix( "my", "urn:secret:42/" )
             .setNsPrefix( "your", "urn:public:17#" );
