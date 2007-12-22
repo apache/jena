@@ -27,6 +27,7 @@ import com.hp.hpl.jena.sparql.core.VarExprList;
 import com.hp.hpl.jena.sparql.expr.E_Aggregator;
 import com.hp.hpl.jena.sparql.expr.Expr;
 import com.hp.hpl.jena.sparql.expr.ExprList;
+import com.hp.hpl.jena.sparql.pfunction.PropFuncArg;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext;
 import com.hp.hpl.jena.sparql.sse.Tags;
 import com.hp.hpl.jena.sparql.util.FmtUtils;
@@ -173,13 +174,38 @@ public class WriterOp
             start(opProc, NoNL) ;
             WriterNode.output(out, opProc.getProcId(), sContext) ;
             out.println();
-            out.incIndent() ;
+            if ( opProc.getArgs() != null )
+            {
+                WriterExpr.output(out, opProc.getArgs(), sContext) ;
+                out.println() ;
+            }
+            else
+            {
+                // Each may be a list or just a single term 
+                outputPF(opProc.getSubjectArgs()) ;
+                out.print(" ") ;
+                outputPF(opProc.getObjectArgs()) ;
+                out.println() ;
+            }
             printOp(opProc.getSubOp()) ;
             finish(opProc) ;
         }
         
+        private void outputPF(PropFuncArg pfArg)
+        {
+            if ( pfArg.isNode() )
+            {
+                WriterNode.output(out, pfArg.getArg(), sContext) ;
+                return ;
+            }
+            WriterNode.output(out, pfArg.getArgList(), sContext) ;
+        }
+        
         public void visit(OpJoin opJoin)
         { visitOp2(opJoin, null) ; }
+
+        public void visit(OpStage opStage)
+        { visitOp2(opStage, null) ; }
 
         public void visit(OpLeftJoin opLeftJoin)
         { visitOp2(opLeftJoin, opLeftJoin.getExprs()) ; }
@@ -314,7 +340,7 @@ public class WriterOp
         
         
         // Neater would be a pair of explicit SortCondition formatter
-        public void formatSortCondition(SortCondition sc)
+        private void formatSortCondition(SortCondition sc)
         {
             boolean close = true ;
             String tag = null ;

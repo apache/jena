@@ -10,26 +10,29 @@ import com.hp.hpl.jena.sparql.algebra.op.*;
 
 public interface OpVisitor
 {
+    // Op0
     public void visit(OpBGP opBGP) ;
     public void visit(OpQuadPattern quadPattern) ;
+    public void visit(OpTable opTable) ;
+    public void visit(OpNull opNull) ;
     
-    // Separate of the same?
-    //public void visit(OpPropFunc opPropFunc) ;
+    //Op1
     public void visit(OpProcedure opProc) ;
-    
-    public void visit(OpJoin opJoin) ;
-    public void visit(OpLeftJoin opLeftJoin) ;
-    public void visit(OpDiff opDiff) ;
-    public void visit(OpUnion opUnion) ;
     public void visit(OpFilter opFilter) ;
     public void visit(OpGraph opGraph) ;
     public void visit(OpService opService) ;
     public void visit(OpDatasetNames dsNames) ;
     
-    public void visit(OpTable opTable) ;
-    public void visit(OpExt opExt) ;
-    public void visit(OpNull opNull) ;
+    // Op2
+    public void visit(OpJoin opJoin) ;
+    public void visit(OpStage opStage) ;
+    public void visit(OpLeftJoin opLeftJoin) ;
+    public void visit(OpDiff opDiff) ;
+    public void visit(OpUnion opUnion) ;
     
+    public void visit(OpExt opExt) ;
+
+    // OpModifier
     public void visit(OpList opList) ;
     public void visit(OpOrder opOrder) ;
     public void visit(OpProject opProject) ;
@@ -37,8 +40,8 @@ public interface OpVisitor
     public void visit(OpDistinct opDistinct) ;
     public void visit(OpSlice opSlice) ;
     public void visit(OpAssign opAssign) ;
+
     public void visit(OpGroupAgg opGroupAgg) ;
-    
 }
 
 /*

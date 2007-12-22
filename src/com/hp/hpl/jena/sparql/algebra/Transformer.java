@@ -85,12 +85,12 @@ public class Transformer
         public void visit(OpProcedure opProc)
         { visit1(opProc) ; }
         
-        public void visit(OpPropFunc op)
-        { visit0(op); }
-        
         public void visit(OpJoin opJoin)
         { visit2(opJoin) ; }
 
+        public void visit(OpStage opStage)
+        { visit2(opStage) ; }
+        
         public void visit(OpLeftJoin opLeftJoin)
         { visit2(opLeftJoin) ; }
 

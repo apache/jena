@@ -40,8 +40,10 @@ public interface Procedure
      * @return QueryIterator
      */
     public QueryIterator proc(QueryIterator input, ExecutionContext execCxt) ;
-
-    //public QueryIterator proc(Binding input, ExecutionContext execCxt) ;
+    // XXX Add args?
+    // getNumSubjectArgs
+    // getNumObjectArgs
+    
 }
 
 /*

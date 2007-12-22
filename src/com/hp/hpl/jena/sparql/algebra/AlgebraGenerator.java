@@ -216,8 +216,15 @@ public class AlgebraGenerator
         return current ;
     }
     
+    public static boolean AlgebraStaging = false ;
     protected Op compileBasicPattern(BasicPattern pattern)
     {
+        if ( AlgebraStaging )
+        {
+            // Sort out property functions.
+            Op op = PropertyFunctionGenerator.compile(pattern, context) ;
+            return op ;
+        }
         return new OpBGP(pattern) ;
     }
     

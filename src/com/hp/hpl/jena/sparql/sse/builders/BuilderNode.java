@@ -26,6 +26,25 @@ public class BuilderNode
         return item.getNode() ;
     }
     
+    public static List buildNodeList(Item item)
+    {
+        BuilderBase.checkList(item) ;
+        ItemList list = item.getList() ;
+        return buildNodeList(list) ;
+    }
+    
+    public static List buildNodeList(ItemList list)
+    {
+        List nodes = new ArrayList() ;
+        for ( Iterator iter = list.iterator() ; iter.hasNext(); )
+        {
+            Item x = (Item)iter.next() ;
+            Node v = buildNode(x) ;
+            nodes.add(v) ;
+        }
+        return nodes ;
+    }
+    
     public static Var buildVar(Item item)
     {
         if ( ! item.isNode() || !Var.isVar(item.getNode()) )

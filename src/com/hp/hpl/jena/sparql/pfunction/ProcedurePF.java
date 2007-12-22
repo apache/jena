@@ -1,22 +1,57 @@
 /*
- * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.sse.builders;
+package com.hp.hpl.jena.sparql.pfunction;
 
-import com.hp.hpl.jena.sparql.sse.ItemException;
+import com.hp.hpl.jena.graph.Node;
 
-public class BuildException extends ItemException
+import com.hp.hpl.jena.sparql.engine.ExecutionContext;
+import com.hp.hpl.jena.sparql.engine.QueryIterator;
+import com.hp.hpl.jena.sparql.expr.ExprList;
+import com.hp.hpl.jena.sparql.procedure.Procedure;
+
+/** Adapter between property functions and server procedures
+ *  A property function is parsed into a procedure of the form:
+ *    (N, M, args1, args2)
+ *  where N is the length of the list of subject arguments, and -1 for a non-list node,
+ *  and M is similar for the object arguments, again with -1 for a non-list node.
+ *  When called, this wrapper reconstructs the usual property function calling conventions.
+ *  
+ *  This classs extends ProcedureBase - it leaves any evaluation the propery
+ *  function implemenation hierarchy.
+ *  
+ * @author Andy Seaborne
+ */ 
+public class ProcedurePF implements Procedure
 {
-//        public BuildException(Throwable cause) { super(cause) ; }
-//        public BuildException() { super() ; }
-        public BuildException (String msg) { super(msg) ; }
-        public BuildException (String msg, Throwable cause) { super(msg, cause) ; }
+
+    private PropertyFunction propFunc ;
+
+    public ProcedurePF(PropertyFunction propFunc)
+    {
+        this.propFunc = propFunc ;
     }
+    
+    // Procedure interface
+ 
+    public void build(Node procId, ExprList args, ExecutionContext execCxt)
+    {}
+
+    public QueryIterator proc(QueryIterator input, ExecutionContext execCxt)
+    {
+        //propFunc.exec(input, argSubject, predicate, argObject, execCxt) ;
+        return null ;
+    }
+
+    
+    
+}
+
 /*
- * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

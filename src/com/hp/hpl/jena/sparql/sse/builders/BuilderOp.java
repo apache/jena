@@ -25,6 +25,7 @@ import com.hp.hpl.jena.sparql.core.VarExprList;
 import com.hp.hpl.jena.sparql.expr.E_Aggregator;
 import com.hp.hpl.jena.sparql.expr.Expr;
 import com.hp.hpl.jena.sparql.expr.ExprList;
+import com.hp.hpl.jena.sparql.pfunction.PropFuncArg;
 import com.hp.hpl.jena.sparql.sse.Item;
 import com.hp.hpl.jena.sparql.sse.ItemList;
 import com.hp.hpl.jena.sparql.sse.Tags;
@@ -55,6 +56,7 @@ public class BuilderOp
         dispatch.put(Tags.tagService, buildService) ;
         dispatch.put(Tags.tagProc, buildProcedure) ;
         dispatch.put(Tags.tagJoin, buildJoin) ;
+        dispatch.put(Tags.tagStage, buildStage) ;
         dispatch.put(Tags.tagLeftJoin, buildLeftJoin) ;
         dispatch.put(Tags.tagDiff, buildDiff) ;
         dispatch.put(Tags.tagUnion, buildUnion) ;
@@ -208,6 +210,18 @@ public class BuilderOp
         }
     } ;
 
+    final protected Build buildStage = new Build()
+    {
+        public Op make(ItemList list)
+        {
+            BuilderBase.checkLength(3, list, "Stage") ;
+            Op left = build(list, 1) ;
+            Op right  = build(list, 2) ;
+            Op op = OpStage.create(left, right) ;
+            return op ;
+        }
+    } ;
+    
     final protected Build buildLeftJoin = new Build()
     {
         public Op make(ItemList list)
@@ -276,16 +290,41 @@ public class BuilderOp
         public Op make(ItemList list)
         {
             // (proc <foo> (args) form)
-            BuilderBase.checkLength(4, list, "proc") ;
+            BuilderBase.checkLength(4, 5, list, "proc") ;
             Node procId = BuilderNode.buildNode(list.get(1)) ;
-            // Arguments
-            ExprList args = BuilderExpr.buildExprListUntagged(list.get(2).getList()) ;
             if ( ! procId.isURI() && ! procId.isVariable() )
                 BuilderBase.broken(list, "Procedure name must be a URI") ;
-            Op sub  = build(list, 3) ;
-            return new OpProcedure(procId, args, sub) ;
+
+            // Arguments
+            // Either a direct form (1 arg list) or a propertry function (2 arg lists)
+            if ( list.size() == 5 )
+            {
+                // Arg list vs single term.
+                PropFuncArg subjArg = read(list.get(2)) ;
+                PropFuncArg objArg = read(list.get(3)) ;
+                Op sub  = build(list, 4) ;
+                return new OpProcedure(procId, subjArg, objArg, sub) ;
+            }
+            else
+            {
+                ExprList args = BuilderExpr.buildExprList(list.get(2)) ;
+                Op sub  = build(list, 3) ;
+                return new OpProcedure(procId, args, sub) ;
+            }
         }
+
     } ;
+
+
+    static final private PropFuncArg read(Item item)
+    {
+        if ( item.isNode() )
+            return new PropFuncArg(BuilderNode.buildNode(item)) ;
+        if ( item.isList() )
+            return new PropFuncArg(BuilderNode.buildNodeList(item)) ;
+        BuilderBase.broken(item, "Expected a property function argument (node or list of nodes") ;
+        return null ;
+    }
 
     final protected Build buildToList = new Build()
     {

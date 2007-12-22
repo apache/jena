@@ -45,7 +45,6 @@ public class OpPropFunc extends Op0 // implements OpExt???
         return new OpPropFunc(uri, args1, args2) ;
     }
 
-    // XXX
     public int hashCode()
     {
         return getBGP().hashCode() ;

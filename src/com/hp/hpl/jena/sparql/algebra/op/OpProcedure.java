@@ -12,18 +12,33 @@ import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.OpVisitor;
 import com.hp.hpl.jena.sparql.algebra.Transform;
 import com.hp.hpl.jena.sparql.expr.ExprList;
+import com.hp.hpl.jena.sparql.pfunction.PropFuncArg;
 import com.hp.hpl.jena.sparql.sse.Tags;
 import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 
 /** General procedure in algebra evaluation (a stored procedure facility)
  *  Syntax (ARQ extension): CALL <iri>(?x, ?y+3)
+ *  
+ *  Also, these are the algebra form for property functions.  As a property function,
+ *  it has two argment lists, one for subject, one for objects.
  * 
  * @author Andy Seaborne
  */
 public class OpProcedure extends Op1
 {
     private Node procId ;
-    private ExprList args ;
+    private ExprList args = null ;
+    private PropFuncArg subjectArgs = null ;
+    private PropFuncArg objectArgs = null ;
+
+    // Property function variation.
+    public OpProcedure(Node procId, PropFuncArg subjectArgs, PropFuncArg objectArgs, Op op)
+    {
+        super(op) ;   
+        this.subjectArgs = subjectArgs ;
+        this.objectArgs = objectArgs ;
+        this.procId = procId ;
+    }
 
     public OpProcedure(Node procId, ExprList args, Op op)
     {
@@ -48,7 +63,17 @@ public class OpProcedure extends Op1
         if ( ! (other instanceof OpProcedure) ) return false ;
         OpProcedure proc = (OpProcedure)other ;
         if ( ! procId.equals(proc.procId) ) return false ;
-        if ( ! args.equals(proc.args) ) return false ;
+        if ( args != null )
+        {
+            if ( args.equals(proc.args) ) return false ;
+        }
+        else
+        {
+            if ( ! subjectArgs.equals(proc.subjectArgs) ) return false ;
+            if ( ! objectArgs.equals(proc.objectArgs) ) return false ;
+        }
+        
+        
         return getSubOp().equalTo(proc.getSubOp(), labelMap) ;
     }
 
@@ -80,6 +105,15 @@ public class OpProcedure extends Op1
         return args ;
     }
 
+    public PropFuncArg getSubjectArgs()
+    {
+        return subjectArgs ;
+    }
+    
+    public PropFuncArg getObjectArgs()
+    {
+        return objectArgs ;
+    }
 }
 
 /*

@@ -52,6 +52,9 @@ public class OpWalker
         public void visit(OpJoin opJoin)
         { visit2(opJoin) ; }
 
+        public void visit(OpStage opStage)
+        { visit2(opStage) ; }
+        
         public void visit(OpLeftJoin opLeftJoin)
         { visit2(opLeftJoin) ; }
 

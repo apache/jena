@@ -26,7 +26,7 @@ import com.hp.hpl.jena.sparql.sse.Tags;
 
 public class BuilderExpr
 {
-    // Build an expr list when they may also be a singe expression. 
+    // Build an expr list when they may also be a single expression. 
     public static ExprList buildExprOrExprList(Item item)
     {
         if ( item.isTagged(Tags.tagExprList) )
@@ -39,7 +39,7 @@ public class BuilderExpr
     public static ExprList buildExprList(Item item)
     {
         if ( ! item.isTagged(Tags.tagExprList) )
-            BuilderBase.broken(item, "Not Tags.tagged exprlist") ;
+            BuilderBase.broken(item, "Not tagged exprlist") ;
         ItemList list = item.getList() ;
         list = list.cdr();
         ExprList exprList = new ExprList() ;

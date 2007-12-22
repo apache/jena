@@ -4,17 +4,47 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.sse.builders;
+package com.hp.hpl.jena.sparql.algebra.op;
 
-import com.hp.hpl.jena.sparql.sse.ItemException;
+import com.hp.hpl.jena.sparql.algebra.Op;
+import com.hp.hpl.jena.sparql.algebra.OpVisitor;
+import com.hp.hpl.jena.sparql.algebra.Transform;
+import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 
-public class BuildException extends ItemException
+/** A "stage" is a join-like operation where it is know that the 
+ * the output of one step can be fed into the input of the next 
+ * (that is, no scoping issues arise). 
+ * 
+ * @author Andy Seaborne
+ */
+
+public class OpStage extends Op2
 {
-//        public BuildException(Throwable cause) { super(cause) ; }
-//        public BuildException() { super() ; }
-        public BuildException (String msg) { super(msg) ; }
-        public BuildException (String msg, Throwable cause) { super(msg, cause) ; }
+    public static Op create(Op left, Op right)
+    { 
+        // If left already an OpStage ... maybe?
+        return new OpStage(left, right) ;
     }
+    
+    private OpStage(Op left, Op right) { super(left, right) ; }
+    
+    public String getName() { return "stage" ; }
+
+    public Op apply(Transform transform, Op left, Op right)
+    { return transform.transform(this, left, right) ; }
+    
+    public void visit(OpVisitor opVisitor) { opVisitor.visit(this) ; }
+    
+    public Op copy(Op newLeft, Op newRight)
+    { return new OpStage(newLeft, newRight) ; }
+    
+    public boolean equalTo(Op op2, NodeIsomorphismMap labelMap)
+    {
+        if ( ! ( op2 instanceof OpStage) ) return false ;
+        return super.sameAs((Op2)op2, labelMap) ;
+    }
+}
+
 /*
  * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.

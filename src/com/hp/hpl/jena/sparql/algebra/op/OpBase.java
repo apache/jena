@@ -54,6 +54,7 @@ public abstract class OpBase extends PrintSerializableBase implements Op
     static final int HashReduced                = 0xB5 ;
     static final int HashToList                 = 0xB6 ;
     static final int HashNull                   = 0xB7 ;
+    static final int HashSequence               = 0xB8 ;
 
 
 }

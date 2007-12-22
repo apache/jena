@@ -17,16 +17,14 @@ public class OpVisitorBase implements OpVisitor
 
     public void visit(OpQuadPattern quadPattern)
     {}
-
-
     
-    public void visit(OpPropFunc opPropFunc)
-    {}
-
     public void visit(OpProcedure opProc)
     {}
     
     public void visit(OpJoin opJoin)
+    {}
+
+    public void visit(OpStage opStage)
     {}
 
     public void visit(OpLeftJoin opLeftJoin)

@@ -1,7 +1,10 @@
-PREFIX  xsd:    <http://www.w3.org/2001/XMLSchema#>
+PREFIX apf:     <http://jena.hpl.hp.com/ARQ/property#>
+
+
 SELECT  ?s ?d
-WHERE
-   { ?s  ?p  ?d .
-    FILTER ( ?d > "2005-01-01"^^xsd:date )
-   }
-LIMIT   10
+{
+    ?s ?p ?o .
+    ?s apf:splitIRI (?x ?y) .
+    ?s1 ?p1 ?o1 .
+    FILTER ( isIRI(?o) )
+}

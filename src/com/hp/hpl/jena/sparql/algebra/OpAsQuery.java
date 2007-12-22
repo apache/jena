@@ -92,6 +92,11 @@ public class OpAsQuery
             throw new ARQNotImplemented("OpProcedure") ;
         }
         
+        public void visit(OpStage opStage)
+        {
+            throw new ARQNotImplemented("OpStage") ;
+        }
+        
         private ElementTriplesBlock process(BasicPattern pattern)
         {
             ElementTriplesBlock e = new ElementTriplesBlock() ;

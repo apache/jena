@@ -24,11 +24,7 @@ import com.hp.hpl.jena.query.larq.IndexLARQ;
 import com.hp.hpl.jena.query.larq.LARQ;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.sparql.algebra.Algebra;
-import com.hp.hpl.jena.sparql.algebra.Op;
-import com.hp.hpl.jena.sparql.algebra.OpAsQuery;
-import com.hp.hpl.jena.sparql.algebra.OpVisitorBase;
-import com.hp.hpl.jena.sparql.algebra.OpWalker;
+import com.hp.hpl.jena.sparql.algebra.*;
 import com.hp.hpl.jena.sparql.algebra.op.OpFilter;
 import com.hp.hpl.jena.sparql.util.DateTimeStruct;
 import com.hp.hpl.jena.util.FileManager;
@@ -37,10 +33,8 @@ public class Run
 {
     public static void main(String[] argv) throws Exception
     {
-//        runQParseARQ() ;
-        
         //socksProxyHost=socks-server
-        System.setProperty("socksProxyHost", "socks-server") ;
+        if ( false ) System.setProperty("socksProxyHost", "socks-server") ;
         if ( false )
         {
             Query query = QueryFactory.read("Q.rq") ;
@@ -52,8 +46,12 @@ public class Run
         }
 
         String DIR = "" ;
-//        ARQ.getContext().set(ARQ.filterPlacement, false) ;
-//        execQuery(DIR+"D.rdf", DIR+"Q.rq") ;
+
+        AlgebraGenerator.AlgebraStaging = true ;
+        
+        //runQParse() ;
+        //        ARQ.getContext().set(ARQ.filterPlacement, false) ;
+        execQuery(DIR+"D.rdf", DIR+"Q.rq") ;
        
 //        runQParse() ;
 //        execQuery(DIR+"D.ttl", DIR+"Q.arq") ;
@@ -105,7 +103,7 @@ public class Run
 
     private static void runQParse()
     {
-        String []a = { "--file=Q.rq", "--print=op", "--print=query" } ;
+        String []a = { "--file=Q.rq", "--print=op" } ;
         arq.qparse.main(a) ;
         System.exit(0) ;
     }

@@ -22,8 +22,6 @@ public abstract class ProcedureBase implements Procedure
     private Node procId ;
     private ExprList args ;
 
-
-    
     public void build(Node procId, ExprList args, ExecutionContext execCxt)
     {
         this.procId = procId ;

@@ -16,6 +16,7 @@ import com.hp.hpl.jena.sparql.lang.Parser;
 import com.hp.hpl.jena.sparql.sse.SSE;
 import com.hp.hpl.jena.sparql.sse.SSEParseException;
 import com.hp.hpl.jena.sparql.sse.WriterSSE;
+import com.hp.hpl.jena.sparql.sse.builders.BuildException;
 
 public class QueryUtils
 {
@@ -41,7 +42,13 @@ public class QueryUtils
         } catch (SSEParseException ex)
         { 
             System.err.println(str);
-            throw ex ; }      // Breakpoint
+            throw ex ; 
+        }      // Breakpoint
+        catch (BuildException ex)
+        {
+            System.err.println(str);
+            throw ex ; 
+        }
     }
     
     public static void checkParse(Query query)

@@ -13,11 +13,10 @@ import java.util.List;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
+import com.hp.hpl.jena.sparql.expr.Expr;
+import com.hp.hpl.jena.sparql.expr.ExprList;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext;
-import com.hp.hpl.jena.sparql.util.FmtUtils;
-import com.hp.hpl.jena.sparql.util.IndentedWriter;
-import com.hp.hpl.jena.sparql.util.PrintSerializableBase;
-import com.hp.hpl.jena.sparql.util.PrintUtils;
+import com.hp.hpl.jena.sparql.util.*;
 
 /** Class representing an argument (subject or object position) of a property function.
  *  Such an argument can be a graph node (variable, IRI, literal).
@@ -58,8 +57,45 @@ public class PropFuncArg extends PrintSerializableBase
         return (Node)argList.get(index) ;
     }
     
+    public int hashCode()
+    {
+        if ( isNode() ) return arg.hashCode() ;
+        return argList.hashCode() ;
+    }
+    
+    public boolean equals(Object other)
+    {
+        if ( ! ( other instanceof PropFuncArg ) ) return false ;
+        PropFuncArg pfArg = (PropFuncArg)other ;
+        if ( isNode() )
+            return arg.equals(pfArg.arg) ;
+        return argList.equals(pfArg.argList) ;
+        
+    }
+    
     public boolean isList()             { return argList != null  ; }
     public boolean isNode()             { return arg != null  ; }
+    
+    public ExprList asExprList(PropFuncArg pfArg)
+    {
+        ExprList exprList = new ExprList() ;
+        if ( pfArg.isNode() )
+        {
+            Node n = pfArg.getArg() ;
+            Expr expr = ExprUtils.nodeToExpr(n) ;
+            exprList.add(expr) ;
+            return exprList ;
+        }
+        
+        for ( Iterator iter = pfArg.getArgList().iterator() ; iter.hasNext() ; )
+        {
+            Node n = (Node)iter.next() ;
+            Expr expr = ExprUtils.nodeToExpr(n) ;
+            exprList.add(expr) ;
+        }
+        return exprList ;
+    }
+
     
     public void output(IndentedWriter out, final SerializationContext sCxt)
     {

@@ -108,25 +108,35 @@ public class OpCompiler
         
         // Look one level in for any filters with out-of-scope variables.
         boolean canDoLinear = JoinClassifier.isLinear(opJoin) ;
-        
-        QueryIterator left = compileOp(opJoin.getLeft(), input) ;
-        
+
         if ( canDoLinear )
-        {
-            // Pass left into right for streamed evaluation
-            QueryIterator right = compileOp(opJoin.getRight(), left) ;
-            return right ;
-        }
+            // Streamed evaluation
+            return stream(opJoin.getLeft(), opJoin.getRight(), input) ;
         
         // Input may be null?
         // Can't do purely indexed (a filter referencing a variable out of scope is in the way)
         // To consider: partial substitution for improved performance (but does it occur for real?)
+        
+        QueryIterator left = compileOp(opJoin.getLeft(), input) ;
         QueryIterator right = compileOp(opJoin.getRight(), root()) ;
         QueryIterator qIter = new QueryIterJoin(left, right, execCxt) ;
         return qIter ;
         // Worth doing anything about join(join(..))?  Probably not.
     }
 
+    QueryIterator compile(OpStage opStage, QueryIterator input)
+    {
+        return stream(opStage.getLeft(), opStage.getRight(), input) ;
+    }
+    
+    // Pass iterator from left directly into the right.
+    private final QueryIterator stream(Op opLeft, Op opRight, QueryIterator input)
+    {
+        QueryIterator left = compileOp(opLeft, input) ;
+        QueryIterator right = compileOp(opRight, left) ;
+        return right ;
+    }
+    
     QueryIterator compile(OpLeftJoin opLeftJoin, QueryIterator input)
     {
         ExprList exprs = opLeftJoin.getExprs() ;

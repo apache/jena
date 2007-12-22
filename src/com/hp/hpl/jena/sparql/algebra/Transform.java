@@ -10,24 +10,30 @@ import com.hp.hpl.jena.sparql.algebra.op.*;
 
 public interface Transform
 {
+    // Op0
     public Op transform(OpTable opUnit) ;
     public Op transform(OpBGP opBGP) ;
     public Op transform(OpDatasetNames dsNames) ;
     public Op transform(OpQuadPattern quadPattern) ;
-    public Op transform(OpProcedure opProcedure, Op subOp) ;
     public Op transform(OpNull opNull) ;
     
+    // Op1
     public Op transform(OpFilter opFilter, Op subOp) ;
     public Op transform(OpGraph opGraph, Op subOp) ;
     public Op transform(OpService opService, Op subOp) ;
+    public Op transform(OpProcedure opProcedure, Op subOp) ;
 
+    // Op2
     public Op transform(OpJoin opJoin, Op left, Op right) ;
+    public Op transform(OpStage opStage, Op left, Op right) ;
     public Op transform(OpLeftJoin opLeftJoin, Op left, Op right) ;
     public Op transform(OpDiff opDiff, Op left, Op right) ;
     public Op transform(OpUnion opUnion, Op left, Op right) ;
     
+    // Extensions
     public Op transform(OpExt opExt) ;
     
+    // OpModifier
     public Op transform(OpList opList, Op subOp) ;
     public Op transform(OpOrder opOrder, Op subOp) ;
     public Op transform(OpProject opProject, Op subOp) ;
@@ -35,6 +41,7 @@ public interface Transform
     public Op transform(OpDistinct opDistinct, Op subOp) ;
     public Op transform(OpReduced opReduced, Op subOp) ;
     public Op transform(OpSlice opSlice, Op subOp) ;
+    
     public Op transform(OpGroupAgg opGroupAgg, Op subOp) ;
 }
 
