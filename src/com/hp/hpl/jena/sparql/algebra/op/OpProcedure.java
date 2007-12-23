@@ -79,7 +79,17 @@ public class OpProcedure extends Op1
 
     public int hashCode()
     {
-        return procId.hashCode() ^ args.hashCode() ^ getSubOp().hashCode() ;
+        int x = procId.hashCode() ;
+        if ( args != null )
+            x ^= args.hashCode() ;
+        else
+        {
+            x ^= subjectArgs.hashCode() ;
+            x ^= objectArgs.hashCode() ;
+        }
+        
+        x ^= getSubOp().hashCode() ;
+        return x ;
     }
 
     public void visit(OpVisitor opVisitor)
@@ -100,6 +110,11 @@ public class OpProcedure extends Op1
         return procId ;
     }
 
+    public String getURI()
+    {
+        return procId.getURI() ;
+    }
+    
     public ExprList getArgs()
     {
         return args ;

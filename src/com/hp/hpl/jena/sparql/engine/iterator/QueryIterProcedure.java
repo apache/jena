@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
@@ -8,74 +8,59 @@ package com.hp.hpl.jena.sparql.engine.iterator;
 
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
-import com.hp.hpl.jena.sparql.serializer.SerializationContext;
-import com.hp.hpl.jena.sparql.util.IndentedWriter;
-import com.hp.hpl.jena.sparql.util.Utils;
+import com.hp.hpl.jena.sparql.engine.binding.Binding;
+import com.hp.hpl.jena.sparql.procedure.Procedure;
 
-/**
- * This class supports a QueryIter that takes one QueryIterator as input.
- * 
+/** QueryIterator for a procedure.  Delays first touch until first call because
+ *  first touch may cause work to be done.
+ *  
+ *  Assumes .build already called.
+ *  
  * @author Andy Seaborne
  */
-public abstract class QueryIter1 extends QueryIter
+
+public class QueryIterProcedure extends QueryIter1
 {
-    private QueryIterator input ; 
+    private Procedure proc ;
+    private boolean initialized = false ;
+    private QueryIterator procIter = null ;
     
-    public QueryIter1(QueryIterator input, ExecutionContext execCxt)
-    { 
-        super(execCxt) ;
-        this.input = input ;
-    }
-    
-    protected QueryIterator getInput() { return input ; }
-    
-    protected final
-    void closeIterator()
+    public QueryIterProcedure(QueryIterator input, Procedure proc, ExecutionContext execCxt)
     {
-        releaseResources() ;
-        if ( input != null )
-            input.close() ;
-        // Don't clear - leave for printing.
-        //input = null ;
+        super(input, execCxt) ;
+        this.proc = proc ;
     }
-    
-    protected abstract void releaseResources() ;
-    
-    public static void releaseResources(QueryIterator qIter)
+
+    private void init()
     {
-        if ( qIter instanceof QueryIter1 )
+        if ( ! initialized )
         {
-            QueryIter1 qIter1 = (QueryIter1)qIter ;
-            qIter1.releaseResources() ;
+            procIter = proc.proc(getInput(), getExecContext()) ;
+            initialized = true ;
         }
     }
-    
-    // Do better
-    public void output(IndentedWriter out, SerializationContext sCxt)
-    {
-        // Linear form.
-        getInput().output(out, sCxt) ;
-        out.ensureStartOfLine() ;
-        details(out, sCxt) ;
-        out.ensureStartOfLine() ;
 
-//        details(out, sCxt) ;
-//        out.ensureStartOfLine() ;
-//        out.incIndent() ;
-//        getInput().output(out, sCxt) ;
-//        out.decIndent() ;
-//        out.ensureStartOfLine() ;
+    protected void releaseResources()
+    { 
+        init() ;    // Ensure initialized even if immediately closed.
+        procIter.close(); 
     }
 
-    protected void details(IndentedWriter out, SerializationContext sCxt)
+    protected boolean hasNextBinding()
     {
-        out.println(Utils.className(this)) ;
+        init() ;
+        return procIter.hasNext() ;
     }
 
+    protected Binding moveToNextBinding()
+    {
+        init( ) ;
+        return procIter.nextBinding() ;
+    }
 }
 
 /*
- * (c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

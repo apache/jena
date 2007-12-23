@@ -15,13 +15,17 @@ import com.hp.hpl.jena.sparql.core.BasicPattern;
 import com.hp.hpl.jena.sparql.core.VarExprList;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.expr.ExprList;
+import com.hp.hpl.jena.sparql.pfunction.PropFuncArg;
 
 public interface Evaluator
 {
     public ExecutionContext getExecContext() ;
     
     public Table basicPattern(BasicPattern pattern) ;
+    
+    // Two forms - depending on whether a property function or a procedure.
     public Table procedure(Table table, Node procId, ExprList args) ;
+    public Table procedure(Table table, Node procId, PropFuncArg subjArgs, PropFuncArg objArgs) ;
     
     public Table join(Table tableLeft, Table tableRight) ;
     public Table leftJoin(Table tableLeft, Table tableRight, ExprList expr) ;

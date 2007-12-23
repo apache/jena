@@ -49,9 +49,9 @@ public class Run
 
         AlgebraGenerator.AlgebraStaging = true ;
         
-        //runQParse() ;
+        runQParse() ;
         //        ARQ.getContext().set(ARQ.filterPlacement, false) ;
-        execQuery(DIR+"D.rdf", DIR+"Q.rq") ;
+        execQuery(DIR+"D.ttl", DIR+"Q.rq") ;
        
 //        runQParse() ;
 //        execQuery(DIR+"D.ttl", DIR+"Q.arq") ;

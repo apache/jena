@@ -8,26 +8,37 @@ package com.hp.hpl.jena.sparql.procedure;
 
 import com.hp.hpl.jena.graph.Node;
 
+import com.hp.hpl.jena.sparql.algebra.op.OpProcedure;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.expr.ExprList;
+import com.hp.hpl.jena.sparql.pfunction.*;
 import com.hp.hpl.jena.sparql.util.Context;
 
 public class ProcEval
 {
+    public static Procedure build(OpProcedure opProc, ExecutionContext execCxt)
+    {
+        if ( opProc.getArgs() != null )
+            return build(opProc.getProcId(), opProc.getArgs(), execCxt) ;
+        else
+            return build(opProc.getProcId(), opProc.getSubjectArgs(), opProc.getObjectArgs(), execCxt) ;
+    }
+    
+    // ----
+    
     public static Procedure build(Node procId, ExprList args, ExecutionContext execCxt)
     {
         Context context = execCxt.getContext() ;
-        ProcedureRegistry reg = chooseRegistry(context) ;
+        ProcedureRegistry reg = chooseProcedureRegistry(context) ;
         ProcedureFactory f = reg.get(procId.getURI()) ;
         Procedure proc = f.create(procId.getURI()) ;
         args.prepareExprs(context) ;        // Allow args to build as well.
         proc.build(procId, args, execCxt) ;
         return proc ;
-        //throw new ARQNotImplemented("ProcEval.build") ;
     }
     
-    private static ProcedureRegistry chooseRegistry(Context context)
+    private static ProcedureRegistry chooseProcedureRegistry(Context context)
     {
         ProcedureRegistry registry = ProcedureRegistry.get(context) ;
         // Else global
@@ -36,12 +47,36 @@ public class ProcEval
         return registry ;
     }
     
-    /** Evaluate a procedure */
-    public static QueryIterator eval(QueryIterator queryIterator, Procedure proc)
+    // ----
+    
+    public static Procedure build(Node procId, PropFuncArg subjArg, PropFuncArg objArg, ExecutionContext execCxt)
     {
-        return eval(queryIterator, proc, null) ;
+        Context context = execCxt.getContext() ;
+        PropertyFunctionRegistry reg = choosePropFuncRegistry(context) ;
+        PropertyFunctionFactory f = reg.get(procId.getURI()) ;
+        PropertyFunction pf = f.create(procId.getURI()) ;
+        pf.build(subjArg, procId, objArg, execCxt) ;
+        //Make wrapper
+        return new ProcedurePF(pf, subjArg, procId, objArg) ;
     }
+    
+ 
+    static public PropertyFunctionRegistry choosePropFuncRegistry(Context context)
+    {
+        PropertyFunctionRegistry registry = PropertyFunctionRegistry.get(context) ; 
+        if ( registry == null )
+            registry = PropertyFunctionRegistry.get() ;
+        return registry ;
+    }
+    
+    // ----
 
+//    /** Evaluate a procedure */
+//    public static QueryIterator eval(QueryIterator queryIterator, Procedure proc)
+//    {
+//        return eval(queryIterator, proc, null) ;
+//    }
+//
     /** Evaluate a procedure */
     public static QueryIterator eval(QueryIterator queryIterator, Procedure proc, ExecutionContext execCxt)
     {

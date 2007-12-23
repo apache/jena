@@ -14,6 +14,7 @@ import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.sparql.algebra.op.OpBGP;
 import com.hp.hpl.jena.sparql.algebra.op.OpProcedure;
 import com.hp.hpl.jena.sparql.algebra.op.OpStage;
+import com.hp.hpl.jena.sparql.algebra.op.OpTable;
 import com.hp.hpl.jena.sparql.core.BasicPattern;
 import com.hp.hpl.jena.sparql.expr.Expr;
 import com.hp.hpl.jena.sparql.expr.ExprList;
@@ -54,15 +55,18 @@ public class PropertyFunctionGenerator //implements StageGenerator
         List propertyFunctionTriples = new ArrayList() ;    // Property functions seen
         BasicPattern triples = new BasicPattern(pattern) ;  // A copy of all triples (later, it is mutated)
         
-        // Divide the triples into those involved in property functions, and those not.
+        // Find the triples invoking property functions, and those not.
         findPropertyFunctions(context, pattern, registry, propertyFunctionTriples) ;
+        
+        if ( propertyFunctionTriples.size() == 0 )
+            //No property functions.
+            return new OpBGP(pattern) ;
         
         Map pfInvocations = new HashMap() ;  // Map triple => property function instance 
         // Removes triples of list arguments.  This mutates 'triples'
         findPropertyFunctionArgs(context, triples, propertyFunctionTriples, pfInvocations) ;
         
-        // Now make the Op structure.
-        //XXX Rename
+        // Now make the OpStage structure.
         Op op = makeStages(triples, pfInvocations) ;
         return op ;
     }
@@ -72,7 +76,7 @@ public class PropertyFunctionGenerator //implements StageGenerator
                                               PropertyFunctionRegistry registry,
                                               List propertyFunctionTriples)
     {
-        // Stage 1 : find property functions (if any); collect triples.
+        // Step 1 : find property functions (if any); collect triples.
         // Not list arg triples at this point.
         for ( Iterator iter = pattern.iterator() ; iter.hasNext() ; )
         {
@@ -88,7 +92,7 @@ public class PropertyFunctionGenerator //implements StageGenerator
                                                  List propertyFunctionTriples,
                                                  Map pfInvocations)
     {
-        // Stage 2 : for each property function, remove associated triples in list arguments; 
+        // Step 2 : for each property function, remove associated triples in list arguments; 
         // Leave the propertyFunction triple itself.
 
         for ( Iterator iter = propertyFunctionTriples.iterator() ; iter.hasNext(); )
@@ -141,34 +145,10 @@ public class PropertyFunctionGenerator //implements StageGenerator
             }
         }
     }
-    
-//    private static void makePropetryFunctions(Context context, 
-//                                              Map pfStages, 
-//                                              BasicPattern triples, List propertyFunctionTriples)
-//    {
-//        // Stage 2 : for each property function, make element
-//        // Remove associated triples in list arguments; leave the propertyFunction triple itself.
-//        // Build map property function triple => stage.
-//        for ( Iterator iter = propertyFunctionTriples.iterator() ; iter.hasNext(); )
-//        {
-//            Triple pf = (Triple)iter.next();
-//            
-//            // Removes associated triples. 
-//            Stage stage = magicProperty(context, pf, triples) ;
-//            if ( stage == null )
-//            {
-//                ALog.warn(PropertyFunctionGenerator.class, "Lost a Stage for a property function") ;
-//                continue ;
-//            }
-//            pfStages.put(pf, stage) ;
-//        }
-//    }
 
-    // XXX Rename
     private static Op makeStages(BasicPattern triples, Map pfInvocations)
-
     {
-        // Stage 3 : MAke the operaqtion expression.
+        // Step 3 : Make the operaqtion expression.
         //   For each property function, insert the implementation 
         //   For each block of non-property function triples, make a BGP.
         
@@ -183,9 +163,6 @@ public class PropertyFunctionGenerator //implements StageGenerator
                 op = flush(pattern, op) ;
                 pattern = null ;
                 PropertyFunctionInstance pfi = (PropertyFunctionInstance)pfInvocations.get(t) ;
-                
-                //ExprList e = pfi.argList() ;
-                
                 OpProcedure opProc = new OpProcedure(t.getPredicate(), pfi.getSubjectArgList(), pfi.getObjectArgList(), op) ;
                 op = opProc ;
                 continue ;
@@ -203,11 +180,16 @@ public class PropertyFunctionGenerator //implements StageGenerator
     private static Op flush(BasicPattern pattern, Op op)
     {
         if ( pattern == null || pattern.isEmpty() )
-            return  op ;
+        {
+            if ( op == null )
+                return OpTable.unit() ;
+            return op ;
+        }
         OpBGP opBGP = new OpBGP(pattern) ;
 
         if ( op == null )
             return opBGP ;
+        // XXX Consider if op is a OpProc, then create a stage sequence. 
         return OpStage.create(op, opBGP) ;
     }
 
@@ -255,7 +237,6 @@ public class PropertyFunctionGenerator //implements StageGenerator
             GraphList.allTriples(oGNode, listTriples) ;
         }
         
-        //XXX
         PropFuncArg subjArgs = new PropFuncArg(sList, pfTriple.getSubject()) ;
         PropFuncArg objArgs =  new PropFuncArg(oList, pfTriple.getObject()) ;
         

@@ -14,40 +14,34 @@ import com.hp.hpl.jena.sparql.expr.ExprList;
 import com.hp.hpl.jena.sparql.procedure.Procedure;
 
 /** Adapter between property functions and server procedures
- *  A property function is parsed into a procedure of the form:
- *    (N, M, args1, args2)
- *  where N is the length of the list of subject arguments, and -1 for a non-list node,
- *  and M is similar for the object arguments, again with -1 for a non-list node.
  *  When called, this wrapper reconstructs the usual property function calling conventions.
- *  
- *  This classs extends ProcedureBase - it leaves any evaluation the propery
- *  function implemenation hierarchy.
  *  
  * @author Andy Seaborne
  */ 
 public class ProcedurePF implements Procedure
 {
-
     private PropertyFunction propFunc ;
+    private PropFuncArg subjArg ;
+    private PropFuncArg objArg ;
+    private Node pfNode ;
 
-    public ProcedurePF(PropertyFunction propFunc)
+    public ProcedurePF(PropertyFunction propFunc, PropFuncArg subjArg, Node pfNode, PropFuncArg objArg)
     {
         this.propFunc = propFunc ;
+        this.subjArg = subjArg ;
+        this.pfNode = pfNode ;
+        this.objArg = objArg ;
     }
     
     // Procedure interface
  
-    public void build(Node procId, ExprList args, ExecutionContext execCxt)
-    {}
-
     public QueryIterator proc(QueryIterator input, ExecutionContext execCxt)
     {
-        //propFunc.exec(input, argSubject, predicate, argObject, execCxt) ;
-        return null ;
+        return propFunc.exec(input, subjArg, pfNode, objArg, execCxt) ;
     }
 
-    
-    
+    public void build(Node procId, ExprList args, ExecutionContext execCxt)
+    {}
 }
 
 /*

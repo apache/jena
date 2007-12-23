@@ -25,6 +25,7 @@ import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.iterator.*;
 import com.hp.hpl.jena.sparql.engine.main.StageBuilder;
 import com.hp.hpl.jena.sparql.expr.ExprList;
+import com.hp.hpl.jena.sparql.pfunction.PropFuncArg;
 import com.hp.hpl.jena.sparql.procedure.ProcEval;
 import com.hp.hpl.jena.sparql.procedure.Procedure;
 import com.hp.hpl.jena.sparql.util.Utils;
@@ -54,6 +55,13 @@ class EvaluatorSimple implements Evaluator
     public Table procedure(Table table, Node procId, ExprList args)
     {
         Procedure proc = ProcEval.build(procId, args, execCxt) ;
+        QueryIterator qIter = ProcEval.eval(table.iterator(execCxt), proc, execCxt) ;
+        return TableFactory.create(qIter) ;
+    }
+    
+    public Table procedure(Table table, Node procId, PropFuncArg subjArgs, PropFuncArg objArgs)
+    {
+        Procedure proc = ProcEval.build(procId, subjArgs, objArgs, execCxt) ;
         QueryIterator qIter = ProcEval.eval(table.iterator(execCxt), proc, execCxt) ;
         return TableFactory.create(qIter) ;
     }

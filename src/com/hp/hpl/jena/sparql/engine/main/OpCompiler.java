@@ -96,9 +96,10 @@ public class OpCompiler
 
     QueryIterator compile(OpProcedure opProc, QueryIterator input)
     {
-        Procedure procedure = ProcEval.build(opProc.getProcId(), opProc.getArgs(), execCxt) ;
+        Procedure procedure = ProcEval.build(opProc, execCxt) ;
         QueryIterator qIter = compileOp(opProc.getSubOp(), input) ;
-        return procedure.proc(qIter, execCxt) ;
+        // Delay until query startes executing.
+        return new QueryIterProcedure(qIter, procedure, execCxt) ;
     }
 
     QueryIterator compile(OpJoin opJoin, QueryIterator input)
