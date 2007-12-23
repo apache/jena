@@ -19,13 +19,13 @@ sdb:DatasetStore rdfs:subClassOf ja:RDFDataset .
 ##      sdb:sdbType        "derby" ;
 ##      sdb:sdbName        "DB/SDB2" ;
 
-    sdb:sdbType       "MySQL" ;
-    sdb:sdbHost       "localhost" ;
-    sdb:sdbName       "SDB2" ;
+##     sdb:sdbType       "MySQL" ;
+##     sdb:sdbHost       "localhost" ;
+##     sdb:sdbName       "SDB2" ;
 
-##     sdb:sdbType        "postgresql" ;
-##     sdb:sdbHost        "localhost" ;
-##     sdb:sdbName        "SDB2" ;
+    sdb:sdbType        "postgresql" ;
+    sdb:sdbHost        "localhost" ;
+    sdb:sdbName        "SDB" ;
 
 ##     sdb:sdbType        "MSSQLServerExpress" ;
 ##     sdb:sdbHost        "localhost" ;
