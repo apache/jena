@@ -1,8 +1,5 @@
-SELECT DISTINCT *
-    WHERE
-    {
-
-                ?a a <http://purl.org/dc/dcmitype/Collection> .
-                ?b a <http://purl.org/dc/dcmitype/Collection> .
-                OPTIONAL { ?a ?link_type ?b . }
-    }
+PREFIX : <http://example/> 
+SELECT *
+{ 
+    ?s ?p ?o .
+}

@@ -19,25 +19,31 @@ import java.sql.Connection;
 
 import arq.cmd.CmdUtils;
 
-import com.hp.hpl.jena.query.Dataset;
-import com.hp.hpl.jena.query.DatasetFactory;
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.QueryExecution;
-import com.hp.hpl.jena.query.QueryExecutionFactory;
-import com.hp.hpl.jena.query.QueryFactory;
-import com.hp.hpl.jena.query.ResultSetFormatter;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.RDFNode;
+import com.hp.hpl.jena.rdf.model.ResourceFactory;
+import com.hp.hpl.jena.util.FileManager;
+
+import com.hp.hpl.jena.sparql.algebra.Op;
+import com.hp.hpl.jena.sparql.core.Prologue;
+import com.hp.hpl.jena.sparql.core.Quad;
+import com.hp.hpl.jena.sparql.resultset.ResultsFormat;
+import com.hp.hpl.jena.sparql.sse.SSE;
+import com.hp.hpl.jena.sparql.util.QueryExecUtils;
+
+import com.hp.hpl.jena.query.*;
+
+import com.hp.hpl.jena.update.GraphStore;
+import com.hp.hpl.jena.update.GraphStoreFactory;
+import com.hp.hpl.jena.update.UpdateFactory;
+import com.hp.hpl.jena.update.UpdateRequest;
+
 import com.hp.hpl.jena.sdb.SDB;
 import com.hp.hpl.jena.sdb.SDBFactory;
 import com.hp.hpl.jena.sdb.Store;
 import com.hp.hpl.jena.sdb.compiler.OpSQL;
 import com.hp.hpl.jena.sdb.compiler.QC;
-import com.hp.hpl.jena.sdb.core.sqlnode.GenerateSQL;
-import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
-import com.hp.hpl.jena.sdb.core.sqlnode.SqlRename;
-import com.hp.hpl.jena.sdb.core.sqlnode.SqlTransformer;
-import com.hp.hpl.jena.sdb.core.sqlnode.TransformSelectBlock;
+import com.hp.hpl.jena.sdb.core.sqlnode.*;
 import com.hp.hpl.jena.sdb.sql.JDBC;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.store.DatabaseType;
@@ -45,26 +51,32 @@ import com.hp.hpl.jena.sdb.store.LayoutType;
 import com.hp.hpl.jena.sdb.store.StoreConfig;
 import com.hp.hpl.jena.sdb.store.StoreFactory;
 import com.hp.hpl.jena.sdb.util.StrUtils;
-import com.hp.hpl.jena.sparql.algebra.Op;
-import com.hp.hpl.jena.sparql.core.Prologue;
-import com.hp.hpl.jena.sparql.core.Quad;
-import com.hp.hpl.jena.sparql.resultset.ResultsFormat;
-import com.hp.hpl.jena.sparql.sse.SSE;
-import com.hp.hpl.jena.sparql.util.QueryExecUtils;
-import com.hp.hpl.jena.update.GraphStore;
-import com.hp.hpl.jena.update.GraphStoreFactory;
-import com.hp.hpl.jena.update.UpdateFactory;
-import com.hp.hpl.jena.update.UpdateRequest;
-import com.hp.hpl.jena.util.FileManager;
 
 public class RunSDB
 {
     static { CmdUtils.setLog4j() ; CmdUtils.setN3Params() ; }
-    public static void main(String[]argv)
+    
+    public static void main(String ... argv) 
     {
-        sdb.sdbscript.main("script.rb") ; System.exit(0) ;
+        Store store = SDBFactory.connectStore("sdb.ttl") ;
+//        Model model = SDBFactory.connectDefaultModel(store) ;
+        Dataset ds = SDBFactory.connectDataset(store) ;
+
+        Query query = QueryFactory.read("Q.rq") ;
         
-        
+        SDBConnection.logSQLQueries = true ;
+
+        QuerySolutionMap qsol = new QuerySolutionMap() ;
+        qsol.add("o", ResourceFactory.createPlainLiteral("abc")) ;
+        QueryExecution qexec = QueryExecutionFactory.create(query, ds, qsol) ;
+        ResultSetFormatter.out(qexec.execSelect()) ;
+        qexec.close() ;
+        System.exit(0) ;
+         
+    }
+    
+    public static void update()
+    {
         String updateCmd = StrUtils.strjoin("\n",
             "DELETE { <http://en.wikipedia.org/wiki/Tony_Benn> <http://purl.org/dc/elements/1.1/publisher> ?all  }" ,
             "WHERE { <http://en.wikipedia.org/wiki/Tony_Benn>  <http://purl.org/dc/elements/1.1/publisher> ?all . }" ,

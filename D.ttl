@@ -2,8 +2,8 @@
 ## @prefix rdfs:	    <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix : <http://example/> .
 
-:x :p 1 .
-:x :q [ :pp :o1 ; :pp :o2 ] .
+:x1 :p "abc" .
+:x2 :q "def" .
 
 ## :x :p 2 .
 ## :x :p 3 .

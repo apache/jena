@@ -41,29 +41,27 @@ public class QueryEngineSDB extends QueryEngineBase
 
     public QueryEngineSDB(Store store, Query q)
     {
-        this(new DatasetStoreGraph(store), q, null) ;
+        this(new DatasetStoreGraph(store), q, BindingRoot.create(), null) ;
     }
     
-    public QueryEngineSDB(DatasetStoreGraph dsg, Query query, Context context)
+    public QueryEngineSDB(DatasetStoreGraph dsg, Query query, Binding initialBinding, Context context)
     {
-        super(query, dsg, new AlgebraGeneratorQuad(context), BindingRoot.create(), context) ;
-        init(dsg, query, context) ;
+        super(query, dsg, new AlgebraGeneratorQuad(context), initialBinding, context) ;
+        init(dsg, query, initialBinding, context) ;
     }
 
-    public QueryEngineSDB(DatasetStoreGraph dsg, Op op, Context context)
+    public QueryEngineSDB(DatasetStoreGraph dsg, Op op, Binding initialBinding, Context context)
     {
-        super(op, dsg, BindingRoot.create(), context) ;
-        init(dsg, null, context) ;
+        super(op, dsg, initialBinding, context) ;
+        init(dsg, null, initialBinding, context) ;
     }
     
-    private void init(DatasetStoreGraph dsg, Query query, Context context)
+    private void init(DatasetStoreGraph dsg, Query query, Binding initialBinding, Context context)
     {
         this.store = dsg.getStore() ;
         this.request = new SDBRequest(store, query, context) ;
         this.originalOp = getOp() ;
-        
-        // Convenience - compile now even though it would get done on execution.    
-        Op op = QC.compile(store, originalOp, null, context, request) ;
+        Op op = QC.compile(store, originalOp, initialBinding, context, request) ;
         setOp(op) ;
     }
     
@@ -72,10 +70,15 @@ public class QueryEngineSDB extends QueryEngineBase
     @Override
     public QueryIterator eval(Op op, DatasetGraph dsg, Binding binding, Context context)
     {
-        if ( ! binding.isEmpty() )
-            // Assumes we compiled in the constructor.
-            // Substitute and recompile.
-            op = QC.compile(store, op, binding, context, request) ;
+        // Compiled in init().
+//        if ( op == null || ! binding.isEmpty() )
+//        {
+//            // Assumes we compiled in the constructor.
+//            // If we have already compiled this op, get the original,substitute and recompile.
+//            if ( op instanceof OpSQL )
+//                op = ((OpSQL)op).getOriginal() ;
+//            op = QC.compile(store, op, binding, context, request) ;
+//        }
         
         ExecutionContext execCxt = new ExecutionContext(context, dsg.getDefaultGraph(), dsg) ;
         
@@ -115,7 +118,7 @@ public class QueryEngineSDB extends QueryEngineBase
 
         public Plan create(Query query, DatasetGraph dataset, Binding inputBinding, Context context)
         {
-            QueryEngineSDB qe = new QueryEngineSDB((DatasetStoreGraph)dataset , query, context) ;
+            QueryEngineSDB qe = new QueryEngineSDB((DatasetStoreGraph)dataset , query, inputBinding, context) ;
             return qe.getPlan() ;
         }
 
@@ -128,7 +131,7 @@ public class QueryEngineSDB extends QueryEngineBase
 
         public Plan create(Op op, DatasetGraph dataset, Binding inputBinding, Context context)
         {
-            QueryEngineSDB qe = new QueryEngineSDB((DatasetStoreGraph)dataset , op, context) ;
+            QueryEngineSDB qe = new QueryEngineSDB((DatasetStoreGraph)dataset, op, inputBinding, context) ;
             return qe.getPlan() ;
         }
 
