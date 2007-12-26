@@ -10,6 +10,7 @@ SELECT *
     { ?s3 ?p3 ?o3 . } 
 
     FILTER (?o1 = 34)
+    FILTER (?o2 = 15)
     FILTER (?ln = 5)
     FILTER (?o3 = 56 )
 }

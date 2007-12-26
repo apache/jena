@@ -209,23 +209,14 @@ public class FilterPlacement
                 qIter = placeFilters(exprs, pattern, varScope, qIter) ;
             }
             else if ( op instanceof OpStage )
-            {
-                OpStage opStage = (OpStage)op ;
-                qIter = placeFilters(exprs, opStage, varScope, qIter) ;
-            }
+                qIter = placeFilters(exprs, (OpStage)op, varScope, qIter) ;
             else if ( op instanceof OpJoin )
-            {
-                OpJoin opJoin = (OpJoin)op ;
-                qIter = placeFilters(exprs, opJoin, varScope, qIter) ;
-            }
+                qIter = placeFilters(exprs, (OpJoin)op, varScope, qIter) ;
             else if ( op instanceof OpProcedure )
-            {
-                // Tricky.  Can be an OpProc or a property function thingy
-                OpProcedure opProc = (OpProcedure)op ;
-                qIter = placeFilters(exprs, opProc, varScope, qIter) ;
-            }
+                qIter = placeFilters(exprs, (OpProcedure)op, varScope, qIter) ;
             else
                 // Not something we can do anything about.
+                // Compile without being clever with filter placement.
                 qIter = compiler.compileOp(op, qIter) ;
             
             OpVars.patternVars(op, varScope) ;
