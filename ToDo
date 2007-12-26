@@ -1,5 +1,8 @@
 ==== ARQ ToDo
 
++ Remove PropertyFunction code from StageBuilder.
+  Place filters across OpStage (OpCompiler).
+
 + OpService in ref QE.
 
 +  FROM <.....n3>
@@ -13,15 +16,13 @@
      Or subclass of OpBGP? OpAltBGP?
      OpCustom == OpExt? OpExt needs printing.
 
-++ ** Document "stages"
+++ ** Document "stages" - new form.
 ++ ** Document "update API"
 ++ Algebra building src-examples
 ++ Tutorial on update 
 ++ ARQ documentation and clearup - adding new storage layers.
    Separate out list PFs like free text.
 See ToDoSSE
-
-++ initialBinding and SDB - shoudl throw "Unsupported"
 
 ----
 + LARQ. IndexLARQ - add : reopenForWriting

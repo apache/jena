@@ -189,16 +189,18 @@ public class OpCompiler
 
     QueryIterator compile(OpFilter opFilter, QueryIterator input)
     {
-        // Has this got all filters by this point ...???
         ExprList exprs = opFilter.getExprs() ;
         exprs.prepareExprs(execCxt.getContext()) ;
         
         Op base = opFilter.getSubOp() ;
         
-        // Leigh reports ... need to split on PF, then place.
         if ( base instanceof OpBGP )
+            // Uncompiled => unsplit
             return filterPlacement.placeFiltersBGP(exprs, ((OpBGP)base).getPattern(), input) ;
 
+        if ( base instanceof OpStage )
+            return filterPlacement.placeFiltersStage(exprs, (OpStage)base, input) ;
+        
         if ( base instanceof OpGraph )
         {}
 
@@ -207,12 +209,7 @@ public class OpCompiler
         
         // Tidy up.
         if ( base instanceof OpJoin )
-        {
-            // Look for a join chain (i.e. the left is also a join)
-            List joinElts = new ArrayList() ;
-            joins(base, joinElts) ;
-            return filterPlacement.placeFiltersJoin(exprs, joinElts, input) ;
-        }
+            return filterPlacement.placeFiltersJoin(exprs, (OpJoin)base, input) ;
         
         // There must be a better way.
         if ( base instanceof OpLeftJoin )
@@ -223,7 +220,7 @@ public class OpCompiler
         if ( base instanceof OpUnion )
         {}
 
-        
+        // Nothing special.
         return filterPlacement.buildOpFilter(exprs, base, input) ;
     }
 
@@ -235,20 +232,6 @@ public class OpCompiler
             ExprWalker.walk(new ExprBuild(execCxt.getContext()), expr) ;
         }
     }
-    
-    private static void joins(Op base, List joinElts)
-    {
-        while ( base instanceof OpJoin )
-        {
-            OpJoin join = (OpJoin)base ;
-            Op right = join.getRight() ; 
-            joins(right, joinElts) ;
-            base = join.getLeft() ;
-        }
-        // Not a join - add it.
-        joinElts.add(base) ;
-    }
-    
     
     QueryIterator compile(OpGraph opGraph, QueryIterator input)
     { 

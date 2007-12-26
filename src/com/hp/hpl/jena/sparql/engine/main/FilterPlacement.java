@@ -6,16 +6,16 @@
 
 package com.hp.hpl.jena.sparql.engine.main;
 
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.query.ARQ;
+
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.OpVars;
 import com.hp.hpl.jena.sparql.algebra.op.OpBGP;
+import com.hp.hpl.jena.sparql.algebra.op.OpJoin;
+import com.hp.hpl.jena.sparql.algebra.op.OpProcedure;
+import com.hp.hpl.jena.sparql.algebra.op.OpStage;
 import com.hp.hpl.jena.sparql.core.BasicPattern;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
@@ -23,6 +23,8 @@ import com.hp.hpl.jena.sparql.engine.iterator.QueryIterFilterExpr;
 import com.hp.hpl.jena.sparql.expr.Expr;
 import com.hp.hpl.jena.sparql.expr.ExprList;
 import com.hp.hpl.jena.sparql.util.VarUtils;
+
+import com.hp.hpl.jena.query.ARQ;
 
 public class FilterPlacement
 {
@@ -32,12 +34,6 @@ public class FilterPlacement
     
     boolean doFilterPlacement = false ;
 
-    // Put filter in best place
-    // Beware of 
-    // { _:a ?p ?v .  FILTER(true) . [] ?q _:a }
-    // making sure the right amount is dispatched as the BGP.
-    // Only affects SPARQL extensions.
-
     public FilterPlacement(OpCompiler compiler, ExecutionContext execCxt)
     {
         this.compiler = compiler ;
@@ -46,7 +42,7 @@ public class FilterPlacement
     }
     
     // --------------------------------
-    // Basic patterns
+    // Basic Graph Patterns
     
     public QueryIterator placeFiltersBGP(ExprList exprs, BasicPattern pattern, QueryIterator input)
     {
@@ -58,19 +54,26 @@ public class FilterPlacement
         
         // Destructive use of exprs - copy it.
         exprs = new ExprList(exprs) ;
-        QueryIterator qIter = placeFiltersWorker(exprs, pattern, input) ;
+        Set patternVarsScope = new HashSet() ;
+        BasicPattern accPattern = new BasicPattern() ;
+        
+        QueryIterator qIter = insertAnyFilter(exprs, patternVarsScope, accPattern, input) ;
+        if ( qIter == null )
+            qIter = input ;
+        
+        qIter = placeFilters(exprs, pattern, patternVarsScope, qIter) ;
         // any remaining filters
         qIter = buildFilter(exprs, qIter) ;
         return qIter ;
     }
 
-    private QueryIterator placeFiltersWorker(ExprList exprs, BasicPattern pattern, QueryIterator input)
+    private QueryIterator placeFilters(ExprList exprs, BasicPattern pattern, Set varScope, QueryIterator input)
     {
         BasicPattern accPattern = new BasicPattern() ;
-        Set patternVarsScope = new HashSet() ;
+        //Set patternVarsScope = new HashSet() ;
         QueryIterator qIter = input ;
         
-        qIter = insertAnyFilter(exprs, patternVarsScope, accPattern, qIter) ;
+        qIter = insertAnyFilter(exprs, varScope, accPattern, qIter) ;
         if ( qIter == null )
             qIter = input ;
         
@@ -79,9 +82,9 @@ public class FilterPlacement
             Triple triple = (Triple)iter.next() ;
             
             accPattern.add(triple) ;
-            VarUtils.addVarsFromTriple(patternVarsScope, triple) ;
+            VarUtils.addVarsFromTriple(varScope, triple) ;
             
-            QueryIterator qIter2 = insertAnyFilter(exprs, patternVarsScope, accPattern, qIter) ;
+            QueryIterator qIter2 = insertAnyFilter(exprs, varScope, accPattern, qIter) ;
             if ( qIter2 != null )
             {
                 accPattern = new BasicPattern() ;
@@ -115,11 +118,79 @@ public class FilterPlacement
     }
 
     // --------------------------------
-    // Placement in joins.
+    // Placement in stages and joins.
+    // Joins may in trun involve stages and BGPs.
     
-    public QueryIterator placeFiltersJoin(ExprList exprs, List ops, QueryIterator input)
+    public QueryIterator placeFiltersStage(ExprList exprs, OpStage opStage, QueryIterator input)
     {
+        if ( ! doFilterPlacement )
+            return buildOpFilter(exprs, opStage, input) ;
         Set varScope = new HashSet() ;
+        QueryIterator qIter = placeFilters(exprs, opStage, varScope, input) ;
+        // Insert any remaining filter expressions regardless.
+        qIter = buildFilter(exprs, qIter) ;
+        return qIter ;
+    }
+    
+    private QueryIterator placeFilters(ExprList exprs, OpStage opStage, Set varScope, QueryIterator input)
+    {
+        List ops = stages(opStage) ;
+        return placeFilters(exprs, ops, varScope, input) ;
+    }
+
+    public QueryIterator placeFiltersJoin(ExprList exprs, OpJoin opJoin, QueryIterator input)
+    {
+        if ( ! doFilterPlacement )
+            return buildOpFilter(exprs, opJoin, input) ;
+        Set varScope = new HashSet() ;
+        QueryIterator qIter = placeFilters(exprs, opJoin, varScope, input) ;
+        // Insert any remaining filter expressions regardless.
+        qIter = buildFilter(exprs, qIter) ;
+        return qIter ;
+    }
+    
+    private QueryIterator placeFilters(ExprList exprs, OpJoin opJoin, Set varScope, QueryIterator input)
+    {
+        // Look for a join chain
+        List ops = joins(opJoin) ;
+        return placeFilters(exprs, ops, varScope, input) ;
+    }
+     
+    public QueryIterator placeFiltersProcedure(ExprList exprs, OpProcedure opProc, QueryIterator input)
+    {
+        if ( ! doFilterPlacement )
+            return buildOpFilter(exprs, opProc, input) ;
+        Set varScope = new HashSet() ;
+        QueryIterator qIter = placeFilters(exprs, opProc, varScope, input) ;
+        // Insert any remaining filter expressions regardless.
+        qIter = buildFilter(exprs, qIter) ;
+        return qIter ;
+    }
+    
+    private QueryIterator placeFilters(ExprList exprs, OpProcedure opProc, Set varScope, QueryIterator input)
+    {
+        if ( false )
+        {
+            if ( opProc.getArgs() != null )
+            {}
+            else
+            {
+                opProc.getSubjectArgs() ;
+                opProc.getObjectArgs() ;
+            }
+        }
+        
+        return compiler.compileOp(opProc, input) ;
+    }
+    
+    // --------------------------------
+    
+    // Placement for filters in a list of ops where the filter can be placed solely
+    // on var definedness (so Join, Stage).
+    
+    private QueryIterator placeFilters(ExprList exprs, List ops, Set varScope, QueryIterator input)
+    { 
+        //Set varScope = new HashSet() ;
         QueryIterator qIter = input ;
         
         qIter = insertAnyFilter(exprs, varScope, qIter) ;
@@ -130,22 +201,87 @@ public class FilterPlacement
         {
             Op op = (Op)iter.next() ;
             
-            // Push into BGPs if possible.
+            // And push into any BGPs or OpStages if possible.
             if ( op instanceof OpBGP )
             {
                 OpBGP bgp = (OpBGP)op ;
                 BasicPattern pattern = bgp.getPattern() ;
-                qIter = placeFiltersWorker(exprs, pattern, qIter) ;
+                qIter = placeFilters(exprs, pattern, varScope, qIter) ;
+            }
+            else if ( op instanceof OpStage )
+            {
+                OpStage opStage = (OpStage)op ;
+                qIter = placeFilters(exprs, opStage, varScope, qIter) ;
+            }
+            else if ( op instanceof OpJoin )
+            {
+                OpJoin opJoin = (OpJoin)op ;
+                qIter = placeFilters(exprs, opJoin, varScope, qIter) ;
+            }
+            else if ( op instanceof OpProcedure )
+            {
+                // Tricky.  Can be an OpProc or a property function thingy
+                OpProcedure opProc = (OpProcedure)op ;
+                qIter = placeFilters(exprs, opProc, varScope, qIter) ;
             }
             else
+                // Not something we can do anything about.
                 qIter = compiler.compileOp(op, qIter) ;
             
             OpVars.patternVars(op, varScope) ;
             qIter = insertAnyFilter(exprs, varScope, qIter) ;
         }
-        // Insert any remaining filter expressions regardless.
-        qIter = buildFilter(exprs, qIter) ;
         return qIter ;
+    }
+    
+    // A chain of joins A join B join C becomes (join (join A B) C)
+    // This code flattens join trees.
+    
+    // --------------------------------
+        // Stages
+        
+        // Flattens OpStage trees.
+        // (Which are usually left-nested lists).
+        // See joins.  Mutter, mutter.
+        
+        private static List stages(OpStage base)
+        {
+            List stages = new ArrayList() ;
+            stages(base, stages) ;
+            return stages ;
+       }
+
+    private static void stages(Op base, List stages)
+    {
+        while ( base instanceof OpStage )
+        {
+            OpStage join = (OpStage)base ;
+            Op left = join.getLeft() ; 
+            stages(left, stages) ;
+            base = join.getRight() ;
+        }
+        // Not a stage - add it.
+        stages.add(base) ;
+    }
+
+    private static List joins(OpJoin base)
+    {
+        List joinElts = new ArrayList() ;
+        joins(base, joinElts) ;
+        return joinElts ;
+   }
+    
+    private static void joins(Op base, List joinElts)
+    {
+        while ( base instanceof OpJoin )
+        {
+            OpJoin join = (OpJoin)base ;
+            Op left = join.getLeft() ; 
+            joins(left, joinElts) ;
+            base = join.getRight() ;
+        }
+        // Not a join - add it.
+        joinElts.add(base) ;
     }
 
     private QueryIterator insertAnyFilter(ExprList exprs, Set varScope, QueryIterator qIter)
@@ -166,8 +302,7 @@ public class FilterPlacement
     }
 
     // ----------------
-    
-    // Build a series of filters around a compile Op
+    // Build a series of filters around a op which is compiled
     public QueryIterator buildOpFilter(ExprList exprs, Op sub, QueryIterator input)
     {
         QueryIterator qIter = compiler.compileOp(sub, input) ;
@@ -205,6 +340,7 @@ public class FilterPlacement
         {
             Expr expr = (Expr)iter.next() ;
             qIter = new QueryIterFilterExpr(qIter, expr, execCxt) ;
+            iter.remove();
         }
         return qIter ;
     }

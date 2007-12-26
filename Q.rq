@@ -1,9 +1,16 @@
 PREFIX apf:     <http://jena.hpl.hp.com/ARQ/property#>
 
-
-SELECT  ?x ?y
+SELECT *
 {
-#    ?s ?p ?o .
-    ?s apf:splitIRI (?x ?y) .
-#    FILTER ( isIRI(?o) )
+
+    { ?s1 ?p1 ?o1 .
+      ?x apf:splitURI ( ?ns ?ln ) .
+      ?s2 ?p2 ?o2 . }
+
+    { ?s3 ?p3 ?o3 . } 
+
+    FILTER (?o1 = 34)
+    FILTER (?ln = 5)
+    FILTER (?o3 = 56 )
 }
+

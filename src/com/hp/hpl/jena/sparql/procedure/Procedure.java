@@ -10,8 +10,9 @@ import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.expr.ExprList;
+import com.hp.hpl.jena.sparql.util.PrintSerializable;
 
-public interface Procedure
+public interface Procedure extends PrintSerializable
 {
     /**
      * Called during query plan construction immediately after the construction
@@ -40,10 +41,6 @@ public interface Procedure
      * @return QueryIterator
      */
     public QueryIterator proc(QueryIterator input, ExecutionContext execCxt) ;
-    // XXX Add args?
-    // getNumSubjectArgs
-    // getNumObjectArgs
-    
 }
 
 /*

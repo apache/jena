@@ -23,7 +23,6 @@ public class QC
     {
         return OpCompiler.compile(op, qIter, execCxt) ;
     }
-    
 }
 
 /*

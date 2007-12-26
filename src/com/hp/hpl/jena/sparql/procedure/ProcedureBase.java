@@ -16,8 +16,9 @@ import com.hp.hpl.jena.sparql.serializer.SerializationContext;
 import com.hp.hpl.jena.sparql.sse.writers.WriterExpr;
 import com.hp.hpl.jena.sparql.util.FmtUtils;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
+import com.hp.hpl.jena.sparql.util.PrintSerializableBase;
 
-public abstract class ProcedureBase implements Procedure
+public abstract class ProcedureBase extends PrintSerializableBase implements Procedure
 {
     private Node procId ;
     private ExprList args ;
@@ -35,6 +36,15 @@ public abstract class ProcedureBase implements Procedure
     
     public abstract QueryIterator exec(Binding binding, Node name, ExprList args, ExecutionContext execCxt) ;
     
+    
+    public void output(IndentedWriter out, SerializationContext sCxt)
+    {
+        out.print("Procedure ["+FmtUtils.stringForNode(procId, sCxt)+"]") ;
+        out.print("[") ;
+        out.print(args.toString()) ;
+        out.print("]") ;
+        out.println() ;
+    }
     
     class RepeatApplyIterator extends QueryIterRepeatApply
     {

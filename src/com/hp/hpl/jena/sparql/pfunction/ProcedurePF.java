@@ -12,13 +12,17 @@ import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.expr.ExprList;
 import com.hp.hpl.jena.sparql.procedure.Procedure;
+import com.hp.hpl.jena.sparql.serializer.SerializationContext;
+import com.hp.hpl.jena.sparql.util.FmtUtils;
+import com.hp.hpl.jena.sparql.util.IndentedWriter;
+import com.hp.hpl.jena.sparql.util.PrintSerializableBase;
 
 /** Adapter between property functions and server procedures
  *  When called, this wrapper reconstructs the usual property function calling conventions.
  *  
  * @author Andy Seaborne
  */ 
-public class ProcedurePF implements Procedure
+public class ProcedurePF extends PrintSerializableBase implements Procedure
 {
     private PropertyFunction propFunc ;
     private PropFuncArg subjArg ;
@@ -42,6 +46,18 @@ public class ProcedurePF implements Procedure
 
     public void build(Node procId, ExprList args, ExecutionContext execCxt)
     {}
+
+    public void output(IndentedWriter out, SerializationContext sCxt)
+    {
+        out.print("ProcedurePF ["+FmtUtils.stringForNode(pfNode, sCxt)+"]") ;
+        out.print("[") ;
+        subjArg.output(out, sCxt) ;
+        out.print("][") ;
+        objArg.output(out, sCxt) ;
+        out.print("]") ;
+        out.println() ;
+    }
+
 }
 
 /*

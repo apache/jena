@@ -10,6 +10,9 @@ import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.procedure.Procedure;
+import com.hp.hpl.jena.sparql.serializer.SerializationContext;
+import com.hp.hpl.jena.sparql.util.IndentedWriter;
+import com.hp.hpl.jena.sparql.util.Utils;
 
 /** QueryIterator for a procedure.  Delays first touch until first call because
  *  first touch may cause work to be done.
@@ -56,6 +59,13 @@ public class QueryIterProcedure extends QueryIter1
     {
         init( ) ;
         return procIter.nextBinding() ;
+    }
+    
+    protected void details(IndentedWriter out, SerializationContext sCxt)
+    {
+        out.print(Utils.className(this)) ;
+        out.print(" ") ;
+        proc.output(out, sCxt) ;
     }
 }
 

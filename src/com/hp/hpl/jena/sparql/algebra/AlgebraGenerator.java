@@ -216,7 +216,7 @@ public class AlgebraGenerator
         return current ;
     }
     
-    public static boolean AlgebraStaging = false ;
+    public static boolean AlgebraStaging = true ;
     protected Op compileBasicPattern(BasicPattern pattern)
     {
         if ( AlgebraStaging )
@@ -241,7 +241,6 @@ public class AlgebraGenerator
         Op sub = compileElement(eltService.getElement()) ;
         return new OpService(serviceNode, sub) ;
     }
-
     
     /** Compile query modifiers */
     public Op compileModifiers(Query query, Op pattern)

@@ -40,6 +40,9 @@ public class OpPropFunc extends Op0 // implements OpExt???
         return null ;
     }
 
+    public void visit(OpVisitor opVisitor)
+    {} // { opVisitor.visit(this) ; }
+
     public Op copy()
     {
         return new OpPropFunc(uri, args1, args2) ;
@@ -56,9 +59,6 @@ public class OpPropFunc extends Op0 // implements OpExt???
         OpPropFunc procFunc = (OpPropFunc)other ;
         return getBGP().equalTo(procFunc.getBGP(), labelMap) ;
     }
-
-    public void visit(OpVisitor opVisitor)
-    {} // { opVisitor.visit(this) ; }
 
     public String getName()
     {

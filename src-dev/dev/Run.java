@@ -33,6 +33,11 @@ public class Run
 {
     public static void main(String[] argv) throws Exception
     {
+//        AlgebraGenerator.AlgebraStaging = true ;
+//        String []a = { "--file=Q.rq", "--print=op" , "--print=plan"} ;
+//        arq.qparse.main(a) ;
+//        System.exit(0) ;
+        
         //socksProxyHost=socks-server
         if ( false ) System.setProperty("socksProxyHost", "socks-server") ;
         if ( false )
@@ -45,13 +50,10 @@ public class Run
             System.exit(0) ;
         }
 
-        String DIR = "" ;
+        String DIR = "testing/ARQ/Algebra/" ;
 
-        AlgebraGenerator.AlgebraStaging = true ;
-        
-        runQParse() ;
         //        ARQ.getContext().set(ARQ.filterPlacement, false) ;
-        execQuery(DIR+"D.ttl", DIR+"Q.rq") ;
+        execQuery(DIR+"opt-filter-1.ttl", DIR+"opt-filter-1.rq") ;
        
 //        runQParse() ;
 //        execQuery(DIR+"D.ttl", DIR+"Q.arq") ;
