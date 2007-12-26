@@ -21,6 +21,8 @@
    Separate out list PFs like free text.
 See ToDoSSE
 
+++ initialBinding and SDB - shoudl throw "Unsupported"
+
 ----
 + LARQ. IndexLARQ - add : reopenForWriting
   IndexBuilderModel has a seen cache - is it not-cache safe?
