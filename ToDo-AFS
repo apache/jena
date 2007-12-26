@@ -1,6 +1,11 @@
 SDB ToDo list (and general notes)
 =================================
 
+Bugs:
++ Initial bindings not handled, nor rejected.
+  If dataset for SDb passed straight in, initial binding not inspected.
+  CONSTRUCT ??
+
 ==== Wiki
 + Document assembler for dataset on wiki
   And model assembler
