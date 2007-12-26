@@ -1,7 +1,7 @@
 ==== ARQ ToDo
 
 + Remove PropertyFunction code from StageBuilder.
-  Place filters across OpStage (OpCompiler).
+  Place filters with respect to OpProcedure (FilterPlacement).
 
 + OpService in ref QE.
 
@@ -9,12 +9,6 @@
    but it's application/rdf+xml
    believe MIME type.
    Jena change: FileManager/MimeStream
-
-++ Filter placement and property functions.
-   PFs as OpBGP => OpBGP/OpPF?, rather than stages
-   OpPropFunc - started.
-     Or subclass of OpBGP? OpAltBGP?
-     OpCustom == OpExt? OpExt needs printing.
 
 ++ ** Document "stages" - new form.
 ++ ** Document "update API"
@@ -25,6 +19,7 @@
 See ToDoSSE
 
 ----
+
 + LARQ. IndexLARQ - add : reopenForWriting
   IndexBuilderModel has a seen cache - is it not-cache safe?
   See Lucene 2.2.0 relese notes for shadow update
@@ -33,7 +28,6 @@ See ToDoSSE
       Change examples.
   IndexBuilderString.  Avoid "seen" by querying the index (Lucene 2.2.0)
   
-
 + Remove OpDatasetNames?? - only needed in quad compilation for GRAPH ?g {}
   Do that a betetr way (join of all names).
   Special iterator for OpCompiler? 
