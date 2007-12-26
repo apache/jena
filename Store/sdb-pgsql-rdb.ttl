@@ -4,17 +4,18 @@
 @prefix ja:      <http://jena.hpl.hp.com/2005/11/Assembler#> .
 
 # Assembler for PostgreSQL/JenaRDB database
+# This is not the normal SDB layout for use with PostgreSQL.
 
-_:c rdf:type sdb:SDBConnection ;
+<#store> rdf:type sdb:Store ;
+    sdb:layout     "RDB" ;
+    #sdb:rdbModeName "" ; # Default model.
+    sdb:connection <#conn> ;
+.
+
+<#conn> rdf:type sdb:SDBConnection ;
     sdb:sdbType       "postgresql" ;    # Needed for JDBC URL
     sdb:sdbHost       "localhost" ;
     sdb:sdbName       "jenatest" ;
     sdb:driver        "org.postgresql.Driver" ;
     sdb:rdbType       "PostgreSQL" ;
     .
-
-[] rdf:type sdb:Store ;
-    sdb:layout     "RDB" ;
-    #sdb:rdbModeName "" ; # Default model.
-    sdb:connection _:c ;
-.

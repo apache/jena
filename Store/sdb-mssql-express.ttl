@@ -5,14 +5,14 @@
 
 # Microsoft SQL Server
 
-_:c rdf:type sdb:SDBConnection ;
+<#store> rdf:type sdb:Store ;
+    sdb:layout         "layout2" ;
+    sdb:connection     <#conn> ;
+.
+
+<#conn> rdf:type sdb:SDBConnection ;
     sdb:sdbType        "MSSQLServerExpress" ;
     sdb:sdbHost        "localhost" ;
     sdb:sdbName        "SDB2" ;
     sdb:driver         "com.microsoft.sqlserver.jdbc.SQLServerDriver"
     .
-
-[] rdf:type sdb:Store ;
-    sdb:layout         "layout2" ;
-    sdb:connection     _:c ;
-.

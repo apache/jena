@@ -3,17 +3,16 @@
 @prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix ja:     <http://jena.hpl.hp.com/2005/11/Assembler#> .
 
-_:c rdf:type sdb:SDBConnection ;
+<#store> rdf:type sdb:Store ;
+    sdb:layout     "layout2" ;
+    sdb:connection <#conn> ;
+    .
+
+<#conn> rdf:type sdb:SDBConnection ;
     sdb:sdbType      "hsqldb" ;
     sdb:sdbHost      "file" ;
     sdb:sdbUser      "sa" ;
     sdb:sdbPassword  "" ;
-    sdb:sdbName      "tmp/SDB2" ;
+    sdb:sdbName      "tmp/SDB2" ;   # Location of the database
     sdb:driver       "org.hsqldb.jdbcDriver" ;
     .
-
-[] rdf:type sdb:Store ;
-    sdb:layout     "layout2" ;
-    sdb:connection _:c ;
-    .
-

@@ -5,15 +5,16 @@
 
 # MySQL - InnoDB
 
-_:c rdf:type sdb:SDBConnection ;
+
+<#store> rdf:type sdb:Store ;
+    sdb:layout     "layout2" ;
+    sdb:connection <#conn> ;
+    sdb:engine     "InnoDB" ;      # MySQL specific
+.
+
+<#conn> rdf:type sdb:SDBConnection ;
     sdb:sdbType       "MySQL" ;    # Needed for JDBC URL
     sdb:sdbHost       "localhost" ;
     sdb:sdbName       "SDB2" ;
     sdb:driver        "com.mysql.jdbc.Driver" ;
     .
-
-[] rdf:type sdb:Store ;
-    sdb:layout     "layout2" ;
-    sdb:connection _:c ;
-    sdb:engine     "InnoDB" ;      # MySQL specific
-.

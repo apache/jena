@@ -5,7 +5,7 @@
 
 # Store only - no connection details
 
-[] rdf:type sdb:Store ;
+<#store> rdf:type sdb:Store ;
     sdb:sdbType        "derby" ;
     sdb:layout         "layout2" ;
 .

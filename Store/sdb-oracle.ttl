@@ -3,7 +3,12 @@
 @prefix ja:       <http://jena.hpl.hp.com/2005/11/Assembler#> .
 @prefix sdb:      <http://jena.hpl.hp.com/2007/sdb#> .
 
-_:c rdf:type sdb:SDBConnection ;
+<#store> rdf:type sdb:Store ;
+    sdb:layout         "layout2/hash" ;
+    sdb:connection     <#conn> ;
+.
+
+<#conn> rdf:type sdb:SDBConnection ;
 
     sdb:sdbType        "oracle" ;
     sdb:sdbHost        "localhost" ;
@@ -15,8 +20,3 @@ _:c rdf:type sdb:SDBConnection ;
     sdb:sdbUser        "DB" ;
     sdb:sdbPassword    "password" ;
     .
-
-[] rdf:type sdb:Store ;
-    sdb:layout         "layout2/hash" ;
-    sdb:connection     _:c ;
-.
