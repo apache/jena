@@ -20,14 +20,14 @@ public class EvaluatorDispatch implements OpVisitor
     // TODO Clean up: OpGraph, OpDatasetNames (needed?)
     
     private Stack stack = new Stack() ;
-    private Evaluator evaluator ;
+    protected Evaluator evaluator ;
     
     public EvaluatorDispatch(Evaluator evaluator)
     {
         this.evaluator = evaluator ;
     }
 
-    private Table eval(Op op)
+    protected Table eval(Op op)
     {
         op.visit(this) ;
         return pop() ;
@@ -197,8 +197,8 @@ public class EvaluatorDispatch implements OpVisitor
         push(table) ;
     }
 
-    private void push(Table table)  { stack.push(table) ; }
-    private Table pop()
+    protected void push(Table table)  { stack.push(table) ; }
+    protected Table pop()
     { 
         if ( stack.size() == 0 )
             ALog.warn(this, "Warning: pop: empty stack") ;

@@ -30,15 +30,14 @@ import com.hp.hpl.jena.sparql.procedure.ProcEval;
 import com.hp.hpl.jena.sparql.procedure.Procedure;
 import com.hp.hpl.jena.sparql.util.Utils;
 
-
-class EvaluatorSimple implements Evaluator
+public class EvaluatorSimple implements Evaluator
 {
     // Simple, slow, correct
 
     private ExecutionContext execCxt ;
     boolean debug = false ;
 
-    EvaluatorSimple(ExecutionContext context)
+    public EvaluatorSimple(ExecutionContext context)
     {
         this.execCxt = context ;
     }

@@ -21,8 +21,8 @@ import com.hp.hpl.jena.sparql.expr.ExprList;
 
 public class TableN extends TableBase
 {
-    List rows = new ArrayList() ;
-    List vars = new ArrayList() ;
+    protected List rows = new ArrayList() ;
+    protected List vars = new ArrayList() ;
 
     public TableN() {}
     
@@ -79,7 +79,6 @@ public class TableN extends TableBase
             return new QueryIterNullIterator(execContext) ;
         return new QueryIterPlainWrapper(out.iterator(), execContext) ;
     }
-
  
     public QueryIterator iterator(ExecutionContext execCxt)
     {
