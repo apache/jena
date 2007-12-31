@@ -8,6 +8,7 @@ package com.hp.hpl.jena.query;
 
 import com.hp.hpl.jena.n3.IRIResolver;
 import com.hp.hpl.jena.sparql.lang.Parser;
+import com.hp.hpl.jena.sparql.lang.ParserRegistry;
 import com.hp.hpl.jena.sparql.lang.ParserSPARQL;
 import com.hp.hpl.jena.sparql.syntax.Element;
 import com.hp.hpl.jena.sparql.syntax.Template;
@@ -126,8 +127,7 @@ public class QueryFactory
     
     static boolean knownParserSyntax(Syntax syntaxURI)
     {
-        Parser parser = Parser.createParser(syntaxURI) ;
-        return ( parser != null ) ;
+        return ParserRegistry.get().containsFactory(syntaxURI) ;
     }
 
 

@@ -6,17 +6,18 @@
 
 package com.hp.hpl.jena.sparql.util;
 
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.QueryException;
-import com.hp.hpl.jena.query.QueryFactory;
 import com.hp.hpl.jena.sparql.algebra.Algebra;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.core.QueryCheckException;
-import com.hp.hpl.jena.sparql.lang.Parser;
+import com.hp.hpl.jena.sparql.lang.ParserRegistry;
 import com.hp.hpl.jena.sparql.sse.SSE;
 import com.hp.hpl.jena.sparql.sse.SSEParseException;
 import com.hp.hpl.jena.sparql.sse.WriterSSE;
 import com.hp.hpl.jena.sparql.sse.builders.BuildException;
+
+import com.hp.hpl.jena.query.Query;
+import com.hp.hpl.jena.query.QueryException;
+import com.hp.hpl.jena.query.QueryFactory;
 
 public class QueryUtils
 {
@@ -53,7 +54,7 @@ public class QueryUtils
     
     public static void checkParse(Query query)
     {
-        if ( ! Parser.canParse(query.getSyntax()) )
+        if ( ! ParserRegistry.get().containsFactory(query.getSyntax()) )
             return ;
         
         IndentedLineBuffer buff = new IndentedLineBuffer() ;

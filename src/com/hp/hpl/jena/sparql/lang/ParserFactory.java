@@ -1,45 +1,26 @@
 /*
- * (c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
 package com.hp.hpl.jena.sparql.lang;
 
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.QueryParseException;
 import com.hp.hpl.jena.query.Syntax;
 
-/** This class provides the root of lower level access to all the parsers.
- *  Each subclass hides the details of the per-language exception handlers and other
- *  javacc details to provide a methods that deal with setting up Query objects
- *  and using QueryException exceptions for problems.    
- * 
- * @author Andy Seaborne
- */
-
-public abstract class Parser
+/** original code - contribution from Olaf Hartig */
+public interface ParserFactory
 {
-    public abstract Query parse(Query query, String queryString) throws QueryParseException ;
+    /** Return true if this factory can create a parser for the given syntax */
+    public boolean accept ( Syntax syntax );
     
-    public static boolean canParse(Syntax syntaxURI)
-    {
-        return ParserRegistry.get().containsFactory(syntaxURI) ;
-    }
-    
-    public static Parser createParser(Syntax syntaxURI)
-    {
-        return ParserRegistry.get().createParser(syntaxURI) ;
-    }
-
-    // Do any testing of queries after the construction of the parse tree.
-    protected void validateParsedQuery(Query query)
-    {
-    }
+    /** Return a parser for the given syntax */
+    public Parser create ( Syntax syntax );
 }
 
+
 /*
- * (c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
