@@ -1,5 +1,5 @@
 /*
- *  (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: JenaConfig.java,v 1.10 2007-01-02 11:48:35 andy_seaborne Exp $
+ * $Id: JenaConfig.java,v 1.11 2008-01-02 12:05:48 andy_seaborne Exp $
  *
  * Created on 27 June 2002, 08:49
  */
@@ -51,7 +51,7 @@ import com.hp.hpl.jena.*;
        See <code>setOldLiteralCompare</code> below.</li>
  * </ul>
  * @author bwm
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  *
  */
 public class JenaConfig {

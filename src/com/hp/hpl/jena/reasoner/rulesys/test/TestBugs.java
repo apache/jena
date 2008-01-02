@@ -3,9 +3,9 @@
  * Created by:  Dave Reynolds
  * Created on:  22-Aug-2003
  *
- * (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestBugs.java,v 1.51 2007-12-07 09:59:35 der Exp $
+ * $Id: TestBugs.java,v 1.52 2008-01-02 12:08:20 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -36,7 +36,7 @@ import com.hp.hpl.jena.vocabulary.*;
  * Unit tests for reported bugs in the rule system.
  *
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.51 $ on $Date: 2007-12-07 09:59:35 $
+ * @version $Revision: 1.52 $ on $Date: 2008-01-02 12:08:20 $
  */
 public class TestBugs extends TestCase {
 
@@ -946,7 +946,7 @@ public class TestBugs extends TestCase {
 }
 
 /*
-    (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

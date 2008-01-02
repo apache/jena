@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+  (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestNode.java,v 1.47 2007-07-04 15:21:57 chris-dollin Exp $
+  $Id: TestNode.java,v 1.48 2008-01-02 12:05:34 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -701,7 +701,7 @@ public class TestNode extends GraphTestBase
     }
 
 /*
-    (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+    (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

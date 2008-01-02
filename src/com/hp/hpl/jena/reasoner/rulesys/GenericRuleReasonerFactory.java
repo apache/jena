@@ -3,9 +3,9 @@
  * Created by:  Dave Reynolds
  * Created on:  08-Jun-2003
  * 
- * (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: GenericRuleReasonerFactory.java,v 1.12 2007-01-02 11:50:58 andy_seaborne Exp $
+ * $Id: GenericRuleReasonerFactory.java,v 1.13 2008-01-02 12:07:47 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -19,7 +19,7 @@ import com.hp.hpl.jena.vocabulary.ReasonerVocabulary;
  * calls to the created reasoner or though parameters in the configuration Model.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.12 $ on $Date: 2007-01-02 11:50:58 $
+ * @version $Revision: 1.13 $ on $Date: 2008-01-02 12:07:47 $
  */
 public class GenericRuleReasonerFactory implements ReasonerFactory {
     
@@ -77,7 +77,7 @@ public class GenericRuleReasonerFactory implements ReasonerFactory {
 
 
 /*
-    (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

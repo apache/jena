@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007, 2008 Hewlett-Packard Development Company, LP
  * [See end of file]
  */
 
@@ -9,7 +9,7 @@ package com.hp.hpl.jena.util.junit;
  *  not a failure of the test itself (e.g. manifest problems)
  *  
  * @author		Andy Seaborne
- * @version 	$Id: TestException.java,v 1.1 2007-03-23 11:59:47 andy_seaborne Exp $
+ * @version 	$Id: TestException.java,v 1.2 2008-01-02 12:11:12 andy_seaborne Exp $
  */
 
 
@@ -22,7 +22,7 @@ public class TestException extends RuntimeException
 }
 
 /*
- *  (c) Copyright 2007 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2007, 2008 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

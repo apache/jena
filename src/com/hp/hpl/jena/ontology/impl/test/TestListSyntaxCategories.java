@@ -7,13 +7,13 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            02-Apr-2003
  * Filename           $RCSfile: TestListSyntaxCategories.java,v $
- * Revision           $Revision: 1.28 $
+ * Revision           $Revision: 1.29 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2007-11-30 15:31:57 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2008-01-02 12:08:39 $
+ *               by   $Author: andy_seaborne $
  *
- * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
  *****************************************************************************/
 
@@ -44,7 +44,7 @@ import org.apache.commons.logging.LogFactory;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestListSyntaxCategories.java,v 1.28 2007-11-30 15:31:57 ian_dickinson Exp $
+ * @version CVS $Id: TestListSyntaxCategories.java,v 1.29 2008-01-02 12:08:39 andy_seaborne Exp $
  */
 public class TestListSyntaxCategories
     extends TestCase
@@ -782,7 +782,7 @@ public class TestListSyntaxCategories
 
 
 /*
-    (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+    (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

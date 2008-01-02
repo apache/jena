@@ -1,7 +1,7 @@
 /*
- 	(c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ 	(c) Copyright 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestDocumentManagerAssembler.java,v 1.5 2007-07-24 15:32:33 chris-dollin Exp $
+ 	$Id: TestDocumentManagerAssembler.java,v 1.6 2008-01-02 12:05:57 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.assembler.test;
@@ -121,7 +121,7 @@ public class TestDocumentManagerAssembler extends AssemblerTestBase
 
 
 /*
- * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

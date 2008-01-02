@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2005, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: ListEntry.java,v 1.3 2007-01-02 11:48:45 andy_seaborne Exp $
+ * $Id: ListEntry.java,v 1.4 2008-01-02 12:06:20 andy_seaborne Exp $
  *****************************************************************/
 
 package com.hp.hpl.jena.reasoner.rulesys.builtins;
@@ -20,7 +20,7 @@ import com.hp.hpl.jena.graph.*;
  * and the call will fail. Only useable in rule bodies.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.3 $ on $Date: 2007-01-02 11:48:45 $
+ * @version $Revision: 1.4 $ on $Date: 2008-01-02 12:06:20 $
  */
 public class ListEntry extends BaseBuiltin {
 
@@ -88,7 +88,7 @@ public class ListEntry extends BaseBuiltin {
 }
 
 /*
-    (c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+    (c) Copyright 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

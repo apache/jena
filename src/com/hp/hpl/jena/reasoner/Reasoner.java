@@ -3,9 +3,9 @@
  * Created by:  Dave Reynolds
  * Created on:  09-Jan-2003
  * 
- * (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: Reasoner.java,v 1.19 2007-01-02 11:52:18 andy_seaborne Exp $
+ * $Id: Reasoner.java,v 1.20 2008-01-02 12:07:00 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner;
 
@@ -21,7 +21,7 @@ import com.hp.hpl.jena.rdf.model.*;
  * the reasoner has been bound to a set of RDF data.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.19 $ on $Date: 2007-01-02 11:52:18 $
+ * @version $Revision: 1.20 $ on $Date: 2008-01-02 12:07:00 $
  */
 public interface Reasoner {
     
@@ -140,7 +140,7 @@ public interface Reasoner {
 
 
 /*
-    (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

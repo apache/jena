@@ -7,13 +7,13 @@
  * Web site           @website@
  * Created            21-Jan-2005
  * Filename           $RCSfile: TestOneToManyMap.java,v $
- * Revision           $Revision: 1.4 $
+ * Revision           $Revision: 1.5 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2007-01-02 11:53:25 $
+ * Last modified on   $Date: 2008-01-02 12:08:35 $
  *               by   $Author: andy_seaborne $
  *
- * (c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  * [See end of file]
  *****************************************************************************/
 
@@ -40,7 +40,7 @@ import junit.framework.TestCase;
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version Release @release@ ($Id: TestOneToManyMap.java,v 1.4 2007-01-02 11:53:25 andy_seaborne Exp $)
+ * @version Release @release@ ($Id: TestOneToManyMap.java,v 1.5 2008-01-02 12:08:35 andy_seaborne Exp $)
  */
 public class TestOneToManyMap 
     extends TestCase
@@ -360,7 +360,7 @@ public class TestOneToManyMap
 
 
 /*
- * (c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

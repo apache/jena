@@ -1,5 +1,5 @@
 /*
- *  (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: rdfcopy.java,v 1.13 2007-01-02 11:51:15 andy_seaborne Exp $
+ * $Id: rdfcopy.java,v 1.14 2008-01-02 12:08:16 andy_seaborne Exp $
  */
 
 package jena;
@@ -59,7 +59,7 @@ import java.io.*;
  *  </pre>
  *
  * @author  bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.13 $ $Date: 2007-01-02 11:51:15 $
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.14 $ $Date: 2008-01-02 12:08:16 $
  */
 public class rdfcopy extends java.lang.Object {
 

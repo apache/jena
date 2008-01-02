@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+  (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: LazyIterator.java,v 1.6 2007-01-02 11:49:41 andy_seaborne Exp $
+  $Id: LazyIterator.java,v 1.7 2008-01-02 12:07:35 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.util.iterator;
@@ -15,7 +15,7 @@ package com.hp.hpl.jena.util.iterator;
  * of create().  That is called exactly once on the first attempt 
  * to interact with the LazyIterator.  
  * @author jjc, modified to use ExtendedIterators by csayers
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  */
 abstract public class LazyIterator implements ExtendedIterator {
 
@@ -87,7 +87,7 @@ abstract public class LazyIterator implements ExtendedIterator {
 }
 
 /*
-	(c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+	(c) Copyright 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
 	All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without

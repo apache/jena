@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2007, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: Regex.java,v 1.1 2007-01-10 17:07:45 der Exp $
+ * $Id: Regex.java,v 1.2 2008-01-02 12:06:20 andy_seaborne Exp $
  *****************************************************************/
 
 package com.hp.hpl.jena.reasoner.rulesys.builtins;
@@ -78,7 +78,7 @@ public class Regex extends BaseBuiltin {
 
 
 /*
-    (c) Copyright 2007 Hewlett-Packard Development Company, LP
+    (c) Copyright 2007, 2008 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

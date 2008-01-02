@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  * [See end of file]
  */
 
@@ -10,7 +10,7 @@ import java.security.* ;
 
 /** Random number based UUIDs
  * @author		Andy Seaborne
- * @version 	$Id: UUID_V4.java,v 1.6 2007-01-02 11:51:49 andy_seaborne Exp $
+ * @version 	$Id: UUID_V4.java,v 1.7 2008-01-02 12:06:07 andy_seaborne Exp $
  */
 public class UUID_V4 extends JenaUUID
 {
@@ -98,7 +98,7 @@ public class UUID_V4 extends JenaUUID
 }
 
 /*
- *  (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

@@ -3,9 +3,9 @@
  * Created by:  Dave Reynolds
  * Created on:  30-Mar-03
  * 
- * (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestBasics.java,v 1.40 2007-11-01 16:07:32 chris-dollin Exp $
+ * $Id: TestBasics.java,v 1.41 2008-01-02 12:08:20 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -27,7 +27,7 @@ import java.io.*;
  * Unit tests for simple infrastructure pieces of the rule systems.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.40 $ on $Date: 2007-11-01 16:07:32 $
+ * @version $Revision: 1.41 $ on $Date: 2008-01-02 12:08:20 $
  */
 public class TestBasics extends TestCase  {
     
@@ -576,7 +576,7 @@ public class TestBasics extends TestCase  {
 }
 
 /*
-    (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+  (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: AbstractTestGraph.java,v 1.78 2007-09-05 14:36:34 jeremy_carroll Exp $i
+  $Id: AbstractTestGraph.java,v 1.79 2008-01-02 12:05:31 andy_seaborne Exp $i
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -990,7 +990,7 @@ public/* abstract */class AbstractTestGraph extends GraphTestBase
 
 
 /*
-    (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

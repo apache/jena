@@ -1,7 +1,7 @@
 /*
- 	(c) Copyright 2007 Hewlett-Packard Development Company, LP
+ 	(c) Copyright 2007, 2008 Hewlett-Packard Development Company, LP
  	All rights reserved.
- 	$Id: BasicFBReifier.java,v 1.5 2007-01-12 14:30:09 chris-dollin Exp $
+ 	$Id: BasicFBReifier.java,v 1.6 2008-01-02 12:07:46 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.reasoner.rulesys;
@@ -89,7 +89,7 @@ public class BasicFBReifier implements Reifier
 
 
 /*
-    (c) Copyright 2007 Hewlett-Packard Development Company, LP
+    (c) Copyright 2007, 2008 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

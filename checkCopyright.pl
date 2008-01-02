@@ -41,9 +41,9 @@ sub checkOne
  	print "$file: No date or wrong order\n" ;
     }
 
-    if ( ! m!Copyright.*2007 Hewlett-Packard! )
+    if ( m!Copyright.*200[^8] Hewlett-Packard! )
     {
- 	print "$file: Not 2007\n" ;
+ 	print "$file: Not 2008\n" ;
     }
 
     unless ( m/THIS SOFTWARE IS PROVIDED BY THE AUTHOR/ )
@@ -64,6 +64,19 @@ sub setExclude
     $exclude{'src/com/hp/hpl/jena/n3/N3AntlrParserTokenTypes.java'} = 1 ;
     $exclude{'src/com/hp/hpl/jena/n3/N3AntlrParserTokenTypes.java'} = 1 ;
     $exclude{'src/com/hp/hpl/jena/n3/N3AntlrParserTokenTypes.java'} = 1 ;
+
+    $exclude{'src/com/hp/hpl/jena/n3/turtle/parser/JavaCharStream.java'}= 1 ;
+    $exclude{'src/com/hp/hpl/jena/n3/turtle/parser/ParseException.java'} = 1 ;
+    $exclude{'src/com/hp/hpl/jena/n3/turtle/parser/Token.java'} = 1 ;
+    $exclude{'src/com/hp/hpl/jena/n3/turtle/parser/TokenMgrError.java'} = 1 ;
+    $exclude{'src/com/hp/hpl/jena/n3/turtle/parser/TurtleParser.java'} = 1 ;
+    $exclude{'src/com/hp/hpl/jena/n3/turtle/parser/TurtleParser.java'} = 1 ;
+    $exclude{'src/com/hp/hpl/jena/n3/turtle/parser/TurtleParserConstants.java'} = 1 ;
+    $exclude{'src/com/hp/hpl/jena/n3/turtle/parser/TurtleParserConstants.java'} = 1 ;
+    $exclude{'src/com/hp/hpl/jena/n3/turtle/parser/TurtleParserTokenManager.java'} = 1 ;
+    $exclude{'src/com/hp/hpl/jena/n3/turtle/parser/TurtleParserTokenManager.java'} = 1 ;
+    $exclude{'src/com/hp/hpl/jena/n3/turtle/test/TurtleTestVocab.java'} = 1 ;
+    $exclude{'src/com/hp/hpl/jena/n3/turtle/test/TurtleTestVocab.java'} = 1 ;
 
     $exclude{'src/com/hp/hpl/jena/rdql/parser/JavaCharStream.java'} = 1 ;
     $exclude{'src/com/hp/hpl/jena/rdql/parser/ParseException.java'} = 1 ;

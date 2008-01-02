@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP, all rights reserved.
+  (c) Copyright 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: RegexpTree.java,v 1.8 2007-01-02 11:51:32 andy_seaborne Exp $
+  $Id: RegexpTree.java,v 1.9 2008-01-02 12:06:04 andy_seaborne Exp $
 */
 package com.hp.hpl.jena.graph.query.regexptrees;
 
@@ -31,7 +31,7 @@ public abstract class RegexpTree
     }
 
 /*
-    (c) Copyright 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+    (c) Copyright 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
     All rights reserved.
     
     Redistribution and use in source and binary forms, with or without

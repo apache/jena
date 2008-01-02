@@ -1,8 +1,8 @@
 /*
- *  (c) Copyright 2000, 2001, 2002, 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2000, 2001, 2002, 2002, 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *  [See end of file]
- *  $Id: BaseXMLWriter.java,v 1.66 2007-06-07 17:07:01 jeremy_carroll Exp $
+ *  $Id: BaseXMLWriter.java,v 1.67 2008-01-02 12:09:33 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.xmloutput.impl;
@@ -46,7 +46,7 @@ import com.hp.hpl.jena.xmloutput.RDFXMLWriterI;
  * </ul>
  *
  * @author  jjcnee
- * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.66 $' Date='$Date: 2007-06-07 17:07:01 $'
+ * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.67 $' Date='$Date: 2008-01-02 12:09:33 $'
 */
 abstract public class BaseXMLWriter implements RDFXMLWriterI {
     
@@ -840,7 +840,7 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
 }
 
 /*
-	(c) Copyright 2000, 2001, 2002, 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+	(c) Copyright 2000, 2001, 2002, 2002, 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
 	All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without

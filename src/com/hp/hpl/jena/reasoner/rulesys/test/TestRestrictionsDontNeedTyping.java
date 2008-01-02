@@ -1,7 +1,7 @@
 /*
- 	(c) Copyright 2007 Hewlett-Packard Development Company, LP
+ 	(c) Copyright 2007, 2008 Hewlett-Packard Development Company, LP
  	All rights reserved.
- 	$Id: TestRestrictionsDontNeedTyping.java,v 1.3 2007-11-01 15:36:41 chris-dollin Exp $
+ 	$Id: TestRestrictionsDontNeedTyping.java,v 1.4 2008-01-02 12:08:19 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.reasoner.rulesys.test;
@@ -87,7 +87,7 @@ public class TestRestrictionsDontNeedTyping extends ModelTestBase
 
 
 /*
- * (c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

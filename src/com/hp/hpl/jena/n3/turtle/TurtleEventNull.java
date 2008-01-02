@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007, 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
@@ -10,7 +10,7 @@ import com.hp.hpl.jena.graph.Triple;
 
 /**
  * @author Andy Seaborne
- * @version $Id: TurtleEventNull.java,v 1.1 2007-06-15 18:32:04 andy_seaborne Exp $
+ * @version $Id: TurtleEventNull.java,v 1.2 2008-01-02 12:09:27 andy_seaborne Exp $
  */
 public class TurtleEventNull implements TurtleEventHandler
 {
@@ -21,7 +21,7 @@ public class TurtleEventNull implements TurtleEventHandler
 }
 
 /*
- * (c) Copyright 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007, 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

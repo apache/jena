@@ -3,9 +3,9 @@
  * Created by:  Dave Reynolds
  * Created on:  11-Jun-2003
  * 
- * (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: RETENode.java,v 1.9 2007-01-02 11:48:41 andy_seaborne Exp $
+ * $Id: RETENode.java,v 1.10 2008-01-02 12:06:15 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -15,7 +15,7 @@ import java.util.Map;
  * Interface for all nodes in the network.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.9 $ on $Date: 2007-01-02 11:48:41 $
+ * @version $Revision: 1.10 $ on $Date: 2008-01-02 12:06:15 $
  */
 public interface RETENode {
     
@@ -31,7 +31,7 @@ public interface RETENode {
 
 
 /*
-    (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

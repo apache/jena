@@ -1,7 +1,7 @@
 /*
- 	(c) Copyright 2007 Hewlett-Packard Development Company, LP
+ 	(c) Copyright 2007, 2008 Hewlett-Packard Development Company, LP
  	All rights reserved.
- 	$Id: TestAssemblerGroupTracing.java,v 1.1 2007-07-20 15:15:14 chris-dollin Exp $
+ 	$Id: TestAssemblerGroupTracing.java,v 1.2 2008-01-02 12:05:56 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.assembler.test;
@@ -46,7 +46,7 @@ public class TestAssemblerGroupTracing extends AssemblerTestBase
 
 
 /*
- * (c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  * [See end of file]
  */
 
@@ -9,7 +9,7 @@ import antlr.collections.AST ;
 
 /** A basic (do nothing) implementation of N3ParserEventHandler.
  * @author		Andy Seaborne
- * @version 	$Id: NullN3EventHandler.java,v 1.8 2007-01-02 11:48:32 andy_seaborne Exp $
+ * @version 	$Id: NullN3EventHandler.java,v 1.9 2008-01-02 12:04:50 andy_seaborne Exp $
  */
 
 public class NullN3EventHandler implements N3ParserEventHandler
@@ -30,7 +30,7 @@ public class NullN3EventHandler implements N3ParserEventHandler
 }
 
 /*
- *  (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

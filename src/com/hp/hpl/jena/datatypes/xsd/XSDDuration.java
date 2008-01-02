@@ -3,9 +3,9 @@
  * Created by:  Dave Reynolds
  * Created on:  16-Dec-02
  * 
- * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: XSDDuration.java,v 1.14 2007-02-19 14:21:11 der Exp $
+ * $Id: XSDDuration.java,v 1.15 2008-01-02 12:10:49 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.datatypes.xsd;
 
@@ -20,7 +20,7 @@ import com.hp.hpl.jena.datatypes.xsd.impl.XSDAbstractDateTimeType;
  * decimals for seconds.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.14 $ on $Date: 2007-02-19 14:21:11 $
+ * @version $Revision: 1.15 $ on $Date: 2008-01-02 12:10:49 $
  */
 public class XSDDuration extends AbstractDateTime {
 
@@ -299,7 +299,7 @@ public class XSDDuration extends AbstractDateTime {
 }
 
 /*
-    (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+    (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

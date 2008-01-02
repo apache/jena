@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+  (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestTriple.java,v 1.22 2007-07-04 15:21:57 chris-dollin Exp $
+  $Id: TestTriple.java,v 1.23 2008-01-02 12:05:33 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -255,7 +255,7 @@ public class TestTriple extends GraphTestBase
 
     }
 /*
-    (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

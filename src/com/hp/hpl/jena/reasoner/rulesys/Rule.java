@@ -3,9 +3,9 @@
  * Created by:  Dave Reynolds
  * Created on:  29-Mar-03
  * 
- * (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: Rule.java,v 1.47 2007-10-22 09:03:41 der Exp $
+ * $Id: Rule.java,v 1.48 2008-01-02 12:07:47 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -65,7 +65,7 @@ import org.apache.commons.logging.LogFactory;
  * embedded rule, commas are ignore and can be freely used as separators. Functor names
  * may not end in ':'.
  * </p>
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.47 $ on $Date: 2007-10-22 09:03:41 $ 
+ * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.48 $ on $Date: 2008-01-02 12:07:47 $ 
  */
 public class Rule implements ClauseEntry {
     
@@ -1099,7 +1099,7 @@ public class Rule implements ClauseEntry {
 }
 
 /*
-    (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

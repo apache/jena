@@ -1,7 +1,7 @@
 /*
- 	(c) Copyright 2007 Hewlett-Packard Development Company, LP
+ 	(c) Copyright 2007, 2008 Hewlett-Packard Development Company, LP
  	All rights reserved.
- 	$Id: TestUnionStatistics.java,v 1.1 2007-07-31 09:43:59 chris-dollin Exp $
+ 	$Id: TestUnionStatistics.java,v 1.2 2008-01-02 12:07:21 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.graph.compose.test;
@@ -102,7 +102,7 @@ public class TestUnionStatistics extends GraphTestBase
 
 
 /*
- * (c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

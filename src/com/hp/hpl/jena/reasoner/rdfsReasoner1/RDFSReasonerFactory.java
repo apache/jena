@@ -3,9 +3,9 @@
  * Created by:  Dave Reynolds
  * Created on:  21-Jan-03
  * 
- * (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: RDFSReasonerFactory.java,v 1.19 2007-11-13 09:46:35 chris-dollin Exp $
+ * $Id: RDFSReasonerFactory.java,v 1.20 2008-01-02 12:06:44 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rdfsReasoner1;
 
@@ -22,7 +22,7 @@ import com.hp.hpl.jena.vocabulary.*;
  * {@link com.hp.hpl.jena.reasoner.rulesys.RDFSRuleReasonerFactory}.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.19 $ on $Date: 2007-11-13 09:46:35 $
+ * @version $Revision: 1.20 $ on $Date: 2008-01-02 12:06:44 $
  */
 public class RDFSReasonerFactory implements ReasonerFactory {
     
@@ -103,7 +103,7 @@ public class RDFSReasonerFactory implements ReasonerFactory {
 }
 
 /*
-    (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

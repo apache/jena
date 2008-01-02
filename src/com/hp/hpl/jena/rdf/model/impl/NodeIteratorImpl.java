@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+  (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: NodeIteratorImpl.java,v 1.9 2007-01-02 11:48:30 andy_seaborne Exp $
+  $Id: NodeIteratorImpl.java,v 1.10 2008-01-02 12:04:56 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -14,7 +14,7 @@ import java.util.*;
 /** A NodeIterator implementation.
  *
  * @author  bwm + kers
- * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.9 $' Date='$Date: 2007-01-02 11:48:30 $'
+ * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.10 $' Date='$Date: 2008-01-02 12:04:56 $'
  */
 public class NodeIteratorImpl extends WrappedIterator implements NodeIterator {
     
@@ -30,7 +30,7 @@ public class NodeIteratorImpl extends WrappedIterator implements NodeIterator {
 }
 
 /*
- *  (c) Copyright 2000, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2000, 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

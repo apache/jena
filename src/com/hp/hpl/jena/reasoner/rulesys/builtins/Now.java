@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2007, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: Now.java,v 1.2 2007-09-08 11:34:09 der Exp $
+ * $Id: Now.java,v 1.3 2008-01-02 12:06:22 andy_seaborne Exp $
  *****************************************************************/
 
 package com.hp.hpl.jena.reasoner.rulesys.builtins;
@@ -22,7 +22,7 @@ import com.hp.hpl.jena.reasoner.rulesys.RuleContext;
  * Bind the first arg to the current date time in the current locale and timezone.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class Now extends BaseBuiltin {
 
@@ -59,7 +59,7 @@ public class Now extends BaseBuiltin {
 
 
 /*
-    (c) Copyright 2007 Hewlett-Packard Development Company, LP
+    (c) Copyright 2007, 2008 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

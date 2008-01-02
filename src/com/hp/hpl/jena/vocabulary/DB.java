@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP  
+ * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP  
  * [see end of file]
  */
 
@@ -15,7 +15,7 @@ import com.hp.hpl.jena.rdf.model.*;
  * Vocabulary for Database properties.
  *
  * @author csayers
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  */
 public class DB {
 
@@ -67,7 +67,7 @@ public class DB {
 }
 
 /*
- * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

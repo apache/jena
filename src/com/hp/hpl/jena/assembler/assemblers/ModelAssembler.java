@@ -1,7 +1,7 @@
 /*
- 	(c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+ 	(c) Copyright 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: ModelAssembler.java,v 1.9 2007-12-21 12:21:57 chris-dollin Exp $
+ 	$Id: ModelAssembler.java,v 1.10 2008-01-02 12:09:36 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.assembler.assemblers;
@@ -119,7 +119,7 @@ public abstract class ModelAssembler extends AssemblerBase implements Assembler
 
 
 /*
- * (c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

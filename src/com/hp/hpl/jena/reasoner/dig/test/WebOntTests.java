@@ -7,13 +7,13 @@
  * Web site           @website@
  * Created            20-Apr-2004
  * Filename           $RCSfile: WebOntTests.java,v $
- * Revision           $Revision: 1.12 $
+ * Revision           $Revision: 1.13 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2007-01-02 11:52:53 $
+ * Last modified on   $Date: 2008-01-02 12:10:28 $
  *               by   $Author: andy_seaborne $
  *
- * (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  *****************************************************************************/
 
 // Package
@@ -684,7 +684,7 @@ public class WebOntTests
 
 
 /*
- * (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

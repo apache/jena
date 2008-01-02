@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
@@ -14,7 +14,7 @@ import com.hp.hpl.jena.rdf.model.Resource;
 /** com.hp.hpl.jena.query.test.TestUtils
  * 
  * @author Andy Seaborne
- * @version $Id: TestUtils.java,v 1.1 2007-03-23 11:59:47 andy_seaborne Exp $
+ * @version $Id: TestUtils.java,v 1.2 2008-01-02 12:11:12 andy_seaborne Exp $
  */
 
 public class TestUtils
@@ -80,7 +80,7 @@ public class TestUtils
 }
 
 /*
- * (c) Copyright 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

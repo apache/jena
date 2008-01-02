@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+  (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: GetModel.java,v 1.5 2007-01-02 11:49:22 andy_seaborne Exp $
+  $Id: GetModel.java,v 1.6 2008-01-02 12:07:04 andy_seaborne Exp $
 */
 package com.hp.hpl.jena.regression;
 import com.hp.hpl.jena.rdf.model.Model;
@@ -15,7 +15,7 @@ interface GetModel {
 }
 
 /*
- (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+ (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without

@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+  (c) Copyright 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ModelReader.java,v 1.2 2007-01-02 11:48:35 andy_seaborne Exp $
+  $Id: ModelReader.java,v 1.3 2008-01-02 12:05:47 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
@@ -21,7 +21,7 @@ public interface ModelReader
     }
 
 /*
-(c) Copyright 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+(c) Copyright 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without

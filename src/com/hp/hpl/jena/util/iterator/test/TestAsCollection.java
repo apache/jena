@@ -1,7 +1,7 @@
 /*
- 	(c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ 	(c) Copyright 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestAsCollection.java,v 1.2 2007-01-02 11:51:07 andy_seaborne Exp $
+ 	$Id: TestAsCollection.java,v 1.3 2008-01-02 12:08:44 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.util.iterator.test;
@@ -50,7 +50,7 @@ public class TestAsCollection extends ModelTestBase
 
 
 /*
- * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

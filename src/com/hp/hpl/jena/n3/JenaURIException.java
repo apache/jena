@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
@@ -12,7 +12,7 @@ import com.hp.hpl.jena.shared.JenaException;
 /** com.hp.hpl.jena.query.util.RelativeURIException
  * 
  * @author Andy Seaborne
- * @version $Id: JenaURIException.java,v 1.2 2007-07-31 14:04:17 jeremy_carroll Exp $
+ * @version $Id: JenaURIException.java,v 1.3 2008-01-02 12:04:48 andy_seaborne Exp $
  */
 
 public class JenaURIException extends JenaException
@@ -23,7 +23,7 @@ public class JenaURIException extends JenaException
 }
 
 /*
- * (c) Copyright 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

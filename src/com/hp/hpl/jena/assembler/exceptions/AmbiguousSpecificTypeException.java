@@ -1,7 +1,7 @@
 /*
- 	(c) Copyright 2007 Hewlett-Packard Development Company, LP
+ 	(c) Copyright 2007, 2008 Hewlett-Packard Development Company, LP
  	All rights reserved.
- 	$Id: AmbiguousSpecificTypeException.java,v 1.1 2007-08-02 13:33:11 chris-dollin Exp $
+ 	$Id: AmbiguousSpecificTypeException.java,v 1.2 2008-01-02 12:07:39 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.assembler.exceptions;
@@ -47,7 +47,7 @@ public class AmbiguousSpecificTypeException extends AssemblerException
 
 
 /*
- * (c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

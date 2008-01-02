@@ -1,7 +1,7 @@
 /*
- 	(c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ 	(c) Copyright 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: ModelExpansion.java,v 1.12 2007-08-02 13:33:09 chris-dollin Exp $
+ 	$Id: ModelExpansion.java,v 1.13 2008-01-02 12:05:52 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.assembler;
@@ -293,7 +293,7 @@ public class ModelExpansion
 
 
 /*
- * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

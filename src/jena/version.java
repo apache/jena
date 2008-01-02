@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2007 Hewlett-Packard Development Company, LP
+  (c) Copyright 2007, 2008 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: version.java,v 1.1 2007-04-16 15:26:59 jeremy_carroll Exp $
+  $Id: version.java,v 1.2 2008-01-02 12:08:16 andy_seaborne Exp $
 */
 package jena;
 
@@ -34,7 +34,7 @@ public class version implements Jena {
 
 
 /*
-    (c) Copyright 2007 Hewlett-Packard Development Company, LP
+    (c) Copyright 2007, 2008 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

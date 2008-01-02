@@ -1,7 +1,7 @@
 /*
- 	(c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+ 	(c) Copyright 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: FasterPatternStage.java,v 1.23 2007-01-02 11:52:40 andy_seaborne Exp $
+ 	$Id: FasterPatternStage.java,v 1.24 2008-01-02 12:09:58 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.mem.faster;
@@ -17,7 +17,7 @@ public class FasterPatternStage extends PatternStageBase
 
 
 /*
- * (c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

@@ -7,13 +7,13 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: InverseFunctionalProperty.java,v $
- * Revision           $Revision: 1.8 $
+ * Revision           $Revision: 1.9 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2007-12-14 18:32:51 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2008-01-02 12:06:38 $
+ *               by   $Author: andy_seaborne $
  *
- * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
  * ****************************************************************************/
 
@@ -42,7 +42,7 @@ package com.hp.hpl.jena.ontology;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: InverseFunctionalProperty.java,v 1.8 2007-12-14 18:32:51 ian_dickinson Exp $
+ * @version CVS $Id: InverseFunctionalProperty.java,v 1.9 2008-01-02 12:06:38 andy_seaborne Exp $
  */
 public interface InverseFunctionalProperty
     extends ObjectProperty
@@ -59,7 +59,7 @@ public interface InverseFunctionalProperty
 
 
 /*
-    (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+    (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

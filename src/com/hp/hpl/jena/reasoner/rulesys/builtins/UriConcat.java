@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2007, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: UriConcat.java,v 1.1 2007-01-10 17:07:45 der Exp $
+ * $Id: UriConcat.java,v 1.2 2008-01-02 12:06:21 andy_seaborne Exp $
  *****************************************************************/
 
 package com.hp.hpl.jena.reasoner.rulesys.builtins;
@@ -20,7 +20,7 @@ import com.hp.hpl.jena.reasoner.rulesys.RuleContext;
  * the concatenation of the lexical form of all the preceeding arguments.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class UriConcat extends StrConcat {
 
@@ -56,7 +56,7 @@ public class UriConcat extends StrConcat {
 
 
 /*
-    (c) Copyright 2007 Hewlett-Packard Development Company, LP
+    (c) Copyright 2007, 2008 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

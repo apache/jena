@@ -3,9 +3,9 @@
  * Created by:  Dave Reynolds
  * Created on:  21-Jul-2003
  *
- * (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: LPTopGoalIterator.java,v 1.12 2007-01-11 17:18:57 der Exp $
+ * $Id: LPTopGoalIterator.java,v 1.13 2008-01-02 12:06:16 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -22,7 +22,7 @@ import java.util.*;
  * inference graph if the iterator hits the end of the result set.
  *
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.12 $ on $Date: 2007-01-11 17:18:57 $
+ * @version $Revision: 1.13 $ on $Date: 2008-01-02 12:06:16 $
  */
 public class LPTopGoalIterator implements ClosableIterator, LPInterpreterContext {
     /** The next result to be returned, or null if we have finished */
@@ -228,7 +228,7 @@ public class LPTopGoalIterator implements ClosableIterator, LPInterpreterContext
 
 
 /*
-    (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

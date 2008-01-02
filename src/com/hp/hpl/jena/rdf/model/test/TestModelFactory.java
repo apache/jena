@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+  (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestModelFactory.java,v 1.35 2007-02-09 12:09:07 chris-dollin Exp $
+  $Id: TestModelFactory.java,v 1.36 2008-01-02 12:04:41 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -99,7 +99,7 @@ public class TestModelFactory extends ModelTestBase
     }
 
 /*
-    (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+    (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

@@ -3,9 +3,9 @@
  * Created by:  Dave Reynolds
  * Created on:  21-Jan-03
  * 
- * (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: RDFSReasoner.java,v 1.24 2007-01-12 14:14:00 chris-dollin Exp $
+ * $Id: RDFSReasoner.java,v 1.25 2008-01-02 12:06:44 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rdfsReasoner1;
 
@@ -35,7 +35,7 @@ import com.hp.hpl.jena.vocabulary.ReasonerVocabulary;
  * need that might match (*, type, Resource) or (*, type, Property)!</p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.24 $ on $Date: 2007-01-12 14:14:00 $
+ * @version $Revision: 1.25 $ on $Date: 2008-01-02 12:06:44 $
  */
 public class RDFSReasoner extends TransitiveReasoner implements Reasoner {
     /** The domain property */
@@ -180,7 +180,7 @@ public class RDFSReasoner extends TransitiveReasoner implements Reasoner {
 }
 
 /*
-    (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

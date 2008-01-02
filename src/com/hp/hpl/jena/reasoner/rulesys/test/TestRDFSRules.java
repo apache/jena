@@ -3,9 +3,9 @@
  * Created by:  Dave Reynolds
  * Created on:  08-Apr-03
  * 
- * (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestRDFSRules.java,v 1.23 2007-01-02 11:50:30 andy_seaborne Exp $
+ * $Id: TestRDFSRules.java,v 1.24 2008-01-02 12:08:20 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -31,7 +31,7 @@ import org.apache.commons.logging.LogFactory;
  * <p> The tests themselves have been replaced by an updated version
  * of the top level TestRDFSReasoners but this file is maintained for now since
  * the top level timing test can sometimes be useful. </p>
- *  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.23 $ on $Date: 2007-01-02 11:50:30 $ */
+ *  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.24 $ on $Date: 2008-01-02 12:08:20 $ */
 public class TestRDFSRules extends TestCase {   
     /** Base URI for the test names */
     public static final String NAMESPACE = "http://www.hpl.hp.com/semweb/2003/query_tester/";
@@ -155,7 +155,7 @@ public class TestRDFSRules extends TestCase {
 }
 
 /*
-    (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

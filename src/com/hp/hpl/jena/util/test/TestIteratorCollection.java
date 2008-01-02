@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+  (c) Copyright 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestIteratorCollection.java,v 1.4 2007-01-02 11:53:25 andy_seaborne Exp $
+  $Id: TestIteratorCollection.java,v 1.5 2008-01-02 12:08:35 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.util.test;
@@ -117,7 +117,7 @@ public class TestIteratorCollection extends GraphTestBase
     }
 
 /*
-    (c) Copyright 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+    (c) Copyright 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

@@ -3,9 +3,9 @@
  * Created by:  Dave Reynolds
  * Created on:  28-Apr-03
  * 
- * (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: BindingStack.java,v 1.11 2007-01-02 11:48:41 andy_seaborne Exp $
+ * $Id: BindingStack.java,v 1.12 2008-01-02 12:06:16 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -21,7 +21,7 @@ import java.util.*;
  * Provides a trail of possible variable bindings for a forward rule.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.11 $ on $Date: 2007-01-02 11:48:41 $
+ * @version $Revision: 1.12 $ on $Date: 2008-01-02 12:06:16 $
  */
 public class BindingStack implements BindingEnvironment {
     
@@ -210,7 +210,7 @@ public class BindingStack implements BindingEnvironment {
 }
 
 /*
-    (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

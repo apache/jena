@@ -3,9 +3,9 @@
  * Created by:  Dave Reynolds
  * Created on:  26-Jan-03
  * 
- * (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: BaseFRule.java,v 1.9 2007-01-02 11:48:52 andy_seaborne Exp $
+ * $Id: BaseFRule.java,v 1.10 2008-01-02 12:06:43 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rdfsReasoner1;
 
@@ -22,7 +22,7 @@ import java.util.*;
  * match and then processed be descendant class.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.9 $ on $Date: 2007-01-02 11:48:52 $
+ * @version $Revision: 1.10 $ on $Date: 2008-01-02 12:06:43 $
  */
 public class BaseFRule {
 
@@ -166,7 +166,7 @@ public class BaseFRule {
 }
 
 /*
-    (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

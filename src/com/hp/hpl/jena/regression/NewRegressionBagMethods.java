@@ -1,7 +1,7 @@
 /*
- 	(c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+ 	(c) Copyright 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: NewRegressionBagMethods.java,v 1.6 2007-01-02 11:49:22 andy_seaborne Exp $
+ 	$Id: NewRegressionBagMethods.java,v 1.7 2008-01-02 12:07:04 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.regression;
@@ -28,7 +28,7 @@ public class NewRegressionBagMethods extends NewRegressionContainerMethods
 
 
 /*
- * (c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

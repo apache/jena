@@ -7,13 +7,13 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            24 Jan 2003
  * Filename           $RCSfile: EmptyListException.java,v $
- * Revision           $Revision: 1.8 $
+ * Revision           $Revision: 1.9 $
  * Release status     @releaseStatus@ $State: Exp $
  *
- * Last modified on   $Date: 2007-01-02 11:48:35 $
+ * Last modified on   $Date: 2008-01-02 12:05:47 $
  *               by   $Author: andy_seaborne $
  *
- * (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
  *****************************************************************************/
 
@@ -37,7 +37,7 @@ import com.hp.hpl.jena.shared.JenaException;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version Release ($Id: EmptyListException.java,v 1.8 2007-01-02 11:48:35 andy_seaborne Exp $)
+ * @version Release ($Id: EmptyListException.java,v 1.9 2008-01-02 12:05:47 andy_seaborne Exp $)
  */
 public class EmptyListException
     extends JenaException
@@ -91,7 +91,7 @@ public class EmptyListException
 
 
 /*
-    (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

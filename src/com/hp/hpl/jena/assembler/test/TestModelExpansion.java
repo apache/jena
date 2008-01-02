@@ -1,7 +1,7 @@
 /*
- 	(c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ 	(c) Copyright 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestModelExpansion.java,v 1.6 2007-08-02 13:33:13 chris-dollin Exp $
+ 	$Id: TestModelExpansion.java,v 1.7 2008-01-02 12:05:55 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.assembler.test;
@@ -139,7 +139,7 @@ public class TestModelExpansion extends AssemblerTestBase
 
 
 /*
- * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

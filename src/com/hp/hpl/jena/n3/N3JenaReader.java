@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  * [See end of file]
  */
 
@@ -11,7 +11,7 @@ import com.hp.hpl.jena.rdf.model.Model;
 
 /**
  * @author		Andy Seaborne
- * @version 	$Id: N3JenaReader.java,v 1.18 2007-01-28 16:04:13 andy_seaborne Exp $
+ * @version 	$Id: N3JenaReader.java,v 1.19 2008-01-02 12:04:50 andy_seaborne Exp $
  */
 
 public class N3JenaReader extends JenaReaderBase
@@ -31,7 +31,7 @@ public class N3JenaReader extends JenaReaderBase
 }
 
 /*
- *  (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

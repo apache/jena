@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP, all rights reserved.
+  (c) Copyright 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: GraphTripleStore.java,v 1.28 2007-01-02 11:52:20 andy_seaborne Exp $
+  $Id: GraphTripleStore.java,v 1.29 2008-01-02 12:09:51 andy_seaborne Exp $
 */
 package com.hp.hpl.jena.mem;
 
@@ -30,7 +30,7 @@ public class GraphTripleStore extends GraphTripleStoreBase implements TripleStor
     }
 
 /*
-    (c) Copyright 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+    (c) Copyright 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
     All rights reserved.
     
     Redistribution and use in source and binary forms, with or without

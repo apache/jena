@@ -1,7 +1,7 @@
 /*
- 	(c) Copyright 2007 Hewlett-Packard Development Company, LP
+ 	(c) Copyright 2007, 2008 Hewlett-Packard Development Company, LP
  	All rights reserved.
- 	$Id: GraphStatisticsHandler.java,v 1.2 2007-07-19 13:26:50 chris-dollin Exp $
+ 	$Id: GraphStatisticsHandler.java,v 1.3 2008-01-02 12:06:55 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -24,7 +24,7 @@ public interface GraphStatisticsHandler
 
 
 /*
- * (c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

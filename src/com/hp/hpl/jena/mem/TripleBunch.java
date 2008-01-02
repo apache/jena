@@ -1,7 +1,7 @@
 /*
-    (c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+    (c) Copyright 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
     All rights reserved - see end of file.
-    $Id: TripleBunch.java,v 1.8 2007-01-02 11:52:20 andy_seaborne Exp $
+    $Id: TripleBunch.java,v 1.9 2008-01-02 12:09:51 andy_seaborne Exp $
 */
 package com.hp.hpl.jena.mem;
 
@@ -76,7 +76,7 @@ public interface TripleBunch
     public abstract void app( Domain d, StageElement next, MatchOrBind s );
     }
 /*
- * (c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

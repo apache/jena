@@ -1,7 +1,7 @@
 /*
- 	(c) Copyright 2007 Hewlett-Packard Development Company, LP
+ 	(c) Copyright 2007, 2008 Hewlett-Packard Development Company, LP
  	All rights reserved.
- 	$Id: TestQuery.java,v 1.1 2007-07-25 07:54:58 chris-dollin Exp $
+ 	$Id: TestQuery.java,v 1.2 2008-01-02 12:08:56 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.graph.query.test;
@@ -46,7 +46,7 @@ public class TestQuery extends QueryTestBase
 
 
 /*
- * (c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

@@ -3,9 +3,9 @@
  * Created by:  Dave Reynolds
  * Created on:  30-Jan-2003
  * 
- * (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestPackage.java,v 1.19 2007-01-02 11:50:50 andy_seaborne Exp $
+ * $Id: TestPackage.java,v 1.20 2008-01-02 12:08:31 andy_seaborne Exp $
  *****************************************************************/
 
 package com.hp.hpl.jena.reasoner.test;
@@ -16,7 +16,7 @@ import junit.framework.*;
  * Aggregate tester that runs all the test associated with the reasoner package.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.19 $ on $Date: 2007-01-02 11:50:50 $
+ * @version $Revision: 1.20 $ on $Date: 2008-01-02 12:08:31 $
  */
 
 public class TestPackage extends TestSuite {
@@ -46,7 +46,7 @@ public class TestPackage extends TestSuite {
 }
 
 /*
-    (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

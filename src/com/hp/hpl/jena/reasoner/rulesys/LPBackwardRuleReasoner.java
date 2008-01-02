@@ -3,9 +3,9 @@
  * Created by:  Dave Reynolds
  * Created on:  25-Jul-2003
  * 
- * (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: LPBackwardRuleReasoner.java,v 1.10 2007-01-02 11:50:57 andy_seaborne Exp $
+ * $Id: LPBackwardRuleReasoner.java,v 1.11 2008-01-02 12:07:47 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -25,7 +25,7 @@ import java.util.*;
  * relvant InfGraph class. 
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.10 $ on $Date: 2007-01-02 11:50:57 $
+ * @version $Revision: 1.11 $ on $Date: 2008-01-02 12:07:47 $
  */
 public class LPBackwardRuleReasoner implements Reasoner {
 
@@ -219,7 +219,7 @@ public class LPBackwardRuleReasoner implements Reasoner {
 
 
 /*
-    (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

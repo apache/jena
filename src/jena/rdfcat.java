@@ -7,13 +7,13 @@
  * Web site           http://jena.sourceforge.net
  * Created            16-Sep-2005
  * Filename           $RCSfile: rdfcat.java,v $
- * Revision           $Revision: 1.14 $
+ * Revision           $Revision: 1.15 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2007-01-29 23:49:18 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2008-01-02 12:08:16 $
+ *               by   $Author: andy_seaborne $
  *
- * (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  * [See end of file]
  *****************************************************************************/
 
@@ -117,7 +117,7 @@ import jena.cmdline.*;
  * serialisations. Also, duplicate triples will be suppressed.</p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version Release @release@ ($Id: rdfcat.java,v 1.14 2007-01-29 23:49:18 ian_dickinson Exp $)
+ * @version Release @release@ ($Id: rdfcat.java,v 1.15 2008-01-02 12:08:16 andy_seaborne Exp $)
  */
 public class rdfcat
 {
@@ -502,7 +502,7 @@ public class rdfcat
 
 
 /*
- *  (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

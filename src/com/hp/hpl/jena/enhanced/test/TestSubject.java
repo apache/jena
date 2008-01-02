@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+  (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestSubject.java,v 1.7 2007-01-02 11:50:24 andy_seaborne Exp $
+  $Id: TestSubject.java,v 1.8 2008-01-02 12:06:35 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.enhanced.test;
@@ -16,7 +16,7 @@ public interface TestSubject  extends TestNode {
 }
 
 /*
-	(c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+	(c) Copyright 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
 	All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without

@@ -1,7 +1,7 @@
 /*
- 	(c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+ 	(c) Copyright 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: GraphMemFaster.java,v 1.19 2007-07-19 15:04:58 chris-dollin Exp $
+ 	$Id: GraphMemFaster.java,v 1.20 2008-01-02 12:09:58 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.mem.faster;
@@ -196,7 +196,7 @@ public class GraphMemFaster extends GraphMemBase
 
 
 /*
- * (c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

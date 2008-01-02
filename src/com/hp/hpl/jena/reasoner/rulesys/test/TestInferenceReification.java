@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2007, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestInferenceReification.java,v 1.1 2007-01-12 14:14:20 chris-dollin Exp $
+ * $Id: TestInferenceReification.java,v 1.2 2008-01-02 12:08:20 andy_seaborne Exp $
  *****************************************************************/
 
 package com.hp.hpl.jena.reasoner.rulesys.test;
@@ -149,7 +149,7 @@ public class TestInferenceReification extends AbstractTestReifier
 
 
 /*
-    (c) Copyright 2007 Hewlett-Packard Development Company, LP
+    (c) Copyright 2007, 2008 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

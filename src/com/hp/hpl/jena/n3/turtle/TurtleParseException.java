@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007, 2008 Hewlett-Packard Development Company, LP
  * [See end of file]
  */
 
@@ -11,7 +11,7 @@ import com.hp.hpl.jena.shared.JenaException;
  *  from the various parsers where the error is to do with the syntax of a query.
  *  
  * @author		Andy Seaborne
- * @version 	$Id: TurtleParseException.java,v 1.3 2007-06-15 18:32:04 andy_seaborne Exp $
+ * @version 	$Id: TurtleParseException.java,v 1.4 2008-01-02 12:09:25 andy_seaborne Exp $
  */
 
 
@@ -24,7 +24,7 @@ public class TurtleParseException extends JenaException
 }
 
 /*
- *  (c) Copyright 2007 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2007, 2008 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

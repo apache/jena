@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+  (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: GraphBase.java,v 1.50 2007-07-31 10:13:22 chris-dollin Exp $
+  $Id: GraphBase.java,v 1.51 2008-01-02 12:05:19 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -439,7 +439,7 @@ public abstract class GraphBase implements GraphWithPerform
 }
 
 /*
-    (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+    (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
