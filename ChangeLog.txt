@@ -3,6 +3,12 @@ ChangeLog for ARQ
 
 ==== ARQ 2.2
 
++ Added ParserRegistry (courtesy of Olaf Hartig)
+
++ Reworked roperty functions so they formally in the algebra.
+
++ Jar change: commons-logging-1.1.1.jar
+
 + Bug fix: text output of result sets sometimes gave full bNode label - revert to
   old design where a short label is used always.  
 
