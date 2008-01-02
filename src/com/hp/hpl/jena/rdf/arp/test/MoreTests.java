@@ -2,7 +2,7 @@
  *  (c)     Copyright 2000, 2001, 2002, 2002, 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  *   All rights reserved.
  * [See end of file]
- *  $Id: MoreTests.java,v 1.45 2008-01-02 12:06:50 andy_seaborne Exp $
+ *  $Id: MoreTests.java,v 1.46 2008-01-02 13:55:35 jeremy_carroll Exp $
  */
 
 package com.hp.hpl.jena.rdf.arp.test;
@@ -257,10 +257,19 @@ public class MoreTests extends TestCase implements RDFErrorHandler,
 		FileInputStream fin = new FileInputStream(
 				"testing/wg/rdf-charmod-literals/test001.rdf"
 				);
-		InputStreamReader r = new InputStreamReader(
+		InputStreamReader r = null;
+		try {
+		   r = new InputStreamReader(
 				fin,
 				"MS950"
 				);
+		}
+		catch (java.io.UnsupportedEncodingException e) {
+			System.err
+			.println("WARNING: Encoding mismatch3 test not executed on platform without MS950 encoding.");
+
+			return;
+		}
 		
 		
 		subTestEncodingMismatch2(r);
