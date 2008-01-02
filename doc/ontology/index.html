@@ -13,7 +13,7 @@
     <meta name="keywords" content="" />
     <link href="../styles/doc.css" rel="stylesheet" type="text/css" />
     <!--
-      CVS: $Id: index.html,v 1.27 2008-01-02 12:07:32 andy_seaborne Exp $
+      CVS: $Id: index.html,v 1.28 2008-01-02 17:08:22 ian_dickinson Exp $
      (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company LP
     -->
   </head>
@@ -311,8 +311,8 @@
     <h3>Ontologies and reasoning</h3>
     <p>One of the main reasons for building an ontology-based application is to use
     a reasoner to derive additional truths about the concepts you are modelling. We
-    saw a simple instance of this above: the assertion "Fred is a Fish" <em>entails</em>
-    the deduction "Fred is an Animal". There are many different styles of automated
+    saw a simple instance of this above: the assertion &quot;Fred is a Fish&quot; <em>entails</em>
+    the deduction &quot;Fred is an Animal&quot;. There are many different styles of automated
     reasoner, and very many different reasoning algorithms. Jena includes support
     for a variety of reasoners through the
     <a href="../inference/index.html">inference API</a>. A common feature of Jena
@@ -535,7 +535,7 @@ OntModel m = ModelFactory.createOntologyModel( ProfileRegistry.DAML_LANG );</pre
 <p> Beyond these basic choices, the complexities of configuring an ontology model
   are wrapped up in a recipe object called
   <code><a href="../javadoc/com/hp/hpl/jena/ontology/OntModelSpec.html">OntModelSpec</a></code>.
-  This specification allows complete control over the configuration choices for the ont
+  This specification allows complete control over the configuration choices for the ontology
   model, including the language profile in use, the reasoner, and the means of
   handling compound documents. A number of common recipes are
   pre-declared as constants in OntModelSpec, and listed below.</p>
@@ -622,17 +622,17 @@ read( InputStream reader, String base )
 read( String url, String lang )
 read( Reader reader, String base, String Lang )
 read( InputStream reader, String base, String Lang )</pre>
-    <p>You can use any of these methods to load an ontology document.
-Note that we advise that the <code>read</code> variants that
-take a  <code>java.io.Reader</code> argument
-are avoided when loading XML documents containing internationalised
-character sets, since the handling of character encoding by the Reader,
-and the handling of character encoding by XML parsers is not compatible.
-</p>
-    <p>By default, when an ontology model reads an ontology document, it
-    will also locate and load the document's imports. An OWL or DAML document
-may contain an individual of class <code>Ontology</code>, which contains meta-data
-about that document itself. For example:</p>
+      <p>You can use any of these methods to load an ontology document.
+  Note that we advise that you avoid the the <code>read()</code> variants that
+  accept  a  <code>java.io.Reader</code> argument
+  when loading XML documents containing internationalised
+  character sets, since the handling of character encoding by the Reader
+  and by XML parsers is not compatible.
+  </p>
+      <p>By default, when an ontology model reads an ontology document, it
+      will also locate and load the document's imports. An OWL or DAML document
+  may contain an individual of class <code>Ontology</code>, which contains meta-data
+  about that document itself. For example:</p>
     <pre>
 &lt;owl:Ontology rdf:about=""&gt;
   &lt;dc:creator rdf:value="Ian Dickinson" /&gt;
@@ -665,7 +665,7 @@ about that document itself. For example:</p>
       Each ontology model has an associated <em>document manager</em> that assists with
       the processing and handling of documents-related concerns. For convenience,
       there is one global document manager that is used by default by ontology
-      models. I can get a reference to this shared instance through
+      models. You  can get a reference to this shared instance through
       <code>OntDocumentManager.getInstance()</code>. In many cases,
       it will be sufficient to simply change the settings on the global
       document manager to suit your application's needs. However, for
@@ -690,7 +690,7 @@ OntModel m = ModelFactory.createOntologyModel( s );</pre>
 
     <h3>Document manager policy</h3>
         <p>Since the document manager has a large number of configurable
-    options, there are two ways in which we can customise it to our
+    options, there are two ways in which you can customise it to your
     application
     requirements. Firstly, you can set the individual parameters of the document manager
     by Java code. Alternatively, when a given document manager is
@@ -700,7 +700,7 @@ OntModel m = ModelFactory.createOntologyModel( s );</pre>
     entry on the list that resolves to a retrievable document. The default
     search path for the policy is: <code>file:./etc/ont-policy.rdf;file:ont-policy.rdf</code>.
     You can find the default policy, which can serve as a template for defining
-    your own policies, in the <code>./etc/</code> directory under the
+    your own policies, in the <code>etc/</code> directory under the
     Jena download directory.</p>
     <p>
       You can set the general properties of the document manager in the policy as follows:
@@ -713,97 +713,153 @@ OntModel m = ModelFactory.createOntologyModel( s );</pre>
 
     <p>
       You can find the simple schema that declares the various properties that you can use in
-      such an ontology document policy in the vocabularies directory of the Jena download.
-            See <code>ont-manager.rdf</code>. To change the search path that
+      such an ontology document policy in the vocabularies directory of the Jena download. It's called <code>ont-manager.rdf</code>. To change the search path that
       the document manager will use to initialise itself, you can either pass the new
       search path as a string when creating a new document manager object, or
-      call the method <code>setMetadataSearchPath</code>.</p>
+      call the method <code>setMetadataSearchPath()</code>.</p>
 
-      <!-- watermark : edit pass has reached here -->
-    <h3>
-      The ModelMaker parameter of the document manager
-    </h3>
+    <h3>The ModelMaker: creating storage on demand</h3>
 
-<p> In order for the document manager to build the union of the imported documents
-  (which we refer to as the <em>imports closure</em>), it must be able to create
-  new graphs to store the imported ontologies. A parameter of the document manager
-  is its <em>model maker</em>. The model maker is a simple interface that allows
-  different kinds of models (in memory, from file, in persistent database, etc.)
-  to be built on demand. For the database case, this may include passing the database
-  user-name and password and other connection parameters. New model makers can
-  be created via <code><a href="../javadoc/com/hp/hpl/jena/rdf/model/ModelFactory.html">ModelFactory</a></code>.
-  The default specifications in OntModelSpec that begin MEM_ use an in-memory
-  model for the base model, and use a memory model maker to store the imported
-  ontologies in in-memory models. </p>
-<p> <b>Note</b>: internally to Jena, we use the Graph as a primary data structure.
-  However, user code will almost always refer to models, not graphs. A model wraps
-  a graph, and provides convenience methods for accessing the contents of the
-  graph. Hence Figure 4, above, refers to a structure containing graphs, but we
-  use a <code><a href="../javadoc/com/hp/hpl/jena/rdf/model/ModelMaker.html">ModelMaker</a></code>
-  to generate new stores. The document manager extracts the appropriate graph
-  from the containing model. </p>
-    <h3>
-      Controlling imports processing
-    </h3>
+  <p> In order for the document manager to build the union of the imported documents
+    (which we may refer to as the <em>imports closure</em>), there must be some means of creating
+    new graphs to store the imported ontologies. Loading a new import means that there
+    needs to be a new graph added
+    Jena defines a <em>model maker</em> as a simple interface that allows
+    different kinds of model storage (in memory, file-backed, in a persistent database, etc.)
+    to be created  on demand. For the database case, this may include passing the database
+    user-name and password and other connection parameters. New model makers can
+        be created with the <code><a href="../javadoc/com/hp/hpl/jena/rdf/model/ModelFactory.html">ModelFactory</a></code>.</p>
+    <p>There are two cases in which we may want to create storage for
+    models on-demand. The first is when creating the <code>OntModel</code>
+    for the first time, some variants of <code>createOntologyModel</code>
+    will allocate space for the <em>base model</em> (instead of, for
+    example, being handed a base model to use as one of the method
+    arguments). The second case when storage must be allocated is when
+    adding an imported document to the union of imports. These cases often
+    require different policies, so the <code>OntModelSpec</code> contains
+    two model maker parameters: the <em>base model maker</em> and <em>imports
+    model maker</em>, available via <code>getBaseModelMaker()</code> and <code>getImportsModelMaker()</code>
+    methods respectively.</p>
+
+    <p>The default specifications in OntModelSpec that begin MEM_ use an
+    in-memory model maker for the both the base model and the imported
+    documents.</p>
+    <p><strong>Implementation note</strong>: internally to Jena, we use
+    <code>Graph</code> as a primary data structure. However, your code will
+    almost always refer to models, not graphs. What's happening is that a <code>Model</code>
+    is a wrapper around the <code>Graph</code>, which balances a rich,
+    convenient programing interface (<code>Model</code>) with a simple,
+    manageable internal data structure (<code>Graph</code>). Hence some
+    potential confusion in that Figure 4, above, refers to a structure
+    containing graphs, but we use a <code><a
+      href="../javadoc/com/hp/hpl/jena/rdf/model/ModelMaker.html"
+    >ModelMaker</a></code> to generate new stores. The document manager extracts the
+    appropriate graph from the containing model. Except in cases where you
+    are extending Jena's internal structures, you should think of <code>Model</code>
+    as the container of RDF and ontology data.</p>
+
+<h3>Controlling imports processing</h3>
+
+        <p>Normally, loading imports during the <code>read()</code> call
+    automatic. To <code>read()</code> an ontology without building the imports closure, call
+    the method <code>setProcessImports(&nbsp;false&nbsp;)</code> on the
+    document manager object before calling <code>read()</code>.
+    Alternatively, you can set the <code>processImports</code> property
+    in the policy file. You can also be more selective, and ignore only
+    certain URI's when loading the imported documents.
+    To selectively skip certain named imports,
+    call the method <code>addIgnoreImport(&nbsp;String&nbsp;uri&nbsp;)</code>
+    on the document manager object, or set the <code>ignoreImport</code>
+    property in the policy.</p>
+
+    <h3>Managing file references</h3>
+        <p>An advantage of working with ontologies is that we can reuse work
+    done by other ontologists, by importing their published ontologies into
+    our own.
+    Sometimes, however, this means that there is an Internet firewall between the ontology-based
+    application and the source of an imported ontology. Even if it's possible to
+    traverse the firewall through an HTTP proxy, retrieving files from an HTTP
+    connection may impose unacceptable delays when starting an application.
+    In the worst case, we may find that ontology on which our application depends is
+    temporarily or permanently unavailable from the original published URL.
+    To alleviate these commonly experienced problems, you can use the
+    ontology document manager to set up a
+    a local indirection, so that an attempt to import a document from a
+    given published URL means that a local copy of the document is retrieved
+    instead. This may be a file copy, or simply a pointer to a local
+    mirror web site.</p>
     <p>
-      To load an ontology without building the imports closure, call the method <code>setProcessImports(&nbsp;false&nbsp;)</code> on the document manager object, or set the <code>processImports</code> property in the policy file. To be more selective, it is possible to ignore certain URI's when loading the imported documents. Call the method <code>addIgnoreImport(&nbsp;String&nbsp;uri&nbsp;)</code> on the document manager object, or set the <code>ignoreImport</code> property in the policy.
+      To specify this local redirection in the policy file, use the following declarations:
     </p>
-    <p>
-      A strength of working with ontologies is that we can reuse work done by other ontologists by importing their published ontologies. Often, however, this means that the ontology is only retrievable by traversing an Internet firewall. Even if this is possible, by using an HTTP proxy, it may impose unacceptable delay in loading an application. In the worst case, an ontology on which our application depends is temporarily or permanently unavailable from the original published URL. To assist with this common problem, the ontology document manager allows a local indirection, so that an attempt to import a document from a given published URL means that a local copy of the document is retrieved instead. This may be a file copy or simply duplicated on an internal mirror web site.
-    </p>
-    <p>
-      To specify this local redirection in the policy file, we use the following declarations:
-    </p>
-    <pre>
-&lt;OntologySpec&gt;
+    <pre class="codesample">&lt;OntologySpec&gt;
+  &lt;publicURI rdf:resource="... the public URI to map from..."    /&gt;
+  &lt;altURL rdf:resource="... the local URL to map to ..." /&gt;
+  &lt;!-- optional ontology language term --&gt;
+  &lt;language rdf:resource="... encoding used ..." /&gt;
+  &lt;!-- optional prefix to associate with the public URL --&gt;
+  &lt;prefix rdf:datatype="&amp;xsd;string"&gt;a prefix&lt;/prefix&gt;
+&lt;/OntologySpec&gt;</pre>
+    <p>For example:</p>
+    <pre class="codesample">&lt;OntologySpec&gt;
   &lt;!-- local version of the RDFS vocabulary --&gt;
   &lt;publicURI rdf:resource="http://www.w3.org/2000/01/rdf-schema"    /&gt;
   &lt;altURL rdf:resource="file:vocabularies/rdf-schema.rdf" /&gt;
-  &lt;language rdf:resource="http://www.w3.org/2000/01/rdf-schema" /&gt;
-  &lt;prefix rdf:datatype="&amp;xsd;string"&gt;rdfs&lt;/prefix&gt;
 &lt;/OntologySpec&gt;</pre>
-    <p>
-      This specifies that an attempt to load the RDFS vocabulary from <code>http://www.w3.org/2000/01/rdf-schema</code> will transparently cause <code>file:vocabularies/rdf-schema.rdf</code> to be fetched instead. Any number of such re-directions may be specified in the policy file, or they can be added to the document manager object directly by calling the various 'add' methods (see the Javadoc for details). As a side-effect, this mechanism also means that ontologies can be named with any legal URI (not necessarily resolvable) - so long as the altURL is itself resolvable.
-    </p>
-    <h3>
-      Specifying prefixes
-    </h3>
+        <p>This specifies that an attempt to load the RDFS vocabulary from <code>http://www.w3.org/2000/01/rdf-schema</code>
+    will transparently cause <code>file:vocabularies/rdf-schema.rdf</code>
+    to be fetched instead. You can specify any number of such re-directions
+    in the policy file, or you can add them to the document manager object
+    directly by calling the various setter methods (see the Javadoc for
+    details). As a side-effect, this mechanism also means that ontologies
+    may be named with any legal URI (not necessarily resolvable) - so long
+    as the <code>altURL</code> is itself resolvable.</p>
+    <p>Note that the <code>OntDocumentManager</code> is an application of Jena's
+    <a href="../how-to/filemanager.html">File Manager</a>. See the notes on FileManager for details of
+    additional options.</p>
 
-<p> A model keeps a table of URI prefixes that can be used to render URI's in
-  the shortened prefix:name form, which is useful in displaying URI's in a readable
-  way in user interfaces, and is essential in producing legal XML names that denote
-  arbitrary URI's. The ontology model's table of prefixes can be initialized from
-  a table kept by the document manager, which contains the standard prefixes plus
-  any that are declared by in the policy file (or added to subsequently by method
-  calls). To prevent the model's prefix table from being initialized in this way,
-  use the property <code>useDeclaredNsPrefixes</code> in the policy file (with
-  value 'false'), or call the method <code>setUseDeclaredPrefixes</code> on the
-  ontology object. </p>
-    <h3>
-      Caching models
-    </h3>
-    <p>
-      The final behaviour that the document manager provides to assist with loading ontology documents is a model cache. Suppose two ontologies, A and B both import ontology C. It would be nice not to have to read C twice when loading A and B. The document manager supports this use case by optionally caching C's model, indexed by C's URI. Then an attempt to import C from B, it previously having been loaded by A, would result in a significant time saving, and a reuse of the same model for C in both A and B.
-    </p>
-    <p>
-      To turn model caching on or off, use the policy property <code>cacheModels</code>, or call the method <code>setCacheModels(&nbsp;boolean&nbsp;caching&nbsp;)</code>. The default is caching on. The document manager's current model cache can be cleared at any time by calling <code>clearCache()</code>.
-    </p>
-    <h3>
-      Example
-    </h3>
+  <p> In the following example, I programmatically declare that the ESWC ontology
+    is replicated locally on disk, and then I load it using the public URL. Assume that the constant
+    <code>JENA</code> has been initialised to the directory in which Jena was installed. </p>
+      <pre class="codesample">
+  OntModel m = ModelFactory.createOntologyModel();
+  OntDocumentManager dm = m.getDocumentManager();
+  dm.addAltEntry( "http://www.eswc2006.org/technologies/ontology",
+                  "file:" + JENA + "src-examples/data/eswc-2006-09-21.rdf"    );
+  m.read( "http://www.eswc2006.org/technologies/ontology" );</pre>
 
-<p> In the following example, we programmatically declare that the camera ontology
-  is copied locally, and then load it using the public URL. Assume that the constant
-  JENA has been initialized to the directory in which Jena is installed. </p>
-    <pre>
-OntModel m = ModelFactory.createOntologyModel();
-OntDocumentManager dm = m.getDocumentManager();
-dm.addAltEntry( "http://www.xfront.com/owl/ontologies/camera/",
-                "file:" + JENA + "src-examples/data/camera.owl"    );
-m.read( "http://www.xfront.com/owl/ontologies/camera/" );</pre>
-    <h2 id="ontResource">
-      The generic ontology type: OntResource
-    </h2>
+    <h3>Specifying prefixes</h3>
+
+    <p> A model keeps a table of URI prefixes that can be used to render URI's in
+      the shortened prefix:name form, which is useful in displaying URI's in a readable
+      way in user interfaces, and is essential in producing legal XML names that denote
+      arbitrary URI's. The ontology model's table of prefixes can be initialized from
+      a table kept by the document manager, which contains the standard prefixes plus
+      any that are declared by in the policy file (or added to subsequently by method
+      calls). To prevent the model's prefix table from being initialized in this way,
+      use the property <code>useDeclaredNsPrefixes</code> in the policy file (with
+      value <code>false</code>), or call the method <code>setUseDeclaredPrefixes</code> on the
+      ontology object. </p>
+
+    <h3>Caching of imported models</h3>
+        <p>You can use the document manager to assist
+    with loading ontology documents through its cache. Suppose two
+    ontologies, A and B both import ontology C. We would like not to have
+    to read C twice when loading A and then B. The document manager supports this
+    use case by optionally caching C's model, indexed by URI. When A tries
+    to import C, there is no cached copy, so a new model is created for C,
+    the contents of C's URL read in to the model, then the C model is used in the
+    compound document for A. Subsequently, when ontology B is loading imports,
+    the document manager checks in its cache and finds an existing copy
+    of C. This will be used in preference to reading a fresh copy of C from
+    C's source URL, saving both time and storage space.</p>
+        <p>Caching of import models is switched on by default.
+    To turn it off, use the policy property <code>cacheModels</code>,
+    or call the method <code>setCacheModels(&nbsp;boolean&nbsp;caching&nbsp;)</code>
+    with <code>caching = false</code>.
+    The document manager's current model cache
+    can be cleared at any time by calling <code>clearCache()</code>.</p>
+
+    <h2 id="ontResource">The generic ontology type: OntResource</h2>
 
 <p> All of the classes in the ontology API that represent ontology values have
   <code><a href="../javadoc/com/hp/hpl/jena/ontology/OntResource.html">OntResource</a></code>
@@ -817,193 +873,116 @@ m.read( "http://www.xfront.com/owl/ontologies/camera/" );</pre>
     <p>
       Some of the common attributes of ontology resources that are expressed through methods on OntResource are shown below:
     </p>
-    <table width="445" border="1" cellspacing="1" cellpadding="1" summary="properties of OntResource">
+    <table width="650" border="1" cellspacing="1" cellpadding="1" summary="properties of OntResource">
       <tr>
-        <th width="132">
+        <th width="150">
           Attribute
         </th>
-        <th width="300">
+        <th width="500">
           Meaning
         </th>
       </tr>
       <tr>
-        <td width="132">
-          <div align="left">
-            versionInfo
-          </div>
-        </td>
-        <td width="300">
-          <div align="left">
+        <td>versionInfo</td>
+        <td>
             A string documenting the version or history of this resource
-          </div>
         </td>
       </tr>
       <tr>
-        <td width="132">
-          <div align="left">
-            comment
-          </div>
-        </td>
-        <td width="300">
-          <div align="left">
+        <td>comment</td>
+        <td>
             A general comment associated with this value
-          </div>
         </td>
       </tr>
       <tr>
-        <td width="132">
-          <div align="left">
-            label
-          </div>
-        </td>
-        <td width="300">
-          <div align="left">
+        <td>label</td>
+        <td>
             A human-readable label
-          </div>
         </td>
       </tr>
       <tr>
-        <td width="132">
-          <div align="left">
-            seeAlso
-          </div>
-        </td>
-        <td width="300">
-          <div align="left">
+        <td>seeAlso</td>
+        <td>
             Another web location to consult for more information about this resource
-          </div>
         </td>
       </tr>
       <tr>
-        <td width="132">
-          <div align="left">
-            isDefinedBy
-          </div>
-        </td>
-        <td width="300">
-          <div align="left">
+        <td>isDefinedBy</td>
+        <td>
             A specialisation of seeAlso that is intended to supply a definition of this resource
-          </div>
         </td>
       </tr>
       <tr>
-        <td width="132">
-          <div align="left">
-            sameAs
-          </div>
-        </td>
-        <td width="300">
-          <div align="left">
+        <td>sameAs</td>
+        <td>
             Denotes another resource that this resource is equivalent to
-          </div>
         </td>
       </tr>
       <tr>
-        <td width="132">
-          <div align="left">
-            differentFrom
-          </div>
-        </td>
-        <td width="300">
-          <div align="left">
+        <td>differentFrom</td>
+        <td>
             Denotes another resource that is distinct from this resource (by definition)
-          </div>
         </td>
       </tr>
     </table>
     <p>
       For each of these properties, there is a standard pattern of available methods:
     </p>
-    <table width="445" border="1" cellspacing="1" cellpadding="1">
+    <table width="650" border="1" cellspacing="1" cellpadding="1">
       <tr>
-        <th width="141">
+        <th width="150">
           Method
         </th>
-        <th width="291">
+        <th width="500">
           Effect
         </th>
       </tr>
       <tr>
-        <td width="141">
-          <div align="left">
-            add&lt;property&gt;
-          </div>
-        </td>
-        <td width="291">
-          <div align="left">
+        <td>add&lt;property&gt;</td>
+        <td>
             Add an additional value for the given property
-          </div>
         </td>
       </tr>
       <tr>
-        <td width="141">
-          <div align="left">
-            set&lt;property&gt;
-          </div>
-        </td>
-        <td width="291">
-          <div align="left">
+        <td>set&lt;property&gt;</td>
+        <td>
             Remove any existing values for the property, then add the given value
-          </div>
         </td>
       </tr>
       <tr>
-        <td width="141">
-          <div align="left">
-            list&lt;property&gt;
-          </div>
-        </td>
-        <td width="291">
-          <div align="left">
+        <td>list&lt;property&gt;</td>
+        <td>
             Return an iterator ranging over the values of the property
-          </div>
         </td>
       </tr>
       <tr>
-        <td width="141">
-          <div align="left">
-            get&lt;property&gt;
-          </div>
-        </td>
-        <td width="291">
-          <div align="left">
+        <td>get&lt;property&gt;</td>
+        <td>
             Return the value for the given property, if the resource has one. If not, return null. If it has more than one value, an arbitrary selection is made.
-          </div>
         </td>
       </tr>
       <tr>
-        <td width="141">
-          <div align="left">
-            has&lt;property&gt;
-          </div>
-        </td>
-        <td width="291">
-          <div align="left">
+        <td>has&lt;property&gt;</td>
+        <td>
             Return true if there is at least one value for the given property. Depending on the name of the property, this is sometimes is&lt;property&gt;
-          </div>
         </td>
       </tr>
       <tr>
-        <td width="141">
-          <div align="left">
-            remove&lt;property&gt;
-          </div>
-        </td>
-        <td width="291">
-          <div align="left">
+        <td>remove&lt;property&gt;</td>
+        <td>
             Removes a given value from the values of the property on this resource. Has no effect if the resource does not have that value.
-          </div>
         </td>
       </tr>
     </table>
+
         <p>For example: <code>addSameAs(&nbsp;Resource&nbsp;r&nbsp;)</code>,
         or <code>isSameAs(&nbsp;Resource&nbsp;r&nbsp;)</code>. For full details
         of the individual methods, please consult the Javadoc.</p>
     <p>
       <code>OntResource</code> defines some other general utility
         methods. For example, to find out how many values a resource has for a
-        given property, we can call <code>getCardinality(&nbsp;Property&nbsp;p&nbsp;)</code>.
-        To delete the resource from the ontology altogether, we can call <code>remove()</code>.
+        given property, you can call <code>getCardinality(&nbsp;Property&nbsp;p&nbsp;)</code>.
+        To delete the resource from the ontology altogether, you can call <code>remove()</code>.
         The effect of this is to remove every statement that mentions this
         resource as a subject or object of a statement. </p>
       <p>To get or set the value
@@ -1013,460 +992,576 @@ m.read( "http://www.xfront.com/owl/ontologies/camera/" );</pre>
         the values of a named property can be listed (with <code>listPropertyValues</code>),
         removed (with <code>removeProperty</code>) or added (with <code>addProperty</code>). </p>
         <p>Finally, <code>OntResource</code> provides methods for listing,
-        getting and setting the RDF types of a resource. The <code>rdf:type</code> property
+        getting and setting the <code>rdf:type</code> of a resource, which denotes a
+        class to which the resource belongs (remember that in RDF and OWL, a resource can belong
+        to many classes at once). The <code>rdf:type</code> property
         is one for which many entailment rules are defined in the semantic
         models of the various ontology languages. Therefore, the values that <code>listRDFTypes()</code>
         returns is more than usually dependent on the actual reasoner bound to
-        the ontology model. For example, suppose we have class A, class B which
+        the ontology model. For example, suppose I have class A, class B which
         is a subclass of A, and resource x whose asserted <code>rdf:type</code>
         is B. With no reasoner, listing x's RDF types will return only B. If the
         reasoner is able to calculate the closure of the subclass hierarchy (and
-        most can), X's RDF types would also include A. Furthermore, complete
-        reasoners might also infer that x has type <code>owl:Thing</code> and <code>rdf:Resource</code>.
+        most can), X's RDF types would also include A. A complete OWL
+        reasoner would also infer that x has <code>rdf:type</code> <code>owl:Thing</code>
+        and <code>rdf:Resource</code>.
         </p>
-        <p>
-      For some tasks, getting a complete list of the RDF types of a resource is exactly what is needed. For other tasks, this is not the case. An ontology editor, for example, might want to distinguish in its display between inferred and asserted types. In the above example, only <code>x&nbsp;rdf:type&nbsp;B</code> is asserted, everything else is inferred. One way to make this distinction is to make use of the base model (see Figure 4). Getting the x resource from the base model and listing the type properties there would return only the asserted values.
-    </p>
-    <p id="direct_relationships">
-      For other user interface or presentation tasks, we may want something between the complete list of types and the base list of only the asserted values. Consider the following class hierarchy:
-    </p>
+        <p>For some tasks, getting a complete list of the RDF types of a
+      resource is exactly what is needed. For other tasks, this is not the
+      case. If you are developing an ontology editor, for example,
+      you may want to distinguish in its
+      display between inferred and asserted types. In the above example, only
+      <code>x&nbsp;rdf:type&nbsp;B</code> is asserted, everything else is
+      inferred. One way to make this distinction is to make use of the base
+      model (see Figure 4). Getting the resource from the base model and
+      listing the type properties there would return only the asserted values.
+      For example:     </p>
+      <pre class="codesample">
+// create the base model
+String SOURCE = &quot;http://www.eswc2006.org/technologies/ontology&quot;;
+String NS = SOURCE + &quot;#&quot;;
+OntModel base = ModelFactory.createOntologyModel( OWL_MEM );
+base.read( SOURCE, &quot;RDF/XML&quot; );
+
+// create the reasoning model using the base
+OntModel inf = ModelFactory.createOntologyModel( OWL_MEM_MICRO_RULE_INF, base );
+
+// create a dummy paper for this example
+OntClass paper = base.getOntClass( NS + &quot;Paper&quot; );
+Individual p1 = base.createIndividual( NS + &quot;paper1&quot;, paper );
+
+// list the asserted types
+for (Iterator i = p1.listRDFTypes(); i.hasNext(); ) {
+    System.out.println( p1.getURI() + &quot; is asserted in class &quot; + i.next() );
+}
+
+// list the inferred types
+p1 = inf.getIndividual( NS + &quot;paper1&quot; );
+for (Iterator i = p1.listRDFTypes(); i.hasNext(); ) {
+    System.out.println( p1.getURI() + &quot; is inferred to be in class &quot; + i.next() );
+}</pre>
+    <p id="direct_relationships">For other user interface or
+    presentation tasks, we may want something between the complete list of
+    types and the base list of only the asserted values. Consider the
+    class hierarchy in figure 5 (i):</p>
     <p class="centered">
       <img src="../images/Direct-hierarchy.png" width="595" height="315" alt="Diagram showing direct relationships" />
     </p>
     <p class="caption">
       Figure 5: asserted and inferred relationships
     </p>
-    <p>
-      Figure 5.i shows a base model, containing a class hierarchy and an instance x. Figure 5.ii shows a full set of relationships that might be inferred from this base model. In Figure 5.iii, we see only the <em>direct</em> or maximally specific relationships. For example, in 5.iii x does not have <code>rdf:type A</code>, since this is an relationship that is covered by the facts that x has <code>rdf:type D</code>, and D is a subclass of A. Notice also that the <code>rdf:type B</code> link is also removed from the direct graph, for a similar reason. Thus the direct graph hides relationships from both the inferred and asserted graphs. When displaying instance x in a GUI, particularly in a tree view of some kind, the direct graph is often the most useful as it contains the useful information in the most compact form.
-    </p>
+    <p>Figure 5 (i) shows a base model, containing a class hierarchy and
+    an instance x. Figure 5 (ii) shows the full set of relationships that might
+    be inferred from this base model. In Figure 5 (iii), we see only the <em>direct</em>
+    or maximally specific relationships. For example, in 5 (iii) x does not
+    have <code>rdf:type A</code>, since this is an relationship that is
+    covered by the facts that x has <code>rdf:type D</code>, and D is a
+    subclass of A. Notice also that the <code>rdf:type B</code> link is also
+    removed from the direct graph, for a similar reason. Thus the direct
+    graph hides relationships from both the inferred and asserted graphs.
+    When displaying instance x in a GUI, particularly in a tree view of some
+    kind, the direct graph is often the most useful as it contains the
+    useful information in the most compact form.</p>
     <p>
       To list the RDF types of a resource, use:
     </p>
-    <pre>
+    <pre class="codesample">
 listRDFTypes()                 // assumes not-direct
-listRDFTypes( boolean direct ) // if true, show only direct relationships</pre>
+listRDFTypes( boolean direct ) // if direct=true, show only direct relationships</pre>
     <p>
       Related methods allow the <code>rdf:type</code> to be tested, set and returned.
     </p>
-    <h2 id="classesBasic">
-      Handling ontology components: basic class expressions
-    </h2>
+
+    <h2 id="classesBasic">Ontology classes and basic class expressions</h2>
 
 <p> Classes are the basic building blocks of an ontology. A simple class is represented
   in Jena by an <a href="../javadoc/com/hp/hpl/jena/ontology/OntClass.html">OntClass</a>
-  object. As mentioned <a href="#rdfPolymorphism">above</a>, a ontology class
+  object. As I <a href="#rdfPolymorphism">mentioned above</a>, an ontology class
   is a facet of an RDF resource. One way, therefore, to get an ontology class
-  is to convert an RDF resource (we assume that <code>m</code> is a suitable defined
-  <code>OntModel</code>, into which the camera ontology has already been read):
+  is to convert an RDF resource. Assume that <code>m</code> is a suitable defined
+  <code>OntModel</code>, into which the ESWC ontology has already been read, and that
+  <code>NS</code> is a variable denoting the ontology namespace:
 </p>
-    <pre>
-String camNS = "http://www.xfront.com/owl/ontologies/camera/#";
-Resource r = m.getResource( camNS + "Camera" );
-OntClass camera = (OntClass) r.as( OntClass.class );</pre>
+    <pre class="codesample">
+Resource r = m.getResource( NS + "Paper" );
+OntClass paper = (OntClass) r.as( OntClass.class );</pre>
 
 <p> This can be shortened by calling <code>getOntClass()</code> on the ontology
   model: </p>
-    <pre>
-OntClass camera = m.getOntClass( camNS + "Camera" );</pre>
-    <p>
-      The <code>getOntClass</code> method will lookup the resource with the given URI, and attempt to obtain the OntClass facet. If either of these operations fail, it will return null. Alternatively, the <code>createClass</code> method will reuse an existing resource, or create a new class resource if one does not exist:
-    </p>
-    <pre>
-OntClass pinCamera = m.createClass( camNS + "PinholeCamera" );</pre>
-    <p>
-      The create class method can also be used to create an anonymous class - a class description with no associated URI. Anonymous classes are often used when building complex ontologies in OWL or DAML. They are less useful in RDFS.
-    </p>
-    <pre>
+    <pre class="codesample">
+OntClass paper = m.getOntClass( NS + "Paper" );</pre>
+    <p>The <code>getOntClass</code> method will retrieve the resource with
+    the given URI, and attempt to obtain the <code>OntClass</code> facet. If either of
+    these operations fail, <code>getOntClass()</code>
+    will return null. Compare this with the <code>createClass</code>
+    method, which will reuse an existing resource if possible,
+    or create a new class resource if not:</p>
+    <pre class="codesample">
+OntClass paper     = m.createClass( NS + "Paper" );
+OntClass bestPaper = m.createClass( NS + "BestPaper" );</pre>
+    <p>You can use the create class method to create an anonymous
+    class &#150; a class description with no associated URI. Anonymous classes
+    are often used when building more complex ontologies in OWL or DAML. They are
+    less useful in RDFS.</p>
+    <pre class="codesample">
 OntClass anonClass = m.createClass();</pre>
-    <p>
-      Once we have the ontology class object, we can begin processing it through the methods defined on <code>OntClass</code>. The attributes of a class are handled in a similar way to the attributes of OntResource, above, with a collection of methods to set, add, get, test, list and remove values. Class properties that are handled in this way are:
-    </p>
-    <table width="445" border="1" cellspacing="1" cellpadding="1">
+    <p>Once you have the ontology class object, you can begin processing
+    it through the methods defined on <code>OntClass</code>. The attributes
+    of a class are handled in a similar way to the attributes of
+    OntResource, above, with a collection of methods to set, add, get, test,
+    list and remove values. Properties of classes that are handled in this way
+    are:</p>
+    <table width="650" border="1" cellspacing="1" cellpadding="1">
       <tr>
-        <th width="130">
+        <th width="150">
           Attribute
         </th>
-        <th width="302">
+        <th width="500">
           Meaning
         </th>
       </tr>
       <tr>
-        <td width="130">
-          <div align="left">
-            subClass
-          </div>
-        </td>
-        <td width="302">
-          <div align="left">
+        <td>subClass</td>
+        <td>
             A subclass of this class, i.e. those classes that are declared <code>subClassOf</code> this class.
-          </div>
         </td>
       </tr>
       <tr>
-        <td width="130">
-          <div align="left">
-            superClass
-          </div>
-        </td>
-        <td width="302">
-          <div align="left">
+        <td>superClass</td>
+        <td>
             A super-class of this class, i.e. a class that this class is a <code>subClassOf</code>.
-          </div>
         </td>
       </tr>
       <tr>
-        <td width="130">
-          <div align="left">
-            equivalentClass
-          </div>
-        </td>
-        <td width="302">
-          <div align="left">
+        <td>equivalentClass</td>
+        <td>
             A class that represents the same concept as this class. This is not just having the same class extension: the class 'British Prime Minister in 2003' contains the same individual as the class 'the husband of Cherie Blair', but they represent different concepts.
-          </div>
         </td>
       </tr>
       <tr>
-        <td width="130">
-          <div align="left">
-            disjointWith
-          </div>
-        </td>
-        <td width="302">
-          <div align="left">
+        <td>disjointWith</td>
+        <td>
             Denotes a class with which this class has no instances in common.
-          </div>
         </td>
       </tr>
     </table>
-    <p>
-      Thus, in our example ontology, we can print a list the subclasses of Camera as follows:
-    </p>
-    <pre>
-OntClass camera = m.getOntClass( camNS + "Camera" );
-for (Iterator i = camera.listSubClasses(); i.hasNext(); ) {
-  OntClass c = (OntClass) i.next();
-  System.out.print( c.getLocalName() + " " );
-}</pre>
-    <p>
-      The result from this code, incidentally, is <code>Large-Format Digital Camera</code> (the order may vary on different systems). Some readers may be surprised to see Camera appearing as its own subclass This is an entailment of RDFS, which states that all classes are subclasses of themselves. While this is a correct entailment, it is not useful information in many contexts. Future versions of Jena will contain means of selectively ignoring such correct but unhelpful entailments.
-    </p>
-    <p>
-      OntClass has some other commonly used utilities. To show all of the instances that mention this class as their <code>rdf:type</code> (or one of them), use <code>listInstances()</code>. The domain of a property is intended to allow entailments about the class of an individual, given that it appears as a statement subject. It is not a constraint that can be used to validate a document, in the way that XML schema can do. Nevertheless, many developers find it convenient to use the domain of a property to document the design intent that the property only applies to known instances of the domain class. Given this observation, it can be a useful debugging or display aide to show the properties that have this class among their domain classes. The method <code>listDeclaredProperties()</code> attempts to identify the properties that are intended to apply to instances of this class. With an optional parameter <code>all</code> this method will inspect just the class itself (<code>all = false</code>) or the class and all of its super-classes (<code>all = true</code>).
-    </p>
-    <h2 id="properties">
-      Handling ontology components: properties
-    </h2>
 
-<p> A property in an ontology model is an extension of the RDF Java class <code>Property</code>,
+    <p>
+      Thus, in our example ontology, we can print a list the subclasses of an Artefact as follows:
+    </p>
+    <pre class="codesample">
+OntClass artefact = m.getOntClass( NS + "Artefact" );
+for (Iterator i = artefact.listSubClasses(); i.hasNext(); ) {
+  OntClass c = (OntClass) i.next();
+  System.out.println( c.getURI() );
+}</pre>
+    <p>Note that, under RDFS and OWL semantics, each class is a sub-class of itself
+    (in other words, <code>rdfs:subClassOf</code> is reflexive). While this is true,
+    under the semantics, Jena users have reported finding it unhelpful. Therefore,
+    the <code>listSubClasses</code> and <code>listSuperClasses</code> methods remove
+    the reflexive from the list of results returned by the iterator. However, if you
+    use the plain <code>Model</code> API to query for <code>rdfs:subClassOf</code>
+    triples, assuming that a reasoner is in use, the reflexive triple will appear
+    in the deductions model.</p>
+
+    <p>Given an <code>OntClas</code> object, you can create or remove members of
+    the class extension &#150; individuals that are instances of the class &#150;
+    using the following methods:
+    </p>
+
+    <table width="650" border="1" cellspacing="1" cellpadding="1">
+      <tr>
+        <th width="275">
+          Method
+        </th>
+        <th width="375">
+          Meaning
+        </th>
+      </tr>
+      <tr>
+        <td>listInstances()<br />listInstances( boolean direct )</td>
+        <td>
+            Returns an iterator over those instances that include this class among
+            their <code>rdf:type</code> values. The <code>direct</code> flag can be
+            used to select individuals that are direct members of the class, rather
+            than indirectly through the class hierarchy. Thus if <code>p1</code> has
+            <code>rdf:type :Paper</code>, it will appear in the iterator returned by
+            <code>listInstances</code> on <code>:Artefact</code>, but not in the
+            iterator returned by <code>listInstances(false)</code> on <code>:Artefact</code>.
+        </td>
+      </tr>
+      <tr>
+        <td>createIndividual()<br />createIndividual( String uri )</td>
+        <td>
+            Adds a resource to the model, whose asserted <code>rdf:type</code> is
+            this ontology class. If no URI is given, the individual is an anonymous
+            resource.
+        </td>
+      </tr>
+      <tr>
+        <td>dropIndividual( Resource individual )</td>
+        <td>
+          Removes the association between the given individual and this ontology class.
+          Effectively, this removes the <code>rdf:type</code> link between this class
+          and the resource. Note that this is not the same as removing the individual
+          altogether, unless the only thing that is known about the resource is that
+          it is a member of the class. To delete an <code>OntResource</code>, including
+          classes and individuals, use the <code>remove()</code> method.
+        </td>
+      </tr>
+    </table>
+
+
+        <p>To test whether a class is a root of the class hierarchy in this
+        model (i.e. it has no known super-classes), call <code>isHierarchyRoot()</code>.</p>
+    <p>The domain of a property
+    is intended to allow entailments about the class of an individual, given
+    that it appears as a statement subject. It is not a constraint that can
+    be used to validate a document, in the way that XML schema can do.
+    Nevertheless, many developers find it convenient to use the domain of a
+    property to document the design intent that the property only applies to
+    known instances of the domain class. Given this observation, it can be a
+    useful debugging or display aide to show the properties that have this
+    class among their domain classes. The method <code>listDeclaredProperties()</code>
+    attempts to identify the properties that are intended to apply to
+    instances of this class. Using <code>listDeclaredProperties</code> is
+    explained in detail in the <a href="../how-to/rdf-frames.html">RDF frames how-to</a>.</p>
+
+    <h2 id="properties">Ontology properties</h2>
+
+    <p>In an ontology, a <em>property</em> denotes the name of a relationship between resources, or between a resource
+    and a data value. It corresponds to a predicate in logic representations. One interesting aspect of
+    languages like RDFS and OWL is that properties are not defined as aspects of some enclosing
+    class, but are first-class objects in their own right. This means that ontologies and ontology-applications
+    can store, retrieve and make assertions about properties directly. Consequently, Jena has a set of Java classes
+    that allow you to conveniently manipulate the properties represented in an ontology model.</p>
+    <p>A property in an ontology model is an extension of the core Jena API class
+    <code><a href="../javadoc/com/hp/hpl/jena/rdf/model/Property.html">Property</a></code>,
   and allows access to the additional information that can be asserted about properties
-  in an ontology language The common super-class for representing ontology properties
+  in an ontology language. The common API super-class for representing ontology properties
   in Java is <code><a href="../javadoc/com/hp/hpl/jena/ontology/OntProperty.html">OntProperty</a></code>.
   Again, using the pattern of add, set, get, list, has, and remove methods, we
   can access the following attributes of an <code>OntProperty</code>: </p>
-    <table width="445" border="1" cellspacing="1" cellpadding="1">
+    <table width="650" border="1" cellspacing="1" cellpadding="1">
       <tr>
-        <th width="125">
-          Attribute
-        </th>
-        <th width="307">
-          Meaning
-        </th>
+        <th width="275">Attribute</th>
+        <th width="375">Meaning</th>
       </tr>
       <tr>
-        <td width="125">
-          <div align="left">
-            subProperty
-          </div>
-        </td>
-        <td width="307">
-          <div align="left">
+        <td>subProperty</td>
+        <td>
             A sub property of this property; i.e. a property which is declared to be a <code>subPropertyOf</code> this property. If p is a sub property of q, and we know that <code>A&nbsp;p&nbsp;B</code> is true, we can infer that <code>A&nbsp;q&nbsp;B</code> is also true.
-          </div>
         </td>
       </tr>
       <tr>
-        <td width="125">
-          <div align="left">
-            superProperty
-          </div>
-        </td>
-        <td width="307">
-          <div align="left">
+        <td>superProperty</td>
+        <td>
             A super property of this property, i.e. a property that this property is a <code>subPropertyOf</code>
-          </div>
         </td>
       </tr>
       <tr>
-        <td width="125">
-          <div align="left">
-            domain
-          </div>
-        </td>
-        <td width="307">
-          <div align="left">
+        <td>domain</td>
+        <td>
             Denotes the class or classes that form the domain of this property. Multiple domain values are interpreted as a conjunction. The domain denotes the class of value the property maps from.
-          </div>
         </td>
       </tr>
       <tr>
-        <td width="125">
-          <div align="left">
-            range
-          </div>
-        </td>
-        <td width="307">
-          <div align="left">
+        <td>range</td>
+        <td>
             Denotes the class or classes that form the range of this property. Multiple range values are interpreted as a conjunction. The range denotes the class of values the property maps to.
-          </div>
         </td>
       </tr>
       <tr>
-        <td width="125">
-          <div align="left">
-            equivalentProperty
-          </div>
-        </td>
-        <td width="307">
-          <div align="left">
+        <td>equivalentProperty</td>
+        <td>
             Denotes a property that is the same as this property.
-          </div>
         </td>
       </tr>
       <tr>
-        <td width="125">
-          <div align="left">
-            inverse
-          </div>
-        </td>
-        <td width="307">
-          <div align="left">
+        <td>inverse</td>
+        <td>
             Denotes a property that is the inverse of this property. Thus if q is the inverse of p, and we know that <code>A q B</code>, then we can infer that <code>B p A</code>.
-          </div>
         </td>
       </tr>
     </table>
+
+        <p>In the example ontology, the property <code>hasProgramme</code> has a domain of
+        <code>OrganizedEvent</code>, a range of <code>Programme</code> and the human-readable
+        label &quot;has programme&quot;.
+        I can reconstruct this definition in an empty ontology model as follows:</p>
+    <pre class="codesample">
+OntModel m = ModelFactory.createOntologyModel( OntModelSpec.OWL_MEM );
+OntClass programme = m.createClass( NS + "Programme" );
+OntClass orgEvent = m.createClass( NS + "OrganizedEvent" );
+
+ObjectProperty hasProgramme = m.createObjectProperty( NS + "hasProgramme" );
+
+hasProgramme.addDomain( orgEvent );
+body.addRange( programme );
+body.addLabel( "has programme", "en" );</pre>
+
+    <p>As a further example, I can alternatively add information to an existing ontology. Let's
+    add a super-property <code>hasDeadline</code> to generalise the separate properties denoting
+    the submission deadline, notification deadline and camera-ready deadline:</p>
+<pre class="codesample">OntModel m = ModelFactory.createOntologyModel( OntModelSpec.OWL_MEM );
+m.read( "http://www.eswc2006.org/technologies/ontology" );
+
+DatatypeProperty subDeadline = m.getDatatypeProperty( NS + "hasSubmissionDeadline" );
+DatatypeProperty notifyDeadline = m.getDatatypeProperty( NS + "hasNotificationDeadline" );
+DatatypeProperty cameraDeadline = m.getDatatypeProperty( NS + "hasCameraReadyDeadline" );
+
+DatatypeProperty deadline = m.createDatatypeProperty( NS + "deadline" );
+deadline.addDomain( m.getOntClass( NS + "Call" ) );
+deadline.addRange( XSD.dateTime );
+
+deadline.addSubProperty( subDeadline );
+deadline.addSubProperty( notifyDeadline );
+deadline.addSubProperty( cameraDeadline );
+</pre>
+    <p>Note that, although I called the <code>addSubProperty</code> method on the object representing
+    the new super-property, the serialized form of the
+    ontology will contain <code>rdfs:subPropertyOf</code> axioms on each of the sub-property resources,
+    since this is what the language defines. Jena will, in general, try to allow symmetric access to
+    sub-properties and sub-classes from either direction.</p>
+
+    <h3 id="propertyTypes">Object and Datatype properties</h3>
     <p>
-      In the example camera ontology, the property body is a sub-property of part, and has domain Camera and range Body (that is, it maps from instances of cameras to instances of camera bodies). We can reconstruct this definition in an empty ontology model as follows:
-    </p>
-    <pre>
-OntModel newM = ModelFactory.createOntologyModel();
-OntClass Camera = newM.createClass( camNS + "Camera" );
-OntClass Body = newM.createClass( camNS + "Body" );
-
-ObjectProperty part = newM.createObjectProperty( camNS + "part" );
-ObjectProperty body = newM.createObjectProperty( camNS + "body" );
-
-body.addSuperProperty( part );
-body.addDomain( Camera );
-body.addRange( Body );</pre>
-    <p>
-      OWL and DAML+OIL refine the basic <code>Property</code> class from RDF into two types: <code>ObjectProperty</code> and <code>DatatypeProperty</code>. The difference between them is that an object property can have only individuals in its range, while a datatype property has concrete data literals (only) in its range. This separation allows the semantic theories for these languages not to have to include the interpretations of the myriad concrete datatypes, arithmetic, and so forth, which would clearly overwhelm what are otherwise quite compact theoretical treatments.
+      OWL and DAML+OIL refine the basic property type from RDF into two sub-types:
+      <em>object properties</em> and <em>datatype properties</em>
+      (for more details see [<a href="http://www.w3.org/TR/owl-ref/#Property">OWL Reference</a>]).
+      The difference between
+      them is that an object property can have only individuals in its range, while a datatype
+      property has concrete data literals (only) in its range. Some OWL reasoners are able to
+      exploit the differences between object and datatype properties to perform more efficient
+      reasoning over ontologies. OWL also adds an <em>annotation property</em>, which is defined
+      to have no semantic entailments, and so is useful when annotating ontology documents, for example.
     </p>
 
-<p> In Jena, the Java interfaces <code><a href="../javadoc/com/hp/hpl/jena/ontology/ObjectProperty.html">ObjectProperty</a></code>
-  and <code><a href="../javadoc/com/hp/hpl/jena/ontology/DatatypeProperty.html">DatatypeProperty</a></code>
-  are sub-types of <code>OntProperty</code>. However, they do not have any behaviours
-  (methods) particular to themselves. Their existence allows the more complex
-  subtypes of ObjectProperty - transitive properties and so forth - to be kept
-  separate in the class hierarchy. Creating an object property or datatype property
-  will have the effect of asserting different <code>rdf:type</code> statements
-  into the underlying model. </p>
+    <p> In Jena, the Java interfaces
+      <code><a href="../javadoc/com/hp/hpl/jena/ontology/ObjectProperty.html">ObjectProperty</a></code>,
+      <code><a href="../javadoc/com/hp/hpl/jena/ontology/DatatypeProperty.html">DatatypeProperty</a></code> and
+      <code><a href="../javadoc/com/hp/hpl/jena/ontology/AnnotationProperty.html">AnnotationProperty</a></code>
+      are sub-types of <code>OntProperty</code>. However, they do not have any behaviours
+      (methods) particular to themselves. Their existence allows the more complex
+      sub-types of ObjectProperty &#150; transitive properties and so forth &#150; to be kept
+      separate in the class hierarchy. However, when you create an object property or datatype property
+      in a model, it
+      will have the effect of asserting different <code>rdf:type</code> statements
+      into the underlying triple store. </p>
 
-<p> Both DAML+OIL and OWL permit object and datatype properties to be <em>functional</em>
-  - that is, for a given individual in the domain, the range value will always
-  be the same. In DAML+OIL, this characteristic is labelled as a <em>unique</em>
-  property, but the idea is the same. A functional property also has a maximum
-  cardinality of one. Rather than represent the quality of being functional in
-  the Java class name (for example FunctionalObjectProperty), we have chosen to
-  represent the capability of being functional as a flag on the <code>OntProperty</code>
-  object. Thus, when creating an object or datatype property, there is an optional
-  Boolean parameter to indicate whether this property is functional. A property
-  that is functional will also support the facet interface <code><a href="../javadoc/com/hp/hpl/jena/ontology/FunctionalProperty.html">FunctionalProperty</a></code>.
-</p>
+    <h3 id="functionalProperties">Functional properties</h3>
+    <p>OWL permits object and datatype properties to be <em>functional</em>
+      &#150; that is, for a given individual in the domain, the range value will always
+      be the same. In particular, if <code>father</code> is a functional property,
+      and individual <code>:bryn</code> has <code>father&nbsp;:ijd</code> and <code>father&nbsp;:ian</code>,
+      a reasoner is entitled to conclude that <code>:ijd</code> and <code>:ian</code>
+      denote the same individual.
+      A functional property is equivalent to stating that the property has a maximum
+      cardinality of one.</p>
+      <p>Being a functional property is represented through the
+      <code><a href="../javadoc/com/hp/hpl/jena/ontology/FunctionalProperty.html">FunctionalProperty</a></code>
+      facet of an ontology property object. If a property is declared functional
+      (test using the <code>isFunctional()</code> method), then the method
+      <code>asFunctionalProperty()</code> conveniently returns the functional facet.
+      A non-functional property can be made functional through the
+      <code>convertToFunctionalProperty()</code> method. When you are creating
+      a property object, you also have the option of passing a Boolean parameter
+      to the <code>createObjectProperty()</code> method on <code>OntModel</code>.
+    </p>
 
-<p> There are several additional subtypes of ObjectProperty that represent additional
-  capabilities of ontology properties. A <code><a href="../javadoc/com/hp/hpl/jena/ontology/TransitiveProperty.html">TransitiveProperty</a></code>
-  means that if p is transitive, and we know <code>A p B</code> and also <code>B
-  p C</code>, we can infer that <code>A p C</code>. A <code><a href="../javadoc/com/hp/hpl/jena/ontology/SymmetricProperty.html">SymmetricProperty</a></code>
-  means that if p is symmetric, and we know <code>A p B</code>, we can infer <code>B
-  p A</code>. An <code><a href="../javadoc/com/hp/hpl/jena/ontology/InverseFunctionalProperty.html">InverseFunctionalProperty</a></code>
-  means that for any given range element, the domain value is unique. (Note that
-  in DAML+OIL, the terminology for inverse functional property is <em>unambiguous
-  property</em>). </p>
+    <h3 id="otherPropertyTypes">Other property types</h3>
 
-<p> Given that all properties are <code>RDFNode</code> objects, and therefore
-  support the <code>as()</code> method, we can use <code>as()</code> to change
-  from an object property facet to a transitive property facet. To make this more
-  straightforward, the <code>OntProperty</code> Java class has a number of methods
-  that support directly switching to the corresponding facet view: </p>
-    <pre>
-public TransitiveProperty asTransitiveProperty();
+    <p> There are several additional sub-types of ObjectProperty that represent additional
+      capabilities of ontology properties. A
+      <code><a href="../javadoc/com/hp/hpl/jena/ontology/TransitiveProperty.html">TransitiveProperty</a></code>
+      means that if p is transitive, and we know <code>:a&nbsp;p&nbsp;:b</code> and also
+      <code>b&nbsp;p&nbsp;:c</code>, we can infer that <code>:a&nbsp;p&nbsp;:c</code>. A
+      <code><a href="../javadoc/com/hp/hpl/jena/ontology/SymmetricProperty.html">SymmetricProperty</a></code>
+      means that if p is symmetric, and we know <code>:a&nbsp;p&nbsp;:b</code>, we can infer
+      <code>:b&nbsp;p&nbsp;:a</code>. An
+      <code><a href="../javadoc/com/hp/hpl/jena/ontology/InverseFunctionalProperty.html">InverseFunctionalProperty</a></code>
+      means that for any given range element, the domain value is unique. (Note that
+      in DAML+OIL, the terminology for inverse functional property is <em>unambiguous
+      property</em>). </p>
+
+    <p> Given that all properties are <code>RDFNode</code> objects, and therefore
+      support the <code>as()</code> method, you can use <code>as()</code> to change
+      from an object property facet to a transitive property facet. To make this more
+      straightforward, the <code>OntProperty</code> Java class has a number of methods
+      that support directly switching to the corresponding facet view: </p>
+    <pre class="codesample">public TransitiveProperty asTransitiveProperty();
 public FunctionalProperty asFunctionalProperty();
 public SymmetricProperty asSymmetricPropery();
 public InverseFunctionalProperty asInverseFunctionalProperty();</pre>
 
-<p> These methods all assume that the underlying model will support this change
-  in perspective, and so will fail with a <code>ConversionException</code> if
-  a given property is not, for example, already a transitive property when that
-  change is attempted. The following will, if necessary, add additional information
-  (i.e. the additional <code>rdf:type</code> statement) to allow the conversion
-  to an alternative facet to succeed. </p>
-    <pre>
+    <p> These methods all assume that the underlying model will support this change
+      in perspective. If not, the operation will fail with a <code>ConversionException</code>.
+      For example, if
+      a given property <code>p</code> is not already a transitive property, then invoking
+      <code>p.asTransitiveProperty()</code> will throw a conversion exception.
+      The following methods will, if necessary, add additional information
+      (i.e. the additional <code>rdf:type</code> statement) to allow the conversion
+      to an alternative facet to succeed. </p>
+    <pre class="codesample">
 public TransitiveProperty convertToTransitiveProperty();
 public FunctionalProperty convertToFunctionalProperty();
 public SymmetricProperty convertToSymmetricPropery();
 public InverseFunctionalProperty convertToInverseFunctionalProperty();</pre>
-    <p>
-      Finally, methods on the pattern <code>isXXX</code> (e.g. <code>isTransitiveProperty</code>) allow the programmer to test whether a given property is already of a given sub-type.
-    </p>
-    <h2 id="classesComplex">
-      Handling ontology components: more complex class expressions
-    </h2>
-    <p>
-      Previously, we introduced the handling of basic, named classes in the Jena ontology API. These are the only kind of class descriptions defined in RDFS. In DAML+OIL and OWL, however, there are a number of types of additional class expression that allow richer and more expressive descriptions of concepts. There are two main types of additional class expression: <em>restrictions</em> and <em>Boolean expressions</em>. We will examine each in turn.
-    </p>
-    <h3>
-      Restriction class expressions
-    </h3>
 
-<p> A <a href="../javadoc/com/hp/hpl/jena/ontology/Restriction.html">restriction</a>
-  defines a class by reference to one of the properties of the individuals that
-  comprise the members of the class, and placing some constraint on that property.
-  For example, in a simple view of animal taxonomy, we might say that mammals
-  are covered in fur, and birds in feathers. Thus the property <code>hasCovering</code>
-  is in one case restricted to have the value <code>fur</code>, in the other to
-  have the value <code>feathers</code>. This is a <em>has value restriction</em>.
-  Six restriction types are defined by OWL and DAML+OIL in total: </p>
-    <table width="445" border="1" cellspacing="1" cellpadding="1">
+    <p>Finally, methods beginning <code>is...</code> (e.g. <code>isTransitiveProperty</code>)
+    allow you to test whether a given property would support a given sub-type facet.</p>
+
+    <h2 id="classesComplex">More complex class expressions</h2>
+
+    <p>I introduced the handling of basic, named classes above.
+    These are the only kind of class descriptions
+    available in RDFS. In OWL, however, there are a number of
+    additional types of class expression, which allow richer and more
+    expressive descriptions of concepts. There are two main categories of
+    additional class expression: <em>restrictions</em> and <em>Boolean
+    expressions</em>. Let's examine each in turn.</p>
+
+    <h3 id="restrictions">Restriction class expressions</h3>
+
+    <p> A <a href="../javadoc/com/hp/hpl/jena/ontology/Restriction.html">restriction</a>
+      defines a class by reference to one of the properties of the individuals that
+      comprise the members of the class, and then placing some constraint on that property.
+      For example, in a simple view of animal taxonomy, we might say that mammals
+      are covered in fur, and birds in feathers. Thus the property <code>hasCovering</code>
+      is in one case restricted to have the value <code>fur</code>, in the other to
+      have the value <code>feathers</code>. This is a <em>has value restriction</em>.
+      Six restriction types are currently defined by OWL: </p>
+
+    <table width="650" border="1" cellspacing="1" cellpadding="1">
       <tr>
-        <th width="147">
-          Restriction type
-        </th>
-        <th width="285">
-          Meaning
-        </th>
+        <th width="205">Restriction type</th><th width="445">Meaning</th>
       </tr>
       <tr>
-        <td width="147">
-          <div align="left">
-            has value
-          </div>
-        </td>
-        <td width="285">
-          <div align="left">
+        <td>has value</td>
+        <td>
             The restricted property has exactly the given value.
-          </div>
         </td>
       </tr>
       <tr>
-        <td width="147">
-          <div align="left">
-            all values from
-          </div>
-        </td>
-        <td width="285">
-          <div align="left">
+        <td>all values from</td>
+        <td>
             All values of the restricted property, if it has any, are members of the given class.
-          </div>
         </td>
       </tr>
       <tr>
-        <td width="147">
-          <div align="left">
-            some values from
-          </div>
-        </td>
-        <td width="285">
-          <div align="left">
+        <td>some values from</td>
+        <td>
             The property has at least one value which is a member of the given class.
-          </div>
         </td>
       </tr>
       <tr>
-        <td width="147">
-          <div align="left">
-            cardinality
-          </div>
-        </td>
-        <td width="285">
-          <div align="left">
+        <td>cardinality</td>
+        <td>
             The property has exactly <em>n</em> values, for some positive integer n.
-          </div>
         </td>
       </tr>
       <tr>
-        <td width="147">
-          <div align="left">
-            min cardinality
-          </div>
-        </td>
-        <td width="285">
-          <div align="left">
+        <td>min cardinality</td>
+        <td>
             The property has at least <em>n</em> values, for some positive integer n.
-          </div>
         </td>
       </tr>
       <tr>
-        <td width="147">
-          <div align="left">
-            max cardinality
-          </div>
-        </td>
-        <td width="285">
-          <div align="left">
+        <td>max cardinality</td>
+        <td>
             The property has at most <em>n</em> values, for some positive integer n.
-          </div>
         </td>
       </tr>
     </table>
-    <p>
-      Note that in DAML+OIL terminology, an all values from restriction is a <em>toClass</em> restriction, while a some values from restriction is a <em>hasClass</em> restriction.
-      Note also that, at present, the Jena ontology API has only limited support for DAML's qualified cardinality restrictions (i.e. <code>cardinalityQ</code>, <code>minCardinalityQ</code> and <code>maxCardinalityQ</code>).
-      Qualified cardinality restrictions are encapsulated in the interfaces <code>CardinalityQRestriction</code>,
-      <code>MinCardinalityQRestriction</code> and <code>CardinalityQRestriction</code>. <code>OntModel</code> also provides methods for creating
-      and accessing qualified cardinality restrictions.  Since they are not part of the language definition, qualified cardinality
-      restrictions are not supported in OWL ontologies.</p>
-    <p>
-      Jena provides a number of ways of creating restrictions, or retrieving them from a model. Firstly, a general restriction may be retrieved from the model by its URI, or a new restriction created by nominating the property that the property applies to. For example:
-    </p>
-    <pre>
-// restriction with a given URI
-Restriction r = m.getRestriction( rURI );
 
-// anonymous restriction on property p
-OntProperty p = m.createOntProperty( ns + "p" );
+    <p>Note that in DAML+OIL terminology, an all-values-from restriction
+    is a <em>toClass</em> restriction, while a some-values-from restriction
+    is a <em>hasClass</em> restriction. Note also that, at present, the Jena
+    ontology API has only limited support for DAML's qualified cardinality
+    restrictions (i.e. <code>cardinalityQ</code>, <code>minCardinalityQ</code>
+    and <code>maxCardinalityQ</code>). Qualified cardinality restrictions
+    are encapsulated in the interfaces <code>CardinalityQRestriction</code>,
+    <code>MinCardinalityQRestriction</code> and <code>CardinalityQRestriction</code>.
+    <code>OntModel</code> also provides methods for creating and accessing
+    qualified cardinality restrictions. Since they are not part of the
+    OWL 1.0 language definition, qualified cardinality restrictions are not
+    supported in OWL ontologies. Qualified cardinality restrictions may be added
+    to the forthcoming OWL 1.1 update, at which point it is likely
+    that the Jena ontology API will be updated. Note however, that we are not currently
+    making any commitment on the timescale for such an update.</p>
+
+    <p>Jena provides a number of ways of creating restrictions, or
+    retrieving them from a model. Firstly, you can retrieve a general restriction
+    from the model by its URI, if known.</p>
+
+<pre class="codesample">// get restriction with a given URI
+Restriction r = m.getRestriction( NS + "theName" );
+</pre>
+
+    <p>You can create a new restriction created by
+    nominating the property that the property applies to:</p>
+<pre class="codesample">// anonymous restriction on property p
+OntProperty p = m.createOntProperty( NS + "p" );
 Restriction anonR = m.createRestriction( p );</pre>
+
+    <p>Since a restriction is typically not assigned a URI in an ontology,
+    retrieving an existing restriction by name may not be possible. However,
+    you can list all of the restrictions in a model and search for the
+    one you want:</p>
+
+<pre class="codesample">Iterator i = m.listRestrictions();
+while (i.hasNext()) {
+    Restriction r = (Restriction) i.next();
+    if (isTheOne( r )) {
+        // handle the restriction
+    }
+}</pre>
+    <p>A common case is that you want the restrictions on some property <code>p</code>.
+    In this case, from an object denoting <code>p</code> you can list the restrictions
+    that mention that property:</p>
+<pre class="codesample">OntProperty p = m.getProperty( NS + "p" );
+Iterator i = p.listReferringRestrictions();
+while (i.hasNext()) {
+    Restriction r = (Restriction) i.next();
+    // now handle the restriction ...
+}</pre>
+
     <p>
-      A general restriction can be converted to a specific type of restriction via asXXX methods (if the information is already in the model), or via createXXX methods if the information may not yet be in the model. For example, to convert the anonymous restriction from the previous example to an all values from restriction, we can do the following:
+      A general restriction can be converted to a specific type of restriction via
+      <code>as...</code> methods (if the information is already in the model), or, if
+      the information is not in the model, via <code>convertTo...</code> methods.
+      For example, to convert the example restriction <code>r</code>
+      from the example above to an all values from restriction, you can do the following:
     </p>
-    <pre>
-OntClass c = m.createClass( Ns + "C" );
-AllValuesFromRestriction avf = anonR.convertToAllValuesFromRestriction( c );</pre>
 
-<p> For creating a particular restriction <em>ab initio</em>, we can use the creation
-  methods defined on <code>OntModel</code>. For example: </p>
-    <pre>
-OntClass c = m.createClass( Ns + "C" );
-ObjectProperty p = m.createObjectProperty( Ns + "p" );
+    <pre class="codesample">OntClass c = m.createClass( NS + "SomeClass" );
+AllValuesFromRestriction avf = r.convertToAllValuesFromRestriction( c );</pre>
 
-// use a null URI to create an anonymous restriction
-AllValuesFromRestriction rst = m.createAllValuesFromRestriction( null, p, c );</pre>
+    <p>To create a particular restriction <em>ab initio</em>, you can use the creation
+      methods defined on <code>OntModel</code>. For example: </p>
+<pre class="codesample">OntClass c = m.createClass( NS + "SomeClass" );
+ObjectProperty p = m.createObjectProperty( NS + "p" );
+
+// null denotes the URI in an anonymous restriction
+AllValuesFromRestriction avf = m.createAllValuesFromRestriction( null, p, c );</pre>
+
     <p>
       Assuming that the above code fragment was using a model <code>m</code> that was created
       with the OWL language profile, it creates a instance of an OWL restriction that would have
       the following definition in RDF/XML:
     </p>
-    <pre>
-&lt;owl:Restriction&gt;
+<pre class="codesample">&lt;owl:Restriction&gt;
   &lt;owl:onProperty rdf:resource="#p"/&gt;
-  &lt;owl:allValuesFrom rdf:resource="#C"/&gt;
+  &lt;owl:allValuesFrom rdf:resource="#SomeClass"/&gt;
 &lt;/owl:Restriction&gt;</pre>
+
     <p>
-      Once we have a particular restriction object, there are methods following the standard add, get, set and test pattern to access the components of the declaration. For example, in the camera ontology, we find this definition of a class describing Large-Format cameras:
+      Once you have a particular restriction object, there are methods following the
+      standard add, get, set and test naming pattern to access the aspects of the restriction.
+      For example, in a camera ontology, we might find this definition of a class
+      describing Large-Format cameras:
     </p>
-    <pre>
-&lt;owl:Class rdf:ID="Large-Format"&gt;
+<pre class="codesample">&lt;owl:Class rdf:ID="Large-Format"&gt;
   &lt;rdfs:subClassOf rdf:resource="#Camera"/&gt;
   &lt;rdfs:subClassOf&gt;
     &lt;owl:Restriction&gt;
@@ -1475,11 +1570,10 @@ AllValuesFromRestriction rst = m.createAllValuesFromRestriction( null, p, c );</
    &lt;/owl:Restriction&gt;
   &lt;/rdfs:subClassOf&gt;
 &lt;/owl:Class&gt;</pre>
-    <p>
-      The following code shows one way to access the components of the all values from restriction. Assume m contains the camera ontology, read in as above.
-    </p>
-    <pre>
-OntClass LargeFormat = m.getOntClass( camNS + "Large-Format" );
+
+    <p>Here's one way to access the components of the all values from restriction.
+    Assume m contains a suitable camera ontology:</p>
+<pre class="codesample">OntClass largeFormat = m.getOntClass( camNS + "Large-Format" );
 for (Iterator i = LargeFormat.listSuperClasses( true ); i.hasNext(); ) {
   OntClass c = (OntClass) i.next();
 
@@ -1489,85 +1583,126 @@ for (Iterator i = LargeFormat.listSuperClasses( true ); i.hasNext(); ) {
     if (r.isAllValuesFromRestriction()) {
       AllValuesFromRestriction av = r.asAllValuesFromRestriction();
       System.out.println( "AllValuesFrom class " +
-                          av.getAllValuesFrom().getLocalName() +
-                          " on property " + av.getOnProperty().getLocalName() );
+                          av.getAllValuesFrom().getURI() +
+                          " on property " + av.getOnProperty().getURI() );
     }
   }
 }</pre>
-    <h3>
-      Boolean class expressions
-    </h3>
+
+    <h3 id="booleanClassExprs">Boolean class expressions</h3>
+    <p>Most programmers are familiar with the use of Boolean operators
+    to construct propositional expressions: conjunction (and), disjunction
+    (or) and negation (not). OWL provides a means for
+    construction expressions describing classes with analogous operators, by
+    considering class descriptions in terms of the set of individuals that
+    comprise the members of the class.</p>
+    <p>Suppose we wish to say that an
+    instance x has <code>rdf:type</code> A <strong>and</strong> <code>rdf:type</code>
+    B. This means that x is both a member of the set of individuals in A,
+    and in the set of individuals in B. Thus, x lies in the <em>intersection</em>
+    of classes A and B. If, on the other hand, A is either has <code>rdf:type</code>
+    A <strong>or</strong> B, then x must lie in the <em>union</em> of A and
+    B. Finally, to say that x does <strong>not</strong> have <code>rdf:type</code>
+    A, it must lie in the <em>complement</em> of A. These operations, union,
+    intersection and complement are the Boolean operators for constructing
+    class expressions. While complement takes only a single argument, union
+    and intersection must necessarily take more than one argument. Before
+    continuing with constructing and using Boolean class expressions, I
+    digress briefly to discuss lists.</p>
+
+    <h3 id="listExpressions">List expressions</h3>
     <p>
-      Most programmers are familiar with the use of Boolean operators to construct propositional expressions: conjunction (and), disjunction (or) and negation (not). OWL and DAML+OIL provide a means for construction expressions describing classes with analogous operators, by considering class descriptions in terms of the set of individuals that comprise the members of the class. Suppose we wish to say that an instance x has <code>rdf:type</code> A <b>and</b> <code>rdf:type</code> B. This means that x is both a member of the set of individuals in A, and in the set of individuals in B. Thus, x lies in the <em>intersection</em> of classes A and B. If, on the other hand, A is either has <code>rdf:type</code> A <b>or</b> B, then x must lie in the <em>union</em> of A and B. Finally, to say that x does <b>not</b> have <code>rdf:type</code> A, it must lie in the <em>complement</em> of A. These operations, union, intersection and complement are the Boolean operators for constructing class expressions. While complement takes only a single argument, union and intersection must necessarily take more than one argument. Before continuing with constructing and using Boolean class expressions, we digress briefly to discuss lists.
+      RDF originally had three container types: <code>Seq</code>,
+      <code>Alt</code> and <code>Bag</code>. While useful, these are
+      all open forms: it is not possible to say that a given container has a fixed number
+      of values. The DAML+OIL standard introduced a fourth container type - lists - in
+      order to have a closed collection. Lists have subsequently been added to the core RDF
+      specification, and are used extensively in OWL.
+      A list follows the well-known <em>cons cell</em> pattern from Lisp, Prolog and other
+      list-handling languages. Each cell of a list is either the end-of-list terminator
+      (<code>nil</code> in Lisp), or is a pair consisting of a value and a pointer to the
+      cell that is the first cell on the tail of the list. In RDF lists, the end-of-list is
+      marked by a resource with name <code>rdf:nil</code>, while each list cell is an anonymous
+      resource with two properties, one denoting the tail and the other the value.
+      Fortunately, this complexity is hidden by some simple syntax:
     </p>
-    <h3>
-      List expressions
-    </h3>
-    <p>
-      RDF originally had three container types: Seq, Alt and Bag. While useful, these are all open forms: it is not possible to say that a given container has a set number of values. The DAML+OIL standard introduced a fourth container type - lists - in order to have a closed collection. Lists have now been added to the core RDF specification. A list has the following compact form in the RDF XML serialisation:
-    </p>
-    <pre>
-&lt;p rdf:parseType="collection"&gt;
+<pre class="codesample">&lt;p rdf:parseType="collection"&gt;
   &lt;A /&gt;
   &lt;B /&gt;
 &lt;/p&gt;</pre>
     <p>
-      According to the RDF syntax specification, this list of two elements has the following expansion in the underlying RDF graph:
+      According to the RDF specification, this list of two elements has the
+      following expansion as RDF triples:
     </p>
-    <pre>
-&lt;p&gt;
+<pre class="codesample">&lt;p&gt;
   &lt;rdf:first&gt;&lt;A /&gt;&lt;/rdf:first&gt;
   &lt;rdf:rest&gt;
     &lt;rdf:first&gt;&lt;B /&gt;&lt;/rdf:first&gt;
     &lt;rdf:rest rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#nil"/&gt;
   &lt;/rdf:rest&gt;
 &lt;/p&gt;</pre>
-    <p>
-      This structure will be familiar to anyone who has used list-valued languages, include Lisp, Prolog and SML. Following the original terminology from Lisp, it is often referred-to as a <em>cons-cell</em> list construction. Given this construction, a well formed list (one with exactly one <code>rdf:first</code> and <code>rdf:rest</code> per cons cell) has a precisely determined set of members.
-    </p>
+<p>Given this construction, a well formed list (one with
+exactly one <code>rdf:first</code> and <code>rdf:rest</code> per cons
+cell) has a precisely determined set of members. Incidentally, the
+same list in N3/Turtle is even more compact:</p>
+<pre class="codesample">:example
+    :p ( :A :B ).</pre>
 
 <p> Although lists
   are defined in the generic RDF model in Jena, they are extensively used by the
-  ontology API so we mention them here. Full details of the methods defined on
-  the <a href="../javadoc/com/hp/hpl/jena/rdf/model/RDFList.html"><code>RDFList</code></a> class are available in the Jena Javadoc. </p>
+  ontology API so I mention them here. Full details of the methods defined on
+  the <a href="../javadoc/com/hp/hpl/jena/rdf/model/RDFList.html"><code>RDFList</code></a>
+  class are available in the Jena Javadoc. </p>
 
-<p> A number of means of constructing lists is defined on in <a href="../javadoc/com/hp/hpl/jena/rdf/model/Model.html"><code>Model</code></a>,
-  as variants on <code>createList</code>. For example, a list of three classes
-  can be defined as follows: </p>
-    <pre>
-OntModel m = ModelFactory.createOntModel();
-OntClass c0 = m.createClass( Ns + "c0" );
-OntClass c1 = m.createClass( Ns + "c1" );
-OntClass c2 = m.createClass( Ns + "c2" );
+<p> A number of means of constructing lists is defined in
+<a href="../javadoc/com/hp/hpl/jena/rdf/model/Model.html"><code>Model</code></a>,
+  as variants on <code>createList</code>. For example, you can construct
+  a list of three classes as follows: </p>
+    <pre class="codesample">OntModel m = ModelFactory.createOntModel();
+OntClass c0 = m.createClass( NS + "c0" );
+OntClass c1 = m.createClass( NS + "c1" );
+OntClass c2 = m.createClass( NS + "c2" );
 
 RDFList cs = m.createList( new RDFNode[] {c0, c1, c2} );</pre>
     <p>
-      Alternatively, a list can be built up one element at at time:
+      Alternatively, you can build a list one element at at time:
     </p>
-    <pre>
-OntModel m = ModelFactory.createOntModel();
-RDFList Cs = m.createList(); // Cs is empty
-Cs = cs.cons( m.createClass( Ns + "c0" ) );
-Cs = cs.cons( m.createClass( Ns + "c1" ) );
-Cs = cs.cons( m.createClass( Ns + "c2" ) );</pre>
-    <p>
-      Note that these two approaches end with the classes in the lists in opposite orders, since the <code>cons</code> operation adds a new list cell to the front of the list. Thus the second list will run c2 to c0. In the ontology operations we are discussing here, the order of values in the list is not considered significant.
-    </p>
-    <p>
-      Once the list has been constructed or obtained from the model (a resource which is the first cell of a list sequence will accept <code>.as(&nbsp;RDFList.class&nbsp;)</code>), RDFList methods may be used to access members of the list, iterate over the list, and so forth. For example:
-    </p>
-    <pre>
-System.out.println( "List has " + myRDFList.size() + " members:"    );
+    <pre class="codesample">OntModel m = ModelFactory.createOntModel();
+RDFList cs = m.createList(); // Cs is empty
+cs = cs.cons( m.createClass( NS + "c0" ) );
+cs = cs.cons( m.createClass( NS + "c1" ) );
+cs = cs.cons( m.createClass( NS + "c2" ) );</pre>
+
+    <p>Note that these two approaches end with the classes in the lists
+    in opposite orders, since the <code>cons</code> operation adds a new
+    list cell to the front of the list. Thus the second list will run c2 to
+    c0. In the ontology operations we are discussing here, the order of
+    values in the list is not considered significant.</p>
+
+    <p>Once the list has been constructed or obtained from the model (a
+    resource which is a cell in a list sequence will accept <code>.as(&nbsp;RDFList.class&nbsp;)</code>),
+    <a href="../javadoc/com/hp/hpl/jena/rdf/model/RDFList.html"><code>RDFList</code></a>
+    methods may be used to access members of the list, iterate over
+    the list, and so forth. For example:</p>
+
+<pre class="codesample">System.out.println( "List has " + myRDFList.size() + " members:" );
 for (Iterator i = myRDFList.iterator(); i.hasNext(); ) {
   System.out.println( i.next() );
 }</pre>
-    <h3>
-      Intersection, union and complement class expressions
-    </h3>
-    <p>
-      Given the ability to form lists, building intersection and union class expressions is straightforward. The create methods on OntModel allow an intersection or union class to be built directly. Alternatively, given an existing OntClass, the convertTo methods can be used to construct facet representing the more specialised expressions. For example, the camera ontology defines an SLR camera as the intersection of the class Camera with a has value restriction on the viewFinder property to have the value ThroughTheLens. Here's the XML declaration:
-    </p>
-    <pre>
+
+<!--  watermark ... edit pass has got to here -->
+    <h3 class="booleanExprs">Intersection, union and complement class expressions</h3>
+
+    <p>Given Jena's ability to construct lists, building intersection and union
+    class expressions is straightforward. The <code>create</code> methods on OntModel
+    allow an intersection or union class to be built directly.
+    Alternatively, given an existing OntClass, the convertTo methods can be
+    used to construct facet representing the more specialised expressions.
+    For example, the camera ontology defines an SLR camera as the
+    intersection of the class Camera with a has value restriction on the
+    viewFinder property to have the value ThroughTheLens. Here's the XML
+    declaration:</p>
+<pre>
 &lt;owl:Class rdf:ID="SLR"&gt;
   &lt;owl:intersectionOf rdf:parseType="Collection"&gt;
     &lt;owl:Class rdf:about="#Camera"/&gt;
