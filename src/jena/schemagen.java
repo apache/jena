@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            14-Apr-2003
  * Filename           $RCSfile: schemagen.java,v $
- * Revision           $Revision: 1.54 $
+ * Revision           $Revision: 1.55 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2008-01-02 12:08:17 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2008-01-02 13:42:25 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -52,7 +52,7 @@ import com.hp.hpl.jena.shared.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: schemagen.java,v 1.54 2008-01-02 12:08:17 andy_seaborne Exp $
+ * @version CVS $Id: schemagen.java,v 1.55 2008-01-02 13:42:25 ian_dickinson Exp $
  */
 public class schemagen {
     // Constants
@@ -833,10 +833,14 @@ public class schemagen {
             writeln( 1, "private static final String SOURCE = " );
             boolean first = true;
 
-            StringTokenizer st = new StringTokenizer( output, m_nl );
+            StringTokenizer st = new StringTokenizer( output, "\n" );
             while (st.hasMoreTokens()) {
+                String tok = st.nextToken();
+                if (tok.endsWith( "\r" )) {
+                    tok = tok.substring( 0, tok.length() - 1 );
+                }
                 write( 2, first ? "   " : " + " );
-                writeln( 2, protectQuotes( st.nextToken() ) );
+                writeln( 2, protectQuotes( tok ) );
                 first = false;
             }
 
