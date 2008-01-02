@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: Content.java,v 1.5 2008-01-02 12:05:51 andy_seaborne Exp $
+ 	$Id: Content.java,v 1.6 2008-01-02 16:16:35 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler;
@@ -40,6 +40,12 @@ public class Content
         {
         for (int i = 0; i < contents.size(); i += 1) ((Content) contents.get(i)).fill( m );
         return m; 
+        }
+
+    public boolean isEmpty()
+        {
+        for (int i = 0; i < contents.size(); i += 1) if (!((Content) contents.get( i )).isEmpty()) return false;
+        return true;
         }
     }
 

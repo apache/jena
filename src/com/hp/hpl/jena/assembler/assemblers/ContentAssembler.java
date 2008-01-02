@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: ContentAssembler.java,v 1.12 2008-01-02 12:09:37 andy_seaborne Exp $
+ 	$Id: ContentAssembler.java,v 1.13 2008-01-02 16:16:34 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.assemblers;
@@ -130,7 +130,11 @@ public class ContentAssembler extends AssemblerBase implements Assembler
     protected static Content newModelContent( final Model m )
         {
         return new Content() 
-            { public Model fill( Model x ) { x.setNsPrefixes( m ); return x.add( m ); } };
+            { 
+            public Model fill( Model x ) { x.setNsPrefixes( m ); return x.add( m ); } 
+            
+            public boolean isEmpty() { return m.isEmpty(); }
+            };
         }
 
     protected Content objectAsContent( FileManager fm, Statement s )

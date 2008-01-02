@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestModelAssembler.java,v 1.7 2008-01-02 12:05:57 andy_seaborne Exp $
+ 	$Id: TestModelAssembler.java,v 1.8 2008-01-02 16:16:37 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.test;
@@ -39,10 +39,10 @@ public class TestModelAssembler extends AssemblerTestBase
 
     public void testContent()
         {
-//        Resource root = resourceInModel( "x rdf:type ja:DefaultModel; x ja:initialContent c; c ja:quotedContent A; A P B" );
+        Resource root = resourceInModel( "x rdf:type ja:DefaultModel; x ja:initialContent c; c ja:quotedContent A; A P B" );
 //        root.getModel().write( System.err, "N3"  );
-//        Model m = (Model) new FakeModelAssembler().open( new ContentAssembler(), root, Mode.ANY );
-//        assertIsoModels( modelWithStatements( "A P B" ), m );
+        Model m = (Model) new FakeModelAssembler().open( new ContentAssembler(), root, Mode.ANY );
+        assertIsoModels( modelWithStatements( "A P B" ), m );
         }
     
     public void testGetsPrefixMappings()

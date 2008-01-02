@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
     [See end of file]
-    $Id: Regression.java,v 1.40 2008-01-02 12:07:03 andy_seaborne Exp $
+    $Id: Regression.java,v 1.41 2008-01-02 16:16:21 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.regression;
@@ -24,7 +24,7 @@ import org.apache.commons.logging.LogFactory;
  * NewRegression suite; kers.]
  *
  * @author  bwm
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.40 $' Date='$Date: 2008-01-02 12:07:03 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.41 $' Date='$Date: 2008-01-02 16:16:21 $'
  */
 public class Regression extends Object {
 
@@ -2818,7 +2818,7 @@ public class Regression extends Object {
             n++; stmt = m.createLiteralStatement(m.createResource(),
                                           RDF.value, tvBoolean);
             n++; m.add(stmt);
-            n++; stmt = stmt.changeObject(tvLitObj);
+            n++; stmt = stmt.changeObject( m.createTypedLiteral( tvLitObj ) );
             n++;  if (! (stmt.getObject(new LitTestObjF()).equals(tvLitObj)))
                       error(test,n);
             n++;  if (  m.containsLiteral(stmt.getSubject(), RDF.value, tvBoolean))
@@ -4883,5 +4883,5 @@ public class Regression extends Object {
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: Regression.java,v 1.40 2008-01-02 12:07:03 andy_seaborne Exp $
+ * $Id: Regression.java,v 1.41 2008-01-02 16:16:21 chris-dollin Exp $
  */
