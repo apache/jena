@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: RDBModelAssembler.java,v 1.8 2008-01-02 12:09:36 andy_seaborne Exp $
+ 	$Id: RDBModelAssembler.java,v 1.9 2008-01-03 15:19:05 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.assemblers;
@@ -14,13 +14,18 @@ import com.hp.hpl.jena.shared.*;
 
 public class RDBModelAssembler extends NamedModelAssembler implements Assembler
     {
-    protected Model openModel( Assembler a, Resource root, Mode mode )
+    protected Model openEmptyModel( Assembler a, Resource root, Mode mode )
+        { return openModel( a, root, Content.empty, mode ); }    
+    
+    protected Model openModel( Assembler a, Resource root, Content initial, Mode mode )
         {
         checkType( root, JA.RDBModel );
         String name = getModelName( root );
         ReificationStyle style = getReificationStyle( root );
         ConnectionDescription c = getConnection( a, root );
-        return openModel( root, c, name, style, mode );
+        Model m = openModel( root, c, name, style, initial, mode );
+//        if (!initial.isEmpty()) addContent( root, m, initial );
+        return m;
         }
 
     protected ConnectionDescription getConnection( Assembler a, Resource root )
@@ -28,16 +33,16 @@ public class RDBModelAssembler extends NamedModelAssembler implements Assembler
         Resource C = getRequiredResource( root, JA.connection );
         return (ConnectionDescription) a.open( C );        
         }
-    
-    protected Model openModel( Resource root, ConnectionDescription c, String name, ReificationStyle style, Mode mode )
+
+    protected Model openModel( Resource root, ConnectionDescription c, String name, ReificationStyle style, Content initial, Mode mode )
         {
         IDBConnection ic = c.getConnection();
         return isDefaultName( name )
             ? ic.containsDefaultModel() ? ModelRDB.open( ic ) : ModelRDB.createModel( ic )
-            : openByMode( root, name, mode, style, ic );
+            : openByMode( root, initial, name, mode, style, ic );
         }
 
-    private Model openByMode( Resource root, String name, Mode mode, ReificationStyle style, IDBConnection ic )
+    private Model openByMode( Resource root, Content initial, String name, Mode mode, ReificationStyle style, IDBConnection ic )
         {
         if (ic.containsModel( name ))
             {
@@ -46,7 +51,7 @@ public class RDBModelAssembler extends NamedModelAssembler implements Assembler
             }
         else
             {
-            if (mode.permitCreateNew( root, name )) return consModel( ic, name, style, true );
+            if (mode.permitCreateNew( root, name )) return initial.fill( consModel( ic, name, style, true ) );
             throw new NotFoundException( name );
             }
         }

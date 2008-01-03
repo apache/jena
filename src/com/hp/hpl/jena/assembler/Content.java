@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: Content.java,v 1.6 2008-01-02 16:16:35 chris-dollin Exp $
+ 	$Id: Content.java,v 1.7 2008-01-03 15:19:07 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler;
@@ -17,6 +17,14 @@ import com.hp.hpl.jena.rdf.model.Model;
 */
 public class Content
     {
+    /**
+        An empty Content object for your convenience.
+    */
+    public static final Content empty = new Content();
+    
+    /**
+        The list of component Content objects. 
+    */
     protected final List contents;
     
     /**

@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: ConnectionDescription.java,v 1.6 2008-01-02 12:05:52 andy_seaborne Exp $
+ 	$Id: ConnectionDescription.java,v 1.7 2008-01-03 15:19:07 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler;
@@ -74,8 +74,8 @@ public class ConnectionDescription
     public String toString()
         { 
         return
-            "UrlConnection("
-            + " subject=" + subject
+            "UrlConnection ("
+            + "subject=" + subject
             + " url=" + dbURL
             + " type=" + dbType
             + " user=" + dbUser

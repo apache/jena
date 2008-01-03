@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestOntModelAssembler.java,v 1.7 2008-01-02 12:05:56 andy_seaborne Exp $
+ 	$Id: TestOntModelAssembler.java,v 1.8 2008-01-03 15:18:54 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.test;
@@ -81,7 +81,7 @@ public class TestOntModelAssembler extends AssemblerTestBase
         Assembler a = new OntModelAssembler();
         Assembler aa = new ModelAssembler()
             {
-            protected Model openModel( Assembler a, Resource root, Mode irrelevant )
+            protected Model openEmptyModel( Assembler a, Resource root, Mode irrelevant )
                 { 
                 assertEquals( resource( "y" ), root );
                 return baseModel;  
@@ -99,7 +99,7 @@ public class TestOntModelAssembler extends AssemblerTestBase
         Assembler a = new OntModelAssembler();
         Assembler aa = new ModelAssembler()
             {
-            protected Model openModel( Assembler a, Resource root, Mode irrelevant )
+            protected Model openEmptyModel( Assembler a, Resource root, Mode irrelevant )
                 { 
                 assertEquals( resource( "y" ), root );
                 return baseModel;  

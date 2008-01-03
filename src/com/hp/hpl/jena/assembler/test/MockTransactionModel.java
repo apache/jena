@@ -1,7 +1,7 @@
 /*
  (c) Copyright 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  All rights reserved - see end of file.
- $Id: MockTransactionModel.java,v 1.8 2008-01-03 09:33:04 chris-dollin Exp $
+ $Id: MockTransactionModel.java,v 1.9 2008-01-03 15:18:54 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.assembler.test;
@@ -37,7 +37,7 @@ final class MockTransactionModel extends ModelAssembler
         this.abortsOnAdd = abortsOnAdd;
         }
 
-    protected Model openModel( Assembler a, Resource root, Mode irrelevant )
+    protected Model openEmptyModel( Assembler a, Resource root, Mode irrelevant )
         {
         return new ModelCom( Factory.createDefaultGraph() ) 
             {

@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: OntModelAssembler.java,v 1.8 2008-01-02 12:09:36 andy_seaborne Exp $
+ 	$Id: OntModelAssembler.java,v 1.9 2008-01-03 15:19:05 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.assemblers;
@@ -14,7 +14,7 @@ import com.hp.hpl.jena.rdf.model.*;
 
 public class OntModelAssembler extends InfModelAssembler implements Assembler
     {
-    public Model openModel( Assembler a, Resource root, Mode mode )
+    public Model openEmptyModel( Assembler a, Resource root, Mode mode )
         {
         checkType( root, JA.OntModel );
         Model baseModel = getBase( a, root, mode );

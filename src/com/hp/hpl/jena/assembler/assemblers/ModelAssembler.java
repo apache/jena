@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: ModelAssembler.java,v 1.12 2008-01-03 09:33:27 chris-dollin Exp $
+ 	$Id: ModelAssembler.java,v 1.13 2008-01-03 15:19:05 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.assemblers;
@@ -17,20 +17,24 @@ import com.hp.hpl.jena.vocabulary.RDF;
 
 public abstract class ModelAssembler extends AssemblerBase implements Assembler
     {    
-    protected abstract Model openModel( Assembler a, Resource root, Mode mode );
+    protected abstract Model openEmptyModel( Assembler a, Resource root, Mode mode );
+    
+    protected Model openModel( Assembler a, Resource root, Content initial, Mode mode )
+        {
+        Model m = openEmptyModel( a, root, mode );
+        if (!initial.isEmpty()) addContent( root, m, initial );
+        return m;
+        }
     
     public Object open( Assembler a, Resource root, Mode mode )
         { 
-        Content initial = getInitialContent( a, root );
-        Content c = getContent( a, root );
-        Model m = openModel( a, root, mode );
-        if (!initial.isEmpty()) addContent( root, m, initial );
-        addContent( root, m, c );
+        Model m = openModel( a, root, getInitialContent( a, root ), mode );
+        addContent( root, m, getContent( a, root ) );
         m.setNsPrefixes( getPrefixMapping( a, root ) );
         return m; 
         }
 
-    private void addContent( Resource root, Model m, Content c )
+    protected void addContent( Resource root, Model m, Content c )
         {
         if (m.supportsTransactions())
             {
@@ -77,7 +81,7 @@ public abstract class ModelAssembler extends AssemblerBase implements Assembler
     private Content contentFromModel( Assembler a, Resource root, Model partial, Resource combined )
         {
         return partial.isEmpty()
-            ? new Content()
+            ? Content.empty
             : (Content) a.open( completedClone( root, combined, partial ) )
             ;
         }
@@ -86,7 +90,7 @@ public abstract class ModelAssembler extends AssemblerBase implements Assembler
         {
         final Resource newRoot = oneLevelClone( root );
         final Model fragment = newRoot.getModel();
-        return fragment.isEmpty() ? new Content() : (Content) a.open( a, completedClone( root, newRoot, fragment ) );
+        return fragment.isEmpty() ? Content.empty : (Content) a.open( a, completedClone( root, newRoot, fragment ) );
         }
 
     private Resource completedClone( Resource root, Resource newRoot, Model fragment )
