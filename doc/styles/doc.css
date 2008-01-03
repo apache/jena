@@ -1,5 +1,5 @@
 /* Style sheet for Jena user manual documents */
-/* CVS $Id: doc.css,v 1.4 2007-12-14 19:22:51 ian_dickinson Exp $ */
+/* CVS $Id: doc.css,v 1.5 2008-01-03 16:32:43 ian_dickinson Exp $ */
 
 /* Media-specific rules */
 
@@ -26,35 +26,54 @@ body {
 table {
   font-family: Verdana, Arial, sans-serif ;
   font-size: 10pt ;
-  border-color : black ;
+  border: black 1px solid;
   border-collapse: collapse;
-  border-width: 1px;
-  border: 1;
   cellspacing: 0 ;
   cellpadding: 0 ;
 }
 
 td {
-  border-width: 1px ;
+  border: #b0b0b0 1px dotted;
   border-collapse: collapse;
-  border-color : #808080 ;
   empty-cells: show;
   padding: 5 ;
   spacing: 0 ;
   vertical-align:top;
-  text-align:center;
+  text-align: left;
+  padding-left: 0.5em;
 }
 
 
 th {
   border-collapse: collapse;
-  border-width: 1px ;
-  border-color: #808080 ;
+  border: #909090 1px dotted;
   empty-cells: show;
   padding: 5 ;
   vertical-align:top;
   text-align:center;
 }
+
+/* definitions table */
+.definitions {
+    width: 650px;
+}
+
+/* two column table with a narrower left col */
+.def1a {
+    width: 200px;
+}
+.def1b {
+    width: 450px;
+}
+
+/* two column table with a wider left col */
+.def2a {
+    width: 300px;
+}
+.def2b {
+    width: 350px;
+}
+
 
 .noindent     { margin-left: -5% ; margin-right: -5%; }
 .moreindent   { margin-left:  5% ; margin-right:  5%; }
@@ -121,10 +140,5 @@ code {
 .footnote {
     font-size: smaller;
     border-top: thin solid gray;
-}
-
-td {
-   text-align: left;
-   padding-left: 0.5em;
 }
 
