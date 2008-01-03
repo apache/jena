@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestModelContent.java,v 1.7 2008-01-02 16:16:37 chris-dollin Exp $
+ 	$Id: TestModelContent.java,v 1.8 2008-01-03 09:33:04 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.test;
@@ -54,8 +54,6 @@ public class TestModelContent extends AssemblerTestBase
             ( "x rdf:type ja:Model; x ja:content y; y rdf:type ja:Content; y rdf:type ja:LiteralContent; y ja:literalContent '_:x\\srdf:value\\s17.'" );
         try { a.open( Assembler.content, root  ); }
         catch (RuntimeException e) {}
-//        assertEquals( listOfStrings( "supports[false] add" ), history );
-//        assertIsoModels( expected, m );
         }
     
     public void testContentTransactionsCommit()

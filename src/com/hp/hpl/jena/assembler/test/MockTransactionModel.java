@@ -1,7 +1,7 @@
 /*
  (c) Copyright 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  All rights reserved - see end of file.
- $Id: MockTransactionModel.java,v 1.7 2008-01-02 16:16:37 chris-dollin Exp $
+ $Id: MockTransactionModel.java,v 1.8 2008-01-03 09:33:04 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.assembler.test;
@@ -14,6 +14,12 @@ import com.hp.hpl.jena.graph.Factory;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.rdf.model.impl.ModelCom;
 
+/**
+    A model assembler that creates a model with controllable supporting of
+    transactions and aborting on adding statements; the model logs transactions
+    and adding-of-models. For testing only.
+ 	@author kers
+*/
 final class MockTransactionModel extends ModelAssembler
     {
     private final List history;
@@ -45,12 +51,7 @@ final class MockTransactionModel extends ModelAssembler
             public Model add( Model other )
                 {
                 history.add( "add" );
-                if (abortsOnAdd) 
-                    {
-                    RuntimeException e = new RuntimeException( "model aborts on add of " + other );
-                    // e.printStackTrace( System.err );
-                    throw e;
-                    }
+                if (abortsOnAdd) throw new RuntimeException( "model aborts on add of " + other );
                 super.add( other );
                 return this;
                 }

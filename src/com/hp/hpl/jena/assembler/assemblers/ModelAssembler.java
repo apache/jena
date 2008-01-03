@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: ModelAssembler.java,v 1.11 2008-01-02 16:16:34 chris-dollin Exp $
+ 	$Id: ModelAssembler.java,v 1.12 2008-01-03 09:33:27 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.assemblers;
@@ -22,10 +22,8 @@ public abstract class ModelAssembler extends AssemblerBase implements Assembler
     public Object open( Assembler a, Resource root, Mode mode )
         { 
         Content initial = getInitialContent( a, root );
-        // System.err.println( ">> initial content (" + (initial.isEmpty() ? "empty" : "non-empty") + ") is " + initial );
-//        Model x = ModelFactory.createDefaultModel(); initial.fill( x ); x.write(  System.err, "N3" ); System.err.println( ">> DONE" );
-        Model m = openModel( a, root, mode );
         Content c = getContent( a, root );
+        Model m = openModel( a, root, mode );
         if (!initial.isEmpty()) addContent( root, m, initial );
         addContent( root, m, c );
         m.setNsPrefixes( getPrefixMapping( a, root ) );
@@ -69,46 +67,19 @@ public abstract class ModelAssembler extends AssemblerBase implements Assembler
 
     protected Content getInitialContent( Assembler a, Resource root )
         {
-//        System.err.println( ">> getInitialContent" );
         Model partial = ModelFactory.createDefaultModel();
         Resource combined = partial.createResource();
         for (StmtIterator it = root.listProperties( JA.initialContent ); it.hasNext();)
-            {
-            Resource someInitial = it.nextStatement().getResource();
-//            System.err.println( ">> next resource: " + someInitial );
-            Map1 replace = replaceSubjectMap( partial, combined );
-            for (Iterator it2 = ContentAssembler.contentProperties.iterator(); it2.hasNext();)
-                {
-                Property p = (Property) it2.next();
-//                System.err.println( ">> trying property  " + p );
-                List copied = copyProperties( someInitial, replace, p );
-//                System.err.println( ">> copy is: " + copied );
-                partial.add( copied );
-                }
-            }
-//        System.err.println( ">> partial.isEmpty = " + partial.isEmpty() );
-        if (partial.isEmpty())
-            return new Content();
-        else
-            {
-//            partial.write(  System.err, "N3"  );
-//            System.err.println( ">> we have a non-empty partial with root " + combined );
-            Resource that = completedClone( root, combined, partial );
-//            that.getModel().write( System.err, "N3" );
-            return (Content) a.open( that );
-            }
-        
-//        // if (true) return new Content();
-//        Model m = ModelFactory.createDefaultModel();
-//        Resource r = m.createResource();
-//        Map1 replace = replaceSubjectMap( m, r );
-//        for (StmtIterator it = root.listProperties( JA.initialContent ); it.hasNext();)
-//            {
-//            m.add( copyProperties( root, replace, JA.initialContent ) );
-//            }
-//        Resource it = completedClone( root, r, m );
-//        if (!m.isEmpty()) it.getModel().write( System.err, "N3" );
-//        return m.isEmpty() ? new Content() : (Content) a.open( it );
+            transferContentProperties( partial, it.nextStatement().getResource(), combined );
+        return contentFromModel( a, root, partial, combined );
+        }
+
+    private Content contentFromModel( Assembler a, Resource root, Model partial, Resource combined )
+        {
+        return partial.isEmpty()
+            ? new Content()
+            : (Content) a.open( completedClone( root, combined, partial ) )
+            ;
         }
     
     protected Content getContent( Assembler a, Resource root )
@@ -127,13 +98,18 @@ public abstract class ModelAssembler extends AssemblerBase implements Assembler
     private Resource oneLevelClone( Resource root )
         {
         Model partialCopy = ModelFactory.createDefaultModel();
-        Resource result = partialCopy.createResource();
-        Map1 replace = replaceSubjectMap( partialCopy, result );
-        for (Iterator it = ContentAssembler.contentProperties.iterator(); it.hasNext();)
-            partialCopy.add( copyProperties( root, replace, (Property) it.next() ) );
-        return result;
+        Resource newRoot = partialCopy.createResource();
+        transferContentProperties( partialCopy, root, newRoot );
+        return newRoot;
         }
 
+    private void transferContentProperties( Model partial, Resource someInitial, Resource combined )
+        {
+        Map1 replace = replaceSubjectMap( partial, combined );
+        for (Iterator it = ContentAssembler.contentProperties.iterator(); it.hasNext();)
+            partial.add( copyProperties( someInitial, replace, (Property) it.next() ) );
+        }
+    
     private List copyProperties( Resource root, Map1 replace, Property property )
         { return root.listProperties( property  ).mapWith( replace ).toList(); }
 
