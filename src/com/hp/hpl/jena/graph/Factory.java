@@ -1,13 +1,11 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Factory.java,v 1.29 2008-01-02 12:06:55 andy_seaborne Exp $
+  $Id: Factory.java,v 1.30 2008-01-03 15:41:20 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
 
-import com.hp.hpl.jena.JenaRuntime;
-import com.hp.hpl.jena.mem.*;
 import com.hp.hpl.jena.mem.faster.GraphMemFaster;
 import com.hp.hpl.jena.shared.*;
 
@@ -22,11 +20,15 @@ public class Factory
     private Factory()
         { super(); }
 
-    public static final boolean faster = 
-        JenaRuntime.getSystemProperty( "jena.faster", "yes" ).equals( "yes" );
+    /**
+        @deprecated -- doesn't do anything anymore.
+    */
+    public static final boolean faster = true;
 
-    public static final boolean newHashing = 
-        JenaRuntime.getSystemProperty( "jena.hashing", "yes" ).equals( "yes" );
+    /**
+        @deprecated -- doesn't do anything anymore.
+    */
+    public static final boolean newHashing = true;
     
     /**
         Answer a memory-based Graph with the Standard reification style.
@@ -41,14 +43,14 @@ public class Factory
         { return Factory.createGraphMem( style ); }
               
     public static Graph createGraphMem()
-        { return faster ? (Graph) new GraphMemFaster() : new GraphMem(); }
+        { return new GraphMemFaster(); }
 
     public static Graph createGraphMem( ReificationStyle style )
-        { return faster ? (Graph) new GraphMemFaster( style ) : new GraphMem( style ); }
+        { return new GraphMemFaster( style ); }
 
     public static Graph createGraphMemWithTransactionHandler( final TransactionHandler th )
         {
-        Graph g = new GraphMem() 
+        Graph g = new GraphMemFaster() 
             {
             public TransactionHandler getTransactionHandler() 
                 {  return th; }
@@ -56,7 +58,6 @@ public class Factory
         return g;
         }
     }
-
 
 /*
     (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
