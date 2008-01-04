@@ -324,6 +324,50 @@ public class QueryExecutionFactory
     
     /** Create a QueryExecution that will access a SPARQL service over HTTP
      * @param service   URL of the remote service 
+     * @param query     Query string to execute 
+     * @return QueryExecution
+     */ 
+     
+    static public QueryExecution sparqlService(String service, String query)
+    {
+        checkNotNull(service, "URL for service is null") ;
+        checkArg(query) ;
+        return sparqlService(service, QueryFactory.create(query)) ;
+    }
+
+    /** Create a QueryExecution that will access a SPARQL service over HTTP
+     * @param service       URL of the remote service 
+     * @param query         Query string to execute
+     * @param defaultGraph  URI of the default graph
+     * @return QueryExecution
+     */ 
+     
+    static public QueryExecution sparqlService(String service, String query, String defaultGraph)
+    {
+        checkNotNull(service, "URL for service is null") ;
+        //checkNotNull(defaultGraph, "IRI for default graph is null") ;
+        checkArg(query) ;
+        return sparqlService(service, QueryFactory.create(query), defaultGraph) ;
+    }
+
+    /** Create a QueryExecution that will access a SPARQL service over HTTP
+     * @param service           URL of the remote service 
+     * @param query             Query string to execute
+     * @param defaultGraphURIs  List of URIs to make up the default graph
+     * @param namedGraphURIs    List of URIs to make up the named graphs
+     * @return QueryExecution
+     */ 
+    static public QueryExecution sparqlService(String service, String query, List defaultGraphURIs, List namedGraphURIs)
+    {
+        checkNotNull(service, "URL for service is null") ;
+        //checkNotNull(defaultGraphURIs, "List of default graph URIs is null") ;
+        //checkNotNull(namedGraphURIs, "List of named graph URIs is null") ;
+        checkArg(query) ;
+        return sparqlService(service, QueryFactory.create(query), defaultGraphURIs, namedGraphURIs) ;
+    }
+    
+    /** Create a QueryExecution that will access a SPARQL service over HTTP
+     * @param service   URL of the remote service 
      * @param query     Query to execute 
      * @return QueryExecution
      */ 

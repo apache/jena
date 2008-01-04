@@ -33,8 +33,7 @@ public class QueryEngineHTTP implements QueryExecution
     
     public QueryEngineHTTP(String serviceURI, Query query)
     { 
-        queryString = query.toString() ;
-        service = serviceURI ;
+        this(serviceURI, query.toString()) ;
     }
     
     public QueryEngineHTTP(String serviceURI, String queryString)

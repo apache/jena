@@ -33,6 +33,12 @@ public class Run
 {
     public static void main(String[] argv) throws Exception
     {
+        QueryExecution qExec = QueryExecutionFactory.sparqlService("http://localhost/foo?bar=baz", "SELECT * { ?s ?p ?o}") ;
+        qExec.execSelect() ;
+        System.out.println("Finished") ;
+        System.exit(0) ;
+        
+        
 //        AlgebraGenerator.AlgebraStaging = true ;
 //        String []a = { "--file=Q.rq", "--print=op" , "--print=plan"} ;
 //        arq.qparse.main(a) ;
