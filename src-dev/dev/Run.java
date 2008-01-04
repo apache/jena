@@ -24,8 +24,13 @@ import com.hp.hpl.jena.query.larq.IndexLARQ;
 import com.hp.hpl.jena.query.larq.LARQ;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.sparql.algebra.*;
+import com.hp.hpl.jena.sparql.algebra.Algebra;
+import com.hp.hpl.jena.sparql.algebra.Op;
+import com.hp.hpl.jena.sparql.algebra.OpAsQuery;
+import com.hp.hpl.jena.sparql.algebra.OpVisitorBase;
+import com.hp.hpl.jena.sparql.algebra.OpWalker;
 import com.hp.hpl.jena.sparql.algebra.op.OpFilter;
+import com.hp.hpl.jena.sparql.engine.http.Params;
 import com.hp.hpl.jena.sparql.util.DateTimeStruct;
 import com.hp.hpl.jena.util.FileManager;
 
@@ -33,8 +38,18 @@ public class Run
 {
     public static void main(String[] argv) throws Exception
     {
-        QueryExecution qExec = QueryExecutionFactory.sparqlService("http://localhost/foo?bar=baz", "SELECT * { ?s ?p ?o}") ;
-        qExec.execSelect() ;
+        if ( false ) System.setProperty("socksProxyHost", "socks-server") ;
+        //java.net.PasswordAuthentication
+        
+//        QueryExecution qExec = QueryExecutionFactory.sparqlService("http://sparql.org/books", "SELECT * { ?s ?p ?o}") ;
+        Params params = new Params() ;
+        //params.addParam("default-graph-uri", "json") ;
+
+        QueryExecution qExec = QueryExecutionFactory.makeServiceRequest("http://sparql.org/books",
+                                                         QueryFactory.create("SELECT * { ?s ?p ?o}"),
+                                                         params) ;
+        
+        ResultSetFormatter.out(qExec.execSelect()) ;
         System.out.println("Finished") ;
         System.exit(0) ;
         

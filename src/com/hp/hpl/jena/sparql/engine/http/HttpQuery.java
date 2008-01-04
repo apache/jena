@@ -75,13 +75,12 @@ public class HttpQuery extends Params
     {
         if ( log.isTraceEnabled())
             log.trace("URL: "+serviceURL) ;
-
+ 
         if ( serviceURL.indexOf('?') >= 0 )
             throw new QueryExceptionHTTP(-1, "URL already has a query string ("+serviceURL+")") ;
         
         this.serviceURL = serviceURL ;
     }
-
     
     private String getQueryString()
     {

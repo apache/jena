@@ -25,7 +25,10 @@ public class QueryEngineHTTP implements QueryExecution
     public static final String QUERY_MIME_TYPE = "application/sparql-query" ;
     String queryString ;
     String service ;
-    Context parameters = new Context() ;
+    Context context = null ;
+    
+    //Params
+    Params params = null ;
     
     // Protocol
     List defaultGraphURIs = new ArrayList() ;
@@ -40,14 +43,19 @@ public class QueryEngineHTTP implements QueryExecution
     { 
         this.queryString = queryString ;
         service = serviceURI ;
+        // Copy the global context to freeze it.
+        context = new Context(ARQ.getContext()) ;
     }
-    
-    //public Query getQuery() { return query ; }
-    
-    public void setFileManager(FileManager fm) { return ; } 
 
-    public void setInitialBinding(QuerySolution binding) { throw new QueryExecException("Initial bindings not supportd for remote queries") ; }
+    public void setParams(Params params)
+    { this.params = params ; }
+    
+    // Meaning-less
+    public void setFileManager(FileManager fm)
+    { throw new UnsupportedOperationException("FileManagers do not apply to remote query execution") ; }  
 
+    public void setInitialBinding(QuerySolution binding)
+    { throw new UnsupportedOperationException("Initial bindings not supported for remote queries") ; }
     
     /**  @param defaultGraphURIs The defaultGraphURIs to set. */
     public void setDefaultGraphURIs(List defaultGraphURIs)
@@ -111,7 +119,7 @@ public class QueryEngineHTTP implements QueryExecution
         return XMLInput.booleanFromXML(in) ;
     }
 
-    public Context getContext() { return parameters ; }
+    public Context getContext() { return context ; }
     
     private HttpQuery makeHttpQuery()
     {
@@ -128,6 +136,10 @@ public class QueryEngineHTTP implements QueryExecution
             String name = (String)iter.next() ;
             httpQuery.addParam(HttpParams.pNamedGraph, name) ;
         }
+        
+        if ( params != null )
+            httpQuery.merge(params) ; 
+
         return httpQuery ;
     }
     

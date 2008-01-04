@@ -20,6 +20,7 @@ import com.hp.hpl.jena.sparql.engine.QueryEngineRegistry;
 import com.hp.hpl.jena.sparql.engine.QueryExecutionBase;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.binding.BindingRoot;
+import com.hp.hpl.jena.sparql.engine.http.Params;
 import com.hp.hpl.jena.sparql.engine.http.QueryEngineHTTP;
 import com.hp.hpl.jena.sparql.syntax.Element;
 import com.hp.hpl.jena.sparql.util.ALog;
@@ -376,7 +377,7 @@ public class QueryExecutionFactory
     {
         checkNotNull(service, "URL for service is null") ;
         checkArg(query) ;
-        return makeServiceRequest(service, query) ;
+        return makeServiceRequest(service, query, null) ;
     }
 
     /** Create a QueryExecution that will access a SPARQL service over HTTP
@@ -391,7 +392,7 @@ public class QueryExecutionFactory
         checkNotNull(service, "URL for service is null") ;
         //checkNotNull(defaultGraph, "IRI for default graph is null") ;
         checkArg(query) ;
-        QueryEngineHTTP qe = makeServiceRequest(service, query) ;
+        QueryEngineHTTP qe = makeServiceRequest(service, query, null) ;
         qe.addDefaultGraph(defaultGraph) ;
         return qe ;
     }
@@ -410,7 +411,7 @@ public class QueryExecutionFactory
         //checkNotNull(namedGraphURIs, "List of named graph URIs is null") ;
         checkArg(query) ;
 
-        QueryEngineHTTP qe = makeServiceRequest(service, query) ;
+        QueryEngineHTTP qe = makeServiceRequest(service, query, null) ;
         
         if ( defaultGraphURIs != null )
             qe.setDefaultGraphURIs(defaultGraphURIs) ;
@@ -522,9 +523,11 @@ public class QueryExecutionFactory
         return QueryEngineRegistry.get().find(query, dataset, context);
     }
     
-    static private QueryEngineHTTP makeServiceRequest(String service, Query query)
+    static public QueryEngineHTTP makeServiceRequest(String service, Query query, Params params)
     {
-        return new QueryEngineHTTP(service, query) ;
+        QueryEngineHTTP e = new QueryEngineHTTP(service, query) ;
+        e.setParams(params) ;
+        return e ;
     }
     
     // Checking

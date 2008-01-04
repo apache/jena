@@ -20,7 +20,28 @@ public class Params
     // string -> list -> string
     private Map params = new HashMap() ;
     
+    
+    /** Create a Params object */
+    
     public Params() { }
+    
+    /** Create a Params object, initialized from another one.  A copy is made
+     * so the initial values of the Params object are as of the time this constructor
+     * was called.
+     *  
+     * @param other
+     */
+    public Params(Params other)
+    {
+        merge(other) ;
+    }
+    
+    public void merge(Params other)
+    {
+        params.putAll(other.params) ;
+        paramList.addAll(other.paramList) ;
+    }
+
     
     /** Add a parameter.
      * @param name  Name of the parameter
