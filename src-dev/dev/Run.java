@@ -38,14 +38,14 @@ public class Run
 {
     public static void main(String[] argv) throws Exception
     {
-        if ( false ) System.setProperty("socksProxyHost", "socks-server") ;
+        if ( true ) System.setProperty("socksProxyHost", "socks-server") ;
         //java.net.PasswordAuthentication
         
 //        QueryExecution qExec = QueryExecutionFactory.sparqlService("http://sparql.org/books", "SELECT * { ?s ?p ?o}") ;
         Params params = new Params() ;
         //params.addParam("default-graph-uri", "json") ;
 
-        QueryExecution qExec = QueryExecutionFactory.makeServiceRequest("http://sparql.org/books",
+        QueryExecution qExec = QueryExecutionFactory.createServiceRequest("http://sparql.org/books",
                                                          QueryFactory.create("SELECT * { ?s ?p ?o}"),
                                                          params) ;
         

@@ -377,24 +377,7 @@ public class QueryExecutionFactory
     {
         checkNotNull(service, "URL for service is null") ;
         checkArg(query) ;
-        return makeServiceRequest(service, query, null) ;
-    }
-
-    /** Create a QueryExecution that will access a SPARQL service over HTTP
-     * @param service       URL of the remote service 
-     * @param query         Query to execute
-     * @param defaultGraph  URI of the default graph
-     * @return QueryExecution
-     */ 
-     
-    static public QueryExecution sparqlService(String service, Query query, String defaultGraph)
-    {
-        checkNotNull(service, "URL for service is null") ;
-        //checkNotNull(defaultGraph, "IRI for default graph is null") ;
-        checkArg(query) ;
-        QueryEngineHTTP qe = makeServiceRequest(service, query, null) ;
-        qe.addDefaultGraph(defaultGraph) ;
-        return qe ;
+        return createServiceRequest(service, query, null) ;
     }
 
     /** Create a QueryExecution that will access a SPARQL service over HTTP
@@ -410,17 +393,49 @@ public class QueryExecutionFactory
         //checkNotNull(defaultGraphURIs, "List of default graph URIs is null") ;
         //checkNotNull(namedGraphURIs, "List of named graph URIs is null") ;
         checkArg(query) ;
-
-        QueryEngineHTTP qe = makeServiceRequest(service, query, null) ;
+        QueryEngineHTTP qe = createServiceRequest(service, query, defaultGraphURIs, namedGraphURIs, null) ;
         
+        return qe ;
+    }
+
+    /** Create a QueryExecution that will access a SPARQL service over HTTP
+     * @param service       URL of the remote service 
+     * @param query         Query to execute
+     * @param defaultGraph  URI of the default graph
+     * @return QueryExecution
+     */ 
+     
+    static public QueryExecution sparqlService(String service, Query query, String defaultGraph)
+    {
+        checkNotNull(service, "URL for service is null") ;
+        //checkNotNull(defaultGraph, "IRI for default graph is null") ;
+        checkArg(query) ;
+        QueryEngineHTTP qe = createServiceRequest(service, query, null) ;
+        qe.addDefaultGraph(defaultGraph) ;
+        return qe ;
+    }
+
+    /** Create a remote execution */ 
+    static public QueryEngineHTTP createServiceRequest(String service, Query query, List defaultGraphURIs, List namedGraphURIs, Params params)
+    {
+        QueryEngineHTTP qe = new QueryEngineHTTP(service, query) ;
         if ( defaultGraphURIs != null )
             qe.setDefaultGraphURIs(defaultGraphURIs) ;
         if ( namedGraphURIs != null )
             qe.setNamedGraphURIs(namedGraphURIs) ;
+        qe.setParams(params) ;
         return qe ;
     }
-    
-    // ---------------- Graph level
+
+    /** Create a remote execution */ 
+    static public QueryEngineHTTP createServiceRequest(String service, Query query, Params params)
+    {
+        QueryEngineHTTP e = new QueryEngineHTTP(service, query) ;
+        e.setParams(params) ;
+        return e ;
+    }
+
+    // -----------------
     
     static public Plan createPlan(Query query, DatasetGraph dataset, Binding input, Context context)
     {
@@ -523,14 +538,6 @@ public class QueryExecutionFactory
         return QueryEngineRegistry.get().find(query, dataset, context);
     }
     
-    static public QueryEngineHTTP makeServiceRequest(String service, Query query, Params params)
-    {
-        QueryEngineHTTP e = new QueryEngineHTTP(service, query) ;
-        e.setParams(params) ;
-        return e ;
-    }
-    
-    // Checking
     
     static private void checkNotNull(Object obj, String msg)
     {
