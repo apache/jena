@@ -20,7 +20,6 @@ import com.hp.hpl.jena.sparql.engine.QueryEngineRegistry;
 import com.hp.hpl.jena.sparql.engine.QueryExecutionBase;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.binding.BindingRoot;
-import com.hp.hpl.jena.sparql.engine.http.Params;
 import com.hp.hpl.jena.sparql.engine.http.QueryEngineHTTP;
 import com.hp.hpl.jena.sparql.syntax.Element;
 import com.hp.hpl.jena.sparql.util.ALog;
@@ -377,7 +376,7 @@ public class QueryExecutionFactory
     {
         checkNotNull(service, "URL for service is null") ;
         checkArg(query) ;
-        return createServiceRequest(service, query, null) ;
+        return createServiceRequest(service, query) ;
     }
 
     /** Create a QueryExecution that will access a SPARQL service over HTTP
@@ -393,8 +392,11 @@ public class QueryExecutionFactory
         //checkNotNull(defaultGraphURIs, "List of default graph URIs is null") ;
         //checkNotNull(namedGraphURIs, "List of named graph URIs is null") ;
         checkArg(query) ;
-        QueryEngineHTTP qe = createServiceRequest(service, query, defaultGraphURIs, namedGraphURIs, null) ;
-        
+        QueryEngineHTTP qe = createServiceRequest(service, query) ;
+        if ( defaultGraphURIs != null )
+            qe.setDefaultGraphURIs(defaultGraphURIs) ;
+        if ( namedGraphURIs != null )
+            qe.setNamedGraphURIs(namedGraphURIs) ;
         return qe ;
     }
 
@@ -410,29 +412,19 @@ public class QueryExecutionFactory
         checkNotNull(service, "URL for service is null") ;
         //checkNotNull(defaultGraph, "IRI for default graph is null") ;
         checkArg(query) ;
-        QueryEngineHTTP qe = createServiceRequest(service, query, null) ;
+        QueryEngineHTTP qe = createServiceRequest(service, query) ;
         qe.addDefaultGraph(defaultGraph) ;
         return qe ;
     }
 
-    /** Create a remote execution */ 
-    static public QueryEngineHTTP createServiceRequest(String service, Query query, List defaultGraphURIs, List namedGraphURIs, Params params)
+    /** Create a service request for remote execution over HTTP.  The returned class,
+     * {@link QueryEngineHTTP},
+     * allows various HTTP specific paramters to be set. 
+     */
+    static public QueryEngineHTTP createServiceRequest(String service, Query query)
     {
         QueryEngineHTTP qe = new QueryEngineHTTP(service, query) ;
-        if ( defaultGraphURIs != null )
-            qe.setDefaultGraphURIs(defaultGraphURIs) ;
-        if ( namedGraphURIs != null )
-            qe.setNamedGraphURIs(namedGraphURIs) ;
-        qe.setParams(params) ;
         return qe ;
-    }
-
-    /** Create a remote execution */ 
-    static public QueryEngineHTTP createServiceRequest(String service, Query query, Params params)
-    {
-        QueryEngineHTTP e = new QueryEngineHTTP(service, query) ;
-        e.setParams(params) ;
-        return e ;
     }
 
     // -----------------

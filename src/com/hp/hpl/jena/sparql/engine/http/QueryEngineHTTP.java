@@ -33,6 +33,8 @@ public class QueryEngineHTTP implements QueryExecution
     // Protocol
     List defaultGraphURIs = new ArrayList() ;
     List namedGraphURIs  = new ArrayList() ;
+    private String user = null ;
+    private char[] password = null ;
     
     public QueryEngineHTTP(String serviceURI, Query query)
     { 
@@ -47,8 +49,8 @@ public class QueryEngineHTTP implements QueryExecution
         context = new Context(ARQ.getContext()) ;
     }
 
-    public void setParams(Params params)
-    { this.params = params ; }
+//    public void setParams(Params params)
+//    { this.params = params ; }
     
     // Meaning-less
     public void setFileManager(FileManager fm)
@@ -69,6 +71,13 @@ public class QueryEngineHTTP implements QueryExecution
         this.namedGraphURIs = namedGraphURIs ;
     }
 
+    public void addParam(String field, String value)
+    {
+        if ( params == null )
+            params = new Params() ;
+        params.addParam(field, value) ;
+    }
+    
     /** @param defaultGraph The defaultGraph to add. */
     public void addDefaultGraph(String defaultGraph)
     {
@@ -83,6 +92,18 @@ public class QueryEngineHTTP implements QueryExecution
         if ( namedGraphURIs == null )
             namedGraphURIs = new ArrayList() ;
         namedGraphURIs.add(name) ;
+    }
+    
+    /** Set user and password for basic authentication.
+     *  After the request is made (one of the exec calls), the application
+     *  can overwrite the password array to remove details of the secret.
+     * @param user
+     * @param password
+     */
+    public void setBasicAuthentication(String user, char[] password)
+    {
+        this.user = user ;
+        this.password = password ;
     }
     
     public ResultSet execSelect()
@@ -138,8 +159,9 @@ public class QueryEngineHTTP implements QueryExecution
         }
         
         if ( params != null )
-            httpQuery.merge(params) ; 
-
+            httpQuery.merge(params) ;
+        
+        httpQuery.setBasicAuthentication(user, password) ;
         return httpQuery ;
     }
     

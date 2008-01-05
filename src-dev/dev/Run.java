@@ -14,40 +14,35 @@ import arq.sse_query;
 import com.hp.hpl.jena.iri.IRI;
 import com.hp.hpl.jena.iri.IRIFactory;
 import com.hp.hpl.jena.iri.IRIRelativize;
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.QueryExecution;
-import com.hp.hpl.jena.query.QueryExecutionFactory;
-import com.hp.hpl.jena.query.QueryFactory;
-import com.hp.hpl.jena.query.ResultSetFormatter;
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.util.FileManager;
+
+import com.hp.hpl.jena.sparql.algebra.*;
+import com.hp.hpl.jena.sparql.algebra.op.OpFilter;
+import com.hp.hpl.jena.sparql.engine.http.QueryEngineHTTP;
+import com.hp.hpl.jena.sparql.util.DateTimeStruct;
+
+import com.hp.hpl.jena.query.*;
 import com.hp.hpl.jena.query.larq.IndexBuilderString;
 import com.hp.hpl.jena.query.larq.IndexLARQ;
 import com.hp.hpl.jena.query.larq.LARQ;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.sparql.algebra.Algebra;
-import com.hp.hpl.jena.sparql.algebra.Op;
-import com.hp.hpl.jena.sparql.algebra.OpAsQuery;
-import com.hp.hpl.jena.sparql.algebra.OpVisitorBase;
-import com.hp.hpl.jena.sparql.algebra.OpWalker;
-import com.hp.hpl.jena.sparql.algebra.op.OpFilter;
-import com.hp.hpl.jena.sparql.engine.http.Params;
-import com.hp.hpl.jena.sparql.util.DateTimeStruct;
-import com.hp.hpl.jena.util.FileManager;
 
 public class Run
 {
     public static void main(String[] argv) throws Exception
     {
-        if ( true ) System.setProperty("socksProxyHost", "socks-server") ;
+        
+        //if ( true ) System.setProperty("socksProxyHost", "socks-server") ;
         //java.net.PasswordAuthentication
         
 //        QueryExecution qExec = QueryExecutionFactory.sparqlService("http://sparql.org/books", "SELECT * { ?s ?p ?o}") ;
-        Params params = new Params() ;
-        //params.addParam("default-graph-uri", "json") ;
 
-        QueryExecution qExec = QueryExecutionFactory.createServiceRequest("http://sparql.org/books",
-                                                         QueryFactory.create("SELECT * { ?s ?p ?o}"),
-                                                         params) ;
+        QueryEngineHTTP qExec = QueryExecutionFactory.createServiceRequest("http://sparql.org/books",
+                                                         QueryFactory.create("SELECT * { ?s ?p ?o}")) ;
+        //qExec.addParam("default-graph-uri", "json") ;
+        qExec.setBasicAuthentication("user", "password".toCharArray()) ;
+        
         
         ResultSetFormatter.out(qExec.execSelect()) ;
         System.out.println("Finished") ;
@@ -272,6 +267,8 @@ class RunLARQ
 //    }
 //    
 }
+
+
 
 /*
  * (c) Copyright 2007, 2008 Hewlett-Packard Development Company, LP

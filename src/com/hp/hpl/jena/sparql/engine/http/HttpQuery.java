@@ -8,6 +8,7 @@ package com.hp.hpl.jena.sparql.engine.http;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -17,6 +18,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.shared.JenaException;
+
+import com.hp.hpl.jena.sparql.ARQInternalErrorException;
+import com.hp.hpl.jena.sparql.util.Base64;
 import com.hp.hpl.jena.sparql.util.Convert;
 
 /** Create an execution object for performing a query on a model
@@ -43,6 +47,8 @@ public class HttpQuery extends Params
     
     // An object indicate no value associated with parameter name 
     final static Object noValue = new Object() ;
+    String user = null ;
+    char[] password = null ;
     
     int responseCode = 0;
     String responseMessage = null ;
@@ -97,6 +103,12 @@ public class HttpQuery extends Params
     public void setAccept(String contentType)
     {
         contentTypeResult = contentType ;
+    }
+    
+    public void setBasicAuthentication(String user, char[] password)
+    {
+        this.user = user ;
+        this.password = password ;
     }
     
     /** Return whether this request will go by GET or POST
@@ -162,7 +174,8 @@ public class HttpQuery extends Params
             httpConnection.setRequestProperty("Accept", contentTypeResult) ;
             // By default, following 3xx redirects is true
             //conn.setFollowRedirects(true) ;
-
+            basicAuthentication(httpConnection) ;
+            
             httpConnection.setDoInput(true);
             httpConnection.connect();
             try
@@ -184,8 +197,6 @@ public class HttpQuery extends Params
         { throw new QueryExceptionHTTP(ioEx); }
     }
     
-    // Better (now) - turn into an HttpExec and use that engine  
-    
     private InputStream execPost() throws QueryExceptionHTTP
     {
         URL target = null;
@@ -196,12 +207,13 @@ public class HttpQuery extends Params
         
         try
         {
-            httpConnection= (HttpURLConnection) target.openConnection();
+            httpConnection = (HttpURLConnection) target.openConnection();
             httpConnection.setRequestMethod("POST") ;
             httpConnection.setRequestProperty("Accept", contentTypeResult) ;
             httpConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded") ;
-            
+            basicAuthentication(httpConnection) ;
             httpConnection.setDoOutput(true) ;
+            
             OutputStream out = httpConnection.getOutputStream() ;
             for ( Iterator iter = pairs().listIterator() ; iter.hasNext() ; )
             {
@@ -223,6 +235,37 @@ public class HttpQuery extends Params
         { throw new QueryExceptionHTTP(ioEx); }
     }
     
+    private void basicAuthentication(HttpURLConnection httpConnection2)
+    {
+        // Do basic authentication : do directly, not via an Authenticator, because it 
+        // avoids an extra round trip (Java normally does the request without authetication,
+        // then reties with)
+
+        if ( user != null || password != null)
+        {
+            try
+            {
+                if ( user == null || password == null )
+                    log.warn("Only one of user/password is set") ;
+                // We want: "Basic user:password" except user:password is base 64 encoded.
+                // Build string, get as UTF-8, bytes, translate to base 64. 
+                StringBuffer x = new StringBuffer() ;
+                byte b[] = x.append(user).append(":").append(password).toString().getBytes("UTF-8") ;
+                String y = Base64.encodeBytes(b) ;
+                httpConnection.setRequestProperty("Authorization", y) ;
+                // Overwrite any password details we copied.
+                // Still leaves the copy in the HTTP connection.  But this only basic auth. 
+                for ( int i = 0 ; i < x.length() ; i++ ) x.setCharAt(i, '*') ;
+                for ( int i = 0 ; i < b.length ; i++ ) b[i] = (byte)0 ; 
+            } catch (UnsupportedEncodingException ex)
+            {
+                // Can't happen - UTF-8 is required of all Java platforms. 
+                throw new ARQInternalErrorException("UTF-8 is broken on this platform", ex) ;
+            }
+        }
+    }
+
+
     private InputStream execCommon() throws QueryExceptionHTTP
     {
         try {        
