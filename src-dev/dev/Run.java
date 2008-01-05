@@ -41,8 +41,8 @@ public class Run
         QueryEngineHTTP qExec = QueryExecutionFactory.createServiceRequest("http://sparql.org/books",
                                                          QueryFactory.create("SELECT * { ?s ?p ?o}")) ;
         //qExec.addParam("default-graph-uri", "json") ;
+        //qExec.addDefaultGraph("foo") ;
         qExec.setBasicAuthentication("user", "password".toCharArray()) ;
-        
         
         ResultSetFormatter.out(qExec.execSelect()) ;
         System.out.println("Finished") ;
