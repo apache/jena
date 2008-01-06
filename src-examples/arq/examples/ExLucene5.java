@@ -74,7 +74,7 @@ public class ExLucene5
         // The application is responsible for keeping 
         // ---- 
         
-        larqBuilder.closeForWriting() ;
+        larqBuilder.closeWriter() ;
         IndexLARQ index = larqBuilder.getIndex() ;
         
 //        NodeIterator iter = index.searchModelByIndex(model, "document") ;

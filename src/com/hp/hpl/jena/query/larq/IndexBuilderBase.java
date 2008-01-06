@@ -7,6 +7,7 @@
 package com.hp.hpl.jena.query.larq;
 
 import java.io.File;
+import java.io.IOException;
 
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.index.IndexReader;
@@ -30,7 +31,7 @@ public class IndexBuilderBase implements IndexBuilder
     private IndexWriter indexWriter = null ;
     private IndexReader indexReader = null ;
 
-    private boolean isClosed ;
+    //private boolean isClosed ;
 
     /** Create an in-memory index */
     
@@ -75,7 +76,6 @@ public class IndexBuilderBase implements IndexBuilder
     {
         try {
             indexWriter = new IndexWriter(dir, new StandardAnalyzer(), true) ;
-            isClosed = false ;
         } catch (Exception ex)
         { throw new ARQLuceneException("IndexBuilderLARQ", ex) ; }
     }
@@ -86,9 +86,8 @@ public class IndexBuilderBase implements IndexBuilder
     {
         if ( indexReader == null )
         {
-            try { 
-                if ( ! isClosed )
-                    closeForWriting() ;
+            try {
+                flushWriter() ;
                 indexReader = IndexReader.open(dir) ;
             } catch (Exception e)
             { throw new ARQLuceneException("getIndexReader", e) ; }
@@ -96,32 +95,65 @@ public class IndexBuilderBase implements IndexBuilder
         return indexReader ;
     }
     
-    /** Finish indexing (optimizes the index)*/
+    
+    /** Close the writing index permanently.  Optimizes the index.
+     */ 
+    
+    public void closeWriter()    { closeWriter(true) ; }
+
+    /** Close the writing index permanently.
+     * @param optimize  Run Lucene optimize on the index before closing.
+     */ 
+    
+    public void closeWriter(boolean optimize)
+    {
+        if ( optimize ) 
+            flushWriter() ;
+        try {
+            if ( indexWriter != null ) indexWriter.close();
+        }
+        catch (IOException ex) { throw new ARQLuceneException("closeIndex", ex) ; }
+        indexWriter = null ;
+   }
+    
+    public void flushWriter()
+    { 
+        try { if ( indexWriter != null ) indexWriter.optimize(); }
+        catch (IOException ex) { throw new ARQLuceneException("flushWriter", ex) ; }
+    }
+    
+    /** Finish indexing (optimizes the index)
+     * @deprecated Use  {@link closeWriter} to really release the index or {@link flushWriter()} to optimize it but leave it open for writing.
+     * The writer index is no longer close by this call.
+     */
     public void closeForWriting()
     { closeForWriting(true) ; }
     
-    /** Finish indexing, optionally optimizing the index */
+
+    /** Finish indexing, optionally optimizing the index
+     * @deprecated      Use {@link closeWriter()} to really release the index or flushIndex to optimize it but leave it open for writing.
+     * @param optimize
+     */
     public void closeForWriting(boolean optimize)
     {
-
         try {
-            if ( ! isClosed && indexWriter != null )
+            if ( indexWriter != null )
             {
-                if ( optimize ) 
-                    indexWriter.optimize();
-                indexWriter.close() ;
+                flushWriter() ;
+                // Lucene >2.2.0 - closing not necessary - can be kept open.
+                //indexWriter.close() ;
             }
-            isClosed = true ;
         } catch (Exception e)
         { throw new ARQLuceneException("close", e) ; }
     }
 
     /** Get a search index used by LARQ.
-     * Automatically closed the index for update
-     * */ 
+     *
+     */
+    
     public IndexLARQ getIndex()
     {
-        closeForWriting() ;
+        //ARQ 2.2 : no longer close the index.  closeForWriting() ;
         return new IndexLARQ(getIndexReader()) ;
     }
     

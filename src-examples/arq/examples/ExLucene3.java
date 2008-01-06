@@ -71,7 +71,7 @@ public class ExLucene3
         // larqBuilder.indexStatements(model.listStatements()) ;
         
         // ---- Finish indexing
-        larqBuilder.closeForWriting() ;
+        larqBuilder.closeWriter() ;
         model.unregister(larqBuilder) ;
         
         // ---- Create the access index  

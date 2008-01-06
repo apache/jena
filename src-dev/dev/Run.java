@@ -223,7 +223,7 @@ class RunLARQ
         // larqBuilder.indexStatements(model.listStatements()) ;
         
         // ---- Finish indexing
-        larqBuilder.closeForWriting() ;
+        larqBuilder.closeWriter() ;
         model.unregister(larqBuilder) ;
         
         // ---- Create the access index  

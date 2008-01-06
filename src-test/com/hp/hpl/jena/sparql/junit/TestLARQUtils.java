@@ -65,7 +65,7 @@ public class TestLARQUtils
         model.register(indexBuilder) ;
         FileManager.get().readModel(model, datafile) ;
         model.unregister(indexBuilder) ;
-        indexBuilder.closeForWriting() ;
+        indexBuilder.closeWriter() ;
         return indexBuilder.getIndex() ;
     }
 

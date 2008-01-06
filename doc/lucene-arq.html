@@ -67,7 +67,7 @@ or modify the standard index builders provided by LARQ.</p>
   FileManager.get().readModel(model, datafile) ;
 
   // -- Finish indexing
-  larqBuilder.closeForWriting() ;
+  larqBuilder.closeWriter() ;
   model.unregister(larqBuilder) ;
 
   // -- Create the access index  
@@ -79,7 +79,7 @@ or modify the standard index builders provided by LARQ.</p>
   // -- Create an index based on existing statements
   larqBuilder.indexStatements(model.listStatements()) ;
   // -- Finish indexing
-  larqBuilder.closeForWriting() ;
+  larqBuilder.closeWriter() ;
   // -- Create the access index  
   IndexLARQ index = larqBuilder.getIndex() ;</pre>
 <h2>Index Registration</h2>

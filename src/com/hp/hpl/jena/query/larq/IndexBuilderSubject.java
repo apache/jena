@@ -7,7 +7,6 @@
 package com.hp.hpl.jena.query.larq;
 
 import java.io.File;
-import java.util.*;
 
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.IndexWriter;
@@ -15,6 +14,7 @@ import org.apache.lucene.index.IndexWriter;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.Statement;
+
 import com.hp.hpl.jena.sparql.ARQNotImplemented;
 
 /** 
@@ -27,7 +27,6 @@ import com.hp.hpl.jena.sparql.ARQNotImplemented;
 
 public class IndexBuilderSubject extends IndexBuilderModel
 {
-    private Set seen = new HashSet() ;
     Property property ;
     
     public IndexBuilderSubject()
@@ -100,12 +99,6 @@ public class IndexBuilderSubject extends IndexBuilderModel
         if ( property == null ) 
             return true ;
         return s.getPredicate().equals(property) ;
-    }
-
-    public void closeForWriting()
-    {
-        super.closeForWriting() ;
-        seen = null ;
     }
 }
 

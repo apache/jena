@@ -43,7 +43,7 @@ public class TestLARQ1 extends TestCase
         Model model = ModelFactory.createDefaultModel() ;
         Resource r = model.createResource("http://example/r") ;
         b.index(r, "foo") ;
-        b.closeForWriting() ;
+        b.closeWriter() ;
         
         IndexLARQ index = b.getIndex() ;
         NodeIterator nIter = index.searchModelByIndex("foo") ;
@@ -59,7 +59,7 @@ public class TestLARQ1 extends TestCase
         Model model = ModelFactory.createDefaultModel() ;
         Literal lit = model.createLiteral("example") ;
         b.index(lit, "foo") ;
-        b.closeForWriting() ;
+        b.closeWriter() ;
         
         IndexLARQ index = b.getIndex() ;
         NodeIterator nIter = index.searchModelByIndex("foo") ;
@@ -75,7 +75,7 @@ public class TestLARQ1 extends TestCase
         Model model = ModelFactory.createDefaultModel() ;
         Resource bnode = model.createResource() ;
         b.index(bnode, "foo") ;
-        b.closeForWriting() ;
+        b.closeWriter() ;
         
         IndexLARQ index = b.getIndex() ;
         NodeIterator nIter = index.searchModelByIndex("foo") ;
@@ -92,7 +92,7 @@ public class TestLARQ1 extends TestCase
         Model model = ModelFactory.createDefaultModel() ;
         Resource r = model.createResource("http://example/r") ;
         b.index(r, "foo") ;
-        b.closeForWriting() ;
+        b.closeWriter() ;
         
         IndexLARQ index = b.getIndex() ;
         NodeIterator nIter = index.searchModelByIndex("bah") ;
@@ -106,7 +106,7 @@ public class TestLARQ1 extends TestCase
         Resource r = model.createResource("http://example/r") ;
         StringReader sr = new StringReader("foo") ;
         b.index(r, sr) ;
-        b.closeForWriting() ;
+        b.closeWriter() ;
         
         IndexLARQ index = b.getIndex() ;
         NodeIterator nIter = index.searchModelByIndex("foo") ;

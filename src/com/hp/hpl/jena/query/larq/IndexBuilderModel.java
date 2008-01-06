@@ -76,13 +76,21 @@ public abstract class IndexBuilderModel extends StatementListener
     /** Update index based on one statement */
     public abstract void indexStatement(Statement s) ;
    
-    /** Finish indexing */
+    
+    /** Finish indexing
+     * @deprecated      Use closeWriter to release the index or flushWriter to optimize it but leave it open for writing.
+     */
+    
     public void closeForWriting()
     { base.closeForWriting() ; }
+    
+    /** Flush the index, optimizing it, to allow a reader to be created */
+    public void flushWriter() { base.flushWriter() ; }
+    
+    /** Close the index - no more updates possible */
+    public void closeWriter() { base.closeWriter() ; }
 
-    /** Get a search index used by LARQ.
-     * Automatically close the index for update
-     * */ 
+    /** Get a search index used by LARQ. */
     public IndexLARQ getIndex()
     { return base.getIndex() ; }
 }

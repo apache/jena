@@ -3,9 +3,15 @@ ChangeLog for ARQ
 
 ==== ARQ 2.2
 
++ LARQ: remove restriction that indexes have to be closed for writing before reading (made possible with Lucene 2.2.0)  
+
++ QueryEngineHTTP
+  + Can be created via QueryExecutionFactory
+  + Operations for adding HTTP parameters and also for basic authentication of HTTP.  
+
 + Added ParserRegistry (courtesy of Olaf Hartig)
 
-+ Reworked roperty functions so they formally in the algebra.
++ Reworked property functions so they formally in the algebra.
 
 + Jar change: commons-logging-1.1.1.jar
 
