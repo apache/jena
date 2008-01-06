@@ -116,6 +116,34 @@ public class TestLARQ1 extends TestCase
         assertEquals(r, r2) ;
     }
     
+    // Test what happens when the index is updated after a reader index (LARQIndex) is created
+    public void test_ext_6()
+    {
+        IndexBuilderExt b = new IndexBuilderExt() ;
+        Model model = ModelFactory.createDefaultModel() ;
+        Resource r1 = model.createResource("http://example/r1") ;
+        Resource r2 = model.createResource("http://example/r2") ;
+        
+        StringReader sr = new StringReader("R1") ;
+        b.index(r1, sr) ;
+        IndexLARQ index = b.getIndex() ;
+        NodeIterator nIter = index.searchModelByIndex("R1") ;
+        assertEquals(1, TestLARQUtils.count(nIter)) ;
+        nIter = index.searchModelByIndex("R2") ;
+        assertEquals(0, TestLARQUtils.count(nIter)) ;
+        
+        // Add r2.
+        b.index(r2, new StringReader("R2")) ;
+        // Old index - can't see R2
+        nIter = index.searchModelByIndex("R2") ;
+        assertEquals(0, TestLARQUtils.count(nIter)) ;
+        
+        // New index - can see R2
+        index = b.getIndex() ;
+        nIter = index.searchModelByIndex("R2") ;
+        assertEquals(1, TestLARQUtils.count(nIter)) ;
+    }
+    
     public void test_index_literal_1()
     { 
         Model model = ModelFactory.createDefaultModel() ;

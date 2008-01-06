@@ -3,7 +3,10 @@ ChangeLog for ARQ
 
 ==== ARQ 2.2
 
-+ LARQ: remove restriction that indexes have to be closed for writing before reading (made possible with Lucene 2.2.0)  
++ LARQ: 
+  Remove restriction that indexes have to be closed for writing before reading
+  Becare: in Lucene, reader indexes (like LARQIndexes) see the index as at the point
+  in time when the index was created.  Must get a new reader to see later updates.
 
 + QueryEngineHTTP
   + Can be created via QueryExecutionFactory

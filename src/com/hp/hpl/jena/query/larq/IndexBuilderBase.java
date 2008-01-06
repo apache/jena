@@ -29,7 +29,7 @@ public class IndexBuilderBase implements IndexBuilder
     //private IndexModifier modifier ;
 
     private IndexWriter indexWriter = null ;
-    private IndexReader indexReader = null ;
+    //private IndexReader indexReader = null ;
 
     //private boolean isClosed ;
 
@@ -84,20 +84,14 @@ public class IndexBuilderBase implements IndexBuilder
     
     protected IndexReader getIndexReader()
     {
-        if ( indexReader == null )
-        {
-            try {
-                flushWriter() ;
-                indexReader = IndexReader.open(dir) ;
-            } catch (Exception e)
-            { throw new ARQLuceneException("getIndexReader", e) ; }
-        }
-        return indexReader ;
+        // Always return a new reader.  Write may have chnaged.
+        try {
+            flushWriter() ;
+            return IndexReader.open(dir) ;
+        } catch (Exception e) { throw new ARQLuceneException("getIndexReader", e) ; }
     }
     
-    
-    /** Close the writing index permanently.  Optimizes the index.
-     */ 
+    /** Close the writing index permanently.  Optimizes the index. */ 
     
     public void closeWriter()    { closeWriter(true) ; }
 

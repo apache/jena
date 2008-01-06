@@ -19,8 +19,6 @@ See ToDoSSE
 
 ----
 
-+ IndexBuilderString.  Avoid "seen" by querying the index (Lucene 2.2.0)
-  
 + Remove OpDatasetNames?? - only needed in quad compilation for GRAPH ?g {}
   Do that a betetr way (join of all names).
   Special iterator for OpCompiler? 

@@ -26,6 +26,9 @@ import com.hp.hpl.jena.sparql.ARQNotImplemented;
 
 public abstract class IndexBuilderLiteral extends IndexBuilderModel
 {
+    // Ensure literals ar eindex once only.
+    // Expensive to have use a Lucene reader (they see the state of the index when opened)
+    // to check so need to manange duplicates in this class.
     private Set seen = new HashSet() ;
     
     public IndexBuilderLiteral()
