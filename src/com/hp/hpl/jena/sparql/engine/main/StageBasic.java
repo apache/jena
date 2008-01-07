@@ -23,7 +23,7 @@ import com.hp.hpl.jena.sparql.util.Utils;
 public class StageBasic implements Stage
 {
     public static Symbol altMatcher = ARQConstants.allocSymbol("altmatcher") ;
-    private BasicPattern pattern ;
+    protected BasicPattern pattern ;
 
     public StageBasic(BasicPattern pattern) { this.pattern = pattern ; }
     
@@ -58,7 +58,6 @@ public class StageBasic implements Stage
         // When in doubt ... use the general pass-through to graph query handler matcher.
         return QueryIterBlockTriplesQH.create(input, pattern, cxt) ;
     }
-
 }
 
 /*
