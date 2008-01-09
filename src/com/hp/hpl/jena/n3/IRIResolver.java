@@ -21,7 +21,16 @@ public class IRIResolver {
 	/**
 	 * The current working directory, as a string.
 	 */
-	static final private String globalBase = FileUtils.toURL(".");;
+	static private String globalBase = "http://localhost/LocalHostBase/" ;
+	
+	// Try to set the global base from the current directory.  
+	// Security (e.g. Tomcat) may prevent this in which case we
+	// use a common default set above.
+	static {
+	    try { globalBase = FileUtils.toURL("."); }
+	    catch (Throwable th) {  }
+	}
+	    
 	/**
 	 * The current working directory, as an IRI.
 	 */
