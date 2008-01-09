@@ -58,6 +58,8 @@ public class RunSDB
     
     public static void main(String ... argv) 
     {
+        runPrint() ;
+        
         Store store = SDBFactory.connectStore("sdb.ttl") ;
 //        Model model = SDBFactory.connectDefaultModel(store) ;
         Dataset ds = SDBFactory.connectDataset(store) ;

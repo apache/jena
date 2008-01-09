@@ -1,5 +1,6 @@
 PREFIX : <http://example/> 
-SELECT *
+SELECT ?s
 { 
     ?s ?p ?o .
 }
+LIMIT 10

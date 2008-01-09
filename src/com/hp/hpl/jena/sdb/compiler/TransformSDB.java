@@ -191,6 +191,7 @@ public class TransformSDB extends TransformCopy
     @Override
     public Op transform(OpDistinct opDistinct, Op subOp)
     { 
+        // TODO (distinct (project SQL)) 
         if ( ! QC.isOpSQL(subOp) )
             return super.transform(opDistinct, subOp) ;
         SqlNode sqlNode = ((OpSQL)subOp).getSqlNode() ;
@@ -200,9 +201,25 @@ public class TransformSDB extends TransformCopy
     @Override
     public Op transform(OpSlice opSlice, Op subOp)
     {
-        // Currently off - need to abstract syntax 
+        // Two cases are currently handled:
+        // (slice (sql expression))
+        // (slice (project ... (sql expression)))
         
-        if ( ! QC.isOpSQL(subOp) )
+        // (slice (distinct (project ...))) is also possible 
+        // If DISTINCT is pushed into the inner SQL
+        // because distinct of nodes is distinct of node ids.
+        
+        boolean canHandle = false ;
+        
+        // Relies on the fact that isOpSQL(null) is false.
+        if (  QC.isOpSQL(subOp) )
+            canHandle = true ;
+        else if ( QC.isOpSQL(sub(asProject(subOp))) )
+            canHandle = true ;
+//        else if ( QC.isOpSQL(sub(asProject(sub(asDistinct(subOp))))) ) 
+//            canHandle = true ;
+        
+        if ( ! canHandle )
             return super.transform(opSlice, subOp) ;
         
         if ( ! request.LimitOffsetTranslation )
@@ -261,6 +278,30 @@ public class TransformSDB extends TransformCopy
         Set<Var> vars = expr.getVarsMentioned() ;
         return vars ;
     }
+    
+    // Will migrate to ARQ.OpLib
+    
+    public static Op sub(Op1 op) { return op==null ? null : op.getSubOp() ; }
+    
+    public static boolean isProject(Op op) { return op instanceof OpProject ; } 
+    public static OpProject asProject(Op op)
+    {  return isProject(op) ? (OpProject)op : null ; }
+
+    public static boolean isDistinct(Op op) { return op instanceof OpDistinct ; } 
+    public static OpDistinct asDistinct(Op op)
+    {  return isDistinct(op) ? (OpDistinct)op : null ; }
+
+    public static boolean isReduced(Op op) { return op instanceof OpReduced ; } 
+    public static OpReduced asReduced(Op op)
+    {  return isReduced(op) ? (OpReduced)op : null ; }
+
+    public static boolean isOrder(Op op) { return op instanceof OpOrder ; } 
+    public static OpOrder asOrder(Op op)
+    {  return isOrder(op) ? (OpOrder)op : null ; }
+
+    public static boolean isSlice(Op op) { return op instanceof OpSlice ; } 
+    public static OpSlice asSlice(Op op)
+    {  return isSlice(op) ? (OpSlice)op : null ; }
 }
 
 /*
