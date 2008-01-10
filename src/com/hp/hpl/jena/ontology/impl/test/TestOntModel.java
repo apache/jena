@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            21-Jun-2003
  * Filename           $RCSfile: TestOntModel.java,v $
- * Revision           $Revision: 1.29 $
+ * Revision           $Revision: 1.30 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2008-01-02 12:08:41 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2008-01-10 19:03:24 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -47,7 +47,7 @@ import com.hp.hpl.jena.vocabulary.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestOntModel.java,v 1.29 2008-01-02 12:08:41 andy_seaborne Exp $
+ * @version CVS $Id: TestOntModel.java,v 1.30 2008-01-10 19:03:24 ian_dickinson Exp $
  */
 public class TestOntModel
     extends ModelTestBase
@@ -175,12 +175,12 @@ public class TestOntModel
         OntModel om = ModelFactory.createOntologyModel();
         om.setNsPrefix( "spoo", "http://spoo.spoo.com/spoo#" );
         om.add( statement( om, "ping http://spoo.spoo.com/spoo#pang pilly" ) );
-        om.add( statement( om, "gg http://www.daml.org/2001/03/daml+oil#hh ii" ) );
+        om.add( statement( om, "gg " + OWL.getURI() + "hh ii" ) );
         StringWriter sw = new StringWriter();
         om.write( sw );
         String s = sw.getBuffer().toString();
         assertTrue( s.indexOf( "xmlns:spoo=\"http://spoo.spoo.com/spoo#\"" ) > 0 );
-        assertTrue( s.indexOf( "xmlns:daml=\"http://www.daml.org/2001/03/daml+oil#\"" ) > 0 );
+        assertTrue( s.indexOf( "xmlns:owl=\"" + OWL.getURI() + "\"" ) > 0 );
         }
 
     /** Test writing the base model to an output stream */

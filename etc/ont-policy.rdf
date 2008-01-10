@@ -18,45 +18,47 @@
 >
 
 <!--
-	The default set of mappings for locally cached ontologies
+    The default set of mappings for locally cached ontologies
 
-	Author: Ian Dickinson, mailto:ian.dickinson@hp.com
-	CVS:    $Id: ont-policy.rdf,v 1.6 2004-01-29 18:45:01 ian_dickinson Exp $
+    Author: Ian Dickinson, mailto:ian.dickinson@hp.com
+    CVS:    $Id: ont-policy.rdf,v 1.7 2008-01-10 19:03:27 ian_dickinson Exp $
 -->
 
 <DocumentManagerPolicy>
-	<!-- policy for controlling the document manager's behaviour -->
-	<processImports rdf:datatype="&xsd;boolean">true</processImports>
-	<cacheModels    rdf:datatype="&xsd;boolean">true</cacheModels>
+    <!-- policy for controlling the document manager's behaviour -->
+    <processImports rdf:datatype="&xsd;boolean">true</processImports>
+    <cacheModels    rdf:datatype="&xsd;boolean">true</cacheModels>
 </DocumentManagerPolicy>
 
 
 <OntologySpec>
-	<!-- local version of the OWL language ontology (in OWL) -->
-	<publicURI rdf:resource="http://www.w3.org/2002/07/owl" />
-	<!-- uncomment the following line to re-direct attempts to http get the file
-	<altURL    rdf:resource="file:vocabularies/owl.owl" /-->
-	<language  rdf:resource="http://www.w3.org/2002/07/owl" />
-	<prefix    rdf:datatype="&xsd;string">owl</prefix>
+    <!-- local version of the OWL language ontology (in OWL) -->
+    <publicURI rdf:resource="http://www.w3.org/2002/07/owl" />
+    <!-- uncomment the following line to re-direct attempts to http get the file
+    <altURL    rdf:resource="file:vocabularies/owl.owl" /-->
+    <language  rdf:resource="http://www.w3.org/2002/07/owl" />
+    <prefix    rdf:datatype="&xsd;string">owl</prefix>
 </OntologySpec>
 
 <OntologySpec>
-	<!-- local version of the RDFS vocabulary -->
-	<publicURI rdf:resource="http://www.w3.org/2000/01/rdf-schema" />
-	<!-- uncomment the following line to re-direct attempts to http get the file
-	<altURL    rdf:resource="file:vocabularies/rdf-schema.rdf" /-->
-	<language  rdf:resource="http://www.w3.org/2000/01/rdf-schema" />
-	<prefix    rdf:datatype="&xsd;string">rdfs</prefix>
+    <!-- local version of the RDFS vocabulary -->
+    <publicURI rdf:resource="http://www.w3.org/2000/01/rdf-schema" />
+    <!-- uncomment the following line to re-direct attempts to http get the file
+    <altURL    rdf:resource="file:vocabularies/rdf-schema.rdf" /-->
+    <language  rdf:resource="http://www.w3.org/2000/01/rdf-schema" />
+    <prefix    rdf:datatype="&xsd;string">rdfs</prefix>
 </OntologySpec>
 
+<!-- Removed as a default entry from Jena 2.6 onwards
 <OntologySpec>
-	<!-- local version of the DAML vocabulary -->
-	<publicURI rdf:resource="http://www.daml.org/2001/03/daml+oil" />
-	<!-- uncomment the following line to re-direct attempts to http get the file
-	<altURL    rdf:resource="file:vocabularies/daml+oil.daml" /-->
-	<language  rdf:resource="http://www.daml.org/2001/03/daml+oil" />
-	<prefix    rdf:datatype="&xsd;string">daml</prefix>
+    <!- - local version of the DAML vocabulary - ->
+    <publicURI rdf:resource="http://www.daml.org/2001/03/daml+oil" />
+    <!- - uncomment the following line to re-direct attempts to http get the file
+    <altURL    rdf:resource="file:vocabularies/daml+oil.daml" /- ->
+    <language  rdf:resource="http://www.daml.org/2001/03/daml+oil" />
+    <prefix    rdf:datatype="&xsd;string">daml</prefix>
 </OntologySpec>
+-->
 
 
 </rdf:RDF>

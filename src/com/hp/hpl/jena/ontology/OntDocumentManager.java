@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OntDocumentManager.java,v $
- * Revision           $Revision: 1.62 $
+ * Revision           $Revision: 1.63 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2008-01-02 12:06:41 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2008-01-10 19:03:31 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -64,7 +64,7 @@ import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
  * list</a>.</p>
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntDocumentManager.java,v 1.62 2008-01-02 12:06:41 andy_seaborne Exp $
+ * @version CVS $Id: OntDocumentManager.java,v 1.63 2008-01-10 19:03:31 ian_dickinson Exp $
  */
 public class OntDocumentManager
 {
@@ -414,14 +414,11 @@ public class OntDocumentManager
             getFileManager().resetCache();
         }
 
-        setDefaults();
-
         m_languageMap.clear();
         m_ignoreImports.clear();
-
-        // copy the standard prefixes
         m_prefixMap = new PrefixMappingImpl();
-        m_prefixMap.setNsPrefixes( PrefixMapping.Standard );
+
+        setDefaults();
 
         if (reload) {
             initialiseMetadata( m_searchPath );
@@ -1226,6 +1223,18 @@ public class OntDocumentManager
         setCacheModels( true );
         setUseDeclaredPrefixes( true );
         setProcessImports( true );
+        setDefaultPrefixMappings();
+    }
+
+
+    /**
+     * Set the default prefix mappings.
+     */
+    protected void setDefaultPrefixMappings() {
+        m_prefixMap.setNsPrefixes( PrefixMapping.Standard );
+
+        // PrefixMapping.Standard includes dc:, which OntModels traditionally haven't included
+        m_prefixMap.removeNsPrefix( "dc" );
     }
 
 

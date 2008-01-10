@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            16-Jun-2003
  * Filename           $RCSfile: TestBugReports.java,v $
- * Revision           $Revision: 1.88 $
+ * Revision           $Revision: 1.89 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2008-01-02 12:08:39 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2008-01-10 19:03:24 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -1703,6 +1703,41 @@ public class TestBugReports
         assertFalse( "ModelMaker.openModel returned a closed model", closed );
     }
 
+    /** User requested default prefixes for xsd:, and daml: is now deprecated */
+    public void testDefaultPrefixeOWL() {
+        OntModel m = ModelFactory.createOntologyModel();
+        assertFalse( "owl:".equals( m.expandPrefix( "owl:" ) ) );
+    }
+
+    /** User requested default prefixes for xsd:, and daml: is now deprecated */
+    public void testDefaultPrefixeRDF() {
+        OntModel m = ModelFactory.createOntologyModel();
+        assertFalse( "rdf:".equals( m.expandPrefix( "rdf:" ) ) );
+    }
+
+    /** User requested default prefixes for xsd:, and daml: is now deprecated */
+    public void testDefaultPrefixeRDFS() {
+        OntModel m = ModelFactory.createOntologyModel();
+        assertFalse( "rdfs:".equals( m.expandPrefix( "rdfs:" ) ) );
+    }
+
+    /** User requested default prefixes for xsd:, and daml: is now deprecated */
+    public void testDefaultPrefixeXSD() {
+        OntModel m = ModelFactory.createOntologyModel();
+        assertFalse( "xsd:".equals( m.expandPrefix( "xsd:" ) ) );
+    }
+
+    /** User requested default prefixes for xsd:, and daml: is now deprecated */
+    public void testDefaultPrefixeDAML() {
+        OntModel m = ModelFactory.createOntologyModel();
+        assertEquals( "daml:", m.expandPrefix( "daml:" ) );
+    }
+
+    /** User requested default prefixes for xsd:, and daml: is now deprecated */
+    public void testDefaultPrefixeDC() {
+        OntModel m = ModelFactory.createOntologyModel();
+        assertEquals( "dc:", m.expandPrefix( "dc:" ) );
+    }
 
     // Internal implementation methods
     //////////////////////////////////
