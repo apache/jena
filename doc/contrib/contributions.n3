@@ -1,7 +1,7 @@
 #
 # N3 rendition of contributions data
 #
-# $Id: contributions.n3,v 1.12 2007-07-02 11:12:35 chris-dollin Exp $
+# $Id: contributions.n3,v 1.13 2008-01-10 13:28:36 chris-dollin Exp $
 #
 
 @prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
@@ -109,5 +109,14 @@
     ; ct:linkTitle "jena files page"
     ; ct:licence "as per Jena"
     .
+
+[]
+   dc:creator "Todd Detwiler - University of Washington Structural Informatics Group"
+   ; dc:name "GLEEN"
+   ; dc:description "A path expression (a.k.a. \"regular paths\") property function library for ARQ SparQL"
+   ; ct:link "http://sig.biostr.washington.edu/projects/ontviews/gleen/index.html"
+   ; ct:linkTitle "GLEEN home"
+   ; ct:licence "Apache 2.0"
+   .
 
 
