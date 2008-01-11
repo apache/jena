@@ -1,4 +1,7 @@
-@prefix : <http://example/> .
+@prefix dc:      <http://purl.org/dc/elements/1.1/> .
+@prefix :        <file:///home/mar/OntologyViews/subQueries/fixDatasets/ARQ-2.1/> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
 
-:s :p 1 .
-:s :p 2 .
+[]    dc:title      "Harry Potter and the Chamber of Secrets" .
+
+[]    dc:title      "Harry Potter and the Philospher's Stone" . 

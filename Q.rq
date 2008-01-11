@@ -1,17 +1,7 @@
-PREFIX apf:     <http://jena.hpl.hp.com/ARQ/property#>
+PREFIX  xsd:    <http://www.w3.org/2001/XMLSchema#>
+PREFIX  dc:     <http://purl.org/dc/elements/1.1/>
+PREFIX  :       <.>
 
-SELECT *
-{
-
-    { ?s1 ?p1 ?o1 .
-      ?x apf:splitURI ( ?ns ?ln ) .
-      ?s2 ?p2 ?o2 . }
-
-    { ?s3 ?p3 ?o3 . } 
-
-    FILTER (?o1 = 34)
-    FILTER (?o2 = 15)
-    FILTER (?ln = 5)
-    FILTER (?o3 = 56 )
-}
-
+CONSTRUCT { ?s ?p ?o }
+FROM <D.ttl>
+WHERE { ?s ?p ?o }
