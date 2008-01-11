@@ -1,7 +1,8 @@
 PREFIX : <http://example/>
 
-SELECT *
-{ ?x :p ?v .
-  ?x :q ?v .
+SELECT ?p
+{ 
+  ?x :p ?v .
+  :x ?p ?v 
 }
 LIMIT 3

@@ -28,7 +28,7 @@ public class AssemblerVocab
     public static final Resource ModelType                      = Vocab.type(NS, "Model") ;
     public static final Resource GraphType                      = Vocab.type(NS, "Graph") ;
 
-    //public static final Property pStore              = Vocab.property(NS, "store") ;
+    public static final Property pStore              = Vocab.property(NS, "store") ;
     public static final Property pDataset            = Vocab.property(NS, "dataset") ;
     public static final Property pGraphData          = Vocab.property(NS, "graph") ;
     public static final Property pNamedGraph         = Vocab.property(NS, "namedGraph") ;

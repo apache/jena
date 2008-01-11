@@ -20,4 +20,5 @@
         <Graph/manifest.ttl>
 
         <UnionGraph/manifest.ttl>
+        <Modifiers/manifest.ttl>
     ) .

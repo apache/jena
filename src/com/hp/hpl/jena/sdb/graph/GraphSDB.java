@@ -29,6 +29,7 @@ import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.Plan;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
+import com.hp.hpl.jena.sparql.engine.binding.BindingRoot;
 
 import com.hp.hpl.jena.query.Query;
 
@@ -182,7 +183,7 @@ public class GraphSDB extends GraphBase implements Graph
         BasicPattern pattern = new BasicPattern() ;
         pattern.add(triple) ;
         Op op = new OpQuadPattern(graphNode, pattern) ;
-        Plan plan = QueryEngineSDB.getFactory().create(op, datasetStore, null, null) ;
+        Plan plan = QueryEngineSDB.getFactory().create(op, datasetStore, BindingRoot.create(), null) ;
         
         QueryIterator qIter = plan.iterator() ;
         List<Triple> triples = new ArrayList<Triple>() ;

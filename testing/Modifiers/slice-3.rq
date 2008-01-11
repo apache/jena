@@ -1,6 +1,6 @@
 PREFIX : <http://example/>
 
-SELECT *
-{ ?x :p ?v }
+SELECT ?p
+{ ?x ?p ?v }
 OFFSET 2
 

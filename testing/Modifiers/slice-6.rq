@@ -1,8 +1,6 @@
 PREFIX : <http://example/>
 
-SELECT *
-{ ?x :p ?v .
-  ?x :q ?v .
-}
+SELECT ?p
+{ ?x ?p ?v . }
 OFFSET 300
 LIMIT 2
