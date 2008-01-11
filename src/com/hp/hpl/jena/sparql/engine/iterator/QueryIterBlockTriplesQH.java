@@ -33,7 +33,7 @@ import com.hp.hpl.jena.util.iterator.ClosableIterator;
  
 public class QueryIterBlockTriplesQH extends QueryIterRepeatApply
 {
-    private BasicPattern pattern ;
+    protected BasicPattern pattern ;
 
     public static QueryIterator create( QueryIterator input,
                                         BasicPattern pattern , 
@@ -42,9 +42,9 @@ public class QueryIterBlockTriplesQH extends QueryIterRepeatApply
         return new QueryIterBlockTriplesQH(input, pattern, cxt) ;
     }
     
-    private QueryIterBlockTriplesQH( QueryIterator input,
-                                   BasicPattern pattern , 
-                                   ExecutionContext cxt)
+    protected QueryIterBlockTriplesQH( QueryIterator input,
+                                       BasicPattern pattern , 
+                                       ExecutionContext cxt)
     {
         super(input, cxt) ;
         this.pattern = pattern ;

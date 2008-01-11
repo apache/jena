@@ -29,10 +29,10 @@ public class ElementWalker
 //        el.visit(new Walker(proc)) ;
 //    }
     
-    static private class Walker implements ElementVisitor
+    static protected class Walker implements ElementVisitor
     {
-        ElementVisitor proc ;
-        private Walker(ElementVisitor visitor) { proc = visitor ; }
+        protected ElementVisitor proc ;
+        protected Walker(ElementVisitor visitor) { proc = visitor ; }
         
         public void visit(ElementTriplesBlock el)
         {
