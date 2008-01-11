@@ -265,10 +265,12 @@ public class QueryExecutionBase implements QueryExecution
     private void insertPrefixesInto(Model model)
     {
         try {
-            // Load the models prefixes first
-            PrefixMapping m = dataset.getDefaultModel() ;
-            model.setNsPrefixes(m) ;
-
+            if ( dataset != null )
+            {
+                // Load the models prefixes first
+                PrefixMapping m = dataset.getDefaultModel() ;
+                model.setNsPrefixes(m) ;
+            }
             // Then add the queries (just the declared mappings)
             // so the query declarations override the data sources. 
             model.setNsPrefixes(query.getPrefixMapping()) ;
