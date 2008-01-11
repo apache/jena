@@ -32,6 +32,19 @@ public class Run
 {
     public static void main(String[] argv) throws Exception
     {
+      //QueryEngineMain.register() ;
+        String a[] = new String[]{
+            //"-v",
+            //"--engine=ref",
+            "-query=Q.rq" , 
+        } ;
+        
+        sparql.main(a) ;
+        System.exit(0) ;
+    }
+    
+    static void Service() throws Exception
+    {
         
         //if ( true ) System.setProperty("socksProxyHost", "socks-server") ;
         //java.net.PasswordAuthentication
