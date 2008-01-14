@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: TestSetRules.java,v 1.11 2008-01-02 12:08:20 andy_seaborne Exp $
+  $Id: TestSetRules.java,v 1.12 2008-01-14 11:26:29 chris-dollin Exp $
 */
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -9,12 +9,9 @@ import java.util.*;
 
 import junit.framework.TestSuite;
 
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.rdf.model.impl.ModelSpecImpl;
+import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.rdf.model.test.ModelTestBase;
 import com.hp.hpl.jena.reasoner.*;
-import com.hp.hpl.jena.reasoner.Reasoner;
 import com.hp.hpl.jena.reasoner.rulesys.*;
 import com.hp.hpl.jena.reasoner.rulesys.impl.WrappedReasonerFactory;
 
@@ -67,9 +64,12 @@ public class TestSetRules extends ModelTestBase
             return uri; }
         }
     
+    private static Resource emptyResource = 
+        ModelFactory.createDefaultModel().createResource();
+    
     private static ReasonerFactory wrap( final ReasonerFactory rrf )
         {
-        return new WrappedReasonerFactory( rrf, ModelSpecImpl.emptyResource );
+        return new WrappedReasonerFactory( rrf, emptyResource );
         }
     
     }
