@@ -5,7 +5,7 @@
  *
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestBugs.java,v 1.52 2008-01-02 12:08:20 andy_seaborne Exp $
+ * $Id: TestBugs.java,v 1.53 2008-01-14 16:07:49 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -36,7 +36,7 @@ import com.hp.hpl.jena.vocabulary.*;
  * Unit tests for reported bugs in the rule system.
  *
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.52 $ on $Date: 2008-01-02 12:08:20 $
+ * @version $Revision: 1.53 $ on $Date: 2008-01-14 16:07:49 $
  */
 public class TestBugs extends TestCase {
 
@@ -200,6 +200,7 @@ public class TestBugs extends TestCase {
      */
     public void testSubProperty() {
         OntModel model = ModelFactory.createOntologyModel(OntModelSpec.DAML_MEM_RDFS_INF, null);
+        model.getDocumentManager().setMetadataSearchPath( "file:etc/ont-policy-test.rdf", true );
 
         String base = "urn:x-hp-jena:test#";
         model.read( new ByteArrayInputStream( INPUT_SUBPROPERTY.getBytes() ), base );

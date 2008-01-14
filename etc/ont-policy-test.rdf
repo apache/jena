@@ -47,14 +47,12 @@
     <prefix    rdf:datatype="&xsd;string">rdfs</prefix>
 </OntologySpec>
 
-<!--
 <OntologySpec>
     <publicURI rdf:resource="http://www.daml.org/2001/03/daml+oil" />
     <altURL    rdf:resource="file:vocabularies/daml+oil.daml" />
     <language  rdf:resource="http://www.daml.org/2001/03/daml+oil#" />
     <prefix    rdf:datatype="&xsd;string">daml</prefix>
 </OntologySpec>
- -->
 
 
 </rdf:RDF>
