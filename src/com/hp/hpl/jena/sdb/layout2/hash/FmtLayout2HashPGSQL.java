@@ -64,15 +64,11 @@ public class FmtLayout2HashPGSQL extends FmtLayout2
         } catch (SQLException ex)
         { throw new SDBExceptionSQL("SQLException formatting table '"+TableDescTriples.name()+"'",ex) ; }
     }
-    
+
     @Override
-    protected void dropIndexesTableTriples()
+    protected String syntaxDropIndex(String indexName, String table)
     {
-        try {
-            connection().exec("DROP INDEX IF EXISTS PredObj ;") ;
-            connection().exec("DROP INDEX IF EXISTS ObjSubj ;") ;
-        } catch (SQLException ex)
-        { throw new SDBExceptionSQL("SQLException indexing table '"+TableDescTriples.name()+"'",ex) ; }
+        return String.format("DROP INDEX IF EXISTS %s", indexName) ;
     }
 
     @Override

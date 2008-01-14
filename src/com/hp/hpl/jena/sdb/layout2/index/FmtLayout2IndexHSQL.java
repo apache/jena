@@ -14,15 +14,12 @@ import com.hp.hpl.jena.sdb.layout2.TableDescNodes;
 import com.hp.hpl.jena.sdb.layout2.TableDescQuads;
 import com.hp.hpl.jena.sdb.layout2.TableDescTriples;
 import com.hp.hpl.jena.sdb.layout2.hash.FmtLayout2HashHSQL;
-import com.hp.hpl.jena.sdb.sql.MySQLEngineType;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.sql.SDBExceptionSQL;
 
 
 public class FmtLayout2IndexHSQL extends FmtLayout2HashHSQL
 {
-    private MySQLEngineType engineType ;
-    
     public FmtLayout2IndexHSQL(SDBConnection connection)
     { 
         super(connection) ;

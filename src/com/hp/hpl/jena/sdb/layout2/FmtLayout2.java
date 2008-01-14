@@ -47,48 +47,60 @@ public abstract class FmtLayout2
     	dropIndexesTableQuads() ;
     }
 
-    // Override this if the syntax is a bit different 
+    // Cols should be a list as in (o, s)
+    protected String syntaxCreateIndex(String indexName, String cols, String table)
+    {
+        return String.format("CREATE INDEX %s ON %s %s", indexName, cols, table) ;
+    }
+    
+    // Cols should be a list as in (o, s)
+    protected String syntaxDropIndex(String indexName, String table)
+    {
+        return String.format("DROP INDEX %s", indexName) ;
+    }
+    
+    // Excludes primary index.
+    protected static String[] triplesIndexCols = { "(o, s)", "(p, o)" } ;
+    protected static String[] triplesIndexNames = { "ObjSubj",  "PredObj" } ;
+    
     protected void addIndexesTableTriples()
     {
         try {
-            connection().exec("CREATE INDEX PredObj ON "+TableDescTriples.name()+" (p, o)") ;
-            connection().exec("CREATE INDEX ObjSubj ON "+TableDescTriples.name()+" (o, s)") ;
+            for ( int i = 0 ; i < triplesIndexNames.length ; i++)
+                connection().exec(syntaxCreateIndex(triplesIndexNames[i],  TableDescTriples.name(), triplesIndexCols[i])) ;
         } catch (SQLException ex)
         { throw new SDBExceptionSQL("SQLException indexing table '"+TableDescTriples.name()+"'",ex) ; }
     }
+    
+    protected void dropIndexesTableTriples()
+    {
+        try {
+            for ( int i = 0 ; i < triplesIndexNames.length ; i++)
+                connection().exec(syntaxDropIndex(triplesIndexNames[i], TableDescTriples.name())) ;
+        } catch (SQLException ex)
+        { throw new SDBExceptionSQL("SQLException dropping indexes for table '"+TableDescTriples.name()+"'",ex) ; }
+    }
+
+    // Excludes primary index.
+    protected static String[] quadIndexCols = { "(o, s, g)", "(p, o, g)", "(g, s, p)", "(g, p, o)", "(g, o, s)" } ;
+    protected static String[] quadIndexNames = {"ObjSubjGra",  "PredObjGra", "GraSubjPred", "GraPredObj", "GraObjSubj"} ;
     
     // Override this if the syntax is a bit different 
     protected void addIndexesTableQuads()
     {
         try {
-            connection().exec("CREATE INDEX SubjPredObjQ ON "+TableDescQuads.name()+" (s, p, o)") ;
-            connection().exec("CREATE INDEX ObjSubjQ ON "+TableDescQuads.name()+" (o, s)") ;
-            connection().exec("CREATE INDEX PredObjQ ON "+TableDescQuads.name()+" (p, o)") ;
-            connection().exec("CREATE INDEX GraPredObj ON "+TableDescQuads.name()+" (g, p, o)") ;
-            connection().exec("CREATE INDEX GraObjSubj ON "+TableDescQuads.name()+" (g, o, s)") ;
+            for ( int i = 0 ; i < quadIndexNames.length ; i++)
+                connection().exec(syntaxCreateIndex(quadIndexNames[i],  TableDescQuads.name(), quadIndexCols[i])) ;
         } catch (SQLException ex)
         { throw new SDBExceptionSQL("SQLException indexing table '"+TableDescQuads.name()+"'",ex) ; }
-    }
-    
-    // Override this if the syntax is a bit different (many are for DROP INDEX)
-    protected void dropIndexesTableTriples()
-    {
-        try {
-            connection().exec("DROP INDEX PredObj") ;
-            connection().exec("DROP INDEX ObjSubj") ;
-        } catch (SQLException ex)
-        { throw new SDBExceptionSQL("SQLException dropping indexes for table '"+TableDescTriples.name()+"'",ex) ; }
     }
     
     // Override this if the syntax is a bit different (many are for DROP INDEX)
     protected void dropIndexesTableQuads()
     {
         try {
-            connection().exec("DROP INDEX SubjPredObjQ") ;
-            connection().exec("DROP INDEX ObjSubjQ") ;
-            connection().exec("DROP INDEX PredObjQ") ;
-            connection().exec("DROP INDEX GraPredObj") ;
-            connection().exec("DROP INDEX GraObjSubj") ;
+            for ( int i = 0 ; i < quadIndexNames.length ; i++)
+                connection().exec(syntaxDropIndex(quadIndexNames[i],  TableDescQuads.name())) ;
         } catch (SQLException ex)
         { throw new SDBExceptionSQL("SQLException dropping indexes for table '"+TableDescQuads.name()+"'",ex) ; }
     }

@@ -64,25 +64,11 @@ public class FmtLayout2HashSQLServer extends FmtLayout2
     }
     
     @Override
-    protected void addIndexesTableTriples()
+    protected String syntaxDropIndex(String indexName, String table)
     {
-        try {
-            connection().exec("CREATE INDEX PredObj ON "+TableDescTriples.name()+" (p, o);") ;
-            connection().exec("CREATE INDEX ObjSubj ON "+TableDescTriples.name()+" (o, s);") ;
-        } catch (SQLException ex)
-        { throw new SDBExceptionSQL("SQLException indexing table '"+TableDescTriples.name()+"'",ex) ; }
+        return String.format("DROP INDEX %s.%s", table, indexName) ;
     }
     
-    @Override
-    protected void dropIndexesTableTriples()
-    {
-        try {
-            connection().exec("DROP INDEX "+TableDescTriples.name()+".PredObj") ;
-            connection().exec("DROP INDEX "+TableDescTriples.name()+".ObjSubj") ;
-        } catch (SQLException ex)
-        { throw new SDBExceptionSQL("SQLException indexing table '"+TableDescTriples.name()+"'",ex) ; }
-    }
-
     @Override
     protected void formatTableNodes()
     {

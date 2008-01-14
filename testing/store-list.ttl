@@ -17,12 +17,12 @@ _:x rdf:type sdb:StoreList ;
       [ rdfs:label "Derby/Index" ;
         sdb:description <StoreDesc/derby-index.ttl> ]
 
-##       [ rdfs:label "PGSQL/Hash" ;
-##         sdb:description <StoreDesc/pgsql-hash.ttl> ]
-## 
-##       [ rdfs:label "PGSQL/Index" ;
-##         sdb:description <StoreDesc/pgsql-index.ttl> ]
-## 
+      [ rdfs:label "PGSQL/Hash" ;
+        sdb:description <StoreDesc/pgsql-hash.ttl> ]
+
+      [ rdfs:label "PGSQL/Index" ;
+        sdb:description <StoreDesc/pgsql-index.ttl> ]
+
 ##       [ rdfs:label "MySQL/Hash" ;
 ##         sdb:description <StoreDesc/mysql-hash.ttl> ]
 ## 

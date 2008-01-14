@@ -18,11 +18,8 @@ import com.hp.hpl.jena.sdb.layout2.TableDescTriples;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.sql.SDBExceptionSQL;
 
-
 public class FmtLayout2HashDB2 extends FmtLayout2
 {
-    //static private Log log = LogFactory.getLog(FmtLayout2Derby.class) ;
-    
     public FmtLayout2HashDB2(SDBConnection connection)
     { 
         super(connection) ;

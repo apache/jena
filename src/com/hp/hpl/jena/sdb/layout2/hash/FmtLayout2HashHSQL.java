@@ -73,16 +73,17 @@ public class FmtLayout2HashHSQL extends FmtLayout2
         }
     }
     
-    @Override
-    protected void dropIndexesTableTriples()
-    {
-        try {
-            connection().exec("DROP INDEX PredObj IF EXIST") ;
-            connection().exec("DROP INDEX ObjSubj IF EXIST") ;
-        } catch (SQLException ex)
-        { throw new SDBExceptionSQL("SQLException dropping indexes for table '"+TableDescTriples.name()+"'",ex) ; }
-    }
+//    @Override
+//    protected String syntaxCreateIndex(String indexName, String cols, String table)
+//    {
+//        return String.format("CREATE INDEX %s ON %s %s", indexName, table, cols) ;
+//    }
     
+    @Override
+    protected String syntaxDropIndex(String indexName, String table)
+    {
+        return String.format("DROP INDEX %s IF EXIST", indexName) ;
+    }
 
     @Override
     protected void formatTableNodes()

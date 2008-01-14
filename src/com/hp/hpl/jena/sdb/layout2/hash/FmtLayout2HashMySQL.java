@@ -78,15 +78,11 @@ public class FmtLayout2HashMySQL extends FmtLayout2
             throw new SDBExceptionSQL("SQLException formatting table '"+TableDescTriples.name()+"'",ex) ;
         }
     }
-    
+  
     @Override
-    protected void dropIndexesTableTriples()
+    protected String syntaxDropIndex(String indexName, String table)
     {
-        try {
-            connection().exec("DROP INDEX PredObj ON "+TableDescTriples.name()) ;
-            connection().exec("DROP INDEX ObjSubj ON "+TableDescTriples.name()) ;
-        } catch (SQLException ex)
-        { throw new SDBExceptionSQL("SQLException dropping indexes '"+TableDescTriples.name()+"'",ex) ; }
+        return String.format("DROP INDEX %s ON %s", indexName, table) ;
     }
     
     @Override

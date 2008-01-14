@@ -10,19 +10,17 @@ import static com.hp.hpl.jena.sdb.sql.SQLUtils.sqlStr;
 
 import java.sql.SQLException;
 
-import com.hp.hpl.jena.sdb.layout2.FmtLayout2;
 import com.hp.hpl.jena.sdb.layout2.TableDescNodes;
 import com.hp.hpl.jena.sdb.layout2.TableDescQuads;
-import com.hp.hpl.jena.sdb.layout2.TablePrefixes;
 import com.hp.hpl.jena.sdb.layout2.TableDescTriples;
+import com.hp.hpl.jena.sdb.layout2.TablePrefixes;
+import com.hp.hpl.jena.sdb.layout2.hash.FmtLayout2HashOracle;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.sql.SDBExceptionSQL;
 
 
-public class FmtLayout2IndexOracle extends FmtLayout2
+public class FmtLayout2IndexOracle extends FmtLayout2HashOracle
 {
-    //static private Log log = LogFactory.getLog(FmtLayout2Derby.class) ;
-    
     public FmtLayout2IndexOracle(SDBConnection connection)
     { 
         super(connection) ;
@@ -115,16 +113,6 @@ public class FmtLayout2IndexOracle extends FmtLayout2
         {
             throw new SDBExceptionSQL("SQLException resetting table '"+TablePrefixes.name()+"'",ex) ;
         }
-    }
-    
-    /* Use truncate */
-    @Override
-    protected void truncateTable(String tableName)
-    {
-        try { 
-            connection().exec("TRUNCATE TABLE "+tableName) ;
-        } catch (SQLException ex)
-        { throw new SDBExceptionSQL("SQLException truncating table: "+tableName,ex) ; }
     }
 }
 
