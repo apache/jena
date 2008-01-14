@@ -35,7 +35,7 @@ public class GenerateSQL implements SQLGenerator
         IndentedLineBuffer buff = new IndentedLineBuffer() ;
         
         // Step one - rewrite the SQL node tree to have SelectBlocks, not the various SqlNodes
-        // that contribute to a SELECt statement.
+        // that contribute to a SELECT statement.
         sqlNode = SqlTransformer.transform(sqlNode, new TransformSelectBlock()) ;
         
         // Step two - turn the SqlNode tree, with SqlSelectBlocks in it,

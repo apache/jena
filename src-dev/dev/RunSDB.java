@@ -58,6 +58,10 @@ public class RunSDB
     
     public static void main(String ... argv) 
     {
+        //sdbprint("--sdb=testing/StoreDesc/pgsql-hash.ttl", "--query=testing/Modifiers/slice-1.rq") ;
+        sdbprint("--sdb=testing/StoreDesc/pgsql-hash.ttl", "--query=testing/Modifiers/slice-2.rq") ;
+        System.exit(0) ;
+        
         runPrint() ;
         
         Store store = SDBFactory.connectStore("sdb.ttl") ;
