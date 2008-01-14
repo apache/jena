@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            4 Mar 2003
  * Filename           $RCSfile: TestOntDocumentManager.java,v $
- * Revision           $Revision: 1.28 $
+ * Revision           $Revision: 1.29 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2008-01-10 19:03:24 $
+ * Last modified on   $Date: 2008-01-14 16:31:23 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
@@ -47,7 +47,7 @@ import com.hp.hpl.jena.vocabulary.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestOntDocumentManager.java,v 1.28 2008-01-10 19:03:24 ian_dickinson Exp $
+ * @version CVS $Id: TestOntDocumentManager.java,v 1.29 2008-01-14 16:31:23 ian_dickinson Exp $
  */
 public class TestOntDocumentManager
     extends TestCase
@@ -199,10 +199,10 @@ public class TestOntDocumentManager
         r.addProperty( OntDocManagerVocab.altURL, m.createResource("file:local.rdf") );
 
         OntDocumentManager odm = new OntDocumentManager( "file:etc/ont-policy-test.rdf" );
-        TestUtil.assertIteratorLength( odm.listDocuments(), 2 );
+        TestUtil.assertIteratorLength( odm.listDocuments(), 3 );
 
         odm.configure( m, false );
-        TestUtil.assertIteratorLength( odm.listDocuments(), 3 );
+        TestUtil.assertIteratorLength( odm.listDocuments(), 4 );
     }
 
     public void testConfigure1() {
@@ -213,7 +213,7 @@ public class TestOntDocumentManager
         r.addProperty( OntDocManagerVocab.altURL, m.createResource("file:local.rdf") );
 
         OntDocumentManager odm = new OntDocumentManager( "file:etc/ont-policy-test.rdf" );
-        TestUtil.assertIteratorLength( odm.listDocuments(), 2 );
+        TestUtil.assertIteratorLength( odm.listDocuments(), 3 );
 
         odm.configure( m );
         TestUtil.assertIteratorLength( odm.listDocuments(), 1 );

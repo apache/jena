@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            16-Jun-2003
  * Filename           $RCSfile: TestBugReports.java,v $
- * Revision           $Revision: 1.89 $
+ * Revision           $Revision: 1.90 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2008-01-10 19:03:24 $
+ * Last modified on   $Date: 2008-01-14 16:31:23 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
@@ -88,6 +88,7 @@ public class TestBugReports
     public void setUp() {
         // ensure the ont doc manager is in a consistent state
         OntDocumentManager.getInstance().reset( true );
+        OntDocumentManager.getInstance().setMetadataSearchPath( "file:etc/ont-policy.rdf", false );
     }
 
 
