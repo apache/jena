@@ -142,20 +142,6 @@ public class PrefixMapping2 implements PrefixMapping
         return s ;
     }
 
-    /** @see com.hp.hpl.jena.shared.PrefixMapping#usePrefix(java.lang.String) 
-     * @deprecated */
-    public String usePrefix(String uri)
-    {
-        String s = pmapLocal.qnameFor(uri) ;
-        if ( pmapGlobal == null )
-            return s ;
-        if ( s != null )
-            return s ;
-        if ( pmapGlobal != null )
-            return pmapGlobal.qnameFor(uri) ;
-        return null ;
-    }
-
     /** @see com.hp.hpl.jena.shared.PrefixMapping#qnameFor(java.lang.String) */
     public String qnameFor(String uri)
     {
