@@ -872,6 +872,47 @@ characters ("[", "]") are not part of the above list
         
     }
 
+    /**
+     * This <em>globally</em> sets the {@link jenaImplementation}; use with care.
+     * This should be used before any calls to {@link jenaImplementation}; 
+     * it does not modify the factory returned by any previous calls, but subsequent
+     * calls to {@link jenaImplementation} will return the new value.
+     * @param jf The new Jena Factory
+     */
+	public static void setJenaImplementation(IRIFactory jf) {
+		jenaFactory = jf;
+	}
+    /**
+     * This <em>globally</em> sets the {@link iriImplementation}; use with care.
+     * This should be used before any calls to {@link iriImplementation}; 
+     * it does not modify the factory returned by any previous calls, but subsequent
+     * calls to {@link iriImplementation} will return the new value.
+     * @param iriF The new IRI Factory
+     */
+	public static void setIriImplementation(IRIFactory iriF) {
+		theIRIFactory = iriF;
+	}
+    /**
+     * This <em>globally</em> sets the {@link uriImplementation}; use with care.
+     * This should be used before any calls to {@link uriImplementation}; 
+     * it does not modify the factory returned by any previous calls, but subsequent
+     * calls to {@link uriImplementation} will return the new value.
+     * @param uriF The new URI Factory
+     */
+	public static void setUriImplementation(IRIFactory uriF) {
+		theURIFactory = uriF;
+	}
+    /**
+     * This <em>globally</em> sets the {@link semanticWebImplementation}; use with care.
+     * This should be used before any calls to {@link semanticWebImplementation}; 
+     * it does not modify the factory returned by any previous calls, but subsequent
+     * calls to {@link semanticWebImplementation} will return the new value.
+     * @param sw The new IRI Factory
+     */
+	public static void setSemanticWebImplementation(IRIFactory sw) {
+		theSemWebFactory = sw;
+	}
+
 }
 
 

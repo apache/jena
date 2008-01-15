@@ -2,11 +2,13 @@
  *  (c)     Copyright 2000, 2001, 2002, 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  *   All rights reserved.
  * [See end of file]
- *  $Id: MoreTests.java,v 1.2 2007-06-04 18:39:12 jeremy_carroll Exp $
+ *  $Id: MoreTests.java,v 1.3 2008-01-15 10:19:39 jeremy_carroll Exp $
  */
 
 package com.hp.hpl.jena.iri.test;
 
+
+import java.util.Iterator;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
@@ -14,6 +16,7 @@ import junit.framework.TestSuite;
 
 import com.hp.hpl.jena.iri.IRI;
 import com.hp.hpl.jena.iri.IRIFactory;
+import com.hp.hpl.jena.iri.Violation;
 
 /**
  * @author jjc
@@ -27,6 +30,8 @@ public class MoreTests extends TestCase {
 		
 		suite.addTest(new MoreTests("testRelativizeFrag1"));
 		suite.addTest(new MoreTests("testRelativizeFrag2"));
+		suite.addTest(new MoreTests("testXPointer"));
+		suite.addTest(new MoreTests("testNotIDN"));
 		
 		return suite;
 	}
@@ -55,6 +60,30 @@ public class MoreTests extends TestCase {
 		assertEquals("/#foo",rel.toString());
 		IRI back = base.resolve(rel);
 		assertEquals(frag,back);
+	}
+	
+	public void testXPointer() {
+		IRIFactory f = IRIFactory.jenaImplementation();
+		IRI base = f.create("http://example.org/");
+		IRI frag = base.resolve("http://eg.com/test.txt#xpointer(/unit[5])");
+		Iterator it = frag.violations(false);
+		while (it.hasNext()) {
+			System.err.println(((Violation)it.next()).getLongMessage());
+		}
+		
+	}
+	public void testNotIDN() {
+		IRIFactory f = IRIFactory.jenaImplementation();
+		IRI base = f.create("http://example.org/");
+		IRI frag = base.resolve("outbind://4-00000000C45F478BF9F2A048A7A59DE"+
+				"3AE35F7230700D3E3AEE226D20A49A390BCD779EC5D4700"+
+				"00003DB3650000D3E3AEE226D20A49A390BCD779EC5D470"+
+					"00001182DB0000/www.uconnectevent.org");
+		Iterator it = frag.violations(false);
+		while (it.hasNext()) {
+			System.err.println(((Violation)it.next()).getLongMessage());
+		}
+		
 	}
 }
 
