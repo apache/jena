@@ -11,8 +11,8 @@ import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.sdb.Store;
+import com.hp.hpl.jena.sdb.compiler.Compile;
 import com.hp.hpl.jena.sdb.compiler.OpSQL;
-import com.hp.hpl.jena.sdb.compiler.QC;
 import com.hp.hpl.jena.sdb.core.SDBRequest;
 import com.hp.hpl.jena.sdb.store.DatasetStoreGraph;
 import com.hp.hpl.jena.sparql.algebra.AlgebraGeneratorQuad;
@@ -61,7 +61,7 @@ public class QueryEngineSDB extends QueryEngineBase
         this.store = dsg.getStore() ;
         this.request = new SDBRequest(store, query, context) ;
         this.originalOp = getOp() ;
-        Op op = QC.compile(store, originalOp, initialBinding, context, request) ;
+        Op op = Compile.compile(store, originalOp, initialBinding, context, request) ;
         setOp(op) ;
     }
     

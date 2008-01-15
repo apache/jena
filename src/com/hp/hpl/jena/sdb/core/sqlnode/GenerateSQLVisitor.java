@@ -42,7 +42,7 @@ public class GenerateSQLVisitor implements SqlNodeVisitor
     private static Log log = LogFactory.getLog(GenerateSQLVisitor.class) ;
     
     private IndentedWriter out ;
-    int level = 0 ;
+    int levelSelectBlock = 0 ;
     
     // Per Generator
     public boolean outputAnnotations = ARQ.getContext().isTrueOrUndef(SDB.annotateGeneratedSQL) ;
@@ -61,42 +61,59 @@ public class GenerateSQLVisitor implements SqlNodeVisitor
     private void shouldNotSee(SqlNode sqlNode)
     { throw new SDBInternalError("Didn't expect: "+Utils.className(sqlNode)) ; }
 
+    // If nested (subquery) 
+    
     public void visit(SqlSelectBlock sqlSelectBlock)
     {
-      out.print("SELECT ") ;
-      if ( sqlSelectBlock.getDistinct() )
-          out.print("DISTINCT ") ;
-      if ( annotate(sqlSelectBlock) ) 
-          out.ensureStartOfLine() ;
-      out.incIndent() ;
-      print(sqlSelectBlock.getCols()) ;
-      out.decIndent() ;
-      out.ensureStartOfLine() ;
-      
-      // FROM
-      out.print("FROM") ;
-      if ( ! sqlSelectBlock.getSubNode().isTable() )
-          out.println();
-      else
-          out.print(" ");
-      out.incIndent() ;
-      outputNode(sqlSelectBlock.getSubNode(), true) ;
-      //sqlSelectBlock.getSubNode().visit(this) ;
-      out.decIndent() ;
-      out.ensureStartOfLine() ;
+        // Need a rename and alias if:
+        //   Not top
+        //   Not merely a table inside.
+        
+        levelSelectBlock++ ;
+        if ( levelSelectBlock > 1 )
+        {
+            // Alias needed.
+//            SqlRename rename = SqlRename.view("X", sqlSelectBlock) ;
+//            rename.visit(this) ;
+//            levelSelectBlock-- ;
+//            return ;
+        }
+        
+        out.print("SELECT ") ;
+        if ( sqlSelectBlock.getDistinct() )
+            out.print("DISTINCT ") ;
+        if ( annotate(sqlSelectBlock) ) 
+            out.ensureStartOfLine() ;
+        out.incIndent() ;
+        print(sqlSelectBlock.getCols()) ;
+        out.decIndent() ;
+        out.ensureStartOfLine() ;
 
-      // WHERE
-      if ( sqlSelectBlock.getWhere().size() > 0 )
-          genWHERE(sqlSelectBlock.getWhere()) ;
-      
-      // LIMIT/OFFSET
-      out.ensureStartOfLine() ;
-      if ( sqlSelectBlock.getLength() >= 0 )
-          out.println("LIMIT "+sqlSelectBlock.getLength()) ;
-      if ( sqlSelectBlock.getStart() >= 0 )
-          out.println("OFFSET "+sqlSelectBlock.getStart()) ;
-      
-      
+        // FROM
+        out.print("FROM") ;
+        if ( ! sqlSelectBlock.getSubNode().isTable() )
+            out.println();
+        else
+            out.print(" ");
+        out.incIndent() ;
+        outputNode(sqlSelectBlock.getSubNode(), true) ;
+        //sqlSelectBlock.getSubNode().visit(this) ;
+        out.decIndent() ;
+        out.ensureStartOfLine() ;
+
+        // WHERE
+        if ( sqlSelectBlock.getWhere().size() > 0 )
+            genWHERE(sqlSelectBlock.getWhere()) ;
+
+        // LIMIT/OFFSET
+        out.ensureStartOfLine() ;
+        if ( sqlSelectBlock.getLength() >= 0 )
+            out.println("LIMIT "+sqlSelectBlock.getLength()) ;
+        if ( sqlSelectBlock.getStart() >= 0 )
+            out.println("OFFSET "+sqlSelectBlock.getStart()) ;
+        
+        levelSelectBlock-- ;
+
     }
 
     private void print(List<ColAlias> cols)
@@ -142,51 +159,6 @@ public class GenerateSQLVisitor implements SqlNodeVisitor
                 out.print(c.getAlias().getColumnName()) ;
             }
         }
-//        
-//        for ( VarCol c : cols )
-//        {
-//            out.print(sep) ;
-//            sep = ", " ;
-//
-//            if ( c.cdr() == null )
-//                log.warn("Null SqlColumn for "+str(c.car())) ;    
-//
-//            Var aliasVar = c.car() ;
-//            String p = null ;
-//
-//            // ?? 
-//            if ( aliasVar == null )
-//            {
-//                splitMarker = "." ;
-//                p = c.cdr().asString() ;
-//            } else {
-//                p = aliasVar.getName() ;
-//            }
-//            // Var name formatting. 
-//            // V_1_lex, etc etc
-//
-//            int j = p.lastIndexOf(splitMarker) ;
-//            if ( j == -1 )
-//                currentPrefix = null ;
-//            else
-//            {
-//                String x = p.substring(0, j) ;
-//                if ( currentPrefix != null && ! x.equals(currentPrefix) )
-//                    out.println() ;
-//
-//                currentPrefix = x ;
-//            }
-//
-//            String projectName = c.cdr().asString() ;
-//            out.print(projectName) ;
-//
-//            if ( aliasVar != null )
-//            {
-//                String varLabel = c.car().getName() ;
-//                out.print(aliasToken()) ;
-//                out.print(varLabel) ;
-//            }
-//        }
     }
 
     private void genWHERE(SqlExprList conditions)
@@ -446,7 +418,6 @@ public class GenerateSQLVisitor implements SqlNodeVisitor
         }
     }
     
-    
     private void outputNode(SqlNode sqlNode, boolean mayNeedBrackets)
     {
         if ( sqlNode.isTable() )
@@ -454,12 +425,14 @@ public class GenerateSQLVisitor implements SqlNodeVisitor
             sqlNode.visit(this) ;
             return ;
         }
-
+        //boolean brackets = ( mayNeedBrackets && ( sqlNode.isSelectBlock() || sqlNode.isCoalesce() ) ) ;
         
-        level ++ ;
+        boolean brackets = false ;
+        brackets = brackets || (mayNeedBrackets && sqlNode.isCoalesce()) ;
         
-        // Why do we need this (mayNeedBrackets) flag?
-        boolean brackets = ( mayNeedBrackets && ( sqlNode.isSelectBlock() || sqlNode.isCoalesce() ) ) ;
+        // Work harder? ready for a better test.
+        brackets = brackets || ( mayNeedBrackets && sqlNode.isSelectBlock()) ;
+        
         
         // Need brackets if the subpart is a SELECT
         
@@ -485,7 +458,6 @@ public class GenerateSQLVisitor implements SqlNodeVisitor
             out.print(sqlNode.getAliasName()) ;
         }
         annotate(sqlNode) ;
-        level -- ;
     }
 
     private boolean annotate(Annotations sqlNode)

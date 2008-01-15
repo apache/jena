@@ -226,29 +226,45 @@ public class TransformSDB extends TransformCopy
             return super.transform(opSlice, subOp) ;
         
         List<Var> project = null ; 
+        boolean distinct = false ;
         
         // Either OpSlice(SQL) or OpSlice(OpProject(SQL))
         // Note: OpSlice(OpProject(SQL)) => OpProject(OpSlice(SQL))
         //  iff no other modifiers
 
+        // Break apart
+        
+        if ( subOp instanceof OpDistinct )
+        {
+            OpDistinct d = (OpDistinct)subOp ;
+            distinct = true ;
+            subOp = d.getSubOp() ;
+        }
+        
         if ( subOp instanceof OpProject )
         {
             OpProject p = (OpProject)subOp ;
             @SuppressWarnings("unchecked")
             List<Var> pv = p.getVars() ;
             project = pv ;
-            subOp = ((OpProject)subOp).getSubOp() ;
+            subOp = p.getSubOp() ;
         }
         
         if ( ! QC.isOpSQL(subOp) )
             return super.transform(opSlice, subOp) ; 
         
+        // For later SQl generation, this must be an alaised thingy.
         SqlNode sqlSubOp = ((OpSQL)subOp).getSqlNode() ;
         SqlNode sqlSlice = new SqlSlice(sqlSubOp, opSlice.getStart(), opSlice.getLength()) ;
         
         Op x = new OpSQL(sqlSlice, opSlice, request) ;
+        
+        // Any other to put back?
         if ( project != null )
             x = new OpProject(x, project) ;
+        if ( distinct )
+            x = new OpDistinct(x) ;
+        
         return x ;
     }
     

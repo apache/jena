@@ -40,6 +40,19 @@ public class ColAlias
         if ( ! getAlias().getTable().getAliasName().equals(requiredName) )
             throw new SDBInternalError("Alias name error: "+getColumn()+"/"+getAlias()+": required: "+requiredName) ;
     }
+    
+    @Override
+    public String toString()
+    {
+        
+        StringBuilder b = new StringBuilder() ;
+        b.append("(") ;
+        b.append(  (column == null) ? "??" : column ) ;
+        b.append(",") ;
+        b.append(  (alias == null) ? "??" : alias ) ;
+        b.append(")") ;
+        return b.toString() ; 
+    }
 }
 
 /*

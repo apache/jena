@@ -21,7 +21,14 @@ public class SqlColumn extends SqlExprBase
     public String getColumnName() { return columnName ; }
     public SqlTable getTable()  { return table ;  }
 
-    public String getFullColumnName() { return getTable().getAliasName()+"."+columnName ; }
+    public String getFullColumnName()
+    { 
+        if ( getTable() != null  )
+            return getTable().getAliasName()+"."+columnName ;
+        else
+            return columnName ;
+    }
+        
     
     @Override
     public int hashCode()

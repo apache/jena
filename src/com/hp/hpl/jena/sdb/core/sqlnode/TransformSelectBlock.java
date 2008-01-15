@@ -6,9 +6,16 @@
 
 package com.hp.hpl.jena.sdb.core.sqlnode;
 
+import java.util.List;
+
+import com.hp.hpl.jena.sdb.core.Generator;
+import com.hp.hpl.jena.sdb.core.Gensym;
 import com.hp.hpl.jena.sdb.core.Scope;
+import com.hp.hpl.jena.sdb.core.ScopeBase;
 import com.hp.hpl.jena.sdb.core.ScopeEntry;
+import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
 import com.hp.hpl.jena.sdb.shared.SDBInternalError;
+import com.hp.hpl.jena.sparql.core.Var;
 
 public class TransformSelectBlock extends SqlTransformCopy
 {
@@ -19,9 +26,9 @@ public class TransformSelectBlock extends SqlTransformCopy
     @Override
     public SqlNode transform(SqlProject sqlProject, SqlNode subNode)
     { 
-        SqlSelectBlock block = block(subNode) ;
+        SqlSelectBlock block = block(subNode, sqlProject.getCols()) ;
         addNotes(block, sqlProject) ;
-        block.addAll(sqlProject.getCols()) ;
+        //block.addAll(sqlProject.getCols()) ;
         return block ;
     }
 
@@ -114,9 +121,14 @@ public class TransformSelectBlock extends SqlTransformCopy
         }
     }
     
-    private SqlSelectBlock block(SqlNode sqlNode)
+    private SqlSelectBlock block(SqlNode sqlNode) { return block(sqlNode, null) ; }
+    
+    private SqlSelectBlock block(SqlNode sqlNode, List<ColAlias> colAliases)
     {
-        SqlSelectBlock block = block2(sqlNode) ;
+        // Need a rename/alias if:
+        //   Not top.
+        
+        SqlSelectBlock block = block2(sqlNode, colAliases) ;
         if ( sqlNode.getAliasName() != null )
         {
             if ( !block.getAliasName().equals(sqlNode.getAliasName()) )
@@ -126,15 +138,59 @@ public class TransformSelectBlock extends SqlTransformCopy
         return block ;
     }
     
-    private SqlSelectBlock block2(SqlNode sqlNode)
+    // XXX Tidy up.
+    private Gensym gen1 = Gensym.create("NS") ; 
+    private Gensym gen2 = Gensym.create("V") ; 
+    
+    private SqlSelectBlock block2(SqlNode sqlNode, List<ColAlias> colAliases)
     {
         if ( sqlNode instanceof SqlSelectBlock )
+        {
+            SqlSelectBlock block = (SqlSelectBlock)sqlNode ;
+            if ( colAliases != null )
+                block.addAll(colAliases) ;
             return (SqlSelectBlock)sqlNode ;
+        }
         
         String alias = sqlNode.getAliasName() ;
-//        if ( alias == null )
-//            alias = gen.next() ;
-        return new SqlSelectBlock(alias, sqlNode) ;
+        
+        if ( alias == null )
+            alias = gen1.next() ;
+        SqlSelectBlock block = new SqlSelectBlock(alias, sqlNode) ;
+        if ( colAliases != null )
+            block.addAll(colAliases) ;
+        else
+        {
+//            block.idScope = new ScopeBase() ;
+//            block.nodeScope = new ScopeBase() ;
+//            rename(block, sqlNode.getNodeScope(), (ScopeBase)block.nodeScope, gen2) ;
+//            rename(block, sqlNode.getIdScope(), (ScopeBase)block.idScope, gen2) ;
+        }
+        return block ;
+    }
+    
+    private void rename(SqlSelectBlock selectBlock, Scope scope, ScopeBase newScope, Generator gen)
+    {
+        String x = "" ;
+        String sep = "" ;
+        SqlTable table = new SqlTable(selectBlock.getAliasName()) ;
+
+        for ( ScopeEntry e : scope.findScopes() )
+        {
+            SqlColumn oldCol = e.getColumn() ;
+            String colName = gen.next() ;
+            
+            SqlColumn newCol = new SqlColumn(table, colName) ;
+            selectBlock.add(new ColAlias(oldCol, newCol)) ;
+            Var v = e.getVar() ;
+            newScope.setColumnForVar(v, newCol) ;
+            
+            // Annotations
+            x = String.format("%s%s(%s=>%s)", x, sep, oldCol, newCol) ;
+            sep = " " ;
+        }
+        if ( x.length() > 0 )
+            selectBlock.addNote(x) ;
     }
 }
 

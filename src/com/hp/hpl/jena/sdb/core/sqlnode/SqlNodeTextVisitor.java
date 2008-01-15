@@ -207,11 +207,17 @@ public class SqlNodeTextVisitor implements SqlNodeVisitor
         print(sqlNode.getWhere()) ;
         out.decIndent() ;
         
-        if ( sqlNode.getStart() >= 0 )
-            out.print(Long.toString(sqlNode.getStart())) ;
-        if ( sqlNode.getLength() >= 0 )
-            out.print(Long.toString(sqlNode.getLength())) ;
-
+        if ( sqlNode.getStart() >= 0 || sqlNode.getLength() >= 0 )
+        {
+            String startStr = "--" ;
+            String lengthStr = "--" ;
+            if ( sqlNode.getStart() >= 0 )
+                startStr = Long.toString(sqlNode.getStart()) ;
+            if ( sqlNode.getLength() >= 0 )
+                lengthStr = Long.toString(sqlNode.getLength()) ;
+            String str = String.format("Slice: (%s, %s)", startStr, lengthStr) ;
+            out.print(str) ;
+        }
         sqlNode.getSubNode().visit(this) ;
         finish() ;
     }
