@@ -27,7 +27,6 @@ import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
  * @author Andy Seaborne
  */
 
-@SuppressWarnings("deprecation")
 public class PrefixMappingSDB extends PrefixMappingImpl
 {
     static private Log log = LogFactory.getLog(PrefixMappingSDB.class) ;
