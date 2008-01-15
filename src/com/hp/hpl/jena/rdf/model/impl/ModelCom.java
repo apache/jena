@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
     [See end of file]
-    $Id: ModelCom.java,v 1.125 2008-01-02 12:04:56 andy_seaborne Exp $
+    $Id: ModelCom.java,v 1.126 2008-01-15 15:51:19 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -828,9 +828,6 @@ public class ModelCom
         
     public String expandPrefix( String prefixed )
         { return getPrefixMapping().expandPrefix( prefixed ); }
-        
-    public String usePrefix( String uri )
-        { return getPrefixMapping().shortForm( uri ); }
     
     public String qnameFor( String uri )
         { return getPrefixMapping().qnameFor( uri ); }

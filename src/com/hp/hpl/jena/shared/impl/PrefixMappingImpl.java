@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: PrefixMappingImpl.java,v 1.28 2008-01-02 12:11:34 andy_seaborne Exp $
+  $Id: PrefixMappingImpl.java,v 1.29 2008-01-15 15:51:21 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.shared.impl;
@@ -194,13 +194,6 @@ public class PrefixMappingImpl implements PrefixMapping
         String prefix = (String) URItoPrefix.get( ns );
         return prefix == null ? null : prefix + ":" + local;
         }
-    
-    /**
-        Obsolete - use shortForm.
-     	@see com.hp.hpl.jena.shared.PrefixMapping#usePrefix(java.lang.String)
-     */
-    public String usePrefix( String uri )
-        { return shortForm( uri ); }
     
     /**
         Compress the URI using the prefix mapping. This version of the code looks
