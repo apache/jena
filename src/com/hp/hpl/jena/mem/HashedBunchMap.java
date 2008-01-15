@@ -1,9 +1,11 @@
 /*
     (c) Copyright 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
     All rights reserved - see end of file.
-    $Id: HashedBunchMap.java,v 1.13 2008-01-02 12:09:51 andy_seaborne Exp $
+    $Id: HashedBunchMap.java,v 1.14 2008-01-15 08:19:16 chris-dollin Exp $
 */
 package com.hp.hpl.jena.mem;
+
+import com.hp.hpl.jena.shared.BrokenException;
 
 /**
     An implementation of BunchMap that does open-addressed hashing.
@@ -66,6 +68,10 @@ public class HashedBunchMap extends HashCommon implements BunchMap
             if (key != null) 
                 {
                 int j = findSlot( key );
+                if (j < 0) 
+                    {
+                    throw new BrokenException( "oh dear, already have a slot for " + key  + ", viz " + ~j );
+                    }
                 keys[j] = key;
                 values[j] = oldValues[i];
                 }

@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            13-May-2003
  * Filename           $RCSfile: OntModelSpec.java,v $
- * Revision           $Revision: 1.53 $
+ * Revision           $Revision: 1.54 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2008-01-02 12:06:38 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2008-01-15 08:19:17 $
+ *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2002, 2003, 204, Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -20,8 +20,6 @@
 // Package
 ///////////////
 package com.hp.hpl.jena.ontology;
-
-
 
 // Imports
 ///////////////
@@ -34,8 +32,6 @@ import com.hp.hpl.jena.reasoner.ReasonerFactory;
 import com.hp.hpl.jena.reasoner.rulesys.*;
 import com.hp.hpl.jena.reasoner.transitiveReasoner.TransitiveReasonerFactory;
 import com.hp.hpl.jena.shared.JenaException;
-import com.hp.hpl.jena.vocabulary.JenaModelSpec;
-
 
 /**
  * <p>
@@ -45,9 +41,9 @@ import com.hp.hpl.jena.vocabulary.JenaModelSpec;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModelSpec.java,v 1.53 2008-01-02 12:06:38 andy_seaborne Exp $
+ * @version CVS $Id: OntModelSpec.java,v 1.54 2008-01-15 08:19:17 chris-dollin Exp $
  */
-public class OntModelSpec extends OntModelSpecObsolete implements ModelSpec {
+public class OntModelSpec {
     // Constants
     //////////////////////////////////
     // Static variables
@@ -173,6 +169,8 @@ public class OntModelSpec extends OntModelSpecObsolete implements ModelSpec {
     }
 
 
+    protected ModelMaker maker;
+    
     /**
      * Construct a new ontology model specification from the supplied components.
      * @param baseModelName the name of the model in the baseModelMaker
@@ -185,7 +183,8 @@ public class OntModelSpec extends OntModelSpecObsolete implements ModelSpec {
     public OntModelSpec( String baseModelName, ModelMaker baseMaker,
                          ModelMaker importsMaker, OntDocumentManager docMgr,
                          ReasonerFactory rFactory, String languageURI ) {
-        super( baseMaker );
+        // super( baseMaker );
+        this.maker = baseMaker;
         m_baseModelName = baseModelName;
         m_importsMaker = importsMaker == null ? ModelFactory.createMemModelMaker() : importsMaker;
         setDocumentManager( docMgr );
@@ -250,7 +249,7 @@ public class OntModelSpec extends OntModelSpecObsolete implements ModelSpec {
      * Answer the model maker used for creating base models.
      */
     public ModelMaker getBaseModelMaker() {
-        return super.getModelMaker();
+        return maker;
     }
 
     public ModelGetter getImportModelGetter() {
@@ -258,65 +257,8 @@ public class OntModelSpec extends OntModelSpecObsolete implements ModelSpec {
         return importModelGetter;
     }
 
-//    private ModelGetter fabricateModelGetter()
-//        {
-//        return new ModelGetter()
-//            {
-//            public Model getModel( String URL )
-//                {
-//                return m_importsMaker.hasModel( URL ) ? m_importsMaker.openModel( URL ) : null;
-//                }
-//
-//            public Model getModel( String URL, ModelReader loadIfAbsent )
-//                {
-//                return m_importsMaker.hasModel( URL ) ? m_importsMaker.openModel( URL ) : createAndLoad( URL, loadIfAbsent );
-//                }
-//
-//            private Model createAndLoad( String URL, ModelReader loadIfAbsent )
-//                {
-//                Model result = m_importsMaker.createModel( URL );
-//                return loadIfAbsent.readModel( result, URL );
-//                }
-//            };
-//        }
-
     public void setImportModelGetter( ModelGetter mg ) {
         importModelGetter = mg;
-    }
-
-    /**
-     * <p>Initialise an OntModelSpec from an RDF description using the JenaModelSpec vocabulary. See
-     * <a href="../../../../../doc/howto/modelspec.html">the modelspec howto</a>
-     * for the description of the OntModel used. The root of the
-     * description is the unique resource with type <code>jms:OntMakerClass</code>.</p>
-     *
-     * @param description an RDF model using the JenaModelSpec vocabulary
-     * @deprecated ModelSpec has been removed; use the <code>assemble</code>
-     * methods.
-     */
-    public OntModelSpec( Model description )  {
-        this( findRootByType( description, JenaModelSpec.OntModelSpec ), description );
-    }
-
-    /**
-     * <p>Initialise an OntModelSpec from an RDF description using the JenaModelSpec vocabulary. See
-     * <a href="../../../../../doc/howto/modelspec.html">the modelspec howto</a>
-     * for the description of the OntModel used.  The root of the
-     *  description is supplied as a parameter (so the description may describe several
-     *  different OntModels).</p>
-     *
-     *  @param description an RDF model using the JenaModelSpec vocabulary
-     *  @param root the root of the sub-graph to use for the specification
-     *  @deprecated ModelSpec has been removed; use the <code>assemble</code>
-     * methods.
-     */
-    public OntModelSpec( Resource root, Model description )  {
-        this( getBaseModelName( description, root ),
-              getBaseMaker( description, root ),
-              getImportMaker( description, root ),
-              getDocumentManager( description, root ),
-              getReasonerFactory( description, root ),
-              getLanguage( description, root )  );
     }
 
     /**
@@ -511,26 +453,10 @@ public class OntModelSpec extends OntModelSpecObsolete implements ModelSpec {
      * <p>Create an OntModel according to this model specification.
      * The base model comes from the underlying ModelMaker and is named by the
      *  given name.</p>
-     * @see com.hp.hpl.jena.rdf.model.ModelSpec#createModelOver(java.lang.String)
      */
     public Model implementCreateModelOver( String name ) {
         return new OntModelImpl( this, maker.createModel( name, false ) );
     }
-
-    /**
-        Add the description of this OntModelSpec to the given model under the given
-        resource. This same description can be used to create an equivalent OntModelSpec.
-        Serialising the description will lose the DocumentManager description.
-
-        TODO allow the DocumentManager to be [de]serialised
-        @deprecated ModelSpecs are obsolete
-    */
-    public Model addDescription( Model d, Resource self )
-        {
-        return addDescription
-            ( d, self, m_importsMaker, m_languageURI,
-            getDocumentManager(), m_rFactory );
-        }
 
     /**
          Answer a base model constructed according to this specification. This is used for the

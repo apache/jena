@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            16-Jun-2003
  * Filename           $RCSfile: TestBugReports.java,v $
- * Revision           $Revision: 1.90 $
+ * Revision           $Revision: 1.91 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2008-01-14 16:31:23 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2008-01-15 08:19:19 $
+ *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -1107,16 +1107,17 @@ public class TestBugReports
 
     /** Test case for SF bug 937810 - NPE from ModelSpec.getDescription() */
     public void test_sf_937810() throws IllegalAccessException {
-        Field[] specs = OntModelSpec.class.getDeclaredFields();
-
-        for (int i = 0;  i < specs.length;  i++) {
-            if (Modifier.isPublic( specs[i].getModifiers()) &&
-                Modifier.isStatic( specs[i].getModifiers()) &&
-                specs[i].getType().equals( OntModelSpec.class )) {
-                OntModelSpec s = (OntModelSpec) specs[i].get( null );
-                assertNotNull( s.getDescription() );
-            }
-        }
+        System.err.println( ">> TestBugReports.test_sf_937810: declared obsolete [ModelSpecs are dead]" );
+//        Field[] specs = OntModelSpec.class.getDeclaredFields();
+//
+//        for (int i = 0;  i < specs.length;  i++) {
+//            if (Modifier.isPublic( specs[i].getModifiers()) &&
+//                Modifier.isStatic( specs[i].getModifiers()) &&
+//                specs[i].getType().equals( OntModelSpec.class )) {
+//                OntModelSpec s = (OntModelSpec) specs[i].get( null );
+//                assertNotNull( s.getDescription() );
+//            }
+//        }
     }
 
     /** Test case for SF bug 940570 - listIndividuals not working with RDFS_INF

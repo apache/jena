@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ModelMaker.java,v 1.17 2008-01-02 12:05:48 andy_seaborne Exp $
+  $Id: ModelMaker.java,v 1.18 2008-01-15 08:19:22 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
@@ -25,7 +25,7 @@ import com.hp.hpl.jena.util.iterator.*;
  	@author kers
 */
 
-public interface ModelMaker extends ModelSpec
+public interface ModelMaker extends ModelSource
     {
     /**
         Create a new Model associated with the given name. If there is no such

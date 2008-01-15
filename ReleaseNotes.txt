@@ -1,6 +1,11 @@
 Release Notes
 =============
 
+ModelSpec
+    o ModelSpec, which has been deprecated for a while, has been removed,
+      along with ModelSpecImpl. OntModelSpec, which used to implement
+      ModelSpec (via OntModelSpecObsolete, also removed), doesn't any more. 
+
 Schemagen
     o Member variables (i.e. for classes, properties and individuals) are now
       lexically sorted to create more stability in change-sets when generated
