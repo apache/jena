@@ -5,7 +5,9 @@
 
 package com.hp.hpl.jena.iri.impl;
 
-public class ViolationCodeInfo extends IRIExamples {
+import com.hp.hpl.jena.iri.ViolationCodes;
+
+public class ViolationCodeInfo extends IRIExamples implements  ViolationCodes {
 
     static abstract public class InSpec {
         protected final Specification spec;
@@ -178,7 +180,12 @@ public class ViolationCodeInfo extends IRIExamples {
         return !unimplemented;
     }
 
-	public String description(int slot, IRIFactoryImpl impl) {
+	public String description(int slot, AbsIRIImpl iri) {
+		switch (code) {
+		case BAD_IDN:
+		case BAD_IDN_UNASSIGNED_CHARS:
+			return description + " " + iri.getIDNAException().getMessage();
+		}
 		return description;
 	}
 

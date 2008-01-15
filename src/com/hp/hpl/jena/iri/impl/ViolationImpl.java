@@ -71,7 +71,7 @@ public class ViolationImpl extends Violation {
 		ViolationCodeInfo info = ViolationCodeInfo.all[code];
 		if (info==null)
 			return "internal error: description of error not found";
-		return info.description(slot,iri.getFactory());
+		return info.description(slot,iri);
 	}
 
 

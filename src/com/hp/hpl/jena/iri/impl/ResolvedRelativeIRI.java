@@ -220,6 +220,14 @@ public class ResolvedRelativeIRI extends AbsIRIImpl {
         return base.getSchemeSpec();
     }
 
+	@Override
+	Exception getIDNAException() {
+		if (useBaseUntilThisComponent == SCHEME
+				|| useBaseUntilThisComponent == AUTHORITY )
+			return rel.getIDNAException();
+		return base.getIDNAException();
+	}
+
 }
 
 

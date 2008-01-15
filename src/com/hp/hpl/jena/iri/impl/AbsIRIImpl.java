@@ -105,6 +105,7 @@ abstract public class AbsIRIImpl extends  IRI implements
     abstract long errors(int field);
 
     abstract SchemeSpecificPart getSchemeSpec();
+    abstract Exception getIDNAException();
     
     // void throwExceptions(IRIFactoryImpl f, boolean includeRelative) {
     // long mask = f.exceptions;

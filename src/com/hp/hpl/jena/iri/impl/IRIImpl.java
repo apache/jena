@@ -16,6 +16,7 @@ implements IRIComponents {
     final IRIFactoryImpl factory;
     final String original;
     final Parser parser;
+    Exception idnaException;
 
     SchemeSpecificPart scheme;
     
@@ -96,6 +97,11 @@ implements IRIComponents {
     SchemeSpecificPart getSchemeSpec() {
         return scheme;
     }
+
+	@Override
+	Exception getIDNAException() {
+		return idnaException;
+	}
 
 
 

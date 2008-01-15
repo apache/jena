@@ -1224,8 +1224,7 @@ URI producers should provide these registered names in the IDNA encoding, rather
     <violation>
 	    <name>BAD_IDN</name> 
 	    <description>
-		    The Internationalized Domain Name check failed (a third
-		    party library is used).
+		    The Internationalized Domain Name check failed.
 	    </description>
 	    <spec ref="URI">
 		    <text section="3.2.2">

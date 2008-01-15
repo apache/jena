@@ -4555,8 +4555,8 @@ This class is not part of the API.
             new ViolationCodeInfo(
                 BAD_IDN,
                 "BAD_IDN",
-                "The Internationalized Domain Name check failed (a third party library is used).",
-                "<p>The Internationalized Domain Name check failed (a third party library is used).</p>",
+                "The Internationalized Domain Name check failed.",
+                "<p>The Internationalized Domain Name check failed.</p>",
                 0,
                 new InSpec[]{
                   
@@ -7091,8 +7091,7 @@ URI producers should provide these registered names in the IDNA encoding, rather
         
     
 /**
-		    The Internationalized Domain Name check failed (a third
-		    party library is used).
+		    The Internationalized Domain Name check failed.
 	    
      <p>This is specified in <a href="#ref-URI">
      [URI]</a>.</p>

@@ -131,14 +131,14 @@ public class Parser implements IRIComponents, ViolationCodes {
                         IDNA.convertIDNToUnicode(IDNA.convertIDNToASCII(h,
                                 IDNA.USE_STD3_RULES | IDNA.ALLOW_UNASSIGNED),
                                 IDNA.USE_STD3_RULES | IDNA.ALLOW_UNASSIGNED);
-                        recordError(HOST, BAD_IDN_UNASSIGNED_CHARS);
+                        recordError(HOST, BAD_IDN_UNASSIGNED_CHARS, e);
                     } catch (StringPrepParseException e1) {
-                        recordError(HOST, BAD_IDN);
+                        recordError(HOST, BAD_IDN, e);
                     }
 
                 }
             } catch (IndexOutOfBoundsException e) {
-                recordError(HOST, BAD_IDN);
+                recordError(HOST, BAD_IDN, e);
             }
         }
         
@@ -245,6 +245,11 @@ public class Parser implements IRIComponents, ViolationCodes {
     public void recordError(int range, int e) {
         errors[invFields[range]] |= (1l << e);
         iri.allErrors |= (1l << e);
+    }
+    public void recordError(int range, int e, Exception ex) {
+        errors[invFields[range]] |= (1l << e);
+        iri.allErrors |= (1l << e);
+        iri.idnaException = ex;
     }
     
     long errors(int r) {
