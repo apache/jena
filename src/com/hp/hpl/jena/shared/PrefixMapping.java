@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: PrefixMapping.java,v 1.37 2008-01-10 19:03:21 ian_dickinson Exp $
+  $Id: PrefixMapping.java,v 1.38 2008-01-15 15:45:26 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.shared;
@@ -139,12 +139,6 @@ public interface PrefixMapping
         @return the shortened form if possible, otherwise the unchanged argument
     */
     String shortForm( String uri );
-
-    /**
-        Old name for shortForm.
-        @deprecated - use shortForm
-    */
-    String usePrefix( String uri );
 
     /**
         Answer a qname with the expansion of the given uri, or null if no such qname

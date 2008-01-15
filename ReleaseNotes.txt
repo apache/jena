@@ -1,6 +1,10 @@
 Release Notes
 =============
 
+PrefixMapping loses deprecated usePrefix
+    o  The deprecated PrefixMapping method `usePrefix` has been removed.
+       (Use `shortForm` instead.)
+
 ModelSpec
     o ModelSpec, which has been deprecated for a while, has been removed,
       along with ModelSpecImpl. OntModelSpec, which used to implement
