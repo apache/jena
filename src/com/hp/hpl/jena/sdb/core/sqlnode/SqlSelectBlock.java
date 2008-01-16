@@ -54,7 +54,7 @@ public class SqlSelectBlock extends SqlNodeBase1
     private Scope idScope = null ;      // Scopes are as the wrapped SqlNode unless explicitly changed.
     private Scope nodeScope = null ;
     
-    // ----
+    // ---- Move code to QC, promoting blockWithView and blokcNoView?
     static public SqlNode distinct(SqlNode sqlNode)
     { 
         SqlSelectBlock block = blockWithView(sqlNode) ;

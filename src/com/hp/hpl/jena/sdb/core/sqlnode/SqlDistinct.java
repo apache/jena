@@ -6,9 +6,12 @@
 
 package com.hp.hpl.jena.sdb.core.sqlnode;
 
-public class SqlDistinct extends SqlNodeBase1
+import com.hp.hpl.jena.sdb.shared.SDBInternalError;
+
+// Not used - my be removed
+/*public*/ class SqlDistinct extends SqlNodeBase1
 {
-    public static SqlNode distinct(SqlNode sqlNode)
+    private static SqlNode distinct(SqlNode sqlNode)
     {
         return SqlSelectBlock.distinct(sqlNode) ;
         
@@ -30,12 +33,13 @@ public class SqlDistinct extends SqlNodeBase1
     @Override
     public SqlDistinct asDistinct() { return this ; }
     
+    //@Override
     public void visit(SqlNodeVisitor visitor)
-    { visitor.visit(this) ; }
+    { throw new SDBInternalError("SqlDistinct.visit") ; /*visitor.visit(this) ;*/ }
     
     @Override
     public SqlNode apply(SqlTransform transform, SqlNode subNode)
-    { return transform.transform(this, subNode) ; }
+    { throw new SDBInternalError("SqlDistinct.transform") ; /* return transform.transform(this, subNode) ; */ }
 
     @Override
     public SqlNode copy(SqlNode subNode)

@@ -12,6 +12,7 @@ import java.util.List;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
 import com.hp.hpl.jena.sdb.shared.SDBInternalError;
 
+// Unused - see SqlSelectBlock 
 public class SqlProject extends SqlNodeBase1
 {
     // Development:
@@ -25,6 +26,7 @@ public class SqlProject extends SqlNodeBase1
     
     /** make sure this node is a projection */
     
+    // This is not quite SqlSelectBlock.
     public static SqlNode project(SqlNode sqlNode)
     {
         return project(sqlNode, null) ;

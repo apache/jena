@@ -6,13 +6,13 @@
 
 package com.hp.hpl.jena.sdb.compiler;
 
+import com.hp.hpl.jena.sparql.core.Quad;
+
 import com.hp.hpl.jena.sdb.SDB;
 import com.hp.hpl.jena.sdb.core.SDBRequest;
-import com.hp.hpl.jena.sdb.core.sqlnode.SqlDistinct;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlRename;
 import com.hp.hpl.jena.sdb.shared.SDBInternalError;
-import com.hp.hpl.jena.sparql.core.Quad;
 
 public class QuadBlockCompilerMain implements QuadBlockCompiler
 {
@@ -62,7 +62,7 @@ public class QuadBlockCompilerMain implements QuadBlockCompiler
         SqlNode sqlStages = sList.build(request, slotCompiler) ;
         
         // --- Join the initial node (constants). 
-        sqlNode = QC.innerJoin(request, sqlNode, sqlStages) ;
+        sqlNode = SqlNodeFactory.innerJoin(request, sqlNode, sqlStages) ;
         sqlNode = slotCompiler.finish(sqlNode, quads) ;
         
         // Insert DISTINCT if accessing the RDF merge of all named graphs
@@ -83,7 +83,7 @@ public class QuadBlockCompilerMain implements QuadBlockCompiler
             // DISTINCT -- over the named variables but not * (which includes the graph node).
             String renameName = request.genId("A") ;
             sqlNode = SqlRename.view(renameName, sqlNode) ;
-            sqlNode = SqlDistinct.distinct(sqlNode) ;
+            sqlNode = SqlNodeFactory.distinct(sqlNode) ;
         }
         
         return sqlNode ;

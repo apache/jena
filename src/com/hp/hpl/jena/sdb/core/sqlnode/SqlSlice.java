@@ -6,13 +6,15 @@
 
 package com.hp.hpl.jena.sdb.core.sqlnode;
 
+import com.hp.hpl.jena.sdb.shared.SDBInternalError;
 
+// Not used - may be removed
 public class SqlSlice extends SqlNodeBase1
 {
     private long start ;
     private long length ;
     
-    public SqlSlice(SqlNode subOp, long start, long length)
+    private SqlSlice(SqlNode subOp, long start, long length)
     {
         super(null, subOp) ;
         this.start = start ;
@@ -26,11 +28,13 @@ public class SqlSlice extends SqlNodeBase1
 //    public boolean isModifier()     { return true ; }
     
     public void visit(SqlNodeVisitor visitor)
-    { visitor.visit(this) ; }
+    { throw new SDBInternalError("SqlSlice.visit") ; }
+    //{ visitor.visit(this) ; }
     
     @Override
     public SqlNode apply(SqlTransform transform, SqlNode subNode)
-    { return transform.transform(this, subNode) ; }
+    { throw new SDBInternalError("SqlSlice.apply") ; }
+    //{ return transform.transform(this, subNode) ; }
 
     @Override
     public SqlNode copy(SqlNode subNode)

@@ -12,10 +12,11 @@ public interface SqlNodeVisitor
     public void visit(SqlSelectBlock    sqlSelectBlock) ;
     
     // TO GO
-    public void visit(SqlSlice          sqlSlice) ;
-    public void visit(SqlProject        sqlProject) ;
+    public void visit(SqlProject        sqlProject) ;       // Removeable?
+
+    //public void visit(SqlSlice          sqlSlice) ;
     public void visit(SqlRestrict       sqlRestrict) ;
-    public void visit(SqlDistinct       sqlDistinct) ;
+    //public void visit(SqlDistinct       sqlDistinct) ;
     public void visit(SqlRename         sqlRename) ;
     
     public void visit(SqlJoinInner      sqlJoin) ;

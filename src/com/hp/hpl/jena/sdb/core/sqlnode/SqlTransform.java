@@ -10,13 +10,13 @@ public interface SqlTransform
 {
     public SqlNode transform(SqlProject sqlProject, SqlNode subNode) ;
 
-    public SqlNode transform(SqlDistinct sqlDistinct, SqlNode subNode) ;
+    //public SqlNode transform(SqlDistinct sqlDistinct, SqlNode subNode) ;
 
     public SqlNode transform(SqlRestrict sqlRestrict, SqlNode subNode) ;
 
     public SqlNode transform(SqlRename sqlRename, SqlNode subNode) ;
 
-    public SqlNode transform(SqlSlice sqlSlice, SqlNode subNode) ;
+    //public SqlNode transform(SqlSlice sqlSlice, SqlNode subNode) ;
 
     public SqlNode transform(SqlSelectBlock sqlSelectBlock, SqlNode newSubNode) ;
 

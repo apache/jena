@@ -12,13 +12,14 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.graph.Node;
+
 import com.hp.hpl.jena.sparql.core.Quad;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.util.FmtUtils;
 
 import com.hp.hpl.jena.sdb.SDBException;
-import com.hp.hpl.jena.sdb.compiler.QC;
 import com.hp.hpl.jena.sdb.compiler.QuadBlock;
+import com.hp.hpl.jena.sdb.compiler.SqlNodeFactory;
 import com.hp.hpl.jena.sdb.core.AliasesSql;
 import com.hp.hpl.jena.sdb.core.SDBRequest;
 import com.hp.hpl.jena.sdb.core.sqlexpr.*;
@@ -92,7 +93,7 @@ public class SlotCompilerIndex extends SlotCompiler2
             // Record 
             constantCols.put(n, new SqlColumn(nTable, nodeTableDesc.getIdColName())) ;
             SqlExpr c = new S_Equal(cHash, hashValue) ;
-            sqlNode = QC.innerJoin(getRequest(), sqlNode, nTable) ;
+            sqlNode = SqlNodeFactory.innerJoin(getRequest(), sqlNode, nTable) ;
             sqlNode = SqlRestrict.restrict(sqlNode, c)  ;
         }
         return sqlNode ;

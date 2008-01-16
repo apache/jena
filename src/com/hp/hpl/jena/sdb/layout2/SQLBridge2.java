@@ -23,7 +23,7 @@ import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.binding.BindingMap;
 
-import com.hp.hpl.jena.sdb.compiler.QC;
+import com.hp.hpl.jena.sdb.compiler.SqlNodeFactory;
 import com.hp.hpl.jena.sdb.core.AliasesSql;
 import com.hp.hpl.jena.sdb.core.SDBRequest;
 import com.hp.hpl.jena.sdb.core.Scope;
@@ -136,7 +136,7 @@ public class SQLBridge2 extends SQLBridgeBase
         nTable.addNote("Var: "+var) ;
 
         SqlExpr cond = new S_Equal(c1, c2) ;
-        SqlNode n = QC.leftJoin(request, sqlNode, nTable) ;
+        SqlNode n = SqlNodeFactory.leftJoin(request, sqlNode, nTable) ;
         SqlNode sqlNode2 = SqlRestrict.restrict(n, cond) ;
         return sqlNode2 ;
     }
