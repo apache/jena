@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            16-Jun-2003
  * Filename           $RCSfile: TestBugReports.java,v $
- * Revision           $Revision: 1.91 $
+ * Revision           $Revision: 1.92 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2008-01-15 08:19:19 $
- *               by   $Author: chris-dollin $
+ * Last modified on   $Date: 2008-01-16 14:13:33 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -1106,8 +1106,8 @@ public class TestBugReports
     }
 
     /** Test case for SF bug 937810 - NPE from ModelSpec.getDescription() */
-    public void test_sf_937810() throws IllegalAccessException {
-        System.err.println( ">> TestBugReports.test_sf_937810: declared obsolete [ModelSpecs are dead]" );
+    /* Test removed 16-Jan-07 following refactoring of ModelSpec code */
+//    public void test_sf_937810() throws IllegalAccessException {
 //        Field[] specs = OntModelSpec.class.getDeclaredFields();
 //
 //        for (int i = 0;  i < specs.length;  i++) {
@@ -1118,7 +1118,7 @@ public class TestBugReports
 //                assertNotNull( s.getDescription() );
 //            }
 //        }
-    }
+//    }
 
     /** Test case for SF bug 940570 - listIndividuals not working with RDFS_INF
      */
