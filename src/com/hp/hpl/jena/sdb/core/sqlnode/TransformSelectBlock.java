@@ -51,7 +51,7 @@ public class TransformSelectBlock extends SqlTransformCopy
     @Override
     public SqlNode transform(SqlRestrict sqlRestrict, SqlNode subNode)
     { 
-        System.err.println("TransformSelectBlock.SqlRestrict") ;
+        System.err.println("TransformSelectBlock.SqlRestrict: "+sqlRestrict.getConditions()) ;
         SqlSelectBlock block = block(subNode) ;
         addNotes(block, sqlRestrict) ;
         block.getWhere().addAll(sqlRestrict.getConditions()) ;
