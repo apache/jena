@@ -28,6 +28,9 @@ public class SqlTransformCopy implements SqlTransform
     public SqlNode transform(SqlSlice sqlSlice, SqlNode subNode)
     { return xform(sqlSlice, subNode) ; }
 
+    public SqlNode transform(SqlSelectBlock sqlSelectBlock, SqlNode subNode)
+    { return xform(sqlSelectBlock, subNode) ; }
+
     public SqlNode transform(SqlJoinInner sqlJoinInner, SqlNode left, SqlNode right)
     { return xform(sqlJoinInner, left, right) ; }
 

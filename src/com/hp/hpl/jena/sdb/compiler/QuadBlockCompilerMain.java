@@ -80,7 +80,7 @@ public class QuadBlockCompilerMain implements QuadBlockCompiler
         
         if ( needDistinct )
         {
-            // DISTINCT -- over the names variables but not * (which includes the graph node).
+            // DISTINCT -- over the named variables but not * (which includes the graph node).
             String renameName = request.genId("A") ;
             sqlNode = SqlRename.view(renameName, sqlNode) ;
             sqlNode = SqlDistinct.distinct(sqlNode) ;

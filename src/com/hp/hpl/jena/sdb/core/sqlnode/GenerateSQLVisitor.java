@@ -70,6 +70,7 @@ public class GenerateSQLVisitor implements SqlNodeVisitor
         //   Not merely a table inside.
         
         levelSelectBlock++ ;
+        
         if ( levelSelectBlock > 1 )
         {
             // Alias needed.

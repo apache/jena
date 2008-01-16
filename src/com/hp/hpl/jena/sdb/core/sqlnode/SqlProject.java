@@ -23,8 +23,6 @@ public class SqlProject extends SqlNodeBase1
     
     // ---- Factory methods
     
-    // Also: 
-    
     /** make sure this node is a projection */
     
     public static SqlNode project(SqlNode sqlNode)
@@ -45,6 +43,9 @@ public class SqlProject extends SqlNodeBase1
 
     public static SqlNode project(SqlNode sqlNode, ColAlias col)
     {
+        // Not if to be left to the bridge.
+        //return SqlSelectBlock.project(sqlNode, col) ;
+        
         SqlProject p = ensure(sqlNode) ;
         
         if ( col != null )

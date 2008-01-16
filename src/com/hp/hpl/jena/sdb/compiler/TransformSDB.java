@@ -17,20 +17,20 @@ import java.util.Set;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.hp.hpl.jena.sdb.core.AliasesSql;
+import com.hp.hpl.jena.sdb.core.SDBRequest;
+import com.hp.hpl.jena.sdb.core.ScopeEntry;
+import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
+import com.hp.hpl.jena.sdb.core.sqlnode.SqlSelectBlock;
+import com.hp.hpl.jena.sdb.iterator.Iter;
+import com.hp.hpl.jena.sdb.layout2.expr.RegexCompiler;
+import com.hp.hpl.jena.sdb.shared.SDBInternalError;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.TransformCopy;
 import com.hp.hpl.jena.sparql.algebra.op.*;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.expr.Expr;
 import com.hp.hpl.jena.sparql.expr.ExprList;
-
-import com.hp.hpl.jena.sdb.core.AliasesSql;
-import com.hp.hpl.jena.sdb.core.SDBRequest;
-import com.hp.hpl.jena.sdb.core.ScopeEntry;
-import com.hp.hpl.jena.sdb.core.sqlnode.*;
-import com.hp.hpl.jena.sdb.iterator.Iter;
-import com.hp.hpl.jena.sdb.layout2.expr.RegexCompiler;
-import com.hp.hpl.jena.sdb.shared.SDBInternalError;
 
 public class TransformSDB extends TransformCopy
 {
@@ -43,6 +43,7 @@ public class TransformSDB extends TransformCopy
     {
         this.request = request ;
         this.quadBlockCompiler = quadBlockCompiler ;
+        //this.genTableAlias = request.generator(AliasesSql.SelectBlock) ;
     }
     
     @Override
@@ -153,61 +154,29 @@ public class TransformSDB extends TransformCopy
 
     // modifier : having
     // modifier : group
-    
-//    @Override
-//    public Op transform(OpOrder opOrder, Op subOp)
-//    { 
-//        if ( ! QC.isOpSQL(subOp) )
-//            return super.transform(opOrder, subOp) ;
-//        return super.transform(opOrder, subOp) ;
-//    }
-    
-//    @Override
-//    public Op transform(OpProject opProject, Op subOp)
-//    { 
-//        if ( ! QC.isOpSQL(subOp) )
-//            return super.transform(opProject, subOp) ;
-//
-//        @SuppressWarnings("unchecked")
-//        List<Var> vars = opProject.getVars() ;
-//        
-//        SqlNode sqlNode = ((OpSQL)subOp).getSqlNode() ; 
-//        SqlNode n = sqlNode ;
-//        
-//        // Something wrong in the design of SqlProject and SqlRename
-//        
-//        for ( Var v : vars )
-//        {
-//            ScopeEntry idScope = sqlNode.getIdScope().findScopeForVar(v) ;
-//            ScopeEntry nScope = sqlNode.getNodeScope().findScopeForVar(v) ;
-//            if ( idScope != null )
-//            {}
-//            if ( nScope != null )
-//            {}
-//        }
-//        return super.transform(opProject, subOp) ;
-//    }
   
+    // ---- Modifiers
+    
     @Override
     public Op transform(OpDistinct opDistinct, Op subOp)
     { 
         // TODO (distinct (project SQL)) 
         if ( ! QC.isOpSQL(subOp) )
             return super.transform(opDistinct, subOp) ;
-        SqlNode sqlNode = ((OpSQL)subOp).getSqlNode() ;
-        return new OpSQL(SqlDistinct.distinct(sqlNode), opDistinct, request) ;
+        SqlNode sqlSubOp = ((OpSQL)subOp).getSqlNode() ;
+        SqlNode n = SqlSelectBlock.distinct(sqlSubOp) ;
+        return new OpSQL(n, opDistinct, request) ; 
     }
     
     @Override
     public Op transform(OpSlice opSlice, Op subOp)
     {
+        if ( ! request.LimitOffsetTranslation )
+            return super.transform(opSlice, subOp) ;
+        
         // Two cases are currently handled:
         // (slice (sql expression))
         // (slice (project ... (sql expression)))
-        
-        // (slice (distinct (project ...))) is also possible 
-        // If DISTINCT is pushed into the inner SQL
-        // because distinct of nodes is distinct of node ids.
         
         boolean canHandle = false ;
         
@@ -215,58 +184,140 @@ public class TransformSDB extends TransformCopy
         if (  QC.isOpSQL(subOp) )
             canHandle = true ;
         else if ( QC.isOpSQL(sub(asProject(subOp))) )
-            canHandle = true ;
-//        else if ( QC.isOpSQL(sub(asProject(sub(asDistinct(subOp))))) ) 
-//            canHandle = true ;
-        
-        if ( ! canHandle )
-            return super.transform(opSlice, subOp) ;
-        
-        if ( ! request.LimitOffsetTranslation )
-            return super.transform(opSlice, subOp) ;
-        
-        List<Var> project = null ; 
-        boolean distinct = false ;
-        
-        // Either OpSlice(SQL) or OpSlice(OpProject(SQL))
-        // Note: OpSlice(OpProject(SQL)) => OpProject(OpSlice(SQL))
-        //  iff no other modifiers
+        {
+            return transformSliceProject(opSlice, (OpProject)subOp) ;
+        }
 
-        // Break apart
-        
-        if ( subOp instanceof OpDistinct )
-        {
-            OpDistinct d = (OpDistinct)subOp ;
-            distinct = true ;
-            subOp = d.getSubOp() ;
-        }
-        
-        if ( subOp instanceof OpProject )
-        {
-            OpProject p = (OpProject)subOp ;
-            @SuppressWarnings("unchecked")
-            List<Var> pv = p.getVars() ;
-            project = pv ;
-            subOp = p.getSubOp() ;
-        }
-        
+        // Simple slice
         if ( ! QC.isOpSQL(subOp) )
-            return super.transform(opSlice, subOp) ; 
+            return super.transform(opSlice, subOp) ;
+
+        return transformSlice(opSlice, ((OpSQL)subOp).getSqlNode()) ;
+    }
         
-        // For later SQl generation, this must be an alaised thingy.
-        SqlNode sqlSubOp = ((OpSQL)subOp).getSqlNode() ;
-        SqlNode sqlSlice = new SqlSlice(sqlSubOp, opSlice.getStart(), opSlice.getLength()) ;
-        
-        Op x = new OpSQL(sqlSlice, opSlice, request) ;
-        
-        // Any other to put back?
-        if ( project != null )
-            x = new OpProject(x, project) ;
-        if ( distinct )
-            x = new OpDistinct(x) ;
-        
+    private Op transformSlice(OpSlice opSlice, SqlNode sqlSubOp)
+    {
+        SqlNode n = SqlSelectBlock.slice(sqlSubOp, opSlice.getStart(), opSlice.getLength()) ;
+        Op x = new OpSQL(n, opSlice, request) ;
         return x ;
     }
+    
+    public Op transformSliceProject(OpSlice opSlice, OpProject opProject)
+    {
+        // (slice (project X))
+        Op subOp = opProject.getSubOp() ;
+        
+        if ( ! QC.isOpSQL(subOp) )
+            // Can't cope - just pass the slice to the general superclass. 
+            return super.transform(opSlice, opProject) ;
+
+        SqlNode sqlSubOp = ((OpSQL)subOp).getSqlNode() ;
+        
+        @SuppressWarnings("unchecked")
+        List<Var> pv = opProject.getVars() ;
+        
+        // Do as (slice X)
+        SqlNode n = SqlSelectBlock.slice(sqlSubOp, opSlice.getStart(), opSlice.getLength()) ;
+        // Put back project - as an OpProject to leave for the bridge.
+        Op x = new OpSQL(n, opProject, request) ;
+        return new OpProject(x, pv) ;
+    }
+    
+//    //@Override
+//    public Op transformOLD(OpSlice opSlice, Op subOp)
+//    {
+//        // Two cases are currently handled:
+//        // (slice (sql expression))
+//        // (slice (project ... (sql expression)))
+//        
+//        // (slice (distinct (project ...))) is also possible 
+//        // If DISTINCT is pushed into the inner SQL
+//        // because distinct of nodes is distinct of node ids.
+//        
+//        boolean canHandle = false ;
+//        
+//        // Relies on the fact that isOpSQL(null) is false.
+//        if (  QC.isOpSQL(subOp) )
+//            canHandle = true ;
+//        else if ( QC.isOpSQL(sub(asProject(subOp))) )
+//            canHandle = true ;
+////        else if ( QC.isOpSQL(sub(asProject(sub(asDistinct(subOp))))) ) 
+////            canHandle = true ;
+//        
+//        if ( ! canHandle )
+//            return super.transform(opSlice, subOp) ;
+//        
+//        if ( ! request.LimitOffsetTranslation )
+//            return super.transform(opSlice, subOp) ;
+//        
+//        List<Var> project = null ; 
+//        boolean distinct = false ;
+//        
+//        // Either OpSlice(SQL) or OpSlice(OpProject(SQL))
+//        // Note: OpSlice(OpProject(SQL)) => OpProject(OpSlice(SQL))
+//        //  iff no other modifiers
+//
+//        // Break apart
+//        
+//        if ( subOp instanceof OpDistinct )
+//        {
+//            OpDistinct d = (OpDistinct)subOp ;
+//            distinct = true ;
+//            subOp = d.getSubOp() ;
+//        }
+//        
+//        if ( subOp instanceof OpProject )
+//        {
+//            OpProject p = (OpProject)subOp ;
+//            @SuppressWarnings("unchecked")
+//            List<Var> pv = p.getVars() ;
+//            project = pv ;
+//            subOp = p.getSubOp() ;
+//        }
+//        
+//        if ( ! QC.isOpSQL(subOp) )
+//            return super.transform(opSlice, subOp) ; 
+//        
+//        // For later SQl generation, this must be an alaised thingy.
+//        SqlNode sqlSubOp = ((OpSQL)subOp).getSqlNode() ;
+//        SqlNode sqlSlice = new SqlSlice(sqlSubOp, opSlice.getStart(), opSlice.getLength()) ;
+//        
+//        Op x = new OpSQL(sqlSlice, opSlice, request) ;
+//        
+//        // Any other to put back?
+//        if ( project != null )
+//            x = new OpProject(x, project) ;
+//        if ( distinct )
+//            x = new OpDistinct(x) ;
+//        
+//        return x ;
+//    }
+    
+    // Only from the bridge, currently.
+//    @Override
+//    public Op transform(OpProject opProject, Op subOp)
+//    { 
+//        if (  ! QC.isOpSQL(subOp) )
+//            return super.transform(opProject, subOp) ;
+//        
+//        // This is the stuff left to the bridge.
+//        
+//        SqlNode sqlSubOp = ((OpSQL)subOp).getSqlNode() ;
+//        // XXX PROJECTION
+//        List<ColAlias> cols = new ArrayList<ColAlias>() ;
+//        
+//        @SuppressWarnings("unchecked")
+//        List<Var> lv = (List<Var>)opProject.getVars();
+//        for ( Var v : lv )
+//        {
+//        }
+//        
+//        SqlNode n = SqlSelectBlock.project(sqlSubOp, cols) ;
+//        Op x = new OpSQL(n, opProject, request) ;
+//        return x ;
+//    }
+
+    // ----
     
     private boolean translateConstraints = true ;
     
@@ -295,6 +346,24 @@ public class TransformSDB extends TransformCopy
         return vars ;
     }
     
+//    // ---- SelectBlock routines
+//    
+//    private Generator genTableAlias ;
+//    private Generator genCol = Gensym.create("C") ;    // Column names - not global 
+//
+//    private SqlSelectBlock block(SqlNode sqlNode)
+//    {
+//        if ( sqlNode instanceof SqlSelectBlock )
+//            return (SqlSelectBlock)sqlNode ;
+//        String alias = sqlNode.getAliasName() ;
+//        
+//        if ( alias == null )
+//            alias = genTableAlias.next() ;
+//        SqlSelectBlock block = new SqlSelectBlock(alias, sqlNode) ;
+//        return block ;
+//    }
+    
+    // ---- Misc
     // Will migrate to ARQ.OpLib
     
     public static Op sub(Op1 op) { return op==null ? null : op.getSubOp() ; }

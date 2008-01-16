@@ -19,27 +19,29 @@ import com.hp.hpl.jena.sparql.core.Var;
 
 public class TransformSelectBlock extends SqlTransformCopy
 {
-    public TransformSelectBlock() {}
+    // BROKEN - procesing moved into TransformSDB
+    // To fix: need to continue back up the tree renaming any column references
+    // due to a nested query being aliased.
+    TransformSelectBlock() {}
     
     // Pull-in various features of a SELECT statement. 
     
     @Override
     public SqlNode transform(SqlProject sqlProject, SqlNode subNode)
     { 
-        SqlSelectBlock block = block(subNode, sqlProject.getCols()) ;
-        addNotes(block, sqlProject) ;
-        //block.addAll(sqlProject.getCols()) ;
-        return block ;
-    }
-
-    private void addNotes(SqlSelectBlock block, SqlNode sqlNode)
-    {
-        block.addNotes(sqlNode.getNotes()) ;
+        return SqlSelectBlock.project(subNode, sqlProject.getCols()) ;
+//        
+//        SqlSelectBlock block = block(subNode, sqlProject.getCols()) ;
+//        addNotes(block, sqlProject) ;
+//        //block.addAll(sqlProject.getCols()) ;
+//        return block ;
     }
 
     @Override
     public SqlNode transform(SqlDistinct sqlDistinct, SqlNode subNode)
     {
+        System.err.println("TransformSelectBlock/SqlDistinct") ;
+        //System.err.println("SqlDistinct - should not see") ;
         SqlSelectBlock block = block(subNode) ;
         addNotes(block, sqlDistinct) ;
         block.setDistinct(true) ;
@@ -49,6 +51,7 @@ public class TransformSelectBlock extends SqlTransformCopy
     @Override
     public SqlNode transform(SqlRestrict sqlRestrict, SqlNode subNode)
     { 
+        System.err.println("TransformSelectBlock.SqlRestrict") ;
         SqlSelectBlock block = block(subNode) ;
         addNotes(block, sqlRestrict) ;
         block.getWhere().addAll(sqlRestrict.getConditions()) ;
@@ -58,6 +61,7 @@ public class TransformSelectBlock extends SqlTransformCopy
     @Override
     public SqlNode transform(SqlSlice sqlSlice, SqlNode subNode)
     { 
+        System.err.println("TransformSelectBlock.SqlSlice - should not see") ;
         SqlSelectBlock block = block(subNode) ;
         addNotes(block, sqlSlice) ;
         
@@ -93,13 +97,15 @@ public class TransformSelectBlock extends SqlTransformCopy
     @Override
     public SqlNode transform(SqlRename sqlRename, SqlNode subNode)
     { 
+        
+        System.err.println("TransformSelectBlock/SqlRename - FIX") ;
         SqlSelectBlock block = block(subNode) ;
 
         if ( sqlRename.getAliasName() != null )
             block.setBlockAlias(sqlRename.getAliasName()) ;
         addNotes(block, sqlRename) ;
-        block.setIdScope(sqlRename.getIdScope()) ;
-        block.setNodeScope(sqlRename.getNodeScope()) ;
+//        block.setIdScope(sqlRename.getIdScope()) ;
+//        block.setNodeScope(sqlRename.getNodeScope()) ;
         
         // Need to add X AS Y
         // for X as subnode and Y as rename. 
@@ -138,6 +144,12 @@ public class TransformSelectBlock extends SqlTransformCopy
         return block ;
     }
     
+    private void addNotes(SqlSelectBlock block, SqlNode sqlNode)
+    {
+        block.addNotes(sqlNode.getNotes()) ;
+    }
+
+    
     // XXX Tidy up.
     private Gensym gen1 = Gensym.create("NS") ; 
     private Gensym gen2 = Gensym.create("V") ; 
@@ -161,6 +173,8 @@ public class TransformSelectBlock extends SqlTransformCopy
             block.addAll(colAliases) ;
         else
         {
+            // Broken - unfortunately this needs to rename all the referewnces outside
+            // that refer to coumns inside block. 
 //            block.idScope = new ScopeBase() ;
 //            block.nodeScope = new ScopeBase() ;
 //            rename(block, sqlNode.getNodeScope(), (ScopeBase)block.nodeScope, gen2) ;

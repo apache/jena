@@ -36,8 +36,10 @@ public class GenerateSQL implements SQLGenerator
         
         // Step one - rewrite the SQL node tree to have SelectBlocks, not the various SqlNodes
         // that contribute to a SELECT statement.
-        sqlNode = SqlTransformer.transform(sqlNode, new TransformSelectBlock()) ;
         
+        // XXX Temp - the nodes tis tranforms should not be generated 
+        sqlNode = SqlTransformer.transform(sqlNode, new TransformSelectBlock()) ;
+
         // Step two - turn the SqlNode tree, with SqlSelectBlocks in it,
         // in an SQL string.
         SqlNodeVisitor v = makeVisitor(buff) ;

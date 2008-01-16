@@ -40,7 +40,11 @@ public class Compile
             op = OpSubstitute.substitute(op, binding) ;
         
         if ( StoreUtils.isHSQL(store) )
+        {
             request.LeftJoinTranslation = false ;
+            request.LimitOffsetTranslation = false ;        // ?? HSQLDB does not like the nested SQL.
+        }
+        
         if ( StoreUtils.isPostgreSQL(store) || StoreUtils.isMySQL(store) )
             request.LimitOffsetTranslation = true ;
 

@@ -46,7 +46,7 @@ public abstract class QueryCompilerMain implements QueryCompiler
         //          order
         //            [toList]
         
-        // Find the first non-modifier.
+        // Find the first non-modifier. WRONG with SqlSelectBlocks.
         Op patternOp = op2 ;
         while ( patternOp instanceof OpModifier )
             patternOp = ((OpModifier)patternOp).getSubOp() ;

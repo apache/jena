@@ -10,15 +10,17 @@ public class SqlDistinct extends SqlNodeBase1
 {
     public static SqlNode distinct(SqlNode sqlNode)
     {
-        SqlDistinct p = null ;
-        if ( sqlNode.isDistinct() )
-            p = sqlNode.asDistinct() ;
-        else
-            p = new SqlDistinct(sqlNode) ;
-        return p ;
+        return SqlSelectBlock.distinct(sqlNode) ;
+        
+//        SqlDistinct p = null ;
+//        if ( sqlNode.isDistinct() )
+//            p = sqlNode.asDistinct() ;
+//        else
+//            p = new SqlDistinct(sqlNode) ;
+//        return p ;
     }
     
-    public SqlDistinct(SqlNode sqlNode)
+    private SqlDistinct(SqlNode sqlNode)
     {
         super(null, sqlNode) ;
     }

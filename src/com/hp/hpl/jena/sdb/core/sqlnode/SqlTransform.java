@@ -18,6 +18,8 @@ public interface SqlTransform
 
     public SqlNode transform(SqlSlice sqlSlice, SqlNode subNode) ;
 
+    public SqlNode transform(SqlSelectBlock sqlSelectBlock, SqlNode newSubNode) ;
+
     public SqlNode transform(SqlCoalesce sqlCoalesce, SqlNode subNode) ;
 
     public SqlNode transform(SqlJoinInner sqlJoinInner, SqlNode left, SqlNode right) ;
@@ -27,6 +29,7 @@ public interface SqlTransform
     public SqlNode transform(SqlUnion sqlUnion, SqlNode left, SqlNode right) ;
 
     public SqlNode transform(SqlTable sqlTable) ;
+
 }
 
 /*

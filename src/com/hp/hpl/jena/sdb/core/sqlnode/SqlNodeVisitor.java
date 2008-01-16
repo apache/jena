@@ -8,10 +8,14 @@ package com.hp.hpl.jena.sdb.core.sqlnode;
 
 public interface SqlNodeVisitor
 {
+    public void visit(SqlTable          sqlTable) ;
+    public void visit(SqlSelectBlock    sqlSelectBlock) ;
+    
+    // TO GO
+    public void visit(SqlSlice          sqlSlice) ;
     public void visit(SqlProject        sqlProject) ;
     public void visit(SqlRestrict       sqlRestrict) ;
     public void visit(SqlDistinct       sqlDistinct) ;
-    public void visit(SqlTable          sqlTable) ;
     public void visit(SqlRename         sqlRename) ;
     
     public void visit(SqlJoinInner      sqlJoin) ;
@@ -19,8 +23,6 @@ public interface SqlNodeVisitor
     public void visit(SqlUnion          sqlUnion) ;
     public void visit(SqlCoalesce       sqlCoalesce) ;
     
-    public void visit(SqlSlice          sqlSlice) ;
-    public void visit(SqlSelectBlock    sqlSelectBlock) ;
 }
 
 /*

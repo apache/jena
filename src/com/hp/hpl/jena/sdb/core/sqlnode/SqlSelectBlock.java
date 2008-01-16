@@ -10,10 +10,14 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import com.hp.hpl.jena.sdb.core.Generator;
+import com.hp.hpl.jena.sdb.core.Gensym;
 import com.hp.hpl.jena.sdb.core.Scope;
+import com.hp.hpl.jena.sdb.core.ScopeBase;
+import com.hp.hpl.jena.sdb.core.ScopeEntry;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExprList;
-import com.hp.hpl.jena.sdb.shared.SDBInternalError;
+import com.hp.hpl.jena.sparql.core.Var;
 
 /** A unit that generates an SQL SELECT Statement.
  *  The SQL generation process is a pass over the SqlNdoe structure to generate SelectBlocks,
@@ -46,9 +50,66 @@ public class SqlSelectBlock extends SqlNodeBase1
     private long length = -1 ;
     private boolean distinct = false ;
     
+    private SqlTable vTable ;           // Naming base for renamed columns
     private Scope idScope = null ;      // Scopes are as the wrapped SqlNode unless explicitly changed.
     private Scope nodeScope = null ;
     
+    // ----
+    static public SqlNode distinct(SqlNode sqlNode)
+    { 
+        SqlSelectBlock block = blockWithView(sqlNode) ;
+        block.setDistinct(true) ;
+        return block ;
+    }
+    
+    static public SqlNode project(SqlNode sqlNode, Collection<ColAlias> cols)
+    {
+        // If already a view, not via a project, - think harder
+        
+        SqlSelectBlock block = blockNoView(sqlNode) ;
+        if ( block.idScope != null || block.nodeScope != null )
+            System.err.println("SqlSelectBlock.project : already a view") ; 
+        
+        if ( cols != null )
+            block.addAll(cols) ;
+        return block ;
+    }
+    
+    static public SqlNode project(SqlNode sqlNode, ColAlias col)
+    {
+        SqlSelectBlock block = blockNoView(sqlNode) ;
+        if ( col != null )
+            block.add(col) ;
+        return block ;
+    }
+
+    static public SqlNode slice(SqlNode sqlNode, long start, long length)
+    {
+        SqlSelectBlock block = blockWithView(sqlNode) ;
+        
+        if ( start >= 0 )
+        {
+            if (  block.getStart() > 0 )
+                start = start + block.getStart() ;
+            block.setStart(start) ;
+        }
+        
+        if ( length >= 0 )
+        {
+            if ( block.getLength() >= 0 )
+                length = Math.min(length, block.getLength()) ;
+            block.setLength(length) ;
+        }
+        return block ;
+    }
+    
+    static public SqlNode view(SqlNode sqlNode)
+    {
+        SqlSelectBlock block = blockWithView(sqlNode) ;
+        return block ;
+    }
+        
+     
     /**
      * @param aliasName
      * @param sqlNode
@@ -56,14 +117,13 @@ public class SqlSelectBlock extends SqlNodeBase1
     public SqlSelectBlock(String aliasName, SqlNode sqlNode)
     {
         super(aliasName, sqlNode) ;
-        
+        vTable = new SqlTable(aliasName) ;
     }
-
+    
     @Override
     public boolean         isSelectBlock() { return true ; }
     @Override
     public SqlSelectBlock  asSelectBlock() { return this  ; }
-
     
     public void setBlockAlias(String alias)      { super.aliasName = alias ; }
     
@@ -100,15 +160,17 @@ public class SqlSelectBlock extends SqlNodeBase1
     @Override
     public Scope getNodeScope()         { return nodeScope != null ? nodeScope : super.getNodeScope() ; } 
 
-    public void setIdScope(Scope scope)     { idScope = scope ; }
-    public void setNodeScope(Scope scope)   { nodeScope = scope ; }
+//    // TODO To Go
+//    public void setIdScope(Scope scope)     { idScope = scope ; }
+//    public void setNodeScope(Scope scope)   { nodeScope = scope ; }
     
     @Override
     public SqlNode apply(SqlTransform transform, SqlNode newSubNode)
-    { throw new SDBInternalError("SqlSelectBlock.apply") ; }
+    { return transform.transform(this, newSubNode) ; }
+    
     @Override
     public SqlNode copy(SqlNode subNode)
-    { throw new SDBInternalError("SqlSelectBlock.copy") ; }
+    { return new SqlSelectBlock(this.getAliasName(), subNode) ; }
     
     public void visit(SqlNodeVisitor visitor)
     { visitor.visit(this) ; }
@@ -122,6 +184,82 @@ public class SqlSelectBlock extends SqlNodeBase1
     public void setDistinct(boolean isDistinct)
     {
         this.distinct = isDistinct ;
+    }
+
+    // TODO Make this per-request
+    static private Generator genTableAlias = Gensym.create("SB") ;
+    
+    private static SqlSelectBlock blockWithView(SqlNode sqlNode)
+    {
+        if ( sqlNode instanceof SqlSelectBlock )
+            return (SqlSelectBlock)sqlNode ;
+        SqlSelectBlock block = _create(sqlNode) ;
+        calcView(block) ;
+        return block ;
+    }
+    
+    private static SqlSelectBlock blockNoView(SqlNode sqlNode)
+    {
+        if ( sqlNode instanceof SqlSelectBlock )
+            return (SqlSelectBlock)sqlNode ;
+        return _create(sqlNode) ;
+    }
+        
+    private static SqlSelectBlock _create(SqlNode sqlNode)
+    {
+        String alias = sqlNode.getAliasName() ;
+        
+        // XXX Remove
+//        if ( alias == null )
+//            alias = genTableAlias.next() ;
+        
+        // Always have a new name.
+        alias = genTableAlias.next() ;
+        SqlSelectBlock block = new SqlSelectBlock(alias, sqlNode) ;
+        addNotes(block, sqlNode) ;
+        return block ;
+    }
+    
+    private static void addNotes(SqlSelectBlock block, SqlNode sqlNode)
+    {
+        block.addNotes(sqlNode.getNotes()) ;
+    }
+
+    static private void calcView(SqlSelectBlock block)
+    {
+        SqlNode sqlNode = block.getSubNode() ;
+        ScopeBase idScopeRename = new ScopeBase() ;
+        ScopeBase nodeScopeRename = new ScopeBase() ;
+        Generator gen = Gensym.create("X") ;    // Column names.  Not global.
+    
+        block.merge(sqlNode.getIdScope(), idScopeRename, gen) ;
+        block.merge(sqlNode.getNodeScope(), nodeScopeRename, gen) ;
+    
+        block.nodeScope = nodeScopeRename ;
+        block.idScope = idScopeRename ;
+    }
+
+    // Calculate renames
+    // Map all vars in the scope to names in the rename.
+    private void merge(Scope scope, ScopeBase newScope, Generator gen)
+    {
+        String x = "" ;
+        String sep = "" ;
+    
+        for ( ScopeEntry e : scope.findScopes() )
+        {
+            SqlColumn oldCol = e.getColumn() ;
+            Var v = e.getVar() ;
+            String colName = gen.next() ;
+            SqlColumn newCol = new SqlColumn(vTable, colName) ;
+            this.add(new ColAlias(oldCol, newCol)) ;
+            newScope.setColumnForVar(v, newCol) ;
+            // Annotations
+            x = String.format("%s%s%s:(%s=>%s)", x, sep, v, oldCol, newCol) ;
+            sep = " " ;
+        }
+        if ( x.length() > 0 )
+            addNote(x) ;
     }
 }
 

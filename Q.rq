@@ -1,6 +1,34 @@
-PREFIX : <http://example/> 
-SELECT ?s
-{ 
-    ?s ?p ?o .
+## PREFIX : <http://example/> 
+## SELECT *
+## { 
+##     ?s ?p ?o .
+## }
+## LIMIT 10
+
+## PREFIX : <http://example/>
+## 
+## SELECT ?x
+## { 
+##   ?x :p :v1 .
+##   ?x :p :v2 .
+## }
+## LIMIT 3
+
+
+PREFIX :    <http://example>
+PREFIX arq: <urn:x-arq:>
+
+SELECT *
+{
+##    GRAPH arq:UnionGraph { ?s ?p ?o . ?s1 ?p ?o }
+    GRAPH arq:UnionGraph { :x ?p ?o . }
 }
-LIMIT 10
+
+## PREFIX :    <http://example>
+## PREFIX arq: <urn:x-arq:>
+## 
+## SELECT *
+## {
+##     GRAPH arq:UnionGraph 
+##     { ?s ?p ?o . OPTIONAL { ?o ?q ?z FILTER(?o != 123) } }
+## }

@@ -25,15 +25,16 @@ public class SqlRename extends SqlNodeBase1
     
     //---
 
-    public static SqlRename view(String alias, SqlNode sqlNode)
+    public static SqlNode view(String alias, SqlNode sqlNode)
     { 
-        SqlTable table = new SqlTable(alias) ;
-        Generator gen = Gensym.create("X") ;    // Column names.  Not global.
-        
-        SqlRename rename = new SqlRename(table, sqlNode) ;
-        rename.merge(sqlNode.getIdScope(), rename.idScope, gen) ;
-        rename.merge(sqlNode.getNodeScope(), rename.nodeScope, gen) ;
-        return rename ;
+        return SqlSelectBlock.view(sqlNode) ;
+//        SqlTable table = new SqlTable(alias) ;
+//        Generator gen = Gensym.create("X") ;    // Column names.  Not global.
+//        
+//        SqlRename rename = new SqlRename(table, sqlNode) ;
+//        rename.merge(sqlNode.getIdScope(), rename.idScope, gen) ;
+//        rename.merge(sqlNode.getNodeScope(), rename.nodeScope, gen) ;
+//        return rename ;
     }
     
     private SqlRename(SqlTable here, SqlNode sqlNode)

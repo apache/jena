@@ -1,10 +1,14 @@
 SDB ToDo list (and general notes)
 =================================
 
-Bugs:
-+ Initial bindings not handled, nor rejected.
-  If dataset for SDb passed straight in, initial binding not inspected.
-  CONSTRUCT ??
+** In progress
+   Improve SQL generation for modifiers.
+   SqlDistinct/SqlRename/SqlSlice/SqlProject will no longer be real SqlNodes
+   
+** Test more LimitOffSetTranslatrions
+   See Compile.compile 
+
+
 
 ==== Wiki
 + Document assembler for dataset on wiki
