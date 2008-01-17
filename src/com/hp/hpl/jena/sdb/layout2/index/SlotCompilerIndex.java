@@ -19,7 +19,7 @@ import com.hp.hpl.jena.sparql.util.FmtUtils;
 
 import com.hp.hpl.jena.sdb.SDBException;
 import com.hp.hpl.jena.sdb.compiler.QuadBlock;
-import com.hp.hpl.jena.sdb.compiler.SqlNodeFactory;
+import com.hp.hpl.jena.sdb.compiler.SqlBuilder;
 import com.hp.hpl.jena.sdb.core.AliasesSql;
 import com.hp.hpl.jena.sdb.core.SDBRequest;
 import com.hp.hpl.jena.sdb.core.sqlexpr.*;
@@ -93,7 +93,7 @@ public class SlotCompilerIndex extends SlotCompiler2
             // Record 
             constantCols.put(n, new SqlColumn(nTable, nodeTableDesc.getIdColName())) ;
             SqlExpr c = new S_Equal(cHash, hashValue) ;
-            sqlNode = SqlNodeFactory.innerJoin(getRequest(), sqlNode, nTable) ;
+            sqlNode = SqlBuilder.innerJoin(getRequest(), sqlNode, nTable) ;
             sqlNode = SqlRestrict.restrict(sqlNode, c)  ;
         }
         return sqlNode ;

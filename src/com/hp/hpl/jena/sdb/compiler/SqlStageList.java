@@ -22,7 +22,7 @@ public class SqlStageList extends ArrayList<SqlStage>
         {
             SqlNode sNode = s.build(request, slotCompiler) ;
             if ( sNode != null )
-                sqlNode = SqlNodeFactory.innerJoin(request, sqlNode, sNode) ;
+                sqlNode = SqlBuilder.innerJoin(request, sqlNode, sNode) ;
         }
         
         return sqlNode ;

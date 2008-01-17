@@ -66,7 +66,7 @@ public class TransformSDB extends TransformCopy
         
         SqlNode sqlLeft = ((OpSQL)left).getSqlNode() ;
         SqlNode sqlRight = ((OpSQL)right).getSqlNode() ;
-        return new OpSQL(SqlNodeFactory.innerJoin(request, sqlLeft, sqlRight), opJoin, request) ;
+        return new OpSQL(SqlBuilder.innerJoin(request, sqlLeft, sqlRight), opJoin, request) ;
     }
 
     @Override
@@ -114,7 +114,7 @@ public class TransformSDB extends TransformCopy
         if ( coalesceVars.size() > 0  ) 
         {
             String alias = request.genId(AliasesSql.CoalesceAliasBase) ;
-            SqlNode sqlNode = SqlNodeFactory.leftJoinCoalesce(request, alias,
+            SqlNode sqlNode = SqlBuilder.leftJoinCoalesce(request, alias,
                                                   sqlLeft, sqlRight, 
                                                   coalesceVars) ;
             return new OpSQL(sqlNode, opJoin, request) ;
@@ -122,7 +122,7 @@ public class TransformSDB extends TransformCopy
             // Punt
             //return super.transform(opJoin, left, right) ;
         }
-        return new OpSQL(SqlNodeFactory.leftJoin(request, sqlLeft, sqlRight), opJoin, request) ;
+        return new OpSQL(SqlBuilder.leftJoin(request, sqlLeft, sqlRight), opJoin, request) ;
     }
     
     @Override

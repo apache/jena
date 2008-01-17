@@ -62,7 +62,7 @@ public class QuadBlockCompilerMain implements QuadBlockCompiler
         SqlNode sqlStages = sList.build(request, slotCompiler) ;
         
         // --- Join the initial node (constants). 
-        sqlNode = SqlNodeFactory.innerJoin(request, sqlNode, sqlStages) ;
+        sqlNode = SqlBuilder.innerJoin(request, sqlNode, sqlStages) ;
         sqlNode = slotCompiler.finish(sqlNode, quads) ;
         
         // Insert DISTINCT if accessing the RDF merge of all named graphs
@@ -83,7 +83,7 @@ public class QuadBlockCompilerMain implements QuadBlockCompiler
             // DISTINCT -- over the named variables but not * (which includes the graph node).
             String renameName = request.genId("A") ;
             sqlNode = SqlRename.view(renameName, sqlNode) ;
-            sqlNode = SqlNodeFactory.distinct(sqlNode) ;
+            sqlNode = SqlBuilder.distinct(sqlNode) ;
         }
         
         return sqlNode ;

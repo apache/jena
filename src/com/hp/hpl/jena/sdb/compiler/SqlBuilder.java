@@ -20,7 +20,7 @@ import com.hp.hpl.jena.sdb.core.ScopeEntry;
 import com.hp.hpl.jena.sdb.core.sqlexpr.*;
 import com.hp.hpl.jena.sdb.core.sqlnode.*;
 
-public class SqlNodeFactory
+public class SqlBuilder
 {
     static public SqlNode distinct(SqlNode sqlNode)
     { return SqlSelectBlock.distinct(sqlNode) ; }
