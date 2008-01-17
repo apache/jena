@@ -1,4 +1,4 @@
-PREFIX :    <http://example>
+PREFIX :    <http://example/>
 PREFIX arq: <urn:x-arq:>
 
 SELECT *

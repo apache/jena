@@ -6,22 +6,24 @@
 
 package com.hp.hpl.jena.sdb.compiler;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.sparql.core.Quad;
-import com.hp.hpl.jena.sparql.util.IndentedWriter;
-
 import com.hp.hpl.jena.sdb.core.SDBRequest;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExprList;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
-import com.hp.hpl.jena.sdb.core.sqlnode.SqlRestrict;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlTable;
 import com.hp.hpl.jena.sdb.store.TableDesc;
+import com.hp.hpl.jena.sparql.core.Quad;
+import com.hp.hpl.jena.sparql.util.IndentedWriter;
 
 /** A (description of a) table that holds a cached/optimized
  * version of a pattern.
@@ -152,7 +154,7 @@ public class PatternTable extends TableDesc
                     slotCompiler.processSlot(request, sqlTable, conditions, obj, colName) ;
                 }
             }
-            return SqlRestrict.restrict(sqlTable, conditions) ;
+            return SqlBuilder.restrict(sqlTable, conditions) ;
         }
         
         @Override

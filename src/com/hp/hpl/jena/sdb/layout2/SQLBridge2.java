@@ -18,11 +18,6 @@ import com.hp.hpl.jena.datatypes.TypeMapper;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.rdf.model.AnonId;
-
-import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.sparql.engine.binding.BindingMap;
-
 import com.hp.hpl.jena.sdb.compiler.SqlBuilder;
 import com.hp.hpl.jena.sdb.core.AliasesSql;
 import com.hp.hpl.jena.sdb.core.SDBRequest;
@@ -32,11 +27,13 @@ import com.hp.hpl.jena.sdb.core.sqlexpr.S_Equal;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExpr;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
-import com.hp.hpl.jena.sdb.core.sqlnode.SqlRestrict;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlTable;
 import com.hp.hpl.jena.sdb.sql.ResultSetJDBC;
 import com.hp.hpl.jena.sdb.sql.SQLUtils;
 import com.hp.hpl.jena.sdb.store.SQLBridgeBase;
+import com.hp.hpl.jena.sparql.core.Var;
+import com.hp.hpl.jena.sparql.engine.binding.Binding;
+import com.hp.hpl.jena.sparql.engine.binding.BindingMap;
 
 public class SQLBridge2 extends SQLBridgeBase 
 {
@@ -136,9 +133,8 @@ public class SQLBridge2 extends SQLBridgeBase
         nTable.addNote("Var: "+var) ;
 
         SqlExpr cond = new S_Equal(c1, c2) ;
-        SqlNode n = SqlBuilder.leftJoin(request, sqlNode, nTable) ;
-        SqlNode sqlNode2 = SqlRestrict.restrict(n, cond) ;
-        return sqlNode2 ;
+        SqlNode n = SqlBuilder.leftJoin(request, sqlNode, nTable, cond) ;
+        return n ;
     }
     
     @Override

@@ -57,7 +57,6 @@ public class FmtLayout2IndexDerby extends FmtLayout2HashDerby
     @Override
     protected void formatTableQuads()
     {
-        // TODO Generalize : return a template
         TableDescQuads desc = new TableDescQuads() ;
         dropTable(desc.getTableName()) ;
         try { 

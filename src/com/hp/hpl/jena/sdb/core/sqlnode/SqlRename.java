@@ -13,6 +13,7 @@ import com.hp.hpl.jena.sparql.core.Var;
 
 import com.hp.hpl.jena.sdb.core.*;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
+import com.hp.hpl.jena.sdb.shared.SDBInternalError;
 
 /** SQL rename */
 
@@ -83,11 +84,13 @@ public class SqlRename extends SqlNodeBase1
     public Scope getNodeScope() { return nodeScope ; }
     
     public void visit(SqlNodeVisitor visitor)
-    { visitor.visit(this) ; }
+    { throw new SDBInternalError("SqlRename.visit") ; }
+    // { visitor.visit(this) ; }
 
     @Override
     public SqlNode apply(SqlTransform transform, SqlNode subNode)
-    { return transform.transform(this, subNode) ; }
+    { throw new SDBInternalError("SqlRename.apply") ; }
+    // { return transform.transform(this, subNode) ; }
 
     @Override
     public SqlNode copy(SqlNode subNode)

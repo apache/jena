@@ -10,11 +10,11 @@
 _:x rdf:type sdb:StoreList ;
     sdb:list
     (
-##       [ rdfs:label "Derby/Simple" ;
-##         sdb:description <StoreDescSimple/derby-layout1.ttl> ]
-## 
-##       [ rdfs:label "PGSQL/Simple" ;
-##         sdb:description <StoreDescSimple/pgsql-layout1.ttl> ]
+      [ rdfs:label "Derby/Simple" ;
+        sdb:description <StoreDescSimple/derby-layout1.ttl> ]
+
+      [ rdfs:label "PGSQL/Simple" ;
+        sdb:description <StoreDescSimple/pgsql-layout1.ttl> ]
 
 ##       [ rdfs:label "MySQL/Simple" ;
 ##         sdb:description <StoreDescSimple/mysql-layout1.ttl> ]

@@ -19,7 +19,6 @@ import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExprList;
 
 public class SqlNodeTextVisitor implements SqlNodeVisitor
 {
-    // TODO Use .ensureNewLine and .atStartOfLine more
     private static final String DelimOpen = "" ;
     private static final String DelimClose = "" ;
     

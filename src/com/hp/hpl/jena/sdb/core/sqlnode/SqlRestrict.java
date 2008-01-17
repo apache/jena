@@ -8,15 +8,16 @@ package com.hp.hpl.jena.sdb.core.sqlnode;
 
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExpr;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExprList;
+import com.hp.hpl.jena.sdb.shared.SDBInternalError;
 
-
+// Class no longer used/
 public class SqlRestrict extends SqlNodeBase1
 {
     private SqlExprList conditions = new SqlExprList() ;
     
-    public static SqlNode restrict(SqlNode sqlNode, SqlExpr condition)
+    private static SqlNode restrict(SqlNode sqlNode, SqlExpr condition)
     {
-        // TODO Consider just making a Restriction node
+        // Consider just making a Restriction node
         // and do moving into Joins as part of relational algrebra tree optimizations
         // c.f. the Join creation code that also moving restrictions around.
         
@@ -36,7 +37,7 @@ public class SqlRestrict extends SqlNodeBase1
         return new SqlRestrict(sqlNode.getAliasName(), sqlNode, condition) ;
     }
 
-    public static SqlNode restrict(SqlNode sqlNode, SqlExprList restrictions)
+    private static SqlNode restrict(SqlNode sqlNode, SqlExprList restrictions)
     {
         if ( restrictions.size() == 0 )
             return sqlNode ;
@@ -89,11 +90,13 @@ public class SqlRestrict extends SqlNodeBase1
     public SqlExprList getConditions() { return conditions ; }
 
     public void visit(SqlNodeVisitor visitor)
-    { visitor.visit(this) ; }
+    { throw new SDBInternalError("SqlRestrict.visit") ; }
+    //{ visitor.visit(this) ; }
     
     @Override
     public SqlNode apply(SqlTransform transform, SqlNode subNode)
-    { return transform.transform(this, subNode) ; }
+    { throw new SDBInternalError("SqlRestrict.apply") ; }
+    //{ return transform.transform(this, subNode) ; }
 
     @Override
     public SqlNode copy(SqlNode subNode)

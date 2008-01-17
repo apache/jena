@@ -122,7 +122,7 @@ public class TransformSDB extends TransformCopy
             // Punt
             //return super.transform(opJoin, left, right) ;
         }
-        return new OpSQL(SqlBuilder.leftJoin(request, sqlLeft, sqlRight), opJoin, request) ;
+        return new OpSQL(SqlBuilder.leftJoin(request, sqlLeft, sqlRight, null), opJoin, request) ;
     }
     
     @Override
@@ -222,100 +222,6 @@ public class TransformSDB extends TransformCopy
         Op x = new OpSQL(n, opProject, request) ;
         return new OpProject(x, pv) ;
     }
-    
-//    //@Override
-//    public Op transformOLD(OpSlice opSlice, Op subOp)
-//    {
-//        // Two cases are currently handled:
-//        // (slice (sql expression))
-//        // (slice (project ... (sql expression)))
-//        
-//        // (slice (distinct (project ...))) is also possible 
-//        // If DISTINCT is pushed into the inner SQL
-//        // because distinct of nodes is distinct of node ids.
-//        
-//        boolean canHandle = false ;
-//        
-//        // Relies on the fact that isOpSQL(null) is false.
-//        if (  QC.isOpSQL(subOp) )
-//            canHandle = true ;
-//        else if ( QC.isOpSQL(sub(asProject(subOp))) )
-//            canHandle = true ;
-////        else if ( QC.isOpSQL(sub(asProject(sub(asDistinct(subOp))))) ) 
-////            canHandle = true ;
-//        
-//        if ( ! canHandle )
-//            return super.transform(opSlice, subOp) ;
-//        
-//        if ( ! request.LimitOffsetTranslation )
-//            return super.transform(opSlice, subOp) ;
-//        
-//        List<Var> project = null ; 
-//        boolean distinct = false ;
-//        
-//        // Either OpSlice(SQL) or OpSlice(OpProject(SQL))
-//        // Note: OpSlice(OpProject(SQL)) => OpProject(OpSlice(SQL))
-//        //  iff no other modifiers
-//
-//        // Break apart
-//        
-//        if ( subOp instanceof OpDistinct )
-//        {
-//            OpDistinct d = (OpDistinct)subOp ;
-//            distinct = true ;
-//            subOp = d.getSubOp() ;
-//        }
-//        
-//        if ( subOp instanceof OpProject )
-//        {
-//            OpProject p = (OpProject)subOp ;
-//            @SuppressWarnings("unchecked")
-//            List<Var> pv = p.getVars() ;
-//            project = pv ;
-//            subOp = p.getSubOp() ;
-//        }
-//        
-//        if ( ! QC.isOpSQL(subOp) )
-//            return super.transform(opSlice, subOp) ; 
-//        
-//        // For later SQl generation, this must be an alaised thingy.
-//        SqlNode sqlSubOp = ((OpSQL)subOp).getSqlNode() ;
-//        SqlNode sqlSlice = new SqlSlice(sqlSubOp, opSlice.getStart(), opSlice.getLength()) ;
-//        
-//        Op x = new OpSQL(sqlSlice, opSlice, request) ;
-//        
-//        // Any other to put back?
-//        if ( project != null )
-//            x = new OpProject(x, project) ;
-//        if ( distinct )
-//            x = new OpDistinct(x) ;
-//        
-//        return x ;
-//    }
-    
-    // Only from the bridge, currently.
-//    @Override
-//    public Op transform(OpProject opProject, Op subOp)
-//    { 
-//        if (  ! QC.isOpSQL(subOp) )
-//            return super.transform(opProject, subOp) ;
-//        
-//        // This is the stuff left to the bridge.
-//        
-//        SqlNode sqlSubOp = ((OpSQL)subOp).getSqlNode() ;
-//        // XXX PROJECTION
-//        List<ColAlias> cols = new ArrayList<ColAlias>() ;
-//        
-//        @SuppressWarnings("unchecked")
-//        List<Var> lv = (List<Var>)opProject.getVars();
-//        for ( Var v : lv )
-//        {
-//        }
-//        
-//        SqlNode n = SqlSelectBlock.project(sqlSubOp, cols) ;
-//        Op x = new OpSQL(n, opProject, request) ;
-//        return x ;
-//    }
 
     // ----
     
@@ -345,23 +251,6 @@ public class TransformSDB extends TransformCopy
         Set<Var> vars = expr.getVarsMentioned() ;
         return vars ;
     }
-    
-//    // ---- SelectBlock routines
-//    
-//    private Generator genTableAlias ;
-//    private Generator genCol = Gensym.create("C") ;    // Column names - not global 
-//
-//    private SqlSelectBlock block(SqlNode sqlNode)
-//    {
-//        if ( sqlNode instanceof SqlSelectBlock )
-//            return (SqlSelectBlock)sqlNode ;
-//        String alias = sqlNode.getAliasName() ;
-//        
-//        if ( alias == null )
-//            alias = genTableAlias.next() ;
-//        SqlSelectBlock block = new SqlSelectBlock(alias, sqlNode) ;
-//        return block ;
-//    }
     
     // ---- Misc
     // Will migrate to ARQ.OpLib

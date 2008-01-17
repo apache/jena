@@ -14,7 +14,6 @@ import com.hp.hpl.jena.sdb.core.AliasesSql;
 import com.hp.hpl.jena.sdb.core.SDBRequest;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExprList;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
-import com.hp.hpl.jena.sdb.core.sqlnode.SqlRestrict;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlTable;
 import com.hp.hpl.jena.sdb.layout2.TableDescQuads;
 import com.hp.hpl.jena.sparql.core.Quad;
@@ -117,7 +116,7 @@ public class SqlStageBasicQuad implements SqlStage
         slotCompiler.processSlot(request, table, conditions, quad.getObject(),
                                  tableDesc.getObjectColName()) ;
         
-        return SqlRestrict.restrict(table, conditions) ;
+        return SqlBuilder.restrict(table, conditions) ;
     }
 
     @Override

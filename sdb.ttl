@@ -11,7 +11,7 @@ sdb:DatasetStore rdfs:subClassOf ja:RDFDataset .
     sdb:store <#store> .
 
 <#store> rdf:type sdb:Store ;
-    sdb:layout         "layout2" ;
+    sdb:layout         "layout2/index" ;
     sdb:connection     <#conn> .
 
 <#conn> rdf:type sdb:SDBConnection ;

@@ -19,6 +19,7 @@ import com.hp.hpl.jena.sdb.core.SDBRequest;
 import com.hp.hpl.jena.sdb.core.ScopeEntry;
 import com.hp.hpl.jena.sdb.core.sqlexpr.*;
 import com.hp.hpl.jena.sdb.core.sqlnode.*;
+import com.hp.hpl.jena.sdb.shared.SDBInternalError;
 
 public class SqlBuilder
 {
@@ -37,6 +38,16 @@ public class SqlBuilder
     static public SqlNode view(SqlNode sqlNode)
     { return SqlSelectBlock.view(sqlNode) ; }
     
+    static public SqlNode restrict(SqlNode sqlNode, SqlExprList conditions)
+    {
+        return SqlSelectBlock.restrict(sqlNode, conditions) ;
+    }
+    
+    static public SqlNode restrict(SqlNode sqlNode, SqlExpr expr)
+    {
+        return SqlSelectBlock.restrict(sqlNode, expr) ;
+    }
+    
     // -----  Making join nodes
     
     public static SqlNode innerJoin(SDBRequest request, SqlNode left, SqlNode right)
@@ -44,17 +55,20 @@ public class SqlBuilder
         if ( left == null )
             return right ; 
         
-        // Try to make things a left tree join(join(table, table), table)
+        // Try to make things a left tree (join(join(table, table), table)
         return join(request, INNER, left, right, null) ; 
     }
 
-    public static SqlNode leftJoin(SDBRequest request, SqlNode left, SqlNode right)
+    public static SqlNode leftJoin(SDBRequest request, SqlNode left, SqlNode right, SqlExpr expr)
     {
         if ( left == null )
-            return right ; 
-        return join(request, LEFT, left, right, null) ; 
+            throw new SDBInternalError("Attempt to leftJoin to null") ;
+        SqlJoin j = join(request, LEFT, left, right, null) ;
+        if ( expr != null )
+            j.addCondition(expr) ;
+        return j ;
     }
-
+    
     public static SqlNode leftJoinCoalesce(SDBRequest request, String alias,
                                            SqlNode left, SqlNode right,
                                            Set<Var> coalesceVars)
@@ -89,9 +103,9 @@ public class SqlBuilder
         if ( joinType == INNER )
             // Put any left filter into the join conditions.
             // Does not apply to LEFT because the LHS filter does not apply to the right in the same way. 
-            left = removeRestrict(left, conditions) ;
+            left = extractRestrict(left, conditions) ;
 
-        right = removeRestrict(right, conditions) ;
+        right = extractRestrict(right, conditions) ;
         
         for ( Var v : left.getIdScope().getVars() )
         {
@@ -149,18 +163,37 @@ public class SqlBuilder
         return new S_And(c, expr) ;
     }
 
-    private static SqlNode removeRestrict(SqlNode sqlNode, SqlExprList conditions)
+    private static SqlNode extractRestrict(SqlNode sqlNode, SqlExprList conditions)
     {
-        if ( ! sqlNode.isRestrict() ) 
-            return sqlNode ;
+        // SqlSelectBlocks as simple restrictions.
         
-        SqlRestrict restrict = sqlNode.asRestrict() ;
-        SqlNode subNode = restrict.getSubNode() ;
-        if ( ! subNode.isTable() && ! subNode.isInnerJoin() )
-            return sqlNode ;
-        conditions.addAll(restrict.getConditions()) ;
-        subNode.addNotes(restrict.getNotes()) ;
-        return subNode ;
+        if ( sqlNode.isSelectBlock() )
+        {
+            SqlSelectBlock block = sqlNode.asSelectBlock() ;
+            if ( block.getDistinct() )
+                return sqlNode ;
+           if ( block.hasSlice() )
+                return sqlNode ;
+            // If a restriction of a table.
+            if ( block.getSubNode().isTable() )
+            {
+                SqlTable t = block.getSubNode().asTable() ;
+                conditions.addAll(block.getWhere()) ;
+                return t ;
+            }
+        }
+        return sqlNode ;
+        
+//        if ( ! sqlNode.isRestrict() ) 
+//            return sqlNode ;
+//        
+//        SqlRestrict restrict = sqlNode.asRestrict() ;
+//        SqlNode subNode = restrict.getSubNode() ;
+//        if ( ! subNode.isTable() && ! subNode.isInnerJoin() )
+//            return sqlNode ;
+//        conditions.addAll(restrict.getConditions()) ;
+//        subNode.addNotes(restrict.getNotes()) ;
+//        return subNode ;
     }
 }
 

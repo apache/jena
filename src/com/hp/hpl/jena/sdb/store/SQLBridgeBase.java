@@ -14,12 +14,13 @@ import java.util.List;
 import java.util.Map;
 
 import com.hp.hpl.jena.sdb.SDB;
+import com.hp.hpl.jena.sdb.compiler.SqlBuilder;
 import com.hp.hpl.jena.sdb.core.AliasesSql;
 import com.hp.hpl.jena.sdb.core.Annotation1;
 import com.hp.hpl.jena.sdb.core.SDBRequest;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
+import com.hp.hpl.jena.sdb.core.sqlnode.ColAlias;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
-import com.hp.hpl.jena.sdb.core.sqlnode.SqlProject;
 import com.hp.hpl.jena.sdb.shared.SDBInternalError;
 import com.hp.hpl.jena.sdb.sql.ResultSetJDBC;
 import com.hp.hpl.jena.sdb.sql.SDBExceptionSQL;
@@ -82,12 +83,8 @@ public abstract class SQLBridgeBase implements SQLBridge
         QueryIterator qIter = new QueryIterSQL(rs, binding, execCxt) ;
         List<Binding> results = new ArrayList<Binding>() ;
         for ( ; qIter.hasNext() ; )
-        {
             results.add(qIter.nextBinding()) ;
-        }
         qIter.close() ;
-//        try { rs.close(); }
-//        catch (SQLException ex) { throw new SDBExceptionSQL(ex) ; }
         return new QueryIterPlainWrapper(results.iterator(), execCxt) ;
     }
 
@@ -109,7 +106,8 @@ public abstract class SQLBridgeBase implements SQLBridge
     
     protected void addProject(SqlColumn col, String colOutName)
     {
-        sqlNode = SqlProject.project(sqlNode, col, colOutName) ;
+        //sqlNode = SqlProject.project(sqlNode, col, colOutName) ;
+        sqlNode = SqlBuilder.project(sqlNode, new ColAlias(col, new SqlColumn(null, colOutName))) ;
     }
     
     protected void addAnnotation(String string)

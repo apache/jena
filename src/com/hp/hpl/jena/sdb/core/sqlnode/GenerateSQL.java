@@ -37,8 +37,8 @@ public class GenerateSQL implements SQLGenerator
         // Step one - rewrite the SQL node tree to have SelectBlocks, not the various SqlNodes
         // that contribute to a SELECT statement.
         
-        // XXX Temp - the nodes tis tranforms should not be generated 
-        sqlNode = SqlTransformer.transform(sqlNode, new TransformSelectBlock()) ;
+        // XXX Temp - the nodes this tranforms should not be generated now 
+        //sqlNode = SqlTransformer.transform(sqlNode, new TransformSelectBlock()) ;
 
         // Step two - turn the SqlNode tree, with SqlSelectBlocks in it,
         // in an SQL string.
@@ -54,9 +54,11 @@ public class GenerateSQL implements SQLGenerator
     
     public static SqlNode ensureProject(SqlNode sqlNode)
     {
-        if ( ! sqlNode.isProject() )
-            sqlNode = SqlProject.project(sqlNode) ;
-            
+        if ( ! sqlNode.isSelectBlock() )
+        {
+            //System.err.println("No select block at top of SQL node tree") ;
+            sqlNode = SqlSelectBlock.project(sqlNode) ;
+        }
         return sqlNode ;
     }
 }

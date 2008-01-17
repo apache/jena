@@ -68,4 +68,25 @@
             ] ;
          mf:result <merge-6-results.srx>
       ]
+      # Queries that need more than one SQL query (currently)
+      [  mf:name    "Merge-A" ;
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <merge-A.rq> ;
+              qt:data <data-dft.ttl> ;
+              qt:graphData <data-1.ttl> ;
+              qt:graphData <data-2.ttl> ;
+            ] ;
+         mf:result <merge-A-results.srx>
+      ]
+      [  mf:name    "Merge-B" ;
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <merge-B.rq> ;
+              qt:data <data-dft.ttl> ;
+              qt:graphData <data-1.ttl> ;
+              qt:graphData <data-2.ttl> ;
+            ] ;
+         mf:result <merge-B-results.srx>
+      ]
     ).

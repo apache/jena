@@ -20,7 +20,6 @@ public class GenerateSQLDB2 extends GenerateSQL
 
 class GeneratorVisitorDB2 extends GenerateSQLVisitor
 {
-    // XXX Check these
     public GeneratorVisitorDB2(IndentedWriter out)
     { super(out) ; }
 

@@ -16,7 +16,9 @@ import com.hp.hpl.jena.sdb.core.Scope;
 import com.hp.hpl.jena.sdb.core.ScopeBase;
 import com.hp.hpl.jena.sdb.core.ScopeEntry;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
+import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExpr;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExprList;
+import com.hp.hpl.jena.sdb.shared.SDBInternalError;
 import com.hp.hpl.jena.sparql.core.Var;
 
 /** A unit that generates an SQL SELECT Statement.
@@ -46,21 +48,24 @@ public class SqlSelectBlock extends SqlNodeBase1
     private List<ColAlias> cols = new ArrayList<ColAlias>() ;
     
     private SqlExprList exprs = new SqlExprList() ;
-    private long start = -1 ;
-    private long length = -1 ;
+    private static final int NOT_SET = -9 ; 
+    private long start = NOT_SET ;
+    private long length = NOT_SET ;
     private boolean distinct = false ;
     
     private SqlTable vTable ;           // Naming base for renamed columns
     private Scope idScope = null ;      // Scopes are as the wrapped SqlNode unless explicitly changed.
     private Scope nodeScope = null ;
     
-    // ---- Move code to QC, promoting blockWithView and blokcNoView?
     static public SqlNode distinct(SqlNode sqlNode)
     { 
         SqlSelectBlock block = blockWithView(sqlNode) ;
         block.setDistinct(true) ;
         return block ;
     }
+    
+    static public SqlNode project(SqlNode sqlNode)
+    { return project(sqlNode, (ColAlias)null) ; }
     
     static public SqlNode project(SqlNode sqlNode, Collection<ColAlias> cols)
     {
@@ -108,16 +113,34 @@ public class SqlSelectBlock extends SqlNodeBase1
         SqlSelectBlock block = blockWithView(sqlNode) ;
         return block ;
     }
+
+    static public SqlNode restrict(SqlNode sqlNode, SqlExprList exprs)
+    {
+        if ( exprs.size() == 0 )
+            return sqlNode ;
         
+        // Single table does not need renaming of columns 
+        SqlSelectBlock block = (sqlNode.isTable() ? blockPlain(sqlNode) : blockWithView(sqlNode)) ;
+        block.getWhere().addAll(exprs) ;
+        return block ;
+    }
+    
+    static public SqlNode restrict(SqlNode sqlNode, SqlExpr expr)
+    {
+        SqlSelectBlock block = (sqlNode.isTable() ? blockPlain(sqlNode) : blockWithView(sqlNode)) ;
+        block.getWhere().add(expr) ;
+        return block ;
+    }
      
     /**
      * @param aliasName
      * @param sqlNode
      */
-    public SqlSelectBlock(String aliasName, SqlNode sqlNode)
+    private SqlSelectBlock(String aliasName, SqlNode sqlNode)
     {
         super(aliasName, sqlNode) ;
-        vTable = new SqlTable(aliasName) ;
+        if ( aliasName != null )
+            vTable = new SqlTable(aliasName) ;
     }
     
     @Override
@@ -148,11 +171,13 @@ public class SqlSelectBlock extends SqlNodeBase1
     
     public SqlExprList getWhere()       { return exprs ; }
 
+    public boolean hasSlice()           { return (start != NOT_SET )  || ( length != NOT_SET ) ; }
+    
     public long getStart()              { return start ; }
-    public void setStart(long start)    { this.start = start ; }
+    private void setStart(long start)    { this.start = start ; }
 
     public long getLength()             { return length ; }
-    public void setLength(long length)  { this.length = length ; }
+    private void setLength(long length)  { this.length = length ; }
     
     @Override
     public Scope getIdScope()           { return idScope != null ? idScope : super.getIdScope() ; } 
@@ -160,10 +185,6 @@ public class SqlSelectBlock extends SqlNodeBase1
     @Override
     public Scope getNodeScope()         { return nodeScope != null ? nodeScope : super.getNodeScope() ; } 
 
-//    // TODO To Go
-//    public void setIdScope(Scope scope)     { idScope = scope ; }
-//    public void setNodeScope(Scope scope)   { nodeScope = scope ; }
-    
     @Override
     public SqlNode apply(SqlTransform transform, SqlNode newSubNode)
     { return transform.transform(this, newSubNode) ; }
@@ -181,7 +202,7 @@ public class SqlSelectBlock extends SqlNodeBase1
         return distinct ;
     }
 
-    public void setDistinct(boolean isDistinct)
+    private void setDistinct(boolean isDistinct)
     {
         this.distinct = isDistinct ;
     }
@@ -192,9 +213,32 @@ public class SqlSelectBlock extends SqlNodeBase1
     private static SqlSelectBlock blockWithView(SqlNode sqlNode)
     {
         if ( sqlNode instanceof SqlSelectBlock )
+        {
+            SqlSelectBlock block = (SqlSelectBlock)sqlNode ;
+            if ( block.cols.size() == 0 )
+            {
+                // Didn't have a column view - force it
+                calcView(block) ;
+            }
+            
             return (SqlSelectBlock)sqlNode ;
+        }
+            
         SqlSelectBlock block = _create(sqlNode) ;
+        if ( block.getCols().size() != 0 )
+            throw new SDBInternalError("Can't set a view on Select block which is already had columns set") ; 
+        
         calcView(block) ;
+        return block ;
+    }
+    
+    private static SqlSelectBlock blockPlain(SqlNode sqlNode)
+    {
+        if ( sqlNode instanceof SqlSelectBlock )
+            return (SqlSelectBlock)sqlNode ;
+        // Reuse alias (typically, sqlNode is a table or view and this is the table name) 
+        SqlSelectBlock block = new SqlSelectBlock(sqlNode.getAliasName(), sqlNode) ;
+        //addNotes(block, sqlNode) ;
         return block ;
     }
     

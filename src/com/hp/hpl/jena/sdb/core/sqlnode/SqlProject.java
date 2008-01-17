@@ -27,14 +27,14 @@ public class SqlProject extends SqlNodeBase1
     /** make sure this node is a projection */
     
     // This is not quite SqlSelectBlock.
-    public static SqlNode project(SqlNode sqlNode)
+    /*public*/private static SqlNode project(SqlNode sqlNode)
     {
         return project(sqlNode, null) ;
     }
     
     /** make sure this node is a projection and add a column */
 
-    public static SqlNode project(SqlNode sqlNode, SqlColumn col, String colOutName)
+    /*public*/private static SqlNode project(SqlNode sqlNode, SqlColumn col, String colOutName)
     {
         SqlColumn asCol = new SqlColumn(null, colOutName) ; 
         ColAlias colAlias = new ColAlias(col, asCol) ;
@@ -43,7 +43,7 @@ public class SqlProject extends SqlNodeBase1
     
     /** make sure this node is a projection and add a column */
 
-    public static SqlNode project(SqlNode sqlNode, ColAlias col)
+    /*public*/public static SqlNode project(SqlNode sqlNode, ColAlias col)
     {
         // Not if to be left to the bridge.
         //return SqlSelectBlock.project(sqlNode, col) ;
@@ -98,11 +98,13 @@ public class SqlProject extends SqlNodeBase1
     public List<ColAlias> getCols() { return cols ; }
 
     public void visit(SqlNodeVisitor visitor)
-    { visitor.visit(this) ; }
+    { throw new SDBInternalError("SqlProject.visit") ; }
+    //{ visitor.visit(this) ; }
     
     @Override
     public SqlNode apply(SqlTransform transform, SqlNode subNode)
-    { return transform.transform(this, subNode) ; }
+    { throw new SDBInternalError("SqlProject.apply") ; }
+    //{ return transform.transform(this, subNode) ; }
 
     @Override
     public SqlNode copy(SqlNode subNode)

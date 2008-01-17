@@ -1,8 +1,8 @@
-PREFIX :    <http://example>
+PREFIX :    <http://example/>
 PREFIX arq: <urn:x-arq:>
 
 SELECT *
 {
-    GRAPH arq:UnionGraph 
-    { ?s ?p ?o . OPTIONAL { ?o ?q ?z FILTER(?o != 123) } }
+    GRAPH arq:UnionGraph { :x ?p  ?o }
 }
+

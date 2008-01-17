@@ -45,7 +45,7 @@ public class RunSDB
     public static void main(String ... argv) 
     {
         //sdbprint("--sdb=testing/StoreDesc/pgsql-hash.ttl", "--query=testing/Modifiers/slice-1.rq") ;
-        sdbprint("--sdb=testing/StoreDesc/pgsql-hash.ttl", "--query=Q.rq") ;
+        sdbprint("--sdb=sdb.ttl", "--query=Q.rq") ;
         
         //sdbquery("--sdb=sdb.ttl", "--query=Q.rq") ;
         System.exit(0) ;
