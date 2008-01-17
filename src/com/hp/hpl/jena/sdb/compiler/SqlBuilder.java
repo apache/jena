@@ -40,11 +40,18 @@ public class SqlBuilder
     
     static public SqlNode restrict(SqlNode sqlNode, SqlExprList conditions)
     {
-        return SqlSelectBlock.restrict(sqlNode, conditions) ;
+        for ( SqlExpr e : conditions )
+            sqlNode = SqlSelectBlock.restrict(sqlNode, e) ;
+        return sqlNode ;
     }
     
     static public SqlNode restrict(SqlNode sqlNode, SqlExpr expr)
     {
+        if ( sqlNode.isInnerJoin() )
+        {
+            sqlNode.asInnerJoin().addCondition(expr) ;
+            return sqlNode ;
+        }
         return SqlSelectBlock.restrict(sqlNode, expr) ;
     }
     
@@ -172,13 +179,13 @@ public class SqlBuilder
             SqlSelectBlock block = sqlNode.asSelectBlock() ;
             if ( block.getDistinct() )
                 return sqlNode ;
-           if ( block.hasSlice() )
+            if ( block.hasSlice() )
                 return sqlNode ;
             // If a restriction of a table.
             if ( block.getSubNode().isTable() )
             {
                 SqlTable t = block.getSubNode().asTable() ;
-                conditions.addAll(block.getWhere()) ;
+                conditions.addAll(block.getConditions()) ;
                 return t ;
             }
         }

@@ -103,8 +103,8 @@ public class GenerateSQLVisitor implements SqlNodeVisitor
         out.ensureStartOfLine() ;
 
         // WHERE
-        if ( sqlSelectBlock.getWhere().size() > 0 )
-            genWHERE(sqlSelectBlock.getWhere()) ;
+        if ( sqlSelectBlock.getConditions().size() > 0 )
+            genWHERE(sqlSelectBlock.getConditions()) ;
 
         // LIMIT/OFFSET
         out.ensureStartOfLine() ;

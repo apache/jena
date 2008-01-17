@@ -203,7 +203,7 @@ public class SqlNodeTextVisitor implements SqlNodeVisitor
 
         out.incIndent() ;
         print(sqlNode.getCols()) ;
-        print(sqlNode.getWhere()) ;
+        print(sqlNode.getConditions()) ;
         out.decIndent() ;
         
         if ( sqlNode.getStart() >= 0 || sqlNode.getLength() >= 0 )

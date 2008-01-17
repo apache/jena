@@ -33,7 +33,13 @@ public class SQLBridge1 extends SQLBridgeBase
     
     @Override
     protected void buildValues()
-    { }
+    { 
+        // No added SQL operations to get the values.
+        // If it is a SelectBlock for renaming purposes, strip the
+        // renames out as they are unnecessary.  Affects scopes.
+        if ( getSqlNode().isSelectBlock() )
+            setSqlNode(getSqlNode().asSelectBlock().clearView()) ;
+    }
 
     @Override
     protected void buildProject()

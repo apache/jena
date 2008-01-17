@@ -57,6 +57,7 @@ public class SqlSelectBlock extends SqlNodeBase1
     private Scope idScope = null ;      // Scopes are as the wrapped SqlNode unless explicitly changed.
     private Scope nodeScope = null ;
     
+    
     static public SqlNode distinct(SqlNode sqlNode)
     { 
         SqlSelectBlock block = blockWithView(sqlNode) ;
@@ -121,17 +122,18 @@ public class SqlSelectBlock extends SqlNodeBase1
         
         // Single table does not need renaming of columns 
         SqlSelectBlock block = (sqlNode.isTable() ? blockPlain(sqlNode) : blockWithView(sqlNode)) ;
-        block.getWhere().addAll(exprs) ;
+        block.getConditions().addAll(exprs) ;
         return block ;
     }
     
     static public SqlNode restrict(SqlNode sqlNode, SqlExpr expr)
     {
         SqlSelectBlock block = (sqlNode.isTable() ? blockPlain(sqlNode) : blockWithView(sqlNode)) ;
-        block.getWhere().add(expr) ;
+        block.getConditions().add(expr) ;
         return block ;
     }
      
+    
     /**
      * @param aliasName
      * @param sqlNode
@@ -169,21 +171,33 @@ public class SqlSelectBlock extends SqlNodeBase1
         cols.add(c) ;
     }    
     
-    public SqlExprList getWhere()       { return exprs ; }
-
-    public boolean hasSlice()           { return (start != NOT_SET )  || ( length != NOT_SET ) ; }
+    /** Prepare the SelectBlock for use as a top level element - may discard the block */
+    public SqlNode clearView()
+    {
+        idScope = null ;
+        nodeScope = null ;
+        cols.clear() ;
+        if ( !distinct && ! hasConditions() && ! hasSlice() )
+            return getSubNode() ;
+        return this ;
+    }
     
-    public long getStart()              { return start ; }
-    private void setStart(long start)    { this.start = start ; }
+    public SqlExprList getConditions()      { return exprs ; }
 
-    public long getLength()             { return length ; }
-    private void setLength(long length)  { this.length = length ; }
+    public boolean hasSlice()               { return (start != NOT_SET )  || ( length != NOT_SET ) ; }
+    public boolean hasConditions()          { return exprs.size() > 0 ; }
+    
+    public long getStart()                  { return start ; }
+    private void setStart(long start)       { this.start = start ; }
+
+    public long getLength()                 { return length ; }
+    private void setLength(long length)     { this.length = length ; }
     
     @Override
-    public Scope getIdScope()           { return idScope != null ? idScope : super.getIdScope() ; } 
+    public Scope getIdScope()               { return idScope != null ? idScope : super.getIdScope() ; } 
 
     @Override
-    public Scope getNodeScope()         { return nodeScope != null ? nodeScope : super.getNodeScope() ; } 
+    public Scope getNodeScope()             { return nodeScope != null ? nodeScope : super.getNodeScope() ; } 
 
     @Override
     public SqlNode apply(SqlTransform transform, SqlNode newSubNode)
@@ -252,13 +266,8 @@ public class SqlSelectBlock extends SqlNodeBase1
     private static SqlSelectBlock _create(SqlNode sqlNode)
     {
         String alias = sqlNode.getAliasName() ;
-        
-        // XXX Remove
-//        if ( alias == null )
-//            alias = genTableAlias.next() ;
-        
-        // Always have a new name.
-        alias = genTableAlias.next() ;
+        //if ( ! sqlNode.isTable() )
+            alias = genTableAlias.next() ;
         SqlSelectBlock block = new SqlSelectBlock(alias, sqlNode) ;
         addNotes(block, sqlNode) ;
         return block ;

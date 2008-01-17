@@ -55,10 +55,7 @@ public class GenerateSQL implements SQLGenerator
     public static SqlNode ensureProject(SqlNode sqlNode)
     {
         if ( ! sqlNode.isSelectBlock() )
-        {
-            //System.err.println("No select block at top of SQL node tree") ;
             sqlNode = SqlSelectBlock.project(sqlNode) ;
-        }
         return sqlNode ;
     }
 }

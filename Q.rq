@@ -1,12 +1,12 @@
 ## SELECT * { ?s ?p "ABC" }
 
-PREFIX : <http://example/>
-
-SELECT * WHERE
-{ 
-    ?x :p 1 .
-}
-
+## PREFIX : <http://example/>
+## 
+## SELECT * WHERE
+## { 
+##     ?x :p 1 .
+## }
+## 
 
 ## PREFIX : <http://example/> 
 ## SELECT *
@@ -24,14 +24,14 @@ SELECT * WHERE
 ## }
 ## LIMIT 3
 
-## PREFIX :    <http://example>
-## PREFIX arq: <urn:x-arq:>
-## 
-## SELECT *
-## {
-## ##   GRAPH arq:UnionGraph { ?s ?p ?o . ?s1 ?p ?o }
-##     GRAPH arq:UnionGraph { :x ?p ?o . }
-## }
+PREFIX :    <http://example>
+PREFIX arq: <urn:x-arq:>
+
+SELECT *
+{
+##   GRAPH arq:UnionGraph { ?s ?p ?o . ?s1 ?p ?o }
+    GRAPH arq:UnionGraph { ?s ?p ?o . }
+}
 
 ## PREFIX :    <http://example>
 ## PREFIX arq: <urn:x-arq:>
