@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: Assembler.java,v 1.10 2008-01-02 12:05:51 andy_seaborne Exp $
+ 	$Id: Assembler.java,v 1.11 2008-01-18 09:43:48 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler;
@@ -89,6 +89,7 @@ public interface Assembler
         .implementWith( JA.InfModel, infModel )
         .implementWith( JA.ReasonerFactory, reasonerFactory )
         .implementWith( JA.ModelSource, modelSource )
+        .implementWith( JA.RDBModelSource, modelSource )
         .implementWith( JA.Content, content )
         .implementWith( JA.ContentItem, content )
         .implementWith( JA.Connection, connection )
