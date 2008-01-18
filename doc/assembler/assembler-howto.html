@@ -44,12 +44,13 @@
 <div class="toc-H2"><a href="#TOC-ID-13">prefix mappings</a></div>
 <div class="toc-H2"><a href="#TOC-ID-14">other Assembler directives</a></div>
 <div class="toc-H3"><a href="#TOC-ID-15">assembler</a></div>
-<div class="toc-H3"><a href="#TOC-ID-16">imports</a></div></div>
+<div class="toc-H3"><a href="#TOC-ID-16">imports</a></div>
+<div class="toc-H1"><a href="#TOC-ID-17">limited RDFS inference</a></div></div>
 
 <h1><a name="TOC-ID-1"></a>introduction</h1>
 
 <p>
-<i>Under active development.</i> This document describes the
+This document describes the
 vocabulary and effect of the built-in Jena assembler descriptions
 for constructing models (and other things). A 
 <a href="inside-assemblers.html">companion document</a>
@@ -100,7 +101,7 @@ memory model with data loaded from a file:
 </p>
 
 <pre>eg:opening-example a ja:MemoryModel 
-    ; ja:content [ja:externalContent &lt;file:///home/kers/projects/jena2/Data/example.n3&gt;] 
+    ; ja:content [ja:externalContent &lt;file:////home/kers/projects/jena2/doc/assembler/Data/example.n3&gt;] 
     . </pre>
 
 <p>
@@ -112,23 +113,24 @@ that this file is to be read using the Jena N3 reader.
 </p>
 
 <p>
-Unless otherwise specified by an application, Assembler specifications
-are interpreted after adding in the JA schema and doing (limited) RDFS inference.
+Unless otherwise specified by an application, Assembler
+specifications are interpreted after <i>completion</i> by
+
+<ol>
+
+<li>including the JA schema,
+</li><li>including (recursively) the objects of any owl:imports 
+and ja:imports statements, and 
+</li><li>doing <a href="#limited-rdfs-inference">(limited) RDFS inference</a>.
+
+</li></ol>
+
+(The supplied model is not modified.)
 In the example above, eg:model has to be given an explicit type,
 but the externalContent bnode is implicitly typed by the domain of
 ja:externalContent. In this document, we will usually leave out
 inferrable types.
 </p>
-
-<pre>
-[BEING FIXED]
-
-Unless otherwise specified by an application, Assembler
-specifications are interpreted after /completion/ by
-(1) including (recursively) the objects of any owl:imports 
-and ja:imports statements and (2) doing (limited) RDFS inference
-[href to details here]. Your model is not modified.
-</pre>
 
 <p>
 We can construct our example model from the specification like this
@@ -178,20 +180,20 @@ for attaching content, prefix mappings, and reification modes.
 <div class="surrounding">
 <div class="show" id="1002A"><a href="javascript:exchange('1002')">&nabla; show as N3</a>
 <div class="show-class"><span class="keyword">class</span> ja:Model <span class="keyword">subClassOf</span> ja:ContentItem ja:Loadable
-<div class="show-property"><span class="keyword">domainOf</span> ja:reificationMode <span class="keyword">withRange</span> ja:ReificationMode</div>
-<div class="show-property"><span class="keyword">domainOf</span> ja:prefixMapping <span class="keyword">withRange</span> ja:PrefixMapping</div></div></div>
+<div class="show-property"><span class="keyword">domainOf</span> ja:prefixMapping <span class="keyword">withRange</span> ja:PrefixMapping</div>
+<div class="show-property"><span class="keyword">domainOf</span> ja:reificationMode <span class="keyword">withRange</span> ja:ReificationMode</div></div></div>
 <div class="hide" id="1002B"><a href="javascript:exchange('1002')">&nabla; show as condensed</a>
 <div class="show-class">ja:Model a rdfs:Class
 <div class="show-subclass"> ; rdfs:subClassOf ja:ContentItem</div>
 <div class="show-subclass"> ; rdfs:subClassOf ja:Loadable</div>
 <div class="show-subclass">.</div>
-<div class="show-property">ja:reificationMode a rdf:Property
-<div class="show-property">; rdfs:domain ja:Model</div>
-<div class="show-property">; rdfs:range ja:ReificationMode</div>
-<div>.</div></div>
 <div class="show-property">ja:prefixMapping a rdf:Property
 <div class="show-property">; rdfs:domain ja:Model</div>
 <div class="show-property">; rdfs:range ja:PrefixMapping</div>
+<div>.</div></div>
+<div class="show-property">ja:reificationMode a rdf:Property
+<div class="show-property">; rdfs:domain ja:Model</div>
+<div class="show-property">; rdfs:range ja:ReificationMode</div>
 <div>.</div></div></div></div></div>
 
 <p>All of a model's <code>ja:content</code> property values are
@@ -206,8 +208,8 @@ specifications. For example:</p>
     . 
 eg:common-example a ja:MemoryModel 
     ; ja:content eg:sharedContent 
-    ; ja:content [ja:externalContent &lt;file:///home/kers/projects/jena2/Data/A.rdf&gt;] 
-    ; ja:content [ja:externalContent &lt;file:///home/kers/projects/jena2/Data/B.rdf&gt;] 
+    ; ja:content [ja:externalContent &lt;file:////home/kers/projects/jena2/doc/assembler/Data/A.rdf&gt;] 
+    ; ja:content [ja:externalContent &lt;file:////home/kers/projects/jena2/doc/assembler/Data/B.rdf&gt;] 
     . </pre>
 
 <p>
@@ -273,8 +275,8 @@ all such resources. For example:
 </p>
 
 <pre>eg:external-content-example
-    ja:externalContent &lt;http://jena.hpl.hp.com/some-jena-data.rdf&gt;,
-        &lt;file:///home/kers/projects/jena2/Data/C.owl&gt; 
+    ja:externalContent &lt;file:////home/kers/projects/jena2/doc/assembler/Data/C.owl&gt;,
+        &lt;http://jena.hpl.hp.com/some-jena-data.rdf&gt; 
     . </pre>
 
 <p>
@@ -383,58 +385,58 @@ to the values of the system properties <code>jena.dbUser</code> and
 <div class="surrounding">
 <div class="show" id="1008A"><a href="javascript:exchange('1008')">&nabla; show as N3</a>
 <div class="show-class"><span class="keyword">class</span> ja:Connection <span class="keyword">subClassOf</span> ja:Object
-<div class="show-property"><span class="keyword">domainOf</span> ja:dbPasswordProperty <span class="keyword">maxCardinality</span> 1</div>
 <div class="show-property"><span class="keyword">domainOf</span> ja:dbTypeProperty <span class="keyword">maxCardinality</span> 1</div>
-<div class="show-property"><span class="keyword">domainOf</span> ja:dbClass <span class="keyword">maxCardinality</span> 1</div>
-<div class="show-property"><span class="keyword">domainOf</span> ja:dbUserProperty <span class="keyword">maxCardinality</span> 1</div>
-<div class="show-property"><span class="keyword">domainOf</span> ja:dbURLProperty <span class="keyword">maxCardinality</span> 1</div>
-<div class="show-property"><span class="keyword">domainOf</span> ja:dbClassProperty <span class="keyword">maxCardinality</span> 1</div>
-<div class="show-property"><span class="keyword">domainOf</span> ja:dbPassword <span class="keyword">maxCardinality</span> 1</div>
-<div class="show-property"><span class="keyword">domainOf</span> ja:dbUser <span class="keyword">maxCardinality</span> 1</div>
+<div class="show-property"><span class="keyword">domainOf</span> ja:dbPasswordProperty <span class="keyword">maxCardinality</span> 1</div>
+<div class="show-property"><span class="keyword">domainOf</span> ja:dbType <span class="keyword">maxCardinality</span> 1</div>
 <div class="show-property"><span class="keyword">domainOf</span> ja:dbURL <span class="keyword">maxCardinality</span> 1</div>
-<div class="show-property"><span class="keyword">domainOf</span> ja:dbType <span class="keyword">maxCardinality</span> 1</div></div></div>
+<div class="show-property"><span class="keyword">domainOf</span> ja:dbPassword <span class="keyword">maxCardinality</span> 1</div>
+<div class="show-property"><span class="keyword">domainOf</span> ja:dbURLProperty <span class="keyword">maxCardinality</span> 1</div>
+<div class="show-property"><span class="keyword">domainOf</span> ja:dbUserProperty <span class="keyword">maxCardinality</span> 1</div>
+<div class="show-property"><span class="keyword">domainOf</span> ja:dbClass <span class="keyword">maxCardinality</span> 1</div>
+<div class="show-property"><span class="keyword">domainOf</span> ja:dbClassProperty <span class="keyword">maxCardinality</span> 1</div>
+<div class="show-property"><span class="keyword">domainOf</span> ja:dbUser <span class="keyword">maxCardinality</span> 1</div></div></div>
 <div class="hide" id="1008B"><a href="javascript:exchange('1008')">&nabla; show as condensed</a>
 <div class="show-class">ja:Connection a rdfs:Class
-<div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:dbURLProperty; owl:maxCardinality 1]</div>
-<div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:dbPasswordProperty; owl:maxCardinality 1]</div>
-<div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:dbURL; owl:maxCardinality 1]</div>
-<div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:dbPassword; owl:maxCardinality 1]</div>
+<div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:dbUser; owl:maxCardinality 1]</div>
 <div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:dbTypeProperty; owl:maxCardinality 1]</div>
 <div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:dbType; owl:maxCardinality 1]</div>
-<div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:dbUserProperty; owl:maxCardinality 1]</div>
-<div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:dbClassProperty; owl:maxCardinality 1]</div>
-<div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:dbUser; owl:maxCardinality 1]</div>
 <div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:dbClass; owl:maxCardinality 1]</div>
+<div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:dbClassProperty; owl:maxCardinality 1]</div>
+<div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:dbURLProperty; owl:maxCardinality 1]</div>
+<div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:dbURL; owl:maxCardinality 1]</div>
+<div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:dbPasswordProperty; owl:maxCardinality 1]</div>
+<div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:dbPassword; owl:maxCardinality 1]</div>
+<div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:dbUserProperty; owl:maxCardinality 1]</div>
 <div class="show-subclass"> ; rdfs:subClassOf ja:Object</div>
 <div class="show-subclass">.</div>
-<div class="show-property">ja:dbPasswordProperty a rdf:Property
-<div class="show-property">; rdfs:domain ja:Connection</div>
-<div>.</div></div>
 <div class="show-property">ja:dbTypeProperty a rdf:Property
 <div class="show-property">; rdfs:domain ja:Connection</div>
 <div>.</div></div>
-<div class="show-property">ja:dbClass a rdf:Property
+<div class="show-property">ja:dbPasswordProperty a rdf:Property
 <div class="show-property">; rdfs:domain ja:Connection</div>
 <div>.</div></div>
-<div class="show-property">ja:dbUserProperty a rdf:Property
-<div class="show-property">; rdfs:domain ja:Connection</div>
-<div>.</div></div>
-<div class="show-property">ja:dbURLProperty a rdf:Property
-<div class="show-property">; rdfs:domain ja:Connection</div>
-<div>.</div></div>
-<div class="show-property">ja:dbClassProperty a rdf:Property
-<div class="show-property">; rdfs:domain ja:Connection</div>
-<div>.</div></div>
-<div class="show-property">ja:dbPassword a rdf:Property
-<div class="show-property">; rdfs:domain ja:Connection</div>
-<div>.</div></div>
-<div class="show-property">ja:dbUser a rdf:Property
+<div class="show-property">ja:dbType a rdf:Property
 <div class="show-property">; rdfs:domain ja:Connection</div>
 <div>.</div></div>
 <div class="show-property">ja:dbURL a rdf:Property
 <div class="show-property">; rdfs:domain ja:Connection</div>
 <div>.</div></div>
-<div class="show-property">ja:dbType a rdf:Property
+<div class="show-property">ja:dbPassword a rdf:Property
+<div class="show-property">; rdfs:domain ja:Connection</div>
+<div>.</div></div>
+<div class="show-property">ja:dbURLProperty a rdf:Property
+<div class="show-property">; rdfs:domain ja:Connection</div>
+<div>.</div></div>
+<div class="show-property">ja:dbUserProperty a rdf:Property
+<div class="show-property">; rdfs:domain ja:Connection</div>
+<div>.</div></div>
+<div class="show-property">ja:dbClass a rdf:Property
+<div class="show-property">; rdfs:domain ja:Connection</div>
+<div>.</div></div>
+<div class="show-property">ja:dbClassProperty a rdf:Property
+<div class="show-property">; rdfs:domain ja:Connection</div>
+<div>.</div></div>
+<div class="show-property">ja:dbUser a rdf:Property
 <div class="show-property">; rdfs:domain ja:Connection</div>
 <div>.</div></div></div></div></div>
 
@@ -481,7 +483,7 @@ necessary.
 </p>
 
 <pre>eg:fileModel-example-2
-    ja:directory &lt;file:///home/kers/projects/jena2/FileModels&gt; 
+    ja:directory &lt;file:////home/kers/projects/jena2/doc/assembler/FileModels&gt; 
     ; ja:mapName ja:true 
     ; ja:modelName "http://somewhere.org/stuff.n3" 
     . </pre>
@@ -497,8 +499,8 @@ encoding is not pretty, but is sufficient for simple URIs.
 <div class="surrounding">
 <div class="show" id="1009A"><a href="javascript:exchange('1009')">&nabla; show as N3</a>
 <div class="show-class"><span class="keyword">class</span> ja:FileModel <span class="keyword">subClassOf</span> ja:NamedModel
-<div class="show-property"><span class="keyword">domainOf</span> ja:directory <span class="keyword">maxCardinality</span> 1</div>
 <div class="show-property"><span class="keyword">domainOf</span> ja:fileEncoding <span class="keyword">maxCardinality</span> 1</div>
+<div class="show-property"><span class="keyword">domainOf</span> ja:directory <span class="keyword">maxCardinality</span> 1</div>
 <div class="show-property"><span class="keyword">domainOf</span> ja:mapName <span class="keyword">maxCardinality</span> 1</div></div></div>
 <div class="hide" id="1009B"><a href="javascript:exchange('1009')">&nabla; show as condensed</a>
 <div class="show-class">ja:FileModel a rdfs:Class
@@ -507,10 +509,10 @@ encoding is not pretty, but is sufficient for simple URIs.
 <div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:fileEncoding; owl:maxCardinality 1]</div>
 <div class="show-subclass"> ; rdfs:subClassOf ja:NamedModel</div>
 <div class="show-subclass">.</div>
-<div class="show-property">ja:directory a rdf:Property
+<div class="show-property">ja:fileEncoding a rdf:Property
 <div class="show-property">; rdfs:domain ja:FileModel</div>
 <div>.</div></div>
-<div class="show-property">ja:fileEncoding a rdf:Property
+<div class="show-property">ja:directory a rdf:Property
 <div class="show-property">; rdfs:domain ja:FileModel</div>
 <div>.</div></div>
 <div class="show-property">ja:mapName a rdf:Property
@@ -604,29 +606,29 @@ prefix <i>my</i> will have to be known to the rule parser, of course.)
 <div class="surrounding">
 <div class="show" id="1010A"><a href="javascript:exchange('1010')">&nabla; show as N3</a>
 <div class="show-class"><span class="keyword">class</span> ja:InfModel <span class="keyword">subClassOf</span> ja:Model
-<div class="show-property"><span class="keyword">domainOf</span> ja:baseModel <span class="keyword">withRange</span> ja:Model <span class="keyword">maxCardinality</span> 1</div>
-<div class="show-property"><span class="keyword">domainOf</span> ja:reasoner <span class="keyword">withRange</span> ja:ReasonerFactory <span class="keyword">maxCardinality</span> 1</div></div></div>
+<div class="show-property"><span class="keyword">domainOf</span> ja:reasoner <span class="keyword">withRange</span> ja:ReasonerFactory <span class="keyword">maxCardinality</span> 1</div>
+<div class="show-property"><span class="keyword">domainOf</span> ja:baseModel <span class="keyword">withRange</span> ja:Model <span class="keyword">maxCardinality</span> 1</div></div></div>
 <div class="hide" id="1010B"><a href="javascript:exchange('1010')">&nabla; show as condensed</a>
 <div class="show-class">ja:InfModel a rdfs:Class
 <div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:reasoner; owl:maxCardinality 1]</div>
 <div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:baseModel; owl:maxCardinality 1]</div>
 <div class="show-subclass"> ; rdfs:subClassOf ja:Model</div>
 <div class="show-subclass">.</div>
-<div class="show-property">ja:baseModel a rdf:Property
-<div class="show-property">; rdfs:domain ja:InfModel</div>
-<div class="show-property">; rdfs:range ja:Model</div>
-<div>.</div></div>
 <div class="show-property">ja:reasoner a rdf:Property
 <div class="show-property">; rdfs:domain ja:InfModel</div>
 <div class="show-property">; rdfs:range ja:ReasonerFactory</div>
+<div>.</div></div>
+<div class="show-property">ja:baseModel a rdf:Property
+<div class="show-property">; rdfs:domain ja:InfModel</div>
+<div class="show-property">; rdfs:range ja:Model</div>
 <div>.</div></div></div></div></div>
 
 <div class="surrounding">
 <div class="show" id="1011A"><a href="javascript:exchange('1011')">&nabla; show as N3</a>
 <div class="show-class"><span class="keyword">class</span> ja:HasRules <span class="keyword">subClassOf</span> ja:Object
 <div class="show-property"><span class="keyword">domainOf</span> ja:rule</div>
-<div class="show-property"><span class="keyword">domainOf</span> ja:rules <span class="keyword">withRange</span> ja:RuleSet</div>
-<div class="show-property"><span class="keyword">domainOf</span> ja:rulesFrom</div></div></div>
+<div class="show-property"><span class="keyword">domainOf</span> ja:rulesFrom</div>
+<div class="show-property"><span class="keyword">domainOf</span> ja:rules <span class="keyword">withRange</span> ja:RuleSet</div></div></div>
 <div class="hide" id="1011B"><a href="javascript:exchange('1011')">&nabla; show as condensed</a>
 <div class="show-class">ja:HasRules a rdfs:Class
 <div class="show-subclass"> ; rdfs:subClassOf ja:Object</div>
@@ -634,12 +636,12 @@ prefix <i>my</i> will have to be known to the rule parser, of course.)
 <div class="show-property">ja:rule a rdf:Property
 <div class="show-property">; rdfs:domain ja:HasRules</div>
 <div>.</div></div>
+<div class="show-property">ja:rulesFrom a rdf:Property
+<div class="show-property">; rdfs:domain ja:HasRules</div>
+<div>.</div></div>
 <div class="show-property">ja:rules a rdf:Property
 <div class="show-property">; rdfs:domain ja:HasRules</div>
 <div class="show-property">; rdfs:range ja:RuleSet</div>
-<div>.</div></div>
-<div class="show-property">ja:rulesFrom a rdf:Property
-<div class="show-property">; rdfs:domain ja:HasRules</div>
 <div>.</div></div></div></div></div>
 
 <p>An InfModel's <code>ja:baseModel</code> property value specifies
@@ -672,23 +674,23 @@ A ReasonerFactory can be specified by URL or by class name (but not both).
 <div class="surrounding">
 <div class="show" id="1012A"><a href="javascript:exchange('1012')">&nabla; show as N3</a>
 <div class="show-class"><span class="keyword">class</span> ja:ReasonerFactory <span class="keyword">subClassOf</span> ja:HasRules
+<div class="show-property"><span class="keyword">domainOf</span> ja:reasonerClass</div>
 <div class="show-property"><span class="keyword">domainOf</span> ja:reasonerURL</div>
-<div class="show-property"><span class="keyword">domainOf</span> ja:schema <span class="keyword">withRange</span> ja:Model</div>
-<div class="show-property"><span class="keyword">domainOf</span> ja:reasonerClass</div></div></div>
+<div class="show-property"><span class="keyword">domainOf</span> ja:schema <span class="keyword">withRange</span> ja:Model</div></div></div>
 <div class="hide" id="1012B"><a href="javascript:exchange('1012')">&nabla; show as condensed</a>
 <div class="show-class">ja:ReasonerFactory a rdfs:Class
 <div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:ReasonerURL; owl:maxCardinality 1]</div>
 <div class="show-subclass"> ; rdfs:subClassOf ja:HasRules</div>
 <div class="show-subclass">.</div>
+<div class="show-property">ja:reasonerClass a rdf:Property
+<div class="show-property">; rdfs:domain ja:ReasonerFactory</div>
+<div>.</div></div>
 <div class="show-property">ja:reasonerURL a rdf:Property
 <div class="show-property">; rdfs:domain ja:ReasonerFactory</div>
 <div>.</div></div>
 <div class="show-property">ja:schema a rdf:Property
 <div class="show-property">; rdfs:domain ja:ReasonerFactory</div>
 <div class="show-property">; rdfs:range ja:Model</div>
-<div>.</div></div>
-<div class="show-property">ja:reasonerClass a rdf:Property
-<div class="show-property">; rdfs:domain ja:ReasonerFactory</div>
 <div>.</div></div></div></div></div>
 
 <p>
@@ -790,10 +792,10 @@ as <code>ModelFactory.createOntologyModel()</code>.
 <div class="surrounding">
 <div class="show" id="1015A"><a href="javascript:exchange('1015')">&nabla; show as N3</a>
 <div class="show-class"><span class="keyword">class</span> ja:OntModelSpec <span class="keyword">subClassOf</span> ja:Object
-<div class="show-property"><span class="keyword">domainOf</span> ja:ontLanguage <span class="keyword">maxCardinality</span> 1</div>
+<div class="show-property"><span class="keyword">domainOf</span> ja:importSource <span class="keyword">maxCardinality</span> 1</div>
 <div class="show-property"><span class="keyword">domainOf</span> ja:reasonerFactory <span class="keyword">withRange</span> ja:ReasonerFactory <span class="keyword">maxCardinality</span> 1</div>
 <div class="show-property"><span class="keyword">domainOf</span> ja:documentManager <span class="keyword">maxCardinality</span> 1</div>
-<div class="show-property"><span class="keyword">domainOf</span> ja:importSource <span class="keyword">maxCardinality</span> 1</div></div></div>
+<div class="show-property"><span class="keyword">domainOf</span> ja:ontLanguage <span class="keyword">maxCardinality</span> 1</div></div></div>
 <div class="hide" id="1015B"><a href="javascript:exchange('1015')">&nabla; show as condensed</a>
 <div class="show-class">ja:OntModelSpec a rdfs:Class
 <div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:reasonerFactory; owl:maxCardinality 1]</div>
@@ -802,7 +804,7 @@ as <code>ModelFactory.createOntologyModel()</code>.
 <div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:ontLanguage; owl:maxCardinality 1]</div>
 <div class="show-subclass"> ; rdfs:subClassOf ja:Object</div>
 <div class="show-subclass">.</div>
-<div class="show-property">ja:ontLanguage a rdf:Property
+<div class="show-property">ja:importSource a rdf:Property
 <div class="show-property">; rdfs:domain ja:OntModelSpec</div>
 <div>.</div></div>
 <div class="show-property">ja:reasonerFactory a rdf:Property
@@ -812,7 +814,7 @@ as <code>ModelFactory.createOntologyModel()</code>.
 <div class="show-property">ja:documentManager a rdf:Property
 <div class="show-property">; rdfs:domain ja:OntModelSpec</div>
 <div>.</div></div>
-<div class="show-property">ja:importSource a rdf:Property
+<div class="show-property">ja:ontLanguage a rdf:Property
 <div class="show-property">; rdfs:domain ja:OntModelSpec</div>
 <div>.</div></div></div></div></div>
 <p><code>OntModel</code> is a subclass of <code>InfModel</code>, and the
@@ -914,6 +916,7 @@ the ontology.rdf ontology.
 <div class="hide" id="1016B"><a href="javascript:exchange('1016')">&nabla; show as condensed</a>
 <div class="show-class">ja:DocumentManager a rdfs:Class
 <div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:policyPath; owl:maxCardinality 1]</div>
+<div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:fileManager; owl:maxCardinality 1]</div>
 <div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:fileManager; owl:maxCardinality 1]</div>
 <div class="show-subclass"> ; rdfs:subClassOf ja:HasFileManager</div>
 <div class="show-subclass">.</div>
@@ -1044,18 +1047,18 @@ property).
 <div class="surrounding">
 <div class="show" id="1021A"><a href="javascript:exchange('1021')">&nabla; show as N3</a>
 <div class="show-class"><span class="keyword">class</span> ja:SinglePrefixMapping <span class="keyword">subClassOf</span> ja:PrefixMapping
-<div class="show-property"><span class="keyword">domainOf</span> ja:prefix <span class="keyword">cardinality</span> 1</div>
-<div class="show-property"><span class="keyword">domainOf</span> ja:namespace <span class="keyword">cardinality</span> 1</div></div></div>
+<div class="show-property"><span class="keyword">domainOf</span> ja:namespace <span class="keyword">cardinality</span> 1</div>
+<div class="show-property"><span class="keyword">domainOf</span> ja:prefix <span class="keyword">cardinality</span> 1</div></div></div>
 <div class="hide" id="1021B"><a href="javascript:exchange('1021')">&nabla; show as condensed</a>
 <div class="show-class">ja:SinglePrefixMapping a rdfs:Class
 <div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:namespace; owl:cardinality 1]</div>
 <div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:prefix; owl:cardinality 1]</div>
 <div class="show-subclass"> ; rdfs:subClassOf ja:PrefixMapping</div>
 <div class="show-subclass">.</div>
-<div class="show-property">ja:prefix a rdf:Property
+<div class="show-property">ja:namespace a rdf:Property
 <div class="show-property">; rdfs:domain ja:SinglePrefixMapping</div>
 <div>.</div></div>
-<div class="show-property">ja:namespace a rdf:Property
+<div class="show-property">ja:prefix a rdf:Property
 <div class="show-property">; rdfs:domain ja:SinglePrefixMapping</div>
 <div>.</div></div></div></div></div>
 
@@ -1118,7 +1121,28 @@ RDF at <code>someURL</code>. That RDF may in turn contain
 <code>imports</code> referring to other RDF.
 </p>
 
+<h1><a name="TOC-ID-17"></a><a name="limited-rdfs-inference">limited RDFS inference</a></h1>
 
+<p>
+The Assembler engine uses limited RDFS inference to complete the model
+it is given, so that the spec-writer does not need to write excessive and
+redundant RDF. (It does not use the usual Jena reasoners because this
+limited once-off reasoning has been faster.) The inference steps
+are:
+
+<ul>
+<li>add all the classes from the JA schema.
+</li><li>do subclass closure over all the classes.
+</li><li>do domain and range inference.
+</li><li>do simple intersection inference: if X is an instance of
+    <i>intersection A B C ...</i>, then X is an instance of A, B,
+    C ... (and their supertypes).
+</li></ul>
+
+This is sufficient for closed-world assembling. Other parts of the
+JA schema -- eg, cardinality constraints -- are hard-coded into the
+individual assemblers. 
+</p>
 
 
 

@@ -2,9 +2,9 @@
 <head>
 <title>inside assemblers</title>
 
-<link rel="stylesheet" type="text/css" href="../styles/doc.css" />
-<link rel="stylesheet" class="text/css" href="assembler-style.css" />
-<script type="text/javascript" src="library.js">
+<link href="../styles/doc.css" rel="stylesheet" type="text/css"></link>
+<link class="text/css" href="assembler-style.css" rel="stylesheet"></link>
+<script src="library.js" type="text/javascript">
 </script>
 
 </head>
@@ -13,7 +13,7 @@
 
 <p>
 This document describes Jena's built-in assembler classes and
-how to write and integrate your own assemblers. If you just need 
+how to write and integrate your own assemblers. If you just need
 a quick guide to the common model specifications, see the
 <a href="index.html">assembler quickstart</a>; if you want
 mroe details on writing assembler descriptions, see the
@@ -38,7 +38,7 @@ public Model openModel( Resource root );
 public Model openModel( Resource root, Mode mode );
 </pre>
 
-The fundamental method is the first: all the others are 
+The fundamental method is the first: all the others are
 shorthands for ways of calling it. The abstract class
 <code>AssemblerBase</code> implements <code>Assembler</code>
 leaving only that method abstract and defining the others
@@ -46,12 +46,12 @@ in terms of it.
 </p>
 
 <p>
-The definition of 
+The definition of
 <code>a.open(Assembler sub, Resource root, Mode mode)</code>
 is that <code>a</code> will construct the object described by
 the properties of <code>root</code>. If this requires the
 construction of sub-objects from descriptions hanging off
-<code>root</code>, <code>sub.open</code> is to be used to construct 
+<code>root</code>, <code>sub.open</code> is to be used to construct
 those. If the object is to be constructed in some persistent
 store, <code>mode</code> defines whether objects can be re-used
 or created: see <a href="#modes">modes</a> for more details.
@@ -66,11 +66,118 @@ Each of these assemblers has a constant instance declared as a
 field of <code>Assembler</code>.
 </p>
 
-<table class="framed" align="center">
+<table align="center" class="framed">
   <thead>
     <tr><th>assembler</th><th>result class</th><th>Type</th><th>constant</th></tr>
   </thead>
 
+<tr>
+<td rowspan="10">ConnectionAssembler[Resource root] ja:Connection ConnectionDescription</td><td>  dbUser String</td>
+</tr>
+<tr><td>  dbUser String</td></tr>
+<tr><td>  dbUserProperty String</td></tr>
+<tr><td>  dbPassword String</td></tr>
+<tr><td>  dbPasswordProperty String</td></tr>
+<tr><td>  dbURL String</td></tr>
+<tr><td>  dbURLProperty String</td></tr>
+<tr><td>  dbType String</td></tr>
+<tr><td>  dbTypeProperty</td></tr>
+<tr><td>  dbClass Class</td></tr>
+<tr><td>  dbClassProperty Class</td></tr>
+<tr>
+<td rowspan="5">ContentAssembler[FileManager fm] ja:Content Content</td><td>  content *Content</td>
+</tr>
+<tr><td>  content *Content</td></tr>
+<tr><td>  externalContent Content</td></tr>
+<tr><td>  quotedContent Content</td></tr>
+<tr><td>  literalContent Content</td></tr>
+<tr><td>  contentEncoding String</td></tr>
+<tr>
+<td rowspan="5">DefaultModelAssembler ja:DefaultModel Model</td><td>  /see/ ModelAssembler  </td>
+</tr>
+<tr><td>  /see/ ModelAssembler  </td></tr>
+<tr><td>  </td></tr>
+<tr><td>DocumentManagerAssembler ja:DocumentManager OntDocumentManager</td></tr>
+<tr><td>  policyPath String default [OntDocumentManager.DEFAULT_METADATA_PATH]</td></tr>
+<tr><td>  fileManager *FileManager</td></tr>
+<tr>
+<td rowspan="1">FileManagerAssembler ja:FileManager FileManager</td><td>  locationMapper !LocationMapper</td>
+</tr>
+<tr><td>  locationMapper !LocationMapper</td></tr>
+<tr>
+<td rowspan="4">FileModelAssembler ja:FileModel FileModel</td><td>  /see/ ModelAssembler</td>
+</tr>
+<tr><td>  /see/ ModelAssembler</td></tr>
+<tr><td>  fileEncoding String</td></tr>
+<tr><td>  mapName boolean</td></tr>
+<tr><td>  directory String</td></tr>
+<tr>
+<td rowspan="2">InfModelAssembler ja:InfModel InfModel</td><td>  baseModel *Model</td>
+</tr>
+<tr><td>  baseModel *Model</td></tr>
+<tr><td>  reasoner *Reasoner</td></tr>
+<tr>
+<td rowspan="1">LocationMappingAssembler ja:LocationMapper LocationMapper</td><td>  /see/ LocationMapper</td>
+</tr>
+<tr><td>  /see/ LocationMapper</td></tr>
+<tr>
+<td rowspan="1">MemoryModelAssembler ja:MemoryModel Model</td><td>  /see/ ModelAssembler</td>
+</tr>
+<tr><td>  /see/ ModelAssembler</td></tr>
+<tr>
+<td rowspan="3">ModelAssemebler ja:Model Model</td><td>  reificationModel ReificationStyle</td>
+</tr>
+<tr><td>  reificationModel ReificationStyle</td></tr>
+<tr><td>  /see/ PrefixMapping</td></tr>
+<tr><td>  /see/ Content</td></tr>
+<tr>
+<td rowspan="4">ModelSourceAssembler ja:ModelSource ModelGetter</td><td>  connection *Connection</td>
+</tr>
+<tr><td>  connection *Connection</td></tr>
+<tr><td>  </td></tr>
+<tr><td>NamedModelAssembler [] Model</td></tr>
+<tr><td>  modelName String</td></tr>
+<tr>
+<td rowspan="3">OntModelAssembler ja:OntModel OntModel</td><td>  /see/ InfModelAssembler</td>
+</tr>
+<tr><td>  /see/ InfModelAssembler</td></tr>
+<tr><td>  subModel *Model</td></tr>
+<tr><td>  ontModelSpec *OntModelSpec</td></tr>
+<tr>
+<td rowspan="5">OntModelSpecAssembler ja:OntModelSpec OntModelSpec</td><td>  importSource *ModelGetter</td>
+</tr>
+<tr><td>  importSource *ModelGetter</td></tr>
+<tr><td>  ontLanguage String</td></tr>
+<tr><td>  reasonerURL ?ReasonerFactory</td></tr>
+<tr><td>  reasonerFactory *ReasonerFactory</td></tr>
+<tr><td>  documentManager *OntDocumentManager</td></tr>
+<tr>
+<td rowspan="2">PrefixMappingAssembler ja:PrefixMapping PrefixMapping</td><td>  includes *PrefixMapping</td>
+</tr>
+<tr><td>  includes *PrefixMapping</td></tr>
+<tr><td>  prefix BNODE[prefix, namespace]</td></tr>
+<tr>
+<td rowspan="2">RDBModelAssembler ja:RDBModel ModelRDB</td><td>  /see/ NamedModelAssembler</td>
+</tr>
+<tr><td>  /see/ NamedModelAssembler</td></tr>
+<tr><td>  connection *ConnectionDescription</td></tr>
+<tr>
+<td rowspan="3">ReasonerFactoryAssembler ja:ReasonerFactory ReasonerFactory</td><td>  reasonerURL ReasonerFactory</td>
+</tr>
+<tr><td>  reasonerURL ReasonerFactory</td></tr>
+<tr><td>  reasonerClass Class</td></tr>
+<tr><td>  /see/ RuleSetAssembler</td></tr>
+<tr>
+<td rowspan="3">RuleSetAssembler ja:RuleSet RuleSet</td><td>  rules *RuleSet</td>
+</tr>
+<tr><td>  rules *RuleSet</td></tr>
+<tr><td>  rulesFrom URL for rules</td></tr>
+<tr><td>  rule String rule</td></tr>
+<tr>
+<td rowspan="2">UnionModelAssembler ja:UnionModel Model</td><td>  rootModel *Model</td>
+</tr>
+<tr><td>  rootModel *Model</td></tr>
+<tr><td>  subModel *Model</td></tr>
 
 </table>
 
@@ -98,7 +205,7 @@ UnionModelAssembler
 AssemblerGroup
 </pre>
 
-<table class='framed' align='center'>
+<table align="center" class="framed">
 <thead>
     <tr><th>produces</th><th>Class</th><th>Type</th><th>constant</th></tr>
 </thead>
@@ -186,7 +293,7 @@ how to build the objects -- not just models -- described by an Assembler
 specification. The normal route into an Assembler is through the method:
 
 <ul>
-<li>open( Resource root ) &rarr; Object</li>
+<li>open( Resource root ) ? Object</li>
 </ul>
 
 The Assembler inspects the <code>root</code> resource properties and
@@ -199,7 +306,7 @@ object.
 Assemblers, there is a convenience wrapper method:
 
 <ul>
-<li>openModel( Resource root ) &rarr; Model</li>
+<li>openModel( Resource root ) ? Model</li>
 </ul>
 
 which constructs the object and checks that it's a Model before
@@ -211,7 +318,7 @@ when an InfModel Assembler requires a Reasoner object), it uses the
 method:
 
 <ul>
-<li>open( Assembler sub, Resource root ) &rarr; Model</li>
+<li>open( Assembler sub, Resource root ) ? Model</li>
 </ul>
 
 passing in a suitable Assembler object. In fact the standard implementation
@@ -285,7 +392,7 @@ integrated and made nice RSN.)
 
 <pre>
 You have to implement the Assembler interface, most straightforwardly
-done by subclassing AssemblerBase and overriding 
+done by subclassing AssemblerBase and overriding
 
     public Object open( Assembler a, Resource root, Mode mode );
 
@@ -301,7 +408,7 @@ done by subclassing AssemblerBase and overriding
     those to define any sub-objects of the object you're assembling
     (including using `a` for anything that's itself a structured
     object) and then constructing a new result object from those
-    components. 
+    components.
 
     Then you attach this new assembler object to its type in some
     AssemblerGroup using that group's `implementWith` method. You
@@ -325,7 +432,7 @@ in <code>Assembler</code> for (an instance of) each of these basic
 assembler classes.
 </p>
 
-<table class='framed' align='center'>
+<table align="center" class="framed">
 <thead>
     <tr><th>produces</th><th>Class</th><th>Type</th><th>constant</th></tr>
 </thead>
@@ -426,7 +533,7 @@ of <code>AssemblerGroup</code>.
 content to models. A Content object has the method:
 
 <ul>
-<li>fill( Model m ) &rarr; m</li>
+<li>fill( Model m ) ? m</li>
 </ul>
 
 Invoking the <code>fill</code> method adds the represented content to
@@ -474,8 +581,8 @@ bundled together and selected by RDF type. AssemblerGroup implements
 Assembler and adds the methods:</p>
 
 <ul>
-<li>implementWith( Resource type, Assembler a ) &rarr; this</li>
-<li>assemblerFor( Resource type ) &rarr; Assembler</li>
+<li>implementWith( Resource type, Assembler a ) ? this</li>
+<li>assemblerFor( Resource type ) ? Assembler</li>
 </ul>
 
 <p>AssemblerGroup's implementation of <code>open(sub,root)</code>
@@ -507,5 +614,6 @@ object, that constructor is used to initialise the class, passing in the
 <code>type</code> subject of the triple. Otherwise the no-argument
 constructor of the class is used.
 </p>
-</body>
-</html>
+
+
+</body></html>

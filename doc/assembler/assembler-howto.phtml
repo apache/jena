@@ -30,7 +30,7 @@
 <h1>introduction</h1>
 
 <p>
-<i>Under active development.</i> This document describes the
+This document describes the
 vocabulary and effect of the built-in Jena assembler descriptions
 for constructing models (and other things). A 
 <a href="inside-assemblers.html">companion document</a>
@@ -91,23 +91,24 @@ that this file is to be read using the Jena N3 reader.
 </p>
 
 <p>
-Unless otherwise specified by an application, Assembler specifications
-are interpreted after adding in the JA schema and doing (limited) RDFS inference.
+Unless otherwise specified by an application, Assembler
+specifications are interpreted after <i>completion</i> by
+
+<ol>
+
+<li>including the JA schema,
+<li>including (recursively) the objects of any owl:imports 
+and ja:imports statements, and 
+<li>doing <a href="#limited-rdfs-inference">(limited) RDFS inference</a>.
+
+</ol>
+
+(The supplied model is not modified.)
 In the example above, eg:model has to be given an explicit type,
 but the externalContent bnode is implicitly typed by the domain of
 ja:externalContent. In this document, we will usually leave out
 inferrable types.
 </p>
-
-<pre>
-[BEING FIXED]
-
-Unless otherwise specified by an application, Assembler
-specifications are interpreted after /completion/ by
-(1) including (recursively) the objects of any owl:imports 
-and ja:imports statements and (2) doing (limited) RDFS inference
-[href to details here]. Your model is not modified.
-</pre>
 
 <p>
 We can construct our example model from the specification like this
@@ -135,7 +136,7 @@ All of these model specifications share a set of base properties
 for attaching content, prefix mappings, and reification modes.
 </p>
 
-<div class='insert-class' root='ja:Loadable' source='vocab'>ja:Loadbale goes here</div>
+<div class='insert-class' root='ja:Loadable' source='vocab'>ja:Loadable goes here</div>
 <div class='insert-class' root='ja:Model' source='vocab'>ja:Model goes here</div>
 
 <p>All of a model's <code>ja:content</code> property values are
@@ -678,7 +679,28 @@ RDF at <code>someURL</code>. That RDF may in turn contain
 <code>imports</code> referring to other RDF.
 </p>
 
+<h1><a name="limited-rdfs-inference">limited RDFS inference</a></h1>
 
+<p>
+The Assembler engine uses limited RDFS inference to complete the model
+it is given, so that the spec-writer does not need to write excessive and
+redundant RDF. (It does not use the usual Jena reasoners because this
+limited once-off reasoning has been faster.) The inference steps
+are:
+
+<ul>
+<li>add all the classes from the JA schema.
+<li>do subclass closure over all the classes.
+<li>do domain and range inference.
+<li>do simple intersection inference: if X is an instance of
+    <i>intersection A B C ...</i>, then X is an instance of A, B,
+    C ... (and their supertypes).
+</ul>
+
+This is sufficient for closed-world assembling. Other parts of the
+JA schema -- eg, cardinality constraints -- are hard-coded into the
+individual assemblers. 
+</p>
 
 </body>
 </html>
