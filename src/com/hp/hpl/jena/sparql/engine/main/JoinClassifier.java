@@ -22,7 +22,7 @@ public class JoinClassifier
 
         if ( print )
             System.err.println(join) ;
-        // Assume somethign will not commute these later on. 
+        // Assume something will not commute these later on. 
         return check(left, right) ;
     }
     

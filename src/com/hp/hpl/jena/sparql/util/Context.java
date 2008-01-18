@@ -55,10 +55,9 @@ public class Context
             return defaultValue ;
         return x ;
     }
-        
     
     /** Store a named value - overwrites any previous set value */
-    public void   put(Symbol property, Object value) { context.put(property, value) ; doCallbacks(property) ; }
+    public void put(Symbol property, Object value) { context.put(property, value) ; doCallbacks(property) ; }
     
     /** Store a named value - overwrites any previous set value */
     public void set(Symbol property, Object value) { context.put(property, value) ; doCallbacks(property) ; }

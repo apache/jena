@@ -19,6 +19,9 @@ See ToDoSSE
 
 ----
 
++ OpCompiler: have a global factory so that can use QueryEngineMain and supply subclasses 
+  of OpCompiler (experimentation and extensibility for Andreas). 
+
 + Remove OpDatasetNames?? - only needed in quad compilation for GRAPH ?g {}
   Do that a betetr way (join of all names).
   Special iterator for OpCompiler? 

@@ -53,7 +53,6 @@ public class LeftJoinClassifier
 
         return SetUtils.intersection(leftVars, optRight) ;
     }
-
 }
 
 /*
