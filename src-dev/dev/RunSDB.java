@@ -66,7 +66,6 @@ public class RunSDB
         ResultSetFormatter.out(qexec.execSelect()) ;
         qexec.close() ;
         System.exit(0) ;
-         
     }
     
     public static void update()
