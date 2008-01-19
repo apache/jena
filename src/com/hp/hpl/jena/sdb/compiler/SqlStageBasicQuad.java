@@ -116,7 +116,7 @@ public class SqlStageBasicQuad implements SqlStage
         slotCompiler.processSlot(request, table, conditions, quad.getObject(),
                                  tableDesc.getObjectColName()) ;
         
-        return SqlBuilder.restrict(table, conditions) ;
+        return SqlBuilder.restrict(request, table, conditions) ;
     }
 
     @Override

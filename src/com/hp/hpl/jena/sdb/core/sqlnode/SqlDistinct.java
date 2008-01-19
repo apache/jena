@@ -8,12 +8,13 @@ package com.hp.hpl.jena.sdb.core.sqlnode;
 
 import com.hp.hpl.jena.sdb.shared.SDBInternalError;
 
-// Not used - my be removed
+// Not used - may be removed
 /*public*/ class SqlDistinct extends SqlNodeBase1
 {
     private static SqlNode distinct(SqlNode sqlNode)
     {
-        return SqlSelectBlock.distinct(sqlNode) ;
+        return null ;
+        //return SqlSelectBlock.distinct(sqlNode) ;
         
 //        SqlDistinct p = null ;
 //        if ( sqlNode.isDistinct() )

@@ -11,7 +11,6 @@ import com.hp.hpl.jena.sparql.core.Quad;
 import com.hp.hpl.jena.sdb.SDB;
 import com.hp.hpl.jena.sdb.core.SDBRequest;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
-import com.hp.hpl.jena.sdb.core.sqlnode.SqlRename;
 import com.hp.hpl.jena.sdb.shared.SDBInternalError;
 
 public class QuadBlockCompilerMain implements QuadBlockCompiler
@@ -82,8 +81,9 @@ public class QuadBlockCompilerMain implements QuadBlockCompiler
         {
             // DISTINCT -- over the named variables but not * (which includes the graph node).
             String renameName = request.genId("A") ;
-            sqlNode = SqlRename.view(renameName, sqlNode) ;
-            sqlNode = SqlBuilder.distinct(sqlNode) ;
+            //sqlNode = SqlRename.view(renameName, sqlNode) ;
+            sqlNode = SqlBuilder.view(request, sqlNode) ;
+            sqlNode = SqlBuilder.distinct(request, sqlNode) ;
         }
         
         return sqlNode ;

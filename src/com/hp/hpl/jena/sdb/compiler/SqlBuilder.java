@@ -23,36 +23,36 @@ import com.hp.hpl.jena.sdb.shared.SDBInternalError;
 
 public class SqlBuilder
 {
-    static public SqlNode distinct(SqlNode sqlNode)
-    { return SqlSelectBlock.distinct(sqlNode) ; }
+    static public SqlNode distinct(SDBRequest request, SqlNode sqlNode)
+    { return SqlSelectBlock.distinct(request, sqlNode) ; }
 
-    static public SqlNode slice(SqlNode sqlNode, long start, long length)
-    { return SqlSelectBlock.slice(sqlNode, start, length) ; }
+    static public SqlNode slice(SDBRequest request, SqlNode sqlNode, long start, long length)
+    { return SqlSelectBlock.slice(request, sqlNode, start, length) ; }
 
-    static public SqlNode project(SqlNode sqlNode, Collection<ColAlias> cols)
-    { return SqlSelectBlock.project(sqlNode, cols) ; }
+    static public SqlNode project(SDBRequest request, SqlNode sqlNode, Collection<ColAlias> cols)
+    { return SqlSelectBlock.project(request, sqlNode, cols) ; }
     
-    static public SqlNode project(SqlNode sqlNode, ColAlias col)
-    { return SqlSelectBlock.project(sqlNode, col) ; }
+    static public SqlNode project(SDBRequest request, SqlNode sqlNode, ColAlias col)
+    { return SqlSelectBlock.project(request, sqlNode, col) ; }
 
-    static public SqlNode view(SqlNode sqlNode)
-    { return SqlSelectBlock.view(sqlNode) ; }
+    static public SqlNode view(SDBRequest request, SqlNode sqlNode)
+    { return SqlSelectBlock.view(request, sqlNode) ; }
     
-    static public SqlNode restrict(SqlNode sqlNode, SqlExprList conditions)
+    static public SqlNode restrict(SDBRequest request, SqlNode sqlNode, SqlExprList conditions)
     {
         for ( SqlExpr e : conditions )
-            sqlNode = SqlSelectBlock.restrict(sqlNode, e) ;
+            sqlNode = SqlSelectBlock.restrict(request, sqlNode, e) ;
         return sqlNode ;
     }
     
-    static public SqlNode restrict(SqlNode sqlNode, SqlExpr expr)
+    static public SqlNode restrict(SDBRequest request, SqlNode sqlNode, SqlExpr expr)
     {
         if ( sqlNode.isInnerJoin() )
         {
             sqlNode.asInnerJoin().addCondition(expr) ;
             return sqlNode ;
         }
-        return SqlSelectBlock.restrict(sqlNode, expr) ;
+        return SqlSelectBlock.restrict(request, sqlNode, expr) ;
     }
     
     // -----  Making join nodes

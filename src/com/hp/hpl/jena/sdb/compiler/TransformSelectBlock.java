@@ -6,10 +6,7 @@
 
 package com.hp.hpl.jena.sdb.compiler;
 
-import com.hp.hpl.jena.sdb.core.Scope;
-import com.hp.hpl.jena.sdb.core.ScopeEntry;
-import com.hp.hpl.jena.sdb.core.sqlnode.*;
-import com.hp.hpl.jena.sdb.shared.SDBInternalError;
+import com.hp.hpl.jena.sdb.core.sqlnode.SqlTransformCopy;
 
 public class TransformSelectBlock extends SqlTransformCopy
 {
@@ -17,79 +14,7 @@ public class TransformSelectBlock extends SqlTransformCopy
     // Be careful - can't introduce aliases or renames without also fixing up the
     // the tree above this node.  Doable - not done (or needed).
     
-    TransformSelectBlock() {}
-    
-    // Pull-in various features of a SELECT statement. 
-    
-    @Override
-    public SqlNode transform(SqlProject sqlProject, SqlNode subNode)
-    { 
-        return SqlSelectBlock.project(subNode, sqlProject.getCols()) ;
-//        
-//        SqlSelectBlock block = block(subNode, sqlProject.getCols()) ;
-//        addNotes(block, sqlProject) ;
-//        //block.addAll(sqlProject.getCols()) ;
-//        return block ;
-    }
-
-//    @Override
-//    public SqlNode transform(SqlDistinct sqlDistinct, SqlNode subNode)
-//    {
-//        System.err.println("TransformSelectBlock/SqlDistinct") ;
-//        //System.err.println("SqlDistinct - should not see") ;
-//        return SqlBuilder.distinct(subNode) ;
-//    }
-    
-    @Override
-    public SqlNode transform(SqlRestrict sqlRestrict, SqlNode subNode)
-    { 
-        System.err.println("TransformSelectBlock.SqlRestrict: "+sqlRestrict.getConditions()) ;
-        return SqlBuilder.restrict(subNode, sqlRestrict.getConditions()) ;
-//        SqlSelectBlock block = block(subNode) ;
-//        addNotes(block, sqlRestrict) ;
-//        block.getWhere().addAll(sqlRestrict.getConditions()) ;
-//        return block ;
-    }
-
-    @Override
-    public SqlNode transform(SqlSlice sqlSlice, SqlNode subNode)
-    {
-        throw new SDBInternalError("TransformSelectBlock.SqlSlice") ;
-    }
-
-    @Override
-    public SqlNode transform(SqlRename sqlRename, SqlNode subNode)
-    { 
-        throw new SDBInternalError("TransformSelectBlock.SqlRename") ;
-//        System.err.println("TransformSelectBlock/SqlRename - FIX") ;
-//        SqlSelectBlock block = block(subNode) ;
-//
-//        if ( sqlRename.getAliasName() != null )
-//            block.setBlockAlias(sqlRename.getAliasName()) ;
-//        addNotes(block, sqlRename) ;
-////        block.setIdScope(sqlRename.getIdScope()) ;
-////        block.setNodeScope(sqlRename.getNodeScope()) ;
-//        
-//        // Need to add X AS Y
-//        // for X as subnode and Y as rename. 
-//        addProject(block, sqlRename.getIdScope(), sqlRename.getSubNode().getIdScope()) ;
-//        addProject(block, sqlRename.getNodeScope(), sqlRename.getSubNode().getNodeScope()) ;
-//        return block ;
-    }
-    
-    private void addProject(SqlSelectBlock block, Scope scope, Scope subScope)
-    {
-        for ( ScopeEntry e : scope.findScopes() )
-        {
-            ScopeEntry sub = subScope.findScopeForVar(e.getVar()) ;
-            if ( sub == null )
-                throw new SDBInternalError("Internal error: column for renamed var not found: "+e.getVar()) ;
-            ColAlias colAlias = new ColAlias(sub.getColumn(), e.getColumn()) ;
-            colAlias.check(block.getAliasName()) ;
-            block.add(colAlias) ;
-        }
-    }
-
+    private TransformSelectBlock() {}
 }
 
 /*

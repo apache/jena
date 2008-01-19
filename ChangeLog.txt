@@ -8,11 +8,16 @@ Documentation:
 
 SDB v1.1
 ========
-+ Jat upgrades: commons-logigng-1.1.1
-+ The named graph indexing has been imporved - old databases still work.
++ Jar upgrades: 
+    commons-logging-1.1.1
+    new versions ARQ and Jena jars (no name changes).
+    
++ The named graph indexing has been improved - old databases still work but ideally
+  should be reindexed.
   Migration: drop indexes with SBD 1.0 tools, create indexes with SDB 1.1 tools
   Manaual deletion of all secondary indexes via DB admin tools also will work 
 
++ SQL code generation made more regular.
 
 SDB v1.0
 ========

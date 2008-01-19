@@ -80,7 +80,7 @@ public class QC
                                      SDBRequest request)
     {
         SqlNode sqlNode = opSQL.getSqlNode() ;
-        String sqlStmt = request.getStore().getSQLGenerator().generateSQL(sqlNode) ;
+        String sqlStmt = request.getStore().getSQLGenerator().generateSQL(request, sqlNode) ;
         return sqlStmt ; 
     }
     

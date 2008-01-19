@@ -6,6 +6,7 @@
 
 package com.hp.hpl.jena.sdb.core.sqlnode;
 
+import com.hp.hpl.jena.sdb.core.SDBRequest;
 import com.hp.hpl.jena.sdb.store.SQLGenerator;
 import com.hp.hpl.jena.sparql.util.IndentedLineBuffer;
 
@@ -13,19 +14,19 @@ public class GenerateSQL implements SQLGenerator
 {
     public static boolean forceOldGenerator = false ; 
    
-    public static String toSQL(SqlNode sqlNode)
-    { return new GenerateSQL().generateSQL(sqlNode) ; }
+    public static String toSQL(SDBRequest request, SqlNode sqlNode)
+    { return new GenerateSQL().generateSQL(request, sqlNode) ; }
     
-    public static String toPartSQL(SqlNode sqlNode)
+    public static String toPartSQL(SDBRequest request, SqlNode sqlNode)
     { return new GenerateSQL().generatePartSQL(sqlNode) ; }
     
     /** Generate an SQL statement for the node - force the outer level to be a SELECT */
-    public String generateSQL(SqlNode sqlNode)
+    public String generateSQL(SDBRequest request, SqlNode sqlNode)
     {
 //        if ( forceOldGenerator )
 //            return GenerateSQL_Old.toSQL(sqlNode) ;
         // Top must be a project to cause the SELECT to be written
-        sqlNode = ensureProject(sqlNode) ;
+        sqlNode = ensureProject(request, sqlNode) ;
         return generatePartSQL(sqlNode) ;
     }
     
@@ -52,10 +53,10 @@ public class GenerateSQL implements SQLGenerator
         return new GenerateSQLVisitor(buff.getIndentedWriter()) ;
     }
     
-    public static SqlNode ensureProject(SqlNode sqlNode)
+    public static SqlNode ensureProject(SDBRequest request, SqlNode sqlNode)
     {
         if ( ! sqlNode.isSelectBlock() )
-            sqlNode = SqlSelectBlock.project(sqlNode) ;
+            sqlNode = SqlSelectBlock.project(request, sqlNode) ;
         return sqlNode ;
     }
 }

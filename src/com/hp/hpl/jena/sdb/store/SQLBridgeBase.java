@@ -106,8 +106,9 @@ public abstract class SQLBridgeBase implements SQLBridge
     
     protected void addProject(SqlColumn col, String colOutName)
     {
-        //sqlNode = SqlProject.project(sqlNode, col, colOutName) ;
-        sqlNode = SqlBuilder.project(sqlNode, new ColAlias(col, new SqlColumn(null, colOutName))) ;
+        sqlNode = SqlBuilder.project(request, 
+                                     sqlNode, 
+                                     new ColAlias(col, new SqlColumn(null, colOutName))) ;
     }
     
     protected void addAnnotation(String string)

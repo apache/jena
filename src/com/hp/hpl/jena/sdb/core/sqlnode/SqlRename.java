@@ -16,8 +16,8 @@ import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
 import com.hp.hpl.jena.sdb.shared.SDBInternalError;
 
 /** SQL rename */
-
-public class SqlRename extends SqlNodeBase1
+//Not used - may be removed
+/*public*/ class SqlRename extends SqlNodeBase1
 {
     private ScopeBase idScope ;
     private ScopeBase nodeScope ;
@@ -26,9 +26,10 @@ public class SqlRename extends SqlNodeBase1
     
     //---
 
-    public static SqlNode view(String alias, SqlNode sqlNode)
+    private /*public*/ static SqlNode view(String alias, SqlNode sqlNode)
     { 
-        return SqlSelectBlock.view(sqlNode) ;
+        // return SqlSelectBlock.view(sqlNode) ;
+        return null ;
 //        SqlTable table = new SqlTable(alias) ;
 //        Generator gen = Gensym.create("X") ;    // Column names.  Not global.
 //        

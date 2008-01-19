@@ -6,11 +6,12 @@
 
 package com.hp.hpl.jena.sdb.store;
 
+import com.hp.hpl.jena.sdb.core.SDBRequest;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 
 public interface SQLGenerator
 {
-    public String generateSQL(SqlNode sqlNode) ;
+    public String generateSQL(SDBRequest request, SqlNode sqlNode) ;
 }
 
 /*

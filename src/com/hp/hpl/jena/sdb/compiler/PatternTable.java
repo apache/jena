@@ -154,7 +154,7 @@ public class PatternTable extends TableDesc
                     slotCompiler.processSlot(request, sqlTable, conditions, obj, colName) ;
                 }
             }
-            return SqlBuilder.restrict(sqlTable, conditions) ;
+            return SqlBuilder.restrict(request, sqlTable, conditions) ;
         }
         
         @Override

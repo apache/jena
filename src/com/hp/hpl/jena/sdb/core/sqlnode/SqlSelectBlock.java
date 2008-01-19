@@ -10,11 +10,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import com.hp.hpl.jena.sdb.core.Generator;
-import com.hp.hpl.jena.sdb.core.Gensym;
-import com.hp.hpl.jena.sdb.core.Scope;
-import com.hp.hpl.jena.sdb.core.ScopeBase;
-import com.hp.hpl.jena.sdb.core.ScopeEntry;
+import com.hp.hpl.jena.sdb.core.*;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExpr;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExprList;
@@ -58,21 +54,21 @@ public class SqlSelectBlock extends SqlNodeBase1
     private Scope nodeScope = null ;
     
     
-    static public SqlNode distinct(SqlNode sqlNode)
+    static public SqlNode distinct(SDBRequest request, SqlNode sqlNode)
     { 
-        SqlSelectBlock block = blockWithView(sqlNode) ;
+        SqlSelectBlock block = blockWithView(request, sqlNode) ;
         block.setDistinct(true) ;
         return block ;
     }
     
-    static public SqlNode project(SqlNode sqlNode)
-    { return project(sqlNode, (ColAlias)null) ; }
+    static public SqlNode project(SDBRequest request, SqlNode sqlNode)
+    { return project(request, sqlNode, (ColAlias)null) ; }
     
-    static public SqlNode project(SqlNode sqlNode, Collection<ColAlias> cols)
+    static public SqlNode project(SDBRequest request, SqlNode sqlNode, Collection<ColAlias> cols)
     {
         // If already a view, not via a project, - think harder
         
-        SqlSelectBlock block = blockNoView(sqlNode) ;
+        SqlSelectBlock block = blockNoView(request, sqlNode) ;
         if ( block.idScope != null || block.nodeScope != null )
             System.err.println("SqlSelectBlock.project : already a view") ; 
         
@@ -81,17 +77,17 @@ public class SqlSelectBlock extends SqlNodeBase1
         return block ;
     }
     
-    static public SqlNode project(SqlNode sqlNode, ColAlias col)
+    static public SqlNode project(SDBRequest request, SqlNode sqlNode, ColAlias col)
     {
-        SqlSelectBlock block = blockNoView(sqlNode) ;
+        SqlSelectBlock block = blockNoView(request, sqlNode) ;
         if ( col != null )
             block.add(col) ;
         return block ;
     }
 
-    static public SqlNode slice(SqlNode sqlNode, long start, long length)
+    static public SqlNode slice(SDBRequest request, SqlNode sqlNode, long start, long length)
     {
-        SqlSelectBlock block = blockWithView(sqlNode) ;
+        SqlSelectBlock block = blockWithView(request, sqlNode) ;
         
         if ( start >= 0 )
         {
@@ -109,26 +105,26 @@ public class SqlSelectBlock extends SqlNodeBase1
         return block ;
     }
     
-    static public SqlNode view(SqlNode sqlNode)
+    static public SqlNode view(SDBRequest request, SqlNode sqlNode)
     {
-        SqlSelectBlock block = blockWithView(sqlNode) ;
+        SqlSelectBlock block = blockWithView(request, sqlNode) ;
         return block ;
     }
 
-    static public SqlNode restrict(SqlNode sqlNode, SqlExprList exprs)
+    static public SqlNode restrict(SDBRequest request, SqlNode sqlNode, SqlExprList exprs)
     {
         if ( exprs.size() == 0 )
             return sqlNode ;
         
         // Single table does not need renaming of columns 
-        SqlSelectBlock block = (sqlNode.isTable() ? blockPlain(sqlNode) : blockWithView(sqlNode)) ;
+        SqlSelectBlock block = (sqlNode.isTable() ? blockPlain(request, sqlNode) : blockWithView(request, sqlNode)) ;
         block.getConditions().addAll(exprs) ;
         return block ;
     }
     
-    static public SqlNode restrict(SqlNode sqlNode, SqlExpr expr)
+    static public SqlNode restrict(SDBRequest request, SqlNode sqlNode, SqlExpr expr)
     {
-        SqlSelectBlock block = (sqlNode.isTable() ? blockPlain(sqlNode) : blockWithView(sqlNode)) ;
+        SqlSelectBlock block = (sqlNode.isTable() ? blockPlain(request, sqlNode) : blockWithView(request, sqlNode)) ;
         block.getConditions().add(expr) ;
         return block ;
     }
@@ -221,10 +217,7 @@ public class SqlSelectBlock extends SqlNodeBase1
         this.distinct = isDistinct ;
     }
 
-    // TODO Make this per-request
-    static private Generator genTableAlias = Gensym.create("SB") ;
-    
-    private static SqlSelectBlock blockWithView(SqlNode sqlNode)
+    private static SqlSelectBlock blockWithView(SDBRequest request,SqlNode sqlNode)
     {
         if ( sqlNode instanceof SqlSelectBlock )
         {
@@ -238,7 +231,7 @@ public class SqlSelectBlock extends SqlNodeBase1
             return (SqlSelectBlock)sqlNode ;
         }
             
-        SqlSelectBlock block = _create(sqlNode) ;
+        SqlSelectBlock block = _create(request, sqlNode) ;
         if ( block.getCols().size() != 0 )
             throw new SDBInternalError("Can't set a view on Select block which is already had columns set") ; 
         
@@ -246,28 +239,28 @@ public class SqlSelectBlock extends SqlNodeBase1
         return block ;
     }
     
-    private static SqlSelectBlock blockPlain(SqlNode sqlNode)
+    private static SqlSelectBlock blockPlain(SDBRequest request,SqlNode sqlNode)
     {
         if ( sqlNode instanceof SqlSelectBlock )
             return (SqlSelectBlock)sqlNode ;
-        // Reuse alias (typically, sqlNode is a table or view and this is the table name) 
+        // Same alias (typically, sqlNode is a table or view and this is the table name) 
         SqlSelectBlock block = new SqlSelectBlock(sqlNode.getAliasName(), sqlNode) ;
         //addNotes(block, sqlNode) ;
         return block ;
     }
     
-    private static SqlSelectBlock blockNoView(SqlNode sqlNode)
+    private static SqlSelectBlock blockNoView(SDBRequest request, SqlNode sqlNode)
     {
         if ( sqlNode instanceof SqlSelectBlock )
             return (SqlSelectBlock)sqlNode ;
-        return _create(sqlNode) ;
+        return _create(request, sqlNode) ;
     }
         
-    private static SqlSelectBlock _create(SqlNode sqlNode)
+    private static SqlSelectBlock _create(SDBRequest request,SqlNode sqlNode)
     {
         String alias = sqlNode.getAliasName() ;
         //if ( ! sqlNode.isTable() )
-            alias = genTableAlias.next() ;
+        alias = request.generator(AliasesSql.SelectBlock).next() ;
         SqlSelectBlock block = new SqlSelectBlock(alias, sqlNode) ;
         addNotes(block, sqlNode) ;
         return block ;

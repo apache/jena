@@ -94,7 +94,7 @@ public class TupleTable
         b.build() ;
 
         try {
-            String sqlStr = store.getSQLGenerator().generateSQL(b.getSqlNode()) ;
+            String sqlStr = store.getSQLGenerator().generateSQL(request, b.getSqlNode()) ;
             //System.out.println(sqlStr) ;
             ResultSetJDBC tableData = store.getConnection().execQuery(sqlStr) ;
             ExecutionContext execCxt = new ExecutionContext(new Context(), null, null) ;

@@ -99,7 +99,7 @@ public class SlotCompilerIndex extends SlotCompiler2
             constantCols.put(n, new SqlColumn(nTable, nodeTableDesc.getIdColName())) ;
             SqlExpr c = new S_Equal(cHash, hashValue) ;
             sqlNode = SqlBuilder.innerJoin(getRequest(), sqlNode, nTable) ;
-            sqlNode = SqlBuilder.restrict(sqlNode, c)  ;
+            sqlNode = SqlBuilder.restrict(getRequest(), sqlNode, c)  ;
         }
         return sqlNode ;
     }

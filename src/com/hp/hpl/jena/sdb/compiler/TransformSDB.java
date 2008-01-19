@@ -164,7 +164,7 @@ public class TransformSDB extends TransformCopy
         if ( ! QC.isOpSQL(subOp) )
             return super.transform(opDistinct, subOp) ;
         SqlNode sqlSubOp = ((OpSQL)subOp).getSqlNode() ;
-        SqlNode n = SqlSelectBlock.distinct(sqlSubOp) ;
+        SqlNode n = SqlSelectBlock.distinct(request, sqlSubOp) ;
         return new OpSQL(n, opDistinct, request) ; 
     }
     
@@ -197,7 +197,7 @@ public class TransformSDB extends TransformCopy
         
     private Op transformSlice(OpSlice opSlice, SqlNode sqlSubOp)
     {
-        SqlNode n = SqlSelectBlock.slice(sqlSubOp, opSlice.getStart(), opSlice.getLength()) ;
+        SqlNode n = SqlSelectBlock.slice(request, sqlSubOp, opSlice.getStart(), opSlice.getLength()) ;
         Op x = new OpSQL(n, opSlice, request) ;
         return x ;
     }
@@ -217,7 +217,7 @@ public class TransformSDB extends TransformCopy
         List<Var> pv = opProject.getVars() ;
         
         // Do as (slice X)
-        SqlNode n = SqlSelectBlock.slice(sqlSubOp, opSlice.getStart(), opSlice.getLength()) ;
+        SqlNode n = SqlSelectBlock.slice(request, sqlSubOp, opSlice.getStart(), opSlice.getLength()) ;
         // Put back project - as an OpProject to leave for the bridge.
         Op x = new OpSQL(n, opProject, request) ;
         return new OpProject(x, pv) ;
