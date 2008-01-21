@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: ReasonerVocabulary.java,v 1.25 2008-01-21 14:54:22 chris-dollin Exp $
+ * $Id: ReasonerVocabulary.java,v 1.26 2008-01-21 15:23:36 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.vocabulary;
 
@@ -18,90 +18,90 @@ import com.hp.hpl.jena.reasoner.rulesys.RDFSRuleReasoner;
  * builtin reasoners.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.25 $ on $Date: 2008-01-21 14:54:22 $
+ * @version $Revision: 1.26 $ on $Date: 2008-01-21 15:23:36 $
  */
 public class ReasonerVocabulary {
     
     /** The namespace used for system level descriptive properties of any reasoner */
-    public static String JenaReasonerNS = "http://jena.hpl.hp.com/2003/JenaReasoner#";
+    public static final String JenaReasonerNS = "http://jena.hpl.hp.com/2003/JenaReasoner#";
     
     /** The RDF class to which all Reasoners belong */
-    public static Resource ReasonerClass = ResourceFactory.createResource(JenaReasonerNS + "ReasonerClass");
+    public static final Resource ReasonerClass = ResourceFactory.createResource(JenaReasonerNS + "ReasonerClass");
     
     /** Reasoner description property: name of the reasoner */
     public static final Property nameP = property( "name" );
     
     /** Reasoner description property: text description of the reasoner */
-    public static Property descriptionP;
+    public static final Property descriptionP = property( "description" );
     
     /** Reasoner description property: version of the reasoner */
-    public static Property versionP;
+    public static final Property versionP = property( "version" );
     
     /** Reasoner description property: a schema property supported by the reasoner */
-    public static Property supportsP;
+    public static final Property supportsP = property( "supports" );
     
     /** Reasoner description property: a configuration property supported by the reasoner */
-    public static Property configurationP;
-
-    /** The property that represents the direct/minimal version of the subClassOf relationship */
-    public static Property directSubClassOf; 
-
-    /** The property that represents the direct/minimal version of the subPropertyOf relationship */
-    public static Property directSubPropertyOf; 
-
-    /** The property that represents the direct/minimal version of the rdf:type relationship */
-    public static Property directRDFType; 
+    public static final Property configurationP = property( "configurationProperty" );
 
     /** A faux property used in reasoner capabilty models to denote reasoners that infer that individuals have rdf:type owl:Thing (or daml:Thing) */
-    public static Property individualAsThingP;
+    public static final Property individualAsThingP = property( "individualAsThing" ); 
+
+    /** The property that represents the direct/minimal version of the subClassOf relationship */
+    public static final Property directSubClassOf = makeDirect( RDFS.subClassOf ); 
+
+    /** The property that represents the direct/minimal version of the subPropertyOf relationship */
+    public static final Property directSubPropertyOf = makeDirect( RDFS.subPropertyOf ); 
+
+    /** The property that represents the direct/minimal version of the rdf:type relationship */
+    public static final Property directRDFType = makeDirect( RDF.type ); 
     
     /** Base URI used for configuration properties for rule reasoners */
     public static final String PropURI = "http://jena.hpl.hp.com/2003/RuleReasoner";
 
     /** Property used to configure the derivation logging behaviour of a reasoner.
      *  Set to "true" to enable logging of derivations. */
-    public static Property PROPderivationLogging;
+    public static final Property PROPderivationLogging = PROP( "derivationLogging" );
 
     /** Property used to configure the tracing behaviour of a reasoner.
      *  Set to "true" to enable internal trace message to be sent to Logger.info . */
-    public static Property PROPtraceOn;
+    public static final Property PROPtraceOn = PROP( "traceOn" );
 
     /** Property used to set the mode of a generic rule reasoner.
      *  Valid values are the strings "forward", "backward" or "hybrid" */
-    public static Property PROPruleMode;
+    public static final Property PROPruleMode = PROP( "ruleMode" );
     
     /** Property used to attach a file a rules to a generic rule reasoner.
      *  Value should a URI giving the rule set to use. */
-    public static Property PROPruleSet;
+    public static final Property PROPruleSet = PROP( "ruleSet" );
     
     /** Property used to switch on/off OWL schema translation on a generic rule reasoner.
      *  Value should be "true" to enable OWL translation */
-    public static Property PROPenableOWLTranslation;
+    public static final Property PROPenableOWLTranslation = PROP( "enableOWLTranslation" );
     
     /** Property used to switch on/off use of the dedicated subclass/subproperty
      *  caching in a generic rule reasoner. Set to "true" to enable caching. */
-    public static Property PROPenableTGCCaching;
+    public static final Property PROPenableTGCCaching = PROP( "enableTGCCaching" );
     
     /** Property used to switch on/off scanning of data for container membership
      * properties in RDFS preprocessing. */
-    public static Property PROPenableCMPScan;
+    public static final Property PROPenableCMPScan = PROP( "enableCMPScan" );
     
     /** Property used to switch to different RDFS processing levles. The
      * legal levels are "default", "simple", and "full". */
-    public static Property PROPsetRDFSLevel;
-    
-    /** Constant for PROPsetRDFSLevel - default behaviour */
-    public static String RDFS_DEFAULT = RDFSRuleReasoner.DEFAULT_RULES;
-    
-    /** Constant for PROPsetRDFSLevel - fullest implementation supported. */
-    public static String RDFS_FULL = RDFSRuleReasoner.FULL_RULES;
-    
-    /** Constant for PROPsetRDFSLevel - simplified, higher performance rules. */
-    public static String RDFS_SIMPLE = RDFSRuleReasoner.SIMPLE_RULES;    
+    public static final Property PROPsetRDFSLevel = PROP( "setRDFSLevel" );
     
     /** Property used to switch on/off filtering of functors from returned results
      *  in the generic rule engine. Default is filtering on. */
-    public static Property PROPenableFunctorFiltering;
+    public static final Property PROPenableFunctorFiltering = PROP( "enableFunctorFiltering" );
+    
+    /** Constant for PROPsetRDFSLevel - default behaviour */
+    public static final String RDFS_DEFAULT = RDFSRuleReasoner.DEFAULT_RULES;
+    
+    /** Constant for PROPsetRDFSLevel - fullest implementation supported. */
+    public static final String RDFS_FULL = RDFSRuleReasoner.FULL_RULES;
+    
+    /** Constant for PROPsetRDFSLevel - simplified, higher performance rules. */
+    public static final String RDFS_SIMPLE = RDFSRuleReasoner.SIMPLE_RULES;    
 
     /** A namespace used for Rubrik specific properties */
     public static final String RBNamespace = "urn:x-hp-jena:rubrik/";
@@ -132,11 +132,21 @@ public class ReasonerVocabulary {
 
     public static final Property schemaURL = property( "schemaURL" );
     
-    protected static Property property( String localName )
+    protected static final Property property( String localName )
         { return ResourceFactory.createProperty( JenaReasonerNS, localName ); }
-    
-//  --------------------------------------------------------------------
+
+    private static final Property PROP( String localName )
+        { return ResourceFactory.createProperty( PropURI + "#" + localName ); }
+
+    /**
+        compact call to ReasonerRegistry.makeDirect
+    */
+    private static final Property makeDirect( Property type )
+        { return ResourceFactory.createProperty( ReasonerRegistry.makeDirect( type.asNode().getURI() ) ); }
+
+    //  --------------------------------------------------------------------
 // Method versions of key namespaces which are more initializer friendly
+
 
     /** Return namespace used for Rubric specific properties */
     public static final String getRBNamespace() {
@@ -146,35 +156,6 @@ public class ReasonerVocabulary {
     /** Return namespace used for system level descriptive properties of any reasoner */
     public static final String getJenaReasonerNS() {
         return JenaReasonerNS;
-    }
-           
-//  --------------------------------------------------------------------
-//  Initializers
-
-    static {
-        try {
-//            nameP = ResourceFactory.createProperty(JenaReasonerNS, "name");
-            descriptionP = ResourceFactory.createProperty(JenaReasonerNS, "description");
-            versionP = ResourceFactory.createProperty(JenaReasonerNS, "version");
-            supportsP = ResourceFactory.createProperty(JenaReasonerNS, "supports");
-            configurationP = ResourceFactory.createProperty(JenaReasonerNS, "configurationProperty");
-            directSubClassOf = ResourceFactory.createProperty(ReasonerRegistry.makeDirect(RDFS.Nodes.subClassOf).getURI());
-            directSubPropertyOf = ResourceFactory.createProperty(ReasonerRegistry.makeDirect(RDFS.Nodes.subPropertyOf).getURI());
-            directRDFType = ResourceFactory.createProperty(ReasonerRegistry.makeDirect(RDF.Nodes.type).getURI());
-            individualAsThingP = ResourceFactory.createProperty(JenaReasonerNS, "individualAsThing");
-            PROPderivationLogging  = ResourceFactory.createProperty(PropURI+"#", "derivationLogging");
-            PROPtraceOn = ResourceFactory.createProperty(PropURI+"#", "traceOn");
-            PROPruleMode = ResourceFactory.createProperty(PropURI+"#", "ruleMode");
-            PROPruleSet = ResourceFactory.createProperty(PropURI+"#", "ruleSet");
-            PROPenableOWLTranslation = ResourceFactory.createProperty(PropURI+"#", "enableOWLTranslation");
-            PROPenableTGCCaching = ResourceFactory.createProperty(PropURI+"#", "enableTGCCaching");
-            PROPenableCMPScan = ResourceFactory.createProperty(PropURI+"#", "enableCMPScan");
-            PROPsetRDFSLevel = ResourceFactory.createProperty(PropURI+"#", "setRDFSLevel");
-            PROPenableFunctorFiltering= ResourceFactory.createProperty(PropURI+"#", "enableFunctorFiltering");
-        } catch (Exception e) {
-            System.err.println("Initialization error: " + e);
-            e.printStackTrace(System.err);
-        }
     }
 }
 
