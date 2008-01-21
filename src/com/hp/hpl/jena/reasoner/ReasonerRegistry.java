@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: ReasonerRegistry.java,v 1.30 2008-01-02 12:07:00 andy_seaborne Exp $
+ * $Id: ReasonerRegistry.java,v 1.31 2008-01-21 14:54:20 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner;
 
@@ -36,7 +36,7 @@ import java.util.*;
  * to register it in this registry.  </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.30 $ on $Date: 2008-01-02 12:07:00 $
+ * @version $Revision: 1.31 $ on $Date: 2008-01-21 14:54:20 $
  */
 public class ReasonerRegistry {
 
@@ -156,7 +156,17 @@ public class ReasonerRegistry {
     
     /**
      * Return a property Node which represents the direct version of a
-     * transitively closed property.
+     * transitively closed property. See <code>makeDirect(String)</code>;
+     * this method makes a new Node with the direct respelling of 
+     * <code>node</code>s URI.
+     */
+    public static Node makeDirect(Node node) {
+        return Node.createURI( makeDirect( node.getURI() ) );
+    }
+    
+    /**
+     * Return a URI string which represents the direct version of a
+     * transitively closed property URI
      * 
      * <p>Not clear what the right thing to do here is. Should not just invent
      * a new local name in the same namespace because that might be a controlled
@@ -164,12 +174,10 @@ public class ReasonerRegistry {
      * because that would be violating the web principles of namespace ownership.
      * On the other hand, this solution results in staggeringly clumsy names.</p>
      * 
-     * @param node the node representing the transitive property
+     * @param uri the URI representing the transitive property
      */
-    public static Node makeDirect(Node node) {
-        String directName = "urn:x-hp-direct-predicate:" + node.getURI().replace(':','_') ;
-        return Node.createURI(directName);
-    }
+    public static String makeDirect( String uri )
+        { return "urn:x-hp-direct-predicate:" + uri.replace( ':' ,'_' ); }
     
     /** Prebuilt standard configuration for the default RDFS reasoner. */
     protected static Reasoner theRDFSReasoner = null;

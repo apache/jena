@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestPackage.java,v 1.28 2008-01-02 12:08:20 andy_seaborne Exp $
+ * $Id: TestPackage.java,v 1.29 2008-01-21 14:54:18 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -16,7 +16,7 @@ import junit.framework.*;
  * Aggregate tester that runs all the test associated with the rulesys package.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.28 $ on $Date: 2008-01-02 12:08:20 $
+ * @version $Revision: 1.29 $ on $Date: 2008-01-21 14:54:18 $
  */
 
 public class TestPackage extends TestSuite {
@@ -29,6 +29,7 @@ public class TestPackage extends TestSuite {
     private TestPackage() {
         super("RuleSys");
         
+        addTestSuite( TestConfigVocabulary.class );
         addTest( "TestBasics", TestBasics.suite() );
         addTest( "TestBackchainer", TestBackchainer.suite() );
         addTest( "TestLPBasics", TestBasicLP.suite() );
