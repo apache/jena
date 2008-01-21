@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: ReasonerVocabulary.java,v 1.26 2008-01-21 15:23:36 chris-dollin Exp $
+ * $Id: ReasonerVocabulary.java,v 1.27 2008-01-21 15:43:41 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.vocabulary;
 
@@ -18,7 +18,7 @@ import com.hp.hpl.jena.reasoner.rulesys.RDFSRuleReasoner;
  * builtin reasoners.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.26 $ on $Date: 2008-01-21 15:23:36 $
+ * @version $Revision: 1.27 $ on $Date: 2008-01-21 15:43:41 $
  */
 public class ReasonerVocabulary {
     
@@ -29,22 +29,22 @@ public class ReasonerVocabulary {
     public static final Resource ReasonerClass = ResourceFactory.createResource(JenaReasonerNS + "ReasonerClass");
     
     /** Reasoner description property: name of the reasoner */
-    public static final Property nameP = property( "name" );
+    public static final Property nameP = jenaReasonerProperty( "name" );
     
     /** Reasoner description property: text description of the reasoner */
-    public static final Property descriptionP = property( "description" );
+    public static final Property descriptionP = jenaReasonerProperty( "description" );
     
     /** Reasoner description property: version of the reasoner */
-    public static final Property versionP = property( "version" );
+    public static final Property versionP = jenaReasonerProperty( "version" );
     
     /** Reasoner description property: a schema property supported by the reasoner */
-    public static final Property supportsP = property( "supports" );
+    public static final Property supportsP = jenaReasonerProperty( "supports" );
     
     /** Reasoner description property: a configuration property supported by the reasoner */
-    public static final Property configurationP = property( "configurationProperty" );
+    public static final Property configurationP = jenaReasonerProperty( "configurationProperty" );
 
     /** A faux property used in reasoner capabilty models to denote reasoners that infer that individuals have rdf:type owl:Thing (or daml:Thing) */
-    public static final Property individualAsThingP = property( "individualAsThing" ); 
+    public static final Property individualAsThingP = jenaReasonerProperty( "individualAsThing" ); 
 
     /** The property that represents the direct/minimal version of the subClassOf relationship */
     public static final Property directSubClassOf = makeDirect( RDFS.subClassOf ); 
@@ -60,39 +60,39 @@ public class ReasonerVocabulary {
 
     /** Property used to configure the derivation logging behaviour of a reasoner.
      *  Set to "true" to enable logging of derivations. */
-    public static final Property PROPderivationLogging = PROP( "derivationLogging" );
+    public static final Property PROPderivationLogging = ruleReasonerProperty( "derivationLogging" );
 
     /** Property used to configure the tracing behaviour of a reasoner.
      *  Set to "true" to enable internal trace message to be sent to Logger.info . */
-    public static final Property PROPtraceOn = PROP( "traceOn" );
+    public static final Property PROPtraceOn = ruleReasonerProperty( "traceOn" );
 
     /** Property used to set the mode of a generic rule reasoner.
      *  Valid values are the strings "forward", "backward" or "hybrid" */
-    public static final Property PROPruleMode = PROP( "ruleMode" );
+    public static final Property PROPruleMode = ruleReasonerProperty( "ruleMode" );
     
     /** Property used to attach a file a rules to a generic rule reasoner.
      *  Value should a URI giving the rule set to use. */
-    public static final Property PROPruleSet = PROP( "ruleSet" );
+    public static final Property PROPruleSet = ruleReasonerProperty( "ruleSet" );
     
     /** Property used to switch on/off OWL schema translation on a generic rule reasoner.
      *  Value should be "true" to enable OWL translation */
-    public static final Property PROPenableOWLTranslation = PROP( "enableOWLTranslation" );
+    public static final Property PROPenableOWLTranslation = ruleReasonerProperty( "enableOWLTranslation" );
     
     /** Property used to switch on/off use of the dedicated subclass/subproperty
      *  caching in a generic rule reasoner. Set to "true" to enable caching. */
-    public static final Property PROPenableTGCCaching = PROP( "enableTGCCaching" );
+    public static final Property PROPenableTGCCaching = ruleReasonerProperty( "enableTGCCaching" );
     
     /** Property used to switch on/off scanning of data for container membership
      * properties in RDFS preprocessing. */
-    public static final Property PROPenableCMPScan = PROP( "enableCMPScan" );
+    public static final Property PROPenableCMPScan = ruleReasonerProperty( "enableCMPScan" );
     
     /** Property used to switch to different RDFS processing levles. The
      * legal levels are "default", "simple", and "full". */
-    public static final Property PROPsetRDFSLevel = PROP( "setRDFSLevel" );
+    public static final Property PROPsetRDFSLevel = ruleReasonerProperty( "setRDFSLevel" );
     
     /** Property used to switch on/off filtering of functors from returned results
      *  in the generic rule engine. Default is filtering on. */
-    public static final Property PROPenableFunctorFiltering = PROP( "enableFunctorFiltering" );
+    public static final Property PROPenableFunctorFiltering = ruleReasonerProperty( "enableFunctorFiltering" );
     
     /** Constant for PROPsetRDFSLevel - default behaviour */
     public static final String RDFS_DEFAULT = RDFSRuleReasoner.DEFAULT_RULES;
@@ -124,18 +124,18 @@ public class ReasonerVocabulary {
      *  Values are URL's. Default is no axioms. */
     public static final Property EXT_REASONER_AXIOMS = ResourceFactory.createProperty( JenaReasonerNS, "extReasonerAxioms" );
 
-    public static final Property ruleSet = property( "ruleSet" );
+    public static final Property ruleSet = jenaReasonerProperty( "ruleSet" );
 
-    public static final Property ruleSetURL = property( "ruleSetURL" );
+    public static final Property ruleSetURL = jenaReasonerProperty( "ruleSetURL" );
 
-    public static final Property hasRule = property( "hasRule" );
+    public static final Property hasRule = jenaReasonerProperty( "hasRule" );
 
-    public static final Property schemaURL = property( "schemaURL" );
+    public static final Property schemaURL = jenaReasonerProperty( "schemaURL" );
     
-    protected static final Property property( String localName )
+    protected static final Property jenaReasonerProperty( String localName )
         { return ResourceFactory.createProperty( JenaReasonerNS, localName ); }
 
-    private static final Property PROP( String localName )
+    protected static final Property ruleReasonerProperty( String localName )
         { return ResourceFactory.createProperty( PropURI + "#" + localName ); }
 
     /**
