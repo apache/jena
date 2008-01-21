@@ -20,7 +20,7 @@ import com.hp.hpl.jena.sparql.util.Utils;
 public abstract class QueryIterRepeatApply extends QueryIter1
 {
     int count = 0 ; 
-    QueryIterator currentStage ;
+    private QueryIterator currentStage ;
     
     public QueryIterRepeatApply( QueryIterator input ,
                                  ExecutionContext context)
@@ -33,6 +33,12 @@ public abstract class QueryIterRepeatApply extends QueryIter1
             ALog.fatal(this, "[QueryIterRepeatApply] Repeated application to null input iterator") ;
             return ;
         }
+    }
+    
+       
+    protected QueryIterator getCurrentStage()
+    {
+        return currentStage ;
     }
     
     protected abstract QueryIterator nextStage(Binding binding) ;

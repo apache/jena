@@ -24,9 +24,9 @@ import com.hp.hpl.jena.sparql.expr.ExprList;
  */ 
 public abstract class QueryIterJoinBase extends QueryIter2
 {
-    QueryIterator current ;
-    Table tableRight ;          // Materialized iterator
-    ExprList exprs ;
+    private QueryIterator current ;
+    protected Table tableRight ;          // Materialized iterator
+    protected ExprList exprs ;
     private Binding nextBinding = null ;
     
     public QueryIterJoinBase(QueryIterator left, QueryIterator right, ExprList exprs, ExecutionContext execCxt)
@@ -40,6 +40,8 @@ public abstract class QueryIterJoinBase extends QueryIter2
     public QueryIterJoinBase(QueryIterator left, Table right, ExprList exprs, ExecutionContext execCxt)
     {
         super(left, right.iterator(execCxt), execCxt) ;
+        this.tableRight = right ;
+        this.exprs = exprs ;
     }
     
     protected boolean hasNextBinding()

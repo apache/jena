@@ -33,6 +33,10 @@ public class QueryIterDefaulting extends QueryIter
         defaultObject = _defaultObject ;
     }
 
+    /** Returns true if the returned binding was the default object. Undef if before the iterator's first .hasNext() */
+    public boolean wasDefaultObject()
+    { return returnDefaultObject ; }
+    
     protected boolean hasNextBinding()
     {
         if ( isFinished() )

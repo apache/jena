@@ -30,7 +30,7 @@ import com.hp.hpl.jena.sparql.util.Utils;
 
 public class QueryIterUnion extends QueryIterRepeatApply 
 {
-    List subOps  ;
+    protected List subOps  ;
     
     public QueryIterUnion(QueryIterator input,
                           List subOps,

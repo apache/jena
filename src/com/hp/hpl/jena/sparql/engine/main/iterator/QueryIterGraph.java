@@ -32,7 +32,7 @@ import com.hp.hpl.jena.util.iterator.SingletonIterator;
 
 public class QueryIterGraph extends QueryIterRepeatApply
 {
-    OpGraph opGraph ;
+    protected OpGraph opGraph ;
     
     public QueryIterGraph(QueryIterator input, OpGraph opGraph, ExecutionContext context)
     {
@@ -66,7 +66,7 @@ public class QueryIterGraph extends QueryIterRepeatApply
     }
 
     // Iterator<Node>
-    private static Iterator makeSources(DatasetGraph data, Binding b, Node graphVar)
+    protected static Iterator makeSources(DatasetGraph data, Binding b, Node graphVar)
     {
         // TODO This should done as part of subsitution.
         Node n2 = resolve(b, graphVar) ;
@@ -84,14 +84,14 @@ public class QueryIterGraph extends QueryIterRepeatApply
     }
     
 
-    private static class QueryIterGraphInner extends QueryIter
+    protected static class QueryIterGraphInner extends QueryIter
     {
-        private Binding parentBinding ;
-        private Iterator graphNames ;       // Names as Nodes
-        private OpGraph opGraph ;
-        private QueryIterator subIter = null ;
+        protected Binding parentBinding ;
+        protected Iterator graphNames ;       // Names as Nodes
+        protected OpGraph opGraph ;
+        protected QueryIterator subIter = null ;
 
-        public QueryIterGraphInner(Binding parent, Iterator graphNames, OpGraph opGraph, ExecutionContext execCxt)
+        protected QueryIterGraphInner(Binding parent, Iterator graphNames, OpGraph opGraph, ExecutionContext execCxt)
         {
             super(execCxt) ;
             this.parentBinding = parent ;
@@ -138,30 +138,30 @@ public class QueryIterGraph extends QueryIterRepeatApply
         // There is a tradeoff of generalising QueryIteratorRepeatApply to Objects
         // and hence no type safety. Or duplicating code (generics?)
         
-        private QueryIterator nextIterator()
+        protected QueryIterator nextIterator()
         {
             if ( ! graphNames.hasNext() )
                 return null ;
             Node gn = (Node)graphNames.next() ;
 
-            Graph g = getExecContext().getDataset().getGraph(gn) ;
-            if ( g == null )
-                return null ;
-                
-            // Create a new context with a different active graph
-            ExecutionContext execCxt2 = new ExecutionContext(getExecContext(), g) ;
+//            Graph g = getExecContext().getDataset().getGraph(gn) ;
+//            if ( g == null )
+//                return null ;
+//                
+//            // Create a new context with a different active graph
+//            ExecutionContext execCxt2 = new ExecutionContext(getExecContext(), g) ;
                 
             Binding b = parentBinding ;
             if ( Var.isVar(opGraph.getNode()) ) 
                 // Binding the variable (if "GRAPH ?var")
                 b = new Binding1(b, Var.alloc(opGraph.getNode()), gn) ;
             
-            QueryIterator qIter = buildIterator(b, gn, opGraph, execCxt2) ; 
+            QueryIterator qIter = buildIterator(b, gn, opGraph, getExecContext()) ; 
             return qIter ;
         }
         
 
-        private static QueryIterator buildIterator(Binding binding, Node graphNode, OpGraph opGraph, ExecutionContext cxt)
+        protected static QueryIterator buildIterator(Binding binding, Node graphNode, OpGraph opGraph, ExecutionContext outerCxt)
         {
             if ( !graphNode.isURI() )
                 // e.g. variable bound to a literal or blank node.
@@ -172,12 +172,12 @@ public class QueryIterGraph extends QueryIterRepeatApply
             // TODO Think about avoiding substitution.
             // If the subpattern does not involve the vars from the binding, avoid the substitute.  
             Op op = OpSubstitute.substitute(opGraph.getSubOp(), binding) ;
-            Graph g = cxt.getDataset().getGraph(graphNode) ;
+            Graph g = outerCxt.getDataset().getGraph(graphNode) ;
             if ( g == null )
                 return null ;
             
-            ExecutionContext cxt2 = new ExecutionContext(cxt, g) ;
-            QueryIterator subInput = new QueryIterSingleton(binding, cxt) ;
+            ExecutionContext cxt2 = new ExecutionContext(outerCxt, g) ;
+            QueryIterator subInput = new QueryIterSingleton(binding, cxt2) ;
             return QC.compile(op, subInput, cxt2) ;
         }
     }
