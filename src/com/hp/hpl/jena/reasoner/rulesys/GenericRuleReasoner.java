@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: GenericRuleReasoner.java,v 1.33 2008-01-22 15:14:52 chris-dollin Exp $
+ * $Id: GenericRuleReasoner.java,v 1.34 2008-01-22 15:59:02 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -26,7 +26,7 @@ import java.util.*;
  * generic setParameter calls.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.33 $ on $Date: 2008-01-22 15:14:52 $
+ * @version $Revision: 1.34 $ on $Date: 2008-01-22 15:59:02 $
  */
 public class GenericRuleReasoner extends FBRuleReasoner {
 
@@ -214,8 +214,8 @@ public class GenericRuleReasoner extends FBRuleReasoner {
 
     private void addRulesFromStrings( Resource value )
         {
-        StmtIterator it = getHasRuleStatements( value );
-        while (it.hasNext()) addRuleFromString( it.nextStatement().getString() );
+        Iterator it = getHasRuleStatements( value );
+        while (it.hasNext()) addRuleFromString( ((Statement) it.next()).getString() );
         }
 
     private void addRuleFromString( String ruleString )
@@ -227,23 +227,41 @@ public class GenericRuleReasoner extends FBRuleReasoner {
         while (that.hasNext()) addRules( Rule.rulesFromURL( that.nextStatement().getResource().getURI() ) );
         }
 
-    private StmtIterator getHasRuleStatements( Resource value )
-        { return value.listProperties( JenaModelSpec.hasRule ); }
+    private Iterator getHasRuleStatements( Resource value )
+        { 
+        return 
+            value.listProperties( JenaModelSpec.hasRule )
+            .andThen( value.listProperties( ReasonerVocabulary.hasRule ) ); 
+        }
 
     private StmtIterator getRuleSetURLStatements( Resource value )
         { return value.listProperties( JenaModelSpec.ruleSetURL ); }
 
     private boolean isHasRule( Property parameter )
-        { return parameter.equals( JenaModelSpec.hasRule ); }
+        { 
+        return 
+            parameter.equals( JenaModelSpec.hasRule ) && obsolete( "hasRule" )
+            || parameter.equals( ReasonerVocabulary.hasRule ); 
+        }
 
     private boolean isRuleSet( Property parameter )
-        { return parameter.equals( JenaModelSpec.ruleSet ); }
+        { 
+        return 
+            parameter.equals( JenaModelSpec.ruleSet ) && obsolete( "ruleSet")
+            || parameter.equals( ReasonerVocabulary.ruleSet ); 
+        }
 
     private boolean isRuleSetURL( Property parameter )
         { 
         return 
-            parameter.equals( JenaModelSpec.ruleSetURL ) 
+            parameter.equals( JenaModelSpec.ruleSetURL ) && obsolete( "ruleSetURL" )
             || parameter.equals( ReasonerVocabulary.ruleSetURL ); 
+        }
+    
+    private boolean obsolete( String property )
+        {
+        // System.err.println( ">> OBSOLETE: jms:" + property + "; use " + ReasonerVocabulary.JenaReasonerNS + property + "." );
+        return true;
         }
     
     /**

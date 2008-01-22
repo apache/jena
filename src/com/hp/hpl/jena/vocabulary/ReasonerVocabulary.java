@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: ReasonerVocabulary.java,v 1.27 2008-01-21 15:43:41 chris-dollin Exp $
+ * $Id: ReasonerVocabulary.java,v 1.28 2008-01-22 15:59:10 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.vocabulary;
 
@@ -18,7 +18,7 @@ import com.hp.hpl.jena.reasoner.rulesys.RDFSRuleReasoner;
  * builtin reasoners.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.27 $ on $Date: 2008-01-21 15:43:41 $
+ * @version $Revision: 1.28 $ on $Date: 2008-01-22 15:59:10 $
  */
 public class ReasonerVocabulary {
     
@@ -124,12 +124,26 @@ public class ReasonerVocabulary {
      *  Values are URL's. Default is no axioms. */
     public static final Property EXT_REASONER_AXIOMS = ResourceFactory.createProperty( JenaReasonerNS, "extReasonerAxioms" );
 
+    /**
+        Property of a GRR config with object a node with rule set properties.
+    */
     public static final Property ruleSet = jenaReasonerProperty( "ruleSet" );
 
+    /**
+        Property of a GRR config with object a resource who's URI is the URL
+        of a Jena rules text.
+    */
     public static final Property ruleSetURL = jenaReasonerProperty( "ruleSetURL" );
 
+    /**
+        Property of a GRR rule-set config that specifies a rule as a string in the
+        Jena rules language.
+    */
     public static final Property hasRule = jenaReasonerProperty( "hasRule" );
 
+    /**
+        Property of a reasoner that specifies the URL of a schema to load.
+    */
     public static final Property schemaURL = jenaReasonerProperty( "schemaURL" );
     
     protected static final Property jenaReasonerProperty( String localName )
