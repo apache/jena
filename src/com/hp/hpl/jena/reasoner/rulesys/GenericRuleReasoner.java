@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: GenericRuleReasoner.java,v 1.32 2008-01-21 14:54:08 chris-dollin Exp $
+ * $Id: GenericRuleReasoner.java,v 1.33 2008-01-22 15:14:52 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -26,7 +26,7 @@ import java.util.*;
  * generic setParameter calls.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.32 $ on $Date: 2008-01-21 14:54:08 $
+ * @version $Revision: 1.33 $ on $Date: 2008-01-22 15:14:52 $
  */
 public class GenericRuleReasoner extends FBRuleReasoner {
 
@@ -215,8 +215,11 @@ public class GenericRuleReasoner extends FBRuleReasoner {
     private void addRulesFromStrings( Resource value )
         {
         StmtIterator it = getHasRuleStatements( value );
-        while (it.hasNext()) addRules( Rule.parseRules( it.nextStatement().getString() ) );
+        while (it.hasNext()) addRuleFromString( it.nextStatement().getString() );
         }
+
+    private void addRuleFromString( String ruleString )
+        { addRules( Rule.parseRules( ruleString ) ); }
 
     private void addRulesFromURLs( Resource value )
         {
@@ -225,23 +228,22 @@ public class GenericRuleReasoner extends FBRuleReasoner {
         }
 
     private StmtIterator getHasRuleStatements( Resource value )
-        {
-        return value.listProperties( JenaModelSpec.hasRule );
-        }
+        { return value.listProperties( JenaModelSpec.hasRule ); }
 
     private StmtIterator getRuleSetURLStatements( Resource value )
-        {
-        return value.listProperties( JenaModelSpec.ruleSetURL );
-        }
+        { return value.listProperties( JenaModelSpec.ruleSetURL ); }
+
+    private boolean isHasRule( Property parameter )
+        { return parameter.equals( JenaModelSpec.hasRule ); }
 
     private boolean isRuleSet( Property parameter )
-        {
-        return parameter.equals( JenaModelSpec.ruleSet );
-        }
+        { return parameter.equals( JenaModelSpec.ruleSet ); }
 
     private boolean isRuleSetURL( Property parameter )
-        {
-        return parameter.equals( JenaModelSpec.ruleSetURL );
+        { 
+        return 
+            parameter.equals( JenaModelSpec.ruleSetURL ) 
+            || parameter.equals( ReasonerVocabulary.ruleSetURL ); 
         }
     
     /**
@@ -250,13 +252,10 @@ public class GenericRuleReasoner extends FBRuleReasoner {
      * @return false if the parameter was not recognized
      */
     protected boolean doSetParameter(Property parameter, Object value) {
-        if (parameter.equals(ReasonerVocabulary.PROPderivationLogging)) {
-            recordDerivations = Util.convertBooleanPredicateArg(parameter, value);
-        } else if (parameter.equals(ReasonerVocabulary.PROPtraceOn)) {
-            traceOn =  Util.convertBooleanPredicateArg(parameter, value);
-        } else if (parameter.equals(ReasonerVocabulary.PROPenableFunctorFiltering)) {
+        if (parameter.equals(ReasonerVocabulary.PROPenableFunctorFiltering)) {
             filterFunctors =  Util.convertBooleanPredicateArg(parameter, value);
-            
+        } else if (isHasRule( parameter )) {
+            addRuleFromString( value.toString() );
         } else if (parameter.equals(ReasonerVocabulary.PROPenableOWLTranslation)) {
             enableOWLTranslation =  Util.convertBooleanPredicateArg(parameter, value);
             if (enableOWLTranslation) {
@@ -288,7 +287,7 @@ public class GenericRuleReasoner extends FBRuleReasoner {
                 throw new IllegalParameterException("PROPruleSet value should be a URI string. Was a " + value.getClass());
             }
         } else {
-            return false;
+            return super.doSetParameter( parameter, value );
         }
         return true;
     }
