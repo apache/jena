@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: GenericRuleReasoner.java,v 1.34 2008-01-22 15:59:02 chris-dollin Exp $
+ * $Id: GenericRuleReasoner.java,v 1.35 2008-01-22 16:16:24 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -26,7 +26,7 @@ import java.util.*;
  * generic setParameter calls.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.34 $ on $Date: 2008-01-22 15:59:02 $
+ * @version $Revision: 1.35 $ on $Date: 2008-01-22 16:16:24 $
  */
 public class GenericRuleReasoner extends FBRuleReasoner {
 
@@ -223,8 +223,8 @@ public class GenericRuleReasoner extends FBRuleReasoner {
 
     private void addRulesFromURLs( Resource value )
         {
-        StmtIterator that = getRuleSetURLStatements( value );
-        while (that.hasNext()) addRules( Rule.rulesFromURL( that.nextStatement().getResource().getURI() ) );
+        Iterator that = getRuleSetURLStatements( value );
+        while (that.hasNext()) addRules( Rule.rulesFromURL( ((Statement) that.next()).getResource().getURI() ) );
         }
 
     private Iterator getHasRuleStatements( Resource value )
@@ -234,8 +234,12 @@ public class GenericRuleReasoner extends FBRuleReasoner {
             .andThen( value.listProperties( ReasonerVocabulary.hasRule ) ); 
         }
 
-    private StmtIterator getRuleSetURLStatements( Resource value )
-        { return value.listProperties( JenaModelSpec.ruleSetURL ); }
+    private Iterator getRuleSetURLStatements( Resource value )
+        {
+        return 
+            value.listProperties( JenaModelSpec.ruleSetURL )
+            .andThen( value.listProperties( ReasonerVocabulary.ruleSetURL ) ); 
+        }
 
     private boolean isHasRule( Property parameter )
         { 
