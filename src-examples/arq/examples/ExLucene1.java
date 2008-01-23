@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
@@ -21,7 +21,6 @@ import com.hp.hpl.jena.util.FileManager;
  * then execute a SPARQL query with a Lucene search in it.
  * 
  * @author Andy Seaborne
- * @version $Id: ExLucene1.java,v 1.8 2007-09-06 15:12:10 andy_seaborne Exp $
  */
 
 public class ExLucene1
@@ -70,7 +69,7 @@ public class ExLucene1
         // larqBuilder.indexStatements(model.listStatements()) ;
         
         // ---- Finish indexing
-        larqBuilder.closeForWriting() ;
+        larqBuilder.closeWriter() ;
         model.unregister(larqBuilder) ;
         
         // ---- Create the access index  
@@ -96,7 +95,7 @@ public class ExLucene1
 }
 
 /*
- * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

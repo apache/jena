@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
@@ -24,7 +24,6 @@ import com.hp.hpl.jena.vocabulary.DC;
  *  Note: it may be better to build and execute an algebra expression.  See other examples.
  * 
  * @author Andy Seaborne
- * @version $Id: ExProg2.java,v 1.10 2007-09-06 15:12:10 andy_seaborne Exp $
  */
 
 public class ExProg2
@@ -120,7 +119,7 @@ public class ExProg2
 
 
 /*
- * (c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

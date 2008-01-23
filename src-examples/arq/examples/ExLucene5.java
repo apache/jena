@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
@@ -19,7 +19,6 @@ import com.hp.hpl.jena.sparql.util.Utils;
  *  Pattern 3. 
  * 
  * @author Andy Seaborne
- * @version $Id: ExLucene5.java,v 1.4 2007-09-06 15:12:10 andy_seaborne Exp $
  */
 
 public class ExLucene5
@@ -75,7 +74,7 @@ public class ExLucene5
         // The application is responsible for keeping 
         // ---- 
         
-        larqBuilder.closeForWriting() ;
+        larqBuilder.closeWriter() ;
         IndexLARQ index = larqBuilder.getIndex() ;
         
 //        NodeIterator iter = index.searchModelByIndex(model, "document") ;
@@ -88,7 +87,7 @@ public class ExLucene5
 }
 
 /*
- * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
