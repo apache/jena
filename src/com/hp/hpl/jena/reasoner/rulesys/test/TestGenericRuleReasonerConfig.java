@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2008 Hewlett-Packard Development Company, LP
  	All rights reserved.
- 	$Id: TestGenericRuleReasonerConfig.java,v 1.3 2008-01-22 16:16:31 chris-dollin Exp $
+ 	$Id: TestGenericRuleReasonerConfig.java,v 1.4 2008-01-23 14:48:30 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.reasoner.rulesys.test;
@@ -56,17 +56,23 @@ public class TestGenericRuleReasonerConfig extends AssemblerTestBase
     
     public void testLoadsSingleRuleViaRuleSetStringString()
         { 
-        testLoadsSingleRuleViaRuleSetString( "jms" );
-        testLoadsSingleRuleViaRuleSetString( "jr" );
+        testLoadsRulesViaRuleSetStrings( "jms" );
+        testLoadsRulesViaRuleSetStrings( "jr" );
         }
 
-    private void testLoadsSingleRuleViaRuleSetString( String ns )
+    private void testLoadsRulesViaRuleSetStrings( String ns )
         {
-        String rule = "[R: (?x rdf:type eg:Thing) -> (?x eg:thing true)]";
-        List rules = Rule.parseRules( rule );
-        Resource r = resourceInModel( "x <ns>:ruleSet _x; _x <ns>:hasRule '<it>'".replace( "<ns>", ns ).replace( "<it>", rule.replace( " ", "\\s" ) ) );
+        String ruleA = "[R: (?x rdf:type eg:Thing) -> (?x eg:thing true)]";
+        String ruleB = "[S: (?x rdf:type eg:Thung) -> (?x eg:thing false)]";
+        Set rules = rulesFromTwoStrings( ruleA, ruleB );
+        String modelString = "x <ns>:ruleSet _x; _x <ns>:hasRule '<A>'; _x <ns>:hasRule '<B>'"
+            .replace( "<ns>", ns )
+            .replace( "<A>", ruleA.replace( " ", "\\s" ) )
+            .replace( "<B>", ruleB.replace( " ", "\\s" ) )
+            ;
+        Resource r = resourceInModel( modelString );
         GenericRuleReasoner grr = new GenericRuleReasoner( null, r );
-        assertEquals( rules, grr.getRules() );
+        assertEquals( rules, new HashSet( grr.getRules() ) );
         }
     
     public void testLoadsMultipleRuleSetsViaRuleSetNode()
@@ -80,11 +86,23 @@ public class TestGenericRuleReasonerConfig extends AssemblerTestBase
         String whereA = "file:testing/modelspecs/example.rules";
         String whereB = "file:testing/modelspecs/extra.rules";
         Resource r = resourceInModel( "x <ns>:ruleSet _a; _a <ns>:ruleSetURL <whereA>; _a <ns>:ruleSetURL <whereB>".replace( "<ns>", ns ).replace( "<whereA>", whereA ).replace( "<whereB>", whereB ) );
+        GenericRuleReasoner grr = new GenericRuleReasoner( null, r );
+        assertEquals( rulesFromTwoPlaces( whereA, whereB ), new HashSet( grr.getRules() ) );
+        }
+
+    private Set rulesFromTwoStrings( String ruleA, String ruleB )
+        {
+        Set rules = new HashSet( Rule.parseRules( ruleA ) );
+        rules.addAll( Rule.parseRules( ruleB ) );
+        return rules;
+        }
+
+    private Set rulesFromTwoPlaces( String whereA, String whereB )
+        {
         Set rules = new HashSet();
         rules.addAll( Rule.rulesFromURL( whereA ) );
         rules.addAll( Rule.rulesFromURL( whereB ) );
-        GenericRuleReasoner grr = new GenericRuleReasoner( null, r );
-        assertEquals( rules, new HashSet( grr.getRules() ) );
+        return rules;
         }
     }
 
