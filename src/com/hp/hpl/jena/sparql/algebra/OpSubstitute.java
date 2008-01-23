@@ -16,6 +16,7 @@ import com.hp.hpl.jena.sparql.core.BasicPattern;
 import com.hp.hpl.jena.sparql.core.Quad;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
+import com.hp.hpl.jena.sparql.engine.binding.Binding1;
 import com.hp.hpl.jena.sparql.expr.ExprList;
 
 public class OpSubstitute extends TransformCopy
@@ -24,6 +25,12 @@ public class OpSubstitute extends TransformCopy
     
     public static Op substitute(Op op, Binding b)
     {
+        return Transformer.transform(new OpSubstitute(b), op) ;
+    }
+    
+    public static Op substitute(Op op, Var var, Node node)
+    {
+        Binding b = new Binding1(null, var, node) ;
         return Transformer.transform(new OpSubstitute(b), op) ;
     }
     

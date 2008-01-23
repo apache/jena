@@ -1,7 +1,4 @@
 PREFIX  xsd:    <http://www.w3.org/2001/XMLSchema#>
-PREFIX  dc:     <http://purl.org/dc/elements/1.1/>
-PREFIX  :       <.>
+PREFIX  :       <http://example/ns#>
 
-CONSTRUCT { ?s ?p ?o }
-FROM <D.ttl>
-WHERE { ?s ?p ?o }
+SELECT * { ?s :p ?o .  FILTER( :x = ?s) }

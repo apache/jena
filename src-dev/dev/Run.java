@@ -32,7 +32,9 @@ public class Run
 {
     public static void main(String[] argv) throws Exception
     {
-      //QueryEngineMain.register() ;
+        Rewrite.main() ; System.exit(0) ;
+        
+        //QueryEngineMain.register() ;
         String a[] = new String[]{
             //"-v",
             //"--engine=ref",
