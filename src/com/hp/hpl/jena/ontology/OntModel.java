@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OntModel.java,v $
- * Revision           $Revision: 1.54 $
+ * Revision           $Revision: 1.55 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2008-01-02 12:06:41 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2008-01-23 12:47:17 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -70,7 +70,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModel.java,v 1.54 2008-01-02 12:06:41 andy_seaborne Exp $
+ * @version CVS $Id: OntModel.java,v 1.55 2008-01-23 12:47:17 ian_dickinson Exp $
  */
 public interface OntModel
     extends InfModel
@@ -977,11 +977,11 @@ public interface OntModel
     /**
      * <p>
      * Answer a resource that represents a property restriction in this model. If a resource
-     * with the given uri exists in the model, it will be re-used.  If not, a new one is created in
+     * with the given URI exists in the model, it will be re-used.  If not, a new one is created in
      * the writable sub-model of the ontology model.
      * </p>
      *
-     * @param URI The URI for the restriction node, or null for an anonymous restriction.
+     * @param uri The URI for the restriction node, or null for an anonymous restriction.
      * @param p The property that is restricted by this restriction, or null to omit from the restriction
      * @return A Restriction resource.
      */

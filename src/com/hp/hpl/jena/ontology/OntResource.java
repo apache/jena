@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OntResource.java,v $
- * Revision           $Revision: 1.41 $
+ * Revision           $Revision: 1.42 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2008-01-02 12:06:41 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2008-01-23 12:47:17 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -38,7 +38,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntResource.java,v 1.41 2008-01-02 12:06:41 andy_seaborne Exp $
+ * @version CVS $Id: OntResource.java,v 1.42 2008-01-23 12:47:17 ian_dickinson Exp $
  */
 public interface OntResource
     extends Resource
@@ -488,13 +488,13 @@ public interface OntResource
      * <p>Add the given class as one of the <code>rdf:type</code>'s for this resource.</p>
      *
      * @param cls An RDF resource denoting a new value for the <code>rdf:type</code> property.
-     * @see Individual#addOntClass(Resource
+     * @see Individual#addOntClass(Resource)
      */
     public void addRDFType( Resource cls );
 
     /**
      * <p>
-     * Answer the <code>rdf:type</code> (ie the class) of this resource. If there
+     * Answer the <code>rdf:type</code> (i.e. the class) of this resource. If there
      * is more than one type for this resource, the return value will be one of
      * the values, but it is not specified which one (nor that it will consistently
      * be the same one each time). Equivalent to <code>getRDFType( false )</code>.

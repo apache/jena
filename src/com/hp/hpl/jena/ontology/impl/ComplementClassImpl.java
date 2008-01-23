@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            28-Apr-2003
  * Filename           $RCSfile: ComplementClassImpl.java,v $
- * Revision           $Revision: 1.16 $
+ * Revision           $Revision: 1.17 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2008-01-02 12:08:03 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2008-01-23 12:47:00 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -40,9 +40,9 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: ComplementClassImpl.java,v 1.16 2008-01-02 12:08:03 andy_seaborne Exp $
+ * @version CVS $Id: ComplementClassImpl.java,v 1.17 2008-01-23 12:47:00 ian_dickinson Exp $
  */
-public class ComplementClassImpl 
+public class ComplementClassImpl
     extends OntClassImpl
     implements ComplementClass
 {
@@ -54,27 +54,27 @@ public class ComplementClassImpl
 
     /**
      * A factory for generating ComplementClass facets from nodes in enhanced graphs.
-     * Note: should not be invoked directly by user code: use 
+     * Note: should not be invoked directly by user code: use
      * {@link com.hp.hpl.jena.rdf.model.RDFNode#as as()} instead.
      */
     public static Implementation factory = new Implementation() {
-        public EnhNode wrap( Node n, EnhGraph eg ) { 
+        public EnhNode wrap( Node n, EnhGraph eg ) {
             if (canWrap( n, eg )) {
                 return new ComplementClassImpl( n, eg );
             }
             else {
                 throw new ConversionException( "Cannot convert node " + n + " to ComplementClass");
-            } 
+            }
         }
-            
+
         public boolean canWrap( Node node, EnhGraph eg ) {
-            // node will support being an ComplementClass facet if it has rdf:type owl:Class and an owl:complementOf statement (or equivalents) 
+            // node will support being an ComplementClass facet if it has rdf:type owl:Class and an owl:complementOf statement (or equivalents)
             Profile profile = (eg instanceof OntModel) ? ((OntModel) eg).getProfile() : null;
             Property comp = (profile == null) ? null : profile.COMPLEMENT_OF();
 
-            return (profile != null)  &&  
+            return (profile != null)  &&
                    profile.isSupported( node, eg, OntClass.class )  &&
-                   comp != null && 
+                   comp != null &&
                    eg.asGraph().contains( node, comp.asNode(), Node.ANY );
         }
     };
@@ -90,7 +90,7 @@ public class ComplementClassImpl
      * <p>
      * Construct a complement class node represented by the given node in the given graph.
      * </p>
-     * 
+     *
      * @param n The node that represents the resource
      * @param g The enh graph that contains n
      */
@@ -102,89 +102,89 @@ public class ComplementClassImpl
     // External signature methods
     //////////////////////////////////
 
-	// operand
-    
-	/**
-	 * <p>Assert that the operands for this boolean class expression are the classes
-	 * in the given list. Any existing 
-	 * statements for the operator will be removed.</p>
-	 * @param operands The list of operands to this expression.
-	 * @exception Always throws UnsupportedOperationException since a complement expression takes only
-	 * a single argument.    
-	 */ 
-	public void setOperands( RDFList operands ) {
-		throw new UnsupportedOperationException( "ComplementClass takes a single operand, not a list.");
-	}
-	
-	
-	/**
-	 * <p>Set the class that the class represented by this class expression is
-	 * a complement of. Any existing value for <code>complementOf</code> will
-	 * be replaced.</p>
-	 * @return The class that this class is a complement of.
-	 */
-	public void setOperand( Resource cls ) {
-		setPropertyValue( getProfile().COMPLEMENT_OF(), "COMPLEMENT_OF", cls );
-	}
+    // operand
 
-	/**
-	 * <p>Add a class the operands of this boolean expression.</p>
-	 * @param cls A class that will be added to the operands of this Boolean expression
-	 * @exception Always throws UnsupportedOperationException since a complement expression takes only
-	 * a single argument.    
-	 */ 
-	public void addOperand( Resource cls ) {
-		throw new UnsupportedOperationException( "ComplementClass is only defined for  a single operand.");
-	}
+    /**
+     * <p>Assert that the operands for this boolean class expression are the classes
+     * in the given list. Any existing
+     * statements for the operator will be removed.</p>
+     * @param operands The list of operands to this expression.
+     * @exception Always throws UnsupportedOperationException since a complement expression takes only
+     * a single argument.
+     */
+    public void setOperands( RDFList operands ) {
+        throw new UnsupportedOperationException( "ComplementClass takes a single operand, not a list.");
+    }
 
-	/**
-	 * <p>Add all of the classes from the given iterator to the operands of this boolean expression.</p>
-	 * @param classes A iterator over classes that will be added to the operands of this Boolean expression
-	 * @exception Always throws UnsupportedOperationException since a complement expression takes only
-	 * a single argument.    
-	 */ 
-	public void addOperands( Iterator classes ) {
-		throw new UnsupportedOperationException( "ComplementClass is only defined for  a single operand.");
-	}
 
-	/**
-	 * <p>Answer the list of operands for this Boolean class expression.</p>
-	 * @return A list of the operands of this expression.
-	 * @exception OntProfileException If the operand property is not supported in the current language profile.   
-	 */ 
-	public RDFList getOperands() {
-		throw new UnsupportedOperationException( "ComplementClass takes a single operand, not a list.");
-	}
+    /**
+     * <p>Set the class that the class represented by this class expression is
+     * a complement of. Any existing value for <code>complementOf</code> will
+     * be replaced.</p>
+     * @param cls The class that this class is a complement of.
+     */
+    public void setOperand( Resource cls ) {
+        setPropertyValue( getProfile().COMPLEMENT_OF(), "COMPLEMENT_OF", cls );
+    }
 
-	/**
-	 * <p>Answer an iterator over all of the clases that are the operands of this 
-	 * Boolean class expression. Each element of the iterator will be an {@link OntClass}.</p>
-	 * @return An iterator over the operands of the expression.
-	 * @exception OntProfileException If the operand property is not supported in the current language profile.   
-	 */ 
-	public ExtendedIterator listOperands() {
-		return listAs( getProfile().COMPLEMENT_OF(), "COMPLEMENT_OF", OntClass.class );
-	}
+    /**
+     * <p>Add a class the operands of this boolean expression.</p>
+     * @param cls A class that will be added to the operands of this Boolean expression
+     * @exception Always throws UnsupportedOperationException since a complement expression takes only
+     * a single argument.
+     */
+    public void addOperand( Resource cls ) {
+        throw new UnsupportedOperationException( "ComplementClass is only defined for  a single operand.");
+    }
 
-	/**
-	 * <p>Answer true if this Boolean class expression has the given class as an operand.</p>
-	 * @param cls A class to test 
-	 * @return True if the given class is an operand to this expression.
-	 * @exception OntProfileException If the operand property is not supported in the current language profile.   
-	 */
-	public boolean hasOperand( Resource cls ) {
-		return hasPropertyValue( getProfile().COMPLEMENT_OF(), "COMPLEMENT_OF", cls );
-	}
-    
-	/**
-	 * <p>Answer the class that the class described by this class description
-	 * is a complement of.</p>
-	 * @return The class that this class is a complement of.
-	 */
-	public OntClass getOperand() {
-		return (OntClass) objectAs( getProfile().COMPLEMENT_OF(), "COMPLEMENT_OF", OntClass.class );
-	}
-    
+    /**
+     * <p>Add all of the classes from the given iterator to the operands of this boolean expression.</p>
+     * @param classes A iterator over classes that will be added to the operands of this Boolean expression
+     * @exception Always throws UnsupportedOperationException since a complement expression takes only
+     * a single argument.
+     */
+    public void addOperands( Iterator classes ) {
+        throw new UnsupportedOperationException( "ComplementClass is only defined for  a single operand.");
+    }
+
+    /**
+     * <p>Answer the list of operands for this Boolean class expression.</p>
+     * @return A list of the operands of this expression.
+     * @exception OntProfileException If the operand property is not supported in the current language profile.
+     */
+    public RDFList getOperands() {
+        throw new UnsupportedOperationException( "ComplementClass takes a single operand, not a list.");
+    }
+
+    /**
+     * <p>Answer an iterator over all of the clases that are the operands of this
+     * Boolean class expression. Each element of the iterator will be an {@link OntClass}.</p>
+     * @return An iterator over the operands of the expression.
+     * @exception OntProfileException If the operand property is not supported in the current language profile.
+     */
+    public ExtendedIterator listOperands() {
+        return listAs( getProfile().COMPLEMENT_OF(), "COMPLEMENT_OF", OntClass.class );
+    }
+
+    /**
+     * <p>Answer true if this Boolean class expression has the given class as an operand.</p>
+     * @param cls A class to test
+     * @return True if the given class is an operand to this expression.
+     * @exception OntProfileException If the operand property is not supported in the current language profile.
+     */
+    public boolean hasOperand( Resource cls ) {
+        return hasPropertyValue( getProfile().COMPLEMENT_OF(), "COMPLEMENT_OF", cls );
+    }
+
+    /**
+     * <p>Answer the class that the class described by this class description
+     * is a complement of.</p>
+     * @return The class that this class is a complement of.
+     */
+    public OntClass getOperand() {
+        return (OntClass) objectAs( getProfile().COMPLEMENT_OF(), "COMPLEMENT_OF", OntClass.class );
+    }
+
     /**
      * <p>Remove the given resource from the operands of this class expression.</p>
      * @param res An resource to be removed from the operands of this class expression
@@ -192,16 +192,16 @@ public class ComplementClassImpl
     public void removeOperand( Resource res ) {
         removePropertyValue( getProfile().COMPLEMENT_OF(), "COMPLEMENT_OF", res );
     }
-    
-    
-	/**
-	 * <p>Answer the property that is used to construct this boolean expression, for example
-	 * {@link Profile#UNION_OF()}.</p>
-	 * @return {@link Profile#COMPLEMENT_OF()}
-	 */
-	public Property operator() {
-		return getProfile().COMPLEMENT_OF();
-	}
+
+
+    /**
+     * <p>Answer the property that is used to construct this boolean expression, for example
+     * {@link Profile#UNION_OF()}.</p>
+     * @return {@link Profile#COMPLEMENT_OF()}
+     */
+    public Property operator() {
+        return getProfile().COMPLEMENT_OF();
+    }
 
 
 

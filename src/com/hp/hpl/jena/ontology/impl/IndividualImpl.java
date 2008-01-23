@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            31-Mar-2003
  * Filename           $RCSfile: IndividualImpl.java,v $
- * Revision           $Revision: 1.16 $
+ * Revision           $Revision: 1.17 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2008-01-02 12:08:02 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2008-01-23 12:47:00 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -38,7 +38,7 @@ import com.hp.hpl.jena.graph.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: IndividualImpl.java,v 1.16 2008-01-02 12:08:02 andy_seaborne Exp $
+ * @version CVS $Id: IndividualImpl.java,v 1.17 2008-01-23 12:47:00 ian_dickinson Exp $
  */
 public class IndividualImpl
     extends OntResourceImpl
@@ -244,7 +244,7 @@ public class IndividualImpl
      * <p>If this individual is not a member of the given class, the
      * operation has no effect.</p>
      *
-     * @param cls A resource denoting a class that that is to be removed from
+     * @param ontClass A resource denoting a class that that is to be removed from
      * the set of classes to which this individual belongs
      */
     public void removeOntClass( Resource ontClass ) {

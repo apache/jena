@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            22 Feb 2003
  * Filename           $RCSfile: OntModelImpl.java,v $
- * Revision           $Revision: 1.104 $
+ * Revision           $Revision: 1.105 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2008-01-02 12:08:02 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2008-01-23 12:47:00 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -54,7 +54,7 @@ import org.apache.commons.logging.LogFactory;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModelImpl.java,v 1.104 2008-01-02 12:08:02 andy_seaborne Exp $
+ * @version CVS $Id: OntModelImpl.java,v 1.105 2008-01-23 12:47:00 ian_dickinson Exp $
  */
 public class OntModelImpl
     extends ModelCom
@@ -238,7 +238,6 @@ public class OntModelImpl
                                 findByTypeAs( RDF.Property, OntProperty.class ) );
 
         // if we are in OWL_FULL, the properties should also include the annotation properties
-        Profile p = getProfile();
         if (getReasoner() != null  && getProfile().equals( ProfileRegistry.getInstance().getProfile( ProfileRegistry.OWL_LANG ) )) {
             // we are using a reasoner, and in OWL Full
             // so add the annotation properties too
@@ -2024,7 +2023,7 @@ public class OntModelImpl
      * URI's to represent the different OWL language levels. There is a slim chance that this
      * may change in future, in which case these return values will change apropriately.
      * In addition, the given <code>problems</problems> list, if non-null, will be filled with the syntax
-     * problems detected by the {@link com.hp.hpl.jena.ontology.tidy.Checker syntax checker}.
+     * problems detected by the syntax checker (<code> com.hp.hpl.jena.ontology.tidy.Checker</code>).
      * </p>
      * <p>
      * The Jena OWL syntax checker will normally list as problems those constructs used in
@@ -2986,8 +2985,8 @@ public class OntModelImpl
     /**
      * <p>Answer a resource presenting the {@link OntResource} facet, which
      * corresponds to the given resource but attached to this model.</p>
-     * @param resource An existing resource
-     * @return An OntResource attached to this model that has the same URI
+     * @param res An existing resource
+     * @return An {@link OntResource} attached to this model that has the same URI
      * or anonID as the given resource
      */
     public OntResource getOntResource( Resource res ) {

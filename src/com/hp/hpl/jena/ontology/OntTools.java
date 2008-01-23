@@ -436,8 +436,8 @@ public class OntTools
         }
 
         /**
-         * @return
          * @see java.lang.Object#toString()
+         * @return A string representation of this set for debugging
          */
         public String toString() {
             StringBuffer buf = new StringBuffer();
