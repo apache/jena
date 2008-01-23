@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            16-Jun-2003
  * Filename           $RCSfile: TestBugReports.java,v $
- * Revision           $Revision: 1.92 $
+ * Revision           $Revision: 1.93 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2008-01-16 14:13:33 $
+ * Last modified on   $Date: 2008-01-23 14:31:14 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
@@ -24,8 +24,6 @@ package com.hp.hpl.jena.ontology.impl.test;
 // Imports
 ///////////////
 import java.io.*;
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import java.util.*;
 
 import junit.framework.TestCase;
@@ -149,7 +147,8 @@ public class TestBugReports
 
         assertEquals( "Graph count..", 2, mymod.getSubGraphs().size() );
 
-        for (Iterator it = mymod.listImportedModels(); it.hasNext();) {
+//        for (Iterator it = mymod.listImportedModels(); it.hasNext();) {
+        for (Iterator it = mymod.listSubModels(); it.hasNext();) {
                 mymod.removeSubModel( (Model) it.next() );
         }
 
@@ -355,8 +354,8 @@ public class TestBugReports
         // TODO this workaround to be removed
         SimpleGraphMaker sgm = (SimpleGraphMaker) ((ModelMakerImpl) spec.getImportModelMaker()).getGraphMaker();
         List toGo = new ArrayList();
-        for (Iterator i = sgm.listGraphs(); i.hasNext(); toGo.add( i.next() ));
-        for (Iterator i = toGo.iterator(); i.hasNext(); sgm.removeGraph( (String) i.next() ));
+        for (Iterator i = sgm.listGraphs(); i.hasNext(); toGo.add( i.next() )) {/**/}
+        for (Iterator i = toGo.iterator(); i.hasNext(); sgm.removeGraph( (String) i.next() )) {/**/}
         dm.clearCache();
 
         OntModel newOntModel = ModelFactory.createOntologyModel(spec, null);
@@ -760,7 +759,7 @@ public class TestBugReports
 
         for (int i = 0; i < classes.length; i++) {
             OntClass c = m.getOntClass( classes[i] );
-            for (Iterator j = c.listDeclaredProperties(); j.hasNext(); j.next() );
+            for (Iterator j = c.listDeclaredProperties(); j.hasNext(); j.next() ) {/**/}
         }
     }
 
@@ -1670,7 +1669,6 @@ public class TestBugReports
 
 
     /** IsIndividual reported not to work with default rdfs reasoner
-     *  TODO test disabled until a fix strategy is agreed
      */
     public void test_isindividual() {
         OntModel defModel = ModelFactory.createOntologyModel();
@@ -1683,7 +1681,7 @@ public class TestBugReports
     public void test_getClassOwlLite() {
         OntModel m = ModelFactory.createOntologyModel( OntModelSpec.OWL_LITE_MEM );
         // throws NPE
-        OntClass c = m.getOntClass( "http://example.com/foo" );
+        m.getOntClass( "http://example.com/foo" );
     }
 
     /** This underpins a problem I'm having with imports processing */
