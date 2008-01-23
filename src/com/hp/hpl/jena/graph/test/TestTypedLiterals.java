@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestTypedLiterals.java,v 1.65 2008-01-02 12:05:32 andy_seaborne Exp $
+ * $Id: TestTypedLiterals.java,v 1.66 2008-01-23 16:21:10 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.graph.test;
 
@@ -34,7 +34,7 @@ import org.apache.xerces.impl.dv.util.HexBin;
  * TypeMapper and LiteralLabel.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.65 $ on $Date: 2008-01-02 12:05:32 $
+ * @version $Revision: 1.66 $ on $Date: 2008-01-23 16:21:10 $
  */
 public class TestTypedLiterals extends TestCase {
               
@@ -416,12 +416,21 @@ public class TestTypedLiterals extends TestCase {
         BigDecimal bigdec1 = new BigDecimal("12345678901234567890.00");
         Literal ld1 = m.createTypedLiteral(bigdec1, XSDDatatype.XSDdecimal);
         BigDecimal bigdec1b = new BigDecimal("12345678901234567890.0");
-        Literal ld1b = m.createTypedLiteral(bigdec1, XSDDatatype.XSDdecimal);
+        Literal ld1b = m.createTypedLiteral(bigdec1b, XSDDatatype.XSDdecimal);
         BigDecimal bigdec2 = new BigDecimal("12345678901234567890.1");
         Literal ld2 = m.createTypedLiteral(bigdec2, XSDDatatype.XSDdecimal);
         assertSameValueAs("big decimal equality check", ld1, ld1b);
         assertSameValueAs("big decimal equality check", ld1, lb1);
         assertDiffer("Decimal equality", ld1, ld2);
+        
+        BigDecimal bigdecF = new BigDecimal("12345678901234567890.1");
+        Literal ldF = m.createTypedLiteral(bigdecF, XSDDatatype.XSDdecimal);
+        BigDecimal bigdecFb = new BigDecimal("12345678901234567890.10");
+        Literal ldFb = m.createTypedLiteral(bigdecFb, XSDDatatype.XSDdecimal);
+        BigDecimal bigdecF2 = new BigDecimal("12345678901234567890.2");
+        Literal ldF2 = m.createTypedLiteral(bigdecF2, XSDDatatype.XSDdecimal);
+        assertSameValueAs("big decimal equality check", ldF, ldFb);
+        assertDiffer("Decimal equality", ldF, ldF2);
     }
     
     /**
