@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2008 Hewlett-Packard Development Company, LP
  	All rights reserved.
- 	$Id: TestGenericRuleReasonerConfig.java,v 1.4 2008-01-23 14:48:30 chris-dollin Exp $
+ 	$Id: TestGenericRuleReasonerConfig.java,v 1.5 2008-01-23 15:49:10 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.reasoner.rulesys.test;
@@ -13,6 +13,12 @@ import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.reasoner.rulesys.*;
 import com.hp.hpl.jena.vocabulary.ReasonerVocabulary;
 
+/**
+    Your eyes will bleed with the number of backslashes required in the substitute
+    strings.
+    
+ 	@author kers
+*/
 public class TestGenericRuleReasonerConfig extends AssemblerTestBase
     {
     public TestGenericRuleReasonerConfig( String name )
@@ -33,7 +39,7 @@ public class TestGenericRuleReasonerConfig extends AssemblerTestBase
     private void testLoadsSingleRuleViaURL( String ns )
         {
         String where = "file:testing/modelspecs/example.rules";
-        Resource r = resourceInModel( "x <ns>:ruleSetURL <where>".replace( "<ns>", ns ).replace( "<where>", where ) );
+        Resource r = resourceInModel( "x <ns>:ruleSetURL <where>".replaceAll( "<ns>", ns ).replaceAll( "<where>", where ) );
         List rules = Rule.rulesFromURL( where );
         GenericRuleReasoner grr = new GenericRuleReasoner( null, r );
         assertEquals( rules, grr.getRules() );
@@ -49,7 +55,7 @@ public class TestGenericRuleReasonerConfig extends AssemblerTestBase
         {
         String rule = "[R: (?x rdf:type eg:Thing) -> (?x eg:thing true)]";
         List rules = Rule.parseRules( rule );
-        Resource r = resourceInModel( "x <ns>:hasRule '<it>'".replace( "<ns>", ns ).replace( "<it>", rule.replace( " ", "\\s" ) ) );
+        Resource r = resourceInModel( "x <ns>:hasRule '<it>'".replaceAll( "<ns>", ns ).replaceAll( "<it>", rule.replaceAll( " ", "\\\\\\\\s" ) ) );
         GenericRuleReasoner grr = new GenericRuleReasoner( null, r );
         assertEquals( rules, grr.getRules() );
         }
@@ -66,9 +72,9 @@ public class TestGenericRuleReasonerConfig extends AssemblerTestBase
         String ruleB = "[S: (?x rdf:type eg:Thung) -> (?x eg:thing false)]";
         Set rules = rulesFromTwoStrings( ruleA, ruleB );
         String modelString = "x <ns>:ruleSet _x; _x <ns>:hasRule '<A>'; _x <ns>:hasRule '<B>'"
-            .replace( "<ns>", ns )
-            .replace( "<A>", ruleA.replace( " ", "\\s" ) )
-            .replace( "<B>", ruleB.replace( " ", "\\s" ) )
+            .replaceAll( "<ns>", ns )
+            .replaceAll( "<A>", ruleA.replaceAll( " ", "\\\\\\\\s" ) )
+            .replaceAll( "<B>", ruleB.replaceAll( " ", "\\\\\\\\s" ) )
             ;
         Resource r = resourceInModel( modelString );
         GenericRuleReasoner grr = new GenericRuleReasoner( null, r );
@@ -85,7 +91,7 @@ public class TestGenericRuleReasonerConfig extends AssemblerTestBase
         {
         String whereA = "file:testing/modelspecs/example.rules";
         String whereB = "file:testing/modelspecs/extra.rules";
-        Resource r = resourceInModel( "x <ns>:ruleSet _a; _a <ns>:ruleSetURL <whereA>; _a <ns>:ruleSetURL <whereB>".replace( "<ns>", ns ).replace( "<whereA>", whereA ).replace( "<whereB>", whereB ) );
+        Resource r = resourceInModel( "x <ns>:ruleSet _a; _a <ns>:ruleSetURL <whereA>; _a <ns>:ruleSetURL <whereB>".replaceAll( "<ns>", ns ).replaceAll( "<whereA>", whereA ).replaceAll( "<whereB>", whereB ) );
         GenericRuleReasoner grr = new GenericRuleReasoner( null, r );
         assertEquals( rulesFromTwoPlaces( whereA, whereB ), new HashSet( grr.getRules() ) );
         }
