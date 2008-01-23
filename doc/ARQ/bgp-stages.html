@@ -7,18 +7,21 @@
 -->
 
 <head>
-<title>ARQ</title>
+<title>ARQ - Extending Query Execution</title>
 <link rel="stylesheet" type="text/css" href="styles/doc.css" />
 </head>
 <body>
 
 <h1>ARQ - Extending Query Execution</h1>
-<p>There are a number of ways of extending query execution </p>
+<p>There are a number of ways of extending query execution. This page describes 
+how to interface ARQ to data which requires an alternative is not in a Jena 
+graph.</p>
 <ul>
 	<li><a href="extension.html#propertyFunctions">Property functions</a>: 
 	custom code that provides the matching of a property, rather than just 
 	simply matching RDF data.</li>
 	<li>Alternative basic pattern matching</li>
+	<li>Alternative execute of a SPARQL algebra</li>
 </ul>
 <p>Property functions provide the most convenient way of adding custom code to 
 the graph matching process for specific predicates.&nbsp; The
@@ -26,10 +29,13 @@ the graph matching process for specific predicates.&nbsp; The
 done this way.</p>
 <p>To replace several or all triple patterns in a SPARQL basic graph pattern (BGP) matching in a query, an 
 application can enhance the main query engine and intercept the BGP matching process.</p>
+<p>This page describes how to interface ARQ to data which requires an 
+alternative matching for the BGP</p>
 <h2>Basic Graph Pattern matching</h2>
 <p>BGP matching proceeds a number of &quot;stages&quot;.&nbsp; Each stage matches a subset 
 of the basic graph pattern.</p>
-<p>&nbsp;</p>
+<p class="todo">@@Standard : break into plain BGP/ property function.&nbsp; 
+Optimize each plain BGP</p>
 <p>&nbsp;</p>
 <p>The normal BGP matching is a single stage that finds all bindings for 
 variables for a pattern.</p>
