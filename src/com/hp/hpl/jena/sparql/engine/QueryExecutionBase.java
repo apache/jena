@@ -6,16 +6,28 @@
 
 package com.hp.hpl.jena.sparql.engine;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.n3.IRIResolver;
-import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.query.Dataset;
+import com.hp.hpl.jena.query.Query;
+import com.hp.hpl.jena.query.QueryExecException;
+import com.hp.hpl.jena.query.QueryExecution;
+import com.hp.hpl.jena.query.QuerySolution;
+import com.hp.hpl.jena.query.ResultSet;
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.rdf.model.RDFNode;
+import com.hp.hpl.jena.rdf.model.Resource;
+import com.hp.hpl.jena.rdf.model.Statement;
 import com.hp.hpl.jena.shared.PrefixMapping;
-import com.hp.hpl.jena.util.FileManager;
-
-import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.core.DatasetGraph;
 import com.hp.hpl.jena.sparql.core.describe.DescribeHandler;
 import com.hp.hpl.jena.sparql.core.describe.DescribeHandlerRegistry;
@@ -24,9 +36,12 @@ import com.hp.hpl.jena.sparql.engine.binding.BindingMap;
 import com.hp.hpl.jena.sparql.engine.binding.BindingRoot;
 import com.hp.hpl.jena.sparql.engine.binding.BindingUtils;
 import com.hp.hpl.jena.sparql.syntax.Template;
-import com.hp.hpl.jena.sparql.util.*;
-
-import com.hp.hpl.jena.query.*;
+import com.hp.hpl.jena.sparql.util.ALog;
+import com.hp.hpl.jena.sparql.util.Context;
+import com.hp.hpl.jena.sparql.util.DatasetUtils;
+import com.hp.hpl.jena.sparql.util.GraphUtils;
+import com.hp.hpl.jena.sparql.util.ModelUtils;
+import com.hp.hpl.jena.util.FileManager;
 
 /** All the SPARQL query result forms made from a graph-level execution object */ 
 

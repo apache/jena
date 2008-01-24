@@ -12,10 +12,13 @@ import com.hp.hpl.jena.sparql.core.DataSourceImpl;
 import com.hp.hpl.jena.sparql.modify.op.Update;
 import com.hp.hpl.jena.sparql.util.GraphUtils;
 
+/** Operations to create a GraphStore */
 public class GraphStoreFactory
 {
+    /** Create an empty GraphStore */
     public static GraphStore create() { return new GraphStoreBasic() ; }
     
+    /** Create a GraphStore from a dataset */
     public static GraphStore create(Dataset ds) { return new GraphStoreBasic(ds) ; }
     
     private static class GraphStoreBasic extends DataSourceGraphImpl implements GraphStore

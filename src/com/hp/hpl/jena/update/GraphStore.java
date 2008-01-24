@@ -10,7 +10,12 @@ import com.hp.hpl.jena.query.Dataset;
 import com.hp.hpl.jena.sparql.core.DataSourceGraph;
 import com.hp.hpl.jena.sparql.modify.op.Update;
 
-
+/** A collection of graphs that an update can be applied to.
+ *  The collection is one unnamed graph and zero or more named graphs, like
+ *  a SPARQL dataset.   
+ * @author Andy Seaborne
+ * @version $Id$
+ */
 public interface GraphStore extends DataSourceGraph
 {
     public void execute(UpdateRequest request) ;

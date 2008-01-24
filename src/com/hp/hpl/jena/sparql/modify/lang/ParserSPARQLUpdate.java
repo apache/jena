@@ -6,6 +6,7 @@
 
 package com.hp.hpl.jena.sparql.modify.lang;
 
+import java.io.InputStream;
 import java.io.Reader;
 import java.io.StringReader;
 
@@ -18,16 +19,28 @@ import com.hp.hpl.jena.query.QueryException;
 import com.hp.hpl.jena.query.QueryParseException;
 
 import com.hp.hpl.jena.update.UpdateRequest;
+import com.hp.hpl.jena.util.FileUtils;
 
 
 public class ParserSPARQLUpdate
 {
     public UpdateRequest parse(UpdateRequest update, String queryString)
     {
+        Reader r = new StringReader(queryString) ;
+        return parse(update, r) ;
+    }
+    
+    public UpdateRequest parse(UpdateRequest update, InputStream in)
+    {
+        Reader r = FileUtils.asBufferedUTF8(in) ;
+        return parse(update, r) ;
+    }
+    
+    private UpdateRequest parse(UpdateRequest update, Reader r)
+    {
         SPARQLUpdateParser parser = null ;
-        Reader in = new StringReader(queryString) ;
         try {
-            parser = new SPARQLUpdateParser(in) ;
+            parser = new SPARQLUpdateParser(r) ;
             parser.setUpdateRequest(update) ;
             parser.SPARQLUpdate() ;
             //validateParsedUpdate(update) ;
@@ -38,14 +51,14 @@ public class ParserSPARQLUpdate
             throw new QueryParseException(ex.getMessage(),
                                           ex.currentToken.beginLine,
                                           ex.currentToken.beginColumn
-                                          ) ; }
+            ) ; }
         catch (com.hp.hpl.jena.sparql.modify.lang.parser.TokenMgrError tErr)
         {
             // Last valid token : not the same as token error message - but this should not happen
             int col = parser.token.endColumn ;
             int line = parser.token.endLine ;
             throw new QueryParseException(tErr.getMessage(), line, col) ; }
-        
+
         catch (QueryException ex) { throw ex ; }
         catch (JenaException ex)  { throw new QueryException(ex.getMessage(), ex) ; }
         catch (Error err)
@@ -59,6 +72,8 @@ public class ParserSPARQLUpdate
             throw new QueryException(th.getMessage(), th) ;
         }
     }
+
+
 }
 /*
  * (c) Copyright 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP

@@ -6,14 +6,19 @@
 
 package com.hp.hpl.jena.update;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+
 import com.hp.hpl.jena.sparql.modify.lang.ParserSPARQLUpdate;
-import com.hp.hpl.jena.util.FileManager;
 
 
 public class UpdateFactory
 {
+    /** Create an empty UpdateRequest */
     public static UpdateRequest create() { return new UpdateRequest() ; }
     
+    /** Create an UpdateRequest by parsing the given string */
     public static UpdateRequest create(String str)
     { 
         ParserSPARQLUpdate p = new ParserSPARQLUpdate() ;
@@ -22,16 +27,32 @@ public class UpdateFactory
         return update ;
     }
     
+    /** Create an UpdateRequest by reading it from a file */
     public static UpdateRequest read(String fileName)
     { 
-        String str = null ;
+        InputStream in = null ;
         if ( fileName.equals("-") )
-            str = FileManager.get().readWholeFileAsUTF8(System.in);
+            in = System.in ;
         else
-            str = FileManager.get().readWholeFileAsUTF8(fileName) ;
-        // TODO Streaming!
-        return create(str) ;
+            try
+            {
+                in = new FileInputStream(fileName) ;
+            } catch (FileNotFoundException ex)
+            {
+                throw new UpdateException("File nout found: "+fileName) ;
+            }
+        return read(in) ;
     }
+    
+    /** Create an UpdateRequest by reading it from an InputStream (note that conversion to UTF-8 will be applied automatically) */
+    public static UpdateRequest read(InputStream in)
+    {
+        ParserSPARQLUpdate p = new ParserSPARQLUpdate() ;
+        UpdateRequest update = new UpdateRequest() ;
+        p.parse(update, in) ;
+        return update ;
+    }
+
 }
 
 /*
