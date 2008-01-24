@@ -41,7 +41,6 @@ public class QueryExecutionBase implements QueryExecution
     private QueryEngineFactory qeFactory ;
     private QueryIterator      queryIterator = null ;
     private Plan               plan = null ;
-    private Op                 queryOp       = null ;
     private Context            context ;
     private FileManager        fileManager = FileManager.get() ;
     private QuerySolution      initialBinding = null ;      

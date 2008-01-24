@@ -12,7 +12,6 @@ import com.hp.hpl.jena.sparql.algebra.*;
 import com.hp.hpl.jena.sparql.algebra.op.OpAssign;
 import com.hp.hpl.jena.sparql.algebra.op.OpFilter;
 import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.sparql.core.VarExprList;
 import com.hp.hpl.jena.sparql.expr.E_Equals;
 import com.hp.hpl.jena.sparql.expr.Expr;
 import com.hp.hpl.jena.sparql.expr.ExprList;
@@ -33,15 +32,13 @@ public class Rewrite
         System.out.println(op) ;
     }
     
-    // Pattern language
-    // (filter (= (VAR 'X) (CONST 'C) Z)
     static class Redo extends TransformCopy
     {
         public Op transform(OpFilter opFilter, Op subOp)
         { 
             ExprList exprs = opFilter.getExprs() ;
             Op op = subOp ;
-            // Any assignments must go inside filters
+            // Any assignments must go inside filters so the filters see the assignments.
             ExprList exprs2 = new ExprList() ;
             
             for ( Iterator iter = exprs.getList().iterator() ; iter.hasNext() ; )
@@ -51,14 +48,10 @@ public class Rewrite
                 if ( op2 == null )
                     exprs2.add(e) ;
                 else
-                {
-                    System.out.println("Equality: "+e) ;
-                    System.out.println(op2) ;
                     op = op2 ;
-                }
-                
             }
-            
+
+            // Place any filter expressions around the processed sub op. 
             if ( exprs2.size() > 0 )
                 op = OpFilter.filter(exprs2, op) ;
             return op ;
@@ -67,6 +60,7 @@ public class Rewrite
         // Return null for "no change"
         private Op processFilter(Expr e, Op subOp)
         {
+            // FILTER ( ?x = :x ) etc
             if ( e instanceof E_Equals )
             {
                 E_Equals eq = (E_Equals)e ;
