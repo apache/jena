@@ -80,7 +80,7 @@
   <target name="jar-optimised"  depends="optimise-javac-flags,main"
     description="Builds ${jarfile} with javac optimisation turned on and no debug info"/>
 
-  <target name="release" depends="contrib,package"
+  <target name="release" depends="contrib,assembler-doc,package"
       description="Create a complete Jena release"/>
 
   <uptodate property="update.unnecessary">
