@@ -1,4 +1,5 @@
- <!-- CVS: $Id: build.xml,v 1.139 2007-11-26 12:21:33 andy_seaborne Exp $ -->
+<!-- CVS: $Id: build.xml,v 1.139 2007/11/26
+12:21:33 andy_seaborne Exp $ -->
 
 <project name="jena" default="main" basedir=".">
 
@@ -34,6 +35,7 @@
   <property name="dist.dir"        value="${dist.root}/${dist.name}"/>
   <property name="lib.dir"         value="lib"/>
   <property name="doc.dir"         value="doc"/>
+  <property name="contrib.dir"     value="${doc.dir}/contrib"/>
   <property name="vocab.dir"       value="vocabularies"/>
   <property name="javadoc.dir"     value="doc/javadoc"/>
   <property name="etc.dir"         value="etc"/>
@@ -53,6 +55,7 @@
   </path>
   <path id="classpath.tools">
     <fileset dir="${lib.dir}" includes="*.jar"/>
+    <fileset dir="tools-lib" includes="*jar"/>
   </path>
 
   <!-- keyword substitutions -->
@@ -71,25 +74,44 @@
   <target name="main" depends="compile-jena,make-jar"
     description="Copy and compile source code, then build ${jarfile}"/>
 
-  <target name="jar"  depends="main"
+  <target name="jar" depends="main"
     description="Alias for target 'main'; builds ${jarfile}"/>
 
   <target name="jar-optimised"  depends="optimise-javac-flags,main"
     description="Builds ${jarfile} with javac optimisation turned on and no debug info"/>
 
-  <target name="release" depends="check-contributions,package"
+  <target name="release" depends="contrib,package"
       description="Create a complete Jena release"/>
 
-  <target name="check-contributions" if="contributions.need.updating">
-      <echo>Warning: contributions.html needs updating</echo>
-      <echo>[do `ant contrib` in the rdf-html module]</echo>
-  </target>
+  <uptodate property="update.unnecessary">
+      <srcfiles dir="${contrib.dir}" includes="contributions.n3"/>
+      <mapper type="glob" from="contributions.n3" to="contributions.html"/>
+  </uptodate>
 
-  <uptodate
-      targetfile="${doc.dir}/contrib/contributions.n3"
-      srcfile="${doc.dir}/contrib/contributions.html"
-      property="contributions.need.updating"
-  />
+  <target name="contrib" unless="update.unnecessary">
+      <echo>rebuilding contributions.html from contributions.n3</echo>
+      <java classname="com.hp.hpl.jena.tools.html.RDFtoTable">
+          <arg value="${contrib.dir}/contributions-table.n3"/>
+          <arg value="${contrib.dir}/contributions.n3"/>
+          <redirector output="${contrib.dir}/table.tmp"/>
+          <classpath>
+              <path refid="classpath.tools"/>
+          </classpath>
+      </java>
+      <java classname="jena.Weave">
+          <arg value="${contrib.dir}/contrib-template.html"/>
+          <redirector
+              output="${contrib.dir}/contributions.html"
+          />
+          <sysproperty
+              key="table"
+              value="${contrib.dir}/table.tmp"
+          />
+          <classpath>
+              <path refid="classpath.tools"/>
+          </classpath>
+      </java>
+  </target>
 
   <target name="jar-etc"
     description="Constructs a .jar file containing only the files from Jena's etc directory">
@@ -98,12 +120,6 @@
 
   <target name="test" depends="test-jar"
     description="Runs the unit tests against ${jarfile}"/>
-
-  <target name="contrib">
-    <echo>building and uploading the contributions.html file is done</echo>
-    <echo>from within Jena's rdf-html module.</echo>
-  </target>
-
 
   <!-- Source code preparation targets -->
   <!-- =============================== -->
@@ -303,8 +319,6 @@
   <target name="assembler-doc-howto">
       <java classname="jena.Weave">
           <classpath>
-              <pathelement path="../rdf-html/bin"/>
-              <fileset dir="../rdf-html/lib" includes="*.jar"/>
               <path refid="classpath.tools"/>
           </classpath>
           <redirector
@@ -319,8 +333,6 @@
    <target name="assembler-doc-inside">
         <java classname="jena.Weave">
             <classpath>
-                <pathelement path="../rdf-html/bin"/>
-                <fileset dir="../rdf-html/lib" includes="*.jar"/>
                 <path refid="classpath.tools"/>
              </classpath>
              <redirector
@@ -379,7 +391,7 @@
     <copy todir="${dist.dir}/${bat.dir}">
       <fileset dir="${bat.dir}" includes="**"/>
     </copy>
-    
+
     <!-- Documentation : Try to be clear here -->
     <!-- Javadoc is part of the documentation directory -->
     <copy todir="${dist.dir}/${doc.dir}">

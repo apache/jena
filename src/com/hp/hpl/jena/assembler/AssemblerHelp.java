@@ -1,7 +1,7 @@
 /*
  (c) Copyright 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  All rights reserved - see end of file.
- $Id: AssemblerHelp.java,v 1.21 2008-01-02 12:05:51 andy_seaborne Exp $
+ $Id: AssemblerHelp.java,v 1.22 2008-01-24 16:00:14 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.assembler;
@@ -82,7 +82,7 @@ public class AssemblerHelp
         }
     
     /**
-        @deprecated. Use <code>loadAssemblerClasses</code> instead
+        @deprecated Use <code>loadAssemblerClasses</code> instead
             (since it's explicit in what kinds of classes it loads).
     */
     public static void loadClasses( AssemblerGroup group, Model m )

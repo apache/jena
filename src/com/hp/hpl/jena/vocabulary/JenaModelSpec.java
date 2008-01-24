@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: JenaModelSpec.java,v 1.7 2008-01-02 12:07:28 andy_seaborne Exp $
+  $Id: JenaModelSpec.java,v 1.8 2008-01-24 16:00:17 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.vocabulary;
@@ -18,6 +18,10 @@ import com.hp.hpl.jena.util.FileManager;
     
     TODO ensure these have explicit tests [they were developed implicitly from the
     ModelSpec tests].
+    
+    @deprecated Use the ReasonerVocabulary equivalents instead; if there
+        is no such equivalent, then you should be using the corresponding
+        JenaAssembler properties.
     
  	@author kers
 */
