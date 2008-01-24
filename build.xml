@@ -8,7 +8,7 @@
   <!-- The major and minor version numbers  -->
   <property name="version-major"   value="2"/>
   <property name="version-minor"   value="2"/>
-  <property name="version-status"  value="-dev"/>
+  <property name="version-status"  value=""/>
   <property name="version"
             value="${version-major}.${version-minor}${version-status}"/>
 
@@ -34,6 +34,18 @@
   <property name="jarfile.extra"   value="${name}-extra.jar"/>
 
   <property name="arq.root"        value="src/com/hp/hpl/jena/query"/>
+
+  <property name="reports.dir"       value="reports"/>
+  <property name="reports.dir.xml"   value="reports/xml"/>
+  <property name="reports.outdir"    value="reports"/>
+
+  <!-- Define contents of each JAR file -->
+  <property name="arq.path.impl"      value="com/hp/hpl/jena/sparql"/>
+  <property name="extra.classes" 
+	    value="${arq.path.impl}/**/test/** ${arq.path.impl}/**/junit/** arq/**"/>
+
+  <!-- =========================================================== -->
+  <!-- ==== Environment -->
   
   <path id="classpath">
     <fileset dir="${lib.dir}" includes="*.jar" excludes="${jarfile}"/>
@@ -71,24 +83,26 @@
 
   <target name="javac-flags" depends="default-javac-flags"/>
 
-  <!-- Main external targets -->
-  <target name="main" depends="jar,test" description="Build arq.jar"/>
-  
-  <!-- Alternative name -->
-  <target name="jar"  depends="make-jars" description="Build arq.jar">
-    <antcall target="clean-build-dirs"/>
-  </target>
-
-  <target name="release" depends="init,package,test"
-          description="Create ARQ release">
-    <antcall target="clean-build-dirs"/>
-  </target>
-
-  <!-- Section: Grammars, Compilation and JAR -->
+  <!-- =========================================================== -->
+  <!-- ==== Main external targets -->
 
   <target name="init">
     <tstamp/>
   </target>
+
+  <target name="main" depends="jar,junit" description="Build arq.jar"/>
+  
+  <target name="jar"  depends="make-jars" description="Build arq.jar">
+    <antcall target="clean-build-dirs"/>
+  </target>
+
+  <target name="release" depends="init,package,junit"
+          description="Create ARQ release">
+    <antcall target="clean-build-dirs"/>
+  </target>
+
+  <!-- =========================================================== -->
+  <!-- ==== Grammars, Compilation and JAR -->
 
   <target name="pre-compile" depends="clean-build-dirs,javac-flags">
   </target>
@@ -103,7 +117,6 @@
       <fileset dir="${src.dir}" includes="**"/>
       <fileset dir="${src-test.dir}" includes="**"/>
       <fileset dir="${src-ex.dir}"  includes="**"/>
-
       <filterset>
         <filterset refid="filters.general"/>
         <filter token="build-time" value="${BUILD_TIME}" />
@@ -126,20 +139,15 @@
     </javac>
   </target>
 
-<!--
+
+<!-- Jena has a log4j in it so merely use that as the default.
   <target name="classes-misc">
     <copy todir="${classes.build.dir}" file="${src.dir}/log4j.properties"/>
   </target>
 -->
-  <!-- JARS -->
-  <!-- Use patternsets -->
+
 
   <target name="make-jars" depends="make-jar-core,make-jar-extra"/>
-
-  <property name="arq.path.impl"      value="com/hp/hpl/jena/sparql"/>
-
-  <property name="extra.classes" 
-	    value="${arq.path.impl}/**/test/** ${arq.path.impl}/**/junit/** arq/**"/>
 
   <target name="make-jar-core" depends="compile">
     <!-- Core jar -->
@@ -155,7 +163,6 @@
     </jar>
   </target>
 
-
   <!-- SSE subsystem - ->
   <target name="make-jar-sse" depends="compile">
     <jar destfile="${lib.dir}/${jarfile.sse}" index="yes">
@@ -164,22 +171,52 @@
   </target>
   -->
 
-  <!-- Section: Testing -->
+  <!-- =========================================================== -->
+  <!-- ==== Testing -->
   <!-- <target name="test" depends="jar"> -->
-  <target name="test">
-    <junit>
+
+  <target name="test" depends="junit"/>
+
+  <target name="junit" depends="run-junit" description="Run the test suite using the ARQ jar files.">
+    <fail message="Junit tests failed" if="junit.failed"/>
+  </target>
+
+  <target name="reports" depends="report"/>
+
+  <target name="report" depends="run-report" description="Run tests and generate reports">
+    <fail message="Junit tests failed" if="junit.failed"/>
+  </target>
+
+  <!-- run-junit and flag -->
+  <target name="run-junit" depends="clean-reports">
+    <mkdir dir="${reports.dir}"/>
+    <mkdir dir="${reports.dir.xml}"/>
+    <junit printsummary="yes" 
+	   errorProperty="junit.failed"
+	   failureProperty="junit.failed">
+      <formatter type="xml"/>
       <classpath>
         <fileset dir="${lib.dir}" includes="*.jar"/>
       </classpath>
-      <test name="com.hp.hpl.jena.sparql.test.ARQTestSuite"/>
+      <test todir="${reports.dir.xml}" name="com.hp.hpl.jena.sparql.test.ARQTestSuite"/>
     </junit>
   </target>
 
-  <!-- Section: Javadoc -->
+  <target name="run-report" depends="run-junit">
+    <mkdir dir="${reports.outdir}"/>
+    <junitreport todir="./${reports.dir}">
+      <fileset dir="./${reports.dir.xml}">
+        <include name="**.xml"/>
+      </fileset>
+      <report format="frames" todir="./${reports.outdir}"/>
+    </junitreport>
+  </target>
+
+  <!-- =========================================================== -->
+  <!-- ==== Javadoc -->
 
   <target name="javadoc" depends="clean-javadoc,build-src,javac-flags"
           description="Make the javadoc">
-
     <javadoc
      sourcepath="${src.build.dir}"
      source="${java.source}"
@@ -191,7 +228,7 @@
      doctitle="${Name} Query Processor"
      Public="true"
      Use="true"
-     bottom="Copyright &#169; 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP"
+     bottom="Copyright &#169; 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP"
      additionalparam="-breakiterator">
         <classpath refid="classpath"/>
         <package name="com.hp.hpl.jena.query"/>
@@ -214,15 +251,16 @@
      doctitle="${Name} Query Processor"
      Public="true"
      Use="true"
-     bottom="Copyright &#169; 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP"
+     bottom="Copyright &#169; 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP"
      additionalparam="-breakiterator">
     </javadoc>
   </target>
 
 
-  <!-- Section: Create distribution area -->
+  <!-- =========================================================== -->
+  <!-- ==== Create distribution area -->
 
-  <!-- Does not include javadoc-all which is 5m (zipped) -->
+  <!-- Does not include javadoc-all which is large even when zipped -->
   <target name="package"
           depends="make-jars,javadoc,distribution-init,copy,zip"/>
 
@@ -237,7 +275,6 @@
       <fileset dir="${lib.dir}" includes="**/*.jar"/>
     </copy>
 
-    
     <!-- Source : We could zip this up -->
     <copy todir="${dist.dir}/${src.dir}">
       <fileset dir="${src.build.dir}" includes="**"/>
@@ -294,14 +331,12 @@
     <!-- Dependences
  -->
 
-    <!-- lib directory include jena.jar -->
+    <!-- lib directory includes jena.jar -->
     <copy todir="${lib.dir}">
       <fileset dir="lib" includes="*.jar"/>
     </copy>
-    <!-- Should all be in the lib directory -->
 
-    <!-- Documentation : Try to be clear here -->
-
+    <!-- Documentation -->
     <!-- Javadoc is part of the documentation directory -->
     <copy todir="${dist.dir}/${doc.dir}">
       <fileset dir="${doc.dir}">
@@ -338,7 +373,6 @@
                includes="**"
                excludes="${test.dir}/*/*-tests-jena*.zip"/>
     </copy>
-
   </target>
 
   <target name="zip" >
@@ -349,14 +383,14 @@
     </zip>
   </target>
 
+  <!-- =========================================================== -->
   <!-- Cleaning -->
-
   <target name="clean" depends="clean-build-dirs"
           description="Clean up">
     <delete dir="${dist.dir}"/>
   </target>
 
-  <target name="clean-all" depends="clean-javadoc,clean"
+  <target name="clean-all" depends="clean-javadoc,clean,clean-reports"
           description="Clean up a lot">
     <delete dir="${dist.dir}"/>
   </target>
@@ -377,6 +411,12 @@
   <target name="clean-javadoc" description="Clean the javadoc directories">
     <delete dir="${javadoc.dir}"/>
     <mkdir  dir="${javadoc.all.dir}"/>
+  </target>
+
+  <target name="clean-reports">
+    <delete dir="${reports.dir}"/>
+    <delete dir="${reports.dir.xml}"/>
+    <delete dir="${reports.outdir}"/>
   </target>
 
   <!-- SSE : Remove sometime because it's in the core compile now. -->
