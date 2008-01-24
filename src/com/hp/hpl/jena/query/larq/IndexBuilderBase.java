@@ -117,7 +117,7 @@ public class IndexBuilderBase implements IndexBuilder
     }
     
     /** Finish indexing (optimizes the index)
-     * @deprecated Use  {@link closeWriter} to really release the index or {@link flushWriter()} to optimize it but leave it open for writing.
+     * @deprecated Use {@link #closeWriter()} to really release the index or {@link #flushWriter()} to optimize it but leave it open for writing.
      * The writer index is no longer close by this call.
      */
     public void closeForWriting()
@@ -125,7 +125,7 @@ public class IndexBuilderBase implements IndexBuilder
     
 
     /** Finish indexing, optionally optimizing the index
-     * @deprecated      Use {@link closeWriter()} to really release the index or flushIndex to optimize it but leave it open for writing.
+     * @deprecated      Use {@link #closeWriter()} to really release the index or {@link #flushWriter()} to optimize it but leave it open for writing.
      * @param optimize
      */
     public void closeForWriting(boolean optimize)

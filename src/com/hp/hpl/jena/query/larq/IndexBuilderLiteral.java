@@ -79,7 +79,7 @@ public abstract class IndexBuilderLiteral extends IndexBuilderModel
         { throw new ARQLuceneException("indexStatement", e) ; }
     }
    
-    /** @deprecated Use {@link closeWriter} or {@link flushWriter}. */
+    /** @deprecated Use {@link IndexBuilderModel#closeWriter()} or {@link IndexBuilderModel#flushWriter()}. */
     public void closeForWriting()
     {
         super.closeForWriting() ;

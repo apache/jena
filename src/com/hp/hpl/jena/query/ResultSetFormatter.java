@@ -47,7 +47,7 @@ public class ResultSetFormatter
     /**
      * Output a result set in a text format.
      * @param qresults   result set
-     * @param Query   May be used to abbreviate URIs 
+     * @param query     May be used to abbreviate URIs 
      */
     public static void out(ResultSet qresults, Query query)
     { out(System.out, qresults, query) ; }
@@ -55,7 +55,7 @@ public class ResultSetFormatter
     /**
      * Output a result set in a text format.
      * @param qresults   result set
-     * @param Progloue   May be used to abbreviate URIs 
+     * @param prologue   May be used to abbreviate URIs 
      */
     public static void out(ResultSet qresults, Prologue prologue)
     { out(System.out, qresults, prologue) ; }
@@ -93,7 +93,7 @@ public class ResultSetFormatter
      * Output a result set in a text format.
      * @param out       OutputStream
      * @param qresults  result set
-     * @param Prologue  Prologue
+     * @param prologue  Prologue, used to abbreviate IRIs
      */
     public static void out(OutputStream out, ResultSet qresults, Prologue prologue)
     {
@@ -567,7 +567,7 @@ public class ResultSetFormatter
      *  Format: <a href="http://jena.hpl.hp.com/wiki/SSE">SSE</a>
      * @param outStream     output stream
      * @param resultSet     result set
-     * @param prefixMap     PrefixMapping
+     * @param prologue
      */
     
     static public void outputAsSSE(OutputStream outStream, ResultSet resultSet, Prologue prologue)

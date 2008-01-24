@@ -205,13 +205,13 @@ public class DatasetFactory
         
     /** Assembler a dataset from a resource
      * 
-     * @param Resource
+     * @param resource  The resource for the dataset
      * @return Dataset
      */
     
-    public static Dataset assemble(Resource r)
+    public static Dataset assemble(Resource resource)
     {
-        Dataset ds = (Dataset)Assembler.general.open(r) ;
+        Dataset ds = (Dataset)Assembler.general.open(resource) ;
         return ds ;
     }
     

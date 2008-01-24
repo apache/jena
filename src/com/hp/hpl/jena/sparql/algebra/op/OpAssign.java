@@ -20,6 +20,19 @@ public class OpAssign extends Op1
 {
     private VarExprList assignments ;
     
+    static public Op assign(Op op, Var var, Expr expr)
+    {
+        if ( ! ( op instanceof OpAssign ) )
+        {
+            VarExprList x = new VarExprList() ;
+            x.add(var, expr) ;
+            return new OpAssign(op, x) ;
+        }
+        OpAssign opAssign = (OpAssign)op ;
+        opAssign.assignments.add(var, expr) ;
+        return opAssign ;
+    }
+    
     public OpAssign(Op subOp)
     {
         super(subOp) ;

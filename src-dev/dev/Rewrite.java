@@ -40,16 +40,33 @@ public class Rewrite
         public Op transform(OpFilter opFilter, Op subOp)
         { 
             ExprList exprs = opFilter.getExprs() ;
+            Op op = subOp ;
+            // Any assignments must go inside filters
+            ExprList exprs2 = new ExprList() ;
+            
             for ( Iterator iter = exprs.getList().iterator() ; iter.hasNext() ; )
             {
                 Expr e = (Expr) iter.next() ;
-            } 
+                Op op2 = processFilter(e, op) ;
+                if ( op2 == null )
+                    exprs2.add(e) ;
+                else
+                {
+                    System.out.println("Equality: "+e) ;
+                    System.out.println(op2) ;
+                    op = op2 ;
+                }
+                
+            }
             
-            
-            // Expand conjunctions
-            
-            if ( exprs.size() != 1 ) return super.transform(opFilter, subOp) ;
-            Expr e = exprs.get(0) ;
+            if ( exprs2.size() > 0 )
+                op = OpFilter.filter(exprs2, op) ;
+            return op ;
+        }
+        
+        // Return null for "no change"
+        private Op processFilter(Expr e, Op subOp)
+        {
             if ( e instanceof E_Equals )
             {
                 E_Equals eq = (E_Equals)e ;
@@ -61,15 +78,13 @@ public class Rewrite
                     return subst(subOp, right.asVar(), left.getConstant()) ;
             }
                 
-            return super.transform(opFilter, subOp) ;
+            return null ;
         }
         
-        private Op subst(Op op, Var var, NodeValue nv)
+        private static Op subst(Op subOp , Var var, NodeValue nv)
         {
-            Op op2 = OpSubstitute.substitute(op, var, nv.asNode()) ;
-            VarExprList x = new VarExprList() ;
-            x.add(var, nv) ;
-            return new OpAssign(op2, x) ;
+            Op op = OpSubstitute.substitute(subOp, var, nv.asNode()) ;
+            return OpAssign.assign(op, var, nv) ;
         }
     }
 }

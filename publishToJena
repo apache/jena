@@ -71,7 +71,7 @@ echo "Run testing/exportToJena"
 
 # 5 -- Examples
 
-copyDir src-examples/arq $JENAROOT/src-examples
+copyDir src-examples/arq $JENAROOT/src-examples/arq
 
 ## # Clean a directory - removes files - leaves CVS info intact
 ## function cleanDir
