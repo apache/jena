@@ -80,13 +80,31 @@
   <target name="jar-optimised"  depends="optimise-javac-flags,main"
     description="Builds ${jarfile} with javac optimisation turned on and no debug info"/>
 
-  <target name="release" depends="contrib,assembler-doc,package"
+  <target name="release" depends="check-contrib,check-assembler-doc,package"
       description="Create a complete Jena release"/>
 
-  <uptodate property="update.unnecessary">
-      <srcfiles dir="${contrib.dir}" includes="contributions.n3"/>
-      <mapper type="glob" from="contributions.n3" to="contributions.html"/>
-  </uptodate>
+  <target name="check-contrib" unless="update.unnecessary">
+    <echo>
+        Warning: contrib needs updating: do `ant contrib` 
+        and commit updates before releasing.
+    </echo>
+  </target>
+
+  <target name="check-assembler-doc" unless="assembler.unnecessary">
+    <echo>
+        Warning: assembler documentation needs updating: do `ant assembler-doc`
+        and commit updates before releasing.
+    </echo>
+  </target>
+
+  <uptodate property="update.unnecessary"
+    srcfile="${contrib.dir}/contributions.n3" targetfile="${contrib.dir}/contributions.html"
+  />
+
+  <uptodate property="assembler.unnecessary"
+    srcfile="${doc.dir}/assembler/assembler-howto.phtml"
+    targetfile="${doc.dir}/assembler/assembler-howto.html"
+  />
 
   <target name="contrib" unless="update.unnecessary">
       <echo>rebuilding contributions.html from contributions.n3</echo>
