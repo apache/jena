@@ -1,14 +1,13 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ModelMakerImpl.java,v 1.25 2008-01-02 12:05:00 andy_seaborne Exp $
+  $Id: ModelMakerImpl.java,v 1.26 2008-01-28 15:51:46 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
 
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.shared.CannotCreateException;
 import com.hp.hpl.jena.util.iterator.*;
 
 /**
@@ -78,20 +77,6 @@ public class ModelMakerImpl implements ModelMaker
       
     public ExtendedIterator listModels()
         { return maker.listGraphs(); }
-    
-    /**
-        @deprecated 
-        @see com.hp.hpl.jena.rdf.model.ModelSource#getModel()
-    */
-    public Model getModel()
-        { return createDefaultModel(); }
-    
-    /**
-        @deprecated 
-        @see com.hp.hpl.jena.rdf.model.ModelSource#createModel()
-     */
-    public Model createModel()
-        { return createFreshModel(); }
     
     /**
         ModelGetter implementation component.     
