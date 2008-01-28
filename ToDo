@@ -1,5 +1,9 @@
 ==== ARQ ToDo
 
+++ ** Document "stages" - new form.
+++ ** Document "algebra"
+++ ** Document "update API"
+
 + Reconsider OpStage
 
 + OpService in ref QE.
@@ -9,8 +13,6 @@
    believe MIME type.
    Jena change: FileManager/MimeStream
 
-++ ** Document "stages" - new form.
-++ ** Document "update API"
 ++ Algebra building src-examples
 ++ Tutorial on update 
 ++ ARQ documentation and clearup - adding new storage layers.

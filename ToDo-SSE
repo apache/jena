@@ -1,5 +1,12 @@
 ==== SSE
 
++ Comment character of # is too valuable.
+  Use '--', ';;', '//', '/* */', '{{', '~~'
+  ## is heavy. '%'  
+  (comment !!!!)
+
++ Use of {} for ???
+
 + Literals and @
   Include @ into literal terminator 
   Currently, symbols can't start with a @ or ^ 
@@ -9,11 +16,6 @@
 + Expr: (exists (pattern ...))
   Tidy expr writing - consolidate in WriterExpr
   
-+ SSE.parseXXX(, Prologue)
-
-+ Item writeing and .toString.
-+ Op toString.
-
-+ PrintSerializable does nto really work because it assumes one serialization form.
++ PrintSerializable does not really work because it assumes one serialization form.
   OK for human readable but that's about it.
   Possible remove "output(, SerializationContext)" form and leave as support for toString.
