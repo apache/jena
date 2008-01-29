@@ -16,6 +16,7 @@ import java.util.TimeZone;
 import com.hp.hpl.jena.datatypes.xsd.XSDDateTime;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
+
 import com.hp.hpl.jena.sparql.core.Var;
 
 /** Miscellaneous operations - not query specific */
@@ -154,8 +155,12 @@ public class Utils
     
     static public String stringForm(double d)
     { 
-        // SPARQL form.
-        return Double.toString(d)+"e0" ;
+        // SPARQL form always has "e0"
+        String x = Double.toString(d) ;
+        if ( (x.indexOf('e') != -1) || (x.indexOf('E') != -1) )
+            return x ;
+        // Renormalize?
+        return x+"e0" ;
     }
     
     static public String stringForm(float f)

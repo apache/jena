@@ -32,6 +32,9 @@ public class Run
 {
     public static void main(String[] argv) throws Exception
     {
+        arq.qexpr.main(new String[]{"64*1000*4e9/(3600*24*365*1000)"} );
+        System.exit(0) ;
+        
         Rewrite.main() ; System.exit(0) ;
         
         //QueryEngineMain.register() ;
