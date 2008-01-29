@@ -27,35 +27,38 @@
   <property name="srczipfile"      value="${name}-src.zip"/>
 
   <!-- Source code locations -->
-  <property name="src.dir"         value="src"/>
+  <property name="src.dir"           value="src"/>
   <property name="src.examples.dir"  value="src-examples"/>
-  <property name="bldsrc.dir"      value="bldsrc"/>
-  <property name="classes.dir"     value="bldbin"/>
-  <property name="dist.root"       value="dist"/>
-  <property name="dist.dir"        value="${dist.root}/${dist.name}"/>
-  <property name="lib.dir"         value="lib"/>
-  <property name="doc.dir"         value="doc"/>
-  <property name="contrib.dir"     value="${doc.dir}/contrib"/>
-  <property name="vocab.dir"       value="vocabularies"/>
-  <property name="javadoc.dir"     value="doc/javadoc"/>
-  <property name="etc.dir"         value="etc"/>
-  <property name="test.dir"        value="testing"/>
+  <property name="bldsrc.dir"        value="bldsrc"/>
+  <property name="classes.dir"       value="bldbin"/>
+  <property name="dist.root"         value="dist"/>
+  <property name="dist.dir"          value="${dist.root}/${dist.name}"/>
+  <property name="lib.dir"           value="lib"/>
+  <property name="doc.dir"           value="doc"/>
+  <property name="doc.examples.dir"  value="${dist.dir}/${doc.dir}/src-examples" />
+  <property name="contrib.dir"       value="${doc.dir}/contrib"/>
+  <property name="vocab.dir"         value="vocabularies"/>
+  <property name="javadoc.dir"       value="doc/javadoc"/>
+  <property name="etc.dir"           value="etc"/>
+  <property name="test.dir"          value="testing"/>
+  <property name="tools.lib.dir"     value="tools-lib"/>
 
-  <property name="bin.dir"        value="bin"/>
-  <property name="bat.dir"        value="bat"/>
+  <property name="bin.dir"           value="bin"/>
+  <property name="bat.dir"           value="bat"/>
 
   <!-- Vocabulary generation -->
-  <property name="vocab.java"      value="src/com/hp/hpl/jena/vocabulary" />
-  <property name="vocab.tool"      value="jena.schemagen" />
-  <property name="vocab.template"  value="vocabularies/jenavocab.rdf" />
+  <property name="vocab.java"        value="src/com/hp/hpl/jena/vocabulary" />
+  <property name="vocab.tool"        value="jena.schemagen" />
+  <property name="vocab.template"    value="vocabularies/jenavocab.rdf" />
 
   <!-- Classpaths -->
   <path id="classpath">
     <fileset dir="${lib.dir}" includes="*.jar" excludes="${jarfile}"/>
   </path>
+
   <path id="classpath.tools">
     <fileset dir="${lib.dir}" includes="*.jar"/>
-    <fileset dir="tools-lib" includes="*jar"/>
+    <fileset dir="${tools.lib.dir}" includes="*.jar"/>
   </path>
 
   <!-- keyword substitutions -->
@@ -85,7 +88,7 @@
 
   <target name="check-contrib" unless="update.unnecessary">
     <echo>
-        Warning: contrib needs updating: do `ant contrib` 
+        Warning: contrib needs updating: do `ant contrib`
         and commit updates before releasing.
     </echo>
   </target>
@@ -410,8 +413,14 @@
       <fileset dir="${bat.dir}" includes="**"/>
     </copy>
 
-    <!-- Documentation : Try to be clear here -->
+    <!-- Documentation -->
     <!-- Javadoc is part of the documentation directory -->
+
+    <!-- First we translate the src-examples code into html (use ant-call to get the sequencing right) -->
+    <antcall target="generate.html.src-examples">
+    </antcall>
+
+    <!-- copy the documentation tree, minus non-release files -->
     <copy todir="${dist.dir}/${doc.dir}">
       <fileset dir="${doc.dir}">
         <include name="**"/>
@@ -423,12 +432,30 @@
         <exclude name="linkcheck"/>
         <exclude name="release"/>
         <exclude name="readme-site.txt"/>
-    <!-- FrontPage control files -->
-    <exclude name="**/_*"/>
-    <exclude name="**/_*/*"/>
+        <!-- FrontPage control files -->
+        <exclude name="**/_*"/>
+        <exclude name="**/_*/*"/>
         <exclude name="**/desktop.ini"/>
       </fileset>
     </copy>
+
+    <!-- After we copy, edit links to src-examples to point to the html versions instead -->
+    <replaceregexp match="\.\./src-examples/(.*\.java)"
+                   replace="src-examples/\1.xhtml"
+                   byline="true">
+      <fileset dir="${dist.dir}/${doc.dir}" includes="**/*.html" excludes="**/javadoc"/>
+    </replaceregexp>
+    <replaceregexp match="\.\./src-examples/data"
+                   replace="src-examples/data"
+                   byline="true">
+      <fileset dir="${dist.dir}/${doc.dir}" includes="**/*.html" excludes="**/javadoc"/>
+    </replaceregexp>
+    <replaceregexp match="\.\./vocabularies"
+                   replace="vocabularies"
+                   byline="true">
+      <fileset dir="${dist.dir}/${doc.dir}" includes="**/*.html" excludes="**/javadoc"/>
+    </replaceregexp>
+
     <!-- Vocabularies and schemas -->
     <copy todir="${dist.dir}/${vocab.dir}">
       <fileset dir="${vocab.dir}" includes="**"/>
@@ -436,8 +463,8 @@
     <copy todir="${dist.dir}/${test.dir}">
       <!-- Exclude any zips of the RDQL test scripts -->
       <fileset dir="${test.dir}"
-           includes="**"
-           excludes="${test.dir}/RDQL/rdql-tests-jena*.zip"/>
+               includes="**"
+               excludes="${test.dir}/RDQL/rdql-tests-jena*.zip"/>
     </copy>
     <!-- Junk that creeps in -->
     <delete>
@@ -537,5 +564,31 @@
     </java>
   </target>
 
+  <!-- Generate html version of src-examples -->
+  <taskdef name="java2html"
+      classname="de.java2html.anttasks.Java2HtmlTask"
+      classpathref="classpath.tools"
+  />
 
+  <target name="generate.html.src-examples" description="Generate HTML form of the code in src-examples">
+      <!-- default location to write to, unless already given -->
+      <java2html
+             srcdir="${src.examples.dir}"
+             destdir="${dist.dir}/${doc.dir}/${src.examples.dir}"
+             includes="**/*.java"
+             excludes="**/CVS"
+             style="eclipse"
+             showLineNumbers="true"
+             showFileName="true"
+             showTableBorder="true"
+             outputFormat="xhtml11"
+      />
+      <!-- we also copy the supporting code, sample data and vocabularies -->
+      <copy todir="${dist.dir}/${doc.dir}/${src.examples.dir}">
+        <fileset dir="${src.examples.dir}" includes="**/*" />
+      </copy>
+      <copy todir="${dist.dir}/${doc.dir}/${vocab.dir}">
+        <fileset dir="${vocab.dir}" includes="**/*" />
+      </copy>
+  </target>
 </project>
