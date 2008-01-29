@@ -1,0 +1,62 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<!--
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+ Firefox gets it wrong (puts a marging at the top) if the declarations as included 
+-->
+
+<head>
+<title>ARQ</title>
+<link rel="stylesheet" type="text/css" href="styles/doc.css" />
+</head>
+<body>
+
+<h1>ARQ - SPARQL Algebra</h1>
+<p>This page describes </p>
+<p>The definition of the SPARQL algebra is to be found in the SPARQL 
+specification in
+<a href="http://www.w3.org/TR/rdf-sparql-query/#sparqlDefinition">section 12</a>.</p>
+<h2>Viewing the algebra expression for a Query</h2>
+<p>The command line tool <a href="cmds.html#arq.qparse">arq.qparse</a> will 
+print the algebra form of a query:</p>
+<pre class="box">arq.qparse --print=op --query=Q.rq
+arq.qparse --print=op 'SELECT * { ?s ?p ?o}'
+</pre>
+<p>The syntax of the output is <a href="http://jena.hpl.hp.com/wiki/SSE">SSE</a>, a 
+simple 
+format for writing datastructures involving RDF terms. It can be read back in 
+again to produce the Java form of the algebra expression.</p> 
+<h2>Turning a query into an algebra expression</h2>
+<p>&nbsp;</p>
+<pre class="box">Query query = QueryFactory.create(.....) ;
+Op op = Algebra.compile(query) ;</pre>
+<p>&nbsp;</p>
+<p>And back again.</p>
+<pre class="box">Op op = SSE.parseOp(&quot;SELECT * { ?s ?p ?o}&quot;) ;</pre>
+<pre class="box">Op op = SSE.readOp(&quot;filename.sse&quot;) ;</pre>
+<p>&nbsp;</p>
+<h2>Creating an algebra expression programmatically</h2>
+<h2>Evaluating a algebra expression</h2>
+<h2>ARQ extensions</h2>
+<p>Quads</p><font SIZE="1">
+<pre class="box">Algebra.compileQuad(Query query)</pre>
+</font>
+<p>&nbsp;</p>
+<h2>Turning an algebra expression into a query string</h2>
+<p>An algebra expression using only definitions from the SPARQL algebra, can be 
+turned back into a SELECT query using </p><font SIZE="1">
+<pre class="box">Query query = OpAsQuery.asQuery(op) ;
+System.out.println(query.serialize()) ;</pre>
+</font>
+<p>.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+
+
+
+<p class="footnote"><a href="documentation.html">ARQ Documentation Page</a></p>
+</body>
+</html>
