@@ -7,16 +7,28 @@
 -->
 
 <head>
-<title>ARQ</title>
+<title>ARQ - SPARQL Algebra</title>
 <link rel="stylesheet" type="text/css" href="styles/doc.css" />
 </head>
 <body>
 
 <h1>ARQ - SPARQL Algebra</h1>
-<p>This page describes </p>
-<p>The definition of the SPARQL algebra is to be found in the SPARQL 
+<p>A SPARQL query goes through several stages of processing:</p>
+<ul>
+  <li>String to Query (parsing)</li>
+  <li>Query to algebra expression</li>
+  <li>Optimization of the algebra expression</li>
+  <li>Query plan determination</li>
+  <li>Evaluation of the query plan</li>
+</ul>
+<p>and each step is accessible. This page describes how to access and use 
+expressions in the SPARQL algebra within ARQ. The definition of the SPARQL algebra is to be found in the SPARQL 
 specification in
 <a href="http://www.w3.org/TR/rdf-sparql-query/#sparqlDefinition">section 12</a>.</p>
+<p>The classes for the datastructures for the algebra resize in the package
+<code>com.hp.hpl.jena.sparql.algebra</code> in the <code>op</code> subpackage.&nbsp; 
+All the classes are names &quot;<code>Op...</code>&quot;; the interface that all offer is 
+&quot;<code>Op</code>&quot;.</p>
 <h2>Viewing the algebra expression for a Query</h2>
 <p>The command line tool <a href="cmds.html#arq.qparse">arq.qparse</a> will 
 print the algebra form of a query:</p>
