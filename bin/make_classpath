@@ -1,0 +1,61 @@
+#!/bin/bash
+
+DIRROOT="$1"
+
+if [ "$DIRROOT" = "" ]
+then
+    echo "No directory given" 1>&2
+    exit 1
+    fi
+
+# remove any trailing /
+DIRROOT=${DIRROOT%/}
+
+LIBDIR="$DIRROOT/lib"
+CPDIR="$DIRROOT/classes"
+
+# Cygwin - on Windows, the Java separator is ;
+
+CYGWIN=0
+SEP=':'
+
+SYS="$(uname)"
+# Was "$(uname -o)" = "cygwin" but not all systems have uname -o
+if [ "${SYS#CYGWIN}" != "${SYS}" ]
+then
+    CYGWIN=1
+    SEP=';'
+    fi
+unset SYS
+
+# CP is the variable collecting the path/
+# It may already have a value.
+
+CP="${CP:-}"
+
+# Append any jars in the lib/ directory
+
+# Java6: just add: "$LIBDIR"/*
+
+for jar in "$LIBDIR"/*.jar
+  do
+  # Check for no expansion
+  [ -e "$jar" ] || break
+  #echo "Path: $jar"
+  [ "$CP" != "" ] && CP="${CP}${SEP}"
+  CP="${CP}$jar"
+  first=0
+done
+
+## CP="$CP$SEP$LIBDIR/*"
+
+# Prepend any classes/ directory
+
+if [ -e "$CPDIR" ]
+then
+    [ "$CP" != "" ] && CP="${SEP}${CP}"
+    CP="${CPDIR}$CP"
+    first=0
+    fi
+
+echo "$CP"

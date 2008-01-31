@@ -1,0 +1,5 @@
+#!/bin/bash
+
+CMD="$(basename $0)"
+export ARQROOT=${ARQROOT:-~/Projects/ARQ}
+exec "$ARQROOT/bin/$CMD" "$@"
