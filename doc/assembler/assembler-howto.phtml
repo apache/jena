@@ -477,6 +477,15 @@ interpreted as an OntModelSpec description based on its name
 and the value of the appropriate properties:
 
 <ul>
+<li><code>ja:likeBuiltinSpec</code>:
+The value of this optional unique property must be a JA resource whose 
+local name is the same as the name of an OntModelSpec constant (as in
+the simple case above). This is the basis for the OntModelSpec constructed
+from this specification. If absent, then <code>OWL_MEM_RDFS_INF</code>
+is used. To build an OntModelSpec with no inference, use eg 
+<code>ja:likeBuiltinSpec ja:OWL_MEM</code>.
+</li>
+
 <li><code>ja:importSource</code>:
 The value of this optional unique property is a <code>ModelSource</code>
 description which describes where imports are obtained from. A <code>ModelSource</code>

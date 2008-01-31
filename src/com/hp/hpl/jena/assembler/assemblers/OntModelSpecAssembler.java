@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: OntModelSpecAssembler.java,v 1.11 2008-01-02 12:09:36 andy_seaborne Exp $
+ 	$Id: OntModelSpecAssembler.java,v 1.12 2008-01-31 12:30:49 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.assemblers;
@@ -13,10 +13,11 @@ import com.hp.hpl.jena.assembler.exceptions.ReasonerClashException;
 import com.hp.hpl.jena.ontology.*;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.reasoner.ReasonerFactory;
+import com.hp.hpl.jena.shared.NotFoundException;
 
 /**
     An OntModelSpecAssembler constructs OntModelSpec's from their
-    RDF description. The description allows the document manageer, the
+    RDF description. The description allows the document manager, the
     reasoner factory, the ont language, and the import model getter to
     be specified: the default values will be those of OWL_MEM_RDFS_INF,
     unless the root is ja:SPOO for some constant SPOO of OntModelSpec,
@@ -82,8 +83,19 @@ public class OntModelSpecAssembler extends AssemblerBase implements Assembler
             return oms == null ? DEFAULT : oms;
             }
         else
-            return DEFAULT;
+            {
+            Resource like = getUniqueResource( root, JA.likeBuiltinSpec );
+            return like == null ? DEFAULT : getRequiredOntModelSpecField( like.getLocalName() );
+            }
         }
+    
+    private OntModelSpec getRequiredOntModelSpecField( String name )
+        {
+        OntModelSpec result = getOntModelSpecField( name );
+        if (result == null) throw new NotFoundException( name );
+        return result;
+        }
+
     /**
         Answer the OntModelSpec in the OntModelSpec class with the given
         member name, or null if there isn't one.

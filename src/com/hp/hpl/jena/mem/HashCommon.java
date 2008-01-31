@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: HashCommon.java,v 1.13 2008-01-02 12:09:51 andy_seaborne Exp $
+ 	$Id: HashCommon.java,v 1.14 2008-01-31 12:30:53 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem;
@@ -122,7 +122,7 @@ public abstract class HashCommon
         it does not work. (Hence, here, the use of bitmasks.)
     */
     protected final int initialIndexFor( Object key )
-        { return (key.hashCode() & 0x7fffffff) % capacity; }    
+        { return ((key.hashCode() * 1) & 0x7fffffff) % capacity; }    
     
     /**
         Search for the slot in which <code>key</code> is found. If it is absent,

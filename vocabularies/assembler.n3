@@ -1,6 +1,6 @@
 # (c) Copyright 2005 Hewlett-Packard Development Company, LP
 # All rights reserved.
-# $Id: assembler.n3,v 1.14 2007-08-02 13:42:03 chris-dollin Exp $
+# $Id: assembler.n3,v 1.15 2008-01-31 12:30:55 chris-dollin Exp $
 
 @prefix rdf:        <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs:       <http://www.w3.org/2000/01/rdf-schema#> .
@@ -482,6 +482,7 @@ ja:OntModelSpec a rdfs:Class
     ; rdfs:subClassOf [owl:onProperty ja:documentManager; owl:maxCardinality 1]
     ; rdfs:subClassOf [owl:onProperty ja:importSource; owl:maxCardinality 1]
     ; rdfs:subClassOf [owl:onProperty ja:reasonerFactory; owl:maxCardinality 1]
+    ; rdfs:subClassOf [owl:onProperty ja:like; owl:maxCardinality 1]
     ; rdfs:label "Assembler.OntModelSpec"
     ; rdfs:comment "class of OntModelSpec objects for OntModel construction"
     .
@@ -491,6 +492,12 @@ ja:ontModelSpec a rdf:Property
     ; rdfs:comment "property of an OntModel giving its OntModelSpec"
     ; rdfs:domain ja:OntModel
     ; rdfs:range ja:OntModelSpec
+    .
+
+ja:likeBuiltinSpec a rdf:Property
+    ; rdfs:label "Assembler.likeBuiltinSpec"
+    ; rdfs:comment "property of an OntModelSpec giving an internal spec it's like"
+    ; rdfs:domain ja:OntModelSpec
     .
 
 ja:ontLanguage a rdf:Property

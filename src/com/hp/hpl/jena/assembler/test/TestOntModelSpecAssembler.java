@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestOntModelSpecAssembler.java,v 1.9 2008-01-02 12:05:55 andy_seaborne Exp $
+ 	$Id: TestOntModelSpecAssembler.java,v 1.10 2008-01-31 12:30:51 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.test;
@@ -54,11 +54,22 @@ public class TestOntModelSpecAssembler extends AssemblerTestBase
             }
         }    
     
-    protected void testSpecificSpec( OntModelSpec ontModelSpec, String specName )
+    protected void testBuiltinSpec( OntModelSpec ontModelSpec, String specName )
+        {
+        testBuiltinSpecAsRootName( ontModelSpec, specName );
+        testBuiltinSpecAsLikeTarget( ontModelSpec, specName );
+        }
+
+    private void testBuiltinSpecAsLikeTarget( OntModelSpec ontModelSpec, String specName )
+        {
+        Resource rr = resourceInModel( "_x rdf:type ja:OntModelSpec; _x ja:likeBuiltinSpec <OM>".replaceAll( "<OM>", JA.getURI() + specName ) );
+        assertEquals( ontModelSpec, new OntModelSpecAssembler().open( rr ) );
+        }
+
+    private void testBuiltinSpecAsRootName( OntModelSpec ontModelSpec, String specName )
         {
         Resource root = resourceInModel( JA.getURI() + specName + " rdf:type ja:OntModelSpec" );
-        Assembler a = new OntModelSpecAssembler();
-        assertEquals( ontModelSpec, a.open( root ) );
+        assertEquals( ontModelSpec, new OntModelSpecAssembler().open( root ) );
         }
     
     protected static Test createTest( final OntModelSpec spec, final String name )
@@ -66,8 +77,15 @@ public class TestOntModelSpecAssembler extends AssemblerTestBase
         return new TestOntModelSpecAssembler( name )
             {
             public void runBare()
-                { testSpecificSpec( spec, name ); }
+                { testBuiltinSpec( spec, name ); }
             };
+        }
+    
+    public void testOntModelSpecVocabulary()
+        {
+        assertDomain( JA.OntModelSpec, JA.ontLanguage );
+        assertDomain( JA.OntModelSpec, JA.documentManager );
+        assertDomain( JA.OntModelSpec, JA.likeBuiltinSpec );
         }
     
     public void testCreateFreshDocumentManager() 
