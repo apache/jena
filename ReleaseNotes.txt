@@ -105,6 +105,12 @@ Assemblers
       they might have expected when other assembler groups are
       being used.
 
+    o OntModelSpecs have acquired an optional likeBuiltinSpec property
+      for defining the "base" on which an OntModelSpec can be built by
+      specifying other properties. In particular, this allows OntModelSpecs
+      /with no reasoning/ to be constructed, which was a mysterious absence
+      in earlier assemblers.
+
 Jar change:
     o lucene-core has been upgraded from lucene-core-2.0.0 to lucene-2.2.0.jar.
     o logging-commons-1.1.jar upgraded to logging-commons-1.1.1.jar 
