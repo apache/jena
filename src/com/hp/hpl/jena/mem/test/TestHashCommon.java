@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  	All rights reserved.
- 	$Id: TestHashCommon.java,v 1.6 2008-01-02 12:09:01 andy_seaborne Exp $
+ 	$Id: TestHashCommon.java,v 1.7 2008-02-01 11:28:50 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem.test;
@@ -36,6 +36,12 @@ public class TestHashCommon extends ModelTestBase
 
         public int capacity()
             { return capacity; }
+        
+        /*
+            Leaving the hashcode alone makes testing simpler. 
+        */
+        protected int improveHashCode( int hashCode )
+            { return hashCode; }   
         }
     
     static class Item

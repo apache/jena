@@ -1,24 +1,32 @@
 /*
  	(c) Copyright 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestHashedTripleBunch.java,v 1.6 2008-01-02 12:09:00 andy_seaborne Exp $
+ 	$Id: TestHashedTripleBunch.java,v 1.7 2008-02-01 11:28:50 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem.test;
 
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.mem.*;
-import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 
 public class TestHashedTripleBunch extends TestTripleBunch
     {
     public TestHashedTripleBunch( String name )
         { super( name ); }
 
+    protected static class HTB extends HashedTripleBunch
+        {
+        public HTB( TripleBunch b )
+            { super( b ); }
+    
+        protected int improveHashCode( int hashCode )
+            { return hashCode; }    
+        }
+    
     public TripleBunch getBunch()
         { return new HashedTripleBunch( emptyBunch ); }
     
-    HashedTripleBunch htb = new HashedTripleBunch( emptyBunch ); 
+    HashedTripleBunch htb = new HTB( emptyBunch ); 
     
     static class TripleWithHash extends Triple
         {
@@ -42,7 +50,7 @@ public class TestHashedTripleBunch extends TestTripleBunch
     
     public void testHashcodeUsedAsIndex()
         {
-        HashedTripleBunch htb = new HashedTripleBunch( emptyBunch );
+        HashedTripleBunch htb = new HTB( emptyBunch );
         int limit = htb.currentCapacity();
         for (int i = 0; i < limit; i += 1)
             {

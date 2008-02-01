@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: HashCommon.java,v 1.14 2008-01-31 12:30:53 chris-dollin Exp $
+ 	$Id: HashCommon.java,v 1.15 2008-02-01 11:29:37 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem;
@@ -122,7 +122,15 @@ public abstract class HashCommon
         it does not work. (Hence, here, the use of bitmasks.)
     */
     protected final int initialIndexFor( Object key )
-        { return ((key.hashCode() * 1) & 0x7fffffff) % capacity; }    
+        { return (improveHashCode( key.hashCode() ) & 0x7fffffff) % capacity; }
+
+    /**
+        Answer the transformed hash code, intended to be an improvement
+        on the objects own hashcode. The magic number 127 is performance
+        voodoo to (try to) eliminate problems experienced by Wolfgang.
+    */
+    protected int improveHashCode( int hashCode )
+        { return hashCode * 127; }    
     
     /**
         Search for the slot in which <code>key</code> is found. If it is absent,
@@ -210,17 +218,22 @@ public abstract class HashCommon
                 Object key = keys[scan];
                 if (key == null) return wrappedAround;
                 int r = initialIndexFor( key );
-                if (!((scan <= r && r < here) || (r < here && here < scan) || (here < scan && scan <= r) )) break;
+                if (scan <= r && r < here || r < here && here < scan || here < scan && scan <= r)
+                    { /* Nothing. We'd have preferred an `unless` statement. */}
+                else
+                    {
+                    // System.err.println( ">> move from " + scan + " to " + here + " [original = " + original + ", r = " + r + "]" );
+                    if (here <= original && scan > original) 
+                        {
+                        // System.err.println( "]] recording wrapped " );
+                        wrappedAround = keys[scan];
+                        }
+                    keys[here] = keys[scan];
+                    moveAssociatedValues( here, scan );
+                    here = scan;
+                    break;
+                    }
                 }
-            // System.err.println( ">> move from " + scan + " to " + here + " [original = " + original + "]" );
-            if (here <= original && scan > original) 
-                {
-                // System.err.println( "]] recording wrapped " );
-                wrappedAround = keys[scan];
-                }
-            keys[here] = keys[scan];
-            moveAssociatedValues( here, scan );
-            here = scan;
             }
         }    
     

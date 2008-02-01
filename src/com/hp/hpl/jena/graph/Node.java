@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Node.java,v 1.58 2008-01-02 12:06:55 andy_seaborne Exp $
+  $Id: Node.java,v 1.59 2008-02-01 11:29:39 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -330,11 +330,11 @@ public abstract class Node {
     
     /**
      * Test that two nodes are semantically equivalent.
-     * In some cases this may be the sames as equals, in others
+     * In some cases this may be the same as equals, in others
      * equals is stricter. For example, two xsd:int literals with
      * the same value but different language tag are semantically
      * equivalent but distinguished by the java equality function
-     * in order to support round tripping.
+     * in order to support round-tripping.
      * <p>Default implementation is to use equals, subclasses should
      * override this.</p>
      */
