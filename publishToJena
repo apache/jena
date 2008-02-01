@@ -37,31 +37,35 @@ function copyDir
 ## 
 ## cp -f lib/arq.jar $JENAROOT/lib
 ## 
-# 2 -- Javadoc
 
-rm -rf $JENAROOT/doc/ARQ/javadoc
-cp -R doc/javadoc $JENAROOT/doc/ARQ/javadoc
-
+# No longer in the Jena distribution - Jena doc points to the web.
+## # 2 -- Javadoc
+## 
+## rm -rf $JENAROOT/doc/ARQ/javadoc
+## cp -R doc/javadoc $JENAROOT/doc/ARQ/javadoc
+## 
 ## ant javadoc-all
 ## rm -rf $JENAROOT/doc/ARQ/javadoc-all/*
 ## cp -R doc/javadoc-all
 
 
-# 3 -- Documentation (avoid CVS/SVN directories and files)
+## # No longer in the Jena distribution - Jena doc points to the web.
+## # 3 -- Documentation (avoid CVS/SVN directories and files)
+## 
+## # Remove destination files first
+## rm    $JENAROOT/doc/ARQ/*.*
+## cp doc/*.*           $JENAROOT/doc/ARQ
+## 
+## rm $JENAROOT/doc/ARQ/styles/*.*
+## cp doc/styles/*.*    $JENAROOT/doc/ARQ/styles
+## 
+## rm $JENAROOT/doc/ARQ/Tutorial/*.*
+## cp doc/Tutorial/*.*  $JENAROOT/doc/ARQ/Tutorial
 
-# Remove destination files first
-rm    $JENAROOT/doc/ARQ/*.*
-cp doc/*.*           $JENAROOT/doc/ARQ
-
-rm $JENAROOT/doc/ARQ/styles/*.*
-cp doc/styles/*.*    $JENAROOT/doc/ARQ/styles
-
-rm $JENAROOT/doc/ARQ/Tutorial/*.*
-cp doc/Tutorial/*.*  $JENAROOT/doc/ARQ/Tutorial
 
 ## # 4 -- Test suite
 
-echo "Run testing/exportToJena"
+echo "Also run testing/exportToJena"
 
 ## 
 ## copyDir testing/ARQ            $JENAROOT/testing/ARQ
@@ -85,7 +89,6 @@ copyDir src-examples/arq $JENAROOT/src-examples/arq
 # 6 -- bin and bat
 
 cp bin/{arq,arq_path,make_classpath,arq_version,qexpr,qparse,qtest,query,sparql,rset} $JENAROOT/bin
-
 cp bat/*.bat $JENAROOT/bat
 
 ##
