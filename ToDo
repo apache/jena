@@ -1,22 +1,5 @@
 ==== ARQ ToDo
 
-Check:
- sparql --service=http://dbpedia.org/sparql --post --query getCallingCodes.sparql
- 
- PREFIX dbp: <http://dbpedia.org/property/>
- PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
- CONSTRUCT {  ?cntry dbp:callingCode ?code ;
-                     rdfs:label ?name .
- } WHERE {
-         ?cntry dbp:callingCode ?code .
-         OPTIONAL { ?cntry rdfs:label ?name . }
-}
- 
-<bblfish> HTTP Exeception
-<bblfish> HttpException: -1 Failed to create RDF request
-<bblfish>  at com.hp.hpl.jena.sparql.engine.http.HttpQuery.execPost(HttpQuery.java:224)
-<bblfish>  at com.hp.hpl.jena.sparql.engine.http.HttpQuery.exec(HttpQuery.java:127)
-
 ++ ** Document "stages" - new form.
 ++ ** Document "algebra"
 ++ ** Document "update API"
