@@ -8,6 +8,7 @@ package com.hp.hpl.jena.sparql.function;
 
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.query.ARQ;
+import com.hp.hpl.jena.sparql.core.DatasetGraph;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.util.Context;
 
@@ -17,6 +18,7 @@ public class FunctionEnvBase implements FunctionEnv
 {
     private Context context ;
     private Graph activeGraph ;
+    private DatasetGraph dataset ;
 
     /** Create an execution environment suitable for testing fucntions and expressions */ 
     public static FunctionEnv createTest()
@@ -24,14 +26,14 @@ public class FunctionEnvBase implements FunctionEnv
         return new FunctionEnvBase(ARQ.getContext()) ;
     }
     
-    public FunctionEnvBase() { this(null, null) ; }
+    public FunctionEnvBase() { this(null, null, null) ; }
     
-    public FunctionEnvBase(Context context) { this ( context, null) ; }
+    public FunctionEnvBase(Context context) { this ( context, null, null) ; }
     
     public FunctionEnvBase(ExecutionContext execCxt)
-    { this(execCxt.getContext(), execCxt.getActiveGraph()) ; }
+    { this(execCxt.getContext(), execCxt.getActiveGraph(), execCxt.getDataset()) ; }
 
-    public FunctionEnvBase(Context context, Graph activeGraph)
+    public FunctionEnvBase(Context context, Graph activeGraph, DatasetGraph dataset)
     {
         this.context = context ;
         this.activeGraph = activeGraph ;
@@ -45,6 +47,11 @@ public class FunctionEnvBase implements FunctionEnv
     public Context getContext()
     {
         return context ;
+    }
+
+    public DatasetGraph getDataset()
+    {
+        return dataset ;
     }
 }
 

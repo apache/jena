@@ -7,6 +7,7 @@
 package com.hp.hpl.jena.sparql.function;
 
 import com.hp.hpl.jena.graph.Graph;
+import com.hp.hpl.jena.sparql.core.DatasetGraph;
 import com.hp.hpl.jena.sparql.util.Context;
 
 /** Environment passed to functions */
@@ -18,6 +19,10 @@ public interface FunctionEnv
      * when sorting.
      */ 
     public Graph getActiveGraph() ;
+    
+    /** Return the dataset for the query
+     */ 
+    public DatasetGraph getDataset() ;
     
     /** Return the context for this function call */
     public Context getContext() ;

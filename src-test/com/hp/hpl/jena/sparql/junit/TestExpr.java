@@ -115,7 +115,7 @@ public abstract class TestExpr extends TestCase
             return ;
         
         try { 
-            FunctionEnv env = new FunctionEnvBase(context, null) ; 
+            FunctionEnv env = new FunctionEnvBase(context, null, null) ; 
             NodeValue v = expr.eval(binding, env) ;
             checkValue(expr, v) ;
         }
@@ -130,41 +130,7 @@ public abstract class TestExpr extends TestCase
     private Expr parse(String exprString) throws Throwable
     {
         return ExprUtils.parse(query, exprString, false) ;
-//        ByteArrayInputStream in = new ByteArrayInputStream(exprString.getBytes()) ;
-//        
-//        try {
-//            return parseSPARQL(in) ;
-//        }
-//        catch (QueryParseException ex) { throw ex ; }
-//        catch (QueryException ex)      { throw ex ; }
-//        catch (JenaException ex)       { throw new QueryException(ex.getMessage(), ex) ; }
-//        catch (Throwable th)
-//        {
-//            th.printStackTrace(System.err) ;
-//            fail("Unexpected throwable: "+th) ;
-//            throw new QueryParseException(th, -1, -1) ;
-//        }
     }
-    
-//    private Expr parseARQ(ByteArrayInputStream in) throws Throwable
-//    {
-//        try {
-//            ARQParser parser = new ARQParser(in) ;
-//            parser.setQuery(query) ;
-//            return parser.Expression() ;
-//        } 
-//        catch (com.hp.hpl.jena.query.lang.arq.ParseException ex)
-//        { throw new QueryParseException(ex.getMessage(), ex.currentToken.beginLine, ex.currentToken.beginColumn) ; }
-//        catch (com.hp.hpl.jena.query.lang.arq.TokenMgrError tErr)
-//        { throw new QueryParseException(tErr.getMessage(), -1, -1) ; }
-//        catch (Error err)
-//        {
-//            String tmp = err.getMessage() ;
-//            if ( tmp == null )
-//                throw new QueryParseException(err, -1, -1) ;
-//            throw new QueryParseException(tmp, -1, -1) ;
-//        }
-//    }
     
     private Expr parseSPARQL(ByteArrayInputStream in) throws Throwable
     {
