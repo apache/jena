@@ -565,12 +565,11 @@
   </target>
 
   <!-- Generate html version of src-examples -->
-  <taskdef name="java2html"
-      classname="de.java2html.anttasks.Java2HtmlTask"
-      classpathref="classpath.tools"
-  />
-
   <target name="generate.html.src-examples" description="Generate HTML form of the code in src-examples">
+	  <taskdef name="java2html"
+	      classname="de.java2html.anttasks.Java2HtmlTask"
+	      classpathref="classpath.tools"
+	  />
       <!-- default location to write to, unless already given -->
       <java2html
              srcdir="${src.examples.dir}"
