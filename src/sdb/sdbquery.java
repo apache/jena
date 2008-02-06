@@ -38,6 +38,7 @@ import com.hp.hpl.jena.sparql.util.Utils;
  
 public class sdbquery extends CmdArgsDB
 {
+    // TODO See if inheriting from arq.query is a good idea.
     public static final String usage = "sdbquery --sdb <SPEC> [--direct] [ <query> | --query=file ]" ;
     
     // ModQueryIn, ModResultsOut or maybe extend arq.query itself.
