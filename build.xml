@@ -100,43 +100,9 @@
     </echo>
   </target>
 
-  <uptodate property="update.unnecessary"
-    srcfile="${contrib.dir}/contributions.n3" targetfile="${contrib.dir}/contributions.html"
-  />
-
-  <uptodate property="assembler.unnecessary"
-    srcfile="${doc.dir}/assembler/assembler-howto.phtml"
-    targetfile="${doc.dir}/assembler/assembler-howto.html"
-  />
-
-  <target name="contrib" unless="update.unnecessary">
-      <echo>rebuilding contributions.html from contributions.n3</echo>
-      <java classname="com.hp.hpl.jena.tools.html.RDFtoTable">
-          <arg value="${contrib.dir}/contributions-table.n3"/>
-          <arg value="${contrib.dir}/contributions.n3"/>
-          <redirector output="${contrib.dir}/table.tmp"/>
-          <classpath>
-              <path refid="classpath.tools"/>
-          </classpath>
-      </java>
-      <java classname="jena.Weave">
-          <arg value="${contrib.dir}/contrib-template.html"/>
-          <redirector
-              output="${contrib.dir}/contributions.html"
-          />
-          <sysproperty
-              key="table"
-              value="${contrib.dir}/table.tmp"
-          />
-          <classpath>
-              <path refid="classpath.tools"/>
-          </classpath>
-      </java>
-  </target>
-
-  <target name="jar-etc"
+  <target name="jar-etc" depends="test-uptodate-etc" unless="etc.build.notreq"
     description="Constructs a .jar file containing only the files from Jena's etc directory">
-      <jar destfile="lib/etc.jar" basedir="." includes="etc/**, vocabularies/**"></jar>
+      <jar destfile="${lib.dir}/etc.jar" basedir="." includes="${etc.dir}/**, ${vocab.dir}/**"></jar>
   </target>
 
   <target name="test" depends="test-jar"
@@ -205,6 +171,8 @@
     <jar jarfile="${lib.dir}/${testjarfile}" index="yes">
       <fileset dir="${classes.dir}" includes="${pattern.tests}"/>
     </jar>
+    <!-- finally, check that etc.jar is up-to-date if it exists -->
+    <antcall target="conditional-jar-etc" />
   </target>
 
   <target name="optimise-javac-flags"
@@ -227,6 +195,65 @@
     <property name="java.source"      value="1.4"/>
     <property name="java.target"      value="1.4"/>
   </target>
+
+  <!-- handling etc.jar -->
+  <!-- ================ -->
+  <!-- etc.jar is a handy .jar packaging of the contents of the etc directory -->
+
+  <target name="test-uptodate-etc"
+          description="set the property etc.build.notreq if lib/etc.jar is newer than ./etc/*">
+    <uptodate property="etc.build.notreq" targetfile="${lib.dir}/etc.jar">
+      <srcfiles dir="." includes="${etc.dir}/**, ${vocab.dir}/**" />
+    </uptodate>
+  </target>
+
+  <target name="test-exists-etc"
+  		  description="set the property etc.file.exists if lib/etc.jar exists">
+    <available file="${lib.dir}/etc.jar" property="etc.file.exists" />
+  </target>
+
+  <target name="conditional-jar-etc" depends="test-exists-etc" if="etc.file.exists"
+    	  description="Only build etc.jar if it already exists in ./lib and is out-of-date">
+    <antcall target="jar-etc" />
+  </target>
+
+  <!-- handling contrib and assembler -->
+  <!-- ============================== -->
+
+  <uptodate property="update.unnecessary"
+    srcfile="${contrib.dir}/contributions.n3" targetfile="${contrib.dir}/contributions.html"
+  />
+
+  <uptodate property="assembler.unnecessary"
+    srcfile="${doc.dir}/assembler/assembler-howto.phtml"
+    targetfile="${doc.dir}/assembler/assembler-howto.html"
+  />
+
+  <target name="contrib" unless="update.unnecessary">
+      <echo>rebuilding contributions.html from contributions.n3</echo>
+      <java classname="com.hp.hpl.jena.tools.html.RDFtoTable">
+          <arg value="${contrib.dir}/contributions-table.n3"/>
+          <arg value="${contrib.dir}/contributions.n3"/>
+          <redirector output="${contrib.dir}/table.tmp"/>
+          <classpath>
+              <path refid="classpath.tools"/>
+          </classpath>
+      </java>
+      <java classname="jena.Weave">
+          <arg value="${contrib.dir}/contrib-template.html"/>
+          <redirector
+              output="${contrib.dir}/contributions.html"
+          />
+          <sysproperty
+              key="table"
+              value="${contrib.dir}/table.tmp"
+          />
+          <classpath>
+              <path refid="classpath.tools"/>
+          </classpath>
+      </java>
+  </target>
+
 
 
   <!-- Generating Javadoc -->
@@ -381,7 +408,7 @@
     description="Copy the various elements of a distribution into one directory tree">
     <!-- Libraries, including jena.jar" -->
     <copy todir="${dist.dir}/${lib.dir}">
-      <fileset dir="${lib.dir}" includes="**/*.jar"/>
+      <fileset dir="${lib.dir}" includes="**/*.jar" excludes="**/etc.jar" />
       <fileset dir="${lib.dir}" includes="readme.html"/>
     </copy>
     <!-- Source - we could zip this up -->
