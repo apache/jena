@@ -1,7 +1,7 @@
 PREFIX proc:     <http://jena.hpl.hp.com/ARQ/procedure#>
 
-SELECT *
+SELECT (count(*) AS ?z) ?z1
 {
     ?s ?p ?o
-    CALL proc:debug(?s,?p,?o)
+#    CALL proc:debug(?s,?p,?o)
 }
