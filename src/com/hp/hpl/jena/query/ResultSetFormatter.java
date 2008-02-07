@@ -400,7 +400,7 @@ public class ResultSetFormatter
     /** Output a boolean result in the XML format
      * 
      * @param booleanResult 
-     * @param stylesheet    The URL of the stylsheet
+     * @param stylesheet    The URL of the stylesheet
      */
     public static void outputAsXML(boolean booleanResult, String stylesheet)
     { outputAsXML(System.out, booleanResult, stylesheet) ; }
@@ -409,7 +409,7 @@ public class ResultSetFormatter
      * 
      * @param outStream     output stream
      * @param booleanResult 
-     * @param stylesheet    The URL of the stylsheet
+     * @param stylesheet    The URL of the stylesheet
      */
     
     public static void outputAsXML(OutputStream outStream, boolean booleanResult, String stylesheet)

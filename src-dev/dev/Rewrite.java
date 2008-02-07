@@ -10,6 +10,7 @@ import java.util.Iterator;
 
 import com.hp.hpl.jena.sparql.algebra.*;
 import com.hp.hpl.jena.sparql.algebra.op.OpAssign;
+import com.hp.hpl.jena.sparql.algebra.op.OpBGP;
 import com.hp.hpl.jena.sparql.algebra.op.OpFilter;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.expr.E_Equals;
@@ -36,6 +37,12 @@ public class Rewrite
     {
         public Op transform(OpFilter opFilter, Op subOp)
         { 
+            // Safe for BGPs (and unions and joins of BGPs)
+            // Optionals - be careful.
+            // Optionals+bound - be very careful.
+            if ( !(subOp instanceof OpBGP) )
+                return super.transform(opFilter, subOp) ;
+            
             ExprList exprs = opFilter.getExprs() ;
             Op op = subOp ;
             // Any assignments must go inside filters so the filters see the assignments.

@@ -11,6 +11,8 @@ import com.hp.hpl.jena.sparql.util.Timer;
 
 public class ModTime implements ArgModuleGeneral
 {
+    public ModTime() {}
+    
     protected final ArgDecl timeDecl = new ArgDecl(ArgDecl.NoValue, "time") ;
     
     protected Timer timer = new Timer() ;
