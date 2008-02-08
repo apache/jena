@@ -11,8 +11,6 @@ import java.net.MalformedURLException;
 import arq.sparql;
 import arq.sse_query;
 
-import com.hp.hpl.jena.db.ModelRDB;
-import com.hp.hpl.jena.db.impl.Driver_HSQL;
 import com.hp.hpl.jena.iri.IRI;
 import com.hp.hpl.jena.iri.IRIFactory;
 import com.hp.hpl.jena.iri.IRIRelativize;
