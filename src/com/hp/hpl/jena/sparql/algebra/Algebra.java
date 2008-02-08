@@ -28,6 +28,11 @@ import com.hp.hpl.jena.query.Query;
 
 public class Algebra
 {
+    // -------- Optimize
+    // Placeholder
+    // Currently all done in plan generation.
+    public static Op optimize(Op op) { return op ; }    
+    
     // -------- Compile
     
     /** Compile a query - pattern and modifiers */

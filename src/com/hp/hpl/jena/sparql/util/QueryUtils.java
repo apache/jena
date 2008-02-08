@@ -31,6 +31,7 @@ public class QueryUtils
     {
         IndentedLineBuffer buff = new IndentedLineBuffer() ;
         Op op = Algebra.compile(query) ;
+        op = Algebra.optimize(op) ;
         WriterSSE.out(buff.getIndentedWriter(), op, query) ;
         String str = buff.getBuffer().toString() ;
         

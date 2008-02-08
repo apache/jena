@@ -53,12 +53,8 @@ public class AlgebraGenerator
     {
         Op pattern = compile(query.getQueryPattern()) ;     // Not compileElement - may need to apply simplification.
         Op op = compileModifiers(query, pattern) ;
-        op = modify(op) ;                                  // Post pattern transformations.
         return op ;
     }
-    
-    protected Op modify(Op op)
-    { return op ; }
     
     static Transform simplify = new TransformSimplify() ;
     // Compile any structural element

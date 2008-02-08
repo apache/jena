@@ -11,6 +11,8 @@ import java.net.MalformedURLException;
 import arq.sparql;
 import arq.sse_query;
 
+import com.hp.hpl.jena.db.ModelRDB;
+import com.hp.hpl.jena.db.impl.Driver_HSQL;
 import com.hp.hpl.jena.iri.IRI;
 import com.hp.hpl.jena.iri.IRIFactory;
 import com.hp.hpl.jena.iri.IRIRelativize;
@@ -107,6 +109,7 @@ public class Run
     {
         Query q = QueryFactory.create("SELECT * { ?s ?p ?o FILTER(?o = 3) }") ;
         Op op = Algebra.compile(q) ;
+        op = Algebra.optimize(op) ;
         OpWalker.walk(op, new F()) ;
         
     }

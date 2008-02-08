@@ -27,8 +27,11 @@ import com.hp.hpl.jena.update.UpdateRequest;
 
 public class update extends CmdARQ
 {
+    
+    //ModGraphStore
     ArgDecl updateArg = new ArgDecl(ArgDecl.HasValue, "--update") ;
-    ArgDecl outArg = new ArgDecl(ArgDecl.HasValue, "--out") ;
+    ArgDecl outArg = new ArgDecl(ArgDecl.NoValue, "--out") ;       // Write the result to stdout.
+    
     ModDataset dataset = new ModAssembler() ;
     List requests = null ;
     
@@ -44,14 +47,13 @@ public class update extends CmdARQ
 
     protected void processModulesAndArgs()
     {
-        requests = getValues(updateArg) ;
-        
+        requests = getValues(updateArg) ;   // ????
         super.processModulesAndArgs() ;
     }
     
     protected String getCommandName() { return Utils.className(this) ; }
     
-    protected String getSummary() { return getCommandName()+" --data=file --update=<query>" ; }
+    protected String getSummary() { return getCommandName()+" --data=file --update=<request file>" ; }
 
     protected void exec()
     {
@@ -82,8 +84,6 @@ public class update extends CmdARQ
         UpdateRequest req = UpdateFactory.read(filename) ;
         store.execute(req) ;
     }
-
-
 }
 
 /*
