@@ -18,7 +18,7 @@ import java.util.* ;
  *  Tries to make N3 data look readable - works better on regular data.
  *
  * @author		Andy Seaborne
- * @version 	$Id: N3JenaWriterPP.java,v 1.22 2008-01-02 12:04:48 andy_seaborne Exp $
+ * @version 	$Id: N3JenaWriterPP.java,v 1.23 2008-02-08 16:13:20 andy_seaborne Exp $
  */
 
 
@@ -337,7 +337,7 @@ public class N3JenaWriterPP extends N3JenaWriterCommon
 	// Need to decide between one line or many.
     // Very hard to do a pretty thing here because the objects may be large or small or a mix.
 
-    protected void writeObjectList(Resource resource, Property property)
+    protected void writeObjectList(Resource subject, Property property)
     {
 //        if ( ! doObjectListsAsLists )
 //        {
@@ -349,7 +349,7 @@ public class N3JenaWriterPP extends N3JenaWriterCommon
         
         // Find which objects are simple (i.e. not nested structures)             
 
-        StmtIterator sIter = resource.listProperties(property);
+        StmtIterator sIter = subject.listProperties(property);
         Set simple = new HashSet() ;
         Set complex = new HashSet() ;
 

@@ -26,7 +26,7 @@ import java.text.* ;
 /** Common framework for implementing N3 writers.
  *
  * @author		Andy Seaborne
- * @version 	$Id: N3JenaWriterCommon.java,v 1.40 2008-01-02 12:04:48 andy_seaborne Exp $
+ * @version 	$Id: N3JenaWriterCommon.java,v 1.41 2008-02-08 16:13:20 andy_seaborne Exp $
  */
 
 public class N3JenaWriterCommon implements RDFWriter
@@ -365,7 +365,7 @@ public class N3JenaWriterCommon implements RDFWriter
 
     }
     
-    protected void writeObjectList(Resource resource, Property property)
+    protected void writeObjectList(Resource subject, Property property)
     {
         String propStr = formatProperty(property) ;
 
@@ -377,7 +377,7 @@ public class N3JenaWriterCommon implements RDFWriter
         // Write with object lists as clusters of statements with the same property
         // Looks more like a machine did it but fewer bad cases.
 
-        StmtIterator sIter = resource.listProperties(property);
+        StmtIterator sIter = subject.listProperties(property);
         for (; sIter.hasNext();)
         {
             Statement stmt = sIter.nextStatement() ;
