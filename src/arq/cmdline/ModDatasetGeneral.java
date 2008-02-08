@@ -20,7 +20,9 @@ import com.hp.hpl.jena.sparql.util.DatasetUtils;
 import com.hp.hpl.jena.util.FileManager;
 import com.hp.hpl.jena.util.LocationMapper;
 
-/** ModDataset: arguments to build a dataset - see also ModAssembler which extends ModDataset with a description parameter.
+/** ModDataset: arguments to build a dataset - 
+ * see also ModAssembler which extends ModDataset
+ * with a description parameter.
  * 
  * @author Andy Seaborne
  */ 
