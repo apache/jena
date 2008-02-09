@@ -13,15 +13,15 @@
 <body>
 
 <h1>ARQ - SPARQL Algebra</h1>
-<p>A SPARQL query goes through several stages of processing:</p>
+<p>A SPARQL query in ARQ goes through several stages of processing:</p>
 <ul>
   <li>String to Query (parsing)</li>
-  <li>Query to algebra expression</li>
+  <li>Translation from Query to a SPARQL algebra expression</li>
   <li>Optimization of the algebra expression</li>
   <li>Query plan determination</li>
   <li>Evaluation of the query plan</li>
 </ul>
-<p>and each step is accessible. This page describes how to access and use 
+<p>and each step is externally accessible. This page describes how to access and use 
 expressions in the SPARQL algebra within ARQ. The definition of the SPARQL algebra is to be found in the SPARQL 
 specification in
 <a href="http://www.w3.org/TR/rdf-sparql-query/#sparqlDefinition">section 12</a>.</p>
@@ -37,32 +37,46 @@ arq.qparse --print=op 'SELECT * { ?s ?p ?o}'
 </pre>
 <p>The syntax of the output is <a href="http://jena.hpl.hp.com/wiki/SSE">SSE</a>, a 
 simple 
-format for writing datastructures involving RDF terms. It can be read back in 
+format for writing data structures involving RDF terms. It can be read back in 
 again to produce the Java form of the algebra expression.</p> 
 <h2>Turning a query into an algebra expression</h2>
-<p>&nbsp;</p>
+<p>Getting the algebra expression for a Query is simply a matter of passing the 
+parsed Query object to the transaction function in the 
+<code>Algebra</code> class:</p>
 <pre class="box">Query query = QueryFactory.create(.....) ;
 Op op = Algebra.compile(query) ;</pre>
-<p>&nbsp;</p>
 <p>And back again.</p>
-<pre class="box">Op op = SSE.parseOp(&quot;SELECT * { ?s ?p ?o}&quot;) ;</pre>
-<pre class="box">Op op = SSE.readOp(&quot;filename.sse&quot;) ;</pre>
-<p>&nbsp;</p>
+<pre class="box">Query query = OpAsQuery.asQuery(op) ;
+System.out.println(query.serialize()) ;</pre>
+<p>This reverse translation can handle any algebra expression originally from a 
+SPARQL Query, but not any algebra expression.&nbsp; It is possible to create 
+programmatically useful algebra expressions that can not be truned into a query, 
+especially if they involve algebra.&nbsp; Also, the query produced may not be 
+exactly the same but will yield the same results (for example, filters may be 
+moved because the SPARQL query algebra translation in the SPARQL specification 
+moves filter expressions around).</p>
+<h2>Directly reading and writing algebra expression</h2>
+<p>The SSE class is a collection of functions to parse SSE expressions for the 
+SPARQ algebra but also RDF terms, filter expressions and even dataset and 
+graphs.</p>
+<pre class="box">Op op = SSE.parseOp(&quot;(bgp (?s ?p ?o))&quot;) ;	// Read a string</pre>
+<pre class="box">Op op = SSE.readOp(&quot;filename.sse&quot;) ;		// Read a file</pre>
+<p>The SSE class simple calls the appropriate builder operation from the 
+<code>com.hp.hpl.jena.sparql.sse.builder</code>
+package.</p>
+<p>To go with this, there is a package of writers for many of the Java 
+structures in ARQ.&nbsp; </p>
+<pre class="box">Op op = ... ;
+WriterOp.output(op) ;		// Write to stdout</pre>
+<p>Writers default to writing to <code>System.out</code> but support calls to any output 
+stream (it manages the conversion to UTF-8) and ARQ own <code>IndentedWriter</code>s 
+form for embedding in structured output.</p>
 <h2>Creating an algebra expression programmatically</h2>
 <h2>Evaluating a algebra expression</h2>
 <h2>ARQ extensions</h2>
 <p>Quads</p><font SIZE="1">
 <pre class="box">Algebra.compileQuad(Query query)</pre>
 </font>
-<p>&nbsp;</p>
-<h2>Turning an algebra expression into a query string</h2>
-<p>An algebra expression using only definitions from the SPARQL algebra, can be 
-turned back into a SELECT query using </p><font SIZE="1">
-<pre class="box">Query query = OpAsQuery.asQuery(op) ;
-System.out.println(query.serialize()) ;</pre>
-</font>
-<p>.</p>
-<p>&nbsp;</p>
 <p>&nbsp;</p>
 <p>&nbsp;</p>
 <p>&nbsp;</p>
