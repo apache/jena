@@ -44,6 +44,11 @@ public class Driver_HSQL extends DriverRDB
         m_lsetReifierClassName = myPackageName + ".SpecializedGraphReifier_RDB";
     }
 
+    public void close()
+    {
+        shutdown() ;
+    }
+    
     public void shutdown()
     {
         try {
