@@ -9,31 +9,30 @@ package arq;
 import java.util.Iterator;
 import java.util.List;
 
+import com.hp.hpl.jena.rdf.model.ModelFactory;
+
 import arq.cmd.CmdException;
 import arq.cmdline.ArgDecl;
 import arq.cmdline.CmdARQ;
-import arq.cmdline.ModAssembler;
-import arq.cmdline.ModDataset;
+import arq.cmdline.ModGraphStore;
 
-import com.hp.hpl.jena.query.Dataset;
-import com.hp.hpl.jena.query.DatasetFactory;
-import com.hp.hpl.jena.sparql.sse.WriterSSE;
+import com.hp.hpl.jena.sparql.sse.SSE;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
 import com.hp.hpl.jena.sparql.util.Utils;
+
 import com.hp.hpl.jena.update.GraphStore;
-import com.hp.hpl.jena.update.GraphStoreFactory;
 import com.hp.hpl.jena.update.UpdateFactory;
 import com.hp.hpl.jena.update.UpdateRequest;
 
 public class update extends CmdARQ
 {
-    
-    //ModGraphStore
+    ModGraphStore modGraphStore = new ModGraphStore() ;
+
     ArgDecl updateArg = new ArgDecl(ArgDecl.HasValue, "--update") ;
-    ArgDecl outArg = new ArgDecl(ArgDecl.NoValue, "--out") ;       // Write the result to stdout.
+    ArgDecl dumpArg = new ArgDecl(ArgDecl.NoValue, "--dump") ;       // Write the result to stdout.
     
-    ModDataset dataset = new ModAssembler() ;
-    List requests = null ;
+    List requestFiles = null ;
+    boolean dump = false ;
     
     public static void main (String [] argv)
     { new update(argv).main() ; }
@@ -41,47 +40,61 @@ public class update extends CmdARQ
     protected update(String[] argv)
     {
         super(argv) ;
-        super.addModule(dataset) ;
+        super.addModule(modGraphStore) ;
         super.add(updateArg, "--update=FILE", "Update commands to execute") ;
+        super.add(dumpArg, "--dump", "Dump the resulting graph store") ;
     }
 
     protected void processModulesAndArgs()
     {
-        requests = getValues(updateArg) ;   // ????
+        requestFiles = getValues(updateArg) ;   // ????
+        dump = contains(dumpArg) ;
         super.processModulesAndArgs() ;
     }
     
     protected String getCommandName() { return Utils.className(this) ; }
     
-    protected String getSummary() { return getCommandName()+" --data=file --update=<request file>" ; }
+    protected String getSummary() { return getCommandName()+" --desc=assembler [--dump] --update=<request file>" ; }
 
     protected void exec()
     {
-        Dataset ds = dataset.getDataset() ;
-        if ( ds == null )
-            ds = DatasetFactory.create() ;
+        GraphStore graphStore = modGraphStore.getGraphStore() ;
+        if ( graphStore.getDefaultGraph() == null )
+            graphStore.setDefaultGraph(ModelFactory.createDefaultModel().getGraph()); 
         
-        GraphStore store = GraphStoreFactory.create(ds) ;
-        
-        if ( requests.size() == 0 )
+        if ( requestFiles.size() == 0 && getPositional().size() == 0 )
             throw new CmdException("Nothing to do") ;
         
-        for ( Iterator iter = requests.iterator() ; iter.hasNext() ; )
+        for ( Iterator iter = requestFiles.iterator() ; iter.hasNext() ; )
         {
             String filename = (String)iter.next();
-            execOne(filename, store) ;
+            execOneFile(filename, graphStore) ;
         }
         
-        // Writer
-        IndentedWriter out = IndentedWriter.stdout ;
-        WriterSSE.out(out, ds.asDatasetGraph(), null) ;
-        out.flush();
+        for ( Iterator iter = super.getPositional().iterator() ; iter.hasNext() ; )
+        {
+            String requestString = (String)iter.next();
+            execOne(requestString, graphStore) ;
+        }
+        
+        if ( dump )
+        {
+            IndentedWriter out = IndentedWriter.stdout ;
+            SSE.write(graphStore.toDataset()) ;
+            out.flush();
+        }
     }
 
 
-    private void execOne(String filename, GraphStore store)
+    private void execOneFile(String filename, GraphStore store)
     {
         UpdateRequest req = UpdateFactory.read(filename) ;
+        store.execute(req) ;
+    }
+    
+    private void execOne(String requestString, GraphStore store)
+    {
+        UpdateRequest req = UpdateFactory.create(requestString) ;
         store.execute(req) ;
     }
 }

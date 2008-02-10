@@ -24,15 +24,15 @@ checking these scripts are suitable.</p>
   <code>arq.arq</code> and
   <code>arq.rdql</code>.</p>
   </li>
-  <li><p>
-  <code><a href="#arq.remote">arq.remote</a></code> : Execute a query by HTTP</p></li>
-  <li><p><code><a href="#arq.qparse" name="arq.qparse">arq</a><a id="arq.qparse" name="arq.qparse" href="#arq.qparse">.qparse</a></code> : parse and print a query.</p></li>
-  <li><p><code><a href="#arq.qtest" name="arq.qtest">arq</a><a id="arq.qtest" name="arq.qtest" href="#arq.qtest">.qtest</a></code> : run a test set.</p></li>
+  <li><p><code><a href="#arq.remote">arq.remote</a></code> : execute a query by HTTP</p></li>
+  <li><p><code><a href="#arq.qparse">arq.qparse</a></code> : parse and print a query.</p></li>
+  <li><p><code><a href="#arq.update">arq.update</a></code> : execute SPARQL/Update requests.</p></li>
+  <li><p><code><a href="#arq.qtest">arq</a></code> : run a test set.</p></li>
   <li>
   <p><code><a href="#arq.rset">arq.rset</a></code> : transform result sets.</p>
   </li>
   <li>
-  <p><code><a href="#arq.qexpr">arq.qexpr</a></code> : Evaluate and print an expression.</p>
+  <p><code><a href="#arq.qexpr">arq.qexpr</a></code> : evaluate and print an expression.</p>
   </li>
 </ul>
 
@@ -52,7 +52,6 @@ set the query language.</p>
 <ul>
     <li><a id="arq.sparql" name="arq.sparql"><code>arq.sparql</code></a> : wrapper for SPARQL queries</li>
     <li><a id="arq.arq" name="arq.arq"><code>arq.arq</code></a> : wrapper for ARQ queries</li>
-    <li><a id="arq.rdql" name="arq.rdql"><code>arq.rdql</code></a> : wrapper for RDQL queries</li>
 </ul>
 
 <p>Running <code>arq.query --help </code>prints the usage message.
@@ -90,6 +89,15 @@ query was syntactically correct but the ARQ serialization is broken.</p>
 <p>The command <code>arq.qparse --print=op --file <i>queryFile</i> </code>will print the
 SPARQL algebra for the query in <a href="http://jena.hpl.hp.com/wiki/SSE">SSE format</a>.</p>
 
+
+<h3><a id="arq.update" name="arq.update"><code>arq.update</code></a></h3>
+<p>Execute one or more <a href="http://jena.hpl.hp.com/~afs/SPARQL-Update.html">SPARQL/Update</a> requests.</p>
+<p>SPARQL/Update is an update language based on SPARQL syntax.</p>
+<ul>
+    <li><code>--desc</code>: <a href="http://jena.sourceforge.net/assembler/">
+    Jena Assembler description</a> of the dataset or graph store to be updated. 
+	See <code>etc/</code> for examples.</li>
+</ul>
 
 <h3><a id="arq.test" name="arq.test"><code>arq.qtest</code></a></h3>
 <p>Execute a test set. In the ARQ directory, <code>qtest --all</code> runs

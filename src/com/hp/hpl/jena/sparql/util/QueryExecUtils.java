@@ -284,16 +284,34 @@ public class QueryExecUtils
         return getExactlyOne(qExec, varname) ;
     }
     
-    /** Execute, expecting the result to be one row, one column.  Return that one RDFNode */
+    /** Execute, expecting the result to be one row, one column.  Return that one RDFNode or throw an exception */
     public static RDFNode getExactlyOne(QueryExecution qExec, String varname)
     {
         try {
             ResultSet rs = qExec.execSelect() ;
             
-            //ResultSetFormatter.out(rs) ;
-            
             if ( ! rs.hasNext() )
                 throw new ARQException("Not found: var ?"+varname) ;
+
+            QuerySolution qs = rs.nextSolution() ;
+            RDFNode r = qs.get(varname) ;
+            if ( rs.hasNext() )
+                throw new ARQException("More than one: var ?"+varname) ;
+            return r ;
+        } finally { qExec.close() ; }
+    }
+    
+    /** Execute, expecting the result to be one row, one column. 
+     * Return that one RDFNode or null
+     * Throw excpetion if more than one.
+     */
+    public static RDFNode getOne(QueryExecution qExec, String varname)
+    {
+        try {
+            ResultSet rs = qExec.execSelect() ;
+            
+            if ( ! rs.hasNext() )
+                return null ;
 
             QuerySolution qs = rs.nextSolution() ;
             RDFNode r = qs.get(varname) ;

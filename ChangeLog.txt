@@ -3,6 +3,9 @@ ChangeLog for ARQ
 
 ==== ARQ 2.2
 
++ Added command line tool, arq.update, for applying SPARQL/Update requests
+  to a graph store or dataset described by an assembler file.
+
 + LARQ: 
   Remove restriction that indexes have to be closed for writing before reading
   Becare: in Lucene, reader indexes (like LARQIndexes) see the index as at the point

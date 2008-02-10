@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006, 2007, 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
@@ -8,6 +8,7 @@ package arq.cmdline;
 
 import arq.cmd.CmdException;
 
+import com.hp.hpl.jena.assembler.exceptions.AssemblerException;
 import com.hp.hpl.jena.shared.JenaException;
 import com.hp.hpl.jena.shared.NotFoundException;
 
@@ -18,36 +19,51 @@ import com.hp.hpl.jena.sparql.core.assembler.DatasetAssemblerVocab;
 import com.hp.hpl.jena.query.DataSource;
 import com.hp.hpl.jena.query.Dataset;
 
+import com.hp.hpl.jena.update.GraphStore;
+import com.hp.hpl.jena.update.GraphStoreFactory;
 
-public class ModAssembler extends ModDatasetGeneral
+public class ModGraphStore extends ModAssembler
 {
-    protected final 
-    ArgDecl assemblerDescDecl = new ArgDecl(ArgDecl.HasValue, "desc", "dataset") ;
-    String assemblerFile = null ;
+    // Better - parameterize ModAssembler
+    GraphStore graphStore = null ;
     
-    public ModAssembler()
-    { 
+    public ModGraphStore()
+    {
         // Wire in assmebler implementations
         AssemblerUtils.init() ;
     }
     
-    // Dataset : default graph and named graphs
+    public GraphStore getGraphStore()
+    {
+        if ( graphStore == null )
+        {
+            try {
+                // Try as graph store.
+                graphStore = (GraphStore)AssemblerUtils.build(assemblerFile, DatasetAssemblerVocab.tGraphStore) ;
+            } 
+            catch (AssemblerException ex) {}
+            catch (ARQException ex)
+            {
+                ex.printStackTrace(System.err) ;
+            }
 
-    //@Override
-    public void processArgs(CmdArgModule cmdLine)
-    {
-        super.processArgs(cmdLine) ;
-        if ( cmdLine.contains(assemblerDescDecl) )
-            assemblerFile = cmdLine.getValue(assemblerDescDecl) ;
-    }
-    
-    public void registerWith(CmdGeneral cmdLine)
-    {
-        super.registerWith(cmdLine) ;
-        //cmdLine.getUsage().startCategory("Dataset") ;
-        cmdLine.add(assemblerDescDecl,
-                    "--desc=",
-                    "Assembler file description of dataset") ;
+            // Try as dataset
+            if ( graphStore == null )
+            {
+                try {
+                    Dataset ds = (Dataset)AssemblerUtils.build(assemblerFile, DatasetAssemblerVocab.tDataset) ;
+                    if ( ds != null )
+                        graphStore = GraphStoreFactory.create(ds) ;
+                } catch (AssemblerException ex) {}
+                catch (ARQException ex)
+                {
+                    ex.printStackTrace(System.err) ;
+                }
+            }
+            if ( graphStore == null )
+                throw new CmdException("Failed to find a dataset or graph store assembler description") ;
+        }
+        return graphStore ;
     }
     
     public Dataset createDataset()
@@ -70,10 +86,11 @@ public class ModAssembler extends ModDatasetGeneral
             super.addGraphs((DataSource)dataset) ;
         return dataset ;
     }
+
 }
 
 /*
- * (c) Copyright 2006, 2007, 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

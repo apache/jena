@@ -171,7 +171,7 @@ public class GraphUtils
         qsm.add("ATYPE", atype) ;
 
         QueryExecution qExec = QueryExecutionFactory.create(q, model, qsm);
-        Resource r = (Resource)QueryExecUtils.getExactlyOne(qExec, "root") ;
+        Resource r = (Resource)QueryExecUtils.getOne(qExec, "root") ;
         return r;
     }
     

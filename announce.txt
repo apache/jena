@@ -1,84 +1,30 @@
-==== ARQ 2.1
+==== ARQ 2.2
 
-ARQ 2.1 is a complete implementation of SPARQL including
-support for custom filter function, property functions
+ARQ 2.2 is a complete implementation of the SPARQL query language
+including support for custom filter functions, property functions
 and free text search.  It also provides an update language
 based on SPARQL.
 
-== New in ARQ 2.1
+ARQ includes a number of advanced SPARQL features:
 
-  * Cost-based Optimizer
-  * GROUP BY
+  * Free text search (provided by Lucene)
+  * Property functions for defining calculated properties
+  * Query inference graphs (Jena inference)
+  * Framework for access to wrapped data sources (RDF and non-RDF) 
+  * Client query engine for remote SPARQL services
+
+ARQ includes a number of SPARQL extensions:
+
+  * SPARQL/Update
+  * GROUP BY/HAVING
   * Counting
-  * SERVICE - call-out to another query service 
+  * Federated query : SERVICE - call-out to another query service 
   * Expressions in the SELECT clause 
-
-== Cost-based Optimizer 
-
-The ARQ-2.1 release includes a static cost-based optimizer for
-Basic Graph Patterns for in-memory models. The optimizer uses heuristics
-to estimate the execution cost of triple patterns and reorders the patterns
-of a BGP according to their estimated costs. The optimizer is enabled by
-default in ARQ but may be disabled if this should be required.
-
-Please refer to the documentation for further information.
-http://jena.sourceforge.net/ARQ/bgp-optimization.html
-
-== GROUP BY
-
-Support for GROUP BY in SELECT queries.  This groups pattern solutions by common
-variables, and applies aggregate functions to the solutiosn with common group
-variables.  Counting is provided as an aggregate function.   
-
-A HAVING clause allows a filer to be applied after the group operation
-
-== Counting
-
-Aggreggeate function over a GROUP BY query.  Aggregate functiosn are uually name
-with AS using the syntax of SELECT expressions.  
-
-Supported: count(*), count(?x), count(distinct *), count(distinct ?x)  
-
-Examples:
-
-  SELECT (count(*) AS ?count)
-  { pattern } 
-
-will return the number of matches
-of a pattern. 
-
-  SELECT ?p (count(?q) AS ?num_q)
-  {
-      ?x a :p .
-      ?x :p ?p .
-      ?x :q ?q .
-  } GROUP BY ?p
-
-== Remote query support
-
-The ARQ query language, an extension of SPARQL, includes the ability
-to call a remote SPARQL service using the SERVICE form.  
-
-  SERVICE <serviceEndPoint> { pattern }
-  
-The pattern is sent to and executed at the remote service.  ARQ combines the
-results with the locally part of the query.  The algebra supports a new
-operation, OpService, for this.  Algebra expression can be turned back into
-SPARQL query syntax.
-
-== SELECT expressions
-
-Expressions, as well as plain variables, can be given in the SELECT clause.
-
-Example: SELECT (?x+?y AS ?z)
-
-Use of AS is not required but is strongly encouraged.
 
 == Links
 
 Download:
-  http://prdownloads.sourceforge.net/jena/ARQ-2.1.zip
-  Use jena.jar in this download - ARQ does not work with Jena.2.5.3
+  http://prdownloads.sourceforge.net/jena/ARQ-2.2.zip
 
 Home page:
   http://jena.sourceforge.net/ARQ/
@@ -94,23 +40,15 @@ SPARQL-Update is described in:
 
 == Status
 
-The implementation of SPARQL is complete and meets the
-SPARQL current editors' working draft and Candidate Recommendation.
+The implementation of SPARQL is complete and meets the SPARQL Recommendation.
 
-ARQ passes all the DAWG tests.
+ARQ passes all the working group tests.
 
-Latest published:
+SPARQL W3C recommendation:
   http://www.w3.org/TR/rdf-sparql-query/
-
-Editors' working draft:
-  http://www.w3.org/2001/sw/DataAccess/rq23/rq25.html
 
 Definition of SPARQL:
   http://www.w3.org/2001/sw/DataAccess/rq23/rq25.html#sparqlDefinition
-
-== Notes
-
-+ The old ARQ-1 query engine "engine1" has been removed.
 
 == Online Services
 
@@ -127,7 +65,3 @@ Comments and questions about ARQ to the Jena mailing list
 
 General questions and comments on SPARQL to jena-dev or
     public-sparql-dev@w3.org
-    
-Formal comments specific to the SPARQL query language,
-protocol or result set documents to:
-	public-rdf-dawg-comments@w3.org

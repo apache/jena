@@ -7,9 +7,17 @@
 package com.hp.hpl.jena.sparql.core.assembler;
 
 
+import arq.cmd.CmdException;
+
 import com.hp.hpl.jena.assembler.Assembler;
 import com.hp.hpl.jena.assembler.assemblers.AssemblerGroup;
+import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.Resource;
+import com.hp.hpl.jena.util.FileManager;
+
+import com.hp.hpl.jena.sparql.ARQException;
+import com.hp.hpl.jena.sparql.util.GraphUtils;
+import com.hp.hpl.jena.sparql.util.TypeNotUniqueException;
 
 
 public class AssemblerUtils
@@ -31,12 +39,31 @@ private static boolean initialized = false ;
     {
         // Wire in the extension assemblers (extensions relative to the Jena assembler framework)
         g.implementWith(DataSourceAssembler.getType(), new DataSourceAssembler()) ;
+        g.implementWith(GraphStoreAssembler.getType(), new GraphStoreAssembler()) ;
     }
     
     private static void assemblerClass(AssemblerGroup g, Resource r, Assembler a)
     {
         g.implementWith(r, a) ;
-        //**assemblerAssertions.add(r, RDFS.subClassOf, JA.Object) ;
+    }
+    
+    public static Object build(String assemblerFile, Resource type)
+    {
+       Model spec = null ;
+        try {
+            spec = FileManager.get().loadModel(assemblerFile) ;
+        } catch (Exception ex)
+        { throw new CmdException("Failed reading assembler description: "+ex.getMessage()) ; }
+
+        Resource root = null ;
+        try {
+            root = GraphUtils.findRootByType(spec, type) ;
+            if ( root == null )
+               return null ;
+        } catch (TypeNotUniqueException ex)
+        { throw new ARQException("Multiple types for: "+DatasetAssemblerVocab.tDataset) ; }
+
+        return Assembler.general.open(root) ;
     }
 }
 

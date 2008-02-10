@@ -38,13 +38,16 @@ public class WriterGraph
     {
         WriterLib.start(out, Tags.tagDataset, NL) ;
         writeGraph(out, ds.getDefaultGraph(), naming) ;
+        out.ensureStartOfLine() ;
         for ( Iterator iter = ds.listGraphNodes() ; iter.hasNext() ; )
         {
+            out.ensureStartOfLine() ;
             Node node = (Node)iter.next() ;  
             Graph g = ds.getGraph(node) ;
             writeGraph(out, g, node, naming) ;
         }
         WriterLib.finish(out, Tags.tagDataset) ;
+        out.ensureStartOfLine() ;
     }
     
 //    private static void writeModel(OutputContext out, Model m)
