@@ -12,29 +12,24 @@ import java.util.Set;
 
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.query.ARQ;
-import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.shared.PrefixMapping;
+
 import com.hp.hpl.jena.sparql.algebra.Algebra;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.OpWalker;
 import com.hp.hpl.jena.sparql.core.BasicPattern;
 import com.hp.hpl.jena.sparql.engine.main.StageBuilder;
-import com.hp.hpl.jena.sparql.engine.main.StageGenPropertyFunction;
-import com.hp.hpl.jena.sparql.engine.optimizer.StageGenOptimizedBasicPattern;
-import com.hp.hpl.jena.sparql.engine.optimizer.core.BasicPatternGraph;
-import com.hp.hpl.jena.sparql.engine.optimizer.core.BasicPatternOptimizer;
-import com.hp.hpl.jena.sparql.engine.optimizer.core.BasicPatternVisitor;
-import com.hp.hpl.jena.sparql.engine.optimizer.core.ConnectedGraph;
-import com.hp.hpl.jena.sparql.engine.optimizer.core.GraphEdge;
-import com.hp.hpl.jena.sparql.engine.optimizer.core.GraphNode;
+import com.hp.hpl.jena.sparql.engine.optimizer.core.*;
 import com.hp.hpl.jena.sparql.engine.optimizer.probability.Probability;
 import com.hp.hpl.jena.sparql.engine.optimizer.probability.ProbabilityFactory;
-import com.hp.hpl.jena.sparql.engine.optimizer.util.Constants;
 import com.hp.hpl.jena.sparql.engine.optimizer.util.Config;
+import com.hp.hpl.jena.sparql.engine.optimizer.util.Constants;
 import com.hp.hpl.jena.sparql.syntax.Element;
 import com.hp.hpl.jena.sparql.util.Context;
+
+import com.hp.hpl.jena.query.ARQ;
+import com.hp.hpl.jena.query.Query;
 
 /**
  * The class provides static methods for handling with the optimizer 
@@ -121,10 +116,14 @@ public class Optimizer
 		 * optimizer is REALLY executed. The flag is mainly for testing purpose (TestEnabled)
 		 */
 		context.set(Constants.isEnabled, false) ;
-		context.set(ARQ.stageGenerator, new StageGenPropertyFunction(
-											new StageGenOptimizedBasicPattern(
-												StageBuilder.getGenerator(),
-												config))) ;
+//		context.set(ARQ.stageGenerator, new StageGenPropertyFunction(
+//											new StageGenOptimizedBasicPattern(
+//												StageBuilder.getGenerator(),
+//												config))) ;
+      context.set(ARQ.stageGenerator, 
+                  new StageGenOptimizedBasicPattern(StageBuilder.getGenerator(),
+                                                    config)) ;
+		
 	}
 	
 	/** 

@@ -20,7 +20,7 @@ import com.hp.hpl.jena.sparql.util.*;
 import com.hp.hpl.jena.query.ARQ;
 
 
-public class StageGenPropertyFunction implements StageGenerator
+public class StageGenPropertyFunctionX implements StageGenerator
 {
     private StageGenerator other ;
 
@@ -30,7 +30,7 @@ public class StageGenPropertyFunction implements StageGenerator
      *  Merges the results with StagePropertyFunctions to produce an overall
      *  StageList.
      *  */
-    public StageGenPropertyFunction(StageGenerator other)
+    public StageGenPropertyFunctionX(StageGenerator other)
     {
         this.other = other ;
     }
@@ -88,7 +88,7 @@ public class StageGenPropertyFunction implements StageGenerator
             
             if ( ! ( obj instanceof Triple ) )
             {
-                ALog.warn(StageGenPropertyFunction.class, "Don't recognize: ["+Utils.className(obj)+"]") ;
+                ALog.warn(StageGenPropertyFunctionX.class, "Don't recognize: ["+Utils.className(obj)+"]") ;
                 throw new ARQInternalErrorException("Not a triple pattern: "+obj.toString() ) ;
             }
                 
@@ -114,7 +114,7 @@ public class StageGenPropertyFunction implements StageGenerator
             Stage stage = magicProperty(context, registry, pf, triples) ;
             if ( stage == null )
             {
-                ALog.warn(StageGenPropertyFunction.class, "Lost a Stage for a property function") ;
+                ALog.warn(StageGenPropertyFunctionX.class, "Lost a Stage for a property function") ;
                 continue ;
             }
             pfStages.put(pf, stage) ;

@@ -63,7 +63,8 @@ public class StageBuilder
     
     public static StageGenerator standardGenerator()
     {
-        return new StageGenPropertyFunction(new StageGenBasicPattern()) ;
+        // return new StageGenPropertyFunction(new StageGenBasicPattern()) ;
+        return new StageGenBasicPattern() ;
     }
     
     private static StageGenerator chooseStageGenerator(Context context)
