@@ -23,8 +23,6 @@ See ToDoSSE
 + OpCompiler: have a global factory so that can use QueryEngineMain and supply subclasses 
   of OpCompiler (experimentation and extensibility for Andreas). 
 
-+ SPARQL/Update - command line tools - arq.update
-
 + Results set to note when finished and warn on attempted continued use.
 
 + More dateTime arithmetic and durations
