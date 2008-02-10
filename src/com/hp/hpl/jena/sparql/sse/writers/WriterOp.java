@@ -61,7 +61,7 @@ public class WriterOp
     public static void output(OutputStream out, Op op, Prologue prologue)
     { output(new IndentedWriter(out), op, prologue) ; }
 
-    public static void out(IndentedWriter iWriter, Op op)
+    public static void output(IndentedWriter iWriter, Op op)
     { output(iWriter, op, (PrefixMapping)null) ; }
 
     public static void output(IndentedWriter iWriter, Op op, PrefixMapping pMap)

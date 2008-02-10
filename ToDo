@@ -1,7 +1,6 @@
 ==== ARQ ToDo
 
 ++ ** Document "stages" - new form.
-++ ** Document "algebra"
 ++ ** Document "update API" and examples.
 
 + Reconsider OpStage
@@ -24,24 +23,10 @@ See ToDoSSE
 + OpCompiler: have a global factory so that can use QueryEngineMain and supply subclasses 
   of OpCompiler (experimentation and extensibility for Andreas). 
 
-+ Remove OpDatasetNames?? - only needed in quad compilation for GRAPH ?g {}
-  Do that a betetr way (join of all names).
-  Special iterator for OpCompiler? 
-
 + SPARQL/Update - command line tools - arq.update
-
-+ Better syntax as well as SQL-like: GROUP BY ... WITH ... ??
-
-+ FILTER(?x = "abc")
-  Extract from exprlist.
 
 + Results set to note when finished and warn on attempted continued use.
 
-+ Expression printing : expr.toString should not add outer brackets
- 
-+ Check the better code in QueryIterTriplePattern.TripleMapper 
-  Still needs to delay the binding allocation.  
-         
 + More dateTime arithmetic and durations
   http://www.w3.org/TR/xpath-functions/#dateTime-arithmetic
 
@@ -51,13 +36,8 @@ See ToDoSSE
 
 + Initial binding for UpdateRequest
 
-== Core
-
 + OpOrder to take an ExprList 
   Query has a list of sort conditions so need turn SortCondition into an expression
-
-+ FmtUtils and WriterTriple/Node/...
-  NodeToLabel maps.
 
 + ResultsFormat (output)vs ResultSetFormat (input)
   ResultSetFormatter.output as SSE
@@ -66,25 +46,20 @@ See ToDoSSE
 
 + What is "OpDatasetNames" nowadays?
 	A table?  unnecessary?
-+ Revisit arq.cmd.QueryUtils for printing.
+	+ Remove OpDatasetNames?? - only needed in quad compilation for GRAPH ?g {}
+  Do that a betetr way (join of all names).
+  Special iterator for OpCompiler? 
 
 + Alternative indexes
   LARQ idea - extracted.  Object ==> node/subject
   
 + Commands
-  + qtest to use modules (and qexpr)
+  + qtest
     ModVersion
-  + qparse to test op output
 
 + DatasetImpl and DataSourceImpl 
     Revisit.
       
-== Algebra
-
-+ OpWalker - only used for getting vars, and that needs to truncate a walk.
-+ Left join as "join union diff"
-+ Table equals (with and without order)
-  
 == LARQ
 
 + LARQ assembler

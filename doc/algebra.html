@@ -61,28 +61,50 @@ SPARQ algebra but also RDF terms, filter expressions and even dataset and
 graphs.</p>
 <pre class="box">Op op = SSE.parseOp(&quot;(bgp (?s ?p ?o))&quot;) ;	// Read a string</pre>
 <pre class="box">Op op = SSE.readOp(&quot;filename.sse&quot;) ;		// Read a file</pre>
-<p>The SSE class simple calls the appropriate builder operation from the 
+<p>The SSE class simply calls the appropriate builder operation from the 
 <code>com.hp.hpl.jena.sparql.sse.builder</code>
 package.</p>
-<p>To go with this, there is a package of writers for many of the Java 
+<p>To go with this, there is a collection of writers for many of the Java 
 structures in ARQ.&nbsp; </p>
 <pre class="box">Op op = ... ;
-WriterOp.output(op) ;		// Write to stdout</pre>
+SE.write(op) ;		// Write to stdout</pre>
 <p>Writers default to writing to <code>System.out</code> but support calls to any output 
 stream (it manages the conversion to UTF-8) and ARQ own <code>IndentedWriter</code>s 
-form for embedding in structured output.</p>
+form for embedding in structured output.&nbsp; Again, SSE is simply passing the 
+calls to the writer operation from the 
+<code>com.hp.hpl.jena.sparql.sse.writer</code>
+package.</p>
 <h2>Creating an algebra expression programmatically</h2>
+<p>See the example in src-examples/ arq.examples.AlgebraExec.</p>
+<p>To produce the complete javadoc for ARQ, downlaod an ARQ distribution and run 
+the ant task 'javadoc-all'.</p>
 <h2>Evaluating a algebra expression</h2>
-<h2>ARQ extensions</h2>
-<p>Quads</p><font SIZE="1">
-<pre class="box">Algebra.compileQuad(Query query)</pre>
+<p>See the example in src-examples/ arq.examples.AlgebraExec.</p><font SIZE="1">
+<pre class="box">QueryIterator qIter = Algebra.<i>exec</i>(op,graph) ;</pre>
+<pre class="box">QueryIterator qIter = Algebra.<i>exec</i>(op,datasetGraph) ;</pre>
+<p>Evaluating an algebra expression produces a iterator of query solutions 
+(called Bindings).</p>
 </font>
-<p>&nbsp;</p>
-<p>&nbsp;</p>
-<p>&nbsp;</p>
+<pre class="box">for ( ; qIter.hasNext() ; )
+{
+   Binding b = qIter.nextBinding() ;
+   Node n = b.get(var_x) ;
+   System.out.println(var_x+" = "+FmtUtils.stringForNode(n)) ;
+}
+qIter.close() ;</pre>
+
+<font SIZE="1">
+<p>Operations of <code>CONSTRUCT</code>, <code>DESCRIBE</code>
+and <code>ASK</code> are done on on top of algebra evaluation. Applications can 
+access this functionality by creating their own <code>QueryEngine</code> (see arq.examples.engine.MyQueryEngine) 
+and it's factory. A query engine is a one-time use object for each query 
+execution.</p>
+</font>
+<h2>ARQ extensions</h2><p>Quads are handled by a slightly different query 
+translation process that tracks the relevant graph for the quad and generates 
+quad patterns, instead of triple patterns. The main query engine supports quad 
+evaluation; there is a separate reference query engine for quad as well (<code>QueryEngineQuad</code>).</p><font SIZE="1"><pre class="box">Algebra.compileQuad(Query query)</pre></font><p>&nbsp;</p>
 
 
 
-<p class="footnote"><a href="documentation.html">ARQ Documentation Page</a></p>
-</body>
-</html>
+<p class="footnote"><a href="documentation.html">ARQ Documentation Page</a></p></body></html>
