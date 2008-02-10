@@ -20,6 +20,7 @@ import com.hp.hpl.jena.sparql.util.*;
 import com.hp.hpl.jena.query.ARQ;
 
 
+// Not used any more.  PropertyFunctions are done in the algebra with called procedures */ 
 public class StageGenPropertyFunctionX implements StageGenerator
 {
     private StageGenerator other ;
@@ -30,7 +31,7 @@ public class StageGenPropertyFunctionX implements StageGenerator
      *  Merges the results with StagePropertyFunctions to produce an overall
      *  StageList.
      *  */
-    public StageGenPropertyFunctionX(StageGenerator other)
+    /*public*/ private StageGenPropertyFunctionX(StageGenerator other)
     {
         this.other = other ;
     }
