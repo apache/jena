@@ -20,6 +20,17 @@ See ToDoSSE
 
 ----
 
++ OpBGP is (ref- & main-) compiled to a call to static "StageBuilder.compile" (modularity)  
+  StageBuilder::
+     Choose StageGenerator and calls it to get a StageList
+     .build the StageList to a QueryIterator
+     Return QueryIterator.
+  (Check for StageList.add() calls).
+  Maybe:      
+     StageGenerator => "Stage" (name reuse?) as a factory-like mechanism
+	 StageList is a kind of Stage.       
+  Better, better?: do as a Transform, which changes a BGP to a matcher/solver.
+
 + OpCompiler: have a global factory so that can use QueryEngineMain and supply subclasses 
   of OpCompiler (experimentation and extensibility for Andreas). 
 
