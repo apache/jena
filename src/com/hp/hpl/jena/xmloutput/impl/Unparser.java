@@ -2,7 +2,7 @@
  *  (c)     Copyright 2000, 2001, 2002, 2002, 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  *   All rights reserved.
  * [See end of file]
- *  $Id: Unparser.java,v 1.44 2008-01-02 12:09:33 andy_seaborne Exp $
+ *  $Id: Unparser.java,v 1.45 2008-02-11 11:10:13 jeremy_carroll Exp $
  */
 
 package com.hp.hpl.jena.xmloutput.impl;
@@ -82,7 +82,7 @@ import com.hp.hpl.jena.vocabulary.*;
 /**
  * An Unparser will output a model in the abbreviated syntax. *
  * 
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.44 $' Date='$Date:
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.45 $' Date='$Date:
  *          2005/07/13 15:33:51 $'
  * 
  */
@@ -1190,8 +1190,8 @@ class Unparser {
      */
 
     private void increaseObjectCount(Resource r) {
-        if (!r.isAnon())
-            return;
+//        if (!r.isAnon())
+//            return;
         Integer cnt = (Integer) objectTable.get(r);
         if (cnt == null) {
             cnt = one;
