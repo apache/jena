@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: GraphBase.java,v 1.51 2008-01-02 12:05:19 andy_seaborne Exp $
+  $Id: GraphBase.java,v 1.52 2008-02-11 09:32:33 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -330,7 +330,7 @@ public abstract class GraphBase implements GraphWithPerform
 	    }
 
     /**
-         Answer a reifier approperiate to this graph. Subclasses override if
+         Answer a reifier appropriate to this graph. Subclasses override if
          they need non-SimpleReifiers.
     */
     protected Reifier constructReifier()

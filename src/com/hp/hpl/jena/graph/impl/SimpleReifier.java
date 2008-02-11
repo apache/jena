@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: SimpleReifier.java,v 1.54 2008-01-02 12:05:18 andy_seaborne Exp $
+  $Id: SimpleReifier.java,v 1.55 2008-02-11 09:32:33 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -229,7 +229,7 @@ public class SimpleReifier implements Reifier
         }
 
     private boolean matchesStatement( Node x )
-        { return x.isVariable() || x.equals( RDF.Nodes.Statement ); }
+        { return !x.isConcrete() || x.equals( RDF.Nodes.Statement ); }
     
     public ExtendedIterator findExposed( TripleMatch m )
         { return findEither( m, false ); }
