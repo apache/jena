@@ -51,9 +51,11 @@ public abstract class CmdMain extends CmdLineArgs
         catch (TerminationException ex) { System.exit(ex.getCode()) ; }
         catch (JenaException ex)
         {
+            ex.printStackTrace(System.err) ;
+            
             String s = Utils.className(ex) ;
-            System.err.println(s) ;
-            System.err.println(ex.getMessage()) ;
+//            System.err.println(s) ;
+//            System.err.println(ex.getMessage()) ;
             if ( exitOnFailure ) System.exit(2) ;
             return 2 ;
         }
