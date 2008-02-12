@@ -51,7 +51,7 @@ ModelSpec
 
 RDF/XML-ABBREV
     o Aesthetic improvement changes most RDF/XML-ABBREV output.
-      The treatment of URI nodes and blank nodes as been made more similar.
+      The treatment of URI nodes and blank nodes has been made more uniform.
       Please give feedback if for your data this is inappropriate.
 
 Schemagen
