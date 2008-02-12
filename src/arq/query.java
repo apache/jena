@@ -64,7 +64,7 @@ public class query extends CmdARQ
     
     protected ModDataset setModDataset()
     {
-        return new ModAssembler() ;
+        return new ModDatasetAssembler() ;
     }
     
     protected void exec()

@@ -8,22 +8,19 @@ package arq.cmdline;
 
 import arq.cmd.CmdException;
 
+import com.hp.hpl.jena.query.Dataset;
+import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.shared.JenaException;
 import com.hp.hpl.jena.shared.NotFoundException;
-
 import com.hp.hpl.jena.sparql.ARQException;
 import com.hp.hpl.jena.sparql.core.assembler.AssemblerUtils;
-import com.hp.hpl.jena.sparql.core.assembler.DatasetAssemblerVocab;
-
-import com.hp.hpl.jena.query.DataSource;
-import com.hp.hpl.jena.query.Dataset;
 
 
-public class ModAssembler extends ModDatasetGeneral
+public class ModAssembler extends ModBase
 {
-    protected final 
-    ArgDecl assemblerDescDecl = new ArgDecl(ArgDecl.HasValue, "desc", "dataset") ;
-    String assemblerFile = null ;
+    protected final ArgDecl assemblerDescDecl = new ArgDecl(ArgDecl.HasValue, "desc", "dataset") ;
+    private String assemblerFile = null ;
+    Object thingDescribed = null ;
     
     public ModAssembler()
     { 
@@ -36,27 +33,27 @@ public class ModAssembler extends ModDatasetGeneral
     //@Override
     public void processArgs(CmdArgModule cmdLine)
     {
-        super.processArgs(cmdLine) ;
         if ( cmdLine.contains(assemblerDescDecl) )
             assemblerFile = cmdLine.getValue(assemblerDescDecl) ;
     }
     
     public void registerWith(CmdGeneral cmdLine)
     {
-        super.registerWith(cmdLine) ;
         //cmdLine.getUsage().startCategory("Dataset") ;
         cmdLine.add(assemblerDescDecl,
                     "--desc=",
-                    "Assembler file description of dataset") ;
+                    "Assembler description file") ;
     }
     
-    public Dataset createDataset()
+    public String getAssemblerFile() { return assemblerFile ; }
+    
+    // Should subclass and apply typing.
+    
+    protected Object create(Resource type)
     {
-        if ( assemblerFile == null )
-            return super.createDataset() ;
-
+        Object thing = null ;
         try {
-            dataset = (Dataset)AssemblerUtils.build(assemblerFile, DatasetAssemblerVocab.tDataset) ;
+            thing = (Dataset)AssemblerUtils.build(assemblerFile, type) ;
         }
         catch (ARQException ex) { throw ex; }
         catch (NotFoundException ex)
@@ -64,11 +61,9 @@ public class ModAssembler extends ModDatasetGeneral
         catch (JenaException ex)
         { throw ex ; }
         catch (Exception ex)
-        { throw new CmdException("Error creating dataset", ex) ; }
-
-        if ( dataset instanceof DataSource )
-            super.addGraphs((DataSource)dataset) ;
-        return dataset ;
+        { throw new CmdException("Error creating", ex) ; }
+        
+        return thing ;
     }
 }
 

@@ -14,7 +14,9 @@ import com.hp.hpl.jena.sparql.algebra.op.OpBGP;
 import com.hp.hpl.jena.sparql.algebra.op.OpFilter;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.expr.E_Equals;
+import com.hp.hpl.jena.sparql.expr.E_SameTerm;
 import com.hp.hpl.jena.sparql.expr.Expr;
+import com.hp.hpl.jena.sparql.expr.ExprFunction2;
 import com.hp.hpl.jena.sparql.expr.ExprList;
 import com.hp.hpl.jena.sparql.expr.NodeValue;
 
@@ -68,18 +70,49 @@ public class Rewrite
         private Op processFilter(Expr e, Op subOp)
         {
             // FILTER ( ?x = :x ) etc
-            if ( e instanceof E_Equals )
+            // FILTER ( sameTerm(?x, :x ) etc
+            
+            
+            
+            if ( e instanceof E_Equals || e instanceof E_SameTerm )
             {
-                E_Equals eq = (E_Equals)e ;
+                ExprFunction2 eq = (ExprFunction2)e ;
                 Expr left = eq.getArg1() ;
                 Expr right = eq.getArg2() ;
+                Var var = null ;
+                NodeValue constant = null ;
+                
+                if ( e instanceof E_Equals )
+                {
+                    // Value based?
+                    if ( ! isSafeTerm(left) || ! isSafeTerm(right) )
+                        return null ;
+                }
+                
                 if ( left.isVariable() && right.isConstant() )
-                    return subst(subOp, left.asVar(), right.getConstant()) ;
-                if ( left.isConstant() && right.isVariable() )
-                    return subst(subOp, right.asVar(), left.getConstant()) ;
+                {
+                    var = left.asVar() ;
+                    constant = right.getConstant() ;
+                }
+                else if ( right.isVariable() && left.isConstant() )
+                {
+                    var = right.asVar() ;
+                    constant = left.getConstant() ;
+                }
+
+                if ( var != null && constant != null )
+                    return subst(subOp, var, constant) ;
             }
                 
             return null ;
+        }
+        
+        private static boolean isSafeTerm(Expr e)
+        {
+            if ( ! e.isConstant() ) return false ;
+
+            NodeValue nv = e.getConstant() ;
+            return nv.isString() || ! nv.isLiteral() ;
         }
         
         private static Op subst(Op subOp , Var var, NodeValue nv)

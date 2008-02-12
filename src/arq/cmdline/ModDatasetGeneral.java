@@ -29,7 +29,7 @@ import com.hp.hpl.jena.util.LocationMapper;
 
 public class ModDatasetGeneral extends ModDataset
 {
-    // See also ModAssembler which extends ModDataset
+    // See also ModDatasetAssembler
     protected final ArgDecl graphDecl      = new ArgDecl(ArgDecl.HasValue, "graph", "data") ;
     protected final ArgDecl namedGraphDecl = new ArgDecl(ArgDecl.HasValue, "named", "namedgraph", "namedGraph", "namedData", "nameddata") ;
     //protected final ArgDecl dataFmtDecl    = new ArgDecl(ArgDecl.HasValue, "fmt", "format") ;
