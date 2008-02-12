@@ -1,101 +1,11 @@
 Release Notes
 =============
 
-==== Jena 2.5.5
-
-RDF/XML-ABBREV
-    o Aesthetic improvement changes most RDF/XML-ABBREV output.
-      The treatment of URI nodes and blank nodes as been made
-      more similar.
-      Please give feedback if for your data this is inappropriate.
-    
-Schemagen
-    o Member variables (i.e. for classes, properties and individuals) are now
-      lexically sorted to create more stability in change-sets when generated
-      Java classes are placed under source code control.
-    o Now tries to guess the namespace of an ontology file in the absence of
-      specific hints (hints such as: an option, prefix binding for the empty
-      prefix, or an owl:Ontology or daml:Ontology resource). The algorithm
-      is to look for the most prevalent URI that is not owl:, rdf: etc.
-    o Added a new option, --includeSource, which causes schemagen to include
-      the source code of the input ontology into the generated Java object.
-
-Ontology API updates
-    o Added methods to Individual to allow testing and manipulation of the
-      classes to which an individual belongs.
-    o Added a method to OntProperty to list the Restrictions that mention
-      the property
-    o Clarified the contract of OntModel.listOntProperties, and added a new
-      method OntModel.listAllOntProperties that is more robust in the
-      absence of a reasoner, but potentially slower.
-    o Added a utility class of basic ontology manipulation tools,
-      com.hp.hpl.jena.ontology.OntTools. So far, this includes:
-         * compute the lowest common ancestor of two classes
-         * compute minimum path between two nodes
-         * compute the named roots of a class hierarchy
-
-Reasoners:
-    o Changed the equality contract of Rule objects to include the rule name.
-    o Extended OWLMicro to include support for hasValue to match documentation.
-    o Fixed problem with OntModel.getDeductionsModel not always triggering prepare.
-    o Fixed problem with reasoner configuration when using typed literals
-
-Change of Behaviour in getByte/Short/Int on typed literals
-
-    o The methods getByte(), getShort(), and getInt(), when applied to
-      typed literals whose value is out of range, delivered a truncated
-      value [as opposed to those methods on plain literals, which throw
-      an exception]. This was deemed to be an error, and those methods
-      will now throw IllegalArgumentExceptions.
-
-    o These methods may be deprecated & removed in later releases.
-
-
-Assemblers
-    o When the Assembler system (ie AssemblerGroup et al) load a class,
-      that class is loaded before any of the implementsWith of that
-      group are consulted. Thus the loaded class can update existing
-      groups inplementsWith tables.
-
-    o Because such an update need not be done to the global group
-      Assembler.general, the group loading the class must be
-      available, so using a static initialiser isn't sufficient.
-
-    o Instead, if the class has a (static) method called
-      `whenRequiredByAssembler` with an AssemblerGroup argument,
-      that method is called passing in the loading AssemblerGroup.
-
-    o Users are discouraged from using static initialisers which
-      update Assembler.general, since this will not work as
-      they might have expected when other assembler groups are
-      being used.
-
-    o OntModelSpecs have acquired an optional likeBuiltinSpec property
-      for defining the "base" on which an OntModelSpec can be built by
-      specifying other properties. In particular, this allows OntModelSpecs
-      /with no reasoning/ to be constructed, which was a mysterious absence
-      in earlier assemblers.
-
-Jar change:
+Jar changes:
     o lucene-core has been upgraded from lucene-core-2.0.0 to lucene-2.2.0.jar.
     o logging-commons-1.1.jar upgraded to logging-commons-1.1.1.jar 
 
-Typed literals:
-    o Fixed bug in equality checking of instances of xsd:decimal,
-      and creation of xsd:decimal or xsd:integer instances from BigDecimal
-      or BigInteger instances
-
-PrefixMapping loses deprecated usePrefix
-    o  The deprecated PrefixMapping method `usePrefix` has been removed.
-       (Use `shortForm` instead.)
-
-ModelSpec
-    o ModelSpec, which has been deprecated for a while, has been removed,
-      along with ModelSpecImpl. OntModelSpec, which used to implement
-      ModelSpec (via OntModelSpecObsolete, also removed), doesn't any more. 
-
 Deprecated Method Removal Frenzy
-
     o A bunch of methods in Resource, Model, ModelCon, and Statement have
       for a while now been marked as deprecated. These methods took literal
       values for the object of a statement and used the old treat-it-as-a-string
@@ -130,6 +40,92 @@ Deprecated Method Removal Frenzy
       now been removed. Users who still process DAML+OIL ontologies should
       switch to using the generic OntModel with the DAML profile.
 
+PrefixMapping loses deprecated usePrefix
+    o  The deprecated PrefixMapping method `usePrefix` has been removed.
+       (Use `shortForm` instead.)
+
+ModelSpec
+    o ModelSpec, which has been deprecated for a while, has been removed,
+      along with ModelSpecImpl. OntModelSpec, which used to implement
+      ModelSpec (via OntModelSpecObsolete, also removed), doesn't any more. 
+
+RDF/XML-ABBREV
+    o Aesthetic improvement changes most RDF/XML-ABBREV output.
+      The treatment of URI nodes and blank nodes as been made more similar.
+      Please give feedback if for your data this is inappropriate.
+
+Schemagen
+    o Member variables (i.e. for classes, properties and individuals) are now
+      lexically sorted to create more stability in change-sets when generated
+      Java classes are placed under source code control.
+    o Now tries to guess the namespace of an ontology file in the absence of
+      specific hints (hints such as: an option, prefix binding for the empty
+      prefix, or an owl:Ontology or daml:Ontology resource). The algorithm
+      is to look for the most prevalent URI that is not owl:, rdf: etc.
+    o Added a new option, --includeSource, which causes schemagen to include
+      the source code of the input ontology into the generated Java object.
+
+Ontology API updates
+    o Added methods to Individual to allow testing and manipulation of the
+      classes to which an individual belongs.
+    o Added a method to OntProperty to list the Restrictions that mention
+      the property
+    o Clarified the contract of OntModel.listOntProperties, and added a new
+      method OntModel.listAllOntProperties that is more robust in the
+      absence of a reasoner, but potentially slower.
+    o Added a utility class of basic ontology manipulation tools,
+      com.hp.hpl.jena.ontology.OntTools. So far, this includes:
+         * compute the lowest common ancestor of two classes
+         * compute minimum path between two nodes
+         * compute the named roots of a class hierarchy
+
+Reasoners:
+    o Changed the equality contract of Rule objects to include the rule name.
+    o Extended OWLMicro to include support for hasValue to match documentation.
+    o Fixed problem with OntModel.getDeductionsModel not always triggering prepare.
+    o Fixed problem with reasoner configuration when using typed literals
+
+Change of Behaviour in getByte/Short/Int on typed literals
+    o The methods getByte(), getShort(), and getInt(), when applied to
+      typed literals whose value is out of range, delivered a truncated
+      value [as opposed to those methods on plain literals, which throw
+      an exception]. This was deemed to be an error, and those methods
+      will now throw IllegalArgumentExceptions.
+
+    o These methods may be deprecated & removed in later releases.
+
+Assemblers
+    o When the Assembler system (ie AssemblerGroup et al) load a class,
+      that class is loaded before any of the implementsWith of that
+      group are consulted. Thus the loaded class can update existing
+      groups inplementsWith tables.
+
+    o Because such an update need not be done to the global group
+      Assembler.general, the group loading the class must be
+      available, so using a static initialiser isn't sufficient.
+
+    o Instead, if the class has a (static) method called
+      `whenRequiredByAssembler` with an AssemblerGroup argument,
+      that method is called passing in the loading AssemblerGroup.
+
+    o Users are discouraged from using static initialisers which
+      update Assembler.general, since this will not work as
+      they might have expected when other assembler groups are
+      being used.
+
+    o OntModelSpecs have acquired an optional likeBuiltinSpec property
+      for defining the "base" on which an OntModelSpec can be built by
+      specifying other properties. In particular, this allows OntModelSpecs
+      /with no reasoning/ to be constructed, which was a mysterious absence
+      in earlier assemblers.
+
+Typed literals:
+    o Fixed bug in equality checking of instances of xsd:decimal,
+      and creation of xsd:decimal or xsd:integer instances from BigDecimal
+      or BigInteger instances
+
+Reasoners:
+    o Changed the equality contract of Rule objects to include the rule name.
 
 ==== Jena 2.5.4
 
