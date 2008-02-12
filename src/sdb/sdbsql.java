@@ -6,7 +6,6 @@
 
 package sdb;
 
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -14,8 +13,9 @@ import sdb.cmd.CmdArgsDB;
 import arq.cmd.TerminationException;
 import arq.cmdline.ArgDecl;
 
-import com.hp.hpl.jena.sparql.util.Utils;
 import com.hp.hpl.jena.sdb.sql.RS;
+import com.hp.hpl.jena.sdb.sql.ResultSetJDBC;
+import com.hp.hpl.jena.sparql.util.Utils;
 import com.hp.hpl.jena.util.FileManager;
 
 public class sdbsql extends CmdArgsDB
@@ -86,7 +86,7 @@ public class sdbsql extends CmdArgsDB
         getModTime().startTimer() ;
         long queryTime = 0 ;
         try {
-            ResultSet rs = getModStore().getConnection().exec(sqlStmt).get() ;
+            ResultSetJDBC rs = getModStore().getConnection().exec(sqlStmt) ;
             queryTime = getModTime().readTimer() ;
             
             if ( rs == null )
@@ -94,9 +94,9 @@ public class sdbsql extends CmdArgsDB
             else
             { 
                 if ( isQuiet() )
-                    RS.consume(rs) ;
+                    RS.consume(rs.get()) ;
                 else
-                    RS.printResultSet(rs) ;
+                    RS.printResultSet(rs.get()) ;
             }
         } catch (SQLException ex)
         {
