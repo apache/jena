@@ -106,6 +106,7 @@ public class Run
     
     public static void code()
     {
+        // see Rewrite.java
         Query q = QueryFactory.create("SELECT * { ?s ?p ?o FILTER(?o = 3) }") ;
         Op op = Algebra.compile(q) ;
         op = Algebra.optimize(op) ;

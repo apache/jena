@@ -7,24 +7,23 @@
 package arq;
 
 import java.io.File;
+import java.util.Iterator;
 
 import junit.framework.TestSuite;
 import arq.cmd.CmdException;
+import arq.cmd.CmdUtils;
 import arq.cmd.TerminationException;
 import arq.cmdline.ArgDecl;
-import arq.cmdline.CmdARQ;
-import arq.cmdline.ModEngine;
+import arq.cmdline.CmdLineArgs;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.n3.IRIResolver;
+import com.hp.hpl.jena.query.ARQ;
 import com.hp.hpl.jena.rdf.model.Literal;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.vocabulary.DC;
-import com.hp.hpl.jena.vocabulary.DCTerms;
-import com.hp.hpl.jena.vocabulary.RDF;
-import com.hp.hpl.jena.vocabulary.XSD;
-
+import com.hp.hpl.jena.sparql.engine.ref.QueryEngineQuad;
+import com.hp.hpl.jena.sparql.engine.ref.QueryEngineRef;
 import com.hp.hpl.jena.sparql.expr.E_Function;
 import com.hp.hpl.jena.sparql.expr.NodeValue;
 import com.hp.hpl.jena.sparql.junit.EarlReport;
@@ -32,10 +31,15 @@ import com.hp.hpl.jena.sparql.junit.QueryTestSuiteFactory;
 import com.hp.hpl.jena.sparql.junit.SimpleTestRunner;
 import com.hp.hpl.jena.sparql.test.ARQTestSuite;
 import com.hp.hpl.jena.sparql.util.NodeFactory;
+import com.hp.hpl.jena.sparql.util.Symbol;
 import com.hp.hpl.jena.sparql.util.Utils;
 import com.hp.hpl.jena.sparql.vocabulary.DOAP;
 import com.hp.hpl.jena.sparql.vocabulary.FOAF;
 import com.hp.hpl.jena.sparql.vocabulary.TestManifest;
+import com.hp.hpl.jena.vocabulary.DC;
+import com.hp.hpl.jena.vocabulary.DCTerms;
+import com.hp.hpl.jena.vocabulary.RDF;
+import com.hp.hpl.jena.vocabulary.XSD;
 
 
 /** A program to execute query test suites
@@ -48,127 +52,189 @@ import com.hp.hpl.jena.sparql.vocabulary.TestManifest;
  *   [ --query <i>query</i> --data <i>data</i> --result <i>result</i> ] -- run one test
  * </pre>
  * 
- * @author  Andy Seaborne, Olaf Hartig
+ * @author  Andy Seaborne
  */
 
-public class qtest extends CmdARQ
+class qtest_X
 {
-    protected ArgDecl allDecl =    new ArgDecl(ArgDecl.NoValue, "all") ;
-    protected ArgDecl wgDecl =     new ArgDecl(ArgDecl.NoValue, "wg", "dawg") ;
-    protected ArgDecl queryDecl =  new ArgDecl(ArgDecl.HasValue, "query") ;
-    protected ArgDecl dataDecl =   new ArgDecl(ArgDecl.HasValue, "data") ;
-    protected ArgDecl resultDecl = new ArgDecl(ArgDecl.HasValue, "result") ;
-    protected ArgDecl earlDecl =   new ArgDecl(ArgDecl.NoValue, "earl") ;
+    // Old - delete me
+
+    static { CmdUtils.setLog4j() ; CmdUtils.setN3Params() ; }
     
-    protected ModEngine modEngine = null ;
+    static String className = Utils.classShortName(qtest_X.class) ;
     
-    protected TestSuite suite = null;
-    protected boolean execAllTests = false;
-    protected boolean execDAWGTests = false;
-    protected String testfileAbs = null;
-    protected boolean createEarlReport = false;
+    static String usage = 
+        "One of:\n"+
+        "  "+className+" [--all]\n"+
+        "  "+className+" [--dawg]\n"+
+        "  "+className+" manifest\n"+
+        "  "+className+" --query queryFile --data dataFile --result resultsFile\n"+
+                "     where --all      run all built-in tests\n"+
+                "           --dawg     run working group tests\n"+
+                "           manifest   run a set of tests";
     
-    public static void main (String [] argv)
+    /*public*/ private static void main (String [] argv)
     {
         try {
-            new qtest(argv).main() ;
+            main2(argv) ;
         }
         catch (TerminationException ex) { System.exit(ex.getCode()) ; }
-    }
-    
-    public qtest(String[] argv)
-    {
-        super(argv) ;
-        
-        modEngine = setModEngine() ;
-        addModule(modEngine) ;
-        
-        getUsage().startCategory("Tests (single query)") ;
-        add(queryDecl, "--query", "run the given query") ;
-        add(dataDecl, "--data", "data file to be queried") ;
-        add(resultDecl, "--result", "file that specifies the expected result") ;
-        
-        getUsage().startCategory("Tests (built-in tests)") ;
-        add(allDecl, "--all", "run all built-in tests") ;
-        add(wgDecl, "--dawg", "run working group tests") ;
-        
-        getUsage().startCategory("Tests (execute test manifest)") ;
-        getUsage().addUsage("<manifest>", "run the tests specified in the given manifest") ;
-        add(earlDecl, "--earl", "create EARL report") ;
-    }
-    
-    protected ModEngine setModEngine()
-    {
-        return new ModEngine() ;
-    }
-    
-    protected String getCommandName() { return Utils.className(this) ; }
-    
-    protected String getSummary() { return getCommandName()+" [ --data=<file> --query=<query> --result=<results> ] | --all | --dawg | <manifest>" ; }
-    
-    protected void processModulesAndArgs()
-    {
-        super.processModulesAndArgs() ;
-        
-        if ( contains(queryDecl) || contains(dataDecl) || contains(resultDecl) )
+        catch (CmdException ex)
         {
-            if ( ! ( contains(queryDecl) && contains(dataDecl) && contains(resultDecl) ) )
-                throw new CmdException("Must give query, data and result to run a single test") ;
-            
-            String query = getValue(queryDecl) ;
-            String data = getValue(dataDecl) ;
-            String result = getValue(resultDecl) ;
-            
-            suite = QueryTestSuiteFactory.make(query, data, result) ;
+            System.err.println(ex.getMessage()) ;
+            if ( ex.getCause() != null )
+                ex.getCause().printStackTrace(System.err) ;
         }
-        else if ( contains(allDecl) )
-        {
-            execAllTests = true ;
-        }
-        else if ( contains(wgDecl) )
-        {
-            execDAWGTests = true ;
-        }
-        else
-        {
-            // OK - running a manifest
-            
-            if ( ! hasPositional() )
-                throw new CmdException("No manifest file") ;
+        
+    }
+        
+    /*public*/ private static void main2(String [] argv)
+    {
+        CmdLineArgs cl = new CmdLineArgs(argv) ;
+        
+        ArgDecl helpDecl = new ArgDecl(ArgDecl.NoValue, "h", "help") ;
+        cl.add(helpDecl) ;
+        
+//        ArgDecl verboseDecl = new ArgDecl(false, "v", "verbose") ;
+//        cl.add(verboseDecl) ;
+//        
+//        ArgDecl quietDecl = new ArgDecl(false, "q", "quiet") ;
+//        cl.add(quietDecl) ;
+        
+        ArgDecl allDecl = new ArgDecl(ArgDecl.NoValue, "all") ;
+        cl.add(allDecl) ;
 
-            String testfile = getPositionalArg(0) ;
-            testfileAbs = IRIResolver.resolveGlobal(testfile) ;
+        ArgDecl wgDecl = new ArgDecl(ArgDecl.NoValue, "wg", "dawg") ;
+        cl.add(wgDecl) ;
+        
+        ArgDecl dirDecl = new ArgDecl(ArgDecl.HasValue, "dir") ;
+        cl.add(dirDecl) ;
+
+        ArgDecl queryDecl = new ArgDecl(ArgDecl.HasValue, "query") ;
+        cl.add(queryDecl) ;
+
+        ArgDecl dataDecl = new ArgDecl(ArgDecl.HasValue, "data") ;
+        cl.add(dataDecl) ;
+
+        ArgDecl resultDecl = new ArgDecl(ArgDecl.HasValue, "result") ;
+        cl.add(resultDecl) ;
+        
+        ArgDecl engineDecl = new ArgDecl(ArgDecl.HasValue, "engine") ;
+        cl.add(engineDecl) ;
+        
+        ArgDecl setDecl = new ArgDecl(ArgDecl.HasValue, "set", "define", "defn", "def") ;
+        cl.add(setDecl) ;
+
+        ArgDecl earlDecl = new ArgDecl(ArgDecl.NoValue, "earl") ;
+        cl.add(earlDecl) ;
+        
+        ArgDecl strictDecl = new ArgDecl(ArgDecl.NoValue, "strict") ;
+        cl.add(strictDecl) ;
+
+        try {
+            cl.process() ;
+        } catch (IllegalArgumentException ex)
+        {
+            System.err.println(ex.getMessage()) ;
+            usage(System.err) ;
+            throw new TerminationException(2) ;
+        }
+
+        if ( cl.contains(helpDecl) ||
+             ( !cl.hasArgs() && ! cl.hasPositional() ) )
+        {
+            usage() ;
+            throw new TerminationException(0) ;
+        }
+
+        // ==== General things
+        //boolean verbose = cl.contains(verboseDecl) ;
+        //boolean quiet = cl.contains(quietDecl) ;
+        
+        // Strict mode
+        if ( cl.contains(strictDecl) )
+            ARQ.setStrictMode() ;
+        
+        // Set symbols
+        if ( cl.getValues(setDecl) != null )
+            for ( Iterator iter = cl.getValues(setDecl).iterator() ; iter.hasNext(); )
+            {
+                String arg = (String)iter.next();
+                String[] frags = arg.split("=", 2) ;
+                if ( frags.length != 2)
+                    throw new RuntimeException("Can't split '"+arg+"'") ;
+
+                String symbolName = frags[0] ;
+                String value = frags[1] ;
+
+                if ( ! symbolName.matches("^[a-zA-Z]*:") )
+                    symbolName = "http://jena.hpl.hp.com/ARQ#" + symbolName ;
+
+                Symbol symbol = Symbol.create(symbolName) ;
+                ARQ.getContext().set(symbol, value) ;
+            }
+                
+        if ( cl.contains(engineDecl) )
+        {
+            if ( cl.getValue(engineDecl).equalsIgnoreCase("engine2") ||
+                 cl.getValue(engineDecl).equalsIgnoreCase("ref") )
+            {
+                QueryEngineRef.register() ;
+            }
+            else if ( cl.getValue(engineDecl).equalsIgnoreCase("quad") )
+                QueryEngineQuad.register() ;
+            else
+            {
+                argError("No such engine ("+cl.getValue(engineDecl)+")") ;
+            }
+        }
+        
+        // First - what are we doing?
+        
+        if ( cl.contains(queryDecl) || cl.contains(dataDecl) || cl.contains(resultDecl) )
+        {
+            if ( ! ( cl.contains(queryDecl) && cl.contains(dataDecl) && cl.contains(resultDecl) ) )
+                argError("Must give query, data and result to run a single test") ;
             
-            createEarlReport = contains(earlDecl) ;
-        }
-    }
-    
-    protected void exec()
-    {
-        if ( suite != null )
-        {
+            String query = cl.getValue(queryDecl) ;
+            String data = cl.getValue(dataDecl) ;
+            String result = cl.getValue(resultDecl) ;
+            
+            TestSuite suite = QueryTestSuiteFactory.make(query, data, result) ;
+
+            //junit.textui.TestRunner.run(suite) ;
             SimpleTestRunner.runAndReport(suite) ;
+            return ;
         }
-        else if ( execAllTests )
+        
+        if ( cl.contains(allDecl) )
         {
-            allTests() ;
+            allTests() ; 
+            throw new TerminationException(0) ;
         }
-        else if ( execDAWGTests )
+        
+        if ( cl.contains(wgDecl) )
         {
             dawgTests() ;
+            throw new TerminationException(0) ;
         }
+        
+        // OK - running a manifest
+        
+        if ( ! cl.hasPositional() )
+            argError("No manifest file") ;
+        String testfile = cl.getPositionalArg(0) ;
+        
+        String testfileAbs = IRIResolver.resolveGlobal(testfile) ;
+        
+        NodeValue.VerboseWarnings = false ;
+        E_Function.WarnOnUnknownFunction = false ;
+        
+        if ( cl.contains(earlDecl) )
+            oneManifestEarl(testfileAbs) ;
         else
-        {
-            // running a manifest
-            
-            NodeValue.VerboseWarnings = false ;
-            E_Function.WarnOnUnknownFunction = false ;
-            
-            if ( createEarlReport )
-                oneManifestEarl(testfileAbs) ;
-            else
-                oneManifest(testfileAbs) ;
-        }
+            oneManifest(testfileAbs) ;
+        throw new TerminationException(0) ;
     }
     
     static void oneManifest(String testManifest)
@@ -178,6 +244,7 @@ public class qtest extends CmdARQ
         //junit.textui.TestRunner.run(suite) ;
         SimpleTestRunner.runAndReport(suite) ;
     }
+    
     
     static void oneManifestEarl(String testManifest)
     {
@@ -247,12 +314,29 @@ public class qtest extends CmdARQ
         
         TestSuite ts = ARQTestSuite.suite() ;
         junit.textui.TestRunner.run(ts) ;
+        throw new TerminationException(0) ;
         //SimpleTestRunner.runAndReport(ts) ;
     }
 
     static void dawgTests()
     {
         System.err.println("DAWG tests not packaged up yet") ;
+        throw new TerminationException(4) ;
+    }
+
+    
+    static void usage() { usage(System.err) ; }
+    
+    static void usage(java.io.PrintStream out)
+    {
+        out.println(usage) ;
+    }
+
+    static void argError(String s)
+    {
+        System.err.println("Argument Error: "+s) ;
+        //usage(System.err) ;
+        throw new TerminationException(3) ;
     }
     
     static void ensureDirExists(String dirname)
