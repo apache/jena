@@ -49,7 +49,9 @@ private static boolean initialized = false ;
     
     public static Object build(String assemblerFile, Resource type)
     {
-       Model spec = null ;
+        if ( assemblerFile == null )
+            throw new CmdException("No assembler file") ;
+        Model spec = null ;
         try {
             spec = FileManager.get().loadModel(assemblerFile) ;
         } catch (Exception ex)
@@ -59,7 +61,7 @@ private static boolean initialized = false ;
         try {
             root = GraphUtils.findRootByType(spec, type) ;
             if ( root == null )
-               return null ;
+                return null ;
         } catch (TypeNotUniqueException ex)
         { throw new ARQException("Multiple types for: "+DatasetAssemblerVocab.tDataset) ; }
 

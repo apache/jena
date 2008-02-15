@@ -21,10 +21,14 @@ public class ModGraphStore extends ModAssembler
     GraphStore graphStore = null ;
     
     public void registerWith(CmdGeneral cmdLine)
-    {}
+    {
+        super.registerWith(cmdLine) ;
+    }
 
     public void processArgs(CmdArgModule cmdLine)
-    {}
+    {
+        super.processArgs(cmdLine) ;
+    }
 
     public ModGraphStore()
     {

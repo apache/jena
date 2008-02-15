@@ -7,7 +7,7 @@ rm -f lib/arq.jar lib/arq-extra.jar
 ##     fi
 ant jar
 
-for d in SDB Joseki3
+for d in SDB Joseki3 AFS
 do
   echo "Moving ARQ jars to project $d"
   cp -u lib/arq.jar ../$d/lib
@@ -29,7 +29,7 @@ do
   )
   done
 
-for d in SDB
+for d in SDB AFS
 do
   echo "Moving arq-src.zip to project $d"
   cp -u arq-src.zip ../$d

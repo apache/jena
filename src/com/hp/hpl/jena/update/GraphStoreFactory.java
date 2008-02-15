@@ -6,6 +6,9 @@
 
 package com.hp.hpl.jena.update;
 
+import java.util.Iterator;
+
+import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.query.Dataset;
 import com.hp.hpl.jena.sparql.core.DataSourceGraphImpl;
 import com.hp.hpl.jena.sparql.core.DataSourceImpl;
@@ -33,22 +36,23 @@ public class GraphStoreFactory
         public void execute(Update graphUpdate)
         { execute(new UpdateRequest(graphUpdate)) ; }
         
-//        public Iterable<String> graphNames()
-//        {
-//            return new Iterable<String>() {
-//                public Iterator<String> iterator()
-//                {
-//                    @SuppressWarnings("unchecked")
-//                    Iterator<String> x = (Iterator<String>)(listNames()) ;
-//                    return x ;
-//                }} ;
-//        }
-        
         public Dataset toDataset()
         {
             // This is a shallow structure copy.
             return new DataSourceImpl(this) ;
         }
+
+        public void close()
+        {
+            for ( Iterator iter = listGraphNodes() ; iter.hasNext() ; )
+            {
+                Node n = (Node)iter.next();
+                getGraph(n).close();
+            }
+        }
+
+        public void sync()
+        {}
     }
 }
 

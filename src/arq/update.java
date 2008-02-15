@@ -96,6 +96,7 @@ public class update extends CmdARQ
     {
         UpdateRequest req = UpdateFactory.create(requestString) ;
         store.execute(req) ;
+        store.close() ;
     }
 }
 

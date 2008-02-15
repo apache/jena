@@ -18,27 +18,17 @@ import com.hp.hpl.jena.sparql.modify.op.Update;
  */
 public interface GraphStore extends DataSourceGraph
 {
+    /** Execute a request (a number of update operations) */
     public void execute(UpdateRequest request) ;
 
+    /** Execute an update (a single update operation) */
     public void execute(Update graphUpdate) ;
     
     public Dataset toDataset() ;
     
-//    public Iterable<String> graphNames()
-//    {
-//        return new Iterable<String>() {
-//            public Iterator<String> iterator()
-//            {
-//                @SuppressWarnings("unchecked")
-//                Iterator<String> x = (Iterator<String>)(listNames()) ;
-//                return x ;
-//            }} ;
-//    }
-//    
-//    public Dataset toDataset()
-//    {
-//        return new DataSourceImpl(this) ;
-//    }
+    public void sync() ;
+
+    public void close() ;
 }
 
 /*
