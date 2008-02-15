@@ -6,8 +6,10 @@
 
 package com.hp.hpl.jena.db.impl;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 import com.hp.hpl.jena.db.IDBConnection;
 import com.hp.hpl.jena.db.RDFRDBException;
@@ -52,9 +54,9 @@ public class Driver_HSQL extends DriverRDB
     public void shutdown()
     {
         try {
-            PreparedStatement ps = m_sql.getPreparedSQLStatement("shutdown") ;
-            ps.execute() ;
-            m_sql.returnPreparedSQLStatement(ps);
+            Connection c = getConnection().getConnection() ;
+            Statement s = c.createStatement() ;
+            s.execute("SHUTDOWN COMPACT") ;
         } catch (SQLException ex) {}
     }
     
