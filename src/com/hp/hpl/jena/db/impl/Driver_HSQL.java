@@ -48,7 +48,8 @@ public class Driver_HSQL extends DriverRDB
 
     public void close()
     {
-        shutdown() ;
+        // This cause problems with in-memory and on disk because there can be multiple models open.   
+        //shutdown() ;
     }
     
     public void shutdown()
@@ -57,7 +58,11 @@ public class Driver_HSQL extends DriverRDB
             Connection c = getConnection().getConnection() ;
             Statement s = c.createStatement() ;
             s.execute("SHUTDOWN COMPACT") ;
-        } catch (SQLException ex) {}
+        } catch (SQLException ex)
+        { 
+            System.err.println("HSQL shutdown exception") ;
+            ex.printStackTrace(System.err) ;
+        }
     }
     
     String[] getDbInitTablesParams()
