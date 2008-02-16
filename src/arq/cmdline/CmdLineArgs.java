@@ -164,7 +164,15 @@ public class CmdLineArgs extends CommandLineBase
 
     public boolean contains(String s) { return getArg(s) != null ; }
     
+    /** Test whether an argument was seen more than once */ 
+    public boolean containsMultiple(String s) { return getValues(s).size() > 1 ; }
+    
+    /** Test whether an argument was seen more than once */ 
+    public boolean containsMultiple(ArgDecl argDecl) { return getValues(argDecl).size() > 1 ; }
+
+    
     public boolean hasArgs() { return args.size() > 0 ; }
+    
     
     /** Test whether the command line had a particular argument
      * 

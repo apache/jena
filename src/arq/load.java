@@ -13,35 +13,39 @@ import arq.cmd.CmdException;
 import arq.cmdline.ArgDecl;
 import arq.cmdline.CmdUpdate;
 
+import com.hp.hpl.jena.sparql.modify.op.UpdateLoad;
 import com.hp.hpl.jena.sparql.sse.SSE;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
 import com.hp.hpl.jena.sparql.util.Utils;
 
 import com.hp.hpl.jena.update.GraphStore;
-import com.hp.hpl.jena.update.UpdateFactory;
-import com.hp.hpl.jena.update.UpdateRequest;
 
-public class update extends CmdUpdate
+public class load extends CmdUpdate
 {
-    ArgDecl updateArg = new ArgDecl(ArgDecl.HasValue, "--update") ;
+    ArgDecl graphNameArg = new ArgDecl(ArgDecl.HasValue, "--graph") ;
     ArgDecl dumpArg = new ArgDecl(ArgDecl.NoValue, "--dump") ;       // Write the result to stdout.
     
-    List requestFiles = null ;
+    String graphName = null ;
+    List loadFiles = null ;
     boolean dump = false ;
     
     public static void main (String [] argv)
-    { new update(argv).main() ; }
+    { new load(argv).main() ; }
     
-    protected update(String[] argv)
+    protected load(String[] argv)
     {
         super(argv) ;
-        super.add(updateArg, "--update=FILE", "Update commands to execute") ;
+        super.add(graphNameArg, "--graph=IRI", "Graph IRI (loads default graph if absent)") ;
         super.add(dumpArg, "--dump", "Dump the resulting graph store") ;
     }
 
     protected void processModulesAndArgs()
     {
-        requestFiles = getValues(updateArg) ;   // ????
+        if ( containsMultiple(graphNameArg) )
+            throw new CmdException("At most one --graph allowed") ;
+        
+        graphName = getValue(graphNameArg) ;
+        loadFiles = super.getPositional() ;
         dump = contains(dumpArg) ;
         super.processModulesAndArgs() ;
     }
@@ -50,23 +54,22 @@ public class update extends CmdUpdate
     
     protected String getSummary() { return getCommandName()+" --desc=assembler [--dump] --update=<request file>" ; }
 
-    // Subclass for specialised commands making common updates more convenient
     protected void execUpdate(GraphStore graphStore)
     {
-        if ( requestFiles.size() == 0 && getPositional().size() == 0 )
+
+        if ( loadFiles.size() == 0 )
             throw new CmdException("Nothing to do") ;
         
-        for ( Iterator iter = requestFiles.iterator() ; iter.hasNext() ; )
+        UpdateLoad loadReq = new UpdateLoad() ;
+        if ( graphName != null )
+            loadReq.setGraphName(graphName) ;
+        
+        for ( Iterator iter = loadFiles.iterator() ; iter.hasNext() ; )
         {
             String filename = (String)iter.next();
-            execOneFile(filename, graphStore) ;
+            loadReq.addLoadIRI(filename) ;
         }
-        
-        for ( Iterator iter = super.getPositional().iterator() ; iter.hasNext() ; )
-        {
-            String requestString = (String)iter.next();
-            execOne(requestString, graphStore) ;
-        }
+        graphStore.execute(loadReq) ;
         
         if ( dump )
         {
@@ -77,17 +80,9 @@ public class update extends CmdUpdate
     }
 
 
-    private void execOneFile(String filename, GraphStore store)
+    private void loadOneFile(String filename, GraphStore store)
     {
-        UpdateRequest req = UpdateFactory.read(filename) ;
-        store.execute(req) ;
-    }
-    
-    private void execOne(String requestString, GraphStore store)
-    {
-        UpdateRequest req = UpdateFactory.create(requestString) ;
-        store.execute(req) ;
-        store.close() ;
+       
     }
 }
 

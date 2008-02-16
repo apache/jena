@@ -1,56 +1,38 @@
 /*
- * (c) Copyright 2007, 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.modify.op;
+package arq.cmdline;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
-
-
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.sparql.modify.UpdateVisitor;
 import com.hp.hpl.jena.update.GraphStore;
-import com.hp.hpl.jena.util.FileManager;
 
-public class UpdateLoad extends GraphUpdate1
+public abstract class CmdUpdate extends CmdARQ
 {
-    List loadData = new ArrayList() ;
+    protected ModGraphStore modGraphStore = new ModGraphStore() ;
     
-    public UpdateLoad() { super() ; }
-    /** Load the default graph with the contents of web resource iri */
-    public UpdateLoad(String iri) { super() ; addLoadIRI(iri) ; }
-    /** Load the contents of web resource iri into graph graphName */
-    public UpdateLoad(String iri, String graphName) { super(graphName) ; addLoadIRI(iri) ; }
-    
-    public void addLoadIRI(String iri) { loadData.add(iri) ; }
-    
-    //@Override
-    protected void exec(GraphStore graphStore, Graph graph)
+    protected CmdUpdate(String[] argv)
     {
-        Model model = ModelFactory.createModelForGraph(graph) ;
-        for ( Iterator iter = loadData.iterator() ; iter.hasNext() ; )
-        {
-            String s = (String)iter.next() ;
-            FileManager.get().readModel(model, s) ;
-        }
+        super(argv) ;
+        addModule(modGraphStore) ;
+    }
+    
+    protected final void exec()
+    {
+        GraphStore graphStore = modGraphStore.getGraphStore() ;
+        if ( graphStore.getDefaultGraph() == null )
+            graphStore.setDefaultGraph(ModelFactory.createDefaultModel().getGraph()); 
+        
+        execUpdate(graphStore) ;
     }
 
-    //@Override
-    public void visit(UpdateVisitor visitor) { visitor.visit(this) ; }
-
-    public List getLoadIRIs()
-    { return loadData ; }
+    protected abstract void execUpdate(GraphStore graphStore) ;
 }
 
 /*
- * (c) Copyright 2007, 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
