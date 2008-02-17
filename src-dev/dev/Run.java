@@ -20,6 +20,7 @@ import com.hp.hpl.jena.util.FileManager;
 
 import com.hp.hpl.jena.sparql.algebra.*;
 import com.hp.hpl.jena.sparql.algebra.op.OpFilter;
+import com.hp.hpl.jena.sparql.engine.http.HttpQuery;
 import com.hp.hpl.jena.sparql.engine.http.QueryEngineHTTP;
 import com.hp.hpl.jena.sparql.util.DateTimeStruct;
 
@@ -53,8 +54,8 @@ public class Run
     
     static void remote()
     {
-
         String url = "http://dbpedia.openlinksw.com:8890/sparql";
+        //String url = "http://localhost:2222/sparql";
         String defaultgraph = "http://dbpedia.org";
         String shortQuery = "SELECT ?predicate ?object " +
         "WHERE { " +
@@ -105,24 +106,41 @@ public class Run
         ResultSet rs;
         String xml;
         QueryEngineHTTP queryExecution;
-        queryExecution = new QueryEngineHTTP(url, shortQuery);
-        queryExecution.addDefaultGraph(defaultgraph);
-        rs = queryExecution.execSelect();
-        xml = ResultSetFormatter.asXMLString(rs);
-        System.out.println("Short Query ResultSet length: "+xml.length());
-
-        try{
-            queryExecution=new QueryEngineHTTP(url,longQuery);
+        
+        if ( false )
+        {
+            HttpQuery.urlLimit = 5 ;
+            queryExecution = new QueryEngineHTTP(url, shortQuery);
             queryExecution.addDefaultGraph(defaultgraph);
             rs = queryExecution.execSelect();
-            xml = ResultSetFormatter.asXMLString(rs);
-            System.out.println("Long Query ResultSet length: "+xml.length()+"\n");
-            System.out.println("Long query XML: "+xml);
-        }catch (Exception e) {e.printStackTrace();}
+            ResultSetFormatter.out(rs) ;
+//            xml = ResultSetFormatter.asXMLString(rs);
+//            System.out.println("Short Query ResultSet length: "+xml.length());
+            return ;
+        }
+        
+        if ( false )
+            try{
+                queryExecution=new QueryEngineHTTP(url,longQuery);
+                queryExecution.addDefaultGraph(defaultgraph);
+                rs = queryExecution.execSelect();
+                xml = ResultSetFormatter.asXMLString(rs);
+                System.out.println("Long Query ResultSet length: "+xml.length()+"\n");
+                System.out.println("Long query XML: "+xml);
+            }catch (Exception e) {e.printStackTrace();}
 
         String queryWithIncreasingLength="";
-        for (int i = 0; i < 30; i++) {
+        
+        // 0 to 30: breaks at 15
+        for (int i = 14; i < 16; i++) {
             queryWithIncreasingLength = makeQueryString ( i);
+            
+            if ( false )
+            {
+                Query q = QueryFactory.create(queryWithIncreasingLength) ;
+                System.out.println(q) ;
+            }
+            
             queryExecution=new QueryEngineHTTP(url,queryWithIncreasingLength);
             queryExecution.addDefaultGraph(defaultgraph);
             rs = queryExecution.execSelect();
