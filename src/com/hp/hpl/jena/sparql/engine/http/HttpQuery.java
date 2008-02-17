@@ -158,6 +158,9 @@ public class HttpQuery extends Params
     {
         URL target = null ;
         String qs = getQueryString() ;
+        
+        //System.out.println(qs) ;
+        
         try {
             if ( count() == 0 )
                 target = new URL(serviceURL) ; 
@@ -214,16 +217,19 @@ public class HttpQuery extends Params
             basicAuthentication(httpConnection) ;
             httpConnection.setDoOutput(true) ;
             
+            boolean first = true ;
             OutputStream out = httpConnection.getOutputStream() ;
             for ( Iterator iter = pairs().listIterator() ; iter.hasNext() ; )
             {
+                if ( ! first )
+                    out.write('&') ;
+                first = false ;
                 Pair p = (Pair)iter.next() ;
                 out.write(p.getName().getBytes()) ;
                 out.write('=') ;
                 String x = p.getValue() ;
                 x = Convert.encWWWForm(x) ;
                 out.write(x.getBytes()) ;
-                out.write('&') ;
             }
             out.flush() ;
             httpConnection.connect() ;
