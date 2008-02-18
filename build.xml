@@ -7,8 +7,8 @@
   
   <!-- The major and minor version numbers  -->
   <property name="version-major"   value="2"/>
-  <property name="version-minor"   value="2"/>
-  <property name="version-status"  value=""/>
+  <property name="version-minor"   value="3"/>
+  <property name="version-status"  value="-dev"/>
   <property name="version"
             value="${version-major}.${version-minor}${version-status}"/>
 

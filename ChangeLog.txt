@@ -1,6 +1,10 @@
 ChangeLog for ARQ
 =================
 
+==== ARQ 2.3
+
++ New command arq.load, which loads files into graphs.
+
 ==== ARQ 2.2
 
 + Added command line tool, arq.update, for applying SPARQL/Update requests
