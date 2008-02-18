@@ -1,6 +1,10 @@
 Release Notes
 =============
 
+==== Jena 2.5.6
+
+==== Jena 2.5.5
+
 Jar changes:
     o lucene-core has been upgraded from lucene-core-2.0.0 to lucene-2.2.0.jar.
     o logging-commons-1.1.jar upgraded to logging-commons-1.1.1.jar 
