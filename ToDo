@@ -1,8 +1,6 @@
 ==== ARQ ToDo
 
-** Remove StageGenPropertyFunction
 ** Clearer ways to add BGP solver mechanisms - invert Stage/StageList 
-** Reconsider OpStage - levels problem?
 
 ++ ** Document "stages" - new form.
 ++ ** Document "update API" and examples.
@@ -16,7 +14,6 @@
    believe MIME type.
    Jena change: FileManager/MimeStream
 
-++ Algebra building src-examples
 ++ Tutorial on update 
 ++ ARQ documentation and clearup - adding new storage layers.
    Separate out list PFs like free text.
