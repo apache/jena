@@ -33,6 +33,12 @@ public class Run
 {
     public static void main(String[] argv) throws Exception
     {
+        {
+        String []a = { "--file=Q2.rq", "--print=plan" } ;
+        arq.qparse.main(a) ;
+        System.exit(0) ;
+        }
+        
         remote() ; System.exit(0) ;
         
         runUpdate() ;

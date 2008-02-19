@@ -35,7 +35,6 @@ public class OpCompiler
     // Is this part of a more general algorithm of pushing the filter down
     // when the vars are known to be fixed?
     
-    // TODO property function detemination by general tree rewriting - BGP special first.
     //  By general BGP rewriting.  Stages.
     //  (General tree rewrite is "Op => Op")
     //   OpExtBase requires eval() but need better extensibility?
@@ -173,20 +172,35 @@ public class OpCompiler
     
     public QueryIterator compile(OpUnion opUnion, QueryIterator input)
     {
-        List x = new ArrayList() ;
-        x.add(opUnion.getLeft()) ;
-
-        // Merge a casaded union
-        while (opUnion.getRight() instanceof OpUnion)
-        {
-            Op opUnionNext = opUnion.getRight() ;
-            x.add(opUnionNext) ;
-        }
-        x.add(opUnion.getRight()) ;
+//        List x = new ArrayList() ;
+//        x.add(opUnion.getLeft()) ;
+//        x.add(opUnion.getRight()) ;
+        List x = flattenUnion(opUnion) ;
         QueryIterator cIter = new QueryIterUnion(input, x, execCxt) ;
         return cIter ;
     }
+    
+    // Based on code from Olaf Hartig.
+    private List flattenUnion(OpUnion opUnion)
+    {
+        List x = new ArrayList() ;
+        flattenUnion(x, opUnion) ;
+        return x ;
+    }
+    
+    private void flattenUnion(List acc, OpUnion opUnion)
+    {
+        if (opUnion.getLeft() instanceof OpUnion)
+            flattenUnion(acc, (OpUnion)opUnion.getLeft()) ;
+        else
+            acc.add( opUnion.getLeft() ) ;
 
+        if (opUnion.getRight() instanceof OpUnion)
+            flattenUnion(acc, (OpUnion)opUnion.getRight()) ;
+        else
+            acc.add( opUnion.getRight() ) ;
+    }
+    
     public QueryIterator compile(OpFilter opFilter, QueryIterator input)
     {
         ExprList exprs = opFilter.getExprs() ;

@@ -1,5 +1,11 @@
 ==== ARQ ToDo
 
+++ Flatten OpUnion properly (OpCompiler) 
+
+** Remove StageGenPropertyFunction
+** Better add BGP solver mechanisms - invert Stage/StageList 
+
+
 ++ ** Document "stages" - new form.
 ++ ** Document "update API" and examples.
 

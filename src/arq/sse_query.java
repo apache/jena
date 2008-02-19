@@ -31,7 +31,8 @@ public class sse_query extends CmdARQ
     // Merging with qparse/sparql
     // 1 - split those two into Query and QueryExecution parts
     // 2 - This is then calls on the QueryExecution parts
-    // 
+    // 3 - Printing plan - uses a verbose prefix setting.  Scan to see what's in use.
+    //      WriterOp.reducePrologue(prologue, op) => prologue.
     
     protected final ArgDecl printDecl  = new ArgDecl(ArgDecl.HasValue, "print") ;
     
