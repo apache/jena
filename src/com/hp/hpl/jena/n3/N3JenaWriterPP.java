@@ -18,7 +18,7 @@ import java.util.* ;
  *  Tries to make N3 data look readable - works better on regular data.
  *
  * @author		Andy Seaborne
- * @version 	$Id: N3JenaWriterPP.java,v 1.23 2008-02-08 16:13:20 andy_seaborne Exp $
+ * @version 	$Id: N3JenaWriterPP.java,v 1.24 2008-02-19 09:29:00 andy_seaborne Exp $
  */
 
 
@@ -30,21 +30,21 @@ public class N3JenaWriterPP extends N3JenaWriterCommon
 	// written to extract information that is going to be specially formatted
 	// (RDF lists, small anon nodes) and to calculate the prefixes that will be used.
 
-    final private boolean doObjectListsAsLists = getBooleanValue("objectLists", true) ;
+    final protected boolean doObjectListsAsLists = getBooleanValue("objectLists", true) ;
     
 	// Data structures used in controlling the formatting
 
-	Set rdfLists      	= null ; 		// Heads of daml lists
-	Set rdfListsAll   	= null ;		// Any resources in a daml lists
-	Set rdfListsDone  	= null ;		// RDF lists written
-	Set roots          	= null ;		// Things to put at the top level
-	Set oneRefObjects 	= null ;		// Bnodes referred to once as an object - can inline
-	Set oneRefDone   	= null ;		// Things done - so we can check for missed items
+    protected Set rdfLists      	= null ; 		// Heads of lists
+    protected Set rdfListsAll   	= null ;		// Any resources in a daml lists
+    protected Set rdfListsDone  	= null ;		// RDF lists written
+    protected Set roots          	= null ;		// Things to put at the top level
+    protected Set oneRefObjects 	= null ;		// Bnodes referred to once as an object - can inline
+    protected Set oneRefDone   	= null ;		// Things done - so we can check for missed items
 
     // Do we do nested (one reference) nodes?
-    boolean allowDeep = true ;
+    protected boolean allowDeep = true ;
     
-    static final String objectListSep = " , " ;
+    static final protected String objectListSep = " , " ;
     
     // ----------------------------------------------------
     // Prepatation stage
@@ -61,7 +61,7 @@ public class N3JenaWriterPP extends N3JenaWriterCommon
     // Should do this during preparation, not as objects found during the write
     // phase.   
 
-    private void prepareLists(Model model)
+	protected void prepareLists(Model model)
 	{
 		Set thisListAll = new HashSet();
 
@@ -113,7 +113,7 @@ public class N3JenaWriterPP extends N3JenaWriterCommon
 	}
 
 	// Validate one list element.
-    private boolean checkListElement(Resource listElement) 
+	protected boolean checkListElement(Resource listElement) 
 	{
 		if (!listElement.hasProperty(RDF.rest)
 			|| !listElement.hasProperty(RDF.first))
@@ -156,7 +156,7 @@ public class N3JenaWriterPP extends N3JenaWriterCommon
 	// which are not RDF lists.
     // Could do this testing at write time (unlike lists)
 
-    private void prepareOneRefBNodes(Model model) 
+	protected void prepareOneRefBNodes(Model model) 
 	{
 
 		NodeIterator objIter = model.listObjects() ;
@@ -178,7 +178,7 @@ public class N3JenaWriterPP extends N3JenaWriterCommon
         }
     }
     
-    private boolean testOneRefBNode(RDFNode n)
+	protected boolean testOneRefBNode(RDFNode n)
     {
 		if ( ! ( n instanceof Resource ) )
 			return false ;
@@ -469,7 +469,7 @@ public class N3JenaWriterPP extends N3JenaWriterCommon
 	}
 
 
-    private boolean isSimpleObject(RDFNode node)
+    protected boolean isSimpleObject(RDFNode node)
     {
         if (node instanceof Literal)
             return true ;
@@ -525,8 +525,7 @@ public class N3JenaWriterPP extends N3JenaWriterCommon
 
 	// Need to out.print in short (all on one line) and long forms (multiple lines)
 	// That needs starts point depth tracking.
-	private void writeList(Resource resource)
-		
+    protected void writeList(Resource resource)
 	{
 		out.print( "(");
 		out.incIndent(2) ;
