@@ -26,7 +26,7 @@ import java.text.* ;
 /** Common framework for implementing N3 writers.
  *
  * @author		Andy Seaborne
- * @version 	$Id: N3JenaWriterCommon.java,v 1.43 2008-02-19 09:21:33 andy_seaborne Exp $
+ * @version 	$Id: N3JenaWriterCommon.java,v 1.44 2008-02-19 09:23:00 andy_seaborne Exp $
  */
 
 public class N3JenaWriterCommon implements RDFWriter
@@ -633,22 +633,22 @@ public class N3JenaWriterCommon implements RDFWriter
     // Qnames in N3 aren't really qnames
     //   No dots; digit can be first
     // These tests must agree, or be more restrictive, than the parser. 
-    static boolean checkQName(String ns, String local)
+    protected static boolean checkQName(String ns, String local)
     {
         return checkQNameNamespace(ns) && checkQNameLocalname(local) ;
     }
     
-    static boolean checkQNameNamespace(String s)
+    protected static boolean checkQNameNamespace(String s)
     {
         return checkQNamePart(s) ;
     }
-    static boolean checkQNameLocalname(String s)
+    protected static boolean checkQNameLocalname(String s)
     {
         return checkQNamePart(s) ;
     }
 
     
-    static boolean checkQNamePart(String s)
+    protected static boolean checkQNamePart(String s)
     {
         boolean isOK = true ;
         CharacterIterator cIter = new StringCharacterIterator(s) ;
@@ -671,7 +671,7 @@ public class N3JenaWriterCommon implements RDFWriter
         return isOK ; 
     }
     
-    final static String WS = "\n\r\t" ;
+    protected final static String WS = "\n\r\t" ;
 
 	protected static void string(StringBuffer sbuff, String s, boolean singleQuoteLiteral)
     {
