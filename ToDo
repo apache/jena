@@ -1,15 +1,13 @@
 ==== ARQ ToDo
 
-++ Flatten OpUnion properly (OpCompiler) 
-
 ** Remove StageGenPropertyFunction
-** Better add BGP solver mechanisms - invert Stage/StageList 
-
+** Clearer ways to add BGP solver mechanisms - invert Stage/StageList 
+** Reconsider OpStage - levels problem?
 
 ++ ** Document "stages" - new form.
 ++ ** Document "update API" and examples.
 
-+ Reconsider OpStage
++ Initial binding for UpdateRequest
 
 + OpService in ref QE.
 
@@ -49,8 +47,6 @@ See ToDoSSE
   ?? use a factory list, including tests with no recorded results.
   ?? Could simply factory to have .create() return null for "no".
 
-+ Initial binding for UpdateRequest
-
 + OpOrder to take an ExprList 
   Query has a list of sort conditions so need turn SortCondition into an expression
 
@@ -68,13 +64,6 @@ See ToDoSSE
 + Alternative indexes
   LARQ idea - extracted.  Object ==> node/subject
   
-+ Commands
-  + qtest
-    ModVersion
-
-+ DatasetImpl and DataSourceImpl 
-    Revisit.
-      
 == LARQ
 
 + LARQ assembler
