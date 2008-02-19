@@ -26,7 +26,7 @@ import java.text.* ;
 /** Common framework for implementing N3 writers.
  *
  * @author		Andy Seaborne
- * @version 	$Id: N3JenaWriterCommon.java,v 1.42 2008-02-19 09:19:31 andy_seaborne Exp $
+ * @version 	$Id: N3JenaWriterCommon.java,v 1.43 2008-02-19 09:21:33 andy_seaborne Exp $
  */
 
 public class N3JenaWriterCommon implements RDFWriter
@@ -40,23 +40,23 @@ public class N3JenaWriterCommon implements RDFWriter
     
     // The simple N3 writer does nothing during preparation.
     
-    Map writerPropertyMap = null ;
+    protected Map writerPropertyMap = null ;
 
 // BaseURI - <#>    
 //    final boolean doAbbreviatedBaseURIref = getBooleanValue("abbrevBaseURI", true) ; 
-    boolean alwaysAllocateBNodeLabel = false ;
+    protected boolean alwaysAllocateBNodeLabel = false ;
     
     // Common variables
-	RDFErrorHandler errorHandler = null;
+    protected RDFErrorHandler errorHandler = null;
 
-	static final String NS_W3_log = "http://www.w3.org/2000/10/swap/log#" ;
+    protected static final String NS_W3_log = "http://www.w3.org/2000/10/swap/log#" ;
 
-	Map prefixMap 	   	= new HashMap() ;	// Prefixes to actually use
-	Map	bNodesMap       = null ;		    // BNodes seen.
-    int bNodeCounter    = 0 ;
+	protected Map prefixMap 	   	= new HashMap() ;	// Prefixes to actually use
+	protected Map	bNodesMap       = null ;		    // BNodes seen.
+	protected int bNodeCounter    = 0 ;
 
     // Specific properties that have a short form.
-	static Map wellKnownPropsMap = new HashMap() ;
+	protected static Map wellKnownPropsMap = new HashMap() ;
 	static {
 		wellKnownPropsMap.put(NS_W3_log+"implies",		"=>" ) ;
 		wellKnownPropsMap.put(OWL.sameAs.getURI(),	    "="  ) ;
@@ -70,33 +70,33 @@ public class N3JenaWriterCommon implements RDFWriter
     //String baseURIrefHash = null ;
 
     // Min spacing of items    
-    int minGap = getIntValue("minGap", 1) ;
-    String minGapStr = pad(minGap) ;
+	protected int minGap = getIntValue("minGap", 1) ;
+	protected String minGapStr = pad(minGap) ;
 
     // Gap from subject to property
-	int indentProperty = getIntValue("indentProperty", 6) ;
+	protected int indentProperty = getIntValue("indentProperty", 6) ;
     
     // Width of property before wrapping.
     // This is not necessarily a control of total width
     // e.g. the pretty writer may be writing properties inside indented one ref bNodes 
-    int widePropertyLen = getIntValue("widePropertyLen", 20) ;
+	protected int widePropertyLen = getIntValue("widePropertyLen", 20) ;
     
     // Column for property when an object follows a property on the same line
-    int propertyCol = getIntValue("propertyColumn", 8) ;
+	protected int propertyCol = getIntValue("propertyColumn", 8) ;
     
     // Minimum gap from property to object when object on a new line.
-    int indentObject = propertyCol ;
+    protected int indentObject = propertyCol ;
     
     // If a subject is shorter than this, the first property may go on same line.
-    int subjectColumn = getIntValue("subjectColumn", indentProperty) ; 
+    protected int subjectColumn = getIntValue("subjectColumn", indentProperty) ; 
     // Require shortSubject < subjectCol (strict less than)
-    int shortSubject = subjectColumn-minGap;
+    protected int shortSubject = subjectColumn-minGap;
     
-    boolean useWellKnownPropertySymbols = getBooleanValue("usePropertySymbols", true) ;
+    protected boolean useWellKnownPropertySymbols = getBooleanValue("usePropertySymbols", true) ;
     
-    boolean allowTripleQuotedStrings = getBooleanValue("useTripleQuotedStrings", true) ;
-    boolean allowDoubles   = getBooleanValue("useDoubles", true) ;
-    boolean allowDecimals  = getBooleanValue("useDecimals", true) ;
+    protected boolean allowTripleQuotedStrings = getBooleanValue("useTripleQuotedStrings", true) ;
+    protected boolean allowDoubles   = getBooleanValue("useDoubles", true) ;
+    protected boolean allowDecimals  = getBooleanValue("useDecimals", true) ;
     
     // ----------------------------------------------------
     // Jena RDFWriter interface
