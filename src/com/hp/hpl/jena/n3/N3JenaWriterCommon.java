@@ -26,7 +26,7 @@ import java.text.* ;
 /** Common framework for implementing N3 writers.
  *
  * @author		Andy Seaborne
- * @version 	$Id: N3JenaWriterCommon.java,v 1.41 2008-02-08 16:13:20 andy_seaborne Exp $
+ * @version 	$Id: N3JenaWriterCommon.java,v 1.42 2008-02-19 09:19:31 andy_seaborne Exp $
  */
 
 public class N3JenaWriterCommon implements RDFWriter
@@ -64,7 +64,7 @@ public class N3JenaWriterCommon implements RDFWriter
 	}
 
 	// Work variables controlling the output
-	IndentedWriter out = null ;
+	protected IndentedWriter out = null ;
 	//Removed base URI specials - look for  "// BaseURI - <#>" & doAbbreviatedBaseURIref
 	//String baseURIref = null ;
     //String baseURIrefHash = null ;
