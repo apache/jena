@@ -1,4 +1,11 @@
 PREFIX  xsd:    <http://www.w3.org/2001/XMLSchema#>
 PREFIX  :       <http://example/ns#>
 
-SELECT * { ?s :p ?o .  FILTER(?o > 56 ) . FILTER( :x = ?s) . FILTER (?o = 123) . FILTER (?o > 76 ) } 
+SELECT * { ?s :p ?o . 
+    FILTER ( ?o > 56 )  ## No.
+    FILTER ( sameTerm(?o, 56) )  ## Yes
+    
+    FILTER ( :x = ?s )
+    FILTER ( ?o = 123 )
+    FILTER ( ?o > 76 )
+}

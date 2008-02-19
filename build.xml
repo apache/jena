@@ -347,6 +347,7 @@
         <!-- FrontPage internal directories -->
         <exclude name="**/_vti*/**"/>
         <exclude name="**/_private/**"/>
+        <exclude name="**/javadoc-all/**"/>
         <exclude name="**/desktop.ini"/>
       </fileset>
     </copy>

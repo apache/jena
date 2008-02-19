@@ -1,7 +1,7 @@
-(prefix ((proc: <http://jena.hpl.hp.com/ARQ/procedure#>))
-  (project (?s ?p ?o)
-    (proc 
-      proc:debug 
-      (?z ?p (+ ?o 10))
-      (BGP (triple ?s ?p ?o))
-      )))
+(prefix ((: <http://exmaple>))
+  (union
+    (union 
+      (bgp (:x1 :p ?x)) 
+      (bgp (:x2 :p ?x)))
+    (bgp (:y1 :p ?y))
+  ))
