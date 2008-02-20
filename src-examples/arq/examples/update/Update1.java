@@ -1,53 +1,39 @@
 /*
- * (c) Copyright 2007, 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.modify.op;
+package arq.examples.update;
 
+import com.hp.hpl.jena.sparql.modify.op.UpdateLoad;
+import com.hp.hpl.jena.sparql.sse.SSE;
 
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.update.GraphStore;
-import com.hp.hpl.jena.update.UpdateException;
+import com.hp.hpl.jena.update.GraphStoreFactory;
 
-/**
- * @author Andy Seaborne
- */ 
-
-public abstract class GraphUpdate1 extends Update
+/** Simple example of SPARQL/Update */ 
+public class Update1
 {
-    private Node graphName = null ;
-    protected GraphUpdate1() { }
-    protected GraphUpdate1(String iri) { setGraphName(iri) ; }
-    protected GraphUpdate1(Node iri) { graphName = iri ; }
-    
-    public boolean hasGraphName() { return graphName != null ; }
-    public void setGraphName(String iri) { graphName = Node.createURI(iri) ; }
-    public Node getGraphName() { return graphName ; }
-    
-    protected abstract void exec(GraphStore graphStore, Graph graph) ;
-    
-    //@Override
-    public void exec(GraphStore graphStore)
+    public static void main(String []args)
     {
-        Graph g = null ;
-        if ( hasGraphName() )
-        {
-            g = graphStore.getGraph(getGraphName()) ;
-            if ( g == null )
-                throw new UpdateException("No such graph: "+getGraphName()) ;
-        }
-        else
-            g = graphStore.getDefaultGraph() ;
-        exec(graphStore, g) ;
+        // Create an empty GraphStore (has an empty default graph and no named graphs) 
+        GraphStore graphStore = GraphStoreFactory.create() ;
+        
+        // Read a graph into it.
+        
+        UpdateLoad load = new UpdateLoad("etc/update-data.ttl") ;
+        graphStore.execute(load) ;
+        
+        // Print it out (format is SSE <http://jena.hpl.hp.com/wiki/SSE>
+        // used to represent a dataset
+        SSE.write(graphStore) ;
     }
 }
 
 
 /*
- * (c) Copyright 2007, 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

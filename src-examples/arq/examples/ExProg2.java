@@ -21,7 +21,7 @@ import com.hp.hpl.jena.sparql.util.IndentedWriter;
 import com.hp.hpl.jena.vocabulary.DC;
 
 /** Example : Build a query with a filter programmatically.
- *  Note: it may be better to build and execute an algebra expression.  See other examples.
+ *  Note: it is often better to build and execute an algebra expression.  See other examples.
  * 
  * @author Andy Seaborne
  */

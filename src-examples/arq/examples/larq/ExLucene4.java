@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package arq.examples;
+package arq.examples.larq;
 
 
 import com.hp.hpl.jena.query.ARQ;

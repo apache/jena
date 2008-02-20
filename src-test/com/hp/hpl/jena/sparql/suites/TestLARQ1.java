@@ -12,7 +12,7 @@ import java.io.StringReader;
 
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
-import arq.examples.*;
+import arq.examples.larq.*;
 
 import com.hp.hpl.jena.query.ARQ;
 import com.hp.hpl.jena.query.QueryExecution;

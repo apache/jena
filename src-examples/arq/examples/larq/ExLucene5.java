@@ -4,48 +4,44 @@
  * [See end of file]
  */
 
-package arq.examples;
+package arq.examples.larq;
 
+import java.io.StringReader;
 
 import com.hp.hpl.jena.query.ARQ;
-import com.hp.hpl.jena.query.larq.IndexBuilderString;
+import com.hp.hpl.jena.query.larq.IndexBuilderExt;
 import com.hp.hpl.jena.query.larq.IndexLARQ;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.sparql.util.StringUtils;
 import com.hp.hpl.jena.sparql.util.Utils;
-import com.hp.hpl.jena.util.FileManager;
-import com.hp.hpl.jena.vocabulary.DC;
 
-/** Example code to load a model from a file, index string literals on the DC title property, 
- * then execute a SPARQL query with a Lucene search in it.
+/** Example code to index subjects by some external content.
+ *  Pattern 3. 
  * 
  * @author Andy Seaborne
  */
 
-public class ExLucene3
+public class ExLucene5
 {
     
     public static void main(String[] a) throws Exception
     {
-        System.out.println("ARQ Example: "+Utils.classShortName(ExLucene3.class)) ;
+        System.out.println("ARQ Example: "+Utils.classShortName(ExLucene5.class)) ;
         System.out.println("ARQ: "+ARQ.VERSION) ;
         System.out.println() ;
         
         Model model = ModelFactory.createDefaultModel() ;
-        IndexLARQ index = buildTitleIndex(model,  "testing/LARQ/data-1.ttl") ;
+
+        IndexLARQ index = buildIndexExternalContent(model) ;
         
         // Search for string 
         String searchString = "+document" ;
         
         // This time, find documents with a matching DC title. 
         String queryString = StringUtils.join("\n", new String[]{
-            "PREFIX xsd:    <http://www.w3.org/2001/XMLSchema#>" ,
-            "PREFIX :       <http://example/>" ,
             "PREFIX pf:     <http://jena.hpl.hp.com/ARQ/property#>",
-            "PREFIX  dc:    <http://purl.org/dc/elements/1.1/>",
-            "SELECT ?title {" ,
-            "    ?title pf:textMatch '"+searchString+"'.",
+            "SELECT ?doc {" ,
+            "    ?doc pf:textMatch '"+searchString+"'.",
             "}"
         }) ;
         
@@ -54,29 +50,38 @@ public class ExLucene3
         index.close() ;
     }
     
-    static IndexLARQ buildTitleIndex(Model model, String datafile)
+    static IndexLARQ buildIndexExternalContent(Model model)
     {
-        // ---- Read and index just the title strings.
-        IndexBuilderString larqBuilder = new IndexBuilderString(DC.title) ;
+        // ---- Create index builder
+        IndexBuilderExt larqBuilder = new IndexBuilderExt() ;
         
-        // Index statements as they are added to the model.
-        model.register(larqBuilder) ;
+        Resource r1 = ResourceFactory.createResource("http://example/r1") ;
+        Resource r2 = ResourceFactory.createResource("http://example/r2") ;
+        Resource r3 = ResourceFactory.createResource("http://example/r3") ;
+        Resource r4 = ResourceFactory.createResource("http://example/r4") ;
+        Literal  lit1 = ResourceFactory.createPlainLiteral("doc") ;
         
-        // To just build the index, create a model that does not store statements 
-        // Model model2 = ModelFactory.createModelForGraph(new GraphSink()) ;
+        // ---- Index based on some external content 
         
-        FileManager.get().readModel(model, datafile) ;
         
-        // ---- Alternatively build the index after the model has been created. 
-        // larqBuilder.indexStatements(model.listStatements()) ;
+        larqBuilder.index(r1, new StringReader("document")) ;   // Just to show a Stringreader is possible
+        larqBuilder.index(r2, "document") ;
+        larqBuilder.index(r3, "slideshow") ;
+        larqBuilder.index(r4, "codebase") ;
+        larqBuilder.index(lit1, "document") ;
         
-        // ---- Finish indexing
+        // Note that the model is untouched - the index exists outside of any model statements.
+        // The application is responsible for keeping 
+        // ---- 
+        
         larqBuilder.closeWriter() ;
-        model.unregister(larqBuilder) ;
-        
-        // ---- Create the access index  
         IndexLARQ index = larqBuilder.getIndex() ;
-        return index ; 
+        
+//        NodeIterator iter = index.searchModelByIndex(model, "document") ;
+//        for ( ; iter.hasNext() ; )
+//            System.out.println("Found: "+FmtUtils.stringForRDFNode((RDFNode)iter.next())) ;
+        
+        return index ;
     }
 
 }

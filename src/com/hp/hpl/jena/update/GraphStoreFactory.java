@@ -18,7 +18,7 @@ import com.hp.hpl.jena.sparql.util.GraphUtils;
 /** Operations to create a GraphStore */
 public class GraphStoreFactory
 {
-    /** Create an empty GraphStore */
+    /** Create an empty GraphStore with an empty default graph */
     public static GraphStore create() { return new GraphStoreBasic() ; }
     
     /** Create a GraphStore from a dataset */

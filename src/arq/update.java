@@ -14,7 +14,6 @@ import arq.cmdline.ArgDecl;
 import arq.cmdline.CmdUpdate;
 
 import com.hp.hpl.jena.sparql.sse.SSE;
-import com.hp.hpl.jena.sparql.util.IndentedWriter;
 import com.hp.hpl.jena.sparql.util.Utils;
 
 import com.hp.hpl.jena.update.GraphStore;
@@ -69,11 +68,7 @@ public class update extends CmdUpdate
         }
         
         if ( dump )
-        {
-            IndentedWriter out = IndentedWriter.stdout ;
-            SSE.write(graphStore.toDataset()) ;
-            out.flush();
-        }
+            SSE.write(graphStore) ;
     }
 
 

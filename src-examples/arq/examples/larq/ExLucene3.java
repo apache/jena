@@ -4,58 +4,60 @@
  * [See end of file]
  */
 
-package arq.examples;
+package arq.examples.larq;
 
 
-import com.hp.hpl.jena.query.*;
+import com.hp.hpl.jena.query.ARQ;
 import com.hp.hpl.jena.query.larq.IndexBuilderString;
 import com.hp.hpl.jena.query.larq.IndexLARQ;
-import com.hp.hpl.jena.query.larq.LARQ;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.sparql.util.StringUtils;
 import com.hp.hpl.jena.sparql.util.Utils;
 import com.hp.hpl.jena.util.FileManager;
+import com.hp.hpl.jena.vocabulary.DC;
 
-/** Example code to load a model from a file, index all string literals,
+/** Example code to load a model from a file, index string literals on the DC title property, 
  * then execute a SPARQL query with a Lucene search in it.
  * 
  * @author Andy Seaborne
  */
 
-public class ExLucene1
+public class ExLucene3
 {
     
     public static void main(String[] a) throws Exception
     {
-        System.out.println("ARQ Example: "+Utils.classShortName(ExLucene1.class)) ;
+        System.out.println("ARQ Example: "+Utils.classShortName(ExLucene3.class)) ;
         System.out.println("ARQ: "+ARQ.VERSION) ;
         System.out.println() ;
         
         Model model = ModelFactory.createDefaultModel() ;
-        IndexLARQ index = buildIndex(model,  "testing/LARQ/data-1.ttl") ;
+        IndexLARQ index = buildTitleIndex(model,  "testing/LARQ/data-1.ttl") ;
         
-        // Search for 
+        // Search for string 
         String searchString = "+document" ;
         
+        // This time, find documents with a matching DC title. 
         String queryString = StringUtils.join("\n", new String[]{
             "PREFIX xsd:    <http://www.w3.org/2001/XMLSchema#>" ,
             "PREFIX :       <http://example/>" ,
             "PREFIX pf:     <http://jena.hpl.hp.com/ARQ/property#>",
-            "SELECT * {" ,
-            "    ?lit pf:textMatch '"+searchString+"'.",
+            "PREFIX  dc:    <http://purl.org/dc/elements/1.1/>",
+            "SELECT ?title {" ,
+            "    ?title pf:textMatch '"+searchString+"'.",
             "}"
         }) ;
         
         // Two of three docuemnts should match. 
-        performQuery(model, index, queryString) ;
+        ExLucene1.performQuery(model, index, queryString) ;
         index.close() ;
     }
-
-    static IndexLARQ buildIndex(Model model, String datafile)
+    
+    static IndexLARQ buildTitleIndex(Model model, String datafile)
     {
-        // ---- Read and index all literal strings.
-        IndexBuilderString larqBuilder = new IndexBuilderString() ;
+        // ---- Read and index just the title strings.
+        IndexBuilderString larqBuilder = new IndexBuilderString(DC.title) ;
         
         // Index statements as they are added to the model.
         model.register(larqBuilder) ;
@@ -75,21 +77,6 @@ public class ExLucene1
         // ---- Create the access index  
         IndexLARQ index = larqBuilder.getIndex() ;
         return index ; 
-    }
-
-    static void performQuery(Model model, IndexLARQ index, String queryString)
-    {  
-        // Make globally available
-        LARQ.setDefaultIndex(index) ;
-        
-        Query query = QueryFactory.create(queryString) ;
-        query.serialize(System.out) ;
-        System.out.println();
-                                          
-        QueryExecution qExec = QueryExecutionFactory.create(query, model) ;
-        //LARQ.setDefaultIndex(qExec.getContext(), index) ;
-        ResultSetFormatter.out(System.out, qExec.execSelect(), query) ;
-        qExec.close() ;
     }
 
 }
