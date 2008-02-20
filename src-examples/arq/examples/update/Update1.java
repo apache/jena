@@ -21,8 +21,9 @@ public class Update1
         GraphStore graphStore = GraphStoreFactory.create() ;
         
         // Read a graph into it.
-        
         UpdateLoad load = new UpdateLoad("etc/update-data.ttl") ;
+        
+        // Execute a single operation.
         graphStore.execute(load) ;
         
         // Print it out (format is SSE <http://jena.hpl.hp.com/wiki/SSE>)
