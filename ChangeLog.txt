@@ -3,9 +3,10 @@ ChangeLog for ARQ
 
 ==== ARQ 2.3
 
++ src-examples: example of SPARQL/Update
 + Fix bug: OpUnion flattening was not happening (Main query engine, OpCompiler) 
 + Fix bug: HttQueryEngine(in HttpQuery) generated bad POST requests with a trailing &.
-+ New command arq.load, which loads files into graphs.
++ New command arq.load, which loads files into graphs.  Special case of arq.update
 
 ==== ARQ 2.2
 
