@@ -25,7 +25,7 @@ public class Update1
         UpdateLoad load = new UpdateLoad("etc/update-data.ttl") ;
         graphStore.execute(load) ;
         
-        // Print it out (format is SSE <http://jena.hpl.hp.com/wiki/SSE>
+        // Print it out (format is SSE <http://jena.hpl.hp.com/wiki/SSE>)
         // used to represent a dataset
         SSE.write(graphStore) ;
     }

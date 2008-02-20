@@ -38,7 +38,7 @@ public class Update2
         req.addUpdate(load) ;
         graphStore.execute(req) ;
         
-        // Print it out (format is SSE <http://jena.hpl.hp.com/wiki/SSE>
+        // Print it out (format is SSE <http://jena.hpl.hp.com/wiki/SSE>)
         // used to represent a dataset.
         // Note the empty default, unnamed graph
         SSE.write(graphStore) ;
