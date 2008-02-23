@@ -285,6 +285,8 @@ public class AlgebraGenerator
             op = new OpOrder(op, query.getOrderBy()) ;
         
         // ---- PROJECT
+        // TODO Need to move assignments (expressions, which add variables) to before ORDER BY and HAVING
+        
         // (ORDER may involve an unselected variable)
         // No projection => initial variables are exposed.
         // Needed for CONSTRUCT and initial bindings + SELECT *
