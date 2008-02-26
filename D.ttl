@@ -6,4 +6,5 @@
 @prefix xsd:        <http://www.w3.org/2001/XMLSchema#> .
 @prefix skos:       <http://www.w3.org/2004/02/skos/core#> .
 
-:x rdfs:subClassOf owl:Thing .
+:x1 :p :v .
+:x2 :p :w .

@@ -3,10 +3,18 @@ ChangeLog for ARQ
 
 ==== ARQ 2.3
 
++ Added optimization rewrite of algebra expressions for FILTER(?x = :x) and FILTER(sameTerm(?x, :x))
+  so that the required term is substituted into the pattern before execution.
+  Cautiously applied to basic graph patterns and quad patterns.
+  
 + Bug fix: ARQ 2.2 broke property functions in many nested structures. 
+
 + src-examples: example of SPARQL/Update
+
 + Fix bug: OpUnion flattening was not happening (Main query engine, OpCompiler) 
+
 + Fix bug: HttQueryEngine(in HttpQuery) generated bad POST requests with a trailing &.
+
 + New command arq.load, which loads files into graphs.  Special case of arq.update
 
 ==== ARQ 2.2

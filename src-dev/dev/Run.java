@@ -19,14 +19,13 @@ import com.hp.hpl.jena.query.QueryFactory;
 import com.hp.hpl.jena.sparql.algebra.Algebra;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.OpVisitorBase;
-import com.hp.hpl.jena.sparql.algebra.OpWalker;
 import com.hp.hpl.jena.sparql.algebra.op.OpFilter;
 
 public class Run
 {
     public static void main(String[] argv) throws Exception
     {
-        //Rewrite.main() ; System.exit(0) ;
+        //rewrite() ;
         
         execQuery("D.ttl", "Q.rq") ;
         
@@ -42,13 +41,23 @@ public class Run
         System.exit(0) ;
     }
 
+    static void rewrite()
+    {
+        Query query = QueryFactory.create("SELECT * { ?s ?p ?o FILTER(?o = <x>) }") ;
+        Op op = Algebra.compile(query, true) ;
+        System.out.println(op) ;
+        op = Algebra.optimize(op) ;
+        System.out.println(op) ;
+        System.exit(0) ;
+    }
+    
     public static void code()
     {
         // see Rewrite.java
         Query q = QueryFactory.create("SELECT * { ?s ?p ?o FILTER(?o = 3) }") ;
-        Op op = Algebra.compile(q) ;
+        Op op = Algebra.compile(q, true) ;
         op = Algebra.optimize(op) ;
-        OpWalker.walk(op, new F()) ;
+        System.out.println(op) ; 
         
     }
 

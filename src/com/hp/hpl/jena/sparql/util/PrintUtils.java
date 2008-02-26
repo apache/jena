@@ -124,7 +124,7 @@ public class PrintUtils
 
     public static void printQuery(Query query)
     {
-        IndentedWriter out = new IndentedWriter(System.out) ;
+        IndentedWriter out = IndentedWriter.stdout ;
         printQuery(out, query) ;
     }
 
@@ -139,30 +139,31 @@ public class PrintUtils
         out.flush() ;
     }
 
-    public static void printOp(Query query)
+    public static void printOp(Query query, boolean optimize)
     {
-        IndentedWriter out = new IndentedWriter(System.out) ;
-        printOp(out, query) ;
+        IndentedWriter out = IndentedWriter.stdout ;
+        printOp(out, query, optimize) ; // Flush done
     }
 
-    public static void printOp(IndentedWriter out, Query query)
+    public static void printOp(IndentedWriter out, Query query, boolean printOptimized)
     {
-        Op op = Algebra.compile(query) ;
+        Op op = Algebra.compile(query, printOptimized) ;
         WriterSSE.out(out, op, query) ;
         out.flush();
     }
 
-    public static void printQuad(Query query)
+    public static void printQuad(Query query, boolean printOptimized)
     {
-        IndentedWriter out = new IndentedWriter(System.out) ;
-        printQuad(out, query) ;
+        IndentedWriter out = IndentedWriter.stdout ;
+        printQuad(out, query, printOptimized) ; // Flush done
     }
 
-    public static void printQuad(IndentedWriter out, Query query)
+    public static void printQuad(IndentedWriter out, Query query, boolean printOptimized)
     {
-        Op op = Algebra.compileQuad(query) ;
+        Op op = Algebra.compileQuad(query, printOptimized) ;
         SerializationContext sCxt = new SerializationContext(query) ;
         op.output(out, sCxt) ;
+        out.flush() ;
     }
 }
 

@@ -100,7 +100,7 @@ public class search
 		
 		BasicPatternVisitor visitor = new BasicPatternVisitor() ;
 		Element el = q.getQueryPattern() ;
-		Op op = Algebra.compile(el) ;
+		Op op = Algebra.compile(el, true) ;
 		OpWalker.walk(op, visitor) ;
 	    List patterns = visitor.getPatterns() ; // List<BasicPattern>
 	    // Get the BGP (this works only for queries with a single BGP!

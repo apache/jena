@@ -32,11 +32,13 @@ public class qparse extends CmdARQ
     ModQueryOut   modOutput  =    new ModQueryOut() ; 
     ModEngine     modEngine  =    new ModEngine() ;
     protected final ArgDecl argDeclPrint  = new ArgDecl(ArgDecl.HasValue, "print") ;
+    protected final ArgDecl argDeclOpt  = new ArgDecl(ArgDecl.HasValue, "opt", "optimize") ;
     
     boolean printQuery = false ;
     boolean printOp = false ;
     boolean printQuad = false ;
     boolean printPlan = false ;
+    boolean printOptimized = true ;
     
     public static void main(String [] argv)
     {
@@ -51,11 +53,23 @@ public class qparse extends CmdARQ
         super.addModule(modEngine) ;
         super.getUsage().startCategory(null) ;
         super.add(argDeclPrint, "--print", "Print in various forms [query, op, quad, plan]") ;
+        super.add(argDeclOpt, "--opt=boolean", "Print with or algebra-level optimization") ; 
     }
     
     protected void processModulesAndArgs()
     {
         super.processModulesAndArgs() ;
+        
+        if ( contains(argDeclOpt) )
+        {
+            if ( hasValueOfTrue(argDeclOpt) )
+                printOptimized = true ;
+            else if ( hasValueOfFalse(argDeclOpt) )
+                printOptimized = false ;
+            else
+                throw new CmdException("Not a recognized: "+getValue(argDeclOpt)+" : Choices are: true or false") ;
+            
+        }
         
         for ( Iterator iter = getValues(argDeclPrint).iterator() ; iter.hasNext() ; )
         {
@@ -114,10 +128,10 @@ public class qparse extends CmdARQ
 
             // Print internal forms.
             if ( printOp )
-            { divider() ; modOutput.outputOp(query) ; }
+            { divider() ; modOutput.outputOp(query, printOptimized) ; }
             
             if ( printQuad )
-            { divider() ; modOutput.outputQuad(query) ; }
+            { divider() ; modOutput.outputQuad(query, printOptimized) ; }
             
             if ( printPlan )
             { 

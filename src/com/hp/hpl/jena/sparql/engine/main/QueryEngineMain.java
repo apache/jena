@@ -7,6 +7,7 @@
 package com.hp.hpl.jena.sparql.engine.main;
 
 import com.hp.hpl.jena.query.Query;
+import com.hp.hpl.jena.sparql.algebra.Algebra;
 import com.hp.hpl.jena.sparql.algebra.AlgebraGenerator;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.core.DatasetGraph;
@@ -44,6 +45,13 @@ public class QueryEngineMain extends QueryEngineBase
         // Wrap with something to check for closed iterators.
         qIter = QueryIteratorCheck.check(qIter, execCxt) ;
         return qIter ;
+    }
+    
+    protected Op createOp(Query query, AlgebraGenerator gen)
+    {
+        Op op = super.createOp(query, gen) ;
+        op = Algebra.optimize(op) ;
+        return op ;
     }
     
     // -------- Factory

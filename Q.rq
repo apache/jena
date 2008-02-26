@@ -1,9 +1,10 @@
-PREFIX apf: <http://jena.hpl.hp.com/ARQ/property#>
+PREFIX : <http://example/>
+PREFIX  apf: <http://jena.hpl.hp.com/ARQ/property#>
 PREFIX  rdfs:   <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX  owl:    <http://www.w3.org/2002/07/owl#>
 
-SELECT ?subject ?ns ?local
-{ ?subject rdfs:subClassOf owl:Thing .
-        OPTIONAL { ?subject apf:splitURI (?ns ?local) }
+SELECT *
+{
+    ?x :p ?v .
+    FILTER(?v = :v)
 }
-

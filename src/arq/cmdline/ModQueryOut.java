@@ -66,17 +66,17 @@ public class ModQueryOut implements ArgModuleGeneral
     public void output(IndentedWriter out, Query query)
     { PrintUtils.printQuery(out, query, outputSyntax) ; }
     
-    public void outputOp(Query query)
-    { outputOp(out(), query) ; }
+    public void outputOp(Query query, boolean printOptimized)
+    { outputOp(out(), query, printOptimized) ; }
 
-    public void outputOp(IndentedWriter out, Query query)
-    { PrintUtils.printOp(out, query) ; }
+    public void outputOp(IndentedWriter out, Query query, boolean printOptimized)
+    { PrintUtils.printOp(out, query, printOptimized) ; }
     
-    public void outputQuad(Query query)
-    { outputQuad(out(), query) ; }
+    public void outputQuad(Query query, boolean printOptimized)
+    { outputQuad(out(), query, printOptimized) ; }
     
-    public void outputQuad(IndentedWriter out, Query query)
-    { PrintUtils.printQuad(out, query) ; }
+    public void outputQuad(IndentedWriter out, Query query, boolean printOptimized)
+    { PrintUtils.printQuad(out, query, printOptimized) ; }
     
     private IndentedWriter out()
     {

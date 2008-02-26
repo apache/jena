@@ -250,6 +250,30 @@ public class CmdLineArgs extends CommandLineBase
         return arg.getValue() ;
     }    
     
+    /** Is the value something that looks like "true" or "yes"? */
+    public boolean hasValueOfTrue(ArgDecl argDecl)
+    {
+        String x = getValue(argDecl) ;
+        if ( x == null )
+            return false ;
+        if ( x.equalsIgnoreCase("true") || x.equalsIgnoreCase("t")
+            || x.equalsIgnoreCase("yes") || x.equalsIgnoreCase("y") )
+            return true ;
+        return false ;
+    }
+    
+    /** Is the value something that looks like "false" or "no"? */
+    public boolean hasValueOfFalse(ArgDecl argDecl)
+    {
+        String x = getValue(argDecl) ;
+        if ( x == null )
+            return false ;
+        if ( x.equalsIgnoreCase("false") || x.equalsIgnoreCase("f") 
+            || x.equalsIgnoreCase("no") || x.equalsIgnoreCase("n") )
+            return true ;
+        return false;
+    }
+    
     /**
      * Returns all the values (0 or more strings) for an argument. 
      * @param argDecl

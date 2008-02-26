@@ -153,7 +153,7 @@ public class labelSearch implements PropertyFunction
         // Compile it.
         // An alternative design is to build the Op structure programmatically,
         // 
-        Op op = Algebra.compile(elementGroup) ;
+        Op op = Algebra.compile(elementGroup, true) ;
         return OpCompiler.compile(op, input, execCxt) ;
     }
     

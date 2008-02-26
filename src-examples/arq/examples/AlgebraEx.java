@@ -29,7 +29,7 @@ public class AlgebraEx
         System.out.println(query) ;
         
         // Generate algebra
-        Op op = Algebra.compile(query) ;
+        Op op = Algebra.compile(query, true) ;
         System.out.println(op) ;
         
         // Execute it.

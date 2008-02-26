@@ -18,6 +18,7 @@
         <Union/manifest.ttl>
 
         <Algebra/manifest.ttl>
+        <Optimization/manifest.ttl>
 
         <Select/manifest.ttl>
         <Construct/manifest.ttl>

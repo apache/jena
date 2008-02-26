@@ -30,8 +30,7 @@ public class QueryUtils
     public static void checkOp(Query query)
     {
         IndentedLineBuffer buff = new IndentedLineBuffer() ;
-        Op op = Algebra.compile(query) ;
-        op = Algebra.optimize(op) ;
+        Op op = Algebra.compile(query, true) ;
         WriterSSE.out(buff.getIndentedWriter(), op, query) ;
         String str = buff.getBuffer().toString() ;
         
