@@ -78,4 +78,75 @@
               qt:data   <data-1.ttl> ] ;
         mf:result  <opt-equals-10.srx>
       ]
+
+      [  mf:name    "opt-sameTerm-01" ;
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <opt-sameTerm-01.rq> ;
+              qt:data   <data-1.ttl> ] ;
+        mf:result  <opt-sameTerm-01.srx>
+      ]
+      [  mf:name    "opt-sameTerm-02" ;
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <opt-sameTerm-02.rq> ;
+              qt:data   <data-1.ttl> ] ;
+        mf:result  <opt-sameTerm-02.srx>
+      ]
+      [  mf:name    "opt-sameTerm-03" ;
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <opt-sameTerm-03.rq> ;
+              qt:data   <data-1.ttl> ] ;
+        mf:result  <opt-sameTerm-03.srx>
+      ]
+      [  mf:name    "opt-sameTerm-04" ;
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <opt-sameTerm-04.rq> ;
+              qt:data   <data-1.ttl> ] ;
+        mf:result  <opt-sameTerm-04.srx>
+      ]
+      [  mf:name    "opt-sameTerm-05" ;
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <opt-sameTerm-05.rq> ;
+              qt:data   <data-1.ttl> ] ;
+        mf:result  <opt-sameTerm-05.srx>
+      ]
+      [  mf:name    "opt-sameTerm-06" ;
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <opt-sameTerm-06.rq> ;
+              qt:data   <data-1.ttl> ] ;
+        mf:result  <opt-sameTerm-06.srx>
+      ]
+      [  mf:name    "opt-sameTerm-07" ;
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <opt-sameTerm-07.rq> ;
+              qt:data   <data-1.ttl> ] ;
+        mf:result  <opt-sameTerm-07.srx>
+      ]
+      [  mf:name    "opt-sameTerm-08" ;
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <opt-sameTerm-08.rq> ;
+              qt:data   <data-1.ttl> ] ;
+        mf:result  <opt-sameTerm-08.srx>
+      ]
+      [  mf:name    "opt-sameTerm-09" ;
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <opt-sameTerm-09.rq> ;
+              qt:data   <data-1.ttl> ] ;
+        mf:result  <opt-sameTerm-09.srx>
+      ]
+      [  mf:name    "opt-sameTerm-10" ;
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <opt-sameTerm-10.rq> ;
+              qt:data   <data-1.ttl> ] ;
+        mf:result  <opt-sameTerm-10.srx>
+      ]
     ).

@@ -1,7 +1,6 @@
 #!/bin/bash
 
-
-for F in opt-equals-0?.rq opt-equals-1?.rq
+for F in opt-sameTerm*
 do
   D="$(basename $F .rq).srx"
   echo "== $F"

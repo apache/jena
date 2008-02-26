@@ -1,7 +1,4 @@
-(prefix ((: <http://exmaple>))
-  (union
-    (union 
-      (bgp (:x1 :p ?x)) 
-      (bgp (:x2 :p ?x)))
-    (bgp (:y1 :p ?y))
-  ))
+(prefix ((: <http://example/>))
+  (propfunc :f ?x ?y
+    (bgp [triple ?s ?p ?o])
+    ))
