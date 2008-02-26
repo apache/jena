@@ -2,10 +2,13 @@
 
 ** Clearer ways to add BGP solver mechanisms - invert Stage/StageList 
 
-** Split SELECT into constructive assignments which ar epushed in so visible to ORDER BY.
+** Split SELECT into constructive assignments which are pushed in so visible to ORDER BY.
     Need to move assignments (expressions, which add variables) to before ORDER BY and HAVING
 ++ ** Document "stages" - new form.
 ++ ** Document "update API" and examples.
+
+++ Rewrite optimizer - sort out nested with outer variable case.
+   Reenable in Algebra 
 
 + Initial binding for UpdateRequest
 

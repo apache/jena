@@ -1,0 +1,9 @@
+#!/bin/bash
+
+
+for F in opt-equals-0?.rq opt-equals-1?.rq
+do
+  D="$(basename $F .rq).srx"
+  echo "== $F"
+  sparql --data data-1.ttl --query $F --engine=ref --results srx > $D
+  done

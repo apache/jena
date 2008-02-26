@@ -3,10 +3,12 @@ ChangeLog for ARQ
 
 ==== ARQ 2.3
 
+[[ In progess
 + Added optimization rewrite of algebra expressions for FILTER(?x = :x) and FILTER(sameTerm(?x, :x))
   so that the required term is substituted into the pattern before execution.
   Cautiously applied to basic graph patterns and quad patterns.
-  
+]]
+ 
 + Bug fix: ARQ 2.2 broke property functions in many nested structures. 
 
 + src-examples: example of SPARQL/Update
