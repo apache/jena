@@ -8,7 +8,10 @@
 ++ ** Document "update API" and examples.
 
 ++ Rewrite optimizer - sort out nested with outer variable case.
-   Reenable in Algebra 
+   Transform support to track variable scopes.
+   (visitor like as well?) 
+   Reenable in Algebra
+     
 
 + Initial binding for UpdateRequest
 

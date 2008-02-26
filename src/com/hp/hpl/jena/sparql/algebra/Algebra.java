@@ -30,8 +30,11 @@ import com.hp.hpl.jena.query.Query;
 /** Utilities to produce SPARQL algebra */
 public class Algebra
 {
-    private static Transform optimization = null ; //new TransformEqualityFilter() ;
+    public static boolean AllowOptimization = false ;
+    private static Transform optimization = new TransformEqualityFilter() ;
+    
     // -------- Optimize
+    
     public static Op optimize(Op op) { return optimize(op, true) ; }
     
     private static Op optimize(Op op, boolean optimize)
@@ -40,7 +43,7 @@ public class Algebra
             return null ;
         if ( ! optimize )
             return op ;
-        if ( optimization == null )
+        if ( !AllowOptimization || optimization == null )
             return op ;
         return Transformer.transform(optimization, op) ;
     }    

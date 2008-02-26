@@ -44,7 +44,7 @@ public class Run
     static void rewrite()
     {
         Query query = QueryFactory.create("SELECT * { ?s ?p ?o FILTER(?o = <x>) }") ;
-        Op op = Algebra.compile(query, true) ;
+        Op op = Algebra.compile(query, false) ;
         System.out.println(op) ;
         op = Algebra.optimize(op) ;
         System.out.println(op) ;
