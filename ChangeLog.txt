@@ -3,6 +3,7 @@ ChangeLog for ARQ
 
 ==== ARQ 2.3
 
++ Bug fix: ARQ 2.2 broke property functions in many nested structures. 
 + src-examples: example of SPARQL/Update
 + Fix bug: OpUnion flattening was not happening (Main query engine, OpCompiler) 
 + Fix bug: HttQueryEngine(in HttpQuery) generated bad POST requests with a trailing &.

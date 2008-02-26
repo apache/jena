@@ -27,6 +27,8 @@ import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 public class OpProcedure extends Op1
 {
     private Node procId ;
+    // Two forms: Stored procedures, with args != null, and property
+    // functions, with subjectArgs and objectArgs != null.
     private ExprList args = null ;
     private PropFuncArg subjectArgs = null ;
     private PropFuncArg objectArgs = null ;
@@ -40,6 +42,7 @@ public class OpProcedure extends Op1
         this.procId = procId ;
     }
 
+    // Stored procedure variation.
     public OpProcedure(Node procId, ExprList args, Op op)
     {
         super(op) ;   
@@ -47,6 +50,7 @@ public class OpProcedure extends Op1
         this.procId = procId ;
     }
     
+    // Stored procedure variation.
     public OpProcedure(String iri, ExprList args, Op op)
     {
         this(Node.createURI(iri), args, op) ;
@@ -62,7 +66,9 @@ public class OpProcedure extends Op1
         if (other == this) return true;
         if ( ! (other instanceof OpProcedure) ) return false ;
         OpProcedure proc = (OpProcedure)other ;
+        
         if ( ! procId.equals(proc.procId) ) return false ;
+        
         if ( args != null )
         {
             if ( args.equals(proc.args) ) return false ;
@@ -72,7 +78,6 @@ public class OpProcedure extends Op1
             if ( ! subjectArgs.equals(proc.subjectArgs) ) return false ;
             if ( ! objectArgs.equals(proc.objectArgs) ) return false ;
         }
-        
         
         return getSubOp().equalTo(proc.getSubOp(), labelMap) ;
     }
@@ -102,7 +107,10 @@ public class OpProcedure extends Op1
 
     public Op copy(Op subOp)
     {
-        return new OpProcedure(procId, args, getSubOp()) ;
+        // Two possible forms.
+        if ( args != null )
+            return new OpProcedure(procId, args, getSubOp()) ;
+        return new OpProcedure(procId, subjectArgs, objectArgs, getSubOp()) ;
     }
 
     public Node getProcId()

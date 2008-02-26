@@ -1,11 +1,9 @@
-PREFIX  xsd:    <http://www.w3.org/2001/XMLSchema#>
-PREFIX  :       <http://example/ns#>
+PREFIX apf: <http://jena.hpl.hp.com/ARQ/property#>
+PREFIX  rdfs:   <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX  owl:    <http://www.w3.org/2002/07/owl#>
 
-SELECT * { ?s :p ?o . 
-    FILTER ( ?o > 56 )  ## No.
-    FILTER ( sameTerm(?o, 56) )  ## Yes
-    
-    FILTER ( :x = ?s )
-    FILTER ( ?o = 123 )
-    FILTER ( ?o > 76 )
+SELECT ?subject ?ns ?local
+{ ?subject rdfs:subClassOf owl:Thing .
+        OPTIONAL { ?subject apf:splitURI (?ns ?local) }
 }
+
