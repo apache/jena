@@ -23,6 +23,12 @@ See ToDoSSE
 
 ----
 
++ Split OpProc into OpProc, OpPropFunc
+
++ LET, { SELECT }
+
++ ORDER BY aggregate
+
 + OpBGP is (ref- & main-) compiled to a call to static "StageBuilder.compile" (modularity)  
   StageBuilder::
      Choose StageGenerator and calls it to get a StageList
