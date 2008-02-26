@@ -49,6 +49,9 @@ public class OpWalker
         public void visit(OpProcedure opProcedure)
         { visit1(opProcedure) ; }
 
+        public void visit(OpPropFunc opPropFunc)
+        { visit1(opPropFunc) ; }
+
         public void visit(OpJoin opJoin)
         { visit2(opJoin) ; }
 

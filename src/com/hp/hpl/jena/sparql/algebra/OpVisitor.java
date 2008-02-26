@@ -18,6 +18,7 @@ public interface OpVisitor
     
     //Op1
     public void visit(OpProcedure opProc) ;
+    public void visit(OpPropFunc opPropFunc) ;
     public void visit(OpFilter opFilter) ;
     public void visit(OpGraph opGraph) ;
     public void visit(OpService opService) ;

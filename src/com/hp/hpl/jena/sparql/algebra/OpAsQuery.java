@@ -92,6 +92,12 @@ public class OpAsQuery
             throw new ARQNotImplemented("OpProcedure") ;
         }
         
+        public void visit(OpPropFunc opPropFunc)
+        {
+            throw new ARQNotImplemented("OpPropFunc") ;
+        }
+        
+        
         public void visit(OpStage opStage)
         {
             throw new ARQNotImplemented("OpStage") ;

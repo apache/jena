@@ -6,63 +6,78 @@
 
 package com.hp.hpl.jena.sparql.algebra.op;
 
+import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.sparql.ARQNotImplemented;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.OpVisitor;
 import com.hp.hpl.jena.sparql.algebra.Transform;
 import com.hp.hpl.jena.sparql.pfunction.PropFuncArg;
+import com.hp.hpl.jena.sparql.sse.Tags;
 import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 
 /** Property functions (or any OpBGP replacement)
  *  Execution will be per-engine specific
+ *  
  * @author Andy Seaborne
  */
-public class OpPropFunc extends Op0 // implements OpExt???
+public class OpPropFunc extends Op1
 {
-    private String uri ;
-    private PropFuncArg args1 ;
-    private PropFuncArg args2 ;
+    // c.f. OpProc which is similar except for the handling of arguments.
+    private Node uri ;
+    private PropFuncArg subjectArgs ;
+    private PropFuncArg objectArgs2 ;
 
-    public OpPropFunc(String uri, PropFuncArg args1 , PropFuncArg args2)
+    public OpPropFunc(Node uri, PropFuncArg args1 , PropFuncArg args2, Op op)
     {
+        super(op) ;
         this.uri = uri ;
-        this.args1 = args1 ;
-        this.args2 = args2 ;
+        this.subjectArgs = args1 ;
+        this.objectArgs2 = args2 ;
     }
     
-    public OpBGP getBGP()
+    public PropFuncArg getSubjectArgs()
     {
-        return null ;
+        return subjectArgs ;
     } 
     
-    public Op apply(Transform transform)
+    public PropFuncArg getObjectArgs()
     {
-        //transform.transform(this) ;
-        return null ;
+        return objectArgs2 ;
+    } 
+    
+    public Op apply(Transform transform, Op subOp)
+    {
+        //return transform.transform(this, subOp) ;
+        throw new ARQNotImplemented("OpPropFunc.transform") ;
     }
 
     public void visit(OpVisitor opVisitor)
-    {} // { opVisitor.visit(this) ; }
+    { opVisitor.visit(this) ; }
 
-    public Op copy()
+    public Node getProperty() { return uri ; }
+    
+    public Op copy(Op op)
     {
-        return new OpPropFunc(uri, args1, args2) ;
+        return new OpPropFunc(uri, subjectArgs, objectArgs2, op) ;
     }
 
     public int hashCode()
     {
-        return getBGP().hashCode() ;
+        return uri.hashCode() ^ getSubOp().hashCode() ;
     }
 
     public boolean equalTo(Op other, NodeIsomorphismMap labelMap)
     {
         if ( ! ( other instanceof OpPropFunc ) ) return false ;
         OpPropFunc procFunc = (OpPropFunc)other ;
-        return getBGP().equalTo(procFunc.getBGP(), labelMap) ;
+        
+        
+        return getSubOp().equalTo(procFunc.getSubOp(), labelMap) ;
     }
 
     public String getName()
     {
-        return null ;
+        return Tags.tagPropFunc ;
     }
 }
 

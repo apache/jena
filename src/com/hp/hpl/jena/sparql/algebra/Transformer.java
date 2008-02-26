@@ -85,6 +85,9 @@ public class Transformer
         public void visit(OpProcedure opProc)
         { visit1(opProc) ; }
         
+        public void visit(OpPropFunc opPropFunc)
+        { visit1(opPropFunc) ; }
+        
         public void visit(OpJoin opJoin)
         { visit2(opJoin) ; }
 

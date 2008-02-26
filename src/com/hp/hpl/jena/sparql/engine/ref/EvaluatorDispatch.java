@@ -69,6 +69,13 @@ public class EvaluatorDispatch implements OpVisitor
         push(table) ;
     }
 
+    public void visit(OpPropFunc opPropFunc)
+    {
+        Table table = eval(opPropFunc.getSubOp()) ;
+        table = evaluator.procedure(table, opPropFunc.getProperty(), opPropFunc.getSubjectArgs(), opPropFunc.getObjectArgs()) ;
+        push(table) ;
+    }
+
     public void visit(OpJoin opJoin)
     {
         Table left = eval(opJoin.getLeft()) ;

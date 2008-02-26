@@ -19,8 +19,9 @@ import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 /** General procedure in algebra evaluation (a stored procedure facility)
  *  Syntax (ARQ extension): CALL <iri>(?x, ?y+3)
  *  
- *  Also, these are the algebra form for property functions.  As a property function,
- *  it has two argment lists, one for subject, one for objects.
+ *  See also the similary algebra form for property functions.  The difference is in argument handling.
+ *  A property function has a URI and two argment lists, one for subject, one for objects.
+ *  A procedure is a URI and a list of arguments.
  * 
  * @author Andy Seaborne
  */

@@ -21,6 +21,9 @@ public class OpVisitorBase implements OpVisitor
     public void visit(OpProcedure opProc)
     {}
     
+    public void visit(OpPropFunc opPropFunc)
+    {}
+    
     public void visit(OpJoin opJoin)
     {}
 

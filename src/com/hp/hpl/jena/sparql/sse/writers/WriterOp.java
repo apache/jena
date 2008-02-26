@@ -191,6 +191,20 @@ public class WriterOp
             finish(opProc) ;
         }
         
+        public void visit(OpPropFunc opPropFunc)
+        {
+            start(opPropFunc, NoNL) ;
+            out.print(FmtUtils.stringForNode(opPropFunc.getProperty(), sContext)) ;
+            out.println();
+
+            outputPF(opPropFunc.getSubjectArgs()) ;
+            out.print(" ") ;
+            outputPF(opPropFunc.getObjectArgs()) ;
+            out.println() ;
+            printOp(opPropFunc.getSubOp()) ;
+            finish(opPropFunc) ;
+        }
+        
         private void outputPF(PropFuncArg pfArg)
         {
             if ( pfArg.isNode() )

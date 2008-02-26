@@ -55,6 +55,7 @@ public class BuilderOp
         dispatch.put(Tags.tagGraph, buildGraph) ;
         dispatch.put(Tags.tagService, buildService) ;
         dispatch.put(Tags.tagProc, buildProcedure) ;
+        dispatch.put(Tags.tagPropFunc, buildPropertyFunction) ;
         dispatch.put(Tags.tagJoin, buildJoin) ;
         dispatch.put(Tags.tagStage, buildStage) ;
         dispatch.put(Tags.tagLeftJoin, buildLeftJoin) ;
@@ -290,18 +291,19 @@ public class BuilderOp
         public Op make(ItemList list)
         {
             // (proc <foo> (args) form)
-            BuilderBase.checkLength(4, 5, list, "proc") ;
+            BuilderBase.checkLength(5, list, "proc") ;
             Node procId = BuilderNode.buildNode(list.get(1)) ;
-            if ( ! procId.isURI() && ! procId.isVariable() )
+            if ( ! procId.isURI() )
                 BuilderBase.broken(list, "Procedure name must be a URI") ;
 
             // Arguments
             // Either a direct form (1 arg list) or a propertry function (2 arg lists)
             if ( list.size() == 5 )
             {
+                // (proc <foo> (subject args) (object args) form)
                 // Arg list vs single term.
-                PropFuncArg subjArg = read(list.get(2)) ;
-                PropFuncArg objArg = read(list.get(3)) ;
+                PropFuncArg subjArg = readPropFuncArg(list.get(2)) ;
+                PropFuncArg objArg = readPropFuncArg(list.get(3)) ;
                 Op sub  = build(list, 4) ;
                 return new OpProcedure(procId, subjArg, objArg, sub) ;
             }
@@ -315,8 +317,25 @@ public class BuilderOp
 
     } ;
 
+    final protected Build buildPropertyFunction = new Build()
+    {
+        public Op make(ItemList list)
+        {
+            // (proc <foo> (subject args) (object args) form)
+            BuilderBase.checkLength(5, list, "propfunc") ;
+            Node property = BuilderNode.buildNode(list.get(1)) ;
+            
+            if ( ! property.isURI() )
+                BuilderBase.broken(list, "Property function name must be a URI") ;
 
-    static final private PropFuncArg read(Item item)
+            PropFuncArg subjArg = readPropFuncArg(list.get(2)) ;
+            PropFuncArg objArg = readPropFuncArg(list.get(3)) ;
+            Op sub  = build(list, 4) ;
+            return new OpPropFunc(property, subjArg, objArg, sub) ;
+        }
+    } ;
+    
+    static final private PropFuncArg readPropFuncArg(Item item)
     {
         if ( item.isNode() )
             return new PropFuncArg(BuilderNode.buildNode(item)) ;

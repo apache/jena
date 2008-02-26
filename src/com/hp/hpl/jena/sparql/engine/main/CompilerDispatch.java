@@ -59,6 +59,13 @@ class CompilerDispatch implements OpVisitor
         push(qIter) ;
     }
 
+    public void visit(OpPropFunc opPropFunc)
+    {
+        QueryIterator input = pop() ;
+        QueryIterator qIter = opCompiler.compile(opPropFunc, input) ;
+        push(qIter) ;
+    }
+
     public void visit(OpJoin opJoin)
     {
         QueryIterator input = pop() ;

@@ -25,7 +25,7 @@ public class Run
 {
     public static void main(String[] argv) throws Exception
     {
-        //rewrite() ;
+        rewrite() ;
         
         execQuery("D.ttl", "Q.rq") ;
         
@@ -43,7 +43,8 @@ public class Run
 
     static void rewrite()
     {
-        Query query = QueryFactory.create("SELECT * { ?s ?p ?o FILTER(?o = <x>) }") ;
+        //Query query = QueryFactory.create("SELECT * { ?s ?p ?o FILTER(?o = <x>) }") ;
+        Query query = QueryFactory.read("file:testing/ARQ/Optimization/opt-equals-10.rq") ;
         Op op = Algebra.compile(query, false) ;
         System.out.println(op) ;
         op = Algebra.optimize(op) ;

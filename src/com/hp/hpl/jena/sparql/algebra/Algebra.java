@@ -31,7 +31,7 @@ import com.hp.hpl.jena.query.Query;
 public class Algebra
 {
     public static boolean AllowOptimization = false ;
-    private static Transform optimization = new TransformEqualityFilter() ;
+    private static Transform optimization() { return new TransformEqualityFilter() ; }
     
     // -------- Optimize
     
@@ -43,9 +43,9 @@ public class Algebra
             return null ;
         if ( ! optimize )
             return op ;
-        if ( !AllowOptimization || optimization == null )
+        if ( ! AllowOptimization )
             return op ;
-        return Transformer.transform(optimization, op) ;
+        return Transformer.transform(optimization(), op) ;
     }    
     
     // -------- Compile

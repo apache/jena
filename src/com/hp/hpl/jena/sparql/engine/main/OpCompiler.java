@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import com.hp.hpl.jena.query.QueryExecException;
 import com.hp.hpl.jena.sparql.ARQNotImplemented;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.Table;
@@ -18,15 +19,18 @@ import com.hp.hpl.jena.sparql.core.BasicPattern;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.iterator.*;
-import com.hp.hpl.jena.sparql.engine.main.iterator.*;
+import com.hp.hpl.jena.sparql.engine.main.iterator.QueryIterGraph;
+import com.hp.hpl.jena.sparql.engine.main.iterator.QueryIterJoin;
+import com.hp.hpl.jena.sparql.engine.main.iterator.QueryIterLeftJoin;
+import com.hp.hpl.jena.sparql.engine.main.iterator.QueryIterOptionalIndex;
+import com.hp.hpl.jena.sparql.engine.main.iterator.QueryIterService;
+import com.hp.hpl.jena.sparql.engine.main.iterator.QueryIterUnion;
 import com.hp.hpl.jena.sparql.expr.Expr;
 import com.hp.hpl.jena.sparql.expr.ExprBuild;
 import com.hp.hpl.jena.sparql.expr.ExprList;
 import com.hp.hpl.jena.sparql.expr.ExprWalker;
 import com.hp.hpl.jena.sparql.procedure.ProcEval;
 import com.hp.hpl.jena.sparql.procedure.Procedure;
-
-import com.hp.hpl.jena.query.QueryExecException;
 
 
 public class OpCompiler
@@ -97,9 +101,19 @@ public class OpCompiler
     {
         Procedure procedure = ProcEval.build(opProc, execCxt) ;
         QueryIterator qIter = compileOp(opProc.getSubOp(), input) ;
-        // Delay until query startes executing.
+        // Delay until query starts executing.
         return new QueryIterProcedure(qIter, procedure, execCxt) ;
     }
+
+    public QueryIterator compile(OpPropFunc opPropFunc, QueryIterator input)
+    {
+        // TODO Separate from procedure code?
+        Procedure procedure = ProcEval.build(opPropFunc.getProperty(), opPropFunc.getSubjectArgs(),opPropFunc.getObjectArgs(), execCxt) ;
+        QueryIterator qIter = compileOp(opPropFunc.getSubOp(), input) ;
+        // Delay until query starts executing.
+        return new QueryIterProcedure(qIter, procedure, execCxt) ;
+    }
+
 
     public QueryIterator compile(OpJoin opJoin, QueryIterator input)
     {

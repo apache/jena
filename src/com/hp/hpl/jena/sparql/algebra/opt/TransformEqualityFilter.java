@@ -11,10 +11,7 @@ import java.util.Iterator;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.OpSubstitute;
 import com.hp.hpl.jena.sparql.algebra.TransformCopy;
-import com.hp.hpl.jena.sparql.algebra.op.OpAssign;
-import com.hp.hpl.jena.sparql.algebra.op.OpBGP;
-import com.hp.hpl.jena.sparql.algebra.op.OpFilter;
-import com.hp.hpl.jena.sparql.algebra.op.OpQuadPattern;
+import com.hp.hpl.jena.sparql.algebra.op.*;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.expr.E_Equals;
 import com.hp.hpl.jena.sparql.expr.E_SameTerm;
@@ -25,6 +22,8 @@ import com.hp.hpl.jena.sparql.expr.NodeValue;
 
 public class TransformEqualityFilter extends TransformCopy
 {
+    public TransformEqualityFilter() {}
+    
     public Op transform(OpFilter opFilter, Op subOp)
     { 
         // Safe for BGPs (and unions and joins of BGPs)
