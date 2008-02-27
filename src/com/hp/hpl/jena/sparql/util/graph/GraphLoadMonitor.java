@@ -6,7 +6,7 @@
 
 package com.hp.hpl.jena.sparql.util.graph;
 
-import java.text.MessageFormat;
+import java.text.DecimalFormat;
 
 import com.hp.hpl.jena.sparql.util.StringUtils;
 import com.hp.hpl.jena.sparql.util.Timer;
@@ -54,8 +54,8 @@ public class GraphLoadMonitor extends GraphListenerCounter
 
         if ( ticks > 0 && (ticks%10) == 0 )
         {
-            MessageFormat mf = new MessageFormat("{0,number,#.#}");
-            String x = mf.format(new Double((soFar/1000F))) ;
+            DecimalFormat f = new DecimalFormat("#,##0.0") ;
+            String x = f.format(soFar/1000F) ;
             System.out.println("  Elapsed: "+x+" seconds") ;
         }
 

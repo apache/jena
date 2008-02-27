@@ -7,6 +7,7 @@
 package dev;
 
 import java.net.MalformedURLException;
+import java.text.DecimalFormat;
 
 import arq.sparql;
 import arq.sse_query;
@@ -26,6 +27,9 @@ public class Run
 {
     public static void main(String[] argv) throws Exception
     {
+        
+        System.out.println(new DecimalFormat("#,##0.0").format(1234561.5678)) ;
+        
         System.out.println(StringUtils.str(0)) ;
         System.out.println(StringUtils.str(1)) ;
         System.out.println(StringUtils.str(12)) ;
