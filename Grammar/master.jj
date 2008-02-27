@@ -360,7 +360,7 @@ Element GraphPatternNotTriples() : { Element el = null ; }
 {
  (
    el = OptionalGraphPattern()
- | 
+ |
    // "GroupPattern" or "GroupPattern" union "GroupPattern"
    el = GroupOrUnionGraphPattern()
  |
@@ -1038,8 +1038,9 @@ TOKEN [IGNORE_CASE] :
 
 #ifdef ARQ
 |  < SERVICE:     "service" >
+|  < EXISTS:      "exists" >
 |  < AS:          "as" >
-|  < EXT:         "ext" >
+|  < LET:         "let" >
 |  < GROUP:       "group" >
 |  < HAVING:      "having" >
 |  < AGG:         "agg" >

@@ -877,11 +877,9 @@ TOKEN [IGNORE_CASE] :
 // Expression operators
 | < BOUND: "bound" >
 | < STR: "str" >
-// |  < URI:         "uri" >
 | < DTYPE: "datatype" >
 | < LANG: "lang" >
 | < LANGMATCHES: "langmatches" >
-//|  < IS_IRI:      ("isIRI"|"isURI") >
 | < IS_URI: "isURI" >
 | < IS_IRI: "isIRI" >
 | < IS_BLANK: "isBlank" >

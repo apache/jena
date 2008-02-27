@@ -28,7 +28,9 @@ See ToDoSSE
 
 ----
 
-+ LET, { SELECT }
++ LET, { SELECT }, EXISTS { pattern }
+  For SELECT, beware of trailing terms runing into triples: ...ORDER BY ?x ?y :p ?z ...
+  Hence need {} around it.  Which is good for scoping.
 
 + ORDER BY aggregate
 
