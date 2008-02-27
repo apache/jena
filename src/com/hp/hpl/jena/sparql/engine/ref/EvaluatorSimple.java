@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.hp.hpl.jena.graph.Node;
-
 import com.hp.hpl.jena.query.ResultSet;
 import com.hp.hpl.jena.query.ResultSetFormatter;
 import com.hp.hpl.jena.sparql.algebra.Table;
@@ -58,7 +57,7 @@ public class EvaluatorSimple implements Evaluator
         return TableFactory.create(qIter) ;
     }
     
-    public Table procedure(Table table, Node procId, PropFuncArg subjArgs, PropFuncArg objArgs)
+    public Table propertyFunction(Table table, Node procId, PropFuncArg subjArgs, PropFuncArg objArgs)
     {
         Procedure proc = ProcEval.build(procId, subjArgs, objArgs, execCxt) ;
         QueryIterator qIter = ProcEval.eval(table.iterator(execCxt), proc, execCxt) ;

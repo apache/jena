@@ -291,28 +291,13 @@ public class BuilderOp
         public Op make(ItemList list)
         {
             // (proc <foo> (args) form)
-            BuilderBase.checkLength(5, list, "proc") ;
+            BuilderBase.checkLength(4, list, "proc") ;
             Node procId = BuilderNode.buildNode(list.get(1)) ;
             if ( ! procId.isURI() )
                 BuilderBase.broken(list, "Procedure name must be a URI") ;
-
-            // Arguments
-            // Either a direct form (1 arg list) or a propertry function (2 arg lists)
-            if ( list.size() == 5 )
-            {
-                // (proc <foo> (subject args) (object args) form)
-                // Arg list vs single term.
-                PropFuncArg subjArg = readPropFuncArg(list.get(2)) ;
-                PropFuncArg objArg = readPropFuncArg(list.get(3)) ;
-                Op sub  = build(list, 4) ;
-                return new OpProcedure(procId, subjArg, objArg, sub) ;
-            }
-            else
-            {
-                ExprList args = BuilderExpr.buildExprList(list.get(2)) ;
-                Op sub  = build(list, 3) ;
-                return new OpProcedure(procId, args, sub) ;
-            }
+            ExprList args = BuilderExpr.buildExprOrExprList(list.get(2)) ;
+            Op sub  = build(list, 3) ;
+            return new OpProcedure(procId, args, sub) ;
         }
 
     } ;

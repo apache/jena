@@ -23,9 +23,9 @@ public interface Evaluator
     
     public Table basicPattern(BasicPattern pattern) ;
     
-    // Two forms - depending on whether a property function or a procedure.
+    // Two forms that provide custom code evaluation
     public Table procedure(Table table, Node procId, ExprList args) ;
-    public Table procedure(Table table, Node procId, PropFuncArg subjArgs, PropFuncArg objArgs) ;
+    public Table propertyFunction(Table table, Node procId, PropFuncArg subjArgs, PropFuncArg objArgs) ;
     
     public Table join(Table tableLeft, Table tableRight) ;
     public Table leftJoin(Table tableLeft, Table tableRight, ExprList expr) ;

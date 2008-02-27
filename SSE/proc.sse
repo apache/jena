@@ -2,6 +2,7 @@
   (project (?s ?p ?o)
     (proc 
       proc:debug 
-      (?z ?p (+ ?o 10))
+      (exprlist ?z ?x)
+      #(exprlist ?z ?p (+ ?o 10))
       (BGP (triple ?s ?p ?o))
       )))

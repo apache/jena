@@ -6,13 +6,17 @@
 
 package com.hp.hpl.jena.sparql.algebra;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
-
+import com.hp.hpl.jena.query.ARQ;
 import com.hp.hpl.jena.sparql.algebra.op.OpBGP;
-import com.hp.hpl.jena.sparql.algebra.op.OpProcedure;
+import com.hp.hpl.jena.sparql.algebra.op.OpPropFunc;
 import com.hp.hpl.jena.sparql.algebra.op.OpStage;
 import com.hp.hpl.jena.sparql.algebra.op.OpTable;
 import com.hp.hpl.jena.sparql.core.BasicPattern;
@@ -24,9 +28,6 @@ import com.hp.hpl.jena.sparql.util.Context;
 import com.hp.hpl.jena.sparql.util.ExprUtils;
 import com.hp.hpl.jena.sparql.util.graph.GNode;
 import com.hp.hpl.jena.sparql.util.graph.GraphList;
-
-import com.hp.hpl.jena.query.ARQ;
-
 
 public class PropertyFunctionGenerator //implements StageGenerator
 {
@@ -163,10 +164,10 @@ public class PropertyFunctionGenerator //implements StageGenerator
                 op = flush(pattern, op) ;
                 pattern = null ;
                 PropertyFunctionInstance pfi = (PropertyFunctionInstance)pfInvocations.get(t) ;
-                OpProcedure opProc = new OpProcedure(t.getPredicate(), pfi.getSubjectArgList(), pfi.getObjectArgList(), op) ;
-                op = opProc ;
+                OpPropFunc opPF =  new OpPropFunc(t.getPredicate(), pfi.getSubjectArgList(), pfi.getObjectArgList(), op) ;
+                op = opPF ;
                 continue ;
-            }                
+            }       
                 
             // Regular triples - make sure there is a basic pattern in progress. 
             if ( pattern == null )

@@ -10,12 +10,13 @@ import com.hp.hpl.jena.sparql.algebra.op.*;
 
 public class TransformBase implements Transform
 {
-    public Op transform(OpTable opTable)            { return opTable ; }
-    public Op transform(OpBGP opBGP)                { return opBGP ; }
-    public Op transform(OpProcedure opProc, Op subOp)   { return opProc ; }
+    public Op transform(OpTable opTable)                    { return opTable ; }
+    public Op transform(OpBGP opBGP)                        { return opBGP ; }
+    public Op transform(OpProcedure opProc, Op subOp)       { return opProc ; }
+    public Op transform(OpPropFunc opPropFunc, Op subOp)    { return opPropFunc ; }
 
-    public Op transform(OpDatasetNames dsNames)     { return dsNames ; }
-    public Op transform(OpQuadPattern quadPattern)  { return quadPattern ; }
+    public Op transform(OpDatasetNames dsNames)             { return dsNames ; }
+    public Op transform(OpQuadPattern quadPattern)          { return quadPattern ; }
     
     public Op transform(OpFilter opFilter, Op subOp)        { return opFilter ; }
     public Op transform(OpGraph opGraph, Op subOp)          { return opGraph ; } 

@@ -169,17 +169,6 @@ public class FilterPlacement
     
     private QueryIterator placeFilters(ExprList exprs, OpProcedure opProc, Set varScope, QueryIterator input)
     {
-        if ( false )
-        {
-            if ( opProc.getArgs() != null )
-            {}
-            else
-            {
-                opProc.getSubjectArgs() ;
-                opProc.getObjectArgs() ;
-            }
-        }
-        
         return compiler.compileOp(opProc, input) ;
     }
     

@@ -19,10 +19,7 @@ public class ProcEval
 {
     public static Procedure build(OpProcedure opProc, ExecutionContext execCxt)
     {
-        if ( opProc.getArgs() != null )
-            return build(opProc.getProcId(), opProc.getArgs(), execCxt) ;
-        else
-            return build(opProc.getProcId(), opProc.getSubjectArgs(), opProc.getObjectArgs(), execCxt) ;
+        return build(opProc.getProcId(), opProc.getArgs(), execCxt) ;
     }
     
     // ----

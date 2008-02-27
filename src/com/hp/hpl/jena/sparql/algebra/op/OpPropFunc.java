@@ -7,7 +7,6 @@
 package com.hp.hpl.jena.sparql.algebra.op;
 
 import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.sparql.ARQNotImplemented;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.OpVisitor;
 import com.hp.hpl.jena.sparql.algebra.Transform;
@@ -22,7 +21,8 @@ import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
  */
 public class OpPropFunc extends Op1
 {
-    // c.f. OpProc which is similar except for the handling of arguments.
+    // c.f. OpProcedure which is similar except for the handling of arguments.
+    // Safer to have two (Ops are mainly asbrtact synatx , not executional).
     private Node uri ;
     private PropFuncArg subjectArgs ;
     private PropFuncArg objectArgs2 ;
@@ -47,8 +47,7 @@ public class OpPropFunc extends Op1
     
     public Op apply(Transform transform, Op subOp)
     {
-        //return transform.transform(this, subOp) ;
-        throw new ARQNotImplemented("OpPropFunc.transform") ;
+        return transform.transform(this, subOp) ;
     }
 
     public void visit(OpVisitor opVisitor)

@@ -20,10 +20,10 @@ public class WriterExpr
     
     public static void output(IndentedWriter out, ExprList exprs, SerializationContext sCxt)
     {
-        output(out, exprs, true, sCxt) ;
+        output(out, exprs, true, true, sCxt) ;
     }
     
-    private static void output(IndentedWriter out, ExprList exprs, boolean withTag, SerializationContext sCxt)
+    public static void output(IndentedWriter out, ExprList exprs, boolean withTag, boolean unlist, SerializationContext sCxt)
     {
         if ( exprs.size() == 0 )
         {
@@ -31,19 +31,20 @@ public class WriterExpr
             return ;
         }
         
-        if ( exprs.size() == 1 )
+        if ( exprs.size() == 1 && unlist )
         {
             output(out, exprs.get(0), sCxt) ;
             return ;
         }
         
         if ( withTag )
-            out.print("(exprlist") ;
+            out.print("(exprlist ") ;
         else
             out.print("(") ;
+        
         for ( int i = 0 ; i < exprs.size() ;  i++ )
         {
-            out.print(" ") ;
+            if ( i != 0 ) out.print(" ") ;
             output(out, exprs.get(i), sCxt) ;
         }
         out.print(")") ;

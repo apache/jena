@@ -11,7 +11,6 @@
    Transform support to track variable scopes.
    (visitor like as well?) 
    Reenable in Algebra
-     
 
 + Initial binding for UpdateRequest
 
@@ -28,8 +27,6 @@
 See ToDoSSE
 
 ----
-
-+ Split OpProc into OpProc, OpPropFunc
 
 + LET, { SELECT }
 

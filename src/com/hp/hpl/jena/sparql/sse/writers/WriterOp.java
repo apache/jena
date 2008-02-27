@@ -174,19 +174,8 @@ public class WriterOp
             start(opProc, NoNL) ;
             WriterNode.output(out, opProc.getProcId(), sContext) ;
             out.println();
-            if ( opProc.getArgs() != null )
-            {
-                WriterExpr.output(out, opProc.getArgs(), sContext) ;
-                out.println() ;
-            }
-            else
-            {
-                // Each may be a list or just a single term 
-                outputPF(opProc.getSubjectArgs()) ;
-                out.print(" ") ;
-                outputPF(opProc.getObjectArgs()) ;
-                out.println() ;
-            }
+            WriterExpr.output(out, opProc.getArgs(), true, false, sContext) ;
+            out.println() ;
             printOp(opProc.getSubOp()) ;
             finish(opProc) ;
         }

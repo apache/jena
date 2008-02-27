@@ -107,10 +107,8 @@ public class OpCompiler
 
     public QueryIterator compile(OpPropFunc opPropFunc, QueryIterator input)
     {
-        // TODO Separate from procedure code?
         Procedure procedure = ProcEval.build(opPropFunc.getProperty(), opPropFunc.getSubjectArgs(),opPropFunc.getObjectArgs(), execCxt) ;
         QueryIterator qIter = compileOp(opPropFunc.getSubOp(), input) ;
-        // Delay until query starts executing.
         return new QueryIterProcedure(qIter, procedure, execCxt) ;
     }
 

@@ -26,7 +26,8 @@ import com.hp.hpl.jena.sparql.sse.Tags;
 
 public class BuilderExpr
 {
-    // Build an expr list when they may also be a single expression. 
+    // Build an expr list when they may also be a single expression.
+    // Because expressions are themslves lists, this requires ExprLists to be explicitly tagged
     public static ExprList buildExprOrExprList(Item item)
     {
         if ( item.isTagged(Tags.tagExprList) )
@@ -118,7 +119,14 @@ public class BuilderExpr
             Item head = list.get(0) ;
             
             if ( head.isNode() )
+            {
+                if ( head.getNode().isVariable() && list.size() == 1 )
+                {
+                    // The case of (?z)
+                    return new ExprVar(Var.alloc(head.getNode())) ;
+                }
                 return buildFunctionCall(list) ;
+            }
             else if ( head.isList() )
                 BuilderBase.broken(item, "Head is a list") ;
             else if ( head.isSymbol() )

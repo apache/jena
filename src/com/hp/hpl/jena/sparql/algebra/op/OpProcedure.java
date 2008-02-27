@@ -7,12 +7,10 @@
 package com.hp.hpl.jena.sparql.algebra.op;
 
 import com.hp.hpl.jena.graph.Node;
-
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.OpVisitor;
 import com.hp.hpl.jena.sparql.algebra.Transform;
 import com.hp.hpl.jena.sparql.expr.ExprList;
-import com.hp.hpl.jena.sparql.pfunction.PropFuncArg;
 import com.hp.hpl.jena.sparql.sse.Tags;
 import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 
@@ -28,22 +26,8 @@ import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 public class OpProcedure extends Op1
 {
     private Node procId ;
-    // Two forms: Stored procedures, with args != null, and property
-    // functions, with subjectArgs and objectArgs != null.
     private ExprList args = null ;
-    private PropFuncArg subjectArgs = null ;
-    private PropFuncArg objectArgs = null ;
 
-    // Property function variation.
-    public OpProcedure(Node procId, PropFuncArg subjectArgs, PropFuncArg objectArgs, Op op)
-    {
-        super(op) ;   
-        this.subjectArgs = subjectArgs ;
-        this.objectArgs = objectArgs ;
-        this.procId = procId ;
-    }
-
-    // Stored procedure variation.
     public OpProcedure(Node procId, ExprList args, Op op)
     {
         super(op) ;   
@@ -51,7 +35,6 @@ public class OpProcedure extends Op1
         this.procId = procId ;
     }
     
-    // Stored procedure variation.
     public OpProcedure(String iri, ExprList args, Op op)
     {
         this(Node.createURI(iri), args, op) ;
@@ -69,16 +52,7 @@ public class OpProcedure extends Op1
         OpProcedure proc = (OpProcedure)other ;
         
         if ( ! procId.equals(proc.procId) ) return false ;
-        
-        if ( args != null )
-        {
-            if ( args.equals(proc.args) ) return false ;
-        }
-        else
-        {
-            if ( ! subjectArgs.equals(proc.subjectArgs) ) return false ;
-            if ( ! objectArgs.equals(proc.objectArgs) ) return false ;
-        }
+        if ( ! args.equals(proc.args) ) return false ;
         
         return getSubOp().equalTo(proc.getSubOp(), labelMap) ;
     }
@@ -86,14 +60,7 @@ public class OpProcedure extends Op1
     public int hashCode()
     {
         int x = procId.hashCode() ;
-        if ( args != null )
-            x ^= args.hashCode() ;
-        else
-        {
-            x ^= subjectArgs.hashCode() ;
-            x ^= objectArgs.hashCode() ;
-        }
-        
+        x ^= args.hashCode() ;
         x ^= getSubOp().hashCode() ;
         return x ;
     }
@@ -108,10 +75,7 @@ public class OpProcedure extends Op1
 
     public Op copy(Op subOp)
     {
-        // Two possible forms.
-        if ( args != null )
-            return new OpProcedure(procId, args, getSubOp()) ;
-        return new OpProcedure(procId, subjectArgs, objectArgs, getSubOp()) ;
+        return new OpProcedure(procId, args, getSubOp()) ;
     }
 
     public Node getProcId()
@@ -127,16 +91,6 @@ public class OpProcedure extends Op1
     public ExprList getArgs()
     {
         return args ;
-    }
-
-    public PropFuncArg getSubjectArgs()
-    {
-        return subjectArgs ;
-    }
-    
-    public PropFuncArg getObjectArgs()
-    {
-        return objectArgs ;
     }
 }
 
