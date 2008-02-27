@@ -1,43 +1,10 @@
-## SELECT * { ?s ?p "ABC" }
+prefix rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+prefix rdfs:<http://www.w3.org/2000/01/rdf-schema#>
+prefix dc:<http://purl.org/dc/elements/1.1/>
+prefix foaf:<http://xmlns.com/foaf/0.1/>
+prefix owl:<http://www.w3.org/2002/07/owl#>
+ select *
+ where {
+ ?subject ?predicate ?object
+ } limit 10
 
-## PREFIX : <http://example/>
-## 
-## SELECT * WHERE
-## { 
-##     ?x :p 1 .
-## }
-## 
-
-## PREFIX : <http://example/> 
-## SELECT *
-## { 
-##     ?s ?p ?o .
-## }
-## LIMIT 10
-
-## PREFIX : <http://example/>
-## 
-## SELECT ?x
-## { 
-##   ?x :p :v1 .
-##   ?x :p :v2 .
-## }
-## LIMIT 3
-
-PREFIX :    <http://example>
-PREFIX arq: <urn:x-arq:>
-
-SELECT *
-{
-##   GRAPH arq:UnionGraph { ?s ?p ?o . ?s1 ?p ?o }
-    GRAPH arq:UnionGraph { ?s ?p ?o . }
-}
-
-## PREFIX :    <http://example>
-## PREFIX arq: <urn:x-arq:>
-## 
-## SELECT *
-## {
-##     GRAPH arq:UnionGraph 
-##     { ?s ?p ?o . OPTIONAL { ?o ?q ?z FILTER(?o != 123) } }
-## }
