@@ -13,7 +13,7 @@ import com.hp.hpl.jena.query.Dataset;
 import com.hp.hpl.jena.sparql.core.DataSourceGraphImpl;
 import com.hp.hpl.jena.sparql.core.DataSourceImpl;
 import com.hp.hpl.jena.sparql.modify.op.Update;
-import com.hp.hpl.jena.sparql.util.GraphUtils;
+import com.hp.hpl.jena.sparql.util.graph.GraphUtils;
 
 /** Operations to create a GraphStore */
 public class GraphStoreFactory

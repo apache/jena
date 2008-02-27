@@ -10,7 +10,7 @@ import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.sparql.AlreadyExists;
 import com.hp.hpl.jena.sparql.DoesNotExist;
 import com.hp.hpl.jena.sparql.modify.op.*;
-import com.hp.hpl.jena.sparql.util.GraphUtils;
+import com.hp.hpl.jena.sparql.util.graph.GraphUtils;
 import com.hp.hpl.jena.update.GraphStore;
 import com.hp.hpl.jena.update.GraphStoreFactory;
 

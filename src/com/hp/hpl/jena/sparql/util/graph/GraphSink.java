@@ -1,42 +1,28 @@
 /*
- * (c) Copyright 2007, 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.util;
+package com.hp.hpl.jena.sparql.util.graph;
 
-import java.util.Iterator;
+import com.hp.hpl.jena.graph.Triple;
+import com.hp.hpl.jena.graph.TripleMatch;
+import com.hp.hpl.jena.graph.impl.GraphBase;
+import com.hp.hpl.jena.util.iterator.ExtendedIterator;
+import com.hp.hpl.jena.util.iterator.NullIterator;
 
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.graph.Node;
-
-class FindableGraph implements Findable
+/** Black hole for triples */
+public class GraphSink extends GraphBase
 {
-    private Graph graph ;
-
-    FindableGraph(Graph graph) { this.graph = graph ; }
-
-    public Iterator find(Node s, Node p, Node o)
-    {
-        if ( s == null ) s = Node.ANY ;
-        if ( p == null ) p = Node.ANY ;
-        if ( o == null ) o = Node.ANY ;
-        return graph.find(s, p ,o) ;
-    }
-
-    public boolean contains(Node s, Node p, Node o)
-    {
-        if ( s == null ) s = Node.ANY ;
-        if ( p == null ) p = Node.ANY ;
-        if ( o == null ) o = Node.ANY ;
-        return graph.contains(s, p, o) ;
-    }
+    protected ExtendedIterator graphBaseFind(TripleMatch m)
+    { return NullIterator.instance ; }
+    
+    public void performAdd( Triple t ) {}
 }
 
-
 /*
- * (c) Copyright 2007, 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

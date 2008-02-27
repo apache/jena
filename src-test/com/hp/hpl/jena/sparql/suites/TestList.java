@@ -16,9 +16,9 @@ import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.sparql.util.GNode;
-import com.hp.hpl.jena.sparql.util.GraphList;
 import com.hp.hpl.jena.sparql.util.Utils;
+import com.hp.hpl.jena.sparql.util.graph.GNode;
+import com.hp.hpl.jena.sparql.util.graph.GraphList;
 import com.hp.hpl.jena.vocabulary.RDF;
 
 

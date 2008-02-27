@@ -10,7 +10,7 @@ import junit.framework.*;
 
 import com.hp.hpl.jena.query.*;
 import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.sparql.util.GraphUtils;
+import com.hp.hpl.jena.sparql.util.graph.GraphUtils;
 
 /** com.hp.hpl.jena.query.test.TestMisc
  * 

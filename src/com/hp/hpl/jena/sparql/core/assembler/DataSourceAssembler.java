@@ -18,7 +18,7 @@ import com.hp.hpl.jena.rdf.model.Resource;
 
 import com.hp.hpl.jena.sparql.util.ALog;
 import com.hp.hpl.jena.sparql.util.FmtUtils;
-import com.hp.hpl.jena.sparql.util.GraphUtils;
+import com.hp.hpl.jena.sparql.util.graph.GraphUtils;
 
 import com.hp.hpl.jena.query.DataSource;
 import com.hp.hpl.jena.query.DatasetFactory;

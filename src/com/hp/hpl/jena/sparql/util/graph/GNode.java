@@ -1,28 +1,34 @@
 /*
- * (c) Copyright 2006, 2007, 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007, 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.util;
+package com.hp.hpl.jena.sparql.util.graph;
 
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.graph.TripleMatch;
-import com.hp.hpl.jena.graph.impl.GraphBase;
-import com.hp.hpl.jena.util.iterator.ExtendedIterator;
-import com.hp.hpl.jena.util.iterator.NullIterator;
+import com.hp.hpl.jena.graph.Graph;
+import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.sparql.core.BasicPattern;
 
-/** Black hole for triples */
-public class GraphSink extends GraphBase
+
+public class GNode
 {
-    protected ExtendedIterator graphBaseFind(TripleMatch m)
-    { return NullIterator.instance ; }
+    public final Findable findable ;
+    public final Node node ;
     
-    public void performAdd( Triple t ) {}
+    public GNode(Graph graph, Node node)
+    { this.findable = new FindableGraph(graph) ; this.node = node ; }
+    
+    public GNode(BasicPattern triples, Node node)
+    { this.findable = new FindableBasicPattern(triples) ; this.node = node ; }
+    
+    public GNode(GNode other, Node node)
+    { this.findable = other.findable ; this.node = node ; }
+
 }
 
 /*
- * (c) Copyright 2006, 2007, 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007, 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

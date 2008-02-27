@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.util;
+package com.hp.hpl.jena.sparql.util.graph;
 
 import java.util.*;
 
@@ -12,6 +12,13 @@ import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.query.*;
 
 import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.sparql.util.NotUniqueException;
+import com.hp.hpl.jena.sparql.util.PlainGraphMem;
+import com.hp.hpl.jena.sparql.util.PropertyRequiredException;
+import com.hp.hpl.jena.sparql.util.QueryExecUtils;
+import com.hp.hpl.jena.sparql.util.RefBoolean;
+import com.hp.hpl.jena.sparql.util.StringUtils;
+import com.hp.hpl.jena.sparql.util.TypeNotUniqueException;
 import com.hp.hpl.jena.vocabulary.RDF;
 
 /** Graph utilities. 

@@ -30,9 +30,9 @@ import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.binding.BindingMap;
 import com.hp.hpl.jena.sparql.util.ALog;
-import com.hp.hpl.jena.sparql.util.GraphUtils;
 import com.hp.hpl.jena.sparql.util.LabelToNodeMap;
 import com.hp.hpl.jena.sparql.util.StringUtils;
+import com.hp.hpl.jena.sparql.util.graph.GraphUtils;
 
 import com.hp.hpl.jena.query.ARQ;
 import com.hp.hpl.jena.query.QuerySolution;

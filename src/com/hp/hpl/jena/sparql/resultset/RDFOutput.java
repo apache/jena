@@ -12,7 +12,7 @@ import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.query.QuerySolution;
 import com.hp.hpl.jena.query.ResultSet;
 import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.sparql.util.GraphUtils;
+import com.hp.hpl.jena.sparql.util.graph.GraphUtils;
 import com.hp.hpl.jena.sparql.vocabulary.ResultSetGraphVocab;
 import com.hp.hpl.jena.vocabulary.RDF;
 

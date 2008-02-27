@@ -19,6 +19,7 @@ import com.hp.hpl.jena.sparql.core.DataSourceGraphImpl;
 import com.hp.hpl.jena.sparql.core.DataSourceImpl;
 import com.hp.hpl.jena.sparql.core.DatasetDesc;
 import com.hp.hpl.jena.sparql.core.DatasetGraph;
+import com.hp.hpl.jena.sparql.util.graph.GraphUtils;
 import com.hp.hpl.jena.util.FileManager;
 
 /** Internal Dataset/DataSource factory + graph equivalents. */

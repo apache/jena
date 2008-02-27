@@ -20,7 +20,7 @@ import com.hp.hpl.jena.sparql.sse.Item;
 import com.hp.hpl.jena.sparql.sse.SSE;
 import com.hp.hpl.jena.sparql.sse.builders.BuilderTable;
 import com.hp.hpl.jena.sparql.util.ALog;
-import com.hp.hpl.jena.sparql.util.GraphUtils;
+import com.hp.hpl.jena.sparql.util.graph.GraphUtils;
 import com.hp.hpl.jena.util.FileManager;
 
 /** ResultSetFactory - make result sets from places other than a query.

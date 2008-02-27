@@ -20,7 +20,7 @@ import com.hp.hpl.jena.sparql.engine.iterator.QueryIterConcat;
 import com.hp.hpl.jena.sparql.pfunction.PropFuncArg;
 import com.hp.hpl.jena.sparql.pfunction.PropFuncArgType;
 import com.hp.hpl.jena.sparql.pfunction.PropertyFunctionEval;
-import com.hp.hpl.jena.sparql.util.GraphList;
+import com.hp.hpl.jena.sparql.util.graph.GraphList;
 
 
 public abstract class ListBase extends PropertyFunctionEval

@@ -14,6 +14,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.sparql.util.graph.GraphUtils;
 
 public class Closure
 {

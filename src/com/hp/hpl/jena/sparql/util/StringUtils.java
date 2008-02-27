@@ -7,6 +7,7 @@
 package com.hp.hpl.jena.sparql.util;
 
 import java.io.UnsupportedEncodingException;
+import java.text.NumberFormat;
 import java.util.List;
 
 import com.hp.hpl.jena.sparql.ARQInternalErrorException;
@@ -84,6 +85,14 @@ public class StringUtils
         if ( x == null ) return "<null>" ;
         return x.toString() ;
     }
+
+
+    public static String str(long v)
+    {
+        NumberFormat mf = NumberFormat.getNumberInstance() ;
+        return mf.format(v) ;
+    }
+    
 
     /** Does one string contain another string?
      * @param str1

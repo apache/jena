@@ -16,8 +16,8 @@ import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.util.FileManager;
 
 import com.hp.hpl.jena.sparql.ARQException;
-import com.hp.hpl.jena.sparql.util.GraphUtils;
 import com.hp.hpl.jena.sparql.util.TypeNotUniqueException;
+import com.hp.hpl.jena.sparql.util.graph.GraphUtils;
 
 
 public class AssemblerUtils

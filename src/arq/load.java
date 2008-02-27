@@ -13,10 +13,13 @@ import arq.cmd.CmdException;
 import arq.cmdline.ArgDecl;
 import arq.cmdline.CmdUpdate;
 
+import com.hp.hpl.jena.graph.Graph;
+import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.sparql.modify.op.UpdateLoad;
 import com.hp.hpl.jena.sparql.sse.SSE;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
 import com.hp.hpl.jena.sparql.util.Utils;
+import com.hp.hpl.jena.sparql.util.graph.GraphLoadMonitor;
 
 import com.hp.hpl.jena.update.GraphStore;
 
@@ -56,7 +59,6 @@ public class load extends CmdUpdate
 
     protected void execUpdate(GraphStore graphStore)
     {
-
         if ( loadFiles.size() == 0 )
             throw new CmdException("Nothing to do") ;
         
@@ -69,6 +71,18 @@ public class load extends CmdUpdate
             String filename = (String)iter.next();
             loadReq.addLoadIRI(filename) ;
         }
+        
+        if ( true )
+        {
+            // Need a better way
+            monitor(graphStore.getDefaultGraph()) ;
+            for ( Iterator iter = graphStore.listGraphNodes() ; iter.hasNext() ; )
+            {
+                Graph g = graphStore.getGraph((Node)iter.next()) ;
+                monitor(g) ;
+            }
+        }
+        
         graphStore.execute(loadReq) ;
         
         if ( dump )
@@ -79,10 +93,9 @@ public class load extends CmdUpdate
         }
     }
 
-
-    private void loadOneFile(String filename, GraphStore store)
+    private void monitor(Graph graph)
     {
-       
+        graph.getEventManager().register(new GraphLoadMonitor(20000,false)) ;
     }
 }
 

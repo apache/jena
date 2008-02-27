@@ -19,8 +19,8 @@ import com.hp.hpl.jena.sparql.core.Quad;
 import com.hp.hpl.jena.sparql.sse.Item;
 import com.hp.hpl.jena.sparql.sse.ItemList;
 import com.hp.hpl.jena.sparql.sse.Tags;
-import com.hp.hpl.jena.sparql.util.GraphUtils;
 import com.hp.hpl.jena.sparql.util.NodeUtils;
+import com.hp.hpl.jena.sparql.util.graph.GraphUtils;
 import com.hp.hpl.jena.util.FileManager;
 
 public class BuilderGraph

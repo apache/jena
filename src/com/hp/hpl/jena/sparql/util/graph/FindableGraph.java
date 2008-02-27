@@ -4,28 +4,36 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.util;
+package com.hp.hpl.jena.sparql.util.graph;
+
+import java.util.Iterator;
 
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.sparql.core.BasicPattern;
 
-
-public class GNode
+class FindableGraph implements Findable
 {
-    public final Findable findable ;
-    public final Node node ;
-    
-    public GNode(Graph graph, Node node)
-    { this.findable = new FindableGraph(graph) ; this.node = node ; }
-    
-    public GNode(BasicPattern triples, Node node)
-    { this.findable = new FindableBasicPattern(triples) ; this.node = node ; }
-    
-    public GNode(GNode other, Node node)
-    { this.findable = other.findable ; this.node = node ; }
+    private Graph graph ;
 
+    FindableGraph(Graph graph) { this.graph = graph ; }
+
+    public Iterator find(Node s, Node p, Node o)
+    {
+        if ( s == null ) s = Node.ANY ;
+        if ( p == null ) p = Node.ANY ;
+        if ( o == null ) o = Node.ANY ;
+        return graph.find(s, p ,o) ;
+    }
+
+    public boolean contains(Node s, Node p, Node o)
+    {
+        if ( s == null ) s = Node.ANY ;
+        if ( p == null ) p = Node.ANY ;
+        if ( o == null ) o = Node.ANY ;
+        return graph.contains(s, p, o) ;
+    }
 }
+
 
 /*
  * (c) Copyright 2007, 2008 Hewlett-Packard Development Company, LP

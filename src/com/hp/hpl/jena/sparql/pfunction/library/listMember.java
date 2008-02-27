@@ -19,8 +19,8 @@ import com.hp.hpl.jena.sparql.engine.iterator.QueryIterYieldN;
 import com.hp.hpl.jena.sparql.expr.ExprEvalException;
 import com.hp.hpl.jena.sparql.pfunction.PropFuncArg;
 import com.hp.hpl.jena.sparql.pfunction.PropFuncArgType;
-import com.hp.hpl.jena.sparql.util.GNode;
-import com.hp.hpl.jena.sparql.util.GraphList;
+import com.hp.hpl.jena.sparql.util.graph.GNode;
+import com.hp.hpl.jena.sparql.util.graph.GraphList;
 import com.hp.hpl.jena.vocabulary.RDF;
 
 

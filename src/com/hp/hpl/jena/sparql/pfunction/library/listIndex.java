@@ -20,9 +20,9 @@ import com.hp.hpl.jena.sparql.engine.iterator.QueryIterPlainWrapper;
 import com.hp.hpl.jena.sparql.expr.ExprEvalException;
 import com.hp.hpl.jena.sparql.pfunction.PropFuncArg;
 import com.hp.hpl.jena.sparql.procedure.ProcLib;
-import com.hp.hpl.jena.sparql.util.GNode;
-import com.hp.hpl.jena.sparql.util.GraphList;
 import com.hp.hpl.jena.sparql.util.NodeFactory;
+import com.hp.hpl.jena.sparql.util.graph.GNode;
+import com.hp.hpl.jena.sparql.util.graph.GraphList;
 
 /** List membership with index : property function to access list using index  
  *  Usage: ?list :listIndex (?index ?member)

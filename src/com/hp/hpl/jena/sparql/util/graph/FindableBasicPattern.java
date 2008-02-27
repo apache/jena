@@ -4,16 +4,58 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.util;
+package com.hp.hpl.jena.sparql.util.graph;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.graph.Triple;
+import com.hp.hpl.jena.sparql.core.BasicPattern;
 
-public interface Findable
+
+
+
+class FindableBasicPattern implements Findable
 {
-    public Iterator find(Node s, Node p, Node o) ; 
-    public boolean  contains(Node s, Node p, Node o) ; 
+    private BasicPattern triples ;
+
+    FindableBasicPattern(BasicPattern triples) { this.triples = triples ; }
+
+    public Iterator find(Node s, Node p, Node o)
+    {
+        if ( s == Node.ANY ) s = null ;
+        if ( p == Node.ANY ) p = null ;
+        if ( o == Node.ANY ) o = null ;
+        
+        List r = new ArrayList() ;
+        for ( Iterator iter = triples.iterator() ; iter.hasNext(); )
+        {
+            Triple t = (Triple)iter.next();
+            if ( s != null && ! t.getSubject().equals(s) ) continue ;
+            if ( p != null && ! t.getPredicate().equals(p) ) continue ;
+            if ( o != null && ! t.getObject().equals(o) ) continue ;
+            r.add(t) ;
+        }
+        return r.iterator() ;
+    }
+    
+    public boolean contains(Node s, Node p, Node o)
+    {
+        if ( s == Node.ANY ) s = null ;
+        if ( p == Node.ANY ) p = null ;
+        if ( o == Node.ANY ) o = null ;
+        for ( Iterator iter = triples.iterator() ; iter.hasNext(); )
+        {
+            Triple t = (Triple)iter.next();
+            if ( s != null && ! t.getSubject().equals(s) ) continue ;
+            if ( p != null && ! t.getPredicate().equals(p) ) continue ;
+            if ( o != null && ! t.getObject().equals(o) ) continue ;
+            return true ;
+        }
+        return false ;
+    }
 }
 
 

@@ -11,7 +11,7 @@ import com.hp.hpl.jena.query.ResultSetFactory;
 import com.hp.hpl.jena.query.Syntax;
 import com.hp.hpl.jena.rdf.model.* ;
 import com.hp.hpl.jena.sparql.core.DataFormat;
-import com.hp.hpl.jena.sparql.util.GraphUtils;
+import com.hp.hpl.jena.sparql.util.graph.GraphUtils;
 import com.hp.hpl.jena.sparql.vocabulary.TestManifest;
 import com.hp.hpl.jena.sparql.vocabulary.TestManifestX;
 import com.hp.hpl.jena.sparql.vocabulary.VocabTestQuery;

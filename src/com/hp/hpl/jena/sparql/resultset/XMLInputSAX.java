@@ -27,8 +27,8 @@ import com.hp.hpl.jena.sparql.engine.binding.BindingMap;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterPlainWrapper;
 import com.hp.hpl.jena.sparql.util.ALog;
 import com.hp.hpl.jena.sparql.util.FmtUtils;
-import com.hp.hpl.jena.sparql.util.GraphUtils;
 import com.hp.hpl.jena.sparql.util.LabelToNodeMap;
+import com.hp.hpl.jena.sparql.util.graph.GraphUtils;
 
 /** Code that reads an XML Result Set and builds the ARQ structure for the same.
  * 

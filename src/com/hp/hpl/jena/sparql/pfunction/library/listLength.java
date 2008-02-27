@@ -14,9 +14,9 @@ import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.procedure.ProcLib;
-import com.hp.hpl.jena.sparql.util.GNode;
-import com.hp.hpl.jena.sparql.util.GraphList;
 import com.hp.hpl.jena.sparql.util.NodeFactory;
+import com.hp.hpl.jena.sparql.util.graph.GNode;
+import com.hp.hpl.jena.sparql.util.graph.GraphList;
 
 /** List length : property function to get the length of a list.
  * 

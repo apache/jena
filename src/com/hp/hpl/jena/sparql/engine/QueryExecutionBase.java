@@ -39,8 +39,8 @@ import com.hp.hpl.jena.sparql.syntax.Template;
 import com.hp.hpl.jena.sparql.util.ALog;
 import com.hp.hpl.jena.sparql.util.Context;
 import com.hp.hpl.jena.sparql.util.DatasetUtils;
-import com.hp.hpl.jena.sparql.util.GraphUtils;
 import com.hp.hpl.jena.sparql.util.ModelUtils;
+import com.hp.hpl.jena.sparql.util.graph.GraphUtils;
 import com.hp.hpl.jena.util.FileManager;
 
 /** All the SPARQL query result forms made from a graph-level execution object */ 
