@@ -7,4 +7,8 @@
 @prefix skos:       <http://www.w3.org/2004/02/skos/core#> .
 
 :x1 :p :v .
-:x2 :p :w .
+:x2 :p :v .
+:x3 :p :w .
+
+:z1 :r 1 .
+:z2 :r 2 .

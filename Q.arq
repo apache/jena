@@ -5,6 +5,6 @@ PREFIX  owl:    <http://www.w3.org/2002/07/owl#>
 
 SELECT * 
 {
-   ?x :p ?v2 
-   { SELECT (count(*) AS ?C) { ?y ?q ?v2 } GROUP BY ?v2 }
+   ?x :r ?C .
+   { SELECT ?v2 (count(*) AS ?C) { ?y :p ?v2 } GROUP BY ?v2 }
 }
