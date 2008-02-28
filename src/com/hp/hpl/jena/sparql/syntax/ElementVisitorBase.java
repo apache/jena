@@ -14,21 +14,23 @@ public class ElementVisitorBase implements ElementVisitor
 {
     public void visit(ElementTriplesBlock el) { }
 
-    public void visit(ElementFilter el)            { }
+    public void visit(ElementFilter el)             { }
 
-    public void visit(ElementUnion el)             { }
+    public void visit(ElementUnion el)              { }
 
-    public void visit(ElementDataset el)             { }
+    public void visit(ElementDataset el)            { }
 
-    public void visit(ElementOptional el)          { }
+    public void visit(ElementOptional el)           { }
 
-    public void visit(ElementGroup el)             { }
+    public void visit(ElementGroup el)              { }
 
-    public void visit(ElementNamedGraph el)        { }
+    public void visit(ElementNamedGraph el)         { }
 
-    public void visit(ElementUnsaid el)            { }
+    public void visit(ElementUnsaid el)             { }
     
     public void visit(ElementService el)            { }
+
+    public void visit(ElementSubQuery el)           { }
 }
 
 /*

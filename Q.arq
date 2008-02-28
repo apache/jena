@@ -1,14 +1,10 @@
-PREFIX  smell: <http://semweb.ivx.ch/software/codeSmells#>
-PREFIX  rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX  vom:  <http://semweb.ivx.ch/software/rcs#>
-PREFIX  owl:  <http://www.w3.org/2002/07/owl#>
-PREFIX  xsd:  <http://www.w3.org/2001/XMLSchema#>
-PREFIX  som:  <http://semweb.ivx.ch/software/oo#>
-PREFIX  rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX : <http://example/>
+PREFIX  apf: <http://jena.hpl.hp.com/ARQ/property#>
+PREFIX  rdfs:   <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX  owl:    <http://www.w3.org/2002/07/owl#>
 
-SELECT  ?invoker
-WHERE
-   { ?class    som:hasMethod  ?method .
-     ?invoker  som:invokes    ?method .
-   }
-GROUP BY ?invoker
+SELECT *
+{
+    ?x :p ?v .
+    { SELECT * { ?x :q ?v } }
+}

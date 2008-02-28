@@ -311,6 +311,16 @@ public class FormatterARQ extends FormatterBase
             out.decIndent(len) ;
     }
     
+    public void visit(ElementSubQuery el)
+    {
+        out.print("{ ") ;
+        out.incIndent(INDENT) ;
+        // Messy - prefixes.
+        el.getQuery().serialize(out) ;
+        out.decIndent(INDENT) ;
+        out.print("}") ;
+    }
+
     // Visit an element, ensuring it is always surround by {} as a group.
     
     private void visitAsGroup(Element el)

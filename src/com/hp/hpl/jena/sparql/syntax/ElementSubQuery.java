@@ -1,37 +1,44 @@
 /*
- * (c) Copyright 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.lang;
+package com.hp.hpl.jena.sparql.syntax;
 
 import com.hp.hpl.jena.query.Query;
+import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 
-public class ParserQueryBase extends ParserBase 
+public class ElementSubQuery extends Element
 {
-    protected Query query ;
-    public void setQuery(Query q)
-    { 
-        query = q ;
-        setPrologue(q) ;
-    }
-    public Query getQuery() { return query ; }
+    Query query ;
     
-    protected void startSubSelect(Query subQuery)
+    public ElementSubQuery(Query query)
     {
-        subQuery.setSameAs(query) ;
+        this.query = query ;
     }
     
-    protected void endSubSelect(Query subQuery, int line, int column)
+    public Query getQuery() { return query ; } 
+    
+    public boolean equalTo(Element other, NodeIsomorphismMap isoMap)
     {
-        if ( ! subQuery.isSelectType() )
-            throwParseException("Subquery not a SELECT query", line, column) ;
+        if ( ! ( other instanceof ElementSubQuery) )
+            return false ;
+        ElementSubQuery el = (ElementSubQuery)other ;
+        return query.equals(el.query) ;
     }
+
+    public int hashCode()
+    {
+        return query.hashCode() ;
+    }
+
+    public void visit(ElementVisitor v)
+    { v.visit(this) ; }
 }
 
 /*
- * (c) Copyright 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

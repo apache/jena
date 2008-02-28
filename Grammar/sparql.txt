@@ -24,7 +24,8 @@ NON-TERMINALS
 	LimitClause	:=	<LIMIT> <INTEGER>
 	OffsetClause	:=	<OFFSET> <INTEGER>
 // ---- General Graph Pattern 
-	GroupGraphPattern	:=	<LBRACE> ( TriplesBlock )? ( ( GraphPatternNotTriples | Filter ) ( <DOT> )? ( TriplesBlock )? )* <RBRACE>
+	GroupGraphPattern	:=	<LBRACE> GroupGraphPatternSub <RBRACE>
+	GroupGraphPatternSub	:=	( TriplesBlock )? ( ( GraphPatternNotTriples | Filter ) ( <DOT> )? ( TriplesBlock )? )*
 	TriplesBlock	:=	TriplesSameSubject ( <DOT> ( TriplesBlock )? )?
 // -----
 	GraphPatternNotTriples	:=	( OptionalGraphPattern | GroupOrUnionGraphPattern | GraphGraphPattern )

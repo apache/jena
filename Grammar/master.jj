@@ -313,10 +313,32 @@ void OffsetClause() : { Token t ; }
 
 // ---- General Graph Pattern 
 
-Element GroupGraphPattern() : { Element el = null ; }
+Element GroupGraphPattern() : { Element el = null ; Token t ; }
 {
-    { ElementGroup elg = new ElementGroup() ; }
-  <LBRACE>
+  t = <LBRACE>
+#ifdef ARQ
+  ( 
+    { Query q = new Query() ;
+      startSubSelect(q) ; }
+    // Optional prologue
+    Prologue()
+    SelectQuery()
+    { 
+      endSubSelect(q, t.beginLine, t.beginColumn) ;
+      el = new ElementSubQuery(q) ;
+    }
+  | el = GroupGraphPatternSub()
+  )
+#else
+    el = GroupGraphPatternSub()
+#endif
+  <RBRACE>
+    { return el ; }
+}
+
+Element GroupGraphPatternSub() : { Element el = null ; }
+{
+      { ElementGroup elg = new ElementGroup() ; }
       { startGroup(elg) ; }
   // Ensure two BGP's can't be next to each other
   // Done by seeing if there is a non-BGP and recursing
@@ -340,8 +362,7 @@ Element GroupGraphPattern() : { Element el = null ; }
     )?
   )*
       { endGroup(elg) ; }
-  <RBRACE>
-    { return elg ; }
+      { return elg ; }
 }
 
 Element TriplesBlock(ElementTriplesBlock acc) : { }

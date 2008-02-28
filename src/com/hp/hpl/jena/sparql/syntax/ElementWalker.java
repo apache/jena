@@ -39,18 +39,6 @@ public class ElementWalker
             proc.visit(el) ;
         }
         
-        // ????
-//        public void visit(ElementBasicGraphPattern el)
-//        {
-//            // Do we need to do this if called from ElementWalker? 
-//            for (Iterator iter = el.getElements().iterator() ; iter.hasNext() ; )
-//            {
-//                Element el2 = (Element)iter.next() ;
-//                el2.visit(this) ;
-//            }
-//            proc.visit(el) ;
-//        }
-        
         public void visit(ElementFilter el)
         {
             proc.visit(el) ;
@@ -109,6 +97,11 @@ public class ElementWalker
         {
             if ( el.getElement() != null )
                 el.getElement().visit(this) ;
+            proc.visit(el) ;
+        }
+
+        public void visit(ElementSubQuery el)
+        {
             proc.visit(el) ;
         }
     }
