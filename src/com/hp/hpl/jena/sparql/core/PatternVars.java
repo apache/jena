@@ -11,12 +11,7 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.sparql.syntax.Element;
-import com.hp.hpl.jena.sparql.syntax.ElementNamedGraph;
-import com.hp.hpl.jena.sparql.syntax.ElementTriplesBlock;
-import com.hp.hpl.jena.sparql.syntax.ElementVisitor;
-import com.hp.hpl.jena.sparql.syntax.ElementVisitorBase;
-import com.hp.hpl.jena.sparql.syntax.ElementWalker;
+import com.hp.hpl.jena.sparql.syntax.*;
 import com.hp.hpl.jena.sparql.util.VarUtils;
 
 
@@ -53,6 +48,13 @@ public class PatternVars
         public void visit(ElementNamedGraph el)
         {
             VarUtils.addVar(acc, el.getGraphNameNode()) ;
+        }
+        
+        public void visit(ElementSubQuery el)
+        {
+            el.getQuery().setResultVars() ;
+            VarExprList x = el.getQuery().getProject() ;
+            acc.addAll(x.getVars()) ;
         }
     }
 }

@@ -13,6 +13,7 @@ import java.util.Set;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
+
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.OpVisitorBase;
 import com.hp.hpl.jena.sparql.algebra.op.*;
@@ -47,7 +48,7 @@ public class VarFinder
     public Set getFilter() { return varUsageVisitor.filterMentions ; }
     public Set getFixed() { return varUsageVisitor.defines ; }
     
-    private static class VarUsageVisitor extends OpVisitorBase
+    private static class VarUsageVisitor extends OpVisitorBase //implements OpVisitor
     {
         static VarUsageVisitor apply(Op op)
         {
@@ -180,42 +181,93 @@ public class VarFinder
             opFilter.getExprs().varsMentioned(filterMentions);
             opFilter.getSubOp().visit(this) ;
         }
-    }
-    
-//    private static class Defines extends OpVisitorBase
-//    {
-//        private Var var ;
-//        boolean result = false ;
-//        
-//        Defines(Var var) { this.var = var ; }
-//        
-//        //@Override
-//        public void visit(OpQuadPattern quadPattern)
+        
+        public void visit(OpAssign opAssign)
+        {
+            opAssign.getSubOp().visit(this) ;
+            List vars = opAssign.getVarExprList().getVars() ;
+            defines.addAll(vars) ;
+        }
+        
+        public void visit(OpProject opProject)
+        {
+            List vars = opProject.getVars() ;
+            VarUsageVisitor subUsage = VarUsageVisitor.apply(opProject.getSubOp()) ;
+            
+            subUsage.defines.retainAll(vars) ;
+            subUsage.optDefines.retainAll(vars) ;
+            subUsage.optDefines.retainAll(vars) ;
+            defines.addAll(subUsage.defines) ;
+            optDefines.addAll(subUsage.optDefines) ;
+            filterMentions.addAll(subUsage.filterMentions) ;
+        }
+
+        public void visit(OpTable opTable)
+        { }
+
+        public void visit(OpNull opNull)
+        { }
+
+//        public void visit(OpProcedure opProc)
 //        {
-//            List quads = quadPattern.getQuads() ;
-//            for ( Iterator iter = quads.iterator() ; iter.hasNext(); )
-//            {
-//                Quad quad = (Quad)iter.next() ;
-//                if ( quad.getGraph().equals(var) )      { result = true ; return ; }
-//                if ( quad.getSubject().equals(var) )    { result = true ; return ; }
-//                if ( quad.getPredicate().equals(var) )  { result = true ; return ; }
-//                if ( quad.getObject().equals(var) )     { result = true ; return ; }
-//            }
+//            throw new ARQNotImplemented("VarFinded/OpProcedure") ;
 //        }
 //
-//        //@Override
-//        public void visit(OpBGP opBGP)
+//        public void visit(OpPropFunc opPropFunc)
 //        {
-//            List triples = opBGP.getPattern() ;
-//            for ( Iterator iter = triples.iterator() ; iter.hasNext(); )
-//            {
-//                Triple triple = (Triple)iter.next() ;
-//                if ( triple.getSubject().equals(var) )    { result = true ; return ; }
-//                if ( triple.getPredicate().equals(var) )  { result = true ; return ; }
-//                if ( triple.getObject().equals(var) )     { result = true ; return ; }
-//            }
+//            throw new ARQNotImplemented("VarFinded/OpPropFunc") ;
 //        }
-//    }
+//
+//        public void visit(OpService opService)
+//        {
+//            opService.getSubOp().visit(this) ;
+//            slot(opService.getService()) ;
+//        }
+//
+//        public void visit(OpDatasetNames dsNames)
+//        { }
+//
+//        public void visit(OpStage opStage)
+//        {
+//            throw new ARQNotImplemented("VarFinded/OpStage") ;
+//        }
+//
+//        public void visit(OpDiff opDiff)
+//        {
+//            throw new ARQNotImplemented("VarFinded/OpDiff") ;
+//        }
+//
+//        public void visit(OpList opList)
+//        {
+//            opList.getSubOp().visit(this) ;
+//        }
+//
+//        public void visit(OpOrder opOrder)
+//        {
+//            opOrder.getSubOp().visit(this) ;
+//        }
+//
+//        public void visit(OpReduced opReduced)
+//        {
+//            opReduced.getSubOp().visit(this) ;
+//        }
+//
+//        public void visit(OpDistinct opDistinct)
+//        {
+//            opDistinct.getSubOp().visit(this);
+//        }
+//
+//        public void visit(OpSlice opSlice)
+//        {
+//            opSlice.getSubOp().visit(this);
+//        }
+//
+//        public void visit(OpGroupAgg opGroupAgg)
+//        {
+//            // XXX Group and variable definedness : check this
+//            defines.addAll(opGroupAgg.getGroupVars().getVars()) ;
+//        }
+    }
 }
 
 /*

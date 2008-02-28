@@ -10,11 +10,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.commons.logging.LogFactory;
-
 import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.query.ARQ;
-import com.hp.hpl.jena.query.Query;
+
 import com.hp.hpl.jena.sparql.ARQInternalErrorException;
 import com.hp.hpl.jena.sparql.algebra.op.*;
 import com.hp.hpl.jena.sparql.core.BasicPattern;
@@ -26,6 +23,9 @@ import com.hp.hpl.jena.sparql.syntax.*;
 import com.hp.hpl.jena.sparql.util.ALog;
 import com.hp.hpl.jena.sparql.util.Context;
 import com.hp.hpl.jena.sparql.util.Utils;
+
+import com.hp.hpl.jena.query.ARQ;
+import com.hp.hpl.jena.query.Query;
 
 
 public class AlgebraGenerator 
@@ -197,9 +197,9 @@ public class AlgebraGenerator
         
         if ( elt instanceof ElementSubQuery )
         {
-            // XXX Skip
-            LogFactory.getLog(this.getClass()).warn("Skipping ElementSubQuery") ;
-            return current ;
+            ElementSubQuery elQuery = (ElementSubQuery)elt ;
+            Op subOp = this.compile(elQuery.getQuery()) ;
+            return join(current, subOp) ;
         }
         
         broken("compileDirect/Element not recognized: "+Utils.className(elt)) ;

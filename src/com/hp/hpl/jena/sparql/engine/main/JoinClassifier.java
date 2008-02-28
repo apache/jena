@@ -11,22 +11,29 @@ import java.util.Set;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.op.OpExt;
 import com.hp.hpl.jena.sparql.algebra.op.OpJoin;
+import com.hp.hpl.jena.sparql.algebra.op.OpModifier;
 import com.hp.hpl.jena.sparql.util.SetUtils;
 
 public class JoinClassifier
 {
+    static final boolean print = false ; 
+    
     static public boolean isLinear(OpJoin join)
     {
         Op left = effectiveOp(join.getLeft()) ;
         Op right = effectiveOp(join.getRight()) ;
+        
+        // Subquery.
+        if ( left instanceof OpModifier )
+            return false ;
+        if ( right instanceof OpModifier )
+            return false ;
 
         if ( print )
             System.err.println(join) ;
         // Assume something will not commute these later on. 
         return check(left, right) ;
     }
-    
-    static final boolean print = false ; 
     
     // Check left can stream into right
     static private boolean check(Op op, Op other)

@@ -25,9 +25,8 @@ public class Run
 {
     public static void main(String[] argv) throws Exception
     {
-        runQParseARQ() ;
-        rewrite() ;
-        execQuery("D.ttl", "Q.rq") ;
+        //rewrite() ;
+        execQuery("D.ttl", "Q.arq") ;
         
         //QueryEngineMain.register() ;
         String a[] = new String[]{
