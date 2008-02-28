@@ -31,6 +31,13 @@ See ToDoSSE
 + LET, { SELECT }, EXISTS { pattern }
   For SELECT, beware of trailing terms runing into triples: ...ORDER BY ?x ?y :p ?z ...
   Hence need {} around it.  Which is good for scoping.
+  
+  {SELECT} Work plan:
+    1/ Syntax [DONE]
+    2/ Printing
+    3/ Synatx test cases
+    4/ Evaluation
+    5/ Evaluation test cases
 
 + ORDER BY aggregate
 

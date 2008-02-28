@@ -6,10 +6,13 @@
 
 package com.hp.hpl.jena.sparql.lang;
 
+import java.util.Stack;
+
 import com.hp.hpl.jena.query.Query;
 
 public class ParserQueryBase extends ParserBase 
 {
+    private Stack stack = new Stack() ;
     protected Query query ;
     public void setQuery(Query q)
     { 
@@ -20,13 +23,16 @@ public class ParserQueryBase extends ParserBase
     
     protected void startSubSelect(Query subQuery)
     {
+        stack.push(query) ;
         subQuery.setSameAs(query) ;
+        query = subQuery ;
     }
     
     protected void endSubSelect(Query subQuery, int line, int column)
     {
         if ( ! subQuery.isSelectType() )
             throwParseException("Subquery not a SELECT query", line, column) ;
+        query = (Query)stack.pop();
     }
 }
 

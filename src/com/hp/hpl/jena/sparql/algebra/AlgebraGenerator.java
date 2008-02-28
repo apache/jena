@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.logging.LogFactory;
+
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.query.ARQ;
 import com.hp.hpl.jena.query.Query;
@@ -191,6 +193,13 @@ public class AlgebraGenerator
         {
             Op op = compileElement(elt) ;
             return join(current, op) ;
+        }
+        
+        if ( elt instanceof ElementSubQuery )
+        {
+            // XXX Skip
+            LogFactory.getLog(this.getClass()).warn("Skipping ElementSubQuery") ;
+            return current ;
         }
         
         broken("compileDirect/Element not recognized: "+Utils.className(elt)) ;
