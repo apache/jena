@@ -312,7 +312,6 @@ public class SSE
     }
     public static void write(IndentedWriter out, Node node)                         
     { WriterNode.output(IndentedWriter.stdout, node, sCxt(defaultDefaultPrefixMapWrite)) ; }
-
     
     private static SerializationContext sCxt(Graph graph)
     {
