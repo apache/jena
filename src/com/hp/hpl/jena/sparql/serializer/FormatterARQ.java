@@ -150,6 +150,16 @@ public class FormatterARQ extends FormatterBase
             out.print(" )") ;
     }
 
+    public void visit(ElementAssign el)
+    {
+        out.print("LET (") ;
+        out.print("?"+el.getVar().getVarName()) ;
+        out.print(" := ") ;
+        FmtExprARQ v = new FmtExprARQ(out, context) ;
+        v.format(el.getExpr()) ;
+        out.print(")") ;
+    }
+
     public void visit(ElementUnion el)
     {
         if ( el.getElements().size() == 1 )

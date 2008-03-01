@@ -56,6 +56,11 @@ public class PatternVars
             VarExprList x = el.getQuery().getProject() ;
             acc.addAll(x.getVars()) ;
         }
+        
+        public void visit(ElementAssign el)
+        {
+            acc.add(el.getVar()) ;
+        }
     }
 }
 

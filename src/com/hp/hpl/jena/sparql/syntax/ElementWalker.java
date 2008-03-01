@@ -42,8 +42,14 @@ public class ElementWalker
         public void visit(ElementFilter el)
         {
             proc.visit(el) ;
-            return ;
         }
+        
+
+        public void visit(ElementAssign el)
+        {
+            proc.visit(el) ;
+        }
+
         
         public void visit(ElementUnion el)
         {

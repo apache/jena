@@ -389,6 +389,8 @@ Element GraphPatternNotTriples() : { Element el = null ; }
 #ifdef ARQ
  |
    el = ServiceGraphPattern()
+ |
+   el = Assignment()
 #endif
  )
   { return el ; }
@@ -414,6 +416,17 @@ Element ServiceGraphPattern() : { Element el ; Node n ; String iri ; }
   n = VarOrIRIref()
   el = GroupGraphPattern()
     { return new ElementService(n, el) ; }
+}
+
+Element Assignment() : { Var v ; Expr expr ; }
+{
+  <LET>  
+  <LPAREN>
+  v = Var()
+  <ASSIGN> 
+  expr = Expression()
+  <RPAREN>
+    { return new ElementAssign(v, expr) ; }
 }
 #endif
 
@@ -1183,6 +1196,9 @@ TOKEN :
 
 | < DATATYPE: "^^">
 | < AT: "@">
+#ifdef ARQ
+| < ASSIGN:     ":=">
+#endif
 }
 
 // See XML chars.txt for notes

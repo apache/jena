@@ -97,6 +97,12 @@ public class OpVars
             acc.clear() ;
             acc.addAll(opProject.getVars()) ;
         }
+        
+        public void visit(OpAssign opAssign)
+        {
+            acc.addAll(opAssign.getVarExprList().getVars()) ;
+            opAssign.getSubOp().visit(this) ;
+        }
     }
     
     private static class OpVarsQuery extends OpVarsPattern

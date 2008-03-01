@@ -29,15 +29,14 @@ See ToDoSSE
 
 ----
 
-+ LET, { SELECT }, EXISTS { pattern }
-  For SELECT, beware of trailing terms runing into triples: ...ORDER BY ?x ?y :p ?z ...
-  Hence need {} around it.  Which is good for scoping.
++ LET, { SELECT }, 
+  EXISTS { pattern }
   
-  {SELECT} Work plan:
+  {SELECT}, LET, Work plan:
     1/ Syntax [DONE]
     2/ Printing [DONE]
-    3/ Syntax test cases
-    4/ Evaluation [DRAFT :-)]
+    3/ Syntax test cases [DONE]
+    4/ Evaluation [DONE]
     5/ Evaluation test cases
     6/ Documentation
 

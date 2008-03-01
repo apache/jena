@@ -202,6 +202,13 @@ public class AlgebraGenerator
             return join(current, subOp) ;
         }
         
+        if ( elt instanceof ElementAssign )
+        {
+            ElementAssign assign = (ElementAssign)elt ;
+            Op subOp = OpAssign.assign(current, assign.getVar(), assign.getExpr()) ;
+            return subOp ;
+        }
+        
         broken("compileDirect/Element not recognized: "+Utils.className(elt)) ;
         return null ;
     }

@@ -1,42 +1,63 @@
 /*
- * (c) Copyright 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
 package com.hp.hpl.jena.sparql.syntax;
 
-/** A ElementVisitor that does nothing.  It saves writing lots of
- * empty visits when only interested in a few element types.  
- */
+import com.hp.hpl.jena.sparql.core.Var;
+import com.hp.hpl.jena.sparql.expr.Expr;
+import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 
-public class ElementVisitorBase implements ElementVisitor 
+public class ElementAssign extends Element
 {
-    public void visit(ElementTriplesBlock el) { }
+    private Var var ;
+    private Expr expr ;
 
-    public void visit(ElementFilter el)             { }
+    public ElementAssign(Var v, Expr expr)
+    {
+        this.var = v ; 
+        this.expr = expr ;
+    }
+
+    public Var getVar()
+    {
+        return var ;
+    }
+
+    public Expr getExpr()
+    {
+        return expr ;
+    }
+
+    public boolean equalTo(Element el2, NodeIsomorphismMap isoMap)
+    {
+        if ( ! ( el2 instanceof ElementAssign ) )
+            return false ;
+        ElementAssign f2 = (ElementAssign)el2 ;
+        if ( ! this.getVar().equals(f2.getVar() ))
+            return false ;
+        if ( ! this.getExpr().equals(f2.getExpr()) )
+            return false ;
+        return true ;
+    }
+
+    public int hashCode()
+    {
+        return var.hashCode()^expr.hashCode();
+    }
+
+    public void visit(ElementVisitor v)
+    {
+        v.visit(this) ;
+    }
     
-    public void visit(ElementAssign el)             { }
-
-    public void visit(ElementUnion el)              { }
-
-    public void visit(ElementDataset el)            { }
-
-    public void visit(ElementOptional el)           { }
-
-    public void visit(ElementGroup el)              { }
-
-    public void visit(ElementNamedGraph el)         { }
-
-    public void visit(ElementUnsaid el)             { }
     
-    public void visit(ElementService el)            { }
-
-    public void visit(ElementSubQuery el)           { }
 }
 
 /*
- * (c) Copyright 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

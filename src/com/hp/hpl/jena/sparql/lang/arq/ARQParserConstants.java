@@ -115,13 +115,14 @@ public interface ARQParserConstants {
   int SLASH = 109;
   int DATATYPE = 110;
   int AT = 111;
-  int PN_CHARS_BASE = 112;
-  int PN_CHARS_U = 113;
-  int PN_CHARS = 114;
-  int PN_PREFIX = 115;
-  int PN_LOCAL = 116;
-  int VARNAME = 117;
-  int UNKNOWN = 118;
+  int ASSIGN = 112;
+  int PN_CHARS_BASE = 113;
+  int PN_CHARS_U = 114;
+  int PN_CHARS = 115;
+  int PN_PREFIX = 116;
+  int PN_LOCAL = 117;
+  int VARNAME = 118;
+  int UNKNOWN = 119;
 
   int DEFAULT = 0;
 
@@ -238,6 +239,7 @@ public interface ARQParserConstants {
     "\"/\"",
     "\"^^\"",
     "\"@\"",
+    "\":=\"",
     "<PN_CHARS_BASE>",
     "<PN_CHARS_U>",
     "<PN_CHARS>",

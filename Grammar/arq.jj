@@ -364,6 +364,8 @@ Element GraphPatternNotTriples() : { Element el = null ; }
 
  |
    el = ServiceGraphPattern()
+ |
+   el = Assignment()
 
  )
   { return el ; }
@@ -389,6 +391,17 @@ Element ServiceGraphPattern() : { Element el ; Node n ; String iri ; }
   n = VarOrIRIref()
   el = GroupGraphPattern()
     { return new ElementService(n, el) ; }
+}
+
+Element Assignment() : { Var v ; Expr expr ; }
+{
+  <LET>
+  <LPAREN>
+  v = Var()
+  <ASSIGN>
+  expr = Expression()
+  <RPAREN>
+    { return new ElementAssign(v, expr) ; }
 }
 
 
@@ -1133,6 +1146,9 @@ TOKEN :
 
 | < DATATYPE: "^^">
 | < AT: "@">
+
+| < ASSIGN: ":=">
+
 }
 
 // See XML chars.txt for notes

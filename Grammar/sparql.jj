@@ -295,6 +295,8 @@ Element GraphPatternNotTriples() : { Element el = null ; }
 
 
 
+
+
  )
   { return el ; }
 }
@@ -989,6 +991,9 @@ TOKEN :
 
 | < DATATYPE: "^^">
 | < AT: "@">
+
+
+
 }
 
 // See XML chars.txt for notes
