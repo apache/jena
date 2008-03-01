@@ -45,14 +45,22 @@ public class QueryIterExtend extends QueryIterConvert
             for ( Iterator iter = exprs.getVars().iterator() ; iter.hasNext(); )
             {
                 Var v = (Var)iter.next();
+                Node n = exprs.get(v, bind, funcEnv) ;
+                if ( n == null )
+                {
+                    // Failed to evaluate
+                    continue ;
+                }
                 // Only add those variables that have expressions associated with them
                 // The parent, bind, already has bound variables for the non-expressions. 
                 if ( b.contains(v) )
-                    throw new QueryExecException("Already set: "+v) ;
-                
-                Node n = exprs.get(v, bind, funcEnv) ;
-                if ( n != null )
-                    b.add(v, n) ;
+                {
+                    Node n2 = b.get(v) ;
+                    if ( ! n2.sameValueAs(n) )
+                        throw new QueryExecException("Already set: "+v) ;
+                    continue ;
+                }
+                b.add(v, n) ;
             }
             return b ;
         }

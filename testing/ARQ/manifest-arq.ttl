@@ -60,7 +60,8 @@
         <EngineMain/manifest.ttl>
 
     ## ARQ extensions
-        <SelectExpr/manifest.ttl>
+        <Assign/manifest.ttl>
         <GroupBy/manifest.ttl>
+        <SubQuery/manifest.ttl>
     ) .
 
