@@ -1,0 +1,6 @@
+PREFIX : <http://example/>
+
+SELECT *
+{ ?s ?p ?o
+  { SELECT count( distinct * ) { ?x :p ?z } ORDER BY ?z LIMIT 5 OFFSET 6 }
+}

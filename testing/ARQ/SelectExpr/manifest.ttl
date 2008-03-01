@@ -50,4 +50,20 @@
               qt:data   <data.ttl> ] ;
         mf:result  <select-expr-06.srx>
       ]
+
+      [ mf:name    "Assign 1" ;
+        rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <assign-01.arq> ;
+              qt:data   <data.ttl> ] ;
+        mf:result  <assign-01.srx>
+      ]
+      [ mf:name    "Assign 2" ;
+        rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <assign-02.arq> ;
+              qt:data   <data.ttl> ] ;
+        mf:result  <assign-02.srx>
+      ]
+
     ).

@@ -126,7 +126,7 @@ public class OpCompiler
             return stream(opJoin.getLeft(), opJoin.getRight(), input) ;
         
         // Input may be null?
-        // Can't do purely indexed (a filter referencing a variable out of scope is in the way)
+        // Can't do purely indexed (e.g. a filter referencing a variable out of scope is in the way)
         // To consider: partial substitution for improved performance (but does it occur for real?)
         
         QueryIterator left = compileOp(opJoin.getLeft(), input) ;

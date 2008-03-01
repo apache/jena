@@ -809,7 +809,7 @@ AggregateFactory Aggregate() : { AggregateFactory agg ;
     t = <COUNT> <LPAREN>
     {
           if ( ! allowAggregatesInExpressions )
-            throwParseException("Aggregates expression not legal at this point",
+            throwParseException("Aggregate expression not legal at this point",
                                t.beginLine, t.beginColumn) ;
     }
 

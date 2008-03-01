@@ -3,16 +3,17 @@ PREFIX  apf: <http://jena.hpl.hp.com/ARQ/property#>
 PREFIX  rdfs:   <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX  owl:    <http://www.w3.org/2002/07/owl#>
 
-SELECT count( distinct *)
-{}
-## 
-## {
-## ##    ?x :r ?C .
-## ##    { SELECT ?v2 (count(*) AS ?C) { ?y :p ?v2 } GROUP BY ?v2 }
-## 
-## ##    ?x :p ?z 
-## ##    { SELECT * { ?x :p ?z } }
-## 
-##      ?z :r ?vz 
-##     LET (?v := ?vz+3)
-## }
+SELECT * 
+{
+##    ?x :r ?C .
+##    { SELECT ?v2 (count(*) AS ?C) { ?y :p ?v2 } GROUP BY ?v2 }
+
+##    ?x :p ?z 
+##    { SELECT * { ?x :p ?z } }
+
+    
+     ?z :r ?vz 
+    OPTIONAL { ?z :r  ?vz2 . FILTER(?vz2 = 1 ) }
+    LET (?v := ?vz2+3 )
+    LET (?vdot := "123"+5 )
+}

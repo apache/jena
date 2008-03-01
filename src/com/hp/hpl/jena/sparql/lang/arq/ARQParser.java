@@ -2047,7 +2047,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     t = jj_consume_token(COUNT);
     jj_consume_token(LPAREN);
           if ( ! allowAggregatesInExpressions )
-            throwParseException("Aggregates expression not legal at this point",
+            throwParseException("Aggregate expression not legal at this point",
                                t.beginLine, t.beginColumn) ;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case STAR:

@@ -107,3 +107,72 @@ PREFIX : <http://example/>
 SELECT (COUNT(DISTINCT ?x) AS ?count) { ?x :p ?p .}
 EOF
 
+
+## ---- { SELECT }
+N=0
+N=$((N+1)) ; testGood $(fname "syntax-subquery-" $N arq) <<EOF
+PREFIX : <http://example/>
+
+SELECT *
+{ SELECT * { ?x ?y ?z } }
+EOF
+
+N=$((N+1)) ; testGood $(fname "syntax-subquery-" $N arq) <<EOF
+PREFIX : <http://example/>
+
+SELECT *
+{ ?s ?p ?o
+  { SELECT * { ?x ?y ?z } }
+}
+EOF
+
+N=$((N+1)) ; testGood $(fname "syntax-subquery-" $N arq) <<EOF
+PREFIX : <http://example/>
+
+SELECT *
+{ ?s ?p ?o
+  { SELECT count( distinct * ) { ?x :p ?z } ORDER BY ?z LIMIT 5 OFFSET 6 }
+}
+EOF
+
+N=0
+N=$((N+1)) ; testBad $(fname "syntax-subquery-bad-" $N arq) <<EOF
+PREFIX : <http://example/>
+
+SELECT *
+  SELECT * { ?x ?y ?z }
+EOF
+
+N=$((N+1)) ; testBad $(fname "syntax-subquery-bad-" $N arq) <<EOF
+PREFIX : <http://example/>
+
+SELECT *
+{
+  ASK { ?x ?y ?z } 
+}
+EOF
+
+## ---- LET
+
+N=0
+N=$((N+1)) ; testGood $(fname "syntax-let-" $N arq) <<EOF
+PREFIX : <http://example/>
+
+SELECT * { LET ( ?x := 3 ) }
+EOF
+
+N=$((N+1)) ; testGood $(fname "syntax-let-" $N arq) <<EOF
+PREFIX : <http://example/>
+
+SELECT * { ?s ?p ?o . OPTIONAL { ?o :p ?q LET ( ?q := true ) } }
+EOF
+
+N=0
+N=$((N+1)) ; testBad $(fname "syntax-let-bad-" $N arq) <<EOF
+PREFIX : <http://example/>
+
+SELECT * 
+{
+  LET ?x := (4+5)
+}
+EOF

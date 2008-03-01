@@ -76,18 +76,24 @@ public abstract class QueryIterJoinBase extends QueryIter2
     // Move on regardless.
     private Binding moveToNext()
     {
-        if ( current != null && current.hasNext() )
-            return current.nextBinding() ;
 
-        if ( current != null )
-            current.close();
-        // Get a new "current" iterator.
-        current = joinWorker() ;
-        if ( current == null )
-            return null ;
-        if ( current.hasNext() )
-            return current.nextBinding() ;
-        return null ;
+        while(true)
+        {
+            if ( current != null )
+            {
+                if ( current.hasNext() )
+                    return current.nextBinding() ;
+                // curent ends.
+                current.close();
+                current = null ;
+            }
+            
+            // Move to next worker
+            current = joinWorker() ;
+            if ( current == null )
+                // No next worker. 
+                return null ;
+        }
     }
     
     // Null iff there is no more results.  
