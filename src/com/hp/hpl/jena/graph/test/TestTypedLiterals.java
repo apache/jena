@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestTypedLiterals.java,v 1.67 2008-03-01 18:06:46 der Exp $
+ * $Id: TestTypedLiterals.java,v 1.68 2008-03-01 18:12:29 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.graph.test;
 
@@ -34,7 +34,7 @@ import org.apache.xerces.impl.dv.util.HexBin;
  * TypeMapper and LiteralLabel.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.67 $ on $Date: 2008-03-01 18:06:46 $
+ * @version $Revision: 1.68 $ on $Date: 2008-03-01 18:12:29 $
  */
 public class TestTypedLiterals extends TestCase {
               
@@ -450,20 +450,21 @@ public class TestTypedLiterals extends TestCase {
     /**
      * Test the internal machinery of decimal normalization directly
      */
-    public void testDecimalCannonicalize() {
-        doTestDecimalCannonicalize("0.500", "0.5", BigDecimal.class);
-        doTestDecimalCannonicalize("0.50", "0.5", BigDecimal.class);
-        doTestDecimalCannonicalize("0.5", "0.5", BigDecimal.class);
-        doTestDecimalCannonicalize("0.0", "0", Integer.class);
-        doTestDecimalCannonicalize("5.0", "5", Integer.class);
-        doTestDecimalCannonicalize("5.00100", "5.001", BigDecimal.class);
+    public void testDecimalCanonicalize() {
+        doTestDecimalCanonicalize("0.500", "0.5", BigDecimal.class);
+        doTestDecimalCanonicalize("0.50", "0.5", BigDecimal.class);
+        doTestDecimalCanonicalize("0.5", "0.5", BigDecimal.class);
+        doTestDecimalCanonicalize("0.0", "0", Integer.class);
+        doTestDecimalCanonicalize("5.0", "5", Integer.class);
+        doTestDecimalCanonicalize("500.0", "500", Integer.class);
+        doTestDecimalCanonicalize("5.00100", "5.001", BigDecimal.class);
     }
     
     /**
      * Helper for testDecimalCannonicalize. Run a single
      * cannonicalization test on a value specified in string form.
      */
-    private void doTestDecimalCannonicalize(String value, String expected, Class expectedClass) {
+    private void doTestDecimalCanonicalize(String value, String expected, Class expectedClass) {
         Object normalized = XSDDatatype.XSDdecimal.cannonicalise( new BigDecimal(value) );
         assertEquals(expected, normalized.toString());
         assertEquals(expectedClass, normalized.getClass());

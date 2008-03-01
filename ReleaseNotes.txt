@@ -4,8 +4,8 @@ Release Notes
 
 Typed literals:
     o Fixed bug in retrieval of decimal values with trailing fractional
-      zeros by cannonicalizing values after parsing and improving
-      cannonicalization.
+      zeros by canonicalizing values after parsing and improving
+      canonicalization.
       
 ==== Jena 2.5.5
 
