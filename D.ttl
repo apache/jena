@@ -1,14 +1,9 @@
 @prefix : <http://example/> .
-@prefix rdf:        <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
-@prefix rdfs:	    <http://www.w3.org/2000/01/rdf-schema#> .
-@prefix owl:        <http://www.w3.org/2002/07/owl#> .
-@prefix log:        <http://www.w3.org/2000/10/swap/log#> .
-@prefix xsd:        <http://www.w3.org/2001/XMLSchema#> .
-@prefix skos:       <http://www.w3.org/2004/02/skos/core#> .
 
-:x1 :p :v .
-:x2 :p :v .
-:x3 :p :w .
+:x1 a :Toy .
+:x1 :order :o1 .
+:x1 :order :o2 .
 
-:z1 :r 1 .
-:z2 :r 2 .
+:x2 a :Toy .
+:x2 :order :o3 .
+
