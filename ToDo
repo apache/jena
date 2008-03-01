@@ -29,17 +29,7 @@ See ToDoSSE
 
 ----
 
-+ LET, { SELECT }, 
-  EXISTS { pattern }
-  
-  {SELECT}, LET, Work plan:
-    1/ Syntax [DONE]
-    2/ Printing [DONE]
-    3/ Syntax test cases [DONE]
-    4/ Evaluation [DONE]
-    5/ Evaluation test cases [DONE]
-    6/ Documentation
-
++  EXISTS { pattern }
 + ORDER BY aggregate
 
 + OpBGP is (ref- & main-) compiled to a call to static "StageBuilder.compile" (modularity)  

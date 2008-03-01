@@ -3,7 +3,7 @@ ChangeLog for ARQ
 
 ==== ARQ 2.3
 
-+ Added { SELECT } (nested SELECT) and LET (assignment) to ARQ extended SPARQL 
++ Added { SELECT } (nested SELECT) and LET (assignment) to ARQ extended SPARQL.
 
 + Added optimization rewrite of algebra expressions for FILTER(?x = :x) and FILTER(sameTerm(?x, :x))
   so that the required term is substituted into the pattern before execution.
