@@ -28,8 +28,9 @@
 See ToDoSSE
 
 ----
++ SUM
 
-+  EXISTS { pattern }
++ EXISTS { pattern }
 + ORDER BY aggregate
 
 + OpBGP is (ref- & main-) compiled to a call to static "StageBuilder.compile" (modularity)  
