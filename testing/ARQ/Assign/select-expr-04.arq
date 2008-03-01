@@ -1,0 +1,8 @@
+PREFIX : <http://example/> 
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+
+SELECT (xsd:byte(str(?v)) AS ?byte)
+{
+  ?x a :X .
+  OPTIONAL { ?x :p ?v }
+}
