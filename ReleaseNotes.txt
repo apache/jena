@@ -1,6 +1,12 @@
 Release Notes
 =============
+==== post Jena 2.5.5
 
+Typed literals:
+    o Fixed bug in retrieval of decimal values with trailing fractional
+      zeros by cannonicalizing values after parsing and improving
+      cannonicalization.
+      
 ==== Jena 2.5.5
 
 Jar changes:

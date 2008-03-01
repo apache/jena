@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestTypedLiterals.java,v 1.66 2008-01-23 16:21:10 der Exp $
+ * $Id: TestTypedLiterals.java,v 1.67 2008-03-01 18:06:46 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.graph.test;
 
@@ -34,7 +34,7 @@ import org.apache.xerces.impl.dv.util.HexBin;
  * TypeMapper and LiteralLabel.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.66 $ on $Date: 2008-01-23 16:21:10 $
+ * @version $Revision: 1.67 $ on $Date: 2008-03-01 18:06:46 $
  */
 public class TestTypedLiterals extends TestCase {
               
@@ -76,7 +76,6 @@ public class TestTypedLiterals extends TestCase {
         Literal l3 = m.createTypedLiteral("15", typeURI);
         Literal l5 = m.createTypedLiteral("foo", typeURI2);
         Literal l6 = m.createLiteral("foo", "lang1");
-        Literal l7 = m.createLiteral("foo");
         JenaParameters.enableSilentAcceptanceOfUnknownDatatypes = originalFlag;
         // Check for successful creation
         
@@ -91,7 +90,7 @@ public class TestTypedLiterals extends TestCase {
 
         // Check typed accessors
         try {
-            int i = l3.getInt();
+            l3.getInt();
             assertTrue("Allowed int conversion", false);
         } catch (DatatypeFormatException e) {}
         assertEquals("Extract value", l1.getValue(), new BaseDatatype.TypedValue("foo", typeURI));
@@ -100,7 +99,7 @@ public class TestTypedLiterals extends TestCase {
         JenaParameters.enableSilentAcceptanceOfUnknownDatatypes = false;
         boolean foundException = false;
         try {
-            Literal l8 = m.createTypedLiteral("food", typeURI+"3");
+            m.createTypedLiteral("food", typeURI+"3");
         } catch (DatatypeFormatException e2) {
             foundException = true;
         }
@@ -140,7 +139,7 @@ public class TestTypedLiterals extends TestCase {
         assertTrue("Value check", ((Rational)val).getNumerator() == 3);
         assertTrue("Value check", ((Rational)val).getDenominator() == 5);
         try {
-            int i = l1.getInt();
+            l1.getInt();
             assertTrue("Allowed int conversion", false);
         } catch (DatatypeFormatException e) {}
         assertEquals("Extract xml tag", l1.isWellFormedXML(), false);
@@ -307,7 +306,7 @@ public class TestTypedLiterals extends TestCase {
             // String overloading cases
             boolean test1 = false;
             try {
-                Literal l1 = m.createTypedLiteral("foo", "http://www.w3.org/2001/XMLSchema#integer");
+                m.createTypedLiteral("foo", "http://www.w3.org/2001/XMLSchema#integer");
             } catch (DatatypeFormatException e1 ) {
                 test1 = true;
             }
@@ -316,7 +315,7 @@ public class TestTypedLiterals extends TestCase {
             boolean test2 = false;
             try {
                 Object foo = "foo";
-                Literal l1 = m.createTypedLiteral(foo, "http://www.w3.org/2001/XMLSchema#integer");
+                m.createTypedLiteral(foo, "http://www.w3.org/2001/XMLSchema#integer");
             } catch (DatatypeFormatException e2 ) {
                 test2 = true;
             }
@@ -431,6 +430,43 @@ public class TestTypedLiterals extends TestCase {
         Literal ldF2 = m.createTypedLiteral(bigdecF2, XSDDatatype.XSDdecimal);
         assertSameValueAs("big decimal equality check", ldF, ldFb);
         assertDiffer("Decimal equality", ldF, ldF2);
+    }
+    
+    /**
+     * Test case for a bug in retrieving a value like 3.00 from
+     * a probe like 3.0
+     */
+    public void testDecimalFind() {
+        RDFDatatype dt = XSDDatatype.XSDdecimal;
+        Node ns = Node.createURI("x") ;
+        Node np = Node.createURI("p") ;
+        Node nx1 = Node.createLiteral("0.50", null, dt) ;
+        Node nx2 = Node.createLiteral("0.500", null, dt) ;
+        Graph graph = Factory.createDefaultGraph() ;
+        graph.add(new Triple(ns, np, nx1)) ;
+        assertTrue( graph.find(Node.ANY, Node.ANY, nx2).hasNext() );  
+    }
+    
+    /**
+     * Test the internal machinery of decimal normalization directly
+     */
+    public void testDecimalCannonicalize() {
+        doTestDecimalCannonicalize("0.500", "0.5", BigDecimal.class);
+        doTestDecimalCannonicalize("0.50", "0.5", BigDecimal.class);
+        doTestDecimalCannonicalize("0.5", "0.5", BigDecimal.class);
+        doTestDecimalCannonicalize("0.0", "0", Integer.class);
+        doTestDecimalCannonicalize("5.0", "5", Integer.class);
+        doTestDecimalCannonicalize("5.00100", "5.001", BigDecimal.class);
+    }
+    
+    /**
+     * Helper for testDecimalCannonicalize. Run a single
+     * cannonicalization test on a value specified in string form.
+     */
+    private void doTestDecimalCannonicalize(String value, String expected, Class expectedClass) {
+        Object normalized = XSDDatatype.XSDdecimal.cannonicalise( new BigDecimal(value) );
+        assertEquals(expected, normalized.toString());
+        assertEquals(expectedClass, normalized.getClass());
     }
     
     /**
@@ -929,13 +965,14 @@ public class TestTypedLiterals extends TestCase {
         TypeMapper typeMapper=TypeMapper.getInstance(); 
         RDFDatatype dt = typeMapper.getSafeTypeByName(XSDDateURI); 
         Object obj = dt.parse("2003-05-21"); 
-        Literal literal = m.createTypedLiteral(obj, dt);        String serialization = literal.toString();     
+        Literal literal = m.createTypedLiteral(obj, dt);        
+        literal.toString();     
         Object value2 = dt.parse(obj.toString());
         assertEquals(obj, value2);
         
-        // Check alternativ form doesn't provoke exceptions
+        // Check alternative form doesn't provoke exceptions
         RDFDatatype dateType = XSDDatatype.XSDdate;
-        Literal l = m.createTypedLiteral("2003-05-21", dateType);
+        m.createTypedLiteral("2003-05-21", dateType);
         
         // Check alt time times
         checkSerialization("2003-05-21", XSDDatatype.XSDdate);
@@ -955,7 +992,7 @@ public class TestTypedLiterals extends TestCase {
         JenaParameters.enableEagerLiteralValidation = true;
         boolean foundException = false;
         try {
-            Literal l = m.createTypedLiteral("fool", XSDDatatype.XSDint);
+            m.createTypedLiteral("fool", XSDDatatype.XSDint);
         } catch (DatatypeFormatException e1) {
             foundException = true;
         }

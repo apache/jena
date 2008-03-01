@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: XSDDatatype.java,v 1.15 2008-01-02 12:10:49 andy_seaborne Exp $
+ * $Id: XSDDatatype.java,v 1.16 2008-03-01 18:06:49 der Exp $
  *****************************************************************/
 
 package com.hp.hpl.jena.datatypes.xsd;
@@ -40,7 +40,7 @@ import org.apache.xerces.xni.grammars.XSGrammar;
  * XSD implementation.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.15 $ on $Date: 2008-01-02 12:10:49 $
+ * @version $Revision: 1.16 $ on $Date: 2008-03-01 18:06:49 $
  */
 public class XSDDatatype extends BaseDatatype {
 
@@ -404,7 +404,8 @@ public class XSDDatatype extends BaseDatatype {
                     return new Integer(0);
                 }
                 if (decimalDV.getFractionDigits(xsdValue) >= 1) {
-                    return new BigDecimal(trimPlus(validatedInfo.normalizedValue));
+                    BigDecimal value =  new BigDecimal(trimPlus(validatedInfo.normalizedValue));
+                    return XSDdecimal.cannonicalise( value );
                 }
                 // Can have 0 fractionDigits but still have a trailing .000
                 String lexical = trimPlus(validatedInfo.normalizedValue);
@@ -437,7 +438,7 @@ public class XSDDatatype extends BaseDatatype {
      	@param number
      	@return
     */
-    protected Number suitableInteger( long number )
+    protected static Number suitableInteger( long number )
         {
         if (number > Integer.MAX_VALUE || number < Integer.MIN_VALUE)
             return new Long( number );

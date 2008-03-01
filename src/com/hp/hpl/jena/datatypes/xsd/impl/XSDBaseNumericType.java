@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: XSDBaseNumericType.java,v 1.21 2008-01-23 16:21:05 der Exp $
+ * $Id: XSDBaseNumericType.java,v 1.22 2008-03-01 18:06:16 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.datatypes.xsd.impl;
 
@@ -24,7 +24,7 @@ import com.hp.hpl.jena.shared.impl.JenaParameters;
  * that float and double are not included in this set.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.21 $ on $Date: 2008-01-23 16:21:05 $
+ * @version $Revision: 1.22 $ on $Date: 2008-03-01 18:06:16 $
  */
 public class XSDBaseNumericType extends XSDDatatype {
 
@@ -101,19 +101,32 @@ public class XSDBaseNumericType extends XSDDatatype {
         return suitableInteger( ((Number)value).longValue() );
     }
     
+    private static final BigInteger ten = new BigInteger("10");
+    private static final int QUOT = 0;
+    private static final int REM = 1;
     /**
      * Cannonicalize a big decimal
      */
     private Object cannonicalizeDecimal(BigDecimal value) {
-        // This could can be simplified by using toBitIntegerExact
+        // This could can be simplified by using toBigIntegerExact
         // once we drop Java 1.4 support
         if (value.scale() > 0) {
-            // Fractional part could still be zero so have to check in that case
-            try {
-                return cannonicalizeInteger( value.setScale(0).toBigInteger() );
-            } catch (ArithmeticException e) {
-                return value;
+            // Check if we can strip off any trailing zeros after decimal point
+            BigInteger i = value.unscaledValue();
+            int limit = value.scale();
+            int nshift = 0;
+            for (nshift = 0; nshift < limit; nshift++) {
+                BigInteger[] quotRem = i.divideAndRemainder(ten);
+                if (quotRem[REM].intValue() != 0) break;
+                i = quotRem[QUOT];
             }
+            if (nshift > 0) {
+               value = new BigDecimal(i, limit - nshift);
+               if (value.scale() <= 0) {
+                   return cannonicalizeInteger( value.toBigInteger() );
+               }
+            }
+            return value;
         } else {
             return cannonicalizeInteger( value.toBigInteger() );
         }
