@@ -29,4 +29,11 @@
               qt:data   <data.ttl> ] ;
         mf:result  <sub-select-03.srx>
       ]
+      [  mf:name    "Sub SELECT 4" ;
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <sub-select-04.arq> ;
+              qt:data   <data.ttl> ] ;
+        mf:result  <sub-select-04.srx>
+      ]
     ).
