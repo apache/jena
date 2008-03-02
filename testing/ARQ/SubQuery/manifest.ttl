@@ -5,7 +5,7 @@
 @prefix qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#> .
 
 <>  rdf:type mf:Manifest ;
-    rdfs:label "Seb Query" ;
+    rdfs:label "Sub Query" ;
     mf:entries
     ( 
       [  mf:name    "Sub SELECT 1" ;
