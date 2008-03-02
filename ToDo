@@ -2,8 +2,6 @@
 
 ** More aggregators
 
-** { SELECT } : Prefix defaulting (PrefixMapping2)
-
 ** Clearer ways to add BGP solver mechanisms - invert Stage/StageList 
 
 ** Split SELECT into constructive assignments which are pushed in so visible to ORDER BY.
@@ -33,6 +31,7 @@ See ToDoSSE
 + SUM
 + EXISTS { pattern }
 + ORDER BY aggregate
++ { SELECT } Algebra expression does not include inner (base (prefix...)) [Minor]
 
 + OpBGP is (ref- & main-) compiled to a call to static "StageBuilder.compile" (modularity)  
   StageBuilder::
