@@ -15,6 +15,10 @@ import com.hp.hpl.jena.sparql.sse.ItemList;
 
 public class ParseHandlerLink extends ParseHandlerResolver
 {
+    // Untested.
+    // Implements (link@ LABEL) and (@name LABEL expression) to give non-trees.
+    // Caveat: other things assume tree walking.
+    
     static final String tagLink = "link@" ;
     static final String tagName = "@name" ;
     
@@ -75,9 +79,6 @@ public class ParseHandlerLink extends ParseHandlerResolver
             return true ;
         return super.isForm(tag) ;
     }
-    
-    
-    
 }
 
 /*

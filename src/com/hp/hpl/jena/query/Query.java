@@ -105,6 +105,12 @@ public class Query extends Prologue implements Cloneable
         syntax = Syntax.syntaxSPARQL ;
     }
     
+    public Query(Prologue prologue)
+    {
+        this() ;
+        usePrologueFrom(prologue) ;
+    }
+    
     // Allocate variables that are unique to this query.
     private VarAlloc varAlloc = new VarAlloc(ARQConstants.allocVarMarker) ;
     public Var allocInternVar() { return varAlloc.allocVar() ; }

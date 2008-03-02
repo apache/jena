@@ -14,25 +14,31 @@ public class ParserQueryBase extends ParserBase
 {
     private Stack stack = new Stack() ;
     protected Query query ;
+
     public void setQuery(Query q)
     { 
         query = q ;
         setPrologue(q) ;
     }
+
     public Query getQuery() { return query ; }
     
-    protected void startSubSelect(Query subQuery)
+    protected void startSubSelect()
     {
         stack.push(query) ;
-        subQuery.setSameAs(query) ;
+        Query subQuery = new Query(query) ;
         query = subQuery ;
+        setPrologue(subQuery) ;
     }
     
-    protected void endSubSelect(Query subQuery, int line, int column)
+    protected Query endSubSelect(int line, int column)
     {
+        Query subQuery = query ;
         if ( ! subQuery.isSelectType() )
             throwParseException("Subquery not a SELECT query", line, column) ;
         query = (Query)stack.pop();
+        setPrologue(query) ;
+        return subQuery ;
     }
 }
 

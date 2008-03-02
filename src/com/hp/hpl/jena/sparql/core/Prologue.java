@@ -53,10 +53,10 @@ public class Prologue
         return new Prologue(prefixMap, resolver.getBaseIRI()) ;
     }
     
-    public void setSameAs(Prologue other)
+    // Reverse of sub()
+    public void usePrologueFrom(Prologue other)
     {
-        prefixMap = new PrefixMappingImpl() ;
-        prefixMap.setNsPrefixes(other.prefixMap) ;
+        prefixMap = new PrefixMapping2(other.prefixMap) ;
         seenBaseURI = false ;
         resolver = new IRIResolver(other.resolver.getBaseIRI()) ;
     }

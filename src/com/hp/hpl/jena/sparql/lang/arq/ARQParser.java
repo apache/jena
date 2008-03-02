@@ -723,11 +723,10 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     case BASE:
     case PREFIX:
     case SELECT:
-      Query q = new Query() ;
-      startSubSelect(q) ;
+      startSubSelect() ;
       Prologue();
       SelectQuery();
-      endSubSelect(q, t.beginLine, t.beginColumn) ;
+      Query q = endSubSelect(t.beginLine, t.beginColumn) ;
       el = new ElementSubQuery(q) ;
       break;
     default:
