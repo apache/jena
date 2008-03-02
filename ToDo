@@ -2,6 +2,8 @@
 
 ** More aggregators
 
+** SELECT * {SELECT} reprints as {{}} nested. 
+
 ** Clearer ways to add BGP solver mechanisms - invert Stage/StageList 
 
 ** Split SELECT into constructive assignments which are pushed in so visible to ORDER BY.

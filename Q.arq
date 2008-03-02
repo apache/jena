@@ -1,7 +1,5 @@
 PREFIX : <http://example/>
 SELECT ?x
 { 
-  ?x a :Toy .
-  { SELECT ?x ( count(?order) as ?q ) { ?x :order ?order } GROUP BY ?x }
-  FILTER ( ?q > 1 )
+  SELECT * { ?s ?p ?o }
 }

@@ -19,7 +19,8 @@
 with language <code>Syntax.syntaxARQ</code>.</p>
 <h2>Nested SELECT</h2>
 <p>A SELECT query can be placed inside a graph pattern to produce a table that 
-is used within the outer query:</p>
+is used within the outer query. A nested SELECT statement is enclosed in {} and 
+is the only element in that group.</p>
 <p>Example: find toys with more than five orders:</p>
 <pre class="box">PREFIX : &lt;http://example/&gt;
 SELECT ?x
@@ -28,11 +29,6 @@ SELECT ?x
   { SELECT ?x ( count(?order) as ?q ) { ?x :order ?order } GROUP BY ?x }
   FILTER ( ?q &gt; 5 )
 }</pre>
-<p>The nested SELECT must have it's own {} pair so when the only element in a 
-group, there will be double braces {{}}:</p>
-<pre class="box">PREFIX : &lt;http://example/&gt;
-SELECT *
-{ { SELECT * { ?s ?p ?o } }</pre>
 <p>&nbsp;</p>
 <p class="footnote"><a href="documentation.html">ARQ Documentation Page</a></p>
 </body>
