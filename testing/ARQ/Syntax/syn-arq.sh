@@ -135,6 +135,15 @@ SELECT *
 }
 EOF
 
+N=$((N+1)) ; testGood $(fname "syntax-subquery-" $N arq) <<EOF
+PREFIX : <http://example/>
+
+SELECT *
+{ ?s ?p ?o
+  OPTIONAL { SELECT * { ?a ?b ?c } }
+}
+EOF
+
 N=0
 N=$((N+1)) ; testBad $(fname "syntax-subquery-bad-" $N arq) <<EOF
 PREFIX : <http://example/>

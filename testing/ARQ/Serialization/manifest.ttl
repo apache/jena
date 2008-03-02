@@ -593,8 +593,35 @@
          mf:action  <syntax-count-04.arq> ; 
       ]
 
-     [  mf:name    "syntax-service-01.arq" ;
+      [  mf:name    "syntax-service-01.arq" ;
          rdf:type   mfx:TestSerialization ;
          mf:action  <syntax-service-01.arq> ; 
-     ]
+      ]
+
+      [  mf:name    "syntax-subselect-01.arq" ;
+         rdf:type   mfx:TestSerialization ;
+         mf:action  <syntax-subselect-01.arq> ; 
+      ]
+      [  mf:name    "syntax-subselect-02.arq" ;
+         rdf:type   mfx:TestSerialization ;
+         mf:action  <syntax-subselect-02.arq> ; 
+      ]
+      [  mf:name    "syntax-subselect-03.arq" ;
+         rdf:type   mfx:TestSerialization ;
+         mf:action  <syntax-subselect-03.arq> ; 
+      ]
+      [  mf:name    "syntax-subselect-04.arq" ;
+         rdf:type   mfx:TestSerialization ;
+         mf:action  <syntax-subselect-04.arq> ; 
+      ]
+
+      [  mf:name    "syntax-assign-01.arq" ;
+         rdf:type   mfx:TestSerialization ;
+         mf:action  <syntax-assign-01.arq> ; 
+      ]
+      [  mf:name    "syntax-assign-02.arq" ;
+         rdf:type   mfx:TestSerialization ;
+         mf:action  <syntax-assign-02.arq> ; 
+      ]
+
     ) .

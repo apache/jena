@@ -84,6 +84,10 @@
          rdf:type   mfx:TestSyntax ;
          mf:action  <syntax-subquery-03.arq> ; 
       ]
+      [  mf:name    "syntax-subquery-04.arq" ;
+         rdf:type   mfx:TestSyntax ;
+         mf:action  <syntax-subquery-04.arq> ; 
+      ]
       [  mf:name    "syntax-let-01.arq" ;
          rdf:type   mfx:TestSyntax ;
          mf:action  <syntax-let-01.arq> ; 
