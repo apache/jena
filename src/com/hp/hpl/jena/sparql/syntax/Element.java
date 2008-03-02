@@ -9,7 +9,7 @@ package com.hp.hpl.jena.sparql.syntax;
 import java.util.*;
 
 import com.hp.hpl.jena.sparql.core.PatternVars;
-import com.hp.hpl.jena.sparql.serializer.FormatterARQ;
+import com.hp.hpl.jena.sparql.serializer.FormatterElement;
 import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 
 /** Element - abstract class for all pattern elements 
@@ -45,7 +45,7 @@ public abstract class Element
     
     public String toString()
     {
-        return FormatterARQ.asString(this) ;
+        return FormatterElement.asString(this) ;
     }
     
     // Constants used in hashing to stop an element and it's subelement

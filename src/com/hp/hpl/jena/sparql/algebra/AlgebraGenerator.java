@@ -88,6 +88,9 @@ public class AlgebraGenerator
         if ( elt instanceof ElementTriplesBlock )
             return compileBasicPattern(((ElementTriplesBlock)elt).getTriples()) ;
 
+        if ( elt instanceof ElementSubQuery )
+            return compileElementSubquery((ElementSubQuery)elt) ; 
+        
         if ( elt == null )
             return new OpNull() ;
 
@@ -185,6 +188,12 @@ public class AlgebraGenerator
             return compileElementOptional(eltOpt, current) ;
         }
         
+        if ( elt instanceof ElementSubQuery )
+        {
+            ElementSubQuery elQuery = (ElementSubQuery)elt ;
+            return compileElementSubquery(elQuery) ;
+        }
+        
         // All other elements: compile the element and then join on to the current group expression.
         if ( elt instanceof ElementGroup || 
              elt instanceof ElementNamedGraph ||
@@ -193,13 +202,6 @@ public class AlgebraGenerator
         {
             Op op = compileElement(elt) ;
             return join(current, op) ;
-        }
-        
-        if ( elt instanceof ElementSubQuery )
-        {
-            ElementSubQuery elQuery = (ElementSubQuery)elt ;
-            Op subOp = this.compile(elQuery.getQuery()) ;
-            return join(current, subOp) ;
         }
         
         if ( elt instanceof ElementAssign )
@@ -256,6 +258,12 @@ public class AlgebraGenerator
         Node serviceNode = eltService.getServiceNode() ;
         Op sub = compileElement(eltService.getElement()) ;
         return new OpService(serviceNode, sub) ;
+    }
+    
+    protected Op compileElementSubquery(ElementSubQuery eltSubQuery)
+    {
+        Op sub = this.compile(eltSubQuery.getQuery()) ;
+        return sub ;
     }
     
     /** Compile query modifiers */

@@ -11,7 +11,7 @@ import java.util.Iterator;
 
 import com.hp.hpl.jena.sparql.modify.op.*;
 import com.hp.hpl.jena.sparql.serializer.FmtTemplateARQ;
-import com.hp.hpl.jena.sparql.serializer.FormatterARQ;
+import com.hp.hpl.jena.sparql.serializer.FormatterElement;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext;
 import com.hp.hpl.jena.sparql.syntax.Template;
 import com.hp.hpl.jena.sparql.util.FmtUtils;
@@ -50,7 +50,7 @@ public class UpdateSerializer implements UpdateVisitor
         {
             out.println("WHERE") ;
             out.incIndent() ;
-            FormatterARQ.format(out, sCxt,modify.getElement()) ;
+            FormatterElement.format(out, sCxt,modify.getElement()) ;
             out.decIndent() ;
             out.println();
         }

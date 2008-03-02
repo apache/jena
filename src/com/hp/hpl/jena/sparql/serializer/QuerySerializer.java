@@ -11,18 +11,19 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.QueryVisitor;
-import com.hp.hpl.jena.query.SortCondition;
+
 import com.hp.hpl.jena.sparql.core.Prologue;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.core.VarExprList;
 import com.hp.hpl.jena.sparql.expr.Expr;
 import com.hp.hpl.jena.sparql.syntax.Element;
-import com.hp.hpl.jena.sparql.syntax.ElementGroup;
 import com.hp.hpl.jena.sparql.syntax.Template;
 import com.hp.hpl.jena.sparql.util.FmtUtils;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
+
+import com.hp.hpl.jena.query.Query;
+import com.hp.hpl.jena.query.QueryVisitor;
+import com.hp.hpl.jena.query.SortCondition;
 
 /** Serialize a query into SPARQL or ARQ formats */
 
@@ -178,15 +179,15 @@ public class QuerySerializer implements QueryVisitor
             
             Element el = query.getQueryPattern() ;
 
-            if ( fmtElement.topMustBeGroup() )
-            {
-                if ( ! ( el instanceof ElementGroup ) )
-                {
-                    ElementGroup elg = new ElementGroup() ;
-                    elg.addElement(el) ;
-                    el = elg ;
-                }
-            }
+//            if ( fmtElement.topMustBeGroup() )
+//            {
+//                if ( ! ( el instanceof ElementGroup ) )
+//                {
+//                    ElementGroup elg = new ElementGroup() ;
+//                    elg.addElement(el) ;
+//                    el = elg ;
+//                }
+//            }
             el.visit(fmtElement) ;
             out.decIndent(BLOCK_INDENT) ;
             out.newline() ;
