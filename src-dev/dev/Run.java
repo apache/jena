@@ -25,6 +25,8 @@ public class Run
 {
     public static void main(String[] argv) throws Exception
     {
+        runQParseARQ() ;
+        
         //rewrite() ;
         execQuery("testing/ARQ/SubQuery/data.ttl", "testing/ARQ/SubQuery/sub-select-03.arq") ;
         

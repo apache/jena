@@ -215,6 +215,15 @@ public class FormatterARQ extends FormatterBase
             visitAsGroup(e) ;
             return ;
         }
+
+//        if ( el.getElements().size() == 1 )
+//        {
+//            if ( el.getElements().get(0) instanceof ElementSubQuery )
+//            {
+//                visit((ElementSubQuery)el.getElements().get(0)) ;
+//                return ;
+//            }
+//        }
         
         out.print("{") ;
         out.incIndent(INDENT) ;
