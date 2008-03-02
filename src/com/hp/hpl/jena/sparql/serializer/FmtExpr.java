@@ -6,24 +6,143 @@
 
 package com.hp.hpl.jena.sparql.serializer;
 
-import com.hp.hpl.jena.sparql.expr.Expr;
+import com.hp.hpl.jena.shared.PrefixMapping;
 
+import com.hp.hpl.jena.sparql.core.Var;
+import com.hp.hpl.jena.sparql.expr.*;
+import com.hp.hpl.jena.sparql.util.IndentedWriter;
 
-/** A FmtExpr is a machine to format expressions : the subclasses are
- *  created with all the context they need.
- *  Can be reused several times (same prefix mapping)   
- * 
- * @author Andy Seaborne
- */
+/** Output expressions in the syntax that ARQ expects them */
 
-public interface FmtExpr
+public class FmtExpr
 {
     static final int INDENT = 2 ;
-    public abstract void format(Expr expr) ; 
+    // Rename as ExprWriter, move to expr.
     
-    // interface <T> Formatter { void format( T thing ) ; }
-}
+    FmtExprARQVisitor visitor ; 
 
+//    public FmtExprARQ(IndentedWriter writer, PrefixMapping pmap)
+//    {
+//        visitor = new FmtExprARQVisitor(writer, pmap) ;
+//    }
+
+    public FmtExpr(IndentedWriter writer, SerializationContext cxt)
+    {
+        visitor = new FmtExprARQVisitor(writer, cxt) ;
+    }
+    
+    // Top level writing of an expression.
+    public void format(Expr expr)
+    { expr.visit(visitor) ; } 
+    
+    public static void format(IndentedWriter out,Expr expr)
+    { format(out, expr, null) ; }
+    
+    public static void format(IndentedWriter out, Expr expr, SerializationContext cxt)
+    {
+        FmtExpr fmt = new FmtExpr(out, cxt) ;
+        fmt.format(expr) ;
+    }
+
+//    
+//    // temporary workaround - need to rationalise FmtExpr
+//    public ExprVisitor getVisitor() { return visitor ; }
+    
+    private static class FmtExprARQVisitor implements ExprVisitor
+    {
+        IndentedWriter out ;
+        SerializationContext context ;
+
+        public FmtExprARQVisitor(IndentedWriter writer, PrefixMapping pmap)
+        {
+            this(writer, new SerializationContext(pmap , null)) ;
+        }
+
+        public FmtExprARQVisitor(IndentedWriter writer, SerializationContext cxt)
+        {
+            out = writer ;
+            context = cxt ;
+            if ( context == null )
+                context = new SerializationContext() ;
+        }
+
+
+        public void startVisit() { }
+
+        private void visitFunction1(ExprFunction1 expr)
+        {
+            out.print("( ") ;
+            out.print( expr.getOpName() ) ;
+            out.print(" ") ;
+            expr.getArg().visit(this) ;
+            out.print(" )");
+        }
+
+        private void visitFunction2(ExprFunction2 expr)
+        {
+            out.print("( ") ;
+            expr.getArg1().visit(this) ;
+            out.print(" ") ;
+            out.print( expr.getOpName() ) ;
+            out.print(" ") ;
+            expr.getArg2().visit(this) ;
+            out.print(" )");
+        }
+
+        public void visit(ExprFunction func)
+        {
+            if ( func.getOpName() != null && func instanceof ExprFunction2 )
+            {
+                visitFunction2((ExprFunction2)func) ;
+                return ;
+            }
+
+            if ( func.getOpName() != null && func instanceof ExprFunction1 )
+            {
+                visitFunction1((ExprFunction1)func) ;
+                return ;
+            }
+
+            out.print( func.getFunctionPrintName(context) ) ;
+            out.print("(") ;
+            for ( int i = 1 ; ; i++ )
+            {
+                Expr expr = func.getArg(i) ;
+                if ( expr == null )
+                    break ; 
+                if ( i != 1 )
+                    out.print(", ") ;
+                expr.visit(this) ;
+            }
+            out.print(")");
+        }
+
+        public void visit(NodeValue nv)
+        {
+            out.print(nv.asQuotedString(context)) ;
+        }
+
+        public void visit(ExprVar nv)
+        {
+            String s = nv.getVarName() ;
+            if ( Var.isBlankNodeVarName(s) )
+            {
+                // Return to a bNode via the bNode mapping of a variable.
+                Var v = Var.alloc(s) ;
+                out.print(context.getBNodeMap().asString(v) ) ;
+            }
+            else
+            {
+                // Print in variable form or as an aggrgegator
+                out.print(nv.toExprString()) ;
+            }
+        }
+
+        public void finishVisit() { out.flush() ; }
+    }
+
+
+}
 /*
  * (c) Copyright 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.

@@ -134,8 +134,8 @@ public class Serializer
         
         serializeARQ(query, writer, 
                      new FormatterElement(writer, cxt1),
-                     new FmtExprARQ(writer, cxt1),
-                     new FmtTemplateARQ(writer, cxt2)) ;
+                     new FmtExpr(writer, cxt1),
+                     new FmtTemplate(writer, cxt2)) ;
     }
     
     static private void serializeARQ(Query query, 

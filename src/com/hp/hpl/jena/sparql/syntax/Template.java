@@ -10,7 +10,7 @@ import java.util.Collection;
 import java.util.Map;
 
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.sparql.serializer.FmtTemplateARQ;
+import com.hp.hpl.jena.sparql.serializer.FmtTemplate;
 import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 
 
@@ -34,7 +34,7 @@ public abstract class Template
     
     public String toString()
     {
-        return FmtTemplateARQ.asString(this) ;
+        return FmtTemplate.asString(this) ;
     }
     
     static final int HashTemplateGroup     = 0xB1 ;

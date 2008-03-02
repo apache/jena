@@ -191,7 +191,8 @@ public class AlgebraGenerator
         if ( elt instanceof ElementSubQuery )
         {
             ElementSubQuery elQuery = (ElementSubQuery)elt ;
-            return compileElementSubquery(elQuery) ;
+            Op op = compileElementSubquery(elQuery) ;
+            return join(current, op) ;
         }
         
         // All other elements: compile the element and then join on to the current group expression.

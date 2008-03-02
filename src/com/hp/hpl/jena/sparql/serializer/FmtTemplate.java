@@ -21,17 +21,17 @@ import com.hp.hpl.jena.sparql.util.IndentedWriter;
  * @author Andy Seaborne
  */
 
-public class FmtTemplateARQ extends FormatterBase
+public class FmtTemplate extends FormatterBase
     implements FormatterTemplate 
 {
-    public FmtTemplateARQ(IndentedWriter out, SerializationContext context)
+    public FmtTemplate(IndentedWriter out, SerializationContext context)
     {
         super(out, context) ;
     }
     
     public static void format(IndentedWriter out, SerializationContext cxt, Template template)
     {
-        FmtTemplateARQ fmt = new FmtTemplateARQ(out, cxt) ;
+        FmtTemplate fmt = new FmtTemplate(out, cxt) ;
         fmt.startVisit() ;
         template.visit(fmt) ;
         fmt.finishVisit() ;
@@ -41,7 +41,7 @@ public class FmtTemplateARQ extends FormatterBase
     {
         SerializationContext cxt = new SerializationContext() ;
         IndentedLineBuffer b = new IndentedLineBuffer() ;
-        FmtTemplateARQ.format(b.getIndentedWriter(), cxt, template) ;
+        FmtTemplate.format(b.getIndentedWriter(), cxt, template) ;
         return b.toString() ;
     }
 

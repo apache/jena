@@ -13,7 +13,6 @@ import com.hp.hpl.jena.sparql.expr.E_Function;
 import com.hp.hpl.jena.sparql.expr.Expr;
 import com.hp.hpl.jena.sparql.expr.ExprVar;
 import com.hp.hpl.jena.sparql.serializer.FmtExpr;
-import com.hp.hpl.jena.sparql.serializer.FmtExprARQ;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext;
 import com.hp.hpl.jena.sparql.util.*;
 
@@ -110,7 +109,7 @@ public class SortCondition extends PrintSerializableBase
 
     public void output(IndentedWriter out, SerializationContext sCxt)
     {
-        FmtExprARQ fmt = new FmtExprARQ(out, sCxt) ;
+        FmtExpr fmt = new FmtExpr(out, sCxt) ;
         format(fmt, out) ;
     }
 }

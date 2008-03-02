@@ -179,16 +179,8 @@ public class QuerySerializer implements QueryVisitor
             
             Element el = query.getQueryPattern() ;
 
-//            if ( fmtElement.topMustBeGroup() )
-//            {
-//                if ( ! ( el instanceof ElementGroup ) )
-//                {
-//                    ElementGroup elg = new ElementGroup() ;
-//                    elg.addElement(el) ;
-//                    el = elg ;
-//                }
-//            }
-            el.visit(fmtElement) ;
+            fmtElement.visitAsGroup(el) ;
+            //el.visit(fmtElement) ;
             out.decIndent(BLOCK_INDENT) ;
             out.newline() ;
         }

@@ -2,10 +2,7 @@
 
 ** More aggregators
 
-** SELECT * {SELECT} reprints as {{}} nested. 
-   Do the two forms parse to the same thing? 
-   Serialization tests.
-   Prefix defaulting (PrefixMapping2)
+** { SELECT } : Prefix defaulting (PrefixMapping2)
 
 ** Clearer ways to add BGP solver mechanisms - invert Stage/StageList 
 

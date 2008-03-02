@@ -133,7 +133,7 @@ public class FormatterElement extends FormatterBase
     {
         out.print("FILTER ") ;
         Expr expr = el.getExpr() ;
-        FmtExprARQ v = new FmtExprARQ(out, context) ;
+        FmtExpr v = new FmtExpr(out, context) ;
         
         // This assumes that complex expressions are bracketted
         // (parens) as necessary except for some cases:
@@ -157,7 +157,7 @@ public class FormatterElement extends FormatterBase
         out.print("LET (") ;
         out.print("?"+el.getVar().getVarName()) ;
         out.print(" := ") ;
-        FmtExprARQ v = new FmtExprARQ(out, context) ;
+        FmtExpr v = new FmtExpr(out, context) ;
         v.format(el.getExpr()) ;
         out.print(")") ;
     }
@@ -344,18 +344,19 @@ public class FormatterElement extends FormatterBase
 
     // Visit an element, ensuring it is always surround by {} as a group.
     
-    private void visitAsGroup(Element el)
+    public void visitAsGroup(Element el)
     {
-        boolean isGroup = ( el instanceof ElementGroup ) ;
+        boolean needBraces = ! ( ( el instanceof ElementGroup ) || ( el instanceof ElementSubQuery ) ) ; 
         
-        if ( ! isGroup )
+        if ( needBraces )
         {
             out.print("{ ") ;
             out.incIndent(INDENT) ;
         }
+        
         el.visit(this) ;
         
-        if ( ! isGroup )
+        if ( needBraces )
         {
             out.decIndent(INDENT) ;
             out.print("}") ;
