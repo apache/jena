@@ -31,7 +31,6 @@ See ToDoSSE
 
 ----
 + SUM
-
 + EXISTS { pattern }
 + ORDER BY aggregate
 
