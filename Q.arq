@@ -1,6 +1,10 @@
 PREFIX : <http://example/>
+
 SELECT ?x
 {
-    SELECT * { ?s ?p ?o }
+    { 
+        PREFIX x: <http://example/x#> 
+        SELECT * { x:foo ?p ?o } 
+    }
 #  OPTIONAL { SELECT * { ?s ?p ?o } }
 }

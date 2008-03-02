@@ -293,13 +293,13 @@ Element GroupGraphPattern() : { Element el = null ; Token t ; }
   t = <LBRACE>
 
   (
-    { Query q = new Query() ;
-      startSubSelect(q) ; }
+    {
+      startSubSelect() ; }
     // Optional prologue
     Prologue()
     SelectQuery()
     {
-      endSubSelect(q, t.beginLine, t.beginColumn) ;
+      Query q = endSubSelect(t.beginLine, t.beginColumn) ;
       el = new ElementSubQuery(q) ;
     }
   | el = GroupGraphPatternSub()
