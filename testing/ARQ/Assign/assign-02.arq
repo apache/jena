@@ -1,0 +1,8 @@
+PREFIX : <http://example/> 
+
+SELECT *
+{
+  ?x a :X .
+  OPTIONAL { ?x :q ?v . LET ( ?marker := true ) }
+  FILTER (?marker)
+}
