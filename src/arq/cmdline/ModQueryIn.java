@@ -22,7 +22,7 @@ public class ModQueryIn implements ArgModuleGeneral
     protected final ArgDecl querySyntaxDecl = new ArgDecl(ArgDecl.HasValue, "syntax", "syn", "in") ;
     protected final ArgDecl queryBaseDecl = new ArgDecl(ArgDecl.HasValue, "base") ;
 
-    private Syntax querySyntax = Syntax.syntaxSPARQL ;
+    private Syntax querySyntax = Syntax.syntaxARQ ;
     private String queryFilename   = null ;
     private String queryString = null ;
     private Query query = null ;
@@ -83,8 +83,7 @@ public class ModQueryIn implements ArgModuleGeneral
             if ( syn == null )
                 cmdline.cmdError("Unrecognized syntax: "+s) ;
             querySyntax = syn ; 
-        }        
-        
+        }
     }
     
     public Syntax getQuerySyntax()
