@@ -235,7 +235,12 @@ public class OpCompiler
         
         // Tidy up.
         if ( base instanceof OpJoin )
-            return filterPlacement.placeFiltersJoin(exprs, (OpJoin)base, input) ;
+        {
+            OpJoin opJoin = (OpJoin)base ;
+            boolean canDoLinear = JoinClassifier.isLinear(opJoin) ;
+            if ( canDoLinear )
+                return filterPlacement.placeFiltersJoin(exprs, (OpJoin)base, input) ;
+        }
         
         // There must be a better way.
         if ( base instanceof OpLeftJoin )

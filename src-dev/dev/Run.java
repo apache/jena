@@ -25,6 +25,8 @@ public class Run
 {
     public static void main(String[] argv) throws Exception
     {
+        //QueryEngineRef.register() ;
+        execQuery("D.ttl", "Q.arq") ;
         runQParseARQ() ;
         
         //rewrite() ;
