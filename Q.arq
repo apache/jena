@@ -1,10 +1,14 @@
 PREFIX : <http://example/>
 
-SELECT ?x
+SELECT ?s ?x ?y
 {
-    { 
-        PREFIX x: <http://example/x#> 
-        SELECT * { x:foo ?p ?o } 
-    }
-#  OPTIONAL { SELECT * { ?s ?p ?o } }
+      # How many relations (?x) does ?s have?
+      { SELECT ?s (COUNT(?r1) AS ?x) { ?s :r ?r1 } GROUP BY ?s }
+      # How many relations (?y) does ?s have in common with :s1?
+      { SELECT ?s (COUNT(?r2) AS ?y) 
+        { :s1 :r ?r2 . ?s  :r ?r2 } 
+        GROUP BY ?s }
+
+#  FILTER(?y = ?x )
+   FILTER(?y = ?x)
 }

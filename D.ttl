@@ -1,9 +1,0 @@
-@prefix : <http://example/> .
-
-:x1 a :Toy .
-:x1 :order :o1 .
-:x1 :order :o2 .
-
-:x2 a :Toy .
-:x2 :order :o3 .
-
