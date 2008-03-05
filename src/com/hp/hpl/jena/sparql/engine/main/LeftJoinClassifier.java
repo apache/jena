@@ -11,6 +11,7 @@ import java.util.Set;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.OpVars;
 import com.hp.hpl.jena.sparql.algebra.op.OpLeftJoin;
+import com.hp.hpl.jena.sparql.algebra.op.OpModifier;
 import com.hp.hpl.jena.sparql.util.SetUtils;
 
 public class LeftJoinClassifier
@@ -33,6 +34,14 @@ public class LeftJoinClassifier
     {
         Op left = JoinClassifier.effectiveOp(op.getLeft()) ;
         Op right = JoinClassifier.effectiveOp(op.getRight()) ;
+        
+        // Subquery with modifier.  Substitution does not apply.
+        // With SELECT *, it's as if the subquery were just the pattern.
+//        if ( left instanceof OpModifier )
+//            return false ;
+        if ( right instanceof OpModifier )
+            return false ;
+        
         Set leftVars = OpVars.patternVars(left) ;
         
         VarFinder vf = new VarFinder(right) ;

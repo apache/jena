@@ -32,6 +32,10 @@ See ToDoSSE
 + EXISTS { pattern }
 + ORDER BY aggregate
 + { SELECT } Algebra expression does not include inner (base (prefix...)) [Minor]
+   + JoinClassification/LeftJoinClassification
+      + Onl op on right (?) should force ref eval.
+      + tests
+
 
 + OpBGP is (ref- & main-) compiled to a call to static "StageBuilder.compile" (modularity)  
   StageBuilder::

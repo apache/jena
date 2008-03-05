@@ -23,10 +23,10 @@ public class JoinClassifier
         Op left = effectiveOp(join.getLeft()) ;
         Op right = effectiveOp(join.getRight()) ;
         
-        // Subquery with modifier.
-        // With SELECT *, it's as if there subquery were just the pattern.
-        if ( left instanceof OpModifier )
-            return false ;
+        // Subquery with modifier.  Substitution does not apply.
+        // With SELECT *, it's as if the subquery were just the pattern.
+//        if ( left instanceof OpModifier )
+//            return false ;
         if ( right instanceof OpModifier )
             return false ;
 

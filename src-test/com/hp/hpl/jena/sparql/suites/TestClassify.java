@@ -119,13 +119,16 @@ public class TestClassify extends TestCase
     
     public void testClassify_LeftJoin_04()
     { classifyLJ("{ ?s ?p ?x OPTIONAL { ?s1 ?p2 ?o3 OPTIONAL { ?s1 :p ?x} } }", false)  ; }
+    
+    public void testClassify_LeftJoin_05()
+    { classifyLJ("{ ?s ?p ?x OPTIONAL { SELECT ?s { ?s ?p ?o } } }", false)  ; }
         
     
     private void classifyLJ(String pattern, boolean expected)
     {
         String qs1 = "PREFIX : <http://example/>\n" ;
         String qs = qs1+"SELECT * "+pattern;
-        Query query = QueryFactory.create(qs) ;
+        Query query = QueryFactory.create(qs, Syntax.syntaxARQ) ;
         Op op = Algebra.compile(query.getQueryPattern(), false) ;
         
         if ( ! ( op instanceof OpLeftJoin ) )
