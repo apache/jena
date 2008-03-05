@@ -90,7 +90,7 @@ public class TestClassify extends TestCase
     public void testClassify_Join_30() 
     { classifyJ("{ ?x ?y ?z {SELECT * { ?s ?p ?o} } }", true) ; }
     
-    // Subselect with modifier is handled witout liearizartion
+    // Subselect with modifier is handled witout linearization
     public void testClassify_Join_31() 
     { classifyJ("{ ?x ?y ?z {SELECT ?s { ?s ?p ?o} } }", false) ; }
 
