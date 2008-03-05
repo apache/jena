@@ -20,6 +20,7 @@ import com.hp.hpl.jena.sparql.util.Utils;
 
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryFactory;
+import com.hp.hpl.jena.query.Syntax;
 
 public class TestClassify extends TestCase
 {
@@ -85,12 +86,19 @@ public class TestClassify extends TestCase
     // Assuming left-right execution, this is safe.
     public void testClassify_Join_21() 
     { classifyJ("{ { {} OPTIONAL { :s :p ?x } } {?s :p ?x } }", true) ; }
+    
+    public void testClassify_Join_30() 
+    { classifyJ("{ ?x ?y ?z {SELECT * { ?s ?p ?o} } }", true) ; }
+    
+    // Subselect with modifier is handled witout liearizartion
+    public void testClassify_Join_31() 
+    { classifyJ("{ ?x ?y ?z {SELECT ?s { ?s ?p ?o} } }", false) ; }
 
     private void classifyJ(String pattern, boolean expected)
     {
         String qs1 = "PREFIX : <http://example/>\n" ;
         String qs = qs1+"SELECT * "+pattern;
-        Query query = QueryFactory.create(qs) ;
+        Query query = QueryFactory.create(qs, Syntax.syntaxARQ) ;
         Op op = Algebra.compile(query.getQueryPattern(), false) ;
         
         if ( ! ( op instanceof OpJoin ) )
