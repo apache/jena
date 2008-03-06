@@ -209,7 +209,7 @@ public class Q_Query extends SimpleNode
             {
                 Q_URI v = (Q_URI)c ;
                 
-                q.addResultURIs(v.getNode()) ;
+                q.addDescribeNode(v.getNode()) ;
                 continue ;
             }
             throw new ARQInternalErrorException("Internal error: parser created '"+c.getClass().getName()+"' when Q_Var expected") ;

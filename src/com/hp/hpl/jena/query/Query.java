@@ -491,17 +491,6 @@ public class Query extends Prologue implements Cloneable
         return expr ;
     }
     
-    // ---- DESCRIBE
-    
-    public void addDescribeNode(Node node)
-    {
-        if ( node.isVariable() ) { addResultVar(node) ; return ; }
-        if ( node.isURI() ) { addResultURIs(node) ; return ; }
-        if ( node.isLiteral() )
-            throw new QueryException("Result node is a literal: "+FmtUtils.stringForNode(node)) ;
-        throw new QueryException("Result node not recognized: "+FmtUtils.stringForNode(node)) ;
-    }
-
     // ---- CONSTRUCT 
     
     /** Get the template pattern for a construct query */ 
@@ -511,22 +500,36 @@ public class Query extends Prologue implements Cloneable
     
     }
     
-    /** Add a triple patterns for a construct query */ 
+    /** Set triple patterns for a construct query */ 
     public void setConstructTemplate(Template templ)  { constructTemplate = templ ; }
 
     // ---- DESCRIBE
+    
+    public void addDescribeNode(Node node)
+    {
+        if ( node.isVariable() ) { addResultVar(node) ; return ; }
+        if ( node.isURI() || node.isBlank() )
+        {
+            if ( !resultNodes.contains(node) )
+                resultNodes.add(node);
+            return ;
+        }
+        if ( node.isLiteral() )
+            throw new QueryException("Result node is a literal: "+FmtUtils.stringForNode(node)) ;
+        throw new QueryException("Result node not recognized: "+node) ;
+    }
+
     
     /** Get the result list (things wanted - not the results themselves)
      *  of a DESCRIBE query. */ 
     public List getResultURIs() { return resultNodes ; }
     
-    /** Add a result for a DESCRIBE query */
+    /** Add a result for a DESCRIBE query
+     * @deprecated Use addDescribeNode()
+     */
     public void addResultURIs(Node node)
     {
-        if ( node.isLiteral() )
-            throw new QueryException("Result URI is a literal: "+FmtUtils.stringForNode(node)) ;
-        if ( !resultNodes.contains(node) )
-            resultNodes.add(node);
+        addDescribeNode(node) ;
     }
 
     
