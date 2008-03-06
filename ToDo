@@ -14,8 +14,6 @@
    test case?  is this fixed now without heavy weight tracking?
    --> Transform support to track variable scopes.
 
-+ Initial binding for UpdateRequest
-
 +  FROM <.....n3>
    but it's application/rdf+xml
    believe MIME type.
