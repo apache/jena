@@ -2115,9 +2115,10 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
        AggregateFactory agg ; Expr expr ; Token t ;
     t = jj_consume_token(SUM);
     jj_consume_token(LPAREN);
-          if ( ! allowAggregatesInExpressions )
+        if ( ! allowAggregatesInExpressions )
             throwParseException("Aggregate expression not legal at this point",
                                t.beginLine, t.beginColumn) ;
+        allowAggregatesInExpressions = false ;
     expr = Expression();
     jj_consume_token(RPAREN);
         allowAggregatesInExpressions = true ;

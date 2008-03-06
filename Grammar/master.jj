@@ -900,9 +900,10 @@ AggregateFactory AggregateSum() :
 {
    t = <SUM> <LPAREN>
     { 
-          if ( ! allowAggregatesInExpressions )
+        if ( ! allowAggregatesInExpressions )
             throwParseException("Aggregate expression not legal at this point",
                                t.beginLine, t.beginColumn) ;
+        allowAggregatesInExpressions = false ;
     }
      expr = Expression() <RPAREN>
     {

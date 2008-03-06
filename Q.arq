@@ -1,7 +1,7 @@
 PREFIX : <http://example/>
 PREFIX  xsd:    <http://www.w3.org/2001/XMLSchema#>
 
-SELECT (sum(xsd:decimal(?x)) as ?sum)
+SELECT (sum(xsd:decimal(count(?x))) as ?sum)
 {
     :x :p ?x .
 }
