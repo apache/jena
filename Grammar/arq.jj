@@ -848,13 +848,15 @@ AggregateFactory AggregateCount() : { AggregateFactory agg ;
 AggregateFactory AggregateSum() :
      { AggregateFactory agg ; Expr expr ; Token t ; }
 {
-   t = <SUM> <LPAREN> expr = Expression() <RPAREN>
+   t = <SUM> <LPAREN>
     {
           if ( ! allowAggregatesInExpressions )
             throwParseException("Aggregate expression not legal at this point",
                                t.beginLine, t.beginColumn) ;
     }
+     expr = Expression() <RPAREN>
     {
+        allowAggregatesInExpressions = true ;
         agg = new AggSum(expr) ;
         return agg ;
     }

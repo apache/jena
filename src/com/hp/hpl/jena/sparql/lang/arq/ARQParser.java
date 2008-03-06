@@ -2115,11 +2115,12 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
        AggregateFactory agg ; Expr expr ; Token t ;
     t = jj_consume_token(SUM);
     jj_consume_token(LPAREN);
-    expr = Expression();
-    jj_consume_token(RPAREN);
           if ( ! allowAggregatesInExpressions )
             throwParseException("Aggregate expression not legal at this point",
                                t.beginLine, t.beginColumn) ;
+    expr = Expression();
+    jj_consume_token(RPAREN);
+        allowAggregatesInExpressions = true ;
         agg = new AggSum(expr) ;
         {if (true) return agg ;}
     throw new Error("Missing return statement in function");
