@@ -13,10 +13,18 @@ import com.hp.hpl.jena.sparql.expr.ExprVar;
 import com.hp.hpl.jena.sparql.expr.ExprVisitor;
 import com.hp.hpl.jena.sparql.expr.NodeValue;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext;
+import com.hp.hpl.jena.sparql.util.IndentedLineBuffer;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
 
 public class WriterExpr
 {
+    
+    public static String asString(Expr expr)
+    {
+        IndentedLineBuffer b = new IndentedLineBuffer() ;
+        output(b.getIndentedWriter(), expr, null) ;
+        return b.asString() ;
+    }
     
     public static void output(IndentedWriter out, ExprList exprs, SerializationContext sCxt)
     {

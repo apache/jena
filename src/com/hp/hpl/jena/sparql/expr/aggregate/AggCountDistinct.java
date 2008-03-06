@@ -12,6 +12,7 @@ import java.util.Set;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.expr.NodeValue;
+import com.hp.hpl.jena.sparql.function.FunctionEnv;
 
 public class AggCountDistinct implements AggregateFactory
 {
@@ -48,7 +49,9 @@ public class AggCountDistinct implements AggregateFactory
         private Set rows = new HashSet() ;
         public AccCountDistinct()               { } 
         // The group key part of binding will be the same for all elements of the group.
-        public void accumulate(Binding binding) { rows.add(binding) ; }
+        public void accumulate(Binding binding, FunctionEnv functionEnv)
+        { rows.add(binding) ; }
+        
         public NodeValue getValue()             { return NodeValue.makeInteger(rows.size()) ; }
     }
 }

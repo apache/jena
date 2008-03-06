@@ -9,6 +9,7 @@ package com.hp.hpl.jena.sparql.expr.aggregate;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.expr.NodeValue;
+import com.hp.hpl.jena.sparql.function.FunctionEnv;
 
 public class AggCount implements AggregateFactory
 {
@@ -51,7 +52,8 @@ public class AggCount implements AggregateFactory
     {
         private long count = 0 ;
         public AccCount()   { }
-        public void accumulate(Binding binding) { count++ ; }
+        public void accumulate(Binding binding, FunctionEnv functionEnv)
+        { count++ ; }
         public NodeValue getValue()             { return NodeValue.makeInteger(count) ; }
     }
 }

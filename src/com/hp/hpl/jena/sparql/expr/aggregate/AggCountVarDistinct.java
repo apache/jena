@@ -13,6 +13,7 @@ import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.expr.NodeValue;
+import com.hp.hpl.jena.sparql.function.FunctionEnv;
 
 public class AggCountVarDistinct implements AggregateFactory
 {
@@ -49,7 +50,7 @@ public class AggCountVarDistinct implements AggregateFactory
         private Set/*<Node>*/ seen = new HashSet() ;
         public AccCountVarDistinct()               { } 
         // The group key part of binding will be the same for all elements of the group.
-        public void accumulate(Binding binding)
+        public void accumulate(Binding binding, FunctionEnv functionEnv)
         { 
             Node n = binding.get(var) ;
             if ( n == null )

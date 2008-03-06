@@ -28,7 +28,7 @@
 See ToDoSSE
 
 ----
-+ SUM
++ SUM - need to pass ExecutionContext into aggregation for function calls "sum(xsd:integer(?foo))"
 + EXISTS { pattern }
 + ORDER BY aggregate
 + { SELECT } Algebra expression does not include inner (base (prefix...)) [Minor]

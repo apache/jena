@@ -6,49 +6,70 @@
 
 package com.hp.hpl.jena.sparql.expr.aggregate;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.sparql.ARQInternalErrorException;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.sparql.engine.binding.BindingKey;
+import com.hp.hpl.jena.sparql.expr.Expr;
+import com.hp.hpl.jena.sparql.expr.ExprEvalException;
+import com.hp.hpl.jena.sparql.expr.NodeValue;
+import com.hp.hpl.jena.sparql.expr.nodevalue.XSDFuncOp;
 import com.hp.hpl.jena.sparql.function.FunctionEnv;
+import com.hp.hpl.jena.sparql.sse.writers.WriterExpr;
+import com.hp.hpl.jena.sparql.util.ExprUtils;
 
-/** Splits bindings by their keys and manages one accumulator per key
- * 
- * @author Andy Seaborne
- */
-
-public abstract class AggregatorBase implements Aggregator
+public class AggSum implements AggregateFactory
 {
-    private Map buckets = new HashMap() ;   // Bindingkey => Accumulator
+    // ---- COUNT(?var)
+    
+    // ---- AggregatorFactory
+    private Expr expr ;
 
-    final
-    public void accumulate(BindingKey key, Binding binding, FunctionEnv functionEnv)
+    public AggSum(Expr var) { this.expr = var ; } 
+
+    public Aggregator create()
     {
-        Accumulator acc = (Accumulator)buckets.get(key) ;
-        if ( acc == null )
+        // One per each time there is an aggregation.
+        // For count(*) - one per group operator (so shared with having clause)
+        return new AggSumWorker() ;
+    }
+    
+    // ---- Aggregator
+    class AggSumWorker extends AggregatorBase
+    {
+        public AggSumWorker()
         {
-            acc = createAccumulator() ;
-            buckets.put(key, acc) ;
+            super() ;
         }
-        acc.accumulate(binding, functionEnv) ;
+
+        public String toString() { return "sum("+ExprUtils.fmtSPARQL(expr)+")" ; }
+        public String toPrefixString() { return "(sum "+WriterExpr.asString(expr)+")" ; }
+
+        protected Accumulator createAccumulator()
+        { 
+            return new AccCountVar() ;
+        }
+        
+        public Node getValueEmpty()     { return NodeValue.nodeIntZERO ; } 
     }
 
-    protected abstract Accumulator createAccumulator() ;
-    
-    public abstract Node getValueEmpty() ;      // Return null for no answer. 
-
-    public Node getValue(BindingKey key)
+    // ---- Accumulator
+    class AccCountVar implements Accumulator
     {
-        Accumulator acc = (Accumulator)buckets.get(key) ;
-        if ( acc == null )
-            throw new ARQInternalErrorException("Null for accumulator") ;
-        return acc.getValue().asNode() ;
+        private NodeValue total = NodeValue.nvZERO ;
+        
+        public AccCountVar()   { }
+        public void accumulate(Binding binding, FunctionEnv functionEnv)
+        { 
+            try {
+                // XXX WRONG! new FunctionEnvBase()
+                
+                NodeValue nv = expr.eval(binding, functionEnv) ;
+                if ( nv.isNumber() )
+                    total = XSDFuncOp.add(nv, total) ;
+            } catch (ExprEvalException ex)
+            {}
+        }
+        public NodeValue getValue()             { return total ; }
     }
-    
-    public String key() { return toPrefixString() ; }
 }
 
 /*

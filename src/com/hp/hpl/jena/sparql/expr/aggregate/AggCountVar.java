@@ -10,6 +10,7 @@ import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.expr.NodeValue;
+import com.hp.hpl.jena.sparql.function.FunctionEnv;
 
 public class AggCountVar implements AggregateFactory
 {
@@ -51,7 +52,7 @@ public class AggCountVar implements AggregateFactory
     {
         private long count = 0 ;
         public AccCountVar()   { }
-        public void accumulate(Binding binding)
+        public void accumulate(Binding binding, FunctionEnv functionEnv)
         { 
             if ( binding.contains(var) )
                 count++ ;

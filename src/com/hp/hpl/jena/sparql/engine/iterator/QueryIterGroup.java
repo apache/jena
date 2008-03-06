@@ -60,12 +60,10 @@ public class QueryIterGroup extends QueryIterPlainWrapper
                 for ( Iterator aggIter = aggregators.iterator() ; aggIter.hasNext() ; )
                 {
                     E_Aggregator agg = (E_Aggregator)aggIter.next();
-                    agg.getAggregator().accumulate(key, b) ;
+                    agg.getAggregator().accumulate(key, b, execCxt) ;
                 }
             }
         }
-        
-        
         
         // Phase 2 : Empty input
         

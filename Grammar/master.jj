@@ -856,6 +856,14 @@ AggregateFactory Aggregate() : { AggregateFactory agg ;
                                  boolean distinct = false ;
                                  Var v ; Token t ; }
 {
+   ( agg = AggregateCount() | agg = AggregateSum() )
+   { return agg ; }
+}
+
+AggregateFactory AggregateCount() : { AggregateFactory agg ;
+                                 boolean distinct = false ;
+                                 Var v ; Token t ; }
+{
     t = <COUNT> <LPAREN> 
     { 
           if ( ! allowAggregatesInExpressions )
@@ -886,6 +894,22 @@ AggregateFactory Aggregate() : { AggregateFactory agg ;
 // #endif
 //   )
 }
+
+AggregateFactory AggregateSum() :
+     { AggregateFactory agg ; Expr expr ; Token t ; }
+{
+   t = <SUM> <LPAREN> expr = Expression() <RPAREN>
+    { 
+          if ( ! allowAggregatesInExpressions )
+            throwParseException("Aggregate expression not legal at this point",
+                               t.beginLine, t.beginColumn) ;
+    }
+    {
+        agg = new AggSum(expr) ;
+        return agg ;
+    }
+}
+
 #endif
 
 

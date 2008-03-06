@@ -8,6 +8,7 @@ package com.hp.hpl.jena.sparql.expr.aggregate;
 
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.expr.NodeValue;
+import com.hp.hpl.jena.sparql.function.FunctionEnv;
 
 /** An Accumulator is the processor for each section of a group, so
  *  there is one Accumulator for each group key.
@@ -16,7 +17,7 @@ import com.hp.hpl.jena.sparql.expr.NodeValue;
 
 public interface Accumulator
 {
-    public void accumulate(Binding binding) ;
+    public void accumulate(Binding binding, FunctionEnv functionEnv) ;
     public NodeValue getValue() ;
 }
 

@@ -9,6 +9,7 @@ package com.hp.hpl.jena.sparql.expr.aggregate;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.binding.BindingKey;
+import com.hp.hpl.jena.sparql.function.FunctionEnv;
 
 /** An Aggregator is the processor for the whole result stream.
  *  BindingKeys identify which section of a group we're in. 
@@ -17,7 +18,7 @@ import com.hp.hpl.jena.sparql.engine.binding.BindingKey;
 
 public interface Aggregator
 {
-    public void accumulate(BindingKey key, Binding b) ;
+    public void accumulate(BindingKey key, Binding b, FunctionEnv functionEnv) ;
     public Node getValue(BindingKey key) ;
     /** Value if there are no elements in any group : return null for no result */
     public Node getValueEmpty() ;
