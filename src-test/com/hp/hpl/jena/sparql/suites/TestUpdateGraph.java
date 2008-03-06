@@ -11,6 +11,10 @@ import com.hp.hpl.jena.graph.Factory;
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
+
+import com.hp.hpl.jena.sparql.core.Var;
+import com.hp.hpl.jena.sparql.engine.binding.Binding;
+import com.hp.hpl.jena.sparql.engine.binding.Binding1;
 import com.hp.hpl.jena.sparql.modify.op.UpdateDelete;
 import com.hp.hpl.jena.sparql.modify.op.UpdateInsert;
 import com.hp.hpl.jena.sparql.modify.op.UpdateModify;
@@ -183,6 +187,46 @@ public class TestUpdateGraph extends TestUpdateBase
         assertTrue(graphEmpty(gStore.getDefaultGraph())) ;
     }
 
+    private Graph testUpdateInitialBindingWorker(Var v, Node n)
+    {
+        GraphStore gStore = GraphStoreFactory.create() ;
+        Graph graph = Factory.createDefaultGraph() ;
+        graph.add(triple1) ;
+        graph.add(triple2) ;
+        gStore.setDefaultGraph(graph) ;
+
+        UpdateDelete delete = new UpdateDelete() ;
+        delete.setPattern("{ ?s <http://example/p> ?o } ") ;
+        delete.setDeleteTemplate("{ ?s <http://example/p> ?o}") ;
+        
+        Binding b = new Binding1(null, v, n) ;
+        delete.exec(gStore, b) ;
+        return gStore.getDefaultGraph() ;
+    }
+    
+    public void testUpdateInitialBinding1()
+    {
+        Graph graph = testUpdateInitialBindingWorker(Var.alloc("o"), o1) ;
+        assertEquals(graph.size(), 1) ;
+        assertFalse(graphContains(graph, triple1)) ;
+        assertTrue(graphContains(graph, triple2)) ;
+    }
+    
+    public void testUpdateInitialBinding2()
+    {
+        Graph graph = testUpdateInitialBindingWorker(Var.alloc("o"), o2) ;
+        assertEquals(graph.size(), 1) ;
+        assertTrue(graphContains(graph, triple1)) ;
+        assertFalse(graphContains(graph, triple2)) ;
+    }
+
+    public void testUpdateInitialBinding3()
+    {
+        // Does not affect the delete
+        Graph graph = testUpdateInitialBindingWorker(Var.alloc("FF"), o1) ;
+        assertTrue(graphEmpty(graph)) ;
+    }
+    
     private static Graph data1()
     {
         Graph graph = Factory.createDefaultGraph() ;
