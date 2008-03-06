@@ -8,7 +8,6 @@ package com.hp.hpl.jena.query.larq;
 
 import java.io.File;
 
-import org.apache.lucene.document.Document;
 import org.apache.lucene.index.IndexWriter;
 
 import com.hp.hpl.jena.graph.Node;
@@ -80,16 +79,12 @@ public class IndexBuilderSubject extends IndexBuilderModel
             if ( ! s.getObject().isLiteral() ||
                  ! LARQ.isString(s.getLiteral()) )
                 return ;
-            // Note: if a subject occurs twice with an indexable string,
-            // there will be two hits later.
-            
-            // TODO Same as code in IndexBuilderExt - inherit from that. 
             
             Node object  = s.getObject().asNode() ;
-            Document doc = new Document() ;
-            LARQ.index(doc, object) ;
-            LARQ.store(doc, subject) ;
-            getIndexWriter().addDocument(doc) ;
+            
+            // Note: if a subject occurs twice with an indexable string,
+            // there will be two hits later.
+            index.index(subject, object.getLiteralLexicalForm()) ;
         } catch (Exception e)
         { throw new ARQLuceneException("indexStatement", e) ; }
     }

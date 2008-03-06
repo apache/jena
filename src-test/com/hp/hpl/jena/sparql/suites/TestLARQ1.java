@@ -39,7 +39,7 @@ public class TestLARQ1 extends TestCase
     
     public void test_ext_1()
     {
-        IndexBuilderExt b = new IndexBuilderExt() ;
+        IndexBuilderNode b = new IndexBuilderNode() ;
         Model model = ModelFactory.createDefaultModel() ;
         Resource r = model.createResource("http://example/r") ;
         b.index(r, "foo") ;
@@ -55,7 +55,7 @@ public class TestLARQ1 extends TestCase
     
     public void test_ext_2()
     {
-        IndexBuilderExt b = new IndexBuilderExt() ;
+        IndexBuilderNode b = new IndexBuilderNode() ;
         Model model = ModelFactory.createDefaultModel() ;
         Literal lit = model.createLiteral("example") ;
         b.index(lit, "foo") ;
@@ -71,7 +71,7 @@ public class TestLARQ1 extends TestCase
 
     public void test_ext_3()
     {
-        IndexBuilderExt b = new IndexBuilderExt() ;
+        IndexBuilderNode b = new IndexBuilderNode() ;
         Model model = ModelFactory.createDefaultModel() ;
         Resource bnode = model.createResource() ;
         b.index(bnode, "foo") ;
@@ -88,7 +88,7 @@ public class TestLARQ1 extends TestCase
 
     public void test_ext_4()
     {
-        IndexBuilderExt b = new IndexBuilderExt() ;
+        IndexBuilderNode b = new IndexBuilderNode() ;
         Model model = ModelFactory.createDefaultModel() ;
         Resource r = model.createResource("http://example/r") ;
         b.index(r, "foo") ;
@@ -101,7 +101,7 @@ public class TestLARQ1 extends TestCase
     
     public void test_ext_5()
     {
-        IndexBuilderExt b = new IndexBuilderExt() ;
+        IndexBuilderNode b = new IndexBuilderNode() ;
         Model model = ModelFactory.createDefaultModel() ;
         Resource r = model.createResource("http://example/r") ;
         StringReader sr = new StringReader("foo") ;
@@ -119,7 +119,7 @@ public class TestLARQ1 extends TestCase
     // Test what happens when the index is updated after a reader index (LARQIndex) is created
     public void test_ext_6()
     {
-        IndexBuilderExt b = new IndexBuilderExt() ;
+        IndexBuilderNode b = new IndexBuilderNode() ;
         Model model = ModelFactory.createDefaultModel() ;
         Resource r1 = model.createResource("http://example/r1") ;
         Resource r2 = model.createResource("http://example/r2") ;

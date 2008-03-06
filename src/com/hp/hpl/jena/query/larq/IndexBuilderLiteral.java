@@ -10,12 +10,12 @@ import java.io.File;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.apache.lucene.document.Document;
 import org.apache.lucene.index.IndexWriter;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.rdf.model.Literal;
 import com.hp.hpl.jena.rdf.model.Statement;
+
 import com.hp.hpl.jena.sparql.ARQNotImplemented;
 
 /** 
@@ -61,18 +61,11 @@ public abstract class IndexBuilderLiteral extends IndexBuilderModel
             if ( s.getObject().isLiteral() )
             {
                 Node node = s.getObject().asNode() ;
-                // How do we use the lucene index to self??
-                // Or do duplicate supression on query
                 if ( ! seen.contains(node) )
                 {
                     if ( indexThisLiteral(s.getLiteral()))
-                    {
-                        Document doc = new Document() ;
-                        LARQ.store(doc, node) ;
-                        LARQ.index(doc, node) ;
-                        getIndexWriter().addDocument(doc) ;
-                        seen.add(node) ;
-                    }
+                        index.index(node, node.getLiteralLexicalForm()) ;
+                    seen.add(node) ;
                 }
             }
         } catch (Exception e)

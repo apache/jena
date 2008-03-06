@@ -1,41 +1,44 @@
 /*
- * (c) Copyright 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
 package dev;
 
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import java.io.File;
 
-import com.hp.hpl.jena.sparql.engine.main.QueryEngineMain;
-import com.hp.hpl.jena.sparql.expr.E_Function;
-import com.hp.hpl.jena.sparql.expr.NodeValue;
-import com.hp.hpl.jena.sparql.junit.QueryTestSuiteFactory;
+import com.hp.hpl.jena.graph.Node;
 
+import org.apache.lucene.index.IndexWriter;
 
-public class TestEngineMain extends TestCase
+import com.hp.hpl.jena.query.larq.IndexBuilderBase;
+
+public class IndexNodeBuilder extends IndexBuilderBase
 {
-    public static TestSuite suite()
-    {
-        NodeValue.VerboseWarnings = false ;
-        E_Function.WarnOnUnknownFunction = false ;
-        QueryEngineMain.register() ;
-        
-        TestSuite ts = QueryTestSuiteFactory.make("testing/ARQ/manifest-engine2.ttl") ;
+    public IndexNodeBuilder() { super() ; }
+    
+    /** Manage a Lucene index that has already been created */
+    public IndexNodeBuilder(IndexWriter existingWriter)
+    { super(existingWriter) ; }
+    
+    /** Create an on-disk index */
+    
+    public IndexNodeBuilder(File fileDir)
+    { super(fileDir) ; }
 
-        //TestSuite ts = QueryTestSuiteFactory.make("testing/ARQ/Dataset/manifest.n3") ;
-        //TestSuite ts = QueryTestSuiteFactory.make("testing/ARQ/Algebra/manifest.ttl") ;
+    /** Create an on-disk index */
+    public IndexNodeBuilder(String fileDir)
+    { super(fileDir) ; }
+    
+    public void index(Node node, String string)
+    {
         
-        // SPARQL test suite (does not test algebra)
-        //TestSuite ts = QueryTestSuiteFactory.make("testing/ARQ/manifest-arq.ttl") ;
-        return ts ;
     }
 }
 
 /*
- * (c) Copyright 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

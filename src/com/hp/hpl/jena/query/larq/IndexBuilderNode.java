@@ -7,8 +7,14 @@
 package com.hp.hpl.jena.query.larq;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.Reader;
 
+import org.apache.lucene.document.Document;
 import org.apache.lucene.index.IndexWriter;
+
+import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.rdf.model.RDFNode;
 
 /** Helper class for index creation from external content.
  *  
@@ -18,25 +24,67 @@ import org.apache.lucene.index.IndexWriter;
  *  To update the index once closed, the application should create a new index builder.
  *  Any index readers (e.g. IndexLARQ objects)
  *  need to be recreated and registered.  
- *  
- *  @deprecated Backwards compatibility named class - use IndexBuilderNode
  *        
  * @author Andy Seaborne
  */
 
-public class IndexBuilderExt extends IndexBuilderNode
+public class IndexBuilderNode extends IndexBuilderBase
 {
     /** Create an in-memory index */
-    public IndexBuilderExt() { super() ; }
+    public IndexBuilderNode() { super() ; }
     
     /** Manage a Lucene index that has already been created */
-    public IndexBuilderExt(IndexWriter existingWriter) { super(existingWriter) ; }
+    public IndexBuilderNode(IndexWriter existingWriter) { super(existingWriter) ; }
     
     /** Create an on-disk index */
-    public IndexBuilderExt(File fileDir) { super(fileDir) ; }
+    public IndexBuilderNode(File fileDir) { super(fileDir) ; }
     
     /** Create an on-disk index */
-    public IndexBuilderExt(String fileDir) { super(fileDir) ; }
+    public IndexBuilderNode(String fileDir) { super(fileDir) ; }
+
+    public void index(RDFNode rdfNode, String indexStr)
+    {
+        try {
+            Document doc = new Document() ;
+            LARQ.store(doc, rdfNode.asNode()) ;
+            LARQ.index(doc, indexStr) ;
+            getIndexWriter().addDocument(doc) ;
+        } catch (IOException ex)
+        { throw new ARQLuceneException("index", ex) ; }
+    }
+   
+    public void index(RDFNode rdfNode, Reader indexStream)
+    {
+        try {
+            Document doc = new Document() ;
+            LARQ.store(doc, rdfNode.asNode()) ;
+            LARQ.index(doc, indexStream) ;
+            getIndexWriter().addDocument(doc) ;
+        } catch (IOException ex)
+        { throw new ARQLuceneException("index", ex) ; }
+    }
+    
+    public void index(Node node, String indexStr)
+    {
+        try {
+            Document doc = new Document() ;
+            LARQ.store(doc, node) ;
+            LARQ.index(doc, indexStr) ;
+            getIndexWriter().addDocument(doc) ;
+        } catch (IOException ex)
+        { throw new ARQLuceneException("index", ex) ; }
+    }
+   
+    public void index(Node node, Reader indexStream)
+    {
+        try {
+            Document doc = new Document() ;
+            LARQ.store(doc, node) ;
+            LARQ.index(doc, indexStream) ;
+            getIndexWriter().addDocument(doc) ;
+        } catch (IOException ex)
+        { throw new ARQLuceneException("index", ex) ; }
+    }
 }
 
 /*

@@ -1,7 +1,5 @@
 ==== ARQ ToDo
 
-** More aggregators
-
 ** Clearer ways to add BGP solver mechanisms - invert Stage/StageList 
 
 ** Split SELECT into constructive assignments which are pushed in so visible to ORDER BY.
@@ -34,16 +32,14 @@ See ToDoSSE
       + Onl op on right (?) should force ref eval.
       + tests
 
-
 + OpBGP is (ref- & main-) compiled to a call to static "StageBuilder.compile" (modularity)  
   Maybe:      
      StageGenerator => "Stage" (name reuse?) as a factory-like mechanism
 	 StageList is a kind of Stage.       
   Better, better?: do as a Transform, which changes a BGP to a matcher/solver.
 
-+ LARQ: node level tools for building index
++ LARQ: node level tools for building index (this is IndexBuilderExt)
   Relayer triple tools over this.
-  LARQ.java has the basic ops.
 
 
 + OpCompiler: have a global factory so that can use QueryEngineMain and supply subclasses 

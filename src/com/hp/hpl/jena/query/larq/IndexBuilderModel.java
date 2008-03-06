@@ -8,7 +8,6 @@ package com.hp.hpl.jena.query.larq;
 
 import java.io.File;
 
-import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.store.Directory;
 
@@ -33,26 +32,26 @@ public abstract class IndexBuilderModel extends StatementListener
     private Directory dir = null ;
 
     // Multiple inheritance would be nice .
-    private IndexBuilderBase base ;
+    protected IndexBuilderNode index ;
     
     /** Create an in-memory index */
     public IndexBuilderModel()
-    { base = new IndexBuilderBase() ; }
+    { index = new IndexBuilderNode() ; }
     
     /** Manage a Lucene index that has already been created */
     public IndexBuilderModel(IndexWriter existingWriter)
-    { base = new IndexBuilderBase(existingWriter) ; }
+    { index = new IndexBuilderNode(existingWriter) ; }
 
     /** Create an on-disk index */
     public IndexBuilderModel(File fileDir)
-    { base = new IndexBuilderBase(fileDir) ; }
+    { index = new IndexBuilderNode(fileDir) ; }
     
     /** Create an on-disk index */
     public IndexBuilderModel(String fileDir)
-    { base = new IndexBuilderBase(fileDir) ; }
+    { index = new IndexBuilderNode(fileDir) ; }
 
-    protected IndexWriter getIndexWriter() { return base.getIndexWriter() ; }
-    protected IndexReader getIndexReader() { return base.getIndexReader() ; }
+//    protected IndexWriter getIndexWriter() { return index.getIndexWriter() ; }
+//    protected IndexReader getIndexReader() { return index.getIndexReader() ; }
     
     /** ModelListener interface : statement taken out of the model */
     public void removedStatement(Statement s)
@@ -82,17 +81,17 @@ public abstract class IndexBuilderModel extends StatementListener
      */
     
     public void closeForWriting()
-    { base.closeForWriting() ; }
+    { index.closeForWriting() ; }
     
     /** Flush the index, optimizing it, to allow a reader to be created */
-    public void flushWriter() { base.flushWriter() ; }
+    public void flushWriter() { index.flushWriter() ; }
     
     /** Close the index - no more updates possible */
-    public void closeWriter() { base.closeWriter() ; }
+    public void closeWriter() { index.closeWriter() ; }
 
     /** Get a search index used by LARQ. */
     public IndexLARQ getIndex()
-    { return base.getIndex() ; }
+    { return index.getIndex() ; }
 }
 
 /*
