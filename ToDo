@@ -5,15 +5,14 @@
 ** Clearer ways to add BGP solver mechanisms - invert Stage/StageList 
 
 ** Split SELECT into constructive assignments which are pushed in so visible to ORDER BY.
-    Need to move assignments (expressions, which add variables) to before ORDER BY and HAVING
+   Need to move assignments (expressions, which add variables) to before ORDER BY and HAVING
 
 ++ ** Document "stages" - new form.
 ++ ** Document "update API" and examples.
 
 ++ Rewrite optimizer - sort out nested with outer variable case.
-   Transform support to track variable scopes.
-   (visitor like as well?) 
-   Reenable in Algebra
+   test case?  is this fixed now without heavy weight tracking?
+   --> Transform support to track variable scopes.
 
 + Initial binding for UpdateRequest
 
@@ -39,20 +38,20 @@ See ToDoSSE
 
 
 + OpBGP is (ref- & main-) compiled to a call to static "StageBuilder.compile" (modularity)  
-  StageBuilder::
-     Choose StageGenerator and calls it to get a StageList
-     .build the StageList to a QueryIterator
-     Return QueryIterator.
-  (Check for StageList.add() calls).
   Maybe:      
      StageGenerator => "Stage" (name reuse?) as a factory-like mechanism
 	 StageList is a kind of Stage.       
   Better, better?: do as a Transform, which changes a BGP to a matcher/solver.
 
++ LARQ: node level tools for building index
+  Relayer triple tools over this.
+  LARQ.java has the basic ops.
+
+
 + OpCompiler: have a global factory so that can use QueryEngineMain and supply subclasses 
   of OpCompiler (experimentation and extensibility for Andreas). 
 
-+ Results set to note when finished and warn on attempted continued use.
++ Result set to note when finished and warn on attempted continued use.
 
 + More dateTime arithmetic and durations
   http://www.w3.org/TR/xpath-functions/#dateTime-arithmetic

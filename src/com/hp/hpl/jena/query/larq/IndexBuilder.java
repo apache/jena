@@ -8,12 +8,18 @@ package com.hp.hpl.jena.query.larq;
 
 public interface IndexBuilder
 {
-    /** Finished indexing */
+    /** Finished indexing
+     *  @deprecated Use {@link #closeWriter()} to really release the index or {@link #flushWriter()} to optimize it but leave it open for writing.
+     */
     public void closeForWriting() ;
+    
+    /** Close the index */
+    public void closeWriter() ;
+    
+    /** Flush index - does a Lucene optimize */ 
+    public void flushWriter() ;
 
-    /** Get a search index used by LARQ.
-     * Automatically close the index for update
-     * */ 
+    /** Get a search index used by LARQ. */ 
     public IndexLARQ getIndex() ;
 }
 

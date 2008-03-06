@@ -1,8 +1,0 @@
-#!/bin/bash
-
-for F in opt-sameTerm*
-do
-  D="$(basename $F .rq).srx"
-  echo "== $F"
-  sparql --data data-1.ttl --query $F --engine=ref --results srx > $D
-  done
