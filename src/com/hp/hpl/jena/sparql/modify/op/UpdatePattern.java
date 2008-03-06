@@ -44,11 +44,11 @@ public abstract class UpdatePattern extends GraphUpdateN
     private List bindings = new ArrayList() ;
     
     //@Override
-    protected void startExec(GraphStore graphStore)
+    protected void startExec(GraphStore graphStore, Binding binding)
     {
         if ( pattern != null )
         {
-            Plan plan = QueryExecutionFactory.createPlan(pattern, graphStore) ;
+            Plan plan = QueryExecutionFactory.createPlan(pattern, graphStore, binding) ;
             QueryIterator qIter = plan.iterator() ;
             
             for( ; qIter.hasNext() ; )

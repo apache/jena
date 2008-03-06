@@ -7,13 +7,14 @@
 package com.hp.hpl.jena.sparql.modify.op;
 
 import java.util.ArrayList;
-import java.util.List;
-
 import java.util.Iterator;
-
+import java.util.List;
 
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
+
+import com.hp.hpl.jena.sparql.engine.binding.Binding;
+
 import com.hp.hpl.jena.update.GraphStore;
 import com.hp.hpl.jena.update.UpdateException;
 
@@ -30,14 +31,14 @@ public abstract class GraphUpdateN extends Update
     public void addGraphName(String uri) { graphNodes.add(Node.createURI(uri)) ; }
     public List getGraphNames() { return graphNodes ; }
     
-    protected abstract void startExec(GraphStore graphStore) ;
+    protected abstract void startExec(GraphStore graphStore, Binding binding) ;
     protected abstract void finishExec() ;
     protected abstract void exec(Graph graph) ;
     
     //@Override
-    public void exec(GraphStore graphStore)
+    public void exec(GraphStore graphStore, Binding binding)
     {
-        startExec(graphStore) ;
+        startExec(graphStore, binding) ;
         if ( hasGraphNames() )
         {
             for ( Iterator iter = graphNodes.iterator() ; iter.hasNext() ; )
@@ -55,6 +56,11 @@ public abstract class GraphUpdateN extends Update
             exec(g) ;
         }
         finishExec() ;
+    }
+    
+    public void exec(GraphStore graphStore)
+    {
+        exec(graphStore, null) ;
     }
 }
 

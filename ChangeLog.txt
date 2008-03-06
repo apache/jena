@@ -3,6 +3,10 @@ ChangeLog for ARQ
 
 ==== ARQ 2.3
 
++ Allow inital bindings for Updates (ignored unless a Modify operation)
+
++ Added SUM(?x) aggregate
+
 + Added { SELECT } (nested SELECT) and LET (assignment) to ARQ extended SPARQL.
 
 + Added optimization rewrite of algebra expressions for FILTER(?x = :x) and FILTER(sameTerm(?x, :x))

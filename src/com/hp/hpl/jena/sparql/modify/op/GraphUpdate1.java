@@ -9,6 +9,9 @@ package com.hp.hpl.jena.sparql.modify.op;
 
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
+
+import com.hp.hpl.jena.sparql.engine.binding.Binding;
+
 import com.hp.hpl.jena.update.GraphStore;
 import com.hp.hpl.jena.update.UpdateException;
 
@@ -28,6 +31,13 @@ public abstract class GraphUpdate1 extends Update
     public Node getGraphName() { return graphName ; }
     
     protected abstract void exec(GraphStore graphStore, Graph graph) ;
+    
+    //@Override 
+    final public void exec(GraphStore graphStore, Binding binding)
+    {
+        // Ignore binding.
+        exec(graphStore) ;
+    }
     
     //@Override
     public void exec(GraphStore graphStore)

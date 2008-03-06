@@ -453,6 +453,11 @@ public class QueryExecutionFactory
     {
         return makePlan(query, dataset, null, null) ;
     }
+    
+    public static Plan createPlan(Query query, DatasetGraph dataset, Binding input)
+    {
+        return makePlan(query, dataset, input, null) ;
+    }
 
     public static Plan createPlan(Element pattern, Graph graph)
     {
@@ -461,7 +466,12 @@ public class QueryExecutionFactory
     
     public static Plan createPlan(Element pattern, DatasetGraph dataset)
     {
-        return createPlan(toQuery(pattern), dataset) ;
+        return createPlan(toQuery(pattern), dataset, null) ;
+    }
+    
+    public static Plan createPlan(Element pattern, DatasetGraph dataset, Binding input)
+    {
+        return createPlan(toQuery(pattern), dataset, input) ;
     }
     
     private static Query toQuery(Element pattern)

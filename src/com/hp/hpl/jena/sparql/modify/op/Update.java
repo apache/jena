@@ -8,6 +8,8 @@ package com.hp.hpl.jena.sparql.modify.op;
 
 
 import com.hp.hpl.jena.shared.PrefixMapping;
+
+import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.modify.UpdateSerializer;
 import com.hp.hpl.jena.sparql.modify.UpdateVisitor;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext;
@@ -19,6 +21,15 @@ import com.hp.hpl.jena.update.GraphStore;
 public abstract class Update implements PrintSerializable
 {
     public abstract void exec(GraphStore graphStore) ;
+    
+    /** Execute an update, using the bindign as values for some of the variables in a pattern.
+     * Binding ignored in operations without a pattern.
+     * @param graphStore
+     * @param binding
+     */
+    
+    
+    public abstract void exec(GraphStore graphStore, Binding binding) ;
 
     public abstract void visit(UpdateVisitor visitor) ; 
     

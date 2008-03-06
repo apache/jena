@@ -19,7 +19,7 @@ import com.hp.hpl.jena.sparql.util.IndentedWriter;
 import com.hp.hpl.jena.sparql.util.PrintUtils;
 import com.hp.hpl.jena.sparql.util.Printable;
 
-/** A single request which may consist of several updates, to be poerformed in the order added to the request */
+/** A single request which may consist of several updates, to be performed in the order added to the request */
 public class UpdateRequest extends Prologue
     implements Printable//, Iterable<Update>
 {

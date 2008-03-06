@@ -27,6 +27,8 @@
 See ToDoSSE
 
 ----
++ Testing for initial bindings and Update
+
 + SUM [done], MIN, MAX, AVG, (STDDEV)
    MINI, MINN, MIND
 + EXISTS { pattern }
