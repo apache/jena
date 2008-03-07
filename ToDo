@@ -27,10 +27,6 @@ See ToDoSSE
    MINI, MINN, MIND
 + EXISTS { pattern }
 + ORDER BY aggregate
-+ { SELECT } Algebra expression does not include inner (base (prefix...)) [Minor]
-   + JoinClassification/LeftJoinClassification
-      + Onl op on right (?) should force ref eval.
-      + tests
 
 + OpBGP is (ref- & main-) compiled to a call to static "StageBuilder.compile" (modularity)  
   Maybe:      
@@ -38,14 +34,10 @@ See ToDoSSE
 	 StageList is a kind of Stage.       
   Better, better?: do as a Transform, which changes a BGP to a matcher/solver.
 
-+ LARQ: node level tools for building index (this is IndexBuilderExt)
-  Relayer triple tools over this.
-
-
 + OpCompiler: have a global factory so that can use QueryEngineMain and supply subclasses 
   of OpCompiler (experimentation and extensibility for Andreas). 
 
-+ Result set to note when finished and warn on attempted continued use.
++ ResultSet to note when finished and warn on attempted continued use.
 
 + More dateTime arithmetic and durations
   http://www.w3.org/TR/xpath-functions/#dateTime-arithmetic
