@@ -85,7 +85,7 @@ public class TestSerialization extends EarlTestCase
         }
 
         try {
-            QueryUtils.checkOp(query) ;
+            QueryUtils.checkOp(query, true) ;
         } catch (SSEParseException ex)
         {
             System.err.println("**** Test: "+getName()) ; 

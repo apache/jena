@@ -26,8 +26,8 @@ public class Run
     public static void main(String[] argv) throws Exception
     {
         //QueryEngineRef.register() ;
-        execQuery("D.ttl", "Q.arq") ;
-        runQParseARQ() ;
+        //execQuery("D.ttl", "Q.rq") ;
+        runQParse() ;
         
         //rewrite() ;
         execQuery("testing/ARQ/SubQuery/data.ttl", "testing/ARQ/SubQuery/sub-select-03.arq") ;
@@ -93,7 +93,7 @@ public class Run
 
     private static void runQParse()
     {
-        String []a = { "--file=Q.rq", "--print=op" } ;
+        String []a = { "--engine=ref", "--file=Q.rq", "--print=op" } ;
         arq.qparse.main(a) ;
         System.exit(0) ;
     }

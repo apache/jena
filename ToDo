@@ -8,9 +8,6 @@
 ++ ** Document "stages" - new form.
 ++ ** Document "update API" and examples.
 
-++ Rewrite optimizer - sort out nested with outer variable case.
-   test case?  is this fixed now without heavy weight tracking?
-   --> Transform support to track variable scopes.
 
 +  FROM <.....n3>
    but it's application/rdf+xml
@@ -27,6 +24,11 @@ See ToDoSSE
    MINI, MINN, MIND
 + EXISTS { pattern }
 + ORDER BY aggregate
+
++ Extend optimization environment - sort out nested with outer variable case.
+   test case?  is this fixed now without heavy weight tracking?
+   --> Transform support to track variable scopes.
+
 
 + OpBGP is (ref- & main-) compiled to a call to static "StageBuilder.compile" (modularity)  
   Maybe:      

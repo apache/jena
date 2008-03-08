@@ -106,6 +106,8 @@ public class qparse extends CmdARQ
     
     protected void exec()
     {
+        printOptimized = modEngine.isAlgebraOptimizing() ;
+        
         try{
             Query query = modQuery.getQuery() ;
             //QueryExecution qExec = QueryExecutionFactory.create(query, DatasetFactory.create()) ;
@@ -113,7 +115,7 @@ public class qparse extends CmdARQ
             // Check the query.
             
             try {
-                QueryUtils.checkQuery(query) ;
+                QueryUtils.checkQuery(query, modEngine.isAlgebraOptimizing()) ;
             } catch (QueryCheckException ex)
             {
                 System.err.println() ;

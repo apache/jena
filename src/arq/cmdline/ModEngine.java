@@ -31,6 +31,7 @@ public class ModEngine extends ModBase
                                                        ) ;
     
     private boolean timing = false ;
+    private boolean isAlgebraOptimizing = true ;
     
     public void registerWith(CmdGeneral cmdLine)
     {
@@ -44,6 +45,7 @@ public class ModEngine extends ModBase
 
     public void processArgs(CmdArgModule cmdLine)
     {
+       
         List x = cmdLine.getValues(engineDecl) ;
 
         for ( Iterator iter = x.iterator() ; iter.hasNext() ; )
@@ -53,6 +55,7 @@ public class ModEngine extends ModBase
                  engineName.equalsIgnoreCase("reference") )
             {
                 QueryEngineRef.register() ;
+                isAlgebraOptimizing = false ;
                 continue ;
             }
             
@@ -92,6 +95,12 @@ public class ModEngine extends ModBase
             }
             throw new CmdException("Engine name not recognized: "+engineName) ;
         }
+    }
+
+    // Unsubtle
+    public boolean isAlgebraOptimizing()
+    {
+        return isAlgebraOptimizing ;
     }
 }
 

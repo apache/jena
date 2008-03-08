@@ -21,16 +21,16 @@ import com.hp.hpl.jena.query.QueryFactory;
 
 public class QueryUtils
 {
-    public static void checkQuery(Query query)
+    public static void checkQuery(Query query, boolean optimizeAlgebra)
     {
         checkParse(query) ;
-        checkOp(query) ;
+        checkOp(query, optimizeAlgebra) ;
     }
 
-    public static void checkOp(Query query)
+    public static void checkOp(Query query, boolean optimizeAlgebra)
     {
         IndentedLineBuffer buff = new IndentedLineBuffer() ;
-        Op op = Algebra.compile(query, true) ;
+        Op op = Algebra.compile(query, optimizeAlgebra) ;
         WriterSSE.out(buff.getIndentedWriter(), op, query) ;
         String str = buff.getBuffer().toString() ;
         
