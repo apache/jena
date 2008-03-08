@@ -1,5 +1,8 @@
 @prefix : <http://example/> .
 
-:x :p 1 .
-:x :p 2 .
-:x :p "3.5" .
+:x1 :p :a .
+:x1 :p :z .
+:x1 :q :v .
+:x1 :q :w .
+
+:x2 :p :z .
