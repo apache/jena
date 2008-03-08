@@ -35,6 +35,20 @@ import com.hp.hpl.jena.sparql.procedure.Procedure;
 
 public class OpCompiler
 {
+    // A small (one slot) registry to allow (experimental) alternative  OpCompilers
+    public interface Factory { OpCompiler create(ExecutionContext execCxt) ; }
+    
+    // Set this to a diferent factory implementation to have a different OpCompiler.  
+    public static Factory factory = new Factory(){
+
+        public OpCompiler create(ExecutionContext execCxt)
+        {
+            return new OpCompiler(execCxt) ;
+        }} ;  
+    
+    // -------
+    
+    
     // And filter placement in LeftJoins?
     // Is this part of a more general algorithm of pushing the filter down
     // when the vars are known to be fixed?
@@ -50,7 +64,11 @@ public class OpCompiler
     
     public static QueryIterator compile(Op op, QueryIterator qIter, ExecutionContext execCxt)
     {
-        OpCompiler compiler = new OpCompiler(execCxt) ;
+        OpCompiler compiler = null ;
+        if ( factory == null )
+            compiler = new OpCompiler(execCxt) ;    // Only if default 'factory' gets lost.
+        else
+            compiler = factory.create(execCxt) ;
         QueryIterator q = compiler.compileOp(op, qIter) ;
         return q ;
     }
@@ -193,14 +211,14 @@ public class OpCompiler
     }
     
     // Based on code from Olaf Hartig.
-    private List flattenUnion(OpUnion opUnion)
+    protected List flattenUnion(OpUnion opUnion)
     {
         List x = new ArrayList() ;
         flattenUnion(x, opUnion) ;
         return x ;
     }
     
-    private void flattenUnion(List acc, OpUnion opUnion)
+    protected void flattenUnion(List acc, OpUnion opUnion)
     {
         if (opUnion.getLeft() instanceof OpUnion)
             flattenUnion(acc, (OpUnion)opUnion.getLeft()) ;

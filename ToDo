@@ -34,9 +34,6 @@ See ToDoSSE
 	 StageList is a kind of Stage.       
   Better, better?: do as a Transform, which changes a BGP to a matcher/solver.
 
-+ OpCompiler: have a global factory so that can use QueryEngineMain and supply subclasses 
-  of OpCompiler (experimentation and extensibility for Andreas). 
-
 + ResultSet to note when finished and warn on attempted continued use.
 
 + More dateTime arithmetic and durations
