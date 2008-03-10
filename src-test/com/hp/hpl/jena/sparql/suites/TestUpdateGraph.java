@@ -23,10 +23,13 @@ import com.hp.hpl.jena.sparql.syntax.Template;
 import com.hp.hpl.jena.sparql.syntax.TemplateGroup;
 import com.hp.hpl.jena.sparql.syntax.TemplateTriple;
 import com.hp.hpl.jena.sparql.util.NodeFactory;
-import com.hp.hpl.jena.update.GraphStore;
-import com.hp.hpl.jena.update.GraphStoreFactory;
 
 import com.hp.hpl.jena.query.QueryFactory;
+
+import com.hp.hpl.jena.update.GraphStore;
+import com.hp.hpl.jena.update.GraphStoreFactory;
+import com.hp.hpl.jena.update.UpdateFactory;
+import com.hp.hpl.jena.update.UpdateRequest;
 
 public class TestUpdateGraph extends TestUpdateBase
 {
@@ -191,16 +194,25 @@ public class TestUpdateGraph extends TestUpdateBase
     {
         GraphStore gStore = GraphStoreFactory.create() ;
         Graph graph = Factory.createDefaultGraph() ;
-        graph.add(triple1) ;
-        graph.add(triple2) ;
         gStore.setDefaultGraph(graph) ;
+        
+        UpdateRequest req = UpdateFactory.create() ;
+
+        UpdateInsert ins = new UpdateInsert() ;
+        TemplateGroup template = new TemplateGroup() ;
+        template.addTriple(triple1) ;
+        template.addTriple(triple2) ;
+        ins.setInsertTemplate(template) ;
+        req.addUpdate(ins) ;
 
         UpdateDelete delete = new UpdateDelete() ;
         delete.setPattern("{ ?s <http://example/p> ?o } ") ;
         delete.setDeleteTemplate("{ ?s <http://example/p> ?o}") ;
+        req.addUpdate(delete) ;
         
         Binding b = new Binding1(null, v, n) ;
-        delete.exec(gStore, b) ;
+        req.exec(gStore, b) ;
+        
         return gStore.getDefaultGraph() ;
     }
     

@@ -20,6 +20,8 @@
 See ToDoSSE
 
 ----
+++ SPARQL/Update : ADD/REMOVE
+
 + SUM [done], MIN, MAX, AVG, (STDDEV)
    MINI, MINN, MIND
 + EXISTS { pattern }

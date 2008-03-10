@@ -20,6 +20,11 @@ import com.hp.hpl.jena.update.GraphStore;
 
 public abstract class Update implements PrintSerializable
 {
+    
+    /** Execute an update.
+     * @param graphStore
+     */
+    
     public abstract void exec(GraphStore graphStore) ;
     
     /** Execute an update, using the bindign as values for some of the variables in a pattern.
@@ -27,7 +32,6 @@ public abstract class Update implements PrintSerializable
      * @param graphStore
      * @param binding
      */
-    
     
     public abstract void exec(GraphStore graphStore, Binding binding) ;
 

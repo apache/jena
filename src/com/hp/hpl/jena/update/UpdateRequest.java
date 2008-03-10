@@ -12,6 +12,7 @@ import java.util.List;
 
 
 import com.hp.hpl.jena.sparql.core.Prologue;
+import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.modify.op.Update;
 import com.hp.hpl.jena.sparql.serializer.PrologueSerializer;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext;
@@ -36,6 +37,20 @@ public class UpdateRequest extends Prologue
         {
             Update update = (Update)iter.next() ;
             update.exec(graphStore) ;
+        }
+    }
+    
+    /** Execute a request, with a given set of variable/value settings.
+     *  The initial binding applies to all Updates within the request.
+     * @param graphStore
+     * @param binding
+     */ 
+    public void exec(GraphStore graphStore, Binding binding)
+    { 
+        for ( Iterator iter = requests.iterator() ; iter.hasNext(); )
+        {
+            Update update = (Update)iter.next() ;
+            update.exec(graphStore, binding) ;
         }
     }
     
