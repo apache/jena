@@ -21,6 +21,7 @@ See ToDoSSE
 
 ----
 ++ SPARQL/Update : ADD/REMOVE
+   Model/Resource wrapper on update API
 
 + SUM [done], MIN, MAX, AVG, (STDDEV)
    MINI, MINN, MIND
