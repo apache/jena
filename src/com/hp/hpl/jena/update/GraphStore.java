@@ -8,6 +8,7 @@ package com.hp.hpl.jena.update;
 
 import com.hp.hpl.jena.query.Dataset;
 import com.hp.hpl.jena.sparql.core.DataSourceGraph;
+import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.modify.op.Update;
 
 /** A collection of graphs that an update can be applied to.
@@ -23,6 +24,13 @@ public interface GraphStore extends DataSourceGraph
 
     /** Execute an update (a single update operation) */
     public void execute(Update graphUpdate) ;
+    
+    /** Execute a request (a number of update operations) */
+    public void execute(UpdateRequest request, Binding binding) ;
+
+    /** Execute an update (a single update operation) */
+    public void execute(Update graphUpdate, Binding binding) ;
+
     
     public Dataset toDataset() ;
     

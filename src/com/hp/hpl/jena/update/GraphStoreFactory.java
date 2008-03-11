@@ -12,6 +12,7 @@ import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.query.Dataset;
 import com.hp.hpl.jena.sparql.core.DataSourceGraphImpl;
 import com.hp.hpl.jena.sparql.core.DataSourceImpl;
+import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.modify.op.Update;
 import com.hp.hpl.jena.sparql.util.graph.GraphUtils;
 
@@ -30,8 +31,14 @@ public class GraphStoreFactory
         
         public GraphStoreBasic(Dataset ds) { super(ds) ; }
         
+        public void execute(UpdateRequest request, Binding binding)
+        { request.exec(this, binding) ; }
+
         public void execute(UpdateRequest request)
         { request.exec(this) ; }
+
+        public void execute(Update graphUpdate, Binding binding)
+        { execute(new UpdateRequest(graphUpdate), binding) ; }
 
         public void execute(Update graphUpdate)
         { execute(new UpdateRequest(graphUpdate)) ; }
