@@ -8,6 +8,7 @@ SDB ToDo list (and general notes)
 ** Test more LimitOffSetTranslatrions
    See Compile.compile 
 
+** MySQL limitation: TEXT in column is limited to 64K.
 
 
 ==== Wiki

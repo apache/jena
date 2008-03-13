@@ -12,6 +12,9 @@ SDB v1.1
     commons-logging-1.1.1
     new versions ARQ and Jena jars (no name changes).
     
++ MySQL : Node table schema changed to be LONGTEXT.  In v1.0 literals longer than 64K caused errors.
+  Old databases layouts continue to work.  Ideally, reformat and reload. 
+    
 + The named graph indexing has been improved - old databases still work but ideally
   should be reindexed.
   Migration: drop indexes with SBD 1.0 tools, create indexes with SDB 1.1 tools
