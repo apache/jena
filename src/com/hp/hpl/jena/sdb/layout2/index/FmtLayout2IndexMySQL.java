@@ -70,12 +70,9 @@ public class FmtLayout2IndexMySQL extends FmtLayout2HashMySQL
     {
         dropTable(TableDescNodes.name()) ;
         try { 
-            // MySQL: VARCHAR BINARY = VARCHAR COLLATE utf8_bin 
             connection().exec(sqlStr ("CREATE TABLE "+TableDescNodes.name()+" (",
                                  "   id int unsigned NOT NULL auto_increment,",
                                  "   hash BIGINT NOT NULL DEFAULT 0,",
-                                 //"   lex VARCHAR("+LexicalLength+") BINARY CHARACTER SET utf8 NOT NULL default '',",
-                                 // VARBINARY - better?  Manage char=>bytes in SDB, not the DB. 
                                  "   lex LONGTEXT BINARY CHARACTER SET utf8 ,",
                                  "   lang VARCHAR(10) BINARY CHARACTER SET utf8 NOT NULL default '',",
                                  "   datatype VARCHAR("+TableDescNodes.DatatypeUriLength+") BINARY CHARACTER SET utf8 NOT NULL default '',",
