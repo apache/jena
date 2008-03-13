@@ -63,8 +63,7 @@ public class ExLucene5
         Resource r4 = ResourceFactory.createResource("http://example/r4") ;
         Literal  lit1 = ResourceFactory.createPlainLiteral("doc") ;
         
-        // ---- Index based on some external content 
-        
+        // ---- Index based on some external content.  Teh content can be any string of words. 
         
         larqBuilder.index(r1, new StringReader("document")) ;   // Just to show a Stringreader is possible
         larqBuilder.index(r2, "document") ;
