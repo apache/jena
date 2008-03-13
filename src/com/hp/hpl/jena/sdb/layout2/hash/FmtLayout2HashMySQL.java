@@ -90,7 +90,6 @@ public class FmtLayout2HashMySQL extends FmtLayout2
     {
         dropTable(TableDescNodes.name()) ;
         try { 
-            // MySQL: VARCHAR BINARY = VARCHAR COLLATE utf8_bin 
             connection().exec(sqlStr ("CREATE TABLE "+TableDescNodes.name()+" (",
                                  "   hash BIGINT NOT NULL DEFAULT 0,",
                                  "   lex LONGTEXT BINARY CHARACTER SET utf8 ,",
