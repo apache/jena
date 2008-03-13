@@ -168,6 +168,7 @@ public class QueryExecutionBase implements QueryExecution
             for ( Iterator iter = query.getResultURIs().iterator() ; iter.hasNext() ; )
             {
                 Node n = (Node)iter.next() ;
+                // Need to make dataset available to describe handlers.
                 RDFNode rNode = ModelUtils.convertGraphNodeToRDFNode(n, dataset.getDefaultModel()) ;
                 set.add(rNode) ;
             }

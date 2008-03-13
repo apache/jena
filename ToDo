@@ -23,6 +23,8 @@ See ToDoSSE
 ++ SPARQL/Update : ADD/REMOVE
    Model/Resource wrapper on update API
 
++ DescribeHandler gets a Resource - hard - Model decided. 
+
 + SUM [done], MIN, MAX, AVG, (STDDEV)
    MINI, MINN, MIND
 + EXISTS { pattern }
