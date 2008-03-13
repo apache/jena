@@ -18,7 +18,7 @@ public class TupleLoaderHashMySQL extends TupleLoaderHashBase {
 	}
 	
 	public String[] getNodeColTypes() {
-		return new String[] {"BIGINT", "TEXT BINARY CHARACTER SET utf8", "VARCHAR(10) BINARY CHARACTER SET utf8",
+		return new String[] {"BIGINT", "LONGTEXT BINARY CHARACTER SET utf8", "VARCHAR(10) BINARY CHARACTER SET utf8",
 				"VARCHAR("+ TableDescNodes.DatatypeUriLength+ ") BINARY CHARACTER SET utf8", "INT"};
 	}
 	

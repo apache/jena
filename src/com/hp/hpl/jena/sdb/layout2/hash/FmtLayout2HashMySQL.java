@@ -93,7 +93,7 @@ public class FmtLayout2HashMySQL extends FmtLayout2
             // MySQL: VARCHAR BINARY = VARCHAR COLLATE utf8_bin 
             connection().exec(sqlStr ("CREATE TABLE "+TableDescNodes.name()+" (",
                                  "   hash BIGINT NOT NULL DEFAULT 0,",
-                                 "   lex TEXT BINARY CHARACTER SET utf8 ,",
+                                 "   lex LONGTEXT BINARY CHARACTER SET utf8 ,",
                                  "   lang VARCHAR(10) BINARY CHARACTER SET utf8 NOT NULL default '',",
                                  "   datatype VARCHAR("+TableDescNodes.DatatypeUriLength+") BINARY CHARACTER SET utf8 NOT NULL default '',",
                                  "   type int unsigned NOT NULL default '0',",
