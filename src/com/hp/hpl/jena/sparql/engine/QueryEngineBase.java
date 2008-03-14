@@ -39,8 +39,10 @@ public abstract class QueryEngineBase implements OpExec
     {
         this(dataset, input, context) ;
         this.context.put(ARQConstants.sysCurrentQuery, query) ;
-        // Avoid if possible - enables custom fucntion is have side-effects. 
-        //this.context.put(ARQConstants.sysCurrentDataset, dataset) ;
+        // Avoid if possible - enables custom functions to have side-effects.
+        // And propoperty functions to see graphs other than the active one.  
+        // this.context.put(ARQConstants.sysCurrentDataset, dataset) ;
+        
         // Build the Op.
         query.setResultVars() ;
         setOp(createOp(query, gen)) ;
