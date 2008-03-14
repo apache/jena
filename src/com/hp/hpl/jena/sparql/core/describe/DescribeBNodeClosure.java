@@ -6,8 +6,12 @@
 
 package com.hp.hpl.jena.sparql.core.describe;
 
+import java.util.Iterator;
+
+import com.hp.hpl.jena.query.Dataset;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.Resource;
+import com.hp.hpl.jena.sparql.ARQConstants;
 import com.hp.hpl.jena.sparql.util.Closure;
 import com.hp.hpl.jena.sparql.util.Context;
 
@@ -21,17 +25,41 @@ import com.hp.hpl.jena.sparql.util.Context;
 public class DescribeBNodeClosure implements DescribeHandler
 {
     Model acc ;
+    Dataset dataset ;
     
     public DescribeBNodeClosure() {}
     
     public void start(Model accumulateResultModel, Context cxt)
     {
         acc = accumulateResultModel ;
+        this.dataset = (Dataset)cxt.get(ARQConstants.sysCurrentDataset) ;
     }
 
+    // Check all named graphs
     public void describe(Resource r)
     {
+        // Default model.
+        Closure.closure(otherModel(r, dataset.getDefaultModel()), false, acc) ;
+        
+        // Named graphs
+        for ( Iterator iter = dataset.listNames() ; iter.hasNext() ; )
+        {
+            String name = (String)iter.next();
+            Model model =  dataset.getNamedModel(name) ;
+            Resource r2 = otherModel(r, model) ;
+            Closure.closure(r2, false, acc) ;
+        }
         Closure.closure(r, false, acc) ;
+    }
+
+    private static Resource otherModel(Resource r, Model model)
+    {
+        if ( r.isURIResource() )
+            return model.createResource(r.getURI()) ;
+        if ( r.isAnon() )
+            return model.createResource(r.getId()) ;
+        // Literals do not need converting.
+        return r ;
     }
 
     public void finish()

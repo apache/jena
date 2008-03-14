@@ -28,6 +28,7 @@ import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.Statement;
 import com.hp.hpl.jena.shared.PrefixMapping;
+import com.hp.hpl.jena.sparql.ARQConstants;
 import com.hp.hpl.jena.sparql.core.DatasetGraph;
 import com.hp.hpl.jena.sparql.core.describe.DescribeHandler;
 import com.hp.hpl.jena.sparql.core.describe.DescribeHandlerRegistry;
@@ -138,8 +139,9 @@ public class QueryExecutionBase implements QueryExecution
     {
         if ( ! query.isDescribeType() )
             throw new QueryExecException("Attempt to get a DESCRIBE result from a "+labelForQuery(query)+" query") ; 
-        query.setQueryResultStar(true) ;
-
+        //Was: query.setQueryResultStar(true) ; but why?
+        query.setResultVars() ;
+        
         Set set = new HashSet() ;
 
         //May return null (no query pattern) 
@@ -177,6 +179,7 @@ public class QueryExecutionBase implements QueryExecution
         // Create new handlers for this process.
         List dhList = DescribeHandlerRegistry.get().newHandlerList() ;
 
+        getContext().put(ARQConstants.sysCurrentDataset, getDataset()) ;
         // Notify start of describe phase
         for ( Iterator handlers = dhList.iterator() ; handlers.hasNext() ; )
         {

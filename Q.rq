@@ -3,13 +3,4 @@ PREFIX  apf: <http://jena.hpl.hp.com/ARQ/property#>
 PREFIX  rdfs:   <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX  owl:    <http://www.w3.org/2002/07/owl#>
 
-SELECT *
-{
-  ?x :p ?z . FILTER(?z = :z)
-  OPTIONAL {
-    {
-      ?x :q ?v 
-       FILTER(sameterm(?v,  :v))
-    }
-  }
-}
+DESCRIBE * { ?s ?p ?o }

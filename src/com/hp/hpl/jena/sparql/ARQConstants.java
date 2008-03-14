@@ -109,7 +109,12 @@ public class ARQConstants
      * (may be null if was not created from a query string )
      * */
     public static final Symbol sysCurrentQuery  = Symbol.create(systemVarNS+"query") ;
-    
+
+    /** Context key for the dataset for the current query execution 
+     * May be null if was not created from a query string.
+     */
+    public static final Symbol sysCurrentDataset  = Symbol.create(systemVarNS+"dataset") ;
+
     /** Context key for the algebra expression of the query execution */
     public static final Symbol sysCurrentAlgebra  = Symbol.create(systemVarNS+"algebra") ;
 

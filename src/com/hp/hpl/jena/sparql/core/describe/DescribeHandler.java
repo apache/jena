@@ -26,7 +26,7 @@ public interface DescribeHandler
      * @param accumulateResultModel
      * @param qContext Query execution context
      */
-    public void start(Model accumulateResultModel, Context qContext ) ;
+    public void start(Model accumulateResultModel, Context qContext) ;
     
     /** Called on everything resource found by a query.
      *  Can add more RDF to the model provided.  May choose to add nothing.

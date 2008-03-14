@@ -25,21 +25,14 @@ public class Run
 {
     public static void main(String[] argv) throws Exception
     {
-        //QueryEngineRef.register() ;
-        //execQuery("D.ttl", "Q.rq") ;
-        runQParse() ;
-        
-        //rewrite() ;
-        execQuery("testing/ARQ/SubQuery/data.ttl", "testing/ARQ/SubQuery/sub-select-03.arq") ;
-        
         //QueryEngineMain.register() ;
         String a[] = new String[]{
             //"-v",
             //"--engine=ref",
+            "--data=D.ttl",
             "-query=Q.rq" ,
-            
         } ;
-        
+
         sparql.main(a) ;
         System.exit(0) ;
     }
@@ -93,7 +86,7 @@ public class Run
 
     private static void runQParse()
     {
-        String []a = { "--engine=ref", "--file=Q.rq", "--print=op" } ;
+        String []a = { "--engine=ref", "--file=Q.rq"/*, "--print=op"*/ } ;
         arq.qparse.main(a) ;
         System.exit(0) ;
     }
