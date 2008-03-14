@@ -1,7 +1,7 @@
 #
 # N3 rendition of contributions data
 #
-# $Id: contributions.n3,v 1.13 2008-01-10 13:28:36 chris-dollin Exp $
+# $Id: contributions.n3,v 1.14 2008-03-14 15:17:23 chris-dollin Exp $
 #
 
 @prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
@@ -119,4 +119,12 @@
    ; ct:licence "Apache 2.0"
    .
 
+[]
+    dc:creator "Fulvio Crivellaro and Gabriele Genovese and Giorgio Orsi"
+    ; dc:name "Micro Jena (uJena)"
+    ; dc:description "Reduced version of Jena for mobile devices"
+    ; ct:link "http://poseidon.elet.polimi.it/ca/?page_id=59"
+    ; ct:linkTitle "Micro Jena"
+    ; ct:licence "as per Jena"
+    .
 
