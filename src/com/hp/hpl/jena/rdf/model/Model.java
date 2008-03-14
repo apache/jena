@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Model.java,v 1.71 2008-01-02 12:05:48 andy_seaborne Exp $
+  $Id: Model.java,v 1.72 2008-03-14 16:07:38 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
@@ -61,7 +61,7 @@ import java.util.*;
  * </pre></code>
  *
  * @author bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.71 $Date: 2007/11/14 15:30:14 $'
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.72 $Date: 2008/01/02 12:05:48 $'
  */
 public interface Model
     extends ModelCon, ModelGraphInterface,
@@ -389,8 +389,9 @@ public interface Model
 	public Model read(InputStream in, String base) ;
 
 	/** Add RDF statements represented in language <code>lang</code> to the model.
-	 * <br />Predefined values for <code>lang</code> are "RDF/XML", "N-TRIPLE"
-	 * and "N3".  <code>null</code> represents the default language, "RDF/XML".
+	 * <br />Predefined values for <code>lang</code> are "RDF/XML", "N-TRIPLE",
+	 * "TURTLE" (or "TTL") and "N3".  
+	 * <code>null</code> represents the default language, "RDF/XML".
 	 * "RDF/XML-ABBREV" is a synonym for "RDF/XML".
      * <br />
 	 *
@@ -427,8 +428,9 @@ public interface Model
 	/**
 	 * Add statements from a serializion in language <code>lang</code> to the
 	 * model.
-     * <br />Predefined values for <code>lang</code> are "RDF/XML", "N-TRIPLE"
-     * and "N3".  <code>null</code> represents the default language, "RDF/XML".
+     * <br />Predefined values for <code>lang</code> are "RDF/XML", "N-TRIPLE",
+     * "TURTLE" (or "TTL") and "N3".
+     * <code>null</code> represents the default language, "RDF/XML".
      * "RDF/XML-ABBREV" is a synonym for "RDF/XML".
      * <br />
 	 *
@@ -442,9 +444,9 @@ public interface Model
 
 	/** Using this method is often a mistake.
 	 * Add RDF statements represented in language <code>lang</code> to the model.
-	 *<br />
-     *Predefined values for <code>lang</code> are "RDF/XML", "N-TRIPLE"
-	 *and "N3".  <code>null</code> represents the default language, "RDF/XML".
+     * <br />Predefined values for <code>lang</code> are "RDF/XML", "N-TRIPLE",
+     * "TURTLE" (or "TTL") and "N3".
+     * <code>null</code> represents the default language, "RDF/XML".
 	 *"RDF/XML-ABBREV" is a synonym for "RDF/XML".
      * <br />
 	 * It is generally better to use an InputStream if possible.
@@ -494,7 +496,7 @@ public interface Model
      * </p>
      * <p>The language in which to write the model is specified by the
      * <code>lang</code> argument.  Predefined values are "RDF/XML",
-     * "RDF/XML-ABBREV", "N-TRIPLE" and "N3".  The default value,
+     * "RDF/XML-ABBREV", "N-TRIPLE", "TURTLE", (and "TTL") and "N3".  The default value,
      * represented by <code>null</code> is "RDF/XML".</p>
      * @param writer The output writer
      * @param lang The output language
@@ -509,7 +511,7 @@ public interface Model
      * </p>
      * <p>The language in which to write the model is specified by the
      * <code>lang</code> argument.  Predefined values are "RDF/XML",
-     * "RDF/XML-ABBREV", "N-TRIPLE" and "N3".  The default value,
+     * "RDF/XML-ABBREV", "N-TRIPLE", "TURTLE", (and "TTL") and "N3".  The default value,
      * represented by <code>null</code>, is "RDF/XML".</p>
      * @param writer The output writer
      * @param base The base uri for relative URI calculations.
@@ -537,7 +539,7 @@ public interface Model
      * </p>
      * <p>The language in which to write the model is specified by the
      * <code>lang</code> argument.  Predefined values are "RDF/XML",
-     * "RDF/XML-ABBREV", "N-TRIPLE" and "N3".  The default value,
+     * "RDF/XML-ABBREV", "N-TRIPLE", "TURTLE", (and "TTL") and "N3".  The default value,
      * represented by <code>null</code>, is "RDF/XML".</p>
      * @param out The output stream to which the RDF is written
      * @param lang The output langauge
@@ -550,7 +552,7 @@ public interface Model
      * </p>
      * <p>The language in which to write the model is specified by the
      * <code>lang</code> argument.  Predefined values are "RDF/XML",
-     * "RDF/XML-ABBREV", "N-TRIPLE" and "N3".  The default value,
+     * "RDF/XML-ABBREV", "N-TRIPLE", "TURTLE", (and "TTL") and "N3".  The default value,
      * represented by <code>null</code>, is "RDF/XML".</p>
      * @param out The output stream to which the RDF is written
      * @param base The base uri to use when writing relative URI's. <code>null</code>
@@ -1027,5 +1029,5 @@ public interface Model
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: Model.java,v 1.71 2008-01-02 12:05:48 andy_seaborne Exp $
+ * $Id: Model.java,v 1.72 2008-03-14 16:07:38 andy_seaborne Exp $
  */
