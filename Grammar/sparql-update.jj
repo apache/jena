@@ -40,6 +40,10 @@ TOKEN [IGNORE_CASE] :
   <MODIFY:      "modify">
 | <INSERT:      "insert">
 | <DELETE:      "delete">
+
+| <ADD:         "add">
+| <REMOVE:      "remove">
+
 | <LOAD:        "load" >
 | <CLEAR:       "clear" >
 | <CREATE:      "create" >
@@ -103,6 +107,26 @@ UpdatePattern Insert() :
     template = ConstructTemplate() { up.setInsertTemplate(template) ; }
     { return up ; }
 }
+
+UpdatePattern Add() :
+{ UpdateInsert up = new UpdateAdd() ; String iri ;  Template triples ; }
+{
+    <ADD> 
+    ((<INTO>)? iri = IRIref() { up.addGraphName(iri) ; } )*
+    // TODO Better triples
+    triple = TriplesBlock() { up.setTriplesBlock() ; }
+    { return up ; }
+}
+
+UpdatePattern Remove() :
+{ UpdateInsert up = new UpdateRemove() ; String iri ; }
+{
+    <REMOVE> 
+    ((<FROM>)? iri = IRIref() { up.addGraphName(iri) ; } )*
+    triple = TriplesBlock() { up.setTriplesBlock() ; }
+    { return up ; }
+}
+
 
 String GraphIRI() : { String iri ; }
 {
@@ -332,6 +356,23 @@ void ConstructTriples(TemplateGroup acc) : { }
     (<DOT> (ConstructTriples(acc))? )?
 }
 
+// -------- Triples (like COnstrust but no variables) patterns
+
+Template TriplesBlock() : { }
+{
+    { TemplateGroup g = new TemplateGroup() ; }
+  <LBRACE>
+    (ConstructTriples(g))?
+  <RBRACE>
+    { return g ; }
+}
+
+void Triples(TemplateGroup acc) : { }
+{
+    TriplesSameSubject(acc)
+    (<DOT> (ConstructTriples(acc))? )?
+}
+
 // -------- Triple lists with property and object lists
 
 void TriplesSameSubject(TripleCollector acc) : { Node s ; }
@@ -349,10 +390,6 @@ void PropertyListNotEmpty(Node s, TripleCollector acc) : { Node p ; }
   p = Verb()
   ObjectList(s, p, acc)
   (<SEMICOLON> (p = Verb() ObjectList(s, p, acc))? )*
-
-
-
-
 }
 
 void PropertyList(Node s, TripleCollector acc) : { }
@@ -829,40 +866,15 @@ TOKEN [IGNORE_CASE] :
    < BASE: "base" >
 | < PREFIX: "prefix" >
 
-// Result forms
-| < SELECT: "select" >
-| < DISTINCT: "distinct" >
-| < DESCRIBE: "describe" >
-| < CONSTRUCT: "construct" >
-| < ASK: "ask" >
-
-| < LIMIT: "limit" >
-| < OFFSET: "offset" >
-| < ORDER: "order" >
-| < BY: "by" >
-
-
-
-
 | < ASC: "asc" >
 | < DESC: "desc" >
-
-// Dataset
-| < NAMED: "named" >
 | < FROM: "from" >
 
 // Graph pattern operators 
 | < WHERE: "where" >
-| < AND: "and" >
 | < GRAPH: "graph" >
 | < OPTIONAL: "optional" >
 | < UNION: "union" >
-
-
-
-
-
-
 | < FILTER: "filter" >
 
 // Expression operators
