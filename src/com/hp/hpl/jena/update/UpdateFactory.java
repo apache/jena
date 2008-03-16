@@ -9,6 +9,7 @@ package com.hp.hpl.jena.update;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.io.Reader;
 
 import com.hp.hpl.jena.sparql.modify.lang.ParserSPARQLUpdate;
 
@@ -53,6 +54,15 @@ public class UpdateFactory
         return update ;
     }
 
+    /** Create an UpdateRequest by reading it from a Reader */
+    private static UpdateRequest read(Reader in)
+    {
+        ParserSPARQLUpdate p = new ParserSPARQLUpdate() ;
+        UpdateRequest update = new UpdateRequest() ;
+        p.parse(update, in) ;
+        return update ;
+    }
+    
 }
 
 /*

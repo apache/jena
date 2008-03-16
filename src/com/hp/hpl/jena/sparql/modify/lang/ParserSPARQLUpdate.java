@@ -6,9 +6,12 @@
 
 package com.hp.hpl.jena.sparql.modify.lang;
 
+import java.io.FileReader;
 import java.io.InputStream;
 import java.io.Reader;
 import java.io.StringReader;
+
+import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.shared.JenaException;
 
@@ -27,16 +30,24 @@ public class ParserSPARQLUpdate
     public UpdateRequest parse(UpdateRequest update, String queryString)
     {
         Reader r = new StringReader(queryString) ;
-        return parse(update, r) ;
+        return _parse(update, r) ;
     }
     
     public UpdateRequest parse(UpdateRequest update, InputStream in)
     {
         Reader r = FileUtils.asBufferedUTF8(in) ;
-        return parse(update, r) ;
+        return _parse(update, r) ;
+    }
+
+    /** Use with care - Reader must be UTF-8 */ 
+    public UpdateRequest parse(UpdateRequest update, Reader r)
+    {
+        if ( r instanceof FileReader )
+            LogFactory.getLog(this.getClass()).warn("FileReader passe to ParserSPARQLUpdate.parse - use a FileInputStream") ;
+        return _parse(update, r) ;
     }
     
-    private UpdateRequest parse(UpdateRequest update, Reader r)
+    private UpdateRequest _parse(UpdateRequest update, Reader r)
     {
         SPARQLUpdateParser parser = null ;
         try {
