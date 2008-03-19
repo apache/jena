@@ -10,13 +10,15 @@ package com.hp.hpl.jena.sdb.script;
 import com.hp.hpl.jena.assembler.Assembler;
 import com.hp.hpl.jena.assembler.Mode;
 import com.hp.hpl.jena.assembler.assemblers.AssemblerBase;
-import com.hp.hpl.jena.sparql.util.GraphUtils;
 import com.hp.hpl.jena.rdf.model.Literal;
 import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.Resource;
+import com.hp.hpl.jena.vocabulary.RDF;
+
+import com.hp.hpl.jena.sparql.util.graph.GraphUtils;
+
 import com.hp.hpl.jena.sdb.assembler.AssemblerVocab;
 import com.hp.hpl.jena.sdb.assembler.CommandAssemblerException;
-import com.hp.hpl.jena.vocabulary.RDF;
 
 public class CmdDescAssembler extends AssemblerBase implements Assembler
 {

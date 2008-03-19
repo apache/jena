@@ -10,11 +10,13 @@ package com.hp.hpl.jena.sdb.assembler;
 import com.hp.hpl.jena.assembler.Assembler;
 import com.hp.hpl.jena.assembler.Mode;
 import com.hp.hpl.jena.assembler.assemblers.AssemblerBase;
-import com.hp.hpl.jena.query.QueryFactory;
-import com.hp.hpl.jena.sparql.util.FmtUtils;
-import com.hp.hpl.jena.sparql.util.GraphUtils;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.util.FileManager;
+
+import com.hp.hpl.jena.sparql.util.FmtUtils;
+import com.hp.hpl.jena.sparql.util.graph.GraphUtils;
+
+import com.hp.hpl.jena.query.QueryFactory;
 
 
 public class QueryAssembler extends AssemblerBase implements Assembler

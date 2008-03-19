@@ -21,15 +21,11 @@ import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.ResourceFactory;
-import com.hp.hpl.jena.sdb.sql.RS;
-import com.hp.hpl.jena.sdb.sql.ResultSetJDBC;
-import com.hp.hpl.jena.sdb.sql.SDBConnection;
-import com.hp.hpl.jena.sdb.sql.SDBConnectionHolder;
-import com.hp.hpl.jena.sdb.sql.SDBExceptionSQL;
-import com.hp.hpl.jena.sdb.sql.SQLUtils;
-import com.hp.hpl.jena.sdb.sql.TableUtils;
-import com.hp.hpl.jena.sparql.util.GraphUtils;
 import com.hp.hpl.jena.util.FileUtils;
+
+import com.hp.hpl.jena.sparql.util.graph.GraphUtils;
+
+import com.hp.hpl.jena.sdb.sql.*;
 
 // Refactor
 //   Name->BlobBytes class

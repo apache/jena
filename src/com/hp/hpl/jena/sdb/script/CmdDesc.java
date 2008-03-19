@@ -13,12 +13,14 @@ import java.util.List;
 import arq.cmdline.CmdLineArgs;
 
 import com.hp.hpl.jena.assembler.assemblers.AssemblerBase;
-import com.hp.hpl.jena.sparql.util.GraphUtils;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.Resource;
+import com.hp.hpl.jena.util.FileManager;
+
+import com.hp.hpl.jena.sparql.util.graph.GraphUtils;
+
 import com.hp.hpl.jena.sdb.SDBException;
 import com.hp.hpl.jena.sdb.util.Pair;
-import com.hp.hpl.jena.util.FileManager;
 
 /** Java description of a command - class and arguments. The assmbler build one of these */
 

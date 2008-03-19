@@ -10,12 +10,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.hp.hpl.jena.assembler.assemblers.AssemblerBase;
-import com.hp.hpl.jena.sparql.util.GraphUtils;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.Resource;
+import com.hp.hpl.jena.util.FileManager;
+
+import com.hp.hpl.jena.sparql.util.graph.GraphUtils;
+
 import com.hp.hpl.jena.sdb.SDBException;
 import com.hp.hpl.jena.sdb.assembler.AssemblerVocab;
-import com.hp.hpl.jena.util.FileManager;
 
 /** Java description a script : the assmbler build one of these */ 
 

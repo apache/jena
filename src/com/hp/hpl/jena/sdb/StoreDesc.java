@@ -12,6 +12,9 @@ import org.apache.commons.logging.LogFactory;
 import com.hp.hpl.jena.assembler.assemblers.AssemblerBase;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.Resource;
+
+import com.hp.hpl.jena.sparql.util.graph.GraphUtils;
+
 import com.hp.hpl.jena.sdb.assembler.AssemblerVocab;
 import com.hp.hpl.jena.sdb.shared.Env;
 import com.hp.hpl.jena.sdb.sql.MySQLEngineType;
@@ -19,7 +22,6 @@ import com.hp.hpl.jena.sdb.sql.SDBConnectionDesc;
 import com.hp.hpl.jena.sdb.store.DatabaseType;
 import com.hp.hpl.jena.sdb.store.FeatureSet;
 import com.hp.hpl.jena.sdb.store.LayoutType;
-import com.hp.hpl.jena.sparql.util.GraphUtils;
 
 
 public class StoreDesc
