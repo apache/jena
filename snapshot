@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Where to move the jars to
-LIBDIRS=AFS
+LIBDIRS=AFS Joseki3
 # Where to add the source zip.
 SRDDIRS=AFS
 

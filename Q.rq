@@ -1,6 +1,9 @@
-PREFIX : <http://example/>
-PREFIX  apf: <http://jena.hpl.hp.com/ARQ/property#>
-PREFIX  rdfs:   <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX  owl:    <http://www.w3.org/2002/07/owl#>
+PREFIX :    <http://example.org/>
+PREFIX apf: <http://jena.hpl.hp.com/ARQ/property#>
 
-DESCRIBE * { ?s ?p ?o }
+SELECT ?ns ?ln
+{ 
+    :x ?p 1 .
+    (?p) apf:splitIRI (?ns ?ln) .
+    :y ?q 2 .
+}
