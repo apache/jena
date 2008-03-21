@@ -20,6 +20,8 @@ SDB v1.1
   Migration: drop indexes with SBD 1.0 tools, create indexes with SDB 1.1 tools
   Manaual deletion of all secondary indexes via DB admin tools also will work 
 
++ Assembler structures clarified.  [document on wiki]
+
 + SQL code generation made more regular.
 
 SDB v1.0

@@ -1,6 +1,8 @@
 SDB ToDo list (and general notes)
 =================================
 
+** Check documentation about assemlber structures on wiki.
+
 ** In progress
    Improve SQL generation for modifiers.
    SqlDistinct/SqlRename/SqlSlice/SqlProject will no longer be real SqlNodes
@@ -8,11 +10,16 @@ SDB ToDo list (and general notes)
 ** Test more LimitOffSetTranslatrions
    See Compile.compile 
 
-** MySQL limitation: TEXT in column is limited to 64K.
-
-
 ==== Wiki
 + Document assembler for dataset on wiki
+<#dataset> rdf:type sdb:DatasetStore ;
+    sdb:store <#store> .
+<#store> rdf:type sdb:Store ;
+    sdb:layout         "layout2/index" ;
+    sdb:connection     <#conn> .
+<#conn> rdf:type sdb:SDBConnection ;
+
+
   And model assembler
 + Break out the merge query section into a separate wiki page.
 
