@@ -14,7 +14,7 @@ import com.hp.hpl.jena.sparql.engine.binding.Binding;
 /** Common, simple case:
  *  <ul> 
  *  <li>subject arguments is not a list</li>
- *  <li>object is a liost</li>
+ *  <li>object is a list</li>
  *  <li>call the implementation with one binding at a time</li>
  *  </ul> 
  * 

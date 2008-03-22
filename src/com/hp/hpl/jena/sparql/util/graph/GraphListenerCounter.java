@@ -44,6 +44,12 @@ public abstract class GraphListenerCounter extends GraphListenerBase
         this.addNotePoint = addTickCount ;
         this.deleteNotePoint = deleteTickCount ;
     }
+    
+    public void reset()
+    { 
+        addCount = 0 ;
+        deleteCount = 0 ; 
+    }
 
     //@Override
     public void notifyEvent(Graph source, Object value)

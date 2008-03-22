@@ -24,6 +24,14 @@ public class GraphLoadMonitor extends GraphListenerCounter
         resetTimer() ;
     }
     
+    public void startMonitor()
+    {
+        resetTimer() ;
+    }
+    
+    public void finishMonitor()
+    {}
+    
     public void resetTimer()
     {
         timer = new Timer() ;
@@ -71,6 +79,24 @@ public class GraphLoadMonitor extends GraphListenerCounter
     //@Override
     protected void deleteTick()
     {}
+    
+//    //@Override
+//    protected void startRead()
+//    { startMonitor() ; }
+//    
+//            
+//    //@Override
+//    protected void finishRead()
+//    {
+//        printAtEnd() ;
+//        finishMonitor() ; 
+//    }
+//
+//    private void printAtEnd()
+//    {}
+    
+    
+    
 }
 /*
  * (c) Copyright 2008 Hewlett-Packard Development Company, LP
