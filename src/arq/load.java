@@ -95,7 +95,9 @@ public class load extends CmdUpdate
 
     private void monitor(Graph graph)
     {
-        graph.getEventManager().register(new GraphLoadMonitor(20000,false)) ;
+        GraphLoadMonitor m = new GraphLoadMonitor(20000,false) ;
+        //m.setSummaryLabel(getCommandName()) ;
+        graph.getEventManager().register(m)  ;
     }
 }
 

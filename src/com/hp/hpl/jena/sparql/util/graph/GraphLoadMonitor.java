@@ -16,6 +16,8 @@ public class GraphLoadMonitor extends GraphListenerCounter
     Timer timer = null ;
     private long lastTime = 0 ;
     private boolean displayMemory = false ;
+    String label = null ;
+    String summaryLabel = null ;
         
     public GraphLoadMonitor(int addNotePoint, boolean displayMemory)
     {
@@ -24,16 +26,24 @@ public class GraphLoadMonitor extends GraphListenerCounter
         resetTimer() ;
     }
     
+    public void setLabel(String label) { this.label = label ; }
+    public void setSummaryLabel(String label) { this.summaryLabel = label ; }
+    
     public void startMonitor()
     {
         resetTimer() ;
     }
     
     public void finishMonitor()
-    {}
+    {
+        if ( timer != null )
+            timer.endTimer() ;
+    }
     
     public void resetTimer()
     {
+        if ( timer != null )
+            timer.endTimer() ;
         timer = new Timer() ;
         timer.startTimer();
     }
@@ -52,19 +62,21 @@ public class GraphLoadMonitor extends GraphListenerCounter
         long tpsAvg = (count * 1000L) / soFar;
 
         String msg = "Add: "+num(count)+" triples  (Batch: "+num(tpsBatch)+" / Run: "+num(tpsAvg)+")" ;
+        if ( label != null )
+            msg = msg+label ;
         if ( displayMemory )
         {
             long mem = Runtime.getRuntime().totalMemory() ;
             long free = Runtime.getRuntime().freeMemory() ;
             msg = msg+"   [M:"+num(mem)+"/F:"+num(free)+"]" ;
         }
-        System.out.println(msg) ;
+        println(label, msg) ;
 
         if ( ticks > 0 && (ticks%10) == 0 )
         {
             DecimalFormat f = new DecimalFormat("#,##0.0") ;
-            String x = f.format(soFar/1000F) ;
-            System.out.println("  Elapsed: "+x+" seconds") ;
+            String x = num(soFar/1000F) ;
+            println(label, "  Elapsed: "+x+" seconds") ;
         }
 
         lastTime = soFar ;        
@@ -75,25 +87,47 @@ public class GraphLoadMonitor extends GraphListenerCounter
         return StringUtils.str(v) ;
     }
     
+    private static String num(float value)
+    {
+        DecimalFormat f = new DecimalFormat("#,##0.0") ;
+        String x = f.format(value) ;
+        return x ;
+    }
+    
     
     //@Override
     protected void deleteTick()
     {}
     
-//    //@Override
-//    protected void startRead()
-//    { startMonitor() ; }
-//    
-//            
-//    //@Override
-//    protected void finishRead()
-//    {
-//        printAtEnd() ;
-//        finishMonitor() ; 
-//    }
-//
-//    private void printAtEnd()
-//    {}
+    //@Override
+    protected void startRead()
+    { startMonitor() ; }
+    
+            
+    //@Override
+    protected void finishRead()
+    {
+        finishMonitor() ;
+        printAtEnd() ;
+    }
+    
+    private void printAtEnd()
+    {
+        long timeMilli = timer.getTimeInterval() ;
+        println(summaryLabel, num(getAddCount())+
+                              " triples: loaded in "+
+                              num(timeMilli/1000.0F)+
+                              " seconds ["+
+                              num(1000F*getAddCount()/timeMilli)+
+                              " triples/s]") ;
+    }
+    
+    private static void println(String label, String line)
+    {
+        if ( label != null )
+            System.out.print(label) ;
+        System.out.println(line) ;
+    }
     
     
     
