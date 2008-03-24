@@ -41,7 +41,7 @@ public class PlainFormat implements ResultSetProcessor
     public void start(QuerySolution qs)
     {
         count++ ;
-        insertLineNumber() ;
+        //insertLineNumber() ;
         first = true ;
     }
     
@@ -57,6 +57,7 @@ public class PlainFormat implements ResultSetProcessor
         out.print("( ?"+varName+" = "+s+" )") ;
         first = false ;
     }
+    
     void insertLineNumber()
     {
         if ( ! lineNumbers )
