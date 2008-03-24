@@ -23,7 +23,7 @@ import com.hp.hpl.jena.rdf.model.* ;
   *  </p>
   * 
   * @author Andy Seaborne
-  * @version $Id: dbcreate.java,v 1.10 2008-01-02 12:08:16 andy_seaborne Exp $
+  * @version $Id: dbcreate.java,v 1.11 2008-03-24 15:52:25 andy_seaborne Exp $
   */ 
  
 public class dbcreate extends DBcmd
@@ -33,7 +33,8 @@ public class dbcreate extends DBcmd
         "dbcreate [--spec spec] | [db_description] [--model name]" ,
         "  where db_description is" ,
         "    --db JDBC URL --dbType type" ,
-        "    --dbUser user --dbPassword password" 
+        "    --dbUser user --dbPassword password",
+        "    --driver classname"
      } ;
 
     public static void main(String[] args)
