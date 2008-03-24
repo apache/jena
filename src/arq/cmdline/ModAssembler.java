@@ -8,10 +8,10 @@ package arq.cmdline;
 
 import arq.cmd.CmdException;
 
-import com.hp.hpl.jena.query.Dataset;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.shared.JenaException;
 import com.hp.hpl.jena.shared.NotFoundException;
+
 import com.hp.hpl.jena.sparql.ARQException;
 import com.hp.hpl.jena.sparql.core.assembler.AssemblerUtils;
 
@@ -49,11 +49,11 @@ public class ModAssembler extends ModBase
     
     // Should subclass and apply typing.
     
-    protected Object create(Resource type)
+    public Object create(Resource type)
     {
         Object thing = null ;
         try {
-            thing = (Dataset)AssemblerUtils.build(assemblerFile, type) ;
+            thing = AssemblerUtils.build(assemblerFile, type) ;
         }
         catch (ARQException ex) { throw ex; }
         catch (NotFoundException ex)
