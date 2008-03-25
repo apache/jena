@@ -48,6 +48,8 @@ public class GraphLoadMonitor extends GraphListenerCounter
         timer.startTimer();
     }
 
+    public long triplesLoaded() { return getAddCount() ; }
+    
     //@Override
     protected void addTick()
     {
