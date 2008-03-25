@@ -83,7 +83,7 @@ public class OpVars
         public void visit(OpTable opTable)
         {
             // Only the variables with values in the tables
-            // (Whenbuilding, undefs didn't get into bindings so no variable mentioned) 
+            // (When building, undefs didn't get into bindings so no variable mentioned) 
             Table t = opTable.getTable() ;
             acc.addAll(t.getVars());
         }
@@ -93,7 +93,7 @@ public class OpVars
             // Seems a tad wasteful to do all that work then throw it away.
             // But it needs the walker redone.
             // TODO Rethink walker for part walks. 
-            // And note these two classes are the only ones using the walker.
+            // Better: extend a Walking visitor - OpWalker.Walker
             acc.clear() ;
             acc.addAll(opProject.getVars()) ;
         }
@@ -101,7 +101,7 @@ public class OpVars
         public void visit(OpAssign opAssign)
         {
             acc.addAll(opAssign.getVarExprList().getVars()) ;
-            opAssign.getSubOp().visit(this) ;
+            //opAssign.getSubOp().visit(this) ;
         }
     }
     
@@ -122,17 +122,6 @@ public class OpVars
                 Set x = sc.getExpression().getVarsMentioned() ;
                 acc.addAll(x) ;
             }
-        }
-
-        public void visit(OpProject opProject)
-        {
-            acc.clear() ;
-            acc.addAll(opProject.getVars()) ;
-        }
-        
-        public void visit(OpAssign opAssign)
-        {
-            acc.addAll(opAssign.getVarExprList().getVars()) ;
         }
     }
 

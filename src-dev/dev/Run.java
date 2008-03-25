@@ -13,19 +13,21 @@ import arq.sparql;
 import arq.sse_query;
 
 import com.hp.hpl.jena.graph.Triple;
+
+import com.hp.hpl.jena.sparql.algebra.*;
+import com.hp.hpl.jena.sparql.algebra.op.OpBGP;
+import com.hp.hpl.jena.sparql.algebra.op.OpJoin;
+import com.hp.hpl.jena.sparql.algebra.op.OpLeftJoin;
+import com.hp.hpl.jena.sparql.core.BasicPattern;
+
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryFactory;
-import com.hp.hpl.jena.sparql.algebra.Algebra;
-import com.hp.hpl.jena.sparql.algebra.Op;
-import com.hp.hpl.jena.sparql.algebra.Transform;
-import com.hp.hpl.jena.sparql.algebra.TransformCopy;
-import com.hp.hpl.jena.sparql.algebra.op.OpBGP;
-import com.hp.hpl.jena.sparql.core.BasicPattern;
 
 public class Run
 {
     public static void main(String[] argv) throws Exception
     {
+        code() ; System.exit(0) ;
         runUpdate() ; System.exit(0) ;
         
         //QueryEngineMain.register() ;
@@ -40,15 +42,20 @@ public class Run
         System.exit(0) ;
     }
     
+    // Can be a visitor because we dont change the Op structure.  But we don't do that do we? 
     static class TransformBGP extends TransformCopy
     {
-        // Scope stack
-        Stack scope = new Stack() ;
+        // Scope stack of mentioned variables (fixed and optional)
+        private Stack scope = new Stack() ;
         
         public TransformBGP()
-        {
-            
-        }
+        { }
+        
+//        public Op transform(OpJoin opJoin, Op left, Op right)
+//        { return super.transform(opJoin, left, right) ; }
+//        
+//        public Op transform(OpLeftJoin opLeftJoin, Op left, Op right)
+//        { return super.transform(opLeftJoin, left, right) ; }
         
         public Op transform(OpBGP opBGP)
         {
@@ -59,6 +66,7 @@ public class Run
             for ( Iterator iter = pattern.getList().listIterator() ; iter.hasNext() ; )
             {
                 Triple triple = (Triple)iter.next();
+                System.out.println("Process: "+triple) ;
                 pattern2.add(triple) ;
             }
             return new OpBGP(pattern2) ; 
@@ -72,9 +80,12 @@ public class Run
         Transform t = new TransformBGP() ;
         
         // see Rewrite.java
-        Query q = QueryFactory.create("SELECT * { ?s ?p ?o FILTER(?o = 3) }") ;
+        Query q = QueryFactory.create("SELECT * { ?s ?p ?o FILTER(sameTerm(?o,3)) }") ;
         Op op = Algebra.compile(q, true) ;
         op = Algebra.optimize(op) ;
+        
+        op = Transformer.transform(new TransformBGP(), op) ;
+        
         System.out.println(op) ; 
         
     }

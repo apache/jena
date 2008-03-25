@@ -13,31 +13,33 @@ public class OpWalker
 {
     public static void walk(Op op, OpVisitor visitor)
     {
-        op.visit(new Walker(visitor)) ;
+        op.visit(new WalkerVisitor(visitor)) ;
     }
     
-    private static class Walker implements OpVisitor
+    public static class WalkerVisitor implements OpVisitor
     {
         private OpVisitor visitor ;
 
-        public Walker(OpVisitor visitor) { this.visitor = visitor ; }
+        // If using this as a superclass, remember to call super.visit.
+        public WalkerVisitor() { this(null) ; }
+        public WalkerVisitor(OpVisitor visitor) { this.visitor = visitor ; }
         
         protected void visit2(Op2 op)
         {
             op.getLeft().visit(this) ;
             op.getRight().visit(this) ;
-            op.visit(visitor) ;        
+            if ( visitor != null ) op.visit(visitor) ;        
         }
         
         protected void visit1(Op1 op)
         {
             op.getSubOp().visit(this) ;
-            op.visit(visitor) ;        
+            if ( visitor != null ) op.visit(visitor) ;        
         }
         
         protected void visit0(Op0 op)         
         {  
-            op.visit(visitor) ; 
+            if ( visitor != null ) op.visit(visitor) ; 
         }
         
         public void visit(OpBGP opBGP)
