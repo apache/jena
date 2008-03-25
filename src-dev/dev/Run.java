@@ -46,11 +46,17 @@ public class Run
         public Op transform(OpBGP opBGP)
         {
             BasicPattern pattern = opBGP.getPattern() ;
+            BasicPattern pattern2 = new BasicPattern() ;
+            
+            // Choose order.
             for ( Iterator iter = pattern.getList().listIterator() ; iter.hasNext() ; )
             {
                 Triple triple = (Triple)iter.next();
+                pattern2.add(triple) ;
             }
-            return super.transform(opBGP) ;
+            return new OpBGP(pattern2) ; 
+            
+            //return super.transform(opBGP) ;
         }
     }
     
