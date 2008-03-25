@@ -69,15 +69,20 @@ void Update() : { }
 {
     (
         { UpdatePattern upPat = null ; Element el ; }
-        ( upPat = Modify() | upPat = Insert() | upPat = Delete() ) 
+        ( upPat = Modify() | upPat = Insert() | upPat = Delete() )
         ( el = WhereClause() { upPat.setPattern(el) ; } )?
         { getRequest().addUpdate(upPat) ; }
+    ) |
+    (
+      { UpdateData upData = null ; }
+      (upData = Add() | upData = Remove() )
+      { getRequest().addUpdate(upData) ; }
     ) |
     (
       { Update up = null ; }
       ( up = Load() | up = Clear() )
       { getRequest().addUpdate(up) ; }
-    )
+    ) 
 }
 
 UpdateModify Modify() : 
@@ -108,23 +113,23 @@ UpdatePattern Insert() :
     { return up ; }
 }
 
-UpdatePattern Add() :
-{ UpdateInsert up = new UpdateAdd() ; String iri ;  Template triples ; }
+UpdateData Add() :
+{ UpdateAdd update = new UpdateAdd() ; String iri ;  Graph triples ; }
 {
     <ADD> 
-    ((<INTO>)? iri = IRIref() { up.addGraphName(iri) ; } )*
+    ((<INTO>)? iri = IRIref() { update.addGraphName(iri) ; } )*
     // TODO Better triples
-    triple = TriplesBlock() { up.setTriplesBlock() ; }
-    { return up ; }
+    triples = TriplesDataBlock() { update.setData(triples) ; }
+    { return update ; }
 }
 
-UpdatePattern Remove() :
-{ UpdateInsert up = new UpdateRemove() ; String iri ; }
+UpdateData Remove() :
+{ UpdateRemove update = new UpdateRemove() ; String iri ; Graph triples ; }
 {
     <REMOVE> 
-    ((<FROM>)? iri = IRIref() { up.addGraphName(iri) ; } )*
-    triple = TriplesBlock() { up.setTriplesBlock() ; }
-    { return up ; }
+    ((<FROM>)? iri = IRIref() { update.addGraphName(iri) ; } )*
+    triples = TriplesDataBlock() { update.setData(triples) ; }
+    { return update ; }
 }
 
 
@@ -356,23 +361,6 @@ void ConstructTriples(TemplateGroup acc) : { }
     (<DOT> (ConstructTriples(acc))? )?
 }
 
-// -------- Triples (like COnstrust but no variables) patterns
-
-Template TriplesBlock() : { }
-{
-    { TemplateGroup g = new TemplateGroup() ; }
-  <LBRACE>
-    (ConstructTriples(g))?
-  <RBRACE>
-    { return g ; }
-}
-
-void Triples(TemplateGroup acc) : { }
-{
-    TriplesSameSubject(acc)
-    (<DOT> (ConstructTriples(acc))? )?
-}
-
 // -------- Triple lists with property and object lists
 
 void TriplesSameSubject(TripleCollector acc) : { Node s ; }
@@ -448,10 +436,6 @@ Node TriplesNode(TripleCollector acc) : { Node n ; }
   n = Collection(acc) { return n ; }
  |
   n = BlankNodePropertyList(acc) { return n ; }
-
-
-
-
 }
 
 Node BlankNodePropertyList(TripleCollector acc) : { }
@@ -462,6 +446,7 @@ Node BlankNodePropertyList(TripleCollector acc) : { }
   <RBRACKET>
     { return n ; }
 }
+
 // ------- RDF collections
 
 Node Collection(TripleCollector acc) :
@@ -487,6 +472,16 @@ Node Collection(TripleCollector acc) :
    { if ( lastCell != null )
        insert(acc, lastCell, nRDFrest, nRDFnil) ;
      return listHead ; }
+}
+
+// --------
+ 
+Graph TriplesDataBlock() : { Template tg ; Graph triples ; }
+{
+    tg = ConstructTemplate()
+    { triples = convertTemplateToTriples(tg) ; 
+      return triples ; 
+    }
 }
 
 // -------- Nodes in a graph pattern or template
@@ -678,7 +673,7 @@ Expr BuiltInCall() : { Expr expr ; Expr expr1, expr2 ; Node gn ; Token t ;}
     { return new E_Datatype(expr) ; }
 
   | <BOUND> <LPAREN> gn = Var() <RPAREN>
-    { return new E_Bound(new NodeVar(gn)) ; }
+    { return new E_Bound(new ExprVar(gn)) ; }
 
   | <SAME_TERM> <LPAREN> expr1 = Expression() <COMMA> expr2 = Expression() <RPAREN>
     { return new E_SameTerm(expr1, expr2) ; }

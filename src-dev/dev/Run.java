@@ -6,25 +6,27 @@
 
 package dev;
 
-import java.net.MalformedURLException;
+import java.util.Iterator;
 
 import arq.sparql;
 import arq.sse_query;
 
-import com.hp.hpl.jena.iri.IRI;
-import com.hp.hpl.jena.iri.IRIFactory;
-import com.hp.hpl.jena.iri.IRIRelativize;
+import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryFactory;
 import com.hp.hpl.jena.sparql.algebra.Algebra;
 import com.hp.hpl.jena.sparql.algebra.Op;
-import com.hp.hpl.jena.sparql.algebra.OpVisitorBase;
-import com.hp.hpl.jena.sparql.algebra.op.OpFilter;
+import com.hp.hpl.jena.sparql.algebra.Transform;
+import com.hp.hpl.jena.sparql.algebra.TransformCopy;
+import com.hp.hpl.jena.sparql.algebra.op.OpBGP;
+import com.hp.hpl.jena.sparql.core.BasicPattern;
 
 public class Run
 {
     public static void main(String[] argv) throws Exception
     {
+        runUpdate() ; System.exit(0) ;
+        
         //QueryEngineMain.register() ;
         String a[] = new String[]{
             //"-v",
@@ -36,20 +38,26 @@ public class Run
         sparql.main(a) ;
         System.exit(0) ;
     }
-
-    static void rewrite()
+    
+    static class TransformBGP extends TransformCopy
     {
-        //Query query = QueryFactory.create("SELECT * { ?s ?p ?o FILTER(?o = <x>) }") ;
-        Query query = QueryFactory.read("file:testing/ARQ/Optimization/opt-equals-10.rq") ;
-        Op op = Algebra.compile(query, false) ;
-        System.out.println(op) ;
-        op = Algebra.optimize(op) ;
-        System.out.println(op) ;
-        System.exit(0) ;
+        // Scope
+        
+        public Op transform(OpBGP opBGP)
+        {
+            BasicPattern pattern = opBGP.getPattern() ;
+            for ( Iterator iter = pattern.getList().listIterator() ; iter.hasNext() ; )
+            {
+                Triple triple = (Triple)iter.next();
+            }
+            return super.transform(opBGP) ;
+        }
     }
     
     public static void code()
     {
+        Transform t = new TransformBGP() ;
+        
         // see Rewrite.java
         Query q = QueryFactory.create("SELECT * { ?s ?p ?o FILTER(?o = 3) }") ;
         Op op = Algebra.compile(q, true) ;
@@ -57,33 +65,6 @@ public class Run
         System.out.println(op) ; 
         
     }
-
-    static class F extends OpVisitorBase
-    {
-        public void visit(OpFilter opFilter)
-        {
-            //WriteropFilter.getExprs()
-        }
-    }
-    
-    
-    private static void code1(String uri, String base)
-    {
-        int relFlags = IRIRelativize.SAMEDOCUMENT | IRIRelativize.CHILD ;
-        IRI baseIRI = IRIFactory.jenaImplementation().construct(base) ;
-        IRI rel = baseIRI.relativize(uri, relFlags) ;
-        
-        String s = null ; 
-        try { s = rel.toASCIIString() ; }
-        catch (MalformedURLException  ex) { s = rel.toString() ; }
-            
-        System.out.println("("+uri+" ["+base+"]) ==> <"+s+">") ;
-        
-        String s2 = baseIRI.create(s).toString() ;
-        System.out.println("     "+s2) ;
-        
-    }
-
     private static void runQParse()
     {
         String []a = { "--engine=ref", "--file=Q.rq"/*, "--print=op"*/ } ;

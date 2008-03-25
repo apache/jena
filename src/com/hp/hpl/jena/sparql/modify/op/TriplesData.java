@@ -1,36 +1,27 @@
 /*
- * (c) Copyright 2007, 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.modify;
+package com.hp.hpl.jena.sparql.modify.op;
 
-import com.hp.hpl.jena.sparql.modify.op.*;
+import java.util.ArrayList;
+import java.util.List;
 
-public interface UpdateVisitor
+import com.hp.hpl.jena.graph.Triple;
+
+public class TriplesData
 {
-    public void visit(UpdateModify modify) ;
-
-    public void visit(UpdateDelete delete) ;
-
-    public void visit(UpdateInsert insert) ;
-
-    public void visit(UpdateAdd add) ;
-
-    public void visit(UpdateRemove remove) ;
+    List triples = new ArrayList() ;
+    public TriplesData() {}
     
-    public void visit(UpdateClear clear) ;
-
-    public void visit(UpdateLoad load) ;
-
-    public void visit(UpdateDrop drop) ;
-    
-    public void visit(UpdateCreate create) ;
+    public List getTriples() { return triples; }
+    public void addTriple(Triple triple) { triples.add(triple) ; }
 }
 
 /*
- * (c) Copyright 2007, 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

@@ -9,6 +9,9 @@ package com.hp.hpl.jena.sparql.modify;
 
 import java.util.Iterator;
 
+import com.hp.hpl.jena.graph.Graph;
+import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.sparql.modify.op.*;
 import com.hp.hpl.jena.sparql.serializer.FmtTemplate;
 import com.hp.hpl.jena.sparql.serializer.FormatterElement;
@@ -27,7 +30,7 @@ public class UpdateSerializer implements UpdateVisitor
     public UpdateSerializer(IndentedWriter out, SerializationContext sCxt)
     { this.out = out ; this.sCxt = sCxt ; }
     
-    private void visitModifyHeader(String name, String word, UpdateModifyBase modify)
+    private void visitModifyHeader(String name, String word, GraphUpdateN modify)
     {
         out.print(name) ;
         for ( Iterator iter = modify.getGraphNames().iterator() ; iter.hasNext() ; )
@@ -78,6 +81,20 @@ public class UpdateSerializer implements UpdateVisitor
         visitModifyHeader("INSERT", "INTO", insert) ;
         printTemplate(insert.getInsertTemplate()) ;
         visitModifyTrailer(insert) ;
+    }
+
+    public void visit(UpdateAdd add)
+    {
+        visitModifyHeader("ADD", "INTO", add) ;
+        printGraph(add.getData()) ;
+        // No trailer
+    }
+
+    public void visit(UpdateRemove remove)
+    {
+        visitModifyHeader("REMOVE", "FROM", remove) ;
+        printGraph(remove.getData()) ;
+        // No trailer
     }
 
     public void visit(UpdateClear clear)
@@ -149,6 +166,20 @@ public class UpdateSerializer implements UpdateVisitor
         out.incIndent() ;
         FmtTemplate.format(out, sCxt, template) ;
         out.decIndent() ;
+    }
+
+    private void printGraph(Graph data)
+    {
+        out.println("{") ;
+        out.incIndent() ;
+        for ( Iterator iter = data.find(Node.ANY, Node.ANY, Node.ANY) ; iter.hasNext(); )
+        {
+            Triple t = (Triple)iter.next();
+            String s = FmtUtils.stringForTriple(t, sCxt.getPrefixMapping()) ;
+            out.println(s) ;
+        }
+        out.decIndent() ;
+        out.println("}") ;
     }
 }
 

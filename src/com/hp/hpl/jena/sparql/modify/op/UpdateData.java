@@ -1,36 +1,26 @@
 /*
- * (c) Copyright 2007, 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.modify;
+package com.hp.hpl.jena.sparql.modify.op;
 
-import com.hp.hpl.jena.sparql.modify.op.*;
+import com.hp.hpl.jena.graph.Graph;
 
-public interface UpdateVisitor
+
+public abstract class UpdateData extends GraphUpdateN
 {
-    public void visit(UpdateModify modify) ;
-
-    public void visit(UpdateDelete delete) ;
-
-    public void visit(UpdateInsert insert) ;
-
-    public void visit(UpdateAdd add) ;
-
-    public void visit(UpdateRemove remove) ;
+    Graph data = null ;
+    public void setData(Graph data)
+    { this.data = data ; }
     
-    public void visit(UpdateClear clear) ;
-
-    public void visit(UpdateLoad load) ;
-
-    public void visit(UpdateDrop drop) ;
-    
-    public void visit(UpdateCreate create) ;
+    public Graph getData()
+    { return data ; }
 }
 
 /*
- * (c) Copyright 2007, 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

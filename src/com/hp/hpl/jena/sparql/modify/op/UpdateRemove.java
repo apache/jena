@@ -1,68 +1,38 @@
 /*
- * (c) Copyright 2007, 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
 package com.hp.hpl.jena.sparql.modify.op;
 
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.Map;
-
 import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.sparql.syntax.TemplateGroup;
-import com.hp.hpl.jena.sparql.syntax.TemplateTriple;
-import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
+import com.hp.hpl.jena.sparql.modify.UpdateVisitor;
+import com.hp.hpl.jena.update.GraphStore;
 
-import com.hp.hpl.jena.util.iterator.ExtendedIterator;
-
-public class TemplateGraph extends TemplateGroup
+public class UpdateRemove extends UpdateData
 {
-    // Not subtle.  May remove or rethink if this proves not useful and a performance bottleneck. 
-    private Graph graph ;
-
-    public TemplateGraph(Graph graph)
+    protected void exec(Graph graph)
     {
-        ExtendedIterator iter = graph.find(Node.ANY, Node.ANY, Node.ANY) ;
-        while(iter.hasNext())
-        {
-            Triple triple = (Triple)iter.next();
-            super.addTriple(triple) ;
-        }
-        iter.close() ;
+        graph.getBulkUpdateHandler().delete(super.getData()) ;
     }
 
-    //@Override
-    public boolean equalIso(Object other, NodeIsomorphismMap labelMap)
+    protected void finishExec()
+    {}
+
+    protected void startExec(GraphStore graphStore, Binding binding)
+    {}
+
+    public void visit(UpdateVisitor visitor)
     {
-        if ( ! ( other instanceof TemplateGraph ) ) return false ;
-        return super.equalIso(other, labelMap) ;
+        visitor.visit(this) ;
     }
 
-    //@Override
-    public int hashCode()
-    {
-        return graph.hashCode() ;
-    }
-
-    //@Override
-    //@SuppressWarnings("unchecked")
-    public void subst(Collection s, Map bNodeMap, Binding b)
-    {
-        for ( Iterator iter = templates() ; iter.hasNext() ; )
-        {
-            TemplateTriple tt = (TemplateTriple)iter.next() ;
-            s.add(tt.getTriple()) ;
-        }
-    }
 }
 
 /*
- * (c) Copyright 2007, 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

@@ -6,7 +6,18 @@
 
 package com.hp.hpl.jena.sparql.modify.lang.parser;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+
+import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.sparql.modify.lang.ParserUpdateBase;
+import com.hp.hpl.jena.sparql.syntax.Template;
+import com.hp.hpl.jena.sparql.syntax.TemplateGroup;
+import com.hp.hpl.jena.sparql.syntax.TemplateTriple;
+import com.hp.hpl.jena.sparql.syntax.TemplateVisitor;
+import com.hp.hpl.jena.sparql.util.graph.GraphUtils;
 import com.hp.hpl.jena.update.UpdateRequest;
 
 
@@ -24,6 +35,38 @@ public class SPARQLUpdateParserBase
     }
     
     protected UpdateRequest getRequest() { return request ; }
+    
+    
+    static class TriplesCollector implements TemplateVisitor
+    {
+        private Collection acc ;
+
+        TriplesCollector(Collection acc) { this.acc = acc ; }
+        public void visit(TemplateTriple template)
+        {
+            acc.add(template.getTriple()) ;
+        }
+
+        public void visit(TemplateGroup template)
+        {
+            for ( Iterator iter = template.getTemplates().iterator() ; iter.hasNext(); )
+            {
+                Template t = (Template)iter.next();
+                t.visit(this) ;
+            }
+        }
+        
+    }
+    
+    protected Graph convertTemplateToTriples(Template template)
+    {
+        List acc = new ArrayList() ;
+        TriplesCollector collector = new TriplesCollector(acc) ;
+        template.visit(collector) ;
+        Graph g = GraphUtils.makePlainGraph() ;
+        g.getBulkUpdateHandler().add(acc) ;
+        return g ;
+    }
 }
 
 /*

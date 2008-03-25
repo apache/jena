@@ -3,10 +3,13 @@ DOCUMENT START
 NON-TERMINALS
 	SPARQLUpdate	:=	Prologue ( ( Update | Manage ) )* <EOF>
 	Update	:=	( ( Modify | Insert | Delete ) ( WhereClause )? )
+		|	( ( Add | Remove ) )
 		|	( ( Load | Clear ) )
 	Modify	:=	<MODIFY> ( GraphIRI )* <DELETE> ConstructTemplate <INSERT> ConstructTemplate
 	Delete	:=	<DELETE> ( ( <FROM> )? IRIref )* ConstructTemplate
 	Insert	:=	<INSERT> ( ( <INTO> )? IRIref )* ConstructTemplate
+	Add	:=	<ADD> ( ( <INTO> )? IRIref )* TriplesDataBlock
+	Remove	:=	<REMOVE> ( ( <FROM> )? IRIref )* TriplesDataBlock
 	GraphIRI	:=	<GRAPH> IRIref
 	Load	:=	<LOAD> ( IRIref )+ ( <INTO> IRIref )?
 	Clear	:=	<CLEAR> ( GraphIRI )?
@@ -94,6 +97,8 @@ NON-TERMINALS
 	BlankNodePropertyList	:=	<LBRACKET> PropertyListNotEmpty <RBRACKET>
 // ------- RDF collections
 	Collection	:=	<LPAREN> ( GraphNode )+ <RPAREN>
+// --------
+	TriplesDataBlock	:=	ConstructTemplate
 // -------- Nodes in a graph pattern or template
 	GraphNode	:=	VarOrTerm
 		|	TriplesNode
