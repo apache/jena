@@ -7,6 +7,7 @@
 package dev;
 
 import java.util.Iterator;
+import java.util.Stack;
 
 import arq.sparql;
 import arq.sse_query;
@@ -41,7 +42,13 @@ public class Run
     
     static class TransformBGP extends TransformCopy
     {
-        // Scope
+        // Scope stack
+        Stack scope = new Stack() ;
+        
+        public TransformBGP()
+        {
+            
+        }
         
         public Op transform(OpBGP opBGP)
         {
