@@ -224,8 +224,9 @@ public class SPARQLUpdateParser extends SPARQLUpdateParserBase implements SPARQL
   }
 
   final public UpdateData Add() throws ParseException {
-  UpdateAdd update = new UpdateAdd() ; String iri ;  Graph triples ;
-    jj_consume_token(ADD);
+  UpdateAdd update = new UpdateAdd() ;
+  String iri ;  Graph triples ; Template templ ; Token t ;
+    t = jj_consume_token(ADD);
     label_5:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -251,15 +252,17 @@ public class SPARQLUpdateParser extends SPARQLUpdateParserBase implements SPARQL
                                 update.addGraphName(iri) ;
     }
     // TODO Better triples
-        triples = TriplesDataBlock();
-                                   update.setData(triples) ;
+        templ = ConstructTemplate();
+      triples = convertTemplateToTriples(templ, t.beginLine, t.beginColumn) ;
+      update.setData(triples) ;
       {if (true) return update ;}
     throw new Error("Missing return statement in function");
   }
 
   final public UpdateData Remove() throws ParseException {
-  UpdateRemove update = new UpdateRemove() ; String iri ; Graph triples ;
-    jj_consume_token(REMOVE);
+  UpdateRemove update = new UpdateRemove() ;
+  String iri ; Graph triples ; Template templ ; Token t ;
+    t = jj_consume_token(REMOVE);
     label_6:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -284,8 +287,9 @@ public class SPARQLUpdateParser extends SPARQLUpdateParserBase implements SPARQL
       iri = IRIref();
                                 update.addGraphName(iri) ;
     }
-    triples = TriplesDataBlock();
-                                   update.setData(triples) ;
+    templ = ConstructTemplate();
+      triples = convertTemplateToTriples(templ, t.beginLine, t.beginColumn) ;
+      update.setData(triples) ;
       {if (true) return update ;}
     throw new Error("Missing return statement in function");
   }
@@ -1121,15 +1125,6 @@ public class SPARQLUpdateParser extends SPARQLUpdateParserBase implements SPARQL
      if ( lastCell != null )
        insert(acc, lastCell, nRDFrest, nRDFnil) ;
      {if (true) return listHead ;}
-    throw new Error("Missing return statement in function");
-  }
-
-// --------
-  final public Graph TriplesDataBlock() throws ParseException {
-                             Template tg ; Graph triples ;
-    tg = ConstructTemplate();
-      triples = convertTemplateToTriples(tg) ;
-      {if (true) return triples ;}
     throw new Error("Missing return statement in function");
   }
 

@@ -114,22 +114,30 @@ UpdatePattern Insert() :
 }
 
 UpdateData Add() :
-{ UpdateAdd update = new UpdateAdd() ; String iri ;  Graph triples ; }
+{ UpdateAdd update = new UpdateAdd() ; 
+  String iri ;  Graph triples ; Template templ ; Token t ;}
 {
-    <ADD> 
+    t = <ADD> 
     ((<INTO>)? iri = IRIref() { update.addGraphName(iri) ; } )*
     // TODO Better triples
-    triples = TriplesDataBlock() { update.setData(triples) ; }
-    { return update ; }
+    templ = ConstructTemplate()
+    { triples = convertTemplateToTriples(templ, t.beginLine, t.beginColumn) ;
+      update.setData(triples) ;
+      return update ;
+    }
 }
 
 UpdateData Remove() :
-{ UpdateRemove update = new UpdateRemove() ; String iri ; Graph triples ; }
+{ UpdateRemove update = new UpdateRemove() ; 
+  String iri ; Graph triples ; Template templ ; Token t ; }
 {
-    <REMOVE> 
+    t = <REMOVE> 
     ((<FROM>)? iri = IRIref() { update.addGraphName(iri) ; } )*
-    triples = TriplesDataBlock() { update.setData(triples) ; }
-    { return update ; }
+    templ = ConstructTemplate()
+    { triples = convertTemplateToTriples(templ, t.beginLine, t.beginColumn) ;
+      update.setData(triples) ;
+      return update ;
+    }
 }
 
 
@@ -472,16 +480,6 @@ Node Collection(TripleCollector acc) :
    { if ( lastCell != null )
        insert(acc, lastCell, nRDFrest, nRDFnil) ;
      return listHead ; }
-}
-
-// --------
- 
-Graph TriplesDataBlock() : { Template tg ; Graph triples ; }
-{
-    tg = ConstructTemplate()
-    { triples = convertTemplateToTriples(tg) ; 
-      return triples ; 
-    }
 }
 
 // -------- Nodes in a graph pattern or template

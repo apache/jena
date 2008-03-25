@@ -8,8 +8,8 @@ NON-TERMINALS
 	Modify	:=	<MODIFY> ( GraphIRI )* <DELETE> ConstructTemplate <INSERT> ConstructTemplate
 	Delete	:=	<DELETE> ( ( <FROM> )? IRIref )* ConstructTemplate
 	Insert	:=	<INSERT> ( ( <INTO> )? IRIref )* ConstructTemplate
-	Add	:=	<ADD> ( ( <INTO> )? IRIref )* TriplesDataBlock
-	Remove	:=	<REMOVE> ( ( <FROM> )? IRIref )* TriplesDataBlock
+	Add	:=	<ADD> ( ( <INTO> )? IRIref )* ConstructTemplate
+	Remove	:=	<REMOVE> ( ( <FROM> )? IRIref )* ConstructTemplate
 	GraphIRI	:=	<GRAPH> IRIref
 	Load	:=	<LOAD> ( IRIref )+ ( <INTO> IRIref )?
 	Clear	:=	<CLEAR> ( GraphIRI )?
@@ -97,8 +97,6 @@ NON-TERMINALS
 	BlankNodePropertyList	:=	<LBRACKET> PropertyListNotEmpty <RBRACKET>
 // ------- RDF collections
 	Collection	:=	<LPAREN> ( GraphNode )+ <RPAREN>
-// --------
-	TriplesDataBlock	:=	ConstructTemplate
 // -------- Nodes in a graph pattern or template
 	GraphNode	:=	VarOrTerm
 		|	TriplesNode

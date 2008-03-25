@@ -12,6 +12,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.hp.hpl.jena.graph.Graph;
+import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.sparql.modify.lang.ParserUpdateBase;
 import com.hp.hpl.jena.sparql.syntax.Template;
 import com.hp.hpl.jena.sparql.syntax.TemplateGroup;
@@ -19,8 +20,6 @@ import com.hp.hpl.jena.sparql.syntax.TemplateTriple;
 import com.hp.hpl.jena.sparql.syntax.TemplateVisitor;
 import com.hp.hpl.jena.sparql.util.graph.GraphUtils;
 import com.hp.hpl.jena.update.UpdateRequest;
-
-
 
 public class SPARQLUpdateParserBase
     extends ParserUpdateBase
@@ -40,11 +39,26 @@ public class SPARQLUpdateParserBase
     static class TriplesCollector implements TemplateVisitor
     {
         private Collection acc ;
+        private int line ;
+        private int col ;
 
-        TriplesCollector(Collection acc) { this.acc = acc ; }
+        TriplesCollector(Collection acc, int line, int col)
+        { 
+            this.acc = acc ;
+            this.line = line ;
+            this.col = col ;
+        }
+            
         public void visit(TemplateTriple template)
         {
-            acc.add(template.getTriple()) ;
+            Triple t = template.getTriple() ;
+            if ( t.getSubject().isVariable() ||
+                t.getPredicate().isVariable() ||
+                t.getObject().isVariable() )
+            {
+                throwParseException("Triples may not contain variables in ADD or REMOVE", line, col) ;
+            }
+            acc.add(t) ;
         }
 
         public void visit(TemplateGroup template)
@@ -58,10 +72,10 @@ public class SPARQLUpdateParserBase
         
     }
     
-    protected Graph convertTemplateToTriples(Template template)
+    protected Graph convertTemplateToTriples(Template template, int line, int col)
     {
         List acc = new ArrayList() ;
-        TriplesCollector collector = new TriplesCollector(acc) ;
+        TriplesCollector collector = new TriplesCollector(acc, line, col) ;
         template.visit(collector) ;
         Graph g = GraphUtils.makePlainGraph() ;
         g.getBulkUpdateHandler().add(acc) ;
