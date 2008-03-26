@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestBuiltinAssemblerGroup.java,v 1.7 2008-01-21 12:09:49 chris-dollin Exp $
+ 	$Id: TestBuiltinAssemblerGroup.java,v 1.8 2008-03-26 12:05:29 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.test;
@@ -9,6 +9,7 @@ package com.hp.hpl.jena.assembler.test;
 import com.hp.hpl.jena.assembler.*;
 import com.hp.hpl.jena.assembler.assemblers.*;
 import com.hp.hpl.jena.rdf.model.Resource;
+import com.hp.hpl.jena.shared.PrefixMapping;
 
 public class TestBuiltinAssemblerGroup extends AssemblerTestBase
     {
@@ -21,7 +22,8 @@ public class TestBuiltinAssemblerGroup extends AssemblerTestBase
     public void testGeneralRegistration()
         {
         assertAssemblerClass( JA.DefaultModel, DefaultModelAssembler.class );
-        assertAssemblerClass( JA.PrefixMapping, PrefixMappingAssembler.class );       
+        assertAssemblerClass( JA.PrefixMapping, PrefixMappingAssembler.class );      
+        assertAssemblerClass( JA.SinglePrefixMapping, PrefixMappingAssembler.class );      
         assertAssemblerClass( JA.FileModel, FileModelAssembler.class );       
         assertAssemblerClass( JA.OntModel, OntModelAssembler.class );       
         assertAssemblerClass( JA.OntModelSpec, OntModelSpecAssembler.class );     
@@ -60,7 +62,31 @@ public class TestBuiltinAssemblerGroup extends AssemblerTestBase
         assertInstanceOf( DocumentManagerAssembler.class, Assembler.documentManager );
         assertInstanceOf( UnionModelAssembler.class, Assembler.unionModel );
         }
+    
+    public void testRecognisesAndAssemblesSinglePrefixMapping()
+        {
+        PrefixMapping wanted = PrefixMapping.Factory.create().setNsPrefix( "P", "spoo:/" );
+        Resource r = resourceInModel( "x ja:prefix 'P'; x ja:namespace 'spoo:/'" );
+        assertEquals( wanted, Assembler.general.open( r ) );
+        }
+    
+    public void testRecognisesAndAssemblesMultiplePrefixMappings()
+        {
+        PrefixMapping wanted = PrefixMapping.Factory.create()
+            .setNsPrefix( "P", "spoo:/" ).setNsPrefix( "Q", "flarn:/" );
+        Resource r = resourceInModel
+            ( "x ja:includes y; x ja:includes z; y ja:prefix 'P'; y ja:namespace 'spoo:/'; z ja:prefix 'Q'; z ja:namespace 'flarn:/'" );
+        assertEquals( wanted, Assembler.general.open( r ) );
+        }
 
+    public static void assertEquals( PrefixMapping wanted, Object got )
+        {
+        if (got instanceof PrefixMapping && wanted.samePrefixMappingAs( (PrefixMapping) got ))
+            pass();
+        else
+            fail( "expected " + wanted + " but was: " + got );
+        }
+    
     private void assertAssemblerClass( Resource type, Class C )
         {
         assertInstanceOf( C, Assembler.general.assemblerFor( type ) );

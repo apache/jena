@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: Assembler.java,v 1.11 2008-01-18 09:43:48 chris-dollin Exp $
+ 	$Id: Assembler.java,v 1.12 2008-03-26 12:05:14 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler;
@@ -96,6 +96,7 @@ public interface Assembler
         .implementWith( JA.RDBModel, rdbModel )
         .implementWith( JA.UnionModel, unionModel )
         .implementWith( JA.PrefixMapping, prefixMapping )
+        .implementWith( JA.SinglePrefixMapping, prefixMapping )
         .implementWith( JA.FileModel, fileModel )
         .implementWith( JA.OntModel, ontModel )
         .implementWith( JA.OntModelSpec, ontModelSpec )

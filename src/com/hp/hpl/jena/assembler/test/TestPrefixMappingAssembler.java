@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestPrefixMappingAssembler.java,v 1.5 2008-01-02 12:05:55 andy_seaborne Exp $
+ 	$Id: TestPrefixMappingAssembler.java,v 1.6 2008-03-26 12:05:29 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.test;
@@ -10,6 +10,23 @@ import com.hp.hpl.jena.assembler.*;
 import com.hp.hpl.jena.assembler.assemblers.PrefixMappingAssembler;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.shared.PrefixMapping;
+
+/**
+   Tests for prefix-mapping assembler. Note that the basic atom is a
+   <i>single</i> prefix-mapping specified with a ja:prefix and ja:namespace
+   pair. If a prefix-mapping needs multiple bindings, ja:includes must be
+   used to include multiple single mappings:
+   
+   <pre>
+   whatever ja:includes [ja:prefix 'A'; ja:namespace 'namespaceForA']
+       ; ja:includes [ja:prefix 'B'; ja:namespace 'namespaceForB']
+       ...
+   </pre>
+
+    See also <i>TestBuiltinAssembler</i>.
+    
+ 	@author kers
+*/
 
 public class TestPrefixMappingAssembler extends AssemblerTestBase
     {
