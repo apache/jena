@@ -22,7 +22,9 @@ public class WriterBasePrefix
     private static final int NoSP = WriterLib.NoSP ;
 
     public static interface Fmt { void format() ; }
+    //public static Fmt fmt = new Fmt(){ public void format() {}} ;
 
+    /** Output, the write the thing with formater fmt */
     public static void output(IndentedWriter iWriter, Fmt fmt, Prologue prologue)
     {
         boolean printBase = false ;
@@ -30,7 +32,8 @@ public class WriterBasePrefix
         boolean closeBase = printBase(iWriter, prologue) ;
         boolean closePrefix = printPrefix(iWriter, prologue) ;
         
-        fmt.format() ;
+        if ( fmt != null )
+            fmt.format() ;
 
         if ( closeBase )
             WriterLib.finish(iWriter, Tags.tagBase) ;
