@@ -51,11 +51,11 @@ public class Run
         public TransformBGP()
         { }
         
-//        public Op transform(OpJoin opJoin, Op left, Op right)
-//        { return super.transform(opJoin, left, right) ; }
-//        
-//        public Op transform(OpLeftJoin opLeftJoin, Op left, Op right)
-//        { return super.transform(opLeftJoin, left, right) ; }
+        public Op transform(OpJoin opJoin, Op left, Op right)
+        { return super.transform(opJoin, left, right) ; }
+        
+        public Op transform(OpLeftJoin opLeftJoin, Op left, Op right)
+        { return super.transform(opLeftJoin, left, right) ; }
         
         public Op transform(OpBGP opBGP)
         {
