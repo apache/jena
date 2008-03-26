@@ -10,19 +10,29 @@ package com.hp.hpl.jena.sparql.core.assembler;
 import arq.cmd.CmdException;
 
 import com.hp.hpl.jena.assembler.Assembler;
+import com.hp.hpl.jena.assembler.JA;
 import com.hp.hpl.jena.assembler.assemblers.AssemblerGroup;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.util.FileManager;
-
+import com.hp.hpl.jena.rdf.model.ResourceFactory;
+import com.hp.hpl.jena.shared.PrefixMapping;
 import com.hp.hpl.jena.sparql.ARQException;
 import com.hp.hpl.jena.sparql.util.TypeNotUniqueException;
 import com.hp.hpl.jena.sparql.util.graph.GraphUtils;
+import com.hp.hpl.jena.util.FileManager;
 
 
 public class AssemblerUtils
 {
-private static boolean initialized = false ; 
+    // Wrappers for reading things form a file - assumes one of the thing per file. 
+    public static PrefixMapping readPrefixMapping(String file)
+    {
+        PrefixMapping pm = (PrefixMapping)AssemblerUtils.build(file, JA.PrefixMapping) ;
+        return pm ;
+    }
+    
+    
+    private static boolean initialized = false ; 
     
     static { init() ; } 
     
@@ -45,6 +55,12 @@ private static boolean initialized = false ;
     private static void assemblerClass(AssemblerGroup g, Resource r, Assembler a)
     {
         g.implementWith(r, a) ;
+    }
+    
+    public static Object build(String assemblerFile, String typeURI)
+    {
+        Resource type = ResourceFactory.createResource(typeURI) ;
+        return build(assemblerFile, type) ; 
     }
     
     public static Object build(String assemblerFile, Resource type)
