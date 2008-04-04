@@ -40,11 +40,11 @@ be set to include the Jena <code>.jar</code> libraries.
 <p>For quick reference, here is a list of all of the schemagen options (both command line and configuration file). The use of these options is explained in detail below.</p>
 <table width="800" border="1" cellspacing="0" cellpadding="1">
 <caption align="bottom">Table 1: schemagen options</caption>
-  <tr align="left"><th width="190">Command line option</th><th width="180">RDF config file property</th><th width="430">Meaning</th></tr>
+  <tr align="left"><th style="width:190px">Command line option</th><th style="width:180px">RDF config file property</th><th style="width:430px">Meaning</th></tr>
   <tr> <td>-a &lt;uri&gt;</td> <td>sgen:namespace</td> <td>The namespace URI for the vocabulary.
     Names with this URI as prefix are automatically included in the generated vocabulary. If not specified, the base URI of the
     ontology is used as a default (but note that some ontology documents don't define a base URI).</td> </tr>
-  <tr> <td>-c &lt;filename&gt;<br>-c &lt;url&gt;</td> <td>&nbsp;</td> <td>Specify an alternative config file.</td> </tr>
+  <tr> <td>-c &lt;filename&gt;<br />-c &lt;url&gt;</td> <td>&nbsp;</td> <td>Specify an alternative config file.</td> </tr>
   <tr> <td>--classdec &lt;string&gt;</td> <td>sgen:classdec</td> <td>Additional decoration for class header (such as <code>implements</code>)</td> </tr>
   <tr> <td>--classnamesuffix &lt;string&gt;</td> <td>sgen:classnamesuffix</td> <td>Option for adding a suffix to the generated class name, e.g. "Vocab".</td> </tr>
   <tr> <td>--classSection &lt;string&gt;</td> <td>sgen:classSection</td> <td>Section declaration comment for class section.</td> </tr>
@@ -55,7 +55,7 @@ be set to include the Jena <code>.jar</code> libraries.
   <tr> <td>-e &lt;string&gt;</td> <td>sgen:encoding</td> <td>The surface syntax of the input file (e.g. RDF/XML, N3). Defaults to RDF/XML.</td> </tr>
   <tr> <td>--footer &lt;string&gt;</td> <td>sgen:footer</td> <td>Template for standard text to add to the end of the file.</td> </tr>
   <tr> <td>--header &lt;string&gt;</td> <td>sgen:header</td> <td>Template for the file header, including the class comment.</td> </tr>
-  <tr> <td>-i &lt;filename&gt;<br>-i &lt;url&gt;</td> <td>sgen:input</td> <td>Specify the input document to load</td> </tr>
+  <tr> <td>-i &lt;filename&gt;<br />-i &lt;url&gt;</td> <td>sgen:input</td> <td>Specify the input document to load</td> </tr>
   <tr> <td>--include &lt;uri&gt;</td> <td>sgen:include</td> <td>Option for including non-local URI's in vocabulary</td> </tr>
   <tr> <td>--individualsSection &lt;string&gt;</td> <td>sgen:individualsSection</td> <td>Section declaration comment for individuals section.</td> </tr>
   <tr> <td>--individualTemplate &lt;string&gt;</td> <td>sgen:individualTemplate</td> <td>Template for writing out declarations of individuals.</td> </tr>
@@ -73,6 +73,7 @@ be set to include the Jena <code>.jar</code> libraries.
       a directory, the generated class will be placed in that directory with a
       file name formed from the generated (or given) class name with ".java" appended.</td>
   </tr>
+  <tr> <td>--nostrict</td><td>sgen:noStrict</td><td>Option to turn off strict checking for ontology classes and properties (prevents <code>ConversionExceptions</code>).</td></tr>
   <tr> <td>--ontology</td> <td>sgen:ontology</td> <td>The generated vocabulary will use the ontology API terms, in preference to RDF model API terms.</td> </tr>
   <tr> <td>--owl</td> <td>sgen:owl</td> <td>Specify that the language of the source is OWL (the default). Note that RDFS is a subset of OWL, so this setting also suffices for RDFS.</td> </tr>
   <tr> <td>--package &lt;string&gt;</td> <td>sgen:package</td> <td>Specify the Java package name.</td> </tr>
@@ -80,20 +81,29 @@ be set to include the Jena <code>.jar</code> libraries.
   <tr> <td>--propTemplate &lt;string&gt;</td> <td>sgen:propTemplate</td> <td>Template for writing out declarations of property resources.</td> </tr>
   <tr> <td>-r &lt;uri&gt;</td> <td>&nbsp;</td> <td>Specify the uri of the root node in the RDF configuration model.</td> </tr>
   <tr> <td>--rdfs</td> <td>sgen:rdfs</td> <td>Specify that the language of the source ontology is RDFS.</td> </tr>
-  <tr> <td>--strictIndividuals</td> <td>sgen:strictIndividuals</td> <td>When selecting the invdividuals to include in the output class, schemagen
+  <tr> <td>--strictIndividuals</td> <td>sgen:strictIndividuals</td> <td>When selecting the individuals to include in the output class, schemagen
     will normally include those individuals whose <code>rdf:type</code> is in the included namespaces for the vocabulary. However, if
   <code>strictIndividuals</code> is turned on, then all individuals in the output class must themselves have a URI in the included namespaces.</td> </tr>
   <tr> <td>--uppercase</td> <td>sgen:uppercase</td> <td>Option for mapping constant names to uppercase (like Java constants). Default is to leave the case of names unchanged.</td> </tr>
 </table>
 
 <h2>What does schemagen do?</h2>
-<p>
-RDFS, OWL and DAML+OIL provide a very convenient means to define a controlled vocabulary or ontology. For general ontology processing, Jena provides various API's to allow the source files to be read in and manipulated. However, when developing an application, it is frequently convenient to refer to the controlled vocabulary terms directly from Java code.  This leads typically to the declaration of constants, such as:
-<code><pre>
+<p>RDFS, OWL and DAML+OIL provide a very convenient means to define a
+controlled vocabulary or ontology. For general ontology processing, Jena
+provides various API's to allow the source files to be read in and
+manipulated. However, when developing an application, it is frequently
+convenient to refer to the controlled vocabulary terms directly from
+Java code. This leads typically to the declaration of constants, such
+as:</p>
+<pre><code>
     public static final Resource A_CLASS = new ResourceImpl( "http://example.org/schemas#a-class" );
-</pre></code>
-When these constants are defined manually, it is tedious and error-prone to maintain them in synch with the source ontology file. Schemagen automates the production of Java constants that correspond to terms in an ontology document. By automating the step from source vocabulary to Java constants, a source of error and inconsistency is removed.
-</p>
+</code></pre>
+<p>When these constants are defined manually, it is tedious and
+error-prone to maintain them in synch with the source ontology file.
+Schemagen automates the production of Java constants that correspond to
+terms in an ontology document. By automating the step from source
+vocabulary to Java constants, a source of error and inconsistency is
+removed.</p>
 <h3>Example</h3>
 <p>
 Perhaps the easiest way to explain the detail of what schemagen does is to show an example. Consider the following mini-RDF vocabulary:
@@ -122,8 +132,8 @@ Perhaps the easiest way to explain the detail of what schemagen does is to show 
 <p>We process this document with a command something like:<br />
   <code>Java jena.schemagen -i deputy.rdf -a http://example.org/eg#</code><br />
 to produce the following generated class:</p>
-<code><pre>
-/* CVS $Id: schemagen.html,v 1.14 2007-07-13 07:28:03 ian_dickinson Exp $ */
+<pre><code>
+/* CVS $Id: schemagen.html,v 1.15 2008-04-04 11:46:00 ian_dickinson Exp $ */
 
 import com.hp.hpl.jena.rdf.model.*;
 
@@ -135,10 +145,10 @@ public class Deputy {
  &nbsp;&nbsp;&nbsp;/** &lt;p&gt;The RDF model that holds the vocabulary terms&lt;/p&gt; */
  &nbsp;&nbsp;&nbsp;private static Model m_model = ModelFactory.createDefaultModel();
  &nbsp;&nbsp;&nbsp;
- &nbsp;&nbsp;&nbsp;/** &lt;p&gt;The namespace of the vocabalary as a string {@value}&lt;/p&gt; */
+ &nbsp;&nbsp;&nbsp;/** &lt;p&gt;The namespace of the vocabulary as a string {@value}&lt;/p&gt; */
  &nbsp;&nbsp;&nbsp;public static final String NS = "http://example.org/eg#";
  &nbsp;&nbsp;&nbsp;
- &nbsp;&nbsp;&nbsp;/** &lt;p&gt;The namespace of the vocabalary as a resource {@value}&lt;/p&gt; */
+ &nbsp;&nbsp;&nbsp;/** &lt;p&gt;The namespace of the vocabulary as a resource {@value}&lt;/p&gt; */
  &nbsp;&nbsp;&nbsp;public static final Resource NAMESPACE = m_model.createResource( "http://example.org/eg#" );
  &nbsp;&nbsp;&nbsp;
  &nbsp;&nbsp;&nbsp;/** &lt;p&gt;The name that everyone calls a dog&lt;/p&gt; */
@@ -154,15 +164,15 @@ public class Deputy {
  &nbsp;&nbsp;&nbsp;public static final Resource deputy = m_model.createResource( "http://example.org/eg#deputy" );
  &nbsp;&nbsp;&nbsp;
 }
-</pre></code>
+</code></pre>
 <p>Some things to note in this example. All of the named classes, properties and individuals from the source document are translated to Java constants (below we show how to be more selective than this). The properties of the named resources are <i>not</i> translated: schemagen is for giving access to the names in the vocabulary or schema, not to perform a general translation of RDF to Java. The RDFS comments from the source code are translated to Javadoc comments. Finally, we no longer directly call <code>new ResourceImpl</code>: this idiom is no longer recommended by the Jena team.
 </p>
 <p>We noted earlier that schemagen is highly configurable. One additional argument generates a vocabulary file that uses Jena's ontology API, rather than the RDF model API. We change <code>rdfs:Class</code> to <code>owl:Class</code>, and invoke<br />
   <code>Java jena.schemagen -i deputy.rdf -b http://example.org/eg# --ontology</code><br />
   to get:</p>
-<p>
+
   <pre><code>
-/* CVs $Id: schemagen.html,v 1.14 2007-07-13 07:28:03 ian_dickinson Exp $ */
+/* CVs $Id: schemagen.html,v 1.15 2008-04-04 11:46:00 ian_dickinson Exp $ */
 
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.ontology.*;
@@ -174,10 +184,10 @@ public class Deputy {
  &nbsp;&nbsp;&nbsp;/** &lt;p&gt;The ontology model that holds the vocabulary terms&lt;/p&gt; */
  &nbsp;&nbsp;&nbsp;private static OntModel m_model = ModelFactory.createOntologyModel( ProfileRegistry.OWL_LANG );
  &nbsp;&nbsp;&nbsp;
- &nbsp;&nbsp;&nbsp;/** &lt;p&gt;The namespace of the vocabalary as a string {@value}&lt;/p&gt; */
+ &nbsp;&nbsp;&nbsp;/** &lt;p&gt;The namespace of the vocabulary as a string {@value}&lt;/p&gt; */
  &nbsp;&nbsp;&nbsp;public static final String NS = "http://example.org/eg#";
  &nbsp;&nbsp;&nbsp;
- &nbsp;&nbsp;&nbsp;/** &lt;p&gt;The namespace of the vocabalary as a resource {@value}&lt;/p&gt; */
+ &nbsp;&nbsp;&nbsp;/** &lt;p&gt;The namespace of the vocabulary as a resource {@value}&lt;/p&gt; */
  &nbsp;&nbsp;&nbsp;public static final Resource NAMESPACE = m_model.createResource( "http://example.org/eg#" );
  &nbsp;&nbsp;&nbsp;
  &nbsp;&nbsp;&nbsp;/** &lt;p&gt;The name that everyone calls a dog&lt;/p&gt; */
@@ -194,7 +204,7 @@ public class Deputy {
  &nbsp;&nbsp;&nbsp;
 }
 </code></pre>
-</p>
+
 <h2>General principles</h2>
 <p>In essence, schemagen will load a single vocabulary file (imports processing is switched off in DAML and OWL), and generate a Java class that contains static constants for the named classes, properties and instances of the vocabulary. Most of the generated components of the output Java file can be controlled by option flags, and formatted with a template.  Default templates are provided for all elements, so the minimum amount of necessary information is actually very small.
 </p>
@@ -221,7 +231,7 @@ Options can be specified on the command line (when invoking schemagen), or may b
 </p>
 <table width="550" border="1" cellspacing="0" cellpadding="1">
 <caption align="bottom">Table 2: Substitutable keywords in templates</caption>
-  <tr> <th width="20%">Keyword</th> <th width="40%">Meaning</th> <th width="40%">Typical value</th> </tr>
+  <tr> <th style="width:20%">Keyword</th> <th style="width:40%">Meaning</th> <th style="width:40%">Typical value</th> </tr>
   <tr> <td>classname</td> <td>The name of the Java class being generated</td> <td>Automatically defined from the document name, or given with the <code>-n</code> option</td> </tr>
   <tr> <td>date</td> <td>The date and time the class was generated</td> <td></td> </tr>
   <tr> <td>imports</td> <td>The Java imports for this class</td> <td></td> </tr>
@@ -265,8 +275,8 @@ Options can be specified on the command line (when invoking schemagen), or may b
 <h3 id="config_file">Specifying the configuration file</h3>
 <table width="650" border="0" cellspacing="0" cellpadding="1">
   <tr>
-    <td width="140" class="syntaxPrompt">Command line </td>
-    <td class="syntax">-c &lt;<i>config-file-path</i>&gt;<br>
+    <td style="width:140px" class="syntaxPrompt">Command line </td>
+    <td class="syntax">-c &lt;<i>config-file-path</i>&gt;<br />
       -c &lt;<i>config-file-URL</i>&gt;</td>
   </tr>
   <tr>
@@ -292,7 +302,7 @@ is implied by the filename/ULRL suffix: ".n3" means N3, ".nt" means NTRIPLES,
 <h3 id="config_root">Specifying the configuration root in the configuration file</h3>
 <table width="650" border="0" cellspacing="0" cellpadding="1">
   <tr>
-    <td width="140" class="syntaxPrompt">Command line </td>
+    <td style="width:140" class="syntaxPrompt">Command line </td>
     <td class="syntax">-r &lt;<i>config-root-URI</i>&gt;</td>
   </tr>
   <tr>
@@ -316,12 +326,12 @@ is implied by the filename/ULRL suffix: ".n3" means N3, ".nt" means NTRIPLES,
 <h3 id="input">Specifying the input document</h3>
 <table width="650" border="0" cellspacing="0" cellpadding="1">
   <tr>
-    <td width="140" class="syntaxPrompt">Command line</td>
-    <td  class="syntax">-i &lt;<i>input-file-path</i>&gt;<br>
+    <td style="width:140px" class="syntaxPrompt">Command line</td>
+    <td  class="syntax">-i &lt;<i>input-file-path</i>&gt;<br />
       -i &lt;<i>input-URL</i>&gt;</td>
   </tr>
   <tr>
-    <td width="140" class="syntaxPrompt">Config file</td>
+    <td style="width:140px" class="syntaxPrompt">Config file</td>
     <td  class="syntax">&lt;sgen:input rdf:resource=&quot;<i>inputURL</i>&quot; /&gt;</td>
   </tr>
 </table>
@@ -335,12 +345,12 @@ is implied by the filename/ULRL suffix: ".n3" means N3, ".nt" means NTRIPLES,
 <h3 id="output">Specifying the output location</h3>
 <table width="650" border="0" cellspacing="0" cellpadding="1">
   <tr>
-    <td width="140" class="syntaxPrompt">Command line</td>
-    <td  class="syntax">-o &lt;<i>input-file-path</i>&gt;<br>
+    <td style="width:140px" class="syntaxPrompt">Command line</td>
+    <td  class="syntax">-o &lt;<i>input-file-path</i>&gt;<br />
       -o &lt;<i>output-dir</i>&gt;</td>
   </tr>
   <tr>
-    <td width="140" class="syntaxPrompt">Config file</td>
+    <td style="width:140px" class="syntaxPrompt">Config file</td>
     <td  class="syntax">&lt;sgen:output rdf:datatype=&quot;&amp;xsd;string&quot;&gt;<i>
       output-path-or-dir</i>&lt;/sgen:output&gt;</td>
   </tr>
@@ -358,11 +368,11 @@ is implied by the filename/ULRL suffix: ".n3" means N3, ".nt" means NTRIPLES,
   (i.e. '\n'). To switch to DOS-style line endings, use <code>--dos</code>.</p>
 <table width="650" border="0" cellspacing="0" cellpadding="1">
   <tr>
-    <td width="140" class="syntaxPrompt">Command line</td>
+    <td style="width:140px" class="syntaxPrompt">Command line</td>
     <td  class="syntax">--dos</td>
   </tr>
   <tr>
-    <td width="140" class="syntaxPrompt">Config file</td>
+    <td style="width:140px" class="syntaxPrompt">Config file</td>
     <td  class="syntax">&lt;sgen:dos rdf:datatype=&quot;&amp;xsd;boolean&quot;&gt;true&lt;/sgen:dos&gt;</td>
   </tr>
 </table>
@@ -370,11 +380,11 @@ is implied by the filename/ULRL suffix: ".n3" means N3, ".nt" means NTRIPLES,
 <h3 id="classname">Specifying the class name</h3>
 <table width="650" border="0" cellspacing="0" cellpadding="1">
   <tr>
-    <td width="140" class="syntaxPrompt">Command line</td>
+    <td style="width:140px" class="syntaxPrompt">Command line</td>
     <td  class="syntax">-n &lt;<i>class-name</i>&gt;</td>
   </tr>
   <tr>
-    <td width="140" class="syntaxPrompt">Config file</td>
+    <td style="width:140px" class="syntaxPrompt">Config file</td>
     <td  class="syntax">&lt;sgen:classname rdf:datatype=&quot;&amp;xsd;string&quot;&gt;<i>
       classname</i>&lt;/sgen:classname&gt;</td>
   </tr>
@@ -390,11 +400,11 @@ is implied by the filename/ULRL suffix: ".n3" means N3, ".nt" means NTRIPLES,
   This can be achieved by the classname-suffix option:</p>
 <table width="650" border="0" cellspacing="0" cellpadding="1">
   <tr>
-    <td width="140" class="syntaxPrompt">Command line</td>
+    <td style="width:140px" class="syntaxPrompt">Command line</td>
     <td  class="syntax">--classnamesuffix &lt;<i>suffix</i>&gt;</td>
   </tr>
   <tr>
-    <td width="140" class="syntaxPrompt">Config file</td>
+    <td style="width:140px" class="syntaxPrompt">Config file</td>
     <td  class="syntax">&lt;sgen:classnamesuffix rdf:datatype=&quot;&amp;xsd;string&quot;&gt;<i>
       suffix</i>&lt;/sgen:classnamesuffix&gt;</td>
   </tr>
@@ -406,11 +416,11 @@ is implied by the filename/ULRL suffix: ".n3" means N3, ".nt" means NTRIPLES,
 <h3 id="input">Specifying the vocabulary namespace</h3>
 <table width="650" border="0" cellspacing="0" cellpadding="0">
   <tr>
-    <td width="140" class="syntaxPrompt">Command line</td>
+    <td style="width:140px" class="syntaxPrompt">Command line</td>
     <td class="syntax">-a &lt;<i>namespace-URI</i>&gt;</td>
   </tr>
   <tr>
-    <td width="140" class="syntaxPrompt">Config file</td>
+    <td style="width:140px" class="syntaxPrompt">Config file</td>
     <td class="syntax">&lt;sgen:namespace rdf:datatype=&quot;&amp;xsd;string&quot;&gt;<i>namespace</i>&lt;/sgen:namespace&gt;</td>
   </tr>
 </table>
@@ -431,11 +441,11 @@ is implied by the filename/ULRL suffix: ".n3" means N3, ".nt" means NTRIPLES,
   option:</p>
 <table width="650" border="0" cellspacing="0" cellpadding="0">
   <tr>
-    <td width="140" class="syntaxPrompt">Command line</td>
+    <td style="width:140px" class="syntaxPrompt">Command line</td>
     <td class="syntax">--include &lt;<i>namespace-URI</i>&gt;</td>
   </tr>
   <tr>
-    <td width="140" class="syntaxPrompt">Config file</td>
+    <td style="width:140px" class="syntaxPrompt">Config file</td>
     <td class="syntax">&lt;sgen:include rdf:datatype=&quot;&amp;xsd;string&quot;&gt;<i>namespace</i>&lt;/sgen:include&gt;</td>
   </tr>
 </table>
@@ -454,11 +464,11 @@ is implied by the filename/ULRL suffix: ".n3" means N3, ".nt" means NTRIPLES,
   if they have a URI that is in the permitted namespaces for the vocabulary.</p>
 <table width="650" border="0" cellspacing="0" cellpadding="0">
   <tr>
-    <td width="140" class="syntaxPrompt">Command line</td>
+    <td style="width:140px" class="syntaxPrompt">Command line</td>
     <td class="syntax">--strictIndividuals</td>
   </tr>
   <tr>
-    <td width="140" class="syntaxPrompt">Config file</td>
+    <td style="width:140px" class="syntaxPrompt">Config file</td>
     <td class="syntax">&lt;sgen:strictIndividuals /&gt;</td>
   </tr>
 </table>
@@ -467,11 +477,11 @@ is implied by the filename/ULRL suffix: ".n3" means N3, ".nt" means NTRIPLES,
 <h3 id="input_syntax">Specifying the syntax (encoding) of the input document</h3>
 <table width="650" border="0" cellspacing="0" cellpadding="0">
   <tr>
-    <td width="140" class="syntaxPrompt">Command line</td>
+    <td style="width:140px" class="syntaxPrompt">Command line</td>
     <td class="syntax">-e &lt;<i>encoding</i>&gt;</td>
   </tr>
   <tr>
-    <td width="140" class="syntaxPrompt">Config file</td>
+    <td style="width:140px" class="syntaxPrompt">Config file</td>
     <td class="syntax">&lt;sgen:encoding rdf:datatype=&quot;&amp;xsd;string&quot;&gt;<i>encoding</i>&lt;/sgen:encoding&gt;</td>
   </tr>
 </table>
@@ -486,11 +496,11 @@ is implied by the filename/ULRL suffix: ".n3" means N3, ".nt" means NTRIPLES,
 <h3 id="ontology">Choosing the style of the generated class: ontology or plain RDF</h3>
 <table width="650" border="0" cellspacing="0" cellpadding="0">
   <tr>
-    <td width="140" class="syntaxPrompt">Command line</td>
+    <td style="width:140px" class="syntaxPrompt">Command line</td>
     <td class="syntax">--ontology</td>
   </tr>
   <tr>
-    <td width="140" class="syntaxPrompt">Config file</td>
+    <td style="width:140px" class="syntaxPrompt">Config file</td>
     <td class="syntax">&lt;sgen:ontology rdf:datatype=&quot;&amp;xsd;boolean&quot;&gt;<i>true
       or false</i>&lt;/sgen:ontology&gt;</td>
   </tr>
@@ -507,33 +517,33 @@ is implied by the filename/ULRL suffix: ".n3" means N3, ".nt" means NTRIPLES,
   selected for the constants in the generated Java class.</p>
 <table width="650" border="0" cellspacing="0" cellpadding="0">
   <tr>
-    <td width="140" class="syntaxPrompt">Command line</td>
+    <td style="width:140px" class="syntaxPrompt">Command line</td>
     <td class="syntax">--daml</td>
   </tr>
   <tr>
-    <td width="140" class="syntaxPrompt">Config file</td>
+    <td style="width:140px" class="syntaxPrompt">Config file</td>
     <td class="syntax">&lt;sgen:daml rdf:datatype=&quot;&amp;xsd;boolean&quot;&gt;true&lt;/sgen:daml&gt;</td>
   </tr>
 </table>
 <p></p>
 <table width="650" border="0" cellspacing="0" cellpadding="0">
   <tr>
-    <td width="140" class="syntaxPrompt">Command line</td>
+    <td style="width:140px" class="syntaxPrompt">Command line</td>
     <td class="syntax">--owl</td>
   </tr>
   <tr>
-    <td width="140" class="syntaxPrompt">Config file</td>
+    <td style="width:140px" class="syntaxPrompt">Config file</td>
     <td class="syntax">&lt;sgen:owl rdf:datatype=&quot;&amp;xsd;boolean&quot;&gt;true&lt;/sgen:owl&gt;</td>
   </tr>
 </table>
 <p></p>
 <table width="650" border="0" cellspacing="0" cellpadding="0">
   <tr>
-    <td width="140" class="syntaxPrompt">Command line</td>
+    <td style="width:140px" class="syntaxPrompt">Command line</td>
     <td class="syntax">--rdfs</td>
   </tr>
   <tr>
-    <td width="140" class="syntaxPrompt">Config file</td>
+    <td style="width:140px" class="syntaxPrompt">Config file</td>
     <td class="syntax">&lt;sgen:rdfs rdf:datatype=&quot;&amp;xsd;boolean&quot;&gt;true&lt;/sgen:owl&gt;</td>
   </tr>
 </table>
@@ -550,11 +560,11 @@ is implied by the filename/ULRL suffix: ".n3" means N3, ".nt" means NTRIPLES,
 <p></p>
 <table width="650" border="0" cellspacing="0" cellpadding="0">
   <tr>
-    <td width="140" class="syntaxPrompt">Command line</td>
+    <td style="width:140px" class="syntaxPrompt">Command line</td>
     <td class="syntax">--inference</td>
   </tr>
   <tr>
-    <td width="140" class="syntaxPrompt">Config file</td>
+    <td style="width:140px" class="syntaxPrompt">Config file</td>
     <td class="syntax">&lt;sgen:inference rdf:datatype=&quot;&amp;xsd;boolean&quot;&gt;true&lt;/sgen:owl&gt;</td>
   </tr>
 </table>
@@ -562,11 +572,11 @@ is implied by the filename/ULRL suffix: ".n3" means N3, ".nt" means NTRIPLES,
   <h3 id="package">Specifying the Java package</h3>
 <table width="650" border="0" cellspacing="0" cellpadding="0">
   <tr>
-    <td width="140" class="syntaxPrompt">Command line</td>
+    <td style="width:140px" class="syntaxPrompt">Command line</td>
     <td class="syntax">--package &lt;<i>package-name</i>&gt;</td>
   </tr>
   <tr>
-    <td width="140" class="syntaxPrompt">Config file</td>
+    <td style="width:140px" class="syntaxPrompt">Config file</td>
     <td class="syntax">&lt;sgen:package rdf:datatype=&quot;&amp;xsd;string&quot;&gt;<i>package-name</i>&lt;/sgen:package&gt;</td>
   </tr>
 </table>
@@ -578,11 +588,11 @@ is implied by the filename/ULRL suffix: ".n3" means N3, ".nt" means NTRIPLES,
 <h3 id="classdec">Additional decorations on the main class declaration</h3>
 <table width="650" border="0" cellspacing="0" cellpadding="0">
   <tr>
-    <td width="140" class="syntaxPrompt">Command line</td>
+    <td style="width:140px" class="syntaxPrompt">Command line</td>
     <td class="syntax">--classdec &lt;<i>class-declaration</i>&gt;</td>
   </tr>
   <tr>
-    <td width="140" class="syntaxPrompt">Config file</td>
+    <td style="width:140px" class="syntaxPrompt">Config file</td>
     <td class="syntax">&lt;sgen:classdec rdf:datatype=&quot;&amp;xsd;string&quot;&gt;<i>class-declaration</i>&lt;/sgen:classdec&gt;</td>
   </tr>
 </table>
@@ -594,11 +604,11 @@ is implied by the filename/ULRL suffix: ".n3" means N3, ".nt" means NTRIPLES,
 <h3 id="declarations">Adding general declarations within the generated class</h3>
 <table width="650" border="0" cellspacing="0" cellpadding="0">
   <tr>
-    <td width="140" class="syntaxPrompt">Command line</td>
+    <td style="width:140px" class="syntaxPrompt">Command line</td>
     <td class="syntax">--declarations &lt;<i>declarations</i>&gt;</td>
   </tr>
   <tr>
-    <td width="140" class="syntaxPrompt">Config file</td>
+    <td style="width:140px" class="syntaxPrompt">Config file</td>
     <td class="syntax">&lt;sgen:declarations rdf:datatype=&quot;&amp;xsd;string&quot;&gt;<i>declarations</i>&lt;/sgen:declarations&gt;</td>
   </tr>
 </table>
@@ -613,15 +623,15 @@ is implied by the filename/ULRL suffix: ".n3" means N3, ".nt" means NTRIPLES,
 <h3 id="omitting_sections">Omitting sections of the generated vocabulary</h3>
 <table width="650" border="0" cellspacing="0" cellpadding="0">
   <tr>
-    <td width="140" class="syntaxPrompt">Command line</td>
-    <td class="syntax">--noclasses<br>
-      --noproperties<br>
+    <td style="width:140px" class="syntaxPrompt">Command line</td>
+    <td class="syntax">--noclasses<br />
+      --noproperties<br />
       --noindividuals </td>
   </tr>
   <tr>
-    <td width="140" class="syntaxPrompt">Config file</td>
-    <td class="syntax">&lt;sgen:noclassses rdf:datatype=&quot;&amp;xsd;boolean&quot;&gt;true&lt;/sgen:noclassses&gt;<br>
-      &lt;sgen:noproperties rdf:datatype=&quot;&amp;xsd;boolean&quot;&gt;true&lt;/sgen:noproperties&gt;<br>
+    <td style="width:140px" class="syntaxPrompt">Config file</td>
+    <td class="syntax">&lt;sgen:noclassses rdf:datatype=&quot;&amp;xsd;boolean&quot;&gt;true&lt;/sgen:noclassses&gt;<br />
+      &lt;sgen:noproperties rdf:datatype=&quot;&amp;xsd;boolean&quot;&gt;true&lt;/sgen:noproperties&gt;<br />
       &lt;sgen:noindividuals rdf:datatype=&quot;&amp;xsd;boolean&quot;&gt;true&lt;/sgen:noindividuals&gt;
     </td>
   </tr>
@@ -635,23 +645,23 @@ is implied by the filename/ULRL suffix: ".n3" means N3, ".nt" means NTRIPLES,
 <h3 id="section_headings">Section header comments</h3>
 <table width="650" border="0" cellspacing="0" cellpadding="0">
   <tr>
-    <td width="140" class="syntaxPrompt">Command line</td>
-    <td class="syntax">--classSection <i>&lt;section heading&gt;</i><br>
-      --propSection<i> &lt;section heading&gt;</i><br>
-      --individualSection <i>&lt;section heading</i>&gt;<br>
-      --header <i>&lt;file header section&gt;</i><br>
+    <td style="width:140px" class="syntaxPrompt">Command line</td>
+    <td class="syntax">--classSection <i>&lt;section heading&gt;</i><br />
+      --propSection<i> &lt;section heading&gt;</i><br />
+      --individualSection <i>&lt;section heading</i>&gt;<br />
+      --header <i>&lt;file header section&gt;</i><br />
       --footer <i>&lt;file footer section&gt;</i></td>
   </tr>
   <tr>
-    <td width="140" class="syntaxPrompt">Config file</td>
+    <td style="width:140px" class="syntaxPrompt">Config file</td>
     <td class="syntax">&lt;sgen:classSection rdf:datatype=&quot;&amp;xsd;string&quot;&gt;<i>section
-      heading </i>&lt;/sgen:classSection&gt;<br>
+      heading </i>&lt;/sgen:classSection&gt;<br />
       &lt;sgen:propSection rdf:datatype=&quot;&amp;xsd;string&quot;&gt;<i>section
-      heading</i>&lt;/sgen:propSection&gt;<br>
+      heading</i>&lt;/sgen:propSection&gt;<br />
       &lt;sgen:individualSection rdf:datatype=&quot;&amp;xsd;string&quot;&gt;<i>section
-      heading</i>&lt;/sgen:individualSection&gt; <br>
+      heading</i>&lt;/sgen:individualSection&gt; <br />
       &lt;sgen:header rdf:datatype=&quot;&amp;xsd;string&quot;&gt;<i>file header</i>&lt;/sgen:header&gt;
-      <br>
+      <br />
       &lt;sgen:footer rdf:datatype=&quot;&amp;xsd;string&quot;&gt;<i>file footer</i>&lt;/sgen:footer&gt;</td>
   </tr>
 </table>
@@ -712,7 +722,7 @@ is implied by the filename/ULRL suffix: ".n3" means N3, ".nt" means NTRIPLES,
 <h2 id="appendixA">Appendix A: Complete example configuration file</h2>
 <p>The source of this example is provided in the Jena download as <code>etc/schemagen.rdf</code>.
   For clarity, RDF/XML text is highlighted in <span class="xmlText">blue</span>.</p>
-<p>
+
   <pre>
 <code><span class="xmlText">&lt;?xml version='1.0'?&gt;
 
@@ -741,7 +751,7 @@ is implied by the filename/ULRL suffix: ".n3" means N3, ".nt" means NTRIPLES,
  &nbsp;&nbsp;&nbsp;Not all possible options are used in this example, see Javadoc and Howto for full details.
 
     Author: Ian Dickinson, mailto:ian.dickinson@hp.com
-    CVs: &nbsp;&nbsp;&nbsp;$Id: schemagen.html,v 1.14 2007-07-13 07:28:03 ian_dickinson Exp $
+    CVs: &nbsp;&nbsp;&nbsp;$Id: schemagen.html,v 1.15 2008-04-04 11:46:00 ian_dickinson Exp $
 --&gt;
 
 <span class="xmlText">&lt;sgen:Config&gt;
@@ -773,10 +783,10 @@ is implied by the filename/ULRL suffix: ".n3" means N3, ".nt" means NTRIPLES,
  * Web site &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@website@
  * Created &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%date%
  * Filename &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$RCSfile: schemagen.html,v $
- * Revision &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$Revision: 1.14 $
+ * Revision &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$Revision: 1.15 $
  * Release status &nbsp;&nbsp;&nbsp;&nbsp;@releaseStatus@ $State: Exp $
  *
- * Last modified on &nbsp;&nbsp;$Date: 2007-07-13 07:28:03 $
+ * Last modified on &nbsp;&nbsp;$Date: 2008-04-04 11:46:00 $
  * &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;by &nbsp;&nbsp;$Author: ian_dickinson $
  *
  * @copyright@
@@ -799,7 +809,7 @@ is implied by the filename/ULRL suffix: ".n3" means N3, ".nt" means NTRIPLES,
  * @author Auto-generated by schemagen on %date%
  */&lt;<span class="xmlText">/sgen:header&gt;
 
-&lt;!-- the template for the file footer (note @footer@ is an Ant-ism, will not be processed by SchemaGen) --&gt;
+&lt;!-- the template for the file footer (note @footer@ is an Ant-ism, and will not be processed by SchemaGen) --&gt;
 &lt;sgen:footer rdf:datatype="&amp;xsd;string"&gt;</span>
 /*
 @footer@
@@ -841,8 +851,8 @@ is implied by the filename/ULRL suffix: ".n3" means N3, ".nt" means NTRIPLES,
 
 &lt;/rdf:RDF&gt;</span>
 </code></pre>
-</p>
+
 <hr />
-<p><small>CVS $Id: schemagen.html,v 1.14 2007-07-13 07:28:03 ian_dickinson Exp $</small></p>
+<p><small>CVS $Id: schemagen.html,v 1.15 2008-04-04 11:46:00 ian_dickinson Exp $</small></p>
 </body>
 </html>

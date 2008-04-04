@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            14-Apr-2003
  * Filename           $RCSfile: schemagen.java,v $
- * Revision           $Revision: 1.55 $
+ * Revision           $Revision: 1.56 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2008-01-02 13:42:25 $
+ * Last modified on   $Date: 2008-04-04 11:45:46 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
@@ -52,7 +52,7 @@ import com.hp.hpl.jena.shared.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: schemagen.java,v 1.55 2008-01-02 13:42:25 ian_dickinson Exp $
+ * @version CVS $Id: schemagen.java,v 1.56 2008-04-04 11:45:46 ian_dickinson Exp $
  */
 public class schemagen {
     // Constants
@@ -190,6 +190,9 @@ public class schemagen {
     /** Option to include the ontology source code in the generated file */
     protected static final Object OPT_INCLUDE_SOURCE = new Object();
 
+    /** Option to turn off strict checking in .a() */
+    protected static final Object OPT_NO_STRICT = new Object();
+
     /** List of Java reserved keywords, see <a href="http://java.sun.com/docs/books/tutorial/java/nutsandbolts/_keywords.html">this list</a>. */
     public static final String[] JAVA_KEYWORDS = {
         "abstract",    "continue",    "for",         "new",         "switch",
@@ -269,6 +272,7 @@ public class schemagen {
         {OPT_USE_INF,             new OptionDefinition( "--inference", "inference" )},
         {OPT_STRICT_INDIVIDUALS,  new OptionDefinition( "--strictIndividuals", "strictIndividuals" )},
         {OPT_INCLUDE_SOURCE,      new OptionDefinition( "--includeSource", "includeSource" )},
+        {OPT_NO_STRICT,           new OptionDefinition( "--nostrict", "noStrict")},
     };
 
     /** Stack of replacements to apply */
@@ -412,6 +416,11 @@ public class schemagen {
 
         m_source = ModelFactory.createOntologyModel( s, null );
         m_source.getDocumentManager().setProcessImports( false );
+
+        // turn off strict checking on request
+        if (isTrue( OPT_NO_STRICT )) {
+            m_source.setStrictMode( false );
+        }
     }
 
     /** Identify the URL that is to be read in and translated to a vocabulary file, and load the source into the source model */
