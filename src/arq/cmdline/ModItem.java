@@ -19,6 +19,8 @@ public class ModItem implements ArgModuleGeneral
     private String parseString = null ; 
     private Item item = null ;
     
+    public ModItem() {}
+    
     public void registerWith(CmdGeneral cmdLine)
     {
         cmdLine.getUsage().startCategory("Item") ;
