@@ -27,7 +27,7 @@ public class Run
 {
     public static void main(String[] argv) throws Exception
     {
-        code() ; System.exit(0) ;
+        //code() ; System.exit(0) ;
         runUpdate() ; System.exit(0) ;
         
         //QueryEngineMain.register() ;
@@ -105,7 +105,7 @@ public class Run
     
     private static void runUpdate()
     {
-        String a[] = {"--desc=etc/graphstore.ttl", "--update=update.ru", "--dump"} ;
+        String a[] = {/*"--desc=etc/graphstore.ttl",*/ "--update=update.ru", "--dump"} ;
         arq.update.main(a) ;
         System.exit(0) ;
     }

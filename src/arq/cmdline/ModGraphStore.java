@@ -45,6 +45,10 @@ public class ModGraphStore extends ModAssembler
     
     public GraphStore createGraphStore()
     {
+        // Default to a simple in-memory one.
+        if ( getAssemblerFile() == null )
+            return GraphStoreFactory.create() ;
+        
         try {
             // Try as graph store.
             graphStore = (GraphStore)create(DatasetAssemblerVocab.tGraphStore) ;

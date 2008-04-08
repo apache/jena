@@ -7,6 +7,9 @@
 package com.hp.hpl.jena.sparql.modify.op;
 
 
+import java.util.List;
+
+import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.sparql.modify.UpdateVisitor;
 import com.hp.hpl.jena.sparql.syntax.Template;
 
@@ -35,7 +38,11 @@ public class UpdateModify extends UpdateModifyBase
     public Template getInsertTemplate()
     { return getInsertTemplateBase() ; }
 
-    
+    protected void exec(Graph graph, List bindings)
+    {
+        // Debug point.
+        super.exec(graph, bindings) ;
+    }
     //@Override
     public void visit(UpdateVisitor visitor) { visitor.visit(this) ; }
 }

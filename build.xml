@@ -304,6 +304,7 @@
         <!-- Just the minimum to produce a buildable grammar -->
         <include name="master.jj"/>
         <include name="sparql.jj"/>
+        <include name="sparql-update.jj"/>
         <include name="arq.jj"/>
         <include name="grammar"/>
       </fileset>

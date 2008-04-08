@@ -1,22 +1,13 @@
 PREFIX : <http://example/>
 
-
-
-## INSERT
-## { 
-##   :x :p :q .
-##   :x2 :p :q 
-## }
-
-# CREATE GRAPH :graph1
-
-## INSERT INTO :graph1
-## { 
-##   :y :p :q .
-##   :y2 :p :q 
-## }
-
-ADD
-{
-  :z :p 128 .
+INSERT
+{ 
+  :x :p :q .
+  :x2 :p :q 
 }
+
+
+MODIFY
+DELETE { :x :p ?x }
+INSERT { :x :p 99 }
+WHERE  { :x :p ?x }

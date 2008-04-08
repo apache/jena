@@ -153,7 +153,7 @@ public class SPARQLUpdateParser extends SPARQLUpdateParserBase implements SPARQL
     jj_consume_token(INSERT);
     template = ConstructTemplate();
                                               up.setInsertTemplate(template) ;
-      {if (true) return new UpdateModify() ;}
+      {if (true) return up ;}
     throw new Error("Missing return statement in function");
   }
 

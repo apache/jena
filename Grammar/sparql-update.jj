@@ -92,7 +92,7 @@ UpdateModify Modify() :
     ( iri = GraphIRI() { up.addGraphName(iri) ; } )*
     <DELETE> template = ConstructTemplate() { up.setDeleteTemplate(template) ; }
     <INSERT> template = ConstructTemplate() { up.setInsertTemplate(template) ; }
-    { return new UpdateModify() ; }
+    { return up ; }
 }
 
 UpdatePattern Delete() : 
