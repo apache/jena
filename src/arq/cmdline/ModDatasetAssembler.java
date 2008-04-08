@@ -18,6 +18,7 @@ import com.hp.hpl.jena.sparql.core.assembler.DatasetAssemblerVocab;
 public class ModDatasetAssembler extends ModDatasetGeneral
 {
     ModAssembler modAssembler = new ModAssembler() ;
+    
     public Dataset createDataset()
     {
         if ( modAssembler.getAssemblerFile() == null )
