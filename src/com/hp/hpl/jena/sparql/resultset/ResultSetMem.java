@@ -9,12 +9,12 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import com.hp.hpl.jena.query.QuerySolution;
+import com.hp.hpl.jena.query.ResultSet;
+import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.sparql.core.ResultBinding;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.util.Utils;
-
-import com.hp.hpl.jena.query.QuerySolution;
-import com.hp.hpl.jena.query.ResultSet;
 
 /** An in-memory result set.  
  * Also useful for writing input processors which
@@ -35,6 +35,7 @@ public class ResultSetMem implements com.hp.hpl.jena.query.ResultSetRewindable
 
     private int rowNumber = 0 ;
     private Iterator iterator = null ;
+    private Model model = null ;
 
     /** Create an in-memory result set from another one
      *
@@ -73,6 +74,7 @@ public class ResultSetMem implements com.hp.hpl.jena.query.ResultSetRewindable
 
     public ResultSetMem(ResultSet qr)
     {
+        model = qr.getResourceModel() ;
         ordered = qr.isOrdered() ;
         if (qr instanceof ResultSetMem)
         {
@@ -117,7 +119,7 @@ public class ResultSetMem implements com.hp.hpl.jena.query.ResultSetRewindable
     /** Moves onto the next result possibility.
      */
     
-    public QuerySolution nextSolution()  { return new ResultBinding(null, nextBinding()) ; }
+    public QuerySolution nextSolution()  { return new ResultBinding(model, nextBinding()) ; }
     
     public Binding nextBinding()  { rowNumber++ ; return (Binding)iterator.next() ; }
 
@@ -136,6 +138,11 @@ public class ResultSetMem implements com.hp.hpl.jena.query.ResultSetRewindable
      */
     public int getRowNumber() { return rowNumber ; }
 
+    public Model getResourceModel()
+    {
+        return model ;
+    }
+    
     /** Return the number of rows
      */
     public int size() { return rows.size() ; }

@@ -204,6 +204,9 @@ public class JSONInput extends SPARQLResult
 
         public boolean isDistinct() { return distinct; }
 
+        // No model - it was from a stream
+        public Model getResourceModel() { return null ; }
+        
         public void remove() {
             throw new UnsupportedOperationException(JSONResultSet.class
                     .getName());

@@ -111,6 +111,8 @@ public class ResultSetStream implements ResultSet
 
     public List getResultVars() { return resultVars ; }
     
+    public Model getModel() { return model ; }
+    
     public void setOrdered(boolean ordered) { this.ordered = ordered ; } 
     /**
      * @deprecated SPARQL results sets no longer record ordered/distinct status
@@ -122,6 +124,9 @@ public class ResultSetStream implements ResultSet
      * @deprecated SPARQL results sets no longer record ordered/distinct status
      */
     public boolean isDistinct() { return distinct ; }
+    
+    public Model getResourceModel() { return model ; }
+
 }
 
 /*

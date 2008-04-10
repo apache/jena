@@ -5,8 +5,10 @@
 
 package com.hp.hpl.jena.query;
 
+import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -120,6 +122,24 @@ public class ResultSetFormatter
         tFmt.format(out, answer) ;
     }
     
+    /** Return a string that has the result set serilized as a text table
+     * 
+     * @param qresults  result set
+     * @return  string
+     */
+    
+    public static String asText(ResultSet qresults)
+    {
+        ByteArrayOutputStream arr = new ByteArrayOutputStream() ;
+        out(arr, qresults) ;
+        try { return new String(arr.toByteArray(), "UTF-8") ; }
+        catch (UnsupportedEncodingException e)
+        {
+            ALog.warn(ResultSetFormatter.class, "UnsupportedEncodingException") ;
+            return null ;
+        }
+    }
+
     // ----------------------------------------------------------------
     // Do nothing formatting
     

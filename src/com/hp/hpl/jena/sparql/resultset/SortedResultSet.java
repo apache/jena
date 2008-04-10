@@ -10,6 +10,7 @@ import java.util.*;
 
 import com.hp.hpl.jena.query.QuerySolution;
 import com.hp.hpl.jena.query.ResultSet;
+import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.sparql.core.ResultBinding;
 import com.hp.hpl.jena.sparql.core.Var;
@@ -33,7 +34,7 @@ public class SortedResultSet implements ResultSet
     QueryIterator qIter ;
     int rowNumber = 0 ;
     List resultVars = null ;
-    
+    Model model ;
     
     public SortedResultSet(ResultSet rs, List conditions)
     {
@@ -42,6 +43,7 @@ public class SortedResultSet implements ResultSet
     
     private SortedResultSet(ResultSet rs, Comparator comparator)
     {
+        model = rs.getResourceModel() ;
         // Put straight into a sorted structure 
         SortedSet sorted = new TreeSet(comparator) ;
         
@@ -89,6 +91,11 @@ public class SortedResultSet implements ResultSet
 
     public boolean isOrdered() { return true ; }
     
+    public Model getResourceModel()
+    {
+        return model ;
+    }
+
     public void remove()
     {
         throw new UnsupportedOperationException(SortedResultSet.class.getName()+".remove") ;

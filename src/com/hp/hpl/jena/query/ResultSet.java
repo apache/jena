@@ -8,6 +8,7 @@ package com.hp.hpl.jena.query;
 
 import java.util.* ;
 
+import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 
 /** Results from a query in a table-like manner for SELECT queries.
@@ -57,6 +58,9 @@ public interface ResultSet extends Iterator
      * (The ordering does not necessaryly have to be total)
      */
     public boolean isOrdered() ;
+    
+    /* Get the model that resources are created against - may be null */
+    public Model getResourceModel() ;
 }
 
 /*
