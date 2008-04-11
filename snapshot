@@ -1,9 +1,9 @@
 #!/bin/bash
 
 # Where to move the jars to
-LIBDIRS="AFS Joseki3"
+LIBDIRS="TDB Joseki3"
 # Where to add the source zip.
-SRDDIRS="AFS"
+SRDDIRS="TDB"
 
 rm -f lib/arq.jar lib/arq-extra.jar
 ant jar
