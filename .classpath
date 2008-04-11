@@ -11,7 +11,6 @@
 	<classpathentry kind="lib" path="lib/concurrent.jar"/>
 	<classpathentry kind="lib" path="lib/icu4j_3_4.jar"/>
 	<classpathentry kind="lib" path="lib/iri.jar"/>
-	<classpathentry kind="lib" path="lib/jdbm-1.0.jar"/>
 	<classpathentry kind="lib" path="lib/je-3.2.68.jar"/>
 	<classpathentry kind="lib" path="lib/jena.jar" sourcepath="jena-src.zip"/>
 	<classpathentry kind="lib" path="lib/jenatest.jar" sourcepath="jena-src.zip"/>
@@ -22,7 +21,6 @@
 	<classpathentry kind="lib" path="lib/slf4j-api-1.4.3.jar"/>
 	<classpathentry kind="lib" path="lib/slf4j-log4j12-1.4.3.jar"/>
 	<classpathentry kind="lib" path="lib/stax-api-1.0.jar"/>
-	<classpathentry kind="lib" path="lib/trove-2.0.2.jar"/>
 	<classpathentry kind="lib" path="lib/wstx-asl-3.0.0.jar"/>
 	<classpathentry kind="lib" path="lib/xercesImpl.jar"/>
 	<classpathentry kind="lib" path="lib/xml-apis.jar"/>
