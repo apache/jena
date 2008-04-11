@@ -1,0 +1,7 @@
+#!/bin/bash
+# Sets CP
+
+export CP="build/classes"
+# Addes "classes"
+CP="$(make_classpath "$TDBROOT")"
+echo "$CP"
