@@ -1,0 +1,25 @@
+Commands:
+
+(see bin/
+     bin2/ - Wrappers to go in your personal bin directory.
+     Use TDBROOT which is set to the root of the TDB project
+)
+
+tdbclean DIRECTORY
+  Deletes a database
+
+tdbloader --desc=ASSEMBLER [--parallel] FILE ...
+  Load a graph
+  Assembler file must point to a directory.
+  
+  Additional:
+	-DTDB.fileMode=
+		mapped
+		  MMap files - can run out of space on 32bit)
+		  Default for 64bit machines
+		direct
+		  Internally manage file caches
+		  Needs tuning
+
+tdbquery --desc ASSEMBLER --query query.rq
+	(same as "arq.query")
