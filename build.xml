@@ -1,0 +1,158 @@
+<project name="AFS" basedir="." default="main">
+
+  <!-- SETUP -->
+  <property name="name" value="AFS"/>
+  <property name="src.dir"                location="src"/>
+  <property name="src.test.dir"           location="src-test"/>
+
+  <property name="src.lib.dir"            location="src-lib"/>
+  <property name="src.lib.test.dir"       location="src-lib-test"/>
+
+  <property name="src.dev.dir"            location="src-dev"/>
+
+  <property name="build.dir"              location="build"/>
+  <property name="lib.dir"                location="lib"/>
+  <property name="classes.dir"            location="${build.dir}/classes"/>
+  <property name="jar.dir"                location="${build.dir}/jar"/>
+  <property name="main-class"             value="cmd.AVLRunTest"/>
+  <property name="jarfile"                value="${name}.jar"/>
+
+  <property name="reports.dir"            value="reports"/>
+  <property name="reports.dir.xml"        value="reports/xml"/>
+  <property name="reports.outdir"         value="reports"/>
+
+  <!-- ========================================== -->
+  <!-- ==== Setup  -->
+
+  <path id="java.build.class.path">
+    <fileset dir="${lib.dir}" includes="*.jar" excludes="${jarfile}"/>
+  </path>
+
+  <path id="java.run.class.path">
+    <fileset dir="${lib.dir}" includes="*.jar" excludes="${jarfile}"/>
+  </path>
+
+
+  <!-- Java setup -->
+  <target name="javac-flags">
+    <!-- Note that in ant, if these flags are already set setting them again has no effect -->
+    <property name="java.debug"       value="true"/>
+    <property name="java.debuglevel"  value="source,lines,vars"/>
+    <property name="java.deprecation" value="true"/>
+    <!-- Currently "false" for developmenet/debugging -->
+    <property name="java.optimize"    value="false"/>
+  </target>
+
+  <!-- ========================================== -->
+  <!-- ==== Build and compile -->
+
+  <target name="clean-build" depends="clean-build-dir,jar"/>
+
+  <target name="compile" depends="javac-flags" description="compile project">
+    <mkdir dir="${classes.dir}"/>
+    <javac destdir="${classes.dir}">
+      <src path="${src.dir}"/>
+      <src path="${src.test.dir}"/>
+      <src path="${src.lib.dir}"/>
+      <src path="${src.lib.test.dir}"/>
+      <src path="${src.dev.dir}"/>
+      <classpath refid="java.build.class.path" />
+    </javac>
+  </target>
+
+  <target name="jar" depends="compile" description="Build the JAR anew">
+    <mkdir dir="${jar.dir}"/>
+    <jar destfile="${jar.dir}/${ant.project.name}.jar" basedir="${classes.dir}">
+      <manifest>
+        <attribute name="Main-Class" value="${main-class}"/>
+      </manifest>
+    </jar>
+  </target>
+
+  <target name="clean-build-dir">
+    <delete dir="${build.dir}"/>
+  </target>
+
+  <!-- ========================================== -->
+  <!-- ==== JUnit and reporting -->
+
+  <target name="junit" depends="run-junit" description="Run the test suite">
+    <fail message="Junit tests failed" if="junit.failed"/>
+  </target>
+
+  <target name="report" depends="run-report" description="Run tests and generate reports">
+    <fail message="Junit tests failed" if="junit.failed"/>
+  </target>
+
+  <!-- Worker tasks for the above tasks -->
+
+  <target name="run-junit" depends="compile,clean-reports">
+    <mkdir dir="${reports.dir}"/>
+    <mkdir dir="${reports.dir.xml}"/>
+
+    <!-- Don't stop on failure - set a property -->
+    <junit printsummary="yes" 
+	   errorProperty="junit.failed"
+	   failureProperty="junit.failed">
+      <!-- usefile="false"  type="plain"-->
+      <!-- <formatter usefile="false" type="brief"/> -->
+      <formatter type="xml"/>
+      <classpath>
+        <pathelement path="${classes.dir}"/>
+        <path refid="java.run.class.path"/>
+      </classpath>
+      <!-- <test name="test.TS_Main" outfile="${reports.dir.xml}/junit-report"/> -->
+      <batchtest todir="${reports.dir.xml}">
+	<fileset dir="${src.test.dir}">
+          <include name="**/TS_*.java"/>
+        </fileset>
+        <fileset dir="${src.lib.test.dir}">
+          <include name="**/TS_*.java"/>
+        </fileset>
+      </batchtest>
+    </junit>
+  </target>
+
+  <target name="run-report" depends="run-junit">
+    <junitreport todir="./${reports.dir}">
+      <fileset dir="./${reports.dir.xml}">
+        <include name="**.xml"/>
+      </fileset>
+      <report format="frames" todir="./${reports.outdir}"/>
+    </junitreport>
+  </target>
+
+  <target name="clean-reports">
+    <delete dir="${reports.dir}"/>
+    <delete dir="${reports.dir.xml}"/>
+    <delete dir="${reports.outdir}"/>
+  </target>
+
+  <!-- ========================================== -->
+  <!-- ==== Run -->
+
+  <target name="run" depends="compile">
+    <java classname="${main-class}" fork="true">
+      <!-- jar="${jar.dir}/${ant.project.name}.jar"-->
+      <arg value="--check"/>
+      <arg value="10"/>
+      <arg value="100"/>
+      <classpath>
+                <pathelement path="${classes.dir}"/>
+                <path refid="java.run.class.path"/>
+      </classpath>
+    </java>
+  </target>
+
+  <!-- ========================================== -->
+  <!-- ==== Misc -->
+
+
+  <target name="main" depends="clean,run"/>
+
+  <target name="clean" 
+	  depends="clean-build-dir,clean-reports" 
+	  description="cleanup">
+  </target>
+
+</project>
