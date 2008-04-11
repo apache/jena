@@ -1,0 +1,19 @@
+PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX p: <http://dbpedia.org/property/>
+
+SELECT ?s ?a ?homepage WHERE {
+
+    ?s p:architect ?a .
+    ?a foaf:homepage ?homepage .
+
+	<http://dbpedia.org/resource/New_York_City> geo:lat ?nyLat .
+	<http://dbpedia.org/resource/New_York_City> geo:long ?nyLong .	
+	?s geo:lat ?lat .
+	?s geo:long ?long .
+FILTER ( ?lat        <=      ?nyLat + 0.3190235436 )
+FILTER ( ?long         >=      ?nyLong - 0.8679199218 )
+FILTER ( ?lat        >=     ?nyLat - 0.3190235436 )
+FILTER ( ?long         <=      ?nyLong + 0.8679199218)
+}

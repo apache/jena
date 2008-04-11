@@ -1,0 +1,14 @@
+PREFIX p: <http://dbpedia.org/property/>
+
+SELECT ?film1 ?actor1 ?film2 ?actor2
+WHERE {
+  ?film1 p:starring <http://dbpedia.org/resource/Kevin_Bacon> .
+  ?film1 p:starring ?actor1 .
+  FILTER(?actor1 != <http://dbpedia.org/resource/Kevin_Bacon> )
+
+  ?film2 p:starring ?actor1 .
+  FILTER (?film1 != ?film2)
+
+  ?film2 p:starring ?actor2 .
+  FILTER(?actor2 != <http://dbpedia.org/resource/Kevin_Bacon> )
+}

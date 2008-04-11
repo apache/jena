@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.hp.jena.tdb</groupId>
+  <artifactId>tdb</artifactId>
+  <packaging>jar</packaging>
+  <name>TDB</name>
+  <version>1.0-SNAPSHOT</version>
+  <description/>
+  <url>http://jena.sf.net/</url>
+
+  <organization>
+    <name>Hewlett-Packard</name>
+    <url>http://www.hp.com/</url>
+  </organization>
+
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.4</version>
+      <scope>test</scope>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>1.4.3</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-log4j12</artifactId>
+      <version>1.4.3</version>
+    </dependency>
+
+    <dependency>
+      <groupId>log4j</groupId>
+      <artifactId>log4j</artifactId>
+      <version>1.2.15</version>
+    </dependency>
+
+    <dependency>
+      <groupId>xml-apis</groupId>
+      <artifactId>xml-apis</artifactId>
+      <version>1.0.b2</version>
+    </dependency>
+
+    <dependency>
+      <groupId>xml-apis</groupId>
+      <artifactId>xml-apis</artifactId>
+      <version>1.0.b2</version>
+    </dependency>
+    
+    <dependency>
+      <groupId>xerces</groupId>
+      <artifactId>xercesImpl</artifactId>
+      <version>2.7.1</version>
+    </dependency>
+
+    <!-- Lots more -->
+
+  </dependencies>
+
+  <build>
+    <sourceDirectory>src</sourceDirectory>
+    <sourceDirectory>src-lib</sourceDirectory>
+    <testSourceDirectory>src-test</testSourceDirectory>
+    <testSourceDirectory>src-lib-test</testSourceDirectory>
+    <outputDirectory>build</outputDirectory>
+    <!-- finalName -->
+    <!-- directory -->
+    <plugins>
+      <plugin>
+	<groupId>org.apache.maven.plugins</groupId>
+	<artifactId>maven-compiler-plugin</artifactId>
+	<configuration>
+	  <source>1.5</source>
+	  <target>1.5</target>
+	</configuration>
+      </plugin>
+
+      <!--
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <includes>
+            <include>**/com/hp/jena/test/TS_JenaCore.java</include>
+          </includes>
+        </configuration>
+      </plugin>
+      -->
+
+    </plugins>
+  </build>
+
+  <licenses>
+    <license>
+      <name>BSD-style license</name>
+      <url>http://jena.sourceforge.net/license.html</url>
+    </license>
+  </licenses>
+
+  <scm>	
+    <connection>scm:svn:https://jena.svn.sourceforge.net/svnroot/jena/Scratch/AFS</connection>
+    <developerConnection>scm:svn:https://jena.svn.sourceforge.net/svnroot/jena/Scratch/AFS</developerConnection>
+    <url>http://jena.svn.sourceforge.net/</url>
+  </scm>
+
+  <!-- <reporting/> -->
+  <!-- <repositories/> -->
+
+</project>

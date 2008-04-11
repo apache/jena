@@ -1,0 +1,16 @@
+#!/bin/bash
+
+# Run in TDBROOT
+
+TDBROOT="${TDBROOT:-$HOME/Projects/AFS}"
+
+DATASETS="${DATASETS:-$HOME/Datasets}"
+
+#DB_DESC="$TDBROOT/DB/DBpediaBM/dataset.ttl"
+
+rm -fr tmp/*.*
+tdbloader --desc dataset.ttl --parallel \
+    $DATASETS/DBpedia/dbp-infoboxes.nt \
+    $DATASETS/DBpedia/dbp-geocoordinates.nt \
+    $DATASETS/DBpedia/dbp-homepages.nt \
+    | tee LOG

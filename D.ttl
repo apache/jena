@@ -1,0 +1,21 @@
+@prefix   :         <http://example/> .
+
+:x1 :p "string"@EN .
+:x2 :p "string"@en .
+
+:x :p 1 .
+:x :p 2 .
+:x :p 3 .
+
+:x :a :y .
+:y :b 1 .
+:y :b 2 .
+
+
+## 
+## _:a :q _:b .
+## 
+## :x1 :p 1 .
+## :x2 :p 2 .
+## :x3 :q 3 .
+## :x3 :q 4 .

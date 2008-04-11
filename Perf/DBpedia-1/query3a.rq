@@ -1,0 +1,7 @@
+PREFIX p: <http://dbpedia.org/property/>
+SELECT ?artist ?artwork ?museum ?director
+WHERE {
+  ?artwork p:museum ?museum .
+  ?museum p:director ?director .
+  ?artwork p:artist ?artist .
+}

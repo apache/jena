@@ -1,0 +1,7 @@
+PREFIX :  <http://example/OTHER>
+
+SELECT * 
+{ 
+    :NoSuchNode ?p ?z .
+    ?x ?p ?z
+}
