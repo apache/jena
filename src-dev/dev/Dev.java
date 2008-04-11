@@ -10,13 +10,13 @@ public class Dev
 {
     // ==== For a graph-release:
     //   Simple BGP optimizer.
-    //   SVN
     // ====
     
     // Interface Sync everywhere?
     // CountingSync.
     
     // Bulk loader : index control.
+    // Text index builder
     // Only do NodeId->Node for needed nodes (special counts?).
     
     // Block typing.
