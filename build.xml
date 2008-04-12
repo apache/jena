@@ -1,7 +1,8 @@
-<project name="AFS" basedir="." default="main">
+<project name="TDB" basedir="." default="main">
 
   <!-- SETUP -->
-  <property name="name" value="AFS"/>
+  <property name="Name" 				  value="TDB"/>
+  <property name="name" 				  value="tdb"/>
   <property name="src.dir"                location="src"/>
   <property name="src.test.dir"           location="src-test"/>
 
@@ -12,9 +13,13 @@
 
   <property name="build.dir"              location="build"/>
   <property name="lib.dir"                location="lib"/>
+	<!-- Build classes --> 
   <property name="classes.dir"            location="${build.dir}/classes"/>
-  <property name="jar.dir"                location="${build.dir}/jar"/>
-  <property name="main-class"             value="cmd.AVLRunTest"/>
+  <!-- <property name="jar.dir"                location="${build.dir}/jar"/> -->
+  <property name="jar.dir"                location="${lib.dir}"/>
+  	
+	<!-- Meaning-less -->
+  <property name="main-class"             value="cmd.AVLRunTest"/>	
   <property name="jarfile"                value="${name}.jar"/>
 
   <property name="reports.dir"            value="reports"/>
@@ -29,7 +34,9 @@
   </path>
 
   <path id="java.run.class.path">
+  	<!-- jar file may, or may not, be in the lib directory -->
     <fileset dir="${lib.dir}" includes="*.jar" excludes="${jarfile}"/>
+  	<fileset dir="${jar.dir}" includes="*.jar"/>	
   </path>
 
 
@@ -62,7 +69,7 @@
 
   <target name="jar" depends="compile" description="Build the JAR anew">
     <mkdir dir="${jar.dir}"/>
-    <jar destfile="${jar.dir}/${ant.project.name}.jar" basedir="${classes.dir}">
+    <jar destfile="${jar.dir}/${name}.jar" basedir="${classes.dir}">
       <manifest>
         <attribute name="Main-Class" value="${main-class}"/>
       </manifest>

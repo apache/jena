@@ -44,7 +44,7 @@ public class NodeTableBDB extends NodeTableBase
             OperationStatus status = nodeHashToId.get(txn, entry, idEntry, config.lockMode) ;
             if ( status == OperationStatus.SUCCESS )
                 return NodeId.create(Bytes.getLong(idEntry.getData())) ;
-            NodeId x = writeNode(node) ;
+            NodeId x = nodeToNodeId(node) ;
             idEntry = nodeIdEntry(x);
 
             status = nodeHashToId.put(txn, entry, idEntry) ;

@@ -5,6 +5,7 @@
 	<classpathentry kind="src" path="src-dev"/>
 	<classpathentry kind="src" path="src-lib"/>
 	<classpathentry kind="src" path="src-lib-test"/>
+	<classpathentry kind="src" path="src-examples"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="lib/antlr-2.7.5.jar"/>
 	<classpathentry kind="lib" path="lib/commons-logging-1.1.1.jar"/>

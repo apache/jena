@@ -37,7 +37,7 @@ public class NodeId
     
     public static NodeId create(long value) { return new NodeId(value) ; }
     
-    // Chance for a cache? (Small Java objects are really not that expensive these days._
+    // Chance for a cache? (Small Java objects are really not that expensive these days.)
     public static NodeId create(byte[] b, int idx)
     {
         return new NodeId(b, idx) ;
@@ -47,7 +47,6 @@ public class NodeId
     {
         return new NodeId(b, idx) ;
     }
-    
     
     private NodeId(byte[] b, int idx)
     {

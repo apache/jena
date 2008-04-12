@@ -57,6 +57,9 @@ public class Const
 
     public static final ByteOrder NetworkOrder      = ByteOrder.BIG_ENDIAN ;
     
+    // BDB related.
+    public static final int BDB_cacheSizePercent    = 75 ; 
+    
     // --------
     
     public static final boolean is64bit = determineIf64Bit() ;

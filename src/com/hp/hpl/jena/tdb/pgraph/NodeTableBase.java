@@ -52,21 +52,38 @@ public abstract class NodeTableBase implements NodeTable
         init(nodeToId, objectFile, idToNodeCacheSize, idToNodeCacheSize) ;
     }
     
-    @Override
-    public NodeId idForNode(Node node)
-    {
-        if ( node2id_Cache != null )
-        {
-            NodeId id = node2id_Cache.get(node) ;
-            if ( id != null )
-                return id ; 
-        }
-        long hash = NodeLib.hash(node) ;
-        return accessIndex(node, hash, false) ;
-    }
+    // ---- Node ==> NodeId
 
     @Override
-    public NodeId storeNode(Node node)
+    public NodeId idForNode(Node node)  { return _idForNode(node, false) ; }
+
+    @Override
+    public NodeId storeNode(Node node)  { return _idForNode(node, true) ; }
+
+    @Override
+    // ---- NodeId ==> Node
+    public Node retrieveNode(NodeId id)
+    {
+        if ( id2node_Cache != null )
+        {
+            Node n = id2node_Cache.get(id) ;
+            if ( n != null )
+                return n ; 
+        }
+        
+        Node n = nodeIdToNode(id) ;
+    
+        // Update caches
+        if ( node2id_Cache != null )
+            node2id_Cache.put(n, id) ;
+        if ( id2node_Cache != null )
+            id2node_Cache.put(id, n) ;
+        return n ;
+    }
+
+    // Node to Node Id worker
+    
+    private NodeId _idForNode(Node node, boolean allocate)
     {
         if ( node2id_Cache != null )
         {
@@ -76,29 +93,9 @@ public abstract class NodeTableBase implements NodeTable
         }
         // Not in cache.  Try the index.
         long hash = NodeLib.hash(node) ;
-        return accessIndex(node, hash, true) ;    // Allow override.
+        return accessIndex(node, hash, allocate) ;
     }
-
-    @Override
-    public Node retrieveNode(NodeId id)
-    {
-        if ( id2node_Cache != null )
-        {
-            Node n = id2node_Cache.get(id) ;
-            if ( n != null )
-                return n ; 
-        }
-        String s = objects.read(id) ;
-        Node n = decode(s) ;
-        
-        // Update caches
-        if ( node2id_Cache != null )
-            node2id_Cache.put(n, id) ;
-        if ( id2node_Cache != null )
-            id2node_Cache.put(id, n) ;
-        return n ;
-    }
-
+    
     // Access the node->NodeId index.  
     // Given a node and a hash, return NodeId
     // Assumes a cache miss on node2id_Cache
@@ -118,7 +115,7 @@ public abstract class NodeTableBase implements NodeTable
                 return NodeId.NodeDoesNotExist ;
            
             // Write the node, which allocates an id for it.
-            NodeId id = writeNode(node) ;
+            NodeId id = nodeToNodeId(node) ;
             
             // Update the r record with the new id.
             id.toBytes(r.getValue(), 0) ;
@@ -144,14 +141,25 @@ public abstract class NodeTableBase implements NodeTable
         if ( id2node_Cache != null )
             id2node_Cache.put(id, node) ;
     }
+
+    // --------
+    // Only places for conversion between NodeId<->Node, accessing the ObjectFile.
+    // Special cases: integers and dateTimes
     
-    protected final NodeId writeNode(Node node)
+    protected final NodeId nodeToNodeId(Node node)
     {
         String s = encode(node) ;
         return objects.write(s) ;
     }
     
+    protected final Node nodeIdToNode(NodeId id)
+    {
+        String s = objects.read(id) ;
+        Node n = decode(s) ;
+        return n ;
+    }
 
+    // --------
     @Override
     public void close()
     {
