@@ -10,6 +10,7 @@ import java.util.Iterator;
 import java.util.concurrent.Semaphore;
 
 import lib.Tuple;
+import tdb.cmdline.ModLocation;
 import arq.cmd.CmdException;
 import arq.cmd.CmdUtils;
 import arq.cmdline.ArgDecl;
@@ -36,6 +37,7 @@ public class tdbloader extends CmdARQ
     
     PGraphBase graph ; 
     ModAssembler modAssembler =  new ModAssembler() ;
+    ModLocation modLocation =  new ModLocation() ;
     ArgDecl argParallel = new ArgDecl(ArgDecl.NoValue, "parallel") ;
     
     boolean timing = true ;
@@ -52,6 +54,7 @@ public class tdbloader extends CmdARQ
         super(argv) ;
         TDB.init() ;
         super.addModule(modAssembler) ;
+        super.addModule(modLocation) ;
         super.add(argParallel) ;
     }
 
@@ -65,7 +68,7 @@ public class tdbloader extends CmdARQ
     @Override
     protected String getSummary()
     {
-        return getCommandName()+" --desc DATASET FILE ..." ;
+        return getCommandName()+" [--desc DATASET | -loc DIR] FILE ..." ;
     }
 
     
@@ -75,6 +78,27 @@ public class tdbloader extends CmdARQ
         return Utils.className(this) ;
     }
 
+    private PGraphBase getGraph()
+    {
+        if ( graph != null )
+            return graph ;
+        
+        if ( modLocation.getLocation() == null && modAssembler.getAssemblerFile() == null )
+            throw new CmdException("No assembler file and no location") ;
+             
+        if ( modAssembler.getAssemblerFile() != null && modAssembler.getAssemblerFile() != null )
+            throw new CmdException("Both an assembler file and a location") ;
+        
+        Model model = null ;
+        
+        if ( modAssembler.getAssemblerFile() != null )
+            model = TDBFactory.assembleModel(modAssembler.getAssemblerFile()) ;
+        else
+            model = TDBFactory.createModel(modLocation.getLocation()) ;
+        graph = (PGraphBase)model.getGraph() ;
+        return graph ;
+    }
+    
     @Override
     protected void exec()
     {
@@ -82,6 +106,7 @@ public class tdbloader extends CmdARQ
             timing = true ;
         if ( isQuiet() )
             timing = false ;
+        
         if ( modAssembler.getAssemblerFile() == null )
             throw new CmdException("No assembler file") ;
         

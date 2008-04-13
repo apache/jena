@@ -40,6 +40,16 @@ public class TDBFactory
     public static Graph createGraph(String dir)
     {
         Location loc = new Location(dir) ;
+        return createGraph(loc) ;
+    }
+    
+    public static Model createModel(Location loc)
+    {
+        return ModelFactory.createModelForGraph(createGraph(loc)) ;
+    }
+    
+    public static Graph createGraph(Location loc)
+    {
         return new GraphBTree(loc) ;
     }
 }
