@@ -36,7 +36,7 @@ public final class BitsLong
     }
 
     /** Place the value into the bit pattern between start and finish;
-     *  leaves other bits along.
+     *  leaves other bits alone.
      */
     public static final
     long pack(long bits, long value, int start, int finish)

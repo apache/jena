@@ -15,24 +15,16 @@ import java.util.Iterator;
 import lib.StrUtils;
 import lib.Tuple;
 
+import com.sleepycat.je.*;
+
 import com.hp.hpl.jena.assembler.JA;
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.QueryExecution;
-import com.hp.hpl.jena.query.QueryExecutionFactory;
-import com.hp.hpl.jena.query.QueryFactory;
-import com.hp.hpl.jena.query.ResultSet;
-import com.hp.hpl.jena.query.ResultSetFormatter;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.impl.RDFReaderFImpl;
 import com.hp.hpl.jena.shared.PrefixMapping;
-import com.hp.hpl.jena.sparql.core.Prologue;
-import com.hp.hpl.jena.sparql.core.assembler.AssemblerUtils;
-import com.hp.hpl.jena.sparql.sse.writers.WriterBasePrefix;
-import com.hp.hpl.jena.sparql.util.IndentedWriter;
 import com.hp.hpl.jena.tdb.base.block.BlockMgrFactory;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 import com.hp.hpl.jena.tdb.btree.BTree;
@@ -45,13 +37,29 @@ import com.hp.hpl.jena.tdb.pgraph.NodeId;
 import com.hp.hpl.jena.tdb.pgraph.PGraphBase;
 import com.hp.hpl.jena.util.FileManager;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
-import com.sleepycat.je.*;
+
+import com.hp.hpl.jena.sparql.core.Prologue;
+import com.hp.hpl.jena.sparql.core.assembler.AssemblerUtils;
+import com.hp.hpl.jena.sparql.sse.SSE;
+import com.hp.hpl.jena.sparql.sse.writers.WriterBasePrefix;
+import com.hp.hpl.jena.sparql.util.FmtUtils;
+import com.hp.hpl.jena.sparql.util.IndentedWriter;
+
+import com.hp.hpl.jena.query.*;
 
 
 public class Run
 {
     public static void main(String ... args)
     {
+        typedNode("1") ;
+        typedNode("'1'^^xsd:int") ;
+        typedNode("'1'") ;
+        System.exit(0) ;
+        
+        
+        
+        
         z() ; System.exit(0) ;
         
         
@@ -68,6 +76,30 @@ public class Run
         
         
         System.exit(0) ;
+    }
+    
+    private static void typedNode(String x)
+    {
+        System.out.println("Input = "+x) ;
+        Node n = SSE.parseNode(x) ;
+        NodeId nodeId = NodeId.inline(n) ;
+        if ( nodeId == null )
+        {
+            System.out.println("null nodeid") ;
+            return ;
+        }
+        
+        System.out.printf("NodeId : 0x%08X\n", nodeId.getId()) ;
+        Node n2 = NodeId.extract(nodeId) ;
+        if ( n2 == null )
+        {
+            System.out.println("null node") ;
+            return ;
+        }
+        String y = FmtUtils.stringForNode(n2) ;
+        System.out.println("Output = "+y) ;
+        if ( ! n.equals(n2) )
+            System.out.println("Different: "+n+" : "+n2) ;
     }
     
     private static void z()

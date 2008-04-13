@@ -6,19 +6,53 @@
 
 package com.hp.hpl.jena.tdb.pgraph;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import junit.TestBase;
+import org.junit.Test;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
-    TestNodeId.class, 
-    TestPGraph_BTree.class,        // Basic graph tests
-    PGraphTestSuite.class          // Scripted tests
-})
+import com.hp.hpl.jena.graph.Node;
 
-public class TS_PGraph
-{ 
-    public static final String testArea = "tmp/testing" ;
+import com.hp.hpl.jena.sparql.sse.SSE;
+
+public class TestNodeId extends TestBase
+{
+    @Test public void nodeId_01()
+    {
+        NodeId nodeId = NodeId.create(37) ;
+        assertEquals(37L, nodeId.getId()) ;
+    }
+    
+    @Test public void nodeId_02()
+    {
+        NodeId nodeId = NodeId.create(-1L) ;
+        assertEquals(-1L, nodeId.getId()) ;
+    }
+    
+    @Test public void nodeId_10()
+    { test("1", SSE.parseNode("1")) ; }
+
+    @Test public void nodeId_11()
+    { test("2", SSE.parseNode("2")) ; }
+
+    @Test public void nodeId_12()
+    { test("'3'^^xsd:int", SSE.parseNode("3")) ; }
+
+    @Test public void nodeId_13()
+    { test("'3'", null) ; }
+
+    private void test(String x, Node correct)
+    {
+        Node n = SSE.parseNode(x) ;
+        NodeId nodeId = NodeId.inline(n) ;
+        
+        if ( correct == null )
+        {
+            assertNull(nodeId) ;
+            return ;
+        }
+        Node n2 = NodeId.extract(nodeId) ;
+        assertNotNull(n2) ;
+        assertEquals(correct, n2) ;
+    }
 }
 
 /*

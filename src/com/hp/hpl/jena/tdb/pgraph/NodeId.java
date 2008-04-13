@@ -8,15 +8,15 @@ package com.hp.hpl.jena.tdb.pgraph;
 
 import java.nio.ByteBuffer;
 
+import lib.BitsLong;
+import lib.Bytes;
+
 import com.hp.hpl.jena.datatypes.RDFDatatype;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.impl.LiteralLabel;
 import com.hp.hpl.jena.tdb.Const;
-
-import com.hp.hpl.jena.sparql.expr.nodevalue.NodeValueInteger;
-
-import lib.Bytes;
+import com.hp.hpl.jena.tdb.TDBException;
 
 final
 public class NodeId
@@ -98,9 +98,18 @@ public class NodeId
     
     /** Encode a node as an inline literal.  Return null if it can't be done */
     
-    protected NodeId inline(Node node)
+    // Type codes.
+    private static final int NONE       = 0 ;
+    private static final int INTEGER    = 1 ;
+    private static final int DECIMAL    = 2 ;
+    private static final int DATE       = 3 ;
+    private static final int DATETIME   = 4 ;
+    
+    public static NodeId inline(Node node)
     {
         if ( ! node.isLiteral() ) return null ;
+        if ( node.getLiteralDatatype() == null ) return null ;
+        
         String lex = node.getLiteralLexicalForm() ;
         LiteralLabel lit = node.getLiteral() ;
         
@@ -121,12 +130,10 @@ public class NodeId
                 long v = ((Number)lit.getValue()).longValue() ;
                 if ( Math.abs(v) < 0x007FFFFF )
                 {
-                    // Convert to a 56 bit number (sign!)
-                    v = v & 0x00FFFFFF ; 
+                    v = lib.BitsLong.clear(v, 56, 64) ;
                     // Type = 1 
-                    BitsLong.
-                    
-                    return new NodeId(v | 0x01000000) ;
+                    v = BitsLong.pack(v, 1, 56, 64) ;
+                    return new NodeId(v) ;
                 }
             }
         }
@@ -134,11 +141,35 @@ public class NodeId
         {}
         if ( XSDDatatype.XSDdate.isValidLiteral(lit) )
         {}
-        
-        
         return null ;
     }
     
+    public static Node extract(NodeId nodeId)
+    {
+        long v = nodeId.getId() ;
+        int type = (int)BitsLong.unpack(v, 56, 64) ;
+
+        switch (type)
+        {
+            case NONE:
+                return null ;
+            case INTEGER:
+                long val = BitsLong.clear(v, 56, 64) ;
+                // Sign extends to 64 bits.
+                if ( BitsLong.isSet(val, 55) )
+                    val = BitsLong.set(v, 56, 64) ;
+                Node n = Node.createLiteral(Long.toString(val), null, XSDDatatype.XSDinteger) ;
+                return n ;
+            case DECIMAL:
+            case DATE:
+            case DATETIME:
+            default:
+                throw new TDBException("Unrecognized node id type: "+type) ;
+                    
+        }
+        
+        
+    }
     
     //public reset(long value) { this.value = value ; }
 }
