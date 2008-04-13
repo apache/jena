@@ -34,6 +34,7 @@ import com.hp.hpl.jena.sparql.sse.lang.SSE_Parser;
 import com.hp.hpl.jena.sparql.sse.writers.WriterGraph;
 import com.hp.hpl.jena.sparql.sse.writers.WriterNode;
 import com.hp.hpl.jena.sparql.sse.writers.WriterOp;
+import com.hp.hpl.jena.sparql.util.FmtUtils;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
 
 import com.hp.hpl.jena.query.Dataset;
@@ -248,6 +249,10 @@ public class SSE
         SSE_Parser.parse(reader, handler) ; 
         return handler.getItem() ;
     }
+    
+    // ---- To String
+    public static String format(Node node)                      { return FmtUtils.stringForNode(node) ; }
+    public static String format(Node node, PrefixMapping pmap)  { return FmtUtils.stringForNode(node, pmap) ; }
     
     // ----
     

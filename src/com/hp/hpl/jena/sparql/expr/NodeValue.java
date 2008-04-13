@@ -854,7 +854,7 @@ public abstract class NodeValue extends ExprNode
             // Ditto literals with language tags (which are handled by nodeToNodeValue)
             
             // isValidLiteral is a value test - not a syntactic test.  
-            // This makes a diffeence in that "1"^^xsd:decimal" is a
+            // This makes a difference in that "1"^^xsd:decimal" is a
             // valid literal for xsd:integer (all other cases are subtypes of xsd:integer)
             // which we want to become integer anyway).
 
