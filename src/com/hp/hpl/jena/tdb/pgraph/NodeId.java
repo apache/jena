@@ -8,7 +8,13 @@ package com.hp.hpl.jena.tdb.pgraph;
 
 import java.nio.ByteBuffer;
 
+import com.hp.hpl.jena.datatypes.RDFDatatype;
+import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
+import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.graph.impl.LiteralLabel;
 import com.hp.hpl.jena.tdb.Const;
+
+import com.hp.hpl.jena.sparql.expr.nodevalue.NodeValueInteger;
 
 import lib.Bytes;
 
@@ -86,6 +92,53 @@ public class NodeId
         //if ( value == NodeDoesNotExist ) return "[DoesNotExist]" ;
         if ( this == NodeIdAny ) return "[Any]" ;
         return "["+value+"]" ; }
+    
+    // ---- Encoding special - inlines.
+    
+    
+    /** Encode a node as an inline literal.  Return null if it can't be done */
+    
+    protected NodeId inline(Node node)
+    {
+        if ( ! node.isLiteral() ) return null ;
+        String lex = node.getLiteralLexicalForm() ;
+        LiteralLabel lit = node.getLiteral() ;
+        
+        RDFDatatype dt = node.getLiteralDatatype() ;
+        
+        // xsd:decimal
+        // xsd:integer, xsd:int and lots of others.
+        
+        // Decimal is a valid supertype of integer but we handle integers and decimals differently.
+        if ( node.getLiteralDatatype().equals(XSDDatatype.XSDdecimal) )
+        {
+            // XSD Decimal
+        }
+        else
+        {
+            if ( XSDDatatype.XSDinteger.isValidLiteral(lit) )
+            {
+                long v = ((Number)lit.getValue()).longValue() ;
+                if ( Math.abs(v) < 0x007FFFFF )
+                {
+                    // Convert to a 56 bit number (sign!)
+                    v = v & 0x00FFFFFF ; 
+                    // Type = 1 
+                    BitsLong.
+                    
+                    return new NodeId(v | 0x01000000) ;
+                }
+            }
+        }
+        if ( XSDDatatype.XSDdateTime.isValidLiteral(lit) )
+        {}
+        if ( XSDDatatype.XSDdate.isValidLiteral(lit) )
+        {}
+        
+        
+        return null ;
+    }
+    
     
     //public reset(long value) { this.value = value ; }
 }

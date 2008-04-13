@@ -6,7 +6,7 @@
 
 package dev;
 
-import lib.Bits;
+import lib.BitsLong;
 
 public class BCD
 {
@@ -42,7 +42,7 @@ public class BCD
 
     private static long set(long z, int y, int idx)
     {
-        return Bits.pack(z, y, 4*idx, 4*(idx+1)) ;
+        return BitsLong.pack(z, y, 4*idx, 4*(idx+1)) ;
     }
 
 
@@ -93,13 +93,13 @@ public class BCD
     
     private static int nibble(long bcd, int j)
     {
-        return (int)Bits.unpack(bcd, 4*j, 4*(j+1)) ;
+        return (int)BitsLong.unpack(bcd, 4*j, 4*(j+1)) ;
     }
 
 
     private static long insert(long bits, int x, int idx)
     {
-        long mask = Bits.maskZero(4*idx, 4*(idx+1)) ;
+        long mask = BitsLong.maskZero(4*idx, 4*(idx+1)) ;
         x = enc(x) ;
         return (bits & mask ) | (x <<4*idx) ; 
     }

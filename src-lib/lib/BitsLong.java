@@ -15,13 +15,9 @@ package lib;
  * @author Andy Seaborne
  * @version $Id: Bits.java,v 1.3 2007/01/02 11:51:49 andy_seaborne Exp $
  */ 
-public final class Bits
+public final class BitsLong
 {
-    // This code was originally pre-Jaav5, which introdedsome bit operations as Long.????
-    // TODO Migrate to Java5 if propriate
-    
-    // When this is false, no calls to check() should be generated and the
-    // JIT can inline these class statics.
+    // When this is false, no calls to check() should be generated.
     public static final boolean CHECK = false ;
     private static int LongLen = Long.SIZE ;
     
