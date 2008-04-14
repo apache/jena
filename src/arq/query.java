@@ -77,7 +77,9 @@ public class query extends CmdARQ
     
     protected String getSummary() { return getCommandName()+" --data=<file> --query=<query>" ; }
     
-    private void queryExec()
+    protected Dataset getDataset()  { return modDataset.getDataset() ; }
+    
+    protected void queryExec()
     {
         try{
             Query query = modQuery.getQuery() ;
@@ -89,7 +91,7 @@ public class query extends CmdARQ
                 System.out.println();
             }
             
-            Dataset dataset = modDataset.getDataset() ;
+            Dataset dataset = getDataset() ;
             modTime.startTimer() ;
             QueryExecution qe = QueryExecutionFactory.create(query, dataset) ;
             // Check there is a dataset
