@@ -77,9 +77,8 @@ public class Run
 //        System.exit(0) ;
         
         
-        
-        //tdb.tdbloader.main("--desc", "dataset.ttl", "D.ttl") ;
-        tdb.tdbquery.main(new String[]{"--desc=dataset.ttl", "SELECT * {?s ?p ?o . FILTER(?o > 1)}"}) ;
+        tdb.tdbloader.main("--desc", "dataset.ttl", "D.ttl") ;
+        tdb.tdbquery.main(new String[]{"--desc=dataset.ttl", "PREFIX xsd:    <http://www.w3.org/2001/XMLSchema#>\n SELECT * {?s ?p ?o . FILTER(datatype(?o) = xsd:decimal)}"}) ;
         System.exit(0) ;
         
         
