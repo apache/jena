@@ -47,10 +47,10 @@ public class Const
     public static final int NodeCacheSize           = 100*1000 ;
 
     /** Size of the delayed-write block cache (32 bit systems only) (per file) */
-    public static final int BlockWriteCacheSize     = 1000 ;
+    public static final int BlockWriteCacheSize     = 2000 ;
 
-    /** Size of read block cache (32 bit systems only).  Increase JVM size as necessary. (per file) */
-    public static final int BlockReadCacheSize      = 20*1000 ;
+    /** Size of read block cache (32 bit systems only).  Increase JVM size as necessary. Per file. */
+    public static final int BlockReadCacheSize      = 10*1000 ;
     
     /** Number of adds/deletes between calls to sync (-ve to disable) */
     public static final int SyncTick                = 5*1000 ;
