@@ -12,17 +12,17 @@ public class BCD
 {
     // BCD is (will be) an scale and a nibble array. 
     
-    static final int NibblesPerLong = 64/4 ;
+    static final int NibblesPerLong = Long.SIZE/4 ;
     
     public static void set() {}
 
-    public static long asBCD(int x)
+    public static long asBCD(long x)
     {
         long z = 0 ;
         int idx = 0 ;
         while( x > 0 )
         {
-            int y = x%10 ;
+            int y = (int)(x%10) ;
             z = set(z, y, idx) ;
             x = x / 10 ;
             idx ++ ;
@@ -30,12 +30,12 @@ public class BCD
         return z ;
     }
     
-    public static int toInt(long bcd)
+    public static long asLong(long bcd)
     {
         int z = numNibbles(bcd) ;
-        int v = 0 ;
+        long v = 0 ;
         for ( int i = z-1 ; i >=0 ; i-- )
-            v = 10*v + nibble(bcd, i) ;
+            v = 10L*v + (long)nibble(bcd, i) ;
         return v ;
     }
 

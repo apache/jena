@@ -64,7 +64,6 @@ public class NodeId
         value = b.getLong(idx) ;
     }
     
-    
     private NodeId(long v) { value = v ;}
     
     public void toByteBuffer(ByteBuffer b, int idx) { b.putLong(idx, value) ; }
@@ -74,10 +73,14 @@ public class NodeId
     public boolean isDirect() { return false ; }
     
     // Masked?
-    public long getId() { return value ; }
+    public long getId()     { return value ; }
     
     @Override
-    public int hashCode() { return (int)value ; }
+    public int hashCode()
+    { 
+        // Ensure the type byte has an effect on the bottom 32 bits.
+        return ((int)value) ^ ((int)(value >> 32)) ; 
+    }
     
     @Override
     public boolean equals(Object other)
@@ -94,9 +97,18 @@ public class NodeId
         return "["+value+"]" ; }
     
     // ---- Encoding special - inlines.
+    /* The long is formated as:
+     * 8 bits of type
+     * 56 bits of value
+     * 
+     *  Type 0 means the node is in the object table.
+     *  Types 1-4 store the value of the node in the 56 bits remaining.
+     *  
+     *  If a value would not fit, it will be stored externally so there is no
+     *  guarantee that all integers, say, are store inline. 
+     *  
+     */
     
-    
-    /** Encode a node as an inline literal.  Return null if it can't be done */
     
     // Type codes.
     private static final int NONE       = 0 ;
@@ -105,6 +117,7 @@ public class NodeId
     private static final int DATE       = 3 ;
     private static final int DATETIME   = 4 ;
     
+    /** Encode a node as an inline literal.  Return null if it can't be done */
     public static NodeId inline(Node node)
     {
         if ( ! node.isLiteral() ) return null ;
@@ -144,6 +157,7 @@ public class NodeId
         return null ;
     }
     
+    /** Decode an inline nodeID, return null if not an inline node */
     public static Node extract(NodeId nodeId)
     {
         long v = nodeId.getId() ;

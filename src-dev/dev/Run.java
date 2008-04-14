@@ -46,12 +46,29 @@ import com.hp.hpl.jena.sparql.util.FmtUtils;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
 
 import com.hp.hpl.jena.query.*;
+import java.math.BigDecimal;
 
 
 public class Run
 {
     public static void main(String ... args)
     {
+        // Geo decimals. : 0.03190235436
+        String x = "0.003190235436" ;
+        BigDecimal d = new BigDecimal(x) ;
+        System.out.println("Decimal: "+d) ;
+        System.out.printf("Scale = %d : Val = %d\n" , d.scale(), d.unscaledValue()) ;
+        
+        DecimalNode dn = new DecimalNode(d.unscaledValue().longValue(), d.scale()) ; 
+        BigDecimal d2 = dn.get() ;
+        System.out.println("Decimal: "+d2) ;
+        
+        System.exit(0) ;
+        
+        
+        
+        
+        
         typedNode("1") ;
         typedNode("'1'^^xsd:int") ;
         typedNode("'1'") ;
@@ -228,7 +245,7 @@ public class Run
     private static void BCD()
     {
         System.out.printf("0x%X\n", BCD.asBCD(15)) ;
-        System.out.printf("%d\n", BCD.toInt(BCD.asBCD(15))) ;
+        System.out.printf("%d\n", BCD.asLong(BCD.asBCD(15))) ;
         
 
         System.out.println("Strings") ;
