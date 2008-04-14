@@ -4,15 +4,16 @@
  * [See end of file]
  */
 
-package dev;
+package com.hp.hpl.jena.tdb.pgraph;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
+import dev.BCD;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-// NO SIGN
 public class DecimalNode
 {
     private static Logger log = LoggerFactory.getLogger(DecimalNode.class) ;
@@ -22,17 +23,20 @@ public class DecimalNode
     // 48 nibbles (12 chars) of accuracy 
     static final long MAX = 999999999999L ; 
     static final BigInteger MAX_I = BigInteger.valueOf(MAX) ;
+    static final BigInteger MIN_I = BigInteger.valueOf(-MAX) ;
     
-    int scale ;     // 2^7 - 2^-7
-    long value ;    // BCD nibbles.  16 nibbles is more than an int's worth.
+    private int scale ;     // 2^7 - 2^-7
+    private long value ;    // BCD nibbles.  16 nibbles is more than an int's worth.
+    private boolean isPositive ;
 
     public static DecimalNode valueOf(BigDecimal decimal)
     {
         int scale = decimal.scale() ;
         BigInteger bigInt = decimal.unscaledValue() ;
-        if ( bigInt.compareTo(MAX_I) > 0 )
+        if ( bigInt.compareTo(MAX_I) > 0 || bigInt.compareTo(MIN_I) < 0 )
         {
-            log.warn("Value out of range: ("+decimal.scale()+","+decimal.unscaledValue()+")") ;
+            // Too big for .longValue.
+            //log.warn("Value out of range: ("+decimal.scale()+","+decimal.unscaledValue()+")") ;
             return null ;
         }
         return valueOf(bigInt.longValue(), scale) ;
@@ -42,13 +46,13 @@ public class DecimalNode
     {
         if ( scale >= 128 || scale < -128 )
         {
-            log.warn("Scale out of range: ("+binValue+","+scale+")") ;
+            //log.warn("Scale out of range: ("+binValue+","+scale+")") ;
             return null ;
         }
         
-        if ( binValue > MAX )
+        if ( Math.abs(binValue) > MAX )
         {
-            log.warn("Value out of range: ("+binValue+","+scale+")") ;
+            //log.warn("Value out of range: ("+binValue+","+scale+")") ;
             return null ;
         }
         
@@ -57,6 +61,7 @@ public class DecimalNode
     
     private DecimalNode(long binVal, int scale)
     {
+        this.isPositive = (binVal >= 0 ) ; 
         this.scale = scale ;
         this.value = BCD.asBCD(binVal) ;
     }

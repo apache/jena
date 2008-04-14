@@ -21,7 +21,6 @@ import com.hp.hpl.jena.tdb.Const;
 import com.hp.hpl.jena.tdb.TDBException;
 
 import dev.BCD;
-import dev.DecimalNode;
 
 final
 public class NodeId
@@ -145,16 +144,13 @@ public class NodeId
         if ( ! enableInlineLiterals ) return null ;
         
         
-        
         String lex = node.getLiteralLexicalForm() ;
         LiteralLabel lit = node.getLiteral() ;
         
         RDFDatatype dt = node.getLiteralDatatype() ;
         
-        // xsd:decimal
-        // xsd:integer, xsd:int and lots of others.
-        
         // Decimal is a valid supertype of integer but we handle integers and decimals differently.
+        
         if ( node.getLiteralDatatype().equals(XSDDatatype.XSDdecimal) )
         {
             BigDecimal decimal = new BigDecimal(lit.getLexicalForm()) ;
@@ -165,17 +161,14 @@ public class NodeId
                 decimal = decimal.abs() ;
             }
             
+            // Does checking.
             DecimalNode dn = DecimalNode.valueOf(decimal) ;
-            
-            // pack : DECIMAL , sign, scale, value
-            long v = BitsLong.pack(0, DECIMAL, 56, 64) ;
-            if ( ! isPositive )
-                v = BitsLong.pack(v, 1, 55, 56) ;
-            v = BitsLong.pack(v, dn.getScale(), 48, 55) ;
-            v = BitsLong.pack(v, dn.getValue(), 0, 48) ;
-            return new NodeId(v) ;
+            if ( dn != null )
+                return packDecimal(isPositive, dn.getScale(), dn.getValue()) ;
+            else
+                return null ;
         }
-        else
+        else    // Not decimal.
         {
             if ( XSDDatatype.XSDinteger.isValidLiteral(lit) )
             {
@@ -187,6 +180,8 @@ public class NodeId
                     v = BitsLong.pack(v, 1, 56, 64) ;
                     return new NodeId(v) ;
                 }
+                else
+                    return null ;
             }
         }
         
@@ -212,6 +207,17 @@ public class NodeId
         return null ;
     }
     
+    private static NodeId packDecimal(boolean isPositive, int scale, long value)
+    {
+        // pack : DECIMAL , sign, scale, value
+        long v = BitsLong.pack(0, DECIMAL, 56, 64) ;
+        if ( ! isPositive )
+            v = BitsLong.pack(v, 1, 55, 56) ;
+        v = BitsLong.pack(v, scale, 48, 55) ;
+        v = BitsLong.pack(v, value, 0, 48) ;
+        return new NodeId(v) ;
+    }
+
     /** Decode an inline nodeID, return null if not an inline node */
     public static Node extract(NodeId nodeId)
     {

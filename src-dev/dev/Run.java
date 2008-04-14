@@ -64,10 +64,6 @@ public class Run
 //        System.out.println("Decimal: "+d2) ;
 //        System.exit(0) ;
         
-        
-        
-        
-        
 //        typedNode("1") ;
 //        typedNode("'1'^^xsd:int") ;
 //        typedNode("'1'") ;
