@@ -4,32 +4,55 @@
  * [See end of file]
  */
 
-package tdb;
+package tdb.cmdline;
 
-import tdb.cmdline.ModTDBDataset;
+import arq.cmd.CmdException;
+import arq.cmdline.CmdArgModule;
+import arq.cmdline.CmdGeneral;
+import arq.cmdline.ModAssembler;
 import arq.cmdline.ModDataset;
 
-import com.hp.hpl.jena.tdb.TDB;
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.tdb.TDBFactory;
+import com.hp.hpl.jena.tdb.pgraph.PGraphBase;
 
+import com.hp.hpl.jena.query.Dataset;
+import com.hp.hpl.jena.query.DatasetFactory;
 
-public class tdbquery extends arq.query
+public class ModTDBDataset extends ModDataset
 {
-    
-    public static void main (String [] argv)
+    ModAssembler modAssembler =  new ModAssembler() ;
+    ModLocation modLocation =  new ModLocation() ;
+
+    public void registerWith(CmdGeneral cmdLine)
     {
-        new tdbquery(argv).main() ;
+        cmdLine.addModule(modAssembler) ;
+        cmdLine.addModule(modLocation) ;
     }
-    
-    public tdbquery(String[] argv)
+
+    public void processArgs(CmdArgModule cmdLine)
     {
-        super(argv) ;
-        TDB.init() ;
+        modAssembler.processArgs(cmdLine) ;
+        modLocation.processArgs(cmdLine) ;
     }
-    
+
     @Override
-    protected ModDataset setModDataset()
+    public Dataset createDataset()
     {
-        return new ModTDBDataset() ;
+        if ( modLocation.getLocation() == null && modAssembler.getAssemblerFile() == null )
+            throw new CmdException("No assembler file and no location") ;
+
+        if ( modAssembler.getAssemblerFile() != null && modAssembler.getAssemblerFile() != null )
+            throw new CmdException("Both an assembler file and a location") ;
+
+        Model model = null ;
+
+        if ( modAssembler.getAssemblerFile() != null )
+            model = TDBFactory.assembleModel(modAssembler.getAssemblerFile()) ;
+        else
+            model = TDBFactory.createModel(modLocation.getLocation()) ;
+        PGraphBase graph = (PGraphBase)model.getGraph() ;
+        return DatasetFactory.create(model) ;
     }
 }
 

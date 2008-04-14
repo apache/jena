@@ -18,6 +18,8 @@ import arq.cmdline.CmdARQ;
 import arq.cmdline.ModAssembler;
 
 import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.ModelFactory;
+
 import com.hp.hpl.jena.sparql.util.Timer;
 import com.hp.hpl.jena.sparql.util.Utils;
 import com.hp.hpl.jena.sparql.util.graph.GraphLoadMonitor;
@@ -86,7 +88,7 @@ public class tdbloader extends CmdARQ
         if ( modLocation.getLocation() == null && modAssembler.getAssemblerFile() == null )
             throw new CmdException("No assembler file and no location") ;
              
-        if ( modAssembler.getAssemblerFile() != null && modAssembler.getAssemblerFile() != null )
+        if ( modLocation.getLocation() != null && modAssembler.getAssemblerFile() != null )
             throw new CmdException("Both an assembler file and a location") ;
         
         Model model = null ;
@@ -107,11 +109,12 @@ public class tdbloader extends CmdARQ
         if ( isQuiet() )
             timing = false ;
         
-        if ( modAssembler.getAssemblerFile() == null )
-            throw new CmdException("No assembler file") ;
+//        if ( modAssembler.getAssemblerFile() == null )
+//            throw new CmdException("No assembler file") ;
         
-        Model model = TDBFactory.assembleModel(modAssembler.getAssemblerFile()) ;
-        graph = (PGraphBase)model.getGraph() ;
+//        Model model = TDBFactory.assembleModel(modAssembler.getAssemblerFile()) ;
+        graph = getGraph() ;
+        Model model = ModelFactory.createModelForGraph(graph) ;
         
         // SPO only.
         dropSecondaryIndexes() ;
