@@ -44,6 +44,9 @@ public class NodeId
     // Could recycle them (but the value field wil not be final) 
     
     public static final int SIZE = Const.SizeOfLong ;
+    
+    private static boolean enableInlineLiterals = true ;
+    
     final long value ;
     
     public static NodeId create(long value)
@@ -139,6 +142,10 @@ public class NodeId
         if ( ! node.isLiteral() ) return null ;
         if ( node.getLiteralDatatype() == null ) return null ;
         
+        if ( ! enableInlineLiterals ) return null ;
+        
+        
+        
         String lex = node.getLiteralLexicalForm() ;
         LiteralLabel lit = node.getLiteral() ;
         
@@ -208,6 +215,8 @@ public class NodeId
     /** Decode an inline nodeID, return null if not an inline node */
     public static Node extract(NodeId nodeId)
     {
+        //if ( ! enableInlineLiterals ) return null ; 
+        
         long v = nodeId.getId() ;
         int type = (int)BitsLong.unpack(v, 56, 64) ;
 
