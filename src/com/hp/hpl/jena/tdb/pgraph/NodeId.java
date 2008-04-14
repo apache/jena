@@ -6,6 +6,7 @@
 
 package com.hp.hpl.jena.tdb.pgraph;
 
+import java.math.BigDecimal;
 import java.nio.ByteBuffer;
 
 import lib.BitsLong;
@@ -13,10 +14,14 @@ import lib.Bytes;
 
 import com.hp.hpl.jena.datatypes.RDFDatatype;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
+import com.hp.hpl.jena.datatypes.xsd.XSDDateTime;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.impl.LiteralLabel;
 import com.hp.hpl.jena.tdb.Const;
 import com.hp.hpl.jena.tdb.TDBException;
+
+import dev.BCD;
+import dev.DecimalNode;
 
 final
 public class NodeId
@@ -41,7 +46,10 @@ public class NodeId
     public static final int SIZE = Const.SizeOfLong ;
     final long value ;
     
-    public static NodeId create(long value) { return new NodeId(value) ; }
+    public static NodeId create(long value)
+    { 
+        return new NodeId(value) ;
+    }
     
     // Chance for a cache? (Small Java objects are really not that expensive these days.)
     public static NodeId create(byte[] b, int idx)
@@ -107,15 +115,23 @@ public class NodeId
      *  If a value would not fit, it will be stored externally so there is no
      *  guarantee that all integers, say, are store inline. 
      *  
+     *  Integer format: signed 56 bit number.
+     *  Decimal format: 1 bit sign, 7 bits signed exponent (base 10: the scale) and 48 bits BCD.
+     *     48 bits = 12 nibbles/digits 
+     *  Date format:
+     *  DateTime format:
+     *  Boolean format:
      */
     
     
     // Type codes.
-    private static final int NONE       = 0 ;
-    private static final int INTEGER    = 1 ;
-    private static final int DECIMAL    = 2 ;
-    private static final int DATE       = 3 ;
-    private static final int DATETIME   = 4 ;
+    private static final int NONE               = 0 ;
+    private static final int INTEGER            = 1 ;
+    private static final int DECIMAL            = 2 ;
+    private static final int DATE               = 3 ;
+    private static final int DATETIME           = 4 ;
+    private static final int BOOLEAN            = 5 ;
+    private static final int SHORT_STRING       = 6 ;
     
     /** Encode a node as an inline literal.  Return null if it can't be done */
     public static NodeId inline(Node node)
@@ -134,7 +150,23 @@ public class NodeId
         // Decimal is a valid supertype of integer but we handle integers and decimals differently.
         if ( node.getLiteralDatatype().equals(XSDDatatype.XSDdecimal) )
         {
-            // XSD Decimal
+            BigDecimal decimal = new BigDecimal(lit.getLexicalForm()) ;
+            boolean isPositive = true ;
+            if ( decimal.compareTo(BigDecimal.ZERO) < 0 )
+            {
+                isPositive = false ;
+                decimal = decimal.abs() ;
+            }
+            
+            DecimalNode dn = DecimalNode.valueOf(decimal) ;
+            
+            // pack : DECIMAL , sign, scale, value
+            long v = BitsLong.pack(0, DECIMAL, 56, 64) ;
+            if ( ! isPositive )
+                v = BitsLong.pack(v, 1, 55, 56) ;
+            v = BitsLong.pack(v, dn.getScale(), 48, 55) ;
+            v = BitsLong.pack(v, dn.getValue(), 0, 48) ;
+            return new NodeId(v) ;
         }
         else
         {
@@ -150,10 +182,26 @@ public class NodeId
                 }
             }
         }
-        if ( XSDDatatype.XSDdateTime.isValidLiteral(lit) )
-        {}
+        
+        if ( XSDDatatype.XSDdateTime.isValidLiteral(lit) ) 
+        {
+            XSDDateTime dateTime = (XSDDateTime)lit.getValue() ;
+            //return new NodeValueDateTime(dateTime, node) ;
+        }
+        
         if ( XSDDatatype.XSDdate.isValidLiteral(lit) )
-        {}
+        {
+            // Jena datatype support works on masked dataTimes. 
+            XSDDateTime dateTime = (XSDDateTime)lit.getValue() ;
+            //return new NodeValueDate(dateTime, node) ;
+        }
+        
+        if ( XSDDatatype.XSDboolean.isValidLiteral(lit) )
+        {
+            boolean b = ((Boolean)lit.getValue()).booleanValue() ;
+            //return new NodeValueBoolean(b, node) ;
+        }
+        
         return null ;
     }
     
@@ -168,13 +216,26 @@ public class NodeId
             case NONE:
                 return null ;
             case INTEGER:
+            {
                 long val = BitsLong.clear(v, 56, 64) ;
                 // Sign extends to 64 bits.
                 if ( BitsLong.isSet(val, 55) )
                     val = BitsLong.set(v, 56, 64) ;
                 Node n = Node.createLiteral(Long.toString(val), null, XSDDatatype.XSDinteger) ;
                 return n ;
+            }
             case DECIMAL:
+            {
+                boolean negSign = BitsLong.isSet(v, 55) ;
+                int scale = (int)BitsLong.unpack(v, 48, 55) ;
+                long bcdVal = BitsLong.unpack(v, 0, 48) ;
+                long binVal = BCD.asLong(bcdVal) ;
+                if ( negSign )
+                    binVal = -binVal ;
+                String x = BigDecimal.valueOf(binVal, scale).toEngineeringString() ;
+                return Node.createLiteral(x, null, XSDDatatype.XSDdecimal) ;
+            }
+
             case DATE:
             case DATETIME:
             default:

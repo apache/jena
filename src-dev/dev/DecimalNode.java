@@ -7,16 +7,55 @@
 package dev;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+// NO SIGN
 public class DecimalNode
 {
-    BigDecimal decimal ;
-   
-    int scale ; 
-    long value ;    // BCD nibbles.  16 nibbles is more than an int's worth.
+    private static Logger log = LoggerFactory.getLogger(DecimalNode.class) ;
     
-    public DecimalNode(long binVal, int scale)
+    BigDecimal decimal = null ;
+    
+    // 48 nibbles (12 chars) of accuracy 
+    static final long MAX = 999999999999L ; 
+    static final BigInteger MAX_I = BigInteger.valueOf(MAX) ;
+    
+    int scale ;     // 2^7 - 2^-7
+    long value ;    // BCD nibbles.  16 nibbles is more than an int's worth.
+
+    public static DecimalNode valueOf(BigDecimal decimal)
+    {
+        int scale = decimal.scale() ;
+        BigInteger bigInt = decimal.unscaledValue() ;
+        if ( bigInt.compareTo(MAX_I) > 0 )
+        {
+            log.warn("Value out of range: ("+decimal.scale()+","+decimal.unscaledValue()+")") ;
+            return null ;
+        }
+        return valueOf(bigInt.longValue(), scale) ;
+    }
+    
+    public static DecimalNode valueOf(long binValue, int scale)
+    {
+        if ( scale >= 128 || scale < -128 )
+        {
+            log.warn("Scale out of range: ("+binValue+","+scale+")") ;
+            return null ;
+        }
+        
+        if ( binValue > MAX )
+        {
+            log.warn("Value out of range: ("+binValue+","+scale+")") ;
+            return null ;
+        }
+        
+        return new DecimalNode(binValue, scale) ;
+    }
+    
+    private DecimalNode(long binVal, int scale)
     {
         this.scale = scale ;
         this.value = BCD.asBCD(binVal) ;
@@ -28,6 +67,23 @@ public class DecimalNode
             decimal = BigDecimal.valueOf(BCD.asLong(value), scale) ;
         return decimal ;
     }
+
+    @Override
+    public String toString()
+    {
+        return get().toPlainString() ;
+    }
+    
+    public int getScale()
+    {
+        return scale ;
+    }
+
+    public long getValue()
+    {
+        return value ;
+    }
+    
     
 }
 

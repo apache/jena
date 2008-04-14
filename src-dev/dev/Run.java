@@ -46,38 +46,41 @@ import com.hp.hpl.jena.sparql.util.FmtUtils;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
 
 import com.hp.hpl.jena.query.*;
-import java.math.BigDecimal;
 
 
 public class Run
 {
     public static void main(String ... args)
     {
-        // Geo decimals. : 0.03190235436
-        String x = "0.003190235436" ;
-        BigDecimal d = new BigDecimal(x) ;
-        System.out.println("Decimal: "+d) ;
-        System.out.printf("Scale = %d : Val = %d\n" , d.scale(), d.unscaledValue()) ;
+//        // Geo decimals. : 0.03190235436
+//        String x = "0.0003190235436" ;
+//        BigDecimal d = new BigDecimal(x) ;
+//        System.out.println("Decimal: "+d) ;
+//        System.out.printf("Scale = %d : Val = %d\n" , d.scale(), d.unscaledValue()) ;
+//        
+//        DecimalNode dn = DecimalNode.valueOf(d) ;
+//        System.out.println("DecimalNode: "+dn) ;
+//        BigDecimal d2 = dn.get() ;
+//        System.out.println("Decimal: "+d2) ;
+//        System.exit(0) ;
         
-        DecimalNode dn = new DecimalNode(d.unscaledValue().longValue(), d.scale()) ; 
-        BigDecimal d2 = dn.get() ;
-        System.out.println("Decimal: "+d2) ;
         
+        
+        
+        
+//        typedNode("1") ;
+//        typedNode("'1'^^xsd:int") ;
+//        typedNode("'1'") ;
+        
+//        typedNode("0.123") ;
+//        typedNode("-0.123") ;
+//        System.exit(0) ;
+        
+        
+        
+        //tdb.tdbloader.main("--desc", "dataset.ttl", "D.ttl") ;
+        tdb.tdbquery.main(new String[]{"--desc=dataset.ttl", "SELECT * {?s ?p ?o . FILTER(?o > 1)}"}) ;
         System.exit(0) ;
-        
-        
-        
-        
-        
-        typedNode("1") ;
-        typedNode("'1'^^xsd:int") ;
-        typedNode("'1'") ;
-        System.exit(0) ;
-        
-        
-        
-        
-        z() ; System.exit(0) ;
         
         
         prefixes() ; 

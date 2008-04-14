@@ -142,24 +142,30 @@ public abstract class NodeTableBase implements NodeTable
             id2node_Cache.put(id, node) ;
     }
 
-    // --------
+    // -------- NodeId<->Node
     // Only places for conversion between NodeId<->Node, accessing the ObjectFile.
     // Special cases: integers and dateTimes
     
     protected final NodeId nodeToNodeId(Node node)
     {
+        NodeId x = NodeId.inline(node) ;
+        if ( x != null )
+            return x ;
         String s = encode(node) ;
         return objects.write(s) ;
     }
     
     protected final Node nodeIdToNode(NodeId id)
     {
+        Node n = NodeId.extract(id) ;
+        if ( n != null )
+            return n ; 
         String s = objects.read(id) ;
-        Node n = decode(s) ;
+        n = decode(s) ;
         return n ;
     }
+    // -------- NodeId<->Node
 
-    // --------
     @Override
     public void close()
     {
