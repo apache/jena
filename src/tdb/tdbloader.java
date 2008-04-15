@@ -17,6 +17,7 @@ import arq.cmdline.ArgDecl;
 import arq.cmdline.CmdARQ;
 import arq.cmdline.ModAssembler;
 
+import com.hp.hpl.jena.query.ARQ;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 
@@ -104,6 +105,9 @@ public class tdbloader extends CmdARQ
     @Override
     protected void exec()
     {
+        if ( isVerbose())
+            System.out.println(ARQ.getContext()) ;
+        
         if ( isVerbose() )
             timing = true ;
         if ( isQuiet() )
