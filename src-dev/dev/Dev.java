@@ -8,7 +8,7 @@ package dev;
 
 public class Dev
 {
-    // Tests for inline NodeIds
+    // Tests for inline NodeIds (scripts)
     // Tidy up inlines.
     // Code in NodeTableBase
     
