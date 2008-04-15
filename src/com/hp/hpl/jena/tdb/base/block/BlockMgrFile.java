@@ -13,10 +13,10 @@ import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 
-import com.hp.hpl.jena.tdb.Const;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.hp.hpl.jena.tdb.Const;
 
 /** Abstract class to for block managers over a file */
 public abstract class BlockMgrFile extends BlockMgrBase
@@ -27,6 +27,9 @@ public abstract class BlockMgrFile extends BlockMgrBase
     protected FileChannel channel ;
     protected RandomAccessFile out ;
     protected long numFileBlocks = -1 ;
+    
+    // Better for ids?
+    //private final AtomicLong numFileBlocks ;
     
     public BlockMgrFile(String filename, int blockSize)
     {
@@ -45,6 +48,7 @@ public abstract class BlockMgrFile extends BlockMgrBase
             long longBlockSize = blockSize ;
             
             numFileBlocks = filesize/longBlockSize ;
+            //numFileBlocks = new AtomicLong(numFileBlocks) ;
             
             if ( numFileBlocks > Integer.MAX_VALUE )
                 log.warn(format("File size (%d) exceeds tested block number limits", filesize, blockSize)) ;
@@ -61,6 +65,8 @@ public abstract class BlockMgrFile extends BlockMgrBase
     @Override final
     public int allocateId()
     {
+        //return numFileBlocks.getAndIncrement() ;
+        
         // Always extends.
         int id = -1 ;
         synchronized (this)
@@ -97,7 +103,6 @@ public abstract class BlockMgrFile extends BlockMgrBase
             throw new BlockException(format("BlockMgrMapped: Wrong size block.  Expected=%d : actual=%d", blockSize, bb.capacity())) ;
         if ( bb.order() != Const.NetworkOrder )
             throw new BlockException("BlockMgrMapped: Wrong byte order") ;
-        
     }
 
     protected void force()
