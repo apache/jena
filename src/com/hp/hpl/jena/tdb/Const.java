@@ -11,6 +11,8 @@ import java.nio.ByteOrder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.hp.hpl.jena.query.ARQ;
+import com.hp.hpl.jena.sparql.util.Symbol;
 import com.hp.hpl.jena.tdb.base.block.FileMode;
 import com.hp.hpl.jena.tdb.pgraph.NodeId;
 
@@ -60,6 +62,10 @@ public class Const
     // BDB related.
     public static final int BDB_cacheSizePercent    = 75 ; 
     
+    // Value: direct, mapped, default 
+    public static final Symbol symFileMode = Symbol.create("TDB.file.mode") ;  
+    public static final Symbol symParallelLoad = Symbol.create("TDB.load.parallel") ;
+    
     // --------
     
     // Symbols.
@@ -91,30 +97,29 @@ public class Const
 
     private static FileMode determineFileMode()
     {
-        if ( System.getProperty("TDB.fileMode") != null ) 
-        {
-            String x = System.getProperty("TDB.fileMode") ;
-            if ( x.equalsIgnoreCase("mapped"))
-            {
-                log.info("File mode: mapped") ;
-                return FileMode.mapped ;
-            }
-            if ( x.equalsIgnoreCase("direct"))
-            {
-                log.info("File mode: direct") ;
-                return FileMode.direct ;
-            }
-            throw new TDBException("Unrecognized file mode: "+x) ;
-        }
+        String x = ARQ.getContext().getAsString(symFileMode, "default") ;
         
-        if ( is64bit )
+        if ( x.equalsIgnoreCase("direct") )
         {
-            log.debug("FileMode: Mapped") ;
+            log.info("File mode: mapped") ;
+            return FileMode.direct ;
+        }
+        if ( x.equalsIgnoreCase("mapped") )
+        {
+            log.info("File mode: mapped") ;
             return FileMode.mapped ;
         }
-
-        log.debug("FileMode: Direct") ;
-        return FileMode.direct;
+        if ( x.equalsIgnoreCase("default") )
+        {
+            if ( is64bit )
+            {
+                log.debug("FileMode: Mapped") ;
+                return FileMode.mapped ;
+            }
+            log.debug("FileMode: Direct") ;
+            return FileMode.direct ;
+        }
+        throw new TDBException("Unrecognized file mode: "+x) ;
     }
 }
 
