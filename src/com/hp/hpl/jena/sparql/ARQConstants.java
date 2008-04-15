@@ -86,7 +86,14 @@ public class ARQConstants
     { 
         if ( shortName.startsWith(ARQ.arqNS)) 
             throw new ARQInternalErrorException("Symbol short name begins with the ARQ namespace name: "+shortName) ;
-        return Symbol.create(ARQ.arqNS+shortName) ;
+        if ( shortName.startsWith("http:")) 
+            throw new ARQInternalErrorException("Symbol short name begins with http: "+shortName) ;
+        return allocSymbol(ARQ.arqNS, shortName) ;
+    }
+    
+    public static Symbol allocSymbol(String base, String shortName)
+    {
+        return Symbol.create(base+shortName) ;
     }
     
     // If adding to the kinds of variable maker, then need to update tests in Var

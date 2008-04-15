@@ -97,6 +97,17 @@ public class Context
     
     // -- as string
     
+
+    /** Get the value a string (uses .toString() if the value is not null) - supply a default string value */
+    public String getAsString(Symbol property, String defaultValue)
+    {
+        String x = getAsString(property) ;
+        if ( x == null )
+            return defaultValue ;
+        return x ;
+    }
+
+    
     /** Get the value a string (uses .toString() if the value is not null) */
     public String getAsString(Symbol property)
     { 

@@ -26,11 +26,11 @@ public class Constants
 	/** The localhost name space */
 	public static final String localhostNS = "http://localhost/#" ;
 	/** Check flag if the BGP optimizer is enabled */
-	public static final Symbol isEnabled = ARQConstants.allocSymbol(Vocabulary.isEnabled.getURI()) ;
+	public static final Symbol isEnabled = ARQConstants.allocSymbol(arqOptimizerNS, Vocabulary.isEnabled.getURI()) ;
 	/** The Probabilistic Framework Symbol used for the ARQ context */
-	public static final Symbol PF = ARQConstants.allocSymbol(Vocabulary.PF.getURI()) ;
+	public static final Symbol PF = ARQConstants.allocSymbol(arqOptimizerNS, Vocabulary.PF.getURI()) ;
 	/** The heuristic Symbol used for the ARQ context */
-	public static final Symbol heuristic = ARQConstants.allocSymbol(Vocabulary.heuristic.getURI()) ;
+	public static final Symbol heuristic = ARQConstants.allocSymbol(arqOptimizerNS, Vocabulary.heuristic.getURI()) ;
 }
 
 
