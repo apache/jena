@@ -87,6 +87,7 @@ public class BlockMgrMapped extends BlockMgrFile
                 segBuffer.position(segOff) ;
             } catch (IllegalArgumentException ex)
             {
+                // This is where bad concurrency seems to bite
                 System.err.println("Id: "+id) ;
                 System.err.println("Seg="+seg) ;
                 System.err.println("Segoff="+segOff) ;
