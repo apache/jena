@@ -124,7 +124,7 @@ public class tdbloader extends CmdARQ
         
         // Side effect : with no files to load, it copies the SPO index to the secondary indexes.
         if ( timing && super.getPositional().size() > 0 )
-            System.out.println("** Load data") ;
+            println("** Load data") ;
         long count = 0 ;
         
         @SuppressWarnings("unchecked")
@@ -142,14 +142,14 @@ public class tdbloader extends CmdARQ
         
         
         if ( timing )
-            System.out.println("** Secondary indexes") ;
+            println("** Secondary indexes") ;
         // Now do secondary indexes.
         
         // Fork two separate processes? But it's disk bound!?
         createSecondaryIndexes(timing) ;
 
         if ( timing )
-            System.out.println("** Close graph") ;
+            println("** Close graph") ;
         graph.close() ;
 
         timer.endTimer() ;
@@ -157,8 +157,8 @@ public class tdbloader extends CmdARQ
         if ( timing )
         {
             long tps = 1000*count/time ;
-            System.out.println() ;
-            System.out.printf("Time for load: %.2fs [%,d triples/s]\n", time/1000.0, tps) ;
+            println() ;
+            printf("Time for load: %.2fs [%,d triples/s]\n", time/1000.0, tps) ;
         }
     }
 
@@ -203,7 +203,7 @@ public class tdbloader extends CmdARQ
     
     private void createSecondaryIndexesParallel(boolean printTiming)
     {
-        System.out.println("** Parallel index building") ;
+        println("** Parallel index building") ;
         Timer timer = new Timer() ;
         timer.startTimer() ;
         
@@ -228,7 +228,7 @@ public class tdbloader extends CmdARQ
 
         long time = timer.readTimer() ;
         if ( printTiming )
-            System.out.printf("Time for POS/OSP indexing: %.2fs\n", time/1000.0) ;
+            printf("Time for POS/OSP indexing: %.2fs\n", time/1000.0) ;
         timer.endTimer() ;
         
         graph.setIndexOSP(triplesOSP) ;
@@ -263,7 +263,7 @@ public class tdbloader extends CmdARQ
         copyIndex(indexSPO, triplesPOS, "POS", printTiming) ;
         long time2 = timer.readTimer() ;
         if ( printTiming )
-            System.out.printf("Time for POS indexing: %.2fs\n", (time2-time1)/1000.0) ;
+            printf("Time for POS indexing: %.2fs\n", (time2-time1)/1000.0) ;
         
         // ---- OSP
         RangeIndex idxOSP = graph.getIndexFactory().createRangeIndex(graph.getIndexRecordFactory(), "OSP") ;
@@ -272,7 +272,7 @@ public class tdbloader extends CmdARQ
         
         long time3 = timer.readTimer() ;
         if ( printTiming )
-            System.out.printf("Time for OSP indexing: %.2fs\n", (time3-time2)/1000.0) ;
+            printf("Time for OSP indexing: %.2fs\n", (time3-time2)/1000.0) ;
         timer.endTimer() ;
         
         graph.setIndexOSP(triplesOSP) ;
@@ -280,6 +280,7 @@ public class tdbloader extends CmdARQ
 
     }
 
+    private static Object lock = new Object() ;
 
     private static void copyIndex(TripleIndex srcIdx, TripleIndex destIdx, String label, boolean printTiming)
     {
@@ -304,7 +305,7 @@ public class tdbloader extends CmdARQ
                 long batchTime = t-last ;
                 long elapsed = t ;
                 last = t ;
-                System.out.printf("Index %s: %,d slots (Batch: %,d slots/s / Run: %,d slots/s)\n", 
+                printf("Index %s: %,d slots (Batch: %,d slots/s / Run: %,d slots/s)\n", 
                                   label, cumulative, 1000*c/batchTime, 1000*cumulative/elapsed) ;
                 c = 0 ;
             }
@@ -317,15 +318,25 @@ public class tdbloader extends CmdARQ
             if ( cumulative > 0 )
             {
                 if ( totalTime > 0 )
-                    System.out.printf("Index %s: %,d triples indexed in %,.2fs [%,d slots/s]\n", 
+                    printf("Index %s: %,d triples indexed in %,.2fs [%,d slots/s]\n", 
                                       label, cumulative, totalTime/1000.0, 1000*cumulative/totalTime) ;
                 else
-                    System.out.printf("Index %s: %,d triples indexed in %,.2fs\n", label, cumulative, totalTime/1000.0) ;
+                    printf("Index %s: %,d triples indexed in %,.2fs\n", label, cumulative, totalTime/1000.0) ;
             }
             else
-                System.out.printf("Index %s: 0 triples indexed\n", label) ;
+                printf("Index %s: 0 triples indexed\n", label) ;
         }
     }
+    
+    private static synchronized void printf(String fmt, Object ...args)
+    { System.out.printf(fmt, args) ; }
+    
+    private static synchronized void println()
+    { System.out.println() ; }
+    
+    private static synchronized void println(String str)
+    { System.out.println(str) ; }
+
 }
 
 /*
