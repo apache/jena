@@ -34,7 +34,7 @@ public class BlockMgrMapped extends BlockMgrFile
     private int segmentSize = 8 * 1024 * 1024 ;
     private int blocksPerSegment ;                              
     
-    private MappedByteBuffer[] segments = new MappedByteBuffer[1000] ;  // 8G - need tuning
+    private MappedByteBuffer[] segments = new MappedByteBuffer[4000] ;  // 32G - needs tuning
     private boolean[] segmentDirty = new boolean[1000] ; 
     
     
@@ -117,21 +117,25 @@ public class BlockMgrMapped extends BlockMgrFile
             throw new BlockException("Negative segment offset: "+seg) ;
         }
         
-        MappedByteBuffer segBuffer = segments[seg] ;
-        if ( segBuffer == null )
+        synchronized(this) 
         {
-            try {
-                segBuffer = channel.map(FileChannel.MapMode.READ_WRITE, offset, segmentSize) ;
-                if ( log.isDebugEnabled() )
-                    log.debug(format("Segment: %d", seg)) ;
-                segments[seg] = segBuffer ;
-            } catch (IOException ex)
+            // This, and force(), are the only places to directly access segments[] while running. 
+            MappedByteBuffer segBuffer = segments[seg] ;
+            if ( segBuffer == null )
             {
-                throw new BlockException("BlockMgrMapped.segmentAllocate: "+seg, ex) ;
+                try {
+                    segBuffer = channel.map(FileChannel.MapMode.READ_WRITE, offset, segmentSize) ;
+                    if ( log.isDebugEnabled() )
+                        log.debug(format("Segment: %d", seg)) ;
+                    segments[seg] = segBuffer ;
+                } catch (IOException ex)
+                {
+                    throw new BlockException("BlockMgrMapped.segmentAllocate: "+seg, ex) ;
+                }
             }
+            segmentDirty[seg] = true ;  //??
+            return segBuffer ;
         }
-        segmentDirty[seg] = true ;
-        return segBuffer ;
     }
 
     @Override
@@ -158,7 +162,7 @@ public class BlockMgrMapped extends BlockMgrFile
     }
 
     @Override
-    protected void force()
+    protected synchronized void force()
     {
         for ( int i = 0 ; i < segments.length ; i++ )
             if ( segments[i] != null && segmentDirty[i] )

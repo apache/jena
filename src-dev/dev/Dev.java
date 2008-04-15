@@ -12,6 +12,7 @@ public class Dev
     // Tidy up inlines.
     // Tidy up symbols use.  TDB. ...
     // Code in NodeTableBase
+    // Syncrhonized in BlockMgrMapped.
     
     // Interface Sync everywhere?
     // CountingSync.
