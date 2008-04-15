@@ -9,10 +9,7 @@ package dev;
 public class Dev
 {
     // Tests for inline NodeIds (scripts)
-    // Tidy up inlines.
     // Tidy up symbols use.  TDB. ...
-    // Code in NodeTableBase
-    // Syncrhonized in BlockMgrMapped.
     
     // Interface Sync everywhere?
     // CountingSync.
