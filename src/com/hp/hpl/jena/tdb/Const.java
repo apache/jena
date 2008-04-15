@@ -6,10 +6,9 @@
 
 package com.hp.hpl.jena.tdb;
 
-import java.nio.ByteOrder;
+import static com.hp.hpl.jena.tdb.TDB.log;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.nio.ByteOrder;
 
 import com.hp.hpl.jena.query.ARQ;
 import com.hp.hpl.jena.sparql.util.Symbol;
@@ -18,8 +17,6 @@ import com.hp.hpl.jena.tdb.pgraph.NodeId;
 
 public class Const
 {
-    private static Logger log = LoggerFactory.getLogger(Const.class) ;
-    
     /** Size, in bytes, of a Java long */
     public static final int SizeOfLong              = Long.SIZE/Byte.SIZE ;
     
@@ -98,10 +95,7 @@ public class Const
     private static FileMode determineFileMode()
     {
         String x = ARQ.getContext().getAsString(symFileMode, "default") ;
-        System.out.println("x ="+x) ;
-        System.out.println(ARQ.getContext().toString()) ;
-        
-        
+
         if ( x.equalsIgnoreCase("direct") )
         {
             log.info("File mode: mapped") ;

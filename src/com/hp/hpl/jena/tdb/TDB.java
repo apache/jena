@@ -7,6 +7,8 @@
 package com.hp.hpl.jena.tdb;
 
 import static lib.Log.log;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.rdf.model.impl.RDFReaderFImpl;
 import com.hp.hpl.jena.tdb.pgraph.assembler.PGraphAssemblerVocab;
@@ -20,6 +22,8 @@ import com.hp.hpl.jena.query.ARQ;
 
 public class TDB
 {
+    public static final Logger log = LoggerFactory.getLogger(TDB.class) ;
+    
     public static String namespace = "http://jena.hpl.hp.com/2008/tdb#" ;
     
 //    public static void panic(Class<?> clazz, String string)
@@ -63,6 +67,9 @@ public class TDB
         String bulkLoaderClass = "com.hp.hpl.jena.tdb.base.loader.BulkReader" ;
         RDFReaderFImpl.setBaseReaderClassName("N-TRIPLES", bulkLoaderClass) ;
         RDFReaderFImpl.setBaseReaderClassName("N-TRIPLE", bulkLoaderClass) ;
+        
+        if ( log.isDebugEnabled() )
+            log.debug("\n"+ARQ.getContext()) ;
     }
     
     /** The root package name for SDB */   
