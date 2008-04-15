@@ -28,9 +28,8 @@ public class BlockMgrMapped extends BlockMgrFile
      */
     
     private static Logger log = LoggerFactory.getLogger(BlockMgrMapped.class) ;
-    
-    // Consider: having one file per segment or a few segments, not one large file.
-    // May make no difference - will need structured disk pointers.
+
+    // Segmentation avoids over-mapping; allows file to grow (in chunks)  
     private int segmentSize = 8 * 1024 * 1024 ;
     private int blocksPerSegment ;                              
     
