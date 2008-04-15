@@ -76,20 +76,28 @@ public class BlockMgrMapped extends BlockMgrFile
     @Override
     public ByteBuffer getSilent(int id)
     {
-        check(id) ;
-        int seg = id/blocksPerSegment ;                     // Segment.
-        int segOff = (id%blocksPerSegment)*blockSize ;      // Byte offset in segement
-
-        if ( log.isDebugEnabled() ) 
-            log.debug(format("%d => [%d, %d]", id, seg, segOff)) ;
-
-        ByteBuffer segBuffer = allocSegment(seg) ;
-        segBuffer.position(segOff) ;
-        segBuffer.limit(segOff+blockSize) ;
-        ByteBuffer dst = segBuffer.slice() ;
-        segBuffer.limit(segBuffer.capacity()) ;
-        numFileBlocks = Math.max(numFileBlocks, id+1) ;
-        return dst ;
+            check(id) ;
+            int seg = id/blocksPerSegment ;                     // Segment.
+            int segOff = (id%blocksPerSegment)*blockSize ;      // Byte offset in segement
+    
+            if ( log.isDebugEnabled() ) 
+                log.debug(format("%d => [%d, %d]", id, seg, segOff)) ;
+    
+            ByteBuffer segBuffer = allocSegment(seg) ;
+            try {
+                segBuffer.position(segOff) ;
+            } catch (IllegalArgumentException ex)
+            {
+                System.err.println("Id: "+id) ;
+                System.err.println("Seg="+seg) ;
+                System.err.println("Segoff="+segOff) ;
+                throw ex ;
+            }
+            segBuffer.limit(segOff+blockSize) ;
+            ByteBuffer dst = segBuffer.slice() ;
+            segBuffer.limit(segBuffer.capacity()) ;
+            numFileBlocks = Math.max(numFileBlocks, id+1) ;
+            return dst ;
     }
     
     private MappedByteBuffer allocSegment(int seg)

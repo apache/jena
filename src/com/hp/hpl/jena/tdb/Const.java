@@ -63,8 +63,8 @@ public class Const
     public static final int BDB_cacheSizePercent    = 75 ; 
     
     // Value: direct, mapped, default 
-    public static final Symbol symFileMode = Symbol.create("TDB.file.mode") ;  
-    public static final Symbol symParallelLoad = Symbol.create("TDB.load.parallel") ;
+    public static final Symbol symFileMode = Symbol.create(ARQ.arqNS+"TDB.file.mode") ;  
+    public static final Symbol symParallelLoad = Symbol.create(ARQ.arqNS+"TDB.load.parallel") ;
     
     // --------
     
@@ -98,6 +98,9 @@ public class Const
     private static FileMode determineFileMode()
     {
         String x = ARQ.getContext().getAsString(symFileMode, "default") ;
+        System.out.println("x ="+x) ;
+        System.out.println(ARQ.getContext().toString()) ;
+        
         
         if ( x.equalsIgnoreCase("direct") )
         {
@@ -109,6 +112,7 @@ public class Const
             log.info("File mode: mapped") ;
             return FileMode.mapped ;
         }
+        
         if ( x.equalsIgnoreCase("default") )
         {
             if ( is64bit )

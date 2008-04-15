@@ -44,7 +44,7 @@
   <target name="javac-flags">
     <!-- Note that in ant, if these flags are already set setting them again has no effect -->
     <property name="java.debug"       value="true"/>
-    <property name="java.debuglevel"  value="source,lines,vars"/>
+    <!--<property name="java.debuglevel"  value="source,lines,vars"/>-->
     <property name="java.deprecation" value="true"/>
     <!-- Currently "false" for developmenet/debugging -->
     <property name="java.optimize"    value="false"/>
