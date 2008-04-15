@@ -9,6 +9,8 @@ package com.hp.hpl.jena.tdb.pgraph;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
+import lib.BitsLong;
+
 import dev.BCD;
 
 import org.slf4j.Logger;
@@ -20,14 +22,15 @@ public class DecimalNode
     
     BigDecimal decimal = null ;
     
-    // 48 nibbles (12 chars) of accuracy 
-    static final long MAX = 999999999999L ; 
+    // 8 bits of scale, signed 48 bits of value.
+    // Not finance industry accuracy nor XSD (18 places minimum) but still useful.
+    
+    static final long MAX = (1L<<48) ;
     static final BigInteger MAX_I = BigInteger.valueOf(MAX) ;
     static final BigInteger MIN_I = BigInteger.valueOf(-MAX) ;
     
-    private int scale ;     // 2^7 - 2^-7
-    private long value ;    // BCD nibbles.  16 nibbles is more than an int's worth.
-    private boolean isPositive ;
+    private int scale ;     // +127 - -128   (2^7-1)  -2^-7
+    private long value ;
 
     public static DecimalNode valueOf(BigDecimal decimal)
     {
@@ -35,7 +38,8 @@ public class DecimalNode
         BigInteger bigInt = decimal.unscaledValue() ;
         if ( bigInt.compareTo(MAX_I) > 0 || bigInt.compareTo(MIN_I) < 0 )
         {
-            // Too big for .longValue.
+            // This check also makes sure that bigInt.logValue is safe. 
+            // Too big for 56 bits
             //log.warn("Value out of range: ("+decimal.scale()+","+decimal.unscaledValue()+")") ;
             return null ;
         }
@@ -59,11 +63,38 @@ public class DecimalNode
         return new DecimalNode(binValue, scale) ;
     }
     
-    private DecimalNode(long binVal, int scale)
+    private DecimalNode(long value, int scale)
     {
-        this.isPositive = (binVal >= 0 ) ; 
         this.scale = scale ;
-        this.value = BCD.asBCD(binVal) ;
+        this.value = value ;
+    }
+    
+    public long pack()  { return pack(value, scale) ; }
+
+    public static long pack(long value, int scale)
+    {
+        // pack : DECIMAL , sign, scale, value
+        long v = BitsLong.pack(0, NodeId.DECIMAL, 56, 64) ;
+        v = BitsLong.pack(v, scale, 48, 56) ;
+        v = BitsLong.pack(v, value, 0, 48) ;
+        return v ;
+    }
+
+    public static DecimalNode unpack(long v)
+    {
+        //assert BitsLong.unpack(v, 56, 64) == NodeId.DECIMAL ;
+        int scale =  (int)BitsLong.unpack(v, 48, 56)  ;
+        long value = BitsLong.unpack(v, 0, 48) ;
+        return new DecimalNode(value, scale) ;
+    }
+    
+    public static BigDecimal unpackAsBigDecimal(long v)
+    {
+        // Can I say tuples-in-java?  Or "Multiple return values"?
+        //assert BitsLong.unpack(v, 56, 64) == NodeId.DECIMAL ;
+        int scale =  (int)BitsLong.unpack(v, 48, 56)  ;
+        long value = BitsLong.unpack(v, 0, 48) ;
+        return BigDecimal.valueOf(value, scale) ;
     }
     
     public BigDecimal get()

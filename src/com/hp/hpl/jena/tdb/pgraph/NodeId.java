@@ -20,8 +20,6 @@ import com.hp.hpl.jena.graph.impl.LiteralLabel;
 import com.hp.hpl.jena.tdb.Const;
 import com.hp.hpl.jena.tdb.TDBException;
 
-import dev.BCD;
-
 final
 public class NodeId
 {
@@ -74,7 +72,7 @@ public class NodeId
         value = b.getLong(idx) ;
     }
     
-    private NodeId(long v) { value = v ;}
+    public NodeId(long v) { value = v ;}
     
     public void toByteBuffer(ByteBuffer b, int idx) { b.putLong(idx, value) ; }
     
@@ -127,13 +125,13 @@ public class NodeId
     
     
     // Type codes.
-    private static final int NONE               = 0 ;
-    private static final int INTEGER            = 1 ;
-    private static final int DECIMAL            = 2 ;
-    private static final int DATE               = 3 ;
-    private static final int DATETIME           = 4 ;
-    private static final int BOOLEAN            = 5 ;
-    private static final int SHORT_STRING       = 6 ;
+    public static final int NONE               = 0 ;
+    public static final int INTEGER            = 1 ;
+    public static final int DECIMAL            = 2 ;
+    public static final int DATE               = 3 ;
+    public static final int DATETIME           = 4 ;
+    public static final int BOOLEAN            = 5 ;
+    public static final int SHORT_STRING       = 6 ;
     
     /** Encode a node as an inline literal.  Return null if it can't be done */
     public static NodeId inline(Node node)
@@ -142,7 +140,6 @@ public class NodeId
         if ( node.getLiteralDatatype() == null ) return null ;
         
         if ( ! enableInlineLiterals ) return null ;
-        
         
         String lex = node.getLiteralLexicalForm() ;
         LiteralLabel lit = node.getLiteral() ;
@@ -153,18 +150,13 @@ public class NodeId
         
         if ( node.getLiteralDatatype().equals(XSDDatatype.XSDdecimal) )
         {
+            // -- XSD Decimal
             BigDecimal decimal = new BigDecimal(lit.getLexicalForm()) ;
-            boolean isPositive = true ;
-            if ( decimal.compareTo(BigDecimal.ZERO) < 0 )
-            {
-                isPositive = false ;
-                decimal = decimal.abs() ;
-            }
-            
+
             // Does checking.
             DecimalNode dn = DecimalNode.valueOf(decimal) ;
             if ( dn != null )
-                return packDecimal(isPositive, dn.getScale(), dn.getValue()) ;
+                return new NodeId(dn.pack()) ;
             else
                 return null ;
         }
@@ -241,13 +233,8 @@ public class NodeId
             }
             case DECIMAL:
             {
-                boolean negSign = BitsLong.isSet(v, 55) ;
-                int scale = (int)BitsLong.unpack(v, 48, 55) ;
-                long bcdVal = BitsLong.unpack(v, 0, 48) ;
-                long binVal = BCD.asLong(bcdVal) ;
-                if ( negSign )
-                    binVal = -binVal ;
-                String x = BigDecimal.valueOf(binVal, scale).toEngineeringString() ;
+                BigDecimal d = DecimalNode.unpackAsBigDecimal(v) ;
+                String x = d.toEngineeringString() ;
                 return Node.createLiteral(x, null, XSDDatatype.XSDdecimal) ;
             }
 
@@ -255,10 +242,7 @@ public class NodeId
             case DATETIME:
             default:
                 throw new TDBException("Unrecognized node id type: "+type) ;
-                    
         }
-        
-        
     }
     
     //public reset(long value) { this.value = value ; }

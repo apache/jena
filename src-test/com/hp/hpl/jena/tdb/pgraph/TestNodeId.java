@@ -9,6 +9,7 @@ package com.hp.hpl.jena.tdb.pgraph;
 import junit.TestBase;
 import org.junit.Test;
 
+import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.graph.Node;
 
 import com.hp.hpl.jena.sparql.sse.SSE;
@@ -27,6 +28,8 @@ public class TestNodeId extends TestBase
         assertEquals(-1L, nodeId.getId()) ;
     }
     
+    // Inlines
+    
     @Test public void nodeId_10()
     { test("1", SSE.parseNode("1")) ; }
 
@@ -38,6 +41,16 @@ public class TestNodeId extends TestBase
 
     @Test public void nodeId_13()
     { test("'3'", null) ; }
+
+    @Test public void nodeId_14()
+    { test("3.14", SSE.parseNode("3.14")) ; }
+
+    @Test public void nodeId_15()
+    { test("123456789.123456789", null) ; }
+    
+    // Just this once, directly create the Node.
+    @Test public void nodeId_16()
+    { test("12.89", Node.createLiteral("12.89", null, XSDDatatype.XSDdecimal)) ; }
 
     private void test(String x, Node correct)
     {

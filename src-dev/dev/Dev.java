@@ -8,7 +8,8 @@ package dev;
 
 public class Dev
 {
-    // Inline NodeIds 
+    // Tests for inline NodeIds
+    // Tidy up inlines.
     // Code in NodeTableBase
     
     // Interface Sync everywhere?
