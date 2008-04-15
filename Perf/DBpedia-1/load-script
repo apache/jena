@@ -8,8 +8,11 @@ DATASETS="${DATASETS:-$HOME/Datasets}"
 
 #DB_DESC="$TDBROOT/DB/DBpediaBM/dataset.ttl"
 
-rm -fr tmp/*.*
-tdbloader --desc dataset.ttl --parallel \
+TARGET=tmp
+PARA="${PARA:---parallel}"
+
+tdbclean "$TARGET"
+tdbloader --location "$TARGET" $PARA \
     $DATASETS/DBpedia/dbp-infoboxes.nt \
     $DATASETS/DBpedia/dbp-geocoordinates.nt \
     $DATASETS/DBpedia/dbp-homepages.nt \

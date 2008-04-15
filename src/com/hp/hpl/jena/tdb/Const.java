@@ -62,6 +62,7 @@ public class Const
     
     // --------
     
+    // Symbols.
     public static final boolean is64bit = determineIf64Bit() ;
 
     private static boolean determineIf64Bit()
