@@ -10,6 +10,7 @@ public class Dev
 {
     // Tests for inline NodeIds (scripts)
     // Tidy up symbols use.  TDB. ...
+    // Scripted tests rerun
     
     // Interface Sync everywhere?
     // CountingSync.
