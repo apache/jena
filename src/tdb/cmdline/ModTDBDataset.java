@@ -42,7 +42,7 @@ public class ModTDBDataset extends ModDataset
         if ( modLocation.getLocation() == null && modAssembler.getAssemblerFile() == null )
             throw new CmdException("No assembler file and no location") ;
 
-        if ( modAssembler.getAssemblerFile() != null && modAssembler.getAssemblerFile() != null )
+        if ( modLocation.getLocation() != null && modAssembler.getAssemblerFile() != null )
             throw new CmdException("Both an assembler file and a location") ;
 
         Model model = null ;

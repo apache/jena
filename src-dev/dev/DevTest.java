@@ -6,11 +6,11 @@
 
 package dev;
 
-import com.hp.hpl.jena.tdb.pgraph.PGraphTestSuite;
-
 import junit.TestBase;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
+
+import com.hp.hpl.jena.tdb.pgraph.PGraphTestSuite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
@@ -20,6 +20,26 @@ import org.junit.runners.Suite;
 public class DevTest extends TestBase
 {
 }
+
+//import com.hp.hpl.jena.tdb.junit.TestFactoryTDB;
+//import junit.framework.TestSuite;
+//import org.junit.runner.RunWith;
+
+//import org.junit.runners.Suite;
+
+//@RunWith(AllTests.class)
+//public class DevTest extends TestSuite
+//{
+//    public static String manifestMain = "m.ttl" ;
+//    
+//    static public TestSuite suite() { return new DevTest() ; }
+//    
+//    private DevTest()
+//    {
+//        super("PGraph") ;
+//        TestFactoryTDB.make(this, manifestMain) ;
+//    }
+//}
 
 /*
  * (c) Copyright 2008 Hewlett-Packard Development Company, LP

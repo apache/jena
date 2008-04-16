@@ -136,7 +136,7 @@ class StageBGP implements Stage
         if ( ! output.containsKey(var) )
             return false ;
         
-        if ( output.get(var) == value )
+        if ( output.get(var).equals(value) )
             return false ;
 
         return true ;

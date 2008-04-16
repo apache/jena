@@ -73,8 +73,8 @@ public class Run
 //        System.exit(0) ;
         
         
-        tdb.tdbloader.main("--desc", "dataset.ttl", "D.ttl") ;
-        tdb.tdbquery.main(new String[]{"--desc=dataset.ttl", "PREFIX xsd:    <http://www.w3.org/2001/XMLSchema#>\n SELECT * {?s ?p ?o . FILTER(datatype(?o) = xsd:decimal)}"}) ;
+//        tdb.tdbloader.main("--desc", "dataset.ttl", "D.ttl") ;
+        tdb.tdbquery.main(new String[]{"--desc=dataset.ttl", "--query=Q.rq"}) ;
         System.exit(0) ;
         
         
@@ -237,27 +237,6 @@ public class Run
         Model m = ModelFactory.createModelForGraph(g) ;
         FileManager.get().readModel(m, "Workspace/dbp-infoboxes.nt") ;
         g.printStats() ;
-        System.exit(0) ;
-    }
-    
-    private static void BCD()
-    {
-        System.out.printf("0x%X\n", BCD.asBCD(15)) ;
-        System.out.printf("%d\n", BCD.asLong(BCD.asBCD(15))) ;
-        
-
-        System.out.println("Strings") ;
-        System.out.println(BCD.nibbleStrZeros(0x987654321L)) ;
-        System.out.println(BCD.nibbleStr(0x987654321L)) ;
-        System.out.println(BCD.nibbleStrLow(0x987654321L, 2)) ;
-        System.out.println(BCD.nibbleStrHigh(0x987654321L, 10)) ;
-        System.out.println(BCD.nibbleStr(0x987654321L, 2,4)) ;
-        
-        System.out.println(BCD.nibbleStrZeros(0x0L)) ;
-        System.out.println(BCD.nibbleStr(0x0L)) ;
-        
-        System.out.println("Finished") ;
-        
         System.exit(0) ;
     }
     

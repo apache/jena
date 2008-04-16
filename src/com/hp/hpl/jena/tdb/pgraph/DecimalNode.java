@@ -11,8 +11,6 @@ import java.math.BigInteger;
 
 import lib.BitsLong;
 
-import dev.BCD;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -100,7 +98,7 @@ public class DecimalNode
     public BigDecimal get()
     {
         if ( decimal == null )
-            decimal = BigDecimal.valueOf(BCD.asLong(value), scale) ;
+            decimal = BigDecimal.valueOf(value, scale) ;
         return decimal ;
     }
 
