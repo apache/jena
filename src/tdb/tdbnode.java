@@ -53,10 +53,15 @@ public class tdbnode extends CmdTDB
         for ( ; iter.hasNext() ; )
         {
             String id = iter.next() ;
-            long x = Long.parseLong(id) ;
-            NodeId nodeId = new NodeId(x) ;
-            Node n = nodeTable.retrieveNode(nodeId) ;
-            System.out.printf("%s [%d] => %s\n", id, x, n) ;
+            try {
+                long x = Long.parseLong(id) ;
+                NodeId nodeId = new NodeId(x) ;
+                Node n = nodeTable.retrieveNode(nodeId) ;
+                System.out.printf("%s [%d] => %s\n", id, x, n) ;
+            } catch (Exception ex)
+            {
+                System.out.println("Failed to decode: "+id) ;
+            }
         }
     }
 
