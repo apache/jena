@@ -1,8 +1,20 @@
 <project name="TDB" basedir="." default="main">
 
   <!-- SETUP -->
-  <property name="Name" 				  value="TDB"/>
-  <property name="name" 				  value="tdb"/>
+  <property name="Name"                   value="TDB"/>
+  <property name="name"                   value="tdb"/>
+
+<!-- The major and minor version numbers  -->
+  <property name="version-major"   value="0"/>
+  <property name="version-minor"   value="0"/>
+  <property name="version-status"  value="-dev"/>
+  <property name="version"
+            value="${version-major}.${version-minor}${version-status}"/>
+
+  <property name="dist.name"              value="${Name}-${version}"/>
+  <property name="dist.root"              location="dist"/>
+  <property name="dist.dir"               location="${dist.root}/${dist.name}"/>
+
   <property name="src.dir"                location="src"/>
   <property name="src.test.dir"           location="src-test"/>
 
@@ -13,13 +25,13 @@
 
   <property name="build.dir"              location="build"/>
   <property name="lib.dir"                location="lib"/>
-	<!-- Build classes --> 
+        <!-- Build classes --> 
   <property name="classes.dir"            location="${build.dir}/classes"/>
   <!-- <property name="jar.dir"                location="${build.dir}/jar"/> -->
   <property name="jar.dir"                location="${lib.dir}"/>
-  	
-	<!-- Meaning-less -->
-  <property name="main-class"             value="cmd.AVLRunTest"/>	
+        
+        <!-- Meaning-less -->
+  <property name="main-class"             value="cmd.AVLRunTest"/>      
   <property name="jarfile"                value="${name}.jar"/>
 
   <property name="reports.dir"            value="reports"/>
@@ -34,16 +46,16 @@
   </path>
 
   <path id="java.run.class.path">
-  	<!-- jar file may, or may not, be in the lib directory -->
+        <!-- jar file may, or may not, be in the lib directory -->
     <fileset dir="${lib.dir}" includes="*.jar" excludes="${jarfile}"/>
-  	<fileset dir="${jar.dir}" includes="*.jar"/>	
+    <fileset dir="${jar.dir}" includes="*.jar"/>    
   </path>
 
 
   <!-- Java setup -->
   <target name="javac-flags">
     <!-- Note that in ant, if these flags are already set 
-	 setting them again has no effect -->
+         setting them again has no effect -->
     <property name="java.debug"       value="true"/>
     <property name="java.debuglevel"  value="source,lines,vars"/>
     <property name="java.deprecation" value="true"/>
@@ -53,7 +65,7 @@
   <!-- ========================================== -->
   <!-- ==== Build and compile -->
 
-  <target name="clean-build" depends="clean-build-dir,jar"/>
+  <target name="clean-build" depends="clean-build-dirs,jars"/>
 
   <target name="compile" depends="javac-flags" description="compile project">
     <mkdir dir="${classes.dir}"/>
@@ -67,7 +79,7 @@
     </javac>
   </target>
 
-  <target name="jar" depends="compile" description="Build the JAR anew">
+  <target name="jars" depends="compile" description="Build the JAR anew">
     <mkdir dir="${jar.dir}"/>
     <jar destfile="${jar.dir}/${name}.jar" basedir="${classes.dir}">
       <manifest>
@@ -76,7 +88,7 @@
     </jar>
   </target>
 
-  <target name="clean-build-dir">
+  <target name="clean-build-dirs">
     <delete dir="${build.dir}"/>
   </target>
 
@@ -99,8 +111,8 @@
 
     <!-- Don't stop on failure - set a property -->
     <junit printsummary="yes" 
-	   errorProperty="junit.failed"
-	   failureProperty="junit.failed">
+           errorProperty="junit.failed"
+           failureProperty="junit.failed">
       <!-- usefile="false"  type="plain"-->
       <!-- <formatter usefile="false" type="brief"/> -->
       <formatter type="xml"/>
@@ -110,7 +122,7 @@
       </classpath>
       <!-- <test name="test.TS_Main" outfile="${reports.dir.xml}/junit-report"/> -->
       <batchtest todir="${reports.dir.xml}">
-	<fileset dir="${src.test.dir}">
+        <fileset dir="${src.test.dir}">
           <include name="**/TS_*.java"/>
         </fileset>
         <fileset dir="${src.lib.test.dir}">
@@ -152,14 +164,77 @@
   </target>
 
   <!-- ========================================== -->
+  <!-- ==== Release -->
+
+  <target name="release" depends="package"
+          description="Create TDB release">
+    <antcall target="clean-build-dirs"/>
+  </target>
+
+  <target name="package"
+          depends="jars,copy,zip"/>
+
+  <target name="copy">
+    <delete dir="${dist.dir}"/>
+    <mkdir dir="${dist.dir}"/>
+
+    <copy todir="${dist.dir}/${lib.dir}">
+      <fileset dir="${lib.dir}" includes="**/*.jar" excludes="${jarfile}"/>
+      <fileset dir="${jar.dir}" includes="*.jar"/>
+    </copy>
+
+    <copy todir="${dist.dir}/${test.dir}">
+      <fileset dir="${test.dir}"/>
+    </copy>
+
+    <!-- bin/ (and bat/ if any) -->
+    <copy todir="${dist.dir}/bin">
+      <fileset dir="bin"/>
+    </copy>
+    <copy todir="${dist.dir}/bin2">
+      <fileset dir="bin2"/>
+    </copy>
+
+    <copy todir="${dist.dir}/" file="build.xml"/>
+    <copy todir="${dist.dir}/" file="copyright.txt"/>
+    <copy todir="${dist.dir}/" file="README.txt"/>
+    <copy todir="${dist.dir}/" file="ChangeLog.txt"/>
+
+    <copy todir="${dist.dir}/${src.dir}">
+      <fileset dir="${src.build.dir}" includes="**" excludes="dev/**"/>
+    </copy>
+
+    <!-- Documentation is on the wiuki, mainly.
+    <copy todir="${dist.dir}/${doc.dir}">
+      <fileset dir="${doc.dir}">
+        <include name="**"/>
+        <exclude name="**/_vti*/**"/>
+        <exclude name="**/_private/**"/>
+        <exclude name="**/desktop.ini"/>
+      </fileset>
+    </copy>
+    -->
+
+  </target>
+  
+  <target name="zip" >
+    <!-- Build the zip of everything -->
+    <delete file="${dist.root}/${zipfile}"/>
+    <zip zipfile="${dist.root}/${zipfile}">
+      <fileset dir="dist" includes="${dist.name}/**"/>
+    </zip>
+  </target>
+
+
+  <!-- ========================================== -->
   <!-- ==== Misc -->
 
 
   <target name="main" depends="clean,run"/>
 
   <target name="clean" 
-	  depends="clean-build-dir,clean-reports" 
-	  description="cleanup">
+          depends="clean-build-dirs,clean-reports" 
+          description="cleanup">
   </target>
 
 </project>
