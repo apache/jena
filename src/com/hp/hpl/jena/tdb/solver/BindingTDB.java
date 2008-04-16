@@ -71,6 +71,8 @@ public class BindingTDB extends BindingBase
         } catch (Exception ex)
         {
             System.err.printf("get1(%s)\n", var) ;
+            System.err.println(idBinding) ;
+            ex.printStackTrace(System.err) ;
             System.exit(1) ;
             return null ;
         }
