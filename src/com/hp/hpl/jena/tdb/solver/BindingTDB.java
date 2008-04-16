@@ -56,17 +56,24 @@ public class BindingTDB extends BindingBase
     @Override
     public Node get1(Var var)
     {
-        Node n = cache.get(var) ;
-        if ( n != null )
+        try {
+            Node n = cache.get(var) ;
+            if ( n != null )
+                return n ;
+            
+            NodeId id = idBinding.get(var) ;
+            if ( id == null )
+                return null ; 
+            n = nodeTable.retrieveNode(id) ;
+            // Update cache.
+            cache.put(var, n) ;
             return n ;
-        
-        NodeId id = idBinding.get(var) ;
-        if ( id == null )
-            return null ; 
-        n = nodeTable.retrieveNode(id) ;
-        // Update cache.
-        cache.put(var, n) ;
-        return n ;
+        } catch (Exception ex)
+        {
+            System.err.printf("get1(%s)\n", var) ;
+            System.exit(1) ;
+            return null ;
+        }
     }
 
     @Override
