@@ -10,11 +10,8 @@ public class Dev
 {
     // Interface Sync everywhere?
     // CountingSync.
-    
-    // Text index builder
-    //   Only do NodeId->Node for needed nodes (special counts?).
-    //   "extends BindingMap" to do delayed Node creation.
-    //   Use in solver
+    //   bound variable tracking
+    //   LARQ++
     
     // QueryHandler to access subjectsFor etc. 
     
@@ -24,13 +21,12 @@ public class Dev
     // 2/ Packing and BTrees (leaves)
     //    B+Tree (lesser)
     // 3/ P ExtHash
+    // Move public ops from BTreeNode to BTree, and make BTreeNode statics for all operations?
     
     // Const from a properties file.
     
     // com.hp.hpl.jena.util.FileUtils - use faster "buffered" reader (extend BufferedReader)
-    // Filter evaluation - get only nodes used
 
     // Fix BDB form
 
-    // Move public ops from BTreeNode to BTree, and make BTreeNode statics for all operations?
 }
