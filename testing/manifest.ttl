@@ -8,6 +8,7 @@
     mf:include (
         <Basic/manifest.ttl>
         <Pattern/manifest.ttl>
+        <Values/manifest.ttl>
     ) .
 
 
