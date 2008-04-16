@@ -25,6 +25,7 @@
 	<classpathentry kind="lib" path="lib/wstx-asl-3.0.0.jar"/>
 	<classpathentry kind="lib" path="lib/xercesImpl.jar"/>
 	<classpathentry kind="lib" path="lib/xml-apis.jar"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/ARQ"/>
+	<classpathentry kind="lib" path="lib/arq.jar" sourcepath="arq-src.zip"/>
+	<classpathentry kind="lib" path="lib/arq-extra.jar" sourcepath="arq-src.zip"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>
