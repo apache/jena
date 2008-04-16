@@ -43,7 +43,8 @@ public final class BitsLong
     {
         if ( CHECK ) check(start, finish) ;
         bits = clear$(bits, start, finish) ;
-        bits = bits | (value<<start) ;
+        long mask = mask(start, finish) ;
+        bits = bits | ( (value<<start) & mask ) ;
         return bits ;
     }
 

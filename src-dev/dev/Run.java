@@ -12,6 +12,7 @@ import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.util.Iterator;
 
+import lib.BitsLong;
 import lib.StrUtils;
 import lib.Tuple;
 
@@ -67,10 +68,16 @@ public class Run
 //        typedNode("1") ;
 //        typedNode("'1'^^xsd:int") ;
 //        typedNode("'1'") ;
+
         
-//        typedNode("0.123") ;
-//        typedNode("-0.123") ;
-//        System.exit(0) ;
+        long v = 1 ;
+        v = BitsLong.pack(v, -180L, 0, 48) ;
+        
+        typedNode("'-180'^^xsd:decimal") ;
+        
+        typedNode("0.123") ;
+        typedNode("-0.123") ;
+        System.exit(0) ;
         
         
 //        tdb.tdbloader.main("--desc", "dataset.ttl", "D.ttl") ;

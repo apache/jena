@@ -52,6 +52,10 @@ public class TestNodeId extends TestBase
     @Test public void nodeId_16()
     { test("12.89", Node.createLiteral("12.89", null, XSDDatatype.XSDdecimal)) ; }
 
+    @Test public void nodeId_17()
+    { test("-1.0",  SSE.parseNode("-1.0")) ; }
+
+    
     private void test(String x, Node correct)
     {
         Node n = SSE.parseNode(x) ;

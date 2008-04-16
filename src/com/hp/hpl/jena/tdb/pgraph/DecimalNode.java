@@ -92,6 +92,10 @@ public class DecimalNode
         //assert BitsLong.unpack(v, 56, 64) == NodeId.DECIMAL ;
         int scale =  (int)BitsLong.unpack(v, 48, 56)  ;
         long value = BitsLong.unpack(v, 0, 48) ;
+        // Sign extend value.
+        if ( BitsLong.isSet(value, 47) )
+            value = value | -1L<<48 ;
+        
         return BigDecimal.valueOf(value, scale) ;
     }
     
