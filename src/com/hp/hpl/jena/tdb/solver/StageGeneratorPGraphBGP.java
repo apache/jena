@@ -49,6 +49,8 @@ public class StageGeneratorPGraphBGP implements StageGenerator
 
     private List<Triple> reorder(List<Triple> triples)
     {
+        // Better: know the bound variables first and do this reordering on the patter, not it's instantiation.
+        // Need help from ARQ to do that.
         return triples ;
     }
 }
