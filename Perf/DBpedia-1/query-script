@@ -4,8 +4,8 @@
 TDBROOT="${TDBROOT:-$HOME/Projects/AFS}"
 DB_DESC="$TDBROOT/DB/dataset-dbp.ttl"
 
-# "none" delays the node access until it might not be needed
-RESULTS=tuples
+# "none" does consume all nodes.
+RESULTS=none
 
 for q in $TDBROOT/Perf/DBpedia-1/query?.rq
 do
