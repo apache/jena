@@ -4,75 +4,59 @@
  * [See end of file]
  */
 
-package tdb;
-
-import java.util.Iterator;
-
-import tdb.cmdline.CmdTDB;
+package tdb.cmdline;
 
 import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.sparql.util.Utils;
 import com.hp.hpl.jena.tdb.TDB;
-import com.hp.hpl.jena.tdb.graph.StatsGraph;
-import com.hp.hpl.jena.util.FileManager;
+import com.hp.hpl.jena.tdb.TDBFactory;
+import com.hp.hpl.jena.tdb.pgraph.PGraphBase;
 
+import arq.cmd.CmdException;
+import arq.cmdline.CmdARQ;
+import arq.cmdline.ModAssembler;
 
-public class tdbexamine extends CmdTDB
+public abstract class CmdTDB extends CmdARQ
 {
-
-    public static void main (String [] argv)
-    {
-        new tdbexamine(argv).main() ;
-    }
+    private PGraphBase graph ; 
+    protected ModAssembler modAssembler =  new ModAssembler() ;
+    protected ModLocation modLocation =  new ModLocation() ;
     
-    public tdbexamine(String[] argv)
+    protected CmdTDB(String[] argv)
     {
         super(argv) ;
         TDB.init() ;
+        super.addModule(modAssembler) ;
+        super.addModule(modLocation) ;
     }
-
     
-    @Override
-    protected void exec()
+    protected PGraphBase getGraph()
     {
-        @SuppressWarnings("unchecked")
-        Iterator<String> iter = (Iterator<String>)super.getPositional().iterator() ;
+        if ( graph != null )
+            return graph ;
         
-        if ( ! iter.hasNext() )
-        {
-            System.err.println("No input files") ;
-            System.exit(1) ;
-        }
+        if ( modLocation.getLocation() == null && modAssembler.getAssemblerFile() == null )
+            throw new CmdException("No assembler file and no location") ;
+             
+        if ( modLocation.getLocation() != null && modAssembler.getAssemblerFile() != null )
+            throw new CmdException("Both an assembler file and a location") ;
         
-        for ( ; iter.hasNext() ; )
-        {
-            String s = iter.next();
-            examineOne(s) ;
-        }
+        Model model = null ;
+        
+        if ( modAssembler.getAssemblerFile() != null )
+            model = TDBFactory.assembleModel(modAssembler.getAssemblerFile()) ;
+        else
+            model = TDBFactory.createModel(modLocation.getLocation()) ;
+        graph = (PGraphBase)model.getGraph() ;
+        return graph ;
     }
-
-    private void examineOne(String s)
-    {
-        StatsGraph graph = new StatsGraph() ;  
-        Model model = ModelFactory.createModelForGraph(graph) ;
-        FileManager.get().readModel(model, s) ;
-        graph.printStats() ;
-    }
-
+    
     @Override
     protected String getCommandName()
     {
         return Utils.className(this) ;
     }
-
-    @Override
-    protected String getSummary()
-    {
-        return getCommandName()+" FILE..." ;
-    }
-
-
+    
 }
 
 /*

@@ -6,18 +6,17 @@
 
 package tdb;
 
+import tdb.cmdline.CmdTDB;
 import tdb.cmdline.ModFormat;
 import arq.cmd.CmdException;
 import arq.cmd.CmdUtils;
-import arq.cmdline.CmdARQ;
 import arq.cmdline.ModAssembler;
 
 import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.sparql.util.Utils;
 import com.hp.hpl.jena.tdb.TDBFactory;
 
-import com.hp.hpl.jena.sparql.util.Utils;
-
-public class tdbdump extends CmdARQ
+public class tdbdump extends CmdTDB
 {
     ModAssembler modAssembler =  new ModAssembler() ;
     ModFormat modFormat =  new ModFormat() ;

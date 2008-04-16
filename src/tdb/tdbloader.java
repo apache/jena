@@ -10,41 +10,28 @@ import java.util.Iterator;
 import java.util.concurrent.Semaphore;
 
 import lib.Tuple;
-import tdb.cmdline.ModLocation;
-import arq.cmd.CmdException;
+import tdb.cmdline.CmdTDB;
 import arq.cmd.CmdUtils;
 import arq.cmdline.ArgDecl;
-import arq.cmdline.CmdARQ;
-import arq.cmdline.ModAssembler;
 
 import com.hp.hpl.jena.query.ARQ;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
-
 import com.hp.hpl.jena.sparql.util.Timer;
-import com.hp.hpl.jena.sparql.util.Utils;
 import com.hp.hpl.jena.sparql.util.graph.GraphLoadMonitor;
-import com.hp.hpl.jena.tdb.TDB;
-import com.hp.hpl.jena.tdb.TDBFactory;
 import com.hp.hpl.jena.tdb.index.RangeIndex;
 import com.hp.hpl.jena.tdb.index.TripleIndex;
 import com.hp.hpl.jena.tdb.pgraph.NodeId;
 import com.hp.hpl.jena.tdb.pgraph.PGraphBase;
 import com.hp.hpl.jena.util.FileManager;
 
-public class tdbloader extends CmdARQ
-    {
-    // Simple wrapper to update?
-    // At least use update requests.
-    //ModGraphStore modGraphStore = new ModGraphStore() ;
-    
-    PGraphBase graph ; 
-    ModAssembler modAssembler =  new ModAssembler() ;
-    ModLocation modLocation =  new ModLocation() ;
+public class tdbloader extends CmdTDB
+{
     ArgDecl argParallel = new ArgDecl(ArgDecl.NoValue, "parallel") ;
     
     boolean timing = true ;
     boolean doInParallel = false ;
+    private PGraphBase graph ;
     
     static public void main(String... argv)
     { 
@@ -55,9 +42,6 @@ public class tdbloader extends CmdARQ
     protected tdbloader(String[] argv)
     {
         super(argv) ;
-        TDB.init() ;
-        super.addModule(modAssembler) ;
-        super.addModule(modLocation) ;
         super.add(argParallel) ;
     }
 
@@ -74,34 +58,6 @@ public class tdbloader extends CmdARQ
         return getCommandName()+" [--desc DATASET | -loc DIR] FILE ..." ;
     }
 
-    
-    @Override
-    protected String getCommandName()
-    {
-        return Utils.className(this) ;
-    }
-
-    private PGraphBase getGraph()
-    {
-        if ( graph != null )
-            return graph ;
-        
-        if ( modLocation.getLocation() == null && modAssembler.getAssemblerFile() == null )
-            throw new CmdException("No assembler file and no location") ;
-             
-        if ( modLocation.getLocation() != null && modAssembler.getAssemblerFile() != null )
-            throw new CmdException("Both an assembler file and a location") ;
-        
-        Model model = null ;
-        
-        if ( modAssembler.getAssemblerFile() != null )
-            model = TDBFactory.assembleModel(modAssembler.getAssemblerFile()) ;
-        else
-            model = TDBFactory.createModel(modLocation.getLocation()) ;
-        graph = (PGraphBase)model.getGraph() ;
-        return graph ;
-    }
-    
     @Override
     protected void exec()
     {

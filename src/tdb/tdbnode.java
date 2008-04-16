@@ -8,70 +8,57 @@ package tdb;
 
 import java.util.Iterator;
 
+import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.tdb.pgraph.NodeId;
+import com.hp.hpl.jena.tdb.pgraph.NodeTable;
+import com.hp.hpl.jena.tdb.pgraph.PGraphBase;
+
+import arq.cmd.CmdUtils;
 import tdb.cmdline.CmdTDB;
 
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.sparql.util.Utils;
-import com.hp.hpl.jena.tdb.TDB;
-import com.hp.hpl.jena.tdb.graph.StatsGraph;
-import com.hp.hpl.jena.util.FileManager;
-
-
-public class tdbexamine extends CmdTDB
+public class tdbnode extends CmdTDB
 {
-
-    public static void main (String [] argv)
-    {
-        new tdbexamine(argv).main() ;
+    // Debugging tool.
+    static public void main(String... argv)
+    { 
+        CmdUtils.setLog4j() ;
+        new tdbnode(argv).main() ;
     }
-    
-    public tdbexamine(String[] argv)
+
+    protected tdbnode(String[] argv)
     {
         super(argv) ;
-        TDB.init() ;
-    }
-
-    
-    @Override
-    protected void exec()
-    {
-        @SuppressWarnings("unchecked")
-        Iterator<String> iter = (Iterator<String>)super.getPositional().iterator() ;
-        
-        if ( ! iter.hasNext() )
-        {
-            System.err.println("No input files") ;
-            System.exit(1) ;
-        }
-        
-        for ( ; iter.hasNext() ; )
-        {
-            String s = iter.next();
-            examineOne(s) ;
-        }
-    }
-
-    private void examineOne(String s)
-    {
-        StatsGraph graph = new StatsGraph() ;  
-        Model model = ModelFactory.createModelForGraph(graph) ;
-        FileManager.get().readModel(model, s) ;
-        graph.printStats() ;
-    }
-
-    @Override
-    protected String getCommandName()
-    {
-        return Utils.className(this) ;
     }
 
     @Override
     protected String getSummary()
     {
-        return getCommandName()+" FILE..." ;
+        return getCommandName()+" NodeId ..." ;
     }
 
+    @SuppressWarnings("unchecked")
+    @Override
+    protected void exec()
+    {
+        PGraphBase graph = getGraph() ;
+        NodeTable nodeTable = graph.getNodeTable() ;
+        @SuppressWarnings("unchecked")
+        Iterator<String> iter = (Iterator<String>)super.getPositional().iterator() ;
+        if ( ! iter.hasNext() )
+        {
+            System.err.println("No node ids") ;
+            return ;
+        }
+        
+        for ( ; iter.hasNext() ; )
+        {
+            String id = iter.next() ;
+            long x = Long.parseLong(id) ;
+            NodeId nodeId = new NodeId(x) ;
+            Node n = nodeTable.retrieveNode(nodeId) ;
+            System.out.printf("%s [%d] => %s\n", id, x, n) ;
+        }
+    }
 
 }
 
