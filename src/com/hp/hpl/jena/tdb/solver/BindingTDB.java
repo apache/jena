@@ -4,69 +4,74 @@
  * [See end of file]
  */
 
-package lib;
+package com.hp.hpl.jena.tdb.solver;
 
-import iterator.Iter;
-
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-public class Map2<K, V> implements Iterable<K>
+import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.sparql.core.Var;
+import com.hp.hpl.jena.sparql.engine.binding.Binding;
+import com.hp.hpl.jena.sparql.engine.binding.BindingBase;
+import com.hp.hpl.jena.tdb.pgraph.NodeId;
+import com.hp.hpl.jena.tdb.pgraph.NodeTable;
+
+/** Bind that delayes turning a NodeId into a Node until explicitly needed by get() */
+
+public class BindingTDB extends BindingBase
 {
-    private Map<K, V> map1 ; 
-    private Map2<K, V> map2 ;
+    private final NodeTable nodeTable ;
+    private final BindingNodeId idBinding ;
+    private final Map<Var,Node> cache = new HashMap<Var, Node>() ;
 
-    public Map2(Map<K,V> map1, Map2<K,V> map2)
+    public BindingTDB(Binding parent, BindingNodeId idBinding, NodeTable nodeTable)
     {
-        this.map1 = map1 ;
-        this.map2 = map2 ;
+        super(parent) ;
+        this.idBinding = idBinding ;
+        this.nodeTable = nodeTable ;
+    }
+
+    @Override
+    protected void add1(Var var, Node node)
+    { throw new UnsupportedOperationException() ; }
+
+    @Override
+    protected int size1() { return idBinding.size(); }
+    
+    /** Iterate over all the names of variables.
+     */
+    @Override
+    public Iterator<Var> vars1() 
+    {
+        return idBinding.iterator() ;
+    }
+
+    @Override
+    public boolean contains1(Var var)
+    {
+        return idBinding.containsKey(var) ;
     }
     
-    public boolean containsKey(K key)
+    @Override
+    public Node get1(Var var)
     {
-        if ( map1.containsKey(key) )
-             return true ;
-        if ( map2 != null )
-            return map2.containsKey(key) ;
-        return false;
+        Node n = cache.get(var) ;
+        if ( n != null )
+            return n ;
+        
+        NodeId id = idBinding.get(var) ;
+        if ( id == null )
+            return null ; 
+        n = nodeTable.retrieveNode(id) ;
+        // Update cache.
+        cache.put(var, n) ;
+        return n ;
     }
 
-//    public boolean containsValue(V value)
-//    {
-//        if ( map1.containsValue(value) )
-//            return true ;
-//        if ( map2 != null )
-//            return map2.containsValue(value) ;
-//        return false;
-//    }
-
-    public V get(K key)
-    {
-        V v = map1.get(key) ;
-        if ( v != null ) return v ;
-        if ( map2 != null )
-            return map2.get(key) ;
-        return null ;
-    }
-
-    public void put(K key, V value)
-    {
-        if ( map2 != null && map2.containsKey(key) )
-            throw new IllegalArgumentException("Parent map already conatins "+key) ;
-        map1.put(key, value) ;
-    }
-
-    // The keys.
-    public Iterator<K> iterator()
-    {
-        Iter<K> iter1 = Iter.convert(map1.keySet().iterator()) ;
-        if ( map2 == null )
-            return iter1 ; 
-        return iter1.append(map2.iterator()) ;
-    }
-    
-    public int size() { return map1.size() ; }
-    
+    @Override
+    protected void checkAdd1(Var var, Node node)
+    { throw new UnsupportedOperationException() ; }
 }
 
 /*

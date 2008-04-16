@@ -38,7 +38,6 @@ public class StageGeneratorPGraphBGP implements StageGenerator
         @SuppressWarnings("unchecked")
         List<Triple> triples = (List<Triple>)pattern.getList() ;
         
-        // TODO Choose order here!
         triples = reorder(triples) ;
         
         Stage stage = new StageBGP(graph, triples) ;
@@ -49,6 +48,7 @@ public class StageGeneratorPGraphBGP implements StageGenerator
 
     private List<Triple> reorder(List<Triple> triples)
     {
+        // TODO Choose order here!
         // Better: know the bound variables first and do this reordering on the patter, not it's instantiation.
         // Need help from ARQ to do that.
         return triples ;

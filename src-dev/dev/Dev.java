@@ -8,16 +8,13 @@ package dev;
 
 public class Dev
 {
-    // Tests for inline NodeIds (scripts)
-    // Tidy up symbols use.  TDB. ...
-    // Scripted tests rerun
-    
     // Interface Sync everywhere?
     // CountingSync.
     
-    // Bulk loader : index control.
     // Text index builder
-    // Only do NodeId->Node for needed nodes (special counts?).
+    //   Only do NodeId->Node for needed nodes (special counts?).
+    //   "extends BindingMap" to do delayed Node creation.
+    //   Use in solver
     
     // QueryHandler to access subjectsFor etc. 
     
