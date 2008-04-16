@@ -17,6 +17,8 @@ import com.hp.hpl.jena.tdb.pgraph.NodeId;
 
 public class Const
 {
+    public static final String TDB_NS = "http://jena.hpl.hp.com/TDB#" ;
+    
     /** Size, in bytes, of a Java long */
     public static final int SizeOfLong              = Long.SIZE/Byte.SIZE ;
     
@@ -60,8 +62,13 @@ public class Const
     public static final int BDB_cacheSizePercent    = 75 ; 
     
     // Value: direct, mapped, default 
-    public static final Symbol symFileMode = Symbol.create(ARQ.arqNS+"TDB.file.mode") ;  
-    public static final Symbol symParallelLoad = Symbol.create(ARQ.arqNS+"TDB.load.parallel") ;
+    public static final Symbol symFileMode          = createSymbol("TDB.file.mode") ;  
+    public static final Symbol symParallelLoad      = createSymbol("TDB.load.parallel") ;
+    
+    private static Symbol createSymbol(String shortName)
+    {
+        return Symbol.create(ARQ.arqNS+shortName) ;
+    }
     
     // --------
     
