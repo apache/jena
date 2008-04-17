@@ -52,6 +52,7 @@ public class DateTimeNode
     
     static long time(int hour, int mins, int sec)
     {
+        // And bit offset for direct packing?
         // HH:MM:SS => 5 bits H, 6 bits M, 6 bits S ==> 17 bits
         long v = 0 ;
         v = BitsLong.pack(v, hour, 0, 5) ; 
@@ -60,7 +61,15 @@ public class DateTimeNode
         return v ;
     }
     
-    
+    static long date(int year, int month, int day)
+    {
+        // YYYY:MM:DD => 18 bits year, 4 bits month, 4 bits day => 26 bits
+        long v = 0 ;
+        v = BitsLong.pack(v, year, 0, 18) ; 
+        v = BitsLong.pack(v, month, 18, 22) ;
+        v = BitsLong.pack(v, day,  22, 26) ;
+        return v ;
+    }
 }
 
 /*
