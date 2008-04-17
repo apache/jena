@@ -6,24 +6,59 @@
 
 package com.hp.hpl.jena.tdb.pgraph;
 
+import lib.BitsLong;
+
 public class DateTimeNode
 {
     // UTC or not UTC, that is the question.
     // Whether to normalize to UTC.  Support costs ... no, people expect timezone.  
     
+    
+    
     // 1 year = 60*60*24*1000 = 86,400,000 milliseconds < 27 bits
-    // So 56 bits is 2^29 years.  Which is quite enough.
+    // It normalize to UTC: 56 bits is 2^29 years. 
     
-    // So let's also keep the timezone. = +- hours:minutes. +-14:00 
-    // 28 hours = 1680 minutes = 2^11 which leaves 56-11 => 45 bits => 2^18 years.
     
-    // 40 bits of time = 2^(40-27) years = 2^13 = 8,000 years. 
     
-    // Epoch base: 1900-01-01T00:00:00Z
+    
+    // Timezone. = +- hours:minutes. +-14:00 
+    // 28 hours = 1680 minutes = 2^11 => 11 bits.
+    // Convenient: 16 bit timezone (binary or BCD).  Special for Z. 
+
+    // 56 bits
+    // Timezone: 8 bits (hours in quarters + Z) 28*4 + 1 = 112 +1 = 113 < 7 bits 
+    // Leaves 48 bits : split 28 date and 20 time.
+    
+    // Date: YYYYMMDD => BCD: 8*4 bits = 32
+    //   Suppose YYY since 1900 => 1000 < 2^10 : 10 bits year
+    //   MM = 12 < 16 = 4 bits.
+    //   DD = 31 < 32 = 5 bits.
+    //     So 9 bits for MM:DD
+    //     leaving 19 bits for year => large
+    
+    // Time: HH:MM:SS => seconds means 24*60*60 = 86400 < 2^17 = 131072 
+    // Block coded:
+    //   HH: 24 < 2^5
+    //   MM: 60 < 2^6
+    //   SS: 60 < 2^6
+    // ==> 17 bits
+    // Factional second => not inline.
+    
+    // Epoch base: 1900-01-01T00:00:00Z or 1000-01-01T00:00:00Z
+    
     // xsd:dateTime : timezone 16bits, time in ms: 40 bits = 8K years
+    // xsd:date : timezone 16bits , 
     
-    // xsd:date : timezone 16bits , day 40 bits  = a lot.
     
+    static long time(int hour, int mins, int sec)
+    {
+        // HH:MM:SS => 5 bits H, 6 bits M, 6 bits S ==> 17 bits
+        long v = 0 ;
+        v = BitsLong.pack(v, hour, 0, 5) ; 
+        v = BitsLong.pack(v, mins, 5, 11) ;
+        v = BitsLong.pack(v, sec,  11, 17) ;
+        return v ;
+    }
     
     
 }
