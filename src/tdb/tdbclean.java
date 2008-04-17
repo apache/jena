@@ -6,54 +6,69 @@
 
 package tdb;
 
+import lib.FileOps;
 import tdb.cmdline.CmdTDB;
-import tdb.cmdline.ModFormat;
-import arq.cmd.CmdException;
 import arq.cmd.CmdUtils;
 
+import com.hp.hpl.jena.query.Query;
+import com.hp.hpl.jena.query.QueryExecution;
+import com.hp.hpl.jena.query.QueryExecutionFactory;
+import com.hp.hpl.jena.query.QueryFactory;
+import com.hp.hpl.jena.query.ResultSet;
 import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.sparql.util.Utils;
+import com.hp.hpl.jena.util.FileManager;
 
-public class tdbdump extends CmdTDB
+public class tdbclean extends CmdTDB
 {
-    ModFormat modFormat =  new ModFormat() ;
-    
     static public void main(String... argv)
     { 
         CmdUtils.setLog4j() ;
-        new tdbdump(argv).main() ;
+        new tdbclean(argv).main() ;
     }
 
-    protected tdbdump(String[] argv)
+    protected tdbclean(String[] argv)
     {
         super(argv) ;
-        super.addModule(modFormat) ;
     }
 
     @Override
     protected String getSummary()
     {
-        return Utils.className(this)+" --desc=DIR [--format=FORMAT]" ;
-    }
-
-    @Override
-    protected String getCommandName()
-    {
-        return "tdbdump" ;
+        return getCommandName()+" [--desc=assembler|--loc=DIR]" ;
     }
 
     @Override
     protected void exec()
     {
-        if ( modAssembler.getAssemblerFile() == null )
-            throw new CmdException("No assembler file") ;
-        
-        Model model = getModel() ;
-        //Graph graph = (PGraphBase)model.getGraph() ;
-        String format = modFormat.getFormat("N3-TRIPLES") ;
-        model.write(System.out, format) ;
-    }
+        if ( modLocation.getLocation() != null )
+            clean(modLocation.getLocation().getDirectoryPath()) ;
 
+        // Extract the location from the assember file.
+        if ( modAssembler.getAssemblerFile() != null )
+        {
+            // Find and clear all locations
+            Model m = FileManager.get().loadModel(modAssembler.getAssemblerFile()) ;
+            Query query = QueryFactory.create("SELECT ?dir { [] tdb:location ?dir FILTER (isURI(?dir) }") ;
+            QueryExecution qExec = null ;
+            try {
+                qExec = QueryExecutionFactory.create(query, m) ;
+                for (ResultSet rs = qExec.execSelect() ; rs.hasNext() ; )
+                    clean(rs.nextSolution().getResource("dir").getURI()) ;
+            } catch ( RuntimeException ex)
+            {
+                if ( qExec != null )
+                    qExec.close() ;
+                throw ex ;
+            }
+        }
+    }
+    
+    private void clean(String dir)
+    {
+        if ( isVerbose() )
+            System.out.println("Clean: "+dir) ;
+        FileOps.clearDirectory(dir) ;
+    }
 }
 
 /*

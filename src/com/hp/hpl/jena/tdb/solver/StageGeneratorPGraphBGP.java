@@ -38,7 +38,7 @@ public class StageGeneratorPGraphBGP implements StageGenerator
         @SuppressWarnings("unchecked")
         List<Triple> triples = (List<Triple>)pattern.getList() ;
         
-        triples = reorder(triples) ;
+        triples = reorder(graph, triples) ;
         
         Stage stage = new StageBGP(graph, triples) ;
         StageList sList = new StageList() ;
@@ -46,14 +46,13 @@ public class StageGeneratorPGraphBGP implements StageGenerator
         return sList ;
     }
 
-    private List<Triple> reorder(List<Triple> triples)
+    // Externally testable.
+    public static final List<Triple> reorder(PGraphBase graph, List<Triple> triples)
     {
-        // TODO Choose order here!
-        // Better: know the bound variables first and do this reordering on the patter, not it's instantiation.
-        // Need help from ARQ to do that.
-        return triples ;
+        ReorderPattern reorderEngine = ReorderLib.get() ;
+        return reorderEngine.reorder(graph, triples) ; 
     }
-}
+ }
 
 /*
  * (c) Copyright 2008 Hewlett-Packard Development Company, LP

@@ -53,6 +53,11 @@ public class BindingTDB extends BindingBase
         return idBinding.containsKey(var) ;
     }
     
+    public NodeId getNodeId(Var var)
+    {
+        return idBinding.get(var) ;
+    }
+    
     @Override
     public Node get1(Var var)
     {

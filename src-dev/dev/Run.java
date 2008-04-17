@@ -10,22 +10,34 @@ import static lib.FileOps.clearDirectory;
 
 import java.io.File;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import lib.BitsLong;
 import lib.StrUtils;
 import lib.Tuple;
 
-import com.sleepycat.je.*;
-
 import com.hp.hpl.jena.assembler.JA;
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
+import com.hp.hpl.jena.query.Query;
+import com.hp.hpl.jena.query.QueryExecution;
+import com.hp.hpl.jena.query.QueryExecutionFactory;
+import com.hp.hpl.jena.query.QueryFactory;
+import com.hp.hpl.jena.query.ResultSet;
+import com.hp.hpl.jena.query.ResultSetFormatter;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.impl.RDFReaderFImpl;
 import com.hp.hpl.jena.shared.PrefixMapping;
+import com.hp.hpl.jena.sparql.core.Prologue;
+import com.hp.hpl.jena.sparql.core.assembler.AssemblerUtils;
+import com.hp.hpl.jena.sparql.sse.SSE;
+import com.hp.hpl.jena.sparql.sse.writers.WriterBasePrefix;
+import com.hp.hpl.jena.sparql.util.FmtUtils;
+import com.hp.hpl.jena.sparql.util.IndentedWriter;
 import com.hp.hpl.jena.tdb.base.block.BlockMgrFactory;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 import com.hp.hpl.jena.tdb.btree.BTree;
@@ -36,23 +48,31 @@ import com.hp.hpl.jena.tdb.lib.StringAbbrev;
 import com.hp.hpl.jena.tdb.pgraph.GraphBTree;
 import com.hp.hpl.jena.tdb.pgraph.NodeId;
 import com.hp.hpl.jena.tdb.pgraph.PGraphBase;
+import com.hp.hpl.jena.tdb.solver.StageGeneratorPGraphBGP;
 import com.hp.hpl.jena.util.FileManager;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
-
-import com.hp.hpl.jena.sparql.core.Prologue;
-import com.hp.hpl.jena.sparql.core.assembler.AssemblerUtils;
-import com.hp.hpl.jena.sparql.sse.SSE;
-import com.hp.hpl.jena.sparql.sse.writers.WriterBasePrefix;
-import com.hp.hpl.jena.sparql.util.FmtUtils;
-import com.hp.hpl.jena.sparql.util.IndentedWriter;
-
-import com.hp.hpl.jena.query.*;
+import com.sleepycat.je.*;
 
 
 public class Run
 {
     public static void main(String ... args)
     {
+        
+        List<Triple> triples = new ArrayList<Triple>() ;
+        
+        triples.add(SSE.parseTriple("(?x ?s ?p)")) ;
+        triples.add(SSE.parseTriple("(?x <p> ?y)")) ;
+        triples.add(SSE.parseTriple("(?x <p> 12)")) ;
+        
+        PGraphBase graph = new GraphBTree() ;
+        triples = StageGeneratorPGraphBGP.reorder(graph, triples) ;
+        
+        for ( Triple t : triples )
+            System.out.println(t) ;
+        System.exit(0) ;
+        
+        
 //        // Geo decimals. : 0.03190235436
 //        String x = "0.0003190235436" ;
 //        BigDecimal d = new BigDecimal(x) ;

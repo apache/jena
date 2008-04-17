@@ -12,6 +12,10 @@ public class Dev
     // CountingSync.
     //   bound variable tracking
     //   LARQ++
+    // Inline xsd:dateTimes/xsd:dates
+    // Sort out library of daatsets : Store/...
+    
+    // BGP Optimizer.
     
     // QueryHandler to access subjectsFor etc. 
     

@@ -165,11 +165,10 @@ public class NodeId
             if ( XSDDatatype.XSDinteger.isValidLiteral(lit) )
             {
                 long v = ((Number)lit.getValue()).longValue() ;
-                if ( Math.abs(v) < 0x007FFFFF )
+                if ( Math.abs(v) < (1L<<47) )      // Absolute value must fit in 47 bits
                 {
                     v = lib.BitsLong.clear(v, 56, 64) ;
-                    // Type = 1 
-                    v = BitsLong.pack(v, 1, 56, 64) ;
+                    v = BitsLong.pack(v, INTEGER, 56, 64) ;
                     return new NodeId(v) ;
                 }
                 else
@@ -199,17 +198,6 @@ public class NodeId
         return null ;
     }
     
-    private static NodeId packDecimal(boolean isPositive, int scale, long value)
-    {
-        // pack : DECIMAL , sign, scale, value
-        long v = BitsLong.pack(0, DECIMAL, 56, 64) ;
-        if ( ! isPositive )
-            v = BitsLong.pack(v, 1, 55, 56) ;
-        v = BitsLong.pack(v, scale, 48, 55) ;
-        v = BitsLong.pack(v, value, 0, 48) ;
-        return new NodeId(v) ;
-    }
-
     /** Decode an inline nodeID, return null if not an inline node */
     public static Node extract(NodeId nodeId)
     {

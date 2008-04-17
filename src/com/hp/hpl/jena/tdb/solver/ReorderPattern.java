@@ -4,56 +4,17 @@
  * [See end of file]
  */
 
-package tdb;
+package com.hp.hpl.jena.tdb.solver;
 
-import tdb.cmdline.CmdTDB;
-import tdb.cmdline.ModFormat;
-import arq.cmd.CmdException;
-import arq.cmd.CmdUtils;
+import java.util.List;
 
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.sparql.util.Utils;
+import com.hp.hpl.jena.graph.Triple;
+import com.hp.hpl.jena.tdb.pgraph.PGraphBase;
 
-public class tdbdump extends CmdTDB
+public interface ReorderPattern
 {
-    ModFormat modFormat =  new ModFormat() ;
-    
-    static public void main(String... argv)
-    { 
-        CmdUtils.setLog4j() ;
-        new tdbdump(argv).main() ;
-    }
-
-    protected tdbdump(String[] argv)
-    {
-        super(argv) ;
-        super.addModule(modFormat) ;
-    }
-
-    @Override
-    protected String getSummary()
-    {
-        return Utils.className(this)+" --desc=DIR [--format=FORMAT]" ;
-    }
-
-    @Override
-    protected String getCommandName()
-    {
-        return "tdbdump" ;
-    }
-
-    @Override
-    protected void exec()
-    {
-        if ( modAssembler.getAssemblerFile() == null )
-            throw new CmdException("No assembler file") ;
-        
-        Model model = getModel() ;
-        //Graph graph = (PGraphBase)model.getGraph() ;
-        String format = modFormat.getFormat("N3-TRIPLES") ;
-        model.write(System.out, format) ;
-    }
-
+    // Can mutate (and return) the list if really necessary.
+    public List<Triple> reorder(PGraphBase graph, List<Triple> triples) ;
 }
 
 /*

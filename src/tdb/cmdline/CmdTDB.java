@@ -7,6 +7,7 @@
 package tdb.cmdline;
 
 import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.sparql.util.Utils;
 import com.hp.hpl.jena.tdb.TDB;
 import com.hp.hpl.jena.tdb.TDBFactory;
@@ -18,7 +19,9 @@ import arq.cmdline.ModAssembler;
 
 public abstract class CmdTDB extends CmdARQ
 {
-    private PGraphBase graph ; 
+    private PGraphBase graph = null ; 
+    private Model model = null ;
+    
     protected ModAssembler modAssembler =  new ModAssembler() ;
     protected ModLocation modLocation =  new ModLocation() ;
     
@@ -30,16 +33,28 @@ public abstract class CmdTDB extends CmdARQ
         super.addModule(modLocation) ;
     }
     
-    protected PGraphBase getGraph()
+    @Override
+    protected void processModulesAndArgs()
     {
-        if ( graph != null )
-            return graph ;
-        
+        super.processModulesAndArgs() ;
         if ( modLocation.getLocation() == null && modAssembler.getAssemblerFile() == null )
             throw new CmdException("No assembler file and no location") ;
              
         if ( modLocation.getLocation() != null && modAssembler.getAssemblerFile() != null )
             throw new CmdException("Both an assembler file and a location") ;
+    }
+    
+    protected Model getModel()
+    {
+        if ( model != null )
+            model = ModelFactory.createModelForGraph(getGraph()) ;
+        return model ;
+    }
+    
+    protected PGraphBase getGraph()
+    {
+        if ( graph != null )
+            return graph ;
         
         Model model = null ;
         

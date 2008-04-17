@@ -27,8 +27,10 @@ public class DecimalNode
     static final BigInteger MAX_I = BigInteger.valueOf(MAX) ;
     static final BigInteger MIN_I = BigInteger.valueOf(-MAX) ;
     
-    private int scale ;     // +127 - -128   (2^7-1)  -2^-7
-    private long value ;
+    // Decimal precision is 47 bits (it's signed) or around 14 places.
+    private int scale ;     // Limted to byte value range. +255 - -256  
+    private long value ;    // 48 bits of precision (8 bits type, 8 bits scale).
+    
 
     public static DecimalNode valueOf(BigDecimal decimal)
     {
