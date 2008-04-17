@@ -40,7 +40,7 @@ public class Utils
     // javax.xml.datatype.DatatypeFactory.newXMLGregorianCalendar 
 
     // warning all calendar based operations force the timezone
-    // to the default is not present. 
+    // to the default if not present. 
     
     public static String nowAsXSDDateTimeString()
     {
