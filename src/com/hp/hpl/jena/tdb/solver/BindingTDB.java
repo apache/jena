@@ -17,13 +17,16 @@ import com.hp.hpl.jena.sparql.engine.binding.BindingBase;
 import com.hp.hpl.jena.tdb.pgraph.NodeId;
 import com.hp.hpl.jena.tdb.pgraph.NodeTable;
 
-/** Bind that delayes turning a NodeId into a Node until explicitly needed by get() */
+/** Bind that delays turning a NodeId into a Node until explicitly needed by get() */
 
 public class BindingTDB extends BindingBase
 {
     private final NodeTable nodeTable ;
     private final BindingNodeId idBinding ;
-    private final Map<Var,Node> cache = new HashMap<Var, Node>() ;
+    
+    private static final boolean caching = false ;
+    // Whether the cache is worthwhile is unclear - the NodeTable keeps a cache. 
+    private final Map<Var,Node> cache = ( caching ? new HashMap<Var, Node>() : null ) ;
 
     public BindingTDB(Binding parent, BindingNodeId idBinding, NodeTable nodeTable)
     {
@@ -62,7 +65,9 @@ public class BindingTDB extends BindingBase
     public Node get1(Var var)
     {
         try {
-            Node n = cache.get(var) ;
+            Node n = null ;
+            if ( cache != null )
+                cache.get(var) ;
             if ( n != null )
                 return n ;
             
@@ -71,7 +76,8 @@ public class BindingTDB extends BindingBase
                 return null ; 
             n = nodeTable.retrieveNode(id) ;
             // Update cache.
-            cache.put(var, n) ;
+            if ( cache != null )
+                cache.put(var, n) ;
             return n ;
         } catch (Exception ex)
         {

@@ -16,12 +16,12 @@ import com.hp.hpl.jena.tdb.pgraph.NodeId;
 
 class BindingNodeId extends Map2<Var, NodeId>
 {
-    public BindingNodeId(Map<Var, NodeId> map1, Map2<Var, NodeId> map2)
+    private BindingNodeId(Map<Var, NodeId> map1, Map2<Var, NodeId> map2)
     {
         super(map1, map2) ;
     }
     
-    public BindingNodeId( Map2<Var, NodeId> map2)
+    public BindingNodeId(Map2<Var, NodeId> map2)
     {
         super(new HashMap<Var, NodeId>(), map2) ;
     }
@@ -30,6 +30,8 @@ class BindingNodeId extends Map2<Var, NodeId>
     {
         super(new HashMap<Var, NodeId>(), null) ;
     }
+    
+    @Override public NodeId get(Var v)    { return super.get(v) ; } 
     
     @Override public void put(Var v, NodeId n)
     {

@@ -11,6 +11,7 @@ import iterator.Iter;
 import java.util.Iterator;
 import java.util.Map;
 
+// Map with parent sharing.
 public class Map2<K, V> implements Iterable<K>
 {
     private Map<K, V> map1 ; 
@@ -65,7 +66,13 @@ public class Map2<K, V> implements Iterable<K>
         return iter1.append(map2.iterator()) ;
     }
     
-    public int size() { return map1.size() ; }
+    public int size()
+    {
+        int x = map1.size() ;
+        if ( map2 != null )
+            x = map2.size();
+        return x ;
+    }
     
 }
 
