@@ -13,42 +13,52 @@ public class DateTimeNode
     // UTC or not UTC, that is the question.
     // Whether to normalize to UTC.  Support costs ... no, people expect timezone.  
     
-    
+    // --- Sizing
     
     // 1 year = 60*60*24*1000 = 86,400,000 milliseconds < 27 bits
     // It normalize to UTC: 56 bits is 2^29 years. 
     
     
-    
-    
     // Timezone. = +- hours:minutes. +-14:00 
     // 28 hours = 1680 minutes = 2^11 => 11 bits.
-    // Convenient: 16 bit timezone (binary or BCD).  Special for Z. 
-
-    // 56 bits
-    // Timezone: 8 bits (hours in quarters + Z) 28*4 + 1 = 112 +1 = 113 < 7 bits 
-    // Leaves 48 bits : split 28 date and 20 time.
+    // Timezone in 15 min increments: 28*4 = 112 < 7 bits
+    // ==> 7 bits
     
-    // Date: YYYYMMDD => BCD: 8*4 bits = 32
+    // Leaves 49 bits.
+
+    // Date: decision: precision of year.
+    
     //   Suppose YYY since 1900 => 1000 < 2^10 : 10 bits year
     //   MM = 12 < 16 = 4 bits.
     //   DD = 31 < 32 = 5 bits.
     //     So 9 bits for MM:DD
-    //     leaving 19 bits for year => large
+    //   YYY in 1900-3000 = 1100 < 2^11
+    // Epoch to 1000-01-01T00:00:00Z - 2999-12-31T23:59:59.9999Z ==> 2000 years < 2^11 
+    //  ==> 20 bits
+    //  ==> 22 bits for 8000 years
     
     // Time: HH:MM:SS => seconds means 24*60*60 = 86400 < 2^17 = 131072 
     // Block coded:
     //   HH: 24 < 2^5
     //   MM: 60 < 2^6
     //   SS: 60 < 2^6
-    // ==> 17 bits
-    // Factional second => not inline.
+    // ==> 17 bits to second accuracy
+    // Milliseconds: 60,000 < 2^^16
+    // ==> 27 bits to millisecond accuracy
     
-    // Epoch base: 1900-01-01T00:00:00Z or 1000-01-01T00:00:00Z
+    // ====> 47 bits of 49.
+
+    // ---- Layout
+    // Epoch base: 0000-01-01T00:00:00
+
+    // Layout:
+    // Bits 56-63 : type
     
-    // xsd:dateTime : timezone 16bits, time in ms: 40 bits = 8K years
-    // xsd:date : timezone 16bits , 
-    
+    // Bits 49-55 (7 bits)  : timezone -- 15 min precision + special for Z
+    // Bits 27-48 (22 bits) : date, year is 13 bits = 8000 years 
+    // Bits 0-26  (27 bits) : time, to milliseconds 
+
+
     
     // Packed to low end.
     static long time(int hour, int mins, int sec)
