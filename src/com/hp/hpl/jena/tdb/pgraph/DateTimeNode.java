@@ -32,7 +32,7 @@ public class DateTimeNode
     //   MM = 12 < 16 = 4 bits.
     //   DD = 31 < 32 = 5 bits.
     //     So 9 bits for MM:DD
-    //   YYY in 1900-3000 = 1100 < 2^11
+    //   YYY in 0000-8000 = 800 < 2^13 (8K)
     // Epoch to 1000-01-01T00:00:00Z - 2999-12-31T23:59:59.9999Z ==> 2000 years < 2^11 
     //  ==> 20 bits
     //  ==> 22 bits for 8000 years
@@ -59,27 +59,50 @@ public class DateTimeNode
     // Bits 0-26  (27 bits) : time, to milliseconds 
 
 
+    // Const-ize
+    static final int DATE_LEN = 22 ;    // 13
+    static final int TIME_LEN = 27 ;    // 5 + 6 + 16
     
-    // Packed to low end.
-    static long time(int hour, int mins, int sec)
+    static final int MILLI = 0 ;
+    static final int MILLI_LEN = 16 ;
+
+    static final int MINUTES = MILLI_LEN ;
+    static final int MINUTES_LEN = 6 ;
+
+    static final int HOUR = MILLI_LEN + MINUTES_LEN ;
+    static final int HOUR_LEN = 5 ;
+
+    
+    static final int DAY = TIME_LEN  ;
+    static final int DAY_LEN = 5 ;
+
+    static final int MONTH = TIME_LEN + DAY_LEN ;
+    static final int MONTH_LEN = 4 ;
+    
+    static final int YEAR = TIME_LEN + MONTH_LEN + DAY_LEN ;
+    static final int YEAR_LEN = 13 ;
+    
+    
+    // Packed in correct place.
+    static long time(int hour, int mins, int millisec)
     {
         // And bit offset for direct packing?
-        // HH:MM:SS => 5 bits H, 6 bits M, 6 bits S ==> 17 bits
+        // HH:MM:SS.ssss => 5 bits H, 6 bits M, 16 bits S ==> 27 bits
         long v = 0 ;
-        v = BitsLong.pack(v, hour, 0, 5) ; 
-        v = BitsLong.pack(v, mins, 5, 11) ;
-        v = BitsLong.pack(v, sec,  11, 17) ;
+        v = BitsLong.pack(v, hour, HOUR, HOUR+HOUR_LEN) ;
+        v = BitsLong.pack(v, mins, MINUTES, MINUTES_LEN) ;
+        v = BitsLong.pack(v, millisec, MILLI, MILLI+MILLI_LEN) ;
         return v ;
     }
     
-    // Packed to low end
+    // Packed in correct place.
     static long date(int year, int month, int day)
     {
-        // YYYY:MM:DD => 18 bits year, 4 bits month, 4 bits day => 26 bits
+        // YYYY:MM:DD => 13 bits year, 4 bits month, 5 bits day => 22 bits
         long v = 0 ;
-        v = BitsLong.pack(v, year, 0, 18) ; 
-        v = BitsLong.pack(v, month, 18, 22) ;
-        v = BitsLong.pack(v, day,  22, 26) ;
+        v = BitsLong.pack(v, year, YEAR, YEAR+YEAR_LEN) ;
+        v = BitsLong.pack(v, month, MONTH, MONTH+MONTH_LEN) ;
+        v = BitsLong.pack(v, day,  DAY, DAY_LEN) ;
         return v ;
     }
 }
