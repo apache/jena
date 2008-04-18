@@ -327,7 +327,7 @@ public class ResultSetFactory
      * @param results
      * @return ResultSet
      */
-    static public ResultSet copyResults(ResultSet results)
+    static public ResultSetRewindable copyResults(ResultSet results)
     {
         return new ResultSetMem(results) ; 
     }
