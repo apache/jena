@@ -3,6 +3,8 @@ ChangeLog for ARQ
 
 ==== ARQ 2.3
 
++ Chnage return type of ResultFactor.copyresult to ResultSetRewinable (a sub interface of ResultSet).
+
 + Allow inital bindings for Updates (ignored unless a Modify operation)
 
 + Added SUM(?x) aggregate
