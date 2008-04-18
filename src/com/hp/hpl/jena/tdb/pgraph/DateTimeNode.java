@@ -58,6 +58,8 @@ public class DateTimeNode
     // Bits 27-48 (22 bits) : date, year is 13 bits = 8000 years 
     // Bits 0-26  (27 bits) : time, to milliseconds 
 
+    // Layout:
+    // Hi: TZ YYYY MM DD HH MM SS.sss Lo:
 
     // Const-ize
     static final int DATE_LEN = 22 ;    // 13
@@ -82,13 +84,14 @@ public class DateTimeNode
     static final int YEAR = TIME_LEN + MONTH_LEN + DAY_LEN ;
     static final int YEAR_LEN = 13 ;
     
+    static final int TZ = TIME_LEN + DATE_LEN ;
+    static final int TZ_LEN = 7 ;
     
     // Packed in correct place.
-    static long time(int hour, int mins, int millisec)
+    static long time(long v, int hour, int mins, int millisec)
     {
         // And bit offset for direct packing?
         // HH:MM:SS.ssss => 5 bits H, 6 bits M, 16 bits S ==> 27 bits
-        long v = 0 ;
         v = BitsLong.pack(v, hour, HOUR, HOUR+HOUR_LEN) ;
         v = BitsLong.pack(v, mins, MINUTES, MINUTES_LEN) ;
         v = BitsLong.pack(v, millisec, MILLI, MILLI+MILLI_LEN) ;
@@ -96,13 +99,18 @@ public class DateTimeNode
     }
     
     // Packed in correct place.
-    static long date(int year, int month, int day)
+    static long date(long v, int year, int month, int day)
     {
         // YYYY:MM:DD => 13 bits year, 4 bits month, 5 bits day => 22 bits
-        long v = 0 ;
         v = BitsLong.pack(v, year, YEAR, YEAR+YEAR_LEN) ;
         v = BitsLong.pack(v, month, MONTH, MONTH+MONTH_LEN) ;
         v = BitsLong.pack(v, day,  DAY, DAY_LEN) ;
+        return v ;
+    }
+    
+    static long tz(long v, int tz_in_quarters)
+    {
+        v = BitsLong.pack(v, tz_in_quarters, TZ, TZ_LEN);
         return v ;
     }
 }
