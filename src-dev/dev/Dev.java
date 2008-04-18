@@ -15,6 +15,8 @@ public class Dev
     // Inline xsd:dateTimes/xsd:dates
     // Sort out library of daatsets : Store/...
     
+    // ARQ: Var scope handing - add to OpBase?
+    
     // BGP Optimizer.
     
     // QueryHandler to access subjectsFor etc. 

@@ -43,18 +43,25 @@ public class TestNodeId extends TestBase
     { test("'3'", null) ; }
 
     @Test public void nodeId_14()
+    { test("-1",  SSE.parseNode("-1")) ; }
+    
+    @Test public void nodeId_15()
+    { test("-180",  SSE.parseNode("-180")) ; }
+
+
+    @Test public void nodeId_20()
     { test("3.14", SSE.parseNode("3.14")) ; }
 
-    @Test public void nodeId_15()
+    @Test public void nodeId_21()
     { test("123456789.123456789", null) ; }
     
     // Just this once, directly create the Node.
-    @Test public void nodeId_16()
+    @Test public void nodeId_22()
     { test("12.89", Node.createLiteral("12.89", null, XSDDatatype.XSDdecimal)) ; }
 
-    @Test public void nodeId_17()
+    @Test public void nodeId_23()
     { test("-1.0",  SSE.parseNode("-1.0")) ; }
-
+    
     
     private void test(String x, Node correct)
     {
