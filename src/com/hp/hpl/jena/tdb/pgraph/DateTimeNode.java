@@ -50,6 +50,7 @@ public class DateTimeNode
     // xsd:date : timezone 16bits , 
     
     
+    // Packed to low end.
     static long time(int hour, int mins, int sec)
     {
         // And bit offset for direct packing?
@@ -61,6 +62,7 @@ public class DateTimeNode
         return v ;
     }
     
+    // Packed to low end
     static long date(int year, int month, int day)
     {
         // YYYY:MM:DD => 18 bits year, 4 bits month, 4 bits day => 26 bits

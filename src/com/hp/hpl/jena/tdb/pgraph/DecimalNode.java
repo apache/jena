@@ -27,6 +27,13 @@ public class DecimalNode
     static final BigInteger MAX_I = BigInteger.valueOf(MAX) ;
     static final BigInteger MIN_I = BigInteger.valueOf(-MAX) ;
     
+    // Bits counts
+    static private int SCALE_LO = 56-8 ;
+    static private int SCALE_HI = 56 ;    // Exclusive index
+
+    static private int VALUE_LO = 0 ;
+    static private int VALUE_HI = VALUE_LO+48 ;
+    
     // Decimal precision is 47 bits (it's signed) or around 14 places.
     private int scale ;     // Limted to byte value range. +255 - -256  
     private long value ;    // 48 bits of precision (8 bits type, 8 bits scale).
@@ -75,16 +82,16 @@ public class DecimalNode
     {
         // pack : DECIMAL , sign, scale, value
         long v = BitsLong.pack(0, NodeId.DECIMAL, 56, 64) ;
-        v = BitsLong.pack(v, scale, 48, 56) ;
-        v = BitsLong.pack(v, value, 0, 48) ;
+        v = BitsLong.pack(v, scale, SCALE_LO, SCALE_HI) ;
+        v = BitsLong.pack(v, value, VALUE_LO, VALUE_HI) ;
         return v ;
     }
 
     public static DecimalNode unpack(long v)
     {
         //assert BitsLong.unpack(v, 56, 64) == NodeId.DECIMAL ;
-        int scale =  (int)BitsLong.unpack(v, 48, 56)  ;
-        long value = BitsLong.unpack(v, 0, 48) ;
+        int scale =  (int)BitsLong.unpack(v, SCALE_LO, SCALE_HI) ;
+        long value = BitsLong.unpack(v, VALUE_LO, VALUE_HI) ;
         return new DecimalNode(value, scale) ;
     }
     
@@ -92,8 +99,8 @@ public class DecimalNode
     {
         // Can I say tuples-in-java?  Or "Multiple return values"?
         //assert BitsLong.unpack(v, 56, 64) == NodeId.DECIMAL ;
-        int scale =  (int)BitsLong.unpack(v, 48, 56)  ;
-        long value = BitsLong.unpack(v, 0, 48) ;
+        int scale =  (int)BitsLong.unpack(v, SCALE_LO, SCALE_HI) ;
+        long value = BitsLong.unpack(v, VALUE_LO, VALUE_HI) ;
         // Sign extend value.
         if ( BitsLong.isSet(value, 47) )
             value = value | -1L<<48 ;
