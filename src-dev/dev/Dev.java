@@ -13,7 +13,11 @@ public class Dev
     //   bound variable tracking
     //   LARQ++
     // Inline xsd:dateTimes/xsd:dates
-    // Sort out library of daatsets : Store/...
+    // Sort out library of datasets : Store/...
+    
+    // 32 bit: Try without each of the read cache and write cahes to see value of each
+    // Combine into one cache?
+    
     
     // ARQ: Var scope handing - add to OpBase?
     
