@@ -16,7 +16,8 @@ public class Dev
     // Sort out library of datasets : Store/...
     
     // 32 bit: Try without each of the read cache and write cahes to see value of each
-    // Combine into one cache?
+    //   And which index cache is having the most effect?
+    //   And/Or, better, combine into one cache?
     
     
     // ARQ: Var scope handing - add to OpBase?
