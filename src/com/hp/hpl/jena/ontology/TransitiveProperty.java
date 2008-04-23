@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: TransitiveProperty.java,v $
- * Revision           $Revision: 1.7 $
+ * Revision           $Revision: 1.8 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2008-01-02 12:06:38 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2008-04-23 11:49:40 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -28,14 +28,15 @@ package com.hp.hpl.jena.ontology;
 
 /**
  * <p>
- * Interface that encapsulates an property that is transitive i&#046;e&#046; one
- * in which if <code>p(x,&nbsp;y)</code> holds, and <code>p(x,&nbsp;z)
- * </code> holds, then <code>p(x,&nbsp;z)</code> must also hold.
+ * Interface that denotes a property that is transitive i&#046;e&#046; one
+ * in which if <code><em>x</em>&nbsp;p&nbsp;<em>y</em></code> holds,
+ * and <code><em>y</em>&nbsp;p&nbsp;<em>z</em></code>
+ * holds, then <code><em>x</em>&nbsp;p&nbsp;<em>z</em></code> must also hold.
  * </p>
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TransitiveProperty.java,v 1.7 2008-01-02 12:06:38 andy_seaborne Exp $
+ * @version CVS $Id: TransitiveProperty.java,v 1.8 2008-04-23 11:49:40 ian_dickinson Exp $
  */
 public interface TransitiveProperty
     extends ObjectProperty
