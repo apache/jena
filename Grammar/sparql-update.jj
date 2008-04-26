@@ -108,24 +108,33 @@ UpdatePattern Insert() :
 { UpdateInsert up = new UpdateInsert() ; String iri ; Template template ; }
 {
     <INSERT> 
-    ((<INTO>)? iri = IRIref() { up.addGraphName(iri) ; } )*
-    template = ConstructTemplate() { up.setInsertTemplate(template) ; }
-    { return up ; }
-}
-
-UpdateData Add() :
-{ UpdateAdd update = new UpdateAdd() ; 
-  String iri ;  Graph triples ; Template templ ; Token t ;}
-{
-    t = <ADD> 
-    ((<INTO>)? iri = IRIref() { update.addGraphName(iri) ; } )*
-    // TODO Better triples
-    templ = ConstructTemplate()
-    { triples = convertTemplateToTriples(templ, t.beginLine, t.beginColumn) ;
+   ( <DATA>
+    template = ConstructTemplate()
+    { triples = convertTemplateToTriples(template,
+                                         t.beginLine, t.beginColumn) ;
       update.setData(triples) ;
       return update ;
     }
+  |
+    ((<INTO>)? iri = IRIref() { up.addGraphName(iri) ; } )*
+    template = ConstructTemplate() { up.setInsertTemplate(template) ; }
+    { return up ; }
+   )
 }
+
+// UpdateData Add() :
+// { UpdateAdd update = new UpdateAdd() ; 
+//   String iri ;  Graph triples ; Template templ ; Token t ;}
+// {
+//     t = <ADD> 
+//     ((<INTO>)? iri = IRIref() { update.addGraphName(iri) ; } )*
+//     // TODO Better triples
+//     templ = ConstructTemplate()
+//     { triples = convertTemplateToTriples(templ, t.beginLine, t.beginColumn) ;
+//       update.setData(triples) ;
+//       return update ;
+//     }
+// }
 
 UpdateData Remove() :
 { UpdateRemove update = new UpdateRemove() ; 
