@@ -72,11 +72,11 @@ public class BTreeParams
     @Override
     public String toString()
     {
-        return String.format("Order=%d : Record factory=%s : records=[%d,%d/%d] : pointers=[%d,%d]",
+        return String.format("Order=%d : Record factory=%s : records=[%d,%d/%d] : pointers=[%d,%d] : split=%d",
                              order,
                              recordFactory,
-                             MinRec,MaxRecNonLeaf,MaxRecLeaf,
-                             MinPtr,MaxPtr,
+                             MinRec, MaxRecNonLeaf, MaxRecLeaf,
+                             MinPtr, MaxPtr,
                              SplitIndex
                              ) ;
     }

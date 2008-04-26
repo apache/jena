@@ -53,11 +53,23 @@ import com.hp.hpl.jena.util.FileManager;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 import com.sleepycat.je.*;
 
-
 public class Run
 {
+    static String divider = "" ;
+    static String nextDivider = null ;
+    static void divider()
+    {
+        if ( nextDivider != null )
+            System.out.println(nextDivider) ;
+        nextDivider = "" ;
+    }
+    
+    
     public static void main(String ... args)
     {
+        p(3, 64, 8*1024) ;
+        p(4, 128, 8*1024) ;
+        System.exit(0) ;
         
         List<Triple> triples = new ArrayList<Triple>() ;
         
@@ -119,7 +131,20 @@ public class Run
         
         System.exit(0) ;
     }
-    
+     
+    public static void  p(int slots, int slotSize, int blkSize)
+    {
+        divider() ;
+        RecordFactory f  = new RecordFactory(slots*slotSize/8,0) ;
+        System.out.printf("Input: %d slots, size %d bytes, %d blocksize\n", slots,slotSize/8, blkSize ) ;
+        System.out.println("Btree: "+BTreeParams.calcOrder(blkSize, f.recordLength())) ;      
+        System.out.println("Packed leaf : "+blkSize/f.recordLength()) ;
+        BTreeParams p = new BTreeParams(BTreeParams.calcOrder(blkSize, f.recordLength()), f) ;
+        System.out.println(p) ;
+        
+                                                              
+    }             
+     
     private static void typedNode(String x)
     {
         System.out.println("Input = "+x) ;

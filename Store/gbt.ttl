@@ -3,7 +3,7 @@
 @prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix ja:      <http://jena.hpl.hp.com/2005/11/Assembler#> .
 
-
+# **** Experimental stuff
 [] ja:loadClass "com.hp.hpl.jena.tdb.TDB" .
 
 ## Tell the system of the new model types.
@@ -16,7 +16,18 @@
     . 
 
 <#graph> rdf:type tdb:GraphBTree ;
+    tdb:location "." ;      # Means here: not a URI??
+    .
+
+<#graph> rdf:type tdb:Graph ;
     tdb:location "tmp" ;
+    # The triple indexes
+    tdb:rangeIndexType   tdb:BTree ;
+    # Node id indexes
+    tdb:indexType   tdb:ExtHash ;
+    # Size
+    tdb:size    tdb:Standard ;
+    tdb:size    tdb:Large ;
     .
 
 

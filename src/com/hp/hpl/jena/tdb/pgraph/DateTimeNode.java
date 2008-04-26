@@ -16,7 +16,7 @@ public class DateTimeNode
     // --- Sizing
     
     // 1 year = 60*60*24*1000 = 86,400,000 milliseconds < 27 bits
-    // It normalize to UTC: 56 bits is 2^29 years. 
+    // Normalize to UTC: 56 bits is 2^29 years. 
     
     
     // Timezone. = +- hours:minutes. +-14:00 
