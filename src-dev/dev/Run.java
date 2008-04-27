@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import lib.BitsLong;
 import lib.StrUtils;
 import lib.Tuple;
 
@@ -67,49 +66,32 @@ public class Run
     
     public static void main(String ... args)
     {
-        p(3, 64, 8*1024) ;
-        p(4, 128, 8*1024) ;
+        btreePacking(3, 64, 8*1024) ;
+        btreePacking(4, 128, 8*1024) ;
         System.exit(0) ;
         
-        List<Triple> triples = new ArrayList<Triple>() ;
-        
-        triples.add(SSE.parseTriple("(?x ?s ?p)")) ;
-        triples.add(SSE.parseTriple("(?x <p> ?y)")) ;
-        triples.add(SSE.parseTriple("(?x <p> 12)")) ;
-        
-        PGraphBase graph = new GraphBTree() ;
-        triples = StageGeneratorPGraphBGP.reorder(graph, triples) ;
-        
-        for ( Triple t : triples )
-            System.out.println(t) ;
-        System.exit(0) ;
-        
-        
-//        // Geo decimals. : 0.03190235436
-//        String x = "0.0003190235436" ;
-//        BigDecimal d = new BigDecimal(x) ;
-//        System.out.println("Decimal: "+d) ;
-//        System.out.printf("Scale = %d : Val = %d\n" , d.scale(), d.unscaledValue()) ;
-//        
-//        DecimalNode dn = DecimalNode.valueOf(d) ;
-//        System.out.println("DecimalNode: "+dn) ;
-//        BigDecimal d2 = dn.get() ;
-//        System.out.println("Decimal: "+d2) ;
-//        System.exit(0) ;
-        
-//        typedNode("1") ;
-//        typedNode("'1'^^xsd:int") ;
-//        typedNode("'1'") ;
+        if ( false )
+        {
+            List<Triple> triples = new ArrayList<Triple>() ;
 
+            triples.add(SSE.parseTriple("(?x ?s ?p)")) ;
+            triples.add(SSE.parseTriple("(?x <p> ?y)")) ;
+            triples.add(SSE.parseTriple("(?x <p> 12)")) ;
+
+            PGraphBase graph = new GraphBTree() ;
+            triples = StageGeneratorPGraphBGP.reorder(graph, triples) ;
+
+            for ( Triple t : triples )
+                System.out.println(t) ;
+            System.exit(0) ;
+        }
+
+        typedNode("'2008-04-27T16:52:00Z'^^xsd;dateTime") ;
         
-        long v = 1 ;
-        v = BitsLong.pack(v, -180L, 0, 48) ;
         
-        typedNode("'-180'^^xsd:decimal") ;
         
-        typedNode("0.123") ;
-        typedNode("-0.123") ;
-        System.exit(0) ;
+        
+        
         
         
 //        tdb.tdbloader.main("--desc", "dataset.ttl", "D.ttl") ;
@@ -132,7 +114,7 @@ public class Run
         System.exit(0) ;
     }
      
-    public static void  p(int slots, int slotSize, int blkSize)
+    public static void  btreePacking(int slots, int slotSize, int blkSize)
     {
         divider() ;
         RecordFactory f  = new RecordFactory(slots*slotSize/8,0) ;

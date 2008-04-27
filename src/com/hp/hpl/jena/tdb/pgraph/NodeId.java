@@ -23,6 +23,7 @@ import com.hp.hpl.jena.tdb.TDBException;
 final
 public class NodeId
 {
+    // SPECIALs - never stored.
     public static final NodeId NodeDoesNotExist = new NodeId(-8) ;
     public static final NodeId NodeIdAny = new NodeId(-9) ;
     
@@ -35,7 +36,7 @@ public class NodeId
     public static final NodeId n5 = new NodeId(5) ; 
 
     
-    // NB If there is any sort of cahce with a NodeId in it, then there is an object created
+    // NB If there is any sort of cache with a NodeId in it, then there is an object created
     // by boxing anyway (unless swap to using Trove with it's hardcoded int/long implementation)
     // Therefore the cost of a NodeId is not as great as it might be.
     // Could recycle them (but the value field wil not be final) 
@@ -78,8 +79,13 @@ public class NodeId
     
     public void toBytes(byte[] b, int idx) { Bytes.setLong(value, b, idx) ; }
  
-    public boolean isDirect() { return false ; }
-    
+    public boolean isDirect() { return type() != NONE && type() != SPECIAL ; }
+                                                       
+    public int type()
+    {
+        return (int)BitsLong.unpack(value, 56, 64) ;
+    }
+
     // Masked?
     public long getId()     { return value ; }
     
@@ -132,6 +138,7 @@ public class NodeId
     public static final int DATETIME           = 4 ;
     public static final int BOOLEAN            = 5 ;
     public static final int SHORT_STRING       = 6 ;
+    public static final int SPECIAL            = 0xFF ;
     
     /** Encode a node as an inline literal.  Return null if it can't be done */
     public static NodeId inline(Node node)
@@ -179,14 +186,16 @@ public class NodeId
         if ( XSDDatatype.XSDdateTime.isValidLiteral(lit) ) 
         {
             XSDDateTime dateTime = (XSDDateTime)lit.getValue() ;
-            //return new NodeValueDateTime(dateTime, node) ;
+            long v = DateTimeNode.packDateTime(dateTime) ;
+            return new NodeId(v) ;
         }
         
         if ( XSDDatatype.XSDdate.isValidLiteral(lit) )
         {
             // Jena datatype support works on masked dataTimes. 
             XSDDateTime dateTime = (XSDDateTime)lit.getValue() ;
-            //return new NodeValueDate(dateTime, node) ;
+            long v = DateTimeNode.packDate(dateTime) ;
+            return new NodeId(v) ;
         }
         
         if ( XSDDatatype.XSDboolean.isValidLiteral(lit) )
@@ -203,8 +212,8 @@ public class NodeId
     {
         //if ( ! enableInlineLiterals ) return null ; 
         
-        long v = nodeId.getId() ;
-        int type = (int)BitsLong.unpack(v, 56, 64) ;
+        long v = nodeId.value ;
+        int type = nodeId.type() ;
 
         switch (type)
         {
@@ -226,8 +235,20 @@ public class NodeId
                 return Node.createLiteral(x, null, XSDDatatype.XSDdecimal) ;
             }
 
-            case DATE:
             case DATETIME:
+            {
+                long val = BitsLong.clear(v, 56, 64) ;
+                XSDDateTime dateTime = DateTimeNode.unpackDateTime(v) ;
+                String lex = dateTime.toString() ;
+                return Node.createLiteral(lex, null, XSDDatatype.XSDdateTime) ;
+            }
+            case DATE:
+            {
+                long val = BitsLong.clear(v, 56, 64) ;
+                XSDDateTime date = DateTimeNode.unpackDate(v) ;
+                String lex = date.toString() ;
+                return Node.createLiteral(lex, null, XSDDatatype.XSDdate) ;
+            }
             default:
                 throw new TDBException("Unrecognized node id type: "+type) ;
         }

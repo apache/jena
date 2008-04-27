@@ -6,6 +6,8 @@
 
 package com.hp.hpl.jena.tdb.pgraph;
 
+import com.hp.hpl.jena.datatypes.xsd.XSDDateTime;
+
 import lib.BitsLong;
 
 public class DateTimeNode
@@ -113,6 +115,48 @@ public class DateTimeNode
         v = BitsLong.pack(v, tz_in_quarters, TZ, TZ_LEN);
         return v ;
     }
+
+    public static void debug(NodeId nodeId)
+    {
+    }
+    
+    public static long packDateTime(XSDDateTime dateTime)
+    {
+        // XXX Unfinished
+        long v = 0 ;
+        int years = dateTime.getYears() ;
+        int months = dateTime.getMonths() ;
+        int days = dateTime.getDays() ;
+        v = date(v, years, months ,days) ;
+        
+        int hours = dateTime.getHours() ;
+        int mins = dateTime.getMinutes() ;
+        double secs = dateTime.getSeconds() ;
+        v = time(v, hours, mins, 0) ;
+        // timezone
+        return v ;
+    }
+
+    public static long packDate(XSDDateTime dateTime)
+    {
+        int y = dateTime.getYears() ;
+        int m = dateTime.getMonths() ;
+        int d = dateTime.getDays() ;
+        long v = 0 ;
+        v = date(v, y, m ,d) ;
+        return v ;
+    }
+
+    public static XSDDateTime unpackDateTime(long v)
+    {
+        return null ;
+    }
+
+    public static XSDDateTime unpackDate(long v)
+    {
+        return null ;
+    }
+
 }
 
 /*
