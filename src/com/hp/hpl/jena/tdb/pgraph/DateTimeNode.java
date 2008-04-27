@@ -118,6 +118,7 @@ public class DateTimeNode
 
     public static void debug(NodeId nodeId)
     {
+        System.out.printf("%08X", nodeId.value) ; 
     }
     
     public static long packDateTime(XSDDateTime dateTime)
