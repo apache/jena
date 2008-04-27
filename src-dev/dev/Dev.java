@@ -22,11 +22,9 @@ public class Dev
     //           
     //      tdb:GraphTDB: mode=standard,large
     //
-    
-    // BTreeLeaf
-    //      
     // Plan for a mega-hash id version
-    // Absteraction: Logical => Physical id translation
+    // Version of NodeTable that does Logical => Physical id translation
+    // And a PageMgr.
 
     // Triggers: triples only
     
