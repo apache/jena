@@ -123,6 +123,7 @@ public class DateTimeNode
     public static long packDateTime(XSDDateTime dateTime)
     {
         // XXX Unfinished
+        System.err.println("DateTimeNode.packDateTime: unfinished") ;
         long v = 0 ;
         int years = dateTime.getYears() ;
         int months = dateTime.getMonths() ;
