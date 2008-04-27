@@ -28,7 +28,6 @@ public class NodeValueDateTime extends NodeValue
     protected Node makeNode()
     {
         String lex = dateTime.toString() ;
-        //String lex = Utils.calendarToXSDDateTimeString(date) ;
         return Node.createLiteral(lex, null, XSDDatatype.XSDdateTime) ;
     }
     
