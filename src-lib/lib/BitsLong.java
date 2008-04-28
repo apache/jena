@@ -18,7 +18,7 @@ package lib;
 public final class BitsLong
 {
     // When this is false, no calls to check() should be generated.
-    public static final boolean CHECK = true ;
+    //public static final boolean CHECK = true ;
     private static int LongLen = Long.SIZE ;
     
     /** Extract the value packed into bits start (inclusive) and finish (exclusive),
@@ -29,7 +29,7 @@ public final class BitsLong
     public static final
     long unpack(long bits, int start, int finish)
     {
-        if ( CHECK ) check(start, finish) ;
+        check(start, finish) ;
         if ( finish == 0 ) return 0 ;
         // Remove top bits by moving up.  Clear bottom bits by them moving down.
         return (bits<<(LongLen-finish)) >>> ((LongLen-finish)+start) ;
@@ -41,7 +41,7 @@ public final class BitsLong
     public static final
     long pack(long bits, long value, int start, int finish)
     {
-        if ( CHECK ) check(start, finish) ;
+        check(start, finish) ;
         bits = clear$(bits, start, finish) ;
         long mask = mask(start, finish) ;
         bits = bits | ( (value<<start) & mask ) ;
@@ -72,7 +72,7 @@ public final class BitsLong
     public static final
     long set(long bits, int bitIndex)
     { 
-        if ( CHECK ) check(bitIndex) ;
+        check(bitIndex) ;
         return set$(bits, bitIndex) ;
     }
 
@@ -86,28 +86,28 @@ public final class BitsLong
     public static final
     long set(long bits, int start, int finish)
     { 
-        if ( CHECK ) check(start, finish) ;
+        check(start, finish) ;
         return set$(bits, start, finish) ;
     }
 
     public static final
     boolean test(long bits, boolean isSet, int bitIndex)
     {
-        if ( CHECK ) check(bitIndex) ;
+        check(bitIndex) ;
         return test$(bits, isSet, bitIndex) ;
     }
     
     public static final
     boolean isSet(long bits, int bitIndex)
     {
-        if ( CHECK ) check(bitIndex) ;
+        check(bitIndex) ;
         return test$(bits, true, bitIndex) ;
     }
     
     public static final
     boolean test(long bits, long value, int start, int finish)
     {
-        if ( CHECK ) check(start, finish) ;
+        check(start, finish) ;
         return test$(bits, value, start, finish) ;
     }
     
@@ -119,14 +119,14 @@ public final class BitsLong
     public static final
     long access(long bits, int start, int finish)
     {
-        if ( CHECK ) check(start, finish) ;
+        check(start, finish) ;
         return access$(bits, start, finish) ; 
     }
     
     public static final
     long clear(long bits, int start, int finish)
     {
-        if ( CHECK ) check(start, finish) ;
+        check(start, finish) ;
         return clear$(bits, start, finish) ;
     }
 
@@ -136,7 +136,7 @@ public final class BitsLong
     public static final
     long mask(int start, int finish)
     {
-        if ( CHECK ) check(start, finish) ;
+        check(start, finish) ;
         return mask$(start, finish) ;
     }
     
@@ -147,7 +147,7 @@ public final class BitsLong
     public static final
     long maskZero(int start, int finish)
     {
-        if ( CHECK ) check(start, finish) ;
+        check(start, finish) ;
         return maskZero$(start, finish) ;
     }
     

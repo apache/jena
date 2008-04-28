@@ -16,8 +16,6 @@ package lib;
  */ 
 public final class BitsInt
 {
-    // When this is false, no calls to check() should be generated.
-    public static final boolean CHECK = false ;
     private static int IntLen = Integer.SIZE ;
     
     /** Extract the value packed into bits start (inclusive) and finish (exclusive),
@@ -28,7 +26,7 @@ public final class BitsInt
     public static final
     int unpack(int bits, int start, int finish)
     {
-        if ( CHECK ) check(start, finish) ;
+        check(start, finish) ;
         if ( finish == 0 ) return 0 ;
         // Remove top bits by moving up.  Clear bottom bits by them moving down.
         return (bits<<(IntLen-finish)) >>> ((IntLen-finish)+start) ;
@@ -40,7 +38,7 @@ public final class BitsInt
     public static final
     int pack(int bits, int value, int start, int finish)
     {
-        if ( CHECK ) check(start, finish) ;
+        check(start, finish) ;
         bits = clear$(bits, start, finish) ;
         bits = bits | (value<<start) ;
         return bits ;
@@ -70,7 +68,7 @@ public final class BitsInt
     public static final
     int set(int bits, int bitIndex)
     { 
-        if ( CHECK ) check(bitIndex) ;
+        check(bitIndex) ;
         return set$(bits, bitIndex) ;
     }
 
@@ -84,28 +82,28 @@ public final class BitsInt
     public static final
     int set(int bits, int start, int finish)
     { 
-        if ( CHECK ) check(start, finish) ;
+        check(start, finish) ;
         return set$(bits, start, finish) ;
     }
 
     public static final
     boolean test(int bits, boolean isSet, int bitIndex)
     {
-        if ( CHECK ) check(bitIndex) ;
+        check(bitIndex) ;
         return test$(bits, isSet, bitIndex) ;
     }
     
     public static final
     boolean isSet(int bits, int bitIndex)
     {
-        if ( CHECK ) check(bitIndex) ;
+        check(bitIndex) ;
         return test$(bits, true, bitIndex) ;
     }
     
     public static final
     boolean test(int bits, int value, int start, int finish)
     {
-        if ( CHECK ) check(start, finish) ;
+        check(start, finish) ;
         return test$(bits, value, start, finish) ;
     }
     
@@ -117,14 +115,14 @@ public final class BitsInt
     public static final
     int access(int bits, int start, int finish)
     {
-        if ( CHECK ) check(start, finish) ;
+        check(start, finish) ;
         return access$(bits, start, finish) ; 
     }
     
     public static final
     int clear(int bits, int start, int finish)
     {
-        if ( CHECK ) check(start, finish) ;
+        check(start, finish) ;
         return clear$(bits, start, finish) ;
     }
 
@@ -134,7 +132,7 @@ public final class BitsInt
     public static final
     int mask(int start, int finish)
     {
-        if ( CHECK ) check(start, finish) ;
+        check(start, finish) ;
         return mask$(start, finish) ;
     }
     
@@ -145,7 +143,7 @@ public final class BitsInt
     public static final
     int maskZero(int start, int finish)
     {
-        if ( CHECK ) check(start, finish) ;
+        check(start, finish) ;
         return maskZero$(start, finish) ;
     }
     
