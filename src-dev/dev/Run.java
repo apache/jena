@@ -69,7 +69,9 @@ public class Run
 //        typedNode("'2008-04-27T16:52:17+01:00'^^xsd:dateTime") ;
 //        typedNode("'2008-04-27T16:52:17-05:00'^^xsd:dateTime") ;
 //        typedNode("'2008-04-27T16:52:17Z'^^xsd:dateTime") ;
-        typedNode("'2008-04-27T16:52:17+00:00'^^xsd:dateTime") ;
+//        typedNode("'2008-04-27T16:52:17+00:00'^^xsd:dateTime") ;
+        typedNode("'2008-04-27T16:52:17'^^xsd:dateTime") ;
+//        typedNode("'2008-04-27'^^xsd:date") ;
         System.exit(0) ;
         
         btreePacking(3, 64, 8*1024) ;
