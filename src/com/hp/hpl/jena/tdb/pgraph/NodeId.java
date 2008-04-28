@@ -193,6 +193,8 @@ public class NodeId
         if ( XSDDatatype.XSDdateTime.isValidLiteral(lit) ) 
         {
             long v = DateTimeNode.packDateTime(lit.getLexicalForm()) ;
+            if ( v == -1 )
+                return null ; 
             v = setType(v, DATETIME) ; 
             return new NodeId(v) ;
         }
@@ -200,6 +202,8 @@ public class NodeId
         if ( XSDDatatype.XSDdate.isValidLiteral(lit) )
         {
             long v = DateTimeNode.packDate(lit.getLexicalForm()) ;
+            if ( v == -1 )
+                return null ; 
             v = setType(v, DATE) ; 
             return new NodeId(v) ;
         }

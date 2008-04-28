@@ -82,6 +82,24 @@ public class TestNodeId extends TestBase
     @Test public void nodeId_35()
     { test("'2008-04-28T15:36:05.450'^^xsd:dateTime",  SSE.parseNode("'2008-04-28T15:36:05.450'^^xsd:dateTime")) ; }
     
+    @Test public void nodeId_36()
+    { test("'8008-04-28T15:36:05.450'^^xsd:dateTime", null) ; }
+
+    @Test public void nodeId_40()
+    { test("'2008-04-28Z'^^xsd:date", SSE.parseNode("'2008-04-28Z'^^xsd:date")) ; }
+
+    @Test public void nodeId_41()
+    { test("'2008-04-28+00:00'^^xsd:date", SSE.parseNode("'2008-04-28+00:00'^^xsd:date")) ; }
+
+    @Test public void nodeId_42()
+    { test("'2008-04-28-05:00'^^xsd:date", SSE.parseNode("'2008-04-28-05:00'^^xsd:date")) ; }
+
+    @Test public void nodeId_43()
+    { test("'2008-04-28+02:00'^^xsd:date", SSE.parseNode("'2008-04-28+02:00'^^xsd:date")) ; }
+
+    @Test public void nodeId_49()
+    { test("'8008-04-28'^^xsd:date", null) ; }
+
     private void test(String x, Node correct)
     {
         Node n = SSE.parseNode(x) ;

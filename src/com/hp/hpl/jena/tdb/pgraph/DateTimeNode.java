@@ -6,7 +6,6 @@
 
 package com.hp.hpl.jena.tdb.pgraph;
 
-import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeConstants;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
@@ -16,44 +15,6 @@ import lib.BitsLong;
 
 public class DateTimeNode
 {
-    // UTC or not UTC, that is the question.
-    // Whether to normalize to UTC.  Support costs ... no, people expect timezone.  
-    
-    // --- Sizing
-    
-    // 1 year = 60*60*24*1000 = 86,400,000 milliseconds < 27 bits
-    // Normalize to UTC: 56 bits is 2^29 years. 
-    
-    
-    // Timezone. = +- hours:minutes. +-14:00 
-    // 28 hours = 1680 minutes = 2^11 => 11 bits.
-    // Timezone in 15 min increments: 28*4 = 112 < 7 bits
-    // ==> 7 bits
-    
-    // Leaves 49 bits.
-
-    // Date: decision: precision of year.
-    
-    //   Suppose YYY since 1900 => 1000 < 2^10 : 10 bits year
-    //   MM = 12 < 16 = 4 bits.
-    //   DD = 31 < 32 = 5 bits.
-    //     So 9 bits for MM:DD
-    //   YYY in 0000-8000 = 800 < 2^13 (8K)
-    // Epoch to 1000-01-01T00:00:00Z - 2999-12-31T23:59:59.9999Z ==> 2000 years < 2^11 
-    //  ==> 20 bits
-    //  ==> 22 bits for 8000 years
-    
-    // Time: HH:MM:SS => seconds means 24*60*60 = 86400 < 2^17 = 131072 
-    // Block coded:
-    //   HH: 24 < 2^5
-    //   MM: 60 < 2^6
-    //   SS: 60 < 2^6
-    // ==> 17 bits to second accuracy
-    // Milliseconds: 60,000 < 2^^16
-    // ==> 27 bits to millisecond accuracy
-    
-    // ====> 47 bits of 49.
-
     // ---- Layout
     // Epoch base: 0000-01-01T00:00:00
 
@@ -61,17 +22,11 @@ public class DateTimeNode
     // Bits 56-63 : type
     
     // Bits 49-55 (7 bits)  : timezone -- 15 min precision + special for Z
-    // Bits 27-48 (22 bits) : date, year is 13 bits = 8000 years 
+    // Bits 27-48 (22 bits) : date, year is 13 bits = 8000 years  (0 to 7999)
     // Bits 0-26  (27 bits) : time, to milliseconds 
 
     // Layout:
     // Hi: TZ YYYY MM DD HH MM SS.sss Lo:
-
-    
-    /* 0x 7D 84 04 
-     *             00 
-                      00 00
-     */
 
     // Const-ize
     static final int DATE_LEN = 22 ;    // 13
@@ -128,12 +83,8 @@ public class DateTimeNode
         return v ;
     }
 
-    public static void debug(NodeId nodeId)
-    {
-        System.out.printf("%08X", nodeId.value) ; 
-    }
-
     // From string.  Assumed legal.  Retains all infor this way.
+    // returns -1 for unpackable. 
     public static long packDate(String lex)
     {
         return packDateTime(lex) ;
@@ -141,12 +92,18 @@ public class DateTimeNode
 
     
     // From string.  Assumed legal.
+    // RTeturns -1 for unpackable.
     public static long packDateTime(String lex)
     {
         long v = 0 ;
         
         boolean containsZ = (lex.indexOf('Z') > 0 ) ;
         XMLGregorianCalendar xcal = datatypeFactory.newXMLGregorianCalendar(lex) ;
+        
+        int y = xcal.getYear() ;
+        
+        if ( y < 0 || y >= 8000 )
+            return -1 ;
         
         v = date(v, xcal.getYear(), xcal.getMonth(), xcal.getDay() ) ;
         v = time(v, xcal.getHour(), xcal.getMinute(), xcal.getSecond()*1000+xcal.getMillisecond()) ;
@@ -158,6 +115,10 @@ public class DateTimeNode
         if ( tz == DatatypeConstants.FIELD_UNDEFINED )
             return tz(v, TZ_NONE) ;
 
+        // Timezone is weird. 
+        if ( tz%15 != 0 )
+            return -1 ;
+        
         tz = tz/15 ;
         return tz(v, tz) ;
     }
@@ -172,16 +133,6 @@ public class DateTimeNode
         return unpack(v, false) ;
     }
 
-    static DatatypeFactory datatypeFactory = null ; 
-    static { 
-        try
-        {
-            datatypeFactory = DatatypeFactory.newInstance() ;
-        } catch (DatatypeConfigurationException ex)
-        {
-            ex.printStackTrace();
-        } }
-    
     private static String unpack(long v, boolean isDateTime)
     {
         // YYYY:MM:DD => 13 bits year, 4 bits month, 5 bits day => 22 bits
@@ -221,6 +172,16 @@ public class DateTimeNode
         int tzM = (tz%4)*15 ;
         return String.format("%s%+03d:%02d", lex, tzH, tzM) ;
     }
+
+    static DatatypeFactory datatypeFactory = null ;
+    static { 
+    try
+    {
+        datatypeFactory = DatatypeFactory.newInstance() ;
+    } catch (DatatypeConfigurationException ex)
+    {
+        ex.printStackTrace();
+    } }
 }
 
 /*
