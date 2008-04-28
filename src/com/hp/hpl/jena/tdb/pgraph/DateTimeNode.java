@@ -195,9 +195,6 @@ public class DateTimeNode
             String.format("%04d-%02d-%02d", years, months, days) ;
         // tz in 15min units
             
-        int x = (int)BitsLong.unpack(v, TZ, TZ+TZ_LEN);
-        System.out.printf("%04X\n", x) ;
-            
         int tz = (int)BitsLong.unpack(v, TZ, TZ+TZ_LEN);
         // Sign extend.
         if ( BitsLong.isSet(v, TZ+TZ_LEN-1) )

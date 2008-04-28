@@ -63,7 +63,7 @@ public class TestNodeId extends TestBase
     { test("-1.0",  SSE.parseNode("-1.0")) ; }
     
     @Test public void nodeId_30()
-    { test("'2008-04-28T15:36:15+01:00'^^xsd:dateTime",  SSE.parseNode("'2008-04-28T15:36:15.0+01:00'^^xsd:dateTime")) ; }
+    { test("'2008-04-28T15:36:15+01:00'^^xsd:dateTime",  SSE.parseNode("'2008-04-28T15:36:15+01:00'^^xsd:dateTime")) ; }
 
     
     private void test(String x, Node correct)
