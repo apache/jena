@@ -226,7 +226,6 @@ public class NodeId
         //if ( ! enableInlineLiterals ) return null ; 
         
         long v = nodeId.value ;
-        System.out.printf("NodeId: 0x%016X\n", v) ;
         int type = nodeId.type() ;
 
         switch (type)
