@@ -13,8 +13,6 @@ import javax.xml.datatype.XMLGregorianCalendar;
 import lib.BitsInt;
 import lib.BitsLong;
 
-import com.hp.hpl.jena.datatypes.xsd.XSDDateTime;
-
 public class DateTimeNode
 {
     // UTC or not UTC, that is the question.
@@ -99,6 +97,7 @@ public class DateTimeNode
     
     static final int TZ = TIME_LEN + DATE_LEN ;
     static final int TZ_LEN = 7 ;
+    static final int TZ_Z = 0x7F ; // Value for Z
     
     // Packed in correct place.
     static long time(long v, int hour, int mins, int millisec)
@@ -131,31 +130,32 @@ public class DateTimeNode
     {
         System.out.printf("%08X", nodeId.value) ; 
     }
-    
+
     // From string.  Assumed legal.  Retains all infor this way.
+    public static long packDate(String lex)
+    {
+        return packDateTime(lex) ;
+    }
+
+    
+    // From string.  Assumed legal.
     public static long packDateTime(String lex)
     {
         long v = 0 ;
+        
+        boolean containsZ = (lex.indexOf('Z') > 0 ) ;
         XMLGregorianCalendar xcal = datatypeFactory.newXMLGregorianCalendar(lex) ;
         
         v = date(v, xcal.getYear(), xcal.getMonth(), xcal.getDay() ) ;
         v = time(v, xcal.getHour(), xcal.getMinute(), xcal.getSecond()*1000+xcal.getMillisecond()) ;
         int tz = xcal.getTimezone() ;
         tz = tz/15 ;
+        if ( containsZ )
+            tz = TZ_Z ;
         v = tz(v, tz) ;
         return v ;
     }
 
-    public static long packDate(XSDDateTime dateTime)
-    {
-        int y = dateTime.getYears() ;
-        int m = dateTime.getMonths() ;
-        int d = dateTime.getDays() ;
-        long v = 0 ;
-        v = date(v, y, m ,d) ;
-        return v ;
-    }
-        
     public static String unpackDateTime(long v)
     {
         return unpack(v, true) ;
@@ -196,14 +196,15 @@ public class DateTimeNode
         // tz in 15min units
             
         int tz = (int)BitsLong.unpack(v, TZ, TZ+TZ_LEN);
+        if ( tz == TZ_Z )
+            return lex+"Z" ; 
+            
         // Sign extend.
         if ( BitsLong.isSet(v, TZ+TZ_LEN-1) )
             tz = BitsInt.set(tz, TZ_LEN, 32) ;
         
         int tzH = tz/4 ;
         int tzM = (tz%4)*15 ;
-        if ( tzH == 0 && tzM == 0 )
-            return lex+"Z" ;
         return String.format("%s%+03d:%02d", lex, tzH, tzM) ;
     }
 }

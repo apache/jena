@@ -14,7 +14,6 @@ import lib.Bytes;
 
 import com.hp.hpl.jena.datatypes.RDFDatatype;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
-import com.hp.hpl.jena.datatypes.xsd.XSDDateTime;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.impl.LiteralLabel;
 import com.hp.hpl.jena.tdb.Const;
@@ -193,7 +192,6 @@ public class NodeId
         
         if ( XSDDatatype.XSDdateTime.isValidLiteral(lit) ) 
         {
-            //XSDDateTime dateTime = (XSDDateTime)lit.getValue() ;
             long v = DateTimeNode.packDateTime(lit.getLexicalForm()) ;
             v = setType(v, DATETIME) ; 
             return new NodeId(v) ;
@@ -201,9 +199,7 @@ public class NodeId
         
         if ( XSDDatatype.XSDdate.isValidLiteral(lit) )
         {
-            // Jena datatype support works on masked dataTimes. 
-            XSDDateTime dateTime = (XSDDateTime)lit.getValue() ;
-            long v = DateTimeNode.packDate(dateTime) ;
+            long v = DateTimeNode.packDate(lit.getLexicalForm()) ;
             v = setType(v, DATE) ; 
             return new NodeId(v) ;
         }
