@@ -193,8 +193,8 @@ public class NodeId
         
         if ( XSDDatatype.XSDdateTime.isValidLiteral(lit) ) 
         {
-            XSDDateTime dateTime = (XSDDateTime)lit.getValue() ;
-            long v = DateTimeNode.packDateTime(dateTime) ;
+            //XSDDateTime dateTime = (XSDDateTime)lit.getValue() ;
+            long v = DateTimeNode.packDateTime(lit.getLexicalForm()) ;
             v = setType(v, DATETIME) ; 
             return new NodeId(v) ;
         }
@@ -251,15 +251,13 @@ public class NodeId
             case DATETIME:
             {
                 long val = BitsLong.clear(v, 56, 64) ;
-                XSDDateTime dateTime = DateTimeNode.unpackDateTime(v) ;
-                String lex = dateTime.toString() ;
+                String lex = DateTimeNode.unpackDateTime(val) ; 
                 return Node.createLiteral(lex, null, XSDDatatype.XSDdateTime) ;
             }
             case DATE:
             {
                 long val = BitsLong.clear(v, 56, 64) ;
-                XSDDateTime date = DateTimeNode.unpackDate(v) ;
-                String lex = date.toString() ;
+                String lex = DateTimeNode.unpackDate(val) ;
                 return Node.createLiteral(lex, null, XSDDatatype.XSDdate) ;
             }
             default:

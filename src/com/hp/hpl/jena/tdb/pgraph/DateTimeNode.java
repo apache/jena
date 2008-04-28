@@ -10,6 +10,7 @@ import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 
+import lib.BitsInt;
 import lib.BitsLong;
 
 import com.hp.hpl.jena.datatypes.xsd.XSDDateTime;
@@ -131,22 +132,17 @@ public class DateTimeNode
         System.out.printf("%08X", nodeId.value) ; 
     }
     
-    public static long packDateTime(XSDDateTime dateTime)
+    // From string.  Assumed legal.  Retains all infor this way.
+    public static long packDateTime(String lex)
     {
-        // XXX Unfinished
-        //System.err.println("DateTimeNode.packDateTime: unfinished") ;
         long v = 0 ;
-        int years = dateTime.getYears() ;
-        int months = dateTime.getMonths() ;
-        int days = dateTime.getDays() ;
-        v = date(v, years, months ,days) ;
+        XMLGregorianCalendar xcal = datatypeFactory.newXMLGregorianCalendar(lex) ;
         
-        int hours = dateTime.getHours() ;
-        int mins = dateTime.getMinutes() ;
-        double secs = dateTime.getSeconds() ;
-        int millseconds = (int)Math.floor(secs*1000) ;
-        v = time(v, hours, mins, millseconds) ;
-        // timezone
+        v = date(v, xcal.getYear(), xcal.getMonth(), xcal.getDay() ) ;
+        v = time(v, xcal.getHour(), xcal.getMinute(), xcal.getSecond()*1000+xcal.getMillisecond()) ;
+        int tz = xcal.getTimezone() ;
+        tz = tz/15 ;
+        v = tz(v, tz) ;
         return v ;
     }
 
@@ -160,12 +156,12 @@ public class DateTimeNode
         return v ;
     }
         
-    public static XSDDateTime unpackDateTime(long v)
+    public static String unpackDateTime(long v)
     {
         return unpack(v, true) ;
     }
 
-    public static XSDDateTime unpackDate(long v)
+    public static String unpackDate(long v)
     {
         return unpack(v, false) ;
     }
@@ -180,7 +176,7 @@ public class DateTimeNode
             ex.printStackTrace();
         } }
     
-    private static XSDDateTime unpack(long v, boolean isDateTime)
+    private static String unpack(long v, boolean isDateTime)
     {
         // YYYY:MM:DD => 13 bits year, 4 bits month, 5 bits day => 22 bits
         int years = (int)BitsLong.unpack(v, YEAR, YEAR+YEAR_LEN) ;
@@ -190,19 +186,28 @@ public class DateTimeNode
         int hours = (int)BitsLong.unpack(v, HOUR, HOUR+HOUR_LEN) ;
         int minutes = (int)BitsLong.unpack(v, MINUTES, MINUTES+MINUTES_LEN) ; 
         int milliSeconds = (int)BitsLong.unpack(v, MILLI, MILLI+MILLI_LEN) ;
-
-        System.out.printf("%d %d %d %d %d %d\n", years, months, days, hours, minutes, milliSeconds) ;
+        int sec = milliSeconds / 1000 ;
+        int fractionSec = milliSeconds % 1000 ;
         
+        String lex = 
+            isDateTime ?
+            String.format("%04d-%02d-%02dT%02d:%02d:%02d", years, months, days, hours, minutes, sec) :
+            String.format("%04d-%02d-%02d", years, months, days) ;
         // tz in 15min units
+            
+        int x = (int)BitsLong.unpack(v, TZ, TZ+TZ_LEN);
+        System.out.printf("%04X\n", x) ;
+            
         int tz = (int)BitsLong.unpack(v, TZ, TZ+TZ_LEN);
+        // Sign extend.
+        if ( BitsLong.isSet(v, TZ+TZ_LEN-1) )
+            tz = BitsInt.set(tz, TZ_LEN, 32) ;
         
-        // No need to rebase months
-        XMLGregorianCalendar xcal = 
-            datatypeFactory.newXMLGregorianCalendar(years, months, days, 
-                                                    hours, minutes, milliSeconds / 1000, 
-                                                    milliSeconds % 1000, 
-                                                    tz * 15) ;
-        return new XSDDateTime( xcal.toGregorianCalendar() ) ;
+        int tzH = tz/4 ;
+        int tzM = (tz%4)*15 ;
+        if ( tzH == 0 && tzM == 0 )
+            return lex+"Z" ;
+        return String.format("%s%+03d:%02d", lex, tzH, tzM) ;
     }
 }
 

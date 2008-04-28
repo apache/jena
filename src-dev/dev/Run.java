@@ -66,7 +66,8 @@ public class Run
     
     public static void main(String ... args)
     {
-        typedNode("'2008-04-27T16:52:17.5Z'^^xsd:dateTime") ;
+        typedNode("'2008-04-27T16:52:17+01:00'^^xsd:dateTime") ;
+        typedNode("'2008-04-27T16:52:17-05:00'^^xsd:dateTime") ;
         System.exit(0) ;
         
         btreePacking(3, 64, 8*1024) ;
