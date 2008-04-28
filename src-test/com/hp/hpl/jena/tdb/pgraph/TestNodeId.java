@@ -74,6 +74,13 @@ public class TestNodeId extends TestBase
     @Test public void nodeId_33()
     { test("'2008-04-28T15:36:15-05:00'^^xsd:dateTime",  SSE.parseNode("'2008-04-28T15:36:15-05:00'^^xsd:dateTime")) ; }
 
+    // No timezone.
+    @Test public void nodeId_34()
+    { test("'2008-04-28T15:36:15'^^xsd:dateTime",  SSE.parseNode("'2008-04-28T15:36:15'^^xsd:dateTime")) ; }
+
+    // Note the trailing zero - system does not preserve perfect lexical forms. 
+    @Test public void nodeId_35()
+    { test("'2008-04-28T15:36:05.450'^^xsd:dateTime",  SSE.parseNode("'2008-04-28T15:36:05.450'^^xsd:dateTime")) ; }
     
     private void test(String x, Node correct)
     {

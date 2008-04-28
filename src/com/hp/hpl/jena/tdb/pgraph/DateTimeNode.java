@@ -7,6 +7,7 @@
 package com.hp.hpl.jena.tdb.pgraph;
 
 import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeConstants;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 
@@ -97,7 +98,8 @@ public class DateTimeNode
     
     static final int TZ = TIME_LEN + DATE_LEN ;
     static final int TZ_LEN = 7 ;
-    static final int TZ_Z = 0x7F ; // Value for Z
+    static final int TZ_Z = 0x7F ;      // Value for Z
+    static final int TZ_NONE = 0x7E ;   // Value for no timezone.
     
     // Packed in correct place.
     static long time(long v, int hour, int mins, int millisec)
@@ -148,12 +150,16 @@ public class DateTimeNode
         
         v = date(v, xcal.getYear(), xcal.getMonth(), xcal.getDay() ) ;
         v = time(v, xcal.getHour(), xcal.getMinute(), xcal.getSecond()*1000+xcal.getMillisecond()) ;
-        int tz = xcal.getTimezone() ;
-        tz = tz/15 ;
+        
         if ( containsZ )
-            tz = TZ_Z ;
-        v = tz(v, tz) ;
-        return v ;
+            return tz(v, TZ_Z) ;
+        
+        int tz = xcal.getTimezone() ;
+        if ( tz == DatatypeConstants.FIELD_UNDEFINED )
+            return tz(v, TZ_NONE) ;
+
+        tz = tz/15 ;
+        return tz(v, tz) ;
     }
 
     public static String unpackDateTime(long v)
@@ -189,15 +195,23 @@ public class DateTimeNode
         int sec = milliSeconds / 1000 ;
         int fractionSec = milliSeconds % 1000 ;
         
+        // Or XMLGregorianCalendar.toXMLFormat()
+        
         String lex = 
             isDateTime ?
             String.format("%04d-%02d-%02dT%02d:%02d:%02d", years, months, days, hours, minutes, sec) :
             String.format("%04d-%02d-%02d", years, months, days) ;
+        if ( isDateTime && fractionSec != 0 )
+            lex = String.format("%s.%d", lex, fractionSec) ;
+            
+            
         // tz in 15min units
             
         int tz = (int)BitsLong.unpack(v, TZ, TZ+TZ_LEN);
         if ( tz == TZ_Z )
             return lex+"Z" ; 
+        if ( tz == TZ_NONE )
+            return lex ; 
             
         // Sign extend.
         if ( BitsLong.isSet(v, TZ+TZ_LEN-1) )
