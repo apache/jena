@@ -6,15 +6,19 @@
 
 package com.hp.hpl.jena.tdb.pgraph;
 
+import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeConstants;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
+
+import com.hp.hpl.jena.tdb.TDBException;
 
 import lib.BitsInt;
 import lib.BitsLong;
 
 public class DateTimeNode
 {
+    
     // ---- Layout
     // Epoch base: 0000-01-01T00:00:00
 
@@ -55,6 +59,15 @@ public class DateTimeNode
     static final int TZ_LEN = 7 ;
     static final int TZ_Z = 0x7F ;      // Value for Z
     static final int TZ_NONE = 0x7E ;   // Value for no timezone.
+    
+    static DatatypeFactory datatypeFactory = null ;
+    static
+    { 
+        try 
+        { datatypeFactory = DatatypeFactory.newInstance() ; }
+        catch (DatatypeConfigurationException ex)
+        { throw new TDBException("DateTimeNode", ex) ; }
+    }
     
     // Packed in correct place.
     static long time(long v, int hour, int mins, int millisec)
@@ -173,15 +186,7 @@ public class DateTimeNode
         return String.format("%s%+03d:%02d", lex, tzH, tzM) ;
     }
 
-    static DatatypeFactory datatypeFactory = null ;
-    static { 
-    try
-    {
-        datatypeFactory = DatatypeFactory.newInstance() ;
-    } catch (DatatypeConfigurationException ex)
-    {
-        ex.printStackTrace();
-    } }
+
 }
 
 /*
