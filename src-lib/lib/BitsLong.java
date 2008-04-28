@@ -18,7 +18,7 @@ package lib;
 public final class BitsLong
 {
     // When this is false, no calls to check() should be generated.
-    public static final boolean CHECK = false ;
+    public static final boolean CHECK = true ;
     private static int LongLen = Long.SIZE ;
     
     /** Extract the value packed into bits start (inclusive) and finish (exclusive),

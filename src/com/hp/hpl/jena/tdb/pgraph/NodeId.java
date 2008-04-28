@@ -86,6 +86,12 @@ public class NodeId
         return (int)BitsLong.unpack(value, 56, 64) ;
     }
 
+    private static long setType(long value, int type)
+    {
+        return BitsLong.pack(value, type, 56, 64) ;
+    }
+
+    
     // Masked?
     public long getId()     { return value ; }
     
@@ -108,7 +114,8 @@ public class NodeId
     { 
         //if ( value == NodeDoesNotExist ) return "[DoesNotExist]" ;
         if ( this == NodeIdAny ) return "[Any]" ;
-        return "["+value+"]" ; }
+        return String.format("[%016X]", value) ; 
+    }
     
     // ---- Encoding special - inlines.
     /* The long is formated as:
@@ -163,6 +170,7 @@ public class NodeId
             // Does checking.
             DecimalNode dn = DecimalNode.valueOf(decimal) ;
             if ( dn != null )
+                // setType
                 return new NodeId(dn.pack()) ;
             else
                 return null ;
@@ -175,7 +183,7 @@ public class NodeId
                 if ( Math.abs(v) < (1L<<47) )      // Absolute value must fit in 47 bits
                 {
                     v = lib.BitsLong.clear(v, 56, 64) ;
-                    v = BitsLong.pack(v, INTEGER, 56, 64) ;
+                    v = setType(v, INTEGER) ;
                     return new NodeId(v) ;
                 }
                 else
@@ -187,6 +195,7 @@ public class NodeId
         {
             XSDDateTime dateTime = (XSDDateTime)lit.getValue() ;
             long v = DateTimeNode.packDateTime(dateTime) ;
+            v = setType(v, DATETIME) ; 
             return new NodeId(v) ;
         }
         
@@ -195,13 +204,17 @@ public class NodeId
             // Jena datatype support works on masked dataTimes. 
             XSDDateTime dateTime = (XSDDateTime)lit.getValue() ;
             long v = DateTimeNode.packDate(dateTime) ;
+            v = setType(v, DATE) ; 
             return new NodeId(v) ;
         }
         
         if ( XSDDatatype.XSDboolean.isValidLiteral(lit) )
         {
+            long v = 0 ;
             boolean b = ((Boolean)lit.getValue()).booleanValue() ;
             //return new NodeValueBoolean(b, node) ;
+            v = setType(v, BOOLEAN) ;
+            
         }
         
         return null ;
@@ -213,6 +226,7 @@ public class NodeId
         //if ( ! enableInlineLiterals ) return null ; 
         
         long v = nodeId.value ;
+        System.out.printf("NodeId: 0x%016X\n", v) ;
         int type = nodeId.type() ;
 
         switch (type)

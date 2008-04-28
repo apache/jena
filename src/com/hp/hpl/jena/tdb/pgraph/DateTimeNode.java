@@ -6,9 +6,13 @@
 
 package com.hp.hpl.jena.tdb.pgraph;
 
-import com.hp.hpl.jena.datatypes.xsd.XSDDateTime;
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeFactory;
+import javax.xml.datatype.XMLGregorianCalendar;
 
 import lib.BitsLong;
+
+import com.hp.hpl.jena.datatypes.xsd.XSDDateTime;
 
 public class DateTimeNode
 {
@@ -63,6 +67,12 @@ public class DateTimeNode
     // Layout:
     // Hi: TZ YYYY MM DD HH MM SS.sss Lo:
 
+    
+    /* 0x 7D 84 04 
+     *             00 
+                      00 00
+     */
+
     // Const-ize
     static final int DATE_LEN = 22 ;    // 13
     static final int TIME_LEN = 27 ;    // 5 + 6 + 16
@@ -95,7 +105,7 @@ public class DateTimeNode
         // And bit offset for direct packing?
         // HH:MM:SS.ssss => 5 bits H, 6 bits M, 16 bits S ==> 27 bits
         v = BitsLong.pack(v, hour, HOUR, HOUR+HOUR_LEN) ;
-        v = BitsLong.pack(v, mins, MINUTES, MINUTES_LEN) ;
+        v = BitsLong.pack(v, mins, MINUTES, MINUTES+MINUTES_LEN) ;
         v = BitsLong.pack(v, millisec, MILLI, MILLI+MILLI_LEN) ;
         return v ;
     }
@@ -106,13 +116,13 @@ public class DateTimeNode
         // YYYY:MM:DD => 13 bits year, 4 bits month, 5 bits day => 22 bits
         v = BitsLong.pack(v, year, YEAR, YEAR+YEAR_LEN) ;
         v = BitsLong.pack(v, month, MONTH, MONTH+MONTH_LEN) ;
-        v = BitsLong.pack(v, day,  DAY, DAY_LEN) ;
+        v = BitsLong.pack(v, day,  DAY, DAY+DAY_LEN) ;
         return v ;
     }
     
     static long tz(long v, int tz_in_quarters)
     {
-        v = BitsLong.pack(v, tz_in_quarters, TZ, TZ_LEN);
+        v = BitsLong.pack(v, tz_in_quarters, TZ, TZ+TZ_LEN);
         return v ;
     }
 
@@ -124,7 +134,7 @@ public class DateTimeNode
     public static long packDateTime(XSDDateTime dateTime)
     {
         // XXX Unfinished
-        System.err.println("DateTimeNode.packDateTime: unfinished") ;
+        //System.err.println("DateTimeNode.packDateTime: unfinished") ;
         long v = 0 ;
         int years = dateTime.getYears() ;
         int months = dateTime.getMonths() ;
@@ -134,7 +144,8 @@ public class DateTimeNode
         int hours = dateTime.getHours() ;
         int mins = dateTime.getMinutes() ;
         double secs = dateTime.getSeconds() ;
-        v = time(v, hours, mins, 0) ;
+        int millseconds = (int)Math.floor(secs*1000) ;
+        v = time(v, hours, mins, millseconds) ;
         // timezone
         return v ;
     }
@@ -148,17 +159,51 @@ public class DateTimeNode
         v = date(v, y, m ,d) ;
         return v ;
     }
-
+        
     public static XSDDateTime unpackDateTime(long v)
     {
-        return null ;
+        return unpack(v, true) ;
     }
 
     public static XSDDateTime unpackDate(long v)
     {
-        return null ;
+        return unpack(v, false) ;
     }
 
+    static DatatypeFactory datatypeFactory = null ; 
+    static { 
+        try
+        {
+            datatypeFactory = DatatypeFactory.newInstance() ;
+        } catch (DatatypeConfigurationException ex)
+        {
+            ex.printStackTrace();
+        } }
+    
+    private static XSDDateTime unpack(long v, boolean isDateTime)
+    {
+        // YYYY:MM:DD => 13 bits year, 4 bits month, 5 bits day => 22 bits
+        int years = (int)BitsLong.unpack(v, YEAR, YEAR+YEAR_LEN) ;
+        int months = (int)BitsLong.unpack(v, MONTH, MONTH+MONTH_LEN) ;
+        int days = (int)BitsLong.unpack(v, DAY, DAY+DAY_LEN) ;
+        
+        int hours = (int)BitsLong.unpack(v, HOUR, HOUR+HOUR_LEN) ;
+        int minutes = (int)BitsLong.unpack(v, MINUTES, MINUTES+MINUTES_LEN) ; 
+        int milliSeconds = (int)BitsLong.unpack(v, MILLI, MILLI+MILLI_LEN) ;
+
+        System.out.printf("%d %d %d %d %d %d\n", years, months, days, hours, minutes, milliSeconds) ;
+        
+        // tz in 15min units
+        int tz = (int)BitsLong.unpack(v, TZ, TZ+TZ_LEN);
+        
+        // No need to rebase months
+        XMLGregorianCalendar xcal = 
+            datatypeFactory.newXMLGregorianCalendar(years, months, days, 
+                                                    hours, minutes, milliSeconds / 1000, 
+                                                    milliSeconds % 1000, 
+                                                    tz * 15) ;
+        return new XSDDateTime( xcal.toGregorianCalendar() ) ;
+    }
 }
 
 /*

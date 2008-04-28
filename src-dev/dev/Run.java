@@ -66,6 +66,9 @@ public class Run
     
     public static void main(String ... args)
     {
+        typedNode("'2008-04-27T16:52:17.5Z'^^xsd:dateTime") ;
+        System.exit(0) ;
+        
         btreePacking(3, 64, 8*1024) ;
         btreePacking(4, 128, 8*1024) ;
         System.exit(0) ;
@@ -85,14 +88,6 @@ public class Run
                 System.out.println(t) ;
             System.exit(0) ;
         }
-
-        typedNode("'2008-04-27T16:52:00Z'^^xsd;dateTime") ;
-        
-        
-        
-        
-        
-        
         
 //        tdb.tdbloader.main("--desc", "dataset.ttl", "D.ttl") ;
         tdb.tdbquery.main(new String[]{"--desc=dataset.ttl", "--query=Q.rq"}) ;
@@ -138,7 +133,7 @@ public class Run
             return ;
         }
         
-        System.out.printf("NodeId : 0x%08X\n", nodeId.getId()) ;
+        System.out.printf("NodeId : %s\n", nodeId) ;
         Node n2 = NodeId.extract(nodeId) ;
         if ( n2 == null )
         {
@@ -148,7 +143,11 @@ public class Run
         String y = FmtUtils.stringForNode(n2) ;
         System.out.println("Output = "+y) ;
         if ( ! n.equals(n2) )
-            System.out.println("Different: "+n+" : "+n2) ;
+        {
+            System.out.println("Different:") ;
+            System.out.println("  "+n) ;
+            System.out.println("  "+n2) ;
+        }
     }
     
     private static void z()
