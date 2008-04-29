@@ -18,7 +18,7 @@
 	<classpathentry kind="lib" path="lib/wstx-asl-3.0.0.jar"/>
 	<classpathentry kind="lib" path="lib/xercesImpl.jar"/>
 	<classpathentry kind="lib" path="lib/xml-apis.jar"/>
-	<classpathentry kind="lib" path="lib/lucene-core-2.2.0.jar"/>
 	<classpathentry kind="lib" path="lib/commons-logging-1.1.1.jar"/>
+	<classpathentry kind="lib" path="lib/lucene-core-2.3.1.jar"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>
