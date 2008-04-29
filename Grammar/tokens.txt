@@ -96,6 +96,7 @@
 [<MODIFY>]      ::= 'MODIFY'
 [<INSERT>]      ::= 'INSERT'
 [<DELETE>]      ::= 'DELETE'
+[<DATA>]        ::= 'DATA'
 [<LOAD>]        ::= 'LOAD' 
 [<CLEAR>]       ::= 'CLEAR' 
 [<CREATE>]      ::= 'CREATE' 
