@@ -16,9 +16,9 @@ public interface UpdateVisitor
 
     public void visit(UpdateInsert insert) ;
 
-    public void visit(UpdateAdd add) ;
+    public void visit(UpdateInsertData add) ;
 
-    public void visit(UpdateRemove remove) ;
+    public void visit(UpdateDeleteData remove) ;
     
     public void visit(UpdateClear clear) ;
 

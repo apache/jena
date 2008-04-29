@@ -22,8 +22,6 @@ public class SPARQLUpdateParser extends SPARQLUpdateParserBase implements SPARQL
       case MODIFY:
       case INSERT:
       case DELETE:
-      case ADD:
-      case REMOVE:
       case LOAD:
       case CLEAR:
       case CREATE:
@@ -38,8 +36,6 @@ public class SPARQLUpdateParser extends SPARQLUpdateParserBase implements SPARQL
       case MODIFY:
       case INSERT:
       case DELETE:
-      case ADD:
-      case REMOVE:
       case LOAD:
       case CLEAR:
         Update();
@@ -58,81 +54,33 @@ public class SPARQLUpdateParser extends SPARQLUpdateParserBase implements SPARQL
   }
 
   final public void Update() throws ParseException {
+                  Update up = null ;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case MODIFY:
-    case INSERT:
-    case DELETE:
-          UpdatePattern upPat = null ; Element el ;
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case MODIFY:
-        upPat = Modify();
-        break;
-      case INSERT:
-        upPat = Insert();
-        break;
-      case DELETE:
-        upPat = Delete();
-        break;
-      default:
-        jj_la1[2] = jj_gen;
-        jj_consume_token(-1);
-        throw new ParseException();
-      }
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case WHERE:
-      case LBRACE:
-        el = WhereClause();
-                               upPat.setPattern(el) ;
-        break;
-      default:
-        jj_la1[3] = jj_gen;
-        ;
-      }
-          getRequest().addUpdate(upPat) ;
+      up = Modify();
       break;
-    case ADD:
-    case REMOVE:
-        UpdateData upData = null ;
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case ADD:
-        upData = Add();
-        break;
-      case REMOVE:
-        upData = Remove();
-        break;
-      default:
-        jj_la1[4] = jj_gen;
-        jj_consume_token(-1);
-        throw new ParseException();
-      }
-        getRequest().addUpdate(upData) ;
+    case INSERT:
+      up = Insert();
+      break;
+    case DELETE:
+      up = Delete();
       break;
     case LOAD:
+      up = Load();
+      break;
     case CLEAR:
-        Update up = null ;
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case LOAD:
-        up = Load();
-        break;
-      case CLEAR:
-        up = Clear();
-        break;
-      default:
-        jj_la1[5] = jj_gen;
-        jj_consume_token(-1);
-        throw new ParseException();
-      }
-        getRequest().addUpdate(up) ;
+      up = Clear();
       break;
     default:
-      jj_la1[6] = jj_gen;
+      jj_la1[2] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
+      getRequest().addUpdate(up) ;
   }
 
   final public UpdateModify Modify() throws ParseException {
-  UpdateModify up = new UpdateModify() ; String iri ; Template template ;
+  UpdateModify up = new UpdateModify() ; String iri ; Template template ; Element el ;
     jj_consume_token(MODIFY);
     label_2:
     while (true) {
@@ -141,7 +89,7 @@ public class SPARQLUpdateParser extends SPARQLUpdateParserBase implements SPARQL
         ;
         break;
       default:
-        jj_la1[7] = jj_gen;
+        jj_la1[3] = jj_gen;
         break label_2;
       }
       iri = GraphIRI();
@@ -153,13 +101,48 @@ public class SPARQLUpdateParser extends SPARQLUpdateParserBase implements SPARQL
     jj_consume_token(INSERT);
     template = ConstructTemplate();
                                               up.setInsertTemplate(template) ;
+    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+    case WHERE:
+    case LBRACE:
+      el = WhereClause();
+                           up.setPattern(el) ;
+      break;
+    default:
+      jj_la1[4] = jj_gen;
+      ;
+    }
       {if (true) return up ;}
     throw new Error("Missing return statement in function");
   }
 
-  final public UpdatePattern Delete() throws ParseException {
-  UpdateDelete up = new UpdateDelete() ; String iri ; Template template ;
+  final public Update Delete() throws ParseException {
+                    Update up ;
     jj_consume_token(DELETE);
+    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+    case DATA:
+      up = DeleteData();
+      break;
+    case IRIref:
+    case PNAME_NS:
+    case PNAME_LN:
+    case FROM:
+    case LBRACE:
+      up = DeleteTemplate();
+      break;
+    default:
+      jj_la1[5] = jj_gen;
+      jj_consume_token(-1);
+      throw new ParseException();
+    }
+      {if (true) return up ;}
+    throw new Error("Missing return statement in function");
+  }
+
+  final public Update DeleteData() throws ParseException {
+  UpdateDeleteData update = new UpdateDeleteData() ;
+  String iri ; Template template ;
+  Token t ;
+    t = jj_consume_token(DATA);
     label_3:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -170,8 +153,42 @@ public class SPARQLUpdateParser extends SPARQLUpdateParserBase implements SPARQL
         ;
         break;
       default:
-        jj_la1[8] = jj_gen;
+        jj_la1[6] = jj_gen;
         break label_3;
+      }
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case FROM:
+        jj_consume_token(FROM);
+        break;
+      default:
+        jj_la1[7] = jj_gen;
+        ;
+      }
+      iri = IRIref();
+                                update.addGraphName(iri) ;
+    }
+    template = ConstructTemplate();
+     Graph triples = convertTemplateToTriples(template,
+                                        t.beginLine, t.beginColumn) ;
+     update.setData(triples) ;
+     {if (true) return update ;}
+    throw new Error("Missing return statement in function");
+  }
+
+  final public Update DeleteTemplate() throws ParseException {
+  UpdateDelete up = new UpdateDelete() ; String iri ; Template template ; Element el ;
+    label_4:
+    while (true) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case IRIref:
+      case PNAME_NS:
+      case PNAME_LN:
+      case FROM:
+        ;
+        break;
+      default:
+        jj_la1[8] = jj_gen;
+        break label_4;
       }
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case FROM:
@@ -182,51 +199,52 @@ public class SPARQLUpdateParser extends SPARQLUpdateParserBase implements SPARQL
         ;
       }
       iri = IRIref();
-                                up.addGraphName(iri) ;
+                              up.addGraphName(iri) ;
     }
     template = ConstructTemplate();
-                                     up.setDeleteTemplate(template) ;
+                                   up.setDeleteTemplate(template) ;
+    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+    case WHERE:
+    case LBRACE:
+      el = WhereClause();
+                           up.setPattern(el) ;
+      break;
+    default:
+      jj_la1[10] = jj_gen;
+      ;
+    }
       {if (true) return up ;}
     throw new Error("Missing return statement in function");
   }
 
-  final public UpdatePattern Insert() throws ParseException {
-  UpdateInsert up = new UpdateInsert() ; String iri ; Template template ;
+  final public Update Insert() throws ParseException {
+                    Update up ;
     jj_consume_token(INSERT);
-    label_4:
-    while (true) {
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case INTO:
-      case IRIref:
-      case PNAME_NS:
-      case PNAME_LN:
-        ;
-        break;
-      default:
-        jj_la1[10] = jj_gen;
-        break label_4;
-      }
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case INTO:
-        jj_consume_token(INTO);
-        break;
-      default:
-        jj_la1[11] = jj_gen;
-        ;
-      }
-      iri = IRIref();
-                                up.addGraphName(iri) ;
+    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+    case DATA:
+      up = InsertData();
+      break;
+    case INTO:
+    case IRIref:
+    case PNAME_NS:
+    case PNAME_LN:
+    case LBRACE:
+      up = InsertTemplate();
+      break;
+    default:
+      jj_la1[11] = jj_gen;
+      jj_consume_token(-1);
+      throw new ParseException();
     }
-    template = ConstructTemplate();
-                                     up.setInsertTemplate(template) ;
       {if (true) return up ;}
     throw new Error("Missing return statement in function");
   }
 
-  final public UpdateData Add() throws ParseException {
-  UpdateAdd update = new UpdateAdd() ;
-  String iri ;  Graph triples ; Template templ ; Token t ;
-    t = jj_consume_token(ADD);
+  final public Update InsertData() throws ParseException {
+  UpdateInsertData update = new UpdateInsertData() ;
+  String iri ; Template template ;
+  Token t ;
+    t = jj_consume_token(DATA);
     label_5:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -249,27 +267,25 @@ public class SPARQLUpdateParser extends SPARQLUpdateParserBase implements SPARQL
         ;
       }
       iri = IRIref();
-                                update.addGraphName(iri) ;
+                               update.addGraphName(iri) ;
     }
-    // TODO Better triples
-        templ = ConstructTemplate();
-      triples = convertTemplateToTriples(templ, t.beginLine, t.beginColumn) ;
-      update.setData(triples) ;
-      {if (true) return update ;}
+    template = ConstructTemplate();
+     Graph triples = convertTemplateToTriples(template,
+                                        t.beginLine, t.beginColumn) ;
+     update.setData(triples) ;
+     {if (true) return update ;}
     throw new Error("Missing return statement in function");
   }
 
-  final public UpdateData Remove() throws ParseException {
-  UpdateRemove update = new UpdateRemove() ;
-  String iri ; Graph triples ; Template templ ; Token t ;
-    t = jj_consume_token(REMOVE);
+  final public UpdatePattern InsertTemplate() throws ParseException {
+  UpdateInsert up = new UpdateInsert() ; String iri ; Template template ; Element el ;
     label_6:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case INTO:
       case IRIref:
       case PNAME_NS:
       case PNAME_LN:
-      case FROM:
         ;
         break;
       default:
@@ -277,20 +293,29 @@ public class SPARQLUpdateParser extends SPARQLUpdateParserBase implements SPARQL
         break label_6;
       }
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case FROM:
-        jj_consume_token(FROM);
+      case INTO:
+        jj_consume_token(INTO);
         break;
       default:
         jj_la1[15] = jj_gen;
         ;
       }
       iri = IRIref();
-                                update.addGraphName(iri) ;
+                              up.addGraphName(iri) ;
     }
-    templ = ConstructTemplate();
-      triples = convertTemplateToTriples(templ, t.beginLine, t.beginColumn) ;
-      update.setData(triples) ;
-      {if (true) return update ;}
+    template = ConstructTemplate();
+                                   up.setInsertTemplate(template) ;
+    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+    case WHERE:
+    case LBRACE:
+      el = WhereClause();
+                           up.setPattern(el) ;
+      break;
+    default:
+      jj_la1[16] = jj_gen;
+      ;
+    }
+      {if (true) return up ;}
     throw new Error("Missing return statement in function");
   }
 
@@ -316,7 +341,7 @@ public class SPARQLUpdateParser extends SPARQLUpdateParserBase implements SPARQL
         ;
         break;
       default:
-        jj_la1[16] = jj_gen;
+        jj_la1[17] = jj_gen;
         break label_7;
       }
     }
@@ -327,7 +352,7 @@ public class SPARQLUpdateParser extends SPARQLUpdateParserBase implements SPARQL
                              up.setGraphName(iri) ;
       break;
     default:
-      jj_la1[17] = jj_gen;
+      jj_la1[18] = jj_gen;
       ;
     }
       {if (true) return up ;}
@@ -343,7 +368,7 @@ public class SPARQLUpdateParser extends SPARQLUpdateParserBase implements SPARQL
                          up.setGraphName(iri) ;
       break;
     default:
-      jj_la1[18] = jj_gen;
+      jj_la1[19] = jj_gen;
       ;
     }
       {if (true) return up ;}
@@ -360,7 +385,7 @@ public class SPARQLUpdateParser extends SPARQLUpdateParserBase implements SPARQL
       mgt = Drop();
       break;
     default:
-      jj_la1[19] = jj_gen;
+      jj_la1[20] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -376,7 +401,7 @@ public class SPARQLUpdateParser extends SPARQLUpdateParserBase implements SPARQL
                 silent = true ;
       break;
     default:
-      jj_la1[20] = jj_gen;
+      jj_la1[21] = jj_gen;
       ;
     }
     iri = GraphIRI();
@@ -393,7 +418,7 @@ public class SPARQLUpdateParser extends SPARQLUpdateParserBase implements SPARQL
                 silent = true ;
       break;
     default:
-      jj_la1[21] = jj_gen;
+      jj_la1[22] = jj_gen;
       ;
     }
     iri = GraphIRI();
@@ -429,7 +454,7 @@ public class SPARQLUpdateParser extends SPARQLUpdateParserBase implements SPARQL
       BaseDecl();
       break;
     default:
-      jj_la1[22] = jj_gen;
+      jj_la1[23] = jj_gen;
       ;
     }
     label_8:
@@ -439,7 +464,7 @@ public class SPARQLUpdateParser extends SPARQLUpdateParserBase implements SPARQL
         ;
         break;
       default:
-        jj_la1[23] = jj_gen;
+        jj_la1[24] = jj_gen;
         break label_8;
       }
       PrefixDecl();
@@ -469,7 +494,7 @@ public class SPARQLUpdateParser extends SPARQLUpdateParserBase implements SPARQL
       jj_consume_token(WHERE);
       break;
     default:
-      jj_la1[24] = jj_gen;
+      jj_la1[25] = jj_gen;
       ;
     }
     el = GroupGraphPattern();
@@ -515,7 +540,7 @@ public class SPARQLUpdateParser extends SPARQLUpdateParserBase implements SPARQL
       elg.addElement(el) ;
       break;
     default:
-      jj_la1[25] = jj_gen;
+      jj_la1[26] = jj_gen;
       ;
     }
     label_9:
@@ -528,7 +553,7 @@ public class SPARQLUpdateParser extends SPARQLUpdateParserBase implements SPARQL
         ;
         break;
       default:
-        jj_la1[26] = jj_gen;
+        jj_la1[27] = jj_gen;
         break label_9;
       }
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -541,7 +566,7 @@ public class SPARQLUpdateParser extends SPARQLUpdateParserBase implements SPARQL
         el = Filter();
         break;
       default:
-        jj_la1[27] = jj_gen;
+        jj_la1[28] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -551,7 +576,7 @@ public class SPARQLUpdateParser extends SPARQLUpdateParserBase implements SPARQL
         jj_consume_token(DOT);
         break;
       default:
-        jj_la1[28] = jj_gen;
+        jj_la1[29] = jj_gen;
         ;
       }
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -586,7 +611,7 @@ public class SPARQLUpdateParser extends SPARQLUpdateParserBase implements SPARQL
         elg.addElement(el) ;
         break;
       default:
-        jj_la1[29] = jj_gen;
+        jj_la1[30] = jj_gen;
         ;
       }
     }
@@ -632,12 +657,12 @@ public class SPARQLUpdateParser extends SPARQLUpdateParserBase implements SPARQL
         TriplesBlock(acc);
         break;
       default:
-        jj_la1[30] = jj_gen;
+        jj_la1[31] = jj_gen;
         ;
       }
       break;
     default:
-      jj_la1[31] = jj_gen;
+      jj_la1[32] = jj_gen;
       ;
     }
       {if (true) return acc ;}
@@ -659,7 +684,7 @@ public class SPARQLUpdateParser extends SPARQLUpdateParserBase implements SPARQL
       el = GraphGraphPattern();
       break;
     default:
-      jj_la1[32] = jj_gen;
+      jj_la1[33] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -697,7 +722,7 @@ public class SPARQLUpdateParser extends SPARQLUpdateParserBase implements SPARQL
         ;
         break;
       default:
-        jj_la1[33] = jj_gen;
+        jj_la1[34] = jj_gen;
         break label_10;
       }
       jj_consume_token(UNION);
@@ -746,7 +771,7 @@ public class SPARQLUpdateParser extends SPARQLUpdateParserBase implements SPARQL
       c = FunctionCall();
       break;
     default:
-      jj_la1[34] = jj_gen;
+      jj_la1[35] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -779,7 +804,7 @@ public class SPARQLUpdateParser extends SPARQLUpdateParserBase implements SPARQL
           ;
           break;
         default:
-          jj_la1[35] = jj_gen;
+          jj_la1[36] = jj_gen;
           break label_11;
         }
         jj_consume_token(COMMA);
@@ -789,7 +814,7 @@ public class SPARQLUpdateParser extends SPARQLUpdateParserBase implements SPARQL
       jj_consume_token(RPAREN);
       break;
     default:
-      jj_la1[36] = jj_gen;
+      jj_la1[37] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -830,7 +855,7 @@ public class SPARQLUpdateParser extends SPARQLUpdateParserBase implements SPARQL
       ConstructTriples(g);
       break;
     default:
-      jj_la1[37] = jj_gen;
+      jj_la1[38] = jj_gen;
       ;
     }
     jj_consume_token(RBRACE);
@@ -872,12 +897,12 @@ public class SPARQLUpdateParser extends SPARQLUpdateParserBase implements SPARQL
         ConstructTriples(acc);
         break;
       default:
-        jj_la1[38] = jj_gen;
+        jj_la1[39] = jj_gen;
         ;
       }
       break;
     default:
-      jj_la1[39] = jj_gen;
+      jj_la1[40] = jj_gen;
       ;
     }
   }
@@ -919,7 +944,7 @@ public class SPARQLUpdateParser extends SPARQLUpdateParserBase implements SPARQL
       PropertyList(s, acc);
       break;
     default:
-      jj_la1[40] = jj_gen;
+      jj_la1[41] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -936,7 +961,7 @@ public class SPARQLUpdateParser extends SPARQLUpdateParserBase implements SPARQL
         ;
         break;
       default:
-        jj_la1[41] = jj_gen;
+        jj_la1[42] = jj_gen;
         break label_12;
       }
       jj_consume_token(SEMICOLON);
@@ -951,7 +976,7 @@ public class SPARQLUpdateParser extends SPARQLUpdateParserBase implements SPARQL
         ObjectList(s, p, acc);
         break;
       default:
-        jj_la1[42] = jj_gen;
+        jj_la1[43] = jj_gen;
         ;
       }
     }
@@ -968,7 +993,7 @@ public class SPARQLUpdateParser extends SPARQLUpdateParserBase implements SPARQL
       PropertyListNotEmpty(s, acc);
       break;
     default:
-      jj_la1[43] = jj_gen;
+      jj_la1[44] = jj_gen;
       ;
     }
   }
@@ -1003,7 +1028,7 @@ public class SPARQLUpdateParser extends SPARQLUpdateParserBase implements SPARQL
         ;
         break;
       default:
-        jj_la1[44] = jj_gen;
+        jj_la1[45] = jj_gen;
         break label_13;
       }
       jj_consume_token(COMMA);
@@ -1033,7 +1058,7 @@ public class SPARQLUpdateParser extends SPARQLUpdateParserBase implements SPARQL
                                  p = nRDFtype ;
       break;
     default:
-      jj_la1[45] = jj_gen;
+      jj_la1[46] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -1057,7 +1082,7 @@ public class SPARQLUpdateParser extends SPARQLUpdateParserBase implements SPARQL
                                    {if (true) return n ;}
       break;
     default:
-      jj_la1[46] = jj_gen;
+      jj_la1[47] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -1117,7 +1142,7 @@ public class SPARQLUpdateParser extends SPARQLUpdateParserBase implements SPARQL
         ;
         break;
       default:
-        jj_la1[47] = jj_gen;
+        jj_la1[48] = jj_gen;
         break label_14;
       }
     }
@@ -1164,7 +1189,7 @@ public class SPARQLUpdateParser extends SPARQLUpdateParserBase implements SPARQL
                          {if (true) return n ;}
       break;
     default:
-      jj_la1[48] = jj_gen;
+      jj_la1[49] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -1202,7 +1227,7 @@ public class SPARQLUpdateParser extends SPARQLUpdateParserBase implements SPARQL
       n = GraphTerm();
       break;
     default:
-      jj_la1[49] = jj_gen;
+      jj_la1[50] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -1225,7 +1250,7 @@ public class SPARQLUpdateParser extends SPARQLUpdateParserBase implements SPARQL
                                  n = createNode(iri) ;
       break;
     default:
-      jj_la1[50] = jj_gen;
+      jj_la1[51] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -1249,7 +1274,7 @@ public class SPARQLUpdateParser extends SPARQLUpdateParserBase implements SPARQL
       t = jj_consume_token(VAR2);
       break;
     default:
-      jj_la1[51] = jj_gen;
+      jj_la1[52] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -1300,7 +1325,7 @@ public class SPARQLUpdateParser extends SPARQLUpdateParserBase implements SPARQL
           {if (true) return nRDFnil ;}
       break;
     default:
-      jj_la1[52] = jj_gen;
+      jj_la1[53] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -1325,7 +1350,7 @@ public class SPARQLUpdateParser extends SPARQLUpdateParserBase implements SPARQL
         ;
         break;
       default:
-        jj_la1[53] = jj_gen;
+        jj_la1[54] = jj_gen;
         break label_15;
       }
       jj_consume_token(SC_OR);
@@ -1346,7 +1371,7 @@ public class SPARQLUpdateParser extends SPARQLUpdateParserBase implements SPARQL
         ;
         break;
       default:
-        jj_la1[54] = jj_gen;
+        jj_la1[55] = jj_gen;
         break label_16;
       }
       jj_consume_token(SC_AND);
@@ -1406,13 +1431,13 @@ public class SPARQLUpdateParser extends SPARQLUpdateParserBase implements SPARQL
         expr1 = new E_GreaterThanOrEqual(expr1, expr2) ;
         break;
       default:
-        jj_la1[55] = jj_gen;
+        jj_la1[56] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
       break;
     default:
-      jj_la1[56] = jj_gen;
+      jj_la1[57] = jj_gen;
       ;
     }
       {if (true) return expr1 ;}
@@ -1443,7 +1468,7 @@ public class SPARQLUpdateParser extends SPARQLUpdateParserBase implements SPARQL
         ;
         break;
       default:
-        jj_la1[57] = jj_gen;
+        jj_la1[58] = jj_gen;
         break label_17;
       }
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -1474,7 +1499,7 @@ public class SPARQLUpdateParser extends SPARQLUpdateParserBase implements SPARQL
       expr1 = new E_Subtract(expr1, expr2) ;
         break;
       default:
-        jj_la1[58] = jj_gen;
+        jj_la1[59] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -1494,7 +1519,7 @@ public class SPARQLUpdateParser extends SPARQLUpdateParserBase implements SPARQL
         ;
         break;
       default:
-        jj_la1[59] = jj_gen;
+        jj_la1[60] = jj_gen;
         break label_18;
       }
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -1509,7 +1534,7 @@ public class SPARQLUpdateParser extends SPARQLUpdateParserBase implements SPARQL
       expr1 = new E_Divide(expr1, expr2) ;
         break;
       default:
-        jj_la1[60] = jj_gen;
+        jj_la1[61] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -1572,7 +1597,7 @@ public class SPARQLUpdateParser extends SPARQLUpdateParserBase implements SPARQL
                                  {if (true) return expr ;}
       break;
     default:
-      jj_la1[61] = jj_gen;
+      jj_la1[62] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -1636,7 +1661,7 @@ public class SPARQLUpdateParser extends SPARQLUpdateParserBase implements SPARQL
                  {if (true) return asExpr(gn) ;}
       break;
     default:
-      jj_la1[62] = jj_gen;
+      jj_la1[63] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -1735,7 +1760,7 @@ public class SPARQLUpdateParser extends SPARQLUpdateParserBase implements SPARQL
                                {if (true) return expr ;}
       break;
     default:
-      jj_la1[63] = jj_gen;
+      jj_la1[64] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -1755,7 +1780,7 @@ public class SPARQLUpdateParser extends SPARQLUpdateParserBase implements SPARQL
       flagsExpr = Expression();
       break;
     default:
-      jj_la1[64] = jj_gen;
+      jj_la1[65] = jj_gen;
       ;
     }
     jj_consume_token(RPAREN);
@@ -1774,7 +1799,7 @@ public class SPARQLUpdateParser extends SPARQLUpdateParserBase implements SPARQL
       a = ArgList();
       break;
     default:
-      jj_la1[65] = jj_gen;
+      jj_la1[66] = jj_gen;
       ;
     }
       if ( a == null ) {if (true) return asExpr(createNode(iri)) ;}
@@ -1799,13 +1824,13 @@ public class SPARQLUpdateParser extends SPARQLUpdateParserBase implements SPARQL
         iri = IRIref();
         break;
       default:
-        jj_la1[66] = jj_gen;
+        jj_la1[67] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
       break;
     default:
-      jj_la1[67] = jj_gen;
+      jj_la1[68] = jj_gen;
       ;
     }
       {if (true) return createLiteral(lex, lang, iri) ;}
@@ -1831,7 +1856,7 @@ public class SPARQLUpdateParser extends SPARQLUpdateParserBase implements SPARQL
       n = NumericLiteralNegative();
       break;
     default:
-      jj_la1[68] = jj_gen;
+      jj_la1[69] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -1855,7 +1880,7 @@ public class SPARQLUpdateParser extends SPARQLUpdateParserBase implements SPARQL
                  {if (true) return createLiteralDouble(t.image) ;}
       break;
     default:
-      jj_la1[69] = jj_gen;
+      jj_la1[70] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -1878,7 +1903,7 @@ public class SPARQLUpdateParser extends SPARQLUpdateParserBase implements SPARQL
                           {if (true) return createLiteralDouble(t.image) ;}
       break;
     default:
-      jj_la1[70] = jj_gen;
+      jj_la1[71] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -1901,7 +1926,7 @@ public class SPARQLUpdateParser extends SPARQLUpdateParserBase implements SPARQL
                           {if (true) return createLiteralDouble(t.image) ;}
       break;
     default:
-      jj_la1[71] = jj_gen;
+      jj_la1[72] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -1919,7 +1944,7 @@ public class SPARQLUpdateParser extends SPARQLUpdateParserBase implements SPARQL
             {if (true) return XSD_FALSE ;}
       break;
     default:
-      jj_la1[72] = jj_gen;
+      jj_la1[73] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -1946,7 +1971,7 @@ public class SPARQLUpdateParser extends SPARQLUpdateParserBase implements SPARQL
                                  lex = stripQuotes3(t.image) ;
       break;
     default:
-      jj_la1[73] = jj_gen;
+      jj_la1[74] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -1968,7 +1993,7 @@ public class SPARQLUpdateParser extends SPARQLUpdateParserBase implements SPARQL
                          {if (true) return iri ;}
       break;
     default:
-      jj_la1[74] = jj_gen;
+      jj_la1[75] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -1987,7 +2012,7 @@ public class SPARQLUpdateParser extends SPARQLUpdateParserBase implements SPARQL
       {if (true) return resolvePName(t.image, t.beginLine, t.beginColumn) ;}
       break;
     default:
-      jj_la1[75] = jj_gen;
+      jj_la1[76] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -2006,7 +2031,7 @@ public class SPARQLUpdateParser extends SPARQLUpdateParserBase implements SPARQL
            {if (true) return createBNode() ;}
       break;
     default:
-      jj_la1[76] = jj_gen;
+      jj_la1[77] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -2025,7 +2050,7 @@ public class SPARQLUpdateParser extends SPARQLUpdateParserBase implements SPARQL
   public Token token, jj_nt;
   private int jj_ntk;
   private int jj_gen;
-  final private int[] jj_la1 = new int[77];
+  final private int[] jj_la1 = new int[78];
   static private int[] jj_la1_0;
   static private int[] jj_la1_1;
   static private int[] jj_la1_2;
@@ -2037,16 +2062,16 @@ public class SPARQLUpdateParser extends SPARQLUpdateParserBase implements SPARQL
       jj_la1_3();
    }
    private static void jj_la1_0() {
-      jj_la1_0 = new int[] {0x5fe,0x5fe,0xe,0x0,0x30,0xc0,0xfe,0x0,0x1c00000,0x0,0x1c00800,0x800,0x1c00800,0x800,0x1c00000,0x0,0x1c00000,0x800,0x0,0x500,0x200,0x200,0x0,0x0,0x0,0xfc00000,0x0,0x0,0x0,0xfc00000,0xfc00000,0x0,0x0,0x0,0x1c00000,0x0,0x0,0xfc00000,0xfc00000,0x0,0xfc00000,0x0,0x8dc00000,0x8dc00000,0x0,0x8dc00000,0x0,0xfc00000,0xfc00000,0xfc00000,0xdc00000,0xc000000,0x3c00000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xdc00000,0xdc00000,0x0,0x0,0x0,0x10000000,0x10000000,0x0,0x0,0x0,0x0,0x0,0x0,0x1c00000,0x1800000,0x2000000,};
+      jj_la1_0 = new int[] {0xb8e,0xb8e,0x18e,0x0,0x0,0x3800010,0x3800000,0x0,0x3800000,0x0,0x0,0x3801010,0x3801000,0x1000,0x3801000,0x1000,0x0,0x3800000,0x1000,0x0,0xa00,0x400,0x400,0x0,0x0,0x0,0x1f800000,0x0,0x0,0x0,0x1f800000,0x1f800000,0x0,0x0,0x0,0x3800000,0x0,0x0,0x1f800000,0x1f800000,0x0,0x1f800000,0x0,0x1b800000,0x1b800000,0x0,0x1b800000,0x0,0x1f800000,0x1f800000,0x1f800000,0x1b800000,0x18000000,0x7800000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x1b800000,0x1b800000,0x0,0x0,0x0,0x20000000,0x20000000,0x0,0x0,0x0,0x0,0x0,0x0,0x3800000,0x3000000,0x4000000,};
    }
    private static void jj_la1_1() {
-      jj_la1_1 = new int[] {0x0,0x0,0x0,0x20,0x0,0x0,0x0,0x40,0x10,0x10,0x0,0x0,0x0,0x0,0x10,0x10,0x0,0x0,0x40,0x0,0x0,0x0,0x1,0x2,0x20,0xffe00000,0x2c0,0x2c0,0x0,0xffe00000,0xffe00000,0x0,0xc0,0x100,0x1ffc00,0x0,0x0,0xffe00000,0xffe00000,0x0,0xffe00000,0x0,0x0,0x0,0x0,0x0,0x0,0xffe00000,0xffe00000,0xffe00000,0x0,0x0,0xffe00000,0x0,0x0,0x0,0x0,0xfc000000,0xfc000000,0x0,0x0,0xfffffc00,0xfffffc00,0x1ffc00,0x0,0x0,0x0,0x0,0xff800000,0x3800000,0x1c000000,0xe0000000,0x600000,0x0,0x0,0x0,0x0,};
+      jj_la1_1 = new int[] {0x0,0x0,0x0,0x80,0x40,0x20,0x20,0x20,0x20,0x20,0x40,0x0,0x0,0x0,0x0,0x0,0x40,0x0,0x0,0x80,0x0,0x0,0x0,0x2,0x4,0x40,0xffc00000,0x580,0x580,0x0,0xffc00000,0xffc00000,0x0,0x180,0x200,0x3ff800,0x0,0x0,0xffc00000,0xffc00000,0x0,0xffc00000,0x0,0x1,0x1,0x0,0x1,0x0,0xffc00000,0xffc00000,0xffc00000,0x0,0x0,0xffc00000,0x0,0x0,0x0,0x0,0xf8000000,0xf8000000,0x0,0x0,0xfffff800,0xfffff800,0x3ff800,0x0,0x0,0x0,0x0,0xff000000,0x7000000,0x38000000,0xc0000000,0xc00000,0x0,0x0,0x0,0x0,};
    }
    private static void jj_la1_2() {
-      jj_la1_2 = new int[] {0x0,0x0,0x0,0x1000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x14af0,0x1000,0x1000,0x80000,0x14af0,0x14af0,0x80000,0x1000,0x0,0x200,0x40000,0xa00,0x14af0,0x14af0,0x80000,0x14af0,0x20000,0x0,0x0,0x40000,0x0,0x4200,0x14af0,0x14af0,0x108f0,0x0,0x0,0x108f0,0x20000000,0x40000000,0x3f00000,0x3f00000,0x80000000,0x80000000,0x0,0x0,0x840002f0,0x2f0,0x0,0x40000,0xa00,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xf0,0x0,0x0,0x10000,};
+      jj_la1_2 = new int[] {0x0,0x0,0x0,0x0,0x2000,0x2000,0x0,0x0,0x0,0x0,0x2000,0x2000,0x0,0x0,0x0,0x0,0x2000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x295e1,0x2000,0x2000,0x100000,0x295e1,0x295e1,0x100000,0x2000,0x0,0x400,0x80000,0x1400,0x295e1,0x295e1,0x100000,0x295e1,0x40000,0x0,0x0,0x80000,0x0,0x8400,0x295e1,0x295e1,0x211e1,0x0,0x0,0x211e1,0x40000000,0x80000000,0x7e00000,0x7e00000,0x1,0x1,0x0,0x0,0x80005e1,0x5e1,0x0,0x80000,0x1400,0x0,0x0,0x1,0x0,0x0,0x1,0x0,0x1e0,0x0,0x0,0x20000,};
    }
    private static void jj_la1_3() {
-      jj_la1_3 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x1,0x1,0x6,0x6,0x1,0x0,0x0,0x0,0x0,0x8,0x8,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,};
+      jj_la1_3 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x3,0x3,0xc,0xc,0x3,0x0,0x0,0x0,0x0,0x10,0x10,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,};
    }
 
   public SPARQLUpdateParser(java.io.InputStream stream) {
@@ -2058,7 +2083,7 @@ public class SPARQLUpdateParser extends SPARQLUpdateParserBase implements SPARQL
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 77; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 78; i++) jj_la1[i] = -1;
   }
 
   public void ReInit(java.io.InputStream stream) {
@@ -2070,7 +2095,7 @@ public class SPARQLUpdateParser extends SPARQLUpdateParserBase implements SPARQL
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 77; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 78; i++) jj_la1[i] = -1;
   }
 
   public SPARQLUpdateParser(java.io.Reader stream) {
@@ -2079,7 +2104,7 @@ public class SPARQLUpdateParser extends SPARQLUpdateParserBase implements SPARQL
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 77; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 78; i++) jj_la1[i] = -1;
   }
 
   public void ReInit(java.io.Reader stream) {
@@ -2088,7 +2113,7 @@ public class SPARQLUpdateParser extends SPARQLUpdateParserBase implements SPARQL
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 77; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 78; i++) jj_la1[i] = -1;
   }
 
   public SPARQLUpdateParser(SPARQLUpdateParserTokenManager tm) {
@@ -2096,7 +2121,7 @@ public class SPARQLUpdateParser extends SPARQLUpdateParserBase implements SPARQL
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 77; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 78; i++) jj_la1[i] = -1;
   }
 
   public void ReInit(SPARQLUpdateParserTokenManager tm) {
@@ -2104,7 +2129,7 @@ public class SPARQLUpdateParser extends SPARQLUpdateParserBase implements SPARQL
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 77; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 78; i++) jj_la1[i] = -1;
   }
 
   final private Token jj_consume_token(int kind) throws ParseException {
@@ -2151,15 +2176,15 @@ public class SPARQLUpdateParser extends SPARQLUpdateParserBase implements SPARQL
 
   public ParseException generateParseException() {
     jj_expentries.removeAllElements();
-    boolean[] la1tokens = new boolean[108];
-    for (int i = 0; i < 108; i++) {
+    boolean[] la1tokens = new boolean[109];
+    for (int i = 0; i < 109; i++) {
       la1tokens[i] = false;
     }
     if (jj_kind >= 0) {
       la1tokens[jj_kind] = true;
       jj_kind = -1;
     }
-    for (int i = 0; i < 77; i++) {
+    for (int i = 0; i < 78; i++) {
       if (jj_la1[i] == jj_gen) {
         for (int j = 0; j < 32; j++) {
           if ((jj_la1_0[i] & (1<<j)) != 0) {
@@ -2177,7 +2202,7 @@ public class SPARQLUpdateParser extends SPARQLUpdateParserBase implements SPARQL
         }
       }
     }
-    for (int i = 0; i < 108; i++) {
+    for (int i = 0; i < 109; i++) {
       if (la1tokens[i]) {
         jj_expentry = new int[1];
         jj_expentry[0] = i;

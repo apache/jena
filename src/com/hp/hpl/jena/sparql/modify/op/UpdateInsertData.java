@@ -11,7 +11,7 @@ import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.modify.UpdateVisitor;
 import com.hp.hpl.jena.update.GraphStore;
 
-public class UpdateAdd extends UpdateData
+public class UpdateInsertData extends UpdateData
 {
     protected void exec(Graph graph)
     {

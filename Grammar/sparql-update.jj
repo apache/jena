@@ -40,6 +40,7 @@ TOKEN [IGNORE_CASE] :
   <MODIFY:      "modify">
 | <INSERT:      "insert">
 | <DELETE:      "delete">
+| <DATA:        "data">
 
 | <ADD:         "add">
 | <REMOVE:      "remove">
@@ -65,90 +66,84 @@ void SPARQLUpdate() : {}
     <EOF>
 }
 
-void Update() : { }
+void Update() : { Update up = null ; }
 {
-    (
-        { UpdatePattern upPat = null ; Element el ; }
-        ( upPat = Modify() | upPat = Insert() | upPat = Delete() )
-        ( el = WhereClause() { upPat.setPattern(el) ; } )?
-        { getRequest().addUpdate(upPat) ; }
-    ) |
-    (
-      { UpdateData upData = null ; }
-      (upData = Add() | upData = Remove() )
-      { getRequest().addUpdate(upData) ; }
-    ) |
-    (
-      { Update up = null ; }
-      ( up = Load() | up = Clear() )
-      { getRequest().addUpdate(up) ; }
-    ) 
+  (  up = Modify() | up = Insert() | up = Delete() | up = Load() | up = Clear() )
+    { getRequest().addUpdate(up) ; }
 }
 
 UpdateModify Modify() : 
-{ UpdateModify up = new UpdateModify() ; String iri ; Template template ; }
+{ UpdateModify up = new UpdateModify() ; String iri ; Template template ; Element el ; }
 {
     <MODIFY>
     ( iri = GraphIRI() { up.addGraphName(iri) ; } )*
     <DELETE> template = ConstructTemplate() { up.setDeleteTemplate(template) ; }
     <INSERT> template = ConstructTemplate() { up.setInsertTemplate(template) ; }
+    ( el = WhereClause() { up.setPattern(el) ; } )?
     { return up ; }
 }
 
-UpdatePattern Delete() : 
-{ UpdateDelete up = new UpdateDelete() ; String iri ; Template template ; }
+Update Delete() : { Update up ; }
 {
-    <DELETE> 
-    ((<FROM>)? iri = IRIref() { up.addGraphName(iri) ; } )*
-    template = ConstructTemplate() { up.setDeleteTemplate(template) ; }
+  <DELETE> 
+  ( up = DeleteData() | up = DeleteTemplate() )
     { return up ; }
 }
 
-UpdatePattern Insert() :
-{ UpdateInsert up = new UpdateInsert() ; String iri ; Template template ; }
+Update DeleteData() : 
+{ UpdateDeleteData update = new UpdateDeleteData() ; 
+  String iri ; Template template ;
+  Token t ; }
 {
-    <INSERT> 
-   ( <DATA>
-    template = ConstructTemplate()
-    { triples = convertTemplateToTriples(template,
-                                         t.beginLine, t.beginColumn) ;
-      update.setData(triples) ;
-      return update ;
-    }
-  |
-    ((<INTO>)? iri = IRIref() { up.addGraphName(iri) ; } )*
-    template = ConstructTemplate() { up.setInsertTemplate(template) ; }
-    { return up ; }
-   )
-}
-
-// UpdateData Add() :
-// { UpdateAdd update = new UpdateAdd() ; 
-//   String iri ;  Graph triples ; Template templ ; Token t ;}
-// {
-//     t = <ADD> 
-//     ((<INTO>)? iri = IRIref() { update.addGraphName(iri) ; } )*
-//     // TODO Better triples
-//     templ = ConstructTemplate()
-//     { triples = convertTemplateToTriples(templ, t.beginLine, t.beginColumn) ;
-//       update.setData(triples) ;
-//       return update ;
-//     }
-// }
-
-UpdateData Remove() :
-{ UpdateRemove update = new UpdateRemove() ; 
-  String iri ; Graph triples ; Template templ ; Token t ; }
-{
-    t = <REMOVE> 
+    t = <DATA>
     ((<FROM>)? iri = IRIref() { update.addGraphName(iri) ; } )*
-    templ = ConstructTemplate()
-    { triples = convertTemplateToTriples(templ, t.beginLine, t.beginColumn) ;
-      update.setData(triples) ;
-      return update ;
+   template = ConstructTemplate()
+   { Graph triples = convertTemplateToTriples(template,
+                                        t.beginLine, t.beginColumn) ;
+     update.setData(triples) ;
+     return update ;
     }
 }
 
+Update DeleteTemplate() : 
+{ UpdateDelete up = new UpdateDelete() ; String iri ; Template template ; Element el ;  }
+{
+  ((<FROM>)? iri = IRIref() { up.addGraphName(iri) ; } )*
+  template = ConstructTemplate() { up.setDeleteTemplate(template) ; }
+    ( el = WhereClause() { up.setPattern(el) ; } )?
+    { return up ; }
+}
+
+Update Insert() : { Update up ; }
+{
+  <INSERT> 
+  ( up = InsertData() | up = InsertTemplate() )
+    { return up ; }
+}
+
+Update InsertData() :
+{ UpdateInsertData update = new UpdateInsertData() ;
+  String iri ; Template template ;
+  Token t ; }
+{
+   t = <DATA>
+   ((<INTO>)? iri = IRIref() { update.addGraphName(iri) ; } )*
+   template = ConstructTemplate()
+   { Graph triples = convertTemplateToTriples(template,
+                                        t.beginLine, t.beginColumn) ;
+     update.setData(triples) ;
+     return update ;
+    }
+}
+
+UpdatePattern InsertTemplate() :
+{ UpdateInsert up = new UpdateInsert() ; String iri ; Template template ; Element el ; }
+{
+  ((<INTO>)? iri = IRIref() { up.addGraphName(iri) ; } )*
+  template = ConstructTemplate() { up.setInsertTemplate(template) ; }
+    ( el = WhereClause() { up.setPattern(el) ; } )?
+    { return up ; }
+}
 
 String GraphIRI() : { String iri ; }
 {

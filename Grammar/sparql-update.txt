@@ -2,14 +2,14 @@
 DOCUMENT START
 NON-TERMINALS
 	SPARQLUpdate	:=	Prologue ( ( Update | Manage ) )* <EOF>
-	Update	:=	( ( Modify | Insert | Delete ) ( WhereClause )? )
-		|	( ( Add | Remove ) )
-		|	( ( Load | Clear ) )
-	Modify	:=	<MODIFY> ( GraphIRI )* <DELETE> ConstructTemplate <INSERT> ConstructTemplate
-	Delete	:=	<DELETE> ( ( <FROM> )? IRIref )* ConstructTemplate
-	Insert	:=	<INSERT> ( ( <INTO> )? IRIref )* ConstructTemplate
-	Add	:=	<ADD> ( ( <INTO> )? IRIref )* ConstructTemplate
-	Remove	:=	<REMOVE> ( ( <FROM> )? IRIref )* ConstructTemplate
+	Update	:=	( Modify | Insert | Delete | Load | Clear )
+	Modify	:=	<MODIFY> ( GraphIRI )* <DELETE> ConstructTemplate <INSERT> ConstructTemplate ( WhereClause )?
+	Delete	:=	<DELETE> ( DeleteData | DeleteTemplate )
+	DeleteData	:=	<DATA> ( ( <FROM> )? IRIref )* ConstructTemplate
+	DeleteTemplate	:=	( ( <FROM> )? IRIref )* ConstructTemplate ( WhereClause )?
+	Insert	:=	<INSERT> ( InsertData | InsertTemplate )
+	InsertData	:=	<DATA> ( ( <INTO> )? IRIref )* ConstructTemplate
+	InsertTemplate	:=	( ( <INTO> )? IRIref )* ConstructTemplate ( WhereClause )?
 	GraphIRI	:=	<GRAPH> IRIref
 	Load	:=	<LOAD> ( IRIref )+ ( <INTO> IRIref )?
 	Clear	:=	<CLEAR> ( GraphIRI )?
