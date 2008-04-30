@@ -13,7 +13,6 @@ import com.hp.hpl.jena.assembler.Mode;
 import com.hp.hpl.jena.assembler.assemblers.AssemblerBase;
 import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.sparql.util.graph.GraphUtils;
 import com.hp.hpl.jena.tdb.Const;
 import com.hp.hpl.jena.tdb.base.block.BlockMgr;
 import com.hp.hpl.jena.tdb.base.block.BlockMgrFactory;
@@ -21,14 +20,11 @@ import com.hp.hpl.jena.tdb.base.file.Location;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 import com.hp.hpl.jena.tdb.btree.BTree;
 import com.hp.hpl.jena.tdb.btree.BTreeParams;
-import com.hp.hpl.jena.tdb.index.IndexFactory;
-import com.hp.hpl.jena.tdb.index.IndexFactoryBTree;
 import com.hp.hpl.jena.tdb.index.RangeIndex;
-import com.hp.hpl.jena.tdb.pgraph.NodeTable;
+import com.hp.hpl.jena.tdb.index.TripleIndex;
 import com.hp.hpl.jena.tdb.pgraph.PGraphFactory;
 
 import static com.hp.hpl.jena.sparql.util.graph.GraphUtils.exactlyOneProperty;
-import static com.hp.hpl.jena.sparql.util.graph.GraphUtils.atmostOneProperty;
 import static com.hp.hpl.jena.sparql.util.graph.GraphUtils.getAsStringValue;
 import static com.hp.hpl.jena.tdb.Const.BlockSize;
 import static com.hp.hpl.jena.tdb.pgraph.assembler.PGraphAssemblerVocab.*;
@@ -44,6 +40,11 @@ public class IndexAssembler extends AssemblerBase implements Assembler
     public IndexAssembler()                     { this.location = new Location(".") ; }
     public IndexAssembler(Location location)    { this.location = location ; }
     
+    /* 
+     * [ :description "SPO" ; :file "SPO.idx" ]
+     * Add "build from".
+     */
+    
     @Override
     public Object open(Assembler a, Resource root, Mode mode)
     {
@@ -55,20 +56,27 @@ public class IndexAssembler extends AssemblerBase implements Assembler
         if ( location != null )
             filename = location.absolute(filename) ;
         
-        return null ;
+        RangeIndex rIndex = rangeIndex(filename) ;
+        return new TripleIndex(desc, rIndex) ;
     }
 
-    public static RangeIndex rangeIndex(String description, String filename)
+    public static RangeIndex rangeIndex(String filename)
     {
-        // Where does the RecordFactory come from?
-        RecordFactory factory = null ;
         BlockMgr blockMgr = BlockMgrFactory.createFile(filename, Const.BlockSize) ;
-        int order = BTreeParams.calcOrder(BlockSize, factory) ;
-        BTreeParams params = new BTreeParams(order, factory) ;
-        BTree bTree = new BTree(params, blockMgr) ; 
-        return bTree ;
+        return IndexF.create(blockMgr, PGraphFactory.indexRecordFactory) ;
     }
-    
+
+    // Somewhere?
+    static class IndexF
+    {
+        static RangeIndex create(BlockMgr blockMgr, RecordFactory factory)
+        {
+            int order = BTreeParams.calcOrder(BlockSize, factory) ;
+            BTreeParams params = new BTreeParams(order, factory) ;
+            BTree bTree = new BTree(params, blockMgr) ; 
+            return bTree ;
+        }
+    }
 }
 
 /*
