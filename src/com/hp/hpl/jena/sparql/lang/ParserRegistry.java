@@ -21,7 +21,7 @@ public class ParserRegistry
     
     // Singleton
     static ParserRegistry registry = null ;
-    static public synchronized ParserRegistry get()
+    static synchronized public ParserRegistry get()
     {
         if ( registry == null )
             init() ;
@@ -30,7 +30,7 @@ public class ParserRegistry
     
     private ParserRegistry() { }
     
-    private static void init()
+    private static synchronized void init()
     {
         ParserRegistry reg = new ParserRegistry() ;
         
