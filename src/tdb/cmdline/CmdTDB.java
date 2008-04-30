@@ -46,7 +46,7 @@ public abstract class CmdTDB extends CmdARQ
     
     protected Model getModel()
     {
-        if ( model != null )
+        if ( model == null )
             model = ModelFactory.createModelForGraph(getGraph()) ;
         return model ;
     }

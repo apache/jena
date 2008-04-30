@@ -75,10 +75,18 @@ public class Iter<T> implements Iterable<T>, Iterator<T>
     private Iterator<T> iterator ;
     private  Iter(Iterator<T> iterator) { this.iterator = iterator ; }
     
+    public static <T>
+    Set<T> toSet(Iterator<T> iterator)
+    { return Stream.toSet(iterator) ; }
+    
     public Set<T> toSet()
     {
         return Stream.toSet(iterator) ;
     }
+
+    public static <T>
+    List<T> toList(Iterator<T> iterator)
+    { return Stream.toList(iterator) ; }
 
     public List<T> toList()
     {

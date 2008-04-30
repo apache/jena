@@ -1,0 +1,6 @@
+PREFIX  xsd:    <http://www.w3.org/2001/XMLSchema#>
+
+SELECT *
+{ 
+    ?s ?p "2008-04-29+01:00"^^xsd:date .
+}

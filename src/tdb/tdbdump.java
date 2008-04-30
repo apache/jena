@@ -8,7 +8,6 @@ package tdb;
 
 import tdb.cmdline.CmdTDB;
 import tdb.cmdline.ModFormat;
-import arq.cmd.CmdException;
 import arq.cmd.CmdUtils;
 
 import com.hp.hpl.jena.rdf.model.Model;
@@ -45,9 +44,6 @@ public class tdbdump extends CmdTDB
     @Override
     protected void exec()
     {
-        if ( modAssembler.getAssemblerFile() == null )
-            throw new CmdException("No assembler file") ;
-        
         Model model = getModel() ;
         //Graph graph = (PGraphBase)model.getGraph() ;
         String format = modFormat.getFormat("N3-TRIPLES") ;

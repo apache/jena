@@ -52,6 +52,19 @@ public class TDBFactory
     {
         return new GraphBTree(loc) ;
     }
+    
+    /** Create a TDB model backed by an in-memory block manager. For testing. */  
+    public static Model createModel()
+    {
+        return ModelFactory.createModelForGraph(createGraph()) ;
+    }
+    
+    /** Create a TDB graph backed by an in-memory block manager. For testing. */  
+    public static Graph createGraph()
+    {
+        return new GraphBTree() ;
+    }
+
 }
 
 /*

@@ -4,7 +4,7 @@
 @prefix qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#> .
 
 <>  rdf:type mf:Manifest ;
-    rdfs:label "Basic test cases" ;
+    rdfs:label "Value tests" ;
     mf:entries
     ( 
       [  mf:name    "Value-00" ;
@@ -27,9 +27,35 @@
             [ qt:query  <value-03.rq> ;
               qt:data   <data-1.ttl> ] ;
       ]
+
       [  mf:name    "Value-04" ;
          mf:action
             [ qt:query  <value-04.rq> ;
+              qt:data   <data-1.ttl> ] ;
+      ]
+      [  mf:name    "Value-05" ;
+         mf:action
+            [ qt:query  <value-05.rq> ;
+              qt:data   <data-1.ttl> ] ;
+      ]
+      [  mf:name    "Value-06" ;
+         mf:action
+            [ qt:query  <value-06.rq> ;
+              qt:data   <data-1.ttl> ] ;
+      ]
+      [  mf:name    "Value-07" ;
+         mf:action
+            [ qt:query  <value-07.rq> ;
+              qt:data   <data-1.ttl> ] ;
+      ]
+      [  mf:name    "Value-08" ;
+         mf:action
+            [ qt:query  <value-08.rq> ;
+              qt:data   <data-1.ttl> ] ;
+      ]
+      [  mf:name    "Value-09" ;
+         mf:action
+            [ qt:query  <value-09.rq> ;
               qt:data   <data-1.ttl> ] ;
       ]
     ) .

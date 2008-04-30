@@ -6,7 +6,8 @@
 
 package com.hp.hpl.jena.tdb.junit;
 
-import java.util.ArrayList;
+import iterator.Iter;
+
 import java.util.Iterator;
 import java.util.List;
 
@@ -50,11 +51,12 @@ public class GraphLocation
     { 
         if ( graph != null )
         {
-            List<Triple> stmts = new ArrayList<Triple>() ;
             @SuppressWarnings("unchecked")
             Iterator<Triple> iter = (Iterator<Triple>)graph.find(Node.ANY, Node.ANY, Node.ANY) ;
-            for ( ; iter.hasNext() ; )
-                graph.delete(iter.next()) ;
+            List<Triple> triples = Iter.toList(iter) ;
+            
+            for ( Triple t : triples )
+                graph.delete(t) ;
         }
     }
 

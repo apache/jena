@@ -14,7 +14,6 @@ public class Dev
     // CountingSync.
     //   bound variable tracking
     //   LARQ++
-    // Inline xsd:dateTimes/xsd:dates
     // Sort out library of datasets : Store/...
     
     // Assembler
@@ -24,7 +23,7 @@ public class Dev
     //           
     //      tdb:GraphTDB: mode=standard,large
     //
-    // Plan for a mega-hash id version
+    // Plan for a mega-hash id version (96 bits, hash based)
     // Version of NodeTable that does Logical => Physical id translation
     // And a PageMgr.
 
@@ -34,27 +33,20 @@ public class Dev
     //   And which index cache is having the most effect?
     //   And/Or, better, combine into one cache?
     
-    // Special to test speed of node loading.
-    //  Subclass PGraphBase, which assumes at least an SPO.
-    //     GraphNodesOnly
+    // Special to test speed of node loading only.
     // Inlines => Inline56, Inline64
     
     // ARQ: Var scope handing - add to OpBase?
     
-    // BGP Optimizer.
-    
     // QueryHandler to access subjectsFor etc. 
     
-    // Analysis tools: NT=>predicate distribution.
-    // Namespace extractor.
+    // Analysis tools: 
+    //    NT=>predicate distribution.
+    //    Namespace extractor.
+    // BGP Optimizer II
 
-    // 2/ Packing and BTrees (leaves)
-    //    B+Tree (lesser)
-    // 3/ P ExtHash
-    // Move public ops from BTreeNode to BTree, and make BTreeNode statics for all operations?
-    
+    // ExtHash
     // com.hp.hpl.jena.util.FileUtils - use faster "buffered" reader (extend BufferedReader)
 
     // Fix BDB form
-
 }
