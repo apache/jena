@@ -22,12 +22,10 @@ import com.hp.hpl.jena.tdb.lib.NodeLib;
 import com.hp.hpl.jena.tdb.pgraph.NodeId;
 import com.hp.hpl.jena.tdb.pgraph.PGraphException;
 
-// Stores NodeId triples in a single order. 
 
+/** A single index of triples.  Uses a Descriptor for SPO<->native order */
 public class TripleIndex
 {
-    // Replacement for Index3.
-    
     private static Logger log = LoggerFactory.getLogger(TripleIndex.class) ;
     Descriptor desc ;
     RangeIndex index ;
