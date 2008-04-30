@@ -19,14 +19,19 @@ public class Dev
     //    Better, less specific type names
     //    Classes -- classes vs properties
     //           
-    //      tdb:GraphTDB: mode=standard,large
+    //      tdb:GraphTDB: mode=small, standard, large
+    //     :mode small, standard, large ;
+    //      Assemblers for Index, RangeIndex, NodeTable
+    //     :index [ :description "SPO" ; :file "SPO.idx" ] ;
+    //     :nodeToId [ :cacheSize 1234 ; :file "node2id.idx" ] ;
+    //     :idToNode [ :cacheSize 1234 ; :file "nodes.dat" ] ;
+    
+    
     //
     // Plan for a mega-hash id version (96 bits, hash based)
     // Version of NodeTable that does Logical => Physical id translation
     // And a PageMgr.
 
-    // Triggers: triples only
-    
     // 32 bit: Try without each of the read cache and write cahes to see value of each
     //   And which index cache is having the most effect?
     //   And/Or, better, combine into one cache?

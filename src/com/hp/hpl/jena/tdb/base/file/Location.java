@@ -16,6 +16,8 @@ import java.io.File;
 
 public class Location
 {
+    static String pathSeparator = File.separator ;  // Or just "/"
+    
     public static Location ensureDirectory(String dirname)
     {
         File file = new File(dirname) ;
@@ -37,8 +39,8 @@ public class Location
     
     private void setPathname(String pathname)
     {
-        if ( ! pathname.endsWith(File.separator) )
-            pathname = pathname + File.separator ;
+        if ( ! pathname.endsWith(File.separator) && !pathname.endsWith(pathSeparator) )
+            pathname = pathname + pathSeparator ;
         this.pathname = pathname ;
     }
     
@@ -80,6 +82,20 @@ public class Location
         return getSubLocation(dirname).getDirectoryPath() ;
     }
 
+    /** Return an absolute filename wheer relative names are resolved from the location */ 
+    public String absolute(String filename)
+    {
+        File f = new File(filename) ;
+        // Location relative.
+        if ( ! f.isAbsolute() )
+            filename = pathname+filename ;
+        return filename ;
+    }
+
+    public String getPath(String filename)
+    {
+        return getPath(filename, null) ;
+    }
     
     public String getPath(String filename, String ext)
     {
