@@ -8,8 +8,6 @@ package dev;
 
 public class Dev
 {
-    // Scriped test cases for inline data.
-    
     // Interface Sync everywhere?
     // CountingSync.
     //   bound variable tracking
