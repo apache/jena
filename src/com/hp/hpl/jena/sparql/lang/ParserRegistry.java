@@ -32,22 +32,26 @@ public class ParserRegistry
     
     private static void init()
     {
-        registry = new ParserRegistry() ;
+        ParserRegistry reg = new ParserRegistry() ;
         
-        registry.add(Syntax.syntaxSPARQL, 
+        reg.add(Syntax.syntaxSPARQL, 
                      new ParserFactory() {
             public boolean accept( Syntax syntax ) { return Syntax.syntaxSPARQL.equals(syntax) ; } 
             public Parser create( Syntax syntax ) { return new ParserSPARQL() ; } }) ;
         
-        registry.add(Syntax.syntaxARQ, 
+        reg.add(Syntax.syntaxARQ, 
                      new ParserFactory() {
             public boolean accept(Syntax syntax ) { return Syntax.syntaxARQ.equals(syntax) ; } 
             public Parser create ( Syntax syntax ) { return new ParserARQ() ; } }) ;
 
-        registry.add(Syntax.syntaxRDQL, 
+        reg.add(Syntax.syntaxRDQL, 
                      new ParserFactory() {
             public boolean accept ( Syntax syntax ) { return Syntax.syntaxRDQL.equals(syntax) ; } 
             public Parser create ( Syntax syntax ) { return new ParserRDQL() ; } }) ;
+        
+        // Defend against concurrent start up.
+        // Protects against, not fixes, the problem.
+        registry = reg ;
     }
     
     /** Return a suitable factory for the given syntax
