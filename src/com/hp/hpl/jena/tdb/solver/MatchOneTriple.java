@@ -85,7 +85,7 @@ class MatchOneTriple extends RepeatApplyIterator<BindingNodeId>
                 return output ;
             }
         } ;
-        return Iter.map(tuples, binder).removeNulls() ;
+        return Iter.iter(tuples).map(binder).removeNulls() ;
     }
     
     private static boolean reject(BindingNodeId output , Var var, NodeId value)

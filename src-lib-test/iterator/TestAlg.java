@@ -31,7 +31,7 @@ public class TestAlg
     @Test
     public void append_1()
     {
-        Iterator<String> iter = Stream.append(data1, data0).iterator() ;
+        Iterator<String> iter = Iter.append(data1, data0).iterator() ;
         test(iter, "a") ;
     }
         
@@ -39,14 +39,14 @@ public class TestAlg
     @Test
     public void append_2()
     {
-        Iterator<String> iter = Stream.append(data0, data1).iterator() ;
+        Iterator<String> iter = Iter.append(data0, data1).iterator() ;
         test(iter, "a") ;
     }
         
     @Test
     public void append_3()
     {
-        Iterator<String> iter = Stream.append(data1, data2).iterator() ;
+        Iterator<String> iter = Iter.append(data1, data2).iterator() ;
         test(iter, "a", "x", "y", "z") ;
     }
 
@@ -54,28 +54,28 @@ public class TestAlg
     @Test
     public void asString_1() 
     {
-        String x = Stream.asString(data0, "") ;
+        String x = Iter.asString(data0, "") ;
         assertEquals("", x) ;
     }
 
     @Test
     public void asString_2() 
     {
-        String x = Stream.asString(data1, "") ;
+        String x = Iter.asString(data1, "") ;
         assertEquals("a", x) ;
     }
 
     @Test
     public void asString_3() 
     {
-        String x = Stream.asString(data1, "/") ;
+        String x = Iter.asString(data1, "/") ;
         assertEquals("a", x) ;
     }
 
     @Test
     public void asString_4() 
     {
-        String x = Stream.asString(data2, "/") ;
+        String x = Iter.asString(data2, "/") ;
         assertEquals("x/y/z", x) ;
     }
     

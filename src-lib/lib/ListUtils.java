@@ -17,7 +17,8 @@ public class ListUtils
     public static <T>
     List<T> unique(List<T> list)
     {
-        return Iter.filter(list.iterator(), new FilterUnique<T>()).toList() ;
+        Iter<T> iter = Iter.iter(list.iterator()) ;
+        return iter.filter(new FilterUnique<T>()).toList() ;
     }
     
     public static

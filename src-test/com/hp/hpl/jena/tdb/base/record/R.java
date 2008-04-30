@@ -75,13 +75,13 @@ public class R
 
     public static List<Integer> toIntList(Iterator<Record> iter)
     {
-        return Iter.map(iter, new Transform<Record, Integer>(){
+        return Iter.toList(Iter.map(iter, new Transform<Record, Integer>(){
             @Override
             public Integer convert(Record item)
             {
                 return recordToInt(item) ;
             }}
-        ).toList() ;
+        )) ;
     }
 
 }

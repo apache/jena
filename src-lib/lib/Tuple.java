@@ -7,7 +7,7 @@
 package lib;
 
 import static lib.Lib.eq;
-import iterator.Stream;
+import iterator.Iter;
 
 import java.util.Arrays;
 import java.util.List;
@@ -57,7 +57,7 @@ public final class Tuple<T>
     public String toString()
     {
         StringBuilder sb = new StringBuilder() ;
-        return "["+Stream.asString(asList(), ", ")+"]" ;
+        return "["+Iter.asString(asList(), ", ")+"]" ;
 //        
 //        sb.append("[") ;
 //

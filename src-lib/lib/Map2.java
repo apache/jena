@@ -60,7 +60,7 @@ public class Map2<K, V> implements Iterable<K>
     // The keys.
     public Iterator<K> iterator()
     {
-        Iter<K> iter1 = Iter.convert(map1.keySet().iterator()) ;
+        Iter<K> iter1 = Iter.iter(map1.keySet().iterator()) ;
         if ( map2 == null )
             return iter1 ; 
         return iter1.append(map2.iterator()) ;
