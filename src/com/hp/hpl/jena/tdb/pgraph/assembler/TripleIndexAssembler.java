@@ -29,7 +29,7 @@ import static com.hp.hpl.jena.sparql.util.graph.GraphUtils.getAsStringValue;
 import static com.hp.hpl.jena.tdb.Const.BlockSize;
 import static com.hp.hpl.jena.tdb.pgraph.assembler.PGraphAssemblerVocab.*;
 
-public class IndexAssembler extends AssemblerBase implements Assembler
+public class TripleIndexAssembler extends AssemblerBase implements Assembler
 {
     // To PGraphAssemblerVocab eventually.
     static Property pDescription = Vocab.property(getURI(), "description") ;
@@ -37,8 +37,8 @@ public class IndexAssembler extends AssemblerBase implements Assembler
 
     private Location location = null ;
     
-    public IndexAssembler()                     { this.location = new Location(".") ; }
-    public IndexAssembler(Location location)    { this.location = location ; }
+    public TripleIndexAssembler()                     { this.location = new Location(".") ; }
+    public TripleIndexAssembler(Location location)    { this.location = location ; }
     
     /* 
      * [ :description "SPO" ; :file "SPO.idx" ]
