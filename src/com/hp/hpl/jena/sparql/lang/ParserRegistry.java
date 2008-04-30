@@ -21,7 +21,7 @@ public class ParserRegistry
     
     // Singleton
     static ParserRegistry registry = null ;
-    static public ParserRegistry get()
+    static public synchronized ParserRegistry get()
     {
         if ( registry == null )
             init() ;
@@ -49,7 +49,7 @@ public class ParserRegistry
             public boolean accept ( Syntax syntax ) { return Syntax.syntaxRDQL.equals(syntax) ; } 
             public Parser create ( Syntax syntax ) { return new ParserRDQL() ; } }) ;
         
-        // Defend against concurrent start up.
+        // Defend against concurrent start up (even if not synchronised).
         // Protects against, not fixes, the problem.
         registry = reg ;
     }
