@@ -63,7 +63,7 @@ public class TripleIndex
     }
         
     public RangeIndex getIndex() { return index ; }
-    public String getName() { return desc.getLabel() ; }
+    public String getDescription() { return desc.getDescription() ; }
     
     public Iterator<Tuple<NodeId>> all()
     {
@@ -194,7 +194,7 @@ public class TripleIndex
     }
     
     @Override
-    public String toString()    { return "TripleIndex: "+desc.getLabel() ; }  
+    public String toString()    { return "TripleIndex: "+desc.getDescription() ; }  
     
     public void sync(boolean force) { index.sync(force); }
 
@@ -202,7 +202,7 @@ public class TripleIndex
     
     public void dump()
     {
-        System.out.println("Index: "+desc.getLabel()) ;
+        System.out.println("Index: "+desc.getDescription()) ;
         IndexLib.print(getIndex()) ;
     }
 }

@@ -61,7 +61,7 @@ public class Descriptor // implements Index3 // And in SPO order
     private final Selector sel_extract_o ;
 
     private final RecordFactory recordFactory ;
-    private final String label ;
+    private final String description ;
     
     // Slurp in the mapper.
     //Selector selectors[] = new Selector[3] ;
@@ -69,7 +69,7 @@ public class Descriptor // implements Index3 // And in SPO order
     {
         this.recordFactory = recordFactory ;
         checkDescriptor(desc) ;
-        label = desc ;
+        description = desc ;
         
         //Selectors : SPO to index order 
         sel_slot_1 = getSelector(desc, 0) ;
@@ -126,10 +126,10 @@ public class Descriptor // implements Index3 // And in SPO order
         throw new TDBException("Can't find a select for "+ch) ;
     }
     
-    public String getLabel() { return label ; }
+    public String getDescription() { return description ; }
 
     @Override
-    public String toString() { return "Descriptor: "+label ; }
+    public String toString() { return "Descriptor: "+description ; }
     
     public final NodeId getSubj(NodeId x, NodeId y, NodeId z)
     { return sel_extract_s.choose(x,y,z) ; }

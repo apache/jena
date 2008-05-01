@@ -233,11 +233,11 @@ public class Run
         
         Iterator<Tuple<NodeId>> iter = index1.all() ;
         // SPO order.
-        System.out.println("Index "+index1.getName()+" in SPO order") ;
+        System.out.println("Index "+index1.getDescription()+" in SPO order") ;
         print(iter) ;
 
         // Directly get the contents of the index and print in index-order.
-        System.out.println("Index "+index1.getName()+" in native order") ;
+        System.out.println("Index "+index1.getDescription()+" in native order") ;
         printNative(index1) ;
         
         BTree bTree2 = new BTree(params, BlockMgrFactory.createMem(blkSize)) ;
@@ -246,10 +246,10 @@ public class Run
         // Copy one to another.  Reordering taken careof
         index1.copyInto(index2) ;
         
-        System.out.println("Index "+index2.getName()+" in native order") ;
+        System.out.println("Index "+index2.getDescription()+" in native order") ;
         printNative(index2) ;
 
-        System.out.println("Index "+index2.getName()+" in SPO order") ;
+        System.out.println("Index "+index2.getDescription()+" in SPO order") ;
         print(index2.all()) ;
 
         BTree bTree3 = new BTree(params, BlockMgrFactory.createMem(blkSize)) ;

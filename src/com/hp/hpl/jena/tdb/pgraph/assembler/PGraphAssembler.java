@@ -8,8 +8,9 @@ package com.hp.hpl.jena.tdb.pgraph.assembler;
 
 import static com.hp.hpl.jena.sparql.util.graph.GraphUtils.exactlyOneProperty;
 import static com.hp.hpl.jena.sparql.util.graph.GraphUtils.getStringValue;
-import static com.hp.hpl.jena.sparql.util.graph.GraphUtils.multiValue;
-import static com.hp.hpl.jena.tdb.pgraph.assembler.PGraphAssemblerVocab.*;
+import static com.hp.hpl.jena.sparql.util.graph.GraphUtils.multiValueResource;
+import static com.hp.hpl.jena.tdb.pgraph.assembler.PGraphAssemblerVocab.pIndex;
+import static com.hp.hpl.jena.tdb.pgraph.assembler.PGraphAssemblerVocab.pLocation;
 
 import java.util.List;
 
@@ -20,9 +21,9 @@ import com.hp.hpl.jena.assembler.exceptions.AssemblerException;
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.tdb.base.file.Location;
+import com.hp.hpl.jena.tdb.index.TripleIndex;
 import com.hp.hpl.jena.tdb.pgraph.GraphBDB;
 import com.hp.hpl.jena.tdb.pgraph.GraphBTree;
 
@@ -50,15 +51,18 @@ public class PGraphAssembler extends AssemblerBase implements Assembler
         String dir = getStringValue(root, pLocation) ;
         Location loc = new Location(dir) ;
         
-        @SuppressWarnings("unchecked")
-        List<RDFNode> indexes = (List<RDFNode>)multiValue(root, pIndex ) ;
-        if ( indexes.size() > 3 )
-            throw new AssemblerException(root, "More than 3 indexes!") ;
-        for ( RDFNode n : indexes )
+        if ( false )
         {
-            tripleIndexBuilder.open(a, n, mode) ;
+            @SuppressWarnings("unchecked")
+            List<Resource> indexes = (List<Resource>)multiValueResource(root, pIndex ) ;
+            if ( indexes.size() > 3 )
+                throw new AssemblerException(root, "More than 3 indexes!") ;
+            for ( Resource r : indexes )
+            {
+                TripleIndex idx = (TripleIndex)tripleIndexBuilder.open(a, r, mode) ;
+                idx.getDescription() ;
+            }
         }
-        
         
         Graph graph = null ;
         if ( ! root.equals(PGraphAssemblerVocab.PGraphBDBType) )
