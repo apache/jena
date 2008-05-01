@@ -8,34 +8,30 @@ package com.hp.hpl.jena.tdb.pgraph.assembler;
 
 import static com.hp.hpl.jena.sparql.util.graph.GraphUtils.exactlyOneProperty;
 import static com.hp.hpl.jena.sparql.util.graph.GraphUtils.getAsStringValue;
-import static com.hp.hpl.jena.tdb.pgraph.assembler.PGraphAssemblerVocab.getURI;
+import static com.hp.hpl.jena.tdb.pgraph.assembler.PGraphAssemblerVocab.pDescription;
+import static com.hp.hpl.jena.tdb.pgraph.assembler.PGraphAssemblerVocab.pFile;
 
 import com.hp.hpl.jena.assembler.Assembler;
 import com.hp.hpl.jena.assembler.Mode;
 import com.hp.hpl.jena.assembler.assemblers.AssemblerBase;
-import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.tdb.Const;
 import com.hp.hpl.jena.tdb.base.block.BlockMgr;
 import com.hp.hpl.jena.tdb.base.block.BlockMgrFactory;
 import com.hp.hpl.jena.tdb.base.file.Location;
-import com.hp.hpl.jena.tdb.index.RangeIndex;
+import com.hp.hpl.jena.tdb.index.Index;
 import com.hp.hpl.jena.tdb.pgraph.PGraphFactory;
 import com.hp.hpl.jena.tdb.pgraph.assembler.TripleIndexAssembler.IndexF;
 
 public class NodeTableAssembler extends AssemblerBase //implements Assembler
 {
     /* 
-     * [ :description "SPO" ; :file "SPO.idx" ; // The hash->id mapping
+     * [ :description "SPO" ; 
+     *   :file "SPO.idx" ;                      // The hash->id mapping
      *   :nodeData "nodes.dat" ;                // The nodes as physical id => disk bytes.
      * ]
      */
     
-
-    // To PGraphAssemblerVocab eventually.
-    
-    static Property pDescription = Vocab.property(getURI(), "description") ;
-    static Property pFile = Vocab.property(getURI(), "file") ;
 
     private Location location = null ;
     
@@ -53,11 +49,11 @@ public class NodeTableAssembler extends AssemblerBase //implements Assembler
         if ( location != null )
             filename = location.absolute(filename) ;
         
-        RangeIndex rIndex = rangeIndex(filename) ;
+        Index rIndex = index(filename) ;
         return null ;
     }
 
-    public static RangeIndex rangeIndex(String filename)
+    public static Index index(String filename)
     {
         BlockMgr blockMgr = BlockMgrFactory.createFile(filename, Const.BlockSize) ;
         return IndexF.create(blockMgr, PGraphFactory.indexRecordFactory) ;

@@ -25,6 +25,10 @@ public class PGraphAssemblerVocab
 
     public static final Property pLocation          = Vocab.property(NS, "location") ;
     
+    public static final Property pDescription       = Vocab.property(getURI(), "description") ;
+    public static final Property pFile              = Vocab.property(getURI(), "file") ;
+
+    
     // java properties.
     
     private static boolean initialized = false ; 

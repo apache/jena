@@ -9,7 +9,6 @@ package com.hp.hpl.jena.tdb.pgraph.assembler;
 import com.hp.hpl.jena.assembler.Assembler;
 import com.hp.hpl.jena.assembler.Mode;
 import com.hp.hpl.jena.assembler.assemblers.AssemblerBase;
-import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.tdb.Const;
 import com.hp.hpl.jena.tdb.base.block.BlockMgr;
@@ -33,10 +32,6 @@ public class TripleIndexAssembler extends AssemblerBase //implements Assembler
      * [ :description "SPO" ; :file "SPO.idx" ]
      */
     
-    // To PGraphAssemblerVocab eventually.
-    static Property pDescription = Vocab.property(getURI(), "description") ;
-    static Property pFile = Vocab.property(getURI(), "file") ;
-
     private Location location = null ;
     
     public TripleIndexAssembler()                     { this.location = new Location(".") ; }
