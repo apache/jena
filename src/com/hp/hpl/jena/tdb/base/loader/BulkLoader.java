@@ -262,7 +262,7 @@ public final class BulkLoader
             int d = readHex() ;
             if ( d < 0 )
                 return -1 ;
-            x = x<<8+d ;
+            x = (x<<4)+d ;
         }
         return x ; 
     }
@@ -272,14 +272,14 @@ public final class BulkLoader
     {
         int ch = in.readChar() ;
         if ( ch == EOF )
-        {}
+            syntaxError("Not a hexadecimal character (end of file)") ;
 
         if ( range(ch, '0', '9') )
             return ch-'0' ;
         if ( range(ch, 'a', 'f') )
-            return ch-'a' ;
+            return ch-'a'+10 ;
         if ( range(ch, 'A', 'F') )
-            return ch-'A' ;
+            return ch-'A'+10 ;
         
         syntaxError("Not a hexadecimal character: "+(char)ch) ;
         return -1 ; 

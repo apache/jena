@@ -16,15 +16,8 @@ public class Dev
     
     // Assembler
     //    :location <.> ;
-    //    Better, less specific type names
-    //    Classes -- classes vs properties
-    //           
-    //      tdb:GraphTDB: mode=small, standard, large
-    //     :mode small, standard, large ;
-    //      Assemblers for Index, RangeIndex, NodeTable
-    //     :index [ :description "SPO" ; :file "SPO.idx" ] ;
-    //     :nodeToId [ :cacheSize 1234 ; :file "node2id.idx" ] ;
-    //     :idToNode [ :cacheSize 1234 ; :file "nodes.dat" ] ;
+    //  [] a :GraphTDB
+    // See TripleIndexAssembler, NodeTableAssembler
     
     
     //
