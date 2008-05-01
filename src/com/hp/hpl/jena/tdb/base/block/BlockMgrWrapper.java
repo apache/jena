@@ -80,6 +80,12 @@ public class BlockMgrWrapper implements BlockMgr
     { blockMgr.close() ; }
 
     @Override
+    public boolean isEmpty()
+    {
+        return blockMgr.isEmpty() ;
+    }
+
+    @Override
     public void startRead()
     {
         blockMgr.startRead() ;

@@ -133,7 +133,7 @@ public class BlockMgrMapped extends BlockMgrFile
                     throw new BlockException("BlockMgrMapped.segmentAllocate: "+seg, ex) ;
                 }
             }
-            segmentDirty[seg] = true ;  //??
+            segmentDirty[seg] = true ;
             return segBuffer ;
         }
     }
@@ -142,6 +142,7 @@ public class BlockMgrMapped extends BlockMgrFile
     public void put(int id, ByteBuffer block)
     {
         check(id, block) ;
+        putNotification(id, block) ;
     }
     
     @Override

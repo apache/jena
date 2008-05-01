@@ -27,6 +27,9 @@ public abstract class BlockMgrFile extends BlockMgrBase
     protected FileChannel channel ;
     protected RandomAccessFile out ;
     protected long numFileBlocks = -1 ;
+    protected boolean isEmpty = false ;
+    
+
     
     // Better for ids?
     //private final AtomicLong numFileBlocks ;
@@ -45,6 +48,7 @@ public abstract class BlockMgrFile extends BlockMgrBase
 
             out = new RandomAccessFile(filename, "rw") ;
             long filesize = out.length() ;
+            isEmpty = (filesize==0) ;
             long longBlockSize = blockSize ;
             
             numFileBlocks = filesize/longBlockSize ;
@@ -62,6 +66,10 @@ public abstract class BlockMgrFile extends BlockMgrBase
         } catch (IOException ex) { throw new BlockException("Failed to create BlockMgrFile", ex) ; }    
     }
 
+    final public boolean isEmpty() { return isEmpty ; }
+    
+    final protected void putNotification(int id, ByteBuffer block) { isEmpty = false ; }
+    
     @Override final
     public int allocateId()
     {

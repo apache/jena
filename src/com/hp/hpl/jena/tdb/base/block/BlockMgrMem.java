@@ -132,6 +132,12 @@ public class BlockMgrMem extends BlockMgrBase
     public void close()
     { blocks = null ; }
     
+    @Override
+    public boolean isEmpty()
+    {
+        return blocks.size() == 0 ;
+    }
+
     protected static ByteBuffer replicate(ByteBuffer srcBlk)
     {
         ByteBuffer dstBlk = ByteBuffer.allocate(srcBlk.capacity()) ;

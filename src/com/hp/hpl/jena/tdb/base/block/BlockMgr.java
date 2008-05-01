@@ -17,6 +17,9 @@ public interface BlockMgr
     /** Allocate a buffer.  Associate with an id via put(id, buffer) */ 
     public ByteBuffer allocateBuffer(int id) ;
     
+    /** Answer whether there are any blocks in the collection being managed */
+    public boolean isEmpty() ; 
+    
     /** Block size */
     public int blockSize() ; 
     
@@ -28,6 +31,7 @@ public interface BlockMgr
 
     public void put(int id, ByteBuffer block);
 
+    /** Announce a block is no longer being worked on */ 
     public void release(int id);
     
     public boolean valid(int id) ;

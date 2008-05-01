@@ -107,6 +107,13 @@ public class IndexBDB implements Index
     }
 
     @Override
+    public boolean isEmpty()
+    {
+        // Can't tell.
+        return false ;
+    }
+
+    @Override
     public void sync(boolean force)
     {}
     

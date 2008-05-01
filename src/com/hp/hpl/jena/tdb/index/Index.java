@@ -29,10 +29,16 @@ public interface Index
     /** Get the Record factory associated with this index */
     public RecordFactory getRecordFactory() ;
     
-    /** */
+    /** Syncrhonize with any persistent storage underlying the index */
     public void sync(boolean force) ;
-    /** */
+    
+    /** Close the index - can't not be used again through this object */
     public void close() ;
+    
+    /** Answer whether the index is empty or not.  Maye return false for unknown or meaningless
+     * (e.g. transactional index)  */
+    public boolean isEmpty() ;
+
 }
 
 /*

@@ -221,6 +221,12 @@ public class BTree implements Iterable<Record>, RangeIndex
         return root.iterator(fromRec, toRec) ;
     }
     
+    @Override
+    public boolean isEmpty()
+    {
+        return pageMgr.getBlockMgr().isEmpty() ;
+    }
+
     public void sync(boolean force)
     {
         if ( pageMgr.getBlockMgr() != null )

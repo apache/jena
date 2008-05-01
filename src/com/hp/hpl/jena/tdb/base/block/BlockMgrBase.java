@@ -14,7 +14,6 @@ import org.slf4j.Logger;
 public abstract class BlockMgrBase implements BlockMgr
 {
     protected int blockSize ;
-    
     protected BlockMgrBase(int blockSize)
     {
         this.blockSize = blockSize ;

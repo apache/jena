@@ -61,6 +61,7 @@ public class BlockMgrDirect extends BlockMgrFile
                 throw new BlockException(format("put: short write (%d, not %d)", len, blockSize)) ;   
         } catch (IOException ex)
         { throw new BlockException("BlockMgrNIO.put", ex) ; }
+        putNotification(id, block) ;
     }
     
     @Override

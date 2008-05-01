@@ -15,7 +15,7 @@
     ja:defaultGraph <#graph> ;
     . 
 
-<#graph> rdf:type tdb:GraphBTree ;
+<#graph> rdf:type tdb:GraphTDB ;
     tdb:location "." ;      # Means here: not a URI??
     .
 
