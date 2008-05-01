@@ -33,7 +33,7 @@ public abstract class SamplingBase implements Sampling
 	 * is a double of the interval [0,1] reflecting the
 	 * percentage.
 	 * 
-	 * @param model
+	 * @param graph
 	 * @param factor
 	 */
 	public SamplingBase(Graph graph, double factor)

@@ -34,8 +34,6 @@ public interface Procedure extends PrintSerializable
      * 
      * @param input
      *            QueryIterator from the previous stage
-     * @param opProc
-     *            The procedure operator
      * @param execCxt
      *            The execution context
      * @return QueryIterator

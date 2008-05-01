@@ -99,7 +99,7 @@ public class Config
 	 * 
 	 * NOT YET IMPLEMENTED, setting this will not have any effect!
 	 * 
-	 * @param double
+	 * @param samplingFactor
 	 */
 	public void setSamplingFactor(double samplingFactor)
 	{ this.samplingFactor = samplingFactor ; }

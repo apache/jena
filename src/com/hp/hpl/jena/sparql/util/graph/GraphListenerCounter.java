@@ -26,7 +26,7 @@ public abstract class GraphListenerCounter extends GraphListenerBase
 
     /** Create a listener that "ticks" on additions to the graph (-1 means "off")
      * 
-     * @param tickCount
+     * @param addTickCount
      */    
     public GraphListenerCounter(int addTickCount)
     {
