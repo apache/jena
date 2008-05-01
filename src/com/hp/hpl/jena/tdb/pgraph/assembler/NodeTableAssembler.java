@@ -6,6 +6,10 @@
 
 package com.hp.hpl.jena.tdb.pgraph.assembler;
 
+import static com.hp.hpl.jena.sparql.util.graph.GraphUtils.exactlyOneProperty;
+import static com.hp.hpl.jena.sparql.util.graph.GraphUtils.getAsStringValue;
+import static com.hp.hpl.jena.tdb.pgraph.assembler.PGraphAssemblerVocab.getURI;
+
 import com.hp.hpl.jena.assembler.Assembler;
 import com.hp.hpl.jena.assembler.Mode;
 import com.hp.hpl.jena.assembler.assemblers.AssemblerBase;
@@ -15,32 +19,28 @@ import com.hp.hpl.jena.tdb.Const;
 import com.hp.hpl.jena.tdb.base.block.BlockMgr;
 import com.hp.hpl.jena.tdb.base.block.BlockMgrFactory;
 import com.hp.hpl.jena.tdb.base.file.Location;
-import com.hp.hpl.jena.tdb.base.record.RecordFactory;
-import com.hp.hpl.jena.tdb.btree.BTree;
-import com.hp.hpl.jena.tdb.btree.BTreeParams;
 import com.hp.hpl.jena.tdb.index.RangeIndex;
-import com.hp.hpl.jena.tdb.index.TripleIndex;
 import com.hp.hpl.jena.tdb.pgraph.PGraphFactory;
+import com.hp.hpl.jena.tdb.pgraph.assembler.TripleIndexAssembler.IndexF;
 
-import static com.hp.hpl.jena.sparql.util.graph.GraphUtils.exactlyOneProperty;
-import static com.hp.hpl.jena.sparql.util.graph.GraphUtils.getAsStringValue;
-import static com.hp.hpl.jena.tdb.Const.BlockSize;
-import static com.hp.hpl.jena.tdb.pgraph.assembler.PGraphAssemblerVocab.*;
-
-public class TripleIndexAssembler extends AssemblerBase //implements Assembler
+public class NodeTableAssembler extends AssemblerBase //implements Assembler
 {
     /* 
-     * [ :description "SPO" ; :file "SPO.idx" ]
+     * [ :description "SPO" ; :file "SPO.idx" ; // The hash->id mapping
+     *   :nodeData "nodes.dat" ;                // The nodes as physical id => disk bytes.
+     * ]
      */
     
+
     // To PGraphAssemblerVocab eventually.
+    
     static Property pDescription = Vocab.property(getURI(), "description") ;
     static Property pFile = Vocab.property(getURI(), "file") ;
 
     private Location location = null ;
     
-    public TripleIndexAssembler()                     { this.location = new Location(".") ; }
-    public TripleIndexAssembler(Location location)    { this.location = location ; }
+    public NodeTableAssembler()                     { this.location = new Location(".") ; }
+    public NodeTableAssembler(Location location)    { this.location = location ; }
     
     @Override
     public Object open(Assembler a, Resource root, Mode mode)
@@ -54,25 +54,13 @@ public class TripleIndexAssembler extends AssemblerBase //implements Assembler
             filename = location.absolute(filename) ;
         
         RangeIndex rIndex = rangeIndex(filename) ;
-        return new TripleIndex(desc, rIndex) ;
+        return null ;
     }
 
     public static RangeIndex rangeIndex(String filename)
     {
         BlockMgr blockMgr = BlockMgrFactory.createFile(filename, Const.BlockSize) ;
         return IndexF.create(blockMgr, PGraphFactory.indexRecordFactory) ;
-    }
-
-    // Somewhere?
-    static class IndexF
-    {
-        static RangeIndex create(BlockMgr blockMgr, RecordFactory factory)
-        {
-            int order = BTreeParams.calcOrder(BlockSize, factory) ;
-            BTreeParams params = new BTreeParams(order, factory) ;
-            BTree bTree = new BTree(params, blockMgr) ; 
-            return bTree ;
-        }
     }
 }
 
