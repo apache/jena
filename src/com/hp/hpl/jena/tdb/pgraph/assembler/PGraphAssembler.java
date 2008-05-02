@@ -6,6 +6,7 @@
 
 package com.hp.hpl.jena.tdb.pgraph.assembler;
 
+import static java.lang.String.format ;
 import static com.hp.hpl.jena.sparql.util.graph.GraphUtils.exactlyOneProperty;
 import static com.hp.hpl.jena.sparql.util.graph.GraphUtils.getStringValue;
 import static com.hp.hpl.jena.sparql.util.graph.GraphUtils.multiValueResource;
@@ -63,8 +64,15 @@ public class PGraphAssembler extends AssemblerBase implements Assembler
             for ( Resource r : indexDesc )
             {
                 TripleIndex idx = (TripleIndex)tripleIndexBuilder.open(a, r, mode) ;
+                String d = idx.getDescription() ;
+                if ( indexes.containsKey(d) )
+                    throw new AssemblerException(root, format("Index %s declared twice", d)) ;
+                // Check one of SPO, POS, OPS.
+                if ( ! ( d.equalsIgnoreCase("SPO") || d.equalsIgnoreCase("POS") || d.equalsIgnoreCase("OSP") ))
+                    throw new AssemblerException(root, format("Unrecognized description (expected SPO, POS or OSP)", d)) ;
                 indexes.put(idx.getDescription(), idx) ;
             }
+            
         }
         
         Graph graph = null ;
