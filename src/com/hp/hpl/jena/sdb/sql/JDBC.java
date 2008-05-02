@@ -5,6 +5,7 @@
  */
 
 package com.hp.hpl.jena.sdb.sql;
+/* H2 contribution from Martin HEIN (m#)/March 2008 */
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -22,29 +23,15 @@ import com.hp.hpl.jena.sdb.store.DatabaseType;
 
 public class JDBC
 {
-    // TODO Make extensible.
-    
     private static Log log = LogFactory.getLog(JDBC.class) ; 
     // The "well known" not a JDBC connection really scheme
     public static final String jdbcNone = "jdbc:none" ;
-
-//    private static Map<String,String> jdbcDrivers = new HashMap<String,String>();
-//    static {
-//        jdbcDrivers.put("mysql",        "com.mysql.jdbc.Driver");
-//        jdbcDrivers.put("mssql",        "com.microsoft.jdbc.sqlserver.SQLServerDriver") ;
-//        jdbcDrivers.put("mssql-e",      "com.microsoft.jdbc.sqlserver.SQLServerDriver") ;
-//        jdbcDrivers.put("postgres",     "org.postgresql.Driver");
-//        jdbcDrivers.put("postgresql",   "org.postgresql.Driver");
-//        jdbcDrivers.put("hsqldb:file",  "org.hsqldb.jdbcDriver");
-//        jdbcDrivers.put("hsqldb:mem",   "org.hsqldb.jdbcDriver");
-//        jdbcDrivers.put("oracle",       "oracle.jdbc.driver.OracleDriver");
-//        jdbcDrivers.put("oracle:thin",  "oracle.jdbc.driver.OracleDriver");
-//    }
 
     private static Map<DatabaseType, String> driver = new HashMap<DatabaseType, String>() ;
     static {
         driver.put(DatabaseType.MySQL,      "com.mysql.jdbc.Driver") ;
         driver.put(DatabaseType.PostgreSQL, "org.postgresql.Driver") ;
+        driver.put(DatabaseType.H2,         "org.h2.Driver") ;
         driver.put(DatabaseType.HSQLDB,     "org.hsqldb.jdbcDriver") ;
         driver.put(DatabaseType.Derby,      "org.apache.derby.jdbc.EmbeddedDriver") ;
         //driver.put(DatabaseType.Derby,       "org.apache.derby.jdbc.ClientDriver") ;
@@ -57,6 +44,8 @@ public class JDBC
     
     /** Explicitly load the HSQLDB driver */ 
     static public void loadDriverHSQL()  { loadDriver(driver.get(DatabaseType.HSQLDB)) ; }
+    /** Explicitly load the H2 driver */ 
+    static public void loadDriverH2()  { loadDriver(driver.get(DatabaseType.H2)) ; }
     /** Explicitly load the MySQL driver */ 
     static public void loadDriverMySQL() { loadDriver(driver.get(DatabaseType.MySQL)) ; }
     /** Explicitly load the PostgreSQL driver */ 
@@ -132,6 +121,20 @@ public class JDBC
             return s ;
         }
         
+        if ( type.startsWith("h2"))
+        {
+            if ( type.startsWith("h2:tcp") || type.startsWith("h2:ssl"))
+            {
+                String s = String.format("jdbc:%s://%s/%s", type, host, dbName) ;
+                return s ;
+            }
+
+            // The rest including -- h2:file, h2:mem or h2
+            // Ignores host
+            String s = String.format("jdbc:%s:%s", type, dbName) ;
+            return s ;
+        }
+
         if ( type.startsWith("pgsql"))
         {
         	String s = String.format("jdbc:%s://%s/%s", type, host, dbName) ;

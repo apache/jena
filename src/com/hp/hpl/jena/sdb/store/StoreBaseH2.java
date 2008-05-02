@@ -4,63 +4,68 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.compiler;
+package com.hp.hpl.jena.sdb.store;
 /* H2 contribution from Martin HEIN (m#)/March 2008 */
 
-import com.hp.hpl.jena.sdb.SDB;
 import com.hp.hpl.jena.sdb.Store;
-import com.hp.hpl.jena.sdb.core.SDBRequest;
+import com.hp.hpl.jena.sdb.StoreDesc;
+import com.hp.hpl.jena.sdb.compiler.QueryCompilerFactory;
+import com.hp.hpl.jena.sdb.core.sqlnode.GenerateSQL;
+import com.hp.hpl.jena.sdb.layout2.StoreBase;
+import com.hp.hpl.jena.sdb.layout2.TableDescNodes;
+import com.hp.hpl.jena.sdb.layout2.TableDescQuads;
+import com.hp.hpl.jena.sdb.layout2.TableDescTriples;
+import com.hp.hpl.jena.sdb.sql.SDBConnection;
+import com.hp.hpl.jena.sdb.util.H2Utils;
 import com.hp.hpl.jena.sdb.util.StoreUtils;
-import com.hp.hpl.jena.sparql.algebra.Op;
-import com.hp.hpl.jena.sparql.algebra.OpSubstitute;
-import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.sparql.util.Context;
 
-public class Compile
+public abstract class StoreBaseH2 extends StoreBase
 {
-    // ----- Compilation : Op -> SQL
-    public static Op compile(Store store, Op op)
-    {
-        return compile(store, op, null) ;
-    }
+    protected boolean currentlyOpen = true ;
     
-    public static Op compile(Store store, Op op, Context context)
+    public StoreBaseH2(SDBConnection connection, StoreDesc desc,
+                         StoreFormatter formatter,
+                         StoreLoader loader,
+                         QueryCompilerFactory compilerF,
+                         SQLBridgeFactory sqlBridgeF,
+                         TableDescTriples tripleTableDesc,
+                         TableDescQuads quadTableDesc,
+                         TableDescNodes nodeTableDesc)
     {
-        if ( context == null )
-            context = SDB.getContext() ;
-        
-        SDBRequest request = new SDBRequest(store, null, context) ;
-        return compile(store, op, null, context, request) ;
+        super(connection, desc, formatter, loader, compilerF, sqlBridgeF, 
+              new GenerateSQL(), tripleTableDesc, quadTableDesc, nodeTableDesc) ;
     }
-    
-    // And the main compilation algorithm.
-    // QueryCompilerMain does the bridge generation.
-    public static Op compile(Store store, Op op, Binding binding, Context context, SDBRequest request)
+
+    @Override 
+    public void close()
     {
-        if ( binding != null && ! binding.isEmpty() )
-            op = OpSubstitute.substitute(op, binding) ;
-        
-        if ( StoreUtils.isHSQL(store) )
-        {
-            request.LeftJoinTranslation = false ;
-            request.LimitOffsetTranslation = false ;        // ?? HSQLDB does not like the nested SQL.
+        if ( currentlyOpen ) {
+        	super.close() ;
+            H2Utils.shutdown(getConnection()) ;
         }
         
+        currentlyOpen = false ; 
+        super.close();
+    }
+
+    public static void close(Store store)
+    {
         if ( StoreUtils.isH2(store) )
-        {
-            request.LeftJoinTranslation = false ;
-            request.LimitOffsetTranslation = false ;        // ?? H2 does not like the nested SQL.
-        }
-        
-        if ( StoreUtils.isPostgreSQL(store) || StoreUtils.isMySQL(store) )
-            request.LimitOffsetTranslation = true ;
-
-        QueryCompiler queryCompiler = store.getQueryCompilerFactory().createQueryCompiler(request) ;
-        Op op2 = queryCompiler.compile(op) ;
-        return op2 ;
+            ((StoreBaseH2)store).close() ;
     }
     
-
+    public static void checkpoint(Store store)
+    {
+        if ( StoreUtils.isH2(store) )
+            ((StoreBaseH2)store).checkpoint() ;
+    }
+    
+    public void checkpoint()
+    { 
+        if ( currentlyOpen ) 
+            H2Utils.checkpoint(getConnection()) ;
+    }
+    
 }
 
 /*

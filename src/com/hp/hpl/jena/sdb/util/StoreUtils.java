@@ -1,4 +1,5 @@
 /*
+ * Copyright (C) Martin HEIN (m#)/March 2008
  * (c) Copyright 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
@@ -18,9 +19,11 @@ public class StoreUtils
     public static boolean isHSQL(Store store)
     { 
         return store.getDatabaseType().equals(DatabaseType.HSQLDB) ;
-//        if ( store instanceof StoreBaseHSQL ) return true ;
-//        if ( store instanceof StoreSimpleHSQL ) return true ;
-//        return false ;
+    }
+    
+    public static boolean isH2(Store store)
+    { 
+        return store.getDatabaseType().equals(DatabaseType.H2) ;
     }
     
     public static boolean isDerby(Store store)
@@ -32,19 +35,11 @@ public class StoreUtils
     public static boolean isPostgreSQL(Store store)
     {
         return store.getDatabaseType().equals(DatabaseType.PostgreSQL) ;
-//        if ( store instanceof StoreTriplesNodesIndexPGSQL ) return true ;
-//        if ( store instanceof StoreTriplesNodesHashPGSQL ) return true ;
-//        if ( store instanceof StoreSimplePGSQL ) return true ;
-//        return false ;
     }
 
     public static boolean isMySQL(Store store)
     {
         return store.getDatabaseType().equals(DatabaseType.MySQL) ;
-//        if ( store instanceof StoreTriplesNodesIndexMySQL ) return true ;
-//        if ( store instanceof StoreTriplesNodesHashMySQL ) return true ;
-//        if ( store instanceof StoreSimpleMySQL ) return true ;
-//        return false ;
     }
     
     public static boolean isSQLServer(Store store)

@@ -87,8 +87,8 @@ public class StoreList
     private static void worker(List<Pair<String, Store>> data, String label, String storeDescFile)
     {
         Store store = StoreFactory.create(storeDescFile) ;
-        if ( formatStores || StoreUtils.isHSQL(store) )
-            // HSQL (in memory) needs formatting always.
+        if ( formatStores || StoreUtils.isHSQL(store) || StoreUtils.isH2(store) )
+            // HSQL (in memory) needs formatting always as does H2
             store.getTableFormatter().create() ;
         Pair<String, Store> e = new Pair<String, Store>(label, store) ;
         data.add(e) ;

@@ -5,6 +5,7 @@
  */
 
 package com.hp.hpl.jena.sdb.store;
+/* H2 contribution from Martin HEIN (m#)/March 2008 */
 
 import java.util.List;
 
@@ -19,6 +20,7 @@ import com.hp.hpl.jena.sparql.util.Symbol;
 public class DatabaseType extends Symbol implements Named
 {
     public static final DatabaseType Derby           = new DatabaseType("derby") ;
+    public static final DatabaseType H2              = new DatabaseType("H2") ;
     public static final DatabaseType HSQLDB          = new DatabaseType("HSQLDB") ;
     public static final DatabaseType MySQL           = new DatabaseType("MySQL") ;
     public static final DatabaseType PostgreSQL      = new DatabaseType("PostgreSQL") ;
@@ -57,9 +59,16 @@ public class DatabaseType extends Symbol implements Named
         registerName("hsqldb:mem", HSQLDB) ;
         registerName("hsql", HSQLDB) ;
         
+        register(H2) ;
+        registerName("h2:file", H2) ;
+        registerName("h2:mem", H2) ;
+        registerName("h2:tcp", H2) ;
+        registerName("h2", H2) ;
+        
         // Open source DBs
         register(MySQL) ;
-        registerName("MySQL5", HSQLDB) ;
+        // registerName("MySQL5", HSQLDB) ;      // am I right in assuming that "HSQLDB" should actually be "MySQL"
+        registerName("MySQL5", MySQL) ;
         
         register(PostgreSQL) ;
         

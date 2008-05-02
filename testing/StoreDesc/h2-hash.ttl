@@ -1,0 +1,14 @@
+@prefix rdfs:	  <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix rdf:      <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix ja:       <http://jena.hpl.hp.com/2005/11/Assembler#> .
+@prefix sdb:      <http://jena.hpl.hp.com/2007/sdb#> .
+
+<#c> rdf:type sdb:SDBConnection ;
+    sdb:sdbType      "h2:mem" ;
+    sdb:sdbName      "test2-hash" ;
+    .
+
+[] rdf:type sdb:Store ;
+    sdb:layout         "layout2/hash" ;
+    sdb:connection     <#c> ;
+.

@@ -157,6 +157,12 @@ public class StoreFactory
                      public Store create(SDBConnection conn, StoreDesc desc)
                      { return new StoreTriplesNodesHashHSQL(conn, desc) ; }} ) ;
         
+        /* H2 contribution from Martin HEIN (m#)/March 2008 */
+        register(H2, LayoutTripleNodesHash, 
+                 new StoreMaker(){
+                     public Store create(SDBConnection conn, StoreDesc desc)
+                     { return new StoreTriplesNodesHashH2(conn, desc) ; }} ) ;
+        
         register(MySQL, LayoutTripleNodesHash,
                  new StoreMaker() {
                     public Store create(SDBConnection conn, StoreDesc desc)
@@ -194,6 +200,11 @@ public class StoreFactory
                  new StoreMaker() {
                     public Store create(SDBConnection conn, StoreDesc desc)
                     { return new StoreTriplesNodesIndexHSQL(conn, desc) ; } }) ;
+        
+        register(H2, LayoutTripleNodesIndex,
+                 new StoreMaker() {
+                    public Store create(SDBConnection conn, StoreDesc desc)
+                    { return new StoreTriplesNodesIndexH2(conn, desc) ; } }) ;
         
         register(MySQL, LayoutTripleNodesIndex,
                  new StoreMaker() {
@@ -233,6 +244,11 @@ public class StoreFactory
                     public Store create(SDBConnection conn, StoreDesc desc)
                     { return new StoreSimpleHSQL(conn, desc) ; } }) ;
         
+        register(H2, LayoutSimple,
+                 new StoreMaker() {
+                    public Store create(SDBConnection conn, StoreDesc desc)
+                    { return new StoreSimpleH2(conn, desc) ; } }) ;
+        
         register(MySQL, LayoutSimple,
                  new StoreMaker() {
                     public Store create(SDBConnection conn, StoreDesc desc)
@@ -261,7 +277,7 @@ public class StoreFactory
     
     static private void checkRegistry()
     {
-        DatabaseType[] dbTypes = {Derby, HSQLDB, MySQL, PostgreSQL, SQLServer, Oracle} ;
+        DatabaseType[] dbTypes = {Derby, HSQLDB, H2, MySQL, PostgreSQL, SQLServer, Oracle} ;
         LayoutType[] layoutTypes = {LayoutTripleNodesHash, LayoutTripleNodesIndex, LayoutSimple} ;
         
         Set <StoreMaker> seen = new HashSet<StoreMaker>() ;
