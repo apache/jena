@@ -6,10 +6,18 @@
 
 package com.hp.hpl.jena.sparql.util;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
+import com.hp.hpl.jena.query.QuerySolution;
 import com.hp.hpl.jena.query.ResultSet;
 import com.hp.hpl.jena.query.ResultSetFormatter;
+import com.hp.hpl.jena.rdf.model.Literal;
 import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.RDFNode;
+import com.hp.hpl.jena.rdf.model.Resource;
+import com.hp.hpl.jena.sparql.ARQException;
 import com.hp.hpl.jena.sparql.util.graph.GraphUtils;
 import com.hp.hpl.jena.sparql.vocabulary.ResultSetGraphVocab;
 import com.hp.hpl.jena.vocabulary.RDF;
@@ -39,6 +47,57 @@ public class ResultSetUtils
         if ( m.getNsPrefixURI("xsd") == null )
             m.setNsPrefix("xsd", XSDDatatype.XSD+"#") ;
         return m ;
+    }
+    
+    /**
+     * Extracts a List filled with the binding of selectElement variable for each
+     * query solution as RDFNodes (Resources or Literals).
+     * Exhausts the result set.  Create a rewindable one to use multiple times. 
+     * @see{com.hp.hpl.jena.query.ResultSetFactory}   
+     * Suggested by James Howison  
+     */
+    public static List resultSetToList(ResultSet rs,
+                                       String selectElement)
+    {
+        List items = new ArrayList() ;
+        while (rs.hasNext())
+        {
+            QuerySolution qs = rs.nextSolution() ;
+            RDFNode n = qs.get(selectElement) ;
+            items.add(n) ;
+        }
+        return items ;
+    }
+    
+    /*Suggested by James Howison. */
+    /**
+     * Extracts a List filled with the binding of selectElement variable for each
+     * query solution, turned into a string (URIs or lexical forms).  
+     * Exhausts the result set.  Create a rewindable one to use multiple times. 
+     * @see{com.hp.hpl.jena.query.ResultSetFactory}   
+     *   
+     */
+    public static List resultSetToStringList(ResultSet rs,
+                                             String selectElement,
+                                             String literalOrResource)
+    {
+        List items = new ArrayList() ;
+        while (rs.hasNext())
+        {
+            QuerySolution qs = rs.nextSolution() ;
+            RDFNode rn = qs.get(selectElement) ;
+            if ( rn.isLiteral() )
+                items.add( ((Literal)rn).getLexicalForm() ) ;
+            else if ( rn.isURIResource() )
+                items.add( ((Resource)rn).getURI() ) ;
+            else if ( rn.isAnon() )
+            {
+                items.add( ((Resource)rn).getId().getLabelString() ) ;
+            }
+            else 
+                throw new ARQException("Unknow thing in results : "+rn) ;
+        }
+        return items ;
     }
 }
 
