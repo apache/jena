@@ -22,6 +22,8 @@ public class PGraphAssemblerVocab
     // Types
     public static final Resource PGraphType         = Vocab.type(NS, "GraphTDB") ;
     public static final Resource PGraphBDBType      = Vocab.type(NS, "GraphBDB") ;
+    public static final Resource TripleIndexType    = Vocab.type(NS, "TripleIndex") ;
+    public static final Resource NodeTableType      = Vocab.type(NS, "NodeTable") ;
 
     public static final Property pLocation          = Vocab.property(NS, "location") ;
     
@@ -52,6 +54,8 @@ public class PGraphAssemblerVocab
 
         assemblerClass(g, PGraphType,            new PGraphAssembler()) ;
         assemblerClass(g, PGraphBDBType,         new PGraphAssembler()) ;
+        assemblerClass(g, TripleIndexType,       new TripleIndexAssembler()) ;
+        assemblerClass(g, NodeTableType,         new NodeTableAssembler()) ;
     }
     
     private static void assemblerClass(AssemblerGroup g, Resource r, Assembler a)
