@@ -82,6 +82,20 @@ public class GraphUtils
         }
         return values;
     }
+    
+    public static List multiValueResource(Resource r, Property p)
+    {
+        List nodes = multiValue(r, p) ;
+        List values = new ArrayList() ;
+    
+        for ( Iterator iter= nodes.iterator() ; iter.hasNext() ; )
+        {
+            RDFNode n = (RDFNode)iter.next();
+            if ( n.isResource() )
+                values.add(n) ;
+        }
+        return values ;
+    }
 
     public static List multiValueURI(Resource r, Property p)
     {
