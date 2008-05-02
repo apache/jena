@@ -8,8 +8,8 @@ package dev;
 
 public class Dev
 {
-    // See Store/gbt.ttl
     
+    // Misc :
     // Interface Sync everywhere?
     // CountingSync.
     //   bound variable tracking
