@@ -182,7 +182,7 @@ public class TripleIndex
             if ( ! tuple1.equals(tuple2) ) return false ;
         }
     }
-
+    
     public void copyInto(TripleIndex index2)
     {
         Iterator<Tuple<NodeId>> iter = all() ;

@@ -23,7 +23,9 @@ public class GraphBDB extends PGraphBase
     private Transaction txn = null ;
     private SetupBDB config ;
  
-    public GraphBDB(String dirname)
+    public static PGraphBase create(String dirname) { return new GraphBDB(dirname) ; }
+    
+    private GraphBDB(String dirname)
     {
         Location loc = Location.ensureDirectory(dirname) ;
         config = new SetupBDB(dirname) ;

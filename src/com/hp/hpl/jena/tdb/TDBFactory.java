@@ -50,7 +50,7 @@ public class TDBFactory
     
     public static Graph createGraph(Location loc)
     {
-        return new GraphBTree(loc) ;
+        return GraphBTree.create(loc) ;
     }
     
     /** Create a TDB model backed by an in-memory block manager. For testing. */  

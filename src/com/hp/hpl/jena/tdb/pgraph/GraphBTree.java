@@ -15,21 +15,38 @@ import com.hp.hpl.jena.tdb.index.IndexFactoryBTreeMem;
 
 public class GraphBTree extends PGraphBase
 {
-    public GraphBTree()
+    public static PGraphBase create()
     {
-        super() ;
         IndexFactory idxFactory = new IndexFactoryBTreeMem(32) ; 
         NodeTable nodeTable = PGraphFactory.createNodeTableMem() ;
-        init(idxFactory, nodeTable) ;
+        return create(idxFactory, nodeTable) ;
     }
-    
-    public GraphBTree(Location loc)
+
+    public static PGraphBase create(Location loc)
     {
-        super() ;
         IndexFactory idxFactory = new IndexFactoryBTree(loc, BlockSize) ;
         NodeTable nodeTable = PGraphFactory.createNodeTable(loc) ;
-        init(idxFactory, nodeTable) ;
+        return create(idxFactory, nodeTable) ;
     }
+    
+    
+//    // Change to a factory that makes PGraghBase's
+//    // No state here.
+//    public GraphBTree()
+//    {
+//        super() ;
+//        IndexFactory idxFactory = new IndexFactoryBTreeMem(32) ; 
+//        NodeTable nodeTable = PGraphFactory.createNodeTableMem() ;
+//        init(idxFactory, nodeTable) ;
+//    }
+//    
+//    public GraphBTree(Location loc)
+//    {
+//        super() ;
+//        IndexFactory idxFactory = new IndexFactoryBTree(loc, BlockSize) ;
+//        NodeTable nodeTable = PGraphFactory.createNodeTable(loc) ;
+//        init(idxFactory, nodeTable) ;
+//    }
 }
 
 /*

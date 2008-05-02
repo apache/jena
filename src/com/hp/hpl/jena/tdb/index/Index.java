@@ -38,7 +38,9 @@ public interface Index
     /** Answer whether the index is empty or not.  Maye return false for unknown or meaningless
      * (e.g. transactional index)  */
     public boolean isEmpty() ;
-
+    
+//    /** Create an index of the same implementation */
+//    public RangeIndex createEmptyCopy() ;
 }
 
 /*

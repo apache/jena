@@ -18,8 +18,8 @@ import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.tdb.TDBFactory;
 import com.hp.hpl.jena.tdb.base.file.Location;
-import com.hp.hpl.jena.tdb.pgraph.GraphBTree;
 
 public class GraphLocation
 {
@@ -42,7 +42,7 @@ public class GraphLocation
     {
         if ( graph != null )
             throw new PGraphTestException("Graph already in use") ;
-        graph = new GraphBTree(loc) ;
+        graph = TDBFactory.createGraph(loc) ;
         model = ModelFactory.createModelForGraph(graph) ;
         return graph ;
     }

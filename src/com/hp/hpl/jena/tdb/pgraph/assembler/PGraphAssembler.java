@@ -39,6 +39,8 @@ public class PGraphAssembler extends AssemblerBase implements Assembler
     @Override
     public Object open(Assembler a, Resource root, Mode mode)
     {
+        // Memory override.
+        
         // Make a model.
         // [] rdf:type tdb:GraphTDB ;
         //    tdb:location "dir" ;
@@ -56,6 +58,8 @@ public class PGraphAssembler extends AssemblerBase implements Assembler
         
         if ( false )
         {
+            // Makeing indexes vs making index factories. 
+            
             Map<String, TripleIndex> indexes = new HashMap<String, TripleIndex>() ;
             @SuppressWarnings("unchecked")
             List<Resource> indexDesc = (List<Resource>)multiValueResource(root, pIndex ) ;
@@ -77,9 +81,9 @@ public class PGraphAssembler extends AssemblerBase implements Assembler
         
         Graph graph = null ;
         if ( ! root.equals(PGraphAssemblerVocab.PGraphBDBType) )
-            graph = new GraphBTree(loc) ;
+            graph = GraphBTree.create(loc) ;
         else
-            graph = new GraphBDB(loc.getDirectoryPath()) ;
+            graph = GraphBDB.create(loc.getDirectoryPath()) ;
         
         Model model = ModelFactory.createModelForGraph(graph) ;
         return model ;

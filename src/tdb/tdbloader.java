@@ -19,7 +19,6 @@ import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.sparql.util.Timer;
 import com.hp.hpl.jena.sparql.util.graph.GraphLoadMonitor;
-import com.hp.hpl.jena.tdb.index.RangeIndex;
 import com.hp.hpl.jena.tdb.index.TripleIndex;
 import com.hp.hpl.jena.tdb.pgraph.NodeId;
 import com.hp.hpl.jena.tdb.pgraph.PGraphBase;
@@ -32,6 +31,10 @@ public class tdbloader extends CmdTDB
     boolean timing = true ;
     boolean doInParallel = false ;
     private PGraphBase graph ;
+
+    private TripleIndex triplesSPO ;
+    private TripleIndex triplesPOS ;
+    private TripleIndex triplesOSP ;
     
     static public void main(String... argv)
     { 
@@ -140,15 +143,20 @@ public class tdbloader extends CmdTDB
 
     private void dropSecondaryIndexes()
     {
+        // Remember first ...
+        triplesSPO = graph.getIndexSPO() ;
+        triplesPOS = graph.getIndexPOS() ;
+        triplesOSP = graph.getIndexOSP() ;
+        
         if ( graph.getIndexPOS() != null )
         {
-            graph.getIndexPOS().close();
+            //graph.getIndexPOS().close();
             graph.setIndexPOS(null) ;
         }
         
         if ( graph.getIndexOSP() != null )
         {
-            graph.getIndexOSP().close();
+            //graph.getIndexOSP().close();
             graph.setIndexOSP(null) ;
         }
     }
@@ -168,17 +176,23 @@ public class tdbloader extends CmdTDB
         timer.startTimer() ;
         
         TripleIndex indexSPO = graph.getIndexSPO() ;
+        TripleIndex triplesPOS = graph.getIndexPOS() ;
+        TripleIndex triplesOSP = graph.getIndexOSP() ;
         
-        // ---- POS
-        RangeIndex idxPOS = graph.getIndexFactory().createRangeIndex(graph.getIndexRecordFactory(), "POS") ;
-        TripleIndex triplesPOS = new TripleIndex("POS", idxPOS) ;
+        
+//        // Rebuild.
+//        {
+//            // ---- POS
+//            RangeIndex idxPOS = graph.getIndexFactory().createRangeIndex(graph.getIndexRecordFactory(), "POS") ;
+//            triplesPOS = new TripleIndex("POS", idxPOS) ;
+//            // ---- OSP
+//            RangeIndex idxOSP = graph.getIndexFactory().createRangeIndex(graph.getIndexRecordFactory(), "OSP") ;
+//            triplesOSP = new TripleIndex("OSP", idxOSP) ;
+//        }
         
         Semaphore sema = new Semaphore(0) ;
+
         Runnable builder1 = setup(sema, indexSPO, triplesPOS, "POS", printTiming) ;
-        
-        // ---- OSP
-        RangeIndex idxOSP = graph.getIndexFactory().createRangeIndex(graph.getIndexRecordFactory(), "OSP") ;
-        TripleIndex triplesOSP = new TripleIndex("OSP", idxOSP) ;
         Runnable builder2 = setup(sema, indexSPO, triplesOSP, "OSP", printTiming) ;
 
         new Thread(builder1).start() ;
@@ -213,23 +227,22 @@ public class tdbloader extends CmdTDB
         Timer timer = new Timer() ;
         timer.startTimer() ;
         
-        TripleIndex indexSPO = graph.getIndexSPO() ;
-        
-        // ---- POS
-        RangeIndex idxPOS = graph.getIndexFactory().createRangeIndex(graph.getIndexRecordFactory(), "POS") ;
-        TripleIndex triplesPOS = new TripleIndex("POS", idxPOS) ;
+//        // ---- POS
+//        RangeIndex idxPOS = graph.getIndexFactory().createRangeIndex(graph.getIndexRecordFactory(), "POS") ;
+//        TripleIndex triplesPOS = new TripleIndex("POS", idxPOS) ;
         
         long time1 = timer.readTimer() ;
-        copyIndex(indexSPO, triplesPOS, "POS", printTiming) ;
+        copyIndex(triplesSPO, triplesPOS, "POS", printTiming) ;
         long time2 = timer.readTimer() ;
         if ( printTiming )
             printf("Time for POS indexing: %.2fs\n", (time2-time1)/1000.0) ;
         
-        // ---- OSP
-        RangeIndex idxOSP = graph.getIndexFactory().createRangeIndex(graph.getIndexRecordFactory(), "OSP") ;
-        TripleIndex triplesOSP = new TripleIndex("OSP", idxOSP) ;
-        copyIndex(indexSPO, triplesOSP, "OSP", printTiming) ;
+//        // ---- OSP
+//        RangeIndex idxOSP = graph.getIndexFactory().createRangeIndex(graph.getIndexRecordFactory(), "OSP") ;
+//        TripleIndex triplesOSP = new TripleIndex("OSP", idxOSP) ;
         
+        
+        copyIndex(triplesSPO, triplesOSP, "OSP", printTiming) ;
         long time3 = timer.readTimer() ;
         if ( printTiming )
             printf("Time for OSP indexing: %.2fs\n", (time3-time2)/1000.0) ;

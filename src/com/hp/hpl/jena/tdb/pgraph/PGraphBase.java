@@ -7,7 +7,6 @@
 package com.hp.hpl.jena.tdb.pgraph;
 
 import static com.hp.hpl.jena.tdb.pgraph.PGraphFactory.indexRecordFactory;
-import static com.hp.hpl.jena.tdb.pgraph.PGraphFactory.nodeRecordFactory;
 import iterator.Filter;
 import iterator.Iter;
 
@@ -26,7 +25,6 @@ import com.hp.hpl.jena.sparql.sse.SSE;
 import com.hp.hpl.jena.sparql.util.FmtUtils;
 import com.hp.hpl.jena.tdb.Const;
 import com.hp.hpl.jena.tdb.TDBException;
-import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 import com.hp.hpl.jena.tdb.graph.GraphSyncListener;
 import com.hp.hpl.jena.tdb.index.IndexFactory;
 import com.hp.hpl.jena.tdb.index.RangeIndex;
@@ -35,14 +33,18 @@ import com.hp.hpl.jena.tdb.lib.TupleLib;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 import com.hp.hpl.jena.util.iterator.NiceIterator;
 
-/** Machinary to implement a "nodes and triples" style graph, based on 3 indexes
- * (SPO, POS, OSP) and a node table form can map to and from ints. 
+/** Machinary to implement a "nodes and triples" style graph,
+ *  based on 3 indexes (SPO, POS, OSP)
+ *  and a node table form can map to and from integers.
+ *  
+ *   There are two ways to build this:
+ *   1/ a subclass can provide an IndexFactory 
  */
 
-public abstract class PGraphBase extends GraphBase implements Sync
+public class PGraphBase extends GraphBase implements Sync
 {
     // Better to have an array?
-    private IndexFactory indexFactory = null ;
+//    private IndexFactory indexFactory = null ;
     private TripleIndex indexSPO = null ;
     private TripleIndex indexPOS = null ;
     private TripleIndex indexOSP = null ;
@@ -50,13 +52,14 @@ public abstract class PGraphBase extends GraphBase implements Sync
     
     private final PGraphQueryHandler queryHandler = new PGraphQueryHandler(this) ;
 
-    protected PGraphBase() {}
     
-    // Two ways to initialize the indexes: via anm indexfcatory or directly with TripleIndexes.
+    protected PGraphBase() {}   // Must call init!
     
-    protected void init(IndexFactory factory, NodeTable nodeTable)
+    // Two ways to initialize the indexes: via an indexfactory or directly with TripleIndexes.
+    
+    public  static PGraphBase create(IndexFactory factory, NodeTable nodeTable)
     {
-        this.indexFactory = factory ;
+        //this.indexFactory = factory ;
 
         RangeIndex idxSPO = factory.createRangeIndex(indexRecordFactory, "SPO") ;
         TripleIndex triplesSPO = new TripleIndex("SPO", idxSPO) ;
@@ -67,11 +70,10 @@ public abstract class PGraphBase extends GraphBase implements Sync
         RangeIndex idxOSP = factory.createRangeIndex(indexRecordFactory, "OSP") ;
         TripleIndex triplesOSP = new TripleIndex("OSP", idxOSP) ;
         
-        init(triplesSPO, triplesPOS, triplesOSP, nodeTable) ;
+        return new PGraphBase(triplesSPO, triplesPOS, triplesOSP, nodeTable) ;
     }
     
-    
-    protected void init(TripleIndex spo, TripleIndex pos, TripleIndex osp, NodeTable nodeTable)
+    public PGraphBase(TripleIndex spo, TripleIndex pos, TripleIndex osp, NodeTable nodeTable)
     {
         if ( spo == null )
             throw new TDBException("SPO index is required") ;
@@ -86,6 +88,7 @@ public abstract class PGraphBase extends GraphBase implements Sync
             this.getEventManager().register(new GraphSyncListener(this, syncPoint)) ;
     }
 
+    
     @Override
     public QueryHandler queryHandler()
     { 
@@ -93,9 +96,6 @@ public abstract class PGraphBase extends GraphBase implements Sync
     }
     
     
-    public NodeTable getNodeTable() {  return nodeTable ; } 
-    
-  
     @Override
     public void performAdd( Triple t ) 
     { 
@@ -419,77 +419,18 @@ public abstract class PGraphBase extends GraphBase implements Sync
     }
 
     // Getters and setters for most things - USE WITH CARE
-    // PLaced here so detailed manipulatation code can be extenral to this class. 
-    
-    public IndexFactory getIndexFactory()
-    {
-        return indexFactory ;
-    }
+    // Placed here so detailed manipulatation code can be external to this class. 
 
-    public void setIndexFactory(IndexFactory indexFactory)
-    {
-        this.indexFactory = indexFactory ;
-    }
+    public TripleIndex getIndexSPO()                { return indexSPO ; }
+    public TripleIndex getIndexPOS()                { return indexPOS ; }
+    public TripleIndex getIndexOSP()                { return indexOSP ; }
 
-    public TripleIndex getIndexSPO()
-    {
-        return indexSPO ;
-    }
+    public void setIndexSPO(TripleIndex indexSPO)   { this.indexSPO = indexSPO ; }
+    public void setIndexPOS(TripleIndex indexPOS)   { this.indexPOS = indexPOS ; }
+    public void setIndexOSP(TripleIndex indexOSP)   { this.indexOSP = indexOSP ; }
 
-//    public void setIndexSPO(TripleIndex indexSPO)
-//    {
-//        this.indexSPO = indexSPO ;
-//    }
-
-    public TripleIndex getIndexPOS()
-    {
-        return indexPOS ;
-    }
-
-    public void setIndexPOS(TripleIndex indexPOS)
-    {
-        this.indexPOS = indexPOS ;
-    }
-
-    public TripleIndex getIndexOSP()
-    {
-        return indexOSP ;
-    }
-
-    public void setIndexOSP(TripleIndex indexOSP)
-    {
-        this.indexOSP = indexOSP ;
-    }
-
-    public RecordFactory getIndexRecordFactory()
-    {
-        return indexRecordFactory ;
-    }
-
-//    public static void setIndexRecordFactory(RecordFactory indexRecordFactory)
-//    {
-//        PGraphBase.indexRecordFactory = indexRecordFactory ;
-//    }
-
-    public RecordFactory getNodeRecordFactory()
-    {
-        return nodeRecordFactory ;
-    }
-
-//    public static void setNodeRecordFactory(RecordFactory nodeRecordFactory)
-//    {
-//        PGraphBase.nodeRecordFactory = nodeRecordFactory ;
-//    }
-
-    public NodeTable getNodeTable(NodeTable nodeTable)
-    {
-        return nodeTable ;
-    }
-
-//    public void setNodeTable(NodeTable nodeTable)
-//    {
-//        this.nodeTable = nodeTable ;
-//    }
+    public NodeTable getNodeTable()                 { return nodeTable ; }
+    public void setNodeTable(NodeTable nodeTable)   { this.nodeTable = nodeTable ; }
 }
 
 /*
