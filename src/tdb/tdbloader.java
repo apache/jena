@@ -163,6 +163,9 @@ public class tdbloader extends CmdTDB
 
     private void createSecondaryIndexes(boolean printTiming)
     {
+        if ( triplesPOS == null && triplesOSP == null )
+            return ;
+        
         if ( doInParallel )
             createSecondaryIndexesParallel(printTiming) ;
         else
@@ -171,14 +174,12 @@ public class tdbloader extends CmdTDB
     
     private void createSecondaryIndexesParallel(boolean printTiming)
     {
+        if ( triplesPOS == null && triplesOSP == null )
+            return ;
+        
         println("** Parallel index building") ;
         Timer timer = new Timer() ;
         timer.startTimer() ;
-        
-        TripleIndex indexSPO = graph.getIndexSPO() ;
-        TripleIndex triplesPOS = graph.getIndexPOS() ;
-        TripleIndex triplesOSP = graph.getIndexOSP() ;
-        
         
 //        // Rebuild.
 //        {
@@ -190,15 +191,24 @@ public class tdbloader extends CmdTDB
 //            triplesOSP = new TripleIndex("OSP", idxOSP) ;
 //        }
         
+        int semaCount = 0 ;
         Semaphore sema = new Semaphore(0) ;
 
-        Runnable builder1 = setup(sema, indexSPO, triplesPOS, "POS", printTiming) ;
-        Runnable builder2 = setup(sema, indexSPO, triplesOSP, "OSP", printTiming) ;
-
-        new Thread(builder1).start() ;
-        new Thread(builder2).start() ;
+        if ( triplesPOS != null )
+        {
+            Runnable builder1 = setup(sema, triplesSPO, triplesPOS, "POS", printTiming) ;
+            new Thread(builder1).start() ;
+            semaCount++ ;
+        }
+         
+        if ( triplesOSP != null )
+        {
+            Runnable builder2 = setup(sema, triplesSPO, triplesOSP, "OSP", printTiming) ;
+            new Thread(builder2).start() ;
+            semaCount++ ;
+        }
         
-        try {  sema.acquire(2) ; } catch (InterruptedException ex) { ex.printStackTrace(); }
+        try {  sema.acquire(semaCount) ; } catch (InterruptedException ex) { ex.printStackTrace(); }
 
         long time = timer.readTimer() ;
         if ( printTiming )
@@ -224,6 +234,9 @@ public class tdbloader extends CmdTDB
 
     private void createSecondaryIndexesSequential(boolean printTiming)
     {
+        if ( triplesPOS == null && triplesOSP == null )
+            return ;
+        
         Timer timer = new Timer() ;
         timer.startTimer() ;
         
@@ -232,21 +245,28 @@ public class tdbloader extends CmdTDB
 //        TripleIndex triplesPOS = new TripleIndex("POS", idxPOS) ;
         
         long time1 = timer.readTimer() ;
-        copyIndex(triplesSPO, triplesPOS, "POS", printTiming) ;
-        long time2 = timer.readTimer() ;
-        if ( printTiming )
-            printf("Time for POS indexing: %.2fs\n", (time2-time1)/1000.0) ;
+        if ( triplesPOS != null )
+        {
+            copyIndex(triplesSPO, triplesPOS, "POS", printTiming) ;
+            long time2 = timer.readTimer() ;
+            if ( printTiming )
+                printf("Time for POS indexing: %.2fs\n", (time2-time1)/1000.0) ;
+        }
         
+        long time2 = timer.readTimer() ; ;
 //        // ---- OSP
 //        RangeIndex idxOSP = graph.getIndexFactory().createRangeIndex(graph.getIndexRecordFactory(), "OSP") ;
 //        TripleIndex triplesOSP = new TripleIndex("OSP", idxOSP) ;
         
-        
-        copyIndex(triplesSPO, triplesOSP, "OSP", printTiming) ;
-        long time3 = timer.readTimer() ;
-        if ( printTiming )
-            printf("Time for OSP indexing: %.2fs\n", (time3-time2)/1000.0) ;
-        timer.endTimer() ;
+        if ( triplesOSP != null )
+        {
+            copyIndex(triplesSPO, triplesOSP, "OSP", printTiming) ;
+            
+            long time3 = timer.readTimer() ;
+            if ( printTiming && triplesOSP != null )
+                printf("Time for OSP indexing: %.2fs\n", (time3-time2)/1000.0) ;
+            timer.endTimer() ;
+        }
         
         graph.setIndexOSP(triplesOSP) ;
         graph.setIndexPOS(triplesPOS) ;

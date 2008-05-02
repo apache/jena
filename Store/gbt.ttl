@@ -15,19 +15,15 @@
     ja:defaultGraph <#graph> ;
     . 
 
-<#graph> rdf:type tdb:GraphTDB ;
-    tdb:location "." ;      # Means here: not a URI??
-    .
+## <#graph> rdf:type tdb:GraphTDB ;
+##     tdb:location "." ;      # Means here: not a URI??
+##     .
 
-<#graph> rdf:type tdb:Graph ;
+<#graph> rdf:type tdb:GraphTDB ;
     tdb:location "tmp" ;
-    # The triple indexes
-    tdb:rangeIndexType   tdb:BTree ;
-    # Node id indexes
-    tdb:indexType   tdb:ExtHash ;
-    # Size
-    tdb:size    tdb:Standard ;
-    tdb:size    tdb:Large ;
+    tdb:index [ tdb:description "SPO" ; tdb:file "tmp/SPO-1.idx" ] ;
+    tdb:index [ tdb:description "POS" ; tdb:file "tmp/POS-1.idx" ] ;
+##    tdb:index [ tdb:description "OSP" ; tdb:file "tmp/OSP-1.idx" ] ;
     .
 
 

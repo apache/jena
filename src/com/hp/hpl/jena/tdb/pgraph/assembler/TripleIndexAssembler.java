@@ -38,13 +38,14 @@ public class TripleIndexAssembler extends AssemblerBase //implements Assembler
     public TripleIndexAssembler(Location location)    { this.location = location ; }
     
     @Override
-    public Object open(Assembler a, Resource root, Mode mode)
+    public TripleIndex open(Assembler a, Resource root, Mode mode)
     {
         exactlyOneProperty(root, pDescription) ;
-        String desc = getAsStringValue(root, pDescription) ;
+        String desc = getAsStringValue(root, pDescription).toUpperCase() ;
         exactlyOneProperty(root, pFile) ;
-        String filename =  getAsStringValue(root, pFile) ;
+        String filename = getAsStringValue(root, pFile) ;
         
+        // Always null - need to pass from PGraphAssembler
         if ( location != null )
             filename = location.absolute(filename) ;
         

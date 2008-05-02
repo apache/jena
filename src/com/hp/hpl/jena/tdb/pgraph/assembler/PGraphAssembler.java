@@ -6,12 +6,12 @@
 
 package com.hp.hpl.jena.tdb.pgraph.assembler;
 
-import static java.lang.String.format ;
 import static com.hp.hpl.jena.sparql.util.graph.GraphUtils.exactlyOneProperty;
 import static com.hp.hpl.jena.sparql.util.graph.GraphUtils.getStringValue;
 import static com.hp.hpl.jena.sparql.util.graph.GraphUtils.multiValueResource;
 import static com.hp.hpl.jena.tdb.pgraph.assembler.PGraphAssemblerVocab.pIndex;
 import static com.hp.hpl.jena.tdb.pgraph.assembler.PGraphAssemblerVocab.pLocation;
+import static java.lang.String.format;
 
 import java.util.HashMap;
 import java.util.List;
@@ -21,14 +21,15 @@ import com.hp.hpl.jena.assembler.Assembler;
 import com.hp.hpl.jena.assembler.Mode;
 import com.hp.hpl.jena.assembler.assemblers.AssemblerBase;
 import com.hp.hpl.jena.assembler.exceptions.AssemblerException;
-import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.Resource;
+import com.hp.hpl.jena.tdb.TDBFactory;
 import com.hp.hpl.jena.tdb.base.file.Location;
 import com.hp.hpl.jena.tdb.index.TripleIndex;
-import com.hp.hpl.jena.tdb.pgraph.GraphBDB;
-import com.hp.hpl.jena.tdb.pgraph.GraphBTree;
+import com.hp.hpl.jena.tdb.pgraph.NodeTable;
+import com.hp.hpl.jena.tdb.pgraph.PGraphBase;
+import com.hp.hpl.jena.tdb.pgraph.PGraphFactory;
 
 public class PGraphAssembler extends AssemblerBase implements Assembler
 {
@@ -37,14 +38,16 @@ public class PGraphAssembler extends AssemblerBase implements Assembler
     
     @SuppressWarnings("unchecked")
     @Override
-    public Object open(Assembler a, Resource root, Mode mode)
+    public Model open(Assembler a, Resource root, Mode mode)
     {
         // Memory override.
         
         // Make a model.
         // [] rdf:type tdb:GraphTDB ;
         //    tdb:location "dir" ;
-        //    tdb:config [ tdb:name ".." ; tdb:value ".." ] ;
+        // Or
+        // [] rdf:type tdb:GraphTDB ;
+        //      index [ ... ] ;
         //    .
         
         // Or 
@@ -56,37 +59,34 @@ public class PGraphAssembler extends AssemblerBase implements Assembler
         String dir = getStringValue(root, pLocation) ;
         Location loc = new Location(dir) ;
         
-        if ( false )
+        if ( ! root.hasProperty(pIndex) )
+            // Make just using the location.
+            return TDBFactory.createModel(loc) ;
+
+        // Make using explicit index descriptions
+        Map<String, TripleIndex> indexes = new HashMap<String, TripleIndex>() ;
+        @SuppressWarnings("unchecked")
+        List<Resource> indexDesc = (List<Resource>)multiValueResource(root, pIndex ) ;
+        if ( indexes.size() > 3 )
+            throw new AssemblerException(root, "More than 3 indexes!") ;
+        for ( Resource r : indexDesc )
         {
-            // Makeing indexes vs making index factories. 
-            
-            Map<String, TripleIndex> indexes = new HashMap<String, TripleIndex>() ;
-            @SuppressWarnings("unchecked")
-            List<Resource> indexDesc = (List<Resource>)multiValueResource(root, pIndex ) ;
-            if ( indexes.size() > 3 )
-                throw new AssemblerException(root, "More than 3 indexes!") ;
-            for ( Resource r : indexDesc )
-            {
-                TripleIndex idx = (TripleIndex)tripleIndexBuilder.open(a, r, mode) ;
-                String d = idx.getDescription() ;
-                if ( indexes.containsKey(d) )
-                    throw new AssemblerException(root, format("Index %s declared twice", d)) ;
-                // Check one of SPO, POS, OPS.
-                if ( ! ( d.equalsIgnoreCase("SPO") || d.equalsIgnoreCase("POS") || d.equalsIgnoreCase("OSP") ))
-                    throw new AssemblerException(root, format("Unrecognized description (expected SPO, POS or OSP)", d)) ;
-                indexes.put(idx.getDescription(), idx) ;
-            }
-            
+            TripleIndex idx = (TripleIndex)tripleIndexBuilder.open(a, r, mode) ;
+            String d = idx.getDescription() ;
+            if ( indexes.containsKey(d) )
+                throw new AssemblerException(root, format("Index %s declared twice", d)) ;
+            // Check one of SPO, POS, OPS.
+            if ( ! ( d.equalsIgnoreCase("SPO") || d.equalsIgnoreCase("POS") || d.equalsIgnoreCase("OSP") ))
+                throw new AssemblerException(root, format("Unrecognized description (expected SPO, POS or OSP)", d)) ;
+            indexes.put(idx.getDescription(), idx) ;
         }
         
-        Graph graph = null ;
-        if ( ! root.equals(PGraphAssemblerVocab.PGraphBDBType) )
-            graph = GraphBTree.create(loc) ;
-        else
-            graph = GraphBDB.create(loc.getDirectoryPath()) ;
+        NodeTable nodeTable = PGraphFactory.createNodeTable(loc) ;
         
-        Model model = ModelFactory.createModelForGraph(graph) ;
-        return model ;
+        PGraphBase graph = new PGraphBase(indexes.get("SPO"), 
+                                          indexes.get("POS"),               
+                                          indexes.get("OSP"), nodeTable) ;
+        return ModelFactory.createModelForGraph(graph) ;
     }
 
 }

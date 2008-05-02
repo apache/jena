@@ -37,7 +37,6 @@ import com.hp.hpl.jena.sparql.sse.SSE;
 import com.hp.hpl.jena.sparql.sse.writers.WriterBasePrefix;
 import com.hp.hpl.jena.sparql.util.FmtUtils;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
-import com.hp.hpl.jena.tdb.TDBFactory;
 import com.hp.hpl.jena.tdb.base.block.BlockMgrFactory;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 import com.hp.hpl.jena.tdb.btree.BTree;
@@ -67,26 +66,10 @@ public class Run
     
     public static void main(String ... args)
     {
-
-        {
-            Graph g = TDBFactory.createGraph("tmp") ;
-            Triple t = SSE.parseTriple("(<x> <p> 1)") ;
-            g.add(t) ;
-            System.out.println(g) ;
-            @SuppressWarnings("unchecked")
-            Iterator<Triple> iter = (Iterator<Triple>)g.find(Node.ANY, Node.ANY, Node.ANY) ;
-            for ( ; iter.hasNext() ; )
-            {
-                Triple t2 = iter.next() ;
-                SSE.write(t2) ; System.out.println();
-                g.delete(t2) ;
-            }
-            System.out.println(g) ;
-            System.exit(0) ;
-        }
         
-        
-        
+        tdb.tdbloader.main("--desc=Store/gbt.ttl", "D.ttl" ) ;
+        System.exit(0) ;
+                
 //        typedNode("'2008-04-27T16:52:17+01:00'^^xsd:dateTime") ;
 //        typedNode("'2008-04-27T16:52:17-05:00'^^xsd:dateTime") ;
 //        typedNode("'2008-04-27T16:52:17Z'^^xsd:dateTime") ;

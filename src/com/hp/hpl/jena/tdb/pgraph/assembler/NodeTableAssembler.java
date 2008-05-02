@@ -6,29 +6,32 @@
 
 package com.hp.hpl.jena.tdb.pgraph.assembler;
 
-import static com.hp.hpl.jena.sparql.util.graph.GraphUtils.exactlyOneProperty;
 import static com.hp.hpl.jena.sparql.util.graph.GraphUtils.getAsStringValue;
-import static com.hp.hpl.jena.tdb.pgraph.assembler.PGraphAssemblerVocab.pDescription;
-import static com.hp.hpl.jena.tdb.pgraph.assembler.PGraphAssemblerVocab.pFile;
+import static com.hp.hpl.jena.tdb.pgraph.assembler.PGraphAssemblerVocab.pNodeData;
+import static com.hp.hpl.jena.tdb.pgraph.assembler.PGraphAssemblerVocab.pNodeIndex;
 
 import com.hp.hpl.jena.assembler.Assembler;
 import com.hp.hpl.jena.assembler.Mode;
 import com.hp.hpl.jena.assembler.assemblers.AssemblerBase;
+import com.hp.hpl.jena.assembler.exceptions.AssemblerException;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.tdb.Const;
 import com.hp.hpl.jena.tdb.base.block.BlockMgr;
 import com.hp.hpl.jena.tdb.base.block.BlockMgrFactory;
 import com.hp.hpl.jena.tdb.base.file.Location;
 import com.hp.hpl.jena.tdb.index.Index;
+import com.hp.hpl.jena.tdb.pgraph.NodeTable;
 import com.hp.hpl.jena.tdb.pgraph.PGraphFactory;
 import com.hp.hpl.jena.tdb.pgraph.assembler.TripleIndexAssembler.IndexF;
 
 public class NodeTableAssembler extends AssemblerBase //implements Assembler
 {
+    // ???
     /* 
-     * [ :description "SPO" ; 
-     *   :file "SPO.idx" ;                      // The hash->id mapping
-     *   :nodeData "nodes.dat" ;                // The nodes as physical id => disk bytes.
+     * [ :location "...." ] 
+     * or (TBD)
+     * [ :nodeIndex "..." ;
+     *   :nodeData "..." ;
      * ]
      */
     
@@ -39,18 +42,16 @@ public class NodeTableAssembler extends AssemblerBase //implements Assembler
     public NodeTableAssembler(Location location)    { this.location = location ; }
     
     @Override
-    public Object open(Assembler a, Resource root, Mode mode)
+    public NodeTable open(Assembler a, Resource root, Mode mode)
     {
-        exactlyOneProperty(root, pDescription) ;
-        String desc = getAsStringValue(root, pDescription) ;
-        exactlyOneProperty(root, pFile) ;
-        String filename =  getAsStringValue(root, pFile) ;
-        
+        String location = getAsStringValue(root, pNodeIndex) ;
         if ( location != null )
-            filename = location.absolute(filename) ;
+            return PGraphFactory.createNodeTable(new Location(location)) ;
         
-        Index rIndex = index(filename) ;
-        return null ;
+        String nodeIndex = getAsStringValue(root, pNodeIndex) ;
+        String nodeData = getAsStringValue(root, pNodeData) ;
+        
+        throw new AssemblerException(root, "Split lcoation index/data file not yet implemented") ; 
     }
 
     public static Index index(String filename)

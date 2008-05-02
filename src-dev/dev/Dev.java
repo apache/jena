@@ -16,13 +16,6 @@ public class Dev
     //   LARQ++
     // Sort out library of datasets : Store/...
     
-    // Assembler
-    //    :location <.> ;
-    //  [] a :GraphTDB
-    // See TripleIndexAssembler, NodeTableAssembler
-    
-    
-    //
     // Plan for a mega-hash id version (96 bits, hash based)
     // Version of NodeTable that does Logical => Physical id translation
     // And a PageMgr.

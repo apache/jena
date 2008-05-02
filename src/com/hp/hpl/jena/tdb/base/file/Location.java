@@ -82,7 +82,7 @@ public class Location
         return getSubLocation(dirname).getDirectoryPath() ;
     }
 
-    /** Return an absolute filename wheer relative names are resolved from the location */ 
+    /** Return an absolute filename where relative names are resolved from the location */ 
     public String absolute(String filename)
     {
         File f = new File(filename) ;

@@ -29,12 +29,14 @@ public class PGraphAssemblerVocab
     
     public static final Property pIndex             = Vocab.property(NS, "index") ;
     public static final Property pNodes             = Vocab.property(NS, "nodes") ;
-    
+
+    // Indexes
     public static final Property pDescription       = Vocab.property(getURI(), "description") ;
     public static final Property pFile              = Vocab.property(getURI(), "file") ;
 
-    
-    // java properties.
+    // Nodes
+    public static final Property pNodeIndex         = Vocab.property(getURI(), "nodeIndex") ;
+    public static final Property pNodeData          = Vocab.property(getURI(), "nodeData") ;
     
     private static boolean initialized = false ; 
     
