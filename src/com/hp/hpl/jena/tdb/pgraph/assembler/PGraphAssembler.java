@@ -12,7 +12,9 @@ import static com.hp.hpl.jena.sparql.util.graph.GraphUtils.multiValueResource;
 import static com.hp.hpl.jena.tdb.pgraph.assembler.PGraphAssemblerVocab.pIndex;
 import static com.hp.hpl.jena.tdb.pgraph.assembler.PGraphAssemblerVocab.pLocation;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.hp.hpl.jena.assembler.Assembler;
 import com.hp.hpl.jena.assembler.Mode;
@@ -53,14 +55,15 @@ public class PGraphAssembler extends AssemblerBase implements Assembler
         
         if ( false )
         {
+            Map<String, TripleIndex> indexes = new HashMap<String, TripleIndex>() ;
             @SuppressWarnings("unchecked")
-            List<Resource> indexes = (List<Resource>)multiValueResource(root, pIndex ) ;
+            List<Resource> indexDesc = (List<Resource>)multiValueResource(root, pIndex ) ;
             if ( indexes.size() > 3 )
                 throw new AssemblerException(root, "More than 3 indexes!") ;
-            for ( Resource r : indexes )
+            for ( Resource r : indexDesc )
             {
                 TripleIndex idx = (TripleIndex)tripleIndexBuilder.open(a, r, mode) ;
-                idx.getDescription() ;
+                indexes.put(idx.getDescription(), idx) ;
             }
         }
         
