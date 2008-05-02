@@ -20,7 +20,7 @@ public class PGraphAssemblerVocab
     public static String getURI() { return NS ; } 
 
     // Types
-    public static final Resource PGraphType         = Vocab.type(NS, "GraphBTree") ;
+    public static final Resource PGraphType         = Vocab.type(NS, "GraphTDB") ;
     public static final Resource PGraphBDBType      = Vocab.type(NS, "GraphBDB") ;
 
     public static final Property pLocation          = Vocab.property(NS, "location") ;
