@@ -34,7 +34,7 @@ public class QueryEngineRegistry
     
     private QueryEngineRegistry() { }
     
-    private static void init()
+    private static synchronized void init()
     {
         registry = new QueryEngineRegistry() ;
         registry.add(QueryEngineMain.getFactory()) ;
