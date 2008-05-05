@@ -1,5 +1,7 @@
 ==== ARQ ToDo
 
+Invert Updates so GraphStore can be a custom processor.
+
 ** Clearer ways to add BGP solver mechanisms - invert Stage/StageList 
 
 ** Split SELECT into constructive assignments which are pushed in so visible to ORDER BY.

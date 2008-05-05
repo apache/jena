@@ -33,6 +33,7 @@ public class UpdateRequest extends Prologue
     
     public void exec(GraphStore graphStore)
     { 
+        // INVERT HERE ?
         for ( Iterator iter = requests.iterator() ; iter.hasNext(); )
         {
             Update update = (Update)iter.next() ;
