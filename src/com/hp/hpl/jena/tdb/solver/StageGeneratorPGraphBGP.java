@@ -29,10 +29,11 @@ public class StageGeneratorPGraphBGP implements StageGenerator
     public StageList compile(BasicPattern pattern, 
                              ExecutionContext execCxt)
     {
-        
         Graph g = execCxt.getActiveGraph() ;
         if ( ! ( g instanceof PGraphBase ) )
             return above.compile(pattern, execCxt) ;
+        
+        System.out.println(pattern) ;
         PGraphBase graph = (PGraphBase)g ;
         
         @SuppressWarnings("unchecked")
