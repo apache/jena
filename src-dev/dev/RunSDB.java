@@ -8,7 +8,6 @@ package dev;
 
 import static sdb.SDBCmd.sdbconfig;
 import static sdb.SDBCmd.sdbload;
-import static sdb.SDBCmd.sdbprint;
 import static sdb.SDBCmd.sdbquery;
 import static sdb.SDBCmd.setExitOnError;
 import static sdb.SDBCmd.setSDBConfig;
@@ -19,10 +18,21 @@ import java.sql.Connection;
 import sdb.SDBCmd;
 import arq.cmd.CmdUtils;
 
-import com.hp.hpl.jena.query.*;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.ResourceFactory;
+import com.hp.hpl.jena.util.FileManager;
+
+import com.hp.hpl.jena.sparql.resultset.ResultsFormat;
+import com.hp.hpl.jena.sparql.util.QueryExecUtils;
+
+import com.hp.hpl.jena.query.*;
+
+import com.hp.hpl.jena.update.GraphStore;
+import com.hp.hpl.jena.update.GraphStoreFactory;
+import com.hp.hpl.jena.update.UpdateFactory;
+import com.hp.hpl.jena.update.UpdateRequest;
+
 import com.hp.hpl.jena.sdb.SDBFactory;
 import com.hp.hpl.jena.sdb.Store;
 import com.hp.hpl.jena.sdb.sql.JDBC;
@@ -30,13 +40,6 @@ import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.store.StoreConfig;
 import com.hp.hpl.jena.sdb.store.StoreFactory;
 import com.hp.hpl.jena.sdb.util.StrUtils;
-import com.hp.hpl.jena.sparql.resultset.ResultsFormat;
-import com.hp.hpl.jena.sparql.util.QueryExecUtils;
-import com.hp.hpl.jena.update.GraphStore;
-import com.hp.hpl.jena.update.GraphStoreFactory;
-import com.hp.hpl.jena.update.UpdateFactory;
-import com.hp.hpl.jena.update.UpdateRequest;
-import com.hp.hpl.jena.util.FileManager;
 
 public class RunSDB
 {
@@ -44,12 +47,12 @@ public class RunSDB
     
     public static void main(String ... argv) 
     {
-        //sdbprint("--sdb=testing/StoreDesc/pgsql-hash.ttl", "--query=testing/Modifiers/slice-1.rq") ;
-        sdbprint("--sdb=sdb.ttl", "--query=Q.rq") ;
-        
-        //sdbquery("--sdb=sdb.ttl", "--query=Q.rq") ;
-        System.exit(0) ;
-        
+        {
+            // SPARQL/Update
+            // Need to invert and put the action on the GraphStore (maybe by default keep with the operation). 
+            Store store = StoreFactory.create("sdb.ttl") ;
+            System.exit(0) ;
+        }
         runPrint() ;
         
         Store store = SDBFactory.connectStore("sdb.ttl") ;
