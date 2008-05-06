@@ -29,7 +29,7 @@ public class UpdateRequest extends Prologue
     public UpdateRequest(Update graphUpdate) { super() ; requests.add(graphUpdate) ; }
     
     public void addUpdate(Update update) { requests.add(update) ; }
-//    public List<Update> getUpdates(Update update) { return requests ; }
+    public List getUpdates() { return requests ; }
     
     public void exec(GraphStore graphStore)
     { 

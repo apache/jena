@@ -6,16 +6,45 @@
 
 package dev;
 
-import com.hp.hpl.jena.sparql.ARQException;
+import java.util.Iterator;
 
-public class UpdateProcessorMain
+import com.hp.hpl.jena.sparql.core.DatasetGraph;
+import com.hp.hpl.jena.sparql.engine.binding.Binding;
+import com.hp.hpl.jena.sparql.modify.UpdateVisitor;
+import com.hp.hpl.jena.sparql.modify.op.Update;
+import com.hp.hpl.jena.sparql.util.ALog;
+import com.hp.hpl.jena.update.GraphStore;
+import com.hp.hpl.jena.update.UpdateRequest;
+
+public class UpdateProcessorMain implements UpdateProcessor
 {
+
+    public void execute(GraphStore graphStore, UpdateRequest request)
+    {
+        UpdateVisitor v = new UpdateProcessorVisitor(graphStore, null) ;
+        for ( Iterator iter = request.getUpdates().iterator() ; iter.hasNext(); )
+        {
+            Update update = (Update)iter.next() ;
+            update.visit(v) ;
+        }
+        
+    }
 
     public static UpdateProcessorFactory getFactory()
     {
-        throw new ARQException("Not implemented") ;
-    }
+       return new UpdateProcessorFactory() {
 
+        public boolean accept(UpdateRequest request, DatasetGraph dataset)
+        {
+            return true ; //dataset instanceof GraphStoreBasic ;
+        }
+
+        public UpdateProcessor create(UpdateRequest request, DatasetGraph dataset, Binding inputBinding)
+        {
+            ALog.warn(UpdateProcessorMain.class, "Check me") ;
+            return new UpdateProcessorMain() ;
+        }} ;
+    }
 }
 
 /*

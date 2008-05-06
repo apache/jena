@@ -6,11 +6,12 @@
 
 package dev;
 
+import com.hp.hpl.jena.update.GraphStore;
 import com.hp.hpl.jena.update.UpdateRequest;
 
 public interface UpdateProcessor
 {
-    public void execute(UpdateRequest request) ;
+    public void execute(GraphStore graphStore, UpdateRequest request) ;
 }
 
 /*
