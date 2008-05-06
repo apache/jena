@@ -5,7 +5,7 @@ ChangeLog for ARQ
 
 + Upgrade to Lucene 2.3.1
 
-+ Change return type of ResultFactor.copyresult to ResultSetRewinable (a sub interface of ResultSet).
++ Change return type of ResultFactor.copyResults to ResultSetRewinable (a sub interface of ResultSet).
 
 + Allow inital bindings for Updates (ignored unless a Modify operation)
 
