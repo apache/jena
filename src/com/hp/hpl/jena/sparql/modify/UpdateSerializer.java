@@ -161,6 +161,11 @@ public class UpdateSerializer implements UpdateVisitor
         out.println() ;
     }
     
+    public void visit(UpdateExt updateExt)
+    {
+        updateExt.print(out) ;
+    }
+
     private void printTemplate(Template template)
     {
         out.incIndent() ;

@@ -17,8 +17,8 @@ import com.hp.hpl.jena.sparql.syntax.Template;
 
 public abstract class UpdateModifyBase extends UpdatePattern
 {
-    protected Template deletes = null ; 
-    protected Template inserts = null ;
+    private Template deletes = null ; 
+    private Template inserts = null ;
     
     protected UpdateModifyBase() {}
     
@@ -73,6 +73,16 @@ public abstract class UpdateModifyBase extends UpdatePattern
             Collection acc = subst(inserts, qIter) ;
             graph.getBulkUpdateHandler().add(acc.iterator()) ;
         }
+    }
+
+    public Template getDeletes()
+    {
+        return deletes ;
+    }
+
+    public Template getInserts()
+    {
+        return inserts ;
     }
 }
 

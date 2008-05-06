@@ -1,38 +1,32 @@
 /*
- * (c) Copyright 2007, 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.modify;
+package com.hp.hpl.jena.sparql.modify.op;
 
-import com.hp.hpl.jena.sparql.modify.op.*;
+import com.hp.hpl.jena.sparql.modify.UpdateVisitor;
+import com.hp.hpl.jena.sparql.util.IndentedWriter;
+import com.hp.hpl.jena.sparql.util.Utils;
 
-public interface UpdateVisitor
+public abstract class UpdateExt extends Update
 {
-    public void visit(UpdateModify modify) ;
+    public void visit(UpdateVisitor visitor)
+    { 
+        visitor.visit(this) ;
+    }
 
-    public void visit(UpdateDelete delete) ;
-
-    public void visit(UpdateInsert insert) ;
-
-    public void visit(UpdateInsertData add) ;
-
-    public void visit(UpdateDeleteData remove) ;
+    public abstract void update() ; 
     
-    public void visit(UpdateClear clear) ;
-
-    public void visit(UpdateLoad load) ;
-
-    public void visit(UpdateDrop drop) ;
-    
-    public void visit(UpdateCreate create) ;
-
-    public void visit(UpdateExt updateExt) ;
+    public void print(IndentedWriter out)
+    {
+        out.println("EXT: "+Utils.className(this)) ;
+    }
 }
 
 /*
- * (c) Copyright 2007, 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

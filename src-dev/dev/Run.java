@@ -13,20 +13,30 @@ import arq.sparql;
 import arq.sse_query;
 
 import com.hp.hpl.jena.graph.Triple;
-
-import com.hp.hpl.jena.sparql.algebra.*;
+import com.hp.hpl.jena.query.Query;
+import com.hp.hpl.jena.query.QueryExecution;
+import com.hp.hpl.jena.query.QueryExecutionFactory;
+import com.hp.hpl.jena.query.QueryFactory;
+import com.hp.hpl.jena.query.QuerySolutionMap;
+import com.hp.hpl.jena.query.ResultSetFormatter;
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.sparql.algebra.Algebra;
+import com.hp.hpl.jena.sparql.algebra.Op;
+import com.hp.hpl.jena.sparql.algebra.Transform;
+import com.hp.hpl.jena.sparql.algebra.TransformCopy;
+import com.hp.hpl.jena.sparql.algebra.Transformer;
 import com.hp.hpl.jena.sparql.algebra.op.OpBGP;
 import com.hp.hpl.jena.sparql.algebra.op.OpJoin;
 import com.hp.hpl.jena.sparql.algebra.op.OpLeftJoin;
 import com.hp.hpl.jena.sparql.core.BasicPattern;
-
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.QueryFactory;
+import com.hp.hpl.jena.util.FileManager;
 
 public class Run
 {
     public static void main(String[] argv) throws Exception
     {
+        execQueryCode("D.ttl", "Q.rq");
+        
         //code() ; System.exit(0) ;
         runUpdate() ; System.exit(0) ;
         
@@ -154,6 +164,20 @@ public class Run
         sse_query.main(a) ;
         System.exit(0) ;
         
+    }
+    
+    private static void execQueryCode(String datafile, String queryfile)
+    {
+        Model model = FileManager.get().loadModel(datafile) ;
+        Query query = QueryFactory.read(queryfile) ;
+        
+        QuerySolutionMap initialBinding = new QuerySolutionMap();
+        initialBinding.add("s", model.createResource("http://example.org/x2")) ;
+        initialBinding.add("o", model.createResource("http://example.org/z")) ;
+        
+        QueryExecution qExec = QueryExecutionFactory.create(query, model, initialBinding) ;
+        ResultSetFormatter.out(qExec.execSelect()) ;
+        System.exit(0) ;
     }
 }
 
