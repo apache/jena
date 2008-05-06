@@ -10,9 +10,7 @@ import com.hp.hpl.jena.sparql.modify.op.UpdateCreate;
 import com.hp.hpl.jena.sparql.modify.op.UpdateLoad;
 import com.hp.hpl.jena.sparql.sse.SSE;
 
-import com.hp.hpl.jena.update.GraphStore;
-import com.hp.hpl.jena.update.GraphStoreFactory;
-import com.hp.hpl.jena.update.UpdateRequest;
+import com.hp.hpl.jena.update.*;
 
 /** Simple example of SPARQL/Update */ 
 public class Update2
@@ -33,10 +31,14 @@ public class Update2
         // Load a file into a named graph - NB order of arguments (both strings).
         UpdateLoad load = new UpdateLoad("etc/update-data.ttl", graphName) ;
         
+        
         // Add the two operations and execute the request
         req.addUpdate(c) ;
         req.addUpdate(load) ;
-        graphStore.execute(req) ;
+
+        // Create a processor 
+        UpdateProcessor uProc = UpdateFactory.create(load, graphStore) ;
+        uProc.execute() ;
         
         // Print it out (format is SSE <http://jena.hpl.hp.com/wiki/SSE>)
         // used to represent a dataset.

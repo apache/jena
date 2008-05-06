@@ -15,6 +15,7 @@ import arq.cmdline.CmdUpdate;
 
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
+
 import com.hp.hpl.jena.sparql.modify.op.UpdateLoad;
 import com.hp.hpl.jena.sparql.sse.SSE;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
@@ -22,6 +23,7 @@ import com.hp.hpl.jena.sparql.util.Utils;
 import com.hp.hpl.jena.sparql.util.graph.GraphLoadMonitor;
 
 import com.hp.hpl.jena.update.GraphStore;
+import com.hp.hpl.jena.update.UpdateFactory;
 
 public class load extends CmdUpdate
 {
@@ -83,7 +85,8 @@ public class load extends CmdUpdate
             }
         }
         
-        graphStore.execute(loadReq) ;
+        
+        UpdateFactory.create(loadReq, graphStore).execute() ;
         
         if ( dump )
         {

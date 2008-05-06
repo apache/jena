@@ -7,17 +7,9 @@
 package com.hp.hpl.jena.sparql.modify.op;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
-
-
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.sparql.modify.UpdateVisitor;
-import com.hp.hpl.jena.update.GraphStore;
-import com.hp.hpl.jena.util.FileManager;
 
 public class UpdateLoad extends GraphUpdate1
 {
@@ -31,16 +23,16 @@ public class UpdateLoad extends GraphUpdate1
     
     public void addLoadIRI(String iri) { loadData.add(iri) ; }
     
-    //@Override
-    protected void exec(GraphStore graphStore, Graph graph)
-    {
-        Model model = ModelFactory.createModelForGraph(graph) ;
-        for ( Iterator iter = loadData.iterator() ; iter.hasNext() ; )
-        {
-            String s = (String)iter.next() ;
-            FileManager.get().readModel(model, s) ;
-        }
-    }
+//    //@Override
+//    protected void exec(GraphStore graphStore, Graph graph)
+//    {
+//        Model model = ModelFactory.createModelForGraph(graph) ;
+//        for ( Iterator iter = loadData.iterator() ; iter.hasNext() ; )
+//        {
+//            String s = (String)iter.next() ;
+//            FileManager.get().readModel(model, s) ;
+//        }
+//    }
 
     //@Override
     public void visit(UpdateVisitor visitor) { visitor.visit(this) ; }

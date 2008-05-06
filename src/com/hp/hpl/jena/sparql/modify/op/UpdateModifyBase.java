@@ -6,14 +6,9 @@
 
 package com.hp.hpl.jena.sparql.modify.op;
 
-import java.util.Collection;
-import java.util.List;
-
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.query.QueryFactory;
-import com.hp.hpl.jena.sparql.engine.QueryIterator;
-import com.hp.hpl.jena.sparql.engine.iterator.QueryIterPlainWrapper;
 import com.hp.hpl.jena.sparql.syntax.Template;
+
+import com.hp.hpl.jena.query.QueryFactory;
 
 public abstract class UpdateModifyBase extends UpdatePattern
 {
@@ -48,32 +43,32 @@ public abstract class UpdateModifyBase extends UpdatePattern
     protected Template getInsertTemplateBase()
     { return inserts ; }
 
-    //Override
-    protected void exec(Graph graph, List bindings)
-    {
-        execDeletes(graph, bindings) ;
-        execInserts(graph, bindings) ;
-    }
-
-    private void execDeletes(Graph graph, List bindings)
-    {
-        if ( deletes != null )
-        {
-            QueryIterator qIter = new QueryIterPlainWrapper(bindings.iterator()) ;
-            Collection acc = subst(deletes, qIter) ;
-            graph.getBulkUpdateHandler().delete(acc.iterator()) ;
-        }
-    }
-
-    private void execInserts(Graph graph, List bindings)
-    {
-        if ( inserts != null )
-        {
-            QueryIterator qIter = new QueryIterPlainWrapper(bindings.iterator()) ;
-            Collection acc = subst(inserts, qIter) ;
-            graph.getBulkUpdateHandler().add(acc.iterator()) ;
-        }
-    }
+//    //Override
+//    protected void exec(Graph graph, List bindings)
+//    {
+//        execDeletes(graph, bindings) ;
+//        execInserts(graph, bindings) ;
+//    }
+//
+//    private void execDeletes(Graph graph, List bindings)
+//    {
+//        if ( deletes != null )
+//        {
+//            QueryIterator qIter = new QueryIterPlainWrapper(bindings.iterator()) ;
+//            Collection acc = subst(deletes, qIter) ;
+//            graph.getBulkUpdateHandler().delete(acc.iterator()) ;
+//        }
+//    }
+//
+//    private void execInserts(Graph graph, List bindings)
+//    {
+//        if ( inserts != null )
+//        {
+//            QueryIterator qIter = new QueryIterPlainWrapper(bindings.iterator()) ;
+//            Collection acc = subst(inserts, qIter) ;
+//            graph.getBulkUpdateHandler().add(acc.iterator()) ;
+//        }
+//    }
 
     public Template getDeletes()
     {

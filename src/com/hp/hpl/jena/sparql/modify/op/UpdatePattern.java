@@ -6,25 +6,9 @@
 
 package com.hp.hpl.jena.sparql.modify.op;
 
-import java.util.*;
-
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Triple;
-
-import com.hp.hpl.jena.sparql.engine.Plan;
-import com.hp.hpl.jena.sparql.engine.QueryIterator;
-import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.sparql.engine.binding.BindingRoot;
 import com.hp.hpl.jena.sparql.syntax.Element;
-import com.hp.hpl.jena.sparql.syntax.Template;
-import com.hp.hpl.jena.sparql.util.FmtUtils;
 
-import com.hp.hpl.jena.query.QueryExecutionFactory;
 import com.hp.hpl.jena.query.QueryFactory;
-
-import com.hp.hpl.jena.update.GraphStore;
-import com.hp.hpl.jena.update.UpdateException;
 
 /**
  * @author Andy Seaborne
@@ -39,71 +23,71 @@ public abstract class UpdatePattern extends GraphUpdateN
     /** Parse the string into an Element.  Must include the surrounding {} in the string */  
     public void setPattern(String pattern) { this.pattern = QueryFactory.createElement(pattern) ; }
     
-    protected abstract void exec(Graph graph, List bindings) ;
-    
-    private List bindings = new ArrayList() ;
-    
-    //@Override
-    protected void startExec(GraphStore graphStore, Binding binding)
-    {
-        if ( pattern != null )
-        {
-            Plan plan = QueryExecutionFactory.createPlan(pattern, graphStore, binding) ;
-            QueryIterator qIter = plan.iterator() ;
-            
-            for( ; qIter.hasNext() ; )
-            {
-                Binding b = qIter.nextBinding() ;
-                bindings.add(b) ;
-            }
-            qIter.close() ;
-        }
-        else
-            bindings.add(BindingRoot.create()) ;
-    }
-    
-    //@Override
-    protected void finishExec()
-    { bindings = null ; }
-    
-    //@Override
-    protected void exec(Graph graph)
-    {
-        exec(graph, bindings) ;
-    }
-
-    protected static Collection subst(Template template, QueryIterator qIter)
-    {
-        Set acc = new HashSet() ;
-        for ( ; qIter.hasNext() ; )
-        {
-            Map bNodeMap = new HashMap() ;
-            Binding b = qIter.nextBinding() ;
-            template.subst(acc, bNodeMap, b) ;
-        }
-
-        for ( Iterator iter = acc.iterator() ; iter.hasNext() ; )
-        {
-            Triple triple = (Triple)iter.next() ;
-            if ( ! isGroundTriple(triple))
-                throw new UpdateException("Unbound triple: "+FmtUtils.stringForTriple(triple)) ;
-        }
-        
-        return acc ;
-    }
-    
-    private static boolean isGroundTriple(Triple triple)
-    {
-        return 
-            isGroundNode(triple.getSubject()) &&
-            isGroundNode(triple.getPredicate()) &&
-            isGroundNode(triple.getObject()) ;
-    }
-
-    private static boolean isGroundNode(Node node)
-    {
-        return node.isConcrete() ; 
-    }
+//    protected abstract void exec(Graph graph, List bindings) ;
+//    
+//    private List bindings = new ArrayList() ;
+//    
+//    //@Override
+//    protected void startExec(GraphStore graphStore, Binding binding)
+//    {
+//        if ( pattern != null )
+//        {
+//            Plan plan = QueryExecutionFactory.createPlan(pattern, graphStore, binding) ;
+//            QueryIterator qIter = plan.iterator() ;
+//            
+//            for( ; qIter.hasNext() ; )
+//            {
+//                Binding b = qIter.nextBinding() ;
+//                bindings.add(b) ;
+//            }
+//            qIter.close() ;
+//        }
+//        else
+//            bindings.add(BindingRoot.create()) ;
+//    }
+//    
+//    //@Override
+//    protected void finishExec()
+//    { bindings = null ; }
+//    
+//    //@Override
+//    protected void exec(Graph graph)
+//    {
+//        exec(graph, bindings) ;
+//    }
+//
+//    protected static Collection subst(Template template, QueryIterator qIter)
+//    {
+//        Set acc = new HashSet() ;
+//        for ( ; qIter.hasNext() ; )
+//        {
+//            Map bNodeMap = new HashMap() ;
+//            Binding b = qIter.nextBinding() ;
+//            template.subst(acc, bNodeMap, b) ;
+//        }
+//
+//        for ( Iterator iter = acc.iterator() ; iter.hasNext() ; )
+//        {
+//            Triple triple = (Triple)iter.next() ;
+//            if ( ! isGroundTriple(triple))
+//                throw new UpdateException("Unbound triple: "+FmtUtils.stringForTriple(triple)) ;
+//        }
+//        
+//        return acc ;
+//    }
+//    
+//    private static boolean isGroundTriple(Triple triple)
+//    {
+//        return 
+//            isGroundNode(triple.getSubject()) &&
+//            isGroundNode(triple.getPredicate()) &&
+//            isGroundNode(triple.getObject()) ;
+//    }
+//
+//    private static boolean isGroundNode(Node node)
+//    {
+//        return node.isConcrete() ; 
+//    }
 }
 
 

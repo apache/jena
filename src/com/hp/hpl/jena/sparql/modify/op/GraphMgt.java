@@ -8,10 +8,6 @@ package com.hp.hpl.jena.sparql.modify.op;
 
 import com.hp.hpl.jena.graph.Node;
 
-import com.hp.hpl.jena.sparql.engine.binding.Binding;
-
-import com.hp.hpl.jena.update.GraphStore;
-
 
 public abstract class GraphMgt extends Update
 {
@@ -32,21 +28,21 @@ public abstract class GraphMgt extends Update
     public boolean isSilent()
     { return silent ; }
     
-    abstract
-    public void exec(GraphStore graphStore, Node iri) ;
-    
-    //@Override 
-    final public void exec(GraphStore graphStore, Binding binding)
-    {
-        // Ignore binding.
-        exec(graphStore, iri) ;
-    }
-    
-    //@Override 
-    final public void exec(GraphStore graphStore)
-    {
-        exec(graphStore, iri) ;
-    }
+//    abstract
+//    public void exec(GraphStore graphStore, Node iri) ;
+//    
+//    //@Override 
+//    final public void exec(GraphStore graphStore, Binding binding)
+//    {
+//        // Ignore binding.
+//        exec(graphStore, iri) ;
+//    }
+//    
+//    //@Override 
+//    final public void exec(GraphStore graphStore)
+//    {
+//        exec(graphStore, iri) ;
+//    }
 }
 
 /*

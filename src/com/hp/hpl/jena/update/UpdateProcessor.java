@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package dev;
+package com.hp.hpl.jena.update;
 
 /** An instance of a execution of an UpdateRequest */ 
 public interface UpdateProcessor

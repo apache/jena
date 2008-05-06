@@ -8,9 +8,8 @@ package com.hp.hpl.jena.sparql.modify.op;
 
 
 import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.sparql.DoesNotExist;
+
 import com.hp.hpl.jena.sparql.modify.UpdateVisitor;
-import com.hp.hpl.jena.update.GraphStore;
 
 
 
@@ -22,17 +21,17 @@ public class UpdateDrop extends GraphMgt
     public UpdateDrop(String iri, boolean silent) {  this(Node.createURI(iri), silent) ; }
     public UpdateDrop(String iri) { this(iri, false) ; }
 
-    //@Override
-    public void exec(GraphStore graphStore, Node iri)
-    {
-        if ( ! graphStore.containsGraph(iri) )
-        {
-            if ( isSilent() )
-                return ; 
-            throw new DoesNotExist("Named graph: "+iri) ;
-        }
-        graphStore.removeGraph(iri) ;
-    }
+//    //@Override
+//    public void exec(GraphStore graphStore, Node iri)
+//    {
+//        if ( ! graphStore.containsGraph(iri) )
+//        {
+//            if ( isSilent() )
+//                return ; 
+//            throw new DoesNotExist("Named graph: "+iri) ;
+//        }
+//        graphStore.removeGraph(iri) ;
+//    }
     
     //@Override
     public void visit(UpdateVisitor visitor) { visitor.visit(this) ; }

@@ -19,30 +19,30 @@ import com.hp.hpl.jena.sparql.modify.op.Update;
 public interface GraphStore extends DataSourceGraph
 {
     /** Execute a request (a number of update operations) 
-     * @deprecated Use @link{UpdateProcessorFactory} 
+     * @deprecated Use {@link UpdateFactory#create} 
      */
     public void execute(UpdateRequest request) ;
 
     /** Execute an update (a single update operation) 
-     * @deprecated Use @link{UpdateProcessorFactory} 
+     * @deprecated Use {@link UpdateFactory#create} 
      */
     public void execute(Update graphUpdate) ;
     
     /** Execute a request (a number of update operations) 
-     * @deprecated Use @link{UpdateProcessorFactory} 
+     * @deprecated Use {@link UpdateFactory#create} 
      */
     public void execute(UpdateRequest request, Binding binding) ;
 
     /** Execute an update (a single update operation) 
-     * @deprecated Use @link{UpdateProcessorFactory} 
+     * @deprecated Use {@link UpdateFactory#create} 
      */
     public void execute(Update graphUpdate, Binding binding) ;
 
     public Dataset toDataset() ;
     
-    public void sync() ;
-
-    public void close() ;
+//    public void sync() ;
+//
+//    public void close() ;
 }
 
 /*

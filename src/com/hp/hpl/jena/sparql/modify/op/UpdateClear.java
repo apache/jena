@@ -7,9 +7,7 @@
 package com.hp.hpl.jena.sparql.modify.op;
 
 
-import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.sparql.modify.UpdateVisitor;
-import com.hp.hpl.jena.update.GraphStore;
 
 public class UpdateClear extends GraphUpdate1
 {
@@ -18,11 +16,11 @@ public class UpdateClear extends GraphUpdate1
     //@Override
     public void visit(UpdateVisitor visitor) { visitor.visit(this) ; }
 
-    //@Override
-    protected void exec(GraphStore graphStore, Graph graph)
-    {
-        graph.getBulkUpdateHandler().removeAll() ;
-    }
+//    //@Override
+//    protected void exec(GraphStore graphStore, Graph graph)
+//    {
+//        graph.getBulkUpdateHandler().removeAll() ;
+//    }
 }
 
 /*

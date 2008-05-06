@@ -7,13 +7,7 @@
 package com.hp.hpl.jena.sparql.modify.op;
 
 
-import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
-
-import com.hp.hpl.jena.sparql.engine.binding.Binding;
-
-import com.hp.hpl.jena.update.GraphStore;
-import com.hp.hpl.jena.update.UpdateException;
 
 /**
  * @author Andy Seaborne
@@ -30,29 +24,29 @@ public abstract class GraphUpdate1 extends Update
     public void setGraphName(String iri) { graphName = Node.createURI(iri) ; }
     public Node getGraphName() { return graphName ; }
     
-    protected abstract void exec(GraphStore graphStore, Graph graph) ;
+//    protected abstract void exec(GraphStore graphStore, Graph graph) ;
     
-    //@Override 
-    final public void exec(GraphStore graphStore, Binding binding)
-    {
-        // Ignore binding.
-        exec(graphStore) ;
-    }
-    
-    //@Override
-    public void exec(GraphStore graphStore)
-    {
-        Graph g = null ;
-        if ( hasGraphName() )
-        {
-            g = graphStore.getGraph(getGraphName()) ;
-            if ( g == null )
-                throw new UpdateException("No such graph: "+getGraphName()) ;
-        }
-        else
-            g = graphStore.getDefaultGraph() ;
-        exec(graphStore, g) ;
-    }
+//    //@Override 
+//    final public void exec(GraphStore graphStore, Binding binding)
+//    {
+//        // Ignore binding.
+//        exec(graphStore) ;
+//    }
+//    
+//    //@Override
+//    public void exec(GraphStore graphStore)
+//    {
+//        Graph g = null ;
+//        if ( hasGraphName() )
+//        {
+//            g = graphStore.getGraph(getGraphName()) ;
+//            if ( g == null )
+//                throw new UpdateException("No such graph: "+getGraphName()) ;
+//        }
+//        else
+//            g = graphStore.getDefaultGraph() ;
+//        exec(graphStore, g) ;
+//    }
 }
 
 

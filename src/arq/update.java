@@ -76,14 +76,13 @@ public class update extends CmdUpdate
     private void execOneFile(String filename, GraphStore store)
     {
         UpdateRequest req = UpdateFactory.read(filename) ;
-        store.execute(req) ;
+        UpdateFactory.create(req, store).execute() ;
     }
     
     private void execOne(String requestString, GraphStore store)
     {
         UpdateRequest req = UpdateFactory.create(requestString) ;
-        store.execute(req) ;
-        store.close() ;
+        UpdateFactory.create(req, store).execute() ;
     }
 }
 

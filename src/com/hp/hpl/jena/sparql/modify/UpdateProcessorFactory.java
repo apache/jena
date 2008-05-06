@@ -1,44 +1,30 @@
 /*
- * (c) Copyright 2007, 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.modify.op;
+package com.hp.hpl.jena.sparql.modify;
 
+import com.hp.hpl.jena.sparql.engine.binding.Binding;
 
-import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.update.GraphStore;
+import com.hp.hpl.jena.update.UpdateProcessor;
+import com.hp.hpl.jena.update.UpdateRequest;
 
-import com.hp.hpl.jena.sparql.modify.UpdateVisitor;
+/** Interface for factiories that accept and make requests for some class of GraphStores. */
 
-public class UpdateCreate extends GraphMgt
+public interface UpdateProcessorFactory
 {
-    public UpdateCreate(Node iri, boolean silent) {  super(iri, silent) ; }
-    public UpdateCreate(Node iri) { super(iri, false) ; }
+    /** Answer whether this factory can produce an UpdateProcessor for the UpdateRequest and GraphStore */
+    public boolean accept(UpdateRequest request, GraphStore graphStore) ;
+    /** Create the request - having returned true to accept, should not fail */  
+    public UpdateProcessor create(UpdateRequest request, GraphStore graphStore, Binding inputBinding) ;
 
-    public UpdateCreate(String iri, boolean silent) {  this(Node.createURI(iri), silent) ; }
-    public UpdateCreate(String iri) { this(iri, false) ; }
-    
-//    //@Override
-//    public void exec(GraphStore graphStore, Node iri)
-//    {
-//        if ( graphStore.containsGraph(iri) )
-//        {
-//            if ( isSilent() )
-//                return ; 
-//            throw new AlreadyExists("Named graph: "+iri) ;
-//        }
-//        
-//        Graph graph = Factory.createDefaultGraph() ;
-//        graphStore.addGraph(iri, graph) ;
-//    }
-//    
-    //@Override
-    public void visit(UpdateVisitor visitor) { visitor.visit(this) ; }
 }
 
 /*
- * (c) Copyright 2007, 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

@@ -6,23 +6,20 @@
 
 package com.hp.hpl.jena.sparql.modify.op;
 
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.modify.UpdateVisitor;
-import com.hp.hpl.jena.update.GraphStore;
 
 public class UpdateInsertData extends UpdateData
 {
-    protected void exec(Graph graph)
-    {
-        graph.getBulkUpdateHandler().add(super.getData()) ;
-    }
-
-    protected void finishExec()
-    {}
-
-    protected void startExec(GraphStore graphStore, Binding binding)
-    {}
+//    protected void exec(Graph graph)
+//    {
+//        graph.getBulkUpdateHandler().add(super.getData()) ;
+//    }
+//
+//    protected void finishExec()
+//    {}
+//
+//    protected void startExec(GraphStore graphStore, Binding binding)
+//    {}
 
     public void visit(UpdateVisitor visitor)
     {

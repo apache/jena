@@ -17,23 +17,30 @@ import com.hp.hpl.jena.sparql.util.IndentedWriter;
 import com.hp.hpl.jena.sparql.util.PrintSerializable;
 import com.hp.hpl.jena.sparql.util.PrintUtils;
 import com.hp.hpl.jena.update.GraphStore;
+import com.hp.hpl.jena.update.UpdateFactory;
 
 public abstract class Update implements PrintSerializable
 {
     
     /** Execute an update.
+     * @deprecated {@link UpdateFactory.create(GraphStore)}
      * @param graphStore
      */
     
-    public abstract void exec(GraphStore graphStore) ;
+    public final void exec(GraphStore graphStore)
+    { UpdateFactory.create(this, graphStore).execute() ; }
     
     /** Execute an update, using the bindign as values for some of the variables in a pattern.
      * Binding ignored in operations without a pattern.
+     * @deprecated {@link UpdateFactory.create(GraphStore, Binding)}
      * @param graphStore
      * @param binding
      */
     
-    public abstract void exec(GraphStore graphStore, Binding binding) ;
+    public final void exec(GraphStore graphStore, Binding binding)
+    {
+        UpdateFactory.create(this, graphStore, binding).execute() ;
+    }
 
     public abstract void visit(UpdateVisitor visitor) ; 
     

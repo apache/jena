@@ -13,13 +13,12 @@ import java.io.Reader;
 
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.binding.BindingUtils;
+import com.hp.hpl.jena.sparql.modify.UpdateProcessorFactory;
+import com.hp.hpl.jena.sparql.modify.UpdateProcessorRegistry;
 import com.hp.hpl.jena.sparql.modify.lang.ParserSPARQLUpdate;
+import com.hp.hpl.jena.sparql.modify.op.Update;
 
 import com.hp.hpl.jena.query.QuerySolution;
-
-import dev.UpdateProcessor;
-import dev.UpdateProcessorFactory;
-import dev.UpdateProcessorRegistry;
 
 
 public class UpdateFactory
@@ -72,6 +71,41 @@ public class UpdateFactory
     }
 
     /** Create a UpdateProcessor appropriate to the GraphStore, or null if no available factory to make an UpdateProcessor 
+     * @param update
+     * @param graphStore
+     * @return UpdateProcessor or null
+     */
+    public static UpdateProcessor create(Update update, GraphStore graphStore)
+    {
+        return create(update, graphStore, (Binding)null) ;
+    }
+    
+    /** Create a UpdateProcessor appropriate to the GraphStore, or null if no available factory to make an UpdateProcessor 
+     * @param update
+     * @param graphStore
+     * @param initialSolution
+     * @return UpdateProcessor or null
+     */
+    public static UpdateProcessor create(Update update, GraphStore graphStore, QuerySolution initialSolution)
+    {        
+        Binding b = null ;
+        if ( initialSolution != null )
+            b = BindingUtils.asBinding(initialSolution) ;
+        return create(update, graphStore, b) ;
+    }
+    
+    /** Create a UpdateProcessor appropriate to the GraphStore, or null if no available factory to make an UpdateProcessor 
+     * @param update
+     * @param graphStore
+     * @param initialBinding
+     * @return UpdateProcessor or null
+     */
+    public static UpdateProcessor create(Update update, GraphStore graphStore, Binding initialBinding)
+    {        
+        return create(new UpdateRequest(update), graphStore, initialBinding) ;
+    }
+    
+    /** Create a UpdateProcessor appropriate to the GraphStore, or null if no available factory to make an UpdateProcessor 
      * @param updateRequest
      * @param graphStore
      * @return UpdateProcessor or null
@@ -85,7 +119,7 @@ public class UpdateFactory
      * @param updateRequest
      * @param graphStore
      * @param initialSolution
-     * @return
+     * @return UpdateProcessor or null
      */
     public static UpdateProcessor create(UpdateRequest updateRequest, GraphStore graphStore, QuerySolution initialSolution)
     {        
@@ -99,7 +133,7 @@ public class UpdateFactory
      * @param updateRequest
      * @param graphStore
      * @param initialBinding
-     * @return
+     * @return UpdateProcessor or null
      */
     public static UpdateProcessor create(UpdateRequest updateRequest, GraphStore graphStore, Binding initialBinding)
     {        

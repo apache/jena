@@ -11,13 +11,13 @@ import com.hp.hpl.jena.graph.Factory;
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.ModelFactory;
 
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.binding.Binding1;
-import com.hp.hpl.jena.sparql.modify.op.UpdateDelete;
-import com.hp.hpl.jena.sparql.modify.op.UpdateInsert;
-import com.hp.hpl.jena.sparql.modify.op.UpdateModify;
+import com.hp.hpl.jena.sparql.modify.op.*;
 import com.hp.hpl.jena.sparql.syntax.Element;
 import com.hp.hpl.jena.sparql.syntax.Template;
 import com.hp.hpl.jena.sparql.syntax.TemplateGroup;
@@ -26,10 +26,7 @@ import com.hp.hpl.jena.sparql.util.NodeFactory;
 
 import com.hp.hpl.jena.query.QueryFactory;
 
-import com.hp.hpl.jena.update.GraphStore;
-import com.hp.hpl.jena.update.GraphStoreFactory;
-import com.hp.hpl.jena.update.UpdateFactory;
-import com.hp.hpl.jena.update.UpdateRequest;
+import com.hp.hpl.jena.update.*;
 
 public class TestUpdateGraph extends TestUpdateBase
 {
@@ -41,6 +38,53 @@ public class TestUpdateGraph extends TestUpdateBase
     protected static Triple triple2 =  new Triple(s,p,o2) ;
     protected static Graph graph1 = data1() ;
     protected static Node graphIRI = NodeFactory.create("<http://example/graph>") ;
+    
+    public void testInsertData1()
+    {
+        Model model = ModelFactory.createDefaultModel() ;
+        model.getGraph().getBulkUpdateHandler().add(graph1) ;
+        
+        GraphStore gStore = GraphStoreFactory.create(model) ;
+        UpdateInsertData insert = new UpdateInsertData() ;
+        insert.setData(data2()) ;
+        UpdateProcessor uProc = UpdateFactory.create(insert, gStore) ;
+        uProc.execute(); 
+        
+        assertFalse(graphEmpty(gStore.getDefaultGraph())) ;
+        assertTrue(graphContains(gStore.getDefaultGraph(), triple1)) ;
+        assertTrue(graphContains(gStore.getDefaultGraph(), triple2)) ;
+    }
+    
+    public void testDeleteData1()
+    {
+        Model model = ModelFactory.createDefaultModel() ;
+        model.getGraph().getBulkUpdateHandler().add(graph1) ;
+        
+        GraphStore gStore = GraphStoreFactory.create(model) ;
+        UpdateDeleteData delete = new UpdateDeleteData() ;
+        delete.setData(data2()) ;
+        UpdateProcessor uProc = UpdateFactory.create(delete, gStore) ;
+        uProc.execute(); 
+        
+        assertFalse(graphEmpty(gStore.getDefaultGraph())) ;
+        assertTrue(graphContains(gStore.getDefaultGraph(), triple1)) ;
+        assertFalse(graphContains(gStore.getDefaultGraph(), triple2)) ;
+    }
+    
+    public void testDeleteData2()
+    {
+        Model model = ModelFactory.createDefaultModel() ;
+        model.getGraph().getBulkUpdateHandler().add(graph1) ;
+        
+        GraphStore gStore = GraphStoreFactory.create(model) ;
+        UpdateDeleteData delete = new UpdateDeleteData() ;
+        delete.setData(data1()) ;
+        UpdateProcessor uProc = UpdateFactory.create(delete, gStore) ;
+        uProc.execute(); 
+        
+        assertTrue(graphEmpty(gStore.getDefaultGraph())) ;
+        assertFalse(graphContains(gStore.getDefaultGraph(), triple1)) ;
+    }
     
     public void testInsert1()
     {

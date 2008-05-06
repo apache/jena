@@ -30,29 +30,33 @@ public class UpdateRequest extends Prologue
     
     public void addUpdate(Update update) { requests.add(update) ; }
     public List getUpdates() { return requests ; }
-    
+
+    /** @deprecated  @link{UpdateFactory#create(UpdateRequest, GraphStore)} */
     public void exec(GraphStore graphStore)
     { 
-        // INVERT HERE ?
-        for ( Iterator iter = requests.iterator() ; iter.hasNext(); )
-        {
-            Update update = (Update)iter.next() ;
-            update.exec(graphStore) ;
-        }
+        UpdateFactory.create(this, graphStore).execute(); 
+//        // INVERT HERE ?
+//        for ( Iterator iter = requests.iterator() ; iter.hasNext(); )
+//        {
+//            Update update = (Update)iter.next() ;
+//            update.exec(graphStore) ;
+//        }
     }
     
     /** Execute a request, with a given set of variable/value settings.
      *  The initial binding applies to all Updates within the request.
+     * @deprecated  @link{UpdateFactory#create(UpdateRequest, GraphStore, binding)}
      * @param graphStore
      * @param binding
      */ 
     public void exec(GraphStore graphStore, Binding binding)
     { 
-        for ( Iterator iter = requests.iterator() ; iter.hasNext(); )
-        {
-            Update update = (Update)iter.next() ;
-            update.exec(graphStore, binding) ;
-        }
+        UpdateFactory.create(this, graphStore, binding).execute(); 
+//        for ( Iterator iter = requests.iterator() ; iter.hasNext(); )
+//        {
+//            Update update = (Update)iter.next() ;
+//            update.exec(graphStore, binding) ;
+//        }
     }
     
     //@Override

@@ -25,10 +25,7 @@ import com.hp.hpl.jena.sparql.sse.SSE;
 
 import com.hp.hpl.jena.query.*;
 
-import com.hp.hpl.jena.update.GraphStore;
-import com.hp.hpl.jena.update.GraphStoreFactory;
-import com.hp.hpl.jena.update.UpdateFactory;
-import com.hp.hpl.jena.update.UpdateRequest;
+import com.hp.hpl.jena.update.*;
 
 public class Run
 {
@@ -37,12 +34,8 @@ public class Run
         UpdateRequest r = UpdateFactory.read("update.ru") ;
         GraphStore gs = GraphStoreFactory.create() ;
         UpdateProcessor uProc = UpdateFactory.create(r, gs) ;
-//        
-//        GraphStore gs = GraphStoreFactory.create() ;
-//        //DatasetGraph dsg = new DataSourceGraphImpl() ;
-//        UpdateProcessorFactory f = UpdateProcessorRegistry.get().find(r, gs) ;
-//        UpdateProcessor uProc = f.create(r, gs, null) ;
         uProc.execute() ;
+
         SSE.write(gs) ;
         System.exit(0) ;
         

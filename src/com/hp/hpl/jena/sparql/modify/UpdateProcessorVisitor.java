@@ -4,15 +4,9 @@
  * [See end of file]
  */
 
-package dev;
+package com.hp.hpl.jena.sparql.modify;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import com.hp.hpl.jena.graph.Factory;
 import com.hp.hpl.jena.graph.Graph;
@@ -22,14 +16,19 @@ import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.sparql.AlreadyExists;
 import com.hp.hpl.jena.sparql.DoesNotExist;
+import com.hp.hpl.jena.sparql.engine.Plan;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
+import com.hp.hpl.jena.sparql.engine.binding.BindingRoot;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterPlainWrapper;
-import com.hp.hpl.jena.sparql.modify.UpdateVisitor;
 import com.hp.hpl.jena.sparql.modify.op.*;
+import com.hp.hpl.jena.sparql.syntax.Element;
 import com.hp.hpl.jena.sparql.syntax.Template;
 import com.hp.hpl.jena.sparql.util.ALog;
 import com.hp.hpl.jena.sparql.util.FmtUtils;
+
+import com.hp.hpl.jena.query.QueryExecutionFactory;
+
 import com.hp.hpl.jena.update.GraphStore;
 import com.hp.hpl.jena.update.UpdateException;
 import com.hp.hpl.jena.util.FileManager;
@@ -73,11 +72,31 @@ public class UpdateProcessorVisitor implements UpdateVisitor
 
     private void visitModify(final UpdateModifyBase modify)
     {
-        final List bindings = null ; //??
+        final List bindings = evalBindings(modify.getElement() ) ;
         action(modify.getGraphNames(), new Action() { public void exec(Graph graph) { execDeletes(modify, graph, bindings) ; }}) ;
         action(modify.getGraphNames(), new Action() { public void exec(Graph graph) { execInserts(modify, graph, bindings) ; }}) ;
     }
   
+    private List evalBindings(Element pattern)
+    {
+        List bindings = new ArrayList() ;
+        if ( pattern != null )
+        {
+            Plan plan = QueryExecutionFactory.createPlan(pattern, graphStore, binding) ;
+            QueryIterator qIter = plan.iterator() ;
+
+            for( ; qIter.hasNext() ; )
+            {
+                Binding b = qIter.nextBinding() ;
+                bindings.add(b) ;
+            }
+            qIter.close() ;
+        }
+        else
+            bindings.add(BindingRoot.create()) ;
+        return bindings ;
+    }
+
     private void execDeletes(UpdateModifyBase modify, Graph graph, List bindings)
     {
         if ( modify.getDeletes() != null )
