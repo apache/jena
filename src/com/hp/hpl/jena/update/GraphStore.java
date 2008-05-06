@@ -15,23 +15,29 @@ import com.hp.hpl.jena.sparql.modify.op.Update;
  *  The collection is one unnamed graph and zero or more named graphs, like
  *  a SPARQL dataset.   
  * @author Andy Seaborne
- * @version $Id$
  */
 public interface GraphStore extends DataSourceGraph
 {
-    /** Execute a request (a number of update operations) */
+    /** Execute a request (a number of update operations) 
+     * @deprecated Use @link{UpdateProcessorFactory} 
+     */
     public void execute(UpdateRequest request) ;
 
-    /** Execute an update (a single update operation) */
+    /** Execute an update (a single update operation) 
+     * @deprecated Use @link{UpdateProcessorFactory} 
+     */
     public void execute(Update graphUpdate) ;
     
-    /** Execute a request (a number of update operations) */
+    /** Execute a request (a number of update operations) 
+     * @deprecated Use @link{UpdateProcessorFactory} 
+     */
     public void execute(UpdateRequest request, Binding binding) ;
 
-    /** Execute an update (a single update operation) */
+    /** Execute an update (a single update operation) 
+     * @deprecated Use @link{UpdateProcessorFactory} 
+     */
     public void execute(Update graphUpdate, Binding binding) ;
 
-    
     public Dataset toDataset() ;
     
     public void sync() ;

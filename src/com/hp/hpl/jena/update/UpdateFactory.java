@@ -11,7 +11,15 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.Reader;
 
+import com.hp.hpl.jena.sparql.engine.binding.Binding;
+import com.hp.hpl.jena.sparql.engine.binding.BindingUtils;
 import com.hp.hpl.jena.sparql.modify.lang.ParserSPARQLUpdate;
+
+import com.hp.hpl.jena.query.QuerySolution;
+
+import dev.UpdateProcessor;
+import dev.UpdateProcessorFactory;
+import dev.UpdateProcessorRegistry;
 
 
 public class UpdateFactory
@@ -61,6 +69,45 @@ public class UpdateFactory
         UpdateRequest update = new UpdateRequest() ;
         p.parse(update, in) ;
         return update ;
+    }
+
+    /** Create a UpdateProcessor appropriate to the GraphStore, or null if no available factory to make an UpdateProcessor 
+     * @param updateRequest
+     * @param graphStore
+     * @return UpdateProcessor or null
+     */
+    public static UpdateProcessor create(UpdateRequest updateRequest, GraphStore graphStore)
+    {
+        return create(updateRequest, graphStore, (Binding)null) ;
+    }
+    
+    /** Create a UpdateProcessor appropriate to the GraphStore, or null if no available factory to make an UpdateProcessor 
+     * @param updateRequest
+     * @param graphStore
+     * @param initialSolution
+     * @return
+     */
+    public static UpdateProcessor create(UpdateRequest updateRequest, GraphStore graphStore, QuerySolution initialSolution)
+    {        
+        Binding b = null ;
+        if ( initialSolution != null )
+            b = BindingUtils.asBinding(initialSolution) ;
+        return create(updateRequest, graphStore, b) ;
+    }
+    
+    /** Create a UpdateProcessor appropriate to the GraphStore, or null if no available factory to make an UpdateProcessor 
+     * @param updateRequest
+     * @param graphStore
+     * @param initialBinding
+     * @return
+     */
+    public static UpdateProcessor create(UpdateRequest updateRequest, GraphStore graphStore, Binding initialBinding)
+    {        
+        UpdateProcessorFactory f = UpdateProcessorRegistry.get().find(updateRequest, graphStore) ;
+        if ( f == null )
+            return null ;
+        UpdateProcessor uProc = f.create(updateRequest, graphStore, initialBinding) ;
+        return uProc ;
     }
     
 }

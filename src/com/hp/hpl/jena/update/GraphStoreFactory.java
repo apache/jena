@@ -25,21 +25,25 @@ public class GraphStoreFactory
     /** Create a GraphStore from a dataset */
     public static GraphStore create(Dataset ds) { return new GraphStoreBasic(ds) ; }
     
-    private static class GraphStoreBasic extends DataSourceGraphImpl implements GraphStore
+    public static class GraphStoreBasic extends DataSourceGraphImpl implements GraphStore
     {
         public GraphStoreBasic() { super.setDefaultGraph(GraphUtils.makeDefaultGraph()) ; }
         
         public GraphStoreBasic(Dataset ds) { super(ds) ; }
         
+        /** @deprecated */
         public void execute(UpdateRequest request, Binding binding)
         { request.exec(this, binding) ; }
 
+        /** @deprecated */
         public void execute(UpdateRequest request)
         { request.exec(this) ; }
 
+        /** @deprecated */
         public void execute(Update graphUpdate, Binding binding)
         { execute(new UpdateRequest(graphUpdate), binding) ; }
 
+        /** @deprecated */
         public void execute(Update graphUpdate)
         { execute(new UpdateRequest(graphUpdate)) ; }
         

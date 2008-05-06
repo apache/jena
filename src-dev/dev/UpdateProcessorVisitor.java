@@ -34,7 +34,7 @@ import com.hp.hpl.jena.update.GraphStore;
 import com.hp.hpl.jena.update.UpdateException;
 import com.hp.hpl.jena.util.FileManager;
 
-/** A general processor for executing SPARQL/Updates */ 
+/** A general processor for executing SPARQL/Updates on GraphStoreBasic objects*/ 
 public class UpdateProcessorVisitor implements UpdateVisitor
 {
 

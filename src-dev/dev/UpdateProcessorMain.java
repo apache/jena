@@ -8,18 +8,30 @@ package dev;
 
 import java.util.Iterator;
 
-import com.hp.hpl.jena.sparql.core.DatasetGraph;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.modify.UpdateVisitor;
 import com.hp.hpl.jena.sparql.modify.op.Update;
-import com.hp.hpl.jena.sparql.util.ALog;
+
 import com.hp.hpl.jena.update.GraphStore;
+import com.hp.hpl.jena.update.GraphStoreFactory;
 import com.hp.hpl.jena.update.UpdateRequest;
 
+/** General purpose UpdateProcessor for GraphStoreBasic objects */
 public class UpdateProcessorMain implements UpdateProcessor
 {
 
-    public void execute(GraphStore graphStore, UpdateRequest request)
+    private GraphStore graphStore ;
+    private UpdateRequest request ;
+    private Binding inputBinding ;
+
+    UpdateProcessorMain(GraphStore graphStore, UpdateRequest request, Binding inputBinding)
+    {
+        this.graphStore = graphStore ;
+        this.request = request ;
+        this.inputBinding = inputBinding ;
+    }
+    
+    public void execute()
     {
         UpdateVisitor v = new UpdateProcessorVisitor(graphStore, null) ;
         for ( Iterator iter = request.getUpdates().iterator() ; iter.hasNext(); )
@@ -30,20 +42,19 @@ public class UpdateProcessorMain implements UpdateProcessor
         
     }
 
-    public static UpdateProcessorFactory getFactory()
-    {
-       return new UpdateProcessorFactory() {
-
-        public boolean accept(UpdateRequest request, DatasetGraph dataset)
+    public static UpdateProcessorFactory getFactory() { 
+        return new UpdateProcessorFactory()
         {
-            return true ; //dataset instanceof GraphStoreBasic ;
-        }
-
-        public UpdateProcessor create(UpdateRequest request, DatasetGraph dataset, Binding inputBinding)
-        {
-            ALog.warn(UpdateProcessorMain.class, "Check me") ;
-            return new UpdateProcessorMain() ;
-        }} ;
+            public boolean accept(UpdateRequest request, GraphStore graphStore)
+            {
+                return (graphStore instanceof GraphStoreFactory.GraphStoreBasic) ;
+            }
+        
+            public UpdateProcessor create(UpdateRequest request, GraphStore graphStore, Binding inputBinding)
+            {
+                return new UpdateProcessorMain(graphStore, request, inputBinding) ;
+            }
+        } ;
     }
 }
 

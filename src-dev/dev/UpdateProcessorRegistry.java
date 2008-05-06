@@ -10,8 +10,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import com.hp.hpl.jena.sparql.core.DatasetGraph;
-
+import com.hp.hpl.jena.update.GraphStore;
 import com.hp.hpl.jena.update.UpdateRequest;
 
 public class UpdateProcessorRegistry
@@ -43,22 +42,22 @@ public class UpdateProcessorRegistry
      * @return A QueryExecutionFactory or null if none accept the request
      */
     
-    public static UpdateProcessorFactory findFactory(UpdateRequest request, DatasetGraph dataset)
-    { return get().find(request, dataset) ; }
+    public static UpdateProcessorFactory findFactory(UpdateRequest request, GraphStore graphStore)
+    { return get().find(request, graphStore) ; }
     
     /** Locate a suitable factory for this query and dataset
      * 
-     * @param request   UpdateRequest 
-     * @param dataset Dataset
+     * @param request       UpdateRequest 
+     * @param graphStore    A GraphStore
      * @return A UpdateProcessorFactroy or null if none accept the request
      */
     
-    public UpdateProcessorFactory find(UpdateRequest request, DatasetGraph dataset)
+    public UpdateProcessorFactory find(UpdateRequest request, GraphStore graphStore)
     {
         for ( Iterator iter = factories.listIterator() ; iter.hasNext() ; )
         {
             UpdateProcessorFactory f = (UpdateProcessorFactory)iter.next() ;
-            if ( f.accept(request, dataset) )
+            if ( f.accept(request, graphStore) )
                 return f ;
         }
         return null ;

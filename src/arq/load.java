@@ -88,7 +88,7 @@ public class load extends CmdUpdate
         if ( dump )
         {
             IndentedWriter out = IndentedWriter.stdout ;
-            SSE.write(graphStore.toDataset()) ;
+            SSE.write(graphStore) ;
             out.flush();
         }
     }

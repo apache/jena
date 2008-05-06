@@ -6,15 +6,19 @@
 
 package dev;
 
-import com.hp.hpl.jena.sparql.core.DatasetGraph;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 
+import com.hp.hpl.jena.update.GraphStore;
 import com.hp.hpl.jena.update.UpdateRequest;
+
+/** Interface for factiories that accept and make requests for some class of GraphStores. */
 
 public interface UpdateProcessorFactory
 {
-    public boolean accept(UpdateRequest request, DatasetGraph dataset) ;
-    public UpdateProcessor create(UpdateRequest request, DatasetGraph dataset, Binding inputBinding) ;
+    /** Answer whether this factory can produce an UpdateProcessor for the UpdateRequest and GraphStore */
+    public boolean accept(UpdateRequest request, GraphStore graphStore) ;
+    /** Create the request - having returned true to accept, should not fail */  
+    public UpdateProcessor create(UpdateRequest request, GraphStore graphStore, Binding inputBinding) ;
 
 }
 
