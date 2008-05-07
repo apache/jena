@@ -87,7 +87,7 @@ public class UpdateAction
 
     /** Read a file containing SPARQL/Update operations, and execute the operations.
      * @param filename
-     * @param model
+     * @param graphStore
      * @param initialBinding Presets for variables.
      */
     public static void readExecute(String filename, GraphStore graphStore, Binding binding)
@@ -164,7 +164,7 @@ public class UpdateAction
 
     /** Parse a string containing SPARQL/Update operations, and execute the operations.
      * @param updateString
-     * @param model
+     * @param graphStore
      * @param initialBinding Presets for variables.
      */
     public static void parseExecute(String updateString, GraphStore graphStore, Binding binding)
@@ -174,7 +174,7 @@ public class UpdateAction
     }
     
     /** Execute SPARQL/Update operations.
-     * @param updateString
+     * @param request
      * @param model
      */
     public static void execute(UpdateRequest request, Model model)
@@ -241,7 +241,7 @@ public class UpdateAction
 
     /** Execute SPARQL/Update operations.
      * @param request
-     * @param model
+     * @param graphStore
      * @param initialBinding Presets for variables.
      */
     public static void execute(UpdateRequest request, GraphStore graphStore, Binding binding)
@@ -317,7 +317,7 @@ public class UpdateAction
 
     /** Execute a single SPARQL/Update operation.
      * @param update
-     * @param model
+     * @param graphStore
      * @param initialBinding Presets for variables.
      */
     public static void execute(Update update, GraphStore graphStore, Binding binding)

@@ -13,51 +13,37 @@ import arq.sparql;
 import arq.sse_query;
 
 import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.rdf.model.Literal;
+import com.hp.hpl.jena.query.Query;
+import com.hp.hpl.jena.query.QueryExecution;
+import com.hp.hpl.jena.query.QueryExecutionFactory;
+import com.hp.hpl.jena.query.QueryFactory;
+import com.hp.hpl.jena.query.QuerySolutionMap;
+import com.hp.hpl.jena.query.ResultSetFormatter;
 import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.util.FileManager;
-
-import com.hp.hpl.jena.sparql.algebra.*;
+import com.hp.hpl.jena.sparql.algebra.Algebra;
+import com.hp.hpl.jena.sparql.algebra.Op;
+import com.hp.hpl.jena.sparql.algebra.Transform;
+import com.hp.hpl.jena.sparql.algebra.TransformCopy;
+import com.hp.hpl.jena.sparql.algebra.Transformer;
 import com.hp.hpl.jena.sparql.algebra.op.OpBGP;
 import com.hp.hpl.jena.sparql.algebra.op.OpJoin;
 import com.hp.hpl.jena.sparql.algebra.op.OpLeftJoin;
 import com.hp.hpl.jena.sparql.core.BasicPattern;
 import com.hp.hpl.jena.sparql.sse.SSE;
-
-import com.hp.hpl.jena.query.*;
-
-import com.hp.hpl.jena.update.*;
-import com.hp.hpl.jena.vocabulary.RDFS;
+import com.hp.hpl.jena.update.GraphStore;
+import com.hp.hpl.jena.update.GraphStoreFactory;
+import com.hp.hpl.jena.update.UpdateAction;
+import com.hp.hpl.jena.update.UpdateFactory;
+import com.hp.hpl.jena.update.UpdateRequest;
+import com.hp.hpl.jena.util.FileManager;
 
 public class Run
 {
     public static void main(String[] argv) throws Exception
     {
-        {
-            Model m = ModelFactory.createDefaultModel();
-            Resource r = m.createResource( "http://example.com/r" );
-            Literal lab = m.createLiteral( "foo" );
-            m.add( r, RDFS.label, lab );
-
-            QueryExecution qexec =
-                QueryExecutionFactory.create( "describe ?x", m );
-
-            QuerySolutionMap qsm = new QuerySolutionMap();
-            qsm.add( "x", r );
-            qexec.setInitialBinding( qsm );
-
-            Model out = qexec.execDescribe();
-            qexec.close();
-            out.write(System.out, "TTL") ;
-            System.exit(0) ;
-        }
-        
         UpdateRequest r = UpdateFactory.read("update.ru") ;
         GraphStore gs = GraphStoreFactory.create() ;
-        UpdateProcessor uProc = UpdateFactory.create(r, gs) ;
-        uProc.execute() ;
+        UpdateAction.execute(r, gs) ;
 
         SSE.write(gs) ;
         System.exit(0) ;
