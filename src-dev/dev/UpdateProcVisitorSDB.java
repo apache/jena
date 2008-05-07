@@ -17,13 +17,13 @@ import com.hp.hpl.jena.update.UpdateRequest;
 
 import com.hp.hpl.jena.sdb.SDBException;
 
-public class UpdateProcVisitorSDB extends UpdateProcessorVisitor
+public class UpdateProcVisitorSDB //extends UpdateProcessorVisitor
 {
 
-    UpdateProcVisitorSDB(GraphStore graphStore, UpdateRequest request, Binding inputBinding)
-    {
-        super(graphStore, request, inputBinding) ;
-    }
+//    UpdateProcVisitorSDB(GraphStore graphStore, UpdateRequest request, Binding inputBinding)
+//    {
+//        super(graphStore, request, inputBinding) ;
+//    }
 
     @Override
     public void visit(UpdateModify modify)
