@@ -242,7 +242,7 @@ public class UpdateAction
     /** Execute SPARQL/Update operations.
      * @param request
      * @param graphStore
-     * @param initialBinding Presets for variables.
+     * @param binding Presets for variables.
      */
     public static void execute(UpdateRequest request, GraphStore graphStore, Binding binding)
     {
