@@ -43,42 +43,11 @@ public abstract class UpdateModifyBase extends UpdatePattern
     protected Template getInsertTemplateBase()
     { return inserts ; }
 
-//    //Override
-//    protected void exec(Graph graph, List bindings)
-//    {
-//        execDeletes(graph, bindings) ;
-//        execInserts(graph, bindings) ;
-//    }
-//
-//    private void execDeletes(Graph graph, List bindings)
-//    {
-//        if ( deletes != null )
-//        {
-//            QueryIterator qIter = new QueryIterPlainWrapper(bindings.iterator()) ;
-//            Collection acc = subst(deletes, qIter) ;
-//            graph.getBulkUpdateHandler().delete(acc.iterator()) ;
-//        }
-//    }
-//
-//    private void execInserts(Graph graph, List bindings)
-//    {
-//        if ( inserts != null )
-//        {
-//            QueryIterator qIter = new QueryIterPlainWrapper(bindings.iterator()) ;
-//            Collection acc = subst(inserts, qIter) ;
-//            graph.getBulkUpdateHandler().add(acc.iterator()) ;
-//        }
-//    }
-
     public Template getDeletes()
-    {
-        return deletes ;
-    }
+    { return deletes ; }
 
     public Template getInserts()
-    {
-        return inserts ;
-    }
+    { return inserts ; }
 }
 
 /*

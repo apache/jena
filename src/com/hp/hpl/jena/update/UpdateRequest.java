@@ -35,12 +35,6 @@ public class UpdateRequest extends Prologue
     public void exec(GraphStore graphStore)
     { 
         UpdateFactory.create(this, graphStore).execute(); 
-//        // INVERT HERE ?
-//        for ( Iterator iter = requests.iterator() ; iter.hasNext(); )
-//        {
-//            Update update = (Update)iter.next() ;
-//            update.exec(graphStore) ;
-//        }
     }
     
     /** Execute a request, with a given set of variable/value settings.
@@ -52,11 +46,6 @@ public class UpdateRequest extends Prologue
     public void exec(GraphStore graphStore, Binding binding)
     { 
         UpdateFactory.create(this, graphStore, binding).execute(); 
-//        for ( Iterator iter = requests.iterator() ; iter.hasNext(); )
-//        {
-//            Update update = (Update)iter.next() ;
-//            update.exec(graphStore, binding) ;
-//        }
     }
     
     //@Override

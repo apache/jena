@@ -27,22 +27,6 @@ public abstract class GraphMgt extends Update
 
     public boolean isSilent()
     { return silent ; }
-    
-//    abstract
-//    public void exec(GraphStore graphStore, Node iri) ;
-//    
-//    //@Override 
-//    final public void exec(GraphStore graphStore, Binding binding)
-//    {
-//        // Ignore binding.
-//        exec(graphStore, iri) ;
-//    }
-//    
-//    //@Override 
-//    final public void exec(GraphStore graphStore)
-//    {
-//        exec(graphStore, iri) ;
-//    }
 }
 
 /*

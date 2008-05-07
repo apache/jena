@@ -13,6 +13,7 @@ import com.hp.hpl.jena.sparql.modify.op.*;
 import com.hp.hpl.jena.sparql.util.graph.GraphUtils;
 import com.hp.hpl.jena.update.GraphStore;
 import com.hp.hpl.jena.update.GraphStoreFactory;
+import com.hp.hpl.jena.update.UpdateAction;
 
 
 public class TestUpdateGraphMgt extends TestUpdateBase
@@ -23,21 +24,21 @@ public class TestUpdateGraphMgt extends TestUpdateBase
     {
         GraphStore gStore = GraphStoreFactory.create() ;
         Update u = new UpdateCreate(graphIRI) ;
-        u.exec(gStore) ;
+        UpdateAction.execute(u, gStore) ;
         assertTrue(gStore.containsGraph(graphIRI)) ;
         assertTrue(graphEmpty(gStore.getGraph(graphIRI))) ;
 
         try {
-            u.exec(gStore) ;
+            UpdateAction.execute(u, gStore) ;
             fail() ;
         } catch (AlreadyExists ex) {}
         
         u = new UpdateDrop(graphIRI) ;
-        u.exec(gStore) ;
+        UpdateAction.execute(u, gStore) ;
         assertFalse(gStore.containsGraph(graphIRI)) ;
         
         try {
-            u.exec(gStore) ;
+            UpdateAction.execute(u, gStore) ;
             fail() ;
         } catch (DoesNotExist ex) {}
         
@@ -47,19 +48,19 @@ public class TestUpdateGraphMgt extends TestUpdateBase
     {
         GraphStore gStore = GraphStoreFactory.create() ;
         Update u = new UpdateCreate(graphIRI) ;
-        u.exec(gStore) ;
+        UpdateAction.execute(u, gStore) ;
         
         u = new UpdateCreate(graphIRI, true) ;
-        u.exec(gStore) ;
+        UpdateAction.execute(u, gStore) ;
         
         assertTrue(gStore.containsGraph(graphIRI)) ;
         assertTrue(graphEmpty(gStore.getGraph(graphIRI))) ;
         
         u = new UpdateDrop(graphIRI) ;
-        u.exec(gStore) ;
+        UpdateAction.execute(u, gStore) ;
         assertFalse(gStore.containsGraph(graphIRI)) ;
         u = new UpdateDrop(graphIRI, true) ;
-        u.exec(gStore) ;
+        UpdateAction.execute(u, gStore) ;
     }
     
     public void testCreateDrop3()

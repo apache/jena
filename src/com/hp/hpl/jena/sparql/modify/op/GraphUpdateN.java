@@ -23,39 +23,6 @@ public abstract class GraphUpdateN extends Update
     public void addGraphName(Node node) { graphNodes.add(node) ; }
     public void addGraphName(String uri) { graphNodes.add(Node.createURI(uri)) ; }
     public List getGraphNames() { return graphNodes ; }
-    
-//    protected abstract void startExec(GraphStore graphStore, Binding binding) ;
-//    protected abstract void finishExec() ;
-    
-//    protected abstract void exec(Graph graph) ;
-    
-//    //@Override
-//    public void exec(GraphStore graphStore, Binding binding)
-//    {
-//        startExec(graphStore, binding) ;
-//        if ( hasGraphNames() )
-//        {
-//            for ( Iterator iter = graphNodes.iterator() ; iter.hasNext() ; )
-//            {
-//                Node gn = (Node)iter.next() ;
-//                Graph g = graphStore.getGraph(gn) ;
-//                if ( g == null )
-//                    throw new UpdateException("No such graph: "+gn) ; 
-//                exec(g) ;
-//            }
-//        }
-//        else
-//        {
-//            Graph g = graphStore.getDefaultGraph() ;
-//            exec(g) ;
-//        }
-//        finishExec() ;
-//    }
-//    
-//    public void exec(GraphStore graphStore)
-//    {
-//        exec(graphStore, null) ;
-//    }
 }
 
 

@@ -8,11 +8,9 @@ package arq.examples.update;
 
 import com.hp.hpl.jena.sparql.modify.op.UpdateLoad;
 import com.hp.hpl.jena.sparql.sse.SSE;
-
 import com.hp.hpl.jena.update.GraphStore;
 import com.hp.hpl.jena.update.GraphStoreFactory;
-import com.hp.hpl.jena.update.UpdateFactory;
-import com.hp.hpl.jena.update.UpdateProcessor;
+import com.hp.hpl.jena.update.UpdateAction;
 
 /** Simple example of SPARQL/Update */ 
 public class Update1
@@ -24,10 +22,12 @@ public class Update1
         
         // Read a graph into it.
         UpdateLoad load = new UpdateLoad("etc/update-data.ttl") ;
-        UpdateProcessor uProc = UpdateFactory.create(load, graphStore) ;
-        
+        UpdateAction.execute(load, graphStore) ;
+
+        // Same as:
+        //UpdateProcessor uProc = UpdateFactory.create(load, graphStore) ;
         // Execute a single operation.
-        uProc.execute() ;
+        //uProc.execute() ;
         
         // Print it out (format is SSE <http://jena.hpl.hp.com/wiki/SSE>)
         // used to represent a dataset

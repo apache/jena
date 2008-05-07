@@ -15,12 +15,6 @@ public class UpdateClear extends GraphUpdate1
 
     //@Override
     public void visit(UpdateVisitor visitor) { visitor.visit(this) ; }
-
-//    //@Override
-//    protected void exec(GraphStore graphStore, Graph graph)
-//    {
-//        graph.getBulkUpdateHandler().removeAll() ;
-//    }
 }
 
 /*

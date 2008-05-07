@@ -22,18 +22,7 @@ public class UpdateLoad extends GraphUpdate1
     public UpdateLoad(String iri, String graphName) { super(graphName) ; addLoadIRI(iri) ; }
     
     public void addLoadIRI(String iri) { loadData.add(iri) ; }
-    
-//    //@Override
-//    protected void exec(GraphStore graphStore, Graph graph)
-//    {
-//        Model model = ModelFactory.createModelForGraph(graph) ;
-//        for ( Iterator iter = loadData.iterator() ; iter.hasNext() ; )
-//        {
-//            String s = (String)iter.next() ;
-//            FileManager.get().readModel(model, s) ;
-//        }
-//    }
-
+ 
     //@Override
     public void visit(UpdateVisitor visitor) { visitor.visit(this) ; }
 

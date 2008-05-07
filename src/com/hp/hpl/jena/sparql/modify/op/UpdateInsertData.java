@@ -10,22 +10,10 @@ import com.hp.hpl.jena.sparql.modify.UpdateVisitor;
 
 public class UpdateInsertData extends UpdateData
 {
-//    protected void exec(Graph graph)
-//    {
-//        graph.getBulkUpdateHandler().add(super.getData()) ;
-//    }
-//
-//    protected void finishExec()
-//    {}
-//
-//    protected void startExec(GraphStore graphStore, Binding binding)
-//    {}
-
     public void visit(UpdateVisitor visitor)
     {
         visitor.visit(this) ;
     }
-
 }
 
 /*

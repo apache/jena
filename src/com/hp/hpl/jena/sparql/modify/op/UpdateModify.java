@@ -35,11 +35,6 @@ public class UpdateModify extends UpdateModifyBase
     public Template getInsertTemplate()
     { return getInsertTemplateBase() ; }
 
-//    protected void exec(Graph graph, List bindings)
-//    {
-//        // Debug point.
-//        super.exec(graph, bindings) ;
-//    }
     //@Override
     public void visit(UpdateVisitor visitor) { visitor.visit(this) ; }
 }

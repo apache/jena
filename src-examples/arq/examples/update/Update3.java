@@ -19,12 +19,7 @@ public class Update3
         GraphStore graphStore = GraphStoreFactory.create() ;
         
         // Read an update script
-        UpdateRequest req = UpdateFactory.read("update.ru") ;
-
-        // Create a processor 
-        UpdateProcessor uProc = UpdateFactory.create(req, graphStore) ;
-        // And perform the action.
-        uProc.execute() ;
+        UpdateAction.readExecute("update.ru", graphStore) ;
         
         // Print it out (format is SSE <http://jena.hpl.hp.com/wiki/SSE>)
         // used to represent a dataset.

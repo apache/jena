@@ -19,8 +19,7 @@ public class TestUpdateBase extends TestCase
     
     protected static void script(GraphStore gStore, String filename)
     {
-        UpdateRequest request = UpdateFactory.read(FileBase+"/"+filename) ;
-        request.exec(gStore) ;
+        UpdateAction.readExecute(FileBase+"/"+filename, gStore) ;
     }
     
     protected static boolean graphEmpty(Graph graph)

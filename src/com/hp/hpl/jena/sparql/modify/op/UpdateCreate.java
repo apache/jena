@@ -18,21 +18,7 @@ public class UpdateCreate extends GraphMgt
 
     public UpdateCreate(String iri, boolean silent) {  this(Node.createURI(iri), silent) ; }
     public UpdateCreate(String iri) { this(iri, false) ; }
-    
-//    //@Override
-//    public void exec(GraphStore graphStore, Node iri)
-//    {
-//        if ( graphStore.containsGraph(iri) )
-//        {
-//            if ( isSilent() )
-//                return ; 
-//            throw new AlreadyExists("Named graph: "+iri) ;
-//        }
-//        
-//        Graph graph = Factory.createDefaultGraph() ;
-//        graphStore.addGraph(iri, graph) ;
-//    }
-//    
+
     //@Override
     public void visit(UpdateVisitor visitor) { visitor.visit(this) ; }
 }

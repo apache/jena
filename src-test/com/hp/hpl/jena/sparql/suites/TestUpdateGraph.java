@@ -91,7 +91,7 @@ public class TestUpdateGraph extends TestUpdateBase
         GraphStore gStore = GraphStoreFactory.create() ;
         UpdateInsert insert = new UpdateInsert() ;
         insert.setInsertTemplate(new TemplateGroup()) ;
-        insert.exec(gStore) ;
+        UpdateAction.execute(insert, gStore) ;
         assertTrue(graphEmpty(gStore.getDefaultGraph())) ;
     }
     
@@ -100,7 +100,7 @@ public class TestUpdateGraph extends TestUpdateBase
         GraphStore gStore = GraphStoreFactory.create() ;
         UpdateInsert insert = new UpdateInsert() ;
         insert.setInsertTemplate(new TemplateTriple(triple1)) ;
-        insert.exec(gStore) ;
+        UpdateAction.execute(insert, gStore) ;
         assertTrue(graphContains(gStore.getDefaultGraph(), triple1)) ;
     }
     
@@ -108,7 +108,7 @@ public class TestUpdateGraph extends TestUpdateBase
     {
         GraphStore gStore = GraphStoreFactory.create() ;
         UpdateInsert insert = new UpdateInsert(graph1) ;
-        insert.exec(gStore) ;
+        UpdateAction.execute(insert, gStore) ;
         assertTrue(graphContains(gStore.getDefaultGraph(), triple1)) ;
     }
     
@@ -118,7 +118,7 @@ public class TestUpdateGraph extends TestUpdateBase
         gStore.addGraph(graphIRI, Factory.createDefaultGraph()) ;
         UpdateInsert insert = new UpdateInsert(triple1) ;
         insert.addGraphName(graphIRI) ;
-        insert.exec(gStore) ;
+        UpdateAction.execute(insert, gStore) ;
         assertTrue(graphContains(gStore.getGraph(graphIRI), triple1)) ;
     }
 
@@ -133,7 +133,7 @@ public class TestUpdateGraph extends TestUpdateBase
         insert.setPattern(element) ;
         insert.setInsertTemplate(template) ;
         
-        insert.exec(gStore) ;
+        UpdateAction.execute(insert, gStore) ;
         assertTrue(graphContains(gStore.getDefaultGraph(), triple2)) ;
     }
     
@@ -142,7 +142,7 @@ public class TestUpdateGraph extends TestUpdateBase
         GraphStore gStore = GraphStoreFactory.create() ;
         UpdateDelete insert = new UpdateDelete() ;
         insert.setDeleteTemplate(new TemplateGroup()) ;
-        insert.exec(gStore) ;
+        UpdateAction.execute(insert, gStore) ;
         assertTrue(graphEmpty(gStore.getDefaultGraph())) ;
     }
     
@@ -152,7 +152,7 @@ public class TestUpdateGraph extends TestUpdateBase
         gStore.setDefaultGraph(data1()) ;
         UpdateDelete delete = new UpdateDelete() ;
         delete.setDeleteTemplate(new TemplateGroup()) ;
-        delete.exec(gStore) ;
+        UpdateAction.execute(delete, gStore) ;
         assertFalse(graphEmpty(gStore.getDefaultGraph())) ;
     }
     
@@ -161,7 +161,7 @@ public class TestUpdateGraph extends TestUpdateBase
         GraphStore gStore = GraphStoreFactory.create() ;
         gStore.setDefaultGraph(data1()) ;
         UpdateDelete delete = new UpdateDelete(triple1) ;
-        delete.exec(gStore) ;
+        UpdateAction.execute(delete, gStore) ;
         assertTrue(graphEmpty(gStore.getDefaultGraph())) ;
     }
     
@@ -172,7 +172,7 @@ public class TestUpdateGraph extends TestUpdateBase
         gStore.addGraph(graphIRI, data1()) ;
         UpdateDelete delete = new UpdateDelete(triple1) ;
         delete.addGraphName(graphIRI) ;
-        delete.exec(gStore) ;
+        UpdateAction.execute(delete, gStore) ;
         assertTrue(graphEmpty(gStore.getGraph(graphIRI))) ;
         assertTrue(graphEmpty(gStore.getDefaultGraph())) ;
     }
@@ -188,7 +188,7 @@ public class TestUpdateGraph extends TestUpdateBase
         delete.setDeleteTemplate("{ ?s <http://example/p> 2007 }") ;
         
         delete.addGraphName(graphIRI) ;
-        delete.exec(gStore) ;
+        UpdateAction.execute(delete, gStore) ;
 
         assertTrue(graphEmpty(gStore.getGraph(graphIRI))) ;
         assertFalse(graphEmpty(gStore.getDefaultGraph())) ;
@@ -204,7 +204,7 @@ public class TestUpdateGraph extends TestUpdateBase
         modify.setPattern("{ ?s <http://example/p> ?o } ") ;
         modify.setDeleteTemplate("{ ?s <http://example/p> ?o}") ;
         modify.setInsertTemplate(new TemplateTriple(triple1)) ;
-        modify.exec(gStore) ;
+        UpdateAction.execute(modify, gStore) ;
         assertFalse(graphEmpty(gStore.getGraph(graphIRI))) ;
         assertFalse(graphEmpty(gStore.getDefaultGraph())) ;
         assertTrue(graphContains(gStore.getGraph(graphIRI), triple1)) ;
@@ -255,7 +255,7 @@ public class TestUpdateGraph extends TestUpdateBase
         req.addUpdate(delete) ;
         
         Binding b = new Binding1(null, v, n) ;
-        req.exec(gStore, b) ;
+        UpdateAction.execute(req, gStore, b) ;
         
         return gStore.getDefaultGraph() ;
     }
