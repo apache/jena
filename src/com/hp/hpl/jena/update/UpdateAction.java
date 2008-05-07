@@ -88,7 +88,7 @@ public class UpdateAction
     /** Read a file containing SPARQL/Update operations, and execute the operations.
      * @param filename
      * @param graphStore
-     * @param initialBinding Presets for variables.
+     * @param binding Presets for variables.
      */
     public static void readExecute(String filename, GraphStore graphStore, Binding binding)
     {
@@ -165,7 +165,7 @@ public class UpdateAction
     /** Parse a string containing SPARQL/Update operations, and execute the operations.
      * @param updateString
      * @param graphStore
-     * @param initialBinding Presets for variables.
+     * @param binding Presets for variables.
      */
     public static void parseExecute(String updateString, GraphStore graphStore, Binding binding)
     {
@@ -250,7 +250,7 @@ public class UpdateAction
         uProc.execute() ;
     }
     /** Execute a single SPARQL/Update operation.
-     * @param updateString
+     * @param update
      * @param model
      */
     public static void execute(Update update, Model model)
@@ -318,7 +318,7 @@ public class UpdateAction
     /** Execute a single SPARQL/Update operation.
      * @param update
      * @param graphStore
-     * @param initialBinding Presets for variables.
+     * @param binding Presets for variables.
      */
     public static void execute(Update update, GraphStore graphStore, Binding binding)
     {
