@@ -10,6 +10,7 @@ import com.hp.hpl.jena.sdb.Store;
 import com.hp.hpl.jena.sdb.store.StoreHolder;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.modify.UpdateProcessorFactory;
+import com.hp.hpl.jena.sparql.modify.UpdateProcessorRegistry;
 import com.hp.hpl.jena.sparql.util.ALog;
 import com.hp.hpl.jena.update.GraphStore;
 import com.hp.hpl.jena.update.UpdateProcessor;
@@ -20,14 +21,13 @@ public class UpdateProcessorSDB  extends StoreHolder implements UpdateProcessor
     private UpdateRequest request ;
     private Binding inputBinding ;
 
-
     public UpdateProcessorSDB(Store store, UpdateRequest request, Binding inputBinding)
     { 
         super(store) ;
         this.request = request ;
         this.inputBinding = inputBinding ;
         if ( inputBinding != null )
-            ALog.warn(this, "Initial binding (not implemented, msg)") ;
+            ALog.warn(this, "Initial binding (not implemented)") ;
     }
     
     public void execute()
@@ -35,7 +35,7 @@ public class UpdateProcessorSDB  extends StoreHolder implements UpdateProcessor
         
     }
 
-    
+    // ---- Factory
     public static UpdateProcessorFactory getFactory() { 
         return new UpdateProcessorFactory()
         {
@@ -52,6 +52,8 @@ public class UpdateProcessorSDB  extends StoreHolder implements UpdateProcessor
             }
         } ;
     }
+
+    public static void register() { UpdateProcessorRegistry.get().add(getFactory()) ; }
 }
 
 /*

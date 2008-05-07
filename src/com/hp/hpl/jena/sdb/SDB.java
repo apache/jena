@@ -8,22 +8,21 @@ package com.hp.hpl.jena.sdb;
 
 import com.hp.hpl.jena.assembler.assemblers.AssemblerGroup;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
-import com.hp.hpl.jena.shared.PrefixMapping;
-import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
-import com.hp.hpl.jena.vocabulary.OWL;
-import com.hp.hpl.jena.vocabulary.RDF;
-import com.hp.hpl.jena.vocabulary.RDFS;
-
-import com.hp.hpl.jena.sparql.ARQInternalErrorException;
-import com.hp.hpl.jena.sparql.util.Context;
-import com.hp.hpl.jena.sparql.util.Symbol;
-
 import com.hp.hpl.jena.query.ARQ;
-
 import com.hp.hpl.jena.sdb.assembler.AssemblerVocab;
 import com.hp.hpl.jena.sdb.core.SDBConstants;
 import com.hp.hpl.jena.sdb.engine.QueryEngineSDB;
 import com.hp.hpl.jena.sdb.util.DerbyUtils;
+import com.hp.hpl.jena.shared.PrefixMapping;
+import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
+import com.hp.hpl.jena.sparql.ARQInternalErrorException;
+import com.hp.hpl.jena.sparql.util.Context;
+import com.hp.hpl.jena.sparql.util.Symbol;
+import com.hp.hpl.jena.vocabulary.OWL;
+import com.hp.hpl.jena.vocabulary.RDF;
+import com.hp.hpl.jena.vocabulary.RDFS;
+
+import dev.UpdateProcessorSDB;
 
 public class SDB
 {
@@ -73,8 +72,10 @@ public class SDB
         // Default is 1000 4Kpages.
         DerbyUtils.setDerbyPageCacheSize(10000) ;
         
-        // Wire in the SDB query engne
+        // Wire in the SDB query engine
         QueryEngineSDB.register() ;
+        // Wire in the SDB update engine 
+        UpdateProcessorSDB.register() ;
         
         SDB.getContext().setIfUndef(useQuadRewrite,        false) ;
         SDB.getContext().setIfUndef(jdbcStream,            true) ;
