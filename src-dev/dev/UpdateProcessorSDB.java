@@ -41,6 +41,7 @@ public class UpdateProcessorSDB  extends StoreHolder implements UpdateProcessor
         {
             public boolean accept(UpdateRequest request, GraphStore graphStore)
             {
+                ALog.warn(this, "Not accepting a GraphStore") ;
                 return (graphStore instanceof Store) ;
             }
         
