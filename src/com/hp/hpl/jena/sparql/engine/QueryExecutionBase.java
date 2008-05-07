@@ -36,6 +36,7 @@ import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.binding.BindingMap;
 import com.hp.hpl.jena.sparql.engine.binding.BindingRoot;
 import com.hp.hpl.jena.sparql.engine.binding.BindingUtils;
+import com.hp.hpl.jena.sparql.syntax.ElementGroup;
 import com.hp.hpl.jena.sparql.syntax.Template;
 import com.hp.hpl.jena.sparql.util.ALog;
 import com.hp.hpl.jena.sparql.util.Context;
@@ -141,6 +142,9 @@ public class QueryExecutionBase implements QueryExecution
             throw new QueryExecException("Attempt to get a DESCRIBE result from a "+labelForQuery(query)+" query") ; 
         //Was: query.setQueryResultStar(true) ; but why?
         query.setResultVars() ;
+        // If there was no WhereClause, use an empty pattern (one solution, no columns). 
+        if ( query.getQueryPattern() == null )
+            query.setQueryPattern(new ElementGroup()) ;
         
         Set set = new HashSet() ;
 
