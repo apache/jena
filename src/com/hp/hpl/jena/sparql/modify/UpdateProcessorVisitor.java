@@ -40,7 +40,7 @@ public class UpdateProcessorVisitor implements UpdateVisitor
     private GraphStore graphStore ;
     private Binding binding ;
 
-    UpdateProcessorVisitor(GraphStore graphStore, Binding initialBinding)
+    public UpdateProcessorVisitor(GraphStore graphStore, Binding initialBinding)
     {
         this.graphStore = graphStore ;
         this.binding = initialBinding ;

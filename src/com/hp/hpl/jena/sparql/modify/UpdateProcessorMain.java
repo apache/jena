@@ -24,7 +24,7 @@ public class UpdateProcessorMain implements UpdateProcessor
     private UpdateRequest request ;
     private Binding inputBinding ;
 
-    UpdateProcessorMain(GraphStore graphStore, UpdateRequest request, Binding inputBinding)
+    private UpdateProcessorMain(GraphStore graphStore, UpdateRequest request, Binding inputBinding)
     {
         this.graphStore = graphStore ;
         this.request = request ;
