@@ -14,6 +14,7 @@ import static sdb.SDBCmd.setSDBConfig;
 import static sdb.SDBCmd.sparql;
 
 import java.sql.Connection;
+import java.util.Iterator;
 
 import sdb.SDBCmd;
 import arq.cmd.CmdUtils;
@@ -25,6 +26,7 @@ import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.ResourceFactory;
 import com.hp.hpl.jena.sdb.SDBFactory;
 import com.hp.hpl.jena.sdb.Store;
+import com.hp.hpl.jena.sdb.iterator.Iter;
 import com.hp.hpl.jena.sdb.modify.GraphStoreSDB;
 import com.hp.hpl.jena.sdb.sql.JDBC;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
@@ -33,6 +35,7 @@ import com.hp.hpl.jena.sdb.store.StoreFactory;
 import com.hp.hpl.jena.sdb.util.StrUtils;
 import com.hp.hpl.jena.sparql.resultset.ResultsFormat;
 import com.hp.hpl.jena.sparql.sse.SSE;
+import com.hp.hpl.jena.sparql.util.IndentedWriter;
 import com.hp.hpl.jena.sparql.util.QueryExecUtils;
 import com.hp.hpl.jena.update.GraphStore;
 import com.hp.hpl.jena.update.GraphStoreFactory;
@@ -43,6 +46,7 @@ public class RunSDB
 {
     static { CmdUtils.setLog4j() ; CmdUtils.setN3Params() ; }
     
+    @SuppressWarnings("unchecked")
     public static void main(String ... argv) 
     {
         {
@@ -51,10 +55,32 @@ public class RunSDB
             Store store = StoreFactory.create("sdb.ttl") ;
             store.getTableFormatter().create() ;
             
+            
+            
             GraphStoreSDB gs = new GraphStoreSDB(store) ;
             UpdateAction.readExecute("update.ru", gs) ;
-            SSE.write(gs.getDefaultGraph()) ;
+            
+            @SuppressWarnings("unchecked")
+            Iter<Node> iter = Iter.convert((Iterator<Node>)gs.listGraphNodes()) ;
+            System.out.println(">>>");
+            for ( Node n : iter)
+                System.out.println(n);
+            System.out.println("<<<");
+            
+            // Does not see new graph.
+            SSE.write(gs.toDataset()) ;
+//            
+//            
+//            SSE.write(gs.getDefaultGraph()) ;
+//            IndentedWriter.stdout.println();
+            System.out.println("-- Get named graph");
             SSE.write(gs.getGraph(Node.createURI("http://example/foo"))) ;
+            IndentedWriter.stdout.println() ;
+//            
+            System.out.println("----");
+            Dataset ds = SDBFactory.connectDataset(store) ;
+            SSE.write(ds) ;
+          System.out.println("----");
             System.exit(0) ;
         }
         runPrint() ;

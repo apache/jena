@@ -7,6 +7,10 @@
 package com.hp.hpl.jena.sdb.print;
 import static com.hp.hpl.jena.sdb.iterator.Stream.* ;
 
+import com.hp.hpl.jena.sparql.util.IndentedLineBuffer;
+import com.hp.hpl.jena.sparql.util.IndentedWriter;
+import com.hp.hpl.jena.sparql.util.Printable;
+
 public class StreamsPrint
 {
     // ---- Common operations 
