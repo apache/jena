@@ -4,70 +4,59 @@
  * [See end of file]
  */
 
-package dev;
-
-import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.sparql.modify.UpdateProcessorMain;
-import com.hp.hpl.jena.sparql.modify.UpdateProcessorVisitor;
-import com.hp.hpl.jena.sparql.modify.UpdateVisitor;
-import com.hp.hpl.jena.sparql.modify.op.*;
-
-import com.hp.hpl.jena.update.GraphStore;
-import com.hp.hpl.jena.update.UpdateRequest;
+package com.hp.hpl.jena.sdb.modify;
 
 import com.hp.hpl.jena.sdb.SDBException;
+import com.hp.hpl.jena.sdb.Store;
+import com.hp.hpl.jena.sparql.engine.binding.Binding;
+import com.hp.hpl.jena.sparql.modify.UpdateProcessorVisitor;
+import com.hp.hpl.jena.sparql.modify.op.UpdateClear;
+import com.hp.hpl.jena.sparql.modify.op.UpdateCreate;
+import com.hp.hpl.jena.sparql.modify.op.UpdateDrop;
+import com.hp.hpl.jena.sparql.modify.op.UpdateExt;
 
-public class UpdateProcVisitorSDB extends UpdateProcessorVisitor
+public class UpdateProcessorVisitorSDB extends UpdateProcessorVisitor
 {
-
-    UpdateProcVisitorSDB(GraphStore graphStore, UpdateRequest request, Binding inputBinding)
+    Store store ;
+    GraphStoreSDB graphStoreSDB ;
+    
+    UpdateProcessorVisitorSDB(GraphStoreSDB graphStore, Binding inputBinding)
     {
-        super(graphStore, request, inputBinding) ;
+        super(graphStore, inputBinding) ;
+        graphStoreSDB = graphStore ;
     }
 
-    @Override
-    public void visit(UpdateModify modify)
-    {}
-
-    @Override
-    public void visit(UpdateDelete delete)
-    {}
-
-    @Override
-    public void visit(UpdateInsert insert)
-    {}
-
-//    @Override
-//    public void visit(UpdateInsertData arg)
-//    {}
+//    @Override public void visit(UpdateModify modify) {}
 //
-//    @Override
-//    public void visit(UpdateDeleteData arg)
-//    {}
+//    @Override public void visit(UpdateDelete delete) {}
+//
+//    @Override public void visit(UpdateInsert insert) {}
+// 
+//    @Override public void visit(UpdateInsertData arg) {}
+//
+//    @Override public void visit(UpdateDeleteData arg) {}
+//
+//    @Override public void visit(UpdateLoad load) {}
 
-    @Override
+    @Override 
     public void visit(UpdateClear clear)
-    {}
-
-//    @Override
-//    public void visit(UpdateLoad load)
-//    {}
+    {
+        graphStoreSDB.clear(clear.getGraphName()) ;
+    }
 
     @Override
     public void visit(UpdateDrop drop)
     { 
-        // Delete triples.
+        graphStoreSDB.clear(drop.getIRI()) ;
     }
-   
 
     @Override
     public void visit(UpdateCreate create)
-    { /* No op in SDB (until a graph management module is written) */ }
+    { /* No-op in SDB (until a graph management module is written) */ }
 
     @Override
     public void visit(UpdateExt arg)
-    { throw new SDBException("UpdateExt - not supported") ; }
-
+    { throw new SDBException("UpdateExt - not supported for SDB") ; }
 }
 
 /*

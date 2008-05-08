@@ -4,35 +4,44 @@
  * [See end of file]
  */
 
-package dev;
+package com.hp.hpl.jena.sdb.modify;
 
-import com.hp.hpl.jena.sdb.Store;
-import com.hp.hpl.jena.sdb.store.StoreHolder;
+import java.util.Iterator;
+
+import com.hp.hpl.jena.sdb.iterator.Iter;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.modify.UpdateProcessorFactory;
 import com.hp.hpl.jena.sparql.modify.UpdateProcessorRegistry;
+import com.hp.hpl.jena.sparql.modify.UpdateVisitor;
+import com.hp.hpl.jena.sparql.modify.op.Update;
 import com.hp.hpl.jena.sparql.util.ALog;
 import com.hp.hpl.jena.update.GraphStore;
 import com.hp.hpl.jena.update.UpdateProcessor;
 import com.hp.hpl.jena.update.UpdateRequest;
 
-public class UpdateProcessorSDB  extends StoreHolder implements UpdateProcessor
+public class UpdateProcessorSDB implements UpdateProcessor
 {
     private UpdateRequest request ;
     private Binding inputBinding ;
+    private GraphStoreSDB graphStore ;
 
-    public UpdateProcessorSDB(Store store, UpdateRequest request, Binding inputBinding)
-    { 
-        super(store) ;
+    public UpdateProcessorSDB(GraphStoreSDB graphStore, UpdateRequest request, Binding inputBinding)
+    {
+        this.graphStore = graphStore ;
         this.request = request ;
         this.inputBinding = inputBinding ;
         if ( inputBinding != null )
             ALog.warn(this, "Initial binding (not implemented)") ;
     }
-    
+
     public void execute()
     {
-        
+        UpdateVisitor v = new UpdateProcessorVisitorSDB(graphStore, inputBinding) ;
+        for ( Iterator<Update> iter = Iter.convert(request.getUpdates().iterator()) ; iter.hasNext(); )
+        {
+            Update update = iter.next() ;
+            update.visit(v) ;
+        }
     }
 
     // ---- Factory
@@ -41,15 +50,12 @@ public class UpdateProcessorSDB  extends StoreHolder implements UpdateProcessor
         {
             public boolean accept(UpdateRequest request, GraphStore graphStore)
             {
-                ALog.warn(this, "Not accepting a GraphStore") ;
-                return (graphStore instanceof Store) ;
+                return (graphStore instanceof GraphStoreSDB) ;
             }
         
             public UpdateProcessor create(UpdateRequest request, GraphStore graphStore, Binding inputBinding)
             {
-                //return new UpdateProcessorSDB(graphStore, request, inputBinding) ;
-                ALog.fatal(this, "No Store implements GraphStore") ;
-                return null ;
+                return new UpdateProcessorSDB((GraphStoreSDB)graphStore, request, inputBinding) ;
             }
         } ;
     }
