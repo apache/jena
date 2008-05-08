@@ -24,12 +24,14 @@ import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.ResourceFactory;
 import com.hp.hpl.jena.sdb.SDBFactory;
 import com.hp.hpl.jena.sdb.Store;
+import com.hp.hpl.jena.sdb.modify.GraphStoreSDB;
 import com.hp.hpl.jena.sdb.sql.JDBC;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.store.StoreConfig;
 import com.hp.hpl.jena.sdb.store.StoreFactory;
 import com.hp.hpl.jena.sdb.util.StrUtils;
 import com.hp.hpl.jena.sparql.resultset.ResultsFormat;
+import com.hp.hpl.jena.sparql.sse.SSE;
 import com.hp.hpl.jena.sparql.util.QueryExecUtils;
 import com.hp.hpl.jena.update.GraphStore;
 import com.hp.hpl.jena.update.GraphStoreFactory;
@@ -46,6 +48,11 @@ public class RunSDB
             // SPARQL/Update
             // Need to invert and put the action on the GraphStore (maybe by default keep with the operation). 
             Store store = StoreFactory.create("sdb.ttl") ;
+            store.getTableFormatter().create() ;
+            
+            GraphStoreSDB gs = new GraphStoreSDB(store) ;
+            UpdateAction.readExecute("update.ru", gs) ;
+            SSE.write(gs.toDataset()) ;
             System.exit(0) ;
         }
         runPrint() ;
