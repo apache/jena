@@ -7,10 +7,18 @@
 
 package com.hp.hpl.jena.sdb.util;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.query.QueryExecution;
+import com.hp.hpl.jena.query.QueryExecutionFactory;
+import com.hp.hpl.jena.query.ResultSet;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.sdb.SDBFactory;
 import com.hp.hpl.jena.sdb.Store;
 import com.hp.hpl.jena.sdb.store.DatabaseType;
+import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.util.FileManager;
 
 public class StoreUtils
@@ -63,6 +71,21 @@ public class StoreUtils
     {
         Model model = SDBFactory.connectNamedModel(store, graphIRI) ;
         FileManager.get().readModel(model, filename) ;
+    }
+    
+    public static List<Node> storeGraphNames(Store store)
+    {
+        List<Node> x = new ArrayList<Node>() ;
+        String qs = "SELECT ?g { GRAPH ?g { ?s ?p ?o }}" ;
+        QueryExecution qExec = QueryExecutionFactory.create(qs, SDBFactory.connectDataset(store)) ;
+        ResultSet rs = qExec.execSelect() ;
+        Var var_g = Var.alloc("g") ;
+        while(rs.hasNext())
+        {
+            Node n = rs.nextBinding().get(var_g) ;
+            x.add(n) ;
+        }
+        return x ;
     }
 }
 

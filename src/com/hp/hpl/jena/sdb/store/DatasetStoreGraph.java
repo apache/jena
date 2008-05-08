@@ -6,29 +6,25 @@
 
 package com.hp.hpl.jena.sdb.store;
 
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.shared.Lock;
-import com.hp.hpl.jena.shared.LockMRSW;
-
-import com.hp.hpl.jena.sparql.core.DatasetGraph;
-
 import com.hp.hpl.jena.sdb.SDBFactory;
 import com.hp.hpl.jena.sdb.Store;
 import com.hp.hpl.jena.sdb.graph.GraphSDB;
 import com.hp.hpl.jena.sdb.layout1.StoreRDB;
 import com.hp.hpl.jena.sdb.shared.SDBNotImplemented;
+import com.hp.hpl.jena.sdb.util.StoreUtils;
+import com.hp.hpl.jena.shared.Lock;
+import com.hp.hpl.jena.shared.LockMRSW;
+import com.hp.hpl.jena.sparql.core.DatasetGraph;
 
 
 public class DatasetStoreGraph implements DatasetGraph
 {
     Store store ;
     Graph defaultGraph = null ;
-    List<Node> names = new ArrayList<Node>() ;
     Lock lock = new LockMRSW() ;
     
     public DatasetStoreGraph(Store store)
@@ -51,11 +47,10 @@ public class DatasetStoreGraph implements DatasetGraph
     }
     
     public Store getStore() { return store ; }
-    
 
     public Iterator<Node> listGraphNodes()
     {
-        return names.iterator() ;
+        return StoreUtils.storeGraphNames(store).iterator() ;
     }
 
     public Lock getLock() { return lock ; }

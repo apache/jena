@@ -5,9 +5,7 @@ package com.hp.hpl.jena.sdb.modify ;
  * [See end of file]
  */
 
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
@@ -17,8 +15,8 @@ import com.hp.hpl.jena.query.QueryExecutionFactory;
 import com.hp.hpl.jena.query.ResultSet;
 import com.hp.hpl.jena.sdb.SDBFactory;
 import com.hp.hpl.jena.sdb.Store;
+import com.hp.hpl.jena.sdb.util.StoreUtils;
 import com.hp.hpl.jena.shared.Lock;
-import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.modify.op.Update;
 import com.hp.hpl.jena.update.GraphStore;
@@ -97,17 +95,7 @@ public class GraphStoreSDB implements GraphStore
 
     public Iterator<?> listGraphNodes()
     {
-        List<Node> x = new ArrayList<Node>() ;
-        String qs = "SELECT ?g { ?s ?p ?o }" ;
-        QueryExecution qExec = QueryExecutionFactory.create(qs, toDataset()) ;
-        ResultSet rs = qExec.execSelect() ;
-        
-        while(rs.hasNext())
-        {
-            Node n = rs.nextBinding().get(Var.alloc("g")) ;
-            x.add(n) ;
-        }
-        return x.iterator() ;
+        return StoreUtils.storeGraphNames(store).iterator() ;
     }
 
     public int size()
