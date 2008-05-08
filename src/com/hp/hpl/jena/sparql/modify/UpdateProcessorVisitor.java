@@ -161,7 +161,7 @@ public class UpdateProcessorVisitor implements UpdateVisitor
                 return ; 
             throw new AlreadyExists("Named graph: "+n) ;
         }
-        
+        // Create an in-memory graph.  Persistent layers need to modify this operation.  
         Graph graph = Factory.createDefaultGraph() ;
         graphStore.addGraph(n, graph) ;
     }
