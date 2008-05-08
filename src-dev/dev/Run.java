@@ -90,7 +90,7 @@ public class Run
             triples.add(SSE.parseTriple("(?x <p> ?y)")) ;
             triples.add(SSE.parseTriple("(?x <p> 12)")) ;
 
-            PGraphBase graph = new GraphBTree() ;
+            PGraphBase graph = GraphBTree.create() ;
             triples = StageGeneratorPGraphBGP.reorder(graph, triples) ;
 
             for ( Triple t : triples )
@@ -391,7 +391,7 @@ public class Run
 
         //Graph g = new GraphBDB("tmp/GraphBDB") ;
         //Graph g = new GraphBTree(new Location("tmp")) ;
-        Graph g = new GraphBTree() ;
+        Graph g = GraphBTree.create() ;
         System.out.println("Add "+new Triple(x1, y1, z1)) ;
         g.add(new Triple(x1, y1, z1)) ;
 

@@ -33,7 +33,6 @@ public class StageGeneratorPGraphBGP implements StageGenerator
         if ( ! ( g instanceof PGraphBase ) )
             return above.compile(pattern, execCxt) ;
         
-        System.out.println(pattern) ;
         PGraphBase graph = (PGraphBase)g ;
         
         @SuppressWarnings("unchecked")

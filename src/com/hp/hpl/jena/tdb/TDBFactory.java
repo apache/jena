@@ -62,7 +62,7 @@ public class TDBFactory
     /** Create a TDB graph backed by an in-memory block manager. For testing. */  
     public static Graph createGraph()
     {
-        return new GraphBTree() ;
+        return GraphBTree.create() ;
     }
 
 }

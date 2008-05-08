@@ -25,7 +25,7 @@ public class TestGraphBTreeMem extends AbstractTestGraphNoRemove
     
     // In-memory testing
     @Override
-    public Graph getGraph() { return new GraphBTree(); }
+    public Graph getGraph() { return GraphBTree.create() ; }
 }
 
 /*

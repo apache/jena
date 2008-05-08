@@ -29,6 +29,8 @@ public class GraphBTree extends PGraphBase
         return create(idxFactory, nodeTable) ;
     }
     
+    private GraphBTree() {}
+    
     
 //    // Change to a factory that makes PGraghBase's
 //    // No state here.

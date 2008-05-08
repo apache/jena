@@ -16,7 +16,7 @@ public class TestGraphBTreeMem2 extends AbstractTestGraph2
     @Override
     protected Graph emptyGraph()
     {
-        return new GraphBTree();
+        return GraphBTree.create() ;
     }
 
 }
