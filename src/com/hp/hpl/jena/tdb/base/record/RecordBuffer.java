@@ -39,7 +39,7 @@ public class RecordBuffer extends BufferBase
         return _get(idx) ;
     }
     
-    // Inserts at slot idx
+    // Inserts at top.
     public void add(Record record) { add(numSlot, record) ; }
     
     // Inserts at slot idx
