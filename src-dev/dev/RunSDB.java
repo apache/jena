@@ -18,6 +18,7 @@ import java.sql.Connection;
 import sdb.SDBCmd;
 import arq.cmd.CmdUtils;
 
+import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.query.*;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.RDFNode;
@@ -52,7 +53,8 @@ public class RunSDB
             
             GraphStoreSDB gs = new GraphStoreSDB(store) ;
             UpdateAction.readExecute("update.ru", gs) ;
-            SSE.write(gs.toDataset()) ;
+            SSE.write(gs.getDefaultGraph()) ;
+            SSE.write(gs.getGraph(Node.createURI("http://example/foo"))) ;
             System.exit(0) ;
         }
         runPrint() ;
