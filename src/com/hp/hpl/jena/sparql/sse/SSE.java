@@ -256,7 +256,7 @@ public class SSE
     
     // ----
     
-    public static void write(Op op) { WriterOp.output(IndentedWriter.stdout, op) ; }
+    public static void write(Op op) { WriterOp.output(IndentedWriter.stdout, op) ; IndentedWriter.stdout.flush() ; }
     public static void write(OutputStream out, Op op) { WriterOp.output(out, op) ; }
     public static void write(IndentedWriter out, Op op) { WriterOp.output(out, op) ; }
 
@@ -264,6 +264,7 @@ public class SSE
     { 
         WriterGraph.output(IndentedWriter.stdout, graph, 
                            new SerializationContext(graph.getPrefixMapping())) ;
+        IndentedWriter.stdout.flush() ;
     }
     public static void write(OutputStream out, Graph graph)
     { 
@@ -316,7 +317,10 @@ public class SSE
         iOut.flush();
     }
     public static void write(IndentedWriter out, Node node)                         
-    { WriterNode.output(IndentedWriter.stdout, node, sCxt(defaultDefaultPrefixMapWrite)) ; }
+    { 
+        WriterNode.output(IndentedWriter.stdout, node, sCxt(defaultDefaultPrefixMapWrite)) ;
+        IndentedWriter.stdout.flush() ;
+    }
     
     private static SerializationContext sCxt(Graph graph)
     {
