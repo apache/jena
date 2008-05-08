@@ -16,7 +16,10 @@ import com.hp.hpl.jena.rdf.model.Resource;
 
 import com.hp.hpl.jena.query.Dataset;
 
+import com.hp.hpl.jena.update.GraphStore;
+
 import com.hp.hpl.jena.sdb.graph.GraphSDB;
+import com.hp.hpl.jena.sdb.modify.GraphStoreSDB;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.sql.SDBConnectionDesc;
 import com.hp.hpl.jena.sdb.sql.SDBConnectionFactory;
@@ -172,6 +175,50 @@ public class SDBFactory
      */
     public static Dataset connectDataset(String configFile)
     { return DatasetStore.create(connectStore(configFile)) ; }
+    
+    // ---- GraphStore
+    
+    /**
+     * Connect to the store as a GraphStore
+     * @param store
+     * @return GraphStore
+     */
+    public static GraphStore connectGraphStore(Store store)
+    { return new GraphStoreSDB(store) ; }
+
+    /**
+     * Connect to the store as a GraphStore.
+     * @param desc Store description
+     * @return GraphStore
+     */
+    public static GraphStore connectGraphStore(StoreDesc desc)
+    { return connectGraphStore(connectStore(desc)) ; }
+
+    /**
+     * Connect to the store as a GraphStore, using existing SDBConnection and a store description.
+     * @param sdbConnection     SDB connection
+     * @param desc              Store description object
+     * @return GraphStore
+     */
+    public static GraphStore connectGraphStore(SDBConnection sdbConnection, StoreDesc desc)
+    { return connectGraphStore(connectStore(sdbConnection, desc)) ; }
+    
+    /**
+     * Connect to the store as a GraphStore, using existing JDBC connection and a store description.
+     * @param jdbcConnection    JDBC connection
+     * @param desc              Store description object
+     * @return GraphStore
+     */
+    public static GraphStore connectGraphStore(Connection jdbcConnection, StoreDesc desc)
+    { return connectGraphStore(connectStore(jdbcConnection, desc)) ; }
+    
+    /**
+     * Connect to the store as a GraphStore, based on a Store assembler file.
+     * @param configFile
+     * @return GraphStore
+     */
+    public static GraphStore connectGraphStore(String configFile)
+    { return connectGraphStore(connectStore(configFile)) ; }
     
     // ---- Graph
     
@@ -334,6 +381,7 @@ public class SDBFactory
     public static Model connectNamedModel(String configFile, Resource resource)
     { return connectNamedModel(StoreFactory.create(configFile), resource) ; }
 
+    
     // ---- Workers
     
     private static Model createModelSDB(Store store)
