@@ -1,36 +1,25 @@
 /*
- * (c) Copyright 2007, 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.test;
+package com.hp.hpl.jena.sparql.suites;
 
-import junit.framework.TestSuite;
+import com.hp.hpl.jena.update.GraphStore;
+import com.hp.hpl.jena.update.GraphStoreFactory;
 
-import com.hp.hpl.jena.sparql.suites.TestUpdateGraph;
-import com.hp.hpl.jena.sparql.suites.TestUpdateGraphMgt;
-
-public class TS_Update extends TestSuite
+public class TestUpdateGraphMgtMem extends TestUpdateGraphMgt
 {
-    public static final String testDirUpdate = "testing/Update" ;
-    
-    static public TestSuite suite()
+    protected GraphStore getEmptyGraphStore()
     {
-        TestSuite ts = new TS_Update() ;
-        ts.addTestSuite(TestUpdateGraphMgt.class) ; 
-        ts.addTestSuite(TestUpdateGraph.class) ;
-        return ts ;
-    }
-    
-    private TS_Update()
-    {
-        super("ARQ/Update");
+        GraphStore gStore = GraphStoreFactory.create() ;
+        return gStore ;
     }
 }
 
 /*
- * (c) Copyright 2007, 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

@@ -57,7 +57,8 @@ public class FunctionRegistry //extends HashMap<String, Function>
         context.set(ARQConstants.registryFunctions, reg) ;
     }
 
-    
+    public FunctionRegistry()
+    {}
     /** Insert a function. Re-inserting with the same URI overwrites the old entry. 
      * 
      * @param uri

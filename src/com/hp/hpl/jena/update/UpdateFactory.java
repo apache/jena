@@ -47,7 +47,7 @@ public class UpdateFactory
                 in = new FileInputStream(fileName) ;
             } catch (FileNotFoundException ex)
             {
-                throw new UpdateException("File nout found: "+fileName) ;
+                throw new UpdateException("File not found: "+fileName) ;
             }
         return read(in) ;
     }

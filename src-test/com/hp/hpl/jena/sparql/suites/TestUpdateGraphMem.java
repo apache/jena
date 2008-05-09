@@ -9,7 +9,7 @@ package com.hp.hpl.jena.sparql.suites;
 import com.hp.hpl.jena.update.GraphStore;
 import com.hp.hpl.jena.update.GraphStoreFactory;
 
-public abstract class TestUpdateMem extends TestUpdateBase
+public class TestUpdateGraphMem extends TestUpdateGraph
 {
     protected GraphStore getEmptyGraphStore()
     {

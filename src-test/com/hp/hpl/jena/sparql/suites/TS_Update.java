@@ -6,53 +6,24 @@
 
 package com.hp.hpl.jena.sparql.suites;
 
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.sparql.util.graph.GraphUtils;
-import com.hp.hpl.jena.update.*;
+import junit.framework.TestSuite;
 
-import junit.framework.TestCase;
 
-public abstract class TestUpdateBase extends TestCase
+public class TS_Update extends TestSuite
 {
-    protected abstract GraphStore getEmptyGraphStore() ; 
+    public static final String testDirUpdate = "testing/Update" ;
     
-    protected void defaultGraphData(GraphStore gStore, Graph data)
+    static public TestSuite suite()
     {
-        Graph g = gStore.getDefaultGraph() ;
-        g.getBulkUpdateHandler().removeAll() ;
-        g.getBulkUpdateHandler().add(data) ;
+        TestSuite ts = new TS_Update() ;
+        ts.addTestSuite(TestUpdateGraphMgtMem.class) ; 
+        ts.addTestSuite(TestUpdateGraphMem.class) ;
+        return ts ;
     }
     
-    protected void namedGraphData(GraphStore gStore, Node uri, Graph data)
+    private TS_Update()
     {
-        Graph g = gStore.getGraph(uri) ;
-        if ( g == null )
-        {
-            gStore.addGraph(uri, GraphUtils.makeJenaDefaultGraph()) ;
-            g = gStore.getGraph(uri) ;
-        }
-        else
-            g.getBulkUpdateHandler().removeAll() ;
-        g.getBulkUpdateHandler().add(data) ;
-    }
-    
-    protected static final String FileBase = TS_Update.testDirUpdate ;
-    
-    protected static void script(GraphStore gStore, String filename)
-    {
-        UpdateAction.readExecute(FileBase+"/"+filename, gStore) ;
-    }
-    
-    protected static boolean graphEmpty(Graph graph)
-    {
-        return graph.isEmpty() ; 
-    }
-    
-    protected static boolean graphContains(Graph graph, Triple triple)
-    {
-        return graph.contains(triple) ; 
+        super("ARQ/Update");
     }
 }
 

@@ -31,7 +31,7 @@ import com.hp.hpl.jena.update.UpdateFactory;
 import com.hp.hpl.jena.update.UpdateProcessor;
 import com.hp.hpl.jena.update.UpdateRequest;
 
-public class TestUpdateGraph extends TestUpdateMem
+public abstract class TestUpdateGraph extends TestUpdateBase
 {
     protected static Node s = NodeFactory.create("<http://example/r>") ;
     protected static Node p = NodeFactory.create("<http://example/p>") ;

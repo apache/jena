@@ -30,6 +30,8 @@ See ToDoSSE
 + EXISTS { pattern }
 + ORDER BY aggregate
 
++ Wrapper to have all functions as assignments
+
 + Extend optimization environment - sort out nested with outer variable case.
    test case?  is this fixed now without heavy weight tracking?
    --> Transform support to track variable scopes.

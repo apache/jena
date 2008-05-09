@@ -153,7 +153,7 @@ public class Run
         //QueryEngineMain.register() ;
         String a[] = new String[]{
             //"-v",
-            //"--engine=ref",
+            "--engine=ref",
             "--data="+datafile,
             "-query="+queryfile , 
         } ;
