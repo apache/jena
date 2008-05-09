@@ -29,9 +29,10 @@ public interface BlockMgr
     /** Get but never log (e.g. in debugging code) */
     public ByteBuffer getSilent(int id);
 
+    /** Block is no longer being worked on - do not use after this call - get() it again */ 
     public void put(int id, ByteBuffer block);
 
-    /** Announce a block is no longer being worked on */ 
+    /** Announce a block is no longer in use (i.e it's now freed) */ 
     public void release(int id);
     
     public boolean valid(int id) ;
