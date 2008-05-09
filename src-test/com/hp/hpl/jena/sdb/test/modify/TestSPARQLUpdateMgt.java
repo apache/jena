@@ -1,33 +1,39 @@
 /*
- * (c) Copyright 2006, 2007, 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.test;
+package com.hp.hpl.jena.sdb.test.modify;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import junit.framework.TestSuite;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
-    SDBTestMisc.class,
-    SDBQueryTestSuite.class,
-    SDBUpdateTestSuite.class
-} )
+import com.hp.hpl.jena.sdb.SDB;
+import com.hp.hpl.jena.sdb.SDBFactory;
+import com.hp.hpl.jena.sdb.Store;
+import com.hp.hpl.jena.sparql.suites.TestUpdateGraphMgt;
+import com.hp.hpl.jena.update.GraphStore;
 
-public class SDBTest
+public class TestSPARQLUpdateMgt extends TestUpdateGraphMgt
 {
-    public static final String testDirSDB           = "testing/" ;
-    public static final String manifestMain         = SDBTest.testDirSDB + "manifest-sdb.ttl" ;
-    public static final String manifestSimple       = SDBTest.testDirSDB + "manifest-sdb-simple.ttl" ;
+
+    public static junit.framework.Test suite() {
+        TestSuite ts = new TestSuite();
+        ts.addTestSuite(TestSPARQLUpdateMgt.class);
+        return ts;
+    }
     
-    public static final String storeDescMainBase    = SDBTest.testDirSDB+"StoreDesc/" ;
-    public static final String storeDescSimpleBase  = SDBTest.testDirSDB+"StoreDescSimple/" ;
+    @Override
+    protected GraphStore getEmptyGraphStore()
+    {
+        Store store = SDB.createInMemoryStore() ;
+        GraphStore graphStore = SDBFactory.connectGraphStore(store) ;
+        return graphStore ;
+    }
 }
 
 /*
- * (c) Copyright 2006, 2007, 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

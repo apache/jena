@@ -125,7 +125,7 @@ public class SDB
     public static Store createInMemoryStore()
     {
         // Create an H2-backed in-memory store for testing.
-        SDBConnection conn = SDBFactory.createConnection("jdbc:h2:mem", "", "") ;
+        SDBConnection conn = SDBFactory.createConnection("jdbc:h2:mem:", "", "") ;
         StoreDesc desc = new StoreDesc(LayoutType.LayoutTripleNodesHash, DatabaseType.H2) ;
         Store store = SDBFactory.connectStore(conn, desc) ;
         store.getTableFormatter().create() ;

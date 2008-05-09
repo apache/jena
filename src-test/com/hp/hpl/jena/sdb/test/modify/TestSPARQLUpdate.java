@@ -6,46 +6,30 @@
 
 package com.hp.hpl.jena.sdb.test.modify;
 
-import com.hp.hpl.jena.query.Dataset;
-
-import com.hp.hpl.jena.update.GraphStore;
+import junit.framework.TestSuite;
 
 import com.hp.hpl.jena.sdb.SDB;
 import com.hp.hpl.jena.sdb.SDBFactory;
 import com.hp.hpl.jena.sdb.Store;
-import com.hp.hpl.jena.sdb.StoreDesc;
-import com.hp.hpl.jena.sdb.layout2.hash.StoreTriplesNodesHashH2;
-import com.hp.hpl.jena.sdb.sql.SDBConnection;
-import com.hp.hpl.jena.sdb.store.DatabaseType;
-import com.hp.hpl.jena.sdb.store.LayoutType;
-import com.hp.hpl.jena.sdb.store.StoreBaseH2;
-import com.hp.hpl.jena.sdb.store.StoreFactory;
+import com.hp.hpl.jena.sparql.suites.TestUpdateGraph;
+import com.hp.hpl.jena.update.GraphStore;
 
-import org.junit.Before;
-import org.junit.Test;
-
-public class TestSPARQLUpdate
+public class TestSPARQLUpdate extends TestUpdateGraph
 {
+
+    public static junit.framework.Test suite() {
+        TestSuite ts = new TestSuite();
+        ts.addTestSuite(TestSPARQLUpdate.class);
+        return ts;
+    }
     
-    static GraphStore graphStore ;
-    static Dataset dataset ;
-    
-    static void setup()
+    @Override
+    protected GraphStore getEmptyGraphStore()
     {
         Store store = SDB.createInMemoryStore() ;
-        
-        graphStore = SDBFactory.connectGraphStore(store) ;
-        dataset = SDBFactory.connectDataset(store) ;
+        GraphStore graphStore = SDBFactory.connectGraphStore(store) ;
+        return graphStore ;
     }
-
-    static { setup() ; }
-    
-    @Before public void before() { /* clean out */ setup() ; }
-    
-    
-    @Test public void update_01()
-    {}
-    
 }
 
 /*

@@ -131,6 +131,8 @@ public class QueryEngineSDB extends QueryEngineBase
 
         public Plan create(Op op, DatasetGraph dataset, Binding inputBinding, Context context)
         {
+            if ( inputBinding == null )
+                inputBinding = BindingRoot.create();
             QueryEngineSDB qe = new QueryEngineSDB((DatasetStoreGraph)dataset, op, inputBinding, context) ;
             return qe.getPlan() ;
         }

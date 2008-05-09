@@ -1,33 +1,35 @@
 /*
- * (c) Copyright 2006, 2007, 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
 package com.hp.hpl.jena.sdb.test;
 
+import junit.framework.TestSuite;
 import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import org.junit.runners.AllTests;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
-    SDBTestMisc.class,
-    SDBQueryTestSuite.class,
-    SDBUpdateTestSuite.class
-} )
+import com.hp.hpl.jena.sdb.test.modify.TestSPARQLUpdate;
+import com.hp.hpl.jena.sdb.test.modify.TestSPARQLUpdateMgt;
 
-public class SDBTest
-{
-    public static final String testDirSDB           = "testing/" ;
-    public static final String manifestMain         = SDBTest.testDirSDB + "manifest-sdb.ttl" ;
-    public static final String manifestSimple       = SDBTest.testDirSDB + "manifest-sdb-simple.ttl" ;
+
+@RunWith(AllTests.class)
+public class SDBUpdateTestSuite extends TestSuite
+{ 
+    static public TestSuite suite() { return new SDBUpdateTestSuite() ; }
     
-    public static final String storeDescMainBase    = SDBTest.testDirSDB+"StoreDesc/" ;
-    public static final String storeDescSimpleBase  = SDBTest.testDirSDB+"StoreDescSimple/" ;
+    private SDBUpdateTestSuite()
+    {
+        super("SDB Update") ;
+        this.addTestSuite(TestSPARQLUpdate.class) ;
+        this.addTestSuite(TestSPARQLUpdateMgt.class) ;
+    }
 }
 
+
 /*
- * (c) Copyright 2006, 2007, 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007, 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

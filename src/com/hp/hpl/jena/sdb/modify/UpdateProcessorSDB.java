@@ -14,7 +14,6 @@ import com.hp.hpl.jena.sparql.modify.UpdateProcessorFactory;
 import com.hp.hpl.jena.sparql.modify.UpdateProcessorRegistry;
 import com.hp.hpl.jena.sparql.modify.UpdateVisitor;
 import com.hp.hpl.jena.sparql.modify.op.Update;
-import com.hp.hpl.jena.sparql.util.ALog;
 import com.hp.hpl.jena.update.GraphStore;
 import com.hp.hpl.jena.update.UpdateProcessor;
 import com.hp.hpl.jena.update.UpdateRequest;
@@ -30,8 +29,6 @@ public class UpdateProcessorSDB implements UpdateProcessor
         this.graphStore = graphStore ;
         this.request = request ;
         this.inputBinding = inputBinding ;
-        if ( inputBinding != null )
-            ALog.warn(this, "Initial binding (not implemented)") ;
     }
 
     public void execute()
