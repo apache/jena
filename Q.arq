@@ -1,7 +1,9 @@
-PREFIX : <http://example/>
-PREFIX  xsd:    <http://www.w3.org/2001/XMLSchema#>
+PREFIX : <http://example.org/>
+PREFIX fn: <http://www.w3.org/2005/xpath-functions#>
 
-SELECT (sum(xsd:decimal(count(?x))) as ?sum)
-{
-    :x :p ?x .
+CONSTRUCT {?item :p  ?x}
+WHERE {
+     ?item :p ?p .
+     ?item :q ?q .
+     let (?x := fn:string-join(?p, ?q))
 }
