@@ -1,24 +1,17 @@
 SDB ToDo list (and general notes)
 =================================
 
-** Check documentation about assemlber structures on wiki.
-
-** In progress
-   Improve SQL generation for modifiers.
-   SqlDistinct/SqlRename/SqlSlice/SqlProject will no longer be real SqlNodes
-   
-** Test more LimitOffSetTranslatrions
-   See Compile.compile 
+** Check documentation about assembler structures on wiki.
 
 ==== Wiki
 + Document assembler for dataset on wiki
+
 <#dataset> rdf:type sdb:DatasetStore ;
     sdb:store <#store> .
 <#store> rdf:type sdb:Store ;
     sdb:layout         "layout2/index" ;
     sdb:connection     <#conn> .
 <#conn> rdf:type sdb:SDBConnection ;
-
 
   And model assembler
 + Break out the merge query section into a separate wiki page.
@@ -32,29 +25,12 @@ SDB ToDo list (and general notes)
    For load-general?
 + Test: Dataset description + JDBC connection for pooling.
 
-==== Development
-
-+ Dataset description+connection for pooling.
-
 == Major
-
-(Post v1.0)
-+ Generalise target table beyond triples/quads (e.g. the metatable)
-  URI => handler(table name, special code)
-  Reduce to one table per property => vertical!!
-  S/P=>O
-
-+ Loader with wacky "rules"
-
-+ "External" graphs vs external indexes.
-  e.g. document store graph
-  Order matters more as graphs.
-
-+ Slice - need to abstract syntax for different DBs
 
 + Graph management:
     Graphs loaded
     Delete graph (can we make this anymore efficient?)
+      Delete by quad pattern
     Add new graph (and load of unknown graph fails?)
     Replace graph
       Delete model, Clear model, Create model
@@ -62,20 +38,8 @@ SDB ToDo list (and general notes)
       Check in GraphSDB
     Need a "graph ids" table
     
-+ Value testing (?? role)
-  Target FILTER and generative indexes
- 
 == Minor
 
-+ Test sorting out
-
-+ Table description language
-
-+ Merge commands with ARQ
-    arq.update -- Update commands from SPARQL/Update
-      Store as GraphStore
-    sdb.query -- --set and --sdb?
-  
 + StoreLoader => StoreLoaderPlus.
 + LoaderTuplesNodes uses reflection on constructors.  OneTuple loader broken by this.
    Each loader has many TupleLoader instances - per table to be loaded.
@@ -84,83 +48,8 @@ SDB ToDo list (and general notes)
 + Tests with SDB.getContext().setTrue(SDB.unionDefaultGraph) ;
   --set in manifest?
 
-+ SqlProject/SqlRename are now highly related - merge - or simplifiy.
-  [Partial - need to consider a "pure" SqlProject]
-  [Need a null-introduction operator]
-    SqlProject - pure project (just a pair of Scopes)
-    SqlRename - rename, aliasing but also only some cols 
-  See TransformSDB for more. 
-
-+ New SQLgenerator
-    IJ-R-T => IJ(r)-T is done specially in old generator? 
-    COALESCE and SqlSelectBlocks
-
-+ See the effect of "enable_seqscan = off" for PostgreSQL
- 
-+ JDBC statement management in execQuery
-
-+ Setting options for testing.
-+ Use cursors for streaming / PostgreSQL [DONE - test]
-
-+ DB type tables
-
 + OpUnion
 
 ==== Notes
-
-== Pattern table and inference
-
-+ Cache tables - integrate with inf and rewriter 
-  This unifies two concepts.
-  Also calculated paths : cache tables of (?s,?o) for { ?s :p1 ?x . ?x :p2 ?o }
-
-+ Pattern/Inf tables:
-  Data:
-    Q: { :s a ?t }  D: :s a :C1 . :s a :C2 .  : SC: (:C1, :C2) => duplicates
-    Could reduce the input to exclude :s a :C2.
-    But if schema changes?
-    Else need SELECT DISTINCT subquery.
-  Reduce data?  is there always a minimum?  No - but synthetic?
-  Or nested SELECT DISTINCT in SQL.
-
-== Value tables and FILTERs
-
-+ Value-based hashing
-  String version - and have fixed choice of xsd:string or plain string for terms.
-  Partial alternative: condition is "T.o = hash1 OR T.o = hash2"
-
-+ ValueTables
-  Values and conditions : reactivate condition compilation.
-  String value table
-    With no URIs, much shorter.
-    Full text indexing where available?
-  Isolate QC2.insertValueGetter
-
-== Design
-
-+ Filters
-
-+ Tidy DB formatting
-    per DB list of column generators (getVarchar, getText etc).
-
-+ SPARQL/Update input and control
-
-== Testing
-
-+ Project/Slice/Distinct tests, including partial rewrite/integration tests 
-
-+ Add query tests :
-  /Structure/ { opt ... } JOIN { opt ... } 
-  
-== Misc
-
-+ canonicalise literals on input?
-
-  + Restrict(Join(A,B)) == Join(A,B,condition)
-    In rel algebra, don't push into conditions: do in code generation.
-  + Precedence-driven output for SqlExpr // SqlExprGenerateSQL, not lots of nesting.
-  + SELECT/one table ==> move constraints out (it's just SPJ)
-    Put in a SqlNode optimizer stage, just before generation
-      IJ-R-T => IJ(r)-T is done specially 
    
 + QueryEngineSDB has duplication with QueryEngineMain - eliminate!
