@@ -6,6 +6,10 @@
 
 package com.hp.hpl.jena.tdb.base.file;
 
+import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile;
+import com.hp.hpl.jena.tdb.base.objectfile.ObjectFileDisk;
+import com.hp.hpl.jena.tdb.base.objectfile.ObjectFileMem;
+
 public class FileFactory
 {
     public static ObjectFile createObjectFileDisk(String filename)

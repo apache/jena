@@ -13,7 +13,7 @@ import lib.CacheLRU;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.tdb.Const;
-import com.hp.hpl.jena.tdb.base.file.ObjectFile;
+import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile;
 import com.hp.hpl.jena.tdb.base.record.Record;
 import com.hp.hpl.jena.tdb.index.Index;
 import com.hp.hpl.jena.tdb.lib.NodeLib;

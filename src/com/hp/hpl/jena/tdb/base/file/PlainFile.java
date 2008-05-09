@@ -18,7 +18,7 @@ import com.hp.hpl.jena.tdb.base.block.BlockException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/** Singe, unsegmented file with ByteBuffer */
+/** Single, unsegmented file with ByteBuffer */
 public class PlainFile
 {
     private static Logger log = LoggerFactory.getLogger(PlainFile.class) ;

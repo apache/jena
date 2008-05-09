@@ -9,7 +9,7 @@ package com.hp.hpl.jena.tdb.pgraph;
 import com.hp.hpl.jena.tdb.TDBException;
 import com.hp.hpl.jena.tdb.base.file.FileFactory;
 import com.hp.hpl.jena.tdb.base.file.Location;
-import com.hp.hpl.jena.tdb.base.file.ObjectFile;
+import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile;
 import com.hp.hpl.jena.tdb.bdb.NodeTableBDB;
 import com.hp.hpl.jena.tdb.bdb.SetupBDB;
 import com.sleepycat.je.Database;

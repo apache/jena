@@ -4,80 +4,25 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.base.file;
+package com.hp.hpl.jena.tdb.base.objectfile;
 
-import java.nio.ByteBuffer;
-import java.util.ArrayList;
 import java.util.List;
 
 import com.hp.hpl.jena.tdb.pgraph.NodeId;
 
-import lib.Bytes;
-
 /** A file for writing serialized objects to
  *  The file is currently "read/append"
- *  Allocates an id (actually the array index)
- *  Limited to 2billion nodes by array size being an int. :-)
- *  
+ *  Allocates an id (actually the byte offset in the file)
  * @author Andy Seaborne
+ * @version $Id$
  */
-
-public class ObjectFileMem implements ObjectFile 
+public interface ObjectFile
 {
-    List<ByteBuffer> buffers = new ArrayList<ByteBuffer>() ;
-
-    public ObjectFileMem()
-    {
-    }
-    
-    @Override
-    public NodeId write(String str)
-    { 
-        ByteBuffer bb = ByteBuffer.allocate(4*str.length()) ;   // Worst case
-        Bytes.toByteBuffer(str, bb) ;
-        int len = bb.position() ;
-        bb.limit(len) ;
-        int x = buffers.size();
-        buffers.add(bb) ;
-        return NodeId.create(x) ;
-    }
-    
-    private ByteBuffer readBytes(NodeId id)
-    { 
-        int x = (int)id.getId() ;
-        ByteBuffer bb = buffers.get(x) ;
-        bb.position(0) ;
-        ByteBuffer bb2 = ByteBuffer.allocate(bb.limit()) ;
-        bb2.put(bb) ;
-        bb2.position(0);
-        return bb2 ;
-    }
-
-    @Override
-    public String read(NodeId id)
-    {
-        ByteBuffer bb = readBytes(id) ;
-        return Bytes.fromByteBuffer(bb) ;
-    }
-    
-    public List<String> all()
-    {
-        List<String> strings = new ArrayList<String>() ;
-        for ( int i = 0 ; i < buffers.size(); i++ )
-        {
-            String str = read(NodeId.create((long)i)) ;
-            strings.add(str) ;
-        }
-        return strings ;
-    }
-
-    @Override
-    public void close()
-    {}
-
-    @Override
-    public void sync(boolean force)
-    {}
+    public NodeId write(String str) ;
+    public String read(NodeId id) ;
+    public List<String> all() ;
+    public void sync(boolean force) ;
+    public void close() ;
 }
 
 /*

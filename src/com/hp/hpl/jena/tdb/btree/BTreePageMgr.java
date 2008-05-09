@@ -37,8 +37,8 @@ final class BTreePageMgr //implements BTreePageMgrI
    
     public BlockMgr getBlockMgr() { return blockMgr ; } 
     
-    /** Allocate an uninitialized slot.  Fill with a .put later */ 
-    public int allocateId()           { return blockMgr.allocateId() ; }
+//    /** Allocate an uninitialized slot.  Fill with a .put later */ 
+//    public int allocateId()           { return blockMgr.allocateId() ; }
     
     /** Allocate root node space. */ 
     public BTreeNode createRoot()

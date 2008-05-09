@@ -13,8 +13,8 @@ import com.hp.hpl.jena.tdb.base.block.BlockMgr;
 import com.hp.hpl.jena.tdb.base.block.BlockMgrFactory;
 import com.hp.hpl.jena.tdb.base.file.FileFactory;
 import com.hp.hpl.jena.tdb.base.file.Location;
-import com.hp.hpl.jena.tdb.base.file.ObjectFile;
-import com.hp.hpl.jena.tdb.base.file.ObjectFileMem;
+import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile;
+import com.hp.hpl.jena.tdb.base.objectfile.ObjectFileMem;
 import com.hp.hpl.jena.tdb.btree.BTree;
 import com.hp.hpl.jena.tdb.btree.BTreeParams;
 

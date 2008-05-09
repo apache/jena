@@ -11,7 +11,7 @@ import lib.Bytes;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.tdb.Const;
-import com.hp.hpl.jena.tdb.base.file.ObjectFile;
+import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile;
 import com.hp.hpl.jena.tdb.pgraph.*;
 import com.sleepycat.je.Database;
 import com.sleepycat.je.DatabaseEntry;

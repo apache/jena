@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.base.file;
+package com.hp.hpl.jena.tdb.base.objectfile;
 
 import java.io.EOFException;
 import java.io.IOException;
@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.hp.hpl.jena.tdb.base.block.BlockException;
+import com.hp.hpl.jena.tdb.base.file.FileException;
 import com.hp.hpl.jena.tdb.pgraph.NodeId;
 
 /** A file for writing serialized objects to disk, using DataInput/DataOuput
@@ -20,10 +21,15 @@ import com.hp.hpl.jena.tdb.pgraph.NodeId;
  * 
  *  The file is currently "read/append"
  *  Allocates an id (actually the byte offset in the file)
+ *  
+ * @see java.io.DataInput
+ * @see java.io.DataOutput
  * @author Andy Seaborne
  * @version $Id$
  */
-public class ObjectFileDisk_DataIO implements ObjectFile
+
+// Currently historical
+/* public */ class ObjectFileDisk_DataIO implements ObjectFile
 {
     // Uses DataInput/DataOutput string encoding.
     private String filename ;

@@ -10,6 +10,7 @@ import static lib.FileOps.clearDirectory;
 import org.junit.Test;
 import test.BaseTest;
 
+import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile;
 import com.hp.hpl.jena.tdb.pgraph.NodeId;
 
 public class TestObjectFile extends BaseTest

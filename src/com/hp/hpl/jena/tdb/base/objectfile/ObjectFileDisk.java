@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.base.file;
+package com.hp.hpl.jena.tdb.base.objectfile;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -14,13 +14,17 @@ import java.util.List;
 import lib.Bytes;
 
 import com.hp.hpl.jena.tdb.base.block.BlockException;
+import com.hp.hpl.jena.tdb.base.file.FileBase;
+import com.hp.hpl.jena.tdb.base.file.FileException;
 import com.hp.hpl.jena.tdb.lib.StringAbbrev;
 import com.hp.hpl.jena.tdb.pgraph.NodeId;
 
 /** Controls the UTF encoder/decoder and is not limited to 64K byte encoded forms.
+ * @see ObjectFileDisk_DataIO
  * @author Andy Seaborne
  * @version $Id$
  */
+
 public class ObjectFileDisk extends FileBase implements ObjectFile 
 {
     private long filesize ;
@@ -31,7 +35,7 @@ public class ObjectFileDisk extends FileBase implements ObjectFile
      *   UTF-8 bytes. 
      */
     
-    ObjectFileDisk(String filename)
+    public ObjectFileDisk(String filename)
     {
         super(filename) ;
         try { 
