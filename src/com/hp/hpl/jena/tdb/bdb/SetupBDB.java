@@ -27,14 +27,18 @@ public class SetupBDB
         try { 
             EnvironmentConfig envConfig = new EnvironmentConfig();
             envConfig.setAllowCreate(true);
-            
+            //envConfig.setTransactional(false) ; // Default
             // Aggressively high.
             envConfig.setCachePercent(Const.BDB_cacheSizePercent) ;
             
-            //envConfig.setTransactional(true) ;
             dbEnv = new Environment(new File(dirname), envConfig);
-            dbConfig = new DatabaseConfig();
-            dbConfig.setAllowCreate(true);
+            dbConfig = new DatabaseConfig() ;
+            dbConfig.setAllowCreate(true) ;
+            dbConfig.setDeferredWrite(true) ;
+            dbConfig.setTransactional(false) ;  // Default
+            
+            
+            
         }
         catch (DatabaseException ex)
         {
