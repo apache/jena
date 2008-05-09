@@ -11,19 +11,19 @@ import junit.framework.TestSuite;
 import com.hp.hpl.jena.sparql.suites.TestUpdateGraph;
 import com.hp.hpl.jena.sparql.suites.TestUpdateGraphMgt;
 
-public class UpdateTestSuite extends TestSuite
+public class TS_Update extends TestSuite
 {
     public static final String testDirUpdate = "testing/Update" ;
     
     static public TestSuite suite()
     {
-        TestSuite ts = new UpdateTestSuite() ;
+        TestSuite ts = new TS_Update() ;
         ts.addTestSuite(TestUpdateGraphMgt.class) ; 
         ts.addTestSuite(TestUpdateGraph.class) ;
         return ts ;
     }
     
-    private UpdateTestSuite()
+    private TS_Update()
     {
         super("ARQ/Update");
     }

@@ -16,7 +16,7 @@ import com.hp.hpl.jena.update.GraphStoreFactory;
 import com.hp.hpl.jena.update.UpdateAction;
 
 
-public class TestUpdateGraphMgt extends TestUpdateBase
+public class TestUpdateGraphMgt extends TestUpdateMem
 {
     static final Node graphIRI = Node.createURI("http://example/graph") ;
     

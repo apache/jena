@@ -11,24 +11,27 @@ import com.hp.hpl.jena.graph.Factory;
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
-
+import com.hp.hpl.jena.query.QueryFactory;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.binding.Binding1;
-import com.hp.hpl.jena.sparql.modify.op.*;
+import com.hp.hpl.jena.sparql.modify.op.UpdateDelete;
+import com.hp.hpl.jena.sparql.modify.op.UpdateDeleteData;
+import com.hp.hpl.jena.sparql.modify.op.UpdateInsert;
+import com.hp.hpl.jena.sparql.modify.op.UpdateInsertData;
+import com.hp.hpl.jena.sparql.modify.op.UpdateModify;
 import com.hp.hpl.jena.sparql.syntax.Element;
 import com.hp.hpl.jena.sparql.syntax.Template;
 import com.hp.hpl.jena.sparql.syntax.TemplateGroup;
 import com.hp.hpl.jena.sparql.syntax.TemplateTriple;
 import com.hp.hpl.jena.sparql.util.NodeFactory;
+import com.hp.hpl.jena.update.GraphStore;
+import com.hp.hpl.jena.update.UpdateAction;
+import com.hp.hpl.jena.update.UpdateFactory;
+import com.hp.hpl.jena.update.UpdateProcessor;
+import com.hp.hpl.jena.update.UpdateRequest;
 
-import com.hp.hpl.jena.query.QueryFactory;
-
-import com.hp.hpl.jena.update.*;
-
-public class TestUpdateGraph extends TestUpdateBase
+public class TestUpdateGraph extends TestUpdateMem
 {
     protected static Node s = NodeFactory.create("<http://example/r>") ;
     protected static Node p = NodeFactory.create("<http://example/p>") ;
@@ -41,10 +44,8 @@ public class TestUpdateGraph extends TestUpdateBase
     
     public void testInsertData1()
     {
-        Model model = ModelFactory.createDefaultModel() ;
-        model.getGraph().getBulkUpdateHandler().add(graph1) ;
-        
-        GraphStore gStore = GraphStoreFactory.create(model) ;
+		GraphStore gStore = getEmptyGraphStore() ;
+		defaultGraphData(gStore, graph1) ;
         UpdateInsertData insert = new UpdateInsertData() ;
         insert.setData(data2()) ;
         UpdateProcessor uProc = UpdateFactory.create(insert, gStore) ;
@@ -57,10 +58,8 @@ public class TestUpdateGraph extends TestUpdateBase
     
     public void testDeleteData1()
     {
-        Model model = ModelFactory.createDefaultModel() ;
-        model.getGraph().getBulkUpdateHandler().add(graph1) ;
-        
-        GraphStore gStore = GraphStoreFactory.create(model) ;
+        GraphStore gStore = getEmptyGraphStore() ;
+        defaultGraphData(gStore, graph1) ;
         UpdateDeleteData delete = new UpdateDeleteData() ;
         delete.setData(data2()) ;
         UpdateProcessor uProc = UpdateFactory.create(delete, gStore) ;
@@ -73,10 +72,8 @@ public class TestUpdateGraph extends TestUpdateBase
     
     public void testDeleteData2()
     {
-        Model model = ModelFactory.createDefaultModel() ;
-        model.getGraph().getBulkUpdateHandler().add(graph1) ;
-        
-        GraphStore gStore = GraphStoreFactory.create(model) ;
+        GraphStore gStore = getEmptyGraphStore() ;
+        defaultGraphData(gStore, graph1) ;
         UpdateDeleteData delete = new UpdateDeleteData() ;
         delete.setData(data1()) ;
         UpdateProcessor uProc = UpdateFactory.create(delete, gStore) ;
@@ -88,7 +85,7 @@ public class TestUpdateGraph extends TestUpdateBase
     
     public void testInsert1()
     {
-        GraphStore gStore = GraphStoreFactory.create() ;
+        GraphStore gStore = getEmptyGraphStore() ;
         UpdateInsert insert = new UpdateInsert() ;
         insert.setInsertTemplate(new TemplateGroup()) ;
         UpdateAction.execute(insert, gStore) ;
@@ -97,7 +94,7 @@ public class TestUpdateGraph extends TestUpdateBase
     
     public void testInsert2()
     {
-        GraphStore gStore = GraphStoreFactory.create() ;
+        GraphStore gStore = getEmptyGraphStore() ;
         UpdateInsert insert = new UpdateInsert() ;
         insert.setInsertTemplate(new TemplateTriple(triple1)) ;
         UpdateAction.execute(insert, gStore) ;
@@ -106,7 +103,7 @@ public class TestUpdateGraph extends TestUpdateBase
     
     public void testInsert3()
     {
-        GraphStore gStore = GraphStoreFactory.create() ;
+        GraphStore gStore = getEmptyGraphStore() ;
         UpdateInsert insert = new UpdateInsert(graph1) ;
         UpdateAction.execute(insert, gStore) ;
         assertTrue(graphContains(gStore.getDefaultGraph(), triple1)) ;
@@ -114,7 +111,7 @@ public class TestUpdateGraph extends TestUpdateBase
     
     public void testInsert4()
     {
-        GraphStore gStore = GraphStoreFactory.create() ;
+        GraphStore gStore = getEmptyGraphStore() ;
         gStore.addGraph(graphIRI, Factory.createDefaultGraph()) ;
         UpdateInsert insert = new UpdateInsert(triple1) ;
         insert.addGraphName(graphIRI) ;
@@ -124,8 +121,8 @@ public class TestUpdateGraph extends TestUpdateBase
 
     public void testInsert5()
     {
-        GraphStore gStore = GraphStoreFactory.create() ;
-        gStore.setDefaultGraph(graph1) ;
+        GraphStore gStore = getEmptyGraphStore() ;
+        defaultGraphData(gStore, graph1) ;
         Element element = QueryFactory.createElement("{ ?s <http://example/p> 2007 }" ) ;
         Template template = QueryFactory.createTemplate("{ ?s <http://example/p> 1066 }" ) ;
         UpdateInsert insert = new UpdateInsert() ;
@@ -139,7 +136,7 @@ public class TestUpdateGraph extends TestUpdateBase
     
     public void testDelete1()
     {
-        GraphStore gStore = GraphStoreFactory.create() ;
+        GraphStore gStore = getEmptyGraphStore() ;
         UpdateDelete insert = new UpdateDelete() ;
         insert.setDeleteTemplate(new TemplateGroup()) ;
         UpdateAction.execute(insert, gStore) ;
@@ -148,8 +145,8 @@ public class TestUpdateGraph extends TestUpdateBase
     
     public void testDelete2()
     {
-        GraphStore gStore = GraphStoreFactory.create() ;
-        gStore.setDefaultGraph(data1()) ;
+        GraphStore gStore = getEmptyGraphStore() ;
+        defaultGraphData(gStore, graph1) ;
         UpdateDelete delete = new UpdateDelete() ;
         delete.setDeleteTemplate(new TemplateGroup()) ;
         UpdateAction.execute(delete, gStore) ;
@@ -158,8 +155,8 @@ public class TestUpdateGraph extends TestUpdateBase
     
     public void testDelete3()
     {
-        GraphStore gStore = GraphStoreFactory.create() ;
-        gStore.setDefaultGraph(data1()) ;
+        GraphStore gStore = getEmptyGraphStore() ;
+        defaultGraphData(gStore, graph1) ;
         UpdateDelete delete = new UpdateDelete(triple1) ;
         UpdateAction.execute(delete, gStore) ;
         assertTrue(graphEmpty(gStore.getDefaultGraph())) ;
@@ -168,8 +165,8 @@ public class TestUpdateGraph extends TestUpdateBase
     
     public void testDelete4()
     {
-        GraphStore gStore = GraphStoreFactory.create() ;
-        gStore.addGraph(graphIRI, data1()) ;
+        GraphStore gStore = getEmptyGraphStore() ;
+        namedGraphData(gStore, graphIRI, data1()) ;
         UpdateDelete delete = new UpdateDelete(triple1) ;
         delete.addGraphName(graphIRI) ;
         UpdateAction.execute(delete, gStore) ;
@@ -179,9 +176,9 @@ public class TestUpdateGraph extends TestUpdateBase
     
     public void testDelete5()
     {
-        GraphStore gStore = GraphStoreFactory.create() ;
-        gStore.setDefaultGraph(data2()) ;
-        gStore.addGraph(graphIRI, data1()) ;
+        GraphStore gStore = getEmptyGraphStore() ;
+        defaultGraphData(gStore, data2()) ;
+        namedGraphData(gStore, graphIRI, data1()) ;
         
         UpdateDelete delete = new UpdateDelete() ;
         delete.setPattern("{ ?s <http://example/p> ?o } ") ;
@@ -196,9 +193,9 @@ public class TestUpdateGraph extends TestUpdateBase
     
     public void testModify1()
     {
-        GraphStore gStore = GraphStoreFactory.create() ;
-        gStore.setDefaultGraph(data2()) ;
-        gStore.addGraph(graphIRI, Factory.createDefaultGraph()) ;
+        GraphStore gStore = getEmptyGraphStore() ;
+        defaultGraphData(gStore, data2()) ;
+        namedGraphData(gStore, graphIRI, Factory.createDefaultGraph()) ;
         UpdateModify modify = new UpdateModify() ;
         modify.addGraphName(graphIRI) ;
         modify.setPattern("{ ?s <http://example/p> ?o } ") ;
@@ -212,14 +209,14 @@ public class TestUpdateGraph extends TestUpdateBase
     
     public void testUpdateScript1()
     {
-        GraphStore gStore = GraphStoreFactory.create() ;
+        GraphStore gStore = getEmptyGraphStore() ;
         script(gStore, "update-1.rup") ;
         assertTrue(graphContains(gStore.getDefaultGraph(), new Triple(s,p,NodeFactory.create("123")))) ;
     }
     
     public void testUpdateScript2()
     {
-        GraphStore gStore = GraphStoreFactory.create() ;
+        GraphStore gStore = getEmptyGraphStore() ;
         script(gStore, "update-2.rup") ;
         assertTrue(graphContains(gStore.getGraph(Node.createURI("http://example/g1")),
                                  new Triple(s,p,NodeFactory.create("123")))) ;
@@ -228,7 +225,7 @@ public class TestUpdateGraph extends TestUpdateBase
 
     public void testUpdateScript3()
     {
-        GraphStore gStore = GraphStoreFactory.create() ;
+        GraphStore gStore = getEmptyGraphStore() ;
         script(gStore, "update-3.rup") ;
         assertTrue(graphEmpty(gStore.getGraph(Node.createURI("http://example/g1")))) ;
         assertTrue(graphEmpty(gStore.getDefaultGraph())) ;
@@ -236,10 +233,7 @@ public class TestUpdateGraph extends TestUpdateBase
 
     private Graph testUpdateInitialBindingWorker(Var v, Node n)
     {
-        GraphStore gStore = GraphStoreFactory.create() ;
-        Graph graph = Factory.createDefaultGraph() ;
-        gStore.setDefaultGraph(graph) ;
-        
+        GraphStore gStore = getEmptyGraphStore() ;
         UpdateRequest req = UpdateFactory.create() ;
 
         UpdateInsert ins = new UpdateInsert() ;
@@ -297,6 +291,8 @@ public class TestUpdateGraph extends TestUpdateBase
         return graph ; 
     }
 
+ 
+  
 }
 
 /*

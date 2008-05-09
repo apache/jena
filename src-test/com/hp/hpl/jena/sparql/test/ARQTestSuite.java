@@ -61,7 +61,7 @@ public class ARQTestSuite extends TestSuite
         ts.addTest(TestAPI.suite()) ;
         
         // SPARQL/Update
-        ts.addTest(UpdateTestSuite.suite()) ;
+        ts.addTest(TS_Update.suite()) ;
         
         ts.addTest(TS_SSE.suite()) ;
         
