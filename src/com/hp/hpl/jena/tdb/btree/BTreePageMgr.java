@@ -15,7 +15,7 @@ import com.hp.hpl.jena.tdb.base.block.BlockType;
 import com.hp.hpl.jena.tdb.base.record.RecordBuffer;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 
-final class BTreePageMgr //implements BTreePageMgrI
+final class BTreePageMgr
 {
     private BTree btree ;
     private BlockMgr blockMgr ;
