@@ -97,8 +97,20 @@ public class TestNodeId extends TestBase
     @Test public void nodeId_43()
     { test("'2008-04-28+02:00'^^xsd:date", SSE.parseNode("'2008-04-28+02:00'^^xsd:date")) ; }
 
-    @Test public void nodeId_49()
+    @Test public void nodeId_44()
     { test("'8008-04-28'^^xsd:date", null) ; }
+
+    @Test public void nodeId_50()
+    { test("'true'^^xsd:boolean", SSE.parseNode("'true'^^xsd:boolean")) ; }
+
+    @Test public void nodeId_51()
+    { test("'false'^^xsd:boolean", SSE.parseNode("'false'^^xsd:boolean")) ; }
+
+    @Test public void nodeId_52()
+    { test("'1'^^xsd:boolean", SSE.parseNode("'true'^^xsd:boolean")) ; }
+
+    @Test public void nodeId_53()
+    { test("'0'^^xsd:boolean", SSE.parseNode("'false'^^xsd:boolean")) ; }
 
     private void test(String x, Node correct)
     {
