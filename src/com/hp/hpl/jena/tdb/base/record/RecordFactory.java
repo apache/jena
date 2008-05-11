@@ -9,7 +9,7 @@ package com.hp.hpl.jena.tdb.base.record;
 import static java.lang.String.format ;
 import java.nio.ByteBuffer;
 
-/** Record creator */
+/** Record creator: can also create key-only records of the same key/value engine*/
 final
 public class RecordFactory
 {
@@ -24,14 +24,24 @@ public class RecordFactory
         this.slotLen = keyLength + (valueLength>0 ? valueLength : 0 ) ;
     }
 
+    /** Create a key-only record */
+    public Record createKey(byte[] key)
+    { 
+        checkKey(key) ;
+        return new Record(key, null) ;
+    }
+    
+    /** Create a key and value record (value uninitialized) */
     public Record create(byte[] key)
     { 
+        checkKey(key) ;
         byte[] v = null ;
         if ( valueLength > 0 )
             v = new byte[valueLength] ;
         return create(key, v) ;
     }
     
+    /** Create a key and value record */
     public Record create(byte[] key, byte[] value)
     {
         check(key, value) ;
@@ -43,7 +53,7 @@ public class RecordFactory
         check(record) ;
         bb.position(idx*slotLen) ;
         bb.put(record.getKey(), 0, keyLength) ;
-        if ( hasValue() )
+        if ( hasValue() && record.getValue() != null )
             bb.put(record.getValue(), 0, valueLength) ;
     }
     
@@ -59,19 +69,21 @@ public class RecordFactory
         return create(key, value) ;
     }
     
-    public boolean hasValue() { return valueLength > 0 ; }
+    public Record buildKeyFrom(ByteBuffer bb, int idx)
+    {
+        byte[] key = new byte[keyLength] ;
+        bb.position(idx*slotLen) ;
+        bb.get(key, 0, keyLength) ;
+        return createKey(key) ;
+    }
 
-    public int recordLength() { return keyLength + valueLength ; }
+    public boolean hasValue()   { return valueLength > 0 ; }
+
+    public int recordLength()   { return keyLength + valueLength ; }
     
-    public int keyLength()
-    {
-        return keyLength ;
-    }
+    public int keyLength()      { return keyLength ; }
 
-    public int valueLength()
-    {
-        return valueLength ;
-    }
+    public int valueLength()    { return valueLength ; }
     
     @Override
     public String toString()
@@ -84,13 +96,17 @@ public class RecordFactory
         check(record.getKey(), record.getValue()) ;
     }
     
-    private final void check(byte[] k, byte[] v)
+    private final void checkKey(byte[] k)
     {
         if ( k == null )
             throw new RecordException("Null key byte[]") ;
         if ( keyLength != k.length ) 
             throw new RecordException(format("Key length error: This RecordFactory manages records of key length %d, not %d", keyLength, k.length)) ;
-
+    }
+    
+    private final void check(byte[] k, byte[] v)
+    {
+        checkKey(k) ;
         if ( valueLength <= 0 )
         {
             if ( v != null ) 
