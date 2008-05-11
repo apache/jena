@@ -9,6 +9,8 @@ package dev;
 public class Dev
 {
     // Log BGP's executed.
+    // Simple stats optimizer.
+    // Assembler to cache graphs made (by location) so reuse is same gengine 
     
     // Misc :
     // Interface Sync everywhere?
