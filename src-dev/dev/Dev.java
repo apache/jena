@@ -8,7 +8,6 @@ package dev;
 
 public class Dev
 {
-    // Loading into an existign graph - don't drop indexes and rebuild.
     // Or do multiple files at once.  
     // Log BGP's executed.
     // Simple stats optimizer.

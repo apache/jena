@@ -77,7 +77,7 @@ public class tdbloader extends CmdTDB
         boolean loadingEmptyGraph = graph.isEmpty() ;
         if ( loadingEmptyGraph )
         {
-            println("** Load empty graph : load by primary index only, then rebuild secondaries") ;
+            println("** Load empty graph") ;
             // SPO only.
             dropSecondaryIndexes() ;
         }
