@@ -72,18 +72,17 @@ public class tdbloader extends CmdTDB
         if ( isQuiet() )
             timing = false ;
         
-//        if ( modAssembler.getAssemblerFile() == null )
-//            throw new CmdException("No assembler file") ;
-        
-//        Model model = TDBFactory.assembleModel(modAssembler.getAssemblerFile()) ;
         graph = getGraph() ;
         Model model = ModelFactory.createModelForGraph(graph) ;
         boolean loadingEmptyGraph = graph.isEmpty() ;
         if ( loadingEmptyGraph )
         {
+            println("** Load empty graph : load by primary index only, then rebuild secondaries") ;
             // SPO only.
             dropSecondaryIndexes() ;
         }
+        else
+            println("** Load graph with existing data") ;
         
         Timer timer = new Timer() ;
         timer.startTimer() ;
@@ -106,7 +105,7 @@ public class tdbloader extends CmdTDB
         graph.sync(true) ;
         // Close other resourses (node table).
         
-        if ( loadingEmptyGraph)
+        if ( loadingEmptyGraph )
         {
             if ( timing )
                 println("** Secondary indexes") ;
@@ -185,16 +184,6 @@ public class tdbloader extends CmdTDB
         println("** Parallel index building") ;
         Timer timer = new Timer() ;
         timer.startTimer() ;
-        
-//        // Rebuild.
-//        {
-//            // ---- POS
-//            RangeIndex idxPOS = graph.getIndexFactory().createRangeIndex(graph.getIndexRecordFactory(), "POS") ;
-//            triplesPOS = new TripleIndex("POS", idxPOS) ;
-//            // ---- OSP
-//            RangeIndex idxOSP = graph.getIndexFactory().createRangeIndex(graph.getIndexRecordFactory(), "OSP") ;
-//            triplesOSP = new TripleIndex("OSP", idxOSP) ;
-//        }
         
         int semaCount = 0 ;
         Semaphore sema = new Semaphore(0) ;
