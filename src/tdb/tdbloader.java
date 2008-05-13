@@ -78,9 +78,12 @@ public class tdbloader extends CmdTDB
 //        Model model = TDBFactory.assembleModel(modAssembler.getAssemblerFile()) ;
         graph = getGraph() ;
         Model model = ModelFactory.createModelForGraph(graph) ;
-        
-        // SPO only.
-        dropSecondaryIndexes() ;
+        boolean loadingEmptyGraph = graph.isEmpty() ;
+        if ( loadingEmptyGraph )
+        {
+            // SPO only.
+            dropSecondaryIndexes() ;
+        }
         
         Timer timer = new Timer() ;
         timer.startTimer() ;
@@ -103,13 +106,15 @@ public class tdbloader extends CmdTDB
         graph.sync(true) ;
         // Close other resourses (node table).
         
-        
-        if ( timing )
-            println("** Secondary indexes") ;
-        // Now do secondary indexes.
-        
-        // Fork two separate processes? But it's disk bound!?
-        createSecondaryIndexes(timing) ;
+        if ( loadingEmptyGraph)
+        {
+            if ( timing )
+                println("** Secondary indexes") ;
+            // Now do secondary indexes.
+            
+            // Fork two separate processes? But it's disk bound!?
+            createSecondaryIndexes(timing) ;
+        }
 
         if ( timing )
             println("** Close graph") ;
