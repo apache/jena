@@ -468,6 +468,7 @@ public final class BulkLoader
 
     private void syntaxError(String s) {
         errCount ++ ;
+        log.warn("Synatx error: "+s) ;
         errorHandler.error(syntaxException(s)) ;
         inErr = true;
     }
