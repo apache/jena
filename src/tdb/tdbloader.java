@@ -27,9 +27,11 @@ import com.hp.hpl.jena.util.FileManager;
 public class tdbloader extends CmdTDB
 {
     ArgDecl argParallel = new ArgDecl(ArgDecl.NoValue, "parallel") ;
+    ArgDecl argIncremental = new ArgDecl(ArgDecl.NoValue, "incr", "incrmenetal") ;
     
     boolean timing = true ;
     boolean doInParallel = false ;
+    private boolean doIncremental = true ;
     private PGraphBase graph ;
 
     private TripleIndex triplesSPO ;
@@ -45,7 +47,8 @@ public class tdbloader extends CmdTDB
     protected tdbloader(String[] argv)
     {
         super(argv) ;
-        super.add(argParallel) ;
+        super.add(argParallel, "--parallel", "Do rebuilding of secondary indexes in a parallel") ;
+        super.add(argIncremental, "--incremental", "Do an incremental load (keep indexes during load, don't rebuild)") ;
     }
 
     @Override
@@ -53,6 +56,7 @@ public class tdbloader extends CmdTDB
     {
         super.processModulesAndArgs() ;
         doInParallel = super.contains(argParallel) ;
+        doIncremental = super.contains(argIncremental) ;
     }
     
     @Override
@@ -74,8 +78,12 @@ public class tdbloader extends CmdTDB
         
         graph = getGraph() ;
         Model model = ModelFactory.createModelForGraph(graph) ;
-        boolean loadingEmptyGraph = graph.isEmpty() ;
-        if ( loadingEmptyGraph )
+        
+        boolean rebuildIndexes = ! doIncremental ;
+        if ( ! graph.isEmpty() )
+            rebuildIndexes = false ;
+        
+        if ( rebuildIndexes )
         {
             println("** Load empty graph") ;
             // SPO only.
@@ -105,7 +113,7 @@ public class tdbloader extends CmdTDB
         graph.sync(true) ;
         // Close other resourses (node table).
         
-        if ( loadingEmptyGraph )
+        if ( rebuildIndexes )
         {
             if ( timing )
                 println("** Secondary indexes") ;
