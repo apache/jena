@@ -181,7 +181,7 @@ public class tdbloader extends CmdTDB
         if ( doInParallel )
             createSecondaryIndexesParallel(printTiming) ;
         else
-            createSecondaryIndexesSequential(printTiming) ;
+            createSecondaryIndexesInterleaved(printTiming) ;
     }
     
     private void createSecondaryIndexesParallel(boolean printTiming)
@@ -227,7 +227,7 @@ public class tdbloader extends CmdTDB
             @Override
             public void run()
             {
-                copyIndex(srcIndex, destIndex, label, printTiming) ;
+                copyIndex(srcIndex, new TripleIndex[]{destIndex}, label, printTiming) ;
                 sema.release() ;
             }} ;
         
@@ -249,7 +249,7 @@ public class tdbloader extends CmdTDB
         long time1 = timer.readTimer() ;
         if ( triplesPOS != null )
         {
-            copyIndex(triplesSPO, triplesPOS, "POS", printTiming) ;
+            copyIndex(triplesSPO, new TripleIndex[]{triplesPOS}, "POS", printTiming) ;
             long time2 = timer.readTimer() ;
             if ( printTiming )
                 printf("Time for POS indexing: %.2fs\n", (time2-time1)/1000.0) ;
@@ -262,7 +262,7 @@ public class tdbloader extends CmdTDB
         
         if ( triplesOSP != null )
         {
-            copyIndex(triplesSPO, triplesOSP, "OSP", printTiming) ;
+            copyIndex(triplesSPO, new TripleIndex[]{triplesOSP}, "OSP", printTiming) ;
             
             long time3 = timer.readTimer() ;
             if ( printTiming && triplesOSP != null )
@@ -275,9 +275,34 @@ public class tdbloader extends CmdTDB
 
     }
 
+    private void createSecondaryIndexesInterleaved(boolean printTiming)
+    {
+        if ( triplesPOS == null && triplesOSP == null )
+            return ;
+        
+        Timer timer = new Timer() ;
+        timer.startTimer() ;
+        
+//        // ---- POS
+//        RangeIndex idxPOS = graph.getIndexFactory().createRangeIndex(graph.getIndexRecordFactory(), "POS") ;
+//        TripleIndex triplesPOS = new TripleIndex("POS", idxPOS) ;
+        
+        long time1 = timer.readTimer() ;
+        
+        copyIndex(triplesSPO, new TripleIndex[]{triplesPOS, triplesOSP}, "POS/OSP", printTiming) ;
+        
+        long time2 = timer.readTimer() ;
+        if ( printTiming )
+            printf("Time for both POS and OSP indexes: %.2fs\n", (time2-time1)/1000.0) ;
+        
+        graph.setIndexOSP(triplesOSP) ;
+        graph.setIndexPOS(triplesPOS) ;
+
+    }
+    
     private static Object lock = new Object() ;
 
-    private static void copyIndex(TripleIndex srcIdx, TripleIndex destIdx, String label, boolean printTiming)
+    private static void copyIndex(TripleIndex srcIdx, TripleIndex[] destIndexes, String label, boolean printTiming)
     {
         long quantum = 100000 ;
 
@@ -291,7 +316,11 @@ public class tdbloader extends CmdTDB
         for ( int i = 0 ; iter.hasNext() ; i++ )
         {
             Tuple<NodeId> tuple = iter.next();
-            destIdx.add(tuple.get(0), tuple.get(1), tuple.get(2)) ;
+            for ( TripleIndex destIdx : destIndexes )
+            {
+                if ( destIdx != null )
+                    destIdx.add(tuple.get(0), tuple.get(1), tuple.get(2)) ;
+            }
             c++ ;
             cumulative++ ;
             if ( printTiming && cumulative%quantum == 0 )
@@ -304,8 +333,14 @@ public class tdbloader extends CmdTDB
                                   label, cumulative, 1000*c/batchTime, 1000*cumulative/elapsed) ;
                 c = 0 ;
             }
-        } 
-        destIdx.sync(true) ;
+        }
+        
+        for ( TripleIndex destIdx : destIndexes )
+        {
+            if ( destIdx != null )
+                destIdx.sync(true) ;
+        }
+        
         long totalTime = timer.endTimer() ;
         
         if ( printTiming )

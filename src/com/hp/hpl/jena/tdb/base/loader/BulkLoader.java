@@ -84,7 +84,6 @@ public final class BulkLoader
         
     }
     
-    
     // Testing ONLY
     BulkLoader(Reader r)
     {
@@ -149,7 +148,6 @@ public final class BulkLoader
                 return ;
         }
     }
-
     
     // ----  Testing support
     Triple emittedTriple = null ;
@@ -316,8 +314,20 @@ public final class BulkLoader
 
             int ch = in.readChar();
             //char c = (char)ch ;
-            if (ch == '\\') 
+            if (ch == '\\')
+            {
                 ch = readLiteralEscape() ;
+                if ( Character.charCount(ch) == 1 )
+                {
+                    buffer.append((char)ch);
+                    continue ;
+                }
+                // Too big for Basic Multilingual Plane (BMP)
+                char[] pair = Character.toChars(ch) ;
+                buffer.append((char)pair[0]);
+                buffer.append((char)pair[1]);
+                continue ;
+            }
             else if (ch == '"')
             {
                 // End of lexical form.
@@ -464,6 +474,7 @@ public final class BulkLoader
                 return readUnicode4Escape();
             case 'U':
             {
+                
                 // attempt to read ... 
                 int ch8 = readUnicodeEscape(8);
                 if ( ch8 > Character.MAX_CODE_POINT )
@@ -471,11 +482,12 @@ public final class BulkLoader
                     syntaxError(String.format("illegal code point in \\U sequence value: 0x%08X", ch8));
                     return 0 ;
                 }
-                if ( ch8 > Character.MAX_VALUE )
-                {
-                    syntaxError(String.format("code point too large for Java in \\U sequence value: 0x%08X", ch8));
-                    return '?' ;
-                }
+//                if ( ch8 > Character.MAX_VALUE )
+//                {
+//                    syntaxError(String.format("code point too large for Java in \\U sequence value: 0x%08X", ch8));
+//                    return '?' ;
+//                }
+                
                 return ch8 ; 
             }
             default:
@@ -515,7 +527,6 @@ public final class BulkLoader
 
         while (true) {
             int inChar = in.peekChar();
-            // XXX Better?
             if ( ! ( range(inChar, 'a', 'z') || range(inChar, 'A', 'Z') || inChar == '-' ) )
                 break ; 
             inChar = in.readChar() ;
