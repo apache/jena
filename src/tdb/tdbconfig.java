@@ -6,25 +6,56 @@
 
 package tdb;
 
-import tdb.cmdline.CmdSubTDB;
+import tdb.cmdline.CmdSub;
+import arq.cmdline.CmdARQ;
 
 /** Tools to manage a TDB store.  Subcommand based. */
-public class tdbconfig extends CmdSubTDB
+public class tdbconfig extends CmdSub
 {
-    static final String CMD_CLEAN = "clean" ;
-    
+    static final String CMD_CLEAN   = "clean" ;
+    static final String CMD_HELP    = "help" ;
     
     static public void main(String... argv)
     {
-        String subCmd = subCommand(argv) ;
-        String[] args = cmdline(argv) ;
-        new tdbconfig(subCmd, args) ;
+        new tdbconfig(argv).exec();
     }
 
-    protected tdbconfig(String subCmd, String[] argv)
+    protected tdbconfig(String[] argv)
     {
-        super(subCmd, argv) ;
-        // Add subcommands.
+        super(argv) ;
+//        super.addSubCommand(CMD_CLEAN, new Exec()
+//          { @Override public void exec(String[] argv) { new tdbclean(argv).main() ; } }) ;
+        super.addSubCommand(CMD_HELP, new Exec()
+          { @Override public void exec(String[] argv) { new SubHelp(argv).main() ; } }) ;
+    }
+    
+    
+    // Subbcomand : help
+    static class SubHelp extends CmdARQ
+    {
+        public SubHelp(String ... argv)
+        {
+            super(argv) ;
+            //super.addModule(modSymbol) ;
+        }
+        
+        @Override
+        protected String getSummary()
+        {
+            return null ;
+        }
+
+        @Override
+        protected void exec()
+        {
+            System.out.println("Help!") ;
+        }
+
+        @Override
+        protected String getCommandName()
+        {
+            return "help" ;
+        }
     }
 }
 

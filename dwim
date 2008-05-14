@@ -1,0 +1,7 @@
+#!/bin/bash
+
+tdbclean tmp
+for f in /data1/Datasets/DBPedia3.0/*.nt.gz
+do
+  gzip -d < $f | tdbloader --desc dataset.ttl - - > LOG
+  done

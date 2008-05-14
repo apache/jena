@@ -12,22 +12,26 @@ import java.util.Map;
 import arq.cmd.CmdException;
 
 
-public class CmdSubTDB //extends CmdTDB
+public class CmdSub
 {
-    protected interface Exec { public void exec() ; }
+    protected interface Exec { public void exec(String[] argv) ; }
     Map<String, Exec> dispatch = new HashMap<String, Exec>() ;
     
+    String subCmd ;
+    String args[] ;
     
-    public CmdSubTDB(String subCmd, String... argv)
+    public CmdSub(String ...argv)
     {
+        subCmd = subCommand(argv) ;
+        args = cmdline(argv) ;
     }
     
-    private void exec(String subCmd, String... argv)
+    protected void exec()
     {
         Exec exec = dispatch.get(subCmd) ;
         if ( exec == null )
             throw new CmdException("No subcommand: "+subCmd) ;
-        exec.exec() ;
+        exec.exec(args) ;
     }
 
     protected static String[] cmdline(String ... argv)

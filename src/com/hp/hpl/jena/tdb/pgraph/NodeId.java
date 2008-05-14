@@ -165,8 +165,12 @@ public class NodeId
         
         if ( node.getLiteralDatatype().equals(XSDDatatype.XSDdecimal) )
         {
-            // -- XSD Decimal
-            BigDecimal decimal = new BigDecimal(lit.getLexicalForm()) ;
+            BigDecimal decimal = null ;
+            try {
+                String x = lit.getLexicalForm().replace(",", "") ;
+                // -- XSD Decimal
+                decimal = new BigDecimal(x) ;
+            } catch (NumberFormatException ex) { return null ; }
 
             // Does checking.
             DecimalNode dn = DecimalNode.valueOf(decimal) ;
