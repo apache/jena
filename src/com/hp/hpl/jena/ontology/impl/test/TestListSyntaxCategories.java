@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            02-Apr-2003
  * Filename           $RCSfile: TestListSyntaxCategories.java,v $
- * Revision           $Revision: 1.29 $
+ * Revision           $Revision: 1.30 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2008-01-02 12:08:39 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2008-05-14 15:21:12 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -44,7 +44,7 @@ import org.apache.commons.logging.LogFactory;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestListSyntaxCategories.java,v 1.29 2008-01-02 12:08:39 andy_seaborne Exp $
+ * @version CVS $Id: TestListSyntaxCategories.java,v 1.30 2008-05-14 15:21:12 ian_dickinson Exp $
  */
 public class TestListSyntaxCategories
     extends TestCase
@@ -80,9 +80,8 @@ public class TestListSyntaxCategories
             }
         },
         // Properties
-        new DoListTest( "OWL list properties",  "file:testing/ontology/owl/list-syntax/test.rdf",  OntModelSpec.OWL_MEM_TRANS_INF,  7,
-                        new String[] {NS+"p",RDFS.label.getURI(),OWL.versionInfo.getURI(),RDFS.seeAlso.getURI(),
-                                      RDFS.comment.getURI(),RDFS.isDefinedBy.getURI(),NS+"karma"} )
+        new DoListTest( "OWL list properties",  "file:testing/ontology/owl/list-syntax/test.rdf",  OntModelSpec.OWL_MEM_TRANS_INF,  2,
+                        new String[] {NS+"p",NS+"karma"} )
         {
             public Iterator doList( OntModel m ) {
                 return m.listOntProperties();
@@ -468,7 +467,7 @@ public class TestListSyntaxCategories
         },
 
         // Annotation property
-        new DoListTest( "OWL list annotation properties",  "file:testing/ontology/owl/list-syntax/test.rdf",  OntModelSpec.OWL_MEM_TRANS_INF,  6,
+        new DoListTest( "OWL list annotation properties",  "file:testing/ontology/owl/list-syntax/test.rdf",  OntModelSpec.OWL_MEM_TRANS_INF,  1,
                         null )
         {
             public Iterator doList( OntModel m ) {

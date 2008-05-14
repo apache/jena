@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            22 Feb 2003
  * Filename           $RCSfile: OntModelImpl.java,v $
- * Revision           $Revision: 1.106 $
+ * Revision           $Revision: 1.107 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2008-01-28 15:51:48 $
- *               by   $Author: chris-dollin $
+ * Last modified on   $Date: 2008-05-14 15:22:17 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -54,7 +54,7 @@ import org.apache.commons.logging.LogFactory;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModelImpl.java,v 1.106 2008-01-28 15:51:48 chris-dollin Exp $
+ * @version CVS $Id: OntModelImpl.java,v 1.107 2008-05-14 15:22:17 ian_dickinson Exp $
  */
 public class OntModelImpl extends ModelCom implements OntModel
 {
@@ -721,7 +721,7 @@ public class OntModelImpl extends ModelCom implements OntModel
         else {
             return UniqueExtendedIterator.create(
                         findByType( r )
-                          .andThen( WrappedIterator.create( getProfile().getAnnotationProperties() ) )
+//                          .andThen( WrappedIterator.create( getProfile().getAnnotationProperties() ) )
                           .mapWith( new SubjectNodeAs( AnnotationProperty.class ) ) );
         }
     }
