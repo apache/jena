@@ -66,9 +66,7 @@ public class Run
     
     public static void main(String ... args)
     {
-        //"--desc=Store/gbt.ttl" ;
-        tdb.tdbconfig.main("help") ;
-//        tdb.tdbloader.main("--desc=dataset.ttl","D.ttl") ;
+        tdb.tdbloader.main("--desc=dataset.ttl","D.nt") ;
         System.exit(0) ;
                 
 //        typedNode("'2008-04-27T16:52:17+01:00'^^xsd:dateTime") ;

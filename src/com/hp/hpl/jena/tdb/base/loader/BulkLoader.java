@@ -36,9 +36,6 @@ import java.net.URL;
 import java.util.Hashtable;
 import java.util.Iterator;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import com.hp.hpl.jena.datatypes.RDFDatatype;
 import com.hp.hpl.jena.datatypes.TypeMapper;
 import com.hp.hpl.jena.graph.Graph;
@@ -50,7 +47,6 @@ import com.hp.hpl.jena.iri.IRIFactory;
 import com.hp.hpl.jena.iri.Violation;
 import com.hp.hpl.jena.rdf.model.AnonId;
 import com.hp.hpl.jena.rdf.model.RDFErrorHandler;
-import com.hp.hpl.jena.rdf.model.impl.RDFDefaultErrorHandler;
 import com.hp.hpl.jena.shared.JenaException;
 import com.hp.hpl.jena.shared.SyntaxError;
 import com.hp.hpl.jena.util.FileUtils;
@@ -60,7 +56,6 @@ import com.hp.hpl.jena.util.FileUtils;
  */
 public final class BulkLoader
 {
-    static final Log log = LogFactory.getLog(BulkLoader.class);
     static final int EOF = -1 ;
 
     //private Model model = null;
@@ -72,13 +67,13 @@ public final class BulkLoader
     private int errCount = 0;
     private static final int sbLength = 200;
 
-    private RDFErrorHandler errorHandler = new RDFDefaultErrorHandler();
+    private RDFErrorHandler errorHandler = new RollForwardErrorHandler();
 
     /**
      * Already with ": " at end for error messages.
      */
-    private String msgBase;
-    boolean KeepParsingAfterError = false ;
+    private String msgBase; // ???
+    boolean KeepParsingAfterError = true ;
     boolean CheckingRDF = true ;
     boolean CheckingIRIs = false ;
     final StringBuilder buffer = new StringBuilder(sbLength);
@@ -140,7 +135,7 @@ public final class BulkLoader
             graph.getEventManager().notifyEvent( graph , GraphEvents.finishRead ) ;
             if ( noCache ) Node.cache(true) ;
         }
-        if ( errCount > 0 )
+        if ( ! KeepParsingAfterError && errCount > 0 )
             throw new SyntaxError("Unknown") ;
     }
     
@@ -148,12 +143,15 @@ public final class BulkLoader
     {
         while (!in.eof())                       // Each line.
         {
+            inErr = false ;
             readOne() ;
             if ( inErr && ! KeepParsingAfterError )
                 return ;
         }
     }
 
+    
+    // ----  Testing support
     Triple emittedTriple = null ;
     
     Triple readTriple()
@@ -161,6 +159,7 @@ public final class BulkLoader
         readOne() ;
         return emittedTriple ;
     }
+    // ---- 
     
     void readOne()
     {
@@ -174,6 +173,12 @@ public final class BulkLoader
             return ;
 
         subject = readNode() ;
+        if ( inErr )
+        {
+            skipToNewlineLax() ;
+            return ;
+        }
+        
         if ( CheckingRDF && ! subject.isURI() && !subject.isBlank() )
         {
             syntaxError("Subject is not an IRI or blank node") ;
@@ -183,6 +188,11 @@ public final class BulkLoader
 
         skipWhiteSpace();
         predicate = readNode() ;
+        if ( inErr )
+        {
+            skipToNewlineLax() ;
+            return ;
+        }
         if ( CheckingRDF && ! predicate.isURI() )
         {
             syntaxError("Predicate is not an IRI") ;
@@ -192,6 +202,11 @@ public final class BulkLoader
 
         skipWhiteSpace();
         object = readNode() ;
+        if ( inErr )
+        {
+            skipToNewlineLax() ;
+            return ;
+        }
         if ( CheckingRDF && ! object.isURI() && !object.isBlank() && ! object.isLiteral() )
         {
             syntaxError("Object is not an IRI, blank node or literal") ;
@@ -207,13 +222,7 @@ public final class BulkLoader
             subject = null ;
             predicate = null ;
             object = null ;
-            // Skip to EOL
-            while( !in.eof() )
-            {
-                int x = in.readChar() ;
-                if ( x == '\n' )
-                    break ;
-            }
+            skipToNewlineStrict() ;
             return ;
         }
         
@@ -254,10 +263,14 @@ public final class BulkLoader
     }
 
     // private
-    int readUnicode4Escape()
+    private final
+    int readUnicode4Escape() { return readUnicodeEscape(4) ; }
+    
+    private final
+    int readUnicodeEscape(int N)
     {
         int x = 0 ;
-        for ( int i = 0 ; i < 4 ; i++ )
+        for ( int i = 0 ; i < N ; i++ )
         {
             int d = readHex() ;
             if ( d < 0 )
@@ -267,7 +280,7 @@ public final class BulkLoader
         return x ; 
     }
     
-    // private
+    private final
     int readHex()
     {
         int ch = in.readChar() ;
@@ -449,8 +462,24 @@ public final class BulkLoader
             case '\\': return '\\' ;
             case 'u':
                 return readUnicode4Escape();
+            case 'U':
+            {
+                // attempt to read ... 
+                int ch8 = readUnicodeEscape(8);
+                if ( ch8 > Character.MAX_CODE_POINT )
+                {
+                    syntaxError(String.format("illegal code point in \\U sequence value: 0x%08X", ch8));
+                    return 0 ;
+                }
+                if ( ch8 > Character.MAX_VALUE )
+                {
+                    syntaxError(String.format("code point too large for Java in \\U sequence value: 0x%08X", ch8));
+                    return '?' ;
+                }
+                return ch8 ; 
+            }
             default:
-                syntaxError("illegal escape sequence '" + c + "'");
+                syntaxError(String.format("illegal escape sequence value: %c (0x%02X)", c, c));
                 return 0 ;
         }
     }
@@ -468,7 +497,6 @@ public final class BulkLoader
 
     private void syntaxError(String s) {
         errCount ++ ;
-        log.warn("Synatx error: "+s) ;
         errorHandler.error(syntaxException(s)) ;
         inErr = true;
     }
@@ -539,6 +567,42 @@ public final class BulkLoader
         }
     }
 
+    private void skipToNewlineStrict()
+    {
+        // Skip to EOL
+        // Exactly one \n. (NB Windows is \r\n so this works)
+        while( !in.eof() )
+        {
+            int x = in.readChar() ;
+            if ( x == '\n' )
+                break ;
+        }
+    }
+    
+    private void skipToNewlineLax()
+    {
+        while (true)
+        {
+            if (in.eof()) 
+                return ;
+            int ch = in.peekChar() ;
+            if (ch == '\n' || ch == '\r') break ;
+            // Not newline - read and try again.
+            in.readChar() ;
+        }
+        // At newline.
+        while (true)
+        {
+            if (in.eof()) 
+                return ;
+            int ch = in.peekChar() ;
+            if (ch != '\n' && ch != '\r') 
+                break ;
+            // Skip multiple EOL characters. 
+            in.readChar() ;
+        }
+    }
+    
     private void comment()
     {
         while (in.readChar() != '\n') {
