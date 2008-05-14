@@ -165,14 +165,12 @@ public class NodeId
         
         if ( node.getLiteralDatatype().equals(XSDDatatype.XSDdecimal) )
         {
-            BigDecimal decimal = null ;
-            try {
-                String x = lit.getLexicalForm().replace(",", "") ;
-                // -- XSD Decimal
-                decimal = new BigDecimal(x) ;
-            } catch (NumberFormatException ex) { return null ; }
-
-            // Does checking.
+            // Check lexical form.
+            if ( ! XSDDatatype.XSDdecimal.isValidLiteral(lit) ) 
+                return null ;
+            
+            BigDecimal decimal = new BigDecimal(lit.getLexicalForm()) ;
+            // Does range checking.
             DecimalNode dn = DecimalNode.valueOf(decimal) ;
             if ( dn != null )
                 // setType
