@@ -11,6 +11,7 @@ import java.util.List;
 import com.hp.hpl.jena.Jena;
 import com.hp.hpl.jena.query.ARQ;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIteratorBase;
+import com.hp.hpl.jena.sparql.util.Utils;
 
 public abstract class CmdARQ extends CmdGeneral
 {
@@ -38,6 +39,11 @@ public abstract class CmdARQ extends CmdGeneral
     {
         items.add("ARQ Version: "+ARQ.VERSION) ;
         items.add("Jena: "+Jena.VERSION) ;
+    }
+    
+    protected String getCommandName()
+    {
+        return Utils.className(this) ;
     }
 }
 
