@@ -115,7 +115,7 @@ public class tdbcheck extends CmdARQ
             LiteralLabel lit = node.getLiteral() ;
             
             // Datatype check (and plain literals are always well formed)
-            if ( ! lit.isWellFormed() )
+            if ( lit.getDatatype() != null && ! lit.isWellFormed() )
                 throw new JenaException("Lexical not valid for datatype: "+node) ;
             
 //            // Not well formed.
@@ -125,13 +125,16 @@ public class tdbcheck extends CmdARQ
 //                    throw new JenaException("Lexical not valid for datatype: "+node) ;
 //            }
             
-//            if (lit.language() != null )
-//            {
-//                String lang = lit.language() ;
-//                if ( ! lang.matches("[a-z]{1,8}(-[a-z]{1,8})*") )
-//                    throw new JenaException("Language not valid: "+node) ;
-//                
-//            }
+            if (lit.language() != null )
+            {
+                // Not a pefect test.
+                String lang = lit.language() ;
+                if ( lang.length() > 0 )
+                {
+                    if ( ! lang.matches("[a-z]{1,8}(-[a-z]{1,8})*") )
+                        throw new JenaException("Language not valid: "+node) ;
+                }
+            }
         }
 
         private void checkBlank(Node node)
@@ -150,6 +153,7 @@ public class tdbcheck extends CmdARQ
             {
                 @SuppressWarnings("unchecked")
                 Iterator<Violation> it = iri.violations(includeWarnings);
+                // Deemphasise some wanrings.
                 Violation v = null ;
                 Violation vSub = null ;
                 while (it.hasNext()) {
