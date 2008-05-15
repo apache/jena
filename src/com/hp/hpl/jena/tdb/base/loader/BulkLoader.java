@@ -56,6 +56,10 @@ import com.hp.hpl.jena.util.FileUtils;
  */
 public final class BulkLoader
 {
+    // TODO BulLoader ToDo list
+    //  1 - expect - check if false and react
+    //  2 - readURIStr - check one char peek ahead but do any escape
+    
     static final int EOF = -1 ;
 
     //private Model model = null;
@@ -73,12 +77,12 @@ public final class BulkLoader
      * Already with ": " at end for error messages.
      */
     private String msgBase; // ???
-    boolean KeepParsingAfterError = true ;
-    boolean CheckingRDF = true ;
-    boolean CheckingIRIs = false ;
+    static public boolean CheckingRDF = true ;
+    
+    static public boolean CheckingIRIs = false ;
+    static public boolean KeepParsingAfterError = true ;
     final StringBuilder buffer = new StringBuilder(sbLength);
 
-    
     public BulkLoader()
     {
         
@@ -225,7 +229,15 @@ public final class BulkLoader
         }
         
         if ( subject != null && predicate != null && object != null )
-            emit(subject, predicate, object) ;
+        {
+            try {
+                emit(subject, predicate, object) ;
+            } catch (JenaException ex)
+            {
+                // We no longer know the column
+                warning(ex.getMessage(), in.getColNum(), -1) ;
+            }
+        }
     }
 
     void emit(Node subject, Node predicate, Node object)
@@ -236,6 +248,7 @@ public final class BulkLoader
         
     private void emit(Triple t)
     {
+        // Note : this can throw a JenaException for further checking of the triple. 
         if ( graph != null )
             graph.add(t) ;
     }
@@ -324,8 +337,8 @@ public final class BulkLoader
                 }
                 // Too big for Basic Multilingual Plane (BMP)
                 char[] pair = Character.toChars(ch) ;
-                buffer.append((char)pair[0]);
-                buffer.append((char)pair[1]);
+                for ( char chSub : pair )
+                    buffer.append((char)chSub);
                 continue ;
             }
             else if (ch == '"')
@@ -402,14 +415,16 @@ public final class BulkLoader
 
             if ( ch == '\\' )
             {
-                expect("u");
-                ch = readUnicode4Escape();
+                // Be liberal an allow any escape here?
+                if ( expect("u") )
+                    ch = readUnicode4Escape();
+                else
+                    ch = '_' ;
             }
             buffer.append((char)ch);
         }
         return buffer.toString() ;
     }
-
  
     static IRIFactory iriFactory = IRIFactory.semanticWebImplementation();
     private void checkIRI(String iriStr)
@@ -421,35 +436,15 @@ public final class BulkLoader
             Iterator<?> it = iri.violations(includeWarnings);
             while (it.hasNext()) {
                 Violation v = (Violation) it.next();
-                syntaxError(v.getShortMessage()) ;
-//                if ( v.isError() )
-//                    syntaxError(v.getShortMessage()) ;
-//                else
-//                    warning(v.getShortMessage()) ;
+//                syntaxError(v.getShortMessage()) ;
+                if ( v.isError() )
+                    syntaxError(v.getShortMessage()) ;
+                else
+                    warning(v.getShortMessage()) ;
             }
-            throw syntaxException(iriStr) ;
         }
     }
 
-    private String readURI2() {
-        //final StringBuilder uriBuffer = new StringBuilder(sbLength);
-        buffer.setLength(0) ;
-
-        while (in.readChar() != '>') {
-            int inChar = in.readChar();
-
-            if (inChar == '\\') {
-                expect("u");
-                inChar = readUnicode4Escape();
-            }
-            if (badEOF()) {
-                return null;
-            }
-            buffer.append((char)inChar);
-        }
-        return buffer.toString();
-    }
-    
     private boolean range(int ch, char a, char b)
     {
         return ( ch >= a && ch <= b ) ;
@@ -496,30 +491,33 @@ public final class BulkLoader
         }
     }
     
-
-    private void warning(String s) {
+    private void warning(String s) { warning(s, in.getLineNum(), in.getColNum()) ; }
+    
+    private void warning(String s, int line, int charpos) {
         errorHandler.warning(
             new SyntaxError(
                 syntaxErrorMessage(
-                    "Deprecation warning",
+                    "Warning",
                     s,
-                    in.getLineNum(),
-                    in.getColNum())));
+                    line, charpos)));
     }
 
-    private void syntaxError(String s) {
+    private void syntaxError(String s) { syntaxError(s, in.getLineNum(), in.getColNum()) ; }
+    
+    private void syntaxError(String s, int line, int charpos) {
         errCount ++ ;
-        errorHandler.error(syntaxException(s)) ;
+        errorHandler.error(syntaxException(s, line, charpos)) ;
         inErr = true;
     }
     
-    private SyntaxError syntaxException(String s) {
+    private SyntaxError syntaxException(String s, int lineNum, int charpos)
+    {
         return new SyntaxError(
                 syntaxErrorMessage(
                     "Syntax error",
                     s,
-                    in.getLineNum(),
-                    in.getColNum()));
+                    lineNum,
+                    charpos));
     }
     
     private String readLang() {
@@ -623,19 +621,27 @@ public final class BulkLoader
         }
     }
 
-    private String syntaxErrorMessage(
-        String sort,
-        String msg,
-        int linepos,
-        int charpos) {
-        return msgBase
-            + sort
-            + " at line "
-            + linepos
-            + " position "
-            + charpos
-            + ": "
-            + msg;
+    private String syntaxErrorMessage(String sort, String msg, 
+                                      int linepos, int charpos)
+    {
+        StringBuilder x = new StringBuilder() ; 
+        x.append(msgBase) ;
+        if ( sort != null )
+        {
+            x.append(sort) ;
+            x.append(" at line ") ;
+        }
+        else
+            x.append("Line ") ;
+        x.append(Integer.toString(linepos)) ;
+        if ( charpos >= 0 )
+        {
+            x.append(" position ") ;
+            x.append(Integer.toString(charpos)) ;
+        }
+        x.append(": ") ;
+        x.append(msg) ;
+        return x.toString() ;
     }
 }    
 

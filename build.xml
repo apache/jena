@@ -63,6 +63,10 @@
     <property name="java.debuglevel"  value="source,lines,vars"/>
     <property name="java.deprecation" value="true"/>
     <property name="java.optimize"    value="true"/>
+    <!--
+    <property name="java.source"      value="1.6"/>
+    <property name="java.target"      value="1.6"/>
+    -->
   </target>
 
   <!-- ========================================== -->

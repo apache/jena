@@ -1,0 +1,3 @@
+<http://example/ X> <http://example/p> <http://example/Z>  .
+<http://example/X> <http://example/p> "123,456"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+<http://example/X> <http://example/p> "123456"^^<http://www.w3.org/2001/XMLSchema#decimal> .

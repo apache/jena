@@ -101,7 +101,7 @@ public class tdbloader extends CmdTDB
         long count = 0 ;
         
         @SuppressWarnings("unchecked")
-        Iterator<String> iter = (Iterator<String>)super.getPositional().iterator() ;
+        Iterator<String> iter = getPositional().iterator() ;
         
         for ( ; iter.hasNext() ; )
         {

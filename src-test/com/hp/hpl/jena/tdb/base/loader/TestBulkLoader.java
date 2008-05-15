@@ -141,7 +141,52 @@ public class TestBulkLoader extends BaseTest
         assertNull(x) ;
     }
 
-    // XXX Errors.
+    
+    @Test public void esc_1()
+    {
+        Triple x = readTriple("<s> <p> \"X\\u0020Y\" .") ;
+        assertNotNull(x) ;
+        Node s = Node.createURI("s") ;
+        Node p = Node.createURI("p") ;
+        Node o = Node.createLiteral("X Y") ;
+        assertEquals(new Triple(s,p,o), x) ;
+    }
+    
+    @Test public void esc_2()
+    {
+        Triple x = readTriple("<s> <p> \"X\\U00000020Y\" .") ;
+        assertNotNull(x) ;
+        Node s = Node.createURI("s") ;
+        Node p = Node.createURI("p") ;
+        Node o = Node.createLiteral("X Y") ;
+        assertEquals(new Triple(s,p,o), x) ;
+    }
+    
+    @Test public void esc_3()
+    {
+        Triple x = readTriple("<s> <p> \"a\\tb\" .") ;
+        assertNotNull(x) ;
+        Node s = Node.createURI("s") ;
+        Node p = Node.createURI("p") ;
+        Node o = Node.createLiteral("a\tb") ;
+        assertEquals(new Triple(s,p,o), x) ;
+    }
+
+    @Test public void esc_4()
+    {
+        // Out of range for UTF-16
+        int ch = 0x00010011 ;
+        String str = new String(Character.toChars(ch)) ;
+        
+        Triple x = readTriple("<s> <p> \"X\\U00010011Y\" .") ;
+        assertNotNull(x) ;
+        Node s = Node.createURI("s") ;
+        Node p = Node.createURI("p") ;
+        Node o = Node.createLiteral("X"+str+"Y") ;
+        assertEquals(new Triple(s,p,o), x) ;
+    }
+    
+    // XXX more error cases
     
     private Node readNode(String form)
     {
