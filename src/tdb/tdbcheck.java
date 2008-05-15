@@ -114,8 +114,13 @@ public class tdbcheck extends CmdARQ
         private void checkLiteral(Node node)
         {
             LiteralLabel lit = node.getLiteral() ;
-            if ( ! lit.getDatatype().isValid(lit.getLexicalForm()) )
-                throw new JenaException("Lexical not valid for datatype: "+node) ;
+            if ( lit.getDatatype() != null )
+            {
+                if ( ! lit.getDatatype().isValid(lit.getLexicalForm()) )
+                    throw new JenaException("Lexical not valid for datatype: "+node) ;
+            }
+            if (lit.language() != null )
+            {}
         }
 
         private void checkBlank(Node node)
