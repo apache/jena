@@ -6,27 +6,19 @@
 
 package tdb;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
 import lib.Tuple;
-
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.tdb.base.record.Record;
-import com.hp.hpl.jena.tdb.graph.StatsGraph;
-import com.hp.hpl.jena.tdb.index.RangeIndex;
-import com.hp.hpl.jena.tdb.index.TripleIndex;
-import com.hp.hpl.jena.tdb.pgraph.NodeId;
-import com.hp.hpl.jena.tdb.pgraph.PGraphBase;
-import com.hp.hpl.jena.util.FileManager;
-
 import tdb.cmdline.CmdSub;
 import tdb.cmdline.CmdTDB;
 import arq.cmdline.CmdARQ;
+
+import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.tdb.index.TripleIndex;
+import com.hp.hpl.jena.tdb.pgraph.NodeId;
+import com.hp.hpl.jena.tdb.pgraph.PGraphBase;
 
 /** Tools to manage a TDB store.  Subcommand based. */
 public class tdbconfig extends CmdSub
