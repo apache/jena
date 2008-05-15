@@ -129,11 +129,8 @@ public class tdbcheck extends CmdARQ
             {
                 // Not a pefect test.
                 String lang = lit.language() ;
-                if ( lang.length() > 0 )
-                {
-                    if ( ! lang.matches("[a-z]{1,8}(-[a-z]{1,8})*") )
-                        throw new JenaException("Language not valid: "+node) ;
-                }
+                if ( lang.length() > 0 && ! lang.matches("[a-z]{1,8}(-[a-z]{1,8})*") )
+                    throw new JenaException("Language not valid: "+node) ;
             }
         }
 
@@ -154,11 +151,19 @@ public class tdbcheck extends CmdARQ
                 @SuppressWarnings("unchecked")
                 Iterator<Violation> it = iri.violations(includeWarnings);
                 // Deemphasise some wanrings.
-                Violation v = null ;
+                Violation vError = null ;
+                Violation vWarning = null ;
                 Violation vSub = null ;
                 while (it.hasNext()) {
                     Violation v2 = (Violation) it.next();
                     int code = v2.getViolationCode() ;
+                    if ( v2.isError() )
+                    {
+                        vError = v2 ;
+                        continue ;
+                    }
+                    
+                    // Supress the importance of these.
                     if ( code == Violation.LOWERCASE_PREFERRED ||
                          code == Violation.PERCENT_ENCODING_SHOULD_BE_UPPERCASE )
                     {
@@ -166,11 +171,13 @@ public class tdbcheck extends CmdARQ
                             vSub = v2 ;
                         continue ;
                     }
-                    v = v2 ;
+                    vWarning = v2 ;
                     break ;
                 }
-                if ( v != null )
-                    throw new JenaException(v.getShortMessage()) ;
+                if ( vError != null )
+                    throw new JenaException(vError.getShortMessage()) ;
+                if ( vWarning != null )
+                    throw new JenaException(vWarning.getShortMessage()) ;
                 if ( vSub != null )
                     throw new JenaException(vSub.getShortMessage()) ;
                 }
