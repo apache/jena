@@ -11,7 +11,7 @@ import iterator.Iter;
 import java.util.Iterator;
 import java.util.Map;
 
-// Map with parent sharing.
+/** Map with parent sharing. */
 public class Map2<K, V> implements Iterable<K>
 {
     private Map<K, V> map1 ; 

@@ -14,8 +14,11 @@ import lib.Map2;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.tdb.pgraph.NodeId;
 
+/** Class for a Binding-like structure excep tit works on NodeIds, not on Nodes */  
 class BindingNodeId extends Map2<Var, NodeId>
 {
+    // Possible optimization: there are at most 3 possible values so HashMap is overkill.
+    
     private BindingNodeId(Map<Var, NodeId> map1, Map2<Var, NodeId> map2)
     {
         super(map1, map2) ;
@@ -31,7 +34,7 @@ class BindingNodeId extends Map2<Var, NodeId>
         super(new HashMap<Var, NodeId>(), null) ;
     }
     
-    @Override public NodeId get(Var v)    { return super.get(v) ; } 
+    //@Override public NodeId get(Var v)    { return super.get(v) ; } 
     
     @Override public void put(Var v, NodeId n)
     {
