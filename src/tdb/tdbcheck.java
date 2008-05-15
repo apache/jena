@@ -87,7 +87,8 @@ public class tdbcheck extends CmdARQ
         return Utils.className(this) ;
     }
 
-    static final class GraphSinkCheck extends GraphSink
+    // Inherit from tis to get performAdd checks 
+    static class GraphSinkCheck extends GraphSink
     {
         @Override
         public void performAdd( Triple t )
@@ -99,7 +100,7 @@ public class tdbcheck extends CmdARQ
         static IRIFactory iriFactory = IRIFactory.semanticWebImplementation();
 
         @SuppressWarnings("unchecked")
-        private void check(Node node)
+        final private void check(Node node)
         {
             if ( node.isURI() ) checkURI(node) ;
             else if ( node.isBlank() ) checkBlank(node) ;
@@ -107,10 +108,10 @@ public class tdbcheck extends CmdARQ
             else if ( node.isVariable() ) checkVar(node) ;
         }
         
-        private void checkVar(Node node)
+        final private void checkVar(Node node)
         {}
 
-        private void checkLiteral(Node node)
+        final private void checkLiteral(Node node)
         {
             LiteralLabel lit = node.getLiteral() ;
             
@@ -134,7 +135,7 @@ public class tdbcheck extends CmdARQ
             }
         }
 
-        private void checkBlank(Node node)
+        final private void checkBlank(Node node)
         {
             String x =  node.getBlankNodeLabel() ;
             if ( x.indexOf(' ') >= 0 )
@@ -142,7 +143,7 @@ public class tdbcheck extends CmdARQ
         }
 
 
-        private void checkURI(Node node)
+        final private void checkURI(Node node)
         {
             boolean includeWarnings = true ;
             IRI iri = iriFactory.create(node.getURI()); // always works
