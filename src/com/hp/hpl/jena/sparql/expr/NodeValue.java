@@ -819,7 +819,9 @@ public abstract class NodeValue extends ExprNode
         LiteralLabel lit = node.getLiteral() ;
         
         // This includes type testing
-        if ( ! lit.getDatatype().isValidLiteral(lit) )
+        //if ( ! lit.getDatatype().isValidLiteral(lit) )
+        // Use this - already calculated when the node is formed. 
+        if ( !node.getLiteral().isWellFormed() )
         {
             if ( NodeValue.VerboseWarnings )
             {
