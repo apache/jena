@@ -37,7 +37,7 @@ public class CmdSub
     protected static String[] cmdline(String ... argv)
     {
         String [] a = new String[argv.length-1] ;
-        System.arraycopy(argv, 0, a, 0, argv.length-1) ;
+        System.arraycopy(argv, 1, a, 0, argv.length-1) ;
         return a ; 
     }
 

@@ -6,7 +6,26 @@
 
 package tdb;
 
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
+import lib.Tuple;
+
+import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.tdb.base.record.Record;
+import com.hp.hpl.jena.tdb.graph.StatsGraph;
+import com.hp.hpl.jena.tdb.index.RangeIndex;
+import com.hp.hpl.jena.tdb.index.TripleIndex;
+import com.hp.hpl.jena.tdb.pgraph.NodeId;
+import com.hp.hpl.jena.tdb.pgraph.PGraphBase;
+import com.hp.hpl.jena.util.FileManager;
+
 import tdb.cmdline.CmdSub;
+import tdb.cmdline.CmdTDB;
 import arq.cmdline.CmdARQ;
 
 /** Tools to manage a TDB store.  Subcommand based. */
@@ -14,6 +33,7 @@ public class tdbconfig extends CmdSub
 {
     static final String CMD_CLEAN   = "clean" ;
     static final String CMD_HELP    = "help" ;
+    static final String CMD_STATS   = "stats" ;
     
     static public void main(String... argv)
     {
@@ -27,10 +47,12 @@ public class tdbconfig extends CmdSub
 //          { @Override public void exec(String[] argv) { new tdbclean(argv).main() ; } }) ;
         super.addSubCommand(CMD_HELP, new Exec()
           { @Override public void exec(String[] argv) { new SubHelp(argv).main() ; } }) ;
+        super.addSubCommand(CMD_STATS, new Exec()
+        { @Override public void exec(String[] argv) { new SubStats(argv).main() ; } }) ;
     }
     
     
-    // Subbcomand : help
+    // Subcommand : help
     static class SubHelp extends CmdARQ
     {
         public SubHelp(String ... argv)
@@ -55,6 +77,54 @@ public class tdbconfig extends CmdSub
         protected String getCommandName()
         {
             return "help" ;
+        }
+    }
+    
+    static class SubStats extends CmdTDB
+    {
+        public SubStats(String ... argv)
+        {
+            super(argv) ;
+            //super.addModule(modSymbol) ;
+        }
+        
+        @Override
+        protected String getSummary()
+        {
+            return null ;
+        }
+
+        @Override
+        protected void exec()
+        {
+            long count = 0 ;
+            Map<NodeId, Integer> predicates = new HashMap<NodeId, Integer>(10000) ;
+            PGraphBase graph = getGraph() ;
+            TripleIndex primary = graph.getIndexSPO() ;
+            Iterator<Tuple<NodeId>> iter = primary.all() ;
+            for ( ; iter.hasNext() ; )
+            {
+                NodeId p  = iter.next().get(1) ; // 0,1,2
+                count++ ;
+                Integer n = predicates.get(p) ;
+                if ( n == null )
+                    predicates.put(p,1) ;
+                else
+                    predicates.put(p, n+1) ;
+            }
+            // Now print.
+            System.out.printf("# Count: %d\n", count) ;
+            for ( NodeId n : predicates.keySet() )
+            {
+                Node p = graph.getNodeTable().retrieveNode(n) ;
+                System.out.printf("%s : %d\n", p.getURI(), predicates.get(n)) ;
+            }
+        }
+
+        @Override
+        protected String getCommandName()
+        {
+            return "stats" ;
         }
     }
 }
