@@ -113,13 +113,25 @@ public class tdbcheck extends CmdARQ
         private void checkLiteral(Node node)
         {
             LiteralLabel lit = node.getLiteral() ;
-            if ( lit.getDatatype() != null )
-            {
-                if ( ! lit.getDatatype().isValid(lit.getLexicalForm()) )
-                    throw new JenaException("Lexical not valid for datatype: "+node) ;
-            }
-            if (lit.language() != null )
-            {}
+            
+            // Datatype check (and plain literals are always well formed)
+            if ( ! lit.isWellFormed() )
+                throw new JenaException("Lexical not valid for datatype: "+node) ;
+            
+//            // Not well formed.
+//            if ( lit.getDatatype() != null )
+//            {
+//                if ( ! lit.getDatatype().isValid(lit.getLexicalForm()) )
+//                    throw new JenaException("Lexical not valid for datatype: "+node) ;
+//            }
+            
+//            if (lit.language() != null )
+//            {
+//                String lang = lit.language() ;
+//                if ( ! lang.matches("[a-z]{1,8}(-[a-z]{1,8})*") )
+//                    throw new JenaException("Language not valid: "+node) ;
+//                
+//            }
         }
 
         private void checkBlank(Node node)
@@ -138,14 +150,29 @@ public class tdbcheck extends CmdARQ
             {
                 @SuppressWarnings("unchecked")
                 Iterator<Violation> it = iri.violations(includeWarnings);
+                Violation v = null ;
+                Violation vSub = null ;
                 while (it.hasNext()) {
-                    Violation v = (Violation) it.next();
+                    Violation v2 = (Violation) it.next();
+                    int code = v2.getViolationCode() ;
+                    if ( code == Violation.LOWERCASE_PREFERRED ||
+                         code == Violation.PERCENT_ENCODING_SHOULD_BE_UPPERCASE )
+                    {
+                        if ( vSub == null )
+                            vSub = v2 ;
+                        continue ;
+                    }
+                    v = v2 ;
+                    break ;
+                }
+                if ( v != null )
                     throw new JenaException(v.getShortMessage()) ;
+                if ( vSub != null )
+                    throw new JenaException(vSub.getShortMessage()) ;
                 }
             }
         }
     }
-}
 
 /*
  * (c) Copyright 2008 Hewlett-Packard Development Company, LP

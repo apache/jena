@@ -235,7 +235,7 @@ public final class BulkLoader
             } catch (JenaException ex)
             {
                 // We no longer know the column
-                warning(ex.getMessage(), in.getColNum(), -1) ;
+                warning(ex.getMessage(), in.getLineNum(), -1) ;
             }
         }
     }
