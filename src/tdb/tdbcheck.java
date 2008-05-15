@@ -107,7 +107,6 @@ public class tdbcheck extends CmdARQ
             else if ( node.isVariable() ) checkVar(node) ;
         }
         
-        
         private void checkVar(Node node)
         {}
 
