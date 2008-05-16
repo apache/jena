@@ -11,7 +11,7 @@ public class Dev
     // Or do multiple files at once.  
     // Log BGP's executed.
     // Simple stats optimizer.
-    // Assembler to cache graphs made (by location) so reuse is same gengine 
+    // Assembler to cache graphs made (by location) so reuse is same graph engine 
     
     // Misc :
     // Interface Sync everywhere?
@@ -31,7 +31,7 @@ public class Dev
     // Special to test speed of node loading only.
     // Inlines => Inline56, Inline64
     
-    // ARQ: Var scope handing - add to OpBase?
+    // ARQ: Var scope handling - add to OpBase?
     
     // QueryHandler to access subjectsFor etc. 
     
