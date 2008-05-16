@@ -11,14 +11,9 @@ import static lib.FileOps.clearDirectory;
 import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
-import lib.StrUtils;
-import lib.Tuple;
-
 import com.hp.hpl.jena.assembler.JA;
-import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.query.Query;
@@ -28,8 +23,6 @@ import com.hp.hpl.jena.query.QueryFactory;
 import com.hp.hpl.jena.query.ResultSet;
 import com.hp.hpl.jena.query.ResultSetFormatter;
 import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.rdf.model.impl.RDFReaderFImpl;
 import com.hp.hpl.jena.shared.PrefixMapping;
 import com.hp.hpl.jena.sparql.core.Prologue;
 import com.hp.hpl.jena.sparql.core.assembler.AssemblerUtils;
@@ -37,19 +30,13 @@ import com.hp.hpl.jena.sparql.sse.SSE;
 import com.hp.hpl.jena.sparql.sse.writers.WriterBasePrefix;
 import com.hp.hpl.jena.sparql.util.FmtUtils;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
-import com.hp.hpl.jena.tdb.base.block.BlockMgrFactory;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
-import com.hp.hpl.jena.tdb.btree.BTree;
 import com.hp.hpl.jena.tdb.btree.BTreeParams;
-import com.hp.hpl.jena.tdb.graph.StatsGraph;
-import com.hp.hpl.jena.tdb.index.TripleIndex;
 import com.hp.hpl.jena.tdb.lib.StringAbbrev;
 import com.hp.hpl.jena.tdb.pgraph.GraphBTree;
 import com.hp.hpl.jena.tdb.pgraph.NodeId;
 import com.hp.hpl.jena.tdb.pgraph.PGraphBase;
 import com.hp.hpl.jena.tdb.solver.StageGeneratorPGraphBGP;
-import com.hp.hpl.jena.util.FileManager;
-import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 import com.sleepycat.je.*;
 
 public class Run
@@ -117,7 +104,7 @@ public class Run
         System.exit(0) ;
     }
      
-    public static void  btreePacking(int slots, int slotSize, int blkSize)
+    public static void btreePacking(int slots, int slotSize, int blkSize)
     {
         divider() ;
         RecordFactory f  = new RecordFactory(slots*slotSize/8,0) ;
@@ -126,8 +113,6 @@ public class Run
         System.out.println("Packed leaf : "+blkSize/f.recordLength()) ;
         BTreeParams p = new BTreeParams(BTreeParams.calcOrder(blkSize, f.recordLength()), f) ;
         System.out.println(p) ;
-        
-                                                              
     }             
      
     private static void typedNode(String x)
@@ -188,131 +173,6 @@ public class Run
         WriterBasePrefix.output(IndentedWriter.stdout, null, prologue) ;
         System.out.println(pm) ; 
     }
-
-    public static void index(String ... args)
-    {
-        int IndexRecordLength = 3 * NodeId.SIZE ;
-        RecordFactory indexRecordFactory = new RecordFactory(IndexRecordLength, 0) ; 
-        int order = 3 ;
-        BTreeParams params = new BTreeParams(order, indexRecordFactory) ;
-        int blkSize = params.getBlockSize() ;
-
-        BTree bTree1 = new BTree(params, BlockMgrFactory.createMem(blkSize)) ;
-
-        TripleIndex index1 = new TripleIndex("OSP", bTree1) ;
-        
-        NodeId n1 = NodeId.create(1) ;
-        NodeId n2 = NodeId.create(2) ;
-        NodeId n3 = NodeId.create(3) ;
-
-        NodeId n4 = NodeId.create(4) ;
-        NodeId n5 = NodeId.create(5) ;
-        NodeId n6 = NodeId.create(6) ;
-
-        index1.add(n1, n2, n3) ;
-        index1.add(n4, n2, n3) ;
-        index1.add(n4, n5, n6) ;
-        
-        Iterator<Tuple<NodeId>> iter = index1.all() ;
-        // SPO order.
-        System.out.println("Index "+index1.getDescription()+" in SPO order") ;
-        print(iter) ;
-
-        // Directly get the contents of the index and print in index-order.
-        System.out.println("Index "+index1.getDescription()+" in native order") ;
-        printNative(index1) ;
-        
-        BTree bTree2 = new BTree(params, BlockMgrFactory.createMem(blkSize)) ;
-        TripleIndex index2 = new TripleIndex("POS", bTree2) ;
-
-        // Copy one to another.  Reordering taken careof
-        index1.copyInto(index2) ;
-        
-        System.out.println("Index "+index2.getDescription()+" in native order") ;
-        printNative(index2) ;
-
-        System.out.println("Index "+index2.getDescription()+" in SPO order") ;
-        print(index2.all()) ;
-
-        BTree bTree3 = new BTree(params, BlockMgrFactory.createMem(blkSize)) ;
-        TripleIndex index3 = new TripleIndex("SPO", bTree3) ;
-        index1.copyInto(index3) ;
-        
-        BTree bTree4 = new BTree(params, BlockMgrFactory.createMem(blkSize)) ;
-        TripleIndex index4 = new TripleIndex("SPO", bTree3) ;
-        index2.copyInto(index4) ;
-        
-        System.out.println("sameAs: "+index3.sameAs(index4)) ;
-        
-        System.out.println("find") ;
-        // OSP
-        Iterator<Tuple<NodeId>> iterF = index1.find(null, n2, n3) ;
-        print(iterF) ;
-        
-        
-        System.exit(0) ;
-        
- 
-    }
-
-    private static void print(Iterator<Tuple<NodeId>> iter)
-    {
-        for ( int i = 0 ; iter.hasNext() ; i++ )
-        {
-            Tuple<NodeId> tuple = iter.next();
-            System.out.printf("%2d: %s\n", i, tuple) ;
-        } 
-    }
-    
-    private static void printNative(TripleIndex index)
-    {
-        print(index.tuplesNativeOrder()) ;
-    }
-    
-    private static void stats()
-    {
-        String bulkLoaderClass = "com.hp.hpl.jena.tdb.base.loader.BulkReader" ;
-        RDFReaderFImpl.setBaseReaderClassName("N-TRIPLES", bulkLoaderClass) ;
-        RDFReaderFImpl.setBaseReaderClassName("N-TRIPLE", bulkLoaderClass) ;
-        StatsGraph g = new StatsGraph() ;
-        Model m = ModelFactory.createModelForGraph(g) ;
-        FileManager.get().readModel(m, "Workspace/dbp-infoboxes.nt") ;
-        g.printStats() ;
-        System.exit(0) ;
-    }
-    
-    private static void updateMusicBrainz()
-    {
-        String[] a = {"--desc=dataset-bdb.ttl", "LOAD <D.ttl>" } ;
-        arq.update.main(a) ;
-        queryMusicBrainz() ;
-        System.exit(0) ;
-    }
-
-    
-    private static void queryMusicBrainz()
-    {
-        String x = "<http://musicbrainz.org/mm-2.1/artist/456f9e8e-f3d8-464d-9e54-1c475016719d>" ;
-        String qs = StrUtils.strjoinNL(
-                                       "PREFIX  dc:     <http://purl.org/dc/elements/1.1/>",
-                                       "SELECT * { "+x+" dc:title ?title }"
-                                       );
-//                                       "                dc:creator ?c . }" );
-////                                       "           ?c ?p ?v }") ;
-//
-//        Model model = TDBFactory.createModel("tmp") ;
-//        
-//        Query query = QueryFactory.create(qs) ;
-//        QueryExecution qExec = QueryExecutionFactory.create(query, model) ;
-//        
-//        
-//        QueryExecUtils.executeQuery(query, qExec) ;
-        // Causes TDB initialization.
-        String[] a = {"--desc=dataset.ttl", qs } ;
-        arq.sparql.main(a) ;
-        System.exit(0) ;
-    }
-
 
     public static void BDB()
     {
@@ -378,101 +238,6 @@ public class Run
         }
     }
     
-    public static void graph()
-    {
-        Node x1 = Node.createURI("x1") ;
-        Node y1 = Node.createURI("y1") ;
-        Node z1 = Node.createURI("z1") ;
-
-        Node x2 = Node.createURI("x2") ;
-        Node y2 = Node.createURI("y2") ;
-        Node z2 = Node.createURI("z2") ;
-
-        //Graph g = new GraphBDB("tmp/GraphBDB") ;
-        //Graph g = new GraphBTree(new Location("tmp")) ;
-        Graph g = GraphBTree.create() ;
-        System.out.println("Add "+new Triple(x1, y1, z1)) ;
-        g.add(new Triple(x1, y1, z1)) ;
-
-        System.out.println("Add "+new Triple(x1, y2, z2)) ;
-        g.add(new Triple(x1, y2, z2)) ;
-        
-//        System.out.println("Add (again) "+new Triple(x1, y1, z1)) ;
-//        g.add(new Triple(x1, y1, z1)) ;
-
-        
-        {
-            ExtendedIterator iter = null ;
-            
-            ((PGraphBase)g).dumpIndexes() ;
-            
-//            System.out.println("find(x1, y1, z1)") ;
-//            iter = g.find(x1, y1, z1) ;
-//            System.out.println(iter.hasNext()) ;
-
-            System.out.println("find(ANY, y1, z1)") ;
-            iter = g.find(Node.ANY, y1, z1) ;
-            System.out.println(iter.hasNext()) ;
-            
-            System.out.println("contains(ANY, y1, z2)") ;
-            System.out.println(g.contains(Node.ANY, y1, z2)) ;
-
-            System.out.println("contains(ANY, y2, z1)") ;
-            System.out.println(g.contains(Node.ANY, y2, z1));
-            
-            System.exit(0) ;
-        }
-        
-        
-        
-        System.out.println("find(Node.ANY, null, null)") ;
-        ExtendedIterator iter = g.find(Node.ANY, null, null) ;
-        while ( iter.hasNext() )
-        {
-            Triple t = (Triple)iter.next() ;
-            System.out.println(t) ;
-        }
-        iter.close();
-      
-        System.out.println("find(x1, null, null)") ;
-        ExtendedIterator iter2 = g.find(x1, null, null) ;
-        while ( iter2.hasNext() )
-        {
-            Triple t = (Triple)iter2.next() ;
-            System.out.println(t) ;
-        }
-        iter2.close();
-        
-        System.out.println("find(x1, null, z1)") ;
-        ExtendedIterator iter3 = g.find(x1, null, z1) ;
-        while ( iter3.hasNext() )
-        {
-            Triple t = (Triple)iter3.next() ;
-            System.out.println(t) ;
-        }
-        iter3.close();
-
-        System.out.println("find(null, null, z1)") ;
-        ExtendedIterator iter4 = g.find(null, null, z1) ;
-        while ( iter4.hasNext() )
-        {
-            Triple t = (Triple)iter4.next() ;
-            System.out.println(t) ;
-        }
-        iter4.close();
-
-        System.out.println("g.size() = "+g.size()) ;
-
-        System.out.println("contains(Node.ANY, y1, z1)") ;
-        //System.out.println(g.contains(x1, y1, z1)) ;
-        //g.contains(Node.ANY, y1, z1) ;
-        System.out.println(g.contains(Node.ANY, y1, z1)) ;
-        
-        g.close() ;
-        System.out.println("GraphBDB - end") ;
-        System.exit(0) ;
-    }
-
     private static void query(String str, Model model)
     {
         System.out.println(str) ; 
