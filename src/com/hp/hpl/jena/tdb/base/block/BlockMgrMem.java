@@ -161,6 +161,9 @@ public class BlockMgrMem extends BlockMgrBase
     }
 
     @Override
+    public String toString() { return format("BlockMgrMem[%d bytes]", blockSize) ; }
+    
+    @Override
     protected Logger getLog()
     {
         return log ;
