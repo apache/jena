@@ -6,7 +6,7 @@
 
 package com.hp.hpl.jena.tdb.base;
 
-/** Misc low lever configuration settings */
+/** Misc low level configuration settings */
 public class BaseConfig
 {
     public static boolean NullOut = false ;                  // For checking 
