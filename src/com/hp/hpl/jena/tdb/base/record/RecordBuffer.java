@@ -32,11 +32,20 @@ public class RecordBuffer extends BufferBase
         this.factory = recFactory ;
     }
     
-    // More like List<> than Buffer 
     public Record get(int idx)
     { 
         checkBounds(idx, numSlot) ;
         return _get(idx) ;
+    }
+    
+    public Record getLow()
+    { 
+        return _get(0) ;
+    }
+    
+    public Record getHigh()
+    { 
+        return _get(numSlot-1) ;
     }
     
     // Inserts at top.

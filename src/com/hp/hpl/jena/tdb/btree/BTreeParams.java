@@ -17,7 +17,7 @@ public class BTreeParams
     public static boolean CheckingBTree = false ;           // Check on exit of btree modifiying operations
     public static boolean CheckingNode = false ;            // Check within BtreeNode
 
-    public static boolean DumpTree = false ;                 // Dump the tree during top level logging 
+    public static boolean DumpTree = false ;                // Dump the tree during top level logging 
     public static boolean Logging = true ;                  // Turn on/off logging the hard way
 
     /* The gap is extra space in a node - some books have node size as 2*N 
