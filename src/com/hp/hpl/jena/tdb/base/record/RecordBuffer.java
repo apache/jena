@@ -7,7 +7,7 @@
 package com.hp.hpl.jena.tdb.base.record;
 
 import static java.lang.String.format;
-
+import static com.hp.hpl.jena.tdb.lib.Lib.encodeIdx; 
 import java.nio.ByteBuffer;
 
 import com.hp.hpl.jena.tdb.base.BufferBase;
@@ -108,9 +108,9 @@ public class RecordBuffer extends BufferBase
             if ( x == 0 )
                 return i ;
             if ( x > 0 )
-                return enc(i) ;
+                return encodeIdx(i) ;
         }
-        return enc(numSlot) ;
+        return encodeIdx(numSlot) ;
     }
     
     // Binary search
@@ -144,9 +144,8 @@ public class RecordBuffer extends BufferBase
         }
         // On exit, when not finding, low is the least value
         // above, including off the end of the array.  
-        return enc(low) ;
+        return encodeIdx(low) ;
     }
-    private static final int enc(int i) { return -(i+1) ; } 
 
     // Record compareByKey except we avoid touching bytes by exiting as soon as possible.
     // No record created as would be by using compareByKey(RecordBuffer.get(idx), record)  
