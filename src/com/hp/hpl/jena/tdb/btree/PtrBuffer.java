@@ -71,7 +71,8 @@ public class PtrBuffer extends BufferBase
         _set(idx, val) ;
     }
     
-    public void set(int idx, int val)   { checkBounds(idx, numSlot) ; _set(idx, val) ; }
+    public void set(int idx, int val)
+    { checkBounds(idx, numSlot) ; _set(idx, val) ; }
     
     private final int _get(int idx)
     {
