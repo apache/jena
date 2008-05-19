@@ -9,10 +9,10 @@ package com.hp.hpl.jena.tdb.lib;
 public class Lib
 {
     /** Encode an index (the insertion point) when not found */
-    public static final int encodeIdx(int i) { return -(i+1) ; } 
+    public static final int encodeIndex(int i) { return -(i+1) ; } 
 
     /** Decode an index returning the insertion point when not found */
-    public static final int decodeIdx(int i) { return -(i+1) ; } 
+    public static final int decodeIndex(int i) { return -(i+1) ; } 
 }
 
 /*
