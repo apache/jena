@@ -28,6 +28,7 @@ See ToDoSSE
 + ORDER BY COUNT(*)
   i.e. add to the assignments.
   c.f SELECT
+  AlgebraGenerator/compileModifiers(Query, Op)
 
 + Extend optimization environment - sort out nested with outer variable case.
    test case?  is this fixed now without heavy weight tracking?
