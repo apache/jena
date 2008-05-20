@@ -337,6 +337,7 @@ public class WriterOp
                 formatSortCondition(sc) ;
             }
             finish() ;
+            out.newline();
             printOp(opOrder.getSubOp()) ;
             finish(opOrder) ;
         }

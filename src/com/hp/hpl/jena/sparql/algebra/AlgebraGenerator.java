@@ -270,6 +270,31 @@ public class AlgebraGenerator
     /** Compile query modifiers */
     public Op compileModifiers(Query query, Op pattern)
     {
+        // Preparation: sort SELECT clause into assignments and projects.
+        VarExprList projectVars = query.getProject() ;
+        
+        VarExprList exprs = new VarExprList() ;
+        List vars = new ArrayList() ;
+        
+        if ( ! projectVars.isEmpty() && ! query.isQueryResultStar())
+        {
+            // Don't project for QueryResultStar so initial bindings show through
+            // in SELECT *
+            if ( projectVars.size() == 0 && query.isSelectType() )
+                ALog.warn(this,"No project variables") ;
+            
+            // Separate assignments and variable projection.
+            for ( Iterator iter = query.getProject().getVars().iterator() ; iter.hasNext(); )
+            {
+                Var v = (Var)iter.next() ;
+                Expr e = query.getProject().getExpr(v) ;
+                if ( e != null )
+                    exprs.add(v, e) ;
+                // Include in project
+                vars.add(v) ;
+            }
+        }
+        
         Op op = pattern ;
         //Modifiers mods = new Modifiers(query) ;
         
@@ -295,6 +320,11 @@ public class AlgebraGenerator
                 op = new OpGroupAgg(op,  query.getGroupBy(), query.getAggregators()) ;
             // Fold into above when certainit works
         }
+        
+        // ---- Assignments from SELECT (so available to ORDER and HAVING)
+        if ( ! exprs.isEmpty() )
+            op = new OpAssign(op, exprs) ;
+
         // ---- HAVING
         if ( query.hasHaving() )
         {
@@ -310,38 +340,13 @@ public class AlgebraGenerator
             op = new OpOrder(op, query.getOrderBy()) ;
         
         // ---- PROJECT
-        // TODO Need to move assignments (expressions, which add variables) to before ORDER BY and HAVING
-        
-        // (ORDER may involve an unselected variable)
         // No projection => initial variables are exposed.
         // Needed for CONSTRUCT and initial bindings + SELECT *
         
-        VarExprList projectVars = query.getProject() ;
-        if ( ! projectVars.isEmpty() && ! query.isQueryResultStar())
-        {
-            // Don't project for QueryResultStar so initial bindings show through
-            // in SELECT *
-            if ( projectVars.size() == 0 && query.isSelectType() )
-                ALog.warn(this,"No project variables") ;
-            
-            // Separate assignments and variable projection.
-            VarExprList exprs = new VarExprList() ;
-            List vars = new ArrayList() ;
-            for ( Iterator iter = query.getProject().getVars().iterator() ; iter.hasNext(); )
-            {
-                Var v = (Var)iter.next() ;
-                Expr e = query.getProject().getExpr(v) ;
-                if ( e != null )
-                    exprs.add(v, e) ;
-                // Include in project
-                vars.add(v) ;
-            }
-            
-            if ( ! exprs.isEmpty() )
-                op = new OpAssign(op, exprs) ;
-            if ( vars.size() > 0 )
-                op = new OpProject(op, vars) ;
-        }
+        if ( ! exprs.isEmpty() )
+            op = new OpAssign(op, exprs) ;
+        if ( vars.size() > 0 )
+            op = new OpProject(op, vars) ;
         
         // ---- DISTINCT
         if ( query.isDistinct() )

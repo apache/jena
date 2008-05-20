@@ -1,15 +1,9 @@
 ==== ARQ ToDo
 
-Invert Updates so GraphStore can be a custom processor.
-
 ** Clearer ways to add BGP solver mechanisms - invert Stage/StageList 
-
-** Split SELECT into constructive assignments which are pushed in so visible to ORDER BY.
-   Need to move assignments (expressions, which add variables) to before ORDER BY and HAVING
 
 ++ ** Document "stages" - new form.
 ++ ** Document "update API" and examples.
-
 
 +  FROM <.....n3>
    but it's application/rdf+xml
@@ -28,14 +22,16 @@ See ToDoSSE
 + SUM [done], MIN, MAX, AVG, (STDDEV)
    MINI, MINN, MIND
 + EXISTS { pattern }
-+ ORDER BY aggregate
 
 + Wrapper to have all functions as assignments
+
++ ORDER BY COUNT(*)
+  i.e. add to the assignments.
+  c.f SELECT
 
 + Extend optimization environment - sort out nested with outer variable case.
    test case?  is this fixed now without heavy weight tracking?
    --> Transform support to track variable scopes.
-
 
 + OpBGP is (ref- & main-) compiled to a call to static "StageBuilder.compile" (modularity)  
   Maybe:      
