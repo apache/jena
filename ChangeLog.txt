@@ -3,6 +3,9 @@ ChangeLog for ARQ
 
 ==== ARQ 2.3
 
++ HAVING / ORDER BY variable, where variable is SELECT as an aggregate or computed value now works. 
+  (current restriction: can't have the expression directly in the ORDER BY - need to project the variable)  
+
 + Upgrade to Lucene 2.3.1
 
 + Change return type of ResultFactor.copyResults to ResultSetRewinable (a sub interface of ResultSet).
