@@ -13,7 +13,7 @@ PARA="${PARA:---parallel}"
 
 tdbclean "$TARGET"
 tdbloader --location "$TARGET" $PARA \
-    $DATASETS/DBpedia/dbp-infoboxes.nt \
-    $DATASETS/DBpedia/dbp-geocoordinates.nt \
-    $DATASETS/DBpedia/dbp-homepages.nt \
+    $DATASETS/DBPediaBM/dbp-infoboxes.nt \
+    $DATASETS/DBPediaBM/dbp-geocoordinates.nt \
+    $DATASETS/DBPedia/dbp-homepages.nt \
     | tee LOG
