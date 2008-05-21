@@ -31,16 +31,10 @@ public class R
     
     static Record intToRecord(int v, RecordFactory factory)
     {
-        byte[] vb = new byte[]{
-            (byte)((v>>24)&0xFF),
-            (byte)((v>>16)&0xFF),
-            
-            (byte)((v>>8)&0xFF),
-            (byte)(v&0xFF)
-            } ;
+        byte[] vb = Bytes.packInt(v) ;
+
         int recLen = factory.recordLength() ;
         byte[] bb = new byte[recLen] ;
-        
         int x = 0 ; // Start point in bb.
         if ( recLen > 4 )
             x = recLen-4 ;

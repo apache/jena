@@ -90,6 +90,20 @@ public class Bytes
         setInt(lo, b, idx+4) ;
     }
 
+    public static byte[] packInt(int val)
+    {
+        byte[] valBytes = new byte[Integer.SIZE/Byte.SIZE] ;
+        setInt(val, valBytes, 0) ;
+        return valBytes ;
+    }
+    
+    public static byte[] packLong(long val)
+    {
+        byte[] valBytes = new byte[Long.SIZE/Byte.SIZE] ;
+        setLong(val, valBytes, 0) ;
+        return valBytes ;
+    }
+    
     // Order of args -- high to low
     static private int assembleInt(byte b3, byte b2, byte b1, byte b0)
     {
