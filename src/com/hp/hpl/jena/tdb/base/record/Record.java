@@ -10,6 +10,8 @@ import static java.lang.String.format;
 
 import java.util.Arrays;
 
+import com.hp.hpl.jena.tdb.base.BaseConfig;
+
 /** A record is pair of key and value.  It may be all key, in which case value is null. 
  * @author Andy Seaborne
  * @version $Id$
@@ -27,7 +29,13 @@ public class Record //implements Comparable<Record>
     
     public Record(byte[] key, byte[] value)
     { 
-        this.key = key ; this.value = value ;
+        this.key = key ;
+        this.value = value ;
+        if ( BaseConfig.Checking )
+        {
+            if ( value.length == 0 )
+                throw new RecordException("Zero length value") ;
+        }
     }
     
     public byte[] getKey()          { return key ; }
@@ -58,13 +66,7 @@ public class Record //implements Comparable<Record>
 //        return gt(this, record) ;
 //    }
     
-    public boolean hasSeparateValue() { return false ; }
-    
-    public Record keyOnly()
-    {
-        return new Record(key, null) ;
-    }
-
+    public boolean hasSeparateValue() { return value!=null ; }
     
     @Override
     public int hashCode()

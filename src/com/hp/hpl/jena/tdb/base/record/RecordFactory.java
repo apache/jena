@@ -9,7 +9,7 @@ package com.hp.hpl.jena.tdb.base.record;
 import static java.lang.String.format ;
 import java.nio.ByteBuffer;
 
-/** Record creator: can also create key-only records of the same key/value engine*/
+/** Record creator */
 final
 public class RecordFactory
 {
@@ -23,14 +23,13 @@ public class RecordFactory
         this.valueLength = valueLength ;
         this.slotLen = keyLength + (valueLength>0 ? valueLength : 0 ) ;
     }
-
-    /** Create a key-only record */
-    public Record createKey(byte[] key)
-    { 
-        checkKey(key) ;
-        return new Record(key, null) ;
-    }
     
+    /** Return a RecordFactory that makes key-only records of the same key size */ 
+    public RecordFactory keyFactory()
+    {
+        return new RecordFactory(keyLength, 0) ;
+    }
+
     /** Create a key and value record (value uninitialized) */
     public Record create(byte[] key)
     { 
@@ -69,14 +68,6 @@ public class RecordFactory
         return create(key, value) ;
     }
     
-    public Record buildKeyFrom(ByteBuffer bb, int idx)
-    {
-        byte[] key = new byte[keyLength] ;
-        bb.position(idx*slotLen) ;
-        bb.get(key, 0, keyLength) ;
-        return createKey(key) ;
-    }
-
     public boolean hasValue()   { return valueLength > 0 ; }
 
     public int recordLength()   { return keyLength + valueLength ; }

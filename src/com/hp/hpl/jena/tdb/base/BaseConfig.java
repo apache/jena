@@ -10,6 +10,7 @@ package com.hp.hpl.jena.tdb.base;
 public class BaseConfig
 {
     public static boolean NullOut = false ;                  // For checking 
+    public static boolean Checking = false ;
 }
 
 /*
