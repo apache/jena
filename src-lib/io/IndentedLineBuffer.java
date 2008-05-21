@@ -6,7 +6,7 @@
 
 package io;
 
-import java.io.* ;
+import java.io.StringWriter;
 
 /** IndentLineBuffer is a buffer that records an indent level 
  *  and uses that to insert a prefix at each line.

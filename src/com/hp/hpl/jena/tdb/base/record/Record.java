@@ -60,6 +60,12 @@ public class Record //implements Comparable<Record>
     
     public boolean hasSeparateValue() { return false ; }
     
+    public Record keyOnly()
+    {
+        return new Record(key, null) ;
+    }
+
+    
     @Override
     public int hashCode()
     { 
@@ -180,6 +186,7 @@ public class Record //implements Comparable<Record>
         }
         return  0 ;
     }
+
 }
 /*
  * (c) Copyright 2007, 2008 Hewlett-Packard Development Company, LP
