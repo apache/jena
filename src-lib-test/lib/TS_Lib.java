@@ -12,7 +12,6 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
     TestAlg.class,
-    TestBitsInt.class,
     TestBitsLong.class,
     TestBytes.class,
     TestListUtils.class,

@@ -6,11 +6,11 @@
 
 package lib;
 
+import static lib.ListUtils.unique;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import static lib.ListUtils.* ;
 
 import org.junit.Test;
 import test.BaseTest;

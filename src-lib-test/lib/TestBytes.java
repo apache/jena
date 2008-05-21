@@ -6,7 +6,6 @@
 
 package lib;
 
-import lib.Bytes;
 import org.junit.Test;
 import test.BaseTest;
 

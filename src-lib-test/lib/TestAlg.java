@@ -10,8 +10,6 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.IntBuffer;
 
-import lib.Alg;
-
 import org.junit.Test;
 import test.BaseTest;
 
