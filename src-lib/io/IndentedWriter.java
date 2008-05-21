@@ -142,7 +142,6 @@ public class IndentedWriter
     
     public void newline()
     {
-        // Not 
         lineStart() ; 
         write('\n') ;
         startingNewLine = true ;
