@@ -137,7 +137,8 @@ public class IndentedWriter
         startingNewLine = true ;
         row++ ;
         column = 0 ;
-        //flush() ;
+        // PrintWriters do not autoflush by default.
+        flush() ;
     }
     
     private boolean atStartOfLine() { return column <= currentIndent ; }
