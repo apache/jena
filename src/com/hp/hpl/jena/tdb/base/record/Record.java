@@ -130,7 +130,7 @@ public class Record //implements Comparable<Record>
     
     public static int compareByKey(Record record1, Record record2)
     {
-        checkCompatible(record1, record2) ;
+        checkKeyCompatible(record1, record2) ;
         return compare(record1.key, record2.key) ; 
     }
     
@@ -148,23 +148,32 @@ public class Record //implements Comparable<Record>
 
     static void checkCompatible(Record record1, Record record2)
     {
-        if ( ! compatible(record1, record2) )
+        if ( ! compatible(record1, record2, true) )
             throw new RecordException(format("Incompatible: %s, %s", record1, record2)) ;
     }
     
-    static boolean compatible(Record record1, Record record2)
+    static void checkKeyCompatible(Record record1, Record record2)
+    {
+        if ( ! compatible(record1, record2, false) )
+            throw new RecordException(format("Incompatible: %s, %s", record1, record2)) ;
+    }
+    
+    static boolean compatible(Record record1, Record record2, boolean checkValue)
     {
         if ( record1.key.length != record2.key.length )
             return false ;
         
-        if ( record1.value == null && record2.value == null )
-            return true ;
-        if ( record1.value == null )
-            return false ;
-        if ( record2.value == null )
-            return false ;
-        if ( record1.value.length != record2.value.length )
-            return false;
+        if ( checkValue )
+        {
+            if ( record1.value == null && record2.value == null )
+                return true ;
+            if ( record1.value == null )
+                return false ;
+            if ( record2.value == null )
+                return false ;
+            if ( record1.value.length != record2.value.length )
+                return false;
+        }
         return true ;
     }
     

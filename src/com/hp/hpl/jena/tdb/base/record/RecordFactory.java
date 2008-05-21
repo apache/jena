@@ -114,7 +114,8 @@ public class RecordFactory
         }
         else
         {
-            if ( v.length != valueLength )
+            // v == null for a key-only record from this factory.
+            if ( v != null && v.length != valueLength )
                 throw new RecordException(format("This RecordFactory manages record of value length %d, not (%d,-)", valueLength, v.length)) ;
         }
     }

@@ -171,7 +171,17 @@ public class RecordBuffer extends BufferBase
         StringBuilder str = new StringBuilder() ;
         str.append(format("Len=%d Max=%d ", numSlot, bb.limit()/slotLen)) ;
         
-        for ( int i = 0 ; i < maxSlot*slotLen ; i++ )
+        // Print active slots as records.
+        for ( int i = 0 ; i < numSlot ; i++ )
+        {
+            if ( i != 0 )
+                str.append(" ") ;
+            Record r = _get(i) ;
+            str.append(r.toString()) ;
+        }
+        
+        // Print empty slots
+        for ( int i = numSlot*slotLen ; i < maxSlot*slotLen ; i++ )
         {
             if ( i != 0 && i%slotLen == 0 )
                 str.append(" ") ;
