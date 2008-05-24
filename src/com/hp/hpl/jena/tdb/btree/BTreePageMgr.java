@@ -12,7 +12,8 @@ import java.nio.ByteBuffer;
 import com.hp.hpl.jena.tdb.base.block.BlockConverter;
 import com.hp.hpl.jena.tdb.base.block.BlockMgr;
 import com.hp.hpl.jena.tdb.base.block.BlockType;
-import com.hp.hpl.jena.tdb.base.record.RecordBuffer;
+import com.hp.hpl.jena.tdb.base.buffer.PtrBuffer;
+import com.hp.hpl.jena.tdb.base.buffer.RecordBuffer;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 
 final class BTreePageMgr

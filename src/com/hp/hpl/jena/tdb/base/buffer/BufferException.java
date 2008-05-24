@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.base;
+package com.hp.hpl.jena.tdb.base.buffer;
 
 public class BufferException extends RuntimeException
 {

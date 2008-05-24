@@ -4,13 +4,14 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.base.record;
+package com.hp.hpl.jena.tdb.base.buffer;
 
 import static java.lang.String.format;
 import static com.hp.hpl.jena.tdb.lib.Lib.encodeIndex;
 import java.nio.ByteBuffer;
 
-import com.hp.hpl.jena.tdb.base.BufferBase;
+import com.hp.hpl.jena.tdb.base.record.Record;
+import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 
 
 
@@ -21,7 +22,7 @@ public class RecordBuffer extends BufferBase
 
     // Need own specialized binary search :-(
     
-    RecordBuffer(RecordFactory recFactory, int maxRec)
+    public RecordBuffer(RecordFactory recFactory, int maxRec)
     {
         this(ByteBuffer.allocate(recFactory.recordLength()*maxRec), recFactory, 0) ;
     }

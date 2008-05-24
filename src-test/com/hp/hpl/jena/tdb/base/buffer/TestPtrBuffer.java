@@ -4,13 +4,13 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.btree;
+package com.hp.hpl.jena.tdb.base.buffer;
 
 import java.nio.ByteBuffer;
 
 import com.hp.hpl.jena.tdb.base.BaseConfig;
-import com.hp.hpl.jena.tdb.base.BufferException;
-import com.hp.hpl.jena.tdb.btree.PtrBuffer;
+import com.hp.hpl.jena.tdb.base.buffer.BufferException;
+import com.hp.hpl.jena.tdb.base.buffer.PtrBuffer;
 
 
 import org.junit.BeforeClass;

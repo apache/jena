@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.base.record;
+package com.hp.hpl.jena.tdb.base.buffer;
 
 import static com.hp.hpl.jena.tdb.btree.BTreeTestBase.r;
 import org.junit.BeforeClass;
@@ -13,6 +13,9 @@ import test.BaseTest;
 
 import com.hp.hpl.jena.tdb.base.BaseConfig;
 import com.hp.hpl.jena.tdb.base.ConfigTest;
+import com.hp.hpl.jena.tdb.base.record.R;
+import com.hp.hpl.jena.tdb.base.record.Record;
+import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 
 public class TestRecordBuffer extends BaseTest
 {

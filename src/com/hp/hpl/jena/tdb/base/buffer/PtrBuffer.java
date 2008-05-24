@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.btree;
+package com.hp.hpl.jena.tdb.base.buffer;
 
 import static java.lang.String.format;
 
@@ -12,9 +12,8 @@ import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 
 import com.hp.hpl.jena.tdb.Const;
-import com.hp.hpl.jena.tdb.base.BufferBase;
-import com.hp.hpl.jena.tdb.base.BufferException;
 import com.hp.hpl.jena.tdb.base.record.RecordException;
+import com.hp.hpl.jena.tdb.btree.BTreeParams;
 
 
 /** An IntBuffer with extra operations */

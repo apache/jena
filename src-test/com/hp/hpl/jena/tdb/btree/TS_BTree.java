@@ -6,6 +6,8 @@
 
 package com.hp.hpl.jena.tdb.btree;
 
+import com.hp.hpl.jena.tdb.base.buffer.TestPtrBuffer;
+
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 

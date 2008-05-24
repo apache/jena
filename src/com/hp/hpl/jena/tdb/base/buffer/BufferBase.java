@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.base;
+package com.hp.hpl.jena.tdb.base.buffer;
 
 import static com.hp.hpl.jena.tdb.base.BaseConfig.NullOut;
 import static java.lang.String.format;
@@ -18,7 +18,7 @@ import com.hp.hpl.jena.tdb.base.record.RecordException;
 
 
 /** ByteBuffer specialization - Common operations for RecordBuffer and PtrBuffer */  
-public abstract class BufferBase
+abstract class BufferBase
 {
     public static boolean CheckBuffer = false ;
     

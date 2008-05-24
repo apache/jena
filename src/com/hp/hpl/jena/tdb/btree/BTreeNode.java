@@ -23,8 +23,9 @@ import java.util.Iterator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.hp.hpl.jena.tdb.base.buffer.PtrBuffer;
+import com.hp.hpl.jena.tdb.base.buffer.RecordBuffer;
 import com.hp.hpl.jena.tdb.base.record.Record;
-import com.hp.hpl.jena.tdb.base.record.RecordBuffer;
 
 public class BTreeNode
 {
@@ -1222,10 +1223,10 @@ public class BTreeNode
 
     /** Iterate over a range of fromRec (inclusive) to toRec (exclusive) */ 
     public Iterator<Record> iterator(Record fromRec, Record toRec)
-    { return RangeIterator.iterator(this, fromRec, toRec) ; }
+    { return BTreeRangeIterator.iterator(this, fromRec, toRec) ; }
     
     public Iterator<Record> iterator()
-    { return RangeIterator.iterator(this) ; }
+    { return BTreeRangeIterator.iterator(this) ; }
     
     // ========== Other
     

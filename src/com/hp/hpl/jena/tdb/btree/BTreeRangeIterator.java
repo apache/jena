@@ -15,7 +15,7 @@ import com.hp.hpl.jena.tdb.base.record.Record;
 
 
 
-class RangeIterator implements Iterator<Record>
+class BTreeRangeIterator implements Iterator<Record>
 {
     // Could use parent pointers to do the walk but 
     // (1) still need to find a node in a pointer list each time
@@ -48,12 +48,12 @@ class RangeIterator implements Iterator<Record>
         }
         
         // Subtree.  Start here.
-        return new RangeIterator(node, fromRec, idxMin, toRec, idxMax) ;
+        return new BTreeRangeIterator(node, fromRec, idxMin, toRec, idxMax) ;
     }
     
     public static Iterator<Record> iterator(BTreeNode node)
     {
-        return new RangeIterator(node) ;
+        return new BTreeRangeIterator(node) ;
         //return new RangeIterator(node, null, null) ;
     }
 
@@ -66,7 +66,7 @@ class RangeIterator implements Iterator<Record>
     private int idx ; 
 
     // Iterator over subtree
-    private RangeIterator sub ;
+    private BTreeRangeIterator sub ;
 
     // Next thing to yield.
     private Record slot ;
@@ -74,12 +74,12 @@ class RangeIterator implements Iterator<Record>
     // Just above the last thing to yield.
     private Record upperLimitRec = null ;
 
-    private RangeIterator(BTreeNode node, Record fromRec, int idxMin, Record toRec, int idxMax)
+    private BTreeRangeIterator(BTreeNode node, Record fromRec, int idxMin, Record toRec, int idxMax)
     {
         init(node, fromRec, idxMin, toRec, idxMax) ;
     }
 
-    private RangeIterator(BTreeNode node, Record fromRec, Record toRec)
+    private BTreeRangeIterator(BTreeNode node, Record fromRec, Record toRec)
     {
         // Find the starting node.
         int idxMin = -1 ; 
@@ -94,7 +94,7 @@ class RangeIterator implements Iterator<Record>
         init(node, fromRec, idxMin, toRec, idxMax) ;
     }
 
-    private RangeIterator(BTreeNode node)
+    private BTreeRangeIterator(BTreeNode node)
     {
         this.node = node ;
         idx = 0 ;
@@ -124,7 +124,7 @@ class RangeIterator implements Iterator<Record>
                 // Due to child ptr staggering, this is idx.
                 // Not "makeSub(idx)" - need to pass down fromRec
                 BTreeNode sn = node.pageMgr.get(node.ptrs.get(idx), node.id) ;
-                sub = new RangeIterator(sn, fromRec, toRec) ;
+                sub = new BTreeRangeIterator(sn, fromRec, toRec) ;
             }
         }
 
@@ -200,10 +200,10 @@ class RangeIterator implements Iterator<Record>
             sub = null ;
     }
     
-    private RangeIterator makeSub(int i)
+    private BTreeRangeIterator makeSub(int i)
     {
         BTreeNode sn = node.pageMgr.get(node.ptrs.get(i), node.id) ;
-        return new RangeIterator(sn, null, upperLimitRec) ;
+        return new BTreeRangeIterator(sn, null, upperLimitRec) ;
     }
     
     private void setSlot(Record rec)
