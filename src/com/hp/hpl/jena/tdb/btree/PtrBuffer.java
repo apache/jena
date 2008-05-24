@@ -13,6 +13,7 @@ import java.nio.IntBuffer;
 
 import com.hp.hpl.jena.tdb.Const;
 import com.hp.hpl.jena.tdb.base.BufferBase;
+import com.hp.hpl.jena.tdb.base.BufferException;
 import com.hp.hpl.jena.tdb.base.record.RecordException;
 
 
@@ -50,6 +51,20 @@ public class PtrBuffer extends BufferBase
         return _get(idx) ;
     }
 
+    public int getHigh()
+    {
+        if ( numSlot == 0 )
+            throw new IllegalArgumentException("Empty PtrBuffer") ;
+        return _get(numSlot-1) ;
+    }
+
+    public int getLow()
+    {
+        if ( numSlot == 0 )
+            throw new IllegalArgumentException("Empty PtrBuffer") ;
+        return _get(0) ;
+    }
+    
     public void add(int val)
     { add(numSlot, val) ; }
     
@@ -64,7 +79,7 @@ public class PtrBuffer extends BufferBase
         else
         {
             if ( numSlot >= maxSlot )
-                throw new IllegalArgumentException(format("Out of bounds: idx=%d, ptrs=%d", idx, maxSlot)) ;
+                throw new BufferException(format("Out of bounds: idx=%d, ptrs=%d", idx, maxSlot)) ;
             numSlot++ ;
         }
         // Add right at the top.
@@ -103,7 +118,7 @@ public class PtrBuffer extends BufferBase
     private static void checkBounds(int idx, int len)
     {
         if ( idx < 0 || idx >= len )
-            throw new IllegalArgumentException(format("Out of bounds: idx=%d, ptrs=%d", idx, len)) ;
+            throw new BufferException(format("Out of bounds: idx=%d, ptrs=%d", idx, len)) ;
     }
     
     /** A duplicate which does not share anything with the original - for testing */

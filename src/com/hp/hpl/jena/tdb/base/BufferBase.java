@@ -73,8 +73,7 @@ public abstract class BufferBase
             throw new RecordException(format("copy: records of differnt sizes: %d, %d",src.slotLen, dst.slotLen)) ;
         
         // How do we set the numRec in dst? max(dstIdx+len, old count)  
-        int recLen = src.slotLen ;
-        bbcopy(src.bb, srcIdx*recLen, dst.bb, dstIdx*recLen, len*recLen) ;
+        bbcopy(src.bb, srcIdx, dst.bb, dstIdx, len, slotLen) ;
         dst.numSlot = Math.max(dstIdx+len, dst.numSlot) ; 
     }
     
@@ -94,7 +93,7 @@ public abstract class BufferBase
     public void clear(int idx, int len)
     {
         if ( NullOut )
-            bbfill(bb, idx*slotLen, (idx+len)*slotLen, FillByte) ;
+            bbfill(bb, idx, (idx+len), FillByte, slotLen) ;
     }
 
     /** Does not reset the size */
@@ -154,12 +153,7 @@ public abstract class BufferBase
         if ( numSlot + num > maxSlot )
             throw new IllegalArgumentException(format("Shift up(%d): out of range: len=%d max=%d", num, num, maxSlot)) ;
         
-        // In bytes ...
-        int srcIdx = idx*slotLen ;
-        int gap = num*slotLen ;
-        int len = (numSlot-idx)*slotLen ;
-        
-        bbcopy(bb, srcIdx, srcIdx+gap, len) ;                // src, dst 
+        bbcopy(bb, idx, idx+num, (numSlot-idx), slotLen) ;       // src, dst 
         if ( NullOut )
             clear(idx, num) ;
 
@@ -173,17 +167,10 @@ public abstract class BufferBase
         if ( idx+num > numSlot )
             throw new IllegalArgumentException(format("Shift down(%d,%d): out of range: len=%d", idx, num, num)) ;
 
-        // In bytes ...
-        int srcIdx = idx*slotLen ;
-        int gap = num*slotLen ;
-        int len = (numSlot-num-idx)*slotLen ;
-        
-        bbcopy(bb, srcIdx+gap, srcIdx, len) ;      // src, dst)
+        bbcopy(bb, idx+num, idx, (numSlot-num-idx), slotLen) ;       // src, dst
 
         if ( NullOut )
-        {
             clear(numSlot-num, num) ;
-        }
         numSlot -= num ;
     }
     
@@ -202,15 +189,47 @@ public abstract class BufferBase
 //        }
 //        return str.toString() ;
 //    }
-    
+
+    /** Move the element from the high end of this to the low end of other */
+    public void shiftHighInto(BufferBase other)
+    {
+        if ( other.numSlot >= other.maxSlot )
+            throw new BufferException("No space in destination buffer") ;
+        if ( numSlot <= 0 )
+            throw new BufferException("Empty buffer") ;
+
+        if ( other.numSlot > 0 )
+            other.shiftUp(0) ;
+        else
+            other.numSlot++ ;
+        // Copy high to low slot.
+        bbcopy(bb, (numSlot-1), other.bb, 0, 1, slotLen) ;
+        removeTop() ;
+    }
+
+    /** Move the element from the low end of this to the high end of other */
+    public void shiftLowInto(BufferBase other)
+    {
+        if ( other.numSlot >= other.maxSlot )
+            throw new BufferException("No space in destination buffer") ;
+        if ( numSlot <= 0 )
+            throw new BufferException("Empty buffer") ;
+
+        // Copy low to above high slot.
+        bbcopy(bb, 0, other.bb, other.numSlot, 1, slotLen) ;
+        // Correct length.
+        other.numSlot ++ ;
+        shiftDown(0) ;
+    }
+
     static boolean allowArray  = false ;
 
     // For non-array versions : beware of overlaps.
-    final public static void bbcopy(ByteBuffer bb, int src, int dst, int length)
+    final public static void bbcopy(ByteBuffer bb, int src, int dst, int length, int slotLen)
     {
         if ( allowArray && bb.hasArray() )
         {
-            acopyArray(bb, src, dst, length) ;
+            acopyArray(bb, src, dst, length, slotLen) ;
             return ;
         }
         
@@ -218,60 +237,72 @@ public abstract class BufferBase
             return ;
         
         if ( src < dst ) 
-            bbcopy1(bb, src, dst, length ) ;
+            bbcopy1(bb, src, dst, length, slotLen) ;
         else
-            bbcopy2(bb, src, dst, length ) ;
+            bbcopy2(bb, src, dst, length, slotLen) ;
     }
     
-    final private static void bbcopy1(ByteBuffer bb, int src, int dst, int length)
+    final private static void bbcopy1(ByteBuffer bb, int src, int dst, int length, int slotLen)
     {
-        // TODO Is creating a byte buffer solely to call bb.put(ByteBuffer) more efficient?
-        // Are there overlap problems?
-        // src < dst so dst[top] is not in the overlap
-        for ( int i = length-1 ; i >= 0 ; i-- )
-            bb.put(dst+i, bb.get(src+i)) ;
+        int bDst = dst*slotLen ;
+        int bSrc = src*slotLen ;
+        int bLen = length*slotLen ;
+
+        for ( int i = bLen-1 ; i >= 0 ; i-- )
+            bb.put(bDst+i, bb.get(bSrc+i)) ;
     }
     
-    final private static void bbcopy2(ByteBuffer bb, int src, int dst, int length)
+    final private static void bbcopy2(ByteBuffer bb, int src, int dst, int length, int slotLen)
     {
+        int bDst = dst*slotLen ;
+        int bSrc = src*slotLen ;
+        int bLen = length*slotLen ;
+        
         // src > dst so dst[0] is not in the overlap 
-        for ( int i = 0 ; i < length ; i++ )
-            bb.put(dst+i, bb.get(src+i)) ;
+        for ( int i = 0 ; i < bLen ; i++ )
+            bb.put(bDst+i, bb.get(bSrc+i)) ;
     }
 
     
-    final private static void bbcopy(ByteBuffer bb1, int src, ByteBuffer bb2, int dst, int length)
+    final private static void bbcopy(ByteBuffer bb1, int src, ByteBuffer bb2, int dst, int length, int slotLen)
     {
         // Assume bb1 and bb2 are different and do not overlap.
         if ( allowArray && bb1.hasArray() && bb2.hasArray() )
         {
-            acopyArray(bb1, src, bb2, dst, length) ;
+            acopyArray(bb1, src, bb2, dst, length, slotLen) ;
             return ;
         }
         // One or both does not have an array.
         
-        for ( int i = 0 ; i < length ; i++ )
-            bb2.put(dst+i, bb1.get(src+i)) ;
+        int bSrc = src*slotLen ;
+        int bDst = dst*slotLen ;
+        int bLen = length*slotLen ;
+        
+        for ( int i = 0 ; i < bLen ; i++ )
+            bb2.put(bDst+i, bb1.get(bSrc+i)) ;
     }
 
-    final public static void bbfill(ByteBuffer bb, int fromIdx, int toIdx, byte fillValue)
+    final public static void bbfill(ByteBuffer bb, int fromIdx, int toIdx, byte fillValue, int slotLen)
     {
         if ( ! NullOut )
             return ;
         if ( allowArray && bb.hasArray() )
         {
-            afillArray(bb, fromIdx, toIdx, fillValue) ;
+            afillArray(bb, fromIdx, toIdx, fillValue, slotLen) ;
             return ;
         }
         
-        for ( int i = fromIdx; i < toIdx; i++ )
+        int bStart = fromIdx*slotLen ;
+        int bFinish = toIdx*slotLen ;
+        
+        for ( int i = bStart ; i < bFinish ; i++ )
             bb.put(i, fillValue) ;
     }
    
     final private static void checkBounds(int idx, int len)
     {
         if ( idx < 0 || idx >= len )
-            throw new IllegalArgumentException(format("Out of bounds: idx=%d, size=%d", idx, len)) ;
+            throw new BufferException(format("Out of bounds: idx=%d, size=%d", idx, len)) ;
     }
 
     //    @Override
@@ -292,23 +323,34 @@ public abstract class BufferBase
     
     // Array versions
     
-    final public static void acopyArray(ByteBuffer bb, int src, int dst, int length)
+    final public static void acopyArray(ByteBuffer bb, int src, int dst, int length, int slotLen)
     {
         byte[] b = bb.array();
+        
         int OFFSET = bb.arrayOffset() ;
-        arraycopy(b, OFFSET+src, b, OFFSET+dst, length) ;
+        
+        int bSrc = src*slotLen ;
+        int bDst = dst*slotLen ;
+        int bLen = length*slotLen ;
+        
+        arraycopy(b, OFFSET+bSrc, b, OFFSET+bDst, bLen) ;
     }
 
-    final public static void acopyArray(ByteBuffer bb1, int src, ByteBuffer bb2, int dst, int length)
+    final public static void acopyArray(ByteBuffer bb1, int src, ByteBuffer bb2, int dst, int length, int slotLen)
     {
         byte[] b1 = bb1.array();
         byte[] b2 = bb2.array();
         int OFFSET1 = bb1.arrayOffset() ;
         int OFFSET2 = bb2.arrayOffset() ;
-        arraycopy(b1, OFFSET1+src, b2, OFFSET2+dst, length) ;
+        
+        int bSrc = src*slotLen ;
+        int bDst = dst*slotLen ;
+        int bLen = length*slotLen ;
+        
+        arraycopy(b1, OFFSET1+bSrc, b2, OFFSET2+bDst, bLen) ;
     }
 
-    final private static void afillArray(ByteBuffer bb, int fromIdx, int toIdx, byte fillValue)
+    final private static void afillArray(ByteBuffer bb, int fromIdx, int toIdx, byte fillValue, int slotLen)
     {
         if ( NullOut )
             fill(bb.array(), fromIdx+bb.arrayOffset(), toIdx+bb.arrayOffset(), fillValue) ;

@@ -9,6 +9,7 @@ package com.hp.hpl.jena.tdb.btree;
 import java.nio.ByteBuffer;
 
 import com.hp.hpl.jena.tdb.base.BaseConfig;
+import com.hp.hpl.jena.tdb.base.BufferException;
 import com.hp.hpl.jena.tdb.btree.PtrBuffer;
 
 
@@ -106,7 +107,7 @@ public class TestPtrBuffer extends BaseTest
     }    
 
     // Errors - IllegalArgumentException
-    @Test(expected=IllegalArgumentException.class) 
+    @Test(expected=BufferException.class) 
     public void ptrbuffer09()
     {
         PtrBuffer pb = make(4,5) ;
@@ -114,7 +115,7 @@ public class TestPtrBuffer extends BaseTest
         pb.shiftDown(4) ;
     }  
     
-    @Test(expected=IllegalArgumentException.class) 
+    @Test(expected=BufferException.class) 
     public void ptrbuffer10()
     {
         PtrBuffer pb = make(4,5) ;
@@ -122,7 +123,7 @@ public class TestPtrBuffer extends BaseTest
         pb.shiftUp(4) ;
     }  
 
-    @Test(expected=IllegalArgumentException.class) 
+    @Test(expected=BufferException.class) 
     public void ptrbuffer11()
     {
         PtrBuffer pb = make(5,5) ;
@@ -177,6 +178,78 @@ public class TestPtrBuffer extends BaseTest
         contains(pb, 6) ;
         pb.remove(0) ;
         contains(pb) ;
+    }
+    
+    @Test public void ptrbuffer20()
+    {
+        PtrBuffer pb1 = make(5,5) ;
+        contains(pb1, 2, 4, 6, 8, 10) ;
+        PtrBuffer pb2 = make(0,5) ;
+        contains(pb2) ;
+        
+        pb1.shiftHighInto(pb2) ;
+        contains(pb1, 2, 4, 6, 8) ;
+        contains(pb2, 10) ;
+    }
+    
+    @Test public void ptrbuffer21()
+    {
+        PtrBuffer pb1 = make(3,5) ;
+        contains(pb1, 2, 4, 6) ;
+        PtrBuffer pb2 = make(0,5) ;
+        contains(pb2) ;
+        
+        pb1.shiftHighInto(pb2) ;
+        contains(pb1, 2, 4) ;
+        contains(pb2, 6) ;
+    }
+    
+    @Test public void ptrbuffer22()
+    {
+        PtrBuffer pb1 = make(3,5) ;
+        contains(pb1, 2, 4, 6) ;
+        PtrBuffer pb2 = make(2,5) ;
+        contains(pb2, 2, 4) ;
+        
+        pb1.shiftHighInto(pb2) ;
+        contains(pb1, 2, 4) ;
+        contains(pb2, 6, 2, 4) ;
+    }
+    
+    @Test public void ptrbuffer24()
+    {
+        PtrBuffer pb1 = make(5,5) ;
+        contains(pb1, 2, 4, 6, 8, 10) ;
+        PtrBuffer pb2 = make(0,5) ;
+        contains(pb2) ;
+        
+        pb1.shiftLowInto(pb2) ;
+        contains(pb1, 4, 6, 8, 10) ;
+        contains(pb2, 2) ;
+    }
+    
+    @Test public void ptrbuffer25()
+    {
+        PtrBuffer pb1 = make(3,5) ;
+        contains(pb1, 2, 4, 6) ;
+        PtrBuffer pb2 = make(0,5) ;
+        contains(pb2) ;
+        
+        pb1.shiftLowInto(pb2) ;
+        contains(pb1, 4, 6) ;
+        contains(pb2, 2) ;
+    }
+    
+    @Test public void ptrbuffer26()
+    {
+        PtrBuffer pb1 = make(3,5) ;
+        contains(pb1, 2, 4, 6) ;
+        PtrBuffer pb2 = make(2,5) ;
+        contains(pb2, 2, 4) ;
+        
+        pb1.shiftLowInto(pb2) ;
+        contains(pb1, 4, 6) ;
+        contains(pb2, 2, 4, 2) ;
     }
     
     // ---- Support
