@@ -86,6 +86,7 @@
     </javac>
   </target>
 
+  <target name="jar" depends="jars" />
   <target name="jars" depends="compile" description="Build the JAR anew">
     <mkdir dir="${jar.dir}"/>
     <delete file="${jar.dir}/${jarfile}"/>
@@ -243,7 +244,7 @@
   <!-- ==== Misc -->
 
 
-  <target name="main" depends="clean,run"/>
+  <target name="main" depends="clean,compile,jar"/>
 
   <target name="clean" 
           depends="clean-build-dirs,clean-reports" 
