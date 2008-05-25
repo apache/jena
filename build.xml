@@ -63,10 +63,9 @@
     <property name="java.debuglevel"  value="source,lines,vars"/>
     <property name="java.deprecation" value="true"/>
     <property name="java.optimize"    value="true"/>
-    <!--
+    <property name="java.encoding"    value="UTF8"/>
     <property name="java.source"      value="1.6"/>
     <property name="java.target"      value="1.6"/>
-    -->
   </target>
 
   <!-- ========================================== -->
@@ -76,7 +75,14 @@
 
   <target name="compile" depends="javac-flags" description="compile project">
     <mkdir dir="${classes.dir}"/>
-    <javac destdir="${classes.dir}">
+    <javac destdir="${classes.dir}"
+	   debug="${java.debug}"
+	   deprecation="${java.debuglevel}"
+	   optimize="${java.optimize}"
+	   encoding="${java.encoding}"
+	   source="${java.source}"
+	   target="${java.target}"
+     >
       <src path="${src.dir}"/>
       <src path="${src.test.dir}"/>
       <src path="${src.lib.dir}"/>

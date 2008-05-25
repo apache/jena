@@ -53,6 +53,7 @@ public class Run
     
     public static void main(String ... args)
     {
+        btreePacking(3, 32, 8*1024) ; System.exit(0) ;
         tdb.tdbconfig.main("stats", "--desc=dataset.ttl") ;
         System.exit(0) ;
                 
