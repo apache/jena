@@ -90,16 +90,21 @@ public class Record //implements Comparable<Record>
         return str(key)+":"+str(value) ;
     }
     
-    public static boolean keyLT(Record record1, Record record2)
-    {
-        int x = compareByKey(record1, record2) ;
-        return x < 0 ;
-    }
-    
     public static boolean keyEQ(Record record1, Record record2)
     {
         int x = compareByKey(record1, record2) ;
         return x == 0 ;
+    }
+
+    public static boolean keyNE(Record record1, Record record2)
+    {
+        int x = compareByKey(record1, record2) ;
+        return x != 0 ;
+    }
+    public static boolean keyLT(Record record1, Record record2)
+    {
+        int x = compareByKey(record1, record2) ;
+        return x < 0 ;
     }
 
     public static boolean keyLE(Record record1, Record record2)
