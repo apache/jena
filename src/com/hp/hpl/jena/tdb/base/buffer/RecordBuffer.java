@@ -67,7 +67,7 @@ public class RecordBuffer extends BufferBase
         else
         {
             if ( numSlot >= maxSlot )
-                throw new IllegalArgumentException(format("Out of bounds: idx=%d, ptrs=%d", idx, maxSlot)) ;
+                throw new BufferException(format("Out of bounds: idx=%d, ptrs=%d", idx, maxSlot)) ;
             numSlot++ ;
         }
         _set(idx, record) ;

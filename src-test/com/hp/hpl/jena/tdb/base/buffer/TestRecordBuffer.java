@@ -127,7 +127,7 @@ public class TestRecordBuffer extends BaseTest
 
     // Errors
     
-    @Test(expected=IllegalArgumentException.class) 
+    @Test(expected=BufferException.class) 
     public void recBuffer09()
     {
         RecordBuffer rb = make(4,5) ;
@@ -135,7 +135,7 @@ public class TestRecordBuffer extends BaseTest
         rb.shiftDown(4) ;
     }  
     
-    @Test(expected=IllegalArgumentException.class) 
+    @Test(expected=BufferException.class) 
     public void recBuffer10()
     {
         RecordBuffer rb = make(4,5) ;
@@ -143,7 +143,7 @@ public class TestRecordBuffer extends BaseTest
         rb.shiftUp(4) ;
     }  
 
-    @Test(expected=IllegalArgumentException.class) 
+    @Test(expected=BufferException.class) 
     public void recBuffer11()
     {
         RecordBuffer rb = make(5,5) ;
