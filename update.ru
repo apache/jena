@@ -1,7 +1,4 @@
-PREFIX : <http://example/>
+PREFIX dc: <http://purl.org/dc/elements/1.1/>
 
-INSERT DATA
-{ 
-  :x :p :q .
-  :x2 :p :q 
-}
+INSERT DATA #INTO <http://example/bookStore>
+{ <http://example/book3>  dc:title  "Fundamentals of Compiler Design"}

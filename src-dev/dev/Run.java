@@ -30,6 +30,9 @@ import com.hp.hpl.jena.sparql.algebra.op.OpJoin;
 import com.hp.hpl.jena.sparql.algebra.op.OpLeftJoin;
 import com.hp.hpl.jena.sparql.core.BasicPattern;
 import com.hp.hpl.jena.sparql.sse.SSE;
+import com.hp.hpl.jena.sparql.util.IndentedWriter;
+import com.hp.hpl.jena.sparql.util.StringUtils;
+
 import com.hp.hpl.jena.update.GraphStore;
 import com.hp.hpl.jena.update.GraphStoreFactory;
 import com.hp.hpl.jena.update.UpdateAction;
@@ -41,8 +44,25 @@ public class Run
 {
     public static void main(String[] argv) throws Exception
     {
+        String qs = StringUtils.join("\n",
+                                      new String[]
+                                                 {
+                                          "PREFIX dc: <http://purl.org/dc/elements/1.1/>",
+                                          "INSERT DATA INTO <http://example/bookStore>",
+                                          "{ <http://example/book3>  dc:title  'Fundamentals of Compiler Design'}"}
+                                          ) ;
+        UpdateRequest request2 = UpdateFactory.create(qs);
+        request2.output(IndentedWriter.stdout);
+        IndentedWriter.stdout.flush();
+        
+        
+        System.exit(0) ;
+        
+        
         UpdateRequest r = UpdateFactory.read("update.ru") ;
         GraphStore gs = GraphStoreFactory.create() ;
+        System.out.println(r) ;
+        
         UpdateAction.execute(r, gs) ;
 
         SSE.write(gs) ;

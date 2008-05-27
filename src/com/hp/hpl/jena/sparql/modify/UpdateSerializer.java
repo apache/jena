@@ -35,14 +35,14 @@ public class UpdateSerializer implements UpdateVisitor
         out.print(name) ;
         for ( Iterator iter = modify.getGraphNames().iterator() ; iter.hasNext() ; )
         {
-            String iri = (String)iter.next() ;
+            Node iri = (Node)iter.next() ;
             if ( word != null )
             {
                 out.print(" ") ;
                 out.print(word) ;
             }
             out.print(" ") ;
-            out.print(FmtUtils.stringForURI(iri, sCxt)) ;
+            out.print(FmtUtils.stringForNode(iri, sCxt)) ;
         }
         out.println(); 
     }
