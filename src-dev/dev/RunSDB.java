@@ -24,6 +24,7 @@ import com.hp.hpl.jena.query.*;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.ResourceFactory;
+import com.hp.hpl.jena.rdf.model.StmtIterator;
 import com.hp.hpl.jena.sdb.SDB;
 import com.hp.hpl.jena.sdb.SDBFactory;
 import com.hp.hpl.jena.sdb.Store;
@@ -50,6 +51,21 @@ public class RunSDB
     @SuppressWarnings("unchecked")
     public static void main(String ... argv) 
     {
+        {
+            String h2Str = "jdbc:h2:file:DB/H2" ;
+            SDBConnection sdb = SDBFactory.createConnection(h2Str,  null, null);
+            Store store = SDBFactory.connectStore("sdb.ttl") ;
+            Model m = SDBFactory.connectDefaultModel(store) ;
+            
+            StmtIterator sIter = m.listStatements(m.createResource("http://example/x1"), null, (RDFNode)null) ;
+            while(sIter.hasNext())
+                System.out.println(sIter.nextStatement()) ;
+            
+            m.write(System.out, "N-TRIPLES") ;
+            System.exit(0) ;
+        }
+        
+        
         {
             // SPARQL/Update
             Store store = SDB.createInMemoryStore() ;

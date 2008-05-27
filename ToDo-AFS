@@ -3,7 +3,27 @@ SDB ToDo list (and general notes)
 
 ** Check documentation about assembler structures on wiki.
 
+** Docuemnt SDB.streamGraphAPI
+
+
+** Streaming for more DBs (MySQL)
+
+MySQL:
+
+stmt = conn.createStatement(java.sql.ResultSet.TYPE_FORWARD_ONLY,
+                            java.sql.ResultSet.CONCUR_READ_ONLY);
+stmt.setFetchSize(Integer.MIN_VALUE);
+
+one-by-one
+
+   SDBConnection.execQuery(String sqlString) => 
+    -    { return execQuery(sqlString, -1) ; }
+    +    { return execQuery(sqlString, Integer.MIN_VALUE) ; }
+   And fix the graph find so triples stream back.
+
 ==== Wiki
+** StoreFormatter.isFormatted()
+
 + Document assembler for dataset on wiki
 
 <#dataset> rdf:type sdb:DatasetStore ;

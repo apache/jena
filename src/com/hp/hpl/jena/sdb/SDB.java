@@ -39,6 +39,10 @@ public class SDB
     public static final Symbol useQuadRewrite           = SDBConstants.allocSymbol("useQuadRewrite") ;
     public static final Symbol unionDefaultGraph        = SDBConstants.allocSymbol("unionDefaultGraph") ;
 
+    /** Control whether GraphSDB streams results to find - must ensure all Jena iterators are closed if this is set true */
+    public static final Symbol streamGraphAPI           = SDBConstants.allocSymbol("streamGraphAPI") ;
+    
+    /** Control/attempt  JDBC streaming - mosty databases allow only one outstandign streaming request */  
     public static final Symbol jdbcStream               = SDBConstants.allocSymbol("jdbcStream") ;
     public static final Symbol jdbcFetchSize            = SDBConstants.allocSymbol("jdbcFetchSize") ;
     
@@ -81,6 +85,7 @@ public class SDB
         UpdateProcessorSDB.register() ;
         
         SDB.getContext().setIfUndef(useQuadRewrite,        false) ;
+        SDB.getContext().setIfUndef(streamGraphAPI,        false) ;
         SDB.getContext().setIfUndef(jdbcStream,            true) ;
         //SDB.getContext().setIfUndef(jdbcFetchSize,         ???) ;
         SDB.getContext().setIfUndef(annotateGeneratedSQL,  true) ;

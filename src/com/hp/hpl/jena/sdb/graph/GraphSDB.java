@@ -7,7 +7,6 @@
 package com.hp.hpl.jena.sdb.graph;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -17,10 +16,16 @@ import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.impl.AllCapabilities;
 import com.hp.hpl.jena.graph.impl.GraphBase;
 import com.hp.hpl.jena.graph.query.QueryHandler;
-import com.hp.hpl.jena.mem.TrackingTripleIterator;
+import com.hp.hpl.jena.query.Query;
+import com.hp.hpl.jena.sdb.SDB;
+import com.hp.hpl.jena.sdb.Store;
+import com.hp.hpl.jena.sdb.core.SDBRequest;
+import com.hp.hpl.jena.sdb.engine.QueryEngineSDB;
+import com.hp.hpl.jena.sdb.sql.SDBConnection;
+import com.hp.hpl.jena.sdb.store.DatasetStoreGraph;
+import com.hp.hpl.jena.sdb.store.StoreLoader;
+import com.hp.hpl.jena.sdb.store.StoreLoaderPlus;
 import com.hp.hpl.jena.shared.PrefixMapping;
-import com.hp.hpl.jena.util.iterator.ExtendedIterator;
-
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.op.OpQuadPattern;
 import com.hp.hpl.jena.sparql.core.BasicPattern;
@@ -30,16 +35,9 @@ import com.hp.hpl.jena.sparql.engine.Plan;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.binding.BindingRoot;
-
-import com.hp.hpl.jena.query.Query;
-
-import com.hp.hpl.jena.sdb.Store;
-import com.hp.hpl.jena.sdb.core.SDBRequest;
-import com.hp.hpl.jena.sdb.engine.QueryEngineSDB;
-import com.hp.hpl.jena.sdb.sql.SDBConnection;
-import com.hp.hpl.jena.sdb.store.DatasetStoreGraph;
-import com.hp.hpl.jena.sdb.store.StoreLoader;
-import com.hp.hpl.jena.sdb.store.StoreLoaderPlus;
+import com.hp.hpl.jena.sparql.engine.iterator.QueryIterPlainWrapper;
+import com.hp.hpl.jena.util.iterator.ExtendedIterator;
+import com.hp.hpl.jena.util.iterator.NiceIterator;
 
 
 
@@ -152,31 +150,12 @@ public class GraphSDB extends GraphBase implements Graph
         // Fake a query.
         SDBRequest cxt = new SDBRequest(getStore(), new Query()) ;
         
+        // If null, create and remember a variable, else use the node.
+        final Node s = (m.getMatchSubject()==null)   ? Var.alloc("s")   :  m.getMatchSubject() ;
         
-        Node s = m.getMatchSubject() ;
-        Var sVar = null ;
-        if ( s == null )
-        {
-            sVar = Var.alloc("s") ;
-            s = sVar ;
-        }
-        
-        Node p = m.getMatchPredicate() ;
-        Var pVar = null ;
-        if ( p == null )
-        {
-            pVar = Var.alloc("p") ;
-            p = pVar ;
-        }
-        
-        Node o = m.getMatchObject() ;
-        Var oVar = null ;
-        if ( o == null )
-        {
-            oVar = Var.alloc("o") ;
-            o = oVar ;
-        }
-        
+        final Node p = (m.getMatchPredicate()==null) ? Var.alloc("p")   :  m.getMatchPredicate() ;
+        final Node o = (m.getMatchObject()==null)    ? Var.alloc("o")   :  m.getMatchObject() ;
+
         Triple triple = new Triple(s, p ,o) ;
         
         // Evaluate as an algebra expression
@@ -186,36 +165,83 @@ public class GraphSDB extends GraphBase implements Graph
         Plan plan = QueryEngineSDB.getFactory().create(op, datasetStore, BindingRoot.create(), null) ;
         
         QueryIterator qIter = plan.iterator() ;
-        List<Triple> triples = new ArrayList<Triple>() ;
         
-        for (; qIter.hasNext() ; )
+        if ( SDB.getContext().isTrue(SDB.streamGraphAPI) )
         {
-            Binding b = qIter.nextBinding() ;
-            Node sResult = s ;
-            Node pResult = p ;
-            Node oResult = o ;
-            if ( sVar != null )
-                sResult = b.get(sVar) ;
-            if ( pVar != null )
-                pResult = b.get(pVar) ;
-            if ( oVar != null )
-                oResult = b.get(oVar) ;
-            Triple resultTriple = new Triple(sResult, pResult, oResult) ;
-            if ( log.isDebugEnabled() )
-                log.debug("  "+resultTriple) ;
-            triples.add(resultTriple) ;
+            // ---- Safe version: 
+            List<Binding> bindings = new ArrayList<Binding>() ;
+            while ( qIter.hasNext() ) bindings.add(qIter.nextBinding()) ;
+            qIter.close();
+            
+            // QueryIterPlainWrapper is just to make it ia QuyerIterator again.
+            return new GraphIterator(triple, new QueryIterPlainWrapper(bindings.iterator())) ;
         }
-        qIter.close() ;
-        return new GraphIterator(triples.iterator()) ;
+        else
+        {
+            // Dangerous version -- application must close iterator.
+            return new GraphIterator(triple, qIter) ;
+        }
     }
 
-    class GraphIterator extends TrackingTripleIterator
+    // Collect ugliness together.
+    private static Triple bindingToTriple(Triple pattern,  
+                                          Binding binding)
     {
-        GraphIterator(Iterator<Triple> iter) { super(iter) ; }
+        Node s = pattern.getSubject() ;
+        Node p = pattern.getPredicate() ;
+        Node o = pattern.getObject() ;
+        
+        Node sResult = s ;
+        Node pResult = p ;
+        Node oResult = o ;
+        
+        if ( Var.isVar(s) )
+            sResult = binding.get(Var.alloc(s)) ;
+        if ( Var.isVar(p) )
+            pResult = binding.get(Var.alloc(p)) ;
+        if ( Var.isVar(o) )
+            oResult = binding.get(Var.alloc(o)) ;
+        
+        Triple resultTriple = new Triple(sResult, pResult, oResult) ;
+        return resultTriple ;
+    }
+
+    class GraphIterator extends NiceIterator
+    {
+        QueryIterator qIter ; 
+        Triple current = null ;
+        Triple pattern ;
+        
+        GraphIterator(Triple pattern, QueryIterator qIter)
+        { 
+            this.qIter = qIter ;
+            this.pattern = pattern ;
+        }
         
         @Override
+        public void close()
+        {
+            qIter.close() ;
+        }
+        
+        @Override
+        public boolean hasNext()
+        {
+            return qIter.hasNext() ;
+        }
+        
+        @Override
+        public Triple next()
+        {
+            return ( current = bindingToTriple(pattern, qIter.nextBinding() ) ) ;
+        }
+
+        @Override
         public void remove()
-        { delete(current) ; }
+        { 
+            if ( current != null )
+                delete(current) ;
+        }
     }
     
     public StoreLoader getBulkLoader() { return store.getLoader() ; }
