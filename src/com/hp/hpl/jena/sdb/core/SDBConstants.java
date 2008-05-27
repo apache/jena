@@ -12,6 +12,10 @@ import com.hp.hpl.jena.sparql.util.Symbol;
 
 public class SDBConstants
 {
+    // Not "Integer.MIN_VALUE"  which is meaningful to MySQL.
+    public static final int jdbcFetchSizeOff            = -1 ;
+
+    
     public static final String sdbSymbolSpace = "http://jena.hpl.hp.com/SDB/symbol#" ;
     public static Symbol allocSymbol(String shortName)
     { 

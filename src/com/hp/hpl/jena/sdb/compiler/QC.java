@@ -26,6 +26,7 @@ import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.SortCondition;
 
 import com.hp.hpl.jena.sdb.SDB;
+import com.hp.hpl.jena.sdb.core.SDBConstants;
 import com.hp.hpl.jena.sdb.core.SDBRequest;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 import com.hp.hpl.jena.sdb.iterator.Transform;
@@ -52,7 +53,7 @@ public class QC
         if ( execCxt != null )
             str = execCxt.getContext().getAsString(SDB.jdbcFetchSize) ;
         
-        int fetchSize = Integer.MIN_VALUE ;
+        int fetchSize = SDBConstants.jdbcFetchSizeOff;
         
         if ( str != null )
             try { fetchSize = Integer.parseInt(str) ; }

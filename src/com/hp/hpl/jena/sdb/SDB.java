@@ -45,6 +45,7 @@ public class SDB
     /** Control/attempt  JDBC streaming - mosty databases allow only one outstandign streaming request */  
     public static final Symbol jdbcStream               = SDBConstants.allocSymbol("jdbcStream") ;
     public static final Symbol jdbcFetchSize            = SDBConstants.allocSymbol("jdbcFetchSize") ;
+    // See also SDBConstants.jdbcFetchSizeOff
     
     public static final Symbol annotateGeneratedSQL     = SDBConstants.allocSymbol("annotateGeneratedSQL") ;
     // ----------------------------------

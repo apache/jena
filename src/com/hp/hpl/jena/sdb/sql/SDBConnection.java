@@ -6,6 +6,10 @@
 
 package com.hp.hpl.jena.sdb.sql;
 
+
+import static java.sql.ResultSet.CONCUR_READ_ONLY;
+import static java.sql.ResultSet.TYPE_FORWARD_ONLY;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -18,11 +22,11 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.graph.TransactionHandler;
-import com.hp.hpl.jena.shared.Command;
-
 import com.hp.hpl.jena.sdb.core.Generator;
 import com.hp.hpl.jena.sdb.core.Gensym;
+import com.hp.hpl.jena.sdb.core.SDBConstants;
 import com.hp.hpl.jena.sdb.graph.TransactionHandlerSDB;
+import com.hp.hpl.jena.shared.Command;
 
 /*
  * An SDBConnection is the abstraction of the link between client
@@ -96,9 +100,22 @@ public class SDBConnection
         Connection conn = getSqlConnection() ;
 
         try {
-            Statement s = conn.createStatement() ; // Managed by ResultSetJDBC
-            if ( fetchSize >= 0 )
+            //Statement s = conn.createStatement() ; // Managed by ResultSetJDBC
+            
+            // These are needed for MySQL when trying for row-by-row fetching
+            // and they are gemnerally true so set them always.
+            Statement s = conn.createStatement(TYPE_FORWARD_ONLY, CONCUR_READ_ONLY) ; // Managed by ResultSetJDBC
+            
+            // MySQL : Integer.MIN_VALUE
+            if ( fetchSize != SDBConstants.jdbcFetchSizeOff )
+            {
+                /* MySQL: streaming if:
+                 * stmt = conn.createStatement(java.sql.ResultSet.TYPE_FORWARD_ONLY,
+                            java.sql.ResultSet.CONCUR_READ_ONLY);
+                   stmt.setFetchSize(Integer.MIN_VALUE);
+                 */
                 s.setFetchSize(fetchSize) ;
+            }
             return new ResultSetJDBC(s, s.executeQuery(sqlString)) ;
         } catch (SQLException ex)
         {
