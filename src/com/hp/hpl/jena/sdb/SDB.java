@@ -42,7 +42,7 @@ public class SDB
     /** Control whether GraphSDB streams results to find - must ensure all Jena iterators are closed if this is set true */
     public static final Symbol streamGraphAPI           = SDBConstants.allocSymbol("streamGraphAPI") ;
     
-    /** Control/attempt  JDBC streaming - mosty databases allow only one outstandign streaming request */  
+    /** Control/attempt  JDBC streaming - mosty databases allow only one outstanding streaming request */  
     public static final Symbol jdbcStream               = SDBConstants.allocSymbol("jdbcStream") ;
     public static final Symbol jdbcFetchSize            = SDBConstants.allocSymbol("jdbcFetchSize") ;
     // See also SDBConstants.jdbcFetchSizeOff
