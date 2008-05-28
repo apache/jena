@@ -321,7 +321,7 @@ public class AlgebraGenerator
             // Fold into above when certainit works
         }
         
-        // ---- Assignments from SELECT (so available to ORDER and HAVING)
+        // ---- Assignments from SELECT and other places (TBD) (so available to ORDER and HAVING)
         if ( ! exprs.isEmpty() )
             op = new OpAssign(op, exprs) ;
 
@@ -342,9 +342,8 @@ public class AlgebraGenerator
         // ---- PROJECT
         // No projection => initial variables are exposed.
         // Needed for CONSTRUCT and initial bindings + SELECT *
+        // Assignments from expressions down earlier.
         
-        if ( ! exprs.isEmpty() )
-            op = new OpAssign(op, exprs) ;
         if ( vars.size() > 0 )
             op = new OpProject(op, vars) ;
         
