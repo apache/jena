@@ -37,8 +37,10 @@ import com.hp.hpl.jena.sdb.store.StoreFactory;
 import com.hp.hpl.jena.sdb.util.StrUtils;
 import com.hp.hpl.jena.sparql.resultset.ResultsFormat;
 import com.hp.hpl.jena.sparql.sse.SSE;
+import com.hp.hpl.jena.sparql.util.Context;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
 import com.hp.hpl.jena.sparql.util.QueryExecUtils;
+import com.hp.hpl.jena.sparql.util.Symbol;
 import com.hp.hpl.jena.update.GraphStore;
 import com.hp.hpl.jena.update.GraphStoreFactory;
 import com.hp.hpl.jena.update.UpdateAction;
@@ -51,6 +53,21 @@ public class RunSDB
     @SuppressWarnings("unchecked")
     public static void main(String ... argv) 
     {
+        {
+            Context cxt = new Context() ;
+            Symbol sym = Symbol.create("x") ;
+            cxt.set(sym, Integer.MIN_VALUE) ;
+            String str = cxt.getAsString(sym) ;
+            System.out.println("==> "+str) ;
+            int x = Integer.parseInt(str) ;
+            System.out.println(x==Integer.MIN_VALUE) ;
+            System.exit(0) ;
+        }
+        
+        
+        
+        
+        
         {
             String h2Str = "jdbc:h2:file:DB/H2" ;
             SDBConnection sdb = SDBFactory.createConnection(h2Str,  null, null);
