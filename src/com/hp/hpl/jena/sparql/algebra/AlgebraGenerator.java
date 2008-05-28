@@ -304,25 +304,15 @@ public class AlgebraGenerator
             op = new OpList(op) ;
         
         // ---- GROUP BY
-        if ( query.hasGroupBy() )
-        {
-            // query.getGroupExprs().size() <  query.getGroupVars().size() ;
-            // Wrong.
-            // 1 - need to pass in expressions for grouping, not vars.
-            // 2 - No aggregates yet
+        // ?? Check for aliases introduced via assignments.
+        
+        if ( query.hasGroupBy() || query.getAggregators().size() > 0 )
+            // When there is no GroupBy but there are some aggregates, it's a group of no variables.
             op = new OpGroupAgg(op, query.getGroupBy(), query.getAggregators()) ;
-        }
-        else
-        {
-            if ( query.getAggregators().size() > 0 )
-                // No GroupBy but there are some aggregates.
-                // This is a group of no variables.
-                op = new OpGroupAgg(op,  query.getGroupBy(), query.getAggregators()) ;
-            // Fold into above when certainit works
-        }
         
         // ---- Assignments from SELECT and other places (TBD) (so available to ORDER and HAVING)
         if ( ! exprs.isEmpty() )
+            // Potential rewrites based of assign introducing aliases.
             op = new OpAssign(op, exprs) ;
 
         // ---- HAVING
