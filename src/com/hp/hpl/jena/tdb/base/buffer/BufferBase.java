@@ -62,6 +62,10 @@ abstract class BufferBase
     final
     public void copy(int srcIdx, BufferBase dst, int dstIdx, int len)
     {
+        if ( len == 0 )
+            return ;
+        
+        // Check end index is inside the buffer.
         checkBounds(srcIdx+len-1, maxSlot) ;
      
         BufferBase src = this ;   // Clarity
@@ -76,6 +80,11 @@ abstract class BufferBase
         bbcopy(src.bb, srcIdx, dst.bb, dstIdx, len, slotLen) ;
         dst.numSlot = Math.max(dstIdx+len, dst.numSlot) ; 
     }
+    
+    final
+    public void copyToTop(BufferBase dst)
+    { 
+        copy(0, dst, dst.numSlot, numSlot) ; } 
     
     /** Remove top element */
     final public void removeTop()

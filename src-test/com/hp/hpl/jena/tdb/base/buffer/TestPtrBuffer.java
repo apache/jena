@@ -252,6 +252,30 @@ public class TestPtrBuffer extends BaseTest
         contains(pb2, 2, 4, 2) ;
     }
     
+    @Test public void ptrbuffer27()
+    {
+        PtrBuffer pb1 = make(2,4) ;
+        PtrBuffer pb2 = make(2,4) ; 
+        pb1.copyToTop(pb2) ;
+        contains(pb2, 2,4,2,4) ;
+    }
+    
+    @Test public void ptrbuffer28()
+    {
+        PtrBuffer pb1 = make(0,5) ;
+        PtrBuffer pb2 = make(2,4) ; 
+        pb1.copyToTop(pb2) ;
+        contains(pb2, 2,4) ;
+    }
+
+    @Test public void ptrbuffer29()
+    {
+        PtrBuffer pb1 = make(0,5) ;
+        PtrBuffer pb2 = make(2,4) ; 
+        pb2.copyToTop(pb1) ;
+        contains(pb1, 2,4) ;
+    }
+
     // ---- Support
     private static void contains(PtrBuffer pb, int... vals)
     {
@@ -263,9 +287,7 @@ public class TestPtrBuffer extends BaseTest
                 assertEquals("Value mismatch: ", vals[i], pb.get(i)) ;
     }
 
-    
-    // 2,4,6,8 who do we ...
-     
+    // Make : 2,4,6,8, ..
     private static PtrBuffer make(int n) { return make(n,n) ; }
     private static PtrBuffer make(int n, int len)
     { 
