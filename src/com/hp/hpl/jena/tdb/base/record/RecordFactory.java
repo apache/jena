@@ -30,6 +30,16 @@ public class RecordFactory
         return new RecordFactory(keyLength, 0) ;
     }
 
+    /** Create a key-only record */
+    public Record createKeyOnly(Record record)
+    {
+        checkKey(record.getKey()) ;
+        if ( record.getValue() == null )
+            return record ;
+        
+        return create(record.getKey(), null) ;
+    }
+    
     /** Create a key and value record (value uninitialized) */
     public Record create(byte[] key)
     { 
