@@ -19,56 +19,58 @@ public interface TurtleParserConstants {
   int KW_A = 13;
   int PREFIX = 14;
   int BASE = 15;
-  int INTEGER = 16;
-  int DECIMAL = 17;
-  int DOUBLE = 18;
-  int EXPONENT = 19;
-  int QUOTE_3D = 20;
-  int QUOTE_3S = 21;
-  int ECHAR = 22;
-  int STRING_LITERAL1 = 23;
-  int STRING_LITERAL2 = 24;
-  int STRING_LITERAL_LONG1 = 25;
-  int STRING_LITERAL_LONG2 = 26;
-  int DIGITS = 27;
-  int HEX = 28;
-  int IRIref = 29;
-  int PNAME_NS = 30;
-  int PNAME_LN = 31;
-  int BLANK_NODE_LABEL = 32;
-  int VAR = 33;
-  int LANGTAG = 34;
-  int A2Z = 35;
-  int A2ZN = 36;
-  int LPAREN = 37;
-  int RPAREN = 38;
-  int NIL = 39;
-  int LBRACE = 40;
-  int RBRACE = 41;
-  int LBRACKET = 42;
-  int RBRACKET = 43;
-  int ANON = 44;
-  int SEMICOLON = 45;
-  int COMMA = 46;
-  int DOT = 47;
-  int EQ = 48;
-  int ARROW = 49;
-  int DOLLAR = 50;
-  int QMARK = 51;
-  int TILDE = 52;
-  int COLON = 53;
-  int STAR = 54;
-  int SLASH = 55;
-  int RSLASH = 56;
-  int DATATYPE = 57;
-  int AT = 58;
-  int PN_CHARS_BASE = 59;
-  int PN_CHARS_U = 60;
-  int PN_CHARS = 61;
-  int PN_PREFIX = 62;
-  int PN_LOCAL = 63;
-  int VARNAME = 64;
-  int UNKNOWN = 65;
+  int TRUE = 16;
+  int FALSE = 17;
+  int INTEGER = 18;
+  int DECIMAL = 19;
+  int DOUBLE = 20;
+  int EXPONENT = 21;
+  int QUOTE_3D = 22;
+  int QUOTE_3S = 23;
+  int ECHAR = 24;
+  int STRING_LITERAL1 = 25;
+  int STRING_LITERAL2 = 26;
+  int STRING_LITERAL_LONG1 = 27;
+  int STRING_LITERAL_LONG2 = 28;
+  int DIGITS = 29;
+  int HEX = 30;
+  int IRIref = 31;
+  int PNAME_NS = 32;
+  int PNAME_LN = 33;
+  int BLANK_NODE_LABEL = 34;
+  int VAR = 35;
+  int LANGTAG = 36;
+  int A2Z = 37;
+  int A2ZN = 38;
+  int LPAREN = 39;
+  int RPAREN = 40;
+  int NIL = 41;
+  int LBRACE = 42;
+  int RBRACE = 43;
+  int LBRACKET = 44;
+  int RBRACKET = 45;
+  int ANON = 46;
+  int SEMICOLON = 47;
+  int COMMA = 48;
+  int DOT = 49;
+  int EQ = 50;
+  int ARROW = 51;
+  int DOLLAR = 52;
+  int QMARK = 53;
+  int TILDE = 54;
+  int COLON = 55;
+  int STAR = 56;
+  int SLASH = 57;
+  int RSLASH = 58;
+  int DATATYPE = 59;
+  int AT = 60;
+  int PN_CHARS_BASE = 61;
+  int PN_CHARS_U = 62;
+  int PN_CHARS = 63;
+  int PN_PREFIX = 64;
+  int PN_LOCAL = 65;
+  int VARNAME = 66;
+  int UNKNOWN = 67;
 
   int DEFAULT = 0;
 
@@ -89,6 +91,8 @@ public interface TurtleParserConstants {
     "\"a\"",
     "\"@prefix\"",
     "\"@base\"",
+    "\"true\"",
+    "\"false\"",
     "<INTEGER>",
     "<DECIMAL>",
     "<DOUBLE>",

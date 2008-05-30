@@ -18,6 +18,8 @@ public class TurtleParser extends ParserBase implements TurtleParserConstants {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case PREFIX:
       case BASE:
+      case TRUE:
+      case FALSE:
       case INTEGER:
       case DECIMAL:
       case DOUBLE:
@@ -52,6 +54,8 @@ public class TurtleParser extends ParserBase implements TurtleParserConstants {
     case BASE:
       Directive();
       break;
+    case TRUE:
+    case FALSE:
     case INTEGER:
     case DECIMAL:
     case DOUBLE:
@@ -108,6 +112,8 @@ public class TurtleParser extends ParserBase implements TurtleParserConstants {
   final public void TriplesSameSubject() throws ParseException {
                               Node s ;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+    case TRUE:
+    case FALSE:
     case INTEGER:
     case DECIMAL:
     case DOUBLE:
@@ -295,6 +301,8 @@ public class TurtleParser extends ParserBase implements TurtleParserConstants {
                  new Triple(cell, nRDFfirst,  n)) ;
       lastCell = cell ;
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case TRUE:
+      case FALSE:
       case INTEGER:
       case DECIMAL:
       case DOUBLE:
@@ -331,6 +339,8 @@ public class TurtleParser extends ParserBase implements TurtleParserConstants {
   final public Node GraphNode() throws ParseException {
                      Node n ;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+    case TRUE:
+    case FALSE:
     case INTEGER:
     case DECIMAL:
     case DOUBLE:
@@ -368,6 +378,8 @@ public class TurtleParser extends ParserBase implements TurtleParserConstants {
     case VAR:
       n = Var();
       break;
+    case TRUE:
+    case FALSE:
     case INTEGER:
     case DECIMAL:
     case DOUBLE:
@@ -412,6 +424,8 @@ public class TurtleParser extends ParserBase implements TurtleParserConstants {
       }
       jj_consume_token(DOT);
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case TRUE:
+      case FALSE:
       case INTEGER:
       case DECIMAL:
       case DOUBLE:
@@ -471,6 +485,11 @@ public class TurtleParser extends ParserBase implements TurtleParserConstants {
     case DOUBLE:
       // Cleaner sign handling in Turtle.
         n = NumericLiteral();
+                          {if (true) return n ;}
+      break;
+    case TRUE:
+    case FALSE:
+      n = BooleanLiteral();
                           {if (true) return n ;}
       break;
     case BLANK_NODE_LABEL:
@@ -566,12 +585,23 @@ public class TurtleParser extends ParserBase implements TurtleParserConstants {
   }
 
 // >>>>> SPARQL extract
-// Node BooleanLiteral() : {}
-// {
-//   <TRUE> { return XSD_TRUE ; }
-//  |
-//   <FALSE> { return XSD_FALSE ; }
-// }
+  final public Node BooleanLiteral() throws ParseException {
+    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+    case TRUE:
+      jj_consume_token(TRUE);
+            {if (true) return XSD_TRUE ;}
+      break;
+    case FALSE:
+      jj_consume_token(FALSE);
+             {if (true) return XSD_FALSE ;}
+      break;
+    default:
+      jj_la1[20] = jj_gen;
+      jj_consume_token(-1);
+      throw new ParseException();
+    }
+    throw new Error("Missing return statement in function");
+  }
 
 // <<<<< SPARQL extract
   final public String String() throws ParseException {
@@ -594,7 +624,7 @@ public class TurtleParser extends ParserBase implements TurtleParserConstants {
                                  lex = stripQuotes3(t.image) ;
       break;
     default:
-      jj_la1[20] = jj_gen;
+      jj_la1[21] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -616,7 +646,7 @@ public class TurtleParser extends ParserBase implements TurtleParserConstants {
                          {if (true) return iri ;}
       break;
     default:
-      jj_la1[21] = jj_gen;
+      jj_la1[22] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -635,7 +665,7 @@ public class TurtleParser extends ParserBase implements TurtleParserConstants {
       {if (true) return resolvePName(t.image, t.beginLine, t.beginColumn) ;}
       break;
     default:
-      jj_la1[22] = jj_gen;
+      jj_la1[23] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -654,7 +684,7 @@ public class TurtleParser extends ParserBase implements TurtleParserConstants {
            {if (true) return createBNode() ;}
       break;
     default:
-      jj_la1[23] = jj_gen;
+      jj_la1[24] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -673,7 +703,7 @@ public class TurtleParser extends ParserBase implements TurtleParserConstants {
   public Token token, jj_nt;
   private int jj_ntk;
   private int jj_gen;
-  final private int[] jj_la1 = new int[24];
+  final private int[] jj_la1 = new int[25];
   static private int[] jj_la1_0;
   static private int[] jj_la1_1;
   static private int[] jj_la1_2;
@@ -683,13 +713,13 @@ public class TurtleParser extends ParserBase implements TurtleParserConstants {
       jj_la1_2();
    }
    private static void jj_la1_0() {
-      jj_la1_0 = new int[] {0xe787c000,0xe787c000,0xc000,0xe7870000,0xe0002000,0x0,0xe0002000,0x0,0xe0002000,0x0,0xe7870000,0xe7870000,0xe7870000,0x0,0xe7870000,0xe7870000,0x70000,0x4000,0x4000,0x4000,0x7800000,0xe0000000,0xc0000000,0x0,};
+      jj_la1_0 = new int[] {0x9e1fc000,0x9e1fc000,0xc000,0x9e1f0000,0x80002000,0x0,0x80002000,0x0,0x80002000,0x0,0x9e1f0000,0x9e1f0000,0x9e1f0000,0x0,0x9e1f0000,0x9e1f0000,0x1c0000,0x4000,0x4000,0x4000,0x30000,0x1e000000,0x80000000,0x0,0x0,};
    }
    private static void jj_la1_1() {
-      jj_la1_1 = new int[] {0x15a3,0x15a3,0x0,0x15a3,0x20000,0x2000,0x20000,0x4000,0x20000,0x420,0x15a3,0x15a3,0x1183,0x8000,0x15a3,0x1081,0x0,0x2000004,0x2000004,0x4,0x0,0x0,0x0,0x1001,};
+      jj_la1_1 = new int[] {0x568f,0x568f,0x0,0x568f,0x80003,0x8000,0x80003,0x10000,0x80003,0x1080,0x568f,0x568f,0x460f,0x20000,0x568f,0x4207,0x0,0x8000010,0x8000010,0x10,0x0,0x0,0x3,0x3,0x4004,};
    }
    private static void jj_la1_2() {
-      jj_la1_2 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,};
+      jj_la1_2 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,};
    }
 
   public TurtleParser(java.io.InputStream stream) {
@@ -701,7 +731,7 @@ public class TurtleParser extends ParserBase implements TurtleParserConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 24; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 25; i++) jj_la1[i] = -1;
   }
 
   public void ReInit(java.io.InputStream stream) {
@@ -713,7 +743,7 @@ public class TurtleParser extends ParserBase implements TurtleParserConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 24; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 25; i++) jj_la1[i] = -1;
   }
 
   public TurtleParser(java.io.Reader stream) {
@@ -722,7 +752,7 @@ public class TurtleParser extends ParserBase implements TurtleParserConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 24; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 25; i++) jj_la1[i] = -1;
   }
 
   public void ReInit(java.io.Reader stream) {
@@ -731,7 +761,7 @@ public class TurtleParser extends ParserBase implements TurtleParserConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 24; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 25; i++) jj_la1[i] = -1;
   }
 
   public TurtleParser(TurtleParserTokenManager tm) {
@@ -739,7 +769,7 @@ public class TurtleParser extends ParserBase implements TurtleParserConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 24; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 25; i++) jj_la1[i] = -1;
   }
 
   public void ReInit(TurtleParserTokenManager tm) {
@@ -747,7 +777,7 @@ public class TurtleParser extends ParserBase implements TurtleParserConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 24; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 25; i++) jj_la1[i] = -1;
   }
 
   final private Token jj_consume_token(int kind) throws ParseException {
@@ -794,15 +824,15 @@ public class TurtleParser extends ParserBase implements TurtleParserConstants {
 
   public ParseException generateParseException() {
     jj_expentries.removeAllElements();
-    boolean[] la1tokens = new boolean[66];
-    for (int i = 0; i < 66; i++) {
+    boolean[] la1tokens = new boolean[68];
+    for (int i = 0; i < 68; i++) {
       la1tokens[i] = false;
     }
     if (jj_kind >= 0) {
       la1tokens[jj_kind] = true;
       jj_kind = -1;
     }
-    for (int i = 0; i < 24; i++) {
+    for (int i = 0; i < 25; i++) {
       if (jj_la1[i] == jj_gen) {
         for (int j = 0; j < 32; j++) {
           if ((jj_la1_0[i] & (1<<j)) != 0) {
@@ -817,7 +847,7 @@ public class TurtleParser extends ParserBase implements TurtleParserConstants {
         }
       }
     }
-    for (int i = 0; i < 66; i++) {
+    for (int i = 0; i < 68; i++) {
       if (la1tokens[i]) {
         jj_expentry = new int[1];
         jj_expentry[0] = i;

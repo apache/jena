@@ -231,8 +231,8 @@ Node GraphTerm() : { Node n ; String iri ; }
 |
   // Cleaner sign handling in Turtle.
   n = NumericLiteral()  { return n ; }
-// |
-//   n = BooleanLiteral()  { return n ; }
+|
+  n = BooleanLiteral()  { return n ; }
 |
   n = BlankNode()       { return n ; }   
 |
@@ -270,13 +270,12 @@ String Langtag() : { Token t ; }
   { String lang = stripChars(t.image, 1) ; return lang ; }
 }
 // >>>>> SPARQL extract
-// Node BooleanLiteral() : {}
-// {
-//   <TRUE> { return XSD_TRUE ; }
-//  |
-//   <FALSE> { return XSD_FALSE ; }
-// }
-
+Node BooleanLiteral() : {}
+{
+   <TRUE> { return XSD_TRUE ; }
+  |
+   <FALSE> { return XSD_FALSE ; }
+}
 // <<<<< SPARQL extract
 
 String String() : { Token t ;  String lex ; }
@@ -346,9 +345,8 @@ TOKEN [IGNORE_CASE] :
 // Prologue
   < PREFIX:      "@prefix" >
 | < BASE:        "@base" >
-
-//| < TRUE:        "true" >
-//| < FALSE:       "false" >
+| < TRUE:        "true" >
+| < FALSE:       "false" >
 }
 
 // -------------------------------------------------
