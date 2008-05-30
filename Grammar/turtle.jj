@@ -338,22 +338,24 @@ SPECIAL_TOKEN :
 // -------------------------------------------------
 // Keyworks : directives before LANGTAG
 
-TOKEN : { <KW_A:  "a" > } // Before HEX rule!
+// Before any HEX rule!
+TOKEN : 
+{ 
+  <KW_A:  "a" > 
+// Prologue
+| < PREFIX:      "@prefix" >
+| < BASE:        "@base" >
+}
+
 
 TOKEN [IGNORE_CASE] :
 {
-// Prologue
-  < PREFIX:      "@prefix" >
-| < BASE:        "@base" >
-| < TRUE:        "true" >
+  < TRUE:        "true" >
 | < FALSE:       "false" >
-}
 
 // -------------------------------------------------
 
-TOKEN :
-{
-   < INTEGER: (["-","+"])? <DIGITS> >
+|   < INTEGER: (["-","+"])? <DIGITS> >
 |
    < DECIMAL: (["-","+"])? 
               ((<DIGITS>)+ "." (<DIGITS>)* | "." (<DIGITS>)+)
@@ -367,25 +369,11 @@ TOKEN :
         | (["0"-"9"])+ <EXPONENT>
       )
       >
-   // Optional exponent.
-// |  < DOUBLE:
-//       //(["+","-"])?
-//       (["0"-"9"])+ "." (["0"-"9"])* (<EXPONENT>)?
-//       | "." (["0"-"9"])+ (<EXPONENT>)?
-//       | (["0"-"9"])+ <EXPONENT>
-//       >
 | < #EXPONENT: ["e","E"] (["+","-"])? (["0"-"9"])+ >
 | < #QUOTE_3D: "\"\"\"">
 | < #QUOTE_3S: "'''">
-
-// | <UCHAR: ("u" <HEX> <HEX> <HEX> <HEX> )
-//             | ("U" <HEX> <HEX> <HEX> <HEX> <HEX> <HEX> <HEX> <HEX>)>
-
-//   <ECHAR: ("t"|"b"|"n"|"r"|"f"|"\\"|"\""|"'")>
-// 
-// |
-//    <XCHAR: "\\" ( <ECHAR> | <UCHAR> ) >
-
+// "u" done by javacc input stream.  
+// "U" escapes not supported yet for Java 1.4
 | <ECHAR: "\\" ("t"|"b"|"n"|"r"|"f"|"\\"|"\""|"'")>
 
 | < STRING_LITERAL1: 
@@ -406,7 +394,7 @@ TOKEN :
       ( ~["\"","\\"] | <ECHAR> | ("\"" ~["\""]) | ("\"\"" ~["\""]))*
      <QUOTE_3D> >
 | < DIGITS: (["0"-"9"])+>
-| <HEX: ["0"-"9"] | ["A"-"F"] | ["a"-"f"]>
+// | <HEX: ["0"-"9"] | ["A"-"F"] | ["a"-"f"]>
 }
 
 TOKEN:

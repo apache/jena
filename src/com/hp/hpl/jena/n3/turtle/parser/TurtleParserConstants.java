@@ -33,44 +33,43 @@ public interface TurtleParserConstants {
   int STRING_LITERAL_LONG1 = 27;
   int STRING_LITERAL_LONG2 = 28;
   int DIGITS = 29;
-  int HEX = 30;
-  int IRIref = 31;
-  int PNAME_NS = 32;
-  int PNAME_LN = 33;
-  int BLANK_NODE_LABEL = 34;
-  int VAR = 35;
-  int LANGTAG = 36;
-  int A2Z = 37;
-  int A2ZN = 38;
-  int LPAREN = 39;
-  int RPAREN = 40;
-  int NIL = 41;
-  int LBRACE = 42;
-  int RBRACE = 43;
-  int LBRACKET = 44;
-  int RBRACKET = 45;
-  int ANON = 46;
-  int SEMICOLON = 47;
-  int COMMA = 48;
-  int DOT = 49;
-  int EQ = 50;
-  int ARROW = 51;
-  int DOLLAR = 52;
-  int QMARK = 53;
-  int TILDE = 54;
-  int COLON = 55;
-  int STAR = 56;
-  int SLASH = 57;
-  int RSLASH = 58;
-  int DATATYPE = 59;
-  int AT = 60;
-  int PN_CHARS_BASE = 61;
-  int PN_CHARS_U = 62;
-  int PN_CHARS = 63;
-  int PN_PREFIX = 64;
-  int PN_LOCAL = 65;
-  int VARNAME = 66;
-  int UNKNOWN = 67;
+  int IRIref = 30;
+  int PNAME_NS = 31;
+  int PNAME_LN = 32;
+  int BLANK_NODE_LABEL = 33;
+  int VAR = 34;
+  int LANGTAG = 35;
+  int A2Z = 36;
+  int A2ZN = 37;
+  int LPAREN = 38;
+  int RPAREN = 39;
+  int NIL = 40;
+  int LBRACE = 41;
+  int RBRACE = 42;
+  int LBRACKET = 43;
+  int RBRACKET = 44;
+  int ANON = 45;
+  int SEMICOLON = 46;
+  int COMMA = 47;
+  int DOT = 48;
+  int EQ = 49;
+  int ARROW = 50;
+  int DOLLAR = 51;
+  int QMARK = 52;
+  int TILDE = 53;
+  int COLON = 54;
+  int STAR = 55;
+  int SLASH = 56;
+  int RSLASH = 57;
+  int DATATYPE = 58;
+  int AT = 59;
+  int PN_CHARS_BASE = 60;
+  int PN_CHARS_U = 61;
+  int PN_CHARS = 62;
+  int PN_PREFIX = 63;
+  int PN_LOCAL = 64;
+  int VARNAME = 65;
+  int UNKNOWN = 66;
 
   int DEFAULT = 0;
 
@@ -105,7 +104,6 @@ public interface TurtleParserConstants {
     "<STRING_LITERAL_LONG1>",
     "<STRING_LITERAL_LONG2>",
     "<DIGITS>",
-    "<HEX>",
     "<IRIref>",
     "<PNAME_NS>",
     "<PNAME_LN>",
