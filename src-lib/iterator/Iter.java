@@ -226,14 +226,6 @@ public class Iter<T> implements Iterable<T>, Iterator<T>
     @SuppressWarnings({"unchecked", "cast"})
     public static <T> Iterator<T> convert(Iterator<?> iterator) { return (Iterator<T>)iterator ; }
 
-//    // ---- Closability
-//    
-//    public static <T> void close(Iterator<T> iter)
-//    {
-//        if ( iter instanceof CloseableIterator )
-//            ((CloseableIterator)iter).close() ; 
-//    }
-
     // ---- String related helpers
     
     public static <T> String asString(Iterable<T> stream)
@@ -257,9 +249,7 @@ public class Iter<T> implements Iterable<T>, Iterator<T>
     public static <T> void close(Iterator<T> iter)
     {
         if ( iter instanceof ClosableIterator )
-        {
             ((ClosableIterator)iter).close() ;
-        }
     }
 
     public static <T> Iterator<T> debug(Iterator<T> stream)

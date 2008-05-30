@@ -44,9 +44,12 @@ public class BlockMgrMem extends BlockMgrBase
     @Override
     public int allocateId()
     {
+        int idx = -1 ;
         if ( !freeBlocks.isEmpty() )
         {
-            Integer idx = freeBlocks.removeFirst() ;
+            idx = freeBlocks.removeFirst() ;
+            // Set this slot - remove a FreeBlock.
+            blocks.set(idx, null) ;
             return idx ;
         }
             
@@ -64,9 +67,9 @@ public class BlockMgrMem extends BlockMgrBase
         check(id) ;
         ByteBuffer bb = blocks.get(id) ;
         if ( bb == null )
-            throw new RuntimeException("Null block: "+id) ;
+            throw new BlockException("Null block: "+id) ;
         if ( bb == FreeBlock )
-            throw new RuntimeException("Null block: "+id) ;
+            throw new BlockException("Null block: "+id) ;
 
         if ( log.isDebugEnabled() ) 
             log.debug(format("get(%d) : %s", id, bb)) ;
@@ -82,7 +85,7 @@ public class BlockMgrMem extends BlockMgrBase
         check(id) ;
         ByteBuffer bb = blocks.get(id) ;
         if ( bb == null )
-            throw new RuntimeException("Null block: "+id) ;
+            throw new BlockException("Null block: "+id) ;
         if ( SafeMode )
             bb = replicate(bb) ;
         return bb ;
@@ -98,7 +101,7 @@ public class BlockMgrMem extends BlockMgrBase
 
         ByteBuffer bb = blocks.get(id) ; 
         if ( bb == null )
-            throw new RuntimeException("Null block: "+id) ;
+            throw new BlockException("Null block: "+id) ;
         
         return bb != FreeBlock ;
     }
