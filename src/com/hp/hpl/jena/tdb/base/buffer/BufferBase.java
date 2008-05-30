@@ -200,7 +200,7 @@ abstract class BufferBase
 //    }
 
     /** Move the element from the high end of this to the low end of other */
-    public void shiftHighInto(BufferBase other)
+    public void shiftRight(BufferBase other)
     {
         if ( other.numSlot >= other.maxSlot )
             throw new BufferException("No space in destination buffer") ;
@@ -216,19 +216,19 @@ abstract class BufferBase
         removeTop() ;
     }
 
-    /** Move the element from the low end of this to the high end of other */
-    public void shiftLowInto(BufferBase other)
+    /** Move the element from the low end of other to the high end of this */
+    public void shiftLeft(BufferBase other)
     {
-        if ( other.numSlot >= other.maxSlot )
+        if ( numSlot >= maxSlot )
             throw new BufferException("No space in destination buffer") ;
-        if ( numSlot <= 0 )
+        if ( other.numSlot <= 0 )
             throw new BufferException("Empty buffer") ;
 
         // Copy low to above high slot.
-        bbcopy(bb, 0, other.bb, other.numSlot, 1, slotLen) ;
+        bbcopy(other.bb, 0, bb, numSlot, 1, slotLen) ;
         // Correct length.
-        other.numSlot ++ ;
-        shiftDown(0) ;
+        numSlot ++ ;
+        other.shiftDown(0) ;
     }
 
     static boolean allowArray  = false ;

@@ -187,7 +187,7 @@ public class TestPtrBuffer extends BaseTest
         PtrBuffer pb2 = make(0,5) ;
         contains(pb2) ;
         
-        pb1.shiftHighInto(pb2) ;
+        pb1.shiftRight(pb2) ;
         contains(pb1, 2, 4, 6, 8) ;
         contains(pb2, 10) ;
     }
@@ -199,7 +199,7 @@ public class TestPtrBuffer extends BaseTest
         PtrBuffer pb2 = make(0,5) ;
         contains(pb2) ;
         
-        pb1.shiftHighInto(pb2) ;
+        pb1.shiftRight(pb2) ;
         contains(pb1, 2, 4) ;
         contains(pb2, 6) ;
     }
@@ -211,45 +211,45 @@ public class TestPtrBuffer extends BaseTest
         PtrBuffer pb2 = make(2,5) ;
         contains(pb2, 2, 4) ;
         
-        pb1.shiftHighInto(pb2) ;
+        pb1.shiftRight(pb2) ;
         contains(pb1, 2, 4) ;
         contains(pb2, 6, 2, 4) ;
     }
     
     @Test public void ptrbuffer24()
     {
-        PtrBuffer pb1 = make(5,5) ;
-        contains(pb1, 2, 4, 6, 8, 10) ;
-        PtrBuffer pb2 = make(0,5) ;
-        contains(pb2) ;
+        PtrBuffer pb1 = make(0,5) ;
+        contains(pb1) ;
+        PtrBuffer pb2 = make(5,5) ;
+        contains(pb2, 2, 4, 6, 8, 10) ;
         
-        pb1.shiftLowInto(pb2) ;
-        contains(pb1, 4, 6, 8, 10) ;
-        contains(pb2, 2) ;
+        pb1.shiftLeft(pb2) ;
+        contains(pb1, 2) ;
+        contains(pb2, 4, 6, 8, 10) ;
     }
     
     @Test public void ptrbuffer25()
     {
-        PtrBuffer pb1 = make(3,5) ;
-        contains(pb1, 2, 4, 6) ;
-        PtrBuffer pb2 = make(0,5) ;
-        contains(pb2) ;
+        PtrBuffer pb1 = make(0,5) ;
+        contains(pb1) ;
+        PtrBuffer pb2 = make(3,5) ;
+        contains(pb2, 2, 4, 6) ;
         
-        pb1.shiftLowInto(pb2) ;
-        contains(pb1, 4, 6) ;
-        contains(pb2, 2) ;
+        pb1.shiftLeft(pb2) ;
+        contains(pb1, 2) ;
+        contains(pb2, 4, 6) ;
     }
     
     @Test public void ptrbuffer26()
     {
-        PtrBuffer pb1 = make(3,5) ;
-        contains(pb1, 2, 4, 6) ;
-        PtrBuffer pb2 = make(2,5) ;
-        contains(pb2, 2, 4) ;
+        PtrBuffer pb1 = make(2,5) ;
+        contains(pb1, 2, 4) ;
+        PtrBuffer pb2 = make(3,5) ;
+        contains(pb2, 2, 4, 6) ;
         
-        pb1.shiftLowInto(pb2) ;
-        contains(pb1, 4, 6) ;
-        contains(pb2, 2, 4, 2) ;
+        pb1.shiftLeft(pb2) ;
+        contains(pb1, 2, 4, 2) ;
+        contains(pb2, 4, 6) ;
     }
     
     @Test public void ptrbuffer27()
