@@ -20,11 +20,11 @@ import com.hp.hpl.jena.tdb.index.RangeIndex;
 
 public class BTreeTestBase extends BaseTest
 {
-    static class BTreeMaker implements RangeIndexMaker
+    public static class BTreeMaker implements RangeIndexMaker
     {
         private int order ;
     
-        BTreeMaker(int order) { this.order = order ; }
+        public BTreeMaker(int order) { this.order = order ; }
         
         @Override
         public RangeIndex make()

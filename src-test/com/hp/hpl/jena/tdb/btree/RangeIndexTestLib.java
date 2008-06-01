@@ -28,7 +28,7 @@ import test.RandomExecution;
 import com.hp.hpl.jena.tdb.base.record.Record;
 import com.hp.hpl.jena.tdb.index.RangeIndex;
 
-class RangeIndexTestLib
+public class RangeIndexTestLib
 {
 
     // ---------- Utilities

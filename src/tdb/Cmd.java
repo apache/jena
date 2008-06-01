@@ -1,20 +1,30 @@
 /*
- * (c) Copyright 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007, 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.btree;
+package tdb;
 
-import com.hp.hpl.jena.tdb.index.RangeIndex;
+import java.io.File;
 
-public interface RangeIndexMaker
+public class Cmd
 {
-    RangeIndex make() ;
-    String getLabel() ;
+    public static void setLog4j()
+    {
+        if ( System.getProperty("log4j.configuration") == null )
+        {
+            String fn = "log4j.properties" ;
+            File f = new File(fn) ;
+            if ( f.exists() ) 
+                System.setProperty("log4j.configuration", "file:"+fn) ;
+        }
+    }
+    
 }
+
 /*
- * (c) Copyright 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007, 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
