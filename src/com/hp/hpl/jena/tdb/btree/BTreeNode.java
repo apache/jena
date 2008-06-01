@@ -92,9 +92,7 @@ public class BTreeNode
 
     private BTreeNode create(int parent, boolean asLeaf)
     {
-        // XXX Leaf/Non-leaf.  Is this a leaf creation or not?
         BTreeNode n = pageMgr.create(parent, asLeaf) ;
-        //n.isLeaf = asLeaf ;
         return n ;
     }
     
@@ -229,7 +227,7 @@ public class BTreeNode
 
     /** size : this is an explicit test which walks the tree.  The BTree object keeps a cache count  */
     
-    public long size()
+    public long sizeByCounting()
     {
         long x = count ;
         if ( ! isLeaf )
@@ -238,7 +236,7 @@ public class BTreeNode
             {
                 BTreeNode n = pageMgr.get(ptrs.get(i), BTreeParams.NoParent) ;
                 //n.internalCheckNode() ;
-                x = x + n.size() ;
+                x = x + n.sizeByCounting() ;
             }
         }
         return x ;
@@ -485,7 +483,6 @@ public class BTreeNode
         }
 
         // New blocks.
-        // XXX Leaf/Non-leaf
         BTreeNode left = create(id, isLeaf) ;
         BTreeNode right = create(id, isLeaf) ;
         int maxRecords = maxRecords() ;
@@ -496,7 +493,6 @@ public class BTreeNode
             ptrs.copy(0, left.ptrs, 0, bTreeParams.SplitIndex+1) ;
         left.count = bTreeParams.SplitIndex ;
 
-        // XXX Leaf/NonLeaf
         // New right
         records.copy(bTreeParams.SplitIndex+1, right.records, 0, maxRecords()-(bTreeParams.SplitIndex+1)) ;
         if ( ! isLeaf )
@@ -586,7 +582,6 @@ public class BTreeNode
         
         x = -(x+1) ;    // First record slot above is highest child below.
         BTreeNode n = pageMgr.get(ptrs.get(x), id) ;
-        // XXX Leaf/Non-leaf
         if ( n.count == bTreeParams.MinRec )
         {
             n = rebalance(n, x) ;   // Flushes nodes
@@ -670,7 +665,6 @@ public class BTreeNode
         if ( idx > 0 )
             left = pageMgr.get(ptrs.get(idx-1), id) ;
         
-        // XXX Leaf/Non-leaf
         if ( left != null && left.count > bTreeParams.MinRec )
         {
             if ( logging() )
@@ -938,7 +932,6 @@ public class BTreeNode
         }
         
         internalCheckNode() ;
-        // XXX Leaf/Non-leaf
         BTreeNode n = create(id, left.isLeaf) ;      // Parent is "this"
         
         // Copy in left

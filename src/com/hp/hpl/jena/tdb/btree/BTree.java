@@ -239,9 +239,9 @@ public class BTree implements Iterable<Record>, RangeIndex
             pageMgr.getBlockMgr().close()   ;
     }
     
-    public void closeIterator(Iterator<Record> iter)
-    {
-    }
+    @Override
+    public long count()
+    { return -1 ; }
 
     public long sessionTripleCount()
     {
@@ -250,7 +250,7 @@ public class BTree implements Iterable<Record>, RangeIndex
 
     public long sizeByCounting()
     {
-        return root.size() ;
+        return root.sizeByCounting() ;
     }
 
     public void check()

@@ -39,7 +39,19 @@ public interface Index
      * (e.g. transactional index)  */
     public boolean isEmpty() ;
     
-//    /** Create an index of the same implementation */
+    /** Perform checks on this index */
+    public void check() ;
+    
+    /** Return size if known else return -1 : does not count the peristent storage */
+    public long count() ;
+    
+    /** [testing] Count the nunber of triples in the index (+1 for succesful insertion, -1 for successful deletion.
+     * Return Integer.MIN_VALUE for unknown.
+     */
+    
+    public long sessionTripleCount() ;
+
+    //    /** Create an index of the same implementation */
 //    public RangeIndex createEmptyCopy() ;
 }
 

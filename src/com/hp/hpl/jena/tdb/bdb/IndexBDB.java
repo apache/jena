@@ -117,6 +117,22 @@ public class IndexBDB implements Index
     public void sync(boolean force)
     {}
     
+    @Override
+    public void check()
+    {}
+
+    @Override
+    public long count()
+    {
+        return -1 ;
+    }
+
+    @Override
+    public long sessionTripleCount()
+    {
+        return Integer.MIN_VALUE ;
+    }
+
     // Don't use in a .get() or .getNext()
     private static DatabaseEntry empty = new DatabaseEntry(new byte[0]) ;
     protected static DatabaseEntry genBlank() { return new DatabaseEntry() ; }

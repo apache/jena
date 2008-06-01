@@ -6,21 +6,23 @@
 
 package com.hp.hpl.jena.tdb.btree;
 
-import static com.hp.hpl.jena.tdb.btree.BTreeTestBase.r;
-import static com.hp.hpl.jena.tdb.btree.BTreeTestBase.toIntList;
+import static com.hp.hpl.jena.tdb.base.record.RecordTestLib.r;
+import static com.hp.hpl.jena.tdb.base.record.RecordTestLib.toIntList;
+import static com.hp.hpl.jena.tdb.btree.BTreeTestBase.buildBTree;
+import static com.hp.hpl.jena.tdb.btree.BTreeTestBase.randTest;
+import static com.hp.hpl.jena.tdb.btree.BTreeTestBase.testDelete;
+import static com.hp.hpl.jena.tdb.btree.BTreeTestBase.testInsert;
 
 import java.util.List;
-
-import com.hp.hpl.jena.tdb.base.BaseConfig;
-import com.hp.hpl.jena.tdb.base.record.R;
-import com.hp.hpl.jena.tdb.base.record.Record;
-import com.hp.hpl.jena.tdb.btree.BTree;
-import com.hp.hpl.jena.tdb.btree.BTreeParams;
 
 import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import test.BaseTest;
+
+import com.hp.hpl.jena.tdb.base.BaseConfig;
+import com.hp.hpl.jena.tdb.base.record.RecordTestLib;
+import com.hp.hpl.jena.tdb.base.record.Record;
 
 public class TestBTree extends BaseTest 
 {
@@ -47,7 +49,7 @@ public class TestBTree extends BaseTest
     {
         // Just a root.
         int[] keys = {0, 1, 2};
-        bt = BTreeTestBase.testInsert(2, keys) ;
+        bt = testInsert(2, keys) ;
         assertEquals(0, r(bt.minKey())) ;
         assertEquals(2, r(bt.maxKey())) ;
     }
@@ -56,7 +58,7 @@ public class TestBTree extends BaseTest
     {
         // Empty tree
         int[] keys = {};
-        bt = BTreeTestBase.testInsert(2, keys) ;
+        bt = testInsert(2, keys) ;
         assertNull(bt.minKey()) ;
         assertNull(bt.maxKey()) ;
     }
@@ -64,7 +66,7 @@ public class TestBTree extends BaseTest
     @Test public void btree_ins_2_01() 
     {
         int[] keys = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
-        bt = BTreeTestBase.testInsert(2, keys) ;
+        bt = testInsert(2, keys) ;
         assertEquals(0, r(bt.minKey())) ;
         assertEquals(9, r(bt.maxKey())) ;
     }
@@ -72,7 +74,7 @@ public class TestBTree extends BaseTest
     @Test public void btree_ins_2_02() 
     {
         int[] keys = {9,8,7,6,5,4,3,2,1,0};
-        bt = BTreeTestBase.testInsert(2, keys) ;
+        bt = testInsert(2, keys) ;
         assertEquals(0, r(bt.minKey())) ;
         assertEquals(9, r(bt.maxKey())) ;
     }
@@ -80,7 +82,7 @@ public class TestBTree extends BaseTest
     @Test public void btree_ins_2_03()
     {
         int[] keys = {0,2,4,6,8,1,3,5,7,9};
-        bt = BTreeTestBase.testInsert(2, keys) ;
+        bt = testInsert(2, keys) ;
         assertEquals(0, r(bt.minKey())) ;
         assertEquals(9, r(bt.maxKey())) ;
     }
@@ -88,7 +90,7 @@ public class TestBTree extends BaseTest
     @Test public void btree_ins_2_04()
     {
         int[] keys = {0,9,2,7,4,5,6,3,8,1};
-        bt = BTreeTestBase.testInsert(2, keys) ;
+        bt = testInsert(2, keys) ;
         assertEquals(0, r(bt.minKey())) ;
         assertEquals(9, r(bt.maxKey())) ;
     }
@@ -96,7 +98,7 @@ public class TestBTree extends BaseTest
     @Test public void btree_ins_2_05()
     {
         int[] keys = {0,18,4,14,8,10,12,6,16,2};
-        bt = BTreeTestBase.testInsert(2, keys) ;
+        bt = testInsert(2, keys) ;
         assertFalse(bt.contains(r(1))) ;
         assertFalse(bt.contains(r(999))) ;
         assertFalse(bt.contains(r(-9))) ;
@@ -109,112 +111,112 @@ public class TestBTree extends BaseTest
     {
         int[] keys1 = {0, 1, 2};
         int[] keys2 = {0, 1, 2};
-        BTreeTestBase.testDelete(2, keys1, keys2) ;
+        testDelete(2, keys1, keys2) ;
     }
 
     @Test public void btree_del_0_2()
     {
         int[] keys1 = {0, 1, 2};
         int[] keys2 = {2, 1, 0};
-        BTreeTestBase.testDelete(2, keys1, keys2) ;
+        testDelete(2, keys1, keys2) ;
     }
 
     @Test public void btree_del_0_3()
     {
         int[] keys1 = {0, 1, 2};
         int[] keys2 = {1, 0, 2};
-        BTreeTestBase.testDelete(2, keys1, keys2) ;
+        testDelete(2, keys1, keys2) ;
     }
 
     @Test public void btree_del_2_01()
     {
         int[] keys1 = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9} ;
         int[] keys2 = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9} ;
-        BTreeTestBase.testDelete(2,  keys1, keys2) ;
+        testDelete(2,  keys1, keys2) ;
     }
     
     @Test public void btree_del_2_02()
     {
         int[] keys1 = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9} ;
         int[] keys2 = {9, 8, 7, 6, 5, 4, 3, 2, 1, 0} ;
-        BTreeTestBase.testDelete(2,  keys1, keys2) ;
+        testDelete(2,  keys1, keys2) ;
     }
     
     @Test public void btree_del_2_03()
     {
         int[] keys1 = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9} ;
         int[] keys2 = {0, 2, 4, 6, 8, 1, 3, 5, 7, 9} ;
-        BTreeTestBase.testDelete(2,  keys1, keys2) ;
+        testDelete(2,  keys1, keys2) ;
     }
     
     @Test public void btree_del_2_04()
     {
         int[] keys1 = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9} ;
         int[] keys2 = {0, 9, 2, 7, 4, 5, 6, 3, 8, 1} ;
-        BTreeTestBase.testDelete(2,  keys1, keys2) ;
+        testDelete(2,  keys1, keys2) ;
     }
     
     @Test public void btree_del_2_05()
     {
         int[] keys1 = {9, 8, 7, 6, 5, 4, 3, 2, 1, 0} ;
         int[] keys2 = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9} ;
-        BTreeTestBase.testDelete(2,  keys1, keys2) ;
+        testDelete(2,  keys1, keys2) ;
     }
     
     @Test public void btree_del_2_06()
     {
         int[] keys1 = {9, 8, 7, 6, 5, 4, 3, 2, 1, 0} ;
         int[] keys2 = {9, 8, 7, 6, 5, 4, 3, 2, 1, 0} ;
-        BTreeTestBase.testDelete(2,  keys1, keys2) ;
+        testDelete(2,  keys1, keys2) ;
     }
     
     @Test public void btree_del_2_07()
     {
         int[] keys1 = {9, 8, 7, 6, 5, 4, 3, 2, 1, 0} ;
         int[] keys2 = {0, 2, 4, 6, 8, 1, 3, 5, 7, 9} ;
-        BTreeTestBase.testDelete(2,  keys1, keys2) ;
+        testDelete(2,  keys1, keys2) ;
     }
     
     @Test public void btree_del_2_08()
     {
         int[] keys1 = {9, 8, 7, 6, 5, 4, 3, 2, 1, 0} ;
         int[] keys2 = {0, 9, 2, 7, 4, 5, 6, 3, 8, 1} ;
-        BTreeTestBase.testDelete(2, keys1, keys2) ;
+        testDelete(2, keys1, keys2) ;
     }
     
     @Test public void btree_del_2_09()
     {
         int[] keys1 = {0, 2, 4, 6, 8, 1, 3, 5, 7, 9} ;
         int[] keys2 = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9} ;
-        BTreeTestBase.testDelete(2,  keys1, keys2) ;
+        testDelete(2,  keys1, keys2) ;
     }
     
     @Test public void btree_del_2_10()
     {
         int[] keys1 = {0, 2, 4, 6, 8, 1, 3, 5, 7, 9} ;
         int[] keys2 = {9, 8, 7, 6, 5, 4, 3, 2, 1, 0} ;
-        BTreeTestBase.testDelete(2,  keys1, keys2) ;
+        testDelete(2,  keys1, keys2) ;
     }
     
     @Test public void btree_del_2_11()
     {
         int[] keys1 = {0, 2, 4, 6, 8, 1, 3, 5, 7, 9} ;
         int[] keys2 = {0, 2, 4, 6, 8, 1, 3, 5, 7, 9} ;
-        BTreeTestBase.testDelete(2,  keys1, keys2) ;
+        testDelete(2,  keys1, keys2) ;
     }
     
     @Test public void btree_del_2_12()
     {
         int[] keys1 = {0, 2, 4, 6, 8, 1, 3, 5, 7, 9} ;
         int[] keys2 = {0, 9, 2, 7, 4, 5, 6, 3, 8, 1} ;
-        BTreeTestBase.testDelete(2,  keys1, keys2) ;
+        testDelete(2,  keys1, keys2) ;
     }
     
     @Test public void btree_iter_2_01()
     {
         int[] keys = {0, 2, 4, 6, 8, 1, 3, 5, 7, 9} ;
-        bt = BTreeTestBase.buildBTree(2, keys) ;
-        List<Integer> x = R.toIntList(bt.iterator(r(4), r(6))) ;
+        bt = buildBTree(2, keys) ;
+        List<Integer> x = RecordTestLib.toIntList(bt.iterator(r(4), r(6))) ;
         List<Integer> expected = toIntList(4,5) ;
         assertEquals(expected, x) ;
     }
@@ -222,8 +224,8 @@ public class TestBTree extends BaseTest
     @Test public void btree_iter_2_02()
     {
         int[] keys = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9} ;
-        bt = BTreeTestBase.buildBTree(2, keys) ;
-        List<Integer> x = R.toIntList(bt.iterator(r(4), r(7))) ;
+        bt = buildBTree(2, keys) ;
+        List<Integer> x = RecordTestLib.toIntList(bt.iterator(r(4), r(7))) ;
         List<Integer> expected = toIntList(4,5,6) ;
         assertEquals(expected, x) ;
     }
@@ -231,8 +233,8 @@ public class TestBTree extends BaseTest
     @Test public void btree_iter_2_03()
     {
         int[] keys = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9} ;
-        bt = BTreeTestBase.buildBTree(2, keys) ;
-        List<Integer> x = R.toIntList(bt.iterator(r(4), null)) ;
+        bt = buildBTree(2, keys) ;
+        List<Integer> x = RecordTestLib.toIntList(bt.iterator(r(4), null)) ;
         List<Integer> expected = toIntList(4,5,6,7,8,9) ;
         assertEquals(expected, x) ;
     }
@@ -240,8 +242,8 @@ public class TestBTree extends BaseTest
     @Test public void btree_iter_2_04()
     {
         int[] keys = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9} ;
-        bt = BTreeTestBase.buildBTree(2, keys) ;
-        List<Integer> x = R.toIntList(bt.iterator(null, null)) ;
+        bt = buildBTree(2, keys) ;
+        List<Integer> x = RecordTestLib.toIntList(bt.iterator(null, null)) ;
         List<Integer> expected = toIntList(keys) ;
         assertEquals(expected, x) ;
     }
@@ -249,8 +251,8 @@ public class TestBTree extends BaseTest
     @Test public void btree_iter_2_05()
     {
         int[] keys = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9} ;
-        bt = BTreeTestBase.buildBTree(2, keys) ;
-        List<Integer> x = R.toIntList(bt.iterator(null, r(4))) ;
+        bt = buildBTree(2, keys) ;
+        List<Integer> x = RecordTestLib.toIntList(bt.iterator(null, r(4))) ;
         List<Integer> expected = toIntList(0,1,2,3) ;
         assertEquals(expected, x) ;
     }
@@ -258,8 +260,8 @@ public class TestBTree extends BaseTest
     @Test public void btree_iter_2_07()
     {
         int[] keys = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9} ;
-        bt = BTreeTestBase.buildBTree(2, keys) ;
-        List<Integer> x = R.toIntList(bt.iterator(null, r(99))) ;
+        bt = buildBTree(2, keys) ;
+        List<Integer> x = RecordTestLib.toIntList(bt.iterator(null, r(99))) ;
         List<Integer> expected = toIntList(keys) ;
         assertEquals(expected, x) ;
     }
@@ -267,8 +269,8 @@ public class TestBTree extends BaseTest
     @Test public void btree_iter_2_08()
     {
         int[] keys = {1, 2, 3, 4, 5, 6, 7, 8, 9} ;
-        bt = BTreeTestBase.buildBTree(2, keys) ;
-        List<Integer> x = R.toIntList(bt.iterator(r(0), r(99))) ;
+        bt = buildBTree(2, keys) ;
+        List<Integer> x = RecordTestLib.toIntList(bt.iterator(r(0), r(99))) ;
         List<Integer> expected = toIntList(keys) ;
         assertEquals(expected, x) ;
     }
@@ -276,8 +278,8 @@ public class TestBTree extends BaseTest
     @Test public void btree_iter_2_09()
     {
         int[] keys = {1, 2, 3, 4, /*5, 6,*/ 7, 8, 9, 10 ,11} ;
-        bt = BTreeTestBase.buildBTree(2, keys) ;
-        List<Integer> x = R.toIntList(bt.iterator(r(5), r(7))) ;
+        bt = buildBTree(2, keys) ;
+        List<Integer> x = RecordTestLib.toIntList(bt.iterator(r(5), r(7))) ;
         List<Integer> expected = toIntList() ;
         assertEquals(expected, x) ;
     }
@@ -286,8 +288,8 @@ public class TestBTree extends BaseTest
     @Test public void btree_iter_0_01()
     {
         int[] keys = {1, 2, 3, 4, 5} ;
-        bt = BTreeTestBase.buildBTree(5, keys) ;
-        List<Integer> x = R.toIntList(bt.iterator(r(2), r(4))) ;
+        bt = buildBTree(5, keys) ;
+        List<Integer> x = RecordTestLib.toIntList(bt.iterator(r(2), r(4))) ;
         List<Integer> expected = toIntList(2,3) ;
         assertEquals(expected, x) ;
     }
@@ -295,8 +297,8 @@ public class TestBTree extends BaseTest
     @Test public void btree_iter_0_02()
     {
         int[] keys = {1, 2, 3, 4, 5} ;
-        bt = BTreeTestBase.buildBTree(5, keys) ;
-        List<Integer> x = R.toIntList(bt.iterator(null, null)) ;
+        bt = buildBTree(5, keys) ;
+        List<Integer> x = RecordTestLib.toIntList(bt.iterator(null, null)) ;
         List<Integer> expected = toIntList(keys) ;
         assertEquals(expected, x) ;
     }
@@ -304,8 +306,8 @@ public class TestBTree extends BaseTest
     @Test public void btree_iter_0_03()
     {
         int[] keys = {1, 2, 3, 4, 5} ;
-        bt = BTreeTestBase.buildBTree(5, keys) ;
-        List<Integer> x = R.toIntList(bt.iterator(r(5), null)) ;
+        bt = buildBTree(5, keys) ;
+        List<Integer> x = RecordTestLib.toIntList(bt.iterator(r(5), null)) ;
         List<Integer> expected = toIntList(5) ;
         assertEquals(expected, x) ;
     }
@@ -313,8 +315,8 @@ public class TestBTree extends BaseTest
     @Test public void btree_iter_0_04()
     {
         int[] keys = {1, 2, 3, 4, 5} ;
-        bt = BTreeTestBase.buildBTree(5, keys) ;
-        List<Integer> x = R.toIntList(bt.iterator(r(0), r(0))) ;
+        bt = buildBTree(5, keys) ;
+        List<Integer> x = RecordTestLib.toIntList(bt.iterator(r(0), r(0))) ;
         List<Integer> expected = toIntList() ;
         assertEquals(expected, x) ;
     }
@@ -322,8 +324,8 @@ public class TestBTree extends BaseTest
     @Test public void btree_iter_0_05()
     {
         int[] keys = {1, 2, 3, 4, 5} ;
-        bt = BTreeTestBase.buildBTree(5, keys) ;
-        List<Integer> x = R.toIntList(bt.iterator(r(1), r(0))) ;
+        bt = buildBTree(5, keys) ;
+        List<Integer> x = RecordTestLib.toIntList(bt.iterator(r(1), r(0))) ;
         List<Integer> expected = toIntList() ;
         assertEquals(expected, x) ;
     }
@@ -331,36 +333,36 @@ public class TestBTree extends BaseTest
     @Test public void btree_ret_1()
     {
         int[] keys = {1, 2, 3, 4, 5} ;
-        bt = BTreeTestBase.buildBTree(2, keys) ;
-        Record r = bt.addAndReturnOld(R.intToRecord(3)) ;
+        bt = buildBTree(2, keys) ;
+        Record r = bt.addAndReturnOld(RecordTestLib.intToRecord(3)) ;
         assertNotNull(r) ;
-        assertEquals(R.intToRecord(3), r) ;
-        r = bt.addAndReturnOld(R.intToRecord(9)) ;
+        assertEquals(RecordTestLib.intToRecord(3), r) ;
+        r = bt.addAndReturnOld(RecordTestLib.intToRecord(9)) ;
         assertNull(r) ;
     }
     
     @Test public void btree_ret_2()
     {
         int[] keys = {1, 2, 3, 4, 5} ;
-        bt = BTreeTestBase.buildBTree(2, keys) ;
-        Record r = bt.deleteAndReturnOld(R.intToRecord(9)) ;
+        bt = buildBTree(2, keys) ;
+        Record r = bt.deleteAndReturnOld(RecordTestLib.intToRecord(9)) ;
         assertNull(r) ;
-        r = bt.addAndReturnOld(R.intToRecord(1)) ;
+        r = bt.addAndReturnOld(RecordTestLib.intToRecord(1)) ;
         assertNotNull(r) ;
-        assertEquals(R.intToRecord(1), r) ;
+        assertEquals(RecordTestLib.intToRecord(1), r) ;
     }
     
     
     @Test public void btree_2_N()
     {
         for ( int i = 0 ; i < 10 ; i++ )
-            BTreeTestBase.randTest(2, 999, 20) ;
+            randTest(2, 999, 20) ;
     }
 
     @Test public void btree_3_N()
     {
         for ( int i = 0 ; i < 10 ; i++ )
-            BTreeTestBase.randTest(3, 9999, 100) ;
+            randTest(3, 9999, 100) ;
     }
 }
 

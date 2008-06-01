@@ -6,14 +6,14 @@
 
 package com.hp.hpl.jena.tdb.base.buffer;
 
-import static com.hp.hpl.jena.tdb.btree.BTreeTestBase.r;
+import static com.hp.hpl.jena.tdb.base.record.RecordTestLib.r;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import test.BaseTest;
 
 import com.hp.hpl.jena.tdb.base.BaseConfig;
 import com.hp.hpl.jena.tdb.base.ConfigTest;
-import com.hp.hpl.jena.tdb.base.record.R;
+import com.hp.hpl.jena.tdb.base.record.RecordTestLib;
 import com.hp.hpl.jena.tdb.base.record.Record;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 
@@ -209,9 +209,9 @@ public class TestRecordBuffer extends BaseTest
                 assertTrue(rb.isClear(i))  ;
             else
             {
-                Record r = R.intToRecord(vals[i]) ;
+                Record r = RecordTestLib.intToRecord(vals[i]) ;
                 Record r2 = rb.get(i) ;
-                int x = R.recordToInt(r2) ;
+                int x = RecordTestLib.recordToInt(r2) ;
                 assertEquals("Value mismatch: ", vals[i], x) ;
             }
     }
@@ -227,7 +227,7 @@ public class TestRecordBuffer extends BaseTest
         RecordBuffer rb = new RecordBuffer(recordFactory, len) ;
         for ( int i = 0 ; i < n ; i++ )
         {
-            Record r = R.intToRecord(2*i+2) ;  
+            Record r = RecordTestLib.intToRecord(2*i+2) ;  
             rb.add(r) ;
         }
         return rb ;

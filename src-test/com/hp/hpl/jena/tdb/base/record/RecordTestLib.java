@@ -6,6 +6,7 @@
 
 package com.hp.hpl.jena.tdb.base.record;
 
+import static com.hp.hpl.jena.tdb.base.ConfigTest.TestRecordLength;
 import iterator.Iter;
 import iterator.Transform;
 
@@ -22,7 +23,7 @@ import lib.Bytes;
 
 /** Record support operations (mainly for testing using ints) */
 
-public class R
+public class RecordTestLib
 {
     static RecordFactory recordFactory = new RecordFactory(ConfigTest.TestRecordLength, 0) ; 
     
@@ -77,6 +78,30 @@ public class R
             }}
         )) ;
     }
+    
+    public static Record r(int v)
+    {
+        return RecordTestLib.intToRecord(v, TestRecordLength) ; 
+    }
+
+    public static int r(Record rec)
+    {
+        return RecordTestLib.recordToInt(rec) ; 
+    }
+
+    public static List<Integer> toIntList(int... vals)
+    {
+        List<Integer> x = new ArrayList<Integer>() ;
+        for ( int i : vals )
+            x.add(i) ;
+        return x ;
+    }
+
+    public static List<Integer> r(Iterator<Record> iter)
+    {
+        return RecordTestLib.toIntList(iter) ;
+    }
+
 
 }
 
