@@ -6,17 +6,13 @@
 
 package com.hp.hpl.jena.tdb.btree;
 
-import com.hp.hpl.jena.tdb.base.BaseConfig;
-import com.hp.hpl.jena.tdb.base.block.BlockMgr;
-import com.hp.hpl.jena.tdb.base.block.BlockMgrFactory;
-import com.hp.hpl.jena.tdb.base.record.Record;
-import com.hp.hpl.jena.tdb.base.record.RecordFactory;
-import com.hp.hpl.jena.tdb.btree.BTree;
-import com.hp.hpl.jena.tdb.btree.BTreeParams;
-
 import org.junit.BeforeClass;
 import org.junit.Test;
 import test.BaseTest;
+
+import com.hp.hpl.jena.tdb.base.BaseConfig;
+import com.hp.hpl.jena.tdb.base.record.Record;
+import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 
 public class TestBTreeLong extends BaseTest
 {
@@ -91,9 +87,7 @@ public class TestBTreeLong extends BaseTest
     
     static BTree create(int order)
     {
-        BTreeParams p = new BTreeParams(order, LongRecordLength, 0) ;
-        BlockMgr mgr = BlockMgrFactory.createMem(p.getBlockSize()) ;
-        BTree bTree = new BTree(order, LongRecordLength, mgr) ;
+        BTree bTree = BTree.makeMem(order, LongRecordLength, 0) ;
         return bTree ;
     }
     

@@ -43,7 +43,8 @@ public abstract class TestRangeIndex extends BaseTest
     }
     
     // ---- Overridable maker
-    protected abstract RangeIndex make(int order) ;
+    protected RangeIndex make(int order) { return make(order, order) ; }
+    protected abstract RangeIndex make(int order, int minRecords) ;
     
     // -- Root-only
     

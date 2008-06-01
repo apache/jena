@@ -16,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.tdb.base.block.BlockMgr;
+import com.hp.hpl.jena.tdb.base.block.BlockMgrFactory;
 import com.hp.hpl.jena.tdb.base.record.Record;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 import com.hp.hpl.jena.tdb.index.RangeIndex;
@@ -110,10 +111,17 @@ public class BTree implements Iterable<Record>, RangeIndex
     private BTreePageMgr pageMgr ; 
     private BTreeParams bTreeParams ;
     
-    public BTree(int N, int recordLength, BlockMgr blkMgr)
+    public static BTree makeMem(int N, int keyLength, int valueLength)
     {
-        this(new BTreeParams(N, recordLength, 0), blkMgr) ;
+        BTreeParams params = new BTreeParams(N, keyLength, valueLength) ;
+        BlockMgr mgr = BlockMgrFactory.createMem(params.getBlockSize()) ;
+        return new BTree(params, mgr) ;
     }
+    
+//    public BTree(int N, int keyLength, int valueLength, BlockMgr blkMgr)
+//    {
+//        this(new BTreeParams(N, keyLength, valueLength), blkMgr) ;
+//    }
     
     public BTree(BTreeParams bTreeParams, BlockMgr blkMgr)
     {

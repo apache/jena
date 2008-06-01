@@ -7,14 +7,9 @@
 package com.hp.hpl.jena.tdb.btree;
 
 import static com.hp.hpl.jena.tdb.base.ConfigTest.TestRecordLength;
-
-import java.io.File;
-
 import org.junit.BeforeClass;
 
 import com.hp.hpl.jena.tdb.base.BaseConfig;
-import com.hp.hpl.jena.tdb.base.block.BlockMgr;
-import com.hp.hpl.jena.tdb.base.block.BlockMgrFactory;
 import com.hp.hpl.jena.tdb.index.RangeIndex;
 
 public class TestBTree extends TestRangeIndex
@@ -29,21 +24,9 @@ public class TestBTree extends TestRangeIndex
     // ---- Overridable maker
     static String filename = "tmp/test.btree" ;
     @Override
-    protected RangeIndex make(int order)
+    protected RangeIndex make(int order, int minRecords)
     {
-        BTreeParams p = new BTreeParams(order, TestRecordLength, 0) ;
-        BlockMgr mgr = null ;
-
-        if ( true )
-            mgr = BlockMgrFactory.createMem(p.getBlockSize()) ;
-        else
-        {
-            File f = new File(filename) ;
-            f.delete() ;
-            mgr = BlockMgrFactory.createFile(filename, p.getBlockSize()) ;
-        }
-        BTree bTree = new BTree(order, TestRecordLength, mgr) ;
-        return bTree ;
+        return BTree.makeMem(order, TestRecordLength, 0) ;
     }
 }
 
