@@ -6,7 +6,7 @@
 
 package test;
 
-import static com.hp.hpl.jena.tdb.btree.BTreeTestBase.buildRangeIndex;
+import static com.hp.hpl.jena.tdb.btree.RangeIndexTestLib.buildRangeIndex;
 import static com.hp.hpl.jena.tdb.btree.RangeIndexTestLib.delete;
 import static lib.RandomLib.random;
 import static test.Gen.permute;
@@ -74,7 +74,7 @@ public abstract class BTreeRun
         @Override
         protected void exec(int order, int numKeys, int iterations)
         {
-            RangeIndexMaker maker = new BTreeTestBase.BTreeMaker(order) ;
+            RangeIndexMaker maker = new BTreeMaker(order) ;
             RangeIndexTestLib.randTests(maker, numKeys*100, numKeys, iterations, showProgress) ;
         }
     }
@@ -220,7 +220,7 @@ public abstract class BTreeRun
         int[] keys1 = rand(numKeys, 0, maxValue) ;
         int[] keys2 = permute(keys1, numKeys) ;
         try {
-            RangeIndexMaker maker = new BTreeTestBase.BTreeMaker(order) ;
+            RangeIndexMaker maker = new BTreeMaker(order) ;
             RangeIndex rIndex = buildRangeIndex(maker, keys1);
             delete(rIndex, keys2) ;
         } catch (RuntimeException ex)

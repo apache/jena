@@ -6,6 +6,7 @@
 
 package com.hp.hpl.jena.tdb.btree;
 
+import static junit.TestBase.* ;
 import static com.hp.hpl.jena.tdb.base.ConfigTest.TestRecordLength;
 import static com.hp.hpl.jena.tdb.base.record.RecordTestLib.intToRecord;
 import static com.hp.hpl.jena.tdb.base.record.RecordTestLib.r;
@@ -23,6 +24,8 @@ import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import junit.TestBase;
+
 import test.RandomExecution;
 
 import com.hp.hpl.jena.tdb.base.record.Record;
@@ -32,6 +35,13 @@ public class RangeIndexTestLib
 {
 
     // ---------- Utilities
+    
+    public static RangeIndex buildRangeIndex(RangeIndexMaker maker, int[] keys)
+    {
+        RangeIndex rIndex = maker.make() ;
+        RangeIndexTestLib.add(rIndex, keys) ;
+        return rIndex ;
+    }
     
     public static void testIteration(RangeIndex rIndex, int[] keys, int numIterations)
     {
@@ -61,7 +71,7 @@ public class RangeIndexTestLib
             List<Integer> expected = new ArrayList<Integer>(keys.length) ;  
             for ( Integer ii : x.subSet(lo, hi) )
                 expected.add(ii) ;
-            BTreeTestBase.assertEquals(format("(%d,%d)",lo, hi), expected, slice) ;
+            assertEquals(format("(%d,%d)",lo, hi), expected, slice) ;
         }
     }
 
@@ -131,9 +141,9 @@ public class RangeIndexTestLib
         }
         
         for ( Record r : x )
-            BTreeTestBase.assertFalse(rIndex.contains(r)) ;
+            TestBase.assertFalse(rIndex.contains(r)) ;
         long size2 = rIndex.sessionTripleCount() ;
-        BTreeTestBase.assertEquals(size1-count, size2) ;
+        assertEquals(size1-count, size2) ;
     }
 
     public static int delete(RangeIndex bTree, int[] vals)
@@ -165,15 +175,15 @@ public class RangeIndexTestLib
         // Make a unique list of expected records.  Remove duplicates
         List<Integer> y = unique(asList(records)) ;
         
-        BTreeTestBase.assertEquals("Expected records size and tree size different", y.size(), rIndex.sessionTripleCount()) ;
-        BTreeTestBase.assertEquals("Expected records size and iteration over all keys are of different sizes", y.size(), x.size()) ;
+        assertEquals("Expected records size and tree size different", y.size(), rIndex.sessionTripleCount()) ;
+        assertEquals("Expected records size and iteration over all keys are of different sizes", y.size(), x.size()) ;
         
         // Check sorted order
         for ( int i = 0 ; i < x.size()-2 ; i++ )
         {
             if ( x.get(i) > x.get(i+1) )
             {
-                BTreeTestBase.fail("check failed: "+strings(records)) ;
+                fail("check failed: "+strings(records)) ;
                 return ;
             }
         }
@@ -183,7 +193,7 @@ public class RangeIndexTestLib
         {
             Record rec = intToRecord(k) ;
             Record r2 = rIndex.find(rec) ;
-            BTreeTestBase.assertNotNull("Finding "+rec, r2) ;
+            assertNotNull("Finding "+rec, r2) ;
         }
     }
 

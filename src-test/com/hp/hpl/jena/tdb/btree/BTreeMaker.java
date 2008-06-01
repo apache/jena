@@ -4,30 +4,45 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.index;
+package com.hp.hpl.jena.tdb.btree;
 
-import java.util.Iterator;
+import static com.hp.hpl.jena.tdb.base.ConfigTest.TestRecordLength;
 
-import com.hp.hpl.jena.tdb.base.record.Record;
+import java.io.File;
 
+import com.hp.hpl.jena.tdb.base.block.BlockMgr;
+import com.hp.hpl.jena.tdb.base.block.BlockMgrFactory;
+import com.hp.hpl.jena.tdb.index.RangeIndex;
 
-public interface RangeIndex extends Index, Iterable<Record>
+public class BTreeMaker implements RangeIndexMaker
 {
-//    /** Create an index of the same implementation */
-//    public RangeIndex createEmptyCopy() ;
-//    
-    public Iterator<Record> iterator() ;
+    static String filename = "tmp/test.btree" ;
     
-    /** Return records between min (inclusive) and max (exclusive), based on the record keys */
-    public Iterator<Record> iterator(Record recordMin, Record recordMax) ;
-    
-    /** Return the record containing the least key - may or may not have the associated value */
-    public Record minKey() ;
+    private int order ;
 
-    /** Return the record containing the greatest key - may or may not have the associated value */
-    public Record maxKey() ;
+    public BTreeMaker(int order) { this.order = order ; }
+    
+    @Override
+    public RangeIndex make()
+    {
+        BTreeParams p = new BTreeParams(order, TestRecordLength, 0) ;
+        BlockMgr mgr = null ;
+        
+        if ( true )
+            mgr = BlockMgrFactory.createMem(p.getBlockSize()) ;
+        else
+        {
+            File f = new File(filename) ;
+            f.delete() ;
+            mgr = BlockMgrFactory.createFile(filename, p.getBlockSize()) ;
+        }
+        BTree bTree = new BTree(order, TestRecordLength, mgr) ;
+        return bTree ;
+    }
+    
+    @Override
+    public String getLabel() { return "Btree order = "+order ; } 
 }
-
 /*
  * (c) Copyright 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.

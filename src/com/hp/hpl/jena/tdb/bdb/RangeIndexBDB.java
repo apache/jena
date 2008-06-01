@@ -147,6 +147,18 @@ public class RangeIndexBDB extends IndexBDB implements RangeIndex
         public void remove() { throw new UnsupportedOperationException("remove") ; }
     }
 
+    @Override
+    public Record maxKey()
+    {
+        throw new UnsupportedOperationException("maxKey") ;
+    }
+
+    @Override
+    public Record minKey()
+    {
+        throw new UnsupportedOperationException("minKey") ;
+    }
+
 }
 
 /*
