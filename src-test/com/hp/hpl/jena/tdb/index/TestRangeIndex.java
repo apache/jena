@@ -4,35 +4,27 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.btree;
+package com.hp.hpl.jena.tdb.index;
 
 import static com.hp.hpl.jena.tdb.base.record.RecordTestLib.r;
 import static com.hp.hpl.jena.tdb.base.record.RecordTestLib.toIntList;
-import static com.hp.hpl.jena.tdb.btree.RangeIndexTestLib.add;
-import static com.hp.hpl.jena.tdb.btree.RangeIndexTestLib.randTest;
-import static com.hp.hpl.jena.tdb.btree.RangeIndexTestLib.testInsert;
-import static com.hp.hpl.jena.tdb.btree.RangeIndexTestLib.testInsertDelete;
+import static com.hp.hpl.jena.tdb.index.RangeIndexTestLib.add;
+import static com.hp.hpl.jena.tdb.index.RangeIndexTestLib.randTest;
+import static com.hp.hpl.jena.tdb.index.RangeIndexTestLib.testInsert;
+import static com.hp.hpl.jena.tdb.index.RangeIndexTestLib.testInsertDelete;
 
 import java.util.List;
 
 import org.junit.After;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import test.BaseTest;
 
-import com.hp.hpl.jena.tdb.base.BaseConfig;
 import com.hp.hpl.jena.tdb.base.record.RecordTestLib;
-import com.hp.hpl.jena.tdb.index.RangeIndex;
+import com.hp.hpl.jena.tdb.btree.BTreeMaker;
 
 public abstract class TestRangeIndex extends BaseTest 
 {
  
-    @BeforeClass public static void before()
-    { 
-        BTreeParams.CheckingNode = true ;
-        BaseConfig.NullOut = true ;
-    }
-    
     RangeIndex rIndex = null ;
     
     @After public void afterTest()

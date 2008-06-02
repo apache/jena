@@ -6,8 +6,8 @@
 
 package test;
 
-import static com.hp.hpl.jena.tdb.btree.RangeIndexTestLib.buildRangeIndex;
-import static com.hp.hpl.jena.tdb.btree.RangeIndexTestLib.delete;
+import static com.hp.hpl.jena.tdb.index.RangeIndexTestLib.buildRangeIndex;
+import static com.hp.hpl.jena.tdb.index.RangeIndexTestLib.delete;
 import static lib.RandomLib.random;
 import static test.Gen.permute;
 import static test.Gen.rand;
@@ -27,6 +27,8 @@ import com.hp.hpl.jena.tdb.base.BaseConfig;
 import com.hp.hpl.jena.tdb.base.block.BlockMgrMem;
 import com.hp.hpl.jena.tdb.btree.*;
 import com.hp.hpl.jena.tdb.index.RangeIndex;
+import com.hp.hpl.jena.tdb.index.RangeIndexMaker;
+import com.hp.hpl.jena.tdb.index.RangeIndexTestLib;
 
 public abstract class BTreeRun
 {

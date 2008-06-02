@@ -9,6 +9,7 @@ package com.hp.hpl.jena.tdb.btree;
 import static com.hp.hpl.jena.tdb.base.ConfigTest.TestRecordLength;
 
 import com.hp.hpl.jena.tdb.index.RangeIndex;
+import com.hp.hpl.jena.tdb.index.RangeIndexMaker;
 
 public class BTreeMaker implements RangeIndexMaker
 {

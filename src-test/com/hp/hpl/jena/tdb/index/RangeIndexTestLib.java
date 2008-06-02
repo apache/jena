@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.btree;
+package com.hp.hpl.jena.tdb.index;
 
 import static junit.TestBase.* ;
 import static com.hp.hpl.jena.tdb.base.ConfigTest.TestRecordLength;
@@ -167,9 +167,6 @@ public class RangeIndexTestLib
 
     public static void testRangeIndex(RangeIndex rIndex, int[] records)
     {
-        if ( BTreeParams.CheckingBTree ) 
-            rIndex.check() ;
-    
         List<Integer> x = toIntList(rIndex.iterator());
         
         // Make a unique list of expected records.  Remove duplicates

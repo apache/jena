@@ -11,10 +11,10 @@ import org.junit.BeforeClass;
 
 import com.hp.hpl.jena.tdb.base.BaseConfig;
 import com.hp.hpl.jena.tdb.index.RangeIndex;
+import com.hp.hpl.jena.tdb.index.TestRangeIndex;
 
 public class TestBTree extends TestRangeIndex
 {
- 
     @BeforeClass public static void before()
     { 
         BTreeParams.CheckingNode = true ;
