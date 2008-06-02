@@ -25,6 +25,8 @@ one-by-one
 ** StoreFormatter.isFormatted()
 
 + Document assembler for dataset on wiki
+  Single graph assembler.
+  (intercept ja:namedGraph)
 
 <#dataset> rdf:type sdb:DatasetStore ;
     sdb:store <#store> .
