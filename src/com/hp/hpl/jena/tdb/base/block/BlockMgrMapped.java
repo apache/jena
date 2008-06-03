@@ -30,19 +30,28 @@ public class BlockMgrMapped extends BlockMgrFile
     private static Logger log = LoggerFactory.getLogger(BlockMgrMapped.class) ;
 
     // Segmentation avoids over-mapping; allows file to grow (in chunks)  
-    private int segmentSize = 8 * 1024 * 1024 ;
-    private int blocksPerSegment ;                              
+    private final int segmentSize = 8 * 1024 * 1024 ;
+    private final int blocksPerSegment ;                              
     
-    private MappedByteBuffer[] segments = new MappedByteBuffer[4000] ;  // 32G - needs tuning
-    private boolean[] segmentDirty = new boolean[1000] ; 
+    // 8M*32000 = 256Gbytes of file addressability - needs tuning
+    private final int MaxNumSegements = 32000 ; 
+    private MappedByteBuffer[] segments = new MappedByteBuffer[MaxNumSegements] ;  
+    
+    // Unflushed segments.
+    private int segmentDirtyCount = 0 ;
+    private boolean[] segmentDirty = new boolean[MaxNumSegements] ; 
     
     
     BlockMgrMapped(String filename, int blockSize)
     {
         super(filename, blockSize) ;
         blocksPerSegment = segmentSize/blockSize ;
-        for ( int i = 0 ; i < segmentDirty.length ; i++ )
+        if ( segmentSize%blockSize != 0 )
+            log.warn(format("%s: Segement size(%d) not a multiple of blocksize (%d)", filename, segmentSize, blockSize)) ;
+        
+        for ( int i = 0 ; i < MaxNumSegements ; i++ )
             segmentDirty[i] = false ;
+        segmentDirtyCount = 0 ;
         
         if ( log.isDebugEnabled() )
             log.debug(format("Segment:%d  BlockSize=%d  blocksPerSegment=%d", segmentSize, blockSize, blocksPerSegment)) ;
@@ -107,10 +116,10 @@ public class BlockMgrMapped extends BlockMgrFile
             log.error("Segment negative: "+seg) ;
             throw new BlockException("Negative segment: "+seg) ;
         }
-        long longSeg  = seg ;
-        
         // Note : do long arthimetic, not int, then extended to long.
-        long offset = longSeg*segmentSize ;
+        long longSeg  = seg ;
+        long offset = getByteOffset(longSeg) ;
+        
         if ( offset < 0 )
         {
             log.error("Segment offset gone negative: "+seg) ;
@@ -119,7 +128,7 @@ public class BlockMgrMapped extends BlockMgrFile
         
         synchronized(this) 
         {
-            // This, and force(), are the only places to directly access segments[] while running. 
+            // This, and flushDirtySegements(), are the only places to directly access segments[] while running. 
             MappedByteBuffer segBuffer = segments[seg] ;
             if ( segBuffer == null )
             {
@@ -138,10 +147,26 @@ public class BlockMgrMapped extends BlockMgrFile
         }
     }
 
+    private void flushDirtySegments()
+    {
+        for ( int i = 0 ; i < MaxNumSegements ; i++ )
+        {
+            if ( segments[i] != null && segmentDirty[i] )
+            {
+                segments[i].force() ;
+                segmentDirty[i] = false ;
+                segmentDirtyCount-- ;
+            }
+        }
+    }
+
+    private long getByteOffset(long segmentNumber) { return segmentNumber*segmentSize ; }
+    
     @Override
     public void put(int id, ByteBuffer block)
     {
         check(id, block) ;
+        // No work.
         putNotification(id, block) ;
     }
     
@@ -165,9 +190,7 @@ public class BlockMgrMapped extends BlockMgrFile
     @Override
     protected synchronized void force()
     {
-        for ( int i = 0 ; i < segments.length ; i++ )
-            if ( segments[i] != null && segmentDirty[i] )
-                segments[i].force() ;
+        flushDirtySegments() ;
         super.force() ;
     }
     
