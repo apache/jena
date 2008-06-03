@@ -1,0 +1,8 @@
+#!/bin/bash
+
+FILES="/data1/Datasets/UniProt/*.nt.gz"
+tdbclean tmp
+
+# Uncompress and stream all files.
+gzip -c -d /data1/Datasets/UniProt/*.nt.gz \
+    | tdbloader --desc dataset.ttl -- -
