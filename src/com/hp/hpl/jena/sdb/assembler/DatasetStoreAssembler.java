@@ -34,7 +34,7 @@ public class DatasetStoreAssembler extends AssemblerBase implements Assembler
     public StoreDesc openStore(Assembler a, Resource root, Mode mode)
     {
         Resource s = storeResource(root) ;
-        StoreDesc desc = storeAssem.open(a, s, mode) ;
+        StoreDesc desc = storeAssem.open(a, root, mode) ;
         return desc ;
     }
     

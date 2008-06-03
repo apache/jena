@@ -26,7 +26,7 @@ public class SDBModelAssembler extends AssemblerBase implements Assembler
     public Model open(Assembler a, Resource root, Mode mode)
     {
         // Make a model.
-        // [] rdf:type sdb:Graph ;
+        // [] rdf:type sdb:Model ;
         //    sdb:dataset <dataset> ;
         //    sdb:graphName <someURI> .
         
@@ -42,7 +42,6 @@ public class SDBModelAssembler extends AssemblerBase implements Assembler
         Resource x = GraphUtils.getResourceValue(root, AssemblerVocab.pNamedGraph) ;
         if ( x != null && ! x.isURIResource() )
             throw new BadDescriptionException(root, "Graph name not a URI: "+x) ;
-        
         
         // No name - default model.
         Graph g = null ;
