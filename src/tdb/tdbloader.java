@@ -139,7 +139,7 @@ public class tdbloader extends CmdTDB
 
     private long loadOne(Model model, String s)
     {
-        GraphLoadMonitor monitor = new GraphLoadMonitor(20000, false) ;
+        GraphLoadMonitor monitor = new GraphLoadMonitor(50000, false) ;
         if ( timing )
             model.getGraph().getEventManager().register(monitor) ;
         if ( ! s.equals("-") )
