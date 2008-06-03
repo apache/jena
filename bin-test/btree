@@ -1,0 +1,10 @@
+#!/bin/bash
+
+if [ "$TDBROOT" = "" ]
+then
+    echo "TDBROOT is not set" 1>&2
+    exit 1
+    fi
+
+export AFSROOT="/home/afs/Projects/AFS"
+"bin-test/driver" btree "$@"
