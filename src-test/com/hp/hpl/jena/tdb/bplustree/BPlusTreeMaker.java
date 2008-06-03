@@ -4,59 +4,39 @@
  * [See end of file]
  */
 
-package dev;
+package com.hp.hpl.jena.tdb.bplustree;
 
-import iterator.TS_Iterator;
-import lib.TS_Lib;
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import static com.hp.hpl.jena.tdb.base.ConfigTest.TestRecordLength;
 
-import com.hp.hpl.jena.tdb.TS_TDB;
-import com.hp.hpl.jena.tdb.base.block.TS_Block;
-import com.hp.hpl.jena.tdb.base.file.TS_File;
-import com.hp.hpl.jena.tdb.base.loader.TS_Loader;
-import com.hp.hpl.jena.tdb.base.record.TS_Record;
-import com.hp.hpl.jena.tdb.base.recordfile.TS_RecordFile;
-import com.hp.hpl.jena.tdb.bplustree.TS_BPlusTree;
-import com.hp.hpl.jena.tdb.btree.TS_BTree;
-import com.hp.hpl.jena.tdb.pgraph.TS_PGraph;
+import com.hp.hpl.jena.tdb.bplustree.BPlusTree;
+import com.hp.hpl.jena.tdb.index.RangeIndex;
+import com.hp.hpl.jena.tdb.index.RangeIndexMaker;
 
-// Ideal - find all TS_ classes on the classpath and run.  Like ant does
-
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
-    TS_Lib.class,
-//    TS_HTable.class,
-    TS_Block.class,
-    TS_File.class,
-    TS_Loader.class,
-    TS_Record.class,
-    //TS_Base.class,
-    TS_RecordFile.class,
-    // Lib
-//    TS_IO.class,
-    TS_Iterator.class,
-    
-    TS_BTree.class,
-    TS_BPlusTree.class,
-//    TS_Hash.class,
-//    TS_SkipList.class,
-//    TS_AVL.class,
-    
-    TS_TDB.class,
-    TS_PGraph.class
-
-
-} )
-
-public class TS_Main
+public class BPlusTreeMaker implements RangeIndexMaker
 {
-    // For "ant" before 1.7 that only understands JUnit3. 
-    public static junit.framework.Test suite() {
-        return new junit.framework.JUnit4TestAdapter(TS_Main.class) ;
-    }
-}
+    private int order ;
+    private int recordOrder ;
 
+
+    public BPlusTreeMaker(int order, int recordOrder)
+    { 
+        this.order = order ; 
+        this.recordOrder = recordOrder ;
+    }
+    
+    
+
+    @Override
+    public RangeIndex make()
+    {
+        BPlusTree bpTree = BPlusTree.makeMem(order, recordOrder, TestRecordLength, 0) ;
+        return bpTree ;
+    }
+
+    @Override
+    public String getLabel() { return "B+Tree order = "+order ; } 
+
+}
 
 /*
  * (c) Copyright 2008 Hewlett-Packard Development Company, LP

@@ -1,65 +1,21 @@
 /*
- * (c) Copyright 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007, 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package dev;
+package com.hp.hpl.jena.tdb.bplustree;
 
-import iterator.TS_Iterator;
-import lib.TS_Lib;
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import com.hp.hpl.jena.tdb.TDBException;
 
-import com.hp.hpl.jena.tdb.TS_TDB;
-import com.hp.hpl.jena.tdb.base.block.TS_Block;
-import com.hp.hpl.jena.tdb.base.file.TS_File;
-import com.hp.hpl.jena.tdb.base.loader.TS_Loader;
-import com.hp.hpl.jena.tdb.base.record.TS_Record;
-import com.hp.hpl.jena.tdb.base.recordfile.TS_RecordFile;
-import com.hp.hpl.jena.tdb.bplustree.TS_BPlusTree;
-import com.hp.hpl.jena.tdb.btree.TS_BTree;
-import com.hp.hpl.jena.tdb.pgraph.TS_PGraph;
-
-// Ideal - find all TS_ classes on the classpath and run.  Like ant does
-
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
-    TS_Lib.class,
-//    TS_HTable.class,
-    TS_Block.class,
-    TS_File.class,
-    TS_Loader.class,
-    TS_Record.class,
-    //TS_Base.class,
-    TS_RecordFile.class,
-    // Lib
-//    TS_IO.class,
-    TS_Iterator.class,
-    
-    TS_BTree.class,
-    TS_BPlusTree.class,
-//    TS_Hash.class,
-//    TS_SkipList.class,
-//    TS_AVL.class,
-    
-    TS_TDB.class,
-    TS_PGraph.class
-
-
-} )
-
-public class TS_Main
+public class BPTreeException extends TDBException
 {
-    // For "ant" before 1.7 that only understands JUnit3. 
-    public static junit.framework.Test suite() {
-        return new junit.framework.JUnit4TestAdapter(TS_Main.class) ;
-    }
+    public BPTreeException() {}
+    public BPTreeException(String msg) { super(msg) ; }
 }
 
-
 /*
- * (c) Copyright 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007, 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
