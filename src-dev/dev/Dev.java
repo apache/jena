@@ -12,7 +12,6 @@ public class Dev
     // Change to a dynamic list of segments?
     
     // Log BGP's executed.
-    // Simple stats optimizer.
     // Assembler to cache graphs made (by location) so reuse is same graph engine 
     
     // Misc :
