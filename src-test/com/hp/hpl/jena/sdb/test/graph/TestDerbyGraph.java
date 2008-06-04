@@ -9,7 +9,6 @@ package com.hp.hpl.jena.sdb.test.graph;
 import junit.framework.TestSuite;
 
 import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.graph.test.AbstractTestGraph;
 import com.hp.hpl.jena.sdb.SDBFactory;
 import com.hp.hpl.jena.sdb.Store;
 import com.hp.hpl.jena.sdb.test.StoreCreator;
@@ -27,7 +26,7 @@ public class TestDerbyGraph {
     	return ts;
 	}
 	
-	public static class TestDerbyIndexGraph extends AbstractTestGraph {
+	public static class TestDerbyIndexGraph extends AbstractTestGraphSDB {
 		public TestDerbyIndexGraph(String arg0) {
 			super(arg0);
 		}
@@ -40,7 +39,7 @@ public class TestDerbyGraph {
 		}
 	}
 	
-	public static class TestDerbyIndexQuadGraph extends AbstractTestGraph {
+	public static class TestDerbyIndexQuadGraph extends AbstractTestGraphSDB {
 		public TestDerbyIndexQuadGraph(String arg0) {
 			super(arg0);
 		}
@@ -53,7 +52,7 @@ public class TestDerbyGraph {
 		}
 	}
 	
-	public static class TestDerbyHashGraph extends AbstractTestGraph {
+	public static class TestDerbyHashGraph extends AbstractTestGraphSDB {
 		public TestDerbyHashGraph(String arg0) {
 			super(arg0);
 		}
@@ -66,7 +65,7 @@ public class TestDerbyGraph {
 		}
 	}
 	
-	public static class TestDerbyHashQuadGraph extends AbstractTestGraph {
+	public static class TestDerbyHashQuadGraph extends AbstractTestGraphSDB {
 		public TestDerbyHashQuadGraph(String arg0) {
 			super(arg0);
 		}

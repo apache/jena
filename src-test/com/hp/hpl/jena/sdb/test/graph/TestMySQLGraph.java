@@ -9,7 +9,6 @@ package com.hp.hpl.jena.sdb.test.graph;
 import junit.framework.TestSuite;
 
 import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.graph.test.AbstractTestGraph;
 import com.hp.hpl.jena.sdb.SDBFactory;
 import com.hp.hpl.jena.sdb.Store;
 import com.hp.hpl.jena.sdb.test.StoreCreator;
@@ -27,7 +26,7 @@ public class TestMySQLGraph {
     	return ts;
 	}
 	
-	public static class TestMySQLIndexGraph extends AbstractTestGraph {
+	public static class TestMySQLIndexGraph extends AbstractTestGraphSDB {
 		public TestMySQLIndexGraph(String arg0) {
 			super(arg0);
 		}
@@ -40,7 +39,7 @@ public class TestMySQLGraph {
 		}
 	}
 	
-	public static class TestMySQLIndexQuadGraph extends AbstractTestGraph {
+	public static class TestMySQLIndexQuadGraph extends AbstractTestGraphSDB {
 		public TestMySQLIndexQuadGraph(String arg0) {
 			super(arg0);
 		}
@@ -53,7 +52,7 @@ public class TestMySQLGraph {
 		}
 	}
 	
-	public static class TestMySQLHashGraph extends AbstractTestGraph {
+	public static class TestMySQLHashGraph extends AbstractTestGraphSDB {
 		public TestMySQLHashGraph(String arg0) {
 			super(arg0);
 		}
@@ -66,7 +65,7 @@ public class TestMySQLGraph {
 		}
 	}
 	
-	public static class TestMySQLHashQuadGraph extends AbstractTestGraph {
+	public static class TestMySQLHashQuadGraph extends AbstractTestGraphSDB {
 		public TestMySQLHashQuadGraph(String arg0) {
 			super(arg0);
 		}

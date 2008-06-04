@@ -9,7 +9,6 @@ package com.hp.hpl.jena.sdb.test.model;
 import junit.framework.TestSuite;
 
 import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.test.AbstractTestModel;
 import com.hp.hpl.jena.sdb.SDBFactory;
 import com.hp.hpl.jena.sdb.Store;
 import com.hp.hpl.jena.sdb.test.StoreCreator;
@@ -27,7 +26,7 @@ public class TestDerbyModel {
     	return ts;
 	}
 	
-	public static class TestDerbyIndexModel extends AbstractTestModel {
+	public static class TestDerbyIndexModel extends AbstractTestModelSDB {
 
 		public TestDerbyIndexModel(String name) {
 			super(name);
@@ -41,7 +40,7 @@ public class TestDerbyModel {
 		
 	}
 	
-	public static class TestDerbyIndexQuadModel extends AbstractTestModel {
+	public static class TestDerbyIndexQuadModel extends AbstractTestModelSDB {
 
 		public TestDerbyIndexQuadModel(String name) {
 			super(name);
@@ -55,7 +54,7 @@ public class TestDerbyModel {
 		
 	}
 	
-	public static class TestDerbyHashModel extends AbstractTestModel {
+	public static class TestDerbyHashModel extends AbstractTestModelSDB {
 
 		public TestDerbyHashModel(String name) {
 			super(name);
@@ -69,7 +68,7 @@ public class TestDerbyModel {
 		
 	}
 	
-	public static class TestDerbyHashQuadModel extends AbstractTestModel {
+	public static class TestDerbyHashQuadModel extends AbstractTestModelSDB {
 
 		public TestDerbyHashQuadModel(String name) {
 			super(name);

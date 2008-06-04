@@ -9,7 +9,6 @@ package com.hp.hpl.jena.sdb.test.model;
 import junit.framework.TestSuite;
 
 import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.test.AbstractTestModel;
 import com.hp.hpl.jena.sdb.SDBFactory;
 import com.hp.hpl.jena.sdb.Store;
 import com.hp.hpl.jena.sdb.test.StoreCreator;
@@ -27,7 +26,7 @@ public class TestMySQLModel {
     	return ts;
 	}
 	
-	public static class TestMySQLIndexModel extends AbstractTestModel {
+	public static class TestMySQLIndexModel extends AbstractTestModelSDB {
 
 		public TestMySQLIndexModel(String name) {
 			super(name);
@@ -41,7 +40,7 @@ public class TestMySQLModel {
 		
 	}
 	
-	public static class TestMySQLIndexQuadModel extends AbstractTestModel {
+	public static class TestMySQLIndexQuadModel extends AbstractTestModelSDB {
 
 		public TestMySQLIndexQuadModel(String name) {
 			super(name);
@@ -55,7 +54,7 @@ public class TestMySQLModel {
 		
 	}
 	
-	public static class TestMySQLHashModel extends AbstractTestModel {
+	public static class TestMySQLHashModel extends AbstractTestModelSDB {
 
 		public TestMySQLHashModel(String name) {
 			super(name);
@@ -69,7 +68,7 @@ public class TestMySQLModel {
 		
 	}
 	
-	public static class TestMySQLHashQuadModel extends AbstractTestModel {
+	public static class TestMySQLHashQuadModel extends AbstractTestModelSDB {
 
 		public TestMySQLHashQuadModel(String name) {
 			super(name);

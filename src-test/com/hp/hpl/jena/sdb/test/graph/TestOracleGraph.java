@@ -9,7 +9,6 @@ package com.hp.hpl.jena.sdb.test.graph;
 import junit.framework.TestSuite;
 
 import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.graph.test.AbstractTestGraph;
 import com.hp.hpl.jena.sdb.SDBFactory;
 import com.hp.hpl.jena.sdb.Store;
 import com.hp.hpl.jena.sdb.test.StoreCreator;
@@ -27,7 +26,7 @@ public class TestOracleGraph {
     	return ts;
 	}
 	
-	public static class TestOracleIndexGraph extends AbstractTestGraph {
+	public static class TestOracleIndexGraph extends AbstractTestGraphSDB {
 		public TestOracleIndexGraph(String arg0) {
 			super(arg0);
 		}
@@ -40,7 +39,7 @@ public class TestOracleGraph {
 		}
 	}
 	
-	public static class TestOracleIndexQuadGraph extends AbstractTestGraph {
+	public static class TestOracleIndexQuadGraph extends AbstractTestGraphSDB {
 		public TestOracleIndexQuadGraph(String arg0) {
 			super(arg0);
 		}
@@ -53,7 +52,7 @@ public class TestOracleGraph {
 		}
 	}
 	
-	public static class TestOracleHashGraph extends AbstractTestGraph {
+	public static class TestOracleHashGraph extends AbstractTestGraphSDB {
 		public TestOracleHashGraph(String arg0) {
 			super(arg0);
 		}
@@ -66,7 +65,7 @@ public class TestOracleGraph {
 		}
 	}
 	
-	public static class TestOracleHashQuadGraph extends AbstractTestGraph {
+	public static class TestOracleHashQuadGraph extends AbstractTestGraphSDB {
 		public TestOracleHashQuadGraph(String arg0) {
 			super(arg0);
 		}
