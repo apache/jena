@@ -27,7 +27,7 @@ for d in $D
       then
       echo "**** Missing: $JDIR"
   else
-      rm $JDIR/*.*
+      rm -f $JDIR/*.*
       cp ~/Projects/ARQ/testing/$d/*.* $JDIR
   fi
 done
