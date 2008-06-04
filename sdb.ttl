@@ -16,12 +16,12 @@ sdb:DatasetStore rdfs:subClassOf ja:RDFDataset .
 
 <#conn> rdf:type sdb:SDBConnection ;
 ##     sdb:sdbType        "h2:mem" ;
-     sdb:sdbType        "h2:file" ;
-     sdb:sdbName        "DB/H2" ;
+##     sdb:sdbType        "h2:file" ;
+##     sdb:sdbName        "DB/H2" ;
 
-##      sdb:sdbHost        "localhost" ;
-##      sdb:sdbType        "derby" ;
-##      sdb:sdbName        "DB/SDB2" ;
+     sdb:sdbHost        "localhost" ;
+     sdb:sdbType        "derby" ;
+     sdb:sdbName        "DB/test2" ;
 
 ##     sdb:sdbType       "MySQL" ;
 ##     sdb:sdbHost       "localhost" ;
