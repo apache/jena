@@ -9,7 +9,7 @@ package com.hp.hpl.jena.sparql.util;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-/** Parse an xsd:ateTime or xsd:date lexical form */  
+/** Parse an xsd:dateTime or xsd:date lexical form */  
 
 public class DateTimeStruct
 {

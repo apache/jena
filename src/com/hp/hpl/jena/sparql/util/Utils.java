@@ -7,6 +7,7 @@
 package com.hp.hpl.jena.sparql.util;
 
 import java.math.BigDecimal;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -55,6 +56,15 @@ public class Utils
     public static String XSDDateTime2String(XSDDateTime xdt)
     {
         return xdt.toString() ;
+    }
+    
+    public static String nowAsString()
+    { return nowAsString("yyyy/MM/dd HH:mm:ss") ; }
+    
+    public static String nowAsString(String formatString)
+    {
+        DateFormat df = new SimpleDateFormat(formatString) ;
+        return df.format(new Date()) ;
     }
     
 //    public static XSDDateTime calendarToXSDDateTime(Calendar cal)

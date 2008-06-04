@@ -7,7 +7,11 @@
 package com.hp.hpl.jena.sparql.util;
 
 import java.io.UnsupportedEncodingException;
+import java.text.DateFormat;
+import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import com.hp.hpl.jena.sparql.ARQInternalErrorException;
@@ -86,14 +90,29 @@ public class StringUtils
         return x.toString() ;
     }
 
-
+    static NumberFormat integerFormat = NumberFormat.getNumberInstance() ;
     public static String str(long v)
     {
-        NumberFormat mf = NumberFormat.getNumberInstance() ;
-        return mf.format(v) ;
+        return integerFormat.format(v) ;
     }
     
+    static DateFormat dateTimeFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss") ;
+    public static String str(Date date)
+    {
+        return dateTimeFormat.format(date) ;
+    }
 
+    static DecimalFormat decimalFormat = new DecimalFormat("#,##0.0") ;
+    public static String str(float value)
+    {
+        return decimalFormat.format(value) ;
+    }
+    
+    public static String str(double value)
+    {
+        return decimalFormat.format(value) ;
+    }
+    
     /** Does one string contain another string?
      * @param str1
      * @param str2

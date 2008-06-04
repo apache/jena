@@ -6,7 +6,7 @@
 
 package com.hp.hpl.jena.sparql.util.graph;
 
-import java.text.DecimalFormat;
+import java.util.Date;
 
 import com.hp.hpl.jena.sparql.util.StringUtils;
 import com.hp.hpl.jena.sparql.util.Timer;
@@ -18,6 +18,7 @@ public class GraphLoadMonitor extends GraphListenerCounter
     private boolean displayMemory = false ;
     String label = null ;
     String summaryLabel = null ;
+ 
         
     public GraphLoadMonitor(int addNotePoint, boolean displayMemory)
     {
@@ -76,9 +77,9 @@ public class GraphLoadMonitor extends GraphListenerCounter
 
         if ( ticks > 0 && (ticks%10) == 0 )
         {
-            DecimalFormat f = new DecimalFormat("#,##0.0") ;
             String x = num(soFar/1000F) ;
-            println(label, "  Elapsed: "+x+" seconds") ;
+            String timestamp = StringUtils.str(new Date()) ; 
+            println(label, "  Elapsed: "+x+" seconds ["+timestamp+"]") ;
         }
 
         lastTime = soFar ;        
@@ -91,11 +92,8 @@ public class GraphLoadMonitor extends GraphListenerCounter
     
     private static String num(float value)
     {
-        DecimalFormat f = new DecimalFormat("#,##0.0") ;
-        String x = f.format(value) ;
-        return x ;
+        return StringUtils.str(value) ;
     }
-    
     
     //@Override
     protected void deleteTick()
