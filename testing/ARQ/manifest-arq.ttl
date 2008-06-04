@@ -17,6 +17,9 @@
         <Optional/manifest.ttl>
         <Union/manifest.ttl>
 
+        <Algebra/manifest.ttl>
+        <Optimization/manifest.ttl>
+
         <Select/manifest.ttl>
         <Construct/manifest.ttl>
         <Describe/manifest.ttl>
@@ -52,8 +55,13 @@
         <Sort/manifest.ttl>
         <Examples/manifest.ttl>
 
+    ## Engines
+        <EngineRef/manifest.ttl>
+        <EngineMain/manifest.ttl>
+
     ## ARQ extensions
-        <SelectExpr/manifest.ttl>
+        <Assign/manifest.ttl>
         <GroupBy/manifest.ttl>
+        <SubQuery/manifest.ttl>
     ) .
 

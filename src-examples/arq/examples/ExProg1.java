@@ -16,8 +16,8 @@ import com.hp.hpl.jena.sparql.syntax.ElementGroup;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
 import com.hp.hpl.jena.vocabulary.DC;
 
-/** Example : Build a query synatx programmatically.
- *  Note: it may be better to build and execute an algebra expression.  See other examples.
+/** Example : Build a query syntax programmatically.
+ *  Note: it is often better to build and execute an algebra expression.  See other examples.
  * 
  * @author Andy Seaborne
  */

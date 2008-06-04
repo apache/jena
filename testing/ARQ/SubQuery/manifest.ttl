@@ -1,0 +1,39 @@
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:	<http://www.w3.org/2000/01/rdf-schema#> .
+@prefix mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix mfx:    <http://jena.hpl.hp.com/2005/05/test-manifest-extra#> .
+@prefix qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#> .
+
+<>  rdf:type mf:Manifest ;
+    rdfs:label "Sub Query" ;
+    mf:entries
+    ( 
+      [  mf:name    "Sub SELECT 1" ;
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <sub-select-01.arq> ;
+              qt:data   <data.ttl> ] ;
+        mf:result  <sub-select-01.srx>
+      ]
+      [  mf:name    "Sub SELECT 2" ;
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <sub-select-02.arq> ;
+              qt:data   <data.ttl> ] ;
+        mf:result  <sub-select-02.srx>
+      ]
+      [  mf:name    "Sub SELECT 3" ;
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <sub-select-03.arq> ;
+              qt:data   <data.ttl> ] ;
+        mf:result  <sub-select-03.srx>
+      ]
+      [  mf:name    "Sub SELECT 4" ;
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <sub-select-04.arq> ;
+              qt:data   <data.ttl> ] ;
+        mf:result  <sub-select-04.srx>
+      ]
+    ).

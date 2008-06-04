@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<sparql xmlns="http://www.w3.org/2005/sparql-results#">
+  <head>
+    <variable name="x"/>
+    <variable name="v"/>
+  </head>
+  <results>
+    <result>
+      <binding name="x">
+        <uri>http://example/x4</uri>
+      </binding>
+      <binding name="v">
+        <uri>http://example/z</uri>
+      </binding>
+    </result>
+    <result>
+      <binding name="x">
+        <uri>http://example/x3</uri>
+      </binding>
+      <binding name="v">
+        <uri>http://example/z</uri>
+      </binding>
+    </result>
+  </results>
+</sparql>

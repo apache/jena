@@ -1,0 +1,8 @@
+PREFIX : <http://example/>
+
+SELECT *
+{
+  ?x :p ?v .
+  FILTER sameTerm(?x,:x3 )
+  FILTER sameTerm(?v,:z )
+}

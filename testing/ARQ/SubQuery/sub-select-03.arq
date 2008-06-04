@@ -1,0 +1,8 @@
+PREFIX : <http://example/> 
+
+SELECT *
+{
+  ?x a :X .
+  { SELECT ?x ( count(*) AS ?c) { ?x :p ?v } GROUP BY ?x }
+}
+

@@ -203,6 +203,18 @@
               qt:data   <data-3.ttl> ] ;
         mf:result  <splitIRI-7.srx>
       ]
+      [ mf:name    "Property Function - splitIRI 8" ;
+        mf:action
+            [ qt:query  <splitIRI-8.rq> ;
+              qt:data   <data-3.ttl> ] ;
+        mf:result  <splitIRI-8.srx>
+      ]
+      [ mf:name    "Property Function - splitIRI 9" ;
+        mf:action
+            [ qt:query  <splitIRI-9.rq> ;
+              qt:data   <data-3.ttl> ] ;
+        mf:result  <splitIRI-9.srx>
+      ]
       [ mf:name    "Property Function - Assign 1" ;
         mf:action
             [ qt:query  <assign-1.rq> ;
