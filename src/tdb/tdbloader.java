@@ -6,6 +6,7 @@
 
 package tdb;
 
+import java.util.Date;
 import java.util.Iterator;
 import java.util.concurrent.Semaphore;
 
@@ -17,6 +18,7 @@ import arq.cmdline.ArgDecl;
 import com.hp.hpl.jena.query.ARQ;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.sparql.util.StringUtils;
 import com.hp.hpl.jena.sparql.util.Timer;
 import com.hp.hpl.jena.sparql.util.graph.GraphLoadMonitor;
 import com.hp.hpl.jena.tdb.index.TripleIndex;
@@ -105,8 +107,10 @@ public class tdbloader extends CmdTDB
         
         for ( ; iter.hasNext() ; )
         {
+            now("-- Start data phase") ;
             String s = iter.next();
             count += loadOne(model, s) ;
+            now("-- Finish data phase") ;
         }
         
         // Especially the node table.
@@ -115,12 +119,14 @@ public class tdbloader extends CmdTDB
         
         if ( rebuildIndexes )
         {
+            now("-- Start index phase") ;
             if ( timing )
                 println("** Secondary indexes") ;
             // Now do secondary indexes.
             
             // Fork two separate processes? But it's disk bound!?
             createSecondaryIndexes(timing) ;
+            now("-- Finish index phase") ;
         }
 
         if ( timing )
@@ -366,7 +372,13 @@ public class tdbloader extends CmdTDB
     
     private static synchronized void println(String str)
     { System.out.println(str) ; }
-
+    
+    private static synchronized void now(String str)
+    { 
+        System.out.print(str) ;
+        System.out.print(" : ") ;
+        System.out.println(StringUtils.str(new Date())) ;
+    }
 }
 
 /*
