@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# Usage: make_classpath DIR
+# Finds jars in lib/, and class files in classes/ and build/classes
+# If CP is already set, include that as well.
+
 DIRROOT="$1"
 
 if [ "$DIRROOT" = "" ]
@@ -12,13 +16,16 @@ then
 DIRROOT=${DIRROOT%/}
 
 LIBDIR="$DIRROOT/lib"
-CPDIR="$DIRROOT/classes"
+# List
+CPDIR1="$DIRROOT/classes"
+CPDIR2="$DIRROOT/build/classes"
+ETCDIR="$DIRROOT/etc"
 
 # Cygwin - on Windows, the Java separator is ;
 
 CYGWIN=0
 SEP=':'
-if [ "$OSTYPE" = "cygwin" ]
+if [ "$(uname -o)" = "Cygwin" ]
 then
     CYGWIN=1
     SEP=';'
@@ -26,6 +33,7 @@ then
 
 # CP is the variable collecting the path/
 # It may already have a value.
+
 CP="${CP:-}"
 
 # Append any jars in the lib/ directory
@@ -37,16 +45,19 @@ for jar in "$LIBDIR"/*.jar
   #echo "Path: $jar"
   [ "$CP" != "" ] && CP="${CP}${SEP}"
   CP="${CP}$jar"
-  first=0
 done
 
 # Prepend any classes/ directory
+for dir in "$CPDIR1" "$CPDIR2"
+do
+  if [ -e "$dir" ]
+      then
+      [ "$CP" != "" ] && CP="${SEP}${CP}"
+      CP="${dir}$CP"
+  fi
+done
 
-if [ -e "$CPDIR" ]
-then
-    [ "$CP" != "" ] && CP="${SEP}${CP}"
-    CP="${CPDIR}$CP"
-    first=0
-    fi
+# Add DIRROOT
+#CP="${CP}${SEP}${DIRROOT}"
 
 echo "$CP"
