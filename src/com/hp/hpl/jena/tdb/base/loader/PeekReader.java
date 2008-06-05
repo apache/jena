@@ -42,6 +42,7 @@ public final class PeekReader extends Reader
 
     public static PeekReader make(Reader r)
     {
+        // StringReader special?
         if ( r instanceof PeekReader )
             return (PeekReader)r ;
         return new PeekReader(r) ;
