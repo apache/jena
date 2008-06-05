@@ -166,7 +166,7 @@
   </target>
 	
   <target name="test-derby" depends="jar">
-    <junit printsummary="on">
+    <junit printsummary="on"  fork="on">	<!-- Fork necessary for Derby -->
       <formatter type="plain"/>
       <classpath>
         <fileset dir="${lib.dir}" includes="*.jar"/>

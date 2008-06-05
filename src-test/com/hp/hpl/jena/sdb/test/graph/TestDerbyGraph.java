@@ -15,7 +15,7 @@ import com.hp.hpl.jena.sdb.test.StoreCreator;
 
 public class TestDerbyGraph {
 	
-	public static junit.framework.Test suite() {
+	public static junit.framework.TestSuite suite() {
     	TestSuite ts = new TestSuite();
     	
     	ts.addTestSuite(TestDerbyIndexGraph.class);
