@@ -14,6 +14,9 @@ public class Dev
     // Log BGP's executed.
     // Assembler to cache graphs made (by location) so reuse is same graph engine 
     
+    // BulkLoader - move processing out of tdb.tdbloader
+    // Make sure that the index manipulations (PGraphBase=>GraphTuple) are index impl independent 
+    
     // Misc :
     // Interface Sync everywhere?
     // CountingSync.
