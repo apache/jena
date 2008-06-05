@@ -16,11 +16,28 @@
 <p>SPARQL/Update is an update language for RDF based on SPARQL syntax.&nbsp; It 
 is described in &quot;<a href="http://jena.hpl.hp.com/~afs/SPARQL-Update.html">SPARQL/Update 
 - A Language for Updating RDF Graphs</a>&quot;.</p>
+<p>A SPARQL/Update request is composed of a number of update operations, so in a 
+single request graphs can be created, loaded with RDF data and modified.</p>
 <p>Some examples of ARQ's SPARQL/Update support are to be found in the download 
 in src-examples/arq/examples/update.</p>
-<p>&nbsp;</p>
+<p>Many common operations can be done with operations in <code>UpdateAction</code>.<p>To execute a SPARQL/Update request as a script from a file:<pre class="box">Model model = ... ;
+GraphStore graphStore = GraphStoreFactory.create(model) ;
+UpdateAction.readExecute("update.ru", graphStore) ;</pre>
+<p>The application writer can create and execute operations:</p>
 
-
+<pre class="box">UpdateLoad load = new UpdateLoad("etc/update-data.ttl") ;
+UpdateAction.<i>execute</i>(load, graphStore) ;</pre>
+<p>or whole requests:</p>
+<pre class="box"> UpdateRequest req = new UpdateRequest() ;
+         // Create a named graph
+ UpdateCreate c = new UpdateCreate(graphName) ;
+         // Load a file into a named graph - NB order of arguments (both strings).
+ UpdateLoad load = new UpdateLoad("etc/update-data.ttl", graphName) ;
+         // Add the two operations and execute the request
+ req.addUpdate(c) ;
+ req.addUpdate(load) ;
+         // Execute!
+ UpdateAction.execute(req, graphStore) ;</pre>
 
 <p class="footnote"><a href="documentation.html">ARQ Documentation Page</a></p>
 </body>

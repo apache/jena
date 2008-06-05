@@ -38,7 +38,7 @@ public class Update2
         req.addUpdate(c) ;
         req.addUpdate(load) ;
 
-        // Create a processor 
+        // Execute 
         UpdateAction.execute(req, graphStore) ;
         
         // Print it out (format is SSE <http://jena.hpl.hp.com/wiki/SSE>)
