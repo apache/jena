@@ -41,8 +41,13 @@ public class Dev
     //    Namespace extractor.
     // BGP Optimizer II
 
-    // ExtHash
+    // Some cleaning up around counting and sync.
+
     // com.hp.hpl.jena.util.FileUtils - use faster "buffered" reader (extend BufferedReader)
 
+    // Apps: Namespace extractor in tdbexamine
+
+    // Consts from a properties file.
+    
     // Fix BDB form
 }
