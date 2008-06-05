@@ -1,14 +1,12 @@
 <project name="ARQ" default="main" basedir=".">
 
-  <!-- TODO Convert value's to location's -->
-
   <property name="Name"            value="ARQ"/>
   <property name="name"            value="arq"/>
   
   <!-- The major and minor version numbers  -->
   <property name="version-major"   value="2"/>
   <property name="version-minor"   value="3"/>
-  <property name="version-status"  value="-RC-0"/>
+  <property name="version-status"  value=""/>
   <property name="version"
             value="${version-major}.${version-minor}${version-status}"/>
 
