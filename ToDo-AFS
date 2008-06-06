@@ -8,6 +8,8 @@ SDB ToDo list (and general notes)
 
 ** Streaming for more DBs (MySQL)
 
+** Check update tests - why is fork needed in ant for Pg and MS-SQL, but not MySQL? 
+
 MySQL:
 
 stmt = conn.createStatement(java.sql.ResultSet.TYPE_FORWARD_ONLY,
