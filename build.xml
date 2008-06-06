@@ -77,7 +77,7 @@
     <antcall target="clean-build-dirs"/>
   </target>
 
-  <target name="release" depends="init,package"
+  <target name="release" depends="clean,init,package"
 	  description="Create SDB release">
     <antcall target="clean-build-dirs"/>
   </target>
@@ -87,10 +87,10 @@
   <target name="init">
     <tstamp/>
   </target>
+  
+  <target name="pre-compile" depends="javac-flags"/>
 
-  <target name="pre-compile" depends="init,clean-build-dirs,javac-flags"/>
-
-  <target name="build-src" depends="clean-build-dirs">
+  <target name="build-src">
     <tstamp>
       <format property="BUILD_TIME"      pattern="yyyy-MM-dd HH:mm Z"/>
       <format property="BUILD_TIME_XSD"  pattern="yyyy-MM-dd'T'HH:mm:ssZ"/>
@@ -142,12 +142,14 @@
 
   <!-- Section: Testing -->
 
-  <target name="test" depends="jar">
+  <target name="test-query" depends="jar">
     <junit printsummary="yes">
+      <formatter type="plain"/>
       <classpath>
-	<fileset dir="${lib.dir}" includes="*.jar"/>
-      </classpath>
-      <test name="com.hp.hpl.jena.query.test.ARQTestSuite"/>
+		<fileset dir="${lib.dir}" includes="*.jar"/>
+		<fileset dir="jdbc" includes="*.jar"/>
+  	  </classpath>
+      <test name="com.hp.hpl.jena.sdb.test.SDBQueryTestSuite"/>
     </junit>
   </target>
 
@@ -180,7 +182,7 @@
   </target>
   
   <target name="test-pgsql" depends="jar">
-    <junit printsummary="on">
+    <junit printsummary="on" fork="on">	<!-- TEMP - may be issue with test suite -->
       <formatter type="plain"/>
       <classpath>
         <fileset dir="${lib.dir}" includes="*.jar"/>
@@ -208,7 +210,7 @@
     </target>
   
   <target name="test-sqlserver" depends="jar">
-      <junit printsummary="on">
+      <junit printsummary="on" fork="on">
         <formatter type="plain"/>
         <classpath>
           <fileset dir="${lib.dir}" includes="*.jar"/>
