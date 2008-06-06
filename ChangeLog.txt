@@ -30,6 +30,8 @@ SDB v1.1
 
 + H2 support
 
++ removeAll() fastpath added
+
 SDB v1.0
 ========
 

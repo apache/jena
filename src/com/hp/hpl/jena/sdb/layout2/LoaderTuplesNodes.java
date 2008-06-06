@@ -138,6 +138,14 @@ public class LoaderTuplesNodes
 		updateStore(new TupleChange(false, t, nodes));
 	}
     
+	public void deleteAll() {
+		updateStore(new TupleChange(false, store.getTripleTableDesc()));
+	}
+	
+	public void deleteAll(Node graph) {
+		updateStore(new TupleChange(false, store.getQuadTableDesc(), graph));
+	}
+	
     static class TupleChange {
     	public Node[] tuple;
     	public boolean toAdd;

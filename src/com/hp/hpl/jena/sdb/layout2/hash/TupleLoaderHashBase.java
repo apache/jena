@@ -51,6 +51,19 @@ public abstract class TupleLoaderHashBase extends TupleLoaderBase {
 		
 		return stmt.toString();
 	}
+	
+	public String getDeleteAllTuples() {
+		StringBuilder stmt = new StringBuilder();
+		
+		stmt.append("DELETE FROM ").append(this.getTableName());
+		if (this.getTableWidth() != 3) { // not a triple table, delete based on first column
+			stmt.append(" \nWHERE\n");
+			stmt.append(getTableDesc().getColNames().get(0));
+			stmt.append(" = ? ");
+		}
+		
+		return stmt.toString();
+	}
 }
 
 /*

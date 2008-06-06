@@ -24,6 +24,7 @@ public abstract class TupleLoaderBase extends com.hp.hpl.jena.sdb.store.TupleLoa
     String insertNodes;
     String insertTuples;
     PreparedStatement deleteTuples;
+    PreparedStatement deleteAllTuples;
     PreparedStatement clearTupleLoader;
     PreparedStatement clearNodeLoader;
 	
@@ -64,6 +65,7 @@ public abstract class TupleLoaderBase extends com.hp.hpl.jena.sdb.store.TupleLoa
 		insertNodes = getLoadNodes();
 		insertTuples = getLoadTuples();
 		deleteTuples = connection().prepareStatement(getDeleteTuples());
+		deleteAllTuples = connection().prepareStatement(getDeleteAllTuples());
 		clearNodeLoader = connection().prepareStatement(getClearTempNodes());
 		clearTupleLoader = connection().prepareStatement(getClearTempTuples());
 	}
@@ -103,8 +105,19 @@ public abstract class TupleLoaderBase extends com.hp.hpl.jena.sdb.store.TupleLoa
 			amLoading = false;
 		}
 		
-		if (row.length != this.getTableWidth())
-			throw new IllegalArgumentException("Tuple size mismatch");
+		// Overloading unload, so this is messy
+		// If arity mismatch then see if this is a massDelete
+		// TODO rethink overloading
+		if (row.length != this.getTableWidth()) {
+			if ((row.length == 0 && this.getTableWidth() == 3) ||
+					(row.length == 1)) {
+				massDelete(row);
+				return;
+			}
+			else {
+				throw new IllegalArgumentException("Tuple size mismatch");
+			}
+		}
 		
 		try {
 			for (int i = 0; i < row.length; i++) {
@@ -120,21 +133,59 @@ public abstract class TupleLoaderBase extends com.hp.hpl.jena.sdb.store.TupleLoa
 		if (tupleNum >= chunkSize) flush();
 	}
 	
+	private void massDelete(Node... row) {
+		flush();
+		boolean handleT = startTransaction(connection());
+		try {
+			if (row.length == 0) deleteAllTuples.execute();
+			else {
+				PreparedNode pNode = new PreparedNode(row[0]);
+				deleteAllTuples.setLong(1, pNode.hash);
+				deleteAllTuples.addBatch();
+				deleteAllTuples.executeBatch();
+				deleteAllTuples.clearBatch();
+			}
+			endTransaction(connection(), handleT);
+		} catch (SQLException e) {
+			if (handleT) {
+				try {
+					connection().getSqlConnection().rollback();
+				} catch (SQLException e1) {
+					e1.printStackTrace();
+				}
+			}
+			throw new SDBException("Exception mass deleting", e);
+		}
+	}
+	
 	@Override
 	public void finish() {
 		super.finish();
 		flush();
 	}
 	
-	protected void flush() {
-		if (tupleNum == 0) return;
-		
+	// Start a transaction if required
+	private static boolean startTransaction(SDBConnection connection) {
 		boolean handleTransaction = false; // is somebody handling transactions already?
 		try {
-			handleTransaction = connection().getSqlConnection().getAutoCommit();
+			handleTransaction = connection.getSqlConnection().getAutoCommit();
 		} catch (SQLException e) {
 			throw new SDBException("Failed to get autocommit status", e);
 		}
+		return handleTransaction;
+	}
+	
+	// Complete transaction
+	private static void endTransaction(SDBConnection connection, boolean handle) throws SQLException {
+		if (!handle) return;
+		connection.getSqlConnection().commit();
+		connection.getSqlConnection().setAutoCommit(true); // back on
+	}
+	
+	protected void flush() {
+		if (tupleNum == 0) return;
+		
+		boolean handleTransaction = startTransaction(connection());
 		
 		try {
 			if (handleTransaction) connection().getSqlConnection().setAutoCommit(false); // turn off if needed
@@ -150,10 +201,8 @@ public abstract class TupleLoaderBase extends com.hp.hpl.jena.sdb.store.TupleLoa
 			} else {
 				deleteTuples.executeBatch();
 			}
-			if (handleTransaction) {
-				connection().getSqlConnection().commit();
-				connection().getSqlConnection().setAutoCommit(true); // back on
-			}
+			
+			endTransaction(connection(), handleTransaction);
 		} catch (SQLException e) {
 			if (handleTransaction)
 				try {

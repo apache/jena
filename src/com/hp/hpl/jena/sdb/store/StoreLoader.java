@@ -21,6 +21,7 @@ public interface StoreLoader
 
     public void setUseThreading(boolean useThreading);
     public boolean getUseThreading();
+	public void deleteAll();
     
 }
 

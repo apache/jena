@@ -12,6 +12,7 @@ public interface TupleLoaderBasics {
 	public String[] getCreateTempTable();
 	public String getLoadTuples();
 	public String getDeleteTuples();
+	public String getDeleteAllTuples();
 	public String getClearTempNodes();
 	public String getClearTempTuples();
 	public boolean clearsOnCommit();

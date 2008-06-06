@@ -66,6 +66,9 @@ public class TupleGraphLoader implements StoreLoader
 
     public void setUseThreading(boolean useThreading)
     { throw new SDBNotImplemented("TupleGraphLoader.setUseThreading") ; }
+    
+	public void deleteAll()
+	{ throw new SDBNotImplemented("TupleGraphLoader.deleteAll"); }
 }
 
 /*

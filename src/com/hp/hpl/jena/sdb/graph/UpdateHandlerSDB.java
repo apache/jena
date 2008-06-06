@@ -100,7 +100,8 @@ public class UpdateHandlerSDB extends SimpleBulkUpdateHandler {
 
 	@Override
     public void removeAll() {
-		try { ((GraphSDB) graph).startBulkUpdate(); super.removeAll(); }
+		notifyRemoveAll();
+		try { ((GraphSDB) graph).startBulkUpdate(); ((GraphSDB) graph).deleteAll(); }
 		finally { ((GraphSDB) graph).finishBulkUpdate(); }
 	}
 	

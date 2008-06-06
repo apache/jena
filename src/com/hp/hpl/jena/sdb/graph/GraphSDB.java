@@ -305,6 +305,15 @@ public class GraphSDB extends GraphBase implements Graph
     
     @Override
     public int graphBaseSize() { return (int) ((graphNode == Quad.defaultGraphNode) ? store.getSize() : store.getSize(graphNode)); }
+    
+	public void deleteAll() {
+		if (inBulkUpdate == 0) store.getLoader().startBulkUpdate();
+		if ( graphNode == Quad.defaultGraphNode )
+			store.getLoader().deleteAll();
+		else
+			((StoreLoaderPlus) store.getLoader()).deleteAll(graphNode);
+		if (inBulkUpdate == 0) store.getLoader().finishBulkUpdate();
+	}
 }
 
 /*

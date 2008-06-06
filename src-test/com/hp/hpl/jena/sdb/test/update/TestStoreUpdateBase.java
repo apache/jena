@@ -49,6 +49,12 @@ public abstract class TestStoreUpdateBase {
 			if (result.get().next())
 				size = result.get().getInt(1);
 			result.close();
+			
+			result = store.getConnection().execQuery("SELECT * FROM " + name);
+			while (result.get().next())
+				System.err.println("Row: " + result.get().getObject(1));
+			result.close();
+			
 			return size;
 		} catch (SQLException e) {
 			throw new RuntimeException("Can't get size of table '" + name + "'", e);
@@ -220,6 +226,32 @@ public abstract class TestStoreUpdateBase {
 		model.remove(RDF.type, RDF.type, RDF.type);
 		model.abort();
 		assertEquals("Model still contains 1 triple", 1l, model.size());
+	}
+	
+	@Test public void safeRemoveAll() {
+		TableDesc desc = store.getTripleTableDesc();
+		loader.startBulkUpdate();
+		loader.addTuple(desc, node("A"), node("A"), node("A"));
+		loader.addTuple(desc, node("B"), node("B"), node("B"));
+		loader.finishBulkUpdate();
+		desc = store.getQuadTableDesc();
+		loader.startBulkUpdate();
+		loader.addTuple(desc, node("A"), node("A"), node("A"), node("A"));
+		loader.addTuple(desc, node("A"), node("A"), node("B"), node("A"));
+		loader.addTuple(desc, node("B"), node("B"), node("B"), node("B"));
+		loader.addTuple(desc, node("B"), node("C"), node("C"), node("C"));
+		loader.finishBulkUpdate();
+		
+		loader.startBulkUpdate();
+		loader.deleteAll();
+		loader.finishBulkUpdate();
+		assertEquals("Triples all removed", 0l, store.getSize());
+		
+		loader.startBulkUpdate();
+		loader.deleteAll(node("A"));
+		loader.finishBulkUpdate();
+		assertEquals("Quad A all removed", 0l, store.getSize(node("A")));
+		assertEquals("Quad B unaffected", 2l, store.getSize(node("B")));
 	}
 }
 

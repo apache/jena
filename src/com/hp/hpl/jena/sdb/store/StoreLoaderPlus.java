@@ -13,6 +13,7 @@ public interface StoreLoaderPlus extends StoreLoader {
 	public void deleteQuad(Node g, Node s, Node p, Node o);
 	public void addTuple(TableDesc t, Node... nodes);
 	public void deleteTuple(TableDesc t, Node... nodes);
+	public void deleteAll(Node graphNode);
 }
 
 /*
