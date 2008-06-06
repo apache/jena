@@ -41,7 +41,7 @@ public class GenerateSQLVisitor implements SqlNodeVisitor
     // Annotate should ensureEndofLine ?
     private static Log log = LogFactory.getLog(GenerateSQLVisitor.class) ;
     
-    private IndentedWriter out ;
+    protected IndentedWriter out ;
     int levelSelectBlock = 0 ;
     
     // Per Generator
@@ -108,15 +108,20 @@ public class GenerateSQLVisitor implements SqlNodeVisitor
 
         // LIMIT/OFFSET
         out.ensureStartOfLine() ;
+        genLimitOffset(sqlSelectBlock) ;
+        levelSelectBlock-- ;
+
+    }
+
+    protected void genLimitOffset(SqlSelectBlock sqlSelectBlock)
+    {
         if ( sqlSelectBlock.getLength() >= 0 )
             out.println("LIMIT "+sqlSelectBlock.getLength()) ;
         if ( sqlSelectBlock.getStart() >= 0 )
             out.println("OFFSET "+sqlSelectBlock.getStart()) ;
         
-        levelSelectBlock-- ;
-
     }
-
+    
     private void print(List<ColAlias> cols)
     {
         String sep = "" ;

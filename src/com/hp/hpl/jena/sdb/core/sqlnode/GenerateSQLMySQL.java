@@ -35,7 +35,26 @@ class GeneratorVisitorMySQL extends GenerateSQLVisitor
     { 
         join = rewrite(join) ;
         visitJoin(join, InnerJoinOperatorDefault) ;
-    }    
+    }   
+    
+    @Override
+    protected void genLimitOffset(SqlSelectBlock sqlSelectBlock)
+    {
+        
+        if ( sqlSelectBlock.getLength() >= 0 || sqlSelectBlock.getStart() >= 0 )
+        {
+            // MySQL synatx issue - need LIMIT even if only OFFSET
+            long length = sqlSelectBlock.getLength() ;
+            if ( length < 0 )
+            {
+                sqlSelectBlock.addNote("Require large LIMIT") ;
+                length = Long.MAX_VALUE ;
+            }
+            out.println("LIMIT "+length) ;
+            if ( sqlSelectBlock.getStart() >= 0 )
+                out.println("OFFSET "+sqlSelectBlock.getStart()) ;
+        }
+    }
 }
 
 /*
