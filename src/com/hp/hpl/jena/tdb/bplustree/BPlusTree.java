@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007, 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
@@ -33,41 +33,38 @@ import com.hp.hpl.jena.tdb.index.RangeIndex;
 
 /** B-Tree converted to B+Tree
  * 
- * Taken from:
+ * B-Tree taken from:
  * Introduction to Algorithms, Second Edition
  * Chapter 18: B-Trees
- * by Thomas H. Cormen, Charles E. Leiserson, Ronald L. Rivest and Clifford Stein 
+ * by Thomas H. Cormen, Charles E. Leiserson, 
+ *    Ronald L. Rivest and Clifford Stein 
  *  
  * Includes implementation of removal.
  * 
- * Stores "records".  The record comparator can either match the whole record
- * (so the record is the key), or part of it (the record is a key and value parts).
+ * Notes:
+ * Stores "records", which are a key and value (the valu emay be null).
  * 
- * This is a B-Tree (not a B+Tree) so if the record in's all key, the storage density
- * isn't as good.  But for complete indexes, the key is the record.
- *  
+ * In this B+Tree implementation, the (key,value) pairs are held in
+ * RecordBuffer, which wrap a ByteBuffer that only has records in it.  
+ * BPTreeRecords provides the B+Tree view of a RecordBuffer. All records
+ * are in RecordBufefr - the "tree" part is an index for finding the right
+ * page. The tree only holds keys, copies from the (key, value) pairs in
+ * the RecordBuffers. 
+ *
  * Notes:
  * 
- *   The version above splits nodes on the way down when full,
- *   not when needed where a split can bubble up from below.
- *   It means it only ever walks down the tree on insert.
- *   Similarly, the delete code ensures a node is suitable
- *   before decending. 
+ * The version above splits nodes on the way down when full,
+ * not when needed where a split can bubble up from below.
+ * It means it only ever walks down the tree on insert.
+ * Similarly, the delete code ensures a node is suitable
+ * before decending. 
  *    
- *  Variations:
- *     + In this impl, splitRoot leaves the root node in place.
- *       The root is always the same block.
+ * Variations:
+ * In this impl, splitRoot leaves the root node in place.
+ * The root is always the same block.
  *  
  *  @author	Andy Seaborne
  */
-
-/** Converted to a B+Tree: the leaves are a chain of all the records
- *  
- *  1/ It is more natural to pack the leaves because leaves are a separate class
- *     with separate operation implementations.
- *     (No pointers means the pointers space can be used for records)
- *  2/ Iteration, once setup, does not touch the branch nodes
- */ 
 
 public class BPlusTree implements Iterable<Record>, RangeIndex
 {
@@ -344,7 +341,7 @@ public class BPlusTree implements Iterable<Record>, RangeIndex
 }
 
 /*
- * (c) Copyright 2007, 2008 Hewlett-Packard Development Company, LP All rights
+ * (c) Copyright 2008 Hewlett-Packard Development Company, LP All rights
  * reserved.
  * 
  * Redistribution and use in source and binary forms, with or without

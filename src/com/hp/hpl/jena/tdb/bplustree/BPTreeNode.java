@@ -43,51 +43,23 @@ public final class BPTreeNode extends BPTreePage
     RecordBuffer records ;
     PtrBuffer ptrs ;
 
-//    private BPlusTree bTree ;
-//    private BPlusTreeParams bTreeParams ;
-//    private BPTreePageMgr pageMgr ;         // Convert to formatting "pages"
-
-    
-    // XXX Update!
-    // See YUK comments.
-    
-    /** Notes
-     * 1/ Records
-     * The B+PTree only 
-     */
-    
     /* BTree => B+Tree
-     * 
-     * The key difference is that the records are always held in leaves (that makes
-     * range queries simpler) and the leaves are more conveniently, a different
-     * block type from internal nodes.
-     * 
-     * Key is the highest key in the left tree (coudl of course be lowest and right subtree) 
-     * 
-     * In a B+Tree, the tree itself only hold keys to note what's in the blocks below. 
      * 
      * Two block managers : 
      *   one for Nodes (BPlusTreePages => BPlusTreeNode)
-     *   one for leaves (RecordBufferPages)  
+     *   one for leaves (RecordBufferPages)
+     * The key held in the highest in the block  
      * 
-     * Search: Look at keys, don't stop on match.
-     * 
-     * Changes: insert:
-     * 
-     * Incidently, it makes the rebuilding from the bas 
-     * 
-     */
-    
-    /*
-     * The bottom-most pointers to blocks are helpd as negative numbers to
-     * indicate which BlockMgr to use.
-     * 
+     * A "leaf" node is a leaf of the B+Tree part, and points to 
+     * highest record in a RecordBuffer 
+     *
+     * The Gap is usually zero.
      * N = 2, Gap = 1 =>
      *  2*N+Gap:  MaxRec = 4, MaxPtr = 5,
      *  Max-1:    HighRec = 3, HighPtr = 4
      *  N-1:      MinRec = 1, MinPtr = 2
      *
-     * Non-leaf:
+     * BPTreeNode:
      * 
      *      +------------------------+
      *      |-| K0 | K1 | K2 | K3 |--|
@@ -101,12 +73,17 @@ public final class BPTreeNode extends BPTreePage
      *      | P0 | P1 | P2 | ** | ** |
      *      +------------------------+
      *      
-     * Leaf: Packed with keys.
+     * BPTreeRecords -> RecordBuffer:
      *      
      *      +------------------------+
-     *      | | K0 | K1 | ** | ** |--|
+     *      | K0 | K1 | K2 | ** | ** |
      *      +------------------------+
-
+     *      
+     * The size of records blocks and size of tree nodes don't have to be the same.
+     * They use different page managers, and are in different files.  
+     *
+     * The minimal tree is one, leaf, root BPTreeNode and one BPTreeRecords page.
+     * 
      * Pictures:      
      *      /--\ \--\
      * means a block with free space introduced between records[i] and records[i+1], ptrs[i+1]/ptrs[i+2]
@@ -118,10 +95,12 @@ public final class BPTreeNode extends BPTreePage
      */
 
     // Branch nodes only need create branch nodes (splitting sideways)
+    // Leaf nodes only create leaf nodes.
+    // The root is an exception.
     private BPTreeNode create(int parent)
     {
         BPTreeNode n = bpTree.getNodeManager().createNode(parent) ;
-        //n.isLeaf = asLeaf ;
+        //n.isLeaf = asLeaf ;   // Gets sorted out anyway.
         return n ;
     }
     
@@ -340,17 +319,12 @@ public final class BPTreeNode extends BPTreePage
     
     // ============ SEARCH
     
-    // **** Old documentation
     /* 
      * Do a (binary) search of the node to find the record.
      *   Returns: 
      *     +ve or 0 => the index of the record 
      *     -ve => The insertion point : the immediate higher record or length as (-i-1)
-     *  If +ve return record
-     *  If -ve and leaf ==> not found
-     *  Get child point
-     *    Pointers are staggered so this is (-(i+1))   
-     *  Search in child node.
+     *  Convert to +ve and decend to find the RecordBuffer with the record in it. 
      */
     
     @Override final
@@ -376,21 +350,8 @@ public final class BPTreeNode extends BPTreePage
     
     // ============ INSERT
     
-    // **** Old documentation
-    /* Insert into a node that is not full.
-     *   Full nodes are split while processing the parent.
-     * Find lost.
-     *   If found, update if necessary and return 
-     * If not found:
-     * If leaf
-     *   insert
-     *   WRITE(this)
-     *   return
-     * Get child pointer.
-     * Ensure not full, split if necessary
-     *   Split writes the parent and two sub-blocks. 
-     *   When split need to check the insertion point has not moved.
-     * InsertNonFull on child. 
+    /* Traverse this page, ensuring the node below is not full before
+     * decending.  Therefore there is always space to do the actual insert.
      */
     
     @Override final
@@ -439,10 +400,8 @@ public final class BPTreeNode extends BPTreePage
 
     // **** Old documentation
     /* Split a non-root node y, held at slot idx.
-     * Record median slot
-     * Allocate a new node , z(will be come the high end)
-     * Copy high end of y to z
-     * Insert median and z pointer into parent (this)
+     * Do this by splitting the node in two (call to BPTree.split)
+     * and insertting the new key/pointer pair.
      * WRITE(y)
      * WRITE(z)
      * WRITE(this)
@@ -455,7 +414,6 @@ public final class BPTreeNode extends BPTreePage
         internalCheckNode() ;
         if ( CheckingNode )
         {
-//            if( y.getId() == 0 ) error("Splitting root in non-root split routine") ;
             if ( ! y.isFull() ) error("Node is not full") ;
             if ( this.ptrs.get(idx) != y.getId() )
             {
@@ -499,8 +457,6 @@ public final class BPTreeNode extends BPTreePage
         y.put();
         z.put();
         this.put();
-//        if ( DumpTree )
-//            this.dump() ;
         if ( CheckingTree )
         {
             if ( Record.keyNE(splitKey, y.maxRecord()) )
@@ -527,9 +483,9 @@ public final class BPTreeNode extends BPTreePage
         // New block.
         BPTreeNode z = create(this.parent) ;
         
-        // Unlike the book, we leave the low end untouched and copy, and clear the high end.
-        // z becomes the new upper node, not the lower node.  this is the lower block.
-        // y is the full block.
+        // Leave the low end untouched and copy, and clear the high end.
+        // z becomes the new upper node, not the lower node.
+        // 'this' is the lower block.
         
         int maxRec = maxRecords() ;
         // Copy from top of y into z. 
@@ -549,8 +505,6 @@ public final class BPTreeNode extends BPTreePage
         z.setCount(maxRec - (ix+1)) ;           // Number copied into z
 
         // Caller puts the blocks in split(int, BTreePage)
-//        this.put();                             // Tree no consistent yet
-//        z.put();
         z.internalCheckNode() ;
         return z ;
     }
@@ -562,7 +516,7 @@ public final class BPTreeNode extends BPTreePage
      *  Copy root low into left
      *  Copy root high into right
      *  Set counts.
-     *  Create new root settings (two poniters, one record) 
+     *  Create new root settings (two pointers, one key record) 
      *  WRITE(left)
      *  WRITE(right)
      *  WRITE(root)
@@ -641,20 +595,11 @@ public final class BPTreeNode extends BPTreePage
             }
     }
 
-    // ==== B+Tree barrier ====
-
-    
     // ============ DELETE
+
     /* Delete
-     * Find record, or insertion point encoded as -i-1
-     * If found:
-     *   do leaf or internal node
-     * If not found:
-     *   If left - nothing to do - return
-     * Get child node
-     * Ensure more than min size so delete is always possible without needing
-     *   to move back up the tree.
-     *    
+     * Descend, making sure that the node is not minimum size at ead descend.
+     * If it is, rebalenace.
      */
     
     @Override final
@@ -665,8 +610,7 @@ public final class BPTreeNode extends BPTreePage
             log.debug(format("_delete(%s) : %s", rec, this)) ;
         
         int x = findSlot(rec) ;
-//        if ( x >= 0 ) 
-//            System.err.println("Deleting a record that is a key value") ;
+
         // If x is >= 0, will need to adjust this 
         int y = convert(x) ;
         BPTreePage page = get(y) ;
@@ -746,7 +690,7 @@ public final class BPTreeNode extends BPTreePage
      *   WRITE(this)
      * else 
      *  merge with left or right sibling
-     * Suboperations do all the write-backof nodes.
+     * Suboperations do all the write-back of nodes.
      */ 
     private BPTreePage rebalance(BPTreePage n, int idx)
     {
@@ -1402,7 +1346,7 @@ public final class BPTreeNode extends BPTreePage
 }
 
 /*
- * (c) Copyright 2007, 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
