@@ -12,7 +12,9 @@ import lib.Bytes;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.tdb.Const;
 import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile;
-import com.hp.hpl.jena.tdb.pgraph.*;
+import com.hp.hpl.jena.tdb.pgraph.NodeId;
+import com.hp.hpl.jena.tdb.pgraph.NodeTableBase;
+import com.hp.hpl.jena.tdb.pgraph.PGraphException;
 import com.sleepycat.je.Database;
 import com.sleepycat.je.DatabaseEntry;
 import com.sleepycat.je.DatabaseException;
@@ -44,7 +46,7 @@ public class NodeTableBDB extends NodeTableBase
             OperationStatus status = nodeHashToId.get(txn, entry, idEntry, config.lockMode) ;
             if ( status == OperationStatus.SUCCESS )
                 return NodeId.create(Bytes.getLong(idEntry.getData())) ;
-            NodeId x = nodeToNodeId(node) ;
+            NodeId x = nodeToNodeIdTable(node) ;
             idEntry = nodeIdEntry(x);
 
             status = nodeHashToId.put(txn, entry, idEntry) ;

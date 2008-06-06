@@ -8,14 +8,17 @@ package dev;
 
 public class Dev
 {
+    // Check: "1"^^<http://www.w3.org/2001/XMLSchema#int> not converted to an inline int? 
+    
     // BlockMgrMapped
     // Change to a dynamic list of segments?
     
     // Log BGP's executed.
     // Assembler to cache graphs made (by location) so reuse is same graph engine 
     
-    // BulkLoader - move processing out of tdb.tdbloader
-    // Make sure that the index manipulations (PGraphBase=>GraphTuple) are index impl independent 
+    // BulkLoader
+    //    - move processing out of tdb.tdbloader
+    //    - shared formatting with GraphLoadMonitor
     
     // Misc :
     // Interface Sync everywhere?

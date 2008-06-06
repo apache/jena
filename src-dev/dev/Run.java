@@ -13,7 +13,10 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
+import lib.FileOps;
+
 import com.hp.hpl.jena.assembler.JA;
+import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.query.Query;
@@ -30,6 +33,7 @@ import com.hp.hpl.jena.sparql.sse.SSE;
 import com.hp.hpl.jena.sparql.sse.writers.WriterBasePrefix;
 import com.hp.hpl.jena.sparql.util.FmtUtils;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
+import com.hp.hpl.jena.tdb.TDBFactory;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 import com.hp.hpl.jena.tdb.btree.BTreeParams;
 import com.hp.hpl.jena.tdb.lib.StringAbbrev;
@@ -53,6 +57,25 @@ public class Run
     
     public static void main(String ... args)
     {
+
+        tdbquery("dataset.ttl", "SELECT * { ?s ?p 1}") ;
+        
+        Node s = SSE.parseNode("<http://example/x>") ;
+        Node p = SSE.parseNode("<http://example/p>") ;
+        Node n = SSE.parseNode("'1'^^<http://www.w3.org/2001/XMLSchema#int>") ;
+        
+        FileOps.clearDirectory("tmp") ;
+        Graph g = TDBFactory.createGraph("tmp") ;
+        g.add(new Triple(s,p,n)) ;
+        System.out.println(g) ;
+        g.close();
+        System.exit(0) ;
+        
+        
+        NodeId nodeId = NodeId.inline(n) ;
+        System.out.println(nodeId) ;
+        System.exit(0) ;
+        
         btreePacking(3, 32, 8*1024) ; System.exit(0) ;
         tdb.tdbconfig.main("stats", "--desc=dataset.ttl") ;
         System.exit(0) ;
@@ -248,6 +271,14 @@ public class Run
         ResultSetFormatter.out(rs) ;
         qexec.close() ;
     }
+    
+    private static void tdbquery(String assembler, String query)
+    {
+        String[] a = { "--desc="+assembler, query } ;
+        tdb.tdbquery.main(a) ;
+        System.exit(0) ;
+    }
+    
 }
 
 /*

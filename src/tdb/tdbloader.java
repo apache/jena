@@ -20,6 +20,7 @@ import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.sparql.util.StringUtils;
 import com.hp.hpl.jena.sparql.util.Timer;
+import com.hp.hpl.jena.sparql.util.Utils;
 import com.hp.hpl.jena.sparql.util.graph.GraphLoadMonitor;
 import com.hp.hpl.jena.tdb.index.TripleIndex;
 import com.hp.hpl.jena.tdb.pgraph.NodeId;
@@ -311,6 +312,7 @@ public class tdbloader extends CmdTDB
     private static void copyIndex(TripleIndex srcIdx, TripleIndex[] destIndexes, String label, boolean printTiming)
     {
         long quantum = 100000 ;
+        long quantum2 = 5*quantum ;
 
         Timer timer = new Timer() ;
         long cumulative = 0 ;
@@ -329,7 +331,7 @@ public class tdbloader extends CmdTDB
             }
             c++ ;
             cumulative++ ;
-            if ( printTiming && cumulative%quantum == 0 )
+            if ( printTiming && tickPoint(cumulative,quantum) )
             {
                 long t = timer.readTimer() ;
                 long batchTime = t-last ;
@@ -337,6 +339,14 @@ public class tdbloader extends CmdTDB
                 last = t ;
                 printf("Index %s: %,d slots (Batch: %,d slots/s / Run: %,d slots/s)\n", 
                                   label, cumulative, 1000*c/batchTime, 1000*cumulative/elapsed) ;
+                if (tickPoint(cumulative, quantum2) )
+                {
+                    String timestamp = Utils.nowAsString() ;
+                    String x = StringUtils.str(elapsed/1000F) ;
+                    // XXX Print elapsed.  Common formatting with GraphLoadMonitor - but now to share?
+                    printf("  Elapsed: %s seconds [%s]\n", x, timestamp) ;
+                    //now(label) ; 
+                }
                 c = 0 ;
             }
         }
@@ -364,6 +374,11 @@ public class tdbloader extends CmdTDB
         }
     }
     
+    private static boolean tickPoint(long counter, long quantum)
+    {
+        return counter%quantum == 0 ;
+    }
+
     private static synchronized void printf(String fmt, Object ...args)
     { System.out.printf(fmt, args) ; }
     
@@ -375,8 +390,11 @@ public class tdbloader extends CmdTDB
     
     private static synchronized void now(String str)
     { 
-        System.out.print(str) ;
-        System.out.print(" : ") ;
+        if ( str != null )
+        {
+            System.out.print(str) ;
+            System.out.print(" : ") ;
+        }
         System.out.println(StringUtils.str(new Date())) ;
     }
 }

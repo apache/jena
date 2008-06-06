@@ -91,9 +91,18 @@ public abstract class NodeTableBase implements NodeTable
             if ( id != null )
                 return id ; 
         }
+        // Inline?
+        NodeId nodeId = NodeId.inline(node) ;
+        if ( nodeId != null )
+            return nodeId ;
+        
         // Not in cache.  Try the index.
         long hash = NodeLib.hash(node) ;
-        return accessIndex(node, hash, allocate) ;
+        nodeId = accessIndex(node, hash, allocate) ;
+        
+        // Ensure caches have it.
+        updateCaches(node, nodeId) ;
+        return nodeId ;
     }
     
     // Access the node->NodeId index.  
@@ -115,7 +124,7 @@ public abstract class NodeTableBase implements NodeTable
                 return NodeId.NodeDoesNotExist ;
            
             // Write the node, which allocates an id for it.
-            NodeId id = nodeToNodeId(node) ;
+            NodeId id = nodeToNodeIdTable(node) ;
             
             // Update the r record with the new id.
             id.toBytes(r.getValue(), 0) ;
@@ -128,9 +137,8 @@ public abstract class NodeTableBase implements NodeTable
             return id ;
         }
         
-        // Found in the nodeHashToId index.  Ensure caches have it.
+        // Found in the nodeHashToId index.
         NodeId id = NodeId.create(r2.getValue(), 0) ;
-        updateCaches(node, id) ;
         return id ;
     }
     
@@ -146,7 +154,7 @@ public abstract class NodeTableBase implements NodeTable
     // Only places for conversion between NodeId<->Node, accessing the ObjectFile.
     // Special cases: integers and dateTimes
     
-    protected final NodeId nodeToNodeId(Node node)
+    protected final NodeId nodeToNodeIdTable(Node node)
     {
         NodeId x = NodeId.inline(node) ;
         if ( x != null )
@@ -155,6 +163,7 @@ public abstract class NodeTableBase implements NodeTable
         return objects.write(s) ;
     }
     
+
     protected final Node nodeIdToNode(NodeId id)
     {
         Node n = NodeId.extract(id) ;

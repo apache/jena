@@ -29,32 +29,34 @@ public class BlockMgrMapped extends BlockMgrFile
     
     private static Logger log = LoggerFactory.getLogger(BlockMgrMapped.class) ;
 
-    // Segmentation avoids over-mapping; allows file to grow (in chunks)  
-    private final int segmentSize = 8 * 1024 * 1024 ;
+    // Segmentation avoids over-mapping; allows file to grow (in chunks) 
+    private final int GrowthFactor = 2 ;
+    private final int SegmentSize = 8 * 1024 * 1024 ;
     private final int blocksPerSegment ;                              
     
-    // 8M*32000 = 256Gbytes of file addressability - needs tuning
-    private final int MaxNumSegements = 32000 ; 
-    private MappedByteBuffer[] segments = new MappedByteBuffer[MaxNumSegements] ;  
+    // 8M*32000 = 256Gbytes of file addressability
+    
+    private int initialNumSegements = 1 ; 
+    private MappedByteBuffer[] segments = new MappedByteBuffer[initialNumSegements] ;  
     
     // Unflushed segments.
     private int segmentDirtyCount = 0 ;
-    private boolean[] segmentDirty = new boolean[MaxNumSegements] ; 
-    
+    private boolean[] segmentDirty = new boolean[initialNumSegements] ; 
     
     BlockMgrMapped(String filename, int blockSize)
     {
         super(filename, blockSize) ;
-        blocksPerSegment = segmentSize/blockSize ;
-        if ( segmentSize%blockSize != 0 )
-            log.warn(format("%s: Segement size(%d) not a multiple of blocksize (%d)", filename, segmentSize, blockSize)) ;
+        blocksPerSegment = SegmentSize/blockSize ;
+        if ( SegmentSize%blockSize != 0 )
+            getLog().warn(format("%s: Segement size(%d) not a multiple of blocksize (%d)", filename, SegmentSize, blockSize)) ;
         
-        for ( int i = 0 ; i < MaxNumSegements ; i++ )
+        for ( int i = 0 ; i < initialNumSegements ; i++ )
+            // Not strictly necessary - default value is false.
             segmentDirty[i] = false ;
         segmentDirtyCount = 0 ;
         
-        if ( log.isDebugEnabled() )
-            log.debug(format("Segment:%d  BlockSize=%d  blocksPerSegment=%d", segmentSize, blockSize, blocksPerSegment)) ;
+        if ( getLog().isDebugEnabled() )
+            getLog().debug(format("Segment:%d  BlockSize=%d  blocksPerSegment=%d", SegmentSize, blockSize, blocksPerSegment)) ;
     }
     
     @Override
@@ -76,8 +78,8 @@ public class BlockMgrMapped extends BlockMgrFile
     @Override
     public ByteBuffer get(int id)
     {
-        if ( log.isDebugEnabled() ) 
-            log.debug(format("get(%d)", id)) ;
+        if ( getLog().isDebugEnabled() ) 
+            getLog().debug(format("get(%d)", id)) ;
         return getSilent(id) ;
     }
 
@@ -85,11 +87,11 @@ public class BlockMgrMapped extends BlockMgrFile
     public ByteBuffer getSilent(int id)
     {
             check(id) ;
-            int seg = id/blocksPerSegment ;                     // Segment.
-            int segOff = (id%blocksPerSegment)*blockSize ;      // Byte offset in segement
+            int seg = segment(id) ;                     // Segment.
+            int segOff = byteOffset(id) ;      // Byte offset in segement
     
-            if ( log.isDebugEnabled() ) 
-                log.debug(format("%d => [%d, %d]", id, seg, segOff)) ;
+            if ( getLog().isDebugEnabled() ) 
+                getLog().debug(format("%d => [%d, %d]", id, seg, segOff)) ;
     
             ByteBuffer segBuffer = allocSegment(seg) ;
             try {
@@ -109,47 +111,61 @@ public class BlockMgrMapped extends BlockMgrFile
             return dst ;
     }
     
-    private MappedByteBuffer allocSegment(int seg)
+    private int segment(int id) { return id/blocksPerSegment ; }
+    private int byteOffset(int id) { return (id%blocksPerSegment)*blockSize ; }
+    private long fileLocation(long segmentNumber) { return segmentNumber*SegmentSize ; }
+    
+    private synchronized MappedByteBuffer allocSegment(int seg)
     {
         if ( seg < 0 )
         {
-            log.error("Segment negative: "+seg) ;
+            getLog().error("Segment negative: "+seg) ;
             throw new BlockException("Negative segment: "+seg) ;
         }
         // Note : do long arthimetic, not int, then extended to long.
-        long longSeg  = seg ;
-        long offset = getByteOffset(longSeg) ;
+        if ( seg >= segments.length )
+            // More space needed.
+            synchronized(this) 
+            {
+                // More space needed.
+                MappedByteBuffer[] segments2 = new MappedByteBuffer[GrowthFactor*segments.length] ;
+                System.arraycopy(segments, 0, segments2, 0, segments.length) ;
+                boolean[] segmentDirty2 = new boolean[GrowthFactor*segmentDirty.length] ;
+                System.arraycopy(segmentDirty, 0, segmentDirty2, 0, segmentDirty.length) ;
+                                 
+                segmentDirty = segmentDirty2 ;
+                segments = segments2 ;
+            }
+        
+        long offset = fileLocation(seg) ;
         
         if ( offset < 0 )
         {
-            log.error("Segment offset gone negative: "+seg) ;
+            getLog().error("Segment offset gone negative: "+seg) ;
             throw new BlockException("Negative segment offset: "+seg) ;
         }
         
-        synchronized(this) 
+        // This, and flushDirtySegements(), are the only places to directly access segments[] while running. 
+        MappedByteBuffer segBuffer = segments[seg] ;
+        if ( segBuffer == null )
         {
-            // This, and flushDirtySegements(), are the only places to directly access segments[] while running. 
-            MappedByteBuffer segBuffer = segments[seg] ;
-            if ( segBuffer == null )
+            try {
+                segBuffer = channel.map(FileChannel.MapMode.READ_WRITE, offset, SegmentSize) ;
+                if ( getLog().isDebugEnabled() )
+                    getLog().debug(format("Segment: %d", seg)) ;
+                segments[seg] = segBuffer ;
+            } catch (IOException ex)
             {
-                try {
-                    segBuffer = channel.map(FileChannel.MapMode.READ_WRITE, offset, segmentSize) ;
-                    if ( log.isDebugEnabled() )
-                        log.debug(format("Segment: %d", seg)) ;
-                    segments[seg] = segBuffer ;
-                } catch (IOException ex)
-                {
-                    throw new BlockException("BlockMgrMapped.segmentAllocate: "+seg, ex) ;
-                }
+                throw new BlockException("BlockMgrMapped.segmentAllocate: "+seg, ex) ;
             }
-            segmentDirty[seg] = true ;
-            return segBuffer ;
         }
+        segmentDirty[seg] = true ;
+        return segBuffer ;
     }
 
-    private void flushDirtySegments()
+    private synchronized void flushDirtySegments()
     {
-        for ( int i = 0 ; i < MaxNumSegements ; i++ )
+        for ( int i = 0 ; i < segments.length ; i++ )
         {
             if ( segments[i] != null && segmentDirty[i] )
             {
@@ -160,13 +176,12 @@ public class BlockMgrMapped extends BlockMgrFile
         }
     }
 
-    private long getByteOffset(long segmentNumber) { return segmentNumber*segmentSize ; }
-    
     @Override
     public void put(int id, ByteBuffer block)
     {
         check(id, block) ;
-        // No work.
+        segmentDirty[segment(id)] = true ;
+        // No other work.
         putNotification(id, block) ;
     }
     
@@ -176,8 +191,8 @@ public class BlockMgrMapped extends BlockMgrFile
         check(id) ;
         int seg = id/blocksPerSegment ; 
         segmentDirty[seg] = false ;
-        if ( log.isDebugEnabled() ) 
-            log.debug(format("release(%d)", id)) ;
+        if ( getLog().isDebugEnabled() ) 
+            getLog().debug(format("release(%d)", id)) ;
     }
     
     @Override
@@ -193,6 +208,8 @@ public class BlockMgrMapped extends BlockMgrFile
         flushDirtySegments() ;
         super.force() ;
     }
+    
+    
     
 //    @Override
 //    public void finishUpdate()
