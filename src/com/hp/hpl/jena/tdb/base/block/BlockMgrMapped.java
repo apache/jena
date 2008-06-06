@@ -123,19 +123,17 @@ public class BlockMgrMapped extends BlockMgrFile
             throw new BlockException("Negative segment: "+seg) ;
         }
         // Note : do long arthimetic, not int, then extended to long.
-        if ( seg >= segments.length )
+        while ( seg >= segments.length )
+        {
             // More space needed.
-            synchronized(this) 
-            {
-                // More space needed.
-                MappedByteBuffer[] segments2 = new MappedByteBuffer[GrowthFactor*segments.length] ;
-                System.arraycopy(segments, 0, segments2, 0, segments.length) ;
-                boolean[] segmentDirty2 = new boolean[GrowthFactor*segmentDirty.length] ;
-                System.arraycopy(segmentDirty, 0, segmentDirty2, 0, segmentDirty.length) ;
-                                 
-                segmentDirty = segmentDirty2 ;
-                segments = segments2 ;
-            }
+            MappedByteBuffer[] segments2 = new MappedByteBuffer[GrowthFactor*segments.length] ;
+            System.arraycopy(segments, 0, segments2, 0, segments.length) ;
+            boolean[] segmentDirty2 = new boolean[GrowthFactor*segmentDirty.length] ;
+            System.arraycopy(segmentDirty, 0, segmentDirty2, 0, segmentDirty.length) ;
+
+            segmentDirty = segmentDirty2 ;
+            segments = segments2 ;
+        }
         
         long offset = fileLocation(seg) ;
         
