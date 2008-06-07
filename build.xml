@@ -71,7 +71,7 @@
   <!-- ==== Ivy Dependency   -->
 	
   <target name="ivy" description="Resolve dependences with Ivy">
-      <ivy:resolve haltonfailure="false" />
+      <ivy:resolve haltonfailure="false" /> <!-- Woodstox prolems -->
       <ivy:retrieve pattern="lib2/[artifact].[ext]" />
   </target>	
 	
