@@ -1,0 +1,34 @@
+<ivy-module version="2.0">
+    <info organisation="com.hp.hpl.jena" module="tdb"/>
+    <dependencies>
+	<!-- ?? latest.integration -->
+	<dependency org="com.hp.hpl.jena" name="arq" rev="latest.integration"/>
+	<dependency org="com.hp.hpl.jena" name="arq-extra" rev="latest.integration"/>
+
+	<!-- Pulls jena and it's dependennces -->
+	<!--
+	    <dependency org="com.hp.hpl.jena" name="iri" rev="0.5"/>
+	    <dependency org="com.hp.hpl.jena" name="jena" rev="2.5.6"/>
+	    <dependency org="com.hp.hpl.jena" name="jenatest" rev="2.5.6"/>
+	    <dependency org="com.hp.hpl.jena" name="json-jena" rev="1.0"/>
+	    <dependency org="com.hp.hpl.jena" name="concurrent-jena" rev="1.3.2"/>
+	    <dependency org="stax" name="stax-api" rev="1.0"/>
+	    <dependency org="org.apache.lucene" name="lucene-core" rev="2.3.1"/>
+	    <dependency org="antlr" name="antlr" rev="2.7.5"/>
+	    <dependency org="commons-logging" name="commons-logging" rev="1.1.1"/>
+	    <dependency org="com.ibm.icu" name="icu4j" rev="3.4.4"/>
+	    <dependency org="log4j" name="log4j" rev="1.2.15"/>
+	    <dependency org="xerces" name="xercesImpl" rev="2.7.1"/>
+	    <dependency org="xerces" name="xmlParserAPIs" rev="2.0.2"/>
+	-->
+
+	<!-- Correction (Jena 2.5.5 , ARQ 2.2) -->
+	<dependency org="woodstox" name="wstx-asl" rev="3.0.0"/>
+
+	<dependency org="junit" name="junit" rev="4.4"/>
+	<dependency org="org.slf4j" name="slf4j-api" rev="1.4.3"/>
+	<dependency org="org.slf4j" name="slf4j-log4j12" rev="1.4.3"/>
+
+    </dependencies>
+
+</ivy-module>

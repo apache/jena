@@ -1,10 +1,9 @@
-<project name="TDB" basedir="." default="main">
-
+<project xmlns:ivy="antlib:org.apache.ivy.ant" name="TDB" default="main">
   <!-- SETUP -->
   <property name="Name"                   value="TDB"/>
   <property name="name"                   value="tdb"/>
 
-<!-- The major and minor version numbers  -->
+  <!-- The major and minor version numbers  -->
   <property name="version-major"   value="0"/>
   <property name="version-minor"   value="0"/>
   <property name="version-status"  value="-dev"/>
@@ -68,6 +67,24 @@
     <property name="java.target"      value="1.6"/>
   </target>
 
+  <!-- ========================================== -->
+  <!-- ==== Ivy Dependency   -->
+	
+  <target name="ivy" description="Resolve dependences with Ivy">
+      <ivy:resolve haltonfailure="false" />
+      <ivy:retrieve pattern="lib2/[artifact].[ext]" />
+  </target>	
+	
+  <target name="pom">	
+      <ivy:makepom ivyfile="ivy.xml" 
+		   pomfile="pom-tdb.xml">
+	  <!--
+	  <mapping conf="default" scope="compile"/>
+	  <mapping conf="runtime" scope="runtime"/>
+	  -->
+      </ivy:makepom>
+  </target>
+	
   <!-- ========================================== -->
   <!-- ==== Build and compile -->
 
