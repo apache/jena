@@ -80,9 +80,9 @@
 
     <target name="ivy" depends="ivy-init" description="Resolve dependences with Ivy">
 	<!-- haltonfailure="false" : Woodstox problems (remove from jena 2.5.6) -->
-	<ivy:resolve haltonfailure="false" /> 
+	<ivy:resolve conf="dev" /> 
 	<!-- Place here -->
-	<ivy:retrieve pattern="lib2/[artifact]-[revision].[ext]" />
+	<ivy:retrieve conf="dev" pattern="lib2/[artifact]-[revision].[ext]" />
     </target>	
     
     <!-- Untested -->
