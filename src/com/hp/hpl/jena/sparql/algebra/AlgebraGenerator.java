@@ -199,13 +199,14 @@ public class AlgebraGenerator
                 continue ;
             }
                 
-            // ElementTriplesBlock
+            // It's an ElementTriplesBlock
             ElementTriplesBlock etb = (ElementTriplesBlock)elt ;
 
             if ( prev != null )
             {
-                // Previous was a BGP.  Merge because they were adjacent in a group
-                // in syntax, so it mush have been BGP, Filter, BGP.
+                // Previous was an ElementTriplesBlock.
+                // Merge because they were adjacent in a group
+                // in syntax, so it must have been BGP, Filter, BGP.
                 // Or someone constructed a non-serializable query. 
                 prev.addAll(etb.getTriples()) ;
                 continue ;
