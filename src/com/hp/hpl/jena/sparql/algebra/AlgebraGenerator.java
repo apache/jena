@@ -151,30 +151,75 @@ public class AlgebraGenerator
         Op current = OpTable.unit() ;
         ExprList exprList = new ExprList() ;
         
+        // First: get all filters, merge adjacent BGPs.
+        // The ElementGroup is in syntax order. 
+        // This includes BGP-FILTER-BGP
+        // This is a delay from parsing time so a printed query
+        // keeps filters where the query writer put them.
+        List groupElts = finalizeSyntax(groupElt, exprList) ; 
         
-        ElementGroup groupElt2 = new ElementGroup() ;
-        // The ElementGroup is in syntax order. This includes BGP-FILTER-BGP
-        
-//        // First: get all filters.
-//        for (Iterator iter = groupElt.getElements().listIterator() ; iter.hasNext() ; )
-//        {
-//            groupElt.
-//        }
-//        
-        
-        // This case must have the BGPs merged.
-        
-        for (Iterator iter = groupElt.getElements().listIterator() ; iter.hasNext() ; )
+        // Second: compile the consolidated group elements.
+        for (Iterator iter = groupElts.listIterator() ; iter.hasNext() ; )
         {
             Element elt = (Element)iter.next() ;
             current = compileOneInGroup(elt, current, exprList) ;
         }
             
-        // Filters collected from the group. 
+        // Third: Filters collected from the group. 
         if ( ! exprList.isEmpty() )
             current = OpFilter.filter(exprList, current) ;
         
         return current ;
+    }
+
+    /* Extract filters, merge adjacent BGPs.
+     * Return a list of elements: update the exprList
+     */
+    
+    private List finalizeSyntax(ElementGroup groupElt, ExprList exprList)
+    {
+        List groupElts = new ArrayList() ;
+        BasicPattern prev = null ;
+        
+        for (Iterator iter = groupElt.getElements().listIterator() ; iter.hasNext() ; )
+        {
+            Element elt = (Element)iter.next() ;
+            if ( elt instanceof ElementFilter )
+            {
+                ElementFilter f = (ElementFilter)elt ;
+                exprList.add(f.getExpr()) ;
+                // Does not place it in the returned list.
+                continue ;
+            }
+            
+            if ( ! ( elt instanceof ElementTriplesBlock ) )
+            {
+                prev = null ;
+                groupElts.add(elt) ;
+                continue ;
+            }
+                
+            // ElementTriplesBlock
+            ElementTriplesBlock etb = (ElementTriplesBlock)elt ;
+
+            if ( prev != null )
+            {
+                // Previous was a BGP.  Merge because they were adjacent in a group
+                // in syntax, so it mush have been BGP, Filter, BGP.
+                // Or someone constructed a non-serializable query. 
+                prev.addAll(etb.getTriples()) ;
+                continue ;
+            }
+
+            // New BGP.
+            // Copy - so that any later mergings do not change the original query. 
+
+            ElementTriplesBlock etb2 = new ElementTriplesBlock() ;
+            etb2.getTriples().addAll(etb.getTriples()) ;
+            prev = etb2.getTriples() ;
+            groupElts.add(etb2) ;
+        }
+        return groupElts ;
     }
 
     private Op compileOneInGroup(Element elt, Op current, ExprList exprList)
@@ -185,14 +230,6 @@ public class AlgebraGenerator
             ElementTriplesBlock etb = (ElementTriplesBlock)elt ;
             Op op =  compileBasicPattern(etb.getTriples()) ;
 
-//            // Merge adjacent BGP (any filters between then have been removed)
-//            if ( current instanceof OpBGP && op instanceof OpBGP )
-//            {
-//                OpBGP opBGP = (OpBGP)current ;
-//                opBGP.getPattern().addAll( ((OpBGP)op).getPattern() ) ;
-//                return current ;
-//            }
-            
             return join(current, op) ;
         }
         
