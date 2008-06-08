@@ -10,8 +10,8 @@
 
     <dependencies>
 	<!-- ?? latest.integration -->
-	<dependency org="com.hp.hpl.jena" name="arq" rev="latest.integration"/>
-	<dependency org="com.hp.hpl.jena" name="arq-extra" rev="latest.integration"/>
+	<dependency org="com.hp.hpl.jena" name="arq" rev="2.3"/>
+	<dependency org="com.hp.hpl.jena" name="arq-extra" rev="2.3"/>
 
 	<!-- Pulls jena and it's dependennces -->
 	<!--
