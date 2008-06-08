@@ -10,22 +10,22 @@ import com.hp.hpl.jena.rdf.model.Model;
 
 import com.hp.hpl.jena.tdb.TDBFactory;
 
-/** Example of creating a TDB-back model.
- *  Once the Model (or Graph) is created, all the normal Jena APIs work
- *  (including SPARQL and SPARQL/Update)
- *   
- *  Calling TDBFactory is the only place TDB-specific code is needed.
- *  
+/**
+ * Using an assembler description (see wiki for details of the assembler format for TDB)
  * @author Andy Seaborne
  */
 
-public class ExTDB1
+public class ExTDB2
 {
     public static void main(String... argv)
     {
-        // Direct way: Make a TDB-back Jena model in the named directory.
-        String directory = "MyDatabases/DB1" ;
-        Model model = TDBFactory.createModel(directory) ;
+        String assemblerFile = "Store/tdb-assembler.ttl" ;
+
+        // Assembler way: Make a TDB-back Jena model in the named directory.
+        // This way, you can change the model being used without changing the code.
+        // The assembler file is a configuration file.
+        // The same assembler description will work in Joseki. 
+        Model model = TDBFactory.assembleModel(assemblerFile) ;
     }
 }
 

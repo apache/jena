@@ -7,25 +7,53 @@
 package tdb.examples;
 
 import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.Resource;
 
-import com.hp.hpl.jena.tdb.TDBFactory;
+import com.hp.hpl.jena.util.FileManager;
 
-/** Example of creating a TDB-back model.
- *  Once the Model (or Graph) is created, all the normal Jena APIs work
- *  (including SPARQL and SPARQL/Update)
- *   
- *  Calling TDBFactory is the only place TDB-specific code is needed.
- *  
+import com.hp.hpl.jena.assembler.Assembler;
+import com.hp.hpl.jena.shared.JenaException;
+
+import com.hp.hpl.jena.sparql.core.assembler.DatasetAssemblerVocab;
+import com.hp.hpl.jena.sparql.util.TypeNotUniqueException;
+import com.hp.hpl.jena.sparql.util.graph.GraphUtils;
+
+import com.hp.hpl.jena.tdb.pgraph.assembler.PGraphAssemblerVocab;
+
+/** 
+ * Examples of finding an asembler for a TDB model in a larger collection
+ * of descriptions in a single file.
+ * 
  * @author Andy Seaborne
  */
-
-public class ExTDB1
+public class ExTDB3
 {
     public static void main(String... argv)
     {
-        // Direct way: Make a TDB-back Jena model in the named directory.
-        String directory = "MyDatabases/DB1" ;
-        Model model = TDBFactory.createModel(directory) ;
+        String assemblerFile = "Store/tdb-assembler.ttl" ;
+        
+        // Find a particular description in the file where there are several: 
+        Model spec = FileManager.get().loadModel(assemblerFile) ;
+
+        // Find the right starting point for the description in some way.
+        Resource root = null ;
+
+        if ( false )
+            // If you know the Resource URI:
+            root = spec.createResource("http://example/myChoiceOfURI" );
+        else
+        {
+            // Alternatively, look for the a single resource of the right type. 
+            try {
+                // Find the required description - the file can contain descriptions of many different types.
+                root = GraphUtils.findRootByType(spec, PGraphAssemblerVocab.PGraphType) ;
+                if ( root == null )
+                    throw new JenaException("Failed to find a suitable root") ;
+            } catch (TypeNotUniqueException ex)
+            { throw new JenaException("Multiple types for: "+DatasetAssemblerVocab.tDataset) ; }
+        }
+
+        Model model = (Model) Assembler.general.open(root) ;
     }
 }
 
