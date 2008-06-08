@@ -16,6 +16,11 @@ public class OpBGP extends Op0
 {
     private BasicPattern pattern ;
 
+    public static boolean isBGP(Op op)
+    {
+        return (op instanceof OpBGP ) ;
+    }
+
     public OpBGP(BasicPattern pattern)
     { this.pattern = pattern ; }
     

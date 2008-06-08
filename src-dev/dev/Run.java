@@ -43,19 +43,24 @@ public class Run
 {
     public static void main(String[] argv) throws Exception
     {
-        String qs = StringUtils.join("\n",
-                                      new String[]
-                                                 {
-                                          "PREFIX dc: <http://purl.org/dc/elements/1.1/>",
-                                          "INSERT DATA INTO <http://example/bookStore>",
-                                          "{ <http://example/book3>  dc:title  'Fundamentals of Compiler Design'}"}
-                                          ) ;
-        UpdateRequest request2 = UpdateFactory.create(qs);
-        request2.output(IndentedWriter.stdout);
-        IndentedWriter.stdout.flush();
-        
-        
-        System.exit(0) ;
+        {
+            String []a = { "--engine=ref", "--file=Q.rq", "--print=op" } ;
+            arq.qparse.main(a) ;
+            System.exit(0) ;
+        }
+        {
+            String qs = StringUtils.join("\n",
+                                         new String[]
+                                                    {
+                "PREFIX dc: <http://purl.org/dc/elements/1.1/>",
+                "INSERT DATA INTO <http://example/bookStore>",
+                                                    "{ <http://example/book3>  dc:title  'Fundamentals of Compiler Design'}"}
+            ) ;
+            UpdateRequest request2 = UpdateFactory.create(qs);
+            request2.output(IndentedWriter.stdout);
+            IndentedWriter.stdout.flush();
+            System.exit(0) ;
+        }
         
         
         UpdateRequest r = UpdateFactory.read("update.ru") ;

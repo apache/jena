@@ -35,8 +35,13 @@ public class AlgebraGenerator
     boolean fixedFilterPosition = false ;
     private Context context ;
     
-    // SimplifyEarly=true is the alternative reading of the DAWG
-    // algebra translation algorithm
+    // SimplifyEarly=true is the alternative reading of
+    // the DAWG Algebra translation algorithm. 
+
+    // If we simplify here 9early), it changes the SPARQL for OPTIONAL {{ FILTER }}
+    // The  {{}} reslts in (join unit (filter ...)) the filter is not moved
+    // into the LeftJoin.  
+    
     boolean simplifyEarly = false ;         // False is correct setting. 
 
     public AlgebraGenerator(Context context)
@@ -146,6 +151,19 @@ public class AlgebraGenerator
         Op current = OpTable.unit() ;
         ExprList exprList = new ExprList() ;
         
+        
+        ElementGroup groupElt2 = new ElementGroup() ;
+        // The ElementGroup is in syntax order. This includes BGP-FILTER-BGP
+        
+//        // First: get all filters.
+//        for (Iterator iter = groupElt.getElements().listIterator() ; iter.hasNext() ; )
+//        {
+//            groupElt.
+//        }
+//        
+        
+        // This case must have the BGPs merged.
+        
         for (Iterator iter = groupElt.getElements().listIterator() ; iter.hasNext() ; )
         {
             Element elt = (Element)iter.next() ;
@@ -166,11 +184,20 @@ public class AlgebraGenerator
         {
             ElementTriplesBlock etb = (ElementTriplesBlock)elt ;
             Op op =  compileBasicPattern(etb.getTriples()) ;
+
+//            // Merge adjacent BGP (any filters between then have been removed)
+//            if ( current instanceof OpBGP && op instanceof OpBGP )
+//            {
+//                OpBGP opBGP = (OpBGP)current ;
+//                opBGP.getPattern().addAll( ((OpBGP)op).getPattern() ) ;
+//                return current ;
+//            }
+            
             return join(current, op) ;
         }
         
         // Collect filters
-        if (  elt instanceof ElementFilter )
+        if ( elt instanceof ElementFilter )
         {
             ElementFilter f = (ElementFilter)elt ;
             if ( fixedFilterPosition )
@@ -356,6 +383,14 @@ public class AlgebraGenerator
     
     protected Op join(Op current, Op newOp)
     { 
+//        if ( current instanceof OpBGP && newOp instanceof OpBGP )
+//        {
+//            OpBGP opBGP = (OpBGP)current ;
+//            opBGP.getPattern().addAll( ((OpBGP)newOp).getPattern() ) ;
+//            return current ;
+//        }
+        
+        
         if ( simplifyEarly )
         {
             if ( OpJoin.isJoinIdentify(current) )

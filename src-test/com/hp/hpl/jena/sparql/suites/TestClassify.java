@@ -86,9 +86,10 @@ public class TestClassify extends TestCase
     // Assuming left-right execution, this is safe.
     public void testClassify_Join_21() 
     { classifyJ("{ { {} OPTIONAL { :s :p ?x } } {?s :p ?x } }", true) ; }
-    
-    public void testClassify_Join_30() 
-    { classifyJ("{ ?x ?y ?z {SELECT * { ?s ?p ?o} } }", true) ; }
+
+    // Not a join by adjacent BGP flattening. 
+//    public void testClassify_Join_30() 
+//    { classifyJ("{ ?x ?y ?z {SELECT * { ?s ?p ?o} } }", true) ; }
     
     // Subselect with modifier is handled witout linearization
     public void testClassify_Join_31() 

@@ -6,7 +6,9 @@
 
 package com.hp.hpl.jena.sparql.algebra;
 
+import com.hp.hpl.jena.sparql.algebra.op.OpBGP;
 import com.hp.hpl.jena.sparql.algebra.op.OpJoin;
+import com.hp.hpl.jena.sparql.core.BasicPattern;
 
 public class TransformSimplify extends TransformCopy
 {
@@ -16,6 +18,18 @@ public class TransformSimplify extends TransformCopy
             return right ;
         if ( OpJoin.isJoinIdentify(right) )
             return left ;
+        // Merge adjacent BGPs
+        // Because this is after (1) syntax issues of label scopes and (2)
+        // creation of LeftJoin etc, it is safe.
+        // Also works on nested subqueries that turned out to be simple BGPs.
+        if ( OpBGP.isBGP(left) && OpBGP.isBGP(right) )
+        {
+            BasicPattern pattern = new BasicPattern() ;
+            pattern.addAll( ((OpBGP)left).getPattern() ) ;
+            pattern.addAll( ((OpBGP)right).getPattern() ) ;
+            return new OpBGP(pattern) ;
+        }
+        
         return super.transform(opJoin, left, right) ;
     }
 }
