@@ -1,12 +1,8 @@
 SDB ToDo list (and general notes)
 =================================
 
-** Check documentation about assembler structures on wiki.
-
-** Docuemnt SDB.streamGraphAPI
-
-
-** Streaming for more DBs (MySQL)
+** Tidy the assembler descriuptions on wiki.
+   Currently two pages: make reference and tutorial.
 
 ** Check update tests - why is fork needed in ant for Pg and MS-SQL, but not MySQL? 
 
@@ -26,18 +22,6 @@ one-by-one
 ==== Wiki
 ** StoreFormatter.isFormatted()
 
-+ Document assembler for dataset on wiki
-  Single graph assembler.
-  (intercept ja:namedGraph)
-
-<#dataset> rdf:type sdb:DatasetStore ;
-    sdb:store <#store> .
-<#store> rdf:type sdb:Store ;
-    sdb:layout         "layout2/index" ;
-    sdb:connection     <#conn> .
-<#conn> rdf:type sdb:SDBConnection ;
-
-  And model assembler
 + Break out the merge query section into a separate wiki page.
 
 ==== Tests
