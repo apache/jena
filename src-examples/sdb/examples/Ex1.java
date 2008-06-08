@@ -6,17 +6,11 @@
 
 package sdb.examples;
 
-import com.hp.hpl.jena.query.Dataset;
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.QueryExecution;
-import com.hp.hpl.jena.query.QueryExecutionFactory;
-import com.hp.hpl.jena.query.QueryFactory;
-import com.hp.hpl.jena.query.ResultSet;
-import com.hp.hpl.jena.query.ResultSetFormatter;
+import com.hp.hpl.jena.query.*;
 
+import com.hp.hpl.jena.sdb.SDBFactory;
 import com.hp.hpl.jena.sdb.Store;
 import com.hp.hpl.jena.sdb.store.DatasetStore;
-import com.hp.hpl.jena.sdb.store.StoreFactory;
 
 /** Example of the usual way to connect store and issue a query.
  *  A description of the connection and store is read from file "sdb.ttl".
@@ -29,7 +23,7 @@ public class Ex1
     {
         String queryString = "SELECT * { ?s ?p ?o }" ;
         Query query = QueryFactory.create(queryString) ;
-        Store store = StoreFactory.create("sdb.ttl") ;
+        Store store = SDBFactory.connectStore("sdb.ttl") ;
         
         // Must be a DatasetStore to trigger the SDB query engine.
         // Creating a graph from the Store, and adding it to a general

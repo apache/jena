@@ -6,14 +6,9 @@
 
 package sdb.examples;
 
-import com.hp.hpl.jena.query.Dataset;
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.QueryExecution;
-import com.hp.hpl.jena.query.QueryExecutionFactory;
-import com.hp.hpl.jena.query.QueryFactory;
-import com.hp.hpl.jena.query.ResultSet;
-import com.hp.hpl.jena.query.ResultSetFormatter;
+import com.hp.hpl.jena.query.*;
 
+import com.hp.hpl.jena.sdb.SDBFactory;
 import com.hp.hpl.jena.sdb.Store;
 import com.hp.hpl.jena.sdb.StoreDesc;
 import com.hp.hpl.jena.sdb.sql.JDBC;
@@ -21,7 +16,6 @@ import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.store.DatabaseType;
 import com.hp.hpl.jena.sdb.store.DatasetStore;
 import com.hp.hpl.jena.sdb.store.LayoutType;
-import com.hp.hpl.jena.sdb.store.StoreFactory;
 
 /** Connect to a store using API calls. */ 
 
@@ -42,7 +36,7 @@ public class Ex2
         SDBConnection conn = new SDBConnection(jdbcURL, null, null) ; 
 
         // Make store from connection and store description. 
-        Store store = StoreFactory.create(storeDesc, conn) ;
+        Store store = SDBFactory.connectStore(conn, storeDesc) ;
         
         Dataset ds = DatasetStore.create(store) ;
         QueryExecution qe = QueryExecutionFactory.create(query, ds) ;
