@@ -1,9 +1,11 @@
 PREFIX : <http://example.org/ns#>
 PREFIX fn: <http://www.w3.org/2005/xpath-functions#>
 
-SELECT ?x #CONSTRUCT {?item :p  ?x}
+SELECT ?x
 WHERE {
-     ?item :p ?p .
-     ?item :q ?q .
-     ?x fn:string-join(?p ?q)
+##  ?item :q ?q  OPTIONAL {    { ?item :p ?p .FILTER(?p!=?q) } }
+
+    ?item1 :q ?q
+        FILTER(?p!=?q)
+      ?item2 :q ?q .
 }
