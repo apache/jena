@@ -1,277 +1,292 @@
 <project xmlns:ivy="antlib:org.apache.ivy.ant" name="TDB" default="main">
-  <!-- SETUP -->
-  <property name="Name"                   value="TDB"/>
-  <property name="name"                   value="tdb"/>
 
-  <!-- The major and minor version numbers  -->
-  <property name="version-major"   value="0"/>
-  <property name="version-minor"   value="0"/>
-  <property name="version-status"  value="-dev"/>
-  <property name="version"
-            value="${version-major}.${version-minor}${version-status}"/>
+    <!-- ========================================== -->
+    <!-- ==== Confifguration  -->
 
-  <property name="dist.name"              value="${Name}-${version}"/>
-  <property name="zipfile"         value="${name}-${version}.zip"/>
+    <property name="Name"                   value="TDB"/>
+    <property name="name"                   value="tdb"/>
 
-  <property name="dist.root"              value="dist"/>
-  <property name="dist.dir"               value="${dist.root}/${dist.name}"/>
+    <!-- The major and minor version numbers  -->
+    <property name="version-major"   value="0"/>
+    <property name="version-minor"   value="0"/>
+    <property name="version-status"  value="-dev"/>
+    <property name="version"
+	      value="${version-major}.${version-minor}${version-status}"/>
 
-  <property name="src.dir"                value="src"/>
-  <property name="src.test.dir"           value="src-test"/>
+    <property name="dist.name"              value="${Name}-${version}"/>
+    <property name="zipfile"                value="${name}-${version}.zip"/>
 
-  <property name="src.lib.dir"            value="src-lib"/>
-  <property name="src.lib.test.dir"       value="src-lib-test"/>
+    <property name="dist.root"              value="dist"/>
+    <property name="dist.dir"               value="${dist.root}/${dist.name}"/>
 
-  <property name="src.dev.dir"            value="src-dev"/>
+    <property name="src.dir"                value="src"/>
+    <property name="src.test.dir"           value="src-test"/>
 
-  <property name="build.dir"              value="build"/>
-  <property name="lib.dir"                value="lib"/>
-  <property name="test.dir"               value="testing"/>
-        <!-- Build classes --> 
-  <property name="classes.dir"            value="${build.dir}/classes"/>
-  <!-- <property name="jar.dir"                value="${build.dir}/jar"/> -->
-  <property name="jar.dir"                value="${lib.dir}"/>
-        
-        <!-- Meaning-less -->
-  <property name="main-class"             value="cmd.AVLRunTest"/>      
-  <property name="jarfile"                value="${name}.jar"/>
+    <property name="src.lib.dir"            value="src-lib"/>
+    <property name="src.lib.test.dir"       value="src-lib-test"/>
 
-  <property name="reports.dir"            value="reports"/>
-  <property name="reports.dir.xml"        value="reports/xml"/>
-  <property name="reports.outdir"         value="reports"/>
+    <property name="src.dev.dir"            value="src-dev"/>
 
-  <!-- ========================================== -->
-  <!-- ==== Setup  -->
+    <property name="build.dir"              value="build"/>
+    <property name="build.lib.dir"          value="build/lib"/>
+    <property name="lib.dir"                value="lib"/>
+    <property name="test.dir"               value="testing"/>
 
-  <path id="java.build.class.path">
-    <fileset dir="${lib.dir}" includes="*.jar" excludes="${jarfile}"/>
-  </path>
+    <!-- Build classes --> 
+    <property name="classes.dir"            value="${build.dir}/classes"/>
+    <!-- <property name="jar.dir"                value="${build.dir}/jar"/> -->
+    <property name="jar.dir"                value="${lib.dir}"/>
+    
+    <!-- Meaning-less -->
+    <!-- <property name="main.class"            value="package.something"/> -->
 
-  <path id="java.run.class.path">
-        <!-- jar file may, or may not, be in the lib directory -->
-    <fileset dir="${lib.dir}" includes="*.jar" excludes="${jarfile}"/>
-    <fileset dir="${jar.dir}" includes="*.jar"/>    
-  </path>
+    <property name="jarfile"                value="${name}.jar"/>
+
+    <property name="reports.dir"            value="reports"/>
+    <property name="reports.dir.xml"        value="reports/xml"/>
+    <property name="reports.outdir"         value="reports"/>
+
+    <!-- ========================================== -->
+    <!-- ==== Setup  -->
+
+    <path id="java.build.class.path">
+	<fileset dir="${lib.dir}" includes="*.jar" excludes="${jarfile}"/>
+    </path>
+
+    <path id="java.run.class.path">
+	<!-- jar file may, or may not, be in the lib directory -->
+	<fileset dir="${lib.dir}" includes="*.jar" excludes="${jarfile}"/>
+	<fileset dir="${jar.dir}" includes="*.jar"/>    
+    </path>
+
+    <target name="javac-flags">
+	<!-- Note that in ant, if these flags are already set 
+	     setting them again has no effect -->
+	<property name="java.debug"       value="true"/>
+	<property name="java.debuglevel"  value="source,lines,vars"/>
+	<property name="java.deprecation" value="true"/>
+	<property name="java.optimize"    value="true"/>
+	<property name="java.encoding"    value="UTF8"/>
+	<property name="java.source"      value="1.6"/>
+	<property name="java.target"      value="1.6"/>
+    </target>
+
+    <!-- ========================================== -->
+    <!-- ==== Ivy Dependency   -->
+    
+    <target name="ivy" description="Resolve dependences with Ivy">
+	<ivy:settings />
+	<!-- Woodstox problems (remove from jena 2.5.6) -->
+	<ivy:resolve haltonfailure="false" /> 
+	<!-- Place here -->
+	<ivy:retrieve pattern="lib2/[artifact].[ext]" />
+    </target>	
+    
+    <target name="ivy-publish" depends="" description="Publish (with Ivy)">
+	<ivy:publish resolver="publish-resolver" pubrevision="${version}">
+	    <artifacts pattern="${build.lib.dir}/[artifact].[ext]" />
+	</ivy:publish>
+    </target>
+
+    <target name="pom">	
+	<ivy:makepom ivyfile="ivy.xml" 
+		     pomfile="pom-tdb.xml">
+	    <!--
+		<mapping conf="default" scope="compile"/>
+		<mapping conf="runtime" scope="runtime"/>
+	    -->
+	</ivy:makepom>
+    </target>
+    
+    <!-- ========================================== -->
+    <!-- ==== Build and compile -->
+
+    <target name="clean-build" depends="clean-build-dirs,jar"/>
+
+    <target name="compile" depends="javac-flags" description="compile project">
+	<mkdir dir="${classes.dir}"/>
+	<javac destdir="${classes.dir}"
+	       debug="${java.debug}"
+	       deprecation="${java.debuglevel}"
+	       optimize="${java.optimize}"
+	       encoding="${java.encoding}"
+	       source="${java.source}"
+	       target="${java.target}"
+	       >
+	    <src path="${src.dir}"/>
+	    <src path="${src.test.dir}"/>
+	    <src path="${src.lib.dir}"/>
+	    <src path="${src.lib.test.dir}"/>
+	    <src path="${src.dev.dir}"/>
+	    <classpath refid="java.build.class.path" />
+	</javac>
+    </target>
+
+    <target name="jars" depends="jar" />
+    <target name="jar" depends="compile" description="Build the JAR">
+	<mkdir dir="${jar.dir}"/>
+	<delete file="${jar.dir}/${jarfile}"/>
+	<jar destfile="${jar.dir}/${jarfile}" basedir="${classes.dir}">
+	    <!--
+	    <manifest>
+		<attribute name="Main-Class" value="${main.class}"/>
+	    </manifest>
+	    -->
+	</jar>
+    </target>
+
+    <target name="clean-build-dirs">
+	<delete dir="${build.dir}"/>
+    </target>
+
+    <!-- ========================================== -->
+    <!-- ==== JUnit and reporting -->
+
+    <target name="junit" depends="run-junit" description="Run the test suite">
+	<fail message="Junit tests failed" if="junit.failed"/>
+    </target>
+
+    <target name="report" depends="run-report" description="Run tests and generate reports">
+	<fail message="Junit tests failed" if="junit.failed"/>
+    </target>
+
+    <!-- Worker tasks for the above tasks -->
+
+    <target name="run-junit" depends="compile,clean-reports">
+	<mkdir dir="${reports.dir}"/>
+	<mkdir dir="${reports.dir.xml}"/>
+
+	<!-- Don't stop on failure - set a property -->
+	<junit printsummary="yes" 
+	       errorProperty="junit.failed"
+	       failureProperty="junit.failed">
+	    <!-- usefile="false"  type="plain"-->
+	    <!-- <formatter usefile="false" type="brief"/> -->
+	    <formatter type="xml"/>
+	    <classpath>
+		<pathelement path="${classes.dir}"/>
+		<path refid="java.run.class.path"/>
+	    </classpath>
+	    <!-- <test name="test.TS_Main" outfile="${reports.dir.xml}/junit-report"/> -->
+	    <batchtest todir="${reports.dir.xml}">
+		<fileset dir="${src.test.dir}">
+		    <include name="**/TS_*.java"/>
+		</fileset>
+		<fileset dir="${src.lib.test.dir}">
+		    <include name="**/TS_*.java"/>
+		</fileset>
+	    </batchtest>
+	</junit>
+    </target>
+
+    <target name="run-report" depends="run-junit">
+	<junitreport todir="./${reports.dir}">
+	    <fileset dir="./${reports.dir.xml}">
+		<include name="**.xml"/>
+	    </fileset>
+	    <report format="frames" todir="./${reports.outdir}"/>
+	</junitreport>
+    </target>
+
+    <target name="clean-reports">
+	<delete dir="${reports.dir}"/>
+	<delete dir="${reports.dir.xml}"/>
+	<delete dir="${reports.outdir}"/>
+    </target>
+
+    <!-- ========================================== -->
+    <!-- ==== Run -->
+
+    <target name="run" depends="compile">
+	<java classname="${main-class}" fork="true">
+	    <!-- jar="${jar.dir}/${jarfile}"-->
+	    <arg value="--check"/>
+	    <arg value="10"/>
+	    <arg value="100"/>
+	    <classpath>
+		<pathelement path="${classes.dir}"/>
+		<path refid="java.run.class.path"/>
+	    </classpath>
+	</java>
+    </target>
+
+    <!-- ========================================== -->
+    <!-- ==== Release -->
+
+    <target name="release" depends="package"
+	    description="Create TDB release">
+	<antcall target="clean-build-dirs"/>
+    </target>
+
+    <target name="package"
+	    depends="jars,copy,zip"/>
+
+    <target name="copy">
+	<delete dir="${dist.dir}"/>
+	<mkdir dir="${dist.dir}"/>
+
+	<mkdir dir="${dist.dir}/${lib.dir}"/>
+
+	<copy todir="${dist.dir}/${lib.dir}">
+	    <fileset dir="${lib.dir}" includes="**/*.jar" excludes="${jarfile}"/>
+	    <fileset dir="${jar.dir}" includes="*.jar"/>
+	</copy>
+
+	<copy todir="${dist.dir}/${test.dir}">
+	    <fileset dir="${test.dir}"/>
+	</copy>
+
+	<!-- bin/ (and bat/ if any) -->
+	<copy todir="${dist.dir}/bin">
+	    <fileset dir="bin"/>
+	</copy>
+	<copy todir="${dist.dir}/bin2">
+	    <fileset dir="bin2"/>
+	</copy>
+
+	<copy todir="${dist.dir}/" file="build.xml"/>
+	<copy todir="${dist.dir}/" file="copyright.txt"/>
+	<copy todir="${dist.dir}/" file="README.txt"/>
+	<copy todir="${dist.dir}/" file="ChangeLog.txt"/>
+
+	<copy todir="${dist.dir}/${src.dir}">
+	    <fileset dir="${src.dir}" includes="**"/>
+	    <fileset dir="${src.lib.dir}" includes="**"/>
+	    <fileset dir="${src.test.dir}" includes="**"/>
+	    <fileset dir="${src.lib.test.dir}" includes="**"/>
+	</copy>
+
+	<!-- Documentation is on the wiuki, mainly.
+	     <copy todir="${dist.dir}/${doc.dir}">
+	     <fileset dir="${doc.dir}">
+	     <include name="**"/>
+	     <exclude name="**/_vti*/**"/>
+	     <exclude name="**/_private/**"/>
+	     <exclude name="**/desktop.ini"/>
+	     </fileset>
+	     </copy>
+	-->
+
+    </target>
+    
+    <target name="zip" >
+	<!-- Build the zip of everything -->
+	<delete file="${dist.root}/${zipfile}"/>
+	<zip zipfile="${dist.root}/${zipfile}">
+	    <fileset dir="dist" includes="${dist.name}/**"/>
+	</zip>
+    </target>
 
 
-  <!-- Java setup -->
-  <target name="javac-flags">
-    <!-- Note that in ant, if these flags are already set 
-         setting them again has no effect -->
-    <property name="java.debug"       value="true"/>
-    <property name="java.debuglevel"  value="source,lines,vars"/>
-    <property name="java.deprecation" value="true"/>
-    <property name="java.optimize"    value="true"/>
-    <property name="java.encoding"    value="UTF8"/>
-    <property name="java.source"      value="1.6"/>
-    <property name="java.target"      value="1.6"/>
-  </target>
-
-  <!-- ========================================== -->
-  <!-- ==== Ivy Dependency   -->
-	
-  <target name="ivy" description="Resolve dependences with Ivy">
-      <ivy:resolve haltonfailure="false" /> <!-- Woodstox prolems -->
-      <ivy:retrieve pattern="lib2/[artifact].[ext]" />
-  </target>	
-	
-  <target name="pom">	
-      <ivy:makepom ivyfile="ivy.xml" 
-		   pomfile="pom-tdb.xml">
-	  <!--
-	  <mapping conf="default" scope="compile"/>
-	  <mapping conf="runtime" scope="runtime"/>
-	  -->
-      </ivy:makepom>
-  </target>
-	
-  <!-- ========================================== -->
-  <!-- ==== Build and compile -->
-
-  <target name="clean-build" depends="clean-build-dirs,jars"/>
-
-  <target name="compile" depends="javac-flags" description="compile project">
-    <mkdir dir="${classes.dir}"/>
-    <javac destdir="${classes.dir}"
-	   debug="${java.debug}"
-	   deprecation="${java.debuglevel}"
-	   optimize="${java.optimize}"
-	   encoding="${java.encoding}"
-	   source="${java.source}"
-	   target="${java.target}"
-     >
-      <src path="${src.dir}"/>
-      <src path="${src.test.dir}"/>
-      <src path="${src.lib.dir}"/>
-      <src path="${src.lib.test.dir}"/>
-      <src path="${src.dev.dir}"/>
-      <classpath refid="java.build.class.path" />
-    </javac>
-  </target>
-
-  <target name="jar" depends="jars" />
-  <target name="jars" depends="compile" description="Build the JAR anew">
-    <mkdir dir="${jar.dir}"/>
-    <delete file="${jar.dir}/${jarfile}"/>
-    <jar destfile="${jar.dir}/${jarfile}" basedir="${classes.dir}">
-      <manifest>
-        <attribute name="Main-Class" value="${main-class}"/>
-      </manifest>
-    </jar>
-  </target>
-
-  <target name="clean-build-dirs">
-    <delete dir="${build.dir}"/>
-  </target>
-
-  <!-- ========================================== -->
-  <!-- ==== JUnit and reporting -->
-
-  <target name="junit" depends="run-junit" description="Run the test suite">
-    <fail message="Junit tests failed" if="junit.failed"/>
-  </target>
-
-  <target name="report" depends="run-report" description="Run tests and generate reports">
-    <fail message="Junit tests failed" if="junit.failed"/>
-  </target>
-
-  <!-- Worker tasks for the above tasks -->
-
-  <target name="run-junit" depends="compile,clean-reports">
-    <mkdir dir="${reports.dir}"/>
-    <mkdir dir="${reports.dir.xml}"/>
-
-    <!-- Don't stop on failure - set a property -->
-    <junit printsummary="yes" 
-           errorProperty="junit.failed"
-           failureProperty="junit.failed">
-      <!-- usefile="false"  type="plain"-->
-      <!-- <formatter usefile="false" type="brief"/> -->
-      <formatter type="xml"/>
-      <classpath>
-        <pathelement path="${classes.dir}"/>
-        <path refid="java.run.class.path"/>
-      </classpath>
-      <!-- <test name="test.TS_Main" outfile="${reports.dir.xml}/junit-report"/> -->
-      <batchtest todir="${reports.dir.xml}">
-        <fileset dir="${src.test.dir}">
-          <include name="**/TS_*.java"/>
-        </fileset>
-        <fileset dir="${src.lib.test.dir}">
-          <include name="**/TS_*.java"/>
-        </fileset>
-      </batchtest>
-    </junit>
-  </target>
-
-  <target name="run-report" depends="run-junit">
-    <junitreport todir="./${reports.dir}">
-      <fileset dir="./${reports.dir.xml}">
-        <include name="**.xml"/>
-      </fileset>
-      <report format="frames" todir="./${reports.outdir}"/>
-    </junitreport>
-  </target>
-
-  <target name="clean-reports">
-    <delete dir="${reports.dir}"/>
-    <delete dir="${reports.dir.xml}"/>
-    <delete dir="${reports.outdir}"/>
-  </target>
-
-  <!-- ========================================== -->
-  <!-- ==== Run -->
-
-  <target name="run" depends="compile">
-    <java classname="${main-class}" fork="true">
-      <!-- jar="${jar.dir}/${jarfile}"-->
-      <arg value="--check"/>
-      <arg value="10"/>
-      <arg value="100"/>
-      <classpath>
-                <pathelement path="${classes.dir}"/>
-                <path refid="java.run.class.path"/>
-      </classpath>
-    </java>
-  </target>
-
-  <!-- ========================================== -->
-  <!-- ==== Release -->
-
-  <target name="release" depends="package"
-          description="Create TDB release">
-    <antcall target="clean-build-dirs"/>
-  </target>
-
-  <target name="package"
-          depends="jars,copy,zip"/>
-
-  <target name="copy">
-    <delete dir="${dist.dir}"/>
-    <mkdir dir="${dist.dir}"/>
-
-    <mkdir dir="${dist.dir}/${lib.dir}"/>
-
-    <copy todir="${dist.dir}/${lib.dir}">
-      <fileset dir="${lib.dir}" includes="**/*.jar" excludes="${jarfile}"/>
-      <fileset dir="${jar.dir}" includes="*.jar"/>
-    </copy>
-
-    <copy todir="${dist.dir}/${test.dir}">
-      <fileset dir="${test.dir}"/>
-    </copy>
-
-    <!-- bin/ (and bat/ if any) -->
-    <copy todir="${dist.dir}/bin">
-      <fileset dir="bin"/>
-    </copy>
-    <copy todir="${dist.dir}/bin2">
-      <fileset dir="bin2"/>
-    </copy>
-
-    <copy todir="${dist.dir}/" file="build.xml"/>
-    <copy todir="${dist.dir}/" file="copyright.txt"/>
-    <copy todir="${dist.dir}/" file="README.txt"/>
-    <copy todir="${dist.dir}/" file="ChangeLog.txt"/>
-
-    <copy todir="${dist.dir}/${src.dir}">
-      <fileset dir="${src.dir}" includes="**"/>
-      <fileset dir="${src.lib.dir}" includes="**"/>
-      <fileset dir="${src.test.dir}" includes="**"/>
-      <fileset dir="${src.lib.test.dir}" includes="**"/>
-    </copy>
-
-    <!-- Documentation is on the wiuki, mainly.
-    <copy todir="${dist.dir}/${doc.dir}">
-      <fileset dir="${doc.dir}">
-        <include name="**"/>
-        <exclude name="**/_vti*/**"/>
-        <exclude name="**/_private/**"/>
-        <exclude name="**/desktop.ini"/>
-      </fileset>
-    </copy>
-    -->
-
-  </target>
-  
-  <target name="zip" >
-    <!-- Build the zip of everything -->
-    <delete file="${dist.root}/${zipfile}"/>
-    <zip zipfile="${dist.root}/${zipfile}">
-      <fileset dir="dist" includes="${dist.name}/**"/>
-    </zip>
-  </target>
+    <!-- ========================================== -->
+    <!-- ==== Misc -->
 
 
-  <!-- ========================================== -->
-  <!-- ==== Misc -->
+    <target name="main" depends="clean,compile,jar" description="Make the jar"/>
 
-
-  <target name="main" depends="clean,compile,jar"/>
-
-  <target name="clean" 
-          depends="clean-build-dirs,clean-reports" 
-          description="cleanup">
-  </target>
+    <target name="clean" 
+	    depends="clean-build-dirs,clean-reports" 
+	    description="Cleanup">
+    </target>
 
 </project>
