@@ -1,5 +1,7 @@
 ==== ARQ ToDo
 
+** Stricter rules for property functions - must bind al variables => can do FILTER migration across them.
+
 ** Clearer ways to add BGP solver mechanisms - invert Stage/StageList 
 
 ++ ** Document "stages" - new form.
