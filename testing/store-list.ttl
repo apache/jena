@@ -29,11 +29,11 @@ _:x rdf:type sdb:StoreList ;
 ##       [ rdfs:label "PGSQL/Index" ;
 ##         sdb:description <StoreDesc/pgsql-index.ttl> ]
 ## 
-      [ rdfs:label "MySQL/Hash" ;
-        sdb:description <StoreDesc/mysql-hash.ttl> ]
-
-      [ rdfs:label "MySQL/Index" ;
-        sdb:description <StoreDesc/mysql-index.ttl> ]
+##       [ rdfs:label "MySQL/Hash" ;
+##         sdb:description <StoreDesc/mysql-hash.ttl> ]
+## 
+##       [ rdfs:label "MySQL/Index" ;
+##         sdb:description <StoreDesc/mysql-index.ttl> ]
 ## 
 ##       [ rdfs:label "OracleXE/Hash" ;
 ##         sdb:description <StoreDesc/oracle-xe-hash.ttl> ]
@@ -58,4 +58,4 @@ _:x rdf:type sdb:StoreList ;
 ## 
 ##       [ rdfs:label "HSQLDB/Index" ;
 ##         sdb:description <StoreDesc/hsqldb-index.ttl> ]
-    ) .
+     ) .
