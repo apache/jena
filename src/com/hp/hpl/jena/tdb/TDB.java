@@ -16,6 +16,7 @@ import com.hp.hpl.jena.tdb.solver.StageGeneratorPGraphBGP;
 import com.hp.hpl.jena.tdb.solver.StageGeneratorPGraphSimple;
 
 import com.hp.hpl.jena.sparql.engine.main.StageGenerator;
+import com.hp.hpl.jena.sparql.util.Symbol;
 
 import com.hp.hpl.jena.query.ARQ;
 
@@ -25,6 +26,8 @@ public class TDB
     public static final Logger log = LoggerFactory.getLogger(TDB.class) ;
     
     public static String namespace = "http://jena.hpl.hp.com/2008/tdb#" ;
+    
+    public static Symbol logBGPs = Symbol.create(namespace+"logBGP") ;
     
 //    public static void panic(Class<?> clazz, String string)
 //    {

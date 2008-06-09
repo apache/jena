@@ -6,6 +6,8 @@
 
 package tdb;
 
+import com.hp.hpl.jena.query.ARQ;
+
 import tdb.cmdline.ModTDBDataset;
 import arq.cmdline.ModDataset;
 
@@ -24,6 +26,16 @@ public class tdbquery extends arq.query
     {
         super(argv) ;
         TDB.init() ;
+    }
+    
+    @Override
+    protected void processModulesAndArgs()
+    {
+        super.processModulesAndArgs() ;
+        if ( isVerbose() )
+        {
+            ARQ.getContext().setTrue(TDB.logBGPs) ;
+        }
     }
     
     @Override

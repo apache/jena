@@ -6,15 +6,20 @@
 
 package com.hp.hpl.jena.tdb.solver;
 
+import iterator.Iter;
+
 import java.util.List;
 
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Triple;
+
 import com.hp.hpl.jena.sparql.core.BasicPattern;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.main.Stage;
 import com.hp.hpl.jena.sparql.engine.main.StageGenerator;
 import com.hp.hpl.jena.sparql.engine.main.StageList;
+
+import com.hp.hpl.jena.tdb.TDB;
 import com.hp.hpl.jena.tdb.pgraph.PGraphBase;
 
 public class StageGeneratorPGraphBGP implements StageGenerator
@@ -39,6 +44,11 @@ public class StageGeneratorPGraphBGP implements StageGenerator
         List<Triple> triples = (List<Triple>)pattern.getList() ;
         
         triples = reorder(graph, triples) ;
+        if ( execCxt.getContext().isTrue(TDB.logBGPs) )
+        {
+            String x = Iter.asString(triples, " . " ) ;
+            System.out.println("BGP: ["+x+"]") ;
+        }
         
         Stage stage = new StageBGP(graph, triples) ;
         StageList sList = new StageList() ;

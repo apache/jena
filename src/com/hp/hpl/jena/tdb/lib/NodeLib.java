@@ -19,6 +19,8 @@ import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.rdf.model.AnonId;
 import com.hp.hpl.jena.shared.PrefixMapping;
 import com.hp.hpl.jena.sparql.sse.SSE;
+import com.hp.hpl.jena.sparql.sse.SSEParseException;
+import com.hp.hpl.jena.sparql.util.ALog;
 import com.hp.hpl.jena.sparql.util.FmtUtils;
 import com.hp.hpl.jena.tdb.base.record.Record;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
@@ -47,7 +49,13 @@ public class NodeLib
             return Node.createAnon(new AnonId(s)) ;
         }
         
-        return SSE.parseNode(s, pmap) ;
+        try {
+            return SSE.parseNode(s, pmap) ;
+        } catch (SSEParseException ex)
+        {
+            ALog.fatal(NodeLib.class, "decode: Failed to parse: "+s) ;
+            throw ex ;
+        }
     }
     
     public static long hash(Node n)
