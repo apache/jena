@@ -169,6 +169,7 @@ public abstract class TupleLoaderBase extends com.hp.hpl.jena.sdb.store.TupleLoa
 		boolean handleTransaction = false; // is somebody handling transactions already?
 		try {
 			handleTransaction = connection.getSqlConnection().getAutoCommit();
+			if (handleTransaction) connection.getSqlConnection().setAutoCommit(false);
 		} catch (SQLException e) {
 			throw new SDBException("Failed to get autocommit status", e);
 		}
@@ -188,7 +189,6 @@ public abstract class TupleLoaderBase extends com.hp.hpl.jena.sdb.store.TupleLoa
 		boolean handleTransaction = startTransaction(connection());
 		
 		try {
-			if (handleTransaction) connection().getSqlConnection().setAutoCommit(false); // turn off if needed
 			if (amLoading) {
 				insertNodeLoader.executeBatch();
 				insertTupleLoader.executeBatch();
