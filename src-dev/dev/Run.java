@@ -274,7 +274,7 @@ public class Run
     
     private static void tdbquery(String assembler, String query)
     {
-        String[] a = { "--desc="+assembler, query } ;
+        String[] a = { "--set", "tdb:logBGP=true", "--desc="+assembler, query } ;
         tdb.tdbquery.main(a) ;
         System.exit(0) ;
     }

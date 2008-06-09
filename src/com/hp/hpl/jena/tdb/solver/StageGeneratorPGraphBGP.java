@@ -45,8 +45,6 @@ public class StageGeneratorPGraphBGP implements StageGenerator
         
         triples = reorder(graph, triples) ;
         
-        System.out.println(execCxt.getContext()) ;
-        
         if ( execCxt.getContext().isTrue(TDB.logBGPs) )
         {
             String x = Iter.asString(triples, " . " ) ;
