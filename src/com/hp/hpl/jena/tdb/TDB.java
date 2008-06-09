@@ -27,7 +27,7 @@ public class TDB
     
     public static String namespace = "http://jena.hpl.hp.com/2008/tdb#" ;
     
-    public static Symbol logBGPs = Symbol.create(namespace+"logBGP") ;
+    public static Symbol logBGPs = Symbol.create("tdb:logBGP") ;
     
 //    public static void panic(Class<?> clazz, String string)
 //    {
