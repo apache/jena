@@ -28,6 +28,9 @@ public class ARQ
     /** Root of ARQ-defined parameter names */  
     public static final String arqNS = "http://jena.hpl.hp.com/ARQ#" ;
     
+    /** Root of ARQ-defined parameter names */  
+    public static final String arqSymbolPrefix = "arq:" ;
+    
     /** Stick exactly to the spec.
      */
     public static final Symbol strictSPARQL =

@@ -20,7 +20,7 @@ public class ModSymbol implements ArgModuleGeneral
     Context context = new Context() ;
     private String namespace ;
     
-    public ModSymbol() { this(ARQ.arqNS) ; }
+    public ModSymbol() { this(ARQ.arqSymbolPrefix) ; }
     
     public ModSymbol(String namespace) { this.namespace = namespace ; }
     
@@ -48,7 +48,7 @@ public class ModSymbol implements ArgModuleGeneral
             String symbolName = frags[0] ;
             String value = frags[1] ;
 
-            if ( ! symbolName.matches("^[a-zA-Z]*:") )
+            if ( ! symbolName.matches("^[a-zA-Z]*:.*") )
                 symbolName = namespace + symbolName ;
             
             Symbol symbol = Symbol.create(symbolName) ;

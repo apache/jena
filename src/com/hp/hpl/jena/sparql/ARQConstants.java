@@ -84,11 +84,11 @@ public class ARQConstants
     
     public static Symbol allocSymbol(String shortName)
     { 
-        if ( shortName.startsWith(ARQ.arqNS)) 
-            throw new ARQInternalErrorException("Symbol short name begins with the ARQ namespace name: "+shortName) ;
+        if ( shortName.startsWith(ARQ.arqSymbolPrefix)) 
+            throw new ARQInternalErrorException("Symbol short name begins with the ARQ namespace prefix: "+shortName) ;
         if ( shortName.startsWith("http:")) 
             throw new ARQInternalErrorException("Symbol short name begins with http: "+shortName) ;
-        return allocSymbol(ARQ.arqNS, shortName) ;
+        return allocSymbol(ARQ.arqSymbolPrefix, shortName) ;
     }
     
     public static Symbol allocSymbol(String base, String shortName)

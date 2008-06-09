@@ -5,9 +5,7 @@
 
 package com.hp.hpl.jena.sparql.engine.optimizer.util;
 
-import com.hp.hpl.jena.sparql.ARQConstants;
 import com.hp.hpl.jena.sparql.util.Symbol;
-import com.hp.hpl.jena.sparql.engine.optimizer.util.Vocabulary;
 
 /**
  * The class contains some constants used in ARQo.
@@ -26,11 +24,11 @@ public class Constants
 	/** The localhost name space */
 	public static final String localhostNS = "http://localhost/#" ;
 	/** Check flag if the BGP optimizer is enabled */
-	public static final Symbol isEnabled = ARQConstants.allocSymbol(arqOptimizerNS, Vocabulary.isEnabled.getURI()) ;
+	public static final Symbol isEnabled = Symbol.create(Vocabulary.isEnabled.getURI()) ;
 	/** The Probabilistic Framework Symbol used for the ARQ context */
-	public static final Symbol PF = ARQConstants.allocSymbol(arqOptimizerNS, Vocabulary.PF.getURI()) ;
+	public static final Symbol PF = Symbol.create(Vocabulary.PF.getURI()) ;
 	/** The heuristic Symbol used for the ARQ context */
-	public static final Symbol heuristic = ARQConstants.allocSymbol(arqOptimizerNS, Vocabulary.heuristic.getURI()) ;
+	public static final Symbol heuristic = Symbol.create(Vocabulary.heuristic.getURI()) ;
 }
 
 
