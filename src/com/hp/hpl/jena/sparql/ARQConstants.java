@@ -88,7 +88,7 @@ public class ARQConstants
             throw new ARQInternalErrorException("Symbol short name begins with the ARQ namespace prefix: "+shortName) ;
         if ( shortName.startsWith("http:")) 
             throw new ARQInternalErrorException("Symbol short name begins with http: "+shortName) ;
-        return allocSymbol(ARQ.arqSymbolPrefix, shortName) ;
+        return allocSymbol(ARQ.arqNS, shortName) ;
     }
     
     public static Symbol allocSymbol(String base, String shortName)

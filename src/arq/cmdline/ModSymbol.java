@@ -10,6 +10,8 @@ import java.io.PrintStream;
 import java.util.Iterator;
 
 import com.hp.hpl.jena.query.ARQ;
+import com.hp.hpl.jena.shared.PrefixMapping;
+import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
 import com.hp.hpl.jena.sparql.util.Context;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
 import com.hp.hpl.jena.sparql.util.Symbol;
@@ -33,6 +35,13 @@ public class ModSymbol implements ArgModuleGeneral
     public void checkCommandLine(CmdArgModule cmdLine)
     {}
 
+    public static PrefixMapping symbolPrefixMapping = new PrefixMappingImpl() ;
+    
+    public static void addPrefixMapping(String prefix, String uri)
+    {
+        symbolPrefixMapping.setNsPrefix(prefix, uri) ;
+    }
+    
     public void processArgs(CmdArgModule cmdLine)
     {
         if ( cmdLine.getValues(setDecl) == null || cmdLine.getValues(setDecl).size() == 0 )
@@ -48,9 +57,9 @@ public class ModSymbol implements ArgModuleGeneral
             String symbolName = frags[0] ;
             String value = frags[1] ;
 
-            if ( ! symbolName.matches("^[a-zA-Z]*:.*") )
-                symbolName = namespace + symbolName ;
-            
+            // Make it a long name.
+            symbolName = symbolPrefixMapping.expandPrefix(symbolName) ;
+
             Symbol symbol = Symbol.create(symbolName) ;
             context.set(symbol, value) ;
         }

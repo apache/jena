@@ -18,8 +18,6 @@
 See ToDoSSE
 
 ----
-++ ModSymbol - prefixes and namespaces
-
 ++ SPARQL/Update : ADD/REMOVE
    Model/Resource wrapper on update API
 

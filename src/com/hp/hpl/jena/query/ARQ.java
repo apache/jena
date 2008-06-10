@@ -7,7 +7,6 @@
 package com.hp.hpl.jena.query;
 
 import com.hp.hpl.jena.assembler.assemblers.AssemblerGroup;
-
 import com.hp.hpl.jena.sparql.ARQConstants;
 import com.hp.hpl.jena.sparql.core.assembler.AssemblerUtils;
 import com.hp.hpl.jena.sparql.engine.optimizer.Optimizer;
@@ -29,7 +28,7 @@ public class ARQ
     public static final String arqNS = "http://jena.hpl.hp.com/ARQ#" ;
     
     /** Root of ARQ-defined parameter names */  
-    public static final String arqSymbolPrefix = "arq:" ;
+    public static final String arqSymbolPrefix = "arq" ;
     
     /** Stick exactly to the spec.
      */
@@ -211,7 +210,6 @@ public class ARQ
             return ;
         initialized = true ;
         globalContext = defaultSettings() ;
-        
         // Markus Stocker 08/06/2007
         Optimizer.enable() ;
     }
