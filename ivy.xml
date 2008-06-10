@@ -30,8 +30,12 @@
 		 -->
 
 	<!-- Additional for development -->
-	<dependency conf="dev->*"   org="org.slf4j" name="slf4j-log4j12" rev="1.4.3"/>
-	<dependency conf="dev->*"   org="log4j" name="log4j" rev="1.2.15"/>
+	<dependency conf="dev->*"   org="org.slf4j" name="slf4j-log4j12" rev="1.4.3">
+	  <!-- includes log4j 1.2.13 which is then evicted by the 1.2.15 below -->
+	  <exclude org="log4j" module="log4j"/>
+	</dependency>
+	
+	<dependency conf="dev->*"   org="log4j" name="log4j" rev="1.2.15"/> 
 
 	<!-- Unwanted junk from log4j -->
 	<exclude org="com.sun.jmx" module="jmxri"/>
