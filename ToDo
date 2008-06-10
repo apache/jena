@@ -1,6 +1,6 @@
 ==== ARQ ToDo
 
-** Stricter rules for property functions - must bind al variables => can do FILTER migration across them.
+** Stricter rules for property functions - must bind all variables => can do FILTER migration across them.
 
 ** Clearer ways to add BGP solver mechanisms - invert Stage/StageList 
 
@@ -18,6 +18,8 @@
 See ToDoSSE
 
 ----
+++ ModSymbol - prefixes and namespaces
+
 ++ SPARQL/Update : ADD/REMOVE
    Model/Resource wrapper on update API
 
