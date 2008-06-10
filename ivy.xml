@@ -25,6 +25,9 @@
 	<!-- Necessary for code compilation : configuration main should compile -->
 	<dependency org="junit" name="junit" rev="4.4"/>
 	<dependency org="org.slf4j" name="slf4j-api" rev="1.4.3"/>
+	<!-- exclude things Log4J depends on we can't get 
+	<exclude org="" 
+		 -->
 
 	<!-- Additional for development -->
 	<dependency conf="dev->*"   org="org.slf4j" name="slf4j-log4j12" rev="1.4.3"/>

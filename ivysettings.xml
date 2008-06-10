@@ -1,18 +1,18 @@
 <ivysettings>
-    <properties file="${ivy.settings.dir}/ivysettings-file.properties" />
-    <!-- <settings defaultResolver="default"/> -->
-    <settings defaultResolver="resolver-chain"/>
+  <properties file="${ivy.settings.dir}/ivysettings-file.properties" />
+  <!-- <settings defaultResolver="default"/> -->
+  <settings defaultResolver="resolver-chain"/>
 
-    <resolvers>
-	<chain name="resolver-chain" returnFirst="true">
-	    <!-- Jena development repository : not sync'ed with maven central -->
-	    <ibiblio name="jena-dev" root="http://jena.hpl.hp.com/repo-dev" m2compatible="true"/>
-	    <ibiblio name="ibiblio" m2compatible="true" />
-	</chain>
-    </resolvers>
-    <include url="${ivy.default.settings.dir}/ivysettings-public.xml"/>
-    <include url="${ivy.default.settings.dir}/ivysettings-shared.xml"/>
-    <include url="${ivy.default.settings.dir}/ivysettings-local.xml"/>
-    <include url="${ivy.default.settings.dir}/ivysettings-main-chain.xml"/>
-    <include url="${ivy.default.settings.dir}/ivysettings-default-chain.xml"/>
+  <resolvers>
+    <chain name="resolver-chain" returnFirst="true">
+      <!-- Jena development repository : not sync'ed with maven central -->
+      <ibiblio name="jena-dev" root="http://jena.hpl.hp.com/repo-dev" m2compatible="true"/>
+      <ibiblio name="ibiblio" m2compatible="true" />
+    </chain>
+  </resolvers>
+  <include url="${ivy.default.settings.dir}/ivysettings-public.xml"/>
+  <include url="${ivy.default.settings.dir}/ivysettings-shared.xml"/>
+  <include url="${ivy.default.settings.dir}/ivysettings-local.xml"/>
+  <include url="${ivy.default.settings.dir}/ivysettings-main-chain.xml"/>
+  <include url="${ivy.default.settings.dir}/ivysettings-default-chain.xml"/>
 </ivysettings>
