@@ -33,6 +33,12 @@
 	<dependency conf="dev->*"   org="org.slf4j" name="slf4j-log4j12" rev="1.4.3"/>
 	<dependency conf="dev->*"   org="log4j" name="log4j" rev="1.2.15"/>
 
+	<!-- Unwanted junk from log4j -->
+	<exclude org="com.sun.jmx" module="jmxri"/>
+	<exclude org="com.sun.jmx" module="jmxri"/>
+	<exclude org="com.sun.jdmk" module="jmxtools"/>
+	<exclude org="javax.jms" module="jms"/>
+	<exclude org="javax.mail" module="mail"/>
     </dependencies>
 	
 </ivy-module>

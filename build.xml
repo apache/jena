@@ -86,19 +86,21 @@
     <ivy:settings />
   </target>
 
+  <!--
+   <target name="ivy-clean">
+  </taget>
+  -->
   <!-- Convenience target -->
   <target name="ivy" depends="ivy-setup-lib" description="Set up for use with Eclispe">
   </target>
   
   <target name="ivy-setup-lib" depends="ivy-init" description="Resolve dependences with Ivy">
     
-    <ivy:resolve conf="main" haltonfailure="false" failureproperty="ivy.resolve.failed"/>
+    <ivy:resolve conf="dev" haltonfailure="false" failureproperty="ivy.resolve.failed"/>
     <!-- Consider: copying without versions would be portable for Eclipse -->
     <ivy:report todir="${reports.dir}"/>
  	<fail message="Ivy dependency failed" if="ivy.resolve.failed"/>
 
-    <!-- Log4j depends on things not available -->
-    
     <ivy:retrieve conf="dev" pattern="lib2/[artifact]-[revision].[ext]" />
     <ivy:cachepath pathid="ivy.dev.classpath" conf="dev" />
   </target>
