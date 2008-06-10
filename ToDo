@@ -2,28 +2,26 @@
 
 ** Stricter rules for property functions - must bind all variables => can do FILTER migration across them.
 
-** Clearer ways to add BGP solver mechanisms - invert Stage/StageList 
+See ToDoSSE
 
-++ ** Document "stages" - new form.
-++ ** Document "update API" and examples.
+----
 
++ Stages
+	invert Stage/StageList 
+	ARQ documentation - stages and adding new storage layers.
+	
 +  FROM <.....n3>
    but it's application/rdf+xml
    believe MIME type.
    Jena change: FileManager/MimeStream
 
-++ Tutorial on update 
-++ ARQ documentation and clearup - adding new storage layers.
-   Separate out list PFs like free text.
-See ToDoSSE
-
-----
-++ SPARQL/Update : ADD/REMOVE
-   Model/Resource wrapper on update API
-
 + SUM [done], MIN, MAX, AVG, (STDDEV)
    MINI, MINN, MIND
-+ EXISTS { pattern }
+
++ EXISTS { pattern } as FILTER 
+
++ Tutorial on update 
+   Separate out list PFs like free text.
 
 + Wrapper to have all functions as assignments
 
@@ -32,24 +30,8 @@ See ToDoSSE
   c.f SELECT
   AlgebraGenerator/compileModifiers(Query, Op)
 
-+ Extend optimization environment - sort out nested with outer variable case.
-   test case?  is this fixed now without heavy weight tracking?
-   --> Transform support to track variable scopes.
-
-+ OpBGP is (ref- & main-) compiled to a call to static "StageBuilder.compile" (modularity)  
-  Maybe:      
-     StageGenerator => "Stage" (name reuse?) as a factory-like mechanism
-	 StageList is a kind of Stage.       
-  Better, better?: do as a Transform, which changes a BGP to a matcher/solver.
-
-+ ResultSet to note when finished and warn on attempted continued use.
-
 + More dateTime arithmetic and durations
   http://www.w3.org/TR/xpath-functions/#dateTime-arithmetic
-
-+ testing QE/ref and QE/main in the same run
-  ?? use a factory list, including tests with no recorded results.
-  ?? Could simply factory to have .create() return null for "no".
 
 + OpOrder to take an ExprList 
   Query has a list of sort conditions so need turn SortCondition into an expression
@@ -57,13 +39,12 @@ See ToDoSSE
 + ResultsFormat (output)vs ResultSetFormat (input)
   ResultSetFormatter.output as SSE
   ResultSetFactory input as SSE
-  rset handler boolean and result set XML forms together => sSPARQLResults.
 
 + What is "OpDatasetNames" nowadays?
 	A table?  unnecessary?
 	+ Remove OpDatasetNames?? - only needed in quad compilation for GRAPH ?g {}
-  Do that a betetr way (join of all names).
-  Special iterator for OpCompiler? 
+  Do that a better way (join of all names).
+  Or even a special iterator for OpCompiler? 
 
 + Alternative indexes
   LARQ idea - extracted.  Object ==> node/subject
@@ -84,12 +65,6 @@ See ToDoSSE
   	Query iterators
   	Bindings
 
-+ Writing filter functions [Done]
-+ Writing property functions
-
-+ Document making and using datasets
-+ Location-mapping and FROM/FROM NAMED
-  
 == Other
 
 + XML results: process xml:lang on other elements than just <literal>
