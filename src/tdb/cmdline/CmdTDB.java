@@ -6,16 +6,17 @@
 
 package tdb.cmdline;
 
+import arq.cmd.CmdException;
+import arq.cmdline.CmdARQ;
+import arq.cmdline.ModAssembler;
+import arq.cmdline.ModSymbol;
+
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.sparql.util.Utils;
 import com.hp.hpl.jena.tdb.TDB;
 import com.hp.hpl.jena.tdb.TDBFactory;
 import com.hp.hpl.jena.tdb.pgraph.PGraphBase;
-
-import arq.cmd.CmdException;
-import arq.cmdline.CmdARQ;
-import arq.cmdline.ModAssembler;
 
 public abstract class CmdTDB extends CmdARQ
 {
@@ -29,6 +30,7 @@ public abstract class CmdTDB extends CmdARQ
     {
         super(argv) ;
         TDB.init() ;
+        ModSymbol.addPrefixMapping(TDB.symbolPrefix, TDB.symbolNamespace) ;
         super.addModule(modAssembler) ;
         super.addModule(modLocation) ;
     }

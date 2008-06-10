@@ -10,6 +10,7 @@ import com.hp.hpl.jena.query.ARQ;
 
 import tdb.cmdline.ModTDBDataset;
 import arq.cmdline.ModDataset;
+import arq.cmdline.ModSymbol;
 
 import com.hp.hpl.jena.tdb.TDB;
 
@@ -19,6 +20,7 @@ public class tdbquery extends arq.query
     
     public static void main(String [] argv)
     {
+        ModSymbol.addPrefixMapping(TDB.symbolPrefix, TDB.symbolNamespace) ;
         new tdbquery(argv).main() ;
     }
     
@@ -34,7 +36,7 @@ public class tdbquery extends arq.query
         super.processModulesAndArgs() ;
         if ( isVerbose() )
         {
-            ARQ.getContext().setTrue(TDB.logBGPs) ;
+            ARQ.getContext().setTrue(TDB.logBGP) ;
         }
     }
     
