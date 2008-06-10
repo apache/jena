@@ -18,7 +18,7 @@ import lib.BitsLong;
 
 public class DateTimeNode
 {
-    
+    // XXX ToDo 00:00:00 vs 24:00:00
     // ---- Layout
     // Epoch base: 0000-01-01T00:00:00
 

@@ -8,6 +8,8 @@ package dev;
 
 public class Dev
 {
+    // Build.  Ant and Ivy.
+    
     // Log BGP's executed.
     // Assembler to cache graphs made (by location) so reuse is same graph engine 
     
@@ -23,8 +25,9 @@ public class Dev
     // Sort out library of datasets : Store/...
     
     // Plan for a mega-hash id version (96 bits, hash based)
+    //    Paramter of hash size.
     // Version of NodeTable that does Logical => Physical id translation
-    // And a PageMgr.
+    //    And a PageMgr wrapper for same.
 
     // 32 bit: Try without each of the read cache and write cahes to see value of each
     //   And which index cache is having the most effect?
