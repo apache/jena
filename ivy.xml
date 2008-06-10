@@ -26,7 +26,7 @@
 	<dependency org="junit" name="junit" rev="4.4"/>
 	<dependency org="org.slf4j" name="slf4j-api" rev="1.4.3"/>
 	<!-- exclude things Log4J depends on we can't get 
-	<exclude org="" 
+	<exclude org=""log4j-1.2.15 
 		 -->
 
 	<!-- Additional for development -->
