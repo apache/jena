@@ -1,0 +1,82 @@
+<project xmlns:ivy="antlib:org.apache.ivy.ant" name="lib">
+  <!-- Library of standard tasks -->
+
+  <!-- Ivy -->
+  <!-- Assumes ... -->
+
+  <target name="ivy-init">
+    <ivy:settings />
+  </target>
+
+  <!--
+   <target name="ivy-clean">
+  </taget>
+  -->
+  <!-- Convenience target -->
+  <target name="ivy" depends="ivy-setup-lib" description="Set up for use with Eclispe">
+  </target>
+  
+  <target name="ivy-setup-lib" depends="ivy-init" description="Resolve dependences with Ivy">
+    
+    <ivy:resolve conf="dev" haltonfailure="false" failureproperty="ivy.resolve.failed"/>
+    <!-- Consider: copying without versions would be portable for Eclipse -->
+    <ivy:report todir="${reports.dir}"/>
+    <fail message="Ivy dependency failed" if="ivy.resolve.failed"/>
+
+    <ivy:retrieve conf="dev" pattern="lib2/[artifact]-[revision].[ext]" />
+    <ivy:cachepath pathid="ivy.dev.classpath" conf="dev" />
+  </target>
+
+  <!-- Untested -->
+  <target name="ivy-publish" depends="ivy-init,jar" description="Publish (with Ivy)">
+    <ivy:publish resolver="publish-resolver" pubrevision="${version}">
+      <artifacts pattern="${build.lib.dir}/[artifact].[ext]" />
+    </ivy:publish>
+  </target>
+
+  <target name="pom">
+    <!-- Make a basic POM file -->
+    <ivy:makepom ivyfile="ivy.xml" 
+		 pomfile="pom-tdb.xml">
+      <!--
+	<mapping conf="default" scope="compile"/>
+	<mapping conf="runtime" scope="runtime"/>
+      -->
+    </ivy:makepom>
+  </target>
+
+  <!-- ========================================== -->
+  <!-- ==== Build and compile -->
+
+  <!-- Assumes ${build.classes.dir} java.build.class.path
+  <!-- Assumes params: folder.src, folder.classes -->
+
+  <target name="lib-compile" depends="javac-flags" description="Compile project">
+    <mkdir dir="${build.classes.dir}"/>
+    <javac destdir="${build.classes.dir}"
+	   debug="${java.debug}"
+	   deprecation="${java.debuglevel}"
+	   optimize="${java.optimize}"
+	   encoding="${java.encoding}"
+	   source="${java.source}"
+	   target="${java.target}"
+	   >
+      <src path="${folder.src}"/>
+      <classpath refid="java.build.class.path" />
+    </javac>
+  </target>
+
+  <target name="jars" depends="jar" />
+  <target name="jar" depends="compile" description="Build the jar">
+    <mkdir dir="${jar.dir}"/>
+    <delete file="${jar.dir}/${jarfile}"/>
+    <jar destfile="${jar.dir}/${jarfile}" basedir="${build.classes.dir}">
+      <!--
+	<manifest>
+	<attribute name="Main-Class" value="${main.class}"/>
+	</manifest>
+      -->
+    </jar>
+  </target>
+  
+</project>
