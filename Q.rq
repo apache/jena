@@ -1,5 +1,1 @@
-SELECT *
-WHERE { ?a ?b ?c . }
-#LIMIT 10
-OFFSET 2
-
+DESCRIBE ?s { ?s ?p ?o }

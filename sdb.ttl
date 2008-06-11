@@ -15,8 +15,8 @@ sdb:DatasetStore rdfs:subClassOf ja:RDFDataset .
     sdb:connection     <#conn> .
 
 <#conn> rdf:type sdb:SDBConnection ;
-    sdb:sdbType        "h2:mem" ;
-##    sdb:sdbType        "h2:file" ;
+##    sdb:sdbType        "h2:mem" ;
+    sdb:sdbType        "h2:file" ;
     sdb:sdbName        "DB/H2" ;
 
 ##      sdb:sdbHost        "localhost" ;

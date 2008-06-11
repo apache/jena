@@ -20,10 +20,15 @@ import sdb.SDBCmd;
 import arq.cmd.CmdUtils;
 
 import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.query.*;
+import com.hp.hpl.jena.query.Dataset;
+import com.hp.hpl.jena.query.DatasetFactory;
+import com.hp.hpl.jena.query.Query;
+import com.hp.hpl.jena.query.QueryExecution;
+import com.hp.hpl.jena.query.QueryExecutionFactory;
+import com.hp.hpl.jena.query.QueryFactory;
+import com.hp.hpl.jena.query.ResultSetFormatter;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.RDFNode;
-import com.hp.hpl.jena.rdf.model.ResourceFactory;
 import com.hp.hpl.jena.rdf.model.StmtIterator;
 import com.hp.hpl.jena.sdb.SDB;
 import com.hp.hpl.jena.sdb.SDBFactory;
@@ -35,6 +40,7 @@ import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.store.StoreConfig;
 import com.hp.hpl.jena.sdb.store.StoreFactory;
 import com.hp.hpl.jena.sdb.util.StrUtils;
+import com.hp.hpl.jena.sparql.core.DatasetGraph;
 import com.hp.hpl.jena.sparql.resultset.ResultsFormat;
 import com.hp.hpl.jena.sparql.sse.SSE;
 import com.hp.hpl.jena.sparql.util.Context;
@@ -53,6 +59,7 @@ public class RunSDB
     @SuppressWarnings("unchecked")
     public static void main(String ... argv) 
     {
+        runQuery("Q.rq") ;
         {
             Context cxt = new Context() ;
             Symbol sym = Symbol.create("x") ;
@@ -114,21 +121,6 @@ public class RunSDB
             System.exit(0) ;
         }
         runPrint() ;
-        
-        Store store = SDBFactory.connectStore("sdb.ttl") ;
-//        Model model = SDBFactory.connectDefaultModel(store) ;
-        Dataset ds = SDBFactory.connectDataset(store) ;
-
-        Query query = QueryFactory.read("Q.rq") ;
-        
-        SDBConnection.logSQLQueries = true ;
-
-        QuerySolutionMap qsol = new QuerySolutionMap() ;
-        qsol.add("o", ResourceFactory.createPlainLiteral("abc")) ;
-        QueryExecution qexec = QueryExecutionFactory.create(query, ds, qsol) ;
-        ResultSetFormatter.out(qexec.execSelect()) ;
-        qexec.close() ;
-        System.exit(0) ;
     }
     
     public static void update()
@@ -294,7 +286,7 @@ public class RunSDB
     }
     
 
-    private static void _runQuery(String queryFile, String dataFile, String sdbFile)
+    private static void runQuery(String queryFile, String dataFile, String sdbFile)
         {
 
         // SDBConnection.logSQLStatements = false ;
@@ -312,6 +304,25 @@ public class RunSDB
          sdbquery("--file=Q.rq") ;
      }
 
+    private static void runQuery(String queryFile)
+    {
+        Store store = SDBFactory.connectStore("sdb.ttl") ;
+        Dataset ds = SDBFactory.connectDataset(store) ;
+        DatasetGraph dsg = ds.asDatasetGraph() ;
+        Iterator<?> iter = dsg.listGraphNodes() ;
+        for ( ; iter.hasNext() ; )
+        {
+            Object x = iter.next();
+            System.out.println(x) ;
+        }
+        System.out.println("Query") ;
+        Query query = QueryFactory.read(queryFile) ;
+        QueryExecution qExec = QueryExecutionFactory.create(query, ds) ;
+        
+        QueryExecUtils.executeQuery(query, qExec, null) ;
+        System.exit(0) ;
+    }
+    
      public static void runInMem(String queryFile, String dataFile)
      {
          if ( true )

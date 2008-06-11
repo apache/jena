@@ -76,7 +76,7 @@ public class StoreUtils
     public static List<Node> storeGraphNames(Store store)
     {
         List<Node> x = new ArrayList<Node>() ;
-        String qs = "SELECT ?g { GRAPH ?g { ?s ?p ?o }}" ;
+        String qs = "SELECT DISTINCT ?g { GRAPH ?g { ?s ?p ?o }}" ;
         QueryExecution qExec = QueryExecutionFactory.create(qs, SDBFactory.connectDataset(store)) ;
         ResultSet rs = qExec.execSelect() ;
         Var var_g = Var.alloc("g") ;
