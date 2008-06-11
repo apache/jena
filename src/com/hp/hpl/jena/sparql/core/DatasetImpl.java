@@ -6,14 +6,13 @@
 
 package com.hp.hpl.jena.sparql.core;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.query.Dataset;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.shared.Lock;
@@ -21,8 +20,6 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 import com.hp.hpl.jena.util.iterator.MapFilter;
 import com.hp.hpl.jena.util.iterator.MapFilterIterator;
 import com.hp.hpl.jena.util.iterator.WrappedIterator;
-
-import com.hp.hpl.jena.query.Dataset;
 
 /**Wrapper around a DatasetGraph. See also DataSourceImpl.
  * 
@@ -68,7 +65,6 @@ public class DatasetImpl implements Dataset
 
     public Iterator listNames()
     { 
-        List x = new ArrayList(dsg.size()) ;
         MapFilter mapper = new MapFilter(){
             public Object accept(Object x)
             {
