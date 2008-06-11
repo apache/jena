@@ -1,6 +1,21 @@
 <project xmlns:ivy="antlib:org.apache.ivy.ant" name="TDB" default="main">
 
-  <!-- ========================================== -->
+	  <!-- Modularize so as we can compile different source tress with the same settings and classpath.
+	             <import file="${path_to_imported}/imported.xml"/>
+	               Compile
+	               JAR
+	               Testing.
+	               IVY
+	             
+	       Use <antcall target="_compile">
+	             <param name="srcfolder" value="..."/>
+	             <param name="classfolder" value="..."/>
+	           </antcall>  
+		-->
+	       	
+
+	
+<!-- ========================================== -->
   <!-- ==== Configuration  -->
 
   <property name="Name"                   value="TDB"/>
