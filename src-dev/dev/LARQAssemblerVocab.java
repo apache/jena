@@ -6,36 +6,21 @@
 
 package dev;
 
-import com.hp.hpl.jena.assembler.Assembler;
-import com.hp.hpl.jena.assembler.Mode;
-import com.hp.hpl.jena.assembler.assemblers.AssemblerBase;
-import com.hp.hpl.jena.assembler.exceptions.AssemblerException;
-
-import com.hp.hpl.jena.sparql.util.graph.GraphUtils;
-
+import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.Resource;
+import com.hp.hpl.jena.rdf.model.ResourceFactory;
 
-public class AssemblerLARQ extends AssemblerBase implements Assembler
+import com.hp.hpl.jena.assembler.JA;
+
+public class LARQAssemblerVocab
 {
-    /** Vocabulary
-     *     ja:luceneIndex ....
-     *     
-     */
+    public static final String NS = JA.getURI() ;
+    public static String getURI() { return NS ; }
     
-    public Object open(Assembler a, Resource root, Mode mode)
-    {
-        
-        if ( ! GraphUtils.exactlyOneProperty(root, LARQAssemblerVocab.pIndex) )
-            throw new AssemblerException(root, "Required: exactly one index property" ) ;
-        
-        String index = GraphUtils.getAsStringValue(root, LARQAssemblerVocab.pIndex) ;
-        
-        return null ;
-    }
+    public static final Resource tTextIndex         = ResourceFactory.createResource(NS+"TextIndex") ;
 
+    public static final Property pIndex             = ResourceFactory.createProperty(NS, "index") ;
 }
-
-
 
 /*
  * (c) Copyright 2008 Hewlett-Packard Development Company, LP
