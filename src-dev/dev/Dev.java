@@ -10,7 +10,6 @@ public class Dev
 {
     // Build.  Ant and Ivy.
     
-    // Log BGP's executed.
     // Assembler to cache graphs made (by location) so reuse is same graph engine 
     
     // BulkLoader
@@ -22,10 +21,9 @@ public class Dev
     // CountingSync.
     //   bound variable tracking
     //   LARQ++
-    // Sort out library of datasets : Store/...
     
     // Plan for a mega-hash id version (96 bits, hash based)
-    //    Paramter of hash size.
+    //    Parameter of hash size.
     // Version of NodeTable that does Logical => Physical id translation
     //    And a PageMgr wrapper for same.
 
