@@ -24,7 +24,7 @@ public class Location
         
         if ( ! file.exists() )
         {
-            if ( ! file.mkdir() )
+            if ( ! file.mkdirs() )
                 throw new FileException("Failed to create directory: "+file.getAbsolutePath()) ;
         }
         if ( ! file.isDirectory() )
