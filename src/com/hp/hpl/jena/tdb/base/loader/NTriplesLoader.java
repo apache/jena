@@ -54,7 +54,7 @@ import com.hp.hpl.jena.util.FileUtils;
 /** BulkLoader
  *  (also a fast N-triples reader)
  */
-public final class BulkLoader
+public final class NTriplesLoader
 {
     // TODO BulLoader ToDo list
     //  1 - expect - check if false and react
@@ -83,18 +83,18 @@ public final class BulkLoader
     static public boolean KeepParsingAfterError = true ;
     final StringBuilder buffer = new StringBuilder(sbLength);
 
-    public BulkLoader()
+    public NTriplesLoader()
     {
         
     }
     
     // Testing ONLY
-    BulkLoader(Reader r)
+    NTriplesLoader(Reader r)
     {
         this(null, r, "TEST") ;
     }
     
-    private BulkLoader(Graph graph, Reader reader, String base)
+    private NTriplesLoader(Graph graph, Reader reader, String base)
     {
       this.graph = graph ;
       this.msgBase = ( base == null ? "" : (base + ": ") );
@@ -123,7 +123,7 @@ public final class BulkLoader
     {
         if ( graph == null )
             throw new IllegalArgumentException("Null for graph") ;
-        BulkLoader b = new BulkLoader(graph, reader, base) ;
+        NTriplesLoader b = new NTriplesLoader(graph, reader, base) ;
         b.readRDF();
     }
 
@@ -614,10 +614,13 @@ public final class BulkLoader
     
     private void comment()
     {
-        while (in.readChar() != '\n') {
-            if (in.eof()) {
-                return;
-            }
+        while (true)
+        {
+            if ( in.eof() )
+                return ;
+            int ch = in.readChar() ;
+            if ( ch == '\n' || ch == '\r' )
+                return ;
         }
     }
 

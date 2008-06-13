@@ -16,7 +16,7 @@ import com.hp.hpl.jena.datatypes.RDFDatatype;
 import com.hp.hpl.jena.datatypes.TypeMapper;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.tdb.base.loader.BulkLoader;
+import com.hp.hpl.jena.tdb.base.loader.NTriplesLoader;
 
 public class TestBulkLoader extends BaseTest
 {
@@ -190,22 +190,22 @@ public class TestBulkLoader extends BaseTest
     
     private Node readNode(String form)
     {
-        BulkLoader b = make(form) ;
+        NTriplesLoader b = make(form) ;
         Node x = b.readNode() ;
         return x ;
     }
     
     private Triple readTriple(String form)
     {
-        BulkLoader b = make(form) ;
+        NTriplesLoader b = make(form) ;
         Triple x = b.readTriple() ;
         return x ;
     }
     
-    private BulkLoader make(String contents)
+    private NTriplesLoader make(String contents)
     {
         StringReader r = new StringReader(contents) ;
-        BulkLoader b = new BulkLoader(r) ;
+        NTriplesLoader b = new NTriplesLoader(r) ;
         return b ;
     }
 }

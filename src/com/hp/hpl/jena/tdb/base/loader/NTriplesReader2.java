@@ -14,24 +14,24 @@ import com.hp.hpl.jena.rdf.model.RDFErrorHandler;
 import com.hp.hpl.jena.rdf.model.RDFReader;
 
 /** Jena reader interface to the bulk loader */
-public class BulkReader implements RDFReader
+public class NTriplesReader2 implements RDFReader
 {
     @Override
     public void read(Model model, String url)
     { 
-        BulkLoader.read(model.getGraph(), url) ;
+        NTriplesLoader.read(model.getGraph(), url) ;
     }
 
     @Override
     public void read(Model model, Reader r, String base)
     { 
-        BulkLoader.read(model.getGraph(), r, base) ;
+        NTriplesLoader.read(model.getGraph(), r, base) ;
     }
 
     @Override
     public void read(Model model, InputStream r, String base)
     { 
-        BulkLoader.read(model.getGraph(), r, base) ;
+        NTriplesLoader.read(model.getGraph(), r, base) ;
     }
 
     public Object setProperty(String propName, Object propValue)
