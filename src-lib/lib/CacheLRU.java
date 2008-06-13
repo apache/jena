@@ -10,13 +10,12 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
- * LRU cache based on extending @link{java.util.LinkedHashMap}
+ * LRU cache using @link{java.util.LinkedHashMap}
  * @author Andy Seaborne
  */
 
 public class CacheLRU<K,V> extends LinkedHashMap<K, V>
 {
-    // Implementation inheritiance?
     int maxEntries ; 
     ActionKeyValue<K,V> dropHandler = null ;
     

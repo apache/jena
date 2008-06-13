@@ -9,6 +9,7 @@ package iterator;
 
 import java.util.*;
 
+import lib.Action;
 import lib.ActionKeyValue;
 
 public class Iter<T> implements Iterable<T>, Iterator<T>

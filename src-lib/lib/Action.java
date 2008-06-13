@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package iterator;
+package lib;
 
 public interface Action<T>
 {

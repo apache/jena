@@ -10,8 +10,12 @@ import static com.hp.hpl.jena.tdb.lib.NodeLib.decode;
 import static com.hp.hpl.jena.tdb.lib.NodeLib.encode;
 import lib.Bytes;
 import lib.CacheLRU;
+import lib.CacheSetLRU;
 
 import com.hp.hpl.jena.graph.Node;
+
+import com.hp.hpl.jena.sparql.util.ALog;
+
 import com.hp.hpl.jena.tdb.Const;
 import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile;
 import com.hp.hpl.jena.tdb.base.record.Record;
@@ -27,9 +31,13 @@ public abstract class NodeTableBase implements NodeTable
     private Index nodeHashToId ;        // hash -> int
     
     // Currently, these caches are updated together.
-    // Good for small scale mix and match of update and query
     private CacheLRU<Node, NodeId> node2id_Cache ;
     private CacheLRU<NodeId, Node> id2node_Cache ;
+    
+    // A small cache of "known unknowns" to speed up searching for impossible things. 
+    // Nodes we know not to be in the node table.
+    // Cache update needed on NodeTable changes. 
+    private CacheSetLRU<Node> notPresent ;
 
     // Delayed construction - must call init.
     protected NodeTableBase() {}
@@ -43,6 +51,7 @@ public abstract class NodeTableBase implements NodeTable
             (nodeToIdCacheSize <= 0) ? null : new CacheLRU<Node, NodeId>(nodeToIdCacheSize) ;
         id2node_Cache = 
             (idToNodeCacheSize <= 0) ? null : new CacheLRU<NodeId, Node>(idToNodeCacheSize) ;
+        notPresent = new CacheSetLRU<Node>(100) ;
     }
     
     // Combined into one constructor.
@@ -62,22 +71,21 @@ public abstract class NodeTableBase implements NodeTable
 
     @Override
     // ---- NodeId ==> Node
+    
+    // Get the node for this NodeId.
     public Node retrieveNode(NodeId id)
     {
-        if ( id2node_Cache != null )
-        {
-            Node n = id2node_Cache.get(id) ;
-            if ( n != null )
-                return n ; 
-        }
+        if ( id == NodeId.NodeDoesNotExist )
+            return null ;
+        if ( id == NodeId.NodeIdAny )
+            return null ;
         
-        Node n = nodeIdToNode(id) ;
-    
-        // Update caches
-        if ( node2id_Cache != null )
-            node2id_Cache.put(n, id) ;
-        if ( id2node_Cache != null )
-            id2node_Cache.put(id, n) ;
+        Node n = lookup(id) ;
+        if ( n != null )
+            return n ; 
+
+        n = nodeIdToNode(id) ;
+        updateCaches(n, id) ;
         return n ;
     }
 
@@ -85,14 +93,11 @@ public abstract class NodeTableBase implements NodeTable
     
     private NodeId _idForNode(Node node, boolean allocate)
     {
-        if ( node2id_Cache != null )
-        {
-            NodeId id = node2id_Cache.get(node) ;
-            if ( id != null )
-                return id ; 
-        }
+        NodeId nodeId = lookup(node) ;
+        if ( nodeId != null )
+            return nodeId ; 
         // Inline?
-        NodeId nodeId = NodeId.inline(node) ;
+        nodeId = NodeId.inline(node) ;
         if ( nodeId != null )
             return nodeId ;
         
@@ -100,7 +105,7 @@ public abstract class NodeTableBase implements NodeTable
         long hash = NodeLib.hash(node) ;
         nodeId = accessIndex(node, hash, allocate) ;
         
-        // Ensure caches have it.
+        // Ensure caches have it.  Includes recording "no such node"
         updateCaches(node, nodeId) ;
         return nodeId ;
     }
@@ -142,14 +147,43 @@ public abstract class NodeTableBase implements NodeTable
         return id ;
     }
     
+    // ---- Only places that the caches are touched
+    private Node lookup(NodeId id)
+    {
+        if ( id2node_Cache == null ) return null ;
+        return id2node_Cache.get(id) ;
+    }
+    
+    private NodeId lookup(Node node)
+    {
+        if ( node2id_Cache == null ) return null ;
+        return node2id_Cache.get(node) ; 
+    }
+
     private void updateCaches(Node node, NodeId id)
     {
+        //Manage the caches.
+        if ( id == NodeId.NodeDoesNotExist )
+        {
+            notPresent.add(node) ;
+            return ;
+        }
+        if ( id == NodeId.NodeIdAny )
+        {
+            ALog.warn(this, "Attempt to cache NodeIdAny - ignored") ;
+            return ;
+        }
+
+        
         if ( node2id_Cache != null )
             node2id_Cache.put(node, id) ;
         if ( id2node_Cache != null )
             id2node_Cache.put(id, node) ;
+        if ( notPresent.contains(node) )
+            notPresent.remove(node) ;
     }
-
+    // ----
+    
     // -------- NodeId<->Node
     // Only places for conversion between NodeId<->Node, accessing the ObjectFile.
     // Special cases: integers and dateTimes

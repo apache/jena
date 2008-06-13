@@ -148,6 +148,18 @@ public abstract class AbstractTestGraph2 extends TestBase
         assertTrue("g does not contain t2", g.contains(t2)) ;
     }
 
+    @Test public void graph_add_find_01()
+    {
+        // Tests the "unknown node" handling
+        Graph g = emptyGraph() ;
+        Triple t1 = triple(s1, p1, o1) ;
+        assertEquals(0, g.size()) ;
+        g.contains(t1) ;
+        g.add(t1) ;
+        assertTrue(g.contains(t1)) ;
+    }
+
+    
     // Tests : triples and values.
     
     

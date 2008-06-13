@@ -6,6 +6,7 @@
 
 package iterator;
 
+import lib.Action;
 import io.IndentedWriter;
 import io.Printable;
 

@@ -4,44 +4,89 @@
  * [See end of file]
  */
 
-package iterator;
+package lib;
 
 import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
 
-import lib.Action;
-
-public interface ExtendedIterator<T> extends Iterable<T>, Iterator<T>
+public class CacheSetLRU<T>
 {
-    public Set<T> toSet();
-
-    public List<T> toList();
-
-    public Iter<T> filter(Filter<T> filter);
-
-    public <R> Iter<R> map(Transform<T, R> converter);
-
-    public <R> R reduce(Accumulate<T, R> aggregator);
-
-    public void apply(Action<T> action);
-
-    public Iter<T> append(Iterator<? extends T> iter);
-
-    public String asString();
-    public String asString(String sep);
+    //LinkHashSet does not have LRU support.
     
-    public Iter<T> distinct();
+    Action<T> dropHandler = null ;
+    
+    static Object theOnlyValue = new Object() ;
+    CacheLRU<T, Object> cacheMap = null ;
+    
+    public CacheSetLRU(int maxSize)
+    {
+        this(0.75f, maxSize) ;
+    }
+    
+    public CacheSetLRU(float loadFactor, int maxSize)
+    {
+        cacheMap = new CacheLRU<T, Object>(loadFactor, maxSize) ;
+    }
 
-//    // ---- Iterable
-//    public Iterator<T>  iterator();
-//    
-//    // ---- Iterator
-//    public boolean hasNext();
-//
-//    public T next();
-//
-//    public void remove();
+    /** Callback for entries when dropped from the cache */
+    public void setDropHandler(Action<T> dropHandler)
+    {
+        cacheMap.setDropHandler(new Wrapper<T>(dropHandler)) ;
+    }
+    
+    // From map action to set action.
+    static class Wrapper<T>  implements ActionKeyValue<T, Object>
+    {
+        Action<T> dropHandler ;
+        public Wrapper(Action<T> dropHandler)
+        { this.dropHandler = dropHandler ; }
+
+        @Override
+        public void apply(T key, Object value)
+        { dropHandler.apply(key) ; }
+
+    }
+    
+    public boolean add(T e)
+    {
+        return cacheMap.put(e, theOnlyValue) == null ;
+    }
+
+
+    public void clear()
+    { 
+        cacheMap.clear() ;
+    }
+
+
+    public boolean contains(T obj)
+    {
+        return cacheMap.containsKey(obj) ;
+    }
+
+
+    public boolean isEmpty()
+    {
+        return cacheMap.isEmpty() ;
+    }
+
+
+    public Iterator<T> iterator()
+    {
+        return cacheMap.keySet().iterator() ;
+    }
+
+
+    public boolean remove(T obj)
+    {
+        return cacheMap.remove(obj) != null ;
+    }
+
+
+    public int size()
+    {
+        return cacheMap.size() ;
+    }
+
 }
 
 /*
