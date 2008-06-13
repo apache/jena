@@ -12,11 +12,11 @@ import com.hp.hpl.jena.JenaRuntime ;
  *  Does not cope with tabs or newlines in output strings.
  * 
  * @author		Andy Seaborne
- * @version 	$Id: IndentedWriter.java,v 1.10 2008-01-02 12:04:48 andy_seaborne Exp $
+ * @version 	$Id: N3IndentedWriter.java,v 1.1 2008-06-13 07:35:19 andy_seaborne Exp $
  */
 
 // Not robust/complete enough for public use
-/*public*/ class IndentedWriter //extends Writer
+public class N3IndentedWriter
 {
 	String lineSeparator = JenaRuntime.getLineSeparator() ;
 	
@@ -25,7 +25,7 @@ import com.hp.hpl.jena.JenaRuntime ;
 	int row ;
 	int currentIndent ;
 	
-	public IndentedWriter(Writer w)
+	public N3IndentedWriter(Writer w)
 	{
 		writer = w ;
 		column = 0 ; 
