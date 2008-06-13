@@ -187,24 +187,47 @@ public class TestNTriples extends BaseTest
         assertEquals(new Triple(s,p,o), x) ;
     }
     
-    @Test public void graph_1()
+    @Test public void comment_1()
     {
         Graph g = parse("#Comment <x> <p> <z> .") ;
         assertEquals(0, g.size()) ;
     }
     
-    @Test public void graph_2()
+    @Test public void comment_2()
     {
         Graph g = parse("#Comment\n<x> <p> <z> .") ;
         assertEquals(1, g.size()) ;
     }
     
-    @Test public void graph_3()
+    @Test public void comment_3()
     {
         Graph g = parse("#Comment\r<x> <p> <z> .") ;
         assertEquals(1, g.size()) ;
     }
 
+    @Test public void comment_4()
+    {
+        Graph g = parse("#Comment\r\n<x> <p> <z> .") ;
+        assertEquals(1, g.size()) ;
+    }
+    
+    @Test public void comment_5()
+    {
+        Graph g = parse("<x> <p> <z> .\n#Comment \n\n<x1> <p1> <z1> .") ;
+        assertEquals(2, g.size()) ;
+    }
+
+    @Test public void comment_6()
+    {
+        Graph g = parse("<x> <p> <z> .\n<x1> <p1> <z1> .\r\n#Comment") ;
+        assertEquals(2, g.size()) ;
+    }
+
+    @Test public void comment_7()
+    {
+        Graph g = parse("<x> <p> <z> .\r#Comment") ;
+        assertEquals(1, g.size()) ;
+    }
     // XXX more error cases
     
     private Node readNode(String form)
