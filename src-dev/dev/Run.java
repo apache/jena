@@ -16,6 +16,7 @@ import com.hp.hpl.jena.query.QueryFactory;
 import com.hp.hpl.jena.query.ResultSet;
 import com.hp.hpl.jena.query.ResultSetFormatter;
 import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.RDFList;
 import com.hp.hpl.jena.rdf.model.Resource;
@@ -58,6 +59,31 @@ public class Run
     }
      
     private static void report()
+    {
+//        System.out.println("Mem model") ;
+//        report(ModelFactory.createDefaultModel()) ;
+        System.out.println("TDB model") ;
+        report(TDBFactory.createModel()) ;
+        System.exit(0) ;
+    }
+    
+    private static void report(Model model)
+    {
+        Model model2 = ModelFactory.createDefaultModel() ;
+        
+        Resource r = model.createResource("http://com.xxx/test");
+       
+        Property op = model2.createProperty("property");
+        //Statement s = null ;
+        Statement s1 = r.getProperty(op);
+        r.addProperty(op, "string") ;
+        Statement s2 = r.getProperty(op);
+       
+        System.out.println("s1: "+s1) ;
+        System.out.println("s2: "+s2) ;
+    }
+    
+    private static void report1()
     {
         FileOps.clearDirectory("tmp") ;
         Model model = TDBFactory.createModel("tmp") ;

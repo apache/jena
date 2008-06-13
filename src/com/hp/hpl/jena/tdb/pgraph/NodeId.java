@@ -26,13 +26,13 @@ public class NodeId
     public static final NodeId NodeDoesNotExist = new NodeId(-8) ;
     public static final NodeId NodeIdAny = new NodeId(-9) ;
     
-    public static final NodeId n0 = new NodeId(0) ; 
-    public static final NodeId n1 = new NodeId(1) ; 
-    public static final NodeId n2 = new NodeId(2) ; 
-
-    public static final NodeId n3 = new NodeId(3) ; 
-    public static final NodeId n4 = new NodeId(4) ; 
-    public static final NodeId n5 = new NodeId(5) ; 
+//    public static final NodeId n0 = new NodeId(0) ; 
+//    public static final NodeId n1 = new NodeId(1) ; 
+//    public static final NodeId n2 = new NodeId(2) ; 
+//
+//    public static final NodeId n3 = new NodeId(3) ; 
+//    public static final NodeId n4 = new NodeId(4) ; 
+//    public static final NodeId n5 = new NodeId(5) ; 
 
     
     // NB If there is any sort of cache with a NodeId in it, then there is an object created
@@ -111,8 +111,9 @@ public class NodeId
     @Override
     public String toString()
     { 
-        //if ( value == NodeDoesNotExist ) return "[DoesNotExist]" ;
+        if ( this == NodeDoesNotExist ) return "[DoesNotExist]" ;
         if ( this == NodeIdAny ) return "[Any]" ;
+        
         return String.format("[%016X]", value) ; 
     }
     

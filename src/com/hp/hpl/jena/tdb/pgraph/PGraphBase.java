@@ -55,7 +55,6 @@ public class PGraphBase extends GraphBase implements Sync
     private NodeTable nodeTable = null ;
     
     private final PGraphQueryHandler queryHandler = new PGraphQueryHandler(this) ;
-
     
     protected PGraphBase() {}   // Must call init!
     
