@@ -14,8 +14,10 @@ import test.BaseTest;
 
 import com.hp.hpl.jena.datatypes.RDFDatatype;
 import com.hp.hpl.jena.datatypes.TypeMapper;
+import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
+import com.hp.hpl.jena.sparql.util.graph.GraphUtils;
 import com.hp.hpl.jena.tdb.base.loader.NTriplesLoader;
 
 public class TestBulkLoader extends BaseTest
@@ -61,7 +63,6 @@ public class TestBulkLoader extends BaseTest
     
     @Test public void literal_2()
     {
-        
         Node x = readNode("\"abc\"") ;
         assertEquals(Node.createLiteral("abc"), x) ;
     }        
@@ -186,6 +187,24 @@ public class TestBulkLoader extends BaseTest
         assertEquals(new Triple(s,p,o), x) ;
     }
     
+    @Test public void graph_1()
+    {
+        Graph g = parse("#Comment <x> <p> <z> .") ;
+        assertEquals(0, g.size()) ;
+    }
+    
+    @Test public void graph_2()
+    {
+        Graph g = parse("#Comment\n<x> <p> <z> .") ;
+        assertEquals(1, g.size()) ;
+    }
+    
+    @Test public void graph_3()
+    {
+        Graph g = parse("#Comment\r<x> <p> <z> .") ;
+        assertEquals(1, g.size()) ;
+    }
+
     // XXX more error cases
     
     private Node readNode(String form)
@@ -200,6 +219,14 @@ public class TestBulkLoader extends BaseTest
         NTriplesLoader b = make(form) ;
         Triple x = b.readTriple() ;
         return x ;
+    }
+    
+    private Graph parse(String contents)
+    {
+        Graph graph = GraphUtils.makePlainGraph() ;
+        StringReader r = new StringReader(contents) ;
+        NTriplesLoader.read(graph, r, null) ;
+        return graph ;
     }
     
     private NTriplesLoader make(String contents)
