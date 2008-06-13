@@ -14,6 +14,8 @@ import com.hp.hpl.jena.query.ARQ;
 import com.hp.hpl.jena.rdf.model.impl.RDFReaderFImpl;
 import com.hp.hpl.jena.sparql.engine.main.StageGenerator;
 import com.hp.hpl.jena.sparql.util.Symbol;
+
+import com.hp.hpl.jena.tdb.base.loader.NTriplesReader2;
 import com.hp.hpl.jena.tdb.pgraph.assembler.PGraphAssemblerVocab;
 import com.hp.hpl.jena.tdb.solver.StageGeneratorPGraphBGP;
 import com.hp.hpl.jena.tdb.solver.StageGeneratorPGraphSimple;
@@ -69,7 +71,7 @@ public class TDB
         }
         
         // Override N-TRIPLES
-        String bulkLoaderClass = "com.hp.hpl.jena.tdb.base.loader.BulkReader" ;
+        String bulkLoaderClass = NTriplesReader2.class.getName() ; //"com.hp.hpl.jena.tdb.base.loader.BulkReader" ;
         RDFReaderFImpl.setBaseReaderClassName("N-TRIPLES", bulkLoaderClass) ;
         RDFReaderFImpl.setBaseReaderClassName("N-TRIPLE", bulkLoaderClass) ;
         
