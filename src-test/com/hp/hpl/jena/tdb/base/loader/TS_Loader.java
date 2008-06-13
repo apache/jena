@@ -12,7 +12,7 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
     TestPeekReader.class ,
-    TestBulkLoader.class 
+    TestNTriples.class 
 })
 
 

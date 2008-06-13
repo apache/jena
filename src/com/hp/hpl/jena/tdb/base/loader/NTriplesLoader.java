@@ -61,6 +61,8 @@ public final class NTriplesLoader
     //  2 - readURIStr - check one char peek ahead but do any escape
     
     static final int EOF = -1 ;
+    static final int NL = '\n' ;
+    static final int CR = '\r' ;
 
     //private Model model = null;
     private Graph graph ; 
@@ -460,8 +462,8 @@ public final class NTriplesLoader
 
         switch (c)
         {
-            case 'n': return '\n' ; 
-            case 'r': return '\r' ;
+            case 'n': return NL ; 
+            case 'r': return CR ;
             case 't': return '\t' ;
             case '"': return '"' ;
             case '\\': return '\\' ;
@@ -578,49 +580,55 @@ public final class NTriplesLoader
 
     private void skipToNewlineStrict()
     {
-        // Skip to EOL
-        // Exactly one \n. (NB Windows is \r\n so this works)
+        // Skip to EOL : (CR | CR NL | NL)
+        // Skips the newline.
         while( !in.eof() )
         {
-            int x = in.readChar() ;
-            if ( x == '\n' )
+            int ch = in.readChar() ;
+            if ( ch == NL )
                 break ;
+            if ( ch == CR )
+            {
+                // Windows line ending.
+                if ( in.peekChar() == NL )
+                    in.readChar() ;
+                break ;
+            }
         }
     }
     
     private void skipToNewlineLax()
     {
-        while (true)
+        skipToNewlineStrict() ;
+        skipCurrentNewlineChars() ;
+    }
+    
+    private void skipCurrentNewlineChars()
+    {
+        // Skip multiple EOL characters. 
+        while ( !in.eof() )
         {
-            if (in.eof()) 
-                return ;
             int ch = in.peekChar() ;
-            if (ch == '\n' || ch == '\r') break ;
-            // Not newline - read and try again.
-            in.readChar() ;
-        }
-        // At newline.
-        while (true)
-        {
-            if (in.eof()) 
-                return ;
-            int ch = in.peekChar() ;
-            if (ch != '\n' && ch != '\r') 
+            if (ch != NL || ch != CR) 
                 break ;
-            // Skip multiple EOL characters. 
             in.readChar() ;
         }
     }
     
     private void comment()
     {
-        while (true)
+        while ( !in.eof() )
         {
-            if ( in.eof() )
-                return ;
             int ch = in.readChar() ;
-            if ( ch == '\n' || ch == '\r' )
+            if ( ch == NL )
                 return ;
+            if ( ch == CR )
+            {
+                // Windows line ending.
+                if ( in.peekChar() == NL )
+                    in.readChar() ;
+                return ;
+            }
         }
     }
 

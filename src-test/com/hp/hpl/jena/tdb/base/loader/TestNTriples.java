@@ -20,7 +20,7 @@ import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.sparql.util.graph.GraphUtils;
 import com.hp.hpl.jena.tdb.base.loader.NTriplesLoader;
 
-public class TestBulkLoader extends BaseTest
+public class TestNTriples extends BaseTest
 {
     @Test public void iri_1()
     {
