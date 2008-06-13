@@ -105,12 +105,15 @@ public class DateTimeNode
 
     
     // From string.  Assumed legal.
-    // RTeturns -1 for unpackable.
+    // Returns -1 for unpackable.
     public static long packDateTime(String lex)
     {
         long v = 0 ;
         
         boolean containsZ = (lex.indexOf('Z') > 0 ) ;
+        // Bug in Java 1.6 (build 5 at least)
+        // T24:00:00 not accepted.
+        // See also TestNodeId.nodeId_date_time_7
         XMLGregorianCalendar xcal = datatypeFactory.newXMLGregorianCalendar(lex) ;
         
         int y = xcal.getYear() ;

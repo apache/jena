@@ -102,6 +102,8 @@ public class BlockMgrMapped extends BlockMgrFile
                 System.err.println("Id: "+id) ;
                 System.err.println("Seg="+seg) ;
                 System.err.println("Segoff="+segOff) ;
+                System.err.println(ex.getMessage()) ;
+                System.err.println(ex) ;
                 throw ex ;
             }
             segBuffer.limit(segOff+blockSize) ;

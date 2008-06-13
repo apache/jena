@@ -15,6 +15,7 @@ import com.hp.hpl.jena.sparql.engine.main.StageList;
 import com.hp.hpl.jena.tdb.pgraph.PGraphBase;
 
 // Force to use StageGenBasicPattern
+// This class not used.  See StageGeneratorPGraphBGP
 public class StageGeneratorPGraphSimple extends StageGenBasicPattern
 {
     StageGenerator above = null ;

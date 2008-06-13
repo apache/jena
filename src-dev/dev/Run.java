@@ -7,20 +7,15 @@
 package dev;
 
 import static lib.FileOps.clearDirectory;
-import lib.FileOps;
 
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.QueryExecution;
-import com.hp.hpl.jena.query.QueryExecutionFactory;
-import com.hp.hpl.jena.query.QueryFactory;
-import com.hp.hpl.jena.query.ResultSet;
-import com.hp.hpl.jena.query.ResultSetFormatter;
 import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.Property;
-import com.hp.hpl.jena.rdf.model.RDFList;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.Statement;
+
+import com.hp.hpl.jena.query.*;
+
+import com.hp.hpl.jena.tdb.TDB;
 import com.hp.hpl.jena.tdb.TDBFactory;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 import com.hp.hpl.jena.tdb.btree.BTreeParams;
@@ -39,11 +34,16 @@ public class Run
     
     public static void main(String ... args)
     {
+        
 //        String[] a = { "--set", "tdb:logBGP=true", "--desc="+assembler, query } ;
 //        tdb.tdbquery.main(a) ;
 //        System.exit(0) ;
         
-        tdbquery("dataset.ttl", "SELECT * { ?s ?p 1}") ;
+        //tdbquery("dataset.ttl", "SELECT * { ?s ?p ?o}") ;
+        ARQ.getContext().set(TDB.symFileMode, "mapped") ;
+        Model model = TDBFactory.createModel("tmp") ;
+        query("SELECT * { ?s ?p ?o}", model) ;
+        System.exit(0) ;
         
         // ----
         btreePacking(3, 32, 8*1024) ; System.exit(0) ;
@@ -62,47 +62,28 @@ public class Run
      
     private static void report()
     {
-//        System.out.println("Mem model") ;
-//        report(ModelFactory.createDefaultModel()) ;
-        System.out.println("TDB model") ;
-        report(TDBFactory.createModel()) ;
-        System.exit(0) ;
-    }
-    
-    private static void report(Model model)
-    {
-        Model model2 = ModelFactory.createDefaultModel() ;
+        ARQ.getContext().set(TDB.symFileMode, "mapped") ;
         
+        Model model = TDBFactory.createModel("foo");
         Resource r = model.createResource("http://com.xxx/test");
-       
-        Property op = model2.createProperty("property");
-        //Statement s = null ;
-        Statement s1 = r.getProperty(op);
-        r.addProperty(op, "string") ;
-        Statement s2 = r.getProperty(op);
-       
-        System.out.println("s1: "+s1) ;
-        System.out.println("s2: "+s2) ;
-    }
-    
-    private static void report1()
-    {
-        FileOps.clearDirectory("tmp") ;
-        Model model = TDBFactory.createModel("tmp") ;
-        //Model model = TDBFactory.createModel() ;
-        
-        Resource r = model.createResource("foo");
-        RDFList list = model.createList();
-        Property p = model.createProperty("p") ;
-        Property p2 = model.createProperty("p2") ;
-        
-        r.addProperty(p, list);
-        Statement s = r.getProperty(p);
-        System.out.println(s) ;
 
-        s = r.getProperty(p2);
-        System.out.println(s) ;
+        Property op = model.createProperty("http://property/bar");
+        Statement s = r.getProperty(op);
+        if (s == null) {
+            Resource list = model.createList();
+            r.addProperty(op, list);
+            s = r.getProperty(op);
+        }
+
+        model.write(System.err);
         
+        //model.close() ;
+        
+        System.err.println("-------------");
+        model = TDBFactory.createModel("foo");
+        model.write(System.err);
+
+
         System.exit(0) ;
 
     }
