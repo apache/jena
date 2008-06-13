@@ -29,10 +29,15 @@ public abstract class CmdTDB extends CmdARQ
     protected CmdTDB(String[] argv)
     {
         super(argv) ;
-        TDB.init() ;
-        ModSymbol.addPrefixMapping(TDB.symbolPrefix, TDB.symbolNamespace) ;
+        init() ;
         super.addModule(modAssembler) ;
         super.addModule(modLocation) ;
+    }
+    
+    public static void init()
+    {
+        //TDB.init() ;
+        ModSymbol.addPrefixMapping(TDB.tdbSymbolPrefix, TDB.symbolNamespace) ;
     }
     
     @Override

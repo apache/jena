@@ -39,8 +39,10 @@ public class Run
     
     public static void main(String ... args)
     {
-
-        report() ;
+//        String[] a = { "--set", "tdb:logBGP=true", "--desc="+assembler, query } ;
+//        tdb.tdbquery.main(a) ;
+//        System.exit(0) ;
+        
         tdbquery("dataset.ttl", "SELECT * { ?s ?p 1}") ;
         
         // ----

@@ -6,11 +6,11 @@
 
 package tdb;
 
-import com.hp.hpl.jena.query.ARQ;
-
+import tdb.cmdline.CmdTDB;
 import tdb.cmdline.ModTDBDataset;
 import arq.cmdline.ModDataset;
-import arq.cmdline.ModSymbol;
+
+import com.hp.hpl.jena.query.ARQ;
 
 import com.hp.hpl.jena.tdb.TDB;
 
@@ -20,14 +20,15 @@ public class tdbquery extends arq.query
     
     public static void main(String [] argv)
     {
-        ModSymbol.addPrefixMapping(TDB.symbolPrefix, TDB.symbolNamespace) ;
+        
         new tdbquery(argv).main() ;
     }
     
     public tdbquery(String[] argv)
     {
         super(argv) ;
-        TDB.init() ;
+        // Because this inherits from an ARQ command
+        CmdTDB.init() ;
     }
     
     @Override

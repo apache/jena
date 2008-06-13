@@ -10,8 +10,10 @@ import static com.hp.hpl.jena.tdb.TDB.log;
 
 import java.nio.ByteOrder;
 
-import com.hp.hpl.jena.query.ARQ;
 import com.hp.hpl.jena.sparql.util.Symbol;
+
+import com.hp.hpl.jena.query.ARQ;
+
 import com.hp.hpl.jena.tdb.base.block.FileMode;
 import com.hp.hpl.jena.tdb.pgraph.NodeId;
 
@@ -61,19 +63,24 @@ public class Const
     // BDB related.
     public static final int BDB_cacheSizePercent    = 75 ; 
     
-    // Value: direct, mapped, default 
-    public static final Symbol symFileMode          = createSymbol("TDB.file.mode") ;  
-    public static final Symbol symParallelLoad      = createSymbol("TDB.load.parallel") ;
+    public static Symbol allocSymbol(String shortName)
+    { 
+        if ( shortName.startsWith(TDB.tdbSymbolPrefix)) 
+            throw new TDBException("Symbol short name begins with the TDB namespace prefix: "+shortName) ;
+        if ( shortName.startsWith("http:")) 
+            throw new TDBException("Symbol short name begins with http: "+shortName) ;
+        return allocSymbol(TDB.symbolNamespace, shortName) ;
+    }
     
-    private static Symbol createSymbol(String shortName)
+    private static Symbol allocSymbol(String namespace, String shortName)
     {
-        return Symbol.create(ARQ.arqNS+shortName) ;
+        return Symbol.create(namespace+shortName) ;
     }
     
     // --------
     
     // Symbols.
-    public static final boolean is64bit = determineIf64Bit() ;
+    public static final boolean is64bitSystem = determineIf64Bit() ;
 
     private static boolean determineIf64Bit()
     {
@@ -97,11 +104,20 @@ public class Const
         return b ;
     }
     
-    public static final FileMode fileMode = determineFileMode() ;
+    private static FileMode fileMode = null ;
+    public static FileMode fileMode()
+    { 
+        if ( fileMode == null )
+            fileMode = determineFileMode() ;
+        return fileMode ;
+    }
 
     private static FileMode determineFileMode()
     {
-        String x = ARQ.getContext().getAsString(symFileMode, "default") ;
+        // Called very, very early, before --set might be seen.
+        // Hence delayed access above.
+        
+        String x = ARQ.getContext().getAsString(TDB.symFileMode, "default") ;
 
         if ( x.equalsIgnoreCase("direct") )
         {
@@ -116,7 +132,7 @@ public class Const
         
         if ( x.equalsIgnoreCase("default") )
         {
-            if ( is64bit )
+            if ( is64bitSystem )
             {
                 log.debug("FileMode: Mapped") ;
                 return FileMode.mapped ;
@@ -124,7 +140,7 @@ public class Const
             log.debug("FileMode: Direct") ;
             return FileMode.direct ;
         }
-        throw new TDBException("Unrecognized file mode: "+x) ;
+        throw new TDBException("Unrecognized file mode (not one of 'default', 'direct' or 'mapped': "+x) ;
     }
 }
 

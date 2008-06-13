@@ -19,14 +19,14 @@ public class BlockMgrFactory
     /** Create a BlockMgr backed by a file */
     public static BlockMgr createFile(String filename, int blockSize)
     {
-        switch ( Const.fileMode )
+        switch ( Const.fileMode() )
         {
             case mapped:
                 return createMMapFile(filename, blockSize) ;
             case direct:
                 return createStdFile(filename, blockSize) ;
         }
-        throw new TDBException("Unknown file mode: "+Const.fileMode) ;
+        throw new TDBException("Unknown file mode: "+Const.fileMode()) ;
     }        
     
  

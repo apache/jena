@@ -26,12 +26,19 @@ public class TDB
     public static final Logger log = LoggerFactory.getLogger(TDB.class) ;
     
     public static String namespace = "http://jena.hpl.hp.com/2008/tdb#" ;
+    
+    /** Root of TDB-defined parameter names */
+    public static final String symbolNamespace = "http://jena.hpl.hp.com/TDB#" ;
+    
+    /** Root of TDB-defined parameter short names */  
+    public static final String tdbSymbolPrefix = "tdb" ;
+//
+//    public static String symbolPrefix = "tdb" ;
 
-    public static String symbolNamespace = "http://jena.hpl.hp.com/TDB/tdb#" ;
-
-    public static String symbolPrefix = "tdb" ;
-
-    public static Symbol logBGP = Symbol.create(symbolNamespace+"logBGP") ;
+    public static Symbol logBGP                     = Const.allocSymbol("logBGP") ;
+    // Value: direct, mapped, default 
+    public static final Symbol symFileMode          = Const.allocSymbol("fileMode") ;  
+    public static final Symbol symParallelLoad      = Const.allocSymbol("parallelLoad") ;
     
 //    public static void panic(Class<?> clazz, String string)
 //    {
@@ -71,7 +78,7 @@ public class TDB
         }
         
         // Override N-TRIPLES
-        String bulkLoaderClass = NTriplesReader2.class.getName() ; //"com.hp.hpl.jena.tdb.base.loader.BulkReader" ;
+        String bulkLoaderClass = NTriplesReader2.class.getName() ;
         RDFReaderFImpl.setBaseReaderClassName("N-TRIPLES", bulkLoaderClass) ;
         RDFReaderFImpl.setBaseReaderClassName("N-TRIPLE", bulkLoaderClass) ;
         
