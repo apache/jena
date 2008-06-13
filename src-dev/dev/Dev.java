@@ -11,6 +11,8 @@ public class Dev
     // Build.  Ant and Ivy. 
     // TDBFactory ==> "create" ==> connect(... , boolean canCeate) ;
  
+    // --set tdb:mmap=true
+    
     // Double check for XSD dateTime 24:00:00 and 00:00:00
     
     // Assembler to cache graphs made (by location) so reuse is same graph engine 
