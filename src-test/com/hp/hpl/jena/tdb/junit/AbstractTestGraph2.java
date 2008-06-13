@@ -154,7 +154,18 @@ public abstract class AbstractTestGraph2 extends TestBase
         Graph g = emptyGraph() ;
         Triple t1 = triple(s1, p1, o1) ;
         assertEquals(0, g.size()) ;
-        g.contains(t1) ;
+        assertFalse(g.contains(t1)) ;
+        g.add(t1) ;
+        assertTrue(g.contains(t1)) ;
+    }
+    
+    @Test public void graph_add_find_02()
+    {
+        // Tests the "unknown node" handling
+        Graph g = emptyGraph() ;
+        Triple t1 = triple(s1, p1, o1) ;
+        assertEquals(0, g.size()) ;
+        assertFalse(g.contains(t1)) ;
         g.add(t1) ;
         assertTrue(g.contains(t1)) ;
     }

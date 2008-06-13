@@ -34,7 +34,8 @@ public abstract class NodeTableBase implements NodeTable
     private CacheLRU<Node, NodeId> node2id_Cache ;
     private CacheLRU<NodeId, Node> id2node_Cache ;
     
-    // A small cache of "known unknowns" to speed up searching for impossible things. 
+    // A small cache of "known unknowns" to speed up searching
+    // for impossible things.   
     // Nodes we know not to be in the node table.
     // Cache update needed on NodeTable changes. 
     private CacheSetLRU<Node> notPresent ;
@@ -72,7 +73,7 @@ public abstract class NodeTableBase implements NodeTable
     @Override
     // ---- NodeId ==> Node
     
-    // Get the node for this NodeId.
+    // Get the node for this NodeId.  Use caches.
     public Node retrieveNode(NodeId id)
     {
         if ( id == NodeId.NodeDoesNotExist )
@@ -89,8 +90,9 @@ public abstract class NodeTableBase implements NodeTable
         return n ;
     }
 
+    // ----------------
     // Node to Node Id worker
-    
+    // Find a node, possibly placing it in the node file as well
     private NodeId _idForNode(Node node, boolean allocate)
     {
         NodeId nodeId = lookup(node) ;
