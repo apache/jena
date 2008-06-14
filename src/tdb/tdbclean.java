@@ -10,14 +10,6 @@ import lib.FileOps;
 import tdb.cmdline.CmdTDB;
 import arq.cmd.CmdUtils;
 
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.QueryExecution;
-import com.hp.hpl.jena.query.QueryExecutionFactory;
-import com.hp.hpl.jena.query.QueryFactory;
-import com.hp.hpl.jena.query.ResultSet;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.util.FileManager;
-
 public class tdbclean extends CmdTDB
 {
     static public void main(String... argv)
@@ -40,27 +32,8 @@ public class tdbclean extends CmdTDB
     @Override
     protected void exec()
     {
-        if ( modLocation.getLocation() != null )
-            clean(modLocation.getLocation().getDirectoryPath()) ;
-
-        // Extract the location from the assember file.
-        if ( modAssembler.getAssemblerFile() != null )
-        {
-            // Find and clear all locations
-            Model m = FileManager.get().loadModel(modAssembler.getAssemblerFile()) ;
-            Query query = QueryFactory.create("SELECT ?dir { [] tdb:location ?dir FILTER (isURI(?dir) }") ;
-            QueryExecution qExec = null ;
-            try {
-                qExec = QueryExecutionFactory.create(query, m) ;
-                for (ResultSet rs = qExec.execSelect() ; rs.hasNext() ; )
-                    clean(rs.nextSolution().getResource("dir").getURI()) ;
-            } catch ( RuntimeException ex)
-            {
-                if ( qExec != null )
-                    qExec.close() ;
-                throw ex ;
-            }
-        }
+        for ( String location : tdbDatasetAssembler.locations() )
+            clean(location) ;
     }
     
     private void clean(String dir)
