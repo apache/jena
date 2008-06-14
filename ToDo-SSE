@@ -5,13 +5,13 @@
   ## is heavy. '%'  
   (comment !!!!)
 
++ Allow space in <> URIs
+
 + Use of {} for ???
 
 + Literals and @
   Include @ into literal terminator 
   Currently, symbols can't start with a @ or ^ 
-
-+ Reader-writer tests
 
 + Expr: (exists (pattern ...))
   Tidy expr writing - consolidate in WriterExpr

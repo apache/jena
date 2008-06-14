@@ -8,7 +8,9 @@ See ToDoSSE
 + extra jar - testing only.
 
 + Stages
-	invert Stage/StageList 
+	invert Stage/StageList
+	Formalse the TDB stackign generator  approach.
+	  Or even register stage facctories wiht accept/create 
 	ARQ documentation - stages and adding new storage layers.
 	
 +  FROM <.....n3>

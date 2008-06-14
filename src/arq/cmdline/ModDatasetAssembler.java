@@ -15,6 +15,7 @@ import com.hp.hpl.jena.shared.NotFoundException;
 import com.hp.hpl.jena.sparql.ARQException;
 import com.hp.hpl.jena.sparql.core.assembler.DatasetAssemblerVocab;
 
+/** Add assembler to a general dataset description */
 public class ModDatasetAssembler extends ModDatasetGeneral
 {
     ModAssembler modAssembler = new ModAssembler() ;

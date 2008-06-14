@@ -24,7 +24,7 @@ public class ModVersion implements ArgModuleGeneral
     
     public void registerWith(CmdGeneral cmdLine)
     {
-        cmdLine.add(versionDecl, "version", "Version information") ;
+        cmdLine.add(versionDecl, "--version", "Version information") ;
     }
 
     public void processArgs(CmdArgModule cmdLine)
