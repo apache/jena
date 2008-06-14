@@ -6,52 +6,41 @@
 
 package tdb.cmdline;
 
-import arq.cmdline.CmdARQ;
-import arq.cmdline.ModSymbol;
+import java.io.File;
 
-import com.hp.hpl.jena.rdf.model.Model;
+import arq.cmdline.CmdGeneral;
+import arq.cmdline.ModAssembler;
 
-import com.hp.hpl.jena.sparql.util.Utils;
-
-import com.hp.hpl.jena.tdb.TDB;
-import com.hp.hpl.jena.tdb.pgraph.PGraphBase;
-
-public abstract class CmdTDB extends CmdARQ
+/**  Extends ModAssembler to include --tdb and defaulting to "tdb.ttl" */  
+public class ModTDBAssembler extends ModAssembler
 {
-    // CmdTDB act on a single graph
-    private PGraphBase graph = null ; 
+    public static final String defaultAssemblerFile = "tdb.ttl" ;
     
-    protected ModTDBDataset tdbDatasetAssembler = new ModTDBDataset() ;
-    
-    protected CmdTDB(String[] argv)
-    {
-        super(argv) ;
-        init() ;
-        super.addModule(tdbDatasetAssembler) ;
-    }
-    
-    public static void init()
-    {
-        TDB.init() ;
-        ModSymbol.addPrefixMapping(TDB.tdbSymbolPrefix, TDB.symbolNamespace) ;
-    }
-    
-    protected Model getModel()
-    {
-        return tdbDatasetAssembler.getModel() ;
-    }
-    
-    protected PGraphBase getGraph()
-    {
-        return (PGraphBase)tdbDatasetAssembler.getGraph() ;
+    public ModTDBAssembler()
+    { 
+        super() ;
+        super.assemblerDescDecl.addName("tdb") ;
     }
     
     @Override
-    protected String getCommandName()
+    public void registerWith(CmdGeneral cmdLine)
     {
-        return Utils.className(this) ;
+        super.registerWith(cmdLine) ;
+        //cmdLine.getUsage().startCategory("Dataset") ;
+        cmdLine.getUsage().addUsage("--tdb=", "Assembler description file") ;
     }
-    
+ 
+    @Override
+    public String getAssemblerFile()
+    {
+        if ( super.getAssemblerFile() != null )
+            return super.getAssemblerFile() ;
+        
+        File f= new File(defaultAssemblerFile) ;
+        if ( f.exists() )
+            return defaultAssemblerFile ; 
+        return null ;
+    }
 }
 
 /*

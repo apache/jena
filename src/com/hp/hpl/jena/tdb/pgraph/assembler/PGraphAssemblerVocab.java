@@ -42,7 +42,7 @@ public class PGraphAssemblerVocab
     
     static { init() ; }
     
-    static public void init()
+    static synchronized public void init()
     {
         if ( initialized )
             return ;

@@ -16,7 +16,7 @@
     . 
 
 <#graph> rdf:type tdb:GraphTDB ;
-    tdb:location "tmp" ;
+    tdb:location "DB" ;
     .
 
 

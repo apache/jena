@@ -6,24 +6,39 @@
 
 package tdb.cmdline;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import arq.cmd.CmdException;
-import arq.cmdline.CmdArgModule;
-import arq.cmdline.CmdGeneral;
-import arq.cmdline.ModAssembler;
-import arq.cmdline.ModDataset;
+import arq.cmdline.*;
 
 import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.ModelFactory;
+
+import com.hp.hpl.jena.util.FileManager;
+
+import com.hp.hpl.jena.graph.Graph;
+import com.hp.hpl.jena.shared.JenaException;
+
+import com.hp.hpl.jena.sparql.ARQException;
+import com.hp.hpl.jena.sparql.core.assembler.AssemblerUtils;
+import com.hp.hpl.jena.sparql.core.assembler.DatasetAssemblerVocab;
+
+import com.hp.hpl.jena.query.*;
+
 import com.hp.hpl.jena.tdb.TDBFactory;
 import com.hp.hpl.jena.tdb.pgraph.PGraphBase;
 
-import com.hp.hpl.jena.query.Dataset;
-import com.hp.hpl.jena.query.DatasetFactory;
-
 public class ModTDBDataset extends ModDataset
 {
-    ModAssembler modAssembler =  new ModAssembler() ;
-    ModLocation modLocation =  new ModLocation() ;
-
+    // Mixes assembler, location and "tdb"
+    // Can make a single model or a dataset
+    
+    private ModAssembler modAssembler   =  new ModTDBAssembler() ;
+    private ModLocation modLocation     =  new ModLocation() ;
+    
+    public ModTDBDataset() {}
+    
     public void registerWith(CmdGeneral cmdLine)
     {
         cmdLine.addModule(modAssembler) ;
@@ -34,25 +49,98 @@ public class ModTDBDataset extends ModDataset
     {
         modAssembler.processArgs(cmdLine) ;
         modLocation.processArgs(cmdLine) ;
+        
+        int count = 0 ;
+        if ( modAssembler.getAssemblerFile() != null ) count++ ;
+        if ( modLocation.getLocation() != null ) count++ ;    
+
+        if ( count == 0 )
+            throw new CmdException("No assembler file and no location") ;
+        if ( count > 1 )
+            throw new CmdException("Only one of an assembler file and a location") ;
     }
 
+    private Model model = null ;
+    private Graph graph = null ;
+    
+    public Model getModel()
+    {
+        if ( model == null )
+            model = ModelFactory.createModelForGraph(getGraph()) ;
+        return model ;
+    }
+    
+    public Graph getGraph()
+    {
+        if ( graph == null )
+            graph = createGraph() ;
+        return graph ;
+    }
+    
+    public Graph createGraph()
+    {
+        if ( modAssembler.getAssemblerFile() != null )
+            return TDBFactory.assembleGraph( modAssembler.getAssemblerFile()) ;
+        if ( modLocation.getLocation() != null )
+            return TDBFactory.createGraph(modLocation.getLocation()) ;
+        throw new CmdException("Don't know how to make a model") ;
+    }
+    
     @Override
     public Dataset createDataset()
     {
-        if ( modLocation.getLocation() == null && modAssembler.getAssemblerFile() == null )
-            throw new CmdException("No assembler file and no location") ;
-
-        if ( modLocation.getLocation() != null && modAssembler.getAssemblerFile() != null )
-            throw new CmdException("Both an assembler file and a location") ;
-
-        Model model = null ;
-
-        if ( modAssembler.getAssemblerFile() != null )
-            model = TDBFactory.assembleModel(modAssembler.getAssemblerFile()) ;
-        else
-            model = TDBFactory.createModel(modLocation.getLocation()) ;
+        if (  modAssembler.getAssemblerFile() != null )
+        {
+            Dataset thing = null ;
+            try {
+                thing = (Dataset)AssemblerUtils.build( modAssembler.getAssemblerFile(), DatasetAssemblerVocab.tDataset) ;
+            }
+            catch (ARQException ex)     { throw ex; }
+            catch (JenaException ex)    { throw ex ; }
+            catch (Exception ex)
+            { throw new CmdException("Error creating", ex) ; }
+            return thing ;
+            
+        }
+        
+        // No assembler - use location (a single graph).
+        Model model = TDBFactory.createModel(modLocation.getLocation()) ;
+        // Check of type.
         PGraphBase graph = (PGraphBase)model.getGraph() ;
         return DatasetFactory.create(model) ;
+    }
+    
+    
+    public List<String> locations()
+    {
+        List<String> locations = new ArrayList<String>() ;  
+        
+        if ( modLocation.getLocation() != null )
+            locations.add(modLocation.getLocation().getDirectoryPath()) ;
+
+        // Extract the location from the assember file.
+        if ( modAssembler.getAssemblerFile() != null )
+        {
+            // Find and clear all locations
+            Model m = FileManager.get().loadModel(modAssembler.getAssemblerFile()) ;
+            Query query = QueryFactory.create("SELECT ?dir { [] tdb:location ?dir FILTER (isURI(?dir) }") ;
+            QueryExecution qExec = null ;
+            try {
+                qExec = QueryExecutionFactory.create(query, m) ;
+                for (ResultSet rs = qExec.execSelect() ; rs.hasNext() ; )
+                {
+                    String x = rs.nextSolution().getResource("dir").getURI() ;
+                    locations.add(x) ;
+                }
+            } catch ( RuntimeException ex)
+            {
+                if ( qExec != null )
+                    qExec.close() ;
+                throw ex ;
+            }
+        }
+        
+        return locations ;
     }
 }
 

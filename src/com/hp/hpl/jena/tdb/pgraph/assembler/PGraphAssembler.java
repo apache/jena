@@ -24,6 +24,8 @@ import com.hp.hpl.jena.assembler.exceptions.AssemblerException;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.Resource;
+
+import com.hp.hpl.jena.tdb.TDB;
 import com.hp.hpl.jena.tdb.TDBFactory;
 import com.hp.hpl.jena.tdb.base.file.Location;
 import com.hp.hpl.jena.tdb.index.TripleIndex;
@@ -36,21 +38,24 @@ public class PGraphAssembler extends AssemblerBase implements Assembler
     static TripleIndexAssembler tripleIndexBuilder = new TripleIndexAssembler() ;
     // See Store/gbt.ttl
     
-    @SuppressWarnings("unchecked")
     @Override
     public Model open(Assembler a, Resource root, Mode mode)
     {
-        // Memory override.
+        // In case we go via explicit index construction,
+        // although given we got here, the assembler is wired in
+        // and that probably means TDB.init
+        TDB.init() ;
         
         // Make a model.
         // [] rdf:type tdb:GraphTDB ;
         //    tdb:location "dir" ;
-        // Or
+        
+        // Or [not tested]
         // [] rdf:type tdb:GraphTDB ;
         //      index [ ... ] ;
         //    .
         
-        // Or 
+        // Or [not ready]
         // [] rdf:type tdb:GraphBDB ;
         
         if ( ! exactlyOneProperty(root, pLocation) )

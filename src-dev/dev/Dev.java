@@ -9,8 +9,21 @@ package dev;
 public class Dev
 {
     // Build.  Ant and Ivy. 
+    
+    // Commands:
+    // --desc defaults to tdb.ttl?
+    // May need to swap the (ARQ) ModDataset > ModDatsetGeneral > ModAssembler
+    // and then ModAssembler > ModTDBDataset 
+    
+    // Initialization - make suu initialization happens on assembler route
+    
+    // Documenation on the wiki
+    //   Assembler
+    //   TDBFactory
+    
     // TDBFactory ==> "create" ==> connect(... , boolean canCeate) ;
-    // TDBFactory, same Location ==> same model.  
+    // TDBFactory, same Location ==> same model. 
+    // ModelSource?
  
     // Assembler to cache graphs made (by location) so reuse is same graph engine 
     // Careful about holding too much memory. Soft refs
