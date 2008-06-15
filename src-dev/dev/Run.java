@@ -31,10 +31,31 @@ public class Run
         nextDivider = "" ;
     }
     
+    static int BlockSize               = 8*1024 ;
+    static int SegmentSize = 8 * 1024 * 1024 ; 
+    static int blocksPerSegment = SegmentSize/BlockSize ;
+    
+    private static int segment(int id) { return id/blocksPerSegment ; }
+    private static int byteOffset(int id) { return (id%blocksPerSegment)*BlockSize ; }
     
     public static void main(String ... args)
     {
+//        Id: 1179
+//        Seg=1
+//        Segoff=1,269,760
+
+        System.out.printf("Blocksize = %d , Segment size = %d\n", BlockSize, SegmentSize) ;
+        System.out.printf("blocksPerSegment = %d\n", blocksPerSegment) ;
         
+        
+        for ( int id : new int[]{1,2,3,4,5,1428, 1179})
+        {
+            int seg = segment(id) ;                     // Segment.
+            int segOff = byteOffset(id) ; 
+            System.out.printf("%d => [%d, %,d]\n", id, seg, segOff) ;
+            System.out.printf("%,d\n", id*BlockSize) ;
+        }
+        System.exit(0) ;
 //        String[] a = { "--set", "tdb:logBGP=true", "--desc="+assembler, query } ;
 //        tdb.tdbquery.main(a) ;
 //        System.exit(0) ;

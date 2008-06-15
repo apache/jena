@@ -31,12 +31,10 @@ public class BlockMgrMapped extends BlockMgrFile
 
     // Segmentation avoids over-mapping; allows file to grow (in chunks) 
     private final int GrowthFactor = 2 ;
-    private final int SegmentSize = 8 * 1024 * 1024 ;
+    private final int SegmentSize = 8 * 1024 * 1024 ;       // 8Meg
     private final int blocksPerSegment ;                              
     
-    // 8M*32000 = 256Gbytes of file addressability
-    
-    private int initialNumSegements = 1 ; 
+    private int initialNumSegements = 1 ;
     private MappedByteBuffer[] segments = new MappedByteBuffer[initialNumSegements] ;  
     
     // Unflushed segments.
