@@ -9,6 +9,9 @@ package dev;
 public class Dev
 {
     // Build.  Ant and Ivy. 
+
+    //removeAll implementation
+    // iterator.remove
     
     // Commands:
     // --desc defaults to tdb.ttl?
