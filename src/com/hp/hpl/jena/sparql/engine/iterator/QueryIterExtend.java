@@ -45,7 +45,11 @@ public class QueryIterExtend extends QueryIterConvert
             for ( Iterator iter = exprs.getVars().iterator() ; iter.hasNext(); )
             {
                 Var v = (Var)iter.next();
-                Node n = exprs.get(v, bind, funcEnv) ;
+                // Not ... expressions not seeing new bindings.
+                //Node n = exprs.get(v, bind, funcEnv) ;
+                // which give (Lisp) "let" semantics, not "let*" semantics 
+                Node n = exprs.get(v, b, funcEnv) ;
+                
                 if ( n == null )
                 {
                     // Failed to evaluate
