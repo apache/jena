@@ -1,52 +1,15 @@
 /*
- * (c) Copyright 2007, 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
 package test;
 
-import com.hp.hpl.jena.tdb.base.BaseConfig;
-import com.hp.hpl.jena.tdb.bplustree.BPlusTreeMaker;
-import com.hp.hpl.jena.tdb.bplustree.BPlusTreeParams;
-import com.hp.hpl.jena.tdb.index.RangeIndexMaker;
-
-public class BPlusTreeRun extends RunnerRangeIndex
+public interface ExecGenerator
 {
-    static public void main(String...a)
-    {
-        new BPlusTreeRun().perform(a) ;
-    }
-    
-    
-    @Override
-    protected RangeIndexMaker makeRangeIndexMaker()
-    {
-        return new BPlusTreeMaker(order, order) ;
-    }
-
-
-    @Override
-    protected void startRun(RunType runType)
-    {
-        switch (runType)
-        {
-            case test:
-                showProgress = true ;
-                BPlusTreeParams.CheckingTree = true ;
-                BPlusTreeParams.CheckingNode = true ;
-                BaseConfig.NullOut = true ;
-                break ;
-            case perf:  
-                showProgress = false ;
-                BPlusTreeParams.CheckingTree = false ;
-                BPlusTreeParams.CheckingNode = false ;
-                BaseConfig.NullOut = false ;
-                break ;
-        }
-    }
+    public void executeOneTest() ;
 }
-
 /*
  * (c) Copyright 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.

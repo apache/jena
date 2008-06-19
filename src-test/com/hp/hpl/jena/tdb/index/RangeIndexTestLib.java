@@ -6,7 +6,6 @@
 
 package com.hp.hpl.jena.tdb.index;
 
-import static junit.TestBase.* ;
 import static com.hp.hpl.jena.tdb.base.ConfigTest.TestRecordLength;
 import static com.hp.hpl.jena.tdb.base.record.RecordTestLib.intToRecord;
 import static com.hp.hpl.jena.tdb.base.record.RecordTestLib.r;
@@ -15,6 +14,9 @@ import static java.lang.String.format;
 import static lib.ListUtils.asList;
 import static lib.ListUtils.unique;
 import static lib.RandomLib.random;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
 import static test.Gen.permute;
 import static test.Gen.rand;
 import static test.Gen.strings;
@@ -26,10 +28,7 @@ import java.util.TreeSet;
 
 import junit.TestBase;
 
-import test.RandomExecution;
-
 import com.hp.hpl.jena.tdb.base.record.Record;
-import com.hp.hpl.jena.tdb.index.RangeIndex;
 
 public class RangeIndexTestLib
 {
@@ -193,13 +192,6 @@ public class RangeIndexTestLib
             assertNotNull("Finding "+rec, r2) ;
         }
     }
-
-    public static void randTests(RangeIndexMaker order, int maxValue, int maxNumKeys, int iterations, boolean showProgess)
-    {
-        RangeIndexTestGenerator test = new RangeIndexTestGenerator(order, maxValue, maxNumKeys) ;
-        RandomExecution.randExecGenerators(test, iterations, showProgess) ;
-    }
-    
 }
 /*
  * (c) Copyright 2008 Hewlett-Packard Development Company, LP

@@ -7,16 +7,15 @@
 package com.hp.hpl.jena.tdb.index;
 
 import lib.RandomLib;
-import test.RandomExecution.ExecGenerator;
+import test.ExecGenerator;
 
-
-class RangeIndexTestGenerator implements ExecGenerator
+public class RangeIndexTestGenerator implements ExecGenerator
 {
     int maxNumKeys ;
     int maxValue ;
     RangeIndexMaker maker ;
     
-    RangeIndexTestGenerator(RangeIndexMaker maker, int maxValue, int maxNumKeys)
+    public RangeIndexTestGenerator(RangeIndexMaker maker, int maxValue, int maxNumKeys)
     {
         if ( maxValue <= maxNumKeys )
             throw new IllegalArgumentException("BTreeTest: Max value less than number of keys") ;

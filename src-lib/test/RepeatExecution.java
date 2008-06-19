@@ -7,15 +7,9 @@
 package test;
 
 
-public class RandomExecution
+public class RepeatExecution
 {
-    public interface ExecGenerator
-    {
-        public void executeOneTest() ;
-    }
-    
-    /* Driver for random execution */
-    public static void randExecGenerators(ExecGenerator execGenerator, int iterations, boolean showProgess)
+    public static void repeatExecutions(ExecGenerator execGenerator, int iterations, boolean showProgress)
     {
         // Output control
         int dots = 10 ;
@@ -33,7 +27,7 @@ public class RandomExecution
         boolean eol = true;
         for ( int i = 0 ; i < iterations ; i++ )
         {
-            if ( showProgess && i%lines == 0 )
+            if ( showProgress && i%lines == 0 )
             {
                 eol = true ;
                 if ( i != 0 ) 
@@ -43,7 +37,7 @@ public class RandomExecution
             else
                 eol = false ;
             
-            if ( showProgess && i%dots == 0 )
+            if ( showProgress && i%dots == 0 )
                 System.out.print(".") ;
             try {
                 execGenerator.executeOneTest();
@@ -59,7 +53,7 @@ public class RandomExecution
         }
         long finish = System.currentTimeMillis() ;
         
-        if ( showProgess && ! eol )
+        if ( showProgress && ! eol )
             System.out.println() ;
         
         //System.out.println() ;

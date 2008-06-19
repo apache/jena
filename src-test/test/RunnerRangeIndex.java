@@ -1,50 +1,51 @@
 /*
- * (c) Copyright 2007, 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
 package test;
 
-import com.hp.hpl.jena.tdb.base.BaseConfig;
-import com.hp.hpl.jena.tdb.bplustree.BPlusTreeMaker;
-import com.hp.hpl.jena.tdb.bplustree.BPlusTreeParams;
+import java.util.List;
+
 import com.hp.hpl.jena.tdb.index.RangeIndexMaker;
+import com.hp.hpl.jena.tdb.index.RangeIndexTestGenerator;
 
-public class BPlusTreeRun extends RunnerRangeIndex
+public abstract class RunnerRangeIndex extends RunnerExecute
 {
-    static public void main(String...a)
-    {
-        new BPlusTreeRun().perform(a) ;
-    }
+    int order ;
+    int maxValue ; 
+    int maxNumKeys ;
     
+    protected abstract RangeIndexMaker makeRangeIndexMaker() ;
     
     @Override
-    protected RangeIndexMaker makeRangeIndexMaker()
+    protected ExecGenerator execGenerator()
     {
-        return new BPlusTreeMaker(order, order) ;
+        RangeIndexMaker maker = makeRangeIndexMaker() ;
+        //new RangeIndexTestGenerator(maker, numKeys*100, numKeys) ;
+        RangeIndexTestGenerator test = new RangeIndexTestGenerator(maker, maxValue, maxNumKeys) ;
+        return test ;
     }
-
 
     @Override
-    protected void startRun(RunType runType)
+    protected int startRun(List<String> args, RunType runType)
     {
-        switch (runType)
-        {
-            case test:
-                showProgress = true ;
-                BPlusTreeParams.CheckingTree = true ;
-                BPlusTreeParams.CheckingNode = true ;
-                BaseConfig.NullOut = true ;
-                break ;
-            case perf:  
-                showProgress = false ;
-                BPlusTreeParams.CheckingTree = false ;
-                BPlusTreeParams.CheckingNode = false ;
-                BaseConfig.NullOut = false ;
-                break ;
-        }
+        startRun(runType) ;
+        order = Integer.parseInt(args.get(0)) ;
+        int numKeys = Integer.parseInt(args.get(1)) ;
+        int iterations = Integer.parseInt(args.get(2)) ;
+        
+        maxValue = 10*numKeys ;  
+        maxNumKeys = numKeys ;
+        return iterations ;
     }
+
+    protected abstract void startRun(RunType runType) ;
+
+    @Override
+    protected void finishRun()
+    {}
 }
 
 /*

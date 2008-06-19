@@ -13,24 +13,18 @@ public class Dev
     //removeAll implementation
     // iterator.remove
     
-    // Commands:
-    // --desc defaults to tdb.ttl?
-    // May need to swap the (ARQ) ModDataset > ModDatsetGeneral > ModAssembler
-    // and then ModAssembler > ModTDBDataset 
-    
-    // Initialization - make suu initialization happens on assembler route
+    // Query union models << architecture
     
     // Documenation on the wiki
     //   Assembler
     //   TDBFactory
+    //   Commands
     
     // TDBFactory ==> "create" ==> connect(... , boolean canCeate) ;
     // TDBFactory, same Location ==> same model. 
     // ModelSource?
  
-    // Assembler to cache graphs made (by location) so reuse is same graph engine 
-    // Careful about holding too much memory. Soft refs
-    //   Cache in BlockMgrFactory.createStdFile (direct files)
+    // Location-keyed cache of TDB graphs 
     
     // BulkLoader
     //    - move processing out of tdb.tdbloader
