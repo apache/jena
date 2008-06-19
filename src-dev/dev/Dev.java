@@ -15,12 +15,13 @@ public class Dev
     
     // Query union models << architecture
     
-    // Documenation on the wiki
+    // Documentation on the wiki
     //   Assembler
     //   TDBFactory
     //   Commands
     
     // TDBFactory ==> "create" ==> connect(... , boolean canCeate) ;
+    // TDB connections?
     // TDBFactory, same Location ==> same model. 
     // ModelSource?
  
