@@ -37,7 +37,9 @@ public abstract class NodeTableBase implements NodeTable
     // A small cache of "known unknowns" to speed up searching
     // for impossible things.   
     // Nodes we know not to be in the node table.
-    // Cache update needed on NodeTable changes. 
+    
+    // Cache update needed on NodeTable changes because a node may become "known"
+    
     private CacheSetLRU<Node> notPresent ;
 
     // Delayed construction - must call init.
@@ -62,18 +64,18 @@ public abstract class NodeTableBase implements NodeTable
         init(nodeToId, objectFile, idToNodeCacheSize, idToNodeCacheSize) ;
     }
     
-    // ---- Node ==> NodeId
+    // ---- Node <==> NodeId
 
+    /** Find the NodeId for a node, or return NodeId.NodeDoesNotExist */ 
     @Override
     public NodeId idForNode(Node node)  { return _idForNode(node, false) ; }
 
+    /** Find the NodeId for a node, allocating a new NodeId if th eNode does not yet have a NodeId */ 
     @Override
     public NodeId storeNode(Node node)  { return _idForNode(node, true) ; }
 
+    /** Get the Node for this NodeId, or null if none */
     @Override
-    // ---- NodeId ==> Node
-    
-    // Get the node for this NodeId.  Use caches.
     public Node retrieveNode(NodeId id)
     {
         if ( id == NodeId.NodeDoesNotExist )
@@ -81,12 +83,12 @@ public abstract class NodeTableBase implements NodeTable
         if ( id == NodeId.NodeIdAny )
             return null ;
         
-        Node n = lookup(id) ;
+        Node n = cacheLookup(id) ;
         if ( n != null )
             return n ; 
 
         n = nodeIdToNode(id) ;
-        updateCaches(n, id) ;
+        cacheUpdate(n, id) ;
         return n ;
     }
 
@@ -95,7 +97,7 @@ public abstract class NodeTableBase implements NodeTable
     // Find a node, possibly placing it in the node file as well
     private NodeId _idForNode(Node node, boolean allocate)
     {
-        NodeId nodeId = lookup(node) ;
+        NodeId nodeId = cacheLookup(node) ;
         if ( nodeId != null )
             return nodeId ; 
         // Inline?
@@ -108,7 +110,7 @@ public abstract class NodeTableBase implements NodeTable
         nodeId = accessIndex(node, hash, allocate) ;
         
         // Ensure caches have it.  Includes recording "no such node"
-        updateCaches(node, nodeId) ;
+        cacheUpdate(node, nodeId) ;
         return nodeId ;
     }
     
@@ -140,7 +142,7 @@ public abstract class NodeTableBase implements NodeTable
             if ( ! nodeHashToId.add(r) )
                 throw new PGraphException("NodeTableBase::nodeToId - record mysteriously appeared") ;
 
-            updateCaches(node, id) ;
+            cacheUpdate(node, id) ;
             return id ;
         }
         
@@ -150,32 +152,40 @@ public abstract class NodeTableBase implements NodeTable
     }
     
     // ---- Only places that the caches are touched
-    private Node lookup(NodeId id)
+    
+    /** Check caches to see if we can map a NodeId to a Node. Returns null on no cache entry. */ 
+    private Node cacheLookup(NodeId id)
     {
         if ( id2node_Cache == null ) return null ;
         return id2node_Cache.get(id) ;
     }
     
-    private NodeId lookup(Node node)
+    /** Check caches to see if we can map a Node to a NodeId. Returns null on no cache entry. */ 
+    private NodeId cacheLookup(Node node)
     {
+        // Remember things known (currently) not to exist 
+        if ( notPresent.contains(node) ) return null ;
         if ( node2id_Cache == null ) return null ;
         return node2id_Cache.get(node) ; 
     }
 
-    private void updateCaches(Node node, NodeId id)
+    /** Update the Node->NodeId caches */
+    private void cacheUpdate(Node node, NodeId id)
     {
-        //Manage the caches.
+        // The "notPresent" cache is used to note whether a node
+        // is known not to exist.
+        // This must be specially handled later if the node is added. 
         if ( id == NodeId.NodeDoesNotExist )
         {
             notPresent.add(node) ;
             return ;
         }
+        
         if ( id == NodeId.NodeIdAny )
         {
             ALog.warn(this, "Attempt to cache NodeIdAny - ignored") ;
             return ;
         }
-
         
         if ( node2id_Cache != null )
             node2id_Cache.put(node, id) ;
