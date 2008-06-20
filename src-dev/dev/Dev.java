@@ -10,8 +10,6 @@ public class Dev
 {
     // Build.  Ant and Ivy. 
 
-    // TestPGraph_BTree --> TestPGraph_BPlusTree 
-    
     // removeAll implementation: depends on iterator.remove
     // but can do fatser as a specific operation.
     
@@ -30,7 +28,6 @@ public class Dev
     // Location-keyed cache of TDB graphs 
     
     // BulkLoader
-    //    - move processing out of tdb.tdbloader
     //    - shared formatting with GraphLoadMonitor
     
     // Misc :
@@ -44,11 +41,6 @@ public class Dev
     // Version of NodeTable that does Logical => Physical id translation
     //    And a PageMgr wrapper for same.
 
-    // 32 bit: Try without each of the read cache and write cahes to see value of each
-    //   And which index cache is having the most effect?
-    //   And/Or, better, combine into one cache?
-    
-    // Special to test speed of node loading only.
     // Inlines => Inline56, Inline64
     
     // ARQ: Var scope handling - add to OpBase?
@@ -60,13 +52,8 @@ public class Dev
     //    Namespace extractor.
     // BGP Optimizer II
 
-    // Some cleaning up around counting and sync.
-
     // com.hp.hpl.jena.util.FileUtils - use faster "buffered" reader (extend BufferedReader)
 
-    // Apps: Namespace extractor in tdbexamine
-
     // Consts from a properties file.
-    
     // Fix BDB form
 }

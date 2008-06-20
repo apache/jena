@@ -15,13 +15,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.log4j.Level;
-import tdb.Cmd;
-
-import com.hp.hpl.jena.tdb.base.BaseConfig;
-import com.hp.hpl.jena.tdb.base.block.BlockMgrMem;
 import com.hp.hpl.jena.tdb.bplustree.BPlusTreeMaker;
-import com.hp.hpl.jena.tdb.bplustree.BPlusTreeParams;
 import com.hp.hpl.jena.tdb.index.RangeIndex;
 import com.hp.hpl.jena.tdb.index.RangeIndexMaker;
 import com.hp.hpl.jena.tdb.index.RangeIndexTestLib;
@@ -60,82 +54,11 @@ public abstract class RunnerExecute
         finishRun() ;
     }
     
+    protected abstract List<String> processArgs(List<String> args) ;
+
     protected abstract ExecGenerator execGenerator() ;
     protected abstract int startRun(List<String> args, RunType runType) ;
     protected abstract void finishRun() ;
-    
-    // ---- 
-    List<String> processArgs(List<String> args)
-    {
-        Cmd.setLog4j() ;
-        int i = 0 ;
-        while ( args.size()>0 )
-        {
-            if ( !args.get(0).startsWith("-") )
-                break ;
-
-            String a = args.remove(0) ;
-            if ( a.startsWith("--") )
-                a = a.substring(2) ;
-            else
-                a = a.substring(1) ;
-
-            if ( a.equals("h") || a.equals("help") )
-            {
-                usage(System.out) ;
-                System.exit(0) ;
-            }
-            else if ( a.equals("v") )
-                BPlusTreeParams.DumpTree = true ;
-            else if ( a.equalsIgnoreCase("bptree:check") )
-            {
-                BPlusTreeParams.CheckingTree = true ;
-                BaseConfig.NullOut = true ;
-            }
-            else if ( a.equalsIgnoreCase("bptree:checknode") )
-            {
-                BPlusTreeParams.CheckingNode = true ;
-                BaseConfig.NullOut = true ;
-                BlockMgrMem.SafeMode = true ;
-            }
-            else if ( a.equalsIgnoreCase("bptree:log") )
-            {
-                showProgress = false ;
-                org.apache.log4j.LogManager.getLogger("bptree").setLevel(Level.DEBUG) ;
-                org.apache.log4j.LogManager.getLogger("bptree.block").setLevel(Level.INFO) ;
-            }
-            else if ( a.equalsIgnoreCase("block:log") )
-            {
-                showProgress = false ;
-                org.apache.log4j.LogManager.getLogger("bptree.block").setLevel(Level.DEBUG) ;
-            }
-            else if ( a.equalsIgnoreCase("block:safe") )
-                BlockMgrMem.SafeMode = true ;
-            else if ( a.equalsIgnoreCase("check") )
-            {
-                BPlusTreeParams.CheckingNode = true ;
-                BaseConfig.NullOut = true ;
-                BlockMgrMem.SafeMode = true ;
-            }
-            else if ( a.equalsIgnoreCase("display") )
-            {
-                showProgress = ! showProgress ;
-            }
-            else   
-            {
-                System.err.println("Unknown argument: "+a) ;
-                System.exit(1) ;
-            }
-        }
-        
-        if ( args.size() != 3 )
-        {
-            usage(System.err) ;
-            System.exit(1) ;
-        }
-        
-        return args ;
-    }
     
     public static void usage(PrintStream printStream)
     {
