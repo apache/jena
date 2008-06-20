@@ -17,9 +17,10 @@ import com.hp.hpl.jena.tdb.junit.AbstractTestGraph2;
 import com.hp.hpl.jena.tdb.junit.GraphLocation;
 
 /** Programmatic tests on persistent graph */
-public class TestPGraph_BTree extends AbstractTestGraph2
+public class TestPersistentGraph extends AbstractTestGraph2
 {
     static GraphLocation graphLocation = null ;
+    
     @BeforeClass public static void beforeClass()
     {
         graphLocation = new GraphLocation(new Location(TS_PGraph.testArea)) ;

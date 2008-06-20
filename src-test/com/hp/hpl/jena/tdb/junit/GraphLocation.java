@@ -21,6 +21,7 @@ import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.tdb.TDBFactory;
 import com.hp.hpl.jena.tdb.base.file.Location;
 
+/** Manage a graph at a fixed location */
 public class GraphLocation
 {
     private Location loc = null ;

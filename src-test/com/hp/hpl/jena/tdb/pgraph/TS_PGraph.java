@@ -12,7 +12,7 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
     TestNodeId.class, 
-    TestPGraph_BTree.class,        // Basic graph tests
+    TestPersistentGraph.class,        // Basic graph tests
     PGraphTestSuite.class          // Scripted tests
 })
 

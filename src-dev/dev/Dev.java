@@ -10,11 +10,10 @@ public class Dev
 {
     // Build.  Ant and Ivy. 
 
-    // "Node Not present" cache management in NodeTableBase
     // TestPGraph_BTree --> TestPGraph_BPlusTree 
     
-    //removeAll implementation
-    // iterator.remove
+    // removeAll implementation: depends on iterator.remove
+    // but can do fatser as a specific operation.
     
     // Query union models << architecture
     
