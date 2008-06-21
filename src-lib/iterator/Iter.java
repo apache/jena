@@ -254,7 +254,7 @@ public class Iter<T> implements Iterable<T>, Iterator<T>
 
     public static <T> Iterator<T> debug(Iterator<T> stream)
     { 
-        Transform<T,T> x = new  Transform<T, T>()
+        Transform<T,T> x = new Transform<T, T>()
         {
             @Override
             public T convert(T item)
