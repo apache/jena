@@ -24,7 +24,7 @@ public class OpBGP extends Op0
     public OpBGP(BasicPattern pattern)
     { this.pattern = pattern ; }
     
-    public BasicPattern getPattern()                { return pattern ; } 
+    public BasicPattern getPattern()        { return pattern ; } 
     
     public String getName()                 { return "BGP" ; }
     public Op apply(Transform transform)    { return transform.transform(this) ; } 
