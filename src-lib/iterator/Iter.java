@@ -189,15 +189,14 @@ public class Iter<T> implements Iterable<T>, Iterator<T>
     
     public static <T> Iterable<T> append(Iterable<T> iter1, Iterable<T> iter2)
     {
-        Iterator<T> _iter1 = (iter1==null) ? null : iter1.iterator() ;
-        Iterator<T> _iter2 = (iter2==null) ? null : iter2.iterator() ;
-        
-        return new Iterator2<T>(_iter1, _iter2);
+        return new Iterator2<T>(iterator(iter1), iterator(iter2));
     }
 
     public static <T> Iterator<T> append(Iterator<? extends T> iter1, Iterator<? extends T> iter2)
     { return new Iterator2<T>(iter1, iter2); }
 
+    private static <T> Iterator<T> iterator(Iterable<T> iter) { return (iter==null) ? null : iter.iterator() ; }
+    
 //    public static <T>
 //    Iter<T> append(Iterator<? extends T> iterator, Iterator<? extends T> iter)
 //    {
