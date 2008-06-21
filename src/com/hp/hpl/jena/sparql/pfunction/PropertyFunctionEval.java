@@ -24,7 +24,7 @@ public abstract class PropertyFunctionEval extends PropertyFunctionBase
         super(subjArgType, objFuncArgType) ;
     }
 
-    public QueryIterator exec(Binding binding, PropFuncArg argSubject, Node predicate, PropFuncArg argObject, ExecutionContext execCxt)
+    public final QueryIterator exec(Binding binding, PropFuncArg argSubject, Node predicate, PropFuncArg argObject, ExecutionContext execCxt)
     {
         argSubject = argSubject.evalIfExists(binding) ;
         argObject = argObject.evalIfExists(binding) ;

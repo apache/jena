@@ -1,5 +1,7 @@
 ==== ARQ ToDo
 
+** Integrate paths
+
 ** Stricter rules for property functions - must bind all variables => can do FILTER migration across them.
 
 See ToDoSSE
