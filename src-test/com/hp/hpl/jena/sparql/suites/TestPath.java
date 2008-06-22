@@ -79,6 +79,8 @@ public class TestPath extends TestCase
     public void testPath_10()           { test(n1, ":p+", new Node[]{n2,n3,n4}) ; }
     
     public void testPath_11()           { test(n1, ":p?", new Node[]{n1,n2}) ; }
+    
+    public void testPath_12()           { test(n1, ":p/:p", new Node[]{n3}) ; }
 
     // ----
     private void test(Node start, String string, Node[] expectedNodes)
