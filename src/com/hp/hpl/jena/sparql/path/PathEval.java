@@ -36,6 +36,22 @@ public class PathEval
         return acc.iterator() ;
     }
     
+    // Solve from object.
+    static public Iterator evalReverse(Graph g, Iterator input, Path p) 
+    {
+        throw new ARQNotImplemented("PathEval.evalReverse") ;
+//        Set acc = new LinkedHashSet() ;
+//        
+//        for ( ; input.hasNext() ; )
+//        {
+//            Node n = (Node)input.next() ;
+//            PathEvaluator evaluator = new PathEvaluator(g, n, acc) ;
+//            // Fills "acc" with nodes found.
+//            p.visit(evaluator) ;
+//        }
+//        return acc.iterator() ;
+    }
+    
     static class PathEvaluator implements PathVisitor
     {
 
