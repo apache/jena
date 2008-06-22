@@ -2,6 +2,7 @@
 
 ** Integrate paths [In Progress]
    need "reverse paths" ^ in N3.<uri>
+** Path tests
 
 ** Stricter rules for property functions - must bind all variables => can do FILTER migration across them.
 
