@@ -74,13 +74,15 @@ public class TestPath extends TestCase
 
     public void testPath_08()           { test(graph1, n1, ":p{9,9}", new Node[]{}) ; }
 
-    public void testPath_09()           { test(graph1, n1, ":p*", new Node[]{n1,n2,n3,n4}) ; }
+    public void testPath_09()           { test(graph1, n1, ":p{0,9}", new Node[]{n1,n2,n3,n4}) ; }
 
-    public void testPath_10()           { test(graph1, n1, ":p+", new Node[]{n2,n3,n4}) ; }
+    public void testPath_10()           { test(graph1, n1, ":p*", new Node[]{n1,n2,n3,n4}) ; }
+
+    public void testPath_11()           { test(graph1, n1, ":p+", new Node[]{n2,n3,n4}) ; }
     
-    public void testPath_11()           { test(graph1, n1, ":p?", new Node[]{n1,n2}) ; }
+    public void testPath_12()           { test(graph1, n1, ":p?", new Node[]{n1,n2}) ; }
     
-    public void testPath_12()           { test(graph1, n1, ":p/:p", new Node[]{n3}) ; }
+    public void testPath_13()           { test(graph1, n1, ":p/:p", new Node[]{n3}) ; }
 
     // ----
     private static void test(Graph graph, Node start, String string, Node[] expectedNodes)

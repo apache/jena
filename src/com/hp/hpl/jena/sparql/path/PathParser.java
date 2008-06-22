@@ -9,13 +9,16 @@ package com.hp.hpl.jena.sparql.path;
 import java.io.Reader;
 import java.io.StringReader;
 
+import com.hp.hpl.jena.shared.JenaException;
 import com.hp.hpl.jena.shared.PrefixMapping;
 
 import com.hp.hpl.jena.sparql.core.Prologue;
 import com.hp.hpl.jena.sparql.lang.arq.ARQParser;
+import com.hp.hpl.jena.sparql.util.ALog;
 
 import com.hp.hpl.jena.query.Query;
-
+import com.hp.hpl.jena.query.QueryException;
+import com.hp.hpl.jena.query.QueryParseException;
 
 public class PathParser
 {
@@ -34,8 +37,28 @@ public class PathParser
             return parser.Path() ;
         } catch (com.hp.hpl.jena.sparql.lang.arq.ParseException ex)
         {
-            ex.printStackTrace();
-            return null ;
+            throw new QueryParseException(ex.getMessage(),
+                                          ex.currentToken.beginLine,
+                                          ex.currentToken.beginColumn
+                                          ) ; }
+        catch (com.hp.hpl.jena.sparql.lang.arq.TokenMgrError tErr)
+        {
+            // Last valid token : not the same as token error message - but this should not happen
+            int col = parser.token.endColumn ;
+            int line = parser.token.endLine ;
+            throw new QueryParseException(tErr.getMessage(), line, col) ;
+        }
+        catch (QueryException ex) { throw ex ; }
+        catch (JenaException ex)  { throw new QueryException(ex.getMessage(), ex) ; }
+        catch (Error err)
+        {
+            // The token stream can throw errors.
+            throw new QueryParseException(err.getMessage(), err, -1, -1) ;
+        }
+        catch (Throwable th)
+        {
+            ALog.warn(PathParser.class, "Unexpected throwable: ",th) ;
+            throw new QueryException(th.getMessage(), th) ;
         }
     }
 }
