@@ -28,6 +28,8 @@ import com.hp.hpl.jena.sparql.path.PathParser;
 import com.hp.hpl.jena.sparql.util.Utils;
 import com.hp.hpl.jena.sparql.util.graph.GraphUtils;
 
+import com.hp.hpl.jena.query.QueryParseException;
+
 public class TestPath extends TestCase
 {
     public static TestSuite suite()
@@ -58,6 +60,41 @@ public class TestPath extends TestCase
     
     // ----
     
+    public void testParsePath_01()           { parse(":p") ; }
+    public void testParsePath_02()           { parse("(:p)") ; }
+    public void testParsePath_03()           { parse("^:p") ; }
+    public void testParsePath_04()           { parse(":p*") ; }
+    public void testParsePath_05()           { parse(":p+") ; }
+    public void testParsePath_06()           { parse(":p?") ; }
+    
+    public void testParsePath_10()           { parse(":p/:q") ; }
+    public void testParsePath_11()           { parse(":p|:q") ; }
+    public void testParsePath_12()           { parse(":p{1}") ; }
+    public void testParsePath_13()           { parse(":p{1,}") ; }
+    public void testParsePath_14()           { parse(":p{1,2}") ; }
+    
+    public void testParsePath_20()           { parse(":p^:q") ; }
+
+    public void testParsePathErr_01()        { parse("", false) ; }
+    public void testParsePathErr_02()        { parse("()", false) ; }
+    public void testParsePathErr_03()        { parse(":p :q", false) ; }  // Need EOF
+    // ----
+    
+    private void parse(String string) { parse(string, true) ; }
+    
+    private void parse(String string, boolean expectLegal)
+    {
+        try {
+            Path p = PathParser.parse(string, pmap) ;
+            if ( ! expectLegal )
+                fail("Expected error; "+string) ;
+        } catch (QueryParseException ex)
+        {
+            if ( expectLegal )
+                fail("Expected success: "+string) ;
+        }
+    }
+
     public void testPath_01()           { test(graph1, n1, ":p", new Node[]{n2}) ; }
 
     public void testPath_02()           { test(graph1, n1, ":p{0}", new Node[]{n1}) ; }

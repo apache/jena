@@ -531,38 +531,40 @@ Node Verb() : {Node p ;}
 // -------- Paths
 
 
-Path Path() : { Path p ; }
+Path PathParse() : { Path p ; }
 {
-    p = PathExpr()
+    p = Path()
+    <EOF>
     { return p ; }
-
 }
 
-Path PathExpr() : { Path p , p2 ; }
+Path Path() : { Path p , p2 ; }
 {
    p = PathElt()
    (
-      <VBAR> p2 = PathExpr() // OR
+      <VBAR> p2 = Path() // OR
       { return new P_Alt(p, p2) ; }
-    | <SLASH> p2 = PathExpr()
+    | <SLASH> p2 = Path()
       { return new P_Seq(p, p2) ; }
+    | <CARROT> p2 = Path()
+      { return new P_Seq(p, new P_Reverse(p2)) ; }
    )?
     { return p ; }
 
 //   // Different from N3 meaning
-//   | <PLING> PathExpr()    // ! Forward path
-//   | <CARROT> PathExpr()   // ^ Reverse path
+//   | <PLING> Path()    // ! Forward path
+//   | <CARROT> Path()   // ^ Reverse path
 // 
 //   // Confusing - not "s -> p -> o"
 
   // Only forward paths  %  &  ~  @  +  =
 
-//   | <FPATH> p2 = PathExpr()    // -> Forward path :p/:q
+//   | <FPATH> p2 = Path()    // -> Forward path :p/:q
 //       { return new P_Seq(p, p2) ; }
-//   | <RPATH> p2 = PathExpr()    // <- Reverse path :
+//   | <RPATH> p2 = Path()    // <- Reverse path :
 //       { return new P_SeqR(p, p2) ; }
 
-//  | <RSLASH> PathExpr()
+//  | <RSLASH> Path()
 
 }
 

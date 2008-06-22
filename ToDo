@@ -1,8 +1,7 @@
 ==== ARQ ToDo
 
 ** Integrate paths [In Progress]
-   need "reverse paths" ^ in N3.<uri>
-** Path tests
+** Path tests / scripted.
 
 ** Stricter rules for property functions - must bind all variables => can do FILTER migration across them.
 
