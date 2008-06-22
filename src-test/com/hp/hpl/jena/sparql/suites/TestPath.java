@@ -58,35 +58,35 @@ public class TestPath extends TestCase
     
     // ----
     
-    public void testPath_01()           { test(n1, ":p", new Node[]{n2}) ; }
+    public void testPath_01()           { test(graph1, n1, ":p", new Node[]{n2}) ; }
 
-    public void testPath_02()           { test(n1, ":p{0}", new Node[]{n1}) ; }
+    public void testPath_02()           { test(graph1, n1, ":p{0}", new Node[]{n1}) ; }
 
-    public void testPath_03()           { test(n1, ":p{1}", new Node[]{n2}) ; }
+    public void testPath_03()           { test(graph1, n1, ":p{1}", new Node[]{n2}) ; }
 
-    public void testPath_04()           { test(n1, ":p{2}", new Node[]{n3}) ; }
+    public void testPath_04()           { test(graph1, n1, ":p{2}", new Node[]{n3}) ; }
 
-    public void testPath_05()           { test(n1, ":p{0,1}", new Node[]{n1, n2}) ; }
+    public void testPath_05()           { test(graph1, n1, ":p{0,1}", new Node[]{n1, n2}) ; }
 
-    public void testPath_06()           { test(n1, ":p{0,2}", new Node[]{n1,n2,n3}) ; }
+    public void testPath_06()           { test(graph1, n1, ":p{0,2}", new Node[]{n1,n2,n3}) ; }
 
-    public void testPath_07()           { test(n1, ":p{1,2}", new Node[]{n2, n3}) ; }
+    public void testPath_07()           { test(graph1, n1, ":p{1,2}", new Node[]{n2, n3}) ; }
 
-    public void testPath_08()           { test(n1, ":p{9,9}", new Node[]{}) ; }
+    public void testPath_08()           { test(graph1, n1, ":p{9,9}", new Node[]{}) ; }
 
-    public void testPath_09()           { test(n1, ":p*", new Node[]{n1,n2,n3,n4}) ; }
+    public void testPath_09()           { test(graph1, n1, ":p*", new Node[]{n1,n2,n3,n4}) ; }
 
-    public void testPath_10()           { test(n1, ":p+", new Node[]{n2,n3,n4}) ; }
+    public void testPath_10()           { test(graph1, n1, ":p+", new Node[]{n2,n3,n4}) ; }
     
-    public void testPath_11()           { test(n1, ":p?", new Node[]{n1,n2}) ; }
+    public void testPath_11()           { test(graph1, n1, ":p?", new Node[]{n1,n2}) ; }
     
-    public void testPath_12()           { test(n1, ":p/:p", new Node[]{n3}) ; }
+    public void testPath_12()           { test(graph1, n1, ":p/:p", new Node[]{n3}) ; }
 
     // ----
-    private void test(Node start, String string, Node[] expectedNodes)
+    private static void test(Graph graph, Node start, String string, Node[] expectedNodes)
     {
         Path p = PathParser.parse(string, pmap) ;
-        Iterator resultsIter = PathEval.eval(graph1, new SingletonIterator(start), p) ;
+        Iterator resultsIter = PathEval.eval(graph, new SingletonIterator(start), p) ;
         Set results = new HashSet() ;
         for ( ; resultsIter.hasNext() ; )
             results.add( (Node)resultsIter.next() ) ;
