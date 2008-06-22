@@ -540,10 +540,14 @@ Path Path() : { Path p ; }
 
 Path PathExpr() : { Path p , p2 ; }
 {
-  p = PathElt()
-  (
-    <VBAR> p2 = PathExpr() // OR
+   p = PathElt()
+   (
+      <VBAR> p2 = PathExpr() // OR
       { return new P_Alt(p, p2) ; }
+    | <SLASH> p2 = PathExpr()
+      { return new P_Seq(p, p2) ; }
+   )?
+    { return p ; }
 
 //   // Different from N3 meaning
 //   | <PLING> PathExpr()    // ! Forward path
@@ -553,35 +557,37 @@ Path PathExpr() : { Path p , p2 ; }
 
   // Only forward paths  %  &  ~  @  +  =
 
-  | <FPATH> p2 = PathExpr() // -> Forward path :p/:q
-      { return new P_Seq(p, p2) ; }
-
+//   | <FPATH> p2 = PathExpr()    // -> Forward path :p/:q
+//       { return new P_Seq(p, p2) ; }
 //   | <RPATH> p2 = PathExpr()    // <- Reverse path :
 //       { return new P_SeqR(p, p2) ; }
 
-  | <SLASH> p2 = PathExpr()
-    { return new P_Seq(p, p2) ; }
-
 //  | <RSLASH> PathExpr()
-  )?
-  { return p ; }
 
 }
 
+// Primary or it's reverse.
 Path PathElt() : { String str ; Node n ; Path p ; }
 {
-   //n = Verb() 
-   str = IRIref()
-     { n = Node.createURI(str) ; }
-     { p = new P_Node(n) ; }
-   ( p = PathMod(p))?
-     { return p ; }
-  |
-   <LPAREN> p = Path() <RPAREN>
-//   p = Path()
-   ( p = PathMod(p))?
-     { return p ; }
+   ( p = PathPrimary()
+   | <CARROT>
+     p = PathPrimary()
+     { p = new P_Reverse(p) ; }
+   )
+   ( p = PathMod(p) )?
+   { return p ; }
 }
+
+Path PathPrimary() : { String str ; Node n ; Path p ; }
+{
+  (
+    str = IRIref()
+     { n = Node.createURI(str) ; p = new P_Link(n) ; }
+  | <LPAREN> p = Path() <RPAREN>
+  )
+    { return p ; }
+}
+
 
 Path PathMod(Path p) : { long i1 = UNSET ; long i2 = UNSET ; }
 {

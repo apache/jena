@@ -6,30 +6,40 @@
 
 package com.hp.hpl.jena.sparql.path;
 
+import com.hp.hpl.jena.graph.Node;
+
 import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
+import com.hp.hpl.jena.sparql.util.Utils;
 
-public class P_SeqR extends P_Path2
+public class P_Link extends PathBase
 {
+    private Node node ;
 
-    public P_SeqR(Path p1, Path p2)
+    public P_Link(Node n)
     {
-        super(p1, p2) ;
-        
+        this.node = n ;
     }
-
+    
+    public Node getNode() { return node ; }
+    
     //@Override
     public void visit(PathVisitor visitor)
     { visitor.visit(this) ; }
-    
-    //@Override
-    public int hashSeed() { return hashSeqR ; }
 
     //@Override
     public boolean equalTo(Path path2, NodeIsomorphismMap isoMap)
     {
-        if ( ! ( path2 instanceof P_SeqR ) ) return false ;
-        return equalsIso((P_Path2)path2, isoMap) ;
+        if ( ! ( path2 instanceof P_Link ) ) return false ;
+        P_Link other = (P_Link)path2 ;
+        return Utils.nodeIso(node, other.node, isoMap) ;
     }
+
+    //@Override
+    public int hashCode()
+    {
+        return node.hashCode() ;
+    }
+
 }
 
 /*

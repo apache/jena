@@ -8,11 +8,11 @@ package com.hp.hpl.jena.sparql.path;
 
 public interface PathVisitor
 {
-    public void visit(P_Node pathNode) ;
+    public void visit(P_Link pathNode) ;
     public void visit(P_Alt pathAlt) ;
     public void visit(P_Seq pathSeq) ;
-    public void visit(P_SeqR pathRevSeq) ;
     public void visit(P_Mod pathMod) ;
+    public void visit(P_Reverse reversePath) ;
 }
 
 /*

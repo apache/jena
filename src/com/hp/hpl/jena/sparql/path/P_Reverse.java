@@ -6,39 +6,33 @@
 
 package com.hp.hpl.jena.sparql.path;
 
-import com.hp.hpl.jena.graph.Node;
-
 import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
-import com.hp.hpl.jena.sparql.util.Utils;
 
-public class P_Node extends PathBase
+public class P_Reverse extends P_Path1
 {
-    private Node node ;
-
-    public P_Node(Node n)
+    public P_Reverse(Path p)
     {
-        this.node = n ;
+         super(p) ;
     }
-    
-    public Node getNode() { return node ; }
     
     //@Override
     public void visit(PathVisitor visitor)
     { visitor.visit(this) ; }
-
+    
     //@Override
     public boolean equalTo(Path path2, NodeIsomorphismMap isoMap)
     {
-        if ( ! ( path2 instanceof P_Node ) ) return false ;
-        P_Node other = (P_Node)path2 ;
-        return Utils.nodeIso(node, other.node, isoMap) ;
+        if ( ! ( path2 instanceof P_Reverse ) ) return false ;
+        P_Reverse other = (P_Reverse)path2 ;
+        return getSubPath().equalTo(other.getSubPath(), isoMap)  ;
     }
 
-    //@Override
     public int hashCode()
     {
-        return node.hashCode() ;
+        return getSubPath().hashCode() ^ hashReverse ;
     }
+
+   
 
 }
 

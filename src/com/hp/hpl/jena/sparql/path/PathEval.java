@@ -39,17 +39,7 @@ public class PathEval
     // Solve from object.
     static public Iterator evalReverse(Graph g, Iterator input, Path p) 
     {
-        throw new ARQNotImplemented("PathEval.evalReverse") ;
-//        Set acc = new LinkedHashSet() ;
-//        
-//        for ( ; input.hasNext() ; )
-//        {
-//            Node n = (Node)input.next() ;
-//            PathEvaluator evaluator = new PathEvaluator(g, n, acc) ;
-//            // Fills "acc" with nodes found.
-//            p.visit(evaluator) ;
-//        }
-//        return acc.iterator() ;
+        return eval(g, input, new P_Reverse(p)) ;
     }
     
     static class PathEvaluator implements PathVisitor
@@ -75,10 +65,15 @@ public class PathEval
        
         
         //@Override
-        public void visit(P_Node pathNode)
+        public void visit(P_Link pathNode)
         {
             Iterator nodes = doOne(pathNode.getNode()) ;
             fill(nodes) ;
+        }
+
+        public void visit(P_Reverse reversePath)
+        {
+            throw new ARQNotImplemented("eval P_Reverse") ;
         }
 
         private static Map1 selectObject = new Map1()
@@ -115,12 +110,6 @@ public class PathEval
             iter = eval(graph, iter, pathSeq.getRight()) ;
             // ConcurrentModificationException possible because P_Seq (etc) uses delayed iterators over output.??
             fill(iter) ;
-        }
-
-        //@Override
-        public void visit(P_SeqR pathRevSeq)
-        {
-            throw new ARQNotImplemented("eval P_SeqR") ;
         }
 
         // If evaluation of "+" and "*" are sufficiently important, maybe have special classes for them.
@@ -205,7 +194,6 @@ public class PathEval
                 closure(graph, n2, path, visited) ;
             }
         }
-        
     }
 }
 

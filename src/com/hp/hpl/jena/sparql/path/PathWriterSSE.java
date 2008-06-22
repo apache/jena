@@ -38,7 +38,7 @@ public class PathWriterSSE implements PathVisitor
     PathWriterSSE(IndentedWriter indentedWriter, Prologue prologue) { this.out = indentedWriter ; this.prologue = prologue ;}
     
     //@Override
-    public void visit(P_Node pathNode)
+    public void visit(P_Link pathNode)
     {
         out.print(FmtUtils.stringForNode(pathNode.getNode(), prologue)) ;
     }
@@ -53,12 +53,6 @@ public class PathWriterSSE implements PathVisitor
     public void visit(P_Seq pathSeq)
     {
         visit2(pathSeq, "seq") ;
-    }
-
-    //@Override
-    public void visit(P_SeqR pathRevSeq)
-    {
-        visit2(pathRevSeq, "rev") ;
     }
 
     private void visit2(P_Path2 path2, String nodeName)
@@ -89,6 +83,15 @@ public class PathWriterSSE implements PathVisitor
         out.print(" )") ;
     }
 
+    public void visit(P_Reverse reversePath)
+    {
+        out.print("(reverse") ;
+        out.println() ;
+        out.incIndent() ;
+        reversePath.getSubPath().visit(this) ;
+        out.decIndent() ;
+        out.print(" )") ;
+    }
 }
 
 /*

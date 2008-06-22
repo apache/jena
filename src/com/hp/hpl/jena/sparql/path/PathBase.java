@@ -10,10 +10,10 @@ import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 
 public abstract class PathBase implements Path
 {
-    protected int hashAlt   = 0x190 ;
-    protected int hashSeq   = 0x191 ;
-    protected int hashSeqR  = 0x192 ;
-    protected int hashMod   = 0x193 ;
+    protected int hashAlt       = 0x190 ;
+    protected int hashSeq       = 0x191 ;
+    protected int hashMod       = 0x193 ;
+    protected int hashReverse   = 0x193 ;
     
     //@Override
     public abstract int hashCode() ;

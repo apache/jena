@@ -38,7 +38,7 @@ public class PathWriter implements PathVisitor
     PathWriter(IndentedWriter indentedWriter, Prologue prologue) { this.out = indentedWriter ; this.prologue = prologue ;}
     
     //@Override
-    public void visit(P_Node pathNode)
+    public void visit(P_Link pathNode)
     {
         out.print(FmtUtils.stringForNode(pathNode.getNode(), prologue)) ;
     }
@@ -53,12 +53,6 @@ public class PathWriter implements PathVisitor
     public void visit(P_Seq pathSeq)
     {
         visit2(pathSeq, "/") ;
-    }
-
-    //@Override
-    public void visit(P_SeqR pathRevSeq)
-    {
-        visit2(pathRevSeq, "\\") ;
     }
 
     private void visit2(P_Path2 path2, String sep)
@@ -91,6 +85,20 @@ public class PathWriter implements PathVisitor
         out.print(",") ;
         out.print(Long.toString(pathMod.getMax())) ;
         out.print("}") ;
+    }
+
+    public void visit(P_Reverse reversePath)
+    {
+        out.print("^") ;
+        Path p = reversePath.getSubPath() ;
+        boolean brackets = true ; 
+        if ( p instanceof P_Link )
+            brackets = false ;
+        if ( brackets )
+            out.print("(") ;
+        p.visit(this) ;
+        if ( brackets )
+            out.print(")") ;
     }
 
 }

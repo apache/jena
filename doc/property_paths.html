@@ -59,6 +59,10 @@ prefixed name.</p>
 		<td>A URI or a prefixed name. A path of length one.</td>
 	</tr>
 	<tr>
+		<td><i><code>^elt</code></i></td>
+		<td>Reverse path (object to subject).</td>
+	</tr>
+	<tr>
 		<td><i><code>(elt)</code></i></td>
 		<td>A group path <i><code>elt</code></i>, brackets control precedence.</td>
 	</tr>
@@ -104,6 +108,7 @@ prefixed name.</p>
 <p>Precedence:</p>
 <ol>
 	<li>URI, prefixes names</li>
+	<li>Reverse links</li>
 	<li>Groups</li>
 	<li>Unary operators <code>*</code>, <code>?</code>, <code>+</code> and <code>{n,m}</code>, 
 	left-to-right within unary operators.</li>
