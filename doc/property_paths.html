@@ -1,0 +1,156 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<!--
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+ Firefox gets it wrong (puts a marging at the top) if the declarations as included 
+-->
+
+<head>
+<title>ARQ - Property Paths</title>
+<link rel="stylesheet" type="text/css" href="styles/doc.css" />
+</head>
+<body>
+
+<h1>ARQ - Property Paths</h1>
+<p>A property path is a possible route through the graph between two graph 
+nodes.&nbsp; A simple case if a property path of length exactly 1, which is a 
+triple pattern.</p>
+<h2>Path Language</h2>
+<p>A path expression is similar to a regular expression but over properties, not 
+characters. ARQ determines all matches of a path expression and binds subject or 
+object as appropriate.</p>
+
+<div style="margin-left: 5%; margin-right: 5%;">
+<table border="1" width="90%">
+	<tr>
+		<th bgcolor="#C0C0C0" style="text-align: left">Path</th>
+		<th bgcolor="#C0C0C0" style="text-align: left">&nbsp;</th>
+	</tr>
+	<tr>
+		<td><code><font size="2">dc:title</font><font size="2"> | rdfs:label</font></code></td>
+		<td>Dublin Core title or an RDFS label.</td>
+	</tr>
+	<tr>
+		<td><code>foaf:knows/foaf:name</code></td>
+		<td>Name of people one &quot;knows&quot; steps away.</td>
+	</tr>
+	<tr>
+		<td><code>foaf:knows/foaf:knows/foaf:name</code></td>
+		<td>Name of people two &quot;knows&quot; steps away.</td>
+	</tr>
+	</table>
+
+</div>
+
+
+
+<p>In the description below, <i><code>uri</code></i> is either a URI or a 
+prefixed name.</p>
+
+<div style="margin-left: 5%; margin-right: 5%;">
+<table border="1" width="90%">
+	<tr>
+		<th bgcolor="#C0C0C0" style="text-align: left">Syntax Form</th>
+		<th bgcolor="#C0C0C0" style="text-align: left">Matches</th>
+	</tr>
+	<tr>
+		<td><code><i>uri</i></code></td>
+		<td>A URI or a prefixed name. A path of length one.</td>
+	</tr>
+	<tr>
+		<td><i><code>(elt)</code></i></td>
+		<td>A group path <i><code>elt</code></i>, brackets control precedence.</td>
+	</tr>
+	<tr>
+		<td><i><code>elt1 / elt2</code></i></td>
+		<td>A sequence path of <i><code>elt1</code></i>, followed by <i><code>elt2</code></i></td>
+	</tr>
+	<tr>
+		<td><i><code>elt1 | elt2</code></i></td>
+		<td>A alternative path of <i><code>elt1</code></i>, or <code><i>elt2</i></code> (all 
+		possibilities are tried)</td>
+	</tr>
+	<tr>
+		<td><i><code>elt*</code></i></td>
+		<td>A path of zero or more occurrences of <i><code>elt</code></i>.</td>
+	</tr>
+	<tr>
+		<td><i><code>elt+</code></i></td>
+		<td>A path of one or more occurrences of <i><code>elt</code></i>.</td>
+	</tr>
+	<tr>
+		<td><i><code>elt?</code></i></td>
+		<td>A path of zero or one <i><code>elt</code></i>.</td>
+	</tr>
+	<tr>
+		<td><i><code>elt{n,m}</code></i></td>
+		<td>A path between n and m occurrences of <i><code>elt</code></i>.</td>
+	</tr>
+	<tr>
+		<td><i><code>elt{n}</code></i></td>
+		<td>Exactly <i><code>n</code></i> occurrences of <i><code>elt</code></i>.</td>
+	</tr>
+	<tr>
+		<td><i><code>elt{n,}</code></i></td>
+		<td><i><code>n</code></i> or more occurrences of <i><code>elt</code></i>.</td>
+	</tr>
+</table>
+
+</div>
+
+<p>A zero occurrence of an path element always matches.</p>
+
+<p>Precedence:</p>
+<ol>
+	<li>URI, prefixes names</li>
+	<li>Groups</li>
+	<li>Unary operators <code>*</code>, <code>?</code>, <code>+</code> and <code>{n,m}</code>, 
+	left-to-right within unary operators.</li>
+	<li>Binary operators, <code>/</code> and <code>|</code>.</li>
+</ol>
+<h2>Use with Legal SPARQL Syntax</h2>
+<p>A path can be given a URI then installed as a
+<a href="extension.html#propertyFunctions">property function</a>. This way, when 
+the URI is used in the predicate location in a triple pattern, the path 
+expression is evaluated.</p>
+<pre class="box">Path path = ...
+String uri = ...
+PathLib.install(uri, path) ;</pre>
+<p>For example:</p>
+<pre class="box">Path path = PathParser.parse("rdf:type/rdfs:subClassOf*", PrefixMapping.Standard) ;
+String uri = &quot;http://example/ns#myType&quot; ;
+PathLib.install(uri, path) ;</pre>
+<p>and the SPARQL query:</p>
+<pre class="box">PREFIX : &lt;http://example/&gt;
+PREFIX ns: &lt;http://example/ns#&gt;
+# Find the types of :x, following subClassOf
+SELECT * { :x ns:myType ?t}</pre>
+<p>This also works with if an existing property is redefined (a URI in a path 
+expression is not interpreted as a property function) so, for example, <code>rdf:type</code> 
+can be redefined as a path that also considers RDFS sub -class relationships.</p>
+<pre class="box">Path path = PathParser.parse("rdf:type/rdfs:subClassOf*", PrefixMapping.Standard) ;
+PathLib.install(RDF.type.getURI(), path) ;</pre>
+<h2>Extended Language</h2>
+<p>This involves is syntactic extension and is available if the query is parsed 
+with language <code>Syntax.syntaxARQ</code>.</p>
+<p>Paths can be directly included in the query:</p>
+<pre class="box">PREFIX :     &lt;http://example/&gt;
+PREFIX rdf:  &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#&gt;
+PREFIX rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt;
+
+# Find the types of :x, following subClassOf
+SELECT *
+{
+   :x  rdf:type/rdfs:subClassOf*  ?t
+}</pre>
+<h2>Efficiency</h2>
+<p>Property path evaluation is similar to backward chaining inference. When used 
+with models backed by SQL databases, complex path expressions may take some 
+time.</p>
+
+
+
+<p class="footnote"><a href="documentation.html">ARQ Documentation Page</a></p>
+</body>
+</html>

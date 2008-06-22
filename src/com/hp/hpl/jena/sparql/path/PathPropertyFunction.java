@@ -33,9 +33,17 @@ public class PathPropertyFunction extends PFuncSimple
     }
 
     //@Override
-    public QueryIterator execEvaluated(Binding binding, Node subject, Node predicate, Node object,
+    public QueryIterator execEvaluated(Binding binding,
+                                       Node subject, Node predicate, Node object,
                                        ExecutionContext execCxt)
     {
+        if ( Var.isVar(subject) )
+        {
+            // Tricky
+            System.err.println("Var input to PathPropertyFunction") ;
+        }
+        
+        
         Iterator iter = PathEval.eval(execCxt.getActiveGraph(), 
                                       new SingletonIterator(subject), 
                                       path) ;

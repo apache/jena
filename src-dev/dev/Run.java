@@ -20,6 +20,7 @@ import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.shared.PrefixMapping;
 import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
 import com.hp.hpl.jena.shared.uuid.JenaUUID;
+import com.hp.hpl.jena.vocabulary.RDF;
 
 import com.hp.hpl.jena.sparql.algebra.*;
 import com.hp.hpl.jena.sparql.algebra.op.OpBGP;
@@ -27,11 +28,8 @@ import com.hp.hpl.jena.sparql.algebra.op.OpJoin;
 import com.hp.hpl.jena.sparql.algebra.op.OpLeftJoin;
 import com.hp.hpl.jena.sparql.core.BasicPattern;
 import com.hp.hpl.jena.sparql.path.Path;
+import com.hp.hpl.jena.sparql.path.PathLib;
 import com.hp.hpl.jena.sparql.path.PathParser;
-import com.hp.hpl.jena.sparql.path.PathPropertyFunction;
-import com.hp.hpl.jena.sparql.pfunction.PropertyFunction;
-import com.hp.hpl.jena.sparql.pfunction.PropertyFunctionFactory;
-import com.hp.hpl.jena.sparql.pfunction.PropertyFunctionRegistry;
 import com.hp.hpl.jena.sparql.resultset.ResultsFormat;
 import com.hp.hpl.jena.sparql.sse.SSE;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
@@ -100,26 +98,20 @@ public class Run
         pmap.setNsPrefixes(PrefixMapping.Standard) ;
         pmap.setNsPrefix("", "http://example/") ;
         
-        final Path path = PathParser.parse("rdf:type/rdfs:subClassOf*", pmap) ;
-        System.out.println("PATH: "+path) ;
-        PropertyFunctionFactory pff = new PropertyFunctionFactory()
-        {
-            //@Override
-            public PropertyFunction create(String uri)
-            {
-                return new PathPropertyFunction(path) ;
-            }
-        }; 
+        Path path = PathParser.parse("rdf:type/rdfs:subClassOf*", pmap) ;
         
         String uri = JenaUUID.generate().asURN() ;
-        PropertyFunctionRegistry.get().put(uri, pff) ;
-        Query query = QueryFactory.create("SELECT * { <http://example/x> <"+uri+"> ?t }" ) ;
+        uri = RDF.type.getURI() ;
+        
+        PathLib.install(uri, path) ;
+        
+        Query query = QueryFactory.create("SELECT * { ?x <"+uri+"> ?t }" ) ;
         QueryExecution qexec = QueryExecutionFactory.create(query, model) ;
         QueryExecUtils.executeQuery(query, qexec, ResultsFormat.FMT_TEXT) ;
         System.exit(0) ;
     }
 
-    // Can be a visitor because we dont change the Op structure.  But we don't do that do we? 
+    // Can be a visitor because we don't change the Op structure.  But we don't do that do we? 
     static class TransformBGP extends TransformCopy
     {
         // Scope stack of mentioned variables (fixed and optional)
