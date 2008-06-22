@@ -1,6 +1,6 @@
 // ARQ/SPARQL Grammar - native syntax for the query engine
 // Author:  Andy Seaborne andy.seaborne@hp.com
-// (c) Copyright 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+// (c) Copyright 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
 // All rights reserved.
 // See end of file for details.
 //
@@ -20,7 +20,7 @@ options
 
 PARSER_BEGIN(ARQParser)
 /*
- * (c) Copyright 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  */
 
@@ -31,12 +31,15 @@ import com.hp.hpl.jena.query.* ;
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.syntax.* ;
 import com.hp.hpl.jena.sparql.expr.* ;
+import com.hp.hpl.jena.sparql.path.* ;
 
 import com.hp.hpl.jena.sparql.expr.aggregate.* ;
 
 
 public class ARQParser extends ARQParserBase
 {
+    private static long UNSET = P_Mod.UNSET ;
+    private static long INF = P_Mod.INF ;
     boolean allowAggregatesInExpressions = false ;
 }
 PARSER_END(ARQParser)
@@ -524,6 +527,91 @@ Node Verb() : {Node p ;}
   ( p = VarOrIRIref() | <KW_A> { p = nRDFtype ; } )
     { return p ; }
 }
+
+// -------- Paths
+
+
+Path Path() : { Path p ; }
+{
+    p = PathExpr()
+    { return p ; }
+
+}
+
+Path PathExpr() : { Path p , p2 ; }
+{
+  p = PathElt()
+  (
+    <VBAR> p2 = PathExpr() // OR
+      { return new P_Alt(p, p2) ; }
+
+//   // Different from N3 meaning
+//   | <PLING> PathExpr()    // ! Forward path
+//   | <CARROT> PathExpr()   // ^ Reverse path
+// 
+//   // Confusing - not "s -> p -> o"
+
+  // Only forward paths  %  &  ~  @  +  =
+
+  | <FPATH> p2 = PathExpr() // -> Forward path :p/:q
+      { return new P_Seq(p, p2) ; }
+
+//   | <RPATH> p2 = PathExpr()    // <- Reverse path :
+//       { return new P_SeqR(p, p2) ; }
+
+  | <SLASH> p2 = PathExpr()
+    { return new P_Seq(p, p2) ; }
+
+//  | <RSLASH> PathExpr()
+  )?
+  { return p ; }
+
+}
+
+Path PathElt() : { String str ; Node n ; Path p ; }
+{
+   //n = Verb() 
+   str = IRIref()
+     { n = Node.createURI(str) ; }
+     { p = new P_Node(n) ; }
+   ( p = PathMod(p))?
+     { return p ; }
+  |
+   <LPAREN> p = Path() <RPAREN>
+//   p = Path()
+   ( p = PathMod(p))?
+     { return p ; }
+}
+
+Path PathMod(Path p) : { long i1 = UNSET ; long i2 = UNSET ; }
+{
+   ( <STAR> { return PathFactory.modZeroOrMode(p) ; }
+   | <QMARK> { return PathFactory.modZeroOrOne(p) ; }
+   | <PLUS> { return PathFactory.modOneOrMore(p) ; }
+   | <LBRACE>
+       ( // {N} {N,M} {N,}
+            i1 = Integer()
+            ( <COMMA>
+              ( <RBRACE> // case {N,}
+                    { return new P_Mod(p, i1, INF) ; }
+              | i2 = Integer() <RBRACE> // case {N,M}
+                    { return new P_Mod(p, i1, i2) ; }
+              )
+            |
+              <RBRACE> // {N}
+                     { return new P_Mod(p, i1) ; }
+            )
+       )
+    //   { return new P_Mod(p, i1, i2) ; } 
+   )
+}
+
+long Integer() : {Token t ;}
+{
+    t = <INTEGER>
+    { return integerValue(t.image) ; }
+}
+
 
 // -------- Triple expansions
 
@@ -1143,13 +1231,7 @@ TOKEN :
 | < SEMICOLON: ";" >
 | < COMMA: "," >
 | < DOT: "." >
-}
-
-// Operator
-
-TOKEN :
-{
-  < EQ: "=" >
+| < EQ: "=" >
 | < NE: "!=" >
 | < GT: ">" >
 | < LT: "<" >
@@ -1175,6 +1257,16 @@ TOKEN :
 | < AT: "@">
 
 | < ASSIGN: ":=">
+// Path related
+| < VBAR: "|" >
+| < CARROT: "^" >
+| < FPATH: "->" >
+| < RPATH: "<-" >
+| < QMARK: "?" >
+
+
+
+
 
 }
 
@@ -1220,7 +1312,7 @@ TOKEN:
 }
 
 /*
- * (c) Copyright 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions

@@ -12,37 +12,41 @@ import java.util.Stack;
 import arq.sparql;
 import arq.sse_query;
 
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.QueryExecution;
-import com.hp.hpl.jena.query.QueryExecutionFactory;
-import com.hp.hpl.jena.query.QueryFactory;
-import com.hp.hpl.jena.query.QuerySolutionMap;
-import com.hp.hpl.jena.query.ResultSetFormatter;
 import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.sparql.algebra.Algebra;
-import com.hp.hpl.jena.sparql.algebra.Op;
-import com.hp.hpl.jena.sparql.algebra.Transform;
-import com.hp.hpl.jena.sparql.algebra.TransformCopy;
-import com.hp.hpl.jena.sparql.algebra.Transformer;
+
+import com.hp.hpl.jena.util.FileManager;
+
+import com.hp.hpl.jena.graph.Triple;
+import com.hp.hpl.jena.shared.PrefixMapping;
+import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
+import com.hp.hpl.jena.shared.uuid.JenaUUID;
+
+import com.hp.hpl.jena.sparql.algebra.*;
 import com.hp.hpl.jena.sparql.algebra.op.OpBGP;
 import com.hp.hpl.jena.sparql.algebra.op.OpJoin;
 import com.hp.hpl.jena.sparql.algebra.op.OpLeftJoin;
 import com.hp.hpl.jena.sparql.core.BasicPattern;
+import com.hp.hpl.jena.sparql.path.Path;
+import com.hp.hpl.jena.sparql.path.PathParser;
+import com.hp.hpl.jena.sparql.path.PathPropertyFunction;
+import com.hp.hpl.jena.sparql.pfunction.PropertyFunction;
+import com.hp.hpl.jena.sparql.pfunction.PropertyFunctionFactory;
+import com.hp.hpl.jena.sparql.pfunction.PropertyFunctionRegistry;
+import com.hp.hpl.jena.sparql.resultset.ResultsFormat;
 import com.hp.hpl.jena.sparql.sse.SSE;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
+import com.hp.hpl.jena.sparql.util.QueryExecUtils;
 import com.hp.hpl.jena.sparql.util.StringUtils;
-import com.hp.hpl.jena.update.GraphStore;
-import com.hp.hpl.jena.update.GraphStoreFactory;
-import com.hp.hpl.jena.update.UpdateAction;
-import com.hp.hpl.jena.update.UpdateFactory;
-import com.hp.hpl.jena.update.UpdateRequest;
-import com.hp.hpl.jena.util.FileManager;
+
+import com.hp.hpl.jena.query.*;
+
+import com.hp.hpl.jena.update.*;
 
 public class Run
 {
     public static void main(String[] argv) throws Exception
     {
+        path() ; System.exit(0) ;
         {
             String []a = { "--engine=ref", "--file=Q.rq", "--print=op" } ;
             arq.qparse.main(a) ;
@@ -88,6 +92,33 @@ public class Run
         System.exit(0) ;
     }
     
+    private static void path()
+    {
+        Model model = FileManager.get().loadModel("D.ttl") ;
+
+        PrefixMapping pmap = new PrefixMappingImpl() ;
+        pmap.setNsPrefixes(PrefixMapping.Standard) ;
+        pmap.setNsPrefix("", "http://example/") ;
+        
+        final Path path = PathParser.parse("rdf:type/rdfs:subClassOf*", pmap) ;
+        System.out.println("PATH: "+path) ;
+        PropertyFunctionFactory pff = new PropertyFunctionFactory()
+        {
+            //@Override
+            public PropertyFunction create(String uri)
+            {
+                return new PathPropertyFunction(path) ;
+            }
+        }; 
+        
+        String uri = JenaUUID.generate().asURN() ;
+        PropertyFunctionRegistry.get().put(uri, pff) ;
+        Query query = QueryFactory.create("SELECT * { <http://example/x> <"+uri+"> ?t }" ) ;
+        QueryExecution qexec = QueryExecutionFactory.create(query, model) ;
+        QueryExecUtils.executeQuery(query, qexec, ResultsFormat.FMT_TEXT) ;
+        System.exit(0) ;
+    }
+
     // Can be a visitor because we dont change the Op structure.  But we don't do that do we? 
     static class TransformBGP extends TransformCopy
     {

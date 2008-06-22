@@ -1,6 +1,6 @@
 // ARQ/SPARQL Grammar - native syntax for the query engine
 // Author:  Andy Seaborne andy.seaborne@hp.com
-// (c) Copyright 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+// (c) Copyright 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
 // All rights reserved.
 // See end of file for details.
 //
@@ -20,7 +20,7 @@ options
 
 PARSER_BEGIN(SPARQLParser)
 /*
- * (c) Copyright 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  */
 
@@ -31,12 +31,15 @@ import com.hp.hpl.jena.query.* ;
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.syntax.* ;
 import com.hp.hpl.jena.sparql.expr.* ;
+import com.hp.hpl.jena.sparql.path.* ;
 
 
 
 
 public class SPARQLParser extends SPARQLParserBase
 {
+    private static long UNSET = P_Mod.UNSET ;
+    private static long INF = P_Mod.INF ;
     boolean allowAggregatesInExpressions = false ;
 }
 PARSER_END(SPARQLParser)
@@ -433,6 +436,7 @@ Node Verb() : {Node p ;}
     { return p ; }
 }
 
+// -------- Paths
 // -------- Triple expansions
 
 // Anything that can stand in a node slot and which is
@@ -961,13 +965,7 @@ TOKEN :
 | < SEMICOLON: ";" >
 | < COMMA: "," >
 | < DOT: "." >
-}
-
-// Operator
-
-TOKEN :
-{
-  < EQ: "=" >
+| < EQ: "=" >
 | < NE: "!=" >
 | < GT: ">" >
 | < LT: "<" >
@@ -991,9 +989,6 @@ TOKEN :
 
 | < DATATYPE: "^^">
 | < AT: "@">
-
-
-
 }
 
 // See XML chars.txt for notes
@@ -1038,7 +1033,7 @@ TOKEN:
 }
 
 /*
- * (c) Copyright 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions

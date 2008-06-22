@@ -58,7 +58,8 @@ public class Prologue
     {
         prefixMap = new PrefixMapping2(other.prefixMap) ;
         seenBaseURI = false ;
-        resolver = new IRIResolver(other.resolver.getBaseIRI()) ;
+        if ( other.resolver != null )
+            resolver = new IRIResolver(other.resolver.getBaseIRI()) ;
     }
     
     public Prologue sub(PrefixMapping newMappings) { return sub(newMappings, null) ; }

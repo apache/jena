@@ -50,6 +50,7 @@ NON-TERMINALS
 	ObjectList	:=	Object ( <COMMA> Object )*
 	Object	:=	GraphNode
 	Verb	:=	( VarOrIRIref | <KW_A> )
+// -------- Paths
 // -------- Triple expansions
 
 // Anything that can stand in a node slot and which is
