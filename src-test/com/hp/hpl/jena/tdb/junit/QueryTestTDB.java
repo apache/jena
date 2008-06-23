@@ -38,16 +38,17 @@ public class QueryTestTDB extends EarlTestCase
     boolean skipThisTest = false ;
     TestItem item ;
  
+    // Track what's currently loaded in the GraphLocation
+    static GraphLocation graphLocation = null ;
+    private static List<String> currentDefaultGraphs = null ;
+    private static List<String> currentNamedGraphs = null ;
+
     // Old style (Junit3)
-    
     public QueryTestTDB(String testName, EarlReport report, TestItem item)
     {
         super(testName, item.getURI(), report) ;
         this.item = item ;
     }
-    
-    // First time, this is null, which causes initialization.
-    static GraphLocation graphLocation = null ;
     
     @Override public void setUp()
     {
@@ -62,9 +63,6 @@ public class QueryTestTDB extends EarlTestCase
     
     //@Override public void tearDown() {} 
     
-    private static List<String> currentDefaultGraphs = null ; 
-    private static List<String> currentNamedGraphs = null ; 
- 
     public void setupData()
     {
         @SuppressWarnings("unchecked")
