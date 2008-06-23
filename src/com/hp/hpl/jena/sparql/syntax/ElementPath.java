@@ -1,33 +1,54 @@
 /*
- * (c) Copyright 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
 package com.hp.hpl.jena.sparql.syntax;
 
-/** 
- * @author Andy Seaborne
- */
+import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.sparql.path.Path;
+import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 
-public interface ElementVisitor
+public class ElementPath extends Element
 {
-    public void visit(ElementTriplesBlock el) ;
-    public void visit(ElementFilter el) ;
-    public void visit(ElementAssign el) ;
-    public void visit(ElementUnion el) ;
-    public void visit(ElementOptional el) ;
-    public void visit(ElementGroup el) ;
-    public void visit(ElementDataset el) ;
-    public void visit(ElementNamedGraph el) ;
-    public void visit(ElementUnsaid el) ;
-    public void visit(ElementService el) ;
-    public void visit(ElementSubQuery el) ;
-    public void visit(ElementPath el) ;
+    
+    private Path path ;
+    private Node subject ;
+    private Node object ;
+
+    public ElementPath(Node subject, Path path, Node object)
+    {
+        this.subject = subject ; 
+        this.path = path ;
+        this.object = object ;
+    }
+    
+    public Path getPath () { return path ; }
+    
+    public Node getSubject () { return subject ; }
+    public Node getObject ()  { return object ; }
+    
+
+    public boolean equalTo(Element el2, NodeIsomorphismMap isoMap)
+    {
+        if ( ! ( el2 instanceof ElementPath ) ) return false ;
+        ElementPath other =(ElementPath)el2 ;      
+        return this.path.equalTo(other.path, isoMap) ;
+    }
+
+    public int hashCode()
+    {
+        return path.hashCode() ^ HashPath ;
+    }
+
+    public void visit(ElementVisitor v)
+    { v.visit(this) ; }
+    
 }
 
 /*
- * (c) Copyright 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

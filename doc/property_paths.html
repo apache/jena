@@ -114,8 +114,22 @@ prefixed name.</p>
 	left-to-right within unary operators.</li>
 	<li>Binary operators, <code>/</code> and <code>|</code>.</li>
 </ol>
+<h2>Extended Language</h2>
+<p>This involves is syntactic extension and is available if the query is parsed 
+with language <code>Syntax.syntaxARQ</code>.</p>
+<p>Paths can be directly included in the query in the property position of a 
+triple pattern:</p>
+<pre class="box">PREFIX :     &lt;http://example/&gt;
+PREFIX rdf:  &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#&gt;
+PREFIX rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt;
+
+# Find the types of :x, following subClassOf
+SELECT *
+{
+   :x  rdf:type/rdfs:subClassOf*  ?t
+}</pre>
 <h2>Use with Legal SPARQL Syntax</h2>
-<p>A path can be given a URI then installed as a
+<p>A path can be given a URI, then installed as a
 <a href="extension.html#propertyFunctions">property function</a>. This way, when 
 the URI is used in the predicate location in a triple pattern, the path 
 expression is evaluated.</p>
@@ -136,19 +150,6 @@ expression is not interpreted as a property function) so, for example, <code>rdf
 can be redefined as a path that also considers RDFS sub -class relationships.</p>
 <pre class="box">Path path = PathParser.parse("rdf:type/rdfs:subClassOf*", PrefixMapping.Standard) ;
 PathLib.install(RDF.type.getURI(), path) ;</pre>
-<h2>Extended Language</h2>
-<p>This involves is syntactic extension and is available if the query is parsed 
-with language <code>Syntax.syntaxARQ</code>.</p>
-<p>Paths can be directly included in the query:</p>
-<pre class="box">PREFIX :     &lt;http://example/&gt;
-PREFIX rdf:  &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#&gt;
-PREFIX rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt;
-
-# Find the types of :x, following subClassOf
-SELECT *
-{
-   :x  rdf:type/rdfs:subClassOf*  ?t
-}</pre>
 <h2>Efficiency</h2>
 <p>Property path evaluation is similar to backward chaining inference. When used 
 with models backed by SQL databases, complex path expressions may take some 

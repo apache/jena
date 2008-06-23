@@ -33,6 +33,8 @@ public class ElementVisitorBase implements ElementVisitor
     public void visit(ElementService el)            { }
 
     public void visit(ElementSubQuery el)           { }
+
+    public void visit(ElementPath el)               { }
 }
 
 /*

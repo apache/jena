@@ -15,6 +15,7 @@ import com.hp.hpl.jena.graph.Triple;
 
 import com.hp.hpl.jena.sparql.core.BasicPattern;
 import com.hp.hpl.jena.sparql.expr.Expr;
+import com.hp.hpl.jena.sparql.path.PathWriter;
 import com.hp.hpl.jena.sparql.syntax.*;
 import com.hp.hpl.jena.sparql.util.IndentedLineBuffer;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
@@ -340,6 +341,15 @@ public class FormatterElement extends FormatterBase
         el.getQuery().serialize(out) ;
         out.decIndent(INDENT) ;
         out.print("}") ;
+    }
+
+    public void visit(ElementPath el)
+    {
+        printSubject(el.getSubject()) ;
+        out.print(" ") ;
+        PathWriter.write(out, el.getPath(), context.getPrologue()) ;
+        out.print(" ") ;
+        printObject(el.getObject()) ;
     }
 
     // Visit an element, ensuring it is always surround by {} as a group.

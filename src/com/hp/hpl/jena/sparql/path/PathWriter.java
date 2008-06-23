@@ -16,9 +16,14 @@ public class PathWriter implements PathVisitor
 
     public static void write(Path path, Prologue prologue)
     {
-        PathWriter w = new PathWriter(IndentedWriter.stdout, prologue) ;
+        write(IndentedWriter.stdout, path, prologue) ;
+    }
+    
+    public static void write(IndentedWriter out, Path path, Prologue prologue)
+    {
+        PathWriter w = new PathWriter(out, prologue) ;
         path.visit(w) ;
-        w.out.flush();
+        out.flush();
     }
     
     public static String asString(Path path) { return asString(path, null) ; }

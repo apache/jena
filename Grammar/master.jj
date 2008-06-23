@@ -550,6 +550,10 @@ Node Verb() : {Node p ;}
 {
 //   ( p = VarOrBlankNodeOrIRIref() | <KW_A> { p = nRDFtype ; } )
   ( p = VarOrIRIref() | <KW_A> { p = nRDFtype ; } )
+
+    // ^path
+    // Potential path : mod,path op.
+
     { return p ; }
 }
 
@@ -1401,4 +1405,3 @@ TOKEN:
 # comment-default-style: "//"
 # End:
 */
-

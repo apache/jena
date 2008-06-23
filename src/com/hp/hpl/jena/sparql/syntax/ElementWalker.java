@@ -110,6 +110,11 @@ public class ElementWalker
         {
             proc.visit(el) ;
         }
+
+        public void visit(ElementPath el)
+        {
+            proc.visit(el) ;
+        }
     }
 }
 
