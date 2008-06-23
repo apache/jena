@@ -60,8 +60,6 @@ public class ElementTriplesBlock extends Element implements TripleCollector
     }
 
     public void visit(ElementVisitor v) { v.visit(this) ; }
-    
-    // Code to test triples for sameness with remapping. 
 }
 
 /*
