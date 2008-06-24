@@ -15,7 +15,7 @@ import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 import com.hp.hpl.jena.sparql.util.Utils;
 
-/** A class whose purpose is to give a name to a collection of triples
+/** A class whose purpose is to give a name to a collection of triples.
  * Reduces the use of bland "List" in APIs (Java 1.4) 
  */ 
 

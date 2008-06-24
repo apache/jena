@@ -149,7 +149,7 @@ public class PropertyFunctionGenerator //implements StageGenerator
 
     private static Op makeStages(BasicPattern triples, Map pfInvocations)
     {
-        // Step 3 : Make the operaqtion expression.
+        // Step 3 : Make the operation expression.
         //   For each property function, insert the implementation 
         //   For each block of non-property function triples, make a BGP.
         

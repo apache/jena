@@ -119,7 +119,7 @@ public class FilterPlacement
 
     // --------------------------------
     // Placement in stages and joins.
-    // Joins may in trun involve stages and BGPs.
+    // Joins may, in turn, involve stages and BGPs.
     
     public QueryIterator placeFiltersStage(ExprList exprs, OpStage opStage, QueryIterator input)
     {

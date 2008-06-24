@@ -20,6 +20,9 @@ import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 
 public class OpStage extends Op2
 {
+    // TODO : Rename as OpSeq
+    // TODO : List of ops.  OpN
+    
     public static Op create(Op left, Op right)
     { 
         // If left already an OpStage ... maybe?
