@@ -6,8 +6,8 @@
 
 package com.hp.hpl.jena.tdb.pgraph;
 
+import static com.hp.hpl.jena.tdb.TDB.logDuplicates;
 import static com.hp.hpl.jena.tdb.pgraph.PGraphFactory.indexRecordFactory;
-import static com.hp.hpl.jena.tdb.TDB.logDuplicates; 
 import iterator.Filter;
 import iterator.Iter;
 
@@ -15,21 +15,15 @@ import java.util.Iterator;
 
 import lib.Tuple;
 
-import com.hp.hpl.jena.rdf.model.AnonId;
-
-import com.hp.hpl.jena.util.iterator.ExtendedIterator;
-import com.hp.hpl.jena.util.iterator.NiceIterator;
-
 import com.hp.hpl.jena.graph.Capabilities;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.graph.TripleMatch;
 import com.hp.hpl.jena.graph.impl.GraphBase;
 import com.hp.hpl.jena.graph.query.QueryHandler;
-
+import com.hp.hpl.jena.rdf.model.AnonId;
 import com.hp.hpl.jena.sparql.sse.SSE;
 import com.hp.hpl.jena.sparql.util.FmtUtils;
-
 import com.hp.hpl.jena.tdb.Const;
 import com.hp.hpl.jena.tdb.TDB;
 import com.hp.hpl.jena.tdb.TDBException;
@@ -38,6 +32,8 @@ import com.hp.hpl.jena.tdb.index.IndexFactory;
 import com.hp.hpl.jena.tdb.index.RangeIndex;
 import com.hp.hpl.jena.tdb.index.TripleIndex;
 import com.hp.hpl.jena.tdb.lib.TupleLib;
+import com.hp.hpl.jena.util.iterator.ExtendedIterator;
+import com.hp.hpl.jena.util.iterator.NiceIterator;
 
 /** Machinary to implement a "nodes and triples" style graph,
  *  based on 3 indexes (SPO, POS, OSP)
@@ -114,7 +110,11 @@ public class PGraphBase extends GraphBase implements Sync
         if ( ! indexSPO.add(sId, pId, oId) )
         {
             if ( TDB.getContext().isTrue(logDuplicates) )
-                System.out.println("Duplicate : "+t) ;
+            {
+                System.out.print("Duplicate: (") ;
+                System.out.print(FmtUtils.stringForTriple(t, this.getPrefixMapping())) ;
+                System.out.println(")") ;
+            }
             return ;
         }
 
