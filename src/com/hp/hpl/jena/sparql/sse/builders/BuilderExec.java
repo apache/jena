@@ -26,16 +26,16 @@ public class BuilderExec
     static public void exec(Item item)
     {
         if (item.isNode() )
-            BuilderBase.broken(item, "Attempt to build evaluation from a plain node") ;
+            BuilderLib.broken(item, "Attempt to build evaluation from a plain node") ;
 
         if (item.isSymbol() )
-            BuilderBase.broken(item, "Attempt to build evaluation from a bare symbol") ;
+            BuilderLib.broken(item, "Attempt to build evaluation from a bare symbol") ;
 
         if ( ! item.isTagged(Tags.tagExec) )
             throw new BuildException("Wanted ("+Tags.tagExec+"...) : got: "+item.shortString());
 
         ItemList list = item.getList() ;
-        BuilderBase.checkLength(3, list, item.shortString()+ " does not have 2 components");
+        BuilderLib.checkLength(3, list, item.shortString()+ " does not have 2 components");
         
         DatasetGraph dsg = BuilderGraph.buildDataset(list.get(1)) ;
         Op op = BuilderOp.build(list.get(2)) ;

@@ -11,12 +11,13 @@ import com.hp.hpl.jena.sparql.util.FmtUtils;
 import com.hp.hpl.jena.sparql.util.IndentedLineBuffer;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
 
-public class PathWriterSSE implements PathVisitor
+/** SSE Writer */
+public class WriterPath implements PathVisitor
 {
 
     public static void write(Path path, Prologue prologue)
     {
-        PathWriterSSE w = new PathWriterSSE(IndentedWriter.stdout, prologue) ;
+        WriterPath w = new WriterPath(IndentedWriter.stdout, prologue) ;
         path.visit(w) ;
         w.out.flush();
     }
@@ -26,7 +27,7 @@ public class PathWriterSSE implements PathVisitor
     public static String asString(Path path, Prologue prologue)
     {
         IndentedLineBuffer buff = new IndentedLineBuffer() ;
-        PathWriterSSE w = new PathWriterSSE(buff.getIndentedWriter(), prologue) ;
+        WriterPath w = new WriterPath(buff.getIndentedWriter(), prologue) ;
         path.visit(w) ;
         w.out.flush();
         return buff.asString() ;
@@ -35,7 +36,7 @@ public class PathWriterSSE implements PathVisitor
     private IndentedWriter out ;
     private Prologue prologue ;
 
-    PathWriterSSE(IndentedWriter indentedWriter, Prologue prologue) { this.out = indentedWriter ; this.prologue = prologue ;}
+    WriterPath(IndentedWriter indentedWriter, Prologue prologue) { this.out = indentedWriter ; this.prologue = prologue ;}
     
     //@Override
     public void visit(P_Link pathNode)
@@ -46,13 +47,13 @@ public class PathWriterSSE implements PathVisitor
     //@Override
     public void visit(P_Alt pathAlt)
     {
-        visit2(pathAlt, "alt") ;
+        visit2(pathAlt, PathBase.tagAlt) ;
     }
 
     //@Override
     public void visit(P_Seq pathSeq)
     {
-        visit2(pathSeq, "seq") ;
+        visit2(pathSeq, PathBase.tagSeq) ;
     }
 
     private void visit2(P_Path2 path2, String nodeName)
@@ -71,7 +72,8 @@ public class PathWriterSSE implements PathVisitor
     //@Override
     public void visit(P_Mod pathMod)
     {
-        out.print("(mod") ;
+        out.print("(") ;
+        out.print(PathBase.tagMod) ;
         out.print(" ") ;
         out.print(Long.toString(pathMod.getMin())) ;
         out.print(" ") ;
@@ -85,7 +87,8 @@ public class PathWriterSSE implements PathVisitor
 
     public void visit(P_Reverse reversePath)
     {
-        out.print("(reverse") ;
+        out.print("(") ;
+        out.print(PathBase.tagReverse) ;
         out.println() ;
         out.incIndent() ;
         reversePath.getSubPath().visit(this) ;

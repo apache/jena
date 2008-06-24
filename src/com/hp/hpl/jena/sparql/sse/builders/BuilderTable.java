@@ -18,7 +18,7 @@ public class BuilderTable
 {
     public static Table build(Item item)
     {
-        BuilderBase.checkTagged(item, Tags.tagTable, "Not a (table ...)") ;
+        BuilderLib.checkTagged(item, Tags.tagTable, "Not a (table ...)") ;
 
         ItemList list = item.getList() ;
         int start = 1 ;

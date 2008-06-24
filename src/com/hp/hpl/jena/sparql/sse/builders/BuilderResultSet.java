@@ -24,7 +24,7 @@ public class BuilderResultSet
        
     public static ResultSet build(Item item)
     {
-        BuilderBase.checkTagged(item, Tags.tagResultSet, "Not a (resultset ...)") ;
+        BuilderLib.checkTagged(item, Tags.tagResultSet, "Not a (resultset ...)") ;
         
         //SPARQLResult result = new SPARQLResult() ;
         /*

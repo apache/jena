@@ -22,9 +22,10 @@ import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.shared.PrefixMapping;
 import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
 
-import com.hp.hpl.jena.sparql.path.Path;
-import com.hp.hpl.jena.sparql.path.PathEval;
-import com.hp.hpl.jena.sparql.path.PathParser;
+import com.hp.hpl.jena.sparql.core.Prologue;
+import com.hp.hpl.jena.sparql.path.*;
+import com.hp.hpl.jena.sparql.sse.Item;
+import com.hp.hpl.jena.sparql.sse.SSE;
 import com.hp.hpl.jena.sparql.util.Utils;
 import com.hp.hpl.jena.sparql.util.graph.GraphUtils;
 
@@ -75,31 +76,41 @@ public class TestPath extends TestCase
     
     public void testParsePath_15()           { parse(":p^:q") ; }
     public void testParsePath_16()           { parse("^:p^:q") ; }
-    public void testParsePath_17()           { parse("^(:p/:q)") ; }
-    public void testParsePath_18()           { parse("^(:p^:q)") ; }
+    public void testParsePath_17()           { parse("^:p/:q") ; }
+    public void testParsePath_18()           { parse("^(:p/:q)") ; }
+    public void testParsePath_19()           { parse("^(:p^:q)") ; }
+    public void testParsePath_20()           { parse(":p^(:q/:r)") ; }
     
     public void testParsePathErr_01()        { parse("", false) ; }
     public void testParsePathErr_02()        { parse("()", false) ; }
-    public void testParsePathErr_03()        { parse(":p :q", false) ; }  // Need EOF
+    public void testParsePathErr_03()        { parse(":p :q", false) ; }
     // ----
     
     private void parse(String string) { parse(string, true) ; }
     
     private void parse(String string, boolean expectLegal)
     {
+        Prologue prologue = new Prologue(pmap) ;
         Path p = null ;
         try {
-            p = PathParser.parse(string, pmap) ;
+            p = PathParser.parse(string, prologue) ;
+//            System.out.println(string+" ==> "+p.toString(new Prologue(pmap))) ;
+//            System.out.println(PathWriterSSE.asString(p, new Prologue(pmap))) ;
             if ( ! expectLegal )
                 fail("Expected error; "+string) ;
         } catch (QueryParseException ex)
         {
             if ( expectLegal )
-                fail("Expected success: "+string) ;
+                fail("Expected success: "+string+": "+ex.getMessage()) ;
             return ;
         }
-        String x = p.toString() ;
-        Path p2 = PathParser.parse(x, pmap) ;
+        String x = p.toString(prologue) ;
+        Path p2 = PathParser.parse(x, prologue) ;
+        assertEquals(p, p2) ;
+        
+        String sse = WriterPath.asString(p, prologue) ;
+        Item item = SSE.parseItem(sse, pmap) ;
+        p2 = BuilderPath.buildPath(item) ;
         assertEquals(p, p2) ;
     }
 

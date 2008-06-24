@@ -22,13 +22,13 @@ public class BuilderNode
     public static Node buildNode(Item item)
     {
         if ( !item.isNode() )
-            BuilderBase.broken(item, "Not a node", item) ;
+            BuilderLib.broken(item, "Not a node", item) ;
         return item.getNode() ;
     }
     
     public static List buildNodeList(Item item)
     {
-        BuilderBase.checkList(item) ;
+        BuilderLib.checkList(item) ;
         ItemList list = item.getList() ;
         return buildNodeList(list) ;
     }
@@ -48,7 +48,7 @@ public class BuilderNode
     public static Var buildVar(Item item)
     {
         if ( ! item.isNode() || !Var.isVar(item.getNode()) )
-            BuilderBase.broken(item, "Not a variable", item) ;
+            BuilderLib.broken(item, "Not a variable", item) ;
 //        if ( ! Var.isNamedVar(item.getNode()) )
 //            BuilderBase.broken(item, "Not a named variable", item) ;
         return Var.alloc(item.getNode()) ;
@@ -56,7 +56,7 @@ public class BuilderNode
     
     public static List buildVarList(Item item)
     {
-        BuilderBase.checkList(item) ;
+        BuilderLib.checkList(item) ;
         ItemList list = item.getList() ;
         return buildVarList(list) ;
     }
@@ -77,7 +77,7 @@ public class BuilderNode
     public static String buildSymbol(Item item)
     {
         if ( !item.isSymbol() )
-            BuilderBase.broken(item, "Not a symbol", item) ;
+            BuilderLib.broken(item, "Not a symbol", item) ;
         return item.getSymbol() ;
     }
     
@@ -101,14 +101,14 @@ public class BuilderNode
             return null ;
         
         if ( !item.isNode() )
-            BuilderBase.broken(item, "Not an integer: "+item) ;
+            BuilderLib.broken(item, "Not an integer: "+item) ;
         Node node = item.getNode() ;
         if ( ! node.isLiteral() )
-            BuilderBase.broken(item, "Not an integer: "+item) ;
+            BuilderLib.broken(item, "Not an integer: "+item) ;
 
         NodeValue nv = NodeValue.makeNode(node) ;
         if ( ! nv.isInteger() )
-            BuilderBase.broken(item, "Not an integer: "+item) ;
+            BuilderLib.broken(item, "Not an integer: "+item) ;
         return nv.getInteger() ;
     }
 

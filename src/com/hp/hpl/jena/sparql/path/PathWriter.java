@@ -62,11 +62,13 @@ public class PathWriter implements PathVisitor
 
     private void visit2(P_Path2 path2, String sep)
     {
-        out.print("(") ;
+        boolean parens = false ;
+        
+        if ( parens ) out.print("(") ;
         path2.getLeft().visit(this) ;
         out.print(sep) ;
         path2.getRight().visit(this) ;
-        out.print(")") ;
+        if ( parens ) out.print(")") ;
     }
     
     //@Override
@@ -96,13 +98,13 @@ public class PathWriter implements PathVisitor
     {
         out.print("^") ;
         Path p = reversePath.getSubPath() ;
-        boolean brackets = true ; 
+        boolean parens = true ; 
         if ( p instanceof P_Link )
-            brackets = false ;
-        if ( brackets )
+            parens = false ;
+        if ( parens )
             out.print("(") ;
         p.visit(this) ;
-        if ( brackets )
+        if ( parens )
             out.print(")") ;
     }
 

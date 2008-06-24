@@ -37,14 +37,14 @@ public class BuilderPrefixMapping
     public static void build(PrefixMapping newMappings, Item elt)
     {
         if ( ! elt.isList() )
-            BuilderBase.broken(elt, "Prefix mapping requires a list of pairs", elt) ;
+            BuilderLib.broken(elt, "Prefix mapping requires a list of pairs", elt) ;
 
         ItemList prefixes = elt.getList() ;
         
         // Strip (prefixmapping  ...)
         if ( elt.isTaggedIgnoreCase(Tags.tagPrefixMap) || elt.isTaggedIgnoreCase(Tags.tagPrefixMapping) )
         {
-            BuilderBase.checkLength(2, elt.getList(), "Not of length 2"+elt.shortString()) ;
+            BuilderLib.checkLength(2, elt.getList(), "Not of length 2"+elt.shortString()) ;
             // drop the tag
             prefixes = prefixes.cdr();
         }
@@ -53,7 +53,7 @@ public class BuilderPrefixMapping
         {
             Item pair = (Item)iter.next() ;
             if ( !pair.isList() || pair.getList().size() != 2 )
-                BuilderBase.broken(pair, "Not a prefix/IRI pair") ;
+                BuilderLib.broken(pair, "Not a prefix/IRI pair") ;
             Item prefixItem = pair.getList().get(0) ;
             Item iriItem = pair.getList().get(1) ;
 
@@ -81,19 +81,19 @@ public class BuilderPrefixMapping
 //            }            
 
             if ( prefix == null )
-                BuilderBase.broken(pair, "Prefix part nor recognized: "+prefixItem) ;
+                BuilderLib.broken(pair, "Prefix part nor recognized: "+prefixItem) ;
             
             if ( ! prefix.endsWith(":") )
-                BuilderBase.broken(pair, "Prefix part does not end with a ':': "+pair) ;
+                BuilderLib.broken(pair, "Prefix part does not end with a ':': "+pair) ;
             prefix = prefix.substring(0, prefix.length()-1) ;
             if ( StringUtils.contains(prefix, ":") )
-                BuilderBase.broken(pair, "Prefix itseld contains a ':' : "+pair) ;
+                BuilderLib.broken(pair, "Prefix itseld contains a ':' : "+pair) ;
             // -- /Prefix
             
             Node iriNode = iriItem.getNode() ;
 
             if ( iriNode == null || ! iriNode.isURI() )
-                BuilderBase.broken(pair, "Not an IRI: "+iriItem) ;
+                BuilderLib.broken(pair, "Not an IRI: "+iriItem) ;
 
             String iri = iriNode.getURI();
 

@@ -10,7 +10,7 @@ import com.hp.hpl.jena.sparql.sse.Item;
 import com.hp.hpl.jena.sparql.sse.ItemList;
 import com.hp.hpl.jena.sparql.sse.ItemLocation;
 
-public class BuilderBase
+public class BuilderLib
 {
  
     public static void checkNode(Item item)

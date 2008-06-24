@@ -36,10 +36,10 @@ public class BuilderOp
     public static Op build(Item item)
     {
         if (item.isNode() )
-            BuilderBase.broken(item, "Attempt to build op structure from a plain node") ;
+            BuilderLib.broken(item, "Attempt to build op structure from a plain node") ;
 
         if (item.isSymbol() )
-            BuilderBase.broken(item, "Attempt to build op structure from a bare symbol") ;
+            BuilderLib.broken(item, "Attempt to build op structure from a bare symbol") ;
 
         BuilderOp b = new BuilderOp();
         return b.build(item.getList()) ;
@@ -89,7 +89,7 @@ public class BuilderOp
         if ( bob != null )
             return bob.make(list) ;
         else
-            BuilderBase.broken(head, "Unrecognized algebra operation: "+tag) ;
+            BuilderLib.broken(head, "Unrecognized algebra operation: "+tag) ;
         return null ;
     }
 
@@ -149,7 +149,7 @@ public class BuilderOp
             {
                 Item item = list.get(i) ;
                 if ( ! item.isList() )
-                    BuilderBase.broken(item, "Not a triple structure") ;
+                    BuilderLib.broken(item, "Not a triple structure") ;
                 Triple t = BuilderGraph.buildTriple(item.getList()) ;
                 triples.add(t) ; 
             }
@@ -167,14 +167,14 @@ public class BuilderOp
             {
                 Item item = list.get(i) ;
                 if ( ! item.isList() )
-                    BuilderBase.broken(item, "Not a quad structure") ;
+                    BuilderLib.broken(item, "Not a quad structure") ;
                 Quad q = BuilderGraph.buildQuad(item.getList()) ;
                 if ( g == null )
                     g = q.getGraph() ;
                 else
                 {
                     if ( ! g.equals(q.getGraph()) )
-                        BuilderBase.broken(item, "Quad has different graph node in quadapttern: "+q) ;
+                        BuilderLib.broken(item, "Quad has different graph node in quadapttern: "+q) ;
                 }
                 bp.add(q.getTriple()) ;
                 
@@ -189,7 +189,7 @@ public class BuilderOp
     {
         public Op make(ItemList list)
         {
-            BuilderBase.checkLength(3, list, "Malformed filter") ;
+            BuilderLib.checkLength(3, list, "Malformed filter") ;
             Item itemExpr = list.get(1) ;
             Item itemOp = list.get(2) ;
 
@@ -203,7 +203,7 @@ public class BuilderOp
     {
         public Op make(ItemList list)
         {
-            BuilderBase.checkLength(3, list, "Join") ;
+            BuilderLib.checkLength(3, list, "Join") ;
             Op left = build(list, 1) ;
             Op right  = build(list, 2) ;
             Op op = OpJoin.create(left, right) ;
@@ -215,7 +215,7 @@ public class BuilderOp
     {
         public Op make(ItemList list)
         {
-            BuilderBase.checkLength(3, list, "Stage") ;
+            BuilderLib.checkLength(3, list, "Stage") ;
             Op left = build(list, 1) ;
             Op right  = build(list, 2) ;
             Op op = OpStage.create(left, right) ;
@@ -227,7 +227,7 @@ public class BuilderOp
     {
         public Op make(ItemList list)
         {
-            BuilderBase.checkLength(3, 4, list, "leftjoin: wanted 2 or 3 arguments") ;
+            BuilderLib.checkLength(3, 4, list, "leftjoin: wanted 2 or 3 arguments") ;
             Op left = build(list, 1) ;
             Op right  = build(list, 2) ;
             Expr expr = null ;
@@ -242,7 +242,7 @@ public class BuilderOp
     {
         public Op make(ItemList list)
         {
-            BuilderBase.checkLength(3, 4, list, "diff: wanted 2 arguments") ;
+            BuilderLib.checkLength(3, 4, list, "diff: wanted 2 arguments") ;
             Op left = build(list, 1) ;
             Op right  = build(list, 2) ;
             Op op = OpDiff.create(left, right) ;
@@ -254,7 +254,7 @@ public class BuilderOp
     {
         public Op make(ItemList list)
         {
-            BuilderBase.checkLength(3, list, "union") ;
+            BuilderLib.checkLength(3, list, "union") ;
             Op left = build(list, 1) ;
             Op right  = build(list, 2) ;
             Op op = new OpUnion(left, right) ;
@@ -266,7 +266,7 @@ public class BuilderOp
     {
         public Op make(ItemList list)
         {
-            BuilderBase.checkLength(3, list, "graph") ;
+            BuilderLib.checkLength(3, list, "graph") ;
             Node graph = BuilderNode.buildNode(list.get(1)) ;
             Op sub  = build(list, 2) ;
             return new OpGraph(graph, sub) ;
@@ -277,10 +277,10 @@ public class BuilderOp
     {
         public Op make(ItemList list)
         {
-            BuilderBase.checkLength(3, list, "service") ;
+            BuilderLib.checkLength(3, list, "service") ;
             Node service = BuilderNode.buildNode(list.get(1)) ;
             if ( ! service.isURI() && ! service.isVariable() )
-                BuilderBase.broken(list, "Service must provide a URI or variable") ;
+                BuilderLib.broken(list, "Service must provide a URI or variable") ;
             Op sub  = build(list, 2) ;
             return new OpService(service, sub) ;
         }
@@ -291,10 +291,10 @@ public class BuilderOp
         public Op make(ItemList list)
         {
             // (proc <foo> (args) form)
-            BuilderBase.checkLength(4, list, "proc") ;
+            BuilderLib.checkLength(4, list, "proc") ;
             Node procId = BuilderNode.buildNode(list.get(1)) ;
             if ( ! procId.isURI() )
-                BuilderBase.broken(list, "Procedure name must be a URI") ;
+                BuilderLib.broken(list, "Procedure name must be a URI") ;
             ExprList args = BuilderExpr.buildExprOrExprList(list.get(2)) ;
             Op sub  = build(list, 3) ;
             return new OpProcedure(procId, args, sub) ;
@@ -307,11 +307,11 @@ public class BuilderOp
         public Op make(ItemList list)
         {
             // (proc <foo> (subject args) (object args) form)
-            BuilderBase.checkLength(5, list, "propfunc") ;
+            BuilderLib.checkLength(5, list, "propfunc") ;
             Node property = BuilderNode.buildNode(list.get(1)) ;
             
             if ( ! property.isURI() )
-                BuilderBase.broken(list, "Property function name must be a URI") ;
+                BuilderLib.broken(list, "Property function name must be a URI") ;
 
             PropFuncArg subjArg = readPropFuncArg(list.get(2)) ;
             PropFuncArg objArg = readPropFuncArg(list.get(3)) ;
@@ -326,7 +326,7 @@ public class BuilderOp
             return new PropFuncArg(BuilderNode.buildNode(item)) ;
         if ( item.isList() )
             return new PropFuncArg(BuilderNode.buildNodeList(item)) ;
-        BuilderBase.broken(item, "Expected a property function argument (node or list of nodes") ;
+        BuilderLib.broken(item, "Expected a property function argument (node or list of nodes") ;
         return null ;
     }
 
@@ -334,7 +334,7 @@ public class BuilderOp
     {
         public Op make(ItemList list)
         {
-            BuilderBase.checkLength(2, list, "tolist") ;
+            BuilderLib.checkLength(2, list, "tolist") ;
             Op sub = build(list, 1) ;
             Op op = new OpList(sub) ;
             return op ;
@@ -347,7 +347,7 @@ public class BuilderOp
         // See buildProject
         public Op make(ItemList list)
         {
-            BuilderBase.checkLength(3, 4, list,  "Group") ;
+            BuilderLib.checkLength(3, 4, list,  "Group") ;
             // GroupBy
             VarExprList vars = BuilderExpr.buildNamedExprList(list.get(1).getList()) ;
             List aggregators = new ArrayList() ;
@@ -361,7 +361,7 @@ public class BuilderOp
                 {
                     Expr expr = (Expr)iter.next() ;
                     if ( ! ( expr instanceof E_Aggregator ) )
-                        BuilderBase.broken(list, "Not a aggregate expression: "+expr) ;
+                        BuilderLib.broken(list, "Not a aggregate expression: "+expr) ;
                 }
             }
             Op sub = build(list, list.size()-1) ;
@@ -375,7 +375,7 @@ public class BuilderOp
     {
         public Op make(ItemList list)
         {
-            BuilderBase.checkLength(3, list,  "Order") ;
+            BuilderLib.checkLength(3, list,  "Order") ;
             ItemList conditions = list.get(1).getList() ;
             
             // Maybe tagged (asc, (desc or a raw expression)
@@ -400,8 +400,8 @@ public class BuilderOp
         if ( item.isTagged("asc") || item.isTagged("desc") )
         {
             
-            BuilderBase.checkList(item) ;
-            BuilderBase.checkLength(2, item.getList(), "Direction corrupt") ;
+            BuilderLib.checkList(item) ;
+            BuilderLib.checkLength(2, item.getList(), "Direction corrupt") ;
             if ( item.isTagged("asc") )
                 direction = Query.ORDER_ASCENDING ;
             else
@@ -420,7 +420,7 @@ public class BuilderOp
     {
         public Op make(ItemList list)
         {
-            BuilderBase.checkLength(3, list, "project") ;
+            BuilderLib.checkLength(3, list, "project") ;
             List x = BuilderNode.buildVars(list.get(1).getList()) ; 
             Op sub = build(list, 2) ;
             return new OpProject(sub, x) ;
@@ -432,7 +432,7 @@ public class BuilderOp
     {
         public Op make(ItemList list)
         {
-            BuilderBase.checkLength(2, list, "distinct") ;
+            BuilderLib.checkLength(2, list, "distinct") ;
             Op sub = build(list, 1) ;
             return new OpDistinct(sub) ;
         }
@@ -442,7 +442,7 @@ public class BuilderOp
     {
         public Op make(ItemList list)
         {
-            BuilderBase.checkLength(2, list, "reduced") ;
+            BuilderLib.checkLength(2, list, "reduced") ;
             Op sub = build(list, 1) ;
             return new OpReduced(sub) ;
         }
@@ -452,7 +452,7 @@ public class BuilderOp
     {
         public Op make(ItemList list)
         {
-            BuilderBase.checkLength(3, list, "assign") ;
+            BuilderLib.checkLength(3, list, "assign") ;
             VarExprList x = BuilderExpr.buildNamedExprList(list.get(1).getList()) ; 
             Op sub = build(list, 2) ;
             return new OpAssign(sub, x) ;
@@ -465,7 +465,7 @@ public class BuilderOp
     {
         public Op make(ItemList list)
         {
-            BuilderBase.checkLength(4, list, "slice") ;
+            BuilderLib.checkLength(4, list, "slice") ;
             long start = BuilderNode.buildInt(list, 1, -1) ;
             long length = BuilderNode.buildInt(list, 2, -1) ;
 
@@ -483,7 +483,7 @@ public class BuilderOp
     {
         public Op make(ItemList list)
         {
-            BuilderBase.checkLength(1, list, "null") ;
+            BuilderLib.checkLength(1, list, "null") ;
             return new OpNull() ;
         }
     } ;
