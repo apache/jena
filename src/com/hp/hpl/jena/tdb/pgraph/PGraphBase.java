@@ -7,6 +7,7 @@
 package com.hp.hpl.jena.tdb.pgraph;
 
 import static com.hp.hpl.jena.tdb.pgraph.PGraphFactory.indexRecordFactory;
+import static com.hp.hpl.jena.tdb.TDB.logDuplicates; 
 import iterator.Filter;
 import iterator.Iter;
 
@@ -30,6 +31,7 @@ import com.hp.hpl.jena.sparql.sse.SSE;
 import com.hp.hpl.jena.sparql.util.FmtUtils;
 
 import com.hp.hpl.jena.tdb.Const;
+import com.hp.hpl.jena.tdb.TDB;
 import com.hp.hpl.jena.tdb.TDBException;
 import com.hp.hpl.jena.tdb.graph.GraphSyncListener;
 import com.hp.hpl.jena.tdb.index.IndexFactory;
@@ -110,7 +112,11 @@ public class PGraphBase extends GraphBase implements Sync
         NodeId oId = storeNode(o) ;
         
         if ( ! indexSPO.add(sId, pId, oId) )
+        {
+            if ( TDB.getContext().isTrue(logDuplicates) )
+                System.out.println("Duplicate : "+t) ;
             return ;
+        }
 
         if ( indexPOS != null )
         {

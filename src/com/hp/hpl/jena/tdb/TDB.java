@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import com.hp.hpl.jena.query.ARQ;
 import com.hp.hpl.jena.rdf.model.impl.RDFReaderFImpl;
 import com.hp.hpl.jena.sparql.engine.main.StageGenerator;
+import com.hp.hpl.jena.sparql.util.Context;
 import com.hp.hpl.jena.sparql.util.Symbol;
 
 import com.hp.hpl.jena.tdb.base.loader.NTriplesReader2;
@@ -36,6 +37,7 @@ public class TDB
 //    public static String symbolPrefix = "tdb" ;
 
     public static Symbol logBGP                     = Const.allocSymbol("logBGP") ;
+    public static Symbol logDuplicates              = Const.allocSymbol("logDuplicates") ;
     // Value: direct, mapped, default 
     public static final Symbol symFileMode          = Const.allocSymbol("fileMode") ;  
     public static final Symbol symParallelLoad      = Const.allocSymbol("parallelLoad") ;
@@ -45,6 +47,8 @@ public class TDB
 //        org.slf4j.LoggerFactory.getLogger(clazz).error(string) ;
 //        throw new TDBException(string) ;
 //    }
+    
+    public static Context getContext()     { return ARQ.getContext() ; }  
     
     // Called on assembler loading.
     public static void init() { }
