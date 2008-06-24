@@ -6,12 +6,14 @@
 
 package com.hp.hpl.jena.sparql.path;
 
+import com.hp.hpl.jena.sparql.core.Prologue;
 import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 
 public interface Path
 {
     public void visit(PathVisitor visitor) ;
     public boolean equalTo(Path path2, NodeIsomorphismMap isoMap) ;
+    public String toString(Prologue prolog) ;
 }
 
 /*

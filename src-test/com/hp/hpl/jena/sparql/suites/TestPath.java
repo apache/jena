@@ -73,8 +73,11 @@ public class TestPath extends TestCase
     public void testParsePath_13()           { parse(":p{1,}") ; }
     public void testParsePath_14()           { parse(":p{1,2}") ; }
     
-    public void testParsePath_20()           { parse(":p^:q") ; }
-
+    public void testParsePath_15()           { parse(":p^:q") ; }
+    public void testParsePath_16()           { parse("^:p^:q") ; }
+    public void testParsePath_17()           { parse("^(:p/:q)") ; }
+    public void testParsePath_18()           { parse("^(:p^:q)") ; }
+    
     public void testParsePathErr_01()        { parse("", false) ; }
     public void testParsePathErr_02()        { parse("()", false) ; }
     public void testParsePathErr_03()        { parse(":p :q", false) ; }  // Need EOF
@@ -84,15 +87,20 @@ public class TestPath extends TestCase
     
     private void parse(String string, boolean expectLegal)
     {
+        Path p = null ;
         try {
-            Path p = PathParser.parse(string, pmap) ;
+            p = PathParser.parse(string, pmap) ;
             if ( ! expectLegal )
                 fail("Expected error; "+string) ;
         } catch (QueryParseException ex)
         {
             if ( expectLegal )
                 fail("Expected success: "+string) ;
+            return ;
         }
+        String x = p.toString() ;
+        Path p2 = PathParser.parse(x, pmap) ;
+        assertEquals(p, p2) ;
     }
 
     public void testPath_01()           { test(graph1, n1, ":p", new Node[]{n2}) ; }

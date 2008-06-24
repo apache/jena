@@ -39,7 +39,6 @@ public class P_Link extends PathBase
     {
         return node.hashCode() ;
     }
-
 }
 
 /*

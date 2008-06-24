@@ -80,7 +80,7 @@ public class PathWriter implements PathVisitor
         }
         if ( pathMod.isOneOrMore() )
         {
-            out.print("*") ;
+            out.print("+") ;
             return ;
         }
         
