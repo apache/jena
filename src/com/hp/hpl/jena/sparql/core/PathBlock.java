@@ -1,0 +1,111 @@
+/*
+ * (c) Copyright 2008 Hewlett-Packard Development Company, LP
+ * All rights reserved.
+ * [See end of file]
+ */
+
+package com.hp.hpl.jena.sparql.core;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
+
+import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
+import com.hp.hpl.jena.sparql.util.Utils;
+
+/** A class whose purpose is to give a name to a collection of triple paths. */ 
+
+public class PathBlock
+{
+    private List triplePaths = new ArrayList() ; 
+
+    public PathBlock() {}
+    public PathBlock(PathBlock other) {triplePaths.addAll(other.triplePaths) ; }
+    
+    public void add(TriplePath tp) { triplePaths.add(tp) ; }
+    public void addAll(PathBlock other) { triplePaths.addAll(other.triplePaths) ; }
+    public void add(int i, TriplePath tp) { triplePaths.add(i, tp) ; }
+    
+    public TriplePath get(int i) { return (TriplePath)triplePaths.get(i) ; }
+    public ListIterator iterator() { return triplePaths.listIterator() ; } 
+    public int size() { return triplePaths.size() ; }
+    public boolean isEmpty() { return triplePaths.isEmpty() ; }
+    
+    public List getList() { return triplePaths ; } 
+    
+    /** Simplify : turns constructs in simple triples and simpler TriplePaths where possible */ 
+    public List reduce()
+    {
+        List x = new ArrayList() ;
+        reduce(x) ;
+        return x ;
+        
+    }
+    
+    public void reduce(List x)
+    {
+        for ( Iterator iter = iterator() ; iter.hasNext() ; )
+        {
+            TriplePath tp = (TriplePath)iter.next();
+            tp.reduce(x) ;
+        }
+    }
+    
+    public int hashCode() { return triplePaths.hashCode() ; } 
+    
+    public boolean equals(Object other)
+    { 
+        if ( ! ( other instanceof PathBlock) ) 
+            return false ;
+        PathBlock bp = (PathBlock)other ;
+        return triplePaths.equals(bp.triplePaths) ;
+    }
+    
+    public boolean equiv(PathBlock other, NodeIsomorphismMap isoMap)
+    { 
+        if ( this.triplePaths.size() != other.triplePaths.size() )
+            return false ;
+        
+        for ( int i = 0 ; i < this.triplePaths.size() ; i++ )
+        {
+            TriplePath tp1 = get(i) ;
+            TriplePath tp2 = other.get(i) ;
+            
+            if ( ! Utils.nodeIso(tp1.getSubject(), tp2.getSubject(), isoMap) ||
+                 ! Utils.nodeIso(tp1.getObject(), tp2.getObject(), isoMap) ||
+                 ! tp1.getPath().equalTo(tp2.getPath(), isoMap) )
+                return false ;
+        }
+        return true ;
+    }
+    
+    public String toString() { return triplePaths.toString() ; } 
+}
+
+/*
+ * (c) Copyright 2008 Hewlett-Packard Development Company, LP
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ * 3. The name of the author may not be used to endorse or promote products
+ *    derived from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
+ * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+ * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+ * IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
+ * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+ * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+ * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */

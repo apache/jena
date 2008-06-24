@@ -8,9 +8,15 @@
 
 package com.hp.hpl.jena.sparql.core;
 
+import java.util.List;
+
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.sparql.path.*;
+
+import com.hp.hpl.jena.sparql.path.P_Link;
+import com.hp.hpl.jena.sparql.path.P_Reverse;
+import com.hp.hpl.jena.sparql.path.P_Seq;
+import com.hp.hpl.jena.sparql.path.Path;
 
 public final class TriplePath
 {
@@ -68,6 +74,50 @@ public final class TriplePath
         return subject.equals(tp.subject) && object.equals(tp.object) && path.equals(tp.path) ;
                
     }
+    
+    public String toString()
+    {
+        return subject+" "+path+" "+object ;
+    }
+    
+    /** Simplify the triple path, add Triple/TriplePaths to a list*/ 
+    public void reduce(List x)
+    {
+        reduce(x, getSubject(), getPath(), getObject()) ;
+    }
+    
+    private static void reduce(List x, Node startNode, Path path, Node endNode)
+    {
+        VarAlloc varAlloc = VarAlloc.getVarAllocator() ;
+        
+        if ( path instanceof P_Link )
+        {
+            Node pred = ((P_Link)path).getNode() ;
+            Triple t = new Triple(startNode, pred, endNode) ; 
+            x.add(t) ;
+            return ;
+        }
+        
+        if ( path instanceof P_Seq )
+        {
+            P_Seq ps = (P_Seq)path ;
+            Node v = varAlloc.allocVar() ;
+            reduce(x, startNode, ps.getLeft(), v) ;
+            reduce(x, v, ps.getRight(), endNode) ;
+            return ;
+        }
+        
+        if ( path instanceof P_Reverse )
+        {
+            reduce(x, endNode, ((P_Reverse)path).getSubPath(), startNode) ;
+            return ;
+        }
+        
+        // Nothing can be done.
+        x.add(new TriplePath(startNode, path, endNode)) ;
+    }
+    
+
 }
 
 /*

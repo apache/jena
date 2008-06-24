@@ -7,6 +7,7 @@
 package dev;
 
 import java.util.Iterator;
+import java.util.List;
 import java.util.Stack;
 
 import arq.sparql;
@@ -16,6 +17,7 @@ import com.hp.hpl.jena.rdf.model.Model;
 
 import com.hp.hpl.jena.util.FileManager;
 
+import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.shared.PrefixMapping;
 import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
@@ -27,6 +29,8 @@ import com.hp.hpl.jena.sparql.algebra.op.OpBGP;
 import com.hp.hpl.jena.sparql.algebra.op.OpJoin;
 import com.hp.hpl.jena.sparql.algebra.op.OpLeftJoin;
 import com.hp.hpl.jena.sparql.core.BasicPattern;
+import com.hp.hpl.jena.sparql.core.PathBlock;
+import com.hp.hpl.jena.sparql.core.TriplePath;
 import com.hp.hpl.jena.sparql.path.Path;
 import com.hp.hpl.jena.sparql.path.PathLib;
 import com.hp.hpl.jena.sparql.path.PathParser;
@@ -99,18 +103,43 @@ public class Run
         pmap.setNsPrefix("", "http://example/") ;
         
         Path path = PathParser.parse("rdf:type/rdfs:subClassOf*", pmap) ;
-        
-        String uri = JenaUUID.generate().asURN() ;
-        uri = RDF.type.getURI() ;
-        
-        PathLib.install(uri, path) ;
-        
-        Query query = QueryFactory.create("SELECT * { ?x <"+uri+"> ?t }" ) ;
-        QueryExecution qexec = QueryExecutionFactory.create(query, model) ;
-        QueryExecUtils.executeQuery(query, qexec, ResultsFormat.FMT_TEXT) ;
+        path1(":p*/:q", pmap) ;
+        path1("^:p", pmap) ;
+        path1("^:p/:q", pmap) ;
+        path1("^(:p/:q)", pmap) ;
+        path1(":p*/:q", pmap) ;
+        path1(":p^:q", pmap) ;
+
+        if( false )
+        {
+            String uri = JenaUUID.generate().asURN() ;
+            uri = RDF.type.getURI() ;
+            
+            PathLib.install(uri, path) ;
+            
+            Query query = QueryFactory.create("SELECT * { ?x <"+uri+"> ?t }" ) ;
+            QueryExecution qexec = QueryExecutionFactory.create(query, model) ;
+            QueryExecUtils.executeQuery(query, qexec, ResultsFormat.FMT_TEXT) ;
+        }
         System.exit(0) ;
     }
 
+    private static void path1(String str, PrefixMapping pmap)
+    {
+        Path path = PathParser.parse(str, pmap) ;
+        PathBlock pBlk = new PathBlock() ;
+        Node s = Node.createURI("s") ;
+        Node o = Node.createURI("o") ;
+        TriplePath tp = new TriplePath(s, path, o) ;
+        pBlk.add(tp) ;
+        
+        System.out.println("Path: "+str) ;
+        List x = pBlk.reduce() ;
+        for ( Iterator iter = x.iterator() ; iter.hasNext() ; )
+            System.out.println("  "+iter.next()) ;
+        System.out.println() ;
+    }
+    
     // Can be a visitor because we don't change the Op structure.  But we don't do that do we? 
     static class TransformBGP extends TransformCopy
     {
