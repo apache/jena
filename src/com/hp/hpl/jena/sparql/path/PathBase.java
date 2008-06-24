@@ -16,11 +16,6 @@ public abstract class PathBase implements Path
     protected static final int hashMod      = 0x193 ;
     protected static final int hashReverse  = 0x193 ;
     
-    public static final String tagSeq       = "seq" ;
-    public static final String tagAlt       = "alt" ;
-    public static final String tagMod       = "mod" ;
-    public static final String tagReverse   = "reverse" ;
-    
     //@Override
     public abstract int hashCode() ;
     

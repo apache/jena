@@ -26,6 +26,8 @@ import com.hp.hpl.jena.sparql.core.Prologue;
 import com.hp.hpl.jena.sparql.path.*;
 import com.hp.hpl.jena.sparql.sse.Item;
 import com.hp.hpl.jena.sparql.sse.SSE;
+import com.hp.hpl.jena.sparql.sse.builders.BuilderPath;
+import com.hp.hpl.jena.sparql.sse.writers.WriterPath;
 import com.hp.hpl.jena.sparql.util.Utils;
 import com.hp.hpl.jena.sparql.util.graph.GraphUtils;
 

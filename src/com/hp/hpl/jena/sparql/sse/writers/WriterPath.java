@@ -4,9 +4,11 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.path;
+package com.hp.hpl.jena.sparql.sse.writers;
 
 import com.hp.hpl.jena.sparql.core.Prologue;
+import com.hp.hpl.jena.sparql.path.*;
+import com.hp.hpl.jena.sparql.sse.Tags;
 import com.hp.hpl.jena.sparql.util.FmtUtils;
 import com.hp.hpl.jena.sparql.util.IndentedLineBuffer;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
@@ -47,13 +49,13 @@ public class WriterPath implements PathVisitor
     //@Override
     public void visit(P_Alt pathAlt)
     {
-        visit2(pathAlt, PathBase.tagAlt) ;
+        visit2(pathAlt, Tags.tagAlt) ;
     }
 
     //@Override
     public void visit(P_Seq pathSeq)
     {
-        visit2(pathSeq, PathBase.tagSeq) ;
+        visit2(pathSeq, Tags.tagSeq) ;
     }
 
     private void visit2(P_Path2 path2, String nodeName)
@@ -73,7 +75,7 @@ public class WriterPath implements PathVisitor
     public void visit(P_Mod pathMod)
     {
         out.print("(") ;
-        out.print(PathBase.tagMod) ;
+        out.print(Tags.tagMod) ;
         out.print(" ") ;
         out.print(Long.toString(pathMod.getMin())) ;
         out.print(" ") ;
@@ -88,7 +90,7 @@ public class WriterPath implements PathVisitor
     public void visit(P_Reverse reversePath)
     {
         out.print("(") ;
-        out.print(PathBase.tagReverse) ;
+        out.print(Tags.tagReverse) ;
         out.println() ;
         out.incIndent() ;
         reversePath.getSubPath().visit(this) ;

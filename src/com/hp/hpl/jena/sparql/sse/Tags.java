@@ -67,6 +67,12 @@ public class Tags
     static public final String symAssign        = ":=" ;
     static public final String tagSlice         = "slice" ;
     
+    // Paths
+    public static final String tagSeq           = "seq" ;
+    public static final String tagAlt           = "alt" ;
+    public static final String tagMod           = "mod" ;
+    public static final String tagReverse       = "reverse" ;
+    
     // Expressions
     // sym => swiggly thing, tag => word-ish thing
     

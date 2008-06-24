@@ -4,16 +4,16 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.path;
+package com.hp.hpl.jena.sparql.sse.builders;
 
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import com.hp.hpl.jena.sparql.path.*;
 import com.hp.hpl.jena.sparql.sse.Item;
 import com.hp.hpl.jena.sparql.sse.ItemList;
-import com.hp.hpl.jena.sparql.sse.builders.BuilderLib;
-import com.hp.hpl.jena.sparql.sse.builders.BuilderNode;
+import com.hp.hpl.jena.sparql.sse.Tags;
 
 public class BuilderPath
 {
@@ -27,10 +27,10 @@ public class BuilderPath
     
     private BuilderPath()
     {
-        dispatch.put(PathBase.tagSeq, buildSeq) ;
-        dispatch.put(PathBase.tagAlt, buildAlt) ;
-        dispatch.put(PathBase.tagMod, buildMod) ;
-        dispatch.put(PathBase.tagReverse, buildRev) ;
+        dispatch.put(Tags.tagSeq, buildSeq) ;
+        dispatch.put(Tags.tagAlt, buildAlt) ;
+        dispatch.put(Tags.tagMod, buildMod) ;
+        dispatch.put(Tags.tagReverse, buildRev) ;
     }
     
     private Path build(Item item)
