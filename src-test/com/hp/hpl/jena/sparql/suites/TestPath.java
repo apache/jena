@@ -14,24 +14,22 @@ import java.util.Set;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
-import com.hp.hpl.jena.util.iterator.SingletonIterator;
-
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
+import com.hp.hpl.jena.query.QueryParseException;
 import com.hp.hpl.jena.shared.PrefixMapping;
 import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
-
 import com.hp.hpl.jena.sparql.core.Prologue;
-import com.hp.hpl.jena.sparql.path.*;
+import com.hp.hpl.jena.sparql.path.Path;
+import com.hp.hpl.jena.sparql.path.PathEval;
+import com.hp.hpl.jena.sparql.path.PathParser;
 import com.hp.hpl.jena.sparql.sse.Item;
 import com.hp.hpl.jena.sparql.sse.SSE;
 import com.hp.hpl.jena.sparql.sse.builders.BuilderPath;
 import com.hp.hpl.jena.sparql.sse.writers.WriterPath;
 import com.hp.hpl.jena.sparql.util.Utils;
 import com.hp.hpl.jena.sparql.util.graph.GraphUtils;
-
-import com.hp.hpl.jena.query.QueryParseException;
 
 public class TestPath extends TestCase
 {
@@ -50,15 +48,23 @@ public class TestPath extends TestCase
     static Node n3 = Node.createURI("n3") ;
     static Node n4 = Node.createURI("n4") ;
     static Node p = Node.createURI("http://example/p") ;
+    static Node q = Node.createURI("http://example/q") ;
     static PrefixMapping pmap  = new PrefixMappingImpl() ;
     
     static {
         pmap.setNsPrefixes(PrefixMapping.Standard) ;
         pmap.setNsPrefix("", "http://example/") ;
         
+        // A linear path in the graph
         graph1.add(new Triple(n1, p, n2)) ;
         graph1.add(new Triple(n2, p, n3)) ;
         graph1.add(new Triple(n3, p, n4)) ;
+        
+        // A DAG
+        graph2.add(new Triple(n1, p, n2)) ;
+        graph2.add(new Triple(n1, p, n3)) ;
+        graph2.add(new Triple(n2, q, n4)) ;
+        graph2.add(new Triple(n3, q, n4)) ;
     }
     
     // ----
@@ -116,37 +122,36 @@ public class TestPath extends TestCase
         assertEquals(p, p2) ;
     }
 
-    public void testPath_01()           { test(graph1, n1, ":p", new Node[]{n2}) ; }
-
-    public void testPath_02()           { test(graph1, n1, ":p{0}", new Node[]{n1}) ; }
-
-    public void testPath_03()           { test(graph1, n1, ":p{1}", new Node[]{n2}) ; }
-
-    public void testPath_04()           { test(graph1, n1, ":p{2}", new Node[]{n3}) ; }
-
-    public void testPath_05()           { test(graph1, n1, ":p{0,1}", new Node[]{n1, n2}) ; }
-
-    public void testPath_06()           { test(graph1, n1, ":p{0,2}", new Node[]{n1,n2,n3}) ; }
-
-    public void testPath_07()           { test(graph1, n1, ":p{1,2}", new Node[]{n2, n3}) ; }
-
-    public void testPath_08()           { test(graph1, n1, ":p{9,9}", new Node[]{}) ; }
-
-    public void testPath_09()           { test(graph1, n1, ":p{0,9}", new Node[]{n1,n2,n3,n4}) ; }
-
-    public void testPath_10()           { test(graph1, n1, ":p*", new Node[]{n1,n2,n3,n4}) ; }
-
-    public void testPath_11()           { test(graph1, n1, ":p+", new Node[]{n2,n3,n4}) ; }
+    public void testPath_01()   { test(graph1, n1,   ":p",          new Node[]{n2}) ; }
+    public void testPath_02()   { test(graph1, n1,   ":p{0}",       new Node[]{n1}) ; }
+    public void testPath_03()   { test(graph1, n1,   ":p{1}",       new Node[]{n2}) ; }
+    public void testPath_04()   { test(graph1, n1,   ":p{2}",       new Node[]{n3}) ; }
+    public void testPath_05()   { test(graph1, n1,   ":p{0,1}",     new Node[]{n1, n2}) ; }
+    public void testPath_06()   { test(graph1, n1,   ":p{0,2}",     new Node[]{n1,n2,n3}) ; }
+    public void testPath_07()   { test(graph1, n1,   ":p{1,2}",     new Node[]{n2, n3}) ; }
+    public void testPath_08()   { test(graph1, n1,   ":p{9,9}",     new Node[]{}) ; }
+    public void testPath_09()   { test(graph1, n1,   ":p{0,9}",     new Node[]{n1,n2,n3,n4}) ; }
+    public void testPath_10()   { test(graph1, n1,   ":p*",         new Node[]{n1,n2,n3,n4}) ; }
+    public void testPath_11()   { test(graph1, n1,   ":p+",         new Node[]{n2,n3,n4}) ; }
+    public void testPath_12()   { test(graph1, n1,   ":p?",         new Node[]{n1,n2}) ; }
+    public void testPath_13()   { test(graph1, n1,   ":p/:p",       new Node[]{n3}) ; }
+    public void testPath_14()   { test(graph1, n2,   "^:p",         new Node[]{n1}) ; }
+    public void testPath_15()   { test(graph1, n2,   "^:p^:p",      new Node[]{}) ; }
+    public void testPath_16()   { test(graph1, n4,   "^:p^:p",      new Node[]{n2}) ; }
+    public void testPath_17()   { test(graph1, n4,   "^(:p/:p)",    new Node[]{n2}) ; }
+    public void testPath_18()   { test(graph1, n2,   "^:p/:p",      new Node[]{n2}) ; }
     
-    public void testPath_12()           { test(graph1, n1, ":p?", new Node[]{n1,n2}) ; }
-    
-    public void testPath_13()           { test(graph1, n1, ":p/:p", new Node[]{n3}) ; }
+
+    public void testPath_20()   { test(graph2, n1,   ":p",          new Node[]{n2,n3}) ; }
+    public void testPath_21()   { test(graph2, n1,   ":p/:q",       new Node[]{n4}) ; }
+    public void testPath_22()   { test(graph2, n2,   "^:p|:q",      new Node[]{n1,n4}) ; }
+    public void testPath_23()   { test(graph2, n2,   "^(:p|^:q)*",  new Node[]{n1,n2,n4}) ; }
 
     // ----
     private static void test(Graph graph, Node start, String string, Node[] expectedNodes)
     {
         Path p = PathParser.parse(string, pmap) ;
-        Iterator resultsIter = PathEval.eval(graph, new SingletonIterator(start), p) ;
+        Iterator resultsIter = PathEval.eval(graph, start, p) ;
         Set results = new HashSet() ;
         for ( ; resultsIter.hasNext() ; )
             results.add( (Node)resultsIter.next() ) ;

@@ -6,64 +6,89 @@
 
 package com.hp.hpl.jena.sparql.path;
 
-import java.util.*;
-
-import com.hp.hpl.jena.util.iterator.Map1;
-import com.hp.hpl.jena.util.iterator.Map1Iterator;
-import com.hp.hpl.jena.util.iterator.SingletonIterator;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
-
-import com.hp.hpl.jena.sparql.ARQNotImplemented;
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.NodeIterator;
+import com.hp.hpl.jena.rdf.model.RDFNode;
+import com.hp.hpl.jena.util.iterator.Map1;
+import com.hp.hpl.jena.util.iterator.Map1Iterator;
 
 public class PathEval
 {
+    // Possible API usages.
+    static public NodeIterator walkForward(Model model, RDFNode rdfNode, Path path)
+    {
+        //Iterator iter = eval(model.getGraph(), new SinglerdfNode)
+        return null ;
+    }
+    
     // LinkedHashSet for predictable order - remove later??
     
-    static public Iterator eval(Graph g, Iterator input, Path p) 
+    static public Iterator eval(Graph graph, Node node, Path path)
+    { return eval(graph, node, path, true) ; }
+    
+    static public Iterator eval(Graph graph, Iterator input, Path path)
+    { return eval(graph, input, path, true) ; }
+    
+
+    static public Iterator evalReverse(Graph g, Node node, Path path) 
+    { return eval(g, node, path, false) ; }
+
+    static public Iterator evalReverse(Graph g, Iterator input, Path path) 
+    { return eval(g, input, path, false) ; }
+    
+    static private Iterator eval(Graph graph, Node node, Path path, boolean forward)
+    {
+        //return eval(graph, new SingletonIterator(node), path) ;
+        // Avoid the singleton creation.
+        Set acc = new LinkedHashSet() ;
+        eval(graph, node, path, forward, acc);
+        return acc.iterator() ;
+    }
+    
+    static private Iterator eval(Graph graph, Iterator input, Path path, boolean forward) 
     {
         Set acc = new LinkedHashSet() ;
         
         for ( ; input.hasNext() ; )
         {
-            Node n = (Node)input.next() ;
-            PathEvaluator evaluator = new PathEvaluator(g, n, acc) ;
-            // Fills "acc" with nodes found.
-            p.visit(evaluator) ;
+            Node node = (Node)input.next() ;
+            eval(graph, node, path, forward, acc) ;
         }
         return acc.iterator() ;
     }
     
-    // Solve from object.
-    static public Iterator evalReverse(Graph g, Iterator input, Path p) 
+    // ---- Worker ??
+    static private void eval(Graph graph, Node node, Path p, boolean forward, Collection acc)
     {
-        return eval(g, input, new P_Reverse(p)) ;
+        PathEvaluator evaluator = new PathEvaluator(graph, node, acc, forward) ;
+        p.visit(evaluator) ;
     }
+    // ----
     
-    static class PathEvaluator implements PathVisitor
+    private static class PathEvaluator implements PathVisitor
     {
 
-        private Graph graph ;
-        private Node node ;
-        private Set output ;
+        private final Graph graph ;
+        private final Node node ;
+        private final Collection output ;
+        private boolean forwardMode ; 
 
-        public PathEvaluator(Graph g, Node n, Set output)
+        public PathEvaluator(Graph g, Node n, Collection output, boolean forward)
         {
             this.graph = g ; 
             this.node = n ;
             this.output = output ;
+            this.forwardMode = forward ;
         }
 
-        private void fill(Iterator iter)
-        {
-            for ( ; iter.hasNext() ; )
-                output.add(iter.next()) ;
-        }
-        
-       
-        
         //@Override
         public void visit(P_Link pathNode)
         {
@@ -73,32 +98,20 @@ public class PathEval
 
         public void visit(P_Reverse reversePath)
         {
-            throw new ARQNotImplemented("eval P_Reverse") ;
+            //boolean b = forwardMode ;
+            // Flip direction and eveluate
+            forwardMode = ! forwardMode ;
+            reversePath.getSubPath().visit(this) ;
+            forwardMode = ! forwardMode ;
         }
 
-        private static Map1 selectObject = new Map1()
-        {
-            //@Override
-            public Object map1(Object triple)
-            {
-                return ((Triple)triple).getObject() ;
-            }
-        } ;
-        
-        private final Iterator doOne(Node property)
-        {
-            Iterator iter = graph.find(node, property, Node.ANY) ;
-            Map1Iterator iter2 = new Map1Iterator(selectObject, iter) ;
-            return iter2 ;
-        }
-        
         //@Override
         public void visit(P_Alt pathAlt)
         {
             // Try both sizes, accumulate into output.
-            Iterator iter = eval(graph, new SingletonIterator(node), pathAlt.getLeft()) ;
+            Iterator iter = eval(graph, node, pathAlt.getLeft(), forwardMode) ;
             fill(iter) ;
-            iter = eval(graph, new SingletonIterator(node), pathAlt.getRight()) ;
+            iter = eval(graph, node, pathAlt.getRight(), forwardMode) ;
             fill(iter) ;
         }
 
@@ -106,8 +119,8 @@ public class PathEval
         public void visit(P_Seq pathSeq)
         {
             // Feed one side into the other
-            Iterator iter = eval(graph, new SingletonIterator(node), pathSeq.getLeft()) ;
-            iter = eval(graph, iter, pathSeq.getRight()) ;
+            Iterator iter = eval(graph, node, pathSeq.getLeft(), forwardMode) ;
+            iter = eval(graph, iter, pathSeq.getRight(), forwardMode) ;
             // ConcurrentModificationException possible because P_Seq (etc) uses delayed iterators over output.??
             fill(iter) ;
         }
@@ -135,7 +148,7 @@ public class PathEval
                 return ;
             
             // One step.
-            Iterator iter = eval(graph, new SingletonIterator(node), pathMod.getSubPath()) ;
+            Iterator iter = eval(graph, node, pathMod.getSubPath(), forwardMode) ;
 
             // The next step
             long min2 = dec(pathMod.getMin()) ;
@@ -147,28 +160,66 @@ public class PathEval
 //            System.out.println(x) ;
 //            iter = x.iterator() ;
             
-            // Move on one step - now go again.
+            // Moved on one step - now go and do it again on a new path
             
             for ( ; iter.hasNext() ; )
             {
                 Node n2 = (Node)iter.next() ;
-                Iterator iter2 = eval(graph, new SingletonIterator(n2), nextPath) ;
+                Iterator iter2 = eval(graph, n2, nextPath, forwardMode) ;
                 fill(iter2) ;
             }
             // If no matches, will not call eval and we drop out.
         }
         
+        private void fill(Iterator iter)
+        {
+            for ( ; iter.hasNext() ; )
+                output.add(iter.next()) ;
+        }
+
+        private static Map1 selectObject = new Map1()
+        {
+            public Object map1(Object triple)
+            { return ((Triple)triple).getObject() ; }
+        } ;
+
+        private static Map1 selectSubject = new Map1()
+        {
+            public Object map1(Object triple)
+            {
+                return ((Triple)triple).getSubject() ;
+            }
+        } ;
+        
+        private final Iterator doOne(Node property)
+        {
+            Map1Iterator iter2 = null ;
+            if ( forwardMode )
+            {
+                Iterator iter1 = graph.find(node, property, Node.ANY) ;
+                iter2 = new Map1Iterator(selectObject, iter1) ;
+            }
+            else
+            {
+                Iterator iter1 = graph.find(Node.ANY, property, node) ;
+                iter2 = new Map1Iterator(selectSubject, iter1) ;
+            }
+            
+            return iter2 ;
+        }
+
         private static long dec(long x) { return (x<=0) ? x : x-1 ; }
 
         private void doOneOrMore(Path path)
         {
             // Do one, then do zero or more for each result.
-            Iterator iter1 = eval(graph, new SingletonIterator(node), path) ;
+            Iterator iter1 = eval(graph, node, path, forwardMode) ;  // ORDER
+            // Do zero or more.
             Set visited = new LinkedHashSet() ;
             for ( ; iter1.hasNext() ; )
             {
                 Node n1 = (Node)iter1.next();
-                closure(graph, n1, path, visited) ;
+                closure(graph, n1, path, visited, forwardMode) ;
             }
             output.addAll(visited) ;
         }
@@ -176,22 +227,19 @@ public class PathEval
         private void doZeroOrMore(Path path)
         {
             Set visited = new LinkedHashSet() ;
-            //List visited = new ArrayList() ;
-            
-            closure(graph, node, path, visited) ;
-            // result is visited
+            closure(graph, node, path, visited, forwardMode) ;
             output.addAll(visited) ;
         }
 
-        private static void closure(Graph graph, Node n, Path path, Collection visited)
+        private static void closure(Graph graph, Node node, Path path, Collection visited, boolean forward)
         {
-            if ( visited.contains(n) ) return ;
-            visited.add(n) ;
-            Iterator iter = eval(graph, new SingletonIterator(n), path) ;
+            if ( visited.contains(node) ) return ;
+            visited.add(node) ;
+            Iterator iter = eval(graph, node, path, forward) ;
             for ( ; iter.hasNext() ; )
             {
                 Node n2 = (Node)iter.next() ;
-                closure(graph, n2, path, visited) ;
+                closure(graph, n2, path, visited, forward) ;
             }
         }
     }
