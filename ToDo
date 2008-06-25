@@ -6,6 +6,7 @@
 3/ OpStage ==> OpSeq
 4/ (ref) SimpleEvaluator OpPath [Sequencing]
 5/ (main) OpCompiler OpPath
+6/ BFI allnodes evaluation of a path.
 0/ Path tests (scripted)
 
 ** Stricter rules for property functions - must bind all variables => can do FILTER migration across them.
