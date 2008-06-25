@@ -21,6 +21,7 @@ import com.hp.hpl.jena.sparql.algebra.Table;
 import com.hp.hpl.jena.sparql.algebra.op.*;
 import com.hp.hpl.jena.sparql.core.BasicPattern;
 import com.hp.hpl.jena.sparql.core.Quad;
+import com.hp.hpl.jena.sparql.core.TriplePath;
 import com.hp.hpl.jena.sparql.core.VarExprList;
 import com.hp.hpl.jena.sparql.expr.E_Aggregator;
 import com.hp.hpl.jena.sparql.expr.Expr;
@@ -51,6 +52,7 @@ public class BuilderOp
     {
         dispatch.put(Tags.tagBGP, buildBGP) ;
         dispatch.put(Tags.tagQuadPattern, buildQuadPattern) ;
+        dispatch.put(Tags.tagTriplePath, buildTriplePath) ;
         dispatch.put(Tags.tagFilter, buildFilter) ;
         dispatch.put(Tags.tagGraph, buildGraph) ;
         dispatch.put(Tags.tagService, buildService) ;
@@ -185,6 +187,13 @@ public class BuilderOp
         }
     } ;
 
+    final protected Build buildTriplePath = new Build(){
+        public Op make(ItemList list)
+        {
+            TriplePath tp = BuilderPath.buildTriplePath(list) ;
+            return new OpPath(tp) ;
+        }} ;
+    
     final protected Build buildFilter = new Build()
     {
         public Op make(ItemList list)

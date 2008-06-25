@@ -9,6 +9,7 @@ package com.hp.hpl.jena.sparql.algebra.op;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.OpVisitor;
 import com.hp.hpl.jena.sparql.algebra.Transform;
+import com.hp.hpl.jena.sparql.sse.Tags;
 import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 
 public class OpList extends OpModifier
@@ -22,7 +23,7 @@ public class OpList extends OpModifier
     public void visit(OpVisitor opVisitor)
     { opVisitor.visit(this) ; }
 
-    public String getName() { return "tolist" ; }
+    public String getName() { return Tags.tagToList ; }
 
     public Op apply(Transform transform, Op subOp) 
     { return transform.transform(this, subOp) ; }

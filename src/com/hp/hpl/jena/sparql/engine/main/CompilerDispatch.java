@@ -8,6 +8,7 @@ package com.hp.hpl.jena.sparql.engine.main;
 
 import java.util.Stack;
 
+import com.hp.hpl.jena.sparql.ARQNotImplemented;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.OpVisitor;
 import com.hp.hpl.jena.sparql.algebra.op.*;
@@ -50,6 +51,14 @@ class CompilerDispatch implements OpVisitor
         QueryIterator input = pop() ;
         QueryIterator qIter = opCompiler.compile(quadPattern, input) ;
         push(qIter) ;
+    }
+
+    public void visit(OpPath opPath)
+    {
+        QueryIterator input = pop() ;
+        QueryIterator qIter = opCompiler.compile(opPath, input) ;
+        push(qIter) ;
+        throw new ARQNotImplemented("compiler distahc OpPath") ;
     }
 
     public void visit(OpProcedure opProc)

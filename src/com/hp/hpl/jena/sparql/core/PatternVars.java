@@ -33,7 +33,7 @@ public class PatternVars
 
         public void visit(ElementTriplesBlock el)
         {
-            for (Iterator iter = el.triples() ; iter.hasNext() ; )
+            for (Iterator iter = el.patternElts() ; iter.hasNext() ; )
             {
                 Triple t = (Triple)iter.next() ;
                 VarUtils.addVarsFromTriple(acc, t) ;

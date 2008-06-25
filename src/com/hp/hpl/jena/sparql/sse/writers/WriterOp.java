@@ -20,10 +20,7 @@ import com.hp.hpl.jena.sparql.algebra.OpPrefixesUsed;
 import com.hp.hpl.jena.sparql.algebra.OpVisitor;
 import com.hp.hpl.jena.sparql.algebra.op.*;
 import com.hp.hpl.jena.sparql.algebra.table.TableUnit;
-import com.hp.hpl.jena.sparql.core.Prologue;
-import com.hp.hpl.jena.sparql.core.Quad;
-import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.sparql.core.VarExprList;
+import com.hp.hpl.jena.sparql.core.*;
 import com.hp.hpl.jena.sparql.expr.E_Aggregator;
 import com.hp.hpl.jena.sparql.expr.Expr;
 import com.hp.hpl.jena.sparql.expr.ExprList;
@@ -169,6 +166,13 @@ public class WriterOp
             finish(opBGP) ;
         }
         
+        public void visit(OpPath opPath)
+        {
+            //start(opPath, NoNL) ;
+            formatTripePath(opPath.getTriplePath()) ;
+            //finish(opPath) ;
+        }
+
         public void visit(OpProcedure opProc)
         {
             start(opProc, NoNL) ;
@@ -490,6 +494,9 @@ public class WriterOp
         
         private void formatQuad(Quad qp)
         { WriterNode.output(out, qp, sContext) ; }
+        
+        private void formatTripePath(TriplePath tp)
+        { WriterPath.output(out, tp, sContext) ; }
     }
 }
 

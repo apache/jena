@@ -14,19 +14,31 @@ import java.util.Set;
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
+
+import com.hp.hpl.jena.sparql.util.ModelUtils;
+
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.NodeIterator;
 import com.hp.hpl.jena.rdf.model.RDFNode;
+import com.hp.hpl.jena.rdf.model.impl.NodeIteratorImpl;
+
 import com.hp.hpl.jena.util.iterator.Map1;
 import com.hp.hpl.jena.util.iterator.Map1Iterator;
 
 public class PathEval
 {
     // Possible API usages.
-    static public NodeIterator walkForward(Model model, RDFNode rdfNode, Path path)
+    static public NodeIterator walkForward(final Model model, RDFNode rdfNode, Path path)
     {
-        //Iterator iter = eval(model.getGraph(), new SinglerdfNode)
-        return null ;
+        Iterator iter = eval(model.getGraph(), rdfNode.asNode(), path) ;
+        
+        Map1 conv = new Map1(){
+            public Object map1(Object obj)
+            {
+                return ModelUtils.convertGraphNodeToRDFNode((Node)obj, model) ;
+            }} ;
+        
+        return new NodeIteratorImpl(new Map1Iterator(conv, iter), null) ;
     }
     
     // LinkedHashSet for predictable order - remove later??

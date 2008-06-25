@@ -7,7 +7,9 @@
 package com.hp.hpl.jena.sparql.sse.writers;
 
 import com.hp.hpl.jena.sparql.core.Prologue;
+import com.hp.hpl.jena.sparql.core.TriplePath;
 import com.hp.hpl.jena.sparql.path.*;
+import com.hp.hpl.jena.sparql.serializer.SerializationContext;
 import com.hp.hpl.jena.sparql.sse.Tags;
 import com.hp.hpl.jena.sparql.util.FmtUtils;
 import com.hp.hpl.jena.sparql.util.IndentedLineBuffer;
@@ -16,12 +18,36 @@ import com.hp.hpl.jena.sparql.util.IndentedWriter;
 /** SSE Writer */
 public class WriterPath implements PathVisitor
 {
-
+    private static final int NL = WriterLib.NL ;
+    private static final int NoNL = WriterLib.NoNL ;
+    private static final int NoSP = WriterLib.NoSP ;
+    
     public static void write(Path path, Prologue prologue)
     {
-        WriterPath w = new WriterPath(IndentedWriter.stdout, prologue) ;
+        output(IndentedWriter.stdout, path, new SerializationContext(prologue)) ;
+    }
+    
+    public static void output(IndentedWriter out, Path path, SerializationContext naming)
+    {
+        WriterPath w = new WriterPath(out, naming.getPrologue()) ;
         path.visit(w) ;
         w.out.flush();
+    }
+    
+    public static void output(IndentedWriter out, TriplePath tp, SerializationContext naming)
+    {
+        WriterLib.start(out, Tags.tagTriplePath, NoNL) ;
+        outputPlain(out, tp, naming) ;
+        out.print(Tags.tagTriplePath) ;
+    }
+    
+    public static void outputPlain(IndentedWriter out, TriplePath tp, SerializationContext naming)
+    {
+        WriterNode.output(out, tp.getSubject(), naming) ;
+        out.print(" ") ;
+        WriterPath.output(out, tp.getPath(), naming) ;
+        out.print(" ") ;
+        WriterNode.output(out, tp.getObject(), naming) ;
     }
     
     public static String asString(Path path) { return asString(path, null) ; }
@@ -38,7 +64,11 @@ public class WriterPath implements PathVisitor
     private IndentedWriter out ;
     private Prologue prologue ;
 
-    WriterPath(IndentedWriter indentedWriter, Prologue prologue) { this.out = indentedWriter ; this.prologue = prologue ;}
+    WriterPath(IndentedWriter indentedWriter, Prologue prologue)
+    { 
+        this.out = indentedWriter ; 
+        this.prologue = prologue ;
+    }
     
     //@Override
     public void visit(P_Link pathNode)
@@ -49,13 +79,13 @@ public class WriterPath implements PathVisitor
     //@Override
     public void visit(P_Alt pathAlt)
     {
-        visit2(pathAlt, Tags.tagAlt) ;
+        visit2(pathAlt, Tags.tagPathAlt) ;
     }
 
     //@Override
     public void visit(P_Seq pathSeq)
     {
-        visit2(pathSeq, Tags.tagSeq) ;
+        visit2(pathSeq, Tags.tagPathSeq) ;
     }
 
     private void visit2(P_Path2 path2, String nodeName)
@@ -75,7 +105,7 @@ public class WriterPath implements PathVisitor
     public void visit(P_Mod pathMod)
     {
         out.print("(") ;
-        out.print(Tags.tagMod) ;
+        out.print(Tags.tagPathMod) ;
         out.print(" ") ;
         out.print(Long.toString(pathMod.getMin())) ;
         out.print(" ") ;
@@ -90,7 +120,7 @@ public class WriterPath implements PathVisitor
     public void visit(P_Reverse reversePath)
     {
         out.print("(") ;
-        out.print(Tags.tagReverse) ;
+        out.print(Tags.tagPathReverse) ;
         out.println() ;
         out.incIndent() ;
         reversePath.getSubPath().visit(this) ;

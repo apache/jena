@@ -10,6 +10,7 @@ import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.OpVisitor;
 import com.hp.hpl.jena.sparql.algebra.Transform;
 import com.hp.hpl.jena.sparql.core.BasicPattern;
+import com.hp.hpl.jena.sparql.sse.Tags;
 import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 
 public class OpBGP extends Op0
@@ -26,7 +27,7 @@ public class OpBGP extends Op0
     
     public BasicPattern getPattern()        { return pattern ; } 
     
-    public String getName()                 { return "BGP" ; }
+    public String getName()                 { return Tags.tagBGP.toUpperCase() ; }
     public Op apply(Transform transform)    { return transform.transform(this) ; } 
     public void visit(OpVisitor opVisitor)  { opVisitor.visit(this) ; }
     public Op copy()                        { return new OpBGP(pattern) ; }

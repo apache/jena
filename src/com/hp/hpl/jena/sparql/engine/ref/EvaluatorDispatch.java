@@ -59,6 +59,12 @@ public class EvaluatorDispatch implements OpVisitor
         push(Eval.evalQuadPattern(quadPattern, evaluator)) ;
     }
 
+    public void visit(OpPath opPath)
+    {
+        Table table = evaluator.pathPattern(opPath.getTriplePath()) ;
+        push(table) ;
+    }
+
     public void visit(OpProcedure opProc)
     {
         Table table = eval(opProc.getSubOp()) ;

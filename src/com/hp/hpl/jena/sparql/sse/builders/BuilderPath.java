@@ -10,6 +10,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import com.hp.hpl.jena.graph.Node;
+
+import com.hp.hpl.jena.sparql.core.TriplePath;
 import com.hp.hpl.jena.sparql.path.*;
 import com.hp.hpl.jena.sparql.sse.Item;
 import com.hp.hpl.jena.sparql.sse.ItemList;
@@ -22,15 +25,33 @@ public class BuilderPath
         BuilderPath bob = new BuilderPath() ;
         return bob.build(item) ;
     }
+    
+    public static TriplePath buildTriplePath(ItemList list)
+    {
+        if ( list.size() != 3 && list.size() != 4 )
+            BuilderLib.broken(list, "Not a triple path", list) ;
+        
+        if ( list.size() == 4 )
+        {
+            if ( ! list.get(0).isSymbol(Tags.tagTriplePath) )
+                BuilderLib.broken(list, "Not a triple path") ;
+            list = list.cdr() ;
+        }
+        
+        Node s = BuilderNode.buildNode(list.get(0)) ;
+        Path p = BuilderPath.buildPath(list.get(1)) ;
+        Node o = BuilderNode.buildNode(list.get(2)) ;
+        return new TriplePath(s, p, o) ; 
+    }
 
     protected Map dispatch = new HashMap() ;
     
     private BuilderPath()
     {
-        dispatch.put(Tags.tagSeq, buildSeq) ;
-        dispatch.put(Tags.tagAlt, buildAlt) ;
-        dispatch.put(Tags.tagMod, buildMod) ;
-        dispatch.put(Tags.tagReverse, buildRev) ;
+        dispatch.put(Tags.tagPathSeq, buildSeq) ;
+        dispatch.put(Tags.tagPathAlt, buildAlt) ;
+        dispatch.put(Tags.tagPathMod, buildMod) ;
+        dispatch.put(Tags.tagPathReverse, buildRev) ;
     }
     
     private Path build(Item item)

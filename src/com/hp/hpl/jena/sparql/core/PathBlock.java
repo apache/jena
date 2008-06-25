@@ -40,7 +40,6 @@ public class PathBlock
         List x = new ArrayList() ;
         reduce(x) ;
         return x ;
-        
     }
     
     public void reduce(List x)
@@ -72,9 +71,7 @@ public class PathBlock
             TriplePath tp1 = get(i) ;
             TriplePath tp2 = other.get(i) ;
             
-            if ( ! Utils.nodeIso(tp1.getSubject(), tp2.getSubject(), isoMap) ||
-                 ! Utils.nodeIso(tp1.getObject(), tp2.getObject(), isoMap) ||
-                 ! tp1.getPath().equalTo(tp2.getPath(), isoMap) )
+            if ( ! Utils.triplePathIso(tp1, tp2, isoMap) )
                 return false ;
         }
         return true ;

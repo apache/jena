@@ -1,61 +1,64 @@
 /*
- * (c) Copyright 2006, 2007, 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
 package com.hp.hpl.jena.sparql.algebra.op;
 
-import com.hp.hpl.jena.sparql.algebra.*;
-import com.hp.hpl.jena.sparql.algebra.table.TableUnit;
+import com.hp.hpl.jena.sparql.algebra.Op;
+import com.hp.hpl.jena.sparql.algebra.OpVisitor;
+import com.hp.hpl.jena.sparql.algebra.Transform;
+import com.hp.hpl.jena.sparql.core.TriplePath;
 import com.hp.hpl.jena.sparql.sse.Tags;
 import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
+import com.hp.hpl.jena.sparql.util.Utils;
 
-public class OpTable extends Op0
+public class OpPath extends Op0
 {
-    private Table table ;
-    public static OpTable unit()
-    { return new OpTable(TableFactory.createUnit()) ; }
-    
-    public static OpTable create(Table table)
-    // Check for Unit-ness?
-    { return new OpTable(table) ; }
-    
-    private OpTable(Table table) { this.table = table ; }
-    
-    public boolean isJoinIdentity()
-    { return (table instanceof TableUnit) ; }
-    // One row of no bindings.
-    
-    public Table getTable()
-    { return table ; }
-    
-    public String getName() { return Tags.tagTable ; }
-    
-    public void visit(OpVisitor opVisitor)
-    { opVisitor.visit(this) ; }
+    private TriplePath triplePath ;
 
-    public Op apply(Transform transform)
-    { return transform.transform(this) ; }
-
-    public Op copy()
-    { return new OpTable(table) ; }
-
-    public int hashCode()
-    { return table.hashCode() ; } 
-
-    public boolean equalTo(Op other, NodeIsomorphismMap labelMap)
+//    public OpPath(Node start, Path path, Node end)
+//    {
+//        this.subject = start ;
+//        this.path = path ;
+//        this.object = object ;
+//    }
+    
+    public OpPath(TriplePath triplePath)
     {
-        if ( ! ( other instanceof OpTable) ) return false ;
-        OpTable opTable = (OpTable)other ;
-        return table.equals(opTable.table) ;
+        this.triplePath = triplePath ;
     }
     
+    public TriplePath getTriplePath()   { return triplePath ; }
+
+    public String getName()     { return Tags.tagPath ; }
+
+    public Op apply(Transform transform)
+    //{ return transform.transform(this) ; }
+    { return null ; } 
+
+    public Op copy()    { return new OpPath(triplePath) ; }
+
+    public boolean equalTo(Op other, NodeIsomorphismMap isoMap)
+    {
+        if ( ! (other instanceof OpPath) ) return false ;
+        OpPath p = (OpPath)other ;
+        return  Utils.triplePathIso(triplePath, p.triplePath, isoMap) ;
+    }
+
+    public int hashCode()
+    {
+        return triplePath.hashCode() ;
+    }
+
+    public void visit(OpVisitor opVisitor)
+    { opVisitor.visit(this) ; }
 
 }
 
 /*
- * (c) Copyright 2006, 2007, 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

@@ -9,6 +9,7 @@ package com.hp.hpl.jena.sparql.algebra.op;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.OpVisitor;
 import com.hp.hpl.jena.sparql.algebra.Transform;
+import com.hp.hpl.jena.sparql.sse.Tags;
 import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 
 /** A "stage" is a join-like operation where it is know that the 
@@ -25,13 +26,17 @@ public class OpStage extends Op2
     
     public static Op create(Op left, Op right)
     { 
+        if ( left == null )
+            return right ;
+        if ( right == null )
+            return left ;
         // If left already an OpStage ... maybe?
         return new OpStage(left, right) ;
     }
     
     private OpStage(Op left, Op right) { super(left, right) ; }
     
-    public String getName() { return "stage" ; }
+    public String getName() { return Tags.tagStage ; }
 
     public Op apply(Transform transform, Op left, Op right)
     { return transform.transform(this, left, right) ; }

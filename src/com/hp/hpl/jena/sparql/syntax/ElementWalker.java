@@ -111,7 +111,7 @@ public class ElementWalker
             proc.visit(el) ;
         }
 
-        public void visit(ElementPath el)
+        public void visit(ElementPathBlock el)
         {
             proc.visit(el) ;
         }

@@ -14,12 +14,14 @@ import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 
 import com.hp.hpl.jena.sparql.core.BasicPattern;
+import com.hp.hpl.jena.sparql.core.PathBlock;
+import com.hp.hpl.jena.sparql.core.TriplePath;
 import com.hp.hpl.jena.sparql.expr.Expr;
 import com.hp.hpl.jena.sparql.path.PathWriter;
 import com.hp.hpl.jena.sparql.syntax.*;
 import com.hp.hpl.jena.sparql.util.IndentedLineBuffer;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
-;
+
 
 /**
  * @author Andy Seaborne
@@ -99,9 +101,29 @@ public class FormatterElement extends FormatterBase
             out.println("# Empty BGP") ;
             return ;
         }
-        formatTriples(el.getTriples()) ;
+        formatTriples(el.getPattern()) ;
     }
     
+    public void visit(ElementPathBlock el)
+    {
+        if ( el.isEmpty() )
+        {
+            out.println("# Empty BGP") ;
+            return ;
+        }
+        // Could be neater.
+        PathBlock pBlk = el.getPattern() ;
+        for ( Iterator iter = pBlk.iterator() ; iter.hasNext() ; )
+        {
+            TriplePath tp = (TriplePath)iter.next();
+            printSubject(tp.getSubject()) ;
+            out.print(" ") ;
+            PathWriter.write(out, tp.getPath(), context.getPrologue()) ;
+            out.print(" ") ;
+            printObject(tp.getObject()) ;
+        }
+    }
+
     public void visit(ElementDataset el)
     {
 //        if ( el.getDataset() != null)
@@ -343,17 +365,6 @@ public class FormatterElement extends FormatterBase
         out.print("}") ;
     }
 
-    public void visit(ElementPath el)
-    {
-        printSubject(el.getSubject()) ;
-        out.print(" ") ;
-        PathWriter.write(out, el.getPath(), context.getPrologue()) ;
-        out.print(" ") ;
-        printObject(el.getObject()) ;
-    }
-
-    // Visit an element, ensuring it is always surround by {} as a group.
-    
     public void visitAsGroup(Element el)
     {
         boolean needBraces = ! ( ( el instanceof ElementGroup ) || ( el instanceof ElementSubQuery ) ) ; 

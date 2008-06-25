@@ -12,10 +12,13 @@ import java.util.List;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.query.ResultSet;
 import com.hp.hpl.jena.query.ResultSetFormatter;
+
+import com.hp.hpl.jena.sparql.ARQNotImplemented;
 import com.hp.hpl.jena.sparql.algebra.Table;
 import com.hp.hpl.jena.sparql.algebra.TableFactory;
 import com.hp.hpl.jena.sparql.algebra.table.TableN;
 import com.hp.hpl.jena.sparql.core.BasicPattern;
+import com.hp.hpl.jena.sparql.core.TriplePath;
 import com.hp.hpl.jena.sparql.core.VarExprList;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
@@ -48,6 +51,12 @@ public class EvaluatorSimple implements Evaluator
     {
         QueryIterator qIter = StageBuilder.compile(pattern, QueryIterRoot.create(execCxt), execCxt) ;
         return TableFactory.create(qIter) ;
+    }
+
+    public Table pathPattern(TriplePath triplePath)
+    {
+        // Tricky - unbound subjects.
+        throw new ARQNotImplemented("EvaluatorSimple TriplePath") ;
     }
 
     public Table procedure(Table table, Node procId, ExprList args)

@@ -115,6 +115,11 @@ public class OpCompiler
         throw new ARQNotImplemented("compile/OpQuadPattern") ;
     }
 
+    public QueryIterator compile(OpPath opPath, QueryIterator input)
+    {
+        throw new ARQNotImplemented("compile/OpPath") ;
+    }
+
     public QueryIterator compile(OpProcedure opProc, QueryIterator input)
     {
         Procedure procedure = ProcEval.build(opProc, execCxt) ;

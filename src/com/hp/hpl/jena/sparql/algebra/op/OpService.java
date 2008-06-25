@@ -11,6 +11,7 @@ import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.OpVisitor;
 import com.hp.hpl.jena.sparql.algebra.Transform;
+import com.hp.hpl.jena.sparql.sse.Tags;
 import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 
 public class OpService extends Op1
@@ -25,7 +26,7 @@ public class OpService extends Op1
     public Op apply(Transform transform, Op subOp)  { return transform.transform(this, subOp) ; }
 
     public Op copy(Op newOp)                    { return new OpService(serviceNode, newOp) ; }
-    public String getName()                     { return "service" ; }
+    public String getName()                     { return Tags.tagService ; }
     public void visit(OpVisitor opVisitor)      { opVisitor.visit(this) ; }
     public Node getService()                    { return serviceNode ;  }
 

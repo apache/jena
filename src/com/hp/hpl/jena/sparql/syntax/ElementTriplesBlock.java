@@ -35,8 +35,8 @@ public class ElementTriplesBlock extends Element implements TripleCollector
     public void addTriple(int index, Triple t)
     { pattern.add(index, t) ; }
     
-    public BasicPattern getTriples() { return pattern ; }
-    public Iterator triples() { return pattern.iterator(); }
+    public BasicPattern getPattern() { return pattern ; }
+    public Iterator patternElts() { return pattern.iterator(); }
     
     //@Override
     public int hashCode()
@@ -49,13 +49,9 @@ public class ElementTriplesBlock extends Element implements TripleCollector
     //@Override
     public boolean equalTo(Element el2, NodeIsomorphismMap isoMap)
     {
-        if ( el2 == null ) return false ;
-
         if ( ! ( el2 instanceof ElementTriplesBlock) )
             return false ;
-        
         ElementTriplesBlock eg2 = (ElementTriplesBlock)el2 ;
-        
         return this.pattern.equiv(eg2.pattern, isoMap) ; 
     }
 

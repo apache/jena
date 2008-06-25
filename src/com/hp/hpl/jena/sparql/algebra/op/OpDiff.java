@@ -9,6 +9,7 @@ package com.hp.hpl.jena.sparql.algebra.op;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.OpVisitor;
 import com.hp.hpl.jena.sparql.algebra.Transform;
+import com.hp.hpl.jena.sparql.sse.Tags;
 import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 
 public class OpDiff extends Op2
@@ -20,7 +21,7 @@ public class OpDiff extends Op2
     
     private OpDiff(Op left, Op right) { super(left, right) ; }
     
-    public String getName() { return "diff" ; }
+    public String getName() { return Tags.tagDiff ; }
 
     public Op apply(Transform transform, Op left, Op right)
     { return transform.transform(this, left, right) ; }

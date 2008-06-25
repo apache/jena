@@ -11,6 +11,7 @@ import java.util.List;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.OpVisitor;
 import com.hp.hpl.jena.sparql.algebra.Transform;
+import com.hp.hpl.jena.sparql.sse.Tags;
 import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 
 public class OpOrder extends OpModifier
@@ -24,7 +25,7 @@ public class OpOrder extends OpModifier
     
     public List getConditions() { return conditions ; }
     
-    public String getName()                 { return "order" ; }
+    public String getName()                 { return Tags.tagOrderBy ; }
     public void visit(OpVisitor opVisitor)  { opVisitor.visit(this) ; }
     public Op copy(Op subOp)                { return new OpOrder(subOp, conditions) ; }
 

@@ -6,47 +6,54 @@
 
 package com.hp.hpl.jena.sparql.syntax;
 
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.sparql.path.Path;
+import com.hp.hpl.jena.sparql.core.PathBlock;
+import com.hp.hpl.jena.sparql.core.TriplePath;
 import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 
-public class ElementPath extends Element
+/** A SPARQL BasicGraphPattern
+ * 
+ * @author Andy Seaborne
+ */
+
+public class ElementPathBlock extends Element //implements TripleCollector
 {
-    
-    private Path path ;
-    private Node subject ;
-    private Node object ;
+    private PathBlock pattern = new PathBlock() ; 
 
-    public ElementPath(Node subject, Path path, Node object)
-    {
-        this.subject = subject ; 
-        this.path = path ;
-        this.object = object ;
+    public ElementPathBlock()
+    {  }
+
+    public boolean isEmpty() { return pattern.isEmpty() ; }
+    
+    public void addTriple(TriplePath tp)
+    { pattern.add(tp) ; }
+    
+    public int mark() { return pattern.size() ; }
+    
+    public void addTriple(int index, TriplePath t)
+    { pattern.add(index, t) ; }
+    
+    public PathBlock getPattern() { return pattern ; }
+    //public Iterator patternElts() { return pattern.iterator(); }
+    
+    //@Override
+    public int hashCode()
+    { 
+        int calcHashCode = Element.HashBasicGraphPattern ;
+        calcHashCode ^=  pattern.hashCode() ; 
+        return calcHashCode ;
     }
-    
-    public Path getPath () { return path ; }
-    
-    public Node getSubject () { return subject ; }
-    public Node getObject ()  { return object ; }
-    
 
+    //@Override
     public boolean equalTo(Element el2, NodeIsomorphismMap isoMap)
     {
-        if ( ! ( el2 instanceof ElementPath ) ) return false ;
-        ElementPath other =(ElementPath)el2 ;      
-        return this.path.equalTo(other.path, isoMap) ;
+        if ( ! ( el2 instanceof ElementPathBlock) )
+            return false ;
+        ElementPathBlock eg2 = (ElementPathBlock)el2 ;
+        return this.pattern.equiv(eg2.pattern, isoMap) ; 
     }
 
-    public int hashCode()
-    {
-        return path.hashCode() ^ HashPath ;
-    }
-
-    public void visit(ElementVisitor v)
-    { v.visit(this) ; }
-    
+    public void visit(ElementVisitor v) { v.visit(this) ; }
 }
-
 /*
  * (c) Copyright 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.

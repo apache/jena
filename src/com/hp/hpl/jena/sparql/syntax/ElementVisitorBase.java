@@ -34,7 +34,7 @@ public class ElementVisitorBase implements ElementVisitor
 
     public void visit(ElementSubQuery el)           { }
 
-    public void visit(ElementPath el)               { }
+    public void visit(ElementPathBlock el)               { }
 }
 
 /*

@@ -10,6 +10,7 @@ import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.OpVisitor;
 import com.hp.hpl.jena.sparql.algebra.Transform;
+import com.hp.hpl.jena.sparql.sse.Tags;
 import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 
 public class OpGraph extends Op1
@@ -25,7 +26,7 @@ public class OpGraph extends Op1
     
     public Node getNode() { return node ; }
     
-    public String getName()                         { return "graph" ; }
+    public String getName()                         { return Tags.tagGraph ; }
 
     public Op apply(Transform transform, Op op)     { return transform.transform(this, op) ; } 
     public void visit(OpVisitor opVisitor)          { opVisitor.visit(this) ; }

@@ -9,6 +9,7 @@ package com.hp.hpl.jena.sparql.algebra.op;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.OpVisitor;
 import com.hp.hpl.jena.sparql.algebra.Transform;
+import com.hp.hpl.jena.sparql.sse.Tags;
 import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 
 public class OpDistinct extends OpModifier
@@ -19,7 +20,7 @@ public class OpDistinct extends OpModifier
     public Op apply(Transform transform, Op subOp)
     { return transform.transform(this, subOp) ; }
 
-    public String getName()                 { return "distinct" ; }
+    public String getName()                 { return Tags.tagDistinct ; }
 
     public void visit(OpVisitor opVisitor)  { opVisitor.visit(this) ; }
     public Op copy(Op subOp)                { return new OpDistinct(subOp) ; }

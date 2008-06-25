@@ -120,6 +120,9 @@ public class OpAsQuery
         public void visit(OpQuadPattern quadPattern)
         { throw new ARQNotImplemented("OpQuadPattern") ; }
 
+        public void visit(OpPath opPath)
+        { throw new ARQNotImplemented("OpPath") ; }
+
         public void visit(OpJoin opJoin)
         {
             // Keep things clearly separated.

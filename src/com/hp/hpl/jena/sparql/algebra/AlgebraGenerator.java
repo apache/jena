@@ -11,14 +11,17 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.graph.Triple;
+import com.hp.hpl.jena.shared.uuid.JenaUUID;
 
 import com.hp.hpl.jena.sparql.ARQInternalErrorException;
+import com.hp.hpl.jena.sparql.ARQNotImplemented;
 import com.hp.hpl.jena.sparql.algebra.op.*;
-import com.hp.hpl.jena.sparql.core.BasicPattern;
-import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.sparql.core.VarExprList;
+import com.hp.hpl.jena.sparql.core.*;
 import com.hp.hpl.jena.sparql.expr.Expr;
 import com.hp.hpl.jena.sparql.expr.ExprList;
+import com.hp.hpl.jena.sparql.path.PathLib;
+import com.hp.hpl.jena.sparql.path.PathPropertyFunction;
 import com.hp.hpl.jena.sparql.syntax.*;
 import com.hp.hpl.jena.sparql.util.ALog;
 import com.hp.hpl.jena.sparql.util.Context;
@@ -91,7 +94,10 @@ public class AlgebraGenerator
         // This is only here for queries built programmatically
         // (triple patterns not in a group) 
         if ( elt instanceof ElementTriplesBlock )
-            return compileBasicPattern(((ElementTriplesBlock)elt).getTriples()) ;
+            return compileBasicPattern(((ElementTriplesBlock)elt).getPattern()) ;
+        
+        if ( elt instanceof ElementPathBlock )
+            return compilePathBlock(((ElementPathBlock)elt).getPattern()) ;
 
         if ( elt instanceof ElementSubQuery )
             return compileElementSubquery((ElementSubQuery)elt) ; 
@@ -208,7 +214,7 @@ public class AlgebraGenerator
                 // Merge because they were adjacent in a group
                 // in syntax, so it must have been BGP, Filter, BGP.
                 // Or someone constructed a non-serializable query. 
-                prev.addAll(etb.getTriples()) ;
+                prev.addAll(etb.getPattern()) ;
                 continue ;
             }
 
@@ -216,8 +222,8 @@ public class AlgebraGenerator
             // Copy - so that any later mergings do not change the original query. 
 
             ElementTriplesBlock etb2 = new ElementTriplesBlock() ;
-            etb2.getTriples().addAll(etb.getTriples()) ;
-            prev = etb2.getTriples() ;
+            etb2.getPattern().addAll(etb.getPattern()) ;
+            prev = etb2.getPattern() ;
             groupElts.add(etb2) ;
         }
         return groupElts ;
@@ -229,7 +235,7 @@ public class AlgebraGenerator
         if ( elt instanceof ElementTriplesBlock )
         {
             ElementTriplesBlock etb = (ElementTriplesBlock)elt ;
-            Op op =  compileBasicPattern(etb.getTriples()) ;
+            Op op =  compileBasicPattern(etb.getPattern()) ;
 
             return join(current, op) ;
         }
@@ -312,6 +318,56 @@ public class AlgebraGenerator
         return new OpBGP(pattern) ;
     }
     
+    private Op compilePathBlock(PathBlock pattern)
+    {
+        if ( true ) throw new ARQNotImplemented("compilePathBlock") ;
+        List x = pattern.reduce() ;
+        
+        BasicPattern bp = null ;
+        Op op = OpTable.unit() ;
+        
+        for ( Iterator iter = x.iterator() ; iter.hasNext() ; )
+        {
+            Object obj = iter.next();
+            
+            if ( obj instanceof Triple )
+            {
+                if ( bp == null )
+                {
+                    bp = new BasicPattern() ;
+                    op = OpStage.create(op, new OpBGP(bp)) ;
+                }
+                bp.add((Triple)obj) ;
+                continue ;
+            }
+            
+            if ( obj instanceof TriplePath )
+            {
+                // This is tacky.  Better to have a OpPath. 
+                
+                TriplePath tp = (TriplePath)obj ;
+                // Clear the basic pattern accumulator.
+                // bp = null ;
+                PathPropertyFunction pff = new PathPropertyFunction(tp.getPath()) ;
+//                PropFuncArg sArg = new PropFuncArg(tp.getSubject()) ;
+//                PropFuncArg oArg = new PropFuncArg(tp.getObject()) ;
+                
+                if ( bp == null )
+                {
+                    bp = new BasicPattern() ;
+                    op = OpStage.create(op, new OpBGP(bp)) ;
+                }
+                String uri = JenaUUID.generate().asURI() ;
+                PathLib.install(uri, tp.getPath()) ;
+                bp.add(new Triple(tp.getSubject(), Node.createURI(uri), tp.getObject())) ;
+                continue ;
+            }
+            
+            throw new ARQInternalErrorException("Unexpected item in PathBlock: ["+Utils.className(obj)+"] "+obj) ;
+        }
+        return op ;
+    }
+
     protected Op compileElementGraph(ElementNamedGraph eltGraph)
     {
         Node graphNode = eltGraph.getGraphNameNode() ;

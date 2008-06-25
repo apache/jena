@@ -76,8 +76,8 @@ public class RecursiveElementVisitor implements ElementVisitor
     public void endElement(ElementSubQuery el)      {}
     public void startElement(ElementSubQuery el)    {}
 
-    public void endElement(ElementPath el)      {}
-    public void startElement(ElementPath el)    {}
+    public void endElement(ElementPathBlock el)      {}
+    public void startElement(ElementPathBlock el)    {}
 
     protected ElementVisitor visitor = null ;
     
@@ -172,7 +172,7 @@ public class RecursiveElementVisitor implements ElementVisitor
         startElement(el) ;
         endElement(el) ;
     }
-    public void visit(ElementPath el)
+    public void visit(ElementPathBlock el)
     {
         startElement(el) ;
         endElement(el) ;

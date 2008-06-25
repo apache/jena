@@ -29,6 +29,7 @@ public class Tags
     static public final String tagLoad          = "graph@" ;
     static public final String tagTriple        = "triple" ;
     static public final String tagQuad          = "quad" ;
+    static public final String tagTriplePath    = "path" ;
     
     static public final String tagBase          = "base" ;
     static public final String tagPrefix        = "prefix" ;
@@ -45,7 +46,6 @@ public class Tags
     // SPARQL algebra
     static public final String tagBGP           = "bgp" ;
     static public final String tagQuadPattern   = "quadpattern" ;
-
     static public final String tagFilter        = "filter" ;
     // static public final String tagGraph = "graph" ;
     static public final String tagService       = "service" ;
@@ -68,10 +68,11 @@ public class Tags
     static public final String tagSlice         = "slice" ;
     
     // Paths
-    public static final String tagSeq           = "seq" ;
-    public static final String tagAlt           = "alt" ;
-    public static final String tagMod           = "mod" ;
-    public static final String tagReverse       = "reverse" ;
+    static public final String tagPath          = "path" ;
+    static public final String tagPathSeq       = "seq" ;
+    static public final String tagPathAlt       = "alt" ;
+    static public final String tagPathMod       = "mod" ;
+    static public final String tagPathReverse   = "reverse" ;
     
     // Expressions
     // sym => swiggly thing, tag => word-ish thing
@@ -94,6 +95,7 @@ public class Tags
     static public final String symMult          = "*" ;
     static public final String symDiv           = "/" ;
     static public final String symNot           = "!" ;
+    
     static public final String tagNot           = "not" ;
     static public final String tagStr           = "str" ;
     static public final String tagLang          = "lang" ;

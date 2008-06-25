@@ -9,6 +9,7 @@ package com.hp.hpl.jena.sparql.algebra.op;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.OpVisitor;
 import com.hp.hpl.jena.sparql.algebra.Transform;
+import com.hp.hpl.jena.sparql.sse.Tags;
 import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 
 public class OpUnion extends Op2
@@ -18,7 +19,7 @@ public class OpUnion extends Op2
     public Op apply(Transform transform, Op left, Op right)
     { return transform.transform(this, left, right) ; }
 
-    public String getName()                 { return "union" ; }
+    public String getName()                 { return Tags.tagUnion ; }
     public void visit(OpVisitor opVisitor)  { opVisitor.visit(this) ; }
     public Op copy(Op newLeft, Op newRight)
     { return new OpUnion(newLeft, newRight) ; }

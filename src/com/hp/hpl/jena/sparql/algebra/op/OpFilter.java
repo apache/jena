@@ -12,6 +12,7 @@ import com.hp.hpl.jena.sparql.algebra.Transform;
 import com.hp.hpl.jena.sparql.expr.E_LogicalAnd;
 import com.hp.hpl.jena.sparql.expr.Expr;
 import com.hp.hpl.jena.sparql.expr.ExprList;
+import com.hp.hpl.jena.sparql.sse.Tags;
 import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 
 public class OpFilter extends Op1
@@ -104,7 +105,7 @@ public class OpFilter extends Op1
     
     public ExprList getExprs() { return expressions ; }
     
-    public String getName() { return "filter" ; }
+    public String getName() { return Tags.tagFilter ; }
     
     public Op apply(Transform transform, Op subOp)
     { return transform.transform(this, subOp) ; }

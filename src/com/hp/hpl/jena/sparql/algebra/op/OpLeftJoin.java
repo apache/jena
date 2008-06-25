@@ -11,6 +11,7 @@ import com.hp.hpl.jena.sparql.algebra.OpVisitor;
 import com.hp.hpl.jena.sparql.algebra.Transform;
 import com.hp.hpl.jena.sparql.expr.Expr;
 import com.hp.hpl.jena.sparql.expr.ExprList;
+import com.hp.hpl.jena.sparql.sse.Tags;
 import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 
 public class OpLeftJoin extends Op2
@@ -33,9 +34,9 @@ public class OpLeftJoin extends Op2
         expressions = exprs ;
     }
     
-    public ExprList getExprs() { return expressions ; } 
+    public ExprList getExprs()      { return expressions ; } 
+    public String getName()         { return Tags.tagLeftJoin ; }
     
-    public String getName() { return "leftjoin" ; }
     public Op apply(Transform transform, Op left, Op right)
     { return transform.transform(this, left, right) ; }
         

@@ -17,6 +17,7 @@ import com.hp.hpl.jena.sparql.algebra.OpVisitor;
 import com.hp.hpl.jena.sparql.algebra.Transform;
 import com.hp.hpl.jena.sparql.core.BasicPattern;
 import com.hp.hpl.jena.sparql.core.Quad;
+import com.hp.hpl.jena.sparql.sse.Tags;
 import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 
 public class OpQuadPattern extends Op0
@@ -58,7 +59,7 @@ public class OpQuadPattern extends Op0
     
     public boolean isDefaultGraph()         { return graphNode.equals(Quad.defaultGraphNode) ; }
     
-    public String getName()                 { return "quadpattern" ; }
+    public String getName()                 { return Tags.tagQuadPattern ; }
     public Op apply(Transform transform)    { return transform.transform(this) ; } 
     public void visit(OpVisitor opVisitor)  { opVisitor.visit(this) ; }
     public Op copy()                        { return new OpQuadPattern(graphNode, triples) ; }

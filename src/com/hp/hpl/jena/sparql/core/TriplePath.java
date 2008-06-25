@@ -72,7 +72,6 @@ public final class TriplePath
             return false ;
         TriplePath tp = (TriplePath)other ;
         return subject.equals(tp.subject) && object.equals(tp.object) && path.equals(tp.path) ;
-               
     }
     
     public String toString()

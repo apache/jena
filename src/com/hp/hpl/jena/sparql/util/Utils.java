@@ -18,6 +18,7 @@ import com.hp.hpl.jena.datatypes.xsd.XSDDateTime;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 
+import com.hp.hpl.jena.sparql.core.TriplePath;
 import com.hp.hpl.jena.sparql.core.Var;
 
 /** Miscellaneous operations - not query specific */
@@ -177,6 +178,13 @@ public class Utils
     { 
         // No SPARQL short form.
         return Float.toString(f) ;
+    }
+    
+    public static boolean triplePathIso(TriplePath tp1, TriplePath tp2, NodeIsomorphismMap isoMap)
+    {
+        return Utils.nodeIso(tp1.getSubject(), tp2.getSubject(), isoMap) && 
+                Utils.nodeIso(tp1.getObject(), tp2.getObject(), isoMap) &&
+                tp1.getPath().equalTo(tp2.getPath(), isoMap) ;
     }
     
     public static boolean tripleIso(Triple t1, Triple t2, NodeIsomorphismMap labelMap)
