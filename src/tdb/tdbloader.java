@@ -62,6 +62,8 @@ public class tdbloader extends CmdTDB
         
         @SuppressWarnings("unchecked")
         List<String> urls = (List<String>)getPositional() ;
+        if ( urls.size() == 0 )
+            urls.add("-") ;
         
         PGraphLoader loader = new PGraphLoader(getGraph(), timing, doInParallel, doIncremental) ;
         loader.load(urls) ;
