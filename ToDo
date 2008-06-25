@@ -1,13 +1,12 @@
 ==== ARQ ToDo
 
-** Integrate paths [In Progress]
-** Path tests / scripted.
-
+** Paths 
 1/ Rewire parser to generate ElementPathBlock (ARQ)
 2/ OpPath (partial)
 3/ OpStage ==> OpSeq
 4/ (ref) SimpleEvaluator OpPath [Sequencing]
 5/ (main) OpCompiler OpPath
+0/ Path tests (scripted)
 
 ** Stricter rules for property functions - must bind all variables => can do FILTER migration across them.
 
