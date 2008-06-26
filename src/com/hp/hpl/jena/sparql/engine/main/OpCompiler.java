@@ -117,7 +117,7 @@ public class OpCompiler
 
     public QueryIterator compile(OpPath opPath, QueryIterator input)
     {
-        throw new ARQNotImplemented("compile/OpPath") ;
+        return new QueryIterPath(opPath.getTriplePath(), input, execCxt) ;
     }
 
     public QueryIterator compile(OpProcedure opProc, QueryIterator input)

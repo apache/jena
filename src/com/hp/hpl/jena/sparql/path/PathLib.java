@@ -6,9 +6,22 @@
 
 package com.hp.hpl.jena.sparql.path;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.sparql.core.TriplePath;
+import com.hp.hpl.jena.sparql.core.Var;
+import com.hp.hpl.jena.sparql.engine.ExecutionContext;
+import com.hp.hpl.jena.sparql.engine.QueryIterator;
+import com.hp.hpl.jena.sparql.engine.binding.Binding;
+import com.hp.hpl.jena.sparql.engine.binding.Binding1;
+import com.hp.hpl.jena.sparql.engine.iterator.QueryIterPlainWrapper;
 import com.hp.hpl.jena.sparql.pfunction.PropertyFunction;
 import com.hp.hpl.jena.sparql.pfunction.PropertyFunctionFactory;
 import com.hp.hpl.jena.sparql.pfunction.PropertyFunctionRegistry;
+import com.hp.hpl.jena.sparql.procedure.ProcLib;
 
 public class PathLib
 {
@@ -31,6 +44,50 @@ public class PathLib
         registry.put(uri, pathPropFuncFactory) ;
     }
 
+    public static QueryIterator execTriplePath(Binding binding, TriplePath triplePath, ExecutionContext execCxt)
+    {
+        return execTriplePath(binding, 
+                              triplePath.getSubject(),
+                              triplePath.getPath(),
+                              triplePath.getObject(),
+                              execCxt) ;
+    }
+    
+    public static QueryIterator execTriplePath(Binding binding, 
+                                               Node s, Path path, Node o,
+                                               ExecutionContext execCxt)
+    {
+        if (Var.isVar(s)) s = binding.get(Var.alloc(s)) ;
+        if (Var.isVar(o)) o = binding.get(Var.alloc(o)) ;
+
+        Iterator iter = PathEval.eval(execCxt.getActiveGraph(), s, path) ;
+        List results = new ArrayList() ;
+
+        if (Var.isVar(o))
+        {
+            Var var = Var.alloc(o) ;
+            // Assign.
+            for (; iter.hasNext();)
+            {
+                Node n = (Node)iter.next() ;
+                results.add(new Binding1(binding, var, n)) ;
+            }
+            return new QueryIterPlainWrapper(results.iterator()) ;
+        } else
+        {
+            // Fixed value - did it match?
+            for (; iter.hasNext();)
+            {
+                Node n = (Node)iter.next() ;
+                if (n.sameValueAs(o))
+                {
+                    results.add(binding) ;
+
+                }
+            }
+            return ProcLib.noResults(execCxt) ;
+        }
+    }
 }
 
 /*

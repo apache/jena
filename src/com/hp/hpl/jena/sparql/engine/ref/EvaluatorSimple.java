@@ -12,8 +12,6 @@ import java.util.List;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.query.ResultSet;
 import com.hp.hpl.jena.query.ResultSetFormatter;
-
-import com.hp.hpl.jena.sparql.ARQNotImplemented;
 import com.hp.hpl.jena.sparql.algebra.Table;
 import com.hp.hpl.jena.sparql.algebra.TableFactory;
 import com.hp.hpl.jena.sparql.algebra.table.TableN;
@@ -55,8 +53,11 @@ public class EvaluatorSimple implements Evaluator
 
     public Table pathPattern(TriplePath triplePath)
     {
-        // Tricky - unbound subjects.
-        throw new ARQNotImplemented("EvaluatorSimple TriplePath") ;
+        // Shudder - this may well be expensive, but this is the simple evaluator, written for correctness. 
+        QueryIterator qIter = new QueryIterPath(triplePath, 
+                                                QueryIterRoot.create(execCxt),
+                                                execCxt) ;
+        return TableFactory.create(qIter) ;
     }
 
     public Table procedure(Table table, Node procId, ExprList args)
