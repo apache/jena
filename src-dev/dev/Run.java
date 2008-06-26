@@ -131,7 +131,8 @@ public class Run
 //            for ( ; iter.hasNext() ; )
 //                System.out.println("P:  "+iter.next()) ;
             
-            Query query = QueryFactory.create("SELECT * { ?x <"+uri+"> <http://example/B> }" ) ;
+            String str = "SELECT * { ?x <"+uri+"> <http://example/Z> }" ;
+            Query query = QueryFactory.create(str) ;
             QueryExecution qexec = QueryExecutionFactory.create(query, model) ;
             QueryExecUtils.executeQuery(query, qexec, ResultsFormat.FMT_TEXT) ;
         }

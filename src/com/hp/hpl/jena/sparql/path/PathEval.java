@@ -38,20 +38,36 @@ public class PathEval
         return new NodeIteratorImpl(new Map1Iterator(conv, iter), null) ;
     }
     
+    static public NodeIterator walkBackwars(final Model model, RDFNode rdfNode, Path path)
+    {
+        Iterator iter = evalReverse(model.getGraph(), rdfNode.asNode(), path) ;
+        
+        Map1 conv = new Map1(){
+            public Object map1(Object obj)
+            {
+                return ModelUtils.convertGraphNodeToRDFNode((Node)obj, model) ;
+            }} ;
+        
+        return new NodeIteratorImpl(new Map1Iterator(conv, iter), null) ;
+    }
+    
     // LinkedHashSet for predictable order - remove later??
     
+    /** Evaluate a path in the forward direction */ 
     static public Iterator eval(Graph graph, Node node, Path path)
     { return eval(graph, node, path, true) ; }
     
-    static public Iterator eval(Graph graph, Iterator input, Path path)
-    { return eval(graph, input, path, true) ; }
+//    /** Evaluate a path in the forward direction */ 
+//    static public Iterator eval(Graph graph, Iterator input, Path path)
+//    { return eval(graph, input, path, true) ; }
     
-
+    /** Evaluate a path starting at the end of the path */ 
     static public Iterator evalReverse(Graph g, Node node, Path path) 
     { return eval(g, node, path, false) ; }
 
-    static public Iterator evalReverse(Graph g, Iterator input, Path path) 
-    { return eval(g, input, path, false) ; }
+//    /** Evaluate a path starting at the end of the path */ 
+//    static public Iterator evalReverse(Graph g, Iterator input, Path path) 
+//    { return eval(g, input, path, false) ; }
     
     static private Iterator eval(Graph graph, Node node, Path path, boolean forward)
     {
@@ -127,14 +143,15 @@ public class PathEval
         //@Override
         public void visit(P_Seq pathSeq)
         {
+            Path part1 = forwardMode ? pathSeq.getLeft() : pathSeq.getRight() ;
+            Path part2 = forwardMode ? pathSeq.getRight() : pathSeq.getLeft() ;
+            
             // Feed one side into the other
-            Iterator iter = eval(graph, node, pathSeq.getLeft(), forwardMode) ;
-            iter = eval(graph, iter, pathSeq.getRight(), forwardMode) ;
-            // ConcurrentModificationException possible because P_Seq (etc) uses delayed iterators over output.??
+            Iterator iter = eval(graph, node, part1, forwardMode) ;
+            iter = eval(graph, iter, part2, forwardMode) ;
             fill(iter) ;
         }
 
-        // If evaluation of "+" and "*" are sufficiently important, maybe have special classes for them.
         //@Override
         public void visit(P_Mod pathMod)
         {
@@ -202,6 +219,7 @@ public class PathEval
         
         private final Iterator doOne(Node property)
         {
+            // The only point to actually touch the graph 
             Map1Iterator iter2 = null ;
             if ( forwardMode )
             {
