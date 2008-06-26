@@ -2,11 +2,11 @@
 
 ** Paths 
 1/ Rewire parser to generate ElementPathBlock (ARQ)
-2/ OpPath (partial)
 3/ OpStage ==> OpSeq
-4/ QueryIterPath and PathLib.execTriplePath
 5/ BFI allnodes evaluation of a path.
 0/ Path tests (scripted)
+9/ Test reverse evaluation from object
+
 
 ** Stricter rules for property functions - must bind all variables => can do FILTER migration across them.
 

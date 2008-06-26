@@ -57,15 +57,35 @@ public class PathLib
                                                Node s, Path path, Node o,
                                                ExecutionContext execCxt)
     {
-        if (Var.isVar(s)) s = binding.get(Var.alloc(s)) ;
-        if (Var.isVar(o)) o = binding.get(Var.alloc(o)) ;
-
-        Iterator iter = PathEval.eval(execCxt.getActiveGraph(), s, path) ;
+        s = Var.lookup(binding, s) ;
+        o = Var.lookup(binding, o) ;
+        Iterator iter = null ;
+        Node endNode = null ;
+        
+        if ( Var.isVar(s) && ! Var.isVar(o) )
+        {
+            // Var subject, concreate obnject - do backwards.
+            iter = PathEval.evalReverse(execCxt.getActiveGraph(), o, path) ;
+            endNode = s ;
+        }
+        else
+        {
+            iter = PathEval.eval(execCxt.getActiveGraph(), s, path) ;
+            endNode = o ;
+        }
+        return _execTriplePath(binding, iter, endNode, execCxt) ;
+    }
+    
+    private static QueryIterator _execTriplePath(Binding binding, 
+                                                 Iterator iter,
+                                                 Node endNode,
+                                                 ExecutionContext execCxt)
+    {
         List results = new ArrayList() ;
 
-        if (Var.isVar(o))
+        if (Var.isVar(endNode))
         {
-            Var var = Var.alloc(o) ;
+            Var var = Var.alloc(endNode) ;
             // Assign.
             for (; iter.hasNext();)
             {
@@ -79,10 +99,9 @@ public class PathLib
             for (; iter.hasNext();)
             {
                 Node n = (Node)iter.next() ;
-                if (n.sameValueAs(o))
+                if (n.sameValueAs(endNode))
                 {
                     results.add(binding) ;
-
                 }
             }
             return ProcLib.noResults(execCxt) ;

@@ -99,13 +99,7 @@ public class OpSubstitute extends TransformCopy
     
     private static Node substitute(Binding b, Node n)
     {
-        if ( ! Var.isVar(n) )
-            return n ;
-        Var v = Var.alloc(n) ;
-        Node x = b.get(v) ;
-        if ( x == null )
-            return n ;
-        return x ;
+        return Var.lookup(b, n) ;
     }
 }
 

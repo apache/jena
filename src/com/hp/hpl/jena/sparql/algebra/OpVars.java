@@ -56,9 +56,15 @@ public class OpVars
         {
             for ( Iterator iter = opBGP.getPattern().iterator() ; iter.hasNext() ; )
             {
-                    Triple t = (Triple)iter.next() ;
-                    addVarsFromTriple(acc, t) ;
+                Triple t = (Triple)iter.next() ;
+                addVarsFromTriple(acc, t) ;
             }
+        }
+        
+        public void visit(OpPath opPath)
+        {
+            addVar(acc, opPath.getTriplePath().getSubject()) ;
+            addVar(acc, opPath.getTriplePath().getObject()) ;
         }
 
         public void visit(OpQuadPattern quadPattern)

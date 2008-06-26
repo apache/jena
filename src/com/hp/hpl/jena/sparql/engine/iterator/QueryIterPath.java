@@ -24,10 +24,6 @@ public class QueryIterPath extends QueryIterRepeatApply
     {
         super(input, context) ;
         this.triplePath = triplePath ;
-        if ( Var.isVar(triplePath.getSubject()) )
-            varSubject = Var.alloc(triplePath.getSubject()) ;
-        if ( Var.isVar(triplePath.getObject()) )
-            varObject = Var.alloc(triplePath.getObject()) ;
     }
 
     protected QueryIterator nextStage(Binding binding)

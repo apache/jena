@@ -15,6 +15,7 @@ import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Node_Variable;
 import com.hp.hpl.jena.sparql.ARQConstants;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException;
+import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.expr.ExprVar;
 
 /** A SPARQL variable
@@ -43,6 +44,22 @@ public class Var extends Node_Variable
     
     
     public static Var alloc(ExprVar nv)         { return new Var(nv) ; }
+    
+    public static Node lookup(Binding binding, Node node)
+    {
+        if ( ! Var.isVar(node) )
+            return node ;
+        Var var = Var.alloc(node) ;
+        return lookup(binding, var) ;
+    }
+    
+    public static Node lookup(Binding binding, Var var)
+    {
+        Node n = binding.get(var) ;
+        if ( n != null )
+            return n ;
+        return var ;
+    }
     
     private Var(String varName)      { super(varName) ; }
     
