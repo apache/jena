@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            22 Feb 2003
  * Filename           $RCSfile: OntModelImpl.java,v $
- * Revision           $Revision: 1.107 $
+ * Revision           $Revision: 1.108 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2008-05-14 15:22:17 $
+ * Last modified on   $Date: 2008-06-27 15:35:29 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
@@ -24,25 +24,29 @@ package com.hp.hpl.jena.ontology.impl;
 
 // Imports
 ///////////////
-import com.hp.hpl.jena.rdf.listeners.StatementListener;
-import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.rdf.model.impl.*;
-import com.hp.hpl.jena.reasoner.*;
-import com.hp.hpl.jena.util.iterator.*;
-import com.hp.hpl.jena.vocabulary.*;
-import com.hp.hpl.jena.ontology.*;
-import com.hp.hpl.jena.ontology.event.*;
-import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.graph.compose.MultiUnion;
-import com.hp.hpl.jena.graph.query.*;
-import com.hp.hpl.jena.enhanced.*;
-import com.hp.hpl.jena.shared.*;
-
 import java.io.*;
 import java.util.*;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+
+import com.hp.hpl.jena.enhanced.BuiltinPersonalities;
+import com.hp.hpl.jena.enhanced.EnhNode;
+import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.graph.compose.MultiUnion;
+import com.hp.hpl.jena.graph.query.BindingQueryPlan;
+import com.hp.hpl.jena.graph.query.Query;
+import com.hp.hpl.jena.ontology.*;
+import com.hp.hpl.jena.ontology.event.OntEventManager;
+import com.hp.hpl.jena.rdf.listeners.StatementListener;
+import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.rdf.model.impl.IteratorFactory;
+import com.hp.hpl.jena.rdf.model.impl.ModelCom;
+import com.hp.hpl.jena.reasoner.*;
+import com.hp.hpl.jena.shared.BrokenException;
+import com.hp.hpl.jena.shared.ConfigException;
+import com.hp.hpl.jena.util.iterator.*;
+import com.hp.hpl.jena.vocabulary.*;
 
 
 
@@ -54,7 +58,7 @@ import org.apache.commons.logging.LogFactory;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModelImpl.java,v 1.107 2008-05-14 15:22:17 ian_dickinson Exp $
+ * @version CVS $Id: OntModelImpl.java,v 1.108 2008-06-27 15:35:29 ian_dickinson Exp $
  */
 public class OntModelImpl extends ModelCom implements OntModel
 {
@@ -2110,9 +2114,6 @@ public class OntModelImpl extends ModelCom implements OntModel
      */
     public Model read( String uri, String base, String syntax ) {
         // we don't want to load this document again if imported by one of the imports
-        if (s_log.isDebugEnabled()) {
-            s_log.debug( "Noting already loaded import URI " + uri );
-        }
         addLoadedImport( uri );
 
         OntDocumentManager odm = getDocumentManager();

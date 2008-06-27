@@ -6,11 +6,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            8 Sep 2006
  * Filename           $RCSfile: Test_schemagen.java,v $
- * Revision           $Revision: 1.8 $
+ * Revision           $Revision: 1.9 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2008-01-02 12:08:49 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2008-06-27 15:35:27 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  * [See end of file]
@@ -46,7 +46,7 @@ import com.hp.hpl.jena.util.FileUtils;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: Test_schemagen.java,v 1.8 2008-01-02 12:08:49 andy_seaborne Exp $
+ * @version CVS $Id: Test_schemagen.java,v 1.9 2008-06-27 15:35:27 ian_dickinson Exp $
  */
 public class Test_schemagen
     extends TestCase
@@ -481,9 +481,9 @@ public class Test_schemagen
 
         // now run the test pattern over the lines in the file
         String result = buf.toString();
-        if (log.isDebugEnabled()) {
-            log.debug(  result );
-        }
+//        if (log.isDebugEnabled()) {
+//            log.debug(  result );
+//        }
         StringTokenizer tokens = new StringTokenizer( result, "\n" );
 
         boolean[] foundPos = new boolean[posPatterns.length];
