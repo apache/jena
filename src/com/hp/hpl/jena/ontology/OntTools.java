@@ -19,9 +19,6 @@ package com.hp.hpl.jena.ontology;
 ///////////////
 import java.util.*;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import com.hp.hpl.jena.ontology.impl.test.TestOntTools;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.shared.JenaException;
@@ -50,7 +47,7 @@ public class OntTools
     // Static variables
     //////////////////////////////////
 
-    static private Log log = LogFactory.getLog( OntTools.class );
+//    static private Log log = LogFactory.getLog( OntTools.class );
 
     // Instance variables
     //////////////////////////////////
@@ -235,7 +232,7 @@ public class OntTools
      * LCA pairs
      */
     protected static DisjointSet lca( OntClass cls, OntClass uCls, OntClass vCls, LCAIndex index ) {
-        log.debug( "Entering lca(), cls = " + cls );
+//        log.debug( "Entering lca(), cls = " + cls );
         DisjointSet clsSet = index.getSet( cls );
         if (clsSet.isBlack()) {
             // already visited
@@ -294,9 +291,9 @@ public class OntTools
             uSet != null && uSet.isBlack() && !uSet.used()) {
             vSet.setUsed();
             uSet.setUsed();
-            log.debug( "Found LCA: u = " + uCls + ", v = " + vCls  );
+//            log.debug( "Found LCA: u = " + uCls + ", v = " + vCls  );
             OntClass lca = (OntClass) vSet.find().getAncestor().getNode();
-            log.debug( "Found LCA: lca = " + lca );
+//            log.debug( "Found LCA: lca = " + lca );
             index.setLCA( uCls, vCls, lca );
         }
 
@@ -312,7 +309,30 @@ public class OntTools
     protected static void partitionByNamed( Iterator i, List named, List anon ) {
         while (i.hasNext()) {
             OntClass c = (OntClass) i.next();
-            (c.isAnon() ? anon : named).add( c );
+            boolean ignore = false;
+
+            // duplicate check: we ignore this class if we've already got it
+            if (named.contains( c )) {
+                ignore = true;
+            }
+
+            // subsumption check: c must have only anon classes or Thing
+            // as super-classes to still qualify as a root class
+            Resource thing = c.getProfile().THING();
+            for (Iterator j = c.listSuperClasses(); !ignore && j.hasNext(); ) {
+                OntClass sup = (OntClass) j.next();
+                if (!((thing != null && sup.equals( thing )) ||
+                      sup.isAnon() ||
+                      sup.equals( c )))
+                {
+                    ignore = true;
+                }
+            }
+
+            if (!ignore) {
+                // place the class in the appropriate partition
+                (c.isAnon() ? anon : named).add( c );
+            }
         }
     }
 
@@ -500,12 +520,12 @@ public class OntTools
         public DisjointSet getSet( Resource r ) {
             DisjointSet s = (DisjointSet) m_setIndex.get( r );
             if (s == null) {
-                log.debug( "Generating new set for " + r );
+//                log.debug( "Generating new set for " + r );
                 s = new DisjointSet( r );
                 m_setIndex.put( r, s );
             }
             else {
-                log.debug( "Retrieving old set for " + r );
+//                log.debug( "Retrieving old set for " + r );
 
             }
             return s;

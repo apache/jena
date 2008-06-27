@@ -395,6 +395,46 @@ public class TestOntTools
         assertTrue( nhr.contains( m_g ));
     }
 
+    /** Test for no dups in the returned list */
+    public void testNamedHierarchyRoots3() {
+        OntClass anon0 = m_model.createClass();
+        OntClass anon1 = m_model.createClass();
+        anon0.addSubClass( m_a );
+        anon1.addSubClass( m_a );
+
+        // only a is root
+        m_a.addSubClass( m_b );
+        m_a.addSubClass( m_c );
+        m_a.addSubClass( m_d );
+        m_a.addSubClass( m_e );
+        m_a.addSubClass( m_f );
+        m_a.addSubClass( m_g );
+
+        List nhr = OntTools.namedHierarchyRoots( m_model );
+        assertEquals( 1, nhr.size() );
+        assertTrue( nhr.contains( m_a ));
+    }
+
+    /** Test for indirect route to a non-root node */
+    public void testNamedHierarchyRoots4() {
+        OntClass anon0 = m_model.createClass();
+        OntClass anon1 = m_model.createClass();
+        anon0.addSubClass( m_a );
+        anon1.addSubClass( m_b );
+
+        // only a is root, because b is a subclass of a
+        // even though b is a sub-class of an anon root
+        m_a.addSubClass( m_b );
+        m_a.addSubClass( m_c );
+        m_a.addSubClass( m_d );
+        m_a.addSubClass( m_e );
+        m_a.addSubClass( m_f );
+        m_a.addSubClass( m_g );
+
+        List nhr = OntTools.namedHierarchyRoots( m_model );
+        assertEquals( 1, nhr.size() );
+        assertTrue( nhr.contains( m_a ));
+    }
 
     // Internal implementation methods
     //////////////////////////////////
