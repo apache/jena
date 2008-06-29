@@ -6,6 +6,8 @@
 
 package com.hp.hpl.jena.sparql.syntax;
 
+import com.hp.hpl.jena.graph.Triple;
+
 import com.hp.hpl.jena.sparql.core.PathBlock;
 import com.hp.hpl.jena.sparql.core.TriplePath;
 import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
@@ -15,7 +17,7 @@ import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
  * @author Andy Seaborne
  */
 
-public class ElementPathBlock extends Element //implements TripleCollector
+public class ElementPathBlock extends Element implements TripleCollector
 {
     private PathBlock pattern = new PathBlock() ; 
 
@@ -29,8 +31,17 @@ public class ElementPathBlock extends Element //implements TripleCollector
     
     public int mark() { return pattern.size() ; }
     
-    public void addTriple(int index, TriplePath t)
-    { pattern.add(index, t) ; }
+    public void addTriple(Triple t)
+    { addTriplePath(new TriplePath(t)) ; }
+
+    public void addTriple(int index, Triple t)
+    { addTriplePath(index, new TriplePath(t)) ; }
+
+    public void addTriplePath(TriplePath tPath)
+    { pattern.add(tPath) ; }
+
+    public void addTriplePath(int index, TriplePath tPath)
+    { pattern.add(index, tPath) ; }
     
     public PathBlock getPattern() { return pattern ; }
     //public Iterator patternElts() { return pattern.iterator(); }

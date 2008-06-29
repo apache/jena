@@ -10,7 +10,9 @@ import java.util.Iterator;
 
 import com.hp.hpl.jena.graph.Triple;
 
+import com.hp.hpl.jena.sparql.ARQException;
 import com.hp.hpl.jena.sparql.core.BasicPattern;
+import com.hp.hpl.jena.sparql.core.TriplePath;
 import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 
 /** A SPARQL BasicGraphPattern
@@ -35,6 +37,12 @@ public class ElementTriplesBlock extends Element implements TripleCollector
     public void addTriple(int index, Triple t)
     { pattern.add(index, t) ; }
     
+    public void addTriplePath(TriplePath path)
+    { throw new ARQException("Triples-only collector") ; }
+
+    public void addTriplePath(int index, TriplePath path)
+    { throw new ARQException("Triples-only collector") ; }
+    
     public BasicPattern getPattern() { return pattern ; }
     public Iterator patternElts() { return pattern.iterator(); }
     
@@ -56,6 +64,8 @@ public class ElementTriplesBlock extends Element implements TripleCollector
     }
 
     public void visit(ElementVisitor v) { v.visit(this) ; }
+
+ 
 }
 
 /*

@@ -8,6 +8,8 @@ package com.hp.hpl.jena.sparql.syntax;
 
 import com.hp.hpl.jena.graph.Triple;
 
+import com.hp.hpl.jena.sparql.core.TriplePath;
+
 
 public interface TripleCollector
 {
@@ -17,6 +19,9 @@ public interface TripleCollector
     // LIFO (stack) order.
     public int mark() ;
     public void addTriple(int index, Triple t) ;
+    
+    public void addTriplePath(TriplePath tPath) ;
+    public void addTriplePath(int index, TriplePath tPath) ;
 }
 
 /*

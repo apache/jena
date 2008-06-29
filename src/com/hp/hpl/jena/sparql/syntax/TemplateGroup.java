@@ -9,6 +9,9 @@ package com.hp.hpl.jena.sparql.syntax;
 import java.util.*;
 
 import com.hp.hpl.jena.graph.Triple;
+
+import com.hp.hpl.jena.sparql.ARQException;
+import com.hp.hpl.jena.sparql.core.TriplePath;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 
@@ -21,9 +24,7 @@ public class TemplateGroup extends Template implements TripleCollector
 {
     List templates = new ArrayList() ;
     
-    public TemplateGroup()
-    {
-    }
+    public TemplateGroup()      { }
     
     public void add(Template templ)
     {
@@ -34,6 +35,13 @@ public class TemplateGroup extends Template implements TripleCollector
     public int mark() { return templates.size() ; }
     public void addTriple(int index, Triple t)
     { templates.add(index, new TemplateTriple(t)) ; }
+    
+    public void addTriplePath(TriplePath path)
+    { throw new ARQException("Triples-only collector") ; }
+
+    public void addTriplePath(int index, TriplePath path)
+    { throw new ARQException("Triples-only collector") ; }
+    
 
     public List getTemplates() { return templates ; }
     public Iterator templates() { return templates.iterator() ; }
