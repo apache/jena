@@ -31,7 +31,7 @@ public class ParserSPARQL extends Parser
         Action action = new Action() {
             public void exec(SPARQLParser parser) throws Exception
             {
-                parser.CompilationUnit() ;
+                parser.QueryUnit() ;
             }
         } ;
 

@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.modify.lang;
+package com.hp.hpl.jena.sparql.lang;
 
 import java.io.FileReader;
 import java.io.InputStream;
@@ -13,16 +13,17 @@ import java.io.StringReader;
 
 import org.apache.commons.logging.LogFactory;
 
+import com.hp.hpl.jena.util.FileUtils;
+
 import com.hp.hpl.jena.shared.JenaException;
 
-import com.hp.hpl.jena.sparql.modify.lang.parser.SPARQLUpdateParser;
+import com.hp.hpl.jena.sparql.lang.arq.ARQParser;
 import com.hp.hpl.jena.sparql.util.ALog;
 
 import com.hp.hpl.jena.query.QueryException;
 import com.hp.hpl.jena.query.QueryParseException;
 
 import com.hp.hpl.jena.update.UpdateRequest;
-import com.hp.hpl.jena.util.FileUtils;
 
 
 public class ParserSPARQLUpdate
@@ -43,27 +44,27 @@ public class ParserSPARQLUpdate
     public UpdateRequest parse(UpdateRequest update, Reader r)
     {
         if ( r instanceof FileReader )
-            LogFactory.getLog(this.getClass()).warn("FileReader passe to ParserSPARQLUpdate.parse - use a FileInputStream") ;
+            LogFactory.getLog(this.getClass()).warn("FileReader passed to ParserSPARQLUpdate.parse - use a FileInputStream") ;
         return _parse(update, r) ;
     }
     
     private UpdateRequest _parse(UpdateRequest update, Reader r)
     {
-        SPARQLUpdateParser parser = null ;
+        ARQParser parser = null ;
         try {
-            parser = new SPARQLUpdateParser(r) ;
+            parser = new ARQParser(r) ;
             parser.setUpdateRequest(update) ;
-            parser.SPARQLUpdate() ;
+            parser.UpdateUnit() ;
             //validateParsedUpdate(update) ;
             return update ;
         }
-        catch (com.hp.hpl.jena.sparql.modify.lang.parser.ParseException ex)
+        catch (com.hp.hpl.jena.sparql.lang.arq.ParseException ex)
         { 
             throw new QueryParseException(ex.getMessage(),
                                           ex.currentToken.beginLine,
                                           ex.currentToken.beginColumn
             ) ; }
-        catch (com.hp.hpl.jena.sparql.modify.lang.parser.TokenMgrError tErr)
+        catch (com.hp.hpl.jena.sparql.lang.arq.TokenMgrError tErr)
         {
             // Last valid token : not the same as token error message - but this should not happen
             int col = parser.token.endColumn ;

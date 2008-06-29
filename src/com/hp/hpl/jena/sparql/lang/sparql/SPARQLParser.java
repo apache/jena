@@ -16,12 +16,15 @@ import com.hp.hpl.jena.sparql.path.* ;
 
 
 
+
+
+
 public class SPARQLParser extends SPARQLParserBase implements SPARQLParserConstants {
     private static long UNSET = P_Mod.UNSET ;
     private static long INF = P_Mod.INF ;
     boolean allowAggregatesInExpressions = false ;
 
-  final public void CompilationUnit() throws ParseException {
+  final public void QueryUnit() throws ParseException {
     Query();
     jj_consume_token(0);
   }
@@ -75,7 +78,7 @@ public class SPARQLParser extends SPARQLParserBase implements SPARQLParserConsta
                     String iri ;
     jj_consume_token(BASE);
     iri = IRI_REF();
-    getQuery().setBaseURI(iri) ;
+    getPrologue().setBaseURI(iri) ;
   }
 
   final public void PrefixDecl() throws ParseException {
@@ -84,7 +87,7 @@ public class SPARQLParser extends SPARQLParserBase implements SPARQLParserConsta
     t = jj_consume_token(PNAME_NS);
     iri = IRI_REF();
         String s = fixupPrefix(t.image, t.beginLine, t.beginColumn) ;
-        getQuery().setPrefix(s, iri) ;
+        getPrologue().setPrefix(s, iri) ;
   }
 
 // ---- Query type clauses
@@ -164,9 +167,7 @@ public class SPARQLParser extends SPARQLParserBase implements SPARQLParserConsta
                           Template t ;
     jj_consume_token(CONSTRUCT);
       getQuery().setQueryConstructType() ;
-      setInConstructTemplate(true) ;
     t = ConstructTemplate();
-      setInConstructTemplate(false) ;
       getQuery().setQueryResultStar(false) ;
       getQuery().setConstructTemplate(t) ;
     label_4:
@@ -498,6 +499,7 @@ public class SPARQLParser extends SPARQLParserBase implements SPARQLParserConsta
       getQuery().setOffset(integerValue(t.image)) ;
   }
 
+// ---- SPARQL/Update
 // ---- General Graph Pattern 
   final public Element GroupGraphPattern() throws ParseException {
                                 Element el = null ; Token t ;
@@ -827,6 +829,7 @@ public class SPARQLParser extends SPARQLParserBase implements SPARQLParserConsta
 
 // -------- Construct patterns
   final public Template ConstructTemplate() throws ParseException {
+      setInConstructTemplate(true) ;
       TemplateGroup g = new TemplateGroup() ;
     jj_consume_token(LBRACE);
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -862,6 +865,7 @@ public class SPARQLParser extends SPARQLParserBase implements SPARQLParserConsta
       ;
     }
     jj_consume_token(RBRACE);
+      setInConstructTemplate(false) ;
       {if (true) return g ;}
     throw new Error("Missing return statement in function");
   }

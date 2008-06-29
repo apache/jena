@@ -7,10 +7,23 @@
 package com.hp.hpl.jena.sparql.lang.arq;
 import com.hp.hpl.jena.sparql.lang.ParserQueryBase;
 
+import com.hp.hpl.jena.update.UpdateRequest;
+
 class ARQParserBase
     extends ParserQueryBase
     implements ARQParserConstants
 {
+    // The ARQ parser is both query and update languages.
+    private UpdateRequest request = null ;
+
+    public void setUpdateRequest(UpdateRequest request)
+    {
+        setPrologue(request) ;
+        this.request = request ;
+        setPrologue(request) ;
+    }
+    
+    protected UpdateRequest getRequest() { return request ; }
 }
 
 /*

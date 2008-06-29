@@ -6,12 +6,15 @@
 
 package com.hp.hpl.jena.sparql.lang;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import com.hp.hpl.jena.datatypes.RDFDatatype;
 import com.hp.hpl.jena.datatypes.TypeMapper;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
+import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.n3.JenaURIException;
@@ -24,9 +27,12 @@ import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.expr.Expr;
 import com.hp.hpl.jena.sparql.syntax.Element;
 import com.hp.hpl.jena.sparql.syntax.ElementGroup;
+import com.hp.hpl.jena.sparql.syntax.Template;
 import com.hp.hpl.jena.sparql.syntax.TripleCollector;
 import com.hp.hpl.jena.sparql.util.ExprUtils;
 import com.hp.hpl.jena.sparql.util.LabelToNodeMap;
+import com.hp.hpl.jena.sparql.util.graph.GraphUtils;
+
 import com.hp.hpl.jena.vocabulary.RDF;
 
 public class ParserBase
@@ -66,7 +72,7 @@ public class ParserBase
     
     public ParserBase() {}
     
-    Prologue prologue ;
+    protected Prologue prologue ;
     public void setPrologue(Prologue prologue) { this.prologue = prologue ; }
     public Prologue getPrologue() { return prologue ; }
     
@@ -361,6 +367,17 @@ public class ParserBase
     public static String testUnescapeStr(String s)
     {
         return new ParserBase().unescapeStr(s) ;
+    }
+    
+    // SPARQL/Update 
+    protected Graph convertTemplateToTriples(Template template, int line, int col)
+    {
+        List acc = new ArrayList() ;
+        TriplesCollector collector = new TriplesCollector(acc, line, col) ;
+        template.visit(collector) ;
+        Graph g = GraphUtils.makePlainGraph() ;
+        g.getBulkUpdateHandler().add(acc) ;
+        return g ;
     }
     
     protected String unescapeStr(String s)

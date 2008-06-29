@@ -30,7 +30,7 @@ class ParserARQ extends Parser
             query.setStrict(true) ;
             parser = new ARQParser(in) ;
             parser.setQuery(query) ;
-            parser.CompilationUnit() ;
+            parser.QueryUnit() ;
             query.setSyntax(Syntax.syntaxARQ) ;
             validateParsedQuery(query) ;
             return query ;

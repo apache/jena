@@ -1,20 +1,58 @@
 /*
- * (c) Copyright 2007, 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.modify.lang;
+package com.hp.hpl.jena.sparql.lang;
 
-import com.hp.hpl.jena.sparql.lang.ParserBase;
+import java.util.Collection;
+import java.util.Iterator;
 
-public class ParserUpdateBase extends ParserBase 
+import com.hp.hpl.jena.graph.Triple;
+
+import com.hp.hpl.jena.sparql.syntax.Template;
+import com.hp.hpl.jena.sparql.syntax.TemplateGroup;
+import com.hp.hpl.jena.sparql.syntax.TemplateTriple;
+import com.hp.hpl.jena.sparql.syntax.TemplateVisitor;
+
+public class TriplesCollector implements TemplateVisitor
 {
+    private Collection acc ;
+    private int line ;
+    private int col ;
 
+    public TriplesCollector(Collection acc, int line, int col)
+    { 
+        this.acc = acc ;
+        this.line = line ;
+        this.col = col ;
+    }
+        
+    public void visit(TemplateTriple template)
+    {
+        Triple t = template.getTriple() ;
+        if ( t.getSubject().isVariable() ||
+            t.getPredicate().isVariable() ||
+            t.getObject().isVariable() )
+        {
+            ParserBase.throwParseException("Triples may not contain variables in ADD or REMOVE", line, col) ;
+        }
+        acc.add(t) ;
+    }
+
+    public void visit(TemplateGroup template)
+    {
+        for ( Iterator iter = template.getTemplates().iterator() ; iter.hasNext(); )
+        {
+            Template t = (Template)iter.next();
+            t.visit(this) ;
+        }
+    }
+    
 }
-
 /*
- * (c) Copyright 2007, 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

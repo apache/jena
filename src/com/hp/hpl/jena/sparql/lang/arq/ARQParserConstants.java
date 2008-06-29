@@ -69,65 +69,77 @@ public interface ARQParserConstants {
   int SAME_TERM = 63;
   int TRUE = 64;
   int FALSE = 65;
-  int DIGITS = 66;
-  int INTEGER = 67;
-  int DECIMAL = 68;
-  int DOUBLE = 69;
-  int INTEGER_POSITIVE = 70;
-  int DECIMAL_POSITIVE = 71;
-  int DOUBLE_POSITIVE = 72;
-  int INTEGER_NEGATIVE = 73;
-  int DECIMAL_NEGATIVE = 74;
-  int DOUBLE_NEGATIVE = 75;
-  int EXPONENT = 76;
-  int QUOTE_3D = 77;
-  int QUOTE_3S = 78;
-  int ECHAR = 79;
-  int STRING_LITERAL1 = 80;
-  int STRING_LITERAL2 = 81;
-  int STRING_LITERAL_LONG1 = 82;
-  int STRING_LITERAL_LONG2 = 83;
-  int LPAREN = 84;
-  int RPAREN = 85;
-  int NIL = 86;
-  int LBRACE = 87;
-  int RBRACE = 88;
-  int LBRACKET = 89;
-  int RBRACKET = 90;
-  int ANON = 91;
-  int SEMICOLON = 92;
-  int COMMA = 93;
-  int DOT = 94;
-  int EQ = 95;
-  int NE = 96;
-  int GT = 97;
-  int LT = 98;
-  int LE = 99;
-  int GE = 100;
-  int BANG = 101;
-  int TILDE = 102;
-  int COLON = 103;
-  int SC_OR = 104;
-  int SC_AND = 105;
-  int PLUS = 106;
-  int MINUS = 107;
-  int STAR = 108;
-  int SLASH = 109;
-  int DATATYPE = 110;
-  int AT = 111;
-  int ASSIGN = 112;
-  int VBAR = 113;
-  int CARROT = 114;
-  int FPATH = 115;
-  int RPATH = 116;
-  int QMARK = 117;
-  int PN_CHARS_BASE = 118;
-  int PN_CHARS_U = 119;
-  int PN_CHARS = 120;
-  int PN_PREFIX = 121;
-  int PN_LOCAL = 122;
-  int VARNAME = 123;
-  int UNKNOWN = 124;
+  int MODIFY = 66;
+  int INSERT = 67;
+  int DELETE = 68;
+  int DATA = 69;
+  int ADD = 70;
+  int REMOVE = 71;
+  int LOAD = 72;
+  int CLEAR = 73;
+  int CREATE = 74;
+  int SILENT = 75;
+  int DROP = 76;
+  int INTO = 77;
+  int DIGITS = 78;
+  int INTEGER = 79;
+  int DECIMAL = 80;
+  int DOUBLE = 81;
+  int INTEGER_POSITIVE = 82;
+  int DECIMAL_POSITIVE = 83;
+  int DOUBLE_POSITIVE = 84;
+  int INTEGER_NEGATIVE = 85;
+  int DECIMAL_NEGATIVE = 86;
+  int DOUBLE_NEGATIVE = 87;
+  int EXPONENT = 88;
+  int QUOTE_3D = 89;
+  int QUOTE_3S = 90;
+  int ECHAR = 91;
+  int STRING_LITERAL1 = 92;
+  int STRING_LITERAL2 = 93;
+  int STRING_LITERAL_LONG1 = 94;
+  int STRING_LITERAL_LONG2 = 95;
+  int LPAREN = 96;
+  int RPAREN = 97;
+  int NIL = 98;
+  int LBRACE = 99;
+  int RBRACE = 100;
+  int LBRACKET = 101;
+  int RBRACKET = 102;
+  int ANON = 103;
+  int SEMICOLON = 104;
+  int COMMA = 105;
+  int DOT = 106;
+  int EQ = 107;
+  int NE = 108;
+  int GT = 109;
+  int LT = 110;
+  int LE = 111;
+  int GE = 112;
+  int BANG = 113;
+  int TILDE = 114;
+  int COLON = 115;
+  int SC_OR = 116;
+  int SC_AND = 117;
+  int PLUS = 118;
+  int MINUS = 119;
+  int STAR = 120;
+  int SLASH = 121;
+  int DATATYPE = 122;
+  int AT = 123;
+  int ASSIGN = 124;
+  int VBAR = 125;
+  int CARROT = 126;
+  int FPATH = 127;
+  int RPATH = 128;
+  int QMARK = 129;
+  int PN_CHARS_BASE = 130;
+  int PN_CHARS_U = 131;
+  int PN_CHARS = 132;
+  int PN_PREFIX = 133;
+  int PN_LOCAL = 134;
+  int VARNAME = 135;
+  int UNKNOWN = 136;
 
   int DEFAULT = 0;
 
@@ -198,6 +210,18 @@ public interface ARQParserConstants {
     "\"sameTerm\"",
     "\"true\"",
     "\"false\"",
+    "\"modify\"",
+    "\"insert\"",
+    "\"delete\"",
+    "\"data\"",
+    "\"add\"",
+    "\"remove\"",
+    "\"load\"",
+    "\"clear\"",
+    "\"create\"",
+    "\"silent\"",
+    "\"drop\"",
+    "\"into\"",
     "<DIGITS>",
     "<INTEGER>",
     "<DECIMAL>",

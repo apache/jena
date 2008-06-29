@@ -13,9 +13,9 @@ import java.io.Reader;
 
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.binding.BindingUtils;
+import com.hp.hpl.jena.sparql.lang.ParserSPARQLUpdate;
 import com.hp.hpl.jena.sparql.modify.UpdateProcessorFactory;
 import com.hp.hpl.jena.sparql.modify.UpdateProcessorRegistry;
-import com.hp.hpl.jena.sparql.modify.lang.ParserSPARQLUpdate;
 import com.hp.hpl.jena.sparql.modify.op.Update;
 
 import com.hp.hpl.jena.query.QuerySolution;
