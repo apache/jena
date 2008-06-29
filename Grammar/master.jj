@@ -11,18 +11,21 @@
 #error Please define only one of ARQ and SPARQL
 #endif
 
-
 #ifdef SPARQL
 #define PACKAGE     lang.sparql
 #define CLASS       SPARQLParser
 #define PARSERBASE  SPARQLParserBase
 #endif
 
+// NB An update can contain a nested SELECT
+
 #ifdef ARQ
 #define PACKAGE     lang.arq
 #define CLASS       ARQParser
 #define PARSERBASE  ARQParserBase
+#define UPDATE
 #endif
+
 
 // Author:  Andy Seaborne andy.seaborne@hp.com
 // (c) Copyright 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
@@ -60,6 +63,9 @@ import com.hp.hpl.jena.sparql.path.* ;
 #ifdef ARQ
 import com.hp.hpl.jena.sparql.expr.aggregate.* ;
 #endif
+#ifdef UPDATE
+import com.hp.hpl.jena.sparql.modify.op.* ;
+#endif
 
 public class CLASS extends PARSERBASE
 {
@@ -69,7 +75,7 @@ public class CLASS extends PARSERBASE
 }
 PARSER_END(CLASS)
 
-void CompilationUnit(): { }
+void QueryUnit(): { }
 {
   Query() <EOF>
 }
@@ -89,7 +95,7 @@ void Prologue() : {}
 void BaseDecl() : { String iri ; }
 {
   <BASE> iri = IRI_REF()
-  { getQuery().setBaseURI(iri) ; }
+  { getPrologue().setBaseURI(iri) ; }
 }
 
 
@@ -97,7 +103,7 @@ void PrefixDecl() : { Token t ; String iri ; }
 {
     <PREFIX> t = <PNAME_NS> iri = IRI_REF()
       { String s = fixupPrefix(t.image, t.beginLine, t.beginColumn) ;
-        getQuery().setPrefix(s, iri) ; }
+        getPrologue().setPrefix(s, iri) ; }
 }
 
 // ---- Query type clauses
@@ -147,11 +153,9 @@ void SelectQuery() : {  Var v ; Expr expr ; }
 void ConstructQuery() : { Template t ; }
 {
   <CONSTRUCT>
-    { getQuery().setQueryConstructType() ;
-      setInConstructTemplate(true) ; }
+    { getQuery().setQueryConstructType() ; }
   t = ConstructTemplate() 
-    { setInConstructTemplate(false) ;
-      getQuery().setQueryResultStar(false) ;
+    { getQuery().setQueryResultStar(false) ;
       getQuery().setConstructTemplate(t) ; }
   ( DatasetClause() )*
   WhereClause()
@@ -313,6 +317,168 @@ void OffsetClause() : { Token t ; }
   <OFFSET> t = <INTEGER>
     { getQuery().setOffset(integerValue(t.image)) ; }
 }
+
+// ---- SPARQL/Update
+
+#ifdef UPDATE
+void UpdateUnit() : {}
+{
+    Prologue()
+    ( 
+      //( Update() | Manage() | Transaction() )
+      ( Update() | Manage() )
+    ) *
+    <EOF>
+}
+
+void Update() : { Update up = null ; }
+{
+  (  up = Modify() | up = Insert() | up = Delete() | up = Load() | up = Clear() )
+    { getRequest().addUpdate(up) ; }
+}
+
+UpdateModify Modify() : 
+{ UpdateModify up = new UpdateModify() ; String iri ; Template template ; Element el ; }
+{
+    <MODIFY>
+    ( iri = GraphIRI() { up.addGraphName(iri) ; } )*
+    <DELETE> template = ConstructTemplate() { up.setDeleteTemplate(template) ; }
+    <INSERT> template = ConstructTemplate() { up.setInsertTemplate(template) ; }
+    ( el = UpdatePattern() { up.setPattern(el) ; } )?
+    { return up ; }
+}
+
+Update Delete() : { Update up ; }
+{
+  <DELETE> 
+  ( up = DeleteData() | up = DeleteTemplate() )
+    { return up ; }
+}
+
+Update DeleteData() : 
+{ UpdateDeleteData update = new UpdateDeleteData() ; 
+  String iri ; Template template ;
+  Token t ; }
+{
+    t = <DATA>
+    ((<FROM>)? iri = IRIref() { update.addGraphName(iri) ; } )*
+   template = ConstructTemplate()
+   { Graph triples = convertTemplateToTriples(template,
+                                        t.beginLine, t.beginColumn) ;
+     update.setData(triples) ;
+     return update ;
+    }
+}
+
+Update DeleteTemplate() : 
+{ UpdateDelete up = new UpdateDelete() ; String iri ; Template template ; Element el ;  }
+{
+  ((<FROM>)? iri = IRIref() { up.addGraphName(iri) ; } )*
+  template = ConstructTemplate() { up.setDeleteTemplate(template) ; }
+    ( el = UpdatePattern() { up.setPattern(el) ; } )?
+    { return up ; }
+}
+
+Update Insert() : { Update up ; }
+{
+  <INSERT> 
+  ( up = InsertData() | up = InsertTemplate() )
+    { return up ; }
+}
+
+Update InsertData() :
+{ UpdateInsertData update = new UpdateInsertData() ;
+  String iri ; Template template ;
+  Token t ; }
+{
+   t = <DATA>
+   ((<INTO>)? iri = IRIref() { update.addGraphName(iri) ; } )*
+   template = ConstructTemplate()
+   { Graph triples = convertTemplateToTriples(template,
+                                        t.beginLine, t.beginColumn) ;
+     update.setData(triples) ;
+     return update ;
+    }
+}
+
+UpdatePattern InsertTemplate() :
+{ UpdateInsert up = new UpdateInsert() ; String iri ; Template template ; Element el ; }
+{
+  ((<INTO>)? iri = IRIref() { up.addGraphName(iri) ; } )*
+  template = ConstructTemplate() { up.setInsertTemplate(template) ; }
+    ( el = UpdatePattern() { up.setPattern(el) ; } )?
+    { return up ; }
+}
+
+String GraphIRI() : { String iri ; }
+{
+    <GRAPH> iri = IRIref() { return iri ; }
+}
+
+UpdateLoad Load() : { UpdateLoad up = new UpdateLoad() ; String iri ;}
+{
+    <LOAD> ( iri = IRIref() { up.addLoadIRI(iri) ; } )+
+    (<INTO> iri = IRIref() { up.setGraphName(iri) ; } )? 
+    { return up ; }
+}
+
+UpdateClear Clear() : { UpdateClear up = new UpdateClear(); String iri ; }
+{
+    <CLEAR>
+    ( iri = GraphIRI() { up.setGraphName(iri) ; } )?
+    { return up ; }
+}
+
+void Manage() : { GraphMgt mgt ; }
+{
+    ( mgt = Create() | mgt = Drop() )
+    { getRequest().addUpdate(mgt) ; }
+}
+
+UpdateCreate Create() : { boolean silent = false ; String iri ; }
+{
+    <CREATE>
+    (<SILENT> { silent = true ; } )?
+    iri = GraphIRI()
+    { return new UpdateCreate( iri, silent); }
+}
+
+UpdateDrop Drop() : { boolean silent = false ; String iri ; }
+{
+    <DROP>
+    (<SILENT>{  silent = true ; } )?
+    iri = GraphIRI()
+    { return new UpdateDrop(iri, silent) ; }
+}
+
+Element UpdatePattern() : { Element el ; }
+{
+   (<WHERE>)? el = GroupGraphPattern() { return el ; }
+}
+
+// void Transaction() : {}
+// {
+//     TransBegin() | TransCommit() | TransAbort()
+// }
+// 
+// void TransBegin() : {}
+// {
+//     <BEGIN> (IRIref())?
+//     { System.out.println("++ Begin") ; }
+// }
+// 
+// void TransCommit() : {}
+// {
+//     <COMMIT> (IRIref())?
+//     { System.out.println("++ Commit") ; }
+// }
+// 
+// void TransAbort() : {}
+// {
+//     <ABORT> (IRIref())?
+//     { System.out.println("++ Abort") ; }
+// }
+#endif
 
 // ---- General Graph Pattern 
 
@@ -492,11 +658,13 @@ ExprList ArgList() : { Expr expr ;  ExprList args = new ExprList() ; }
 
 Template ConstructTemplate() : { }
 {
-    { TemplateGroup g = new TemplateGroup() ; }
+    { setInConstructTemplate(true) ;
+      TemplateGroup g = new TemplateGroup() ; }
   <LBRACE> 
     (ConstructTriples(g))?
   <RBRACE>
-    { return g ; }
+    { setInConstructTemplate(false) ;
+      return g ; }
 }
 
 void ConstructTriples(TemplateGroup acc) : { }
@@ -1231,6 +1399,32 @@ TOKEN [IGNORE_CASE] :
 |  <TRUE:         "true" >
 |  <FALSE:        "false" >
 }
+
+#ifdef UPDATE
+// SPARQL/Update parts.
+
+TOKEN [IGNORE_CASE] :
+{
+  <MODIFY:      "modify">
+| <INSERT:      "insert">
+| <DELETE:      "delete">
+| <DATA:        "data">
+
+| <ADD:         "add">
+| <REMOVE:      "remove">
+
+| <LOAD:        "load" >
+| <CLEAR:       "clear" >
+| <CREATE:      "create" >
+| <SILENT:      "silent" >
+| <DROP:        "drop" >
+| <INTO:        "into" >
+
+//| <BEGIN:       "begin" >
+//| <COMMIT:      "commit" >
+//| <ABORT:       "abort" >
+}
+#endif
 
 // -------------------------------------------------
 

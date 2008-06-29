@@ -1,6 +1,6 @@
 // SPARQL/Update
 // Author:  Andy Seaborne andy.seaborne@hp.com
-// (c) Copyright 2007 Hewlett-Packard Development Company, LP
+// (c) Copyright 2007, 2008 Hewlett-Packard Development Company, LP
 // All rights reserved.
 // See end of file for details.
 
@@ -16,7 +16,7 @@ options
 
 PARSER_BEGIN(SPARQLUpdateParser)
 /*
- * (c) Copyright 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007, 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  */
 
@@ -33,7 +33,7 @@ public class SPARQLUpdateParser extends SPARQLUpdateParserBase
 }
 PARSER_END(SPARQLUpdateParser)
 
-// SPARQUL parts.
+// SPARQL/Update parts.
 
 TOKEN [IGNORE_CASE] :
 {
@@ -1032,7 +1032,7 @@ TOKEN:
 }
 
 /*
- * (c) Copyright 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007, 2008 Hewlett-Packard Development Company, LP
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions

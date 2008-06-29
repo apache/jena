@@ -1,7 +1,7 @@
 
 DOCUMENT START
 NON-TERMINALS
-	CompilationUnit	:=	Query <EOF>
+	QueryUnit	:=	Query <EOF>
 	Query	:=	Prologue ( SelectQuery | ConstructQuery | DescribeQuery | AskQuery )
 	Prologue	:=	( BaseDecl )? ( PrefixDecl )*
 	BaseDecl	:=	<BASE> IRI_REF
@@ -23,6 +23,7 @@ NON-TERMINALS
 	LimitOffsetClauses	:=	( LimitClause ( OffsetClause )? | OffsetClause ( LimitClause )? )
 	LimitClause	:=	<LIMIT> <INTEGER>
 	OffsetClause	:=	<OFFSET> <INTEGER>
+// ---- SPARQL/Update
 // ---- General Graph Pattern 
 	GroupGraphPattern	:=	<LBRACE> GroupGraphPatternSub <RBRACE>
 	GroupGraphPatternSub	:=	( TriplesBlock )? ( ( GraphPatternNotTriples | Filter ) ( <DOT> )? ( TriplesBlock )? )*

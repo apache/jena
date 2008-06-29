@@ -1,4 +1,5 @@
 // ARQ/SPARQL Grammar - native syntax for the query engine
+// NB An update can contain a nested SELECT
 // Author:  Andy Seaborne andy.seaborne@hp.com
 // (c) Copyright 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
 // All rights reserved.
@@ -36,6 +37,9 @@ import com.hp.hpl.jena.sparql.path.* ;
 
 
 
+
+
+
 public class SPARQLParser extends SPARQLParserBase
 {
     private static long UNSET = P_Mod.UNSET ;
@@ -44,7 +48,7 @@ public class SPARQLParser extends SPARQLParserBase
 }
 PARSER_END(SPARQLParser)
 
-void CompilationUnit(): { }
+void QueryUnit(): { }
 {
   Query() <EOF>
 }
@@ -64,7 +68,7 @@ void Prologue() : {}
 void BaseDecl() : { String iri ; }
 {
   <BASE> iri = IRI_REF()
-  { getQuery().setBaseURI(iri) ; }
+  { getPrologue().setBaseURI(iri) ; }
 }
 
 
@@ -72,7 +76,7 @@ void PrefixDecl() : { Token t ; String iri ; }
 {
     <PREFIX> t = <PNAME_NS> iri = IRI_REF()
       { String s = fixupPrefix(t.image, t.beginLine, t.beginColumn) ;
-        getQuery().setPrefix(s, iri) ; }
+        getPrologue().setPrefix(s, iri) ; }
 }
 
 // ---- Query type clauses
@@ -102,11 +106,9 @@ void SelectQuery() : { Var v ; Expr expr ; }
 void ConstructQuery() : { Template t ; }
 {
   <CONSTRUCT>
-    { getQuery().setQueryConstructType() ;
-      setInConstructTemplate(true) ; }
+    { getQuery().setQueryConstructType() ; }
   t = ConstructTemplate()
-    { setInConstructTemplate(false) ;
-      getQuery().setQueryResultStar(false) ;
+    { getQuery().setQueryResultStar(false) ;
       getQuery().setConstructTemplate(t) ; }
   ( DatasetClause() )*
   WhereClause()
@@ -233,6 +235,7 @@ void OffsetClause() : { Token t ; }
     { getQuery().setOffset(integerValue(t.image)) ; }
 }
 
+// ---- SPARQL/Update
 // ---- General Graph Pattern 
 
 Element GroupGraphPattern() : { Element el = null ; Token t ; }
@@ -375,11 +378,13 @@ ExprList ArgList() : { Expr expr ; ExprList args = new ExprList() ; }
 
 Template ConstructTemplate() : { }
 {
-    { TemplateGroup g = new TemplateGroup() ; }
+    { setInConstructTemplate(true) ;
+      TemplateGroup g = new TemplateGroup() ; }
   <LBRACE>
     (ConstructTriples(g))?
   <RBRACE>
-    { return g ; }
+    { setInConstructTemplate(false) ;
+      return g ; }
 }
 
 void ConstructTriples(TemplateGroup acc) : { }
@@ -433,6 +438,10 @@ Node Verb() : {Node p ;}
 {
 //   ( p = VarOrBlankNodeOrIRIref() | <KW_A> { p = nRDFtype ; } )
   ( p = VarOrIRIref() | <KW_A> { p = nRDFtype ; } )
+
+    // ^path
+    // Potential path : mod,path op.
+
     { return p ; }
 }
 
@@ -903,7 +912,6 @@ TOKEN [IGNORE_CASE] :
 | <TRUE: "true" >
 | <FALSE: "false" >
 }
-
 // -------------------------------------------------
 
 TOKEN :

@@ -25,6 +25,8 @@ import com.hp.hpl.jena.sparql.syntax.Template;
 import com.hp.hpl.jena.sparql.syntax.TemplateGroup;
 import com.hp.hpl.jena.sparql.syntax.TemplateTriple;
 import com.hp.hpl.jena.sparql.util.NodeFactory;
+import com.hp.hpl.jena.sparql.util.graph.GraphUtils;
+
 import com.hp.hpl.jena.update.GraphStore;
 import com.hp.hpl.jena.update.UpdateAction;
 import com.hp.hpl.jena.update.UpdateFactory;
@@ -35,6 +37,9 @@ public abstract class TestUpdateGraph extends TestUpdateBase
 {
     protected static Node s = NodeFactory.create("<http://example/r>") ;
     protected static Node p = NodeFactory.create("<http://example/p>") ;
+    protected static Node q = NodeFactory.create("<http://example/q>") ;
+    protected static Node v = NodeFactory.create("<http://example/v>") ;
+    
     protected static Node o1 = NodeFactory.create("2007") ;
     protected static Triple triple1 =  new Triple(s,p,o1) ;
     protected static Node o2 = NodeFactory.create("1066") ;
@@ -231,6 +236,48 @@ public abstract class TestUpdateGraph extends TestUpdateBase
         assertTrue(graphEmpty(gStore.getDefaultGraph())) ;
     }
 
+    public void testUpdateScript4()
+    {
+        GraphStore gStore = getEmptyGraphStore() ;
+        script(gStore, "data-1.rup") ;
+        assertTrue(graphContains(gStore.getDefaultGraph(),
+                                 new Triple(s,p,NodeFactory.create("123")))) ;
+    }
+    
+    public void testUpdateScript5()
+    {
+        GraphStore gStore = getEmptyGraphStore() ;
+        script(gStore, "data-2.rup") ;
+        
+        
+        Graph g = GraphUtils.makePlainGraph() ;
+        Node b = Node.createAnon() ;
+        
+        g.add(new Triple(s, p, b)) ;
+        g.add(new Triple(b, q, v)) ;
+        assertTrue(g.isIsomorphicWith(gStore.getDefaultGraph())) ;
+    }
+    
+    public void testUpdateScript6()
+    {
+        GraphStore gStore = getEmptyGraphStore() ;
+        script(gStore, "data-3.rup") ;
+        assertTrue(graphContains(gStore.getGraph(graphIRI),
+                                 new Triple(s,p,NodeFactory.create("123")))) ;
+    }
+    
+    public void testUpdateScript7()
+    {
+        GraphStore gStore = getEmptyGraphStore() ;
+        script(gStore, "data-4.rup") ;
+        assertTrue(graphContains(gStore.getDefaultGraph(),
+                                 new Triple(s,p,NodeFactory.create("123")))) ;
+        Graph g = gStore.getGraph(graphIRI) ;
+        assertTrue(graphContains(gStore.getGraph(graphIRI),
+                                 new Triple(s,p,o2))) ;
+    }
+    
+    
     private Graph testUpdateInitialBindingWorker(Var v, Node n)
     {
         GraphStore gStore = getEmptyGraphStore() ;

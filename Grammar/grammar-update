@@ -1,6 +1,10 @@
 #!/bin/bash
 # Parser builder
 
+echo "merged into master.jj"
+echo "sparql-update is no longer the update grammar"
+exit 1
+
 GRAMMAR="${GRAMMAR:-"sparql-update.jj"}"
 BASE="com/hp/hpl/jena/sparql/"
 # --------------------------------------------------------
