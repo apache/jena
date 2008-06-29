@@ -169,7 +169,7 @@ public class WriterOp
         public void visit(OpPath opPath)
         {
             //start(opPath, NoNL) ;
-            formatTripePath(opPath.getTriplePath()) ;
+            formatTriplePath(opPath.getTriplePath()) ;
             //finish(opPath) ;
         }
 
@@ -495,7 +495,7 @@ public class WriterOp
         private void formatQuad(Quad qp)
         { WriterNode.output(out, qp, sContext) ; }
         
-        private void formatTripePath(TriplePath tp)
+        private void formatTriplePath(TriplePath tp)
         { WriterPath.output(out, tp, sContext) ; }
     }
 }

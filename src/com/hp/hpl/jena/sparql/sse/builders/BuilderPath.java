@@ -130,13 +130,20 @@ public class BuilderPath
         {
             BuilderLib.checkLength(4, 4, list, "path mod: wanted 3 arguments") ;
             
-            long min = BuilderNode.buildInt(list, 1) ;
-            long max = BuilderNode.buildInt(list, 2) ;
+            long min = modInt(list.get(1)) ;
+            long max = modInt(list.get(2)) ;
             Path path  = build(list, 3) ;
             return new P_Mod(path, min, max) ;
         }
     };
 
+    static long modInt(Item item)
+    {
+        if ( "*".equals(item.getSymbol()) ) return P_Mod.INF ;
+        //if ( "****".equals(item.getSymbol()) ) return P_Mod.UNSET ;
+        return BuilderNode.buildInt(item) ;
+    }
+    
     final protected Build buildRev = new Build()
     {
         public Path make(ItemList list)

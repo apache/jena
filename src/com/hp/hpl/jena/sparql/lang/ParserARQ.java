@@ -46,8 +46,6 @@ class ParserARQ extends Parser
             // Last valid token : not the same as token error message - but this should not happen
             int col = parser.token.endColumn ;
             int line = parser.token.endLine ;
-            //parser.token_source.
-            //parser.token_source.
             throw new QueryParseException(tErr.getMessage(), line, col) ; }
         catch (QueryException ex) { throw ex ; }
         catch (JenaException ex)  { throw new QueryException(ex.getMessage(), ex) ; }

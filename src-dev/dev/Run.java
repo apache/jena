@@ -13,29 +13,26 @@ import java.util.Stack;
 import arq.sparql;
 import arq.sse_query;
 
+import com.hp.hpl.jena.rdf.model.Model;
+
+import com.hp.hpl.jena.util.FileManager;
+
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.QueryExecution;
-import com.hp.hpl.jena.query.QueryExecutionFactory;
-import com.hp.hpl.jena.query.QueryFactory;
-import com.hp.hpl.jena.query.QuerySolutionMap;
-import com.hp.hpl.jena.query.ResultSetFormatter;
-import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.shared.PrefixMapping;
 import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
 import com.hp.hpl.jena.shared.uuid.JenaUUID;
-import com.hp.hpl.jena.sparql.algebra.Algebra;
-import com.hp.hpl.jena.sparql.algebra.Op;
-import com.hp.hpl.jena.sparql.algebra.Transform;
-import com.hp.hpl.jena.sparql.algebra.TransformCopy;
-import com.hp.hpl.jena.sparql.algebra.Transformer;
+import com.hp.hpl.jena.vocabulary.RDF;
+
+import com.hp.hpl.jena.sparql.algebra.*;
 import com.hp.hpl.jena.sparql.algebra.op.OpBGP;
 import com.hp.hpl.jena.sparql.algebra.op.OpJoin;
 import com.hp.hpl.jena.sparql.algebra.op.OpLeftJoin;
+import com.hp.hpl.jena.sparql.algebra.op.OpPath;
 import com.hp.hpl.jena.sparql.core.BasicPattern;
 import com.hp.hpl.jena.sparql.core.PathBlock;
 import com.hp.hpl.jena.sparql.core.TriplePath;
+import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.path.Path;
 import com.hp.hpl.jena.sparql.path.PathLib;
 import com.hp.hpl.jena.sparql.path.PathParser;
@@ -44,13 +41,10 @@ import com.hp.hpl.jena.sparql.sse.SSE;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
 import com.hp.hpl.jena.sparql.util.QueryExecUtils;
 import com.hp.hpl.jena.sparql.util.StringUtils;
-import com.hp.hpl.jena.update.GraphStore;
-import com.hp.hpl.jena.update.GraphStoreFactory;
-import com.hp.hpl.jena.update.UpdateAction;
-import com.hp.hpl.jena.update.UpdateFactory;
-import com.hp.hpl.jena.update.UpdateRequest;
-import com.hp.hpl.jena.util.FileManager;
-import com.hp.hpl.jena.vocabulary.RDF;
+
+import com.hp.hpl.jena.query.*;
+
+import com.hp.hpl.jena.update.*;
 
 public class Run
 {
@@ -104,6 +98,10 @@ public class Run
     
     private static void path()
     {
+//        String[] a = { "--print=op", "--file=Q.sse" } ;
+//        arq.sse_query.main(a) ;
+//        System.exit(0) ;
+        
         Model model = FileManager.get().loadModel("D.ttl") ;
 
         PrefixMapping pmap = new PrefixMappingImpl() ;
@@ -119,9 +117,20 @@ public class Run
             path1(":p*/:q", pmap) ;
             path1(":p^:q", pmap) ;
         }
-        if( true )
+        
+        Path path = PathParser.parse("rdf:type/rdfs:subClassOf*", pmap) ;
+        //path = new P_Link(RDF.type.asNode()) ;
+        
+        TriplePath triplePath = new TriplePath(Var.alloc("s"), path, Var.alloc("o")) ; 
+        OpPath opPath = new OpPath(triplePath) ;
+        System.out.println(opPath.toString(pmap)) ;
+        String x = opPath.toString(pmap) ;
+        Op op = SSE.parseOp(x, pmap) ;
+        System.out.println(op.toString(pmap)) ;
+        
+        
+        if( false )
         {
-            Path path = PathParser.parse("rdf:type/rdfs:subClassOf*", pmap) ;
             String uri = JenaUUID.generate().asURN() ;
             uri = RDF.type.getURI() ;
             

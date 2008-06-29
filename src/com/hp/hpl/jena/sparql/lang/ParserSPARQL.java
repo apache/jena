@@ -77,9 +77,6 @@ public class ParserSPARQL extends Parser
 
         try {
             query.setStrict(true) ;
-            // If reading from an InputStream, do 
-            // Reader r = new InputStreamreader(in, "UTF-8")  and 
-            // parser = new SPARQLParser(r) ;
             parser.setQuery(query) ;
             action.exec(parser) ;
         }
@@ -94,8 +91,6 @@ public class ParserSPARQL extends Parser
             // Last valid token : not the same as token error message - but this should not happen
             int col = parser.token.endColumn ;
             int line = parser.token.endLine ;
-            //parser.token_source.
-            //parser.token_source.
             throw new QueryParseException(tErr.getMessage(), line, col) ; }
         
         catch (QueryException ex) { throw ex ; }

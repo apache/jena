@@ -22,9 +22,12 @@ import com.hp.hpl.jena.query.ARQ;
 import com.hp.hpl.jena.query.QueryParseException;
 import com.hp.hpl.jena.rdf.model.AnonId;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException;
+import com.hp.hpl.jena.sparql.ARQNotImplemented;
 import com.hp.hpl.jena.sparql.core.Prologue;
+import com.hp.hpl.jena.sparql.core.TriplePath;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.expr.Expr;
+import com.hp.hpl.jena.sparql.path.Path;
 import com.hp.hpl.jena.sparql.syntax.Element;
 import com.hp.hpl.jena.sparql.syntax.ElementGroup;
 import com.hp.hpl.jena.sparql.syntax.Template;
@@ -343,6 +346,17 @@ public class ParserBase
         acc.addTriple(index, new Triple(s, p, o)) ;
     }
     
+    protected void insert(TripleCollector acc, Node s, Path path, Node o)
+    {
+        TriplePath tp = new TriplePath(s, path, o) ;
+        throw new ARQNotImplemented("insert/Path") ;
+    }
+    
+    protected void insert(TripleCollector acc, int index, Node s, Path path, Node o)
+    {
+        throw new ARQNotImplemented("insert/Path") ;
+    }
+    
     
 
     protected Expr asExpr(Node n)
@@ -373,7 +387,7 @@ public class ParserBase
     protected Graph convertTemplateToTriples(Template template, int line, int col)
     {
         List acc = new ArrayList() ;
-        TriplesCollector collector = new TriplesCollector(acc, line, col) ;
+        TriplesDataCollector collector = new TriplesDataCollector(acc, line, col) ;
         template.visit(collector) ;
         Graph g = GraphUtils.makePlainGraph() ;
         g.getBulkUpdateHandler().add(acc) ;

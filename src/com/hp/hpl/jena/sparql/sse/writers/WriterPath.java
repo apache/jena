@@ -30,7 +30,7 @@ public class WriterPath implements PathVisitor
     public static void output(IndentedWriter out, Path path, SerializationContext naming)
     {
         WriterPath w = new WriterPath(out, naming.getPrologue()) ;
-        path.visit(w) ;
+        w.output(path) ;
         w.out.flush();
     }
     
@@ -38,16 +38,29 @@ public class WriterPath implements PathVisitor
     {
         WriterLib.start(out, Tags.tagTriplePath, NoNL) ;
         outputPlain(out, tp, naming) ;
-        out.print(Tags.tagTriplePath) ;
+        WriterLib.finish(out, Tags.tagTriplePath) ;
     }
     
     public static void outputPlain(IndentedWriter out, TriplePath tp, SerializationContext naming)
     {
-        WriterNode.output(out, tp.getSubject(), naming) ;
-        out.print(" ") ;
-        WriterPath.output(out, tp.getPath(), naming) ;
-        out.print(" ") ;
-        WriterNode.output(out, tp.getObject(), naming) ;
+        boolean oneLiner = oneLiner(tp.getPath()) ;
+        if ( oneLiner )
+        {
+            WriterNode.output(out, tp.getSubject(), naming) ;
+            out.print(" ") ;
+            WriterPath.output(out, tp.getPath(), naming) ;
+            out.print(" ") ;
+            WriterNode.output(out, tp.getObject(), naming) ;
+        }
+        else
+        {
+            out.println() ;
+            WriterNode.output(out, tp.getSubject(), naming) ;
+            out.println() ;
+            WriterPath.output(out, tp.getPath(), naming) ;
+            out.println() ;
+            WriterNode.output(out, tp.getObject(), naming) ;
+        }
     }
     
     public static String asString(Path path) { return asString(path, null) ; }
@@ -68,6 +81,11 @@ public class WriterPath implements PathVisitor
     { 
         this.out = indentedWriter ; 
         this.prologue = prologue ;
+    }
+    
+    private void output(Path path)
+    {
+        path.visit(this) ;
     }
     
     //@Override
@@ -92,11 +110,13 @@ public class WriterPath implements PathVisitor
     {
         out.print("(") ;
         out.print(nodeName) ;
+
+        // never one line
         out.println() ;
         out.incIndent() ;
-        path2.getLeft().visit(this) ;
+        output(path2.getLeft()) ;
         out.println() ;
-        path2.getRight().visit(this) ;
+        output(path2.getRight()) ;
         out.decIndent() ;
         out.print(" )") ;
     }
@@ -107,14 +127,32 @@ public class WriterPath implements PathVisitor
         out.print("(") ;
         out.print(Tags.tagPathMod) ;
         out.print(" ") ;
-        out.print(Long.toString(pathMod.getMin())) ;
+        out.print(modInt(pathMod.getMin())) ;
         out.print(" ") ;
-        out.print(Long.toString(pathMod.getMax())) ;
-        out.println() ;
+        out.print(modInt(pathMod.getMax())) ;
+        
+        if ( oneLiner(pathMod.getSubPath()) )
+            out.print(" ") ;
+        else
+            out.println() ;
         out.incIndent() ;
-        pathMod.getSubPath().visit(this) ;
+        output(pathMod.getSubPath()) ;
         out.decIndent() ;
-        out.print(" )") ;
+        out.print(")") ;
+    }
+
+    private static String modInt(long value)
+    {
+        if ( value == P_Mod.INF ) return "*" ;
+        //if ( value == P_Mod.UNSET ) return " ;
+        
+        return Long.toString(value) ;
+    }
+    
+    
+    private static boolean oneLiner(Path path)
+    {
+        return (path instanceof P_Link) ;
     }
 
     public void visit(P_Reverse reversePath)
@@ -123,7 +161,7 @@ public class WriterPath implements PathVisitor
         out.print(Tags.tagPathReverse) ;
         out.println() ;
         out.incIndent() ;
-        reversePath.getSubPath().visit(this) ;
+        output(reversePath.getSubPath()) ;
         out.decIndent() ;
         out.print(" )") ;
     }

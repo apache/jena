@@ -16,13 +16,13 @@ import com.hp.hpl.jena.sparql.syntax.TemplateGroup;
 import com.hp.hpl.jena.sparql.syntax.TemplateTriple;
 import com.hp.hpl.jena.sparql.syntax.TemplateVisitor;
 
-public class TriplesCollector implements TemplateVisitor
+public class TriplesDataCollector implements TemplateVisitor
 {
     private Collection acc ;
     private int line ;
     private int col ;
 
-    public TriplesCollector(Collection acc, int line, int col)
+    public TriplesDataCollector(Collection acc, int line, int col)
     { 
         this.acc = acc ;
         this.line = line ;

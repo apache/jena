@@ -1,4 +1,8 @@
-(prefix ((: <http://example/>))
-  (propfunc :f ?x ?y
-    (bgp [triple ?s ?p ?o])
-    ))
+(prefix ((:      <http://example/>)
+	  (rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>)
+	 (rdfs:   <http://www.w3.org/2000/01/rdf-schema#>))
+  (path 
+    ?s
+    (seq rdf:type (mod 0 * rdfs:subClassof))
+    ?t))
+
