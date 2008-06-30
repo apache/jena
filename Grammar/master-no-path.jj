@@ -534,21 +534,10 @@ Element GroupGraphPatternSub() : { Element el = null ; }
       { return elg ; }
 }
 
-// -- TriplesBlock
-#ifdef SPARQL
 Element TriplesBlock(ElementTriplesBlock acc) : { }
-#endif
-#ifdef ARQ
-Element TriplesBlock(ElementPathBlock acc) : { }
-#endif
 {
   { if ( acc == null )
-#ifdef SPARQL
-        acc = new ElementTriplesBlock() ;
-#endif
-#ifdef ARQ
-        acc = new ElementPathBlock() ;
-#endif
+      acc = new ElementTriplesBlock() ;
   }
   TriplesSameSubject(acc)
   ( <DOT> (TriplesBlock(acc))? )?
@@ -696,31 +685,11 @@ void TriplesSameSubject(TripleCollector acc) : { Node s ; }
   PropertyList(s, acc)
 }
 
-void PropertyListNotEmpty(Node s, TripleCollector acc) : 
-    { Path path = null ; Node p = null ; }
+void PropertyListNotEmpty(Node s, TripleCollector acc) : { Node p ; }
 {
-#ifdef SPARQL
-    p = Verb()
-#endif
-#ifdef ARQ
-  ( path = VerbPath()
-  | p = VerbSimple()
-  )
-#endif
-  ObjectList(s, p, path, acc)
-  ( <SEMICOLON> 
-    (
-#ifdef SPARQL
-       p = Verb()
-#endif
-#ifdef ARQ
-      ( path = VerbPath()
-      | p = VerbSimple()
-      )
-#endif
-      ObjectList(s, p, path, acc)
-    )? 
-  )*
+  p = Verb()
+  ObjectList(s, p, acc)
+  (<SEMICOLON> (p = Verb() ObjectList(s, p, acc))? )*
 #if 0
   |
   Reification(s, acc)
@@ -732,45 +701,29 @@ void PropertyList(Node s, TripleCollector acc) : { }
   ( PropertyListNotEmpty(s, acc) ) ?
 }
 
-void ObjectList(Node s,  Node p, Path path, TripleCollector acc): { Node o ; } 
+void ObjectList(Node s, Node p, TripleCollector acc): { Node o ; } 
 {
-  Object(s, p, path, acc)
-  ( <COMMA> Object(s, p, path, acc) )*
+  Object(s, p, acc)
+  ( <COMMA> Object(s, p, acc) )*
 }
 
-void Object(Node s, Node p, Path path, TripleCollector acc): { Node o ; }
+void Object(Node s, Node p, TripleCollector acc): { Node o ; }
 {
     { int mark = acc.mark() ; }
   o = GraphNode(acc) 
-  { insert(acc, mark, s, p, path, o) ; }
+  { insert(acc, mark, s, p, o) ; }
 }
 
-// Property, no path
-#ifdef SPARQL
-Node Verb() : { Node p ;}
+Node Verb() : {Node p ;}
 {
-// Blank nodes as predicates
 //   ( p = VarOrBlankNodeOrIRIref() | <KW_A> { p = nRDFtype ; } )
   ( p = VarOrIRIref() | <KW_A> { p = nRDFtype ; } )
-  { return p ; }
+
+    // ^path
+    // Potential path : mod,path op.
+
+    { return p ; }
 }
-#endif
-
-#ifdef ARQ
-// Includes P_Link(URI)
-Path VerbPath() : {Node p ; Path path ; }
-{
-  path = Path() { return path ; }
-}
-
-Node VerbSimple() : { Node p ; }
-{
-  ( p = Var() | <KW_A> { p = nRDFtype ; } )
-  { return p ; }
-}
-#endif
-
-
 
 // -------- Paths
 
@@ -782,43 +735,37 @@ Path PathUnit() : { Path p ; }
     { return p ; }
 }
 
-// Weakest outermost
-
-Path Path() : { Path p ; }
-{ 
-  p = PathAlternative() { return p ; }
-}
-
-Path PathAlternative() : { Path p1 , p2 ; }
+Path Path() : { Path p , p2 ; }
 {
-   p1 = PathSequence()
+   p = PathElt()
    (
-      <VBAR> p2 = PathAlternative()
-      { return new P_Alt(p1, p2) ; }
-   ) ?
-   { return p1 ; }
-}
+      <VBAR> p2 = Path()     // OR
+      { return new P_Alt(p, p2) ; }
+    | <SLASH> p2 = Path()
+      { return new P_Seq(p, p2) ; }
+    | <CARROT> p2 = Path()
+      { return new P_Seq(p, new P_Reverse(p2)) ; }
+   )?
+    { return p ; }
 
-Path PathSequence() : { Path p1 , p2 ; }
-{
-    p1 = PathElt()
-    ( <SLASH> p2 = PathSequence()
-      { return new P_Seq(p1, p2) ; }
-    | <CARROT> p2 = PathSequence()
-      { return new P_Seq(p1, new P_Reverse(p2)) ; }
-    )?
-   { return p1; }
 //   // Different from N3 meaning
 //   | <PLING> Path()    // ! Forward path
+//   | <CARROT> Path()   // ^ Reverse path
+// 
+//   // Confusing - not "s -> p -> o"
+
+  // Only forward paths  %  &  ~  @  +  =
+
 //   | <FPATH> p2 = Path()    // -> Forward path :p/:q
 //       { return new P_Seq(p, p2) ; }
 //   | <RPATH> p2 = Path()    // <- Reverse path :
 //       { return new P_SeqR(p, p2) ; }
+
 //  | <RSLASH> Path()
 
 }
 
-// Primary or it's reverse (unary ^)
+// Primary or it's reverse.
 Path PathElt() : { String str ; Node n ; Path p ; }
 { 
    ( p = PathPrimary() 
@@ -829,6 +776,17 @@ Path PathElt() : { String str ; Node n ; Path p ; }
    ( p = PathMod(p) )?
    { return p ; }
 }
+
+Path PathPrimary() : { String str ; Node n ; Path p ; }
+{
+  ( 
+    str = IRIref()
+     { n = Node.createURI(str) ; p = new P_Link(n) ; }
+  | <LPAREN> p = Path() <RPAREN>
+  )
+    { return p ; }
+}
+
 
 Path PathMod(Path p) : { long i1 = UNSET ; long i2 = UNSET ; }
 {
@@ -852,17 +810,6 @@ Path PathMod(Path p) : { long i1 = UNSET ; long i2 = UNSET ; }
     //   { return new P_Mod(p, i1, i2) ; } 
    )
 }
-
-Path PathPrimary() : { String str ; Node n ; Path p ; }
-{
-  ( 
-    str = IRIref()
-     { n = Node.createURI(str) ; p = new P_Link(n) ; }
-  | <LPAREN> p = Path() <RPAREN>
-  )
-    { return p ; }
-}
-
 
 long Integer() : {Token t ;}
 {
