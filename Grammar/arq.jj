@@ -507,10 +507,12 @@ Element GroupGraphPatternSub() : { Element el = null ; }
       { return elg ; }
 }
 
-Element TriplesBlock(ElementTriplesBlock acc) : { }
+// ***
+Element TriplesBlock(ElementPathBlock acc) : { }
 {
   { if ( acc == null )
-      acc = new ElementTriplesBlock() ;
+        // acc = new ElementBlock() ;
+        acc = new ElementPathBlock() ;
   }
   TriplesSameSubject(acc)
   ( <DOT> (TriplesBlock(acc))? )?
@@ -658,7 +660,8 @@ void TriplesSameSubject(TripleCollector acc) : { Node s ; }
   PropertyList(s, acc)
 }
 
-void PropertyListNotEmpty(Node s, TripleCollector acc) : { Node p ; }
+// ***
+void PropertyListNotEmpty(Node s, TripleCollector acc) : { Path p ; }
 {
   p = Verb()
   ObjectList(s, p, acc)
@@ -674,28 +677,36 @@ void PropertyList(Node s, TripleCollector acc) : { }
   ( PropertyListNotEmpty(s, acc) ) ?
 }
 
-void ObjectList(Node s, Node p, TripleCollector acc): { Node o ; }
+// ***
+void ObjectList(Node s, Path p, TripleCollector acc): { Node o ; }
 {
   Object(s, p, acc)
   ( <COMMA> Object(s, p, acc) )*
 }
 
-void Object(Node s, Node p, TripleCollector acc): { Node o ; }
+// ***
+void Object(Node s, Path p, TripleCollector acc): { Node o ; }
 {
     { int mark = acc.mark() ; }
   o = GraphNode(acc)
   { insert(acc, mark, s, p, o) ; }
 }
 
-Node Verb() : {Node p ;}
+// ***
+Path Verb() : {Node p ; Path path ; }
 {
+// Blank nodes as predicates
 //   ( p = VarOrBlankNodeOrIRIref() | <KW_A> { p = nRDFtype ; } )
-  ( p = VarOrIRIref() | <KW_A> { p = nRDFtype ; } )
 
-    // ^path
-    // Potential path : mod,path op.
 
-    { return p ; }
+
+
+
+
+  ( path = Path() { return path ; }
+  | <KW_A> { return new P_Link(nRDFtype) ; }
+  )
+
 }
 
 // -------- Paths
