@@ -22,7 +22,6 @@ import com.hp.hpl.jena.query.ARQ;
 import com.hp.hpl.jena.query.QueryParseException;
 import com.hp.hpl.jena.rdf.model.AnonId;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException;
-import com.hp.hpl.jena.sparql.ARQNotImplemented;
 import com.hp.hpl.jena.sparql.core.Prologue;
 import com.hp.hpl.jena.sparql.core.TriplePath;
 import com.hp.hpl.jena.sparql.core.Var;
@@ -35,7 +34,6 @@ import com.hp.hpl.jena.sparql.syntax.TripleCollector;
 import com.hp.hpl.jena.sparql.util.ExprUtils;
 import com.hp.hpl.jena.sparql.util.LabelToNodeMap;
 import com.hp.hpl.jena.sparql.util.graph.GraphUtils;
-
 import com.hp.hpl.jena.vocabulary.RDF;
 
 public class ParserBase
@@ -348,16 +346,13 @@ public class ParserBase
     
     protected void insert(TripleCollector acc, Node s, Path path, Node o)
     {
-        TriplePath tp = new TriplePath(s, path, o) ;
-        throw new ARQNotImplemented("insert/Path") ;
+        acc.addTriplePath(new TriplePath(s, path, o)) ;
     }
     
     protected void insert(TripleCollector acc, int index, Node s, Path path, Node o)
     {
-        throw new ARQNotImplemented("insert/Path") ;
+        acc.addTriplePath(index, new TriplePath(s, path, o)) ;
     }
-    
-    
 
     protected Expr asExpr(Node n)
     {

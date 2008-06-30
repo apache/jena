@@ -50,6 +50,9 @@ public class Run
 {
     public static void main(String[] argv) throws Exception
     {
+        execQuery("D.ttl", "Q.rq") ;
+        
+        
         path() ; System.exit(0) ;
         {
             String []a = { "--engine=ref", "--file=Q.rq", "--print=op" } ;

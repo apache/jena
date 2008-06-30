@@ -1,11 +1,5 @@
-PREFIX : <http://example.org/ns#>
-PREFIX fn: <http://www.w3.org/2005/xpath-functions#>
+PREFIX : <http://example/>
+PREFIX  n: <http://example/x#> 
 
-SELECT ?x
-WHERE {
-##  ?item :q ?q  OPTIONAL {    { ?item :p ?p .FILTER(?p!=?q) } }
-
-    ?item1 :q ?q
-        FILTER(?p!=?q)
-      ?item2 :q ?q .
-}
+SELECT ?x ?a
+{ ?x n:a ?a }

@@ -240,6 +240,14 @@ public class AlgebraGenerator
             return join(current, op) ;
         }
         
+        if ( elt instanceof ElementPathBlock )
+        {
+            System.err.println("ElementPathBlock") ;
+            ElementPathBlock epb = (ElementPathBlock)elt ;
+            Op op =  compilePathBlock(epb.getPattern()) ;
+            return join(current, op) ;
+        }
+        
         // Collect filters
         if ( elt instanceof ElementFilter )
         {
@@ -320,7 +328,7 @@ public class AlgebraGenerator
     
     private Op compilePathBlock(PathBlock pattern)
     {
-        if ( true ) throw new ARQNotImplemented("compilePathBlock") ;
+        //if ( true ) throw new ARQNotImplemented("NotImplemented: compilePathBlock") ;
         List x = pattern.reduce() ;
         
         BasicPattern bp = null ;
