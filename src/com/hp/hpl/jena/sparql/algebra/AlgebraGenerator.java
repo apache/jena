@@ -12,25 +12,19 @@ import java.util.List;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.query.ARQ;
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.shared.uuid.JenaUUID;
+
 import com.hp.hpl.jena.sparql.ARQInternalErrorException;
 import com.hp.hpl.jena.sparql.algebra.op.*;
-import com.hp.hpl.jena.sparql.core.BasicPattern;
-import com.hp.hpl.jena.sparql.core.PathBlock;
-import com.hp.hpl.jena.sparql.core.TriplePath;
-import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.sparql.core.VarExprList;
+import com.hp.hpl.jena.sparql.core.*;
 import com.hp.hpl.jena.sparql.expr.Expr;
 import com.hp.hpl.jena.sparql.expr.ExprList;
-import com.hp.hpl.jena.sparql.path.PathLib;
-import com.hp.hpl.jena.sparql.path.PathPropertyFunction;
-import com.hp.hpl.jena.sparql.pfunction.PropertyFunctionRegistry;
 import com.hp.hpl.jena.sparql.syntax.*;
 import com.hp.hpl.jena.sparql.util.ALog;
 import com.hp.hpl.jena.sparql.util.Context;
 import com.hp.hpl.jena.sparql.util.Utils;
+
+import com.hp.hpl.jena.query.ARQ;
+import com.hp.hpl.jena.query.Query;
 
 public class AlgebraGenerator 
 {
@@ -72,9 +66,10 @@ public class AlgebraGenerator
     public Op compile(Element elt)
     {
         Op op = compileElement(elt) ;
+        Op op2 = op ;
         if ( ! simplifyEarly && simplify != null )
-            op = Transformer.transform(simplify, op) ;
-        return op ;
+            op2 = Transformer.transform(simplify, op) ;
+        return op2;
     }
 
     // This is the operation to call for recursive application of step 4.
@@ -97,6 +92,7 @@ public class AlgebraGenerator
         if ( elt instanceof ElementTriplesBlock )
             return compileBasicPattern(((ElementTriplesBlock)elt).getPattern()) ;
         
+        // Ditto.
         if ( elt instanceof ElementPathBlock )
             return compilePathBlock(((ElementPathBlock)elt).getPattern()) ;
 
@@ -237,7 +233,6 @@ public class AlgebraGenerator
         {
             ElementTriplesBlock etb = (ElementTriplesBlock)elt ;
             Op op =  compileBasicPattern(etb.getPattern()) ;
-
             return join(current, op) ;
         }
         
@@ -333,7 +328,7 @@ public class AlgebraGenerator
         List x = pattern.reduce() ;
         
         BasicPattern bp = null ;
-        Op op = OpTable.unit() ;
+        Op op = null ;
         
         for ( Iterator iter = x.iterator() ; iter.hasNext() ; )
         {
@@ -342,40 +337,35 @@ public class AlgebraGenerator
             if ( obj instanceof Triple )
             {
                 if ( bp == null )
-                {
                     bp = new BasicPattern() ;
-                    //op = OpStage.create(op, new OpBGP(bp)) ;
-                }
                 bp.add((Triple)obj) ;
                 continue ;
             }
             
             if ( obj instanceof TriplePath )
             {
-                // This is tacky.  Better to have a OpPath. 
+                if ( bp != null )
+                {
+                    // Finish off a BGP.
+                    Op op2 = PropertyFunctionGenerator.compile(bp, context) ;
+                    op = OpStage.create(op, op2) ;
+                    bp = null ;
+                }
                 
                 TriplePath tp = (TriplePath)obj ;
-                // Clear the basic pattern accumulator.
-                // bp = null ;
-                PathPropertyFunction pff = new PathPropertyFunction(tp.getPath()) ;
-                PropertyFunctionRegistry registry = PropertyFunctionGenerator.chooseRegistry(context) ;
-                
-                if ( bp == null )
-                {
-                    bp = new BasicPattern() ;
-                    //op = OpStage.create(op, new OpBGP(bp)) ;
-                }
-                String uri = JenaUUID.generate().asURI() ;
-                
-                PathLib.install(uri, tp.getPath(), registry) ;
-                bp.add(new Triple(tp.getSubject(), Node.createURI(uri), tp.getObject())) ;
+                OpPath opPath = new OpPath(tp) ;
+                op = OpStage.create(op, opPath) ;
                 continue ;
             }
             
             throw new ARQInternalErrorException("Unexpected item in PathBlock: ["+Utils.className(obj)+"] "+obj) ;
         }
-        // Need to invoke PF processing for the temp hack
-        op = PropertyFunctionGenerator.compile(bp, context) ;
+        if ( bp != null )
+        {
+            Op op2 = PropertyFunctionGenerator.compile(bp, context) ;
+            op = OpStage.create(op, op2) ;
+        }
+        
         return op ;
     }
 

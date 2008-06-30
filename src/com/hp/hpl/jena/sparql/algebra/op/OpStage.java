@@ -26,6 +26,8 @@ public class OpStage extends Op2
     
     public static Op create(Op left, Op right)
     { 
+        if ( left == null && right == null )
+            return null ;
         if ( left == null )
             return right ;
         if ( right == null )
@@ -34,7 +36,8 @@ public class OpStage extends Op2
         return new OpStage(left, right) ;
     }
     
-    private OpStage(Op left, Op right) { super(left, right) ; }
+    private OpStage(Op left, Op right)
+    { super(left, right) ; }
     
     public String getName() { return Tags.tagStage ; }
 
@@ -44,7 +47,7 @@ public class OpStage extends Op2
     public void visit(OpVisitor opVisitor) { opVisitor.visit(this) ; }
     
     public Op copy(Op newLeft, Op newRight)
-    { return new OpStage(newLeft, newRight) ; }
+    { return OpStage.create(newLeft, newRight) ; }
     
     public boolean equalTo(Op op2, NodeIsomorphismMap labelMap)
     {

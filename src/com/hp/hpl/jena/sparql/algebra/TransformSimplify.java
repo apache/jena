@@ -7,9 +7,20 @@
 package com.hp.hpl.jena.sparql.algebra;
 
 import com.hp.hpl.jena.sparql.algebra.op.OpJoin;
+import com.hp.hpl.jena.sparql.algebra.op.OpStage;
 
 public class TransformSimplify extends TransformCopy
 {
+    public Op transform(OpStage opStage, Op left, Op right)
+    {
+        // An OpStage is like a join.
+        if ( OpJoin.isJoinIdentify(left) )
+            return right ;
+        if ( OpJoin.isJoinIdentify(right) )
+            return left ;
+        return super.transform(opStage, left, right) ;
+    }
+    
     public Op transform(OpJoin opJoin, Op left, Op right)
     {
         if ( OpJoin.isJoinIdentify(left) )

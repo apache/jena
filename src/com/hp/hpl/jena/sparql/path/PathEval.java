@@ -11,6 +11,9 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
@@ -18,14 +21,18 @@ import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.NodeIterator;
 import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.impl.NodeIteratorImpl;
+
+import com.hp.hpl.jena.sparql.util.ALog;
 import com.hp.hpl.jena.sparql.util.ModelUtils;
 import com.hp.hpl.jena.util.iterator.Map1;
 import com.hp.hpl.jena.util.iterator.Map1Iterator;
 
 public class PathEval
 {
+    static private Log log = LogFactory.getLog(PathEval.class) ; 
+    
     // Possible API usages.
-    static public NodeIterator walkForward(final Model model, RDFNode rdfNode, Path path)
+    static public NodeIterator walkForwards(final Model model, RDFNode rdfNode, Path path)
     {
         Iterator iter = eval(model.getGraph(), rdfNode.asNode(), path) ;
         
@@ -38,7 +45,7 @@ public class PathEval
         return new NodeIteratorImpl(new Map1Iterator(conv, iter), null) ;
     }
     
-    static public NodeIterator walkBackwars(final Model model, RDFNode rdfNode, Path path)
+    static public NodeIterator walkBackwards(final Model model, RDFNode rdfNode, Path path)
     {
         Iterator iter = evalReverse(model.getGraph(), rdfNode.asNode(), path) ;
         
@@ -55,7 +62,13 @@ public class PathEval
     
     /** Evaluate a path in the forward direction */ 
     static public Iterator eval(Graph graph, Node node, Path path)
-    { return eval(graph, node, path, true) ; }
+    { 
+        if ( node == null  )
+            ALog.fatal(PathEval.class, "PathEval.eval applied to a null node") ;
+        if ( node.isVariable() )
+            ALog.warn(PathEval.class, "PathEval.eval applied to a variable: "+node) ;
+        return eval(graph, node, path, true) ;
+    }
     
 //    /** Evaluate a path in the forward direction */ 
 //    static public Iterator eval(Graph graph, Iterator input, Path path)
@@ -75,6 +88,8 @@ public class PathEval
         // Avoid the singleton creation.
         Set acc = new LinkedHashSet() ;
         eval(graph, node, path, forward, acc);
+//        if ( log.isDebugEnabled() )
+//            log.debug("Eval("+node+", "+path+") => "+acc) ;
         return acc.iterator() ;
     }
     

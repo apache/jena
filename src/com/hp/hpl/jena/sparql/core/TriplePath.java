@@ -36,7 +36,7 @@ public final class TriplePath
     public TriplePath(Triple triple)
     {
         this.subject = triple.getSubject() ;
-        this.path = new P_Link(triple.getPredicate()) ;
+        this.path = new P_Link(triple.getPredicate()) ; // May be a variable (compiled out later)
         this.object = triple.getObject() ;
         this.triple = triple ; 
     }

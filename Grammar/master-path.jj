@@ -535,11 +535,20 @@ Element GroupGraphPatternSub() : { Element el = null ; }
 }
 
 // ***
+#ifdef SPARQL
+Element TriplesBlock(ElementTriplesBlock acc) : { }
+#endif
+#ifdef ARQ
 Element TriplesBlock(ElementPathBlock acc) : { }
+#endif
 {
   { if ( acc == null )
-        // acc = new ElementBlock() ;
+#ifdef SPARQL
+        acc = new ElementTriplesBlock() ;
+#endif
+#ifdef ARQ
         acc = new ElementPathBlock() ;
+#endif
   }
   TriplesSameSubject(acc)
   ( <DOT> (TriplesBlock(acc))? )?
@@ -688,11 +697,31 @@ void TriplesSameSubject(TripleCollector acc) : { Node s ; }
 }
 
 // ***
-void PropertyListNotEmpty(Node s, TripleCollector acc) : { Path p ; }
+void PropertyListNotEmpty(Node s, TripleCollector acc) : 
+    { Path path = null ; Node p = null ; }
 {
-  p = Verb()
-  ObjectList(s, p, acc)
-  (<SEMICOLON> (p = Verb() ObjectList(s, p, acc))? )*
+#ifdef SPARQL
+    p = Verb()
+#endif
+#ifdef ARQ
+  ( path = VerbPath()
+  | p = VerbSimple()
+  )
+#endif
+  ObjectList(s, p, path, acc)
+  ( <SEMICOLON> 
+    (
+#ifdef SPARQL
+       p = Verb()
+#endif
+#ifdef ARQ
+      ( path = VerbPath()
+      | p = VerbSimple()
+      )
+#endif
+      ObjectList(s, p, path, acc)
+    )? 
+  )*
 #if 0
   |
   Reification(s, acc)
@@ -705,36 +734,47 @@ void PropertyList(Node s, TripleCollector acc) : { }
 }
 
 // ***
-void ObjectList(Node s, Path p, TripleCollector acc): { Node o ; } 
+void ObjectList(Node s,  Node p, Path path, TripleCollector acc): { Node o ; } 
 {
-  Object(s, p, acc)
-  ( <COMMA> Object(s, p, acc) )*
+  Object(s, p, path, acc)
+  ( <COMMA> Object(s, p, path, acc) )*
 }
 
 // ***
-void Object(Node s, Path p, TripleCollector acc): { Node o ; }
+void Object(Node s, Node p, Path path, TripleCollector acc): { Node o ; }
 {
     { int mark = acc.mark() ; }
   o = GraphNode(acc) 
-  { insert(acc, mark, s, p, o) ; }
+  { insert(acc, mark, s, p, path, o) ; }
 }
 
-// ***
-Path Verb() : {Node p ; Path path ; }
+// Property, no path
+#ifdef SPARQL
+Node Verb() : { Node p ;}
 {
 // Blank nodes as predicates
 //   ( p = VarOrBlankNodeOrIRIref() | <KW_A> { p = nRDFtype ; } )
-
-#ifdef SPARQL
   ( p = VarOrIRIref() | <KW_A> { p = nRDFtype ; } )
-    { return new P_Link(p) ; }
-#endif
-#ifdef ARQ
-  ( path = Path() { return path ; }
-  | <KW_A> { return new P_Link(nRDFtype) ; }
-  )
-#endif
+  { return p ; }
 }
+#endif
+
+// ***
+#ifdef ARQ
+// Includes P_Link(URI)
+Path VerbPath() : {Node p ; Path path ; }
+{
+  path = Path() { return path ; }
+}
+
+Node VerbSimple() : { Node p ; }
+{
+  ( p = Var() | <KW_A> { p = nRDFtype ; } )
+  { return p ; }
+}
+#endif
+
+
 
 // -------- Paths
 

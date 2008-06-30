@@ -13,6 +13,7 @@ public interface Transform
     // Op0
     public Op transform(OpTable opUnit) ;
     public Op transform(OpBGP opBGP) ;
+    public Op transform(OpPath opPath) ;
     public Op transform(OpDatasetNames dsNames) ;
     public Op transform(OpQuadPattern quadPattern) ;
     public Op transform(OpNull opNull) ;

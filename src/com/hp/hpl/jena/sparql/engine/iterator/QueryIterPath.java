@@ -12,6 +12,9 @@ import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.path.PathLib;
+import com.hp.hpl.jena.sparql.serializer.SerializationContext;
+import com.hp.hpl.jena.sparql.util.IndentedWriter;
+import com.hp.hpl.jena.sparql.util.Utils;
 
 public class QueryIterPath extends QueryIterRepeatApply
 {
@@ -29,6 +32,15 @@ public class QueryIterPath extends QueryIterRepeatApply
     protected QueryIterator nextStage(Binding binding)
     {
         return PathLib.execTriplePath(binding, triplePath, getExecContext()) ;
+    }
+    
+    protected void details(IndentedWriter out, SerializationContext sCxt)
+    {
+        out.print(Utils.className(this)) ;
+        out.println() ;
+        out.incIndent() ;
+        out.print(triplePath.toString()) ; 
+        out.decIndent() ;
     }
 }
 

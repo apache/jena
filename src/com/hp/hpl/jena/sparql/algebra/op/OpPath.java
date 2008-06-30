@@ -35,8 +35,7 @@ public class OpPath extends Op0
     public String getName()     { return Tags.tagPath ; }
 
     public Op apply(Transform transform)
-    //{ return transform.transform(this) ; }
-    { return null ; } 
+    { return transform.transform(this) ; }
 
     public Op copy()    { return new OpPath(triplePath) ; }
 

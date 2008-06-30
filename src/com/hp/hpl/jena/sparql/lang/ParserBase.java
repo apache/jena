@@ -344,14 +344,20 @@ public class ParserBase
         acc.addTriple(index, new Triple(s, p, o)) ;
     }
     
-    protected void insert(TripleCollector acc, Node s, Path path, Node o)
+    protected void insert(TripleCollector acc, Node s, Node p, Path path, Node o)
     {
-        acc.addTriplePath(new TriplePath(s, path, o)) ;
+        if ( p == null )
+            acc.addTriplePath(new TriplePath(s, path, o)) ;
+        else
+            acc.addTriple(new Triple(s, p, o)) ;
     }
     
-    protected void insert(TripleCollector acc, int index, Node s, Path path, Node o)
+    protected void insert(TripleCollector acc, int index, Node s, Node p, Path path, Node o)
     {
-        acc.addTriplePath(index, new TriplePath(s, path, o)) ;
+        if ( p == null )
+            acc.addTriplePath(index, new TriplePath(s, path, o)) ;
+        else
+            acc.addTriple(index, new Triple(s, p, o)) ;
     }
 
     protected Expr asExpr(Node n)

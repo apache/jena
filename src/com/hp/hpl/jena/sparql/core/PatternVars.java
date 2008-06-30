@@ -40,6 +40,19 @@ public class PatternVars
             }
         }
 
+        public void visit(ElementPathBlock el) 
+        {
+            for (Iterator iter = el.patternElts() ; iter.hasNext() ; )
+            {
+                TriplePath tp = (TriplePath)iter.next() ;
+                // If it's triple-izable, then use the triple.  Can include strange paths (e.g. variables).  
+                if ( tp.asTriple() != null )
+                    VarUtils.addVarsFromTriple(acc, tp.asTriple()) ;
+                else
+                    VarUtils.addVarsFromTriplePath(acc, tp) ;
+            }
+        }
+        
 //      public void visit(ElementFilter el)
 //      {
 //      el.getExpr().varsMentioned(acc);

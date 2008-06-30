@@ -12,6 +12,8 @@ public class TransformBase implements Transform
 {
     public Op transform(OpTable opTable)                    { return opTable ; }
     public Op transform(OpBGP opBGP)                        { return opBGP ; }
+    public Op transform(OpPath opPath)                      { return opPath ; } 
+
     public Op transform(OpProcedure opProc, Op subOp)       { return opProc ; }
     public Op transform(OpPropFunc opPropFunc, Op subOp)    { return opPropFunc ; }
 

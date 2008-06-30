@@ -1,5 +1,8 @@
 PREFIX : <http://example/>
 PREFIX  n: <http://example/x#> 
 
-SELECT ?x ?a
-{ ?x n:a|n:b ?a }
+SELECT *
+{ 
+  ?x n:b|n:a ?a . 
+  ?x ?p ?a 
+}

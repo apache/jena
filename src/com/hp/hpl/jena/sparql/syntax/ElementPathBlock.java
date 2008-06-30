@@ -6,6 +6,8 @@
 
 package com.hp.hpl.jena.sparql.syntax;
 
+import java.util.Iterator;
+
 import com.hp.hpl.jena.graph.Triple;
 
 import com.hp.hpl.jena.sparql.core.PathBlock;
@@ -44,7 +46,7 @@ public class ElementPathBlock extends Element implements TripleCollector
     { pattern.add(index, tPath) ; }
     
     public PathBlock getPattern() { return pattern ; }
-    //public Iterator patternElts() { return pattern.iterator(); }
+    public Iterator patternElts() { return pattern.iterator(); }
     
     //@Override
     public int hashCode()

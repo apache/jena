@@ -12,6 +12,8 @@ import java.util.Set;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 
+import com.hp.hpl.jena.sparql.core.TriplePath;
+
 public class VarUtils
 {
     public static Set getVars(Triple triple)
@@ -26,6 +28,12 @@ public class VarUtils
         addVar(acc, t.getSubject()) ;
         addVar(acc, t.getPredicate()) ;
         addVar(acc, t.getObject()) ;
+    }
+    
+    public static void addVarsFromTriplePath(Set acc, TriplePath tpath)
+    {
+        addVar(acc, tpath.getSubject()) ;
+        addVar(acc, tpath.getObject()) ;
     }
     
     public static void addVar(Set acc, Node n)

@@ -80,6 +80,7 @@ public class QueryUtils
         }
         catch (QueryException ex)
         {
+            System.err.println(tmp) ;
             throw new QueryCheckException("could not parse output query", ex) ;
         }
         

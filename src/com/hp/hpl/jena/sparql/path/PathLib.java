@@ -6,17 +6,21 @@
 
 package com.hp.hpl.jena.sparql.path;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
+import com.hp.hpl.jena.util.iterator.ExtendedIterator;
+
+import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.graph.Triple;
+
 import com.hp.hpl.jena.sparql.core.TriplePath;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.binding.Binding1;
+import com.hp.hpl.jena.sparql.engine.iterator.QueryIterConcat;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterPlainWrapper;
 import com.hp.hpl.jena.sparql.pfunction.PropertyFunction;
 import com.hp.hpl.jena.sparql.pfunction.PropertyFunctionFactory;
@@ -61,21 +65,56 @@ public class PathLib
         o = Var.lookup(binding, o) ;
         Iterator iter = null ;
         Node endNode = null ;
+        Graph graph = execCxt.getActiveGraph() ;
         
-        if ( Var.isVar(s) && ! Var.isVar(o) )
+        if ( Var.isVar(s) && Var.isVar(o) )
+            return ungroundedPath(binding, graph, Var.alloc(s), path, Var.alloc(o), execCxt) ;
+
+        if ( Var.isVar(s) )
         {
             // Var subject, concreate obnject - do backwards.
-            iter = PathEval.evalReverse(execCxt.getActiveGraph(), o, path) ;
+            iter = PathEval.evalReverse(graph, o, path) ;
             endNode = s ;
-        }
+        } 
         else
         {
-            iter = PathEval.eval(execCxt.getActiveGraph(), s, path) ;
+            iter = PathEval.eval(graph, s, path) ;
             endNode = o ;
         }
         return _execTriplePath(binding, iter, endNode, execCxt) ;
     }
     
+    // Brute force evaluation of a TriplePah where neither subject nor object ar ebound 
+    private static QueryIterator ungroundedPath(Binding binding, Graph graph, Var s, Path path, Var o,
+                                                ExecutionContext execCxt)
+    {
+        Iterator iter = allNodes(graph) ;
+        QueryIterConcat qIterCat = new QueryIterConcat(execCxt) ;
+        
+        for ( ; iter.hasNext() ; )
+        {
+            Node n = (Node)iter.next() ;
+            Binding b2 = new Binding1(binding, s, n) ;
+            Iterator pathIter = PathEval.eval(graph, n, path) ;
+            QueryIterator qIter = _execTriplePath(b2, pathIter, o, execCxt) ;
+            qIterCat.add(qIter) ;
+        }
+        return qIterCat ;
+    }
+
+    private static Iterator allNodes(Graph graph)
+    {
+        Set x = new HashSet(1000) ;
+        ExtendedIterator iter = graph.find(Node.ANY, Node.ANY, Node.ANY) ;
+        for ( ; iter.hasNext() ; )
+        {
+            Triple t = (Triple)iter.next();
+            x.add(t.getSubject()) ;
+            x.add(t.getObject()) ;
+        }
+        return x.iterator() ;
+    }
+
     private static QueryIterator _execTriplePath(Binding binding, 
                                                  Iterator iter,
                                                  Node endNode,

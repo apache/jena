@@ -112,9 +112,15 @@ public class FormatterElement extends FormatterBase
             return ;
         }
         // Could be neater.
+        boolean first = true ;
         PathBlock pBlk = el.getPattern() ;
         for ( Iterator iter = pBlk.iterator() ; iter.hasNext() ; )
         {
+            if ( ! first )
+            {
+                out.println(" .") ;
+            }
+            first = false ;
             TriplePath tp = (TriplePath)iter.next();
             printSubject(tp.getSubject()) ;
             out.print(" ") ;
