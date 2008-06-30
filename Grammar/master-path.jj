@@ -720,18 +720,26 @@ void Object(Node s, Path p, TripleCollector acc): { Node o ; }
 }
 
 // ***
-Path Verb() : {Node p ;}
+Path Verb() : {Node p ; Path path ; }
 {
+// Blank nodes as predicates
 //   ( p = VarOrBlankNodeOrIRIref() | <KW_A> { p = nRDFtype ; } )
-  ( p = VarOrIRIref() | <KW_A> { p = nRDFtype ; } )
 
+#ifdef SPARQL
+  ( p = VarOrIRIref() | <KW_A> { p = nRDFtype ; } )
     { return new P_Link(p) ; }
+#endif
+#ifdef ARQ
+  ( path = Path() { return path ; }
+  | <KW_A> { return new P_Link(nRDFtype) ; }
+  )
+#endif
 }
 
 // -------- Paths
 
 #ifdef ARQ
-Path PathParse() : { Path p ; }
+Path PathUnit() : { Path p ; }
 {
     p = Path()
     <EOF>

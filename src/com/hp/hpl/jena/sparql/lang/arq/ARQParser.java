@@ -1772,8 +1772,8 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
   }
 
 // -------- Paths
-  final public Path PathParse() throws ParseException {
-                     Path p ;
+  final public Path PathUnit() throws ParseException {
+                    Path p ;
     p = Path();
     jj_consume_token(0);
       {if (true) return p ;}

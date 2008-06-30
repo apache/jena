@@ -701,7 +701,7 @@ Node Verb() : {Node p ;}
 // -------- Paths
 
 
-Path PathParse() : { Path p ; }
+Path PathUnit() : { Path p ; }
 {
     p = Path()
     <EOF>

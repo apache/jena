@@ -70,27 +70,22 @@ then
 for G in "$@"
 do
   case "$G" in
-
+      arq-path)
+          dos2unix < "master-path.jj" | cpp -P -C -DARQ | unix2dos > arq.jj
+          grammar arq.jj arq ARQ
+          ;;
+    
       sparql|sparql.jj)
           # The parser that is exactly the working group grammar.
           dos2unix < "$GRAMMAR" | cpp -P -C -DSPARQL | unix2dos > sparql.jj
           grammar sparql.jj sparql SPARQL
           ;;
 
-##       sparqldev|sparql2)
-##           # Development version of SPARQL
-##           #cpp -P -C -DSPARQL < "X" | unix2dos > sparql-dev.jj
-##           grammar sparql-dev.jj sparqldev SPARQLDev
-##           ;;
-
       arq|arq.jj)
           dos2unix < "$GRAMMAR" | cpp -P -C -DARQ | unix2dos > arq.jj
           grammar arq.jj arq ARQ
           ;;
 
-##       prefix|prefix.jj)
-##           grammar prefix.jj prefix Prefix
-## 	  ;; 
       rdql) echo "Tread carefully" 1>&2
           rdqlGrammar
           ;;

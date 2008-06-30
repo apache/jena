@@ -728,7 +728,7 @@ Node Verb() : {Node p ;}
 // -------- Paths
 
 #ifdef ARQ
-Path PathParse() : { Path p ; }
+Path PathUnit() : { Path p ; }
 {
     p = Path()
     <EOF>

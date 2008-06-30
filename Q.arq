@@ -1,9 +1,5 @@
-PREFIX core: <http://purl.uniprot.org/core/>
-SELECT ?author1 ?author2 (COUNT(*) as ?C)
-{
-    ?x core:author ?author1 .
-    ?x core:author ?author2 .
-    FILTER ( ?author1 < ?author2 )
-}
-GROUP BY ?author1 ?author2
-ORDER BY DESC(?C)
+PREFIX : <http://example/>
+PREFIX  n: <http://example/x#> 
+
+SELECT ?x ?a
+{ ?x n:a ?a }

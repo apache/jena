@@ -34,7 +34,7 @@ public class PathParser
         try {
             query.setStrict(true) ;
             parser.setQuery(query) ;
-            return parser.PathParse() ;
+            return parser.PathUnit() ;
         } catch (com.hp.hpl.jena.sparql.lang.arq.ParseException ex)
         {
             throw new QueryParseException(ex.getMessage(),
