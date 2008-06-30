@@ -11,6 +11,13 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
+import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.graph.Triple;
+
+import com.hp.hpl.jena.sparql.path.P_Link;
+import com.hp.hpl.jena.sparql.path.P_Reverse;
+import com.hp.hpl.jena.sparql.path.P_Seq;
+import com.hp.hpl.jena.sparql.path.Path;
 import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 import com.hp.hpl.jena.sparql.util.Utils;
 
@@ -35,21 +42,58 @@ public class PathBlock
     public List getList() { return triplePaths ; } 
     
     /** Simplify : turns constructs in simple triples and simpler TriplePaths where possible */ 
-    public List reduce()
+    public PathBlock reduce()
     {
-        List x = new ArrayList() ;
+        PathBlock x = new PathBlock() ;
         reduce(x) ;
         return x ;
     }
     
-    public void reduce(List x)
+    private static VarAlloc varAlloc = VarAlloc.getVarAllocator() ;
+    private void reduce(PathBlock x)
     {
         for ( Iterator iter = iterator() ; iter.hasNext() ; )
         {
             TriplePath tp = (TriplePath)iter.next();
-            tp.reduce(x) ;
+            if ( tp.isTriple() )
+            {
+                x.add(tp) ;
+                continue ;
+            }
+            reduce(x, tp.getSubject(), tp.getPath(), tp.getObject()) ;
         }
     }
+    
+    
+    private void reduce(PathBlock x, Node startNode, Path path, Node endNode)
+    {
+        if ( path instanceof P_Link )
+        {
+            Node pred = ((P_Link)path).getNode() ;
+            Triple t = new Triple(startNode, pred, endNode) ; 
+            x.add(new TriplePath(t)) ;
+            return ;
+        }
+
+        if ( path instanceof P_Seq )
+        {
+            P_Seq ps = (P_Seq)path ;
+            Node v = varAlloc.allocVar() ;
+            reduce(x, startNode, ps.getLeft(), v) ;
+            reduce(x, v, ps.getRight(), endNode) ;
+            return ;
+        }
+
+        if ( path instanceof P_Reverse )
+        {
+            reduce(x, endNode, ((P_Reverse)path).getSubPath(), startNode) ;
+            return ;
+        }
+
+        // Nothing can be done.
+        x.add(new TriplePath(startNode, path, endNode)) ;
+    }
+
     
     public int hashCode() { return triplePaths.hashCode() ; } 
     
@@ -77,7 +121,10 @@ public class PathBlock
         return true ;
     }
     
-    public String toString() { return triplePaths.toString() ; } 
+    public String toString()
+    {
+        return triplePaths.toString() ;
+    }
 }
 
 /*

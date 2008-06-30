@@ -122,11 +122,22 @@ public class FormatterElement extends FormatterBase
             }
             first = false ;
             TriplePath tp = (TriplePath)iter.next();
-            printSubject(tp.getSubject()) ;
-            out.print(" ") ;
-            PathWriter.write(out, tp.getPath(), context.getPrologue()) ;
-            out.print(" ") ;
-            printObject(tp.getObject()) ;
+            if ( tp.isTriple() )
+            {
+                printSubject(tp.getSubject()) ;
+                out.print(" ") ;
+                printProperty(tp.getPredicate()) ;
+                out.print(" ") ;
+                printObject(tp.getObject()) ;
+            }
+            else
+            {
+                printSubject(tp.getSubject()) ;
+                out.print(" ") ;
+                PathWriter.write(out, tp.getPath(), context.getPrologue()) ;
+                out.print(" ") ;
+                printObject(tp.getObject()) ;
+            }
         }
     }
 

@@ -7,7 +7,6 @@
 package dev;
 
 import java.util.Iterator;
-import java.util.List;
 import java.util.Stack;
 
 import arq.sparql;
@@ -51,6 +50,7 @@ public class Run
     public static void main(String[] argv) throws Exception
     {
         // BFI allNode code.
+        runQParseARQ() ;
         execQuery("D.ttl", "Q.arq") ;
         
         
@@ -164,7 +164,7 @@ public class Run
         pBlk.add(tp) ;
         
         System.out.println("Path: "+str) ;
-        List x = pBlk.reduce() ;
+        PathBlock x = pBlk.reduce() ;
         for ( Iterator iter = x.iterator() ; iter.hasNext() ; )
             System.out.println("  "+iter.next()) ;
         System.out.println() ;

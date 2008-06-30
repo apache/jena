@@ -4,23 +4,21 @@
  * [See end of file]
  */
 
-/** Like a triple, except the property is a path */
-
 package com.hp.hpl.jena.sparql.core;
-
-import java.util.List;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 
 import com.hp.hpl.jena.sparql.path.P_Link;
-import com.hp.hpl.jena.sparql.path.P_Reverse;
-import com.hp.hpl.jena.sparql.path.P_Seq;
 import com.hp.hpl.jena.sparql.path.Path;
+import com.hp.hpl.jena.sparql.util.ALog;
+
+/** Like a triple except it can be a path or a triple.  The triple can have a variable predicate.  Theer may be no "path" */ 
 
 public final class TriplePath
 {
     private final Node subject ;
+    private final Node predicate ;
     private final Path path ;
     private final Node object ;
     private Triple triple = null ;
@@ -29,6 +27,7 @@ public final class TriplePath
     public TriplePath(Node s, Path p, Node o)
     {
         this.subject = s ;
+        this.predicate = null ;
         this.path = p ;
         this.object = o ;
     }
@@ -36,15 +35,25 @@ public final class TriplePath
     public TriplePath(Triple triple)
     {
         this.subject = triple.getSubject() ;
-        this.path = new P_Link(triple.getPredicate()) ; // May be a variable (compiled out later)
+        //this.path = new P_Link(triple.getPredicate()) ;
+        this.path = null ;
+        this.predicate = triple.getPredicate() ;
         this.object = triple.getObject() ;
         this.triple = triple ; 
+        if ( triple.getPredicate() == null )
+            ALog.warn(this, "Triple predicate is null") ;
     }
 
     public Node getSubject()    { return subject ; }
-    public Path getPath()       { return path ; }
+    public Path getPath()       { return path ; }       // Maybe null (it's a path).
+    public Node getPredicate()  { return predicate ; }  // Maybe null (it's a triple).
     public Node getObject()     { return object ; }
 
+    public boolean isTriple()
+    {
+        return (predicate != null) ;
+    }
+    
     /** Return as a triple when the path is a simple, 1-link, else return null */ 
     public Triple asTriple()
     { 
@@ -78,45 +87,6 @@ public final class TriplePath
     {
         return subject+" "+path+" "+object ;
     }
-    
-    /** Simplify the triple path, add Triple/TriplePaths to a list*/ 
-    public void reduce(List x)
-    {
-        reduce(x, getSubject(), getPath(), getObject()) ;
-    }
-    
-    private static void reduce(List x, Node startNode, Path path, Node endNode)
-    {
-        VarAlloc varAlloc = VarAlloc.getVarAllocator() ;
-        
-        if ( path instanceof P_Link )
-        {
-            Node pred = ((P_Link)path).getNode() ;
-            Triple t = new Triple(startNode, pred, endNode) ; 
-            x.add(t) ;
-            return ;
-        }
-        
-        if ( path instanceof P_Seq )
-        {
-            P_Seq ps = (P_Seq)path ;
-            Node v = varAlloc.allocVar() ;
-            reduce(x, startNode, ps.getLeft(), v) ;
-            reduce(x, v, ps.getRight(), endNode) ;
-            return ;
-        }
-        
-        if ( path instanceof P_Reverse )
-        {
-            reduce(x, endNode, ((P_Reverse)path).getSubPath(), startNode) ;
-            return ;
-        }
-        
-        // Nothing can be done.
-        x.add(new TriplePath(startNode, path, endNode)) ;
-    }
-    
-
 }
 
 /*

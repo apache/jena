@@ -65,6 +65,11 @@ public class P_Mod extends P_Path1
     {
         return min == 1 && max < 0 ;
     }
+    
+    public boolean isZeroOrOne()
+    {
+        return min == 0 && max == 1 ;
+    }
 }
 
 /*

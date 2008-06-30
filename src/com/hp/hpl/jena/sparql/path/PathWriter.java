@@ -11,7 +11,7 @@ import com.hp.hpl.jena.sparql.util.FmtUtils;
 import com.hp.hpl.jena.sparql.util.IndentedLineBuffer;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
 
-public class PathWriter implements PathVisitor
+public class PathWriter
 {
 
     public static void write(Path path, Prologue prologue)
@@ -21,7 +21,7 @@ public class PathWriter implements PathVisitor
     
     public static void write(IndentedWriter out, Path path, Prologue prologue)
     {
-        PathWriter w = new PathWriter(out, prologue) ;
+        PathWriterWorker w = new PathWriterWorker(out, prologue) ;
         path.visit(w) ;
         out.flush();
     }
@@ -31,83 +31,112 @@ public class PathWriter implements PathVisitor
     public static String asString(Path path, Prologue prologue)
     {
         IndentedLineBuffer buff = new IndentedLineBuffer() ;
-        PathWriter w = new PathWriter(buff.getIndentedWriter(), prologue) ;
+        PathWriterWorker w = new PathWriterWorker(buff.getIndentedWriter(), prologue) ;
         path.visit(w) ;
         w.out.flush();
         return buff.asString() ;
     }
-    
-    private IndentedWriter out ;
-    private Prologue prologue ;
 
-    PathWriter(IndentedWriter indentedWriter, Prologue prologue) { this.out = indentedWriter ; this.prologue = prologue ;}
-    
-    //@Override
-    public void visit(P_Link pathNode)
+    static class PathWriterWorker implements PathVisitor
     {
-        out.print(FmtUtils.stringForNode(pathNode.getNode(), prologue)) ;
-    }
 
-    //@Override
-    public void visit(P_Alt pathAlt)
-    {
-        visit2(pathAlt, "|") ;
-    }
+        private IndentedWriter out ;
+        private Prologue prologue ;
+        private boolean alwaysInnerParens = false ;
+        private boolean needParens = false ;
 
-    //@Override
-    public void visit(P_Seq pathSeq)
-    {
-        visit2(pathSeq, "/") ;
-    }
-
-    private void visit2(P_Path2 path2, String sep)
-    {
-        boolean parens = false ;
-        
-        if ( parens ) out.print("(") ;
-        path2.getLeft().visit(this) ;
-        out.print(sep) ;
-        path2.getRight().visit(this) ;
-        if ( parens ) out.print(")") ;
-    }
-    
-    //@Override
-    public void visit(P_Mod pathMod)
-    {
-        pathMod.getSubPath().visit(this) ;
-        if ( pathMod.isZeroOrMore() )
-        {
-            out.print("*") ;
-            return ;
+        PathWriterWorker(IndentedWriter indentedWriter, Prologue prologue)
+        { 
+            this.out = indentedWriter ; 
+            this.prologue = prologue ;
         }
-        if ( pathMod.isOneOrMore() )
+
+        private void visitPath(Path path)
+        { visitPath(path, true) ; }
+        
+        private void visitPath(Path path, boolean needParensThisTime)
         {
-            out.print("+") ;
-            return ;
+            if ( alwaysInnerParens )
+                needParensThisTime = true ;
+            boolean b = needParens ;
+            needParens = needParensThisTime ;
+            path.visit(this) ;
+            needParens = b ;
         }
         
-        
-        out.print("{") ;
-        out.print(Long.toString(pathMod.getMin())) ;
-        out.print(",") ;
-        out.print(Long.toString(pathMod.getMax())) ;
-        out.print("}") ;
-    }
+        //@Override
+        public void visit(P_Link pathNode)
+        {
+            out.print(FmtUtils.stringForNode(pathNode.getNode(), prologue)) ;
+        }
 
-    public void visit(P_Reverse reversePath)
-    {
-        out.print("^") ;
-        Path p = reversePath.getSubPath() ;
-        boolean parens = true ; 
-        if ( p instanceof P_Link )
-            parens = false ;
-        if ( parens )
-            out.print("(") ;
-        p.visit(this) ;
-        if ( parens )
-            out.print(")") ;
-    }
+        //@Override
+        public void visit(P_Alt pathAlt)
+        {
+            visit2(pathAlt, "|", true) ;
+        }
 
+        //@Override
+        public void visit(P_Seq pathSeq)
+        {
+            visit2(pathSeq, "/", false) ;
+        }
+
+        // Should pass around precedence numbers.
+        private void visit2(P_Path2 path2, String sep, boolean isSeq)
+        {
+            if ( needParens ) out.print("(") ;
+            visitPath(path2.getLeft()) ;
+            out.print(sep) ;
+            // Don't need parens if same as before.
+            if ( isSeq )
+            {
+                // Make / and ^ chains look nice
+                if ( path2.getRight() instanceof P_Seq )
+                    visitPath(path2.getRight(), needParens) ;
+                else
+                    visitPath(path2.getRight(), true) ;
+            }
+            else
+                visitPath(path2.getRight(), true) ;
+            
+            if ( needParens ) out.print(")") ;
+        }
+
+        //@Override
+        public void visit(P_Mod pathMod)
+        {
+            if ( needParens ) out.print("(") ;
+            
+            pathMod.getSubPath().visit(this) ;
+            if ( pathMod.isZeroOrMore() )
+                out.print("*") ;
+            else if ( pathMod.isOneOrMore() )
+                out.print("+") ;
+            else if ( pathMod.isZeroOrOne() )
+                out.print("?") ;
+            else
+            {
+                out.print("{") ;
+                out.print(Long.toString(pathMod.getMin())) ;
+                out.print(",") ;
+                out.print(Long.toString(pathMod.getMax())) ;
+                out.print("}") ;
+            }
+            if ( needParens ) out.print(")") ;
+        }
+
+        // Need to consider binary ^
+        public void visit(P_Reverse reversePath)
+        {
+            out.print("^") ;
+            Path p = reversePath.getSubPath() ;
+            boolean parens = true ; 
+            if ( p instanceof P_Link )
+                parens = false ;
+            visitPath(p, parens) ;
+        }
+    }
 }
 
 /*

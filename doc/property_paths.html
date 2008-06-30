@@ -71,6 +71,11 @@ prefixed name.</p>
 		<td>A sequence path of <i><code>elt1</code></i>, followed by <i><code>elt2</code></i></td>
 	</tr>
 	<tr>
+		<td><i><code>elt1 ^ elt2</code></i></td>
+		<td>Shorthand for <code><i>elt1 / ^elt2</i></code>, that is <i><code>elt1 </code></i>
+		followed by reverse <i><code>elt2</code></i>.</td>
+	</tr>
+	<tr>
 		<td><i><code>elt1 | elt2</code></i></td>
 		<td>A alternative path of <i><code>elt1</code></i>, or <code><i>elt2</i></code> (all 
 		possibilities are tried)</td>
@@ -108,12 +113,13 @@ prefixed name.</p>
 <p>Precedence:</p>
 <ol>
 	<li>URI, prefixes names</li>
-	<li>Reverse links</li>
 	<li>Groups</li>
-	<li>Unary operators <code>*</code>, <code>?</code>, <code>+</code> and <code>{n,m}</code>, 
-	left-to-right within unary operators.</li>
-	<li>Binary operators, <code>/</code> and <code>|</code>.</li>
+	<li>Unary reverse links</li>
+	<li>Unary operators <code>*</code>, <code>?</code>, <code>+</code> and <code>{n,m}</code></li>
+	<li>Binary operators <code>/</code> and ^</li>
+	<li>Binary operator <code>|</code> </li>
 </ol>
+<p>Precedence is left-to-right within groups.</p>
 <h2>Extended Language</h2>
 <p>This involves is syntactic extension and is available if the query is parsed 
 with language <code>Syntax.syntaxARQ</code>.</p>
@@ -151,7 +157,7 @@ can be redefined as a path that also considers RDFS sub -class relationships.</p
 <pre class="box">Path path = PathParser.parse("rdf:type/rdfs:subClassOf*", PrefixMapping.Standard) ;
 PathLib.install(RDF.type.getURI(), path) ;</pre>
 <h2>Efficiency</h2>
-<p>Property path evaluation is similar to backward chaining inference. When used 
+<p>Paths are compiled into basic graph patterns where possible but some property path evaluation is similar to backward chaining inference. When used 
 with models backed by SQL databases, complex path expressions may take some 
 time.</p>
 

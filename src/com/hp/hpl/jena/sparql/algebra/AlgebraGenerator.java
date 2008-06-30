@@ -11,7 +11,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Triple;
 
 import com.hp.hpl.jena.sparql.ARQInternalErrorException;
 import com.hp.hpl.jena.sparql.algebra.op.*;
@@ -238,7 +237,6 @@ public class AlgebraGenerator
         
         if ( elt instanceof ElementPathBlock )
         {
-            System.err.println("ElementPathBlock") ;
             ElementPathBlock epb = (ElementPathBlock)elt ;
             Op op =  compilePathBlock(epb.getPattern()) ;
             return join(current, op) ;
@@ -324,42 +322,40 @@ public class AlgebraGenerator
     
     private Op compilePathBlock(PathBlock pattern)
     {
-        //if ( true ) throw new ARQNotImplemented("NotImplemented: compilePathBlock") ;
-        List x = pattern.reduce() ;
+        // Step 1 : flatten down to triples where possible. 
+        pattern = pattern.reduce() ;
+        
+        //Step 2 : gather into OpBGP(BasicPatterns) or OpPath
         
         BasicPattern bp = null ;
         Op op = null ;
         
-        for ( Iterator iter = x.iterator() ; iter.hasNext() ; )
+        for ( Iterator iter = pattern.iterator() ; iter.hasNext() ; )
         {
-            Object obj = iter.next();
-            
-            if ( obj instanceof Triple )
+            TriplePath obj = (TriplePath)iter.next();
+            if ( obj.isTriple() )
             {
                 if ( bp == null )
                     bp = new BasicPattern() ;
-                bp.add((Triple)obj) ;
+                bp.add(obj.asTriple()) ;
                 continue ;
             }
-            
-            if ( obj instanceof TriplePath )
+            // Path form.
+            if ( bp != null )
             {
-                if ( bp != null )
-                {
-                    // Finish off a BGP.
-                    Op op2 = PropertyFunctionGenerator.compile(bp, context) ;
-                    op = OpStage.create(op, op2) ;
-                    bp = null ;
-                }
-                
-                TriplePath tp = (TriplePath)obj ;
-                OpPath opPath = new OpPath(tp) ;
-                op = OpStage.create(op, opPath) ;
-                continue ;
+                // Finish off a BGP.
+                Op op2 = PropertyFunctionGenerator.compile(bp, context) ;
+                op = OpStage.create(op, op2) ;
+                bp = null ;
             }
-            
-            throw new ARQInternalErrorException("Unexpected item in PathBlock: ["+Utils.className(obj)+"] "+obj) ;
+                
+            TriplePath tp = (TriplePath)obj ;
+            OpPath opPath = new OpPath(tp) ;
+            op = OpStage.create(op, opPath) ;
+            continue ;
         }
+
+        // End.  Finish off any outstanding BGP.
         if ( bp != null )
         {
             Op op2 = PropertyFunctionGenerator.compile(bp, context) ;

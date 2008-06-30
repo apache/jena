@@ -350,6 +350,7 @@ public class ParserBase
             acc.addTriplePath(new TriplePath(s, path, o)) ;
         else
             acc.addTriple(new Triple(s, p, o)) ;
+            
     }
     
     protected void insert(TripleCollector acc, int index, Node s, Node p, Path path, Node o)

@@ -1,9 +1,13 @@
 ==== ARQ ToDo
 
 ** Paths 
-/ Check how plain triples are processed.
-    ElementPathBlock to have triples and paths
-    ParserBase to break apart top level P_Link
++ Precedence: "|" < "/" -- tests 
+
++ AlgebraGenerator: OpPath to take a PathBlock and not get flattned into a nest of stages
+    Don't process and reverse paths (.reduce) at this point. 
+  Then OpPathBlock to OpStages of things at a later stage.
+
++ Precedence-driven printing PathWriter.
 
 3/ OpStage ==> OpSeq
 0/ Path tests (scripted) inc from Object
