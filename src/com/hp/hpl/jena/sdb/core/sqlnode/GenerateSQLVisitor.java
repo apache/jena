@@ -15,7 +15,6 @@ import java.util.Set;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.hp.hpl.jena.query.ARQ;
 import com.hp.hpl.jena.sdb.SDB;
 import com.hp.hpl.jena.sdb.core.Annotations;
 import com.hp.hpl.jena.sdb.core.sqlexpr.S_Equal;
@@ -25,7 +24,6 @@ import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExprList;
 import com.hp.hpl.jena.sdb.iterator.Transform;
 import com.hp.hpl.jena.sdb.shared.SDBInternalError;
 import com.hp.hpl.jena.sdb.shared.SDBNotImplemented;
-
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
 import com.hp.hpl.jena.sparql.util.Utils;
@@ -45,7 +43,8 @@ public class GenerateSQLVisitor implements SqlNodeVisitor
     int levelSelectBlock = 0 ;
     
     // Per Generator
-    public boolean outputAnnotations = ARQ.getContext().isTrueOrUndef(SDB.annotateGeneratedSQL) ;
+    public boolean outputAnnotations = SDB.getContext().isTrueOrUndef(SDB.annotateGeneratedSQL) ;
+    
     private static final int annotationColumn = 40 ;
     private static boolean commentSQLStyle = true ;
     

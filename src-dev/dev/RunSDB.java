@@ -59,6 +59,10 @@ public class RunSDB
     @SuppressWarnings("unchecked")
     public static void main(String ... argv) 
     {
+        
+        sdb.sdbprint.main("--sdb=sdb.ttl", "--set", "sdb:annotateGeneratedSQL=false", "--file=Q.rq") ;
+        System.exit(0) ;
+        
         runQuery("Q.rq") ;
         {
             Context cxt = new Context() ;
@@ -70,10 +74,6 @@ public class RunSDB
             System.out.println(x==Integer.MIN_VALUE) ;
             System.exit(0) ;
         }
-        
-        
-        
-        
         
         {
             String h2Str = "jdbc:h2:file:DB/H2" ;

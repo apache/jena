@@ -6,11 +6,13 @@
 
 package com.hp.hpl.jena.sdb.util;
 
+import com.hp.hpl.jena.JenaRuntime;
+
 public class DerbyUtils
 {
     public static void setDerbyPageCacheSize(int pages)
     {
-        System.setProperty("derby.storage.pageCacheSize", Integer.toString(pages)) ;
+        JenaRuntime.getSystemProperty("derby.storage.pageCacheSize", Integer.toString(pages)) ;
     }
 }
 

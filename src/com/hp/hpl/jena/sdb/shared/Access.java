@@ -11,12 +11,16 @@ public class Access
 {
     private static String get(String key1, String key2, String defValue)
     {
-        if ( System.getenv(key1) != null )
-            return System.getenv(key1) ;
-        
-        if ( System.getProperty(key2) != null )
-            return System.getProperty(key2) ;
-        
+        try {
+            if ( System.getenv(key1) != null )
+                return System.getenv(key1) ;
+        } catch (SecurityException ex) {}
+
+        try {
+            if ( System.getProperty(key2) != null )
+                return System.getProperty(key2) ;
+        } catch (SecurityException ex) {}
+
         return defValue ;
     }
     

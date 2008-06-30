@@ -32,8 +32,9 @@ public class SDB
     /** SDB namespace */
     
     public final static String namespace = "http://jena.hpl.hp.com/2007/sdb#" ;
-    
-    public final static String symbolNamespace = "http://jena.hpl.hp.com/SDB/symbol#" ; 
+    public final static String symbolPrefix = "sdb" ;
+    public final static String symbolSpace = "http://jena.hpl.hp.com/SDB/symbol#" ;
+
     
     // ----------------------------------
     public static final Symbol useQuadRewrite           = SDBConstants.allocSymbol("useQuadRewrite") ;

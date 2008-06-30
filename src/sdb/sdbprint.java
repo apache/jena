@@ -107,7 +107,7 @@ public class sdbprint extends CmdArgsDB
     
     private void compilePrint(Store store, Query query)
     {
-        SDB.getContext().set(SDB.annotateGeneratedSQL, true) ;
+        SDB.getContext().setIfUndef(SDB.annotateGeneratedSQL, true) ;
         
         if ( !printQuery && ! printOp && ! printSqlNode && ! printSQL && ! printPlan )
             printSQL = true ;

@@ -26,7 +26,7 @@ public abstract class CmdArgsDB extends CmdGeneral
         System.setProperty("propertyColumn",       "14") ;
     }
     
-    private ModSymbol modSymbol = new ModSymbol(SDB.symbolNamespace) ;
+    private ModSymbol modSymbol = new ModSymbol(SDB.symbolSpace) ;
     private ModStore  modStore  = new ModStore() ;
     private ModTime   modTime   = new ModTime() ;
     private ModLogSQL modLogSQL = new ModLogSQL() ;
@@ -38,6 +38,7 @@ public abstract class CmdArgsDB extends CmdGeneral
         addModule(modStore) ;
         addModule(modLogSQL) ;
         addModule(modTime) ;
+        ModSymbol.addPrefixMapping(SDB.symbolPrefix, SDB.symbolSpace) ;
     }
     
     protected void setModStore(ModStore modStore) { this.modStore = modStore ; }
