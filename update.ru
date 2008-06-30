@@ -1,5 +1,11 @@
 PREFIX : <http://example.org/>
 
-INSERT DATA { :x :p _:a . _:a :q :v }
+
+
+INSERT 
+	{ :x :j ?j }
+WHERE 
+	{ LET (?j := 5) }
+
 
 
