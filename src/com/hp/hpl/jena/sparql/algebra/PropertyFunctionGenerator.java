@@ -194,7 +194,7 @@ public class PropertyFunctionGenerator //implements StageGenerator
         return OpStage.create(op, opBGP) ;
     }
 
-    private static PropertyFunctionRegistry chooseRegistry(Context context)
+    public static PropertyFunctionRegistry chooseRegistry(Context context)
     {
         PropertyFunctionRegistry registry = PropertyFunctionRegistry.get(context) ;
         // Else global

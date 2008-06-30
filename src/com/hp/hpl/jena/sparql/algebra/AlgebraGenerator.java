@@ -26,6 +26,7 @@ import com.hp.hpl.jena.sparql.expr.Expr;
 import com.hp.hpl.jena.sparql.expr.ExprList;
 import com.hp.hpl.jena.sparql.path.PathLib;
 import com.hp.hpl.jena.sparql.path.PathPropertyFunction;
+import com.hp.hpl.jena.sparql.pfunction.PropertyFunctionRegistry;
 import com.hp.hpl.jena.sparql.syntax.*;
 import com.hp.hpl.jena.sparql.util.ALog;
 import com.hp.hpl.jena.sparql.util.Context;
@@ -343,7 +344,7 @@ public class AlgebraGenerator
                 if ( bp == null )
                 {
                     bp = new BasicPattern() ;
-                    op = OpStage.create(op, new OpBGP(bp)) ;
+                    //op = OpStage.create(op, new OpBGP(bp)) ;
                 }
                 bp.add((Triple)obj) ;
                 continue ;
@@ -357,22 +358,24 @@ public class AlgebraGenerator
                 // Clear the basic pattern accumulator.
                 // bp = null ;
                 PathPropertyFunction pff = new PathPropertyFunction(tp.getPath()) ;
-//                PropFuncArg sArg = new PropFuncArg(tp.getSubject()) ;
-//                PropFuncArg oArg = new PropFuncArg(tp.getObject()) ;
+                PropertyFunctionRegistry registry = PropertyFunctionGenerator.chooseRegistry(context) ;
                 
                 if ( bp == null )
                 {
                     bp = new BasicPattern() ;
-                    op = OpStage.create(op, new OpBGP(bp)) ;
+                    //op = OpStage.create(op, new OpBGP(bp)) ;
                 }
                 String uri = JenaUUID.generate().asURI() ;
-                PathLib.install(uri, tp.getPath()) ;
+                
+                PathLib.install(uri, tp.getPath(), registry) ;
                 bp.add(new Triple(tp.getSubject(), Node.createURI(uri), tp.getObject())) ;
                 continue ;
             }
             
             throw new ARQInternalErrorException("Unexpected item in PathBlock: ["+Utils.className(obj)+"] "+obj) ;
         }
+        // Need to invoke PF processing for the temp hack
+        op = PropertyFunctionGenerator.compile(bp, context) ;
         return op ;
     }
 

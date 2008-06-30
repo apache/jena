@@ -36,7 +36,6 @@ public class PropertyFunctionRegistry
         return reg ;
     }
 
-    // Comment out the conts and see what happens
     public static PropertyFunctionRegistry get(Context context)
     { 
         if ( context == null )

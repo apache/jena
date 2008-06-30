@@ -1,13 +1,12 @@
 ==== ARQ ToDo
 
 ** Paths 
-1/ Rewire parser to generate ElementPathBlock (ARQ)
+1/ Rewire parser to generate ElementPathBlock (ARQ) [DONE 0.75]
 3/ OpStage ==> OpSeq
-5/ BFI allnodes evaluation of a path.
+5/ BFI allnodes evaluation of a path. [**]
 0/ Path tests (scripted) inc from Object
 1/ TestPath - API usage.
 9/ Test reverse evaluation from object
-
 
 ** Stricter rules for property functions - must bind all variables => can do FILTER migration across them.
 

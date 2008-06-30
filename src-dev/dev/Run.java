@@ -50,6 +50,7 @@ public class Run
 {
     public static void main(String[] argv) throws Exception
     {
+        // BFI allNode code.
         execQuery("D.ttl", "Q.arq") ;
         
         
@@ -110,6 +111,8 @@ public class Run
         PrefixMapping pmap = new PrefixMappingImpl() ;
         pmap.setNsPrefixes(PrefixMapping.Standard) ;
         pmap.setNsPrefix("", "http://example/") ;
+        
+        // | alt.
         
         if ( false )
         {
