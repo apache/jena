@@ -92,6 +92,15 @@ public class TestPath extends TestCase
     public void testParsePathErr_01()        { parse("", false) ; }
     public void testParsePathErr_02()        { parse("()", false) ; }
     public void testParsePathErr_03()        { parse(":p :q", false) ; }
+    
+    // Bracketted form on the left
+    public void testParseEquals_1()         {  parse("(:p)",        ":p") ; }
+    public void testParseEquals_2()         {  parse(":p/(:q/:r)",  ":p/:q/:r") ; }
+    public void testParseEquals_3()         {  parse("(:p/:q)|:r",  ":p/:q|:r") ; }
+    public void testParseEquals_4()         {  parse(":p|(:q/:r)",  ":p|:q/:r") ; }
+    public void testParseEquals_5()         {  parse("^:p/:q",       "(^:p)/:q") ; }
+    
+
     // ----
     
     private void parse(String string) { parse(string, true) ; }
@@ -121,6 +130,16 @@ public class TestPath extends TestCase
         p2 = BuilderPath.buildPath(item) ;
         assertEquals(p, p2) ;
     }
+    
+    
+    private static void parse(String path1, String path2)
+    {
+        Prologue prologue = new Prologue(pmap) ;
+        Path p1 = PathParser.parse(path1, prologue) ;
+        Path p2 = PathParser.parse(path2, prologue) ;
+        assertEquals(p1, p2) ;
+    }
+
 
     public void testPath_01()   { test(graph1, n1,   ":p",          new Node[]{n2}) ; }
     public void testPath_02()   { test(graph1, n1,   ":p{0}",       new Node[]{n1}) ; }
@@ -147,11 +166,24 @@ public class TestPath extends TestCase
     public void testPath_22()   { test(graph2, n2,   "^:p|:q",      new Node[]{n1,n4}) ; }
     public void testPath_23()   { test(graph2, n2,   "^(:p|^:q)*",  new Node[]{n1,n2,n4}) ; }
 
+    public void testPath_24()   { testReverse(graph1, n2,   ":p",          new Node[]{n1}) ; }
+    public void testPath_25()   { testReverse(graph1, n3,   ":p/:p",       new Node[]{n1}) ; }
     // ----
     private static void test(Graph graph, Node start, String string, Node[] expectedNodes)
     {
+       test(graph, start, string, expectedNodes, true) ;
+    }
+    
+    private static void testReverse(Graph graph, Node start, String string, Node[] expectedNodes)
+    {
+       test(graph, start, string, expectedNodes, false) ;
+    }
+
+    private static void test(Graph graph, Node start, String string, Node[] expectedNodes, boolean directionForward)
+    {
         Path p = PathParser.parse(string, pmap) ;
-        Iterator resultsIter = PathEval.eval(graph, start, p) ;
+        Iterator resultsIter = 
+            directionForward ? PathEval.eval(graph, start, p) : PathEval.evalReverse(graph, start, p) ; 
         Set results = new HashSet() ;
         for ( ; resultsIter.hasNext() ; )
             results.add( (Node)resultsIter.next() ) ;

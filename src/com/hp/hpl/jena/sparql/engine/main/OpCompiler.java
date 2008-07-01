@@ -159,9 +159,17 @@ public class OpCompiler
         // Worth doing anything about join(join(..))?  Probably not.
     }
 
+    // Pass iterator from one step directly into the next.
     public QueryIterator compile(OpStage opStage, QueryIterator input)
     {
-        return stream(opStage.getLeft(), opStage.getRight(), input) ;
+        QueryIterator qIter = input ;
+        for ( Iterator iter = opStage.iterator() ; iter.hasNext() ; )
+        {
+            Op sub = (Op)iter.next() ;
+            qIter = compileOp(sub, qIter) ;
+        }
+        
+        return qIter ;
     }
     
     // Pass iterator from left directly into the right.

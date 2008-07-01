@@ -35,7 +35,7 @@ public class AlgebraGenerator
     // SimplifyEarly=true is the alternative reading of
     // the DAWG Algebra translation algorithm. 
 
-    // If we simplify here 9early), it changes the SPARQL for OPTIONAL {{ FILTER }}
+    // If we simplify here (early), it changes the SPARQL for OPTIONAL {{ FILTER }}
     // The  {{}} reslts in (join unit (filter ...)) the filter is not moved
     // into the LeftJoin.  
     
@@ -326,7 +326,6 @@ public class AlgebraGenerator
         pattern = pattern.reduce() ;
         
         //Step 2 : gather into OpBGP(BasicPatterns) or OpPath
-        
         BasicPattern bp = null ;
         Op op = null ;
         
@@ -341,13 +340,8 @@ public class AlgebraGenerator
                 continue ;
             }
             // Path form.
-            if ( bp != null )
-            {
-                // Finish off a BGP.
-                Op op2 = PropertyFunctionGenerator.compile(bp, context) ;
-                op = OpStage.create(op, op2) ;
-                bp = null ;
-            }
+            op = flush(bp, op) ;
+            bp = null ;
                 
             TriplePath tp = (TriplePath)obj ;
             OpPath opPath = new OpPath(tp) ;
@@ -356,15 +350,21 @@ public class AlgebraGenerator
         }
 
         // End.  Finish off any outstanding BGP.
-        if ( bp != null )
-        {
-            Op op2 = PropertyFunctionGenerator.compile(bp, context) ;
-            op = OpStage.create(op, op2) ;
-        }
+        op = flush(bp, op) ;
         
         return op ;
     }
 
+    private Op flush(BasicPattern bp, Op op)
+    {
+        if ( bp == null || bp.isEmpty() )
+            return op ;
+        
+        Op op2 = PropertyFunctionGenerator.compile(bp, context) ;
+        op = OpStage.create(op, op2) ;
+        return op ;
+    }
+    
     protected Op compileElementGraph(ElementNamedGraph eltGraph)
     {
         Node graphNode = eltGraph.getGraphNameNode() ;

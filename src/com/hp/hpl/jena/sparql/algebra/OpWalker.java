@@ -6,6 +6,8 @@
 
 package com.hp.hpl.jena.sparql.algebra;
 
+import java.util.Iterator;
+
 import com.hp.hpl.jena.sparql.algebra.op.*;
 
 
@@ -24,6 +26,16 @@ public class OpWalker
         public WalkerVisitor() { this(null) ; }
         public WalkerVisitor(OpVisitor visitor) { this.visitor = visitor ; }
         
+        protected void visitN(OpN op)
+        {
+            for ( Iterator iter = op.iterator() ; iter.hasNext() ; )
+            {
+                Op sub = (Op)iter.next() ;
+                sub.visit(this) ;
+            }
+            if ( visitor != null ) op.visit(visitor) ;        
+        }
+
         protected void visit2(Op2 op)
         {
             op.getLeft().visit(this) ;
@@ -61,7 +73,7 @@ public class OpWalker
         { visit2(opJoin) ; }
 
         public void visit(OpStage opStage)
-        { visit2(opStage) ; }
+        { visitN(opStage) ; }
         
         public void visit(OpLeftJoin opLeftJoin)
         { visit2(opLeftJoin) ; }

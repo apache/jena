@@ -6,6 +6,9 @@
 
 package com.hp.hpl.jena.sparql.algebra;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Stack;
 
 import com.hp.hpl.jena.sparql.algebra.op.*;
@@ -70,6 +73,20 @@ public class Transformer
             push(opX) ;
         }
         
+        private void visitN(OpN op)
+        {
+            List x = new ArrayList(op.size()) ;
+            for ( Iterator iter = op.iterator() ; iter.hasNext() ; )
+            {
+                Op sub = (Op)iter.next() ;
+                sub.visit(this) ;
+                Op r = pop() ;
+                x.add(r) ;
+            }
+            Op opX = op.apply(transform, x) ;  
+            push(opX) ;
+        }
+        
         public void visit(OpTable opTable)
         { visit0(opTable) ; }
         
@@ -95,7 +112,7 @@ public class Transformer
         { visit2(opJoin) ; }
 
         public void visit(OpStage opStage)
-        { visit2(opStage) ; }
+        { visitN(opStage) ; }
         
         public void visit(OpLeftJoin opLeftJoin)
         { visit2(opLeftJoin) ; }

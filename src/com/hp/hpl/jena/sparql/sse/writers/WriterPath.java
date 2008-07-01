@@ -16,7 +16,7 @@ import com.hp.hpl.jena.sparql.util.IndentedLineBuffer;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
 
 /** SSE Writer */
-public class WriterPath implements PathVisitor
+public class WriterPath
 {
     private static final int NL = WriterLib.NL ;
     private static final int NoNL = WriterLib.NoNL ;
@@ -29,7 +29,7 @@ public class WriterPath implements PathVisitor
     
     public static void output(IndentedWriter out, Path path, SerializationContext naming)
     {
-        WriterPath w = new WriterPath(out, naming.getPrologue()) ;
+        WriterPathVisitor w = new WriterPathVisitor(out, naming.getPrologue()) ;
         w.output(path) ;
         w.out.flush();
     }
@@ -54,13 +54,35 @@ public class WriterPath implements PathVisitor
         }
         else
         {
-            out.println() ;
+            nl(out, false);
             WriterNode.output(out, tp.getSubject(), naming) ;
-            out.println() ;
+            nl(out);
             WriterPath.output(out, tp.getPath(), naming) ;
-            out.println() ;
+            nl(out);
             WriterNode.output(out, tp.getObject(), naming) ;
         }
+    }
+    
+    private static boolean oneLiner(Path path)
+    {
+        return (path instanceof P_Link) ;
+    }
+    
+    private static final boolean multiline = false ;
+    private static void nl(IndentedWriter out)
+    {
+        if ( multiline )
+            out.println();
+        else
+            out.print(" ") ;
+    }
+
+    private static void nl(IndentedWriter out, boolean spaceForNL)
+    {
+        if ( multiline )
+            out.println();
+        else
+            if ( spaceForNL ) out.print(" ") ;
     }
     
     public static String asString(Path path) { return asString(path, null) ; }
@@ -68,102 +90,99 @@ public class WriterPath implements PathVisitor
     public static String asString(Path path, Prologue prologue)
     {
         IndentedLineBuffer buff = new IndentedLineBuffer() ;
-        WriterPath w = new WriterPath(buff.getIndentedWriter(), prologue) ;
+        WriterPathVisitor w = new WriterPathVisitor(buff.getIndentedWriter(), prologue) ;
         path.visit(w) ;
         w.out.flush();
         return buff.asString() ;
     }
     
-    private IndentedWriter out ;
-    private Prologue prologue ;
+    private static class WriterPathVisitor implements PathVisitor
+    {
 
-    WriterPath(IndentedWriter indentedWriter, Prologue prologue)
-    { 
-        this.out = indentedWriter ; 
-        this.prologue = prologue ;
-    }
-    
-    private void output(Path path)
-    {
-        path.visit(this) ;
-    }
-    
-    //@Override
-    public void visit(P_Link pathNode)
-    {
-        out.print(FmtUtils.stringForNode(pathNode.getNode(), prologue)) ;
-    }
+        private IndentedWriter out ;
+        private Prologue prologue ;
 
-    //@Override
-    public void visit(P_Alt pathAlt)
-    {
-        visit2(pathAlt, Tags.tagPathAlt) ;
-    }
+        WriterPathVisitor(IndentedWriter indentedWriter, Prologue prologue)
+        { 
+            this.out = indentedWriter ; 
+            this.prologue = prologue ;
+        }
 
-    //@Override
-    public void visit(P_Seq pathSeq)
-    {
-        visit2(pathSeq, Tags.tagPathSeq) ;
-    }
+        private void output(Path path)
+        {
+            path.visit(this) ;
+        }
 
-    private void visit2(P_Path2 path2, String nodeName)
-    {
-        out.print("(") ;
-        out.print(nodeName) ;
+        //@Override
+        public void visit(P_Link pathNode)
+        {
+            out.print(FmtUtils.stringForNode(pathNode.getNode(), prologue)) ;
+        }
 
-        // never one line
-        out.println() ;
-        out.incIndent() ;
-        output(path2.getLeft()) ;
-        out.println() ;
-        output(path2.getRight()) ;
-        out.decIndent() ;
-        out.print(" )") ;
-    }
-    
-    //@Override
-    public void visit(P_Mod pathMod)
-    {
-        out.print("(") ;
-        out.print(Tags.tagPathMod) ;
-        out.print(" ") ;
-        out.print(modInt(pathMod.getMin())) ;
-        out.print(" ") ;
-        out.print(modInt(pathMod.getMax())) ;
-        
-        if ( oneLiner(pathMod.getSubPath()) )
+        //@Override
+        public void visit(P_Alt pathAlt)
+        {
+            visit2(pathAlt, Tags.tagPathAlt) ;
+        }
+
+        //@Override
+        public void visit(P_Seq pathSeq)
+        {
+            visit2(pathSeq, Tags.tagPathSeq) ;
+        }
+
+        private void visit2(P_Path2 path2, String nodeName)
+        {
+            out.print("(") ;
+            out.print(nodeName) ;
+            nl(out) ; 
+            out.incIndent() ;
+            output(path2.getLeft()) ;
+            nl(out) ; 
+            output(path2.getRight()) ;
+            out.decIndent() ;
+            out.print(" )") ;
+        }
+
+        //@Override
+        public void visit(P_Mod pathMod)
+        {
+            out.print("(") ;
+            out.print(Tags.tagPathMod) ;
             out.print(" ") ;
-        else
-            out.println() ;
-        out.incIndent() ;
-        output(pathMod.getSubPath()) ;
-        out.decIndent() ;
-        out.print(")") ;
-    }
+            out.print(modInt(pathMod.getMin())) ;
+            out.print(" ") ;
+            out.print(modInt(pathMod.getMax())) ;
 
-    private static String modInt(long value)
-    {
-        if ( value == P_Mod.INF ) return "*" ;
-        //if ( value == P_Mod.UNSET ) return " ;
-        
-        return Long.toString(value) ;
-    }
-    
-    
-    private static boolean oneLiner(Path path)
-    {
-        return (path instanceof P_Link) ;
-    }
+            if ( oneLiner(pathMod.getSubPath()) )
+                out.print(" ") ;
+            else
+                nl(out) ;
+            out.incIndent() ;
+            output(pathMod.getSubPath()) ;
+            out.decIndent() ;
+            out.print(")") ;
+        }
 
-    public void visit(P_Reverse reversePath)
-    {
-        out.print("(") ;
-        out.print(Tags.tagPathReverse) ;
-        out.println() ;
-        out.incIndent() ;
-        output(reversePath.getSubPath()) ;
-        out.decIndent() ;
-        out.print(" )") ;
+        private static String modInt(long value)
+        {
+            if ( value == P_Mod.INF ) return "*" ;
+            //if ( value == P_Mod.UNSET ) return " ;
+
+            return Long.toString(value) ;
+        }
+
+        public void visit(P_Reverse reversePath)
+        {
+            out.print("(") ;
+            out.print(Tags.tagPathReverse) ;
+            nl(out) ; 
+            out.incIndent() ;
+            output(reversePath.getSubPath()) ;
+            out.decIndent() ;
+            out.print(" )") ;
+        }
+
     }
 }
 

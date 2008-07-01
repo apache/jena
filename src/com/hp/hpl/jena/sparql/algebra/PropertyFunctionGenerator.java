@@ -187,10 +187,6 @@ public class PropertyFunctionGenerator //implements StageGenerator
             return op ;
         }
         OpBGP opBGP = new OpBGP(pattern) ;
-
-        if ( op == null )
-            return opBGP ;
-        // XXX Consider if op is a OpProc, then create a stage sequence. 
         return OpStage.create(op, opBGP) ;
     }
 

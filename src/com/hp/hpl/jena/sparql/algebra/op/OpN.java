@@ -1,55 +1,60 @@
 /*
- * (c) Copyright 2007, 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.algebra;
+package com.hp.hpl.jena.sparql.algebra.op;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import com.hp.hpl.jena.sparql.algebra.op.OpJoin;
-import com.hp.hpl.jena.sparql.algebra.op.OpStage;
+import com.hp.hpl.jena.sparql.algebra.Op;
+import com.hp.hpl.jena.sparql.algebra.Transform;
+import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 
-public class TransformSimplify extends TransformCopy
-{
-    public Op transform(OpStage opStage, List elts)
-    {
-        List x = new ArrayList(elts) ;
-        for ( Iterator iter = x.iterator() ; iter.hasNext() ; )
-        {
-            Op sub = (Op)iter.next() ;
-            if ( OpJoin.isJoinIdentify(sub) )
-                iter.remove();
-        }
-        return super.transform(opStage, x) ;
-    }
+public abstract class OpN extends OpBase
+{ 
+    private List elements = new ArrayList() ;
     
-    public Op transform(OpJoin opJoin, Op left, Op right)
+    protected OpN()         { elements = new ArrayList() ; }
+    protected OpN(List x)   { elements = x ; }
+    
+    public void add(Op op) { elements.add(op) ; }
+    public Op get(int idx) { return (Op)elements.get(idx) ; }
+    
+    public abstract Op apply(Transform transform, List elts) ;
+    public abstract Op copy(List elts) ;
+    
+
+    public boolean sameAs(OpN op, NodeIsomorphismMap labelMap)
     {
-        if ( OpJoin.isJoinIdentify(left) )
-            return right ;
-        if ( OpJoin.isJoinIdentify(right) )
-            return left ;
-        // Merge adjacent BGPs
-        // Also works on nested subqueries that turned out to be simple BGPs.
+        Iterator iter1 = elements.listIterator() ;
+        Iterator iter2 = op.elements.listIterator() ;
         
-//        if ( OpBGP.isBGP(left) && OpBGP.isBGP(right) )
-//        {
-//            BasicPattern pattern = new BasicPattern() ;
-//            pattern.addAll( ((OpBGP)left).getPattern() ) ;
-//            pattern.addAll( ((OpBGP)right).getPattern() ) ;
-//            return new OpBGP(pattern) ;
-//        }
-        
-        return super.transform(opJoin, left, right) ;
+        for ( ; iter1.hasNext() ; )
+        {
+            Op op1 = (Op)iter1.next();
+            Op op2 = (Op)iter2.next();
+            if ( ! op1.equalTo(op2, labelMap) )
+                return false ;
+        }
+        return true ;
     }
+
+    public int size()                   { return elements.size() ; } 
+
+    
+    public int hashCode()               { return elements.hashCode() ; } 
+
+    public List getElements()           { return elements ; }
+
+    public Iterator iterator()          { return elements.iterator() ; }
 }
 
 /*
- * (c) Copyright 2007, 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

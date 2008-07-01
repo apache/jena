@@ -70,18 +70,10 @@ public class PathEval
         return eval(graph, node, path, true) ;
     }
     
-//    /** Evaluate a path in the forward direction */ 
-//    static public Iterator eval(Graph graph, Iterator input, Path path)
-//    { return eval(graph, input, path, true) ; }
-    
     /** Evaluate a path starting at the end of the path */ 
     static public Iterator evalReverse(Graph g, Node node, Path path) 
     { return eval(g, node, path, false) ; }
 
-//    /** Evaluate a path starting at the end of the path */ 
-//    static public Iterator evalReverse(Graph g, Iterator input, Path path) 
-//    { return eval(g, input, path, false) ; }
-    
     static private Iterator eval(Graph graph, Node node, Path path, boolean forward)
     {
         //return eval(graph, new SingletonIterator(node), path) ;
@@ -139,7 +131,7 @@ public class PathEval
         public void visit(P_Reverse reversePath)
         {
             //boolean b = forwardMode ;
-            // Flip direction and eveluate
+            // Flip direction and evaluate
             forwardMode = ! forwardMode ;
             reversePath.getSubPath().visit(this) ;
             forwardMode = ! forwardMode ;

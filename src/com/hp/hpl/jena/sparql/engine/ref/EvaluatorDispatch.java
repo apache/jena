@@ -6,6 +6,7 @@
 
 package com.hp.hpl.jena.sparql.engine.ref;
 
+import java.util.Iterator;
 import java.util.Stack;
 
 import com.hp.hpl.jena.sparql.algebra.Op;
@@ -89,10 +90,15 @@ public class EvaluatorDispatch implements OpVisitor
     
     public void visit(OpStage opStage)
     {
-        // Evaluate as a join (reference implementation).
-        Table left = eval(opStage.getLeft()) ;
-        Table right = eval(opStage.getRight()) ;
-        Table table = evaluator.join(left, right) ;
+        // Evaluation is as a sequence of joins.
+        Table table = TableFactory.createUnit() ;
+        
+        for ( Iterator iter = opStage.iterator() ; iter.hasNext() ; )
+        {
+            Op op = (Op)iter.next() ;
+            Table eltTable = eval(op) ;
+            table = evaluator.join(table, eltTable) ;
+        }
         push(table) ;
     }
 

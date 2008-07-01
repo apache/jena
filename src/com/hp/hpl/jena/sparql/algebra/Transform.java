@@ -6,6 +6,8 @@
 
 package com.hp.hpl.jena.sparql.algebra;
 
+import java.util.List;
+
 import com.hp.hpl.jena.sparql.algebra.op.*;
 
 public interface Transform
@@ -27,11 +29,13 @@ public interface Transform
 
     // Op2
     public Op transform(OpJoin opJoin, Op left, Op right) ;
-    public Op transform(OpStage opStage, Op left, Op right) ;
     public Op transform(OpLeftJoin opLeftJoin, Op left, Op right) ;
     public Op transform(OpDiff opDiff, Op left, Op right) ;
     public Op transform(OpUnion opUnion, Op left, Op right) ;
     
+    // OpN
+    public Op transform(OpStage opStage, List elts) ;
+
     // Extensions
     public Op transform(OpExt opExt) ;
     

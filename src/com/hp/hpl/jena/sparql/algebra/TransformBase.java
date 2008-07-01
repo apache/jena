@@ -6,6 +6,8 @@
 
 package com.hp.hpl.jena.sparql.algebra;
 
+import java.util.List;
+
 import com.hp.hpl.jena.sparql.algebra.op.*;
 
 public class TransformBase implements Transform
@@ -25,11 +27,12 @@ public class TransformBase implements Transform
     public Op transform(OpService opService, Op subOp)      { return opService ; } 
     
     public Op transform(OpJoin opJoin, Op left, Op right)           { return opJoin ; }
-    public Op transform(OpStage opStage, Op left, Op right)         { return opStage ; }
     public Op transform(OpLeftJoin opLeftJoin, Op left, Op right)   { return opLeftJoin ; }
     public Op transform(OpDiff opDiff, Op left, Op right)           { return opDiff ; }
     public Op transform(OpUnion opUnion, Op left, Op right)         { return opUnion ; }
     
+    public Op transform(OpStage opStage, List elts)         { return opStage ; }
+
     public Op transform(OpExt opExt)                        { return opExt ; }
     public Op transform(OpNull opNull)                      { return opNull ; }
     

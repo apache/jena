@@ -218,31 +218,36 @@ public class FilterPlacement
     // This code flattens join trees.
     
     // --------------------------------
-        // Stages
-        
-        // Flattens OpStage trees.
-        // (Which are usually left-nested lists).
-        // See joins.  Mutter, mutter.
-        
-        private static List stages(OpStage base)
-        {
-            List stages = new ArrayList() ;
-            stages(base, stages) ;
-            return stages ;
-       }
+    // Stages
 
-    private static void stages(Op base, List stages)
+    // Flattens OpStage trees.
+    // (Which are usually left-nested lists).
+    // See joins.  Mutter, mutter.
+
+    private static List stages(OpStage base)
     {
-        while ( base instanceof OpStage )
-        {
-            OpStage join = (OpStage)base ;
-            Op left = join.getLeft() ; 
-            stages(left, stages) ;
-            base = join.getRight() ;
-        }
-        // Not a stage - add it.
-        stages.add(base) ;
+        return base.getElements() ;
     }
+    
+//    private static List stages(OpStage base)
+//    {
+//        List stages = new ArrayList() ;
+//        stages(base, stages) ;
+//        return stages ;
+//    }
+//
+//    private static void stages(Op base, List stages)
+//    {
+//        while ( base instanceof OpStage )
+//        {
+//            OpStage join = (OpStage)base ;
+//            Op left = join.getLeft() ; 
+//            stages(left, stages) ;
+//            base = join.getRight() ;
+//        }
+//        // Not a stage - add it.
+//        stages.add(base) ;
+//    }
 
     private static List joins(OpJoin base)
     {

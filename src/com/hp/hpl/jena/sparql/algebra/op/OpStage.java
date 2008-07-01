@@ -6,6 +6,8 @@
 
 package com.hp.hpl.jena.sparql.algebra.op;
 
+import java.util.List;
+
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.OpVisitor;
 import com.hp.hpl.jena.sparql.algebra.Transform;
@@ -19,13 +21,13 @@ import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
  * @author Andy Seaborne
  */
 
-public class OpStage extends Op2
+public class OpStage extends OpN
 {
-    // TODO : Rename as OpSeq
-    // TODO : List of ops.  OpN
+    public static OpStage create() { return new OpStage() ; } 
     
     public static Op create(Op left, Op right)
     { 
+        // Avoid stages of one.
         if ( left == null && right == null )
             return null ;
         if ( left == null )
@@ -33,26 +35,39 @@ public class OpStage extends Op2
         if ( right == null )
             return left ;
         // If left already an OpStage ... maybe?
-        return new OpStage(left, right) ;
+        if ( left instanceof OpStage )
+        {
+            OpStage opStage = (OpStage)left ;
+            opStage.add(right) ;
+            return opStage ; 
+        }
+        // Not a stage .. yet
+        OpStage stage = new OpStage() ;
+        stage.add(left) ;
+        stage.add(right) ;
+        return stage ;
     }
     
-    private OpStage(Op left, Op right)
-    { super(left, right) ; }
+    private OpStage()           { super() ; }
+    private OpStage(List elts)  { super(elts) ; }
     
     public String getName() { return Tags.tagStage ; }
 
-    public Op apply(Transform transform, Op left, Op right)
-    { return transform.transform(this, left, right) ; }
-    
     public void visit(OpVisitor opVisitor) { opVisitor.visit(this) ; }
     
-    public Op copy(Op newLeft, Op newRight)
-    { return OpStage.create(newLeft, newRight) ; }
-    
-    public boolean equalTo(Op op2, NodeIsomorphismMap labelMap)
+    public boolean equalTo(Op op, NodeIsomorphismMap labelMap)
     {
-        if ( ! ( op2 instanceof OpStage) ) return false ;
-        return super.sameAs((Op2)op2, labelMap) ;
+        if ( ! ( op instanceof OpStage) ) return false ;
+        OpStage other = (OpStage) op ;
+        return super.sameAs(other, labelMap) ;
+    }
+
+    public Op apply(Transform transform, List elts)
+    { return transform.transform(this, elts) ; }
+
+    public Op copy(List elts)
+    {
+        return new OpStage(elts) ; 
     }
 }
 

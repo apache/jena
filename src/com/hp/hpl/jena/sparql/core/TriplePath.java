@@ -71,7 +71,12 @@ public final class TriplePath
     public int hashCode()
     {
         if ( hash == -1 )
-            hash = (subject.hashCode()<<2) ^ path.hashCode() ^ (object.hashCode()<<1) ;
+        {
+            if ( isTriple() )
+                hash = asTriple().hashCode() ;
+            else
+                hash = (subject.hashCode()<<2) ^ path.hashCode() ^ (object.hashCode()<<1) ;
+        }
         return hash ;
     }
     
@@ -80,7 +85,14 @@ public final class TriplePath
         if ( ! ( other instanceof TriplePath) )
             return false ;
         TriplePath tp = (TriplePath)other ;
-        return subject.equals(tp.subject) && object.equals(tp.object) && path.equals(tp.path) ;
+
+        // True is one is true and one is false
+        if ( tp.isTriple() ^ this.isTriple() )
+            return false ;
+        if ( isTriple() )
+            return asTriple().equals(tp.asTriple()) ;
+        else        
+            return subject.equals(tp.subject) && object.equals(tp.object) && path.equals(tp.path) ;
     }
     
     public String toString()

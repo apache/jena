@@ -102,6 +102,18 @@ public class WriterOp
             this.out = out ;
         }
         
+        private void visitOpN(OpN op)
+        {
+            start(op, NL) ;
+            for ( Iterator iter = op.iterator() ; iter.hasNext() ; )
+            {
+                Op sub = (Op)iter.next() ;
+                out.ensureStartOfLine() ;
+                printOp(sub) ;
+            }
+            finish(op) ;
+        }
+        
         private void visitOp2(Op2 op, ExprList exprs)
         {
             start(op, NL) ;
@@ -212,7 +224,7 @@ public class WriterOp
         { visitOp2(opJoin, null) ; }
 
         public void visit(OpStage opStage)
-        { visitOp2(opStage, null) ; }
+        { visitOpN(opStage) ; }
 
         public void visit(OpLeftJoin opLeftJoin)
         { visitOp2(opLeftJoin, opLeftJoin.getExprs()) ; }

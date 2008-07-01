@@ -680,11 +680,14 @@ Template ConstructTemplate() : { }
 
 void ConstructTriples(TemplateGroup acc) : { }
 {
+    // Recursion :-(
     TriplesSameSubject(acc)
     (<DOT> (ConstructTriples(acc))? )?
 }
 
 // -------- Triple lists with property and object lists
+// ?? Have two versions, one for paths, one for non paths.
+// Simplifies CONSTRUCT
 
 void TriplesSameSubject(TripleCollector acc) : { Node s ; } 
 {

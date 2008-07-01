@@ -224,10 +224,13 @@ public class BuilderOp
     {
         public Op make(ItemList list)
         {
-            BuilderLib.checkLength(3, list, "Stage") ;
-            Op left = build(list, 1) ;
-            Op right  = build(list, 2) ;
-            Op op = OpStage.create(left, right) ;
+            BuilderLib.checkLengthAtLeast(2, list, "Stage") ;
+            OpStage op = OpStage.create() ;
+            for ( int i = 1 ; i < list.size() ; i++ )
+            {
+                Op sub = build(list, i) ;
+                op.add(sub) ;
+            }
             return op ;
         }
     } ;

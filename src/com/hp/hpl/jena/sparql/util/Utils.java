@@ -182,9 +182,15 @@ public class Utils
     
     public static boolean triplePathIso(TriplePath tp1, TriplePath tp2, NodeIsomorphismMap isoMap)
     {
-        return Utils.nodeIso(tp1.getSubject(), tp2.getSubject(), isoMap) && 
-                Utils.nodeIso(tp1.getObject(), tp2.getObject(), isoMap) &&
-                tp1.getPath().equalTo(tp2.getPath(), isoMap) ;
+        if ( tp1.isTriple() ^ tp2.isTriple() ) 
+            return false ;
+
+        if ( tp1.isTriple() )
+            return Utils.tripleIso(tp1.asTriple(), tp2.asTriple(), isoMap) ;
+        else
+            return Utils.nodeIso(tp1.getSubject(), tp2.getSubject(), isoMap) && 
+                   Utils.nodeIso(tp1.getObject(), tp2.getObject(), isoMap) &&
+                   tp1.getPath().equalTo(tp2.getPath(), isoMap) ;
     }
     
     public static boolean tripleIso(Triple t1, Triple t2, NodeIsomorphismMap labelMap)
