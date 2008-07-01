@@ -53,6 +53,7 @@ public class Algebra
     /** Compile a query - pattern and modifiers.  Optionally optimize the algebra expression. */
     public static Op compile(Query query, boolean optimize)
     {
+        // Need to switch on quads here. 
         if ( query == null )
             return null ;
         Op op = new AlgebraGenerator().compile(query) ;

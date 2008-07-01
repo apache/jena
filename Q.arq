@@ -3,17 +3,18 @@ PREFIX  n: <http://example/x#>
 
 SELECT *
 { 
+    ?x n:p ?q .
     ?x n:a^n:b/n:c  ?z .
 
 ## Parse testing
-   ?x n:a/n:a/n:a  ?a .
-   ?x n:a/(n:b|n:p) ?a . 
-   ?x n:a/n:b|n:p ?a . 
-   ?x (n:a/n:b)|n:p ?a . 
-   ?x :q ?z .
- 
-    ?x ^:p* ?w .
-
-    ?x ^(:p*) ?w .
+##    ?x n:a/n:a/n:a  ?a .
+##    ?x n:a/(n:b|n:p) ?a . 
+##    ?x n:a/n:b|n:p ?a . 
+##    ?x (n:a/n:b)|n:p ?a . 
+##    ?x :q ?z .
+##  
+##     ?x ^:p* ?w .
+## 
+##     ?x ^(:p*) ?w .
 
 }

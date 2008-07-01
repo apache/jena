@@ -49,8 +49,8 @@ public class Run
 {
     public static void main(String[] argv) throws Exception
     {
-        //runQParseARQ() ;
-        execQuery2("testing/ARQ/PropertyFunctions/data-3.ttl", "testing/ARQ/PropertyFunctions/splitIRI-9.rq") ;
+        runQParse() ;
+        execQuery("D.ttl", "Q.arq") ;
         
         path() ; System.exit(0) ;
         {
@@ -217,7 +217,7 @@ public class Run
     }
     private static void runQParse()
     {
-        String []a = { "--engine=ref", "--file=Q.rq"/*, "--print=op"*/ } ;
+        String []a = { "--engine=quad", "--file=Q.arq", "--print=op" } ;
         arq.qparse.main(a) ;
         System.exit(0) ;
     }

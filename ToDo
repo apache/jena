@@ -4,6 +4,8 @@
 
 + Precedence-driven printing PathWriter.
 
++ Quad engine. Does this work at all at the parse/op level?
+
 + OpStage ==> OpSeq
 
 + Path tests (scripted) inc from Object
