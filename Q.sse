@@ -1,8 +1,12 @@
-(prefix ((:      <http://example/>)
-	  (rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>)
-	 (rdfs:   <http://www.w3.org/2000/01/rdf-schema#>))
-  (path 
-    ?s
-    (seq rdf:type (mod 0 * rdfs:subClassof))
-    ?t))
-
+(base <file:///c:/home/afs/Projects/ARQ/Q.rq>
+  (prefix ((: <http://example/>))
+    (project (?s ?g ?c ?a ?n)
+      (sequence
+	(filter (< ?a 50)
+          (bgp (triple ?s :age ?a)))
+	(BGP
+          (triple ?s :gender ?g)
+          (triple ?s :country ?c)
+          (triple ?s :name ?n)
+	  )
+        ))))
