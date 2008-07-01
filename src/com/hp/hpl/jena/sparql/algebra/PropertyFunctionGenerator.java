@@ -17,7 +17,7 @@ import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.query.ARQ;
 import com.hp.hpl.jena.sparql.algebra.op.OpBGP;
 import com.hp.hpl.jena.sparql.algebra.op.OpPropFunc;
-import com.hp.hpl.jena.sparql.algebra.op.OpSeq;
+import com.hp.hpl.jena.sparql.algebra.op.OpSequence;
 import com.hp.hpl.jena.sparql.algebra.op.OpTable;
 import com.hp.hpl.jena.sparql.core.BasicPattern;
 import com.hp.hpl.jena.sparql.expr.Expr;
@@ -67,7 +67,7 @@ public class PropertyFunctionGenerator //implements StageGenerator
         // Removes triples of list arguments.  This mutates 'triples'
         findPropertyFunctionArgs(context, triples, propertyFunctionTriples, pfInvocations) ;
         
-        // Now make the OpSeq structure.
+        // Now make the OpSequence structure.
         Op op = makeStages(triples, pfInvocations) ;
         return op ;
     }
@@ -187,7 +187,7 @@ public class PropertyFunctionGenerator //implements StageGenerator
             return op ;
         }
         OpBGP opBGP = new OpBGP(pattern) ;
-        return OpSeq.create(op, opBGP) ;
+        return OpSequence.create(op, opBGP) ;
     }
 
     public static PropertyFunctionRegistry chooseRegistry(Context context)

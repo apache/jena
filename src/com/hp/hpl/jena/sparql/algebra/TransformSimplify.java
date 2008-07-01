@@ -11,11 +11,11 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.hp.hpl.jena.sparql.algebra.op.OpJoin;
-import com.hp.hpl.jena.sparql.algebra.op.OpSeq;
+import com.hp.hpl.jena.sparql.algebra.op.OpSequence;
 
 public class TransformSimplify extends TransformCopy
 {
-    public Op transform(OpSeq opSeq, List elts)
+    public Op transform(OpSequence opSequence, List elts)
     {
         List x = new ArrayList(elts) ;
         for ( Iterator iter = x.iterator() ; iter.hasNext() ; )
@@ -24,7 +24,7 @@ public class TransformSimplify extends TransformCopy
             if ( OpJoin.isJoinIdentify(sub) )
                 iter.remove();
         }
-        return super.transform(opSeq, x) ;
+        return super.transform(opSequence, x) ;
     }
     
     public Op transform(OpJoin opJoin, Op left, Op right)

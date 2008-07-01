@@ -30,7 +30,7 @@ public class OpVisitorBase implements OpVisitor
     public void visit(OpJoin opJoin)
     {}
 
-    public void visit(OpSeq opSeq)
+    public void visit(OpSequence opSequence)
     {}
 
     public void visit(OpLeftJoin opLeftJoin)

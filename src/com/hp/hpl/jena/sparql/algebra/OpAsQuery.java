@@ -98,9 +98,9 @@ public class OpAsQuery
         }
         
         
-        public void visit(OpSeq opSeq)
+        public void visit(OpSequence opSequence)
         {
-            throw new ARQNotImplemented("OpSeq") ;
+            throw new ARQNotImplemented("OpSequence") ;
         }
         
         private ElementTriplesBlock process(BasicPattern pattern)

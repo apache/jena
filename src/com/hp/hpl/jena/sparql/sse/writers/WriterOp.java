@@ -223,8 +223,8 @@ public class WriterOp
         public void visit(OpJoin opJoin)
         { visitOp2(opJoin, null) ; }
 
-        public void visit(OpSeq opSeq)
-        { visitOpN(opSeq) ; }
+        public void visit(OpSequence opSequence)
+        { visitOpN(opSequence) ; }
 
         public void visit(OpLeftJoin opLeftJoin)
         { visitOp2(opLeftJoin, opLeftJoin.getExprs()) ; }

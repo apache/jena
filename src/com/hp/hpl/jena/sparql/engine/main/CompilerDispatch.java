@@ -80,10 +80,10 @@ class CompilerDispatch implements OpVisitor
         push(qIter) ;
     }
 
-    public void visit(OpSeq opSeq)
+    public void visit(OpSequence opSequence)
     {
         QueryIterator input = pop() ;
-        QueryIterator qIter = opCompiler.compile(opSeq, input) ;
+        QueryIterator qIter = opCompiler.compile(opSequence, input) ;
         push(qIter) ;
     }
     

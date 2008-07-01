@@ -72,8 +72,8 @@ public class OpWalker
         public void visit(OpJoin opJoin)
         { visit2(opJoin) ; }
 
-        public void visit(OpSeq opSeq)
-        { visitN(opSeq) ; }
+        public void visit(OpSequence opSequence)
+        { visitN(opSequence) ; }
         
         public void visit(OpLeftJoin opLeftJoin)
         { visit2(opLeftJoin) ; }

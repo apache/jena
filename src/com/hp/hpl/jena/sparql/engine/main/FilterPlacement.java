@@ -15,7 +15,7 @@ import com.hp.hpl.jena.sparql.algebra.OpVars;
 import com.hp.hpl.jena.sparql.algebra.op.OpBGP;
 import com.hp.hpl.jena.sparql.algebra.op.OpJoin;
 import com.hp.hpl.jena.sparql.algebra.op.OpProcedure;
-import com.hp.hpl.jena.sparql.algebra.op.OpSeq;
+import com.hp.hpl.jena.sparql.algebra.op.OpSequence;
 import com.hp.hpl.jena.sparql.core.BasicPattern;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
@@ -121,20 +121,20 @@ public class FilterPlacement
     // Placement in stages and joins.
     // Joins may, in turn, involve stages and BGPs.
     
-    public QueryIterator placeFiltersStage(ExprList exprs, OpSeq opSeq, QueryIterator input)
+    public QueryIterator placeFiltersStage(ExprList exprs, OpSequence opSequence, QueryIterator input)
     {
         if ( ! doFilterPlacement )
-            return buildOpFilter(exprs, opSeq, input) ;
+            return buildOpFilter(exprs, opSequence, input) ;
         Set varScope = new HashSet() ;
-        QueryIterator qIter = placeFilters(exprs, opSeq, varScope, input) ;
+        QueryIterator qIter = placeFilters(exprs, opSequence, varScope, input) ;
         // Insert any remaining filter expressions regardless.
         qIter = buildFilter(exprs, qIter) ;
         return qIter ;
     }
     
-    private QueryIterator placeFilters(ExprList exprs, OpSeq opSeq, Set varScope, QueryIterator input)
+    private QueryIterator placeFilters(ExprList exprs, OpSequence opSequence, Set varScope, QueryIterator input)
     {
-        List ops = stages(opSeq) ;
+        List ops = stages(opSequence) ;
         return placeFilters(exprs, ops, varScope, input) ;
     }
 
@@ -190,15 +190,15 @@ public class FilterPlacement
         {
             Op op = (Op)iter.next() ;
             
-            // And push into any BGPs or OpSeq if possible.
+            // And push into any BGPs or OpSequence if possible.
             if ( op instanceof OpBGP )
             {
                 OpBGP bgp = (OpBGP)op ;
                 BasicPattern pattern = bgp.getPattern() ;
                 qIter = placeFilters(exprs, pattern, varScope, qIter) ;
             }
-            else if ( op instanceof OpSeq )
-                qIter = placeFilters(exprs, (OpSeq)op, varScope, qIter) ;
+            else if ( op instanceof OpSequence )
+                qIter = placeFilters(exprs, (OpSequence)op, varScope, qIter) ;
             else if ( op instanceof OpJoin )
                 qIter = placeFilters(exprs, (OpJoin)op, varScope, qIter) ;
             else if ( op instanceof OpProcedure )
@@ -220,16 +220,16 @@ public class FilterPlacement
     // --------------------------------
     // Stages
 
-    // Flattens OpSeq trees.
+    // Flattens OpSequence trees.
     // (Which are usually left-nested lists).
     // See joins.  Mutter, mutter.
 
-    private static List stages(OpSeq base)
+    private static List stages(OpSequence base)
     {
         return base.getElements() ;
     }
     
-//    private static List stages(OpSeq base)
+//    private static List stages(OpSequence base)
 //    {
 //        List stages = new ArrayList() ;
 //        stages(base, stages) ;
@@ -238,9 +238,9 @@ public class FilterPlacement
 //
 //    private static void stages(Op base, List stages)
 //    {
-//        while ( base instanceof OpSeq )
+//        while ( base instanceof OpSequence )
 //        {
-//            OpSeq join = (OpSeq)base ;
+//            OpSequence join = (OpSequence)base ;
 //            Op left = join.getLeft() ; 
 //            stages(left, stages) ;
 //            base = join.getRight() ;

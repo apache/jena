@@ -225,7 +225,7 @@ public class BuilderOp
         public Op make(ItemList list)
         {
             BuilderLib.checkLengthAtLeast(2, list, "Sequence") ;
-            OpSeq op = OpSeq.create() ;
+            OpSequence op = OpSequence.create() ;
             for ( int i = 1 ; i < list.size() ; i++ )
             {
                 Op sub = build(list, i) ;

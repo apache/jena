@@ -21,9 +21,9 @@ import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
  * @author Andy Seaborne
  */
 
-public class OpSeq extends OpN
+public class OpSequence extends OpN
 {
-    public static OpSeq create() { return new OpSeq() ; } 
+    public static OpSequence create() { return new OpSequence() ; } 
     
     public static Op create(Op left, Op right)
     { 
@@ -34,22 +34,22 @@ public class OpSeq extends OpN
             return right ;
         if ( right == null )
             return left ;
-        // If left already an OpSeq ... maybe?
-        if ( left instanceof OpSeq )
+        // If left already an OpSequence ... maybe?
+        if ( left instanceof OpSequence )
         {
-            OpSeq opSeq = (OpSeq)left ;
-            opSeq.add(right) ;
-            return opSeq ; 
+            OpSequence opSequence = (OpSequence)left ;
+            opSequence.add(right) ;
+            return opSequence ; 
         }
         // Not a stage .. yet
-        OpSeq stage = new OpSeq() ;
+        OpSequence stage = new OpSequence() ;
         stage.add(left) ;
         stage.add(right) ;
         return stage ;
     }
     
-    private OpSeq()           { super() ; }
-    private OpSeq(List elts)  { super(elts) ; }
+    private OpSequence()           { super() ; }
+    private OpSequence(List elts)  { super(elts) ; }
     
     public String getName() { return Tags.tagSequence ; }
 
@@ -57,8 +57,8 @@ public class OpSeq extends OpN
     
     public boolean equalTo(Op op, NodeIsomorphismMap labelMap)
     {
-        if ( ! ( op instanceof OpSeq) ) return false ;
-        OpSeq other = (OpSeq) op ;
+        if ( ! ( op instanceof OpSequence) ) return false ;
+        OpSequence other = (OpSequence) op ;
         return super.sameAs(other, labelMap) ;
     }
 
@@ -67,7 +67,7 @@ public class OpSeq extends OpN
 
     public Op copy(List elts)
     {
-        return new OpSeq(elts) ; 
+        return new OpSequence(elts) ; 
     }
 }
 

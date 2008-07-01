@@ -88,12 +88,12 @@ public class EvaluatorDispatch implements OpVisitor
         push(table) ;
     }
     
-    public void visit(OpSeq opSeq)
+    public void visit(OpSequence opSequence)
     {
         // Evaluation is as a sequence of joins.
         Table table = TableFactory.createUnit() ;
         
-        for ( Iterator iter = opSeq.iterator() ; iter.hasNext() ; )
+        for ( Iterator iter = opSequence.iterator() ; iter.hasNext() ; )
         {
             Op op = (Op)iter.next() ;
             Table eltTable = eval(op) ;

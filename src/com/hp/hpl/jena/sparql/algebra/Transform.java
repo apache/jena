@@ -34,7 +34,7 @@ public interface Transform
     public Op transform(OpUnion opUnion, Op left, Op right) ;
     
     // OpN
-    public Op transform(OpSeq opSeq, List elts) ;
+    public Op transform(OpSequence opSequence, List elts) ;
 
     // Extensions
     public Op transform(OpExt opExt) ;
