@@ -52,7 +52,7 @@ public class Tags
     static public final String tagProc          = "proc" ;
     static public final String tagPropFunc      = "propfunc" ;
     static public final String tagJoin          = "join" ;
-    static public final String tagStage         = "stage" ;
+    static public final String tagSequence      = "sequence" ;
     static public final String tagLeftJoin      = "leftjoin" ;
     static public final String tagDiff          = "diff" ;
     static public final String tagUnion         = "union" ;

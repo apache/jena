@@ -14,16 +14,16 @@ import com.hp.hpl.jena.sparql.algebra.Transform;
 import com.hp.hpl.jena.sparql.sse.Tags;
 import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 
-/** A "stage" is a join-like operation where it is know that the 
+/** A "sequence" is a join-like operation where it is know that the 
  * the output of one step can be fed into the input of the next 
  * (that is, no scoping issues arise). 
  * 
  * @author Andy Seaborne
  */
 
-public class OpStage extends OpN
+public class OpSeq extends OpN
 {
-    public static OpStage create() { return new OpStage() ; } 
+    public static OpSeq create() { return new OpSeq() ; } 
     
     public static Op create(Op left, Op right)
     { 
@@ -34,31 +34,31 @@ public class OpStage extends OpN
             return right ;
         if ( right == null )
             return left ;
-        // If left already an OpStage ... maybe?
-        if ( left instanceof OpStage )
+        // If left already an OpSeq ... maybe?
+        if ( left instanceof OpSeq )
         {
-            OpStage opStage = (OpStage)left ;
-            opStage.add(right) ;
-            return opStage ; 
+            OpSeq opSeq = (OpSeq)left ;
+            opSeq.add(right) ;
+            return opSeq ; 
         }
         // Not a stage .. yet
-        OpStage stage = new OpStage() ;
+        OpSeq stage = new OpSeq() ;
         stage.add(left) ;
         stage.add(right) ;
         return stage ;
     }
     
-    private OpStage()           { super() ; }
-    private OpStage(List elts)  { super(elts) ; }
+    private OpSeq()           { super() ; }
+    private OpSeq(List elts)  { super(elts) ; }
     
-    public String getName() { return Tags.tagStage ; }
+    public String getName() { return Tags.tagSequence ; }
 
     public void visit(OpVisitor opVisitor) { opVisitor.visit(this) ; }
     
     public boolean equalTo(Op op, NodeIsomorphismMap labelMap)
     {
-        if ( ! ( op instanceof OpStage) ) return false ;
-        OpStage other = (OpStage) op ;
+        if ( ! ( op instanceof OpSeq) ) return false ;
+        OpSeq other = (OpSeq) op ;
         return super.sameAs(other, labelMap) ;
     }
 
@@ -67,7 +67,7 @@ public class OpStage extends OpN
 
     public Op copy(List elts)
     {
-        return new OpStage(elts) ; 
+        return new OpSeq(elts) ; 
     }
 }
 

@@ -27,7 +27,7 @@ public interface OpVisitor
     
     // Op2
     public void visit(OpJoin opJoin) ;
-    public void visit(OpStage opStage) ;
+    public void visit(OpSeq opSeq) ;
     public void visit(OpLeftJoin opLeftJoin) ;
     public void visit(OpDiff opDiff) ;
     public void visit(OpUnion opUnion) ;

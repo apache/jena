@@ -31,7 +31,7 @@ public class TransformBase implements Transform
     public Op transform(OpDiff opDiff, Op left, Op right)           { return opDiff ; }
     public Op transform(OpUnion opUnion, Op left, Op right)         { return opUnion ; }
     
-    public Op transform(OpStage opStage, List elts)         { return opStage ; }
+    public Op transform(OpSeq opSeq, List elts)         { return opSeq ; }
 
     public Op transform(OpExt opExt)                        { return opExt ; }
     public Op transform(OpNull opNull)                      { return opNull ; }

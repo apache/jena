@@ -59,7 +59,7 @@ public class BuilderOp
         dispatch.put(Tags.tagProc, buildProcedure) ;
         dispatch.put(Tags.tagPropFunc, buildPropertyFunction) ;
         dispatch.put(Tags.tagJoin, buildJoin) ;
-        dispatch.put(Tags.tagStage, buildStage) ;
+        dispatch.put(Tags.tagSequence, buildSequence) ;
         dispatch.put(Tags.tagLeftJoin, buildLeftJoin) ;
         dispatch.put(Tags.tagDiff, buildDiff) ;
         dispatch.put(Tags.tagUnion, buildUnion) ;
@@ -220,12 +220,12 @@ public class BuilderOp
         }
     } ;
 
-    final protected Build buildStage = new Build()
+    final protected Build buildSequence = new Build()
     {
         public Op make(ItemList list)
         {
-            BuilderLib.checkLengthAtLeast(2, list, "Stage") ;
-            OpStage op = OpStage.create() ;
+            BuilderLib.checkLengthAtLeast(2, list, "Sequence") ;
+            OpSeq op = OpSeq.create() ;
             for ( int i = 1 ; i < list.size() ; i++ )
             {
                 Op sub = build(list, i) ;

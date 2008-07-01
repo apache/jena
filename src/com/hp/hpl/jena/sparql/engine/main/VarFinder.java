@@ -207,66 +207,6 @@ public class VarFinder
 
         public void visit(OpNull opNull)
         { }
-
-//        public void visit(OpProcedure opProc)
-//        {
-//            throw new ARQNotImplemented("VarFinded/OpProcedure") ;
-//        }
-//
-//        public void visit(OpPropFunc opPropFunc)
-//        {
-//            throw new ARQNotImplemented("VarFinded/OpPropFunc") ;
-//        }
-//
-//        public void visit(OpService opService)
-//        {
-//            opService.getSubOp().visit(this) ;
-//            slot(opService.getService()) ;
-//        }
-//
-//        public void visit(OpDatasetNames dsNames)
-//        { }
-//
-//        public void visit(OpStage opStage)
-//        {
-//            throw new ARQNotImplemented("VarFinded/OpStage") ;
-//        }
-//
-//        public void visit(OpDiff opDiff)
-//        {
-//            throw new ARQNotImplemented("VarFinded/OpDiff") ;
-//        }
-//
-//        public void visit(OpList opList)
-//        {
-//            opList.getSubOp().visit(this) ;
-//        }
-//
-//        public void visit(OpOrder opOrder)
-//        {
-//            opOrder.getSubOp().visit(this) ;
-//        }
-//
-//        public void visit(OpReduced opReduced)
-//        {
-//            opReduced.getSubOp().visit(this) ;
-//        }
-//
-//        public void visit(OpDistinct opDistinct)
-//        {
-//            opDistinct.getSubOp().visit(this);
-//        }
-//
-//        public void visit(OpSlice opSlice)
-//        {
-//            opSlice.getSubOp().visit(this);
-//        }
-//
-//        public void visit(OpGroupAgg opGroupAgg)
-//        {
-//            // XXX Group and variable definedness : check this
-//            defines.addAll(opGroupAgg.getGroupVars().getVars()) ;
-//        }
     }
 }
 

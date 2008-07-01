@@ -345,7 +345,7 @@ public class AlgebraGenerator
                 
             TriplePath tp = (TriplePath)obj ;
             OpPath opPath = new OpPath(tp) ;
-            op = OpStage.create(op, opPath) ;
+            op = OpSeq.create(op, opPath) ;
             continue ;
         }
 
@@ -361,7 +361,7 @@ public class AlgebraGenerator
             return op ;
         
         Op op2 = PropertyFunctionGenerator.compile(bp, context) ;
-        op = OpStage.create(op, op2) ;
+        op = OpSeq.create(op, op2) ;
         return op ;
     }
     

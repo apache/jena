@@ -160,10 +160,10 @@ public class OpCompiler
     }
 
     // Pass iterator from one step directly into the next.
-    public QueryIterator compile(OpStage opStage, QueryIterator input)
+    public QueryIterator compile(OpSeq opSeq, QueryIterator input)
     {
         QueryIterator qIter = input ;
-        for ( Iterator iter = opStage.iterator() ; iter.hasNext() ; )
+        for ( Iterator iter = opSeq.iterator() ; iter.hasNext() ; )
         {
             Op sub = (Op)iter.next() ;
             qIter = compileOp(sub, qIter) ;
@@ -255,8 +255,8 @@ public class OpCompiler
             // Uncompiled => unsplit
             return filterPlacement.placeFiltersBGP(exprs, ((OpBGP)base).getPattern(), input) ;
 
-        if ( base instanceof OpStage )
-            return filterPlacement.placeFiltersStage(exprs, (OpStage)base, input) ;
+        if ( base instanceof OpSeq )
+            return filterPlacement.placeFiltersStage(exprs, (OpSeq)base, input) ;
         
         if ( base instanceof OpGraph )
         {}
