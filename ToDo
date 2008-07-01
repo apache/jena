@@ -3,13 +3,9 @@
 ** Paths 
 
 + Precedence-driven printing PathWriter.
-
-+ Quad engine. Does this work at all at the parse/op level?
-
++ Quad engine from qparse
 + OpStage ==> OpSeq
-
 + Path tests (scripted) inc from Object
-+ Ref engine and paths
 
 ** Stricter rules for property functions - must bind all variables => can do FILTER migration across them.
 
