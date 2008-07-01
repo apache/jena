@@ -63,5 +63,6 @@
         <Assign/manifest.ttl>
         <GroupBy/manifest.ttl>
         <SubQuery/manifest.ttl>
+        <Paths/manifest.ttl>
     ) .
 
