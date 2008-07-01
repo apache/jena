@@ -27,6 +27,8 @@ NON-TERMINALS
 // ---- General Graph Pattern 
 	GroupGraphPattern	:=	<LBRACE> GroupGraphPatternSub <RBRACE>
 	GroupGraphPatternSub	:=	( TriplesBlock )? ( ( GraphPatternNotTriples | Filter ) ( <DOT> )? ( TriplesBlock )? )*
+// -- TriplesBlock
+// Two versions - for SPARQL and ARQ (with paths)
 	TriplesBlock	:=	TriplesSameSubject ( <DOT> ( TriplesBlock )? )?
 // -----
 	GraphPatternNotTriples	:=	( OptionalGraphPattern | GroupOrUnionGraphPattern | GraphGraphPattern )
@@ -44,6 +46,7 @@ NON-TERMINALS
 	ConstructTemplate	:=	<LBRACE> ( ConstructTriples )? <RBRACE>
 	ConstructTriples	:=	TriplesSameSubject ( <DOT> ( ConstructTriples )? )?
 // -------- Triple lists with property and object lists
+// -------- Without paths: entry: TriplesSameSubject
 	TriplesSameSubject	:=	VarOrTerm PropertyListNotEmpty
 		|	TriplesNode PropertyList
 	PropertyListNotEmpty	:=	Verb ObjectList ( <SEMICOLON> ( Verb ObjectList )? )*
@@ -51,6 +54,8 @@ NON-TERMINALS
 	ObjectList	:=	Object ( <COMMA> Object )*
 	Object	:=	GraphNode
 	Verb	:=	( VarOrIRIref | <KW_A> )
+// -------- BGPs with paths.
+// -------- Entry point: TriplesSameSubjectPath
 // -------- Paths
 // -------- Triple expansions
 

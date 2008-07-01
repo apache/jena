@@ -59,6 +59,7 @@ import com.hp.hpl.jena.query.* ;
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.syntax.* ;
 import com.hp.hpl.jena.sparql.expr.* ;
+import com.hp.hpl.jena.sparql.path.* ;
 #ifdef ARQ
 import com.hp.hpl.jena.sparql.expr.aggregate.* ;
 #endif
@@ -533,15 +534,30 @@ Element GroupGraphPatternSub() : { Element el = null ; }
       { return elg ; }
 }
 
+// -- TriplesBlock
+// Two versions - for SPARQL and ARQ (with paths)
+#ifdef SPARQL
 Element TriplesBlock(ElementTriplesBlock acc) : { }
-{
   { if ( acc == null )
-      acc = new ElementTriplesBlock() ;
+        acc = new ElementTriplesBlock() ;
   }
   TriplesSameSubject(acc)
   ( <DOT> (TriplesBlock(acc))? )?
     { return acc ; }
 }
+#endif
+
+#ifdef ARQ
+Element TriplesBlock(ElementPathBlock acc) : { }
+{
+  { if ( acc == null )
+        acc = new ElementPathBlock() ;
+  }
+  TriplesSameSubjectPath(acc)
+  ( <DOT> (TriplesBlock(acc))? )?
+    { return acc ; }
+}
+#endif
 
 // -----
 
@@ -668,11 +684,14 @@ Template ConstructTemplate() : { }
 
 void ConstructTriples(TemplateGroup acc) : { }
 {
+    // Recursion :-(
+    // No paths here
     TriplesSameSubject(acc)
     (<DOT> (ConstructTriples(acc))? )?
 }
 
 // -------- Triple lists with property and object lists
+// -------- Without paths: entry: TriplesSameSubject
 
 void TriplesSameSubject(TripleCollector acc) : { Node s ; } 
 {
@@ -684,15 +703,17 @@ void TriplesSameSubject(TripleCollector acc) : { Node s ; }
   PropertyList(s, acc)
 }
 
-void PropertyListNotEmpty(Node s, TripleCollector acc) : { Node p ; }
+void PropertyListNotEmpty(Node s, TripleCollector acc) : 
+    { Node p = null ; }
 {
-  p = Verb()
-  ObjectList(s, p, acc)
-  (<SEMICOLON> (p = Verb() ObjectList(s, p, acc))? )*
-#if 0
-  |
-  Reification(s, acc)
-#endif
+    p = Verb()
+    ObjectList(s, p, null, acc)
+  ( <SEMICOLON> 
+    (
+       p = Verb()
+      ObjectList(s, p, null, acc)
+    )? 
+  )*
 }
 
 void PropertyList(Node s, TripleCollector acc) : { }
@@ -700,25 +721,184 @@ void PropertyList(Node s, TripleCollector acc) : { }
   ( PropertyListNotEmpty(s, acc) ) ?
 }
 
-void ObjectList(Node s, Node p, TripleCollector acc): { Node o ; } 
+void ObjectList(Node s,  Node p, Path path, TripleCollector acc): { Node o ; } 
 {
-  Object(s, p, acc)
-  ( <COMMA> Object(s, p, acc) )*
+  Object(s, p, path, acc)
+  ( <COMMA> Object(s, p, path, acc) )*
 }
 
-void Object(Node s, Node p, TripleCollector acc): { Node o ; }
+void Object(Node s, Node p, Path path, TripleCollector acc): { Node o ; }
 {
     { int mark = acc.mark() ; }
   o = GraphNode(acc) 
-  { insert(acc, mark, s, p, o) ; }
+  { insert(acc, mark, s, p, path, o) ; }
 }
 
-Node Verb() : {Node p ;}
+Node Verb() : { Node p ;}
 {
+// Blank nodes as predicates
 //   ( p = VarOrBlankNodeOrIRIref() | <KW_A> { p = nRDFtype ; } )
   ( p = VarOrIRIref() | <KW_A> { p = nRDFtype ; } )
+  { return p ; }
+}
+
+// -------- BGPs with paths.
+// -------- Entry point: TriplesSameSubjectPath
+
+#ifdef ARQ
+
+void TriplesSameSubjectPath(TripleCollector acc) : { Node s ; } 
+{
+  s = VarOrTerm()
+  PropertyListNotEmptyPath(s, acc) 
+|
+  // Any of the triple generating syntax elements
+  s = TriplesNode(acc)
+  PropertyListPath(s, acc)
+}
+
+void PropertyListNotEmptyPath(Node s, TripleCollector acc) : 
+    { Path path = null ; Node p = null ; }
+{
+  ( path = VerbPath()
+  | p = VerbSimple()
+  )
+
+  ObjectList(s, p, path, acc)
+  ( <SEMICOLON> 
+    (
+      ( path = VerbPath()
+      | p = VerbSimple()
+      )
+      ObjectList(s, p, path, acc)
+    )? 
+  )*
+#if 0
+  |
+  Reification(s, acc)
+#endif
+}
+
+void PropertyListPath(Node s, TripleCollector acc) : { }
+{
+  ( PropertyListNotEmpty(s, acc) ) ?
+}
+
+
+Path VerbPath() : {Node p ; Path path ; }
+{
+  path = Path() { return path ; }
+}
+
+Node VerbSimple() : { Node p ; }
+{
+  ( p = Var() | <KW_A> { p = nRDFtype ; } )
+  { return p ; }
+}
+// End paths stuff.
+#endif
+
+
+
+
+// -------- Paths
+
+#ifdef ARQ
+Path PathUnit() : { Path p ; }
+{
+    p = Path()
+    <EOF>
     { return p ; }
 }
+
+// Weakest outermost
+
+Path Path() : { Path p ; }
+{ 
+  p = PathAlternative() { return p ; }
+}
+
+Path PathAlternative() : { Path p1 , p2 ; }
+{
+   p1 = PathSequence()
+   (
+      <VBAR> p2 = PathAlternative()
+      { return new P_Alt(p1, p2) ; }
+   ) ?
+   { return p1 ; }
+}
+
+Path PathSequence() : { Path p1 , p2 ; }
+{
+    p1 = PathElt()
+    ( <SLASH> p2 = PathSequence()
+      { return new P_Seq(p1, p2) ; }
+    | <CARROT> p2 = PathSequence()
+      { return new P_Seq(p1, new P_Reverse(p2)) ; }
+    )?
+   { return p1; }
+//   // Different from N3 meaning
+//   | <PLING> Path()    // ! Forward path
+//   | <FPATH> p2 = Path()    // -> Forward path :p/:q
+//       { return new P_Seq(p, p2) ; }
+//   | <RPATH> p2 = Path()    // <- Reverse path :
+//       { return new P_SeqR(p, p2) ; }
+//  | <RSLASH> Path()
+
+}
+
+// Primary or it's reverse (unary ^)
+Path PathElt() : { String str ; Node n ; Path p ; }
+{ 
+   ( p = PathPrimary() 
+   | <CARROT>
+     p = PathPrimary()
+     { p = new P_Reverse(p) ; }
+   )
+   ( p = PathMod(p) )?
+   { return p ; }
+}
+
+Path PathMod(Path p) : { long i1 = UNSET ; long i2 = UNSET ; }
+{
+   ( <STAR>   { return PathFactory.modZeroOrMode(p) ; }
+   | <QMARK>  { return PathFactory.modZeroOrOne(p) ; }
+   | <PLUS>   { return PathFactory.modOneOrMore(p) ; }
+   | <LBRACE>
+       (  // {N} {N,M} {N,}
+            i1 = Integer()
+            ( <COMMA>
+              ( <RBRACE>  // case {N,}
+                    { return new P_Mod(p, i1, INF) ; } 
+              |  i2 = Integer() <RBRACE> // case {N,M}
+                    { return new P_Mod(p, i1, i2) ; } 
+              )
+            |
+              <RBRACE>   // {N}
+                     { return new P_Mod(p, i1) ; }
+            )
+       )
+    //   { return new P_Mod(p, i1, i2) ; } 
+   )
+}
+
+Path PathPrimary() : { String str ; Node n ; Path p ; }
+{
+  ( 
+    str = IRIref()
+     { n = Node.createURI(str) ; p = new P_Link(n) ; }
+  | <LPAREN> p = Path() <RPAREN>
+  )
+    { return p ; }
+}
+
+
+long Integer() : {Token t ;}
+{
+    t = <INTEGER> 
+    { return integerValue(t.image) ; }
+}
+#endif
 
 // -------- Triple expansions
 
@@ -1415,7 +1595,16 @@ TOKEN :
 | < AT: "@">
 #ifdef ARQ
 | < ASSIGN:     ":=">
+// Path related
+|  < VBAR:     "|" >
+| < CARROT:   "^" >
+| < FPATH:    "->" >
+| < RPATH:    "<-" >
+| < QMARK:    "?" >
+
 #endif
+
+
 
 }
 

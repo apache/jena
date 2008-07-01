@@ -49,10 +49,8 @@ public class Run
 {
     public static void main(String[] argv) throws Exception
     {
-        // BFI allNode code.
-        runQParseARQ() ;
-        execQuery("D.ttl", "Q.arq") ;
-        
+        //runQParseARQ() ;
+        execQuery2("testing/ARQ/PropertyFunctions/data-3.ttl", "testing/ARQ/PropertyFunctions/splitIRI-9.rq") ;
         
         path() ; System.exit(0) ;
         {
@@ -259,14 +257,34 @@ public class Run
         //QueryEngineMain.register() ;
         String a[] = new String[]{
             //"-v",
-             //"--engine=ref",
+            "--engine=ref", 
             "--data="+datafile,
             "-query="+queryfile , 
         } ;
         
         sparql.main(a) ;
         System.exit(0) ;
+    }
+
+    private static void execQuery2(String datafile, String queryfile)
+    {
+        //QueryEngineMain.register() ;
+        String a[] = new String[]{
+            //"-v",
+            "--data="+datafile,
+            "-query="+queryfile , 
+        } ;
         
+        sparql.main(a) ;
+        a = new String[]{
+            //"-v",
+            "--engine=ref", 
+            "--data="+datafile,
+            "-query="+queryfile , 
+        } ;
+        sparql.main(a) ;
+        
+        System.exit(0) ;
     }
     
     private static void execQuerySSE(String datafile, String queryfile)

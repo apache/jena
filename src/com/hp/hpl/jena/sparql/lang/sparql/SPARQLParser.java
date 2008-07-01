@@ -626,9 +626,11 @@ public class SPARQLParser extends SPARQLParserBase implements SPARQLParserConsta
     throw new Error("Missing return statement in function");
   }
 
+// -- TriplesBlock
+// Two versions - for SPARQL and ARQ (with paths)
   final public Element TriplesBlock(ElementTriplesBlock acc) throws ParseException {
     if ( acc == null )
-      acc = new ElementTriplesBlock() ;
+        acc = new ElementTriplesBlock() ;
     TriplesSameSubject(acc);
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case DOT:
@@ -915,6 +917,7 @@ public class SPARQLParser extends SPARQLParserBase implements SPARQLParserConsta
   }
 
 // -------- Triple lists with property and object lists
+// -------- Without paths: entry: TriplesSameSubject
   final public void TriplesSameSubject(TripleCollector acc) throws ParseException {
                                                  Node s ;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -958,9 +961,9 @@ public class SPARQLParser extends SPARQLParserBase implements SPARQLParserConsta
   }
 
   final public void PropertyListNotEmpty(Node s, TripleCollector acc) throws ParseException {
-                                                           Node p ;
+      Node p = null ;
     p = Verb();
-    ObjectList(s, p, acc);
+    ObjectList(s, p, null, acc);
     label_12:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -980,7 +983,7 @@ public class SPARQLParser extends SPARQLParserBase implements SPARQLParserConsta
       case VAR2:
       case KW_A:
         p = Verb();
-        ObjectList(s, p, acc);
+        ObjectList(s, p, null, acc);
         break;
       default:
         jj_la1[42] = jj_gen;
@@ -1005,9 +1008,9 @@ public class SPARQLParser extends SPARQLParserBase implements SPARQLParserConsta
     }
   }
 
-  final public void ObjectList(Node s, Node p, TripleCollector acc) throws ParseException {
-                                                        Node o ;
-    Object(s, p, acc);
+  final public void ObjectList(Node s, Node p, Path path, TripleCollector acc) throws ParseException {
+                                                                   Node o ;
+    Object(s, p, path, acc);
     label_13:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -1019,19 +1022,19 @@ public class SPARQLParser extends SPARQLParserBase implements SPARQLParserConsta
         break label_13;
       }
       jj_consume_token(COMMA);
-      Object(s, p, acc);
+      Object(s, p, path, acc);
     }
   }
 
-  final public void Object(Node s, Node p, TripleCollector acc) throws ParseException {
-                                                    Node o ;
+  final public void Object(Node s, Node p, Path path, TripleCollector acc) throws ParseException {
+                                                               Node o ;
       int mark = acc.mark() ;
     o = GraphNode(acc);
-    insert(acc, mark, s, p, o) ;
+    insert(acc, mark, s, p, path, o) ;
   }
 
   final public Node Verb() throws ParseException {
-               Node p ;
+                Node p ;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case IRIref:
     case PNAME_NS:
@@ -1049,10 +1052,12 @@ public class SPARQLParser extends SPARQLParserBase implements SPARQLParserConsta
       jj_consume_token(-1);
       throw new ParseException();
     }
-      {if (true) return p ;}
+    {if (true) return p ;}
     throw new Error("Missing return statement in function");
   }
 
+// -------- BGPs with paths.
+// -------- Entry point: TriplesSameSubjectPath
 // -------- Paths
 // -------- Triple expansions
 

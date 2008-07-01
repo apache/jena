@@ -70,14 +70,14 @@ then
 for G in "$@"
 do
   case "$G" in
-      arq-path)
-          dos2unix < "master-path.jj" | cpp -P -C -DARQ | unix2dos > arq.jj
-          grammar arq.jj arq ARQ
-          ;;
-      sparql-path)
-          dos2unix < "master-path.jj" | cpp -P -C -DSPARQL | unix2dos > sparql.jj
-          grammar sparql.jj sparql SPARQL
-          ;;
+##       arq-path)
+##           dos2unix < "master-path.jj" | cpp -P -C -DARQ | unix2dos > arq.jj
+##           grammar arq.jj arq ARQ
+##           ;;
+##       sparql-path)
+##           dos2unix < "master-path.jj" | cpp -P -C -DSPARQL | unix2dos > sparql.jj
+##           grammar sparql.jj sparql SPARQL
+##           ;;
     
 
       sparql|sparql.jj)

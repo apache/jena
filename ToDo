@@ -2,19 +2,11 @@
 
 ** Paths 
 
-+ AlgebraGenerator: OpPath to take a PathBlock and not get flattned into a nest of stages
-    Don't process and reverse paths (.reduce) at this point. 
-  Then OpPathBlock to OpStages of things at a later stage.
-  Better: stage becomes N-ary.
-  
 + Precedence-driven printing PathWriter.
 
-+ TriplesCollector and CONSTRUCT templates.
-  Just be done with it and duplicate the BGP styles? 
-
 + OpStage ==> OpSeq
-+ Path tests (scripted) inc from Object
 
++ Path tests (scripted) inc from Object
 + Ref engine and paths
 
 ** Stricter rules for property functions - must bind all variables => can do FILTER migration across them.

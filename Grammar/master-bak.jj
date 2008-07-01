@@ -534,21 +534,10 @@ Element GroupGraphPatternSub() : { Element el = null ; }
       { return elg ; }
 }
 
-// -- TriplesBlock
-#ifdef SPARQL
 Element TriplesBlock(ElementTriplesBlock acc) : { }
-#endif
-#ifdef ARQ
-Element TriplesBlock(ElementPathBlock acc) : { }
-#endif
 {
   { if ( acc == null )
-#ifdef SPARQL
-        acc = new ElementTriplesBlock() ;
-#endif
-#ifdef ARQ
-        acc = new ElementPathBlock() ;
-#endif
+      acc = new ElementTriplesBlock() ;
   }
   TriplesSameSubject(acc)
   ( <DOT> (TriplesBlock(acc))? )?
@@ -680,14 +669,11 @@ Template ConstructTemplate() : { }
 
 void ConstructTriples(TemplateGroup acc) : { }
 {
-    // Recursion :-(
     TriplesSameSubject(acc)
     (<DOT> (ConstructTriples(acc))? )?
 }
 
 // -------- Triple lists with property and object lists
-// ?? Have two versions, one for paths, one for non paths.
-// Simplifies CONSTRUCT
 
 void TriplesSameSubject(TripleCollector acc) : { Node s ; } 
 {
@@ -699,31 +685,11 @@ void TriplesSameSubject(TripleCollector acc) : { Node s ; }
   PropertyList(s, acc)
 }
 
-void PropertyListNotEmpty(Node s, TripleCollector acc) : 
-    { Path path = null ; Node p = null ; }
+void PropertyListNotEmpty(Node s, TripleCollector acc) : { Node p ; }
 {
-#ifdef SPARQL
-    p = Verb()
-#endif
-#ifdef ARQ
-  ( path = VerbPath()
-  | p = VerbSimple()
-  )
-#endif
-  ObjectList(s, p, path, acc)
-  ( <SEMICOLON> 
-    (
-#ifdef SPARQL
-       p = Verb()
-#endif
-#ifdef ARQ
-      ( path = VerbPath()
-      | p = VerbSimple()
-      )
-#endif
-      ObjectList(s, p, path, acc)
-    )? 
-  )*
+  p = Verb()
+  ObjectList(s, p, acc)
+  (<SEMICOLON> (p = Verb() ObjectList(s, p, acc))? )*
 #if 0
   |
   Reification(s, acc)
@@ -735,45 +701,29 @@ void PropertyList(Node s, TripleCollector acc) : { }
   ( PropertyListNotEmpty(s, acc) ) ?
 }
 
-void ObjectList(Node s,  Node p, Path path, TripleCollector acc): { Node o ; } 
+void ObjectList(Node s, Node p, TripleCollector acc): { Node o ; } 
 {
-  Object(s, p, path, acc)
-  ( <COMMA> Object(s, p, path, acc) )*
+  Object(s, p, acc)
+  ( <COMMA> Object(s, p, acc) )*
 }
 
-void Object(Node s, Node p, Path path, TripleCollector acc): { Node o ; }
+void Object(Node s, Node p, TripleCollector acc): { Node o ; }
 {
     { int mark = acc.mark() ; }
   o = GraphNode(acc) 
-  { insert(acc, mark, s, p, path, o) ; }
+  { insert(acc, mark, s, p, o) ; }
 }
 
-// Property, no path
-#ifdef SPARQL
-Node Verb() : { Node p ;}
+Node Verb() : {Node p ;}
 {
-// Blank nodes as predicates
 //   ( p = VarOrBlankNodeOrIRIref() | <KW_A> { p = nRDFtype ; } )
   ( p = VarOrIRIref() | <KW_A> { p = nRDFtype ; } )
-  { return p ; }
+
+    // ^path
+    // Potential path : mod,path op.
+
+    { return p ; }
 }
-#endif
-
-#ifdef ARQ
-// Includes P_Link(URI)
-Path VerbPath() : {Node p ; Path path ; }
-{
-  path = Path() { return path ; }
-}
-
-Node VerbSimple() : { Node p ; }
-{
-  ( p = Var() | <KW_A> { p = nRDFtype ; } )
-  { return p ; }
-}
-#endif
-
-
 
 // -------- Paths
 
@@ -1570,16 +1520,12 @@ TOKEN :
 #ifdef ARQ
 | < ASSIGN:     ":=">
 // Path related
-|  < VBAR:     "|" >
+| < VBAR:     "|" >
 | < CARROT:   "^" >
 | < FPATH:    "->" >
 | < RPATH:    "<-" >
 | < QMARK:    "?" >
-
 #endif
-
-
-
 }
 
 // See XML chars.txt for notes
