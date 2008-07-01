@@ -9,9 +9,12 @@ package dev;
 public class Dev
 {
     // Build.  Ant and Ivy. 
-    // Flagging duplicates.
 
-    // TestPGraph_BPlusTree 
+    // Constructing BPT graphs 
+    
+    // TestPGraph_BPlusTree
+    // Long tests
+    // With a persistence layer
     
     // removeAll implementation: depends on iterator.remove
     // but can do fatser as a specific operation.
