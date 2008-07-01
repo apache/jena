@@ -3,8 +3,8 @@ PREFIX  n: <http://example/x#>
 
 SELECT *
 { 
-    ?x n:p ?q .
-    ?x n:a^n:b/n:c  ?z .
+    ?x a ?q .
+    ?x a^n:b/n:c  ?z .
 
 ## Parse testing
 ##    ?x n:a/n:a/n:a  ?a .

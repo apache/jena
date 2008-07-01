@@ -13,18 +13,18 @@
 :A rdfs:subClassOf :Z .
 :A rdfs:subClassOf :A .
 
-:x n:p :a1 .
-:x n:p :a2 .
-
-:x n:a :b1 .
-:b1 n:b :c1 .
-:c1 n:c :d1 .
-:c1 n:c :d2 .
-
-:x n:a :b2 .
-
-:z1 n:p :z2 .
-:z2 n:p :z3 .
-:z3 n:p :z4 .
-
-:z4 n:p :z1 .
+## :x n:p :a1 .
+## :x n:p :a2 .
+## 
+## :x n:a :b1 .
+## :b1 n:b :c1 .
+## :c1 n:c :d1 .
+## :c1 n:c :d2 .
+## 
+## :x n:a :b2 .
+## 
+## :z1 n:p :z2 .
+## :z2 n:p :z3 .
+## :z3 n:p :z4 .
+## 
+## :z4 n:p :z1 .
