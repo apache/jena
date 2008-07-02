@@ -122,7 +122,8 @@
 
   <!-- Untested -->
   <target name="ivy-publish" depends="ivy-init,jar" description="Publish (with Ivy)">
-    <ivy:publish resolver="publish-resolver" pubrevision="${version}">
+    <ivy:publish resolver="publish-resolver" pubrevision="${version}"
+      			 organisation="com.hp.hpl.jena" module="tdb" revision="${version}">
       <artifacts pattern="${build.lib.dir}/[artifact].[ext]" />
     </ivy:publish>
   </target>

@@ -10,6 +10,12 @@
       <ibiblio name="jena" root="http://jena.hpl.hp.com/repo" m2compatible="true"/>
       <ibiblio name="ibiblio" m2compatible="true" />
     </chain>
+    
+    <!-- Publish -->
+    <filesystem name="publish-resolver" m2compatible="true">
+       <!-- Does not work: [revision] must be last directory [module]/[type]s/[artifact]-[revision].[ext] -->
+    	<artifact pattern="build/pub/[module]/[revision]/[artifact].[ext]"/>
+    </filesystem>
   </resolvers>
   <include url="${ivy.default.settings.dir}/ivysettings-public.xml"/>
   <include url="${ivy.default.settings.dir}/ivysettings-shared.xml"/>
