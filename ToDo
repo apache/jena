@@ -2,6 +2,8 @@
 
 ** Paths 
 
++ ** Path tests (scripted) inc from Object : testing/ARQ/Paths/
+
 + Precedence-driven printing PathWriter.
 
 [DONE/checked]

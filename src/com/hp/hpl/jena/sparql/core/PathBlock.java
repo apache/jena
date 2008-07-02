@@ -13,7 +13,6 @@ import java.util.ListIterator;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
-
 import com.hp.hpl.jena.sparql.path.P_Link;
 import com.hp.hpl.jena.sparql.path.P_Reverse;
 import com.hp.hpl.jena.sparql.path.P_Seq;
@@ -41,16 +40,23 @@ public class PathBlock
     
     public List getList() { return triplePaths ; } 
     
+    static VarAlloc varAlloc = VarAlloc.getVarAllocator() ;
+    
     /** Simplify : turns constructs in simple triples and simpler TriplePaths where possible */ 
     public PathBlock reduce()
     {
         PathBlock x = new PathBlock() ;
-        reduce(x) ;
+        // No context during algebra generation time.
+//        VarAlloc varAlloc = VarAlloc.get(context, ARQConstants.sysVarAllocNamed) ;
+//        if ( varAlloc == null )
+//            // Panic
+//            throw new ARQInternalErrorException("No execution-scope allocator for variables") ;
+        
+        reduce(x, varAlloc) ;
         return x ;
     }
     
-    private static VarAlloc varAlloc = VarAlloc.getVarAllocator() ;
-    private void reduce(PathBlock x)
+    private void reduce(PathBlock x, VarAlloc varAlloc )
     {
         for ( Iterator iter = iterator() ; iter.hasNext() ; )
         {
@@ -60,12 +66,12 @@ public class PathBlock
                 x.add(tp) ;
                 continue ;
             }
-            reduce(x, tp.getSubject(), tp.getPath(), tp.getObject()) ;
+            reduce(x, varAlloc, tp.getSubject(), tp.getPath(), tp.getObject()) ;
         }
     }
     
     
-    private void reduce(PathBlock x, Node startNode, Path path, Node endNode)
+    private static void reduce(PathBlock x, VarAlloc varAlloc, Node startNode, Path path, Node endNode)
     {
         if ( path instanceof P_Link )
         {
@@ -79,14 +85,14 @@ public class PathBlock
         {
             P_Seq ps = (P_Seq)path ;
             Node v = varAlloc.allocVar() ;
-            reduce(x, startNode, ps.getLeft(), v) ;
-            reduce(x, v, ps.getRight(), endNode) ;
+            reduce(x, varAlloc, startNode, ps.getLeft(), v) ;
+            reduce(x, varAlloc, v, ps.getRight(), endNode) ;
             return ;
         }
 
         if ( path instanceof P_Reverse )
         {
-            reduce(x, endNode, ((P_Reverse)path).getSubPath(), startNode) ;
+            reduce(x, varAlloc, endNode, ((P_Reverse)path).getSubPath(), startNode) ;
             return ;
         }
 

@@ -242,37 +242,6 @@ public class ParserBase
     }
     
     
-    
-//    protected Node createNodeFromQuotedURI(String s, int line, int column)
-//    {
-//        s = stripQuotes(s) ;
-//        return createNodeFromURI(s, line, column) ;
-//    }
-//    
-//    protected Node createNodeFromURI(String s, int line, int column)
-//    {
-//        //s = unescapeCodePoint(s, line, column) ;
-//        String uriStr = s ;     // Mutated
-//        
-//        // Is it a bNode label? i.e. <_:xyz>
-//        if ( skolomizedBNodes && s.startsWith(bNodeLabelStart) )
-//        {
-//            s = s.substring(bNodeLabelStart.length()) ;
-//            Node n = Node.createAnon(new AnonId(s)) ;
-//            return n ;
-//        }
-//        
-//        if ( getPrologue() != null )
-//        {
-//            if ( getPrologue().getResolver() != null )
-//                try {
-//                    uriStr = getPrologue().getResolver().resolve(uriStr) ;
-//                } catch (JenaURIException ex)
-//                { throwParseException(ex.getMessage(), line, column) ; }
-//        }
-//        return Node.createURI(uriStr) ;
-//    }
-//    
     // -------- Basic Graph Patterns and Blank Node label scopes
     
     // A BasicGraphPattern is any sequence of TripleBlocks, separated by filters,

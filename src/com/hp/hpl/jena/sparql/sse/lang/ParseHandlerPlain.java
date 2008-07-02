@@ -31,7 +31,7 @@ public class ParseHandlerPlain implements ParseHandler
     
     // Allocation of fresh variables.
     private VarAlloc       varAlloc        = new VarAlloc("_") ;
-    private VarAlloc       varAllocND      = new VarAlloc(ARQConstants.anonVarMarker) ;
+    private VarAlloc       varAllocND      = new VarAlloc(ARQConstants.allocVarAnonMarker) ;
     private VarAlloc       varAllocIntern  = new VarAlloc(ARQConstants.allocVarMarker) ;
     
     public Item getItem()
@@ -95,16 +95,16 @@ public class ParseHandlerPlain implements ParseHandler
         Var var = null ;
         if ( varName.equals("") )                                   // "?"
             var = varAlloc.allocVar()  ;
-        else if ( varName.equals(ARQConstants.anonVarMarker))       // "??" 
+        else if ( varName.equals(ARQConstants.allocVarAnonMarker))  // "??" -- Allocate a non-distinguished variable
             var = varAllocND.allocVar()  ;
-        else if ( varName.equals(ARQConstants.allocVarMarker))      // "?." 
+        else if ( varName.equals(ARQConstants.allocVarMarker))      // "?." -- Allocate a named variable
             var = varAllocIntern.allocVar()  ;
         else
             var = Var.alloc(varName) ;
         Item item = Item.createNode(var, line, column) ;
         listAdd(item) ;
     }
-
+    
     public void emitLiteral(int line, int column, String lexicalForm, String langTag, String datatypeIRI, String datatypePN)
     {
         Node n = null ;

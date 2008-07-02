@@ -7,6 +7,8 @@
 package com.hp.hpl.jena.sparql.core;
 
 import com.hp.hpl.jena.sparql.ARQConstants;
+import com.hp.hpl.jena.sparql.util.Context;
+import com.hp.hpl.jena.sparql.util.Symbol;
 
 /** Allocate variables */
 
@@ -16,16 +18,24 @@ public class VarAlloc
     private long counter = 0 ;
 
     // Globals
-    //private static VarAlloc bNodeAllocator  = new VarAlloc(ARQConstants.anonVarMarker) ;
-    private static VarAlloc varAllocator    = new VarAlloc(ARQConstants.allocVarMarker) ;
+    // Try to avoid their use because of clashes/vry large allocated names.
+    private static VarAlloc varAnonAllocator  = new VarAlloc(ARQConstants.allocGlobalVarAnonMarker) ;
+    private static VarAlloc varAllocator    = new VarAlloc(ARQConstants.allocGlobalVarMarker) ;
 
-    //public static VarAlloc getBNodeAllocator() { return bNodeAllocator ; }
+    //public static VarAlloc getVarAnonAllocator() { return bNodeAllocator ; }
     public static VarAlloc getVarAllocator() { return varAllocator ; }
+    
+    public static VarAlloc get(Context context, Symbol name)
+    { 
+        return (VarAlloc)context.get(name) ;
+    }
     
     public VarAlloc(String baseMarker)
     {
         this.baseMarker = baseMarker ;
     }
+    
+    
     
     public Var allocVar()
     { return alloc(baseMarker, counter ++) ; }

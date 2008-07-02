@@ -217,8 +217,9 @@ public class ExprUtils
     public static void evalPrint(Expr expr, Binding binding)
     {
         try {
-            ARQ.getContext().set(ARQConstants.sysCurrentTime, NodeFactory.nowAsDateTime()) ;
-            FunctionEnv env = new ExecutionContext(ARQ.getContext(), null, null) ; 
+            Context context = ARQ.getContext().copy() ;
+            context.set(ARQConstants.sysCurrentTime, NodeFactory.nowAsDateTime()) ;
+            FunctionEnv env = new ExecutionContext(context, null, null) ; 
             NodeValue r = expr.eval(binding, env) ;
             //System.out.println(r.asQuotedString()) ;
             Node n = r.asNode() ;

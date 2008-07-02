@@ -126,7 +126,7 @@ public class Var extends Node_Variable
     { return node.isVariable() && isBlankNodeVarName(node.getName()) ; }
 
     public static boolean isBlankNodeVarName(String x)
-    { return x.startsWith(ARQConstants.anonVarMarker) ; }
+    { return x.startsWith(ARQConstants.allocVarAnonMarker) ; }
 
     public static boolean isAllocVar(Node node)
     { return node.isVariable() && isAllocVarName(node.getName()) ; }

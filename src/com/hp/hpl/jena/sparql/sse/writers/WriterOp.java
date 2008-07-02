@@ -94,7 +94,6 @@ public class WriterOp
     {
         private IndentedWriter out ;
         private SerializationContext sContext ;
-//        private VarAlloc varAlloc = new VarAlloc("__") ;
         
         public OpWriterWorker(IndentedWriter out, SerializationContext sCxt)
         { 

@@ -95,15 +95,52 @@ public class ARQConstants
     {
         return Symbol.create(base+shortName) ;
     }
+
+    // Allocation classes
+    // See also VarAlloc
+    //   BNode variables names start "?"
+    //   Named variables names start "."
     
-    // If adding to the kinds of variable maker, then need to update tests in Var
+    // 1 - Per query allocated variables (e.g expressions and aggregrations)
+    //          ARQConstants.allocVarMarker                                     "."
     
-    /** Marker for generated variables for non-distinguished in query patterns (??a etc)*/ 
-    public static final String anonVarMarker = "?" ;
+    // 2 - Parser-wide for bNodes => variables. ParserBase=>LabelToNodeMap
+    //          ARQConstants.allocVarAnonMarker                                 "?"
+    
+    // Currently used in PathBlock.reduce which happens at algebra generation time.
+    // 3 - Global : (** ideally, do not use **)
+    //          ARQConstants.allocGlobalVarMarker                               ".="
+    //          ARQConstants.allocGlobalVarAnonMarker                           "?="
+    
+    // Unused ??
+    // 4 - Query planning and execution
+    //     Execution context contains allocators for 
+    //          ARQConstants.allocVarAnonMarkerExec                             "?-"
+    //          ARQConstants.allocVarMarkerExec                                 ".-"
+    
+    private static final String globalVar =     "=" ;
+    private static final String executionVar =  "-" ;
+    
+    /** Marker for generated variables for non-distinguished in query patterns (??a etc)
+     * Used directly in the parser, seed for  */ 
+    public static final String allocVarAnonMarker = "?" ;
     
     /** Marker for general temporary variables (not blank node variables) */
     public static final String allocVarMarker = "." ;
 
+    /** Marker for generated variables for non-distinguished created in query planning and execution */
+    public static final String allocVarAnonMarkerExec = allocVarAnonMarker+executionVar ;
+
+    /** Marker for temporary variables allocated by the per-execution allocator */
+    public static final String allocVarMarkerExec = allocVarMarker+executionVar ;
+    
+    /** Marker for temporary variables allocated by the per-execution allocator */
+    public static final String allocGlobalVarMarker = allocVarMarker+globalVar ;
+
+    /** Marker for temporary variables allocated by the per-execution allocator */
+    public static final String allocGlobalVarAnonMarker = allocVarAnonMarker+globalVar ;
+
+    
     // Use alloc vars
 //    /** Marker for generated variables for aggregates and unnamed expressions */ 
 //    public static final String aggVarMarker = "=" ;
@@ -134,6 +171,12 @@ public class ARQConstants
     /** Context key for Jena version */
     public static final Symbol sysVersionJena  = Symbol.create(systemVarNS+"version/Jena") ;
 
+    /** Context key for the execution-scoped named variable generator */
+    public static final Symbol sysVarAllocNamed  = Symbol.create(systemVarNS+"namedVarAlloc") ;
+    
+    /** Context key for the execution-scoped bNode variable generator */
+    public static final Symbol sysVarAllocAnon  = Symbol.create(systemVarNS+"namedVarAnon") ;
+    
     /** Context key for making all SELECT queries have DISTINCT applied, whether stated ot not */
     public static final Symbol autoDistinct = ARQConstants.allocSymbol("autoDistinct") ;
     

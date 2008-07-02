@@ -115,6 +115,10 @@ public class Query extends Prologue implements Cloneable
     private VarAlloc varAlloc = new VarAlloc(ARQConstants.allocVarMarker) ;
     public Var allocInternVar() { return varAlloc.allocVar() ; }
     
+    private VarAlloc varAnonAlloc = new VarAlloc(ARQConstants.allocVarAnonMarker) ;
+    public Var allocVarAnon() { return varAnonAlloc.allocVar() ; }
+    
+    
     public void setQueryType(int qType)         { queryType = qType ; }
     
     public void setQuerySelectType()            { setQueryType(QueryTypeSelect) ; }

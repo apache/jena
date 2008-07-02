@@ -13,6 +13,7 @@ import com.hp.hpl.jena.sparql.algebra.AlgebraGenerator;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.core.DataSourceGraphImpl;
 import com.hp.hpl.jena.sparql.core.DatasetGraph;
+import com.hp.hpl.jena.sparql.core.VarAlloc;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.binding.BindingRoot;
 import com.hp.hpl.jena.sparql.util.ALog;
@@ -66,7 +67,21 @@ public abstract class QueryEngineBase implements OpExec
             input = BindingRoot.create() ;
         }
         this.startBinding = input ;
+        
+        initContext(context) ;
+    }
+    
+    private static void initContext(Context context)
+    {
         context.set(ARQConstants.sysCurrentTime, NodeFactory.nowAsDateTime()) ;
+        
+        context.set(ARQConstants.sysVarAllocNamed, new VarAlloc(ARQConstants.allocVarMarkerExec)) ;
+        context.set(ARQConstants.sysVarAllocAnon,  new VarAlloc(ARQConstants.allocVarAnonMarkerExec)) ;
+        
+        // Add VarAlloc for variables and bNodes (this is not the parse name). 
+        // 
+        
+        // More added later e.g. query (if there is a query), algebra form (in setOp)
     }
     
     public Plan getPlan()

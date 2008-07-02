@@ -119,10 +119,10 @@ public class TestSSE_Basic extends TestCase
     
     public void testVar_10()
     { 
-        Node v = SSE.parseNode("?"+ARQConstants.anonVarMarker) ;
+        Node v = SSE.parseNode("?"+ARQConstants.allocVarAnonMarker) ;
         assertTrue( v instanceof Var ) ;
         String vn = ((Var)v).getVarName() ;
-        assertFalse(vn.equals(ARQConstants.anonVarMarker)) ;
+        assertFalse(vn.equals(ARQConstants.allocVarAnonMarker)) ;
     }
     
     public void testVar_11()
