@@ -3,6 +3,7 @@
 ** Paths 
 
 + ** Path tests (scripted) inc from Object : testing/ARQ/Paths/
++ ** Path and aggregation in same query.
 + ** Path syntax tests (scripted)
 
 + Precedence-driven printing PathWriter.
