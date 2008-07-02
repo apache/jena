@@ -3,6 +3,7 @@
 ** Paths 
 
 + ** Path tests (scripted) inc from Object : testing/ARQ/Paths/
++ ** Path syntax tests (scripted)
 
 + Precedence-driven printing PathWriter.
 
@@ -11,7 +12,6 @@
     Test failure is due to { pattern LJ propfunc } - fix the property function! 
   + Quad engine - does not do property functions.
   
-+ Path tests (scripted) inc from Object : testing/ARQ/Paths/
 + Check: JoinClassification involving OpSeq
 ** Stricter rules for property functions - must bind all variables => can do FILTER migration across them.
 
