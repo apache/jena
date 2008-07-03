@@ -19,11 +19,13 @@ public class VarAlloc
 
     // Globals
     // Try to avoid their use because of clashes/vry large allocated names.
-    private static VarAlloc varAnonAllocator  = new VarAlloc(ARQConstants.allocGlobalVarAnonMarker) ;
-    private static VarAlloc varAllocator    = new VarAlloc(ARQConstants.allocGlobalVarMarker) ;
-
+    //private static VarAlloc varAnonAllocator  = new VarAlloc(ARQConstants.allocGlobalVarAnonMarker) ;
     //public static VarAlloc getVarAnonAllocator() { return bNodeAllocator ; }
+
+    private static VarAlloc varAllocator    = new VarAlloc(ARQConstants.allocGlobalVarMarker) ;
     public static VarAlloc getVarAllocator() { return varAllocator ; }
+
+    
     
     public static VarAlloc get(Context context, Symbol name)
     { 

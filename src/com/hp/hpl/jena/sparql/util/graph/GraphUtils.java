@@ -19,6 +19,7 @@ import com.hp.hpl.jena.sparql.util.QueryExecUtils;
 import com.hp.hpl.jena.sparql.util.RefBoolean;
 import com.hp.hpl.jena.sparql.util.StringUtils;
 import com.hp.hpl.jena.sparql.util.TypeNotUniqueException;
+import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 import com.hp.hpl.jena.vocabulary.RDF;
 
 /** Graph utilities. 
@@ -199,7 +200,21 @@ public class GraphUtils
     
     public static String fmtURI(Resource r)
     { return r.getModel().shortForm(r.getURI()) ;  }
-
+    
+    /** All subjects and objects, no duplicates. */
+    public static Iterator allNodes(Graph graph)
+    {
+        Set x = new HashSet(1000) ;
+        ExtendedIterator iter = graph.find(Node.ANY, Node.ANY, Node.ANY) ;
+        for ( ; iter.hasNext() ; )
+        {
+            Triple t = (Triple)iter.next();
+            x.add(t.getSubject()) ;
+            x.add(t.getObject()) ;
+        }
+        iter.close() ;
+        return x.iterator() ;
+    }
 }
 
 /*

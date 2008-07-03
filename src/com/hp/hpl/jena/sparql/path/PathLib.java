@@ -6,14 +6,12 @@
 
 package com.hp.hpl.jena.sparql.path;
 
-import java.util.*;
-
-import com.hp.hpl.jena.util.iterator.ExtendedIterator;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Triple;
-
 import com.hp.hpl.jena.sparql.core.TriplePath;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
@@ -26,6 +24,7 @@ import com.hp.hpl.jena.sparql.pfunction.PropertyFunction;
 import com.hp.hpl.jena.sparql.pfunction.PropertyFunctionFactory;
 import com.hp.hpl.jena.sparql.pfunction.PropertyFunctionRegistry;
 import com.hp.hpl.jena.sparql.procedure.ProcLib;
+import com.hp.hpl.jena.sparql.util.graph.GraphUtils;
 
 public class PathLib
 {
@@ -88,7 +87,7 @@ public class PathLib
     private static QueryIterator ungroundedPath(Binding binding, Graph graph, Var s, Path path, Var o,
                                                 ExecutionContext execCxt)
     {
-        Iterator iter = allNodes(graph) ;
+        Iterator iter = GraphUtils.allNodes(graph) ;
         QueryIterConcat qIterCat = new QueryIterConcat(execCxt) ;
         
         for ( ; iter.hasNext() ; )
@@ -102,18 +101,7 @@ public class PathLib
         return qIterCat ;
     }
 
-    private static Iterator allNodes(Graph graph)
-    {
-        Set x = new HashSet(1000) ;
-        ExtendedIterator iter = graph.find(Node.ANY, Node.ANY, Node.ANY) ;
-        for ( ; iter.hasNext() ; )
-        {
-            Triple t = (Triple)iter.next();
-            x.add(t.getSubject()) ;
-            x.add(t.getObject()) ;
-        }
-        return x.iterator() ;
-    }
+ 
 
     private static QueryIterator _execTriplePath(Binding binding, 
                                                  Iterator iter,

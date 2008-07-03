@@ -123,12 +123,18 @@ void PrefixedName() : { Token t ; }
 
 void Var() : { Token t ; }
 {
-  // Includes "?" as a variable for anon variables.
-  // Includes "??" as a variable for anon non-distinguished variables.
-  // Includes non-distinguished variables as ??0
-  // Includes internal allocated variables as ?@0
+    // VAR_NAMED:   "?"  and any legal SPARQL variable.
+    // VAR_NAMED2:  "?." and non-legal SPARQL variable (usually allocated)
+    // VAR_ANON:    "??" : Anon variables.
 
-  ( t = <VAR_N> | t = <VAR_ND> | t = <VAR_A> )
+
+    // Includes "?" as a variable which allocated one from ?0, ?1, ?2 
+    //    Legal SPARQL syntax.
+    // Includes "??" as a variable for anon non-distinguished variables.
+    // Includes non-distinguished variables as ??0
+    // Includes internal allocated variables as ?.0
+
+  ( t = <VAR_NAMED> | t = <VAR_NAMED2> | t = <VAR_ANON> )
   { emitVar(t.beginLine, t.beginColumn, stripChars(t.image, 1)) ; }
 }
 

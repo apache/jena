@@ -96,31 +96,47 @@ public class ARQConstants
         return Symbol.create(base+shortName) ;
     }
 
-    // Allocation classes
-    // See also VarAlloc
-    //   BNode variables names start "?"
-    //   Named variables names start "."
+    /* Variable names and allocated variables.
+     * NB Must agree with the variable parsing rules in SSE 
+     * Allocated variables use names that are not legal in SPARQL.
+     * 
+     * Examples include the "?" variable initial character
+     * 
+     * We need to allocate so clashes never occur within scopes.
+     * Distinguished (named variables) and non-distinguished (anon variables, bNodes) 
+     * 
+     * SSE also allows some convenience forms of exactly these string:
+     *  "?"     short hand for "some variable" using ?0, ?1, ?2 naming (legal SPARQL names)
+     *  "??"    short hand for "some new anon variable"
+     *  "?."    short hand for "some new named variable"
+     *  
+     * See: ParseHandlerPlain.emitVar
+     * 
+     * Naming:
+     *   Distingusihes, alloctaed variables start "?."
+     *   Non-Distinguished, alloctaed variables start "??"
+     * 
+     * Scopes:
+     *   Global:        
+     *      allocVarMarker          "?."
+     *      allocVarAnonMarker      "??"
+     *   
+     *   Parser:    Used in turning blank nodes into variables in query patterns
+     *              See LabelToNodeMap which creates a variable allocator using "??" (beware)
+     *      allocVarMarker          "?."    
+     *      allocVarAnonMarker      "??"
+     *   
+     *   Execution:
+     *      allocVarMarkerExec      "?.@"
+     *      allocVarAnonMarkerExec  "??@"
+     *      
+     *  See also sysVarAllocNAmed and sysVarAllocAnon for symbols to identify in a context. 
+     */
     
-    // 1 - Per query allocated variables (e.g expressions and aggregrations)
-    //          ARQConstants.allocVarMarker                                     "."
+    private static final String globalVar =     "." ;
+    private static final String executionVar =  "@" ;
     
-    // 2 - Parser-wide for bNodes => variables. ParserBase=>LabelToNodeMap
-    //          ARQConstants.allocVarAnonMarker                                 "?"
-    
-    // Currently used in PathBlock.reduce which happens at algebra generation time.
-    // 3 - Global : (** ideally, do not use **)
-    //          ARQConstants.allocGlobalVarMarker                               ".="
-    //          ARQConstants.allocGlobalVarAnonMarker                           "?="
-    
-    // Unused ??
-    // 4 - Query planning and execution
-    //     Execution context contains allocators for 
-    //          ARQConstants.allocVarAnonMarkerExec                             "?-"
-    //          ARQConstants.allocVarMarkerExec                                 ".-"
-    
-    private static final String globalVar =     "=" ;
-    private static final String executionVar =  "-" ;
-    
+    // These strings are without the leading "?"
     /** Marker for generated variables for non-distinguished in query patterns (??a etc)
      * Used directly in the parser, seed for  */ 
     public static final String allocVarAnonMarker = "?" ;
@@ -128,17 +144,17 @@ public class ARQConstants
     /** Marker for general temporary variables (not blank node variables) */
     public static final String allocVarMarker = "." ;
 
-    /** Marker for generated variables for non-distinguished created in query planning and execution */
-    public static final String allocVarAnonMarkerExec = allocVarAnonMarker+executionVar ;
-
-    /** Marker for temporary variables allocated by the per-execution allocator */
-    public static final String allocVarMarkerExec = allocVarMarker+executionVar ;
+//    /** Marker for generated variables for non-distinguished created in query planning and execution */
+//    public static final String allocVarAnonMarkerExec = allocVarAnonMarker+executionVar ;
+//
+//    /** Marker for temporary variables allocated by the per-execution allocator */
+//    public static final String allocVarMarkerExec = allocVarMarker+executionVar ;
     
     /** Marker for temporary variables allocated by the per-execution allocator */
     public static final String allocGlobalVarMarker = allocVarMarker+globalVar ;
 
-    /** Marker for temporary variables allocated by the per-execution allocator */
-    public static final String allocGlobalVarAnonMarker = allocVarAnonMarker+globalVar ;
+//    /** Marker for temporary variables allocated by the per-execution allocator */
+//    public static final String allocGlobalVarAnonMarker = allocVarAnonMarker+globalVar ;
 
     
     // Use alloc vars

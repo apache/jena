@@ -1,10 +1,15 @@
 PREFIX : <http://example/>
 PREFIX  n: <http://example/x#> 
 
-SELECT *
-{ 
-    ?x a ?q .
-    ?x a^n:b/n:c  ?z .
+## SELECT COUNT(*)
+## { 
+##     ?x a ?q .
+##     ?x n:b/n: ?z  .
+##     ?x n:b/n:c [] .
+## }
+
+SELECT * { ?x n:b/n:c [] . }
+
 
 ## Parse testing
 ##    ?x n:a/n:a/n:a  ?a .
@@ -17,4 +22,3 @@ SELECT *
 ## 
 ##     ?x ^(:p*) ?w .
 
-}

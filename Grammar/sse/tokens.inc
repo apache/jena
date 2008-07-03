@@ -3,10 +3,11 @@
 // SSE - SPARQL S-Expressions
 // Not the keywords.
 
-#ifdef SKIP
-SKIP : { " " | "\t" | "\n" | "\r" | "\f" }
-#else
+
 TOKEN: { <WS: " " | "\t" | "\n" | "\r" | "\f"> }
+
+#ifdef SKIP
+SKIP : { <WS> }    //" " | "\t" | "\n" | "\r" | "\f" }
 #endif
 
 SPECIAL_TOKEN :
@@ -17,15 +18,24 @@ SPECIAL_TOKEN :
     <SINGLE_LINE_COMMENT2: ";" (~["\n","\r"])* ("\n"|"\r"|"\r\n")? >
 }
 
+#define VAR_ANY     " ", 
+
 TOKEN:
 {
    <IRIref: "<" (~[">","<","\u0000"-"\u0020"])* ">" >
 |  <PNAME: (<PN_PREFIX>)? ":" (<PN_LOCAL>)? >
 |  <BLANK_NODE_LABEL: "_:" (<PN_LOCAL>)? >  // Allows no label
-// Co-ordinate with ARQConstants
-|  <VAR_N:   "?" (<VARNAME>)?>      // Named variable - allows no name
-|  <VAR_A:   "?." (<VARNAME>)?>     // Allocated, internal variable - allows no name
-|  <VAR_ND:  "??"(<VARNAME>)?>      // Non-distinguished variable (BNode in SPARQL)
+
+    // Co-ordinate with ARQConstants
+
+    // Named variable - allows no name
+|  <VAR_NAMED:   "?" (<VARNAME>)?>
+    // Non-distinguished variable (BNode in SPARQL)
+|  <VAR_NAMED2:   "?." (~[" " , "\t" , "\n" , "\r" , "\f",
+                            "(", ")", "[", "]", "{", "}"])* >
+
+|  <VAR_ANON:     "??" (~[ " " , "\t" , "\n" , "\r" , "\f",
+                            "(", ")", "[", "]", "{", "}"])* >
 }
 
 TOKEN :
