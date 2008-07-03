@@ -2,17 +2,11 @@
 
 ** Paths 
 
-+ ** Path tests (scripted) inc from Object : testing/ARQ/Paths/
 + ** Path and aggregation in same query.
 + ** Path syntax tests (scripted)
 
 + Precedence-driven printing PathWriter.
 
-[DONE/checked]
-  + Ref engine should work on (new style) property functions
-    Test failure is due to { pattern LJ propfunc } - fix the property function! 
-  + Quad engine - does not do property functions.
-  
 + Check: JoinClassification involving OpSeq
 ** Stricter rules for property functions - must bind all variables => can do FILTER migration across them.
 
@@ -20,6 +14,8 @@ See ToDoSSE
 
 ----
 + extra jar - testing only.
+
++ Parser context (to put var allocation things in)
 
 + Stages
 	invert Stage/StageList
@@ -41,6 +37,12 @@ See ToDoSSE
    Separate out list PFs like free text.
 
 + Wrapper to have all functions as assignments
+
+[DONE/checked]
+  + Ref engine should work on (new style) property functions
+    Test failure is due to { pattern LJ propfunc } - fix the property function! 
+  + Quad engine - does not do property functions.
+  
 
 + ORDER BY COUNT(*)
   i.e. add to the assignments.

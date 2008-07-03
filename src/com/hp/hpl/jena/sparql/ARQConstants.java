@@ -118,19 +118,18 @@ public class ARQConstants
      * 
      * Scopes:
      *   Global:        
-     *      allocVarMarker          "?."
-     *      allocVarAnonMarker      "??"
+     *      allocVarMarker          "?.."
      *   
      *   Parser:    Used in turning blank nodes into variables in query patterns
      *              See LabelToNodeMap which creates a variable allocator using "??" (beware)
      *      allocVarMarker          "?."    
      *      allocVarAnonMarker      "??"
      *   
-     *   Execution:
+     *   Execution: (not used yet)
      *      allocVarMarkerExec      "?.@"
      *      allocVarAnonMarkerExec  "??@"
      *      
-     *  See also sysVarAllocNAmed and sysVarAllocAnon for symbols to identify in a context. 
+     *  See also sysVarAllocNamed and sysVarAllocAnon for symbols to identify in a context. 
      */
     
     private static final String globalVar =     "." ;
