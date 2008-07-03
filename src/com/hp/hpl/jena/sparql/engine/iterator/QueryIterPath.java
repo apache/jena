@@ -6,6 +6,7 @@
 
 package com.hp.hpl.jena.sparql.engine.iterator;
 
+import com.hp.hpl.jena.sparql.ARQInternalErrorException;
 import com.hp.hpl.jena.sparql.core.TriplePath;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
@@ -31,7 +32,10 @@ public class QueryIterPath extends QueryIterRepeatApply
 
     protected QueryIterator nextStage(Binding binding)
     {
-        return PathLib.execTriplePath(binding, triplePath, getExecContext()) ;
+        if ( triplePath.isTriple() )
+            throw new ARQInternalErrorException("TriplePath which is a Triple passed to QueryIterPath") ;
+        QueryIterator qIter = PathLib.execTriplePath(binding, triplePath, getExecContext()) ;
+        return qIter ; 
     }
     
     protected void details(IndentedWriter out, SerializationContext sCxt)

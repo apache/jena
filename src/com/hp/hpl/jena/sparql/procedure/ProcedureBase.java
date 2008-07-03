@@ -6,7 +6,6 @@
 
 package com.hp.hpl.jena.sparql.procedure ;
 import com.hp.hpl.jena.graph.Node;
-
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
@@ -16,6 +15,7 @@ import com.hp.hpl.jena.sparql.serializer.SerializationContext;
 import com.hp.hpl.jena.sparql.sse.writers.WriterExpr;
 import com.hp.hpl.jena.sparql.util.FmtUtils;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
+import com.hp.hpl.jena.sparql.util.IterLib;
 import com.hp.hpl.jena.sparql.util.PrintSerializableBase;
 
 public abstract class ProcedureBase extends PrintSerializableBase implements Procedure
@@ -61,7 +61,7 @@ public abstract class ProcedureBase extends PrintSerializableBase implements Pro
         {
             QueryIterator iter = exec(binding, name, args, super.getExecContext()) ;
             if ( iter == null ) 
-                iter = ProcLib.noResults(execCxt) ;
+                iter = IterLib.noResults(execCxt) ;
             return iter ;
         }
         

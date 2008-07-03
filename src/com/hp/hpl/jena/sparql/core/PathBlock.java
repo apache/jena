@@ -13,6 +13,7 @@ import java.util.ListIterator;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
+import com.hp.hpl.jena.sparql.ARQConstants;
 import com.hp.hpl.jena.sparql.path.P_Link;
 import com.hp.hpl.jena.sparql.path.P_Reverse;
 import com.hp.hpl.jena.sparql.path.P_Seq;
@@ -40,7 +41,7 @@ public class PathBlock
     
     public List getList() { return triplePaths ; } 
     
-    static VarAlloc varAlloc = VarAlloc.getVarAllocator() ;
+    static VarAlloc varAlloc = new VarAlloc(ARQConstants.allocVarMarker+"P") ;// VarAlloc.getVarAllocator() ;
     
     /** Simplify : turns constructs in simple triples and simpler TriplePaths where possible */ 
     public PathBlock reduce()

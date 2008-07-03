@@ -7,7 +7,8 @@
 package com.hp.hpl.jena.sparql.pfunction.library;
 
 import com.hp.hpl.jena.graph.Node;
-
+import com.hp.hpl.jena.query.QueryBuildException;
+import com.hp.hpl.jena.query.QueryException;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
@@ -16,13 +17,10 @@ import com.hp.hpl.jena.sparql.engine.binding.BindingMap;
 import com.hp.hpl.jena.sparql.pfunction.PropFuncArg;
 import com.hp.hpl.jena.sparql.pfunction.PropFuncArgType;
 import com.hp.hpl.jena.sparql.pfunction.PropertyFunctionBase;
-import com.hp.hpl.jena.sparql.procedure.ProcLib;
 import com.hp.hpl.jena.sparql.util.ALog;
+import com.hp.hpl.jena.sparql.util.IterLib;
 import com.hp.hpl.jena.sparql.util.NodeUtils;
 import com.hp.hpl.jena.sparql.util.Utils;
-
-import com.hp.hpl.jena.query.QueryBuildException;
-import com.hp.hpl.jena.query.QueryException;
 
 public class splitIRI extends PropertyFunctionBase
 {
@@ -59,7 +57,7 @@ public class splitIRI extends PropertyFunctionBase
             // Subject bound to something other a URI. 
             if ( argSubject.getArg().isLiteral() || argSubject.getArg().isBlank() )
                 // Only split IRIs
-                return ProcLib.noResults(execCxt) ;
+                return IterLib.noResults(execCxt) ;
     
             if ( argSubject.getArg().isURI() )
                 // Case 1 : subject is a fixed URI or a variable bount to a URI. 
@@ -104,7 +102,7 @@ public class splitIRI extends PropertyFunctionBase
             if ( namespaceNode.isLiteral() )
                 ns = NodeUtils.stringLiteral(namespaceNode) ;
             if ( ns == null || ! ns.equals(namespace) )
-                return ProcLib.noResults(execCxt) ;
+                return IterLib.noResults(execCxt) ;
             // Fall through and proceed to localname 
         }
         
@@ -117,17 +115,17 @@ public class splitIRI extends PropertyFunctionBase
             // Only string literals (plain strings or datatype xsd:string) 
             String lc = NodeUtils.stringLiteral(localnameNode) ;
             if ( lc == null || ! lc.equals(localname) )
-                return ProcLib.noResults(execCxt) ;
+                return IterLib.noResults(execCxt) ;
         }
         if ( b == null )
             b = binding ;
-        return ProcLib.result(b, execCxt) ;
+        return IterLib.result(b, execCxt) ;
     }
 
     private QueryIterator subjectIsVariable(Node arg, PropFuncArg argObject, ExecutionContext execCxt)
     {
         ALog.warn(this, "Subject to property function splitURI is not a bound nor a constant.") ;
-        return ProcLib.noResults(execCxt) ;
+        return IterLib.noResults(execCxt) ;
     }
 }
 

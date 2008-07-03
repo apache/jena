@@ -9,16 +9,17 @@ package com.hp.hpl.jena.sparql.pfunction.library;
 import java.util.List;
 
 import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.query.ARQ;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.binding.BindingMap;
 import com.hp.hpl.jena.sparql.expr.NodeValue;
-import com.hp.hpl.jena.sparql.pfunction.*;
-import com.hp.hpl.jena.sparql.procedure.ProcLib;
-
-import com.hp.hpl.jena.query.ARQ;
+import com.hp.hpl.jena.sparql.pfunction.PropFuncArg;
+import com.hp.hpl.jena.sparql.pfunction.PropFuncArgType;
+import com.hp.hpl.jena.sparql.pfunction.PropertyFunctionEval;
+import com.hp.hpl.jena.sparql.util.IterLib;
 
 public class versionARQ extends PropertyFunctionEval
 {
@@ -39,7 +40,7 @@ public class versionARQ extends PropertyFunctionEval
         
         Node subj = subject.getArg() ;
         
-        if ( ! isSameOrVar(subj, arq) ) ProcLib.noResults(execCxt) ;
+        if ( ! isSameOrVar(subj, arq) ) IterLib.noResults(execCxt) ;
         if ( subj.isVariable() )
             b.add(Var.alloc(subj), arq) ;
         
@@ -47,7 +48,7 @@ public class versionARQ extends PropertyFunctionEval
         {
             Node obj = object.getArg() ;
             
-            if ( ! isSameOrVar(obj, version) ) ProcLib.noResults(execCxt) ;
+            if ( ! isSameOrVar(obj, version) ) IterLib.noResults(execCxt) ;
             if ( obj.isVariable() )
                 b.add(Var.alloc(obj), version) ;
         }
@@ -55,18 +56,18 @@ public class versionARQ extends PropertyFunctionEval
         {
             List x = object.getArgList() ;
             if ( x.size() != 2)
-                return ProcLib.noResults(execCxt) ;
+                return IterLib.noResults(execCxt) ;
             Node major = object.getArg(0) ;
             Node minor = object.getArg(1) ;
-            if ( ! isSameOrVar(major, versionMajor) ) ProcLib.noResults(execCxt) ;
+            if ( ! isSameOrVar(major, versionMajor) ) IterLib.noResults(execCxt) ;
             if ( major.isVariable() )
                 b.add(Var.alloc(major), versionMajor) ;
-            if ( ! isSameOrVar(minor, versionMinor) ) ProcLib.noResults(execCxt) ;
+            if ( ! isSameOrVar(minor, versionMinor) ) IterLib.noResults(execCxt) ;
             if ( major.isVariable() )
                 b.add(Var.alloc(minor), versionMinor) ;
         }
         
-        return ProcLib.result(b, execCxt) ;
+        return IterLib.result(b, execCxt) ;
     }
 
     private boolean isSameOrVar(Node var, Node value)

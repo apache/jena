@@ -125,6 +125,9 @@ public class ARQConstants
      *      allocVarMarker          "?."    
      *      allocVarAnonMarker      "??"
      *   
+     *   Path rewrite (PathBlock.reduce)
+     *      allocVarMarker+"P"          "?.P"
+     *   
      *   Execution: (not used yet)
      *      allocVarMarkerExec      "?.@"
      *      allocVarAnonMarkerExec  "??@"

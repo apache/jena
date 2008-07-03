@@ -4,54 +4,33 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.pfunction.library;
+package com.hp.hpl.jena.sparql.util;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.sparql.expr.ExprEvalException;
-import com.hp.hpl.jena.sparql.pfunction.PFuncSimple;
-import com.hp.hpl.jena.sparql.util.IterLib;
+import com.hp.hpl.jena.sparql.engine.iterator.QueryIterNullIterator;
+import com.hp.hpl.jena.sparql.engine.iterator.QueryIterSingleton;
 
-/** Relationship between a node (subject) and it's bNode label (object/string) */ 
-
-public class blankNode extends PFuncSimple
+public class IterLib
 {
-    public QueryIterator execEvaluated(Binding binding, Node subject, Node predicate, Node object, ExecutionContext execCxt)
+    public static QueryIterator noResults(ExecutionContext execCxt)
     {
-        if ( Var.isVar(subject) )
-            throw new ExprEvalException("bnode: subject is an unbound variable") ;
-        if ( ! subject.isBlank() )
-            return IterLib.noResults(execCxt) ;
-        String str = subject.getBlankNodeLabel() ;
-        Node obj = Node.createLiteral(str) ;
-        if ( Var.isVar(object) )
-            return IterLib.oneResult(binding, Var.alloc(object), obj, execCxt) ;
-        
-        // Subject and object are concrete 
-        if ( object.sameValueAs(obj) )
-            return IterLib.result(binding, execCxt) ;
-        return IterLib.noResults(execCxt) ;
+        return new QueryIterNullIterator(execCxt) ;
+    }
+    
+    public static QueryIterator oneResult(Binding binding, Var var, Node value, ExecutionContext execCxt)
+    {
+        return QueryIterSingleton.create(binding, var, value, execCxt) ;
+    }
+    
+    public static QueryIterator result(Binding binding, ExecutionContext execCxt)
+    {
+        return new QueryIterSingleton(binding, execCxt) ;
     }
 }
-
-// Code to create bNodes from strings.
-//            // Subject a variable : we're try to create a bNode ... :-)
-//            
-//            if ( Var.isVar(object) )
-//                throw new ExprEvalException("bnode: subject and object are both unbound variables") ;
-//            
-//            if ( ! object.isLiteral() ) return PFLib.noResults(execCxt) ;
-//            
-//            RDFDatatype dt = object.getLiteralDatatype() ;
-//            if ( dt != null &&  !dt.equals(XSDDatatype.XSDstring) )
-//                return PFLib.noResults(execCxt) ;
-//            
-//            String str = object.getLiteralLexicalForm() ;
-//            Node n = Node.createAnon(new AnonId(str)) ;
-//            return PFLib.oneResult(binding, Var.alloc(subject), n, execCxt) ;
 
 /*
  * (c) Copyright 2007, 2008 Hewlett-Packard Development Company, LP

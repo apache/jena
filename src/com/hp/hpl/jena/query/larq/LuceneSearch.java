@@ -10,9 +10,9 @@ import java.util.Iterator;
 
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.util.iterator.Map1;
-import com.hp.hpl.jena.util.iterator.Map1Iterator;
-
+import com.hp.hpl.jena.query.Query;
+import com.hp.hpl.jena.query.QueryBuildException;
+import com.hp.hpl.jena.query.QueryExecException;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
@@ -27,14 +27,12 @@ import com.hp.hpl.jena.sparql.expr.NodeValue;
 import com.hp.hpl.jena.sparql.pfunction.PropFuncArg;
 import com.hp.hpl.jena.sparql.pfunction.PropFuncArgType;
 import com.hp.hpl.jena.sparql.pfunction.PropertyFunctionEval;
-import com.hp.hpl.jena.sparql.procedure.ProcLib;
 import com.hp.hpl.jena.sparql.util.ALog;
+import com.hp.hpl.jena.sparql.util.IterLib;
 import com.hp.hpl.jena.sparql.util.IteratorTruncate;
 import com.hp.hpl.jena.sparql.util.NodeFactory;
-
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.QueryBuildException;
-import com.hp.hpl.jena.query.QueryExecException;
+import com.hp.hpl.jena.util.iterator.Map1;
+import com.hp.hpl.jena.util.iterator.Map1Iterator;
 
 /** Base class for searching a IndexLARQ */
 
@@ -131,7 +129,7 @@ public abstract class LuceneSearch extends PropertyFunctionEval
         }
         
         if ( !isValidSearchString(searchString) )
-            return ProcLib.noResults(execCxt) ;
+            return IterLib.noResults(execCxt) ;
 
         String qs = asString(searchString) ;
         
@@ -233,7 +231,7 @@ public abstract class LuceneSearch extends PropertyFunctionEval
             return new QueryIterNullIterator(execCxt) ;
         if ( score == null ) 
             return new QueryIterSingleton(binding, execCxt) ;
-        return ProcLib.oneResult(binding, score, NodeFactory.floatToNode(hit.getScore()), execCxt) ;
+        return IterLib.oneResult(binding, score, NodeFactory.floatToNode(hit.getScore()), execCxt) ;
     }
 
     static private String asString(Node node)

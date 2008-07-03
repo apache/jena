@@ -18,88 +18,99 @@ import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.binding.Binding1;
 import com.hp.hpl.jena.sparql.expr.ExprList;
+import com.hp.hpl.jena.sparql.path.PathLib;
 
-public class OpSubstitute extends TransformCopy
+public class OpSubstitute
 {
-    private Binding binding ;
+   
     
     public static Op substitute(Op op, Binding b)
     {
-        return Transformer.transform(new OpSubstitute(b), op) ;
+        return Transformer.transform(new OpSubstituteWorker(b), op) ;
     }
     
     public static Op substitute(Op op, Var var, Node node)
     {
         Binding b = new Binding1(null, var, node) ;
-        return Transformer.transform(new OpSubstitute(b), op) ;
+        return Transformer.transform(new OpSubstituteWorker(b), op) ;
     }
     
-    public OpSubstitute(Binding binding) 
+    private static class OpSubstituteWorker extends TransformCopy
     {
-        super(TransformCopy.COPY_ALWAYS) ;
-        this.binding = binding ;
-    }
+        private Binding binding ;
 
-    //@Override
-    public Op transform(OpBGP bgp)
-    {
-        BasicPattern triples = new BasicPattern() ;
-        for ( Iterator iter = bgp.getPattern().iterator() ; iter.hasNext() ; )
+        public OpSubstituteWorker(Binding binding) 
         {
-            Triple triple = (Triple)iter.next() ;
-            Node s = substitute(binding, triple.getSubject()) ;
-            Node p = substitute(binding, triple.getPredicate()) ;
-            Node o = substitute(binding, triple.getObject()) ;
-            Triple t = new Triple(s, p, o) ;
-            triples.add(t) ;
+            super(TransformCopy.COPY_ALWAYS) ;
+            this.binding = binding ;
         }
-        return new OpBGP(triples) ;
-    }
-    
-    //@Override
-    public Op transform(OpQuadPattern quadPattern)
-    {
-        Node gNode = quadPattern.getGraphNode() ;
-        Node g = substitute(binding, gNode) ;
-        
-        BasicPattern triples = new BasicPattern() ;
-        for ( Iterator iter = quadPattern.getQuads().iterator() ; iter.hasNext() ; )
-        {
-            Quad quad = (Quad)iter.next() ;
-            if ( ! quad.getGraph().equals(gNode) )
-                throw new ARQInternalErrorException("Internal error: quads block is not uniform over the graph node") ;
-            Node s = substitute(binding, quad.getSubject()) ;
-            Node p = substitute(binding, quad.getPredicate()) ;
-            Node o = substitute(binding, quad.getObject()) ;
-            Triple t = new Triple(s, p, o) ;
-            triples.add(t) ;
-        }
-        
-        return new OpQuadPattern(g, triples) ;
-    }
-    
-    //@Override
-    public Op transform(OpFilter filter, Op op)
-    {
-        ExprList exprs = filter.getExprs().copySubstitute(binding, true) ;
-        return OpFilter.filter(exprs, op) ; 
-    }
 
-    public Op transform(OpGraph op, Op sub)
-    {
-        Node n = substitute(binding, op.getNode()) ;
-        return new OpGraph(n, sub) ;
-    }
-    
-    public Op transform(OpService op, Op sub)
-    {
-        Node n = substitute(binding, op.getService()) ;
-        return new OpService(n, sub) ;
-    }
-    
-    private static Node substitute(Binding b, Node n)
-    {
-        return Var.lookup(b, n) ;
+        //@Override
+        public Op transform(OpBGP bgp)
+        {
+            BasicPattern triples = new BasicPattern() ;
+            for ( Iterator iter = bgp.getPattern().iterator() ; iter.hasNext() ; )
+            {
+                Triple triple = (Triple)iter.next() ;
+                Node s = substitute(binding, triple.getSubject()) ;
+                Node p = substitute(binding, triple.getPredicate()) ;
+                Node o = substitute(binding, triple.getObject()) ;
+                Triple t = new Triple(s, p, o) ;
+                triples.add(t) ;
+            }
+            return new OpBGP(triples) ;
+        }
+
+        //@Override
+        public Op transform(OpQuadPattern quadPattern)
+        {
+            Node gNode = quadPattern.getGraphNode() ;
+            Node g = substitute(binding, gNode) ;
+
+            BasicPattern triples = new BasicPattern() ;
+            for ( Iterator iter = quadPattern.getQuads().iterator() ; iter.hasNext() ; )
+            {
+                Quad quad = (Quad)iter.next() ;
+                if ( ! quad.getGraph().equals(gNode) )
+                    throw new ARQInternalErrorException("Internal error: quads block is not uniform over the graph node") ;
+                Node s = substitute(binding, quad.getSubject()) ;
+                Node p = substitute(binding, quad.getPredicate()) ;
+                Node o = substitute(binding, quad.getObject()) ;
+                Triple t = new Triple(s, p, o) ;
+                triples.add(t) ;
+            }
+
+            return new OpQuadPattern(g, triples) ;
+        }
+
+        public Op transform(OpPath opPath)
+        {
+            return new OpPath(PathLib.substitute(opPath.getTriplePath(), binding)) ;
+        }
+
+        //@Override
+        public Op transform(OpFilter filter, Op op)
+        {
+            ExprList exprs = filter.getExprs().copySubstitute(binding, true) ;
+            return OpFilter.filter(exprs, op) ; 
+        }
+
+        public Op transform(OpGraph op, Op sub)
+        {
+            Node n = substitute(binding, op.getNode()) ;
+            return new OpGraph(n, sub) ;
+        }
+
+        public Op transform(OpService op, Op sub)
+        {
+            Node n = substitute(binding, op.getService()) ;
+            return new OpService(n, sub) ;
+        }
+
+        private static Node substitute(Binding b, Node n)
+        {
+            return Var.lookup(b, n) ;
+        }
     }
 }
 

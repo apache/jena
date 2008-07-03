@@ -163,6 +163,7 @@ public class OpCompiler
     public QueryIterator compile(OpSequence opSequence, QueryIterator input)
     {
         QueryIterator qIter = input ;
+        
         for ( Iterator iter = opSequence.iterator() ; iter.hasNext() ; )
         {
             Op sub = (Op)iter.next() ;

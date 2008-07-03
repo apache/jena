@@ -13,7 +13,7 @@ import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.sparql.procedure.ProcLib;
+import com.hp.hpl.jena.sparql.util.IterLib;
 import com.hp.hpl.jena.sparql.util.NodeFactory;
 import com.hp.hpl.jena.sparql.util.graph.GNode;
 import com.hp.hpl.jena.sparql.util.graph.GraphList;
@@ -46,9 +46,9 @@ public class listLength extends ListBase1
     {
         int x = GraphList.length(new GNode(graph, listNode)) ;
         if ( x < 0 )
-            return ProcLib.noResults(execCxt) ;
+            return IterLib.noResults(execCxt) ;
         Node n = NodeFactory.intToNode(x) ;
-        return ProcLib.oneResult(binding, varLength, n, execCxt) ;
+        return IterLib.oneResult(binding, varLength, n, execCxt) ;
     }
     
     private QueryIterator verify(Binding binding, Graph graph, Node listNode, Node length, ExecutionContext execCxt)
@@ -57,8 +57,8 @@ public class listLength extends ListBase1
         int len = NodeFactory.nodeToInt(length) ;
         
         if ( x == len )
-            return ProcLib.result(binding, execCxt) ;
-        return ProcLib.noResults(execCxt) ;
+            return IterLib.result(binding, execCxt) ;
+        return IterLib.noResults(execCxt) ;
     }
 }
 

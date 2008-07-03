@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007, 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
@@ -11,29 +11,35 @@ import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.sparql.engine.iterator.QueryIterNullIterator;
-import com.hp.hpl.jena.sparql.engine.iterator.QueryIterSingleton;
+import com.hp.hpl.jena.sparql.util.IterLib;
 
+/** Backwards compatibility. 
+* @deprecated Use {@link com.hp.hpl.jena.sparql.util.IterLib} 
+* @author Andy Seaborne
+*/
 public class ProcLib
 {
-    public static QueryIterator noResults(ExecutionContext execCxt)
-    {
-        return new QueryIterNullIterator(execCxt) ;
-    }
-    
-    public static QueryIterator oneResult(Binding binding, Var var, Node value, ExecutionContext execCxt)
-    {
-        return QueryIterSingleton.create(binding, var, value, execCxt) ;
-    }
-    
-    public static QueryIterator result(Binding binding, ExecutionContext execCxt)
-    {
-        return new QueryIterSingleton(binding, execCxt) ;
-    }
+   /** @deprecated Use IterLib.noResults */
+   public static QueryIterator noResults(ExecutionContext execCxt)
+   {
+       return IterLib.noResults(execCxt) ;
+   }
+   
+   /** @deprecated Use IterLib.oneResult */
+   public static QueryIterator oneResult(Binding binding, Var var, Node value, ExecutionContext execCxt)
+   {
+       return IterLib.oneResult(binding, var, value, execCxt) ;
+   }
+   
+   /** @deprecated Use IterLib.result */
+   public static QueryIterator result(Binding binding, ExecutionContext execCxt)
+   {
+       return IterLib.result(binding, execCxt) ;
+   }
 }
 
 /*
- * (c) Copyright 2007, 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

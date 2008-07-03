@@ -7,6 +7,7 @@
 package com.hp.hpl.jena.sparql.engine.iterator;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
@@ -14,51 +15,49 @@ import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
 
-/** A caching QueryIterator.  On demand, the application can ask for a new
- *  query iterator which will repeat the bindings yielded so far.
+/** A QueryIterator that copies an iterator.
+ *  Can get a QueryIterator over teh copy.
  */  
 
 public 
-class QueryIteratorCaching extends QueryIteratorWrapper
+class QueryIteratorCopy extends QueryIteratorBase
 {
     // Not tracked.
-    List cache = new ArrayList() ;
+    List elements = new ArrayList() ;
+    QueryIterator iterator ; 
     
-    public QueryIteratorCaching(QueryIterator qIter)
+    public QueryIteratorCopy(QueryIterator qIter)
     {
-        super(qIter) ;
+        for ( ; qIter.hasNext() ; )
+            elements.add(qIter.nextBinding()) ;
+        iterator = copy() ;
     }
 
     protected Binding moveToNextBinding()
     {
-        Binding b = super.moveToNextBinding() ;
-        cache.add(b) ;
-        return b ;
+        return iterator.nextBinding() ;
     }
 
     public void output(IndentedWriter out, SerializationContext sCxt)
     {}
     
     
-    public QueryIteratorCaching createRepeat()
+    public List elements()
     {
-        List elements = cache ;
-        if ( super.hasNext() )
-            // If the iterator isn't finished, copy what we have so far.
-            elements = new ArrayList(cache) ;
-        
-        return new QueryIteratorCaching(new QueryIterPlainWrapper(elements.iterator(), null)) ;
+        return Collections.unmodifiableList(elements) ;
     }
     
-    public static QueryIterator reset(QueryIterator qIter)
+    public QueryIterator copy()
     {
-        if ( qIter instanceof QueryIteratorCaching )
-        {
-            QueryIteratorCaching cIter = (QueryIteratorCaching)qIter ;
-            return cIter.createRepeat() ;
-        }
-            
-        return qIter ;
+        return new QueryIterPlainWrapper(elements.iterator()) ;
+    }
+
+    protected void closeIterator()
+    { iterator.close() ; }
+
+    protected boolean hasNextBinding()
+    {
+        return iterator.hasNext() ;
     }
 }
 

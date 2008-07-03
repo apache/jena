@@ -6,14 +6,16 @@
 
 package com.hp.hpl.jena.sparql.pfunction.library;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.util.iterator.ExtendedIterator;
-import com.hp.hpl.jena.vocabulary.RDF;
-
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
@@ -23,8 +25,10 @@ import com.hp.hpl.jena.sparql.engine.iterator.QueryIterConcat;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterPlainWrapper;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterYieldN;
 import com.hp.hpl.jena.sparql.pfunction.PFuncSimple;
-import com.hp.hpl.jena.sparql.procedure.ProcLib;
+import com.hp.hpl.jena.sparql.util.IterLib;
 import com.hp.hpl.jena.sparql.util.graph.GraphContainerUtils;
+import com.hp.hpl.jena.util.iterator.ExtendedIterator;
+import com.hp.hpl.jena.vocabulary.RDF;
 
 /** container - super class of bag/alt/seq - rdfs:member
  * 
@@ -48,7 +52,7 @@ public class container extends PFuncSimple
         {
             // Container a ground term.
             if ( ! GraphContainerUtils.isContainer(execCxt.getActiveGraph(), containerNode, typeNode) )
-                return ProcLib.noResults(execCxt) ;
+                return IterLib.noResults(execCxt) ;
             return oneContainer(binding, containerNode, member, execCxt) ;
         }            
         
@@ -93,7 +97,7 @@ public class container extends PFuncSimple
         Collection x = GraphContainerUtils.containerMembers(execCxt.getActiveGraph(), containerNode, typeNode) ;
         if ( x == null )
             // Wrong type.
-            return ProcLib.noResults(execCxt) ;
+            return IterLib.noResults(execCxt) ;
 
         List bindings = new ArrayList() ;
         for ( Iterator iter = x.iterator() ; iter.hasNext() ; )

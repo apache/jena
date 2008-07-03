@@ -13,8 +13,8 @@ import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.pfunction.PFuncSimple;
-import com.hp.hpl.jena.sparql.procedure.ProcLib;
 import com.hp.hpl.jena.sparql.util.FmtUtils;
+import com.hp.hpl.jena.sparql.util.IterLib;
 
 /** Assignment: does not change the value of an existing binding.
  *  Either the subject or object must be a constant or be a bound variable.
@@ -31,15 +31,15 @@ public class assign extends PFuncSimple
             throw new QueryExecException("Both subject and object are unbound variables: "+FmtUtils.stringForNode(predicate)) ;
         if ( subject.isVariable() )
             // Object not a variable or already bound
-            return ProcLib.oneResult(binding, Var.alloc(subject), object, execCxt) ;
+            return IterLib.oneResult(binding, Var.alloc(subject), object, execCxt) ;
         if ( object.isVariable() )
             // Subjects not a variable or already bound
-            return ProcLib.oneResult(binding, Var.alloc(object), subject, execCxt) ;
+            return IterLib.oneResult(binding, Var.alloc(object), subject, execCxt) ;
         // Both bound.  Must be the same.
         if ( subject.sameValueAs(object) )
-            return ProcLib.result(binding, execCxt) ;
+            return IterLib.result(binding, execCxt) ;
         // different
-        return ProcLib.noResults(execCxt) ;
+        return IterLib.noResults(execCxt) ;
     }
 
 }

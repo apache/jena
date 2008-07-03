@@ -30,7 +30,7 @@ public class QueryIterOptionalIndex extends QueryIterRepeatApply
     {
         super(input, context) ;
         // In an indexed left join, the LHS bindings are visible to the
-        // RHS execution so the expression is evaluted by moving it to be 
+        // RHS execution so the expression is evaluated by moving it to be 
         // a filter over the RHS pattern. 
         if ( exprs != null )
             op = OpFilter.filter(exprs, op) ;

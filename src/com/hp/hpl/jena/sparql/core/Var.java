@@ -47,6 +47,12 @@ public class Var extends Node_Variable
     
     public static Node lookup(Binding binding, Node node)
     {
+//        if ( ! node.isVariable() )
+//            return node ;
+//
+//        if ( ! (node instanceof Var) )
+//            ALog.fatal(Var.class, "Node_Variable, not a Var") ; 
+        
         if ( ! Var.isVar(node) )
             return node ;
         Var var = Var.alloc(node) ;

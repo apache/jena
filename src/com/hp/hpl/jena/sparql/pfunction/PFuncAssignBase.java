@@ -7,13 +7,12 @@
 package com.hp.hpl.jena.sparql.pfunction;
 
 import com.hp.hpl.jena.graph.Node;
-
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.sparql.procedure.ProcLib;
 import com.hp.hpl.jena.sparql.util.ALog;
+import com.hp.hpl.jena.sparql.util.IterLib;
 
 abstract
 class PFuncAssignBase extends PFuncSimple
@@ -24,20 +23,20 @@ class PFuncAssignBase extends PFuncSimple
             if ( subject.isVariable() )
             {
                 ALog.warn(this, "Variable found: expected a value: "+subject) ;
-                return ProcLib.noResults(execCxt) ;
+                return IterLib.noResults(execCxt) ;
             }
             
             Node r = calc(subject) ;
             
             // Variable bound? 
             if ( Var.isVar(object) ) //object.isVariable() )
-                return ProcLib.oneResult(binding, Var.alloc(object), r, execCxt) ;
+                return IterLib.oneResult(binding, Var.alloc(object), r, execCxt) ;
             
             // Variable already bound - test same value.
             if ( r.equals(object) )
-                return ProcLib.result(binding, execCxt) ;
+                return IterLib.result(binding, execCxt) ;
             
-            return ProcLib.noResults(execCxt) ;
+            return IterLib.noResults(execCxt) ;
         }  catch (Exception ex)
         { 
             ALog.warn(this, "Exception: "+ex.getMessage(), ex);

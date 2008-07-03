@@ -8,13 +8,9 @@ import java.util.Iterator;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.rdf.model.RDFNode;
-
-import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.sparql.util.ALog;
-
 import com.hp.hpl.jena.query.QuerySolution;
-
+import com.hp.hpl.jena.rdf.model.RDFNode;
+import com.hp.hpl.jena.sparql.core.Var;
 
 /**
  * @author     Andy Seaborne
@@ -38,29 +34,8 @@ public class BindingUtils
     
     public static Node substituteNode(Node n, Binding binding)
     {
-        if ( ! n.isVariable() )
-            return n ;
-
-        if ( ! (n instanceof Var) )
-            ALog.fatal(BindingUtils.class, "Node_Variable, not a Var") ; 
-        
-        //String name = ((Node_Variable)n).getName() ;
-        Var var = Var.alloc(n) ;
-        Object obj = null ;
-        
-        if ( binding != null )
-            obj = binding.get(var) ;
-        
-        if ( obj == null )
-            return n ;
-            
-        if ( obj instanceof Node )
-            return (Node)obj ;
-
-        ALog.warn(BindingUtils.class, "Unknown object in binding: ignored: "+obj.getClass().getName()) ;        
-        return n ;
+        return Var.lookup(binding, n) ;
     }
-    
     
     public static Binding asBinding(QuerySolution qSolution)
     {

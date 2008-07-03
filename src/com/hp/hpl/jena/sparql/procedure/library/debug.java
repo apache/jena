@@ -10,8 +10,8 @@ import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.expr.ExprList;
-import com.hp.hpl.jena.sparql.procedure.ProcLib;
 import com.hp.hpl.jena.sparql.procedure.ProcedureEval;
+import com.hp.hpl.jena.sparql.util.IterLib;
 
 public class debug extends ProcedureEval
 {
@@ -19,7 +19,7 @@ public class debug extends ProcedureEval
     public QueryIterator execEval(Binding binding, ExprList args, ExecutionContext execCxt)
     {
         System.out.println("Debug: "+args.toString()) ;
-        return ProcLib.result(binding, execCxt) ;
+        return IterLib.result(binding, execCxt) ;
     }
 }
 

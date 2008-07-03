@@ -15,7 +15,7 @@ import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.expr.nodevalue.NodeFunctions;
 import com.hp.hpl.jena.sparql.pfunction.PFuncSimple;
 import com.hp.hpl.jena.sparql.pfunction.PropFuncArg;
-import com.hp.hpl.jena.sparql.procedure.ProcLib;
+import com.hp.hpl.jena.sparql.util.IterLib;
 
 /** Property function to turn an RDF term (but not a blank node) into a string
       <pre>
@@ -36,7 +36,7 @@ public class str extends PFuncSimple
     {
         // Subject bound to something other a literal. 
         if ( subject.isURI() || subject.isBlank() )
-            return ProcLib.noResults(execCxt) ;
+            return IterLib.noResults(execCxt) ;
 
         if ( Var.isVar(subject) && Var.isVar(object) )
             throw new QueryExecException("str: Both subject and object are unbound variables") ;
@@ -50,13 +50,13 @@ public class str extends PFuncSimple
         Node strValue =  Node.createLiteral(NodeFunctions.str(object)) ;
         
         if ( Var.isVar(subject) )
-            return ProcLib.oneResult(binding, Var.alloc(subject), strValue, execCxt) ;
+            return IterLib.oneResult(binding, Var.alloc(subject), strValue, execCxt) ;
         else
         {
             // Subject bound : check it.
             if ( subject.equals(strValue) )
-                return ProcLib.result(binding, execCxt) ;
-            return ProcLib.noResults(execCxt) ;
+                return IterLib.result(binding, execCxt) ;
+            return IterLib.noResults(execCxt) ;
         }
     }
 }

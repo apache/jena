@@ -12,30 +12,30 @@ import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.sparql.procedure.ProcLib;
+import com.hp.hpl.jena.sparql.util.IterLib;
 
 /** Backwards compatibility. 
- * @deprecated Use {@link com.hp.hpl.jena.sparql.procedure.ProcLib} 
+ * @deprecated Use {@link com.hp.hpl.jena.sparql.util.IterLib} 
  * @author Andy Seaborne
  */
 public class PFLib
 {
-    /** @deprecated Use ProcLib.noResults */
+    /** @deprecated Use IterLib.noResults */
     public static QueryIterator noResults(ExecutionContext execCxt)
     {
-        return ProcLib.noResults(execCxt) ;
+        return IterLib.noResults(execCxt) ;
     }
     
-    /** @deprecated Use ProcLib.oneResult */
+    /** @deprecated Use IterLib.oneResult */
     public static QueryIterator oneResult(Binding binding, Var var, Node value, ExecutionContext execCxt)
     {
-        return ProcLib.oneResult(binding, var, value, execCxt) ;
+        return IterLib.oneResult(binding, var, value, execCxt) ;
     }
     
-    /** @deprecated Use ProcLib.result */
+    /** @deprecated Use IterLib.result */
     public static QueryIterator result(Binding binding, ExecutionContext execCxt)
     {
-        return ProcLib.result(binding, execCxt) ;
+        return IterLib.result(binding, execCxt) ;
     }
 }
 
