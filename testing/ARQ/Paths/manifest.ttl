@@ -50,4 +50,32 @@
               qt:data   <data-1.ttl> ] ;
         mf:result  <path-10.srx>
       ]
+      [  mf:name    "Path-11" ;
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <path-11.arq> ;
+              qt:data   <data-1.ttl> ] ;
+        mf:result  <path-11.srx>
+      ]
+      [  mf:name    "Path-20" ;
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <path-20.arq> ;
+              qt:data   <data-1.ttl> ] ;
+        mf:result  <path-20.srx>
+      ]
+      [  mf:name    "Path-21" ;
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <path-21.arq> ;
+              qt:data   <data-1.ttl> ] ;
+        mf:result  <path-21.srx>
+      ]
+      [  mf:name    "Path-22" ;
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <path-22.arq> ;
+              qt:data   <data-1.ttl> ] ;
+        mf:result  <path-22.srx>
+      ]
     ).

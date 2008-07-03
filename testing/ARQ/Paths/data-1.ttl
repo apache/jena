@@ -11,7 +11,7 @@
 :B rdfs:subClassOf :C .
 
 :A rdfs:subClassOf :Z .
-:A rdfs:subClassOf :A .
+#:A rdfs:subClassOf :A .
 
 :x n:p :a1 .
 :x n:p :a2 .
