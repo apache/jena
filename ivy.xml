@@ -2,48 +2,51 @@
 <ivy-module version="2.0"
 	    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	    xsi:noNamespaceSchemaLocation="http://ant.apache.org/ivy/schemas/ivy.xsd">
-  <info organisation="com.hp.hpl.jena" module="tdb">
+
+  <info module="tdb"
+	organisation="com.hp.hpl.jena" 
+	revision="${version}">
     <license name="BSD"/>
     <ivyauthor name="Hewlett-Packard" url="http://jena.sf.net/"/>
     <description>Jena - Semantic Web framework</description>
   </info>
 
-    <configurations defaultconfmapping="main->*">
-	<conf name="main" description="TDB" />
-	<conf name="dev"  description="TDB development"  extends="main" />
-    </configurations>
+  <configurations defaultconfmapping="main->*">
+    <conf name="main" description="TDB" />
+    <conf name="dev"  description="TDB development"  extends="main" />
+  </configurations>
 
-    <publications>
-	<artifact conf="main" name="tdb" type="jar"/>
-    </publications>
+  <publications>
+    <artifact conf="main" name="tdb" type="jar"/>
+  </publications>
 
-    <dependencies>
-	<!-- ?? latest.integration -->
-	<!--
-	<dependency org="com.hp.hpl.jena" name="arq" rev="latest.integration"/>
-	<dependency org="com.hp.hpl.jena" name="arq-extra" rev="latest.integration"/>
-	-->
+  <dependencies>
+    <!-- ?? latest.integration -->
+    <!--
+      <dependency org="com.hp.hpl.jena" name="arq" rev="latest.integration"/>
+      <dependency org="com.hp.hpl.jena" name="arq-extra" rev="latest.integration"/>
+    -->
 
-	<dependency org="com.hp.hpl.jena" name="arq" rev="2.3"/>
-	<dependency org="com.hp.hpl.jena" name="arq-extra" rev="2.3"/>
+    <dependency org="com.hp.hpl.jena" name="arq" rev="2.3"/>
+    <dependency org="com.hp.hpl.jena" name="arq-extra" rev="2.3"/>
 
-	<!-- Necessary for code compilation : configuration main should compile -->
-	<dependency org="junit" name="junit" rev="4.4"/>
-	<dependency org="org.slf4j" name="slf4j-api" rev="1.4.3"/>
+    <!-- Necessary for code compilation : configuration main should compile -->
+    <dependency org="junit" name="junit" rev="4.4"/>
+    <dependency org="org.slf4j" name="slf4j-api" rev="1.4.3"/>
 
-	<!-- Additional for development : logging implementation -->
-	<dependency conf="dev->*"   org="org.slf4j" name="slf4j-log4j12" rev="1.4.3">
-	  <!-- includes log4j 1.2.13 which is then evicted by the 1.2.15 below -->
-	  <exclude org="log4j" module="log4j"/>
-	</dependency>
-	
-	<dependency conf="dev->*"   org="log4j" name="log4j" rev="1.2.15"/> 
-	<!-- Unwanted junk from log4j that is not accessible -->
-	<exclude org="com.sun.jmx" module="jmxri"/>
-	<exclude org="com.sun.jmx" module="jmxri"/>
-	<exclude org="com.sun.jdmk" module="jmxtools"/>
-	<exclude org="javax.jms" module="jms"/>
-	<exclude org="javax.mail" module="mail"/>
-    </dependencies>
+    <!-- Additional for development : logging implementation -->
+    <dependency conf="dev->*"   org="org.slf4j" name="slf4j-log4j12" rev="1.4.3">
+      <!-- includes log4j 1.2.13 which is then evicted by the 1.2.15 below -->
+      <exclude org="log4j" module="log4j"/>
+    </dependency>
+    
+    <dependency conf="dev->*"   org="log4j" name="log4j" rev="1.2.15"/> 
+    <!-- Unwanted junk from log4j that is not accessible -->
+    <exclude org="com.sun.jmx" module="jmxri"/>
+    <exclude org="com.sun.jmx" module="jmxri"/>
+    <exclude org="com.sun.jdmk" module="jmxtools"/>
+    <exclude org="javax.jms" module="jms"/>
+    <exclude org="javax.mail" module="mail"/>
+  </dependencies>
 
 </ivy-module>

@@ -8,14 +8,18 @@ add to ivy:resolve force to tdb-0.0.-dev
 
 ?? set org etc in some file somewhere 
 
+-- 
+revision on ivy-module->info->revision="${version}"
+Stops evictions (why?)
+  Transitivity?
 ---
 Why 
 ivy:publish conf="main" 
 		 organisation="com.hp.hpl.jena" module="tdb"
 		 revision="${version}"
 
-why evicting when ivy:resolve 
-whu does ivy:resolve and ivy:publish need revisions?
+why evicting when ivy:resolve  (no revision on info) Transitivity?
+why does ivy:resolve and ivy:publish need revisions?
 
 What are the default settings names?
 
