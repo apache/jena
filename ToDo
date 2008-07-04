@@ -2,10 +2,7 @@
 
 ** Paths 
 
-    // Move PathBlock.reduce to AlgebraCompiler and have a per-transaction scoped var generator 
-
 + {0} to be an assignment? 
-+ ** Path and aggregation in same query.
 + ** Path syntax tests (scripted)
 
 + Precedence-driven printing PathWriter.
