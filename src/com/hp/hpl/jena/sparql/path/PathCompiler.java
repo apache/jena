@@ -18,7 +18,7 @@ import com.hp.hpl.jena.sparql.core.VarAlloc;
 public class PathCompiler
 {
     
-    VarAlloc varAlloc = new VarAlloc(ARQConstants.allocVarMarker+"P") ;
+    VarAlloc varAlloc = new VarAlloc(ARQConstants.allocVarAnonMarker+"P") ;
     
     // Move to AlgebraCompiler and have a per-transaction scoped var generator 
     /** Simplify : turns constructs in simple triples and simpler TriplePaths where possible */ 

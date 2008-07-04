@@ -24,8 +24,6 @@ public class VarAlloc
 
     private static VarAlloc varAllocator    = new VarAlloc(ARQConstants.allocGlobalVarMarker) ;
     public static VarAlloc getVarAllocator() { return varAllocator ; }
-
-    
     
     public static VarAlloc get(Context context, Symbol name)
     { 

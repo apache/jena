@@ -42,7 +42,7 @@ public class LabelToNodeMap
      */
     
     public static LabelToNodeMap createVarMap()
-    { return new LabelToNodeMap(true, new VarAlloc(ARQConstants.allocVarAnonMarker) ) ; }
+    { return new LabelToNodeMap(true, new VarAlloc(ARQConstants.allocParserAnonVars) ) ; }
     
 //    private LabelToNodeMap() { this(false) ; }
     private LabelToNodeMap(VarAlloc allocator) { this(false, allocator) ; }

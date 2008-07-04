@@ -30,9 +30,9 @@ public class ParseHandlerPlain implements ParseHandler
     private LabelToNodeMap bNodeLabels = LabelToNodeMap.createBNodeMap() ;
     
     // Allocation of fresh variables.
-    private VarAlloc       varAlloc        = new VarAlloc("_") ;
-    private VarAlloc       varAllocND      = new VarAlloc(ARQConstants.allocVarAnonMarker) ;
-    private VarAlloc       varAllocIntern  = new VarAlloc(ARQConstants.allocVarMarker) ;
+    private VarAlloc       varAlloc        = new VarAlloc(ARQConstants.allocSSEUnamedVars) ;
+    private VarAlloc       varAllocND      = new VarAlloc(ARQConstants.allocSSEAnonVars) ;
+    private VarAlloc       varAllocIntern  = new VarAlloc(ARQConstants.allocSSENamedVars) ;
     
     public Item getItem()
     {
