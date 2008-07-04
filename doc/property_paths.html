@@ -17,9 +17,12 @@
 nodes.&nbsp; A simple case if a property path of length exactly 1, which is a 
 triple pattern.</p>
 <h2>Path Language</h2>
-<p>A path expression is similar to a regular expression but over properties, not 
+<p>A property path expression (r just 'path') is similar to a string regular expression 
+but over properties, not 
 characters. ARQ determines all matches of a path expression and binds subject or 
-object as appropriate.</p>
+object as appropriate. Only one match is recorded - no duplicates for any given 
+path expression, although is the path is used in a situation where it's initial 
+points is already repeated in a pattern, then this duplication is preserved.</p>
 
 <div style="margin-left: 5%; margin-right: 5%;">
 <table border="1" width="90%">
@@ -98,7 +101,8 @@ prefixed name.</p>
 	</tr>
 	<tr>
 		<td><i><code>elt{n}</code></i></td>
-		<td>Exactly <i><code>n</code></i> occurrences of <i><code>elt</code></i>.</td>
+		<td>Exactly <i><code>n</code></i> occurrences of <i><code>elt</code></i>. 
+        A fixed length path.</td>
 	</tr>
 	<tr>
 		<td><i><code>elt{n,}</code></i></td>
@@ -114,12 +118,27 @@ prefixed name.</p>
 <ol>
 	<li>URI, prefixes names</li>
 	<li>Groups</li>
-	<li>Unary reverse links</li>
+	<li>Unary ^ reverse links</li>
 	<li>Unary operators <code>*</code>, <code>?</code>, <code>+</code> and <code>{n,m}</code></li>
 	<li>Binary operators <code>/</code> and ^</li>
 	<li>Binary operator <code>|</code> </li>
 </ol>
 <p>Precedence is left-to-right within groups.</p>
+<h2>Path Evaluation</h2>
+<p>Paths are &quot;simple&quot; if they involve only operators / (sequence), ^ (reverse, 
+unary or binary) and the form {<i>n</i>}, for some single integer <i>n</i>. Such 
+paths are fixed length. They are translated to triple patterns by the query 
+compiler and do not require special path-evaluation at runtime.</p>
+<p>A path of just a URI is still a single triple pattern.</p>
+<p>A path is &quot;complex&quot;&nbsp; if it involves one or more of the operators *,?, + 
+and {}. Such paths require special evaluation and provide expressivity outside 
+of strict SPARQL because paths can be of variable length. When used with models 
+backed by SQL databases, complex path expressions may take some time.</p>
+<p>A path of length zero connects a graph node to itself.</p>
+<p>Cycles in paths are possible and are handled.</p>
+<p>Paths do not need to be anchored at one end of the other, although this can 
+lead to large numbers of result because the whole graph is searched.</p>
+<p>Property functions in paths are only available for simple paths.</p>
 <h2>Extended Language</h2>
 <p>This involves is syntactic extension and is available if the query is parsed 
 with language <code>Syntax.syntaxARQ</code>.</p>
@@ -134,9 +153,64 @@ SELECT *
 {
    :x  rdf:type/rdfs:subClassOf*  ?t
 }</pre>
+<h2>Examples</h2>
+<h3>Simple Paths</h3>
+<p>Find the name of any people that Alice knows.</p>
+<pre class="box">{ 
+  ?x foaf:mbox &lt;mailto:alice@example&gt; .
+  ?x foaf:knows/foaf:name ?name .
+}</pre>
+<p>Find the names of people 2 &quot;<code>foaf:knows</code>&quot; links away.</p>
+<pre class="box">{ 
+  ?x foaf:mbox &lt;mailto:alice@example&gt; .
+  ?x foaf:knows/foaf:knows/foaf:name ?name .
+}</pre>
+<p>This is the same as the strict SPARQL query:</p>
+<pre class="box">{
+  ?x  foaf:mbox &lt;mailto:alice@example&gt; .
+  ?x  foaf:knows [ foaf:knows [ foaf:name ?name ]]. 
+}</pre>
+<p>or, with explicit variables:</p>
+<pre class="box">{
+  ?x  foaf:mbox &lt;mailto:alice@example&gt; .
+  ?x  foaf:knows ?a1 .
+  ?a1 foaf:knows ?a2 .
+  ?a2 foaf:name ?name .
+}</pre>
+<p>Because someone Alice knows may well know Alice, the example above may 
+include Alice herself. This could be avoided with:</p>
+<pre class="box">{ ?x foaf:mbox &lt;mailto:alice@example&gt; .
+  ?x foaf:knows/foaf:knows ?y .
+  FILTER ( ?x != ?y )
+  ?y foaf:name ?name 
+}</pre>
+<p>These two are the same query: the second is just reversing the property 
+direction which swaps the roles of subject and object.</p>
+<pre class="box">{ ?x foaf:mbox &lt;mailto:alice@example&gt; }</pre>
+<pre class="box">{ &lt;mailto:alice@example&gt; ^foaf:mbox ?x }</pre>
+<p>Mutual <code>foaf:knows</code> relationships: <code>?x</code> knows someone 
+who knows <code>?x</code></p>
+<pre class="box">{
+  ?x foaf:knows^foaf:knows ?x .  
+}</pre>
+<h3>Complex Paths</h3>
+<p>Find the names of all the people can be reached from Alice by <code>
+foaf:knows</code>:</p>
+<pre class="box">{
+  ?x foaf:mbox &lt;mailto:alice@example&gt; .
+  ?x foaf:knows+/foaf:name ?name .
+}</pre>
+<p>Again, because of cycles in <code>foaf:knows</code> relationships, it is 
+likely to include Alice herself. </p>
+<p>Some forms of limited inference are possible as well. For example: all types 
+and supertypes of a resource:</p>
+<pre class="box">{ &lt;http://example/&gt; rdf:type/rdfs:subClassOf* ?type }</pre>
+<p>All resources and all their inferred types:</p>
+<pre class="box">{ ?x rdf:type/rdfs:subClassOf* ?type }</pre>
 <h2>Use with Legal SPARQL Syntax</h2>
-<p>A path can be given a URI, then installed as a
-<a href="extension.html#propertyFunctions">property function</a>. This way, when 
+<p>A path can parsed, then installed as a
+<a href="extension.html#propertyFunctions">property function</a> to be referred 
+to by URI. This way, when 
 the URI is used in the predicate location in a triple pattern, the path 
 expression is evaluated.</p>
 <pre class="box">Path path = ...
@@ -153,16 +227,11 @@ PREFIX ns: &lt;http://example/ns#&gt;
 SELECT * { :x ns:myType ?t}</pre>
 <p>This also works with if an existing property is redefined (a URI in a path 
 expression is not interpreted as a property function) so, for example, <code>rdf:type</code> 
-can be redefined as a path that also considers RDFS sub -class relationships.</p>
+can be redefined as a path that also considers RDFS sub -class relationships. 
+The path is a complex path so the property function for <code>rdf:type</code> 
+is not triggered.</p>
 <pre class="box">Path path = PathParser.parse("rdf:type/rdfs:subClassOf*", PrefixMapping.Standard) ;
 PathLib.install(RDF.type.getURI(), path) ;</pre>
-<h2>Efficiency</h2>
-<p>Paths are compiled into basic graph patterns where possible but some property path evaluation is similar to backward chaining inference. When used 
-with models backed by SQL databases, complex path expressions may take some 
-time.</p>
-
-
-
 <p class="footnote"><a href="documentation.html">ARQ Documentation Page</a></p>
 </body>
 </html>

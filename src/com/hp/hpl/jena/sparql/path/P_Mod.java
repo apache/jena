@@ -56,6 +56,18 @@ public class P_Mod extends P_Path1
         return other.min == min && other.max == max && getSubPath().equalTo(other.getSubPath(), isoMap)  ;
     }
 
+    
+    public boolean isFixedLength()
+    {
+        return min == max && min > 0 ; 
+    }
+    
+    public long getFixedLength()
+    {
+        if ( ! isFixedLength() ) return -1 ;
+        return min ;
+    }
+    
     public boolean isZeroOrMore()
     {
         return min == 0 && max < 0 ;

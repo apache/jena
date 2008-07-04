@@ -15,6 +15,7 @@ import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.sparql.ARQConstants;
 import com.hp.hpl.jena.sparql.path.P_Link;
+import com.hp.hpl.jena.sparql.path.P_Mod;
 import com.hp.hpl.jena.sparql.path.P_Reverse;
 import com.hp.hpl.jena.sparql.path.P_Seq;
 import com.hp.hpl.jena.sparql.path.Path;
@@ -43,6 +44,7 @@ public class PathBlock
     
     static VarAlloc varAlloc = new VarAlloc(ARQConstants.allocVarMarker+"P") ;// VarAlloc.getVarAllocator() ;
     
+    // Move to AlgebraCompiler and have a per-transaction scoped var generator 
     /** Simplify : turns constructs in simple triples and simpler TriplePaths where possible */ 
     public PathBlock reduce()
     {
@@ -74,6 +76,9 @@ public class PathBlock
     
     private static void reduce(PathBlock x, VarAlloc varAlloc, Node startNode, Path path, Node endNode)
     {
+        // V-i-s-i-t-o-r!
+        
+        
         if ( path instanceof P_Link )
         {
             Node pred = ((P_Link)path).getNode() ;
@@ -97,6 +102,26 @@ public class PathBlock
             return ;
         }
 
+        if ( path instanceof P_Mod )
+        {
+            P_Mod pMod = (P_Mod)path ;
+            if ( pMod.isFixedLength() && pMod.getFixedLength() > 0 )
+            {
+                long N = pMod.getFixedLength() ;
+                Node stepStart = startNode ;
+
+                for ( long i = 0 ; i < N-1 ; i++ )
+                {
+                    Node v = varAlloc.allocVar() ;
+                    reduce(x, varAlloc, stepStart, pMod.getSubPath(), v) ;
+                    stepStart = v ;
+                }
+                reduce(x, varAlloc, stepStart, pMod.getSubPath(), endNode) ;
+                return ;
+            }
+            // Not fixed - drop through, including zero length paths.
+        }
+        
         // Nothing can be done.
         x.add(new TriplePath(startNode, path, endNode)) ;
     }
