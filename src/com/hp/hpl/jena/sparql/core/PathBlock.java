@@ -7,18 +7,9 @@
 package com.hp.hpl.jena.sparql.core;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.sparql.ARQConstants;
-import com.hp.hpl.jena.sparql.path.P_Link;
-import com.hp.hpl.jena.sparql.path.P_Mod;
-import com.hp.hpl.jena.sparql.path.P_Reverse;
-import com.hp.hpl.jena.sparql.path.P_Seq;
-import com.hp.hpl.jena.sparql.path.Path;
 import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 import com.hp.hpl.jena.sparql.util.Utils;
 
@@ -41,91 +32,6 @@ public class PathBlock
     public boolean isEmpty() { return triplePaths.isEmpty() ; }
     
     public List getList() { return triplePaths ; } 
-    
-    static VarAlloc varAlloc = new VarAlloc(ARQConstants.allocVarMarker+"P") ;// VarAlloc.getVarAllocator() ;
-    
-    // Move to AlgebraCompiler and have a per-transaction scoped var generator 
-    /** Simplify : turns constructs in simple triples and simpler TriplePaths where possible */ 
-    public PathBlock reduce()
-    {
-        PathBlock x = new PathBlock() ;
-        // No context during algebra generation time.
-//        VarAlloc varAlloc = VarAlloc.get(context, ARQConstants.sysVarAllocNamed) ;
-//        if ( varAlloc == null )
-//            // Panic
-//            throw new ARQInternalErrorException("No execution-scope allocator for variables") ;
-        
-        reduce(x, varAlloc) ;
-        return x ;
-    }
-    
-    private void reduce(PathBlock x, VarAlloc varAlloc )
-    {
-        for ( Iterator iter = iterator() ; iter.hasNext() ; )
-        {
-            TriplePath tp = (TriplePath)iter.next();
-            if ( tp.isTriple() )
-            {
-                x.add(tp) ;
-                continue ;
-            }
-            reduce(x, varAlloc, tp.getSubject(), tp.getPath(), tp.getObject()) ;
-        }
-    }
-    
-    
-    private static void reduce(PathBlock x, VarAlloc varAlloc, Node startNode, Path path, Node endNode)
-    {
-        // V-i-s-i-t-o-r!
-        
-        
-        if ( path instanceof P_Link )
-        {
-            Node pred = ((P_Link)path).getNode() ;
-            Triple t = new Triple(startNode, pred, endNode) ; 
-            x.add(new TriplePath(t)) ;
-            return ;
-        }
-
-        if ( path instanceof P_Seq )
-        {
-            P_Seq ps = (P_Seq)path ;
-            Node v = varAlloc.allocVar() ;
-            reduce(x, varAlloc, startNode, ps.getLeft(), v) ;
-            reduce(x, varAlloc, v, ps.getRight(), endNode) ;
-            return ;
-        }
-
-        if ( path instanceof P_Reverse )
-        {
-            reduce(x, varAlloc, endNode, ((P_Reverse)path).getSubPath(), startNode) ;
-            return ;
-        }
-
-        if ( path instanceof P_Mod )
-        {
-            P_Mod pMod = (P_Mod)path ;
-            if ( pMod.isFixedLength() && pMod.getFixedLength() > 0 )
-            {
-                long N = pMod.getFixedLength() ;
-                Node stepStart = startNode ;
-
-                for ( long i = 0 ; i < N-1 ; i++ )
-                {
-                    Node v = varAlloc.allocVar() ;
-                    reduce(x, varAlloc, stepStart, pMod.getSubPath(), v) ;
-                    stepStart = v ;
-                }
-                reduce(x, varAlloc, stepStart, pMod.getSubPath(), endNode) ;
-                return ;
-            }
-            // Not fixed - drop through, including zero length paths.
-        }
-        
-        // Nothing can be done.
-        x.add(new TriplePath(startNode, path, endNode)) ;
-    }
-
     
     public int hashCode() { return triplePaths.hashCode() ; } 
     

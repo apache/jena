@@ -31,6 +31,7 @@ public class AlgebraGenerator
     // Helpful only to write exactly what you mean and test the full query compiler.
     boolean fixedFilterPosition = false ;
     private Context context ;
+    private PathCompiler pathCompiler = new PathCompiler() ;
     
     // SimplifyEarly=true is the alternative reading of
     // the DAWG Algebra translation algorithm. 
@@ -60,7 +61,7 @@ public class AlgebraGenerator
         return op ;
     }
     
-    static Transform simplify = new TransformSimplify() ;
+    protected static Transform simplify = new TransformSimplify() ;
     // Compile any structural element
     public Op compile(Element elt)
     {
@@ -323,7 +324,7 @@ public class AlgebraGenerator
     private Op compilePathBlock(PathBlock pattern)
     {
         // Step 1 : flatten down to triples where possible. 
-        pattern = pattern.reduce() ;
+        pattern = pathCompiler.reduce(pattern) ;
         
         //Step 2 : gather into OpBGP(BasicPatterns) or OpPath
         BasicPattern bp = null ;

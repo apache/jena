@@ -25,6 +25,7 @@ import com.hp.hpl.jena.shared.PrefixMapping;
 import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
 import com.hp.hpl.jena.sparql.algebra.Algebra;
 import com.hp.hpl.jena.sparql.algebra.Op;
+import com.hp.hpl.jena.sparql.algebra.PathCompiler;
 import com.hp.hpl.jena.sparql.algebra.Transform;
 import com.hp.hpl.jena.sparql.algebra.TransformCopy;
 import com.hp.hpl.jena.sparql.algebra.Transformer;
@@ -151,7 +152,7 @@ public class Run
         pBlk.add(tp) ;
         
         System.out.println("Path: "+str) ;
-        PathBlock x = pBlk.reduce() ;
+        PathBlock x = new PathCompiler().reduce(pBlk) ;
         for ( Iterator iter = x.iterator() ; iter.hasNext() ; )
             System.out.println("  "+iter.next()) ;
         System.out.println() ;
