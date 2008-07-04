@@ -53,7 +53,7 @@
 
   <!-- Build classes -->
   <property name="build.classes.dir"            value="${build.dir}/classes"/>
-  <property name="jar.dir"                value="${build.dir}/jar"/>
+  <property name="build.jar.dir"                value="${build.dir}/jar"/>
   <!-- <property name="jar.dir"                value="${lib.dir}"/> -->
 
   <!-- Meaning-less -->
@@ -79,7 +79,7 @@
   <path id="java.run.class.path">
     <!-- jar file may, or may not, be in the lib directory -->
     <fileset dir="${lib.dir}" includes="*.jar" excludes="${jarfile}"/>
-    <fileset dir="${jar.dir}" includes="*.jar"/>
+    <fileset dir="${build.jar.dir}" includes="*.jar"/>
   </path>
 
   <target name="javac-flags">
@@ -105,26 +105,36 @@
    <target name="ivy-clean">
   </taget>
   -->
+
   <!-- Convenience target -->
   <target name="ivy" depends="ivy-setup-lib" description="Set up for use with Eclispe">
   </target>
   
-  <target name="ivy-setup-lib" depends="ivy-init" description="Resolve dependences with Ivy">
-    
-    <ivy:resolve conf="dev" haltonfailure="false" failureproperty="ivy.resolve.failed"/>
-    <!-- Consider: copying without versions would be portable for Eclipse -->
-    <ivy:report todir="${reports.dir}"/>
- 	<fail message="Ivy dependency failed" if="ivy.resolve.failed"/>
-
+  <target name="ivy-setup-lib" depends="ivy-init,ivy-resolve-report" 
+	  description="Resolve and fetch dependences with Ivy">
     <ivy:retrieve conf="dev" pattern="lib2/[artifact]-[revision].[ext]" />
     <ivy:cachepath pathid="ivy.dev.classpath" conf="dev" />
   </target>
 
-  <!-- Untested -->
-  <target name="ivy-publish" depends="ivy-init,jar" description="Publish (with Ivy)">
-    <ivy:publish resolver="publish-resolver" pubrevision="${version}"
-      			 organisation="com.hp.hpl.jena" module="tdb" revision="${version}">
-      <artifacts pattern="${build.lib.dir}/[artifact].[ext]" />
+  <target name="ivy-resolve" depends="ivy-resolve-report"/>
+
+  <target name="ivy-resolve-report" depends="ivy-init">
+    <ivy:resolve conf="dev"
+		 revision="${version}"
+		 haltonfailure="false" failureproperty="ivy.resolve.failed"/>
+    <ivy:report todir="${reports.dir}"/>
+    <fail message="Ivy dependency failed" if="ivy.resolve.failed"/>
+  </target>
+
+  <!-- Remove jar build check for testing -->
+  <target name="ivy-publish" depends="ivy-init" description="Publish (with Ivy)">
+    <ivy:publish conf="main" 
+		 organisation="com.hp.hpl.jena" module="tdb"
+		 revision="${version}"
+		 resolver="publish-resolver" 
+		 overwrite="true"
+		 forcedeliver="true">
+      <artifacts pattern="${build.jar.dir}/[artifact].[ext]" />
     </ivy:publish>
   </target>
 
@@ -166,9 +176,9 @@
 
   <target name="jars" depends="jar" />
   <target name="jar" depends="compile" description="Build the jar">
-    <mkdir dir="${jar.dir}"/>
-    <delete file="${jar.dir}/${jarfile}"/>
-    <jar destfile="${jar.dir}/${jarfile}" basedir="${build.classes.dir}">
+    <mkdir dir="${build.jar.dir}"/>
+    <delete file="${build.jar.dir}/${jarfile}"/>
+    <jar destfile="${build.jar.dir}/${jarfile}" basedir="${build.classes.dir}">
       <!--
 	<manifest>
 	<attribute name="Main-Class" value="${main.class}"/>
@@ -241,7 +251,7 @@
 
   <target name="run" depends="compile">
     <java classname="${main-class}" fork="true">
-      <!-- jar="${jar.dir}/${jarfile}"-->
+      <!-- jar="${build.jar.dir}/${jarfile}"-->
       <arg value="--check"/>
       <arg value="10"/>
       <arg value="100"/>
@@ -272,7 +282,7 @@
   <target name="copy" depends="copy-init">
     <copy todir="${dist.dir}/${lib.dir}">
       <fileset dir="${lib.dir}" includes="**/*.jar" excludes="${jarfile}"/>
-      <fileset dir="${jar.dir}" includes="*.jar"/>
+      <fileset dir="${build.jar.dir}" includes="*.jar"/>
     </copy>
 
     <copy todir="${dist.dir}/${test.dir}">

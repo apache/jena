@@ -1,0 +1,21 @@
+Either version is  "working@Seaborne3" in ivy:publish, and ivy:resolve
+defaults
+
+Else
+
+add to ivy:resolve force to tdb-0.0.-dev
+(then evicts items from 
+
+?? set org etc in some file somewhere 
+
+---
+Why 
+ivy:publish conf="main" 
+		 organisation="com.hp.hpl.jena" module="tdb"
+		 revision="${version}"
+
+why evicting when ivy:resolve 
+whu does ivy:resolve and ivy:publish need revisions?
+
+What are the default settings names?
+
