@@ -17,16 +17,11 @@
   </configurations>
 
   <publications>
-    <artifact conf="main" name="tdb" type="jar"/>
+    <artifact name="tdb" type="jar"/>
   </publications>
 
   <dependencies>
-    <!-- ?? latest.integration -->
-    <!--
-      <dependency org="com.hp.hpl.jena" name="arq" rev="latest.integration"/>
-      <dependency org="com.hp.hpl.jena" name="arq-extra" rev="latest.integration"/>
-    -->
-
+    <!-- rev="latest.integration" -->
     <dependency org="com.hp.hpl.jena" name="arq" rev="2.3"/>
     <dependency org="com.hp.hpl.jena" name="arq-extra" rev="2.3"/>
 
@@ -34,19 +29,20 @@
     <dependency org="junit" name="junit" rev="4.4"/>
     <dependency org="org.slf4j" name="slf4j-api" rev="1.4.3"/>
 
-    <!-- Additional for development : logging implementation -->
     <dependency conf="dev->*"   org="org.slf4j" name="slf4j-log4j12" rev="1.4.3">
+      <!-- Additional for development : logging implementation -->
       <!-- includes log4j 1.2.13 which is then evicted by the 1.2.15 below -->
       <exclude org="log4j" module="log4j"/>
     </dependency>
     
-    <dependency conf="dev->*"   org="log4j" name="log4j" rev="1.2.15"/> 
-    <!-- Unwanted junk from log4j that is not accessible -->
-    <exclude org="com.sun.jmx" module="jmxri"/>
-    <exclude org="com.sun.jmx" module="jmxri"/>
-    <exclude org="com.sun.jdmk" module="jmxtools"/>
-    <exclude org="javax.jms" module="jms"/>
-    <exclude org="javax.mail" module="mail"/>
+    <dependency conf="dev->*"   org="log4j" name="log4j" rev="1.2.15"> 
+      <!-- Unwanted modules from log4j that are not accessible -->
+      <exclude org="com.sun.jmx" module="jmxri"/>
+      <exclude org="com.sun.jmx" module="jmxri"/>
+      <exclude org="com.sun.jdmk" module="jmxtools"/>
+      <exclude org="javax.jms" module="jms"/>
+      <exclude org="javax.mail" module="mail"/>
+    </dependency>
   </dependencies>
 
 </ivy-module>

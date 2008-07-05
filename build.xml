@@ -120,7 +120,6 @@
 
   <target name="ivy-resolve-report" depends="ivy-init">
     <ivy:resolve conf="dev"
-		 revision="${version}"
 		 haltonfailure="false" failureproperty="ivy.resolve.failed"/>
     <ivy:report todir="${reports.dir}"/>
     <fail message="Ivy dependency failed" if="ivy.resolve.failed"/>
@@ -128,9 +127,8 @@
 
   <!-- Remove jar build check for testing -->
   <target name="ivy-publish" depends="ivy-init" description="Publish (with Ivy)">
+    <ivy:resolve conf="main"/>
     <ivy:publish conf="main" 
-		 organisation="com.hp.hpl.jena" module="tdb"
-		 revision="${version}"
 		 resolver="publish-resolver" 
 		 overwrite="true"
 		 forcedeliver="true">

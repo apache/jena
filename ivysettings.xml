@@ -1,5 +1,6 @@
 <ivysettings>
   <properties file="${ivy.settings.dir}/ivysettings-file.properties" />
+
   <!-- <settings defaultResolver="default"/> -->
   <settings defaultResolver="resolver-chain"/>
 
@@ -19,9 +20,6 @@
     
     <!-- Publish -->
     <filesystem name="publish-resolver" >
-       <!-- Documentatrion says this does not work??:
-	    ""[revision] must be last directory [module]/[type]s/[artifact]-[revision].[ext]""
-       -->
        <ivy      pattern="build/pub/[module]-[revision]/[artifact]-[revision].[ext]"/>
        <artifact pattern="build/pub/[module]-[revision]/[artifact]-[revision].[ext]"/>
     </filesystem>
