@@ -20,6 +20,8 @@ import com.hp.hpl.jena.sparql.expr.ExprFunction2;
 import com.hp.hpl.jena.sparql.expr.ExprList;
 import com.hp.hpl.jena.sparql.expr.NodeValue;
 
+import com.hp.hpl.jena.query.ARQ;
+
 public class TransformEqualityFilter extends TransformCopy
 {
     public TransformEqualityFilter() {}
@@ -59,11 +61,14 @@ public class TransformEqualityFilter extends TransformCopy
         // Rewrites: 
         // FILTER ( ?x = :x ) for IRIs and bNodes, not literals 
         //    (to preserve value testing in the filter, and not in the graph). 
-        // FILTER ( sameTerm(?x, :x ) etc
+        // FILTER ( sameTerm(?x, :x ) ) etc
         
         if ( !(e instanceof E_Equals) && !(e instanceof E_SameTerm) )
             return null ;
 
+        // Corner case: sameTerm is false for string/plain literal, 
+        // but true in the graph for graphs with 
+        
         ExprFunction2 eq = (ExprFunction2)e ;
         Expr left = eq.getArg1() ;
         Expr right = eq.getArg2() ;
@@ -84,11 +89,19 @@ public class TransformEqualityFilter extends TransformCopy
         if ( var == null || constant == null )
             return null ;
 
-        // Final check for "="  
+        // Corner case: sameTerm is false for string/plain literal, 
+        // but true in the graph for graph matching. 
+        if (e instanceof E_SameTerm)
+        {
+            if ( ! ARQ.isStrictMode() && constant.isString() )
+                return null ;
+        }
+        
+        // Final check for "=" where a FILTER = can do value matching when the graph does not.
         if ( e instanceof E_Equals )
         {
             // Value based?
-            if ( constant.isLiteral() )
+            if ( ! ARQ.isStrictMode() && constant.isLiteral() )
                 return null ;
         }
 

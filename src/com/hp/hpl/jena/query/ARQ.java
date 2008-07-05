@@ -142,8 +142,6 @@ public class ARQ
      */
     public static final Symbol generateToList = ARQConstants.allocSymbol("generateToList") ;
 
-    private static boolean strictMode = false ; 
-    
     /** Set global strict mode */
     public static void setStrictMode() { setStrictMode(ARQ.getContext()) ; }
     
@@ -151,7 +149,6 @@ public class ARQ
     
     public static void setStrictMode(Context context)
     {
-        strictMode = true ;
         XSDFuncOp.strictDateTimeFO = true ;
         
         context.set(hideNonDistiguishedVariables, true) ;
@@ -166,13 +163,12 @@ public class ARQ
 //        XSDFuncOp.strictDateTimeFO = false ;
     }
     
-    //public static boolean getStrictMode()       { return strictMode ; }
+    public static boolean isStrictMode()       { return ARQ.getContext().isTrue(strictSPARQL) ; }
     
     public static void setNormalMode() { setNormalMode(ARQ.getContext()) ; }
         
     public static void setNormalMode(Context context)
     {
-        strictMode = false ;
         XSDFuncOp.strictDateTimeFO = false ;
 
         //context.set(hideNonDistiguishedVariables, true) ;
