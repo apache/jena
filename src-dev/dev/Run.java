@@ -7,11 +7,11 @@
 package dev;
 
 import static lib.FileOps.clearDirectory;
+import lib.FileOps;
 
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.Property;
-import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.rdf.model.Statement;
+import com.hp.hpl.jena.rdf.model.*;
+
+import com.hp.hpl.jena.util.FileManager;
 
 import com.hp.hpl.jena.graph.Graph;
 
@@ -34,12 +34,18 @@ public class Run
         nextDivider = "" ;
     }
     
-    
     public static void main(String ... args)
     {
-        // Make a B+Tree
-        //BPlusTree.attach(params, blkMgrNodes, blkMgrLeaves)
         Location loc = new Location("tmp") ;
+        FileOps.clearDirectory(loc.getDirectoryPath()) ;
+        
+        Graph graph = TDBFactory.createGraphBPT(loc) ;
+        Model model = ModelFactory.createModelForGraph(graph) ;
+        //FileManager.get().readModel(model, "D.ttl") ;
+        FileManager.get().readModel(model, "/home/afs/Datasets/DBpediaBM/dbp-homepages.nt") ;
+        query("SELECT count(*) { ?s ?p ?o}", model) ;
+        System.exit(0) ;
+        
         //tdbquery("dataset.ttl", "SELECT * { ?s ?p ?o}") ;
 
 //        ARQ.getContext().set(TDB.symFileMode, "mapped") ;
@@ -150,7 +156,7 @@ public class Run
     private static void query(String str, Model model)
     {
         System.out.println(str) ; 
-        Query q = QueryFactory.create(str) ;
+        Query q = QueryFactory.create(str, Syntax.syntaxARQ) ;
         QueryExecution qexec = QueryExecutionFactory.create(q, model) ;
         ResultSet rs = qexec.execSelect() ;
         ResultSetFormatter.out(rs) ;

@@ -42,7 +42,7 @@ public class IndexFactoryBPlusTree implements IndexFactory
         BlockMgr blkMgrNodes = createBlockMgr(fnNodes, blockSize) ;
         
         String fnRecords = location.getPath(name, "dat") ;
-        BlockMgr blkMgrRecords = createBlockMgr(fnNodes, blockSize) ;
+        BlockMgr blkMgrRecords = createBlockMgr(fnRecords, blockSize) ;
 
         return BPlusTree.attach(params, blkMgrNodes, blkMgrRecords) ;
     }

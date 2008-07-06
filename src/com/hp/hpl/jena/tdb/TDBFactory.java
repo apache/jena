@@ -10,6 +10,7 @@ import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.tdb.base.file.Location;
+import com.hp.hpl.jena.tdb.pgraph.GraphBPlusTree;
 import com.hp.hpl.jena.tdb.pgraph.GraphBTree;
 import com.hp.hpl.jena.tdb.pgraph.PGraphBase;
 import com.hp.hpl.jena.tdb.pgraph.assembler.PGraphAssemblerVocab;
@@ -19,6 +20,14 @@ import com.hp.hpl.jena.sparql.core.assembler.AssemblerUtils;
 public class TDBFactory
 {
     static { TDB.init(); }
+    
+    // -----
+    public static Graph createGraphBPT(Location loc)
+    {
+        return GraphBPlusTree.create(loc) ;
+    }
+    // -----
+    
     
     public static Model assembleModel(String assemblerFile)
     {
