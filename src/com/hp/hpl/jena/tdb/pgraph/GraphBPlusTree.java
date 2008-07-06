@@ -10,26 +10,26 @@ import static com.hp.hpl.jena.tdb.Const.BlockSize;
 
 import com.hp.hpl.jena.tdb.base.file.Location;
 import com.hp.hpl.jena.tdb.index.IndexFactory;
-import com.hp.hpl.jena.tdb.index.IndexFactoryBTree;
-import com.hp.hpl.jena.tdb.index.IndexFactoryBTreeMem;
+import com.hp.hpl.jena.tdb.index.IndexFactoryBPlusTree;
+import com.hp.hpl.jena.tdb.index.IndexFactoryBPlusTreeMem;
 
-public class GraphBTree extends PGraphBase
+public class GraphBPlusTree extends PGraphBase
 {
     public static PGraphBase create()
     {
-        IndexFactory idxFactory = new IndexFactoryBTreeMem(32) ; 
+        IndexFactory idxFactory = new IndexFactoryBPlusTreeMem(32) ; 
         NodeTable nodeTable = PGraphFactory.createNodeTableMem() ;
         return create(idxFactory, nodeTable) ;
     }
 
     public static PGraphBase create(Location loc)
     {
-        IndexFactory idxFactory = new IndexFactoryBTree(loc, BlockSize) ;
+        IndexFactory idxFactory = new IndexFactoryBPlusTree(loc, BlockSize) ;
         NodeTable nodeTable = PGraphFactory.createNodeTable(loc) ;
         return create(idxFactory, nodeTable) ;
     }
     
-    private GraphBTree() {}
+    private GraphBPlusTree() {}
 }
 
 /*

@@ -6,11 +6,8 @@
 
 package com.hp.hpl.jena.tdb.index;
 
-import com.hp.hpl.jena.tdb.base.block.BlockMgr;
-import com.hp.hpl.jena.tdb.base.block.BlockMgrFactory;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
-import com.hp.hpl.jena.tdb.btree.BTree;
-import com.hp.hpl.jena.tdb.btree.BTreeParams;
+import com.hp.hpl.jena.tdb.bplustree.BPlusTree;
 
 public class IndexFactoryBTreeMem implements IndexFactory
 {
@@ -31,11 +28,7 @@ public class IndexFactoryBTreeMem implements IndexFactory
     @Override
     public RangeIndex createRangeIndex(RecordFactory factory, String name)
     {
-        int blkSize = BTreeParams.calcBlockSize(order, factory) ;
-        BTreeParams params = new BTreeParams(order, factory) ;
-        BlockMgr blkMgr = BlockMgrFactory.createMem(blkSize) ;
-        BTree bTree = new BTree(params, blkMgr) ; 
-        return bTree ;
+        return BPlusTree.makeMem(order, order, factory.keyLength(), factory.valueLength()) ;
     }
 }
 

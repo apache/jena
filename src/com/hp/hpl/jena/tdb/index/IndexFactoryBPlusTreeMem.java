@@ -1,39 +1,46 @@
 /*
- * (c) Copyright 2007, 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.pgraph;
+package com.hp.hpl.jena.tdb.index;
 
-import static com.hp.hpl.jena.tdb.Const.BlockSize;
+import com.hp.hpl.jena.tdb.base.block.BlockMgr;
+import com.hp.hpl.jena.tdb.base.block.BlockMgrFactory;
+import com.hp.hpl.jena.tdb.base.record.RecordFactory;
+import com.hp.hpl.jena.tdb.btree.BTree;
+import com.hp.hpl.jena.tdb.btree.BTreeParams;
 
-import com.hp.hpl.jena.tdb.base.file.Location;
-import com.hp.hpl.jena.tdb.index.IndexFactory;
-import com.hp.hpl.jena.tdb.index.IndexFactoryBTree;
-import com.hp.hpl.jena.tdb.index.IndexFactoryBTreeMem;
-
-public class GraphBTree extends PGraphBase
+public class IndexFactoryBPlusTreeMem implements IndexFactory
 {
-    public static PGraphBase create()
-    {
-        IndexFactory idxFactory = new IndexFactoryBTreeMem(32) ; 
-        NodeTable nodeTable = PGraphFactory.createNodeTableMem() ;
-        return create(idxFactory, nodeTable) ;
-    }
+    
+    private final int order ;
 
-    public static PGraphBase create(Location loc)
+    public IndexFactoryBPlusTreeMem(int order)
     {
-        IndexFactory idxFactory = new IndexFactoryBTree(loc, BlockSize) ;
-        NodeTable nodeTable = PGraphFactory.createNodeTable(loc) ;
-        return create(idxFactory, nodeTable) ;
+        this.order = order ;
     }
     
-    private GraphBTree() {}
+    @Override
+    public Index createIndex(RecordFactory factory, String name)
+    {
+        return createRangeIndex(factory, name) ;
+    }
+    
+    @Override
+    public RangeIndex createRangeIndex(RecordFactory factory, String name)
+    {
+        int blkSize = BTreeParams.calcBlockSize(order, factory) ;
+        BTreeParams params = new BTreeParams(order, factory) ;
+        BlockMgr blkMgr = BlockMgrFactory.createMem(blkSize) ;
+        BTree bTree = new BTree(params, blkMgr) ; 
+        return bTree ;
+    }
 }
 
 /*
- * (c) Copyright 2007, 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

@@ -127,7 +127,7 @@ public class BPlusTree implements Iterable<Record>, RangeIndex
     
     /** Create the in-memory structures to correspnond to
      * the supplied block managers for the persistent storage.
-     * This is teh normal way to create a B+Tree.
+     * This is the normal way to create a B+Tree.
      */
     public static BPlusTree attach(BPlusTreeParams params, BlockMgr blkMgrNodes, BlockMgr blkMgrLeaves)
     { 
@@ -136,7 +136,7 @@ public class BPlusTree implements Iterable<Record>, RangeIndex
         return bpt ;
     }
     
-    /** (Testing) Make an in-memory B+Tree, with copy-in, copy-out block managers */
+    /** (Testing mainly) Make an in-memory B+Tree, with copy-in, copy-out block managers */
     public static BPlusTree makeMem(int order, int minRecords, int keyLength, int valueLength)
     {
         BPlusTreeParams params = new BPlusTreeParams(order, keyLength, valueLength) ;

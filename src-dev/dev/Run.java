@@ -13,10 +13,13 @@ import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.Statement;
 
+import com.hp.hpl.jena.graph.Graph;
+
 import com.hp.hpl.jena.query.*;
 
 import com.hp.hpl.jena.tdb.TDB;
 import com.hp.hpl.jena.tdb.TDBFactory;
+import com.hp.hpl.jena.tdb.base.file.Location;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 import com.hp.hpl.jena.tdb.btree.BTreeParams;
 
@@ -31,14 +34,41 @@ public class Run
         nextDivider = "" ;
     }
     
+    
+    public static void main(String ... args)
+    {
+        // Make a B+Tree
+        //BPlusTree.attach(params, blkMgrNodes, blkMgrLeaves)
+        Location loc = new Location("tmp") ;
+        //tdbquery("dataset.ttl", "SELECT * { ?s ?p ?o}") ;
+
+//        ARQ.getContext().set(TDB.symFileMode, "mapped") ;
+//        Model model = TDBFactory.createModel("tmp") ;
+//        query("SELECT * { ?s ?p ?o}", model) ;
+//        System.exit(0) ;
+    }
+    
+    public static Graph createGraphBPT(String dir)
+    {
+        Location loc = new Location(dir) ;
+        return createGraphBPT(loc) ;
+    }
+    
+    public static Graph createGraphBPT(Location loc)
+    {
+        //return GraphBPlusTree.create(loc) ;
+        return null ;
+    }
+    
     static int BlockSize               = 8*1024 ;
     static int SegmentSize = 8 * 1024 * 1024 ; 
     static int blocksPerSegment = SegmentSize/BlockSize ;
     
     private static int segment(int id) { return id/blocksPerSegment ; }
     private static int byteOffset(int id) { return (id%blocksPerSegment)*BlockSize ; }
+
     
-    public static void main(String ... args)
+    public static void seg()
     {
 //        Id: 1179
 //        Seg=1
@@ -60,11 +90,7 @@ public class Run
 //        tdb.tdbquery.main(a) ;
 //        System.exit(0) ;
         
-        //tdbquery("dataset.ttl", "SELECT * { ?s ?p ?o}") ;
-        ARQ.getContext().set(TDB.symFileMode, "mapped") ;
-        Model model = TDBFactory.createModel("tmp") ;
-        query("SELECT * { ?s ?p ?o}", model) ;
-        System.exit(0) ;
+ 
         
         // ----
         btreePacking(3, 32, 8*1024) ; System.exit(0) ;

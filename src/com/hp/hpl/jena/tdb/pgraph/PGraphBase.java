@@ -58,7 +58,7 @@ public class PGraphBase extends GraphBase implements Sync
     
     // Two ways to initialize the indexes: via an indexfactory or directly with TripleIndexes.
     
-    public  static PGraphBase create(IndexFactory factory, NodeTable nodeTable)
+    public static PGraphBase create(IndexFactory factory, NodeTable nodeTable)
     {
         //this.indexFactory = factory ;
 

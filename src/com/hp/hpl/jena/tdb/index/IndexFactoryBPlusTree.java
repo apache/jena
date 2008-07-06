@@ -1,39 +1,60 @@
 /*
- * (c) Copyright 2007, 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.pgraph;
+package com.hp.hpl.jena.tdb.index;
 
 import static com.hp.hpl.jena.tdb.Const.BlockSize;
 
+import com.hp.hpl.jena.tdb.base.block.BlockMgr;
+import com.hp.hpl.jena.tdb.base.block.BlockMgrFactory;
 import com.hp.hpl.jena.tdb.base.file.Location;
-import com.hp.hpl.jena.tdb.index.IndexFactory;
-import com.hp.hpl.jena.tdb.index.IndexFactoryBTree;
-import com.hp.hpl.jena.tdb.index.IndexFactoryBTreeMem;
+import com.hp.hpl.jena.tdb.base.record.RecordFactory;
+import com.hp.hpl.jena.tdb.bplustree.BPlusTree;
+import com.hp.hpl.jena.tdb.bplustree.BPlusTreeParams;
 
-public class GraphBTree extends PGraphBase
+public class IndexFactoryBPlusTree implements IndexFactory
 {
-    public static PGraphBase create()
-    {
-        IndexFactory idxFactory = new IndexFactoryBTreeMem(32) ; 
-        NodeTable nodeTable = PGraphFactory.createNodeTableMem() ;
-        return create(idxFactory, nodeTable) ;
-    }
+    private final Location location ;
+    private final int blockSize ;
 
-    public static PGraphBase create(Location loc)
+    public IndexFactoryBPlusTree(Location location, int blockSize)
     {
-        IndexFactory idxFactory = new IndexFactoryBTree(loc, BlockSize) ;
-        NodeTable nodeTable = PGraphFactory.createNodeTable(loc) ;
-        return create(idxFactory, nodeTable) ;
+        this.location = location ;
+        this.blockSize = blockSize ;
     }
     
-    private GraphBTree() {}
+    @Override
+    public Index createIndex(RecordFactory factory, String name)
+    {
+        return createRangeIndex(factory, name) ;
+    }
+    
+    @Override
+    public RangeIndex createRangeIndex(RecordFactory factory, String name)
+    {
+        int order = BPlusTreeParams.calcOrder(BlockSize, factory) ;
+        BPlusTreeParams params = new BPlusTreeParams(order, factory) ;
+        
+        String fnNodes = location.getPath(name, "idx") ;
+        BlockMgr blkMgrNodes = createBlockMgr(fnNodes, blockSize) ;
+        
+        String fnRecords = location.getPath(name, "dat") ;
+        BlockMgr blkMgrRecords = createBlockMgr(fnNodes, blockSize) ;
+
+        return BPlusTree.attach(params, blkMgrNodes, blkMgrRecords) ;
+    }
+    
+    protected BlockMgr createBlockMgr(String filename, int blockSize)
+    {
+        return BlockMgrFactory.createFile(filename, blockSize) ;
+    }
 }
 
 /*
- * (c) Copyright 2007, 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
