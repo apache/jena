@@ -8,13 +8,8 @@ package dev;
 
 public class Dev
 {
-    // Build.  Ant and Ivy. 
-
-    // Constructing BPT graphs 
-    
     // TestPGraph_BPlusTree
-    // Long tests
-    // With a persistence layer
+    // IndexFactory vs RangeIndexMaker
     
     // removeAll implementation: depends on iterator.remove
     // but can do fatser as a specific operation.
