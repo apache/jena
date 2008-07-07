@@ -8,6 +8,14 @@ package dev;
 
 public class Dev
 {
+    // PtrBuffer has ref to BTreeParams.
+    // Role of PGraphFactory?
+    //    Move cerate stuff here
+    // GraphBplusTree and GraphBTree to go.
+    // IndexBuilder to include ppolicy for data files
+    
+    // TestGraphBPlusTreeMem and Mem2.
+    
     // Global IndexFactory.  create(Location, Name) => (Range)Index
     // IndexBuilder for the global, any location (IndexFactoryFactory)
     // Use IndexBuilder in PGraphFactory, TDBFactory, TripleIndexAssembler

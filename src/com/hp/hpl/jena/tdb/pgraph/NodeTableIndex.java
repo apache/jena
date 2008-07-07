@@ -6,33 +6,23 @@
 
 package com.hp.hpl.jena.tdb.pgraph;
 
-import static com.hp.hpl.jena.tdb.Const.BlockSize;
 import static com.hp.hpl.jena.tdb.Const.NodeCacheSize;
 
-import com.hp.hpl.jena.tdb.Const;
 import com.hp.hpl.jena.tdb.base.file.FileFactory;
 import com.hp.hpl.jena.tdb.base.file.Location;
 import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile;
 import com.hp.hpl.jena.tdb.base.objectfile.ObjectFileMem;
-import com.hp.hpl.jena.tdb.bplustree.BPlusTree;
-import com.hp.hpl.jena.tdb.bplustree.BPlusTreeParams;
 import com.hp.hpl.jena.tdb.index.Index;
-import com.hp.hpl.jena.tdb.index.IndexFactory;
-import com.hp.hpl.jena.tdb.index.IndexFactoryBPlusTree;
+import com.hp.hpl.jena.tdb.index.IndexBuilder;
 
-public class NodeTableBPlusTree extends NodeTableBase
+public class NodeTableIndex extends NodeTableBase
 {
     // Disk version
-    public NodeTableBPlusTree(Location loc)
+    public NodeTableIndex(IndexBuilder factory, Location loc)
     {
         super() ;
 
-        // IndexFactory
-        int order = BPlusTreeParams.calcOrder(Const.BlockSize, PGraphFactory.nodeRecordFactory) ;
-        BPlusTreeParams params = new BPlusTreeParams(order, PGraphFactory.nodeRecordFactory) ;
-        
-        IndexFactory idxFactory = new IndexFactoryBPlusTree(loc, BlockSize) ;
-        Index nodeToId = idxFactory.createIndex(PGraphFactory.nodeRecordFactory, "node2id") ; 
+        Index nodeToId = factory.newIndex(loc, PGraphFactory.nodeRecordFactory, "node2id") ;
             
         // Data file.
         ObjectFile objects = FileFactory.createObjectFileDisk(loc.getPath("nodes", "dat"));
@@ -40,16 +30,13 @@ public class NodeTableBPlusTree extends NodeTableBase
     }
     
     // Memory version - testing.
-    public NodeTableBPlusTree()
+    public NodeTableIndex()
     {
         super() ;
-        int order = 32 ;
+        Index nodeToId = IndexBuilder.mem().newIndex(null, PGraphFactory.nodeRecordFactory, "node2id") ;
         
-        Index index = BPlusTree.makeMem(order, order,
-                                        PGraphFactory.nodeRecordFactory.keyLength(),
-                                        PGraphFactory.nodeRecordFactory.valueLength()) ;
         ObjectFile objects = new ObjectFileMem() ;
-        init(index, objects, 100, 100) ;
+        init(nodeToId, objects, 100, 100) ;
     }
 }
 /*

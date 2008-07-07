@@ -7,26 +7,25 @@
 package com.hp.hpl.jena.tdb.pgraph;
 
 import static com.hp.hpl.jena.tdb.Const.BlockSize;
+import static com.hp.hpl.jena.tdb.Const.BlockSizeMem;
 
 import com.hp.hpl.jena.tdb.base.file.Location;
-import com.hp.hpl.jena.tdb.index.IndexFactory;
-import com.hp.hpl.jena.tdb.index.IndexFactoryBTree;
-import com.hp.hpl.jena.tdb.index.IndexFactoryBTreeMem;
+import com.hp.hpl.jena.tdb.index.*;
 
 public class GraphBTree extends PGraphBase
 {
     public static PGraphBase create()
     {
-        IndexFactory idxFactory = new IndexFactoryBTreeMem(32) ; 
-        NodeTable nodeTable = PGraphFactory.createNodeTableMem() ;
-        return create(idxFactory, nodeTable) ;
+        IndexFactoryBTreeMem factory = new IndexFactoryBTreeMem(BlockSizeMem) ;
+        IndexBuilder indexBuilder = new IndexBuilder(factory, factory) ;
+        return PGraphBase.create(indexBuilder, null) ;
     }
 
     public static PGraphBase create(Location loc)
     {
-        IndexFactory idxFactory = new IndexFactoryBTree(loc, BlockSize) ;
-        NodeTable nodeTable = PGraphFactory.createNodeTable(loc) ;
-        return create(idxFactory, nodeTable) ;
+        IndexFactoryBTree factory = new IndexFactoryBTree(BlockSize) ;
+        IndexBuilder indexBuilder = new IndexBuilder(factory, factory) ;
+        return PGraphBase.create(indexBuilder, loc) ;
     }
     
     private GraphBTree() {}

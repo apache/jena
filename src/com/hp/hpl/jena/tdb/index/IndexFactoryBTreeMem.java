@@ -6,10 +6,11 @@
 
 package com.hp.hpl.jena.tdb.index;
 
+import com.hp.hpl.jena.tdb.base.file.Location;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 import com.hp.hpl.jena.tdb.bplustree.BPlusTree;
 
-public class IndexFactoryBTreeMem implements IndexFactory
+public class IndexFactoryBTreeMem implements IndexFactory, IndexRangeFactory
 {
     
     private final int order ;
@@ -20,15 +21,15 @@ public class IndexFactoryBTreeMem implements IndexFactory
     }
     
     @Override
-    public Index createIndex(RecordFactory factory, String name)
+    public Index createIndex(Location location, String name, RecordFactory recordFactory)
     {
-        return createRangeIndex(factory, name) ;
+        return createRangeIndex(location, name, recordFactory) ;
     }
     
     @Override
-    public RangeIndex createRangeIndex(RecordFactory factory, String name)
+    public RangeIndex createRangeIndex(Location location, String name, RecordFactory recordFactory)
     {
-        return BPlusTree.makeMem(order, order, factory.keyLength(), factory.valueLength()) ;
+        return BPlusTree.makeMem(order, order, recordFactory.keyLength(), recordFactory.valueLength()) ;
     }
 }
 

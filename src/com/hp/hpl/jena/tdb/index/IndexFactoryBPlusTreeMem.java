@@ -8,13 +8,13 @@ package com.hp.hpl.jena.tdb.index;
 
 import com.hp.hpl.jena.tdb.base.block.BlockMgr;
 import com.hp.hpl.jena.tdb.base.block.BlockMgrFactory;
+import com.hp.hpl.jena.tdb.base.file.Location;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 import com.hp.hpl.jena.tdb.btree.BTree;
 import com.hp.hpl.jena.tdb.btree.BTreeParams;
 
-public class IndexFactoryBPlusTreeMem implements IndexFactory
+public class IndexFactoryBPlusTreeMem implements IndexFactory, IndexRangeFactory
 {
-    
     private final int order ;
 
     public IndexFactoryBPlusTreeMem(int order)
@@ -23,16 +23,16 @@ public class IndexFactoryBPlusTreeMem implements IndexFactory
     }
     
     @Override
-    public Index createIndex(RecordFactory factory, String name)
+    public Index createIndex(Location location, String name, RecordFactory recordFactory)
     {
-        return createRangeIndex(factory, name) ;
+        return createRangeIndex(location, name, recordFactory) ;
     }
     
     @Override
-    public RangeIndex createRangeIndex(RecordFactory factory, String name)
+    public RangeIndex createRangeIndex(Location location, String name, RecordFactory recordFactory)
     {
-        int blkSize = BTreeParams.calcBlockSize(order, factory) ;
-        BTreeParams params = new BTreeParams(order, factory) ;
+        int blkSize = BTreeParams.calcBlockSize(order, recordFactory) ;
+        BTreeParams params = new BTreeParams(order, recordFactory) ;
         BlockMgr blkMgr = BlockMgrFactory.createMem(blkSize) ;
         BTree bTree = new BTree(params, blkMgr) ; 
         return bTree ;

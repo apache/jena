@@ -6,8 +6,6 @@
 
 package com.hp.hpl.jena.tdb.index;
 
-import static com.hp.hpl.jena.tdb.Const.BlockSize;
-
 import com.hp.hpl.jena.tdb.base.block.BlockMgr;
 import com.hp.hpl.jena.tdb.base.block.BlockMgrFactory;
 import com.hp.hpl.jena.tdb.base.file.Location;
@@ -15,28 +13,26 @@ import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 import com.hp.hpl.jena.tdb.btree.BTree;
 import com.hp.hpl.jena.tdb.btree.BTreeParams;
 
-public class IndexFactoryBTree implements IndexFactory
+public class IndexFactoryBTree implements IndexFactory, IndexRangeFactory
 {
-    private final Location location ;
     private final int blockSize ;
 
-    public IndexFactoryBTree(Location location, int blockSize)
+    public IndexFactoryBTree(int blockSize)
     {
-        this.location = location ;
         this.blockSize = blockSize ;
     }
     
     @Override
-    public Index createIndex(RecordFactory factory, String name)
+    public Index createIndex(Location location, String name, RecordFactory recordFactory)
     {
-        return createRangeIndex(factory, name) ;
+        return createRangeIndex(location, name, recordFactory) ;
     }
     
     @Override
-    public RangeIndex createRangeIndex(RecordFactory factory, String name)
+    public RangeIndex createRangeIndex(Location location, String name, RecordFactory recordFactory)
     {
-        int order = BTreeParams.calcOrder(BlockSize, factory) ;
-        BTreeParams params = new BTreeParams(order, factory) ;
+        int order = BTreeParams.calcOrder(blockSize, recordFactory) ;
+        BTreeParams params = new BTreeParams(order, recordFactory) ;
         BTree bTree = new BTree(params, createBlockMgr(location.getPath(name, "idx"), blockSize)) ; 
         return bTree ;
     }

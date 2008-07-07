@@ -6,13 +6,13 @@
 
 package com.hp.hpl.jena.tdb.index;
 
+import com.hp.hpl.jena.tdb.base.file.Location;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 
 
 public interface IndexFactory
 {
-    public Index createIndex(RecordFactory factory, String name) ;
-    public RangeIndex createRangeIndex(RecordFactory factory, String name) ;
+    public Index createIndex(Location location, String name, RecordFactory recordFactory) ;
 }
 
 /*

@@ -42,6 +42,9 @@ public class Const
     
     /** Size, in bytes, of a block */
     public static final int BlockSize               = 8*1024 ;
+    
+    /** Size, in bytes, of a memory block */
+    public static final int BlockSizeMem            = 32*8 ;
 
     /** Size, in bytes, of a segment (used for memory mapped files) */
     public static final int SegmentSize             = 8*1024*1024 ;

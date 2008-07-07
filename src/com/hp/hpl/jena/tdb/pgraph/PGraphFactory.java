@@ -12,6 +12,7 @@ import static com.hp.hpl.jena.tdb.Const.NodeValueLength;
 
 import com.hp.hpl.jena.tdb.base.file.Location;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
+import com.hp.hpl.jena.tdb.index.IndexBuilder;
 
 /** Place to put various "making" things. */
 
@@ -22,10 +23,16 @@ public class PGraphFactory
     public final static RecordFactory nodeRecordFactory = new RecordFactory(NodeKeyLength, NodeValueLength) ;
     
     // NodeTables
-    
-    // -------- Plain
-    public static NodeTable createNodeTable(Location loc)   { return new NodeTableBPlusTree(loc) ; }
-    public static NodeTable createNodeTableMem()            { return new NodeTableBPlusTree() ; }
+    public static NodeTable createNodeTable(IndexBuilder indexBuilder, Location loc) 
+    { 
+        return new NodeTableIndex(indexBuilder, loc) ;
+    }
+        
+//    public static NodeTable createNodeTableMem()
+//    { 
+//        return new NodeTableIndex() ;
+//    }
+        
 }
 
 /*

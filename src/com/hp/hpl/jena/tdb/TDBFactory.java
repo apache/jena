@@ -6,11 +6,15 @@
 
 package com.hp.hpl.jena.tdb;
 
-import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
+
+import com.hp.hpl.jena.graph.Graph;
+
 import com.hp.hpl.jena.sparql.core.assembler.AssemblerUtils;
+
 import com.hp.hpl.jena.tdb.base.file.Location;
+import com.hp.hpl.jena.tdb.index.IndexBuilder;
 import com.hp.hpl.jena.tdb.pgraph.GraphBPlusTree;
 import com.hp.hpl.jena.tdb.pgraph.GraphBTree;
 import com.hp.hpl.jena.tdb.pgraph.PGraphBase;
@@ -85,27 +89,13 @@ public class TDBFactory
     
     private static Graph _createGraph()
     {
-        String indexType = TDB.getContext().getAsString(TDB.symIndexType, "BPlusTree") ;
-
-        if (indexType.equalsIgnoreCase("BPlusTree")) 
-            return GraphBPlusTree.create() ;
-        if (indexType.equalsIgnoreCase("BTree")) 
-            return GraphBTree.create() ;
-        throw new TDBException("Unrecognized index type: " + indexType) ;
+        return PGraphBase.create(IndexBuilder.mem(), null) ;
     }
 
     private static Graph _createGraph(Location loc)
     {
-        String indexType = TDB.getContext().getAsString(TDB.symIndexType, "BPlusTree") ;
-        if (indexType.equalsIgnoreCase("BPlusTree")) 
-            return GraphBPlusTree.create(loc) ;
-        if (indexType.equalsIgnoreCase("BTree")) 
-            return GraphBTree.create(loc) ;
-        throw new TDBException("Unrecognized index type: " + indexType) ;
+        return PGraphBase.create(loc) ;
     }
-// private static Graph _createGraph() { return GraphBTree.create() ; }
-// private static Graph _createGraph(Location loc) { return GraphBTree.create(loc) ; }
-    
 }
 
 /*

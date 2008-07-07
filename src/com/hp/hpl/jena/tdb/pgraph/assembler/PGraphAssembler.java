@@ -28,6 +28,7 @@ import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.tdb.TDB;
 import com.hp.hpl.jena.tdb.TDBFactory;
 import com.hp.hpl.jena.tdb.base.file.Location;
+import com.hp.hpl.jena.tdb.index.IndexBuilder;
 import com.hp.hpl.jena.tdb.index.TripleIndex;
 import com.hp.hpl.jena.tdb.pgraph.NodeTable;
 import com.hp.hpl.jena.tdb.pgraph.PGraphBase;
@@ -87,7 +88,9 @@ public class PGraphAssembler extends AssemblerBase implements Assembler
             indexes.put(idx.getDescription(), idx) ;
         }
         
-        NodeTable nodeTable = PGraphFactory.createNodeTable(loc) ;
+        
+        
+        NodeTable nodeTable = PGraphFactory.createNodeTable(IndexBuilder.get(), loc) ;
         
         PGraphBase graph = new PGraphBase(indexes.get("SPO"), 
                                           indexes.get("POS"),               

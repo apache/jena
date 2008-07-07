@@ -6,8 +6,6 @@
 
 package com.hp.hpl.jena.tdb.index;
 
-import static com.hp.hpl.jena.tdb.Const.BlockSize;
-
 import com.hp.hpl.jena.tdb.base.block.BlockMgr;
 import com.hp.hpl.jena.tdb.base.block.BlockMgrFactory;
 import com.hp.hpl.jena.tdb.base.file.Location;
@@ -15,27 +13,25 @@ import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 import com.hp.hpl.jena.tdb.bplustree.BPlusTree;
 import com.hp.hpl.jena.tdb.bplustree.BPlusTreeParams;
 
-public class IndexFactoryBPlusTree implements IndexFactory
+public class IndexFactoryBPlusTree implements IndexFactory, IndexRangeFactory
 {
-    private final Location location ;
     private final int blockSize ;
 
-    public IndexFactoryBPlusTree(Location location, int blockSize)
+    public IndexFactoryBPlusTree(int blockSize)
     {
-        this.location = location ;
         this.blockSize = blockSize ;
     }
     
     @Override
-    public Index createIndex(RecordFactory factory, String name)
+    public Index createIndex(Location location, String name, RecordFactory factory)
     {
-        return createRangeIndex(factory, name) ;
+        return createRangeIndex(location, name, factory) ;
     }
     
     @Override
-    public RangeIndex createRangeIndex(RecordFactory factory, String name)
+    public RangeIndex createRangeIndex(Location location, String name, RecordFactory factory)
     {
-        int order = BPlusTreeParams.calcOrder(BlockSize, factory) ;
+        int order = BPlusTreeParams.calcOrder(blockSize, factory) ;
         BPlusTreeParams params = new BPlusTreeParams(order, factory) ;
         
         String fnNodes = location.getPath(name, "idx") ;

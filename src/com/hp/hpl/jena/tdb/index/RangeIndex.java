@@ -13,9 +13,7 @@ import com.hp.hpl.jena.tdb.base.record.Record;
 
 public interface RangeIndex extends Index, Iterable<Record>
 {
-//    /** Create an index of the same implementation */
-//    public RangeIndex createEmptyCopy() ;
-//    
+    /** Iterate over the wole index */ 
     public Iterator<Record> iterator() ;
     
     /** Return records between min (inclusive) and max (exclusive), based on the record keys */
