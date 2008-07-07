@@ -41,6 +41,7 @@ public class TDB
     // Value: direct, mapped, default 
     public static final Symbol symFileMode          = Const.allocSymbol("fileMode") ;  
     public static final Symbol symParallelLoad      = Const.allocSymbol("parallelLoad") ;
+    public static final Symbol symIndexType         = Const.allocSymbol("indexType") ;
     
 //    public static void panic(Class<?> clazz, String string)
 //    {

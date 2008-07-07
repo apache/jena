@@ -78,10 +78,30 @@ public class TDBFactory
     
     // Switch on Graph implementation
     
-    private static Graph _createGraph()             { return GraphBPlusTree.create() ; }
-    private static Graph _createGraph(Location loc) { return GraphBPlusTree.create(loc) ; }
-//    private static Graph _createGraph()             { return GraphBTree.create() ; }
-//    private static Graph _createGraph(Location loc) { return GraphBTree.create(loc) ; }
+    
+    
+    private static Graph _createGraph()
+    {
+        String indexType = TDB.getContext().getAsString(TDB.symIndexType, "BPlusTree") ;
+
+        if (indexType.equalsIgnoreCase("BPlusTree")) 
+            return GraphBPlusTree.create() ;
+        if (indexType.equalsIgnoreCase("BTree")) 
+            return GraphBTree.create() ;
+        throw new TDBException("Unrecognized index type: " + indexType) ;
+    }
+
+    private static Graph _createGraph(Location loc)
+    {
+        String indexType = TDB.getContext().getAsString(TDB.symIndexType, "BPlusTree") ;
+        if (indexType.equalsIgnoreCase("BPlusTree")) 
+            return GraphBPlusTree.create(loc) ;
+        if (indexType.equalsIgnoreCase("BTree")) 
+            return GraphBTree.create(loc) ;
+        throw new TDBException("Unrecognized index type: " + indexType) ;
+    }
+// private static Graph _createGraph() { return GraphBTree.create() ; }
+// private static Graph _createGraph(Location loc) { return GraphBTree.create(loc) ; }
     
 }
 
