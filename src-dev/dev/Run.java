@@ -54,7 +54,7 @@ public class Run
     public static void main(String[] argv) throws Exception
     {
         //runQParse() ;
-        execQuery("DX.ttl", "Q3.rq") ;
+        execQuery("D.ttl", "Q.arq") ;
         
         path() ; System.exit(0) ;
         {
