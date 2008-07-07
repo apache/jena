@@ -9,31 +9,35 @@ package com.hp.hpl.jena.tdb;
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.sparql.core.assembler.AssemblerUtils;
 import com.hp.hpl.jena.tdb.base.file.Location;
 import com.hp.hpl.jena.tdb.pgraph.GraphBPlusTree;
 import com.hp.hpl.jena.tdb.pgraph.GraphBTree;
 import com.hp.hpl.jena.tdb.pgraph.PGraphBase;
 import com.hp.hpl.jena.tdb.pgraph.assembler.PGraphAssemblerVocab;
 
-import com.hp.hpl.jena.sparql.core.assembler.AssemblerUtils;
-
 public class TDBFactory
 {
     static { TDB.init(); }
     
-    // -----
+    // ----- TEMP
     public static Graph createGraphBPT(Location loc)
     {
         return GraphBPlusTree.create(loc) ;
     }
+    public static Graph createGraphBT(Location loc)
+    {
+        return GraphBTree.create(loc) ;
+    }
     // -----
     
-    
+    /** Read the file and assembler a model, of type TDB persistent graph */ 
     public static Model assembleModel(String assemblerFile)
     {
         return (Model)AssemblerUtils.build(assemblerFile, PGraphAssemblerVocab.PGraphType) ;
     }
     
+    /** Read the file and assembler a model, of type TDB persistent graph */ 
     public static Graph assembleGraph(String assemblerFile)
     {
         Model m = assembleModel(assemblerFile) ;
@@ -41,26 +45,27 @@ public class TDBFactory
         return g ;
     }
 
+    /** Create a model, at the given location */
     public static Model createModel(String dir)
     {
         return ModelFactory.createModelForGraph(createGraph(dir)) ;
     }
-    
+
+    /** Create a graph, at the given location */
     public static Graph createGraph(String dir)
     {
         Location loc = new Location(dir) ;
         return createGraph(loc) ;
     }
     
+    /** Create a model, at the given location */
     public static Model createModel(Location loc)
     {
         return ModelFactory.createModelForGraph(createGraph(loc)) ;
     }
-    
-    public static Graph createGraph(Location loc)
-    {
-        return GraphBTree.create(loc) ;
-    }
+
+    /** Create a graph, at the given location */
+    public static Graph createGraph(Location loc)       { return _createGraph(loc) ; }
     
     /** Create a TDB model backed by an in-memory block manager. For testing. */  
     public static Model createModel()
@@ -69,11 +74,15 @@ public class TDBFactory
     }
     
     /** Create a TDB graph backed by an in-memory block manager. For testing. */  
-    public static Graph createGraph()
-    {
-        return GraphBTree.create() ;
-    }
-
+    public static Graph createGraph()   { return _createGraph() ; }
+    
+    // Switch on Graph implementation
+    
+    private static Graph _createGraph()             { return GraphBPlusTree.create() ; }
+    private static Graph _createGraph(Location loc) { return GraphBPlusTree.create(loc) ; }
+//    private static Graph _createGraph()             { return GraphBTree.create() ; }
+//    private static Graph _createGraph(Location loc) { return GraphBTree.create(loc) ; }
+    
 }
 
 /*

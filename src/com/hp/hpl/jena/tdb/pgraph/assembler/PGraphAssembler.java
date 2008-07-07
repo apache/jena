@@ -68,7 +68,8 @@ public class PGraphAssembler extends AssemblerBase implements Assembler
             // Make just using the location.
             return TDBFactory.createModel(loc) ;
 
-        // Make using explicit index descriptions
+        // ------- Experimental : Make using explicit index descriptions
+        // ---- Uses BTree, not BPlusTrees - need upgrading. 
         Map<String, TripleIndex> indexes = new HashMap<String, TripleIndex>() ;
         @SuppressWarnings("unchecked")
         List<Resource> indexDesc = (List<Resource>)multiValueResource(root, pIndex ) ;

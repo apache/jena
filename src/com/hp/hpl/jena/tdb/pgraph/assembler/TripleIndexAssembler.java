@@ -56,10 +56,11 @@ public class TripleIndexAssembler extends AssemblerBase //implements Assembler
     public static RangeIndex rangeIndex(String filename)
     {
         BlockMgr blockMgr = BlockMgrFactory.createFile(filename, Const.BlockSize) ;
+        RecordFactory factory = PGraphFactory.indexRecordFactory ;
         return IndexF.create(blockMgr, PGraphFactory.indexRecordFactory) ;
     }
 
-    // Somewhere?
+    // Somewhere?  Shared with NodeTbaleAssembler.
     static class IndexF
     {
         static RangeIndex create(BlockMgr blockMgr, RecordFactory factory)
