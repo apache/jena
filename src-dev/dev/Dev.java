@@ -9,9 +9,8 @@ package dev;
 public class Dev
 {
     // Global IndexFactory.  create(Location, Name) => (Range)Index
-    //   Use by PGraphFactory, TDBFactory, TripleIndexAssembler 
-    // IndexFactory / IndexBuilder
-    // IndexBuilder for the global, any location (IndexFactoryFcatory)
+    // IndexBuilder for the global, any location (IndexFactoryFactory)
+    // Use IndexBuilder in PGraphFactory, TDBFactory, TripleIndexAssembler
     
     // PExt!
     

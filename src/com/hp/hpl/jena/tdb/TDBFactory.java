@@ -81,6 +81,8 @@ public class TDBFactory
     //IndexFactory idxFactory = new IndexFactoryBPlusTree(loc, BlockSize) ;
     
     
+    // See IndexBuilder.
+    
     private static Graph _createGraph()
     {
         String indexType = TDB.getContext().getAsString(TDB.symIndexType, "BPlusTree") ;
