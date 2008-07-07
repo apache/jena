@@ -18,10 +18,10 @@ import com.hp.hpl.jena.tdb.base.objectfile.ObjectFileMem;
 import com.hp.hpl.jena.tdb.btree.BTree;
 import com.hp.hpl.jena.tdb.btree.BTreeParams;
 
-public class NodeTableStd extends NodeTableBase
+public class NodeTableBTree extends NodeTableBase
 {
     // Disk version
-    public NodeTableStd(Location loc)
+    public NodeTableBTree(Location loc)
     {
         super() ;
 
@@ -46,7 +46,7 @@ public class NodeTableStd extends NodeTableBase
     }
     
     // Memory version - testing.
-    public NodeTableStd()
+    public NodeTableBTree()
     {
         super() ;
         int order = 32 ;
