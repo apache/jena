@@ -8,8 +8,18 @@ package dev;
 
 public class Dev
 {
-    // TestPGraph_BPlusTree
-    // IndexFactory vs RangeIndexMaker
+    // Global IndexFactory.  create(Location, Name) => (Range)Index
+    //   Use by PGraphFactory, TDBFactory, TripleIndexAssembler 
+    // IndexFactory / IndexBuilder
+    // IndexBuilder for the global, any location (IndexFactoryFcatory)
+    
+    // PExt!
+    
+    // Nodetable to use BPlusTrees 
+    // Complete refactoring for 96 bit ids.
+    
+    // BPT testing
+    // Use with assembler and explicit indexes
     
     // removeAll implementation: depends on iterator.remove
     // but can do fatser as a specific operation.

@@ -24,8 +24,8 @@ public class PGraphFactory
     // NodeTables
     
     // -------- Plain
-    public static NodeTable createNodeTable(Location loc)   { return new NodeTableStd(loc) ; }
-    public static NodeTable createNodeTableMem()            { return new NodeTableStd() ; }
+    public static NodeTable createNodeTable(Location loc)   { return new NodeTableBPlusTree(loc) ; }
+    public static NodeTable createNodeTableMem()            { return new NodeTableBPlusTree() ; }
 }
 
 /*

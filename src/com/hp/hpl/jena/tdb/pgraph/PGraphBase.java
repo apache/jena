@@ -46,7 +46,10 @@ import com.hp.hpl.jena.util.iterator.NiceIterator;
 public class PGraphBase extends GraphBase implements Sync
 {
     // Better to have an array?
-//    private IndexFactory indexFactory = null ;
+    // private IndexFactory indexFactory = null ;
+    // TODO Change to cope with SPO/POS/OSP or SPO/OPS
+    // Just some renames.  This code does not depend on index order.
+    
     private TripleIndex indexSPO = null ;
     private TripleIndex indexPOS = null ;
     private TripleIndex indexOSP = null ;

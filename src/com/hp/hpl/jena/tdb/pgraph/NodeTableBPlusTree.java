@@ -17,8 +17,8 @@ import com.hp.hpl.jena.tdb.base.objectfile.ObjectFileMem;
 import com.hp.hpl.jena.tdb.bplustree.BPlusTree;
 import com.hp.hpl.jena.tdb.bplustree.BPlusTreeParams;
 import com.hp.hpl.jena.tdb.index.Index;
-import com.hp.hpl.jena.tdb.index.IndexBuilder;
-import com.hp.hpl.jena.tdb.index.IndexBuilderBPlusTree;
+import com.hp.hpl.jena.tdb.index.IndexFactory;
+import com.hp.hpl.jena.tdb.index.IndexFactoryBPlusTree;
 
 public class NodeTableBPlusTree extends NodeTableBase
 {
@@ -31,7 +31,7 @@ public class NodeTableBPlusTree extends NodeTableBase
         int order = BPlusTreeParams.calcOrder(Const.BlockSize, PGraphFactory.nodeRecordFactory) ;
         BPlusTreeParams params = new BPlusTreeParams(order, PGraphFactory.nodeRecordFactory) ;
         
-        IndexBuilder idxFactory = new IndexBuilderBPlusTree(loc, BlockSize) ;
+        IndexFactory idxFactory = new IndexFactoryBPlusTree(loc, BlockSize) ;
         Index nodeToId = idxFactory.createIndex(PGraphFactory.nodeRecordFactory, "node2id") ; 
             
         // Data file.

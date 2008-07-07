@@ -78,6 +78,7 @@ public class TDBFactory
     
     // Switch on Graph implementation
     
+    //IndexFactory idxFactory = new IndexFactoryBPlusTree(loc, BlockSize) ;
     
     
     private static Graph _createGraph()
