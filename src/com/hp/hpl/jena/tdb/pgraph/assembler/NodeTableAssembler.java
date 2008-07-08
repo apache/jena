@@ -23,7 +23,7 @@ import com.hp.hpl.jena.tdb.index.Index;
 import com.hp.hpl.jena.tdb.index.IndexBuilder;
 import com.hp.hpl.jena.tdb.pgraph.NodeTable;
 import com.hp.hpl.jena.tdb.pgraph.NodeTableIndex;
-import com.hp.hpl.jena.tdb.pgraph.PGraphFactory;
+import com.hp.hpl.jena.tdb.pgraph.PGraphBase;
 import com.hp.hpl.jena.tdb.pgraph.assembler.TripleIndexAssembler.IndexF;
 
 public class NodeTableAssembler extends AssemblerBase //implements Assembler
@@ -59,7 +59,7 @@ public class NodeTableAssembler extends AssemblerBase //implements Assembler
     public static Index index(String filename)
     {
         BlockMgr blockMgr = BlockMgrFactory.createFile(filename, Const.BlockSize) ;
-        return IndexF.create(blockMgr, PGraphFactory.indexRecordFactory) ;
+        return IndexF.create(blockMgr, PGraphBase.indexRecordFactory) ;
     }
 }
 

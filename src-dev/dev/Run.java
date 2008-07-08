@@ -7,7 +7,6 @@
 package dev;
 
 import static lib.FileOps.clearDirectory;
-import lib.FileOps;
 
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.query.*;
@@ -36,8 +35,13 @@ public class Run
     
     public static void main(String ... args)
     {
+        // Also check absent triples.
+        
+        // Do NOW!
+        TDB.getContext().set(TDB.symIndexType, "bplustree") ;
+        
         Location loc = new Location("tmp") ;
-        FileOps.clearDirectory(loc.getDirectoryPath()) ;
+        //FileOps.clearDirectory(loc.getDirectoryPath()) ;
         
         Graph graph = TDBFactory.createGraph(loc) ;
         
@@ -56,8 +60,16 @@ public class Run
         
         
         Model model = ModelFactory.createModelForGraph(graph) ;
-        //FileManager.get().readModel(model, "D.ttl") ;
-        FileManager.get().readModel(model, "D.ttl") ;
+        
+        query("SELECT * { <no> <no> <no>}", model) ;
+        System.out.flush() ;
+        
+        if ( model.isEmpty() )
+        {  
+            System.out.println("**** Load data") ;
+            FileManager.get().readModel(model, "D.ttl") ;
+        }
+        query("SELECT * { <no> <no> <no>}", model) ;
         query("SELECT * { ?s ?p ?o}", model) ;
         
         System.exit(0) ;

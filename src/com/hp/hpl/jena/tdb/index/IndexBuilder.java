@@ -6,7 +6,6 @@
 
 package com.hp.hpl.jena.tdb.index;
 
-import com.hp.hpl.jena.sparql.util.ALog;
 import com.hp.hpl.jena.tdb.Const;
 import com.hp.hpl.jena.tdb.TDB;
 import com.hp.hpl.jena.tdb.TDBException;
@@ -18,73 +17,36 @@ import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 
 public class IndexBuilder
 {
-    // Migrate to be a generalpolicy place for files.
+    // Migrate to be a general policy place for files.
+    final static String indexTypeBTree = "BTree" ;
+    final static String indexTypeBPlusTree = "BPlusTree" ;
     
-    static IndexBuilder builder = new IndexBuilder(new IndexBuilderBTree(), new IndexBuilderBTree()) ;
+    final static String defaultIndexType = indexTypeBTree ;
+    
+    private static IndexBuilder builder = chooseIndexBuilder() ;
     public static IndexBuilder get() { return builder ; }
     
-    public static IndexBuilder createBTree()
-    {
-        IndexFactoryBTree idxFactory = new IndexFactoryBTree(Const.BlockSizeMem) ;
-        return new IndexBuilder(idxFactory,idxFactory) ; 
-    }
+    private static IndexBuilder builderMem = null ;
     
-    public static IndexBuilder createBPlusTree()
-    {
-        IndexFactoryBTree idxFactory = new IndexFactoryBTree(Const.BlockSizeMem) ;
-        return new IndexBuilder(idxFactory,idxFactory) ; 
-    }
-    
-
     public static IndexBuilder mem()
     { 
-        //XXX BTree
-        IndexFactoryBTreeMem idxFactory = new IndexFactoryBTreeMem(Const.BlockSizeMem) ;
-        return new IndexBuilder(idxFactory,idxFactory) ;
-    }
-
-    // Instance
-    IndexFactory factoryIndex = null ;
-    IndexRangeFactory builderRangeIndex = null ;
-
-    public IndexBuilder(IndexFactory indexBuilder, IndexRangeFactory rangeIndexBuilder)
-    {
-        factoryIndex = indexBuilder ;
-        builderRangeIndex = rangeIndexBuilder ;
-        
-    }
-//    static public FactoryIndex getBuilderIndex() { return factoryIndex ; }
-//    static public BuilderRange getBuilderIndexRange() { return builderRangeIndex ; }
-    
-    // Set from context
-    static { init() ; }
-    static private void init()
-    {
-        final String defaultIndexType = "btree" ;
-        
-        IndexFactory factoryIndex = null ;
-        IndexRangeFactory builderRangeIndex = null  ;
-        
         String indexType = TDB.getContext().getAsString(TDB.symIndexType, defaultIndexType) ;
-
-        if (indexType.equalsIgnoreCase("BPlusTree"))
+        
+        if (indexType.equalsIgnoreCase(indexTypeBPlusTree))
         {
-            ALog.warn(IndexBuilder.class,"BPlusTree turned off currently") ;
-            //builder = new IndexBuilder(new IndexBuilderBPlusTree(), new IndexBuilderBPlusTree()) ;
-            return ;
+            IndexFactoryBPlusTreeMem idxFactory = new IndexFactoryBPlusTreeMem(Const.BlockSizeMem) ;
+            return new IndexBuilder(idxFactory,idxFactory) ;
         }            
         
-        if (indexType.equalsIgnoreCase("BTree")) 
+        if (indexType.equalsIgnoreCase(indexTypeBTree)) 
         {
-            builder = new IndexBuilder(new IndexBuilderBTree(), new IndexBuilderBTree()) ;
-            return ;
-        }            
-
-        throw new TDBException("Unrecognized index type: " + indexType) ;
+            IndexFactoryBTreeMem idxFactory = new IndexFactoryBTreeMem(Const.BlockSizeMem) ;
+            return new IndexBuilder(idxFactory,idxFactory) ;
+        }    
+        
+        throw new TDBException("Memory index builder: Unrecognized index type: " + indexType) ;
     }
-    
-    // Statics.
-    
+
     /** Create an index at the specified place
      * @param location  Place to put the file or files needed
      * @param name      Name of index within the location
@@ -105,7 +67,36 @@ public class IndexBuilder
         return builder.newRangeIndex(location, recordFactory, name) ;
     }
 
-    //---- The class
+    private static synchronized IndexBuilder chooseIndexBuilder()
+    {
+        String indexType = TDB.getContext().getAsString(TDB.symIndexType, defaultIndexType) ;
+
+        if (indexType.equalsIgnoreCase(indexTypeBPlusTree))
+        {
+            IndexFactoryBPlusTree idx = new IndexFactoryBPlusTree(Const.BlockSize) ;
+            return new IndexBuilder(idx, idx) ;
+        }            
+        
+        if (indexType.equalsIgnoreCase(indexTypeBTree)) 
+        {
+            IndexFactoryBTree idx = new IndexFactoryBTree(Const.BlockSize) ;
+            return new IndexBuilder(idx, idx) ;
+        }            
+
+        throw new TDBException("Unrecognized index type: " + indexType) ;
+    }
+    
+    
+    // ---- The class ....
+    IndexFactory factoryIndex = null ;
+    IndexRangeFactory builderRangeIndex = null ;
+
+    public IndexBuilder(IndexFactory indexBuilder, IndexRangeFactory rangeIndexBuilder)
+    {
+        factoryIndex = indexBuilder ;
+        builderRangeIndex = rangeIndexBuilder ;
+        
+    }
     
     public Index newIndex(Location location, RecordFactory factory, String name)
     {
@@ -116,42 +107,6 @@ public class IndexBuilder
     {
         return builderRangeIndex.createRangeIndex(location, name, factory) ;
     }
-    
-    // ----
-    
-//    private static class IndexBuilderBPlusTree implements IndexFactory, IndexRangeFactory
-//    {
-//
-//        public Index createIndex(Location location, String name, RecordFactory recordFactory)
-//        {
-//            IndexFactory idxFactory = new IndexFactoryBPlusTree(Const.BlockSize) ;
-//            return idxFactory.createIndex(location, name, recordFactory) ;
-//        }
-//
-//        public RangeIndex createRangeIndex(Location location, String name, RecordFactory recordFactory)
-//        {
-//            IndexRangeFactory idxFactory = new IndexFactoryBPlusTree(Const.BlockSize) ;
-//            return idxFactory.createRangeIndex(location, name, recordFactory) ;
-//        }
-//    }
-    
-    // ----
-    
-    private static class IndexBuilderBTree implements IndexFactory, IndexRangeFactory
-    {
-        public Index createIndex(Location location, String name, RecordFactory recordFactory)
-        {
-            IndexFactory idxFactory = new IndexFactoryBTree(Const.BlockSize) ;
-            return idxFactory.createIndex(location, name, recordFactory) ;
-        }
-
-        public RangeIndex createRangeIndex(Location location, String name, RecordFactory recordFactory)
-        {
-            IndexRangeFactory idxFactory = new IndexFactoryBTree(Const.BlockSize) ;
-            return idxFactory.createRangeIndex(location, name, recordFactory) ;
-        }
-    }
-
 }
 
 /*

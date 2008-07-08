@@ -36,7 +36,7 @@ public class ModTDBAssembler extends ModAssembler
         if ( super.getAssemblerFile() != null )
             return super.getAssemblerFile() ;
         
-        File f= new File(defaultAssemblerFile) ;
+        File f = new File(defaultAssemblerFile) ;
         if ( f.exists() )
             return defaultAssemblerFile ; 
         return null ;

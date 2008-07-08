@@ -55,7 +55,11 @@ public class ModTDBDataset extends ModDataset
         if ( modLocation.getLocation() != null ) count++ ;    
 
         if ( count == 0 )
-            throw new CmdException("No assembler file and no location") ;
+        {
+        
+            // throw new CmdException("No assembler file and no location") ;
+        }
+            
         if ( count > 1 )
             throw new CmdException("Only one of an assembler file and a location") ;
     }

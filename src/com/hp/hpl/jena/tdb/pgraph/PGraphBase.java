@@ -6,6 +6,9 @@
 
 package com.hp.hpl.jena.tdb.pgraph;
 
+import static com.hp.hpl.jena.tdb.Const.IndexRecordLength;
+import static com.hp.hpl.jena.tdb.Const.NodeKeyLength;
+import static com.hp.hpl.jena.tdb.Const.NodeValueLength;
 import static com.hp.hpl.jena.tdb.TDB.logDuplicates;
 import iterator.Filter;
 import iterator.Iter;
@@ -26,6 +29,7 @@ import com.hp.hpl.jena.sparql.util.FmtUtils;
 import com.hp.hpl.jena.tdb.Const;
 import com.hp.hpl.jena.tdb.TDB;
 import com.hp.hpl.jena.tdb.TDBException;
+import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 import com.hp.hpl.jena.tdb.graph.GraphSyncListener;
 import com.hp.hpl.jena.tdb.index.TripleIndex;
 import com.hp.hpl.jena.tdb.lib.TupleLib;
@@ -42,6 +46,10 @@ import com.hp.hpl.jena.util.iterator.NiceIterator;
 
 public class PGraphBase extends GraphBase implements Sync
 {
+    // ---- Record factories
+    public final static RecordFactory indexRecordFactory = new RecordFactory(IndexRecordLength, 0) ; 
+    public final static RecordFactory nodeRecordFactory = new RecordFactory(NodeKeyLength, NodeValueLength) ;
+    
     //static Logger log = LoggerFactory.getLogger(PGraphBase.class) ;
     
     // Just some renames.  This code does not depend on index order.

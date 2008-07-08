@@ -34,7 +34,7 @@ public class IndexFactoryBPlusTree implements IndexFactory, IndexRangeFactory
         int order = BPlusTreeParams.calcOrder(blockSize, factory) ;
         BPlusTreeParams params = new BPlusTreeParams(order, factory) ;
         
-        String fnNodes = location.getPath(name, "idx") ;
+        String fnNodes = location.getPath(name, "idn") ;
         BlockMgr blkMgrNodes = createBlockMgr(fnNodes, blockSize) ;
         
         String fnRecords = location.getPath(name, "dat") ;
