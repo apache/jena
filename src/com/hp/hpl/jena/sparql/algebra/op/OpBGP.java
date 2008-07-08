@@ -22,6 +22,8 @@ public class OpBGP extends Op0
         return (op instanceof OpBGP ) ;
     }
 
+    public OpBGP() { this(new BasicPattern()) ; }
+    
     public OpBGP(BasicPattern pattern)
     { this.pattern = pattern ; }
     

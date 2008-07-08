@@ -6,53 +6,51 @@
 
 package dev;
 
+import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Stack;
+import java.util.Set;
 
 import arq.sparql;
 import arq.sse_query;
 
+import com.hp.hpl.jena.rdf.model.Model;
+
+import com.hp.hpl.jena.util.FileManager;
+
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.QueryExecution;
-import com.hp.hpl.jena.query.QueryExecutionFactory;
-import com.hp.hpl.jena.query.QueryFactory;
-import com.hp.hpl.jena.query.QuerySolutionMap;
-import com.hp.hpl.jena.query.ResultSetFormatter;
-import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.shared.PrefixMapping;
 import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
-import com.hp.hpl.jena.sparql.algebra.Algebra;
+
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.Transform;
 import com.hp.hpl.jena.sparql.algebra.TransformCopy;
 import com.hp.hpl.jena.sparql.algebra.Transformer;
-import com.hp.hpl.jena.sparql.algebra.op.OpBGP;
-import com.hp.hpl.jena.sparql.algebra.op.OpJoin;
-import com.hp.hpl.jena.sparql.algebra.op.OpLeftJoin;
-import com.hp.hpl.jena.sparql.algebra.op.OpPath;
+import com.hp.hpl.jena.sparql.algebra.op.*;
 import com.hp.hpl.jena.sparql.core.BasicPattern;
 import com.hp.hpl.jena.sparql.core.PathBlock;
 import com.hp.hpl.jena.sparql.core.TriplePath;
 import com.hp.hpl.jena.sparql.core.Var;
+import com.hp.hpl.jena.sparql.expr.Expr;
+import com.hp.hpl.jena.sparql.expr.ExprList;
 import com.hp.hpl.jena.sparql.path.Path;
 import com.hp.hpl.jena.sparql.path.PathCompiler;
 import com.hp.hpl.jena.sparql.path.PathParser;
 import com.hp.hpl.jena.sparql.sse.SSE;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
 import com.hp.hpl.jena.sparql.util.StringUtils;
-import com.hp.hpl.jena.update.GraphStore;
-import com.hp.hpl.jena.update.GraphStoreFactory;
-import com.hp.hpl.jena.update.UpdateAction;
-import com.hp.hpl.jena.update.UpdateFactory;
-import com.hp.hpl.jena.update.UpdateRequest;
-import com.hp.hpl.jena.util.FileManager;
+import com.hp.hpl.jena.sparql.util.VarUtils;
+
+import com.hp.hpl.jena.query.*;
+
+import com.hp.hpl.jena.update.*;
 
 public class Run
 {
     public static void main(String[] argv) throws Exception
     {
+        
+        code() ;
         //runQParse() ;
         execQuery("D.ttl", "Q.arq") ;
         
@@ -158,21 +156,95 @@ public class Run
         System.out.println() ;
     }
     
-    // Can be a visitor because we don't change the Op structure.  But we don't do that do we? 
-    static class TransformBGP extends TransformCopy
+    static class TransformFilterPlacement extends TransformCopy
     {
-        // Scope stack of mentioned variables (fixed and optional)
-        private Stack scope = new Stack() ;
-        
-        public TransformBGP()
+        public TransformFilterPlacement()
         { }
         
-        public Op transform(OpJoin opJoin, Op left, Op right)
-        { return super.transform(opJoin, left, right) ; }
+        // **** Replacement for FilterPlacement.
+        public Op transform(OpFilter opFilter, Op x)
+        {
+            if ( ! ( x instanceof OpBGP ) )
+                return super.transform(opFilter, x) ;
+            
+            // Also OpSequence and OpJoin - see OpCompile.compile(OpFilter opFilter,...)
+            
+            BasicPattern pattern = ((OpBGP)x).getPattern() ;
+            
+            // Destructive use of exprs - copy it.
+            ExprList exprs = new ExprList(opFilter.getExprs()) ;
+            Set patternVarsScope = new HashSet() ;
+
+            // Accumulate 
+            Op op = insertAnyFilter(exprs, patternVarsScope, null) ;
+            
+            // Place filter
+            for ( Iterator iter = pattern.getList().listIterator() ; iter.hasNext() ; )
+            {
+                Triple triple = (Triple)iter.next();
+                OpBGP opBGP = null ;
+                
+                // Find the current OpBGP, creating if there isn't one. 
+                if ( op instanceof OpBGP )
+                    opBGP = (OpBGP)op ;
+                else
+                {
+                    opBGP = new OpBGP() ;
+                    op = OpSequence.create(op, opBGP) ;
+                }   
+                    
+                opBGP.getPattern().add(triple) ;
+                // Update varaibles in scope.
+                VarUtils.addVarsFromTriple(patternVarsScope, triple) ;
+                
+                // Attempt to place any filters
+                op = insertAnyFilter(exprs, patternVarsScope, op) ;
+            } 
+            //remaining expr
+            op = buildFilter(exprs, op) ;
+            
+            // Punt - for now.
+            return op ;
+            
+        }
         
-        public Op transform(OpLeftJoin opLeftJoin, Op left, Op right)
-        { return super.transform(opLeftJoin, left, right) ; }
+        private Op buildFilter(ExprList exprs, Op op)
+        {
+            if ( exprs.isEmpty() )
+                return op ;
         
+            for ( Iterator iter = exprs.iterator() ; iter.hasNext() ; )
+            {
+                Expr expr = (Expr)iter.next() ;
+                if ( op == null )
+                    op = OpTable.unit() ;
+                op = OpFilter.filter(expr, op) ;
+                iter.remove();
+            }
+            return op ;
+        }
+        
+        private Op insertAnyFilter(ExprList exprs, Set patternVarsScope, Op op)
+        {
+            for ( Iterator iter = exprs.iterator() ; iter.hasNext() ; )
+            {
+                Expr expr = (Expr)iter.next() ;
+                // Cache
+                Set exprVars = expr.getVarsMentioned() ;
+                if ( patternVarsScope.containsAll(exprVars) )
+                {
+                    if ( op == null )
+                        op = OpTable.unit() ;
+                    op = OpFilter.filter(expr, op) ;
+                    iter.remove() ;
+                }
+            }
+            return op ;
+        }
+    }
+
+    static class TransformReorderBGP extends TransformCopy
+    {
         public Op transform(OpBGP opBGP)
         {
             BasicPattern pattern = opBGP.getPattern() ;
@@ -193,16 +265,14 @@ public class Run
     
     public static void code()
     {
-        Transform t = new TransformBGP() ;
+        Transform t = new TransformFilterPlacement() ;
         
-        // see Rewrite.java
-        Query q = QueryFactory.create("SELECT * { ?s ?p ?o FILTER(sameTerm(?o,3)) }") ;
-        Op op = Algebra.compile(q, true) ;
-        op = Algebra.optimize(op) ;
+        Op op = SSE.readOp("Q.sse") ;
         
-        op = Transformer.transform(new TransformBGP(), op) ;
-        
-        System.out.println(op) ; 
+        System.out.println(op) ;
+        op = Transformer.transform(new TransformFilterPlacement(), op) ;
+        System.out.println(op) ;
+        System.exit(0) ;
         
     }
     private static void runQParse()

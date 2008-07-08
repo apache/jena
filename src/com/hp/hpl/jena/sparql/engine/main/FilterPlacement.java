@@ -175,7 +175,7 @@ public class FilterPlacement
     // --------------------------------
     
     // Placement for filters in a list of ops where the filter can be placed solely
-    // on var definedness (so Join, Stage).
+    // on var definedness (so Join, Sequence).
     
     private QueryIterator placeFilters(ExprList exprs, List ops, Set varScope, QueryIterator input)
     { 
