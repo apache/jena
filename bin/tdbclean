@@ -16,5 +16,6 @@ then
     fi
 
 # Don't remove subdirectories or prefix files.
+rm -f "$DIR"/*.idn
 rm -f "$DIR"/*.idx
 rm -f "$DIR"/*.dat

@@ -8,19 +8,33 @@ package dev;
 
 import static lib.FileOps.clearDirectory;
 
+import java.util.Iterator;
+
+import lib.FileOps;
+import org.apache.log4j.Level;
+
+import com.hp.hpl.jena.rdf.model.*;
+
+import com.hp.hpl.jena.util.FileManager;
+
 import com.hp.hpl.jena.graph.Graph;
+
 import com.hp.hpl.jena.query.*;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.rdf.model.Property;
-import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.rdf.model.Statement;
+
+import com.hp.hpl.jena.tdb.Const;
 import com.hp.hpl.jena.tdb.TDB;
 import com.hp.hpl.jena.tdb.TDBFactory;
+import com.hp.hpl.jena.tdb.base.block.BlockMgr;
+import com.hp.hpl.jena.tdb.base.block.BlockMgrFactory;
 import com.hp.hpl.jena.tdb.base.file.Location;
+import com.hp.hpl.jena.tdb.base.record.Record;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
+import com.hp.hpl.jena.tdb.bplustree.BPlusTree;
+import com.hp.hpl.jena.tdb.bplustree.BPlusTreeParams;
 import com.hp.hpl.jena.tdb.btree.BTreeParams;
-import com.hp.hpl.jena.util.FileManager;
+import com.hp.hpl.jena.tdb.lib.NodeLib;
+import com.hp.hpl.jena.tdb.pgraph.NodeId;
+import com.hp.hpl.jena.tdb.pgraph.PGraphBase;
 
 public class Run
 {
@@ -35,13 +49,18 @@ public class Run
     
     public static void main(String ... args)
     {
+        org.apache.log4j.Logger.getLogger("com.hp.hpl.jena.tdb").setLevel(Level.ALL) ;
+        // Don't seem to tbe writing to disk.
+        // Run once data created. 
+        bpt_test() ; System.exit(0) ;
+        
         // Also check absent triples.
         
         // Do NOW!
         TDB.getContext().set(TDB.symIndexType, "bplustree") ;
         
         Location loc = new Location("tmp") ;
-        //FileOps.clearDirectory(loc.getDirectoryPath()) ;
+        FileOps.clearDirectory(loc.getDirectoryPath()) ;
         
         Graph graph = TDBFactory.createGraph(loc) ;
         
@@ -61,16 +80,18 @@ public class Run
         
         Model model = ModelFactory.createModelForGraph(graph) ;
         
-        query("SELECT * { <no> <no> <no>}", model) ;
-        System.out.flush() ;
+        //query("SELECT * { <no> <no> <no>}", model) ;
+        //System.out.flush() ;
         
         if ( model.isEmpty() )
         {  
             System.out.println("**** Load data") ;
             FileManager.get().readModel(model, "D.ttl") ;
+            ((PGraphBase)graph).sync(true) ;
+            System.out.println("Size = "+model.size()) ;
         }
-        query("SELECT * { <no> <no> <no>}", model) ;
         query("SELECT * { ?s ?p ?o}", model) ;
+        model.close() ;
         
         System.exit(0) ;
         
@@ -82,17 +103,48 @@ public class Run
 //        System.exit(0) ;
     }
     
-    public static Graph createGraphBPT(String dir)
+    public static void bpt_test()
     {
-        Location loc = new Location(dir) ;
-        return createGraphBPT(loc) ;
+        TDB.getContext().set(TDB.symFileMode, "mapped" ) ;
+        Location location = new Location("tmp") ;
+        FileOps.clearDirectory(location.getDirectoryPath()) ;
+        
+        int order = BPlusTreeParams.calcOrder(Const.BlockSize, PGraphBase.indexRecordFactory) ;
+        BPlusTreeParams params = new BPlusTreeParams(order, PGraphBase.indexRecordFactory) ;
+        
+        String fnNodes = location.getPath("X", "idn") ;
+        
+        BlockMgr blkMgrNodes = BlockMgrFactory.createFile(fnNodes, Const.BlockSize) ;
+        
+        String fnRecords = location.getPath("X", "dat") ;
+        BlockMgr blkMgrRecords = BlockMgrFactory.createFile(fnRecords, Const.BlockSize) ;
+        
+        BPlusTree bt = BPlusTree.attach(params, blkMgrRecords, blkMgrNodes) ;
+        
+        NodeId n = NodeId.create(0x41424344) ;
+        Record rn = NodeLib.record(PGraphBase.indexRecordFactory, n, n, n) ;
+        bt.add(rn) ;
+        bt.sync(true) ;
+        bt = null ;
+        
+        // Reattach
+        blkMgrNodes = BlockMgrFactory.createFile(fnNodes, Const.BlockSize) ;
+        blkMgrRecords = BlockMgrFactory.createFile(fnRecords, Const.BlockSize) ;
+        bt = BPlusTree.attach(params, blkMgrRecords, blkMgrNodes) ;
+        
+        System.out.println("Loop") ;
+        Iterator<Record> iter = bt.iterator() ;
+        for ( ; iter.hasNext() ; )
+        {
+            Record r = iter.next() ;
+            System.out.println(r) ;
+        }
+        
+        
+        System.exit(0) ;
+
     }
     
-    public static Graph createGraphBPT(Location loc)
-    {
-        //return GraphBPlusTree.create(loc) ;
-        return null ;
-    }
     
     static int BlockSize               = 8*1024 ;
     static int SegmentSize = 8 * 1024 * 1024 ; 
