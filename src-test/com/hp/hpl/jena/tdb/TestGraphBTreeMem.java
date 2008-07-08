@@ -8,9 +8,8 @@ package com.hp.hpl.jena.tdb;
 
 
 import com.hp.hpl.jena.graph.Graph;
-
 import com.hp.hpl.jena.tdb.junit.AbstractTestGraphNoRemove;
-import com.hp.hpl.jena.tdb.pgraph.PGraphBase;
+import com.hp.hpl.jena.tdb.pgraph.PGraphFactoryTest;
 
 // Jena normal tests
 public class TestGraphBTreeMem extends AbstractTestGraphNoRemove
@@ -26,7 +25,7 @@ public class TestGraphBTreeMem extends AbstractTestGraphNoRemove
     
     // In-memory testing
     @Override
-    public Graph getGraph() { return PGraphBase.create() ; }
+    public Graph getGraph() { return PGraphFactoryTest.createBTreeMem() ; }
 }
 
 /*

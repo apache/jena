@@ -7,9 +7,8 @@
 package com.hp.hpl.jena.tdb;
 
 import com.hp.hpl.jena.graph.Graph;
-
 import com.hp.hpl.jena.tdb.junit.AbstractTestGraph2;
-import com.hp.hpl.jena.tdb.pgraph.PGraphBase;
+import com.hp.hpl.jena.tdb.pgraph.PGraphFactoryTest;
 
 public class TestGraphBTreeMem2 extends AbstractTestGraph2
 {
@@ -17,7 +16,7 @@ public class TestGraphBTreeMem2 extends AbstractTestGraph2
     @Override
     protected Graph emptyGraph()
     {
-        return PGraphBase.create() ;
+        return PGraphFactoryTest.createBTreeMem() ;
     }
 
 }

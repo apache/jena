@@ -4,33 +4,28 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.pgraph;
+package com.hp.hpl.jena.tdb;
 
-import static com.hp.hpl.jena.tdb.Const.BlockSize;
-import static com.hp.hpl.jena.tdb.Const.BlockSizeMem;
 
-import com.hp.hpl.jena.tdb.base.file.Location;
-import com.hp.hpl.jena.tdb.index.IndexBuilder;
-import com.hp.hpl.jena.tdb.index.IndexFactoryBPlusTree;
-import com.hp.hpl.jena.tdb.index.IndexFactoryBPlusTreeMem;
+import com.hp.hpl.jena.graph.Graph;
+import com.hp.hpl.jena.tdb.junit.AbstractTestGraphNoRemove;
+import com.hp.hpl.jena.tdb.pgraph.PGraphFactoryTest;
 
-public class GraphBPlusTree extends PGraphBase
+// Jena normal tests
+public class TestGraphBPlusTreeMem extends AbstractTestGraphNoRemove
 {
-    public static PGraphBase create()
+    public TestGraphBPlusTreeMem()
     {
-        IndexFactoryBPlusTreeMem factory = new IndexFactoryBPlusTreeMem(BlockSizeMem) ;
-        IndexBuilder indexBuilder = new IndexBuilder(factory, factory) ;
-        return PGraphBase.create(indexBuilder, null) ;
-    }
-
-    public static PGraphBase create(Location loc)
-    {
-        IndexFactoryBPlusTree factory = new IndexFactoryBPlusTree(BlockSize) ;
-        IndexBuilder indexBuilder = new IndexBuilder(factory, factory) ;
-        return PGraphBase.create(indexBuilder, loc) ;
+        this("GraphBTree") ;
     }
     
-    private GraphBPlusTree() {}
+    protected TestGraphBPlusTreeMem(String name) { super(name) ; }
+
+    // Insert tests from AbstractTestGraph here to debug
+    
+    // In-memory testing
+    @Override
+    public Graph getGraph() { return PGraphFactoryTest.createBPlusTreeMem() ; }
 }
 
 /*

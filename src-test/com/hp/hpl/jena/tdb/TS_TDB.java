@@ -13,6 +13,8 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
     TestNodeLib.class ,
+    TestGraphBPlusTreeMem.class,
+    TestGraphBPlusTreeMem2.class,
     TestGraphBTreeMem.class,
     TestGraphBTreeMem2.class
 })

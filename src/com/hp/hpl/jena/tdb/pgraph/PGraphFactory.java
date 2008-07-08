@@ -9,30 +9,77 @@ package com.hp.hpl.jena.tdb.pgraph;
 import static com.hp.hpl.jena.tdb.Const.IndexRecordLength;
 import static com.hp.hpl.jena.tdb.Const.NodeKeyLength;
 import static com.hp.hpl.jena.tdb.Const.NodeValueLength;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.tdb.base.file.Location;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
+import com.hp.hpl.jena.tdb.index.Index;
 import com.hp.hpl.jena.tdb.index.IndexBuilder;
+import com.hp.hpl.jena.tdb.index.RangeIndex;
+import com.hp.hpl.jena.tdb.index.TripleIndex;
 
 /** Place to put various "making" things. */
 
 public class PGraphFactory
 {
+    static Logger log = LoggerFactory.getLogger(PGraphBase.class) ;
+
     // ---- Record factories
     public final static RecordFactory indexRecordFactory = new RecordFactory(IndexRecordLength, 0) ; 
     public final static RecordFactory nodeRecordFactory = new RecordFactory(NodeKeyLength, NodeValueLength) ;
     
-    // NodeTables
-    public static NodeTable createNodeTable(IndexBuilder indexBuilder, Location loc) 
-    { 
-        return new NodeTableIndex(indexBuilder, loc) ;
+    /** Create a graph backed with storage at a particular location using a system of indexes */
+    public static PGraphBase create(IndexBuilder factory, Location location)
+    {
+        if ( location == null )
+            log.warn("Null location") ;
+        
+        RangeIndex idxSPO = factory.newRangeIndex(location, indexRecordFactory, "SPO") ;
+        TripleIndex triplesSPO = new TripleIndex("SPO", idxSPO) ;
+
+        RangeIndex idxPOS = factory.newRangeIndex(location, indexRecordFactory, "POS") ;
+        TripleIndex triplesPOS = new TripleIndex("POS", idxPOS) ;
+
+        RangeIndex idxOSP = factory.newRangeIndex(location, indexRecordFactory, "OSP") ;
+        TripleIndex triplesOSP = new TripleIndex("OSP", idxOSP) ;
+     
+        NodeTable nodeTable = new NodeTableIndex(factory, location) ;
+
+        return new PGraphBase(triplesSPO, triplesPOS, triplesOSP, nodeTable) ;
     }
+    
+    // ----
+    
+    /** Create a graph backed with storage at a particular location */
+    public static PGraphBase create(Location location)  { return create(IndexBuilder.get(), location) ; }
+    
+    /** Create a graph backed with storage in-memory (maily for testing) */
+    public static PGraphBase createMem()
+    {
+        return createMem(IndexBuilder.mem()) ;
+    }
+    
+    /** Create a graph backed with storage in-memory (maily for testing) */
+    public static PGraphBase createMem(IndexBuilder factory)
+    { 
+        RangeIndex idxSPO = factory.newRangeIndex(null, indexRecordFactory, "SPO") ;
+        TripleIndex triplesSPO = new TripleIndex("SPO", idxSPO) ;
+
+        RangeIndex idxPOS = factory.newRangeIndex(null, indexRecordFactory, "POS") ;
+        TripleIndex triplesPOS = new TripleIndex("POS", idxPOS) ;
+
+        RangeIndex idxOSP = factory.newRangeIndex(null, indexRecordFactory, "OSP") ;
+        TripleIndex triplesOSP = new TripleIndex("OSP", idxOSP) ;
+     
+        Index nodeIndex = factory.newIndex(null, nodeRecordFactory, "node2id") ;
         
-//    public static NodeTable createNodeTableMem()
-//    { 
-//        return new NodeTableIndex() ;
-//    }
+        NodeTable nodeTable = new NodeTableIndex(factory) ;
         
+        return new PGraphBase(triplesSPO, triplesPOS, triplesOSP, nodeTable) ;
+    }
+    
+    
 }
 
 /*

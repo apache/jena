@@ -21,7 +21,7 @@ public class NodeTableIndex extends NodeTableBase
     public NodeTableIndex(IndexBuilder factory, Location loc)
     {
         super() ;
-
+        
         Index nodeToId = factory.newIndex(loc, PGraphFactory.nodeRecordFactory, "node2id") ;
             
         // Data file.
@@ -30,10 +30,10 @@ public class NodeTableIndex extends NodeTableBase
     }
     
     // Memory version - testing.
-    public NodeTableIndex()
+    public NodeTableIndex(IndexBuilder factory)
     {
         super() ;
-        Index nodeToId = IndexBuilder.mem().newIndex(null, PGraphFactory.nodeRecordFactory, "node2id") ;
+        Index nodeToId = factory.newIndex(null, PGraphFactory.nodeRecordFactory, "node2id") ;
         
         ObjectFile objects = new ObjectFileMem() ;
         init(nodeToId, objects, 100, 100) ;

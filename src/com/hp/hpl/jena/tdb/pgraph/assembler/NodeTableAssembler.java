@@ -22,6 +22,7 @@ import com.hp.hpl.jena.tdb.base.file.Location;
 import com.hp.hpl.jena.tdb.index.Index;
 import com.hp.hpl.jena.tdb.index.IndexBuilder;
 import com.hp.hpl.jena.tdb.pgraph.NodeTable;
+import com.hp.hpl.jena.tdb.pgraph.NodeTableIndex;
 import com.hp.hpl.jena.tdb.pgraph.PGraphFactory;
 import com.hp.hpl.jena.tdb.pgraph.assembler.TripleIndexAssembler.IndexF;
 
@@ -47,7 +48,7 @@ public class NodeTableAssembler extends AssemblerBase //implements Assembler
     {
         String location = getAsStringValue(root, pNodeIndex) ;
         if ( location != null )
-            return PGraphFactory.createNodeTable(IndexBuilder.get(), new Location(location)) ;
+            return new NodeTableIndex(IndexBuilder.get(), new Location(location)) ;
         
         String nodeIndex = getAsStringValue(root, pNodeIndex) ;
         String nodeData = getAsStringValue(root, pNodeData) ;

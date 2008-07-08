@@ -18,9 +18,24 @@ import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 
 public class IndexBuilder
 {
+    // Migrate to be a generalpolicy place for files.
+    
     static IndexBuilder builder = new IndexBuilder(new IndexBuilderBTree(), new IndexBuilderBTree()) ;
     public static IndexBuilder get() { return builder ; }
     
+    public static IndexBuilder createBTree()
+    {
+        IndexFactoryBTree idxFactory = new IndexFactoryBTree(Const.BlockSizeMem) ;
+        return new IndexBuilder(idxFactory,idxFactory) ; 
+    }
+    
+    public static IndexBuilder createBPlusTree()
+    {
+        IndexFactoryBTree idxFactory = new IndexFactoryBTree(Const.BlockSizeMem) ;
+        return new IndexBuilder(idxFactory,idxFactory) ; 
+    }
+    
+
     public static IndexBuilder mem()
     { 
         //XXX BTree

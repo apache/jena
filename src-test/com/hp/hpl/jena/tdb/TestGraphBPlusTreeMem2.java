@@ -1,38 +1,23 @@
 /*
- * (c) Copyright 2007, 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.pgraph;
+package com.hp.hpl.jena.tdb;
 
-import static com.hp.hpl.jena.tdb.Const.BlockSize;
-import static com.hp.hpl.jena.tdb.Const.BlockSizeMem;
+import com.hp.hpl.jena.graph.Graph;
+import com.hp.hpl.jena.tdb.junit.AbstractTestGraph2;
+import com.hp.hpl.jena.tdb.pgraph.PGraphFactoryTest;
 
-import com.hp.hpl.jena.tdb.base.file.Location;
-import com.hp.hpl.jena.tdb.index.*;
-
-public class GraphBTree extends PGraphBase
+public class TestGraphBPlusTreeMem2 extends AbstractTestGraph2
 {
-    public static PGraphBase create()
-    {
-        IndexFactoryBTreeMem factory = new IndexFactoryBTreeMem(BlockSizeMem) ;
-        IndexBuilder indexBuilder = new IndexBuilder(factory, factory) ;
-        return PGraphBase.create(indexBuilder, null) ;
-    }
-
-    public static PGraphBase create(Location loc)
-    {
-        IndexFactoryBTree factory = new IndexFactoryBTree(BlockSize) ;
-        IndexBuilder indexBuilder = new IndexBuilder(factory, factory) ;
-        return PGraphBase.create(indexBuilder, loc) ;
-    }
-    
-    private GraphBTree() {}
+    @Override
+    public Graph emptyGraph() { return PGraphFactoryTest.createBPlusTreeMem() ; }
 }
 
 /*
- * (c) Copyright 2007, 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

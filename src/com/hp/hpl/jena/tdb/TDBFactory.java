@@ -6,16 +6,13 @@
 
 package com.hp.hpl.jena.tdb;
 
+import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
-
-import com.hp.hpl.jena.graph.Graph;
-
 import com.hp.hpl.jena.sparql.core.assembler.AssemblerUtils;
-
 import com.hp.hpl.jena.tdb.base.file.Location;
-import com.hp.hpl.jena.tdb.index.IndexBuilder;
 import com.hp.hpl.jena.tdb.pgraph.PGraphBase;
+import com.hp.hpl.jena.tdb.pgraph.PGraphFactory;
 import com.hp.hpl.jena.tdb.pgraph.assembler.PGraphAssemblerVocab;
 
 public class TDBFactory
@@ -71,12 +68,12 @@ public class TDBFactory
     
     private static Graph _createGraph()
     {
-        return PGraphBase.create(IndexBuilder.mem(), null) ;
+        return PGraphFactory.createMem() ;
     }
 
     private static Graph _createGraph(Location loc)
     {
-        return PGraphBase.create(loc) ;
+        return PGraphFactory.create(loc) ;
     }
 }
 

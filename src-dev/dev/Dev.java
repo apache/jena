@@ -8,10 +8,11 @@ package dev;
 
 public class Dev
 {
-    // JUnit failures
     // CI
     // BPlusTree and non-existent entries
     //   Make sure BPlusTree tests geting run.
+    // TestGraphBPlusTreeMem and 2
+    // PGraphFactory
     
     // PtrBuffer has ref to BTreeParams.
     // Role of PGraphFactory?
@@ -20,7 +21,8 @@ public class Dev
     // IndexBuilder to include ppolicy for data files
     
     // TestGraphBPlusTreeMem and Mem2.
-    // Duplicate ahve for BTree and B+Tree
+    // Duplicate above for BTree and B+Tree
+    // IndexBuilder.mem() - fixed.
     
     // Global IndexFactory.  create(Location, Name) => (Range)Index
     // IndexBuilder for the global, any location (IndexFactoryFactory)
