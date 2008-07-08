@@ -7,7 +7,7 @@ PREFIX  xsd:    <http://www.w3.org/2001/XMLSchema#>
 SELECT *
 { 
     ?x n:p ?z .
-    ?x n:p{9} ?z.
+    ?x n:p* ?z.
 }
 
 
