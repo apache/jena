@@ -12,37 +12,18 @@ public class Dev
     // B+Trees 
     
     // CI
-    // BPlusTree and non-existent entries
-    //   Make sure BPlusTree tests geting run.
-    // TestGraphBPlusTreeMem and 2
-    // PGraphFactory
-    
+
     // PtrBuffer has ref to BTreeParams.
-    // Role of PGraphFactory?
-    //    Move cerate stuff here
-    // GraphBplusTree and GraphBTree to go.
-    // IndexBuilder to include ppolicy for data files
-    
-    // TestGraphBPlusTreeMem and Mem2.
-    // Duplicate above for BTree and B+Tree
-    // IndexBuilder.mem() - fixed.
-    
-    // Global IndexFactory.  create(Location, Name) => (Range)Index
-    // IndexBuilder for the global, any location (IndexFactoryFactory)
-    // Use IndexBuilder in PGraphFactory, TDBFactory, TripleIndexAssembler
+    // !!!!!!
+
+    // IndexBuilder to migrate to be policy for data files as well.
     
     // PExt!
     
-    // Nodetable to use BPlusTrees 
     // Complete refactoring for 96 bit ids.
     
-    // BPT testing
-    // Use with assembler and explicit indexes
-    
     // removeAll implementation: depends on iterator.remove
-    // but can do fatser as a specific operation.
-    
-    // Query union models << architecture
+    // but can do faster as a specific operation.
     
     // Documentation on the wiki
     //   Assembler
