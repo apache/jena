@@ -8,6 +8,7 @@ package dev;
 
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 import arq.sparql;
@@ -182,17 +183,13 @@ public class Run
             for ( Iterator iter = pattern.getList().listIterator() ; iter.hasNext() ; )
             {
                 Triple triple = (Triple)iter.next();
-                OpBGP opBGP = null ;
-                
-                // Find the current OpBGP, creating if there isn't one. 
-                if ( op instanceof OpBGP )
-                    opBGP = (OpBGP)op ;
-                else
+                OpBGP opBGP = getBGP(op) ;
+                if ( opBGP == null )
                 {
-                    opBGP = new OpBGP() ;
+                    opBGP = new OpBGP() ;    
                     op = OpSequence.create(op, opBGP) ;
-                }   
-                    
+                }
+                
                 opBGP.getPattern().add(triple) ;
                 // Update varaibles in scope.
                 VarUtils.addVarsFromTriple(patternVarsScope, triple) ;
@@ -208,6 +205,28 @@ public class Run
             
         }
         
+        private OpBGP getBGP(Op op)
+        {
+            // Find the current OpBGP, or return null.
+            if ( op instanceof OpBGP )
+                return (OpBGP)op ;
+            
+            if ( op instanceof OpSequence )
+            {
+                OpSequence opSeq = (OpSequence)op ;
+                List x = opSeq.getElements() ;
+                if ( x.size() > 0 )
+                {                
+                    Op opTop = (Op)x.get(x.size()-1) ;
+                    if ( opTop instanceof OpBGP )
+                        return (OpBGP)opTop ;
+                    // Drop through
+                }
+            }
+            // Can't find.
+            return null ;
+        }
+
         private Op buildFilter(ExprList exprs, Op op)
         {
             if ( exprs.isEmpty() )
@@ -268,7 +287,6 @@ public class Run
         Transform t = new TransformFilterPlacement() ;
         
         Op op = SSE.readOp("Q.sse") ;
-        
         System.out.println(op) ;
         op = Transformer.transform(new TransformFilterPlacement(), op) ;
         System.out.println(op) ;

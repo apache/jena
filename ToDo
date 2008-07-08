@@ -15,7 +15,8 @@ See ToDoSSE
 ----
 + Do more at algebra level:
   Reorg to be a algebra -> algebra rewrite.
-  OpFilter/OpBGP done as a rewrite to OpSequence/OpFilter/OpBGp
+  OpFilter/OpBGP done as a rewrite to OpSequence/OpFilter/OpBGp [IN PROGRESS]
+
   Direct (flow based) execution in main - remove the FilterPlacement and BGP optimizer to an optimize step. 
 
 + Stages and FilterPlacement.
