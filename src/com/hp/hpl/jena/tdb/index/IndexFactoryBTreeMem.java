@@ -9,6 +9,7 @@ package com.hp.hpl.jena.tdb.index;
 import com.hp.hpl.jena.tdb.base.file.Location;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 import com.hp.hpl.jena.tdb.bplustree.BPlusTree;
+import com.hp.hpl.jena.tdb.btree.BTree;
 
 public class IndexFactoryBTreeMem implements IndexFactory, IndexRangeFactory
 {
@@ -29,7 +30,7 @@ public class IndexFactoryBTreeMem implements IndexFactory, IndexRangeFactory
     @Override
     public RangeIndex createRangeIndex(Location location, String name, RecordFactory recordFactory)
     {
-        return BPlusTree.makeMem(order, order, recordFactory.keyLength(), recordFactory.valueLength()) ;
+        return BTree.makeMem(order, recordFactory.keyLength(), recordFactory.valueLength()) ;
     }
 }
 

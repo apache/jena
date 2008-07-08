@@ -9,19 +9,19 @@ package dev;
 import static lib.FileOps.clearDirectory;
 import lib.FileOps;
 
-import com.hp.hpl.jena.rdf.model.*;
-
-import com.hp.hpl.jena.util.FileManager;
-
 import com.hp.hpl.jena.graph.Graph;
-
 import com.hp.hpl.jena.query.*;
-
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.rdf.model.Property;
+import com.hp.hpl.jena.rdf.model.Resource;
+import com.hp.hpl.jena.rdf.model.Statement;
 import com.hp.hpl.jena.tdb.TDB;
 import com.hp.hpl.jena.tdb.TDBFactory;
 import com.hp.hpl.jena.tdb.base.file.Location;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 import com.hp.hpl.jena.tdb.btree.BTreeParams;
+import com.hp.hpl.jena.util.FileManager;
 
 public class Run
 {
@@ -39,11 +39,27 @@ public class Run
         Location loc = new Location("tmp") ;
         FileOps.clearDirectory(loc.getDirectoryPath()) ;
         
-        Graph graph = TDBFactory.createGraphBPT(loc) ;
+        Graph graph = TDBFactory.createGraph(loc) ;
+        
+//        Node s1 = SSE.parseNode("<s1>") ;
+//        Node p1 = SSE.parseNode("<p1>") ;
+//        Node o1 = SSE.parseNode("<o1>") ;
+//        Node s2 = SSE.parseNode("<s2>") ;
+//        Node p2 = SSE.parseNode("<p2>") ;
+//        Node o2 = SSE.parseNode("<o2>") ;
+//        Triple t1 = new Triple(s1,p1,o1) ; 
+//        Triple t2 = new Triple(s2,p2,o2) ;
+//        
+//        graph.add(t1) ;
+//        graph.add(t2) ;
+//        graph.delete(t1) ;
+        
+        
         Model model = ModelFactory.createModelForGraph(graph) ;
         //FileManager.get().readModel(model, "D.ttl") ;
-        FileManager.get().readModel(model, "/home/afs/Datasets/DBpediaBM/dbp-homepages.nt") ;
-        query("SELECT count(*) { ?s ?p ?o}", model) ;
+        FileManager.get().readModel(model, "D.ttl") ;
+        query("SELECT * { ?s ?p ?o}", model) ;
+        
         System.exit(0) ;
         
         //tdbquery("dataset.ttl", "SELECT * { ?s ?p ?o}") ;

@@ -6,6 +6,10 @@
 
 package junit;
 
+import com.hp.hpl.jena.graph.Graph;
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.ModelFactory;
+
 import org.junit.Assert;
 
 /** A few, very common, test extras */
@@ -20,6 +24,17 @@ public class TestBase extends Assert
     public static void assertNotEquals(String msg, Object obj1, Object obj2)
     {
         assertFalse(msg, obj1.equals(obj2)) ;
+    }
+
+    public static void printGraph(Graph g) { printGraph(null, g) ; }
+
+    
+    public static void printGraph(String sep, Graph g)
+    {
+        if ( sep != null )
+                System.out.println(sep) ;
+        Model m = ModelFactory.createModelForGraph(g) ;
+        m.write(System.out, "N-TRIPLES") ;
     }
 }
 

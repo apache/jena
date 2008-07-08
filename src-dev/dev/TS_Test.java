@@ -11,13 +11,15 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 import com.hp.hpl.jena.tdb.pgraph.PGraphTestSuite;
+import com.hp.hpl.jena.tdb.pgraph.TestPersistentGraph;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
-    PGraphTestSuite.class          // Scripted tests
+    TestPersistentGraph.class,
+    //PGraphTestSuite.class          // Scripted tests
 })
 
-public class DevTest extends TestBase
+public class TS_Test extends TestBase
 {
 }
 

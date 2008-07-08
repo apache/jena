@@ -24,16 +24,16 @@ public class TDBFactory
 {
     static { TDB.init(); }
     
-    // ----- TEMP
-    public static Graph createGraphBPT(Location loc)
-    {
-        return GraphBPlusTree.create(loc) ;
-    }
-    public static Graph createGraphBT(Location loc)
-    {
-        return GraphBTree.create(loc) ;
-    }
-    // -----
+//    // ----- TEMP
+//    public static Graph createGraphBPT(Location loc)
+//    {
+//        return GraphBPlusTree.create(loc) ;
+//    }
+//    public static Graph createGraphBT(Location loc)
+//    {
+//        return GraphBTree.create(loc) ;
+//    }
+//    // -----
     
     /** Read the file and assembler a model, of type TDB persistent graph */ 
     public static Model assembleModel(String assemblerFile)
@@ -80,12 +80,7 @@ public class TDBFactory
     /** Create a TDB graph backed by an in-memory block manager. For testing. */  
     public static Graph createGraph()   { return _createGraph() ; }
     
-    // Switch on Graph implementation
-    
-    //IndexFactory idxFactory = new IndexFactoryBPlusTree(loc, BlockSize) ;
-    
-    
-    // See IndexBuilder.
+    // Point at which actual graphs are made.
     
     private static Graph _createGraph()
     {

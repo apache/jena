@@ -78,8 +78,6 @@ public class PGraphBase extends GraphBase implements Sync
         RangeIndex idxOSP = factory.newRangeIndex(location, indexRecordFactory, "OSP") ;
         TripleIndex triplesOSP = new TripleIndex("OSP", idxOSP) ;
      
-        Index nodeIndex = factory.newIndex(location, nodeRecordFactory, "node2id") ;
-        
         NodeTable nodeTable = new NodeTableIndex(factory, location) ;
         
         return new PGraphBase(triplesSPO, triplesPOS, triplesOSP, nodeTable) ;

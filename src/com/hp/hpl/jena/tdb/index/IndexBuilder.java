@@ -6,6 +6,7 @@
 
 package com.hp.hpl.jena.tdb.index;
 
+import com.hp.hpl.jena.sparql.util.ALog;
 import com.hp.hpl.jena.tdb.Const;
 import com.hp.hpl.jena.tdb.TDB;
 import com.hp.hpl.jena.tdb.TDBException;
@@ -22,7 +23,8 @@ public class IndexBuilder
     
     public static IndexBuilder mem()
     { 
-        IndexFactoryBPlusTreeMem idxFactory = new IndexFactoryBPlusTreeMem(Const.BlockSizeMem) ;
+        //XXX BTree
+        IndexFactoryBTreeMem idxFactory = new IndexFactoryBTreeMem(Const.BlockSizeMem) ;
         return new IndexBuilder(idxFactory,idxFactory) ;
     }
 
@@ -43,14 +45,17 @@ public class IndexBuilder
     static { init() ; }
     static private void init()
     {
+        final String defaultIndexType = "btree" ;
+        
         IndexFactory factoryIndex = null ;
         IndexRangeFactory builderRangeIndex = null  ;
         
-        String indexType = TDB.getContext().getAsString(TDB.symIndexType, "BPlusTree") ;
+        String indexType = TDB.getContext().getAsString(TDB.symIndexType, defaultIndexType) ;
 
         if (indexType.equalsIgnoreCase("BPlusTree"))
         {
-            builder = new IndexBuilder(new IndexBuilderBPlusTree(), new IndexBuilderBPlusTree()) ;
+            ALog.warn(IndexBuilder.class,"BPlusTree turned off currently") ;
+            //builder = new IndexBuilder(new IndexBuilderBPlusTree(), new IndexBuilderBPlusTree()) ;
             return ;
         }            
         
@@ -99,21 +104,21 @@ public class IndexBuilder
     
     // ----
     
-    private static class IndexBuilderBPlusTree implements IndexFactory, IndexRangeFactory
-    {
-
-        public Index createIndex(Location location, String name, RecordFactory recordFactory)
-        {
-            IndexFactory idxFactory = new IndexFactoryBPlusTree(Const.BlockSize) ;
-            return idxFactory.createIndex(location, name, recordFactory) ;
-        }
-
-        public RangeIndex createRangeIndex(Location location, String name, RecordFactory recordFactory)
-        {
-            IndexRangeFactory idxFactory = new IndexFactoryBPlusTree(Const.BlockSize) ;
-            return idxFactory.createRangeIndex(location, name, recordFactory) ;
-        }
-    }
+//    private static class IndexBuilderBPlusTree implements IndexFactory, IndexRangeFactory
+//    {
+//
+//        public Index createIndex(Location location, String name, RecordFactory recordFactory)
+//        {
+//            IndexFactory idxFactory = new IndexFactoryBPlusTree(Const.BlockSize) ;
+//            return idxFactory.createIndex(location, name, recordFactory) ;
+//        }
+//
+//        public RangeIndex createRangeIndex(Location location, String name, RecordFactory recordFactory)
+//        {
+//            IndexRangeFactory idxFactory = new IndexFactoryBPlusTree(Const.BlockSize) ;
+//            return idxFactory.createRangeIndex(location, name, recordFactory) ;
+//        }
+//    }
     
     // ----
     

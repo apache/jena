@@ -45,7 +45,7 @@
   <property name="src.dev.dir"            value="src-dev"/>
 
   <property name="build.dir"              value="build"/>
-  <property name="build.lib.dir"          value="build/lib"/>
+  <property name="build.lib.dir"          value="${build.dir}/lib"/>
 
   <property name="lib.dir"                value="lib"/>
   <!-- Testing - scripts and data files -->

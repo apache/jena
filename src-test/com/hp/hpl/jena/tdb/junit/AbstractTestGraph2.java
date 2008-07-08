@@ -141,9 +141,11 @@ public abstract class AbstractTestGraph2 extends TestBase
         Graph g = emptyGraph() ;
         Triple t1 = triple(s1, p1, o1) ;
         Triple t2 = triple(s2, p2, o2) ;
+        
         g.add(t1) ;
         g.add(t2) ;
         g.delete(t1) ;
+
         assertEquals(1, g.size()) ;
         assertTrue("g does not contain t2", g.contains(t2)) ;
     }

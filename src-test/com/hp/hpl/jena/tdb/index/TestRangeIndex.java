@@ -40,7 +40,7 @@ public abstract class TestRangeIndex extends BaseTest
     
     // -- Root-only
     
-    @Test public void btree_ins_0_1()
+    @Test public void tree_ins_0_1()
     {
         // Just a root.
         int[] keys = {0, 1, 2};
@@ -52,7 +52,7 @@ public abstract class TestRangeIndex extends BaseTest
     
  
 
-    @Test public void btree_ins_0_2()
+    @Test public void tree_ins_0_2()
     {
         // Empty tree
         int[] keys = {};
@@ -62,7 +62,7 @@ public abstract class TestRangeIndex extends BaseTest
         assertNull(rIndex.maxKey()) ;
     }
     
-    @Test public void btree_ins_2_01() 
+    @Test public void tree_ins_2_01() 
     {
         int[] keys = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
         rIndex = make(2) ;
@@ -71,7 +71,7 @@ public abstract class TestRangeIndex extends BaseTest
         assertEquals(9, r(rIndex.maxKey())) ;
     }
     
-    @Test public void btree_ins_2_02() 
+    @Test public void tree_ins_2_02() 
     {
         int[] keys = {9,8,7,6,5,4,3,2,1,0};
         rIndex = make(2) ;
@@ -80,7 +80,7 @@ public abstract class TestRangeIndex extends BaseTest
         assertEquals(9, r(rIndex.maxKey())) ;
     }
 
-    @Test public void btree_ins_2_03()
+    @Test public void tree_ins_2_03()
     {
         int[] keys = {0,2,4,6,8,1,3,5,7,9};
         rIndex = make(2) ;
@@ -89,7 +89,7 @@ public abstract class TestRangeIndex extends BaseTest
         assertEquals(9, r(rIndex.maxKey())) ;
     }
 
-    @Test public void btree_ins_2_04()
+    @Test public void tree_ins_2_04()
     {
         int[] keys = {0,9,2,7,4,5,6,3,8,1};
         rIndex = make(2) ;
@@ -98,7 +98,7 @@ public abstract class TestRangeIndex extends BaseTest
         assertEquals(9, r(rIndex.maxKey())) ;
     }
     
-    @Test public void btree_ins_2_05()
+    @Test public void tree_ins_2_05()
     {
         int[] keys = {0,18,4,14,8,10,12,6,16,2};
         rIndex = make(2) ;
@@ -111,7 +111,7 @@ public abstract class TestRangeIndex extends BaseTest
         assertEquals(18, r(rIndex.maxKey())) ;
     }
     
-    @Test public void btree_del_0_1()
+    @Test public void tree_del_0_1()
     {
         int[] keys1 = {0, 1, 2};
         int[] keys2 = {0, 1, 2};
@@ -119,7 +119,7 @@ public abstract class TestRangeIndex extends BaseTest
         testInsertDelete(rIndex, keys1, keys2) ;
     }
 
-    @Test public void btree_del_0_2()
+    @Test public void tree_del_0_2()
     {
         int[] keys1 = {0, 1, 2};
         int[] keys2 = {2, 1, 0};
@@ -127,7 +127,7 @@ public abstract class TestRangeIndex extends BaseTest
         testInsertDelete(rIndex, keys1, keys2) ;
     }
 
-    @Test public void btree_del_0_3()
+    @Test public void tree_del_0_3()
     {
         int[] keys1 = {0, 1, 2};
         int[] keys2 = {1, 0, 2};
@@ -135,7 +135,7 @@ public abstract class TestRangeIndex extends BaseTest
 		testInsertDelete(rIndex, keys1, keys2) ;
     }
 
-    @Test public void btree_del_2_01()
+    @Test public void tree_del_2_01()
     {
         int[] keys1 = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9} ;
         int[] keys2 = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9} ;
@@ -143,7 +143,7 @@ public abstract class TestRangeIndex extends BaseTest
         testInsertDelete(rIndex,  keys1, keys2) ;
     }
     
-    @Test public void btree_del_2_02()
+    @Test public void tree_del_2_02()
     {
         int[] keys1 = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9} ;
         int[] keys2 = {9, 8, 7, 6, 5, 4, 3, 2, 1, 0} ;
@@ -151,7 +151,7 @@ public abstract class TestRangeIndex extends BaseTest
         testInsertDelete(rIndex,  keys1, keys2) ;
     }
     
-    @Test public void btree_del_2_03()
+    @Test public void tree_del_2_03()
     {
         int[] keys1 = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9} ;
         int[] keys2 = {0, 2, 4, 6, 8, 1, 3, 5, 7, 9} ;
@@ -159,7 +159,7 @@ public abstract class TestRangeIndex extends BaseTest
         testInsertDelete(rIndex,  keys1, keys2) ;
     }
     
-    @Test public void btree_del_2_04()
+    @Test public void tree_del_2_04()
     {
         int[] keys1 = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9} ;
         int[] keys2 = {0, 9, 2, 7, 4, 5, 6, 3, 8, 1} ;
@@ -167,7 +167,7 @@ public abstract class TestRangeIndex extends BaseTest
         testInsertDelete(rIndex,  keys1, keys2) ;
     }
     
-    @Test public void btree_del_2_05()
+    @Test public void tree_del_2_05()
     {
         int[] keys1 = {9, 8, 7, 6, 5, 4, 3, 2, 1, 0} ;
         int[] keys2 = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9} ;
@@ -175,7 +175,7 @@ public abstract class TestRangeIndex extends BaseTest
         testInsertDelete(rIndex,  keys1, keys2) ;
     }
     
-    @Test public void btree_del_2_06()
+    @Test public void tree_del_2_06()
     {
         int[] keys1 = {9, 8, 7, 6, 5, 4, 3, 2, 1, 0} ;
         int[] keys2 = {9, 8, 7, 6, 5, 4, 3, 2, 1, 0} ;
@@ -183,7 +183,7 @@ public abstract class TestRangeIndex extends BaseTest
         testInsertDelete(rIndex,  keys1, keys2) ;
     }
     
-    @Test public void btree_del_2_07()
+    @Test public void tree_del_2_07()
     {
         int[] keys1 = {9, 8, 7, 6, 5, 4, 3, 2, 1, 0} ;
         int[] keys2 = {0, 2, 4, 6, 8, 1, 3, 5, 7, 9} ;
@@ -191,7 +191,7 @@ public abstract class TestRangeIndex extends BaseTest
         testInsertDelete(rIndex,  keys1, keys2) ;
     }
     
-    @Test public void btree_del_2_08()
+    @Test public void tree_del_2_08()
     {
         int[] keys1 = {9, 8, 7, 6, 5, 4, 3, 2, 1, 0} ;
         int[] keys2 = {0, 9, 2, 7, 4, 5, 6, 3, 8, 1} ;
@@ -199,7 +199,7 @@ public abstract class TestRangeIndex extends BaseTest
 		testInsertDelete(rIndex, keys1, keys2) ;
     }
     
-    @Test public void btree_del_2_09()
+    @Test public void tree_del_2_09()
     {
         int[] keys1 = {0, 2, 4, 6, 8, 1, 3, 5, 7, 9} ;
         int[] keys2 = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9} ;
@@ -207,7 +207,7 @@ public abstract class TestRangeIndex extends BaseTest
         testInsertDelete(rIndex,  keys1, keys2) ;
     }
     
-    @Test public void btree_del_2_10()
+    @Test public void tree_del_2_10()
     {
         int[] keys1 = {0, 2, 4, 6, 8, 1, 3, 5, 7, 9} ;
         int[] keys2 = {9, 8, 7, 6, 5, 4, 3, 2, 1, 0} ;
@@ -215,7 +215,7 @@ public abstract class TestRangeIndex extends BaseTest
         testInsertDelete(rIndex,  keys1, keys2) ;
     }
     
-    @Test public void btree_del_2_11()
+    @Test public void tree_del_2_11()
     {
         int[] keys1 = {0, 2, 4, 6, 8, 1, 3, 5, 7, 9} ;
         int[] keys2 = {0, 2, 4, 6, 8, 1, 3, 5, 7, 9} ;
@@ -223,7 +223,7 @@ public abstract class TestRangeIndex extends BaseTest
         testInsertDelete(rIndex,  keys1, keys2) ;
     }
     
-    @Test public void btree_del_2_12()
+    @Test public void tree_del_2_12()
     {
         int[] keys1 = {0, 2, 4, 6, 8, 1, 3, 5, 7, 9} ;
         int[] keys2 = {0, 9, 2, 7, 4, 5, 6, 3, 8, 1} ;
@@ -231,7 +231,7 @@ public abstract class TestRangeIndex extends BaseTest
         testInsertDelete(rIndex,  keys1, keys2) ;
     }
     
-    @Test public void btree_iter_2_01()
+    @Test public void tree_iter_2_01()
     {
         int[] keys = {0, 2, 4, 6, 8, 1, 3, 5, 7, 9} ;
         rIndex = make(2) ;
@@ -241,7 +241,7 @@ public abstract class TestRangeIndex extends BaseTest
         assertEquals(expected, x) ;
     }
     
-    @Test public void btree_iter_2_02()
+    @Test public void tree_iter_2_02()
     {
         int[] keys = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9} ;
         rIndex =  make(2) ;
@@ -251,7 +251,7 @@ public abstract class TestRangeIndex extends BaseTest
         assertEquals(expected, x) ;
     }
     
-    @Test public void btree_iter_2_03()
+    @Test public void tree_iter_2_03()
     {
         int[] keys = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9} ;
         rIndex  = make(2) ;
@@ -261,7 +261,7 @@ public abstract class TestRangeIndex extends BaseTest
         assertEquals(expected, x) ;
     }
     
-    @Test public void btree_iter_2_04()
+    @Test public void tree_iter_2_04()
     {
         int[] keys = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9} ;
         rIndex  = make(2) ;
@@ -271,7 +271,7 @@ public abstract class TestRangeIndex extends BaseTest
         assertEquals(expected, x) ;
     }
 
-    @Test public void btree_iter_2_05()
+    @Test public void tree_iter_2_05()
     {
         int[] keys = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9} ;
         rIndex  = make(2) ;
@@ -281,7 +281,7 @@ public abstract class TestRangeIndex extends BaseTest
         assertEquals(expected, x) ;
     }
     
-    @Test public void btree_iter_2_07()
+    @Test public void tree_iter_2_07()
     {
         int[] keys = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9} ;
         rIndex  = make(2) ;
@@ -291,7 +291,7 @@ public abstract class TestRangeIndex extends BaseTest
         assertEquals(expected, x) ;
     }
     
-    @Test public void btree_iter_2_08()
+    @Test public void tree_iter_2_08()
     {
         int[] keys = {1, 2, 3, 4, 5, 6, 7, 8, 9} ;
         rIndex  = make(2) ;
@@ -301,7 +301,7 @@ public abstract class TestRangeIndex extends BaseTest
         assertEquals(expected, x) ;
     }
 
-    @Test public void btree_iter_2_09()
+    @Test public void tree_iter_2_09()
     {
         int[] keys = {1, 2, 3, 4, /*5, 6,*/ 7, 8, 9, 10 ,11} ;
         rIndex  = make(2) ;
@@ -312,7 +312,7 @@ public abstract class TestRangeIndex extends BaseTest
     }
     
     // Root
-    @Test public void btree_iter_0_01()
+    @Test public void tree_iter_0_01()
     {
         int[] keys = {1, 2, 3, 4, 5} ;
         rIndex = make(5) ;
@@ -322,7 +322,7 @@ public abstract class TestRangeIndex extends BaseTest
         assertEquals(expected, x) ;
     }
 
-    @Test public void btree_iter_0_02()
+    @Test public void tree_iter_0_02()
     {
         int[] keys = {1, 2, 3, 4, 5} ;
         rIndex = make(5) ;
@@ -332,7 +332,7 @@ public abstract class TestRangeIndex extends BaseTest
         assertEquals(expected, x) ;
     }
 
-    @Test public void btree_iter_0_03()
+    @Test public void tree_iter_0_03()
     {
         int[] keys = {1, 2, 3, 4, 5} ;
         rIndex = make(5) ;
@@ -342,7 +342,7 @@ public abstract class TestRangeIndex extends BaseTest
         assertEquals(expected, x) ;
     }
 
-    @Test public void btree_iter_0_04()
+    @Test public void tree_iter_0_04()
     {
         int[] keys = {1, 2, 3, 4, 5} ;
         rIndex = make(5) ;
@@ -352,7 +352,7 @@ public abstract class TestRangeIndex extends BaseTest
         assertEquals(expected, x) ;
     }
     
-    @Test public void btree_iter_0_05()
+    @Test public void tree_iter_0_05()
     {
         int[] keys = {1, 2, 3, 4, 5} ;
         rIndex = make(5) ;
@@ -362,7 +362,7 @@ public abstract class TestRangeIndex extends BaseTest
         assertEquals(expected, x) ;
     }
     
-    @Test public void btree_ret_1()
+    @Test public void tree_ret_1()
     {
         int[] keys = {1, 2, 3, 4, 5} ;
         rIndex  = make(2) ;
@@ -373,7 +373,7 @@ public abstract class TestRangeIndex extends BaseTest
         assertTrue(b) ;
     }
     
-    @Test public void btree_ret_2()
+    @Test public void tree_ret_2()
     {
         int[] keys = {1, 2, 3, 4, 5} ;
         rIndex  = make(2) ;
@@ -385,13 +385,13 @@ public abstract class TestRangeIndex extends BaseTest
     }
     
     
-    @Test public void btree_2_N()
+    @Test public void tree_2_N()
     {
         for ( int i = 0 ; i < 10 ; i++ )
             randTest(new BTreeMaker(2), 999, 20) ;
     }
 
-    @Test public void btree_3_N()
+    @Test public void tree_3_N()
     {
         for ( int i = 0 ; i < 10 ; i++ )
             randTest(new BTreeMaker(3), 9999, 100) ;

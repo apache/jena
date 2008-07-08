@@ -18,6 +18,7 @@ public class Dev
     // IndexBuilder to include ppolicy for data files
     
     // TestGraphBPlusTreeMem and Mem2.
+    // Duplicate ahve for BTree and B+Tree
     
     // Global IndexFactory.  create(Location, Name) => (Range)Index
     // IndexBuilder for the global, any location (IndexFactoryFactory)
