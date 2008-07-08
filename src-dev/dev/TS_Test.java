@@ -16,7 +16,7 @@ import com.hp.hpl.jena.tdb.pgraph.TestPersistentGraph;
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
     TestPersistentGraph.class,
-    //PGraphTestSuite.class          // Scripted tests
+    PGraphTestSuite.class          // Scripted tests
 })
 
 public class TS_Test extends TestBase

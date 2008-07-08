@@ -10,6 +10,8 @@ public class Dev
 {
     // JUnit failures
     // CI
+    // BPlusTree and non-existent entries
+    //   Make sure BPlusTree tests geting run.
     
     // PtrBuffer has ref to BTreeParams.
     // Role of PGraphFactory?

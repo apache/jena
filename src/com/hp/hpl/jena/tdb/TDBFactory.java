@@ -15,25 +15,12 @@ import com.hp.hpl.jena.sparql.core.assembler.AssemblerUtils;
 
 import com.hp.hpl.jena.tdb.base.file.Location;
 import com.hp.hpl.jena.tdb.index.IndexBuilder;
-import com.hp.hpl.jena.tdb.pgraph.GraphBPlusTree;
-import com.hp.hpl.jena.tdb.pgraph.GraphBTree;
 import com.hp.hpl.jena.tdb.pgraph.PGraphBase;
 import com.hp.hpl.jena.tdb.pgraph.assembler.PGraphAssemblerVocab;
 
 public class TDBFactory
 {
     static { TDB.init(); }
-    
-//    // ----- TEMP
-//    public static Graph createGraphBPT(Location loc)
-//    {
-//        return GraphBPlusTree.create(loc) ;
-//    }
-//    public static Graph createGraphBT(Location loc)
-//    {
-//        return GraphBTree.create(loc) ;
-//    }
-//    // -----
     
     /** Read the file and assembler a model, of type TDB persistent graph */ 
     public static Model assembleModel(String assemblerFile)
