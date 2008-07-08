@@ -1,12 +1,14 @@
 (base <file:///c:/home/afs/Projects/ARQ/Q.rq>
   (prefix ((: <http://example/>))
-    (project (?s ?g ?c ?a ?n)
-      (sequence
-	(filter (< ?a 50)
-          (bgp (triple ?s :age ?a)))
-	(BGP
-          (triple ?s :gender ?g)
-          (triple ?s :country ?c)
-          (triple ?s :name ?n)
-	  )
-        ))))
+    (filter (exprlist
+	      #(< 1 3)
+	      (< ?a ?b)
+	      (< ?c "GGG")
+	      )
+      (BGP
+	(triple ?s :p ?z)
+	(triple ?s :p ?a)
+	(triple ?s :q ?b)
+	(triple ?s :r ?c)
+	))
+    ))
