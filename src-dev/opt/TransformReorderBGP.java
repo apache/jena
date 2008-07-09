@@ -10,6 +10,9 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
+import com.hp.hpl.jena.graph.Graph;
+import com.hp.hpl.jena.graph.GraphStatisticsHandler;
+import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.TransformCopy;
@@ -22,14 +25,50 @@ public class TransformReorderBGP extends TransformCopy
     public Op transform(OpBGP opBGP)
     {
         BasicPattern pattern = opBGP.getPattern() ;
+        BasicPattern pattern2 = rewrite(pattern) ; 
+        return new OpBGP(pattern2) ; 
+        //return super.transform(opBGP) ;
+    }
+    
+    public static BasicPattern rewrite(BasicPattern pattern)
+    {
         BasicPattern pattern2 = new BasicPattern() ;
         Set patternVarsScope = new HashSet() ;
         
         // Choose order.
-        // TODO
+        // Not easy at this point as we do not know the graph yet.
         for ( Iterator iter = pattern.getList().listIterator() ; iter.hasNext() ; )
         {
             Triple triple = (Triple)iter.next();
+            System.out.println("Process: "+triple) ;
+            
+            // Vars in scope.
+            // Non-graph specific reordering possible.
+            VarUtils.addVarsFromTriple(patternVarsScope, triple) ;
+            
+            pattern2.add(triple) ;
+        }
+        return pattern2 ;
+    }
+    
+    // Toy
+    public static BasicPattern rewrite(Graph graph, BasicPattern pattern)
+    {
+        BasicPattern pattern2 = new BasicPattern() ;
+        Set patternVarsScope = new HashSet() ;
+        
+        GraphStatisticsHandler handler = graph.getStatisticsHandler() ;
+        
+        for ( Iterator iter = pattern.getList().listIterator() ; iter.hasNext() ; )
+        {
+            Triple triple = (Triple)iter.next();
+            Node s = node(triple.getSubject()) ;
+            Node p = node(triple.getPredicate()) ;
+            Node o = node(triple.getObject()) ;
+            
+            // What about bound variables?
+            long w = handler.getStatistic(s,p,o) ;
+            
             System.out.println("Process: "+triple) ;
             
             // Vars in scope.
@@ -37,10 +76,21 @@ public class TransformReorderBGP extends TransformCopy
             
             pattern2.add(triple) ;
         }
-        return new OpBGP(pattern2) ; 
-        
-        //return super.transform(opBGP) ;
+        return pattern2 ;
     }
+    
+    public static Node node(Node n)
+    {
+        if ( n == null )
+            return Node.ANY ;
+        if ( n == Node.ANY )
+            return Node.ANY ;
+        if ( n.isConcrete() )
+            return n ;
+        return Node.ANY ;
+    }
+    
+    
 }
 /*
  * (c) Copyright 2008 Hewlett-Packard Development Company, LP
