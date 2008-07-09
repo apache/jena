@@ -42,31 +42,23 @@ public abstract class TestRangeIndex extends BaseTest
     
     @Test public void tree_ins_0_0()
     {
+        // Empty tree
+        int[] keys = {};
         rIndex = make(2) ;
+        testInsert(rIndex, keys) ;
+        assertNull(rIndex.minKey()) ;
+        assertNull(rIndex.maxKey()) ;
     }
     
     @Test public void tree_ins_0_1()
     {
-        // Just a root.
         int[] keys = {0, 1, 2};
         rIndex = make(2) ;
         testInsert(rIndex, keys) ;
         assertEquals(0, r(rIndex.minKey())) ;
         assertEquals(2, r(rIndex.maxKey())) ;
     }
-    
- 
-
-    @Test public void tree_ins_0_2()
-    {
-        // Empty tree
-        int[] keys = {};
-        rIndex = make(2) ;
-		testInsert(rIndex, keys) ;
-        assertNull(rIndex.minKey()) ;
-        assertNull(rIndex.maxKey()) ;
-    }
-    
+     
     @Test public void tree_ins_2_01() 
     {
         int[] keys = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};

@@ -6,8 +6,7 @@
 
 package com.hp.hpl.jena.tdb.bplustree;
 
-import static com.hp.hpl.jena.tdb.base.block.BlockType.BTREE_BRANCH;
-import static com.hp.hpl.jena.tdb.base.block.BlockType.RECORD_BLOCK;
+import static com.hp.hpl.jena.tdb.base.block.BlockType.*;
 
 import java.nio.ByteBuffer;
 
@@ -43,15 +42,22 @@ final class BPTreeNodeMgr
     /** Allocate root node space. The root is a node with a Records block.*/ 
     public BPTreeNode createRoot()
     { 
-        BPTreeNode n = createNode(BPlusTreeParams.RootParent) ;
         // Create an empty records block.
         int recId = bpTree.getRecordsMgr().allocateId() ;
         BPTreePage page = bpTree.getRecordsMgr().create(recId) ;
         page.put();
+
         
-        n.ptrs.add(0) ;
+        BPTreeNode n = createNode(BPlusTreeParams.RootParent) ;
+        // n.ptrs is currently invalid.  count was 0 so thinks it has a pointer.
+        // Force to right layout.
+        n.ptrs.setSize(0) ;         // No pointers
+        n.ptrs.add(page.getId()) ;  // Add the page below
+        
+        //n.ptrs.set(0, page.getId()) ; // This is the same as the size is one.
+        
         n.isLeaf = true ;
-        n.setCount(0) ;     // Count is count of records = ptr count -1 if not empty. 
+        n.setCount(0) ;     // Count is count of records. 
         n.put();
         return n ;
     }
@@ -104,7 +110,6 @@ final class BPTreeNodeMgr
 
     public void put(BPTreeNode node)
     {
-        // ByteBuffer bb = node.getByteBuffer() ;
         ByteBuffer bb = converter.toByteBuffer(node) ;
         blockMgr.put(node.getId(), bb) ;
     }
@@ -152,10 +157,10 @@ final class BPTreeNodeMgr
             int x = bb.getInt(0) ;
             BlockType type = getType(x) ;
 
-            if ( type != BlockType.BTREE_BRANCH && type != BlockType.RECORD_BLOCK )
+            if ( type != BPTREE_BRANCH && type != BPTREE_LEAF )
                 throw new BTreeException("Wrong block type: "+type) ; 
             int count = decCount(x) ;
-            return overlay(bpTree, bb, (type==BlockType.RECORD_BLOCK), count) ;
+            return overlay(bpTree, bb, (type==BPTREE_LEAF), count) ;
         }
 
         @Override
@@ -164,7 +169,7 @@ final class BPTreeNodeMgr
             // It's manipulated in-place so no conversion needed, 
             // Just the count needs to be fixed up. 
             ByteBuffer bb = node.getByteBuffer() ;
-            BlockType bType = (node.isLeaf ? RECORD_BLOCK : BTREE_BRANCH ) ;
+            BlockType bType = (node.isLeaf ? BPTREE_LEAF : BPTREE_BRANCH ) ;
             int c = encCount(bType, node.getCount()) ;
             bb.putInt(0, c) ;
             return bb ;
@@ -197,26 +202,10 @@ final class BPTreeNodeMgr
      * New:
      *  0: Block type
      *  1-3: Count 
-     *      For an internal node, it is the number of pointers
-     *      For a leaf node, it is the number of records.
-     *  Leaves:
-     *     4- :  Records (count of them)
      *  Internal nodes:
-     *    4-X:        Records: btree.MaxRec*record length
-     *    X- :        Pointers: btree*MaxPtr*ptr length 
-
-     * OLD    
-     *    0-3:        Header: Number in use.
-     *      Negative (as -(i+1)implies a leaf.
-     *** Change: 8 bytes (=>64bit aligned?).  Include a "block type"
-     *** Or pack 8/24.
-     * Leaf:
-     *    4-       Records: btree.NumRec* 
-     * Non-leaf:
-     *    4-X:        Records: btree.MaxRec*record length
-     *    X- :        Pointers: btree*MaxPtr*ptr length 
+     *    4-X:        Records: b+tree.MaxRec*record length
+     *    X- :        Pointers: b+tree.MaxPtr*ptr length 
      */
-    // Produce a BTreeNode from a ByteBuffer
     private static BPTreeNode overlay(BPlusTree bTree, ByteBuffer byteBuffer, boolean asLeaf, int count)
     {
 //        if ( byteBuffer.order() != Const.NetworkOrder )
@@ -237,12 +226,6 @@ final class BPTreeNodeMgr
         int ptrBuffLen = params.MaxPtr * BPlusTreeParams.PtrLength ;
         int recBuffLen = params.MaxRec * params.getRecordLength() ;
 
-//      if ( (ptrBuffLen+recBuffLen+BTreeParams.BlockHeaderSize) > n.byteBuffer.capacity() )
-//      {
-//      int x = (ptrBuffLen+recBuffLen+4) ;
-//      throw new BTreeException(format("Short byte block: expected=%d, actual=%d", x, n.byteBuffer.capacity())) ;
-//      }
-
         n.setId(-1) ;
         n.parent = -2 ;
         n.setCount(count) ;
@@ -254,39 +237,33 @@ final class BPTreeNodeMgr
 
         // Find the number of pointers.
         int numPtrs = -1 ;
-            
+        
+        // The root can have count zero - which means one pointer always.
+        // Junk only when creating the root the first time.
         if ( n.getCount() < 0 )
         {
             numPtrs = 0 ;
             n.setCount(decCount(n.getCount())) ; 
         }
-        else if ( n.getCount() == 0 )    // The root.
-        {
-            numPtrs = 0 ;
-        }
-        else    // Count > 0
+        else
             numPtrs = n.getCount()+1 ;
 
+        // -- Records area
         n.getByteBuffer().position(rStart) ;
         n.getByteBuffer().limit(rStart+recBuffLen) ;
         ByteBuffer bbr = n.getByteBuffer().slice() ;
         //bbr.limit(recBuffLen) ;
         n.records = new RecordBuffer(bbr, n.params.keyFactory, n.getCount()) ;
 
-//        if ( n.isLeaf )
-//        {
-//            n.ptrs = null ;
-//        }
-//        else
-        {
-            n.getByteBuffer().position(pStart) ;
-            n.getByteBuffer().limit(pStart+ptrBuffLen) ;
-            
-            ByteBuffer bbi = n.getByteBuffer().slice() ;
-            //bbi.limit(ptrBuffLen) ;
-            n.ptrs = new PtrBuffer(bbi, numPtrs) ;
-        }
+        // -- Pointers area
+        n.getByteBuffer().position(pStart) ;
+        n.getByteBuffer().limit(pStart+ptrBuffLen) ;
         
+        ByteBuffer bbi = n.getByteBuffer().slice() ;
+        //bbi.limit(ptrBuffLen) ;
+        n.ptrs = new PtrBuffer(bbi, numPtrs) ;
+
+        // Reset
         n.getByteBuffer().rewind() ;
         return n ;
     }
@@ -295,6 +272,7 @@ final class BPTreeNodeMgr
     {
         BPTreeNodeMgr.formatBTreeNode(n, n.bpTree, n.getByteBuffer(), asLeaf, 0) ;
         // Tweak for the root-specials.  The node is not consistent yet.
+        // Has one dangling pointer.
         n.setId(0) ;
         n.parent = BPlusTreeParams.RootParent ;
     }

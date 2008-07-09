@@ -34,7 +34,7 @@ public class BlockMgrMem extends BlockMgrBase
     private static ByteBuffer FreeBlock = ByteBuffer.allocate(0) ;      // Marker
 
     // This controls whether blocks are copied in and otu
-    public static boolean SafeMode = false ;                            
+    public static boolean SafeMode = true ;                            
     
     BlockMgrMem(int blockSize)
     {

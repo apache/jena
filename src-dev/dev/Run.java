@@ -11,16 +11,14 @@ import static lib.FileOps.clearDirectory;
 import java.util.Iterator;
 
 import lib.FileOps;
-import org.apache.log4j.Level;
-
-import com.hp.hpl.jena.rdf.model.*;
-
-import com.hp.hpl.jena.util.FileManager;
 
 import com.hp.hpl.jena.graph.Graph;
-
 import com.hp.hpl.jena.query.*;
-
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.rdf.model.Property;
+import com.hp.hpl.jena.rdf.model.Resource;
+import com.hp.hpl.jena.rdf.model.Statement;
 import com.hp.hpl.jena.tdb.Const;
 import com.hp.hpl.jena.tdb.TDB;
 import com.hp.hpl.jena.tdb.TDBFactory;
@@ -36,6 +34,7 @@ import com.hp.hpl.jena.tdb.btree.BTreeParams;
 import com.hp.hpl.jena.tdb.lib.NodeLib;
 import com.hp.hpl.jena.tdb.pgraph.NodeId;
 import com.hp.hpl.jena.tdb.pgraph.PGraphBase;
+import com.hp.hpl.jena.util.FileManager;
 
 public class Run
 {
@@ -54,6 +53,18 @@ public class Run
         // Don't seem to tbe writing to disk.
         // Run once data created. 
         //bpt_test() ; System.exit(0) ;
+        
+//        BPlusTreeParams.checkAll() ;
+//        BPlusTreeParams.Logging = true ;
+//        org.apache.log4j.Logger.getLogger("com.hp.hpl.jena.tdb.bplustree").setLevel(Level.ALL) ;
+//        
+//        BaseConfig.NullOut = true ;
+//        int[] keys = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+//        RangeIndex rIndex = BPlusTree.makeMem(2, 2, TestRecordLength, 0) ;
+//        testInsert(rIndex, keys) ;
+////        assertEquals(0, r(rIndex.minKey())) ;
+////        assertEquals(9, r(rIndex.maxKey())) ;
+        
         
         // Also check absent triples.
         
@@ -91,12 +102,12 @@ public class Run
             ((PGraphBase)graph).sync(true) ;
             System.out.println("Size = "+model.size()) ;
         }
-        query("SELECT * { ?s ?p ?o}", model) ;
+        query("SELECT * { ?s ?p ?o }", model) ;
         model.close() ;
         
         System.exit(0) ;
         
-        //tdbquery("dataset.ttl", "SELECT * { ?s ?p ?o}") ;
+        //tdbquery("dataset.ttl", "SELECT * { ?s ?p ?o }") ;
 
 //        ARQ.getContext().set(TDB.symFileMode, "mapped") ;
 //        Model model = TDBFactory.createModel("tmp") ;

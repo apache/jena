@@ -20,13 +20,25 @@ public enum BlockType implements Printable, Named
         @Override public int id()           { return 5 ; }
     } ,
     
+    BPTREE_BRANCH
+    {
+        @Override public String getName()   { return "BPlusTreeBranch" ; }
+        @Override public int id()           { return 6 ; }
+    } ,
+
+    BPTREE_LEAF
+    {
+        @Override public String getName()   { return "BPlusTreeBranch" ; }
+        @Override public int id()           { return 7 ; }
+    } ,
+
     DICTIONARY
     {
         @Override public String getName()   { return "DICTIONARY" ; }
-        @Override public int id()           { return 6 ; }
+        @Override public int id()           { return 10 ; }
     } ,
     
-    RECORD_BLOCK // which is also a BTree leaf
+    RECORD_BLOCK
     {
         @Override public String getName()   { return "RecordBlock" ; }
         @Override public int id()           { return 99 ; }
@@ -42,8 +54,10 @@ public enum BlockType implements Printable, Named
     
     public static BlockType extract(int x)
     {
-        if ( x == BTREE_BRANCH.id() )   return BTREE_BRANCH ;
-        if ( x == RECORD_BLOCK.id() )   return RECORD_BLOCK ;
+        if ( x == BTREE_BRANCH.id() )       return BTREE_BRANCH ;
+        if ( x == BPTREE_BRANCH.id() )      return BPTREE_BRANCH ;
+        if ( x == BPTREE_LEAF.id() )        return BPTREE_LEAF ;
+        if ( x == RECORD_BLOCK.id() )       return RECORD_BLOCK ;
         throw new TDBException("No known block type for "+x) ;
     }
 }

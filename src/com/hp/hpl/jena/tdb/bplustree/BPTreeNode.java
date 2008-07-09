@@ -562,16 +562,17 @@ public final class BPTreeNode extends BPTreePage
         
         // So left.count+right.count = bTree.NumRec-1
         
-        // Clear root by reformatting.  New root not a leaf
+        // Clear root by reformatting.  New root not a leaf.  Has count of 1 after formatting.
         BPTreeNodeMgr.formatForRoot(this, false) ;
         // Make a non-leaf.
         
         // Insert two subnodes, divided by the median record
         count = 1 ;
-        records.add(0, rec) ;
         
-        ptrs.add(left.id) ;        // slot 0
-        ptrs.add(right.id) ;       // slot 1
+        records.add(0, rec) ;
+        ptrs.setSize(2) ;
+        ptrs.set(0, left.id) ;        // slot 0
+        ptrs.set(1, right.id) ;       // slot 1
         
         if ( logging())
         {
