@@ -32,13 +32,23 @@ import com.hp.hpl.jena.sparql.expr.ExprWalker;
 import com.hp.hpl.jena.sparql.procedure.ProcEval;
 import com.hp.hpl.jena.sparql.procedure.Procedure;
 
+/** Turn an Op expression into an execution of QueryIterators.
+ *  Does not consider optimizing the algebra expression (that should happen elsewhere).
+ *  BGPs are stil subject to StageBuilding during iterator execution.  
+ * 
+ * @author Andy Seaborne
+ */
+
+// TODO Pull out FilterPlacement to be a transform.
+// Need to find a place to include Op => Op rewrite
+// Separate statics from class 
 
 public class OpCompiler
 {
     // A small (one slot) registry to allow (experimental) alternative  OpCompilers
     public interface Factory { OpCompiler create(ExecutionContext execCxt) ; }
     
-    // Set this to a diferent factory implementation to have a different OpCompiler.  
+    // Set this to a different factory implementation to have a different OpCompiler.  
     public static Factory factory = new Factory(){
 
         public OpCompiler create(ExecutionContext execCxt)
@@ -47,22 +57,14 @@ public class OpCompiler
         }} ;  
     
     // -------
+    // Call via QC.compile
     
-    
-    // And filter placement in LeftJoins?
-    // Is this part of a more general algorithm of pushing the filter down
-    // when the vars are known to be fixed?
-    
-    //  By general BGP rewriting.  Stages.
-    //  (General tree rewrite is "Op => Op")
-    //   OpExtBase requires eval() but need better extensibility?
-    
-    public static QueryIterator compile(Op op, ExecutionContext execCxt)
+    static QueryIterator compile(Op op, ExecutionContext execCxt)
     {
         return compile(op, root(execCxt), execCxt) ;
     }
     
-    public static QueryIterator compile(Op op, QueryIterator qIter, ExecutionContext execCxt)
+    static QueryIterator compile(Op op, QueryIterator qIter, ExecutionContext execCxt)
     {
         OpCompiler compiler = null ;
         if ( factory == null )
@@ -138,9 +140,6 @@ public class OpCompiler
 
     public QueryIterator compile(OpJoin opJoin, QueryIterator input)
     {
-        // TODO Consider building join lists and place filters carefully.  
-        // Place by fixed - if none present, place by optional
-        
         // Look one level in for any filters with out-of-scope variables.
         boolean canDoLinear = JoinClassifier.isLinear(opJoin) ;
 
@@ -148,7 +147,6 @@ public class OpCompiler
             // Streamed evaluation
             return stream(opJoin.getLeft(), opJoin.getRight(), input) ;
         
-        // Input may be null?
         // Can't do purely indexed (e.g. a filter referencing a variable out of scope is in the way)
         // To consider: partial substitution for improved performance (but does it occur for real?)
         
@@ -156,7 +154,15 @@ public class OpCompiler
         QueryIterator right = compileOp(opJoin.getRight(), root()) ;
         QueryIterator qIter = new QueryIterJoin(left, right, execCxt) ;
         return qIter ;
-        // Worth doing anything about join(join(..))?  Probably not.
+        // Worth doing anything about join(join(..))?
+    }
+
+    // Pass iterator from left directly into the right.
+    protected QueryIterator stream(Op opLeft, Op opRight, QueryIterator input)
+    {
+        QueryIterator left = compileOp(opLeft, input) ;
+        QueryIterator right = compileOp(opRight, left) ;
+        return right ;
     }
 
     // Pass iterator from one step directly into the next.
@@ -171,14 +177,6 @@ public class OpCompiler
         }
         
         return qIter ;
-    }
-    
-    // Pass iterator from left directly into the right.
-    protected QueryIterator stream(Op opLeft, Op opRight, QueryIterator input)
-    {
-        QueryIterator left = compileOp(opLeft, input) ;
-        QueryIterator right = compileOp(opRight, left) ;
-        return right ;
     }
     
     public QueryIterator compile(OpLeftJoin opLeftJoin, QueryIterator input)
@@ -216,9 +214,6 @@ public class OpCompiler
     
     public QueryIterator compile(OpUnion opUnion, QueryIterator input)
     {
-//        List x = new ArrayList() ;
-//        x.add(opUnion.getLeft()) ;
-//        x.add(opUnion.getRight()) ;
         List x = flattenUnion(opUnion) ;
         QueryIterator cIter = new QueryIterUnion(input, x, execCxt) ;
         return cIter ;
