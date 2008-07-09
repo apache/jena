@@ -7,6 +7,7 @@
 package com.hp.hpl.jena.tdb.btree;
 
 import static com.hp.hpl.jena.tdb.base.ConfigTest.TestRecordLength;
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 
 import com.hp.hpl.jena.tdb.base.BaseConfig;
@@ -15,10 +16,17 @@ import com.hp.hpl.jena.tdb.index.TestRangeIndex;
 
 public class TestBTree extends TestRangeIndex
 {
+    static boolean b ;
+    
     @BeforeClass public static void before()
     { 
         BTreeParams.CheckingNode = true ;
         BaseConfig.NullOut = true ;
+    }
+    
+    @AfterClass public static void after()
+    { 
+        BaseConfig.NullOut = b ;
     }
     
     // ---- Overridable maker

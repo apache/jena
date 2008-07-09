@@ -6,6 +6,7 @@
 
 package com.hp.hpl.jena.tdb.btree;
 
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import test.BaseTest;
@@ -13,17 +14,25 @@ import test.BaseTest;
 import com.hp.hpl.jena.tdb.base.BaseConfig;
 import com.hp.hpl.jena.tdb.base.record.Record;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
+import com.hp.hpl.jena.tdb.bplustree.BPlusTreeParams;
 
 public class TestBTreeLong extends BaseTest
 {
     static RecordFactory recordFactory  ;
     static final int LongRecordLength = 16 ;
+    static boolean b ;
     
     @BeforeClass public static void before()
     { 
         recordFactory = new RecordFactory(LongRecordLength, 0) ;
         BTreeParams.CheckingNode = true ;
+        b = BaseConfig.NullOut ;
         BaseConfig.NullOut = true ;
+    }
+    
+    @AfterClass public static void after()
+    { 
+        BaseConfig.NullOut = b ;
     }
     
     @Test public void record1()

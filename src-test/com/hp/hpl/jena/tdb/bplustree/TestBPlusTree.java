@@ -7,6 +7,7 @@
 package com.hp.hpl.jena.tdb.bplustree;
 
 import static com.hp.hpl.jena.tdb.base.ConfigTest.TestRecordLength;
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 
 import com.hp.hpl.jena.tdb.base.BaseConfig;
@@ -18,11 +19,19 @@ import com.hp.hpl.jena.tdb.index.TestRangeIndex;
 public class TestBPlusTree extends TestRangeIndex
 {
  
+    static boolean b ;
     @BeforeClass public static void before()
     { 
         BPlusTreeParams.checkAll() ;
+        b = BaseConfig.NullOut ;
         BaseConfig.NullOut = true ;
     }
+    
+    @AfterClass public static void after()
+    { 
+        BaseConfig.NullOut = b ;
+    }
+    
     
     @Override
     protected RangeIndex make(int order, int minRecords)

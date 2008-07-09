@@ -40,6 +40,11 @@ public abstract class TestRangeIndex extends BaseTest
     
     // -- Root-only
     
+    @Test public void tree_ins_0_0()
+    {
+        rIndex = make(2) ;
+    }
+    
     @Test public void tree_ins_0_1()
     {
         // Just a root.
