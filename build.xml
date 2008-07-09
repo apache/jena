@@ -204,7 +204,7 @@
 
   <!-- Worker tasks for the above tasks -->
 
-  <target name="run-junit" depends="compile,clean-reports">
+  <target name="run-junit" depends="jar,clean-reports">
     <mkdir dir="${reports.dir}"/>
     <mkdir dir="${reports.dir.xml}"/>
 
