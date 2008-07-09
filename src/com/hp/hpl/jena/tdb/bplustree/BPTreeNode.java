@@ -38,7 +38,7 @@ public final class BPTreeNode extends BPTreePage
     protected int id ; 
     
     int parent ;            // Need to consider splitRoot - let the root id change?
-    int count ;
+    int count ;             // Number of records.
     boolean isLeaf ;
     RecordBuffer records ;
     PtrBuffer ptrs ;
@@ -1237,6 +1237,7 @@ public final class BPTreeNode extends BPTreePage
         // Check empty is empty
         if ( NullOut )
         {
+            int x = params.MaxPtr ;
             for ( ; i < params.MaxPtr ; i ++ )
             {
                 if ( ! ptrs.isClear(i) )
