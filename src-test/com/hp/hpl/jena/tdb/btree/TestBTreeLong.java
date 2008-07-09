@@ -14,7 +14,6 @@ import test.BaseTest;
 import com.hp.hpl.jena.tdb.base.BaseConfig;
 import com.hp.hpl.jena.tdb.base.record.Record;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
-import com.hp.hpl.jena.tdb.bplustree.BPlusTreeParams;
 
 public class TestBTreeLong extends BaseTest
 {
