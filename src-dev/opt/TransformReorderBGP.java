@@ -6,13 +6,16 @@
 
 package opt;
 
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Set;
 
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.TransformCopy;
 import com.hp.hpl.jena.sparql.algebra.op.OpBGP;
 import com.hp.hpl.jena.sparql.core.BasicPattern;
+import com.hp.hpl.jena.sparql.util.VarUtils;
 
 public class TransformReorderBGP extends TransformCopy
 {
@@ -20,6 +23,7 @@ public class TransformReorderBGP extends TransformCopy
     {
         BasicPattern pattern = opBGP.getPattern() ;
         BasicPattern pattern2 = new BasicPattern() ;
+        Set patternVarsScope = new HashSet() ;
         
         // Choose order.
         // TODO
@@ -27,6 +31,10 @@ public class TransformReorderBGP extends TransformCopy
         {
             Triple triple = (Triple)iter.next();
             System.out.println("Process: "+triple) ;
+            
+            // Vars in scope.
+            VarUtils.addVarsFromTriple(patternVarsScope, triple) ;
+            
             pattern2.add(triple) ;
         }
         return new OpBGP(pattern2) ; 
