@@ -183,11 +183,11 @@ public class BPlusTree implements Iterable<Record>, RangeIndex
         {
             // Existing BTree
             root = nodeManager.getRoot(rootIdx) ;
+            
             rootIdx = root.getId() ;
             // Build root node.
             // Per session count only.
             sessionCounter = 0 ;
-            log.debug("Existing BTree: crude implementation of size") ; 
         }
         else
         {
