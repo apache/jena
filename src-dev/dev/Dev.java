@@ -12,16 +12,13 @@ public class Dev
 
     // Build needs to create tmp/testing
     
-    // CI
+    // CI - tidy up
+    // CC dashborad assumes it's the default target
 
-    // PtrBuffer has ref to BTreeParams.
-    // !!!!!!
-
+    // Huge store : 96bits hash ids?
     // IndexBuilder to migrate to be policy for data files as well.
     
     // PExt!
-    
-    // Complete refactoring for 96 bit ids.
     
     // removeAll implementation: depends on iterator.remove
     // but can do faster as a specific operation.
