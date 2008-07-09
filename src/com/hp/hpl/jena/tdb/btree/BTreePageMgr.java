@@ -225,12 +225,12 @@ final class BTreePageMgr
         {
             // XXX Leaf/Non-leaf
             // Will be zero.
-            ptrBuffLen = params.MaxPtr * BTreeParams.PtrLength ;
+            ptrBuffLen = params.MaxPtr * BTreeParams.getPtrLength() ;
             recBuffLen = params.MaxRecLeaf * params.getRecordLength() ;
         }
         else
         {
-            ptrBuffLen = params.MaxPtr * BTreeParams.PtrLength ;
+            ptrBuffLen = params.MaxPtr * BTreeParams.getPtrLength() ;
             recBuffLen = params.MaxRecNonLeaf * params.getRecordLength() ;
         }
 

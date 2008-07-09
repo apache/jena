@@ -6,6 +6,7 @@
 
 package com.hp.hpl.jena.tdb.bplustree;
 
+import static com.hp.hpl.jena.tdb.Const.* ;
 import org.slf4j.Logger;
 
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
@@ -28,11 +29,10 @@ public class BPlusTreeParams
     public static boolean Logging = false ;                  // Turn on/off logging the hard way
 
     /* The gap is extra space in a node - some books have node size as 2*N 
-     * (often for the classic insertion algorithm where it' easier to implement
+     * (often for the classic insertion algorithm where it's easier to implement
      * by inserting then splitting).
      */ 
     private static final int Gap            = 0 ;  
-    public static final int PtrLength       = 4 ;
     
     public static final int RootParent      = -2 ;
     public static final int NoParent        = -99 ;
@@ -131,9 +131,9 @@ public class BPlusTreeParams
         return order ;
     }
 
-    public static int getPtrLength()
+    public int getPtrLength()
     {
-        return PtrLength ;
+        return SizeOfPointer ;
     }
 
     public int getRecordLength()
@@ -183,7 +183,7 @@ public class BPlusTreeParams
         // N = (X+1-Gap)/2
         blockSize -= BlockHeaderSize ;
         
-        int X = (blockSize-recordLength)/(recordLength+PtrLength) ;
+        int X = (blockSize-recordLength)/(recordLength+SizeOfPointer) ;
         int N = (X+1-Gap)/2 ;
         return N ;
     }
@@ -192,7 +192,7 @@ public class BPlusTreeParams
     public static int calcBlockSize(int bTreeOrder, RecordFactory factory) 
     {
         BPlusTreeParams p = new BPlusTreeParams(bTreeOrder, factory) ;
-        int x = p.getMaxRec()*factory.recordLength() + p.getMaxPtr()*PtrLength ;
+        int x = p.getMaxRec()*factory.recordLength() + p.getMaxPtr()*SizeOfPointer ;
         x += BlockHeaderSize ;
         return x ;
     }

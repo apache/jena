@@ -6,6 +6,7 @@
 
 package com.hp.hpl.jena.tdb.btree;
 
+import static com.hp.hpl.jena.tdb.Const.* ;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 
 
@@ -25,7 +26,7 @@ public class BTreeParams
      * by inserting then splitting).
      */ 
     private static final int Gap            = 0 ;  
-    public static final int PtrLength       = 4 ;
+    //private static final int PtrLength      = 4 ;
     
     public static final int RootParent      = -2 ;
     public static final int NoParent        = -99 ;
@@ -124,7 +125,7 @@ public class BTreeParams
 
     public static int getPtrLength()
     {
-        return PtrLength ;
+        return SizeOfPointer ;
     }
 
     public int getRecordLength()
@@ -164,7 +165,7 @@ public class BTreeParams
         // N = (X+1-Gap)/2
         blockSize -= BlockHeaderSize ;
         
-        int X = (blockSize-recordLength)/(recordLength+PtrLength) ;
+        int X = (blockSize-recordLength)/(recordLength+SizeOfPointer) ;
         int N = (X+1-Gap)/2 ;
         return N ;
     }
@@ -173,7 +174,7 @@ public class BTreeParams
     public static int calcBlockSize(int bTreeOrder, RecordFactory factory) 
     {
         BTreeParams p = new BTreeParams(bTreeOrder, factory) ;
-        int x = p.getMaxRecNonLeaf()*factory.recordLength() + p.getMaxPtr()*PtrLength ;
+        int x = p.getMaxRecNonLeaf()*factory.recordLength() + p.getMaxPtr()*SizeOfPointer ;
         x += BlockHeaderSize ;
         return x ;
     }

@@ -22,7 +22,10 @@ public class PGraphFactory
     static Logger log = LoggerFactory.getLogger(PGraphBase.class) ;
 
     /** Create a graph backed with storage at a particular location */
-    public static PGraphBase create(Location location)  { return create(IndexBuilder.get(), location) ; }
+    public static PGraphBase create(Location location)
+    { 
+        return create(IndexBuilder.get(), location) ;
+    }
     
     /** Create a graph backed with storage at a particular location using a system of indexes */
     public static PGraphBase create(IndexBuilder factory, Location location)

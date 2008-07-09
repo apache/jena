@@ -49,6 +49,10 @@ public class Run
     
     public static void main(String ... args)
     {
+        FileOps.clearDirectory("DB") ;
+        tdb.tdbloader.main(new String[]{"--set", "tdb:indexType=bplustree", 
+            "/home/afs//Datasets/DBPediaBM/dbp-homepages.nt"}) ;
+        System.exit(1) ;
         //org.apache.log4j.Logger.getLogger("com.hp.hpl.jena.tdb").setLevel(Level.ALL) ;
         // Don't seem to tbe writing to disk.
         // Run once data created. 

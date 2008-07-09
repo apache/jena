@@ -223,7 +223,7 @@ final class BPTreeNodeMgr
     {
         BPlusTreeParams params = bTree.getParams() ;
 
-        int ptrBuffLen = params.MaxPtr * BPlusTreeParams.PtrLength ;
+        int ptrBuffLen = params.MaxPtr * params.getPtrLength() ;
         int recBuffLen = params.MaxRec * params.getRecordLength() ;
 
         n.setId(-1) ;

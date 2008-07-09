@@ -29,8 +29,10 @@ public class Const
     
     /** Size, in bytes, of the persistent representation of a node id */
     public static final int SizeOfNodeId            = NodeId.SIZE ;
-    
 
+    /** Size, in bytes, of a pointer between blocks */
+    public static final int SizeOfPointer           = SizeOfInt ;
+    
     /** Size, in bytes, of a triple index record. */
     public static final int IndexRecordLength       = 3 * NodeId.SIZE ;
     

@@ -9,10 +9,8 @@ package dev;
 public class Dev
 {
     // Different names for nodes.dat file under the two schemes.
-    // B+Trees 
-    // BPT iterators.
-    // ?? Problem is when a block is #0, can't tell leaf and non-leaf
-    
+
+    // Build needs to create tmp/testing
     
     // CI
 

@@ -63,7 +63,6 @@ public class PGraphAssembler extends AssemblerBase implements Assembler
 
         String dir = getStringValue(root, pLocation) ;
         Location loc = new Location(dir) ;
-        
         if ( ! root.hasProperty(pIndex) )
             // Make just using the location.
             return TDBFactory.createModel(loc) ;

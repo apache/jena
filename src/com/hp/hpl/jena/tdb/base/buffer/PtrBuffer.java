@@ -13,7 +13,6 @@ import java.nio.IntBuffer;
 
 import com.hp.hpl.jena.tdb.Const;
 import com.hp.hpl.jena.tdb.base.record.RecordException;
-import com.hp.hpl.jena.tdb.btree.BTreeParams;
 
 
 /** An IntBuffer with extra operations */
@@ -27,12 +26,12 @@ public class PtrBuffer extends BufferBase
     
     private PtrBuffer(int maxRec)
     {
-        this(ByteBuffer.allocate(BTreeParams.PtrLength*maxRec), 0) ;
+        this(ByteBuffer.allocate(Const.SizeOfPointer*maxRec), 0) ;
     }
     
     public PtrBuffer(ByteBuffer bb, int num)
     { 
-        super(bb, BTreeParams.PtrLength, num) ;
+        super(bb, Const.SizeOfPointer, num) ;
         iBuff = bb.asIntBuffer() ;
 
         if ( CheckBuffer )

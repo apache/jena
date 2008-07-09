@@ -120,6 +120,8 @@ public class Location
         }
     }
     
+    @Override
+    public String toString() { return "location:"+pathname ; }
 }
 
 /*

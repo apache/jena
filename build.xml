@@ -66,6 +66,7 @@
   <property name="reports.dir"            value="reports"/>
   <property name="reports.dir.xml"        value="reports/xml"/>
   <property name="reports.outdir"         value="reports"/>
+  <property name="test.dir"               value="tmp/testing"/>
 
   <!-- ========================================== -->
   <!-- ==== Setup  -->
@@ -207,7 +208,7 @@
   <target name="run-junit" depends="jar,clean-reports">
     <mkdir dir="${reports.dir}"/>
     <mkdir dir="${reports.dir.xml}"/>
-    <mkdir dir="tmp/testing"/>
+    <mkdir dir="${test.dir}"/>
 
     <!-- Don't stop on failure - set a property instead -->
     <junit printsummary="yes" errorProperty="junit.failed" failureProperty="junit.failed">

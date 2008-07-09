@@ -55,7 +55,6 @@ public class PGraphAssemblerVocab
         // Wire in the extension assemblers (extensions relative to the Jena assembler framework)
         // Domain and range for properties.
         // Separated and use ja:imports
-        
         assemblerClass(g, PGraphType,            new PGraphAssembler()) ;
         assemblerClass(g, PGraphBDBType,         new PGraphAssembler()) ;
         assemblerClass(g, TripleIndexType,       new TripleIndexAssembler()) ;

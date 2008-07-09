@@ -6,6 +6,9 @@
 
 package com.hp.hpl.jena.tdb.index;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.hp.hpl.jena.tdb.Const;
 import com.hp.hpl.jena.tdb.TDB;
 import com.hp.hpl.jena.tdb.TDBException;
@@ -17,10 +20,11 @@ import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 
 public class IndexBuilder
 {
+    private static Logger log = LoggerFactory.getLogger(IndexBuilder.class) ;
+    
     // Migrate to be a general policy place for files.
     final static String indexTypeBTree = "BTree" ;
     final static String indexTypeBPlusTree = "BPlusTree" ;
-    
     final static String defaultIndexType = indexTypeBTree ;
     
     private static IndexBuilder builder = chooseIndexBuilder() ;
@@ -30,21 +34,40 @@ public class IndexBuilder
     
     public static IndexBuilder mem()
     { 
-        String indexType = TDB.getContext().getAsString(TDB.symIndexType, defaultIndexType) ;
-        
-        if (indexType.equalsIgnoreCase(indexTypeBPlusTree))
+        IndexType indexType = IndexType.get() ;
+        switch (indexType)
         {
-            IndexFactoryBPlusTreeMem idxFactory = new IndexFactoryBPlusTreeMem(Const.BlockSizeMem) ;
-            return new IndexBuilder(idxFactory,idxFactory) ;
-        }            
-        
-        if (indexType.equalsIgnoreCase(indexTypeBTree)) 
-        {
-            IndexFactoryBTreeMem idxFactory = new IndexFactoryBTreeMem(Const.BlockSizeMem) ;
-            return new IndexBuilder(idxFactory,idxFactory) ;
-        }    
-        
+            case BTree:
+            {
+                IndexFactoryBTreeMem idxFactory = new IndexFactoryBTreeMem(Const.BlockSizeMem) ;
+                return new IndexBuilder(idxFactory,idxFactory) ;
+            }
+            case BPlusTree:
+            {
+                IndexFactoryBPlusTreeMem idxFactory = new IndexFactoryBPlusTreeMem(Const.BlockSizeMem) ;
+                return new IndexBuilder(idxFactory,idxFactory) ;
+            }
+        }
         throw new TDBException("Memory index builder: Unrecognized index type: " + indexType) ;
+    }
+
+    private static synchronized IndexBuilder chooseIndexBuilder()
+    {
+        IndexType indexType = IndexType.get() ;
+        switch (indexType)
+        {
+            case BTree:
+            {
+                IndexFactoryBTree idx = new IndexFactoryBTree(Const.BlockSize) ;
+                return new IndexBuilder(idx, idx) ;
+            }
+            case BPlusTree:
+            {
+                IndexFactoryBPlusTree idx = new IndexFactoryBPlusTree(Const.BlockSize) ;
+                return new IndexBuilder(idx, idx) ;
+            }
+        }
+        throw new TDBException("Unrecognized index type: " + indexType) ;
     }
 
     /** Create an index at the specified place
@@ -67,26 +90,6 @@ public class IndexBuilder
         return builder.newRangeIndex(location, recordFactory, name) ;
     }
 
-    private static synchronized IndexBuilder chooseIndexBuilder()
-    {
-        String indexType = TDB.getContext().getAsString(TDB.symIndexType, defaultIndexType) ;
-
-        if (indexType.equalsIgnoreCase(indexTypeBPlusTree))
-        {
-            IndexFactoryBPlusTree idx = new IndexFactoryBPlusTree(Const.BlockSize) ;
-            return new IndexBuilder(idx, idx) ;
-        }            
-        
-        if (indexType.equalsIgnoreCase(indexTypeBTree)) 
-        {
-            IndexFactoryBTree idx = new IndexFactoryBTree(Const.BlockSize) ;
-            return new IndexBuilder(idx, idx) ;
-        }            
-
-        throw new TDBException("Unrecognized index type: " + indexType) ;
-    }
-    
-    
     // ---- The class ....
     IndexFactory factoryIndex = null ;
     IndexRangeFactory builderRangeIndex = null ;
@@ -106,6 +109,41 @@ public class IndexBuilder
     public RangeIndex newRangeIndex(Location location, RecordFactory factory, String name)
     {
         return builderRangeIndex.createRangeIndex(location, name, factory) ;
+    }
+    
+    enum IndexType
+    {
+        BTree 
+        { @Override public String getName() { return "BTree" ; } } ,
+        BPlusTree
+        { @Override public String getName() { return "BPlusTree" ; } } ,
+        ;
+        
+        abstract public String getName() ;
+
+        static IndexType get()
+        {
+            boolean defaultSetting = false ;
+            String x = TDB.getContext().getAsString(TDB.symIndexType, defaultIndexType) ;
+            if ( x == null )
+            {
+                defaultSetting = true ;
+                x = defaultIndexType ;
+            }
+            IndexType iType = get(x) ;
+            if ( !defaultSetting )
+                log.info("Index type: "+iType) ;
+            
+            return iType ;
+        }
+        
+        static IndexType get(String name)
+        {
+            if ( name.equalsIgnoreCase(indexTypeBTree) ) return BTree ;
+            if ( name.equalsIgnoreCase(indexTypeBPlusTree) ) return BPlusTree ;
+            return null ;
+        }
+        @Override public String toString() { return getName() ; }
     }
 }
 
