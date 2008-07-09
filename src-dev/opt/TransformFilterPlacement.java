@@ -31,12 +31,17 @@ import com.hp.hpl.jena.sparql.util.VarUtils;
 
 public class TransformFilterPlacement extends TransformCopy
 {
+    static boolean doFilterPlacement = true ;
+    
     public TransformFilterPlacement()
     { }
     
     // **** Replacement for FilterPlacement.
     public Op transform(OpFilter opFilter, Op x)
     {
+        if ( ! doFilterPlacement )
+            return super.transform(opFilter, x) ;
+        
         // (filter (BGP ...) ) only. 
         if ( ! ( x instanceof OpBGP ) )
             return super.transform(opFilter, x) ;
@@ -144,9 +149,8 @@ public class TransformFilterPlacement extends TransformCopy
         }
         return op ;
     }
-    
-
 }
+
 /*
  * (c) Copyright 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.

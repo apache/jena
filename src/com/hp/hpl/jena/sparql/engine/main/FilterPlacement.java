@@ -156,7 +156,8 @@ public class FilterPlacement
         return placeFilters(exprs, ops, varScope, input) ;
     }
      
-    public QueryIterator placeFiltersProcedure(ExprList exprs, OpProcedure opProc, QueryIterator input)
+    // Err - not sure this is useful.
+    public QueryIterator _placeFiltersProcedure(ExprList exprs, OpProcedure opProc, QueryIterator input)
     {
         if ( ! doFilterPlacement )
             return buildOpFilter(exprs, opProc, input) ;
