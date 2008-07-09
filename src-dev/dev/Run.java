@@ -29,6 +29,7 @@ import com.hp.hpl.jena.tdb.base.block.BlockMgrFactory;
 import com.hp.hpl.jena.tdb.base.file.Location;
 import com.hp.hpl.jena.tdb.base.record.Record;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
+import com.hp.hpl.jena.tdb.base.recordfile.RecordBufferPage;
 import com.hp.hpl.jena.tdb.bplustree.BPlusTree;
 import com.hp.hpl.jena.tdb.bplustree.BPlusTreeParams;
 import com.hp.hpl.jena.tdb.btree.BTreeParams;
@@ -49,10 +50,10 @@ public class Run
     
     public static void main(String ... args)
     {
-        org.apache.log4j.Logger.getLogger("com.hp.hpl.jena.tdb").setLevel(Level.ALL) ;
+        //org.apache.log4j.Logger.getLogger("com.hp.hpl.jena.tdb").setLevel(Level.ALL) ;
         // Don't seem to tbe writing to disk.
         // Run once data created. 
-        bpt_test() ; System.exit(0) ;
+        //bpt_test() ; System.exit(0) ;
         
         // Also check absent triples.
         
@@ -60,7 +61,7 @@ public class Run
         TDB.getContext().set(TDB.symIndexType, "bplustree") ;
         
         Location loc = new Location("tmp") ;
-        FileOps.clearDirectory(loc.getDirectoryPath()) ;
+        //FileOps.clearDirectory(loc.getDirectoryPath()) ;
         
         Graph graph = TDBFactory.createGraph(loc) ;
         
@@ -105,32 +106,58 @@ public class Run
     
     public static void bpt_test()
     {
-        TDB.getContext().set(TDB.symFileMode, "mapped" ) ;
+        //TDB.getContext().set(TDB.symFileMode, "mapped" ) ;
         Location location = new Location("tmp") ;
-        FileOps.clearDirectory(location.getDirectoryPath()) ;
-        
-        int order = BPlusTreeParams.calcOrder(Const.BlockSize, PGraphBase.indexRecordFactory) ;
-        BPlusTreeParams params = new BPlusTreeParams(order, PGraphBase.indexRecordFactory) ;
-        
         String fnNodes = location.getPath("X", "idn") ;
-        
-        BlockMgr blkMgrNodes = BlockMgrFactory.createFile(fnNodes, Const.BlockSize) ;
-        
         String fnRecords = location.getPath("X", "dat") ;
-        BlockMgr blkMgrRecords = BlockMgrFactory.createFile(fnRecords, Const.BlockSize) ;
         
-        BPlusTree bt = BPlusTree.attach(params, blkMgrRecords, blkMgrNodes) ;
+        boolean disk = true ;
         
+        BPlusTree bt = null ;
+        BPlusTreeParams params = null ;
+        
+        BlockMgr mgr1 = null ;
+        BlockMgr mgr2 = null ;
+        
+        if ( disk )
+        {
+            FileOps.clearDirectory(location.getDirectoryPath()) ;
+            int order = BPlusTreeParams.calcOrder(Const.BlockSize, PGraphBase.indexRecordFactory) ;
+            params = new BPlusTreeParams(order, PGraphBase.indexRecordFactory) ;
+            mgr1 = BlockMgrFactory.createFile(fnNodes, Const.BlockSize) ;
+            mgr2 = BlockMgrFactory.createFile(fnRecords, Const.BlockSize) ;
+        }
+        else
+        {
+            params = new BPlusTreeParams(5, PGraphBase.indexRecordFactory.keyLength(), PGraphBase.indexRecordFactory.valueLength()) ;
+            
+            int maxRecords = 2*5 ;
+            int rSize = RecordBufferPage.HEADER+(maxRecords*params.getRecordLength()) ;
+            
+            mgr1 = BlockMgrFactory.createMem(params.getBlockSize()) ;
+            mgr2 = BlockMgrFactory.createMem(rSize) ;
+        }
+        
+        bt = BPlusTree.attach(params, mgr1, mgr2) ;
         NodeId n = NodeId.create(0x41424344) ;
         Record rn = NodeLib.record(PGraphBase.indexRecordFactory, n, n, n) ;
         bt.add(rn) ;
         bt.sync(true) ;
+        
+        bt.dump() ;
+        
+        System.out.println() ;
+        
         bt = null ;
         
         // Reattach
-        blkMgrNodes = BlockMgrFactory.createFile(fnNodes, Const.BlockSize) ;
-        blkMgrRecords = BlockMgrFactory.createFile(fnRecords, Const.BlockSize) ;
-        bt = BPlusTree.attach(params, blkMgrRecords, blkMgrNodes) ;
+        if ( disk )
+        {
+            mgr1 = BlockMgrFactory.createFile(fnNodes, Const.BlockSize) ;
+            mgr2 = BlockMgrFactory.createFile(fnRecords, Const.BlockSize) ;
+        }
+        
+        bt = BPlusTree.attach(params, mgr1, mgr2) ;
         
         System.out.println("Loop") ;
         Iterator<Record> iter = bt.iterator() ;
