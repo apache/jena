@@ -207,6 +207,7 @@
   <target name="run-junit" depends="jar,clean-reports">
     <mkdir dir="${reports.dir}"/>
     <mkdir dir="${reports.dir.xml}"/>
+    <mkdir dir="tmp/testing"/>
 
     <!-- Don't stop on failure - set a property instead -->
     <junit printsummary="yes" errorProperty="junit.failed" failureProperty="junit.failed">
