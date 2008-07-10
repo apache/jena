@@ -22,18 +22,26 @@ import com.hp.hpl.jena.sparql.util.VarUtils;
 
 public class TransformReorderBGP extends TransformCopy
 {
+    private Graph graph ;
+
+    public TransformReorderBGP(Graph graph) { this.graph = graph ; }
+    
     public Op transform(OpBGP opBGP)
     {
         BasicPattern pattern = opBGP.getPattern() ;
-        BasicPattern pattern2 = rewrite(pattern) ; 
+        BasicPattern pattern2 = rewrite(pattern, graph) ; 
         return new OpBGP(pattern2) ; 
         //return super.transform(opBGP) ;
     }
     
+    // Use an extenal configuration approach. 
     public static BasicPattern rewrite(BasicPattern pattern)
     {
         BasicPattern pattern2 = new BasicPattern() ;
         Set patternVarsScope = new HashSet() ;
+        
+        // Get optimization rules file. 
+        // XXX
         
         // Choose order.
         // Not easy at this point as we do not know the graph yet.
@@ -46,13 +54,15 @@ public class TransformReorderBGP extends TransformCopy
             // Non-graph specific reordering possible.
             VarUtils.addVarsFromTriple(patternVarsScope, triple) ;
             
+            // XXX
+            // Decide
             pattern2.add(triple) ;
         }
         return pattern2 ;
     }
     
     // Toy
-    public static BasicPattern rewrite(Graph graph, BasicPattern pattern)
+    public static BasicPattern rewrite(BasicPattern pattern, Graph graph)
     {
         BasicPattern pattern2 = new BasicPattern() ;
         Set patternVarsScope = new HashSet() ;
