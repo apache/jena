@@ -13,7 +13,7 @@ public class Dev
     // Build needs to create tmp/testing
     
     // CI - tidy up
-    // CC dashborad assumes it's the default target
+    // CC dashborad assumes the use of ant default target
 
     // Huge store : 96bits hash ids?
     // IndexBuilder to migrate to be policy for data files as well.
