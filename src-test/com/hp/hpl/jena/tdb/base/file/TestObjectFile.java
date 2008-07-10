@@ -6,6 +6,7 @@
 
 package com.hp.hpl.jena.tdb.base.file;
 
+import static com.hp.hpl.jena.tdb.ConfigTest.testingDir; 
 import static lib.FileOps.clearDirectory;
 import org.junit.Test;
 import test.BaseTest;
@@ -17,7 +18,7 @@ public class TestObjectFile extends BaseTest
 {
     @Test public void object_file_1()
     {
-        String dir = "testing/tmp" ;
+        String dir = testingDir ;
         clearDirectory(dir) ;
         Location loc = new Location(dir) ;
         ObjectFile f = FileFactory.createObjectFileDisk(loc.getPath("xyz", "node")) ;

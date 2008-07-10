@@ -1,28 +1,18 @@
 /*
- * (c) Copyright 2007, 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package test;
+package com.hp.hpl.jena.tdb;
 
-import org.junit.Assert;
-
-public class BaseTest extends Assert
+public class ConfigTest
 {
-    public static void assertNotEquals(Object a, Object b)
-    {
-         assertFalse(a.equals(b)) ;
-    }
-
-    public static void assertNotEquals(String msg, Object a, Object b)
-    {
-         assertFalse(msg, a.equals(b)) ;
-    }
+    public static final String testingDir = "testing/tmp" ;
 }
 
 /*
- * (c) Copyright 2007, 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

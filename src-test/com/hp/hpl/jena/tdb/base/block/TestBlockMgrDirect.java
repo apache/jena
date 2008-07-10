@@ -6,13 +6,14 @@
 
 package com.hp.hpl.jena.tdb.base.block;
 
+import static com.hp.hpl.jena.tdb.ConfigTest.testingDir;
 import lib.FileOps;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 
 public class TestBlockMgrDirect extends AbstractTestBlockMgr
 {
-    static final String filename = "testing/tmp/block-mgr" ;
+    static final String filename = testingDir+"/block-mgr" ;
     
     @BeforeClass static public void remove1() { FileOps.delete(filename) ; } 
     @AfterClass  static public void remove2() { FileOps.delete(filename) ; }

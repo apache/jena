@@ -6,13 +6,14 @@
 
 package com.hp.hpl.jena.tdb.base.block;
 
+import static com.hp.hpl.jena.tdb.ConfigTest.testingDir;
 import lib.FileOps;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 
 public class TestBlockMgrMapped extends AbstractTestBlockMgr
 {
-    static final String filename = "testing/tmp/block-mgr" ;
+    static final String filename = testingDir+"/block-mgr" ;
     
     // Windows does not allow memory mapped files to be deleted.
     
