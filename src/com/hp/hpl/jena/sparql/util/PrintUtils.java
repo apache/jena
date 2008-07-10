@@ -161,8 +161,9 @@ public class PrintUtils
     public static void printQuad(IndentedWriter out, Query query, boolean printOptimized)
     {
         Op op = Algebra.compileQuad(query, printOptimized) ;
-        SerializationContext sCxt = new SerializationContext(query) ;
-        op.output(out, sCxt) ;
+        WriterSSE.out(out, op, query) ;
+//        SerializationContext sCxt = new SerializationContext(query) ;
+//        op.output(out, sCxt) ;
         out.flush() ;
     }
 }

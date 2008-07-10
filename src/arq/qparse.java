@@ -32,7 +32,7 @@ public class qparse extends CmdARQ
     ModQueryOut   modOutput  =    new ModQueryOut() ; 
     ModEngine     modEngine  =    new ModEngine() ;
     protected final ArgDecl argDeclPrint  = new ArgDecl(ArgDecl.HasValue, "print") ;
-    protected final ArgDecl argDeclOpt  = new ArgDecl(ArgDecl.HasValue, "opt", "optimize") ;
+    protected final ArgDecl argDeclOpt  = new ArgDecl(ArgDecl.NoValue, "opt", "optimize") ;
     
     boolean printQuery = false ;
     boolean printOp = false ;
@@ -53,7 +53,7 @@ public class qparse extends CmdARQ
         super.addModule(modEngine) ;
         super.getUsage().startCategory(null) ;
         super.add(argDeclPrint, "--print", "Print in various forms [query, op, quad, plan]") ;
-        super.add(argDeclOpt, "--opt=boolean", "Print with or algebra-level optimization") ; 
+        super.add(argDeclOpt, "--opt", "Print with algebra-level optimization") ; 
     }
     
     protected void processModulesAndArgs()
@@ -62,10 +62,8 @@ public class qparse extends CmdARQ
         
         if ( contains(argDeclOpt) )
         {
-            if ( hasValueOfTrue(argDeclOpt) )
+            if ( contains(argDeclOpt) )
                 printOptimized = true ;
-            else if ( hasValueOfFalse(argDeclOpt) )
-                printOptimized = false ;
             else
                 throw new CmdException("Not a recognized: "+getValue(argDeclOpt)+" : Choices are: true or false") ;
             
@@ -106,16 +104,10 @@ public class qparse extends CmdARQ
     
     protected void exec()
     {
-        printOptimized = modEngine.isAlgebraOptimizing() ;
-        
         try{
             Query query = modQuery.getQuery() ;
-            //QueryExecution qExec = QueryExecutionFactory.create(query, DatasetFactory.create()) ;
-
-            // Check the query.
-            
             try {
-                QueryUtils.checkQuery(query, modEngine.isAlgebraOptimizing()) ;
+                QueryUtils.checkQuery(query, true) ;
             } catch (QueryCheckException ex)
             {
                 System.err.println() ;
