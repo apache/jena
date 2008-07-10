@@ -54,8 +54,8 @@ CREATE TABLE ${c}graph (
 CREATE UNIQUE INDEX ${c}IXLIT ON ${c}LONG_LIT(Head,ChkSum);;
 CREATE UNIQUE INDEX ${c}IXURI ON ${c}LONG_URI(Head,ChkSum);;
 CREATE UNIQUE INDEX ${c}IXBND ON ${c}PREFIX(Head,ChkSum);;
-CREATE INDEX ${c}IXSP ON ${c}SYS_STMT(Subj, Prop);;
-CREATE INDEX ${c}IXO ON ${c}SYS_STMT(Obj);;
+CREATE INDEX ${c}IXSP ON ${c}sys_stmt(Subj, Prop);;
+CREATE INDEX ${c}IXO ON ${c}sys_stmt(Obj);;
 
 #-------------------------------------------------------------------
 # Change the lock level for a table to suppress pagelocks, not used
