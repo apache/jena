@@ -24,6 +24,9 @@ import com.hp.hpl.jena.query.ARQ;
 
 public class TransformEqualityFilter extends TransformCopy
 {
+    // TODO (Carefully) Two forms - aggressive and strict
+    //Aggressive on strins goes for efficient over exactlness of xsd:string/plain literal. 
+    
     public TransformEqualityFilter() {}
     
     public Op transform(OpFilter opFilter, Op subOp)

@@ -4,18 +4,19 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.engine.main;
+package opt;
 
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.TransformBase;
 import com.hp.hpl.jena.sparql.algebra.op.OpBGP;
 
-public class PropertyFunctionTransform extends TransformBase
+public class TransformPropertyFunction extends TransformBase
 {
     public Op transform(OpBGP opBGP)
     {
         // Split on PropertyFunctions.
-        // Currently done in Stage processing.
+        // Currently done in algebra.PropertyFunctionGenerator
+        // XX Change to new tranform framework 
         return opBGP ;
     }
 }
