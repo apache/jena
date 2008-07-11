@@ -8,6 +8,8 @@ package dev;
 
 public class Dev
 {
+    // Sort out names - Names.xyz
+    
     // Different names for nodes.dat file under the two schemes.
 
     // Build needs to create tmp/testing
