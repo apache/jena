@@ -1,11 +1,5 @@
 PREFIX : <http://example/>
 
-SELECT  ?s ?g ?c ?a ?n
-WHERE {
-                ?s :gender ?g .
-                ?s :country ?c .
-                ?s :name ?n .
-                ?s :age  ?a
-                FILTER(?a < 50)
-}
+SELECT  *
+WHERE { {} ?s ?p ?o }
 
