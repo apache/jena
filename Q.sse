@@ -20,5 +20,6 @@
       (BGP
         (triple ?s :p ?z)
         (triple ?s apf:textMatch '+word')
+        (triple ?s :p ?z)
         )
       )))

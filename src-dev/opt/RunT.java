@@ -20,32 +20,9 @@ public class RunT
         System.exit(0) ;
     }
     
-    /*
-     * Move PF to Transforms
-     * 
-     * TransformFilterPlacement  [DONE] - not enabled, yet.
-     * TransformPropertyFunction [DONE] - not enabled, yet.
-     * Simplify [DONE] 
-     *    - algebra.opt.TransformSimplify 
-     *    -- called by AlgebraGenerator because of SimplifyEarly
-     * Equality filter [DONE]
-     *    - algebra.opt.TransformEqualityFilter
-     *    -- called via Algebra.compile(,optimize)
-     *    
-     * TransformRemoveLabels
-     * TransformReoderBGP
-     */
-    
     public static void rewrite()
     {
-        // Stage 0 - always
-        //    Simplify
-        // Stage 1 - general algebra rewrites
-        //    ? Filter placement
-        //    ? Equality filter
-        // Stage 2 - per execution -- context and dataset available.
-        //    ? Property function
-        //    ? BGP rewrites
+ 
         
         Op op = SSE.readOp("Q.sse") ;
         // Always in algebra

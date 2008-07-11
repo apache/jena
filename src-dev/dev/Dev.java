@@ -8,6 +8,31 @@ package dev;
 
 public class Dev
 {
+    // Stage 0 - always
+    //    Simplify
+    // Stage 1 - general algebra rewrites
+    //    ? Filter placement
+    //    ? Equality filter
+    // Stage 2 - per execution -- context and dataset available.
+    //    ? Property function
+    //    ? BGP rewrites
+    
+    /*
+     * Move PF to Transforms
+     * 
+     * TransformFilterPlacement  [DONE] - not enabled, yet.
+     * TransformPropertyFunction [DONE] - not enabled, yet.
+     * Simplify [DONE] 
+     *    - algebra.opt.TransformSimplify 
+     *    -- called by AlgebraGenerator because of SimplifyEarly
+     * Equality filter [DONE]
+     *    - algebra.opt.TransformEqualityFilter
+     *    -- called via Algebra.compile(,optimize)
+     *    
+     * TransformRemoveLabels
+     * TransformReoderBGP
+     */
+    
     /*
      * Getting into an algebra for *execution*
      * Separate system or extension of algebra?
@@ -17,11 +42,9 @@ public class Dev
      *   Transform engine
      *   2 * evaluations (will become one!)
 
-    + One-sided versions of operators for a sequence.
-      Only valid in a sequence.
-      Have a "marker" op meaning current working table.
+    + Have a "marker" op meaning current working table - the current enclosing sequnce (or Unit table if none?)
           (seq) (current)
-          
+      Hence:    
           (filter (current) ...)
           (leftJoin (current) other)
     
@@ -35,10 +58,10 @@ public class Dev
 
     Direct (flow based) execution in main - remove the FilterPlacement and BGP optimizer to an optimize step. 
 
-+ Stages and FilterPlacement.
++ Stages
     invert Stage/StageList
     Formalse the TDB stacking generator approach.
-      Or even register stage facctories with accept/create 
+      Or even register stage factories with accept/create 
   
     StateGenerator (and invert StageLists) 
             
