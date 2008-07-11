@@ -6,14 +6,17 @@
 
 package com.hp.hpl.jena.sparql.suites;
 
-import com.hp.hpl.jena.sparql.algebra.Op;
-import com.hp.hpl.jena.sparql.algebra.op.OpNull;
-import com.hp.hpl.jena.sparql.sse.Item;
-import com.hp.hpl.jena.sparql.sse.SSE;
-import com.hp.hpl.jena.sparql.sse.builders.BuilderNode;
 
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+
+import com.hp.hpl.jena.sparql.algebra.Op;
+import com.hp.hpl.jena.sparql.algebra.op.OpLabel;
+import com.hp.hpl.jena.sparql.algebra.op.OpNull;
+import com.hp.hpl.jena.sparql.algebra.op.OpTable;
+import com.hp.hpl.jena.sparql.sse.Item;
+import com.hp.hpl.jena.sparql.sse.SSE;
+import com.hp.hpl.jena.sparql.sse.builders.BuilderNode;
 
 public class TestSSE_Builder extends TestCase
 {
@@ -35,9 +38,10 @@ public class TestSSE_Builder extends TestCase
     public void test_08() { SSE.parseExpr("(+ 1 2)") ; }
     
     public void testOp_01() { opSame("(null)") ; }
-    public void testOp_02() { opSame("(null)", new OpNull()) ; }
+    public void testOp_02() { opSame("(null)", OpNull.create()) ; }
     public void testOp_03() { opSame("(bgp [triple ?s ?p ?o])") ; }
 
+    public void testOp_04() { opSame("(label 'ABC' (table unit))", new OpLabel("ABC", OpTable.unit())) ; }
     
     private static void opSame(String str)
     {

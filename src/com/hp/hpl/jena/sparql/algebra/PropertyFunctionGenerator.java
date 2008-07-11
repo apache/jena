@@ -31,12 +31,23 @@ import com.hp.hpl.jena.sparql.util.graph.GraphList;
 
 public class PropertyFunctionGenerator //implements StageGenerator
 {
+    public static Op compile(OpBGP opBGP, Context context)
+    {
+        if ( opBGP.getPattern().isEmpty() )
+            return opBGP ;
+        return compilePattern(opBGP.getPattern(), context) ;
+    }
+    
     public static Op compile(BasicPattern pattern, Context context)
     {
         if ( pattern.isEmpty() )
-            // Fixme.
             return new OpBGP(pattern) ;
+        return compilePattern(pattern, context) ;
+    }
         
+    private static Op compilePattern(BasicPattern pattern, Context context)
+    {   
+
         boolean doingMagicProperties = context.isTrue(ARQ.enablePropertyFunctions) ;
         if ( ! doingMagicProperties )
             return new OpBGP(pattern) ;

@@ -1,46 +1,48 @@
 /*
- * (c) Copyright 2007, 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.algebra.op;
+package opt;
 
 import com.hp.hpl.jena.sparql.algebra.Op;
-import com.hp.hpl.jena.sparql.algebra.OpVisitor;
-import com.hp.hpl.jena.sparql.algebra.Transform;
-import com.hp.hpl.jena.sparql.sse.Tags;
-import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
+import com.hp.hpl.jena.sparql.engine.ExecutionContext;
+import com.hp.hpl.jena.sparql.util.Context;
 
-public class OpNull extends Op0
+public class OptimizeExecution implements Rewrite
 {
-    // Only really need one.
-    public static OpNull create() { return new OpNull() ; }
-    
-    private OpNull() { }
-    
-    public Op apply(Transform transform)
-    { return transform.transform(this) ; }
+    // Optimize at query execution time.
 
-    public Op copy() { return this ; }
-
-    public void visit(OpVisitor opVisitor) { opVisitor.visit(this) ; }
-
-    public String getName()
+    public static Op optimize(Op op, ExecutionContext execCxt)
     {
-        return Tags.tagNull ;
+        Context context = execCxt.getContext() ;
+        // Look up to find the rewriter
+        Rewrite opt = new OptimizeExecution(execCxt) ;
+        return opt.rewrite(op) ;
     }
 
-    public int hashCode()
-    { return OpBase.HashNull ; }
+    // The execution-independent optimizations
+    public static Op optimize(Op op, Context context)
+    {
+        //Rewrite opt = new OptimizeExecution( ;
+        //return opt.rewrite(op) ;
+        return null ;
+    }
 
+    
+    private OptimizeExecution(ExecutionContext execCxt)
+    {}
 
-    public boolean equalTo(Op other, NodeIsomorphismMap labelMap)
-    { return ( other instanceof OpNull ) ; }
+    public Op rewrite(Op op)
+    {
+        return op ;
+    }
+
 }
 
 /*
- * (c) Copyright 2007, 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

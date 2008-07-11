@@ -105,6 +105,12 @@ public class OpWalker
         public void visit(OpNull opNull)
         { visit0(opNull) ; }
 
+        public void visit(OpLabel opLabel)
+        {
+            if ( opLabel.hasSubOp() )
+                opLabel.getSubOp().visit(visitor) ;
+            opLabel.visit(visitor) ;
+        }
         public void visit(OpAssign opAssign)
         { visit1(opAssign) ; }
 

@@ -7,23 +7,75 @@
 package opt;
 
 import com.hp.hpl.jena.sparql.algebra.Op;
+import com.hp.hpl.jena.sparql.algebra.Transform;
 import com.hp.hpl.jena.sparql.algebra.Transformer;
+import com.hp.hpl.jena.sparql.algebra.opt.TransformSimplify;
 import com.hp.hpl.jena.sparql.sse.SSE;
 
 public class Run
 {
     public static void main(String[] argv) throws Exception
     {
-        filterPlacement() ;
+        rewrite() ;
+        System.exit(0) ;
     }
     
-    public static void filterPlacement()
+    /*
+     * Move PF to Transforms
+     * 
+     * FilterPlacment [DONE] - not enabled, yet.
+     * Simplify [DONE] 
+     *    - algebra.opt.TransformSimplify 
+     *    -- called by AlgebraGenerator because of SimplifyEarly
+     * Equality filter [DONE]
+     *    - algebra.opt.TransformEqualityFilter
+     *    -- called via Algebra.compile(,optimize)
+     */
+    
+    public static void rewrite()
     {
+        // Stage 0 - always
+        //    Simplify
+        // Stage 1 - property functions
+        //    Property function <-- needs context
+        // Stage 2 - general algebra rewrites
+        //    ? Filter placement
+        //    ? Equality filter
+        // Stage 3 - per execution -- context and dataset available.
+        //    ? Property function
+        // Stage 4 - during execution
+        //    ? BGP rewrites
+        
         Op op = SSE.readOp("Q.sse") ;
+        // Always
+        op = apply("Simplify", new TransformSimplify(), op) ;
+        //op = apply("Delabel", new TransformRemoveLabels(), op) ;
+        // 
+        op = apply("Filter placement 1", new TransformFilterPlacement(), op) ;
+        op = apply("Filter placement 2", new TransformFilterPlacement(), op) ;  // No-op
+    }
+    
+    static Op apply(String label, Transform transform, Op op)
+    {
+        System.out.println("**** "+label) ;
+        Op op2 = Transformer.transform(transform, op) ;
+        if ( op == op2 ) 
+        {
+            System.out.println("No change (==)") ;
+            System.out.println() ;
+            return op2 ;
+        }
+        
+        if ( op.equals(op2) ) 
+        {
+            System.out.println("No change (equals)") ;
+            System.out.println() ;
+            return op2 ;
+        }
+        
         System.out.println(op) ;
-        op = Transformer.transform(new TransformFilterPlacement(), op) ;
-        System.out.println(op) ;
-        System.exit(0) ;
+        System.out.println(op2) ;
+        return op2 ;
     }
 }
 

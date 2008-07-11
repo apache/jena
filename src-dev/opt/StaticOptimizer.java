@@ -1,46 +1,18 @@
 /*
- * (c) Copyright 2007, 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.algebra.op;
+package opt;
 
-import com.hp.hpl.jena.sparql.algebra.Op;
-import com.hp.hpl.jena.sparql.algebra.OpVisitor;
-import com.hp.hpl.jena.sparql.algebra.Transform;
-import com.hp.hpl.jena.sparql.sse.Tags;
-import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
-
-public class OpNull extends Op0
+public class StaticOptimizer
 {
-    // Only really need one.
-    public static OpNull create() { return new OpNull() ; }
-    
-    private OpNull() { }
-    
-    public Op apply(Transform transform)
-    { return transform.transform(this) ; }
-
-    public Op copy() { return this ; }
-
-    public void visit(OpVisitor opVisitor) { opVisitor.visit(this) ; }
-
-    public String getName()
-    {
-        return Tags.tagNull ;
-    }
-
-    public int hashCode()
-    { return OpBase.HashNull ; }
-
-
-    public boolean equalTo(Op other, NodeIsomorphismMap labelMap)
-    { return ( other instanceof OpNull ) ; }
+    // Transforms that apply to any query, independent of the data
 }
 
 /*
- * (c) Copyright 2007, 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

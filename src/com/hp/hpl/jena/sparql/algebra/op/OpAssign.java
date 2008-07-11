@@ -70,7 +70,7 @@ public class OpAssign extends Op1
             return false ;
         OpAssign assign = (OpAssign)other ;
         
-        if ( ! Utils.eq(assignments, assign.assignments) )
+        if ( ! Utils.equals(assignments, assign.assignments) )
             return false ;
         return getSubOp().equalTo(assign.getSubOp(), labelMap) ;
     }

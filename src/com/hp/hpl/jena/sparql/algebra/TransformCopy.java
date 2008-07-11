@@ -43,6 +43,7 @@ public class TransformCopy implements Transform
     public Op transform(OpExt opExt)                                { return opExt.copy() ; }
     
     public Op transform(OpNull opNull)                              { return opNull.copy() ; }
+    public Op transform(OpLabel opLabel, Op subOp)                  { return xform(opLabel, subOp) ; }
     
     public Op transform(OpList opList, Op subOp)                    { return xform(opList, subOp) ; }
     public Op transform(OpOrder opOrder, Op subOp)                  { return xform(opOrder, subOp) ; }

@@ -22,6 +22,7 @@ import com.hp.hpl.jena.sparql.util.VarUtils;
 
 public class TransformReorderBGP extends TransformCopy
 {
+    // See AFS/src-dev/opt
     private Graph graph ;
 
     public TransformReorderBGP(Graph graph) { this.graph = graph ; }

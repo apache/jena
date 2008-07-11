@@ -26,6 +26,7 @@ public interface Transform
     public Op transform(OpService opService, Op subOp) ;
     public Op transform(OpProcedure opProcedure, Op subOp) ;
     public Op transform(OpPropFunc opPropFunc, Op subOp) ;
+    public Op transform(OpLabel opLabel, Op subOp) ;
 
     // Op2
     public Op transform(OpJoin opJoin, Op left, Op right) ;

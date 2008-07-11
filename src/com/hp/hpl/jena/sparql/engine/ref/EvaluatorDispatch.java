@@ -162,6 +162,15 @@ public class EvaluatorDispatch implements OpVisitor
     { 
         push(TableFactory.createEmpty()) ;
     }
+    
+    public void visit(OpLabel opLabel)
+    {
+        if ( opLabel.hasSubOp() )
+            push(eval(opLabel.getSubOp())) ;
+        else
+            // No subop.
+            push(TableFactory.createUnit()) ;
+    }
 
     public void visit(OpList opList)
     {

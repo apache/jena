@@ -76,6 +76,7 @@ public class BuilderOp
 
         dispatch.put(Tags.tagTable, buildTable) ;
         dispatch.put(Tags.tagNull, buildNull) ;
+        dispatch.put(Tags.tagLabel, buildLabel) ;
     }
 
     // The main recursive build operation.
@@ -495,12 +496,50 @@ public class BuilderOp
     {
         public Op make(ItemList list)
         {
-            BuilderLib.checkLength(1, list, "null") ;
-            return new OpNull() ;
+            BuilderLib.checkLength(1, list, Tags.tagNull) ;
+            return OpNull.create() ;
         }
     } ;
 
+    final protected Build buildLabel = new Build()
+    {
+        public Op make(ItemList list)
+        {
+            BuilderLib.checkLength(2, 3, list, Tags.tagLabel) ;
+            Item label = list.get(1) ;
+            Object str = null ;
+            if ( label.isSymbol() )
+                str = label.getSymbol() ;
+            else if ( label.isNode() )
+            {
+                if ( label.getNode().isLiteral() )
+                {
+                    if ( label.getNode().getLiteralLanguage() == null ||
+                        label.getNode().getLiteralLanguage().equals("") ) ;
+                    str = label.getNode().getLiteralLexicalForm() ;
+                }
+                else
+                    str = label.getNode() ;
+            }
+            else
+                BuilderLib.broken("No a symbol or a node") ;
+            
+            if ( str == null )
+                str = label.toString() ;
+            
+            Op op = null ;
+            
+            if ( list.size() == 3 )
+                op = build(list, 2) ;
+            
+            if ( op == null )
+                return new OpLabel(str) ;
+            else
+                return new OpLabel(str , op) ;
+        }
+    } ;
 }
+
 /*
  * (c) Copyright 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.

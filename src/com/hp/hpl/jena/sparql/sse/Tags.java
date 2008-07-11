@@ -8,115 +8,115 @@ package com.hp.hpl.jena.sparql.sse;
 
 public class Tags
 {
-    static public final String LPAREN         = "(" ;
-    static public final String RPAREN         = ")" ;
+    public static final String LPAREN         = "(" ;
+    public static final String RPAREN         = ")" ;
     
-    static public final String LBRACKET       = "[" ;
-    static public final String RBRACKET       = "]" ;
+    public static final String LBRACKET       = "[" ;
+    public static final String RBRACKET       = "]" ;
     
-    static public final String LBRACE         = "{" ;
-    static public final String RBRACE         = "}" ;
+    public static final String LBRACE         = "{" ;
+    public static final String RBRACE         = "}" ;
     
     // -- Common terms
-    static public final String tagUndef         = "undef" ;
-    static public final String tagNull          = "null" ;
-    static public final String tagDefault       = "default" ;
-    static public final String tagExec          = "exec" ;
-    static public final String tagRow           = "row" ;
+    public static final String tagUndef         = "undef" ;
+    public static final String tagNull          = "null" ;
+    public static final String tagDefault       = "default" ;
+    public static final String tagExec          = "exec" ;
+    public static final String tagRow           = "row" ;
 
     // RDF
-    static public final String tagGraph         = "graph" ;
-    static public final String tagLoad          = "graph@" ;
-    static public final String tagTriple        = "triple" ;
-    static public final String tagQuad          = "quad" ;
-    static public final String tagTriplePath    = "path" ;
+    public static final String tagGraph         = "graph" ;
+    public static final String tagLoad          = "graph@" ;
+    public static final String tagTriple        = "triple" ;
+    public static final String tagQuad          = "quad" ;
+    public static final String tagTriplePath    = "path" ;
     
-    static public final String tagBase          = "base" ;
-    static public final String tagPrefix        = "prefix" ;
-    static public final String tagPrefixMap     = "prefixmap" ;
-    static public final String tagPrefixMapping = "prefixmapping" ;
+    public static final String tagBase          = "base" ;
+    public static final String tagPrefix        = "prefix" ;
+    public static final String tagPrefixMap     = "prefixmap" ;
+    public static final String tagPrefixMapping = "prefixmapping" ;
 
     // SPARQL 
-    static public final String tagDataset       = "dataset" ;
-    static public final String tagNamedGraph    = "namedgraph" ;
-    static public final String tagBinding       = "binding" ;
-    static public final String tagTable         = "table" ;
-    static public final String tagResultSet     = "resultset" ;
+    public static final String tagDataset       = "dataset" ;
+    public static final String tagNamedGraph    = "namedgraph" ;
+    public static final String tagBinding       = "binding" ;
+    public static final String tagTable         = "table" ;
+    public static final String tagResultSet     = "resultset" ;
 
     // SPARQL algebra
-    static public final String tagBGP           = "bgp" ;
-    static public final String tagQuadPattern   = "quadpattern" ;
-    static public final String tagFilter        = "filter" ;
-    // static public final String tagGraph = "graph" ;
-    static public final String tagService       = "service" ;
-    static public final String tagProc          = "proc" ;
-    static public final String tagPropFunc      = "propfunc" ;
-    static public final String tagJoin          = "join" ;
-    static public final String tagSequence      = "sequence" ;
-    static public final String tagLeftJoin      = "leftjoin" ;
-    static public final String tagDiff          = "diff" ;
-    static public final String tagUnion         = "union" ;
+    public static final String tagBGP           = "bgp" ;
+    public static final String tagQuadPattern   = "quadpattern" ;
+    public static final String tagFilter        = "filter" ;
+    // public static final String tagGraph = "graph" ;
+    public static final String tagLabel         = "label" ;
+    public static final String tagService       = "service" ;
+    public static final String tagProc          = "proc" ;
+    public static final String tagPropFunc      = "propfunc" ;
+    public static final String tagJoin          = "join" ;
+    public static final String tagSequence      = "sequence" ;
+    public static final String tagLeftJoin      = "leftjoin" ;
+    public static final String tagDiff          = "diff" ;
+    public static final String tagUnion         = "union" ;
 
-    static public final String tagToList        = "tolist" ;
-    static public final String tagOrderBy       = "order" ;
-    static public final String tagGroupBy       = "group" ;
-    static public final String tagProject       = "project" ;
-    static public final String tagDistinct      = "distinct" ;
-    static public final String tagReduced       = "reduced" ;
-    static public final String tagAssign        = "assign" ;
-    static public final String symAssign        = ":=" ;
-    static public final String tagSlice         = "slice" ;
+    public static final String tagToList        = "tolist" ;
+    public static final String tagOrderBy       = "order" ;
+    public static final String tagGroupBy       = "group" ;
+    public static final String tagProject       = "project" ;
+    public static final String tagDistinct      = "distinct" ;
+    public static final String tagReduced       = "reduced" ;
+    public static final String tagAssign        = "assign" ;
+    public static final String symAssign        = ":=" ;
+    public static final String tagSlice         = "slice" ;
     
     // Paths
-    static public final String tagPath          = "path" ;
-    static public final String tagPathSeq       = "seq" ;
-    static public final String tagPathAlt       = "alt" ;
-    static public final String tagPathMod       = "mod" ;
-    static public final String tagPathReverse   = "reverse" ;
+    public static final String tagPath          = "path" ;
+    public static final String tagPathSeq       = "seq" ;
+    public static final String tagPathAlt       = "alt" ;
+    public static final String tagPathMod       = "mod" ;
+    public static final String tagPathReverse   = "reverse" ;
     
     // Expressions
     // sym => swiggly thing, tag => word-ish thing
     
-    static public final String tagExpr          = "expr" ;
-    static public final String tagExprList      = "exprlist" ;
+    public static final String tagExpr          = "expr" ;
+    public static final String tagExprList      = "exprlist" ;
 
-    static public final String symEQ            = "=" ;
-    static public final String symNE            = "!=" ;
-    static public final String symGT            = ">" ;
-    static public final String symLT            = "<" ;
-    static public final String symLE            = "<=" ;
-    static public final String symGE            = ">=" ;
-    static public final String symOr            = "||" ;
-    static public final String tagOr            = "or" ;
-    static public final String symAnd           = "&&" ;
-    static public final String tagAnd           = "and" ;
-    static public final String symPlus          = "+" ;
-    static public final String symMinus         = "-" ;
-    static public final String symMult          = "*" ;
-    static public final String symDiv           = "/" ;
-    static public final String symNot           = "!" ;
+    public static final String symEQ            = "=" ;
+    public static final String symNE            = "!=" ;
+    public static final String symGT            = ">" ;
+    public static final String symLT            = "<" ;
+    public static final String symLE            = "<=" ;
+    public static final String symGE            = ">=" ;
+    public static final String symOr            = "||" ;
+    public static final String tagOr            = "or" ;
+    public static final String symAnd           = "&&" ;
+    public static final String tagAnd           = "and" ;
+    public static final String symPlus          = "+" ;
+    public static final String symMinus         = "-" ;
+    public static final String symMult          = "*" ;
+    public static final String symDiv           = "/" ;
+    public static final String symNot           = "!" ;
     
-    static public final String tagNot           = "not" ;
-    static public final String tagStr           = "str" ;
-    static public final String tagLang          = "lang" ;
-    static public final String tagLangMatches   = "langmatches" ;
-    static public final String tagSameTerm      = "sameterm" ;
-    static public final String tagDatatype      = "datatype" ;
-    static public final String tagBound         = "bound" ;
-    static public final String tagIRI           = "isIRI" ;
-    static public final String tagURI           = "isURI" ;
-    static public final String tagIsBlank       = "isBlank" ;
-    static public final String tagIsLiteral     = "isLiteral" ;
-    static public final String tagRegex         = "regex" ;
+    public static final String tagNot           = "not" ;
+    public static final String tagStr           = "str" ;
+    public static final String tagLang          = "lang" ;
+    public static final String tagLangMatches   = "langmatches" ;
+    public static final String tagSameTerm      = "sameterm" ;
+    public static final String tagDatatype      = "datatype" ;
+    public static final String tagBound         = "bound" ;
+    public static final String tagIRI           = "isIRI" ;
+    public static final String tagURI           = "isURI" ;
+    public static final String tagIsBlank       = "isBlank" ;
+    public static final String tagIsLiteral     = "isLiteral" ;
+    public static final String tagRegex         = "regex" ;
 
-    static public final String tagTrue          = "true" ;
-    static public final String tagFalse         = "false" ;
+    public static final String tagTrue          = "true" ;
+    public static final String tagFalse         = "false" ;
 
-    static public final String tagAsc           = "asc" ;
-    static public final String tagDesc          = "desc" ;
+    public static final String tagAsc           = "asc" ;
+    public static final String tagDesc          = "desc" ;
     
-    static public final String tagCount         = "count" ;
-    
+    public static final String tagCount         = "count" ;
 }
 
 /*

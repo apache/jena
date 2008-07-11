@@ -102,7 +102,7 @@ public class AlgebraGenerator
             return compileElementSubquery((ElementSubQuery)elt) ; 
         
         if ( elt == null )
-            return new OpNull() ;
+            return OpNull.create() ;
 
         broken("compile(Element)/Not a structural element: "+Utils.className(elt)) ;
         return null ;

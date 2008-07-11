@@ -5,10 +5,12 @@
 	      (< ?a ?b)
 	      (< ?a "GGG")
 	      )
-      (BGP
-	(triple ?s :p ?z)
-	(triple ?s :p ?a)
-	(triple ?s :q ?b)
-	(triple ?s :r ?c)
-	))
+      (join
+        (table unit)
+        (BGP
+          (triple ?s :p ?z)
+          (triple ?s :p ?a)
+          (triple ?s :q ?b)
+          (triple ?s :r ?c)
+          )))
     ))

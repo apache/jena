@@ -132,7 +132,7 @@ public class Utils
     
     /** Compare two object-things for quality - allow null to be equals to null */
     
-    public static boolean eq(Object obj1, Object obj2)
+    public static boolean equals(Object obj1, Object obj2)
     {
         if ( obj1 == null )
             return obj2 == null ;

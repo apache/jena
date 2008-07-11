@@ -14,6 +14,9 @@ public class TransformPropertyFunction extends TransformBase
 {
     public Op transform(OpBGP opBGP)
     {
+        // Needs context.
+        // Execution time rewrites?
+        
         // Split on PropertyFunctions.
         // Currently done in algebra.PropertyFunctionGenerator
         // XX Change to new tranform framework 

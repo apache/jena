@@ -37,7 +37,7 @@ import com.hp.hpl.jena.sparql.util.IndentedWriter;
 public class WriterOp
 {
     private static final int NL = WriterLib.NL ;
-    private static final int NoNL = WriterLib.NoNL ;
+    private static final int NoNL = WriterLib.NoNL ;    // No newline, with space
     private static final int NoSP = WriterLib.NoSP ;
     
     public static void output(Op op)
@@ -296,6 +296,24 @@ public class WriterOp
 
         public void visit(OpNull opNull)
         { start(opNull, NoSP) ; finish(opNull) ; } 
+        
+        public void visit(OpLabel opLabel)
+        { 
+            String x = FmtUtils.stringForString(opLabel.getObject().toString()) ;
+            if ( opLabel.hasSubOp() )
+            {
+                start(opLabel, NL) ;
+                out.println(x) ;
+                printOp(opLabel.getSubOp()) ;
+                finish(opLabel) ;
+            }
+            else
+            {
+                start(opLabel, NoNL) ;
+                out.print(x) ;
+                finish(opLabel) ;
+            }
+        }
 
         public void visit(OpList opList)
         {

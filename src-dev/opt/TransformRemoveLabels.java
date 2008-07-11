@@ -4,39 +4,23 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.algebra.op;
+package opt;
 
 import com.hp.hpl.jena.sparql.algebra.Op;
-import com.hp.hpl.jena.sparql.algebra.OpVisitor;
-import com.hp.hpl.jena.sparql.algebra.Transform;
-import com.hp.hpl.jena.sparql.sse.Tags;
-import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
+import com.hp.hpl.jena.sparql.algebra.TransformBase;
+import com.hp.hpl.jena.sparql.algebra.op.OpLabel;
+import com.hp.hpl.jena.sparql.algebra.op.OpTable;
 
-public class OpNull extends Op0
+public class TransformRemoveLabels extends TransformBase
 {
-    // Only really need one.
-    public static OpNull create() { return new OpNull() ; }
-    
-    private OpNull() { }
-    
-    public Op apply(Transform transform)
-    { return transform.transform(this) ; }
-
-    public Op copy() { return this ; }
-
-    public void visit(OpVisitor opVisitor) { opVisitor.visit(this) ; }
-
-    public String getName()
+    // Strip labels
+    public Op transform(OpLabel opLabel, Op subOp)
     {
-        return Tags.tagNull ;
+        // So sequence or join is unchanged. 
+        if ( subOp == null )
+            return OpTable.unit() ; 
+        return subOp ;
     }
-
-    public int hashCode()
-    { return OpBase.HashNull ; }
-
-
-    public boolean equalTo(Op other, NodeIsomorphismMap labelMap)
-    { return ( other instanceof OpNull ) ; }
 }
 
 /*

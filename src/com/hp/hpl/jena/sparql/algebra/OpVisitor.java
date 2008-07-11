@@ -24,6 +24,7 @@ public interface OpVisitor
     public void visit(OpGraph opGraph) ;
     public void visit(OpService opService) ;
     public void visit(OpDatasetNames dsNames) ;
+    public void visit(OpLabel opLabel) ;
     
     // Op2
     public void visit(OpJoin opJoin) ;

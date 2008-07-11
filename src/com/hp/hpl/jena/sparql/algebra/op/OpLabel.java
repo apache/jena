@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007, 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
@@ -11,36 +11,72 @@ import com.hp.hpl.jena.sparql.algebra.OpVisitor;
 import com.hp.hpl.jena.sparql.algebra.Transform;
 import com.hp.hpl.jena.sparql.sse.Tags;
 import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
+import com.hp.hpl.jena.sparql.util.Utils;
 
-public class OpNull extends Op0
+/** Do-nothing class that means that tags/labels/comments can be left in the algebra tree.
+ * If serialized, toString called on the object, reparsing yields a string.
+ *  Can have zero one one sub ops.
+ * @author Andy Seaborne
+ */
+
+public class OpLabel extends Op1
 {
-    // Only really need one.
-    public static OpNull create() { return new OpNull() ; }
+    // BEware : while this is a Op1, it have no sub operation.
+    // (label "foo") and (label "foo" (other ...)) are legal.
+    // OpNull?
     
-    private OpNull() { }
+    private Object object ;
+
+    public OpLabel(Object thing) { this(thing, null) ; }
     
-    public Op apply(Transform transform)
-    { return transform.transform(this) ; }
-
-    public Op copy() { return this ; }
-
-    public void visit(OpVisitor opVisitor) { opVisitor.visit(this) ; }
-
-    public String getName()
+    public OpLabel(Object thing, Op op)
     {
-        return Tags.tagNull ;
+        super(op) ;
+        this.object = thing ;
+    }
+
+    public boolean equalTo(Op other, NodeIsomorphismMap labelMap)
+    {
+        if ( ! ( other instanceof OpLabel) )
+            return false ;
+        OpLabel opLabel = (OpLabel)other ;
+        if ( ! Utils.equals(object, opLabel.object) )
+            return false ;
+        
+        return Utils.equals(getSubOp(), opLabel.getSubOp()) ;
     }
 
     public int hashCode()
-    { return OpBase.HashNull ; }
+    {
+        int x = HashLabel ;
+        x ^= Utils.hashCodeObject(object, 0) ;
+        x ^= Utils.hashCodeObject(getSubOp(), 0) ;
+        return x ;
+    }
 
+    public void visit(OpVisitor opVisitor)
+    { opVisitor.visit(this) ; }
 
-    public boolean equalTo(Op other, NodeIsomorphismMap labelMap)
-    { return ( other instanceof OpNull ) ; }
+    public Object getObject() { return object ; } 
+    
+    public boolean hasSubOp() { return getSubOp() != null ; } 
+    
+    public String getName()
+    {
+        return Tags.tagLabel ;
+    }
+
+    public Op apply(Transform transform, Op subOp)
+    { return transform.transform(this, subOp) ; }
+
+    public Op copy(Op subOp)
+    {
+        return new OpLabel(object, subOp) ; 
+    }
 }
 
 /*
- * (c) Copyright 2007, 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
