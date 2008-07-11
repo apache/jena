@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Run in TDBROOT
-TDBROOT="${TDBROOT:-$HOME/Projects/AFS}"
+TDBROOT="${TDBROOT:-$HOME/Projects/TDB}"
 DB_DESC="$TDBROOT/DB/dataset-dbp.ttl"
 
 # "none" does consume all nodes.
