@@ -8,7 +8,6 @@ package com.hp.hpl.jena.sparql.algebra.op;
 
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext;
-import com.hp.hpl.jena.sparql.sse.WriterSSE;
 import com.hp.hpl.jena.sparql.sse.writers.WriterOp;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
 import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
@@ -30,7 +29,7 @@ public abstract class OpBase extends PrintSerializableBase implements Op
 
     public void output(IndentedWriter out)
     {
-        WriterSSE.out(out, this, null) ;
+        output(out, null) ;
     }
 
     public void output(IndentedWriter out, SerializationContext sCxt)
@@ -41,8 +40,6 @@ public abstract class OpBase extends PrintSerializableBase implements Op
             out.ensureStartOfLine() ;
     }
 
-    //public String getName()                 { return Utils.className(this) ; }
-    
     // Constants used in hashing to stop an element and it's subelement
     // (if just one) having the same hash.
     
