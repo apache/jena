@@ -21,6 +21,8 @@ public class Names
     
     /** Node file */
     public static final String nodesData    = "rdfNodes.dat" ;
+    public static String indexNode2Id       = "node2id";
+    public static String indexId2Node       = "id2node";
     
     
 }

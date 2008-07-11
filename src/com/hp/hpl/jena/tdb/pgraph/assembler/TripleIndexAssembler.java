@@ -8,21 +8,17 @@ package com.hp.hpl.jena.tdb.pgraph.assembler;
 
 import static com.hp.hpl.jena.sparql.util.graph.GraphUtils.exactlyOneProperty;
 import static com.hp.hpl.jena.sparql.util.graph.GraphUtils.getAsStringValue;
-import static com.hp.hpl.jena.tdb.Const.BlockSize;
 import static com.hp.hpl.jena.tdb.pgraph.assembler.PGraphAssemblerVocab.pDescription;
 import static com.hp.hpl.jena.tdb.pgraph.assembler.PGraphAssemblerVocab.pFile;
+
+import com.hp.hpl.jena.rdf.model.Resource;
 
 import com.hp.hpl.jena.assembler.Assembler;
 import com.hp.hpl.jena.assembler.Mode;
 import com.hp.hpl.jena.assembler.assemblers.AssemblerBase;
-import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.tdb.Const;
-import com.hp.hpl.jena.tdb.base.block.BlockMgr;
-import com.hp.hpl.jena.tdb.base.block.BlockMgrFactory;
+
 import com.hp.hpl.jena.tdb.base.file.Location;
-import com.hp.hpl.jena.tdb.base.record.RecordFactory;
-import com.hp.hpl.jena.tdb.btree.BTree;
-import com.hp.hpl.jena.tdb.btree.BTreeParams;
+import com.hp.hpl.jena.tdb.index.IndexBuilder;
 import com.hp.hpl.jena.tdb.index.RangeIndex;
 import com.hp.hpl.jena.tdb.index.TripleIndex;
 import com.hp.hpl.jena.tdb.pgraph.PGraphBase;
@@ -50,27 +46,17 @@ public class TripleIndexAssembler extends AssemblerBase //implements Assembler
         if ( location != null )
             filename = location.absolute(filename) ;
         
-        RangeIndex rIndex = rangeIndex(filename) ;
+        RangeIndex rIndex = IndexBuilder.createRangeIndex(new Location(filename), 
+                                                          desc, 
+                                                          PGraphBase.indexRecordFactory) ;
         return new TripleIndex(desc, rIndex) ;
     }
 
-    public static RangeIndex rangeIndex(String filename)
+    public static RangeIndex rangeIndex(String filename, String name)
     {
-        BlockMgr blockMgr = BlockMgrFactory.createFile(filename, Const.BlockSize) ;
-        return IndexF.create(blockMgr, PGraphBase.indexRecordFactory) ;
+        return IndexBuilder.createRangeIndex(new Location(filename), name, PGraphBase.indexRecordFactory) ;
     }
 
-    // Somewhere?  Shared with NodeTbaleAssembler.
-    static class IndexF
-    {
-        static RangeIndex create(BlockMgr blockMgr, RecordFactory factory)
-        {
-            int order = BTreeParams.calcOrder(BlockSize, factory) ;
-            BTreeParams params = new BTreeParams(order, factory) ;
-            BTree bTree = new BTree(params, blockMgr) ; 
-            return bTree ;
-        }
-    }
 }
 
 /*

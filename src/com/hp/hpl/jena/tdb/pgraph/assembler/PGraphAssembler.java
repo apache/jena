@@ -24,6 +24,8 @@ import com.hp.hpl.jena.assembler.exceptions.AssemblerException;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.Resource;
+
+import com.hp.hpl.jena.tdb.Names;
 import com.hp.hpl.jena.tdb.TDB;
 import com.hp.hpl.jena.tdb.TDBFactory;
 import com.hp.hpl.jena.tdb.base.file.Location;
@@ -81,16 +83,18 @@ public class PGraphAssembler extends AssemblerBase implements Assembler
             if ( indexes.containsKey(d) )
                 throw new AssemblerException(root, format("Index %s declared twice", d)) ;
             // Check one of SPO, POS, OPS.
-            if ( ! ( d.equalsIgnoreCase("SPO") || d.equalsIgnoreCase("POS") || d.equalsIgnoreCase("OSP") ))
+            if ( ! ( d.equalsIgnoreCase(Names.indexSPO) || 
+                     d.equalsIgnoreCase(Names.indexPOS) || 
+                     d.equalsIgnoreCase(Names.indexOSP) ))
                 throw new AssemblerException(root, format("Unrecognized description (expected SPO, POS or OSP)", d)) ;
             indexes.put(idx.getDescription(), idx) ;
         }
         
         NodeTable nodeTable = new NodeTableIndex(IndexBuilder.get(), loc) ;
         
-        PGraphBase graph = new PGraphBase(indexes.get("SPO"), 
-                                          indexes.get("POS"),               
-                                          indexes.get("OSP"), nodeTable) ;
+        PGraphBase graph = new PGraphBase(indexes.get(Names.indexSPO), 
+                                          indexes.get(Names.indexPOS),               
+                                          indexes.get(Names.indexOSP), nodeTable) ;
         return ModelFactory.createModelForGraph(graph) ;
     }
 

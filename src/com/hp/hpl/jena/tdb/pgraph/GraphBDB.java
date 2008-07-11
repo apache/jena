@@ -39,9 +39,9 @@ public class GraphBDB extends PGraphBase
 
             throw new TDBException("NOT IMPLEMENTED YET") ;
 //            // ---- Triple indexes
-//            Index3 spo = new TripleIndexBDB(config, mapSPO, "SPO") ;
-//            Index3 pos = new TripleIndexBDB(config, mapPOS, "POS") ;
-//            Index3 osp = new TripleIndexBDB(config, mapOSP, "OSP") ;
+//            Index3 spo = new TripleIndexBDB(config, mapSPO, Names.indexSPO) ;
+//            Index3 pos = new TripleIndexBDB(config, mapPOS, Names.indexPOS) ;
+//            Index3 osp = new TripleIndexBDB(config, mapOSP, Names.indexOSP) ;
 //            init(spo, pos, osp, nodeTable) ;
         } catch (DatabaseException ex)
         {

@@ -124,7 +124,7 @@ public class IndexBuilder
         static IndexType get()
         {
             boolean defaultSetting = false ;
-            String x = TDB.getContext().getAsString(TDB.symIndexType, defaultIndexType) ;
+            String x = TDB.getContext().getAsString(TDB.symIndexType) ;
             if ( x == null )
             {
                 defaultSetting = true ;

@@ -10,21 +10,17 @@ import static com.hp.hpl.jena.sparql.util.graph.GraphUtils.getAsStringValue;
 import static com.hp.hpl.jena.tdb.pgraph.assembler.PGraphAssemblerVocab.pNodeData;
 import static com.hp.hpl.jena.tdb.pgraph.assembler.PGraphAssemblerVocab.pNodeIndex;
 
+import com.hp.hpl.jena.rdf.model.Resource;
+
 import com.hp.hpl.jena.assembler.Assembler;
 import com.hp.hpl.jena.assembler.Mode;
 import com.hp.hpl.jena.assembler.assemblers.AssemblerBase;
 import com.hp.hpl.jena.assembler.exceptions.AssemblerException;
-import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.tdb.Const;
-import com.hp.hpl.jena.tdb.base.block.BlockMgr;
-import com.hp.hpl.jena.tdb.base.block.BlockMgrFactory;
+
 import com.hp.hpl.jena.tdb.base.file.Location;
-import com.hp.hpl.jena.tdb.index.Index;
 import com.hp.hpl.jena.tdb.index.IndexBuilder;
 import com.hp.hpl.jena.tdb.pgraph.NodeTable;
 import com.hp.hpl.jena.tdb.pgraph.NodeTableIndex;
-import com.hp.hpl.jena.tdb.pgraph.PGraphBase;
-import com.hp.hpl.jena.tdb.pgraph.assembler.TripleIndexAssembler.IndexF;
 
 public class NodeTableAssembler extends AssemblerBase //implements Assembler
 {
@@ -53,13 +49,7 @@ public class NodeTableAssembler extends AssemblerBase //implements Assembler
         String nodeIndex = getAsStringValue(root, pNodeIndex) ;
         String nodeData = getAsStringValue(root, pNodeData) ;
         
-        throw new AssemblerException(root, "Split lcoation index/data file not yet implemented") ; 
-    }
-
-    public static Index index(String filename)
-    {
-        BlockMgr blockMgr = BlockMgrFactory.createFile(filename, Const.BlockSize) ;
-        return IndexF.create(blockMgr, PGraphBase.indexRecordFactory) ;
+        throw new AssemblerException(root, "Split location index/data file not yet implemented") ; 
     }
 }
 

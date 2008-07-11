@@ -9,6 +9,7 @@ package com.hp.hpl.jena.tdb.pgraph;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.hp.hpl.jena.tdb.Names;
 import com.hp.hpl.jena.tdb.base.file.Location;
 import com.hp.hpl.jena.tdb.index.Index;
 import com.hp.hpl.jena.tdb.index.IndexBuilder;
@@ -33,14 +34,14 @@ public class PGraphFactory
         if ( location == null )
             log.warn("Null location") ;
         
-        RangeIndex idxSPO = factory.newRangeIndex(location, PGraphBase.indexRecordFactory, "SPO") ;
-        TripleIndex triplesSPO = new TripleIndex("SPO", idxSPO) ;
+        RangeIndex idxSPO = factory.newRangeIndex(location, PGraphBase.indexRecordFactory, Names.indexSPO) ;
+        TripleIndex triplesSPO = new TripleIndex(Names.indexSPO, idxSPO) ;
 
-        RangeIndex idxPOS = factory.newRangeIndex(location, PGraphBase.indexRecordFactory, "POS") ;
-        TripleIndex triplesPOS = new TripleIndex("POS", idxPOS) ;
+        RangeIndex idxPOS = factory.newRangeIndex(location, PGraphBase.indexRecordFactory, Names.indexPOS) ;
+        TripleIndex triplesPOS = new TripleIndex(Names.indexPOS, idxPOS) ;
 
-        RangeIndex idxOSP = factory.newRangeIndex(location, PGraphBase.indexRecordFactory, "OSP") ;
-        TripleIndex triplesOSP = new TripleIndex("OSP", idxOSP) ;
+        RangeIndex idxOSP = factory.newRangeIndex(location, PGraphBase.indexRecordFactory, Names.indexOSP) ;
+        TripleIndex triplesOSP = new TripleIndex(Names.indexOSP, idxOSP) ;
      
         // Creates the object file as a file-backed one. 
         NodeTable nodeTable = new NodeTableIndex(factory, location) ;
@@ -59,16 +60,16 @@ public class PGraphFactory
     /** Create a graph backed with storage in-memory (maily for testing) */
     public static PGraphBase createMem(IndexBuilder factory)
     { 
-        RangeIndex idxSPO = factory.newRangeIndex(null, PGraphBase.indexRecordFactory, "SPO") ;
-        TripleIndex triplesSPO = new TripleIndex("SPO", idxSPO) ;
+        RangeIndex idxSPO = factory.newRangeIndex(null, PGraphBase.indexRecordFactory, Names.indexSPO) ;
+        TripleIndex triplesSPO = new TripleIndex(Names.indexSPO, idxSPO) ;
 
-        RangeIndex idxPOS = factory.newRangeIndex(null, PGraphBase.indexRecordFactory, "POS") ;
-        TripleIndex triplesPOS = new TripleIndex("POS", idxPOS) ;
+        RangeIndex idxPOS = factory.newRangeIndex(null, PGraphBase.indexRecordFactory, Names.indexPOS) ;
+        TripleIndex triplesPOS = new TripleIndex(Names.indexPOS, idxPOS) ;
 
-        RangeIndex idxOSP = factory.newRangeIndex(null, PGraphBase.indexRecordFactory, "OSP") ;
-        TripleIndex triplesOSP = new TripleIndex("OSP", idxOSP) ;
+        RangeIndex idxOSP = factory.newRangeIndex(null, PGraphBase.indexRecordFactory, Names.indexOSP) ;
+        TripleIndex triplesOSP = new TripleIndex(Names.indexOSP, idxOSP) ;
      
-        Index nodeIndex = factory.newIndex(null, PGraphBase.nodeRecordFactory, "node2id") ;
+        Index nodeIndex = factory.newIndex(null, PGraphBase.nodeRecordFactory, Names.indexNode2Id) ;
         
         // Implicitly creates the object file as a memory one. 
         NodeTable nodeTable = new NodeTableIndex(factory) ;
