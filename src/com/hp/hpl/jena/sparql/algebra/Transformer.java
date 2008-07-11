@@ -28,7 +28,8 @@ public class Transformer
         
         TransformApply v = new TransformApply(tranform) ;
         op.visit(v) ;
-        return v.result() ;
+        Op r = v.result() ;
+        return r ;
     }
     
     private Transformer() { }

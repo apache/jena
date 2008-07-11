@@ -44,7 +44,7 @@ public class Run
     public static void main(String[] argv) throws Exception
     {
         
-        opt.Run.main(argv) ; 
+        opt.RunT.main(argv) ; 
         //runQParse() ;
         execQuery("D.ttl", "Q.arq") ;
         

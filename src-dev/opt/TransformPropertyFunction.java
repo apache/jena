@@ -1,31 +1,40 @@
 /*
- * (c) Copyright 2007, 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
 package opt;
 
+import com.hp.hpl.jena.query.ARQ;
 import com.hp.hpl.jena.sparql.algebra.Op;
-import com.hp.hpl.jena.sparql.algebra.TransformBase;
+import com.hp.hpl.jena.sparql.algebra.PropertyFunctionGenerator;
+import com.hp.hpl.jena.sparql.algebra.TransformCopy;
 import com.hp.hpl.jena.sparql.algebra.op.OpBGP;
+import com.hp.hpl.jena.sparql.util.Context;
 
-public class TransformPropertyFunction extends TransformBase
+/** Rewrite to replace a property function property with the call to the property function implementation */
+public class TransformPropertyFunction extends TransformCopy
 {
+    private Context context ;
+
+    public TransformPropertyFunction(Context context)
+    {
+     this.context = context ;   
+    }
+    
     public Op transform(OpBGP opBGP)
     {
-        // Needs context.
-        // Execution time rewrites?
+        boolean doingMagicProperties = context.isTrue(ARQ.enablePropertyFunctions) ;
+        if ( ! doingMagicProperties )
+            return opBGP ;
         
-        // Split on PropertyFunctions.
-        // Currently done in algebra.PropertyFunctionGenerator
-        // XX Change to new tranform framework 
-        return opBGP ;
+        return PropertyFunctionGenerator.compile(opBGP, context) ;
     }
 }
 
 /*
- * (c) Copyright 2007, 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

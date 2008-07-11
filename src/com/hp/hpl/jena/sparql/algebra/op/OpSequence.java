@@ -27,9 +27,10 @@ public class OpSequence extends OpN
     
     public static Op create(Op left, Op right)
     { 
-        // Avoid stages of one.
+        // Avoid stages of nothing
         if ( left == null && right == null )
             return null ;
+        // Avoid stages of one.
         if ( left == null )
             return right ;
         if ( right == null )

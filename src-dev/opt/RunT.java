@@ -6,13 +6,13 @@
 
 package opt;
 
+import com.hp.hpl.jena.query.ARQ;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.Transform;
 import com.hp.hpl.jena.sparql.algebra.Transformer;
-import com.hp.hpl.jena.sparql.algebra.opt.TransformSimplify;
 import com.hp.hpl.jena.sparql.sse.SSE;
 
-public class Run
+public class RunT
 {
     public static void main(String[] argv) throws Exception
     {
@@ -23,36 +23,39 @@ public class Run
     /*
      * Move PF to Transforms
      * 
-     * FilterPlacment [DONE] - not enabled, yet.
+     * TransformFilterPlacement  [DONE] - not enabled, yet.
+     * TransformPropertyFunction [DONE] - not enabled, yet.
      * Simplify [DONE] 
      *    - algebra.opt.TransformSimplify 
      *    -- called by AlgebraGenerator because of SimplifyEarly
      * Equality filter [DONE]
      *    - algebra.opt.TransformEqualityFilter
      *    -- called via Algebra.compile(,optimize)
+     *    
+     * TransformRemoveLabels
+     * TransformReoderBGP
      */
     
     public static void rewrite()
     {
         // Stage 0 - always
         //    Simplify
-        // Stage 1 - property functions
-        //    Property function <-- needs context
-        // Stage 2 - general algebra rewrites
+        // Stage 1 - general algebra rewrites
         //    ? Filter placement
         //    ? Equality filter
-        // Stage 3 - per execution -- context and dataset available.
+        // Stage 2 - per execution -- context and dataset available.
         //    ? Property function
-        // Stage 4 - during execution
         //    ? BGP rewrites
         
         Op op = SSE.readOp("Q.sse") ;
-        // Always
-        op = apply("Simplify", new TransformSimplify(), op) ;
+        // Always in algebra
+        //op = apply("Simplify", new TransformSimplify(), op) ;
         //op = apply("Delabel", new TransformRemoveLabels(), op) ;
+        
+        op = apply("Property Functions", new TransformPropertyFunction(ARQ.getContext()), op) ;
         // 
-        op = apply("Filter placement 1", new TransformFilterPlacement(), op) ;
-        op = apply("Filter placement 2", new TransformFilterPlacement(), op) ;  // No-op
+//        op = apply("Filter placement 1", new TransformFilterPlacement(), op) ;
+//        op = apply("Filter placement 2", new TransformFilterPlacement(), op) ;  // No-op
     }
     
     static Op apply(String label, Transform transform, Op op)

@@ -6,7 +6,6 @@
 
 package com.hp.hpl.jena.sparql.algebra;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.hp.hpl.jena.sparql.algebra.op.*;
@@ -35,7 +34,7 @@ public class TransformCopy implements Transform
     public Op transform(OpService opService, Op x)                  { return xform(opService, x) ; }
     
     public Op transform(OpJoin opJoin, Op left, Op right)           { return xform(opJoin, left, right) ; }
-    public Op transform(OpSequence opSequence, List elts)                 { return xform(opSequence, elts) ; }
+    public Op transform(OpSequence opSequence, List elts)           { return xform(opSequence, elts) ; }
     public Op transform(OpLeftJoin opLeftJoin, Op left, Op right)   { return xform(opLeftJoin, left, right) ; }
     public Op transform(OpDiff opDiff, Op left, Op right)           { return xform(opDiff, left, right) ; }
     public Op transform(OpUnion opUnion, Op left, Op right)         { return xform(opUnion, left, right) ; }
@@ -78,8 +77,7 @@ public class TransformCopy implements Transform
     {
         if ( ! alwaysCopy && (elts == op.getElements()) )
             return op ;
-        List x = new ArrayList(op.getElements()) ;
-        return op.copy(x) ;
+        return op.copy(elts) ;
     }
     
     private Op xform(OpModifier op, Op subOp)

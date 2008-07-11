@@ -9,13 +9,27 @@ package dev;
 public class Dev
 {
     /*
-    + OpLabel.visit
+     * Getting into an algebra for *execution*
+     * Separate system or extension of algebra?
+     *   Extension - but be clear of what's where.
+     * What makes it hard to introduce a new operation?
+     *   Builder/Writer
+     *   Transform engine
+     *   2 * evaluations (will become one!)
+
+    + One-sided versions of operators for a sequence.
+      Only valid in a sequence.
+      Have a "marker" op meaning current working table.
+          (seq) (current)
+          
+          (filter (current) ...)
+          (leftJoin (current) other)
     
     + Transform framework :
         Match => Action for a single rewrite?  Need to worry about this?
           Transform collection.
             Move PF to Transforms
-            FilterPlacment
+            FilterPlacement
             Simply
             Equality filter
 

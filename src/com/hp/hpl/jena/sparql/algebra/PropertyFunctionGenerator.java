@@ -38,20 +38,21 @@ public class PropertyFunctionGenerator //implements StageGenerator
         return compilePattern(opBGP.getPattern(), context) ;
     }
     
+    // Old router from OpCompiler. 
     public static Op compile(BasicPattern pattern, Context context)
     {
         if ( pattern.isEmpty() )
             return new OpBGP(pattern) ;
-        return compilePattern(pattern, context) ;
-    }
-        
-    private static Op compilePattern(BasicPattern pattern, Context context)
-    {   
 
         boolean doingMagicProperties = context.isTrue(ARQ.enablePropertyFunctions) ;
         if ( ! doingMagicProperties )
             return new OpBGP(pattern) ;
         
+        return compilePattern(pattern, context) ;
+    }
+        
+    private static Op compilePattern(BasicPattern pattern, Context context)
+    {   
         // Split into triples and property functions.
 
         PropertyFunctionRegistry registry = chooseRegistry(context) ;

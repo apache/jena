@@ -1,16 +1,24 @@
 (base <file:///c:/home/afs/Projects/ARQ/Q.rq>
-  (prefix ((: <http://example/>))
-    (filter (exprlist
-	      #(< 1 3)
-	      (< ?a ?b)
-	      (< ?a "GGG")
-	      )
-      (join
-        (table unit)
-        (BGP
-          (triple ?s :p ?z)
-          (triple ?s :p ?a)
-          (triple ?s :q ?b)
-          (triple ?s :r ?c)
-          )))
-    ))
+  (prefix ((: <http://example/>)
+           (list:   <http://jena.hpl.hp.com/ARQ/list#>)
+           (apf:     <http://jena.hpl.hp.com/ARQ/property#>))
+
+    (sequence 
+##       (label "Filter placement")
+##       (filter (exprlist
+##                 #(< 1 3)
+##                 (< ?a ?b)
+##                 (< ?a "GGG")
+##                 )
+##         (BGP
+##           (triple ?s :p ?z)
+##           (triple ?s :p ?a)
+##           (triple ?s :q ?b)
+##           (triple ?s :r ?c)
+##           ))
+      (label "Property function (transform)")
+      (BGP
+        (triple ?s :p ?z)
+        (triple ?s apf:textMatch '+word')
+        )
+      )))
