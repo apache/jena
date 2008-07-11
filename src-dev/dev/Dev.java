@@ -9,15 +9,23 @@ package dev;
 public class Dev
 {
     /*
-     * 
-  Direct (flow based) execution in main - remove the FilterPlacement and BGP optimizer to an optimize step. 
+    + Transform framework :
+        Match => Action for a single rewrite?  Need to worry about this?
+          Transform collection.
+            Move PF to Transforms
+            FilterPlacment
+            Simply
+            Equality filter
+
+    Direct (flow based) execution in main - remove the FilterPlacement and BGP optimizer to an optimize step. 
 
 + Stages and FilterPlacement.
     invert Stage/StageList
     Formalse the TDB stacking generator approach.
       Or even register stage facctories with accept/create 
-
-    qparse --print=opt
+  
+    StateGenerator (and invert StageLists) 
+            
      */
 }
 
