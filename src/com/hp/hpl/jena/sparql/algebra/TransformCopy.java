@@ -22,6 +22,7 @@ public class TransformCopy implements Transform
 
     public Op transform(OpTable opTable)                            { return xform(opTable) ; }
     public Op transform(OpBGP opBGP)                                { return xform(opBGP) ; }
+    public Op transform(OpTriple opTriple)                          { return xform(opTriple) ; }
     public Op transform(OpPath opPath)                              { return xform(opPath) ; }
 
     public Op transform(OpProcedure opProc, Op subOp)               { return xform(opProc, subOp) ; }
@@ -75,11 +76,23 @@ public class TransformCopy implements Transform
     }
     private Op xform(OpN op, List elts)
     {
-        if ( ! alwaysCopy && (elts == op.getElements()) )
+        // Need to do one-deep equality checking.
+        if ( ! alwaysCopy && equals1(elts, op.getElements()) )
             return op ;
         return op.copy(elts) ;
     }
     
+    private boolean equals1(List list1, List list2)
+    {
+        if ( list1.size() != list2.size() )
+            return false ;
+        for ( int i = 0 ; i < list1.size() ; i++ )
+        {
+            if ( list1.get(i) != list2.get(i) )
+                return false ;
+        }
+        return true ;
+    }
     private Op xform(OpModifier op, Op subOp)
     { 
         if ( ! alwaysCopy && op.getSubOp() == subOp )

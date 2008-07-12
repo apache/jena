@@ -39,10 +39,6 @@ import com.hp.hpl.jena.sparql.procedure.Procedure;
  * @author Andy Seaborne
  */
 
-// TODO Pull out FilterPlacement to be a transform.
-// Need to find a place to include Op => Op rewrite
-// Separate statics from class 
-
 public class OpCompiler
 {
     // A small (one slot) registry to allow (experimental) alternative  OpCompilers
@@ -100,6 +96,11 @@ public class OpCompiler
     {
         BasicPattern pattern = opBGP.getPattern() ;
         return StageBuilder.compile(pattern, input, execCxt) ;
+    }
+
+    public QueryIterator compile(OpTriple opTriple, QueryIterator input)
+    {
+        return compile(opTriple.asBGP(), input) ;
     }
 
     public QueryIterator compile(OpQuadPattern quadPattern, QueryIterator input)

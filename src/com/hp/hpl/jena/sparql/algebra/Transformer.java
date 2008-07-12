@@ -82,7 +82,8 @@ public class Transformer
                 Op sub = (Op)iter.next() ;
                 sub.visit(this) ;
                 Op r = pop() ;
-                x.add(r) ;
+                if ( r != null )
+                    x.add(r) ;
             }
             Op opX = op.apply(transform, x) ;  
             push(opX) ;
@@ -96,6 +97,9 @@ public class Transformer
 
         public void visit(OpPath opPath)
         { visit0(opPath) ; }
+        
+        public void visit(OpTriple opTriple)
+        { visit0(opTriple) ; }
         
         public void visit(OpDatasetNames dsNames)
         { visit0(dsNames) ; }

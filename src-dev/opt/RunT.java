@@ -6,11 +6,12 @@
 
 package opt;
 
-import com.hp.hpl.jena.query.ARQ;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.Transform;
 import com.hp.hpl.jena.sparql.algebra.Transformer;
 import com.hp.hpl.jena.sparql.sse.SSE;
+
+import com.hp.hpl.jena.query.ARQ;
 
 public class RunT
 {
@@ -25,6 +26,7 @@ public class RunT
  
         
         Op op = SSE.readOp("Q.sse") ;
+        System.out.println(op) ;
         // Always in algebra
         //op = apply("Simplify", new TransformSimplify(), op) ;
         //op = apply("Delabel", new TransformRemoveLabels(), op) ;

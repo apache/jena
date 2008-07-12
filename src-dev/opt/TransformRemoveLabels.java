@@ -7,18 +7,14 @@
 package opt;
 
 import com.hp.hpl.jena.sparql.algebra.Op;
-import com.hp.hpl.jena.sparql.algebra.TransformBase;
+import com.hp.hpl.jena.sparql.algebra.TransformCopy;
 import com.hp.hpl.jena.sparql.algebra.op.OpLabel;
-import com.hp.hpl.jena.sparql.algebra.op.OpTable;
 
-public class TransformRemoveLabels extends TransformBase
+public class TransformRemoveLabels extends TransformCopy
 {
     // Strip labels
     public Op transform(OpLabel opLabel, Op subOp)
     {
-        // So sequence or join is unchanged. 
-        if ( subOp == null )
-            return OpTable.unit() ; 
         return subOp ;
     }
 }

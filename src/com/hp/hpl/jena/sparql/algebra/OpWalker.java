@@ -60,6 +60,9 @@ public class OpWalker
         public void visit(OpQuadPattern quadPattern)
         { visit0(quadPattern) ; }
 
+        public void visit(OpTriple opTriple)
+        { visit0(opTriple) ; }
+        
         public void visit(OpPath opPath)
         { visit0(opPath) ; }
         

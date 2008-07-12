@@ -52,6 +52,7 @@ public class BuilderOp
     {
         dispatch.put(Tags.tagBGP, buildBGP) ;
         dispatch.put(Tags.tagQuadPattern, buildQuadPattern) ;
+        dispatch.put(Tags.tagTriple, buildTriple) ; // OpTriple
         dispatch.put(Tags.tagTriplePath, buildTriplePath) ;
         dispatch.put(Tags.tagFilter, buildFilter) ;
         dispatch.put(Tags.tagGraph, buildGraph) ;
@@ -188,6 +189,14 @@ public class BuilderOp
         }
     } ;
 
+    final protected Build buildTriple = new Build(){
+        public Op make(ItemList list)
+        {
+            Triple t = BuilderGraph.buildTriple(list) ;
+            return new OpTriple(t) ;
+        }} ;
+    
+    
     final protected Build buildTriplePath = new Build(){
         public Op make(ItemList list)
         {

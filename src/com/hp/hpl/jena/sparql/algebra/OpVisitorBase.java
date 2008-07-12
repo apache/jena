@@ -18,6 +18,9 @@ public class OpVisitorBase implements OpVisitor
     public void visit(OpQuadPattern quadPattern)
     {}
     
+    public void visit(OpTriple opTriple)
+    {}
+
     public void visit(OpPath opPath)
     {}
 

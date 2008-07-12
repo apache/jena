@@ -13,6 +13,7 @@ public interface OpVisitor
     // Op0
     public void visit(OpBGP opBGP) ;
     public void visit(OpQuadPattern quadPattern) ;
+    public void visit(OpTriple opTriple) ;
     public void visit(OpPath opPath) ;
     public void visit(OpTable opTable) ;
     public void visit(OpNull opNull) ;

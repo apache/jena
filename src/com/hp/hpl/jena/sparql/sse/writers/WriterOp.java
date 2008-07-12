@@ -177,6 +177,11 @@ public class WriterOp
             finish(opBGP) ;
         }
         
+        public void visit(OpTriple opTriple)
+        {
+            formatTriple(opTriple.getTriple()) ;
+        }
+
         public void visit(OpPath opPath)
         {
             //start(opPath, NoNL) ;

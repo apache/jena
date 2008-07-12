@@ -60,6 +60,11 @@ public class EvaluatorDispatch implements OpVisitor
         push(Eval.evalQuadPattern(quadPattern, evaluator)) ;
     }
 
+    public void visit(OpTriple opTriple)
+    {
+        visit(opTriple.asBGP()) ;
+    }
+
     public void visit(OpPath opPath)
     {
         Table table = evaluator.pathPattern(opPath.getTriplePath()) ;

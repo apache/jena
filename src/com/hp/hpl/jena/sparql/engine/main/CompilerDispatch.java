@@ -52,6 +52,13 @@ class CompilerDispatch implements OpVisitor
         push(qIter) ;
     }
 
+    public void visit(OpTriple opTriple)
+    {
+        QueryIterator input = pop() ;
+        QueryIterator qIter = opCompiler.compile(opTriple, input) ;
+        push(qIter) ;
+    }
+
     public void visit(OpPath opPath)
     {
         QueryIterator input = pop() ;
