@@ -6,14 +6,9 @@
 
 package com.hp.hpl.jena.sparql.engine.iterator;
 
-import java.util.Iterator;
-
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.sparql.engine.binding.BindingMap;
 import com.hp.hpl.jena.sparql.engine.binding.BindingNamedVar;
 
 /** Filter bindings for distinguished variables only 
@@ -31,22 +26,23 @@ public class QueryIterDistinguishedVars extends QueryIterConvert
 
     static Converter conv = new ProjectWrap() ;
     
-    static class ProjectCopy implements Converter
-    {
-        public Binding convert(Binding binding)
-        {
-            Binding b = new BindingMap() ;
-            for ( Iterator iter = binding.vars() ; iter.hasNext(); )
-            {
-                Var v = (Var)iter.next() ;
-                if ( ! v.isNamedVar() )
-                    continue ;
-                Node n = binding.get(v) ;
-                b.add(v, n) ;
-            }
-            return b ;
-        }
-    }
+    // Copying version.  Deprecated.
+//    static class ProjectCopy implements Converter
+//    {
+//        public Binding convert(Binding binding)
+//        {
+//            Binding b = new BindingMap() ;
+//            for ( Iterator iter = binding.vars() ; iter.hasNext(); )
+//            {
+//                Var v = (Var)iter.next() ;
+//                if ( ! v.isNamedVar() )
+//                    continue ;
+//                Node n = binding.get(v) ;
+//                b.add(v, n) ;
+//            }
+//            return b ;
+//        }
+//    }
 
     static class ProjectWrap implements Converter
     {

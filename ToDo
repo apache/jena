@@ -14,11 +14,6 @@ See ToDoSSE
 
 ----
 
-+ Stages and FilterPlacement.
-	invert Stage/StageList
-	Formalse the TDB stacking generator approach.
-	  Or even register stage facctories with accept/create 
-	
 + extra jar - testing only.
 
 + Parser context (to put var allocation things in)
@@ -43,7 +38,6 @@ See ToDoSSE
     Test failure is due to { pattern LJ propfunc } - fix the property function! 
   + Quad engine - does not do property functions.
   
-
 + ORDER BY COUNT(*)
   i.e. add to the assignments.
   c.f SELECT

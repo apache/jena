@@ -6,18 +6,62 @@
 
 package com.hp.hpl.jena.sparql.engine.main;
 
+import com.hp.hpl.jena.db.impl.DBQueryHandler;
+import com.hp.hpl.jena.graph.query.QueryHandler;
+import com.hp.hpl.jena.mem.GraphMemBaseQueryHandler;
+
+import com.hp.hpl.jena.sparql.ARQConstants;
 import com.hp.hpl.jena.sparql.core.BasicPattern;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
+import com.hp.hpl.jena.sparql.engine.QueryIterator;
+import com.hp.hpl.jena.sparql.engine.iterator.QueryIterBlockTriples;
+import com.hp.hpl.jena.sparql.engine.iterator.QueryIterBlockTriplesQH;
+import com.hp.hpl.jena.sparql.util.ALog;
+import com.hp.hpl.jena.sparql.util.Symbol;
+import com.hp.hpl.jena.sparql.util.Utils;
+
+/** StageGenerator for plain basic graph patterns.  Chooses the best way
+ * to solve the pattern based on whether it is a databse or a memory graph. 
+ */
 
 public class StageGenBasicPattern implements StageGenerator
 {
-    public StageList compile(BasicPattern pattern,
-                             ExecutionContext execCxt)
+    public static Symbol altMatcher = ARQConstants.allocSymbol("altmatcher") ;
+    
+    public QueryIterator compile(BasicPattern pattern, 
+                                 ExecutionContext execCxt,
+                                 QueryIterator input)
     {
-        StageList sList = new StageList() ;
-        Stage basicStage = new StageBasic(pattern) ;
-        sList.add(basicStage) ;
-        return sList ;
+        if ( input == null )
+                ALog.fatal(this, "Null input to "+Utils.classShortName(this.getClass())) ;
+        QueryIterator cIter = createMatcher(input, pattern, execCxt) ;
+        return cIter ;
+    }
+    
+    // Decision process for which matcher to use.
+    // The built in one (in-memory cases)
+    // or the graphs (for databases)
+    private static QueryIterator createMatcher(QueryIterator input,
+                                               BasicPattern pattern , 
+                                               ExecutionContext cxt)
+    {
+        QueryHandler qh = cxt.getActiveGraph().queryHandler() ;
+        
+        // Always use the pass-through triple matcher for databases
+        if ( qh instanceof DBQueryHandler )
+            return QueryIterBlockTriplesQH.create(input, pattern, cxt) ;
+        
+        // If in-memory and allowing alt matching ...
+        // Was SimpleQueryHandler.
+        if ( qh instanceof GraphMemBaseQueryHandler &&
+             cxt.getContext().isTrueOrUndef(altMatcher) )
+        {
+            // The alt matcher avoids thread creation - makes a difference when called very heavily.
+            return QueryIterBlockTriples.create(input, pattern, cxt) ;
+        }
+        
+        // When in doubt ... use the general pass-through to graph query handler matcher.
+        return QueryIterBlockTriplesQH.create(input, pattern, cxt) ;
     }
 }
 

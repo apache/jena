@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007, 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
@@ -9,51 +9,38 @@ package arq.examples.bgpmatching;
 import java.util.Iterator;
 
 import com.hp.hpl.jena.graph.Triple;
+
 import com.hp.hpl.jena.sparql.core.BasicPattern;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
-import com.hp.hpl.jena.sparql.engine.main.Stage;
-import com.hp.hpl.jena.sparql.engine.main.StageBasic;
+import com.hp.hpl.jena.sparql.engine.QueryIterator;
+import com.hp.hpl.jena.sparql.engine.iterator.QueryIterTriplePattern;
 import com.hp.hpl.jena.sparql.engine.main.StageGenerator;
-import com.hp.hpl.jena.sparql.engine.main.StageList;
 
 /** Example stage generator that compiles a BasicPattern into a sequence of
- *  individual triple pattern stages.
+ *  individual triple matching steps.
  */   
 
 public class StageGeneratorAlt implements StageGenerator
 {
-    public StageList compile(BasicPattern pattern, 
-                             ExecutionContext execCxt)
+    public QueryIterator compile(BasicPattern pattern, 
+                                 ExecutionContext execCxt,
+                                 QueryIterator input)
     {
         System.err.println("MyStageGenerator.compile:: triple patterns = "+pattern.size()) ;
-        
-        if ( false )
-        {
-            // Illustrative -- call the most basic one one (no property functions)
-            StageList sList = new StageList() ;
-            sList.add(new StageBasic(pattern)) ;
-            return sList ;
-        }
 
-        
-        if ( false )
-        {
-         // Illustrative -- call the most basic one one (no property functions)
-        }
-        
-        StageList sList = new StageList() ;
+        // Stream the triple matches together, one triple matcher at a time. 
+        QueryIterator qIter = input ;
         for ( Iterator iter = pattern.getList().iterator() ; iter.hasNext() ; )
         {
             Triple triple = (Triple)iter.next();
-            Stage stage = new StageAlt(triple) ;
-            sList.add(stage) ;
+            qIter = new QueryIterTriplePattern(qIter, triple, execCxt) ;
         }
-        return sList ;
+        return qIter ;
     }
 }
 
 /*
- * (c) Copyright 2007, 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

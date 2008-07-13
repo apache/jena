@@ -12,10 +12,8 @@ import com.hp.hpl.jena.mem.faster.GraphMemFaster;
 import com.hp.hpl.jena.sparql.ARQException;
 import com.hp.hpl.jena.sparql.core.BasicPattern;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
-import com.hp.hpl.jena.sparql.engine.main.Stage;
-import com.hp.hpl.jena.sparql.engine.main.StageBasic;
-import com.hp.hpl.jena.sparql.engine.main.StageGenerator;
-import com.hp.hpl.jena.sparql.engine.main.StageList;
+import com.hp.hpl.jena.sparql.engine.QueryIterator;
+import com.hp.hpl.jena.sparql.engine.main.*;
 import com.hp.hpl.jena.sparql.util.Context;
 import com.hp.hpl.jena.sparql.engine.optimizer.core.BasicPatternOptimizer;
 import com.hp.hpl.jena.sparql.engine.optimizer.util.Constants;
@@ -33,6 +31,7 @@ public class StageGenOptimizedBasicPattern implements StageGenerator
 {
 	private StageGenerator other = null ;
 	private Config config = null ;
+	private StageGenerator basic = new StageGenBasicPattern() ;
 	
 	public StageGenOptimizedBasicPattern(StageGenerator other, Config config)
 	{	
@@ -46,12 +45,12 @@ public class StageGenOptimizedBasicPattern implements StageGenerator
 	 * 
 	 * @param pattern
 	 * @param execCxt
-	 * @return StageList
+	 * @param input
+	 * @return QueryIterator
 	 * @see com.hp.hpl.jena.sparql.engine.main.StageGenerator#compile(com.hp.hpl.jena.sparql.core.BasicPattern, com.hp.hpl.jena.sparql.engine.ExecutionContext)
 	 */
-	public StageList compile(BasicPattern pattern, ExecutionContext execCxt)
+	public QueryIterator compile(BasicPattern pattern, ExecutionContext execCxt, QueryIterator input)
 	{
-		StageList sList = new StageList() ;
 		Context context = execCxt.getContext() ;
 		Graph graph = execCxt.getActiveGraph() ;
 		
@@ -72,15 +71,12 @@ public class StageGenOptimizedBasicPattern implements StageGenerator
 			if (! isConsistent(pattern, optimized))
 				throw new ARQException("Optimizer returned an inconsistent pattern: " + pattern + " " + optimized) ;
 			
-			Stage basicStage = new StageBasic(optimized) ;
-			sList.add(basicStage) ;
-        
-			return sList ;
+			return basic.compile(optimized, execCxt, input) ;
 		}
 		
 		context.set(Constants.isEnabled, false) ;
 		
-		return other.compile(pattern, execCxt) ;
+		return other.compile(pattern, execCxt, input) ;
 	}
 	
 	private boolean isConsistent(BasicPattern pattern, BasicPattern optimized)

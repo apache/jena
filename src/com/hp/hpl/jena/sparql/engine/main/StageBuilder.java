@@ -13,6 +13,26 @@ import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterDistinguishedVars;
 import com.hp.hpl.jena.sparql.util.Context;
 
+/** The stage builder (there is only one) is a library that encapsulates
+ * evaluation of a basic graph pattern (BGP).  Matching BGPs is an extension
+ * point of SPARQL; different entailment regimes plug in at this point.
+ * They are also an extension poin tin ARQ to connect to any datasource,
+ * the most common case being connectinbg to a Jena graph.     
+ * 
+ * The StageBuilder finds the registered StageGenerator, and calls it to
+ * compiler a basic graph pattern that has any boudn variables
+ * replaced by their value (in effect, an index join).
+ *
+ * Extension happens by registering a different StageGenerator in
+ * the context object for the execution. Setting the StageGenerator
+ * in the global context ({@link ARQ.getContext}) makes it available
+ * to all query execution created after the point of setting.
+ * 
+ *  Helper static methods for setting the stage generator are provided.  
+ * 
+ * @see StageGenerator
+ */
+
 public class StageBuilder
 {
     public static QueryIterator compile(BasicPattern pattern, 
@@ -25,12 +45,10 @@ public class StageBuilder
         boolean hideBNodeVars = execCxt.getContext().isTrue(ARQ.hideNonDistiguishedVariables) ;
         
         StageGenerator gen = chooseStageGenerator(execCxt.getContext()) ;
-        StageList sList = gen.compile(pattern, execCxt) ;
-        QueryIterator qIter = sList.build(input, execCxt) ;
-        
+        QueryIterator qIter = gen.compile(pattern, execCxt, input) ;
+
         // Remove non-distinguished variables here.
-        // Can't do at any one stage because two stages 
-        // may share a nondistinguished variable.
+        // Project out only named variables.
         if ( hideBNodeVars )
             qIter = new QueryIterDistinguishedVars(qIter, execCxt) ;
         return qIter ;

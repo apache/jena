@@ -3,6 +3,11 @@ ChangeLog for ARQ
 
 ==== ARQ 2.4
 
++ Property paths added.  See documentation.
+  
++ Simplify the interface between ARQ and data sources.
+  StageGenerator example updated.   
+
 ==== ARQ 2.3
 
 + HAVING / ORDER BY variable, where variable is SELECT as an aggregate or computed value now works. 

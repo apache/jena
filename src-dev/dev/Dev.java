@@ -8,11 +8,14 @@ package dev;
 
 public class Dev
 {
+    // Next: Stage/StageList
+    
     // Stage 0 - always
     //    Simplify
     // Stage 1 - general algebra rewrites
     //    ? Filter placement
     //    ? Equality filter
+
     // Stage 2 - per execution -- context and dataset available.
     //    ? Property function
     //    ? BGP rewrites
@@ -31,16 +34,15 @@ public class Dev
      *    
      * TransformRemoveLabels
      * TransformReoderBGP
+     * TransformQuad - needs to work on the way down as well!
+     *   Could redo from (graph) down  
+     * 
      */
     
     /*
      * Getting into an algebra for *execution*
      * Separate system or extension of algebra?
      *   Extension - but be clear of what's where.
-     * What makes it hard to introduce a new operation?
-     *   Builder/Writer
-     *   Transform engine
-     *   2 * evaluations (will become one!)
 
     + Have a "marker" op meaning current working table - the current enclosing sequnce (or Unit table if none?)
           (seq) (current)
@@ -55,7 +57,6 @@ public class Dev
             FilterPlacement
             Simply
             Equality filter
-
     Direct (flow based) execution in main - remove the FilterPlacement and BGP optimizer to an optimize step. 
 
 + Stages

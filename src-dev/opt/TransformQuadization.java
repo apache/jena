@@ -1,21 +1,34 @@
 /*
- * (c) Copyright 2007, 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.engine.main;
+package opt;
 
-import com.hp.hpl.jena.sparql.engine.ExecutionContext;
-import com.hp.hpl.jena.sparql.engine.QueryIterator;
+import com.hp.hpl.jena.graph.Node;
 
-public interface Stage
+import com.hp.hpl.jena.sparql.algebra.Op;
+import com.hp.hpl.jena.sparql.algebra.TransformCopy;
+import com.hp.hpl.jena.sparql.algebra.op.OpGraph;
+
+public class TransformQuadization extends TransformCopy
 {
-    public QueryIterator build(QueryIterator input, ExecutionContext execCxt) ;
+    
+    public TransformQuadization() { }
+    
+    public Op transform(OpGraph opGraph)
+    {
+        Node gn = opGraph.getNode() ;
+        // rewrite recursively down from here.  A bit inefficient in some very complex cases.
+        // Or transform copy has "start" as well as transform for the bottom up rewrite. 
+        return null ;
+    }
+    
 }
 
 /*
- * (c) Copyright 2007, 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

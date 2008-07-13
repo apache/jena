@@ -8,11 +8,27 @@ package com.hp.hpl.jena.sparql.engine.main;
 
 import com.hp.hpl.jena.sparql.core.BasicPattern;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
+import com.hp.hpl.jena.sparql.engine.QueryIterator;
+
+/** Interface for compilation of a basic graph pattern.
+ *  A StageGenerator is registred in the context of an query execution
+ *  to be found and called by the StageBuilder.
+ *  
+ *  The StageGenerator is called repeated for a basic graph pattern
+ *  with each possible bindinging unsed to instantiate variables
+ *  where possible.  
+ *  
+ *  Each call of a stage generator returns a QueryIterator
+ *  of solutions to the pattern.  All bindings   
+ * 
+ * @see StageBuilder
+ */
 
 public interface StageGenerator
 {
-    public StageList compile(BasicPattern pattern, 
-                             ExecutionContext execCxt) ;
+    public QueryIterator compile(BasicPattern pattern, 
+                                 ExecutionContext execCxt,
+                                 QueryIterator input) ;
 }
 
 /*
