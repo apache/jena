@@ -22,9 +22,9 @@ import com.hp.hpl.jena.sparql.engine.main.StageGenerator;
 
 public class StageGeneratorAlt implements StageGenerator
 {
-    public QueryIterator compile(BasicPattern pattern, 
-                                 ExecutionContext execCxt,
-                                 QueryIterator input)
+    public QueryIterator execute(BasicPattern pattern, 
+                                 QueryIterator input,
+                                 ExecutionContext execCxt)
     {
         System.err.println("MyStageGenerator.compile:: triple patterns = "+pattern.size()) ;
 

@@ -11,24 +11,29 @@ import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 
 /** Interface for compilation of a basic graph pattern.
- *  A StageGenerator is registred in the context of an query execution
- *  to be found and called by the StageBuilder.
+ *  A StageGenerator is registred in the context of an query
+ *  execution to be found and called by the StageBuilder.
  *  
  *  The StageGenerator is called repeated for a basic graph pattern
  *  with each possible bindinging unsed to instantiate variables
  *  where possible.  
  *  
  *  Each call of a stage generator returns a QueryIterator
- *  of solutions to the pattern.  All bindings   
+ *  of solutions to the pattern for each of the possibilities
+ *  (bindings) from the input query iterator.
+ *  
+ *  Result bindings to a particular input binding should use that
+ *  as their parent, to pick up the variable bounds for that
+ *  particular input. 
  * 
  * @see StageBuilder
  */
 
 public interface StageGenerator
 {
-    public QueryIterator compile(BasicPattern pattern, 
-                                 ExecutionContext execCxt,
-                                 QueryIterator input) ;
+    public QueryIterator execute(BasicPattern pattern, 
+                                 QueryIterator input,
+                                 ExecutionContext execCxt) ;
 }
 
 /*

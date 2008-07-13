@@ -28,9 +28,9 @@ public class StageGenBasicPattern implements StageGenerator
 {
     public static Symbol altMatcher = ARQConstants.allocSymbol("altmatcher") ;
     
-    public QueryIterator compile(BasicPattern pattern, 
-                                 ExecutionContext execCxt,
-                                 QueryIterator input)
+    public QueryIterator execute(BasicPattern pattern, 
+                                 QueryIterator input,
+                                 ExecutionContext execCxt)
     {
         if ( input == null )
                 ALog.fatal(this, "Null input to "+Utils.classShortName(this.getClass())) ;

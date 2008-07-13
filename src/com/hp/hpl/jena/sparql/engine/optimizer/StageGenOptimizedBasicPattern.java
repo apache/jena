@@ -44,12 +44,12 @@ public class StageGenOptimizedBasicPattern implements StageGenerator
 	 * is statically optimized (i.e. reordered by some heuristics, e.g. selectivity estimation)
 	 * 
 	 * @param pattern
-	 * @param execCxt
 	 * @param input
+	 * @param execCxt
 	 * @return QueryIterator
 	 * @see com.hp.hpl.jena.sparql.engine.main.StageGenerator#compile(com.hp.hpl.jena.sparql.core.BasicPattern, com.hp.hpl.jena.sparql.engine.ExecutionContext)
 	 */
-	public QueryIterator compile(BasicPattern pattern, ExecutionContext execCxt, QueryIterator input)
+	public QueryIterator execute(BasicPattern pattern, QueryIterator input, ExecutionContext execCxt)
 	{
 		Context context = execCxt.getContext() ;
 		Graph graph = execCxt.getActiveGraph() ;
@@ -71,12 +71,12 @@ public class StageGenOptimizedBasicPattern implements StageGenerator
 			if (! isConsistent(pattern, optimized))
 				throw new ARQException("Optimizer returned an inconsistent pattern: " + pattern + " " + optimized) ;
 			
-			return basic.compile(optimized, execCxt, input) ;
+			return basic.execute(optimized, input, execCxt) ;
 		}
 		
 		context.set(Constants.isEnabled, false) ;
 		
-		return other.compile(pattern, execCxt, input) ;
+		return other.execute(pattern, input, execCxt) ;
 	}
 	
 	private boolean isConsistent(BasicPattern pattern, BasicPattern optimized)

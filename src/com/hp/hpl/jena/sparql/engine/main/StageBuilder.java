@@ -16,7 +16,7 @@ import com.hp.hpl.jena.sparql.util.Context;
 /** The stage builder (there is only one) is a library that encapsulates
  * evaluation of a basic graph pattern (BGP).  Matching BGPs is an extension
  * point of SPARQL; different entailment regimes plug in at this point.
- * They are also an extension poin tin ARQ to connect to any datasource,
+ * They are also an extension point in ARQ to connect to any datasource,
  * the most common case being connectinbg to a Jena graph.     
  * 
  * The StageBuilder finds the registered StageGenerator, and calls it to
@@ -28,7 +28,7 @@ import com.hp.hpl.jena.sparql.util.Context;
  * in the global context ({@link ARQ.getContext}) makes it available
  * to all query execution created after the point of setting.
  * 
- *  Helper static methods for setting the stage generator are provided.  
+ * Helper static methods for setting the stage generator are provided.  
  * 
  * @see StageGenerator
  */
@@ -45,7 +45,7 @@ public class StageBuilder
         boolean hideBNodeVars = execCxt.getContext().isTrue(ARQ.hideNonDistiguishedVariables) ;
         
         StageGenerator gen = chooseStageGenerator(execCxt.getContext()) ;
-        QueryIterator qIter = gen.compile(pattern, execCxt, input) ;
+        QueryIterator qIter = gen.execute(pattern, input, execCxt) ;
 
         // Remove non-distinguished variables here.
         // Project out only named variables.

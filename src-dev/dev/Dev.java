@@ -8,8 +8,6 @@ package dev;
 
 public class Dev
 {
-    // Next: Stage/StageList
-    
     // Stage 0 - always
     //    Simplify
     // Stage 1 - general algebra rewrites
@@ -58,14 +56,6 @@ public class Dev
             Simply
             Equality filter
     Direct (flow based) execution in main - remove the FilterPlacement and BGP optimizer to an optimize step. 
-
-+ Stages
-    invert Stage/StageList
-    Formalse the TDB stacking generator approach.
-      Or even register stage factories with accept/create 
-  
-    StateGenerator (and invert StageLists) 
-            
      */
 }
 
