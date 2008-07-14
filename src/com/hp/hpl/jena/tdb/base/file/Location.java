@@ -111,7 +111,7 @@ public class Location
             throw new FileException("Location: null filename") ;
         if ( filename.contains("/") || filename.contains("\\") )
             throw new FileException("Illegal file component name: "+filename) ;
-        if ( filename.contains(".") )
+        if ( filename.contains(".") && ext != null )
             throw new FileException("Filename has an extension: "+filename) ;
         if ( ext != null )
         {

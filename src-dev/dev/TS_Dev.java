@@ -19,7 +19,7 @@ import com.hp.hpl.jena.tdb.pgraph.TestPersistentGraph;
     PGraphTestSuite.class          // Scripted tests
 })
 
-public class TS_Test extends TestBase
+public class TS_Dev extends TestBase
 {
 }
 
