@@ -147,7 +147,9 @@ public class PrintUtils
 
     public static void printOp(IndentedWriter out, Query query, boolean printOptimized)
     {
-        Op op = Algebra.compile(query, printOptimized) ;
+        Op op = Algebra.compile(query) ;
+        if ( printOptimized )
+            op =  Algebra.optimize(op) ;
         WriterSSE.out(out, op, query) ;
         out.flush();
     }
@@ -160,7 +162,9 @@ public class PrintUtils
 
     public static void printQuad(IndentedWriter out, Query query, boolean printOptimized)
     {
-        Op op = Algebra.compileQuad(query, printOptimized) ;
+        Op op = Algebra.compileQuad(query) ;
+        if ( printOptimized )
+            op =  Algebra.optimize(op) ;
         WriterSSE.out(out, op, query) ;
 //        SerializationContext sCxt = new SerializationContext(query) ;
 //        op.output(out, sCxt) ;

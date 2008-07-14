@@ -100,7 +100,7 @@ public class TestClassify extends TestCase
         String qs1 = "PREFIX : <http://example/>\n" ;
         String qs = qs1+"SELECT * "+pattern;
         Query query = QueryFactory.create(qs, Syntax.syntaxARQ) ;
-        Op op = Algebra.compile(query.getQueryPattern(), false) ;
+        Op op = Algebra.compile(query.getQueryPattern()) ;
         
         if ( ! ( op instanceof OpJoin ) )
             fail("Not a join: "+pattern) ;
@@ -130,7 +130,7 @@ public class TestClassify extends TestCase
         String qs1 = "PREFIX : <http://example/>\n" ;
         String qs = qs1+"SELECT * "+pattern;
         Query query = QueryFactory.create(qs, Syntax.syntaxARQ) ;
-        Op op = Algebra.compile(query.getQueryPattern(), false) ;
+        Op op = Algebra.compile(query.getQueryPattern()) ;
         
         if ( ! ( op instanceof OpLeftJoin ) )
             fail("Not a leftjoin: "+pattern) ;

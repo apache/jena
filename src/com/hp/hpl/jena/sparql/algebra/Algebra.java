@@ -33,62 +33,74 @@ public class Algebra
     public static boolean AllowOptimization = true ;
     private static Transform optimization() { return new TransformEqualityFilter() ; }
     
+    // -------- Prepackaged combinations
+    
+    /** Compile a query - pattern and modifiers.  Optionally optimize the algebra expression. */
+    public static Op compile(Query query, boolean optimize)
+    {
+        Op op = compile(query) ;
+        if ( optimize )
+            op = optimize(op) ;
+        return op ;
+    }
+    
     // -------- Optimize
     
-    public static Op optimize(Op op) { return optimize(op, true) ; }
-    
-    private static Op optimize(Op op, boolean optimize)
-    { 
+    /** Apply static transformations to a query to optimzie it */
+    public static Op optimize(Op op)
+    {
         if ( op == null )
             return null ;
-        if ( ! optimize )
-            return op ;
-        if ( ! AllowOptimization )
-            return op ;
         return Transformer.transform(optimization(), op) ;
     }    
     
     // -------- Compile
     
-    /** Compile a query - pattern and modifiers.  Optionally optimize the algebra expression. */
-    public static Op compile(Query query, boolean optimize)
+    /** Compile a query - pattern and modifiers.  */
+    public static Op compile(Query query)
     {
         // Need to switch on quads here. 
         if ( query == null )
             return null ;
-        Op op = new AlgebraGenerator().compile(query) ;
-        return optimize(op, optimize) ;
+        return new AlgebraGenerator().compile(query) ;
     }
 
-    /** Compile a pattern.  Optionally optimize the algebra expression. */
-    public static Op compile(Element elt, boolean optimize)
+    /** Compile a pattern.*/
+    public static Op compile(Element elt)
     {
         if ( elt == null )
             return null ;
-        Op op = new AlgebraGenerator().compile(elt) ;
-        return optimize(op, optimize) ;
-
+        return new AlgebraGenerator().compile(elt) ;
     }
 
-    /** Compile a query - pattern and modifiers - to quad form.  Optionally optimize the algebra expression. */
+    /** Compile a query - pattern and modifiers - to quad form. */
+    public static Op compileQuad(Query query)
+    {
+        if ( query == null )
+            return null ;
+        return new AlgebraGeneratorQuad().compile(query) ;
+    }
+
+    /** Compile a pattern to quad form. */
+    public static Op compileQuad(Element elt)
+    {
+        if ( elt == null )
+            return null ;
+        return new AlgebraGeneratorQuad().compile(elt) ;
+    }
+
+    /** Compile a pattern - to quad form. */
     public static Op compileQuad(Query query, boolean optimize)
     {
         if ( query == null )
             return null ;
         Op op = new AlgebraGeneratorQuad().compile(query) ;
-        return optimize(op, optimize) ;
+        if ( optimize )
+            op = optimize(op) ;
+        return op ;
     }
 
-    /** Compile a pattern - to quad form.  Optionally optimize the algebra expression. */
-    public static Op compileQuad(Element elt, boolean optimize)
-    {
-        if ( elt == null )
-            return null ;
-        Op op = new AlgebraGeneratorQuad().compile(elt) ;
-        return optimize(op, optimize) ;
-    }
-
-    // ---- SSE
+    // -------- SSE
     
     static public Op read(String filename)
     {

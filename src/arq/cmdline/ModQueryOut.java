@@ -16,24 +16,16 @@ import com.hp.hpl.jena.query.Syntax;
 public class ModQueryOut implements ArgModuleGeneral
 {
     protected final ArgDecl queryOutputSyntaxDecl  = new ArgDecl(ArgDecl.HasValue, "out", "format") ;
-    protected final ArgDecl queryNumberDecl        = new ArgDecl(ArgDecl.HasValue, "num", "number") ;
-    protected final ArgDecl queryPlainDecl         = new ArgDecl(ArgDecl.NoValue, "plain") ;
+    protected final ArgDecl queryNumberDecl        = new ArgDecl(ArgDecl.NoValue, "num", "number") ;
 
     private Syntax outputSyntax = Syntax.syntaxSPARQL ;
-    private boolean lineNumbers = true ;
+    private boolean lineNumbers = false ;
     
     public void registerWith(CmdGeneral cmdLine)
     {
         cmdLine.getUsage().startCategory("Output") ;
-        cmdLine.add(queryOutputSyntaxDecl,
-                    "--out, --format",
-                    "Output syntax") ;
-        cmdLine.add(queryNumberDecl,
-                    "--num [on|off]",
-                    "Numbers") ;
-        cmdLine.add(queryPlainDecl,
-                    "--plain",
-                    "Plain output") ;
+        cmdLine.add(queryOutputSyntaxDecl, "--out, --format",  "Output syntax") ;
+        cmdLine.add(queryNumberDecl, "--num", "Print line numbers") ;
     }
 
     public void processArgs(CmdArgModule cmdline) throws IllegalArgumentException
@@ -48,11 +40,7 @@ public class ModQueryOut implements ArgModuleGeneral
             outputSyntax = syn ; 
         }        
         
-        if ( cmdline.contains(queryNumberDecl) )
-            lineNumbers = cmdline.getValue(queryNumberDecl).equalsIgnoreCase("on") ;
-        
-        if ( cmdline.contains(queryPlainDecl) )
-            lineNumbers = false ;
+        lineNumbers = cmdline.contains(queryNumberDecl) ;
     }
     
     public Syntax getOutputSyntax()

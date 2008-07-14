@@ -245,7 +245,8 @@ public class Optimizer
 		PrefixMapping prefix = query.getPrefixMapping() ;
 		BasicPatternVisitor visitor = new BasicPatternVisitor() ;
 		Element el = query.getQueryPattern() ;
-		Op op = Algebra.compile(el,true) ;
+		Op op = Algebra.compile(el) ;
+		op = Algebra.optimize(op) ;
 		OpWalker.walk(op, visitor) ;
 		
 		if (model != null)

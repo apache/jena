@@ -29,7 +29,8 @@ public class AlgebraEx
         System.out.println(query) ;
         
         // Generate algebra
-        Op op = Algebra.compile(query, true) ;
+        Op op = Algebra.compile(query) ;
+        op = Algebra.optimize(op) ;
         System.out.println(op) ;
         
         // Execute it.

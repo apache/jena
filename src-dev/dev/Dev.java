@@ -8,6 +8,20 @@ package dev;
 
 public class Dev
 {
+    // Next:
+    // Integrate TransformFilterPlacement, TransformPropertyFunction
+    // Some sort of flags to make what has been done? 
+
+    //  Two stage:
+    //    Algebra.compile (inc simplify, and property function - global context.
+    //    Algebra.optimize(op, context)
+    //      (done at start of execution, not engine creation so context can have been updated). 
+    
+    // Algebra compile
+    // Algebra optimize
+    // Algebra exec
+    
+    
     // Stage 0 - always
     //    Simplify
     // Stage 1 - general algebra rewrites
@@ -31,11 +45,15 @@ public class Dev
      *    -- called via Algebra.compile(,optimize)
      *    
      * TransformRemoveLabels
-     * TransformReoderBGP
-     * TransformQuad - needs to work on the way down as well!
-     *   Could redo from (graph) down  
+     * TransformReorderBGP
+     * TransformQuadization
+     *   - needs to work on the way down as well!
+     *     Could redo from (graph) down  
      * 
      */
+    
+    // Annotations (at least of join)
+    // Relationship to "label"
     
     /*
      * Getting into an algebra for *execution*
