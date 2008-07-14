@@ -6,9 +6,9 @@
 
 package com.hp.hpl.jena.tdb.pgraph;
 
-import static com.hp.hpl.jena.tdb.Const.IndexRecordLength;
-import static com.hp.hpl.jena.tdb.Const.NodeKeyLength;
-import static com.hp.hpl.jena.tdb.Const.NodeValueLength;
+import static com.hp.hpl.jena.tdb.Const.LenIndexRecord;
+import static com.hp.hpl.jena.tdb.Const.LenNodeHash;
+import static com.hp.hpl.jena.tdb.Const.SizeOfNodeId;
 import static com.hp.hpl.jena.tdb.TDB.logDuplicates;
 import iterator.Filter;
 import iterator.Iter;
@@ -17,15 +17,21 @@ import java.util.Iterator;
 
 import lib.Tuple;
 
+import com.hp.hpl.jena.rdf.model.AnonId;
+
+import com.hp.hpl.jena.util.iterator.ExtendedIterator;
+import com.hp.hpl.jena.util.iterator.NiceIterator;
+
 import com.hp.hpl.jena.graph.Capabilities;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.graph.TripleMatch;
 import com.hp.hpl.jena.graph.impl.GraphBase;
 import com.hp.hpl.jena.graph.query.QueryHandler;
-import com.hp.hpl.jena.rdf.model.AnonId;
+
 import com.hp.hpl.jena.sparql.sse.SSE;
 import com.hp.hpl.jena.sparql.util.FmtUtils;
+
 import com.hp.hpl.jena.tdb.Const;
 import com.hp.hpl.jena.tdb.TDB;
 import com.hp.hpl.jena.tdb.TDBException;
@@ -33,8 +39,6 @@ import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 import com.hp.hpl.jena.tdb.graph.GraphSyncListener;
 import com.hp.hpl.jena.tdb.index.TripleIndex;
 import com.hp.hpl.jena.tdb.lib.TupleLib;
-import com.hp.hpl.jena.util.iterator.ExtendedIterator;
-import com.hp.hpl.jena.util.iterator.NiceIterator;
 
 /** Machinary to implement a "nodes and triples" style graph,
  *  based on 3 indexes (SPO, POS, OSP)
@@ -47,8 +51,8 @@ import com.hp.hpl.jena.util.iterator.NiceIterator;
 public class PGraphBase extends GraphBase implements Sync
 {
     // ---- Record factories
-    public final static RecordFactory indexRecordFactory = new RecordFactory(IndexRecordLength, 0) ; 
-    public final static RecordFactory nodeRecordFactory = new RecordFactory(NodeKeyLength, NodeValueLength) ;
+    public final static RecordFactory indexRecordFactory = new RecordFactory(LenIndexRecord, 0) ; 
+    public final static RecordFactory nodeRecordFactory = new RecordFactory(LenNodeHash, SizeOfNodeId) ;
     
     //static Logger log = LoggerFactory.getLogger(PGraphBase.class) ;
     

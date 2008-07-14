@@ -33,14 +33,15 @@ public class Const
     /** Size, in bytes, of a pointer between blocks */
     public static final int SizeOfPointer           = SizeOfInt ;
     
+    // ---- Node table related
+    
     /** Size, in bytes, of a triple index record. */
-    public static final int IndexRecordLength       = 3 * NodeId.SIZE ;
+    public static final int LenIndexRecord         = 3 * NodeId.SIZE ;
     
     /** Size, in bytes, of a Node hash. */
-    public static final int NodeKeyLength           = SizeOfLong ;
-    
-    /** Size, in bytes, of a NodeId as used by the NodeTable.. */
-    public static final int NodeValueLength         = NodeId.SIZE ; 
+    public static final int LenNodeHash            = SizeOfLong ;
+
+    // File unit sizes
     
     /** Size, in bytes, of a block */
     public static final int BlockSize               = 8*1024 ;
@@ -51,6 +52,8 @@ public class Const
     /** Size, in bytes, of a segment (used for memory mapped files) */
     public static final int SegmentSize             = 8*1024*1024 ;
     
+    // ---- Caches
+    
     /** Size of Node<->NodeId caches */
     public static final int NodeCacheSize           = 100*1000 ;
 
@@ -59,6 +62,8 @@ public class Const
 
     /** Size of read block cache (32 bit systems only).  Increase JVM size as necessary. Per file. */
     public static final int BlockReadCacheSize      = 10*1000 ;
+    
+    // ---- Misc
     
     /** Number of adds/deletes between calls to sync (-ve to disable) */
     public static final int SyncTick                = 5*1000 ;

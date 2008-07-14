@@ -16,7 +16,6 @@ import com.hp.hpl.jena.graph.Node;
 
 import com.hp.hpl.jena.sparql.util.ALog;
 
-import com.hp.hpl.jena.tdb.Const;
 import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile;
 import com.hp.hpl.jena.tdb.base.record.Record;
 import com.hp.hpl.jena.tdb.index.Index;
@@ -119,7 +118,7 @@ public abstract class NodeTableBase implements NodeTable
     // Assumes a cache miss on node2id_Cache
     protected NodeId accessIndex(Node node, long hash, boolean create)
     {
-        byte k[] = new byte[Const.NodeKeyLength] ;
+        byte k[] = new byte[nodeHashToId.getRecordFactory().keyLength()] ;
         Bytes.setLong(hash, k, 0) ;
         // Key only.
         Record r = nodeHashToId.getRecordFactory().create(k) ;
@@ -136,6 +135,7 @@ public abstract class NodeTableBase implements NodeTable
             NodeId id = nodeToNodeIdTable(node) ;
             
             // Update the r record with the new id.
+            // r.valkue := id bytes ; 
             id.toBytes(r.getValue(), 0) ;
             
             // Put in index

@@ -39,7 +39,7 @@ public class NodeTableBDB extends NodeTableBase
     protected NodeId accessIndex(Node node, long hash, boolean create)
     {
         try {
-            byte k[] = new byte[Const.NodeKeyLength] ;
+            byte k[] = new byte[Const.LenNodeHash] ;
             Bytes.setLong(hash, k, 0) ;
             DatabaseEntry entry = new DatabaseEntry(k) ;
             DatabaseEntry idEntry = new DatabaseEntry() ;
