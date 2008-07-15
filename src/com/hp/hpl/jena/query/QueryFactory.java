@@ -116,12 +116,16 @@ public class QueryFactory
         if ( parser == null )
             throw new UnsupportedOperationException("Unrecognized syntax for parsing: "+syntaxURI) ;
         
-        // Sort out the baseURI - if that fails, dump in a dummy one and continue.
-        try { baseURI = IRIResolver.chooseBaseURI(baseURI) ; }
-        catch (Exception ex)
-        { baseURI = "http://localhost/defaultBase#" ; }
-
-        query.setResolver(new IRIResolver(baseURI)) ;
+        if ( query.getResolver() == null )
+        {
+            
+            // Sort out the baseURI - if that fails, dump in a dummy one and continue.
+            try { baseURI = IRIResolver.chooseBaseURI(baseURI) ; }
+            catch (Exception ex)
+            { baseURI = "http://localhost/defaultBase#" ; }
+    
+            query.setResolver(new IRIResolver(baseURI)) ;
+        }
         return parser.parse(query, queryString) ;
     }
     
