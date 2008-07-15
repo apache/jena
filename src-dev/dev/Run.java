@@ -14,6 +14,7 @@ import arq.sparql;
 import arq.sse_query;
 
 import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.ModelFactory;
 
 import com.hp.hpl.jena.util.FileManager;
 
@@ -26,12 +27,15 @@ import com.hp.hpl.jena.sparql.algebra.Transform;
 import com.hp.hpl.jena.sparql.algebra.Transformer;
 import com.hp.hpl.jena.sparql.algebra.op.*;
 import com.hp.hpl.jena.sparql.core.PathBlock;
+import com.hp.hpl.jena.sparql.core.Prologue;
 import com.hp.hpl.jena.sparql.core.TriplePath;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.path.Path;
 import com.hp.hpl.jena.sparql.path.PathCompiler;
 import com.hp.hpl.jena.sparql.path.PathParser;
+import com.hp.hpl.jena.sparql.serializer.PrologueSerializer;
 import com.hp.hpl.jena.sparql.sse.SSE;
+import com.hp.hpl.jena.sparql.util.IndentedLineBuffer;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
 import com.hp.hpl.jena.sparql.util.StringUtils;
 
@@ -43,6 +47,33 @@ public class Run
 {
     public static void main(String[] argv) throws Exception
     {
+        if ( false )
+        {
+            Model m = ModelFactory.createDefaultModel() ;
+            m.setNsPrefix("", "http://example/") ;
+            Query query = QueryFactory.make() ;
+            query.setPrefixMapping(m) ;
+            QueryFactory.parse(query, "SELECT * { :s :p :o }", null, Syntax.syntaxSPARQL) ;
+            System.out.println(query) ;
+            System.exit(0) ;
+        }
+        
+        {
+            Model m = ModelFactory.createDefaultModel() ;
+            m.setNsPrefix("", "http://example/") ;
+            Prologue prologue = new Prologue(m) ;
+            IndentedLineBuffer b = new IndentedLineBuffer() ;
+            PrologueSerializer.output(b.getIndentedWriter(), prologue) ;
+            System.out.println(b.asString()) ;
+            
+//            query.setPrefixMapping(m) ;
+//            QueryFactory.parse(query, "SELECT * { :s :p :o }", null, Syntax.syntaxSPARQL) ;
+//            System.out.println(query) ;
+            System.exit(0) ;
+        }
+        
+        
+        
         
         opt.RunT.main(argv) ; 
         //runQParse() ;

@@ -41,7 +41,8 @@ public abstract class OpBase extends PrintSerializableBase implements Op
     }
 
     // Constants used in hashing to stop an element and it's subelement
-    // (if just one) having the same hash.
+    // (if just one) having the same hash.  That isn't usualy any problem but
+    // it's easy to avoid so we do.
     
     static final int HashBasicGraphPattern      = 0xB1 ;
 //    static final int HashGroup                = 0xB2 ;
