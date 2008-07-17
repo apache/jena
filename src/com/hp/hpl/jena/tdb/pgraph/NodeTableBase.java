@@ -8,7 +8,7 @@ package com.hp.hpl.jena.tdb.pgraph;
 
 import static com.hp.hpl.jena.tdb.lib.NodeLib.decode;
 import static com.hp.hpl.jena.tdb.lib.NodeLib.encode;
-import lib.Bytes;
+import static com.hp.hpl.jena.tdb.lib.NodeLib.setHash;
 import lib.CacheLRU;
 import lib.CacheSetLRU;
 
@@ -19,7 +19,6 @@ import com.hp.hpl.jena.sparql.util.ALog;
 import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile;
 import com.hp.hpl.jena.tdb.base.record.Record;
 import com.hp.hpl.jena.tdb.index.Index;
-import com.hp.hpl.jena.tdb.lib.NodeLib;
 
 public abstract class NodeTableBase implements NodeTable
 {
@@ -104,9 +103,7 @@ public abstract class NodeTableBase implements NodeTable
         if ( nodeId != null )
             return nodeId ;
         
-        // Not in cache.  Try the index.
-        long hash = NodeLib.hash(node) ;
-        nodeId = accessIndex(node, hash, allocate) ;
+        nodeId = accessIndex(node, allocate) ;
         
         // Ensure caches have it.  Includes recording "no such node"
         cacheUpdate(node, nodeId) ;
@@ -116,10 +113,11 @@ public abstract class NodeTableBase implements NodeTable
     // Access the node->NodeId index.  
     // Given a node and a hash, return NodeId
     // Assumes a cache miss on node2id_Cache
-    protected NodeId accessIndex(Node node, long hash, boolean create)
+    protected NodeId accessIndex(Node node, boolean create)
     {
-        byte k[] = new byte[nodeHashToId.getRecordFactory().keyLength()] ;
-        Bytes.setLong(hash, k, 0) ;
+        Hash hash = new Hash(nodeHashToId.getRecordFactory().keyLength()) ;
+        setHash(hash, node) ;
+        byte k[] = hash.getBytes() ;        
         // Key only.
         Record r = nodeHashToId.getRecordFactory().create(k) ;
 

@@ -9,17 +9,16 @@ package com.hp.hpl.jena.tdb.bdb;
 import static com.hp.hpl.jena.tdb.Const.NodeCacheSize;
 import lib.Bytes;
 
+import com.sleepycat.je.*;
+
 import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.tdb.Const;
+
 import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile;
+import com.hp.hpl.jena.tdb.lib.NodeLib;
+import com.hp.hpl.jena.tdb.pgraph.Hash;
 import com.hp.hpl.jena.tdb.pgraph.NodeId;
 import com.hp.hpl.jena.tdb.pgraph.NodeTableBase;
 import com.hp.hpl.jena.tdb.pgraph.PGraphException;
-import com.sleepycat.je.Database;
-import com.sleepycat.je.DatabaseEntry;
-import com.sleepycat.je.DatabaseException;
-import com.sleepycat.je.OperationStatus;
-import com.sleepycat.je.Transaction;
 
 /** Rather than use the Index wrapper, we directly sublcass to provide the index capability for a NodeTable */
 public class NodeTableBDB extends NodeTableBase
@@ -36,12 +35,11 @@ public class NodeTableBDB extends NodeTableBase
     }
     
     @Override
-    protected NodeId accessIndex(Node node, long hash, boolean create)
+    protected NodeId accessIndex(Node node, boolean create)
     {
         try {
-            byte k[] = new byte[Const.LenNodeHash] ;
-            Bytes.setLong(hash, k, 0) ;
-            DatabaseEntry entry = new DatabaseEntry(k) ;
+            Hash h = NodeLib.hash(node) ;
+            DatabaseEntry entry = new DatabaseEntry(h.getBytes()) ;
             DatabaseEntry idEntry = new DatabaseEntry() ;
             OperationStatus status = nodeHashToId.get(txn, entry, idEntry, config.lockMode) ;
             if ( status == OperationStatus.SUCCESS )

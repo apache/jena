@@ -6,24 +6,29 @@
 
 package com.hp.hpl.jena.tdb.lib;
 
+import static com.hp.hpl.jena.tdb.Const.LenNodeHash;
 import static com.hp.hpl.jena.tdb.Const.SizeOfLong;
 
 import java.io.UnsupportedEncodingException;
-import java.math.BigInteger;
+import java.security.DigestException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 import lib.Bytes;
 
-import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.rdf.model.AnonId;
+
+import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.shared.PrefixMapping;
+
 import com.hp.hpl.jena.sparql.sse.SSE;
 import com.hp.hpl.jena.sparql.sse.SSEParseException;
 import com.hp.hpl.jena.sparql.util.ALog;
 import com.hp.hpl.jena.sparql.util.FmtUtils;
+
 import com.hp.hpl.jena.tdb.base.record.Record;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
+import com.hp.hpl.jena.tdb.pgraph.Hash;
 import com.hp.hpl.jena.tdb.pgraph.NodeId;
 import com.hp.hpl.jena.tdb.pgraph.NodeType;
 import com.hp.hpl.jena.tdb.pgraph.PGraphException;
@@ -58,31 +63,37 @@ public class NodeLib
         }
     }
     
-    public static long hash(Node n)
+    public static Hash hash(Node n)
+    { 
+        Hash h = new Hash(LenNodeHash) ;
+        setHash(h, n) ;
+        return h ;
+    }
+    
+    public static void setHash(Hash h, Node n) 
     {
-        // Get the bits and pieces for a value
-        String lexForm ; 
-        String lang = "" ;
-        String datatype ;
-        
         NodeType nt = NodeType.lookup(n) ;
         switch(nt) 
         {
             case URI:
-                return hash(n.getURI(), null, null, nt) ;
+                hash(h, n.getURI(), null, null, nt) ;
+                return ;
             case BNODE:
-                return hash(n.getBlankNodeLabel(), null, null, nt) ;
+                hash(h, n.getBlankNodeLabel(), null, null, nt) ;
+                return ;
             case LITERAL:
-                return hash(n.getLiteralLexicalForm(),
-                         n.getLiteralLanguage(),
-                         n.getLiteralDatatypeURI(),nt) ; 
+                hash(h,
+                     n.getLiteralLexicalForm(),
+                     n.getLiteralLanguage(),
+                     n.getLiteralDatatypeURI(), nt) ;
+                return  ;
             case OTHER:
-                throw new PGraphException("Attempt to hash somethign strange: "+n) ; 
+                throw new PGraphException("Attempt to hash something strange: "+n) ; 
         }
         throw new PGraphException("NodeType broken: "+n) ; 
     }
-
-    private static long hash(String lex, String lang, String datatype, NodeType nodeType)
+    
+    private static void hash(Hash h, String lex, String lang, String datatype, NodeType nodeType)
     {
         if ( datatype == null )
             datatype = "" ;
@@ -94,15 +105,24 @@ public class NodeLib
         {
             digest = MessageDigest.getInstance("MD5");
             digest.update(toHash.getBytes("UTF8"));
-            byte[] hash = digest.digest();
-            BigInteger bigInt = new BigInteger(hash);
-            return bigInt.longValue();
+            if ( h.getLen() == 16 )
+                // MD5 is 16 bytes.
+                digest.digest(h.getBytes(), 0, 16) ;
+            else
+            {
+                byte b[] = digest.digest(); // 16 bytes.
+                // Avoid the copy? If length is 16.  digest.digest(bytes, 0, length) needs 16 bytes
+                System.arraycopy(b, 0, h.getBytes(), 0, h.getLen()) ;
+            }
+            return ;
         }
         catch (NoSuchAlgorithmException e)
         { e.printStackTrace(); }
         catch (UnsupportedEncodingException e)
-        { e.printStackTrace(); }
-        return -1;
+        { e.printStackTrace(); } 
+        catch (DigestException ex)
+        { ex.printStackTrace(); }
+        return ;
     }
     
     public static long getId(Record r, int idx)

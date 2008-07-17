@@ -8,19 +8,15 @@ package dev;
 
 public class Dev
 {
-    // Sort out names - Names.xyz
-    
+    // Check caches.
+    // Use of java properties fro key values.
     // Different names for nodes.dat file under the two schemes.
 
-    // Build needs to create tmp/testing
-    
     // CI - tidy up
-    // CC dashborad assumes the use of ant default target
+    // CC dashboard assumes the use of ant default target
 
     // Huge store : 96bits hash ids?
     // IndexBuilder to migrate to be policy for data files as well.
-    
-    // PExt!
     
     // removeAll implementation: depends on iterator.remove
     // but can do faster as a specific operation.
