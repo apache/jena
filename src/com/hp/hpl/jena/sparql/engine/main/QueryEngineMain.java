@@ -49,6 +49,7 @@ public class QueryEngineMain extends QueryEngineBase
     
     protected Op createOp(Query query, AlgebraGenerator gen)
     {
+        // Optimize here??  Was context setting possible?
         Op op = super.createOp(query, gen) ;
         op = Algebra.optimize(op) ;
         return op ;
@@ -75,10 +76,7 @@ public class QueryEngineMain extends QueryEngineBase
             QueryEngineMain engine = new QueryEngineMain(op, dataset, binding, context) ;
             return engine.getPlan() ;
         }
-
     } ;
-
-
 }
 
 /*

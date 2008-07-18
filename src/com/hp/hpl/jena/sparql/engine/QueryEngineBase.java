@@ -118,6 +118,7 @@ public abstract class QueryEngineBase implements OpExec
     public QueryIterator eval(Op op, DatasetGraph dsg, Binding binding, Context context) ;
     
     public Op getOp() { return queryOp ; }
+    
     protected void setOp(Op op)
     { 
         queryOp = op ;

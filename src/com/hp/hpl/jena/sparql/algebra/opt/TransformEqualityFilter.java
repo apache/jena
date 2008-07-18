@@ -31,6 +31,8 @@ public class TransformEqualityFilter extends TransformCopy
     
     public Op transform(OpFilter opFilter, Op subOp)
     { 
+        // What about filter of OpSequence? 
+        
         // Safe for BGPs (and unions and joins of BGPs)
         // Optionals - be careful.
         // Optionals+bound - be very careful.

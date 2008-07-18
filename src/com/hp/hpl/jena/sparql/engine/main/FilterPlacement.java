@@ -44,7 +44,7 @@ public class FilterPlacement
     // --------------------------------
     // Basic Graph Patterns
     
-    public QueryIterator placeFiltersBGP(ExprList exprs, BasicPattern pattern, QueryIterator input)
+    public QueryIterator X_placeFiltersBGP(ExprList exprs, BasicPattern pattern, QueryIterator input)
     {
         if ( ! doFilterPlacement )
         {
@@ -121,7 +121,7 @@ public class FilterPlacement
     // Placement in stages and joins.
     // Joins may, in turn, involve stages and BGPs.
     
-    public QueryIterator placeFiltersStage(ExprList exprs, OpSequence opSequence, QueryIterator input)
+    public QueryIterator X_placeFiltersStage(ExprList exprs, OpSequence opSequence, QueryIterator input)
     {
         if ( ! doFilterPlacement )
             return buildOpFilter(exprs, opSequence, input) ;
@@ -138,7 +138,7 @@ public class FilterPlacement
         return placeFilters(exprs, ops, varScope, input) ;
     }
 
-    public QueryIterator placeFiltersJoin(ExprList exprs, OpJoin opJoin, QueryIterator input)
+    public QueryIterator X_placeFiltersJoin(ExprList exprs, OpJoin opJoin, QueryIterator input)
     {
         if ( ! doFilterPlacement )
             return buildOpFilter(exprs, opJoin, input) ;
@@ -157,7 +157,7 @@ public class FilterPlacement
     }
      
     // Err - not sure this is useful.
-    public QueryIterator _placeFiltersProcedure(ExprList exprs, OpProcedure opProc, QueryIterator input)
+    public QueryIterator X_placeFiltersProcedure(ExprList exprs, OpProcedure opProc, QueryIterator input)
     {
         if ( ! doFilterPlacement )
             return buildOpFilter(exprs, opProc, input) ;

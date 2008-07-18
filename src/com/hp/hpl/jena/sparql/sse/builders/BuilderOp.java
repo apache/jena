@@ -540,11 +540,11 @@ public class BuilderOp
             
             if ( list.size() == 3 )
                 op = build(list, 2) ;
-            
-            if ( op == null )
-                return new OpLabel(str) ;
-            else
-                return new OpLabel(str , op) ;
+            return OpLabel.create(str, op) ;
+//            if ( op == null )
+//                return new OpLabel(str) ;
+//            else
+//                return new OpLabel(str , op) ;
         }
     } ;
 }

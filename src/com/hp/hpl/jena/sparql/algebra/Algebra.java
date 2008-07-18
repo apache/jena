@@ -17,13 +17,16 @@ import com.hp.hpl.jena.sparql.engine.QueryEngineFactory;
 import com.hp.hpl.jena.sparql.engine.QueryEngineRegistry;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.BindingRoot;
+import com.hp.hpl.jena.sparql.algebra.opt.Optimize;
 import com.hp.hpl.jena.sparql.algebra.opt.TransformEqualityFilter;
 import com.hp.hpl.jena.sparql.engine.ref.QueryEngineRef;
 import com.hp.hpl.jena.sparql.sse.Item;
 import com.hp.hpl.jena.sparql.sse.SSE;
 import com.hp.hpl.jena.sparql.sse.builders.BuilderOp;
 import com.hp.hpl.jena.sparql.syntax.Element;
+import com.hp.hpl.jena.sparql.util.Context;
 
+import com.hp.hpl.jena.query.ARQ;
 import com.hp.hpl.jena.query.Dataset;
 import com.hp.hpl.jena.query.Query;
 
@@ -46,14 +49,19 @@ public class Algebra
     
     // -------- Optimize
     
-    /** Apply static transformations to a query to optimzie it */
-    public static Op optimize(Op op)
+    /** Apply static transformations to a query to optimize it */
+    public static Op optimize(Op op) { return optimize(op, null) ; }
+    
+    /** Apply static transformations to a query to optimize it */
+    public static Op optimize(Op op, Context context)
     {
+        if ( context == null )
+            context = ARQ.getContext() ;
         // Call-through to somewhere to manage all the optimizations
         if ( op == null )
             return null ;
-        return Transformer.transform(optimization(), op) ;
-    }    
+        return Optimize.optimize(op, context) ;
+    }   
     
     // -------- Compile
     

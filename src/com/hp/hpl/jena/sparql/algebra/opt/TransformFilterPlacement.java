@@ -12,7 +12,9 @@ import java.util.List;
 import java.util.Set;
 
 import com.hp.hpl.jena.graph.Triple;
+
 import com.hp.hpl.jena.sparql.algebra.Op;
+import com.hp.hpl.jena.sparql.algebra.OpVars;
 import com.hp.hpl.jena.sparql.algebra.TransformCopy;
 import com.hp.hpl.jena.sparql.algebra.op.OpBGP;
 import com.hp.hpl.jena.sparql.algebra.op.OpFilter;
@@ -36,25 +38,39 @@ public class TransformFilterPlacement extends TransformCopy
     public TransformFilterPlacement()
     { }
     
-    // **** Replacement for FilterPlacement.
     public Op transform(OpFilter opFilter, Op x)
     {
         if ( ! doFilterPlacement )
             return super.transform(opFilter, x) ;
         
-        // (filter (BGP ...) ) only. 
-        if ( ! ( x instanceof OpBGP ) )
-            return super.transform(opFilter, x) ;
-        
-        // Can also move filter around for OpSequence and OpJoin 
-        // see OpCompile.compile(OpFilter opFilter,...)
-        
-        BasicPattern pattern = ((OpBGP)x).getPattern() ;
-        
         // Destructive use of exprs - copy it.
         ExprList exprs = new ExprList(opFilter.getExprs()) ;
-        // Variables in scope as we move through the BGP
-        Set patternVarsScope = new HashSet() ;
+        Set varsScope = new HashSet() ;
+        
+        Op op = transform(exprs, varsScope, x) ;
+        if ( op == x )
+            // Didn't do anything.
+            return super.transform(opFilter, x) ;
+        
+        // Remaining exprs
+        op = buildFilter(exprs, op) ;
+        return op ;
+    }
+        
+    private Op transform(ExprList exprs, Set varsScope, Op x)
+    {
+        if ( x instanceof OpBGP )
+            return transformFilterBGP(exprs, varsScope, (OpBGP)x) ;
+
+        if ( x instanceof OpSequence )
+            return transformFilterSequence(exprs, varsScope, (OpSequence)x) ;
+
+        return x ;
+    }
+    
+    private Op transformFilterBGP(ExprList exprs, Set patternVarsScope, OpBGP x)
+    {
+        BasicPattern pattern = ((OpBGP)x).getPattern() ;
 
         // Any filters that depend on no variables. 
         Op op = insertAnyFilter(exprs, patternVarsScope, null) ;
@@ -83,15 +99,34 @@ public class TransformFilterPlacement extends TransformCopy
             // Attempt to place any filters
             op = insertAnyFilter(exprs, patternVarsScope, op) ;
         } 
-        //remaining expr
-        op = buildFilter(exprs, op) ;
-        
-        // Punt - for now.
         return op ;
-        
     }
     
-    /** For any expression now in scope, wrpe the op with a filter */
+    private Op transformFilterSequence(ExprList exprs, Set varScope, OpSequence opSequence)
+    {
+        //List ops = stages(opSequence) ;
+        List ops = opSequence.getElements() ;
+        
+        // Any filters that depend on no variables. 
+        Op op = insertAnyFilter(exprs, varScope, null) ;
+        
+        for ( Iterator iter = ops.iterator() ; iter.hasNext() ; )
+        {
+            Op seqElt = (Op)iter.next() ;
+            OpVars.patternVars(seqElt, varScope) ;
+            // Process the sequence element.  This may insert filters (sequence or BGP)
+            seqElt = transform(exprs, varScope, seqElt) ;
+            // Merge into sequence.
+            op = OpSequence.create(op, seqElt) ;
+            // Place any filters now ready.
+            op = insertAnyFilter(exprs, varScope, op) ;
+        }
+        return op ;
+    }
+    
+    // ---- Utilities
+    
+    /** For any expression now in scope, wrap the op with a filter */
     private Op insertAnyFilter(ExprList exprs, Set patternVarsScope, Op op)
     {
         for ( Iterator iter = exprs.iterator() ; iter.hasNext() ; )

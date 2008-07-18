@@ -4,20 +4,22 @@
  * [See end of file]
  */
 
-package opt;
+package com.hp.hpl.jena.sparql.algebra.opt;
 
-import com.hp.hpl.jena.sparql.ARQNotImplemented;
+import opt.Rewrite;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.Transform;
 import com.hp.hpl.jena.sparql.algebra.Transformer;
 import com.hp.hpl.jena.sparql.algebra.op.OpLabel;
-import com.hp.hpl.jena.sparql.algebra.opt.TransformFilterPlacement;
-import com.hp.hpl.jena.sparql.algebra.opt.TransformPropertyFunction;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.util.Context;
 
 public class Optimize implements Rewrite
 {
+    static private Log log = LogFactory.getLog(Optimize.class) ;
     // Optimize at query execution time.
 
     public static Op optimize(Op op, ExecutionContext execCxt)
@@ -26,52 +28,71 @@ public class Optimize implements Rewrite
         // Look up to find the rewriter
         Rewrite opt = new Optimize(execCxt) ;
         op = opt.rewrite(op) ;
-        op = new OpLabel("Optimized", op) ; // Debug
         return op ;
     }
 
     // The execution-independent optimizations
     public static Op optimize(Op op, Context context)
     {
-        //Rewrite opt = new Optimize() ;
-        //return opt.rewrite(op) ;
-        throw new ARQNotImplemented("optimize(op, context)") ;
-        //return null ;
+        Rewrite opt = new Optimize(context) ;
+        return opt.rewrite(op) ;
     }
 
     private final Context context ;
     private Optimize(ExecutionContext execCxt)
     {
-        this.context = execCxt.getContext() ;
+        this(execCxt.getContext()) ;
     }
+    
+    private Optimize(Context context)
+    {
+        this.context = context ;
+    }
+    
 
     public Op rewrite(Op op)
     {
-        //op = apply("Simplify", new TransformSimplify(), op) ;
-        //op = apply("Delabel", new TransformRemoveLabels(), op) ;
-        
-        op = apply("Property Functions", new TransformPropertyFunction(context), op) ;
+        if ( false )
+        {
+            op = apply("Simplify", new TransformSimplify(), op) ;
+            op = apply("Delabel", new TransformRemoveLabels(), op) ;
+        }
+        // TODO Improve filter placement to go through assigns that have no effect.
+        // Do this before filter placement and other sequence generating transformations.
+        // or improve to place in a sequence. 
+        op = apply("Filter Equality", new TransformEqualityFilter(), op) ;
+        //op = apply("Property Functions", new TransformPropertyFunction(context), op) ;
         op = apply("Filter placement", new TransformFilterPlacement(), op) ;
         
+        // Mark
+        op = OpLabel.create("Transformed", op) ;
         return op ;
     }
 
     static Op apply(String label, Transform transform, Op op)
     {
         Op op2 = Transformer.transform(transform, op) ;
-//        if ( op == op2 ) 
-//        {
-//            System.out.println("No change (==)") ;
-//            System.out.println() ;
-//            return op2 ;
-//        }
-//        
-//        if ( op.equals(op2) ) 
-//        {
-//            System.out.println("No change (equals)") ;
-//            System.out.println() ;
-//            return op2 ;
-//        }
+        
+        final boolean debug = false ;
+        
+        if ( debug )
+        {
+            log.info("Transform: "+label) ;
+            if ( op == op2 ) 
+            {
+                log.info("No change (==)") ;
+                return op2 ;
+            }
+
+            if ( op.equals(op2) ) 
+            {
+                log.info("No change (equals)") ;
+                return op2 ;
+            }
+            
+            String str = op2.toString() ;
+            log.info("\n"+str) ;
+        }
         return op2 ;
     }
 }

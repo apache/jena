@@ -12,14 +12,16 @@ import java.util.Iterator;
 import arq.cmd.CmdException;
 import arq.cmdline.*;
 
-import com.hp.hpl.jena.query.*;
 import com.hp.hpl.jena.shared.JenaException;
+
 import com.hp.hpl.jena.sparql.ARQInternalErrorException;
 import com.hp.hpl.jena.sparql.core.QueryCheckException;
 import com.hp.hpl.jena.sparql.resultset.ResultSetException;
 import com.hp.hpl.jena.sparql.util.PrintUtils;
 import com.hp.hpl.jena.sparql.util.QueryUtils;
 import com.hp.hpl.jena.sparql.util.Utils;
+
+import com.hp.hpl.jena.query.*;
 
 /** A program to parse and print a query.
  *
@@ -38,7 +40,7 @@ public class qparse extends CmdARQ
     boolean printOp = false ;
     boolean printQuad = false ;
     boolean printPlan = false ;
-    boolean printOptimized = true ;
+    boolean printOptimized = false ;
     
     public static void main(String [] argv)
     {

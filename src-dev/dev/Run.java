@@ -47,6 +47,8 @@ public class Run
 {
     public static void main(String[] argv) throws Exception
     {
+        //opt.RunT.main(argv) ; 
+
         if ( false )
         {
             Model m = ModelFactory.createDefaultModel() ;
@@ -58,6 +60,7 @@ public class Run
             System.exit(0) ;
         }
         
+        if ( false )
         {
             Model m = ModelFactory.createDefaultModel() ;
             m.setNsPrefix("", "http://example/") ;
@@ -73,10 +76,7 @@ public class Run
         }
         
         
-        
-        
-        opt.RunT.main(argv) ; 
-        //runQParse() ;
+        runQParseARQ() ;
         execQuery("D.ttl", "Q.arq") ;
         
         path() ; System.exit(0) ;
@@ -194,14 +194,15 @@ public class Run
     }
     private static void runQParse()
     {
-        String []a = { "--engine=quad", "--file=Q.arq", "--print=op" } ;
+        // "--engine=quad" "--opt"
+        String []a = { "--file=Q.rq", "--print=op", "--print=plan"} ;
         arq.qparse.main(a) ;
         System.exit(0) ;
     }
     
     private static void runQParseARQ()
     {
-        String []a = { "--file=Q.arq", "--out=arq", "--print=op", "--print=query" } ;
+        String []a = { "--file=Q.arq", "--opt", "--print=op", "--print=plan" } ;
         arq.qparse.main(a) ;
         System.exit(0) ;
     }

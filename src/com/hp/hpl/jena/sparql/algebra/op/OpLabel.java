@@ -25,6 +25,8 @@ public class OpLabel extends Op1
     // (label "foo") and (label "foo" (other ...)) are legal.
     // OpNull?
     
+    public static Op create(Object label, Op op) { return new OpLabel(label, op) ; }
+    
     private Object object ;
 
     public OpLabel(Object thing) { this(thing, null) ; }

@@ -11,14 +11,17 @@ package dev;
 public class Dev
 {
     // Next:
+    //   Property functions.
+    //   Interactions between Filter Placement and Equality filters (or even combine?)
+    //   (current)
+    
     // Optimize: QueryEngineMain.QueryEngineMain(Op op,)
     // so does not happen for ref engine (property functions).
 
     // Remove:
     //   AlgebraGenerator: Path flattening -- compilePathBlock
     //   AlgebraGenerator: PropertyFunctionGenerator -- compileBasicPattern
-    //   OpCompile: FilterPlacement
-        
+    //   OpCompile: FilterPlacement [DONE]
     
     //  Two stage:
     //    Algebra.compile (inc simplify).

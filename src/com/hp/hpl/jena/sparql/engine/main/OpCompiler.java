@@ -73,13 +73,11 @@ public class OpCompiler
 
     protected ExecutionContext execCxt ;
     protected CompilerDispatch dispatcher = null ;
-    protected FilterPlacement filterPlacement ;
 
     protected OpCompiler(ExecutionContext execCxt)
     { 
         this.execCxt = execCxt ;
         dispatcher = new CompilerDispatch(this) ;
-        filterPlacement = new FilterPlacement(this, execCxt);
     }
 
     public QueryIterator compileOp(Op op)
@@ -248,39 +246,50 @@ public class OpCompiler
         
         Op base = opFilter.getSubOp() ;
         
-        if ( base instanceof OpBGP )
-            // Uncompiled => unsplit
-            return filterPlacement.placeFiltersBGP(exprs, ((OpBGP)base).getPattern(), input) ;
+        // Done as a transform prior to compilation to a query plan
+        QueryIterator qIter = compileOp(base, input) ;
 
-        if ( base instanceof OpSequence )
-            return filterPlacement.placeFiltersStage(exprs, (OpSequence)base, input) ;
-        
-        if ( base instanceof OpGraph )
-        {}
-
-//        if ( base instanceof OpQuadPattern )
-//            return filterPlacement.placeFilter(opFilter.getExpr(), (OpQuadPattern)base, input) ;
-        
-        // Tidy up.
-        if ( base instanceof OpJoin )
+        for ( Iterator iter = exprs.iterator() ; iter.hasNext(); )
         {
-            OpJoin opJoin = (OpJoin)base ;
-            boolean canDoLinear = JoinClassifier.isLinear(opJoin) ;
-            if ( canDoLinear )
-                return filterPlacement.placeFiltersJoin(exprs, (OpJoin)base, input) ;
+            Expr expr = (Expr)iter.next() ;
+            qIter = new QueryIterFilterExpr(qIter, expr, execCxt) ;
         }
+        return qIter ;
         
-        // There must be a better way.
-        if ( base instanceof OpLeftJoin )
-        {
-            // Can push in if used only on the LHS 
-        }
-        
-        if ( base instanceof OpUnion )
-        {}
-
-        // Nothing special.
-        return filterPlacement.buildOpFilter(exprs, base, input) ;
+//        FilterPlacement filterPlacement = new FilterPlacement(this, execCxt);
+//        if ( base instanceof OpBGP )
+//            // Uncompiled => unsplit
+//            return filterPlacement.placeFiltersBGP(exprs, ((OpBGP)base).getPattern(), input) ;
+//
+//        if ( base instanceof OpSequence )
+//            return filterPlacement.placeFiltersStage(exprs, (OpSequence)base, input) ;
+//        
+//        if ( base instanceof OpGraph )
+//        {}
+//
+////        if ( base instanceof OpQuadPattern )
+////            return filterPlacement.placeFilter(opFilter.getExpr(), (OpQuadPattern)base, input) ;
+//        
+//        // Tidy up.
+//        if ( base instanceof OpJoin )
+//        {
+//            OpJoin opJoin = (OpJoin)base ;
+//            boolean canDoLinear = JoinClassifier.isLinear(opJoin) ;
+//            if ( canDoLinear )
+//                return filterPlacement.placeFiltersJoin(exprs, (OpJoin)base, input) ;
+//        }
+//        
+//        // There must be a better way.
+//        if ( base instanceof OpLeftJoin )
+//        {
+//            // Can push in if used only on the LHS 
+//        }
+//        
+//        if ( base instanceof OpUnion )
+//        {}
+//
+//        // Nothing special.
+//        return filterPlacement.buildOpFilter(exprs, base, input) ;
     }
 
     protected void prepareExprs(ExprList exprs)
