@@ -89,9 +89,8 @@ public class Optimize implements Rewrite
                 log.info("No change (equals)") ;
                 return op2 ;
             }
-            
-            String str = op2.toString() ;
-            log.info("\n"+str) ;
+            log.info("\n"+op.toString()) ;
+            log.info("\n"+op2.toString()) ;
         }
         return op2 ;
     }

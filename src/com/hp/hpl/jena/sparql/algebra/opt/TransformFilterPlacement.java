@@ -64,7 +64,9 @@ public class TransformFilterPlacement extends TransformCopy
 
         if ( x instanceof OpSequence )
             return transformFilterSequence(exprs, varsScope, (OpSequence)x) ;
-
+        
+        // No specialk - advance the variable scope tracking. 
+        OpVars.patternVars(x, varsScope) ;
         return x ;
     }
     
@@ -113,7 +115,6 @@ public class TransformFilterPlacement extends TransformCopy
         for ( Iterator iter = ops.iterator() ; iter.hasNext() ; )
         {
             Op seqElt = (Op)iter.next() ;
-            OpVars.patternVars(seqElt, varScope) ;
             // Process the sequence element.  This may insert filters (sequence or BGP)
             seqElt = transform(exprs, varScope, seqElt) ;
             // Merge into sequence.

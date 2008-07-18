@@ -14,21 +14,16 @@ public class Dev
     //   Property functions.
     //   Interactions between Filter Placement and Equality filters (or even combine?)
     //   (current)
+    // TransformPathFlattern - leave in AlgebraGenerator for now.
     
     // Optimize: QueryEngineMain.QueryEngineMain(Op op,)
-    // so does not happen for ref engine (property functions).
+    // so does not happen for ref engine (do just property functions?).
 
     // Remove:
     //   AlgebraGenerator: Path flattening -- compilePathBlock
     //   AlgebraGenerator: PropertyFunctionGenerator -- compileBasicPattern
     //   OpCompile: FilterPlacement [DONE]
     
-    //  Two stage:
-    //    Algebra.compile (inc simplify).
-    //    Algebra.optimize(op, context)
-    //      (done at start of execution, not engine creation so context can have been updated). 
-
-    // TransformPathFlattern - leave in AlgebraGenerator for now.
     
     // Stage 0 - always
     //    Simplify

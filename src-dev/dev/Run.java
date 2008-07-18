@@ -202,7 +202,7 @@ public class Run
     
     private static void runQParseARQ()
     {
-        String []a = { "--file=Q.arq", "--opt", "--print=op", "--print=plan" } ;
+        String []a = { "--file=Q.arq", "--opt", "--print=op" /*, "--print=plan"*/ } ;
         arq.qparse.main(a) ;
         System.exit(0) ;
     }
