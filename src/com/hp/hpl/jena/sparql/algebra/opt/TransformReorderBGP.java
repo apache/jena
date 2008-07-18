@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package opt;
+package com.hp.hpl.jena.sparql.algebra.opt;
 
 import java.util.HashSet;
 import java.util.Iterator;

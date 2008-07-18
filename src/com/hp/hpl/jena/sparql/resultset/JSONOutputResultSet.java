@@ -39,9 +39,7 @@ public class JSONOutputResultSet implements ResultSetProcessor, JSONResults
     static boolean multiLineValues = false ;
     static boolean multiLineVarNames = false ;
 
-    static 
-    
-    IndentedWriter  out ;
+    IndentedWriter out ;
     int bNodeCounter = 0 ;
     Map bNodeMap = new HashMap() ;
     

@@ -1,48 +1,26 @@
 /*
- * (c) Copyright 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007, 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package opt;
+package com.hp.hpl.jena.sparql.algebra.opt;
 
 import com.hp.hpl.jena.sparql.algebra.Op;
-import com.hp.hpl.jena.sparql.engine.ExecutionContext;
-import com.hp.hpl.jena.sparql.util.Context;
+import com.hp.hpl.jena.sparql.algebra.TransformCopy;
+import com.hp.hpl.jena.sparql.algebra.op.OpLabel;
 
-public class OptimizeExecution implements Rewrite
+public class TransformRemoveLabels extends TransformCopy
 {
-    // Optimize at query execution time.
-
-    public static Op optimize(Op op, ExecutionContext execCxt)
+    // Strip labels
+    public Op transform(OpLabel opLabel, Op subOp)
     {
-        Context context = execCxt.getContext() ;
-        // Look up to find the rewriter
-        Rewrite opt = new OptimizeExecution(execCxt) ;
-        return opt.rewrite(op) ;
+        return subOp ;
     }
-
-    // The execution-independent optimizations
-    public static Op optimize(Op op, Context context)
-    {
-        //Rewrite opt = new OptimizeExecution( ;
-        //return opt.rewrite(op) ;
-        return null ;
-    }
-
-    
-    private OptimizeExecution(ExecutionContext execCxt)
-    {}
-
-    public Op rewrite(Op op)
-    {
-        return op ;
-    }
-
 }
 
 /*
- * (c) Copyright 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007, 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

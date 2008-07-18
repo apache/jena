@@ -6,47 +6,68 @@
 
 package opt;
 
-import com.hp.hpl.jena.query.ARQ;
 import com.hp.hpl.jena.sparql.algebra.Op;
-import com.hp.hpl.jena.sparql.algebra.PropertyFunctionGenerator;
 import com.hp.hpl.jena.sparql.algebra.TransformCopy;
-import com.hp.hpl.jena.sparql.algebra.op.OpBGP;
-import com.hp.hpl.jena.sparql.algebra.op.OpTriple;
-import com.hp.hpl.jena.sparql.util.Context;
+import com.hp.hpl.jena.sparql.algebra.op.OpPath;
+import com.hp.hpl.jena.sparql.core.BasicPattern;
+import com.hp.hpl.jena.sparql.path.PathCompiler;
 
-/** Rewrite to replace a property function property with the call to the property function implementation */
-public class TransformPropertyFunction extends TransformCopy
+public class TransformPathFlattern extends TransformCopy
 {
-    private Context context ;
+    // Need previous BGP?
+    private PathCompiler pathCompiler ;
 
-    public TransformPropertyFunction(Context context)
+    public TransformPathFlattern(PathCompiler pathCompiler)
     {
-     this.context = context ;   
+        this.pathCompiler = pathCompiler ;
     }
     
-    public Op transform(OpTriple opTriple)
+    public Op transform(OpPath opPath)
     {
-        boolean doingMagicProperties = context.isTrue(ARQ.enablePropertyFunctions) ;
-        if ( ! doingMagicProperties )
-            return opTriple ;
-        
-        Op x =  transform(opTriple.asBGP()) ;
-        if ( ! ( x instanceof OpBGP ) )
-            return x ;
-
-        if ( opTriple.equivalent((OpBGP)x) )
-            return opTriple ;
-        return x ;
-        
+        return super.transform(opPath) ;
+//        Path path = opPath.getTriplePath().getPath() ;
+//        
+//        // Step 1 : flatten down to triples where possible. 
+//        pattern = pathCompiler.reduce(pattern) ;
+//
+//        //Step 2 : gather into OpBGP(BasicPatterns) or OpPath
+//        BasicPattern bp = null ;
+//        Op op = null ;
+//
+//        for ( Iterator iter = pattern.iterator() ; iter.hasNext() ; )
+//        {
+//            TriplePath obj = (TriplePath)iter.next();
+//            if ( obj.isTriple() )
+//            {
+//                if ( bp == null )
+//                    bp = new BasicPattern() ;
+//                bp.add(obj.asTriple()) ;
+//                continue ;
+//            }
+//            // Path form.
+//            op = flush(bp, op) ;
+//            bp = null ;
+//
+//            TriplePath tp = (TriplePath)obj ;
+//            OpPath opPath = new OpPath(tp) ;
+//            op = OpSequence.create(op, opPath) ;
+//            continue ;
+//        }
+//
+//        // End.  Finish off any outstanding BGP.
+//        op = flush(bp, op) ;
+//
+//        return op ;
     }
     
-    public Op transform(OpBGP opBGP)
+    private Op flush(BasicPattern bp, Op op)
     {
-        boolean doingMagicProperties = context.isTrue(ARQ.enablePropertyFunctions) ;
-        if ( ! doingMagicProperties )
-            return opBGP ;
+        if ( bp == null || bp.isEmpty() )
+            return op ;
         
-        return PropertyFunctionGenerator.compile(opBGP, context) ;
+        //Op op2 = PropertyFunctionGenerator.compile(bp, context) ;
+        //op = OpSequence.create(op, op2) ;
+        return op ;
     }
 }
 

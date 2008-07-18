@@ -10,6 +10,7 @@ import java.util.Iterator;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
+
 import com.hp.hpl.jena.sparql.ARQConstants;
 import com.hp.hpl.jena.sparql.core.PathBlock;
 import com.hp.hpl.jena.sparql.core.TriplePath;
@@ -17,8 +18,14 @@ import com.hp.hpl.jena.sparql.core.VarAlloc;
 
 public class PathCompiler
 {
+    // Convert to work on OpPath.
+    // Need pre (and post) BGPs.
+    
     
     VarAlloc varAlloc = new VarAlloc(ARQConstants.allocVarAnonMarker+"P") ;
+    
+    // Make 
+    
     
     // Move to AlgebraCompiler and have a per-transaction scoped var generator 
     /** Simplify : turns constructs in simple triples and simpler TriplePaths where possible */ 
@@ -49,7 +56,6 @@ public class PathCompiler
             reduce(x, varAlloc, tp.getSubject(), tp.getPath(), tp.getObject()) ;
         }
     }
-    
     
     private static void reduce(PathBlock x, VarAlloc varAlloc, Node startNode, Path path, Node endNode)
     {

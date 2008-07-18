@@ -7,18 +7,25 @@
 package dev;
 
 
+
 public class Dev
 {
     // Next:
-    // Integrate TransformFilterPlacement, TransformPropertyFunction
-    // [Some sort of flags to make what has been done??]
     // Optimize: QueryEngineMain.QueryEngineMain(Op op,)
     // so does not happen for ref engine (property functions).
 
+    // Remove:
+    //   AlgebraGenerator: Path flattening -- compilePathBlock
+    //   AlgebraGenerator: PropertyFunctionGenerator -- compileBasicPattern
+    //   OpCompile: FilterPlacement
+        
+    
     //  Two stage:
     //    Algebra.compile (inc simplify).
     //    Algebra.optimize(op, context)
     //      (done at start of execution, not engine creation so context can have been updated). 
+
+    // TransformPathFlattern - leave in AlgebraGenerator for now.
     
     // Stage 0 - always
     //    Simplify

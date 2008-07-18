@@ -49,6 +49,7 @@ public class Algebra
     /** Apply static transformations to a query to optimzie it */
     public static Op optimize(Op op)
     {
+        // Call-through to somewhere to manage all the optimizations
         if ( op == null )
             return null ;
         return Transformer.transform(optimization(), op) ;
