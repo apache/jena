@@ -45,7 +45,6 @@ public class FileOps
         }
     }
     
-    
     public static void clearDirectory(String dir)
     {
         try {

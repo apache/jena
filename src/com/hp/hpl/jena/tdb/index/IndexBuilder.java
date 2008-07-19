@@ -23,18 +23,32 @@ public class IndexBuilder
     private static Logger log = LoggerFactory.getLogger(IndexBuilder.class) ;
     
     // Migrate to be a general policy place for files.
-    final static String indexTypeBTree = "BTree" ;
-    final static String indexTypeBPlusTree = "BPlusTree" ;
-    final static String defaultIndexType = indexTypeBTree ;
+    final static String indexTypeBTree          = "BTree" ;
+    final static String indexTypeBPlusTree      = "BPlusTree" ;
+    final static String defaultIndexType        = indexTypeBTree ; // CHANGE ME!
     
-    private static IndexBuilder builder = chooseIndexBuilder() ;
-    public static IndexBuilder get() { return builder ; }
+    private static IndexBuilder builder         = chooseIndexBuilder() ;
+    public static IndexBuilder get()            { return builder ; }
+    
+    public static IndexBuilder getBTree()       { return createIndexBuilder(IndexType.BTree) ; }
+    public static IndexBuilder getBPlusTree()   { return createIndexBuilder(IndexType.BPlusTree) ; }
     
     private static IndexBuilder builderMem = null ;
     
     public static IndexBuilder mem()
     { 
         IndexType indexType = IndexType.get() ;
+        return createIndexBuilderMem(indexType) ;
+    }
+
+    private static synchronized IndexBuilder chooseIndexBuilder()
+    {
+        IndexType indexType = IndexType.get() ;
+        return createIndexBuilder(indexType) ;
+    }
+    
+    private static IndexBuilder createIndexBuilderMem(IndexType indexType)
+    {
         switch (indexType)
         {
             case BTree:
@@ -50,10 +64,9 @@ public class IndexBuilder
         }
         throw new TDBException("Memory index builder: Unrecognized index type: " + indexType) ;
     }
-
-    private static synchronized IndexBuilder chooseIndexBuilder()
+    
+    private static IndexBuilder createIndexBuilder(IndexType indexType)
     {
-        IndexType indexType = IndexType.get() ;
         switch (indexType)
         {
             case BTree:

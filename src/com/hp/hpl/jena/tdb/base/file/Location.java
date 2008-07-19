@@ -91,6 +91,15 @@ public class Location
             filename = pathname+filename ;
         return filename ;
     }
+ 
+    public boolean exists(String filename) { return exists(filename, null) ; }
+    
+    public boolean exists(String filename, String ext)
+    {
+        String fn = getPath(filename, ext) ;
+        File f = new File(fn) ;
+        return f.exists() ;
+    }
 
     public String getPath(String filename)
     {
@@ -99,7 +108,7 @@ public class Location
     
     public String getPath(String filename, String ext)
     {
-        check(filename, null) ;
+        check(filename, ext) ;
         if ( ext == null )
             return pathname+filename ;
         return pathname+filename+"."+ext ;

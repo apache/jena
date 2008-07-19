@@ -9,6 +9,9 @@ package dev;
 public class Dev
 {
     // Check caches.
+    //   More aggressively cache B+Tree indexes
+    
+    // Node table caching?
     // Use of java properties fro key values.
     // Different names for nodes.dat file under the two schemes.
 

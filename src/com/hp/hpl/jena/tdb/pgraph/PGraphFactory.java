@@ -25,6 +25,18 @@ public class PGraphFactory
     /** Create a graph backed with storage at a particular location */
     public static PGraphBase create(Location location)
     { 
+        if ( location.exists(Names.indexSPO, Names.btExt) )
+        {
+            log.info("Existing BTree index found - using BTree indexing") ;
+            return create(IndexBuilder.getBTree(), location) ;
+        }
+        
+        if ( location.exists(Names.indexSPO, Names.bptExt1) )
+        {
+            log.debug("Existing B+Tree index found - using B+Tree indexing") ;
+            return create(IndexBuilder.getBPlusTree(), location) ;
+        }   
+        
         return create(IndexBuilder.get(), location) ;
     }
     
