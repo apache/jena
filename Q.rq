@@ -1,5 +1,11 @@
 PREFIX : <http://example/>
+PREFIX apf:     <http://jena.hpl.hp.com/ARQ/property#>
 
 SELECT  *
-WHERE { {} ?s ?p ?o }
-
+WHERE { 
+  ?s :p ?v .
+  ?s :q ?q .
+  ?s apf:splitIRI (?ns ?ln)
+   FILTER(?v > 4)
+#    FILTER(?q = <x>)
+}

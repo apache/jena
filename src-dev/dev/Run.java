@@ -202,7 +202,7 @@ public class Run
     
     private static void runQParseARQ()
     {
-        String []a = { "--file=Q.arq", "--opt", "--print=op" /*, "--print=plan"*/ } ;
+        String []a = { "--file=Q.arq", "--print=op", "--opt", "--print=plan"} ;
         arq.qparse.main(a) ;
         System.exit(0) ;
     }
@@ -294,8 +294,6 @@ public class Run
         System.exit(0) ;
     }
 }
-
-
 
 /*
  * (c) Copyright 2007, 2008 Hewlett-Packard Development Company, LP

@@ -40,7 +40,7 @@ public class qparse extends CmdARQ
     boolean printOp = false ;
     boolean printQuad = false ;
     boolean printPlan = false ;
-    boolean printOptimized = false ;
+    boolean printOpt = false ;
     
     public static void main(String [] argv)
     {
@@ -62,15 +62,8 @@ public class qparse extends CmdARQ
     {
         super.processModulesAndArgs() ;
         
-        if ( contains(argDeclOpt) )
-        {
-            if ( contains(argDeclOpt) )
-                printOptimized = true ;
-            else
-                throw new CmdException("Not a recognized: "+getValue(argDeclOpt)+" : Choices are: true or false") ;
-            
-        }
-        
+        printOpt = contains(argDeclOpt) ;
+
         for ( Iterator iter = getValues(argDeclPrint).iterator() ; iter.hasNext() ; )
         {
             String arg = (String)iter.next() ;
@@ -80,8 +73,9 @@ public class qparse extends CmdARQ
                       arg.equalsIgnoreCase("algebra") ) { printOp = true ; }
             else if ( arg.equalsIgnoreCase("quad"))     { printQuad = true ; }
             else if ( arg.equalsIgnoreCase("plan"))     { printPlan = true ; }
+            //else if ( arg.equalsIgnoreCase("opt"))      { printOpt = true ; }
             else
-                throw new CmdException("Not a recognized print form: "+arg+" : Choices are: query, op, quad") ;
+                throw new CmdException("Not a recognized print form: "+arg+" : Choices are: query, op, quad.  opt") ;
         }
         
         if ( ! printQuery && ! printOp && ! printQuad && ! printPlan )
@@ -124,10 +118,20 @@ public class qparse extends CmdARQ
 
             // Print internal forms.
             if ( printOp )
-            { divider() ; modOutput.outputOp(query, printOptimized) ; }
+            { divider() ; modOutput.outputOp(query, false) ; }
             
             if ( printQuad )
-            { divider() ; modOutput.outputQuad(query, printOptimized) ; }
+            { divider() ; modOutput.outputQuad(query, false) ; }
+            
+            if ( printOpt )
+            {
+                // And again after applying the algebra optimizer 
+                if ( printOp )
+                { divider() ; modOutput.outputOp(query, true) ; }
+                
+                if ( printQuad )
+                { divider() ; modOutput.outputQuad(query, true) ; }
+            }
             
             if ( printPlan )
             { 

@@ -15,6 +15,7 @@ public class Dev
     //   Interactions between Filter Placement and Equality filters (or even combine?)
     //   (current)
     // TransformPathFlattern - leave in AlgebraGenerator for now.
+    // Quad engine?
     
     // Optimize: QueryEngineMain.QueryEngineMain(Op op,)
     // so does not happen for ref engine (do just property functions?).

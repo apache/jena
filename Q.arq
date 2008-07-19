@@ -6,8 +6,14 @@ PREFIX  xsd:    <http://www.w3.org/2001/XMLSchema#>
 
 SELECT *
 { 
-    ?x n:p ?z .
-    ?x n:p* ?z.
+    ?x n:p ?z1 .
+    ?x n:p* ?z2.
+    ?x n:p ?z3 .
+    FILTER( true ) 
+    FILTER(?z1 > 2 )
+    FILTER(?z2 > 2 )
+    FILTER(?z3 > 2 )
+    FILTER(?z4 > 2 )
 }
 
 
