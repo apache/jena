@@ -47,13 +47,15 @@ public class QueryEngineMain extends QueryEngineBase
         return qIter ;
     }
     
-    protected Op createOp(Query query, AlgebraGenerator gen)
-    {
-        // Optimize here??  Was context setting possible?
-        Op op = super.createOp(query, gen) ;
-        op = Algebra.optimize(op) ;
-        return op ;
-    }
+//    protected Op createOp(Query query, AlgebraGenerator gen)
+//    {
+//        // Optimize here??  Was context setting possible?
+//        Op op = super.createOp(query, gen) ;
+//        return op ;
+//    }
+    
+    protected Op modifyOp(Op op)
+    { return Algebra.optimize(op) ; }
     
     // -------- Factory
     

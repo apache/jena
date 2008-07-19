@@ -36,7 +36,7 @@ public class PropertyFunctionGenerator //implements StageGenerator
     }
     
     // Old router from OpCompiler. 
-    public static Op compile(BasicPattern pattern, Context context)
+    private static Op compile(BasicPattern pattern, Context context)
     {
         if ( pattern.isEmpty() )
             return new OpBGP(pattern) ;

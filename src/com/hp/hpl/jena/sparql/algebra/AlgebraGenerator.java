@@ -311,15 +311,10 @@ public class AlgebraGenerator
         return current ;
     }
     
-    public static boolean AlgebraStaging = true ;
     protected Op compileBasicPattern(BasicPattern pattern)
     {
-        if ( AlgebraStaging )
-        {
-            // Sort out property functions.
-            Op op = PropertyFunctionGenerator.compile(pattern, context) ;
-            return op ;
-        }
+        // Property functions : assume done later.
+        // (Or do as a tranform here.)
         return new OpBGP(pattern) ;
     }
     
@@ -354,7 +349,6 @@ public class AlgebraGenerator
 
         // End.  Finish off any outstanding BGP.
         op = flush(bp, op) ;
-        
         return op ;
     }
 
@@ -362,10 +356,14 @@ public class AlgebraGenerator
     {
         if ( bp == null || bp.isEmpty() )
             return op ;
-        
-        Op op2 = PropertyFunctionGenerator.compile(bp, context) ;
-        op = OpSequence.create(op, op2) ;
+
+        OpBGP opBGP = new OpBGP(bp) ;
+        op = OpSequence.create(op, opBGP) ;
         return op ;
+        
+//        Op op2 = PropertyFunctionGenerator.compile(bp, context) ;
+//        op = OpSequence.create(op, op2) ;
+//        return op ;
     }
     
     protected Op compileElementGraph(ElementNamedGraph eltGraph)

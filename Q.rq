@@ -6,6 +6,6 @@ WHERE {
   ?s :p ?v .
   ?s :q ?q .
   ?s apf:splitIRI (?ns ?ln)
-   FILTER(?v > 4)
+#   FILTER(?v > 4)
 #    FILTER(?q = <x>)
 }

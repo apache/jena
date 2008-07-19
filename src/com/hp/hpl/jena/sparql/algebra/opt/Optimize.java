@@ -57,12 +57,13 @@ public class Optimize implements Rewrite
             op = apply("Simplify", new TransformSimplify(), op) ;
             op = apply("Delabel", new TransformRemoveLabels(), op) ;
         }
+        op = apply("Property Functions", new TransformPropertyFunction(context), op) ;
+
         // TODO Improve filter placement to go through assigns that have no effect.
         // Do this before filter placement and other sequence generating transformations.
         // or improve to place in a sequence. 
         op = apply("Filter Equality", new TransformEqualityFilter(), op) ;
-        //op = apply("Property Functions", new TransformPropertyFunction(context), op) ;
-        op = apply("Filter placement", new TransformFilterPlacement(), op) ;
+        op = apply("Filter Placement", new TransformFilterPlacement(), op) ;
         
         // Mark
         op = OpLabel.create("Transformed", op) ;

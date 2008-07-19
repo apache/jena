@@ -23,7 +23,7 @@ import com.hp.hpl.jena.sparql.util.NodeFactory;
 public abstract class QueryEngineBase implements OpExec
 {
     private DatasetGraph dataset = null ;
-    private Context context ;
+    protected Context context ;
     private Binding startBinding ;
     
     private Op queryOp = null ;

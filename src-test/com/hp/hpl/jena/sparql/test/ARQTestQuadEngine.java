@@ -38,7 +38,7 @@ public class ARQTestQuadEngine extends TestCase
     
     private static TestSuite suiteMaker()
     {
-        return QueryTestSuiteFactory.make("testing/ARQ/manifest-arq.ttl") ;
+        return QueryTestSuiteFactory.make("testing/ARQ/manifest-ref-arq.ttl") ;
     }
     
 }

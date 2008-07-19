@@ -50,34 +50,34 @@ public class BuilderOp
 
     public BuilderOp()
     {
-        dispatch.put(Tags.tagBGP, buildBGP) ;
-        dispatch.put(Tags.tagQuadPattern, buildQuadPattern) ;
-        dispatch.put(Tags.tagTriple, buildTriple) ; // OpTriple
-        dispatch.put(Tags.tagTriplePath, buildTriplePath) ;
-        dispatch.put(Tags.tagFilter, buildFilter) ;
-        dispatch.put(Tags.tagGraph, buildGraph) ;
-        dispatch.put(Tags.tagService, buildService) ;
-        dispatch.put(Tags.tagProc, buildProcedure) ;
-        dispatch.put(Tags.tagPropFunc, buildPropertyFunction) ;
-        dispatch.put(Tags.tagJoin, buildJoin) ;
-        dispatch.put(Tags.tagSequence, buildSequence) ;
-        dispatch.put(Tags.tagLeftJoin, buildLeftJoin) ;
-        dispatch.put(Tags.tagDiff, buildDiff) ;
-        dispatch.put(Tags.tagUnion, buildUnion) ;
+        dispatch.put(Tags.tagBGP,           buildBGP) ;
+        dispatch.put(Tags.tagQuadPattern,   buildQuadPattern) ;
+        dispatch.put(Tags.tagTriple,        buildTriple) ;
+        dispatch.put(Tags.tagTriplePath,    buildTriplePath) ;
+        dispatch.put(Tags.tagFilter,        buildFilter) ;
+        dispatch.put(Tags.tagGraph,         buildGraph) ;
+        dispatch.put(Tags.tagService,       buildService) ;
+        dispatch.put(Tags.tagProc,          buildProcedure) ;
+        dispatch.put(Tags.tagPropFunc,      buildPropertyFunction) ;
+        dispatch.put(Tags.tagJoin,          buildJoin) ;
+        dispatch.put(Tags.tagSequence,      buildSequence) ;
+        dispatch.put(Tags.tagLeftJoin,      buildLeftJoin) ;
+        dispatch.put(Tags.tagDiff,          buildDiff) ;
+        dispatch.put(Tags.tagUnion,         buildUnion) ;
 
-        dispatch.put(Tags.tagToList, buildToList) ;
-        dispatch.put(Tags.tagGroupBy, buildGroupBy) ;
-        dispatch.put(Tags.tagOrderBy, buildOrderBy) ;
-        dispatch.put(Tags.tagProject, buildProject) ;
-        dispatch.put(Tags.tagDistinct, buildDistinct) ;
-        dispatch.put(Tags.tagReduced, buildReduced) ;
-        dispatch.put(Tags.tagAssign, buildAssign) ;
-        dispatch.put(Tags.symAssign, buildAssign) ;
-        dispatch.put(Tags.tagSlice, buildSlice) ;
+        dispatch.put(Tags.tagToList,        buildToList) ;
+        dispatch.put(Tags.tagGroupBy,       buildGroupBy) ;
+        dispatch.put(Tags.tagOrderBy,       buildOrderBy) ;
+        dispatch.put(Tags.tagProject,       buildProject) ;
+        dispatch.put(Tags.tagDistinct,      buildDistinct) ;
+        dispatch.put(Tags.tagReduced,       buildReduced) ;
+        dispatch.put(Tags.tagAssign,        buildAssign) ;
+        dispatch.put(Tags.symAssign,        buildAssign) ;
+        dispatch.put(Tags.tagSlice,         buildSlice) ;
 
-        dispatch.put(Tags.tagTable, buildTable) ;
-        dispatch.put(Tags.tagNull, buildNull) ;
-        dispatch.put(Tags.tagLabel, buildLabel) ;
+        dispatch.put(Tags.tagTable,         buildTable) ;
+        dispatch.put(Tags.tagNull,          buildNull) ;
+        dispatch.put(Tags.tagLabel,         buildLabel) ;
     }
 
     // The main recursive build operation.

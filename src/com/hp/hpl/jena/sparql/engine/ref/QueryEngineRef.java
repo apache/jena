@@ -6,10 +6,8 @@
 
 package com.hp.hpl.jena.sparql.engine.ref;
 
-import com.hp.hpl.jena.sparql.algebra.AlgebraGenerator;
-import com.hp.hpl.jena.sparql.algebra.Op;
-import com.hp.hpl.jena.sparql.algebra.OpSubstitute;
-import com.hp.hpl.jena.sparql.algebra.Table;
+import com.hp.hpl.jena.sparql.algebra.*;
+import com.hp.hpl.jena.sparql.algebra.opt.TransformPropertyFunction;
 import com.hp.hpl.jena.sparql.core.DatasetGraph;
 import com.hp.hpl.jena.sparql.engine.*;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
@@ -37,6 +35,14 @@ public class QueryEngineRef extends QueryEngineBase
                              Binding input, Context context)
     {
         super(query, dataset, gen, input, context) ;
+    }
+    
+    protected Op modifyOp(Op op)
+    {
+        // Just property functions
+        Transform t = new TransformPropertyFunction(context) ;
+        op = Transformer.transform(t, op) ;
+        return op ;
     }
     
     public QueryIterator eval(Op op, DatasetGraph dsg, Binding binding, Context context)

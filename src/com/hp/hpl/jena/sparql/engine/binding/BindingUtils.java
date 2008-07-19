@@ -45,7 +45,9 @@ public class BindingUtils
     }
         
     public static void addToBinding(Binding binding, QuerySolution qSolution)
-    {        
+    {
+        if ( qSolution == null )
+            return ;
         for ( Iterator iter = qSolution.varNames() ; iter.hasNext() ; )
         {
             String n = (String)iter.next() ;

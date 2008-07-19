@@ -139,7 +139,10 @@ public class UpdateAction
      */
     public static void parseExecute(String updateString, Model model, QuerySolution initialBinding)
     {
-        parseExecute(updateString, GraphStoreFactory.create(model), BindingUtils.asBinding(initialBinding)) ; 
+        if ( initialBinding == null )
+            parseExecute(updateString, GraphStoreFactory.create(model), null) ;
+        else
+            parseExecute(updateString, GraphStoreFactory.create(model), BindingUtils.asBinding(initialBinding)) ; 
     }
     
     /** Parse a string containing SPARQL/Update operations, and execute the operations.

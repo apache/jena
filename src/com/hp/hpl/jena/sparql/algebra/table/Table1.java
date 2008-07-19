@@ -20,7 +20,7 @@ import com.hp.hpl.jena.sparql.engine.iterator.QueryIterSingleton;
 import com.hp.hpl.jena.sparql.expr.ExprList;
 import com.hp.hpl.jena.sparql.util.FmtUtils;
 
-
+/** A table of one row of one binding */ 
 public class Table1 extends TableBase
 {
     private Var var ;

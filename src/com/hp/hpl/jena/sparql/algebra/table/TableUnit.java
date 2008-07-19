@@ -47,8 +47,6 @@ public class TableUnit extends TableBase
     public List getVars()       { return new ArrayList() ; }
     
     public String toString()    { return "TableUnit" ; }
-    
-
 }
 
 /*
