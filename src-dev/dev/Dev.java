@@ -14,6 +14,7 @@ public class Dev
     // ** OpQuadPath = a node + TriplePattern
     // ** Alternatively, OpGraph and retire OpQuadPattern - modify SDB. <<== ****
     // End of OpDatasetNames!
+    //   OpBase has a graph node?
     
     // Next:
     // ++  Interactions between Filter Placement and Equality filters (or even combine?)
