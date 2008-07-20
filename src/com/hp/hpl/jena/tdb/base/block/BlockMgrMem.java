@@ -118,7 +118,7 @@ public class BlockMgrMem extends BlockMgrBase
     }
     
     @Override
-    public void release(int id)
+    public void freeBlock(int id)
     { 
         check(id) ;
         if ( log.isDebugEnabled() ) 

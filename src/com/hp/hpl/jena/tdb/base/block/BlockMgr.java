@@ -22,6 +22,11 @@ public interface BlockMgr
     
     /** Block size */
     public int blockSize() ; 
+
+    // Renaming?
+    // get->allocate
+    // pin and unpin 
+    // put->write
     
     /** Fetch a block */
     public ByteBuffer get(int id);
@@ -33,7 +38,7 @@ public interface BlockMgr
     public void put(int id, ByteBuffer block);
 
     /** Announce a block is no longer in use (i.e it's now freed) */ 
-    public void release(int id);
+    public void freeBlock(int id);
     
     public boolean valid(int id) ;
     

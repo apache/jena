@@ -68,7 +68,7 @@ public class BlockConverter<T>
         blockMgr.put(id, bb) ;
     }
 
-    public void release(int id)     { blockMgr.release(id) ; }
+    public void release(int id)     { blockMgr.freeBlock(id) ; }
     
     public boolean valid(int id)    { return blockMgr.valid(id) ; }
     

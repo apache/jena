@@ -8,8 +8,12 @@ package dev;
 
 public class Dev
 {
+    // New cache API alloc/return/invalidate (shrink/grow?)
+    //   Stats.
     // Check caches.
     //   More aggressively cache B+Tree indexes
+    
+    // BlockMgr - get() ==> pin() and unpin() (with checking!)
     
     // Node table caching?
     // Use of java properties fro key values.

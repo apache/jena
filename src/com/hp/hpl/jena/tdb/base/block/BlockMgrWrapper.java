@@ -66,9 +66,9 @@ public class BlockMgrWrapper implements BlockMgr
     }
 
     @Override
-    public void release(int id)
+    public void freeBlock(int id)
     {
-        blockMgr.release(id) ;
+        blockMgr.freeBlock(id) ;
     }
 
     @Override

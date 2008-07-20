@@ -109,6 +109,12 @@ public class BTreeNode
         this.count = -1 ;
     }
     
+    private BTreeNode getNode(int idx)
+    {
+        int ptr = ptrs.get(idx) ;
+        return pageMgr.get(ptr, id) ;
+    }
+    
     public final int getCount() { return count ; } 
     
     /** Return the nodes id */ 
@@ -234,7 +240,7 @@ public class BTreeNode
         {
             for ( int i = 0 ; i <= count ; i++ )
             {
-                BTreeNode n = pageMgr.get(ptrs.get(i), BTreeParams.NoParent) ;
+                BTreeNode n = getNode(i) ;
                 //n.internalCheckNode() ;
                 x = x + n.sizeByCounting() ;
             }
@@ -267,7 +273,7 @@ public class BTreeNode
         // Index of pointer block (which is staggerd from the records list) 
         x = -(x+1) ;
         // Recurse
-        BTreeNode n = pageMgr.get(ptrs.get(x), id) ;
+        BTreeNode n = getNode(x) ;
         // I'm a tail recursion - get me out of here.
         return n._search(rec) ;
     }
@@ -276,7 +282,7 @@ public class BTreeNode
     {
         BTreeNode n = this ;
         while( ! n.isLeaf )
-            n = pageMgr.get(n.ptrs.get(0), n.id) ;
+            n = n.getNode(0) ;
         // Empty tree
         if ( n.count == 0 )
             return null ;
@@ -287,7 +293,7 @@ public class BTreeNode
     {
         BTreeNode n = this ;
         while( ! n.isLeaf )
-            n = pageMgr.get(n.ptrs.get(n.count), n.id) ;
+            n = n.getNode(n.count) ;
         // Empty in empty tree
         if ( n.count == 0 )
             return null ;
@@ -332,10 +338,7 @@ public class BTreeNode
         }
     
         // Not leaf.
-        int nId = ptrs.get(i) ;
-        if ( nId == id )
-            System.err.println("****") ;
-        BTreeNode n = pageMgr.get(nId, id) ;
+        BTreeNode n = getNode(i) ;
         if ( n.isFull() )
         {
             split(i, n) ;
@@ -351,7 +354,7 @@ public class BTreeNode
             if ( cmp > 0 ) 
             {
                 i = i+1 ;
-                n = pageMgr.get(ptrs.get(i), id) ;
+                n = getNode(i) ;
             }
             if ( CheckingNode )
                 n.internalCheckNodeDeep() ;
@@ -432,7 +435,7 @@ public class BTreeNode
         y.count = ix ;                              // Median is ix
         y.internalCheckNode() ;                     // y finished
         
-        z.count = maxRec - (ix+1) ;     // Number copied into z
+        z.count = maxRec - (ix+1) ;                 // Number copied into z
         z.internalCheckNode() ;                     // z finished
         
         // Insert new node in parent 
@@ -581,7 +584,7 @@ public class BTreeNode
         // Identify subtree and recurse but fixup sizes first.
         
         x = -(x+1) ;    // First record slot above is highest child below.
-        BTreeNode n = pageMgr.get(ptrs.get(x), id) ;
+        BTreeNode n = getNode(x) ;
         if ( n.count == bTreeParams.MinRec )
         {
             n = rebalance(n, x) ;   // Flushes nodes
@@ -614,7 +617,7 @@ public class BTreeNode
             return ;
         }
         
-        BTreeNode n = pageMgr.get(ptrs.get(0), id) ;
+        BTreeNode n = getNode(0) ;
         
         // Got child.  Clear root by reformatting.  New root a leaf IFF n is.
         BTreePageMgr.formatForRoot(this, n.isLeaf) ;
@@ -663,7 +666,7 @@ public class BTreeNode
         
         BTreeNode left = null ;
         if ( idx > 0 )
-            left = pageMgr.get(ptrs.get(idx-1), id) ;
+            left = getNode(idx-1) ;
         
         if ( left != null && left.count > bTreeParams.MinRec )
         {
@@ -688,7 +691,7 @@ public class BTreeNode
 
         BTreeNode right = null ;
         if ( idx < count )
-            right = pageMgr.get(ptrs.get(idx+1), id) ;
+            right = getNode(idx+1) ;
         
         if ( right != null && right.count > bTreeParams.MinRec )
         {
@@ -773,7 +776,7 @@ public class BTreeNode
         internalCheckNode() ;
 
         // try left
-        BTreeNode left = pageMgr.get(ptrs.get(x), id) ;
+        BTreeNode left = getNode(x) ;
         if ( left.count > bTreeParams.MinRec )
         {
             if ( logging() )
@@ -784,7 +787,7 @@ public class BTreeNode
         }
         
         // try right
-        BTreeNode right = pageMgr.get(ptrs.get(x+1), id) ;
+        BTreeNode right = getNode(x+1) ;
         if ( right.count > bTreeParams.MinRec )
         {
             if ( logging() )
@@ -845,7 +848,7 @@ public class BTreeNode
         BTreeNode n = subTree ;
         while ( ! n.isLeaf )
         {
-            BTreeNode n2 = n.pageMgr.get(n.ptrs.get(n.count), n.id) ;
+            BTreeNode n2 = n.getNode(n.count) ;
             if ( n2.count == n2.bTreeParams.MinRec )
             {
                 n2 = n.rebalance(n2, n.count) ;
@@ -884,7 +887,7 @@ public class BTreeNode
         BTreeNode n = subTree ;
         while ( ! n.isLeaf )
         {
-            BTreeNode n2 = n.pageMgr.get(n.ptrs.get(0), n.id) ;
+            BTreeNode n2 = n.getNode(0) ;
             if ( n2.count == n2.bTreeParams.MinRec )
             {
                 n2 = n.rebalance(n2, 0) ;
@@ -1015,15 +1018,6 @@ public class BTreeNode
             right.ptrs.add(0, ptr1) ;
         }
         right.count++ ;
-
-//        right.shuffleAllUp() ;
-//        right.records.set(0, rec1) ;
-//        
-//        if ( ! right.isLeaf )
-//        {
-//            int ptr1 = left.ptrs.get(left.count) ;      // Greatest left child
-//            right.ptrs.set(0, ptr1) ;
-//        }
 
         Record rec2 = left.records.get(left.count-1) ;
         left.records.removeTop() ;

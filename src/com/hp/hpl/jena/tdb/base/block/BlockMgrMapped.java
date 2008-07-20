@@ -186,7 +186,7 @@ public class BlockMgrMapped extends BlockMgrFile
     }
     
     @Override
-    public void release(int id)
+    public void freeBlock(int id)
     { 
         check(id) ;
         int seg = id/blocksPerSegment ; 
