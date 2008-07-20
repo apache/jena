@@ -1,7 +1,9 @@
 SDB ToDo list (and general notes)
 =================================
 
-** Tidy the assembler descriuptions on wiki.
+** OpQuadPattern ==> Track OpGraph and OpBGP (common visitor/transform base pattern?) 
+
+** Tidy the assembler descriptions on wiki.
    Currently two pages: make reference and tutorial.
 
 ** Check update tests - why is fork needed in ant for Pg and MS-SQL, but not MySQL? 
