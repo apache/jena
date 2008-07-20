@@ -2,6 +2,7 @@ SDB ToDo list (and general notes)
 =================================
 
 ** OpQuadPattern ==> Track OpGraph and OpBGP (common visitor/transform base pattern?) 
+** OpDatasetNames (and check GRAPH ?g {})
 
 ** Tidy the assembler descriptions on wiki.
    Currently two pages: make reference and tutorial.
