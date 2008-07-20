@@ -13,6 +13,7 @@ public class Dev
     // ** Quads and paths interaction (not interacting currently).
     // ** OpQuadPath = a node + TriplePattern
     // ** Alternatively, OpGraph and retire OpQuadPattern - modify SDB. <<== ****
+    // End of OpDatasetNames!
     
     // Next:
     // ++  Interactions between Filter Placement and Equality filters (or even combine?)
