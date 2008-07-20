@@ -6,7 +6,8 @@ DB_DESC="$TDBROOT/tdb.ttl"
 
 # "none" does consume all nodes.
 RESULTS=count
-#ARGS="--set tdb:indexType=bplustree"
+# ARGS="--set tdb:indexType=bplustree"
+# ARGS="--set tdb:fileMode=mapped"
 
 for q in $TDBROOT/Perf/DBpedia-1/query?.rq
 do
