@@ -154,7 +154,9 @@ public class BlockMgrMapped extends BlockMgrFile
                 segments[seg] = segBuffer ;
             } catch (IOException ex)
             {
-                throw new BlockException("BlockMgrMapped.segmentAllocate: "+seg, ex) ;
+                if ( ex.getCause() instanceof java.lang.OutOfMemoryError )
+                    throw new BlockException("BlockMgrMapped.segmentAllocate: Segement = "+seg+" : Offset = "+offset) ;
+                throw new BlockException("BlockMgrMapped.segmentAllocate: Segement = "+seg, ex) ;
             }
         }
         segmentDirty[seg] = true ;

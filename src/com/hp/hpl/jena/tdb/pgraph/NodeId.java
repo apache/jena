@@ -40,10 +40,9 @@ public class NodeId
     // Therefore the cost of a NodeId is not as great as it might be.
     // Could recycle them (but the value field wil not be final) 
     
-    public static final int SIZE = Const.SizeOfLong ;
-    
     private static boolean enableInlineLiterals = true ;
     
+    public static final int SIZE = Const.SizeOfLong ;
     final long value ;
     
     public static NodeId create(long value)

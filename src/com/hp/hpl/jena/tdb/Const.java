@@ -8,7 +8,14 @@ package com.hp.hpl.jena.tdb;
 
 import static com.hp.hpl.jena.tdb.TDB.log;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.Reader;
 import java.nio.ByteOrder;
+import java.util.Properties;
+
+import com.hp.hpl.jena.util.FileUtils;
 
 import com.hp.hpl.jena.sparql.util.Symbol;
 
@@ -19,6 +26,8 @@ import com.hp.hpl.jena.tdb.pgraph.NodeId;
 
 public class Const
 {
+    // Get these via a properties file
+    
     public static final String TDB_NS = "http://jena.hpl.hp.com/TDB#" ;
     
     /** Size, in bytes, of a Java long */
@@ -44,34 +53,34 @@ public class Const
     // File unit sizes
     
     /** Size, in bytes, of a block */
-    public static final int BlockSize               = 8*1024 ;
+    public static final int BlockSize               = intValue("BlockSize", 8*1024) ;
     
     /** Size, in bytes, of a memory block */
-    public static final int BlockSizeMem            = 32*8 ;
+    public static final int BlockSizeMem            = intValue("BlockSizeMem", 32*8 ) ;
 
     /** Size, in bytes, of a segment (used for memory mapped files) */
-    public static final int SegmentSize             = 8*1024*1024 ;
+    public static final int SegmentSize             = intValue("SegmentSize", 8*1024*1024) ;
     
     // ---- Caches
     
     /** Size of Node<->NodeId caches */
-    public static final int NodeCacheSize           = 100*1000 ;
+    public static final int NodeCacheSize           = intValue("NodeCacheSize", 100*1000) ;
 
     /** Size of the delayed-write block cache (32 bit systems only) (per file) */
-    public static final int BlockWriteCacheSize     = 2000 ;
+    public static final int BlockWriteCacheSize     = intValue("BlockWriteCacheSize", 2000) ;
 
     /** Size of read block cache (32 bit systems only).  Increase JVM size as necessary. Per file. */
-    public static final int BlockReadCacheSize      = 10*1000 ;
+    public static final int BlockReadCacheSize      = intValue("BlockReadCacheSize", 10*1000) ;
     
     // ---- Misc
     
     /** Number of adds/deletes between calls to sync (-ve to disable) */
-    public static final int SyncTick                = 5*1000 ;
+    public static final int SyncTick                = intValue("SyncTick", 5*1000) ;
 
     public static final ByteOrder NetworkOrder      = ByteOrder.BIG_ENDIAN ;
     
     // BDB related.
-    public static final int BDB_cacheSizePercent    = 75 ; 
+    public static final int BDB_cacheSizePercent    = intValue("BDB_cacheSizePercent", 75) ;
     
     public static Symbol allocSymbol(String shortName)
     { 
@@ -89,7 +98,46 @@ public class Const
     
     // --------
     
-    // Symbols.
+    // Tie to location but that means one instance per graph
+    // More in the context !
+    
+    private static String propertyFileName = "" ;
+    private static Properties properties = null ; //readPropertiesFile() ;
+    
+    private static int intValue(String name, int defaultValue)
+    {
+        if ( name == null ) return defaultValue ;
+        if ( name.length() == 0 ) throw new TDBException("Empty string for value name") ;
+        
+        if ( properties == null )
+            return defaultValue ;
+        String x = properties.getProperty(name) ;
+        if ( x == null )
+            return defaultValue ;  
+        int v = Integer.parseInt(x) ;
+        return v ;
+    }
+    
+
+    
+    private static Properties readPropertiesFile()
+    {
+        Properties p = new Properties() ;
+        try
+        {
+            Reader r = FileUtils.asBufferedUTF8(new FileInputStream(propertyFileName)) ;
+            p.load(r) ;
+        } catch (FileNotFoundException ex)
+        {
+            ex.printStackTrace();
+        } catch (IOException ex)
+        {
+            ex.printStackTrace();
+        }
+        return p ;
+    }
+    // --------
+    
     public static final boolean is64bitSystem = determineIf64Bit() ;
 
     private static boolean determineIf64Bit()
