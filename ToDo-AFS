@@ -4,23 +4,17 @@ SDB ToDo list (and general notes)
 ** OpQuadPattern ==> Track OpGraph and OpBGP (common visitor/transform base pattern?) 
 ** OpDatasetNames (and check GRAPH ?g {})
 
+** SELECT DISTINCT ?p { ?s ?p ?o }
+   Can push in DISTINCT through the project if the SelectBlock has the project
+   else just put on the project?
+     TransformSDB 
+
 ** Tidy the assembler descriptions on wiki.
    Currently two pages: make reference and tutorial.
 
 ** Check update tests - why is fork needed in ant for Pg and MS-SQL, but not MySQL? 
 
-MySQL:
-
-stmt = conn.createStatement(java.sql.ResultSet.TYPE_FORWARD_ONLY,
-                            java.sql.ResultSet.CONCUR_READ_ONLY);
-stmt.setFetchSize(Integer.MIN_VALUE);
-
-one-by-one
-
-   SDBConnection.execQuery(String sqlString) => 
-    -    { return execQuery(sqlString, -1) ; }
-    +    { return execQuery(sqlString, Integer.MIN_VALUE) ; }
-   And fix the graph find so triples stream back.
+** Connection pooling (Apache DBCP) which will also cope with MySQL timeouts   
 
 ==== Wiki
 ** StoreFormatter.isFormatted()
