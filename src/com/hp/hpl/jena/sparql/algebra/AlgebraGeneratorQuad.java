@@ -18,7 +18,6 @@ import com.hp.hpl.jena.sparql.util.Context;
 
 public class AlgebraGeneratorQuad extends AlgebraGenerator 
 {
-    
     private Node currentGraph = Quad.defaultGraphNode ;
     
     public AlgebraGeneratorQuad(Context context) { super(context) ; }
@@ -29,6 +28,8 @@ public class AlgebraGeneratorQuad extends AlgebraGenerator
         return new OpQuadPattern(currentGraph, pattern) ;
     }
 
+    //protected Op compilePathBlock(PathBlock pattern)
+    
     protected Op compileElementGraph(ElementNamedGraph eltGraph)
     {
         Node graphNode = eltGraph.getGraphNameNode() ;

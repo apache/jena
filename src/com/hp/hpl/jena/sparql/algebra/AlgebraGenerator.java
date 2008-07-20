@@ -318,7 +318,7 @@ public class AlgebraGenerator
         return new OpBGP(pattern) ;
     }
     
-    private Op compilePathBlock(PathBlock pattern)
+    protected Op compilePathBlock(PathBlock pattern)
     {
         // Step 1 : flatten down to triples where possible. 
         pattern = pathCompiler.reduce(pattern) ;

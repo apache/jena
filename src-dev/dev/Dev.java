@@ -10,6 +10,10 @@ package dev;
 
 public class Dev
 {
+    // ** Quads and paths interaction (not interacting currently).
+    // ** OpQuadPath = a node + TriplePattern
+    // ** Alternatively, OpGraph and retire OpQuadPattern - modify SDB. <<== ****
+    
     // Next:
     // ++  Interactions between Filter Placement and Equality filters (or even combine?)
     // +  (current) -- how does this relate to "table" OpTable
@@ -19,7 +23,6 @@ public class Dev
     //   The reverse is in BuilderTable so use WriterTable.
     // ]]
     // TransformPathFlattern - leave in AlgebraGenerator for now.
-    // Quad engine?
     
     // Remove:
     //   AlgebraGenerator: Path flattening -- compilePathBlock

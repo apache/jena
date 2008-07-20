@@ -47,14 +47,6 @@ public class Run
 {
     public static void main(String[] argv) throws Exception
     {
-        String x = "PREFIX ex: <http://example/#> INSERT DATA { <http://example/> ex:p ex:o }" ;
-        Model model = ModelFactory.createDefaultModel() ;
-        UpdateAction.parseExecute(x, model) ;
-        model.write(System.out, "TTL") ;
-        System.exit(0) ; 
-        
-        //opt.RunT.main(argv) ; 
-
         if ( false )
         {
             Model m = ModelFactory.createDefaultModel() ;
@@ -82,7 +74,7 @@ public class Run
         }
         
         
-        runQParse() ;
+        runQParseARQ() ;
         execQuery("D.ttl", "Q.arq") ;
         
         path() ; System.exit(0) ;
@@ -208,7 +200,7 @@ public class Run
     
     private static void runQParseARQ()
     {
-        String []a = { "--file=Q.arq", "--print=op", "--opt", "--print=plan"} ;
+        String []a = { "--file=Q.arq", "--print=quad" } ; //, "--opt", "--print=plan"} ;
         arq.qparse.main(a) ;
         System.exit(0) ;
     }
