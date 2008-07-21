@@ -19,8 +19,7 @@ public class Dev
     // Use of java properties fro key values.
     // Different names for nodes.dat file under the two schemes.
 
-    // CI: 
-    CC dashboard assumes the use of ant default target
+    // CI:     CC dashboard assumes the use of ant default target
 
     // Huge store : 96bits hash ids?
     // IndexBuilder to migrate to be policy for data files as well.
