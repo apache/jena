@@ -19,8 +19,8 @@ public class Dev
     // Use of java properties fro key values.
     // Different names for nodes.dat file under the two schemes.
 
-    // CI - tidy up
-    // CC dashboard assumes the use of ant default target
+    // CI: 
+    CC dashboard assumes the use of ant default target
 
     // Huge store : 96bits hash ids?
     // IndexBuilder to migrate to be policy for data files as well.
@@ -34,9 +34,6 @@ public class Dev
     //   Commands
     
     // TDBFactory ==> "create" ==> connect(... , boolean canCeate) ;
-    // TDB connections?
-    // TDBFactory, same Location ==> same model. 
-    // ModelSource?
  
     // Location-keyed cache of TDB graphs 
     
@@ -55,18 +52,8 @@ public class Dev
     //    And a PageMgr wrapper for same.
 
     // Inlines => Inline56, Inline64
-    
-    // ARQ: Var scope handling - add to OpBase?
-    
+
     // QueryHandler to access subjectsFor etc. 
-    
-    // Analysis tools: 
-    //    NT=>predicate distribution.
-    //    Namespace extractor.
-    // BGP Optimizer II
 
-    // com.hp.hpl.jena.util.FileUtils - use faster "buffered" reader (extend BufferedReader)
-
-    // Consts from a properties file.
     // Fix BDB form
 }
