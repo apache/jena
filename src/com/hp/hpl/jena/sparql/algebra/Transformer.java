@@ -18,7 +18,7 @@ public class Transformer
 {
     static boolean noDupIfSame = true ;
     
-    public static Op transform(Transform tranform, Op op)
+    public static Op transform(Transform transform, Op op)
     {
         if ( op == null )
         {
@@ -26,7 +26,7 @@ public class Transformer
             return op ;
         }
         
-        TransformApply v = new TransformApply(tranform) ;
+        TransformApply v = new TransformApply(transform) ;
         op.visit(v) ;
         Op r = v.result() ;
         return r ;
@@ -59,17 +59,30 @@ public class Transformer
         
         private void visit1(Op1 op)
         {
-            op.getSubOp().visit(this) ;
-            Op subOp = pop() ;
+            Op subOp = null ;
+            if ( op.getSubOp() != null )
+            {
+                op.getSubOp().visit(this) ;
+                subOp = pop() ;
+            }
             push(op.apply(transform, subOp)) ;
         }
 
         private void visit2(Op2 op)
         { 
-            op.getLeft().visit(this) ;
-            Op left = pop() ;
-            op.getRight().visit(this) ;
-            Op right = pop() ;
+            Op left = null ;
+            Op right = null ;
+
+            if ( op.getLeft() != null )
+            {
+                op.getLeft().visit(this) ;
+                left = pop() ;
+            }
+            if ( op.getRight() != null )
+            {
+                op.getRight().visit(this) ;
+                right = pop() ;
+            }
             Op opX = op.apply(transform, left, right) ; 
             push(opX) ;
         }
@@ -82,6 +95,7 @@ public class Transformer
                 Op sub = (Op)iter.next() ;
                 sub.visit(this) ;
                 Op r = pop() ;
+                // Skip nulls.
                 if ( r != null )
                     x.add(r) ;
             }
@@ -144,16 +158,7 @@ public class Transformer
         { visit0(opNull) ; }
         
         public void visit(OpLabel opLabel)
-        {
-            if ( opLabel.hasSubOp())
-            {
-                opLabel.getSubOp().visit(this) ;
-                Op subOp = pop() ;
-                push(opLabel.apply(transform, subOp)) ;
-            }
-            else
-                push(opLabel.apply(transform, null)) ;
-        }
+        { visit1(opLabel) ; }
         
         public void visit(OpList opList)
         { visit1(opList) ; }

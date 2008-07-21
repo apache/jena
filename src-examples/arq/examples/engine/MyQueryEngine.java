@@ -6,10 +6,11 @@
 
 package arq.examples.engine;
 
+import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.Transform;
-import com.hp.hpl.jena.sparql.algebra.TransformBase;
+import com.hp.hpl.jena.sparql.algebra.TransformCopy;
 import com.hp.hpl.jena.sparql.algebra.Transformer;
 import com.hp.hpl.jena.sparql.algebra.op.OpBGP;
 import com.hp.hpl.jena.sparql.core.DatasetGraph;
@@ -20,8 +21,6 @@ import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.main.QueryEngineMain;
 import com.hp.hpl.jena.sparql.util.Context;
-
-import com.hp.hpl.jena.query.Query;
 
 /** Example skeleton for a query engine.
  *  To just enxtend ARQ by custom basic graph pattern matching (a very common case)
@@ -68,7 +67,7 @@ public class MyQueryEngine extends QueryEngineMain
     
 }
 
-class MyTransform extends TransformBase
+class MyTransform extends TransformCopy
 {
     // Example, do nothing tranform. 
     public Op transform(OpBGP opBGP)                { return opBGP ; }

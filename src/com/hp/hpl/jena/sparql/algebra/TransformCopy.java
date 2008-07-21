@@ -10,15 +10,17 @@ import java.util.List;
 
 import com.hp.hpl.jena.sparql.algebra.op.*;
 
-/** One step in the transformation process */
+/** One step in the transformation process.
+ *  Used with Transformer, performs a a bottom-up rewrite.
+ */
 public class TransformCopy implements Transform
 {
     public static final boolean COPY_ALWAYS         = true ;
     public static final boolean COPY_ONLY_ON_CHANGE = false ;
     private boolean alwaysCopy = false ;
     
-    public TransformCopy() { this(COPY_ONLY_ON_CHANGE) ; }
-    public TransformCopy(boolean alwaysDuplicate)   { this.alwaysCopy = alwaysDuplicate ; }
+    public TransformCopy()                                          { this(COPY_ONLY_ON_CHANGE) ; }
+    public TransformCopy(boolean alwaysDuplicate)                   { this.alwaysCopy = alwaysDuplicate ; }
 
     public Op transform(OpTable opTable)                            { return xform(opTable) ; }
     public Op transform(OpBGP opBGP)                                { return xform(opBGP) ; }

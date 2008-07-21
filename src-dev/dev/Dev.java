@@ -11,14 +11,18 @@ package dev;
 public class Dev
 {
     // ** Quads and paths interaction (not interacting currently).
-    // ** OpQuadPath = a node + TriplePattern
-    // ** Alternatively, OpGraph and retire OpQuadPattern - modify SDB. <<== ****
-    // End of OpDatasetNames!
-    //   OpBase has a graph node?
+
+    // 1 -- New "OpQuadPath = a node + TriplePattern"
+    // 2 -- A secondary transformation to convert from triples/graphs to quads  
+    //      Or modify SDB?  <<== ****
+    //
+    // Issue is that this is a "visit on the way down and change on the way up" process.
+    //   Could add a separate pre-call visitor to Transformer.
+    //   Or a specific to TransformCopy.
     
     // Next:
     // ++  Interactions between Filter Placement and Equality filters (or even combine?)
-    // +  (current) -- how does this relate to "table" OpTable
+    // +  (current) -- A kind of table (stack during evaluation?)
     
     // [[
     // Writing tables - too much done in OpTable
