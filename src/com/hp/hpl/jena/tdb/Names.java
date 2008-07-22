@@ -23,8 +23,6 @@ public class Names
     public static final String nodesData    = "nodes.dat" ;
     public static String indexNode2Id       = "node2id";
     public static String indexId2Node       = "id2node";
-    
-    
 }
 
 /*

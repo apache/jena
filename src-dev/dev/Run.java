@@ -6,33 +6,25 @@
 
 package dev;
 
-import static lib.FileOps.clearDirectory;
-
-import java.util.Iterator;
-
-import lib.FileOps;
-
 import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.query.*;
+import com.hp.hpl.jena.query.Query;
+import com.hp.hpl.jena.query.QueryExecution;
+import com.hp.hpl.jena.query.QueryExecutionFactory;
+import com.hp.hpl.jena.query.QueryFactory;
+import com.hp.hpl.jena.query.ResultSet;
+import com.hp.hpl.jena.query.ResultSetFormatter;
+import com.hp.hpl.jena.query.Syntax;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.rdf.model.Property;
-import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.rdf.model.Statement;
 import com.hp.hpl.jena.tdb.Const;
 import com.hp.hpl.jena.tdb.TDB;
 import com.hp.hpl.jena.tdb.TDBFactory;
 import com.hp.hpl.jena.tdb.base.block.BlockMgr;
 import com.hp.hpl.jena.tdb.base.block.BlockMgrFactory;
 import com.hp.hpl.jena.tdb.base.file.Location;
-import com.hp.hpl.jena.tdb.base.record.Record;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 import com.hp.hpl.jena.tdb.base.recordfile.RecordBufferPage;
-import com.hp.hpl.jena.tdb.bplustree.BPlusTree;
-import com.hp.hpl.jena.tdb.bplustree.BPlusTreeParams;
-import com.hp.hpl.jena.tdb.btree.BTreeParams;
-import com.hp.hpl.jena.tdb.lib.NodeLib;
-import com.hp.hpl.jena.tdb.pgraph.NodeId;
+import com.hp.hpl.jena.tdb.base.recordfile.RecordBufferPageMgr;
 import com.hp.hpl.jena.tdb.pgraph.PGraphBase;
 import com.hp.hpl.jena.util.FileManager;
 
@@ -49,30 +41,42 @@ public class Run
     
     public static void main(String ... args)
     {
-        FileOps.clearDirectory("DB") ;
-        tdb.tdbloader.main(new String[]{"--set", "tdb:indexType=bplustree", 
-            "/home/afs//Datasets/DBPediaBM/dbp-homepages.nt"}) ;
-        System.exit(1) ;
-        //org.apache.log4j.Logger.getLogger("com.hp.hpl.jena.tdb").setLevel(Level.ALL) ;
-        // Don't seem to tbe writing to disk.
-        // Run once data created. 
-        //bpt_test() ; System.exit(0) ;
+        readBPlusTreeAll() ;
         
-//        BPlusTreeParams.checkAll() ;
-//        BPlusTreeParams.Logging = true ;
-//        org.apache.log4j.Logger.getLogger("com.hp.hpl.jena.tdb.bplustree").setLevel(Level.ALL) ;
-//        
-//        BaseConfig.NullOut = true ;
-//        int[] keys = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
-//        RangeIndex rIndex = BPlusTree.makeMem(2, 2, TestRecordLength, 0) ;
-//        testInsert(rIndex, keys) ;
-////        assertEquals(0, r(rIndex.minKey())) ;
-////        assertEquals(9, r(rIndex.maxKey())) ;
+        //tdbquery("dataset.ttl", "SELECT * { ?s ?p ?o }") ;
+
+//      Model model = TDBFactory.createModel("tmp") ;
+//      query("SELECT * { ?s ?p ?o}", model) ;
+//      System.exit(0) ;
+
         
+    }
+    
+    private static void readBPlusTreeAll()
+    {
+        divider() ;
+        String filename = "DB/OSP.dat" ;
+        BlockMgr blkMgr = BlockMgrFactory.createFile(filename, Const.BlockSize) ;
+        RecordFactory f = PGraphBase.indexRecordFactory ; 
         
-        // Also check absent triples.
+        RecordBufferPageMgr recordPageMgr = new RecordBufferPageMgr(f, blkMgr) ;
+        int idx = 0 ;
+        int n = 0 ;
+        while ( idx >= 0 )
+        {
+            RecordBufferPage page = recordPageMgr.get(idx) ;
+            System.out.printf("%04d :: %04d -> %04d [%d, %d]\n", n, page.getId(), page.getLink(), page.getCount(), page.getMaxSize()) ;
+            idx = page.getLink() ;
+            n++ ;
+        }
+        System.exit(0) ;
         
+    }
+
+    static public void smallGraph() 
+    {
         // Do NOW!
+        // TDB.getContext().set(TDB.symFileMode, "mapped") ;
         TDB.getContext().set(TDB.symIndexType, "bplustree") ;
         
         Location loc = new Location("tmp") ;
@@ -111,169 +115,7 @@ public class Run
         
         System.exit(0) ;
         
-        //tdbquery("dataset.ttl", "SELECT * { ?s ?p ?o }") ;
-
-//        ARQ.getContext().set(TDB.symFileMode, "mapped") ;
-//        Model model = TDBFactory.createModel("tmp") ;
-//        query("SELECT * { ?s ?p ?o}", model) ;
-//        System.exit(0) ;
     }
-    
-    public static void bpt_test()
-    {
-        //TDB.getContext().set(TDB.symFileMode, "mapped" ) ;
-        Location location = new Location("tmp") ;
-        String fnNodes = location.getPath("X", "idn") ;
-        String fnRecords = location.getPath("X", "dat") ;
-        
-        boolean disk = true ;
-        
-        BPlusTree bt = null ;
-        BPlusTreeParams params = null ;
-        
-        BlockMgr mgr1 = null ;
-        BlockMgr mgr2 = null ;
-        
-        if ( disk )
-        {
-            FileOps.clearDirectory(location.getDirectoryPath()) ;
-            int order = BPlusTreeParams.calcOrder(Const.BlockSize, PGraphBase.indexRecordFactory) ;
-            params = new BPlusTreeParams(order, PGraphBase.indexRecordFactory) ;
-            mgr1 = BlockMgrFactory.createFile(fnNodes, Const.BlockSize) ;
-            mgr2 = BlockMgrFactory.createFile(fnRecords, Const.BlockSize) ;
-        }
-        else
-        {
-            params = new BPlusTreeParams(5, PGraphBase.indexRecordFactory.keyLength(), PGraphBase.indexRecordFactory.valueLength()) ;
-            
-            int maxRecords = 2*5 ;
-            int rSize = RecordBufferPage.HEADER+(maxRecords*params.getRecordLength()) ;
-            
-            mgr1 = BlockMgrFactory.createMem(params.getBlockSize()) ;
-            mgr2 = BlockMgrFactory.createMem(rSize) ;
-        }
-        
-        bt = BPlusTree.attach(params, mgr1, mgr2) ;
-        NodeId n = NodeId.create(0x41424344) ;
-        Record rn = NodeLib.record(PGraphBase.indexRecordFactory, n, n, n) ;
-        bt.add(rn) ;
-        bt.sync(true) ;
-        
-        bt.dump() ;
-        
-        System.out.println() ;
-        
-        bt = null ;
-        
-        // Reattach
-        if ( disk )
-        {
-            mgr1 = BlockMgrFactory.createFile(fnNodes, Const.BlockSize) ;
-            mgr2 = BlockMgrFactory.createFile(fnRecords, Const.BlockSize) ;
-        }
-        
-        bt = BPlusTree.attach(params, mgr1, mgr2) ;
-        
-        System.out.println("Loop") ;
-        Iterator<Record> iter = bt.iterator() ;
-        for ( ; iter.hasNext() ; )
-        {
-            Record r = iter.next() ;
-            System.out.println(r) ;
-        }
-        
-        
-        System.exit(0) ;
-
-    }
-    
-    
-    static int BlockSize               = 8*1024 ;
-    static int SegmentSize = 8 * 1024 * 1024 ; 
-    static int blocksPerSegment = SegmentSize/BlockSize ;
-    
-    private static int segment(int id) { return id/blocksPerSegment ; }
-    private static int byteOffset(int id) { return (id%blocksPerSegment)*BlockSize ; }
-
-    
-    public static void seg()
-    {
-//        Id: 1179
-//        Seg=1
-//        Segoff=1,269,760
-
-        System.out.printf("Blocksize = %d , Segment size = %d\n", BlockSize, SegmentSize) ;
-        System.out.printf("blocksPerSegment = %d\n", blocksPerSegment) ;
-        
-        
-        for ( int id : new int[]{1,2,3,4,5,1428, 1179})
-        {
-            int seg = segment(id) ;                     // Segment.
-            int segOff = byteOffset(id) ; 
-            System.out.printf("%d => [%d, %,d]\n", id, seg, segOff) ;
-            System.out.printf("%,d\n", id*BlockSize) ;
-        }
-        System.exit(0) ;
-//        String[] a = { "--set", "tdb:logBGP=true", "--desc="+assembler, query } ;
-//        tdb.tdbquery.main(a) ;
-//        System.exit(0) ;
-        
- 
-        
-        // ----
-        btreePacking(3, 32, 8*1024) ; System.exit(0) ;
-        btreePacking(3, 64, 8*1024) ;
-        btreePacking(4, 128, 8*1024) ;
-        System.exit(0) ;
-                
-        // ----
-        System.exit(0) ;
-        
-        // ----
-        String dir = "tmp" ;
-        clearDirectory(dir) ;
-        System.exit(0) ;
-    }
-     
-    private static void report()
-    {
-        ARQ.getContext().set(TDB.symFileMode, "mapped") ;
-        
-        Model model = TDBFactory.createModel("foo");
-        Resource r = model.createResource("http://com.xxx/test");
-
-        Property op = model.createProperty("http://property/bar");
-        Statement s = r.getProperty(op);
-        if (s == null) {
-            Resource list = model.createList();
-            r.addProperty(op, list);
-            s = r.getProperty(op);
-        }
-
-        model.write(System.err);
-        
-        //model.close() ;
-        
-        System.err.println("-------------");
-        model = TDBFactory.createModel("foo");
-        model.write(System.err);
-
-
-        System.exit(0) ;
-
-    }
-
-
-    public static void btreePacking(int slots, int slotSize, int blkSize)
-    {
-        divider() ;
-        RecordFactory f  = new RecordFactory(slots*slotSize/8,0) ;
-        System.out.printf("Input: %d slots, size %d bytes, %d blocksize\n", slots,slotSize/8, blkSize ) ;
-        System.out.println("Btree: "+BTreeParams.calcOrder(blkSize, f.recordLength())) ;      
-        System.out.println("Packed leaf : "+blkSize/f.recordLength()) ;
-        BTreeParams p = new BTreeParams(BTreeParams.calcOrder(blkSize, f.recordLength()), f) ;
-        System.out.println(p) ;
-    }             
     
     private static void query(String str, Model model)
     {
