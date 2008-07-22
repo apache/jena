@@ -124,70 +124,7 @@ public class Run
         System.out.printf("Count = %d in %d blocks\n", total, n) ;
     }
     
-    // B+Tree Rewriter
-    static class BPlusTreeRewriter
-    {
-        RecordFactory f = PGraphBase.indexRecordFactory ; 
-        BlockMgr blkMgr = null ;
-        RecordBufferPageMgr recordPageMgr = null ;
-        RecordBuffer currentBuffer = null ;
-        RecordBufferPage currentPage = null ;
-        
-        BPlusTreeRewriter(String filename)
-        {
-            blkMgr = BlockMgrFactory.createFile(filename, Const.BlockSize) ;
-            recordPageMgr = new RecordBufferPageMgr(f, blkMgr) ;
-        }
-        
-        void write(Record r)
-        {
-            if ( currentBuffer == null )
-                moveOneOnePage() ;
-            currentBuffer.add(r) ;
-            // Now full?
-            // Make a note to write next time.
-            // Delaying means an empty (last) block is not handled until a record is written  
-            if ( currentBuffer.size() >= currentBuffer.maxSize() )
-                currentBuffer = null ;
-                
-        }
-        
-        private void moveOneOnePage()
-        {
-            // Write, with link, the old block.
-            int id = recordPageMgr.allocateId() ;
-            if ( currentPage != null )
-            {
-                // Check split is the high of lower.
-                Record r = currentPage.getRecordBuffer().getHigh() ;
-                Record k = f.createKeyOnly(r) ;
-                System.out.printf("Split = %s\n", k) ;
-                flush(id) ;
-            }
-            // Now get new space
-            
-            
-            currentPage = recordPageMgr.create(id) ;
-            currentBuffer = currentPage.getRecordBuffer() ;
-        }
-        
-        private void flush(int _linkId)
-        {
-            if ( currentPage == null )
-                return ;
-            currentPage.setLink(_linkId) ;
-            recordPageMgr.put(currentPage.getId(), currentPage) ;
-            currentBuffer = null ;
-            currentPage = null ;
-        }
-        
-        void close()
-        {
-            // End block id.
-            flush(-1) ;
-            blkMgr.close() ;
-        }
-    }
+    
     
     static public void smallGraph() 
     {
