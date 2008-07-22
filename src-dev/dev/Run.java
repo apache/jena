@@ -6,6 +6,8 @@
 
 package dev;
 
+import lib.FileOps;
+
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryExecution;
@@ -62,20 +64,26 @@ public class Run
         RecordFactory f = PGraphBase.indexRecordFactory ; 
 
         String filename2 = "DB/OSP-2.dat" ;
-        BPT bpt = new BPT(filename2) ;
+        // Must not exist
+        FileOps.delete(filename2) ;
+        
+        BPlusTreeRewriter bpt = new BPlusTreeRewriter(filename2) ;
         
         RecordBufferPageMgr recordPageMgr = new RecordBufferPageMgr(f, blkMgr) ;
         int idx = 0 ;
         int n = 0 ;
+        int total = 0 ;
+        
         while ( idx >= 0 )
         {
             RecordBufferPage page = recordPageMgr.get(idx) ;
-            System.out.printf("%04d :: %04d -> %04d [%d, %d]\n", n, page.getId(), page.getLink(), page.getCount(), page.getMaxSize()) ;
+            //System.out.printf("%04d :: %04d -> %04d [%d, %d]\n", n, page.getId(), page.getLink(), page.getCount(), page.getMaxSize()) ;
             
             // ---- 
             RecordBuffer rb = page.getRecordBuffer() ;
-            System.out.printf("     :: %d %d\n", rb.getSize(), rb.maxSize() ) ;
-            
+            //System.out.printf("     :: %d %d\n", rb.getSize(), rb.maxSize() ) ;
+
+            total += rb.size();
             for ( int i = 0 ; i < rb.getSize() ; i++ )
             {
                 Record r = rb.get(i) ;
@@ -86,21 +94,98 @@ public class Run
             idx = page.getLink() ;
             n++ ;
         }
+        bpt.close();
+        System.out.printf("Count = %d in %d blocks\n", total, n) ;
+        System.out.println() ;
+        scan(filename2) ;
         System.exit(0) ;
     }
 
-    static class BPT
+    // Assumes the file is not open anywhere else.
+    static void scan(String filename)
     {
-        BPT(String filename)
+        BlockMgr blkMgr = BlockMgrFactory.createFile(filename, Const.BlockSize) ;
+        RecordFactory f = PGraphBase.indexRecordFactory ; 
+        RecordBufferPageMgr recordPageMgr = new RecordBufferPageMgr(f, blkMgr) ;
+        int idx = 0 ;
+        int n = 0 ;
+        int total = 0 ;
+        
+        while ( idx >= 0 )
         {
-            RecordFactory f = PGraphBase.indexRecordFactory ; 
-            BlockMgr blkMgr2 = BlockMgrFactory.createFile(filename, Const.BlockSize) ;
-            RecordBufferPageMgr recordPageMgr2 = new RecordBufferPageMgr(f, blkMgr2) ;
+            RecordBufferPage page = recordPageMgr.get(idx) ;
+            //System.out.printf("%04d :: %04d -> %04d [%d, %d]\n", n, page.getId(), page.getLink(), page.getCount(), page.getMaxSize()) ;
+            RecordBuffer rb = page.getRecordBuffer() ;
+            //System.out.printf("     :: %d %d\n", rb.getSize(), rb.maxSize() ) ;
+            total += rb.size();
+            idx = page.getLink() ;
+            n++ ;
+        }
+        System.out.printf("Count = %d in %d blocks\n", total, n) ;
+    }
+    
+    // B+Tree Rewriter
+    static class BPlusTreeRewriter
+    {
+        RecordFactory f = PGraphBase.indexRecordFactory ; 
+        BlockMgr blkMgr = null ;
+        RecordBufferPageMgr recordPageMgr = null ;
+        RecordBuffer currentBuffer = null ;
+        RecordBufferPage currentPage = null ;
+        
+        BPlusTreeRewriter(String filename)
+        {
+            blkMgr = BlockMgrFactory.createFile(filename, Const.BlockSize) ;
+            recordPageMgr = new RecordBufferPageMgr(f, blkMgr) ;
         }
         
         void write(Record r)
         {
+            if ( currentBuffer == null )
+                moveOneOnePage() ;
+            currentBuffer.add(r) ;
+            // Now full?
+            // Make a note to write next time.
+            // Delaying means an empty (last) block is not handled until a record is written  
+            if ( currentBuffer.size() >= currentBuffer.maxSize() )
+                currentBuffer = null ;
+                
+        }
+        
+        private void moveOneOnePage()
+        {
+            // Write, with link, the old block.
+            int id = recordPageMgr.allocateId() ;
+            if ( currentPage != null )
+            {
+                // Check split is the high of lower.
+                Record r = currentPage.getRecordBuffer().getHigh() ;
+                Record k = f.createKeyOnly(r) ;
+                System.out.printf("Split = %s\n", k) ;
+                flush(id) ;
+            }
+            // Now get new space
             
+            
+            currentPage = recordPageMgr.create(id) ;
+            currentBuffer = currentPage.getRecordBuffer() ;
+        }
+        
+        private void flush(int _linkId)
+        {
+            if ( currentPage == null )
+                return ;
+            currentPage.setLink(_linkId) ;
+            recordPageMgr.put(currentPage.getId(), currentPage) ;
+            currentBuffer = null ;
+            currentPage = null ;
+        }
+        
+        void close()
+        {
+            // End block id.
+            flush(-1) ;
+            blkMgr.close() ;
         }
     }
     

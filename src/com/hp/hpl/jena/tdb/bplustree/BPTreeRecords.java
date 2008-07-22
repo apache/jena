@@ -135,8 +135,8 @@ public final class BPTreeRecords extends BPTreePage
         return r ;
     }
 
-    /** Split: place old high half in 'other'. Return the Record that splits
-     * the pages - the high end of the low page.
+    /** Split: place old high half in 'other'. Return the new (upper) BPTreePage.
+     * Split is the high end of the low page.
      */
     @Override final
     BPTreePage split() 
@@ -148,7 +148,7 @@ public final class BPTreeRecords extends BPTreePage
         rBuffPage.setLink(other.getId()) ;
         
         int splitIdx = rBuff.size()/2-1 ;
-        Record r = rBuff.get(splitIdx) ;                // Only need key for checkign later.
+        Record r = rBuff.get(splitIdx) ;                // Only need key for checking later.
         
         int moveLen =  rBuff.size()-(splitIdx+1) ;      // Number to move.
         // Copy high end to new.  
