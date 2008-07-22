@@ -21,7 +21,9 @@ import com.hp.hpl.jena.tdb.TDB;
 import com.hp.hpl.jena.tdb.TDBFactory;
 import com.hp.hpl.jena.tdb.base.block.BlockMgr;
 import com.hp.hpl.jena.tdb.base.block.BlockMgrFactory;
+import com.hp.hpl.jena.tdb.base.buffer.RecordBuffer;
 import com.hp.hpl.jena.tdb.base.file.Location;
+import com.hp.hpl.jena.tdb.base.record.Record;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 import com.hp.hpl.jena.tdb.base.recordfile.RecordBufferPage;
 import com.hp.hpl.jena.tdb.base.recordfile.RecordBufferPageMgr;
@@ -58,6 +60,9 @@ public class Run
         String filename = "DB/OSP.dat" ;
         BlockMgr blkMgr = BlockMgrFactory.createFile(filename, Const.BlockSize) ;
         RecordFactory f = PGraphBase.indexRecordFactory ; 
+
+        String filename2 = "DB/OSP-2.dat" ;
+        BPT bpt = new BPT(filename2) ;
         
         RecordBufferPageMgr recordPageMgr = new RecordBufferPageMgr(f, blkMgr) ;
         int idx = 0 ;
@@ -66,13 +71,39 @@ public class Run
         {
             RecordBufferPage page = recordPageMgr.get(idx) ;
             System.out.printf("%04d :: %04d -> %04d [%d, %d]\n", n, page.getId(), page.getLink(), page.getCount(), page.getMaxSize()) ;
+            
+            // ---- 
+            RecordBuffer rb = page.getRecordBuffer() ;
+            System.out.printf("     :: %d %d\n", rb.getSize(), rb.maxSize() ) ;
+            
+            for ( int i = 0 ; i < rb.getSize() ; i++ )
+            {
+                Record r = rb.get(i) ;
+                bpt.write(r) ;
+            }
+            
+            // ---- Loop
             idx = page.getLink() ;
             n++ ;
         }
         System.exit(0) ;
-        
     }
 
+    static class BPT
+    {
+        BPT(String filename)
+        {
+            RecordFactory f = PGraphBase.indexRecordFactory ; 
+            BlockMgr blkMgr2 = BlockMgrFactory.createFile(filename, Const.BlockSize) ;
+            RecordBufferPageMgr recordPageMgr2 = new RecordBufferPageMgr(f, blkMgr2) ;
+        }
+        
+        void write(Record r)
+        {
+            
+        }
+    }
+    
     static public void smallGraph() 
     {
         // Do NOW!

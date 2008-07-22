@@ -143,7 +143,9 @@ abstract class BufferBase
         numSlot -= n ;
     }
     
-    final public int slotLen()    { return slotLen ; }
+    final public int slotLen()      { return slotLen ; }
+    
+    final public int getSize()      { return numSlot ; } 
     
     final public void setSize(int n)
     {
