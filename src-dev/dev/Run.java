@@ -82,7 +82,7 @@ public class Run
                 bpt.write(r) ;
             }
             
-            // ---- Loop
+            // ---- Loop on existing page file
             idx = page.getLink() ;
             n++ ;
         }
