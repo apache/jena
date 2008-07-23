@@ -19,6 +19,9 @@ public class Transformer
     static boolean noDupIfSame = true ;
     
     public static Op transform(Transform transform, Op op)
+    { return transform(transform, op, null) ; }
+    
+    public static Op transform(Transform transform, Op op, OpVisitor monitor)
     {
         if ( op == null )
         {
@@ -26,7 +29,7 @@ public class Transformer
             return op ;
         }
         
-        TransformApply v = new TransformApply(transform) ;
+        TransformApply v = new TransformApply(transform, monitor) ;
         op.visit(v) ;
         Op r = v.result() ;
         return r ;
@@ -34,10 +37,13 @@ public class Transformer
     
     private Transformer() { }
     
-    static class TransformApply implements OpVisitor
+    private static final 
+    class TransformApply implements OpVisitor
     {
-        Transform transform = null ;
-        Stack stack = new Stack() ;
+        private Transform transform = null ;
+        // Called before recursing.  Can be null.  Must not mutate anything.
+        private OpVisitor beforeVisitor = null ; 
+        private Stack stack = new Stack() ;
         private Op pop() { return (Op)stack.pop(); }
         private void push(Op op)
         { 
@@ -45,8 +51,11 @@ public class Transformer
             stack.push(op) ;
         }
         
-        public TransformApply(Transform transform)
-        { this.transform = transform ; }
+        public TransformApply(Transform transform, OpVisitor beforeVisitor)
+        { 
+            this.transform = transform ;
+            this.beforeVisitor = beforeVisitor ;
+        }
         
         public Op result()
         { 
@@ -55,10 +64,17 @@ public class Transformer
             return pop() ; 
         }
 
-        private void visit0(Op0 op) { push(op.apply(transform)) ; }
+        private void visit0(Op0 op)
+        {
+            if ( beforeVisitor != null )
+                op.visit(beforeVisitor) ;
+            push(op.apply(transform)) ;
+        }
         
         private void visit1(Op1 op)
         {
+            if ( beforeVisitor != null )
+                op.visit(beforeVisitor) ;
             Op subOp = null ;
             if ( op.getSubOp() != null )
             {
@@ -70,6 +86,8 @@ public class Transformer
 
         private void visit2(Op2 op)
         { 
+            if ( beforeVisitor != null )
+                op.visit(beforeVisitor) ;
             Op left = null ;
             Op right = null ;
 
@@ -89,6 +107,8 @@ public class Transformer
         
         private void visitN(OpN op)
         {
+            if ( beforeVisitor != null )
+                op.visit(beforeVisitor) ;
             List x = new ArrayList(op.size()) ;
             for ( Iterator iter = op.iterator() ; iter.hasNext() ; )
             {

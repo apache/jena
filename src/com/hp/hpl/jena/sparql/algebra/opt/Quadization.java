@@ -9,13 +9,29 @@ package com.hp.hpl.jena.sparql.algebra.opt;
 import com.hp.hpl.jena.graph.Node;
 
 import com.hp.hpl.jena.sparql.algebra.Op;
+import com.hp.hpl.jena.sparql.algebra.OpVisitorBase;
 import com.hp.hpl.jena.sparql.algebra.TransformCopy;
 import com.hp.hpl.jena.sparql.algebra.op.OpGraph;
+import com.hp.hpl.jena.sparql.core.Quad;
 
-public class TransformQuadization extends TransformCopy
+public class Quadization extends TransformCopy
 {
+    // A pair - a visitor to track the current node in and out
+    // A transformation to convert BGPs to Quads
+    // And paths
     
-    public TransformQuadization() { }
+    public Quadization() { }
+    
+    
+    public class RecordGraph extends OpVisitorBase
+    {
+        Node currentGraph = Quad.defaultGraphNode ;
+        public void visit(OpGraph opGraph)
+        {
+            //push()
+            currentGraph = opGraph.getNode() ;
+        }
+    }
     
     public Op transform(OpGraph opGraph)
     {

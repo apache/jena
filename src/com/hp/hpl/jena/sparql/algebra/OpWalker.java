@@ -38,14 +38,14 @@ public class OpWalker
 
         protected void visit2(Op2 op)
         {
-            op.getLeft().visit(this) ;
-            op.getRight().visit(this) ;
+            if ( op.getLeft() != null ) op.getLeft().visit(this) ;
+            if ( op.getRight() != null ) op.getRight().visit(this) ;
             if ( visitor != null ) op.visit(visitor) ;        
         }
         
         protected void visit1(Op1 op)
         {
-            op.getSubOp().visit(this) ;
+            if ( op.getSubOp() != null ) op.getSubOp().visit(this) ;
             if ( visitor != null ) op.visit(visitor) ;        
         }
         
@@ -109,11 +109,8 @@ public class OpWalker
         { visit0(opNull) ; }
 
         public void visit(OpLabel opLabel)
-        {
-            if ( opLabel.hasSubOp() )
-                opLabel.getSubOp().visit(visitor) ;
-            opLabel.visit(visitor) ;
-        }
+        { visit1(opLabel) ; }
+
         public void visit(OpAssign opAssign)
         { visit1(opAssign) ; }
 
