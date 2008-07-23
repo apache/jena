@@ -6,13 +6,9 @@
 
 package com.hp.hpl.jena.sparql.algebra.opt;
 
-import java.util.Iterator;
-
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.TransformCopy;
 import com.hp.hpl.jena.sparql.algebra.op.OpFilter;
-import com.hp.hpl.jena.sparql.expr.E_LogicalAnd;
-import com.hp.hpl.jena.sparql.expr.Expr;
 import com.hp.hpl.jena.sparql.expr.ExprList;
 
 /** Imporvements to filters that do not chnage the rest of the tree 
@@ -20,7 +16,9 @@ import com.hp.hpl.jena.sparql.expr.ExprList;
  *  which both do change the sub opof the filter).  
  * 
  * Currently:
- * 1/ Redo FILTER (A&&B) as FILTER(A) FILTER(B) via multiple elements of the exprList of the OpFilter
+ * 1/ Redo FILTER (A&&B) as FILTER(A) FILTER(B)
+ *    via multiple elements of the exprList of the OpFilter.
+ *    This allows them to be placed independently.
  * 
  * Filter placment and equality/assignment interact.
  * Maybe need one place for all filter-related stuff, in which case this is becomes a library of code,
@@ -34,45 +32,11 @@ public class TransformFilterImprove extends TransformCopy
     public Op transform(OpFilter opFilter, Op subOp)
     {
         ExprList exprList = opFilter.getExprs() ;
-        exprList = process(exprList) ;
+        exprList = ExprList.splitConjunction(exprList) ;
         // This creates an OpFilter without any additional processing.
         return OpFilter.filterDirect(exprList, subOp) ;
     }
-    
 
-    private static ExprList process(ExprList exprList1)
-    {
-        ExprList exprList2 = new ExprList() ;
-        for ( Iterator iter = exprList1.iterator() ; iter.hasNext() ; )
-        {
-            Expr expr = (Expr)iter.next() ;
-            mergeExprList(exprList2, expr) ;
-        }
-        return exprList2 ;
-    }
-    
-    private static ExprList process(Expr expr)
-    {
-        ExprList exprList = new ExprList() ;
-        mergeExprList(exprList, expr) ;
-        return exprList ;
-    }
-    
-    
-    private static void mergeExprList(ExprList exprList, Expr expr)
-    {
-        // Explode &&-chain to exprlist.
-        while ( expr instanceof E_LogicalAnd )
-        {
-            E_LogicalAnd x = (E_LogicalAnd)expr ;
-            Expr left = x.getArg1() ;
-            Expr right = x.getArg2() ;
-            mergeExprList(exprList, left) ;
-            expr = right ;
-        }
-        // Drop through and add remaining
-        exprList.add(expr) ;
-    }
 }
     
 /*

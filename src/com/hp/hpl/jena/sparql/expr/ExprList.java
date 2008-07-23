@@ -94,6 +94,39 @@ public class ExprList
         ExprList exprs = (ExprList)other ;
         return expressions.equals(exprs.expressions) ;
     }
+    public static ExprList splitConjunction(ExprList exprList1)
+    {
+        ExprList exprList2 = new ExprList() ;
+        for ( Iterator iter = exprList1.iterator() ; iter.hasNext() ; )
+        {
+            Expr expr = (Expr)iter.next() ;
+            split(exprList2, expr) ;
+        }
+        return exprList2 ;
+    }
+    
+    private static ExprList splitConjunction(Expr expr)
+    {
+        ExprList exprList = new ExprList() ;
+        split(exprList, expr) ;
+        return exprList ;
+    }
+    
+    
+    private static void split(ExprList exprList, Expr expr)
+    {
+        // Explode &&-chain to exprlist.
+        while ( expr instanceof E_LogicalAnd )
+        {
+            E_LogicalAnd x = (E_LogicalAnd)expr ;
+            Expr left = x.getArg1() ;
+            Expr right = x.getArg2() ;
+            split(exprList, left) ;
+            expr = right ;
+        }
+        // Drop through and add remaining
+        exprList.add(expr) ;
+    }
 }
 
 /*

@@ -214,6 +214,7 @@ public class BuilderOp
 
             Op op = build(itemOp.getList()) ;
             ExprList exprList = BuilderExpr.buildExprOrExprList(itemExpr) ;
+            //exprList = ExprList.splitConjunction(exprList) ;
             return OpFilter.filter(exprList, op) ;
         }
     } ;

@@ -25,6 +25,7 @@ import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.Transform;
 import com.hp.hpl.jena.sparql.algebra.Transformer;
 import com.hp.hpl.jena.sparql.algebra.op.*;
+import com.hp.hpl.jena.sparql.algebra.opt.TransformFilterImprove;
 import com.hp.hpl.jena.sparql.algebra.opt.TransformFilterPlacement;
 import com.hp.hpl.jena.sparql.core.PathBlock;
 import com.hp.hpl.jena.sparql.core.Prologue;
@@ -72,6 +73,14 @@ public class Run
 //            System.out.println(query) ;
             System.exit(0) ;
         }
+        
+        Op op = SSE.parseOp("(filter (|| ?c (&& (+ 1 ?a) ?b)) (table unit))") ;
+        
+        Op op2 = Transformer.transform(new TransformFilterImprove(), op) ;
+        
+        System.out.println(op) ;
+        System.out.println(op2) ;
+        System.exit(0) ;
         
         
         runQParse() ;
