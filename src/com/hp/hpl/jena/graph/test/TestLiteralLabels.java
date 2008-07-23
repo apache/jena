@@ -1,11 +1,12 @@
 /*
  	(c) Copyright 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestLiteralLabels.java,v 1.7 2008-01-02 12:05:32 andy_seaborne Exp $
+ 	$Id: TestLiteralLabels.java,v 1.8 2008-07-23 08:47:28 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
 
+import com.hp.hpl.jena.datatypes.*;
 import com.hp.hpl.jena.graph.impl.LiteralLabel;
 
 import junit.framework.*;
@@ -48,6 +49,21 @@ public class TestLiteralLabels extends GraphTestBase
         LiteralLabel A = node( "'0123'http://www.w3.org/2001/XMLSchema#hexBinary" ).getLiteral();
         LiteralLabel B = node( "'0123'http://www.w3.org/2001/XMLSchema#hexBinary" ).getLiteral();
         assertEquals( A.hashCode(), B.hashCode() );
+        }
+    
+    public void testDatatypeIsEqualsNotCalledIfSecondOperandIsNotTyped()
+        {
+        RDFDatatype d = new BaseDatatype( "eh:/FakeDataType" ) 
+            {
+            public boolean isEqual( LiteralLabel A, LiteralLabel B ) 
+                { 
+                fail( "RDFDatatype::isEquals should not be called if B has no datatype" ); 
+                return false; 
+                }
+            };
+        LiteralLabel A = new LiteralLabel( "17", "", d );
+        LiteralLabel B = new LiteralLabel( "17", "", null );
+        assertFalse( A.sameValueAs( B ) );
         }
 
     // AFS

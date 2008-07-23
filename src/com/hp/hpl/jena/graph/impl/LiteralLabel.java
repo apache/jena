@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: LiteralLabel.java,v 1.33 2008-01-02 12:05:20 andy_seaborne Exp $
+  $Id: LiteralLabel.java,v 1.34 2008-07-23 08:47:17 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -361,7 +361,19 @@ final public class LiteralLabel {
 			}
 		} else {
 			// Typed literal
-			return dtype.isEqual(this, other);
+		    if (other.dtype == null)
+		        { // might be plain literal that we count as XSDString
+		        if (JenaParameters.enablePlainLiteralSameAsString && this.dtype.equals( XSDDatatype.XSDstring ))
+		            {
+		            return other.lang.equals( "" ) && lexicalForm.equals( other.lexicalForm );
+		            }
+		        else
+		            return false;
+		        }
+		    else
+		        return dtype.isEqual( this, other );
+//		    return dtype.isEqual( this, other );
+//			 return other.dtype == null ? false : dtype.isEqual(this, other);
 		}
 	}
 
