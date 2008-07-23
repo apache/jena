@@ -8,13 +8,33 @@ package com.hp.hpl.jena.sparql.util;
 
 import org.apache.commons.logging.LogFactory;
 
-/** Convenience logging for warn and fatal.  Classes don't need to import
+/** Convenience logging when it's just the odd log message.  Classes don't need to import
  *  the logging system, or have excessive pirvate static loggers for non-performance
  *  critical messages.
  */
 
 public class ALog
 {
+    static public void info(Object caller, String msg)
+    {
+        info(caller.getClass(), msg) ;
+    }
+
+    static public void info(Class cls, String msg)
+    {
+        LogFactory.getLog(cls).info(msg) ;
+    }
+
+    static public void info(Object caller, String msg, Throwable th)
+    {
+        info(caller.getClass(), msg, th) ;
+    }
+
+    static public void info(Class cls, String msg, Throwable th)
+    {
+        LogFactory.getLog(cls).warn(msg, th) ;
+    }
+
     static public void warn(Object caller, String msg)
     {
         warn(caller.getClass(), msg) ;

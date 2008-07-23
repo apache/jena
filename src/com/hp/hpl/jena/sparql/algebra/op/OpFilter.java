@@ -6,6 +6,8 @@
 
 package com.hp.hpl.jena.sparql.algebra.op;
 
+import java.util.Iterator;
+
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.OpVisitor;
 import com.hp.hpl.jena.sparql.algebra.Transform;
@@ -18,6 +20,7 @@ import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 public class OpFilter extends Op1
 {
     // Canonicalization turns "&&" into multiple expr lists items
+    // Migrate to a transformation
     private static boolean canonicalize = false ;
     ExprList expressions ;
     
@@ -30,7 +33,7 @@ public class OpFilter extends Op1
             return f ;
         }
         // Canonicalize
-        ExprList exprList = asExprList(expr) ;
+        ExprList exprList = process(expr) ;
         return new OpFilter(exprList, op) ;
     }
     
@@ -38,6 +41,7 @@ public class OpFilter extends Op1
     {
         if ( exprs.isEmpty() )
             return op ;
+        exprs = process(exprs) ;
         if ( op instanceof OpFilter )
         {
             OpFilter f = (OpFilter)op ;
@@ -45,10 +49,28 @@ public class OpFilter extends Op1
             return f ;
         }
         
-        return new OpFilter(exprs, op) ;
+        return filterDirect(exprs, op) ;
     }
 
-    private static ExprList asExprList(Expr expr)
+    public static Op filterDirect(ExprList exprs, Op op)
+    {
+        return new OpFilter(exprs, op) ; 
+    }
+    
+    private static ExprList process(ExprList exprList1)
+    {
+        if ( ! canonicalize )
+            return exprList1 ;
+        ExprList exprList2 = new ExprList() ;
+        for ( Iterator iter = exprList1.iterator() ; iter.hasNext() ; )
+        {
+            Expr expr = (Expr)iter.next() ;
+            mergeExprList(exprList2, expr) ;
+        }
+        return exprList2 ;
+    }
+    
+    private static ExprList process(Expr expr)
     {
         ExprList exprList = new ExprList() ;
         mergeExprList(exprList, expr) ;

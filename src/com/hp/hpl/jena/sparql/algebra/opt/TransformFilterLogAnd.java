@@ -24,23 +24,30 @@ public class TransformFilterLogAnd extends TransformCopy
     public Op transform(OpFilter opFilter, Op subOp)
     {
         ExprList exprList = opFilter.getExprs() ;
+        exprList = process(exprList) ;
+        // This creates an OpFilter without any additional processing.
+        return OpFilter.filterDirect(exprList, subOp) ;
+    }
+    
+
+    private static ExprList process(ExprList exprList1)
+    {
         ExprList exprList2 = new ExprList() ;
-        
-        for ( Iterator iter = exprList.iterator() ; iter.hasNext() ; )
+        for ( Iterator iter = exprList1.iterator() ; iter.hasNext() ; )
         {
             Expr expr = (Expr)iter.next() ;
             mergeExprList(exprList2, expr) ;
         }
-        
-        return OpFilter.filter(exprList2, subOp) ;
+        return exprList2 ;
     }
     
-    private static ExprList asExprList(Expr expr)
+    private static ExprList process(Expr expr)
     {
         ExprList exprList = new ExprList() ;
         mergeExprList(exprList, expr) ;
         return exprList ;
     }
+    
     
     private static void mergeExprList(ExprList exprList, Expr expr)
     {
