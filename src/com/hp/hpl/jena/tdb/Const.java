@@ -15,6 +15,8 @@ import java.io.Reader;
 import java.nio.ByteOrder;
 import java.util.Properties;
 
+import org.slf4j.LoggerFactory;
+
 import com.hp.hpl.jena.util.FileUtils;
 
 import com.hp.hpl.jena.sparql.util.Symbol;
@@ -22,6 +24,7 @@ import com.hp.hpl.jena.sparql.util.Symbol;
 import com.hp.hpl.jena.query.ARQ;
 
 import com.hp.hpl.jena.tdb.base.block.FileMode;
+import com.hp.hpl.jena.tdb.index.IndexType;
 import com.hp.hpl.jena.tdb.pgraph.NodeId;
 
 public class Const
@@ -97,7 +100,7 @@ public class Const
     }
     
     // --------
-    
+    // XXX
     // Tie to location but that means one instance per graph
     // More in the context !
     
@@ -117,8 +120,6 @@ public class Const
         int v = Integer.parseInt(x) ;
         return v ;
     }
-    
-
     
     private static Properties readPropertiesFile()
     {
@@ -162,6 +163,8 @@ public class Const
         return b ;
     }
     
+    // ---- File mode
+    
     private static FileMode fileMode = null ;
     public static FileMode fileMode()
     { 
@@ -200,6 +203,32 @@ public class Const
         }
         throw new TDBException("Unrecognized file mode (not one of 'default', 'direct' or 'mapped': "+x) ;
     }
+    
+    // ---- Index type
+    
+    public static final String indexTypeBTree          = "BTree" ;
+    public static final String indexTypeBPlusTree      = "BPlusTree" ;
+    public static final String defaultIndexType        = indexTypeBPlusTree ; 
+    
+    public final static IndexType indexType = getIndexType() ;
+    
+    public static IndexType getIndexType()
+    {
+        boolean defaultSetting = false ;
+        String x = TDB.getContext().getAsString(TDB.symIndexType) ;
+        if ( x == null )
+        {
+            defaultSetting = true ;
+            x = Const.defaultIndexType ;
+        }
+        IndexType iType = IndexType.get(x) ;
+        if ( !defaultSetting )
+            LoggerFactory.getLogger(IndexType.class).info("Index type: "+iType) ;
+        
+        return iType ;
+    }
+    
+    
 }
 
 /*

@@ -6,11 +6,7 @@
 
 package com.hp.hpl.jena.tdb.index;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.hp.hpl.jena.tdb.Const;
-import com.hp.hpl.jena.tdb.TDB;
 import com.hp.hpl.jena.tdb.TDBException;
 import com.hp.hpl.jena.tdb.base.file.Location;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
@@ -20,12 +16,7 @@ import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 
 public class IndexBuilder
 {
-    private static Logger log = LoggerFactory.getLogger(IndexBuilder.class) ;
-    
     // Migrate to be a general policy place for files.
-    final static String indexTypeBTree          = "BTree" ;
-    final static String indexTypeBPlusTree      = "BPlusTree" ;
-    final static String defaultIndexType        = indexTypeBTree ; // CHANGE ME!
     
     private static IndexBuilder builder         = chooseIndexBuilder() ;
     public static IndexBuilder get()            { return builder ; }
@@ -37,14 +28,12 @@ public class IndexBuilder
     
     public static IndexBuilder mem()
     { 
-        IndexType indexType = IndexType.get() ;
-        return createIndexBuilderMem(indexType) ;
+        return createIndexBuilderMem(Const.indexType) ;
     }
 
     private static synchronized IndexBuilder chooseIndexBuilder()
     {
-        IndexType indexType = IndexType.get() ;
-        return createIndexBuilder(indexType) ;
+        return createIndexBuilder(Const.indexType) ;
     }
     
     private static IndexBuilder createIndexBuilderMem(IndexType indexType)
@@ -122,41 +111,6 @@ public class IndexBuilder
     public RangeIndex newRangeIndex(Location location, RecordFactory factory, String name)
     {
         return builderRangeIndex.createRangeIndex(location, name, factory) ;
-    }
-    
-    enum IndexType
-    {
-        BTree 
-        { @Override public String getName() { return "BTree" ; } } ,
-        BPlusTree
-        { @Override public String getName() { return "BPlusTree" ; } } ,
-        ;
-        
-        abstract public String getName() ;
-
-        static IndexType get()
-        {
-            boolean defaultSetting = false ;
-            String x = TDB.getContext().getAsString(TDB.symIndexType) ;
-            if ( x == null )
-            {
-                defaultSetting = true ;
-                x = defaultIndexType ;
-            }
-            IndexType iType = get(x) ;
-            if ( !defaultSetting )
-                log.info("Index type: "+iType) ;
-            
-            return iType ;
-        }
-        
-        static IndexType get(String name)
-        {
-            if ( name.equalsIgnoreCase(indexTypeBTree) ) return BTree ;
-            if ( name.equalsIgnoreCase(indexTypeBPlusTree) ) return BPlusTree ;
-            return null ;
-        }
-        @Override public String toString() { return getName() ; }
     }
 }
 
