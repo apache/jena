@@ -4,46 +4,60 @@
  * [See end of file]
  */
 
-package dev;
+package com.hp.hpl.jena.sparql.algebra.opt;
 
+import java.util.Iterator;
 
+import com.hp.hpl.jena.sparql.algebra.Op;
+import com.hp.hpl.jena.sparql.algebra.TransformCopy;
+import com.hp.hpl.jena.sparql.algebra.op.OpFilter;
+import com.hp.hpl.jena.sparql.expr.E_LogicalAnd;
+import com.hp.hpl.jena.sparql.expr.Expr;
+import com.hp.hpl.jena.sparql.expr.ExprList;
 
-public class Dev
+/** Redo FILTER (A&&B) as FILTER(A) FILTER(B) via multiple elements of the exprList of the OpFilter */
+
+public class TransformFilterLogAnd extends TransformCopy
 {
-    // ** Quads and paths interaction (not interacting currently).
-    // TransformFilterLogAnd (And remove from OpFilter)
-
-    // 1 -- New "OpQuadPath = a node + TriplePattern"
-    // 2 -- A secondary transformation to convert from triples/graphs to quads  
-    //      Or modify SDB?  <<== ****
-    //
-    // Issue is that this is a "visit on the way down and change on the way up" process.
-    //   Could add a separate pre-call visitor to Transformer.
-    //   Or a specific to TransformCopy.
+    public TransformFilterLogAnd() {}
     
-    // Next:
-    // ++  Interactions between Filter Placement and Equality filters (or even combine?)
-    // +  (current) -- A kind of table (stack during evaluation?)
+    public Op transform(OpFilter opFilter, Op subOp)
+    {
+        ExprList exprList = opFilter.getExprs() ;
+        ExprList exprList2 = new ExprList() ;
+        
+        for ( Iterator iter = exprList.iterator() ; iter.hasNext() ; )
+        {
+            Expr expr = (Expr)iter.next() ;
+            mergeExprList(exprList2, expr) ;
+        }
+        
+        return OpFilter.filter(exprList2, subOp) ;
+    }
     
-    // [[
-    // Writing tables - too much done in OpTable
-    //   The reverse is in BuilderTable so use WriterTable.
-    // ]]
-    // TransformPathFlattern - leave in AlgebraGenerator for now.
+    private static ExprList asExprList(Expr expr)
+    {
+        ExprList exprList = new ExprList() ;
+        mergeExprList(exprList, expr) ;
+        return exprList ;
+    }
     
-    // Remove:
-    //   AlgebraGenerator: Path flattening -- compilePathBlock
-
-    /*
-     * Move PF to Transforms
-     * TransformRemoveLabels
-     * TransformReorderBGP
-     * TransformQuadization
-     *   - needs to work on the way down as well!
-     *     Could redo from (graph) down  
-     */
+    private static void mergeExprList(ExprList exprList, Expr expr)
+    {
+        // Explode &&-chain to exprlist.
+        while ( expr instanceof E_LogicalAnd )
+        {
+            E_LogicalAnd x = (E_LogicalAnd)expr ;
+            Expr left = x.getArg1() ;
+            Expr right = x.getArg2() ;
+            mergeExprList(exprList, left) ;
+            expr = right ;
+        }
+        // Drop through and add remaining
+        exprList.add(expr) ;
+    }
 }
-
+    
 /*
  * (c) Copyright 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.

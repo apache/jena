@@ -74,7 +74,7 @@ public class Run
         }
         
         
-        runQParseARQ() ;
+        runQParse() ;
         execQuery("D.ttl", "Q.arq") ;
         
         path() ; System.exit(0) ;
