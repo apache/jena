@@ -4,43 +4,80 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.algebra.opt;
+package dev;
+
+import java.util.Stack;
 
 import com.hp.hpl.jena.graph.Node;
 
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.OpVisitorBase;
 import com.hp.hpl.jena.sparql.algebra.TransformCopy;
+import com.hp.hpl.jena.sparql.algebra.Transformer;
+import com.hp.hpl.jena.sparql.algebra.op.OpBGP;
 import com.hp.hpl.jena.sparql.algebra.op.OpGraph;
+import com.hp.hpl.jena.sparql.algebra.op.OpPath;
+import com.hp.hpl.jena.sparql.algebra.op.OpQuadPattern;
 import com.hp.hpl.jena.sparql.core.Quad;
 
 public class Quadization extends TransformCopy
 {
-    // A pair - a visitor to track the current node in and out
+    // A pair - a visitor to track the current node in
     // A transformation to convert BGPs to Quads
+    // and reset the node on the way out.
     // And paths
     
-    public Quadization() { }
-    
-    
-    public class RecordGraph extends OpVisitorBase
+    private Quadization() { }
+    public static Op quadize(Op op)
     {
-        Node currentGraph = Quad.defaultGraphNode ;
+        // Wire the (pre)vistor to the transformer 
+        RecordGraph rg = new RecordGraph() ;
+        QuadGraph qg = new QuadGraph(rg) ;
+        return Transformer.transform(qg, op, rg) ;
+    }
+    
+    static class RecordGraph extends OpVisitorBase
+    {
+        Stack stack = new Stack() ;
+        RecordGraph() { stack.push(Quad.defaultGraphNode) ; }
+
         public void visit(OpGraph opGraph)
         {
-            //push()
-            currentGraph = opGraph.getNode() ;
+            stack.push(opGraph.getNode()) ;
         }
+        
+        public void unvisit(OpGraph opGraph)
+        {
+            stack.pop() ;
+        }
+        
+        Node getNode() { return (Node)stack.peek(); }
     }
     
-    public Op transform(OpGraph opGraph)
+    static class QuadGraph extends TransformCopy
     {
-        Node gn = opGraph.getNode() ;
-        // rewrite recursively down from here.  A bit inefficient in some very complex cases.
-        // Or transform copy has "start" as well as transform for the bottom up rewrite. 
-        return null ;
-    }
-    
+        private RecordGraph tracker ;
+
+        public QuadGraph(RecordGraph tracker) { this.tracker = tracker ; }
+        
+        public Op transform(OpGraph opGraph, Op subOp)
+        {
+            // On the way out, we reset the currentGraph
+            // and return the transformed subtree
+            tracker.unvisit(opGraph) ;
+            return subOp ;
+        }
+        
+        public Op transform(OpPath opPath)
+        {
+            return opPath;
+        }
+        
+        public Op transform(OpBGP opBGP)
+        {
+            return new OpQuadPattern(tracker.getNode(), opBGP.getPattern()) ;
+        }
+    }    
 }
 
 /*

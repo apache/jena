@@ -8,7 +8,6 @@ package dev;
 
 import java.util.Iterator;
 
-
 import arq.sparql;
 import arq.sse_query;
 
@@ -21,11 +20,11 @@ import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.shared.PrefixMapping;
 import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
 
+import com.hp.hpl.jena.sparql.algebra.Algebra;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.Transform;
 import com.hp.hpl.jena.sparql.algebra.Transformer;
-import com.hp.hpl.jena.sparql.algebra.op.*;
-import com.hp.hpl.jena.sparql.algebra.opt.TransformFilterImprove;
+import com.hp.hpl.jena.sparql.algebra.op.OpPath;
 import com.hp.hpl.jena.sparql.algebra.opt.TransformFilterPlacement;
 import com.hp.hpl.jena.sparql.core.PathBlock;
 import com.hp.hpl.jena.sparql.core.Prologue;
@@ -74,12 +73,17 @@ public class Run
             System.exit(0) ;
         }
         
-        Op op = SSE.parseOp("(filter (|| ?c (&& (+ 1 ?a) ?b)) (table unit))") ;
+        Query query = QueryFactory.create("SELECT ?g { ?s ?p ?o GRAPH ?g { GRAPH ?g2 { ?sg ?pg ?og } }}") ; 
+        Op op = Algebra.compile(query) ;
+        Op op3 = Algebra.compileQuad(query) ;
         
-        Op op2 = Transformer.transform(new TransformFilterImprove(), op) ;
+        //Op op = SSE.parseOp("(join (BGP (?s ?p ?o)) (graph ?g (BGP (<sg> ?gp ?go)) ))") ;
+        
+        Op op2 = Quadization.quadize(op) ;
         
         System.out.println(op) ;
         System.out.println(op2) ;
+        System.out.println(op3) ;
         System.exit(0) ;
         
         
