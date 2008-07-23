@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: LiteralLabel.java,v 1.34 2008-07-23 08:47:17 chris-dollin Exp $
+  $Id: LiteralLabel.java,v 1.35 2008-07-23 09:34:13 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -336,46 +336,64 @@ final public class LiteralLabel {
      	Answer true iff this literal represents the same (abstract) value as
         the other one.
     */
-	public boolean sameValueAs(LiteralLabel other) {
+	public boolean sameValueAs( LiteralLabel other ) {
 		if (other == null)
 			return false;
-		if (!wellformed || !other.wellformed) {
-			if (!other.wellformed) {
-				// Need to support this comparison in order for the WG tests on ill formed
-				// literals to be testable using isIsomorphic to
-				return lexicalForm.equals(other.lexicalForm)
-					&& lang.equalsIgnoreCase(other.lang);
-			} else {
-				return false;
-			}
-		}
-		if (dtype == null) {
-			// Plain literal
-			if (other.dtype == null
-				|| (JenaParameters.enablePlainLiteralSameAsString
-					&& other.dtype.equals(XSDDatatype.XSDstring))) {
-				return lexicalForm.equals(other.lexicalForm)
-					&& lang.equalsIgnoreCase(other.lang);
-			} else {
-				return false;
-			}
-		} else {
-			// Typed literal
-		    if (other.dtype == null)
-		        { // might be plain literal that we count as XSDString
-		        if (JenaParameters.enablePlainLiteralSameAsString && this.dtype.equals( XSDDatatype.XSDstring ))
-		            {
-		            return other.lang.equals( "" ) && lexicalForm.equals( other.lexicalForm );
-		            }
-		        else
-		            return false;
-		        }
-		    else
-		        return dtype.isEqual( this, other );
-//		    return dtype.isEqual( this, other );
-//			 return other.dtype == null ? false : dtype.isEqual(this, other);
-		}
+		if (!wellformed || !other.wellformed) 
+			return areIllFormedLiteralsSameValueAs( other );
+		return dtype == null 
+		    ? isPlainLiteralSameValueAsOther( other ) 
+		    : isTypedLiteralSameValueAsOther( other );
 	}
+
+	/**
+	    Need to support comparison of ill-formed literals in order for the WG 
+	    tests on ill formed literals to be testable using isIsomorphic to. "same
+	    value as" on ill-formed literals is defined to mean "same lexical form
+	    and same [ignoring case] language code".
+	<p>
+	    precondition: at least one of <i>this</i> and <i>other</i> is
+	    ill-formed.
+	*/
+    private boolean areIllFormedLiteralsSameValueAs( LiteralLabel other )
+        { return  !other.wellformed && sameByFormAndLanguage( other ); }
+
+    /**
+        Answer true iff <i>this</i> and <i>other</i> have the same lexical
+        form and [ignoring case] language code. [Note: both typed literals
+        and plain literals have the empty string as language code.]
+    */
+    private boolean sameByFormAndLanguage( LiteralLabel other )
+        {
+        return 
+            lexicalForm.equals( other.lexicalForm ) 
+            && lang.equalsIgnoreCase( other.lang );
+        }
+
+    private boolean isTypedLiteralSameValueAsOther( LiteralLabel other )
+        {
+        return other.dtype == null
+            ? looksLikePlainString( this ) && sameByFormAndLanguage( other )
+            : dtype.isEqual( this, other );
+        }
+
+    private boolean isPlainLiteralSameValueAsOther( LiteralLabel other )
+        {
+        return other.dtype == null || looksLikePlainString( other )
+            ? sameByFormAndLanguage( other )
+            : false;
+        }
+
+    /**
+        Answer true iff <i>L</i> has type XSD string and we're treating plain
+        literals and xsd string literals as "the same".
+    */
+    private boolean looksLikePlainString( LiteralLabel L )
+        {
+        return 
+            L.dtype.equals( XSDDatatype.XSDstring )
+            && JenaParameters.enablePlainLiteralSameAsString;
+        }
 
 	/** 
      	Answer the hashcode of this literal, derived from its value if it's
