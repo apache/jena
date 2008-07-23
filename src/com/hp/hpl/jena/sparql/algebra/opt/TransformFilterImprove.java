@@ -15,11 +15,21 @@ import com.hp.hpl.jena.sparql.expr.E_LogicalAnd;
 import com.hp.hpl.jena.sparql.expr.Expr;
 import com.hp.hpl.jena.sparql.expr.ExprList;
 
-/** Redo FILTER (A&&B) as FILTER(A) FILTER(B) via multiple elements of the exprList of the OpFilter */
+/** Imporvements to filters that do not chnage the rest of the tree 
+ * (so, fo rexample, not filter replacement or equality/assignment
+ *  which both do change the sub opof the filter).  
+ * 
+ * Currently:
+ * 1/ Redo FILTER (A&&B) as FILTER(A) FILTER(B) via multiple elements of the exprList of the OpFilter
+ * 
+ * Filter placment and equality/assignment interact.
+ * Maybe need one place for all filter-related stuff, in which case this is becomes a library of code,
+ * hence the statics for the real work. 
+ */
 
-public class TransformFilterLogAnd extends TransformCopy
+public class TransformFilterImprove extends TransformCopy
 {
-    public TransformFilterLogAnd() {}
+    public TransformFilterImprove() {}
     
     public Op transform(OpFilter opFilter, Op subOp)
     {
