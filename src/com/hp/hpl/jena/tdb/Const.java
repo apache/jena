@@ -210,10 +210,14 @@ public class Const
     public static final String indexTypeBPlusTree      = "BPlusTree" ;
     public static final String defaultIndexType        = indexTypeBPlusTree ; 
     
-    public final static IndexType indexType = getIndexType() ;
+    // Delay until needed so application can set symIndexType
+    private static IndexType indexType = null ;
     
     public static IndexType getIndexType()
     {
+        if ( indexType != null )
+            return indexType ;
+        
         boolean defaultSetting = false ;
         String x = TDB.getContext().getAsString(TDB.symIndexType) ;
         if ( x == null )
@@ -225,6 +229,7 @@ public class Const
         if ( !defaultSetting )
             LoggerFactory.getLogger(IndexType.class).info("Index type: "+iType) ;
         
+        indexType = iType ;
         return iType ;
     }
     

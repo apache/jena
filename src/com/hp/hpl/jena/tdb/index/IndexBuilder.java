@@ -28,12 +28,12 @@ public class IndexBuilder
     
     public static IndexBuilder mem()
     { 
-        return createIndexBuilderMem(Const.indexType) ;
+        return createIndexBuilderMem(Const.getIndexType()) ;
     }
 
     private static synchronized IndexBuilder chooseIndexBuilder()
     {
-        return createIndexBuilder(Const.indexType) ;
+        return createIndexBuilder(Const.getIndexType()) ;
     }
     
     private static IndexBuilder createIndexBuilderMem(IndexType indexType)
