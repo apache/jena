@@ -318,16 +318,16 @@ public class AlgebraGenerator
         return new OpBGP(pattern) ;
     }
     
-    protected Op compilePathBlock(PathBlock pattern)
+    protected Op compilePathBlock(PathBlock pathBlock)
     {
         // Step 1 : flatten down to triples where possible. 
-        pattern = pathCompiler.reduce(pattern) ;
+        pathBlock = pathCompiler.reduce(pathBlock) ;
         
         //Step 2 : gather into OpBGP(BasicPatterns) or OpPath
         BasicPattern bp = null ;
         Op op = null ;
         
-        for ( Iterator iter = pattern.iterator() ; iter.hasNext() ; )
+        for ( Iterator iter = pathBlock.iterator() ; iter.hasNext() ; )
         {
             TriplePath obj = (TriplePath)iter.next();
             if ( obj.isTriple() )

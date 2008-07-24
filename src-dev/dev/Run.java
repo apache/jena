@@ -79,7 +79,8 @@ public class Run
         		"{ ?s ?p ?o ",
         		"  GRAPH ?g {",
         		"    GRAPH ?g2",
-        		"    { ?sg :q/:p* ?og }",
+        		//"    { ?sg :q/:p* ?og }",
+                "    { ?sg :q/:p ?og }",
         		"   }",
         		"}"
         }) ;
