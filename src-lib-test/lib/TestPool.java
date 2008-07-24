@@ -6,23 +6,13 @@
 
 package lib;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import org.junit.Test;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
-    TestAlg.class,
-    TestBitsLong.class,
-    TestBitsInt.class,
-    TestBytes.class,
-    TestListUtils.class,
-    TestSetUtils.class,
-    TestPool.class
-} )
-
-public class TS_Lib
+public class TestPool
 {
-
+    @Test public void pool_01()
+    { Pool<Integer, String> pool = new Pool<Integer, String>(2) ; }
+    
 }
 
 /*

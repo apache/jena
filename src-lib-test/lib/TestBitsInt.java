@@ -204,7 +204,7 @@ public class TestBitsInt extends BaseTest
     @Test public void testSet8()
     {
         int v = 0 ;
-        v = BitsInt.set(v, 0, 64) ;
+        v = BitsInt.set(v, 0, 32) ;
         check(-1, v) ;
     }
     
