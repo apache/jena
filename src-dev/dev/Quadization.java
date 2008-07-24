@@ -70,7 +70,13 @@ public class Quadization extends TransformCopy
         
         public Op transform(OpPath opPath)
         {
-            return opPath;
+            // Put the graph back round it
+            // ?? inc default graph node.
+            Node gn = tracker.getNode() ;
+            if ( gn.equals(Quad.defaultGraphNode ) )
+                return opPath ; 
+            
+            return new OpGraph(gn , opPath) ;
         }
         
         public Op transform(OpBGP opBGP)

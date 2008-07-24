@@ -73,7 +73,19 @@ public class Run
             System.exit(0) ;
         }
         
-        Query query = QueryFactory.create("SELECT ?g { ?s ?p ?o GRAPH ?g { GRAPH ?g2 { ?sg ?pg ?og } }}") ; 
+        String qstr = StringUtils.join("\n", new String[]{
+                "PREFIX : <http://example/>\n",
+        		"SELECT ?g",
+        		"{ ?s ?p ?o ",
+        		"  GRAPH ?g {",
+        		"    GRAPH ?g2",
+        		"    { ?sg :q/:p* ?og }",
+        		"   }",
+        		"}"
+        }) ;
+            
+        
+        Query query = QueryFactory.create(qstr, Syntax.syntaxARQ) ;
         Op op = Algebra.compile(query) ;
         Op op3 = Algebra.compileQuad(query) ;
         
@@ -81,8 +93,11 @@ public class Run
         
         Op op2 = Quadization.quadize(op) ;
         
+        System.out.println("---- Original") ;
         System.out.println(op) ;
+        System.out.println("---- Quadization") ;
         System.out.println(op2) ;
+        System.out.println("---- Old quad translation") ;
         System.out.println(op3) ;
         System.exit(0) ;
         
