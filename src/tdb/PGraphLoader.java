@@ -36,8 +36,9 @@ public class PGraphLoader
     private PGraphBase graph ;
     private boolean showProgress ;
     
-    private boolean doInParallel ;
-    private boolean doIncremental ;
+    private boolean doInParallel  = false ;
+    private boolean doIncremental = false ;
+    private boolean doInterleaved = false ;
 
     private TripleIndex triplesSPO ;
     private TripleIndex triplesPOS ;
@@ -162,8 +163,10 @@ public class PGraphLoader
         
         if ( doInParallel )
             createSecondaryIndexesParallel(printTiming) ;
-        else
+        else if ( doInterleaved )
             createSecondaryIndexesInterleaved(printTiming) ;
+        else
+            createSecondaryIndexesSequential(printTiming) ;
     }
     
     private void createSecondaryIndexesParallel(boolean printTiming)
@@ -216,6 +219,7 @@ public class PGraphLoader
         return builder ;
     }
 
+    // Create each secondary indexes, doing one at a time.
     private void createSecondaryIndexesSequential(boolean printTiming)
     {
         if ( triplesPOS == null && triplesOSP == null )
@@ -250,6 +254,8 @@ public class PGraphLoader
 
     }
 
+    // Do as one pass over the SPO index, creating both othe rindexes at the same time.
+    // Can be hugely costly in system resources.
     private void createSecondaryIndexesInterleaved(boolean printTiming)
     {
         if ( triplesPOS == null && triplesOSP == null )

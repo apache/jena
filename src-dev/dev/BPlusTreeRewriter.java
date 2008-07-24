@@ -26,7 +26,8 @@ public class BPlusTreeRewriter
     
     public BPlusTreeRewriter(String filename)
     {
-        blkMgr = BlockMgrFactory.createFile(filename, Const.BlockSize) ;
+        // No point caching.
+        blkMgr = BlockMgrFactory.createStdFileNoCache(filename, Const.BlockSize) ;
         recordPageMgr = new RecordBufferPageMgr(f, blkMgr) ;
     }
     
@@ -52,7 +53,7 @@ public class BPlusTreeRewriter
             // Check split is the high of lower.
             Record r = currentPage.getRecordBuffer().getHigh() ;
             Record k = f.createKeyOnly(r) ;
-            System.out.printf("Split = %s\n", k) ;
+            //System.out.printf("Split = %s\n", k) ;
             flush(id) ;
         }
         // Now get new space

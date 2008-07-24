@@ -44,6 +44,13 @@ public class BlockMgrFactory
         blockMgr = new BlockMgrCache(Const.BlockReadCacheSize, Const.BlockWriteCacheSize, blockMgr) ;
         return blockMgr ;
     }
+    
+    /** Create a Block Manager using direct access */
+    public static BlockMgr createStdFileNoCache(String filename, int blockSize)
+    {
+        BlockMgr blockMgr = new BlockMgrDirect(filename, blockSize) ;
+        return blockMgr ;
+    }
 }
 
 /*
