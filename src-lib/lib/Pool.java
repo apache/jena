@@ -23,7 +23,9 @@ public class Pool<Key, T>
 {
     private static Logger log = LoggerFactory.getLogger(Pool.class) ;
     
-    // SoftReference<T>?
+    // SoftReference<T>? and then app has a hard reference when using.
+    // Probably overkill.
+    // See TestPool
     private int max ;
     private int min ;
     CacheLRU<Key, PoolEntry<T>> objects ;
