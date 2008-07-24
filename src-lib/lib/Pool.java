@@ -6,10 +6,23 @@
 
 package lib;
 
-/** A cache.  But we already use that name (and this is a replacement for that) */ 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+/** A cache.  But we already use that name (and this is a replacement for that).
+ *  This class provides a cache of objects that can be retrieved for shared (read)
+ *  use or for exclusive (write) use.  It assumes the application will not make
+ *  conflicting demands (e.g. exclusive of a currently multiply shared object).
+ *  
+ *   This class does not control the making of objects.
+ * 
+ * @author Andy Seaborne
+ */
 // Rename later.
 public class Pool<Key, T>
 {
+    private static Logger log = LoggerFactory.getLogger(Pool.class) ;
+    
     // SoftReference<T>?
     private int max ;
     private int min ;
@@ -30,6 +43,13 @@ public class Pool<Key, T>
         cacheHits = 0 ;
         cacheMisses = 0 ;
     }
+
+    synchronized
+    public boolean contains(Key key)
+    {
+        return objects.containsKey(key) ;
+    }
+
     
     synchronized
     public T getObject(Key key, boolean exclusive)
@@ -44,7 +64,10 @@ public class Pool<Key, T>
         if ( exclusive )
         {
             if ( entry.refCount > 0 )
-                ; // Problems
+            {
+                log.error("Attempt to get exclusive access when the object is already being shared: "+key) ;
+                throw new CacheException("Failed to get exclusive access") ;
+            }
             entry.refCount = -1 ;
             cacheHits++ ;
             return entry.thing ; 
@@ -52,11 +75,44 @@ public class Pool<Key, T>
         else
         {
             if ( entry.refCount < 0 )
-                ;// Problems
+            {
+                log.error("Attempt to get shared access when the object is already exclusively allocated: "+key) ;
+                throw new CacheException("Failed to get shared access") ;
+            }
             entry.refCount++ ;
             cacheHits++ ;
             return entry.thing ;
         }
+    }
+    
+    static class CacheException extends RuntimeException
+    { CacheException(String msg) { super(msg) ; } }
+    
+    /** Turn a single-shared object into an exclusively locked object */ 
+    synchronized
+    public void promote(Key key)
+    {
+        PoolEntry<T> entry = objects.get(key) ;
+        if ( entry == null )
+            ; // Problems
+        if ( entry.refCount < 0 )
+        {
+            log.error("Attempt to promote object that is already exclusively allocated: "+key) ;
+            throw new CacheException("Failed to promote") ;
+        }
+        else if ( entry.refCount == 0 )
+        {
+            log.error("Attempt to promote object that is not allocated: "+key) ;
+            throw new CacheException("Failed to promote") ;
+        }
+        else if ( entry.refCount > 1 )
+        {
+            log.error("Attempt to promote object that is multiply shared: "+key) ;
+            throw new CacheException("Failed to promote") ;
+        }
+
+        // OK!  Lock it.
+        entry.refCount = -1 ;
     }
     
     synchronized
@@ -64,8 +120,10 @@ public class Pool<Key, T>
     {
         PoolEntry<T> entry = objects.get(key) ;
         if ( entry == null )
+        {
+            log.warn("Object returned that is not allocated: "+key) ;
             return ;
-        
+        }        
         if ( entry.refCount < 0 )
         {
             entry.refCount = 0 ;
@@ -74,7 +132,8 @@ public class Pool<Key, T>
         
         entry.refCount -- ;
         if ( entry.refCount == 0 )
-            ; //??
+        {
+        }
     }
     
     synchronized
@@ -101,6 +160,18 @@ public class Pool<Key, T>
             ; // Problems
         objects.remove(key) ;
         cacheEntries-- ;
+    }
+    
+    
+    synchronized
+    public void removeAll()
+    {
+        objects.clear() ;
+    }
+    
+    private void warn(String message)
+    {
+        
     }
     
     static class Handler<Key, T> implements ActionKeyValue<Key, PoolEntry<T>>

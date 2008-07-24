@@ -7,6 +7,7 @@
 package dev;
 
 import lib.FileOps;
+import lib.Pool;
 
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.query.Query;
@@ -45,6 +46,8 @@ public class Run
     
     public static void main(String ... args)
     {
+        cache2() ;
+        
         readBPlusTreeAll() ;
         
         //tdbquery("dataset.ttl", "SELECT * { ?s ?p ?o }") ;
@@ -56,6 +59,24 @@ public class Run
         
     }
     
+    private static void cache2()
+    {
+        Pool<Integer, String> pool = new Pool<Integer, String>(2) ;
+        pool.putObject(1, "X1") ;
+        pool.putObject(2, "X2") ;
+        pool.putObject(3, "X3") ;
+        
+        System.out.println(pool.contains(1)) ;
+        System.out.println(pool.contains(2)) ;
+        
+        System.out.println(pool.getObject(3, false)) ;
+        System.out.println(pool.getObject(3, false)) ;
+        System.out.println(pool.getObject(3, true)) ;
+        
+        
+        System.exit(0) ;
+    }
+
     private static void readBPlusTreeAll()
     {
         divider() ;
