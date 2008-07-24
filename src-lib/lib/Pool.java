@@ -10,9 +10,15 @@ package lib;
 // Rename later.
 public class Pool<Key, T>
 {
+    // SoftReference<T>?
     private int max ;
     private int min ;
     CacheLRU<Key, PoolEntry<T>> objects ;
+    
+    // Statistics
+    private long cacheEntries ;
+    private long cacheHits ;
+    private long cacheMisses ; 
     
     public Pool(int num)            { this(0, num) ; }
     private Pool(int min, int max)
@@ -20,22 +26,27 @@ public class Pool<Key, T>
         this.min = min ;
         this.max = max ;
         objects = new CacheLRU<Key, PoolEntry<T>>(max) ;
+        cacheEntries = 0 ;
+        cacheHits = 0 ;
+        cacheMisses = 0 ;
     }
-    
-    // Is it get-once?  Reference counting?
-    // Is it out-of-the-cache (and so unavailable to anyone else)?
-    
-    // Exclusive, Shareable.
     
     synchronized
     public T getObject(Key key, boolean exclusive)
     { 
         PoolEntry<T> entry = objects.get(key) ;
+        if ( entry == null )
+        {
+            cacheMisses++ ;
+            return null ;
+        }
+        
         if ( exclusive )
         {
             if ( entry.refCount > 0 )
                 ; // Problems
             entry.refCount = -1 ;
+            cacheHits++ ;
             return entry.thing ; 
         }
         else
@@ -43,15 +54,18 @@ public class Pool<Key, T>
             if ( entry.refCount < 0 )
                 ;// Problems
             entry.refCount++ ;
+            cacheHits++ ;
             return entry.thing ;
         }
-
     }
-        
+    
     synchronized
-    public void returnObject(Key key, T t)
+    public void returnObject(Key key)
     {
         PoolEntry<T> entry = objects.get(key) ;
+        if ( entry == null )
+            return ;
+        
         if ( entry.refCount < 0 )
         {
             entry.refCount = 0 ;
@@ -64,12 +78,29 @@ public class Pool<Key, T>
     }
     
     synchronized
-    public void removeObject(Key key, T t)
+    public void putObject(Key key, T t)
     {
         PoolEntry<T> entry = objects.get(key) ;
+        if ( entry != null )
+        {
+            if ( entry.thing.equals(t) )
+                ; //WARN
+        }
+        cacheEntries++ ;
+        objects.put(key, new PoolEntry<T>(t)) ;
+    }
+        
+    synchronized
+    public void removeObject(Key key)
+    {
+        PoolEntry<T> entry = objects.get(key) ;
+        if ( entry == null )
+            return ;
+        
         if ( entry.refCount != 0 )
             ; // Problems
         objects.remove(key) ;
+        cacheEntries-- ;
     }
     
     static class Handler<Key, T> implements ActionKeyValue<Key, PoolEntry<T>>
@@ -84,15 +115,16 @@ public class Pool<Key, T>
         }
         
     }
-    
+
+    // Hmm - bet there is an existing class to do all this. 
     static class PoolEntry<T>
     {
         // Ref count = -1 ==> exclusive lock.
         int refCount = 0 ;
-        enum Status { FREE, ALLOCATED, INVALID } ;
-        Status status = Status.INVALID ;
+//        enum Status { FREE, ALLOCATED, INVALID } ;
+//        Status status = Status.INVALID ;
         T thing ;
-        
+        PoolEntry(T thing) { this.thing = thing ; } 
     }
     
 }
