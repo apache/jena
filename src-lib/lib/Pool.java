@@ -6,25 +6,89 @@
 
 package lib;
 
-/** A cache.  */ 
+/** A cache.  But we already use that name (and this is a replacement for that) */ 
 // Rename later.
 public class Pool<Key, T>
 {
     private int max ;
     private int min ;
+    CacheLRU<Key, PoolEntry<T>> objects ;
     
     public Pool(int num)            { this(0, num) ; }
-    public Pool(int min, int max)   { this.min = min ; this.max = max ; }
+    private Pool(int min, int max)
+    { 
+        this.min = min ;
+        this.max = max ;
+        objects = new CacheLRU<Key, PoolEntry<T>>(max) ;
+    }
     
     // Is it get-once?  Reference counting?
     // Is it out-of-the-cache (and so unavailable to anyone else)?
     
-    public T getObject(Key key) { return null ; }
-    public void returnObject(Key key, T t) { ; }
-    public T removeObject(Key key, T t) { return null ; }
+    // Exclusive, Shareable.
     
-    static class PoolEntry<Key, T>
+    synchronized
+    public T getObject(Key key, boolean exclusive)
+    { 
+        PoolEntry<T> entry = objects.get(key) ;
+        if ( exclusive )
+        {
+            if ( entry.refCount > 0 )
+                ; // Problems
+            entry.refCount = -1 ;
+            return entry.thing ; 
+        }
+        else
+        {
+            if ( entry.refCount < 0 )
+                ;// Problems
+            entry.refCount++ ;
+            return entry.thing ;
+        }
+
+    }
+        
+    synchronized
+    public void returnObject(Key key, T t)
     {
+        PoolEntry<T> entry = objects.get(key) ;
+        if ( entry.refCount < 0 )
+        {
+            entry.refCount = 0 ;
+            return ;
+        }
+        
+        entry.refCount -- ;
+        if ( entry.refCount == 0 )
+            ; //??
+    }
+    
+    synchronized
+    public void removeObject(Key key, T t)
+    {
+        PoolEntry<T> entry = objects.get(key) ;
+        if ( entry.refCount != 0 )
+            ; // Problems
+        objects.remove(key) ;
+    }
+    
+    static class Handler<Key, T> implements ActionKeyValue<Key, PoolEntry<T>>
+    {
+
+        @Override
+        public void apply(Key key, PoolEntry<T> entry)
+        {
+            if ( entry.refCount != 0 )
+                ;
+            entry.refCount = 0 ;
+        }
+        
+    }
+    
+    static class PoolEntry<T>
+    {
+        // Ref count = -1 ==> exclusive lock.
+        int refCount = 0 ;
         enum Status { FREE, ALLOCATED, INVALID } ;
         Status status = Status.INVALID ;
         T thing ;
