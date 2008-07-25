@@ -20,7 +20,7 @@ import com.hp.hpl.jena.shared.Lock;
 import com.hp.hpl.jena.shared.LockMRSW;
 import com.hp.hpl.jena.sparql.core.DatasetGraph;
 
-
+/** A graph-level dataset for SDB - triggers SDB SQL processing when used in a query */
 public class DatasetStoreGraph implements DatasetGraph
 {
     Store store ;

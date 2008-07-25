@@ -16,7 +16,10 @@ import static sdb.SDBCmd.sparql;
 import java.sql.Connection;
 import java.util.Iterator;
 
+import javax.sql.DataSource;
+
 import org.apache.commons.dbcp.ConnectionFactory;
+import org.apache.commons.dbcp.DataSourceConnectionFactory;
 import org.apache.commons.dbcp.DriverManagerConnectionFactory;
 import org.apache.commons.dbcp.PoolableConnectionFactory;
 import org.apache.commons.dbcp.PoolingDataSource;
@@ -71,7 +74,13 @@ public class RunSDB
          *  Connection  getConnection(String username, String password) 
          */
         ConnectionFactory connFactory =  new DriverManagerConnectionFactory("jdbc:", "user", "password") ;
-        ObjectPool connectionPool = new GenericObjectPool(null);
+        if ( false )
+        {
+            DataSource ds = null ;
+            connFactory = new DataSourceConnectionFactory(ds) ;
+        }
+        
+        ObjectPool connectionPool = new GenericObjectPool(null, 10);
         PoolableConnectionFactory pcf = new PoolableConnectionFactory(connFactory,
                                                                       connectionPool,
                                                                       null,

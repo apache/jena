@@ -9,6 +9,8 @@ package com.hp.hpl.jena.sdb.sql;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+import javax.sql.DataSource;
+
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.sdb.SDBException;
 
@@ -48,6 +50,13 @@ public class SDBConnectionFactory
     public static SDBConnection create(Connection sqlConnection)
     {
         return new SDBConnection(sqlConnection) ;
+    }
+    
+    public static DataSource createDataSource(String configFile)
+    {
+        // XXX Use this through out?
+        SDBConnectionDesc desc = SDBConnectionDesc.read(configFile) ;
+        return new DataSourceSDB(desc) ;
     }
     
     // --------

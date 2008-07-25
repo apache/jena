@@ -1,31 +1,31 @@
 /*
- * (c) Copyright 2006, 2007, 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.core;
+package dev;
 
-import com.hp.hpl.jena.sdb.SDB;
-import com.hp.hpl.jena.sdb.SDBException;
-import com.hp.hpl.jena.sparql.util.Symbol;
-
-
-public class SDBConstants
+public class Dev
 {
-    // Not "Integer.MIN_VALUE" which is meaningful to MySQL.
-    public static final int jdbcFetchSizeOff            = -1 ;
-
-    public static Symbol allocSymbol(String shortName)
-    { 
-        if ( shortName.matches("^[a-zA-Z]*:") )
-            throw new SDBException("Symbol short name begins URI scheme") ;
-        return Symbol.create(SDB.symbolSpace+shortName) ;
-    }
+    /* DataSourceSDB
+     * SDBConnection??
+     * 
+     * Pooling with DBCP - rtlkationship to Joseki?
+     * Alternatives:
+     * 1/ One "Virtual connection" that pools
+     *    QC.exec SQL => getConnection from pool
+     *     
+     * 2/ Have an addition "pool" assembler used in Joseki
+     *    and Joseki does the "get connection, "make Store" each time.
+     *
+     * Joseki needs a container (for DatasetDesc)
+     * SDBConnection.getSqlConnection - potential pool point.
+     */
 }
 
 /*
- * (c) Copyright 2006, 2007, 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

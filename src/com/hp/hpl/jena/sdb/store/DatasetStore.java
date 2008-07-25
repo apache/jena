@@ -15,7 +15,6 @@ import com.hp.hpl.jena.query.Dataset;
 import com.hp.hpl.jena.sdb.SDB;
 import com.hp.hpl.jena.sdb.Store;
 
-/** Dataset around a Store - triggers SDB SQL processing when used in a query */
 public class DatasetStore extends DataSourceImpl
 {
     static { SDB.init() ; }

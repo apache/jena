@@ -44,14 +44,6 @@ public class SDBConnection
     TransactionHandler transactionHandler = null ;
     String label = gen.next() ;
     
-    // ??(here or TransactionHandler) counting transactions.
-    //   record transaction state
-    //   start transation on 0 -> 1
-    //   commit transaction on 1 -> 0
-    //   abort on any exception
-    // Hard and soft forms of executeInTransaction 
-    // begin/commit/abort call-throughs
-    
     // Defaults 
     public static boolean logSQLExceptions = true ;
     public static boolean logSQLStatements = false ;
@@ -90,7 +82,7 @@ public class SDBConnection
     public TransactionHandler getTransactionHandler() { return transactionHandler ; } 
     
     public ResultSetJDBC execQuery(String sqlString) throws SQLException
-    { return execQuery(sqlString, -1) ; }
+    { return execQuery(sqlString, SDBConstants.jdbcFetchSizeOff) ; }
     
     public ResultSetJDBC execQuery(String sqlString, int fetchSize) throws SQLException
     {
@@ -131,7 +123,7 @@ public class SDBConnection
     public Object executeSQL(final SQLCommand c)
     {
         try {
-            return c.execute(sqlConnection) ;
+            return c.execute(getSqlConnection()) ;
         } catch (SQLException ex)
         { 
             exception("SQL", ex) ;
@@ -243,14 +235,16 @@ public class SDBConnection
     
     public Connection getSqlConnection()
     {
+        // Potential pool point.
         return sqlConnection ;
     }
     
     public void close()
     {
+        Connection connection = getSqlConnection() ;
         try {
-            if ( sqlConnection != null && ! sqlConnection.isClosed() )
-                sqlConnection.close() ;
+            if ( connection != null && ! connection.isClosed() )
+                connection.close() ;
         } catch (SQLException ex){
             log.warn("Problems closing SQL connection", ex) ;
         }
