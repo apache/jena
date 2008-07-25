@@ -66,6 +66,10 @@ public class RunSDB
     public static void main(String ... argv) 
     {
         // DataSource?
+        /*
+         *  Connection  getConnection()
+         *  Connection  getConnection(String username, String password) 
+         */
         ConnectionFactory connFactory =  new DriverManagerConnectionFactory("jdbc:", "user", "password") ;
         ObjectPool connectionPool = new GenericObjectPool(null);
         PoolableConnectionFactory pcf = new PoolableConnectionFactory(connFactory,
