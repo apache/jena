@@ -1,11 +1,28 @@
+## PREFIX : <http://www.utdallas.edu/~farhan.husain/test_data/>
+## 
+## SELECT  ?s ?a ?h ?w ?n ?g ?c 
+## WHERE {
+##                 ?s :gender ?g . #(Selectivity: 0.0083 (considering filter))
+##                 ?s :country ?c . #(Selectivity: 0.0083 (considering filter))
+##                 ?s :name ?n . #(Selectivity: 0.0083 (considering filter))
+##                 ?s :age  ?a . #(Selectivity: 0.1666)
+##                 ?s :height ?h . #(Selectivity: 0. 1666)
+##                 ?s :weight ?w #(Selectivity: 0. 1666)
+##                 FILTER(?a < 50 && ?h < 50 )
+##     #                FILTER (?h < 50 )
+##                 FILTER (?w < 50)
+## }
+
+
 PREFIX : <http://example/>
 PREFIX apf:     <http://jena.hpl.hp.com/ARQ/property#>
 
 SELECT  *
 WHERE { 
-  ?s :p ?v .
-  ?s :q ?q .
-  ?s apf:splitIRI (?ns ?ln)
-#   FILTER(?v > 4)
-#    FILTER(?q = <x>)
+  ?s :p1 ?a .
+  ?s :p2 ?b .
+  ?s :p3 ?c .
+    FILTER(?a < 10 && ?b < 20 )
+#    FILTER(?b < 20 )
+    FILTER(?c < 30 )
 }
