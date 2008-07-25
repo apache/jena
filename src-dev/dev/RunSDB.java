@@ -16,6 +16,12 @@ import static sdb.SDBCmd.sparql;
 import java.sql.Connection;
 import java.util.Iterator;
 
+import org.apache.commons.dbcp.ConnectionFactory;
+import org.apache.commons.dbcp.DriverManagerConnectionFactory;
+import org.apache.commons.dbcp.PoolableConnectionFactory;
+import org.apache.commons.dbcp.PoolingDataSource;
+import org.apache.commons.pool.ObjectPool;
+import org.apache.commons.pool.impl.GenericObjectPool;
 import sdb.SDBCmd;
 import arq.cmd.CmdUtils;
 
@@ -59,9 +65,20 @@ public class RunSDB
     @SuppressWarnings("unchecked")
     public static void main(String ... argv) 
     {
-        
-        sdb.sdbprint.main("--sdb=sdb.ttl", "--set", "sdb:annotateGeneratedSQL=false", "--file=Q.rq") ;
+        // DataSource?
+        ConnectionFactory connFactory =  new DriverManagerConnectionFactory("jdbc:", "user", "password") ;
+        ObjectPool connectionPool = new GenericObjectPool(null);
+        PoolableConnectionFactory pcf = new PoolableConnectionFactory(connFactory,
+                                                                      connectionPool,
+                                                                      null,
+                                                                      null,
+                                                                      false,
+                                                                      true) ;
         System.exit(0) ;
+        
+        //sdb.sdbprint.main("--sdb=sdb.ttl", "--set", "sdb:annotateGeneratedSQL=false", "--file=Q.rq") ;
+        System.exit(0) ;
+        PoolingDataSource pds = new PoolingDataSource() ;
         
         runQuery("Q.rq") ;
         {
