@@ -7,9 +7,11 @@
 package arq;
 
 import arq.cmd.CmdException;
-import arq.cmdline.ModDataset;
+import arq.cmdline.CmdARQ;
 import arq.cmdline.ModDatasetGeneral;
+import arq.cmdline.ModQueryIn;
 import arq.cmdline.ModRemote;
+import arq.cmdline.ModResultsOut;
 
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryExecution;
@@ -18,28 +20,37 @@ import com.hp.hpl.jena.sparql.engine.http.HttpQuery;
 import com.hp.hpl.jena.sparql.engine.http.QueryExceptionHTTP;
 import com.hp.hpl.jena.sparql.util.QueryExecUtils;
 
-public class remote extends query
+public class remote extends CmdARQ
 {
-    protected ModRemote     modRemote =   new ModRemote() ;
-    protected ModDatasetGeneral modDesc = new ModDatasetGeneral() ;
+    protected ModQueryIn    modQuery =      new ModQueryIn() ;
+    protected ModRemote     modRemote =     new ModRemote() ;
+    protected ModDatasetGeneral modDesc =   new ModDatasetGeneral() ;
+    protected ModResultsOut modResults =  new ModResultsOut() ;
 
     public static void main (String [] argv)
     {
-        new query(argv).main() ;
+        new remote(argv).main() ;
     }
 
 
     public remote(String[] argv)
     {
         super(argv) ;
-    }
-
-    protected ModDataset setModDataset()
-    {
-        return modDesc ;
+        super.addModule(modRemote) ;
+        super.addModule(modQuery) ;
+        super.addModule(modDesc) ;
+        super.addModule(modResults) ;
     }
     
-    private void queryExecRemote()
+    
+    protected void processModulesAndArgs()
+    {
+        super.processModulesAndArgs() ;
+        if ( modRemote.getServiceURL() == null )
+            throw new CmdException("No SPARQL endpoint specificied") ;
+    }
+    
+    protected void exec()
     {
         Query query = modQuery.getQuery() ;
 
@@ -63,7 +74,13 @@ public class remote extends query
             ex.printStackTrace(System.err) ;
         }
     }
-    
+
+
+    protected String getSummary()
+    {
+        return null ;
+    }
+
 }
 
 /*
