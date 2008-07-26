@@ -9,7 +9,10 @@ package dev;
 public class Dev
 {
     /* Principle: SDB does not connection management.
-     * It wraps conenctions.  The constainer does the connection management. 
+     * It wraps connections.  The constainer does the connection management.
+     * 
+     * Remove quad dependency (and so complex paths will work).
+     * See ARQ new Quadization
      */
 }
 
