@@ -6,12 +6,9 @@
 
 package com.hp.hpl.jena.sparql.algebra.op;
 
-import java.util.Iterator;
-
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.OpVisitor;
 import com.hp.hpl.jena.sparql.algebra.Transform;
-import com.hp.hpl.jena.sparql.expr.E_LogicalAnd;
 import com.hp.hpl.jena.sparql.expr.Expr;
 import com.hp.hpl.jena.sparql.expr.ExprList;
 import com.hp.hpl.jena.sparql.sse.Tags;
@@ -19,97 +16,45 @@ import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 
 public class OpFilter extends Op1
 {
-    // Canonicalization turns "&&" into multiple expr lists items
-    // Migrate to a transformation
-    private static boolean canonicalize = false ;
     ExprList expressions ;
     
     public static Op filter(Expr expr, Op op)
     {
+        OpFilter f = filter(op) ;
+        f.getExprs().add(expr) ;
+        return f ;
+    }
+    
+    public static OpFilter filter(Op op)
+    {
         if ( op instanceof OpFilter )
-        {
-            OpFilter f = (OpFilter)op ;
-            f.getExprs().add(expr) ;
-            return f ;
-        }
-        // Canonicalize
-        ExprList exprList = process(expr) ;
-        return new OpFilter(exprList, op) ;
+           return (OpFilter)op ;
+        else
+           return new OpFilter(op) ;  
     }
     
     public static Op filter(ExprList exprs, Op op)
     {
         if ( exprs.isEmpty() )
             return op ;
-        exprs = process(exprs) ;
-        if ( op instanceof OpFilter )
-        {
-            OpFilter f = (OpFilter)op ;
-            f.getExprs().addAll(exprs) ;
-            return f ;
-        }
-        
-        return filterDirect(exprs, op) ;
-    }
-
-    public static Op filterDirect(ExprList exprs, Op op)
-    {
-        return new OpFilter(exprs, op) ; 
+        OpFilter f = filter(op) ;
+        f.getExprs().addAll(exprs) ;
+        return f ;
     }
     
-    private static ExprList process(ExprList exprList1)
-    {
-        if ( ! canonicalize )
-            return exprList1 ;
-        ExprList exprList2 = new ExprList() ;
-        for ( Iterator iter = exprList1.iterator() ; iter.hasNext() ; )
-        {
-            Expr expr = (Expr)iter.next() ;
-            mergeExprList(exprList2, expr) ;
-        }
-        return exprList2 ;
-    }
-    
-    private static ExprList process(Expr expr)
-    {
-        ExprList exprList = new ExprList() ;
-        mergeExprList(exprList, expr) ;
-        return exprList ;
-    }
-    
-    private static void mergeExprList(ExprList exprList, Expr expr)
-    {
-        if ( canonicalize )
-        {
-            // Explode &&-chain to exprlist.
-            while ( expr instanceof E_LogicalAnd )
-            {
-                E_LogicalAnd x = (E_LogicalAnd)expr ;
-                Expr left = x.getArg1() ;
-                Expr right = x.getArg2() ;
-                mergeExprList(exprList, left) ;
-                expr = right ;
-            }
-            // Drop through and add remaining
-        }
-        exprList.add(expr) ;
-    }
-    
-    private OpFilter(Expr expr , Op sub)
+    private OpFilter(Op sub)
     { 
         super(sub) ;
         expressions = new ExprList() ;
-        expressions.add(expr) ;
     }
     
-
     private OpFilter(ExprList exprs , Op sub)
     { 
         super(sub) ;
         expressions = exprs ;
     }
     
-    /** Compress multipel filters:  (filter (filter (filter op)))) into one (filter op) */ 
+    /** Compress multiple filters:  (filter (filter (filter op)))) into one (filter op) */ 
     public static OpFilter tidy(OpFilter base)
     {
         ExprList exprs = new ExprList() ;
@@ -119,7 +64,6 @@ public class OpFilter extends Op1
         {
             OpFilter f = (OpFilter)op ;
             exprs.addAll(f.getExprs()) ;
-            //expr = new E_LogicalAnd(expr, f.getExpr()) ;
             op = f.getSubOp() ;
         }
         return new OpFilter(exprs, op) ;

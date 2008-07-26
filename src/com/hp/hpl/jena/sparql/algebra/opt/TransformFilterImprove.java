@@ -16,7 +16,7 @@ import com.hp.hpl.jena.sparql.expr.ExprList;
  *  which both do change the sub opof the filter).  
  * 
  * Currently:
- * 1/ Redo FILTER (A&&B) as FILTER(A) FILTER(B)
+ * 1/ Redo FILTER (A&&B) as FILTER(A) FILTER(B) 9as an expr list).
  *    via multiple elements of the exprList of the OpFilter.
  *    This allows them to be placed independently.
  * 
@@ -33,8 +33,7 @@ public class TransformFilterImprove extends TransformCopy
     {
         ExprList exprList = opFilter.getExprs() ;
         exprList = ExprList.splitConjunction(exprList) ;
-        // This creates an OpFilter without any additional processing.
-        return OpFilter.filterDirect(exprList, subOp) ;
+        return OpFilter.filter(exprList, subOp) ;
     }
 
 }

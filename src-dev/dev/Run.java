@@ -47,6 +47,7 @@ public class Run
 {
     public static void main(String[] argv) throws Exception
     {
+        runQParse() ;
         // Compressed syntax
         // match(Subject, Path, Object, PrefixMapping)
         
@@ -225,7 +226,7 @@ public class Run
     private static void runQParse()
     {
         // "--engine=quad" "--opt"
-        String []a = { "--file=Q.rq", "--print=op", "--opt", "--print=plan"} ;
+        String []a = { "--file=Q.rq", "--print=op" , "--opt" } ; //, "--print=plan"} ;
         arq.qparse.main(a) ;
         System.exit(0) ;
     }

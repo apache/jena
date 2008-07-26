@@ -8,42 +8,22 @@ package dev;
 
 
 
+
 public class Dev
 {
     // ** Quads and paths interaction (not interacting currently).
     // See Quadization
+    // Leaves paths wrapped in OpGraph.  Assumes can do "OpDatasetNames"
 
-    // TransformFilterLogAnd (And remove from OpFilter)
-
-    // 1 -- New "OpQuadPath = a node + TriplePattern"
-    // 2 -- A secondary transformation to convert from triples/graphs to quads  
-    //      Or modify SDB?  <<== ****
+    //     Modify SDB?  <<== ****
     //
-    // Issue is that this is a "visit on the way down and change on the way up" process.
-    //   Could add a separate pre-call visitor to Transformer.
-    //   Or a specific to TransformCopy.
-    
     // Next:
-    // ++  Interactions between Filter Placement and Equality filters (or even combine?)
     // +  (current) -- A kind of table (stack during evaluation?)
     
-    // [[
-    // Writing tables - too much done in OpTable
-    //   The reverse is in BuilderTable so use WriterTable.
-    // ]]
-    // TransformPathFlattern - leave in AlgebraGenerator for now.
-    
-    // Remove:
-    //   AlgebraGenerator: Path flattening -- compilePathBlock
-
-    /*
-     * Move PF to Transforms
-     * TransformRemoveLabels
-     * TransformReorderBGP
-     * TransformQuadization
-     *   - needs to work on the way down as well!
-     *     Could redo from (graph) down  
-     */
+    // Migrate:
+    // TransformPathFlattern - left in AlgebraGenerator for now
+    //   compilePathBlock(PathBlock pathBlock) 
+    //     calls .reduce(pathBlock) 
 }
 
 /*
