@@ -270,7 +270,7 @@ public class BTreeNode
         // Not found. 
         if ( isLeaf )
             return null ;
-        // Index of pointer block (which is staggerd from the records list) 
+        // Index of pointer block (which is staggered from the records list) 
         x = -(x+1) ;
         // Recurse
         BTreeNode n = getNode(x) ;

@@ -6,6 +6,8 @@
 
 package com.hp.hpl.jena.tdb.base.block;
 
+import java.io.File;
+
 import com.hp.hpl.jena.tdb.Const;
 import com.hp.hpl.jena.tdb.TDBException;
 
@@ -41,7 +43,13 @@ public class BlockMgrFactory
     public static BlockMgr createStdFile(String filename, int blockSize)
     {
         BlockMgr blockMgr = new BlockMgrDirect(filename, blockSize) ;
-        blockMgr = new BlockMgrCache(Const.BlockReadCacheSize, Const.BlockWriteCacheSize, blockMgr) ;
+        String fn = filename ;
+        
+        int j = filename.lastIndexOf(File.separatorChar) ;
+        if ( j > 0 )
+            fn = filename.substring(j+1) ;
+        
+        blockMgr = new BlockMgrCache(fn, Const.BlockReadCacheSize, Const.BlockWriteCacheSize, blockMgr) ;
         return blockMgr ;
     }
     

@@ -7,7 +7,7 @@
 package dev;
 
 import lib.FileOps;
-import lib.Pool;
+import lib.CachePool;
 
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.query.Query;
@@ -46,6 +46,8 @@ public class Run
     
     public static void main(String ... args)
     {
+        tdbloader("tdb.ttl", "/home/afs/Datasets/MusicBrainz/tracks.nt") ;
+        
         cache2() ;
         
         readBPlusTreeAll() ;
@@ -61,7 +63,7 @@ public class Run
     
     private static void cache2()
     {
-        Pool<Integer, String> pool = new Pool<Integer, String>(2) ;
+        CachePool<Integer, String> pool = new CachePool<Integer, String>(2) ;
         pool.putObject(1, "X1") ;
         pool.putObject(2, "X2") ;
         pool.putObject(3, "X3") ;

@@ -34,22 +34,26 @@ public class ModTDBDataset extends ModDataset
     // Mixes assembler, location and "tdb"
     // Can make a single model or a dataset
     
+    private ArgDecl argMem              = new ArgDecl(ArgDecl.NoValue, "mem") ;
     private ModAssembler modAssembler   =  new ModTDBAssembler() ;
     private ModLocation modLocation     =  new ModLocation() ;
+    private boolean useMemory = false ;
     
     public ModTDBDataset() {}
     
     public void registerWith(CmdGeneral cmdLine)
     {
+        cmdLine.add(argMem) ; //, "mem", "Memory graph") ;
         cmdLine.addModule(modAssembler) ;
         cmdLine.addModule(modLocation) ;
     }
 
     public void processArgs(CmdArgModule cmdLine)
     {
+        useMemory = cmdLine.contains(argMem) ;
         modAssembler.processArgs(cmdLine) ;
         modLocation.processArgs(cmdLine) ;
-        
+            
         int count = 0 ;
         if ( modAssembler.getAssemblerFile() != null ) count++ ;
         if ( modLocation.getLocation() != null ) count++ ;    
@@ -83,6 +87,9 @@ public class ModTDBDataset extends ModDataset
     
     public Graph createGraph()
     {
+        if ( useMemory )
+            return TDBFactory.createGraph() ;
+        
         if ( modAssembler.getAssemblerFile() != null )
             return TDBFactory.assembleGraph( modAssembler.getAssemblerFile()) ;
         if ( modLocation.getLocation() != null )

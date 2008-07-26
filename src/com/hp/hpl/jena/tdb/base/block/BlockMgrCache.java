@@ -24,9 +24,19 @@ public class BlockMgrCache extends BlockMgrWrapper
     // Delayed dirty writes.
     CacheLRU<Integer, ByteBuffer> writeCache = null ;
     
-    public BlockMgrCache(int readSlots, int writeSlots, final BlockMgr blockMgr)
+    private boolean logging = log.isInfoEnabled() ;
+    private String indexName ; 
+    // ---- stats
+    long cacheHits = 0 ;
+    long cacheMisses = 0 ;
+    long cacheWriteHits = 0 ;
+    
+    public BlockMgrCache(String indexName, int readSlots, int writeSlots, final BlockMgr blockMgr)
     {
         super(blockMgr) ;
+        this.indexName = String.format("%-10s", indexName) ;
+        logging = log.isInfoEnabled() && indexName.startsWith("SPO") ;
+        
         readCache = new CacheLRU<Integer, ByteBuffer>(readSlots) ;
         
         if ( writeSlots > 0 )
@@ -36,9 +46,9 @@ public class BlockMgrCache extends BlockMgrWrapper
                 @Override
                 public void apply(Integer id, ByteBuffer bb)
                 { 
-                    if ( log.isDebugEnabled() )
-                        log.debug("Cache spill: write block") ;
-                    blockMgr.put(id, bb) ; }
+                    log("Cache spill: write block: %d", id) ;
+                    blockMgr.put(id, bb) ; 
+                }
             }) ;
         }
     }
@@ -62,14 +72,26 @@ public class BlockMgrCache extends BlockMgrWrapper
     {
         ByteBuffer bb = readCache.get(id) ;
         if ( bb != null )
+        {
+            cacheHits++ ;
+            //log("Hit   : %d", id) ;
             return bb ;
+        }
         if ( writeCache != null )
         {
             // Maybe in the dirty blocks still.
             bb = writeCache.get(id) ;
             if ( bb != null )
+            {
+                cacheWriteHits++ ;
+                log("Hit(w) : %d",id) ;
                 return bb ;
+            }
         }
+        
+        cacheMisses++ ;
+        log("Miss  : %d", id) ;
+        
         if ( silent )
             bb = blockMgr.getSilent(id) ;
         else
@@ -81,6 +103,8 @@ public class BlockMgrCache extends BlockMgrWrapper
     @Override
     public void put(int id, ByteBuffer block)
     {
+        log("Put   : %d", id) ;
+        
         if ( writeCache != null )
             writeCache.put(id, block) ;
         else
@@ -99,22 +123,38 @@ public class BlockMgrCache extends BlockMgrWrapper
     @Override
     public void sync(boolean force)
     {
-        if ( log.isDebugEnabled() )
+        if ( true )
+        {
+            String x = "" ;
+            if ( indexName != null )
+                x = indexName+" : ";
+            log.info(String.format("%sH=%d, M=%d, W=%d", x, cacheHits, cacheMisses, cacheWriteHits)) ;
+        }
+        
+        if ( logging )
         {
             if ( writeCache != null )
-                log.debug("sync ("+writeCache.size()+" blocks)") ;
+                log("sync ("+writeCache.size()+" blocks)") ;
             else
-                log.debug("sync") ;
+                log("sync") ;
         }
         //if ( force )
         flush() ;
     }
     
+    private void log(String fmt, Object... args)
+    { 
+        if ( ! logging ) return ;
+        String msg = String.format(fmt, args) ;
+        if ( indexName != null )
+             msg = indexName+" : "+msg ;
+        log.info(msg) ;
+    }
+    
     @Override
     public void close()
     {
-        if ( log.isDebugEnabled() )
-            log.debug("close ("+writeCache.size()+" blocks)") ;
+        log("close ("+writeCache.size()+" blocks)") ;
         flush() ;
         blockMgr.close() ;
     }
@@ -124,7 +164,10 @@ public class BlockMgrCache extends BlockMgrWrapper
         if ( writeCache != null )
         {
             for ( Entry<Integer, ByteBuffer> e : writeCache.entrySet() )
-                  blockMgr.put(e.getKey(), e.getValue()) ;
+            {
+                log("Write: %d", e.getKey()) ;
+                blockMgr.put(e.getKey(), e.getValue()) ;
+            }
             writeCache.clear() ;   
         }
     }
