@@ -12,6 +12,7 @@ import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.sparql.ARQConstants;
 import com.hp.hpl.jena.sparql.algebra.AlgebraGenerator;
 import com.hp.hpl.jena.sparql.algebra.Op;
+import com.hp.hpl.jena.sparql.core.Closeable;
 import com.hp.hpl.jena.sparql.core.DataSourceGraphImpl;
 import com.hp.hpl.jena.sparql.core.DatasetGraph;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
@@ -20,7 +21,7 @@ import com.hp.hpl.jena.sparql.util.ALog;
 import com.hp.hpl.jena.sparql.util.Context;
 import com.hp.hpl.jena.sparql.util.NodeFactory;
 
-public abstract class QueryEngineBase implements OpExec
+public abstract class QueryEngineBase implements OpExec, Closeable
 {
     private DatasetGraph dataset = null ;
     protected Context context ;
@@ -96,7 +97,8 @@ public abstract class QueryEngineBase implements OpExec
         if ( dataset != null )
             // Null means setting up but not executing a query.
             queryIterator = eval(op, dataset, startBinding, context) ;
-        return new PlanOp(getOp(), queryIterator) ;
+        // This could be an automagic iterator to catch close.
+        return new PlanOp(getOp(), this, queryIterator) ;
     }
     
     protected Op modifyOp(Op op)
@@ -118,6 +120,9 @@ public abstract class QueryEngineBase implements OpExec
     public QueryIterator eval(Op op, DatasetGraph dsg, Binding binding, Context context) ;
     
     public Op getOp() { return queryOp ; }
+    
+    public void close()
+    { }
     
     protected void setOp(Op op)
     { 

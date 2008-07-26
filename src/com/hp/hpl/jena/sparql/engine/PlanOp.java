@@ -7,6 +7,8 @@
 package com.hp.hpl.jena.sparql.engine;
 
 import com.hp.hpl.jena.sparql.algebra.Op;
+import com.hp.hpl.jena.sparql.core.Closeable;
+import com.hp.hpl.jena.sparql.engine.iterator.QueryIteratorCloseable;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
 import com.hp.hpl.jena.sparql.util.Utils;
@@ -16,15 +18,17 @@ public class PlanOp extends PlanBase
     private QueryIterator qIter ;
     private String label = null ;
     
-    public PlanOp(Op op, QueryIterator qIter)
+    public PlanOp(Op op, Closeable closeable, QueryIterator qIter)
     { 
-        super(op) ;
-        this.qIter = qIter ;
+        super(op, closeable) ;
+        //this.qIter = qIter ;
+        // Catch the close and close the plan. 
+        this.qIter = new QueryIteratorCloseable(qIter, this) ;
     }
 
-    public PlanOp(String label, Op op, QueryIterator qIter)
+    public PlanOp(String label, Closeable closeable, Op op, QueryIterator qIter)
     {
-        this(op, qIter) ;
+        this(op, closeable, qIter) ;
         this.label = label ;
     }
     

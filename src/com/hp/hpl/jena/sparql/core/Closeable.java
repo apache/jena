@@ -1,33 +1,18 @@
 /*
- * (c) Copyright 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.engine;
+package com.hp.hpl.jena.sparql.core;
 
-import java.util.Iterator;
-
-import com.hp.hpl.jena.sparql.core.Closeable;
-import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.sparql.util.PrintSerializable;
-
-/** Root of query iterators in ARQ.
- *
- * @author Andy Seaborne
- */
-
-public interface QueryIterator extends Closeable, Iterator, PrintSerializable
+public interface Closeable
 {
-    /** Get next binding - preferred over Iterator.next() */ 
-    public Binding nextBinding() ;
-    
-    /** Abort a query - may not clearup properly */
-    public void abort() ; 
+    public void close() ;
 }
 
 /*
- * (c) Copyright 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

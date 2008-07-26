@@ -14,7 +14,7 @@ import com.hp.hpl.jena.sparql.serializer.SerializationContext;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
 import com.hp.hpl.jena.sparql.util.Utils;
 
-/** Closable empty query iterator
+/** Closeable empty query iterator
  * 
  * @author Andy Seaborne
  */
@@ -22,7 +22,7 @@ import com.hp.hpl.jena.sparql.util.Utils;
 public class QueryIterNullIterator extends QueryIter
 {
     // Or QueryIterYeildN with N = 0 ;
-    // but sometimes it clear just to w-r-i-t-e the code.
+    // but sometimes it clearer just to w-r-i-t-e the code.
     
     public QueryIterNullIterator(ExecutionContext qCxt) { super(qCxt) ; }
 

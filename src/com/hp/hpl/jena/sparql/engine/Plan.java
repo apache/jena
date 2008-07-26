@@ -7,9 +7,10 @@
 package com.hp.hpl.jena.sparql.engine;
 
 import com.hp.hpl.jena.sparql.algebra.Op;
+import com.hp.hpl.jena.sparql.core.Closeable;
 import com.hp.hpl.jena.sparql.util.PrintSerializable;
 
-public interface Plan extends PrintSerializable
+public interface Plan extends PrintSerializable, Closeable
 {
     // General markers, especially structural elements
     public static final String startMarker = "(" ;
@@ -22,6 +23,7 @@ public interface Plan extends PrintSerializable
     public Op getOp() ;
     public QueryIterator iterator() ;
 }
+
 
 /*
  * (c) Copyright 2006, 2007, 2008 Hewlett-Packard Development Company, LP

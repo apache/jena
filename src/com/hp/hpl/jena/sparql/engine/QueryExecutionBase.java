@@ -83,6 +83,8 @@ public class QueryExecutionBase implements QueryExecution
     {
         if ( queryIterator != null )
             queryIterator.close() ;
+        if ( plan != null )
+            plan.close() ;
     }
 
     public ResultSet execSelect()

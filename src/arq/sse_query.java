@@ -122,7 +122,7 @@ public class sse_query extends CmdARQ
             if ( printPlan )
             {
                 QueryIterator qIter = Algebra.exec(op, dsg) ;
-                Plan plan = new PlanOp(op, qIter) ;
+                Plan plan = new PlanOp(op, null, qIter) ;
                 divider() ;
                 IndentedWriter out = new IndentedWriter(System.out, false) ;
                 plan.output(out) ;
