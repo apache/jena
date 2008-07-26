@@ -17,6 +17,7 @@ import com.hp.hpl.jena.sparql.util.PrintSerializableBase;
 public abstract class PlanBase extends PrintSerializableBase implements Plan
 {
     // Merge with PlanOp?
+    // Enforces "use once"
     private Op op = null ;
     protected Closeable closeable = null ;
     protected boolean closed = false ;
