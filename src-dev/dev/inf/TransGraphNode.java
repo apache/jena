@@ -6,22 +6,21 @@
 
 package dev.inf;
 
-import static com.hp.hpl.jena.sparql.sse.builders.BuilderBase.checkLength;
-import static com.hp.hpl.jena.sparql.sse.builders.BuilderBase.checkList;
-import static com.hp.hpl.jena.sparql.sse.builders.BuilderBase.checkNode;
+import static com.hp.hpl.jena.sparql.sse.builders.BuilderLib.checkLength;
+import static com.hp.hpl.jena.sparql.sse.builders.BuilderLib.checkList;
+import static com.hp.hpl.jena.sparql.sse.builders.BuilderLib.checkNode;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.sdb.iterator.Iter;
 import com.hp.hpl.jena.sparql.sse.Item;
 import com.hp.hpl.jena.sparql.sse.ItemList;
-import com.hp.hpl.jena.sparql.sse.builders.BuilderBase;
 
 class TransGraphNode extends TransGraph<Node>
 {
     public static TransGraphNode build(Item item)
     {
         TransGraphNode tg = new TransGraphNode() ;
-        BuilderBase.checkList(item) ;
+        checkList(item) ;
         ItemList list = item.getList() ;
         list = list.cdr() ;
         

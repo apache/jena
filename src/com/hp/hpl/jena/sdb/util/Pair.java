@@ -7,8 +7,8 @@
 package com.hp.hpl.jena.sdb.util;
 
 import static com.hp.hpl.jena.sparql.util.StringUtils.str;
-import static com.hp.hpl.jena.sparql.util.Utils.eq;
 import static com.hp.hpl.jena.sparql.util.Utils.hashCodeObject;
+import com.hp.hpl.jena.sparql.util.Utils ;
 
 public class Pair<A, B>
 {
@@ -41,7 +41,7 @@ public class Pair<A, B>
         
         if( ! ( other instanceof Pair ) ) return false ;
         Pair<?,?> p2 = (Pair<?,?>)other ;
-        return  eq(car(), p2.car()) && eq(cdr(), p2.cdr()) ;
+        return Utils.equals(car(), p2.car()) && Utils.equals(cdr(), p2.cdr()) ;
     }
     
     @Override 

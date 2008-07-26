@@ -110,7 +110,6 @@ public class SDBFactory
     public static Store connectStore(StoreDesc desc) 
     { return StoreFactory.create(desc) ; }
 
-    
     /**
      * Connect to a store, based on an existing SDB connection and a store description.
      * @param sdbConnection     SDBConnection object 

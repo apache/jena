@@ -16,29 +16,31 @@ import static sdb.SDBCmd.sparql;
 import java.sql.Connection;
 import java.util.Iterator;
 
-import javax.sql.DataSource;
-
-import org.apache.commons.dbcp.ConnectionFactory;
-import org.apache.commons.dbcp.DataSourceConnectionFactory;
-import org.apache.commons.dbcp.DriverManagerConnectionFactory;
-import org.apache.commons.dbcp.PoolableConnectionFactory;
-import org.apache.commons.dbcp.PoolingDataSource;
-import org.apache.commons.pool.ObjectPool;
-import org.apache.commons.pool.impl.GenericObjectPool;
 import sdb.SDBCmd;
 import arq.cmd.CmdUtils;
 
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.query.Dataset;
-import com.hp.hpl.jena.query.DatasetFactory;
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.QueryExecution;
-import com.hp.hpl.jena.query.QueryExecutionFactory;
-import com.hp.hpl.jena.query.QueryFactory;
-import com.hp.hpl.jena.query.ResultSetFormatter;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.StmtIterator;
+
+import com.hp.hpl.jena.util.FileManager;
+
+import com.hp.hpl.jena.graph.Node;
+
+import com.hp.hpl.jena.sparql.core.DatasetGraph;
+import com.hp.hpl.jena.sparql.resultset.ResultsFormat;
+import com.hp.hpl.jena.sparql.sse.SSE;
+import com.hp.hpl.jena.sparql.util.Context;
+import com.hp.hpl.jena.sparql.util.IndentedWriter;
+import com.hp.hpl.jena.sparql.util.QueryExecUtils;
+import com.hp.hpl.jena.sparql.util.Symbol;
+
+import com.hp.hpl.jena.query.*;
+
+import com.hp.hpl.jena.update.GraphStore;
+import com.hp.hpl.jena.update.GraphStoreFactory;
+import com.hp.hpl.jena.update.UpdateAction;
+
 import com.hp.hpl.jena.sdb.SDB;
 import com.hp.hpl.jena.sdb.SDBFactory;
 import com.hp.hpl.jena.sdb.Store;
@@ -49,17 +51,6 @@ import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.store.StoreConfig;
 import com.hp.hpl.jena.sdb.store.StoreFactory;
 import com.hp.hpl.jena.sdb.util.StrUtils;
-import com.hp.hpl.jena.sparql.core.DatasetGraph;
-import com.hp.hpl.jena.sparql.resultset.ResultsFormat;
-import com.hp.hpl.jena.sparql.sse.SSE;
-import com.hp.hpl.jena.sparql.util.Context;
-import com.hp.hpl.jena.sparql.util.IndentedWriter;
-import com.hp.hpl.jena.sparql.util.QueryExecUtils;
-import com.hp.hpl.jena.sparql.util.Symbol;
-import com.hp.hpl.jena.update.GraphStore;
-import com.hp.hpl.jena.update.GraphStoreFactory;
-import com.hp.hpl.jena.update.UpdateAction;
-import com.hp.hpl.jena.util.FileManager;
 
 public class RunSDB
 {
@@ -68,30 +59,8 @@ public class RunSDB
     @SuppressWarnings("unchecked")
     public static void main(String ... argv) 
     {
-        // DataSource?
-        /*
-         *  Connection  getConnection()
-         *  Connection  getConnection(String username, String password) 
-         */
-        ConnectionFactory connFactory =  new DriverManagerConnectionFactory("jdbc:", "user", "password") ;
-        if ( false )
-        {
-            DataSource ds = null ;
-            connFactory = new DataSourceConnectionFactory(ds) ;
-        }
-        
-        ObjectPool connectionPool = new GenericObjectPool(null, 10);
-        PoolableConnectionFactory pcf = new PoolableConnectionFactory(connFactory,
-                                                                      connectionPool,
-                                                                      null,
-                                                                      null,
-                                                                      false,
-                                                                      true) ;
-        System.exit(0) ;
-        
         //sdb.sdbprint.main("--sdb=sdb.ttl", "--set", "sdb:annotateGeneratedSQL=false", "--file=Q.rq") ;
         System.exit(0) ;
-        PoolingDataSource pds = new PoolingDataSource() ;
         
         runQuery("Q.rq") ;
         {

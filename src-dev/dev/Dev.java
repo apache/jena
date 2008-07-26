@@ -8,22 +8,8 @@ package dev;
 
 public class Dev
 {
-    /* DataSourceSDB
-     * SDBConnection??
-     * 
-     * Pooling with DBCP - rtlkationship to Joseki?
-     * Alternatives:
-     * 1/ One "Virtual connection" that pools
-     *    QC.exec SQL => getConnection from pool
-     *     
-     * 2/ Have an addition "pool" assembler used in Joseki
-     *    and Joseki does the "get connection, "make Store" each time.
-     *
-     * Joseki needs a container (for DatasetDesc)
-     * SDBConnection.getSqlConnection - potential pool point.
-
-     * 3/ Stores are N-connection - allocated to an SDBRequest
-     * store.getConnection().getSqlConnection
+    /* Principle: SDB does not connection management.
+     * It wraps conenctions.  The constainer does the connection management. 
      */
 }
 

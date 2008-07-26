@@ -9,27 +9,24 @@ package com.hp.hpl.jena.sdb.engine;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.hp.hpl.jena.sparql.algebra.AlgebraGeneratorQuad;
+import com.hp.hpl.jena.sparql.algebra.Op;
+import com.hp.hpl.jena.sparql.core.DatasetGraph;
+import com.hp.hpl.jena.sparql.engine.*;
+import com.hp.hpl.jena.sparql.engine.binding.Binding;
+import com.hp.hpl.jena.sparql.engine.binding.BindingRoot;
+import com.hp.hpl.jena.sparql.engine.iterator.QueryIterSingleton;
+import com.hp.hpl.jena.sparql.engine.iterator.QueryIteratorCheck;
+import com.hp.hpl.jena.sparql.engine.main.QC;
+import com.hp.hpl.jena.sparql.util.Context;
+
 import com.hp.hpl.jena.query.Query;
+
 import com.hp.hpl.jena.sdb.Store;
 import com.hp.hpl.jena.sdb.compiler.Compile;
 import com.hp.hpl.jena.sdb.compiler.OpSQL;
 import com.hp.hpl.jena.sdb.core.SDBRequest;
 import com.hp.hpl.jena.sdb.store.DatasetStoreGraph;
-import com.hp.hpl.jena.sparql.algebra.AlgebraGeneratorQuad;
-import com.hp.hpl.jena.sparql.algebra.Op;
-import com.hp.hpl.jena.sparql.core.DatasetGraph;
-import com.hp.hpl.jena.sparql.engine.ExecutionContext;
-import com.hp.hpl.jena.sparql.engine.Plan;
-import com.hp.hpl.jena.sparql.engine.QueryEngineBase;
-import com.hp.hpl.jena.sparql.engine.QueryEngineFactory;
-import com.hp.hpl.jena.sparql.engine.QueryEngineRegistry;
-import com.hp.hpl.jena.sparql.engine.QueryIterator;
-import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.sparql.engine.binding.BindingRoot;
-import com.hp.hpl.jena.sparql.engine.iterator.QueryIterSingleton;
-import com.hp.hpl.jena.sparql.engine.iterator.QueryIteratorCheck;
-import com.hp.hpl.jena.sparql.engine.main.OpCompiler;
-import com.hp.hpl.jena.sparql.util.Context;
 
 
 public class QueryEngineSDB extends QueryEngineBase
@@ -66,6 +63,12 @@ public class QueryEngineSDB extends QueryEngineBase
     }
     
     public SDBRequest getRequest()      { return request ; }
+    
+//    public void close()
+//    { 
+//        if ( request != null )
+//            request.close() ;
+//    }
 
     @Override
     public QueryIterator eval(Op op, DatasetGraph dsg, Binding binding, Context context)
@@ -88,7 +91,7 @@ public class QueryEngineSDB extends QueryEngineBase
             // Not top - invoke the main query engine as a framework to
             // put all the sub-opSQL parts together.
             QueryIterator input = new QueryIterSingleton(binding, execCxt) ;
-            QueryIterator qIter = OpCompiler.compile(op, input, execCxt) ;  // OpCompiler from main query engine.
+            QueryIterator qIter = QC.compile(op, input, execCxt) ;  // OpCompiler from main query engine.
             qIter = QueryIteratorCheck.check(qIter, execCxt) ;
             return qIter ;
           }

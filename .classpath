@@ -25,7 +25,5 @@
 	<classpathentry kind="lib" path="lib/arq-extra.jar" sourcepath="arq-src.zip"/>
 	<classpathentry kind="lib" path="lib/junit-4.4.jar"/>
 	<classpathentry kind="lib" path="lib/commons-logging-1.1.1.jar"/>
-	<classpathentry kind="lib" path="jdbc/commons-dbcp-1.2.2.jar"/>
-	<classpathentry kind="lib" path="jdbc/commons-pool-1.4.jar"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>
