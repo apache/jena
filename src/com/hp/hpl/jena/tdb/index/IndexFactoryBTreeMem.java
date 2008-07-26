@@ -29,7 +29,7 @@ public class IndexFactoryBTreeMem implements IndexFactory, IndexRangeFactory
     @Override
     public RangeIndex createRangeIndex(Location location, String name, RecordFactory recordFactory)
     {
-        return BTree.makeMem(order, recordFactory.keyLength(), recordFactory.valueLength()) ;
+        return BTree.makeMem(name, order, recordFactory.keyLength(), recordFactory.valueLength()) ;
     }
 }
 

@@ -33,7 +33,7 @@ public class IndexFactoryBPlusTreeMem implements IndexFactory, IndexRangeFactory
     {
         int blkSize = BTreeParams.calcBlockSize(order, recordFactory) ;
         BTreeParams params = new BTreeParams(order, recordFactory) ;
-        BlockMgr blkMgr = BlockMgrFactory.createMem(blkSize) ;
+        BlockMgr blkMgr = BlockMgrFactory.createMem(name, blkSize) ;
         BTree bTree = new BTree(params, blkMgr) ; 
         return bTree ;
     }

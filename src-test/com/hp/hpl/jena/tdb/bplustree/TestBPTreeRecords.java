@@ -50,7 +50,7 @@ public class TestBPTreeRecords extends TestBase
         recordFactory = new RecordFactory(4, 0) ;
         
         bufSizeRecord = RecordBufferPage.calcRecordSize(recordFactory, blockSize) ;
-        blkMgrRecords = BlockMgrFactory.createMem(blockSize) ;
+        blkMgrRecords = BlockMgrFactory.createMem("BPTreeRecords", blockSize) ;
         recordBufferPageMgr = new RecordBufferPageMgr(recordFactory, blkMgrRecords) ;
         
         // Order does not matter.

@@ -92,7 +92,7 @@ public class TestRecordBufferPage extends BaseTest
 
     private static BlockMgr makeBlockMgr()
     {
-        return BlockMgrFactory.createMem(RecordBufferPage.calcBlockSize(factory, TestNumRecord)) ; 
+        return BlockMgrFactory.createMem("RecordBuffer", RecordBufferPage.calcBlockSize(factory, TestNumRecord)) ; 
     }
 }
 

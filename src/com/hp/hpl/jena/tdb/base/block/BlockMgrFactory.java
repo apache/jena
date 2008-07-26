@@ -15,8 +15,12 @@ import com.hp.hpl.jena.tdb.TDBException;
 public class BlockMgrFactory
 {
     /** Create an in-memory block manager */ 
-    public static BlockMgr createMem(int blockSize)
-    { return new BlockMgrMem(blockSize) ; }
+    public static BlockMgr createMem(String indexName, int blockSize)
+    {
+        BlockMgr blockMgr = new BlockMgrMem(blockSize) ;
+        blockMgr = new BlockMgrCache(indexName, 100, 100, blockMgr) ;
+        return blockMgr ;
+    }
     
     /** Create a BlockMgr backed by a file */
     public static BlockMgr createFile(String filename, int blockSize)

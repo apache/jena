@@ -57,10 +57,16 @@ public class Const
     
     /** Size, in bytes, of a block */
     public static final int BlockSize               = intValue("BlockSize", 8*1024) ;
-    
-    /** Size, in bytes, of a memory block */
-    public static final int BlockSizeMem            = intValue("BlockSizeMem", 32*8 ) ;
 
+    /** Size, in bytes, of a block */
+    public static final int BlockSizeTest           = intValue("BlockSizeTest", 1024) ;
+    
+//    /** Size, in bytes, of a memory block */
+//    public static final int BlockSizeMem            = intValue("BlockSizeMem", 32*8 ) ;
+
+    /** order of an in-memory BTree or B+Tree */
+    public static final int OrderMem                = intValue("OrderMem", 5) ;
+    
     /** Size, in bytes, of a segment (used for memory mapped files) */
     public static final int SegmentSize             = intValue("SegmentSize", 8*1024*1024) ;
     

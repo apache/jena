@@ -65,8 +65,8 @@ public class Snippets
             int maxRecords = 2*5 ;
             int rSize = RecordBufferPage.HEADER+(maxRecords*params.getRecordLength()) ;
             
-            mgr1 = BlockMgrFactory.createMem(params.getBlockSize()) ;
-            mgr2 = BlockMgrFactory.createMem(rSize) ;
+            mgr1 = BlockMgrFactory.createMem("Nodes", params.getBlockSize()) ;
+            mgr2 = BlockMgrFactory.createMem("Records", rSize) ;
         }
         
         bt = BPlusTree.attach(params, mgr1, mgr2) ;

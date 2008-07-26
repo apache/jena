@@ -21,7 +21,7 @@ public class PGraphFactoryTest
     /** Create a graph backed with storage at a location using and BTree indexes (testing) */
     public static PGraphBase createBTree(Location location)
     { 
-        IndexFactoryBTree idxFactory = new IndexFactoryBTree(Const.BlockSizeMem) ;
+        IndexFactoryBTree idxFactory = new IndexFactoryBTree(Const.BlockSizeTest) ;
         IndexBuilder builder = new IndexBuilder(idxFactory,idxFactory) ; 
         return PGraphFactory.create(builder, location) ;
     }
@@ -29,7 +29,7 @@ public class PGraphFactoryTest
     /** Create a graph backed with storage at a location using and BTree indexes (testing) */
     public static PGraphBase createBPlusTree(Location location)
     { 
-        IndexFactoryBPlusTree idxFactory = new IndexFactoryBPlusTree(Const.BlockSizeMem) ;
+        IndexFactoryBPlusTree idxFactory = new IndexFactoryBPlusTree(Const.BlockSizeTest) ;
         IndexBuilder builder = new IndexBuilder(idxFactory,idxFactory) ; 
         return PGraphFactory.create(builder, location) ;
     }
@@ -37,7 +37,7 @@ public class PGraphFactoryTest
     /** Create a graph backed with storage and BTree indexes in-memory (testing) */
     public static PGraphBase createBTreeMem()
     { 
-        IndexFactoryBPlusTreeMem idxFactory = new IndexFactoryBPlusTreeMem(Const.BlockSizeMem) ;
+        IndexFactoryBPlusTreeMem idxFactory = new IndexFactoryBPlusTreeMem(Const.OrderMem) ;
         IndexBuilder builder = new IndexBuilder(idxFactory,idxFactory) ; 
         return PGraphFactory.createMem(builder) ;
     }
@@ -45,7 +45,7 @@ public class PGraphFactoryTest
     /** Create a graph backed with storage and B+Tree indexes in-memory (testing) */
     public static PGraphBase createBPlusTreeMem()
     { 
-        IndexFactoryBTreeMem idxFactory = new IndexFactoryBTreeMem(Const.BlockSizeMem) ;
+        IndexFactoryBTreeMem idxFactory = new IndexFactoryBTreeMem(Const.OrderMem) ;
         IndexBuilder builder = new IndexBuilder(idxFactory,idxFactory) ; 
         return PGraphFactory.createMem(builder) ;
     }

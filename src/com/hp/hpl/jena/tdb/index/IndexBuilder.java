@@ -42,12 +42,12 @@ public class IndexBuilder
         {
             case BTree:
             {
-                IndexFactoryBTreeMem idxFactory = new IndexFactoryBTreeMem(Const.BlockSizeMem) ;
+                IndexFactoryBTreeMem idxFactory = new IndexFactoryBTreeMem(Const.OrderMem) ;
                 return new IndexBuilder(idxFactory,idxFactory) ;
             }
             case BPlusTree:
             {
-                IndexFactoryBPlusTreeMem idxFactory = new IndexFactoryBPlusTreeMem(Const.BlockSizeMem) ;
+                IndexFactoryBPlusTreeMem idxFactory = new IndexFactoryBPlusTreeMem(Const.OrderMem) ;
                 return new IndexBuilder(idxFactory,idxFactory) ;
             }
         }

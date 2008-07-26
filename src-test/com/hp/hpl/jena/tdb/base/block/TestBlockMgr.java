@@ -18,7 +18,7 @@ public class TestBlockMgr extends BaseTest
 {
     @Test public void block1()
     {
-        BlockMgr mgr = BlockMgrFactory.createMem(4) ;
+        BlockMgr mgr = BlockMgrFactory.createMem("BPTRecord", 4) ;
         int id = mgr.allocateId() ;
         ByteBuffer bb = mgr.allocateBuffer(id) ;
         bb.putInt(0,1234) ;

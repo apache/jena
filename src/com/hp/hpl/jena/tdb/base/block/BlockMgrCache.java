@@ -24,7 +24,7 @@ public class BlockMgrCache extends BlockMgrWrapper
     // Delayed dirty writes.
     CacheLRU<Integer, ByteBuffer> writeCache = null ;
     
-    private boolean logging = log.isInfoEnabled() ;
+    private boolean logging = log.isDebugEnabled() ;        // Avoid the string assembly overhea.
     private String indexName ; 
     // ---- stats
     long cacheHits = 0 ;
@@ -35,7 +35,7 @@ public class BlockMgrCache extends BlockMgrWrapper
     {
         super(blockMgr) ;
         this.indexName = String.format("%-10s", indexName) ;
-        logging = log.isInfoEnabled() && indexName.startsWith("SPO") ;
+        //logging = log.isInfoEnabled() && indexName.startsWith("SPO") ;
         
         readCache = new CacheLRU<Integer, ByteBuffer>(readSlots) ;
         
@@ -128,16 +128,14 @@ public class BlockMgrCache extends BlockMgrWrapper
             String x = "" ;
             if ( indexName != null )
                 x = indexName+" : ";
-            log.info(String.format("%sH=%d, M=%d, W=%d", x, cacheHits, cacheMisses, cacheWriteHits)) ;
+            //log.info(String.format("%sH=%d, M=%d, W=%d", x, cacheHits, cacheMisses, cacheWriteHits)) ;
+            log("%sH=%d, M=%d, W=%d", x, cacheHits, cacheMisses, cacheWriteHits) ;
         }
         
-        if ( logging )
-        {
-            if ( writeCache != null )
-                log("sync ("+writeCache.size()+" blocks)") ;
-            else
-                log("sync") ;
-        }
+        if ( writeCache != null )
+            log("sync (%d blocks)", writeCache.size()) ;
+        else
+            log("sync") ;
         //if ( force )
         flush() ;
     }
@@ -148,7 +146,7 @@ public class BlockMgrCache extends BlockMgrWrapper
         String msg = String.format(fmt, args) ;
         if ( indexName != null )
              msg = indexName+" : "+msg ;
-        log.info(msg) ;
+        log.debug(msg) ;
     }
     
     @Override

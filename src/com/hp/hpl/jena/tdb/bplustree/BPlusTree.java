@@ -138,14 +138,18 @@ public class BPlusTree implements Iterable<Record>, RangeIndex
     
     /** (Testing mainly) Make an in-memory B+Tree, with copy-in, copy-out block managers */
     public static BPlusTree makeMem(int order, int minRecords, int keyLength, int valueLength)
+    { return makeMem(null, order, minRecords, keyLength, valueLength) ; }
+    
+    /** (Testing mainly) Make an in-memory B+Tree, with copy-in, copy-out block managers */
+    public static BPlusTree makeMem(String name, int order, int minRecords, int keyLength, int valueLength)
     {
         BPlusTreeParams params = new BPlusTreeParams(order, keyLength, valueLength) ;
         
         int maxRecords = 2*minRecords ;
         int rSize = RecordBufferPage.HEADER+(maxRecords*params.getRecordLength()) ;
         
-        BlockMgr mgr1 = BlockMgrFactory.createMem(params.getBlockSize()) ;
-        BlockMgr mgr2 = BlockMgrFactory.createMem(rSize) ;
+        BlockMgr mgr1 = BlockMgrFactory.createMem(name+"(nodes)", params.getBlockSize()) ;
+        BlockMgr mgr2 = BlockMgrFactory.createMem(name+"(records)", rSize) ;
         
         BPlusTree bpTree = BPlusTree.attach(params, mgr1, mgr2) ;
         return bpTree ;

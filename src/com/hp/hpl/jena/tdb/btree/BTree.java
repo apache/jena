@@ -111,10 +111,14 @@ public class BTree implements Iterable<Record>, RangeIndex
     private BTreePageMgr pageMgr ; 
     private BTreeParams bTreeParams ;
     
+    
     public static BTree makeMem(int N, int keyLength, int valueLength)
+    { return makeMem(null, N, keyLength, valueLength) ; }
+    
+    public static BTree makeMem(String name, int N, int keyLength, int valueLength)
     {
         BTreeParams params = new BTreeParams(N, keyLength, valueLength) ;
-        BlockMgr mgr = BlockMgrFactory.createMem(params.getBlockSize()) ;
+        BlockMgr mgr = BlockMgrFactory.createMem(name, params.getBlockSize()) ;
         return new BTree(params, mgr) ;
     }
     

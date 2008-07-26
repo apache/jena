@@ -46,7 +46,7 @@ public class Run
     
     public static void main(String ... args)
     {
-        tdbloader("tdb.ttl", "/home/afs/Datasets/MusicBrainz/tracks.nt") ;
+        tdbloader("--desc=tdb.ttl", "--mem", "/home/afs/Datasets/MusicBrainz/tracks.nt") ;
         
         cache2() ;
         
@@ -210,9 +210,9 @@ public class Run
         System.exit(0) ;
     }
     
-    private static void tdbloader(String assembler, String file)
+    private static void tdbloader(String... args)
     {
-        tdb.tdbloader.main("--desc="+assembler, file) ; 
+        tdb.tdbloader.main(args) ; 
         System.exit(0) ;
     }
     

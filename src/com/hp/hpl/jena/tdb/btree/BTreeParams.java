@@ -83,12 +83,12 @@ public class BTreeParams
     }
 
     
-    public BTreeParams(int N, int keyLen, int valLen)
+    public BTreeParams(int order, int keyLen, int valLen)
     { 
-        this(N, new RecordFactory(keyLen, valLen)) ;
+        this(order, new RecordFactory(keyLen, valLen)) ;
     }
     
-    public BTreeParams(int N, RecordFactory factory)
+    public BTreeParams(int order, RecordFactory factory)
     {
         // BTrees of order one aren't strictly BTrees, where the order is >= 2
         // Order 1 => Min size = 0 and max size = 2*N-1 = 1.
@@ -96,19 +96,19 @@ public class BTreeParams
         // and something will work.  The BTree may have empty nodes
         // (i.e. no keys, single child).
 
-        if ( N < 2 )
-            throw new IllegalArgumentException("BTree: illegal order (min 2): "+N);
+        if ( order < 2 )
+            throw new IllegalArgumentException("BTree: illegal order (min 2): "+order);
 
-        order = N ;
+        this.order = order ;
         recordFactory = factory ;
 
         // Derived constants.
-        MaxRecNonLeaf = 2*N-1 + Gap ;
-        MaxPtr  = 2*N + Gap ; 
-        MinRec = N-1 ;
-        MinPtr  = N ;
+        MaxRecNonLeaf = 2*order-1 + Gap ;
+        MaxPtr  = 2*order + Gap ; 
+        MinRec = order-1 ;
+        MinPtr  = order ;
         
-        SplitIndex = N-1+Gap;
+        SplitIndex = order-1+Gap;
         
         HighRecNonLeaf = MaxRecNonLeaf - 1 ;
         HighPtr  = MaxPtr - 1 ;
@@ -166,8 +166,8 @@ public class BTreeParams
         blockSize -= BlockHeaderSize ;
         
         int X = (blockSize-recordLength)/(recordLength+SizeOfPointer) ;
-        int N = (X+1-Gap)/2 ;
-        return N ;
+        int order = (X+1-Gap)/2 ;
+        return order ;
     }
 
     /** return the size of a block */
