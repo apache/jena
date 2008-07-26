@@ -47,6 +47,9 @@ public class Run
 {
     public static void main(String[] argv) throws Exception
     {
+        // Compressed syntax
+        // match(Subject, Path, Object, PrefixMapping)
+        
         if ( false )
         {
             Model m = ModelFactory.createDefaultModel() ;
