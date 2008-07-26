@@ -21,6 +21,9 @@ public class Dev
      *
      * Joseki needs a container (for DatasetDesc)
      * SDBConnection.getSqlConnection - potential pool point.
+
+     * 3/ Stores are N-connection - allocated to an SDBRequest
+     * store.getConnection().getSqlConnection
      */
 }
 
