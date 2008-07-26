@@ -11,6 +11,8 @@ package dev;
 public class Dev
 {
     // ** Quads and paths interaction (not interacting currently).
+    // See Quadization
+
     // TransformFilterLogAnd (And remove from OpFilter)
 
     // 1 -- New "OpQuadPath = a node + TriplePattern"
