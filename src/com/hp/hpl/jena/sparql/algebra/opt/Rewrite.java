@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package opt;
+package com.hp.hpl.jena.sparql.algebra.opt;
 
 import com.hp.hpl.jena.sparql.algebra.Op;
 

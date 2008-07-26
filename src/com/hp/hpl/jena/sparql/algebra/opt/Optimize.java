@@ -6,7 +6,6 @@
 
 package com.hp.hpl.jena.sparql.algebra.opt;
 
-import opt.Rewrite;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
