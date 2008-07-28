@@ -7,10 +7,11 @@
 package com.hp.hpl.jena.tdb.base.block;
 
 import java.nio.ByteBuffer;
-import java.util.Map.Entry;
+import java.util.Iterator;
 
 import lib.ActionKeyValue;
-import lib.CacheLRU;
+import lib.Cache;
+import lib.CacheFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,10 +20,10 @@ public class BlockMgrCache extends BlockMgrWrapper
 {
     private static Logger log = LoggerFactory.getLogger(BlockMgrCache.class) ;
     // Read cache
-    CacheLRU<Integer, ByteBuffer> readCache = null ;
+    Cache<Integer, ByteBuffer> readCache = null ;
 
     // Delayed dirty writes.
-    CacheLRU<Integer, ByteBuffer> writeCache = null ;
+    Cache<Integer, ByteBuffer> writeCache = null ;
     
     private boolean logging = log.isDebugEnabled() ;        // Avoid the string assembly overhea.
     private String indexName ; 
@@ -37,11 +38,11 @@ public class BlockMgrCache extends BlockMgrWrapper
         this.indexName = String.format("%-10s", indexName) ;
         //logging = log.isInfoEnabled() && indexName.startsWith("SPO") ;
         
-        readCache = new CacheLRU<Integer, ByteBuffer>(readSlots) ;
+        readCache = CacheFactory.createCache(readSlots) ;
         
         if ( writeSlots > 0 )
         {
-            writeCache = new CacheLRU<Integer, ByteBuffer>(writeSlots) ;
+            writeCache = CacheFactory.createCache(writeSlots) ;
             writeCache.setDropHandler(new ActionKeyValue<Integer, ByteBuffer>(){
                 @Override
                 public void apply(Integer id, ByteBuffer bb)
@@ -70,7 +71,7 @@ public class BlockMgrCache extends BlockMgrWrapper
 
     private ByteBuffer fetchEntry(int id, boolean silent)
     {
-        ByteBuffer bb = readCache.get(id) ;
+        ByteBuffer bb = readCache.getObject(id, false) ;
         if ( bb != null )
         {
             cacheHits++ ;
@@ -80,7 +81,7 @@ public class BlockMgrCache extends BlockMgrWrapper
         if ( writeCache != null )
         {
             // Maybe in the dirty blocks still.
-            bb = writeCache.get(id) ;
+            bb = writeCache.getObject(id, false) ;
             if ( bb != null )
             {
                 cacheWriteHits++ ;
@@ -96,7 +97,7 @@ public class BlockMgrCache extends BlockMgrWrapper
             bb = blockMgr.getSilent(id) ;
         else
             bb = blockMgr.get(id) ;
-        readCache.put(id, bb) ;
+        readCache.putObject(id, bb) ;
         return bb ;
     }
 
@@ -106,12 +107,12 @@ public class BlockMgrCache extends BlockMgrWrapper
         log("Put   : %d", id) ;
         
         if ( writeCache != null )
-            writeCache.put(id, block) ;
+            writeCache.putObject(id, block) ;
         else
             blockMgr.put(id, block) ;
 
         //cache.remove(id) ;
-        readCache.put(id, block) ;
+        readCache.putObject(id, block) ;
     }
     
 //    @Override
@@ -161,10 +162,17 @@ public class BlockMgrCache extends BlockMgrWrapper
     {
         if ( writeCache != null )
         {
-            for ( Entry<Integer, ByteBuffer> e : writeCache.entrySet() )
+            Integer[] ids = new Integer[(int)writeCache.size()] ;
+            
+            Iterator<Integer> iter = writeCache.keys() ;
+            for ( int i = 0 ; iter.hasNext() ; i++ )
+                ids[i] = iter.next() ;
+            // Concurrent modification when used in-memory for testing (Java bug?)
+            for ( Integer id : ids )
             {
-                log("Write: %d", e.getKey()) ;
-                blockMgr.put(e.getKey(), e.getValue()) ;
+                ByteBuffer buff = writeCache.getObject(id, false) ; 
+                log("Write: %d", id) ;
+                blockMgr.put(id, buff) ;
             }
             writeCache.clear() ;   
         }

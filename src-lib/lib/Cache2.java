@@ -6,6 +6,9 @@
 
 package lib;
 
+
+import java.util.Iterator;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,18 +23,18 @@ import org.slf4j.LoggerFactory;
  */
 
 // Rename later.  This does not assume that read-only objects are returned (may change)?  
-public class CachePool<Key, T>
+public class Cache2<Key, T> implements Cache<Key, T>
 {
-    private static Logger log = LoggerFactory.getLogger(CachePool.class) ;
+    private static Logger log = LoggerFactory.getLogger(Cache2.class) ;
     private int statsDumpTick = -1 ;
-    private final boolean logging = false ;
+    private final boolean logging = false  ;
     
     // SoftReference<T>? and then app has a hard reference when using.
     // Probably overkill.
     // See TestPool
     private int max ;
     private int min ;
-    CacheLRU<Key, PoolEntry<Key, T>> objects ;
+    CacheLRU.CacheImpl<Key, PoolEntry<Key, T>> objects ;
     
     // Statistics
     private long cacheEntries ;
@@ -39,8 +42,8 @@ public class CachePool<Key, T>
     private long cacheMisses ; 
     private long cacheEjects ;
     
-    public CachePool(int num)            { this(0, num) ; }
-    private CachePool(int min, int max)
+    public Cache2(int num)            { this(0, num) ; }
+    private Cache2(int min, int max)
     { 
         this.min = min ;
         this.max = max ;
@@ -49,14 +52,14 @@ public class CachePool<Key, T>
         cacheMisses = 0 ;
         cacheEjects = 0 ;
         
-        objects = new CacheLRU<Key, PoolEntry<Key, T>>(max) ;
+        objects = new CacheLRU.CacheImpl<Key, PoolEntry<Key, T>>(max) ;
         objects.setDropHandler(new ActionKeyValue<Key, PoolEntry<Key, T>>(){
             @Override
-            public void apply(Key key, PoolEntry<Key, T> value)
+            public void apply(Key key, PoolEntry<Key, T> entry)
             {
                 cacheEjects++ ;
                 if ( logging && log.isDebugEnabled() )
-                    log.debug("Eject: "+str(key)) ;
+                    log.debug("Eject: "+str(key)+ "Hits: "+entry.cacheHit) ;
             }}) ;
     }
 
@@ -82,6 +85,8 @@ public class CachePool<Key, T>
             stats() ;
             return null ;
         }
+        
+        entry.cacheHit++ ;
         
         if ( exclusive )
         {
@@ -210,24 +215,43 @@ public class CachePool<Key, T>
     }
     
     
+    @Override
+    public Iterator<Key> keys()
+    {
+        return objects.keySet().iterator() ;
+    }
+    synchronized
+    public void clear()
+    {
+        if ( logging )
+            log.info("Clear") ;
+        objects.clear() ;
+    }
+    @Override
+    public boolean isEmpty()
+    {
+        return objects.isEmpty() ;
+    }
+    
+    @Override
+    public void setDropHandler(ActionKeyValue<Key, T> dropHandler)
+    {}
+    
+    @Override
+    public long size()
+    {
+        return objects.size() ;
+    }
     private void stats()
     {
         long total = cacheMisses + cacheHits ;
         if ( total != 0 && total%statsDumpTick == 0 )
         {
-            String x = String.format("Hits=%d, Misses=%d, Ejects=%d", cacheHits, cacheMisses, cacheEjects) ;
+            String x = String.format("Size=%d, Hits=%d, Misses=%d, Ejects=%d", size(), cacheHits, cacheMisses, cacheEjects) ;
             log.info(x) ;
         }
     }
     
-    
-    synchronized
-    public void removeAll()
-    {
-        if ( logging )
-            log.info("Remove All") ;
-        objects.clear() ;
-    }
     
     private void Xwarn(String message)
     {
@@ -257,6 +281,7 @@ public class CachePool<Key, T>
     {
         // Ref count = -1 ==> exclusive lock.
         int refCount = 0 ;
+        int cacheHit = 0 ;
 //        enum Status { FREE, ALLOCATED, INVALID } ;
 //        Status status = Status.INVALID ;
         T thing ;

@@ -9,13 +9,12 @@ package com.hp.hpl.jena.tdb.pgraph;
 import static com.hp.hpl.jena.tdb.lib.NodeLib.decode;
 import static com.hp.hpl.jena.tdb.lib.NodeLib.encode;
 import static com.hp.hpl.jena.tdb.lib.NodeLib.setHash;
-import lib.CacheLRU;
+import lib.Cache;
+import lib.CacheFactory;
 import lib.CacheSetLRU;
 
 import com.hp.hpl.jena.graph.Node;
-
 import com.hp.hpl.jena.sparql.util.ALog;
-
 import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile;
 import com.hp.hpl.jena.tdb.base.record.Record;
 import com.hp.hpl.jena.tdb.index.Index;
@@ -29,8 +28,8 @@ public abstract class NodeTableBase implements NodeTable
     private Index nodeHashToId ;        // hash -> int
     
     // Currently, these caches are updated together.
-    private CacheLRU<Node, NodeId> node2id_Cache ;
-    private CacheLRU<NodeId, Node> id2node_Cache ;
+    private Cache<Node, NodeId> node2id_Cache = null ;
+    private Cache<NodeId, Node> id2node_Cache = null ;
     
     // A small cache of "known unknowns" to speed up searching
     // for impossible things.   
@@ -48,10 +47,10 @@ public abstract class NodeTableBase implements NodeTable
     {
         this.nodeHashToId = nodeToId ;
         this.objects = objectFile ;
-        node2id_Cache = 
-            (nodeToIdCacheSize <= 0) ? null : new CacheLRU<Node, NodeId>(nodeToIdCacheSize) ;
-        id2node_Cache = 
-            (idToNodeCacheSize <= 0) ? null : new CacheLRU<NodeId, Node>(idToNodeCacheSize) ;
+        if ( nodeToIdCacheSize > 0) 
+            node2id_Cache = CacheFactory.createCache(nodeToIdCacheSize) ;
+        if ( idToNodeCacheSize > 0)
+            id2node_Cache = CacheFactory.createCache(idToNodeCacheSize) ;
         notPresent = new CacheSetLRU<Node>(100) ;
     }
     
@@ -155,7 +154,7 @@ public abstract class NodeTableBase implements NodeTable
     private Node cacheLookup(NodeId id)
     {
         if ( id2node_Cache == null ) return null ;
-        return id2node_Cache.get(id) ;
+        return id2node_Cache.getObject(id, false) ;
     }
     
     /** Check caches to see if we can map a Node to a NodeId. Returns null on no cache entry. */ 
@@ -164,7 +163,7 @@ public abstract class NodeTableBase implements NodeTable
         // Remember things known (currently) not to exist 
         if ( notPresent.contains(node) ) return null ;
         if ( node2id_Cache == null ) return null ;
-        return node2id_Cache.get(node) ; 
+        return node2id_Cache.getObject(node, false) ; 
     }
 
     /** Update the Node->NodeId caches */
@@ -186,9 +185,9 @@ public abstract class NodeTableBase implements NodeTable
         }
         
         if ( node2id_Cache != null )
-            node2id_Cache.put(node, id) ;
+            node2id_Cache.putObject(node, id) ;
         if ( id2node_Cache != null )
-            id2node_Cache.put(id, node) ;
+            id2node_Cache.putObject(id, node) ;
         if ( notPresent.contains(node) )
             notPresent.remove(node) ;
     }

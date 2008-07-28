@@ -24,10 +24,11 @@ import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 
 public class RecordBufferPage extends PageBase //implements Page
 {
-    // To Consantts
+    // To Constants
     final public static int COUNT      = 0 ;
     final public static int LINK       = 4 ;
     final public static int HEADER     = 8 ;
+    final public static int NO_LINK    = -1 ;
 
     // Interface: "Page" - id, byteBuffer, count
     private static Logger log = LoggerFactory.getLogger(RecordBufferPage.class) ;

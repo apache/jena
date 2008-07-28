@@ -80,7 +80,7 @@ public class NodeTableBDBDirect implements NodeTable
         try {
             if ( nodeCache != null )
             {
-                NodeId id = nodeCache.get(node) ;
+                NodeId id = nodeCache.getObject(node, false) ;
                 if ( id != null )
                     return id ; 
             }
@@ -104,7 +104,7 @@ public class NodeTableBDBDirect implements NodeTable
 
             NodeId nodeId = NodeId.create(x) ;
             if ( nodeCache != null )
-                nodeCache.put(node, nodeId) ; 
+                nodeCache.putObject(node, nodeId) ; 
             return nodeId ;
 
         } catch (DatabaseException dbe) {

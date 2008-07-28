@@ -7,9 +7,11 @@
 package dev;
 
 import lib.FileOps;
-import lib.CachePool;
+import lib.Cache2;
 
 import com.hp.hpl.jena.graph.Graph;
+import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryExecution;
 import com.hp.hpl.jena.query.QueryExecutionFactory;
@@ -19,6 +21,7 @@ import com.hp.hpl.jena.query.ResultSetFormatter;
 import com.hp.hpl.jena.query.Syntax;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.sparql.sse.SSE;
 import com.hp.hpl.jena.tdb.Const;
 import com.hp.hpl.jena.tdb.TDB;
 import com.hp.hpl.jena.tdb.TDBFactory;
@@ -46,6 +49,7 @@ public class Run
     
     public static void main(String ... args)
     {
+        smallGraph() ;
         tdbloader("--desc=tdb.ttl", "--mem", "/home/afs/Datasets/MusicBrainz/tracks.nt") ;
         
         cache2() ;
@@ -63,7 +67,7 @@ public class Run
     
     private static void cache2()
     {
-        CachePool<Integer, String> pool = new CachePool<Integer, String>(2) ;
+        Cache2<Integer, String> pool = new Cache2<Integer, String>(2) ;
         pool.putObject(1, "X1") ;
         pool.putObject(2, "X2") ;
         pool.putObject(3, "X3") ;
@@ -160,19 +164,24 @@ public class Run
         
         Graph graph = TDBFactory.createGraph(loc) ;
         
-//        Node s1 = SSE.parseNode("<s1>") ;
-//        Node p1 = SSE.parseNode("<p1>") ;
-//        Node o1 = SSE.parseNode("<o1>") ;
-//        Node s2 = SSE.parseNode("<s2>") ;
-//        Node p2 = SSE.parseNode("<p2>") ;
-//        Node o2 = SSE.parseNode("<o2>") ;
-//        Triple t1 = new Triple(s1,p1,o1) ; 
-//        Triple t2 = new Triple(s2,p2,o2) ;
-//        
-//        graph.add(t1) ;
-//        graph.add(t2) ;
-//        graph.delete(t1) ;
-        
+        if ( true )
+        {
+            
+            Node s1 = SSE.parseNode("<s1>") ;
+            Node p1 = SSE.parseNode("<p1>") ;
+            Node o1 = SSE.parseNode("<o1>") ;
+            Node s2 = SSE.parseNode("<s2>") ;
+            Node p2 = SSE.parseNode("<p2>") ;
+            Node o2 = SSE.parseNode("<o2>") ;
+            Triple t1 = new Triple(s1,p1,o1) ; 
+            Triple t2 = new Triple(s2,p2,o2) ;
+            
+            graph.add(t1) ;
+            graph.add(t2) ;
+            graph.delete(t1) ;
+            
+            graph.contains(s2, p2, SSE.parseNode("5")) ;
+        }
         
         Model model = ModelFactory.createModelForGraph(graph) ;
         
@@ -187,6 +196,8 @@ public class Run
             System.out.println("Size = "+model.size()) ;
         }
         query("SELECT * { ?s ?p ?o }", model) ;
+        
+        
         model.close() ;
         
         System.exit(0) ;

@@ -1,59 +1,31 @@
 /*
- * (c) Copyright 2007, 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.base.block;
+package lib;
 
-import java.nio.ByteBuffer;
+import java.util.Iterator;
 
-import org.slf4j.Logger;
-
-// Rename as PageManager?
-public abstract class BlockMgrBase implements BlockMgr
+/** A cache */
+public interface Cache<Key, T>
 {
-    protected int blockSize ;
-    protected BlockMgrBase(int blockSize)
-    {
-        this.blockSize = blockSize ;
-    }
-    
-    protected abstract Logger getLog() ;
-    
-    @Override
-    final
-    public int blockSize()
-    { return blockSize ; }
-    
-    @Override
-    public abstract ByteBuffer allocateBuffer(int id) ;
-//    {
-////        if ( getLog().isDebugEnabled() ) 
-////            getLog().debug(format("allocateBuffer(%d)", id)) ;
-//        
-//        return ByteBuffer.allocate(blockSize) ;
-//    }
-    
-    @Override
-    public void finishUpdate()
-    {}
-
-    @Override
-    public void startUpdate()
-    {}
-
-    @Override
-    public void startRead()
-    {}
-
-    @Override
-    public void finishRead()
-    {}
+    public boolean contains(Key key) ;
+    public T getObject(Key key, boolean exclusive) ;
+    public void putObject(Key key, T thing) ;
+    public void promote(Key key) ;
+    public void returnObject(Key key) ;
+    public void removeObject(Key key) ;
+    public Iterator<Key> keys() ;
+    public boolean isEmpty() ;
+    public void clear() ;
+    public long size() ;
+    public void setDropHandler(ActionKeyValue<Key,T> dropHandler) ;
 }
 
 /*
- * (c) Copyright 2007, 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

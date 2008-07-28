@@ -26,7 +26,6 @@ import com.hp.hpl.jena.tdb.base.record.Record;
  * This class adds not peristent state to a RecordBufferPage */
 public final class BPTreeRecords extends BPTreePage
 {
-
     // Could require all Page operations to the RecordBufferPage
     // Page is then an interface and BPTreeNode has the state 
     private static Logger log = LoggerFactory.getLogger(BPTreeRecords.class) ;
@@ -78,7 +77,8 @@ public final class BPTreeRecords extends BPTreePage
         if ( rBuff.size() == 0 )
             return this ;
         
-        if ( Record.keyGT(record, maxRecord()) ) 
+        // Not true if above the last record.
+        if ( this.getLink() != RecordBufferPage.NO_LINK && Record.keyGT(record, maxRecord()) ) 
             error("Record [%s] not in this page: %s", record , this) ;
         return this ;
     }

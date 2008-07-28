@@ -66,7 +66,7 @@ public class RecordBufferPageMgr extends BlockConverter<RecordBufferPage>
             if ( blkType != BlockType.RECORD_BLOCK )
                 throw new RecordException("Not RECORD_BLOCK: "+blkType) ;
             // Initially empty
-            RecordBufferPage rb = new RecordBufferPage(-1, -1, bb, factory, pageMgr, 0) ;
+            RecordBufferPage rb = new RecordBufferPage(NO_LINK, NO_LINK, bb, factory, pageMgr, 0) ;
             return rb ;
         }
 
@@ -75,7 +75,7 @@ public class RecordBufferPageMgr extends BlockConverter<RecordBufferPage>
         {
             int count = byteBuffer.getInt(COUNT) ;
             int linkId = byteBuffer.getInt(LINK) ;
-            RecordBufferPage rb = new RecordBufferPage(-1, linkId, byteBuffer, factory, pageMgr, count) ;
+            RecordBufferPage rb = new RecordBufferPage(NO_LINK, linkId, byteBuffer, factory, pageMgr, count) ;
             return rb ;
         }
 

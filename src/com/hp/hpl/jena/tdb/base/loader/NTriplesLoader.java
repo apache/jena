@@ -136,7 +136,12 @@ public final class NTriplesLoader
         try {
             graph.getEventManager().notifyEvent( graph , GraphEvents.startRead ) ;
             unwrappedReadRDF();
-        } finally {
+        } catch (RuntimeException ex)
+        { 
+            ex.printStackTrace(System.err) ;
+            throw ex ;
+        }
+        finally {
             graph.getEventManager().notifyEvent( graph , GraphEvents.finishRead ) ;
             if ( noCache ) Node.cache(true) ;
         }

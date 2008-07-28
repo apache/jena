@@ -6,54 +6,132 @@
 
 package lib;
 
-import java.util.LinkedHashMap; 
+import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.Map;
+
+import com.hp.hpl.jena.tdb.TDBException;
 
 /**
  * LRU cache using @link{java.util.LinkedHashMap}
  * @author Andy Seaborne
  */
 
-public class CacheLRU<K,V> extends LinkedHashMap<K, V>
+public class CacheLRU<K,V> implements Cache<K,V>
 {
-    int maxEntries ; 
-    ActionKeyValue<K,V> dropHandler = null ;
+    private CacheImpl<K,V> cache ;
     
-    public CacheLRU(int maxSize)
+    //public CacheLRU(int maxSize) { cache = new CacheImpl<K, V>(maxSize) ; }
+    
+    public CacheLRU(float loadFactor, int maxSize) { cache = new CacheImpl<K, V>(loadFactor, maxSize) ; }
+
+    @Override
+    public void clear()
+    { cache.clear() ; }
+
+    @Override
+    public boolean contains(K key)
     {
-        this(0.75f, maxSize) ;
+        return cache.containsKey(key) ;
     }
-    
-    public CacheLRU(float loadFactor, int maxSize)
+
+    @Override
+    public V getObject(K key, boolean exclusive)
     {
-        // True => Access order, which is what makes it LRU
-        
-        // Initial size is max size + slop, rounded up, for the load factor
-        // i.e. it allocate the space needed once at create time.
-        
-        super( Math.round(maxSize/loadFactor+0.5f)+1, loadFactor, true) ;
-        // which is also (int)Math.floor(a + 1f)
-        // and hence can be one larger than needed.  But safer than one less.
-        // +1 is the need for the added entry before the removing the "eldest"
-        maxEntries = maxSize ;
+        return cache.get(key) ;
     }
-    
-    /** Callback for entries when dropped from the cache */
-    public void setDropHandler(ActionKeyValue<K,V> dropHandler)
+
+    @Override
+    public void promote(K key)
     {
-        this.dropHandler = dropHandler ;
+        throw new TDBException("Not implemented") ; 
+    }
+
+    @Override
+    public void putObject(K key, V thing)
+    {
+        cache.put(key, thing) ;
+    }
+
+    @Override
+    public void removeObject(K key)
+    {
+        cache.remove(key) ;
+    }
+
+    @Override
+    public void returnObject(K key)
+    {
+        throw new TDBException("Not implemented") ;
     }
     
     @Override
-    protected boolean removeEldestEntry(Map.Entry<K,V> eldest) 
+    public long size()
     {
-        // Overshoots by one - the new entry is added, then this called.
-        // Initial capacity adjusted to allow for this.
-        
-        boolean b = ( size() > maxEntries ) ;
-        if ( b && dropHandler != null )
-            dropHandler.apply(eldest.getKey(), eldest.getValue()) ;
-        return b ;
+        return cache.size() ;
+    }
+
+    @Override
+    public Iterator<K> keys()
+    {
+        return cache.keySet().iterator() ;
+    }
+
+    @Override
+    public boolean isEmpty()
+    {
+        return cache.isEmpty() ;
+    }
+
+    /** Callback for entries when dropped from the cache */
+    public void setDropHandler(ActionKeyValue<K,V> dropHandler)
+    {
+        cache.setDropHandler(dropHandler) ;
+    }
+
+    static class CacheImpl<K,V> extends LinkedHashMap<K, V>
+    {
+        int maxEntries ; 
+        ActionKeyValue<K,V> dropHandler = null ;
+    
+        public CacheImpl(int maxSize)
+        {
+            this(0.75f, maxSize) ;
+        }
+    
+        public CacheImpl(float loadFactor, int maxSize)
+        {
+            // True => Access order, which is what makes it LRU
+    
+            // Initial size is max size + slop, rounded up, for the load factor
+            // i.e. it allocate the space needed once at create time.
+    
+            super( Math.round(maxSize/loadFactor+0.5f)+1, loadFactor, true) ;
+            // which is also (int)Math.floor(a + 1f)
+            // and hence can be one larger than needed.  But safer than one less.
+            // +1 is the need for the added entry before the removing the "eldest"
+            maxEntries = maxSize ;
+    
+    
+        }
+    
+        /** Callback for entries when dropped from the cache */
+        public void setDropHandler(ActionKeyValue<K,V> dropHandler)
+        {
+            this.dropHandler = dropHandler ;
+        }
+    
+        @Override
+        protected boolean removeEldestEntry(Map.Entry<K,V> eldest) 
+        {
+            // Overshoots by one - the new entry is added, then this called.
+            // Initial capacity adjusted to allow for this.
+    
+            boolean b = ( size() > maxEntries ) ;
+            if ( b && dropHandler != null )
+                dropHandler.apply(eldest.getKey(), eldest.getValue()) ;
+            return b ;
+        }
     }
 }
 

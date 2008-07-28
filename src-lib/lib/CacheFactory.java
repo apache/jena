@@ -1,59 +1,26 @@
 /*
- * (c) Copyright 2007, 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.base.block;
+package lib;
 
-import java.nio.ByteBuffer;
-
-import org.slf4j.Logger;
-
-// Rename as PageManager?
-public abstract class BlockMgrBase implements BlockMgr
+public class CacheFactory
 {
-    protected int blockSize ;
-    protected BlockMgrBase(int blockSize)
+    public static <Key, T> Cache<Key, T> createCache(int maxSize)
     {
-        this.blockSize = blockSize ;
+        return createCache(0.75f, maxSize) ;
     }
     
-    protected abstract Logger getLog() ;
-    
-    @Override
-    final
-    public int blockSize()
-    { return blockSize ; }
-    
-    @Override
-    public abstract ByteBuffer allocateBuffer(int id) ;
-//    {
-////        if ( getLog().isDebugEnabled() ) 
-////            getLog().debug(format("allocateBuffer(%d)", id)) ;
-//        
-//        return ByteBuffer.allocate(blockSize) ;
-//    }
-    
-    @Override
-    public void finishUpdate()
-    {}
-
-    @Override
-    public void startUpdate()
-    {}
-
-    @Override
-    public void startRead()
-    {}
-
-    @Override
-    public void finishRead()
-    {}
+    public static <Key, T> Cache<Key, T> createCache(float loadFactor, int maxSize)
+    {
+        return new CacheLRU<Key, T>(0.75f, maxSize) ;
+    }
 }
 
 /*
- * (c) Copyright 2007, 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

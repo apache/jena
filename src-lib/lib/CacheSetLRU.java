@@ -6,7 +6,6 @@
 
 package lib;
 
-import java.util.Iterator;
 
 public class CacheSetLRU<T>
 {
@@ -15,7 +14,7 @@ public class CacheSetLRU<T>
     Action<T> dropHandler = null ;
     
     static Object theOnlyValue = new Object() ;
-    CacheLRU<T, Object> cacheMap = null ;
+    CacheLRU.CacheImpl<T, Object> cacheMap = null ;
     
     public CacheSetLRU(int maxSize)
     {
@@ -24,14 +23,14 @@ public class CacheSetLRU<T>
     
     public CacheSetLRU(float loadFactor, int maxSize)
     {
-        cacheMap = new CacheLRU<T, Object>(loadFactor, maxSize) ;
+        cacheMap = new CacheLRU.CacheImpl<T, Object>(loadFactor, maxSize) ;
     }
 
-    /** Callback for entries when dropped from the cache */
-    public void setDropHandler(Action<T> dropHandler)
-    {
-        cacheMap.setDropHandler(new Wrapper<T>(dropHandler)) ;
-    }
+//    /** Callback for entries when dropped from the cache */
+//    public void setDropHandler(Action<T> dropHandler)
+//    {
+//        cacheMap.setDropHandler(new Wrapper<T>(dropHandler)) ;
+//    }
     
     // From map action to set action.
     static class Wrapper<T>  implements ActionKeyValue<T, Object>
@@ -46,9 +45,9 @@ public class CacheSetLRU<T>
 
     }
     
-    public boolean add(T e)
+    public void add(T e)
     {
-        return cacheMap.put(e, theOnlyValue) == null ;
+        cacheMap.put(e, theOnlyValue) ;
     }
 
 
@@ -70,19 +69,19 @@ public class CacheSetLRU<T>
     }
 
 
-    public Iterator<T> iterator()
+//    public Iterator<T> iterator()
+//    {
+//        return cacheMap.keySet().iterator() ;
+//    }
+
+
+    public void remove(T obj)
     {
-        return cacheMap.keySet().iterator() ;
+        cacheMap.remove(obj);
     }
 
 
-    public boolean remove(T obj)
-    {
-        return cacheMap.remove(obj) != null ;
-    }
-
-
-    public int size()
+    public long size()
     {
         return cacheMap.size() ;
     }

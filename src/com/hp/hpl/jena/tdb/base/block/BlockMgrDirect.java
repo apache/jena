@@ -26,6 +26,15 @@ public class BlockMgrDirect extends BlockMgrFile
     }
     
     @Override
+    public ByteBuffer allocateBuffer(int id)
+    {
+//    if ( getLog().isDebugEnabled() ) 
+//        getLog().debug(format("allocateBuffer(%d)", id)) ;
+    
+        return ByteBuffer.allocate(blockSize) ;
+    }
+
+    @Override
     public ByteBuffer get(int id)
     {
         if ( log.isDebugEnabled() ) 

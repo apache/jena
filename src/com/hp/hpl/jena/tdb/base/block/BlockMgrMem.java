@@ -62,6 +62,20 @@ public class BlockMgrMem extends BlockMgrBase
     }
     
     @Override
+    public ByteBuffer allocateBuffer(int id)
+    {
+//    if ( getLog().isDebugEnabled() ) 
+//        getLog().debug(format("allocateBuffer(%d)", id)) ;
+    
+        ByteBuffer bb = ByteBuffer.allocate(blockSize) ;
+        ByteBuffer bb2 = blocks.get(id) ;
+        if ( bb2 != null )
+            throw new BlockException("Block overwrite: "+id) ;
+        blocks.set(id, bb) ;
+        return bb ;
+    }
+    
+    @Override
     public ByteBuffer get(int id)
     {
         check(id) ;

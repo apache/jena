@@ -11,7 +11,7 @@ import org.junit.Test;
 public class TestPool
 {
     @Test public void pool_01()
-    { CachePool<Integer, String> pool = new CachePool<Integer, String>(2) ; }
+    { Cache2<Integer, String> pool = new Cache2<Integer, String>(2) ; }
     
 }
 
