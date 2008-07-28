@@ -28,7 +28,7 @@ public class SDBConnectionDesc
     private String jdbcURL   = null ;
     private String label     = null ;
     
-    public String rdbType   = null ;    // ModelRDB specific
+    public String rdbType    = null ;    // ModelRDB specific
     
     public static SDBConnectionDesc blank()
     { return new SDBConnectionDesc() ; }
