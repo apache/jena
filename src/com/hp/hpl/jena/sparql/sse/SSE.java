@@ -124,6 +124,16 @@ public class SSE
         return BuilderGraph.buildGraph(item) ;
     }
     
+    /** Read in a file, parse, and obtain a graph */
+    public static void readGraph(Graph graph, String filename) { readGraph(graph, filename, null) ; }
+    
+    /** Read in a file, parse, and obtain a graph */
+    public static void readGraph(Graph graph, String filename, PrefixMapping pmap)
+    {
+        Item item = readFile(filename, pmap) ;
+        BuilderGraph.buildGraph(graph, item) ;
+    }
+    
     /** Read in a file, parse, and obtain a SPARQL algebra op */
     public static Op readOp(String filename) { return Algebra.read(filename) ; }
     
@@ -168,6 +178,9 @@ public class SSE
         catch (FileNotFoundException ex)
         { throw new NotFoundException("Not found: "+filename) ; }
     }
+    
+    /** Parse a string and obtain an SSE item expression (no additional prefix mappings)*/
+    public static Item parseRaw(String str) { return parse(str, new PrefixMappingImpl()) ; }
     
     /** Parse a string and obtain an SSE item expression */
     public static Item parse(String str) { return parse(str, null) ; }

@@ -8,6 +8,9 @@ package com.hp.hpl.jena.sparql.sse.builders;
 
 import java.util.Iterator;
 
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.ModelFactory;
+
 import com.hp.hpl.jena.graph.Factory;
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
@@ -25,8 +28,21 @@ import com.hp.hpl.jena.util.FileManager;
 
 public class BuilderGraph
 {
-
     public static Graph buildGraph(Item item)
+    { 
+        Graph graph = Factory.createDefaultGraph() ;
+        buildGraph(graph, item) ;
+        return graph ;
+    }
+    
+    public static Graph buildGraph(ItemList itemList)
+    { 
+        Graph graph = Factory.createDefaultGraph() ;
+        buildGraph(graph, itemList) ;
+        return graph ;
+    }
+    
+    public static void buildGraph(Graph graph, Item item)
     {
         if (item.isNode() )
             BuilderLib.broken(item, "Attempt to build graph from a plain node") ;
@@ -35,18 +51,24 @@ public class BuilderGraph
             BuilderLib.broken(item, "Attempt to build graph from a bare symbol") ;
 
         if ( item.isTagged(Tags.tagGraph) )
-            return buildGraph(item.getList()) ;
+        {
+            buildGraph(graph, item.getList()) ;
+            return ;
+        }
+        
         if ( item.isTagged(Tags.tagLoad) )
-            return loadGraph(item.getList()) ;
+        {
+           loadGraph(graph, item.getList()) ;
+           return ;
+        }
+        
         BuilderLib.broken(item, "Wanted ("+Tags.tagGraph+"...) or ("+Tags.tagLoad+"...)");
-        return null ;
     }
     
-    public static Graph buildGraph(ItemList list)
+    public static Graph buildGraph(Graph graph, ItemList list)
     {
         BuilderLib.checkTag(list, Tags.tagGraph) ;
         list = list.cdr();
-        Graph graph = Factory.createDefaultGraph() ;
         
         for ( Iterator iter = list.iterator() ; iter.hasNext() ; )
         {
@@ -124,7 +146,7 @@ public class BuilderGraph
     }
     
     
-    private static Graph loadGraph(ItemList list)
+    private static void loadGraph(Graph graph, ItemList list)
     {
         BuilderLib.checkLength(2, list, Tags.tagLoad ) ;
         Item item = list.get(1) ;
@@ -133,7 +155,8 @@ public class BuilderGraph
         String s = NodeUtils.stringLiteral(item.getNode()) ;
         if ( s == null )
             BuilderLib.broken(item, "Expected: ("+Tags.tagLoad+" 'filename')") ;
-        return FileManager.get().loadModel(s).getGraph() ;
+        Model model = ModelFactory.createModelForGraph(graph) ;
+        FileManager.get().readModel(model, s) ;
     }
     
     public static Triple buildTriple(ItemList list)

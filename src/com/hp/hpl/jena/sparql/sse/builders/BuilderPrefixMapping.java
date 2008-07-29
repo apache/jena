@@ -81,13 +81,13 @@ public class BuilderPrefixMapping
 //            }            
 
             if ( prefix == null )
-                BuilderLib.broken(pair, "Prefix part nor recognized: "+prefixItem) ;
+                BuilderLib.broken(pair, "Prefix part not recognized: "+prefixItem) ;
             
             if ( ! prefix.endsWith(":") )
                 BuilderLib.broken(pair, "Prefix part does not end with a ':': "+pair) ;
             prefix = prefix.substring(0, prefix.length()-1) ;
             if ( StringUtils.contains(prefix, ":") )
-                BuilderLib.broken(pair, "Prefix itseld contains a ':' : "+pair) ;
+                BuilderLib.broken(pair, "Prefix itself contains a ':' : "+pair) ;
             // -- /Prefix
             
             Node iriNode = iriItem.getNode() ;
