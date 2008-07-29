@@ -21,7 +21,7 @@ public interface BlockMgr
     public boolean isEmpty() ; 
     
     /** Block size */
-    public int blockSize() ; 
+    public int blockSize() ;
 
     // Renaming?
     // get->allocate

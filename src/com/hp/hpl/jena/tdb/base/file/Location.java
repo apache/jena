@@ -83,6 +83,12 @@ public class Location
     }
 
     /** Return an absolute filename where relative names are resolved from the location */ 
+    public String absolute(String filename, String extension)
+    { 
+        return (extension == null) ? absolute(filename) : absolute(filename+"."+extension) ;
+    }
+    
+    /** Return an absolute filename where relative names are resolved from the location */ 
     public String absolute(String filename)
     {
         File f = new File(filename) ;

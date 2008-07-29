@@ -1,53 +1,43 @@
 /*
- * (c) Copyright 2007, 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.base.block;
+package com.hp.hpl.jena.tdb.base.file;
 
-import java.nio.ByteBuffer;
-
-import org.slf4j.Logger;
-
-// Rename as PageManager?
-public abstract class BlockMgrBase implements BlockMgr
+public class FileIO
 {
-    protected int blockSize ;
-    protected BlockMgrBase(int blockSize)
+    public enum Mode { CLOSED, MMAP, DIRECT, EXCLUSIVE } ;
+    
+    private Location location ;
+    private String entryName ;
+    private String ext ;
+
+    public FileIO(Location location, String entryName)
     {
-        this.blockSize = blockSize ;
+        this(location, entryName, null) ;
     }
     
-    protected abstract Logger getLog() ;
+    public FileIO(Location location, String entryName, String ext)
+    {
+        this.location = location ;
+        this.entryName = entryName ;
+        this.ext = ext ;
+    }
     
-    @Override
-    final
-    public int blockSize()
-    { return blockSize ; }
+    // See FileBase
+    // Maybe "a PageMgr" - more than a file.
+    // Always a BlockMgr?
+    public void open(int mode) {}
+    public void close() {}
     
-    @Override
-    public abstract ByteBuffer allocateBuffer(int id) ;
-    
-    @Override
-    public void finishUpdate()
-    {}
-
-    @Override
-    public void startUpdate()
-    {}
-
-    @Override
-    public void startRead()
-    {}
-
-    @Override
-    public void finishRead()
-    {}
+    public Location getLocation() { return location ; } 
+    public String getPath() { return location.getPath(entryName, ext) ; }
 }
 
 /*
- * (c) Copyright 2007, 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

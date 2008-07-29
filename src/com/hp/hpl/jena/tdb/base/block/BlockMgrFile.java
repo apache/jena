@@ -29,8 +29,6 @@ public abstract class BlockMgrFile extends BlockMgrBase
     protected long numFileBlocks = -1 ;
     protected boolean isEmpty = false ;
     
-
-    
     // Better for ids?
     //private final AtomicLong numFileBlocks ;
     

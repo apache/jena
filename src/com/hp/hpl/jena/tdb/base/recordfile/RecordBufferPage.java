@@ -6,12 +6,9 @@
 
 package com.hp.hpl.jena.tdb.base.recordfile;
 
-import java.nio.ByteBuffer;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import io.IndentedWriter;
+
+import java.nio.ByteBuffer;
 
 import com.hp.hpl.jena.tdb.base.buffer.RecordBuffer;
 import com.hp.hpl.jena.tdb.base.page.PageBase;
@@ -31,7 +28,6 @@ public class RecordBufferPage extends PageBase //implements Page
     final public static int NO_LINK    = -1 ;
 
     // Interface: "Page" - id, byteBuffer, count
-    private static Logger log = LoggerFactory.getLogger(RecordBufferPage.class) ;
     private RecordBuffer recBuff ;
     private RecordBufferPageMgr pageMgr ;
  

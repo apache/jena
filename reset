@@ -1,0 +1,4 @@
+#!/bin/bash
+# Make directories that svn removes on a forced update.
+
+mkdir DB DB2 reports tmp lib2

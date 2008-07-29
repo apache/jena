@@ -13,15 +13,17 @@ public class Dev
     // Check caches.
     //   More aggressively cache B+Tree indexes
     
-    // BlockMgr - get() ==> pin() and unpin() (with checking!)
-    
+    // tdbloader: 
+    //   close indexes not in use in a given phase
+    //   Especially efficient iterator() for B+Trees (not mmap).
+
     // Node table caching?
-    // Use of java properties fro key values.
-    // Different names for nodes.dat file under the two schemes.
+    // Use of java properties for key values.
 
     // CI:     CC dashboard assumes the use of ant default target
 
     // Huge store : 96bits hash ids?
+    // Cluster store: machine/type/value 8/8/64 => 80 bits 
     // IndexBuilder to migrate to be policy for data files as well.
     
     // removeAll implementation: depends on iterator.remove

@@ -35,7 +35,7 @@ public class BlockMgrCache extends BlockMgrWrapper
     public BlockMgrCache(String indexName, int readSlots, int writeSlots, final BlockMgr blockMgr)
     {
         super(blockMgr) ;
-        this.indexName = String.format("%-10s", indexName) ;
+        this.indexName = String.format("%-12s", indexName) ;
         //logging = log.isInfoEnabled() && indexName.startsWith("SPO") ;
         
         readCache = CacheFactory.createCache(readSlots) ;

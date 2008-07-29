@@ -63,13 +63,15 @@ public class BlockMgrMapped extends BlockMgrFile
         if ( getLog().isDebugEnabled() ) 
             getLog().debug(format("allocateBuffer(%d)", id)) ;
         ByteBuffer bb = getSilent(id) ;
-        // clear out bb ;
         bb.position(0) ;
-        for ( int i = 0 ; i < bb.limit(); i ++ )
-            bb.put(0, (byte)0xFF) ;
-
-        bb.putInt(0,0) ;
-        bb.position(0) ;
+        if ( false )
+        {
+            // clear out bb ;
+            for ( int i = 0 ; i < bb.limit(); i ++ )
+                bb.put(0, (byte)0xFF) ;
+            //bb.putInt(0,0) ;
+            //bb.position(0) ;
+        }
         return bb ;
     }
     
@@ -85,8 +87,8 @@ public class BlockMgrMapped extends BlockMgrFile
     public ByteBuffer getSilent(int id)
     {
             check(id) ;
-            int seg = segment(id) ;                     // Segment.
-            int segOff = byteOffset(id) ;      // Byte offset in segement
+            int seg = segment(id) ;                 // Segment.
+            int segOff = byteOffset(id) ;           // Byte offset in segement
     
             if ( getLog().isDebugEnabled() ) 
                 getLog().debug(format("%d => [%d, %d]", id, seg, segOff)) ;
