@@ -7,19 +7,27 @@
 package com.hp.hpl.jena.tdb.solver;
 
 import iterator.Iter;
+import iterator.Transform;
 
+import java.util.Iterator;
 import java.util.List;
 
 import com.hp.hpl.jena.graph.Graph;
+import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 
 import com.hp.hpl.jena.sparql.core.BasicPattern;
+import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
-import com.hp.hpl.jena.sparql.engine.main.Stage;
+import com.hp.hpl.jena.sparql.engine.QueryIterator;
+import com.hp.hpl.jena.sparql.engine.binding.Binding;
+import com.hp.hpl.jena.sparql.engine.binding.BindingMap;
+import com.hp.hpl.jena.sparql.engine.iterator.QueryIterPlainWrapper;
 import com.hp.hpl.jena.sparql.engine.main.StageGenerator;
-import com.hp.hpl.jena.sparql.engine.main.StageList;
+import com.hp.hpl.jena.sparql.util.ALog;
 
 import com.hp.hpl.jena.tdb.TDB;
+import com.hp.hpl.jena.tdb.pgraph.NodeId;
 import com.hp.hpl.jena.tdb.pgraph.PGraphBase;
 
 public class StageGeneratorPGraphBGP implements StageGenerator
@@ -31,38 +39,133 @@ public class StageGeneratorPGraphBGP implements StageGenerator
         above = original ;
     }
     
-    public StageList compile(BasicPattern pattern, 
-                             ExecutionContext execCxt)
+    @Override
+    public QueryIterator execute(BasicPattern pattern, QueryIterator input, ExecutionContext execCxt)
     {
+        // --- In case we are misdirected (or mixed dataset)
         Graph g = execCxt.getActiveGraph() ;
         if ( ! ( g instanceof PGraphBase ) )
-            return above.compile(pattern, execCxt) ;
+            return above.execute(pattern, input, execCxt) ;
         
-        PGraphBase graph = (PGraphBase)g ;
+        PGraphBase graph =(PGraphBase)g ;
         
         @SuppressWarnings("unchecked")
         List<Triple> triples = (List<Triple>)pattern.getList() ;
         
-        triples = reorder(graph, triples) ;
+        // triples = reorder(graph, triples) ;
         
         if ( execCxt.getContext().isTrue(TDB.logBGP) )
         {
             String x = Iter.asString(triples, " . " ) ;
-            System.out.println("BGP: ["+x+"]") ;
+            ALog.info(this, "BGP: ["+x+"]") ;
         }
         
-        Stage stage = new StageBGP(graph, triples) ;
-        StageList sList = new StageList() ;
-        sList.add(stage) ;
-        return sList ;
+        @SuppressWarnings("unchecked")
+        Iterator<Binding> iter = (Iterator<Binding>)input ;
+        Iterator<BindingNodeId> chain = Iter.map(iter, convFromBinding(graph)) ;
+        
+        for ( Triple triple : triples )
+        {
+            chain = solve(graph, chain, triple, execCxt) ;
+            //chain = Iter.debug(chain) ;
+        }
+        
+        Iterator<Binding> iterBinding = Iter.map(chain, convToBinding(graph)) ;
+        return new QueryIterPlainWrapper(iterBinding) ;
     }
 
-    // Externally testable.
-    public static final List<Triple> reorder(PGraphBase graph, List<Triple> triples)
+    private Iterator<BindingNodeId> solve(PGraphBase graph,
+                                          Iterator<BindingNodeId> chain,
+                                          final Triple triple, 
+                                          final ExecutionContext execCxt)
     {
-        ReorderPattern reorderEngine = ReorderLib.get() ;
-        return reorderEngine.reorder(graph, triples) ; 
+        return new MatchOneTriple(graph, chain, triple, execCxt) ;
     }
+    
+    // Transform : BindingNodeId ==> Binding
+    static Transform<BindingNodeId, Binding> convToBinding(final PGraphBase graph)
+    {
+        return new Transform<BindingNodeId, Binding>()
+        {
+            @Override
+            public Binding convert(BindingNodeId bindingNodeIds)
+            {
+                if ( true )
+                    return new BindingTDB(null, bindingNodeIds, graph.getNodeTable()) ;
+                else
+                {
+                    // Makes nodes immediately.  Interacts with FILTERs, causing unecessary NodeTbale accesses. 
+                    Binding b = new BindingMap() ;
+                    for ( Var v : bindingNodeIds )
+                    {
+                        NodeId id = bindingNodeIds.get(v) ;
+                        Node n = graph.getNodeTable().retrieveNode(id) ;
+                        b.add(v, n) ;
+                    }
+                    return b ;
+                }
+            }
+        } ;
+    }
+
+    // Transform : Binding ==> BindingNodeId
+    static Transform<Binding, BindingNodeId> convFromBinding(final PGraphBase graph)
+    {
+        return new Transform<Binding, BindingNodeId>()
+        {
+            @SuppressWarnings("unchecked")
+            @Override
+            public BindingNodeId convert(Binding binding)
+            {
+                BindingNodeId b = new BindingNodeId() ;
+                @SuppressWarnings("unchecked")
+                Iterator<Var> vars = (Iterator<Var>)binding.vars() ;
+
+                for ( ; vars.hasNext() ; )
+                {
+                    Var v = vars.next() ;
+                    Node n = binding.get(v) ;  
+                    // Rely on the node table cache. 
+                    NodeId id = graph.getNodeTable().idForNode(n) ;
+                    b.put(v, id) ;
+                }
+                return b ;
+            }
+        } ;
+    }
+    
+//    public StageList compile(BasicPattern pattern, 
+//                             ExecutionContext execCxt)
+//    {
+//        Graph g = execCxt.getActiveGraph() ;
+//        if ( ! ( g instanceof PGraphBase ) )
+//            return above.compile(pattern, execCxt) ;
+//        
+//        PGraphBase graph = (PGraphBase)g ;
+//        
+//        @SuppressWarnings("unchecked")
+//        List<Triple> triples = (List<Triple>)pattern.getList() ;
+//        
+////        triples = reorder(graph, triples) ;
+//        
+//        if ( execCxt.getContext().isTrue(TDB.logBGP) )
+//        {
+//            String x = Iter.asString(triples, " . " ) ;
+//            System.out.println("BGP: ["+x+"]") ;
+//        }
+//        
+//        Stage stage = new StageBGP(graph, triples) ;
+//        StageList sList = new StageList() ;
+//        sList.add(stage) ;
+//        return sList ;
+//    }
+
+//    // Externally testable.
+//    public static final List<Triple> reorder(PGraphBase graph, List<Triple> triples)
+//    {
+//        ReorderPattern reorderEngine = ReorderLib.get() ;
+//        return reorderEngine.reorder(graph, triples) ; 
+//    }
  }
 
 /*

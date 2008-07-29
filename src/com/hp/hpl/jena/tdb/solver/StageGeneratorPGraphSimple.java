@@ -7,11 +7,13 @@
 package com.hp.hpl.jena.tdb.solver;
 
 import com.hp.hpl.jena.graph.Graph;
+
 import com.hp.hpl.jena.sparql.core.BasicPattern;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
+import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.main.StageGenBasicPattern;
 import com.hp.hpl.jena.sparql.engine.main.StageGenerator;
-import com.hp.hpl.jena.sparql.engine.main.StageList;
+
 import com.hp.hpl.jena.tdb.pgraph.PGraphBase;
 
 // Force to use StageGenBasicPattern
@@ -26,15 +28,15 @@ public class StageGeneratorPGraphSimple extends StageGenBasicPattern
     }
     
     @Override
-    public StageList compile(BasicPattern pattern, 
-                             ExecutionContext execCxt)
+    public QueryIterator execute(BasicPattern pattern, 
+                                 QueryIterator input,
+                                 ExecutionContext execCxt)
     {
         Graph g = execCxt.getActiveGraph() ;
         if ( ! ( g instanceof PGraphBase ) )
-            return above.compile(pattern, execCxt) ;
-        return super.compile(pattern, execCxt) ;
+            return above.execute(pattern, input, execCxt) ;
+        return super.execute(pattern, input, execCxt) ;
     }
-    
 }
 
 /*

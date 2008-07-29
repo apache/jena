@@ -6,16 +6,16 @@
 
 package com.hp.hpl.jena.tdb.solver;
 
-import java.util.List;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.tdb.pgraph.PGraphBase;
+@RunWith(Suite.class)
+@Suite.SuiteClasses( {
+    TestSolver.class, 
+})
 
-public interface ReorderPattern
-{
-    // Can mutate (and return) the list if really necessary.
-    public List<Triple> reorder(PGraphBase graph, List<Triple> triples) ;
-}
+public class TS_Solver
+{}
 
 /*
  * (c) Copyright 2008 Hewlett-Packard Development Company, LP

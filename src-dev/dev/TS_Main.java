@@ -20,6 +20,7 @@ import com.hp.hpl.jena.tdb.base.recordfile.TS_RecordFile;
 import com.hp.hpl.jena.tdb.bplustree.TS_BPlusTree;
 import com.hp.hpl.jena.tdb.btree.TS_BTree;
 import com.hp.hpl.jena.tdb.pgraph.TS_PGraph;
+import com.hp.hpl.jena.tdb.solver.TS_Solver;
 
 // Ideal - find all TS_ classes on the classpath and run.  Like ant does
 
@@ -44,7 +45,8 @@ import com.hp.hpl.jena.tdb.pgraph.TS_PGraph;
 //    TS_AVL.class,
     
     TS_TDB.class,
-    TS_PGraph.class
+    TS_PGraph.class,
+    TS_Solver.class
 
 
 } )

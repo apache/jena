@@ -1,0 +1,6 @@
+(prefix ((: <http://example/>))
+  (graph
+    (:s :p :o)
+    (:s :p :x)
+    (:x :q :y)
+    ))
