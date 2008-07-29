@@ -112,6 +112,7 @@ public class TestSolver extends TestBase
         equals(rs1, rs2) ;
     }
 
+    // ------
     
     private static void equals(ResultSet rs1, ResultSet rs2)
     { same(rs1, rs2, true) ; }
