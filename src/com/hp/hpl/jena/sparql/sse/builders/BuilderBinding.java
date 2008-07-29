@@ -15,7 +15,7 @@ import com.hp.hpl.jena.sparql.sse.ItemList;
 import com.hp.hpl.jena.sparql.sse.Tags;
 import com.hp.hpl.jena.sparql.util.FmtUtils;
 
-class BuilderBinding
+public class BuilderBinding
 {
     public static Binding build(Item item)
     {
