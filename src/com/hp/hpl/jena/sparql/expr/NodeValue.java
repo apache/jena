@@ -846,8 +846,10 @@ public abstract class NodeValue extends ExprNode
     {
         LiteralLabel lit = node.getLiteral() ;
         
+        // 50% of the time of this method is in  isValidLiteral and the lexcial form parsing.
+        
         try { // DatatypeFormatException - should not happen
-
+            
             if ( sameValueAsString && XSDDatatype.XSDstring.isValidLiteral(node.getLiteral()) ) 
                     // String - plain or xsd:string
                 return new NodeValueString(lit.getLexicalForm(), node) ;
