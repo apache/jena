@@ -10,7 +10,7 @@ import com.hp.hpl.jena.sparql.core.BasicPattern;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 
-/** Interface for compilation of a basic graph pattern.
+/** Interface for execution of a basic graph pattern.
  *  A StageGenerator is registred in the context of an query
  *  execution to be found and called by the StageBuilder.
  *  
