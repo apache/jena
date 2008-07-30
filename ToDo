@@ -7,7 +7,6 @@
 
 + Precedence-driven printing PathWriter.
 
-+ Check: JoinClassification involving OpSeq
 ** Stricter rules for property functions - must bind all variables => can do FILTER migration across them.
 
 See ToDoSSE
@@ -15,10 +14,13 @@ See ToDoSSE
 ----
 
 + Prefixes for a query from a model.
+  Abbreviates access match("pattern", model) and get prefixes from model.
 
 + extra jar - testing only.
 
-+ Parser context (to put var allocation things in)
++ Document StageGenerator
+
++ List handling on own documentation page
 
 +  FROM <.....n3>
    but it's application/rdf+xml
@@ -35,12 +37,7 @@ See ToDoSSE
 
 + Wrapper to have all functions as assignments
 
-[DONE/checked]
-  + Ref engine should work on (new style) property functions
-    Test failure is due to { pattern LJ propfunc } - fix the property function! 
-  + Quad engine - does not do property functions.
-  
-+ ORDER BY COUNT(*)
++ ORDER BY COUNT(*) [Partially done]
   i.e. add to the assignments.
   c.f SELECT
   AlgebraGenerator/compileModifiers(Query, Op)
@@ -48,14 +45,7 @@ See ToDoSSE
 + More dateTime arithmetic and durations
   http://www.w3.org/TR/xpath-functions/#dateTime-arithmetic
 
-+ OpOrder to take an ExprList 
-  Query has a list of sort conditions so need turn SortCondition into an expression
-
-+ ResultsFormat (output)vs ResultSetFormat (input)
-  ResultSetFormatter.output as SSE
-  ResultSetFactory input as SSE
-
-+ What is "OpDatasetNames" nowadays?
++ What is "OpDatasetNames" nowadays? yes.
 	A table?  unnecessary?
 	+ Remove OpDatasetNames?? - only needed in quad compilation for GRAPH ?g {}
   Do that a better way (join of all names).
@@ -81,6 +71,10 @@ See ToDoSSE
   	Bindings
 
 == Other
+
++ ResultsFormat (output)vs ResultSetFormat (input)
+  ResultSetFormatter.output as SSE
+  ResultSetFactory input as SSE
 
 + XML results: process xml:lang on other elements than just <literal>
   Documentation for XML result set processing
