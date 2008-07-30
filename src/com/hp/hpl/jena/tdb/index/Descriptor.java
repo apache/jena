@@ -19,7 +19,7 @@ import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 import com.hp.hpl.jena.tdb.lib.NodeLib;
 import com.hp.hpl.jena.tdb.pgraph.NodeId;
 
-public class Descriptor // implements Index3 // And in SPO order
+public class Descriptor
 {
     static interface Selector
     { 
@@ -63,8 +63,6 @@ public class Descriptor // implements Index3 // And in SPO order
     private final RecordFactory recordFactory ;
     private final String description ;
     
-    // Slurp in the mapper.
-    //Selector selectors[] = new Selector[3] ;
     public Descriptor(String desc, RecordFactory recordFactory)
     {
         this.recordFactory = recordFactory ;
