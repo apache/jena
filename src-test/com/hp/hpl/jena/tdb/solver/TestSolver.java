@@ -12,6 +12,11 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.ModelFactory;
+
+import com.hp.hpl.jena.util.FileManager;
+
 import junit.TestBase;
 import lib.StrUtils;
 import org.junit.BeforeClass;
@@ -41,16 +46,16 @@ import com.hp.hpl.jena.tdb.pgraph.PGraphFactory;
 
 public class TestSolver extends TestBase
 {
-    static final String graphData = "testing/data.sse" ;
+    static final String graphData = "testing/data.ttl" ;
     static Graph graph = null ;
     static PrefixMapping pmap = null ;
 
     @BeforeClass static public void beforeClass()
     { 
-        Graph dataGraph = SSE.readGraph(graphData) ;
         graph = PGraphFactory.createMem() ;
-        addAll(dataGraph, graph) ;
-        
+        Model m = ModelFactory.createModelForGraph(graph) ;
+        FileManager.get().readModel(m, graphData) ;
+
         pmap = new PrefixMappingImpl() ;
         pmap.setNsPrefix("", "http://example/") ;
         
@@ -127,8 +132,8 @@ public class TestSolver extends TestBase
             System.out.println("Different: ") ;
             rsw1.reset() ;
             rsw2.reset() ;
-            ResultSetFormatter.asText(rsw1) ;
-            ResultSetFormatter.asText(rsw2) ;
+            ResultSetFormatter.out(rsw1) ;
+            ResultSetFormatter.out(rsw2) ;
             System.out.println() ;
         }
         
