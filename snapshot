@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Where to move the jars to
-LIBDIRS="TDB Joseki3 SDB"
+LIBDIRS="TDB SDB"
 # Where to add the source zip.
 SRCDIRS="TDB SDB"
 
