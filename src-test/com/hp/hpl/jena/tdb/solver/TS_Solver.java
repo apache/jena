@@ -11,7 +11,7 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
-    TestSolver.class, 
+    TestSolver.class
 })
 
 public class TS_Solver
