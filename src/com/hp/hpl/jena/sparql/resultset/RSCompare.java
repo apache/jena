@@ -10,6 +10,7 @@ import java.util.* ;
 
 import com.hp.hpl.jena.query.*;
 import com.hp.hpl.jena.rdf.model.* ;
+import com.hp.hpl.jena.sparql.util.ResultSetUtils;
 import com.hp.hpl.jena.graph.Node;
 
 /** RSCompare - comparision of result sets
@@ -55,10 +56,11 @@ public class RSCompare
      */
     public static boolean sameUnordered(ResultSet rs1, ResultSet rs2)
     {
-        Model model1 = ResultSetFormatter.toModel(rs1) ; 
-        Model model2 = ResultSetFormatter.toModel(rs2) ;
-        
-        return model1.isIsomorphicWith(model2) ;
+        return ResultSetUtils.equals(rs1, rs2) ;
+//        Model model1 = ResultSetFormatter.toModel(rs1) ; 
+//        Model model2 = ResultSetFormatter.toModel(rs2) ;
+//        
+//        return model1.isIsomorphicWith(model2) ;
     }
     
     
