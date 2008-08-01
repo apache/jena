@@ -49,6 +49,8 @@ public class Run
     
     public static void main(String ... args)
     {
+        tdbquery("SELECT * {?s ?p ?o} LIMIT 1") ;
+        
         smallGraph() ;
         tdbloader("--desc=tdb.ttl", "--mem", "/home/afs/Datasets/MusicBrainz/tracks.nt") ;
         
@@ -214,6 +216,13 @@ public class Run
         qexec.close() ;
     }
     
+    private static void tdbquery(String query)
+    {
+        String[] a = { query } ;
+        tdb.tdbquery.main(a) ;
+        System.exit(0) ;
+    }
+    
     private static void tdbquery(String assembler, String query)
     {
         String[] a = { "--set", "tdb:logBGP=true", "--desc="+assembler, query } ;
@@ -224,6 +233,12 @@ public class Run
     private static void tdbloader(String... args)
     {
         tdb.tdbloader.main(args) ; 
+        System.exit(0) ;
+    }
+    
+    private static void tdbdump(String... args)
+    {
+        tdb.tdbdump.main(args) ; 
         System.exit(0) ;
     }
     

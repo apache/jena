@@ -4,46 +4,32 @@
  * [See end of file]
  */
 
-package tdb;
+package com.hp.hpl.jena.tdb.solver;
 
-import tdb.cmdline.CmdTDB;
-import tdb.cmdline.ModTDBDataset;
-import arq.cmdline.ModDataset;
+import java.util.Iterator;
 
-import com.hp.hpl.jena.query.ARQ;
+import com.hp.hpl.jena.sparql.engine.QueryIterator;
+import com.hp.hpl.jena.sparql.engine.binding.Binding;
+import com.hp.hpl.jena.sparql.engine.iterator.QueryIterPlainWrapper;
 
-import com.hp.hpl.jena.tdb.TDB;
-
-
-public class tdbquery extends arq.query
+public class QueryIterTDB extends QueryIterPlainWrapper
 {
+    QueryIterator originalInput ;
     
-    public static void main(String [] argv)
+    // The original input needs closing as well.
+    // Maybe it should be a feature of QueryIterPlainWrapper??
+    public QueryIterTDB(Iterator<Binding> iterBinding, QueryIterator originalInput)
     {
-        new tdbquery(argv).main() ;
-    }
-    
-    public tdbquery(String[] argv)
-    {
-        super(argv) ;
-        // Because this inherits from an ARQ command
-        CmdTDB.init() ;
-    }
-
-    @Override
-    protected void processModulesAndArgs()
-    {
-        super.processModulesAndArgs() ;
-        if ( isVerbose() )
-        {
-            ARQ.getContext().setTrue(TDB.logBGP) ;
-        }
+        super(iterBinding) ;
+        this.originalInput = originalInput ;
     }
     
     @Override
-    protected ModDataset setModDataset()
-    {
-        return new ModTDBDataset() ;
+    protected void closeIterator()
+    { 
+        if ( originalInput != null )
+            originalInput.close();
+        super.closeIterator() ;
     }
 }
 

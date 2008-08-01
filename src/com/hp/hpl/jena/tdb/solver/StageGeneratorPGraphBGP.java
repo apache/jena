@@ -22,7 +22,6 @@ import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.binding.BindingMap;
-import com.hp.hpl.jena.sparql.engine.iterator.QueryIterPlainWrapper;
 import com.hp.hpl.jena.sparql.engine.main.StageGenerator;
 import com.hp.hpl.jena.sparql.util.ALog;
 
@@ -42,7 +41,7 @@ public class StageGeneratorPGraphBGP implements StageGenerator
     @Override
     public QueryIterator execute(BasicPattern pattern, QueryIterator input, ExecutionContext execCxt)
     {
-        // --- In case we are misdirected (or mixed dataset)
+        // --- In case this isn't for TDB
         Graph g = execCxt.getActiveGraph() ;
         if ( ! ( g instanceof PGraphBase ) )
             return above.execute(pattern, input, execCxt) ;
@@ -60,6 +59,7 @@ public class StageGeneratorPGraphBGP implements StageGenerator
             ALog.info(this, "BGP: ["+x+"]") ;
         }
         
+        // XXX How does inoput get closed??
         @SuppressWarnings("unchecked")
         Iterator<Binding> iter = (Iterator<Binding>)input ;
         Iterator<BindingNodeId> chain = Iter.map(iter, convFromBinding(graph)) ;
@@ -71,7 +71,7 @@ public class StageGeneratorPGraphBGP implements StageGenerator
         }
         
         Iterator<Binding> iterBinding = Iter.map(chain, convToBinding(graph)) ;
-        return new QueryIterPlainWrapper(iterBinding) ;
+        return new QueryIterTDB(iterBinding, input) ;
     }
 
     private Iterator<BindingNodeId> solve(PGraphBase graph,

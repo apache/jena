@@ -34,10 +34,9 @@ public class ModTDBDataset extends ModDataset
     // Mixes assembler, location and "tdb"
     // Can make a single model or a dataset
     
-    private ArgDecl argMem              = new ArgDecl(ArgDecl.NoValue, "mem") ;
-    private ModAssembler modAssembler   =  new ModTDBAssembler() ;
-    private ModLocation modLocation     =  new ModLocation() ;
-    private boolean useMemory = false ;
+    private ArgDecl argMem                  = new ArgDecl(ArgDecl.NoValue, "mem") ;
+    private ModTDBAssembler modAssembler    =  new ModTDBAssembler() ;
+    private boolean useMemory               = false ;
     
     public ModTDBDataset() {}
     
@@ -45,28 +44,13 @@ public class ModTDBDataset extends ModDataset
     {
         cmdLine.add(argMem) ; //, "mem", "Memory graph") ;
         cmdLine.addModule(modAssembler) ;
-        cmdLine.addModule(modLocation) ;
     }
 
     public void processArgs(CmdArgModule cmdLine)
     {
         useMemory = cmdLine.contains(argMem) ;
-        modAssembler.processArgs(cmdLine) ;
-        modLocation.processArgs(cmdLine) ;
-            
-        int count = 0 ;
-        if ( modAssembler.getAssemblerFile() != null ) count++ ;
-        if ( modLocation.getLocation() != null ) count++ ;    
-
-        if ( count == 0 )
-        {
-        
-            // throw new CmdException("No assembler file and no location") ;
-        }
-            
-        if ( count > 1 )
-            throw new CmdException("Only one of an assembler file and a location") ;
-    }
+        //-->modAssembler.processArgs(cmdLine) ;
+    }        
 
     private Model model = null ;
     private Graph graph = null ;
@@ -92,8 +76,8 @@ public class ModTDBDataset extends ModDataset
         
         if ( modAssembler.getAssemblerFile() != null )
             return TDBFactory.assembleGraph( modAssembler.getAssemblerFile()) ;
-        if ( modLocation.getLocation() != null )
-            return TDBFactory.createGraph(modLocation.getLocation()) ;
+        if ( modAssembler.getLocation() != null )
+            return TDBFactory.createGraph(modAssembler.getLocation()) ;
         throw new CmdException("Don't know how to make a model") ;
     }
     
@@ -115,7 +99,7 @@ public class ModTDBDataset extends ModDataset
         }
         
         // No assembler - use location (a single graph).
-        Model model = TDBFactory.createModel(modLocation.getLocation()) ;
+        Model model = TDBFactory.createModel(modAssembler.getLocation()) ;
         // Check of type.
         PGraphBase graph = (PGraphBase)model.getGraph() ;
         return DatasetFactory.create(model) ;
@@ -126,8 +110,8 @@ public class ModTDBDataset extends ModDataset
     {
         List<String> locations = new ArrayList<String>() ;  
         
-        if ( modLocation.getLocation() != null )
-            locations.add(modLocation.getLocation().getDirectoryPath()) ;
+        if ( modAssembler.getLocation() != null )
+            locations.add(modAssembler.getLocation().getDirectoryPath()) ;
 
         // Extract the location from the assember file.
         if ( modAssembler.getAssemblerFile() != null )

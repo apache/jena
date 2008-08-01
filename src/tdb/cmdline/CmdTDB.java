@@ -18,7 +18,7 @@ import com.hp.hpl.jena.tdb.pgraph.PGraphBase;
 
 public abstract class CmdTDB extends CmdARQ
 {
-    // CmdTDB act on a single graph
+    // CmdTDB acts on a single graph
     private PGraphBase graph = null ; 
     
     protected ModTDBDataset tdbDatasetAssembler = new ModTDBDataset() ;
