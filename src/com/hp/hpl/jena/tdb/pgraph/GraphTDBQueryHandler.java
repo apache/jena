@@ -11,10 +11,10 @@ import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.query.SimpleQueryHandler;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 
-public class PGraphQueryHandler extends SimpleQueryHandler //implements QueryHandler
+public class GraphTDBQueryHandler extends SimpleQueryHandler //implements QueryHandler
 {
 
-    public PGraphQueryHandler(Graph graph)
+    public GraphTDBQueryHandler(Graph graph)
     {
         super(graph) ;
     }

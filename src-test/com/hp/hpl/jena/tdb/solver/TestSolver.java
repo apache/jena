@@ -42,7 +42,7 @@ import com.hp.hpl.jena.query.ResultSet;
 import com.hp.hpl.jena.query.ResultSetFactory;
 import com.hp.hpl.jena.query.ResultSetFormatter;
 
-import com.hp.hpl.jena.tdb.pgraph.PGraphFactory;
+import com.hp.hpl.jena.tdb.pgraph.GraphTDBFactory;
 
 public class TestSolver extends TestBase
 {
@@ -52,7 +52,7 @@ public class TestSolver extends TestBase
 
     @BeforeClass static public void beforeClass()
     { 
-        graph = PGraphFactory.createMem() ;
+        graph = GraphTDBFactory.createMem() ;
         Model m = ModelFactory.createModelForGraph(graph) ;
         FileManager.get().readModel(m, graphData) ;
 

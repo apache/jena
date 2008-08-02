@@ -8,12 +8,12 @@ package com.hp.hpl.jena.tdb;
 
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.tdb.junit.AbstractTestGraph2;
-import com.hp.hpl.jena.tdb.pgraph.PGraphFactoryTest;
+import com.hp.hpl.jena.tdb.pgraph.GraphTDBFactoryTest;
 
 public class TestGraphBPlusTreeMem2 extends AbstractTestGraph2
 {
     @Override
-    public Graph emptyGraph() { return PGraphFactoryTest.createBPlusTreeMem() ; }
+    public Graph emptyGraph() { return GraphTDBFactoryTest.createBPlusTreeMem() ; }
 }
 
 /*

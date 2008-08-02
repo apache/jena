@@ -12,7 +12,7 @@ import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.sparql.core.assembler.AssemblerUtils;
 import com.hp.hpl.jena.tdb.base.file.Location;
 import com.hp.hpl.jena.tdb.pgraph.GraphTDB;
-import com.hp.hpl.jena.tdb.pgraph.PGraphFactory;
+import com.hp.hpl.jena.tdb.pgraph.GraphTDBFactory;
 import com.hp.hpl.jena.tdb.pgraph.assembler.PGraphAssemblerVocab;
 
 public class TDBFactory
@@ -68,12 +68,12 @@ public class TDBFactory
     
     private static Graph _createGraph()
     {
-        return PGraphFactory.createMem() ;
+        return GraphTDBFactory.createMem() ;
     }
 
     private static Graph _createGraph(Location loc)
     {
-        return PGraphFactory.create(loc) ;
+        return GraphTDBFactory.create(loc) ;
     }
 }
 

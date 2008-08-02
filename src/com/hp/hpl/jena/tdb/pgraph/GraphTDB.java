@@ -63,7 +63,7 @@ public class GraphTDB extends GraphBase implements Sync
     private TripleIndex indexOSP = null ;
     private NodeTable nodeTable = null ;
     
-    private final PGraphQueryHandler queryHandler = new PGraphQueryHandler(this) ;
+    private final GraphTDBQueryHandler queryHandler = new GraphTDBQueryHandler(this) ;
     
     protected GraphTDB() {}   // Must call init!
     

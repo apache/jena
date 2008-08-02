@@ -18,7 +18,7 @@ import com.hp.hpl.jena.tdb.index.TripleIndex;
 
 /** Place to put various "making" things. */
 
-public class PGraphFactory
+public class GraphTDBFactory
 {
     static Logger log = LoggerFactory.getLogger(GraphTDB.class) ;
 
