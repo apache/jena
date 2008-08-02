@@ -6,6 +6,8 @@
 
 package dev;
 
+import java.util.Iterator;
+
 import lib.Pair;
 
 import com.hp.hpl.jena.tdb.Const;
@@ -16,115 +18,113 @@ import com.hp.hpl.jena.tdb.base.record.Record;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 import com.hp.hpl.jena.tdb.base.recordfile.RecordBufferPage;
 import com.hp.hpl.jena.tdb.base.recordfile.RecordBufferPageMgr;
+import com.hp.hpl.jena.tdb.base.recordfile.RecordRangeIterator;
 import com.hp.hpl.jena.tdb.pgraph.GraphTDB;
 
 public class BPlusTreeRewriter
 {
+    // Next: WriteDataFile to send output (split keys) somewhere.
+    
     public static Pair<Long, Long> rewrite(String rootname, String newRootname)
     {
         String filename = rootname+".dat" ;
         String filename2 = newRootname+".dat" ;
-        
-        // Sequential read - OS file caching. 
+
+        WriteDataFile writeDataFile = new WriteDataFile(filename2) ;
+        Iterator<Record> iter = records(filename) ;
+
+        for ( ; iter.hasNext() ; )
+        {
+            Record r = iter.next() ;
+            writeDataFile.write(r) ;
+        }
+
+        writeDataFile.close();
+        return new Pair<Long, Long>(writeDataFile.recordCount, writeDataFile.blockCount) ;
+    }
+
+    private static RecordFactory recordFactory = GraphTDB.indexRecordFactory ;
+    
+    private static RecordRangeIterator records(String filename)
+    {
         BlockMgr blkMgr = BlockMgrFactory.createStdFileNoCache(filename, Const.BlockSize) ;
-        RecordFactory f = GraphTDB.indexRecordFactory ; 
+        RecordBufferPageMgr recordPageMgr = new RecordBufferPageMgr(recordFactory, blkMgr) ;
+        RecordBufferPage page = recordPageMgr.get(0) ;
+        return new RecordRangeIterator(page, null,null) ;
+    }
 
-        BPlusTreeRewriter bpt = new BPlusTreeRewriter(filename2) ;
-        
-        RecordBufferPageMgr recordPageMgr = new RecordBufferPageMgr(f, blkMgr) ;
-        int idx = 0 ;
-        int n = 0 ;
-        int total = 0 ;
-        
-        while ( idx >= 0 )
+    // Record file writer
+    private static class WriteDataFile
+    {
+
+        private final BlockMgr blkMgr ;
+        private final RecordBufferPageMgr recordPageMgr ;
+
+        // The working variables.
+        private RecordBuffer currentBuffer = null ;
+        private RecordBufferPage currentPage = null ;
+
+        // Counters
+        private long blockCount = 0 ;
+        private long recordCount = 0 ;
+
+        private WriteDataFile(String filename)
         {
-            RecordBufferPage page = recordPageMgr.get(idx) ;
-            //System.out.printf("%04d :: %04d -> %04d [%d, %d]\n", n, page.getId(), page.getLink(), page.getCount(), page.getMaxSize()) ;
-            
-            // ---- 
-            RecordBuffer rb = page.getRecordBuffer() ;
-            //System.out.printf("     :: %d %d\n", rb.getSize(), rb.maxSize() ) ;
-    
-            total += rb.size();
-            for ( int i = 0 ; i < rb.getSize() ; i++ )
+            // No point caching.
+            blkMgr = BlockMgrFactory.createStdFileNoCache(filename, Const.BlockSize) ;
+            recordPageMgr = new RecordBufferPageMgr(recordFactory, blkMgr) ;
+        }
+
+        private void write(Record r)
+        {
+            if ( currentBuffer == null )
+                moveOneOnePage() ;
+            currentBuffer.add(r) ;
+            recordCount++ ;
+            // Now full?
+            // Make a note to write next time.
+            // Delaying means an empty (last) block is not handled until a record is written  
+            if ( currentBuffer.size() >= currentBuffer.maxSize() )
+                currentBuffer = null ;
+        }
+
+        private void moveOneOnePage()
+        {
+            // Write, with link, the old block.
+            int id = recordPageMgr.allocateId() ;
+            if ( currentPage != null )
             {
-                Record r = rb.get(i) ;
-                bpt.write(r) ;
+//              // Check split is the high of lower.
+//              Record r = currentPage.getRecordBuffer().getHigh() ;
+//              Record k = recordFactory.createKeyOnly(r) ;
+//              //System.out.printf("Split = %s\n", k) ;
+                flush(id) ;
             }
-            
-            // ---- Loop on existing page file
-            idx = page.getLink() ;
-            n++ ;
-        }
-        bpt.close();
-        return new Pair<Long, Long>((long)total, (long)n) ;
-    }
-    
-    
-    private static final RecordFactory f = GraphTDB.indexRecordFactory ; 
-    private final BlockMgr blkMgr ;
-    private final RecordBufferPageMgr recordPageMgr ;
-    
-    // The working variables.
-    private RecordBuffer currentBuffer = null ;
-    private RecordBufferPage currentPage = null ;
 
-    
-    private BPlusTreeRewriter(String filename)
-    {
-        // No point caching.
-        blkMgr = BlockMgrFactory.createStdFileNoCache(filename, Const.BlockSize) ;
-        recordPageMgr = new RecordBufferPageMgr(f, blkMgr) ;
-    }
-    
-    private void write(Record r)
-    {
-        if ( currentBuffer == null )
-            moveOneOnePage() ;
-        currentBuffer.add(r) ;
-        // Now full?
-        // Make a note to write next time.
-        // Delaying means an empty (last) block is not handled until a record is written  
-        if ( currentBuffer.size() >= currentBuffer.maxSize() )
-            currentBuffer = null ;
-            
-    }
-    
-    private void moveOneOnePage()
-    {
-        // Write, with link, the old block.
-        int id = recordPageMgr.allocateId() ;
-        if ( currentPage != null )
-        {
-            // Check split is the high of lower.
-            Record r = currentPage.getRecordBuffer().getHigh() ;
-            Record k = f.createKeyOnly(r) ;
-            //System.out.printf("Split = %s\n", k) ;
-            flush(id) ;
+            // Now get new space
+            currentPage = recordPageMgr.create(id) ;
+            currentBuffer = currentPage.getRecordBuffer() ;
         }
-        // Now get new space
-        
-        currentPage = recordPageMgr.create(id) ;
-        currentBuffer = currentPage.getRecordBuffer() ;
-    }
-    
-    private void flush(int _linkId)
-    {
-        if ( currentPage == null )
-            return ;
-        currentPage.setLink(_linkId) ;
-        recordPageMgr.put(currentPage.getId(), currentPage) ;
-        // Release?
-        currentBuffer = null ;
-        currentPage = null ;
-    }
-    
-    private void close()
-    {
-        // End block id.
-        // Flush always writes a block (if currentPage != null)
-        flush(-1) ;
-        blkMgr.close() ;
+
+        private void flush(int linkId)
+        {
+            if ( currentPage == null )
+                return ;
+            currentPage.setLink(linkId) ;
+            recordPageMgr.put(currentPage.getId(), currentPage) ;
+            blockCount++ ;
+            currentBuffer = null ;
+            currentPage = null ;
+        }
+
+        private void close()
+        {
+            // End block id.
+            // Flush always writes a block (if currentPage != null)
+            //  currentPage == null only initially because moveOneOnePage allocates
+            flush(-1) ;
+            blkMgr.close() ;
+        }
     }
 }
 /*

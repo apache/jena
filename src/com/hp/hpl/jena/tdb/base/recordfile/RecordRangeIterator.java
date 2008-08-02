@@ -6,46 +6,58 @@
 
 package com.hp.hpl.jena.tdb.base.recordfile;
 
-import iterator.Iter;
+import static com.hp.hpl.jena.tdb.lib.Lib.decodeIndex;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-
 import com.hp.hpl.jena.tdb.base.record.Record;
-import static com.hp.hpl.jena.tdb.lib.Lib.decodeIndex; 
-
 
 final public
-class BPTreeRangeInterator implements Iterator<Record>
+class RecordRangeIterator implements Iterator<Record>
 {
+    /** Iterate over a range of fromRec (inclusive) to toRec (exclusive) */
     
-    private RecordBufferPage currentPage ;
+    public static Iterator<Record> iterator(RecordBufferPage page, Record fromRec, Record toRec)
+    {
+        return new RecordRangeIterator(page, fromRec, toRec) ;
+    }
+    
+    /** Iterate over all recors from this page onwards */
+    public static Iterator<Record> iterator(RecordBufferPage page)
+    {
+        return new RecordRangeIterator(page, null, null) ;
+    }
+    
+    
+    
+    private RecordBufferPage currentPage ;      // Set null when finished.
     private RecordBufferPageMgr pageMgr ;
     private int currentIdx ;
     private Record slot = null ;
     private final Record maxRec ;
     private final Record minRec ;
     
-    /** Iterate over a range of fromRec (inclusive) to toRec (exclusive) */
+    private long countRecords = 0 ;
+    private long countBlocks = 0 ;
     
-    public static Iterator<Record> iterator(RecordBufferPage page, Record fromRec, Record toRec)
-    {
-        if ( toRec != null && fromRec != null && Record.keyLE(toRec, fromRec) )
-            return Iter.nullIter() ;
 
-        return new BPTreeRangeInterator(page, fromRec, toRec) ;
-    }
-    
-    
-    private BPTreeRangeInterator(RecordBufferPage page, Record fromRec, Record toRec)
+
+    public RecordRangeIterator(RecordBufferPage page, Record fromRec, Record toRec)
     {
+        
         currentPage = page ;
         currentIdx = 0 ;
         this.pageMgr = page.getPageMgr() ;
         this.minRec = fromRec ;
         this.maxRec = toRec ;
         
+        if ( toRec != null && fromRec != null && Record.keyLE(toRec, fromRec) )
+        {
+            currentPage = null ;
+            return ;
+        }
+
         if ( fromRec != null )
         {
             currentIdx = page.getRecordBuffer().find(fromRec) ;
@@ -54,11 +66,6 @@ class BPTreeRangeInterator implements Iterator<Record>
         }
     }
     
-    public static Iterator<Record> iterator(RecordBufferPage page)
-    {
-        return new BPTreeRangeInterator(page, null, null) ;
-    }
-
 
     @Override
     public boolean hasNext()
@@ -79,6 +86,7 @@ class BPTreeRangeInterator implements Iterator<Record>
             }
             
             currentPage = pageMgr.get(link) ;
+            countBlocks++ ;
             currentIdx = 0 ;
         }
             
@@ -86,7 +94,11 @@ class BPTreeRangeInterator implements Iterator<Record>
         currentIdx++ ;
         if ( maxRec != null && Record.keyGE(slot, maxRec) )
             finish() ;
-        return slot != null ;
+        
+        if ( slot == null )
+            return false ;
+        countRecords++ ;
+        return true ;
     }
 
 
@@ -112,6 +124,18 @@ class BPTreeRangeInterator implements Iterator<Record>
     @Override
     public void remove()
     { throw new UnsupportedOperationException("remove") ; }
+
+
+    public long getCountRecords()
+    {
+        return countRecords ;
+    }
+
+
+    public long getCountBlocks()
+    {
+        return countBlocks ;
+    }
 
 }
 

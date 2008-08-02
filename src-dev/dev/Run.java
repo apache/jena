@@ -7,6 +7,7 @@
 package dev;
 
 import lib.Cache2;
+import lib.FileOps;
 import lib.Pair;
 
 import com.hp.hpl.jena.rdf.model.Model;
@@ -87,6 +88,7 @@ public class Run
         
         String root1 = "DB/OSP" ;
         String root2 = "DB/OSP-2" ;
+        FileOps.delete(root2+".dat") ;
         
         Pair<Long, Long> results = BPlusTreeRewriter.rewrite(root1, root2) ;
         long total = results.car() ;
@@ -94,6 +96,7 @@ public class Run
         System.out.printf("Count = %d in %d blocks\n", total, blocks) ;
         System.out.println() ;
         scan(root1+".dat") ;
+        scan(root2+".dat") ;
         System.exit(0) ;
     }
 

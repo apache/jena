@@ -25,7 +25,7 @@ import java.util.Iterator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.hp.hpl.jena.tdb.base.recordfile.BPTreeRangeInterator;
+import com.hp.hpl.jena.tdb.base.recordfile.RecordRangeIterator;
 import com.hp.hpl.jena.tdb.base.recordfile.RecordBufferPage;
 
 import com.hp.hpl.jena.tdb.base.buffer.PtrBuffer;
@@ -1054,7 +1054,7 @@ public final class BPTreeNode extends BPTreePage
             return Iter.nullIter() ;
         
         RecordBufferPage page = btr.getRecordBufferPage()  ;
-        return BPTreeRangeInterator.iterator(page, fromRec, toRec) ;
+        return RecordRangeIterator.iterator(page, fromRec, toRec) ;
     }
     
     Iterator<Record> iterator()
