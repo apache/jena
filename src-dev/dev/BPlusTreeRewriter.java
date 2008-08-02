@@ -53,10 +53,13 @@ public class BPlusTreeRewriter
         return new RecordRangeIterator(page, null,null) ;
     }
 
-    // Record file writer
+    // ---- B+Tree Node Writer
+
+    // XXX
+    
+    // ---- Record file writer
     private static class WriteDataFile
     {
-
         private final BlockMgr blkMgr ;
         private final RecordBufferPageMgr recordPageMgr ;
 
@@ -83,7 +86,10 @@ public class BPlusTreeRewriter
             recordCount++ ;
             // Now full?
             // Make a note to write next time.
-            // Delaying means an empty (last) block is not handled until a record is written  
+            // Delaying means that the block will not be written until
+            // we know another block is needed (at least one record)
+            // so when we then know the link id to a non-empty block.
+            // Requires a flush(-1) on close.
             if ( currentBuffer.size() >= currentBuffer.maxSize() )
                 currentBuffer = null ;
         }
@@ -94,11 +100,10 @@ public class BPlusTreeRewriter
             int id = recordPageMgr.allocateId() ;
             if ( currentPage != null )
             {
-//              // Check split is the high of lower.
-//              Record r = currentPage.getRecordBuffer().getHigh() ;
-//              Record k = recordFactory.createKeyOnly(r) ;
-//              //System.out.printf("Split = %s\n", k) ;
-                flush(id) ;
+              Record r = currentPage.getRecordBuffer().getHigh() ;
+              Record splitKey = recordFactory.createKeyOnly(r) ;
+              // System.out.printf("Split = %s\n", splitKey) ;
+              flush(id) ;
             }
 
             // Now get new space
@@ -121,12 +126,13 @@ public class BPlusTreeRewriter
         {
             // End block id.
             // Flush always writes a block (if currentPage != null)
-            //  currentPage == null only initially because moveOneOnePage allocates
+            // and currentPage == null only initially because moveOneOnePage allocates
             flush(-1) ;
             blkMgr.close() ;
         }
     }
 }
+
 /*
  * (c) Copyright 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
