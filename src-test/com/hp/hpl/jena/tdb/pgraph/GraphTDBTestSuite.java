@@ -6,19 +6,28 @@
 
 package com.hp.hpl.jena.tdb.pgraph;
 
+import junit.framework.TestSuite;
 import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import org.junit.runners.AllTests;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
-    TestNodeId.class, 
-    TestPersistentGraph.class,        // Basic graph tests
-    PGraphTestSuite.class          // Scripted tests
-})
+import com.hp.hpl.jena.tdb.junit.TestFactoryTDB;
 
-public class TS_PGraph
-{ 
-    public static final String testArea = "tmp/testing" ;
+/** Scripted test generation */
+
+@RunWith(AllTests.class)
+public class GraphTDBTestSuite extends TestSuite
+{
+    public static String manifestMain = "testing/manifest.ttl" ;
+    
+    static public TestSuite suite() { return new GraphTDBTestSuite() ; }
+    
+    private GraphTDBTestSuite()
+    {
+        super("PGraph") ;
+        TestFactoryTDB.make(this, manifestMain) ;
+    }
+
+    
 }
 
 /*

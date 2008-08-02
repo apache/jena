@@ -13,12 +13,12 @@ import com.sleepycat.je.*;
 
 import com.hp.hpl.jena.graph.Node;
 
+import com.hp.hpl.jena.tdb.TDBException;
 import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile;
 import com.hp.hpl.jena.tdb.lib.NodeLib;
 import com.hp.hpl.jena.tdb.pgraph.Hash;
 import com.hp.hpl.jena.tdb.pgraph.NodeId;
 import com.hp.hpl.jena.tdb.pgraph.NodeTableBase;
-import com.hp.hpl.jena.tdb.pgraph.PGraphException;
 
 /** Rather than use the Index wrapper, we directly sublcass to provide the index capability for a NodeTable */
 public class NodeTableBDB extends NodeTableBase
@@ -49,10 +49,10 @@ public class NodeTableBDB extends NodeTableBase
 
             status = nodeHashToId.put(txn, entry, idEntry) ;
             if ( status != OperationStatus.SUCCESS )
-                throw new PGraphException("NodeTableBDB.accessIndex: failed to update index: "+status.toString()) ;
+                throw new TDBException("NodeTableBDB.accessIndex: failed to update index: "+status.toString()) ;
             return x ;
         } catch (DatabaseException dbe) {
-            throw new PGraphException("GraphBDB.storeNode", dbe) ;
+            throw new TDBException("GraphBDB.storeNode", dbe) ;
         }
     }
 
@@ -67,7 +67,7 @@ public class NodeTableBDB extends NodeTableBase
     public void close()
     {
         try { nodeHashToId.close() ; }
-        catch (DatabaseException ex) { throw new PGraphException(ex) ; }
+        catch (DatabaseException ex) { throw new TDBException(ex) ; }
         super.close() ;
     }
 

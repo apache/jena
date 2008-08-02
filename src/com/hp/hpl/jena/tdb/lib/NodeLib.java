@@ -26,12 +26,12 @@ import com.hp.hpl.jena.sparql.sse.SSEParseException;
 import com.hp.hpl.jena.sparql.util.ALog;
 import com.hp.hpl.jena.sparql.util.FmtUtils;
 
+import com.hp.hpl.jena.tdb.TDBException;
 import com.hp.hpl.jena.tdb.base.record.Record;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 import com.hp.hpl.jena.tdb.pgraph.Hash;
 import com.hp.hpl.jena.tdb.pgraph.NodeId;
 import com.hp.hpl.jena.tdb.pgraph.NodeType;
-import com.hp.hpl.jena.tdb.pgraph.PGraphException;
 
 public class NodeLib
 {
@@ -88,9 +88,9 @@ public class NodeLib
                      n.getLiteralDatatypeURI(), nt) ;
                 return  ;
             case OTHER:
-                throw new PGraphException("Attempt to hash something strange: "+n) ; 
+                throw new TDBException("Attempt to hash something strange: "+n) ; 
         }
-        throw new PGraphException("NodeType broken: "+n) ; 
+        throw new TDBException("NodeType broken: "+n) ; 
     }
     
     private static void hash(Hash h, String lex, String lang, String datatype, NodeType nodeType)

@@ -11,7 +11,7 @@ import java.util.Iterator;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.tdb.pgraph.NodeId;
 import com.hp.hpl.jena.tdb.pgraph.NodeTable;
-import com.hp.hpl.jena.tdb.pgraph.PGraphBase;
+import com.hp.hpl.jena.tdb.pgraph.GraphTDB;
 
 import arq.cmd.CmdUtils;
 import tdb.cmdline.CmdTDB;
@@ -40,7 +40,7 @@ public class tdbnode extends CmdTDB
     @Override
     protected void exec()
     {
-        PGraphBase graph = getGraph() ;
+        GraphTDB graph = getGraph() ;
         NodeTable nodeTable = graph.getNodeTable() ;
         @SuppressWarnings("unchecked")
         Iterator<String> iter = (Iterator<String>)super.getPositional().iterator() ;

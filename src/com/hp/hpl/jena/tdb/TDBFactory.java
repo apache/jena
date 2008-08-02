@@ -11,7 +11,7 @@ import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.sparql.core.assembler.AssemblerUtils;
 import com.hp.hpl.jena.tdb.base.file.Location;
-import com.hp.hpl.jena.tdb.pgraph.PGraphBase;
+import com.hp.hpl.jena.tdb.pgraph.GraphTDB;
 import com.hp.hpl.jena.tdb.pgraph.PGraphFactory;
 import com.hp.hpl.jena.tdb.pgraph.assembler.PGraphAssemblerVocab;
 
@@ -29,7 +29,7 @@ public class TDBFactory
     public static Graph assembleGraph(String assemblerFile)
     {
         Model m = assembleModel(assemblerFile) ;
-        Graph g = (PGraphBase)m.getGraph() ;
+        Graph g = (GraphTDB)m.getGraph() ;
         return g ;
     }
 

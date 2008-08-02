@@ -14,12 +14,12 @@ import com.hp.hpl.jena.tdb.index.IndexFactoryBPlusTreeMem;
 import com.hp.hpl.jena.tdb.index.IndexFactoryBTree;
 import com.hp.hpl.jena.tdb.index.IndexFactoryBTreeMem;
 
-/** Place to put various "making" explciitly for testing */
+/** Place to put various "making" explicitly for testing */
 
 public class PGraphFactoryTest
 {
     /** Create a graph backed with storage at a location using and BTree indexes (testing) */
-    public static PGraphBase createBTree(Location location)
+    public static GraphTDB createBTree(Location location)
     { 
         IndexFactoryBTree idxFactory = new IndexFactoryBTree(Const.BlockSizeTest) ;
         IndexBuilder builder = new IndexBuilder(idxFactory,idxFactory) ; 
@@ -27,7 +27,7 @@ public class PGraphFactoryTest
     }
 
     /** Create a graph backed with storage at a location using and BTree indexes (testing) */
-    public static PGraphBase createBPlusTree(Location location)
+    public static GraphTDB createBPlusTree(Location location)
     { 
         IndexFactoryBPlusTree idxFactory = new IndexFactoryBPlusTree(Const.BlockSizeTest) ;
         IndexBuilder builder = new IndexBuilder(idxFactory,idxFactory) ; 
@@ -35,7 +35,7 @@ public class PGraphFactoryTest
     }
 
     /** Create a graph backed with storage and BTree indexes in-memory (testing) */
-    public static PGraphBase createBTreeMem()
+    public static GraphTDB createBTreeMem()
     { 
         IndexFactoryBPlusTreeMem idxFactory = new IndexFactoryBPlusTreeMem(Const.OrderMem) ;
         IndexBuilder builder = new IndexBuilder(idxFactory,idxFactory) ; 
@@ -43,7 +43,7 @@ public class PGraphFactoryTest
     }
     
     /** Create a graph backed with storage and B+Tree indexes in-memory (testing) */
-    public static PGraphBase createBPlusTreeMem()
+    public static GraphTDB createBPlusTreeMem()
     { 
         IndexFactoryBTreeMem idxFactory = new IndexFactoryBTreeMem(Const.OrderMem) ;
         IndexBuilder builder = new IndexBuilder(idxFactory,idxFactory) ; 

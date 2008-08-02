@@ -25,7 +25,7 @@ import com.hp.hpl.jena.sparql.util.graph.GraphLoadMonitor;
 
 import com.hp.hpl.jena.tdb.index.TripleIndex;
 import com.hp.hpl.jena.tdb.pgraph.NodeId;
-import com.hp.hpl.jena.tdb.pgraph.PGraphBase;
+import com.hp.hpl.jena.tdb.pgraph.GraphTDB;
 
 /** To directly load data, including manipulaattng the indexes at a quite low level for efficiency.
  * Not efficent for small, incremental additions to a graph.  
@@ -33,7 +33,7 @@ import com.hp.hpl.jena.tdb.pgraph.PGraphBase;
 
 public class PGraphLoader
 {
-    private PGraphBase graph ;
+    private GraphTDB graph ;
     private boolean showProgress ;
     
     private boolean doInParallel  = false ;
@@ -44,13 +44,13 @@ public class PGraphLoader
     private TripleIndex triplesPOS ;
     private TripleIndex triplesOSP ;
 
-    public PGraphLoader(PGraphBase graph, boolean showProgress)
+    public PGraphLoader(GraphTDB graph, boolean showProgress)
     {
         this(graph, showProgress, false, false) ;
     }
     
     /** Create a bulkloader for a graph : showProgress/paralell/incrmental */
-    public PGraphLoader(PGraphBase graph, boolean showProgress, boolean doInParallel, boolean doIncremental)
+    public PGraphLoader(GraphTDB graph, boolean showProgress, boolean doInParallel, boolean doIncremental)
     {
         this.graph = graph ;
         this.showProgress = showProgress ;

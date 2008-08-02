@@ -17,10 +17,10 @@ import lib.Tuple;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.hp.hpl.jena.tdb.TDBException;
 import com.hp.hpl.jena.tdb.base.record.Record;
 import com.hp.hpl.jena.tdb.lib.NodeLib;
 import com.hp.hpl.jena.tdb.pgraph.NodeId;
-import com.hp.hpl.jena.tdb.pgraph.PGraphException;
 
 
 /** A single index of triples.  Uses a Descriptor for SPO<->native order */
@@ -97,7 +97,7 @@ public class TripleIndex
         NodeId Z = desc.getSlot3(s, p, o) ;
         
         if ( X == null )
-            throw new PGraphException("No first key") ;
+            throw new TDBException("No first key") ;
         
 //        if ( Y != null && Z != null )
 //        {

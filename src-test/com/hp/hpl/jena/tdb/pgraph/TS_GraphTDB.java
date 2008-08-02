@@ -4,16 +4,21 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.junit;
+package com.hp.hpl.jena.tdb.pgraph;
 
-import com.hp.hpl.jena.tdb.pgraph.PGraphException;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
-public class PGraphTestException extends PGraphException
-{
-    public PGraphTestException() {}
-    public PGraphTestException(String msg) { super(msg) ; }
-    public PGraphTestException(Throwable th) { super(th) ;}
-    public PGraphTestException(String msg, Throwable th) { super(msg, th) ; }
+@RunWith(Suite.class)
+@Suite.SuiteClasses( {
+    TestNodeId.class, 
+    TestPersistentGraph.class,        // Basic graph tests
+    GraphTDBTestSuite.class          // Scripted tests
+})
+
+public class TS_GraphTDB
+{ 
+    public static final String testArea = "tmp/testing" ;
 }
 
 /*

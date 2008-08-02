@@ -42,7 +42,7 @@ public class GraphLocation
     public Graph createGraph()
     {
         if ( graph != null )
-            throw new PGraphTestException("Graph already in use") ;
+            throw new TDBTestException("Graph already in use") ;
         graph = TDBFactory.createGraph(loc) ;
         model = ModelFactory.createModelForGraph(graph) ;
         return graph ;

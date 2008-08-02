@@ -45,7 +45,7 @@ public class tdbdump extends CmdTDB
     protected void exec()
     {
         Model model = getModel() ;
-        //Graph graph = (PGraphBase)model.getGraph() ;
+        //Graph graph = (GraphTDB)model.getGraph() ;
         String format = modFormat.getFormat("N3-TRIPLES") ;
         model.write(System.out, format) ;
     }

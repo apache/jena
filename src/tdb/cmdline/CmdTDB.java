@@ -14,12 +14,12 @@ import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.sparql.util.Utils;
 
 import com.hp.hpl.jena.tdb.TDB;
-import com.hp.hpl.jena.tdb.pgraph.PGraphBase;
+import com.hp.hpl.jena.tdb.pgraph.GraphTDB;
 
 public abstract class CmdTDB extends CmdARQ
 {
     // CmdTDB acts on a single graph
-    private PGraphBase graph = null ; 
+    private GraphTDB graph = null ; 
     
     protected ModTDBDataset tdbDatasetAssembler = new ModTDBDataset() ;
     
@@ -41,9 +41,9 @@ public abstract class CmdTDB extends CmdARQ
         return tdbDatasetAssembler.getModel() ;
     }
     
-    protected PGraphBase getGraph()
+    protected GraphTDB getGraph()
     {
-        return (PGraphBase)tdbDatasetAssembler.getGraph() ;
+        return (GraphTDB)tdbDatasetAssembler.getGraph() ;
     }
     
     @Override

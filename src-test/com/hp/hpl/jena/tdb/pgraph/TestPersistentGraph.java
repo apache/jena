@@ -23,7 +23,7 @@ public class TestPersistentGraph extends AbstractTestGraph2
     
     @BeforeClass public static void beforeClass()
     {
-        graphLocation = new GraphLocation(new Location(TS_PGraph.testArea)) ;
+        graphLocation = new GraphLocation(new Location(TS_GraphTDB.testArea)) ;
         graphLocation.clearDirectory() ; 
         graphLocation.createGraph() ;
     }

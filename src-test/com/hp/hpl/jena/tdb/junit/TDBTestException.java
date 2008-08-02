@@ -4,30 +4,16 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.pgraph;
+package com.hp.hpl.jena.tdb.junit;
 
-import junit.framework.TestSuite;
-import org.junit.runner.RunWith;
-import org.junit.runners.AllTests;
+import com.hp.hpl.jena.tdb.TDBException;
 
-import com.hp.hpl.jena.tdb.junit.TestFactoryTDB;
-
-/** Scripted test generation */
-
-@RunWith(AllTests.class)
-public class PGraphTestSuite extends TestSuite
+public class TDBTestException extends TDBException
 {
-    public static String manifestMain = "testing/manifest.ttl" ;
-    
-    static public TestSuite suite() { return new PGraphTestSuite() ; }
-    
-    private PGraphTestSuite()
-    {
-        super("PGraph") ;
-        TestFactoryTDB.make(this, manifestMain) ;
-    }
-
-    
+    public TDBTestException() {}
+    public TDBTestException(String msg) { super(msg) ; }
+    public TDBTestException(Throwable th) { super(th) ;}
+    public TDBTestException(String msg, Throwable th) { super(msg, th) ; }
 }
 
 /*

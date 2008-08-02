@@ -23,7 +23,7 @@ public class NodeTableIndex extends NodeTableBase
     {
         super() ;
         
-        Index nodeToId = factory.newIndex(loc, PGraphBase.nodeRecordFactory, Names.indexNode2Id) ;
+        Index nodeToId = factory.newIndex(loc, GraphTDB.nodeRecordFactory, Names.indexNode2Id) ;
             
         // Data file.
         ObjectFile objects = FileFactory.createObjectFileDisk(loc.getPath(Names.nodesData));
@@ -34,7 +34,7 @@ public class NodeTableIndex extends NodeTableBase
     public NodeTableIndex(IndexBuilder factory)
     {
         super() ;
-        Index nodeToId = factory.newIndex(null, PGraphBase.nodeRecordFactory, Names.indexNode2Id) ;
+        Index nodeToId = factory.newIndex(null, GraphTDB.nodeRecordFactory, Names.indexNode2Id) ;
         
         ObjectFile objects = new ObjectFileMem() ;
         init(nodeToId, objects, 100, 100) ;

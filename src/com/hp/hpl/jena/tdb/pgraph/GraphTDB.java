@@ -48,13 +48,13 @@ import com.hp.hpl.jena.tdb.lib.TupleLib;
  *   1/ a subclass can provide an IndexFactory 
  */
 
-public class PGraphBase extends GraphBase implements Sync
+public class GraphTDB extends GraphBase implements Sync
 {
     // ---- Record factories
     public final static RecordFactory indexRecordFactory = new RecordFactory(LenIndexRecord, 0) ; 
     public final static RecordFactory nodeRecordFactory = new RecordFactory(LenNodeHash, SizeOfNodeId) ;
     
-    //static Logger log = LoggerFactory.getLogger(PGraphBase.class) ;
+    //static Logger log = LoggerFactory.getLogger(GraphTDB.class) ;
     
     // Just some renames.  This code does not depend on index order.
     
@@ -65,9 +65,9 @@ public class PGraphBase extends GraphBase implements Sync
     
     private final PGraphQueryHandler queryHandler = new PGraphQueryHandler(this) ;
     
-    protected PGraphBase() {}   // Must call init!
+    protected GraphTDB() {}   // Must call init!
     
-    public PGraphBase(TripleIndex spo, TripleIndex pos, TripleIndex osp, NodeTable nodeTable)
+    public GraphTDB(TripleIndex spo, TripleIndex pos, TripleIndex osp, NodeTable nodeTable)
     {
         if ( spo == null )
             throw new TDBException("SPO index is required") ;
@@ -114,13 +114,13 @@ public class PGraphBase extends GraphBase implements Sync
         if ( indexPOS != null )
         {
             if ( ! indexPOS.add(sId, pId, oId) )
-                throw new PGraphException("POS duplicate: "+t) ;
+                throw new TDBException("POS duplicate: "+t) ;
         }
 
         if ( indexOSP != null )
         {
             if ( ! indexOSP.add(sId, pId, oId) )
-                throw new PGraphException("OSP duplicate: "+t) ;
+                throw new TDBException("OSP duplicate: "+t) ;
         }
     }
 
@@ -140,13 +140,13 @@ public class PGraphBase extends GraphBase implements Sync
         if ( indexPOS != null )
         {
             if ( ! indexPOS.delete(sId, pId, oId) )
-                throw new PGraphException("No POS entry") ;
+                throw new TDBException("No POS entry") ;
         }
         
         if ( indexOSP != null )
         {
             if ( ! indexOSP.delete(sId, pId, oId) )
-                throw new PGraphException("No OSP entry") ;
+                throw new TDBException("No OSP entry") ;
         }
     }
     

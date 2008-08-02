@@ -18,7 +18,7 @@ import arq.cmdline.CmdARQ;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.tdb.index.TripleIndex;
 import com.hp.hpl.jena.tdb.pgraph.NodeId;
-import com.hp.hpl.jena.tdb.pgraph.PGraphBase;
+import com.hp.hpl.jena.tdb.pgraph.GraphTDB;
 
 /** Tools to manage a TDB store.  Subcommand based. */
 public class tdbconfig extends CmdSub
@@ -91,7 +91,7 @@ public class tdbconfig extends CmdSub
         {
             long count = 0 ;
             Map<NodeId, Integer> predicates = new HashMap<NodeId, Integer>(10000) ;
-            PGraphBase graph = getGraph() ;
+            GraphTDB graph = getGraph() ;
             TripleIndex primary = graph.getIndexSPO() ;
             Iterator<Tuple<NodeId>> iter = primary.all() ;
             for ( ; iter.hasNext() ; )

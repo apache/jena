@@ -30,7 +30,7 @@ import com.hp.hpl.jena.tdb.btree.BTreeParams;
 import com.hp.hpl.jena.tdb.lib.NodeLib;
 import com.hp.hpl.jena.tdb.lib.StringAbbrev;
 import com.hp.hpl.jena.tdb.pgraph.NodeId;
-import com.hp.hpl.jena.tdb.pgraph.PGraphBase;
+import com.hp.hpl.jena.tdb.pgraph.GraphTDB;
 import com.sleepycat.je.*;
 
 public class Snippets
@@ -53,14 +53,14 @@ public class Snippets
         if ( disk )
         {
             FileOps.clearDirectory(location.getDirectoryPath()) ;
-            int order = BPlusTreeParams.calcOrder(Const.BlockSize, PGraphBase.indexRecordFactory) ;
-            params = new BPlusTreeParams(order, PGraphBase.indexRecordFactory) ;
+            int order = BPlusTreeParams.calcOrder(Const.BlockSize, GraphTDB.indexRecordFactory) ;
+            params = new BPlusTreeParams(order, GraphTDB.indexRecordFactory) ;
             mgr1 = BlockMgrFactory.createFile(fnNodes, Const.BlockSize) ;
             mgr2 = BlockMgrFactory.createFile(fnRecords, Const.BlockSize) ;
         }
         else
         {
-            params = new BPlusTreeParams(5, PGraphBase.indexRecordFactory.keyLength(), PGraphBase.indexRecordFactory.valueLength()) ;
+            params = new BPlusTreeParams(5, GraphTDB.indexRecordFactory.keyLength(), GraphTDB.indexRecordFactory.valueLength()) ;
             
             int maxRecords = 2*5 ;
             int rSize = RecordBufferPage.HEADER+(maxRecords*params.getRecordLength()) ;
@@ -71,7 +71,7 @@ public class Snippets
         
         bt = BPlusTree.attach(params, mgr1, mgr2) ;
         NodeId n = NodeId.create(0x41424344) ;
-        Record rn = NodeLib.record(PGraphBase.indexRecordFactory, n, n, n) ;
+        Record rn = NodeLib.record(GraphTDB.indexRecordFactory, n, n, n) ;
         bt.add(rn) ;
         bt.sync(true) ;
         

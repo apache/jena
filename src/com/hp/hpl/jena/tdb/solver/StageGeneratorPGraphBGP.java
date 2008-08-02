@@ -27,7 +27,7 @@ import com.hp.hpl.jena.sparql.util.ALog;
 
 import com.hp.hpl.jena.tdb.TDB;
 import com.hp.hpl.jena.tdb.pgraph.NodeId;
-import com.hp.hpl.jena.tdb.pgraph.PGraphBase;
+import com.hp.hpl.jena.tdb.pgraph.GraphTDB;
 
 public class StageGeneratorPGraphBGP implements StageGenerator
 {
@@ -43,10 +43,10 @@ public class StageGeneratorPGraphBGP implements StageGenerator
     {
         // --- In case this isn't for TDB
         Graph g = execCxt.getActiveGraph() ;
-        if ( ! ( g instanceof PGraphBase ) )
+        if ( ! ( g instanceof GraphTDB ) )
             return above.execute(pattern, input, execCxt) ;
         
-        PGraphBase graph =(PGraphBase)g ;
+        GraphTDB graph =(GraphTDB)g ;
         
         @SuppressWarnings("unchecked")
         List<Triple> triples = (List<Triple>)pattern.getList() ;
@@ -74,7 +74,7 @@ public class StageGeneratorPGraphBGP implements StageGenerator
         return new QueryIterTDB(iterBinding, input) ;
     }
 
-    private Iterator<BindingNodeId> solve(PGraphBase graph,
+    private Iterator<BindingNodeId> solve(GraphTDB graph,
                                           Iterator<BindingNodeId> chain,
                                           final Triple triple, 
                                           final ExecutionContext execCxt)
@@ -83,7 +83,7 @@ public class StageGeneratorPGraphBGP implements StageGenerator
     }
     
     // Transform : BindingNodeId ==> Binding
-    static Transform<BindingNodeId, Binding> convToBinding(final PGraphBase graph)
+    static Transform<BindingNodeId, Binding> convToBinding(final GraphTDB graph)
     {
         return new Transform<BindingNodeId, Binding>()
         {
@@ -109,7 +109,7 @@ public class StageGeneratorPGraphBGP implements StageGenerator
     }
 
     // Transform : Binding ==> BindingNodeId
-    static Transform<Binding, BindingNodeId> convFromBinding(final PGraphBase graph)
+    static Transform<Binding, BindingNodeId> convFromBinding(final GraphTDB graph)
     {
         return new Transform<Binding, BindingNodeId>()
         {
@@ -138,10 +138,10 @@ public class StageGeneratorPGraphBGP implements StageGenerator
 //                             ExecutionContext execCxt)
 //    {
 //        Graph g = execCxt.getActiveGraph() ;
-//        if ( ! ( g instanceof PGraphBase ) )
+//        if ( ! ( g instanceof GraphTDB ) )
 //            return above.compile(pattern, execCxt) ;
 //        
-//        PGraphBase graph = (PGraphBase)g ;
+//        GraphTDB graph = (GraphTDB)g ;
 //        
 //        @SuppressWarnings("unchecked")
 //        List<Triple> triples = (List<Triple>)pattern.getList() ;
@@ -161,7 +161,7 @@ public class StageGeneratorPGraphBGP implements StageGenerator
 //    }
 
 //    // Externally testable.
-//    public static final List<Triple> reorder(PGraphBase graph, List<Triple> triples)
+//    public static final List<Triple> reorder(GraphTDB graph, List<Triple> triples)
 //    {
 //        ReorderPattern reorderEngine = ReorderLib.get() ;
 //        return reorderEngine.reorder(graph, triples) ; 

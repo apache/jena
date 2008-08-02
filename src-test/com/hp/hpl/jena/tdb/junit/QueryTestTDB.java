@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.tdb.base.file.Location;
-import com.hp.hpl.jena.tdb.pgraph.TS_PGraph;
+import com.hp.hpl.jena.tdb.pgraph.TS_GraphTDB;
 import com.hp.hpl.jena.util.FileManager;
 
 import com.hp.hpl.jena.sparql.engine.QueryEngineFactory;
@@ -54,7 +54,7 @@ public class QueryTestTDB extends EarlTestCase
     {
         if ( graphLocation == null )
         {
-            graphLocation = new GraphLocation(new Location(TS_PGraph.testArea)) ;
+            graphLocation = new GraphLocation(new Location(TS_GraphTDB.testArea)) ;
             graphLocation.clearDirectory() ; 
             graphLocation.createGraph() ;
             model = graphLocation.getModel() ;
@@ -75,10 +75,10 @@ public class QueryTestTDB extends EarlTestCase
             return ;
         
         if ( named != null && named.size() > 0 )
-            throw new PGraphTestException("No named graphs yet") ;
+            throw new TDBTestException("No named graphs yet") ;
         
         if ( current == null )
-            throw new PGraphTestException("No default graphs given") ;
+            throw new TDBTestException("No default graphs given") ;
 
         graphLocation.clearGraph() ;
         

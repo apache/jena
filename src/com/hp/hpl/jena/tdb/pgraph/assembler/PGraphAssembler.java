@@ -33,7 +33,7 @@ import com.hp.hpl.jena.tdb.index.IndexBuilder;
 import com.hp.hpl.jena.tdb.index.TripleIndex;
 import com.hp.hpl.jena.tdb.pgraph.NodeTable;
 import com.hp.hpl.jena.tdb.pgraph.NodeTableIndex;
-import com.hp.hpl.jena.tdb.pgraph.PGraphBase;
+import com.hp.hpl.jena.tdb.pgraph.GraphTDB;
 
 public class PGraphAssembler extends AssemblerBase implements Assembler
 {
@@ -92,7 +92,7 @@ public class PGraphAssembler extends AssemblerBase implements Assembler
         
         NodeTable nodeTable = new NodeTableIndex(IndexBuilder.get(), loc) ;
         
-        PGraphBase graph = new PGraphBase(indexes.get(Names.indexSPO), 
+        GraphTDB graph = new GraphTDB(indexes.get(Names.indexSPO), 
                                           indexes.get(Names.indexPOS),               
                                           indexes.get(Names.indexOSP), nodeTable) ;
         return ModelFactory.createModelForGraph(graph) ;

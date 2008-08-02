@@ -33,7 +33,7 @@ import com.hp.hpl.jena.tdb.base.record.Record;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 import com.hp.hpl.jena.tdb.base.recordfile.RecordBufferPage;
 import com.hp.hpl.jena.tdb.base.recordfile.RecordBufferPageMgr;
-import com.hp.hpl.jena.tdb.pgraph.PGraphBase;
+import com.hp.hpl.jena.tdb.pgraph.GraphTDB;
 import com.hp.hpl.jena.util.FileManager;
 
 public class Run
@@ -90,7 +90,7 @@ public class Run
         divider() ;
         String filename = "DB/OSP.dat" ;
         BlockMgr blkMgr = BlockMgrFactory.createFile(filename, Const.BlockSize) ;
-        RecordFactory f = PGraphBase.indexRecordFactory ; 
+        RecordFactory f = GraphTDB.indexRecordFactory ; 
 
         String filename2 = "DB/OSP-2.dat" ;
         // Must not exist
@@ -134,7 +134,7 @@ public class Run
     static void scan(String filename)
     {
         BlockMgr blkMgr = BlockMgrFactory.createFile(filename, Const.BlockSize) ;
-        RecordFactory f = PGraphBase.indexRecordFactory ; 
+        RecordFactory f = GraphTDB.indexRecordFactory ; 
         RecordBufferPageMgr recordPageMgr = new RecordBufferPageMgr(f, blkMgr) ;
         int idx = 0 ;
         int n = 0 ;
@@ -194,7 +194,7 @@ public class Run
         {  
             System.out.println("**** Load data") ;
             FileManager.get().readModel(model, "D.ttl") ;
-            ((PGraphBase)graph).sync(true) ;
+            ((GraphTDB)graph).sync(true) ;
             System.out.println("Size = "+model.size()) ;
         }
         query("SELECT * { ?s ?p ?o }", model) ;

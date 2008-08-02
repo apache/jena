@@ -18,12 +18,12 @@ import com.sleepycat.je.Transaction;
 
 
 /** Jena persistent graph implemented using BDB (Java Edition).  Node storage using an external file. */
-public class GraphBDB extends PGraphBase
+public class GraphBDB extends GraphTDB
 {
     private Transaction txn = null ;
     private SetupBDB config ;
  
-    public static PGraphBase create(String dirname) { return new GraphBDB(dirname) ; }
+    public static GraphTDB create(String dirname) { return new GraphBDB(dirname) ; }
     
     private GraphBDB(String dirname)
     {
@@ -45,7 +45,7 @@ public class GraphBDB extends PGraphBase
 //            init(spo, pos, osp, nodeTable) ;
         } catch (DatabaseException ex)
         {
-            throw new PGraphException(ex) ;
+            throw new TDBException(ex) ;
         }
     }
 

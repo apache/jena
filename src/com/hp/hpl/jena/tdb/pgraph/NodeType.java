@@ -10,6 +10,8 @@ import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.sparql.util.Named;
 
+import com.hp.hpl.jena.tdb.TDBException;
+
 public enum NodeType implements Named
 {
     // Do not allocate id 0 (which is the return for NULL in JDBC)
@@ -142,7 +144,7 @@ public enum NodeType implements Named
 
 //      LogFactory.getLog(ValueType.class).warn("Seen an unrecognized type") ;
 //      return UNKNOWN ; 
-        throw new PGraphException("Unknown type ("+type+")") ;
+        throw new TDBException("Unknown type ("+type+")") ;
     }
 }
 

@@ -14,11 +14,12 @@ import lib.CacheLRU;
 import com.sleepycat.je.*;
 
 import com.hp.hpl.jena.graph.Node;
+
 import com.hp.hpl.jena.tdb.Const;
+import com.hp.hpl.jena.tdb.TDBException;
 import com.hp.hpl.jena.tdb.lib.NodeLib;
 import com.hp.hpl.jena.tdb.pgraph.NodeId;
 import com.hp.hpl.jena.tdb.pgraph.NodeTable;
-import com.hp.hpl.jena.tdb.pgraph.PGraphException;
 
 
 public class NodeTableBDBDirect implements NodeTable
@@ -42,7 +43,7 @@ public class NodeTableBDBDirect implements NodeTable
             idNumbering = idToNode.openSequence(txn, entryNode("seq"), sequenceConfig) ;
         } catch (DatabaseException ex)
         {
-            throw new PGraphException(ex) ;
+            throw new TDBException(ex) ;
         }
     }
     
@@ -62,7 +63,7 @@ public class NodeTableBDBDirect implements NodeTable
             return k ;
         } catch (UnsupportedEncodingException ex)
         {
-            throw new PGraphException("Should not happen") ;
+            throw new TDBException("Should not happen") ;
         }
     }
 
@@ -108,7 +109,7 @@ public class NodeTableBDBDirect implements NodeTable
             return nodeId ;
 
         } catch (DatabaseException dbe) {
-            throw new PGraphException("GraphBDB.storeNode", dbe) ;
+            throw new TDBException("GraphBDB.storeNode", dbe) ;
         } 
     }
 
@@ -127,7 +128,7 @@ public class NodeTableBDBDirect implements NodeTable
             Node n = NodeLib.decode(s, null) ;
             return n ;
         } catch (Exception ex)
-        { throw new PGraphException("GraphBDB.retrieveNode", ex) ; }
+        { throw new TDBException("GraphBDB.retrieveNode", ex) ; }
     }
 
 
@@ -151,7 +152,7 @@ public class NodeTableBDBDirect implements NodeTable
             nodeToId.close();
             idToNode.close();
         } catch (DatabaseException dbe) {
-            throw new PGraphException(dbe) ;
+            throw new TDBException(dbe) ;
         } 
     }
 

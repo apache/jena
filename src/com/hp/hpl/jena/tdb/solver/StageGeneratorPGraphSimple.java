@@ -14,7 +14,7 @@ import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.main.StageGenBasicPattern;
 import com.hp.hpl.jena.sparql.engine.main.StageGenerator;
 
-import com.hp.hpl.jena.tdb.pgraph.PGraphBase;
+import com.hp.hpl.jena.tdb.pgraph.GraphTDB;
 
 // Force to use StageGenBasicPattern
 // This class not used.  See StageGeneratorPGraphBGP
@@ -33,7 +33,7 @@ public class StageGeneratorPGraphSimple extends StageGenBasicPattern
                                  ExecutionContext execCxt)
     {
         Graph g = execCxt.getActiveGraph() ;
-        if ( ! ( g instanceof PGraphBase ) )
+        if ( ! ( g instanceof GraphTDB ) )
             return above.execute(pattern, input, execCxt) ;
         return super.execute(pattern, input, execCxt) ;
     }

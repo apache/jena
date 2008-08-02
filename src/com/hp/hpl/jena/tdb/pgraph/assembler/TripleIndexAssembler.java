@@ -21,7 +21,7 @@ import com.hp.hpl.jena.tdb.base.file.Location;
 import com.hp.hpl.jena.tdb.index.IndexBuilder;
 import com.hp.hpl.jena.tdb.index.RangeIndex;
 import com.hp.hpl.jena.tdb.index.TripleIndex;
-import com.hp.hpl.jena.tdb.pgraph.PGraphBase;
+import com.hp.hpl.jena.tdb.pgraph.GraphTDB;
 
 public class TripleIndexAssembler extends AssemblerBase //implements Assembler
 {
@@ -48,13 +48,13 @@ public class TripleIndexAssembler extends AssemblerBase //implements Assembler
         
         RangeIndex rIndex = IndexBuilder.createRangeIndex(new Location(filename), 
                                                           desc, 
-                                                          PGraphBase.indexRecordFactory) ;
+                                                          GraphTDB.indexRecordFactory) ;
         return new TripleIndex(desc, rIndex) ;
     }
 
     public static RangeIndex rangeIndex(String filename, String name)
     {
-        return IndexBuilder.createRangeIndex(new Location(filename), name, PGraphBase.indexRecordFactory) ;
+        return IndexBuilder.createRangeIndex(new Location(filename), name, GraphTDB.indexRecordFactory) ;
     }
 
 }

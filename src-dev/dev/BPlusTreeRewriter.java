@@ -14,11 +14,11 @@ import com.hp.hpl.jena.tdb.base.record.Record;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 import com.hp.hpl.jena.tdb.base.recordfile.RecordBufferPage;
 import com.hp.hpl.jena.tdb.base.recordfile.RecordBufferPageMgr;
-import com.hp.hpl.jena.tdb.pgraph.PGraphBase;
+import com.hp.hpl.jena.tdb.pgraph.GraphTDB;
 
 public class BPlusTreeRewriter
 {
-    RecordFactory f = PGraphBase.indexRecordFactory ; 
+    RecordFactory f = GraphTDB.indexRecordFactory ; 
     BlockMgr blkMgr = null ;
     RecordBufferPageMgr recordPageMgr = null ;
     RecordBuffer currentBuffer = null ;

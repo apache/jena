@@ -20,15 +20,15 @@ import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.tdb.pgraph.NodeId;
-import com.hp.hpl.jena.tdb.pgraph.PGraphBase;
+import com.hp.hpl.jena.tdb.pgraph.GraphTDB;
 
 class MatchOneTriple extends RepeatApplyIterator<BindingNodeId>
 {
-    private PGraphBase graph ;
+    private GraphTDB graph ;
     private Triple triple ;
     private ExecutionContext execCxt ;
 
-    MatchOneTriple(PGraphBase graph, Iterator<BindingNodeId> input, Triple triple, ExecutionContext execCxt)
+    MatchOneTriple(GraphTDB graph, Iterator<BindingNodeId> input, Triple triple, ExecutionContext execCxt)
     {
         super(input) ;
         this.graph = graph ; 
@@ -106,7 +106,7 @@ class MatchOneTriple extends RepeatApplyIterator<BindingNodeId>
         return null ;
     }
 
-    private static NodeId idFor(PGraphBase graph, BindingNodeId input, Node node)
+    private static NodeId idFor(GraphTDB graph, BindingNodeId input, Node node)
     {
         if ( Var.isVar(node) )
         {

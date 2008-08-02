@@ -15,6 +15,8 @@ import lib.CacheSetLRU;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.sparql.util.ALog;
+
+import com.hp.hpl.jena.tdb.TDBException;
 import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile;
 import com.hp.hpl.jena.tdb.base.record.Record;
 import com.hp.hpl.jena.tdb.index.Index;
@@ -137,7 +139,7 @@ public abstract class NodeTableBase implements NodeTable
             
             // Put in index
             if ( ! nodeHashToId.add(r) )
-                throw new PGraphException("NodeTableBase::nodeToId - record mysteriously appeared") ;
+                throw new TDBException("NodeTableBase::nodeToId - record mysteriously appeared") ;
 
             cacheUpdate(node, id) ;
             return id ;

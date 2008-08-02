@@ -27,7 +27,7 @@ import com.hp.hpl.jena.sparql.core.assembler.DatasetAssemblerVocab;
 import com.hp.hpl.jena.query.*;
 
 import com.hp.hpl.jena.tdb.TDBFactory;
-import com.hp.hpl.jena.tdb.pgraph.PGraphBase;
+import com.hp.hpl.jena.tdb.pgraph.GraphTDB;
 
 public class ModTDBDataset extends ModDataset
 {
@@ -101,7 +101,7 @@ public class ModTDBDataset extends ModDataset
         // No assembler - use location (a single graph).
         Model model = TDBFactory.createModel(modAssembler.getLocation()) ;
         // Check of type.
-        PGraphBase graph = (PGraphBase)model.getGraph() ;
+        GraphTDB graph = (GraphTDB)model.getGraph() ;
         return DatasetFactory.create(model) ;
     }
     
