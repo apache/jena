@@ -14,6 +14,8 @@ import arq.cmdline.ArgDecl;
 
 import com.hp.hpl.jena.query.ARQ;
 
+import com.hp.hpl.jena.tdb.pgraph.BulkLoader;
+
 public class tdbloader extends CmdTDB
 {
     ArgDecl argParallel = new ArgDecl(ArgDecl.NoValue, "parallel") ;

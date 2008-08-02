@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package tdb;
+package com.hp.hpl.jena.tdb.pgraph;
 
 import java.util.Date;
 import java.util.Iterator;
@@ -24,8 +24,6 @@ import com.hp.hpl.jena.sparql.util.Utils;
 import com.hp.hpl.jena.sparql.util.graph.GraphLoadMonitor;
 
 import com.hp.hpl.jena.tdb.index.TripleIndex;
-import com.hp.hpl.jena.tdb.pgraph.NodeId;
-import com.hp.hpl.jena.tdb.pgraph.GraphTDB;
 
 /** To directly load data, including manipulaattng the indexes at a quite low level for efficiency.
  * Not efficent for small, incremental additions to a graph.  
