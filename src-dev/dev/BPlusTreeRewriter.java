@@ -6,6 +6,8 @@
 
 package dev;
 
+import lib.Pair;
+
 import com.hp.hpl.jena.tdb.Const;
 import com.hp.hpl.jena.tdb.base.block.BlockMgr;
 import com.hp.hpl.jena.tdb.base.block.BlockMgrFactory;
@@ -18,20 +20,64 @@ import com.hp.hpl.jena.tdb.pgraph.GraphTDB;
 
 public class BPlusTreeRewriter
 {
-    RecordFactory f = GraphTDB.indexRecordFactory ; 
-    BlockMgr blkMgr = null ;
-    RecordBufferPageMgr recordPageMgr = null ;
-    RecordBuffer currentBuffer = null ;
-    RecordBufferPage currentPage = null ;
+    public static Pair<Long, Long> rewrite(String rootname, String newRootname)
+    {
+        String filename = rootname+".dat" ;
+        String filename2 = newRootname+".dat" ;
+        
+        // Sequential read - OS file caching. 
+        BlockMgr blkMgr = BlockMgrFactory.createStdFileNoCache(filename, Const.BlockSize) ;
+        RecordFactory f = GraphTDB.indexRecordFactory ; 
+
+        BPlusTreeRewriter bpt = new BPlusTreeRewriter(filename2) ;
+        
+        RecordBufferPageMgr recordPageMgr = new RecordBufferPageMgr(f, blkMgr) ;
+        int idx = 0 ;
+        int n = 0 ;
+        int total = 0 ;
+        
+        while ( idx >= 0 )
+        {
+            RecordBufferPage page = recordPageMgr.get(idx) ;
+            //System.out.printf("%04d :: %04d -> %04d [%d, %d]\n", n, page.getId(), page.getLink(), page.getCount(), page.getMaxSize()) ;
+            
+            // ---- 
+            RecordBuffer rb = page.getRecordBuffer() ;
+            //System.out.printf("     :: %d %d\n", rb.getSize(), rb.maxSize() ) ;
     
-    public BPlusTreeRewriter(String filename)
+            total += rb.size();
+            for ( int i = 0 ; i < rb.getSize() ; i++ )
+            {
+                Record r = rb.get(i) ;
+                bpt.write(r) ;
+            }
+            
+            // ---- Loop on existing page file
+            idx = page.getLink() ;
+            n++ ;
+        }
+        bpt.close();
+        return new Pair<Long, Long>((long)total, (long)n) ;
+    }
+    
+    
+    private static final RecordFactory f = GraphTDB.indexRecordFactory ; 
+    private final BlockMgr blkMgr ;
+    private final RecordBufferPageMgr recordPageMgr ;
+    
+    // The working variables.
+    private RecordBuffer currentBuffer = null ;
+    private RecordBufferPage currentPage = null ;
+
+    
+    private BPlusTreeRewriter(String filename)
     {
         // No point caching.
         blkMgr = BlockMgrFactory.createStdFileNoCache(filename, Const.BlockSize) ;
         recordPageMgr = new RecordBufferPageMgr(f, blkMgr) ;
     }
     
-    public void write(Record r)
+    private void write(Record r)
     {
         if ( currentBuffer == null )
             moveOneOnePage() ;
@@ -68,11 +114,12 @@ public class BPlusTreeRewriter
             return ;
         currentPage.setLink(_linkId) ;
         recordPageMgr.put(currentPage.getId(), currentPage) ;
+        // Release?
         currentBuffer = null ;
         currentPage = null ;
     }
     
-    public void close()
+    private void close()
     {
         // End block id.
         // Flush always writes a block (if currentPage != null)
