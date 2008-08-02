@@ -14,9 +14,10 @@ public class Dev
     //   Stats.
     
     // Documentation on the wiki
-    //   Assembler
-    //   TDBFactory
-    //   Commands
+    
+    // New organsiation for files:
+    //   TripleIndex -> Index/RangeIndex (records) -> BlockFile (id-Block)
+    //   NodeTable   -> ObjectFile (NodId->Node) -> VarFile (id-bytes)
     
     // tdbloader: 
     //   close indexes not in use in a given phase

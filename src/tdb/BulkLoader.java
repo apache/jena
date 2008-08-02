@@ -31,7 +31,7 @@ import com.hp.hpl.jena.tdb.pgraph.GraphTDB;
  * Not efficent for small, incremental additions to a graph.  
  */
 
-public class PGraphLoader
+public class BulkLoader
 {
     private GraphTDB graph ;
     private boolean showProgress ;
@@ -44,13 +44,13 @@ public class PGraphLoader
     private TripleIndex triplesPOS ;
     private TripleIndex triplesOSP ;
 
-    public PGraphLoader(GraphTDB graph, boolean showProgress)
+    public BulkLoader(GraphTDB graph, boolean showProgress)
     {
         this(graph, showProgress, false, false) ;
     }
     
     /** Create a bulkloader for a graph : showProgress/paralell/incrmental */
-    public PGraphLoader(GraphTDB graph, boolean showProgress, boolean doInParallel, boolean doIncremental)
+    public BulkLoader(GraphTDB graph, boolean showProgress, boolean doInParallel, boolean doIncremental)
     {
         this.graph = graph ;
         this.showProgress = showProgress ;

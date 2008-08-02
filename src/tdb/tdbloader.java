@@ -65,7 +65,7 @@ public class tdbloader extends CmdTDB
         if ( urls.size() == 0 )
             urls.add("-") ;
         
-        PGraphLoader loader = new PGraphLoader(getGraph(), timing, doInParallel, doIncremental) ;
+        BulkLoader loader = new BulkLoader(getGraph(), timing, doInParallel, doIncremental) ;
         loader.load(urls) ;
     }
 
