@@ -4,21 +4,19 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.bplustree;
+package com.hp.hpl.jena.tdb.base.recordfile;
 
 import iterator.Iter;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-import com.hp.hpl.jena.tdb.base.recordfile.RecordBufferPage;
-import com.hp.hpl.jena.tdb.base.recordfile.RecordBufferPageMgr;
 
 import com.hp.hpl.jena.tdb.base.record.Record;
 import static com.hp.hpl.jena.tdb.lib.Lib.decodeIndex; 
 
 
-public final
+final public
 class BPTreeRangeInterator implements Iterator<Record>
 {
     

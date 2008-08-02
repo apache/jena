@@ -24,6 +24,8 @@ import java.util.Iterator;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.hp.hpl.jena.tdb.base.recordfile.BPTreeRangeInterator;
 import com.hp.hpl.jena.tdb.base.recordfile.RecordBufferPage;
 
 import com.hp.hpl.jena.tdb.base.buffer.PtrBuffer;
