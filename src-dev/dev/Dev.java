@@ -11,6 +11,7 @@ public class Dev
     // Build - to sftp server
     // Need jsch.
     // Make pom an artifact => publish it.
+    // Make the file layout correct for Maven (see that email message)
     
     // B+Tree rewriter
     

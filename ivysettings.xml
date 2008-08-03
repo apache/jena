@@ -24,9 +24,10 @@
     </filesystem>
     -->
 
-    <sftp name="dev-publish" user="afs" host="jena.hpl.hp.com">
-      <ivy pattern="repo-dev/[module]/ivy.xml"/>
-      <artifact pattern="repo-dev/[module]/[artifact].[ext]"/>
+    <sftp name="dev-publish" user="afs" host="jena.hpl.hp.com" 
+	  keyFile="/home/afs/.ssh/id_rsa">
+      <!-- <ivy pattern="repo-dev/[module]/ivy.xml"/> -->
+      <artifact pattern="repo-dev/[module]/[artifact]-[revision].[ext]"/>
     </sftp>
 
   </resolvers>
