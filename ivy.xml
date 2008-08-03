@@ -17,6 +17,7 @@
   </configurations>
 
   <publications>
+    <!-- Add the Maven pom.xml as an artifact -->
     <artifact name="tdb" type="jar"/>
     <artifact name="tdb-src" type="source" ext="zip"/>
   </publications>

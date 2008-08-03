@@ -17,12 +17,14 @@
     </chain>
     
     <!-- Publish -->
-    <filesystem name="publish-resolver" >
+    <!--
+    <filesystem name="dev-resolver" >
        <ivy      pattern="build/pub/[module]-[revision]/[artifact]-[revision].[ext]"/>
        <artifact pattern="build/pub/[module]-[revision]/[artifact]-[revision].[ext]"/>
     </filesystem>
+    -->
 
-    <sftp name="jena-dev-publish" user="afs" host="jena.hpl.hp.com">
+    <sftp name="dev-publish" user="afs" host="jena.hpl.hp.com">
       <ivy pattern="repo-dev/[module]/ivy.xml"/>
       <artifact pattern="repo-dev/[module]/[artifact].[ext]"/>
     </sftp>

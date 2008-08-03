@@ -151,7 +151,7 @@
   <target name="ivy-publish" depends="ivy-init" description="Publish (with Ivy)">
     <ivy:resolve conf="main"/>
     <ivy:publish conf="main" 
-		 resolver="jena-dev-publish" 
+		 resolver="dev-publish" 
 		 overwrite="true"
 		 forcedeliver="true">
       <artifacts pattern="${artifacts.dir}/[artifact]-[revision].[ext]" />
