@@ -1,21 +1,6 @@
 <project xmlns:ivy="antlib:org.apache.ivy.ant" name="TDB" default="main">
 
-  <!-- Modularize so as we can compile different source tress with the same settings and classpath.
-       <import file="${path_to_imported}/imported.xml"/>
-       Compile
-       JAR
-       Testing.
-       IVY
-       
-       Use <antcall target="_compile">
-       <param name="srcfolder" value="..."/>
-       <param name="classfolder" value="..."/>
-       </antcall>  
-  -->
-	       	
-
-	
-<!-- ========================================== -->
+  <!-- ========================================== -->
   <!-- ==== Configuration  -->
 
   <property name="Name"                   value="TDB"/>
@@ -27,6 +12,30 @@
   <property name="version-status"  value="-RC"/>
   <property name="version"
 	    value="${version-major}.${version-minor}${version-status}"/>
+  
+  <target name="main" depends="jar"/>
+  
+  <!-- IMPORT : except -p shows the lib.TARGET and TARGET each time.-->
+
+  <!-- Library of standard tasks
+
+       == Tasks
+       clean      clean up
+       compile    compile sources
+       jar        make jar 
+       publish    export to maven
+       release    
+                  Must prpvide
+       junit      Run the test suite
+       report     Run the test suite and generate a report
+
+       == Assumes
+       Properties:
+       Name       The project name, capitalized, used for 
+                    release directory and release zip.
+       name       The project name,lowercase, used as artifact root
+       version    The version string
+  -->
 
   <property name="dist.name"              value="${Name}-${version}"/>
   <property name="release.zipfile"        value="${name}-${version}.zip"/>
@@ -45,7 +54,7 @@
   <property name="src.lib.dir"            value="src-lib"/>
   <property name="src.lib.test.dir"       value="src-lib-test"/>
   <property name="src.dev.dir"            value="src-dev"/>
-  <property name="doc.dir"			      value="doc"/>
+  <property name="doc.dir"		  value="doc"/>
   <property name="lib.dir"                value="lib"/>
   <!-- Testing - scripts and data files -->
   <property name="test.dir"               value="testing"/>
@@ -87,7 +96,7 @@
     <pathelement path="${src.lib.test.dir}"/>
   </path>
 
-  <!-- Sources as fileset (hwo do I avoid the duplication here?) -->
+  <!-- Sources as fileset (how do I avoid the duplication here?) -->
   <fileset dir="." id="fileset.src">
     <include name="${src.dir}/**/*.java"/>
     <include name="${src.test.dir}**/*.java"/>
@@ -166,12 +175,6 @@
   <!-- ========================================== -->
   <!-- ==== Build and compile -->
 
-
-  <import file="build-lib.xml"/>
-  <target name="compile2" depends="javac-flags">
-    <compile-java src-ref="path.java.source"/>
-  </target>
-
   <target name="compile" depends="javac-flags" description="Compile project">
     <mkdir dir="${build.classes.dir}"/>
     <javac destdir="${build.classes.dir}"
@@ -201,8 +204,6 @@
       -->
     </jar>
   </target>
-
-
 
   <!-- ========================================== -->
   <!-- ==== Source code -->
@@ -374,8 +375,6 @@
   <!-- ========================================== -->
   <!-- ==== Misc -->
 
-  <target name="main" depends="clean,compile,jar" description="Make the jar"/>
-
   <target name="clean" description="Clean (build and reports)"
 	  depends="clean-build-area,clean-reports">
   </target>
@@ -388,5 +387,5 @@
 	<delete dir="${build.classes.dir}"/>
   	<delete dir="${artifacts.dir}"/>
   </target>
-	    
+
 </project>
