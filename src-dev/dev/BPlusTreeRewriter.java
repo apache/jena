@@ -77,6 +77,7 @@ public class BPlusTreeRewriter
         System.out.printf("++ Count = %d\n", n) ;
     }
     
+    //XXX Off by one?
     private static class BlocksIterator implements Iterator<RecordBufferPage>
     {
         private RecordBufferPage page = null ;
@@ -93,6 +94,7 @@ public class BPlusTreeRewriter
             }
             
             this.page = recordPageMgr.get(blockId) ;
+            this.slot = page ;
             this.recordPageMgr = recordPageMgr ; 
         }
         
