@@ -18,6 +18,7 @@
 
   <publications>
     <artifact name="tdb" type="jar"/>
+    <artifact name="tdb-src" type="source" ext="zip"/>
   </publications>
 
   <dependencies>

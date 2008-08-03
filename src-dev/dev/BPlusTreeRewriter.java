@@ -7,6 +7,7 @@
 package dev;
 
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 import lib.Pair;
 
@@ -54,7 +55,80 @@ public class BPlusTreeRewriter
     }
 
     // ---- B+Tree Node Writer
-
+    // For now, we do multiple passes.
+    // Assume the Records file has been compressed.
+    
+    public static void processForBPTree(String filename)
+    {
+        BlockMgr blkMgr = BlockMgrFactory.createStdFileNoCache(filename, Const.BlockSize) ;
+        RecordBufferPageMgr recordPageMgr = new RecordBufferPageMgr(recordFactory, blkMgr) ;
+        
+        BlocksIterator iter = new BlocksIterator(recordPageMgr, 0) ;
+        int n = 0 ;
+        for ( ; iter.hasNext() ; )
+        {
+            RecordBufferPage page = iter.next();
+            Record r = page.getRecordBuffer().getHigh() ;
+            Record key = recordFactory.createKeyOnly(r) ;
+            // Do something with key
+            n++ ;
+        }
+        blkMgr.close() ;
+        System.out.printf("++ Count = %d\n", n) ;
+    }
+    
+    private static class BlocksIterator implements Iterator<RecordBufferPage>
+    {
+        private RecordBufferPage page = null ;
+        private RecordBufferPage slot = null ;
+        private RecordBufferPageMgr recordPageMgr ;
+        
+        public BlocksIterator(RecordBufferPageMgr recordPageMgr, int blockId)
+        {
+            if ( blockId < 0 )
+            {
+                // End of file
+                page = null ; 
+                return ;
+            }
+            
+            this.page = recordPageMgr.get(blockId) ;
+            this.recordPageMgr = recordPageMgr ; 
+        }
+        
+        @Override
+        public boolean hasNext()
+        {
+            if ( slot != null ) return true ;
+            if ( page == null ) return false ;  // Finished
+            int x = page.getLink() ;
+            if ( x < 0 )
+            {
+                // End of file
+                page = null ; 
+                return false ;
+            }
+            page = recordPageMgr.get(x) ;
+            slot = page ;
+            return true ;
+        }
+        
+        @Override
+        public RecordBufferPage next()
+        {
+            if ( ! hasNext() ) throw new NoSuchElementException() ;
+            RecordBufferPage r = slot ;
+            slot = null ;
+            return r ;
+        }
+        @Override
+        public void remove()
+        { throw new UnsupportedOperationException() ; }
+        
+        
+        
+    }
+    
     // XXX
     
     // ---- Record file writer

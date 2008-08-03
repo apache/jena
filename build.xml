@@ -23,44 +23,40 @@
 
   <!-- The major and minor version numbers  -->
   <property name="version-major"   value="0"/>
-  <property name="version-minor"   value="0"/>
-  <property name="version-status"  value="-dev"/>
+  <property name="version-minor"   value="5"/>
+  <property name="version-status"  value="-RC"/>
   <property name="version"
 	    value="${version-major}.${version-minor}${version-status}"/>
 
-  <!-- Distribution area -->
   <property name="dist.name"              value="${Name}-${version}"/>
-  <property name="zipfile"                value="${name}-${version}.zip"/>
+  <property name="release.zipfile"        value="${name}-${version}.zip"/>
 
+  <!-- Distribution area -->
   <property name="dist.root"              value="dist"/>
   <property name="dist.dir"               value="${dist.root}/${dist.name}"/>
+
+  <!-- Artifacts -->
+  <property name="jarfile"                value="${name}-${version}.jar"/>
+  <property name="src.zipfile"            value="${name}-src-${version}.zip"/>
 
   <!-- Places -->
   <property name="src.dir"                value="src"/>
   <property name="src.test.dir"           value="src-test"/>
-
   <property name="src.lib.dir"            value="src-lib"/>
   <property name="src.lib.test.dir"       value="src-lib-test"/>
-
   <property name="src.dev.dir"            value="src-dev"/>
-
-  <property name="build.dir"              value="build"/>
-  <property name="build.lib.dir"          value="${build.dir}/lib"/>
-
+  <property name="doc.dir"			      value="doc"/>
   <property name="lib.dir"                value="lib"/>
   <!-- Testing - scripts and data files -->
   <property name="test.dir"               value="testing"/>
 
-  <!-- Build classes -->
-  <property name="build.classes.dir"            value="${build.dir}/classes"/>
-  <property name="build.jar.dir"                value="${build.dir}/jar"/>
-  <!-- <property name="jar.dir"                value="${lib.dir}"/> -->
-
   <!-- Meaning-less -->
   <!-- <property name="main.class"            value="package.something"/> -->
 
-  <property name="jarfile"                value="${name}.jar"/>
-  <property name="src.zipfile"            value="${name}-src.zip"/>
+  <!-- Build area - locally publising in ivy is to build/pub --> 
+  <property name="build.dir"              value="build"/>
+  <property name="build.classes.dir"      value="${build.dir}/classes"/>
+  <property name="artifacts.dir"          value="${build.dir}/artifacts"/>
 
   <!-- Testing -->
   <property name="reports.dir"            value="reports"/>
@@ -80,9 +76,25 @@
   <path id="java.run.class.path">
     <!-- jar file may, or may not, be in the lib directory -->
     <fileset dir="${lib.dir}" includes="*.jar" excludes="${jarfile}"/>
-    <fileset dir="${build.jar.dir}" includes="*.jar"/>
+    <fileset dir="${artifacts.dir}" includes="*.jar"/>
   </path>
 
+  <!-- Sources as a path -->
+  <path id="path.java.source">
+    <pathelement path="${src.dir}"/>
+    <pathelement path="${src.test.dir}"/>
+    <pathelement path="${src.lib.dir}"/>
+    <pathelement path="${src.lib.test.dir}"/>
+  </path>
+
+  <!-- Sources as fileset (hwo do I avoid the duplication here?) -->
+  <fileset dir="." id="fileset.src">
+    <include name="${src.dir}/**/*.java"/>
+    <include name="${src.test.dir}**/*.java"/>
+    <include name="${src.lib.dir}**/*.java"/>
+    <include name="${src.lib.test.dir}**/*.java"/>
+  </fileset>
+  
   <target name="javac-flags">
     <!-- Note that in ant, if these flags are already set 
 	 setting them again has no effect -->
@@ -133,7 +145,7 @@
 		 resolver="publish-resolver" 
 		 overwrite="true"
 		 forcedeliver="true">
-      <artifacts pattern="${build.jar.dir}/[artifact].[ext]" />
+      <artifacts pattern="${artifacts.dir}/[artifact]-[$revision].[ext]" />
     </ivy:publish>
   </target>
 
@@ -164,20 +176,18 @@
 	   source="${java.source}"
 	   target="${java.target}"
 	   >
-      <src path="${src.dir}"/>
-      <src path="${src.test.dir}"/>
-      <src path="${src.lib.dir}"/>
-      <src path="${src.lib.test.dir}"/>
-      <src path="${src.dev.dir}"/>
+      <src refid="path.java.source"/>
       <classpath refid="java.build.class.path" />
     </javac>
   </target>
 
+  <!-- Artifacts -->
+  
   <target name="jars" depends="jar" />
   <target name="jar" depends="compile" description="Build the jar">
-    <mkdir dir="${build.jar.dir}"/>
-    <delete file="${build.jar.dir}/${jarfile}"/>
-    <jar destfile="${build.jar.dir}/${jarfile}" basedir="${build.classes.dir}">
+    <mkdir dir="${artifacts.dir}"/>
+    <delete file="${artifacts.dir}/${jarfile}"/>
+    <jar destfile="${artifacts.dir}/${jarfile}" basedir="${build.classes.dir}">
       <!--
 	<manifest>
 	<attribute name="Main-Class" value="${main.class}"/>
@@ -186,12 +196,28 @@
     </jar>
   </target>
 
-  <target name="clean-build" depends="clean-build-dirs,jar" description="Clean build of the jar"/>
-  
-  <target name="clean-build-dirs">
-    <delete dir="${build.dir}"/>
-  </target>
 
+
+  <!-- ========================================== -->
+  <!-- ==== Source code -->
+  
+  <target name="src-artifact" description="Produce the source code artifact">
+    <mkdir dir="${artifacts.dir}"/>
+    <delete file="${artifacts.dir}/${src.zipfile}"/>
+    <zip zipfile="${artifacts.dir}/${src.zipfile}">
+      <fileset refid="fileset.src"/>
+    </zip>
+  </target>
+  
+  <!-- ========================================== -->
+  <!-- Publication -->
+
+  <target name="artifacts" depends="clean,jar,src-artifact"/>
+  
+  <target name="publish" description="Build and publish this version"
+          depends="clean,artifacts,ivy-publish">
+  </target>
+  
   <!-- ========================================== -->
   <!-- ==== JUnit and reporting -->
 
@@ -265,26 +291,37 @@
   <!-- ========================================== -->
   <!-- ==== Release -->
 
-  <target name="release" depends="clean-dist,package"
+  <target name="release" depends="clean,artifacts,package"
 	  description="Create TDB release">
-    <antcall target="clean-build-dirs"/>
   </target>
 
-  <target name="package" depends="jars,copy-init,copy,zip-src,zip"/>
+    <!--
+    <target name="release2" description="Build a single release zip"
+    		  depends="clean,artifacts">
+    	<zip zipfile="${build.dir}/${release.zipfile}">
+    		 basedir="${artifacts.dir}">
+    	</zip>
+    </target>
+    -->
+    
+  <target name="package" depends="copy-init,copy,zip.release"/>
 
-  <target name="copy-init">
+  <target name="copy-init" depends="clean-release">
     <delete dir="${dist.dir}" />
     <mkdir dir="${dist.dir}" />
     <mkdir dir="${dist.dir}/${lib.dir}"/>
   </target>
 
-  <!-- zip-src is a subtask that copies the source into the distribution area -->
   <target name="copy" depends="copy-init">
+  	<!-- jars - tdb jar and dependences -->
     <copy todir="${dist.dir}/${lib.dir}">
       <fileset dir="${lib.dir}" includes="**/*.jar" excludes="${jarfile}"/>
-      <fileset dir="${build.jar.dir}" includes="*.jar"/>
+      <fileset dir="${artifacts.dir}" includes="*.jar"/>
     </copy>
 
+    <!-- Source code -->
+    <copy todir="${dist.dir}" file="${artifacts.dir}/${src.zipfile}"/>
+      
     <copy todir="${dist.dir}/${test.dir}">
       <fileset dir="${test.dir}"/>
     </copy>
@@ -298,13 +335,13 @@
     </copy>
 
     <copy todir="${dist.dir}/" file="build.xml"/>
+    <copy todir="${dist.dir}/">
+	  <fileset dir="." includes="ivy*"/>
+	</copy>
     <copy todir="${dist.dir}/" file="copyright.txt"/>
     <copy todir="${dist.dir}/" file="README.txt"/>
     <copy todir="${dist.dir}/" file="ChangeLog.txt"/>
 
-    <!-- Source code happens by zipping -->
-
-    <!-- Documentation is on the wiki, mainly. -->
     <copy todir="${dist.dir}/${doc.dir}">
       <fileset dir="${doc.dir}">
         <include name="**" />
@@ -316,20 +353,10 @@
 
   </target>
 
-  <target name="zip-src">
-    <delete file="${dist}/$src.zipfile" />
-    <zip destfile="${dist}/$src.zipfile">
-      <fileset dir="${src.dir}" includes="**/*.java" />
-      <fileset dir="${src.lib.dir}" includes="**/*.java" />
-      <fileset dir="${src.test.dir}" includes="**/*.java" />
-      <fileset dir="${src.lib.test.dir}" includes="**/*.java" />
-    </zip>
-  </target>
-
-  <target name="zip">
+  <target name="zip.release">
     <!-- Build the zip of the distribution -->
-    <delete file="${dist.root}/${zipfile}"/>
-    <zip zipfile="${dist.root}/${zipfile}">
+    <delete file="${dist.root}/${release.zipfile}"/>
+    <zip zipfile="${dist.root}/${release.zipfile}">
       <fileset dir="dist" includes="${dist.name}/**"/>
     </zip>
   </target>
@@ -343,9 +370,17 @@
 
   <target name="main" depends="clean,compile,jar" description="Make the jar"/>
 
-  <target name="clean" 
-	  depends="clean-build-dirs,clean-reports" 
-	  description="Cleanup">
+  <target name="clean" description="Clean (build and reports)"
+	  depends="clean-build-area,clean-reports">
   </target>
-
+	    
+  <target name="clean-release">
+    <delete dir="${dist.dir}"/>
+  </target>  
+  
+  <target name="clean-build-area" description="Clean the build area">
+	<delete dir="${classes.dir}"/>
+  	<delete dir="${artifacts.dir}"/>
+  </target>
+	    
 </project>

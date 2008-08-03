@@ -86,9 +86,13 @@ public class Run
     {
         divider() ;
         
+        
         String root1 = "DB/OSP" ;
         String root2 = "DB/OSP-2" ;
         FileOps.delete(root2+".dat") ;
+
+        BPlusTreeRewriter.processForBPTree(root1+".dat") ;
+
         
         Pair<Long, Long> results = BPlusTreeRewriter.rewrite(root1, root2) ;
         long total = results.car() ;
@@ -97,6 +101,7 @@ public class Run
         System.out.println() ;
         scan(root1+".dat") ;
         scan(root2+".dat") ;
+        BPlusTreeRewriter.processForBPTree(root2+".dat") ;
         System.exit(0) ;
     }
 
@@ -121,6 +126,7 @@ public class Run
             idx = page.getLink() ;
             n++ ;
         }
+        blkMgr.close() ;
         System.out.printf("Count = %d in %d blocks\n", total, n) ;
     }
     
