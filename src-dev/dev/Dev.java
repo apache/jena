@@ -8,6 +8,10 @@ package dev;
 
 public class Dev
 {
+    // Build - to sftp server
+    // Need jsch.
+    // Make pom an artifact => publish it.
+    
     // B+Tree rewriter
     
     // New cache API alloc/return/invalidate (shrink/grow?)

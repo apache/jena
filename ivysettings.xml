@@ -8,9 +8,7 @@
 
     <chain name="resolver-chain" returnFirst="true">
       <!-- Jena development repository : not sync'ed with maven central -->
-      <!-- 
-      <ibiblio name="jena-dev" root="http://jena.hpl.hp.com/repo-dev" m2compatible="true"/>
-      -->
+      <!-- <ibiblio name="jena-dev" root="http://jena.hpl.hp.com/repo-dev" m2compatible="true"/> -->
       <!-- Jena publish repository, synec to maven central -->
       <!--
       <ibiblio name="jena" root="http://jena.hpl.hp.com/repo" m2compatible="true"/>
@@ -23,6 +21,12 @@
        <ivy      pattern="build/pub/[module]-[revision]/[artifact]-[revision].[ext]"/>
        <artifact pattern="build/pub/[module]-[revision]/[artifact]-[revision].[ext]"/>
     </filesystem>
+
+    <sftp name="jena-dev-publish" user="afs" host="jena.hpl.hp.com">
+      <ivy pattern="repo-dev/[module]/ivy.xml"/>
+      <artifact pattern="repo-dev/[module]/[artifact].[ext]"/>
+    </sftp>
+
   </resolvers>
   <include url="${ivy.default.settings.dir}/ivysettings-public.xml"/>
   <include url="${ivy.default.settings.dir}/ivysettings-shared.xml"/>
