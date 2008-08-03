@@ -149,7 +149,7 @@
     </ivy:publish>
   </target>
 
-  <target name="pom">
+  <target name="ivy-pom" depends="ivy-init">
     <!-- Make a basic POM file -->
     <ivy:makepom ivyfile="ivy.xml" 
 		 pomfile="pom-tdb.xml">
@@ -165,6 +165,12 @@
 
   <!-- ========================================== -->
   <!-- ==== Build and compile -->
+
+
+  <import file="build-lib.xml"/>
+  <target name="compile2" depends="javac-flags">
+    <compile-java src-ref="path.java.source"/>
+  </target>
 
   <target name="compile" depends="javac-flags" description="Compile project">
     <mkdir dir="${build.classes.dir}"/>
@@ -379,7 +385,7 @@
   </target>  
   
   <target name="clean-build-area" description="Clean the build area">
-	<delete dir="${classes.dir}"/>
+	<delete dir="${build.classes.dir}"/>
   	<delete dir="${artifacts.dir}"/>
   </target>
 	    
