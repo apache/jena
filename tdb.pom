@@ -35,33 +35,29 @@
       <groupId>com.hp.hpl.jena</groupId>
       <artifactId>arq</artifactId>
       <version>2.3</version>
-      <optional>true</optional>
     </dependency>
     <dependency>
       <groupId>com.hp.hpl.jena</groupId>
       <artifactId>arq-extra</artifactId>
       <version>2.3</version>
-      <optional>true</optional>
     </dependency>
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <version>4.4</version>
-      <optional>true</optional>
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
       <version>1.4.3</version>
-      <optional>true</optional>
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-log4j12</artifactId>
       <version>1.4.3</version>
-      <optional>true</optional>
     </dependency>
     <dependency>
+	<!-- Brings in Junk -->
       <groupId>log4j</groupId>
       <artifactId>log4j</artifactId>
       <version>1.2.15</version>

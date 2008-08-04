@@ -27,8 +27,8 @@
     <sftp name="dev-publish" user="afs" host="jena.hpl.hp.com" 
 	  keyFile="/home/afs/.ssh/id_rsa"
 	  m2compatible="true">
-      <ivy pattern="repo-dev/com/hp/hpl/jena/[module]/ivy.xml"/>
-      <artifact pattern="repo-dev/com/hp/hpl/jena/[module]/[artifact]-[revision].[ext]"/>
+      <ivy pattern="repo-dev/com/hp/hpl/jena/[module]/[revision]/ivy.xml"/>
+      <artifact pattern="repo-dev/com/hp/hpl/jena/[module]/[revision]/[artifact]-[revision].[ext]"/>
     </sftp>
 
   </resolvers>
