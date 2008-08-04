@@ -5,6 +5,7 @@
 
 package com.hp.hpl.jena.sparql.engine.http;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -22,6 +23,7 @@ import com.hp.hpl.jena.shared.JenaException;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException;
 import com.hp.hpl.jena.sparql.util.Base64;
 import com.hp.hpl.jena.sparql.util.Convert;
+import com.hp.hpl.jena.util.FileUtils;
 
 /** Create an execution object for performing a query on a model
  *  over HTTP.  This is the main protocol engine for HTTP query.
@@ -300,6 +302,22 @@ public class HttpQuery extends Params
             // Request suceeded
             InputStream in = httpConnection.getInputStream() ;
             
+            if ( false )
+            {
+                // Dump response body
+                StringBuffer b = new StringBuffer(1000) ;
+                byte[] chars = new byte[1000] ;
+                while(true)
+                {
+                    int x = in.read(chars) ;
+                    if ( x < 0 ) break ;
+                    b.append(new String(chars, 0, x, FileUtils.encodingUTF8)) ;
+                }
+                System.out.println(b.toString()) ;
+                System.out.flush() ;
+                // Reset
+                in = new ByteArrayInputStream(b.toString().getBytes(FileUtils.encodingUTF8)) ;
+            }
             return in ;
         }
         catch (IOException ioEx)

@@ -47,6 +47,13 @@ public class Run
 {
     public static void main(String[] argv) throws Exception
     {
+        System.setProperty("socksProxyHost", "socks-server") ;
+        
+        String a2[] = { "--service=http://dbpedia.org/sparql",
+                        "SELECT * WHERE {  <http://dbpedia.org/resource/Angela_Merkel> <http://dbpedia.org/property/reference> ?object.  FILTER  (!isLiteral(?object))}"} ;
+        arq.remote.main(a2) ;
+        System.exit(0) ;
+        
         runQParse() ;
         // Compressed syntax
         // match(Subject, Path, Object, PrefixMapping)
