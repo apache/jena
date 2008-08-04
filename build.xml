@@ -401,8 +401,9 @@
   </target>  
   
   <target name="clean-build-area" description="Clean the build area">
-	<delete dir="${build.classes.dir}"/>
-  	<delete dir="${artifacts.dir}"/>
+    <delete dir="${build.classes.dir}"/>
+    <delete dir="${artifacts.dir}"/>
+    <delete dir="${build.dir}/${jarfile}"/>
   </target>
 
 </project>

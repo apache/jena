@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<!-- POM file for TDB publishing -->
+<!-- POM file for TDB -->
 
 <project>
   <modelVersion>4.0.0</modelVersion>
