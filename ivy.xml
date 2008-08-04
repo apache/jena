@@ -17,9 +17,9 @@
   </configurations>
 
   <publications>
-    <!-- Add the Maven pom.xml as an artifact -->
     <artifact name="tdb" type="jar"/>
-    <artifact name="tdb-src" type="source" ext="zip"/>
+    <artifact name="tdb-src" type="zip" ext="zip"/>
+    <artifact name="tdb-javadoc" type="zip" ext="zip"/>
     <artifact name="tdb" type="xml"    ext="pom"/>
   </publications>
 
@@ -40,7 +40,6 @@
     
     <dependency conf="dev->*"   org="log4j" name="log4j" rev="1.2.15"> 
       <!-- Unwanted modules from log4j that are not accessible -->
-      <exclude org="com.sun.jmx" module="jmxri"/>
       <exclude org="com.sun.jmx" module="jmxri"/>
       <exclude org="com.sun.jdmk" module="jmxtools"/>
       <exclude org="javax.jms" module="jms"/>

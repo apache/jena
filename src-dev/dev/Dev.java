@@ -9,8 +9,8 @@ package dev;
 public class Dev
 {
     // Build
-    // Put in organisation name for publishing.  com.hp.. vs com/hp/ 
-    //   [module]/maven-metadata.xml ??
+    //  Maven name for sources and javadoc? jar? [thing]-sources.jar
+    // ivy names (publications section e.g "tdb-src") and src.zipfile, javadoc.zipfile need to align
     
     // B+Tree rewriter
     
