@@ -17,15 +17,12 @@ public class Dev
     // New cache API alloc/return/invalidate (shrink/grow?)
     //   Stats.
     
-    // Documentation on the wiki
-    
     // New organsiation for files:
     //   TripleIndex -> Index/RangeIndex (records) -> BlockFile (id-Block)
     //   NodeTable   -> ObjectFile (NodId->Node) -> VarFile (id-bytes)
     
     // tdbloader: 
     //   close indexes not in use in a given phase
-    //   More aggressively cache B+Tree indexes, less on leaves (enough for 32 bit?)
     //   Especially efficient iterator() for B+Trees (not mmap).
 
     // Node table caching?
