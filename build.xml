@@ -47,6 +47,7 @@
   <!-- Artifacts -->
   <property name="jarfile"                value="${name}-${version}.jar"/>
   <property name="src.zipfile"            value="${name}-src-${version}.zip"/>
+  <property name="pomfile"                value="${name}-${version}.pom"/>
 
   <!-- Places -->
   <property name="src.dir"                value="src"/>
@@ -85,7 +86,7 @@
   <path id="java.run.class.path">
     <!-- jar file may, or may not, be in the lib directory -->
     <fileset dir="${lib.dir}" includes="*.jar" excludes="${jarfile}"/>
-    <fileset dir="${artifacts.dir}" includes="*.jar"/>
+    <fileset dir="${build.dir}" includes="tdb*.jar"/>
   </path>
 
   <!-- Sources as a path -->
@@ -147,8 +148,7 @@
     <fail message="Ivy dependency failed" if="ivy.resolve.failed"/>
   </target>
 
-  <!-- Remove jar build check for testing -->
-  <target name="ivy-publish" depends="ivy-init" description="Publish (with Ivy)">
+  <target name="ivy-publish" depends="ivy-init">
     <ivy:resolve conf="main"/>
     <ivy:publish conf="main" 
 		 resolver="dev-publish" 
@@ -161,7 +161,7 @@
   <target name="ivy-pom" depends="ivy-init">
     <!-- Make a basic POM file -->
     <ivy:makepom ivyfile="ivy.xml" 
-		 pomfile="pom-tdb.xml">
+		 pomfile="pom-tdb-auto.xml">
       <!--
 	<mapping conf="default" scope="compile"/>
 	<mapping conf="runtime" scope="runtime"/>
@@ -170,7 +170,7 @@
   </target>
 
   <!-- ========================================== -->
-  <!-- Preprocessing sources -->
+  <!-- ==== Preprocessing sources -->
 
   <!-- ========================================== -->
   <!-- ==== Build and compile -->
@@ -190,13 +190,10 @@
     </javac>
   </target>
 
-  <!-- Artifacts -->
-  
   <target name="jars" depends="jar" />
   <target name="jar" depends="compile" description="Build the jar">
-    <mkdir dir="${artifacts.dir}"/>
-    <delete file="${artifacts.dir}/${jarfile}"/>
-    <jar destfile="${artifacts.dir}/${jarfile}" basedir="${build.classes.dir}">
+    <delete file="${build.dir}/${jarfile}"/>
+    <jar destfile="${build.dir}/${jarfile}" basedir="${build.classes.dir}">
       <!--
 	<manifest>
 	<attribute name="Main-Class" value="${main.class}"/>
@@ -206,20 +203,40 @@
   </target>
 
   <!-- ========================================== -->
-  <!-- ==== Source code -->
-  
-  <target name="src-artifact" description="Produce the source code artifact">
+  <!-- ==== Artifacts -->	
+	
+  <target name="artifacts-init">
+  	<delete dir="${artifacts.dir}"/>
     <mkdir dir="${artifacts.dir}"/>
-    <delete file="${artifacts.dir}/${src.zipfile}"/>
+  </target>
+
+  <target name="jar-artifact" depends="jar">
+  	<!-- <delete file="${artifacts.dir}/${jarfile}"/> -->
+	<copy todir="${artifacts.dir}" file="${build.dir}/${jarfile}"/>
+  </target>
+	
+  <target name="src-artifact">
+    <!-- <delete file="${artifacts.dir}/${src.zipfile}"/> -->
     <zip zipfile="${artifacts.dir}/${src.zipfile}">
       <fileset refid="fileset.src"/>
     </zip>
   </target>
+
+  <target name="pom-artifact">
+    <!-- <delete file="${artifacts.dir}/${pomfile}"/> -->
+
+    <copy file="tdb.pom" tofile="${artifacts.dir}/${pomfile}">
+      <filterset>
+	<filter token="VERSION" value="${version}"/>
+      </filterset>
+    </copy>
+  </target>
+  
   
   <!-- ========================================== -->
-  <!-- Publication -->
+  <!-- ==== Publication -->
 
-  <target name="artifacts" depends="clean,jar,src-artifact"/>
+  <target name="artifacts" depends="clean,jar,jar-artifact,src-artifact,pom-artifact"/>
   
   <target name="publish" description="Build and publish this version"
           depends="clean,artifacts,ivy-publish">

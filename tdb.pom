@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- POM file for TDB publishing -->
+
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.hp.jena.tdb</groupId>
+  <artifactId>tdb</artifactId>
+  <packaging>jar</packaging>
+  <name>TDB</name>
+  <version>@VERSION@</version>
+  <description/>
+  <url>http://jena.sf.net/TDB</url>
+
+  <organization>
+    <name>Hewlett-Packard</name>
+    <url>http://www.hp.com/</url>
+  </organization>
+
+  <licenses>
+    <license>
+      <name>BSD-style license</name>
+      <url>http://jena.sourceforge.net/license.html</url>
+    </license>
+  </licenses>
+
+  <scm>	
+    <connection>scm:svn:https://jena.svn.sourceforge.net/svnroot/jena/TDB</connection>
+    <developerConnection>scm:svn:https://jena.svn.sourceforge.net/svnroot/jena/TDB</developerConnection>
+    <url>http://jena.svn.sourceforge.net/</url>
+  </scm>
+
+  <dependencies>
+    <dependency>
+      <groupId>com.hp.hpl.jena</groupId>
+      <artifactId>arq</artifactId>
+      <version>2.3</version>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>com.hp.hpl.jena</groupId>
+      <artifactId>arq-extra</artifactId>
+      <version>2.3</version>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.4</version>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>1.4.3</version>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-log4j12</artifactId>
+      <version>1.4.3</version>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>log4j</groupId>
+      <artifactId>log4j</artifactId>
+      <version>1.2.15</version>
+      <optional>true</optional>
+    </dependency>
+  </dependencies>
+
+</project>
