@@ -9,11 +9,8 @@ package dev;
 public class Dev
 {
     // Build
-    // Jar - to lib dir (or build/tdb.jar) then as artifact?
     // Put in organisation name for publishing.  com.hp.. vs com/hp/ 
     //   [module]/maven-metadata.xml ??
-    // Make pom an artifact => publish it.
-    // Make the file layout correct for Maven (see that email message)
     
     // B+Tree rewriter
     
