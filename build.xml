@@ -27,16 +27,19 @@
        jar        make jar 
        publish    export to maven
        release    
-                  Must prpvide
+       Must prpvide
        junit      Run the test suite
        report     Run the test suite and generate a report
 
        == Assumes
        Properties:
        Name       The project name, capitalized, used for 
-                    release directory and release zip.
+       release directory and release zip.
        name       The project name,lowercase, used as artifact root
        version    The version string
+       path id="path.java.source"
+       fileset dir="." id="fileset.src"
+       So maybe change to one src-directory after all
   -->
 
   <property name="dist.name"              value="${Name}-${version}"/>
@@ -57,7 +60,9 @@
   <property name="src.lib.dir"            value="src-lib"/>
   <property name="src.lib.test.dir"       value="src-lib-test"/>
   <property name="src.dev.dir"            value="src-dev"/>
-  <property name="doc.dir"		  value="doc"/>
+  <property name="doc.dir"                        value="doc"/>
+  <property name="javadoc.dir"            value="${doc.dir}/javadoc"/>
+  <property name="javadoc.all.dir"        value="${doc.dir}/javadoc-all"/>
   <property name="lib.dir"                value="lib"/>
   <!-- Testing - scripts and data files -->
   <property name="test.dir"               value="testing"/>
@@ -92,7 +97,7 @@
   </path>
 
   <!-- Sources as a path -->
-  <path id="path.java.source">
+  <path id="java.source.path">
     <pathelement path="${src.dir}"/>
     <pathelement path="${src.test.dir}"/>
     <pathelement path="${src.lib.dir}"/>
@@ -120,16 +125,265 @@
   </target>
 
   <!-- ========================================== -->
+  <!-- ==== Sources -->
+  
+  <target name="zip-src">
+    <zip zipfile="${build.dir}/${src.zipfile}">
+      <fileset refid="fileset.src"/>
+    </zip>
+  </target>
+
+  <!-- ========================================== -->
+  <!-- ==== Build and compile -->
+
+  <target name="compile" depends="javac-flags" description="Compile project">
+    <mkdir dir="${build.classes.dir}"/>
+    <javac destdir="${build.classes.dir}"
+	   debug="${java.debug}"
+	   deprecation="${java.debuglevel}"
+	   optimize="${java.optimize}"
+	   encoding="${java.encoding}"
+	   source="${java.source}"
+	   target="${java.target}"
+	   >
+      <src refid="java.source.path"/>
+      <classpath refid="java.build.class.path" />
+    </javac>
+  </target>
+
+  <target name="jars" depends="jar" />
+  <target name="jar" depends="compile" description="Build the jar">
+    <delete file="${build.dir}/${jarfile}"/>
+    <jar destfile="${build.dir}/${jarfile}" basedir="${build.classes.dir}">
+      <!--
+	<manifest>
+	<attribute name="Main-Class" value="${main.class}"/>
+	</manifest>
+      -->
+    </jar>
+  </target>
+  
+  <!-- ========================================== -->
+  <!-- ==== Javadoc -->
+
+  <target name="javadoc-init">
+    <delete  dir="${javadoc.dir}"/>
+    <mkdir  dir="${javadoc.dir}"/>
+    <delete dir="${javadoc.all.dir}"/>
+    <mkdir  dir="${javadoc.all.dir}"/>
+  </target>
+  
+  <target name="javadoc" depends="javadoc-init"/>
+  <target name="javadoc-all" depends="javadoc-init"/>
+  
+  <!-- To be sorted out
+       <target name="javadoc" depends="clean-javadoc,build-src,javac-flags"
+       description="Make the javadoc">
+       <javadoc
+       sourcepath="${src.build.dir}" << Remove
+       source="${java.source}"
+       destdir="${javadoc.dir}"
+       author="true"
+       version="true"
+       classpathref="classpath"
+       windowtitle="${Name}"
+       doctitle="${Name}"
+       Public="true"
+       Use="true"
+       bottom="Copyright &#169; 2007, 2008 Hewlett-Packard Development Company, LP"
+       additionalparam="-breakiterator">
+       <classpath refid="classpath"/>
+       <package name="com.hp.hpl.jena.tdb"/>
+       <packageset or <fileset ...  
+       
+       </javadoc>
+       </target>
+
+       <target name="javadoc-all" depends="clean-javadoc,build-src,javac-flags"
+       description="Make the javadoc (all of it)">
+       <javadoc
+       packagenames="com.hp.hpl.jena.tdb.*"
+       sourcepath="${src.build.dir}"
+       source="${java.source}"
+       destdir="${javadoc.all.dir}"
+       author="true"
+       version="true"
+       classpathref="classpath"
+       windowtitle="${Name} Query Processor"
+       doctitle="${Name} Query Processor"
+       Public="true"
+       Use="true"
+       bottom="Copyright &#169; 2007, 2008 Hewlett-Packard Development Company, LP"
+       additionalparam="-breakiterator">
+       </javadoc>
+       </target>
+  -->
+
+  <!-- ========================================== -->
+  <!-- ==== Artifacts -->       
+  
+  <target name="artifacts-init">
+    <delete dir="${artifacts.dir}"/>
+    <mkdir dir="${artifacts.dir}"/>
+  </target>
+
+  <target name="jar-artifact" depends="jar">
+    <!-- <delete file="${artifacts.dir}/${jarfile}"/> -->
+    <copy todir="${artifacts.dir}" file="${build.dir}/${jarfile}"/>
+  </target>
+  
+  <target name="src-artifact" depends="zip-src">
+    <!-- <delete file="${artifacts.dir}/${src.zipfile}"/> -->
+    <copy todir="${artifacts.dir}" file="${build.dir}/${src.zipfile}"/>
+  </target>
+
+  <target name="pom-artifact">
+    <!-- <delete file="${artifacts.dir}/${pomfile}"/> -->
+    <copy file="tdb.pom" tofile="${artifacts.dir}/${pomfile}">
+      <filterset>
+	<filter token="VERSION" value="${version}"/>
+      </filterset>
+    </copy>
+  </target>
+  
+  
+  <!-- ========================================== -->
+  <!-- ==== Publication -->
+
+  <target name="artifacts" depends="clean,jar,jar-artifact,src-artifact,pom-artifact"/>
+  
+  <target name="publish" description="Build and publish this version"
+	  depends="clean,artifacts,ivy-publish">
+  </target>
+  
+  <!-- ========================================== -->
+  <!-- ==== JUnit and reporting -->
+
+  <target name="junit" depends="run-junit" description="Run the test suite">
+    <fail message="JUnit tests failed" if="junit.failed"/>
+  </target>
+
+  <target name="report" depends="run-report" description="Run tests and generate reports">
+    <fail message="JUnit tests failed" if="junit.failed"/>
+  </target>
+
+  <!-- Worker tasks for the above tasks -->
+
+  <target name="run-junit" depends="jar,clean-reports">
+    <mkdir dir="${reports.dir}"/>
+    <mkdir dir="${reports.dir.xml}"/>
+    <mkdir dir="${test.dir}"/>
+
+    <!-- Don't stop on failure - set a property instead -->
+    <junit printsummary="yes" errorProperty="junit.failed" failureProperty="junit.failed">
+      <!-- usefile="false"  type="plain"-->
+      <!-- <formatter usefile="false" type="brief"/> -->
+      <formatter type="xml" />
+      <classpath>
+	<pathelement path="${build.classes.dir}" />
+	<path refid="java.run.class.path" />
+      </classpath>
+      <!-- <test name="test.TS_Main" outfile="${reports.dir.xml}/junit-report"/> -->
+      <batchtest todir="${reports.dir.xml}">
+	<fileset dir="${src.test.dir}">
+	  <include name="**/TS_*.java" />
+	</fileset>
+	<fileset dir="${src.lib.test.dir}">
+	  <include name="**/TS_*.java" />
+	</fileset>
+      </batchtest>
+    </junit>
+  </target>
+
+  <target name="run-report" depends="run-junit">
+    <junitreport todir="./${reports.dir}">
+      <fileset dir="./${reports.dir.xml}">
+	<include name="**.xml"/>
+      </fileset>
+      <report format="frames" todir="./${reports.outdir}"/>
+    </junitreport>
+  </target>
+
+  <target name="clean-reports">
+    <delete dir="${reports.dir}"/>
+    <delete dir="${reports.dir.xml}"/>
+    <delete dir="${reports.outdir}"/>
+  </target>
+  
+  <!-- ========================================== -->
+  <!-- ==== Release -->
+
+  <target name="release" depends="clean,artifacts,package"
+	  description="Create TDB release">
+  </target>
+
+  <target name="package" depends="copy-init,copy,zip.release"/>
+
+  <target name="copy-init">
+    <delete dir="${dist.dir}" />
+    <mkdir dir="${dist.dir}" />
+    <mkdir dir="${dist.dir}/${lib.dir}"/>
+  </target>
+
+  <target name="copy" depends="copy-init,jar,javadoc">
+    <!-- jars - tdb jar and dependences -->
+    <copy todir="${dist.dir}/${lib.dir}">
+      <fileset dir="${lib.dir}" includes="**/*.jar" excludes="${jarfile}"/>
+      <fileset dir="${build.dir}" includes="*.jar"/>
+    </copy>
+
+    <!-- Source code -->
+    <copy todir="${dist.dir}" file="${artifacts.dir}/${src.zipfile}"/>
+    
+    <copy todir="${dist.dir}/${test.dir}">
+      <fileset dir="${test.dir}"/>
+    </copy>
+
+    <!-- bin/ (and bat/ if any) -->
+    <copy todir="${dist.dir}/bin">
+      <fileset dir="bin"/>
+    </copy>
+    <copy todir="${dist.dir}/bin2">
+      <fileset dir="bin2"/>
+    </copy>
+
+    <copy todir="${dist.dir}/" file="build.xml"/>
+    <copy todir="${dist.dir}/">
+      <fileset dir="." includes="ivy*"/>
+    </copy>
+    <copy todir="${dist.dir}/" file="copyright.txt"/>
+    <copy todir="${dist.dir}/" file="README.txt"/>
+    <copy todir="${dist.dir}/" file="ChangeLog.txt"/>
+
+    <copy todir="${dist.dir}/${doc.dir}">
+      <fileset dir="${doc.dir}">
+	<include name="**" />
+	<exclude name="**/_vti*/**" />
+	<exclude name="**/_private/**" />
+	<exclude name="**/javadoc-all/**"/>
+	<exclude name="**/desktop.ini" />
+      </fileset>
+    </copy>
+  </target>
+
+  <target name="zip.release">
+    <!-- Build the zip of the distribution -->
+    <delete file="${dist.root}/${release.zipfile}"/>
+    <zip zipfile="${dist.root}/${release.zipfile}">
+      <fileset dir="dist" includes="${dist.name}/**"/>
+    </zip>
+  </target>
+
+  <target name="clean-dist">
+    <delete dir="${dist.root}"/>
+  </target>
+  
+  <!-- ========================================== -->
   <!-- ==== Ivy : Dependency Management  -->
 
   <target name="ivy-init">
     <ivy:settings />
   </target>
-
-  <!--
-   <target name="ivy-clean">
-  </taget>
-  -->
 
   <!-- Convenience target -->
   <target name="ivy" depends="ivy-setup-lib" description="Set up for use with Eclispe">
@@ -170,134 +424,8 @@
       -->
     </ivy:makepom>
   </target>
-
-  <!-- ========================================== -->
-  <!-- ==== Preprocessing sources -->
-
-  <!-- ========================================== -->
-  <!-- ==== Build and compile -->
-
-  <target name="compile" depends="javac-flags" description="Compile project">
-    <mkdir dir="${build.classes.dir}"/>
-    <javac destdir="${build.classes.dir}"
-	   debug="${java.debug}"
-	   deprecation="${java.debuglevel}"
-	   optimize="${java.optimize}"
-	   encoding="${java.encoding}"
-	   source="${java.source}"
-	   target="${java.target}"
-	   >
-      <src refid="path.java.source"/>
-      <classpath refid="java.build.class.path" />
-    </javac>
-  </target>
-
-  <target name="jars" depends="jar" />
-  <target name="jar" depends="compile" description="Build the jar">
-    <delete file="${build.dir}/${jarfile}"/>
-    <jar destfile="${build.dir}/${jarfile}" basedir="${build.classes.dir}">
-      <!--
-	<manifest>
-	<attribute name="Main-Class" value="${main.class}"/>
-	</manifest>
-      -->
-    </jar>
-  </target>
-
-  <!-- ========================================== -->
-  <!-- ==== Artifacts -->	
-	
-  <target name="artifacts-init">
-  	<delete dir="${artifacts.dir}"/>
-    <mkdir dir="${artifacts.dir}"/>
-  </target>
-
-  <target name="jar-artifact" depends="jar">
-  	<!-- <delete file="${artifacts.dir}/${jarfile}"/> -->
-	<copy todir="${artifacts.dir}" file="${build.dir}/${jarfile}"/>
-  </target>
-	
-  <target name="src-artifact">
-    <!-- <delete file="${artifacts.dir}/${src.zipfile}"/> -->
-    <zip zipfile="${artifacts.dir}/${src.zipfile}">
-      <fileset refid="fileset.src"/>
-    </zip>
-  </target>
-
-  <target name="pom-artifact">
-    <!-- <delete file="${artifacts.dir}/${pomfile}"/> -->
-
-    <copy file="tdb.pom" tofile="${artifacts.dir}/${pomfile}">
-      <filterset>
-	<filter token="VERSION" value="${version}"/>
-      </filterset>
-    </copy>
-  </target>
   
   
-  <!-- ========================================== -->
-  <!-- ==== Publication -->
-
-  <target name="artifacts" depends="clean,jar,jar-artifact,src-artifact,pom-artifact"/>
-  
-  <target name="publish" description="Build and publish this version"
-          depends="clean,artifacts,ivy-publish">
-  </target>
-  
-  <!-- ========================================== -->
-  <!-- ==== JUnit and reporting -->
-
-  <target name="junit" depends="run-junit" description="Run the test suite">
-    <fail message="JUnit tests failed" if="junit.failed"/>
-  </target>
-
-  <target name="report" depends="run-report" description="Run tests and generate reports">
-    <fail message="JUnit tests failed" if="junit.failed"/>
-  </target>
-
-  <!-- Worker tasks for the above tasks -->
-
-  <target name="run-junit" depends="jar,clean-reports">
-    <mkdir dir="${reports.dir}"/>
-    <mkdir dir="${reports.dir.xml}"/>
-    <mkdir dir="${test.dir}"/>
-
-    <!-- Don't stop on failure - set a property instead -->
-    <junit printsummary="yes" errorProperty="junit.failed" failureProperty="junit.failed">
-      <!-- usefile="false"  type="plain"-->
-      <!-- <formatter usefile="false" type="brief"/> -->
-      <formatter type="xml" />
-      <classpath>
-        <pathelement path="${build.classes.dir}" />
-        <path refid="java.run.class.path" />
-      </classpath>
-      <!-- <test name="test.TS_Main" outfile="${reports.dir.xml}/junit-report"/> -->
-      <batchtest todir="${reports.dir.xml}">
-        <fileset dir="${src.test.dir}">
-          <include name="**/TS_*.java" />
-        </fileset>
-        <fileset dir="${src.lib.test.dir}">
-          <include name="**/TS_*.java" />
-        </fileset>
-      </batchtest>
-    </junit>
-  </target>
-
-  <target name="run-report" depends="run-junit">
-    <junitreport todir="./${reports.dir}">
-      <fileset dir="./${reports.dir.xml}">
-        <include name="**.xml"/>
-      </fileset>
-      <report format="frames" todir="./${reports.outdir}"/>
-    </junitreport>
-  </target>
-
-  <target name="clean-reports">
-    <delete dir="${reports.dir}"/>
-    <delete dir="${reports.dir.xml}"/>
-    <delete dir="${reports.outdir}"/>
-  </target>
-
   <!-- ========================================== -->
   <!-- ==== Run -->
 
@@ -308,88 +436,12 @@
       <arg value="10"/>
       <arg value="100"/>
       <classpath>
-        <pathelement path="${build.classes.dir}"/>
-        <path refid="java.run.class.path"/>
+	<pathelement path="${build.classes.dir}"/>
+	<path refid="java.run.class.path"/>
       </classpath>
     </java>
   </target>
 
-  <!-- ========================================== -->
-  <!-- ==== Release -->
-
-  <target name="release" depends="clean,artifacts,package"
-	  description="Create TDB release">
-  </target>
-
-    <!--
-    <target name="release2" description="Build a single release zip"
-    		  depends="clean,artifacts">
-    	<zip zipfile="${build.dir}/${release.zipfile}">
-    		 basedir="${artifacts.dir}">
-    	</zip>
-    </target>
-    -->
-    
-  <target name="package" depends="copy-init,copy,zip.release"/>
-
-  <target name="copy-init" depends="clean-release">
-    <delete dir="${dist.dir}" />
-    <mkdir dir="${dist.dir}" />
-    <mkdir dir="${dist.dir}/${lib.dir}"/>
-  </target>
-
-  <target name="copy" depends="copy-init">
-  	<!-- jars - tdb jar and dependences -->
-    <copy todir="${dist.dir}/${lib.dir}">
-      <fileset dir="${lib.dir}" includes="**/*.jar" excludes="${jarfile}"/>
-      <fileset dir="${artifacts.dir}" includes="*.jar"/>
-    </copy>
-
-    <!-- Source code -->
-    <copy todir="${dist.dir}" file="${artifacts.dir}/${src.zipfile}"/>
-      
-    <copy todir="${dist.dir}/${test.dir}">
-      <fileset dir="${test.dir}"/>
-    </copy>
-
-    <!-- bin/ (and bat/ if any) -->
-    <copy todir="${dist.dir}/bin">
-      <fileset dir="bin"/>
-    </copy>
-    <copy todir="${dist.dir}/bin2">
-      <fileset dir="bin2"/>
-    </copy>
-
-    <copy todir="${dist.dir}/" file="build.xml"/>
-    <copy todir="${dist.dir}/">
-	  <fileset dir="." includes="ivy*"/>
-	</copy>
-    <copy todir="${dist.dir}/" file="copyright.txt"/>
-    <copy todir="${dist.dir}/" file="README.txt"/>
-    <copy todir="${dist.dir}/" file="ChangeLog.txt"/>
-
-    <copy todir="${dist.dir}/${doc.dir}">
-      <fileset dir="${doc.dir}">
-        <include name="**" />
-        <exclude name="**/_vti*/**" />
-        <exclude name="**/_private/**" />
-        <exclude name="**/desktop.ini" />
-      </fileset>
-    </copy>
-
-  </target>
-
-  <target name="zip.release">
-    <!-- Build the zip of the distribution -->
-    <delete file="${dist.root}/${release.zipfile}"/>
-    <zip zipfile="${dist.root}/${release.zipfile}">
-      <fileset dir="dist" includes="${dist.name}/**"/>
-    </zip>
-  </target>
-
-  <target name="clean-dist">
-    <delete dir="${dist.root}"/>
-  </target>
   
   <!-- ========================================== -->
   <!-- ==== Misc -->
@@ -397,12 +449,15 @@
   <target name="clean" description="Clean (build and reports)"
 	  depends="clean-build-area,clean-reports">
   </target>
-	    
-  <target name="clean-release">
-    <delete dir="${dist.dir}"/>
-  </target>  
+
+  <target name="clean-javadoc">
+    <delete dir="${javadoc.dir}"/>
+    <mkdir  dir="${javadoc.dir}"/>
+    <delete dir="${javadoc.all.dir}"/>
+    <mkdir  dir="${javadoc.all.dir}"/>
+  </target>
   
-  <target name="clean-build-area" description="Clean the build area">
+  <target name="clean-build-area">
     <delete dir="${build.classes.dir}"/>
     <delete dir="${artifacts.dir}"/>
     <delete dir="${build.dir}/${jarfile}"/>
