@@ -23,10 +23,9 @@
        <artifact pattern="build/pub/[module]-[revision]/[artifact]-[revision].[ext]"/>
     </filesystem>
     -->
-
-    <sftp name="dev-publish" user="afs" host="jena.hpl.hp.com" 
-	  keyFile="/home/afs/.ssh/id_rsa"
-	  m2compatible="true">
+    <!-- User environment variables to find user/key -->
+    <sftp name="dev-publish" host="jena.hpl.hp.com" 
+	  user="${env.USER}" keyFile="${env.HOME}/.ssh/ivy-pub-jena-key">
       <ivy pattern="repo-dev/com/hp/hpl/jena/[module]/[revision]/ivy.xml"/>
       <artifact pattern="repo-dev/com/hp/hpl/jena/[module]/[revision]/[artifact]-[revision].[ext]"/>
     </sftp>

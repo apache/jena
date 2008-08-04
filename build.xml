@@ -6,6 +6,8 @@
   <property name="Name"                   value="TDB"/>
   <property name="name"                   value="tdb"/>
 
+  <property environment="env"/>
+
   <!-- The major and minor version numbers  -->
   <property name="version-major"   value="0"/>
   <property name="version-minor"   value="5"/>
