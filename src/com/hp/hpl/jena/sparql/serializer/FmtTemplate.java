@@ -64,7 +64,7 @@ public class FmtTemplate extends FormatterBase
                 continue ;
             }
             // Flush accumulator
-            if ( acc != null && ! acc.isEmpty() )
+            if ( ! acc.isEmpty() )
                 formatTriples(acc) ;
             acc = new BasicPattern() ;
             temp.visit(this) ;
@@ -74,7 +74,7 @@ public class FmtTemplate extends FormatterBase
         }
     
         // Flush accumulator
-        if ( acc != null && ! acc.isEmpty() )
+        if ( ! acc.isEmpty() )
             formatTriples(acc) ;
         
         out.decIndent(INDENT) ;

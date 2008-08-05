@@ -1069,12 +1069,12 @@ public class Base64
         catch( java.io.IOException e )
         {
             e.printStackTrace();
-            obj = null;
+            //obj = null;
         }   // end catch
         catch( java.lang.ClassNotFoundException e )
         {
             e.printStackTrace();
-            obj = null;
+            //obj = null;
         }   // end catch
         finally
         {

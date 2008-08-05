@@ -83,9 +83,6 @@ public class BuilderOp
     // The main recursive build operation.
     public Op build(ItemList list)
     {
-        if ( list == null )
-            list = null ;
-
         Item head = list.get(0) ;
         String tag = head.getSymbol() ;
 

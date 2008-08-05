@@ -43,8 +43,8 @@ public class SystemVar extends FunctionBase0
             throw new ExprEvalException("Not a Node: "+Utils.className(obj)) ;
         
         Node n = (Node)obj ;
-        if ( n == null )
-            throw new ExprEvalException("No value for system variable: "+systemSymbol) ;  
+//        if ( n == null )
+//            throw new ExprEvalException("No value for system variable: "+systemSymbol) ;  
         // NodeValue.makeNode could have a cache.
         NodeValue nv = NodeValue.makeNode(n) ;
         return nv ;

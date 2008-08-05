@@ -80,7 +80,7 @@ public abstract class LuceneSearch extends PropertyFunctionEval
         else
         {
             match = argSubject.getArg() ;
-            score = null ;
+            //score = null ;
         }
         
         if ( argObject.isList() )

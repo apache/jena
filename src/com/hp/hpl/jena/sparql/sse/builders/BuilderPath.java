@@ -70,9 +70,6 @@ public class BuilderPath
     
     private Path build(ItemList list)
     {
-        if ( list == null )
-            list = null ;
-
         Item head = list.get(0) ;
         String tag = head.getSymbol() ;
 

@@ -146,9 +146,11 @@ public class JSONOutputResultSet implements ResultSetProcessor, JSONResults
         if ( multiLineValues ) out.println() ;
         
         out.incIndent() ;
-        if ( value == null )
-            printUnbound() ;
-        else if ( value.isLiteral() )
+        // Old, explicit unbound
+//        if ( value == null )
+//            printUnbound() ;
+//        else
+      	if ( value.isLiteral() )
             printLiteral((Literal)value) ;
         else if ( value.isResource() )
             printResource((Resource)value) ;
