@@ -127,10 +127,9 @@ public class VarFinder
         Defines(Var var) { this.var = var ; }
         
         @Override
-        @SuppressWarnings("unchecked")
         public void visit(OpQuadPattern quadPattern)
         {
-            @SuppressWarnings("unchecked")
+        	@SuppressWarnings("unchecked")
             List<Quad> quads = quadPattern.getQuads() ;
             for ( Quad quad : quads )
             {

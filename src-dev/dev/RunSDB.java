@@ -96,7 +96,6 @@ public class RunSDB
             GraphStoreSDB gs = new GraphStoreSDB(store) ;
             UpdateAction.readExecute("update.ru", gs) ;
             
-            @SuppressWarnings("unchecked")
             Iter<Node> iter = Iter.convert((Iterator<Node>)gs.listGraphNodes()) ;
             System.out.println(">>>");
             for ( Node n : iter)

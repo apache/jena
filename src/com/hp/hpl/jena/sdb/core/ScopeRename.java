@@ -107,19 +107,11 @@ public class ScopeRename implements Scope
                 entry = new ScopeEntry(entry.getVar(), entry.getColumn()) ;
                 Var var = entry.getVar() ;
                 SqlColumn col = frame.get(var) ;
-                if ( col == null && entry != null )
+                if ( col == null )
                 {
                     log.warn("No alias for variable "+var) ;
                     return entry ;
                 }
-                if ( col != null && entry == null )
-                {
-                    log.warn("No underlying column for alias: "+var) ;
-                    return entry ;
-                }
-                
-                if ( entry == null )
-                    return null ;
                 ScopeEntry entry2 = new ScopeEntry(entry.getVar(), entry.getColumn()) ;
                 entry2.setStatus(entry.getStatus()) ;
                 //entry.reset(var, col, entry.getStatus()) ;

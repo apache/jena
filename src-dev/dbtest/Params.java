@@ -16,10 +16,8 @@ public class Params
 
     public String get(String key) { return (String)params.get(key.toLowerCase()) ; }
     
-    @SuppressWarnings("unchecked")
     public void put(String key, String value) { params.put(key.toLowerCase(), value) ; }
     
-    @SuppressWarnings("unchecked")
     public void putDft(String key, String value)
     { 
         key = key.toLowerCase() ;

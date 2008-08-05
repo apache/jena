@@ -130,7 +130,6 @@ public class ModStore extends ModBase
     }
     
     
-    @SuppressWarnings("unchecked")
     public void processArgs(CmdArgModule cmdLine)
     {
         if (! cmdLine.contains(argDeclSDBdesc))
