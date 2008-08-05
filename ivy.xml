@@ -18,9 +18,11 @@
 
   <publications>
     <artifact name="tdb" type="jar"/>
+    <artifact name="tdb" type="xml"    ext="pom"/>
+    <!-- Problems with the names Maven expectes
     <artifact name="tdb-src" type="zip" ext="zip"/>
     <artifact name="tdb-javadoc" type="zip" ext="zip"/>
-    <artifact name="tdb" type="xml"    ext="pom"/>
+    -->
   </publications>
 
   <dependencies>

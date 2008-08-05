@@ -229,14 +229,6 @@
     <copy todir="${artifacts.dir}" file="${build.dir}/${jarfile}"/>
   </target>
   
-  <target name="src-artifact" depends="">
-    <!-- <delete file="${artifacts.dir}/${src.zipfile}"/> -->
-    <zip zipfile="${artifacts.dir}/${src.zipfile}">
-        <fileset refid="fileset.src"/>
-    </zip>
-    <!-- OLD   <copy todir="${artifacts.dir}" file="${build.dir}/${src.zipfile}"/> -->
-  </target>
-
   <target name="pom-artifact">
     <!-- <delete file="${artifacts.dir}/${pomfile}"/> -->
     <copy file="tdb.pom" tofile="${artifacts.dir}/${pomfile}">
@@ -246,6 +238,14 @@
     </copy>
   </target>
   
+  <target name="src-artifact" depends="">
+    <!-- <delete file="${artifacts.dir}/${src.zipfile}"/> -->
+    <zip zipfile="${artifacts.dir}/${src.zipfile}">
+        <fileset refid="fileset.src"/>
+    </zip>
+    <!-- OLD   <copy todir="${artifacts.dir}" file="${build.dir}/${src.zipfile}"/> -->
+  </target>
+
   <target name="javadoc-artifact" depends="javadoc">
     <!-- <delete file="${artifacts.dir}/${src.zipfile}"/> -->
     <zip zipfile="${artifacts.dir}/${javadoc.zipfile}" 
@@ -255,7 +255,8 @@
   <!-- ========================================== -->
   <!-- ==== Publication -->
 
-  <target name="artifacts" depends="clean,jar,jar-artifact,src-artifact,pom-artifact,javadoc-artifact"/>
+  <!-- jar-artifact,pom-artifact,src-artifact,javadoc-artifact -->
+  <target name="artifacts" depends="clean,jar,jar-artifact,pom-artifact"/>
   
   <target name="publish" description="Build and publish this version"
           depends="clean,artifacts,ivy-publish">
