@@ -52,7 +52,6 @@ public class tdbcheck extends CmdARQ
         return getCommandName()+" FILE ..." ;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     protected void exec()
     {
@@ -99,7 +98,6 @@ public class tdbcheck extends CmdARQ
         }
         static IRIFactory iriFactory = IRIFactory.semanticWebImplementation();
 
-        @SuppressWarnings("unchecked")
         final private void check(Node node)
         {
             if ( node.isURI() ) checkURI(node) ;

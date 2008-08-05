@@ -113,7 +113,6 @@ public class StageGeneratorPGraphBGP implements StageGenerator
     {
         return new Transform<Binding, BindingNodeId>()
         {
-            @SuppressWarnings("unchecked")
             @Override
             public BindingNodeId convert(Binding binding)
             {

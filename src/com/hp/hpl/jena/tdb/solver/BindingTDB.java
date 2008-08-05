@@ -67,7 +67,7 @@ public class BindingTDB extends BindingBase
         try {
             Node n = null ;
             if ( cache != null )
-                cache.get(var) ;
+            	n = cache.get(var) ;
             if ( n != null )
                 return n ;
             
