@@ -38,6 +38,9 @@ public class ModelUtils
  
     public static Statement tripleToStatement(Model model, Triple t)
     {
+        if ( model == null )
+            throw new ARQInternalErrorException("Attempt to create statement with null model") ;
+        
         Node sNode = t.getSubject() ;
         Node pNode = t.getPredicate() ;
         Node oNode = t.getObject() ;
@@ -45,20 +48,21 @@ public class ModelUtils
         if ( sNode.isLiteral() || sNode.isVariable() )
             return null ;
         
-        if ( ! pNode.isURI() )  // Includes variable.
+        if ( ! pNode.isURI() )  // Not variable, literal or blank.
             return null ;
-        
+
         if ( oNode.isVariable() )
             return null ;
         
-        RDFNode s = convertGraphNodeToRDFNode(sNode, model) ;
-        RDFNode p = convertGraphNodeToRDFNode(pNode, model) ;
-        if ( p instanceof Resource )
-            p = model.createProperty(((Resource)p).getURI()) ;
-        RDFNode o = convertGraphNodeToRDFNode(oNode, model) ;
-        
-        Statement stmt = model.createStatement((Resource)s, (Property)p, o) ;
-        return stmt ;
+        return model.asStatement(t) ; 
+//        RDFNode s = convertGraphNodeToRDFNode(sNode, model) ;
+//        RDFNode p = convertGraphNodeToRDFNode(pNode, model) ;
+//        if ( p instanceof Resource )
+//            p = model.createProperty(((Resource)p).getURI()) ;
+//        RDFNode o = convertGraphNodeToRDFNode(oNode, model) ;
+//        
+//        Statement stmt = model.createStatement((Resource)s, (Property)p, o) ;
+//        return stmt ;
     }
  
 }

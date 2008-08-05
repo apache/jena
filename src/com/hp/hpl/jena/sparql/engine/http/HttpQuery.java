@@ -14,6 +14,8 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -304,6 +306,15 @@ public class HttpQuery extends Params
             
             if ( false )
             {
+                // Dump the reply
+                Map map = httpConnection.getHeaderFields() ;
+                for ( Iterator iter = map.keySet().iterator() ; iter.hasNext() ; )
+                {
+                    String k = (String)iter.next();
+                    List v = (List)map.get(k) ;
+                    System.out.println(k+" = "+v) ;
+                }
+                
                 // Dump response body
                 StringBuffer b = new StringBuffer(1000) ;
                 byte[] chars = new byte[1000] ;

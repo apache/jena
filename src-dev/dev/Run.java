@@ -47,13 +47,14 @@ public class Run
 {
     public static void main(String[] argv) throws Exception
     {
-        System.setProperty("socksProxyHost", "socks-server") ;
-        
-        String a2[] = { "--service=http://dbpedia.org/sparql",
-                        "SELECT * WHERE {  <http://dbpedia.org/resource/Angela_Merkel> <http://dbpedia.org/property/reference> ?object.  FILTER  (!isLiteral(?object))}"} ;
-        arq.remote.main(a2) ;
-        System.exit(0) ;
-        
+//        System.setProperty("socksProxyHost", "socks-server") ;
+//        
+//        String a2[] = { "--service=http://dbpedia.org/sparql",
+//                        "SELECT * WHERE {  <http://dbpedia.org/resource/Angela_Merkel> <http://dbpedia.org/property/reference> ?object.  FILTER  (!isLiteral(?object))}"} ;
+//        arq.remote.main(a2) ;
+//        System.exit(0) ;
+
+        runQTest() ;
         runQParse() ;
         // Compressed syntax
         // match(Subject, Path, Object, PrefixMapping)
@@ -254,14 +255,10 @@ public class Run
     
     private static void runQTest()
     {
-        String DIR = "/home/afs/W3C/DataAccess/tests/data-r2/expr-equals/" ;
-        String []a1 = { "--strict", "--data="+DIR+"data-eq.ttl",
-            "--query="+DIR+"query-eq2-2.rq",
-            "--result="+DIR+"result-eq2-2.ttl"} ;
-
-        String []a2 = { "--strict", "--data="+DIR+"data-eq.ttl",
-            "--query="+DIR+"query-eq2-graph-1.rq",
-            "--result="+DIR+"result-eq2-graph-1.ttl"} ;
+        String DIR = "testing/ARQ/Assign/" ;
+        String []a1 = { "--strict", "--data="+DIR+"data.ttl",
+            "--query="+DIR+"assign-04.arq",
+            "--result="+DIR+"assign-04.ttl"} ;
 
         arq.qtest.main(a1) ;
         System.exit(0 ) ; 

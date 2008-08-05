@@ -101,7 +101,11 @@ class XMLInputStAX extends SPARQLResult
             worker(xReader, model) ;
         } catch (XMLStreamException e)
         {
-            throw new ResultSetException("Can't initialize StAX parsing engine") ;
+            throw new ResultSetException("Can't initialize StAX parsing engine", e) ;
+        }
+        catch (Exception ex)
+        {
+            throw new ResultSetException("Failed when initializing the StAX parsing engine", ex) ;
         }
     }
 
@@ -118,9 +122,12 @@ class XMLInputStAX extends SPARQLResult
             worker(xReader, model) ;
         } catch (XMLStreamException e)
         {
-            throw new ResultSetException("Can't initialize StAX parsing engine") ;
+            throw new ResultSetException("Can't initialize StAX parsing engine", e) ;
         }
-        
+        catch (Exception ex)
+        {
+            throw new ResultSetException("Failed when initializing the StAX parsing engine", ex) ;
+        }
     }
 
     private void worker(XMLStreamReader xReader, Model model)
