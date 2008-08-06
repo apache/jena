@@ -16,6 +16,8 @@ SDB ToDo list (and general notes)
 
 ** Connection pooling (Apache DBCP) which will also cope with MySQL timeouts   
 
+** Store .isClosed, isFormatted
+
 ==== Wiki
 ** StoreFormatter.isFormatted()
 
