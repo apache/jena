@@ -22,6 +22,7 @@ public class Dev
     
     // Migrate:
     // TransformPathFlattern - left in AlgebraGenerator for now - code in src-dev/opt
+    //   Do adjacent BGP merging afterwards.
     //   compilePathBlock(PathBlock pathBlock) 
     //     calls .reduce(pathBlock) 
 }
