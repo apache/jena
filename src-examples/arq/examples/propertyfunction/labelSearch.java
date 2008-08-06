@@ -10,11 +10,20 @@ import java.util.List;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
+import com.hp.hpl.jena.query.Query;
+import com.hp.hpl.jena.query.QueryBuildException;
+import com.hp.hpl.jena.query.QueryExecution;
+import com.hp.hpl.jena.query.QueryExecutionFactory;
+import com.hp.hpl.jena.query.QueryFactory;
+import com.hp.hpl.jena.query.ResultSet;
+import com.hp.hpl.jena.query.ResultSetFormatter;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.Resource;
-
-import com.hp.hpl.jena.sparql.algebra.*;
+import com.hp.hpl.jena.sparql.algebra.Algebra;
+import com.hp.hpl.jena.sparql.algebra.Op;
+import com.hp.hpl.jena.sparql.algebra.Table;
+import com.hp.hpl.jena.sparql.algebra.TableFactory;
 import com.hp.hpl.jena.sparql.algebra.op.OpBGP;
 import com.hp.hpl.jena.sparql.algebra.op.OpFilter;
 import com.hp.hpl.jena.sparql.algebra.op.OpJoin;
@@ -24,7 +33,7 @@ import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterNullIterator;
-import com.hp.hpl.jena.sparql.engine.main.OpCompiler;
+import com.hp.hpl.jena.sparql.engine.main.QC;
 import com.hp.hpl.jena.sparql.expr.E_Regex;
 import com.hp.hpl.jena.sparql.expr.Expr;
 import com.hp.hpl.jena.sparql.expr.ExprVar;
@@ -37,8 +46,6 @@ import com.hp.hpl.jena.sparql.syntax.ElementTriplesBlock;
 import com.hp.hpl.jena.sparql.util.ALog;
 import com.hp.hpl.jena.sparql.util.NodeUtils;
 import com.hp.hpl.jena.vocabulary.RDFS;
-
-import com.hp.hpl.jena.query.*;
 
 /** Example extension or property function to show rewriting part of a query.
  *  A simpler, more driect way to implement property functions is to extends
@@ -130,7 +137,7 @@ public class labelSearch implements PropertyFunction
         }        
         
         // Use the default, optimizing query engine.
-        return OpCompiler.compile(filter, input, execCxt) ;
+        return QC.compile(filter, input, execCxt) ;
     }
 
     
@@ -153,8 +160,9 @@ public class labelSearch implements PropertyFunction
         // Compile it.
         // An alternative design is to build the Op structure programmatically,
         // 
-        Op op = Algebra.compile(elementGroup, true) ;
-        return OpCompiler.compile(op, input, execCxt) ;
+        Op op = Algebra.compile(elementGroup) ;
+        op = Algebra.optimize(op) ;
+        return QC.compile(op, input, execCxt) ;
     }
     
     static int hiddenVariableCount = 0 ; 

@@ -44,7 +44,9 @@ public class StageAltMain
         // is cloned when a query execution object (query engine) is
         // created.
         
-        StageGenerator stageGenAlt = new StageGeneratorAlt() ;
+        // Normally, StageGenerators are chained - a new one inspects the
+        // execution request and sees if it handles it.  If it does not,
+        // it sends the request to the stage generator that was already registered. 
         
         // The normal stage generator is registerd in the global context.
         // This can be replaced, so that every query execution uses the
@@ -53,14 +55,22 @@ public class StageAltMain
 
         // Change the stage generator for all queries ...
         if ( false )
+        {
+            StageGenerator origStageGen = (StageGenerator)ARQ.getContext().get(ARQ.stageGenerator) ;
+            StageGenerator stageGenAlt = new StageGeneratorAlt(origStageGen) ;
             ARQ.getContext().set(ARQ.stageGenerator, stageGenAlt) ;
+        }
         
         Query query = QueryFactory.create( StringUtils.join("\n", queryString)) ;
         QueryExecution engine = QueryExecutionFactory.create(query, makeData()) ;
         
         // ... or set on a per-execution basis.
         if ( true )
+        {
+            StageGenerator origStageGen = (StageGenerator)engine.getContext().get(ARQ.stageGenerator) ;
+            StageGenerator stageGenAlt = new StageGeneratorAlt(origStageGen) ;
             engine.getContext().set(ARQ.stageGenerator, stageGenAlt) ;
+        }
         
         QueryExecUtils.executeQuery(query, engine) ;
     }
