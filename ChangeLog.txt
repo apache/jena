@@ -7,6 +7,8 @@ ChangeLog for ARQ
 
 ==== ARQ 2.4
 
++ Change to interface for query compilation : Algebra.compile and Algebra.optimize 
+
 + Property paths added.  See documentation.
   
 + Simplify the interface between ARQ and data sources.

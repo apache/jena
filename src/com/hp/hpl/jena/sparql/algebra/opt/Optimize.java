@@ -66,6 +66,8 @@ public class Optimize implements Rewrite
         op = apply("Filter Equality", new TransformEqualityFilter(), op) ;
         op = apply("Filter Placement", new TransformFilterPlacement(), op) ;
         
+        //op = apply("Filter Placement", new TransformPathFlatten(), op) ;
+        
         // Mark
         op = OpLabel.create("Transformed", op) ;
         return op ;

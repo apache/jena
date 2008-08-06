@@ -21,7 +21,7 @@ public class Dev
     // +  (current) -- A kind of table (stack during evaluation?)
     
     // Migrate:
-    // TransformPathFlattern - left in AlgebraGenerator for now
+    // TransformPathFlattern - left in AlgebraGenerator for now - code in src-dev/opt
     //   compilePathBlock(PathBlock pathBlock) 
     //     calls .reduce(pathBlock) 
 }
