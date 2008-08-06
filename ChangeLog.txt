@@ -1,6 +1,10 @@
 ChangeLog for ARQ
 =================
 
+==== ARQ 2.5
+
+
+
 ==== ARQ 2.4
 
 + Property paths added.  See documentation.
