@@ -61,6 +61,17 @@ public abstract class LuceneSearch extends PropertyFunctionEval
     
     public QueryIterator execEvaluated(Binding binding, PropFuncArg argSubject, Node predicate, PropFuncArg argObject, ExecutionContext execCxt)
     {
+    	try { 
+    		return execEvaluatedProtected(binding, argSubject, predicate,  argObject,  execCxt) ;
+    	} catch (RuntimeException ex)
+    	{
+    		ALog.fatal(this, "Exception from Lucene search", ex) ;
+    		throw ex ;
+    	}
+    }
+
+    private QueryIterator execEvaluatedProtected(Binding binding, PropFuncArg argSubject, Node predicate, PropFuncArg argObject, ExecutionContext execCxt)
+    {	
         Node match = null ;
         Node score = null ;
         
