@@ -1,5 +1,5 @@
 <ivysettings>
-  <properties file="${ivy.settings.dir}/ivysettings-file.properties" />
+  <properties file="${ivy.settings.dir}/ivysettings.properties" />
 
   <settings defaultResolver="resolver-chain"/>
 
