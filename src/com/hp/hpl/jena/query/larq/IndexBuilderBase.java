@@ -84,7 +84,7 @@ public class IndexBuilderBase implements IndexBuilder
     
     protected IndexReader getIndexReader()
     {
-        // Always return a new reader.  Write may have chnaged.
+        // Always return a new reader.  Write may have changed.
         try {
             flushWriter() ;
             return IndexReader.open(dir) ;
@@ -147,6 +147,8 @@ public class IndexBuilderBase implements IndexBuilder
     
     public IndexLARQ getIndex()
     {
+    	// In Lucene, an index reader sees the index at a point in time.
+    	// This wil not see later updates.
         //ARQ 2.2 : no longer close the index.  closeForWriting() ;
         return new IndexLARQ(getIndexReader()) ;
     }
