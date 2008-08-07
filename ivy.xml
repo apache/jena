@@ -19,7 +19,7 @@
   <publications>
     <artifact name="tdb" type="jar"/>
     <artifact name="tdb" type="xml"    ext="pom"/>
-    <!-- Problems with the names Maven expectes
+    <!-- Problems with the names Maven expects
     <artifact name="tdb-src" type="zip" ext="zip"/>
     <artifact name="tdb-javadoc" type="zip" ext="zip"/>
     -->
@@ -27,8 +27,8 @@
 
   <dependencies>
     <!-- rev="latest.integration" -->
-    <dependency org="com.hp.hpl.jena" name="arq" rev="2.3"/>
-    <dependency org="com.hp.hpl.jena" name="arq-extra" rev="2.3"/>
+    <dependency org="com.hp.hpl.jena" name="arq" rev="2.4"/>
+    <dependency org="com.hp.hpl.jena" name="arq-extra" rev="2.4"/>
 
     <!-- Necessary for code compilation : configuration main should compile -->
     <dependency org="junit" name="junit" rev="4.4"/>
