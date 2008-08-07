@@ -19,6 +19,19 @@
   
   <!-- IMPORT : except -p shows the lib.TARGET and TARGET each time.-->
 
+  <!-- TODO
+       Make ivy-resolve work with the compilation process.
+       Possibly download twice - with and without versions (is there 
+       <ivy:retrieve conf="dev" pattern="lib2/[artifact]-[revision].[ext]" />
+
+       <ivy:retrieve conf="dev" pattern="lib/arq.[ext]" />
+       <ivy:retrieve conf="dev" pattern="lib/arq-extra.[ext]" />
+        etc
+       <ivy:cachepath>
+       or work with version numbered.
+       Enable srource and javadoc artifacts
+  -->
+
   <!-- Library of standard tasks
 
        == Tasks
@@ -27,7 +40,7 @@
        jar        make jar 
        publish    export to maven
        release    
-       Must prpvide
+       Must provide
        junit      Run the test suite
        report     Run the test suite and generate a report
 
@@ -259,7 +272,7 @@
   <target name="artifacts" depends="clean,jar,jar-artifact,pom-artifact"/>
   
   <target name="publish" description="Build and publish this version"
-          depends="clean,artifacts,ivy-publish">
+          depends="clean,ivy-resolve,artifacts,ivy-publish">
   </target>
   
   <!-- ========================================== -->
@@ -323,7 +336,7 @@
           description="Create TDB release">
   </target>
 
-  <target name="package" depends="copy-init,copy,zip-release"/>
+  <target name="package" depends="copy-init,copy-dist,zip-release"/>
 
   <target name="copy-init">
     <delete dir="${dist.dir}" />
@@ -331,7 +344,7 @@
     <mkdir dir="${dist.dir}/${lib.dir}"/>
   </target>
 
-  <target name="copy" depends="copy-init,jar,javadoc">
+  <target name="copy-dist" depends="copy-init,jar,javadoc">
     <!-- jars - tdb jar and dependences -->
     <copy todir="${dist.dir}/${lib.dir}">
       <fileset dir="${lib.dir}" includes="**/*.jar" excludes="${jarfile}"/>
@@ -339,8 +352,13 @@
     </copy>
 
     <!-- Source code -->
-    <copy todir="${dist.dir}" file="${artifacts.dir}/${src.zipfile}"/>
-    
+    <!-- Not an artifact yet -->
+    <!-- <copy todir="${dist.dir}" file="${artifacts.dir}/${src.zipfile}"/> -->
+    <zip zipfile="${dist.dir}/${src.zipfile}">
+        <fileset refid="fileset.src"/>
+    </zip>
+
+
     <copy todir="${dist.dir}/${test.dir}">
       <fileset dir="${test.dir}"/>
     </copy>
@@ -357,9 +375,11 @@
     <copy todir="${dist.dir}/">
       <fileset dir="." includes="ivy*"/>
     </copy>
+  	
     <copy todir="${dist.dir}/" file="copyright.txt"/>
     <copy todir="${dist.dir}/" file="README.txt"/>
     <copy todir="${dist.dir}/" file="ChangeLog.txt"/>
+  	<copy todir="${dist.dir}/" file="tdb.ttl"/>
 
     <!-- Documentation (not the wiki) -->
     <copy todir="${dist.dir}/${doc.dir}">
@@ -465,10 +485,8 @@
   </target>
   
   <target name="clean-build-area">
-    <delete dir="${build.classes.dir}"/>
-    <delete dir="${artifacts.dir}"/>
-    <delete dir="${build.dir}/${jarfile}"/>
-<delete dir="${build.dir}/${jarfile}"/>
+    <delete dir="${build.dir}"/>
+    <mkdir  dir="${build.dir}"/>
   </target>
 
 </project>

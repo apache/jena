@@ -9,8 +9,14 @@ package dev;
 public class Dev
 {
     // Build
-    //  Maven name for sources and javadoc? jar? [thing]-sources.jar
-    // ivy names (publications section e.g "tdb-src") and src.zipfile, javadoc.zipfile need to align
+    //   Maven name for -source and -javadoc - how to generate in ivy?
+    //   tdb.pom needs to exclude messy stuff (log4j) - dependency on log4j somehow. 
+    //    ?? slf4j-log4j12 needs exclusions as well?
+    //    Only affects ivy-resolve 
+    
+    // ivy.xml exported does not contain the
+    // How to use the ivy.xml from TDB-0.5, not pom.xml, -- not biblio compatible? 
+    
     
     // B+Tree rewriter
     
