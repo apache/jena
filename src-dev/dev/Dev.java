@@ -9,13 +9,17 @@ package dev;
 public class Dev
 {
     // Build
-    //   Maven name for -source and -javadoc - how to generate in ivy?
-    //   tdb.pom needs to exclude messy stuff (log4j) - dependency on log4j somehow. 
-    //    ?? slf4j-log4j12 needs exclusions as well?
-    //    Only affects ivy-resolve 
-    
-    // ivy.xml exported does not contain the
+    //   + Maven name for -source and -javadoc - how to generate in ivy?
+    //   + tdb.pom needs to exclude messy stuff (log4j) - dependency on log4j somehow. 
+    //     ?? slf4j-log4j12 needs exclusions as well?
+    //     Only affects ivy-resolve
     // How to use the ivy.xml from TDB-0.5, not pom.xml, -- not biblio compatible? 
+    
+    // Release
+    // Being about to run tests
+    //  Special ant target that has no dependences on compile
+    
+    
     
     
     // B+Tree rewriter
