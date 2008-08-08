@@ -7,6 +7,9 @@ Typed literals:
       zeros by canonicalizing values after parsing and improving
       canonicalization.
       
+Reasoners:
+    o Modified @include processing to support FileManager redirects.
+          
 ==== Jena 2.5.5
 
 Jar changes:

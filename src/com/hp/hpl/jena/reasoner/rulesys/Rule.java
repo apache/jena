@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: Rule.java,v 1.48 2008-01-02 12:07:47 andy_seaborne Exp $
+ * $Id: Rule.java,v 1.49 2008-08-08 16:10:34 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -13,6 +13,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.*;
 
+import com.hp.hpl.jena.util.FileManager;
 import com.hp.hpl.jena.util.FileUtils;
 import com.hp.hpl.jena.util.PrintUtil;
 import com.hp.hpl.jena.util.Tokenizer;
@@ -65,7 +66,7 @@ import org.apache.commons.logging.LogFactory;
  * embedded rule, commas are ignore and can be freely used as separators. Functor names
  * may not end in ':'.
  * </p>
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.48 $ on $Date: 2008-01-02 12:07:47 $ 
+ * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.49 $ on $Date: 2008-08-08 16:10:34 $ 
  */
 public class Rule implements ClauseEntry {
     
@@ -460,7 +461,7 @@ public class Rule implements ClauseEntry {
      */
     public static List rulesFromURL( String uri ) {
         try {
-            BufferedReader br = FileUtils.readerFromURL( uri );
+            BufferedReader br = FileUtils.asBufferedUTF8( FileManager.get().open(uri) );
             return parseRules( Rule.rulesParserFromReader( br ) );
         }
         catch (WrappedIOException e)
@@ -599,13 +600,6 @@ public class Rule implements ClauseEntry {
         return i;
     }
 
-    public static void main(String[] args) {
-        String test = " <http://myuri/fool>.";
-        String arg = nextArg(test);
-        String rest = nextAfterArg(test);
-        String uri = extractURI(rest);
-        System.out.println("ARG = [" + arg + "], URI = [" + uri + "]");
-    }
     /**
      * Run a pre-bound rule parser to extract it's rules
      * @return a list of rules
