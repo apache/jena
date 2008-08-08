@@ -1,0 +1,4 @@
+PREFIX : <http://example/> 
+
+CREATE GRAPH <http://example/graph>
+INSERT DATA  INTO <http://example/graph>  { :r :p 123 }
