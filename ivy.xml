@@ -38,7 +38,7 @@
 
     <!-- includes log4j 1.2.13 so depenedency is not necessary-->
     <dependency conf="dev->*"  org="org.slf4j" name="slf4j-log4j12" rev="1.4.3"/>
-    <dependency conf="dev->*"  org="log4j" name="log4j" rev="1.2.13"> 
+    <dependency conf="dev->*"  org="log4j" name="log4j" rev="1.2.13"/> 
 
     <!-- Log4j 1.2.15 referes to inaccessible modules as excluded below. -->
     <!-- Alternative.
@@ -52,7 +52,7 @@
       <exclude org="javax.jms" module="jms"/>
       <exclude org="javax.mail" module="mail"/>
     </dependency>
-  </dependencies>
   -->
+  </dependencies>
 
 </ivy-module>
