@@ -71,7 +71,7 @@ public class BlockMgrCache extends BlockMgrWrapper
 
     private ByteBuffer fetchEntry(int id, boolean silent)
     {
-        ByteBuffer bb = readCache.getObject(id, false) ;
+        ByteBuffer bb = readCache.getObject(id) ;
         if ( bb != null )
         {
             cacheHits++ ;
@@ -81,7 +81,7 @@ public class BlockMgrCache extends BlockMgrWrapper
         if ( writeCache != null )
         {
             // Maybe in the dirty blocks still.
-            bb = writeCache.getObject(id, false) ;
+            bb = writeCache.getObject(id) ;
             if ( bb != null )
             {
                 cacheWriteHits++ ;
@@ -170,7 +170,7 @@ public class BlockMgrCache extends BlockMgrWrapper
             // Concurrent modification when used in-memory for testing (Java bug?)
             for ( Integer id : ids )
             {
-                ByteBuffer buff = writeCache.getObject(id, false) ; 
+                ByteBuffer buff = writeCache.getObject(id) ; 
                 log("Write: %d", id) ;
                 blockMgr.put(id, buff) ;
             }

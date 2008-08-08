@@ -74,8 +74,8 @@ public class Run
         System.out.println(pool.contains(1)) ;
         System.out.println(pool.contains(2)) ;
         
-        System.out.println(pool.getObject(3, false)) ;
-        System.out.println(pool.getObject(3, false)) ;
+        System.out.println(pool.getObject(3)) ;
+        System.out.println(pool.getObject(3)) ;
         System.out.println(pool.getObject(3, true)) ;
         
         

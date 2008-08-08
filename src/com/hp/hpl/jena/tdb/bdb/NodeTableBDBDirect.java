@@ -81,7 +81,7 @@ public class NodeTableBDBDirect implements NodeTable
         try {
             if ( nodeCache != null )
             {
-                NodeId id = nodeCache.getObject(node, false) ;
+                NodeId id = nodeCache.getObject(node) ;
                 if ( id != null )
                     return id ; 
             }

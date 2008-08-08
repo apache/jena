@@ -36,12 +36,13 @@ public class CacheLRU<K,V> implements Cache<K,V>
     }
 
     @Override
-    public V getObject(K key, boolean exclusive)
+    //public V getObject(K key, boolean exclusive)
+    public V getObject(K key)
     {
         return cache.get(key) ;
     }
 
-    @Override
+    //@Override
     public void promote(K key)
     {
         throw new TDBException("Not implemented") ; 
@@ -59,7 +60,7 @@ public class CacheLRU<K,V> implements Cache<K,V>
         cache.remove(key) ;
     }
 
-    @Override
+    //@Override
     public void returnObject(K key)
     {
         throw new TDBException("Not implemented") ;

@@ -81,7 +81,10 @@ public class Cache2<Key, T> implements Cache<Key, T>
         return b ;
     }
 
+    public T getObject(Key key) { return getObject(key, false) ; }
+
     
+    //@Override
     synchronized
     public T getObject(Key key, boolean exclusive)
     { 
@@ -185,6 +188,7 @@ public class Cache2<Key, T> implements Cache<Key, T>
         stats() ;
     }
     
+    //@Override
     synchronized
     public void returnObject(Key key)
     {
@@ -210,6 +214,7 @@ public class Cache2<Key, T> implements Cache<Key, T>
         stats() ;
     }
     
+    @Override
     synchronized
     public void removeObject(Key key)
     {

@@ -156,7 +156,7 @@ public abstract class NodeTableBase implements NodeTable
     private Node cacheLookup(NodeId id)
     {
         if ( id2node_Cache == null ) return null ;
-        return id2node_Cache.getObject(id, false) ;
+        return id2node_Cache.getObject(id) ;
     }
     
     /** Check caches to see if we can map a Node to a NodeId. Returns null on no cache entry. */ 
@@ -165,7 +165,7 @@ public abstract class NodeTableBase implements NodeTable
         // Remember things known (currently) not to exist 
         if ( notPresent.contains(node) ) return null ;
         if ( node2id_Cache == null ) return null ;
-        return node2id_Cache.getObject(node, false) ; 
+        return node2id_Cache.getObject(node) ; 
     }
 
     /** Update the Node->NodeId caches */

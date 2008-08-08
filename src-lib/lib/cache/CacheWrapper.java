@@ -24,7 +24,8 @@ public class CacheWrapper<K,V> implements Cache<K,V>
     public boolean contains(K key)                  { return cache.contains(key) ; }
     
     @Override
-    public V getObject(K key, boolean exclusive)    { return cache.getObject(key, exclusive) ; }
+    //public V getObject(K key, boolean exclusive)    { return cache.getObject(key, exclusive) ; }
+    public V getObject(K key)                       { return cache.getObject(key) ; }
 
     @Override
     public boolean isEmpty()                        { return cache.isEmpty() ; }
@@ -32,8 +33,8 @@ public class CacheWrapper<K,V> implements Cache<K,V>
     @Override
     public Iterator<K> keys()                       { return cache.keys(); }
 
-    @Override
-    public void promote(K key)                      { cache.promote(key) ; }
+//    @Override
+//    public void promote(K key)                      { cache.promote(key) ; }
 
     @Override
     public void putObject(K key, V thing)           { cache.putObject(key, thing) ; }
@@ -41,8 +42,8 @@ public class CacheWrapper<K,V> implements Cache<K,V>
     @Override
     public void removeObject(K key)                 { cache.removeObject(key) ; }
 
-    @Override
-    public void returnObject(K key)                 { cache.removeObject(key) ; }
+//    @Override
+//    public void returnObject(K key)                 { cache.removeObject(key) ; }
 
     @Override
     public void setDropHandler(ActionKeyValue<K, V> dropHandler)
@@ -50,8 +51,7 @@ public class CacheWrapper<K,V> implements Cache<K,V>
 
     @Override
     public long size()                              { return cache.size() ; }
-    
-    
+
 }
 
 /*
