@@ -6,9 +6,11 @@
 
 package lib.cache;
 
-public class CacheStats<K,V> //implements Cache<K,V>
-{
+import lib.Cache;
 
+public class CacheStats<K,V> extends CacheWrapper<K,V>
+{
+    public CacheStats(Cache<K,V> cache) { super(cache) ; }
 }
 
 /*

@@ -13,63 +13,43 @@ import lib.Cache;
 
 public class CacheWrapper<K,V> implements Cache<K,V>
 {
-    Cache<K,V> cache ;
+    protected Cache<K,V> cache ;
     
     public CacheWrapper(Cache<K,V> cache) { this.cache = cache ; }
 
     @Override
-    public void clear()
-    { cache.clear(); }
+    public void clear()                             { cache.clear(); }
 
     @Override
-    public boolean contains(K key)
-    {
-        return cache.contains(key) ;
-    }
+    public boolean contains(K key)                  { return cache.contains(key) ; }
+    
+    @Override
+    public V getObject(K key, boolean exclusive)    { return cache.getObject(key, exclusive) ; }
 
     @Override
-    public V getObject(K key, boolean exclusive)
-    {
-        return cache.getObject(key, exclusive) ;
-    }
+    public boolean isEmpty()                        { return cache.isEmpty() ; }
 
     @Override
-    public boolean isEmpty()
-    {
-        return cache.isEmpty() ;
-    }
+    public Iterator<K> keys()                       { return cache.keys(); }
 
     @Override
-    public Iterator<K> keys()
-    {
-        return cache.keys();
-    }
+    public void promote(K key)                      { cache.promote(key) ; }
 
     @Override
-    public void promote(K key)
-    {
-        cache.promote(key) ;
-    }
+    public void putObject(K key, V thing)           { cache.putObject(key, thing) ; }
 
     @Override
-    public void putObject(K key, V thing)
-    { cache.putObject(key, thing) ; }
+    public void removeObject(K key)                 { cache.removeObject(key) ; }
 
     @Override
-    public void removeObject(K key)
-    { cache.removeObject(key) ; }
-
-    @Override
-    public void returnObject(K key)
-    { cache.removeObject(key) ; }
+    public void returnObject(K key)                 { cache.removeObject(key) ; }
 
     @Override
     public void setDropHandler(ActionKeyValue<K, V> dropHandler)
     { cache.setDropHandler(dropHandler) ; }
 
     @Override
-    public long size()
-    { return cache.size() ; }
+    public long size()                              { return cache.size() ; }
     
     
 }
