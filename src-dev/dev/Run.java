@@ -6,9 +6,9 @@
 
 package dev;
 
-import lib.Cache2;
 import lib.FileOps;
 import lib.Pair;
+import lib.cache.Cache2;
 
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;

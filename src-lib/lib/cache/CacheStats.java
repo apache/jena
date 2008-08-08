@@ -4,16 +4,11 @@
  * [See end of file]
  */
 
-package lib;
+package lib.cache;
 
-import lib.cache.Cache2;
-import org.junit.Test;
-
-public class TestPool
+public class CacheStats<K,V> //implements Cache<K,V>
 {
-    @Test public void pool_01()
-    { Cache2<Integer, String> pool = new Cache2<Integer, String>(2) ; }
-    
+
 }
 
 /*

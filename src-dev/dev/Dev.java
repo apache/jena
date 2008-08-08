@@ -8,46 +8,36 @@ package dev;
 
 public class Dev
 {
-    // Build
-    //   + Maven name for -source and -javadoc - how to generate in ivy?
-    //   + tdb.pom needs to exclude messy stuff (log4j) - dependency on log4j somehow. 
-    //     ?? slf4j-log4j12 needs exclusions as well?
-    //     Only affects ivy-resolve
-    // How to use the ivy.xml from TDB-0.5, not pom.xml, -- not biblio compatible? 
+    // ---- Build and release
+    // 1 -- Sources and javadopc to maven // -source and -javadoc - how to generate in ivy?
+    // 2 -- tdb.pom needs to exclude messy stuff (log4j) - dependency on log4j somehow.
+    //      Only for ivy resolve - 
+    //      Is Ivy using the ivy files? where did the excludes go?  main vs dev?
+    //      Does slf4j-api depend on log4j ?!!
+    // 3 -- Being about to run tests : Special ant target that has no dependences on compile
     
-    // Release
-    // Being about to run tests
-    //  Special ant target that has no dependences on compile
+    // ---- B+Tree rewriter
     
-    
-    
-    
-    // B+Tree rewriter
-    
-    // New cache API alloc/return/invalidate (shrink/grow?)
+    // ---- New cache API alloc/return/invalidate (shrink/grow?)
     //   Stats.
     
-    // New organsiation for files:
+    // ---- New organsiation for files:
     //   TripleIndex -> Index/RangeIndex (records) -> BlockFile (id-Block)
     //   NodeTable   -> ObjectFile (NodId->Node) -> VarFile (id-bytes)
-    
-    // tdbloader: 
-    //   close indexes not in use in a given phase
-    //   Especially efficient iterator() for B+Trees (not mmap).
-
-    // Node table caching?
-    
-    // Use of java properties for key values.
-
-    // FileFactory2
     //   IndexBuilder to migrate to be policy for data files as well.
-    //   Combine with FileFactory, BlockMgrFactory
-    
-    // Reopenable BlockMgrs (and the object file?) 
+    //   ?? Combine with FileFactory, BlockMgrFactory
+    // ---- Reopenable BlockMgrs (and the object file?) 
     //   Memory versions are a "file" (fit into framework for testing).
     //     Maybe not worth the effort to rework but needs to be reopenable.
     //   Root is an NIO FileChannel
     
+    // ---- tdbloader: 
+    //   close indexes not in use in a given phase
+    //   Especially efficient iterator() for B+Trees (not mmap).
+
+    // ---- Use of java properties for key values.
+
+    // ---- Graph
     // removeAll implementation: depends on iterator.remove
     // but can do faster as a specific operation.
     
@@ -57,7 +47,7 @@ public class Dev
     // BulkLoader
     //    - shared formatting with GraphLoadMonitor
     
-    // Misc :
+    // ---- Misc :
     // Interface Sync everywhere?
     // CountingSync.
     //   bound variable tracking

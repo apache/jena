@@ -89,7 +89,7 @@ public class CacheLRU<K,V> implements Cache<K,V>
         cache.setDropHandler(dropHandler) ;
     }
 
-    static class CacheImpl<K,V> extends LinkedHashMap<K, V>
+    public static class CacheImpl<K,V> extends LinkedHashMap<K, V>
     {
         int maxEntries ; 
         ActionKeyValue<K,V> dropHandler = null ;

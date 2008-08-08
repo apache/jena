@@ -4,13 +4,18 @@
  * [See end of file]
  */
 
-package lib;
+package lib.cache;
 
 
 import java.util.Iterator;
 
+import lib.ActionKeyValue;
+import lib.Cache;
+import lib.CacheLRU;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.hp.hpl.jena.sparql.util.ALog;
 
 /** A cache.  But we already use that name (and this is a replacement for that).
  *  This class provides a cache of objects that can be retrieved for shared (read)
@@ -25,22 +30,26 @@ import org.slf4j.LoggerFactory;
 // Rename later.  This does not assume that read-only objects are returned (may change)?  
 public class Cache2<Key, T> implements Cache<Key, T>
 {
+    // XXX Stats and loging/reporting
     private static Logger log = LoggerFactory.getLogger(Cache2.class) ;
     private int statsDumpTick = -1 ;
     private final boolean logging = false  ;
     
     // SoftReference<T>? and then app has a hard reference when using.
     // Probably overkill.
-    // See TestPool
     private int max ;
     private int min ;
     CacheLRU.CacheImpl<Key, PoolEntry<Key, T>> objects ;
     
-    // Statistics
+    // Overall statistics 
     private long cacheEntries ;
     private long cacheHits ;
     private long cacheMisses ; 
     private long cacheEjects ;
+    
+    // Detailed stats
+    // XXX NO! Make a stats capturing Cache wrapper.
+    // ----
     
     public Cache2(int num)            { this(0, num) ; }
     private Cache2(int min, int max)
@@ -137,6 +146,9 @@ public class Cache2<Key, T> implements Cache<Key, T>
         stats() ;
     }
 
+    // A simple cache just has get/put.
+    // No promotion.
+    
     static class CacheException extends RuntimeException
     { CacheException(String msg) { super(msg) ; } }
     
@@ -253,9 +265,10 @@ public class Cache2<Key, T> implements Cache<Key, T>
     }
     
     
-    private void Xwarn(String message)
+    private void warn(String message, Object... args)
     {
-        
+        String x = String.format(message, args) ;
+        ALog.warn(this, x) ;
     }
     
     private String str(Key key) { return key.toString() ; } 
