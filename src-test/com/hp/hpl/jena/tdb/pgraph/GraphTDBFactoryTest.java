@@ -6,13 +6,13 @@
 
 package com.hp.hpl.jena.tdb.pgraph;
 
-import com.hp.hpl.jena.tdb.Const;
 import com.hp.hpl.jena.tdb.base.file.Location;
 import com.hp.hpl.jena.tdb.index.IndexBuilder;
 import com.hp.hpl.jena.tdb.index.IndexFactoryBPlusTree;
 import com.hp.hpl.jena.tdb.index.IndexFactoryBPlusTreeMem;
 import com.hp.hpl.jena.tdb.index.IndexFactoryBTree;
 import com.hp.hpl.jena.tdb.index.IndexFactoryBTreeMem;
+import com.hp.hpl.jena.tdb.sys.Const;
 
 /** Place to put various "making" explicitly for testing */
 

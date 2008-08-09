@@ -11,8 +11,8 @@ import static java.lang.String.format;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 
-import com.hp.hpl.jena.tdb.Const;
 import com.hp.hpl.jena.tdb.base.record.RecordException;
+import com.hp.hpl.jena.tdb.sys.Const;
 
 
 /** An IntBuffer with extra operations */

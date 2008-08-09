@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb;
+package com.hp.hpl.jena.tdb.sys;
 
 import static lib.Log.log;
 import org.slf4j.Logger;
@@ -91,29 +91,29 @@ public class TDB
             log.debug("\n"+ARQ.getContext()) ;
     }
     
-    /** The root package name for SDB */   
-    public static final String PATH = "com.hp.hpl.jena.tdb";
-   
-    /** The product name */   
-    public static final String NAME = "TDB";
-   
-    /** The TDB web site : see also http://jena.sourceforge.net*/   
-    public static final String WEBSITE = "http://jena.hpl.hp.com/wiki/TDB";
-   
-    /** The full name of the current ARQ version */   
-    public static final String VERSION = "@version@";
-   
-    /** The major version number for this release of SDB (ie '2' for SDB 2.0) */
-    public static final String MAJOR_VERSION = "@version-major@";
-   
-    /** The minor version number for this release of SDB (ie '0' for SDB 2.0) */
-    public static final String MINOR_VERSION = "@version-minor@";
-   
-    /** The version status for this release of SDB (eg '-beta1' or the empty string) */
-    public static final String VERSION_STATUS = "@version-status@";
-   
-    /** The date and time at which this release was built */   
-    public static final String BUILD_DATE = "@build-time@";
+//    /** The root package name for TDB */   
+//    public static final String PATH = "com.hp.hpl.jena.tdb";
+//   
+//    /** The product name */   
+//    public static final String NAME = "TDB";
+//   
+//    /** The TDB web site : see also http://jena.sourceforge.net*/   
+//    public static final String WEBSITE = "http://jena.hpl.hp.com/wiki/TDB";
+//   
+//    /** The full name of the current TDB version */   
+//    public static final String VERSION = "@version@";
+//   
+//    /** The major version number for this release of TDB (ie '2' for TDB 2.0) */
+//    public static final String MAJOR_VERSION = "@version-major@";
+//   
+//    /** The minor version number for this release of TDB (ie '0' for TDB 2.0) */
+//    public static final String MINOR_VERSION = "@version-minor@";
+//   
+//    /** The version status for this release of SDB (eg '-beta1' or the empty string) */
+//    public static final String VERSION_STATUS = "@version-status@";
+//   
+//    /** The date and time at which this release was built */   
+//    public static final String BUILD_DATE = "@build-time@";
 }
 
 /*

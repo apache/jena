@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.Deque;
 import java.util.List;
 
-import com.hp.hpl.jena.tdb.Const;
+import com.hp.hpl.jena.tdb.sys.Const;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

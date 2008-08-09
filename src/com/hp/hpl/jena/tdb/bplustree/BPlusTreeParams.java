@@ -6,7 +6,7 @@
 
 package com.hp.hpl.jena.tdb.bplustree;
 
-import static com.hp.hpl.jena.tdb.Const.* ;
+import static com.hp.hpl.jena.tdb.sys.Const.*;
 import org.slf4j.Logger;
 
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;

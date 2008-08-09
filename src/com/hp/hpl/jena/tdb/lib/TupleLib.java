@@ -6,7 +6,7 @@
 
 package com.hp.hpl.jena.tdb.lib;
 
-import static com.hp.hpl.jena.tdb.Const.SizeOfNodeId;
+import static com.hp.hpl.jena.tdb.sys.Const.SizeOfNodeId;
 import iterator.Iter;
 import iterator.Transform;
 

@@ -11,42 +11,42 @@ import java.util.Iterator;
 import lib.ActionKeyValue;
 import lib.Cache;
 
-public class CacheWrapper<K,V> implements Cache<K,V>
+public class CacheWrapper<Key,T> implements Cache<Key,T>
 {
-    protected Cache<K,V> cache ;
+    protected Cache<Key,T> cache ;
     
-    public CacheWrapper(Cache<K,V> cache) { this.cache = cache ; }
+    public CacheWrapper(Cache<Key,T> cache) { this.cache = cache ; }
 
     @Override
     public void clear()                             { cache.clear(); }
 
     @Override
-    public boolean contains(K key)                  { return cache.contains(key) ; }
+    public boolean contains(Key key)                  { return cache.contains(key) ; }
     
     @Override
     //public V getObject(K key, boolean exclusive)    { return cache.getObject(key, exclusive) ; }
-    public V getObject(K key)                       { return cache.getObject(key) ; }
+    public T getObject(Key key)                       { return cache.getObject(key) ; }
 
     @Override
     public boolean isEmpty()                        { return cache.isEmpty() ; }
 
     @Override
-    public Iterator<K> keys()                       { return cache.keys(); }
+    public Iterator<Key> keys()                       { return cache.keys(); }
 
 //    @Override
 //    public void promote(K key)                      { cache.promote(key) ; }
 
     @Override
-    public void putObject(K key, V thing)           { cache.putObject(key, thing) ; }
+    public void putObject(Key key, T thing)           { cache.putObject(key, thing) ; }
 
     @Override
-    public void removeObject(K key)                 { cache.removeObject(key) ; }
+    public void removeObject(Key key)                 { cache.removeObject(key) ; }
 
 //    @Override
 //    public void returnObject(K key)                 { cache.removeObject(key) ; }
 
     @Override
-    public void setDropHandler(ActionKeyValue<K, V> dropHandler)
+    public void setDropHandler(ActionKeyValue<Key, T> dropHandler)
     { cache.setDropHandler(dropHandler) ; }
 
     @Override

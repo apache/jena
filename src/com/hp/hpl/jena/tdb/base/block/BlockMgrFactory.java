@@ -8,8 +8,8 @@ package com.hp.hpl.jena.tdb.base.block;
 
 import java.io.File;
 
-import com.hp.hpl.jena.tdb.Const;
 import com.hp.hpl.jena.tdb.TDBException;
+import com.hp.hpl.jena.tdb.sys.Const;
 
 
 public class BlockMgrFactory

@@ -6,11 +6,83 @@
 
 package lib.cache;
 
+import lib.ActionKeyValue;
 import lib.Cache;
 
-public class CacheStats<K,V> extends CacheWrapper<K,V>
+public class CacheStats<Key,T> extends CacheWrapper<Key,T>
 {
-    public CacheStats(Cache<K,V> cache) { super(cache) ; }
+    // Overall statistics 
+    private long cacheEntries = 0 ;
+    private long cacheHits = 0 ;
+    private long cacheMisses = 0 ; 
+    private long cacheEjects = 0 ;
+
+    // ----
+    private class EjectMonitor implements ActionKeyValue<Key,T>
+    {
+     
+        private ActionKeyValue<Key, T> other ;
+
+        EjectMonitor(ActionKeyValue<Key,T> other) { this.other = other ; }
+
+        @Override
+        public void apply(Key key, T thing)
+        { 
+            cacheEjects++ ;
+            if ( other != null )
+                other.apply(key, thing) ;
+        }
+    } ;
+    // ----
+
+    
+    public CacheStats(Cache<Key,T> cache)
+    { 
+        super(cache) ;
+        cache.setDropHandler(new EjectMonitor(null)) ;
+    }
+    
+    @Override synchronized
+    public T getObject(Key key)
+    { 
+        if ( cache.contains(key) )
+            cacheMisses ++ ;
+        else
+            cacheHits++ ;
+        return cache.getObject(key) ;
+    }
+    
+    @Override synchronized
+    public void putObject(Key key, T t)
+    {
+        T v = getObject(key) ;
+        if ( v == null )
+        {
+            cacheEntries++ ;
+            cache.putObject(key, v) ;
+            return ;
+        }
+        //if ( v.equals(t) ) { }
+        // Do it anyway to be consistent 
+        cache.putObject(key, v) ;
+    }
+    
+    @Override synchronized
+    public void removeObject(Key key)
+    {
+        if ( cache.contains(key) )
+            cacheEntries-- ;
+
+        // Do it anyway to be consistent
+        cache.removeObject(key) ;
+    }
+    
+    
+    @Override synchronized
+    public void setDropHandler(ActionKeyValue<Key,T> dropHandler)
+    {
+        cache.setDropHandler(new EjectMonitor(dropHandler)) ;
+    }
 }
 
 /*

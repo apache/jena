@@ -11,7 +11,8 @@ import com.hp.hpl.jena.assembler.Assembler;
 import com.hp.hpl.jena.assembler.assemblers.AssemblerGroup;
 import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.tdb.TDB;
+
+import com.hp.hpl.jena.tdb.sys.TDB;
 
 public class PGraphAssemblerVocab
 {

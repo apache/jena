@@ -12,7 +12,7 @@ import arq.cmdline.ModDataset;
 
 import com.hp.hpl.jena.query.ARQ;
 
-import com.hp.hpl.jena.tdb.TDB;
+import com.hp.hpl.jena.tdb.sys.TDB;
 
 
 public class tdbquery extends arq.query

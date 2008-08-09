@@ -6,7 +6,7 @@
 
 package com.hp.hpl.jena.tdb.index;
 
-import static com.hp.hpl.jena.tdb.Const.SizeOfNodeId;
+import static com.hp.hpl.jena.tdb.sys.Const.SizeOfNodeId;
 
 import java.util.HashSet;
 import java.util.Set;

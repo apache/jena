@@ -16,7 +16,7 @@ import java.nio.channels.FileChannel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.hp.hpl.jena.tdb.Const;
+import com.hp.hpl.jena.tdb.sys.Const;
 
 /** Abstract class to for block managers over a file */
 public abstract class BlockMgrFile extends BlockMgrBase

@@ -23,8 +23,6 @@ import com.hp.hpl.jena.sparql.sse.SSE;
 
 import com.hp.hpl.jena.query.*;
 
-import com.hp.hpl.jena.tdb.Const;
-import com.hp.hpl.jena.tdb.TDB;
 import com.hp.hpl.jena.tdb.TDBFactory;
 import com.hp.hpl.jena.tdb.base.block.BlockMgr;
 import com.hp.hpl.jena.tdb.base.block.BlockMgrFactory;
@@ -34,6 +32,8 @@ import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 import com.hp.hpl.jena.tdb.base.recordfile.RecordBufferPage;
 import com.hp.hpl.jena.tdb.base.recordfile.RecordBufferPageMgr;
 import com.hp.hpl.jena.tdb.pgraph.GraphTDB;
+import com.hp.hpl.jena.tdb.sys.Const;
+import com.hp.hpl.jena.tdb.sys.TDB;
 
 public class Run
 {

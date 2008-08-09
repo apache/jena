@@ -6,7 +6,7 @@
 
 package com.hp.hpl.jena.tdb.index;
 
-import com.hp.hpl.jena.tdb.Const;
+import com.hp.hpl.jena.tdb.sys.Const;
 
 public enum IndexType
 {

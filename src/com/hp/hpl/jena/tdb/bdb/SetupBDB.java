@@ -10,9 +10,9 @@ import java.io.File;
 
 import com.sleepycat.je.*;
 
-import com.hp.hpl.jena.tdb.Const;
 import com.hp.hpl.jena.tdb.TDBException;
 import com.hp.hpl.jena.tdb.base.file.Location;
+import com.hp.hpl.jena.tdb.sys.Const;
 
 public class SetupBDB
 {

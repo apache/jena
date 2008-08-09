@@ -6,7 +6,8 @@
 
 package com.hp.hpl.jena.tdb.btree;
 
-import static com.hp.hpl.jena.tdb.Const.* ;
+import static com.hp.hpl.jena.tdb.sys.Const.*;
+
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 
 

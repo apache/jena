@@ -4,9 +4,9 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb;
+package com.hp.hpl.jena.tdb.sys;
 
-import static com.hp.hpl.jena.tdb.TDB.log;
+import static com.hp.hpl.jena.tdb.sys.TDB.log;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -23,6 +23,7 @@ import com.hp.hpl.jena.sparql.util.Symbol;
 
 import com.hp.hpl.jena.query.ARQ;
 
+import com.hp.hpl.jena.tdb.TDBException;
 import com.hp.hpl.jena.tdb.base.block.FileMode;
 import com.hp.hpl.jena.tdb.index.IndexType;
 import com.hp.hpl.jena.tdb.pgraph.NodeId;

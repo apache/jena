@@ -15,11 +15,11 @@ import com.sleepycat.je.*;
 
 import com.hp.hpl.jena.graph.Node;
 
-import com.hp.hpl.jena.tdb.Const;
 import com.hp.hpl.jena.tdb.TDBException;
 import com.hp.hpl.jena.tdb.lib.NodeLib;
 import com.hp.hpl.jena.tdb.pgraph.NodeId;
 import com.hp.hpl.jena.tdb.pgraph.NodeTable;
+import com.hp.hpl.jena.tdb.sys.Const;
 
 
 public class NodeTableBDBDirect implements NodeTable

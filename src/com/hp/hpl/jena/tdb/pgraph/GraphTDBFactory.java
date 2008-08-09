@@ -9,12 +9,12 @@ package com.hp.hpl.jena.tdb.pgraph;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.hp.hpl.jena.tdb.Names;
 import com.hp.hpl.jena.tdb.base.file.Location;
 import com.hp.hpl.jena.tdb.index.Index;
 import com.hp.hpl.jena.tdb.index.IndexBuilder;
 import com.hp.hpl.jena.tdb.index.RangeIndex;
 import com.hp.hpl.jena.tdb.index.TripleIndex;
+import com.hp.hpl.jena.tdb.sys.Names;
 
 /** Place to put various "making" things. */
 

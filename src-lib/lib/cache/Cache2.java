@@ -39,17 +39,14 @@ public class Cache2<Key, T> implements Cache<Key, T>
     // Probably overkill.
     private int max ;
     private int min ;
-    CacheLRU.CacheImpl<Key, PoolEntry<Key, T>> objects ;
+    CacheLRU.CacheImpl<Key, PoolEntry> objects ;
     
     // Overall statistics 
     private long cacheEntries ;
     private long cacheHits ;
     private long cacheMisses ; 
     private long cacheEjects ;
-    
-    // Detailed stats
-    // XXX NO! Make a stats capturing Cache wrapper.
-    // ----
+    private long cacheTimePoint = 0;  
     
     public Cache2(int num)            { this(0, num) ; }
     private Cache2(int min, int max)
@@ -61,10 +58,10 @@ public class Cache2<Key, T> implements Cache<Key, T>
         cacheMisses = 0 ;
         cacheEjects = 0 ;
         
-        objects = new CacheLRU.CacheImpl<Key, PoolEntry<Key, T>>(max) ;
-        objects.setDropHandler(new ActionKeyValue<Key, PoolEntry<Key, T>>(){
+        objects = new CacheLRU.CacheImpl<Key, PoolEntry>(max) ;
+        objects.setDropHandler(new ActionKeyValue<Key, PoolEntry>(){
             @Override
-            public void apply(Key key, PoolEntry<Key, T> entry)
+            public void apply(Key key, PoolEntry entry)
             {
                 cacheEjects++ ;
                 if ( logging && log.isDebugEnabled() )
@@ -88,7 +85,7 @@ public class Cache2<Key, T> implements Cache<Key, T>
     synchronized
     public T getObject(Key key, boolean exclusive)
     { 
-        PoolEntry<Key, T> entry = objects.get(key) ;
+        PoolEntry entry = objects.get(key) ;
         if ( entry == null )
         {
             cacheMisses++ ;
@@ -130,12 +127,12 @@ public class Cache2<Key, T> implements Cache<Key, T>
         }
     }
     synchronized
-    public void putObject(Key key, T t)
+    public void putObject(Key key, T thing)
     {
-        PoolEntry<Key, T> entry = objects.get(key) ;
+        PoolEntry entry = objects.get(key) ;
         if ( entry != null )
         {
-            if ( entry.thing.equals(t) )
+            if ( entry.thing.equals(thing) )
                 log.error("Putting the same object into the cache: "+key) ;
             else
                 if ( logging )
@@ -145,7 +142,7 @@ public class Cache2<Key, T> implements Cache<Key, T>
         cacheEntries++ ;
         if ( logging )
             log.info("Miss/Put    : "+str(key)) ;
-        objects.put(key, new PoolEntry<Key, T>(key, t)) ;
+        objects.put(key, new PoolEntry(key, thing)) ;
         stats() ;
     }
 
@@ -159,7 +156,7 @@ public class Cache2<Key, T> implements Cache<Key, T>
     synchronized
     public void promote(Key key)
     {
-        PoolEntry<Key, T> entry = objects.get(key) ;
+        PoolEntry entry = objects.get(key) ;
         if ( entry == null )
         {
             log.error("Attempt to promote object noit in the pool: "+key) ;
@@ -192,7 +189,7 @@ public class Cache2<Key, T> implements Cache<Key, T>
     synchronized
     public void returnObject(Key key)
     {
-        PoolEntry<Key, T> entry = objects.get(key) ;
+        PoolEntry entry = objects.get(key) ;
         if ( entry == null )
         {
             log.warn("Object returned that is not allocated: "+key) ;
@@ -218,7 +215,7 @@ public class Cache2<Key, T> implements Cache<Key, T>
     synchronized
     public void removeObject(Key key)
     {
-        PoolEntry<Key, T> entry = objects.get(key) ;
+        PoolEntry entry = objects.get(key) ;
         if ( entry == null )
             return ;
         
@@ -278,14 +275,14 @@ public class Cache2<Key, T> implements Cache<Key, T>
     
     private String str(Key key) { return key.toString() ; } 
     
-    private String str(PoolEntry<Key, T> entry)
+    private String str(PoolEntry entry)
     { return entry.key.toString()+" ["+entry.refCount+"]"  ; }
     
-//    static class Handler<Key, T> implements ActionKeyValue<Key, PoolEntry<Key, T>>
+//    static class Handler<Key, T> implements ActionKeyValue<Key, PoolEntry>
 //    {
 //
 //        @Override
-//        public void apply(Key key, PoolEntry<Key, T> entry)
+//        public void apply(Key key, PoolEntry entry)
 //        {
 //            if ( entry.refCount != 0 )
 //                ;
@@ -295,20 +292,26 @@ public class Cache2<Key, T> implements Cache<Key, T>
 //    }
 
     // Hmm - bet there is an existing class to do all this. 
-    static class PoolEntry<Key, T>
+    class PoolEntry
     {
         // Ref count = -1 ==> exclusive lock.
         int refCount = 0 ;
         int cacheHit = 0 ;
+        long cachePoint = 0 ;
 //        enum Status { FREE, ALLOCATED, INVALID } ;
 //        Status status = Status.INVALID ;
         T thing ;
         private Object key ;
-        PoolEntry(Key key, T thing) { this.key = key ; this.thing = thing ; } 
+        PoolEntry(Key key, T thing)
+        { 
+            this.key = key ; 
+            this.thing = thing ;
+            this.cachePoint = (++cacheTimePoint) ;
+        }
         
         @Override public String toString() 
         {
-            return String.format("%s ["+refCount+"]") ;
+            return String.format("[H:%d@%d] %s ", cacheHit, cachePoint, thing) ;
         }
     }
     

@@ -9,12 +9,12 @@ package lib;
 import java.util.Iterator;
 
 /** A cache */
-public interface Cache<Key, T>
+public interface Cache<Key, Value>
 {
     public boolean contains(Key key) ;
 //    public T getObject(Key key, boolean exclusive) ;
-    public T getObject(Key key) ;
-    public void putObject(Key key, T thing) ;
+    public Value getObject(Key key) ;
+    public void putObject(Key key, Value thing) ;
 //    public void promote(Key key) ;
 //    public void returnObject(Key key) ;
     public void removeObject(Key key) ;
@@ -22,7 +22,7 @@ public interface Cache<Key, T>
     public boolean isEmpty() ;
     public void clear() ;
     public long size() ;
-    public void setDropHandler(ActionKeyValue<Key,T> dropHandler) ;
+    public void setDropHandler(ActionKeyValue<Key,Value> dropHandler) ;
 }
 
 /*

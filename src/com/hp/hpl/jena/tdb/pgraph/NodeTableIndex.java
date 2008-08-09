@@ -6,15 +6,15 @@
 
 package com.hp.hpl.jena.tdb.pgraph;
 
-import static com.hp.hpl.jena.tdb.Const.NodeCacheSize;
+import static com.hp.hpl.jena.tdb.sys.Const.NodeCacheSize;
 
-import com.hp.hpl.jena.tdb.Names;
 import com.hp.hpl.jena.tdb.base.file.FileFactory;
 import com.hp.hpl.jena.tdb.base.file.Location;
 import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile;
 import com.hp.hpl.jena.tdb.base.objectfile.ObjectFileMem;
 import com.hp.hpl.jena.tdb.index.Index;
 import com.hp.hpl.jena.tdb.index.IndexBuilder;
+import com.hp.hpl.jena.tdb.sys.Names;
 
 public class NodeTableIndex extends NodeTableBase
 {
