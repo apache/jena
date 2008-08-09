@@ -15,6 +15,7 @@ public class Dev
     //      Is Ivy using the ivy files? where did the excludes go?  main vs dev?
     //      Does slf4j-api depend on log4j ?!!
     // 3 -- Being about to run tests : Special ant target that has no dependences on compile
+    // 4 -- Version details as properties file (template and real) that ant updates.
     
     // ---- B+Tree rewriter
     
