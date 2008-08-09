@@ -150,7 +150,7 @@ public class SDB
     /** The SDB web site : see also http://jena.sourceforge.net*/   
     public static final String WEBSITE = "@website@";
    
-    /** The full name of the current ARQ version */   
+    /** The full name of the current SDB version */   
     public static final String VERSION = "@version@";
    
     /** The major version number for this release of SDB (ie '2' for SDB 2.0) */
