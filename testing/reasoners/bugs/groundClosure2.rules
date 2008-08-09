@@ -1,0 +1,13 @@
+# test for reported problem where doing a contains on a grounded
+# triple causes more rule to fire after the truth of the containment
+# has been verified.
+
+@prefix eg: <http://jena.hpl.hp.com/example#> .
+
+-> (eg:Paul eg:fatherTwo eg:Phil) .
+-> (eg:Paul eg:altFather eg:Phil) .
+-> (eg:Paul eg:builtinFather eg:Phil) .
+
+[fatherparent: (?a eg:parent ?b) <- (?a eg:father ?b)]
+[fatherparenttwo: (?a eg:father ?b) <- (?a eg:fatherTwo ?b)]
+[builtinparent: (?a eg:parent ?b)<- flag() (?a eg:builtinFater ?b) ]

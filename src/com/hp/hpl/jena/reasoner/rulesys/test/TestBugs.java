@@ -5,7 +5,7 @@
  *
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestBugs.java,v 1.53 2008-01-14 16:07:49 der Exp $
+ * $Id: TestBugs.java,v 1.54 2008-08-09 14:57:57 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -36,7 +36,7 @@ import com.hp.hpl.jena.vocabulary.*;
  * Unit tests for reported bugs in the rule system.
  *
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.53 $ on $Date: 2008-01-14 16:07:49 $
+ * @version $Revision: 1.54 $ on $Date: 2008-08-09 14:57:57 $
  */
 public class TestBugs extends TestCase {
 
@@ -54,7 +54,8 @@ public class TestBugs extends TestCase {
     public static TestSuite suite() {
         return new TestSuite( TestBugs.class );
 //        TestSuite suite = new TestSuite();
-//        suite.addTest(new TestBugs( "testOntModelGetDeductions" ));
+//        suite.addTest(new TestBugs( "testGroundClosure" ));
+//        suite.addTest(new TestBugs( "testGroundClosure2" ));
 //        return suite;
     }
 
@@ -800,6 +801,24 @@ public class TestBugs extends TestCase {
         GenericRuleReasoner reasoner = new GenericRuleReasoner(Rule.parseRules(rules));
         InfModel infModel = ModelFactory.createInfModel(reasoner, m);
         assertTrue( infModel.contains(a, q, b) );
+        assertTrue( ! myFlag.fired );
+    }
+
+    /**
+     * Test closure of grounded choice points
+     */
+    public void testGroundClosure2() {
+        Flag myFlag = new Flag();
+        BuiltinRegistry.theRegistry.register(myFlag);
+        List rules = Rule.rulesFromURL("file:testing/reasoners/bugs/groundClosure2.rules");
+        GenericRuleReasoner reasoner = new GenericRuleReasoner( rules );
+        InfModel inf = ModelFactory.createInfModel(reasoner, ModelFactory.createDefaultModel());
+        
+        String NS = "http://jena.hpl.hp.com/example#";
+        Resource Phil = inf.getResource(NS + "Phil");
+        Resource Paul = inf.getResource(NS + "Paul");
+        Property parent = inf.getProperty(NS + "parent");
+        assertTrue ( inf.contains(Paul, parent, Phil) );
         assertTrue( ! myFlag.fired );
     }
 

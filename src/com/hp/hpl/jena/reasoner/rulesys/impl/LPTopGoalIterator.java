@@ -5,7 +5,7 @@
  *
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: LPTopGoalIterator.java,v 1.13 2008-01-02 12:06:16 andy_seaborne Exp $
+ * $Id: LPTopGoalIterator.java,v 1.14 2008-08-09 14:58:01 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -22,7 +22,7 @@ import java.util.*;
  * inference graph if the iterator hits the end of the result set.
  *
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.13 $ on $Date: 2008-01-02 12:06:16 $
+ * @version $Revision: 1.14 $ on $Date: 2008-08-09 14:58:01 $
  */
 public class LPTopGoalIterator implements ClosableIterator, LPInterpreterContext {
     /** The next result to be returned, or null if we have finished */
@@ -47,7 +47,7 @@ public class LPTopGoalIterator implements ClosableIterator, LPInterpreterContext
     protected boolean checkReadyNeeded = false;
 
     /** True if the iteration has started */
-    boolean started = false;
+    boolean lookaheadValid = false;
 
     /** Version stamp of the graph when we start */
     protected int initialVersion;
@@ -73,7 +73,7 @@ public class LPTopGoalIterator implements ClosableIterator, LPInterpreterContext
         synchronized (lpEngine) {
             // LogFactory.getLog( getClass() ).debug( "Entering moveForward sync block on " + interpreter.getEngine() );
 
-            started = true;
+            lookaheadValid = true;
             // LogFactory.getLog( getClass() ).debug( "interpreter = " + interpreter );
 
             lookAhead = interpreter.next();
@@ -179,7 +179,7 @@ public class LPTopGoalIterator implements ClosableIterator, LPInterpreterContext
      */
     public boolean hasNext() {
         checkCME();
-        if (!started) moveForward();
+        if (!lookaheadValid) moveForward();
         return (lookAhead != null);
     }
 
@@ -188,12 +188,12 @@ public class LPTopGoalIterator implements ClosableIterator, LPInterpreterContext
      */
     public Object next() {
         checkCME();
-        if (!started) moveForward();
+        if (!lookaheadValid) moveForward();
         if (lookAhead == null) {
             throw new NoSuchElementException("Overran end of LP result set");
         }
         Object result = lookAhead;
-        moveForward();
+        lookaheadValid = false;
         return result;
     }
     

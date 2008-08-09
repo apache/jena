@@ -8,8 +8,11 @@ Typed literals:
       canonicalization.
       
 Reasoners:
-    o Modified @include processing to support FileManager redirects.
-          
+    o Modified @include processing and Rule.rulesFromURL to support 
+      FileManager redirects.
+    o Fixed problem withLPTopGoalIterator which caused one extra level
+      of lookahead in some circumstances.
+    
 ==== Jena 2.5.5
 
 Jar changes:
