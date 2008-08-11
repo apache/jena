@@ -13,6 +13,10 @@ import java.util.Properties;
 
 import com.hp.hpl.jena.tdb.TDBException;
 
+/** Pluck data out of the ether - or failing that, read it from a properties file.
+ *  Assumes the properties is in the "right place" through build or compile processes
+ * @author Andy Seaborne
+ */
 public class Metadata
 {
     static boolean initialized = false ; 
