@@ -10,8 +10,8 @@
 
   <!-- The major and minor version numbers  -->
   <property name="version-major"   value="0"/>
-  <property name="version-minor"   value="5"/>
-  <property name="version-status"  value=""/>
+  <property name="version-minor"   value="6"/>
+  <property name="version-status"  value="-dev"/>
   <property name="version"
             value="${version-major}.${version-minor}${version-status}"/>
   
@@ -30,6 +30,31 @@
        <ivy:cachepath>
        or work with version numbered.
        Enable srource and javadoc artifacts
+  -->
+
+  <!--
+  <filterset id="filters.shared">
+    <filter token="Name"              value="${Name}" />
+    <filter token="website"           value="${web.site}" />
+    <filter token="version-major"     value="${version-major}" />
+    <filter token="version-minor"     value="${version-minor}" />
+    <filter token="version-status"    value="${version-status}" />
+    <filter token="version"           value="${version}" />
+    <filterset refid="filters.version"/>
+  </filterset>
+  -->
+
+<!--
+  <tstamp>
+    <format property="build.time.txt"  pattern="yyyy-MM-dd HH:mm Z"/>
+    <format property="build.time.xsd"  pattern="yyyy-MM-dd'T'HH:mm:ssZ"/>
+  </tstamp>
+
+  <filterset id="filters.build.metadata">
+    <filter token="VERSION"           value="${version}" />
+    <filter token="BUILD_TIME"        value="${build.time.txt}" />
+    <filter token="BUILD_TIME_XSD"    value="${build.time.xsd}" />
+  </filterset>
   -->
 
   <!-- Library of standard tasks
@@ -94,6 +119,12 @@
   <property name="build.classes.dir"      value="${build.dir}/classes"/>
   <property name="artifacts.dir"          value="${build.dir}/artifacts"/>
 
+
+  <property name="build.metadata.file"   
+	    value="${build.classes.dir}/com/hp/hpl/jena/tdb/tdb-properties.xml"/>
+  <property name="build.metadata.file.src"   
+	    value="${src.dir}/com/hp/hpl/jena/tdb/tdb-properties.xml"/>
+
   <!-- Testing -->
   <property name="reports.dir"            value="reports"/>
   <property name="reports.dir.xml"        value="reports/xml"/>
@@ -152,6 +183,19 @@
     <property name="java.target"      value="1.6"/>
   </target>
 
+
+    <tstamp>
+    <format property="build.time.xsd"  pattern="yyyy-MM-dd'T'HH:mm:ssZ"/>
+  </tstamp>
+
+  <filterset id="filters.build.metadata">
+    <filter token="VERSION"           value="${version}" />
+    <filter token="BUILD_TIME"        value="${build.time.txt}" />
+    <filter token="BUILD_TIME_XSD"    value="${build.time.xsd}" />
+  </filterset>
+
+
+
   <!-- ========================================== -->
   <!-- ==== Sources -->
   
@@ -173,9 +217,21 @@
     </javac>
   </target>
 
+  <target name="build-properties">
+    <!-- Delete any file compilation javac copied over -->
+    <delete file="${build.metadata.file}"/>
+    <copy tofile="${build.metadata.file}" file="${build.metadata.file.src}">
+      <filterset refid="filters.build.metadata"/>
+    </copy>
+  </target>
+
   <target name="jars" depends="jar" />
   <target name="jar" depends="compile" description="Build the jar">
     <delete file="${build.dir}/${jarfile}"/>
+
+    <!-- Insert the properties for the build into the class area -->
+    <antcall target="build-properties"/>
+
     <jar destfile="${build.dir}/${jarfile}" basedir="${build.classes.dir}">
       <!--
         <manifest>
@@ -246,6 +302,7 @@
     <!-- <delete file="${artifacts.dir}/${pomfile}"/> -->
     <copy file="tdb.pom" tofile="${artifacts.dir}/${pomfile}">
       <filterset>
+	<!-- <filterset refid="filters.shared"/> -->
         <filter token="VERSION" value="${version}"/>
       </filterset>
     </copy>

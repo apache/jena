@@ -22,12 +22,13 @@ import com.hp.hpl.jena.tdb.solver.StageGeneratorPGraphBGP;
 import com.hp.hpl.jena.tdb.solver.StageGeneratorPGraphSimple;
 
 
+
 public class TDB
 {
     public static final Logger log = LoggerFactory.getLogger(TDB.class) ;
     
     public static String namespace = "http://jena.hpl.hp.com/2008/tdb#" ;
-    
+
     /** Root of TDB-defined parameter names */
     public static final String symbolNamespace = "http://jena.hpl.hp.com/TDB#" ;
     
@@ -91,8 +92,10 @@ public class TDB
             log.debug("\n"+ARQ.getContext()) ;
     }
     
-//    /** The root package name for TDB */   
-//    public static final String PATH = "com.hp.hpl.jena.tdb";
+    // Add tests in TestSys to check set up correctly.
+    
+    /** The root package name for TDB */   
+    public static final String PATH = "com.hp.hpl.jena.tdb";
 //   
 //    /** The product name */   
 //    public static final String NAME = "TDB";
@@ -100,8 +103,8 @@ public class TDB
 //    /** The TDB web site : see also http://jena.sourceforge.net*/   
 //    public static final String WEBSITE = "http://jena.hpl.hp.com/wiki/TDB";
 //   
-//    /** The full name of the current TDB version */   
-//    public static final String VERSION = "@version@";
+        /** The full name of the current TDB version */   
+    public static final String VERSION = Metadata.get(PATH+".version", "unknown") ;
 //   
 //    /** The major version number for this release of TDB (ie '2' for TDB 2.0) */
 //    public static final String MAJOR_VERSION = "@version-major@";
@@ -112,8 +115,8 @@ public class TDB
 //    /** The version status for this release of SDB (eg '-beta1' or the empty string) */
 //    public static final String VERSION_STATUS = "@version-status@";
 //   
-//    /** The date and time at which this release was built */   
-//    public static final String BUILD_DATE = "@build-time@";
+    /** The date and time at which this release was built */   
+    public static final String BUILD_DATETIME = Metadata.get(PATH+".build.datetime", "unset") ;
 }
 
 /*
