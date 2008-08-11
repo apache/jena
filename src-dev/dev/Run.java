@@ -1,10 +1,15 @@
 /*
- * ong time (c) Copyright 2007, 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007, 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
 package dev;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Reader;
+import java.util.Properties;
 
 import lib.FileOps;
 import lib.Pair;
@@ -14,6 +19,7 @@ import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 
 import com.hp.hpl.jena.util.FileManager;
+import com.hp.hpl.jena.util.FileUtils;
 
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
@@ -46,8 +52,24 @@ public class Run
         nextDivider = "" ;
     }
     
-    public static void main(String ... args)
+    public static void main(String ... args) throws IOException
     {
+        InputStream in = ClassLoader.getSystemClassLoader().getResourceAsStream("tdb.properties") ;
+        if ( in == null )
+        {
+            System.err.println("Null input stream") ;
+            return ;
+        }
+        Reader r = FileUtils.asBufferedUTF8(in) ;
+        Properties p = new Properties() ;
+        p.load(r) ;
+        String x = (String)p.get("com.hp.hpl.jena.tdb.version") ;
+        System.out.println("==> "+x) ;
+        
+        p.storeToXML(System.out, "TDB Properties") ;
+        
+        System.exit(0) ;
+        
         //smallGraph() ;
         //tdbloader("--desc=tdb.ttl", "--mem", "/home/afs/Datasets/MusicBrainz/tracks.nt") ;
         

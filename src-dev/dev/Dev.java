@@ -9,11 +9,7 @@ package dev;
 public class Dev
 {
     // ---- Build and release
-    // 1 -- Sources and javadopc to maven // -source and -javadoc - how to generate in ivy?
-    // 2 -- tdb.pom needs to exclude messy stuff (log4j) - dependency on log4j somehow.
-    //      Only for ivy resolve - 
-    //      Is Ivy using the ivy files? where did the excludes go?  main vs dev?
-    //      Does slf4j-api depend on log4j ?!!
+    // 1 -- Sources and javadoc to maven // -source and -javadoc - how to generate in ivy?
     // 3 -- Being about to run tests : Special ant target that has no dependences on compile
     // 4 -- Version details as properties file (template and real) that ant updates.
     
@@ -30,7 +26,7 @@ public class Dev
     // ---- Reopenable BlockMgrs (and the object file?) 
     //   Memory versions are a "file" (fit into framework for testing).
     //     Maybe not worth the effort to rework but needs to be reopenable.
-    //   Root is an NIO FileChannel
+    //   Root is an NIO FileChannel (Or Chanel with a mem impl?)
     
     // ---- tdbloader: 
     //   close indexes not in use in a given phase

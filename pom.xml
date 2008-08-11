@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-Start of a POM for TDB.
+<!--
+Start of a development POM for TDB.
+See tdb.pom for the published version.
 Unfinished.
+-->
 
 <project>
   <modelVersion>4.0.0</modelVersion>
@@ -42,6 +45,19 @@ Unfinished.
       <artifactId>arq-extra</artifactId>
       <version>2.4</version>
     </dependency>
+
+   <!-- Not strictly necessary - ARQ depends on Jena -->
+     <dependency>
+      <groupId>com.hp.hpl.jena</groupId>
+      <artifactId>jena</artifactId>
+      <version>2.5.6</version>
+    </dependency>
+    <dependency>
+      <groupId>com.hp.hpl.jena</groupId>
+      <artifactId>jenatest</artifactId>
+      <version>2.5.6</version>
+    </dependency>
+
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
@@ -56,23 +72,13 @@ Unfinished.
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-log4j12</artifactId>
       <version>1.4.3</version>
-      <optional>true</optional>
     </dependency>
-    <dependency>
-      <groupId>log4j</groupId>
-      <artifactId>log4j</artifactId>
-      <version>1.2.15</version>
-      <optional>true</optional>
-    </dependency>
+
   </dependencies>
 
   <build>
-This does not work in Maven2
-Apparently it's possible but the maven web site contains no information beyond some sections headings.
-    <sourceDirectory>src</sourceDirectory>
-    <sourceDirectory>src-lib</sourceDirectory>
-    <testSourceDirectory>src-test</testSourceDirectory>
-    <testSourceDirectory>src-lib-test</testSourceDirectory>
+    <sourceDirectory>src??</sourceDirectory>
+    <testSourceDirectory>src??-test</testSourceDirectory>
     <outputDirectory>build</outputDirectory>
 
     <finalName>${project.artifactId}-${project.version}</finalName>
@@ -86,6 +92,25 @@ Apparently it's possible but the maven web site contains no information beyond s
 	  <target>1.6</target>
 	</configuration>
       </plugin>
+ <plugins>
+      <plugin>
+	<groupId>org.apache.maven.plugins</groupId>
+	<artifactId>maven-compiler-plugin</artifactId>
+	<configuration>
+	  <source>1.6</source>
+	  <target>1.6</target>
+	</configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <configuration>
+          <outputDirectory>build</outputDirectory>
+          <attach>true</attach>
+        </configuration>
+      </plugin>
+    </plugins>
 
       <!--
       <plugin>
@@ -103,7 +128,19 @@ Apparently it's possible but the maven web site contains no information beyond s
   </build>
 
 
-  <!-- <reporting/> -->
+
+  <reporting>
+    <plugins>
+      <plugin>
+	<groupId>org.apache.maven.plugins</groupId>
+	<artifactId>maven-javadoc-plugin</artifactId>
+        <configuration>
+	  ...???...
+        </configuration>
+      </plugin>
+    </plugins>
+  </reporting>
+
   <!-- <repositories/> -->
 
 </project>

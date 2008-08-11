@@ -41,6 +41,19 @@
       <artifactId>arq-extra</artifactId>
       <version>2.4</version>
     </dependency>
+
+    <!-- Not strictly necessary - ARQ depends on Jena -->
+     <dependency>
+      <groupId>com.hp.hpl.jena</groupId>
+      <artifactId>jena</artifactId>
+      <version>2.5.6</version>
+    </dependency>
+    <dependency>
+      <groupId>com.hp.hpl.jena</groupId>
+      <artifactId>jenatest</artifactId>
+      <version>2.5.6</version>
+    </dependency>
+
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
@@ -51,40 +64,20 @@
       <artifactId>slf4j-api</artifactId>
       <version>1.4.3</version>
     </dependency>
+
+    <!-- And a choice of logging implementation ... -->
+    <!--
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-log4j12</artifactId>
       <version>1.4.3</version>
     </dependency>
-    <dependency>
-      <groupId>log4j</groupId>
-      <artifactId>log4j</artifactId>
-      <version>1.2.15</version>
-      <!-- <optional>true</optional> -->
-      <!-- Brings in inaccessible things -->
-      <exclusions>
-	<exclusion>
-	  <groupId>com.sun.jmx</groupId>
-	  <artifactId>jmxri</artifactId>
-	</exclusion>
-	<exclusion>
-	  <groupId></groupId>
-	  <artifactId></artifactId>
-	</exclusion>
-	<exclusion>
-	  <groupId>com.sun.jdmk</groupId>
-	  <artifactId>jmxtools</artifactId>
-	</exclusion>
-	<exclusion>
-	  <groupId>javax.jms</groupId>
-	  <artifactId>jms</artifactId>
-	</exclusion>
-	<exclusion>
-	  <groupId>javax.mail</groupId>
-	  <artifactId>mail</artifactId>
-	</exclusion>
-      </exclusions>
-    </dependency>
+    -->
+    <!-- slf4j-log4j12 depends on log4j 1.2.13 -->
+    <!-- log4j 1.2.15 brings in dependences for 
+	 inaccessible things and causes warnings
+	 -->
+
   </dependencies>
 
 </project>
