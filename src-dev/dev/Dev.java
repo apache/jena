@@ -11,7 +11,7 @@ public class Dev
     // ---- Build and release
     // 1 -- Sources and javadoc to maven // -source and -javadoc - how to generate in ivy?
     // 3 -- Being about to run tests : Special ant target that has no dependences on compile
-    // 4 -- Version details as properties file (template and real) that ant updates.
+    // Or shell script.
     
     // ---- B+Tree rewriter
     
