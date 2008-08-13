@@ -125,6 +125,14 @@ public class Record //implements Comparable<Record>
         return x > 0 ;
     }
     
+    public static boolean equals(Record record1, Record record2)
+    {
+        int x = compareByKeyValue(record1, record2) ;
+        return x == 0 ;
+    }
+
+
+    
     static public String str(byte[] b)
     {
         StringBuilder str = new StringBuilder() ;

@@ -12,6 +12,7 @@ public class Dev
     // 1 -- Sources and javadoc to maven // -source and -javadoc - how to generate in ivy?
     // 3 -- Being about to run tests : Special ant target that has no dependences on compile
     // Or shell script.
+    // Where does the jar go in the download version?
     
     // ---- B+Tree rewriter
     

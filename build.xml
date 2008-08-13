@@ -172,8 +172,7 @@
   </fileset>
   
   <target name="javac-flags">
-    <!-- Note that in ant, if these flags are already set 
-         setting them again has no effect -->
+    <!-- Target - so can have different javac flags (properties are set once) -->
     <property name="java.debug"       value="true"/>
     <property name="java.debuglevel"  value="source,lines,vars"/>
     <property name="java.deprecation" value="true"/>
@@ -184,7 +183,7 @@
   </target>
 
 
-    <tstamp>
+  <tstamp>
     <format property="build.time.xsd"  pattern="yyyy-MM-dd'T'HH:mm:ssZ"/>
   </tstamp>
 
@@ -402,10 +401,10 @@
   </target>
 
   <target name="copy-dist" depends="copy-init,jar,javadoc">
-    <!-- jars - tdb jar and dependences -->
+    <!-- jars - tdb jar and dependences - Puts the TDB jar inplace -->
     <copy todir="${dist.dir}/${lib.dir}">
-      <fileset dir="${lib.dir}" includes="**/*.jar" excludes="${jarfile}"/>
-      <fileset dir="${build.dir}" includes="*.jar"/>
+      <fileset dir="${lib.dir}" includes="*.jar" excludes="${jarfile}"/>
+      <fileset dir="${build.dir}" includes="${jarfile}"/>
     </copy>
 
     <!-- Source code -->
