@@ -163,12 +163,17 @@ public class Var extends Node_Variable
         for ( Iterator iter = vars.iterator() ; iter.hasNext() ; )
         {
             Object obj = iter.next(); 
+            String name = null ; 
+            
             if ( obj instanceof Var )
-                x.add(((Var)obj).getVarName()) ;
+                name = ((Var)obj).getVarName() ;
             else if ( obj instanceof String )
-                x.add(obj) ;
+                name = (String)obj ;
             else
                 throw new ARQInternalErrorException("Element of a var list is not a string or a var: "+obj) ;
+//            if ( x.contains(name) )
+//                throw new ARQInternalErrorException("Duplicate name") ;
+            x.add(name) ;
         }
         return x ;
     }
