@@ -173,8 +173,8 @@ public class RecordBuffer extends BufferBase
     @Override
     public String toString()
     {
-        StringBuilder str = new StringBuilder() ;
-        str.append(format("Len=%d Max=%d ", numSlot, bb.limit()/slotLen)) ;
+        StringBuilder str = new StringBuilder(40000) ;
+        str.append(format("Len=%d Max=%d: ", numSlot, bb.limit()/slotLen)) ;
         
         // Print active slots as records.
         for ( int i = 0 ; i < numSlot ; i++ )
@@ -185,15 +185,16 @@ public class RecordBuffer extends BufferBase
             str.append(r.toString()) ;
         }
         
-        // Print empty slots
-        for ( int i = numSlot*slotLen ; i < maxSlot*slotLen ; i++ )
-        {
-            if ( i != 0 && i%slotLen == 0 )
-                str.append(" ") ;
-            byte b = bb.get(i) ;
-            str.append(format("%02x", b)) ;
-        }
-        return str.toString() ;
+//        // Print empty slots
+//        for ( int i = numSlot*slotLen ; i < maxSlot*slotLen ; i++ )
+//        {
+//            if ( i != 0 && i%slotLen == 0 )
+//                str.append(" ") ;
+//            byte b = bb.get(i) ;
+//            str.append(format("%02x", b)) ;
+//        }
+        String s = str.toString() ;
+        return s ;
     }
 
     private static void checkBounds(int idx, int len)
