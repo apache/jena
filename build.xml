@@ -17,8 +17,9 @@
   
   <target name="main" depends="jar"/>
   
-  <!-- IMPORT : except -p shows the lib.TARGET and TARGET each time.-->
-
+  <!-- Predefine ant standard properties --> 
+  <!-- Import "standard" properties that all depend on standard layout or the ones above -->
+	
   <!-- TODO
        Make ivy-resolve work with the compilation process.
        Possibly download twice - with and without versions (is there 
@@ -30,31 +31,6 @@
        <ivy:cachepath>
        or work with version numbered.
        Enable srource and javadoc artifacts
-  -->
-
-  <!--
-  <filterset id="filters.shared">
-    <filter token="Name"              value="${Name}" />
-    <filter token="website"           value="${web.site}" />
-    <filter token="version-major"     value="${version-major}" />
-    <filter token="version-minor"     value="${version-minor}" />
-    <filter token="version-status"    value="${version-status}" />
-    <filter token="version"           value="${version}" />
-    <filterset refid="filters.version"/>
-  </filterset>
-  -->
-
-<!--
-  <tstamp>
-    <format property="build.time.txt"  pattern="yyyy-MM-dd HH:mm Z"/>
-    <format property="build.time.xsd"  pattern="yyyy-MM-dd'T'HH:mm:ssZ"/>
-  </tstamp>
-
-  <filterset id="filters.build.metadata">
-    <filter token="VERSION"           value="${version}" />
-    <filter token="BUILD_TIME"        value="${build.time.txt}" />
-    <filter token="BUILD_TIME_XSD"    value="${build.time.xsd}" />
-  </filterset>
   -->
 
   <!-- Library of standard tasks
@@ -171,6 +147,29 @@
     <include name="${src.lib.test.dir}**/*.java"/>
   </fileset>
   
+  <tstamp>
+    <format property="build.time.xsd"  pattern="yyyy-MM-dd'T'HH:mm:ssZ"/>
+    <!-- <format property="build.time.txt"  pattern="yyyy-MM-dd HH:mm Z"/>-->
+  </tstamp>
+
+  <filterset id="filters.build.metadata">
+    <filter token="VERSION"           value="${version}" />
+    <filter token="BUILD_TIME"        value="${build.time.txt}" />
+    <filter token="BUILD_TIME_XSD"    value="${build.time.xsd}" />
+  </filterset>
+	
+  <!--
+  <filterset id="filters.shared">
+    <filter token="Name"              value="${Name}" />
+    <filter token="website"           value="${web.site}" />
+    <filter token="version-major"     value="${version-major}" />
+    <filter token="version-minor"     value="${version-minor}" />
+    <filter token="version-status"    value="${version-status}" />
+    <filter token="version"           value="${version}" />
+    <filterset refid="filters.version"/>
+  </filterset>
+  -->
+
   <target name="javac-flags">
     <!-- Target - so can have different javac flags (properties are set once) -->
     <property name="java.debug"       value="true"/>
@@ -181,19 +180,6 @@
     <property name="java.source"      value="1.6"/>
     <property name="java.target"      value="1.6"/>
   </target>
-
-
-  <tstamp>
-    <format property="build.time.xsd"  pattern="yyyy-MM-dd'T'HH:mm:ssZ"/>
-  </tstamp>
-
-  <filterset id="filters.build.metadata">
-    <filter token="VERSION"           value="${version}" />
-    <filter token="BUILD_TIME"        value="${build.time.txt}" />
-    <filter token="BUILD_TIME_XSD"    value="${build.time.xsd}" />
-  </filterset>
-
-
 
   <!-- ========================================== -->
   <!-- ==== Sources -->
