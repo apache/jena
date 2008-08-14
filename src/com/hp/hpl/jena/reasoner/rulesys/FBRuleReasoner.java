@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: FBRuleReasoner.java,v 1.26 2008-01-02 12:07:47 andy_seaborne Exp $
+ * $Id: FBRuleReasoner.java,v 1.27 2008-08-14 10:35:08 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -23,7 +23,7 @@ import java.util.*;
  * of forward rules to generate and instantiate backward rules.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.26 $ on $Date: 2008-01-02 12:07:47 $
+ * @version $Revision: 1.27 $ on $Date: 2008-08-14 10:35:08 $
  */
 public class FBRuleReasoner implements RuleReasoner {
     
@@ -141,6 +141,14 @@ public class FBRuleReasoner implements RuleReasoner {
             return null;
         }
     }
+    
+    /**
+        Answer the schema graph bound into this reasoner, or null if there
+        isn't one. (Added mainly for testing purposes, which is why it isn't
+        part of the Reasoner API.)
+    */
+    public Graph getBoundSchema()
+        { return schemaGraph; }
     
     /**
      * Add a configuration description for this reasoner into a partial

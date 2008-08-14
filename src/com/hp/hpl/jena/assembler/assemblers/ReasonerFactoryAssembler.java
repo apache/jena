@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: ReasonerFactoryAssembler.java,v 1.11 2008-01-02 12:09:36 andy_seaborne Exp $
+ 	$Id: ReasonerFactoryAssembler.java,v 1.12 2008-08-14 10:35:46 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.assemblers;
@@ -10,6 +10,7 @@ import java.util.*;
 
 import com.hp.hpl.jena.assembler.*;
 import com.hp.hpl.jena.assembler.exceptions.*;
+import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.reasoner.rulesys.*;
@@ -35,7 +36,44 @@ public class ReasonerFactoryAssembler extends AssemblerBase implements Assembler
     public Object open( Assembler a, Resource root, Mode irrelevant )
         { 
         checkType( root, JA.ReasonerFactory );
-        return addRules( root, a, getReasonerFactory( root ) );
+        return addSchema( root, a, addRules( root, a, getReasonerFactory( root ) ) );
+        }
+
+    private ReasonerFactory addSchema( Resource root, Assembler a, final ReasonerFactory rf )
+        {
+        if (root.hasProperty( JA.ja_schema ))
+            {
+            final Graph schema = loadSchema( root, a );
+            return new ReasonerFactory()
+                {
+                public Reasoner create( Resource configuration )
+                    {
+                    return rf.create( configuration ).bindSchema( schema );
+                    }
+
+                public Model getCapabilities()
+                    { return rf.getCapabilities(); }
+
+                public String getURI()
+                    { return rf.getURI(); }
+                };
+            }
+        else
+            return rf;
+        }
+
+    private Graph loadSchema( Resource root, Assembler a )
+        {
+        Graph result = Factory.createDefaultGraph();
+        for (StmtIterator models = root.listProperties( JA.ja_schema ); models.hasNext();)
+            loadSchema( result, a, getResource( models.nextStatement() ) );
+        return result;
+        }
+
+    private void loadSchema( Graph result, Assembler a, Resource root )
+        {
+        Model m = a.openModel( root );
+        result.getBulkUpdateHandler().add( m.getGraph() );
         }
 
     private ReasonerFactory addRules( Resource root, Assembler a, final ReasonerFactory r )

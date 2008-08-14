@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestReasonerFactoryAssembler.java,v 1.7 2008-01-02 12:05:57 andy_seaborne Exp $
+ 	$Id: TestReasonerFactoryAssembler.java,v 1.8 2008-08-14 10:35:41 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.test;
@@ -145,6 +145,12 @@ public class TestReasonerFactoryAssembler extends AssemblerTestBase
     
     public void testSchema()
         {
+        Model schema = model( "P rdf:type owl:ObjectProperty" );
+        Resource root = resourceInModel( "x rdf:type ja:ReasonerFactory; x ja:schema S" );
+        Assembler sub = new NamedObjectAssembler( resource( "S" ), schema );
+        ReasonerFactory rf = (ReasonerFactory) ASSEMBLER.open( sub, root );
+        Reasoner r = rf.create( null );
+        assertIsomorphic( schema.getGraph(), ((FBRuleReasoner) r).getBoundSchema() );
         }
     
     public void testSingleRules()

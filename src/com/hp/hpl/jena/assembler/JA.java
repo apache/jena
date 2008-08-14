@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: JA.java,v 1.17 2008-03-26 12:05:14 chris-dollin Exp $
+ 	$Id: JA.java,v 1.18 2008-08-14 10:35:44 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler;
@@ -182,6 +182,8 @@ public class JA
     public static final Property reasonerFactory = property( "reasonerFactory" );
 
     public static final Property reasonerClass = property( "reasonerClass" );
+    
+    public static final Property ja_schema = property( "schema" );
 
     public static final Property likeBuiltinSpec = property( "likeBuiltinSpec" );
 
