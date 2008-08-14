@@ -1,4 +1,0 @@
-#!/bin/bash
-
-CP="$($ARQROOT/bin/arq_path)"
-java $SOCKS -cp "$CP" arq.rset "$@"

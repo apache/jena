@@ -404,6 +404,13 @@ registry; the reasoner is the one with the given URI.
 </p>
 
 <p>
+If the optional property <code>ja:schema</code> is specified, then
+the models specified by all the schema properties are unioned and
+any reasoner produced by the factory will have that union bound in
+as its schema (using the <code>Reasoner::bindSchema()</code> method).
+</p>
+
+<p>
 If the optional unique property <code>ja:reasonerClass</code> is specified,
 its value names a class which implements <code>ReasonerFactory</code>. That
 class is loaded and an instance of it used as the factory.
