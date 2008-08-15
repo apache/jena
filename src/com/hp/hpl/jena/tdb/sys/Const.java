@@ -89,6 +89,10 @@ public class Const
 
     public static final ByteOrder NetworkOrder      = ByteOrder.BIG_ENDIAN ;
     
+    public static boolean NullOut = false ;                  // For checking 
+
+    public static boolean Checking = false ;
+
     // BDB related.
     public static final int BDB_cacheSizePercent    = intValue("BDB_cacheSizePercent", 75) ;
     

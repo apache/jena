@@ -6,7 +6,6 @@
 
 package com.hp.hpl.jena.tdb.base.buffer;
 
-import static com.hp.hpl.jena.tdb.base.BaseConfig.NullOut;
 import static java.lang.String.format;
 import static java.lang.System.arraycopy;
 import static java.util.Arrays.fill;
@@ -14,7 +13,7 @@ import static java.util.Arrays.fill;
 import java.nio.ByteBuffer;
 
 import com.hp.hpl.jena.tdb.base.record.RecordException;
-import com.hp.hpl.jena.tdb.sys.Const;
+import static com.hp.hpl.jena.tdb.sys.Const.* ;
 
 
 /** ByteBuffer specialization - Common operations for RecordBuffer and PtrBuffer */  
@@ -33,7 +32,7 @@ abstract class BufferBase
     {
         if ( CheckBuffer )
         {
-            if ( ! bb.order().equals(Const.NetworkOrder) || !bb.hasArray() )
+            if ( ! bb.order().equals(NetworkOrder) || !bb.hasArray() )
                 throw new RecordException("Duff buffer (byte order is not network order)") ;
             if ( bb.limit() == 0 )
                 throw new RecordException("Duff buffer (zero length byte buffer)") ;

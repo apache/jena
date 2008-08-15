@@ -6,7 +6,6 @@
 
 package com.hp.hpl.jena.tdb.bplustree;
 
-import static com.hp.hpl.jena.tdb.base.BaseConfig.NullOut;
 import static com.hp.hpl.jena.tdb.base.record.Record.keyGT;
 import static com.hp.hpl.jena.tdb.base.record.Record.keyLT;
 import static com.hp.hpl.jena.tdb.base.record.Record.keyNE;
@@ -25,12 +24,12 @@ import java.util.Iterator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.hp.hpl.jena.tdb.base.recordfile.RecordRangeIterator;
-import com.hp.hpl.jena.tdb.base.recordfile.RecordBufferPage;
-
 import com.hp.hpl.jena.tdb.base.buffer.PtrBuffer;
 import com.hp.hpl.jena.tdb.base.buffer.RecordBuffer;
 import com.hp.hpl.jena.tdb.base.record.Record;
+import com.hp.hpl.jena.tdb.base.recordfile.RecordBufferPage;
+import com.hp.hpl.jena.tdb.base.recordfile.RecordRangeIterator;
+import com.hp.hpl.jena.tdb.sys.Const;
 
 public final class BPTreeNode extends BPTreePage
 {
@@ -1218,7 +1217,7 @@ public final class BPTreeNode extends BPTreePage
         if ( k != null && max != null && keyGT(k,max) )
             error("Node: %d - Record is too high (max=%s):: %s", id, max, this) ;
         
-        if ( NullOut )
+        if ( Const.NullOut )
         {
             // Test records in the free area
             for ( int i = count ; i < maxRecords() ; i++ )
@@ -1238,7 +1237,7 @@ public final class BPTreeNode extends BPTreePage
         }
             
         // Check empty is empty
-        if ( NullOut )
+        if ( Const.NullOut )
         {
             int x = params.MaxPtr ;
             for ( ; i < params.MaxPtr ; i ++ )

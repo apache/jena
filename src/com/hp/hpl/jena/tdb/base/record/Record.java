@@ -10,7 +10,7 @@ import static java.lang.String.format;
 
 import java.util.Arrays;
 
-import com.hp.hpl.jena.tdb.base.BaseConfig;
+import com.hp.hpl.jena.tdb.sys.Const;
 
 /** A record is pair of key and value.  It may be all key, in which case value is null. 
  * @author Andy Seaborne
@@ -31,7 +31,7 @@ public class Record //implements Comparable<Record>
     { 
         this.key = key ;
         this.value = value ;
-        if ( BaseConfig.Checking )
+        if ( Const.Checking )
         {
             if ( value.length == 0 )
                 throw new RecordException("Zero length value") ;

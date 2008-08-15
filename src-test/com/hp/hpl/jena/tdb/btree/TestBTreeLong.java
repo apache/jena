@@ -11,9 +11,9 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import test.BaseTest;
 
-import com.hp.hpl.jena.tdb.base.BaseConfig;
 import com.hp.hpl.jena.tdb.base.record.Record;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
+import com.hp.hpl.jena.tdb.sys.Const;
 
 public class TestBTreeLong extends BaseTest
 {
@@ -25,13 +25,13 @@ public class TestBTreeLong extends BaseTest
     { 
         recordFactory = new RecordFactory(LongRecordLength, 0) ;
         BTreeParams.CheckingNode = true ;
-        b = BaseConfig.NullOut ;
-        BaseConfig.NullOut = true ;
+        b = Const.NullOut ;
+        Const.NullOut = true ;
     }
     
     @AfterClass public static void after()
     { 
-        BaseConfig.NullOut = b ;
+        Const.NullOut = b ;
     }
     
     @Test public void record1()

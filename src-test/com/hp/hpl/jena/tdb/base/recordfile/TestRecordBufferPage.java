@@ -10,12 +10,12 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import test.BaseTest;
 
-import com.hp.hpl.jena.tdb.base.BaseConfig;
 import com.hp.hpl.jena.tdb.base.block.BlockMgr;
 import com.hp.hpl.jena.tdb.base.block.BlockMgrFactory;
 import com.hp.hpl.jena.tdb.base.buffer.RecordBuffer;
 import com.hp.hpl.jena.tdb.base.record.Record;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
+import com.hp.hpl.jena.tdb.sys.Const;
 
 public class TestRecordBufferPage extends BaseTest
 {
@@ -27,7 +27,7 @@ public class TestRecordBufferPage extends BaseTest
     
     @BeforeClass static public void before()
     {
-        BaseConfig.NullOut = true ;    
+        Const.NullOut = true ;    
     }
     
     @Test public void recBufferPage01()

@@ -11,7 +11,6 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.hp.hpl.jena.tdb.base.BaseConfig;
 import com.hp.hpl.jena.tdb.base.block.BlockMgr;
 import com.hp.hpl.jena.tdb.base.block.BlockMgrFactory;
 import com.hp.hpl.jena.tdb.base.buffer.RecordBuffer;
@@ -20,6 +19,7 @@ import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 import com.hp.hpl.jena.tdb.base.record.RecordTestLib;
 import com.hp.hpl.jena.tdb.base.recordfile.RecordBufferPage;
 import com.hp.hpl.jena.tdb.base.recordfile.RecordBufferPageMgr;
+import com.hp.hpl.jena.tdb.sys.Const;
 
 public class TestBPTreeRecords extends TestBase
 {
@@ -37,8 +37,8 @@ public class TestBPTreeRecords extends TestBase
     
     @BeforeClass public static void beforeClass()
     {
-        oldNullOut = BaseConfig.NullOut ;
-        BaseConfig.NullOut = true ;
+        oldNullOut = Const.NullOut ;
+        Const.NullOut = true ;
         
         oldCheckingNode = BPlusTreeParams.CheckingNode ;
         BPlusTreeParams.CheckingNode = true ;
@@ -59,7 +59,7 @@ public class TestBPTreeRecords extends TestBase
     
     @AfterClass public static void afterClass()
     {
-        BaseConfig.NullOut = oldNullOut ;
+        Const.NullOut = oldNullOut ;
         BPlusTreeParams.CheckingTree = oldCheckingNode ;
         BPlusTreeParams.CheckingTree = oldCheckingBTree ;
     }

@@ -6,8 +6,6 @@
 
 package com.hp.hpl.jena.tdb.btree;
 
-
-import static com.hp.hpl.jena.tdb.base.BaseConfig.NullOut;
 import static com.hp.hpl.jena.tdb.base.record.Record.compareByKey;
 import static com.hp.hpl.jena.tdb.base.record.Record.keyGE;
 import static com.hp.hpl.jena.tdb.btree.BTreeParams.CheckingNode;
@@ -26,6 +24,7 @@ import org.slf4j.LoggerFactory;
 import com.hp.hpl.jena.tdb.base.buffer.PtrBuffer;
 import com.hp.hpl.jena.tdb.base.buffer.RecordBuffer;
 import com.hp.hpl.jena.tdb.base.record.Record;
+import com.hp.hpl.jena.tdb.sys.Const;
 
 public class BTreeNode
 {
@@ -1361,7 +1360,7 @@ public class BTreeNode
         if ( k != null && max != null && keyGE(k,max) )
             error("Node: %d - Record is too high (max=%s):: %s", id, max, this) ;
         
-        if ( NullOut )
+        if ( Const.NullOut )
             // Test records in the free area
             for ( int i = count ; i < maxRecords() ; i++ )
                 if ( ! records.isClear(i) )
@@ -1369,7 +1368,7 @@ public class BTreeNode
         
         // Test children
         
-        if ( NullOut )
+        if ( Const.NullOut )
         {
             int i = 0 ;
             if ( ! isLeaf )

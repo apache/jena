@@ -6,10 +6,10 @@
 
 package test;
 
-import com.hp.hpl.jena.tdb.base.BaseConfig;
 import com.hp.hpl.jena.tdb.bplustree.BPlusTreeMaker;
 import com.hp.hpl.jena.tdb.btree.BTreeParams;
 import com.hp.hpl.jena.tdb.index.RangeIndexMaker;
+import com.hp.hpl.jena.tdb.sys.Const;
 
 public abstract class BTreeRun extends RunnerRangeIndex
 {
@@ -37,13 +37,13 @@ public abstract class BTreeRun extends RunnerRangeIndex
                 showProgress = true ;
                 BTreeParams.CheckingBTree = true ;
                 BTreeParams.CheckingNode = true ;
-                BaseConfig.NullOut = true ;
+                Const.NullOut = true ;
                 break ;
             case perf:  
                 showProgress = false ;
                 BTreeParams.CheckingBTree = false ;
                 BTreeParams.CheckingNode = false ;
-                BaseConfig.NullOut = false ;
+                Const.NullOut = false ;
                 break ;
         }
     }

@@ -10,9 +10,9 @@ import static com.hp.hpl.jena.tdb.base.ConfigTest.TestRecordLength;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 
-import com.hp.hpl.jena.tdb.base.BaseConfig;
 import com.hp.hpl.jena.tdb.index.RangeIndex;
 import com.hp.hpl.jena.tdb.index.TestRangeIndex;
+import com.hp.hpl.jena.tdb.sys.Const;
 
 public class TestBTree extends TestRangeIndex
 {
@@ -21,12 +21,12 @@ public class TestBTree extends TestRangeIndex
     @BeforeClass public static void before()
     { 
         BTreeParams.CheckingNode = true ;
-        BaseConfig.NullOut = true ;
+        Const.NullOut = true ;
     }
     
     @AfterClass public static void after()
     { 
-        BaseConfig.NullOut = b ;
+        Const.NullOut = b ;
     }
     
     // ---- Overridable maker

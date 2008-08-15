@@ -124,6 +124,15 @@ public class RecordBuffer extends BufferBase
         return find(k, 0, numSlot) ;
     }
     
+
+    public Record findGet(Record k)
+    {
+        int x = find(k) ;
+        if ( x >= 0 )
+            return get(x) ; 
+        return null ;
+    }
+
     /** Search for key in range fromIndex (inclusive) to toIndex (exclusive) */
     public int find(Record rec, int fromIndex, int toIndex)
     { 

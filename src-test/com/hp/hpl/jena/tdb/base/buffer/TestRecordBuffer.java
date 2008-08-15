@@ -11,11 +11,11 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import test.BaseTest;
 
-import com.hp.hpl.jena.tdb.base.BaseConfig;
 import com.hp.hpl.jena.tdb.base.ConfigTest;
 import com.hp.hpl.jena.tdb.base.record.RecordTestLib;
 import com.hp.hpl.jena.tdb.base.record.Record;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
+import com.hp.hpl.jena.tdb.sys.Const;
 
 public class TestRecordBuffer extends BaseTest
 {
@@ -24,7 +24,7 @@ public class TestRecordBuffer extends BaseTest
     @BeforeClass static public void before()
     {
         recordFactory = new RecordFactory(ConfigTest.TestRecordLength, 0) ;
-        BaseConfig.NullOut = true ;    
+        Const.NullOut = true ;    
     }
     
     @Test public void recBuffer01()

@@ -11,11 +11,11 @@ import java.util.List;
 import org.apache.log4j.Level;
 import tdb.Cmd;
 
-import com.hp.hpl.jena.tdb.base.BaseConfig;
 import com.hp.hpl.jena.tdb.base.block.BlockMgrMem;
 import com.hp.hpl.jena.tdb.bplustree.BPlusTreeParams;
 import com.hp.hpl.jena.tdb.index.RangeIndexMaker;
 import com.hp.hpl.jena.tdb.index.RangeIndexTestGenerator;
+import com.hp.hpl.jena.tdb.sys.Const;
 
 public abstract class RunnerRangeIndex extends RunnerExecute
 {
@@ -80,12 +80,12 @@ public abstract class RunnerRangeIndex extends RunnerExecute
             else if ( a.equalsIgnoreCase("bptree:check") )
             {
                 BPlusTreeParams.CheckingTree = true ;
-                BaseConfig.NullOut = true ;
+                Const.NullOut = true ;
             }
             else if ( a.equalsIgnoreCase("bptree:checknode") )
             {
                 BPlusTreeParams.CheckingNode = true ;
-                BaseConfig.NullOut = true ;
+                Const.NullOut = true ;
                 BlockMgrMem.SafeMode = true ;
             }
             else if ( a.equalsIgnoreCase("bptree:log") )
@@ -104,7 +104,7 @@ public abstract class RunnerRangeIndex extends RunnerExecute
             else if ( a.equalsIgnoreCase("check") )
             {
                 BPlusTreeParams.CheckingNode = true ;
-                BaseConfig.NullOut = true ;
+                Const.NullOut = true ;
                 BlockMgrMem.SafeMode = true ;
             }
             else if ( a.equalsIgnoreCase("display") )

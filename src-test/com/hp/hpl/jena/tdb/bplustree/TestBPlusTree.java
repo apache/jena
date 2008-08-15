@@ -10,11 +10,11 @@ import static com.hp.hpl.jena.tdb.base.ConfigTest.TestRecordLength;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 
-import com.hp.hpl.jena.tdb.base.BaseConfig;
 import com.hp.hpl.jena.tdb.bplustree.BPlusTree;
 import com.hp.hpl.jena.tdb.bplustree.BPlusTreeParams;
 import com.hp.hpl.jena.tdb.index.RangeIndex;
 import com.hp.hpl.jena.tdb.index.TestRangeIndex;
+import com.hp.hpl.jena.tdb.sys.Const;
 
 public class TestBPlusTree extends TestRangeIndex
 {
@@ -23,13 +23,13 @@ public class TestBPlusTree extends TestRangeIndex
     @BeforeClass public static void before()
     { 
         BPlusTreeParams.checkAll() ;
-        b = BaseConfig.NullOut ;
-        BaseConfig.NullOut = true ;
+        b = Const.NullOut ;
+        Const.NullOut = true ;
     }
     
     @AfterClass public static void after()
     { 
-        BaseConfig.NullOut = b ;
+        Const.NullOut = b ;
     }
     
     
