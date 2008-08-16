@@ -16,7 +16,7 @@ import com.hp.hpl.jena.tdb.base.block.BlockMgrFactory;
 import com.hp.hpl.jena.tdb.base.buffer.RecordBuffer;
 import com.hp.hpl.jena.tdb.base.record.Record;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
-import com.hp.hpl.jena.tdb.base.record.RecordTestLib;
+import com.hp.hpl.jena.tdb.base.record.RecordLib;
 import com.hp.hpl.jena.tdb.base.recordfile.RecordBufferPage;
 import com.hp.hpl.jena.tdb.base.recordfile.RecordBufferPageMgr;
 import com.hp.hpl.jena.tdb.sys.Const;
@@ -135,9 +135,9 @@ public class TestBPTreeRecords extends TestBase
         fill(bpr) ;
         
         // No match.
-        assertNull(bpr.internalSearch(RecordTestLib.intToRecord(0x20))) ;
+        assertNull(bpr.internalSearch(RecordLib.intToRecord(0x20))) ;
 
-        Record r = RecordTestLib.intToRecord(0x32) ;
+        Record r = RecordLib.intToRecord(0x32) ;
         Record r2 = search(bpr, r) ;
         assertTrue(Record.keyEQ(r, r2)) ;
 
@@ -172,7 +172,7 @@ public class TestBPTreeRecords extends TestBase
         insert(bpr1, 10) ;
         Record r = bpr2.shiftLeft(bpr1, null) ;
         
-        assertTrue(Record.keyEQ(r, RecordTestLib.intToRecord(10))) ;
+        assertTrue(Record.keyEQ(r, RecordLib.intToRecord(10))) ;
         contains(bpr1) ;
         contains(bpr2, 10) ;
     }
@@ -187,7 +187,7 @@ public class TestBPTreeRecords extends TestBase
         
         Record r = bpr1.shiftRight(bpr2, null) ;
 
-        assertTrue(r+" != "+RecordTestLib.intToRecord(10), Record.keyEQ(r, RecordTestLib.intToRecord(10))) ;
+        assertTrue(r+" != "+RecordLib.intToRecord(10), Record.keyEQ(r, RecordLib.intToRecord(10))) ;
         contains(bpr1, 10) ;
         contains(bpr2, 20, 99) ;
     }
@@ -201,7 +201,7 @@ public class TestBPTreeRecords extends TestBase
         insert(bpr2, 5) ;
         
         Record r = bpr2.shiftLeft(bpr1, null) ;
-        assertTrue(Record.keyEQ(r, RecordTestLib.intToRecord(10))) ;
+        assertTrue(Record.keyEQ(r, RecordLib.intToRecord(10))) ;
         
         contains(bpr1, 20) ;
         contains(bpr2, 5, 10) ;
@@ -253,7 +253,7 @@ public class TestBPTreeRecords extends TestBase
 
     private static Record search(BPTreeRecords bpr, int x)
     {
-        return search(bpr, RecordTestLib.intToRecord(x)) ;
+        return search(bpr, RecordLib.intToRecord(x)) ;
     }
 
     
@@ -265,7 +265,7 @@ public class TestBPTreeRecords extends TestBase
     private static void insert(BPTreeRecords bpr, int ... values)
     {
         for ( int i = 0 ; i < values.length ; i++ )
-           bpr.internalInsert(RecordTestLib.intToRecord(values[i])) ;
+           bpr.internalInsert(RecordLib.intToRecord(values[i])) ;
     }
     
     private static void insert(BPTreeRecords bpr, Record r)
@@ -277,7 +277,7 @@ public class TestBPTreeRecords extends TestBase
     private static void delete(BPTreeRecords bpr, int ... values)
     {
         for ( int i = 0 ; i < values.length ; i++ )
-           delete(bpr, RecordTestLib.intToRecord(values[i])) ;
+           delete(bpr, RecordLib.intToRecord(values[i])) ;
     }
     
     private static void delete(BPTreeRecords bpr, Record r)
@@ -290,7 +290,7 @@ public class TestBPTreeRecords extends TestBase
     {
         assertEquals(values.length, bpr.getCount() ) ;
         for ( int i = 1 ; i < values.length ; i++ )
-            assertTrue(Record.compareByKeyValue(RecordTestLib.intToRecord(values[i]),bpr.getRecordBuffer().get(i)) == 0 ) ;
+            assertTrue(Record.compareByKeyValue(RecordLib.intToRecord(values[i]),bpr.getRecordBuffer().get(i)) == 0 ) ;
     }
 
     private static BPTreeRecords make()

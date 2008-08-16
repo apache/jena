@@ -54,7 +54,9 @@ public class RecordBufferPage extends PageBase //implements Page
         return HEADER + factory.recordLength()*maxRec ;
     }
     
-    public RecordBufferPage(int id, int linkId, ByteBuffer byteBuffer, RecordFactory factory, RecordBufferPageMgr recordBufferPageMgr, int count)
+    public RecordBufferPage(int id, int linkId, ByteBuffer byteBuffer,
+                            RecordFactory factory, RecordBufferPageMgr recordBufferPageMgr, 
+                            int count)
     {
         super(id, byteBuffer) ;
         this.link = linkId ;

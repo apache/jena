@@ -14,7 +14,6 @@ public class BlockConverter<T>
 {
     public interface Converter<T>
     { 
-        /* include id? */
         T fromByteBuffer(ByteBuffer byteBuffer) ;
         ByteBuffer toByteBuffer(T t) ;
         T createFromByteBuffer(ByteBuffer bb, BlockType bType) ;

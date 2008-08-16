@@ -8,13 +8,11 @@ package com.hp.hpl.jena.tdb.base.page;
 
 import java.nio.ByteBuffer;
 
+/** A page with a byte buffer */
 public abstract class PageBase implements Page
 {
     private int id ;
     private final ByteBuffer byteBuffer ;
-
-    // Not needed even though BPTreeNode and RecordsBufferPage could share.
-    // BPTreeRecords does not use so BPTreePage shouldn't use this (forces subtypes to decide).
 
     protected PageBase(int id, ByteBuffer byteBuffer)
     {

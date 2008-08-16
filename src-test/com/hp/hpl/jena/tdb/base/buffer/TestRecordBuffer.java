@@ -6,13 +6,12 @@
 
 package com.hp.hpl.jena.tdb.base.buffer;
 
-import static com.hp.hpl.jena.tdb.base.record.RecordTestLib.r;
+import static com.hp.hpl.jena.tdb.base.record.RecordLib.r;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import test.BaseTest;
 
-import com.hp.hpl.jena.tdb.base.ConfigTest;
-import com.hp.hpl.jena.tdb.base.record.RecordTestLib;
+import com.hp.hpl.jena.tdb.base.record.RecordLib;
 import com.hp.hpl.jena.tdb.base.record.Record;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 import com.hp.hpl.jena.tdb.sys.Const;
@@ -23,7 +22,7 @@ public class TestRecordBuffer extends BaseTest
     
     @BeforeClass static public void before()
     {
-        recordFactory = new RecordFactory(ConfigTest.TestRecordLength, 0) ;
+        recordFactory = new RecordFactory(RecordLib.TestRecordLength, 0) ;
         Const.NullOut = true ;    
     }
     
@@ -209,9 +208,9 @@ public class TestRecordBuffer extends BaseTest
                 assertTrue(rb.isClear(i))  ;
             else
             {
-                Record r = RecordTestLib.intToRecord(vals[i]) ;
+                Record r = RecordLib.intToRecord(vals[i]) ;
                 Record r2 = rb.get(i) ;
-                int x = RecordTestLib.recordToInt(r2) ;
+                int x = RecordLib.recordToInt(r2) ;
                 assertEquals("Value mismatch: ", vals[i], x) ;
             }
     }
@@ -227,7 +226,7 @@ public class TestRecordBuffer extends BaseTest
         RecordBuffer rb = new RecordBuffer(recordFactory, len) ;
         for ( int i = 0 ; i < n ; i++ )
         {
-            Record r = RecordTestLib.intToRecord(2*i+2) ;  
+            Record r = RecordLib.intToRecord(2*i+2) ;  
             rb.add(r) ;
         }
         return rb ;

@@ -6,10 +6,9 @@
 
 package com.hp.hpl.jena.tdb.index;
 
-import static com.hp.hpl.jena.tdb.base.ConfigTest.TestRecordLength;
-import static com.hp.hpl.jena.tdb.base.record.RecordTestLib.intToRecord;
-import static com.hp.hpl.jena.tdb.base.record.RecordTestLib.r;
-import static com.hp.hpl.jena.tdb.base.record.RecordTestLib.toIntList;
+import static com.hp.hpl.jena.tdb.base.record.RecordLib.intToRecord;
+import static com.hp.hpl.jena.tdb.base.record.RecordLib.r;
+import static com.hp.hpl.jena.tdb.base.record.RecordLib.toIntList;
 import static java.lang.String.format;
 import static lib.ListUtils.asList;
 import static lib.ListUtils.unique;
@@ -29,6 +28,7 @@ import java.util.TreeSet;
 import junit.TestBase;
 
 import com.hp.hpl.jena.tdb.base.record.Record;
+import com.hp.hpl.jena.tdb.base.record.RecordLib;
 
 public class RangeIndexTestLib
 {
@@ -131,7 +131,7 @@ public class RangeIndexTestLib
         int count = 0 ;
         count = delete(rIndex, vals) ;
     
-        List<Record> x =  intToRecord(vals, TestRecordLength) ;
+        List<Record> x =  intToRecord(vals, RecordLib.TestRecordLength) ;
         for ( Record r : x )
         {
             boolean b = rIndex.delete(r) ;
@@ -159,7 +159,7 @@ public class RangeIndexTestLib
 
     public static void add(RangeIndex rIndex, int[] vals)
     {
-        List<Record> x = intToRecord(vals, TestRecordLength) ;
+        List<Record> x = intToRecord(vals, RecordLib.TestRecordLength) ;
         for ( Record r : x )
             rIndex.add(r) ;
     }

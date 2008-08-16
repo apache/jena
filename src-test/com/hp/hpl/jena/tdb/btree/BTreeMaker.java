@@ -6,8 +6,7 @@
 
 package com.hp.hpl.jena.tdb.btree;
 
-import static com.hp.hpl.jena.tdb.base.ConfigTest.TestRecordLength;
-
+import com.hp.hpl.jena.tdb.base.record.RecordLib;
 import com.hp.hpl.jena.tdb.index.RangeIndex;
 import com.hp.hpl.jena.tdb.index.RangeIndexMaker;
 
@@ -20,7 +19,7 @@ public class BTreeMaker implements RangeIndexMaker
     @Override
     public RangeIndex make()
     {
-        BTree bTree = BTree.makeMem(order, TestRecordLength, 0) ;
+        BTree bTree = BTree.makeMem(order, RecordLib.TestRecordLength, 0) ;
         return bTree ;
     }
     

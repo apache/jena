@@ -125,6 +125,16 @@ abstract class BufferBase
                 return false ;
         return true ;
     }
+
+    final public boolean isFull()
+    {
+        return numSlot >= maxSlot ; 
+    }
+
+    final public boolean isEmpty()
+    {
+        return numSlot == 0 ; 
+    }
     
     final public void incSize() { incSize(1) ; }
     final public void incSize(int n)

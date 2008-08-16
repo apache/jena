@@ -6,10 +6,10 @@
 
 package com.hp.hpl.jena.tdb.btree;
 
-import static com.hp.hpl.jena.tdb.base.ConfigTest.TestRecordLength;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 
+import com.hp.hpl.jena.tdb.base.record.RecordLib;
 import com.hp.hpl.jena.tdb.index.RangeIndex;
 import com.hp.hpl.jena.tdb.index.TestRangeIndex;
 import com.hp.hpl.jena.tdb.sys.Const;
@@ -34,7 +34,7 @@ public class TestBTree extends TestRangeIndex
     @Override
     protected RangeIndex make(int order, int minRecords)
     {
-        return BTree.makeMem(order, TestRecordLength, 0) ;
+        return BTree.makeMem(order, RecordLib.TestRecordLength, 0) ;
     }
 }
 

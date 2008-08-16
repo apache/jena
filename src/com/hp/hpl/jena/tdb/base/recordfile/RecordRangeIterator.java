@@ -23,13 +23,11 @@ class RecordRangeIterator implements Iterator<Record>
         return new RecordRangeIterator(page, fromRec, toRec) ;
     }
     
-    /** Iterate over all recors from this page onwards */
+    /** Iterate over all records from this page onwards */
     public static Iterator<Record> iterator(RecordBufferPage page)
     {
         return new RecordRangeIterator(page, null, null) ;
     }
-    
-    
     
     private RecordBufferPage currentPage ;      // Set null when finished.
     private RecordBufferPageMgr pageMgr ;

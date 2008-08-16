@@ -6,8 +6,8 @@
 
 package com.hp.hpl.jena.tdb.base.record;
 
-import static com.hp.hpl.jena.tdb.base.record.RecordTestLib.intToRecord;
-import static com.hp.hpl.jena.tdb.base.record.RecordTestLib.recordToInt;
+import static com.hp.hpl.jena.tdb.base.record.RecordLib.intToRecord;
+import static com.hp.hpl.jena.tdb.base.record.RecordLib.recordToInt;
 
 import com.hp.hpl.jena.tdb.base.record.Record;
 

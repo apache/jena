@@ -6,7 +6,6 @@
 
 package com.hp.hpl.jena.tdb.base.record;
 
-import static com.hp.hpl.jena.tdb.base.ConfigTest.TestRecordLength;
 import iterator.Iter;
 import iterator.Transform;
 
@@ -14,7 +13,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import com.hp.hpl.jena.tdb.base.ConfigTest;
 import com.hp.hpl.jena.tdb.base.record.Record;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 
@@ -23,9 +21,12 @@ import lib.Bytes;
 
 /** Record support operations (mainly for testing using ints) */
 
-public class RecordTestLib
+public class RecordLib
 {
-    static RecordFactory recordFactory = new RecordFactory(ConfigTest.TestRecordLength, 0) ; 
+    // Size of a record when testing (one integer)
+    public static int TestRecordLength = 4 ;
+    
+    public static RecordFactory recordFactory = new RecordFactory(TestRecordLength, 0) ; 
     
     public static Record intToRecord(int v) { return intToRecord(v, recordFactory) ; }
     public static Record intToRecord(int v, int recLen) { return intToRecord(v, new RecordFactory(recLen, 0)) ; }
@@ -81,12 +82,12 @@ public class RecordTestLib
     
     public static Record r(int v)
     {
-        return RecordTestLib.intToRecord(v, TestRecordLength) ; 
+        return RecordLib.intToRecord(v, RecordLib.TestRecordLength) ; 
     }
 
     public static int r(Record rec)
     {
-        return RecordTestLib.recordToInt(rec) ; 
+        return RecordLib.recordToInt(rec) ; 
     }
 
     public static List<Integer> toIntList(int... vals)
@@ -99,7 +100,7 @@ public class RecordTestLib
 
     public static List<Integer> r(Iterator<Record> iter)
     {
-        return RecordTestLib.toIntList(iter) ;
+        return RecordLib.toIntList(iter) ;
     }
 
 

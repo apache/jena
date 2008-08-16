@@ -132,6 +132,16 @@ public class RecordBuffer extends BufferBase
             return get(x) ; 
         return null ;
     }
+    
+    /** return true is removed anything */
+    public boolean removeByKey(Record k)
+    {
+        int x = find(k) ;
+        if ( x < 0 )
+            return false ;
+        super.remove(x) ;
+        return true ;
+    }
 
     /** Search for key in range fromIndex (inclusive) to toIndex (exclusive) */
     public int find(Record rec, int fromIndex, int toIndex)
