@@ -6,23 +6,32 @@
 
 package com.hp.hpl.jena.tdb.base.file;
 
-import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile;
-import com.hp.hpl.jena.tdb.base.objectfile.ObjectFileDisk;
-import com.hp.hpl.jena.tdb.base.objectfile.ObjectFileMem;
+import java.nio.ByteBuffer;
 
-public class FileFactory
+
+public class PlainFileMem extends PlainFile
 {
-    public static ObjectFile createObjectFileDisk(String filename)
-    { return new ObjectFileDisk(filename) ; }
+    public PlainFileMem()
+    {
+        super() ;
+        ensure(0) ;
+    }
 
-    public static ObjectFile createObjectFileMem()
-    { return new ObjectFileMem() ; }
+    @Override
+    protected ByteBuffer allocateBuffer(long size)
+    {
+        filesize = size ;
+        return ByteBuffer.allocate((int)size) ;
+    }
+
+    @Override
+    public void close()
+    {}
+
+    @Override
+    public void sync()
+    {}
     
-    public static PlainFile createPlainFileDisk(String filename)
-    { return new PlainFilePersistent(filename) ; }
-    
-    public static PlainFile createPlainFileMem()
-    { return new PlainFileMem() ; }
 }
 
 /*

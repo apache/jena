@@ -6,60 +6,21 @@
 
 package com.hp.hpl.jena.tdb.base.file;
 
-import java.io.IOException;
-import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
-import java.nio.MappedByteBuffer;
-import java.nio.channels.FileChannel;
 
-import com.hp.hpl.jena.tdb.base.block.BlockException;
-
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-/** Single, unsegmented file with ByteBuffer */
-public class PlainFile
+public abstract class PlainFile
 {
-    private static Logger log = LoggerFactory.getLogger(PlainFile.class) ;
-    
-    private FileChannel channel ;
-    private RandomAccessFile out ;
+    protected long filesize = -1 ;
+    protected ByteBuffer byteBuffer = null ;
 
-    long filesize = -1 ;
-    String filename ;
-    public MappedByteBuffer byteBuffer = null ;
-
-    // Plain file over mmapped ByteBuffer 
-    PlainFile(Location loc, String filename)
-    {
-        this(loc.getPath(filename, "dat")) ;
-    }
-    
-    PlainFile(String filename)
-    {
-        try {
-            this.filename = filename ;
-            // "rwd" - Syncs only the file contents
-            // "rws" - Syncs the file contents and metadata
-            // "rw" - cached?
-            
-            out = new RandomAccessFile(filename, "rw") ;
-            long filesize = out.length() ;
-            channel = out.getChannel() ;
-            byteBuffer = allocateBuffer(filesize) ;
-            //if ( channel.size() == 0 ) {}
-        } catch (IOException ex) { throw new FileException("Failed to create BlockMgrFile", ex) ; }
-    }
-    
-    public ByteBuffer getByteBuffer()
+    public final ByteBuffer getByteBuffer()
     {
 //        if ( byteBuffer == null )
 //            byteBuffer = allocateBuffer(filesize) ;
         return byteBuffer ;
     }
     
-    public ByteBuffer ensure(int newSize)
+    public final ByteBuffer ensure(int newSize)
     {
         if ( filesize > newSize )
             return getByteBuffer() ;
@@ -68,41 +29,15 @@ public class PlainFile
        return byteBuffer ;
     }
     
-    public long getFileSize() { return filesize ; }
+    public final long getFileSize() { return filesize ; }
     
     //@Override
-    public void sync()
-    { 
-        try
-        {
-            channel.force(true) ;
-        } catch (IOException ex)
-        { throw new FileException("force", ex) ; }
-    }
-    
+    public abstract void sync() ;
+
     //@Override
-    public void close()
-    {
-        try {
-            //sync() ;
-            //channel.close();
-            out.close();        // Closes the channel.
-            channel = null ;
-            out = null ;
-        } catch (IOException ex)
-        { throw new BlockException("BlockMgrMapped.close", ex) ; }
+    public abstract void close() ;
 
-    }
-
-    private MappedByteBuffer allocateBuffer(long size)
-    {
-        try {
-            return channel.map(FileChannel.MapMode.READ_WRITE, 0, size) ;
-        } catch (IOException ex)
-        {
-            throw new FileException("allocateBuffer", ex) ;
-        }
-    }
+    protected abstract ByteBuffer allocateBuffer(long size) ;
 }
 
 /*
