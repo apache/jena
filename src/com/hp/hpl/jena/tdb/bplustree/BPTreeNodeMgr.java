@@ -168,7 +168,7 @@ final class BPTreeNodeMgr
         {
             // It's manipulated in-place so no conversion needed, 
             // Just the count needs to be fixed up. 
-            ByteBuffer bb = node.getByteBuffer() ;
+            ByteBuffer bb = node.getBackingByteBuffer() ;
             BlockType bType = (node.isLeaf ? BPTREE_LEAF : BPTREE_BRANCH ) ;
             int c = encCount(bType, node.getCount()) ;
             bb.putInt(0, c) ;
@@ -249,28 +249,28 @@ final class BPTreeNodeMgr
             numPtrs = n.getCount()+1 ;
 
         // -- Records area
-        n.getByteBuffer().position(rStart) ;
-        n.getByteBuffer().limit(rStart+recBuffLen) ;
-        ByteBuffer bbr = n.getByteBuffer().slice() ;
+        n.getBackingByteBuffer().position(rStart) ;
+        n.getBackingByteBuffer().limit(rStart+recBuffLen) ;
+        ByteBuffer bbr = n.getBackingByteBuffer().slice() ;
         //bbr.limit(recBuffLen) ;
         n.records = new RecordBuffer(bbr, n.params.keyFactory, n.getCount()) ;
 
         // -- Pointers area
-        n.getByteBuffer().position(pStart) ;
-        n.getByteBuffer().limit(pStart+ptrBuffLen) ;
+        n.getBackingByteBuffer().position(pStart) ;
+        n.getBackingByteBuffer().limit(pStart+ptrBuffLen) ;
         
-        ByteBuffer bbi = n.getByteBuffer().slice() ;
+        ByteBuffer bbi = n.getBackingByteBuffer().slice() ;
         //bbi.limit(ptrBuffLen) ;
         n.ptrs = new PtrBuffer(bbi, numPtrs) ;
 
         // Reset
-        n.getByteBuffer().rewind() ;
+        n.getBackingByteBuffer().rewind() ;
         return n ;
     }
     
     static final void formatForRoot(BPTreeNode n, boolean asLeaf)
     {
-        BPTreeNodeMgr.formatBTreeNode(n, n.bpTree, n.getByteBuffer(), asLeaf, 0) ;
+        BPTreeNodeMgr.formatBTreeNode(n, n.bpTree, n.getBackingByteBuffer(), asLeaf, 0) ;
         // Tweak for the root-specials.  The node is not consistent yet.
         // Has one dangling pointer.
         n.setId(0) ;

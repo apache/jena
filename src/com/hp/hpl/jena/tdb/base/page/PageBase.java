@@ -21,7 +21,7 @@ public abstract class PageBase implements Page
     }
     
     @Override final
-    public ByteBuffer getByteBuffer()       { return byteBuffer ; }
+    public ByteBuffer getBackingByteBuffer()       { return byteBuffer ; }
 
     @Override final
     public int getId()                      { return id ; }

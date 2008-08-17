@@ -284,7 +284,7 @@ public final class BPTreeNode extends BPTreePage
     public final void setCount(int count)   { this.count = count ; }
     
     @Override
-    public ByteBuffer getByteBuffer()       { return byteBuffer ; }
+    public ByteBuffer getBackingByteBuffer()       { return byteBuffer ; }
 
     @Override
     public int getId()                      { return id ; }

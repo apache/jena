@@ -342,7 +342,7 @@ public final class BPTreeRecords extends BPTreePage
     { checkNode() ; }
 
     @Override
-    public ByteBuffer getByteBuffer()   { return rBuffPage.getByteBuffer() ; }
+    public ByteBuffer getBackingByteBuffer()   { return rBuffPage.getBackingByteBuffer() ; }
 
     @Override
     public int getId()                  { return rBuffPage.getId() ; } 

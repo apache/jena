@@ -24,7 +24,7 @@ public interface Page extends Printable
     public int getId() ;
     public void setId(int id) ;
     /** Return the ByteBuffer backing this page */ 
-    public ByteBuffer getByteBuffer() ;
+    public ByteBuffer getBackingByteBuffer() ;
 
     abstract public int getCount() ; 
     abstract public void setCount(int count) ;

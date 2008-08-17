@@ -84,9 +84,9 @@ public class RecordBufferPageMgr extends BlockConverter<RecordBufferPage>
         {
             int count = rbp.getRecordBuffer().size() ;
             rbp.setCount(count) ;
-            rbp.getByteBuffer().putInt(COUNT, rbp.getCount()) ;
-            rbp.getByteBuffer().putInt(LINK, rbp.getLink()) ;
-            return rbp.getByteBuffer() ;
+            rbp.getBackingByteBuffer().putInt(COUNT, rbp.getCount()) ;
+            rbp.getBackingByteBuffer().putInt(LINK, rbp.getLink()) ;
+            return rbp.getBackingByteBuffer() ;
         }
     }
 }
