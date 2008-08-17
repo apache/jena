@@ -57,7 +57,8 @@ public class RecordBufferPage extends PageBase //implements Page
     public RecordBufferPage(int id, int linkId, ByteBuffer byteBuffer,
                             RecordFactory factory, RecordBufferPageMgr recordBufferPageMgr, 
                             int count)
-    {
+    {   // This code know the alignment of the records in the ByteBuffer.
+        // Move to Block2RecordBufferPage
         super(id, byteBuffer) ;
         this.link = linkId ;
         this.pageMgr = null ;
