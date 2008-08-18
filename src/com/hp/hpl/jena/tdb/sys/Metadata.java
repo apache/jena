@@ -27,10 +27,12 @@ public class Metadata
     {
         if ( ! initialized )
         {
+            initialized = true ;
             properties = new Properties() ;
             InputStream in = ClassLoader.getSystemClassLoader().getResourceAsStream(resource) ;
             if ( in == null )
-                throw new TDBException("Failed to find the properties file") ;
+                //throw new TDBException("Failed to find the properties file") ;
+                return ;
             try
             {
                 properties.loadFromXML(in) ;
