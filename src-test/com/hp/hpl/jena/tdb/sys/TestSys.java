@@ -6,6 +6,8 @@
 
 package com.hp.hpl.jena.tdb.sys;
 
+import com.hp.hpl.jena.tdb.TDB;
+
 import org.junit.Test;
 import test.BaseTest;
 

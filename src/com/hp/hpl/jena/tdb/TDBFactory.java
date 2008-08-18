@@ -14,7 +14,6 @@ import com.hp.hpl.jena.tdb.base.file.Location;
 import com.hp.hpl.jena.tdb.pgraph.GraphTDB;
 import com.hp.hpl.jena.tdb.pgraph.GraphTDBFactory;
 import com.hp.hpl.jena.tdb.pgraph.assembler.PGraphAssemblerVocab;
-import com.hp.hpl.jena.tdb.sys.TDB;
 
 public class TDBFactory
 {

@@ -6,10 +6,10 @@
 
 package com.hp.hpl.jena.tdb.pgraph;
 
+import static com.hp.hpl.jena.tdb.TDB.logDuplicates;
 import static com.hp.hpl.jena.tdb.sys.Const.LenIndexRecord;
 import static com.hp.hpl.jena.tdb.sys.Const.LenNodeHash;
 import static com.hp.hpl.jena.tdb.sys.Const.SizeOfNodeId;
-import static com.hp.hpl.jena.tdb.sys.TDB.logDuplicates;
 import iterator.Filter;
 import iterator.Iter;
 
@@ -32,13 +32,13 @@ import com.hp.hpl.jena.graph.query.QueryHandler;
 import com.hp.hpl.jena.sparql.sse.SSE;
 import com.hp.hpl.jena.sparql.util.FmtUtils;
 
+import com.hp.hpl.jena.tdb.TDB;
 import com.hp.hpl.jena.tdb.TDBException;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 import com.hp.hpl.jena.tdb.graph.GraphSyncListener;
 import com.hp.hpl.jena.tdb.index.TripleIndex;
 import com.hp.hpl.jena.tdb.lib.TupleLib;
 import com.hp.hpl.jena.tdb.sys.Const;
-import com.hp.hpl.jena.tdb.sys.TDB;
 
 /** Machinary to implement a "nodes and triples" style graph,
  *  based on 3 indexes (SPO, POS, OSP)

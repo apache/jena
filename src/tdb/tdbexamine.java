@@ -13,8 +13,8 @@ import tdb.cmdline.CmdTDB;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.sparql.util.Utils;
+import com.hp.hpl.jena.tdb.TDB;
 import com.hp.hpl.jena.tdb.graph.StatsGraph;
-import com.hp.hpl.jena.tdb.sys.TDB;
 
 import com.hp.hpl.jena.util.FileManager;
 

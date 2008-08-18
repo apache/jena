@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.sys;
+package com.hp.hpl.jena.tdb;
 
 import static lib.Log.log;
 import org.slf4j.Logger;
@@ -20,6 +20,8 @@ import com.hp.hpl.jena.tdb.base.loader.NTriplesReader2;
 import com.hp.hpl.jena.tdb.pgraph.assembler.PGraphAssemblerVocab;
 import com.hp.hpl.jena.tdb.solver.StageGeneratorPGraphBGP;
 import com.hp.hpl.jena.tdb.solver.StageGeneratorPGraphSimple;
+import com.hp.hpl.jena.tdb.sys.Const;
+import com.hp.hpl.jena.tdb.sys.Metadata;
 
 
 
