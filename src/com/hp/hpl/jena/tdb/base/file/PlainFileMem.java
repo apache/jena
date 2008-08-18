@@ -21,7 +21,14 @@ public class PlainFileMem extends PlainFile
     protected ByteBuffer allocateBuffer(long size)
     {
         filesize = size ;
-        return ByteBuffer.allocate((int)size) ;
+        ByteBuffer bb = ByteBuffer.allocate((int)size) ;
+        // If copy-over
+        if ( false )
+        {
+            bb.position(0) ;
+            bb.put(super.byteBuffer) ;
+        }
+        return bb ;
     }
 
     @Override
