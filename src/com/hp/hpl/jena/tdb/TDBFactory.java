@@ -17,8 +17,38 @@ import com.hp.hpl.jena.tdb.pgraph.assembler.PGraphAssemblerVocab;
 
 public class TDBFactory
 {
-    static { TDB.init(); }
+    /** Low level interface to maker of the actual implementation of TDB graphs */ 
+    public interface ImplFactory 
+    {
+        /** Make a memory implementation of a TDB graph (memory graphs are for testing, not efficiency) */
+        public Graph createGraph() ;
+        /** Make a TDB graph with persistent data at the location */
+        public Graph createGraph(Location loc) ;
+    }
+
+    static ImplFactory factory = null ;
+
+    // Standard implementation factory
+    static ImplFactory stdFactory = new ImplFactory()
+    {
+        @Override
+        public Graph createGraph()
+        {
+            return GraphTDBFactory.createMem() ;
+        }
     
+        @Override
+        public Graph createGraph(Location loc)
+        {
+            return GraphTDBFactory.create(loc) ;
+        }
+    };
+
+    static { 
+        TDB.init(); 
+        setImplFactory(stdFactory) ;
+    }
+
     /** Read the file and assembler a model, of type TDB persistent graph */ 
     public static Model assembleModel(String assemblerFile)
     {
@@ -67,14 +97,13 @@ public class TDBFactory
     // Point at which actual graphs are made.
     
     private static Graph _createGraph()
-    {
-        return GraphTDBFactory.createMem() ;
-    }
+    { return factory.createGraph() ; }
 
     private static Graph _createGraph(Location loc)
-    {
-        return GraphTDBFactory.create(loc) ;
-    }
+    { return factory.createGraph(loc) ; }
+
+    /** Set the implementation factory */
+    public static void setImplFactory(ImplFactory f) { factory = f ; }
 }
 
 /*

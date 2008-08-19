@@ -39,11 +39,10 @@ public class TDB
 //
 //    public static String symbolPrefix = "tdb" ;
 
-    public static Symbol logBGP                     = Const.allocSymbol("logBGP") ;
-    public static Symbol logDuplicates              = Const.allocSymbol("logDuplicates") ;
+    public static final Symbol logBGP               = Const.allocSymbol("logBGP") ;
+    public static final Symbol logDuplicates        = Const.allocSymbol("logDuplicates") ;
     // Value: direct, mapped, default 
     public static final Symbol symFileMode          = Const.allocSymbol("fileMode") ;  
-    public static final Symbol symParallelLoad      = Const.allocSymbol("parallelLoad") ;
     public static final Symbol symIndexType         = Const.allocSymbol("indexType") ;
     
 //    public static void panic(Class<?> clazz, String string)
@@ -55,6 +54,10 @@ public class TDB
     public static Context getContext()     { return ARQ.getContext() ; }  
     
     // Called on assembler loading.
+    /** TDB System initialization - normally, this is not explicitly called because
+     * all routes to use TDB will cause initialization to occur.  However, calling it
+     * repeatedly is safe and low cost.
+     */
     public static void init() { }
     
     static { initWorker() ; }

@@ -59,7 +59,6 @@ public class StageGeneratorPGraphBGP implements StageGenerator
             ALog.info(this, "BGP: ["+x+"]") ;
         }
         
-        // XXX How does inoput get closed??
         @SuppressWarnings("unchecked")
         Iterator<Binding> iter = (Iterator<Binding>)input ;
         Iterator<BindingNodeId> chain = Iter.map(iter, convFromBinding(graph)) ;
@@ -71,6 +70,7 @@ public class StageGeneratorPGraphBGP implements StageGenerator
         }
         
         Iterator<Binding> iterBinding = Iter.map(chain, convToBinding(graph)) ;
+        // Input passed in to ensure it gets closed when QueryIterTDB gets closed
         return new QueryIterTDB(iterBinding, input) ;
     }
 
