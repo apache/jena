@@ -92,7 +92,7 @@ public class BPlusTreeRewriter
         for ( ; iter2.hasNext() ; )
         {
             Pair<Integer, Record> pair = iter2.next() ;
-            System.out.printf("Split at: (%d, %s)\n",pair.car(), pair.cdr()) ;
+            //System.out.printf("Split at: (%d, %s)\n",pair.car(), pair.cdr()) ;
             n++ ;
         }
         blkMgr.close() ;
@@ -164,6 +164,7 @@ public class BPlusTreeRewriter
         // The working variables.
         private RecordBuffer currentBuffer = null ;
         private RecordBufferPage currentPage = null ;
+        private RecordBufferPage previousPage = null ;
 
         // Counters
         private long blockCount = 0 ;
@@ -179,7 +180,7 @@ public class BPlusTreeRewriter
         private void write(Record r)
         {
             if ( currentBuffer == null )
-                moveOneOnePage() ;
+                moveOnOnePage() ;
             currentBuffer.add(r) ;
             recordCount++ ;
             // Now full?
@@ -192,21 +193,22 @@ public class BPlusTreeRewriter
                 currentBuffer = null ;
         }
 
-        private void moveOneOnePage()
+        private void moveOnOnePage()
         {
             // Write, with link, the old block.
             int id = recordPageMgr.allocateId() ;
             if ( currentPage != null )
             {
-              Record r = currentPage.getRecordBuffer().getHigh() ;
-              Record splitKey = recordFactory.createKeyOnly(r) ;
-              // System.out.printf("Split = %s\n", splitKey) ;
-              flush(id) ;
+                Record r = currentPage.getRecordBuffer().getHigh() ;
+                Record splitKey = recordFactory.createKeyOnly(r) ;
+                // System.out.printf("Split = %s\n", splitKey) ;
+                flush(id) ;
             }
 
             // Now get new space
-            currentPage = recordPageMgr.create(id) ;
-            currentBuffer = currentPage.getRecordBuffer() ;
+            RecordBufferPage page = recordPageMgr.create(id) ;
+            shift(page) ;
+            
         }
 
         private void flush(int linkId)
@@ -217,16 +219,26 @@ public class BPlusTreeRewriter
             recordPageMgr.put(currentPage.getId(), currentPage) ;
             blockCount++ ;
             currentBuffer = null ;
-            currentPage = null ;
         }
 
         private void close()
         {
+            // Last needs balancing.
+            // Was full and written => no rebalence needed.
+            
             // End block id.
             // Flush always writes a block (if currentPage != null)
             // and currentPage == null only initially because moveOneOnePage allocates
             flush(-1) ;
             blkMgr.close() ;
+        }
+        
+        private void shift(RecordBufferPage nextPage)
+        {
+            previousPage = currentPage ; 
+            currentPage = nextPage ;
+            if ( nextPage != null )
+                currentBuffer = currentPage.getRecordBuffer() ;
         }
     }
 }
