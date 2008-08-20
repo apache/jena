@@ -6,6 +6,9 @@
 
 package dev;
 
+import iterator.Iter;
+import iterator.Transform;
+
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
@@ -31,6 +34,7 @@ public class BPlusTreeRewriter
         String filename = rootname+".dat" ;
         String filename2 = newRootname+".dat" ;
 
+        // Bug : last block may be only one record.  Need to balance last two blocks.
         WriteDataFile writeDataFile = new WriteDataFile(filename2) ;
         Iterator<Record> iter = records(filename) ;
 
@@ -58,30 +62,48 @@ public class BPlusTreeRewriter
     // For now, we do multiple passes.
     // Assume the Records file has been compressed.
     
-    public static void processForBPTree(String filename)
+    public static void phase2(String filename)
     {
+        //String filename = rootname+".dat" ;
         BlockMgr blkMgr = BlockMgrFactory.createStdFileNoCache(filename, Const.BlockSize) ;
         RecordBufferPageMgr recordPageMgr = new RecordBufferPageMgr(recordFactory, blkMgr) ;
         
         BlocksIterator iter = new BlocksIterator(recordPageMgr, 0) ;
-        int n = 0 ;
-        for ( ; iter.hasNext() ; )
+        
+        Transform<Pair<Integer, RecordBufferPage>, Pair<Integer, Record>> converter = 
+            new Transform<Pair<Integer, RecordBufferPage>,
+                          Pair<Integer, Record>>() 
         {
-            RecordBufferPage page = iter.next();
-            Record r = page.getRecordBuffer().getHigh() ;
-            Record key = recordFactory.createKeyOnly(r) ;
-            // Do something with key
+
+            @Override
+            public Pair<Integer, Record> convert(Pair<Integer, RecordBufferPage> page)
+            {
+                int x = page.getLeft() ;
+                Record r = page.getRight().getRecordBuffer().getHigh() ;
+                Record key = recordFactory.createKeyOnly(r) ;
+                return new Pair<Integer, Record>(x, key) ;
+            }
+            
+        } ;
+        
+        Iterator<Pair<Integer, Record>> iter2 = Iter.map(iter, converter) ;
+        
+        int n = 0 ;
+        for ( ; iter2.hasNext() ; )
+        {
+            Pair<Integer, Record> pair = iter2.next() ;
+            System.out.printf("Split at: (%d, %s)\n",pair.car(), pair.cdr()) ;
             n++ ;
         }
         blkMgr.close() ;
         System.out.printf("++ Count = %d\n", n) ;
     }
     
-    //XXX Off by one?
-    private static class BlocksIterator implements Iterator<RecordBufferPage>
+    // Change to yield id and RecordBufferPage
+    private static class BlocksIterator implements Iterator<Pair<Integer, RecordBufferPage>>
     {
         private RecordBufferPage page = null ;
-        private RecordBufferPage slot = null ;
+        private Pair<Integer, RecordBufferPage> slot = null ;
         private RecordBufferPageMgr recordPageMgr ;
         
         public BlocksIterator(RecordBufferPageMgr recordPageMgr, int blockId)
@@ -94,7 +116,7 @@ public class BPlusTreeRewriter
             }
             
             this.page = recordPageMgr.get(blockId) ;
-            this.slot = page ;
+            this.slot = new Pair<Integer, RecordBufferPage>(blockId, page) ;
             this.recordPageMgr = recordPageMgr ; 
         }
         
@@ -111,15 +133,15 @@ public class BPlusTreeRewriter
                 return false ;
             }
             page = recordPageMgr.get(x) ;
-            slot = page ;
+            slot = new Pair<Integer, RecordBufferPage>(x, page) ;
             return true ;
         }
         
         @Override
-        public RecordBufferPage next()
+        public Pair<Integer, RecordBufferPage> next()
         {
             if ( ! hasNext() ) throw new NoSuchElementException() ;
-            RecordBufferPage r = slot ;
+            Pair<Integer, RecordBufferPage> r = slot ;
             slot = null ;
             return r ;
         }

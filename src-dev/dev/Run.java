@@ -50,16 +50,12 @@ public class Run
     
     public static void main(String ... args) throws IOException
     {
-        System.out.println(TDB.VERSION) ;
-        System.out.println(TDB.BUILD_DATETIME) ;
-        System.exit(0) ;
-        
         //smallGraph() ;
         //tdbloader("--desc=tdb.ttl", "--mem", "/home/afs/Datasets/MusicBrainz/tracks.nt") ;
         
         //cache2() ;
         
-        readBPlusTreeAll() ;
+        processBPTree() ;
         
         //tdbquery("dataset.ttl", "SELECT * { ?s ?p ?o }") ;
 
@@ -88,7 +84,7 @@ public class Run
         System.exit(0) ;
     }
 
-    private static void readBPlusTreeAll()
+    private static void processBPTree()
     {
         divider() ;
         
@@ -97,9 +93,6 @@ public class Run
         String root2 = "DB/OSP-2" ;
         FileOps.delete(root2+".dat") ;
 
-        BPlusTreeRewriter.processForBPTree(root1+".dat") ;
-
-        
         Pair<Long, Long> results = BPlusTreeRewriter.rewrite(root1, root2) ;
         long total = results.car() ;
         long blocks = results.cdr() ;
@@ -107,7 +100,12 @@ public class Run
         System.out.println() ;
         scan(root1+".dat") ;
         scan(root2+".dat") ;
-        BPlusTreeRewriter.processForBPTree(root2+".dat") ;
+        
+        // Now scan for split points
+        BPlusTreeRewriter.phase2(root2+".dat") ; 
+        
+        
+        
         System.exit(0) ;
     }
 
