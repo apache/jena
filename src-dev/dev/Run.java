@@ -104,11 +104,10 @@ public class Run
         // Now scan for split points
         BPlusTreeRewriter.phase2(root2+".dat") ; 
         
-        
-        
         System.exit(0) ;
     }
 
+    // Checker.
     // Assumes the file is not open anywhere else.
     static void scan(String filename)
     {
@@ -131,7 +130,7 @@ public class Run
             n++ ;
         }
         blkMgr.close() ;
-        System.out.printf("Count = %d in %d blocks\n", total, n) ;
+        System.out.printf("%-15s [Scan] Count = %d in %d blocks\n", filename, total, n) ;
     }
     
     

@@ -44,6 +44,7 @@ public class BPlusTreeRewriter
             writeDataFile.write(r) ;
         }
 
+        // Sort out last two blocks.
         writeDataFile.close();
         return new Pair<Long, Long>(writeDataFile.recordCount, writeDataFile.blockCount) ;
     }
@@ -223,6 +224,9 @@ public class BPlusTreeRewriter
 
         private void close()
         {
+            System.out.println(previousPage) ;
+            System.out.println(currentPage) ;
+            
             // Last needs balancing.
             // Was full and written => no rebalence needed.
             
