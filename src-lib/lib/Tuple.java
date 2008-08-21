@@ -42,7 +42,7 @@ public final class Tuple<T>
             return false ;
         Tuple<?> x = (Tuple<?>)other ;
         if ( x.size() != this.size() )
-            return true ;
+            return false ;
         for ( int i = 0 ; i < tuple.length ; i++ )
         {
             Object obj1 = tuple[i] ;

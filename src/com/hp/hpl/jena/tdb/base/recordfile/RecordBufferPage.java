@@ -6,12 +6,8 @@
 
 package com.hp.hpl.jena.tdb.base.recordfile;
 
-import io.IndentedWriter;
-
 import java.nio.ByteBuffer;
 
-import com.hp.hpl.jena.tdb.base.buffer.RecordBuffer;
-import com.hp.hpl.jena.tdb.base.page.PageBase;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 
 /** The on-disk form of a block of a single RecordBuffer
@@ -20,90 +16,43 @@ import com.hp.hpl.jena.tdb.base.record.RecordFactory;
  * This must be compatible with B+Tree records nodes and hashbuckets.
  */
 
-public class RecordBufferPage extends PageBase //implements Page
+public class RecordBufferPage extends RecordBufferPageBase
 {
     // To Constants
-    final public static int COUNT      = 0 ;
-    final public static int LINK       = 4 ;
-    final public static int HEADER     = 8 ;
-    final public static int NO_LINK    = -1 ;
+//    final public static int COUNT      = 0 ;
+    final public static int LINK        = 4 ;
+    final public static int OFFSET      = LINK ;
+    final public static int NO_LINK     = -1 ;
 
-    // Interface: "Page" - id, byteBuffer, count
-    private RecordBuffer recBuff ;
-    private RecordBufferPageMgr pageMgr ;
- 
     private int link ;
     public int getLink() { return link ; }
     
     public void setLink(int link)
     { 
         this.link = link ;
-        getBackingByteBuffer().putInt(LINK, link) ; // put(Index, Value)
+        getBackingByteBuffer().putInt(LINK, link) ;
     }
     
     public static int calcRecordSize(RecordFactory factory, int blkSize)
-    { 
-        // Length = X*recordLength + HEADER
-        int x = blkSize-HEADER ; 
-        return x / factory.recordLength() ;
-    }
+    { return RecordBufferPageBase.calcRecordSize(factory, blkSize, OFFSET) ; }
     
     public static int calcBlockSize(RecordFactory factory, int maxRec)
-    { 
-        // Count, link, records 
-        return HEADER + factory.recordLength()*maxRec ;
-    }
+    { return RecordBufferPageBase.calcBlockSize(factory, maxRec, OFFSET) ; }
     
-    public RecordBufferPage(int id, int linkId, ByteBuffer byteBuffer,
+    
+    /*public*/ RecordBufferPage(int id, int linkId, ByteBuffer byteBuffer,
                             RecordFactory factory, RecordBufferPageMgr recordBufferPageMgr, 
                             int count)
-    {   // This code know the alignment of the records in the ByteBuffer.
-        // Move to Block2RecordBufferPage
-        super(id, byteBuffer) ;
-        this.link = linkId ;
-        this.pageMgr = null ;
-        byteBuffer.position(HEADER) ;
-        ByteBuffer bb = byteBuffer.slice();
-        this.recBuff = new RecordBuffer(bb, factory, count) ;
-    }
-
-    public RecordBuffer getRecordBuffer()
     {
-        return recBuff ;
+        super(id, OFFSET, byteBuffer, factory, recordBufferPageMgr, count) ;
+        this.link = linkId ;
+        
     }
     
-    public RecordBufferPageMgr getPageMgr()
-    {
-        return pageMgr ;
-    }
-
-    public void setPageMgr(RecordBufferPageMgr recordBufferPageMgr)
-    {
-        this.pageMgr = recordBufferPageMgr ;
-    }
-
-    @Override
-    public int getCount()
-    {
-        return recBuff.size() ;
-    }
-
-    @Override
-    public int getMaxSize()
-    {
-        return recBuff.maxSize() ;
-    }
-
-    @Override
-    public void setCount(int count)
-    { recBuff.setSize(count) ; }
-
     @Override
     public String toString()
     { return String.format("RecordBufferPage[id=%d,link=%d]: %s", getId(), getLink(), recBuff) ; }
 
-    public void output(IndentedWriter out)
-    { out.print(toString()) ; }
 }
 /*
  * (c) Copyright 2008 Hewlett-Packard Development Company, LP

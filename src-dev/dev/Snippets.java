@@ -10,99 +10,18 @@ import static lib.FileOps.clearDirectory;
 
 import java.io.File;
 import java.io.UnsupportedEncodingException;
-import java.util.Iterator;
-
-import lib.FileOps;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.sparql.sse.SSE;
 import com.hp.hpl.jena.sparql.util.FmtUtils;
-import com.hp.hpl.jena.tdb.base.block.BlockMgr;
-import com.hp.hpl.jena.tdb.base.block.BlockMgrFactory;
-import com.hp.hpl.jena.tdb.base.file.Location;
-import com.hp.hpl.jena.tdb.base.record.Record;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
-import com.hp.hpl.jena.tdb.base.recordfile.RecordBufferPage;
-import com.hp.hpl.jena.tdb.bplustree.BPlusTree;
-import com.hp.hpl.jena.tdb.bplustree.BPlusTreeParams;
 import com.hp.hpl.jena.tdb.btree.BTreeParams;
-import com.hp.hpl.jena.tdb.lib.NodeLib;
 import com.hp.hpl.jena.tdb.lib.StringAbbrev;
 import com.hp.hpl.jena.tdb.pgraph.NodeId;
-import com.hp.hpl.jena.tdb.pgraph.GraphTDB;
-import com.hp.hpl.jena.tdb.sys.Const;
-
 import com.sleepycat.je.*;
 
 public class Snippets
 {
-    public static void bpt_test()
-    {
-        //TDB.getContext().set(TDB.symFileMode, "mapped" ) ;
-        Location location = new Location("tmp") ;
-        String fnNodes = location.getPath("X", "idn") ;
-        String fnRecords = location.getPath("X", "dat") ;
-        
-        boolean disk = true ;
-        
-        BPlusTree bt = null ;
-        BPlusTreeParams params = null ;
-        
-        BlockMgr mgr1 = null ;
-        BlockMgr mgr2 = null ;
-        
-        if ( disk )
-        {
-            FileOps.clearDirectory(location.getDirectoryPath()) ;
-            int order = BPlusTreeParams.calcOrder(Const.BlockSize, GraphTDB.indexRecordFactory) ;
-            params = new BPlusTreeParams(order, GraphTDB.indexRecordFactory) ;
-            mgr1 = BlockMgrFactory.createFile(fnNodes, Const.BlockSize) ;
-            mgr2 = BlockMgrFactory.createFile(fnRecords, Const.BlockSize) ;
-        }
-        else
-        {
-            params = new BPlusTreeParams(5, GraphTDB.indexRecordFactory.keyLength(), GraphTDB.indexRecordFactory.valueLength()) ;
-            
-            int maxRecords = 2*5 ;
-            int rSize = RecordBufferPage.HEADER+(maxRecords*params.getRecordLength()) ;
-            
-            mgr1 = BlockMgrFactory.createMem("Nodes", params.getBlockSize()) ;
-            mgr2 = BlockMgrFactory.createMem("Records", rSize) ;
-        }
-        
-        bt = BPlusTree.attach(params, mgr1, mgr2) ;
-        NodeId n = NodeId.create(0x41424344) ;
-        Record rn = NodeLib.record(GraphTDB.indexRecordFactory, n, n, n) ;
-        bt.add(rn) ;
-        bt.sync(true) ;
-        
-        bt.dump() ;
-        
-        System.out.println() ;
-        
-        bt = null ;
-        
-        // Reattach
-        if ( disk )
-        {
-            mgr1 = BlockMgrFactory.createFile(fnNodes, Const.BlockSize) ;
-            mgr2 = BlockMgrFactory.createFile(fnRecords, Const.BlockSize) ;
-        }
-        
-        bt = BPlusTree.attach(params, mgr1, mgr2) ;
-        
-        System.out.println("Loop") ;
-        Iterator<Record> iter = bt.iterator() ;
-        for ( ; iter.hasNext() ; )
-        {
-            Record r = iter.next() ;
-            System.out.println(r) ;
-        }
-        
-        
-        System.exit(0) ;
-    
-    }
     public static void BDB()
         {
             Environment myDbEnvironment = null;

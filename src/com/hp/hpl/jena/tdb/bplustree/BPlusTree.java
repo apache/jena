@@ -146,10 +146,12 @@ public class BPlusTree implements Iterable<Record>, RangeIndex
         BPlusTreeParams params = new BPlusTreeParams(order, keyLength, valueLength) ;
         
         int maxRecords = 2*minRecords ;
-        int rSize = RecordBufferPage.HEADER+(maxRecords*params.getRecordLength()) ;
+        //int rSize = RecordBufferPage.HEADER+(maxRecords*params.getRecordLength()) ;
         
+        int blkSize = RecordBufferPage.calcBlockSize(params.getRecordFactory(), maxRecords) ;
+
         BlockMgr mgr1 = BlockMgrFactory.createMem(name+"(nodes)", params.getBlockSize()) ;
-        BlockMgr mgr2 = BlockMgrFactory.createMem(name+"(records)", rSize) ;
+        BlockMgr mgr2 = BlockMgrFactory.createMem(name+"(records)", blkSize) ;
         
         BPlusTree bpTree = BPlusTree.attach(params, mgr1, mgr2) ;
         return bpTree ;

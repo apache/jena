@@ -74,7 +74,7 @@ public class RecordBufferPageMgr extends BlockConverter<RecordBufferPage>
         public RecordBufferPage fromByteBuffer(ByteBuffer byteBuffer)
         {
             int count = byteBuffer.getInt(COUNT) ;
-            int linkId = byteBuffer.getInt(LINK) ;
+            int linkId = byteBuffer.getInt(OFFSET) ;
             RecordBufferPage rb = new RecordBufferPage(NO_LINK, linkId, byteBuffer, factory, pageMgr, count) ;
             return rb ;
         }
@@ -85,7 +85,7 @@ public class RecordBufferPageMgr extends BlockConverter<RecordBufferPage>
             int count = rbp.getRecordBuffer().size() ;
             rbp.setCount(count) ;
             rbp.getBackingByteBuffer().putInt(COUNT, rbp.getCount()) ;
-            rbp.getBackingByteBuffer().putInt(LINK, rbp.getLink()) ;
+            rbp.getBackingByteBuffer().putInt(OFFSET, rbp.getLink()) ;
             return rbp.getBackingByteBuffer() ;
         }
     }

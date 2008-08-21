@@ -119,7 +119,7 @@ public final class PeekReader extends Reader
         }
         catch(IOException ex)
         {
-            // ??? XXX ???
+            ex.printStackTrace(System.err) ;
         }
     }
 
