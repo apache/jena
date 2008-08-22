@@ -48,7 +48,7 @@ public class BlockMgrDirect extends BlockMgrFile
         check(id) ;
         try {
             ByteBuffer dst = allocateBuffer(id) ;
-            int len = channel.read(dst, id*blockSize) ;
+            int len = channel.read(dst, filePosition(id)) ;
             if ( len != blockSize )
                 throw new BlockException(format("get: short read (%d, not %d)", len, blockSize)) ;   
             return dst ;
@@ -65,12 +65,18 @@ public class BlockMgrDirect extends BlockMgrFile
         block.position(0) ;
         block.limit(block.capacity()) ;
         try {
-            int len = channel.write(block, id*blockSize) ;
+            int len = channel.write(block, filePosition(id)) ;
             if ( len != blockSize )
                 throw new BlockException(format("put: short write (%d, not %d)", len, blockSize)) ;   
         } catch (IOException ex)
         { throw new BlockException("BlockMgrNIO.put", ex) ; }
         putNotification(id, block) ;
+    }
+    
+    
+    private final long filePosition(int id)
+    {
+        return ((long)id)*((long)blockSize) ;
     }
     
     @Override

@@ -16,6 +16,9 @@ public class Dev
     
     // ---- B+Tree rewriter
     
+    // ---- 32 bit
+    // Does this work now?
+    
     // ---- New cache API alloc/return/invalidate (shrink/grow?)
     //   Stats.
     
