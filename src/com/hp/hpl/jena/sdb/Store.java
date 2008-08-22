@@ -63,6 +63,9 @@ public interface Store
      *  and some stores may be able to release system resources.
      */  
     public void  close() ;
+
+    /** Has this store been closed? **/
+    public boolean isClosed();
     
     /** Get the size of this store **/
     public long  getSize() ;

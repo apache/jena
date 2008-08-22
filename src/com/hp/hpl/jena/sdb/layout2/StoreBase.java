@@ -35,6 +35,7 @@ public abstract class StoreBase
     protected TableDescTriples tripleTableDesc ;
     protected TableDescQuads quadTableDesc = null ;
     protected TableDescNodes nodeTableDesc ;
+    protected boolean isClosed = false ;
     
     public StoreBase(SDBConnection connection, StoreDesc desc, 
                      StoreFormatter formatter ,
@@ -82,7 +83,8 @@ public abstract class StoreBase
 
     // Note -- this does not close the JDBC connection, which may be shared.
     // See also StoreBaseHSQL
-    public void close() { getLoader().close(); }
+    public void close() { getLoader().close(); isClosed = true; }
+    public boolean isClosed() { return isClosed; }
     
     /** Default implementation: get size of Triples table **/
     public long getSize()

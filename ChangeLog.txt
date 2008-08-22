@@ -8,6 +8,8 @@ Documentation:
 
 ==== SDB v1.2
 
+Added Store#isClosed(). Does nothing except track whether you've called close().
+
 ==== SDB v1.1
 
 + SPARQL/Update support 

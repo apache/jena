@@ -32,7 +32,8 @@ public class StoreBase1
     protected SQLGenerator sqlGenerator ;
     protected StoreConfig configuration ;
     protected TableDescTriples tripleTable ;
-    
+    protected boolean isClosed = false ;
+
     public StoreBase1(SDBConnection connection, StoreDesc desc, 
                      StoreFormatter formatter ,
                      TupleLoaderSimple loader ,
@@ -78,8 +79,9 @@ public class StoreBase1
 
     // Note -- this does not close the JDBC connection, which may be shared.
     // See also StoreBaseHSQL
-    public void close()                              { }
-    
+    public void close()                              { isClosed = true; }
+    public boolean isClosed()                        { return isClosed; }
+
     /** Default implementation: get size of Triples table **/
     public long getSize()
     {
