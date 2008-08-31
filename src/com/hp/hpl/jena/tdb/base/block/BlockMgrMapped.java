@@ -86,40 +86,49 @@ public class BlockMgrMapped extends BlockMgrFile
     @Override
     public ByteBuffer getSilent(int id)
     {
-            check(id) ;
-            int seg = segment(id) ;                 // Segment.
-            int segOff = byteOffset(id) ;           // Byte offset in segment
-    
-            if ( getLog().isDebugEnabled() ) 
-                getLog().debug(format("%d => [%d, %d]", id, seg, segOff)) ;
-    
-            // Need to put the alloc AND the slice/reset inside a sync
-            ByteBuffer segBuffer = allocSegment(seg) ;
+        check(id) ;
+        int seg = segment(id) ;                 // Segment.
+        int segOff = byteOffset(id) ;           // Byte offset in segment
+
+        if ( getLog().isDebugEnabled() ) 
+            getLog().debug(format("%d => [%d, %d]", id, seg, segOff)) ;
+
+        synchronized (this)
+        {
             try {
+                // Need to put the alloc AND the slice/reset inside a sync
+                ByteBuffer segBuffer = allocSegment(seg) ;
+                // Now slice the buffer to get the ByteBuffer to return
+    
                 segBuffer.position(segOff) ;
+                segBuffer.limit(segOff+blockSize) ;
+                ByteBuffer dst = segBuffer.slice() ;
+                // Reset limit to max for segment.
+                segBuffer.limit(segBuffer.capacity()) ;
+                numFileBlocks = Math.max(numFileBlocks, id+1) ;
+                return dst ;
             } catch (IllegalArgumentException ex)
             {
-                // This is where bad concurrency seems to bite
+                // Shoudl not happen
                 log.error("Id: "+id) ;
                 log.error("Seg="+seg) ;
                 log.error("Segoff="+segOff) ;
                 log.error(ex.getMessage(), ex) ;
                 throw ex ;
             }
-            segBuffer.limit(segOff+blockSize) ;
-            ByteBuffer dst = segBuffer.slice() ;
-            // Reset.
-            segBuffer.limit(segBuffer.capacity()) ;
-            numFileBlocks = Math.max(numFileBlocks, id+1) ;
-            return dst ;
+        }
     }
     
-    private int segment(int id) { return id/blocksPerSegment ; }
-    private int byteOffset(int id) { return (id%blocksPerSegment)*blockSize ; }
-    private long fileLocation(long segmentNumber) { return segmentNumber*SegmentSize ; }
+    private final int segment(int id)                   { return id/blocksPerSegment ; }
+    private final int byteOffset(int id)                { return (id%blocksPerSegment)*blockSize ; }
+    private final long fileLocation(long segmentNumber) { return segmentNumber*SegmentSize ; }
     
-    private synchronized MappedByteBuffer allocSegment(int seg)
+    private MappedByteBuffer allocSegment(int seg)
     {
+        // Must be synchronized and inside that synchronization
+        // the MappedByteBuffer must be sliced and reset
+        // so as not to mess up the underlying MappedByteBuffer in segments[].
+        
         if ( seg < 0 )
         {
             getLog().error("Segment negative: "+seg) ;
@@ -146,7 +155,7 @@ public class BlockMgrMapped extends BlockMgrFile
             throw new BlockException("Negative segment offset: "+seg) ;
         }
         
-        // This, and flushDirtySegements(), are the only places to directly access segments[] while running. 
+        // This, the relocation code above, and flushDirtySegements(), are the only places to directly access segments[] while running. 
         MappedByteBuffer segBuffer = segments[seg] ;
         if ( segBuffer == null )
         {
@@ -163,12 +172,12 @@ public class BlockMgrMapped extends BlockMgrFile
             }
         }
         segmentDirty[seg] = true ;
-        // Will be sliced by getSilent.
         return segBuffer ;
     }
 
     private synchronized void flushDirtySegments()
     {
+        // A linked list (with uniqueness) of dirty segments may be better.
         for ( int i = 0 ; i < segments.length ; i++ )
         {
             if ( segments[i] != null && segmentDirty[i] )
