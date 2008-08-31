@@ -88,26 +88,27 @@ public class BlockMgrMapped extends BlockMgrFile
     {
             check(id) ;
             int seg = segment(id) ;                 // Segment.
-            int segOff = byteOffset(id) ;           // Byte offset in segement
+            int segOff = byteOffset(id) ;           // Byte offset in segment
     
             if ( getLog().isDebugEnabled() ) 
                 getLog().debug(format("%d => [%d, %d]", id, seg, segOff)) ;
     
+            // Need to put the alloc AND the slice/reset inside a sync
             ByteBuffer segBuffer = allocSegment(seg) ;
             try {
                 segBuffer.position(segOff) ;
             } catch (IllegalArgumentException ex)
             {
                 // This is where bad concurrency seems to bite
-                System.err.println("Id: "+id) ;
-                System.err.println("Seg="+seg) ;
-                System.err.println("Segoff="+segOff) ;
-                System.err.println(ex.getMessage()) ;
-                System.err.println(ex) ;
+                log.error("Id: "+id) ;
+                log.error("Seg="+seg) ;
+                log.error("Segoff="+segOff) ;
+                log.error(ex.getMessage(), ex) ;
                 throw ex ;
             }
             segBuffer.limit(segOff+blockSize) ;
             ByteBuffer dst = segBuffer.slice() ;
+            // Reset.
             segBuffer.limit(segBuffer.capacity()) ;
             numFileBlocks = Math.max(numFileBlocks, id+1) ;
             return dst ;
@@ -124,7 +125,7 @@ public class BlockMgrMapped extends BlockMgrFile
             getLog().error("Segment negative: "+seg) ;
             throw new BlockException("Negative segment: "+seg) ;
         }
-        // Note : do long arthimetic, not int, then extended to long.
+
         while ( seg >= segments.length )
         {
             // More space needed.
@@ -162,6 +163,7 @@ public class BlockMgrMapped extends BlockMgrFile
             }
         }
         segmentDirty[seg] = true ;
+        // Will be sliced by getSilent.
         return segBuffer ;
     }
 

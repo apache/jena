@@ -15,9 +15,9 @@ import test.BaseTest;
 
 public abstract class AbstractTestBlockMgr extends BaseTest
 {
-    static int BlkSize = 256 ;
+    static public int BlkSize = 256 ;
     
-    private BlockMgr blockMgr = null ;
+    protected BlockMgr blockMgr = null ;
     
     @Before public void before() { blockMgr = make() ; }
     @After public void after() { blockMgr.close(); }
@@ -56,10 +56,16 @@ public abstract class AbstractTestBlockMgr extends BaseTest
 
     protected abstract BlockMgr make() ; 
     
-    private static void fill(ByteBuffer bb, byte fillValue)
+    protected static void fill(ByteBuffer bb, byte fillValue)
     {
         for ( int i = 0; i < bb.limit(); i++ )
             bb.put(i, fillValue) ;
+    }
+    
+    protected static void contains(ByteBuffer bb, byte fillValue)
+    {
+        for ( int i = 0; i < bb.limit(); i++ )
+            assertEquals("Index: "+i, bb.get(i), fillValue ) ;
     }
 }
 
