@@ -125,8 +125,8 @@ public class BlockMgrMapped extends BlockMgrFile
     
     private MappedByteBuffer allocSegment(int seg)
     {
-        // Must be synchronized and inside that synchronization
-        // the MappedByteBuffer must be sliced and reset
+        // Auxiliary function for getSilent - which holds the lock needed here.
+        // The MappedByteBuffer must be sliced and reset once found/allocated
         // so as not to mess up the underlying MappedByteBuffer in segments[].
         
         if ( seg < 0 )
@@ -167,8 +167,8 @@ public class BlockMgrMapped extends BlockMgrFile
             } catch (IOException ex)
             {
                 if ( ex.getCause() instanceof java.lang.OutOfMemoryError )
-                    throw new BlockException("BlockMgrMapped.segmentAllocate: Segement = "+seg+" : Offset = "+offset) ;
-                throw new BlockException("BlockMgrMapped.segmentAllocate: Segement = "+seg, ex) ;
+                    throw new BlockException("BlockMgrMapped.segmentAllocate: Segment = "+seg+" : Offset = "+offset) ;
+                throw new BlockException("BlockMgrMapped.segmentAllocate: Segment = "+seg, ex) ;
             }
         }
         segmentDirty[seg] = true ;
