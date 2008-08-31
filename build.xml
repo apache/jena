@@ -400,7 +400,6 @@
         <fileset refid="fileset.src"/>
     </zip>
 
-
     <copy todir="${dist.dir}/${test.dir}">
       <fileset dir="${test.dir}"/>
     </copy>
