@@ -20,7 +20,10 @@ public abstract class AbstractTestBlockMgr extends BaseTest
     protected BlockMgr blockMgr = null ;
     
     @Before public void before() { blockMgr = make() ; }
-    @After public void after() { blockMgr.close(); }
+    @After  public void after()
+    {
+        if (blockMgr != null) blockMgr.close() ;
+    }
     
     @Test public void file01()
     {
@@ -54,6 +57,30 @@ public abstract class AbstractTestBlockMgr extends BaseTest
         assertEquals(bb2.get(BlkSize-1), (byte)2) ;
     }
 
+    // Move to abstract class
+    @Test public void multiAccess01()
+    {
+        int id1 = blockMgr.allocateId() ;
+        int id2 = blockMgr.allocateId() ;
+
+        ByteBuffer bb1 = blockMgr.allocateBuffer(id1) ;
+        ByteBuffer bb2 = blockMgr.allocateBuffer(id2) ;
+
+        fill(bb1, (byte)1) ;
+        fill(bb2, (byte)2) ;
+
+        blockMgr.put(id1, bb1) ;
+        blockMgr.put(id2, bb2) ;
+
+        ByteBuffer bb_1 = blockMgr.get(id1) ;
+        ByteBuffer bb_2 = blockMgr.get(id2) ;
+
+        contains(bb_1, (byte)1) ;
+        contains(bb_2, (byte)2) ;
+        
+    }
+    
+    
     protected abstract BlockMgr make() ; 
     
     protected static void fill(ByteBuffer bb, byte fillValue)
