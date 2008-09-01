@@ -93,23 +93,21 @@ public class BlockMgrMapped extends BlockMgrFile
         if ( getLog().isDebugEnabled() ) 
             getLog().debug(format("%d => [%d, %d]", id, seg, segOff)) ;
 
-        synchronized (this)
-        {
+        synchronized (this) {
             try {
-                // Need to put the alloc AND the slice/reset inside a sync
+                // Need to put the alloc AND the slice/reset inside a sync.
                 ByteBuffer segBuffer = allocSegment(seg) ;
                 // Now slice the buffer to get the ByteBuffer to return
-    
                 segBuffer.position(segOff) ;
                 segBuffer.limit(segOff+blockSize) ;
                 ByteBuffer dst = segBuffer.slice() ;
-                // Reset limit to max for segment.
+                
+                // And then reset limit to max for segment.
                 segBuffer.limit(segBuffer.capacity()) ;
                 numFileBlocks = Math.max(numFileBlocks, id+1) ;
                 return dst ;
-            } catch (IllegalArgumentException ex)
-            {
-                // Shoudl not happen
+            } catch (IllegalArgumentException ex) {
+                // Shouldn't (ha!) happen because the second "limit" resets 
                 log.error("Id: "+id) ;
                 log.error("Seg="+seg) ;
                 log.error("Segoff="+segOff) ;
@@ -216,7 +214,7 @@ public class BlockMgrMapped extends BlockMgrFile
     }
 
     @Override
-    protected synchronized void force()
+    protected void force()
     {
         flushDirtySegments() ;
         super.force() ;
