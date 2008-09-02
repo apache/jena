@@ -530,4 +530,9 @@
     <mkdir  dir="${build.dir}"/>
   </target>
 
+  <target name="clean-dist-area" description="Clean distribution area">
+    <delete dir="${dist.root}"/>
+    <mkdir  dir="${dist.root}"/>
+  </target>
+
 </project>
