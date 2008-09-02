@@ -28,7 +28,7 @@ public class CacheWrapper<Key,T> implements Cache<Key,T>
     public T getObject(Key key)                       { return cache.getObject(key) ; }
 
     @Override
-    public boolean isEmpty()                        { return cache.isEmpty() ; }
+    public boolean isEmpty()                          { return cache.isEmpty() ; }
 
     @Override
     public Iterator<Key> keys()                       { return cache.keys(); }

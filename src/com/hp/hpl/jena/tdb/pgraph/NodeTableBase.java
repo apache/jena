@@ -67,15 +67,15 @@ public abstract class NodeTableBase implements NodeTable
 
     /** Find the NodeId for a node, or return NodeId.NodeDoesNotExist */ 
     @Override
-    public NodeId idForNode(Node node)  { return _idForNode(node, false) ; }
+    public synchronized NodeId idForNode(Node node)  { return _idForNode(node, false) ; }
 
     /** Find the NodeId for a node, allocating a new NodeId if th eNode does not yet have a NodeId */ 
     @Override
-    public NodeId storeNode(Node node)  { return _idForNode(node, true) ; }
+    public synchronized NodeId storeNode(Node node)  { return _idForNode(node, true) ; }
 
     /** Get the Node for this NodeId, or null if none */
     @Override
-    public Node retrieveNode(NodeId id)
+    public synchronized Node retrieveNode(NodeId id)
     {
         if ( id == NodeId.NodeDoesNotExist )
             return null ;
@@ -94,7 +94,7 @@ public abstract class NodeTableBase implements NodeTable
     // ----------------
     // Node to Node Id worker
     // Find a node, possibly placing it in the node file as well
-    private NodeId _idForNode(Node node, boolean allocate)
+    private  NodeId _idForNode(Node node, boolean allocate)
     {
         NodeId nodeId = cacheLookup(node) ;
         if ( nodeId != null )
@@ -122,32 +122,34 @@ public abstract class NodeTableBase implements NodeTable
         // Key only.
         Record r = nodeHashToId.getRecordFactory().create(k) ;
 
-        // Key and value, or null
-        Record r2 = nodeHashToId.find(r) ;
-        if ( r2 == null )
+        synchronized (this)
         {
+            // Key and value, or null
+            Record r2 = nodeHashToId.find(r) ;
+            if ( r2 != null )
+            {
+                NodeId id = NodeId.create(r2.getValue(), 0) ;
+                return id ;
+            }
+
             // Not found.
             if ( ! create )
                 return NodeId.NodeDoesNotExist ;
-           
+
             // Write the node, which allocates an id for it.
             NodeId id = nodeToNodeIdTable(node) ;
-            
+
             // Update the r record with the new id.
             // r.valkue := id bytes ; 
             id.toBytes(r.getValue(), 0) ;
-            
-            // Put in index
+
+            // Put in index - may appear because of concurrency
             if ( ! nodeHashToId.add(r) )
                 throw new TDBException("NodeTableBase::nodeToId - record mysteriously appeared") ;
 
             cacheUpdate(node, id) ;
             return id ;
         }
-        
-        // Found in the nodeHashToId index.
-        NodeId id = NodeId.create(r2.getValue(), 0) ;
-        return id ;
     }
     
     // ---- Only places that the caches are touched
@@ -169,8 +171,9 @@ public abstract class NodeTableBase implements NodeTable
     }
 
     /** Update the Node->NodeId caches */
-    private synchronized void cacheUpdate(Node node, NodeId id)
+    private /*synchronized*/ void cacheUpdate(Node node, NodeId id)
     {
+        // synchronized is further out.
         // The "notPresent" cache is used to note whether a node
         // is known not to exist.
         // This must be specially handled later if the node is added. 
@@ -204,8 +207,11 @@ public abstract class NodeTableBase implements NodeTable
         NodeId x = NodeId.inline(node) ;
         if ( x != null )
             return x ;
-        String s = encode(node) ;
-        return objects.write(s) ;
+        synchronized (this)
+        {
+            String s = encode(node) ;
+            return objects.write(s) ;
+        }
     }
     
 
@@ -221,7 +227,7 @@ public abstract class NodeTableBase implements NodeTable
     // -------- NodeId<->Node
 
     @Override
-    public void close()
+    public synchronized void close()
     {
         if ( nodeHashToId != null )
             nodeHashToId.close() ;
@@ -230,7 +236,7 @@ public abstract class NodeTableBase implements NodeTable
     }
 
     @Override
-    public void sync(boolean force)
+    public synchronized void sync(boolean force)
     {
         if ( nodeHashToId != null )
             nodeHashToId.sync(force) ;
