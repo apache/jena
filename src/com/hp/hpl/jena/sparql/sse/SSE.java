@@ -43,6 +43,8 @@ import com.hp.hpl.jena.util.FileUtils;
 
 public class SSE
 {
+    private SSE() {}
+    
     // Short prefix map for convenience (used in parsing, not in writing).
     protected static PrefixMapping defaultDefaultPrefixMapRead = new PrefixMappingImpl() ;
     static {
