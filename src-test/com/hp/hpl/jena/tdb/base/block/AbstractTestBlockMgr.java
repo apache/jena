@@ -6,6 +6,7 @@
 
 package com.hp.hpl.jena.tdb.base.block;
 
+import static lib.ByteBufferLib.fill ;
 import java.nio.ByteBuffer;
 
 import org.junit.After;
@@ -82,12 +83,6 @@ public abstract class AbstractTestBlockMgr extends BaseTest
     
     
     protected abstract BlockMgr make() ; 
-    
-    protected static void fill(ByteBuffer bb, byte fillValue)
-    {
-        for ( int i = 0; i < bb.limit(); i++ )
-            bb.put(i, fillValue) ;
-    }
     
     protected static void contains(ByteBuffer bb, byte fillValue)
     {
