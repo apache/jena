@@ -8,6 +8,12 @@ package dev;
 
 public class Dev
 {
+    // Check MRSW concurrency under load
+    //   Caches: NodeTableBase
+    //   ObjectFileDisk (no need - protected by cache use)
+    
+    
+    
     // ---- Build and release
     // 1 -- Sources and javadoc to maven // -source and -javadoc - how to generate in ivy?
     // 3 -- Being about to run tests : Special ant target that has no dependences on compile

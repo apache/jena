@@ -27,6 +27,9 @@ import com.hp.hpl.jena.tdb.pgraph.NodeId;
 
 public class ObjectFileDisk extends FileBase implements ObjectFile 
 {
+    /* No synchronization - assumes that the caller has some appropriate lock
+     * because the combination of file and cache operations need to be thread safe.  
+     */
     private long filesize ;
 
     /*
@@ -84,7 +87,7 @@ public class ObjectFileDisk extends FileBase implements ObjectFile
         try {
             ByteBuffer bb = ByteBuffer.allocate(4) ;
             channel.position(loc) ;
-            int x = channel.read(bb) ;
+            int x = channel.read(bb) ;  // Updates position.
             if ( x != 4 )
                 throw new FileException("ObjectFile.read: Failed to read the length : got "+x+" bytes") ;
             int len = bb.getInt(0) ;

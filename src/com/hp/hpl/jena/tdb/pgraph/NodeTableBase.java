@@ -169,7 +169,7 @@ public abstract class NodeTableBase implements NodeTable
     }
 
     /** Update the Node->NodeId caches */
-    private void cacheUpdate(Node node, NodeId id)
+    private synchronized void cacheUpdate(Node node, NodeId id)
     {
         // The "notPresent" cache is used to note whether a node
         // is known not to exist.
