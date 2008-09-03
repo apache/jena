@@ -33,10 +33,7 @@ public abstract class NodeTableBase implements NodeTable
     private Cache<Node, NodeId> node2id_Cache = null ;
     private Cache<NodeId, Node> id2node_Cache = null ;
     
-    // A small cache of "known unknowns" to speed up searching
-    // for impossible things.   
-    // Nodes we know not to be in the node table.
-    
+    // A small cache of "known unknowns" to speed up searching for impossible things.   
     // Cache update needed on NodeTable changes because a node may become "known"
     
     private CacheSetLRU<Node> notPresent ;
