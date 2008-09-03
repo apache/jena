@@ -23,9 +23,9 @@ import com.hp.hpl.jena.sparql.util.Utils;
  * @author Andy Seaborne
  */
 
-public class QueryIterFilterExpr extends QueryIterFilter
+public class QueryIterFilterExpr extends QueryIterProcessBinding
 {
-    Expr expr ;
+    private final Expr expr ;
     
     public QueryIterFilterExpr(QueryIterator input, Expr expr, ExecutionContext context)
     {
@@ -33,22 +33,20 @@ public class QueryIterFilterExpr extends QueryIterFilter
         this.expr = expr ;
     }
     
-    public boolean accept(Binding binding)
+    public Binding accept(Binding binding)
     {
-        boolean passFilter = false ;
         try {
-            //Binding b = new BindingFixed(binding) ;
-            Binding b = binding ;
-            return expr.isSatisfied(b, super.getExecContext()) ;
+            if ( expr.isSatisfied(binding, super.getExecContext()) )
+                return binding ;
+            return null ;
         } catch (ExprException ex)
         { // Some evaluation exception
-          return false ;
+            return null ;
         }
-        
         catch (Exception ex)
         {
             ALog.warn(this, "General exception in "+expr, ex) ;
-            return false ;
+            return null ;
         }
     }
 

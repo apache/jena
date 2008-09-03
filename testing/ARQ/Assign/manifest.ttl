@@ -100,4 +100,11 @@
               qt:data   <data.ttl> ] ;
         mf:result  <assign-07.srx>
       ]
+      [ mf:name    "Assign 8" ;
+        rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <assign-08.arq> ;
+              qt:data   <data.ttl> ] ;
+        mf:result  <assign-08.srx>
+      ]
     ).

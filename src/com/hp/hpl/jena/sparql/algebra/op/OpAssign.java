@@ -22,16 +22,29 @@ public class OpAssign extends Op1
     
     static public Op assign(Op op, Var var, Expr expr)
     {
+//        VarExprList x = new VarExprList() ;
+//        x.add(var, expr) ;
+//        return new OpAssign(op, x) ;
+        
         if ( ! ( op instanceof OpAssign ) )
-        {
-            VarExprList x = new VarExprList() ;
-            x.add(var, expr) ;
-            return new OpAssign(op, x) ;
-        }
+            return createAssign(op, var, expr) ;
+        
         OpAssign opAssign = (OpAssign)op ;
+        if ( opAssign.assignments.contains(var) || true )
+            // Must nest - variable already used.
+            return createAssign(op, var, expr) ;
+
+        // Merge assignment
         opAssign.assignments.add(var, expr) ;
         return opAssign ;
     }
+    
+    static private Op createAssign(Op op, Var var, Expr expr)
+    {
+        VarExprList x = new VarExprList() ;
+        x.add(var, expr) ;
+        return new OpAssign(op, x) ;
+    }        
     
     public OpAssign(Op subOp)
     {

@@ -413,7 +413,7 @@ public class OpCompiler
     public QueryIterator compile(OpAssign opAssign, QueryIterator input)
     {
         QueryIterator qIter = compileOp(opAssign.getSubOp(), input) ;
-        qIter = new QueryIterExtend(qIter, opAssign.getVarExprList(), execCxt) ;
+        qIter = new QueryIterAssign(qIter, opAssign.getVarExprList(), execCxt) ;
         return qIter ;
     }
 

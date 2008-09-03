@@ -49,7 +49,7 @@ public class Run
     public static void main(String[] argv) throws Exception
     {
 
-        //runQTest() ;
+        runQTest() ;
         //runQParse() ;
         // Compressed syntax
         // match(Subject, Path, Object, PrefixMapping)
@@ -229,8 +229,8 @@ public class Run
     {
         String DIR = "testing/ARQ/Assign/" ;
         String []a1 = { "--strict", "--data="+DIR+"data.ttl",
-            "--query="+DIR+"assign-04.arq",
-            "--result="+DIR+"assign-04.ttl"} ;
+            "--query="+DIR+"assign-01.arq",
+            "--result="+DIR+"assign-01.srx"} ;
 
         arq.qtest.main(a1) ;
         System.exit(0 ) ; 

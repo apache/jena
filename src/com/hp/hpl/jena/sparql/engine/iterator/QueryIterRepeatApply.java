@@ -93,7 +93,7 @@ public abstract class QueryIterRepeatApply extends QueryIter1
         return iter ;
     }
    
-    protected void releaseResources()
+    protected void closeSubIterator()
     {
         if ( currentStage != null )
             currentStage.close() ;

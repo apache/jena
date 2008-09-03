@@ -1,76 +1,84 @@
 /*
- * (c) Copyright 2007, 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
 package com.hp.hpl.jena.sparql.engine.iterator;
 
+import java.util.NoSuchElementException;
+
+import com.hp.hpl.jena.sparql.ARQInternalErrorException;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.sparql.procedure.Procedure;
-import com.hp.hpl.jena.sparql.serializer.SerializationContext;
-import com.hp.hpl.jena.sparql.util.IndentedWriter;
 import com.hp.hpl.jena.sparql.util.Utils;
 
-/** QueryIterator for a procedure.  Delays first touch until first call because
- *  first touch may cause work to be done.
- *  
- *  Assumes .build already called.
- *  
+/** An iterator that applying a condition.
+ * 
  * @author Andy Seaborne
  */
 
-public class QueryIterProcedure extends QueryIter1
+public abstract class QueryIterProcessBinding extends QueryIter1
 {
-    private Procedure proc ;
-    private boolean initialized = false ;
-    private QueryIterator procIter = null ;
+    abstract public Binding accept(Binding binding);
     
-    public QueryIterProcedure(QueryIterator input, Procedure proc, ExecutionContext execCxt)
+    Binding nextBinding;
+
+    public QueryIterProcessBinding(QueryIterator qIter, ExecutionContext context)
     {
-        super(input, execCxt) ;
-        this.proc = proc ;
+        super(qIter, context) ;
+        nextBinding = null;
     }
 
-    private void init()
-    {
-        if ( ! initialized )
-        {
-            procIter = proc.proc(getInput(), getExecContext()) ;
-            initialized = true ;
-        }
-    }
-
-    protected void closeSubIterator()
-    { 
-        init() ;    // Ensure initialized even if immediately closed.
-        procIter.close(); 
-    }
-
+    /** Are there any more acceptable objects.
+    * @return true if there is another acceptable object.
+    */        
     protected boolean hasNextBinding()
     {
-        init() ;
-        return procIter.hasNext() ;
-    }
+        // Needs to be idempotent.?
+        if ( isFinished() )
+            return false ;
+        
+        if (nextBinding != null)
+            return true;
 
-    protected Binding moveToNextBinding()
-    {
-        init( ) ;
-        return procIter.nextBinding() ;
+        // Null iterator.
+        if ( getInput() == null )
+            throw new ARQInternalErrorException(Utils.className(this)+": Null iterator") ;
+
+        while ( getInput().hasNext() )
+        {
+            // Skip forward until a binding to return is found. 
+            Binding input = getInput().nextBinding();
+            Binding output = accept(input) ;
+            if ( output != null )
+            {
+                nextBinding = output ;
+                return true ;
+            }
+        }
+        nextBinding = null;
+        return false;
     }
     
-    protected void details(IndentedWriter out, SerializationContext sCxt)
-    {
-        out.print(Utils.className(this)) ;
-        out.print(" ") ;
-        proc.output(out, sCxt) ;
+    /** The next acceptable object in the iterator.
+    * @return The next acceptable object.
+    */        
+    public Binding moveToNextBinding() {
+        if (hasNext()) {
+            Binding r = nextBinding;
+            nextBinding = null;
+            return r;
+        }
+        throw new NoSuchElementException();
     }
+    
+    protected void closeSubIterator() {}
 }
 
 /*
- * (c) Copyright 2007, 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

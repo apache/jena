@@ -1,80 +1,68 @@
 /*
- * (c) Copyright 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007, 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
 package com.hp.hpl.jena.sparql.engine.iterator;
 
-import java.util.NoSuchElementException;
+import java.util.Iterator;
 
-import com.hp.hpl.jena.sparql.ARQInternalErrorException;
+import com.hp.hpl.jena.graph.Node;
+
+import com.hp.hpl.jena.sparql.core.Var;
+import com.hp.hpl.jena.sparql.core.VarExprList;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.sparql.util.Utils;
+import com.hp.hpl.jena.sparql.engine.binding.BindingMap;
 
-/** An iterator that applying a condition.
- * 
- * @author Andy Seaborne
- */
+/** Extend each solution by an expressions */ 
 
-public abstract class QueryIterFilter extends QueryIter1
+public class QueryIterAssign extends QueryIterProcessBinding
 {
-    abstract public boolean accept(Binding binding);
+    private VarExprList exprs ; 
     
-    Binding nextBinding;
-
-    public QueryIterFilter(QueryIterator qIter, ExecutionContext context)
+    public QueryIterAssign(QueryIterator input, VarExprList exprs, ExecutionContext qCxt)
     {
-        super(qIter, context) ;
-        nextBinding = null;
+        super(input, qCxt) ;
+        this.exprs = exprs ;
+        //super(input, new Extend(exprs, qCxt), qCxt) ;
     }
-
-    /** Are there any more acceptable objects.
-    * @return true if there is another acceptable object.
-    */        
-    protected boolean hasNextBinding()
+    
+    public Binding accept(Binding binding)
     {
-        // Needs to be idempotent.?
-        if ( isFinished() )
-            return false ;
-        
-        if (nextBinding != null)
-            return true;
-
-        // Null iterator.
-        if ( getInput() == null )
-            throw new ARQInternalErrorException(Utils.className(this)+": Null iterator") ;
-
-        while ( getInput().hasNext() )
+        Binding b = new BindingMap(binding) ;
+        for ( Iterator iter = exprs.getVars().iterator() ; iter.hasNext(); )
         {
-            nextBinding = getInput().nextBinding();
-            if (accept(nextBinding))
-                return true ; 
+            Var v = (Var)iter.next();
+            // Not this, where expressions do not see the new bindings.
+            // Node n = exprs.get(v, bind, funcEnv) ;
+            // which gives (Lisp) "let" semantics, not "let*" semantics 
+            Node n = exprs.get(v, b, getExecContext()) ;
+            
+            if ( n == null )
+                // Expression failed to evaluate - no assignment
+                continue ;
+                
+            // Check is already has a value; if so, must be sameValueAs
+            if ( b.contains(v) )
+            {
+                Node n2 = b.get(v) ;
+                if ( ! n2.sameValueAs(n) )
+                    //throw new QueryExecException("Already set: "+v) ;
+                    // Error in single assignment.
+                    return null ;
+                continue ;
+            }
+            b.add(v, n) ;
         }
-        nextBinding = null;
-        return false;
+        return b ;
     }
-    
-    /** The next acceptable object in the iterator.
-    * @return The next acceptable object.
-    */        
-    public Binding moveToNextBinding() {
-        if (hasNext()) {
-            Binding r = nextBinding;
-            nextBinding = null;
-            return r;
-        }
-        throw new NoSuchElementException();
-    }
-    
-    protected void releaseResources()
-    { }
 }
 
 /*
- * (c) Copyright 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007, 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

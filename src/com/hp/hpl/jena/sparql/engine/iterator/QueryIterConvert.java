@@ -35,19 +35,17 @@ public class QueryIterConvert extends QueryIter1
         converter = c ;
     }
     
-    protected void releaseResources()
-    {
-        QueryIter1.releaseResources(getInput()) ;
-    }
+    protected void closeSubIterator() {}
 
     public boolean hasNextBinding()
     {
-        if ( isFinished() )
-            return false ;
-        boolean r = getInput().hasNext() ;
-        if ( !r )
-            close() ;
-        return r ;
+//        if ( isFinished() )
+//            return false ;
+//        boolean r = getInput().hasNext() ;
+//        if ( !r )
+//            close() ;
+//        return r ;
+        return getInput().hasNext() ;
     }
 
     public Binding moveToNextBinding()

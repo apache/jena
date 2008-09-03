@@ -26,15 +26,15 @@ public class QueryIterCommonParent extends QueryIterConvert
 {
     public QueryIterCommonParent(QueryIterator input, Binding binding, ExecutionContext execCxt)
     {
-        super(input, new ConverterExtent(binding) , execCxt) ;
+        super(input, new ConverterExtend(binding) , execCxt) ;
     }
 
     // Extend (with checking) an iterator stream of binding to have a common parent. 
-    static class ConverterExtent implements QueryIterConvert.Converter
+    static class ConverterExtend implements QueryIterConvert.Converter
     {
         private Binding parentBinding ;
         
-        ConverterExtent(Binding parent) { parentBinding = parent ; }
+        ConverterExtend(Binding parent) { parentBinding = parent ; }
         
         public Binding convert(Binding b)
         {

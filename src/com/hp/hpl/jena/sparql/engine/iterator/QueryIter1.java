@@ -32,23 +32,22 @@ public abstract class QueryIter1 extends QueryIter
     protected final
     void closeIterator()
     {
-        releaseResources() ;
+        closeSubIterator() ;
+        if ( input instanceof QueryIter1 )
+        {
+            // Pass on down.
+            QueryIter1 qIter1 = (QueryIter1)input ;
+            qIter1.closeSubIterator() ;
+        }
+        
         if ( input != null )
             input.close() ;
         // Don't clear - leave for printing.
         //input = null ;
     }
     
-    protected abstract void releaseResources() ;
-    
-    public static void releaseResources(QueryIterator qIter)
-    {
-        if ( qIter instanceof QueryIter1 )
-        {
-            QueryIter1 qIter1 = (QueryIter1)qIter ;
-            qIter1.releaseResources() ;
-        }
-    }
+    /** Pass on the close method - no need to close the QueryIterator passed to the QueryIter1 constructor */
+    protected abstract void closeSubIterator() ;
     
     // Do better
     public void output(IndentedWriter out, SerializationContext sCxt)

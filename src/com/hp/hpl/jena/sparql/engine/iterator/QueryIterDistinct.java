@@ -29,10 +29,10 @@ public class QueryIterDistinct extends QueryIterDistinctReduced
         super(iter, context)  ;
     }
 
-    protected void releaseResources()
+    protected void closeSubIterator()
     {
         seen = null ;
-        super.releaseResources() ;
+        super.closeSubIterator() ;
     }
 
     protected boolean isDuplicate(Binding binding)

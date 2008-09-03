@@ -19,6 +19,7 @@ import com.hp.hpl.jena.sparql.engine.binding.Binding1;
  */
 public class QueryIterExtendByVar extends QueryIter
 {
+    // Use QueryIterProcessBinding?
     Binding binding ;
     Var var ;
     Iterator members ;

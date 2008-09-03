@@ -78,7 +78,7 @@ public class QueryIterSlice extends QueryIter1
         return getInput().nextBinding() ;
     }
 
-    protected void releaseResources() {}
+    protected void closeSubIterator() {}
 }
 
 /*

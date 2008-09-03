@@ -62,7 +62,7 @@ public class QueryIterBlockTriples extends QueryIter1
         return output.nextBinding() ;
     }
 
-    protected void releaseResources()
+    protected void closeSubIterator()
     {
         if ( output != null )
             output.close() ;

@@ -22,7 +22,7 @@ public abstract class QueryIterDistinctReduced extends QueryIter1
     { super(QueryIterFixed.create(iter, context), context)  ; }
 
     // Subclasses will want to implement this as well. 
-    protected void releaseResources()
+    protected void closeSubIterator()
     { slot = null ; }
 
     final
