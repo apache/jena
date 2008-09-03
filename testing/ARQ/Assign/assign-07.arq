@@ -1,0 +1,10 @@
+PREFIX : <http://example/> 
+
+SELECT *
+{
+  ?x :n ?v .
+    # Assign once.
+  LET ( ?y := 6-?v )
+     # Already set in many cases.
+   LET ( ?v := ?y )
+}

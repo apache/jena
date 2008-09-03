@@ -1,20 +1,24 @@
 @prefix : <http://example/> .
 
 :x1 a :X ;
-    :p 1 .
+    :p 1 ;
+    :n 1 .
 
 :x2 a :X ;
-    :p 2 .
+    :p 2 ;
+    :n 2 .
 
 :x3 a :X ;
-    :p 3 .
+    :p 3 ;
+    :n 3 .
 
 :x4 a :X ;
-    :p 4 .
+    :p 4 ;
+    :n 4 .
 
 :x5 a :X ;
-    :p 5 .
-
+    :p 5 ;
+    :n 5 .
 
 :x6 a :X ;
     :p "a" .
