@@ -179,7 +179,7 @@ public class GraphTDB extends GraphBase implements Sync
     {
         if ( node == null || node == Node.ANY )
             return NodeId.NodeIdAny ;
-        return nodeTable.idForNode(node) ;
+        return nodeTable.nodeIdForNode(node) ;
     }
     
     // Store node, return id.  Node may already be stored.
@@ -192,7 +192,7 @@ public class GraphTDB extends GraphBase implements Sync
     
     protected final Node retrieveNode(NodeId id)
     {
-        return nodeTable.retrieveNode(id) ;
+        return nodeTable.retrieveNodeByNodeId(id) ;
     }
 
     // ==== Triple indexes

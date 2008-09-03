@@ -55,7 +55,7 @@ public class tdbnode extends CmdTDB
             try {
                 long x = Long.parseLong(id) ;
                 NodeId nodeId = new NodeId(x) ;
-                Node n = nodeTable.retrieveNode(nodeId) ;
+                Node n = nodeTable.retrieveNodeByNodeId(nodeId) ;
                 System.out.printf("%s [%d] => %s\n", id, x, n) ;
             } catch (Exception ex)
             {

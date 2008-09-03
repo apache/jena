@@ -60,9 +60,9 @@ public class TupleLib
     
     public static Triple triple(NodeTable nodeTable, NodeId s, NodeId p, NodeId o) 
     {
-        Node sNode = nodeTable.retrieveNode(s) ;
-        Node pNode = nodeTable.retrieveNode(p) ;
-        Node oNode = nodeTable.retrieveNode(o) ;
+        Node sNode = nodeTable.retrieveNodeByNodeId(s) ;
+        Node pNode = nodeTable.retrieveNodeByNodeId(p) ;
+        Node oNode = nodeTable.retrieveNodeByNodeId(o) ;
         return new Triple(sNode, pNode, oNode) ;
     }
     

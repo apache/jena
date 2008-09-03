@@ -60,55 +60,80 @@ public abstract class NodeTableBase implements NodeTable
         init(nodeToId, objectFile, idToNodeCacheSize, idToNodeCacheSize) ;
     }
     
-    // ---- Node <==> NodeId
-
-    /** Find the NodeId for a node, or return NodeId.NodeDoesNotExist */ 
-    @Override
-    public synchronized NodeId idForNode(Node node)  { return _idForNode(node, false) ; }
-
-    /** Find the NodeId for a node, allocating a new NodeId if th eNode does not yet have a NodeId */ 
-    @Override
-    public synchronized NodeId storeNode(Node node)  { return _idForNode(node, true) ; }
+    // ---- Public interface for Node <==> NodeId
 
     /** Get the Node for this NodeId, or null if none */
     @Override
-    public synchronized Node retrieveNode(NodeId id)
+    public Node retrieveNodeByNodeId(NodeId id)
+    {
+        return _retrieveNodeByNodeId(id) ;
+    }
+
+    /** Find the NodeId for a node, or return NodeId.NodeDoesNotExist */ 
+    @Override
+    public NodeId nodeIdForNode(Node node)  { return _idForNode(node, false) ; }
+
+    /** Find the NodeId for a node, allocating a new NodeId if th eNode does not yet have a NodeId */ 
+    @Override
+    public NodeId storeNode(Node node)  { return _idForNode(node, true) ; }
+
+    // ----
+    
+    private Node _retrieveNodeByNodeId(NodeId id)
     {
         if ( id == NodeId.NodeDoesNotExist )
             return null ;
         if ( id == NodeId.NodeIdAny )
             return null ;
         
-        Node n = cacheLookup(id) ;
+        // Inline?
+        Node n = NodeId.extract(id) ;
         if ( n != null )
             return n ; 
+        
+        synchronized (this)
+        {
+            n = cacheLookup(id) ;   // Includes known to not exist
+            if ( n != null )
+                return n ; 
 
-        n = nodeIdToNode(id) ;
-        cacheUpdate(n, id) ;
-        return n ;
+            n = readNodeByNodeId(id) ;
+            cacheUpdate(n, id) ;
+            return n ;
+            
+        }
     }
 
     // ----------------
     // Node to Node Id worker
     // Find a node, possibly placing it in the node file as well
-    private  NodeId _idForNode(Node node, boolean allocate)
+    private NodeId _idForNode(Node node, boolean allocate)
     {
-        NodeId nodeId = cacheLookup(node) ;
-        if ( nodeId != null )
-            return nodeId ; 
+        if ( node == Node.ANY )
+            return NodeId.NodeIdAny ;
+        
         // Inline?
-        nodeId = NodeId.inline(node) ;
+        NodeId nodeId = NodeId.inline(node) ;
         if ( nodeId != null )
             return nodeId ;
-        
-        nodeId = accessIndex(node, allocate) ;
-        
-        // Ensure caches have it.  Includes recording "no such node"
-        cacheUpdate(node, nodeId) ;
-        return nodeId ;
+
+        synchronized (this)
+        {
+            // Check caches.
+            nodeId = cacheLookup(node) ;
+            if ( nodeId != null )
+                return nodeId ; 
+
+            nodeId = accessIndex(node, allocate) ;
+
+            // Ensure caches have it.  Includes recording "no such node"
+            cacheUpdate(node, nodeId) ;
+            return nodeId ;
+        }
     }
     
-    // Access the node->NodeId index.  
+    // Access the node->NodeId index.
+    // Synchronized.
     // Given a node and a hash, return NodeId
     // Assumes a cache miss on node2id_Cache
     protected NodeId accessIndex(Node node, boolean create)
@@ -119,34 +144,31 @@ public abstract class NodeTableBase implements NodeTable
         // Key only.
         Record r = nodeHashToId.getRecordFactory().create(k) ;
 
-        synchronized (this)
+        // Key and value, or null
+        Record r2 = nodeHashToId.find(r) ;
+        if ( r2 != null )
         {
-            // Key and value, or null
-            Record r2 = nodeHashToId.find(r) ;
-            if ( r2 != null )
-            {
-                NodeId id = NodeId.create(r2.getValue(), 0) ;
-                return id ;
-            }
-
-            // Not found.
-            if ( ! create )
-                return NodeId.NodeDoesNotExist ;
-
-            // Write the node, which allocates an id for it.
-            NodeId id = nodeToNodeIdTable(node) ;
-
-            // Update the r record with the new id.
-            // r.valkue := id bytes ; 
-            id.toBytes(r.getValue(), 0) ;
-
-            // Put in index - may appear because of concurrency
-            if ( ! nodeHashToId.add(r) )
-                throw new TDBException("NodeTableBase::nodeToId - record mysteriously appeared") ;
-
-            cacheUpdate(node, id) ;
+            // Found.  Get the NodeId.
+            NodeId id = NodeId.create(r2.getValue(), 0) ;
             return id ;
         }
+
+        // Not found.
+        if ( ! create )
+            return NodeId.NodeDoesNotExist ;
+
+        // Write the node, which allocates an id for it.
+        NodeId id = writeNodeToTable(node) ;
+
+        // Update the r record with the new id.
+        // r.valkue := id bytes ; 
+        id.toBytes(r.getValue(), 0) ;
+
+        // Put in index - may appear because of concurrency
+        if ( ! nodeHashToId.add(r) )
+            throw new TDBException("NodeTableBase::nodeToId - record mysteriously appeared") ;
+
+        return id ;
     }
     
     // ---- Only places that the caches are touched
@@ -168,7 +190,7 @@ public abstract class NodeTableBase implements NodeTable
     }
 
     /** Update the Node->NodeId caches */
-    private /*synchronized*/ void cacheUpdate(Node node, NodeId id)
+    private void cacheUpdate(Node node, NodeId id)
     {
         // synchronized is further out.
         // The "notPresent" cache is used to note whether a node
@@ -196,29 +218,21 @@ public abstract class NodeTableBase implements NodeTable
     // ----
     
     // -------- NodeId<->Node
-    // Only places for conversion between NodeId<->Node, accessing the ObjectFile.
-    // Special cases: integers and dateTimes
+    // Assumes NodeId inlining and caching has been handled.
+    // Assumes synchronized (the caches wil be updated consistently)
+    // Only places for accessing the ObjectFile.
     
-    protected final NodeId nodeToNodeIdTable(Node node)
+    protected final NodeId writeNodeToTable(Node node)
     {
-        NodeId x = NodeId.inline(node) ;
-        if ( x != null )
-            return x ;
-        synchronized (this)
-        {
-            String s = encode(node) ;
-            return objects.write(s) ;
-        }
+        String s = encode(node) ;
+        return objects.write(s) ;
     }
     
 
-    protected final Node nodeIdToNode(NodeId id)
+    protected final Node readNodeByNodeId(NodeId id)
     {
-        Node n = NodeId.extract(id) ;
-        if ( n != null )
-            return n ; 
         String s = objects.read(id) ;
-        n = decode(s) ;
+        Node n = decode(s) ;
         return n ;
     }
     // -------- NodeId<->Node

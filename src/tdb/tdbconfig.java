@@ -108,7 +108,7 @@ public class tdbconfig extends CmdSub
             System.out.printf("# Count: %d\n", count) ;
             for ( NodeId n : predicates.keySet() )
             {
-                Node p = graph.getNodeTable().retrieveNode(n) ;
+                Node p = graph.getNodeTable().retrieveNodeByNodeId(n) ;
                 System.out.printf("%s : %d\n", p.getURI(), predicates.get(n)) ;
             }
         }

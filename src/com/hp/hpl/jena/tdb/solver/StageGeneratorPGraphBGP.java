@@ -99,7 +99,7 @@ public class StageGeneratorPGraphBGP implements StageGenerator
                     for ( Var v : bindingNodeIds )
                     {
                         NodeId id = bindingNodeIds.get(v) ;
-                        Node n = graph.getNodeTable().retrieveNode(id) ;
+                        Node n = graph.getNodeTable().retrieveNodeByNodeId(id) ;
                         b.add(v, n) ;
                     }
                     return b ;
@@ -125,7 +125,7 @@ public class StageGeneratorPGraphBGP implements StageGenerator
                     Var v = vars.next() ;
                     Node n = binding.get(v) ;  
                     // Rely on the node table cache. 
-                    NodeId id = graph.getNodeTable().idForNode(n) ;
+                    NodeId id = graph.getNodeTable().nodeIdForNode(n) ;
                     b.put(v, id) ;
                 }
                 return b ;

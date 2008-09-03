@@ -114,7 +114,7 @@ public class NodeTableBDBDirect implements NodeTable
     }
 
     @Override
-    public Node retrieveNode(NodeId id)
+    public Node retrieveNodeByNodeId(NodeId id)
     {
         try {
             DatabaseEntry k = new DatabaseEntry(longBuff(id.getId())) ;
@@ -140,7 +140,7 @@ public class NodeTableBDBDirect implements NodeTable
     }
 
     @Override
-    public NodeId idForNode(Node node)
+    public NodeId nodeIdForNode(Node node)
     {
         return accessIndex(node, false) ;
     }

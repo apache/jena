@@ -20,7 +20,9 @@ import com.hp.hpl.jena.tdb.pgraph.Hash;
 import com.hp.hpl.jena.tdb.pgraph.NodeId;
 import com.hp.hpl.jena.tdb.pgraph.NodeTableBase;
 
-/** Rather than use the Index wrapper, we directly sublcass to provide the index capability for a NodeTable */
+// OUT OF DATE
+
+/** Rather than use the Index wrapper, we directly subclass to provide the index capability for a NodeTable */
 public class NodeTableBDB extends NodeTableBase
 {
     SetupBDB config ;
@@ -44,7 +46,7 @@ public class NodeTableBDB extends NodeTableBase
             OperationStatus status = nodeHashToId.get(txn, entry, idEntry, config.lockMode) ;
             if ( status == OperationStatus.SUCCESS )
                 return NodeId.create(Bytes.getLong(idEntry.getData())) ;
-            NodeId x = nodeToNodeIdTable(node) ;
+            NodeId x = writeNodeToTable(node) ;
             idEntry = nodeIdEntry(x);
 
             status = nodeHashToId.put(txn, entry, idEntry) ;

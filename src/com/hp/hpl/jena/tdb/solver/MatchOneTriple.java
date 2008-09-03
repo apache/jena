@@ -115,7 +115,7 @@ class MatchOneTriple extends RepeatApplyIterator<BindingNodeId>
             return n ;
         } 
         // Returns NodeId.NodeDoesNotExist which must not be null. 
-        return graph.getNodeTable().idForNode(node) ;
+        return graph.getNodeTable().nodeIdForNode(node) ;
     }
 }
 /*
