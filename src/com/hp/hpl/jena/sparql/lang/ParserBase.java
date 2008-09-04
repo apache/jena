@@ -314,7 +314,7 @@ public class ParserBase
         acc.addTriple(index, new Triple(s, p, o)) ;
     }
     
-    // insert-with-path is Used by both SPARQL and ARQ (extended SPARQL). 
+    // insert-with-path is used by both SPARQL and ARQ (extended SPARQL). 
     
     protected void insert(TripleCollector acc, Node s, Node p, Path path, Node o)
     {
