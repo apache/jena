@@ -35,9 +35,18 @@ public final class TriplePath
     public TriplePath(Triple triple)
     {
         this.subject = triple.getSubject() ;
-        //this.path = new P_Link(triple.getPredicate()) ;
-        this.path = null ;
-        this.predicate = triple.getPredicate() ;
+        // Canonicalise: A triple and a path with a using P_Link of a URI 
+        Node p = triple.getPredicate() ;
+        if ( p.isURI() )
+        {
+            this.path = new P_Link(triple.getPredicate()) ;
+            this.predicate = null ;
+        }
+        else
+        {   
+            this.path = null ;
+            this.predicate = triple.getPredicate() ;
+        }
         this.object = triple.getObject() ;
         this.triple = triple ; 
         if ( triple.getPredicate() == null )
@@ -61,10 +70,7 @@ public final class TriplePath
             return triple ;
         
         if ( path instanceof P_Link )
-        {
             triple = new Triple(subject, ((P_Link)path).getNode(), object) ;
-            return triple ;
-        }
         return triple ;
     }
 
@@ -98,9 +104,9 @@ public final class TriplePath
     public String toString()
     {
         if ( path != null )
-            return subject+" path/"+path+" "+object ;
+            return subject+" ("+path+") "+object ;
         else
-            return subject+" prediciate/"+predicate+" "+object ;
+            return subject+" "+predicate+" "+object ;
     }
 }
 
