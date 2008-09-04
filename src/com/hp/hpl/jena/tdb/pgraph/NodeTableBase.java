@@ -77,7 +77,7 @@ public abstract class NodeTableBase implements NodeTable
     @Override
     public NodeId storeNode(Node node)  { return _idForNode(node, true) ; }
 
-    // ----
+    // ---- The worker functions
     
     private Node _retrieveNodeByNodeId(NodeId id)
     {
