@@ -9,11 +9,12 @@
   <property environment="env"/>
 
   <!-- The major and minor version numbers  -->
-  <property name="version-major"   value="0"/>
-  <property name="version-minor"   value="5.3"/>
+  <property name="version-major"   		value="0"/>
+  <property name="version-minor"    	value="5"/>
+  <property name="version-revision"   	value="4"/>
   <property name="version-status"  value=""/>
   <property name="version"
-            value="${version-major}.${version-minor}${version-status}"/>
+            value="${version-major}.${version-minor}.${version-revision}${version-status}"/>
   
   <target name="main" depends="jar"/>
   
@@ -149,9 +150,11 @@
   
   <tstamp>
     <format property="build.time.xsd"  pattern="yyyy-MM-dd'T'HH:mm:ssZ"/>
-    <!-- <format property="build.time.txt"  pattern="yyyy-MM-dd HH:mm Z"/>-->
+    <format property="build.time.txt"  pattern="yyyy-MM-dd HH:mm Z"/>
   </tstamp>
 
+  <!-- <echo message="Build: ${build.time.xsd}"/> -->
+	
   <filterset id="filters.build.metadata">
     <filter token="VERSION"           value="${version}" />
     <filter token="BUILD_TIME"        value="${build.time.txt}" />
