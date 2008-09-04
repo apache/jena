@@ -13,7 +13,10 @@ import com.hp.hpl.jena.sparql.path.P_Link;
 import com.hp.hpl.jena.sparql.path.Path;
 import com.hp.hpl.jena.sparql.util.ALog;
 
-/** Like a triple except it can be a path or a triple.  The triple can have a variable predicate.  Theer may be no "path" */ 
+/** Like a triple except it can be a path or a triple.  
+ * The triple can have a variable predicate.  
+ * There may be no "path".
+ */ 
 
 public final class TriplePath
 {
@@ -24,12 +27,19 @@ public final class TriplePath
     private Triple triple = null ;
     private int hash = -1 ;
 
-    public TriplePath(Node s, Path p, Node o)
+    // Maybe "de P_Link" all this.
+    
+    public TriplePath(Node s, Path path, Node o)
     {
         this.subject = s ;
-        this.predicate = null ;
-        this.path = p ;
         this.object = o ;
+        if ( path instanceof P_Link )
+        {
+            this.predicate = ((P_Link)path).getNode() ;
+            triple = new Triple(subject, this.predicate , o) ;
+        } else
+            this.predicate = null ;
+        this.path = path ;
     }
     
     public TriplePath(Triple triple)
@@ -40,13 +50,15 @@ public final class TriplePath
         if ( p.isURI() )
         {
             this.path = new P_Link(triple.getPredicate()) ;
-            this.predicate = null ;
+            this.predicate = p ;
         }
         else
         {   
             this.path = null ;
             this.predicate = triple.getPredicate() ;
         }
+//        this.path = null ;
+//        this.predicate = triple.getPredicate() ;
         this.object = triple.getObject() ;
         this.triple = triple ; 
         if ( triple.getPredicate() == null )
@@ -54,13 +66,13 @@ public final class TriplePath
     }
 
     public Node getSubject()    { return subject ; }
-    public Path getPath()       { return path ; }       // Maybe null (it's a path).
-    public Node getPredicate()  { return predicate ; }  // Maybe null (it's a triple).
+    public Path getPath()       { return path ; }       // Maybe null (it's a triple).
+    public Node getPredicate()  { return predicate ; }  // Maybe null (it's a path).
     public Node getObject()     { return object ; }
 
     public boolean isTriple()
     {
-        return (predicate != null) ;
+        return (triple != null || predicate != null) ;
     }
     
     /** Return as a triple when the path is a simple, 1-link, else return null */ 
@@ -92,7 +104,7 @@ public final class TriplePath
             return false ;
         TriplePath tp = (TriplePath)other ;
 
-        // True is one is true and one is false
+        // True if one is true and one is false
         if ( tp.isTriple() ^ this.isTriple() )
             return false ;
         if ( isTriple() )

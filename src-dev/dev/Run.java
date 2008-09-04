@@ -49,13 +49,11 @@ public class Run
 {
     public static void main(String[] argv) throws Exception
     {
-        if ( false )
+        if ( true )
         {
 //            Query query = QueryFactory.read("Q.arq", Syntax.syntaxARQ) ;
+//            System.out.println(query) ;
 //            System.exit(0) ;
-            
-            
-            
             
             String x = FileUtils.readWholeFileAsUTF8("Q.arq") ;
             System.out.println(x) ;
