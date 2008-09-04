@@ -2032,9 +2032,13 @@ public class SPARQLParser extends SPARQLParserBase implements SPARQLParserConsta
     throw new Error("Missing return statement in function");
   }
 
+  /** Generated Token Manager. */
   public SPARQLParserTokenManager token_source;
   JavaCharStream jj_input_stream;
-  public Token token, jj_nt;
+  /** Current token. */
+  public Token token;
+  /** Next token. */
+  public Token jj_nt;
   private int jj_ntk;
   private int jj_gen;
   final private int[] jj_la1 = new int[77];
@@ -2043,27 +2047,29 @@ public class SPARQLParser extends SPARQLParserBase implements SPARQLParserConsta
   static private int[] jj_la1_2;
   static private int[] jj_la1_3;
   static {
-      jj_la1_0();
-      jj_la1_1();
-      jj_la1_2();
-      jj_la1_3();
+      jj_la1_init_0();
+      jj_la1_init_1();
+      jj_la1_init_2();
+      jj_la1_init_3();
    }
-   private static void jj_la1_0() {
+   private static void jj_la1_init_0() {
       jj_la1_0 = new int[] {0x3900000,0x40000,0x80000,0x600000,0x600000,0x3000,0x3000,0x0,0x0,0x3700,0x3700,0x0,0x0,0x0,0x700,0x0,0x10000000,0xc000000,0xc0003700,0xc0000000,0x3700,0xc0003700,0x8000000,0x4000000,0xc000000,0x3f00,0x0,0x0,0x0,0x3f00,0x3f00,0x0,0x0,0x0,0x700,0x0,0x0,0x3f00,0x3f00,0x0,0x3f00,0x0,0x23700,0x23700,0x0,0x23700,0x0,0x3f00,0x3f00,0x3f00,0x3700,0x3000,0xf00,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x3700,0x3700,0x0,0x0,0x0,0x4000,0x4000,0x0,0x0,0x0,0x0,0x0,0x0,0x700,0x600,0x800,};
    }
-   private static void jj_la1_1() {
+   private static void jj_la1_init_1() {
       jj_la1_1 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x2,0x2,0x0,0x0,0x2,0x4,0x2,0x1,0x4,0x0,0x0,0x7ff00,0x0,0x7ff00,0x7ff00,0x0,0x0,0x0,0x7fd80000,0xb0,0xb0,0x0,0x7fd80000,0x7fd80000,0x0,0x30,0x40,0x7ff00,0x0,0x0,0x7fd80000,0x7fd80000,0x0,0x7fd80000,0x0,0x0,0x0,0x0,0x0,0x0,0x7fd80000,0x7fd80000,0x7fd80000,0x0,0x0,0x7fd80000,0x0,0x0,0x0,0x0,0x7e000000,0x7e000000,0x0,0x0,0x7fdfff00,0x7fdfff00,0x7ff00,0x0,0x0,0x0,0x0,0x7fc00000,0x1c00000,0xe000000,0x70000000,0x180000,0x0,0x0,0x0,0x0,};
    }
-   private static void jj_la1_2() {
+   private static void jj_la1_init_2() {
       jj_la1_2 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x80000000,0x0,0x0,0x0,0x80000000,0x0,0x400,0x0,0x0,0x0,0x0,0x0,0x80,0x0,0x80,0x80,0x0,0x0,0x0,0x52f8,0x400,0x400,0x20000,0x52f8,0x52f8,0x20000,0x400,0x0,0x80,0x10000,0x280,0x52f8,0x52f8,0x20000,0x52f8,0x8000,0x0,0x0,0x10000,0x0,0x1080,0x52f8,0x52f8,0x4278,0x0,0x0,0x4278,0x8000000,0x10000000,0xfc0000,0xfc0000,0x60000000,0x60000000,0x80000000,0x80000000,0x610000f8,0xf8,0x0,0x10000,0x280,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x78,0x0,0x0,0x4000,};
    }
-   private static void jj_la1_3() {
+   private static void jj_la1_init_3() {
       jj_la1_3 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x1,0x1,0x0,0x0,0x0,0x0,0x0,0x2,0x2,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,};
    }
 
+  /** Constructor with InputStream. */
   public SPARQLParser(java.io.InputStream stream) {
      this(stream, null);
   }
+  /** Constructor with InputStream and supplied encoding */
   public SPARQLParser(java.io.InputStream stream, String encoding) {
     try { jj_input_stream = new JavaCharStream(stream, encoding, 1, 1); } catch(java.io.UnsupportedEncodingException e) { throw new RuntimeException(e); }
     token_source = new SPARQLParserTokenManager(jj_input_stream);
@@ -2073,9 +2079,11 @@ public class SPARQLParser extends SPARQLParserBase implements SPARQLParserConsta
     for (int i = 0; i < 77; i++) jj_la1[i] = -1;
   }
 
+  /** Reinitialise. */
   public void ReInit(java.io.InputStream stream) {
      ReInit(stream, null);
   }
+  /** Reinitialise. */
   public void ReInit(java.io.InputStream stream, String encoding) {
     try { jj_input_stream.ReInit(stream, encoding, 1, 1); } catch(java.io.UnsupportedEncodingException e) { throw new RuntimeException(e); }
     token_source.ReInit(jj_input_stream);
@@ -2085,6 +2093,7 @@ public class SPARQLParser extends SPARQLParserBase implements SPARQLParserConsta
     for (int i = 0; i < 77; i++) jj_la1[i] = -1;
   }
 
+  /** Constructor. */
   public SPARQLParser(java.io.Reader stream) {
     jj_input_stream = new JavaCharStream(stream, 1, 1);
     token_source = new SPARQLParserTokenManager(jj_input_stream);
@@ -2094,6 +2103,7 @@ public class SPARQLParser extends SPARQLParserBase implements SPARQLParserConsta
     for (int i = 0; i < 77; i++) jj_la1[i] = -1;
   }
 
+  /** Reinitialise. */
   public void ReInit(java.io.Reader stream) {
     jj_input_stream.ReInit(stream, 1, 1);
     token_source.ReInit(jj_input_stream);
@@ -2103,6 +2113,7 @@ public class SPARQLParser extends SPARQLParserBase implements SPARQLParserConsta
     for (int i = 0; i < 77; i++) jj_la1[i] = -1;
   }
 
+  /** Constructor with generated Token Manager. */
   public SPARQLParser(SPARQLParserTokenManager tm) {
     token_source = tm;
     token = new Token();
@@ -2111,6 +2122,7 @@ public class SPARQLParser extends SPARQLParserBase implements SPARQLParserConsta
     for (int i = 0; i < 77; i++) jj_la1[i] = -1;
   }
 
+  /** Reinitialise. */
   public void ReInit(SPARQLParserTokenManager tm) {
     token_source = tm;
     token = new Token();
@@ -2119,7 +2131,7 @@ public class SPARQLParser extends SPARQLParserBase implements SPARQLParserConsta
     for (int i = 0; i < 77; i++) jj_la1[i] = -1;
   }
 
-  final private Token jj_consume_token(int kind) throws ParseException {
+  private Token jj_consume_token(int kind) throws ParseException {
     Token oldToken;
     if ((oldToken = token).next != null) token = token.next;
     else token = token.next = token_source.getNextToken();
@@ -2133,6 +2145,8 @@ public class SPARQLParser extends SPARQLParserBase implements SPARQLParserConsta
     throw generateParseException();
   }
 
+
+/** Get the next Token. */
   final public Token getNextToken() {
     if (token.next != null) token = token.next;
     else token = token.next = token_source.getNextToken();
@@ -2141,6 +2155,7 @@ public class SPARQLParser extends SPARQLParserBase implements SPARQLParserConsta
     return token;
   }
 
+/** Get the specific Token. */
   final public Token getToken(int index) {
     Token t = token;
     for (int i = 0; i < index; i++) {
@@ -2150,23 +2165,21 @@ public class SPARQLParser extends SPARQLParserBase implements SPARQLParserConsta
     return t;
   }
 
-  final private int jj_ntk() {
+  private int jj_ntk() {
     if ((jj_nt=token.next) == null)
       return (jj_ntk = (token.next=token_source.getNextToken()).kind);
     else
       return (jj_ntk = jj_nt.kind);
   }
 
-  private java.util.Vector jj_expentries = new java.util.Vector();
+  private java.util.List jj_expentries = new java.util.ArrayList();
   private int[] jj_expentry;
   private int jj_kind = -1;
 
+  /** Generate ParseException. */
   public ParseException generateParseException() {
-    jj_expentries.removeAllElements();
+    jj_expentries.clear();
     boolean[] la1tokens = new boolean[106];
-    for (int i = 0; i < 106; i++) {
-      la1tokens[i] = false;
-    }
     if (jj_kind >= 0) {
       la1tokens[jj_kind] = true;
       jj_kind = -1;
@@ -2193,19 +2206,21 @@ public class SPARQLParser extends SPARQLParserBase implements SPARQLParserConsta
       if (la1tokens[i]) {
         jj_expentry = new int[1];
         jj_expentry[0] = i;
-        jj_expentries.addElement(jj_expentry);
+        jj_expentries.add(jj_expentry);
       }
     }
     int[][] exptokseq = new int[jj_expentries.size()][];
     for (int i = 0; i < jj_expentries.size(); i++) {
-      exptokseq[i] = (int[])jj_expentries.elementAt(i);
+      exptokseq[i] = (int[])jj_expentries.get(i);
     }
     return new ParseException(token, exptokseq, tokenImage);
   }
 
+  /** Enable tracing. */
   final public void enable_tracing() {
   }
 
+  /** Disable tracing. */
   final public void disable_tracing() {
   }
 

@@ -161,6 +161,17 @@ public class QueryFactory
     /** Read a query from a file.
      * 
      * @param url            URL (file: or http: or anything a FileManager can handle)
+     * @param langURI        Query syntax
+     * @return               A new query object 
+     */
+    static public Query read(String url, Syntax langURI)
+    {
+        return read(url, null, null, langURI) ;
+    }
+
+    /** Read a query from a file.
+     * 
+     * @param url            URL (file: or http: or anything a FileManager can handle)
      * @param baseURI        BaseURI for the query
      * @param langURI        Query syntax
      * @return               A new query object 

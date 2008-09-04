@@ -43,14 +43,38 @@ import com.hp.hpl.jena.update.UpdateAction;
 import com.hp.hpl.jena.update.UpdateFactory;
 import com.hp.hpl.jena.update.UpdateRequest;
 import com.hp.hpl.jena.util.FileManager;
+import com.hp.hpl.jena.util.FileUtils;
 
 public class Run
 {
     public static void main(String[] argv) throws Exception
     {
-
-        runQTest() ;
-        //runQParse() ;
+        if ( false )
+        {
+//            Query query = QueryFactory.read("Q.arq", Syntax.syntaxARQ) ;
+//            System.exit(0) ;
+            
+            
+            
+            
+            String x = FileUtils.readWholeFileAsUTF8("Q.arq") ;
+            System.out.println(x) ;
+            
+            Query query1 = QueryFactory.read("Q.arq", Syntax.syntaxARQ) ;
+            Query query2 = QueryFactory.read("Q.arq", Syntax.syntaxARQ) ;
+            
+            System.out.println(query1.hashCode()) ;
+            System.out.println(query2.hashCode()) ;
+            
+            System.out.println(query1) ;
+            
+            query2 = QueryFactory.create(""+query1, Syntax.syntaxARQ) ;
+            System.out.println(query2.hashCode()) ;
+            
+            System.exit(0) ;
+        }
+        //runQTest() ;
+        runQParseARQ() ;
         // Compressed syntax
         // match(Subject, Path, Object, PrefixMapping)
         
@@ -213,7 +237,7 @@ public class Run
     
     private static void runQParseARQ()
     {
-        String []a = { "--file=Q.arq", "--print=quad" } ; //, "--opt", "--print=plan"} ;
+        String []a = { "--file=Q.arq", "--print=op" } ; //, "--opt", "--print=plan"} ;
         arq.qparse.main(a) ;
         System.exit(0) ;
     }

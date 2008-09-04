@@ -3,7 +3,7 @@ ChangeLog for ARQ
 
 ==== ARQ 2.5
 
-
++ Fixed bug with path parsing when "a" (for rdf:type) is used in a property list (using ;) 
 
 ==== ARQ 2.4
 

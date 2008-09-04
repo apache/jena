@@ -1,11 +1,8 @@
-PREFIX : <http://example/>
-PREFIX apf:     <http://jena.hpl.hp.com/ARQ/property#>
+PREFIX pd: <http://example/>
 
-SELECT DISTINCT ?x
-WHERE { 
-  ?x :p ?v1 .
-  ?x :p ?v2 .
-  FILTER(?v1 != ?v2)
-  OPTIONAL{?x :p ?v3 . FILTER(?v3 != ?v1 && ?v3 != ?v2)}
-  FILTER(!bound(?v3))
+SELECT DISTINCT ?dc
+{
+    ?x  a       pd:Entry ;
+        pd:dc   ?dc .
 }
+

@@ -97,7 +97,10 @@ public final class TriplePath
     
     public String toString()
     {
-        return subject+" "+path+" "+object ;
+        if ( path != null )
+            return subject+" path/"+path+" "+object ;
+        else
+            return subject+" prediciate/"+predicate+" "+object ;
     }
 }
 

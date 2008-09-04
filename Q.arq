@@ -1,39 +1,15 @@
-PREFIX : <http://example/>
-SELECT ?x (count(?v) as ?n)
+PREFIX  rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX pd: <http://example/>
+
+SELECT DISTINCT ?dc
 {
- ?x :p ?v .
+
+
+    ?x  a       pd:Entry ;
+        pd:dc   ?dc .
+
+
+    ?x1  rdf:type       pd:Entry ;
+        pd:dc   ?dc .
 }
-GROUP BY ?x
-HAVING (?n = 2 )
 
-
-## PREFIX : <http://example/>
-## PREFIX  n: <http://example/x#> 
-## PREFIX  rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-## PREFIX  rdfs:   <http://www.w3.org/2000/01/rdf-schema#>
-## PREFIX  xsd:    <http://www.w3.org/2001/XMLSchema#>
-## 
-## SELECT *
-## { 
-##     ?x n:p ?z1 .
-##     ?x n:q/n:p* ?z2.
-##     ?x n:p ?z3 .
-## ##     FILTER( true ) 
-## ##     FILTER(?z1 > 2 )
-## ##     FILTER(?z2 > 2 )
-## ##     FILTER(?z3 > 2 )
-## ##     FILTER(?z4 > 2 )
-## }
-## 
-## 
-## ## Parse testing
-## ##    ?x n:a/n:a/n:a  ?a .
-## ##    ?x n:a/(n:b|n:p) ?a . 
-## ##    ?x n:a/n:b|n:p ?a . 
-## ##    ?x (n:a/n:b)|n:p ?a . 
-## ##    ?x :q ?z .
-## ##  
-## ##     ?x ^:p* ?w .
-## ## 
-## ##     ?x ^(:p*) ?w .
-## 

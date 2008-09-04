@@ -727,6 +727,7 @@ void PropertyListNotEmptyPath(Node s, TripleCollector acc) :
 
   ObjectList(s, p, path, acc)
   ( <SEMICOLON>
+    { path = null ; p = null ; }
     (
       ( path = VerbPath()
       | p = VerbSimple()

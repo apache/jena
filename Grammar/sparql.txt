@@ -1,5 +1,156 @@
 
 DOCUMENT START
+TOKENS
+// ------------------------------------------
+// Tokens
+
+// Comments and whitespace
+<DEFAULT> SKIP : {
+" "
+| "\t"
+| "\n"
+| "\r"
+| "\f"
+}
+
+<DEFAULT> TOKEN : {
+<#WS: " " | "\t" | "\n" | "\r" | "\f">
+}
+
+<DEFAULT> SPECIAL : {
+<SINGLE_LINE_COMMENT: "#" (~["\n","\r"])* ("\n" | "\r" | "\r\n")?>
+}
+
+// Main tokens */
+<DEFAULT> TOKEN : {
+<IRIref: "<" (~[">","<","\"","{","}","^","\\","|","`","\u0000"-" "])* ">">
+| <PNAME_NS: (<PN_PREFIX>)? ":">
+| <PNAME_LN: <PNAME_NS> <PN_LOCAL>>
+| <BLANK_NODE_LABEL: "_:" <PN_LOCAL>>
+| <VAR1: "?" <VARNAME>>
+| <VAR2: "$" <VARNAME>>
+| <LANGTAG: <AT> (<A2Z>)+ ("-" (<A2ZN>)+)*>
+| <#A2Z: ["a"-"z","A"-"Z"]>
+| <#A2ZN: ["a"-"z","A"-"Z","0"-"9"]>
+}
+
+// -------------------------------------------------
+// Keyworks : includes operators that are words and should be
+// before general things like IDENTIFIER which swallow almost
+// anything
+<DEFAULT> TOKEN : {
+<KW_A: "a">
+}
+
+<DEFAULT> TOKEN [IGNORE_CASE] : {
+<BASE: "base">
+| <PREFIX: "prefix">
+| <SELECT: "select">
+| <DISTINCT: "distinct">
+| <REDUCED: "reduced">
+| <DESCRIBE: "describe">
+| <CONSTRUCT: "construct">
+| <ASK: "ask">
+| <LIMIT: "limit">
+| <OFFSET: "offset">
+| <ORDER: "order">
+| <BY: "by">
+| <ASC: "asc">
+| <DESC: "desc">
+| <NAMED: "named">
+| <FROM: "from">
+| <WHERE: "where">
+| <AND: "and">
+| <GRAPH: "graph">
+| <OPTIONAL: "optional">
+| <UNION: "union">
+| <FILTER: "filter">
+| <BOUND: "bound">
+| <STR: "str">
+| <DTYPE: "datatype">
+| <LANG: "lang">
+| <LANGMATCHES: "langmatches">
+| <IS_URI: "isURI">
+| <IS_IRI: "isIRI">
+| <IS_BLANK: "isBlank">
+| <IS_LITERAL: "isLiteral">
+| <REGEX: "regex">
+| <SAME_TERM: "sameTerm">
+| <TRUE: "true">
+| <FALSE: "false">
+}
+
+// -------------------------------------------------
+<DEFAULT> TOKEN : {
+<#DIGITS: (["0"-"9"])+>
+| <INTEGER: <DIGITS>>
+| <DECIMAL: <DIGITS> "." (<DIGITS>)* | "." <DIGITS>>
+| <DOUBLE: (["0"-"9"])+ "." (["0"-"9"])* <EXPONENT> | "." (["0"-"9"])+ <EXPONENT> | (["0"-"9"])+ <EXPONENT>>
+| <INTEGER_POSITIVE: <PLUS> <INTEGER>>
+| <DECIMAL_POSITIVE: <PLUS> <DECIMAL>>
+| <DOUBLE_POSITIVE: <PLUS> <DOUBLE>>
+| <INTEGER_NEGATIVE: <MINUS> <INTEGER>>
+| <DECIMAL_NEGATIVE: <MINUS> <DECIMAL>>
+| <DOUBLE_NEGATIVE: <MINUS> <DOUBLE>>
+| <#EXPONENT: ["e","E"] (["+","-"])? (["0"-"9"])+>
+| <#QUOTE_3D: "\"\"\"">
+| <#QUOTE_3S: "\'\'\'">
+| <ECHAR: "\\" ("t" | "b" | "n" | "r" | "f" | "\\" | "\"" | "\'")>
+| <STRING_LITERAL1: "\'" (~["\'","\\","\n","\r"] | <ECHAR>)* "\'">
+| <STRING_LITERAL2: "\"" (~["\"","\\","\n","\r"] | <ECHAR>)* "\"">
+| <STRING_LITERAL_LONG1: <QUOTE_3S> (("\'" | "\'\'")? (~["\'","\\"] | <ECHAR>))* <QUOTE_3S>>
+| <STRING_LITERAL_LONG2: <QUOTE_3D> (("\"" | "\"\"")? (~["\"","\\"] | <ECHAR>))* <QUOTE_3D>>
+}
+
+<DEFAULT> TOKEN : {
+<LPAREN: "(">
+| <RPAREN: ")">
+| <NIL: <LPAREN> (<WS> | <SINGLE_LINE_COMMENT>)* <RPAREN>>
+| <LBRACE: "{">
+| <RBRACE: "}">
+| <LBRACKET: "[">
+| <RBRACKET: "]">
+| <ANON: <LBRACKET> (<WS> | <SINGLE_LINE_COMMENT>)* <RBRACKET>>
+| <SEMICOLON: ";">
+| <COMMA: ",">
+| <DOT: ".">
+| <EQ: "=">
+| <NE: "!=">
+| <GT: ">">
+| <LT: "<">
+| <LE: "<=">
+| <GE: ">=">
+| <BANG: "!">
+| <TILDE: "~">
+| <COLON: ":">
+| <SC_OR: "||">
+| <SC_AND: "&&">
+| <PLUS: "+">
+| <MINUS: "-">
+| <STAR: "*">
+| <SLASH: "/">
+| <DATATYPE: "^^">
+| <AT: "@">
+}
+
+// See XML chars.txt for notes
+<DEFAULT> TOKEN : {
+<#PN_CHARS_BASE: ["A"-"Z"] | ["a"-"z"] | ["\u00c0"-"\u00d6"] | ["\u00d8"-"\u00f6"] | ["\u00f8"-"\u02ff"] | ["\u0370"-"\u037d"] | ["\u037f"-"\u1fff"] | ["\u200c"-"\u200d"] | ["\u2070"-"\u218f"] | ["\u2c00"-"\u2fef"] | ["\u3001"-"\ud7ff"] | ["\uf900"-"\ufffd"]>
+| <#PN_CHARS_U: <PN_CHARS_BASE> | "_">
+| <#PN_CHARS: <PN_CHARS_U> | "-" | ["0"-"9"] | "\u00b7" | ["\u0300"-"\u036f"] | ["\u203f"-"\u2040"]>
+| <#PN_PREFIX: <PN_CHARS_BASE> ((<PN_CHARS> | ".")* <PN_CHARS>)?>
+| <#PN_LOCAL: (<PN_CHARS_U> | ["0"-"9"]) ((<PN_CHARS> | ".")* <PN_CHARS>)?>
+| <#VARNAME: (<PN_CHARS_U> | ["0"-"9"]) (<PN_CHARS_U> | ["0"-"9"] | "\u00b7" | ["\u0300"-"\u036f"] | ["\u203f"-"\u2040"])*>
+}
+
+// Catch-all tokens.  Must be last.  
+// Any non-whitespace.  Causes a parser exception, rather than a
+// token manager error (with hidden line numbers).
+// Only bad IRIs (e.g. spaces) now give unhelpful parse errors.
+<DEFAULT> TOKEN : {
+<#UNKNOWN: (~[" ","\t","\n","\r","\f"])+>
+}
+
 NON-TERMINALS
 	QueryUnit	:=	Query <EOF>
 	Query	:=	Prologue ( SelectQuery | ConstructQuery | DescribeQuery | AskQuery )
