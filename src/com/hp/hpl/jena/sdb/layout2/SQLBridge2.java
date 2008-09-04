@@ -78,8 +78,6 @@ public class SQLBridge2 extends SQLBridgeBase
             // Need to allocate aliases because otherwise we need to access
             // "table.column" as a label and "." is illegal in a label
             
-            // XXX sqlVarName => SqlColumn, not a Var.  A hack that fails. 
-            
             String vLex = SQLUtils.gen(sqlVarName,"lex") ;
             SqlColumn cLex = new SqlColumn(table, "lex") ;
     
@@ -160,10 +158,20 @@ public class SQLBridge2 extends SQLBridgeBase
                     continue ;
 
                 // Oracle: may be null (empty string).
-                String lex = rs.getString(SQLUtils.gen(codename,"lex")) ;
+                // Oracle 9i issue: It might be that .getString does not work on CLOBs.
+                // A fix would be to look at the metadata.
+                
+                String lexColName = SQLUtils.gen(codename,"lex") ;
+                
+//                int lexCol = rs.findColumn(lexColName) ;
+//                getColumnTypeName//
+//                if ( rs.getMetaData().getColumnType(lexCol) == java.sql.Types.CLOB )
+//                {}
+                
+                String lex = rs.getString(lexColName) ;
                 if ( lex == null )
                     lex = "" ;
-                
+
                 // byte bytes[] = rs.getBytes(SQLUtils.gen(codename,"lex")) ; // bytes
                 // try {
                 //     String $ = new String(bytes, "UTF-8") ;
