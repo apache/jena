@@ -6,8 +6,16 @@
 
 package dev;
 
+
 public class Dev
 {
+    // DatasetStore to imnplement listNames()
+    // ==> DatasetStoreGraph.listGraphNodes() ;
+    // ==> StoreUtils.storeGraphNames
+    // This wil do OpDatasetNames??
+    // Temporarily - why doesn't the SQL use DISTINCT
+    // ==> Fix up (distinct (project ...)) 
+    
     /* Principle: SDB does not connection management.
      * It wraps connections.  The constainer does the connection management.
      * 
