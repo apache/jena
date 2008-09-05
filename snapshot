@@ -1,13 +1,12 @@
 #!/bin/bash
 
 # Where to move the jars to
-LIBDIRS="TDB SDB"
+LIBDIRS="TDB SDB Joseki3"
 # Where to add the source zip.
 SRCDIRS="TDB SDB"
 
 rm -f lib/arq.jar lib/arq-extra.jar
 ant jar
-
 
 
 for d in $LIBDIRS
