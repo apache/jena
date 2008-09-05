@@ -1,4 +1,5 @@
 #!/bin/bash
 # Make directories that svn removes on a forced update.
 
-mkdir DB DB2 reports tmp lib2
+mkdir DB DB2 reports tmp lib2 build dist classes
+
