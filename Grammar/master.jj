@@ -795,14 +795,13 @@ Path VerbPath() : {Node p ; Path path ; }
 
 Node VerbSimple() : { Node p ; }
 {
-  ( p = Var() | <KW_A> { p = nRDFtype ; } )
+  // "a" now allowed in paths.
+  //( p = Var() | <KW_A> { p = nRDFtype ; } )
+  p = Var()
   { return p ; }
 }
 // End paths stuff.
 #endif
-
-
-
 
 // -------- Paths
 
@@ -885,11 +884,13 @@ Path PathMod(Path p) : { long i1 = UNSET ; long i2 = UNSET ; }
    )
 }
 
-Path PathPrimary() : { String str ; Node n ; Path p ; }
+Path PathPrimary() : { String str ; Path p ; }
 {
   ( 
     str = IRIref()
-     { n = Node.createURI(str) ; p = new P_Link(n) ; }
+     { Node n = Node.createURI(str) ; p = new P_Link(n) ; }
+  | <KW_A> 
+     { p = new P_Link(nRDFtype) ; }
   | <LPAREN> p = Path() <RPAREN>
   )
     { return p ; }
