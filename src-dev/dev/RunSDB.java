@@ -53,7 +53,8 @@ public class RunSDB
     {
         
         
-        //sdb.sdbquery.main("--sdb=sdb.ttl", "--file=Q.rq") ;
+        sdb.sdbprint.main("--sdb=sdb.ttl", "SELECT DISTINCT ?g { GRAPH ?g { ?s ?p ?o}}") ;
+        System.exit(0) ;
         runQueryDefaultModel("Q.rq", "sdb.ttl") ;
         System.exit(0) ;
         

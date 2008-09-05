@@ -161,11 +161,26 @@ public class TransformSDB extends TransformCopy
     public Op transform(OpDistinct opDistinct, Op subOp)
     { 
         // TODO (distinct (project SQL)) 
+        // This is a bottom up rewrite so 
         if ( ! QC.isOpSQL(subOp) )
             return super.transform(opDistinct, subOp) ;
         SqlNode sqlSubOp = ((OpSQL)subOp).getSqlNode() ;
         SqlNode n = SqlSelectBlock.distinct(request, sqlSubOp) ;
         return new OpSQL(n, opDistinct, request) ; 
+    }
+    
+    @Override
+    public Op transform(OpProject opProject, Op subOp)
+    { 
+        
+        if ( ! QC.isOpSQL(subOp) )
+            return super.transform(opProject, subOp) ;
+        // Project doe with the bridge - need SQLBrdige now!
+        
+//        SqlNode sqlSubOp = ((OpSQL)subOp).getSqlNode() ;
+//        SqlNode n = SqlSelectBlock.project(????????)
+//        return new OpSQL(n, opProject, request) ; 
+        return super.transform(opProject, subOp) ;
     }
     
     @Override
