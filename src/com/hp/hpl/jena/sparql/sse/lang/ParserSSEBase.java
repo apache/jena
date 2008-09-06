@@ -34,20 +34,21 @@ public class ParserSSEBase extends ParserBase
     protected void emitIRI(int line, int column, String iriStr)
     { handler.emitIRI(line, column, iriStr) ; }
 
-//    public void emitLiteral(int line, int column, String lex, String lang, String datatype)
-//    {}
-
     protected void emitPName(int line, int column, String pname)
     { handler.emitPName(line, column, pname) ; }
 
     protected void emitSymbol(int line, int column, String pname)
-    { handler.emitSymbol(line, column, pname) ; }
+    {
+        // XXX Fix escapes
+        handler.emitSymbol(line, column, pname) ;
+    }
 
     protected void emitVar(int line, int column, String varName)
     { handler.emitVar(line, column, varName) ; }
     
     protected void emitLiteral(int currLine, int currColumn, String lex, String lang, String dt_iri, String dt_pname)
     { 
+        // XXX Fix escapes
         if ( lang != null )
         {
             if ( dt_iri != null || dt_pname != null )
