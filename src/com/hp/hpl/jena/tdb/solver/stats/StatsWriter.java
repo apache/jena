@@ -58,12 +58,20 @@ public class StatsWriter
 
 //        System.out.println("Nodes") ;
         
-        addPair(statsList, "timestamp", NodeFactory.nowAsDateTime()) ;
-        addPair(statsList, "run@",  Utils.nowAsString()) ;
-        addPair(statsList, "count", integer(count)) ;
+        Item meta = Item.createList() ;
+        addPair(meta.getList(), "timestamp", NodeFactory.nowAsDateTime()) ;
+        addPair(meta.getList(), "run@",  Utils.nowAsString()) ;
+        addPair(meta.getList(), "count", integer(count)) ;
+        addPair(statsList, Item.createSymbol("meta"), meta) ;
+        
         for ( NodeId p : predicateIds.keySet() )
         {
-            Node n = graph.getNodeTable().retrieveNodeByNodeId(p) ; 
+            Node n = graph.getNodeTable().retrieveNodeByNodeId(p) ;
+            
+            // Skip these - they just clog things up!
+            if ( n.getURI().startsWith("http://www.w3.org/1999/02/22-rdf-syntax-ns#_") )
+                continue ;
+            
             predicates.put(n, predicateIds.get(p)) ;
             
             addPair(statsList, n, integer(predicateIds.get(p))) ;

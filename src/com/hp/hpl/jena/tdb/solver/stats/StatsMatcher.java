@@ -37,7 +37,7 @@ import com.hp.hpl.jena.sparql.util.Printable;
 
 public class StatsMatcher
 {
-    private static final String STATS = "stats" ; 
+    private static final String WEIGHTS   = "weights" ; 
     private static final Item ANY       = Item.createSymbol("ANY") ;
     private static final Item VAR       = Item.createSymbol("VAR") ;
     private static final Item TERM      = Item.createSymbol("TERM") ;
@@ -94,13 +94,13 @@ public class StatsMatcher
 
     List<Pattern> patterns = new ArrayList<Pattern>() ;
     
-    public StatsMatcher() {}
+    private StatsMatcher() {}
     
     public StatsMatcher(String filename)
     {
         try {
             Item stats = SSE.readFile(filename) ;
-            if ( !stats.isTagged(STATS) )
+            if ( !stats.isTagged(WEIGHTS) )
             {
                 throw new ARQException("Not a stats file: "+filename) ;
             }
@@ -115,7 +115,7 @@ public class StatsMatcher
     
     private void init(Item stats)
     {
-        if ( !stats.isTagged(STATS) )
+        if ( !stats.isTagged(WEIGHTS) )
         {
             throw new ARQException("Not a tagged 'stats'") ;
         }
@@ -124,11 +124,10 @@ public class StatsMatcher
 
         while (!list.isEmpty()) 
         {
-            // Each list element is a pair (pattern, weight)
             Item elt = list.car() ;
-
-            Pattern pattern = new Pattern() ;
             Item w =  elt.getList().get(1) ;
+            
+            Pattern pattern = new Pattern() ;
             pattern.weight = ((Number)(w.getNode().getLiteralValue())).doubleValue() ;
 
             Item pat = elt.getList().get(0) ;
@@ -143,13 +142,12 @@ public class StatsMatcher
         
     private Item intern(Item item)
     {
-        // Becomes sameSymbol when ARQ upgraded
-        if ( item.isSymbolIgnoreCase(ANY.getSymbol()) )         return ANY ;
-        if ( item.isSymbolIgnoreCase(VAR.getSymbol()) )         return VAR ;
-        if ( item.isSymbolIgnoreCase(TERM.getSymbol()) )        return TERM ;
-        if ( item.isSymbolIgnoreCase(URI.getSymbol()) )         return URI ;
-        if ( item.isSymbolIgnoreCase(LITERAL.getSymbol()) )     return LITERAL ;
-        if ( item.isSymbolIgnoreCase(BNODE.getSymbol()) )       return BNODE ;
+        if ( item.sameSymbol(ANY.getSymbol()) )         return ANY ;
+        if ( item.sameSymbol(VAR.getSymbol()) )         return VAR ;
+        if ( item.sameSymbol(TERM.getSymbol()) )        return TERM ;
+        if ( item.sameSymbol(URI.getSymbol()) )         return URI ;
+        if ( item.sameSymbol(LITERAL.getSymbol()) )     return LITERAL ;
+        if ( item.sameSymbol(BNODE.getSymbol()) )       return BNODE ;
         return item ;
     }
     
