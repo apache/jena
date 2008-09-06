@@ -5,7 +5,7 @@
   (stats
     (meta
       ((timestamp "2008-09-06T20:58:11.119+01:00"^^<http://www.w3.org/2001/XMLSchema#dateTime>)
-	(run@ "2008/09/06 20:58:11")
+       (run@ "2008/09/06 20:58:11")
        (count 344195)))
 
     ((ANY :ifp TERM) 1.1)
@@ -13,14 +13,5 @@
     (<http://www.w3.org/1999/02/22-rdf-syntax-ns#type> 73512)
     (<http://purl.org/dc/elements/1.1/title> 44382)
     (<http://purl.org/dc/elements/1.1/creator> 34181)
-    (<http://musicbrainz.org/mm/mm-2.1#duration> 30288)
-    (<http://musicbrainz.org/mm/mm-2.1#trmidList> 22710)
-    (<http://musicbrainz.org/mm/mm-2.1#sortName> 10201)
-    (<http://musicbrainz.org/mm/mm-2.1#artistType> 2797)
-    (<http://musicbrainz.org/mm/mm-2.1#beginDate> 1528)
-    (<http://musicbrainz.org/mm/mq-1.1#status> 3187)
-    (<http://musicbrainz.org/mm/mm-2.1#endDate> 323)
-    (<http://purl.org/dc/elements/1.1/comment> 163)
-    (<http://musicbrainz.org/mm/mm-2.1#trackList> 2910)
     (<http://musicbrainz.org/mm/mq-1.1#error> 23)
   ))
