@@ -14,7 +14,6 @@ import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.shared.PrefixMapping;
 
-import com.hp.hpl.jena.sparql.ARQException;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext;
 import com.hp.hpl.jena.sparql.sse.Item;
 import com.hp.hpl.jena.sparql.sse.ItemException;
@@ -23,6 +22,8 @@ import com.hp.hpl.jena.sparql.sse.SSE;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
 import com.hp.hpl.jena.sparql.util.PrintUtils;
 import com.hp.hpl.jena.sparql.util.Printable;
+
+import com.hp.hpl.jena.tdb.TDBException;
 
 /** Stats format:
  * <pre>(stats
@@ -101,9 +102,7 @@ public class StatsMatcher
         try {
             Item stats = SSE.readFile(filename) ;
             if ( !stats.isTagged(TAG) )
-            {
-                throw new ARQException("Not a stats file: "+filename) ;
-            }
+                throw new TDBException("Not a stats file: "+filename) ;
             init(stats) ;
         } catch (ItemException ex)
         {  // Debug
@@ -116,9 +115,7 @@ public class StatsMatcher
     private void init(Item stats)
     {
         if ( !stats.isTagged(TAG) )
-        {
-            throw new ARQException("Not a tagged '"+TAG+"'") ;
-        }
+            throw new TDBException("Not a tagged '"+TAG+"'") ;
 
         ItemList list = stats.getList().cdr();      // Skip tag
 
