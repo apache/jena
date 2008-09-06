@@ -98,7 +98,6 @@ public class Utils
         SimpleDateFormat dFmt = new SimpleDateFormat(fmt) ;
         Date date = cal.getTime() ;
         String lex = dFmt.format(date) ;
-       
         lex = lex+calcTimezone(cal) ;
         return lex ;
     }
