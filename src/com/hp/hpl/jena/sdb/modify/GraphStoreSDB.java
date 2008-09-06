@@ -93,9 +93,9 @@ public class GraphStoreSDB implements GraphStore
         throw new UnsupportedOperationException("Locking must be over all stors on this connection") ;
     }
 
-    public Iterator<?> listGraphNodes()
+    public Iterator<Node> listGraphNodes()
     {
-        return StoreUtils.storeGraphNames(store).iterator() ;
+        return StoreUtils.storeGraphNames(store) ;//.iterator() ;
     }
 
     public int size()

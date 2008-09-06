@@ -17,6 +17,9 @@ import com.hp.hpl.jena.sdb.store.SQLBridgeFactory;
 
 public class SQLBridgeFactory2 implements SQLBridgeFactory
 {
+    
+    public  SQLBridgeFactory2() { }
+    
     public SQLBridge create(SDBRequest request, SqlNode sqlNode, List<Var> projectVars)
     {
         return new SQLBridge2(request, sqlNode, projectVars) ;

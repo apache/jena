@@ -85,6 +85,9 @@ public abstract class QueryCompilerMain implements QueryCompiler
             }
             
             OpSQL opSQL = (OpSQL)op ;
+            if ( opSQL.getBridge() != null )
+                // Already done
+                return ;
 
             // XYZ
             List<Var> projectVars = null ;

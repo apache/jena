@@ -51,8 +51,20 @@ public class RunSDB
     @SuppressWarnings("unchecked")
     public static void main(String ... argv) 
     {
-        
-        
+        {
+            Store store = SDBFactory.connectStore("sdb.ttl") ;
+
+                //SDBFactory.connectNamedModel(store, "http://example/G9") ; 
+            
+            Dataset ds = SDBFactory.connectDataset(store) ;
+            Iterator<Node> nodes = ds.listNames() ;
+            for ( ; nodes.hasNext() ; )
+            {
+                System.out.println("N: "+nodes.next()) ;
+            }
+            System.out.println("END") ;
+            System.exit(0) ;
+        }
         sdb.sdbprint.main("--sdb=sdb.ttl", "SELECT DISTINCT ?g { GRAPH ?g { ?s ?p ?o}}") ;
         System.exit(0) ;
         runQueryDefaultModel("Q.rq", "sdb.ttl") ;

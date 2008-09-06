@@ -10,12 +10,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import com.hp.hpl.jena.graph.Node;
+
 import com.hp.hpl.jena.sdb.StoreDesc;
-import com.hp.hpl.jena.sdb.layout2.LoaderTuplesNodes;
-import com.hp.hpl.jena.sdb.layout2.NodeLayout2;
-import com.hp.hpl.jena.sdb.layout2.SQLBridgeFactory2;
-import com.hp.hpl.jena.sdb.layout2.TableDescQuads;
-import com.hp.hpl.jena.sdb.layout2.TableDescTriples;
+import com.hp.hpl.jena.sdb.layout2.*;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.sql.SDBExceptionSQL;
 import com.hp.hpl.jena.sdb.store.StoreBaseHSQL;

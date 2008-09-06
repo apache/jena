@@ -50,7 +50,7 @@ public class DatasetStoreGraph implements DatasetGraph
 
     public Iterator<Node> listGraphNodes()
     {
-        return StoreUtils.storeGraphNames(store).iterator() ;
+        return StoreUtils.storeGraphNames(store) ;//.iterator() ;
     }
 
     public Lock getLock() { return lock ; }

@@ -8,6 +8,7 @@
 package com.hp.hpl.jena.sdb.util;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import com.hp.hpl.jena.graph.Node;
@@ -73,19 +74,24 @@ public class StoreUtils
         FileManager.get().readModel(model, filename) ;
     }
     
-    public static List<Node> storeGraphNames(Store store)
+    public static Iterator<Node> storeGraphNames(Store store)
     {
-        List<Node> x = new ArrayList<Node>() ;
-        String qs = "SELECT DISTINCT ?g { GRAPH ?g { ?s ?p ?o }}" ;
-        QueryExecution qExec = QueryExecutionFactory.create(qs, SDBFactory.connectDataset(store)) ;
-        ResultSet rs = qExec.execSelect() ;
-        Var var_g = Var.alloc("g") ;
-        while(rs.hasNext())
+        if ( true )
         {
-            Node n = rs.nextBinding().get(var_g) ;
-            x.add(n) ;
+            return store.listNamedGraphs() ;
+        } else {
+            List<Node> x = new ArrayList<Node>() ;
+            String qs = "SELECT DISTINCT ?g { GRAPH ?g { ?s ?p ?o }}" ;
+            QueryExecution qExec = QueryExecutionFactory.create(qs, SDBFactory.connectDataset(store)) ;
+            ResultSet rs = qExec.execSelect() ;
+            Var var_g = Var.alloc("g") ;
+            while(rs.hasNext())
+            {
+                Node n = rs.nextBinding().get(var_g) ;
+                x.add(n) ;
+            }
+            return x.iterator() ;
         }
-        return x ;
     }
 }
 

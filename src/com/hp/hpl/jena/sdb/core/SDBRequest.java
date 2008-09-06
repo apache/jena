@@ -33,9 +33,9 @@ public class SDBRequest extends StoreHolder
     // Per request unique variables.
     private VarAlloc varAlloc = new VarAlloc(AliasesSparql.VarBase) ;
     
-    // See TransformSDB for details of these two.
-    public boolean LeftJoinTranslation = true ;
-    public boolean LimitOffsetTranslation = false ;
+    public boolean LeftJoinTranslation = true ;     // Does the DB support general join expressions? 
+    public boolean LimitOffsetTranslation = false ; // Does the DB grok the Limmit/Offset SQL?
+    public boolean DistinctOnCLOB = false ;         // Is ths DB able to do DISTINCT on CLOBs? 
     
     private Context context ;
 

@@ -17,6 +17,13 @@ import java.util.Set;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.hp.hpl.jena.sparql.algebra.Op;
+import com.hp.hpl.jena.sparql.algebra.TransformCopy;
+import com.hp.hpl.jena.sparql.algebra.op.*;
+import com.hp.hpl.jena.sparql.core.Var;
+import com.hp.hpl.jena.sparql.expr.Expr;
+import com.hp.hpl.jena.sparql.expr.ExprList;
+
 import com.hp.hpl.jena.sdb.core.AliasesSql;
 import com.hp.hpl.jena.sdb.core.SDBRequest;
 import com.hp.hpl.jena.sdb.core.ScopeEntry;
@@ -25,12 +32,8 @@ import com.hp.hpl.jena.sdb.core.sqlnode.SqlSelectBlock;
 import com.hp.hpl.jena.sdb.iterator.Iter;
 import com.hp.hpl.jena.sdb.layout2.expr.RegexCompiler;
 import com.hp.hpl.jena.sdb.shared.SDBInternalError;
-import com.hp.hpl.jena.sparql.algebra.Op;
-import com.hp.hpl.jena.sparql.algebra.TransformCopy;
-import com.hp.hpl.jena.sparql.algebra.op.*;
-import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.sparql.expr.Expr;
-import com.hp.hpl.jena.sparql.expr.ExprList;
+import com.hp.hpl.jena.sdb.store.SQLBridge;
+import com.hp.hpl.jena.sdb.store.SQLBridgeFactory;
 
 public class TransformSDB extends TransformCopy
 {
@@ -160,27 +163,52 @@ public class TransformSDB extends TransformCopy
     @Override
     public Op transform(OpDistinct opDistinct, Op subOp)
     { 
-        // TODO (distinct (project SQL)) 
-        // This is a bottom up rewrite so 
         if ( ! QC.isOpSQL(subOp) )
             return super.transform(opDistinct, subOp) ;
-        SqlNode sqlSubOp = ((OpSQL)subOp).getSqlNode() ;
+        //request.getStore().supportsDistinct() ; 
+        
+        // Derby does not support DISTINCT on CLOBS
+        if ( ! request.DistinctOnCLOB )
+            return super.transform(opDistinct, subOp) ;
+        
+        OpSQL opSubSQL = (OpSQL)subOp ;
+        SqlNode sqlSubOp = opSubSQL.getSqlNode() ;
         SqlNode n = SqlSelectBlock.distinct(request, sqlSubOp) ;
-        return new OpSQL(n, opDistinct, request) ; 
+        OpSQL opSQL = new OpSQL(n, opDistinct, request) ;
+        // Pull up bridge, if any
+        opSQL.setBridge(opSubSQL.getBridge()) ;
+        return opSQL ;
     }
+    
     
     @Override
     public Op transform(OpProject opProject, Op subOp)
     { 
-        
+        //request.getStore().getSQLBridgeFactory().create(request, null, null)
         if ( ! QC.isOpSQL(subOp) )
             return super.transform(opProject, subOp) ;
-        // Project doe with the bridge - need SQLBrdige now!
+        if ( false ) return super.transform(opProject, subOp) ;
         
-//        SqlNode sqlSubOp = ((OpSQL)subOp).getSqlNode() ;
-//        SqlNode n = SqlSelectBlock.project(????????)
-//        return new OpSQL(n, opProject, request) ; 
-        return super.transform(opProject, subOp) ;
+        // Need to not do bridge elsewhere.
+        @SuppressWarnings("unchecked")
+        List<Var> vars = opProject.getVars() ;
+        return doBridge(request, (OpSQL)subOp, vars, opProject) ;
+    }
+    
+    // See QueryCompilerMain.SqlNodesFinisher.visit(OpExt op)
+    // Be careful about being done twice.
+    // SHARE CODE!
+    static private OpSQL doBridge(SDBRequest request, OpSQL opSQL, List<Var> projectVars, Op original)
+    {
+        SqlNode sqlNode = opSQL.getSqlNode() ;
+        SQLBridgeFactory f = request.getStore().getSQLBridgeFactory() ;
+        SQLBridge bridge = f.create(request, sqlNode, projectVars) ;
+        bridge.build();
+        sqlNode = bridge.getSqlNode() ;
+        opSQL = new OpSQL(sqlNode, original, request) ; 
+        opSQL.setBridge(bridge) ;
+        opSQL.resetSqlNode(sqlNode) ;   // New is better?
+        return opSQL ;
     }
     
     @Override

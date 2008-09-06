@@ -52,6 +52,11 @@ public class Compile
             request.LimitOffsetTranslation = false ;        // ?? H2 does not like the nested SQL.
         }
         
+        if ( StoreUtils.isDerby(store) )
+        {
+            request.DistinctOnCLOB = false ;
+        }
+        
         if ( StoreUtils.isPostgreSQL(store) || StoreUtils.isMySQL(store) )
             request.LimitOffsetTranslation = true ;
 

@@ -6,12 +6,23 @@
 
 package com.hp.hpl.jena.sdb.layout2;
 
+import static com.hp.hpl.jena.sdb.sql.SQLUtils.sqlStr;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+import com.hp.hpl.jena.graph.Node;
+
 import com.hp.hpl.jena.sdb.Store;
 import com.hp.hpl.jena.sdb.StoreDesc;
 import com.hp.hpl.jena.sdb.compiler.QueryCompilerFactory;
 import com.hp.hpl.jena.sdb.core.sqlnode.GenerateSQL;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.sql.SDBConnectionHolder;
+import com.hp.hpl.jena.sdb.sql.SDBExceptionSQL;
 import com.hp.hpl.jena.sdb.sql.TableUtils;
 import com.hp.hpl.jena.sdb.store.DatabaseType;
 import com.hp.hpl.jena.sdb.store.LayoutType;
@@ -95,6 +106,33 @@ public abstract class StoreBase
     public TableDescNodes   getNodeTableDesc()                 { return nodeTableDesc ; }
     public TableDescTriples getTripleTableDesc()               { return tripleTableDesc ; }
     public TableDescQuads   getQuadTableDesc()                 { return quadTableDesc ; }
+ 
+    public Iterator<Node> listNamedGraphs()
+    {
+        // Only works for Store layout2.  Layout1 overrides and removes.
+        // Name of column that is the node id type (hash or id).
+        String idCol = getNodeTableDesc().getNodeRefColName() ;
+        
+        String str = sqlStr("SELECT Nodes.lex, Nodes.type",
+                            "FROM",
+                            "    (SELECT DISTINCT g FROM Quads) AS Q",
+                            "  LEFT OUTER JOIN",
+                            "    Nodes",
+                            "ON Q.g = Nodes."+idCol) ;
+        List<Node> nodes = new ArrayList<Node>() ; 
+        try {
+            ResultSet res = getConnection().exec(str).get() ;
+            while(res.next())
+            {
+                String x = res.getString("lex") ;
+                // CHECK type
+                nodes.add(Node.createURI(x)) ;
+            }
+            return nodes.iterator();
+        } catch (SQLException e) {
+            throw new SDBExceptionSQL("Failed to get graph size", e);
+        }
+    }
 }
 
 /*
