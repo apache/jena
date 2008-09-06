@@ -37,7 +37,7 @@ import com.hp.hpl.jena.sparql.util.Printable;
 
 public class StatsMatcher
 {
-    private static final String WEIGHTS   = "weights" ; 
+    private static final String TAG     = "stats" ; 
     private static final Item ANY       = Item.createSymbol("ANY") ;
     private static final Item VAR       = Item.createSymbol("VAR") ;
     private static final Item TERM      = Item.createSymbol("TERM") ;
@@ -100,7 +100,7 @@ public class StatsMatcher
     {
         try {
             Item stats = SSE.readFile(filename) ;
-            if ( !stats.isTagged(WEIGHTS) )
+            if ( !stats.isTagged(TAG) )
             {
                 throw new ARQException("Not a stats file: "+filename) ;
             }
@@ -115,28 +115,46 @@ public class StatsMatcher
     
     private void init(Item stats)
     {
-        if ( !stats.isTagged(WEIGHTS) )
+        if ( !stats.isTagged(TAG) )
         {
-            throw new ARQException("Not a tagged 'stats'") ;
+            throw new ARQException("Not a tagged '"+TAG+"'") ;
         }
 
         ItemList list = stats.getList().cdr();      // Skip tag
 
         while (!list.isEmpty()) 
         {
+            
             Item elt = list.car() ;
-            Item w =  elt.getList().get(1) ;
+            list = list.cdr();
+            
+            Item pat = elt.getList().get(0) ;
+
+            if ( elt.isTagged("meta") )
+                // Get count.
+                continue ;
             
             Pattern pattern = new Pattern() ;
-            pattern.weight = ((Number)(w.getNode().getLiteralValue())).doubleValue() ;
+            if ( pat.isNode() )
+            {
+                // Just the predicate. Shorthand for ANY predicate ANY
+                pattern.weight = ((Number)(elt.getList().get(1).getNode().getLiteralValue())).doubleValue() ;
+                pattern.subjItem = ANY ;
+                pattern.predItem = pat ;
+                pattern.objItem = ANY ;
+                
+            }
+            else
+            {
+                Item w =  elt.getList().get(1) ;
 
-            Item pat = elt.getList().get(0) ;
-            pattern.subjItem = intern(pat.getList().get(0)) ;
-            pattern.predItem = intern(pat.getList().get(1)) ;
-            pattern.objItem = intern(pat.getList().get(2)) ;
+                pattern.weight = ((Number)(w.getNode().getLiteralValue())).doubleValue() ;
+                pattern.subjItem = intern(pat.getList().get(0)) ;
+                pattern.predItem = intern(pat.getList().get(1)) ;
+                pattern.objItem = intern(pat.getList().get(2)) ;
+            }
             patterns.add(pattern) ;
             // Round and round
-            list = list.cdr();
         }
     }
         

@@ -35,6 +35,7 @@ import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 import com.hp.hpl.jena.tdb.base.recordfile.RecordBufferPage;
 import com.hp.hpl.jena.tdb.base.recordfile.RecordBufferPageMgr;
 import com.hp.hpl.jena.tdb.pgraph.GraphTDB;
+import com.hp.hpl.jena.tdb.solver.stats.StatsMatcher;
 import com.hp.hpl.jena.tdb.sys.Const;
 
 public class Run
@@ -52,7 +53,9 @@ public class Run
     {
         if ( true )
         {
-            tdb.tdbstats.main(new String[0]) ;
+            //tdb.tdbstats.main(new String[0]) ;
+            StatsMatcher matcher = new StatsMatcher("stats.sse") ;
+            matcher.printSSE(System.out) ;
             System.exit(0) ;
         }
         
