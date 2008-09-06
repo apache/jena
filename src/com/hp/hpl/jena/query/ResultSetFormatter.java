@@ -34,14 +34,16 @@ import com.hp.hpl.jena.sparql.util.ALog;
 public class ResultSetFormatter
 {
     /**
-     * Output a result set in a text format.
+     * Output a result set in a text format.  The result set is consumed.
+     * Use @see{ResultSetFactory.makeRewindable(ResultSet)} for a rewindable one.
      * @param qresults   result set
      */
     public static void out(ResultSet qresults)
     { out(System.out, qresults) ; }
 
     /**
-     * Output a result set in a text format.
+     * Output a result set in a text format.  The result set is consumed.
+     * Use @see{ResultSetFactory.makeRewindable(ResultSet)} for a rewindable one.
      * @param out        OutputStream
      * @param qresults   result set
      */
@@ -49,7 +51,8 @@ public class ResultSetFormatter
     { out(out, qresults, (PrefixMapping)null) ; }
     
     /**
-     * Output a result set in a text format.
+     * Output a result set in a text format.  The result set is consumed.
+     * Use @see{ResultSetFactory.makeRewindable(ResultSet)} for a rewindable one.
      * @param qresults   result set
      * @param query     May be used to abbreviate URIs 
      */
@@ -57,7 +60,8 @@ public class ResultSetFormatter
     { out(System.out, qresults, query) ; }
     
     /**
-     * Output a result set in a text format.
+     * Output a result set in a text format.  The result set is consumed.
+     * Use @see{ResultSetFactory.makeRewindable(ResultSet)} for a rewindable one.
      * @param qresults   result set
      * @param prologue   May be used to abbreviate URIs 
      */
@@ -74,7 +78,8 @@ public class ResultSetFormatter
 //    { out(out, qresults, query.getPrefixMapping()) ; }
     
     /**
-     * Output a result set in a text format.
+     * Output a result set in a text format.  The result set is consumed.
+     * Use @see{ResultSetFactory.makeRewindable(ResultSet)} for a rewindable one.
      * @param qresults  result set
      * @param pmap      Prefix mapping for abbreviating URIs.
      */
@@ -82,7 +87,8 @@ public class ResultSetFormatter
     { out(System.out, qresults, pmap) ; }
 
     /**
-     * Output a result set in a text format.
+     * Output a result set in a text format.  The result set is consumed.
+     * Use @see{ResultSetFactory.makeRewindable(ResultSet)} for a rewindable one.
      * @param out       OutputStream
      * @param qresults  result set
      * @param pmap      Prefix mapping for abbreviating URIs.
@@ -94,7 +100,8 @@ public class ResultSetFormatter
     }
 
     /**
-     * Output a result set in a text format.
+     * Output a result set in a text format.  The result set is consumed.
+     * Use @see{ResultSetFactory.makeRewindable(ResultSet)} for a rewindable one.
      * @param out       OutputStream
      * @param qresults  result set
      * @param prologue  Prologue, used to abbreviate IRIs
