@@ -6,31 +6,14 @@
 
 package com.hp.hpl.jena.sdb.layout2;
 
-import static com.hp.hpl.jena.sdb.sql.SQLUtils.sqlStr;
-
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
-import com.hp.hpl.jena.graph.Node;
-
 import com.hp.hpl.jena.sdb.Store;
 import com.hp.hpl.jena.sdb.StoreDesc;
 import com.hp.hpl.jena.sdb.compiler.QueryCompilerFactory;
 import com.hp.hpl.jena.sdb.core.sqlnode.GenerateSQL;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.sql.SDBConnectionHolder;
-import com.hp.hpl.jena.sdb.sql.SDBExceptionSQL;
 import com.hp.hpl.jena.sdb.sql.TableUtils;
-import com.hp.hpl.jena.sdb.store.DatabaseType;
-import com.hp.hpl.jena.sdb.store.LayoutType;
-import com.hp.hpl.jena.sdb.store.SQLBridgeFactory;
-import com.hp.hpl.jena.sdb.store.SQLGenerator;
-import com.hp.hpl.jena.sdb.store.StoreConfig;
-import com.hp.hpl.jena.sdb.store.StoreFormatter;
-import com.hp.hpl.jena.sdb.store.StoreLoader;
+import com.hp.hpl.jena.sdb.store.*;
 
 public abstract class StoreBase 
     extends SDBConnectionHolder
@@ -107,32 +90,44 @@ public abstract class StoreBase
     public TableDescTriples getTripleTableDesc()               { return tripleTableDesc ; }
     public TableDescQuads   getQuadTableDesc()                 { return quadTableDesc ; }
  
-    public Iterator<Node> listNamedGraphs()
-    {
-        // Only works for Store layout2.  Layout1 overrides and removes.
-        // Name of column that is the node id type (hash or id).
-        String idCol = getNodeTableDesc().getNodeRefColName() ;
-        
-        String str = sqlStr("SELECT Nodes.lex, Nodes.type",
-                            "FROM",
-                            "    (SELECT DISTINCT g FROM Quads) AS Q",
-                            "  LEFT OUTER JOIN",
-                            "    Nodes",
-                            "ON Q.g = Nodes."+idCol) ;
-        List<Node> nodes = new ArrayList<Node>() ; 
-        try {
-            ResultSet res = getConnection().exec(str).get() ;
-            while(res.next())
-            {
-                String x = res.getString("lex") ;
-                // CHECK type
-                nodes.add(Node.createURI(x)) ;
-            }
-            return nodes.iterator();
-        } catch (SQLException e) {
-            throw new SDBExceptionSQL("Failed to get graph size", e);
-        }
-    }
+//    public Iterator<Node> listNamedGraphs()
+//    {
+//        // Only works for Store layout2.  Layout1 overrides and removes.
+//        // Name of column that is the node id type (hash or id).
+//        String idCol = getNodeTableDesc().getNodeRefColName() ;
+//        
+//        // %1$s - node table name
+//        // %2$s - quad table name
+//        // %3$s - node column
+//        String str = sqlStr("SELECT %1$s.lex, %1$s.type",
+//                            "FROM",
+//                            "    (SELECT DISTINCT g FROM %2$s) AS Q",
+//                            "  LEFT OUTER JOIN",
+//                            "    %1$s",
+//                            "ON Q.g = %1$s."+idCol) ;
+//        str = String.format(str, getNodeTableDesc().getTableName(),
+//                            getQuadTableDesc().getTableName(),
+//                            idCol) ;
+//        
+//        List<Node> nodes = new ArrayList<Node>() ; 
+//        try {
+//            ResultSet res = getConnection().exec(str).get() ;
+//            while(res.next())
+//            {
+//                String lex = res.getString("lex") ;
+//
+//                // Check type
+//                int type = res.getInt("type") ;
+//                if ( type != ValueType.URI.getTypeId() )
+//                    ALog.warn(this, "Non-URI for graph name: (lexical form: "+lex) ;
+//                
+//                nodes.add(Node.createURI(lex)) ;
+//            }
+//            return nodes.iterator();
+//        } catch (SQLException e) {
+//            throw new SDBExceptionSQL("Failed to get graph size", e);
+//        }
+//    }
 }
 
 /*

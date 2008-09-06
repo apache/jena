@@ -17,6 +17,8 @@ import java.util.Set;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.hp.hpl.jena.graph.Node;
+
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.TransformCopy;
 import com.hp.hpl.jena.sparql.algebra.op.*;
@@ -27,9 +29,12 @@ import com.hp.hpl.jena.sparql.expr.ExprList;
 import com.hp.hpl.jena.sdb.core.AliasesSql;
 import com.hp.hpl.jena.sdb.core.SDBRequest;
 import com.hp.hpl.jena.sdb.core.ScopeEntry;
+import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlSelectBlock;
+import com.hp.hpl.jena.sdb.core.sqlnode.SqlTable;
 import com.hp.hpl.jena.sdb.iterator.Iter;
+import com.hp.hpl.jena.sdb.layout2.TableDescQuads;
 import com.hp.hpl.jena.sdb.layout2.expr.RegexCompiler;
 import com.hp.hpl.jena.sdb.shared.SDBInternalError;
 import com.hp.hpl.jena.sdb.store.SQLBridge;
@@ -197,7 +202,7 @@ public class TransformSDB extends TransformCopy
     
     // See QueryCompilerMain.SqlNodesFinisher.visit(OpExt op)
     // Be careful about being done twice.
-    // SHARE CODE!
+    // XXX SHARE CODE!
     static private OpSQL doBridge(SDBRequest request, OpSQL opSQL, List<Var> projectVars, Op original)
     {
         SqlNode sqlNode = opSQL.getSqlNode() ;
@@ -293,6 +298,28 @@ public class TransformSDB extends TransformCopy
         @SuppressWarnings("unchecked")
         Set<Var> vars = expr.getVarsMentioned() ;
         return vars ;
+    }
+    
+    @Override
+    public Op transform(OpDatasetNames opDatasetNames)
+    {
+        if ( false )
+            return super.transform(opDatasetNames) ;
+        
+        // Basically, an implementation of "GRAPH ?g {}" 
+        Node g  = opDatasetNames.getGraphNode() ;
+        if ( ! Var.isVar(g) )
+            throw new SDBInternalError("OpDatasetNames - not a variable: "+g) ;
+        Var v = Var.alloc(g) ;
+
+        // Inner SELECT SQL: (SELECT DISTINCT g FROM Quads)
+        TableDescQuads quads = request.getStore().getQuadTableDesc() ;
+        SqlTable sqlTableQ = new SqlTable(quads.getTableName()) ;
+        sqlTableQ.setIdColumnForVar(v, new SqlColumn(sqlTableQ, quads.getGraphColName())) ;
+        SqlNode sqlNodeQ = SqlSelectBlock.distinct(request, sqlTableQ) ;
+        
+        // Will have the value left join added later. 
+        return new OpSQL(sqlNodeQ, opDatasetNames, request) ;
     }
     
     // ---- Misc

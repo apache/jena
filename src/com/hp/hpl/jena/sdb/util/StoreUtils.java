@@ -76,22 +76,17 @@ public class StoreUtils
     
     public static Iterator<Node> storeGraphNames(Store store)
     {
-        if ( true )
+        List<Node> x = new ArrayList<Node>() ;
+        String qs = "SELECT ?g { GRAPH ?g { }}" ;
+        QueryExecution qExec = QueryExecutionFactory.create(qs, SDBFactory.connectDataset(store)) ;
+        ResultSet rs = qExec.execSelect() ;
+        Var var_g = Var.alloc("g") ;
+        while(rs.hasNext())
         {
-            return store.listNamedGraphs() ;
-        } else {
-            List<Node> x = new ArrayList<Node>() ;
-            String qs = "SELECT DISTINCT ?g { GRAPH ?g { ?s ?p ?o }}" ;
-            QueryExecution qExec = QueryExecutionFactory.create(qs, SDBFactory.connectDataset(store)) ;
-            ResultSet rs = qExec.execSelect() ;
-            Var var_g = Var.alloc("g") ;
-            while(rs.hasNext())
-            {
-                Node n = rs.nextBinding().get(var_g) ;
-                x.add(n) ;
-            }
-            return x.iterator() ;
+            Node n = rs.nextBinding().get(var_g) ;
+            x.add(n) ;
         }
+        return x.iterator() ;
     }
 }
 

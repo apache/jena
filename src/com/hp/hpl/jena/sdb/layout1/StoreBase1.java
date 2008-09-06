@@ -6,15 +6,12 @@
 
 package com.hp.hpl.jena.sdb.layout1;
 
-import java.util.Iterator;
-
 import com.hp.hpl.jena.graph.Node;
 
 import com.hp.hpl.jena.sdb.Store;
 import com.hp.hpl.jena.sdb.StoreDesc;
 import com.hp.hpl.jena.sdb.compiler.QueryCompilerFactory;
 import com.hp.hpl.jena.sdb.core.sqlnode.GenerateSQL;
-import com.hp.hpl.jena.sdb.iterator.NullIterator;
 import com.hp.hpl.jena.sdb.layout2.TableDescNodes;
 import com.hp.hpl.jena.sdb.layout2.TableDescQuads;
 import com.hp.hpl.jena.sdb.layout2.TableDescTriples;
@@ -101,10 +98,11 @@ public class StoreBase1
     public TableDescTriples getTripleTableDesc()               { return tripleTable ; }
     public TableDescQuads   getQuadTableDesc()                 { return null ; }
 
-    public Iterator<Node> listNamedGraphs()
-    {
-        return new NullIterator<Node>() ;
-    }
+//    @Override
+//    public Iterator<Node> listNamedGraphs()
+//    {
+//        return new NullIterator<Node>() ;
+//    }
 }
 
 

@@ -6,8 +6,6 @@
 
 package com.hp.hpl.jena.sdb;
 
-import java.util.Iterator;
-
 import com.hp.hpl.jena.graph.Node;
 
 import com.hp.hpl.jena.sdb.compiler.QueryCompilerFactory;
@@ -85,8 +83,9 @@ public interface Store
     /** Location of the nodes in the store (if meaningful) */  
     public TableDescNodes       getNodeTableDesc() ;
 
-    /** List the Nodes of the named graphs */
-    public Iterator<Node> listNamedGraphs() ;
+    // Use the SPARQL query : SELECT ?g {GRAPH ?g {}}
+//    /** List the Nodes of the named graphs */
+//    public Iterator<Node> listNamedGraphs() ;
 }
 
 /*

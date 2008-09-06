@@ -11,6 +11,7 @@ sdb:DatasetStore rdfs:subClassOf ja:RDFDataset .
     sdb:store <#store> .
 
 <#store> rdf:type sdb:Store ;
+##    sdb:layout         "layout2/index" ;
     sdb:layout         "layout2/hash" ;
     sdb:connection     <#conn> .
 
@@ -21,7 +22,7 @@ sdb:DatasetStore rdfs:subClassOf ja:RDFDataset .
 
 ##      sdb:sdbHost        "localhost" ;
 ##      sdb:sdbType        "derby" ;
-##      sdb:sdbName        "DB/test2" ;
+##      sdb:sdbName        "DB/derby" ;
 
 ##     sdb:sdbType       "MySQL" ;
 ##     sdb:sdbHost       "localhost" ;
@@ -35,5 +36,3 @@ sdb:DatasetStore rdfs:subClassOf ja:RDFDataset .
 ##     sdb:sdbHost        "localhost" ;
 ##     sdb:sdbName        "test2-hash" ;
      .
-
-

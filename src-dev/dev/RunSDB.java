@@ -51,6 +51,7 @@ public class RunSDB
     @SuppressWarnings("unchecked")
     public static void main(String ... argv) 
     {
+        if ( false )
         {
             Store store = SDBFactory.connectStore("sdb.ttl") ;
 
