@@ -50,6 +50,12 @@ public class Run
     
     public static void main(String ... args) throws IOException
     {
+        if ( true )
+        {
+            tdb.tdbstats.main(new String[0]) ;
+            System.exit(0) ;
+        }
+        
         //smallGraph() ;
         //tdbloader("--desc=tdb.ttl", "--mem", "/home/afs/Datasets/MusicBrainz/tracks.nt") ;
         

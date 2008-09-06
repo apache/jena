@@ -8,11 +8,7 @@ package dev;
 
 public class Dev
 {
-    // Check MRSW concurrency under load
-    //   Caches: NodeTableBase
-    //   ObjectFileDisk (no need - protected by cache use)
-    
-    
+    // tdbloader (script) to work on gzip files 
     
     // ---- Build and release
     // 1 -- Sources and javadoc to maven // -source and -javadoc - how to generate in ivy?
