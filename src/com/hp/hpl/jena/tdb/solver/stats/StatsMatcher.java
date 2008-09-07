@@ -28,6 +28,7 @@ import com.hp.hpl.jena.tdb.TDBException;
 /** Stats format:
  * <pre>(stats
  *    ((S P O) weight)
+ *    (<predicate uri> weight)
  *  )</pre>
  * where <code>S</code>, <code>P</code>, <code>O</code> is a URI, variable, 
  * literal or one of the words <code>ANY</code> (matches anything), 
