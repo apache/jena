@@ -101,7 +101,11 @@ public class StatsMatcher
         int anyMatches = 0 ;
     }
 
+    // A better structure would be a hierarchy based on P,S,O
+    // because P is often fixed.
     List<Pattern> patterns = new ArrayList<Pattern>() ;
+    
+    //Map<Item, List<Pattern>> patterns = new HashMap<>() ;//new ArrayList<Pattern>() ;
     
     private StatsMatcher() {}
     
