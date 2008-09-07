@@ -9,6 +9,7 @@ package com.hp.hpl.jena.tdb.base.recordfile;
 import java.nio.ByteBuffer;
 
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
+import com.hp.hpl.jena.tdb.sys.Const;
 
 /** The on-disk form of a block of a single RecordBuffer
  * (i.e. not part of a BTree/BPlusTree node).
@@ -20,11 +21,12 @@ public class RecordBufferPage extends RecordBufferPageBase
 {
     // To Constants
 //    final public static int COUNT      = 0 ;
-    final public static int LINK        = 4 ;
-    final public static int OFFSET      = LINK ;
-    final public static int NO_LINK     = -1 ;
+    final public static int LINK            = 4 ;
+    final private static int FIELD_LENGTH   = Const.SizeOfInt ;
 
+    private RecordBufferPageMgr pageMgr ;
     private int link ;
+    
     public int getLink() { return link ; }
     
     public void setLink(int link)
@@ -34,20 +36,33 @@ public class RecordBufferPage extends RecordBufferPageBase
     }
     
     public static int calcRecordSize(RecordFactory factory, int blkSize)
-    { return RecordBufferPageBase.calcRecordSize(factory, blkSize, OFFSET) ; }
+    { return RecordBufferPageBase.calcRecordSize(factory, blkSize, FIELD_LENGTH) ; }
     
     public static int calcBlockSize(RecordFactory factory, int maxRec)
-    { return RecordBufferPageBase.calcBlockSize(factory, maxRec, OFFSET) ; }
+    { return RecordBufferPageBase.calcBlockSize(factory, maxRec, FIELD_LENGTH) ; }
     
     
     /*public*/ RecordBufferPage(int id, int linkId, ByteBuffer byteBuffer,
                             RecordFactory factory, RecordBufferPageMgr recordBufferPageMgr, 
                             int count)
     {
-        super(id, OFFSET, byteBuffer, factory, recordBufferPageMgr, count) ;
+        super(id, FIELD_LENGTH, byteBuffer, factory, count) ;
+        this.pageMgr = recordBufferPageMgr ; 
         this.link = linkId ;
         
     }
+    
+    public final RecordBufferPageMgr getPageMgr()
+    {
+        return pageMgr ;
+    }
+
+    public void setPageMgr(RecordBufferPageMgr recordBufferPageMgr)
+    {
+        this.pageMgr = recordBufferPageMgr ;
+    }
+
+
     
     @Override
     public String toString()

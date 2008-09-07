@@ -24,7 +24,6 @@ import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 final
 public class RecordBufferPageMgr extends BlockConverter<RecordBufferPage>
 {
-    // Abstract a PageMgr?
     public RecordBufferPageMgr(RecordFactory factory, BlockMgr blockMgr)
     {
         super(null, blockMgr) ;
@@ -66,7 +65,7 @@ public class RecordBufferPageMgr extends BlockConverter<RecordBufferPage>
             if ( blkType != BlockType.RECORD_BLOCK )
                 throw new RecordException("Not RECORD_BLOCK: "+blkType) ;
             // Initially empty
-            RecordBufferPage rb = new RecordBufferPage(NO_LINK, NO_LINK, bb, factory, pageMgr, 0) ;
+            RecordBufferPage rb = new RecordBufferPage(NO_ID, NO_ID, bb, factory, pageMgr, 0) ;
             return rb ;
         }
 
@@ -74,8 +73,8 @@ public class RecordBufferPageMgr extends BlockConverter<RecordBufferPage>
         public RecordBufferPage fromByteBuffer(ByteBuffer byteBuffer)
         {
             int count = byteBuffer.getInt(COUNT) ;
-            int linkId = byteBuffer.getInt(OFFSET) ;
-            RecordBufferPage rb = new RecordBufferPage(NO_LINK, linkId, byteBuffer, factory, pageMgr, count) ;
+            int linkId = byteBuffer.getInt(LINK) ;
+            RecordBufferPage rb = new RecordBufferPage(NO_ID, linkId, byteBuffer, factory, pageMgr, count) ;
             return rb ;
         }
 
@@ -85,7 +84,7 @@ public class RecordBufferPageMgr extends BlockConverter<RecordBufferPage>
             int count = rbp.getRecordBuffer().size() ;
             rbp.setCount(count) ;
             rbp.getBackingByteBuffer().putInt(COUNT, rbp.getCount()) ;
-            rbp.getBackingByteBuffer().putInt(OFFSET, rbp.getLink()) ;
+            rbp.getBackingByteBuffer().putInt(LINK, rbp.getLink()) ;
             return rbp.getBackingByteBuffer() ;
         }
     }

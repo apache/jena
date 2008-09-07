@@ -8,9 +8,11 @@ package com.hp.hpl.jena.tdb.base.block;
 
 import java.nio.ByteBuffer;
 
+import com.hp.hpl.jena.tdb.base.page.PageBase;
+
 /** Engine that wraps from blocks to typed (in-memory) representations. */
 
-public class BlockConverter<T>
+public class BlockConverter<T extends PageBase>
 {
     public interface Converter<T>
     { 

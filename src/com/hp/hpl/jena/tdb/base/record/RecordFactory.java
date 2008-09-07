@@ -30,6 +30,12 @@ public class RecordFactory
         return new RecordFactory(keyLength, 0) ;
     }
 
+    /** Create a key-only record, allocating blank space for the key  */
+    public Record createKeyOnly()
+    {
+        return create(new byte[keyLength], null) ;
+    }
+    
     /** Create a key-only record */
     public Record createKeyOnly(Record record)
     {
@@ -48,6 +54,12 @@ public class RecordFactory
         if ( valueLength > 0 )
             v = new byte[valueLength] ;
         return create(key, v) ;
+    }
+    
+    /** Create a record, allocaing space for the key and value (if any) */
+    public Record create()
+    { return create(new byte[keyLength], 
+                    (valueLength > 0) ? new byte[valueLength] : null) ;
     }
     
     /** Create a key and value record */

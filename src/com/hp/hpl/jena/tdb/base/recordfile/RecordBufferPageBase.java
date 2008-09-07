@@ -23,14 +23,15 @@ import com.hp.hpl.jena.tdb.sys.Const;
 
 public class RecordBufferPageBase extends PageBase //implements Page
 {
-    // To Constants
-    final public static int COUNT      = 0 ;
-//    final public static int LINK       = 4 ;
-    final int headerOffset ;
+    // Field offsets
+    final public static int COUNT           = 0 ;
+    final private static int FIELD_LENGTH   = Const.SizeOfInt ;
+    final public static int NO_ID           = -1 ;
+    
+    protected final int headerLength ;
 
     // Interface: "Page" - id, byteBuffer, count
     protected RecordBuffer recBuff ;
-    protected RecordBufferPageMgr pageMgr ;
     
     private int offset ;                // Bytes of overhead.
  
@@ -47,44 +48,36 @@ public class RecordBufferPageBase extends PageBase //implements Page
         return totalOffset(headerOffset) + factory.recordLength()*maxRec ;
     }
     
-    /*public*/ RecordBufferPageBase(int id, int offset, ByteBuffer byteBuffer,
-                            RecordFactory factory, RecordBufferPageMgr recordBufferPageMgr, 
-                            int count)
+    private static int totalOffset(int headerOffset)
+    {
+        return FIELD_LENGTH+headerOffset ;
+    }
+
+    protected RecordBufferPageBase(int id, int offset, 
+                                   ByteBuffer byteBuffer, RecordFactory factory,
+                                   int count)
     {   // This code know the alignment of the records in the ByteBuffer.
         // Move to Block2RecordBufferPage
         super(id, byteBuffer) ;
-        this.headerOffset = totalOffset(offset) ;        // NB +4 for the count field
-        this.pageMgr = null ;
-        byteBuffer.position(headerOffset) ;
+        this.headerLength = FIELD_LENGTH+offset ;        // NB +4 for the count field
+        byteBuffer.position(headerLength) ;
         ByteBuffer bb = byteBuffer.slice();
         this.recBuff = new RecordBuffer(bb, factory, count) ;
     }
 
-    private static int totalOffset(int subClassOffset) { return subClassOffset+Const.SizeOfInt ; }
-    
-    public RecordBuffer getRecordBuffer()
+    public final RecordBuffer getRecordBuffer()
     {
         return recBuff ;
     }
     
-    public RecordBufferPageMgr getPageMgr()
-    {
-        return pageMgr ;
-    }
-
-    public void setPageMgr(RecordBufferPageMgr recordBufferPageMgr)
-    {
-        this.pageMgr = recordBufferPageMgr ;
-    }
-
     @Override
-    public int getCount()
+    public final int getCount()
     {
         return recBuff.size() ;
     }
 
     @Override
-    public int getMaxSize()
+    public final int getMaxSize()
     {
         return recBuff.maxSize() ;
     }
