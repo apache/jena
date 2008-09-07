@@ -38,13 +38,13 @@ import com.hp.hpl.jena.tdb.TDBException;
 
 public class StatsMatcher
 {
-    private static final String TAG     = "stats" ; 
-    private static final Item ANY       = Item.createSymbol("ANY") ;
-    private static final Item VAR       = Item.createSymbol("VAR") ;
-    private static final Item TERM      = Item.createSymbol("TERM") ;
-    private static final Item URI       = Item.createSymbol("URI") ;
-    private static final Item BNODE     = Item.createSymbol("BNODE") ;
-    private static final Item LITERAL   = Item.createSymbol("LITERAL") ;
+    public static final String TAG     = "stats" ; 
+    public static final Item ANY       = Item.createSymbol("ANY") ;
+    public static final Item VAR       = Item.createSymbol("VAR") ;
+    public static final Item TERM      = Item.createSymbol("TERM") ;
+    public static final Item URI       = Item.createSymbol("URI") ;
+    public static final Item BNODE     = Item.createSymbol("BNODE") ;
+    public static final Item LITERAL   = Item.createSymbol("LITERAL") ;
     
     static class Pattern implements Printable
     {
@@ -52,6 +52,14 @@ public class StatsMatcher
         Item predItem ;
         Item objItem ;
         double weight ; 
+        
+        Pattern(double w, Item subj, Item pred, Item obj)
+        {
+            weight = w ;
+            subjItem = subj ;
+            predItem = pred ;
+            objItem = obj ;
+        }        
         
         @Override
         public String toString()
@@ -131,26 +139,26 @@ public class StatsMatcher
                 // Get count.
                 continue ;
             
-            Pattern pattern = new Pattern() ;
+            
             if ( pat.isNode() )
             {
-                // Just the predicate. Shorthand for ANY predicate ANY
-                pattern.weight = ((Number)(elt.getList().get(1).getNode().getLiteralValue())).doubleValue() ;
-                pattern.subjItem = ANY ;
-                pattern.predItem = pat ;
-                pattern.objItem = ANY ;
-                
+                // Generate entries: 
+//                patterns.add(new Pattern(1, TERM, pat, TERM)) ;
+                patterns.add(new Pattern(2,  TERM, pat, ANY)) ;     // S, P, ?
+                patterns.add(new Pattern(10, ANY, pat, TERM)) ;     // ?, P, O
+                patterns.add(new Pattern(((Number)(elt.getList().get(1).getNode().getLiteralValue())).doubleValue(),
+                                         ANY, pat, ANY)) ;          // ?, P, ?
             }
             else
             {
                 Item w =  elt.getList().get(1) ;
-
-                pattern.weight = ((Number)(w.getNode().getLiteralValue())).doubleValue() ;
-                pattern.subjItem = intern(pat.getList().get(0)) ;
-                pattern.predItem = intern(pat.getList().get(1)) ;
-                pattern.objItem = intern(pat.getList().get(2)) ;
+                Pattern pattern = new Pattern(((Number)(w.getNode().getLiteralValue())).doubleValue(),
+                                              intern(pat.getList().get(0)),
+                                              intern(pat.getList().get(1)),
+                                              intern(pat.getList().get(2))) ;
+                patterns.add(pattern) ;
             }
-            patterns.add(pattern) ;
+            
             // Round and round
         }
     }
@@ -166,17 +174,29 @@ public class StatsMatcher
         return item ;
     }
     
-    /** Return the matching weight for the first triple match found, else -1 for no match */
+    
     public double match(Triple t)
     {
+        return match(Item.createNode(t.getSubject()),
+                     Item.createNode(t.getPredicate()),
+                     Item.createNode(t.getObject())) ;
+    }
+    
+    /** Return the matching weight for the first triple match found, else -1 for no match */
+    public double match(Item subj, Item pred, Item obj)
+    {
+        if ( isSet(subj) && isSet(pred) && isSet(obj) )
+            // A set of triples ...
+            return 1.0 ;
+        
         for ( Pattern pattern : patterns )
         {
             Match match = new Match() ;
-            if ( ! matchNode(t.getSubject(), pattern.subjItem, match) )
+            if ( ! matchNode(subj, pattern.subjItem, match) )
                 continue ;
-            if ( ! matchNode(t.getPredicate(), pattern.predItem, match) )
+            if ( ! matchNode(pred, pattern.predItem, match) )
                 continue ;
-            if ( ! matchNode(t.getObject(), pattern.objItem, match) )
+            if ( ! matchNode(obj, pattern.objItem, match) )
                 continue ;
             // First match.
             return pattern.weight ;
@@ -184,8 +204,18 @@ public class StatsMatcher
         return -1 ;
     }
 
+    private static boolean isSet(Item item)
+    {
+        if (item.isNode() && item.getNode().isConcrete() ) return true ;
+        if (item.equals(TERM) ) return true ;
+        if (item.equals(URI) ) return true ;
+        if (item.equals(BNODE) ) return true ;
+        if (item.equals(LITERAL) ) return true ;
+        return false ;
+    }
+    
     /** Return the matching weight for the given triple, else -1 for no match */
-    /*public*/private double match_(Triple t)
+    /*public*/private double match_(Item subj, Item pred, Item obj)
     {
         // Weighted matching.
         // Redo as weight of best, most specifc, match.  
@@ -195,11 +225,11 @@ public class StatsMatcher
         for ( Pattern pattern : patterns )
         {
             Match match = new Match() ;
-            if ( ! matchNode(t.getSubject(), pattern.subjItem, match) )
+            if ( ! matchNode(subj, pattern.subjItem, match) )
                 continue ;
-            if ( ! matchNode(t.getPredicate(), pattern.predItem, match) )
+            if ( ! matchNode(pred, pattern.predItem, match) )
                 continue ;
-            if ( ! matchNode(t.getObject(), pattern.objItem, match) )
+            if ( ! matchNode(obj, pattern.objItem, match) )
                 continue ;
             int m =  (100*match.exactMatches)+(10*match.termMatches)+match.varMatches+match.anyMatches ;
 
@@ -213,7 +243,7 @@ public class StatsMatcher
     }
     
     // Later - isomorphism mapping
-    private boolean matchNode(Node n, Item item, Match details)
+    private boolean matchNode(Item node, Item item, Match details)
     {
         if ( item.equals(ANY) )
         {
@@ -227,6 +257,22 @@ public class StatsMatcher
             return true ;
         }
 
+        if ( node.isSymbol() )
+        {
+            if ( node.equals(TERM) )
+            {
+                if ( item.equals(TERM) )
+                {
+                    details.termMatches ++ ;
+                    return true ;
+                }
+                return false ;
+            }
+
+            throw new TDBException("StatsMatcher: unexpected slot type: "+node) ; 
+        }
+        
+        Node n = node.getNode() ;
         if (  n.isConcrete() )
         {
             if ( item.isNode() && item.getNode().equals(n) )

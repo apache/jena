@@ -21,6 +21,7 @@ import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 
+import com.hp.hpl.jena.sparql.sse.Item;
 import com.hp.hpl.jena.sparql.sse.SSE;
 
 import com.hp.hpl.jena.query.*;
@@ -56,6 +57,10 @@ public class Run
             //tdb.tdbstats.main(new String[0]) ;
             StatsMatcher matcher = new StatsMatcher("stats.sse") ;
             matcher.printSSE(System.out) ;
+            double d = matcher.match(StatsMatcher.TERM, 
+                                     Item.createNode(Node.createURI("http://purl.org/dc/elements/1.1/title")),
+                                     StatsMatcher.TERM) ;
+            System.out.println("Match: "+d) ;
             System.exit(0) ;
         }
         
