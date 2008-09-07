@@ -264,6 +264,7 @@ public class StatsMatcher
 
         if ( node.isSymbol() )
         {
+            //TERM in the thing to be matched means somethign concrete will be there.
             if ( node.equals(TERM) )
             {
                 if ( item.equals(TERM) )
@@ -271,12 +272,16 @@ public class StatsMatcher
                     details.termMatches ++ ;
                     return true ;
                 }
+                // Does not match LITERAL, URI, BNODE and VAR/ANY were done above.
                 return false ;
             }
 
             throw new TDBException("StatsMatcher: unexpected slot type: "+node) ; 
         }
         
+        if ( ! node.isNode() )
+            return false ;
+       
         Node n = node.getNode() ;
         if (  n.isConcrete() )
         {
