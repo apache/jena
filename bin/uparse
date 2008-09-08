@@ -1,0 +1,12 @@
+#!/bin/bash
+
+if [ "$ARQROOT" == "" ]
+then
+    echo "ARQROOT not set" 1>&2
+    exit 1
+    fi
+
+CP="$($ARQROOT/bin/arq_path)"
+CMD="$(basename $0)"
+
+java $SOCKS -cp "$CP" "arq.$CMD" "$@"

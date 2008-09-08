@@ -49,6 +49,10 @@ public class Run
 {
     public static void main(String[] argv) throws Exception
     {
+        
+        arq.uparse.main(new String[]{"--file", "update.ru"}) ;
+        System.exit(0) ;
+        
         if ( true )
         {
 //            Query query = QueryFactory.read("Q.arq", Syntax.syntaxARQ) ;
