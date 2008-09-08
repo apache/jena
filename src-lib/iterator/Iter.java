@@ -94,6 +94,8 @@ public class Iter<T> implements Iterable<T>, Iterator<T>
             action.apply(entry.getKey(), entry.getValue()) ;
     }
     
+    // ---- Filter
+    
     public static <T> Iterator<T> filter(Iterable<? extends T> stream, Filter<T> filter)
     { return filter(stream.iterator(), filter) ; }
 
@@ -165,6 +167,52 @@ public class Iter<T> implements Iterable<T>, Iterator<T>
         return filter(stream, flippedFilter) ;
     }
     
+    // Filter-related
+    
+    /** Return true if every element of stream passes the filter (reads the stream) */
+    public static <T> boolean every(Iterable<? extends T> stream, Filter<T> filter)
+    { 
+        for ( T item : stream )
+            if ( ! filter.accept(item) ) 
+                return false ;
+        return true ;
+    }
+
+    /** Return true if every element of stream passes the filter (reads the stream until the first element not passing the filter) */
+    public static <T> boolean every(Iterator<? extends T> stream, Filter<T> filter)
+    { 
+        for ( ; stream.hasNext() ; )
+        {
+            T item = stream.next();
+            if ( ! filter.accept(item) ) 
+                return false ;
+        }
+        return true ;
+    }
+
+    /** Return true if every element of stream passes the filter (reads the stream) */
+    public static <T> boolean some(Iterable<? extends T> stream, Filter<T> filter)
+    { 
+        for ( T item : stream )
+            if ( filter.accept(item) ) 
+                return true ;
+        return false ;
+    }
+
+    /** Return true if one or more elements of stream passes the filter (reads the stream to first element passing the filter) */
+    public static <T> boolean some(Iterator<? extends T> stream, Filter<T> filter)
+    { 
+        for ( ; stream.hasNext() ; )
+        {
+            T item = stream.next();
+            if ( filter.accept(item) ) 
+                return true ;
+        }
+        return false ;
+    }
+
+    
+    // ---- Map
 
     public static <T, R> Iterator<R> map(Iterable<? extends T> stream, Transform<T, R> converter)
     { return map(stream.iterator(), converter) ; }
@@ -325,6 +373,16 @@ public class Iter<T> implements Iterable<T>, Iterator<T>
         return iter(filter(iterator, filter)) ;
     }
 
+    public boolean every(Filter<T> filter)
+    {
+        return every(iterator, filter) ;
+    }
+    
+    public boolean some(Filter<T> filter)
+    {
+        return some(iterator, filter) ;
+    }
+    
     public Iter<T> removeNulls()
     {
         return filter(new FilterOutNulls<T>()) ;
