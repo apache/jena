@@ -11,7 +11,8 @@ package dev;
 
 public class Dev
 {
-    // Dev: escapes in Literals and symbols (ParseSSBase)
+    // Dev: escapes in Literals and symbols in SSE (ParseSSBase)
+    // Need configurable escape processing.
     
     // ** Quads and paths interaction (not interacting currently).
     // See Quadization
