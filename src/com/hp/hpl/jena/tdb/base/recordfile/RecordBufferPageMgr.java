@@ -42,7 +42,6 @@ public class RecordBufferPageMgr extends BlockConverter<RecordBufferPage>
     public RecordBufferPage get(int id)
     {
         RecordBufferPage rbp = super.get(id) ;
-        rbp.setId(id) ;
         rbp.setPageMgr(this) ;
         // Link and Count are in the block and got done by the converter.
         return rbp ;

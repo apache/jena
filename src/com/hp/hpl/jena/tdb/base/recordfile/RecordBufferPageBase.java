@@ -26,7 +26,6 @@ public class RecordBufferPageBase extends PageBase //implements Page
     // Field offsets
     final public static int COUNT           = 0 ;
     final private static int FIELD_LENGTH   = Const.SizeOfInt ;
-    final public static int NO_ID           = -1 ;
     
     protected final int headerLength ;
 

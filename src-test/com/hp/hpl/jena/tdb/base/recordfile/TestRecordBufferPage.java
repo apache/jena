@@ -51,7 +51,7 @@ public class TestRecordBufferPage extends BaseTest
             RecordBufferPage page1 = rpm.create(x) ;
             fill(page1.getRecordBuffer(), 10, 20, 30) ;
             // Now forget it.
-            rpm.put(x, page1) ;
+            rpm.put(page1) ;
             page1 = null ;
         }
         {

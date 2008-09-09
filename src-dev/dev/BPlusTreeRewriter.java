@@ -217,7 +217,7 @@ public class BPlusTreeRewriter
             if ( currentPage == null )
                 return ;
             currentPage.setLink(linkId) ;
-            recordPageMgr.put(currentPage.getId(), currentPage) ;
+            recordPageMgr.put(currentPage) ;
             blockCount++ ;
             currentBuffer = null ;
         }

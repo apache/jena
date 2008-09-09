@@ -45,7 +45,7 @@ final class BPTreeRecordsMgr
     
     public void put(BPTreeRecords bRec)
     {
-        rBuffPageMgr.put(bRec.getId(), bRec.getRecordBufferPage()) ;
+        rBuffPageMgr.put(bRec.getRecordBufferPage()) ;
     }
 
     public void release(int id)     { rBuffPageMgr.release(id) ; }

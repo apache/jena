@@ -13,6 +13,8 @@ import io.Printable;
 /** Abstract of a bytebuffer, a block type, an id and a count */
 public interface Page extends Printable
 {
+    public static final int NO_ID   = -1 ;
+    
     /** Return the nodes id */ 
 //    public final int getId()                { return id ; }
 //    public final void setId(int id)         { this.id = id ; }

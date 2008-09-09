@@ -44,6 +44,7 @@ public class BlockConverter<T extends PageBase>
     {
         ByteBuffer bb = blockMgr.allocateBuffer(id) ;
         T newThing = pageFactory.createFromByteBuffer(bb, bType) ;
+        newThing.setId(id) ;
         return newThing ;
     }
     
@@ -52,6 +53,7 @@ public class BlockConverter<T extends PageBase>
     {
         ByteBuffer bb = blockMgr.get(id) ;
         T newThing = pageFactory.fromByteBuffer(bb) ;
+        newThing.setId(id) ;
         return newThing ;
     }
     
@@ -60,6 +62,7 @@ public class BlockConverter<T extends PageBase>
     { 
         ByteBuffer bb = blockMgr.getSilent(id) ;
         T newThing = pageFactory.fromByteBuffer(bb) ;
+        newThing.setId(id) ;
         return newThing ;
     }
 
@@ -67,6 +70,11 @@ public class BlockConverter<T extends PageBase>
     {
         ByteBuffer bb = pageFactory.toByteBuffer(page) ;
         blockMgr.put(id, bb) ;
+    }
+    
+    public void put(T page)
+    {
+        put(page.getId(), page) ;
     }
 
     public void release(int id)     { blockMgr.freeBlock(id) ; }
