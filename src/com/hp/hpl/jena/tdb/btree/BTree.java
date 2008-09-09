@@ -253,7 +253,7 @@ public class BTree implements Iterable<Record>, RangeIndex
     }
     
     @Override
-    public long count()
+    public long size()
     { return -1 ; }
 
     public long sessionTripleCount()

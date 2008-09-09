@@ -4,42 +4,33 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.base.file;
+package com.hp.hpl.jena.tdb.index;
 
-import java.nio.ByteBuffer;
+import lib.RandomLib;
+import test.ExecGenerator;
 
-public abstract class PlainFile
+public class IndexTestGenerator implements ExecGenerator
 {
-    protected long filesize = -1 ;
-    protected ByteBuffer byteBuffer = null ;
-
-    public final ByteBuffer getByteBuffer()
+    int maxNumKeys ;
+    int maxValue ;
+    IndexMaker maker ;
+    
+    public IndexTestGenerator(IndexMaker maker, int maxValue, int maxNumKeys)
     {
-//        if ( byteBuffer == null )
-//            byteBuffer = allocateBuffer(filesize) ;
-        return byteBuffer ;
+        if ( maxValue <= maxNumKeys )
+            throw new IllegalArgumentException("RangeIndexTestGenerator: Max value less than number of keys") ;
+        this.maker = maker ;
+        this.maxValue = maxValue ; 
+        this.maxNumKeys = maxNumKeys ;
     }
     
-    public final ByteBuffer ensure(int newSize)
+    @Override
+    public void executeOneTest()
     {
-        if ( filesize > newSize )
-            return getByteBuffer() ;
-       byteBuffer = allocateBuffer(newSize) ;
-       filesize = newSize ;
-       return byteBuffer ;
+        int numKeys = RandomLib.random.nextInt(maxNumKeys)+1 ;
+        IndexTestLib.randTest(maker.makeIndex(), maxValue, numKeys) ;
     }
-    
-    public final long getFileSize() { return filesize ; }
-    
-    //@Override
-    public abstract void sync(boolean force) ;
-
-    //@Override
-    public abstract void close() ;
-
-    protected abstract ByteBuffer allocateBuffer(long size) ;
 }
-
 /*
  * (c) Copyright 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.

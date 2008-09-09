@@ -30,19 +30,27 @@ import junit.TestBase;
 import com.hp.hpl.jena.tdb.base.record.Record;
 import com.hp.hpl.jena.tdb.base.record.RecordLib;
 
-public class RangeIndexTestLib
+public class IndexTestLib
 {
 
     // ---------- Utilities
     
-    public static RangeIndex buildRangeIndex(RangeIndexMaker maker, int[] keys)
+//    public static RangeIndex buildRangeIndex(RangeIndexMaker maker, int[] keys)
+//    {
+//        RangeIndex index = maker.make() ;
+//        IndexTestLib.add(index, keys) ;
+//        return index ;
+//    }
+
+    public static Index buildIndex(IndexMaker maker, int[] keys)
     {
-        RangeIndex rIndex = maker.make() ;
-        RangeIndexTestLib.add(rIndex, keys) ;
-        return rIndex ;
+        Index index = maker.makeIndex() ;
+        IndexTestLib.add(index, keys) ;
+        return index ;
     }
+
     
-    public static void testIteration(RangeIndex rIndex, int[] keys, int numIterations)
+    public static void testIteration(RangeIndex index, int[] keys, int numIterations)
     {
         // Shared across test-lets
         SortedSet<Integer> x = new TreeSet<Integer>() ;
@@ -66,7 +74,7 @@ public class RangeIndexTestLib
             if ( random.nextFloat() < 0.5 )
                 hi++ ;
             
-            List<Integer> slice = r(rIndex.iterator(r(lo), r(hi))) ;
+            List<Integer> slice = r(index.iterator(r(lo), r(hi))) ;
             List<Integer> expected = new ArrayList<Integer>(keys.length) ;  
             for ( Integer ii : x.subSet(lo, hi) )
                 expected.add(ii) ;
@@ -76,7 +84,7 @@ public class RangeIndexTestLib
 
     /* One random test : print the keys if there was a problem */ 
     
-    public static void randTest(RangeIndexMaker maker, int maxValue, int numKeys)
+    public static void randTest(Index index, int maxValue, int numKeys)
     {
         if ( numKeys >= 3000 )
             System.err.printf("Warning: too many keys\n") ;
@@ -84,20 +92,20 @@ public class RangeIndexTestLib
         int[] keys1 = rand(numKeys, 0, maxValue) ;
         int[] keys2 = permute(keys1, 4*numKeys) ;
         try {
-            RangeIndex rIndex = maker.make() ;
-            testInsert(rIndex, keys1);
+            testInsert(index, keys1);
             if ( true )
             {
                 // Checking tests.
-                testRangeIndex(rIndex, keys2);
+                testRangeIndex(index, keys2);
                 // Test iteration - quite expensive.
-                testIteration(rIndex, keys1, 10) ;
+                if ( index instanceof RangeIndex )
+                    testIteration((RangeIndex)index, keys1, 10) ;
             }
-            testDelete(rIndex, keys2) ;
-            rIndex.close() ;
+            testDelete(index, keys2) ;
+            index.close() ;
         } catch (RuntimeException ex)
         {
-            System.err.printf("Maker : \n", maker.getLabel()) ;
+            System.err.printf("Index : %s\n", index.getClass().getName()) ;
             System.err.printf("int[] keys1 = {%s} ;\n", strings(keys1)) ;
             System.err.printf("int[] keys2 = {%s}; \n", strings(keys2)) ;
             throw ex ;
@@ -106,72 +114,72 @@ public class RangeIndexTestLib
 
     // ---- Test utils
     
-    public static void testInsert(RangeIndex rIndex, int[] keys)
+    public static void testInsert(Index index, int[] keys)
     {
-        RangeIndexTestLib.add(rIndex, keys) ;
-        testRangeIndex(rIndex, keys);
+        IndexTestLib.add(index, keys) ;
+        testRangeIndex(index, keys);
     }
 
-    public static RangeIndex testInsert(RangeIndexMaker maker, int[] keys)
+    public static Index testInsert(IndexMaker maker, int[] keys)
     {
-        RangeIndex rIndex = maker.make() ;
-        testInsert(rIndex, keys);
-        return rIndex ; 
+        Index index = maker.makeIndex() ;
+        testInsert(index, keys);
+        return index ; 
     }
 
-    public static void testInsertDelete(RangeIndex rIndex, int[] buildKeys, int[] deleteKeys)
+    public static void testInsertDelete(Index index, int[] buildKeys, int[] deleteKeys)
     {
-        testInsert(rIndex, buildKeys) ;
-        testDelete(rIndex, deleteKeys) ;
+        testInsert(index, buildKeys) ;
+        testDelete(index, deleteKeys) ;
     }
 
-    public static void testDelete(RangeIndex rIndex, int[] vals)
+    public static void testDelete(Index index, int[] vals)
     {
-        long size1 = rIndex.sessionTripleCount() ;
+        long size1 = index.sessionTripleCount() ;
         int count = 0 ;
-        count = delete(rIndex, vals) ;
+        count = delete(index, vals) ;
     
         List<Record> x =  intToRecord(vals, RecordLib.TestRecordLength) ;
         for ( Record r : x )
         {
-            boolean b = rIndex.delete(r) ;
+            boolean b = index.delete(r) ;
             if ( b )
                 count ++ ;
         }
         
         for ( Record r : x )
-            TestBase.assertFalse(rIndex.contains(r)) ;
-        long size2 = rIndex.sessionTripleCount() ;
+            TestBase.assertFalse(index.contains(r)) ;
+        long size2 = index.sessionTripleCount() ;
         assertEquals(size1-count, size2) ;
     }
 
-    public static int delete(RangeIndex bTree, int[] vals)
+    public static int delete(Index index, int[] vals)
     {
         int count = 0 ;
         for ( int v : vals )
         {
-            boolean b = bTree.delete(r(v)) ;
+            boolean b = index.delete(r(v)) ;
             if ( b )
                 count ++ ;
         }
         return count ;
     }
 
-    public static void add(RangeIndex rIndex, int[] vals)
+    public static void add(Index index, int[] vals)
     {
         List<Record> x = intToRecord(vals, RecordLib.TestRecordLength) ;
         for ( Record r : x )
-            rIndex.add(r) ;
+            index.add(r) ;
     }
 
-    public static void testRangeIndex(RangeIndex rIndex, int[] records)
+    public static void testRangeIndex(Index index, int[] records)
     {
-        List<Integer> x = toIntList(rIndex.iterator());
+        List<Integer> x = toIntList(index.iterator());
         
         // Make a unique list of expected records.  Remove duplicates
         List<Integer> y = unique(asList(records)) ;
         
-        assertEquals("Expected records size and tree size different", y.size(), rIndex.sessionTripleCount()) ;
+        assertEquals("Expected records size and tree size different", y.size(), index.sessionTripleCount()) ;
         assertEquals("Expected records size and iteration over all keys are of different sizes", y.size(), x.size()) ;
         
         // Check sorted order
@@ -188,7 +196,7 @@ public class RangeIndexTestLib
         for ( int k : y)
         {
             Record rec = intToRecord(k) ;
-            Record r2 = rIndex.find(rec) ;
+            Record r2 = index.find(rec) ;
             assertNotNull("Finding "+rec, r2) ;
         }
     }

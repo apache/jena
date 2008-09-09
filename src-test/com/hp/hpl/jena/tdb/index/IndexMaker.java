@@ -6,30 +6,10 @@
 
 package com.hp.hpl.jena.tdb.index;
 
-import lib.RandomLib;
-import test.ExecGenerator;
-
-public class RangeIndexTestGenerator implements ExecGenerator
+public interface IndexMaker
 {
-    int maxNumKeys ;
-    int maxValue ;
-    RangeIndexMaker maker ;
-    
-    public RangeIndexTestGenerator(RangeIndexMaker maker, int maxValue, int maxNumKeys)
-    {
-        if ( maxValue <= maxNumKeys )
-            throw new IllegalArgumentException("BTreeTest: Max value less than number of keys") ;
-        this.maker = maker ;
-        this.maxValue = maxValue ; 
-        this.maxNumKeys = maxNumKeys ;
-    }
-    
-    @Override
-    public void executeOneTest()
-    {
-        int numKeys = RandomLib.random.nextInt(maxNumKeys)+1 ;
-        RangeIndexTestLib.randTest(maker, maxValue, numKeys) ;
-    }
+    Index makeIndex() ;
+    String getLabel() ;
 }
 /*
  * (c) Copyright 2008 Hewlett-Packard Development Company, LP

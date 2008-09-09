@@ -32,7 +32,7 @@ public class TestBPlusTree extends TestRangeIndex
     
     
     @Override
-    protected RangeIndex make(int order, int minRecords)
+    protected RangeIndex makeRangeIndex(int order, int minRecords)
     {
         return BPlusTree.makeMem(order, minRecords, RecordLib.TestRecordLength, 0) ;
     }

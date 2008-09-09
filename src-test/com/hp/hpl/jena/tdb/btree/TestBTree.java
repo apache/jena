@@ -32,7 +32,7 @@ public class TestBTree extends TestRangeIndex
     // ---- Overridable maker
     static String filename = "tmp/test.btree" ;
     @Override
-    protected RangeIndex make(int order, int minRecords)
+    protected RangeIndex makeRangeIndex(int order, int minRecords)
     {
         return BTree.makeMem(order, RecordLib.TestRecordLength, 0) ;
     }

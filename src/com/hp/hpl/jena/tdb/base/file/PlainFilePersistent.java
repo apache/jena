@@ -56,11 +56,11 @@ public class PlainFilePersistent extends PlainFile
     
     
     @Override
-    public void sync()
+    public void sync(boolean force)
     { 
         try
         {
-            channel.force(true) ;
+            channel.force(force) ;
         } catch (IOException ex)
         { throw new FileException("force", ex) ; }
     }

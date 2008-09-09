@@ -1,47 +1,68 @@
 /*
- * (c) Copyright 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007, 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.base.file;
+package com.hp.hpl.jena.tdb.index;
 
-import java.nio.ByteBuffer;
+//import static com.hp.hpl.jena.tdb.base.record.RecordLib.r;
+//import static com.hp.hpl.jena.tdb.base.record.RecordLib.toIntList;
+//import static com.hp.hpl.jena.tdb.index.IndexTestLib.add;
+//import static com.hp.hpl.jena.tdb.index.IndexTestLib.randTest;
+//import static com.hp.hpl.jena.tdb.index.IndexTestLib.testInsert;
+//import static com.hp.hpl.jena.tdb.index.IndexTestLib.testInsertDelete;
 
-public abstract class PlainFile
+import static com.hp.hpl.jena.tdb.index.IndexTestLib.testInsert;
+
+import java.util.List;
+
+import org.junit.After;
+import org.junit.Test;
+import test.BaseTest;
+
+import com.hp.hpl.jena.tdb.base.record.RecordLib;
+
+public abstract class TestIndex extends BaseTest 
 {
-    protected long filesize = -1 ;
-    protected ByteBuffer byteBuffer = null ;
-
-    public final ByteBuffer getByteBuffer()
-    {
-//        if ( byteBuffer == null )
-//            byteBuffer = allocateBuffer(filesize) ;
-        return byteBuffer ;
+    Index index = null ;
+    
+    @After public void afterTest()
+    { 
+        if ( index != null )
+            index.close();
+        index = null ;
     }
     
-    public final ByteBuffer ensure(int newSize)
+    // ---- Overridable maker
+    protected abstract Index makeIndex() ;
+    
+    // TODO
+    @Test public void tree_ins_0()
     {
-        if ( filesize > newSize )
-            return getByteBuffer() ;
-       byteBuffer = allocateBuffer(newSize) ;
-       filesize = newSize ;
-       return byteBuffer ;
+        // Empty tree
+        int[] keys = {};
+        test(keys) ;
     }
     
-    public final long getFileSize() { return filesize ; }
+    @Test public void tree_ins_1()
+    {
+        int[] keys = {1};
+        test(keys) ;
+    }
     
-    //@Override
-    public abstract void sync(boolean force) ;
-
-    //@Override
-    public abstract void close() ;
-
-    protected abstract ByteBuffer allocateBuffer(long size) ;
+    private void test(int[] keys)
+    {
+        index = makeIndex() ;
+        testInsert(index, keys) ;
+        long x = index.size() ;
+        if ( x >= 0 )
+            assertEquals(keys.length, x) ;
+    }
 }
 
 /*
- * (c) Copyright 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007, 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

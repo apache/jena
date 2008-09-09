@@ -8,10 +8,10 @@ package com.hp.hpl.jena.tdb.index;
 
 import static com.hp.hpl.jena.tdb.base.record.RecordLib.r;
 import static com.hp.hpl.jena.tdb.base.record.RecordLib.toIntList;
-import static com.hp.hpl.jena.tdb.index.RangeIndexTestLib.add;
-import static com.hp.hpl.jena.tdb.index.RangeIndexTestLib.randTest;
-import static com.hp.hpl.jena.tdb.index.RangeIndexTestLib.testInsert;
-import static com.hp.hpl.jena.tdb.index.RangeIndexTestLib.testInsertDelete;
+import static com.hp.hpl.jena.tdb.index.IndexTestLib.add;
+import static com.hp.hpl.jena.tdb.index.IndexTestLib.randTest;
+import static com.hp.hpl.jena.tdb.index.IndexTestLib.testInsert;
+import static com.hp.hpl.jena.tdb.index.IndexTestLib.testInsertDelete;
 
 import java.util.List;
 
@@ -20,7 +20,6 @@ import org.junit.Test;
 import test.BaseTest;
 
 import com.hp.hpl.jena.tdb.base.record.RecordLib;
-import com.hp.hpl.jena.tdb.btree.BTreeMaker;
 
 public abstract class TestRangeIndex extends BaseTest 
 {
@@ -35,8 +34,8 @@ public abstract class TestRangeIndex extends BaseTest
     }
     
     // ---- Overridable maker
-    protected RangeIndex make(int order) { return make(order, order) ; }
-    protected abstract RangeIndex make(int order, int minRecords) ;
+    protected RangeIndex makeRangeIndex(int order) { return makeRangeIndex(order, order) ; }
+    protected abstract RangeIndex makeRangeIndex(int order, int minRecords) ;
     
     // -- Root-only
     
@@ -44,7 +43,7 @@ public abstract class TestRangeIndex extends BaseTest
     {
         // Empty tree
         int[] keys = {};
-        rIndex = make(2) ;
+        rIndex = makeRangeIndex(2) ;
         testInsert(rIndex, keys) ;
         assertNull(rIndex.minKey()) ;
         assertNull(rIndex.maxKey()) ;
@@ -53,7 +52,7 @@ public abstract class TestRangeIndex extends BaseTest
     @Test public void tree_ins_0_1()
     {
         int[] keys = {0, 1, 2};
-        rIndex = make(2) ;
+        rIndex = makeRangeIndex(2) ;
         testInsert(rIndex, keys) ;
         assertEquals(0, r(rIndex.minKey())) ;
         assertEquals(2, r(rIndex.maxKey())) ;
@@ -62,7 +61,7 @@ public abstract class TestRangeIndex extends BaseTest
     @Test public void tree_ins_2_01() 
     {
         int[] keys = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
-        rIndex = make(2) ;
+        rIndex = makeRangeIndex(2) ;
 		testInsert(rIndex, keys) ;
         assertEquals(0, r(rIndex.minKey())) ;
         assertEquals(9, r(rIndex.maxKey())) ;
@@ -71,7 +70,7 @@ public abstract class TestRangeIndex extends BaseTest
     @Test public void tree_ins_2_02() 
     {
         int[] keys = {9,8,7,6,5,4,3,2,1,0};
-        rIndex = make(2) ;
+        rIndex = makeRangeIndex(2) ;
 		testInsert(rIndex, keys) ;
         assertEquals(0, r(rIndex.minKey())) ;
         assertEquals(9, r(rIndex.maxKey())) ;
@@ -80,7 +79,7 @@ public abstract class TestRangeIndex extends BaseTest
     @Test public void tree_ins_2_03()
     {
         int[] keys = {0,2,4,6,8,1,3,5,7,9};
-        rIndex = make(2) ;
+        rIndex = makeRangeIndex(2) ;
 		testInsert(rIndex, keys) ;
         assertEquals(0, r(rIndex.minKey())) ;
         assertEquals(9, r(rIndex.maxKey())) ;
@@ -89,7 +88,7 @@ public abstract class TestRangeIndex extends BaseTest
     @Test public void tree_ins_2_04()
     {
         int[] keys = {0,9,2,7,4,5,6,3,8,1};
-        rIndex = make(2) ;
+        rIndex = makeRangeIndex(2) ;
 		testInsert(rIndex, keys) ;
         assertEquals(0, r(rIndex.minKey())) ;
         assertEquals(9, r(rIndex.maxKey())) ;
@@ -98,7 +97,7 @@ public abstract class TestRangeIndex extends BaseTest
     @Test public void tree_ins_2_05()
     {
         int[] keys = {0,18,4,14,8,10,12,6,16,2};
-        rIndex = make(2) ;
+        rIndex = makeRangeIndex(2) ;
 		testInsert(rIndex, keys) ;
         assertFalse(rIndex.contains(r(1))) ;
         assertFalse(rIndex.contains(r(999))) ;
@@ -112,7 +111,7 @@ public abstract class TestRangeIndex extends BaseTest
     {
         int[] keys1 = {0, 1, 2};
         int[] keys2 = {0, 1, 2};
-		rIndex = make(2) ;
+		rIndex = makeRangeIndex(2) ;
         testInsertDelete(rIndex, keys1, keys2) ;
     }
 
@@ -120,7 +119,7 @@ public abstract class TestRangeIndex extends BaseTest
     {
         int[] keys1 = {0, 1, 2};
         int[] keys2 = {2, 1, 0};
-		rIndex = make(2) ;
+		rIndex = makeRangeIndex(2) ;
         testInsertDelete(rIndex, keys1, keys2) ;
     }
 
@@ -128,7 +127,7 @@ public abstract class TestRangeIndex extends BaseTest
     {
         int[] keys1 = {0, 1, 2};
         int[] keys2 = {1, 0, 2};
-		rIndex = make(2) ;
+		rIndex = makeRangeIndex(2) ;
 		testInsertDelete(rIndex, keys1, keys2) ;
     }
 
@@ -136,7 +135,7 @@ public abstract class TestRangeIndex extends BaseTest
     {
         int[] keys1 = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9} ;
         int[] keys2 = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9} ;
-        rIndex = make(2) ;
+        rIndex = makeRangeIndex(2) ;
         testInsertDelete(rIndex,  keys1, keys2) ;
     }
     
@@ -144,7 +143,7 @@ public abstract class TestRangeIndex extends BaseTest
     {
         int[] keys1 = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9} ;
         int[] keys2 = {9, 8, 7, 6, 5, 4, 3, 2, 1, 0} ;
-        rIndex = make(2) ;
+        rIndex = makeRangeIndex(2) ;
         testInsertDelete(rIndex,  keys1, keys2) ;
     }
     
@@ -152,7 +151,7 @@ public abstract class TestRangeIndex extends BaseTest
     {
         int[] keys1 = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9} ;
         int[] keys2 = {0, 2, 4, 6, 8, 1, 3, 5, 7, 9} ;
-        rIndex = make(2) ;
+        rIndex = makeRangeIndex(2) ;
         testInsertDelete(rIndex,  keys1, keys2) ;
     }
     
@@ -160,7 +159,7 @@ public abstract class TestRangeIndex extends BaseTest
     {
         int[] keys1 = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9} ;
         int[] keys2 = {0, 9, 2, 7, 4, 5, 6, 3, 8, 1} ;
-        rIndex = make(2) ;
+        rIndex = makeRangeIndex(2) ;
         testInsertDelete(rIndex,  keys1, keys2) ;
     }
     
@@ -168,7 +167,7 @@ public abstract class TestRangeIndex extends BaseTest
     {
         int[] keys1 = {9, 8, 7, 6, 5, 4, 3, 2, 1, 0} ;
         int[] keys2 = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9} ;
-        rIndex = make(2) ;
+        rIndex = makeRangeIndex(2) ;
         testInsertDelete(rIndex,  keys1, keys2) ;
     }
     
@@ -176,7 +175,7 @@ public abstract class TestRangeIndex extends BaseTest
     {
         int[] keys1 = {9, 8, 7, 6, 5, 4, 3, 2, 1, 0} ;
         int[] keys2 = {9, 8, 7, 6, 5, 4, 3, 2, 1, 0} ;
-        rIndex = make(2) ;
+        rIndex = makeRangeIndex(2) ;
         testInsertDelete(rIndex,  keys1, keys2) ;
     }
     
@@ -184,7 +183,7 @@ public abstract class TestRangeIndex extends BaseTest
     {
         int[] keys1 = {9, 8, 7, 6, 5, 4, 3, 2, 1, 0} ;
         int[] keys2 = {0, 2, 4, 6, 8, 1, 3, 5, 7, 9} ;
-        rIndex = make(2) ;
+        rIndex = makeRangeIndex(2) ;
         testInsertDelete(rIndex,  keys1, keys2) ;
     }
     
@@ -192,7 +191,7 @@ public abstract class TestRangeIndex extends BaseTest
     {
         int[] keys1 = {9, 8, 7, 6, 5, 4, 3, 2, 1, 0} ;
         int[] keys2 = {0, 9, 2, 7, 4, 5, 6, 3, 8, 1} ;
-		rIndex = make(2) ;
+		rIndex = makeRangeIndex(2) ;
 		testInsertDelete(rIndex, keys1, keys2) ;
     }
     
@@ -200,7 +199,7 @@ public abstract class TestRangeIndex extends BaseTest
     {
         int[] keys1 = {0, 2, 4, 6, 8, 1, 3, 5, 7, 9} ;
         int[] keys2 = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9} ;
-        rIndex = make(2) ;
+        rIndex = makeRangeIndex(2) ;
         testInsertDelete(rIndex,  keys1, keys2) ;
     }
     
@@ -208,7 +207,7 @@ public abstract class TestRangeIndex extends BaseTest
     {
         int[] keys1 = {0, 2, 4, 6, 8, 1, 3, 5, 7, 9} ;
         int[] keys2 = {9, 8, 7, 6, 5, 4, 3, 2, 1, 0} ;
-        rIndex = make(2) ;
+        rIndex = makeRangeIndex(2) ;
         testInsertDelete(rIndex,  keys1, keys2) ;
     }
     
@@ -216,7 +215,7 @@ public abstract class TestRangeIndex extends BaseTest
     {
         int[] keys1 = {0, 2, 4, 6, 8, 1, 3, 5, 7, 9} ;
         int[] keys2 = {0, 2, 4, 6, 8, 1, 3, 5, 7, 9} ;
-        rIndex = make(2) ;
+        rIndex = makeRangeIndex(2) ;
         testInsertDelete(rIndex,  keys1, keys2) ;
     }
     
@@ -224,14 +223,14 @@ public abstract class TestRangeIndex extends BaseTest
     {
         int[] keys1 = {0, 2, 4, 6, 8, 1, 3, 5, 7, 9} ;
         int[] keys2 = {0, 9, 2, 7, 4, 5, 6, 3, 8, 1} ;
-        rIndex = make(2) ;
+        rIndex = makeRangeIndex(2) ;
         testInsertDelete(rIndex,  keys1, keys2) ;
     }
     
     @Test public void tree_iter_2_01()
     {
         int[] keys = {0, 2, 4, 6, 8, 1, 3, 5, 7, 9} ;
-        rIndex = make(2) ;
+        rIndex = makeRangeIndex(2) ;
         add(rIndex, keys) ;
         List<Integer> x = RecordLib.toIntList(rIndex.iterator(r(4), r(6))) ;
         List<Integer> expected = toIntList(4,5) ;
@@ -241,7 +240,7 @@ public abstract class TestRangeIndex extends BaseTest
     @Test public void tree_iter_2_02()
     {
         int[] keys = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9} ;
-        rIndex =  make(2) ;
+        rIndex =  makeRangeIndex(2) ;
         add(rIndex, keys) ;
         List<Integer> x = RecordLib.toIntList(rIndex.iterator(r(4), r(7))) ;
         List<Integer> expected = toIntList(4,5,6) ;
@@ -251,7 +250,7 @@ public abstract class TestRangeIndex extends BaseTest
     @Test public void tree_iter_2_03()
     {
         int[] keys = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9} ;
-        rIndex  = make(2) ;
+        rIndex  = makeRangeIndex(2) ;
         add(rIndex, keys) ;
         List<Integer> x = RecordLib.toIntList(rIndex.iterator(r(4), null)) ;
         List<Integer> expected = toIntList(4,5,6,7,8,9) ;
@@ -261,7 +260,7 @@ public abstract class TestRangeIndex extends BaseTest
     @Test public void tree_iter_2_04()
     {
         int[] keys = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9} ;
-        rIndex  = make(2) ;
+        rIndex  = makeRangeIndex(2) ;
         add(rIndex, keys) ;
         List<Integer> x = RecordLib.toIntList(rIndex.iterator(null, null)) ;
         List<Integer> expected = toIntList(keys) ;
@@ -271,7 +270,7 @@ public abstract class TestRangeIndex extends BaseTest
     @Test public void tree_iter_2_05()
     {
         int[] keys = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9} ;
-        rIndex  = make(2) ;
+        rIndex  = makeRangeIndex(2) ;
         add(rIndex, keys) ;
         List<Integer> x = RecordLib.toIntList(rIndex.iterator(null, r(4))) ;
         List<Integer> expected = toIntList(0,1,2,3) ;
@@ -281,7 +280,7 @@ public abstract class TestRangeIndex extends BaseTest
     @Test public void tree_iter_2_07()
     {
         int[] keys = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9} ;
-        rIndex  = make(2) ;
+        rIndex  = makeRangeIndex(2) ;
         add(rIndex, keys) ;
         List<Integer> x = RecordLib.toIntList(rIndex.iterator(null, r(99))) ;
         List<Integer> expected = toIntList(keys) ;
@@ -291,7 +290,7 @@ public abstract class TestRangeIndex extends BaseTest
     @Test public void tree_iter_2_08()
     {
         int[] keys = {1, 2, 3, 4, 5, 6, 7, 8, 9} ;
-        rIndex  = make(2) ;
+        rIndex  = makeRangeIndex(2) ;
         add(rIndex, keys) ;
         List<Integer> x = RecordLib.toIntList(rIndex.iterator(r(0), r(99))) ;
         List<Integer> expected = toIntList(keys) ;
@@ -301,7 +300,7 @@ public abstract class TestRangeIndex extends BaseTest
     @Test public void tree_iter_2_09()
     {
         int[] keys = {1, 2, 3, 4, /*5, 6,*/ 7, 8, 9, 10 ,11} ;
-        rIndex  = make(2) ;
+        rIndex  = makeRangeIndex(2) ;
         add(rIndex, keys) ;
         List<Integer> x = RecordLib.toIntList(rIndex.iterator(r(5), r(7))) ;
         List<Integer> expected = toIntList() ;
@@ -312,7 +311,7 @@ public abstract class TestRangeIndex extends BaseTest
     @Test public void tree_iter_0_01()
     {
         int[] keys = {1, 2, 3, 4, 5} ;
-        rIndex = make(5) ;
+        rIndex = makeRangeIndex(5) ;
         add(rIndex, keys) ;
         List<Integer> x = RecordLib.toIntList(rIndex.iterator(r(2), r(4))) ;
         List<Integer> expected = toIntList(2,3) ;
@@ -322,7 +321,7 @@ public abstract class TestRangeIndex extends BaseTest
     @Test public void tree_iter_0_02()
     {
         int[] keys = {1, 2, 3, 4, 5} ;
-        rIndex = make(5) ;
+        rIndex = makeRangeIndex(5) ;
         add(rIndex, keys) ;
         List<Integer> x = RecordLib.toIntList(rIndex.iterator(null, null)) ;
         List<Integer> expected = toIntList(keys) ;
@@ -332,7 +331,7 @@ public abstract class TestRangeIndex extends BaseTest
     @Test public void tree_iter_0_03()
     {
         int[] keys = {1, 2, 3, 4, 5} ;
-        rIndex = make(5) ;
+        rIndex = makeRangeIndex(5) ;
         add(rIndex, keys) ;
         List<Integer> x = RecordLib.toIntList(rIndex.iterator(r(5), null)) ;
         List<Integer> expected = toIntList(5) ;
@@ -342,7 +341,7 @@ public abstract class TestRangeIndex extends BaseTest
     @Test public void tree_iter_0_04()
     {
         int[] keys = {1, 2, 3, 4, 5} ;
-        rIndex = make(5) ;
+        rIndex = makeRangeIndex(5) ;
         add(rIndex, keys) ;
         List<Integer> x = RecordLib.toIntList(rIndex.iterator(r(0), r(0))) ;
         List<Integer> expected = toIntList() ;
@@ -352,7 +351,7 @@ public abstract class TestRangeIndex extends BaseTest
     @Test public void tree_iter_0_05()
     {
         int[] keys = {1, 2, 3, 4, 5} ;
-        rIndex = make(5) ;
+        rIndex = makeRangeIndex(5) ;
         add(rIndex, keys) ;
         List<Integer> x = RecordLib.toIntList(rIndex.iterator(r(1), r(0))) ;
         List<Integer> expected = toIntList() ;
@@ -362,7 +361,7 @@ public abstract class TestRangeIndex extends BaseTest
     @Test public void tree_ret_1()
     {
         int[] keys = {1, 2, 3, 4, 5} ;
-        rIndex  = make(2) ;
+        rIndex  = makeRangeIndex(2) ;
         add(rIndex, keys) ;
         boolean b = rIndex.add(RecordLib.intToRecord(3)) ;
         assertFalse(b) ;
@@ -373,7 +372,7 @@ public abstract class TestRangeIndex extends BaseTest
     @Test public void tree_ret_2()
     {
         int[] keys = {1, 2, 3, 4, 5} ;
-        rIndex  = make(2) ;
+        rIndex  = makeRangeIndex(2) ;
         add(rIndex, keys) ;
         boolean b = rIndex.delete(RecordLib.intToRecord(9)) ;
         assertFalse(b) ;
@@ -385,13 +384,13 @@ public abstract class TestRangeIndex extends BaseTest
     @Test public void tree_2_N()
     {
         for ( int i = 0 ; i < 10 ; i++ )
-            randTest(new BTreeMaker(2), 999, 20) ;
+            randTest(makeRangeIndex(2), 999, 20) ;
     }
 
     @Test public void tree_3_N()
     {
         for ( int i = 0 ; i < 10 ; i++ )
-            randTest(new BTreeMaker(3), 9999, 100) ;
+            randTest(makeRangeIndex(3), 9999, 100) ;
     }
 }
 

@@ -16,9 +16,9 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.hp.hpl.jena.tdb.bplustree.BPlusTreeMaker;
-import com.hp.hpl.jena.tdb.index.RangeIndex;
-import com.hp.hpl.jena.tdb.index.RangeIndexMaker;
-import com.hp.hpl.jena.tdb.index.RangeIndexTestLib;
+import com.hp.hpl.jena.tdb.index.Index;
+import com.hp.hpl.jena.tdb.index.IndexMaker;
+import com.hp.hpl.jena.tdb.index.IndexTestLib;
 
 public abstract class RunnerExecute
 {
@@ -106,9 +106,9 @@ public abstract class RunnerExecute
         int[] keys1 = rand(numKeys, 0, maxValue) ;
         int[] keys2 = permute(keys1, numKeys) ;
         try {
-            RangeIndexMaker maker = new BPlusTreeMaker(order, order) ;
-            RangeIndex rIndex = RangeIndexTestLib.buildRangeIndex(maker, keys1);
-            RangeIndexTestLib.delete(rIndex, keys2) ;
+            IndexMaker maker = new BPlusTreeMaker(order, order) ;
+            Index rIndex = IndexTestLib.buildIndex(maker, keys1);
+            IndexTestLib.delete(rIndex, keys2) ;
         } catch (RuntimeException ex)
         {
             System.err.printf("int order=%d ;\n", order) ;

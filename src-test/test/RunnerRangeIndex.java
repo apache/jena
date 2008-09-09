@@ -13,8 +13,8 @@ import tdb.Cmd;
 
 import com.hp.hpl.jena.tdb.base.block.BlockMgrMem;
 import com.hp.hpl.jena.tdb.bplustree.BPlusTreeParams;
+import com.hp.hpl.jena.tdb.index.IndexTestGenerator;
 import com.hp.hpl.jena.tdb.index.RangeIndexMaker;
-import com.hp.hpl.jena.tdb.index.RangeIndexTestGenerator;
 import com.hp.hpl.jena.tdb.sys.Const;
 
 public abstract class RunnerRangeIndex extends RunnerExecute
@@ -30,7 +30,7 @@ public abstract class RunnerRangeIndex extends RunnerExecute
     {
         RangeIndexMaker maker = makeRangeIndexMaker() ;
         //new RangeIndexTestGenerator(maker, numKeys*100, numKeys) ;
-        RangeIndexTestGenerator test = new RangeIndexTestGenerator(maker, maxValue, maxNumKeys) ;
+        IndexTestGenerator test = new IndexTestGenerator(maker, maxValue, maxNumKeys) ;
         return test ;
     }
 

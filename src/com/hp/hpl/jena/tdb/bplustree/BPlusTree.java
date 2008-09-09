@@ -319,7 +319,7 @@ public class BPlusTree implements Iterable<Record>, RangeIndex
         return sessionCounter ;
     }
 
-    public long count()
+    public long size()
     {
         return -1 ;
     }

@@ -12,13 +12,13 @@ import java.util.Random;
 public class RandomLib
 {
     // The only.
-    public static Random random = new SecureRandom() ;
+    public static final Random random = new SecureRandom() ;
     
-    public static Random qrandom = randInit() ;
+    public static final Random qrandom = randInit() ;
 
     private static Random randInit()
     {
-        // Cheap radnom numbers, well seeded.
+        // Cheap random numbers, well seeded.
         int seed = random.nextInt() ;
         return new Random(seed) ;   
     }

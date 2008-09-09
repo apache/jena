@@ -6,6 +6,8 @@
 
 package com.hp.hpl.jena.tdb.bdb;
 
+import java.util.Iterator;
+
 import com.sleepycat.je.*;
 
 import com.hp.hpl.jena.tdb.TDBException;
@@ -107,6 +109,12 @@ public class IndexBDB implements Index
     }
 
     @Override
+    public Iterator<Record> iterator()
+    {
+        throw new TDBException("IndexBDB: Not implemented") ;
+    }
+
+    @Override
     public boolean isEmpty()
     {
         // Can't tell.
@@ -122,7 +130,7 @@ public class IndexBDB implements Index
     {}
 
     @Override
-    public long count()
+    public long size()
     {
         return -1 ;
     }

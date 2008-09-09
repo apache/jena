@@ -7,6 +7,7 @@
 package com.hp.hpl.jena.tdb.bplustree;
 
 import com.hp.hpl.jena.tdb.base.record.RecordLib;
+import com.hp.hpl.jena.tdb.index.Index;
 import com.hp.hpl.jena.tdb.index.RangeIndex;
 import com.hp.hpl.jena.tdb.index.RangeIndexMaker;
 
@@ -22,10 +23,11 @@ public class BPlusTreeMaker implements RangeIndexMaker
         this.recordOrder = recordOrder ;
     }
     
-    
+    @Override
+    public Index makeIndex() { return makeRangeIndex() ; }
 
     @Override
-    public RangeIndex make()
+    public RangeIndex makeRangeIndex()
     {
         BPlusTree bpTree = BPlusTree.makeMem(order, recordOrder, RecordLib.TestRecordLength, 0) ;
         return bpTree ;

@@ -6,10 +6,12 @@
 
 package com.hp.hpl.jena.tdb.index;
 
+import java.util.Iterator;
+
 import com.hp.hpl.jena.tdb.base.record.Record;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 
-public interface Index
+public interface Index extends Iterable<Record>
 {
     /** Find one record - and return the record actually in the index (may have a value part) */
     public Record find(Record record) ;
@@ -25,6 +27,9 @@ public interface Index
     
     /** Delete a record.  Return true if a record was actually removed */
     public boolean delete(Record record) ;
+    
+    /** Iterate over the whole index */ 
+    public Iterator<Record> iterator() ;
     
     /** Get the Record factory associated with this index */
     public RecordFactory getRecordFactory() ;
@@ -43,7 +48,7 @@ public interface Index
     public void check() ;
     
     /** Return size if known else return -1 : does not count the peristent storage */
-    public long count() ;
+    public long size() ;
     
     /** [testing] Count the nunber of triples in the index 
      * (+1 for succesful insertion, -1 for successful deletion)

@@ -8,9 +8,9 @@ package com.hp.hpl.jena.tdb.index;
 
 import com.hp.hpl.jena.tdb.index.RangeIndex;
 
-public interface RangeIndexMaker
+public interface RangeIndexMaker extends IndexMaker
 {
-    RangeIndex make() ;
+    RangeIndex makeRangeIndex() ;
     String getLabel() ;
 }
 /*

@@ -36,7 +36,7 @@ public class PlainFileMem extends PlainFile
     {}
 
     @Override
-    public void sync()
+    public void sync(boolean force)
     {}
     
 }
