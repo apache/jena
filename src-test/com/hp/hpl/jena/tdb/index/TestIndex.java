@@ -49,6 +49,12 @@ public abstract class TestIndex extends BaseTest
         test(keys) ;
     }
     
+    @Test public void tree_ins_2()
+    {
+        int[] keys = {1,2,3,4,5,6,7,8,9};
+        test(keys) ;
+    }
+    
     private void test(int[] keys)
     {
         index = makeIndex() ;
