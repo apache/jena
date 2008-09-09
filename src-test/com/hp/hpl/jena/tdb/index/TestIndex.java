@@ -15,13 +15,11 @@ package com.hp.hpl.jena.tdb.index;
 
 import static com.hp.hpl.jena.tdb.index.IndexTestLib.testInsert;
 
-import java.util.List;
-
 import org.junit.After;
 import org.junit.Test;
 import test.BaseTest;
 
-import com.hp.hpl.jena.tdb.base.record.RecordLib;
+//import com.hp.hpl.jena.tdb.base.record.RecordLib;
 
 public abstract class TestIndex extends BaseTest 
 {
