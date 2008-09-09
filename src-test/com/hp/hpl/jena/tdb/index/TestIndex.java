@@ -51,10 +51,37 @@ public abstract class TestIndex extends BaseTest
     
     @Test public void tree_ins_2()
     {
-        int[] keys = {1,2,3,4,5,6,7,8,9};
+        int[] keys = new int[20] ; 
+        for ( int i = 0 ; i < keys.length ; i++ )
+            keys[i] = i ;
         test(keys) ;
     }
     
+    @Test public void tree_ins_3()
+    {
+        int[] keys = new int[20] ; 
+        for ( int i = keys.length-1 ; i >= 0 ; i-- )
+            keys[i] = i ;
+        test(keys) ;
+    }
+
+    @Test public void tree_ins_4()
+    {
+        int[] keys = new int[10] ; 
+        for ( int i = 0 ; i < keys.length ; i++ )
+            keys[i] = 1<<i ;
+        test(keys) ;
+    }
+    
+    @Test public void tree_ins_5()
+    {
+        int[] keys = new int[10] ; 
+        for ( int i = keys.length-1 ; i >= 0 ; i-- )
+            keys[i] = 1<<i ;
+        test(keys) ;
+    }
+    
+
     private void test(int[] keys)
     {
         index = makeIndex() ;
