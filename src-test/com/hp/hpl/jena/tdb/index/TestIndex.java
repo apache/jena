@@ -6,14 +6,7 @@
 
 package com.hp.hpl.jena.tdb.index;
 
-//import static com.hp.hpl.jena.tdb.base.record.RecordLib.r;
-//import static com.hp.hpl.jena.tdb.base.record.RecordLib.toIntList;
-//import static com.hp.hpl.jena.tdb.index.IndexTestLib.add;
-//import static com.hp.hpl.jena.tdb.index.IndexTestLib.randTest;
-//import static com.hp.hpl.jena.tdb.index.IndexTestLib.testInsert;
-//import static com.hp.hpl.jena.tdb.index.IndexTestLib.testInsertDelete;
-
-import static com.hp.hpl.jena.tdb.index.IndexTestLib.testInsert;
+import static com.hp.hpl.jena.tdb.index.IndexTestLib.*;
 
 import org.junit.After;
 import org.junit.Test;
@@ -36,20 +29,20 @@ public abstract class TestIndex extends BaseTest
     protected abstract Index makeIndex() ;
     
     // TODO
-    @Test public void tree_ins_0()
+    @Test public void index_ins_0()
     {
         // Empty tree
         int[] keys = {};
         test(keys) ;
     }
     
-    @Test public void tree_ins_1()
+    @Test public void index_ins_1()
     {
         int[] keys = {1};
         test(keys) ;
     }
     
-    @Test public void tree_ins_2()
+    @Test public void index_ins_2()
     {
         int[] keys = new int[20] ; 
         for ( int i = 0 ; i < keys.length ; i++ )
@@ -57,7 +50,7 @@ public abstract class TestIndex extends BaseTest
         test(keys) ;
     }
     
-    @Test public void tree_ins_3()
+    @Test public void index_ins_3()
     {
         int[] keys = new int[20] ; 
         for ( int i = keys.length-1 ; i >= 0 ; i-- )
@@ -65,7 +58,7 @@ public abstract class TestIndex extends BaseTest
         test(keys) ;
     }
 
-    @Test public void tree_ins_4()
+    @Test public void index_ins_4()
     {
         int[] keys = new int[10] ; 
         for ( int i = 0 ; i < keys.length ; i++ )
@@ -73,7 +66,7 @@ public abstract class TestIndex extends BaseTest
         test(keys) ;
     }
     
-    @Test public void tree_ins_5()
+    @Test public void index_ins_5()
     {
         int[] keys = new int[10] ; 
         for ( int i = keys.length-1 ; i >= 0 ; i-- )
@@ -81,14 +74,37 @@ public abstract class TestIndex extends BaseTest
         test(keys) ;
     }
     
+    
+    @Test public void tree_del_0_1()
+    {
+        int[] keys1 = {0, 1, 2};
+        int[] keys2 = {0, 1, 2};
+        int[] keys3 = {} ;
+        test(keys1, keys2, keys3) ;
+    }
+
+    
+    private void test(int[] insKeys, int[] delKeys, int[] expected)
+    {
+        index = makeIndex() ;
+        testInsert(index, insKeys) ;
+        long x = index.size() ;
+        if ( x >= 0 )
+            assertEquals(insKeys.length, x) ;
+        
+        if ( delKeys != null )
+        {
+            testDelete(index, delKeys) ;
+            
+        }
+        
+        if ( expected != null ) 
+            testIndexContents(index, expected) ;
+    }
 
     private void test(int[] keys)
     {
-        index = makeIndex() ;
-        testInsert(index, keys) ;
-        long x = index.size() ;
-        if ( x >= 0 )
-            assertEquals(keys.length, x) ;
+       test(keys, null, keys) ;
     }
 }
 
