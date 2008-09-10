@@ -59,7 +59,8 @@ public class StandardFunctions
 
         add(registry, xfn+"matches",       matches.class) ;
         add(registry, xfn+"string-length", strLength.class) ;
-        add(registry, xfn+"string-join",   strJoin.class) ;
+        add(registry, xfn+"string-join",   strConcat.class) ;   // Misnamed.
+        add(registry, xfn+"concat",        strConcat.class) ;
         add(registry, xfn+"substring",     strSubstring.class) ;
         add(registry, xfn+"starts-with",   strStartsWith.class) ;
         

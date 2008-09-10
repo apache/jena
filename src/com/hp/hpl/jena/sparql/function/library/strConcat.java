@@ -8,28 +8,43 @@ package com.hp.hpl.jena.sparql.function.library;
 
 //import org.apache.commons.logging.*;
 
-import com.hp.hpl.jena.sparql.expr.ExprTypeException;
-import com.hp.hpl.jena.sparql.expr.NodeValue;
-import com.hp.hpl.jena.sparql.function.FunctionBase2;
+import java.util.Iterator;
+import java.util.List;
 
-/** Function that concatenates two strings.
+import com.hp.hpl.jena.sparql.ARQInternalErrorException;
+import com.hp.hpl.jena.sparql.expr.ExprList;
+import com.hp.hpl.jena.sparql.expr.NodeValue;
+import com.hp.hpl.jena.sparql.expr.nodevalue.NodeFunctions;
+import com.hp.hpl.jena.sparql.function.FunctionBase;
+import com.hp.hpl.jena.sparql.util.Utils;
+
+/** Function that concatenates arguments as strings.
+ *  fn:concat
  * 
  * @author Andy Seaborne
  */
 
-public class strJoin extends FunctionBase2
+public class strConcat extends FunctionBase
 {
 
-    //@Override
-    public NodeValue exec(NodeValue v1, NodeValue v2)
+    public final NodeValue exec(List args)
     {
-        if ( !v1.isString() )
-            throw new ExprTypeException("concat: arg1 is not a string: "+v1) ;
-        if ( !v2.isString() )
-            throw new ExprTypeException("concat: arg2 is not a string: "+v2) ;
-        // Uses getString(), not asString()
-        return NodeValue.makeString(v1.getString()+v2.getString()) ;
+        if ( args == null )
+            // The contract on the function interface is that this should not happen.
+            throw new ARQInternalErrorException(Utils.className(this)+": Null args list") ;
+        
+        String result = "" ;
+        for ( Iterator iter = args.iterator() ; iter.hasNext() ; )
+        {
+            NodeValue arg = (NodeValue)iter.next();
+            String x = arg.asString() ;
+            result = result+x ;
+        }
+        return NodeValue.makeString(result) ;
     }
+
+    public void checkBuild(String uri, ExprList args)
+    {}
 }
 
 /*
