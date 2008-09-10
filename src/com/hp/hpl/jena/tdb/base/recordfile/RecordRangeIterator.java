@@ -91,7 +91,10 @@ class RecordRangeIterator implements Iterator<Record>
         slot = currentPage.getRecordBuffer().get(currentIdx) ;
         currentIdx++ ;
         if ( maxRec != null && Record.keyGE(slot, maxRec) )
+        {
             finish() ;
+            return false ;
+        }
         
         if ( slot == null )
             return false ;

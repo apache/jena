@@ -6,14 +6,19 @@
 
 package com.hp.hpl.jena.tdb.base.buffer;
 
+import static com.hp.hpl.jena.tdb.base.record.RecordLib.intToRecord;
 import static com.hp.hpl.jena.tdb.base.record.RecordLib.r;
+
+import java.util.Iterator;
+import java.util.List;
+
 import org.junit.BeforeClass;
 import org.junit.Test;
 import test.BaseTest;
 
-import com.hp.hpl.jena.tdb.base.record.RecordLib;
 import com.hp.hpl.jena.tdb.base.record.Record;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
+import com.hp.hpl.jena.tdb.base.record.RecordLib;
 import com.hp.hpl.jena.tdb.sys.Const;
 
 public class TestRecordBuffer extends BaseTest
@@ -197,6 +202,61 @@ public class TestRecordBuffer extends BaseTest
         contains(rb) ;
     }
 
+    @Test public void recBufferIterate01()
+    {
+        RecordBuffer rb = make(5,5) ;
+        Iterator<Record> iter = new RecordBufferIterator(rb) ;
+        same(iter, 2,4,6,8,10) ;
+    }
+
+    @Test public void recBufferIterate02()
+    {
+        RecordBuffer rb = make(3,5) ;
+        Iterator<Record> iter = new RecordBufferIterator(rb) ;
+        same(iter, 2, 4, 6) ;
+    }
+
+    @Test public void recBufferIterate03()
+    {
+        RecordBuffer rb = make(3,5) ;
+        Iterator<Record> iter = new RecordBufferIterator(rb, intToRecord(4), null) ;
+        same(iter, 4, 6) ;
+    }
+
+    @Test public void recBufferIterate04()
+    {
+        RecordBuffer rb = make(3,5) ;
+        Iterator<Record> iter = new RecordBufferIterator(rb, intToRecord(3), null) ;
+        same(iter, 4, 6) ;
+    }
+
+    @Test public void recBufferIterate05()
+    {
+        RecordBuffer rb = make(3,5) ;
+        Iterator<Record> iter = new RecordBufferIterator(rb, intToRecord(1), null) ;
+        same(iter, 2, 4, 6) ;
+    }
+
+    @Test public void recBufferIterate06()
+    {
+        RecordBuffer rb = make(3,5) ;
+        Iterator<Record> iter = new RecordBufferIterator(rb, null, intToRecord(1)) ;
+        same(iter) ;
+    }
+
+    @Test public void recBufferIterate07()
+    {
+        RecordBuffer rb = make(3,5) ;
+        Iterator<Record> iter = new RecordBufferIterator(rb, null, intToRecord(2)) ;
+        same(iter,2 ) ;
+    }
+
+    @Test public void recBufferIterate08()
+    {
+        RecordBuffer rb = make(5,5) ;
+        Iterator<Record> iter = new RecordBufferIterator(rb, null, intToRecord(99)) ;
+        same(iter, 2, 4, 6, 8, 10) ;
+    }
 
     // ---- Support
     private static void contains(RecordBuffer rb, int... vals)
@@ -212,6 +272,18 @@ public class TestRecordBuffer extends BaseTest
                 Record r2 = rb.get(i) ;
                 int x = RecordLib.recordToInt(r2) ;
                 assertEquals("Value mismatch: ", vals[i], x) ;
+            }
+    }
+    
+    private static void same(Iterator<Record> iter, int... vals)
+    {
+        List<Integer> list = RecordLib.toIntList(iter) ;
+        assertEquals("Length mismatch: ", vals.length, list.size()) ;
+        
+        for ( int i = 0 ; i < vals.length ; i++ )
+        {
+            int x = list.get(i) ;
+            assertEquals("Value mismatch: ", vals[i], x) ;
             }
     }
 
