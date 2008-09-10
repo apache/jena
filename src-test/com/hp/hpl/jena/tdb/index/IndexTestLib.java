@@ -96,7 +96,7 @@ public class IndexTestLib
             if ( true )
             {
                 // Checking tests.
-                testRangeIndex(index, keys2);
+                testIndexContents(index, keys2);
                 // Test iteration - quite expensive.
                 if ( index instanceof RangeIndex )
                     testIteration((RangeIndex)index, keys1, 10) ;
@@ -117,7 +117,7 @@ public class IndexTestLib
     public static void testInsert(Index index, int[] keys)
     {
         IndexTestLib.add(index, keys) ;
-        testRangeIndex(index, keys);
+        testIndexContents(index, keys);
     }
 
     public static Index testInsert(IndexMaker maker, int[] keys)
@@ -172,7 +172,7 @@ public class IndexTestLib
             index.add(r) ;
     }
 
-    public static void testRangeIndex(Index index, int[] records)
+    public static void testIndexContents(Index index, int[] records)
     {
         List<Integer> x = toIntList(index.iterator());
         
@@ -182,16 +182,19 @@ public class IndexTestLib
         assertEquals("Expected records size and tree size different", y.size(), index.sessionTripleCount()) ;
         assertEquals("Expected records size and iteration over all keys are of different sizes", y.size(), x.size()) ;
         
-        // Check sorted order
-        for ( int i = 0 ; i < x.size()-2 ; i++ )
+        if ( index instanceof RangeIndex )
         {
-            if ( x.get(i) > x.get(i+1) )
+            // Check sorted order
+            for ( int i = 0 ; i < x.size()-2 ; i++ )
             {
-                fail("check failed: "+strings(records)) ;
-                return ;
+                if ( x.get(i) > x.get(i+1) )
+                {
+                    fail("check failed: "+strings(records)) ;
+                    return ;
+                }
             }
         }
-    
+        
         // Check each expected record is in the tree
         for ( int k : y)
         {
