@@ -5,8 +5,14 @@ ChangeLog for ARQ
 
 + fn:string-join was misnamed - was actually renamed as fn:concat
   And now takes arbitrary number of arguments
+
 + Add afn:strjoin(str, string...) 
-+ Fixed bug with path parsing when "a" (for rdf:type) is used in a property list (using ;) 
+
++ Bug fix: path parsing when "a" (for rdf:type) 
+           is used in a property list (using ;) 
+
++ Bug fix: LET expressions did not eliminate solutions when
+    assigned a new, different value.
 
 ==== ARQ 2.4
 
