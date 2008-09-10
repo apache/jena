@@ -205,59 +205,79 @@ public class TestRecordBuffer extends BaseTest
     @Test public void recBufferIterate01()
     {
         RecordBuffer rb = make(5,5) ;
-        Iterator<Record> iter = new RecordBufferIterator(rb) ;
-        same(iter, 2,4,6,8,10) ;
+        same(rb.iterator(), 2,4,6,8,10) ;
     }
 
     @Test public void recBufferIterate02()
     {
         RecordBuffer rb = make(3,5) ;
-        Iterator<Record> iter = new RecordBufferIterator(rb) ;
+        Iterator<Record> iter = rb.iterator() ;
         same(iter, 2, 4, 6) ;
     }
 
     @Test public void recBufferIterate03()
     {
         RecordBuffer rb = make(3,5) ;
-        Iterator<Record> iter = new RecordBufferIterator(rb, intToRecord(4), null) ;
+        Iterator<Record> iter = rb.iterator( intToRecord(4), null) ;
         same(iter, 4, 6) ;
     }
 
     @Test public void recBufferIterate04()
     {
         RecordBuffer rb = make(3,5) ;
-        Iterator<Record> iter = new RecordBufferIterator(rb, intToRecord(3), null) ;
+        Iterator<Record> iter = rb.iterator( intToRecord(3), null) ;
         same(iter, 4, 6) ;
     }
 
     @Test public void recBufferIterate05()
     {
         RecordBuffer rb = make(3,5) ;
-        Iterator<Record> iter = new RecordBufferIterator(rb, intToRecord(1), null) ;
+        Iterator<Record> iter = rb.iterator( intToRecord(1), null) ;
         same(iter, 2, 4, 6) ;
     }
 
     @Test public void recBufferIterate06()
     {
         RecordBuffer rb = make(3,5) ;
-        Iterator<Record> iter = new RecordBufferIterator(rb, null, intToRecord(1)) ;
+        Iterator<Record> iter = rb.iterator( null, intToRecord(1)) ;
         same(iter) ;
     }
 
     @Test public void recBufferIterate07()
     {
         RecordBuffer rb = make(3,5) ;
-        Iterator<Record> iter = new RecordBufferIterator(rb, null, intToRecord(2)) ;
-        same(iter,2 ) ;
+        Iterator<Record> iter = rb.iterator( null, intToRecord(2)) ;
+        same(iter ) ;
     }
 
     @Test public void recBufferIterate08()
     {
+        RecordBuffer rb = make(3,5) ;
+        Iterator<Record> iter = rb.iterator( null, intToRecord(3)) ;
+        same(iter,2 ) ;
+    }
+    
+    @Test public void recBufferIterate09()
+    {
         RecordBuffer rb = make(5,5) ;
-        Iterator<Record> iter = new RecordBufferIterator(rb, null, intToRecord(99)) ;
+        Iterator<Record> iter = rb.iterator( null, intToRecord(99)) ;
         same(iter, 2, 4, 6, 8, 10) ;
     }
 
+    @Test public void recBufferIterate10()
+    {
+        RecordBuffer rb = make(5,5) ;
+        Iterator<Record> iter = rb.iterator( intToRecord(4), intToRecord(8)) ;
+        same(iter, 4, 6 ) ;
+    }
+
+    @Test public void recBufferIterate11()
+    {
+        RecordBuffer rb = make(5,5) ;
+        Iterator<Record> iter = rb.iterator( intToRecord(3), intToRecord(9)) ;
+        same(iter, 4, 6, 8 ) ;
+    }
+    
     // ---- Support
     private static void contains(RecordBuffer rb, int... vals)
     {

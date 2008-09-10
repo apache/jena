@@ -60,7 +60,7 @@ public class RecordBufferIterator implements Iterator<Record>
         }
         
         slot = rBuff.get(nextIdx) ;
-        if ( maxRec != null && Record.keyGT(slot, maxRec) )
+        if ( maxRec != null && Record.keyGE(slot, maxRec) )
         {
             // Finished - now to large
             finish() ;

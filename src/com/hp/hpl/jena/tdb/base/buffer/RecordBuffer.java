@@ -9,6 +9,7 @@ package com.hp.hpl.jena.tdb.base.buffer;
 import static java.lang.String.format;
 import static com.hp.hpl.jena.tdb.lib.Lib.encodeIndex;
 import java.nio.ByteBuffer;
+import java.util.Iterator;
 
 import com.hp.hpl.jena.tdb.base.record.Record;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
@@ -124,7 +125,11 @@ public class RecordBuffer extends BufferBase
         return find(k, 0, numSlot) ;
     }
     
+    public Iterator<Record> iterator() { return new RecordBufferIterator(this) ; } 
 
+    /** Iterator over a range from min (inclusive) to max(exclusive) */
+    public Iterator<Record> iterator(Record min, Record max) { return new RecordBufferIterator(this, min, max) ; } 
+    
     public Record findGet(Record k)
     {
         int x = find(k) ;
