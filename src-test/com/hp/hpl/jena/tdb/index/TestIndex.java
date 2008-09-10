@@ -6,7 +6,11 @@
 
 package com.hp.hpl.jena.tdb.index;
 
+import static com.hp.hpl.jena.tdb.base.record.RecordLib.intToRecord;
 import static com.hp.hpl.jena.tdb.index.IndexTestLib.*;
+
+import com.hp.hpl.jena.tdb.base.record.Record;
+import com.hp.hpl.jena.tdb.base.record.RecordLib;
 
 import org.junit.After;
 import org.junit.Test;
@@ -74,6 +78,24 @@ public abstract class TestIndex extends BaseTest
         test(keys) ;
     }
     
+    @Test public void index_find_1()
+    {
+        int[] keys = {1};
+        Index index = test(keys) ;
+        Record r = intToRecord(1, RecordLib.TestRecordLength) ;
+        r = index.find(r) ;
+        assertNotNull(r) ;
+    }
+    
+    @Test public void index_find_2()
+    {
+        int[] keys = {1,2,3,4,5,6,7,8,9};
+        Index index = test(keys) ;
+        Record r = intToRecord(20, RecordLib.TestRecordLength) ;
+        r = index.find(r) ;
+        assertNull(r) ;
+    }
+    
     
     @Test public void tree_del_0_1()
     {
@@ -83,8 +105,7 @@ public abstract class TestIndex extends BaseTest
         test(keys1, keys2, keys3) ;
     }
 
-    
-    private void test(int[] insKeys, int[] delKeys, int[] expected)
+    private Index test(int[] insKeys, int[] delKeys, int[] expected)
     {
         index = makeIndex() ;
         testInsert(index, insKeys) ;
@@ -100,11 +121,12 @@ public abstract class TestIndex extends BaseTest
         
         if ( expected != null ) 
             testIndexContents(index, expected) ;
+        return index ;
     }
 
-    private void test(int[] keys)
+    private Index test(int[] keys)
     {
-       test(keys, null, keys) ;
+        return test(keys, null, keys) ;
     }
 }
 
