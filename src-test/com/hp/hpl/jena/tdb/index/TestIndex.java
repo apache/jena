@@ -32,7 +32,6 @@ public abstract class TestIndex extends BaseTest
     // ---- Overridable maker
     protected abstract Index makeIndex() ;
     
-    // TODO
     @Test public void index_ins_0()
     {
         // Empty tree
