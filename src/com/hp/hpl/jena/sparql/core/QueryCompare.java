@@ -97,10 +97,10 @@ public class QueryCompare implements QueryVisitor
 
     public void visitDatasetDecl(Query query1)
     {
-        check("Default graph URIs", query1.getGraphURIs(), query2.getGraphURIs() ) ;
-        check("Named graph URIs", 
-                  query1.getNamedGraphURIs(), 
-                  query2.getNamedGraphURIs() ) ;
+        boolean b1 = Utils.equalsListAsSet(query1.getGraphURIs(), query2.getGraphURIs()) ;
+        check("Default graph URIs", b1 ) ;
+        boolean b2 = Utils.equalsListAsSet(query1.getNamedGraphURIs(), query2.getNamedGraphURIs()) ; 
+        check("Named graph URIs", b2 ) ;
     }
 
     public void visitQueryPattern(Query query1)

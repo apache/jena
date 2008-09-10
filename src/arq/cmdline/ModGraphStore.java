@@ -66,7 +66,7 @@ public class ModGraphStore extends ModAssembler
                 Dataset ds = (Dataset)create(DatasetAssemblerVocab.tDataset) ;
                 if ( ds != null )
                     graphStore = GraphStoreFactory.create(ds) ;
-            } catch (AssemblerException ex) {}
+            } catch (AssemblerException ex) { ex.printStackTrace(System.err) ;}
             catch (ARQException ex)
             {
                 ex.printStackTrace(System.err) ;
