@@ -160,10 +160,8 @@ Firefox puts space in with this  --><html xmlns="http://www.w3.org/1999/xhtml">
         </tr>
       	<tr>
           <td style="text-align: left;">
-          <i><code><font size="2">subject</font></code></i><code><font size="2"> apf:blankNode 
-			</font></code> <i><code><font size="2">label</font></code><br>
-          <code>subject</code></i><code> apf:bnode </code> <i><code>label</code><br>
-&nbsp;</i></td>
+          <code><i>subject</i> apf:blankNode <i>label</i><br>
+          <code><i>subject</i> apf:bnode <i>label</i><br></td>
 
           <td style="text-align: left;"><i>Subject</i> must be bound to a blank 
           node or a constant. <i>Label</i> is either a string, in which case 
@@ -182,6 +180,15 @@ Firefox puts space in with this  --><html xmlns="http://www.w3.org/1999/xhtml">
 			minor version strings. If any of the variables are already set, test 
 			for the correct value.</td>
         </tr>
+	 <tr>
+          <td style="text-align: left;">
+          <code><i>var</i> apf:concat <i>(arg arg ...)</i></code></td>
+
+          <td style="text-align: left;">Concatentate the arguments in the
+	object list as strings, and assign to <code><i>var</i></code>.
+		</td>
+        </tr>
+	
       </tbody>
     </table>
   </div>

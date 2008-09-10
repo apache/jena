@@ -1,8 +1,9 @@
-PREFIX pd: <http://example/>
-
-SELECT DISTINCT ?dc
+PREFIX apf:     <http://jena.hpl.hp.com/ARQ/property#>
+prefix :        <http://example/>
+SELECT *
 {
-    ?x  a       pd:Entry ;
-        pd:dc   ?dc .
+    ?x :p1 ?a .    
+    ?x :p2 ?b .    
+    ?name apf:concat (?a "--" ?b)
 }
 

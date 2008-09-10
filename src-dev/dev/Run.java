@@ -49,7 +49,7 @@ public class Run
 {
     public static void main(String[] argv) throws Exception
     {
-        
+        execQuery("D.ttl", "Q.rq") ;
         arq.uparse.main(new String[]{"--file", "update.ru"}) ;
         System.exit(0) ;
         

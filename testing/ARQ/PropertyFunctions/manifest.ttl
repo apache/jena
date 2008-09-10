@@ -257,5 +257,11 @@
             [ qt:query  <str-1.rq> ;
               qt:data   <data-0.ttl> ] ;
         mf:result  <str-1.srx>
+     ]
+     [ mf:name    "Property Function - concat" ;
+        mf:action
+            [ qt:query  <concat-1.rq> ;
+              qt:data   <data-3.ttl> ] ;
+        mf:result  <concat-1.srx>
       ]
     ) .
