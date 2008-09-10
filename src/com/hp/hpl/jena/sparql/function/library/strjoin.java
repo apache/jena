@@ -14,13 +14,9 @@ import java.util.List;
 
 import com.hp.hpl.jena.query.QueryBuildException;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException;
-import com.hp.hpl.jena.sparql.expr.ExprEvalException;
 import com.hp.hpl.jena.sparql.expr.ExprList;
-import com.hp.hpl.jena.sparql.expr.ExprTypeException;
 import com.hp.hpl.jena.sparql.expr.NodeValue;
-import com.hp.hpl.jena.sparql.expr.nodevalue.NodeFunctions;
 import com.hp.hpl.jena.sparql.function.FunctionBase;
-import com.hp.hpl.jena.sparql.function.FunctionBase2;
 import com.hp.hpl.jena.sparql.util.StringUtils;
 import com.hp.hpl.jena.sparql.util.Utils;
 
@@ -33,7 +29,7 @@ import com.hp.hpl.jena.sparql.util.Utils;
  */
 
 
-public class X_strJoin extends FunctionBase
+public class strjoin extends FunctionBase
 {
 
     public final NodeValue exec(List args)
@@ -52,7 +48,7 @@ public class X_strJoin extends FunctionBase
             x.add( arg.asString() ) ;
         }
         
-        return NodeValue.makeString(StringUtils.join(sep, args)) ;
+        return NodeValue.makeString(StringUtils.join(sep, x)) ;
     }
 
     public void checkBuild(String uri, ExprList args)

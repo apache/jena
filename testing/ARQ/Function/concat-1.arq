@@ -1,0 +1,4 @@
+PREFIX fn:      <http://www.w3.org/2005/xpath-functions#>
+PREFIX  afn:     <http://jena.hpl.hp.com/ARQ/function#>
+
+SELECT (fn:concat(1,2) as ?X) {}

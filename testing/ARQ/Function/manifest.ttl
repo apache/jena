@@ -110,4 +110,31 @@
         mf:result  <namespace-1.srj>
       ]
 
+      [ mf:name     "Concat - 1" ;
+        mf:action
+            [ qt:query  <concat-1.arq> ;
+              qt:data   <data-0.ttl> ] ;
+        mf:result  <concat-1.srj>
+      ]
+
+      [ mf:name     "Concat - 2" ;
+        mf:action
+            [ qt:query  <concat-2.arq> ;
+              qt:data   <data-0.ttl> ] ;
+        mf:result  <concat-2.srj>
+      ]
+
+      [ mf:name     "strjoin - 1" ;
+        mf:action
+            [ qt:query  <strjoin-1.arq> ;
+              qt:data   <data-0.ttl> ] ;
+        mf:result  <strjoin-1.srj>
+      ]
+
+      [ mf:name     "strjoin - 2" ;
+        mf:action
+            [ qt:query  <strjoin-2.arq> ;
+              qt:data   <data-0.ttl> ] ;
+        mf:result  <strjoin-2.srj>
+      ]
     ).
