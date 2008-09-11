@@ -17,8 +17,7 @@ import com.hp.hpl.jena.tdb.base.file.TS_File;
 import com.hp.hpl.jena.tdb.base.loader.TS_Loader;
 import com.hp.hpl.jena.tdb.base.record.TS_Record;
 import com.hp.hpl.jena.tdb.base.recordfile.TS_RecordFile;
-import com.hp.hpl.jena.tdb.bplustree.TS_BPlusTree;
-import com.hp.hpl.jena.tdb.btree.TS_BTree;
+import com.hp.hpl.jena.tdb.index.TS_Index;
 import com.hp.hpl.jena.tdb.pgraph.TS_GraphTDB;
 import com.hp.hpl.jena.tdb.solver.TS_Solver;
 import com.hp.hpl.jena.tdb.sys.TS_Sys;
@@ -39,11 +38,7 @@ import com.hp.hpl.jena.tdb.sys.TS_Sys;
 //    TS_IO.class,
     TS_Iterator.class,
     
-    TS_BTree.class,
-    TS_BPlusTree.class,
-//    TS_Hash.class,
-//    TS_SkipList.class,
-//    TS_AVL.class,
+    TS_Index.class,
     
     TS_TDB.class,
     TS_GraphTDB.class,

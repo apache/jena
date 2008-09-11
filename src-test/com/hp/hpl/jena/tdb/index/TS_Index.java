@@ -1,29 +1,37 @@
 /*
- * (c) Copyright 2007, 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.btree;
-
-import com.hp.hpl.jena.tdb.base.buffer.TestPtrBuffer;
+package com.hp.hpl.jena.tdb.index;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
+
+import com.hp.hpl.jena.tdb.base.buffer.TestPtrBuffer;
+import com.hp.hpl.jena.tdb.bplustree.TestBPTreeRecords;
+import com.hp.hpl.jena.tdb.bplustree.TestBPlusTree;
+import com.hp.hpl.jena.tdb.btree.TestBTree;
+import com.hp.hpl.jena.tdb.btree.TestBTreeLong;
+import com.hp.hpl.jena.tdb.index.ext.TestExtHash;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
     TestPtrBuffer.class,
     TestBTree.class,
-    TestBTreeLong.class
+    TestBTreeLong.class,
+    TestBPlusTree.class,
+    TestBPTreeRecords.class,
+    TestExtHash.class
 } )
-public class TS_BTree
+public class TS_Index
 {
 
 }
 
 /*
- * (c) Copyright 2007, 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
