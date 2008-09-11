@@ -66,7 +66,7 @@ public class Run
                               Item.createNode(Node.createURI("http://purl.org/dc/elements/1.1/title")),
                               StatsMatcher.VAR) ;
             System.out.println("Match: "+d) ;
-            
+            // Now do a whole block.
             
             System.exit(0) ;
         }

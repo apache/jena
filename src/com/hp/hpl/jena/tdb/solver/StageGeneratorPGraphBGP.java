@@ -28,6 +28,7 @@ import com.hp.hpl.jena.sparql.util.ALog;
 import com.hp.hpl.jena.tdb.TDB;
 import com.hp.hpl.jena.tdb.pgraph.NodeId;
 import com.hp.hpl.jena.tdb.pgraph.GraphTDB;
+import com.hp.hpl.jena.tdb.solver.stats.StatsMatcher;
 
 public class StageGeneratorPGraphBGP implements StageGenerator
 {
@@ -51,7 +52,7 @@ public class StageGeneratorPGraphBGP implements StageGenerator
         @SuppressWarnings("unchecked")
         List<Triple> triples = (List<Triple>)pattern.getList() ;
         
-        // triples = reorder(graph, triples) ;
+        triples = reorder(graph, triples) ;
         
         if ( execCxt.getContext().isTrue(TDB.logBGP) )
         {
@@ -72,6 +73,13 @@ public class StageGeneratorPGraphBGP implements StageGenerator
         Iterator<Binding> iterBinding = Iter.map(chain, convToBinding(graph)) ;
         // Input passed in to ensure it gets closed when QueryIterTDB gets closed
         return new QueryIterTDB(iterBinding, input) ;
+    }
+
+    private List<Triple> reorder(GraphTDB graph, List<Triple> triples)
+    {
+        StatsMatcher matcher = null ; //graph.getStatsMatcher() ;
+//        if ( matcher == null )
+            return triples ;
     }
 
     private Iterator<BindingNodeId> solve(GraphTDB graph,
