@@ -96,11 +96,27 @@ public abstract class TestIndex extends BaseTest
     }
     
     
-    @Test public void tree_del_0_1()
+    @Test public void index_del_1()
     {
         int[] keys1 = {0, 1, 2};
         int[] keys2 = {0, 1, 2};
         int[] keys3 = {} ;
+        test(keys1, keys2, keys3) ;
+    }
+
+    @Test public void index_del_2()
+    {
+        int[] keys1 = {0, 1, 2};
+        int[] keys2 = {0, 1};
+        int[] keys3 = {2} ;
+        test(keys1, keys2, keys3) ;
+    }
+
+    @Test public void index_del_3()
+    {
+        int[] keys1 = {0, 1, 2};
+        int[] keys2 = {0, 99};
+        int[] keys3 = {2, 1} ;
         test(keys1, keys2, keys3) ;
     }
 

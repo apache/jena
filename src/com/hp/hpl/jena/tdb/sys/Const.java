@@ -220,6 +220,8 @@ public class Const
     
     public static final String indexTypeBTree          = "BTree" ;
     public static final String indexTypeBPlusTree      = "BPlusTree" ;
+    public static final String indexTypeExtHash        = "ExtHash" ;
+    
     public static final String defaultIndexType        = indexTypeBPlusTree ; 
     
     // Delay until needed so application can set symIndexType

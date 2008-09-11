@@ -14,6 +14,8 @@ public enum IndexType
     { @Override public String getName() { return "BTree" ; } } ,
     BPlusTree
     { @Override public String getName() { return "BPlusTree" ; } } ,
+//    ExtHash
+//    { @Override public String getName() { return "ExtHash" ; } } ,
     ;
 
     abstract public String getName() ;
@@ -22,6 +24,7 @@ public enum IndexType
     {
         if ( name.equalsIgnoreCase(Const.indexTypeBTree) ) return BTree ;
         if ( name.equalsIgnoreCase(Const.indexTypeBPlusTree) ) return BPlusTree ;
+//        if ( name.equalsIgnoreCase(Const.indexTypeExtHash) ) return ExtHash ;
         return null ;
     }
     @Override public String toString() { return getName() ; }
