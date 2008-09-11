@@ -1,16 +1,11 @@
+PREFIX  afn:     <http://jena.hpl.hp.com/ARQ/function#>
 PREFIX  rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX  rdfs:   <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX pd: <http://example/>
+PREFIX  apf:     <http://jena.hpl.hp.com/ARQ/property#>
 
-SELECT DISTINCT ?dc
+SELECT *
 {
-
-
-    ?x  a/rdfs:subClassOf*      pd:Entry ;
-        pd:dc   ?dc .
-
-
-    ?z  rdf:type       pd:Entry ;
-        pd:dc   ?dc .
+    FILTER (  afn:nowX() )
+    LET ( ?x := afn:nowX() )
 }
 

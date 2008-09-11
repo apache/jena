@@ -366,6 +366,7 @@ public class OpCompiler
 
     public QueryIterator compile(OpAssign opAssign, QueryIterator input)
     {
+        // Need prepare?
         QueryIterator qIter = compileOp(opAssign.getSubOp(), input) ;
         qIter = new QueryIterAssign(qIter, opAssign.getVarExprList(), execCxt) ;
         return qIter ;

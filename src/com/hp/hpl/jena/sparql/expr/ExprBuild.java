@@ -6,26 +6,30 @@
 
 package com.hp.hpl.jena.sparql.expr;
 
+import com.hp.hpl.jena.sparql.engine.OpExec;
 import com.hp.hpl.jena.sparql.util.Context;
 
-
+/** Visitor class to run over expressions and initialise them
+ *  
+ * @author Andy Seaborne
+ */
 public class ExprBuild extends ExprVisitorBase 
 {
     private Context context ;
-    public ExprBuild(Context context) { this.context = context ; }
+    private OpExec opExec ;
+    public ExprBuild(Context context)
+    { 
+        this.context = context ;
+    }
+    
     public void visit(ExprFunction func)
     {
         if ( func instanceof E_Function )
         {
+            // Causes unbindable functions to complain now, not later.
             E_Function f = (E_Function)func ;
             f.buildFunction(context) ;
         }
-        
-//        if ( func instanceof E_Exists )
-//        {
-//            E_Exists f = (E_Exists)func ;
-//            ??
-//        }
     }
 }
 

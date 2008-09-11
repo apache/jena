@@ -11,6 +11,10 @@ package dev;
 
 public class Dev
 {
+    // OpAssign - needs expression prepare (for function binding)?
+    // Other places using a VarExprList?
+    // Does prepare really matter?
+    
     // Dev: escapes in Literals and symbols in SSE (ParseSSBase)
     // Need configurable escape processing.
     

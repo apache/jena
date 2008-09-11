@@ -6,17 +6,23 @@
 
 package com.hp.hpl.jena.sparql.expr;
 
+import com.hp.hpl.jena.sparql.ARQConstants;
+import com.hp.hpl.jena.sparql.ARQInternalErrorException;
 import com.hp.hpl.jena.sparql.algebra.Op;
+import com.hp.hpl.jena.sparql.engine.OpExec;
+import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.function.FunctionEnv;
 
 public class E_Exists extends ExprFunction
 {
     private static final String symbol = "exists" ;
+    private Op op ;
 
     public E_Exists(Op op)
     {
         super(symbol) ;
+        this.op = op  ;
     }
 
     public Expr getArg(int i)
@@ -31,18 +37,18 @@ public class E_Exists extends ExprFunction
 
     public Expr copySubstitute(Binding binding, boolean foldConstants)
     {
-        
         return null ;
     }
 
     public NodeValue eval(Binding binding, FunctionEnv env)
     {
-        // Only problem is that it does not know what query engine it is in.
-        // Compile at compile time using the OpExec/QueryEngine
-        // ExprBuild is the visitor run over 
-        env.getActiveGraph() ;
-        env.getDataset() ;
-        return null ;
+        OpExec opExec = (OpExec)env.getContext().get(ARQConstants.sysCurrentOpExec) ;
+        if ( opExec == null )
+            throw new ARQInternalErrorException("No OpExec") ;
+        QueryIterator qIter = opExec.eval(op, env.getDataset(), binding, env.getContext()) ;
+        boolean b = qIter.hasNext() ;
+        qIter.close() ;
+        return NodeValue.booleanReturn(b) ;
     }
 
 }
