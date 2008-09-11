@@ -8,7 +8,7 @@ package com.hp.hpl.jena.sparql.expr;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 
 /** A function in the expression hierarchy.
- *  Everything that is evaluable (i.e. not NodeValue, NodeVar) is a function).
+ *  Everything that is evaluable (i.e. not NodeValue, NodeVar) is a function.
  *  It is useful to distinguish between values, vars and functions.
  */
  

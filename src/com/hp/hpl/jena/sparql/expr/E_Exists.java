@@ -31,13 +31,15 @@ public class E_Exists extends ExprFunction
 
     public Expr copySubstitute(Binding binding, boolean foldConstants)
     {
+        
         return null ;
     }
 
     public NodeValue eval(Binding binding, FunctionEnv env)
     {
-        
+        // Only problem is that it does not know what query engine it is in.
         env.getActiveGraph() ;
+        env.getDataset() ;
         return null ;
     }
 
