@@ -20,6 +20,12 @@ public class ExprBuild extends ExprVisitorBase
             E_Function f = (E_Function)func ;
             f.buildFunction(context) ;
         }
+        
+//        if ( func instanceof E_Exists )
+//        {
+//            E_Exists f = (E_Exists)func ;
+//            ??
+//        }
     }
 }
 

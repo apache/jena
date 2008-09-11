@@ -30,7 +30,7 @@ public class ExprVars
                     acc.add(nv.asVar()) ;
                 }
             } ;
-        Worker vv = new Worker(acc, action) ;
+        ExprVarsWorker vv = new ExprVarsWorker(acc, action) ;
         ExprWalker.walk(vv, expr) ;
     }
     
@@ -50,16 +50,16 @@ public class ExprVars
                     acc.add(nv.getVarName()) ;
                 }
             } ;
-        Worker vv = new Worker(acc, action) ;
+        ExprVarsWorker vv = new ExprVarsWorker(acc, action) ;
         ExprWalker.walk(vv, expr) ;
     }
     
-    static class Worker extends ExprVisitorBase
+    static class ExprVarsWorker extends ExprVisitorBase
     {
         Collection acc ;
         Action action ;
         
-        public Worker(Collection acc, Action action)
+        public ExprVarsWorker(Collection acc, Action action)
         { this.acc = acc ; this.action = action ; }
         
         public void visit(ExprVar nv)

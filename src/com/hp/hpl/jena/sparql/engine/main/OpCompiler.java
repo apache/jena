@@ -26,9 +26,7 @@ import com.hp.hpl.jena.sparql.engine.main.iterator.QueryIterOptionalIndex;
 import com.hp.hpl.jena.sparql.engine.main.iterator.QueryIterService;
 import com.hp.hpl.jena.sparql.engine.main.iterator.QueryIterUnion;
 import com.hp.hpl.jena.sparql.expr.Expr;
-import com.hp.hpl.jena.sparql.expr.ExprBuild;
 import com.hp.hpl.jena.sparql.expr.ExprList;
-import com.hp.hpl.jena.sparql.expr.ExprWalker;
 import com.hp.hpl.jena.sparql.procedure.ProcEval;
 import com.hp.hpl.jena.sparql.procedure.Procedure;
 
@@ -255,52 +253,8 @@ public class OpCompiler
             qIter = new QueryIterFilterExpr(qIter, expr, execCxt) ;
         }
         return qIter ;
-        
-//        FilterPlacement filterPlacement = new FilterPlacement(this, execCxt);
-//        if ( base instanceof OpBGP )
-//            // Uncompiled => unsplit
-//            return filterPlacement.placeFiltersBGP(exprs, ((OpBGP)base).getPattern(), input) ;
-//
-//        if ( base instanceof OpSequence )
-//            return filterPlacement.placeFiltersStage(exprs, (OpSequence)base, input) ;
-//        
-//        if ( base instanceof OpGraph )
-//        {}
-//
-////        if ( base instanceof OpQuadPattern )
-////            return filterPlacement.placeFilter(opFilter.getExpr(), (OpQuadPattern)base, input) ;
-//        
-//        // Tidy up.
-//        if ( base instanceof OpJoin )
-//        {
-//            OpJoin opJoin = (OpJoin)base ;
-//            boolean canDoLinear = JoinClassifier.isLinear(opJoin) ;
-//            if ( canDoLinear )
-//                return filterPlacement.placeFiltersJoin(exprs, (OpJoin)base, input) ;
-//        }
-//        
-//        // There must be a better way.
-//        if ( base instanceof OpLeftJoin )
-//        {
-//            // Can push in if used only on the LHS 
-//        }
-//        
-//        if ( base instanceof OpUnion )
-//        {}
-//
-//        // Nothing special.
-//        return filterPlacement.buildOpFilter(exprs, base, input) ;
     }
 
-    protected void prepareExprs(ExprList exprs)
-    {
-        for ( Iterator iter = exprs.iterator() ; iter.hasNext() ; )
-        {
-            Expr expr = (Expr)iter.next() ;
-            ExprWalker.walk(new ExprBuild(execCxt.getContext()), expr) ;
-        }
-    }
-    
     public QueryIterator compile(OpGraph opGraph, QueryIterator input)
     { 
         return new QueryIterGraph(input, opGraph, execCxt) ;

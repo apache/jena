@@ -38,6 +38,8 @@ public class E_Exists extends ExprFunction
     public NodeValue eval(Binding binding, FunctionEnv env)
     {
         // Only problem is that it does not know what query engine it is in.
+        // Compile at compile time using the OpExec/QueryEngine
+        // ExprBuild is the visitor run over 
         env.getActiveGraph() ;
         env.getDataset() ;
         return null ;
