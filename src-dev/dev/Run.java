@@ -57,10 +57,17 @@ public class Run
             //tdb.tdbstats.main(new String[0]) ;
             StatsMatcher matcher = new StatsMatcher("stats.sse") ;
             matcher.printSSE(System.out) ;
-            double d = matcher.match(StatsMatcher.TERM, 
-                                     Item.createNode(Node.createURI("http://purl.org/dc/elements/1.1/title")),
-                                     StatsMatcher.TERM) ;
+            double d = 0 ; 
+            d = matcher.match(StatsMatcher.TERM, 
+                              Item.createNode(Node.createURI("http://purl.org/dc/elements/1.1/title")),
+                              StatsMatcher.TERM) ;
             System.out.println("Match: "+d) ;
+            d = matcher.match(StatsMatcher.TERM, 
+                              Item.createNode(Node.createURI("http://purl.org/dc/elements/1.1/title")),
+                              StatsMatcher.VAR) ;
+            System.out.println("Match: "+d) ;
+            
+            
             System.exit(0) ;
         }
         

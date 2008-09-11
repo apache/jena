@@ -149,8 +149,8 @@ public class StatsMatcher
             {
                 // Generate entries: 
 //                patterns.add(new Pattern(1, TERM, pat, TERM)) ;
-                patterns.add(new Pattern(2,  TERM, pat, ANY)) ;     // S, P, ?
-                patterns.add(new Pattern(10, ANY, pat, TERM)) ;     // ?, P, O
+                patterns.add(new Pattern(2,  TERM, pat, ANY)) ;     // S, P, ? : approx weight
+                patterns.add(new Pattern(10, ANY, pat, TERM)) ;     // ?, P, O : approx weight
                 patterns.add(new Pattern(((Number)(elt.getList().get(1).getNode().getLiteralValue())).doubleValue(),
                                          ANY, pat, ANY)) ;          // ?, P, ?
             }
