@@ -141,8 +141,10 @@ public final class StatsMatcher
             Item pat = elt.getList().get(0) ;
 
             if ( elt.isTagged("meta") )
+            {
                 // Get count.
                 continue ;
+            }
             
             
             if ( pat.isNode() )
@@ -235,7 +237,7 @@ public final class StatsMatcher
                 continue ;
             if ( ! matchNode(obj, pattern.objItem, match) )
                 continue ;
-            int m =  (100*match.exactMatches)+(10*match.termMatches)+match.varMatches+match.anyMatches ;
+            int m = (100*match.exactMatches)+(10*match.termMatches)+match.varMatches+match.anyMatches ;
 
             if ( m > matches )
             {
@@ -246,7 +248,6 @@ public final class StatsMatcher
         return w ;
     }
     
-    // Later - isomorphism mapping
     private boolean matchNode(Item node, Item item, Match details)
     {
         if ( item.equals(ANY) )
@@ -263,7 +264,7 @@ public final class StatsMatcher
 
         if ( node.isSymbol() )
         {
-            //TERM in the thing to be matched means somethign concrete will be there.
+            //TERM in the thing to be matched means something concrete will be there.
             if ( node.equals(TERM) )
             {
                 if ( item.equals(TERM) )

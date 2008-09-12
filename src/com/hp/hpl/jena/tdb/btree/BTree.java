@@ -236,7 +236,6 @@ public class BTree implements Iterable<Record>, RangeIndex
     @Override
     public boolean isEmpty()
     {
-        // TODO This is wrong.
         return pageMgr.getBlockMgr().isEmpty() ;
     }
 

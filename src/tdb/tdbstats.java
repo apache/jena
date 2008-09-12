@@ -17,6 +17,7 @@ import com.hp.hpl.jena.tdb.solver.stats.StatsWriter;
 
 public class tdbstats extends CmdTDB
 {
+    // tdbconfig?
     static public void main(String... argv)
     { 
         CmdUtils.setLog4j() ;

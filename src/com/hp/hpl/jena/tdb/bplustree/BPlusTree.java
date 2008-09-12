@@ -23,14 +23,6 @@ import com.hp.hpl.jena.tdb.base.recordfile.RecordBufferPage;
 import com.hp.hpl.jena.tdb.base.recordfile.RecordBufferPageMgr;
 import com.hp.hpl.jena.tdb.index.RangeIndex;
 
-/* TODO
- * Abstract class for BTreeNode
- *   Factory opes (for block to node)
- *   BTreeNodeLeaf, BTreeNodeBranch
- *   
- */
-
-
 /** B-Tree converted to B+Tree
  * 
  * B-Tree taken from:

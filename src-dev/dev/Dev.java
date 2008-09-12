@@ -11,6 +11,7 @@ public class Dev
     // tdbloader (script) to work on gzip files 
 
     // NodeIds. varints.
+    // Extract/generalised the pattern matcher and apply to BGPs.
     
     // ---- Build and release
     // 1 -- Sources and javadoc to maven // -source and -javadoc - how to generate in ivy?

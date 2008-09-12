@@ -6,19 +6,13 @@
 
 package tdb;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-
-import lib.Tuple;
 import tdb.cmdline.CmdSub;
 import tdb.cmdline.CmdTDB;
 import arq.cmdline.CmdARQ;
 
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.tdb.index.TripleIndex;
-import com.hp.hpl.jena.tdb.pgraph.NodeId;
+import com.hp.hpl.jena.sparql.sse.Item;
 import com.hp.hpl.jena.tdb.pgraph.GraphTDB;
+import com.hp.hpl.jena.tdb.solver.stats.StatsWriter;
 
 /** Tools to manage a TDB store.  Subcommand based. */
 public class tdbconfig extends CmdSub
@@ -89,28 +83,31 @@ public class tdbconfig extends CmdSub
         @Override
         protected void exec()
         {
-            long count = 0 ;
-            Map<NodeId, Integer> predicates = new HashMap<NodeId, Integer>(10000) ;
             GraphTDB graph = getGraph() ;
-            TripleIndex primary = graph.getIndexSPO() ;
-            Iterator<Tuple<NodeId>> iter = primary.all() ;
-            for ( ; iter.hasNext() ; )
-            {
-                NodeId p  = iter.next().get(1) ; // 0,1,2
-                count++ ;
-                Integer n = predicates.get(p) ;
-                if ( n == null )
-                    predicates.put(p,1) ;
-                else
-                    predicates.put(p, n+1) ;
-            }
-            // Now print.
-            System.out.printf("# Count: %d\n", count) ;
-            for ( NodeId n : predicates.keySet() )
-            {
-                Node p = graph.getNodeTable().retrieveNodeByNodeId(n) ;
-                System.out.printf("%s : %d\n", p.getURI(), predicates.get(n)) ;
-            }
+            Item item = StatsWriter.gather(graph) ;
+            System.out.println(item) ;
+//            long count = 0 ;
+//            Map<NodeId, Integer> predicates = new HashMap<NodeId, Integer>(10000) ;
+//            GraphTDB graph = getGraph() ;
+//            TripleIndex primary = graph.getIndexSPO() ;
+//            Iterator<Tuple<NodeId>> iter = primary.all() ;
+//            for ( ; iter.hasNext() ; )
+//            {
+//                NodeId p  = iter.next().get(1) ; // 0,1,2
+//                count++ ;
+//                Integer n = predicates.get(p) ;
+//                if ( n == null )
+//                    predicates.put(p,1) ;
+//                else
+//                    predicates.put(p, n+1) ;
+//            }
+//            // Now print.
+//            System.out.printf("# Count: %d\n", count) ;
+//            for ( NodeId n : predicates.keySet() )
+//            {
+//                Node p = graph.getNodeTable().retrieveNodeByNodeId(n) ;
+//                System.out.printf("%s : %d\n", p.getURI(), predicates.get(n)) ;
+//            }
         }
 
         @Override

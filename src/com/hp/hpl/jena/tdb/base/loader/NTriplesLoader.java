@@ -56,7 +56,7 @@ import com.hp.hpl.jena.util.FileUtils;
  */
 public final class NTriplesLoader
 {
-    // TODO BulLoader ToDo list
+    // TODO BulkLoader ToDo list
     //  1 - expect - check if false and react
     //  2 - readURIStr - check one char peek ahead but do any escape
     
