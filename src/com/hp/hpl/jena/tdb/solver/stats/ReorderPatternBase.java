@@ -6,87 +6,73 @@
 
 package com.hp.hpl.jena.tdb.solver.stats;
 
+import static iterator.Iter.map;
+import static iterator.Iter.toList;
+import iterator.Transform;
+
 import java.util.List;
 
 import com.hp.hpl.jena.graph.Graph;
+import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.sparql.core.BasicPattern;
+import com.hp.hpl.jena.sparql.core.Var;
 
-public final class ReorderWeighted extends ReorderPatternBase
+/** Machinary */
+public abstract class ReorderPatternBase implements ReorderPattern
 {
-    private StatsMatcher stats ;
-
-    public ReorderWeighted(StatsMatcher stats)
+    public final BasicPattern reorder(Graph graph, BasicPattern pattern)
     {
-        this.stats = stats ;
-    }
-    
-    
-    @Override
-    public void reorder(Graph graph, List<Triple> triples, List<PatternTriple> components, BasicPattern bgp)
-    {
-        int N = components.size() ;
+        if (pattern.size() == 0 )
+            return pattern ;
+        @SuppressWarnings("unchecked")
+        List<Triple> triples = (List<Triple>)pattern.getList() ;
+        BasicPattern bgp = new BasicPattern() ;
 
-        for ( int i = 0 ; i < N ; i++ )
-        {
-            int j = minimum(components) ;
-            if ( j < 0 )
-                // No weight for any remaining triples 
-                j = first(components) ;
-            Triple triple = triples.get(j) ; 
-            bgp.add(triple) ;
-            update(triple, components) ;
-            components.set(j, null) ;
-        }
+        List<PatternTriple> components = toList(map(triples, new Transform<Triple, PatternTriple>(){
+            @Override
+            public PatternTriple convert(Triple triple)
+            {
+                return new PatternTriple(triple) ;
+            }})) ;
+
+        reorder(graph, triples, components, bgp) ;
+        return bgp ;
     }
 
-    private int minimum(List<PatternTriple> triples)
+    protected abstract void reorder(Graph graph, List<Triple> triples, List<PatternTriple> components, BasicPattern bgp) ;
+    
+    /** Update compoents to note any variables from triple */
+    protected final void update(Triple triple, List<PatternTriple> components)
     {
-        int idx = -1 ;
-        double w = Double.MAX_VALUE ;
+        for ( PatternTriple elt : components )
+            if ( elt != null ) update(triple, elt) ;
+    }
+
+    
+    private void update(Triple triple, PatternTriple tuple)
+    {
+        update(triple.getSubject(), tuple) ;
+        update(triple.getPredicate(), tuple) ;
+        update(triple.getObject(), tuple) ;
+    }
+
+    private void update(Node node, PatternTriple elt)
+    {
         
-        for ( int i = 0 ; i < triples.size() ; i++ ) 
+        if ( Var.isVar(node) )
         {
-            if ( triples.get(i) == null )
-                continue ;
-            double w2 = match(triples.get(i)) ;
-            if ( w2 < 0 )
-            {
-                // No match : use an empricial guess.
-                // P != rdf;type
-                //SP?
-                //?PO
-            }
-            
-            
-            if ( w2 >= 0 && w > w2 )
-            {
-                w = w2 ;
-                idx = i ;
-            }
+            if ( elt.subject.equals(node) )
+                elt.subject = StatsMatcher.TERM ;
+            if ( elt.predicate.equals(node) )
+                elt.predicate = StatsMatcher.TERM ;
+            if ( elt.object.equals(node) )
+                elt.object = StatsMatcher.TERM ;
         }
-        return idx ;
+           
     }
-
-    
-    private double match(PatternTriple item)
-    {
-        return stats.match(item.subject, item.predicate, item.object) ;
-    }
-
-    
-    private int first(List<PatternTriple> triples)
-    {
-        for ( int i = 0 ; i < triples.size() ; i++ ) 
-        {
-            if ( triples.get(i) != null )
-                return i ;
-        }
-        return -2 ;
-    }
-
-
 }
+
 /*
  * (c) Copyright 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.

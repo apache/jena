@@ -37,7 +37,7 @@ import com.hp.hpl.jena.tdb.TDBException;
  * <code>LITERAL</code> (matches one of these types).    
  */
 
-public class StatsMatcher
+public final class StatsMatcher
 {
     public static final String TAG     = "stats" ; 
     public static final Item ANY       = Item.createSymbol("ANY") ;
@@ -179,18 +179,11 @@ public class StatsMatcher
         return item ;
     }
     
-    
     public double match(Triple t)
     {
         return match(Item.createNode(t.getSubject()),
                      Item.createNode(t.getPredicate()),
                      Item.createNode(t.getObject())) ;
-    }
-    
-    // Convenience form.
-    public double match(Item[] items)
-    {
-        return match(items[0], items[1], items[2]) ;
     }
     
     /** Return the matching weight for the first triple match found, else -1 for no match */

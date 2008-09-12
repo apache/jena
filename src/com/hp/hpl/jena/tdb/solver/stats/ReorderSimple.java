@@ -6,13 +6,21 @@
 
 package com.hp.hpl.jena.tdb.solver.stats;
 
+import java.util.List;
+
 import com.hp.hpl.jena.graph.Graph;
+import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.sparql.core.BasicPattern;
 
-public interface ReorderPattern
+public class ReorderSimple extends ReorderPatternBase
 {
-    // Return a basic graph pattern to execute instead.
-    public BasicPattern reorder(Graph graph, BasicPattern pattern) ;
+    @Override
+    protected void reorder(Graph graph, List<Triple> triples, List<PatternTriple> components, BasicPattern bgp)
+    {
+        // Based on variable usage.
+        for ( Triple t : triples )
+            bgp.add(t) ;
+    }
 }
 
 /*

@@ -6,13 +6,22 @@
 
 package com.hp.hpl.jena.tdb.solver.stats;
 
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.sparql.core.BasicPattern;
+import com.hp.hpl.jena.graph.Triple;
+import com.hp.hpl.jena.sparql.sse.Item;
 
-public interface ReorderPattern
+/** A mutable triple pattern */
+public final class PatternTriple
 {
-    // Return a basic graph pattern to execute instead.
-    public BasicPattern reorder(Graph graph, BasicPattern pattern) ;
+    Item subject ;
+    Item predicate ;
+    Item object ;
+
+    PatternTriple(Triple triple)
+    {
+        subject = Item.createNode(triple.getSubject()) ;
+        predicate = Item.createNode(triple.getPredicate()) ;
+        object = Item.createNode(triple.getObject()) ;
+    }
 }
 
 /*
