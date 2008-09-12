@@ -11,8 +11,8 @@
   <!-- The major and minor version numbers  -->
   <property name="version-major"   		value="0"/>
   <property name="version-minor"    	value="5"/>
-  <property name="version-revision"   	value="3"/>
-  <property name="version-status"  value=""/>
+  <property name="version-revision"   	value="4"/>
+  <property name="version-status"  value="-dev"/>
   <property name="version"
             value="${version-major}.${version-minor}.${version-revision}${version-status}"/>
   
@@ -68,10 +68,15 @@
   <!-- Artifacts -->
   <!-- Align name with ivy.xml publications section -->
   <property name="jarfile"                value="${name}-${version}.jar"/>
-  <property name="src.zipfile"            value="${name}-src-${version}.zip"/>               <!-- Not Maven name ?-->
-  <property name="javadoc.zipfile"        value="${name}-javadoc-${version}.zip"/>          <!-- Not Maven name ?-->
+	
+  <property name="src.artifact"           value="${name}-${version}-sources.jar"/>
+  <property name="javadoc.artifact"       value="${name}-${version}-javadoc.zip"/>
   <property name="pomfile"                value="${name}-${version}.pom"/>
 
+  <!-- File names in the distribution --> 
+  <property name="src.zipfile"            value="${name}-src-${version}.zip"/>
+  <property name="javadoc.zipfile"        value="${name}-javadoc-${version}.zip"/>
+  	
   <!-- Places -->
   <property name="src.dir"                value="src"/>
   <property name="src.test.dir"           value="src-test"/>
@@ -296,17 +301,16 @@
     </copy>
   </target>
   
-  <target name="src-artifact" depends="">
+  <target name="src-artifact">
     <!-- <delete file="${artifacts.dir}/${src.zipfile}"/> -->
-    <zip zipfile="${artifacts.dir}/${src.zipfile}">
+    <jar destfile="${artifacts.dir}/${src.artifact}">
         <fileset refid="fileset.src"/>
-    </zip>
-    <!-- OLD   <copy todir="${artifacts.dir}" file="${build.dir}/${src.zipfile}"/> -->
+    </jar>
   </target>
 
   <target name="javadoc-artifact" depends="javadoc">
     <!-- <delete file="${artifacts.dir}/${src.zipfile}"/> -->
-    <zip zipfile="${artifacts.dir}/${javadoc.zipfile}" 
+    <jar destfile="${artifacts.dir}/${javadoc.artifact}" 
          basedir="${javadoc.dir}"/>
   </target>
   
@@ -482,8 +486,23 @@
                  overwrite="true"
                  forcedeliver="true">
       <artifacts pattern="${artifacts.dir}/[artifact]-[revision].[ext]" />
+      <artifacts pattern="${artifacts.dir}/[artifact]-[revision]-sources.jar" />
+      <artifacts pattern="${artifacts.dir}/[artifact]-[revision]-javadoc.jar" />
     </ivy:publish>
   </target>
+
+  <target name="ivy-publish-dev" depends="ivy-init">
+    <ivy:resolve conf="main"/>
+    <ivy:publish conf="main" 
+                 resolver="dev-resolver" 
+                 overwrite="true"
+                 forcedeliver="true">
+      <!-- <artifacts pattern="${artifacts.dir}/[artifact]-[revision].[ext]" /> -->
+      <artifacts pattern="${artifacts.dir}/[artifact]-[revision]-sources.jar" />
+      <artifacts pattern="${artifacts.dir}/[artifact]-[revision]-javadoc.jar" />
+    </ivy:publish>
+  </target>
+
 
   <target name="ivy-pom" depends="ivy-init">
     <!-- Make a basic POM file -->

@@ -19,9 +19,9 @@
   <publications>
     <artifact name="tdb" type="jar"/>
     <artifact name="tdb" type="xml"    ext="pom"/>
-    <!-- Problems with the names Maven expects
-    <artifact name="tdb-src" type="zip" ext="zip"/>
-    <artifact name="tdb-javadoc" type="zip" ext="zip"/>
+    <!-- NOT the names that Maven expects - converted in publication
+    <artifact name="tdb-src"     type="jar"/>
+    <artifact name="tdb-javadoc" type="jar"/>
     -->
   </publications>
 

@@ -15,13 +15,13 @@
       <ibiblio name="ibiblio" m2compatible="true" />
     </chain>
     
+
     <!-- Publish -->
-    <!-- File system - for testing
+    <!-- File system - for testing -->
     <filesystem name="dev-resolver" >
-       <ivy      pattern="build/pub/[module]-[revision]/[artifact]-[revision].[ext]"/>
-       <artifact pattern="build/pub/[module]-[revision]/[artifact]-[revision].[ext]"/>
+       <ivy      pattern="build/pub/[module]-[revision]/[artifact]-[revision]-sources.[ext]"/>
+       <artifact pattern="build/pub/[module]-[revision]/[artifact]-[revision]-javadoc.[ext]"/>
     </filesystem>
-    -->
 
     <!-- User environment variables to find user/key -->
     <sftp name="dev-publish" host="jena.hpl.hp.com" 

@@ -12,9 +12,11 @@ public class Dev
 
     // NodeIds. varints.
     // Extract/generalised the pattern matcher and apply to BGPs.
+    // Modular build.
     
     // ---- Build and release
     // 1 -- Sources and javadoc to maven // -source and -javadoc - how to generate in ivy?
+    //      Build artifact tdb-src-VER.jar and publish to tdb-VER-sources.jar 
     // 3 -- Being about to run tests : Special ant target that has no dependences on compile
     // Or shell script.
     // Where does the jar go in the download version?
