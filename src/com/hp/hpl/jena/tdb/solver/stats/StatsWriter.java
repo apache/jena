@@ -14,12 +14,10 @@ import lib.Tuple;
 
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.graph.Node;
-
 import com.hp.hpl.jena.sparql.sse.Item;
 import com.hp.hpl.jena.sparql.sse.ItemList;
 import com.hp.hpl.jena.sparql.util.NodeFactory;
 import com.hp.hpl.jena.sparql.util.Utils;
-
 import com.hp.hpl.jena.tdb.index.TripleIndex;
 import com.hp.hpl.jena.tdb.pgraph.GraphTDB;
 import com.hp.hpl.jena.tdb.pgraph.NodeId;
@@ -58,11 +56,11 @@ public class StatsWriter
 
 //        System.out.println("Nodes") ;
         
-        Item meta = Item.createList() ;
+        Item meta = createTagged("meta") ;
         addPair(meta.getList(), "timestamp", NodeFactory.nowAsDateTime()) ;
         addPair(meta.getList(), "run@",  Utils.nowAsString()) ;
         addPair(meta.getList(), "count", integer(count)) ;
-        addPair(statsList, Item.createSymbol("meta"), meta) ;
+        statsList.add(meta) ;
         
         for ( NodeId p : predicateIds.keySet() )
         {
@@ -98,6 +96,14 @@ public class StatsWriter
         return Node.createLiteral(lex, null, XSDDatatype.XSDinteger) ;
     }
 
+    
+    // To ARQ sometime.
+    
+    private static Item createTagged(String tag) { 
+        Item tagged = Item.createList() ;
+        tagged.getList().add(Item.createSymbol(tag)) ;
+        return tagged ;
+    }
     
     private static void addPair(ItemList list, String key, String value)
     {

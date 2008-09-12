@@ -187,6 +187,12 @@ public class StatsMatcher
                      Item.createNode(t.getObject())) ;
     }
     
+    // Convenience form.
+    public double match(Item[] items)
+    {
+        return match(items[0], items[1], items[2]) ;
+    }
+    
     /** Return the matching weight for the first triple match found, else -1 for no match */
     public double match(Item subj, Item pred, Item obj)
     {

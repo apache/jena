@@ -7,10 +7,14 @@
 package com.hp.hpl.jena.tdb.solver.stats;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import com.hp.hpl.jena.graph.Graph;
+import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
+import com.hp.hpl.jena.sparql.core.Var;
 
 public class ReorderWeighted implements ReorderPattern
 {
@@ -26,17 +30,42 @@ public class ReorderWeighted implements ReorderPattern
     {
         int N = triples.size() ;
         double[] weights = init(triples) ;
+        // XXX TODO Binding terms.
         
+        List<Triple> triples1 = new ArrayList<Triple>(triples) ;    // Decreasing set
         List<Triple> triples2 = new ArrayList<Triple>() ;
+        Set<Var> bindings = new HashSet<Var>() ; 
+        
         for ( int i = 0 ; i < N ; i++ )
         {
             int j = minimum(weights) ;
-            triples2.add(triples.get(j)) ;
+            if ( j < 0 )
+                // No weight
+                ;
+            Triple triple = triples.get(j) ; 
+            
+            triples2.add(triple) ;
+            note(triple, bindings) ;
             weights[j] = -1 ;
+            // And "bind" the rest
+            
             
         }
         // Check
         return triples2 ;
+    }
+
+    private void note(Triple triple, Set<Var> bindings)
+    {
+        note(triple.getSubject(), bindings) ;
+        note(triple.getPredicate(), bindings) ;
+        note(triple.getObject(), bindings) ;
+    }
+
+    private void note(Node node, Set<Var> bindings)
+    {
+        if ( Var.isVar(node) )
+            bindings.add(Var.alloc(node)) ;
     }
 
     private double[] init(List<Triple> triples)

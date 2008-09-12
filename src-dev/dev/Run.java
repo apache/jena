@@ -12,20 +12,19 @@ import lib.FileOps;
 import lib.Pair;
 import lib.cache.Cache2;
 
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
-
-import com.hp.hpl.jena.util.FileManager;
-
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
-
-import com.hp.hpl.jena.sparql.sse.Item;
+import com.hp.hpl.jena.query.Query;
+import com.hp.hpl.jena.query.QueryExecution;
+import com.hp.hpl.jena.query.QueryExecutionFactory;
+import com.hp.hpl.jena.query.QueryFactory;
+import com.hp.hpl.jena.query.ResultSet;
+import com.hp.hpl.jena.query.ResultSetFormatter;
+import com.hp.hpl.jena.query.Syntax;
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.sparql.sse.SSE;
-
-import com.hp.hpl.jena.query.*;
-
 import com.hp.hpl.jena.tdb.TDB;
 import com.hp.hpl.jena.tdb.TDBFactory;
 import com.hp.hpl.jena.tdb.base.block.BlockMgr;
@@ -36,8 +35,8 @@ import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 import com.hp.hpl.jena.tdb.base.recordfile.RecordBufferPage;
 import com.hp.hpl.jena.tdb.base.recordfile.RecordBufferPageMgr;
 import com.hp.hpl.jena.tdb.pgraph.GraphTDB;
-import com.hp.hpl.jena.tdb.solver.stats.StatsMatcher;
 import com.hp.hpl.jena.tdb.sys.Const;
+import com.hp.hpl.jena.util.FileManager;
 
 public class Run
 {
@@ -52,25 +51,6 @@ public class Run
     
     public static void main(String ... args) throws IOException
     {
-        if ( true )
-        {
-            //tdb.tdbstats.main(new String[0]) ;
-            StatsMatcher matcher = new StatsMatcher("stats.sse") ;
-            matcher.printSSE(System.out) ;
-            double d = 0 ; 
-            d = matcher.match(StatsMatcher.TERM, 
-                              Item.createNode(Node.createURI("http://purl.org/dc/elements/1.1/title")),
-                              StatsMatcher.TERM) ;
-            System.out.println("Match: "+d) ;
-            d = matcher.match(StatsMatcher.TERM, 
-                              Item.createNode(Node.createURI("http://purl.org/dc/elements/1.1/title")),
-                              StatsMatcher.VAR) ;
-            System.out.println("Match: "+d) ;
-            // Now do a whole block.
-            
-            System.exit(0) ;
-        }
-        
         //smallGraph() ;
         //tdbloader("--desc=tdb.ttl", "--mem", "/home/afs/Datasets/MusicBrainz/tracks.nt") ;
         
@@ -247,11 +227,6 @@ public class Run
     {
         tdb.tdbconfig.main("stats", "--desc="+assembler) ;
         System.exit(0) ;
-    }
-
-    private static void stats()
-    {
-        
     }
 }
 
