@@ -8,32 +8,21 @@ package com.hp.hpl.jena.tdb.pgraph.assembler;
 
 import static com.hp.hpl.jena.sparql.util.graph.GraphUtils.exactlyOneProperty;
 import static com.hp.hpl.jena.sparql.util.graph.GraphUtils.getStringValue;
-import static com.hp.hpl.jena.sparql.util.graph.GraphUtils.multiValueResource;
 import static com.hp.hpl.jena.tdb.pgraph.assembler.PGraphAssemblerVocab.pIndex;
 import static com.hp.hpl.jena.tdb.pgraph.assembler.PGraphAssemblerVocab.pLocation;
-import static java.lang.String.format;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.Resource;
 
 import com.hp.hpl.jena.assembler.Assembler;
 import com.hp.hpl.jena.assembler.Mode;
 import com.hp.hpl.jena.assembler.assemblers.AssemblerBase;
 import com.hp.hpl.jena.assembler.exceptions.AssemblerException;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.rdf.model.Resource;
 
 import com.hp.hpl.jena.tdb.TDB;
+import com.hp.hpl.jena.tdb.TDBException;
 import com.hp.hpl.jena.tdb.TDBFactory;
 import com.hp.hpl.jena.tdb.base.file.Location;
-import com.hp.hpl.jena.tdb.index.IndexBuilder;
-import com.hp.hpl.jena.tdb.index.TripleIndex;
-import com.hp.hpl.jena.tdb.pgraph.NodeTable;
-import com.hp.hpl.jena.tdb.pgraph.NodeTableIndex;
-import com.hp.hpl.jena.tdb.pgraph.GraphTDB;
-import com.hp.hpl.jena.tdb.sys.Names;
 
 public class PGraphAssembler extends AssemblerBase implements Assembler
 {
@@ -68,34 +57,36 @@ public class PGraphAssembler extends AssemblerBase implements Assembler
         if ( ! root.hasProperty(pIndex) )
             // Make just using the location.
             return TDBFactory.createModel(loc) ;
-
-        // ------- Experimental : Make using explicit index descriptions
-        // ---- Uses BTree, not BPlusTrees - need upgrading. 
-        Map<String, TripleIndex> indexes = new HashMap<String, TripleIndex>() ;
-        @SuppressWarnings("unchecked")
-        List<Resource> indexDesc = (List<Resource>)multiValueResource(root, pIndex ) ;
-        if ( indexes.size() > 3 )
-            throw new AssemblerException(root, "More than 3 indexes!") ;
-        for ( Resource r : indexDesc )
-        {
-            TripleIndex idx = (TripleIndex)tripleIndexBuilder.open(a, r, mode) ;
-            String d = idx.getDescription() ;
-            if ( indexes.containsKey(d) )
-                throw new AssemblerException(root, format("Index %s declared twice", d)) ;
-            // Check one of SPO, POS, OPS.
-            if ( ! ( d.equalsIgnoreCase(Names.indexSPO) || 
-                     d.equalsIgnoreCase(Names.indexPOS) || 
-                     d.equalsIgnoreCase(Names.indexOSP) ))
-                throw new AssemblerException(root, format("Unrecognized description (expected SPO, POS or OSP)", d)) ;
-            indexes.put(idx.getDescription(), idx) ;
-        }
-        
-        NodeTable nodeTable = new NodeTableIndex(IndexBuilder.get(), loc) ;
-        
-        GraphTDB graph = new GraphTDB(indexes.get(Names.indexSPO), 
-                                          indexes.get(Names.indexPOS),               
-                                          indexes.get(Names.indexOSP), nodeTable) ;
-        return ModelFactory.createModelForGraph(graph) ;
+        throw new TDBException("Custom indexes turned off") ; 
+//        // ------- Experimental : Make using explicit index descriptions
+//        // ---- Uses BTree, not BPlusTrees - need upgrading. 
+//        Map<String, TripleIndex> indexes = new HashMap<String, TripleIndex>() ;
+//        @SuppressWarnings("unchecked")
+//        List<Resource> indexDesc = (List<Resource>)multiValueResource(root, pIndex ) ;
+//        if ( indexes.size() > 3 )
+//            throw new AssemblerException(root, "More than 3 indexes!") ;
+//        for ( Resource r : indexDesc )
+//        {
+//            TripleIndex idx = (TripleIndex)tripleIndexBuilder.open(a, r, mode) ;
+//            String d = idx.getDescription() ;
+//            if ( indexes.containsKey(d) )
+//                throw new AssemblerException(root, format("Index %s declared twice", d)) ;
+//            // Check one of SPO, POS, OPS.
+//            if ( ! ( d.equalsIgnoreCase(Names.indexSPO) || 
+//                     d.equalsIgnoreCase(Names.indexPOS) || 
+//                     d.equalsIgnoreCase(Names.indexOSP) ))
+//                throw new AssemblerException(root, format("Unrecognized description (expected SPO, POS or OSP)", d)) ;
+//            indexes.put(idx.getDescription(), idx) ;
+//        }
+//        
+//        NodeTable nodeTable = new NodeTableIndex(IndexBuilder.get(), loc) ;
+//        
+//        GraphTDB graph = new GraphTDB(indexes.get(Names.indexSPO), 
+//                                      indexes.get(Names.indexPOS),               
+//                                      indexes.get(Names.indexOSP),
+//                                      nodeTable,
+//                                      null) ;
+//        return ModelFactory.createModelForGraph(graph) ;
     }
 
 }

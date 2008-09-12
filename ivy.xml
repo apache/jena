@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ivy-module version="2.0"
 	    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	    xmlns:mvn="http://ant.apache.org/ivy/maven"
 	    xsi:noNamespaceSchemaLocation="http://ant.apache.org/ivy/schemas/ivy.xsd">
 
   <info module="tdb"
@@ -18,10 +19,15 @@
 
   <publications>
     <artifact name="tdb" type="jar"/>
-    <artifact name="tdb" type="xml"    ext="pom"/>
-    <!-- NOT the names that Maven expects - converted in publication -->
+    <artifact type="xml"       ext="pom"/>
+    <artifact type="sources"   ext="jar"/>
+    <artifact type="javadoc"   ext="jar"/>
+    
+    <!-- <artifact name="tdb" type="source" ext="jar" mvn:classifier="sources"/> -->
+    <!-- NOT the names that Maven expects - converted in publication 
     <artifact name="tdb-src"     type="jar"/>
     <artifact name="tdb-javadoc" type="jar"/>
+    -->
   </publications>
 
   <dependencies>

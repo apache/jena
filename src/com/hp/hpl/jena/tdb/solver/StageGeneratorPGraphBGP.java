@@ -26,9 +26,9 @@ import com.hp.hpl.jena.sparql.engine.main.StageGenerator;
 import com.hp.hpl.jena.sparql.util.ALog;
 
 import com.hp.hpl.jena.tdb.TDB;
-import com.hp.hpl.jena.tdb.pgraph.NodeId;
 import com.hp.hpl.jena.tdb.pgraph.GraphTDB;
-import com.hp.hpl.jena.tdb.solver.stats.StatsMatcher;
+import com.hp.hpl.jena.tdb.pgraph.NodeId;
+import com.hp.hpl.jena.tdb.solver.stats.ReorderPattern;
 
 public class StageGeneratorPGraphBGP implements StageGenerator
 {
@@ -48,12 +48,11 @@ public class StageGeneratorPGraphBGP implements StageGenerator
             return above.execute(pattern, input, execCxt) ;
         
         GraphTDB graph =(GraphTDB)g ;
+        pattern = reorder(graph, pattern) ;
         
         @SuppressWarnings("unchecked")
         List<Triple> triples = (List<Triple>)pattern.getList() ;
-        
-        triples = reorder(graph, triples) ;
-        
+
         if ( execCxt.getContext().isTrue(TDB.logBGP) )
         {
             String x = Iter.asString(triples, " . " ) ;
@@ -75,11 +74,12 @@ public class StageGeneratorPGraphBGP implements StageGenerator
         return new QueryIterTDB(iterBinding, input) ;
     }
 
-    private List<Triple> reorder(GraphTDB graph, List<Triple> triples)
+    private BasicPattern reorder(GraphTDB graph, BasicPattern pattern)
     {
-        StatsMatcher matcher = null ; //graph.getStatsMatcher() ;
-//        if ( matcher == null )
-            return triples ;
+        ReorderPattern reorderPattern = graph.getReorderPattern() ;
+        if ( reorderPattern != null )
+            return reorderPattern.reorder(graph, null) ;
+        return pattern ;
     }
 
     private Iterator<BindingNodeId> solve(GraphTDB graph,

@@ -19,7 +19,7 @@
     <!-- Publish -->
     <!-- File system - for testing -->
     <filesystem name="dev-resolver" >
-       <ivy      pattern="build/pub/[module]-[revision]/[artifact]-[revision]-sources.[ext]"/>
+       <ivy      pattern="build/pub/[module]-[revision]/[artifact]-[revision].[ext]"/>
        <artifact pattern="build/pub/[module]-[revision]/[artifact]-[revision].[ext]"/>
        <!-- ?? Need src => sources
        <artifact pattern="build/pub/[module]-[revision]/[artifact]-[revision]-javadoc.jar"/>

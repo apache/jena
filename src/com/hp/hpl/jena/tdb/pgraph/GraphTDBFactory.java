@@ -6,14 +6,20 @@
 
 package com.hp.hpl.jena.tdb.pgraph;
 
+import com.hp.hpl.jena.sparql.sse.SSEParseException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.hp.hpl.jena.tdb.TDBException;
 import com.hp.hpl.jena.tdb.base.file.Location;
 import com.hp.hpl.jena.tdb.index.Index;
 import com.hp.hpl.jena.tdb.index.IndexBuilder;
 import com.hp.hpl.jena.tdb.index.RangeIndex;
 import com.hp.hpl.jena.tdb.index.TripleIndex;
+import com.hp.hpl.jena.tdb.solver.stats.ReorderPattern;
+import com.hp.hpl.jena.tdb.solver.stats.ReorderWeighted;
+import com.hp.hpl.jena.tdb.solver.stats.StatsMatcher;
 import com.hp.hpl.jena.tdb.sys.Names;
 
 /** Place to put various "making" things. */
@@ -57,8 +63,19 @@ public class GraphTDBFactory
      
         // Creates the object file as a file-backed one. 
         NodeTable nodeTable = new NodeTableIndex(factory, location) ;
+        
+        ReorderPattern reorder = null ;
+        if ( location.exists(Names.statsPatterns) )
+        {
+            try {
+                StatsMatcher matcher = new StatsMatcher(location.getPath(Names.statsPatterns)) ;
+                reorder = new ReorderWeighted(matcher) ;
+            } catch (SSEParseException ex) { 
+                throw new TDBException("Error in stats file: "+ex.getMessage()) ;
+            }
+        }
 
-        return new GraphTDB(triplesSPO, triplesPOS, triplesOSP, nodeTable) ;
+        return new GraphTDB(triplesSPO, triplesPOS, triplesOSP, nodeTable, reorder) ;
     }
     
     // ----
@@ -86,7 +103,7 @@ public class GraphTDBFactory
         // Implicitly creates the object file as a memory one. 
         NodeTable nodeTable = new NodeTableIndex(factory) ;
         
-        return new GraphTDB(triplesSPO, triplesPOS, triplesOSP, nodeTable) ;
+        return new GraphTDB(triplesSPO, triplesPOS, triplesOSP, nodeTable, null) ;
     }
     
     
