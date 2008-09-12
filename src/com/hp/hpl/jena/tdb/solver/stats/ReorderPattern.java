@@ -16,7 +16,7 @@ public interface ReorderPattern
     // Can mutate (and return) the list if really necessary.
     public List<Triple> reorder(Graph graph, List<Triple> triples) ;
     
-    public Triple first(Graph graph, List<Triple> triples) ;
+    //public Triple first(Graph graph, List<Triple> triples) ;
 }
 
 /*
