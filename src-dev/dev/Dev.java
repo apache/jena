@@ -11,14 +11,9 @@ public class Dev
     // tdbloader (script) to work on gzip files 
 
     // NodeIds. varints.
-    // Extract/generalised the pattern matcher and apply to BGPs.
+    // Extract/generalise the pattern matcher and apply to BGPs.
     // Link Assembler (custom indexes) to TDBFactory 
     // Modular build.
-    
-    // ---- Build and release
-    // 1 -- Sources and javadoc to maven // -source and -javadoc - how to generate in ivy?
-    // 3 -- Being able to run tests : Special ant target that has no dependences on compile
-    // Need to take out the "resolve" from "publish"
     
     // ---- B+Tree rewriter
     
