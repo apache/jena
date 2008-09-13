@@ -1,0 +1,4 @@
+
+== 0.5.4
++ Bug fixes: concurrency control for on-disk files
+  
