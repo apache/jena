@@ -8,17 +8,11 @@ package dev;
 
 public class Dev
 {
-    // tdbloader (script) to work on gzip files 
-
-    // NodeIds. varints.
     // Extract/generalise the pattern matcher and apply to BGPs.
     // Link Assembler (custom indexes) to TDBFactory 
     // Modular build.
     
     // ---- B+Tree rewriter
-    
-    // ---- 32 bit
-    // Does this work now?
     
     // ---- New cache API alloc/return/invalidate (shrink/grow?)
     //   Stats.
@@ -36,8 +30,10 @@ public class Dev
     // ---- tdbloader: 
     //   close indexes not in use in a given phase
     //   Especially efficient iterator() for B+Trees (not mmap).
+    //   (script) to work on gzip files 
 
     // ---- Use of java properties for key values.
+    // Or config file.
 
     // ---- Graph
     // removeAll implementation: depends on iterator.remove
