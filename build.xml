@@ -68,9 +68,10 @@
   <!-- Artifacts -->
   <!-- Align name with ivy.xml publications section -->
   <property name="jarfile"                value="${name}-${version}.jar"/>
-	
-  <property name="src.artifact"           value="${name}-${version}-sources.jar"/>
-  <property name="javadoc.artifact"       value="${name}-${version}-javadoc.zip"/>
+
+  <!-- Not maven naming - needs a change to Ivy as this is an artifact -->
+  <property name="src.artifact"           value="${name}-sources-${version}.jar"/>
+  <property name="javadoc.artifact"       value="${name}-javadoc-${version}.zip"/>
   <property name="pomfile"                value="${name}-${version}.pom"/>
 
   <!-- File names in the distribution --> 
@@ -318,7 +319,7 @@
   <!-- ==== Publication -->
 
   <!-- jar-artifact,pom-artifact,src-artifact,javadoc-artifact -->
-  <target name="artifacts" depends="clean,jar,jar-artifact,pom-artifact"/>
+  <target name="artifacts" depends="clean,ivy-resolve,jar,jar-artifact,pom-artifact"/>
   
   <target name="publish" description="Build and publish this version"
           depends="clean,ivy-resolve,artifacts,ivy-publish">
@@ -479,8 +480,8 @@
     <fail message="Ivy dependency failed" if="ivy.resolve.failed"/>
   </target>
 
-  <target name="ivy-publish" depends="ivy-init">
-    <ivy:resolve conf="main"/>
+  <target name="ivy-publish" depends="ivy-init,ivy-resolve">
+    <!-- <ivy:resolve conf="main"/> -->
     <ivy:publish conf="main" 
                  resolver="dev-publish" 
                  overwrite="true"
@@ -489,14 +490,26 @@
     </ivy:publish>
   </target>
 
-  <target name="ivy-publish-dev" depends="ivy-init">
-    <ivy:resolve conf="main"/>
+  <target name="publish-check">
+    <fail message="Publication environment variables (IVYUSER, IVYKEY) not set">
+      <condition>
+	<and> 
+	  <not><isset property="env.IVYUSER"/></not>
+	  <not><isset property="env.IVYKEY"/></not>
+	</and>
+      </condition>
+    </fail>
+    <fail message="Publication environment variable (IVYUSER) not set"  unless="env.IVYUSER"/>
+    <fail message="Publication environment variable (IVYKEY) not set"  unless="env.IVYKEY"/>
+  </target>
+
+  <target name="ivy-publish-dev" depends="ivy-init,publish-check,ivy-resolve">
+    <!-- <ivy:resolve conf="main"/> -->
     <ivy:publish conf="main" 
                  resolver="dev-resolver" 
                  overwrite="true"
                  forcedeliver="true">
-      <artifacts pattern="${artifacts.dir}/[artifact]-[revision]-sources.jar" />
-      <artifacts pattern="${artifacts.dir}/[artifact]-[revision]-javadoc.jar" />
+      <artifacts pattern="${artifacts.dir}/[artifact]-[revision].jar" />
     </ivy:publish>
   </target>
 

@@ -19,15 +19,10 @@
 
   <publications>
     <artifact name="tdb" type="jar"/>
-    <artifact type="xml"       ext="pom"/>
-    <artifact type="sources"   ext="jar"/>
-    <artifact type="javadoc"   ext="jar"/>
-    
+    <artifact name="tdb" type="xml" ext="pom"/>
+    <!-- <artifact name="tdb-sources" type="jar"/> -->
+
     <!-- <artifact name="tdb" type="source" ext="jar" mvn:classifier="sources"/> -->
-    <!-- NOT the names that Maven expects - converted in publication 
-    <artifact name="tdb-src"     type="jar"/>
-    <artifact name="tdb-javadoc" type="jar"/>
-    -->
   </publications>
 
   <dependencies>

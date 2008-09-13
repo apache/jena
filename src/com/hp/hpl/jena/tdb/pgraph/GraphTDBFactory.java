@@ -65,10 +65,10 @@ public class GraphTDBFactory
         NodeTable nodeTable = new NodeTableIndex(factory, location) ;
         
         ReorderPattern reorder = null ;
-        if ( location.exists(Names.statsPatterns) )
+        if ( location.exists(Names.statsAndPatterns) )
         {
             try {
-                StatsMatcher matcher = new StatsMatcher(location.getPath(Names.statsPatterns)) ;
+                StatsMatcher matcher = new StatsMatcher(location.getPath(Names.statsAndPatterns)) ;
                 reorder = new ReorderWeighted(matcher) ;
             } catch (SSEParseException ex) { 
                 throw new TDBException("Error in stats file: "+ex.getMessage()) ;

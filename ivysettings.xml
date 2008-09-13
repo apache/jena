@@ -17,19 +17,15 @@
     
 
     <!-- Publish -->
-    <!-- File system - for testing -->
+    <!-- File system - for testing - can publish wrong bytes! -->
     <filesystem name="dev-resolver" >
-       <ivy      pattern="build/pub/[module]-[revision]/[artifact]-[revision].[ext]"/>
+       <ivy      pattern="build/pub/[module]-[revision]/ivy.xml"/>
        <artifact pattern="build/pub/[module]-[revision]/[artifact]-[revision].[ext]"/>
-       <!-- ?? Need src => sources
-       <artifact pattern="build/pub/[module]-[revision]/[artifact]-[revision]-javadoc.jar"/>
-       <artifact pattern="build/pub/[module]-[revision]/[artifact]-[revision]-sources.jar"/>
-       -->
     </filesystem>
 
     <!-- User environment variables to find user/key -->
     <sftp name="dev-publish" host="jena.hpl.hp.com" 
-	  user="${env.USER}" keyFile="${env.HOME}/.ssh/ivy-pub-jena-key">
+	  user="${env.IVYUSER}" keyFile="${env.IVYKEY}">
       <ivy pattern="repo-dev/com/hp/hpl/jena/[module]/[revision]/ivy.xml"/>
       <artifact pattern="repo-dev/com/hp/hpl/jena/[module]/[revision]/[artifact]-[revision].[ext]"/>
     </sftp>

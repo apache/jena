@@ -25,7 +25,7 @@ public class Names
     public static String indexId2Node       = "id2node";
     
     /** Stats */
-    public static String statsPatterns      = "stats.sse";
+    public static String statsAndPatterns   = "stats.cfg";
 }
 
 /*
