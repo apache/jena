@@ -4,20 +4,15 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.solver.stats;
+package com.hp.hpl.jena.tdb.solver;
 
 import com.hp.hpl.jena.graph.Graph;
-
 import com.hp.hpl.jena.sparql.core.BasicPattern;
 
-public class ReorderLib
+public interface ReorderPattern
 {
-    static ReorderPattern identity = new ReorderPattern() {
-        @Override
-        public BasicPattern reorder(Graph graph, BasicPattern pattern)
-        {
-            return pattern ;
-        } } ;
+    // Return a basic graph pattern to execute instead.
+    public BasicPattern reorder(Graph graph, BasicPattern pattern) ;
 }
 
 /*

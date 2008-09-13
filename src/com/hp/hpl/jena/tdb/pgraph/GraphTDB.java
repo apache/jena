@@ -38,7 +38,7 @@ import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 import com.hp.hpl.jena.tdb.graph.GraphSyncListener;
 import com.hp.hpl.jena.tdb.index.TripleIndex;
 import com.hp.hpl.jena.tdb.lib.TupleLib;
-import com.hp.hpl.jena.tdb.solver.stats.ReorderPattern;
+import com.hp.hpl.jena.tdb.solver.ReorderPattern;
 import com.hp.hpl.jena.tdb.sys.Const;
 
 /** Machinary to implement a "nodes and triples" style graph,

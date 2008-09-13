@@ -17,7 +17,7 @@ import com.hp.hpl.jena.tdb.index.Index;
 import com.hp.hpl.jena.tdb.index.IndexBuilder;
 import com.hp.hpl.jena.tdb.index.RangeIndex;
 import com.hp.hpl.jena.tdb.index.TripleIndex;
-import com.hp.hpl.jena.tdb.solver.stats.ReorderPattern;
+import com.hp.hpl.jena.tdb.solver.ReorderPattern;
 import com.hp.hpl.jena.tdb.solver.stats.ReorderWeighted;
 import com.hp.hpl.jena.tdb.solver.stats.StatsMatcher;
 import com.hp.hpl.jena.tdb.sys.Names;
