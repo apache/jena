@@ -314,12 +314,12 @@ public class MD5 {
      * @param encoding the encoding name used (such as UTF8)
      */
 
-    public MD5 (String input, String enc) {
+    public MD5 (String input, String encoding) {
         byte bytes [] = null;
         try {
-            bytes = input.getBytes (enc);
+            bytes = input.getBytes (encoding);
         } catch(UnsupportedEncodingException e){
-            throw new RuntimeException("no "+enc+" encoding!!!");
+            throw new RuntimeException("no "+encoding+" encoding!!!");
         }
         this.stringp = true ;
         this.in      = new ByteArrayInputStream (bytes) ;

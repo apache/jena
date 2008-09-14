@@ -1,5 +1,5 @@
 // Base 64 encoder - public domain.
-// Chnages : put in ARQ util package
+// Changes : put in ARQ/TDB library package
 // http://iharder.sourceforge.net/current/java/base64/
 // With thanks.
 
@@ -694,7 +694,6 @@ public class Base64
      * @param off Offset in array where conversion should begin
      * @param len Length of data to convert
      * @param options Specified options
-     * @param options alphabet type is pulled from this (standard, url-safe, ordered)
      * @see Base64#GZIP
      * @see Base64#DONT_BREAK_LINES
      * @since 2.0

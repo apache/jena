@@ -16,7 +16,7 @@ import java.nio.charset.CharsetDecoder;
 import java.nio.charset.CharsetEncoder;
 
 /** Byte-oriented operations.  Packing and unpacking integers
- *  is in network order (Big endian - which is the preferred ordr in Java)
+ *  is in network order (Big endian - which is the preferred order in Java)
  *  {@link http://en.wikipedia.org/wiki/Endianness}
  */  
 
