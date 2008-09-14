@@ -65,11 +65,11 @@ public abstract class ReorderPatternBase implements ReorderPattern
         if ( Var.isVar(node) )
         {
             if ( elt.subject.equals(node) )
-                elt.subject = StatsMatcher.TERM ;
+                elt.subject = PatternElements.TERM ;
             if ( elt.predicate.equals(node) )
-                elt.predicate = StatsMatcher.TERM ;
+                elt.predicate = PatternElements.TERM ;
             if ( elt.object.equals(node) )
-                elt.object = StatsMatcher.TERM ;
+                elt.object = PatternElements.TERM ;
         }
            
     }

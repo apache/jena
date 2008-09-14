@@ -6,6 +6,7 @@
 
 package com.hp.hpl.jena.tdb.solver.stats;
 
+import static com.hp.hpl.jena.tdb.solver.stats.PatternElements.* ;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -40,12 +41,7 @@ import com.hp.hpl.jena.tdb.TDBException;
 public final class StatsMatcher
 {
     public static final String TAG     = "stats" ; 
-    public static final Item ANY       = Item.createSymbol("ANY") ;
-    public static final Item VAR       = Item.createSymbol("VAR") ;
-    public static final Item TERM      = Item.createSymbol("TERM") ;
-    public static final Item URI       = Item.createSymbol("URI") ;
-    public static final Item BNODE     = Item.createSymbol("BNODE") ;
-    public static final Item LITERAL   = Item.createSymbol("LITERAL") ;
+
     
     static class Pattern implements Printable
     {
