@@ -6,15 +6,22 @@
 
 package com.hp.hpl.jena.tdb.solver.stats;
 
-import static com.hp.hpl.jena.tdb.solver.stats.PatternElements.* ;
+import static com.hp.hpl.jena.tdb.solver.stats.PatternElements.ANY;
+import static com.hp.hpl.jena.tdb.solver.stats.PatternElements.BNODE;
+import static com.hp.hpl.jena.tdb.solver.stats.PatternElements.LITERAL;
+import static com.hp.hpl.jena.tdb.solver.stats.PatternElements.TERM;
+import static com.hp.hpl.jena.tdb.solver.stats.PatternElements.URI;
+import static com.hp.hpl.jena.tdb.solver.stats.PatternElements.VAR;
+
 import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.shared.PrefixMapping;
-
 import com.hp.hpl.jena.sparql.serializer.SerializationContext;
 import com.hp.hpl.jena.sparql.sse.Item;
 import com.hp.hpl.jena.sparql.sse.ItemException;
@@ -23,7 +30,6 @@ import com.hp.hpl.jena.sparql.sse.SSE;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
 import com.hp.hpl.jena.sparql.util.PrintUtils;
 import com.hp.hpl.jena.sparql.util.Printable;
-
 import com.hp.hpl.jena.tdb.TDBException;
 
 /** Stats format:
@@ -89,7 +95,7 @@ public final class StatsMatcher
         }
     }
 
-    private class Match
+    private static class Match
     {
         double weight = -1 ;
         int exactMatches = 0 ;
@@ -100,7 +106,10 @@ public final class StatsMatcher
 
     // A better structure would be a hierarchy based on P,S,O
     // because P is often fixed.
+    // Or a map keyed by P.
     List<Pattern> patterns = new ArrayList<Pattern>() ;
+    
+    Map<Item, List<Pattern>> _patterns = new HashMap<Item,  List<Pattern>>() ;
     
     //Map<Item, List<Pattern>> patterns = new HashMap<>() ;//new ArrayList<Pattern>() ;
     
@@ -138,18 +147,20 @@ public final class StatsMatcher
 
             if ( elt.isTagged("meta") )
             {
+                int count = -1 ;
                 // Get count.
+                Item x = Item.find(elt.getList(), "count") ;
+                if ( x != null )
+                    count = asInt(x.getList().get(1)) ;
                 continue ;
             }
-            
             
             if ( pat.isNode() )
             {
                 // Generate entries: 
-//                patterns.add(new Pattern(1, TERM, pat, TERM)) ;
-                patterns.add(new Pattern(2,  TERM, pat, ANY)) ;     // S, P, ? : approx weight
-                patterns.add(new Pattern(10, ANY, pat, TERM)) ;     // ?, P, O : approx weight
-                patterns.add(new Pattern(((Number)(elt.getList().get(1).getNode().getLiteralValue())).doubleValue(),
+                addPattern(new Pattern(2,  TERM, pat, ANY)) ;     // S, P, ? : approx weight
+                addPattern(new Pattern(10, ANY, pat, TERM)) ;     // ?, P, O : approx weight
+                addPattern(new Pattern(((Number)(elt.getList().get(1).getNode().getLiteralValue())).doubleValue(),
                                          ANY, pat, ANY)) ;          // ?, P, ?
             }
             else
@@ -159,13 +170,42 @@ public final class StatsMatcher
                                               intern(pat.getList().get(0)),
                                               intern(pat.getList().get(1)),
                                               intern(pat.getList().get(2))) ;
-                patterns.add(pattern) ;
+                addPattern(pattern) ;
             }
             
             // Round and round
         }
     }
         
+    private void addPattern(Pattern pattern)
+    {
+        patterns.add(pattern) ;
+        
+        List<Pattern> entry = _patterns.get(pattern.predItem) ;
+        if ( entry == null )
+        {
+            entry = new ArrayList<Pattern>() ;
+            _patterns.put(pattern.predItem, new ArrayList<Pattern>() ) ;
+        }
+        entry.add(pattern) ;
+    }
+    
+    // -- More for Item
+    
+    public static int asInt(Item item)
+    {
+        if ( item.isNode() )
+        { 
+            if ( item.getNode().isLiteral() )
+                // Ignore typing.
+                return Integer.parseInt(item.getNode().getLiteralLexicalForm()) ;
+        }
+        if ( item.isSymbol() )
+            return Integer.parseInt(item.getSymbol()) ;
+        
+        throw new ItemException("Not a literal or string: "+item) ;
+    }
+    
     private Item intern(Item item)
     {
         if ( item.sameSymbol(ANY.getSymbol()) )         return ANY ;
@@ -183,14 +223,37 @@ public final class StatsMatcher
                      Item.createNode(t.getPredicate()),
                      Item.createNode(t.getObject())) ;
     }
-    
+
     /** Return the matching weight for the first triple match found, else -1 for no match */
+    
     public double match(Item subj, Item pred, Item obj)
+    {
+        return matchMap(subj, pred, obj) ;
+    }
+    
+    private double matchMap(Item subj, Item pred, Item obj)
     {
         if ( isSet(subj) && isSet(pred) && isSet(obj) )
             // A set of triples ...
             return 1.0 ;
         
+//        if ( ! pred.isNode() )
+//            return matchLinear(patterns, subj, pred, obj) ;
+        
+        List<Pattern> entry = _patterns.get(pred) ;
+        if ( entry == null )
+            return -1 ;
+        return matchLinear(entry, subj, pred, obj) ;
+    }
+
+    
+    private double matchLinear(Item subj, Item pred, Item obj)
+    {
+        if ( isSet(subj) && isSet(pred) && isSet(obj) )
+            // A set of triples ...
+            return 1.0 ;
+        
+        // Use a map keyed by predicate to accelerate searching.
         for ( Pattern pattern : patterns )
         {
             Match match = new Match() ;
@@ -206,6 +269,24 @@ public final class StatsMatcher
         return -1 ;
     }
 
+    private static double matchLinear(List<Pattern> patterns, Item subj, Item pred, Item obj)
+    {
+     // Use a map keyed by predicate to accelerate searching.
+        for ( Pattern pattern : patterns )
+        {
+            Match match = new Match() ;
+            if ( ! matchNode(subj, pattern.subjItem, match) )
+                continue ;
+            if ( ! matchNode(pred, pattern.predItem, match) )
+                continue ;
+            if ( ! matchNode(obj, pattern.objItem, match) )
+                continue ;
+            // First match.
+            return pattern.weight ;
+        }
+        return -1 ;
+    }
+    
     private static boolean isSet(Item item)
     {
         if (item.isNode() && item.getNode().isConcrete() ) return true ;
@@ -217,7 +298,7 @@ public final class StatsMatcher
     }
     
     /** Return the matching weight for the given triple, else -1 for no match */
-    /*public*/private double match_(Item subj, Item pred, Item obj)
+    /*public*/private double matchLinear_(Item subj, Item pred, Item obj)
     {
         // Weighted matching.
         // Redo as weight of best, most specifc, match.  
@@ -244,7 +325,7 @@ public final class StatsMatcher
         return w ;
     }
     
-    private boolean matchNode(Item node, Item item, Match details)
+    private static boolean matchNode(Item node, Item item, Match details)
     {
         if ( item.equals(ANY) )
         {

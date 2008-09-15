@@ -6,13 +6,16 @@
 
 package com.hp.hpl.jena.tdb.solver.stats;
 
+import static com.hp.hpl.jena.sparql.sse.Item.addPair;
+import static com.hp.hpl.jena.sparql.sse.Item.createTagged;
+import static com.hp.hpl.jena.sparql.sse.Item.integer;
+
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
 import lib.Tuple;
 
-import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.sparql.sse.Item;
 import com.hp.hpl.jena.sparql.sse.ItemList;
@@ -33,7 +36,6 @@ public class StatsWriter
         Item stats = Item.createList() ;
         ItemList statsList = stats.getList() ;
         statsList.add("stats") ;
-        
         
         TripleIndex index = graph.getIndexSPO() ;
         Iterator<Tuple<NodeId>> iter = index.all() ;
@@ -76,62 +78,6 @@ public class StatsWriter
 //            System.out.printf("%s : %d\n",n, predicateIds.get(p) ) ;
         }
         return stats ;
-    }
-    
-    
-    // To Item.
-    private static Node integer(Integer n)
-    {
-        return integer(Integer.toString(n)) ;
-    }
-
-    private static Node integer(long n)
-    {
-        return integer(Long.toString(n)) ;
-    }
-
-    
-    private static Node integer(String lex)
-    {
-        return Node.createLiteral(lex, null, XSDDatatype.XSDinteger) ;
-    }
-
-    
-    // To ARQ sometime.
-    
-    private static Item createTagged(String tag) { 
-        Item tagged = Item.createList() ;
-        tagged.getList().add(Item.createSymbol(tag)) ;
-        return tagged ;
-    }
-    
-    private static void addPair(ItemList list, String key, String value)
-    {
-        addPair(list, Item.createSymbol(key), Item.createNode(Node.createLiteral(value))) ;
-    }
-    
-    private static void addPair(ItemList list, String key, Node node)
-    {
-        addPair(list, Item.createSymbol(key), Item.createNode(node)) ;
-    }
-    
-    private static void addPair(ItemList list, Node key, Node value)
-    {
-        addPair(list, Item.createNode(key), Item.createNode(value)) ;
-    }
-    
-    private static void addPair(ItemList list, Item key, Item value)
-    {
-        Item pair = make(key, value) ;
-        list.add(pair) ;
-    }
-        
-    private static Item make(Item... items)
-    {
-        Item list = Item.createList() ;
-        for ( Item item : items)
-            list.getList().add(item) ;
-        return list ; 
     }
 }
 

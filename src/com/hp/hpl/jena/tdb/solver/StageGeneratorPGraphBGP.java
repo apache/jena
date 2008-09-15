@@ -139,39 +139,6 @@ public class StageGeneratorPGraphBGP implements StageGenerator
             }
         } ;
     }
-    
-//    public StageList compile(BasicPattern pattern, 
-//                             ExecutionContext execCxt)
-//    {
-//        Graph g = execCxt.getActiveGraph() ;
-//        if ( ! ( g instanceof GraphTDB ) )
-//            return above.compile(pattern, execCxt) ;
-//        
-//        GraphTDB graph = (GraphTDB)g ;
-//        
-//        @SuppressWarnings("unchecked")
-//        List<Triple> triples = (List<Triple>)pattern.getList() ;
-//        
-////        triples = reorder(graph, triples) ;
-//        
-//        if ( execCxt.getContext().isTrue(TDB.logBGP) )
-//        {
-//            String x = Iter.asString(triples, " . " ) ;
-//            System.out.println("BGP: ["+x+"]") ;
-//        }
-//        
-//        Stage stage = new StageBGP(graph, triples) ;
-//        StageList sList = new StageList() ;
-//        sList.add(stage) ;
-//        return sList ;
-//    }
-
-//    // Externally testable.
-//    public static final List<Triple> reorder(GraphTDB graph, List<Triple> triples)
-//    {
-//        ReorderPattern reorderEngine = ReorderLib.get() ;
-//        return reorderEngine.reorder(graph, triples) ; 
-//    }
  }
 
 /*
