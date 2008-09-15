@@ -89,6 +89,11 @@ public class NodeFactory
         return Node.createLiteral(Integer.toString(integer), "", XSDDatatype.XSDinteger) ;
     }
 
+    public static Node intToNode(long integer)
+    {
+        return Node.createLiteral(Long.toString(integer), "", XSDDatatype.XSDinteger) ;
+    }
+
     public static Node floatToNode(float value)
     {
         return Node.createLiteral(Float.toString(value), "", XSDDatatype.XSDfloat) ;

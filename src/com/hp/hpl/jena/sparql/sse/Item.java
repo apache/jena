@@ -9,7 +9,6 @@ package com.hp.hpl.jena.sparql.sse;
 
 import java.util.Iterator;
 
-import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.sparql.util.FmtUtils;
 import com.hp.hpl.jena.sparql.util.IndentedLineBuffer;
@@ -70,23 +69,6 @@ public class Item extends ItemLocation
         return item ;
     }
     
-    // To Item.
-    public static Node integer(int n)
-    {
-        return integer(Integer.toString(n)) ;
-    }
-
-    public static Node integer(long n)
-    {
-        return integer(Long.toString(n)) ;
-    }
-
-    
-    public static Node integer(String lex)
-    {
-        return Node.createLiteral(lex, null, XSDDatatype.XSDinteger) ;
-    }
-
     // --- Convenience ways to make things
     
     public static Item createTagged(String tag) { 

@@ -198,8 +198,24 @@ public class TestSSE_Basic extends TestCase
     public void testMisc_11()    { testNotEquals("(a)", "()") ; }
     public void testMisc_12()    { testNotEquals("(a)", "(<a>)") ; }
     
+    public void testTaggedList_1()
+    {
+        Item x = Item.createTagged("TAG") ;
+        assertTrue(x.isTagged()) ;
+        assertTrue(x.isTagged("TAG")) ;
+    }
     
-    
+    public void testTaggedList_2()
+    {
+        Item x = Item.createTagged("TAG") ;
+        Item.addPair(x.getList(), "KEY", "VALUE") ;
+        
+        Item y = Item.find(x.getList(), "KEY") ;
+        assertNotNull(y) ;
+        
+        Item z = Item.find(x.getList(), "KEYKEY") ;
+        assertNull(z) ;
+    }
     
     
     
