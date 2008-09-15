@@ -7,6 +7,9 @@
 package com.hp.hpl.jena.sparql.sse;
 
 
+import java.util.Iterator;
+
+import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.sparql.util.FmtUtils;
 import com.hp.hpl.jena.sparql.util.IndentedLineBuffer;
@@ -66,6 +69,80 @@ public class Item extends ItemLocation
         item.isNil = true ;
         return item ;
     }
+    
+    // To Item.
+    public static Node integer(int n)
+    {
+        return integer(Integer.toString(n)) ;
+    }
+
+    public static Node integer(long n)
+    {
+        return integer(Long.toString(n)) ;
+    }
+
+    
+    public static Node integer(String lex)
+    {
+        return Node.createLiteral(lex, null, XSDDatatype.XSDinteger) ;
+    }
+
+    // --- Convenience ways to make things
+    
+    public static Item createTagged(String tag) { 
+        Item tagged = Item.createList() ;
+        tagged.getList().add(Item.createSymbol(tag)) ;
+        return tagged ;
+    }
+    
+    public static void addPair(ItemList list, String key, String value)
+    {
+        addPair(list, Item.createSymbol(key), Item.createNode(Node.createLiteral(value))) ;
+    }
+    
+    public static void addPair(ItemList list, String key, Node node)
+    {
+        addPair(list, Item.createSymbol(key), Item.createNode(node)) ;
+    }
+    
+    public static void addPair(ItemList list, Node key, Node value)
+    {
+        addPair(list, Item.createNode(key), Item.createNode(value)) ;
+    }
+    
+    public static void addPair(ItemList list, Item key, Item value)
+    {
+        Item pair = makePair(key, value) ;
+        list.add(pair) ;
+    }
+        
+    public static Item makePair(Item item1, Item item2)
+    {
+        Item list = Item.createList() ;
+        list.getList().add(item1) ;
+        list.getList().add(item2) ;
+        return list ;
+    }
+    
+    public static Item find(ItemList list, String key)
+    {
+        for ( Iterator iter = list.iterator() ; iter.hasNext() ; )
+        {
+            Item x = (Item)iter.next() ;
+            if ( x.isTagged(key))
+                return x ;
+        }
+        return null ;
+    }
+    
+//    public static Item make(Item... items)
+//    {
+//        Item list = Item.createList() ;
+//        for ( Item item : items)
+//            list.getList().add(item) ;
+//        return list ; 
+//    }
+
     
     
     private Item(int line, int column)

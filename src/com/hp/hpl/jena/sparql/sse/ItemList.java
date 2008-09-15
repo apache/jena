@@ -58,8 +58,15 @@ public class ItemList extends ItemLocation //implements Iterable<Item>
         if ( elements.size() == 0 )
             throw new ItemException("ItemList.cdr: list is zero length") ;
         ItemList x = new ItemList(super.getLine(), super.getColumn()) ;
+        x.elements = this.elements.subList(1, size()) ;
+        return x ;
+    }
+    
+    public ItemList cdrOrNull()
+    {
         if ( elements.size() == 0 )
-            return x ; 
+            return null ;
+        ItemList x = new ItemList(super.getLine(), super.getColumn()) ;
         x.elements = this.elements.subList(1, size()) ;
         return x ;
     }
