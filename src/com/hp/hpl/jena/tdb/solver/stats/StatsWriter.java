@@ -61,7 +61,7 @@ public class StatsWriter
         Item meta = createTagged("meta") ;
         addPair(meta.getList(), "timestamp", NodeFactory.nowAsDateTime()) ;
         addPair(meta.getList(), "run@",  Utils.nowAsString()) ;
-        addPair(meta.getList(), "count", integer(count)) ;
+        addPair(meta.getList(), "count", NodeFactory.intToNode((int)count)) ;
         statsList.add(meta) ;
         
         for ( NodeId p : predicateIds.keySet() )
