@@ -47,6 +47,7 @@ public class StageGeneratorPGraphBGP implements StageGenerator
             return above.execute(pattern, input, execCxt) ;
         
         GraphTDB graph =(GraphTDB)g ;
+        // XXX NOT here.  On a per input basis.
         pattern = reorder(graph, pattern) ;
         
         @SuppressWarnings("unchecked")
@@ -54,13 +55,16 @@ public class StageGeneratorPGraphBGP implements StageGenerator
 
         if ( execCxt.getContext().isTrue(TDB.logBGP) )
         {
-            String x = Iter.asString(triples, " . " ) ;
-            ALog.info(this, "BGP: ["+x+"]") ;
+            String x = Iter.asString(triples, "\n" ) ;
+            ALog.info(this, "BGP: \n"+x) ;
         }
         
         @SuppressWarnings("unchecked")
         Iterator<Binding> iter = (Iterator<Binding>)input ;
         Iterator<BindingNodeId> chain = Iter.map(iter, convFromBinding(graph)) ;
+        
+        // Insert reordering stuff on chain first.
+        // Move BGP logging
         
         for ( Triple triple : triples )
         {
