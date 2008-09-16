@@ -77,7 +77,7 @@ public class StageGeneratorPGraphBGP implements StageGenerator
     {
         ReorderPattern reorderPattern = graph.getReorderPattern() ;
         if ( reorderPattern != null )
-            return reorderPattern.reorder(graph, null) ;
+            return reorderPattern.reorder(graph, pattern) ;
         return pattern ;
     }
 
