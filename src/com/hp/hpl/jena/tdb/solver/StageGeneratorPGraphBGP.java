@@ -65,6 +65,9 @@ public class StageGeneratorPGraphBGP implements StageGenerator
         Iterator<BindingNodeId> chain = Iter.map(iter, convFromBinding(graph)) ;
         
         // Insert reordering stuff on chain first.
+        // Don't work on a triple loop.
+        
+        // Cache results and reuse if same vars. 
         // Move BGP logging
         
         for ( Triple triple : triples )

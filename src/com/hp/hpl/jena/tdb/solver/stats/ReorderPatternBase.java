@@ -42,13 +42,29 @@ public abstract class ReorderPatternBase implements ReorderPattern
         return bgp ;
     }
 
-    protected abstract void reorder(Graph graph, List<Triple> triples, List<PatternTriple> components, BasicPattern bgp) ;
+    protected void reorder(Graph graph, List<Triple> triples, List<PatternTriple> components, BasicPattern bgp)
+    {
+        int N = components.size() ;
+        // Common loop - move to ReorderPatternBase
+        for ( int i = 0 ; i < N ; i++ )
+        {
+            int j = chooseNext(components) ;
+            Triple triple = triples.get(j) ; 
+            bgp.add(triple) ;
+            update(triple, components) ;
+            components.set(j, null) ;
+        }
+    }
+    
+    /** Return index of next patter triple */
+    protected abstract int chooseNext(List<PatternTriple> pTriples) ;
     
     /** Update components to note any variables from triple */
     protected final void update(Triple triple, List<PatternTriple> components)
     {
         for ( PatternTriple elt : components )
-            if ( elt != null ) update(triple, elt) ;
+            if ( elt != null )
+                update(triple, elt) ;
     }
 
     
@@ -61,7 +77,6 @@ public abstract class ReorderPatternBase implements ReorderPattern
 
     private void update(Node node, PatternTriple elt)
     {
-        
         if ( Var.isVar(node) )
         {
             if ( elt.subject.equals(node) )

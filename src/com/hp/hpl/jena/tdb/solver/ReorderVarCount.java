@@ -4,80 +4,93 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.solver.stats;
+package com.hp.hpl.jena.tdb.solver;
 
 import java.util.List;
 
+import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.util.ALog;
 
-public final class ReorderWeighted extends ReorderPatternBase
-{
-    private StatsMatcher stats ;
+import com.hp.hpl.jena.tdb.solver.stats.PatternTriple;
+import com.hp.hpl.jena.tdb.solver.stats.ReorderPatternBase;
 
-    public ReorderWeighted(StatsMatcher stats)
-    {
-        this.stats = stats ;
-    }
+public class ReorderVarCount extends ReorderPatternBase
+{
+
+    //implements ReorderPattern
+//    @Override
+//    public BasicPattern reorder(Graph graph, BasicPattern pattern)
+//    {
+//        @SuppressWarnings("unchecked")
+//        List<Triple> triples = (List<Triple>)pattern.getList() ;
+//
+//        BasicPattern pattern2 = new BasicPattern() ;
+//        Set<Var> patternVarsScope = new HashSet<Var>() ;
+//
+//        
+//        //Would need to this repeatedly as the order changes. 
+//        for ( Iterator<Triple> iter = triples.listIterator() ; iter.hasNext() ; )
+//        {
+//            Triple triple = (Triple)iter.next();
+//            System.out.println("Process: "+triple) ;
+//            
+//            // Vars in scope.
+//            VarUtils.addVarsFromTriple(patternVarsScope, triple) ;
+//            
+//            pattern2.add(triple) ;
+//        }
+//        return pattern2 ;
+//    }
+
     
+    
+// extends ReorderPatternBase -- heavy
     @Override
     protected int chooseNext(List<PatternTriple> pTriples)
     {
-        int j = minimum(pTriples) ;
+        int j = choose(pTriples) ;
         if ( j < 0 )
             // No weight for any remaining triples 
-            j = first(pTriples) ;
-        return  j;
+            ALog.fatal(this, "Oops - negative index for choosen triple") ;
+        return j ;
     }
 
-    private int minimum(List<PatternTriple> pTriples)
+    private int choose(List<PatternTriple> components)
     {
         int idx = -1 ;
-        double w = Double.MAX_VALUE ;
-        
-        for ( int i = 0 ; i < pTriples.size() ; i++ ) 
+        int min = 5 ;
+        int N = components.size() ;
+        for ( int i = 0 ; i < N ; i++ )
         {
-            PatternTriple pt =  pTriples.get(i) ;
+            PatternTriple pt = components.get(i) ;
             if ( pt == null )
                 continue ;
-            double w2 = match(pt) ;
-            if ( w2 < 0 )
+            int x = countVars(pt) ;
+            if ( x < 0 )
+                System.err.println("Oops - negative") ;
+            if ( x < min )
             {
-                ALog.fatal(getClass(), "w2 < 0 :: "+pt+" "+stats.patterns) ;
-                // No match : use an empiricial guess.
-                // P != rdf;type
-                //SP?
-                //?PO
-            }
-            
-            
-            if ( w2 >= 0 && w > w2 )
-            {
-                w = w2 ;
+                min = idx ;
                 idx = i ;
             }
         }
         return idx ;
     }
 
-    
-    private double match(PatternTriple item)
+    private int countVars(PatternTriple pt)
     {
-        return stats.match(item.subject, item.predicate, item.object) ;
+        int count = 0 ;
+        // Var.isVar is null-safe
+        if ( Var.isVar(pt.subject.getNode()) )
+            count++ ;
+        if ( Var.isVar(pt.predicate.getNode()) )
+            count++ ;
+        if ( Var.isVar(pt.object.getNode()) )
+            count++ ;
+        return count ;
     }
-
-    
-    private int first(List<PatternTriple> triples)
-    {
-        for ( int i = 0 ; i < triples.size() ; i++ ) 
-        {
-            if ( triples.get(i) != null )
-                return i ;
-        }
-        return -2 ;
-    }
-
-
 }
+
 /*
  * (c) Copyright 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
