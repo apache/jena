@@ -69,6 +69,10 @@ public class TDB
         initialized = true ;
 
         //QueryEngineTDB.register() ;
+        
+        //Gets in the way!
+        ARQ.getContext().set(ARQ.filterPlacement, false) ;
+        
         PGraphAssemblerVocab.init();
         
         // Globally change the stage generator

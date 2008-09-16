@@ -8,7 +8,6 @@ package com.hp.hpl.jena.tdb.solver.stats;
 
 import static com.hp.hpl.jena.sparql.sse.Item.addPair;
 import static com.hp.hpl.jena.sparql.sse.Item.createTagged;
-import static com.hp.hpl.jena.sparql.sse.Item.integer;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -17,10 +16,12 @@ import java.util.Map;
 import lib.Tuple;
 
 import com.hp.hpl.jena.graph.Node;
+
 import com.hp.hpl.jena.sparql.sse.Item;
 import com.hp.hpl.jena.sparql.sse.ItemList;
 import com.hp.hpl.jena.sparql.util.NodeFactory;
 import com.hp.hpl.jena.sparql.util.Utils;
+
 import com.hp.hpl.jena.tdb.index.TripleIndex;
 import com.hp.hpl.jena.tdb.pgraph.GraphTDB;
 import com.hp.hpl.jena.tdb.pgraph.NodeId;
@@ -74,7 +75,7 @@ public class StatsWriter
             
             predicates.put(n, predicateIds.get(p)) ;
             
-            addPair(statsList, n, integer(predicateIds.get(p))) ;
+            addPair(statsList, n, NodeFactory.intToNode(predicateIds.get(p))) ;
 //            System.out.printf("%s : %d\n",n, predicateIds.get(p) ) ;
         }
         return stats ;
