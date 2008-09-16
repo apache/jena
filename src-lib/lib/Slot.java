@@ -7,13 +7,14 @@
 package lib ;
 
 
-/** Key-value slot, with chaining for lookup */ 
+/** Key-value slot, with chaining for lookup. */  
 public class Slot<K,V>
 {
     private final Slot<K,V> previous ;
     private final K key ;
     private final V value ;
 
+    /** Create a slot with no key, value or parent - can be used a slot chain root */  
     public Slot()               { this(null, null, null); }
 
     public Slot(K key, V value) { this(key, value, null); }
@@ -37,7 +38,8 @@ public class Slot<K,V>
 
         while (slot != null)
         {
-            if ( slot.key.equals(k) )
+            // Defend against null keys (e.g. the root of a slot chain). 
+            if ( k.equals(slot.key) )
                 return slot.value ;
 //            if ( previous == null )
 //              return null ;
