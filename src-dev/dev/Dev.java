@@ -11,8 +11,8 @@ public class Dev
     
     // Enable stats
     
-    // --> Reorder in the wrong place.  Substitute on a per input basis.
-    // --> Need to add something for connectivity
+    // --> StageGeneratorPGraphBGP:: Reorder in the wrong place.  Substitute on a per input basis.
+    // --> Need to add something for connectivity??
     
     // 1/ StageGeneratorPGraphBGP : reorder : needs to pass in list of defined vars
     //    Work on Filter-BGP blocks.  
