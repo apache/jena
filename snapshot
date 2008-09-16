@@ -1,9 +1,16 @@
 #!/bin/bash
 
+MODULE="$1"
+
 # Where to move the jars to
-LIBDIRS="TDB SDB Joseki3"
-# Where to add the source zip.
-SRCDIRS="TDB SDB"
+if [ "$MODULE" != "" ]
+then
+    LIBDIRS="$MODULE"
+    SRCDIRS="$MODULE"
+else
+    LIBDIRS="${LIBDIR:-TDB SDB Joseki3}"
+    SRCDIRS="${SRCDIR:-TDB SDB}"
+fi
 
 rm -f lib/arq.jar lib/arq-extra.jar
 ant jar
