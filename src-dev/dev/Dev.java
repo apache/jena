@@ -8,6 +8,14 @@ package dev;
 
 public class Dev
 {
+    
+    // Enable stats
+    // 1/ StageGeneratorPGraphBGP : reorder : needs to pass in list of defined vars
+    //    Work on Filter-BGP blocks.  
+    // 2/ Test (and JUnit for the stats matcher)
+    // 3/ tdbloader: write/update stats
+    // ARQ: (A) FilterBGP units and (B) optimizer policy hook (C) per source optimization.
+    
     // Extract/generalise the pattern matcher and apply to BGPs.
     // Link Assembler (custom indexes) to TDBFactory 
     // Modular build.

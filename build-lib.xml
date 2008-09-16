@@ -58,10 +58,11 @@
   <!-- Artifacts -->
   <property name="jarfile"                value="${name}-${version}.jar"/>
 
-  <!-- Not maven naming - needs a change to Ivy settings as this is an artifact -->
-  <property name="src.artifact"           value="${name}-sources-${version}.jar"/>
-  <property name="javadoc.artifact"       value="${name}-javadoc-${version}.zip"/>
+  <!-- Assumes Ivy classifiers work. -->
+  <property name="src.artifact"           value="${name}-${version}-sources.jar"/>
+  <property name="javadoc.artifact"       value="${name}-${version}-javadoc.jar"/>
   <property name="pomfile"                value="${name}-${version}.pom"/>
+  <property name="pomfile.template"       value="${name}.pom"/>
 
   <!-- zip files version of the source and javadoc artifacts -->
   <property name="src.zipfile"            value="${name}-src-${version}.zip"/>
@@ -109,31 +110,6 @@
     <fileset dir="${build.dir}" includes="tdb*.jar"/>
   </path>
 
-  <!-- Sources as a path -->
-  
-  <path id="java.source.path.test">
-    <pathelement path="${src.test.dir}"/>
-    <pathelement path="${src.lib.test.dir}"/>
-  </path>    
-
-  <path id="java.source.path.main">
-    <pathelement path="${src.dir}"/>
-    <pathelement path="${src.lib.dir}"/>
-  </path>    
-  
-  <path id="java.source.path">
-    <path refid="java.source.path.main"/>
-    <path refid="java.source.path.test"/>
-  </path>
-
-  <!-- Sources as fileset (how do I avoid the duplication here?) Only used in zip -->
-  <fileset dir="." id="fileset.src">
-    <include name="${src.dir}/**/*.java"/>
-    <include name="${src.test.dir}**/*.java"/>
-    <include name="${src.lib.dir}**/*.java"/>
-    <include name="${src.lib.test.dir}**/*.java"/>
-  </fileset>
-  
   <tstamp>
     <format property="build.time.xsd"  pattern="yyyy-MM-dd'T'HH:mm:ssZ"/>
     <format property="build.time.txt"  pattern="yyyy-MM-dd HH:mm Z"/>
@@ -268,7 +244,7 @@
   
   <target name="pom-artifact">
     <!-- <delete file="${artifacts.dir}/${pomfile}"/> -->
-    <copy file="tdb.pom" tofile="${artifacts.dir}/${pomfile}">
+    <copy file="${pomfile.template}" tofile="${artifacts.dir}/${pomfile}">
       <filterset>
 	<!-- <filterset refid="filters.shared"/> -->
 	<filter token="VERSION" value="${version}"/>

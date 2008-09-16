@@ -105,8 +105,6 @@ public class GraphTDBFactory
         
         return new GraphTDB(triplesSPO, triplesPOS, triplesOSP, nodeTable, null) ;
     }
-    
-    
 }
 
 /*

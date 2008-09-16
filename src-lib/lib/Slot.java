@@ -4,68 +4,87 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.solver;
+package lib ;
 
-import java.util.HashMap;
-import java.util.Map;
 
-import lib.Map2;
-
-import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.tdb.pgraph.NodeId;
-
-/** Class for a Binding-like structure excep tit works on NodeIds, not on Nodes */  
-class BindingNodeId extends Map2<Var, NodeId>
+/** Key-value slot, with chaining for lookup */ 
+public class Slot<K,V>
 {
-    // Possible optimization: there are at most 3 possible values so HashMap is overkill.
-    // Use a chain of small objects.
-    
-    private BindingNodeId(Map<Var, NodeId> map1, Map2<Var, NodeId> map2)
+    private final Slot<K,V> previous ;
+    private final K key ;
+    private final V value ;
+
+    public Slot()               { this(null, null, null); }
+
+    public Slot(K key, V value) { this(key, value, null); }
+
+    private Slot(K key, V value, Slot<K, V> previous)
     {
-        super(map1, map2) ;
+        this.key = key ;
+        this.value = value ;
+        this.previous = previous ;
+    }
+
+    public Slot<K,V> extend(K key, V value)
+    {
+        return new Slot<K,V>(key, value, this) ;
     }
     
-    public BindingNodeId(Map2<Var, NodeId> map2)
+    public final V find(K k)
     {
-        super(new HashMap<Var, NodeId>(), map2) ;
+        // Java, tail recursion, lack thereof.
+        Slot<K,V> slot = this ;
+
+        while (slot != null)
+        {
+            if ( slot.key.equals(k) )
+                return slot.value ;
+//            if ( previous == null )
+//              return null ;
+            slot = slot.previous ;
+        }
+        return null ;
     }
     
-    public BindingNodeId()
+      /* As it should be ... */
+//    public final V find(K k)
+//    {
+//        if ( k.equals(key) )
+//            return value ;
+//        if ( previous == null )
+//            return null ;
+//        return previous.find(k) ;
+//    }
+
+    private static final String sep = ", " ;
+    private void str(int level, StringBuilder acc)
     {
-        super(new HashMap<Var, NodeId>(), null) ;
+        if ( key == null && value == null )
+            return ;
+
+        if ( level != 0 )
+            acc.append(sep) ;
+        acc.append("(") ;
+        acc.append(key.toString()) ;
+        acc.append("->") ;
+        acc.append(value.toString()) ;
+        acc.append(")") ;
+        if ( previous != null )
+            previous.str(level+1, acc) ;
     }
-    
-    //@Override public NodeId get(Var v)    { return super.get(v) ; } 
-    
-    @Override public void put(Var v, NodeId n)
-    {
-        if ( v == null || n == null )
-            throw new IllegalArgumentException("("+v+","+n+")") ;
-        super.put(v, n) ;
-        
-    }
-    
+
     @Override
     public String toString()
-    {
+    { 
         StringBuilder sb = new StringBuilder() ;
-        
-        boolean first = true ;
-        for ( Var v : this )
-        {
-            if ( ! first )
-                sb.append(" ") ;
-            first = false ;
-            NodeId x = get(v) ;
-            sb.append(v) ;
-            sb.append(" = ") ;
-            sb.append(x) ;
-        }
-            
+        sb.append("{ ") ;
+        str(0, sb) ;
+        sb.append(" }") ;
         return sb.toString() ;
-        
     }
 }
+
+
 /*
  * (c) Copyright 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.

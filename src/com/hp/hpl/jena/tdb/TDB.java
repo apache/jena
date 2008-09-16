@@ -15,7 +15,6 @@ import com.hp.hpl.jena.rdf.model.impl.RDFReaderFImpl;
 import com.hp.hpl.jena.sparql.engine.main.StageGenerator;
 import com.hp.hpl.jena.sparql.util.Context;
 import com.hp.hpl.jena.sparql.util.Symbol;
-
 import com.hp.hpl.jena.tdb.base.loader.NTriplesReader2;
 import com.hp.hpl.jena.tdb.pgraph.assembler.PGraphAssemblerVocab;
 import com.hp.hpl.jena.tdb.solver.StageGeneratorPGraphBGP;
@@ -68,7 +67,8 @@ public class TDB
         if ( initialized )
             return ;
         initialized = true ;
-        
+
+        //QueryEngineTDB.register() ;
         PGraphAssemblerVocab.init();
         
         // Globally change the stage generator

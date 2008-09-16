@@ -70,14 +70,19 @@ public class Bytes
     public static final void setInt(int value, byte[]b)
     { setInt(value, b, 0) ; }
     
-    public static final void setInt(int value, byte[]b, int idx)
+    public static final void setInt(int x, byte[]b, int idx)
     {
-        // Network order - high value byte first
-        b[idx+0] = byte3(value) ;
-        b[idx+1] = byte2(value) ;
-        b[idx+2] = byte1(value) ;
-        b[idx+3] = byte0(value) ;
+//        b[idx+0] = byte3(value) ;
+//        b[idx+1] = byte2(value) ;
+//        b[idx+2] = byte1(value) ;
+//        b[idx+3] = byte0(value) ;
+      b[idx+0] = (byte)((x >> 24)&0xFF) ;
+      b[idx+1] = (byte)((x >> 16)&0xFF);
+      b[idx+2] = (byte)((x >>  8)&0xFF);
+      b[idx+3] = (byte)(x &0xFF);
+
     }
+    
     
     public static final void setLong(long value, byte[]b)
     { setLong(value, b, 0) ; }

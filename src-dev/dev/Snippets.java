@@ -164,7 +164,7 @@ public class Snippets
         System.out.printf("blocksPerSegment = %d\n", blocksPerSegment) ;
         
         
-        for ( int id : new int[]{1,2,3,4,5,1428, 1179})
+        for ( int id : new int[]{1, 2, 3, 4, 5, 1428, 1179})
         {
             int seg = segment(id) ;                     // Segment.
             int segOff = byteOffset(id) ; 
@@ -179,11 +179,14 @@ public class Snippets
  
         
         // ----
-        btreePacking(3, 32, 8*1024) ; System.exit(0) ;
+        btreePacking(3, 32, 8*1024) ; 
+        System.out.println() ;
+        
         btreePacking(3, 64, 8*1024) ;
+        System.out.println() ;
+
         btreePacking(4, 128, 8*1024) ;
-        System.exit(0) ;
-                
+        //System.out.println() ;
         // ----
         System.exit(0) ;
         

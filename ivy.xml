@@ -20,9 +20,8 @@
   <publications>
     <artifact name="tdb" type="jar"/>
     <artifact name="tdb" type="xml" ext="pom"/>
-    <!-- <artifact name="tdb-sources" type="jar"/> -->
-
-    <!-- <artifact name="tdb" type="source" ext="jar" mvn:classifier="sources"/> -->
+    <!-- <artifact name="tdb" mvn:classifier="sources" type="jar"/> -->
+    <!-- <artifact name="tdb" mvn:classifier="javadoc" type="jar"/> -->
   </publications>
 
   <dependencies>
