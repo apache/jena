@@ -16,6 +16,8 @@ import com.hp.hpl.jena.sparql.algebra.op.OpLabel;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.util.Context;
 
+import com.hp.hpl.jena.query.ARQ;
+
 public class Optimize implements Rewrite
 {
     static private Log log = LogFactory.getLog(Optimize.class) ;
@@ -62,7 +64,10 @@ public class Optimize implements Rewrite
         // or improve to place in a sequence. 
 
         op = apply("Filter Equality", new TransformEqualityFilter(), op) ;
-        op = apply("Filter Placement", new TransformFilterPlacement(), op) ;
+        
+        if ( context.isTrueOrUndef(ARQ.filterPlacement) )
+            // This can be done too early (breaks up BGPs).
+            op = apply("Filter Placement", new TransformFilterPlacement(), op) ;
         
         //op = apply("Path flattening", new TransformPathFlatten(), op) ;
         

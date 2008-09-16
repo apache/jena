@@ -65,7 +65,7 @@ public class TransformFilterPlacement extends TransformCopy
         if ( x instanceof OpSequence )
             return transformFilterSequence(exprs, varsScope, (OpSequence)x) ;
         
-        // No specialk - advance the variable scope tracking. 
+        // Not special - advance the variable scope tracking. 
         OpVars.patternVars(x, varsScope) ;
         return x ;
     }
