@@ -48,6 +48,7 @@ public class StageGeneratorPGraphBGP implements StageGenerator
         
         GraphTDB graph =(GraphTDB)g ;
         // XXX NOT here.  On a per input basis.
+        // XXX Need to add something for connectivity
         pattern = reorder(graph, pattern) ;
         
         @SuppressWarnings("unchecked")

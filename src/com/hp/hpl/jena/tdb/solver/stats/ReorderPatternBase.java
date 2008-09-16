@@ -44,7 +44,7 @@ public abstract class ReorderPatternBase implements ReorderPattern
 
     protected abstract void reorder(Graph graph, List<Triple> triples, List<PatternTriple> components, BasicPattern bgp) ;
     
-    /** Update compoents to note any variables from triple */
+    /** Update components to note any variables from triple */
     protected final void update(Triple triple, List<PatternTriple> components)
     {
         for ( PatternTriple elt : components )
