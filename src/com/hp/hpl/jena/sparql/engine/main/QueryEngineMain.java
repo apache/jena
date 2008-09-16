@@ -34,9 +34,6 @@ public class QueryEngineMain extends QueryEngineBase
     public QueryEngineMain(Query query, DatasetGraph dataset, Binding input, Context context)
     { super(query, dataset, new AlgebraGenerator(context), input, context) ; }
 
-//    public QueryEngineMain(Query query, Context context)
-//    { this(query, null, context) ; }
-    
     public QueryIterator eval(Op op, DatasetGraph dsg, Binding input, Context context)
     {
         ExecutionContext execCxt = new ExecutionContext(context, dsg.getDefaultGraph(), dsg) ;
@@ -49,7 +46,6 @@ public class QueryEngineMain extends QueryEngineBase
     
 //    protected Op createOp(Query query, AlgebraGenerator gen)
 //    {
-//        // Optimize here??  Was context setting possible?
 //        Op op = super.createOp(query, gen) ;
 //        return op ;
 //    }

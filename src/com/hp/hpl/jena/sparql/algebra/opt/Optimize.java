@@ -23,11 +23,7 @@ public class Optimize implements Rewrite
 
     public static Op optimize(Op op, ExecutionContext execCxt)
     {
-        Context context = execCxt.getContext() ;
-        // Look up to find the rewriter
-        Rewrite opt = new Optimize(execCxt) ;
-        op = opt.rewrite(op) ;
-        return op ;
+        return optimize(op, execCxt.getContext()) ;
     }
 
     // The execution-independent optimizations
@@ -47,7 +43,6 @@ public class Optimize implements Rewrite
     {
         this.context = context ;
     }
-    
 
     public Op rewrite(Op op)
     {
@@ -56,6 +51,9 @@ public class Optimize implements Rewrite
             op = apply("Simplify", new TransformSimplify(), op) ;
             op = apply("Delabel", new TransformRemoveLabels(), op) ;
         }
+        
+        // Need to allow subsystems to play with this list.
+        
         op = apply("Property Functions", new TransformPropertyFunction(context), op) ;
         op = apply("Break up conjunctions", new TransformFilterImprove(), op) ;
 
@@ -66,7 +64,7 @@ public class Optimize implements Rewrite
         op = apply("Filter Equality", new TransformEqualityFilter(), op) ;
         op = apply("Filter Placement", new TransformFilterPlacement(), op) ;
         
-        //op = apply("Filter Placement", new TransformPathFlatten(), op) ;
+        //op = apply("Path flattening", new TransformPathFlatten(), op) ;
         
         // Mark
         op = OpLabel.create("Transformed", op) ;

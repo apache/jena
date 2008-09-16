@@ -62,7 +62,8 @@ public class qparse extends CmdARQ
     {
         super.processModulesAndArgs() ;
         
-        printOpt = contains(argDeclOpt) ;
+        if ( contains(argDeclOpt) )
+            printOpt = printOp = true ;
 
         for ( Iterator iter = getValues(argDeclPrint).iterator() ; iter.hasNext() ; )
         {
@@ -73,7 +74,7 @@ public class qparse extends CmdARQ
                       arg.equalsIgnoreCase("algebra") ) { printOp = true ; }
             else if ( arg.equalsIgnoreCase("quad"))     { printQuad = true ; }
             else if ( arg.equalsIgnoreCase("plan"))     { printPlan = true ; }
-            //else if ( arg.equalsIgnoreCase("opt"))      { printOpt = true ; }
+            else if ( arg.equalsIgnoreCase("opt"))      { printOpt = true ; }
             else
                 throw new CmdException("Not a recognized print form: "+arg+" : Choices are: query, op, quad.  opt") ;
         }
@@ -124,14 +125,7 @@ public class qparse extends CmdARQ
             { divider() ; modOutput.outputQuad(query, false) ; }
             
             if ( printOpt )
-            {
-                // And again after applying the algebra optimizer 
-                if ( printOp )
-                { divider() ; modOutput.outputOp(query, true) ; }
-                
-                if ( printQuad )
-                { divider() ; modOutput.outputQuad(query, true) ; }
-            }
+            { divider() ; modOutput.outputOp(query, true) ; }
             
             if ( printPlan )
             { 
