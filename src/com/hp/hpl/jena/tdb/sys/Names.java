@@ -24,7 +24,7 @@ public class Names
     public static String indexNode2Id       = "node2id";
     public static String indexId2Node       = "id2node";
     
-    /** Stats */
+    /** Optimizer / stats */
     public static String optStats           = "stats.opt";
     public static String optCountVar        = "var-count.opt";      // Currently, it's just the presence of this file that matters.
     public static String optNone            = "none.opt"; 
