@@ -6,18 +6,16 @@
 
 package com.hp.hpl.jena.tdb.solver;
 
+import static com.hp.hpl.jena.tdb.lib.Lib.printAbbrev;
 import iterator.Iter;
 import iterator.Transform;
 
 import java.util.Iterator;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
-
 import com.hp.hpl.jena.sparql.core.BasicPattern;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
@@ -26,7 +24,6 @@ import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.binding.BindingMap;
 import com.hp.hpl.jena.sparql.engine.main.StageGenerator;
 import com.hp.hpl.jena.sparql.util.ALog;
-
 import com.hp.hpl.jena.tdb.TDB;
 import com.hp.hpl.jena.tdb.pgraph.GraphTDB;
 import com.hp.hpl.jena.tdb.pgraph.NodeId;
@@ -53,24 +50,21 @@ public class StageGeneratorPGraphBGP implements StageGenerator
         
         GraphTDB graph =(GraphTDB)g ;
         // XXX NOT here.  On a per input basis.
-        // XXX Need to add something for connectivity
+        // Need to havea repeaty-apply on the input triples, not the node ids. 
+        // input => triple => reorder pattern(caching?, do once and return same each time?) => convert to nodeids => execute  
+        
         pattern = reorder(graph, pattern) ;
         
         @SuppressWarnings("unchecked")
         List<Triple> triples = (List<Triple>)pattern.getList() ;
 
         if ( execCxt.getContext().isTrue(TDB.logBGP) )
-            ALog.info(this, "<< BGP: \n  "+printAbbrev(pattern));
+            ALog.info(this, "<< BGP: \n  "+strPattern(pattern));
         
         @SuppressWarnings("unchecked")
         Iterator<Binding> iter = (Iterator<Binding>)input ;
+        // Binding ==> BindingNodeId.
         Iterator<BindingNodeId> chain = Iter.map(iter, convFromBinding(graph)) ;
-        
-        // Insert reordering stuff on chain first.
-        // Don't work on a triple loop.
-        
-        // Cache results and reuse if same vars. 
-        // Move BGP logging
         
         for ( Triple triple : triples )
         {
@@ -83,26 +77,12 @@ public class StageGeneratorPGraphBGP implements StageGenerator
         return new QueryIterTDB(iterBinding, input) ;
     }
 
-    // WHERE??
-    static String printAbbrev(BasicPattern pattern)
-    {
-        @SuppressWarnings("unchecked")
-        List<Triple> triples = (List<Triple>)pattern.getList() ;
-        String x = Iter.asString(triples, "\n  ") ;
-        
-        Pattern p = Pattern.compile("http:[^ \n]*[#/]([^/ \n]*)") ;
-        Matcher m = p.matcher(x);
-        x = m.replaceAll("::$1") ;
-        return x ;
- 
-    }
-    
     private BasicPattern reorder(GraphTDB graph, BasicPattern pattern)
     {
         ReorderPattern reorderPattern = graph.getReorderPattern() ;
-        if ( reorderPattern != null )
-            return reorderPattern.reorder(graph, pattern) ;
-        return pattern ;
+        if ( reorderPattern == null )
+            return pattern ;
+        return reorderPattern.reorder(graph, pattern) ;
     }
 
     private Iterator<BindingNodeId> solve(GraphTDB graph,
@@ -163,7 +143,15 @@ public class StageGeneratorPGraphBGP implements StageGenerator
             }
         } ;
     }
- }
+    
+    private static String strPattern(BasicPattern pattern)
+    {
+        @SuppressWarnings("unchecked")
+        List<Triple> triples = (List<Triple>)pattern.getList() ;
+        String x = Iter.asString(triples, "\n  ") ;
+        return printAbbrev(x) ; 
+    }
+}
 
 /*
  * (c) Copyright 2008 Hewlett-Packard Development Company, LP

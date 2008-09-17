@@ -1,0 +1,90 @@
+INFO  StageGeneratorPGraphBGP :: BGP: 
+  ?product @rdfs:label ?productLabel
+  d:Product27056 @v:productFeature ?prodFeature
+  ?product @v:productFeature ?prodFeature
+  d:Product27056 @v:productPropertyNumeric1 ?origProperty1
+  ?product @v:productPropertyNumeric1 ?simProperty1
+  d:Product27056 @v:productPropertyNumeric2 ?origProperty2
+  ?product @v:productPropertyNumeric2 ?simProperty2
+>> Input
+0   343193 : ?product <http://www.w3.org/2000/01/rdf-schema#label> ?productLabel
+1        2 : <d:Product27056> <v:productFeature> ?prodFeature
+2  5534734 : ?product <v:productFeature> ?prodFeature
+3        2 : <d:Product27056> <v:productPropertyNumeric1> ?origProperty1
+4   284826 : ?product <v:productPropertyNumeric1> ?simProperty1
+5        2 : <d:Product27056> <v:productPropertyNumeric2> ?origProperty2
+6   284826 : ?product <v:productPropertyNumeric2> ?simProperty2
+<< Output: 1
+<d:Product27056> <v:productFeature> ?prodFeature
+>> Input
+0   343193 : ?product <http://www.w3.org/2000/01/rdf-schema#label> ?productLabel
+1          : null
+2       10 : ?product <v:productFeature> TERM
+3        2 : <d:Product27056> <v:productPropertyNumeric1> ?origProperty1
+4   284826 : ?product <v:productPropertyNumeric1> ?simProperty1
+5        2 : <d:Product27056> <v:productPropertyNumeric2> ?origProperty2
+6   284826 : ?product <v:productPropertyNumeric2> ?simProperty2
+<< Output: 3
+<d:Product27056> <v:productPropertyNumeric1> ?origProperty1
+>> Input
+0   343193 : ?product <http://www.w3.org/2000/01/rdf-schema#label> ?productLabel
+1          : null
+2       10 : ?product <v:productFeature> TERM
+3          : null
+4   284826 : ?product <v:productPropertyNumeric1> ?simProperty1
+5        2 : <d:Product27056> <v:productPropertyNumeric2> ?origProperty2
+6   284826 : ?product <v:productPropertyNumeric2> ?simProperty2
+<< Output: 5
+<d:Product27056> <v:productPropertyNumeric2> ?origProperty2
+>> Input
+0   343193 : ?product <http://www.w3.org/2000/01/rdf-schema#label> ?productLabel
+1          : null
+2       10 : ?product <v:productFeature> TERM
+3          : null
+4   284826 : ?product <v:productPropertyNumeric1> ?simProperty1
+5          : null
+6   284826 : ?product <v:productPropertyNumeric2> ?simProperty2
+<< Output: 2
+?product <v:productFeature> TERM
+>> Input
+0        2 : TERM <http://www.w3.org/2000/01/rdf-schema#label> ?productLabel
+1          : null
+2          : null
+3          : null
+4        2 : TERM <v:productPropertyNumeric1> ?simProperty1
+5          : null
+6        2 : TERM <v:productPropertyNumeric2> ?simProperty2
+<< Output: 0
+TERM <http://www.w3.org/2000/01/rdf-schema#label> ?productLabel
+>> Input
+0          : null
+1          : null
+2          : null
+3          : null
+4        2 : TERM <v:productPropertyNumeric1> ?simProperty1
+5          : null
+6        2 : TERM <v:productPropertyNumeric2> ?simProperty2
+<< Output: 4
+TERM <v:productPropertyNumeric1> ?simProperty1
+>> Input
+0          : null
+1          : null
+2          : null
+3          : null
+4          : null
+5          : null
+6        2 : TERM <v:productPropertyNumeric2> ?simProperty2
+<< Output: 6
+TERM <v:productPropertyNumeric2> ?simProperty2
+INFO  StageGeneratorPGraphBGP :: BGP: 
+  d:Product27056 @v:productFeature ?prodFeature
+  d:Product27056 @v:productPropertyNumeric1 ?origProperty1
+  d:Product27056 @v:productPropertyNumeric2 ?origProperty2
+  ?product @v:productFeature ?prodFeature
+  ?product @rdfs:label ?productLabel
+  ?product @v:productPropertyNumeric1 ?simProperty1
+  ?product @v:productPropertyNumeric2 ?simProperty2
+--------------------------
+| product | productLabel |
+==========================
+--------------------------

@@ -7,10 +7,9 @@
 package com.hp.hpl.jena.tdb.solver.stats;
 
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import com.hp.hpl.jena.sparql.util.ALog;
+import static com.hp.hpl.jena.tdb.lib.Lib.printAbbrev;
 
 public final class ReorderWeighted extends ReorderPatternBase
 {
@@ -37,8 +36,7 @@ public final class ReorderWeighted extends ReorderPatternBase
                     continue ;
                 }
                 double w2 = match(pt) ;
-                String x = printAbbrev(pt) ;
-                System.out.printf("%d %8.0f : %s\n", i, w2, x) ;
+                System.out.printf("%d %8.0f : %s\n", i, w2, printAbbrev(pt)) ;
             }
         }
 
@@ -57,19 +55,6 @@ public final class ReorderWeighted extends ReorderPatternBase
         return  j;
     }
 
-    // Aslo in StategGeneratorBGP
-    static String printAbbrev(PatternTriple pTriple)
-    {
-        if ( pTriple==null )
-            return "<null>" ;
-        String x = pTriple.toString() ;
-        Pattern p = Pattern.compile("http:[^ \n]*[#/]([^/ \n]*)") ;
-        Matcher m = p.matcher(x);
-        x = m.replaceAll("::$1") ;
-        return x ;
- 
-    }
-    
     private int minimum(List<PatternTriple> pTriples)
     {
         int idx = -1 ;

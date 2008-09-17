@@ -6,7 +6,6 @@
 
 package com.hp.hpl.jena.tdb;
 
-import static lib.Log.log;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,7 +17,6 @@ import com.hp.hpl.jena.sparql.util.Symbol;
 import com.hp.hpl.jena.tdb.base.loader.NTriplesReader2;
 import com.hp.hpl.jena.tdb.pgraph.assembler.PGraphAssemblerVocab;
 import com.hp.hpl.jena.tdb.solver.StageGeneratorPGraphBGP;
-import com.hp.hpl.jena.tdb.solver.StageGeneratorPGraphSimple;
 import com.hp.hpl.jena.tdb.sys.Const;
 import com.hp.hpl.jena.tdb.sys.Metadata;
 
@@ -75,22 +73,10 @@ public class TDB
         
         PGraphAssemblerVocab.init();
         
-        // Globally change the stage generator
-        if ( true )
-        {
-            StageGenerator orig = (StageGenerator)ARQ.getContext().get(ARQ.stageGenerator) ;
-            StageGenerator stageGenerator = null ;
-            if ( false )
-            {
-                log(TDB.class).warn("Using find-based solver") ;
-                stageGenerator = new StageGeneratorPGraphSimple(orig) ;
-                ARQ.getContext().set(ARQ.stageGenerator, stageGenerator) ;
-            }
-            else
-                stageGenerator = new StageGeneratorPGraphBGP(orig) ;
-            
-            ARQ.getContext().set(ARQ.stageGenerator, stageGenerator) ;
-        }
+        // Globally change the stage generator to intercept BGP on TDB
+        StageGenerator orig = (StageGenerator)ARQ.getContext().get(ARQ.stageGenerator) ;
+        StageGenerator stageGenerator = new StageGeneratorPGraphBGP(orig) ;
+        ARQ.getContext().set(ARQ.stageGenerator, stageGenerator) ;
         
         // Override N-TRIPLES
         String bulkLoaderClass = NTriplesReader2.class.getName() ;

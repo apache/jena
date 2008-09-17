@@ -17,7 +17,6 @@ import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.sparql.core.BasicPattern;
 import com.hp.hpl.jena.sparql.core.Var;
-
 import com.hp.hpl.jena.tdb.solver.ReorderPattern;
 
 /** Machinary */
@@ -88,7 +87,6 @@ public abstract class ReorderPatternBase implements ReorderPattern
             if ( node.equals(elt.object.getNode()) )
                 elt.object = PatternElements.TERM ;
         }
-           
     }
 }
 

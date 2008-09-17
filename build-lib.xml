@@ -81,6 +81,8 @@
   <property name="build.dir"              value="build"/>
   <property name="build.classes.dir"      value="${build.dir}/classes"/>
   <property name="artifacts.dir"          value="${build.dir}/artifacts"/>
+  <property name="publication.dir"        location="${build.dir}/pub"/>
+  <echo message="DIR= ${publication.dir}"/>
 
   <!-- Other -->
   <property name="javadoc.title"          value="${Name}"/>
@@ -389,7 +391,7 @@
 		 resolver="dev-resolver" 
 		 overwrite="true"
 		 forcedeliver="true">
-      <artifacts pattern="${artifacts.dir}/[artifact]-[revision].jar" />
+      <artifacts pattern="${artifacts.dir}/[artifact]-[revision].[ext]" />
     </ivy:publish>
   </target>
 

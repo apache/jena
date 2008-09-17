@@ -6,6 +6,8 @@
 
 package com.hp.hpl.jena.tdb.solver;
 
+import static com.hp.hpl.jena.tdb.lib.Lib.printAbbrev;
+
 import java.util.List;
 
 import com.hp.hpl.jena.sparql.core.Var;
@@ -16,14 +18,42 @@ import com.hp.hpl.jena.tdb.solver.stats.ReorderPatternBase;
 
 public class ReorderVarCount extends ReorderPatternBase
 {
-    //TODO Test
+    //TODO Test!
     @Override
     protected int chooseNext(List<PatternTriple> pTriples)
     {
+        // Override.
+        //boolean DEBUG = true ;
+        
+        if ( DEBUG )
+        {
+            System.out.println(">> Input") ;
+            int i = -1 ;
+            for ( PatternTriple pt : pTriples )
+            {
+                i++ ;
+                if ( pt == null )
+                {
+                    System.out.printf("%d    : null\n", i) ;
+                    continue ;
+                }
+                int x = countVars(pt) ;
+                System.out.printf("%d : %d : %s\n", i, x, printAbbrev(pt)) ;
+            }
+        }
+        
         int j = choose(pTriples) ;
         if ( j < 0 )
             // No weight for any remaining triples 
             ALog.fatal(this, "Oops - negative index for choosen triple") ;
+        
+        if ( DEBUG )
+        {
+            System.out.println("<< Output: "+j) ;
+            String x = printAbbrev(pTriples.get(j)) ;
+            System.out.println(x) ;
+        }
+        
         return j ;
     }
 
@@ -42,7 +72,7 @@ public class ReorderVarCount extends ReorderPatternBase
                 System.err.println("Oops - negative") ;
             if ( x < min )
             {
-                min = idx ;
+                min = x ;
                 idx = i ;
             }
         }

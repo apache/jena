@@ -48,6 +48,7 @@ class MatchOneTriple extends RepeatApplyIterator<BindingNodeId>
         NodeId o = idFor(graph, input, triple.getObject()) ;
         if ( o == NodeId.NodeDoesNotExist ) return new NullIterator<BindingNodeId>() ;
         
+        // s etc is a null if the triple has a variable in that slot.
         final Var var_s = (s == null) ? asVar(triple.getSubject()) : null ;
         final Var var_p = (p == null) ? asVar(triple.getPredicate()) : null ;
         final Var var_o = (o == null) ? asVar(triple.getObject()) : null ;
@@ -114,7 +115,7 @@ class MatchOneTriple extends RepeatApplyIterator<BindingNodeId>
             // Bound to NodeId or null. 
             return n ;
         } 
-        // Returns NodeId.NodeDoesNotExist which must not be null. 
+        // May return NodeId.NodeDoesNotExist which must not be null. 
         return graph.getNodeTable().nodeIdForNode(node) ;
     }
 }

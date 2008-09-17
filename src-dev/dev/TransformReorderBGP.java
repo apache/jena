@@ -4,26 +4,35 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.lib;
+package dev;
 
-import java.util.regex.Pattern;
+import com.hp.hpl.jena.sparql.algebra.Op;
+import com.hp.hpl.jena.sparql.algebra.TransformCopy;
+import com.hp.hpl.jena.sparql.algebra.op.OpBGP;
+import com.hp.hpl.jena.sparql.core.BasicPattern;
 
-public class Lib
+import com.hp.hpl.jena.tdb.solver.ReorderPattern;
+
+public class TransformReorderBGP extends TransformCopy
 {
-    /** Encode an index (the insertion point) when not found */
-    public static final int encodeIndex(int i) { return -(i+1) ; } 
+    private ReorderPattern reorderPattern ;
 
-    /** Decode an index returning the insertion point when not found */
-    public static final int decodeIndex(int i) { return -(i+1) ; } 
+    public TransformReorderBGP(ReorderPattern reorderPattern)
+    { 
+        this.reorderPattern = reorderPattern ;
+    }
     
-    private static Pattern p = Pattern.compile("http:[^ \n]*[#/]([^/ \n]*)") ;
-    /** Abbreviate, crudely, URI in strings, leaving only their last component. */ 
-    public static String printAbbrev(Object obj)
+    @Override
+    public Op transform(OpBGP opBGP)
     {
-        if ( obj==null )
-            return "<null>" ;
-        String x = obj.toString() ;
-        return p.matcher(x).replaceAll("::$1") ;
+        BasicPattern pattern = opBGP.getPattern() ;
+        BasicPattern pattern2 = rewrite(pattern) ; 
+        return new OpBGP(pattern2) ; 
+    }
+    
+    public BasicPattern rewrite(BasicPattern pattern)
+    {
+        return reorderPattern.reorder(null, pattern) ;
     }
 }
 

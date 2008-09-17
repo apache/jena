@@ -8,8 +8,7 @@
     <chain name="resolver-chain" returnFirst="true">
       <!-- Jena development repository : not sync'ed with maven central -->
       <!-- <ibiblio name="jena-dev" root="http://jena.hpl.hp.com/repo-dev" m2compatible="true"/> -->
-
-      <!-- Jena publish repository, sync to maven central : onmly needed if the sync has not happened -->
+      <!-- Jena publish repository, sync to maven central : only needed if the sync has not happened -->
       <ibiblio name="jena" root="http://jena.hpl.hp.com/repo" m2compatible="true"/>
 
       <ibiblio name="ibiblio" m2compatible="true" />
@@ -19,8 +18,8 @@
     <!-- Publish -->
     <!-- File system - for testing - can publish wrong bytes! -->
     <filesystem name="dev-resolver" >
-       <ivy      pattern="build/pub/[module]-[revision]/ivy.xml"/>
-       <artifact pattern="build/pub/[module]-[revision]/[artifact]-[revision].[ext]"/>
+       <ivy      pattern="${publication.dir}/[module]-[revision]/ivy.xml"/>
+       <artifact pattern="${publication.dir}/[module]-[revision]/[artifact]-[revision].[ext]"/>
     </filesystem>
 
     <!-- User environment variables to find user/key -->

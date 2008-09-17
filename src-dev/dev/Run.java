@@ -24,6 +24,9 @@ import com.hp.hpl.jena.query.ResultSetFormatter;
 import com.hp.hpl.jena.query.Syntax;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.sparql.algebra.Algebra;
+import com.hp.hpl.jena.sparql.algebra.Op;
+import com.hp.hpl.jena.sparql.algebra.Transformer;
 import com.hp.hpl.jena.sparql.sse.SSE;
 import com.hp.hpl.jena.tdb.TDB;
 import com.hp.hpl.jena.tdb.TDBFactory;
@@ -35,6 +38,8 @@ import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 import com.hp.hpl.jena.tdb.base.recordfile.RecordBufferPage;
 import com.hp.hpl.jena.tdb.base.recordfile.RecordBufferPageMgr;
 import com.hp.hpl.jena.tdb.pgraph.GraphTDB;
+import com.hp.hpl.jena.tdb.solver.ReorderPattern;
+import com.hp.hpl.jena.tdb.solver.ReorderVarCount;
 import com.hp.hpl.jena.tdb.sys.Const;
 import com.hp.hpl.jena.util.FileManager;
 
@@ -49,24 +54,12 @@ public class Run
         nextDivider = "" ;
     }
     
-//    static void test(String x)
-//    {
-//        System.out.println("Absolute: "+x+"==>"+new File(x).isAbsolute()) ;
-//        System.out.println("Parent: "+x+"==>"+new File(x).getParent()) ;
-//        System.out.println() ;
-//    }
-    
     public static void main(String ... args) throws IOException
     {
-//        test("/foo/bar") ;
-//        test("\\foo\\bar") ;
-//        test("c:/foo/bar") ;
-//        test("c:\\foo\\bar") ;
-//        System.exit(0) ;
-        
-        
         //smallGraph() ;
         //tdbloader("--desc=tdb.ttl", "--mem", "/home/afs/Datasets/MusicBrainz/tracks.nt") ;
+        
+        rewrite() ; System.exit(0) ;
         
         String[] a = { "--desc=tdb.ttl", 
                        "--set=tdb:logBGP=true",
@@ -86,6 +79,21 @@ public class Run
 
         
     }
+    
+    public static void rewrite()
+    {
+        ReorderPattern reorder = new ReorderVarCount() ;
+        
+        Query query = QueryFactory.read("Q.rq") ;
+        Op op = Algebra.compile(query) ;
+        System.out.println(op) ;
+        
+        op = Transformer.transform(new TransformReorderBGP(reorder), op) ;
+        System.out.println(op) ;
+        System.exit(0) ;
+    }
+    
+
     
     private static void cache2()
     {

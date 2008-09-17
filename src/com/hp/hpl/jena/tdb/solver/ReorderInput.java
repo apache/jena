@@ -6,37 +6,36 @@
 
 package com.hp.hpl.jena.tdb.solver;
 
-import com.hp.hpl.jena.graph.Graph;
+import java.util.Iterator;
 
+import com.hp.hpl.jena.sparql.core.Substitute;
 import com.hp.hpl.jena.sparql.core.BasicPattern;
-import com.hp.hpl.jena.sparql.engine.ExecutionContext;
-import com.hp.hpl.jena.sparql.engine.QueryIterator;
-import com.hp.hpl.jena.sparql.engine.main.StageGenBasicPattern;
-import com.hp.hpl.jena.sparql.engine.main.StageGenerator;
-
+import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.tdb.pgraph.GraphTDB;
 
-// Force to use StageGenBasicPattern
-// This class not used.  See StageGeneratorPGraphBGP
-public class StageGeneratorPGraphSimple extends StageGenBasicPattern
+import iterator.RepeatApplyIterator;
+
+public class ReorderInput extends RepeatApplyIterator<Binding>
 {
-    StageGenerator above = null ;
-    
-    public StageGeneratorPGraphSimple(StageGenerator original)
+    private BasicPattern pattern ;
+    protected ReorderInput(GraphTDB graph, Iterator<Binding> input, BasicPattern pattern)
     {
-        above = original ;
+        super(input) ;
+        this.pattern = pattern ;
+        this.reorderPattern = graph.getReorderPattern() ;
+        if ( reorderPattern == null )
+            return pattern ;
+        return reorderPattern.reorder(graph, pattern) ;
     }
-    
+
     @Override
-    public QueryIterator execute(BasicPattern pattern, 
-                                 QueryIterator input,
-                                 ExecutionContext execCxt)
+    protected Iterator<Binding> makeNextStage(Binding b)
     {
-        Graph g = execCxt.getActiveGraph() ;
-        if ( ! ( g instanceof GraphTDB ) )
-            return above.execute(pattern, input, execCxt) ;
-        return super.execute(pattern, input, execCxt) ;
+        BasicPattern pattern2 = Substitute.substitute(pattern, b) ;
+        
+        return null ;
     }
+
 }
 
 /*
