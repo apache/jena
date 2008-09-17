@@ -8,13 +8,13 @@ package com.hp.hpl.jena.sparql.engine.main.iterator;
 
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.op.OpService;
-import com.hp.hpl.jena.sparql.core.Substitute;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.http.Service;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterCommonParent;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterRepeatApply;
+import com.hp.hpl.jena.sparql.engine.main.QC;
 
 
 public class QueryIterService extends QueryIterRepeatApply
@@ -29,7 +29,7 @@ public class QueryIterService extends QueryIterRepeatApply
     
     protected QueryIterator nextStage(Binding outerBinding)
     {
-        Op op = Substitute.substitute(opService, outerBinding) ;
+        Op op = QC.substitute(opService, outerBinding) ;
         QueryIterator qIter = Service.exec((OpService)op) ;
         // Need to put the outerBinding as parent to every binding of the service call.
         // There should be no variables in common because of the OpSubstitute.substitute 

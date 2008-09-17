@@ -10,7 +10,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.hp.hpl.jena.sparql.algebra.Op;
-import com.hp.hpl.jena.sparql.core.Substitute;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
@@ -46,7 +45,7 @@ public class QueryIterUnion extends QueryIterRepeatApply
         for ( Iterator iter = subOps.listIterator() ; iter.hasNext() ; )
         {
             Op subOp = (Op)iter.next() ;
-            subOp = Substitute.substitute(subOp, binding) ;
+            subOp = QC.substitute(subOp, binding) ;
             QueryIterator parent = new QueryIterSingleton(binding, getExecContext()) ;
             QueryIterator qIter = QC.compile(subOp, parent, getExecContext()) ;
             unionQIter.add(qIter) ;

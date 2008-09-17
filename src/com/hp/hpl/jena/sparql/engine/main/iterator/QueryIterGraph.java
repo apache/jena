@@ -9,13 +9,16 @@ package com.hp.hpl.jena.sparql.engine.main.iterator;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
+import com.hp.hpl.jena.util.iterator.NullIterator;
+import com.hp.hpl.jena.util.iterator.SingletonIterator;
+
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
+
 import com.hp.hpl.jena.sparql.ARQInternalErrorException;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.op.OpGraph;
 import com.hp.hpl.jena.sparql.core.DatasetGraph;
-import com.hp.hpl.jena.sparql.core.Substitute;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
@@ -26,8 +29,6 @@ import com.hp.hpl.jena.sparql.engine.iterator.QueryIterRepeatApply;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterSingleton;
 import com.hp.hpl.jena.sparql.engine.main.QC;
 import com.hp.hpl.jena.sparql.util.Utils;
-import com.hp.hpl.jena.util.iterator.NullIterator;
-import com.hp.hpl.jena.util.iterator.SingletonIterator;
 
 
 public class QueryIterGraph extends QueryIterRepeatApply
@@ -171,7 +172,7 @@ public class QueryIterGraph extends QueryIterRepeatApply
             
             // TODO Think about avoiding substitution.
             // If the subpattern does not involve the vars from the binding, avoid the substitute.  
-            Op op = Substitute.substitute(opGraph.getSubOp(), binding) ;
+            Op op = QC.substitute(opGraph.getSubOp(), binding) ;
             Graph g = outerCxt.getDataset().getGraph(graphNode) ;
             if ( g == null )
                 return null ;
