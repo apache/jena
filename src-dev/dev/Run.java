@@ -49,10 +49,30 @@ public class Run
         nextDivider = "" ;
     }
     
+//    static void test(String x)
+//    {
+//        System.out.println("Absolute: "+x+"==>"+new File(x).isAbsolute()) ;
+//        System.out.println("Parent: "+x+"==>"+new File(x).getParent()) ;
+//        System.out.println() ;
+//    }
+    
     public static void main(String ... args) throws IOException
     {
+//        test("/foo/bar") ;
+//        test("\\foo\\bar") ;
+//        test("c:/foo/bar") ;
+//        test("c:\\foo\\bar") ;
+//        System.exit(0) ;
+        
+        
         //smallGraph() ;
         //tdbloader("--desc=tdb.ttl", "--mem", "/home/afs/Datasets/MusicBrainz/tracks.nt") ;
+        
+        String[] a = { "--desc=tdb.ttl", 
+                       "--set=tdb:logBGP=true",
+                       "--file=Q.rq" } ;
+        tdb.tdbquery.main(a) ;
+        System.exit(0) ;
         
         //cache2() ;
         

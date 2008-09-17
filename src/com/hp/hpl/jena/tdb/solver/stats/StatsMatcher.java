@@ -185,7 +185,7 @@ public final class StatsMatcher
         if ( entry == null )
         {
             entry = new ArrayList<Pattern>() ;
-            _patterns.put(pattern.predItem, new ArrayList<Pattern>() ) ;
+            _patterns.put(pattern.predItem, entry ) ;
         }
         entry.add(pattern) ;
     }

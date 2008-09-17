@@ -13,7 +13,7 @@ import com.hp.hpl.jena.sparql.util.ALog;
 public final class ReorderWeighted extends ReorderPatternBase
 {
     private StatsMatcher stats ;
-
+    
     public ReorderWeighted(StatsMatcher stats)
     {
         this.stats = stats ;
@@ -22,10 +22,38 @@ public final class ReorderWeighted extends ReorderPatternBase
     @Override
     protected int chooseNext(List<PatternTriple> pTriples)
     {
+        if ( DEBUG )
+        {
+            System.out.println(">> Input") ;
+//            String x = Iter.asString(pTriples, "\n") ;
+//            System.out.println(x) ;
+            int i = -1 ;
+            for ( PatternTriple pt : pTriples )
+            {
+                i++ ;
+                if ( pt == null )
+                {
+                    System.out.printf("%d          : null\n", i) ;
+                    continue ;
+                }
+                double w2 = match(pt) ;
+                System.out.printf("%d %8.0f : %s\n", i, w2, pt) ;
+            }
+                
+            
+        }
+
         int j = minimum(pTriples) ;
         if ( j < 0 )
             // No weight for any remaining triples 
             j = first(pTriples) ;
+        
+        if ( DEBUG )
+        {
+            System.out.println("<< Output: "+j) ;
+            System.out.println(pTriples.get(j)) ;
+        }
+        
         return  j;
     }
 

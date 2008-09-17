@@ -45,6 +45,14 @@ public class StageGeneratorPGraphBGP implements StageGenerator
         Graph g = execCxt.getActiveGraph() ;
         if ( ! ( g instanceof GraphTDB ) )
             return above.execute(pattern, input, execCxt) ;
+
+        if ( execCxt.getContext().isTrue(TDB.logBGP) )
+        {
+            @SuppressWarnings("unchecked")
+            List<Triple> triples = (List<Triple>)pattern.getList() ;
+
+            ALog.info(this, "BGP: \n  "+Iter.asString(triples, "\n  ")) ;
+        }
         
         GraphTDB graph =(GraphTDB)g ;
         // XXX NOT here.  On a per input basis.
@@ -56,8 +64,7 @@ public class StageGeneratorPGraphBGP implements StageGenerator
 
         if ( execCxt.getContext().isTrue(TDB.logBGP) )
         {
-            String x = Iter.asString(triples, "\n" ) ;
-            ALog.info(this, "BGP: \n"+x) ;
+            ALog.info(this, "BGP: \n  "+Iter.asString(triples, "\n  ")) ;
         }
         
         @SuppressWarnings("unchecked")

@@ -20,7 +20,10 @@ public class AccString<T> implements Accumulate<T, String>
     { 
         if ( ! first )
             buffer.append(sep) ;
-        buffer.append(item.toString()) ;
+        if ( item != null )
+            buffer.append(item.toString()) ;
+        else
+            buffer.append("<null>") ;
         first = false ;
     }
 

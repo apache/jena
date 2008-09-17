@@ -23,6 +23,8 @@ import com.hp.hpl.jena.tdb.solver.ReorderPattern;
 /** Machinary */
 public abstract class ReorderPatternBase implements ReorderPattern
 {
+    protected static final boolean DEBUG = false ;
+    
     public final BasicPattern reorder(Graph graph, BasicPattern pattern)
     {
         if (pattern.size() == 0 )
@@ -79,11 +81,11 @@ public abstract class ReorderPatternBase implements ReorderPattern
     {
         if ( Var.isVar(node) )
         {
-            if ( elt.subject.equals(node) )
+            if ( node.equals(elt.subject.getNode()) )
                 elt.subject = PatternElements.TERM ;
-            if ( elt.predicate.equals(node) )
+            if ( node.equals(elt.predicate.getNode()) )
                 elt.predicate = PatternElements.TERM ;
-            if ( elt.object.equals(node) )
+            if ( node.equals(elt.object.getNode()) )
                 elt.object = PatternElements.TERM ;
         }
            
