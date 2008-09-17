@@ -13,9 +13,9 @@ import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException;
 import com.hp.hpl.jena.sparql.algebra.Op;
-import com.hp.hpl.jena.sparql.algebra.OpSubstitute;
 import com.hp.hpl.jena.sparql.algebra.op.OpGraph;
 import com.hp.hpl.jena.sparql.core.DatasetGraph;
+import com.hp.hpl.jena.sparql.core.Substitute;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
@@ -171,7 +171,7 @@ public class QueryIterGraph extends QueryIterRepeatApply
             
             // TODO Think about avoiding substitution.
             // If the subpattern does not involve the vars from the binding, avoid the substitute.  
-            Op op = OpSubstitute.substitute(opGraph.getSubOp(), binding) ;
+            Op op = Substitute.substitute(opGraph.getSubOp(), binding) ;
             Graph g = outerCxt.getDataset().getGraph(graphNode) ;
             if ( g == null )
                 return null ;

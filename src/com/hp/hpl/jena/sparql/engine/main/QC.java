@@ -7,7 +7,7 @@
 package com.hp.hpl.jena.sparql.engine.main;
 
 import com.hp.hpl.jena.sparql.algebra.Op;
-import com.hp.hpl.jena.sparql.algebra.OpSubstitute;
+import com.hp.hpl.jena.sparql.core.Substitute;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
@@ -16,7 +16,7 @@ public class QC
 {
     public static Op substitute(Op op, Binding binding)
     {
-        return OpSubstitute.substitute(op, binding) ;
+        return Substitute.substitute(op, binding) ;
     }
     
     public static QueryIterator compile(Op op, QueryIterator qIter, ExecutionContext execCxt)

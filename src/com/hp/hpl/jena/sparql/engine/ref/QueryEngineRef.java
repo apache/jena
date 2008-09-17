@@ -9,6 +9,7 @@ package com.hp.hpl.jena.sparql.engine.ref;
 import com.hp.hpl.jena.sparql.algebra.*;
 import com.hp.hpl.jena.sparql.algebra.opt.TransformPropertyFunction;
 import com.hp.hpl.jena.sparql.core.DatasetGraph;
+import com.hp.hpl.jena.sparql.core.Substitute;
 import com.hp.hpl.jena.sparql.engine.*;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIteratorCheck;
@@ -48,7 +49,7 @@ public class QueryEngineRef extends QueryEngineBase
     public QueryIterator eval(Op op, DatasetGraph dsg, Binding binding, Context context)
     {
         if ( binding.vars().hasNext() )
-            op = OpSubstitute.substitute(op, binding) ;
+            op = Substitute.substitute(op, binding) ;
 
         ExecutionContext execCxt = new ExecutionContext(context, dsg.getDefaultGraph(), dsg) ;
         Evaluator eval = EvaluatorFactory.create(execCxt) ;

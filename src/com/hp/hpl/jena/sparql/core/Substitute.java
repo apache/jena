@@ -4,26 +4,24 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.algebra;
+package com.hp.hpl.jena.sparql.core;
 
 import java.util.Iterator;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException;
+import com.hp.hpl.jena.sparql.algebra.Op;
+import com.hp.hpl.jena.sparql.algebra.TransformCopy;
+import com.hp.hpl.jena.sparql.algebra.Transformer;
 import com.hp.hpl.jena.sparql.algebra.op.*;
-import com.hp.hpl.jena.sparql.core.BasicPattern;
-import com.hp.hpl.jena.sparql.core.Quad;
-import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.binding.Binding1;
 import com.hp.hpl.jena.sparql.expr.ExprList;
 import com.hp.hpl.jena.sparql.path.PathLib;
 
-public class OpSubstitute
+public class Substitute
 {
-   
-    
     public static Op substitute(Op op, Binding b)
     {
         return Transformer.transform(new OpSubstituteWorker(b), op) ;
@@ -35,6 +33,33 @@ public class OpSubstitute
         return Transformer.transform(new OpSubstituteWorker(b), op) ;
     }
     
+    public static BasicPattern substitute(BasicPattern bgp, Binding binding)
+    {
+        BasicPattern bgp2 = new BasicPattern() ;
+        for ( Iterator iter = bgp.iterator() ; iter.hasNext() ; )
+        {
+            Triple triple = (Triple)iter.next() ;
+            Triple t = substitute(triple, binding) ;
+            bgp2.add(t) ;
+        }
+        return bgp2 ;
+    }
+    
+    public static Triple substitute(Triple triple, Binding binding)
+    {
+        Node s = substitute(triple.getSubject(), binding) ;
+        Node p = substitute(triple.getPredicate(), binding) ;
+        Node o = substitute(triple.getObject(), binding) ;
+        Triple t = new Triple(s, p, o) ;
+        return t ;
+    }
+
+    public static Node substitute(Node n, Binding b)
+    {
+        return Var.lookup(b, n) ;
+    }
+
+    // ----
     private static class OpSubstituteWorker extends TransformCopy
     {
         private Binding binding ;
@@ -46,26 +71,18 @@ public class OpSubstitute
         }
 
         //@Override
-        public Op transform(OpBGP bgp)
+        public Op transform(OpBGP opBGP)
         {
-            BasicPattern triples = new BasicPattern() ;
-            for ( Iterator iter = bgp.getPattern().iterator() ; iter.hasNext() ; )
-            {
-                Triple triple = (Triple)iter.next() ;
-                Node s = substitute(binding, triple.getSubject()) ;
-                Node p = substitute(binding, triple.getPredicate()) ;
-                Node o = substitute(binding, triple.getObject()) ;
-                Triple t = new Triple(s, p, o) ;
-                triples.add(t) ;
-            }
-            return new OpBGP(triples) ;
+            BasicPattern bgp = opBGP.getPattern() ;
+            bgp = substitute(bgp, binding) ;
+            return new OpBGP(bgp) ;
         }
 
         //@Override
         public Op transform(OpQuadPattern quadPattern)
         {
             Node gNode = quadPattern.getGraphNode() ;
-            Node g = substitute(binding, gNode) ;
+            Node g = substitute(gNode, binding) ;
 
             BasicPattern triples = new BasicPattern() ;
             for ( Iterator iter = quadPattern.getQuads().iterator() ; iter.hasNext() ; )
@@ -73,9 +90,9 @@ public class OpSubstitute
                 Quad quad = (Quad)iter.next() ;
                 if ( ! quad.getGraph().equals(gNode) )
                     throw new ARQInternalErrorException("Internal error: quads block is not uniform over the graph node") ;
-                Node s = substitute(binding, quad.getSubject()) ;
-                Node p = substitute(binding, quad.getPredicate()) ;
-                Node o = substitute(binding, quad.getObject()) ;
+                Node s = substitute(quad.getSubject(), binding) ;
+                Node p = substitute(quad.getPredicate(), binding) ;
+                Node o = substitute(quad.getObject(), binding) ;
                 Triple t = new Triple(s, p, o) ;
                 triples.add(t) ;
             }
@@ -97,19 +114,14 @@ public class OpSubstitute
 
         public Op transform(OpGraph op, Op sub)
         {
-            Node n = substitute(binding, op.getNode()) ;
+            Node n = substitute(op.getNode(), binding) ;
             return new OpGraph(n, sub) ;
         }
 
         public Op transform(OpService op, Op sub)
         {
-            Node n = substitute(binding, op.getService()) ;
+            Node n = substitute(op.getService(), binding) ;
             return new OpService(n, sub) ;
-        }
-
-        private static Node substitute(Binding b, Node n)
-        {
-            return Var.lookup(b, n) ;
         }
     }
 }

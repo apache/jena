@@ -9,9 +9,9 @@ package com.hp.hpl.jena.sparql.algebra.opt;
 import java.util.Iterator;
 
 import com.hp.hpl.jena.sparql.algebra.Op;
-import com.hp.hpl.jena.sparql.algebra.OpSubstitute;
 import com.hp.hpl.jena.sparql.algebra.TransformCopy;
 import com.hp.hpl.jena.sparql.algebra.op.*;
+import com.hp.hpl.jena.sparql.core.Substitute;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.expr.E_Equals;
 import com.hp.hpl.jena.sparql.expr.E_SameTerm;
@@ -115,7 +115,7 @@ public class TransformEqualityFilter extends TransformCopy
     
     private static Op subst(Op subOp , Var var, NodeValue nv)
     {
-        Op op = OpSubstitute.substitute(subOp, var, nv.asNode()) ;
+        Op op = Substitute.substitute(subOp, var, nv.asNode()) ;
         return OpAssign.assign(op, var, nv) ;
     }
 }
