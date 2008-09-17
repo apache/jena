@@ -9,13 +9,14 @@ package com.hp.hpl.jena.tdb.solver;
 import java.util.Iterator;
 
 import com.hp.hpl.jena.graph.Graph;
+
 import com.hp.hpl.jena.sparql.core.BasicPattern;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.main.StageGenerator;
+
 import com.hp.hpl.jena.tdb.pgraph.GraphTDB;
-import com.hp.hpl.jena.tdb.solver.reorder.ReorderLib;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderPattern;
 
 public class StageGeneratorTDB implements StageGenerator
@@ -36,14 +37,15 @@ public class StageGeneratorTDB implements StageGenerator
             return above.execute(pattern, input, execCxt) ;
         GraphTDB graph = (GraphTDB)g ;
         
-        ReorderPattern reorder = ReorderLib.identity() ;
-        if ( false )
-            reorder = graph.getReorderPattern() ;
-        // TODO In progress.
+        //ReorderPattern reorder = ReorderLib.identity() ;
+        ReorderPattern reorder = graph.getReorderPattern() ;
+
         @SuppressWarnings("unchecked")
         Iterator<Binding> _input = (Iterator<Binding>)input ;
+        
         Iterator<Binding> iterBinding = new StageMatchPattern(graph, _input, pattern, reorder, execCxt) ;
-        // StageMatchPattern<T> (RepeatApplyIterator<T>) will not close input -- not iterator.Closable
+
+        // StageMatchPattern<T> (well, RepeatApplyIterator<T>) will not close input -- not iterator.Closable
         return new QueryIterTDB(iterBinding, input) ;
     }
 }

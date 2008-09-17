@@ -27,12 +27,13 @@ public abstract class ReorderPatternBase implements ReorderPattern
     
     public final BasicPattern reorder(BasicPattern pattern)
     {
-        if (pattern.size() == 0 )
+        if (pattern.size() < 2 )
             return pattern ;
         @SuppressWarnings("unchecked")
         List<Triple> triples = (List<Triple>)pattern.getList() ;
         BasicPattern bgp = new BasicPattern() ;
 
+        // Convert to a mutable form (that allows things like "TERM")
         List<PatternTriple> components = toList(map(triples, new Transform<Triple, PatternTriple>(){
             @Override
             public PatternTriple convert(Triple triple)
