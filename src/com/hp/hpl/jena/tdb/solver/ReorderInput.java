@@ -6,34 +6,58 @@
 
 package com.hp.hpl.jena.tdb.solver;
 
+import static com.hp.hpl.jena.tdb.solver.SolverLib.* ;
 import java.util.Iterator;
+import java.util.List;
 
+import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.sparql.core.Substitute;
 import com.hp.hpl.jena.sparql.core.BasicPattern;
+import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.tdb.pgraph.GraphTDB;
 
+import iterator.Iter;
 import iterator.RepeatApplyIterator;
+import iterator.SingletonIterator;
 
 public class ReorderInput extends RepeatApplyIterator<Binding>
 {
     private BasicPattern pattern ;
-    protected ReorderInput(GraphTDB graph, Iterator<Binding> input, BasicPattern pattern)
+    private ReorderPattern reorderPattern ;
+    private GraphTDB graph ;
+    private ExecutionContext execCxt ;
+    
+    protected ReorderInput(GraphTDB graph, Iterator<Binding> input, BasicPattern pattern, ExecutionContext execCxt)
     {
         super(input) ;
         this.pattern = pattern ;
         this.reorderPattern = graph.getReorderPattern() ;
-        if ( reorderPattern == null )
-            return pattern ;
-        return reorderPattern.reorder(graph, pattern) ;
+        this.graph = graph ;
+        this.execCxt = execCxt ;
     }
 
     @Override
     protected Iterator<Binding> makeNextStage(Binding b)
     {
+        // ---- Reorder
+        // TODO Make the optimization decision cached
         BasicPattern pattern2 = Substitute.substitute(pattern, b) ;
+        if ( reorderPattern != null )
+            pattern2 = reorderPattern.reorder(graph, pattern2) ;
         
-        return null ;
+        @SuppressWarnings("unchecked")
+        List<Triple> triples = (List<Triple>)pattern2.getList() ;
+        
+        // ---- Execute
+        Iterator<BindingNodeId> chain = 
+            new SingletonIterator<BindingNodeId>(convFromBinding(graph).convert(b)) ;
+        
+        for ( Triple triple : triples )
+            chain = solve(graph, chain, triple, execCxt) ;
+        
+        Iterator<Binding> iterBinding = Iter.map(chain, convToBinding(graph)) ;
+        return iterBinding ;
     }
 
 }

@@ -8,25 +8,20 @@ package com.hp.hpl.jena.tdb.solver;
 
 import static com.hp.hpl.jena.tdb.lib.Lib.printAbbrev;
 import iterator.Iter;
-import iterator.Transform;
 
 import java.util.Iterator;
 import java.util.List;
 
 import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.sparql.core.BasicPattern;
-import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.sparql.engine.binding.BindingMap;
 import com.hp.hpl.jena.sparql.engine.main.StageGenerator;
 import com.hp.hpl.jena.sparql.util.ALog;
 import com.hp.hpl.jena.tdb.TDB;
 import com.hp.hpl.jena.tdb.pgraph.GraphTDB;
-import com.hp.hpl.jena.tdb.pgraph.NodeId;
 
 public class StageGeneratorPGraphBGP implements StageGenerator
 {
@@ -44,13 +39,33 @@ public class StageGeneratorPGraphBGP implements StageGenerator
         Graph g = execCxt.getActiveGraph() ;
         if ( ! ( g instanceof GraphTDB ) )
             return above.execute(pattern, input, execCxt) ;
+        GraphTDB graph = (GraphTDB)g ;
+        
+        if ( false )
+        {
+            Iterator<Binding> iterBinding = _execute(graph, pattern, input, execCxt) ;
+            return new QueryIterTDB(iterBinding, input) ;
+        }
+        else
+        {
+            // TODO In progress.
+            @SuppressWarnings("unchecked")
+            Iterator<Binding> _input =  (Iterator<Binding>)input ;
+            Iterator<Binding> iterBinding = new ReorderInput(graph, _input, pattern, execCxt) ;
+            // ReorderInput<T> will not close input.
+            return new QueryIterTDB(iterBinding, input) ;
+        }
+    }
+    
+    
+    public Iterator<Binding> _execute(GraphTDB graph, BasicPattern pattern, QueryIterator input, ExecutionContext execCxt)
+    {
 
         if ( execCxt.getContext().isTrue(TDB.logBGP) )
             ALog.info(this, ">> BGP: \n  "+printAbbrev(pattern));
         
-        GraphTDB graph =(GraphTDB)g ;
-        // XXX NOT here.  On a per input basis.
-        // Need to havea repeaty-apply on the input triples, not the node ids. 
+        // NOT HERE.  On a per input basis.
+        // See ReorderInput
         // input => triple => reorder pattern(caching?, do once and return same each time?) => convert to nodeids => execute  
         
         pattern = reorder(graph, pattern) ;
@@ -59,22 +74,22 @@ public class StageGeneratorPGraphBGP implements StageGenerator
         List<Triple> triples = (List<Triple>)pattern.getList() ;
 
         if ( execCxt.getContext().isTrue(TDB.logBGP) )
-            ALog.info(this, "<< BGP: \n  "+strPattern(pattern));
+            ALog.info(this, "<< BGP: \n  "+SolverLib.strPattern(pattern));
         
         @SuppressWarnings("unchecked")
         Iterator<Binding> iter = (Iterator<Binding>)input ;
         // Binding ==> BindingNodeId.
-        Iterator<BindingNodeId> chain = Iter.map(iter, convFromBinding(graph)) ;
+        Iterator<BindingNodeId> chain = Iter.map(iter, SolverLib.convFromBinding(graph)) ;
         
         for ( Triple triple : triples )
         {
-            chain = solve(graph, chain, triple, execCxt) ;
+            chain = SolverLib.solve(graph, chain, triple, execCxt) ;
             //chain = Iter.debug(chain) ;
         }
         
-        Iterator<Binding> iterBinding = Iter.map(chain, convToBinding(graph)) ;
+        Iterator<Binding> iterBinding = Iter.map(chain, SolverLib.convToBinding(graph)) ;
         // Input passed in to ensure it gets closed when QueryIterTDB gets closed
-        return new QueryIterTDB(iterBinding, input) ;
+        return iterBinding ;
     }
 
     private BasicPattern reorder(GraphTDB graph, BasicPattern pattern)
@@ -83,73 +98,6 @@ public class StageGeneratorPGraphBGP implements StageGenerator
         if ( reorderPattern == null )
             return pattern ;
         return reorderPattern.reorder(graph, pattern) ;
-    }
-
-    private Iterator<BindingNodeId> solve(GraphTDB graph,
-                                          Iterator<BindingNodeId> chain,
-                                          final Triple triple, 
-                                          final ExecutionContext execCxt)
-    {
-        return new MatchOneTriple(graph, chain, triple, execCxt) ;
-    }
-    
-    // Transform : BindingNodeId ==> Binding
-    static Transform<BindingNodeId, Binding> convToBinding(final GraphTDB graph)
-    {
-        return new Transform<BindingNodeId, Binding>()
-        {
-            @Override
-            public Binding convert(BindingNodeId bindingNodeIds)
-            {
-                if ( true )
-                    return new BindingTDB(null, bindingNodeIds, graph.getNodeTable()) ;
-                else
-                {
-                    // Makes nodes immediately.  Interacts with FILTERs, causing unecessary NodeTbale accesses. 
-                    Binding b = new BindingMap() ;
-                    for ( Var v : bindingNodeIds )
-                    {
-                        NodeId id = bindingNodeIds.get(v) ;
-                        Node n = graph.getNodeTable().retrieveNodeByNodeId(id) ;
-                        b.add(v, n) ;
-                    }
-                    return b ;
-                }
-            }
-        } ;
-    }
-
-    // Transform : Binding ==> BindingNodeId
-    static Transform<Binding, BindingNodeId> convFromBinding(final GraphTDB graph)
-    {
-        return new Transform<Binding, BindingNodeId>()
-        {
-            @Override
-            public BindingNodeId convert(Binding binding)
-            {
-                BindingNodeId b = new BindingNodeId() ;
-                @SuppressWarnings("unchecked")
-                Iterator<Var> vars = (Iterator<Var>)binding.vars() ;
-
-                for ( ; vars.hasNext() ; )
-                {
-                    Var v = vars.next() ;
-                    Node n = binding.get(v) ;  
-                    // Rely on the node table cache. 
-                    NodeId id = graph.getNodeTable().nodeIdForNode(n) ;
-                    b.put(v, id) ;
-                }
-                return b ;
-            }
-        } ;
-    }
-    
-    private static String strPattern(BasicPattern pattern)
-    {
-        @SuppressWarnings("unchecked")
-        List<Triple> triples = (List<Triple>)pattern.getList() ;
-        String x = Iter.asString(triples, "\n  ") ;
-        return printAbbrev(x) ; 
     }
 }
 
