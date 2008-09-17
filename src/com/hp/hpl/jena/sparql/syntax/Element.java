@@ -8,7 +8,6 @@ package com.hp.hpl.jena.sparql.syntax;
 
 import java.util.*;
 
-import com.hp.hpl.jena.sparql.core.PatternVars;
 import com.hp.hpl.jena.sparql.serializer.FormatterElement;
 import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 

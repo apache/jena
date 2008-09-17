@@ -21,27 +21,43 @@ import com.hp.hpl.jena.sparql.core.BasicPattern;
 import com.hp.hpl.jena.sparql.core.Quad;
 import com.hp.hpl.jena.sparql.core.Var;
 
-public class VarFinder
+class VarFinder
 {
-    public static Set optDefined(Op op)
+    // See also VarUtils and OpVars.
+    // This class is specific to the needs of the main query engine and scopoing of variables
+    
+    static Set optDefined(Op op)
     {
         return VarUsageVisitor.apply(op).optDefines ;
     }
     
-    public static Set fixed(Op op)
+    static Set fixed(Op op)
     {
         return VarUsageVisitor.apply(op).defines ;
     }
     
     
-    public static Set filter(Op op)
+    static Set filter(Op op)
     {
         return VarUsageVisitor.apply(op).filterMentions ;
     }
 
+    static void vars(Set vars, Triple triple)
+    {
+        slot(vars, triple.getSubject()) ;
+        slot(vars, triple.getPredicate()) ;
+        slot(vars, triple.getObject()) ;
+    }
+    
+    static void slot(Set vars, Node node)
+    {
+        if ( Var.isVar(node) )
+            vars.add(Var.alloc(node)) ;
+    }
+
     VarUsageVisitor varUsageVisitor ;
     
-    public VarFinder(Op op)
+    VarFinder(Op op)
     { varUsageVisitor = VarUsageVisitor.apply(op) ; }
     
     public Set getOpt() { return varUsageVisitor.optDefines ; }
@@ -78,15 +94,15 @@ public class VarFinder
         //@Override
         public void visit(OpQuadPattern quadPattern)
         {
-            slot(quadPattern.getGraphNode()) ;
+            slot(defines, quadPattern.getGraphNode()) ;
             List quads = quadPattern.getQuads() ;
             for ( Iterator iter = quads.iterator() ; iter.hasNext(); )
             {
                 Quad quad = (Quad)iter.next() ;
                 //slot(quad.getGraph()) ;
-                slot(quad.getSubject()) ;
-                slot(quad.getPredicate()) ;
-                slot(quad.getObject()) ;
+                slot(defines, quad.getSubject()) ;
+                slot(defines, quad.getPredicate()) ;
+                slot(defines, quad.getObject()) ;
             }
         }
 
@@ -97,16 +113,8 @@ public class VarFinder
             for ( Iterator iter = triples.iterator() ; iter.hasNext(); )
             {
                 Triple triple = (Triple)iter.next() ;
-                slot(triple.getSubject()) ;
-                slot(triple.getPredicate()) ;
-                slot(triple.getObject()) ;
+                vars(defines, triple) ;
             }
-        }
-        
-        private void slot(Node node)
-        {
-            if ( Var.isVar(node) )
-                defines.add(Var.alloc(node)) ;
         }
         
         //@Override
@@ -172,7 +180,7 @@ public class VarFinder
         //@Override
         public void visit(OpGraph opGraph)
         {
-            slot(opGraph.getNode()) ;
+            slot(defines, opGraph.getNode()) ;
         }
         
         // @Override

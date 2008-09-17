@@ -68,7 +68,6 @@ public class Algebra
     /** Compile a query - pattern and modifiers.  */
     public static Op compile(Query query)
     {
-        // Need to switch on quads here. 
         if ( query == null )
             return null ;
         return new AlgebraGenerator().compile(query) ;
