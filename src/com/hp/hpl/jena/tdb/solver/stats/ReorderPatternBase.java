@@ -47,11 +47,13 @@ public abstract class ReorderPatternBase implements ReorderPattern
     {
         int N = components.size() ;
         // Common loop - move to ReorderPatternBase
+        //Set<Var> varsInScope = new HashSet<Var>() ;
         for ( int i = 0 ; i < N ; i++ )
         {
             int j = chooseNext(components) ;
             Triple triple = triples.get(j) ; 
             bgp.add(triple) ;
+            //VarUtils.addVarsFromTriple(varsInScope, triple) ;
             update(triple, components) ;
             components.set(j, null) ;
         }
