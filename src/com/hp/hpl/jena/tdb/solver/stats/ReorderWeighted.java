@@ -9,6 +9,9 @@ package com.hp.hpl.jena.tdb.solver.stats;
 import java.util.List;
 
 import com.hp.hpl.jena.sparql.util.ALog;
+import com.hp.hpl.jena.tdb.solver.PatternTriple;
+import com.hp.hpl.jena.tdb.solver.ReorderPatternBase;
+
 import static com.hp.hpl.jena.tdb.lib.Lib.printAbbrev;
 
 public final class ReorderWeighted extends ReorderPatternBase

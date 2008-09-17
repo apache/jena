@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.solver.stats;
+package com.hp.hpl.jena.tdb.solver;
 
 import static iterator.Iter.map;
 import static iterator.Iter.toList;
@@ -17,7 +17,6 @@ import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.sparql.core.BasicPattern;
 import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.tdb.solver.ReorderPattern;
 
 /** Machinary */
 public abstract class ReorderPatternBase implements ReorderPattern
@@ -59,7 +58,7 @@ public abstract class ReorderPatternBase implements ReorderPattern
         }
     }
     
-    /** Return index of next patter triple */
+    /** Return index of next pattern triple */
     protected abstract int chooseNext(List<PatternTriple> pTriples) ;
     
     /** Update components to note any variables from triple */
@@ -70,7 +69,6 @@ public abstract class ReorderPatternBase implements ReorderPattern
                 update(triple, elt) ;
     }
 
-    
     private void update(Triple triple, PatternTriple tuple)
     {
         update(triple.getSubject(), tuple) ;

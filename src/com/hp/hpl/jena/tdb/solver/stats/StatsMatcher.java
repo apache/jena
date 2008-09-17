@@ -6,12 +6,12 @@
 
 package com.hp.hpl.jena.tdb.solver.stats;
 
-import static com.hp.hpl.jena.tdb.solver.stats.PatternElements.ANY;
-import static com.hp.hpl.jena.tdb.solver.stats.PatternElements.BNODE;
-import static com.hp.hpl.jena.tdb.solver.stats.PatternElements.LITERAL;
-import static com.hp.hpl.jena.tdb.solver.stats.PatternElements.TERM;
-import static com.hp.hpl.jena.tdb.solver.stats.PatternElements.URI;
-import static com.hp.hpl.jena.tdb.solver.stats.PatternElements.VAR;
+import static com.hp.hpl.jena.tdb.solver.PatternElements.ANY;
+import static com.hp.hpl.jena.tdb.solver.PatternElements.BNODE;
+import static com.hp.hpl.jena.tdb.solver.PatternElements.LITERAL;
+import static com.hp.hpl.jena.tdb.solver.PatternElements.TERM;
+import static com.hp.hpl.jena.tdb.solver.PatternElements.URI;
+import static com.hp.hpl.jena.tdb.solver.PatternElements.VAR;
 
 import java.io.PrintStream;
 import java.util.ArrayList;

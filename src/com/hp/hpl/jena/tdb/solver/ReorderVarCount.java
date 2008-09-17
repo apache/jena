@@ -13,8 +13,6 @@ import java.util.List;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.util.ALog;
 
-import com.hp.hpl.jena.tdb.solver.stats.PatternTriple;
-import com.hp.hpl.jena.tdb.solver.stats.ReorderPatternBase;
 
 public class ReorderVarCount extends ReorderPatternBase
 {
