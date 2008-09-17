@@ -11,6 +11,8 @@ import iterator.Transform;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
@@ -47,12 +49,7 @@ public class StageGeneratorPGraphBGP implements StageGenerator
             return above.execute(pattern, input, execCxt) ;
 
         if ( execCxt.getContext().isTrue(TDB.logBGP) )
-        {
-            @SuppressWarnings("unchecked")
-            List<Triple> triples = (List<Triple>)pattern.getList() ;
-
-            ALog.info(this, "BGP: \n  "+Iter.asString(triples, "\n  ")) ;
-        }
+            ALog.info(this, ">> BGP: \n  "+printAbbrev(pattern));
         
         GraphTDB graph =(GraphTDB)g ;
         // XXX NOT here.  On a per input basis.
@@ -63,9 +60,7 @@ public class StageGeneratorPGraphBGP implements StageGenerator
         List<Triple> triples = (List<Triple>)pattern.getList() ;
 
         if ( execCxt.getContext().isTrue(TDB.logBGP) )
-        {
-            ALog.info(this, "BGP: \n  "+Iter.asString(triples, "\n  ")) ;
-        }
+            ALog.info(this, "<< BGP: \n  "+printAbbrev(pattern));
         
         @SuppressWarnings("unchecked")
         Iterator<Binding> iter = (Iterator<Binding>)input ;
@@ -88,6 +83,20 @@ public class StageGeneratorPGraphBGP implements StageGenerator
         return new QueryIterTDB(iterBinding, input) ;
     }
 
+    // WHERE??
+    static String printAbbrev(BasicPattern pattern)
+    {
+        @SuppressWarnings("unchecked")
+        List<Triple> triples = (List<Triple>)pattern.getList() ;
+        String x = Iter.asString(triples, "\n  ") ;
+        
+        Pattern p = Pattern.compile("http:[^ \n]*[#/]([^/ \n]*)") ;
+        Matcher m = p.matcher(x);
+        x = m.replaceAll("::$1") ;
+        return x ;
+ 
+    }
+    
     private BasicPattern reorder(GraphTDB graph, BasicPattern pattern)
     {
         ReorderPattern reorderPattern = graph.getReorderPattern() ;

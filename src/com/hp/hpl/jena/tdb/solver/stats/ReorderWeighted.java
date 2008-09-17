@@ -7,6 +7,8 @@
 package com.hp.hpl.jena.tdb.solver.stats;
 
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.hp.hpl.jena.sparql.util.ALog;
 
@@ -25,8 +27,6 @@ public final class ReorderWeighted extends ReorderPatternBase
         if ( DEBUG )
         {
             System.out.println(">> Input") ;
-//            String x = Iter.asString(pTriples, "\n") ;
-//            System.out.println(x) ;
             int i = -1 ;
             for ( PatternTriple pt : pTriples )
             {
@@ -37,10 +37,9 @@ public final class ReorderWeighted extends ReorderPatternBase
                     continue ;
                 }
                 double w2 = match(pt) ;
-                System.out.printf("%d %8.0f : %s\n", i, w2, pt) ;
+                String x = printAbbrev(pt) ;
+                System.out.printf("%d %8.0f : %s\n", i, w2, x) ;
             }
-                
-            
         }
 
         int j = minimum(pTriples) ;
@@ -51,12 +50,26 @@ public final class ReorderWeighted extends ReorderPatternBase
         if ( DEBUG )
         {
             System.out.println("<< Output: "+j) ;
-            System.out.println(pTriples.get(j)) ;
+            String x = printAbbrev(pTriples.get(j)) ;
+            System.out.println(x) ;
         }
         
         return  j;
     }
 
+    // Aslo in StategGeneratorBGP
+    static String printAbbrev(PatternTriple pTriple)
+    {
+        if ( pTriple==null )
+            return "<null>" ;
+        String x = pTriple.toString() ;
+        Pattern p = Pattern.compile("http:[^ \n]*[#/]([^/ \n]*)") ;
+        Matcher m = p.matcher(x);
+        x = m.replaceAll("::$1") ;
+        return x ;
+ 
+    }
+    
     private int minimum(List<PatternTriple> pTriples)
     {
         int idx = -1 ;

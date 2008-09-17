@@ -16,35 +16,7 @@ import com.hp.hpl.jena.tdb.solver.stats.ReorderPatternBase;
 
 public class ReorderVarCount extends ReorderPatternBase
 {
-
-    //implements ReorderPattern
-//    @Override
-//    public BasicPattern reorder(Graph graph, BasicPattern pattern)
-//    {
-//        @SuppressWarnings("unchecked")
-//        List<Triple> triples = (List<Triple>)pattern.getList() ;
-//
-//        BasicPattern pattern2 = new BasicPattern() ;
-//        Set<Var> patternVarsScope = new HashSet<Var>() ;
-//
-//        
-//        //Would need to this repeatedly as the order changes. 
-//        for ( Iterator<Triple> iter = triples.listIterator() ; iter.hasNext() ; )
-//        {
-//            Triple triple = (Triple)iter.next();
-//            System.out.println("Process: "+triple) ;
-//            
-//            // Vars in scope.
-//            VarUtils.addVarsFromTriple(patternVarsScope, triple) ;
-//            
-//            pattern2.add(triple) ;
-//        }
-//        return pattern2 ;
-//    }
-
-    
-    
-// extends ReorderPatternBase -- heavy
+    //TODO Test
     @Override
     protected int chooseNext(List<PatternTriple> pTriples)
     {
