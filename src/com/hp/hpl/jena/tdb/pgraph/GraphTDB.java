@@ -17,21 +17,15 @@ import java.util.Iterator;
 
 import lib.Tuple;
 
-import com.hp.hpl.jena.rdf.model.AnonId;
-
-import com.hp.hpl.jena.util.iterator.ExtendedIterator;
-import com.hp.hpl.jena.util.iterator.NiceIterator;
-
 import com.hp.hpl.jena.graph.Capabilities;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.graph.TripleMatch;
 import com.hp.hpl.jena.graph.impl.GraphBase;
 import com.hp.hpl.jena.graph.query.QueryHandler;
-
+import com.hp.hpl.jena.rdf.model.AnonId;
 import com.hp.hpl.jena.sparql.sse.SSE;
 import com.hp.hpl.jena.sparql.util.FmtUtils;
-
 import com.hp.hpl.jena.tdb.TDB;
 import com.hp.hpl.jena.tdb.TDBException;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
@@ -40,17 +34,18 @@ import com.hp.hpl.jena.tdb.index.TripleIndex;
 import com.hp.hpl.jena.tdb.lib.TupleLib;
 import com.hp.hpl.jena.tdb.solver.ReorderPattern;
 import com.hp.hpl.jena.tdb.sys.Const;
+import com.hp.hpl.jena.util.iterator.ExtendedIterator;
+import com.hp.hpl.jena.util.iterator.NiceIterator;
 
 /** Machinary to implement a "nodes and triples" style graph,
  *  based on 3 indexes (SPO, POS, OSP)
  *  and a node table form can map to and from integers.
- *  
- *   There are two ways to build this:
- *   1/ a subclass can provide an IndexFactory 
  */
 
 public class GraphTDB extends GraphBase implements Sync
 {
+    //static Logger log = LoggerFactory.getLogger(GraphTDB.class) ;
+    
     // ---- Record factories
     public final static RecordFactory indexRecordFactory = new RecordFactory(LenIndexRecord, 0) ; 
     public final static RecordFactory nodeRecordFactory = new RecordFactory(LenNodeHash, SizeOfNodeId) ;

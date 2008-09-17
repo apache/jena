@@ -27,7 +27,7 @@ import com.hp.hpl.jena.tdb.sys.Names;
 
 public class GraphTDBFactory
 {
-    static Logger log = LoggerFactory.getLogger(GraphTDB.class) ;
+    static Logger log = LoggerFactory.getLogger(GraphTDBFactory.class) ;
 
     /** Create a graph backed with storage at a particular location */
     public static GraphTDB create(Location location)
