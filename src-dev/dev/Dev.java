@@ -8,14 +8,8 @@ package dev;
 
 public class Dev
 {
-    
-    // Enable stats
-    // MatchOneTriple.
-    
-    
-    // --> StageGeneratorPGraphBGP:: Reorder in the wrong place.  Substitute on a per input basis.
-    //     Reordering needs to return a list of indexes so it can be reapplied.
-    // --> Need to add something for connectivity??
+    // --> Optimizer : Need to add something for connectivity - or rely on the stats
+    //     For the var counter, connectivity matters 
     
     // -- Work on Filter-BGP blocks.  
     // -- Tests : VarCounter, stats matcher.
