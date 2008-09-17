@@ -69,21 +69,30 @@ public class GraphTDBFactory
         NodeTable nodeTable = new NodeTableIndex(factory, location) ;
         
         ReorderPattern reorder = null ;
-        if ( location.exists(Names.statsAndPatterns) )
+        if ( location.exists(Names.optStats) )
         {
             try {
-                StatsMatcher matcher = new StatsMatcher(location.getPath(Names.statsAndPatterns)) ;
+                StatsMatcher matcher = new StatsMatcher(location.getPath(Names.optStats)) ;
                 reorder = new ReorderWeighted(matcher) ;
+                log.info("Statistics-based BGP optimizer") ;  
             } catch (SSEParseException ex) { 
                 throw new TDBException("Error in stats file: "+ex.getMessage()) ;
             }
         }
-        if ( reorder == null )
+        if ( reorder == null && location.exists(Names.optCountVar) )
         {
-            System.out.println("Using VarCount reorder algorithm") ;
-            // Not as good.
+            // Not as good but better than nothering.
             reorder = new ReorderVarCount() ;
+            log.info("Variable counting BGP optimizer") ;  
         }
+        
+        if ( location.exists(Names.optNone) )
+        {
+            log.info("Optimizer explicitly turned off") ;
+            reorder = null ;
+        }
+        else if ( reorder == null )
+                log.info("No BGP optimizer") ;
         
         return new GraphTDB(triplesSPO, triplesPOS, triplesOSP, nodeTable, reorder) ;
     }
