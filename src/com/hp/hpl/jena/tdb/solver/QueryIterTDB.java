@@ -14,10 +14,9 @@ import com.hp.hpl.jena.sparql.engine.iterator.QueryIterPlainWrapper;
 
 public class QueryIterTDB extends QueryIterPlainWrapper
 {
-    QueryIterator originalInput ;
+    final private QueryIterator originalInput ;
     
     // The original input needs closing as well.
-    // Maybe it should be a feature of QueryIterPlainWrapper??
     public QueryIterTDB(Iterator<Binding> iterBinding, QueryIterator originalInput)
     {
         super(iterBinding) ;

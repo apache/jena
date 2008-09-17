@@ -4,37 +4,25 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.solver;
+package com.hp.hpl.jena.tdb.solver.reorder;
 
-import com.hp.hpl.jena.graph.Graph;
-
-import com.hp.hpl.jena.sparql.core.BasicPattern;
-
-import com.hp.hpl.jena.tdb.solver.stats.ReorderWeighted;
 import com.hp.hpl.jena.tdb.solver.stats.StatsMatcher;
 
-public class ReorderLib
+public final class ReorderWeighted extends ReorderPatternBase
 {
-    static ReorderPattern _identity = new ReorderPattern() {
-        @Override
-        public BasicPattern reorder(Graph graph, BasicPattern pattern)
-        {
-            return pattern ;
-        } } ;
-
-    public static ReorderPattern identity()
+    private StatsMatcher stats ;
+    
+    public ReorderWeighted(StatsMatcher stats)
     {
-        return _identity ;
+        this.stats = stats ;
     }
-
-    public static ReorderPattern weighted(String filename)
+    
+    @Override
+    protected double weight(PatternTriple item)
     {
-        StatsMatcher stats = new StatsMatcher(filename) ;
-        return new ReorderWeighted(stats) ;
+        return stats.match(item.subject, item.predicate, item.object) ;
     }
-
 }
-
 /*
  * (c) Copyright 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.

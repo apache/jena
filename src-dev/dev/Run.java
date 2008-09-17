@@ -38,8 +38,8 @@ import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 import com.hp.hpl.jena.tdb.base.recordfile.RecordBufferPage;
 import com.hp.hpl.jena.tdb.base.recordfile.RecordBufferPageMgr;
 import com.hp.hpl.jena.tdb.pgraph.GraphTDB;
-import com.hp.hpl.jena.tdb.solver.ReorderPattern;
-import com.hp.hpl.jena.tdb.solver.ReorderVarCount;
+import com.hp.hpl.jena.tdb.solver.reorder.ReorderPattern;
+import com.hp.hpl.jena.tdb.solver.reorder.ReorderVarCount;
 import com.hp.hpl.jena.tdb.sys.Const;
 import com.hp.hpl.jena.util.FileManager;
 

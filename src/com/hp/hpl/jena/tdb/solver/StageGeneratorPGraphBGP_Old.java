@@ -24,11 +24,11 @@ import com.hp.hpl.jena.tdb.TDB;
 import com.hp.hpl.jena.tdb.pgraph.GraphTDB;
 
 // OLD - does not reorder BGP - no optimizer.
-public class StageGeneratorPGraphBGP implements StageGenerator
+public class StageGeneratorPGraphBGP_Old implements StageGenerator
 {
     StageGenerator above = null ;
     
-    public StageGeneratorPGraphBGP(StageGenerator original)
+    public StageGeneratorPGraphBGP_Old(StageGenerator original)
     {
         above = original ;
     }

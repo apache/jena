@@ -4,72 +4,32 @@
  * [See end of file]
  */
 
-package iterator;
+package com.hp.hpl.jena.tdb.solver.reorder;
 
-import java.util.Iterator;
-import java.util.NoSuchElementException;
+import com.hp.hpl.jena.sparql.core.BasicPattern;
 
-import com.hp.hpl.jena.sparql.util.Utils;
+import com.hp.hpl.jena.tdb.solver.stats.StatsMatcher;
 
-public abstract class RepeatApplyIterator<T> implements Iterator<T>, ClosableIterator
+public class ReorderLib
 {
-    private Iterator<T> input ;
-    private boolean finished = false ;
-    private T slot = null ;
-    private Iterator<T> currentStage = null ;
-
-    protected RepeatApplyIterator(Iterator<T> input)
-    {
-        this.input = input ;
-    }
-
-    @Override
-    public boolean hasNext()
-    {
-        if  ( finished )
-            return false ;
-        for ( ;; )
+    private static ReorderPattern _identity = new ReorderPattern() {
+        @Override
+        public BasicPattern reorder(BasicPattern pattern)
         {
-            if ( currentStage == null && input.hasNext() )
-            {
-                T nextItem = input.next();
-                currentStage = makeNextStage(nextItem) ;
-            }
-            
-            if ( currentStage == null  )
-            {
-                finished = true ;
-                return false ;
-            }
-            
-            if ( currentStage.hasNext() )
-                return true ;
-            
-            currentStage = null ;
-        }
+            return pattern ;
+        } } ;
+
+    public static ReorderPattern identity()
+    { return _identity ; }
+
+    public static ReorderPattern weighted(String filename)
+    {
+        StatsMatcher stats = new StatsMatcher(filename) ;
+        return new ReorderWeighted(stats) ;
     }
 
-    protected abstract Iterator<T> makeNextStage(T t) ;
-    
-    @Override
-    public T next()
-    {
-        if ( ! hasNext() )
-            throw new NoSuchElementException(Utils.className(this)+".next()/finished") ;
-        return currentStage.next() ;
-    }
-
-    @Override
-    public final void remove()
-    { throw new UnsupportedOperationException() ; }
-    
-    @Override
-    public void close()
-    {
-        if ( input instanceof ClosableIterator )
-            ((ClosableIterator)input).close();
-    }
 }
+
 /*
  * (c) Copyright 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.

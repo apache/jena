@@ -4,54 +4,14 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.solver;
+package com.hp.hpl.jena.tdb.solver.reorder;
 
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.sparql.sse.Item;
+import com.hp.hpl.jena.sparql.core.BasicPattern;
 
-/** A mutable triple pattern */
-public final class PatternTriple
+public interface ReorderPattern
 {
-    public Item subject ;
-    public Item predicate ;
-    public Item object ;
-    
-    public PatternTriple(Item s, Item p, Item o)
-    {
-        set(normalize(s), normalize(p), normalize(o)) ;
-    }
-    
-    private void set(Item s, Item p, Item o) 
-    {
-        subject =    s ;
-        predicate =  p ;
-        object =     o ;
-    }
-    
-    public PatternTriple(Node s, Node p, Node o)
-    {
-        set(normalize(s),
-            normalize(p),
-            normalize(o)) ;
-    }
-    
-    public PatternTriple(Triple triple)
-    {
-        this(triple.getSubject(),
-             triple.getPredicate(),
-             triple.getObject()) ;
-    }
-    
-    @Override
-    public String toString()
-    { return subject+" "+predicate+" "+object ; }
-    
-    private static Item normalize(Item x)
-    { return x != null ? x : PatternElements.ANY ; }
-    
-    private static Item normalize(Node x)
-    { return x != null ? Item.createNode(x) : PatternElements.ANY ; }
+    // Return a basic graph pattern to execute instead.
+    public BasicPattern reorder(BasicPattern pattern) ;
 }
 
 /*

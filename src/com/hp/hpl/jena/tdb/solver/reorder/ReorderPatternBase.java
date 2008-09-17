@@ -4,26 +4,28 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.solver;
+package com.hp.hpl.jena.tdb.solver.reorder;
 
+import static com.hp.hpl.jena.tdb.lib.Lib.printAbbrev;
 import static iterator.Iter.map;
 import static iterator.Iter.toList;
 import iterator.Transform;
 
 import java.util.List;
 
-import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
+
 import com.hp.hpl.jena.sparql.core.BasicPattern;
 import com.hp.hpl.jena.sparql.core.Var;
+
 
 /** Machinary */
 public abstract class ReorderPatternBase implements ReorderPattern
 {
     protected static final boolean DEBUG = false ;
     
-    public final BasicPattern reorder(Graph graph, BasicPattern pattern)
+    public final BasicPattern reorder(BasicPattern pattern)
     {
         if (pattern.size() == 0 )
             return pattern ;
@@ -38,11 +40,11 @@ public abstract class ReorderPatternBase implements ReorderPattern
                 return new PatternTriple(triple) ;
             }})) ;
 
-        reorder(graph, triples, components, bgp) ;
+        reorder(triples, components, bgp) ;
         return bgp ;
     }
 
-    protected void reorder(Graph graph, List<Triple> triples, List<PatternTriple> components, BasicPattern bgp)
+    protected void reorder(List<Triple> triples, List<PatternTriple> components, BasicPattern bgp)
     {
         int N = components.size() ;
         // Common loop - move to ReorderPatternBase
@@ -59,8 +61,54 @@ public abstract class ReorderPatternBase implements ReorderPattern
     }
     
     /** Return index of next pattern triple */
-    protected abstract int chooseNext(List<PatternTriple> pTriples) ;
-    
+    protected int chooseNext(List<PatternTriple> pTriples)
+    {
+        if ( DEBUG )
+        {
+            System.out.println(">> Input") ;
+            int i = -1 ;
+            for ( PatternTriple pt : pTriples )
+            {
+                i++ ;
+                if ( pt == null )
+                {
+                    System.out.printf("%d          : null\n", i) ;
+                    continue ;
+                }
+                double w2 = weight(pt) ;
+                System.out.printf("%d %8.0f : %s\n", i, w2, printAbbrev(pt)) ;
+            }
+        }
+        
+        int idx = -1 ;
+        double min = 5 ;
+        int N = pTriples.size() ;
+        for ( int i = 0 ; i < N ; i++ )
+        {
+            PatternTriple pt = pTriples.get(i) ;
+            if ( pt == null )
+                continue ;
+            double x = weight(pt) ;
+            if ( x < 0 )
+                System.err.println("Oops - negative") ;
+            if ( x < min )
+            {
+                min = x ;
+                idx = i ;
+            }
+        }
+        
+        if ( DEBUG )
+        {
+            System.out.println("<< Output: "+idx) ;
+            String x = printAbbrev(pTriples.get(idx)) ;
+            System.out.println(x) ;
+        }
+        return idx ;
+    }
+
+    protected abstract double weight(PatternTriple pt) ;
+
     /** Update components to note any variables from triple */
     protected final void update(Triple triple, List<PatternTriple> components)
     {

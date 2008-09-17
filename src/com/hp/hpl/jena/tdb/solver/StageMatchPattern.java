@@ -16,6 +16,7 @@ import com.hp.hpl.jena.sparql.core.BasicPattern;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.tdb.pgraph.GraphTDB;
+import com.hp.hpl.jena.tdb.solver.reorder.ReorderPattern;
 
 import iterator.Iter;
 import iterator.RepeatApplyIterator;
@@ -28,11 +29,11 @@ public class StageMatchPattern extends RepeatApplyIterator<Binding>
     private GraphTDB graph ;
     private ExecutionContext execCxt ;
     
-    protected StageMatchPattern(GraphTDB graph, Iterator<Binding> input, BasicPattern pattern, ExecutionContext execCxt)
+    protected StageMatchPattern(GraphTDB graph, Iterator<Binding> input, BasicPattern pattern, ReorderPattern reorder, ExecutionContext execCxt)
     {
         super(input) ;
         this.pattern = pattern ;
-        this.reorderPattern = graph.getReorderPattern() ;
+        this.reorderPattern = reorder ;
         this.graph = graph ;
         this.execCxt = execCxt ;
     }
@@ -43,8 +44,8 @@ public class StageMatchPattern extends RepeatApplyIterator<Binding>
         // ---- Reorder
         // TODO Make the optimization decision cached
         BasicPattern pattern2 = Substitute.substitute(pattern, b) ;
-        if ( reorderPattern != null )
-            pattern2 = reorderPattern.reorder(graph, pattern2) ;
+        if ( reorderPattern != null && pattern.size() > 1 )
+            pattern2 = reorderPattern.reorder(pattern2) ;
         
         @SuppressWarnings("unchecked")
         List<Triple> triples = (List<Triple>)pattern2.getList() ;

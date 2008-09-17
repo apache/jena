@@ -1,46 +1,21 @@
 /*
- * (c) C;opyright 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.solver;
+package com.hp.hpl.jena.tdb.solver.reorder;
 
-import java.util.Iterator;
+import com.hp.hpl.jena.sparql.sse.Item;
 
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.sparql.core.BasicPattern;
-import com.hp.hpl.jena.sparql.engine.ExecutionContext;
-import com.hp.hpl.jena.sparql.engine.QueryIterator;
-import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.sparql.engine.main.StageGenerator;
-import com.hp.hpl.jena.tdb.pgraph.GraphTDB;
-
-public class StageGeneratorReorderBGP implements StageGenerator
+public class PatternElements
 {
-    StageGenerator above = null ;
-    
-    public StageGeneratorReorderBGP(StageGenerator original)
-    {
-        above = original ;
-    }
-    
-    @Override
-    public QueryIterator execute(BasicPattern pattern, QueryIterator input, ExecutionContext execCxt)
-    {
-        // --- In case this isn't for TDB
-        Graph g = execCxt.getActiveGraph() ;
-        if ( ! ( g instanceof GraphTDB ) )
-            return above.execute(pattern, input, execCxt) ;
-        GraphTDB graph = (GraphTDB)g ;
-        
-        // TODO In progress.
-        @SuppressWarnings("unchecked")
-        Iterator<Binding> _input = (Iterator<Binding>)input ;
-        Iterator<Binding> iterBinding = new StageMatchPattern(graph, _input, pattern, execCxt) ;
-        // ReorderInput<T> will not close input.
-        return new QueryIterTDB(iterBinding, input) ;
-    }
+    public static final Item ANY       = Item.createSymbol("ANY") ;
+    public static final Item VAR       = Item.createSymbol("VAR") ;
+    public static final Item TERM      = Item.createSymbol("TERM") ;
+    public static final Item URI       = Item.createSymbol("URI") ;
+    public static final Item BNODE     = Item.createSymbol("BNODE") ;
+    public static final Item LITERAL   = Item.createSymbol("LITERAL") ;
 }
 
 /*

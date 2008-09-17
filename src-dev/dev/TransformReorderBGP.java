@@ -11,7 +11,7 @@ import com.hp.hpl.jena.sparql.algebra.TransformCopy;
 import com.hp.hpl.jena.sparql.algebra.op.OpBGP;
 import com.hp.hpl.jena.sparql.core.BasicPattern;
 
-import com.hp.hpl.jena.tdb.solver.ReorderPattern;
+import com.hp.hpl.jena.tdb.solver.reorder.ReorderPattern;
 
 public class TransformReorderBGP extends TransformCopy
 {
@@ -32,7 +32,7 @@ public class TransformReorderBGP extends TransformCopy
     
     public BasicPattern rewrite(BasicPattern pattern)
     {
-        return reorderPattern.reorder(null, pattern) ;
+        return reorderPattern.reorder(pattern) ;
     }
 }
 

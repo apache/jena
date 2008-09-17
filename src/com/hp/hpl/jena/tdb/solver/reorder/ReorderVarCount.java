@@ -4,18 +4,41 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.solver;
+package com.hp.hpl.jena.tdb.solver.reorder;
 
-import com.hp.hpl.jena.sparql.sse.Item;
+import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.vocabulary.RDF;
 
-public class PatternElements
+import com.hp.hpl.jena.sparql.core.Var;
+
+
+
+public class ReorderVarCount extends ReorderPatternBase
 {
-    public static final Item ANY       = Item.createSymbol("ANY") ;
-    public static final Item VAR       = Item.createSymbol("VAR") ;
-    public static final Item TERM      = Item.createSymbol("TERM") ;
-    public static final Item URI       = Item.createSymbol("URI") ;
-    public static final Item BNODE     = Item.createSymbol("BNODE") ;
-    public static final Item LITERAL   = Item.createSymbol("LITERAL") ;
+    // TODO Test!
+    // TODO Connectivity
+    private static Node rdfType = RDF.type.asNode() ;
+    
+    @Override
+    protected double weight(PatternTriple pt)
+    {
+        int count = 0 ;
+        // Var.isVar is null-safe
+        if ( Var.isVar(pt.subject.getNode()) )
+            count++ ;
+        if ( Var.isVar(pt.predicate.getNode()) )
+            count++ ;
+        if ( Var.isVar(pt.object.getNode()) )
+            count++ ;
+        else
+        {
+            // ?x rdf:type <TYPE>
+            if ( rdfType.equals(pt.predicate.getNode()) )
+                // Discourage rdf:type.
+                count += 0.5 ;
+        }   
+        return count ;
+    }
 }
 
 /*

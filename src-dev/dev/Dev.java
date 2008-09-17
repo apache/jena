@@ -11,6 +11,8 @@ public class Dev
     // --> Optimizer : For the var counter, connectivity matters 
     //     VarCount tuning: Special case rdf:type
     //     (tidying) : ARQ : treat memory graphs as a storage (StageGenBasicPattern in ARQ).
+    
+    // Split solver into solver-general and solver-TDB
     // ARQ: StageGenBasicPatternMem
     //      (eventually) Move stats code to ARQ. For now, keep neatly in TDB 
     // TDB.optimizerOn() / TDB.optimizerOff() -- leaving it in the StageGenerator chain.

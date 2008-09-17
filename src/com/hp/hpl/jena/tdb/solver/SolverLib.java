@@ -26,6 +26,7 @@ import com.hp.hpl.jena.tdb.pgraph.NodeId;
 /** Utilities used within the BGP solver */
 public class SolverLib
 {
+    // ---- TDB specific
     // Transform : BindingNodeId ==> Binding
     static Transform<BindingNodeId, Binding> convToBinding(final GraphTDB graph)
     {

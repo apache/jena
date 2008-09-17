@@ -4,72 +4,57 @@
  * [See end of file]
  */
 
-package iterator;
+package com.hp.hpl.jena.tdb.solver.reorder;
 
-import java.util.Iterator;
-import java.util.NoSuchElementException;
+import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.graph.Triple;
+import com.hp.hpl.jena.sparql.sse.Item;
 
-import com.hp.hpl.jena.sparql.util.Utils;
 
-public abstract class RepeatApplyIterator<T> implements Iterator<T>, ClosableIterator
+/** A mutable triple pattern */
+public final class PatternTriple
 {
-    private Iterator<T> input ;
-    private boolean finished = false ;
-    private T slot = null ;
-    private Iterator<T> currentStage = null ;
-
-    protected RepeatApplyIterator(Iterator<T> input)
+    public Item subject ;
+    public Item predicate ;
+    public Item object ;
+    
+    public PatternTriple(Item s, Item p, Item o)
     {
-        this.input = input ;
+        set(normalize(s), normalize(p), normalize(o)) ;
     }
-
-    @Override
-    public boolean hasNext()
+    
+    private void set(Item s, Item p, Item o) 
     {
-        if  ( finished )
-            return false ;
-        for ( ;; )
-        {
-            if ( currentStage == null && input.hasNext() )
-            {
-                T nextItem = input.next();
-                currentStage = makeNextStage(nextItem) ;
-            }
-            
-            if ( currentStage == null  )
-            {
-                finished = true ;
-                return false ;
-            }
-            
-            if ( currentStage.hasNext() )
-                return true ;
-            
-            currentStage = null ;
-        }
+        subject =    s ;
+        predicate =  p ;
+        object =     o ;
     }
-
-    protected abstract Iterator<T> makeNextStage(T t) ;
+    
+    public PatternTriple(Node s, Node p, Node o)
+    {
+        set(normalize(s),
+            normalize(p),
+            normalize(o)) ;
+    }
+    
+    public PatternTriple(Triple triple)
+    {
+        this(triple.getSubject(),
+             triple.getPredicate(),
+             triple.getObject()) ;
+    }
     
     @Override
-    public T next()
-    {
-        if ( ! hasNext() )
-            throw new NoSuchElementException(Utils.className(this)+".next()/finished") ;
-        return currentStage.next() ;
-    }
-
-    @Override
-    public final void remove()
-    { throw new UnsupportedOperationException() ; }
+    public String toString()
+    { return subject+" "+predicate+" "+object ; }
     
-    @Override
-    public void close()
-    {
-        if ( input instanceof ClosableIterator )
-            ((ClosableIterator)input).close();
-    }
+    private static Item normalize(Item x)
+    { return x != null ? x : PatternElements.ANY ; }
+    
+    private static Item normalize(Node x)
+    { return x != null ? Item.createNode(x) : PatternElements.ANY ; }
 }
+
 /*
  * (c) Copyright 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.

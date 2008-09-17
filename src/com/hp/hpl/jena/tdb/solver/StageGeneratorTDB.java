@@ -1,18 +1,51 @@
 /*
- * (c) Copyright 2008 Hewlett-Packard Development Company, LP
+ * (c) C;opyright 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
 package com.hp.hpl.jena.tdb.solver;
 
+import java.util.Iterator;
+
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.sparql.core.BasicPattern;
+import com.hp.hpl.jena.sparql.engine.ExecutionContext;
+import com.hp.hpl.jena.sparql.engine.QueryIterator;
+import com.hp.hpl.jena.sparql.engine.binding.Binding;
+import com.hp.hpl.jena.sparql.engine.main.StageGenerator;
+import com.hp.hpl.jena.tdb.pgraph.GraphTDB;
+import com.hp.hpl.jena.tdb.solver.reorder.ReorderLib;
+import com.hp.hpl.jena.tdb.solver.reorder.ReorderPattern;
 
-public interface ReorderPattern
+public class StageGeneratorTDB implements StageGenerator
 {
-    // Return a basic graph pattern to execute instead.
-    public BasicPattern reorder(Graph graph, BasicPattern pattern) ;
+    StageGenerator above = null ;
+    
+    public StageGeneratorTDB(StageGenerator original)
+    {
+        above = original ;
+    }
+    
+    @Override
+    public QueryIterator execute(BasicPattern pattern, QueryIterator input, ExecutionContext execCxt)
+    {
+        // --- In case this isn't for TDB
+        Graph g = execCxt.getActiveGraph() ;
+        if ( ! ( g instanceof GraphTDB ) )
+            return above.execute(pattern, input, execCxt) ;
+        GraphTDB graph = (GraphTDB)g ;
+        
+        ReorderPattern reorder = ReorderLib.identity() ;
+        if ( false )
+            reorder = graph.getReorderPattern() ;
+        // TODO In progress.
+        @SuppressWarnings("unchecked")
+        Iterator<Binding> _input = (Iterator<Binding>)input ;
+        Iterator<Binding> iterBinding = new StageMatchPattern(graph, _input, pattern, reorder, execCxt) ;
+        // StageMatchPattern<T> (RepeatApplyIterator<T>) will not close input -- not iterator.Closable
+        return new QueryIterTDB(iterBinding, input) ;
+    }
 }
 
 /*

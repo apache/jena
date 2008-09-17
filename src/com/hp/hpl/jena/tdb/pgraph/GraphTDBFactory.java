@@ -6,10 +6,10 @@
 
 package com.hp.hpl.jena.tdb.pgraph;
 
-import com.hp.hpl.jena.sparql.sse.SSEParseException;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.hp.hpl.jena.sparql.sse.SSEParseException;
 
 import com.hp.hpl.jena.tdb.TDBException;
 import com.hp.hpl.jena.tdb.base.file.Location;
@@ -17,10 +17,9 @@ import com.hp.hpl.jena.tdb.index.Index;
 import com.hp.hpl.jena.tdb.index.IndexBuilder;
 import com.hp.hpl.jena.tdb.index.RangeIndex;
 import com.hp.hpl.jena.tdb.index.TripleIndex;
-import com.hp.hpl.jena.tdb.solver.ReorderPattern;
-import com.hp.hpl.jena.tdb.solver.ReorderVarCount;
-import com.hp.hpl.jena.tdb.solver.stats.ReorderWeighted;
-import com.hp.hpl.jena.tdb.solver.stats.StatsMatcher;
+import com.hp.hpl.jena.tdb.solver.reorder.ReorderLib;
+import com.hp.hpl.jena.tdb.solver.reorder.ReorderPattern;
+import com.hp.hpl.jena.tdb.solver.reorder.ReorderVarCount;
 import com.hp.hpl.jena.tdb.sys.Names;
 
 /** Place to put various "making" things. */
@@ -72,8 +71,7 @@ public class GraphTDBFactory
         if ( location.exists(Names.optStats) )
         {
             try {
-                StatsMatcher matcher = new StatsMatcher(location.getPath(Names.optStats)) ;
-                reorder = new ReorderWeighted(matcher) ;
+                reorder = ReorderLib.weighted(location.getPath(Names.optStats)) ;
                 log.info("Statistics-based BGP optimizer") ;  
             } catch (SSEParseException ex) { 
                 throw new TDBException("Error in stats file: "+ex.getMessage()) ;
@@ -88,11 +86,12 @@ public class GraphTDBFactory
         
         if ( location.exists(Names.optNone) )
         {
+            reorder = ReorderLib.identity() ;
             log.info("Optimizer explicitly turned off") ;
-            reorder = null ;
         }
-        else if ( reorder == null )
-                log.info("No BGP optimizer") ;
+
+        if ( reorder == null )
+            log.info("No BGP optimizer") ;
         
         return new GraphTDB(triplesSPO, triplesPOS, triplesOSP, nodeTable, reorder) ;
     }

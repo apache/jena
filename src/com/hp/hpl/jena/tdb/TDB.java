@@ -16,7 +16,7 @@ import com.hp.hpl.jena.sparql.util.Context;
 import com.hp.hpl.jena.sparql.util.Symbol;
 import com.hp.hpl.jena.tdb.base.loader.NTriplesReader2;
 import com.hp.hpl.jena.tdb.pgraph.assembler.PGraphAssemblerVocab;
-import com.hp.hpl.jena.tdb.solver.StageGeneratorReorderBGP;
+import com.hp.hpl.jena.tdb.solver.StageGeneratorTDB;
 import com.hp.hpl.jena.tdb.sys.Const;
 import com.hp.hpl.jena.tdb.sys.Metadata;
 
@@ -75,7 +75,7 @@ public class TDB
         
         // Globally change the stage generator to intercept BGP on TDB
         StageGenerator orig = (StageGenerator)ARQ.getContext().get(ARQ.stageGenerator) ;
-        StageGenerator stageGenerator = new StageGeneratorReorderBGP(orig) ;
+        StageGenerator stageGenerator = new StageGeneratorTDB(orig) ;
         ARQ.getContext().set(ARQ.stageGenerator, stageGenerator) ;
         
         // Override N-TRIPLES
