@@ -98,6 +98,9 @@ public class ModTDBDataset extends ModDataset
             
         }
         
+        if ( modAssembler.getLocation() == null )
+            throw new CmdException("No assembler file nor location provided") ;
+        
         // No assembler - use location (a single graph).
         Model model = TDBFactory.createModel(modAssembler.getLocation()) ;
         // Check of type.

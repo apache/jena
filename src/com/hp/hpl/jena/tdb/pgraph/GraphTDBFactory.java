@@ -18,6 +18,7 @@ import com.hp.hpl.jena.tdb.index.IndexBuilder;
 import com.hp.hpl.jena.tdb.index.RangeIndex;
 import com.hp.hpl.jena.tdb.index.TripleIndex;
 import com.hp.hpl.jena.tdb.solver.ReorderPattern;
+import com.hp.hpl.jena.tdb.solver.ReorderVarCount;
 import com.hp.hpl.jena.tdb.solver.stats.ReorderWeighted;
 import com.hp.hpl.jena.tdb.solver.stats.StatsMatcher;
 import com.hp.hpl.jena.tdb.sys.Names;
@@ -31,6 +32,9 @@ public class GraphTDBFactory
     /** Create a graph backed with storage at a particular location */
     public static GraphTDB create(Location location)
     { 
+        if ( location == null )
+            throw new TDBException("Location is null") ;
+        
         if ( location.exists(Names.indexSPO, Names.btExt) )
         {
             log.info("Existing BTree index found - using BTree indexing") ;
@@ -74,7 +78,13 @@ public class GraphTDBFactory
                 throw new TDBException("Error in stats file: "+ex.getMessage()) ;
             }
         }
-
+        if ( reorder == null )
+        {
+            System.out.println("Using VarCount reorder algorithm") ;
+            // Not as good.
+            reorder = new ReorderVarCount() ;
+        }
+        
         return new GraphTDB(triplesSPO, triplesPOS, triplesOSP, nodeTable, reorder) ;
     }
     
