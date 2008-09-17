@@ -15,7 +15,9 @@ import java.util.Map;
 
 import lib.Tuple;
 
+import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.graph.Triple;
 
 import com.hp.hpl.jena.sparql.sse.Item;
 import com.hp.hpl.jena.sparql.sse.ItemList;
@@ -28,15 +30,34 @@ import com.hp.hpl.jena.tdb.pgraph.NodeId;
 
 public class StatsWriter
 {
-    public static Item gather(GraphTDB graph)
+    /** Gather statistics, any graph */
+    public static Item gather(Graph graph)
+    {
+        Map<Node, Integer> predicates = new HashMap<Node, Integer>(1000) ;
+        long count = 0 ;
+        @SuppressWarnings("unchecked")
+        Iterator<Triple> iter = (Iterator<Triple>)graph.find(Node.ANY, Node.ANY, Node.ANY) ;
+        for ( ; iter.hasNext() ; )
+        {
+            Triple t = iter.next();
+            count++ ;
+            Node p = t.getPredicate() ;
+            Integer num = predicates.get(p) ;
+            if ( num == null )
+                predicates.put(p,1) ;
+            else
+                predicates.put(p, num+1) ;
+        }
+        
+        return format(predicates, count) ;
+    }
+    
+    /** Gather statistics - faster for TDB */
+    public static Item gatherTDB(GraphTDB graph)
     {
         long count = 0 ;
-        Map<NodeId, Integer> predicateIds = new HashMap<NodeId, Integer>(10000) ;
-        Map<Node, Integer> predicates = new HashMap<Node, Integer>(10000) ;
-        
-        Item stats = Item.createList() ;
-        ItemList statsList = stats.getList() ;
-        statsList.add("stats") ;
+        Map<NodeId, Integer> predicateIds = new HashMap<NodeId, Integer>(1000) ;
+        Map<Node, Integer> predicates = new HashMap<Node, Integer>(1000) ;
         
         TripleIndex index = graph.getIndexSPO() ;
         Iterator<Tuple<NodeId>> iter = index.all() ;
@@ -44,7 +65,7 @@ public class StatsWriter
         {
             Tuple<NodeId> tuple = iter.next(); 
             count++ ;
-            NodeId nodeId = tuple.get(1) ;      // Predciate slot
+            NodeId nodeId = tuple.get(1) ;      // Predicate slot
             Integer n = predicateIds.get(nodeId) ;
             if ( n == null )
                 predicateIds.put(nodeId,1) ;
@@ -52,6 +73,26 @@ public class StatsWriter
                 predicateIds.put(nodeId, n+1) ;
         }
         
+        for ( NodeId p : predicateIds.keySet() )
+        {
+            Node n = graph.getNodeTable().retrieveNodeByNodeId(p) ;
+            
+            // Skip these - they just clog things up!
+            if ( n.getURI().startsWith("http://www.w3.org/1999/02/22-rdf-syntax-ns#_") )
+                continue ;
+            
+            predicates.put(n, predicateIds.get(p)) ;
+        }
+        
+        return format(predicates, count) ;
+    }
+     
+    private static Item format(Map<Node, Integer> predicates, long count)
+    {
+        Item stats = Item.createList() ;
+        ItemList statsList = stats.getList() ;
+        statsList.add("stats") ;
+
 //        System.out.printf("Triples  %d\n", count) ;
 //        System.out.println("NodeIds") ;
 //        for ( NodeId p : predicateIds.keySet() )
@@ -65,17 +106,9 @@ public class StatsWriter
         addPair(meta.getList(), "count", NodeFactory.intToNode((int)count)) ;
         statsList.add(meta) ;
         
-        for ( NodeId p : predicateIds.keySet() )
+        for ( Node p : predicates.keySet() )
         {
-            Node n = graph.getNodeTable().retrieveNodeByNodeId(p) ;
-            
-            // Skip these - they just clog things up!
-            if ( n.getURI().startsWith("http://www.w3.org/1999/02/22-rdf-syntax-ns#_") )
-                continue ;
-            
-            predicates.put(n, predicateIds.get(p)) ;
-            
-            addPair(statsList, n, NodeFactory.intToNode(predicateIds.get(p))) ;
+            addPair(statsList, p, NodeFactory.intToNode(predicates.get(p))) ;
 //            System.out.printf("%s : %d\n",n, predicateIds.get(p) ) ;
         }
         return stats ;

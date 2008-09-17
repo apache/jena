@@ -8,8 +8,7 @@ package dev;
 
 public class Dev
 {
-    // --> Optimizer : Need to add something for connectivity - or rely on the stats
-    //     For the var counter, connectivity matters 
+    // --> Optimizer : For the var counter, connectivity matters 
     
     // -- Work on Filter-BGP blocks.  
     // -- Tests : VarCounter, stats matcher.

@@ -62,7 +62,7 @@ public class tdbconfig extends CmdSub
         @Override
         protected String getCommandName()
         {
-            return "help" ;
+            return "tdbconfig help" ;
         }
     }
     
@@ -77,43 +77,21 @@ public class tdbconfig extends CmdSub
         @Override
         protected String getSummary()
         {
-            return null ;
+            return "tdbconfig stats" ;
         }
 
         @Override
         protected void exec()
         {
             GraphTDB graph = getGraph() ;
-            Item item = StatsWriter.gather(graph) ;
+            Item item = StatsWriter.gatherTDB(graph) ;
             System.out.println(item) ;
-//            long count = 0 ;
-//            Map<NodeId, Integer> predicates = new HashMap<NodeId, Integer>(10000) ;
-//            GraphTDB graph = getGraph() ;
-//            TripleIndex primary = graph.getIndexSPO() ;
-//            Iterator<Tuple<NodeId>> iter = primary.all() ;
-//            for ( ; iter.hasNext() ; )
-//            {
-//                NodeId p  = iter.next().get(1) ; // 0,1,2
-//                count++ ;
-//                Integer n = predicates.get(p) ;
-//                if ( n == null )
-//                    predicates.put(p,1) ;
-//                else
-//                    predicates.put(p, n+1) ;
-//            }
-//            // Now print.
-//            System.out.printf("# Count: %d\n", count) ;
-//            for ( NodeId n : predicates.keySet() )
-//            {
-//                Node p = graph.getNodeTable().retrieveNodeByNodeId(n) ;
-//                System.out.printf("%s : %d\n", p.getURI(), predicates.get(n)) ;
-//            }
         }
 
         @Override
         protected String getCommandName()
         {
-            return "stats" ;
+            return "tdbconfig stats" ;
         }
     }
 }

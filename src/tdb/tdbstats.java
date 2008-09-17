@@ -39,7 +39,7 @@ public class tdbstats extends CmdTDB
     protected void exec()
     {
         GraphTDB graph = getGraph() ;
-        Item item = StatsWriter.gather(graph) ;
+        Item item = StatsWriter.gatherTDB(graph) ;
         System.out.println(item) ;
     }
 }
