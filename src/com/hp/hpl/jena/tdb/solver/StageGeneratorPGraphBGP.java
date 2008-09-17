@@ -60,7 +60,6 @@ public class StageGeneratorPGraphBGP implements StageGenerator
     
     public Iterator<Binding> _execute(GraphTDB graph, BasicPattern pattern, QueryIterator input, ExecutionContext execCxt)
     {
-
         if ( execCxt.getContext().isTrue(TDB.logBGP) )
             ALog.info(this, ">> BGP: \n  "+printAbbrev(pattern));
         
