@@ -8,7 +8,7 @@ package com.hp.hpl.jena.sdb.compiler;
 
 import com.hp.hpl.jena.sdb.shared.SDBInternalError;
 import com.hp.hpl.jena.sparql.algebra.Op;
-import com.hp.hpl.jena.sparql.algebra.OpSubstitute;
+import com.hp.hpl.jena.sparql.core.Substitute;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
@@ -36,7 +36,7 @@ public class QueryIterSQL extends QueryIterRepeatApply
         if ( binding != null && ! isRoot(binding) )
         {
             QueryCompiler qc = opSQL.getRequest().getStore().getQueryCompilerFactory().createQueryCompiler(opSQL.getRequest()) ;
-            Op op2 = OpSubstitute.substitute(opSQL.getOriginal(), binding) ;
+            Op op2 = Substitute.substitute(opSQL.getOriginal(), binding) ;
             Op op = qc.compile(op2) ;
             if ( op instanceof OpSQL )
                 execSQL = (OpSQL)op ;

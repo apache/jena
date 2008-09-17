@@ -12,7 +12,7 @@ import com.hp.hpl.jena.sdb.Store;
 import com.hp.hpl.jena.sdb.core.SDBRequest;
 import com.hp.hpl.jena.sdb.util.StoreUtils;
 import com.hp.hpl.jena.sparql.algebra.Op;
-import com.hp.hpl.jena.sparql.algebra.OpSubstitute;
+import com.hp.hpl.jena.sparql.core.Substitute;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.util.Context;
 
@@ -38,7 +38,7 @@ public class Compile
     public static Op compile(Store store, Op op, Binding binding, Context context, SDBRequest request)
     {
         if ( binding != null && ! binding.isEmpty() )
-            op = OpSubstitute.substitute(op, binding) ;
+            op = Substitute.substitute(op, binding) ;
         
         if ( StoreUtils.isHSQL(store) )
         {
