@@ -60,6 +60,13 @@ public class ReorderInput extends RepeatApplyIterator<Binding>
         return iterBinding ;
     }
 
+    static Iterator<BindingNodeId> solve(GraphTDB graph,
+                                         Iterator<BindingNodeId> chain,
+                                         Triple triple, 
+                                         ExecutionContext execCxt)
+    {
+        return new MatchTriple(graph, chain, triple, execCxt) ;
+    }
 }
 
 /*

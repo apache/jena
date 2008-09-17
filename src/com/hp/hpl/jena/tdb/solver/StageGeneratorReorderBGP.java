@@ -6,29 +6,21 @@
 
 package com.hp.hpl.jena.tdb.solver;
 
-import static com.hp.hpl.jena.tdb.lib.Lib.printAbbrev;
-import iterator.Iter;
-
 import java.util.Iterator;
-import java.util.List;
 
 import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.sparql.core.BasicPattern;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.main.StageGenerator;
-import com.hp.hpl.jena.sparql.util.ALog;
-import com.hp.hpl.jena.tdb.TDB;
 import com.hp.hpl.jena.tdb.pgraph.GraphTDB;
 
-// OLD - does not reorder BGP - no optimizer.
-public class StageGeneratorPGraphBGP implements StageGenerator
+public class StageGeneratorReorderBGP implements StageGenerator
 {
     StageGenerator above = null ;
     
-    public StageGeneratorPGraphBGP(StageGenerator original)
+    public StageGeneratorReorderBGP(StageGenerator original)
     {
         above = original ;
     }
@@ -42,37 +34,12 @@ public class StageGeneratorPGraphBGP implements StageGenerator
             return above.execute(pattern, input, execCxt) ;
         GraphTDB graph = (GraphTDB)g ;
         
-        if ( execCxt.getContext().isTrue(TDB.logBGP) )
-            ALog.info(this, ">> BGP: \n  "+printAbbrev(pattern));
-        
+        // TODO In progress.
         @SuppressWarnings("unchecked")
-        List<Triple> triples = (List<Triple>)pattern.getList() ;
-
-        if ( execCxt.getContext().isTrue(TDB.logBGP) )
-            ALog.info(this, "<< BGP: \n  "+SolverLib.strPattern(pattern));
-        
-        @SuppressWarnings("unchecked")
-        Iterator<Binding> iter = (Iterator<Binding>)input ;
-        // Binding ==> BindingNodeId.
-        Iterator<BindingNodeId> chain = Iter.map(iter, SolverLib.convFromBinding(graph)) ;
-        
-        for ( Triple triple : triples )
-        {
-            chain = solve(graph, chain, triple, execCxt) ;
-            //chain = Iter.debug(chain) ;
-        }
-        
-        Iterator<Binding> iterBinding = Iter.map(chain, SolverLib.convToBinding(graph)) ;
-        // Input passed in to ensure it gets closed when QueryIterTDB gets closed
+        Iterator<Binding> _input =  (Iterator<Binding>)input ;
+        Iterator<Binding> iterBinding = new ReorderInput(graph, _input, pattern, execCxt) ;
+        // ReorderInput<T> will not close input.
         return new QueryIterTDB(iterBinding, input) ;
-    }
-    
-    static Iterator<BindingNodeId> solve(GraphTDB graph,
-                                         Iterator<BindingNodeId> chain,
-                                         Triple triple, 
-                                         ExecutionContext execCxt)
-    {
-        return new MatchTriple(graph, chain, triple, execCxt) ;
     }
 }
 

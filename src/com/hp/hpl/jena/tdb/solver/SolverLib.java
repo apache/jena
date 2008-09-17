@@ -17,7 +17,6 @@ import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.sparql.core.BasicPattern;
 import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.binding.BindingMap;
 import com.hp.hpl.jena.tdb.pgraph.GraphTDB;
@@ -27,14 +26,6 @@ import com.hp.hpl.jena.tdb.pgraph.NodeId;
 /** Utilities used within the BGP solver */
 public class SolverLib
 {
-    static Iterator<BindingNodeId> solve(GraphTDB graph,
-                                         Iterator<BindingNodeId> chain,
-                                         Triple triple, 
-                                         ExecutionContext execCxt)
-    {
-        return new MatchOneTriple(graph, chain, triple, execCxt) ;
-    }
-
     // Transform : BindingNodeId ==> Binding
     static Transform<BindingNodeId, Binding> convToBinding(final GraphTDB graph)
     {
