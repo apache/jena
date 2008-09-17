@@ -11,7 +11,8 @@ public class Dev
     // --> Optimizer : For the var counter, connectivity matters 
     //     VarCount tuning: Special case rdf:type
     //     (tidying) : ARQ : treat memory graphs as a storage (StageGenBasicPattern in ARQ).
-    //      StageGenBasicPatternMem
+    // ARQ: StageGenBasicPatternMem
+    //      (eventually) Move stats code to ARQ. For now, keep neatly in TDB 
     
     // -- Work on Filter-BGP blocks.  
     // -- Tests : VarCounter, stats matcher.
