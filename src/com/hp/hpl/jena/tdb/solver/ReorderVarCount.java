@@ -18,7 +18,8 @@ import com.hp.hpl.jena.tdb.solver.stats.ReorderPatternBase;
 
 public class ReorderVarCount extends ReorderPatternBase
 {
-    //TODO Test!
+    // TODO Test!
+    // TODO Connectivity
     @Override
     protected int chooseNext(List<PatternTriple> pTriples)
     {
