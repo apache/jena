@@ -36,8 +36,8 @@ public class StageGeneratorReorderBGP implements StageGenerator
         
         // TODO In progress.
         @SuppressWarnings("unchecked")
-        Iterator<Binding> _input =  (Iterator<Binding>)input ;
-        Iterator<Binding> iterBinding = new ReorderInput(graph, _input, pattern, execCxt) ;
+        Iterator<Binding> _input = (Iterator<Binding>)input ;
+        Iterator<Binding> iterBinding = new StageMatchPattern(graph, _input, pattern, execCxt) ;
         // ReorderInput<T> will not close input.
         return new QueryIterTDB(iterBinding, input) ;
     }

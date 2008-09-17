@@ -72,7 +72,7 @@ public class StageGeneratorPGraphBGP implements StageGenerator
                                          Triple triple, 
                                          ExecutionContext execCxt)
     {
-        return new MatchTriple(graph, chain, triple, execCxt) ;
+        return new StageMatchTriple(graph, chain, triple, execCxt) ;
     }
 }
 

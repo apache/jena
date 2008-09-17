@@ -21,14 +21,14 @@ import iterator.Iter;
 import iterator.RepeatApplyIterator;
 import iterator.SingletonIterator;
 
-public class ReorderInput extends RepeatApplyIterator<Binding>
+public class StageMatchPattern extends RepeatApplyIterator<Binding>
 {
     private BasicPattern pattern ;
     private ReorderPattern reorderPattern ;
     private GraphTDB graph ;
     private ExecutionContext execCxt ;
     
-    protected ReorderInput(GraphTDB graph, Iterator<Binding> input, BasicPattern pattern, ExecutionContext execCxt)
+    protected StageMatchPattern(GraphTDB graph, Iterator<Binding> input, BasicPattern pattern, ExecutionContext execCxt)
     {
         super(input) ;
         this.pattern = pattern ;
@@ -65,7 +65,7 @@ public class ReorderInput extends RepeatApplyIterator<Binding>
                                          Triple triple, 
                                          ExecutionContext execCxt)
     {
-        return new MatchTriple(graph, chain, triple, execCxt) ;
+        return new StageMatchTriple(graph, chain, triple, execCxt) ;
     }
 }
 

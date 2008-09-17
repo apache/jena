@@ -22,13 +22,13 @@ import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.tdb.pgraph.GraphTDB;
 import com.hp.hpl.jena.tdb.pgraph.NodeId;
 
-class MatchTriple extends RepeatApplyIterator<BindingNodeId>
+class StageMatchTriple extends RepeatApplyIterator<BindingNodeId>
 {
     private GraphTDB graph ;
     private Triple triple ;
     private ExecutionContext execCxt ;
 
-    MatchTriple(GraphTDB graph, Iterator<BindingNodeId> input, Triple triple, ExecutionContext execCxt)
+    StageMatchTriple(GraphTDB graph, Iterator<BindingNodeId> input, Triple triple, ExecutionContext execCxt)
     {
         super(input) ;
         this.graph = graph ; 

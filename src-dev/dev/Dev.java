@@ -13,6 +13,7 @@ public class Dev
     //     (tidying) : ARQ : treat memory graphs as a storage (StageGenBasicPattern in ARQ).
     // ARQ: StageGenBasicPatternMem
     //      (eventually) Move stats code to ARQ. For now, keep neatly in TDB 
+    // TDB.optimizerOn() / TDB.optimizerOff() -- leaving it in the StageGenerator chain.
     
     // -- Work on Filter-BGP blocks.  
     // -- Tests : VarCounter, stats matcher.
