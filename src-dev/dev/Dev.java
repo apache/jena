@@ -11,6 +11,8 @@ public class Dev
     // (tidying) : ARQ : treat memory graphs as a storage (StageGenBasicPattern in ARQ).
     // TDB.optimizerOn() / TDB.optimizerOff() -- leaving it in the StageGenerator chain.
     // reorder -> return a list on indexes (a reorder function), not the pattern itself.
+    // The fast lokup in stats isn't perfect - if TERM is stronger than <p>, it misses it.
+    // By perfect: from <p> try TERM and ANY; from ?p try VAR and ANY  
     
     // Stats: What about a rules
     // VarCounting : need to consider connectivity for boundedness propagation 
