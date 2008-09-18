@@ -21,14 +21,14 @@ import jena.util.DBcmd;
 
   * 
   * @author Andy Seaborne
-  * @version $Id: dbdump.java,v 1.11 2008-01-02 12:08:16 andy_seaborne Exp $
+  * @version $Id: dbdump.java,v 1.12 2008-09-18 08:40:33 andy_seaborne Exp $
   */ 
  
 public class dbdump extends DBcmd
 {
     public static final String[] usage = new String[]
     { 
-        "dbdump [--spec spec] | [db_description] [--model name] [--format syntax]" ,
+        "dbdump [db_description] [--model name] [--format syntax]" ,
         "  where db_description is" ,
         "    --db JDBC URL --dbType type" ,
         "    --dbUser user --dbPassword password" 

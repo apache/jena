@@ -24,14 +24,14 @@ import com.hp.hpl.jena.util.iterator.*;
  *  </p>
  * 
  * @author Andy Seaborne
- * @version $Id: dblist.java,v 1.10 2008-01-02 12:08:16 andy_seaborne Exp $
+ * @version $Id: dblist.java,v 1.11 2008-09-18 08:40:33 andy_seaborne Exp $
  */ 
  
 public class dblist extends DBcmd
 {
     public static final String[] usage = new String[]
                                                     { 
-            "dblist [--spec spec] | [db_description] [--model name]" ,
+            "dblist [db_description] [--model name]" ,
             "  where db_description is" ,
             "    --db JDBC URL --dbType type" ,
             "    --dbUser user --dbPassword password" 

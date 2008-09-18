@@ -16,11 +16,12 @@ import java.util.* ;
 /** Framework for the database commands.
  * 
  * @author Andy Seaborne
- * @version $Id: DBcmd.java,v 1.9 2008-01-02 12:11:27 andy_seaborne Exp $
+ * @version $Id: DBcmd.java,v 1.10 2008-09-18 08:40:57 andy_seaborne Exp $
  */ 
  
 public abstract class DBcmd
 {
+    protected final ArgDecl argDeclSpec        = new ArgDecl(true, "spec");
     // Standardised names.
     protected final ArgDecl argDeclDbURL       = new ArgDecl(true, "db");
     protected final ArgDecl argDeclDbType      = new ArgDecl(true, "dbType");
@@ -112,6 +113,13 @@ public abstract class DBcmd
         debug = cmdLine.contains(argDeclDebug) ;
         if ( debug )
             verbose = true ;
+        
+        if ( cmdLine.contains(argDeclSpec) )
+        {
+            System.err.println("--spec not implemented") ;
+            
+        }
+        
         
         if (cmdLine.contains(argDeclDbURL))
             argDbURL = cmdLine.getArg(argDeclDbURL).getValue();

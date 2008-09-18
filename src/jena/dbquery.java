@@ -30,7 +30,7 @@ public class dbquery extends DBcmd
 
     public static final String[] usage =
         new String[] {
-        "dbquery [--spec spec] | [db_description] [--model name] --query QueryFile" ,
+        "dbquery [db_description] [--model name] --query QueryFile" ,
         "  where db_description is" ,
         "    --db JDBC URL --dbType type" ,
         "    --dbUser user --dbPassword password" 

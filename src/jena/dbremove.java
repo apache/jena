@@ -21,14 +21,14 @@ import jena.util.DBcmd;
   *  </p>
   * 
   * @author Andy Seaborne
-  * @version $Id: dbremove.java,v 1.9 2008-01-02 12:08:16 andy_seaborne Exp $
+  * @version $Id: dbremove.java,v 1.10 2008-09-18 08:40:33 andy_seaborne Exp $
   */ 
  
 public class dbremove extends DBcmd
 {
     public static final String[] usage = new String[]
     { 
-        "dbremove [--spec spec] | [db_description] [--model name]" ,
+        "dbremove [db_description] [--model name]" ,
         "  where db_description is" ,
         "    --db JDBC URL --dbType type" ,
         "    --dbUser user --dbPassword password" 
