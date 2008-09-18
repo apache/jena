@@ -8,14 +8,15 @@ package dev;
 
 public class Dev
 {
-    // --> Optimizer : For the var counter, connectivity matters 
-    //     VarCount tuning: Special case rdf:type
-    //     (tidying) : ARQ : treat memory graphs as a storage (StageGenBasicPattern in ARQ).
-    
-    // Split solver into solver-general and solver-TDB
-    // ARQ: StageGenBasicPatternMem
-    //      (eventually) Move stats code to ARQ. For now, keep neatly in TDB 
+    // (tidying) : ARQ : treat memory graphs as a storage (StageGenBasicPattern in ARQ).
     // TDB.optimizerOn() / TDB.optimizerOff() -- leaving it in the StageGenerator chain.
+    // reorder -> return a list on indexes (a reorder function), not the pattern itself.
+    
+    // Stats: What about a rules
+    //   (VAR VAR VAR)
+    //   (S VAR O) or (?S TERM ?O)
+    //   No match
+    // Testing of rewrite
     
     // -- Work on Filter-BGP blocks.  
     // -- Tests : VarCounter, stats matcher.
@@ -29,20 +30,13 @@ public class Dev
     // ---- New cache API alloc/return/invalidate (shrink/grow?)
     //   Stats.
     
-    // ---- New organsiation for files:
-    //   TripleIndex -> Index/RangeIndex (records) -> BlockFile (id-Block)
-    //   NodeTable   -> ObjectFile (NodId->Node) -> VarFile (id-bytes)
-    //   IndexBuilder to migrate to be policy for data files as well.
-    //   ?? Combine with FileFactory, BlockMgrFactory
     // ---- Reopenable BlockMgrs (and the object file?) 
-    //   Memory versions are a "file" (fit into framework for testing).
-    //     Maybe not worth the effort to rework but needs to be reopenable.
-    //   Root is an NIO FileChannel (Or Chanel with a mem impl?)
     
     // ---- tdbloader: 
     //   close indexes not in use in a given phase
     //   Especially efficient iterator() for B+Trees (not mmap).
-    //   (script) to work on gzip files 
+    //   (script) to work on gzip files
+    //   Write stats
 
     // ---- Use of java properties for key values.
     // Or config file.

@@ -17,6 +17,7 @@ import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.tdb.pgraph.GraphTDB;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderPattern;
+import com.hp.hpl.jena.tdb.solver.reorder.ReorderProc;
 
 import iterator.Iter;
 import iterator.RepeatApplyIterator;
@@ -26,6 +27,7 @@ public class StageMatchPattern extends RepeatApplyIterator<Binding>
 {
     private BasicPattern pattern ;
     private ReorderPattern reorderPattern ;
+    private ReorderProc    reorderProc ;
     private GraphTDB graph ;
     private ExecutionContext execCxt ;
     
@@ -34,6 +36,7 @@ public class StageMatchPattern extends RepeatApplyIterator<Binding>
         super(input) ;
         this.pattern = pattern ;
         this.reorderPattern = reorder ;
+        this.reorderProc = null ;
         this.graph = graph ;
         this.execCxt = execCxt ;
     }
@@ -42,15 +45,21 @@ public class StageMatchPattern extends RepeatApplyIterator<Binding>
     protected Iterator<Binding> makeNextStage(Binding b)
     {
         // ---- Reorder
-        // TODO Make the optimization decision cached
         BasicPattern pattern2 = Substitute.substitute(pattern, b) ;
+
         if ( reorderPattern != null && pattern.size() > 1 )
-            pattern2 = reorderPattern.reorder(pattern2) ;
+        {
+            if ( reorderProc == null )
+                // Cache the reorder processor - ie. the first binding is used
+                // as a template for later input bindings.   
+                reorderProc = reorderPattern.reorderIndexes(pattern2) ;
+            pattern2 = reorderProc.reorder(pattern2) ;
+        }
         
+        // ---- Execute
         @SuppressWarnings("unchecked")
         List<Triple> triples = (List<Triple>)pattern2.getList() ;
         
-        // ---- Execute
         Iterator<BindingNodeId> chain = 
             new SingletonIterator<BindingNodeId>(convFromBinding(graph).convert(b)) ;
         

@@ -25,40 +25,44 @@ public abstract class ReorderPatternBase implements ReorderPattern
 {
     protected static final boolean DEBUG = false ;
     
-    public final BasicPattern reorder(BasicPattern pattern)
+    @Override
+    public BasicPattern reorder(BasicPattern pattern)
+    {
+        return reorderIndexes(pattern).reorder(pattern) ;
+    }
+    
+    @Override
+    public final ReorderProc reorderIndexes(BasicPattern pattern)
     {
         if (pattern.size() < 2 )
-            return pattern ;
+            return ReorderLib.identityProc() ;
+        
         @SuppressWarnings("unchecked")
         List<Triple> triples = (List<Triple>)pattern.getList() ;
-        BasicPattern bgp = new BasicPattern() ;
 
         // Convert to a mutable form (that allows things like "TERM")
-        List<PatternTriple> components = toList(map(triples, new Transform<Triple, PatternTriple>(){
-            @Override
-            public PatternTriple convert(Triple triple)
-            {
-                return new PatternTriple(triple) ;
-            }})) ;
-
-        reorder(triples, components, bgp) ;
-        return bgp ;
+        List<PatternTriple> components = toList(map(triples, convert)) ;
+        ReorderProc proc = reorder(triples, components) ;
+        return proc ;
     }
 
-    protected void reorder(List<Triple> triples, List<PatternTriple> components, BasicPattern bgp)
+    private ReorderProc reorder(List<Triple> triples, List<PatternTriple> components)
     {
         int N = components.size() ;
-        // Common loop - move to ReorderPatternBase
+        int indexes[] = new int[N] ;
         //Set<Var> varsInScope = new HashSet<Var>() ;
         for ( int i = 0 ; i < N ; i++ )
         {
             int j = chooseNext(components) ;
-            Triple triple = triples.get(j) ; 
-            bgp.add(triple) ;
+            Triple triple = triples.get(j) ;
+            indexes[i] = j ;
             //VarUtils.addVarsFromTriple(varsInScope, triple) ;
             update(triple, components) ;
             components.set(j, null) ;
         }
+        
+        ReorderProc proc = new ReorderProcIndexes(indexes) ; 
+        return proc ;
     }
     
     /** Return index of next pattern triple */
@@ -137,6 +141,13 @@ public abstract class ReorderPatternBase implements ReorderPattern
                 elt.object = PatternElements.TERM ;
         }
     }
+    
+    private static Transform<Triple, PatternTriple> convert = new Transform<Triple, PatternTriple>(){
+        @Override
+        public PatternTriple convert(Triple triple)
+        {
+            return new PatternTriple(triple) ;
+        }} ;
 }
 
 /*

@@ -27,16 +27,16 @@ public abstract class NodeTableBase implements NodeTable
     // this to be overriden for a direct use of BDB.
 
     public ObjectFile objects ;
-    private Index nodeHashToId ;        // hash -> int
+    protected Index nodeHashToId ;        // hash -> int
     
     // Currently, these caches are updated together.
-    private Cache<Node, NodeId> node2id_Cache = null ;
-    private Cache<NodeId, Node> id2node_Cache = null ;
+    protected Cache<Node, NodeId> node2id_Cache = null ;
+    protected Cache<NodeId, Node> id2node_Cache = null ;
     
     // A small cache of "known unknowns" to speed up searching for impossible things.   
     // Cache update needed on NodeTable changes because a node may become "known"
     
-    private CacheSetLRU<Node> notPresent ;
+    protected CacheSetLRU<Node> notPresent ;
 
     // Delayed construction - must call init.
     protected NodeTableBase() {}
@@ -174,14 +174,14 @@ public abstract class NodeTableBase implements NodeTable
     // ---- Only places that the caches are touched
     
     /** Check caches to see if we can map a NodeId to a Node. Returns null on no cache entry. */ 
-    private Node cacheLookup(NodeId id)
+    protected Node cacheLookup(NodeId id)
     {
         if ( id2node_Cache == null ) return null ;
         return id2node_Cache.getObject(id) ;
     }
     
     /** Check caches to see if we can map a Node to a NodeId. Returns null on no cache entry. */ 
-    private NodeId cacheLookup(Node node)
+    protected NodeId cacheLookup(Node node)
     {
         // Remember things known (currently) not to exist 
         if ( notPresent.contains(node) ) return null ;
@@ -190,7 +190,7 @@ public abstract class NodeTableBase implements NodeTable
     }
 
     /** Update the Node->NodeId caches */
-    private void cacheUpdate(Node node, NodeId id)
+    protected void cacheUpdate(Node node, NodeId id)
     {
         // synchronized is further out.
         // The "notPresent" cache is used to note whether a node

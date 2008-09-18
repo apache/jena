@@ -22,6 +22,7 @@ import java.util.Map;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.shared.PrefixMapping;
+import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext;
 import com.hp.hpl.jena.sparql.sse.Item;
 import com.hp.hpl.jena.sparql.sse.ItemException;
@@ -31,9 +32,11 @@ import com.hp.hpl.jena.sparql.util.IndentedWriter;
 import com.hp.hpl.jena.sparql.util.PrintUtils;
 import com.hp.hpl.jena.sparql.util.Printable;
 import com.hp.hpl.jena.tdb.TDBException;
+import com.hp.hpl.jena.vocabulary.RDF;
 
 /** Stats format:
  * <pre>(stats
+ *    (meta ...)
  *    ((S P O) weight)
  *    (<predicate uri> weight)
  *  )</pre>
@@ -46,8 +49,9 @@ import com.hp.hpl.jena.tdb.TDBException;
 
 public final class StatsMatcher
 {
-    public static final String TAG     = "stats" ; 
-
+    public static final String STATS     = "stats" ; 
+    public static final String META      = "meta" ; 
+    public static final String COUNT     = "count" ;
     
     static class Pattern implements Printable
     {
@@ -119,7 +123,7 @@ public final class StatsMatcher
     {
         try {
             Item stats = SSE.readFile(filename) ;
-            if ( !stats.isTagged(TAG) )
+            if ( !stats.isTagged(STATS) )
                 throw new TDBException("Not a stats file: "+filename) ;
             init(stats) ;
         } catch (ItemException ex)
@@ -130,12 +134,37 @@ public final class StatsMatcher
     public StatsMatcher(Item stats)
     { init(stats) ; }
     
+    
+    
+    private static final Node rdfType = RDF.type.asNode() ;
     private void init(Item stats)
     {
-        if ( !stats.isTagged(TAG) )
-            throw new TDBException("Not a tagged '"+TAG+"'") ;
+        if ( !stats.isTagged(STATS) )
+            throw new TDBException("Not a tagged '"+STATS+"'") ;
 
         ItemList list = stats.getList().cdr();      // Skip tag
+        
+        int count = -1 ;
+        
+        // Estimated fan out from SP? and ?PO
+        // Can override in stats file.
+        double weightSP = 2 ;
+        double weightPO = 10 ;                   
+
+        if ( list.car().isTagged(META) )
+        {        
+            // Process the meta tag.
+            Item elt1 = list.car(); 
+            list = list.cdr();      // Move list on
+
+            // Get count.
+            Item x = Item.find(elt1.getList(), "count") ;
+            if ( x != null )
+                count = asInt(x.getList().get(1)) ;
+        }
+        
+        if ( count != - 1 && count < 100 )
+            weightPO = 4 ;
 
         while (!list.isEmpty()) 
         {
@@ -144,27 +173,31 @@ public final class StatsMatcher
             list = list.cdr();
             
             Item pat = elt.getList().get(0) ;
-
-            if ( elt.isTagged("meta") )
-            {
-                int count = -1 ;
-                // Get count.
-                Item x = Item.find(elt.getList(), "count") ;
-                if ( x != null )
-                    count = asInt(x.getList().get(1)) ;
-                continue ;
-            }
             
             if ( pat.isNode() )
             {
-                // Generate entries: 
-                addPattern(new Pattern(2,  TERM, pat, ANY)) ;     // S, P, ? : approx weight
-                addPattern(new Pattern(10, ANY, pat, TERM)) ;     // ?, P, O : approx weight
-                addPattern(new Pattern(((Number)(elt.getList().get(1).getNode().getLiteralValue())).doubleValue(),
-                                         ANY, pat, ANY)) ;          // ?, P, ?
+                // Knowing ?PO is quite important - it ranges from IFP (1) to
+                // rdf:type rdf:Resource (potentially everything)
+                
+                // At least weight to avoid rdf:type if there is another ?PO.
+                // Numbers for large models.
+                
+                double numProp = ((Number)(elt.getList().get(1).getNode().getLiteralValue())).doubleValue() ;
+                
+                if ( rdfType.equals(pat.getNode()) )
+                {
+                    // Special case:  ? rdf:type O
+                    weightPO = Math.min(numProp, 5*weightPO) ;
+                }
+                    
+                // If does not exist. 
+                addPattern(new Pattern(weightSP, TERM, pat, ANY)) ;     // S, P, ? : approx weight
+                addPattern(new Pattern(weightPO,  ANY, pat, TERM)) ;    // ?, P, O : approx weight
+                addPattern(new Pattern(numProp,   ANY, pat, ANY)) ;     // ?, P, ?
             }
             else
             {
+                // It's of the form ((S P O) weight)
                 Item w =  elt.getList().get(1) ;
                 Pattern pattern = new Pattern(((Number)(w.getNode().getLiteralValue())).doubleValue(),
                                               intern(pat.getList().get(0)),
@@ -179,6 +212,9 @@ public final class StatsMatcher
         
     private void addPattern(Pattern pattern)
     {
+        // Check for named variables whch shoudl not appear in a Pattern
+        check(pattern) ;
+        
         patterns.add(pattern) ;
         
         List<Pattern> entry = _patterns.get(pattern.predItem) ;
@@ -192,6 +228,19 @@ public final class StatsMatcher
     
     // -- More for Item
     
+    private static void check(Pattern pattern)
+    {
+        check(pattern.subjItem) ;
+        check(pattern.predItem) ;
+        check(pattern.objItem) ;
+    }
+
+    private static void check(Item item)
+    {
+        if ( Var.isVar(item.getNode()) )
+            throw new TDBException("Explicit variable used in a pattern (use VAR): "+item.getNode()) ;
+    }
+
     public static int asInt(Item item)
     {
         if ( item.isNode() )

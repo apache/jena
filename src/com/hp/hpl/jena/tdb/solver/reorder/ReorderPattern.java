@@ -10,7 +10,10 @@ import com.hp.hpl.jena.sparql.core.BasicPattern;
 
 public interface ReorderPattern
 {
-    // Return a basic graph pattern to execute instead.
+    /** Return the reordering function based on a basic graph pattern. */
+    public ReorderProc reorderIndexes(BasicPattern pattern) ;
+    
+    /** Return the reordered basic graph pattern. */
     public BasicPattern reorder(BasicPattern pattern) ;
 }
 

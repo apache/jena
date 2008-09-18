@@ -12,16 +12,34 @@ import com.hp.hpl.jena.tdb.solver.stats.StatsMatcher;
 
 public class ReorderLib
 {
-    private static ReorderPattern _identity = new ReorderPattern() {
+    
+    private static ReorderProc _identityProc = new ReorderProc() {
         @Override
         public BasicPattern reorder(BasicPattern pattern)
         {
             return pattern ;
         } } ;
 
+    private static ReorderPattern _identity = new ReorderPattern() {
+        @Override
+        public BasicPattern reorder(BasicPattern pattern)
+        {
+            return pattern ;
+        }
+
+        @Override
+        public ReorderProc reorderIndexes(BasicPattern pattern)
+        {
+            return _identityProc ;
+        } } ;
+
+    public static ReorderProc identityProc()
+    { return _identityProc ; }
+
     public static ReorderPattern identity()
     { return _identity ; }
 
+    
     public static ReorderPattern weighted(String filename)
     {
         StatsMatcher stats = new StatsMatcher(filename) ;

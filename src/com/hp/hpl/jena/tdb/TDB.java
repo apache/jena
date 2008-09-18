@@ -11,11 +11,13 @@ import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.query.ARQ;
 import com.hp.hpl.jena.rdf.model.impl.RDFReaderFImpl;
+import com.hp.hpl.jena.sparql.engine.main.StageGenBasicPattern;
 import com.hp.hpl.jena.sparql.engine.main.StageGenerator;
 import com.hp.hpl.jena.sparql.util.Context;
 import com.hp.hpl.jena.sparql.util.Symbol;
 import com.hp.hpl.jena.tdb.base.loader.NTriplesReader2;
 import com.hp.hpl.jena.tdb.pgraph.assembler.PGraphAssemblerVocab;
+import com.hp.hpl.jena.tdb.solver.StageGeneratorGeneric;
 import com.hp.hpl.jena.tdb.solver.StageGeneratorTDB;
 import com.hp.hpl.jena.tdb.sys.Const;
 import com.hp.hpl.jena.tdb.sys.Metadata;
@@ -73,10 +75,7 @@ public class TDB
         
         PGraphAssemblerVocab.init();
         
-        // Globally change the stage generator to intercept BGP on TDB
-        StageGenerator orig = (StageGenerator)ARQ.getContext().get(ARQ.stageGenerator) ;
-        StageGenerator stageGenerator = new StageGeneratorTDB(orig) ;
-        ARQ.getContext().set(ARQ.stageGenerator, stageGenerator) ;
+        wireStageGenerator() ;
         
         // Override N-TRIPLES
         String bulkLoaderClass = NTriplesReader2.class.getName() ;
@@ -85,6 +84,19 @@ public class TDB
         
         if ( log.isDebugEnabled() )
             log.debug("\n"+ARQ.getContext()) ;
+    }
+    
+    private static void wireStageGenerator()
+    {
+        // Globally change the stage generator to intercept BGP on TDB
+        StageGenerator orig = (StageGenerator)ARQ.getContext().get(ARQ.stageGenerator) ;
+        
+        if ( orig instanceof StageGenBasicPattern )
+            // ARQ base.  Cause chaos by using the new version.
+            orig = new StageGeneratorGeneric() ;
+
+        StageGenerator stageGenerator = new StageGeneratorTDB(orig) ;
+        ARQ.getContext().set(ARQ.stageGenerator, stageGenerator) ;
     }
     
     // Add tests in TestSys to check set up correctly.

@@ -42,8 +42,7 @@ public class BindingTDB extends BindingBase
     @Override
     protected int size1() { return idBinding.size(); }
     
-    /** Iterate over all the names of variables.
-     */
+    /** Iterate over all the names of variables. */
     @Override
     public Iterator<Var> vars1() 
     {
@@ -65,9 +64,7 @@ public class BindingTDB extends BindingBase
     public Node get1(Var var)
     {
         try {
-            Node n = null ;
-            if ( cache != null )
-            	n = cache.get(var) ;
+            Node n = cacheGet(var) ;
             if ( n != null )
                 return n ;
             
@@ -76,8 +73,7 @@ public class BindingTDB extends BindingBase
                 return null ; 
             n = nodeTable.retrieveNodeByNodeId(id) ;
             // Update cache.
-            if ( cache != null )
-                cache.put(var, n) ;
+            cachePut(var, n) ;
             return n ;
         } catch (Exception ex)
         {
@@ -89,6 +85,17 @@ public class BindingTDB extends BindingBase
         }
     }
 
+    private void cachePut(Var var, Node n)
+    {
+        if ( cache != null ) cache.put(var, n) ; 
+    }
+
+    private Node cacheGet(Var var)
+    { 
+        if ( cache == null ) return null ;
+        return cache.get(var) ;
+    }
+    
     @Override
     protected void checkAdd1(Var var, Node node)
     { throw new UnsupportedOperationException() ; }

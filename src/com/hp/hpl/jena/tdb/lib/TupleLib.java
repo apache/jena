@@ -49,7 +49,6 @@ public class TupleLib
     public static  Iterator<Triple> convertToTriples(final NodeTable nodeTable, Iterator<Tuple<NodeId>> iter)
     {
         Transform<Tuple<NodeId>, Triple> action =  new Transform<Tuple<NodeId>, Triple>(){
-
             @Override
             public Triple convert(Tuple<NodeId> item)
             {

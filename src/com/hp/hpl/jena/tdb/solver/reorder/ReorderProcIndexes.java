@@ -6,36 +6,41 @@
 
 package com.hp.hpl.jena.tdb.solver.reorder;
 
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.vocabulary.RDF;
+import com.hp.hpl.jena.graph.Triple;
+import com.hp.hpl.jena.sparql.core.BasicPattern;
+import com.hp.hpl.jena.sparql.util.ALog;
+import com.hp.hpl.jena.tdb.TDBException;
 
-import com.hp.hpl.jena.sparql.core.Var;
-
-public class ReorderVarCount extends ReorderPatternBase
+public class ReorderProcIndexes implements ReorderProc
 {
-    // TODO Test!
-    // TODO Connectivity
-    private static Node rdfType = RDF.type.asNode() ;
-    
-    @Override
-    protected double weight(PatternTriple pt)
+    private int[] indexes ;
+
+    public ReorderProcIndexes(int[] indexes)
     {
-        int count = 0 ;
-        // Var.isVar is null-safe
-        if ( Var.isVar(pt.subject.getNode()) )
-            count++ ;
-        if ( Var.isVar(pt.predicate.getNode()) )
-            count++ ;
-        if ( Var.isVar(pt.object.getNode()) )
-            count++ ;
-        else
+        this.indexes = indexes ;   
+    }
+    
+    /** Return a new basic pattern with the same triples as the input,
+     *  but ordered as per the index list of this reorder processor. 
+     */ 
+    @Override
+    public BasicPattern reorder(BasicPattern bgp)
+    {
+        if ( indexes.length != bgp.size() )
         {
-            // ?x rdf:type <TYPE>
-            if ( rdfType.equals(pt.predicate.getNode()) )
-                // Discourage rdf:type.
-                count += 0.5 ;
-        }   
-        return count ;
+            String str = String.format("Expected size = %d : actual basic pattern size = %d", indexes.length, bgp.size()) ;
+            ALog.fatal(this, str) ;
+            throw new TDBException(str) ; 
+        }        
+        
+        BasicPattern bgp2 = new BasicPattern() ; 
+        for ( int j = 0 ; j < indexes.length ; j++ )
+        {
+            int idx = indexes[j] ;
+            Triple t = bgp.get(idx) ;
+            bgp2.add(t) ;
+        }
+        return bgp2 ;
     }
 }
 

@@ -33,19 +33,20 @@ public class StageGeneratorTDB implements StageGenerator
     {
         // --- In case this isn't for TDB
         Graph g = execCxt.getActiveGraph() ;
+        
         if ( ! ( g instanceof GraphTDB ) )
+            // Not use - bounce up the StageGenerator
             return above.execute(pattern, input, execCxt) ;
+        
         GraphTDB graph = (GraphTDB)g ;
         
-        //ReorderPattern reorder = ReorderLib.identity() ;
         ReorderPattern reorder = graph.getReorderPattern() ;
 
         @SuppressWarnings("unchecked")
         Iterator<Binding> _input = (Iterator<Binding>)input ;
-        
         Iterator<Binding> iterBinding = new StageMatchPattern(graph, _input, pattern, reorder, execCxt) ;
-
-        // StageMatchPattern<T> (well, RepeatApplyIterator<T>) will not close input -- not iterator.Closable
+        // StageMatchPattern<T> (well, RepeatApplyIterator<T>) will not close input 
+        // QueryIterators are from ARQ and not "iterator.Closable"
         return new QueryIterTDB(iterBinding, input) ;
     }
 }

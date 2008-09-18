@@ -40,6 +40,8 @@ import com.hp.hpl.jena.tdb.base.recordfile.RecordBufferPageMgr;
 import com.hp.hpl.jena.tdb.pgraph.GraphTDB;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderPattern;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderVarCount;
+import com.hp.hpl.jena.tdb.solver.reorder.ReorderWeighted;
+import com.hp.hpl.jena.tdb.solver.stats.StatsMatcher;
 import com.hp.hpl.jena.tdb.sys.Const;
 import com.hp.hpl.jena.util.FileManager;
 
@@ -82,8 +84,9 @@ public class Run
     
     public static void rewrite()
     {
-        ReorderPattern reorder = new ReorderVarCount() ;
-        
+        //ReorderPattern reorder = new ReorderVarCount() ;
+        StatsMatcher matcher = new StatsMatcher("stats.sse") ;
+        ReorderPattern reorder = new ReorderWeighted(matcher) ;
         Query query = QueryFactory.read("Q.rq") ;
         Op op = Algebra.compile(query) ;
         System.out.println(op) ;
