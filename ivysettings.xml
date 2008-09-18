@@ -3,6 +3,8 @@
 
   <settings defaultResolver="resolver-chain"/>
 
+  <property name="sftp.root" value="repo-dev/com/hp/hpl/jena/" override="false"/>
+
   <resolvers>
 
     <chain name="resolver-chain" returnFirst="true">
@@ -18,15 +20,15 @@
     <!-- Publish -->
     <!-- File system - for testing - can publish wrong bytes! -->
     <filesystem name="dev-resolver" >
-       <ivy      pattern="${publication.dir}/[module]-[revision]/ivy.xml"/>
-       <artifact pattern="${publication.dir}/[module]-[revision]/[artifact]-[revision].[ext]"/>
+       <ivy      pattern="${pub.dir.local}/[module]-[revision]/ivy.xml"/>
+       <artifact pattern="${pub.dir.local}/[module]-[revision]/[artifact]-[revision](-[classifier]).[ext]"/>
     </filesystem>
 
     <!-- User environment variables to find user/key -->
     <sftp name="dev-publish" host="jena.hpl.hp.com" 
 	  user="${env.IVYUSER}" keyFile="${env.IVYKEY}">
-      <ivy pattern="repo-dev/com/hp/hpl/jena/[module]/[revision]/ivy.xml"/>
-      <artifact pattern="repo-dev/com/hp/hpl/jena/[module]/[revision]/[artifact]-[revision].[ext]"/>
+      <ivy      pattern="${sftp.root}/[module]/[revision]/ivy.xml"/>
+      <artifact pattern="${sftp.root}/[module]/[revision]/[artifact]-[revision](-[classifier]).[ext]"/>
     </sftp>
 
   </resolvers>

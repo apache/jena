@@ -29,6 +29,7 @@
  
        == Library of standard tasks
        clean      clean up
+       clean-once clean up once - can depend on this repeatedly - wil run first time only.
        compile    compile sources
        jar        make jar 
        publish    export to maven
@@ -81,8 +82,7 @@
   <property name="build.dir"              value="build"/>
   <property name="build.classes.dir"      value="${build.dir}/classes"/>
   <property name="artifacts.dir"          value="${build.dir}/artifacts"/>
-  <property name="publication.dir"        location="${build.dir}/pub"/>
-  <echo message="DIR= ${publication.dir}"/>
+  <property name="pub.dir.local"  location="${build.dir}/pub"/>
 
   <!-- Other -->
   <property name="javadoc.title"          value="${Name}"/>
@@ -234,11 +234,6 @@
   <!-- ========================================== -->
   <!-- ==== Artifacts -->       
   
-  <target name="artifacts-init">
-    <delete dir="${artifacts.dir}"/>
-    <mkdir dir="${artifacts.dir}"/>
-  </target>
-
   <target name="jar-artifact" depends="jar">
     <!-- <delete file="${artifacts.dir}/${jarfile}"/> -->
     <copy todir="${artifacts.dir}" file="${build.dir}/${jarfile}"/>
@@ -281,10 +276,11 @@
   <!-- ==== Publication -->
 
   <!-- jar-artifact,pom-artifact,src-artifact,javadoc-artifact -->
-  <target name="artifacts" depends="clean,ivy-resolve,jar,jar-artifact,pom-artifact"/>
+  <target name="artifacts" 
+	  depends="jar-artifact,pom-artifact,src-artifact,javadoc-artifact"/>
   
   <target name="publish" description="Build and publish this version"
-	  depends="clean,ivy-resolve,artifacts,ivy-publish">
+	  depends="clean-once,artifacts,ivy-publish">
   </target>
   
   <!-- ========================================== -->
@@ -367,7 +363,7 @@
 		 resolver="dev-publish" 
 		 overwrite="true"
 		 forcedeliver="true">
-      <artifacts pattern="${artifacts.dir}/[artifact]-[revision].[ext]" />
+      <artifacts pattern="${artifacts.dir}/[artifact]-[revision](-[classifier]).[ext]" />
     </ivy:publish>
   </target>
 
@@ -391,7 +387,7 @@
 		 resolver="dev-resolver" 
 		 overwrite="true"
 		 forcedeliver="true">
-      <artifacts pattern="${artifacts.dir}/[artifact]-[revision].[ext]" />
+      <artifacts pattern="${artifacts.dir}/[artifact]-[revision](-[classifier]).[ext]" />
     </ivy:publish>
   </target>
 
@@ -431,6 +427,12 @@
 	  depends="clean-build-area,clean-reports">
   </target>
 
+  <target name="clean-once" unless="clean.run">
+    <antcall target="clean"/>
+    <!-- Not inside the "clean" as it's scoped -->
+    <property name="clean.run" value="set"/>
+  </target>
+
   <target name="clean-javadoc">
     <delete dir="${javadoc.dir}"/>
     <mkdir  dir="${javadoc.dir}"/>
@@ -448,5 +450,10 @@
     <delete dir="${reports.dir.xml}"/>
     <delete dir="${reports.outdir}"/>
   </target>
+
+  <target name="clean-artifacts">
+    <delete dir="${artifacts.dir}"/>
+    <mkdir dir="${artifacts.dir}"/>
+  </target> 
   
 </project>

@@ -84,9 +84,14 @@ public class Run
     
     public static void rewrite()
     {
-        //ReorderPattern reorder = new ReorderVarCount() ;
-        StatsMatcher matcher = new StatsMatcher("stats.sse") ;
-        ReorderPattern reorder = new ReorderWeighted(matcher) ;
+        ReorderPattern reorder = null ;
+        if ( false )
+            reorder = new ReorderVarCount() ;
+        else
+        {
+            StatsMatcher matcher = new StatsMatcher("stats.sse") ;
+            reorder = new ReorderWeighted(matcher) ;
+        }
         Query query = QueryFactory.read("Q.rq") ;
         Op op = Algebra.compile(query) ;
         System.out.println(op) ;
@@ -95,8 +100,6 @@ public class Run
         System.out.println(op) ;
         System.exit(0) ;
     }
-    
-
     
     private static void cache2()
     {

@@ -5,6 +5,7 @@ SELECT *
    ?s :X1 ?z .
    ?s :q ?w .
    ?s :X2 :W .
+    ?x ?y ?z .
 } UNION {
    ?a :p ?v .
    ?a :X1 ?w .
