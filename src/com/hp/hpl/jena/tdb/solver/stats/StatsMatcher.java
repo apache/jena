@@ -114,6 +114,7 @@ public final class StatsMatcher
     List<Pattern> patterns = new ArrayList<Pattern>() ;
     
     Map<Item, List<Pattern>> _patterns = new HashMap<Item,  List<Pattern>>() ;
+    long count = -1 ;
     
     //Map<Item, List<Pattern>> patterns = new HashMap<>() ;//new ArrayList<Pattern>() ;
     
@@ -144,8 +145,6 @@ public final class StatsMatcher
 
         ItemList list = stats.getList().cdr();      // Skip tag
         
-        int count = -1 ;
-        
         // Estimated fan out from SP? and ?PO
         // Can override in stats file.
         double weightSP = 2 ;
@@ -160,7 +159,7 @@ public final class StatsMatcher
             // Get count.
             Item x = Item.find(elt1.getList(), "count") ;
             if ( x != null )
-                count = asInt(x.getList().get(1)) ;
+                count = asInteger(x.getList().get(1)) ;
         }
         
         if ( count != - 1 && count < 100 )
@@ -241,7 +240,7 @@ public final class StatsMatcher
             throw new TDBException("Explicit variable used in a pattern (use VAR): "+item.getNode()) ;
     }
 
-    public static int asInt(Item item)
+    public static long asInteger(Item item)
     {
         if ( item.isNode() )
         { 
@@ -294,30 +293,7 @@ public final class StatsMatcher
             return -1 ;
         return matchLinear(entry, subj, pred, obj) ;
     }
-
     
-    private double matchLinear(Item subj, Item pred, Item obj)
-    {
-        if ( isSet(subj) && isSet(pred) && isSet(obj) )
-            // A set of triples ...
-            return 1.0 ;
-        
-        // Use a map keyed by predicate to accelerate searching.
-        for ( Pattern pattern : patterns )
-        {
-            Match match = new Match() ;
-            if ( ! matchNode(subj, pattern.subjItem, match) )
-                continue ;
-            if ( ! matchNode(pred, pattern.predItem, match) )
-                continue ;
-            if ( ! matchNode(obj, pattern.objItem, match) )
-                continue ;
-            // First match.
-            return pattern.weight ;
-        }
-        return -1 ;
-    }
-
     private static double matchLinear(List<Pattern> patterns, Item subj, Item pred, Item obj)
     {
      // Use a map keyed by predicate to accelerate searching.
@@ -344,34 +320,6 @@ public final class StatsMatcher
         if (item.equals(BNODE) ) return true ;
         if (item.equals(LITERAL) ) return true ;
         return false ;
-    }
-    
-    /** Return the matching weight for the given triple, else -1 for no match */
-    /*public*/private double matchLinear_(Item subj, Item pred, Item obj)
-    {
-        // Weighted matching.
-        // Redo as weight of best, most specifc, match.  
-        int matches = 0 ;
-        double w = -1 ;
-        
-        for ( Pattern pattern : patterns )
-        {
-            Match match = new Match() ;
-            if ( ! matchNode(subj, pattern.subjItem, match) )
-                continue ;
-            if ( ! matchNode(pred, pattern.predItem, match) )
-                continue ;
-            if ( ! matchNode(obj, pattern.objItem, match) )
-                continue ;
-            int m = (100*match.exactMatches)+(10*match.termMatches)+match.varMatches+match.anyMatches ;
-
-            if ( m > matches )
-            {
-                w = pattern.weight ;
-                matches = m ;
-            }
-        }
-        return w ;
     }
     
     private static boolean matchNode(Item node, Item item, Match details)

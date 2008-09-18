@@ -7,7 +7,6 @@
 package com.hp.hpl.jena.tdb.solver.reorder;
 
 import static com.hp.hpl.jena.tdb.lib.Lib.printAbbrev;
-import static com.hp.hpl.jena.tdb.lib.Lib.printAbbrevList;
 import static iterator.Iter.map;
 import static iterator.Iter.toList;
 import iterator.Transform;
@@ -18,12 +17,13 @@ import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.sparql.core.BasicPattern;
 import com.hp.hpl.jena.sparql.core.Var;
+import com.hp.hpl.jena.tdb.TDBException;
 
 
 /** Machinary */
 public abstract class ReorderPatternBase implements ReorderPattern
 {
-    protected static final boolean DEBUG = false ;
+    protected static final boolean DEBUG = true ;
     
     @Override
     public BasicPattern reorder(BasicPattern pattern)
@@ -49,29 +49,52 @@ public abstract class ReorderPatternBase implements ReorderPattern
     private ReorderProc reorder(List<Triple> triples, List<PatternTriple> components)
     {
         int N = components.size() ;
+        int numReorder = N ;        // Maybe choose 4, say, and copy over the rest.
         int indexes[] = new int[N] ;
+
         //Set<Var> varsInScope = new HashSet<Var>() ;
-        for ( int i = 0 ; i < N ; i++ )
+        int idx = 0 ;
+        for ( ; idx < numReorder ; idx++ )
         {
             int j = chooseNext(components) ;
             if ( j < 0 )
-            {
-                System.err.println("Reorder error") ;
-                System.err.println("Triples:     "+printAbbrevList(triples)) ;
-                System.err.println("Compontents: "+printAbbrevList(components)) ;
-            }
+                break ;
+//            {
+//                System.err.println("Reorder error") ;
+//                System.err.println("---- Triples:\n"+printAbbrevList(triples)) ;
+//                System.err.println("---- Components:\n"+printAbbrevList(components)) ;
+//            }
             Triple triple = triples.get(j) ;
-            indexes[i] = j ;
+            indexes[idx] = j ;
             //VarUtils.addVarsFromTriple(varsInScope, triple) ;
             update(triple, components) ;
             components.set(j, null) ;
         }
+        
+        // Copy over the remainder (if any) 
+        for ( int i = 0 ; i < components.size() ; i++ )
+        {
+            if ( components.get(i) != null )
+                indexes[idx++] = i ;
+            
+            //VarUtils.addVarsFromTriple(varsInScope, triples.get(i)) ;
+        }
+        if ( triples.size() != idx )
+            throw new TDBException(String.format("Inconsistency: number of triples (%d) not equal to number of indexes processed (%d)", triples.size(), idx)) ;
         
         ReorderProc proc = new ReorderProcIndexes(indexes) ; 
         return proc ;
     }
     
     
+//    private int findFirst(List<PatternTriple> pTriples)
+//    {
+//        for ( int i = 0 ; i < pTriples.size() ; i++ )
+//            if ( pTriples.get(i) != null )
+//                return i ;
+//        return -1 ;
+//    }
+
     /** Return index of next pattern triple */
     protected int chooseNext(List<PatternTriple> pTriples)
     {
@@ -102,7 +125,12 @@ public abstract class ReorderPatternBase implements ReorderPattern
                 continue ;
             double x = weight(pt) ;
             if ( x < 0 )
-                System.err.println("Oops - negative") ;
+            {
+                // Not found.  Make sure idx is not left as -1 
+                if ( idx == -1 )
+                    idx = i ;
+                continue ;
+            }
             if ( x < min )
             {
                 min = x ;

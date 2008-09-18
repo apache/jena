@@ -2,15 +2,15 @@ PREFIX : <http://example/>
 SELECT *
 { 
 {  ?s :p ?v .
-   ?s :X1 ?z .
+   ?s1 :X1 ?z .
    ?s :q ?w .
-   ?s :X2 :W .
-    ?x ?y ?z .
-} UNION {
-   ?a :p ?v .
-   ?a :X1 ?w .
-   ?b :q ?w .
-   ?b :X2 :W .
+##    ?s :X2 :W .
+   ?x ?y ?z .
+## } UNION {
+##    ?a :p ?v .
+##    ?a :X1 ?w .
+##    ?b :q ?w .
+##    ?b :X2 :W .
 }
 }
 

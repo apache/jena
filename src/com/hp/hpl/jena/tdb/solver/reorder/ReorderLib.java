@@ -18,7 +18,13 @@ public class ReorderLib
         public BasicPattern reorder(BasicPattern pattern)
         {
             return pattern ;
-        } } ;
+        } 
+        @Override
+        public String toString()
+        {
+            return "identity reorder" ;
+        }
+    } ;
 
     private static ReorderPattern _identity = new ReorderPattern() {
         @Override

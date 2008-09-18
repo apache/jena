@@ -42,6 +42,19 @@ public class ReorderProcIndexes implements ReorderProc
         }
         return bgp2 ;
     }
+    
+    @Override
+    public String toString()
+    {
+        String x = "" ;
+        String sep = "" ;
+        for ( int idx : indexes )
+        {
+            x = x + sep + idx ;
+            sep = ", " ;
+        }
+        return x;
+    }
 }
 
 /*
