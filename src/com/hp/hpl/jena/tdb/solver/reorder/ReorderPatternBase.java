@@ -93,7 +93,7 @@ public abstract class ReorderPatternBase implements ReorderPattern
         }
         
         int idx = -1 ;
-        double min = 5 ;
+        double min = Double.MAX_VALUE ;
         int N = pTriples.size() ;
         for ( int i = 0 ; i < N ; i++ )
         {
