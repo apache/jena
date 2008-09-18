@@ -13,10 +13,8 @@ public class Dev
     // reorder -> return a list on indexes (a reorder function), not the pattern itself.
     
     // Stats: What about a rules
-    //   (VAR VAR VAR)
-    //   (S VAR O) or (?S TERM ?O)
-    //   No match
-    // Testing of rewrite
+    // VarCounting : need to consider conectivity when same possible choices.
+    // e.g. (?s P X) (?s1 P X) (?s P X)    vs   (?s1 P X) (?s P X) (?s P X) 
     
     // -- Work on Filter-BGP blocks.  
     // -- Tests : VarCounter, stats matcher.

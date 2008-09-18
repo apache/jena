@@ -290,7 +290,9 @@ public final class StatsMatcher
         
         List<Pattern> entry = _patterns.get(pred) ;
         if ( entry == null )
-            return -1 ;
+            // If the predicate is TERM, VAR etc, do a full linear scan of rules.  
+            return matchLinear(patterns, subj, pred, obj) ;
+        // Jump to those with just this predicate.
         return matchLinear(entry, subj, pred, obj) ;
     }
     

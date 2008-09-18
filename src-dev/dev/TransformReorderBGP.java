@@ -34,7 +34,7 @@ public class TransformReorderBGP extends TransformCopy
     public BasicPattern rewrite(BasicPattern pattern)
     {
         ReorderProc proc = reorderPattern.reorderIndexes(pattern) ;
-        System.out.println(proc) ;
+        System.out.println("Reorder: "+proc) ;
         return proc.reorder(pattern) ;
     }
 }
