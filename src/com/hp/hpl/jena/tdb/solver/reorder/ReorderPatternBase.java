@@ -7,6 +7,7 @@
 package com.hp.hpl.jena.tdb.solver.reorder;
 
 import static com.hp.hpl.jena.tdb.lib.Lib.printAbbrev;
+import static com.hp.hpl.jena.tdb.lib.Lib.printAbbrevList;
 import static iterator.Iter.map;
 import static iterator.Iter.toList;
 import iterator.Transform;
@@ -15,7 +16,6 @@ import java.util.List;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
-
 import com.hp.hpl.jena.sparql.core.BasicPattern;
 import com.hp.hpl.jena.sparql.core.Var;
 
@@ -56,9 +56,9 @@ public abstract class ReorderPatternBase implements ReorderPattern
             int j = chooseNext(components) ;
             if ( j < 0 )
             {
-                System.err.println("Reorder: error") ;
-                System.err.println("Triples: "+triples) ;
-                System.err.println("Triples: "+components) ;
+                System.err.println("Reorder error") ;
+                System.err.println("Triples:     "+printAbbrevList(triples)) ;
+                System.err.println("Compontents: "+printAbbrevList(components)) ;
             }
             Triple triple = triples.get(j) ;
             indexes[i] = j ;
@@ -70,6 +70,7 @@ public abstract class ReorderPatternBase implements ReorderPattern
         ReorderProc proc = new ReorderProcIndexes(indexes) ; 
         return proc ;
     }
+    
     
     /** Return index of next pattern triple */
     protected int chooseNext(List<PatternTriple> pTriples)

@@ -6,6 +6,9 @@
 
 package com.hp.hpl.jena.tdb.lib;
 
+import iterator.Iter;
+
+import java.util.List;
 import java.util.regex.Pattern;
 
 public class Lib
@@ -24,6 +27,13 @@ public class Lib
             return "<null>" ;
         String x = obj.toString() ;
         return p.matcher(x).replaceAll("::$1") ;
+    }
+    
+    /** Abbreviate, crudely, URI in strings, leaving only their last component. */ 
+    public static <T> String printAbbrevList(List<T> objs)
+    {
+        String x = Iter.asString(objs, "\n") ;
+        return printAbbrev(x) ;
     }
 }
 
