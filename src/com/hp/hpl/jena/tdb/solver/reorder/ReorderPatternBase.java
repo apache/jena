@@ -54,6 +54,12 @@ public abstract class ReorderPatternBase implements ReorderPattern
         for ( int i = 0 ; i < N ; i++ )
         {
             int j = chooseNext(components) ;
+            if ( j < 0 )
+            {
+                System.err.println("Reorder: error") ;
+                System.err.println("Triples: "+triples) ;
+                System.err.println("Triples: "+components) ;
+            }
             Triple triple = triples.get(j) ;
             indexes[i] = j ;
             //VarUtils.addVarsFromTriple(varsInScope, triple) ;
