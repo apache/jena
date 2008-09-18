@@ -78,6 +78,9 @@ public class SDB
         // (It's better if there are no dependences but ...)
         initialized = true ;
         
+        // Better not to break up BGPs too much.
+        ARQ.getContext().set(ARQ.filterPlacement, false) ;
+        
         // Default is 1000 4Kpages.
         DerbyUtils.setDerbyPageCacheSize(10000) ;
         
