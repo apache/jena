@@ -13,7 +13,8 @@ public class Dev
     // reorder -> return a list on indexes (a reorder function), not the pattern itself.
     
     // Stats: What about a rules
-    // VarCounting : need to consider conectivity when same possible choices.
+    // VarCounting : need to consider connectivity for boundedness propagation 
+    // when same possible choices (stats is the same only less so). 
     // e.g. (?s P X) (?s1 P X) (?s P X)    vs   (?s1 P X) (?s P X) (?s P X) 
     
     // -- Work on Filter-BGP blocks.  
