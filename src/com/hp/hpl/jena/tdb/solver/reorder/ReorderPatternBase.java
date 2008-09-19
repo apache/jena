@@ -23,7 +23,7 @@ import com.hp.hpl.jena.tdb.TDBException;
 /** Machinary */
 public abstract class ReorderPatternBase implements ReorderPattern
 {
-    protected static final boolean DEBUG = true ;
+    protected static final boolean DEBUG = false ;
     
     @Override
     public BasicPattern reorder(BasicPattern pattern)
