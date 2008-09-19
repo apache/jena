@@ -12,36 +12,28 @@ public class Dev
     // Don't test for "GraphTDB" but for "GraphCanOptimizeBGP"
     // Wrapper for any Graph 
     
+    // StageMatchPattern ==> StageReorderPattern(ReorderableGraph, StageGenerator)
+    
     // ---- Optimizer
-    // Abbreviate planning when below a threshold.
-    // TDB.optimizerOn() / TDB.optimizerOff() -- leaving it in the StageGenerator chain.
-    // VarCounting : need to consider connectivity for boundedness propagation 
-    // when same possible choices (stats is the same only less so). 
-    // e.g. (?s P X) (?s1 P X) (?s P X)    vs   (?s1 P X) (?s P X) (?s P X) 
+    //   Abbreviate planning when below a threshold.
+    //   TDB.optimizerOn() / TDB.optimizerOff() -- leaving it in the StageGenerator chain.
+    //   VarCounting : need to consider connectivity for boundedness propagation 
+    //     when same possible choices (stats is the same only less so). 
+    //     e.g. (?s P X) (?s1 P X) (?s P X)    vs   (?s1 P X) (?s P X) (?s P X) 
     
-    // -- Work on Filter-BGP blocks.  
+    // -- Work on Filter-BGP blocks.  OpCompilerTDB to intercept (later: in ARQ at "OpCompiler.compile")
+    
     // -- Tests : VarCounter, stats matcher.
-    // -- ARQ: (A) FilterBGP units and (B) optimizer policy hook (C) per source optimization.
-    
-    // Is there a problem here when the active graph changes?
-    // Does StageBuilder need to do a delayed build (ARQ)?
-    // ----> Intercept point is "OpCompiler.compile"
-    
-    //   Have a "test for executing this op" call in a stage generator++ that engine main calls 
-    //     before any/specific ops.  
-    
-    // ARQ: CompilerDispatch
-    // OpCompiler.factory
-    // Catch (filter (bgp ...)). 
     
     // Link Assembler (custom indexes) to TDBFactory 
     
     // ---- B+Tree rewriter
     
     // ---- ExtHash
+    //   Trial
     
     // ---- New cache API alloc/return/invalidate (shrink/grow?)
-    //   Stats.
+    //   Stats
     
     // ---- Reopenable BlockMgrs (and the object file?) 
     
@@ -55,13 +47,14 @@ public class Dev
     // Or config file.
 
     // ---- Graph
+    // QueryHandler to access subjectsFor etc. 
     // removeAll implementation: depends on iterator.remove
     // but can do faster as a specific operation.
     
     // TDBFactory ==> "create" ==> connect(... , boolean canCreate) ;
     // Location-keyed cache of TDB graphs 
     
-    // BulkLoader
+    // ---- BulkLoader
     //    - shared formatting with GraphLoadMonitor
     
     // ---- Misc :
@@ -74,8 +67,6 @@ public class Dev
     //    And a PageMgr wrapper for same?
 
     // Inlines => Inline56, Inline64
-
-    // QueryHandler to access subjectsFor etc. 
 
     // Fix BDB form
 }
