@@ -2,7 +2,8 @@
 
 # Run in TDBROOT
 TDBROOT="${TDBROOT:-$HOME/Projects/TDB}"
-LOCATION="--location DB"
+DB_DIR=DB
+LOCATION="--location $DB_DIR"
 #DB_DESC="$TDBROOT/DB/dataset-dbp.ttl"
 # "none" does consume all nodes.
 RESULTS=none

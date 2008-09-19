@@ -5,10 +5,11 @@
 TDBROOT="${TDBROOT:-$HOME/Projects/TDB}"
 DATASETS="${DATASETS:-$HOME/Datasets}"
 #DB_DESC="$TDBROOT/DB/DBpediaBM/dataset-dbp.ttl"
-LOCATION="--location DB"
+DB_DIR=DB
+LOCATION="--location $DB_DIR"
 PARA="${PARA:---parallel}"
 
-tdbclean $LOCATION
+tdbclean $DB_DIR
 tdbloader $LOCATION $PARA \
     $DATASETS/DBPediaBM/dbp-infoboxes.nt \
     $DATASETS/DBPediaBM/dbp-geocoordinates.nt \
