@@ -8,10 +8,6 @@ package dev;
 
 public class Dev
 {
-    // (tidying) : ARQ : treat memory graphs as a storage (StageGenBasicPattern in ARQ).
-    // Don't test for "GraphTDB" but for "GraphCanOptimizeBGP"
-    // Wrapper for any Graph ==> 
-    
     // ** solver.reorder.StageGeneratorReorder:: StageMatchPattern ==> StageReorderPattern(ReorderableGraph, StageGenerator)
     
     // ---- Optimizer
@@ -21,19 +17,16 @@ public class Dev
     //     when same possible choices (stats is the same only less so). 
     //     e.g. (?s P X) (?s1 P X) (?s P X)    vs   (?s1 P X) (?s P X) (?s P X) 
     
-    // -- Work on Filter-BGP blocks.  OpCompilerTDB to intercept (later: in ARQ at "OpCompiler.compile")
+    // -- Work on Filter-BGP blocks.
+    // OpCompilerTDB to intercept (later: in ARQ at "OpCompiler.compile")
     
     // -- Tests : VarCounter, stats matcher.
     
-    // Link Assembler (custom indexes) to TDBFactory 
-    
     // ---- B+Tree rewriter
     
-    // ---- ExtHash
-    //   Trial
+    // ---- ExtHash : Trial
     
-    // ---- New cache API alloc/return/invalidate (shrink/grow?)
-    //   Stats
+    // ---- New cache API alloc/return/invalidate (shrink/grow?) : stats
     
     // ---- Reopenable BlockMgrs (and the object file?) 
     
@@ -50,7 +43,8 @@ public class Dev
     // QueryHandler to access subjectsFor etc. 
     // removeAll implementation: depends on iterator.remove
     // but can do faster as a specific operation.
-    
+
+    // Link Assembler (custom indexes) to TDBFactory 
     // TDBFactory ==> "create" ==> connect(... , boolean canCreate) ;
     // Location-keyed cache of TDB graphs 
     
