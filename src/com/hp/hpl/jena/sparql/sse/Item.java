@@ -244,6 +244,19 @@ public class Item extends ItemLocation
         return ((Number)(getNode().getLiteralValue())).intValue() ;
     }
 
+    // Get an integer-like value, ignoring typing 
+    public long asInteger()
+    {
+        if ( isNode() )
+        { 
+            if ( getNode().isLiteral() )
+                // Ignore typing.
+                return Integer.parseInt(getNode().getLiteralLexicalForm()) ;
+        }
+        if ( isSymbol() )
+            return Integer.parseInt(getSymbol()) ;
+        throw new ItemException("Not a literal or string: "+this) ;
+    }
     
     public String sniff()
     {
