@@ -81,6 +81,7 @@ public class GraphTDBFactory
                 throw new TDBException("Error in stats file: "+ex.getMessage()) ;
             }
         }
+        
         if ( reorder == null && location.exists(Names.optCountVar) )
         {
             // Not as good but better than nothering.
