@@ -9,24 +9,25 @@ package dev;
 public class Dev
 {
     // (tidying) : ARQ : treat memory graphs as a storage (StageGenBasicPattern in ARQ).
-    // TDB.optimizerOn() / TDB.optimizerOff() -- leaving it in the StageGenerator chain.
-    // reorder -> return a list on indexes (a reorder function), not the pattern itself.
-    // The fast lokup in stats isn't perfect - if TERM is stronger than <p>, it misses it.
-    // By perfect: from <p> try TERM and ANY; from ?p try VAR and ANY  
+    // Don't test for "GraphTDB" but for "GraphCanOptimizeBGP"
+    // Wrapper for any Graph 
     
-    // Stats: What about a rules
+    // TDB.optimizerOn() / TDB.optimizerOff() -- leaving it in the StageGenerator chain.
+
     // VarCounting : need to consider connectivity for boundedness propagation 
     // when same possible choices (stats is the same only less so). 
     // e.g. (?s P X) (?s1 P X) (?s P X)    vs   (?s1 P X) (?s P X) (?s P X) 
     
     // -- Work on Filter-BGP blocks.  
     // -- Tests : VarCounter, stats matcher.
-    // -- tdbloader: write/update stats
+    // -- tdbloader: write/update stats, gzip files (script).
     // -- ARQ: (A) FilterBGP units and (B) optimizer policy hook (C) per source optimization.
     
     // Link Assembler (custom indexes) to TDBFactory 
     
     // ---- B+Tree rewriter
+    
+    // ---- ExtHash
     
     // ---- New cache API alloc/return/invalidate (shrink/grow?)
     //   Stats.

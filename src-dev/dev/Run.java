@@ -89,8 +89,8 @@ public class Run
             reorder = new ReorderVarCount() ;
         else
         {
-            //StatsMatcher matcher = new StatsMatcher("stats.sse") ;
-            StatsMatcher matcher = new StatsMatcher("stats-var-count.opt") ;
+            StatsMatcher matcher = new StatsMatcher("stats.sse") ;
+            //StatsMatcher matcher = new StatsMatcher("stats-var-count.opt") ;
             reorder = new ReorderWeighted(matcher) ;
         }
         Query query = QueryFactory.read("Q.rq") ;

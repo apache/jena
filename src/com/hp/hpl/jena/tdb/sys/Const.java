@@ -159,7 +159,7 @@ public class Const
         if ( s != null )
         {
             boolean b = s.equals("64") ; 
-            log.debug("System architecture: "+(b?"64 bit":"32 bit")) ;
+            log.info("System architecture: "+(b?"64 bit":"32 bit")) ;
             return b ;
         }
         // Not a SUN VM
@@ -194,12 +194,12 @@ public class Const
 
         if ( x.equalsIgnoreCase("direct") )
         {
-            log.info("File mode: mapped") ;
+            log.info("File mode: direct (forced)") ;
             return FileMode.direct ;
         }
         if ( x.equalsIgnoreCase("mapped") )
         {
-            log.info("File mode: mapped") ;
+            log.info("File mode: mapped (forced)") ;
             return FileMode.mapped ;
         }
         
@@ -207,10 +207,10 @@ public class Const
         {
             if ( is64bitSystem )
             {
-                log.debug("FileMode: Mapped") ;
+                log.info("File mode: Mapped") ;
                 return FileMode.mapped ;
             }
-            log.debug("FileMode: Direct") ;
+            log.info("File mode: Direct") ;
             return FileMode.direct ;
         }
         throw new TDBException("Unrecognized file mode (not one of 'default', 'direct' or 'mapped': "+x) ;

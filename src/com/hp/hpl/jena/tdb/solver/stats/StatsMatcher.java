@@ -14,6 +14,7 @@ import static com.hp.hpl.jena.tdb.solver.reorder.PatternElements.URI;
 import static com.hp.hpl.jena.tdb.solver.reorder.PatternElements.VAR;
 import static com.hp.hpl.jena.tdb.solver.reorder.PatternElements.*;
 
+
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -261,31 +262,57 @@ public final class StatsMatcher
     
     public double match(Item subj, Item pred, Item obj)
     {
-        return matchMap(subj, pred, obj) ;
-    }
-    
-    private double matchMap(Item subj, Item pred, Item obj)
-    {
         if ( isSet(subj) && isSet(pred) && isSet(obj) )
             // A set of triples ...
             return 1.0 ;
         
-//        if ( ! pred.isNode() )
-//            return matchLinear(patterns, subj, pred, obj) ;
+        // A predciate can be :
+        //   A URI      - search on that URI, the TERM and ANY chains.
+        //   A variable - search on that VAR and ANY chains.
         
-        List<Pattern> entry = _patterns.get(pred) ;
+        if ( pred.isNodeURI() )
+        {
+            double w = -1 ;
+            w = search(pred, subj, pred, obj, w) ;
+            w = search(TERM, subj, pred, obj, w) ;
+            w = search(ANY, subj, pred, obj, w) ;
+            return w ;
+        }
         
-        // Also do ....
-        //if ( isAnyTerm(pred) ) { }
-        //if ( isAnyVar(pred) ) { }
+        if ( pred.isVar() )
+        {
+            double w = -1 ;
+            w = search(VAR, subj, pred, obj, w) ;
+            w = search(ANY, subj, pred, obj, w) ;
+            return w ;
+        }
+        throw new TDBException("Unidetnified predicate: "+pred) ;
         
-        if ( entry == null )
-            return matchLinear(patterns, subj, pred, obj) ;
-        
-        
-        // Jump to those with just this predicate.
-        return matchLinear(entry, subj, pred, obj) ;
+        //return matchLinear(subj, pred, obj) ;
     }
+    
+
+    private double search(Item key, Item subj, Item pred, Item obj, double oldMin)
+    {
+        List<Pattern> entry = _patterns.get(key) ;
+        if ( entry == null )
+            return oldMin ;
+        double w = matchLinear(entry, subj, pred, obj) ;
+        return minPos(w, oldMin) ;
+    }
+    
+    //Mimumum respecting -1 for "not known"
+    private static double minPos(double x, double y)
+    {
+        if ( x == -1.0 ) return y ;
+        if ( y == -1.0 ) return x ;
+        return Math.min(x, y) ;
+    }
+    
+    double matchLinear(Item subj, Item pred, Item obj)
+    {
+        return matchLinear(patterns, subj, pred, obj) ;
+    } 
     
     private static double matchLinear(List<Pattern> patterns, Item subj, Item pred, Item obj)
     {
