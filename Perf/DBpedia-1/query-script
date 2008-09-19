@@ -2,8 +2,8 @@
 
 # Run in TDBROOT
 TDBROOT="${TDBROOT:-$HOME/Projects/TDB}"
-DB_DESC="$TDBROOT/DB/dataset-dbp.ttl"
-
+LOCATION="--location DB"
+#DB_DESC="$TDBROOT/DB/dataset-dbp.ttl"
 # "none" does consume all nodes.
 RESULTS=none
 
@@ -11,7 +11,7 @@ for q in $TDBROOT/Perf/DBpedia-1/query?.rq
 do
   N=$(basename "$q")
   echo "==== $N ===="
-  tdbquery --time --results $RESULTS --desc "$DB_DESC" --query "$q"
+  tdbquery --time --results $RESULTS $LOCATION --query "$q"
   done
 
 for q in $TDBROOT/Perf/DBpedia-1/query?a.rq

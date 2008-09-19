@@ -2,17 +2,14 @@
 
 # Run in TDBROOT
 
-TDBROOT="${TDBROOT:-$HOME/Projects/AFS}"
-
+TDBROOT="${TDBROOT:-$HOME/Projects/TDB}"
 DATASETS="${DATASETS:-$HOME/Datasets}"
-
-#DB_DESC="$TDBROOT/DB/DBpediaBM/dataset.ttl"
-
-TARGET=tmp
+#DB_DESC="$TDBROOT/DB/DBpediaBM/dataset-dbp.ttl"
+LOCATION="--location DB"
 PARA="${PARA:---parallel}"
 
-tdbclean "$TARGET"
-tdbloader --location "$TARGET" $PARA \
+tdbclean "$LOCATION"
+tdbloader $LOCATION $PARA \
     $DATASETS/DBPediaBM/dbp-infoboxes.nt \
     $DATASETS/DBPediaBM/dbp-geocoordinates.nt \
     $DATASETS/DBPedia/dbp-homepages.nt \

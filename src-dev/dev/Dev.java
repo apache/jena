@@ -12,8 +12,9 @@ public class Dev
     // Don't test for "GraphTDB" but for "GraphCanOptimizeBGP"
     // Wrapper for any Graph 
     
+    // ---- Optimizer
+    // Abbreviate planning when below a threshold.
     // TDB.optimizerOn() / TDB.optimizerOff() -- leaving it in the StageGenerator chain.
-
     // VarCounting : need to consider connectivity for boundedness propagation 
     // when same possible choices (stats is the same only less so). 
     // e.g. (?s P X) (?s1 P X) (?s P X)    vs   (?s1 P X) (?s P X) (?s P X) 
