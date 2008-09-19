@@ -6,6 +6,7 @@
 
 package com.hp.hpl.jena.tdb.solver.reorder;
 
+import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.sse.Item;
 
 public class PatternElements
@@ -16,6 +17,29 @@ public class PatternElements
     public static final Item URI       = Item.createSymbol("URI") ;
     public static final Item BNODE     = Item.createSymbol("BNODE") ;
     public static final Item LITERAL   = Item.createSymbol("LITERAL") ;
+    
+    public static boolean isSet(Item item)
+    {
+        if ( item.isNode() )
+        {
+            if ( item.getNode().isConcrete() ) return true ;
+        }
+        if (item.equals(TERM) ) return true ;
+        if (item.equals(URI) ) return true ;
+        if (item.equals(BNODE) ) return true ;
+        if (item.equals(LITERAL) ) return true ;
+        return false ;
+    }
+    
+    public static boolean isAny(Item item)         { return item.equals(ANY) ; }
+    public static boolean isAnyTerm(Item item)     { return item.equals(TERM) ; }
+    public static boolean isAnyURI(Item item)      { return item.equals(URI) ; }
+    public static boolean isAnyLiteral(Item item)  { return item.equals(LITERAL) ; }
+    public static boolean isAnyBNode(Item item)    { return item.equals(BNODE) ; }
+    public static boolean isAnyVar(Item item)      { return item.equals(VAR) ; }
+    public static boolean isVar(Item item)         { return Var.isVar(item.getNode()) ; }
+    
+
 }
 
 /*

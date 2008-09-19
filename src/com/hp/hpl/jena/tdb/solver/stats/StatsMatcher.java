@@ -12,6 +12,7 @@ import static com.hp.hpl.jena.tdb.solver.reorder.PatternElements.LITERAL;
 import static com.hp.hpl.jena.tdb.solver.reorder.PatternElements.TERM;
 import static com.hp.hpl.jena.tdb.solver.reorder.PatternElements.URI;
 import static com.hp.hpl.jena.tdb.solver.reorder.PatternElements.VAR;
+import static com.hp.hpl.jena.tdb.solver.reorder.PatternElements.*;
 
 import java.io.PrintStream;
 import java.util.ArrayList;
@@ -159,7 +160,7 @@ public final class StatsMatcher
             // Get count.
             Item x = Item.find(elt1.getList(), "count") ;
             if ( x != null )
-                count = asInteger(x.getList().get(1)) ;
+                count = x.getList().get(1).asInteger() ;
         }
         
         if ( count != - 1 && count < 100 )
@@ -181,13 +182,11 @@ public final class StatsMatcher
                 // At least weight to avoid rdf:type if there is another ?PO.
                 // Numbers for large models.
                 
-                double numProp = ((Number)(elt.getList().get(1).getNode().getLiteralValue())).doubleValue() ;
+                double numProp = elt.getList().get(1).getDouble() ;
                 
                 if ( rdfType.equals(pat.getNode()) )
-                {
                     // Special case:  ? rdf:type O
                     weightPO = Math.min(numProp, 5*weightPO) ;
-                }
                     
                 // If does not exist. 
                 addPattern(new Pattern(weightSP, TERM, pat, ANY)) ;     // S, P, ? : approx weight
@@ -240,20 +239,6 @@ public final class StatsMatcher
             throw new TDBException("Explicit variable used in a pattern (use VAR): "+item.getNode()) ;
     }
 
-    public static long asInteger(Item item)
-    {
-        if ( item.isNode() )
-        { 
-            if ( item.getNode().isLiteral() )
-                // Ignore typing.
-                return Integer.parseInt(item.getNode().getLiteralLexicalForm()) ;
-        }
-        if ( item.isSymbol() )
-            return Integer.parseInt(item.getSymbol()) ;
-        
-        throw new ItemException("Not a literal or string: "+item) ;
-    }
-    
     private Item intern(Item item)
     {
         if ( item.sameSymbol(ANY.getSymbol()) )         return ANY ;
@@ -289,16 +274,21 @@ public final class StatsMatcher
 //            return matchLinear(patterns, subj, pred, obj) ;
         
         List<Pattern> entry = _patterns.get(pred) ;
+        
+        // Also do ....
+        //if ( isAnyTerm(pred) ) { }
+        //if ( isAnyVar(pred) ) { }
+        
         if ( entry == null )
-            // If the predicate is TERM, VAR etc, do a full linear scan of rules.  
             return matchLinear(patterns, subj, pred, obj) ;
+        
+        
         // Jump to those with just this predicate.
         return matchLinear(entry, subj, pred, obj) ;
     }
     
     private static double matchLinear(List<Pattern> patterns, Item subj, Item pred, Item obj)
     {
-     // Use a map keyed by predicate to accelerate searching.
         for ( Pattern pattern : patterns )
         {
             Match match = new Match() ;
@@ -314,25 +304,15 @@ public final class StatsMatcher
         return -1 ;
     }
     
-    private static boolean isSet(Item item)
-    {
-        if (item.isNode() && item.getNode().isConcrete() ) return true ;
-        if (item.equals(TERM) ) return true ;
-        if (item.equals(URI) ) return true ;
-        if (item.equals(BNODE) ) return true ;
-        if (item.equals(LITERAL) ) return true ;
-        return false ;
-    }
-    
     private static boolean matchNode(Item node, Item item, Match details)
     {
-        if ( item.equals(ANY) )
+        if ( isAny(item) )
         {
             details.anyMatches ++ ;
             return true ;
         }
         
-        if ( item.equals(VAR) ) 
+        if ( isAnyVar(item) ) 
         {
             details.varMatches ++ ;
             return true ;
@@ -367,23 +347,23 @@ public final class StatsMatcher
                 return true ;
             }
         
-            if ( item.equals(TERM) )
+            if ( isAnyTerm(item) )
             {
                 details.termMatches ++ ;
                 return true ;
             }
             
-            if ( item.equals(URI) && n.isURI() )
+            if ( isAnyURI(item) && n.isURI() )
             {
                 details.termMatches ++ ;
                 return true ;
             }
-            if ( item.equals(LITERAL) && n.isLiteral() )
+            if ( isAnyLiteral(item) && n.isLiteral() )
             {
                 details.termMatches ++ ;
                 return true ;
             }
-            if ( item.equals(BNODE) && n.isBlank() )
+            if ( isAnyBNode(item) && n.isBlank() )
             {
                 details.termMatches ++ ;
                 return true ;

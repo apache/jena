@@ -2,7 +2,7 @@
 
 (prefix ((rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>))
   (stats
-    # Rules for a 
+    # Rules for a variable counting algorithm
       ((TERM TERM TERM) 1)
       
       ((TERM TERM VAR) 2)
