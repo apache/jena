@@ -30,15 +30,23 @@ import com.hp.hpl.jena.sparql.expr.ExprList;
 import com.hp.hpl.jena.sparql.procedure.ProcEval;
 import com.hp.hpl.jena.sparql.procedure.Procedure;
 
-/** Turn an Op expression into an execution of QueryIterators.
- *  Does not consider optimizing the algebra expression (that should happen elsewhere).
- *  BGPs are stil subject to StageBuilding during iterator execution.  
+/**
+ * Turn an Op expression into an execution of QueryIterators.
+ * 
+ * Does not consider optimizing the algebra expression (that should happen
+ * elsewhere). BGPs are still subject to StageBuilding during iterator
+ * execution. During execution, when a substitution into an algebra expression
+ * happens (in other words, a streaming opertation (index-join-like), there is a
+ * call into the compiler each time so it doe snot just happen once before a
+ * query starts.
  * 
  * @author Andy Seaborne
  */
 
 public class OpCompiler
 {
+    // If this becomes important, then formalise as symbol value in the context. 
+    
     // A small (one slot) registry to allow (experimental) alternative  OpCompilers
     public interface Factory { OpCompiler create(ExecutionContext execCxt) ; }
     
@@ -49,26 +57,32 @@ public class OpCompiler
         {
             return new OpCompiler(execCxt) ;
         }} ;  
-    
+
+    static private OpCompiler decideOpCompiler(ExecutionContext execCxt)
+    {
+        if ( factory == null )
+            return new OpCompiler(execCxt) ;    // Only if default 'factory' gets lost.
+        else
+            return factory.create(execCxt) ;
+    }
+        
     // -------
-    // Call via QC.compile
     
     static QueryIterator compile(Op op, ExecutionContext execCxt)
     {
         return compile(op, root(execCxt), execCxt) ;
     }
     
+    // Public interface is via QC.compile.
     static QueryIterator compile(Op op, QueryIterator qIter, ExecutionContext execCxt)
     {
-        OpCompiler compiler = null ;
-        if ( factory == null )
-            compiler = new OpCompiler(execCxt) ;    // Only if default 'factory' gets lost.
-        else
-            compiler = factory.create(execCxt) ;
+        OpCompiler compiler = decideOpCompiler(execCxt) ;
         QueryIterator q = compiler.compileOp(op, qIter) ;
         return q ;
     }
 
+    // -------- The object starts here --------
+    
     protected ExecutionContext execCxt ;
     protected CompilerDispatch dispatcher = null ;
 
@@ -243,8 +257,6 @@ public class OpCompiler
         exprs.prepareExprs(execCxt.getContext()) ;
         
         Op base = opFilter.getSubOp() ;
-        
-        // Done as a transform prior to compilation to a query plan
         QueryIterator qIter = compileOp(base, input) ;
 
         for ( Iterator iter = exprs.iterator() ; iter.hasNext(); )
