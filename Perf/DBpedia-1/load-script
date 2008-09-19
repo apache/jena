@@ -8,7 +8,7 @@ DATASETS="${DATASETS:-$HOME/Datasets}"
 LOCATION="--location DB"
 PARA="${PARA:---parallel}"
 
-tdbclean "$LOCATION"
+tdbclean $LOCATION
 tdbloader $LOCATION $PARA \
     $DATASETS/DBPediaBM/dbp-infoboxes.nt \
     $DATASETS/DBPediaBM/dbp-geocoordinates.nt \
