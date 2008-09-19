@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.sparql.sse.SSEParseException;
 
+import com.hp.hpl.jena.tdb.TDB;
 import com.hp.hpl.jena.tdb.TDBException;
 import com.hp.hpl.jena.tdb.base.file.Location;
 import com.hp.hpl.jena.tdb.index.Index;
@@ -26,7 +27,10 @@ import com.hp.hpl.jena.tdb.sys.Names;
 
 public class GraphTDBFactory
 {
-    static Logger log = LoggerFactory.getLogger(GraphTDBFactory.class) ;
+    // For this class
+    private static Logger log = LoggerFactory.getLogger(GraphTDBFactory.class) ;
+    // Generally informative
+    private static Logger logTDB = LoggerFactory.getLogger(TDB.class) ;
 
     /** Create a graph backed with storage at a particular location */
     public static GraphTDB create(Location location)
@@ -72,7 +76,7 @@ public class GraphTDBFactory
         {
             try {
                 reorder = ReorderLib.weighted(location.getPath(Names.optStats)) ;
-                log.info("Statistics-based BGP optimizer") ;  
+                logTDB.info("Statistics-based BGP optimizer") ;  
             } catch (SSEParseException ex) { 
                 throw new TDBException("Error in stats file: "+ex.getMessage()) ;
             }
@@ -81,17 +85,17 @@ public class GraphTDBFactory
         {
             // Not as good but better than nothering.
             reorder = new ReorderVarCount() ;
-            log.info("Variable counting BGP optimizer") ;  
+            logTDB.info("Variable counting BGP optimizer") ;  
         }
         
         if ( location.exists(Names.optNone) )
         {
             reorder = ReorderLib.identity() ;
-            log.info("Optimizer explicitly turned off") ;
+            logTDB.info("Optimizer explicitly turned off") ;
         }
 
         if ( reorder == null )
-            log.info("No BGP optimizer") ;
+            logTDB.info("No BGP optimizer") ;
         
         return new GraphTDB(triplesSPO, triplesPOS, triplesOSP, nodeTable, reorder) ;
     }
