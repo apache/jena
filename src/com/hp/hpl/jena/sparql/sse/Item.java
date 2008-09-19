@@ -10,6 +10,7 @@ package com.hp.hpl.jena.sparql.sse;
 import java.util.Iterator;
 
 import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.util.FmtUtils;
 import com.hp.hpl.jena.sparql.util.IndentedLineBuffer;
 
@@ -288,8 +289,14 @@ public class Item extends ItemLocation
     
     public boolean isNil()              { return isNil ; } 
     public boolean isList()             { return list != null ; }
+    
     public boolean isNode()             { return node != null ; }
-    public boolean isSymbol()             { return symbol != null ; }
+    public boolean isNodeURI()          { return isNode() && getNode().isURI() ; }
+    public boolean isVar()              { return Var.isVar(getNode()) ; }
+    public boolean isNodeLiteral()      { return isNode() && getNode().isLiteral() ; }
+    public boolean isNodeBNode()        { return isNode() && getNode().isBlank() ; }
+    
+    public boolean isSymbol()           { return symbol != null ; }
     public boolean isSymbol(String testSymbol)
     { 
         if ( symbol == null )
