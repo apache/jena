@@ -8,7 +8,7 @@ package com.hp.hpl.jena.tdb.solver.reorder;
 
 import com.hp.hpl.jena.sparql.core.BasicPattern;
 
-public interface ReorderPattern
+public interface ReorderTransformation
 {
     /** Return the reordering function based on a basic graph pattern. */
     public ReorderProc reorderIndexes(BasicPattern pattern) ;

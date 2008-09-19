@@ -9,7 +9,7 @@ package com.hp.hpl.jena.tdb.solver.reorder;
 public interface Reorderable
 {
     /** Reorder processor - may be null, for "not applicable" */ 
-    public ReorderPattern getReorderPattern() ;
+    public ReorderTransformation getReorderPattern() ;
 }
 
 /*

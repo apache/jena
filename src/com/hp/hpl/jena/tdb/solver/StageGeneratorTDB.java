@@ -15,7 +15,7 @@ import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.main.StageGenerator;
 import com.hp.hpl.jena.tdb.pgraph.GraphTDB;
-import com.hp.hpl.jena.tdb.solver.reorder.ReorderPattern;
+import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
 
 public class StageGeneratorTDB implements StageGenerator
 {
@@ -36,14 +36,10 @@ public class StageGeneratorTDB implements StageGenerator
             // Not use - bounce up the StageGenerator
             return above.execute(pattern, input, execCxt) ;
         
-//        if ( g instanceof Reorderable )
-//        { // wrap in a reorder step
-//            
-//        }
-        
+        // To be split up.
         GraphTDB graph = (GraphTDB)g ;
         
-        ReorderPattern reorder = graph.getReorderPattern() ;
+        ReorderTransformation reorder = graph.getReorderPattern() ;
 
         @SuppressWarnings("unchecked")
         Iterator<Binding> _input = (Iterator<Binding>)input ;

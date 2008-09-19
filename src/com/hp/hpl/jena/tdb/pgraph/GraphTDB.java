@@ -32,7 +32,7 @@ import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 import com.hp.hpl.jena.tdb.graph.GraphSyncListener;
 import com.hp.hpl.jena.tdb.index.TripleIndex;
 import com.hp.hpl.jena.tdb.lib.TupleLib;
-import com.hp.hpl.jena.tdb.solver.reorder.ReorderPattern;
+import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
 import com.hp.hpl.jena.tdb.solver.reorder.Reorderable;
 import com.hp.hpl.jena.tdb.sys.Const;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
@@ -61,11 +61,11 @@ public class GraphTDB extends GraphBase implements Sync, Reorderable
     private NodeTable nodeTable = null ;
     
     private final GraphTDBQueryHandler queryHandler = new GraphTDBQueryHandler(this) ;
-    private ReorderPattern reorderPattern = null ;
+    private ReorderTransformation reorderPattern = null ;
     
     protected GraphTDB() {}   // Must call init!
     
-    public GraphTDB(TripleIndex spo, TripleIndex pos, TripleIndex osp, NodeTable nodeTable, ReorderPattern reorderPattern)
+    public GraphTDB(TripleIndex spo, TripleIndex pos, TripleIndex osp, NodeTable nodeTable, ReorderTransformation reorderPattern)
     {
         if ( spo == null )
             throw new TDBException("SPO index is required") ;
@@ -423,7 +423,7 @@ public class GraphTDB extends GraphBase implements Sync, Reorderable
     // Placed here so detailed manipulatation code can be external to this class.
     
     /** Reorder processor - may be null, for "none" */ 
-    public ReorderPattern getReorderPattern()       { return reorderPattern ; }
+    public ReorderTransformation getReorderPattern()       { return reorderPattern ; }
 
     public TripleIndex getIndexSPO()                { return indexSPO ; }
     public TripleIndex getIndexPOS()                { return indexPOS ; }

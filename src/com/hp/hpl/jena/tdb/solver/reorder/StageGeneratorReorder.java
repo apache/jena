@@ -1,57 +1,54 @@
 /*
- * (c) Copyright 2008 Hewlett-Packard Development Company, LP
+ * (c) C;opyright 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
 package com.hp.hpl.jena.tdb.solver.reorder;
 
+import java.util.Iterator;
+
+import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.sparql.core.BasicPattern;
+import com.hp.hpl.jena.sparql.engine.ExecutionContext;
+import com.hp.hpl.jena.sparql.engine.QueryIterator;
+import com.hp.hpl.jena.sparql.engine.binding.Binding;
+import com.hp.hpl.jena.sparql.engine.main.StageGenerator;
+import com.hp.hpl.jena.tdb.TDBException;
+import com.hp.hpl.jena.tdb.solver.QueryIterTDB;
 
-import com.hp.hpl.jena.tdb.solver.stats.StatsMatcher;
-
-public class ReorderLib
+/** Apply a reordering transformation */
+public class StageGeneratorReorder implements StageGenerator
 {
+    StageGenerator above = null ;
     
-    private static ReorderProc _identityProc = new ReorderProc() {
-        @Override
-        public BasicPattern reorder(BasicPattern pattern)
-        {
-            return pattern ;
-        } 
-        @Override
-        public String toString()
-        {
-            return "identity reorder" ;
-        }
-    } ;
-
-    private static ReorderTransformation _identity = new ReorderTransformation() {
-        @Override
-        public BasicPattern reorder(BasicPattern pattern)
-        {
-            return pattern ;
-        }
-
-        @Override
-        public ReorderProc reorderIndexes(BasicPattern pattern)
-        {
-            return _identityProc ;
-        } } ;
-
-    public static ReorderProc identityProc()
-    { return _identityProc ; }
-
-    public static ReorderTransformation identity()
-    { return _identity ; }
-
-    
-    public static ReorderTransformation weighted(String filename)
+    public StageGeneratorReorder(StageGenerator original)
     {
-        StatsMatcher stats = new StatsMatcher(filename) ;
-        return new ReorderWeighted(stats) ;
+        above = original ;
     }
+    
+    @Override
+    public QueryIterator execute(BasicPattern pattern, QueryIterator input, ExecutionContext execCxt)
+    {
+        if ( true )
+            throw new TDBException("StageGeneratorReorder: NOT READY") ;
+        
+        Graph graph = execCxt.getActiveGraph() ;
+        if ( graph instanceof Reorderable )
+        {
+            ReorderTransformation transform = ((Reorderable)graph).getReorderPattern() ;
+            if ( transform != null )
+            {
+                @SuppressWarnings("unchecked")
+                Iterator<Binding> _input = (Iterator<Binding>)input ;
+                Iterator<Binding> iterBinding = new StageReorder(pattern, _input, transform, execCxt, above) ;
+                return new QueryIterTDB(iterBinding, input) ;
+            }
+        }
 
+        // Has no reorder capability.  Pass on.
+        return above.execute(pattern, input, execCxt) ;
+    }
 }
 
 /*

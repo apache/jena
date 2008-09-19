@@ -10,9 +10,9 @@ public class Dev
 {
     // (tidying) : ARQ : treat memory graphs as a storage (StageGenBasicPattern in ARQ).
     // Don't test for "GraphTDB" but for "GraphCanOptimizeBGP"
-    // Wrapper for any Graph 
+    // Wrapper for any Graph ==> 
     
-    // StageMatchPattern ==> StageReorderPattern(ReorderableGraph, StageGenerator)
+    // ** solver.reorder.StageGeneratorReorder:: StageMatchPattern ==> StageReorderPattern(ReorderableGraph, StageGenerator)
     
     // ---- Optimizer
     //   Abbreviate planning when below a threshold.

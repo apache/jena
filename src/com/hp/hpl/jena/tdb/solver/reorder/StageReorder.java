@@ -4,39 +4,54 @@
  * [See end of file]
  */
 
-package dev;
+package com.hp.hpl.jena.tdb.solver.reorder;
 
-import com.hp.hpl.jena.sparql.algebra.Op;
-import com.hp.hpl.jena.sparql.algebra.TransformCopy;
-import com.hp.hpl.jena.sparql.algebra.op.OpBGP;
+import java.util.Iterator;
+
+import iterator.RepeatApplyIterator;
+
 import com.hp.hpl.jena.sparql.core.BasicPattern;
+import com.hp.hpl.jena.sparql.core.Substitute;
+import com.hp.hpl.jena.sparql.engine.ExecutionContext;
+import com.hp.hpl.jena.sparql.engine.binding.Binding;
+import com.hp.hpl.jena.sparql.engine.main.StageGenerator;
+import com.hp.hpl.jena.tdb.TDBException;
 
-import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
-import com.hp.hpl.jena.tdb.solver.reorder.ReorderProc;
-
-public class TransformReorderBGP extends TransformCopy
+public class StageReorder extends RepeatApplyIterator<Binding>
 {
+    private ReorderProc reorderProc = null ;
     private ReorderTransformation transform ;
+    private StageGenerator stageGenerator ;
+    private BasicPattern pattern ;
 
-    public TransformReorderBGP(ReorderTransformation transform)
-    { 
+    public StageReorder(BasicPattern pattern, Iterator<Binding> _input, ReorderTransformation transform,
+                        ExecutionContext execCxt, StageGenerator stageGen)
+    {
+        super(_input) ;
+        this.pattern = pattern ;
         this.transform = transform ;
+        this.stageGenerator = stageGen ;
     }
-    
+
     @Override
-    public Op transform(OpBGP opBGP)
+    protected Iterator<Binding> makeNextStage(Binding b)
     {
-        BasicPattern pattern = opBGP.getPattern() ;
-        BasicPattern pattern2 = rewrite(pattern) ; 
-        return new OpBGP(pattern2) ; 
+        // ---- Reorder
+        BasicPattern pattern2 = Substitute.substitute(pattern, b) ;
+
+        if ( transform != null && pattern.size() > 1 )
+        {
+            if ( reorderProc == null )
+                // Cache the reorder processor - ie. the first binding is used
+                // as a template for later input bindings.   
+                reorderProc = transform.reorderIndexes(pattern2) ;
+            pattern2 = reorderProc.reorder(pattern2) ;
+        }
+        
+        // ---- Execute
+        throw new TDBException("NOT READY: StageReorder") ;
     }
-    
-    public BasicPattern rewrite(BasicPattern pattern)
-    {
-        ReorderProc proc = transform.reorderIndexes(pattern) ;
-        System.out.println("Reorder: "+proc) ;
-        return proc.reorder(pattern) ;
-    }
+
 }
 
 /*

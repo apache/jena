@@ -16,7 +16,7 @@ import com.hp.hpl.jena.sparql.core.BasicPattern;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.tdb.pgraph.GraphTDB;
-import com.hp.hpl.jena.tdb.solver.reorder.ReorderPattern;
+import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderProc;
 
 import iterator.Iter;
@@ -26,12 +26,13 @@ import iterator.SingletonIterator;
 public class StageMatchPattern extends RepeatApplyIterator<Binding>
 {
     private BasicPattern pattern ;
-    private ReorderPattern reorderPattern ;
-    private ReorderProc    reorderProc ;
+    private ReorderTransformation reorderPattern ;
     private GraphTDB graph ;
     private ExecutionContext execCxt ;
+    // Cache slot.
+    private ReorderProc reorderProc = null ;
     
-    protected StageMatchPattern(GraphTDB graph, Iterator<Binding> input, BasicPattern pattern, ReorderPattern reorder, ExecutionContext execCxt)
+    protected StageMatchPattern(GraphTDB graph, Iterator<Binding> input, BasicPattern pattern, ReorderTransformation reorder, ExecutionContext execCxt)
     {
         super(input) ;
         this.pattern = pattern ;

@@ -19,7 +19,7 @@ import com.hp.hpl.jena.tdb.index.IndexBuilder;
 import com.hp.hpl.jena.tdb.index.RangeIndex;
 import com.hp.hpl.jena.tdb.index.TripleIndex;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderLib;
-import com.hp.hpl.jena.tdb.solver.reorder.ReorderPattern;
+import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderVarCount;
 import com.hp.hpl.jena.tdb.sys.Names;
 
@@ -71,7 +71,7 @@ public class GraphTDBFactory
         // Creates the object file as a file-backed one. 
         NodeTable nodeTable = new NodeTableIndex(factory, location) ;
         
-        ReorderPattern reorder = null ;
+        ReorderTransformation reorder = null ;
         if ( location.exists(Names.optStats) )
         {
             try {
