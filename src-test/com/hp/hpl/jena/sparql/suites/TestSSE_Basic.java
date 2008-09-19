@@ -221,6 +221,14 @@ public class TestSSE_Basic extends TestCase
         } catch (ItemException ex) {}
     }
 
+    public void testNum_05()
+    { 
+        Item item = SSE.parse("<x>") ;
+        try {
+            item.getInt() ;
+            fail("Succeeded where exception expected") ;
+        } catch (ItemException ex) {}
+    }
     
     
     public void testMisc_01()    { testEquals("()") ; }

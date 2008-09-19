@@ -211,6 +211,8 @@ public class Item extends ItemLocation
     { 
         if ( ! isNode() )
             throw new ItemException("Not a node, can't be a double: "+this) ;
+        if ( ! getNode().isLiteral() )
+            throw new ItemException("Not a literal, can't be a double: "+this) ;
         return ((Number)(getNode().getLiteralValue())).doubleValue() ;
     }
 
@@ -218,6 +220,9 @@ public class Item extends ItemLocation
     { 
         if ( ! isNode() )
             throw new ItemException("Not a node, can't be an integer: "+this) ;
+        if ( ! getNode().isLiteral() )
+            throw new ItemException("Not a literal, can't be a integer: "+this) ;
+        //Integer.parseInt(getNode().getLiteralLexicalForm()) ;
         return ((Number)(getNode().getLiteralValue())).longValue() ;
     }
 
@@ -225,6 +230,8 @@ public class Item extends ItemLocation
     { 
         if ( ! isNode() )
             throw new ItemException("Not a node, can't be an integer: "+this) ;
+        if ( ! getNode().isLiteral() )
+            throw new ItemException("Not a literal, can't be a integer: "+this) ;
         return ((Number)(getNode().getLiteralValue())).intValue() ;
     }
 
@@ -232,6 +239,8 @@ public class Item extends ItemLocation
     { 
         if ( ! isNode() )
             throw new ItemException("Not a node, can't be an integer: "+this) ;
+        if ( ! getNode().isLiteral() )
+            throw new ItemException("Not a literal, can't be a integer: "+this) ;
         return ((Number)(getNode().getLiteralValue())).intValue() ;
     }
 
