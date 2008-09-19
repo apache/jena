@@ -207,6 +207,35 @@ public class Item extends ItemLocation
     //public String getPrefixedName()     { return prefixedName ; }
     public String getSymbol()             { return symbol ; }
     
+    public double getDouble()
+    { 
+        if ( ! isNode() )
+            throw new ItemException("Not a node, can't be a double: "+this) ;
+        return ((Number)(getNode().getLiteralValue())).doubleValue() ;
+    }
+
+    public long getInteger()
+    { 
+        if ( ! isNode() )
+            throw new ItemException("Not a node, can't be an integer: "+this) ;
+        return ((Number)(getNode().getLiteralValue())).longValue() ;
+    }
+
+    public int getInt()
+    { 
+        if ( ! isNode() )
+            throw new ItemException("Not a node, can't be an integer: "+this) ;
+        return ((Number)(getNode().getLiteralValue())).intValue() ;
+    }
+
+    public int getLong()
+    { 
+        if ( ! isNode() )
+            throw new ItemException("Not a node, can't be an integer: "+this) ;
+        return ((Number)(getNode().getLiteralValue())).intValue() ;
+    }
+
+    
     public String sniff()
     {
         if ( ! isTaggable() ) return null ;

@@ -15,6 +15,7 @@ import com.hp.hpl.jena.sparql.ARQConstants;
 import com.hp.hpl.jena.sparql.ARQException;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.sse.Item;
+import com.hp.hpl.jena.sparql.sse.ItemException;
 import com.hp.hpl.jena.sparql.sse.SSE;
 import com.hp.hpl.jena.sparql.sse.SSEParseException;
 import com.hp.hpl.jena.sparql.util.NodeFactory;
@@ -191,6 +192,36 @@ public class TestSSE_Basic extends TestCase
 
     public void testList_7()
     { testList("[+ 1]", Item.createSymbol("+"), int1i) ; }
+    
+    
+    public void testNum_01()
+    { 
+        Item item = SSE.parse("1") ;
+        assertEquals(1, item.getInt()) ;
+    }
+        
+    public void testNum_02()
+    { 
+        Item item = SSE.parse("3") ;
+        assertEquals(3d, item.getDouble(), 0) ;
+    }
+
+    public void testNum_03()
+    { 
+        Item item = SSE.parse("2.5") ;      // Exact double
+        assertEquals(2.5d, item.getDouble(), 0) ;
+    }
+    
+    public void testNum_04()
+    { 
+        Item item = SSE.parse("abc") ;
+        try {
+            item.getInt() ;
+            fail("Succeeded where exception expected") ;
+        } catch (ItemException ex) {}
+    }
+
+    
     
     public void testMisc_01()    { testEquals("()") ; }
     public void testMisc_02()    { testEquals("(a)") ; }
