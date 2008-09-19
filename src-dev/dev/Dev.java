@@ -21,8 +21,18 @@ public class Dev
     
     // -- Work on Filter-BGP blocks.  
     // -- Tests : VarCounter, stats matcher.
-    // -- tdbloader: write/update stats, gzip files (script).
     // -- ARQ: (A) FilterBGP units and (B) optimizer policy hook (C) per source optimization.
+    
+    // Is there a problem here when the active graph changes?
+    // Does StageBuilder need to do a delayed build (ARQ)?
+    // ----> Intercept point is "OpCompiler.compile"
+    
+    //   Have a "test for executing this op" call in a stage generator++ that engine main calls 
+    //     before any/specific ops.  
+    
+    // ARQ: CompilerDispatch
+    // OpCompiler.factory
+    // Catch (filter (bgp ...)). 
     
     // Link Assembler (custom indexes) to TDBFactory 
     
@@ -38,8 +48,8 @@ public class Dev
     // ---- tdbloader: 
     //   close indexes not in use in a given phase
     //   Especially efficient iterator() for B+Trees (not mmap).
-    //   (script) to work on gzip files
-    //   Write stats
+    //   ** (script) to work on gzip files
+    //   ** Write stats
 
     // ---- Use of java properties for key values.
     // Or config file.

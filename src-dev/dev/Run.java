@@ -12,16 +12,12 @@ import lib.FileOps;
 import lib.Pair;
 import lib.cache.Cache2;
 
+import arq.cmd.CmdUtils;
+
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.QueryExecution;
-import com.hp.hpl.jena.query.QueryExecutionFactory;
-import com.hp.hpl.jena.query.QueryFactory;
-import com.hp.hpl.jena.query.ResultSet;
-import com.hp.hpl.jena.query.ResultSetFormatter;
-import com.hp.hpl.jena.query.Syntax;
+import com.hp.hpl.jena.query.*;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.sparql.algebra.Algebra;
@@ -55,11 +51,29 @@ public class Run
             System.out.println(nextDivider) ;
         nextDivider = "" ;
     }
+
+    static { CmdUtils.setLog4j() ; }
+ 
     
     public static void main(String ... args) throws IOException
     {
         //smallGraph() ;
         //tdbloader("--desc=tdb.ttl", "--mem", "/home/afs/Datasets/MusicBrainz/tracks.nt") ;
+        
+        Model m1 = TDBFactory.createModel("DB") ;
+        Model m2 = ModelFactory.createDefaultModel() ;
+        DataSource ds = DatasetFactory.create() ;
+        ds.addNamedModel("http://example/tdb", m1) ;
+        ds.setDefaultModel(m2) ;
+        Query query = QueryFactory.create("SELECT (Count(*)) { { ?s ?p ?o } UNION { GRAPH ?g {?s ?p ?o} } }", Syntax.syntaxARQ) ;
+        QueryExecution qexec = QueryExecutionFactory.create(query, ds) ;
+        
+        ResultSet rs = qexec.execSelect() ;
+        ResultSetFormatter.out(rs) ;
+        qexec.close() ;
+        System.exit(0) ;
+        
+        
         
         rewrite() ; System.exit(0) ;
         

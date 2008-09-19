@@ -33,6 +33,7 @@ import com.hp.hpl.jena.tdb.graph.GraphSyncListener;
 import com.hp.hpl.jena.tdb.index.TripleIndex;
 import com.hp.hpl.jena.tdb.lib.TupleLib;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderPattern;
+import com.hp.hpl.jena.tdb.solver.reorder.Reorderable;
 import com.hp.hpl.jena.tdb.sys.Const;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 import com.hp.hpl.jena.util.iterator.NiceIterator;
@@ -42,7 +43,7 @@ import com.hp.hpl.jena.util.iterator.NiceIterator;
  *  and a node table form can map to and from integers.
  */
 
-public class GraphTDB extends GraphBase implements Sync
+public class GraphTDB extends GraphBase implements Sync, Reorderable
 {
     //static Logger log = LoggerFactory.getLogger(GraphTDB.class) ;
     

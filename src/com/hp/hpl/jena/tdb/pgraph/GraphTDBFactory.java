@@ -96,7 +96,7 @@ public class GraphTDBFactory
         }
 
         if ( reorder == null )
-            logTDB.info("No BGP optimizer") ;
+            logTDB.warn("No BGP optimizer") ;
         
         return new GraphTDB(triplesSPO, triplesPOS, triplesOSP, nodeTable, reorder) ;
     }
