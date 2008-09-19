@@ -8,7 +8,8 @@ package dev;
 
 public class Dev
 {
-    // ** solver.reorder.StageGeneratorReorder:: StageMatchPattern ==> StageReorderPattern(ReorderableGraph, StageGenerator)
+    // ** solver.reorder.StageGeneratorReorder
+    // ** General StageGenerator one bindng at a time over a Stage.
     
     // ---- Optimizer
     //   Abbreviate planning when below a threshold.

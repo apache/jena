@@ -15,7 +15,7 @@ import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.tdb.pgraph.NodeId;
 
 /** Class for a Binding-like structure excep tit works on NodeIds, not on Nodes */  
-class BindingNodeId extends Map2<Var, NodeId>
+public class BindingNodeId extends Map2<Var, NodeId>
 {
     // Possible optimization: there are at most 3 possible values so HashMap is overkill.
     // Use a chain of small objects.

@@ -28,7 +28,7 @@ public class SolverLib
 {
     // ---- TDB specific
     // Transform : BindingNodeId ==> Binding
-    static Transform<BindingNodeId, Binding> convToBinding(final GraphTDB graph)
+    public static Transform<BindingNodeId, Binding> convToBinding(final GraphTDB graph)
     {
         return new Transform<BindingNodeId, Binding>()
         {
@@ -54,7 +54,7 @@ public class SolverLib
     }
 
     // Transform : Binding ==> BindingNodeId
-    static Transform<Binding, BindingNodeId> convFromBinding(final GraphTDB graph)
+    public static Transform<Binding, BindingNodeId> convFromBinding(final GraphTDB graph)
     {
         return new Transform<Binding, BindingNodeId>()
         {

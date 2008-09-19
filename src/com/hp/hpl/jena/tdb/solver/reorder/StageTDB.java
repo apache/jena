@@ -6,57 +6,56 @@
 
 package com.hp.hpl.jena.tdb.solver.reorder;
 
-import iterator.RepeatApplyIterator;
+import static com.hp.hpl.jena.tdb.solver.SolverLib.* ;
+import iterator.Iter;
+import iterator.SingletonIterator;
 
 import java.util.Iterator;
+import java.util.List;
 
+import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.sparql.core.BasicPattern;
-import com.hp.hpl.jena.sparql.core.Substitute;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.tdb.TDBException;
+import com.hp.hpl.jena.tdb.pgraph.GraphTDB;
+import com.hp.hpl.jena.tdb.solver.BindingNodeId;
+import com.hp.hpl.jena.tdb.solver.StageMatchTriple;
 
-public class StageReorder extends RepeatApplyIterator<Binding>
+/** Execute a basic graph pattern for TDB */
+
+public class StageTDB implements StageReorder.Stage
 {
-    private ReorderProc reorderProc = null ;
-    private ReorderTransformation transform ;
-    private Stage stage ;
-    private BasicPattern pattern ;
+    private GraphTDB graph ;
     private ExecutionContext execCxt ;
-
-    public StageReorder(BasicPattern pattern, Iterator<Binding> _input, 
-                        ReorderTransformation transform,  Stage stage,
-                        ExecutionContext execCxt)
+    
+    protected StageTDB(GraphTDB graph) 
     {
-        super(_input) ;
-        this.pattern = pattern ;
-        this.transform = transform ;
-        this.stage = stage ;
-        this.execCxt = execCxt ;
+        this.graph = graph ;
     }
 
     @Override
-    protected Iterator<Binding> makeNextStage(Binding binding)
+    public Iterator<Binding> execute(BasicPattern pattern, Binding binding, ExecutionContext execCxt)
     {
-        // ---- Reorder
-        BasicPattern pattern2 = Substitute.substitute(pattern, binding) ;
-
-        if ( transform != null && pattern.size() > 1 )
-        {
-            if ( reorderProc == null )
-                // Cache the reorder processor - ie. the first binding is used
-                // as a template for later input bindings.   
-                reorderProc = transform.reorderIndexes(pattern2) ;
-            pattern2 = reorderProc.reorder(pattern2) ;
-        }
+        @SuppressWarnings("unchecked")
+        List<Triple> triples = (List<Triple>)pattern.getList() ;
         
-        // ---- Execute
-        if ( true ) throw new TDBException("NOT READY: StageReorder") ;
-        return stage.execute(pattern2, binding, execCxt) ;
+        Iterator<BindingNodeId> chain = 
+            new SingletonIterator<BindingNodeId>(convFromBinding(graph).convert(binding)) ;
+        
+        for ( Triple triple : triples )
+            chain = solve(graph, chain, triple, execCxt) ;
+        
+        Iterator<Binding> iterBinding = Iter.map(chain, convToBinding(graph)) ;
+        return iterBinding ;
     }
 
-    interface Stage { public Iterator<Binding> execute(BasicPattern pattern, Binding binding, ExecutionContext execCxt) ; }
-    
+    static Iterator<BindingNodeId> solve(GraphTDB graph,
+                                         Iterator<BindingNodeId> chain,
+                                         Triple triple, 
+                                         ExecutionContext execCxt)
+    {
+        return new StageMatchTriple(graph, chain, triple, execCxt) ;
+    }
 }
 
 /*

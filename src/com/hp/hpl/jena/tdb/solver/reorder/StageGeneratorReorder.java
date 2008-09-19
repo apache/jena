@@ -16,15 +16,19 @@ import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.main.StageGenerator;
 import com.hp.hpl.jena.tdb.TDBException;
 import com.hp.hpl.jena.tdb.solver.QueryIterTDB;
+import com.hp.hpl.jena.tdb.solver.reorder.StageReorder.Stage;
 
-/** Apply a reordering transformation */
+/** Attempt to apply a reordering transformation */
+
 public class StageGeneratorReorder implements StageGenerator
 {
-    StageGenerator above = null ;
+    private Stage stage ;
+    private StageGenerator original ;
     
-    public StageGeneratorReorder(StageGenerator original)
+    public StageGeneratorReorder(StageGenerator original, Stage stage)
     {
-        above = original ;
+        this.stage = stage ;
+        this.original = original ;
     }
     
     @Override
@@ -41,13 +45,13 @@ public class StageGeneratorReorder implements StageGenerator
             {
                 @SuppressWarnings("unchecked")
                 Iterator<Binding> _input = (Iterator<Binding>)input ;
-                Iterator<Binding> iterBinding = new StageReorder(pattern, _input, transform, execCxt, above) ;
+                Iterator<Binding> iterBinding = new StageReorder(pattern, _input, transform, stage, execCxt) ;
                 return new QueryIterTDB(iterBinding, input) ;
             }
         }
 
         // Has no reorder capability.  Pass on.
-        return above.execute(pattern, input, execCxt) ;
+        return original.execute(pattern, input, execCxt) ;
     }
 }
 
