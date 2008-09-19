@@ -26,7 +26,7 @@ import com.hp.hpl.jena.tdb.sys.Metadata;
 
 public class TDB
 {
-    public static final Logger log = LoggerFactory.getLogger(TDB.class) ;
+    private static final Logger log = LoggerFactory.getLogger(TDB.class) ;
     
     public static String namespace = "http://jena.hpl.hp.com/2008/tdb#" ;
 

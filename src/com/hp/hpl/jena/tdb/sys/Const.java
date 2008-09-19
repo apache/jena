@@ -6,8 +6,6 @@
 
 package com.hp.hpl.jena.tdb.sys;
 
-import static com.hp.hpl.jena.tdb.TDB.log;
-
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -15,6 +13,7 @@ import java.io.Reader;
 import java.nio.ByteOrder;
 import java.util.Properties;
 
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.util.FileUtils;
@@ -31,6 +30,10 @@ import com.hp.hpl.jena.tdb.pgraph.NodeId;
 
 public class Const
 {
+    // NB Same logger as the TDB class because this class is the system info but kept out of TDB javadoc.
+    // It's visibility is TDB, not really public. 
+    private static final Logger log = LoggerFactory.getLogger(TDB.class) ;
+    
     // Get these via a properties file
     
     public static final String TDB_NS = "http://jena.hpl.hp.com/TDB#" ;
