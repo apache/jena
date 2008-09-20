@@ -18,6 +18,7 @@
     
 
     <!-- Publish -->
+    <!-- ibiblio and a file:/// URL? -->
     <!-- File system - for testing - can publish wrong bytes! -->
     <filesystem name="dev-resolver" >
        <ivy      pattern="${pub.dir.local}/[module]-[revision]/ivy.xml"/>

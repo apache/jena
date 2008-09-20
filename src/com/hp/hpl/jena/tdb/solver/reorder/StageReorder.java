@@ -29,8 +29,8 @@ public class StageReorder implements Stage
     public QueryIterator execute(BasicPattern pattern, Binding binding, ExecutionContext execCxt)
     {
         // ---- Reorder
-        // This does a substitute - which stage.execute will do anyway.
-        // Could move into reorderIndexes.
+        // This does a substitute - which stage.execute will do anyway (or moral equivalent).
+        // Could move into reorderIndexes to do as the mutate PatterTriples are made.
         BasicPattern pattern2 = Substitute.substitute(pattern, binding) ;
 
         if ( transform != null && pattern.size() > 1 )

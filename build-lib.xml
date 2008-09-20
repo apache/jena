@@ -344,7 +344,7 @@
   <!-- DEVELOPMENT : lib2/ -->
   <target name="ivy-setup-lib" depends="ivy-init,ivy-resolve-report" 
 	  description="Resolve and fetch dependences with Ivy">
-    <ivy:retrieve conf="dev" pattern="lib2/[artifact]-[revision].[ext]" />
+    <ivy:retrieve conf="dev" pattern="lib2/[artifact]-[revision](-[classifier]).[ext]" />
     <ivy:cachepath pathid="ivy.dev.classpath" conf="dev" />
   </target>
 
@@ -359,10 +359,10 @@
 
   <target name="ivy-publish" depends="ivy-init,ivy-resolve">
     <!-- <ivy:resolve conf="main"/> -->
+    <ivy:deliver con="main"/>
     <ivy:publish conf="main" 
 		 resolver="dev-publish" 
-		 overwrite="true"
-		 forcedeliver="true">
+		 overwrite="true">
       <artifacts pattern="${artifacts.dir}/[artifact]-[revision](-[classifier]).[ext]" />
     </ivy:publish>
   </target>

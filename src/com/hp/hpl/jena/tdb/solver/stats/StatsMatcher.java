@@ -152,6 +152,7 @@ public final class StatsMatcher
         double weightSP = 2 ;
         double weightPO = 10 ;                   
 
+        int _ = 0 ;
         if ( list.car().isTagged(META) )
         {        
             // Process the meta tag.
@@ -167,6 +168,7 @@ public final class StatsMatcher
         if ( count != - 1 && count < 100 )
             weightPO = 4 ;
 
+        
         while (!list.isEmpty()) 
         {
             

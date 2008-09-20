@@ -46,8 +46,9 @@ public abstract class ReorderTransformationBase implements ReorderTransformation
         // Convert to a mutable form (that allows things like "TERM")
         List<PatternTriple> components = toList(map(triples, convert)) ;
         
-        // This is for moving the substitution inside the reorder code.
-        // Otherwise StageReorder needs to call Substitute.substitute  
+        // Could merge into the conversion step to do the rewrite WRT an Binding.
+        // Or done here as a second pass mutate of PatternTriples
+        // Currently done early in the reorder code which is cleaner. 
 //        Binding b = new BindingMap() ;
 //        if ( b != null )
 //        {

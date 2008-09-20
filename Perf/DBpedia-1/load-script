@@ -7,7 +7,8 @@ DATASETS="${DATASETS:-$HOME/Datasets}"
 #DB_DESC="$TDBROOT/DB/DBpediaBM/dataset-dbp.ttl"
 DB_DIR=DB
 LOCATION="--location $DB_DIR"
-PARA="${PARA:---parallel}"
+
+#PARA="${PARA:---parallel}"
 
 tdbclean $DB_DIR
 tdbloader $LOCATION $PARA \
