@@ -14,21 +14,38 @@ import com.hp.hpl.jena.graph.Node;
 
 public class ItemList extends ItemLocation //implements Iterable<Item> 
 {
-    private List elements = new ArrayList() ;
-
-    public ItemList(int line, int column)
-    { super(line, column) ; }
-
-    public ItemList() { super(noLine, noColumn) ; }
+    private final List elements ;
+    // Pointer to the start of the list
+    // Because of repeated cdr's, we can not use a .subList (leads to a whole
+    // chain subLists, one per call).
+    private final int offset ;       
+    private int index(int i) { return offset+i ; }
+    private int _size()      { return elements.size()-offset; }
+    private List slice()     { return elements.subList(offset, elements.size()) ; }
     
-    public int size() { return elements.size() ; }
-    public boolean isEmpty() { return elements.isEmpty() ; }
+    public ItemList(int line, int column)
+    { this(line, column, 0, new ArrayList()) ; }
 
-    public int hashCode() { return elements.hashCode() ; }
+    public ItemList() { this(noLine, noColumn) ; }
+
+    public ItemList(int line, int column, int offset, List elts)
+    { 
+        super(line, column) ;
+        this.elements = elts ;
+        this.offset = offset ;
+    }
+    
+    public int size() { return _size() ; }
+    public boolean isEmpty() { return _size()==0 ; }
+
+    public int hashCode() { return elements.hashCode() ^ offset ; }
     public boolean equals(Object other)
     { 
         if ( ! ( other instanceof ItemList) ) return false ;
-        return elements.equals(((ItemList)other).elements) ;
+        ItemList list = (ItemList)other ;
+        
+        if ( list.size() != size() ) return false ;
+        return slice().equals(list.slice()) ;
     }
     
     public void addAll(ItemList itemList) { elements.addAll(itemList.elements) ; }
@@ -37,46 +54,42 @@ public class ItemList extends ItemLocation //implements Iterable<Item>
     public void add(Node node){ elements.add(Item.createNode(node)) ; }
     public void add(String symbol){ elements.add(Item.createSymbol(symbol)) ; }
     
-    public Item get(int idx) { return (Item)elements.get(idx) ; }
-
+    public Item get(int idx) { return (Item)elements.get(index(idx)) ; }
 
     public Item getFirst()      { return get(0) ; }
 
-    public Item getLast()       { return get(size()-1) ; }
+    public Item getLast()       { return get(_size()-1) ; }
 
-    //  public List getList() { return items ; }
-    public Iterator iterator() { return elements.iterator() ; }
+    public Iterator iterator() { return elements.listIterator(offset) ; }
     
     public Item car()
     { 
-        if ( elements.size() == 0 )
+        if (  _size() == 0 )
             throw new ItemException("ItemList.car: list is zero length") ;
-        return (Item)elements.get(0) ;
+        return get(0) ;
     }
     public ItemList cdr()
     {
-        if ( elements.size() == 0 )
+        if (  _size() == 0 )
             throw new ItemException("ItemList.cdr: list is zero length") ;
-        ItemList x = new ItemList(super.getLine(), super.getColumn()) ;
-        x.elements = this.elements.subList(1, size()) ;
+        ItemList x = new ItemList(super.getLine(), super.getColumn(), offset+1, elements) ;
         return x ;
     }
     
     public ItemList cdrOrNull()
     {
-        if ( elements.size() == 0 )
+        if (  _size() == 0 )
             return null ;
-        ItemList x = new ItemList(super.getLine(), super.getColumn()) ;
-        x.elements = this.elements.subList(1, size()) ;
+        ItemList x = new ItemList(super.getLine(), super.getColumn(), offset+1, elements) ;
         return x ;
     }
     
     public String shortString()
     {
-        if ( size() == 0 ) return "()" ;
+        if (  _size() == 0 ) return "()" ;
         if ( get(0).isSymbol() ) 
         {
-            if ( size() == 1 )
+            if ( _size() == 1 )
                 return "("+get(0).getSymbol()+")";
             else
                 return "("+get(0).getSymbol()+" ...)";
@@ -89,7 +102,7 @@ public class ItemList extends ItemLocation //implements Iterable<Item>
         String str = "" ;
         if ( hasLocation() )
             str = str.concat(location()) ;
-        return str+elements.toString() ; }
+        return str+slice().toString() ; }
 }
 
 /*
