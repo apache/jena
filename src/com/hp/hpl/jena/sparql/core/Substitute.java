@@ -18,6 +18,7 @@ import com.hp.hpl.jena.sparql.algebra.Transformer;
 import com.hp.hpl.jena.sparql.algebra.op.*;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.binding.Binding1;
+import com.hp.hpl.jena.sparql.engine.binding.BindingRoot;
 import com.hp.hpl.jena.sparql.expr.ExprList;
 import com.hp.hpl.jena.sparql.path.PathLib;
 
@@ -25,6 +26,13 @@ public class Substitute
 {
     public static Op substitute(Op op, Binding b)
     {
+        // Want to avoid cost if the binding is empty 
+        // but the empty test is not zero-cost on non-empty things.
+     
+        if ( b instanceof BindingRoot )
+            // The root binding is empty.
+            return op ;
+        
         return Transformer.transform(new OpSubstituteWorker(b), op) ;
     }
     
@@ -36,6 +44,10 @@ public class Substitute
     
     public static BasicPattern substitute(BasicPattern bgp, Binding binding)
     {
+        if ( binding instanceof BindingRoot )
+            // The root binding is empty.
+            return bgp ;
+        
         BasicPattern bgp2 = new BasicPattern() ;
         for ( Iterator iter = bgp.iterator() ; iter.hasNext() ; )
         {
