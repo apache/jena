@@ -6,11 +6,10 @@
 
 package com.hp.hpl.jena.tdb.pgraph;
 
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.Semaphore;
 
+import lib.MapUtils;
 import lib.Tuple;
 
 import com.hp.hpl.jena.rdf.model.Model;
@@ -18,12 +17,18 @@ import com.hp.hpl.jena.rdf.model.ModelFactory;
 
 import com.hp.hpl.jena.util.FileManager;
 
+import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.graph.Triple;
+
+import com.hp.hpl.jena.sparql.sse.Item;
 import com.hp.hpl.jena.sparql.util.StringUtils;
 import com.hp.hpl.jena.sparql.util.Timer;
 import com.hp.hpl.jena.sparql.util.Utils;
+import com.hp.hpl.jena.sparql.util.graph.GraphListenerBase;
 import com.hp.hpl.jena.sparql.util.graph.GraphLoadMonitor;
 
 import com.hp.hpl.jena.tdb.index.TripleIndex;
+import com.hp.hpl.jena.tdb.solver.stats.StatsWriter;
 
 /** To directly load data, including manipulaattng the indexes at a quite low level for efficiency.
  * Not efficent for small, incremental additions to a graph.  
@@ -34,26 +39,30 @@ public class BulkLoader
     private GraphTDB graph ;
     private boolean showProgress ;
     
-    private boolean doInParallel  = false ;
-    private boolean doIncremental = false ;
-    private boolean doInterleaved = false ;
+    private boolean doInParallel ;
+    private boolean doIncremental ;
+    private boolean doInterleaved ;
+    private boolean generateStats ;
 
     private TripleIndex triplesSPO ;
     private TripleIndex triplesPOS ;
     private TripleIndex triplesOSP ;
+    private Item statsItem = null ; 
 
     public BulkLoader(GraphTDB graph, boolean showProgress)
     {
-        this(graph, showProgress, false, false) ;
+        this(graph, showProgress, false, false, false) ;
     }
     
-    /** Create a bulkloader for a graph : showProgress/paralell/incrmental */
-    public BulkLoader(GraphTDB graph, boolean showProgress, boolean doInParallel, boolean doIncremental)
+    /** Create a bulkloader for a graph : showProgress/parallel/incrmental/generate statistics */ 
+
+    public BulkLoader(GraphTDB graph, boolean showProgress, boolean doInParallel, boolean doIncremental, boolean generateStats)
     {
         this.graph = graph ;
         this.showProgress = showProgress ;
         this.doInParallel = doInParallel ;
         this.doIncremental = doIncremental ;
+        this.generateStats = generateStats ;
     }
     
     public void load(List<String> urls)
@@ -71,7 +80,10 @@ public class BulkLoader
             dropSecondaryIndexes() ;
         }
         else
+        {
             println("** Load graph with existing data") ;
+            generateStats = false ;
+        }
         
         Timer timer = new Timer() ;
         timer.startTimer() ;
@@ -83,9 +95,11 @@ public class BulkLoader
         
         for ( String url : urls )
         {
+            statsStart(model) ;
             now("-- Start data phase") ;
             count += loadOne(model, url) ;
             now("-- Finish data phase") ;
+            statsFinish(model) ;
         }
         
         // Especially the node table.
@@ -116,8 +130,52 @@ public class BulkLoader
             println() ;
             printf("Time for load: %.2fs [%,d triples/s]\n", time/1000.0, tps) ;
         }
+        
+        if ( generateStats && statsItem != null )
+        {
+            System.out.println() ;
+            System.out.println(statsItem) ;
+        }
     }
 
+    
+    // --------
+    // TODO Unique triples only.
+    GraphStatsCollector statsMonitor = new GraphStatsCollector() ;
+        
+    static class GraphStatsCollector extends GraphListenerBase
+    {
+        Map<Node, Integer> predicates = new HashMap<Node, Integer>() ;
+        long count = 0 ;
+        @Override
+        protected void addEvent(Triple t)
+        {
+            // Assumes unique.
+            MapUtils.increment(predicates, t.getPredicate()) ;
+            count++ ;
+        }
+
+        @Override
+        protected void deleteEvent(Triple t)
+        {}} ;
+        
+    private void statsStart(Model model)
+    {
+        if ( generateStats )
+            model.getGraph().getEventManager().register(statsMonitor) ;
+    }
+
+    private void statsFinish(Model model)
+    {
+        if ( generateStats )
+        {
+            model.getGraph().getEventManager().unregister(statsMonitor) ;
+            statsItem = StatsWriter.format(statsMonitor.predicates, statsMonitor.count) ;
+        }
+    }
+
+    // --------
+    
     private long loadOne(Model model, String s)
     {
         GraphLoadMonitor monitor = new GraphLoadMonitor(50000, false) ;
@@ -289,7 +347,7 @@ public class BulkLoader
         timer.startTimer() ;
         
         Iterator<Tuple<NodeId>> iter = srcIdx.all() ;
-        for ( int i = 0 ; iter.hasNext() ; i++ )
+        for ( int counter = 0 ; iter.hasNext() ; counter++ )
         {
             Tuple<NodeId> tuple = iter.next();
             for ( TripleIndex destIdx : destIndexes )

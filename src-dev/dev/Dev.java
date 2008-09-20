@@ -9,7 +9,7 @@ package dev;
 public class Dev
 {
     // ---- Optimizer
-    //   Abbreviate planning when below a threshold.
+    //   Abbreviate planning when below a threshold (likely selectivity?)
     //   Consider do all plans from first choice.
     //     VarCounting : need to consider connectivity for boundedness propagation 
     //       when same possible choices (stats is the same only less so). 
@@ -32,7 +32,7 @@ public class Dev
     //   close indexes not in use in a given phase
     //   Especially efficient iterator() for B+Trees (not mmap).
     //   ** (script) to work on gzip files
-    //   ** Write stats
+    //   ** Write stats (where to hook in to get unique?)
 
     // ---- Use of java properties for key values.
     // Or config file.

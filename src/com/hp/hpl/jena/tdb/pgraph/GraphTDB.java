@@ -134,7 +134,7 @@ public class GraphTDB extends GraphBase implements Sync, Reorderable
         NodeId sId = storeNode(s) ;
         NodeId pId = storeNode(p) ;
         NodeId oId = storeNode(o) ;
-
+        
         if ( ! indexSPO.delete(sId, pId, oId) )
             return ;
         if ( indexPOS != null )

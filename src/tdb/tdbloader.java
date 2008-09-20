@@ -20,10 +20,12 @@ public class tdbloader extends CmdTDB
 {
     ArgDecl argParallel = new ArgDecl(ArgDecl.NoValue, "parallel") ;
     ArgDecl argIncremental = new ArgDecl(ArgDecl.NoValue, "incr", "incrmenetal") ;
+    ArgDecl argStats = new ArgDecl(ArgDecl.NoValue, "stats") ;
     
-    boolean timing = true ;
-    boolean doInParallel = false ;
+    private boolean timing = true ;
+    private boolean doInParallel = false ;
     private boolean doIncremental = false ;
+    private boolean generateStats = false ;
     
     static public void main(String... argv)
     { 
@@ -44,6 +46,7 @@ public class tdbloader extends CmdTDB
         super.processModulesAndArgs() ;
         doInParallel = super.contains(argParallel) ;
         doIncremental = super.contains(argIncremental) ;
+        generateStats = super.contains(argStats) ;
     }
     
     @Override
@@ -67,7 +70,7 @@ public class tdbloader extends CmdTDB
         if ( urls.size() == 0 )
             urls.add("-") ;
         
-        BulkLoader loader = new BulkLoader(getGraph(), timing, doInParallel, doIncremental) ;
+        BulkLoader loader = new BulkLoader(getGraph(), timing, doInParallel, doIncremental, generateStats) ;
         loader.load(urls) ;
     }
 

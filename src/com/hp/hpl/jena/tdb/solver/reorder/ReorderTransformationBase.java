@@ -11,6 +11,7 @@ import static iterator.Iter.map;
 import static iterator.Iter.toList;
 import iterator.Transform;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.hp.hpl.jena.graph.Node;
@@ -135,28 +136,30 @@ public abstract class ReorderTransformationBase implements ReorderTransformation
             }
         }
         
-        int idx = -1 ;
-        double min = Double.MAX_VALUE ;
-        int N = pTriples.size() ;
-        for ( int i = 0 ; i < N ; i++ )
-        {
-            PatternTriple pt = pTriples.get(i) ;
-            if ( pt == null )
-                continue ;
-            double x = weight(pt) ;
-            if ( x < 0 )
-            {
-                // Not found.  Make sure idx is not left as -1 
-                if ( idx == -1 )
-                    idx = i ;
-                continue ;
-            }
-            if ( x < min )
-            {
-                min = x ;
-                idx = i ;
-            }
-        }
+        int idx = processPTriples(pTriples, null) ; 
+//        
+//        int idx = -1 ;
+//        double min = Double.MAX_VALUE ;
+//        int N = pTriples.size() ;
+//        for ( int i = 0 ; i < N ; i++ )
+//        {
+//            PatternTriple pt = pTriples.get(i) ;
+//            if ( pt == null )
+//                continue ;
+//            double x = weight(pt) ;
+//            if ( x < 0 )
+//            {
+//                // Not found.  Make sure idx is not left as -1 
+//                if ( idx == -1 )
+//                    idx = i ;
+//                break ;
+//            }
+//            if ( x < min )
+//            {
+//                min = x ;
+//                idx = i ;
+//            }
+//        }
         
         if ( DEBUG )
         {
@@ -167,6 +170,58 @@ public abstract class ReorderTransformationBase implements ReorderTransformation
         return idx ;
     }
 
+    /** Return all the indexes of pattern triples of the least weight. */
+    protected List<Integer> chooseAll(List<PatternTriple> pTriples)
+    {
+        List<Integer> results = new ArrayList<Integer>(pTriples.size()) ;
+        processPTriples(pTriples, results) ;
+        return results ;
+    }
+    
+    /** Return the index of the first, least triple; optionally accumulate all indexes of the same least weight */ 
+    private int processPTriples(List<PatternTriple> pTriples, List<Integer> results)
+    {
+        double min = Double.MAX_VALUE ;     // Current minimum
+        int N = pTriples.size() ;
+        int idx = -1 ;
+        
+        for ( int i = 0 ; i < N ; i++ )
+        {
+            PatternTriple pt = pTriples.get(i) ;
+            if ( pt == null )
+                continue ;
+            double x = weight(pt) ;
+            if ( x < 0 )
+            {
+                // Not found.  Make sure something is returned. 
+                if ( idx == -1 )
+                {
+                    idx = i ;
+                    if ( results != null ) results.add(i) ;
+                }
+                break ;
+            }
+            
+            if ( x == min )
+            {
+                if ( results != null ) results.add(i) ;
+                continue ;
+            }
+            
+            if ( x < min )
+            {
+                min = x ;
+                idx = i ;
+                if ( results != null )
+                {
+                    results.clear() ;
+                    results.add(i) ;
+                }
+            }
+        }
+        return idx ;
+    }
+    
     protected abstract double weight(PatternTriple pt) ;
 
     /** Update components to note any variables from triple */

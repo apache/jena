@@ -17,6 +17,18 @@ public class MapUtils
         for ( Map.Entry<K,V> entry : map.entrySet() )
             action.apply(entry.getKey(), entry.getValue()) ;
     }
+    
+    public static <T> void increment(Map<T, Integer> countMap, T key)
+    { increment(countMap, key, 1) ; }
+    
+    public static <T> void increment(Map<T, Integer> countMap, T key, int incr)
+    {
+        Integer integer = countMap.get(key) ;
+        if ( integer == null ) 
+            countMap.put(key, incr) ;
+        else
+            countMap.put(key, integer+incr) ;
+    }
 }
 
 

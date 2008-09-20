@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import lib.MapUtils;
 import lib.Tuple;
 
 import com.hp.hpl.jena.graph.Graph;
@@ -57,7 +58,7 @@ public class StatsWriter
     {
         long count = 0 ;
         Map<NodeId, Integer> predicateIds = new HashMap<NodeId, Integer>(1000) ;
-        Map<Node, Integer> predicates = new HashMap<Node, Integer>(1000) ;
+        
         
         TripleIndex index = graph.getIndexSPO() ;
         Iterator<Tuple<NodeId>> iter = index.all() ;
@@ -65,14 +66,16 @@ public class StatsWriter
         {
             Tuple<NodeId> tuple = iter.next(); 
             count++ ;
-            NodeId nodeId = tuple.get(1) ;      // Predicate slot
-            Integer n = predicateIds.get(nodeId) ;
-            if ( n == null )
-                predicateIds.put(nodeId,1) ;
-            else
-                predicateIds.put(nodeId, n+1) ;
+            MapUtils.increment(predicateIds, tuple.get(1)) ;
         }
         
+        return statsOutput(graph, predicateIds, count) ;
+    }
+        
+        
+    private static Item statsOutput(GraphTDB graph, Map<NodeId, Integer> predicateIds, long total)
+    {
+        Map<Node, Integer> predicates = new HashMap<Node, Integer>(1000) ;
         for ( NodeId p : predicateIds.keySet() )
         {
             Node n = graph.getNodeTable().retrieveNodeByNodeId(p) ;
@@ -84,10 +87,10 @@ public class StatsWriter
             predicates.put(n, predicateIds.get(p)) ;
         }
         
-        return format(predicates, count) ;
+        return format(predicates, total) ;
     }
      
-    private static Item format(Map<Node, Integer> predicates, long count)
+    public static Item format(Map<Node, Integer> predicates, long count)
     {
         Item stats = Item.createList() ;
         ItemList statsList = stats.getList() ;
@@ -103,7 +106,8 @@ public class StatsWriter
         Item meta = createTagged("meta") ;
         addPair(meta.getList(), "timestamp", NodeFactory.nowAsDateTime()) ;
         addPair(meta.getList(), "run@",  Utils.nowAsString()) ;
-        addPair(meta.getList(), "count", NodeFactory.intToNode((int)count)) ;
+        if ( count >= 0 )
+            addPair(meta.getList(), "count", NodeFactory.intToNode((int)count)) ;
         statsList.add(meta) ;
         
         for ( Node p : predicates.keySet() )
