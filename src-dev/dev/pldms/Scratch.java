@@ -3,91 +3,98 @@
  * All rights reserved.
  * [See end of file]
  */
-
 package dev.pldms;
 
+import com.hp.hpl.jena.sdb.layout2.TableDescNodes;
+import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import com.hp.hpl.jena.graph.test.NodeCreateUtils;
-import com.hp.hpl.jena.sdb.SDBFactory;
 import com.hp.hpl.jena.sdb.Store;
-import com.hp.hpl.jena.sdb.sql.JDBC;
-import com.hp.hpl.jena.sdb.sql.ResultSetJDBC;
-import com.hp.hpl.jena.sdb.sql.SDBConnection;
-import com.hp.hpl.jena.sdb.sql.SDBConnectionDesc;
-import com.hp.hpl.jena.sdb.store.DatabaseType;
-import com.hp.hpl.jena.sdb.store.LayoutType;
 import com.hp.hpl.jena.sdb.store.StoreFactory;
-import com.hp.hpl.jena.sdb.store.StoreLoaderPlus;
 import com.hp.hpl.jena.sdb.store.TableDesc;
+import java.util.Collection;
+import java.util.HashSet;
 
 public class Scratch {
 
-        /**
-         * @param args
-         * @throws SQLException 
-         */
-        public static void main(String[] args) throws SQLException {
-                
-        		Store store;
-        		SDBConnection conn;
-        	
-                JDBC.loadDriverOracle();
-                SDBConnectionDesc desc = SDBConnectionDesc.blank();
-                desc.setHost("localhost:1521");
-                desc.setName("XE");
-                desc.setUser("jena");
-                desc.setPassword("swara");
-                desc.setType("oracle:thin");
-                conn = SDBFactory.createConnection(desc);
-                
-                store = StoreFactory.create(conn, LayoutType.LayoutTripleNodesIndex, DatabaseType.Oracle);
-                store.getTableFormatter().format();
-                store.getTableFormatter().addIndexes();
-                store.close();
-                conn.close();
-                
-                conn = SDBFactory.createConnection(desc);
-                store = StoreFactory.create(conn, LayoutType.LayoutTripleNodesIndex, DatabaseType.Oracle);
-                
-                StoreLoaderPlus loader = (StoreLoaderPlus) store.getLoader();
-                
-                TableDesc descT = store.getTripleTableDesc();
-                
-                loader.startBulkUpdate();
-                loader.addTuple(descT, NodeCreateUtils.create("a"), NodeCreateUtils.create("a"), NodeCreateUtils.create("a"));
-                loader.addTuple(descT, NodeCreateUtils.create("b"), NodeCreateUtils.create("a"), NodeCreateUtils.create("a"));
-                loader.addTuple(descT, NodeCreateUtils.create("c"), NodeCreateUtils.create("a"), NodeCreateUtils.create("a"));
-                loader.finishBulkUpdate();
-                System.err.println("Nodes: " + getSize("Nodes", conn));
-                System.err.println("Triples: " + getSize("Triples", conn));
-                loader.startBulkUpdate();
-                loader.deleteTuple(descT, NodeCreateUtils.create("a"), NodeCreateUtils.create("a"), NodeCreateUtils.create("a"));
-                loader.deleteTuple(descT, NodeCreateUtils.create("b"), NodeCreateUtils.create("a"), NodeCreateUtils.create("a"));
-                loader.deleteTuple(descT, NodeCreateUtils.create("c"), NodeCreateUtils.create("a"), NodeCreateUtils.create("a"));
-                loader.finishBulkUpdate();
-                System.err.println("Nodes: " + getSize("Nodes", conn));
-                System.err.println("Triples: " + getSize("Triples", conn));
-                store.close();
-                conn.close();
+    /**
+     * @param args
+     * @throws SQLException
+     */
+    public static void main(String[] args) throws SQLException {
+        Store store = StoreFactory.create("Store/sdb-hsqldb-mem.ttl");
+        System.err.println("Formatted? " + formatted(store));
+        store.getTableFormatter().create();
+        System.err.println("Formatted? " + formatted(store));
+    }
+
+    public static boolean formatted(Store store) throws SQLException {
+        return checkNodes(store) && checkTuples(store);
+    }
+
+    private static boolean checkNodes(Store store) throws SQLException {
+        Connection conn = store.getConnection().getSqlConnection();
+        TableDescNodes nodeDesc = store.getNodeTableDesc();
+        if (nodeDesc == null) {
+            return true; // vacuous
         }
-        
-        public static Integer getSize(String table, SDBConnection conn) {
-        	Integer size = -1;
-        	
-        	try {
-        		ResultSetJDBC result = conn.execQuery("SELECT COUNT(*) AS NUM FROM " + table);
-        		
-        		if (result.get().next()) {
-        			size = result.get().getInt("NUM");
-        		}
-				result.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-        	
-        	return size;
+        return hasTableAndColumns(conn,
+                nodeDesc.getTableName(),
+                nodeDesc.getIdColName(),
+                nodeDesc.getHashColName(),
+                nodeDesc.getLexColName(),
+                nodeDesc.getLangColName(),
+                nodeDesc.getTypeColName());
+    }
+
+    private static boolean checkTuples(Store store) throws SQLException {
+        Connection conn = store.getConnection().getSqlConnection();
+        return isTupleTableFormatted(conn, store.getTripleTableDesc()) &&
+                isTupleTableFormatted(conn, store.getQuadTableDesc());
+    }
+
+    private static boolean isTupleTableFormatted(Connection conn, TableDesc desc) throws SQLException {
+        if (desc == null) {
+            return true; // vacuous
         }
+        return hasTableAndColumns(conn,
+                desc.getTableName(),
+                desc.getColNames().toArray(new String[]{}));
+    }
+
+    private static boolean hasTableAndColumns(Connection conn, String tableName, String... colNames) throws SQLException {
+        Collection<String> cols = new HashSet();
+        for (String c : colNames) {
+            if (c != null) {
+                cols.add(c.toLowerCase());
+            }
+        }
+        return (hasColumns(conn, tableName, cols) ||
+                hasColumns(conn, tableName.toLowerCase(), cols) ||
+                hasColumns(conn, tableName.toUpperCase(), cols));
+    }
+
+    private static boolean hasColumns(Connection conn, String tableName, Collection<String> colNames) throws SQLException {
+        //System.err.println("Trying: " + tableName);
+        ResultSet res = null;
+        try {
+            res = conn.getMetaData().getColumns(null, null, tableName, null);
+            while (res.next()) {
+                String colName = res.getString("COLUMN_NAME");
+                //System.err.println("Looking at :" + colName + " " + colNames.contains(colName.toLowerCase()));
+                colNames.remove(colName.toLowerCase());
+            }
+            //System.err.print("[");
+            //for (String col: colNames) System.err.print(col + ",");
+            //System.err.println("]");
+            return colNames.isEmpty();
+        } finally {
+            if (res != null) {
+                res.close();
+            }
+        }
+    }
 }
 /*
  * (c) Copyright 2007, 2008 Hewlett-Packard Development Company, LP
