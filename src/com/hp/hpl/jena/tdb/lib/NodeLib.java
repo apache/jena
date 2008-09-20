@@ -6,8 +6,8 @@
 
 package com.hp.hpl.jena.tdb.lib;
 
-import static com.hp.hpl.jena.tdb.sys.Const.LenNodeHash;
-import static com.hp.hpl.jena.tdb.sys.Const.SizeOfLong;
+import static com.hp.hpl.jena.tdb.sys.SystemTDB.LenNodeHash;
+import static com.hp.hpl.jena.tdb.sys.SystemTDB.SizeOfLong;
 
 import java.io.UnsupportedEncodingException;
 import java.security.DigestException;

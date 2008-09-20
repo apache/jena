@@ -28,7 +28,7 @@ import com.hp.hpl.jena.tdb.base.block.FileMode;
 import com.hp.hpl.jena.tdb.index.IndexType;
 import com.hp.hpl.jena.tdb.pgraph.NodeId;
 
-public class Const
+public class SystemTDB
 {
     // NB Same logger as the TDB class because this class is the system info but kept out of TDB javadoc.
     // It's visibility is TDB, not really public. 
@@ -100,6 +100,12 @@ public class Const
     // BDB related.
     public static final int BDB_cacheSizePercent    = intValue("BDB_cacheSizePercent", 75) ;
     
+    public static void panic(Class<?> clazz, String string)
+    {
+        org.slf4j.LoggerFactory.getLogger(clazz).error(string) ;
+        throw new TDBException(string) ;
+    }
+    
     public static Symbol allocSymbol(String shortName)
     { 
         if ( shortName.startsWith(TDB.tdbSymbolPrefix)) 
@@ -162,7 +168,7 @@ public class Const
         if ( s != null )
         {
             boolean b = s.equals("64") ; 
-            log.info("System architecture: "+(b?"64 bit":"32 bit")) ;
+            log.debug("System architecture: "+(b?"64 bit":"32 bit")) ;
             return b ;
         }
         // Not a SUN VM
@@ -240,7 +246,7 @@ public class Const
         if ( x == null )
         {
             defaultSetting = true ;
-            x = Const.defaultIndexType ;
+            x = SystemTDB.defaultIndexType ;
         }
         IndexType iType = IndexType.get(x) ;
         if ( !defaultSetting )

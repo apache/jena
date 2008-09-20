@@ -18,7 +18,7 @@ import java.util.List;
 
 import com.hp.hpl.jena.tdb.index.ext.ExtHash;
 import com.hp.hpl.jena.tdb.index.ext.ExtHashTestBase;
-import com.hp.hpl.jena.tdb.sys.Const;
+import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
 
 import tdb.Cmd;
@@ -78,7 +78,7 @@ public abstract class ExtHashRun
             showProgress = true ;
             ExtHash.Checking = false ;
             ExtHash.Logging = false ;
-            Const.NullOut = false ;
+            SystemTDB.NullOut = false ;
             super.exec(args) ;
         }
         

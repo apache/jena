@@ -4,57 +4,60 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.solver.reorder;
+package com.hp.hpl.jena.tdb.solver.stage;
 
-import static com.hp.hpl.jena.tdb.solver.SolverLib.* ;
-import iterator.Iter;
-import iterator.SingletonIterator;
-
-import java.util.Iterator;
-import java.util.List;
-
-import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.sparql.core.BasicPattern;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
+import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.tdb.pgraph.GraphTDB;
-import com.hp.hpl.jena.tdb.solver.BindingNodeId;
-import com.hp.hpl.jena.tdb.solver.StageMatchTriple;
+import com.hp.hpl.jena.sparql.engine.iterator.QueryIterRepeatApply;
+import com.hp.hpl.jena.sparql.engine.main.StageGenerator;
 
-/** Execute a basic graph pattern for TDB */
 
-public class StageTDB implements StageReorder.Stage
+/** Adapter that unbundles an input stream and calls a method for each binding */
+
+public class StageGenerator1 implements StageGenerator 
 {
-    private GraphTDB graph ;
-    private ExecutionContext execCxt ;
+    private final Stage stage ;
     
-    protected StageTDB(GraphTDB graph) 
+    public StageGenerator1(Stage stage)
     {
-        this.graph = graph ;
+        this.stage = stage ; 
     }
-
+    
+//    static class StageCaller extends QueryIterRepeatApply 
+//    {
+//        private BasicPattern pattern ;
+//        private Stage stage ;
+//
+//        public StageCaller(BasicPattern pattern, QueryIterator input, Stage stage, ExecutionContext context)
+//        {
+//            super(input, context) ;
+//            this.pattern = pattern;
+//            this.stage = stage ;
+//            
+//        }
+//
+//        @Override
+//        protected QueryIterator nextStage(Binding binding)
+//        {
+//            return stage.execute(pattern, binding, getExecContext()) ;
+//        }
+//    }
+    
     @Override
-    public Iterator<Binding> execute(BasicPattern pattern, Binding binding, ExecutionContext execCxt)
+    public QueryIterator execute(final BasicPattern pattern, 
+                                 final QueryIterator input, 
+                                 final ExecutionContext execCxt)
     {
-        @SuppressWarnings("unchecked")
-        List<Triple> triples = (List<Triple>)pattern.getList() ;
-        
-        Iterator<BindingNodeId> chain = 
-            new SingletonIterator<BindingNodeId>(convFromBinding(graph).convert(binding)) ;
-        
-        for ( Triple triple : triples )
-            chain = solve(graph, chain, triple, execCxt) ;
-        
-        Iterator<Binding> iterBinding = Iter.map(chain, convToBinding(graph)) ;
-        return iterBinding ;
-    }
-
-    static Iterator<BindingNodeId> solve(GraphTDB graph,
-                                         Iterator<BindingNodeId> chain,
-                                         Triple triple, 
-                                         ExecutionContext execCxt)
-    {
-        return new StageMatchTriple(graph, chain, triple, execCxt) ;
+        return new QueryIterRepeatApply(input, execCxt)     // We live and learn.  I didn't know arguments to the constructor worked. 
+        {
+            @Override
+            protected QueryIterator nextStage(Binding binding)
+            {
+                return stage.execute(pattern, binding, getExecContext()) ;
+            }
+        } ;
     }
 }
 

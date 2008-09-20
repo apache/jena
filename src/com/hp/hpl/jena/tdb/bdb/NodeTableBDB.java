@@ -6,7 +6,7 @@
 
 package com.hp.hpl.jena.tdb.bdb;
 
-import static com.hp.hpl.jena.tdb.sys.Const.NodeCacheSize;
+import static com.hp.hpl.jena.tdb.sys.SystemTDB.NodeCacheSize;
 import lib.Bytes;
 
 import com.sleepycat.je.*;

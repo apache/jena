@@ -9,7 +9,7 @@ package com.hp.hpl.jena.tdb.base.block;
 import java.io.File;
 
 import com.hp.hpl.jena.tdb.TDBException;
-import com.hp.hpl.jena.tdb.sys.Const;
+import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
 
 public class BlockMgrFactory
@@ -25,14 +25,14 @@ public class BlockMgrFactory
     /** Create a BlockMgr backed by a file */
     public static BlockMgr createFile(String filename, int blockSize)
     {
-        switch ( Const.fileMode() )
+        switch ( SystemTDB.fileMode() )
         {
             case mapped:
                 return createMMapFile(filename, blockSize) ;
             case direct:
                 return createStdFile(filename, blockSize) ;
         }
-        throw new TDBException("Unknown file mode: "+Const.fileMode()) ;
+        throw new TDBException("Unknown file mode: "+SystemTDB.fileMode()) ;
     }        
     
  
@@ -53,7 +53,7 @@ public class BlockMgrFactory
         if ( j > 0 )
             fn = filename.substring(j+1) ;
         
-        blockMgr = new BlockMgrCache(fn, Const.BlockReadCacheSize, Const.BlockWriteCacheSize, blockMgr) ;
+        blockMgr = new BlockMgrCache(fn, SystemTDB.BlockReadCacheSize, SystemTDB.BlockWriteCacheSize, blockMgr) ;
         return blockMgr ;
     }
     

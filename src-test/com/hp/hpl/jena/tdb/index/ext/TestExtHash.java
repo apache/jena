@@ -17,13 +17,13 @@ import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 import com.hp.hpl.jena.tdb.index.Index;
 import com.hp.hpl.jena.tdb.index.TestIndex;
 import com.hp.hpl.jena.tdb.index.ext.ExtHash;
-import com.hp.hpl.jena.tdb.sys.Const;
+import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
 public class TestExtHash extends TestIndex
 {
     @BeforeClass static public void setup()
     {
-        Const.NullOut = true ;
+        SystemTDB.NullOut = true ;
         ExtHash.Checking = true ;
         ExtHash.Logging = false ;
     }

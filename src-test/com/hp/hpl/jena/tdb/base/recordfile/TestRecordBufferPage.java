@@ -15,7 +15,7 @@ import com.hp.hpl.jena.tdb.base.block.BlockMgrFactory;
 import com.hp.hpl.jena.tdb.base.buffer.RecordBuffer;
 import com.hp.hpl.jena.tdb.base.record.Record;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
-import com.hp.hpl.jena.tdb.sys.Const;
+import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
 public class TestRecordBufferPage extends BaseTest
 {
@@ -27,7 +27,7 @@ public class TestRecordBufferPage extends BaseTest
     
     @BeforeClass static public void before()
     {
-        Const.NullOut = true ;    
+        SystemTDB.NullOut = true ;    
     }
     
     @Test public void recBufferPage01()

@@ -29,7 +29,7 @@ import com.hp.hpl.jena.tdb.base.buffer.RecordBuffer;
 import com.hp.hpl.jena.tdb.base.record.Record;
 import com.hp.hpl.jena.tdb.base.recordfile.RecordBufferPage;
 import com.hp.hpl.jena.tdb.base.recordfile.RecordRangeIterator;
-import com.hp.hpl.jena.tdb.sys.Const;
+import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
 public final class BPTreeNode extends BPTreePage
 {
@@ -1217,7 +1217,7 @@ public final class BPTreeNode extends BPTreePage
         if ( k != null && max != null && keyGT(k,max) )
             error("Node: %d - Record is too high (max=%s):: %s", id, max, this) ;
         
-        if ( Const.NullOut )
+        if ( SystemTDB.NullOut )
         {
             // Test records in the free area
             for ( int i = count ; i < maxRecords() ; i++ )
@@ -1237,7 +1237,7 @@ public final class BPTreeNode extends BPTreePage
         }
             
         // Check empty is empty
-        if ( Const.NullOut )
+        if ( SystemTDB.NullOut )
         {
             int x = params.MaxPtr ;
             for ( ; i < params.MaxPtr ; i ++ )

@@ -23,10 +23,11 @@ import iterator.Iter;
 import iterator.RepeatApplyIterator;
 import iterator.SingletonIterator;
 
+// Only used by the all-in-one StategGenerator for TDB (which is not the normal one to use).
 public class StageMatchPattern extends RepeatApplyIterator<Binding>
 {
     private BasicPattern pattern ;
-    private ReorderTransformation reorderPattern ;
+    private ReorderTransformation reorderTransform ;
     private GraphTDB graph ;
     private ExecutionContext execCxt ;
     // Cache slot.
@@ -36,7 +37,7 @@ public class StageMatchPattern extends RepeatApplyIterator<Binding>
     {
         super(input) ;
         this.pattern = pattern ;
-        this.reorderPattern = reorder ;
+        this.reorderTransform = reorder ;
         this.reorderProc = null ;
         this.graph = graph ;
         this.execCxt = execCxt ;
@@ -48,12 +49,12 @@ public class StageMatchPattern extends RepeatApplyIterator<Binding>
         // ---- Reorder
         BasicPattern pattern2 = Substitute.substitute(pattern, b) ;
 
-        if ( reorderPattern != null && pattern.size() > 1 )
+        if ( reorderTransform != null && pattern.size() > 1 )
         {
             if ( reorderProc == null )
                 // Cache the reorder processor - ie. the first binding is used
                 // as a template for later input bindings.   
-                reorderProc = reorderPattern.reorderIndexes(pattern2) ;
+                reorderProc = reorderTransform.reorderIndexes(pattern2) ;
             pattern2 = reorderProc.reorder(pattern2) ;
         }
         

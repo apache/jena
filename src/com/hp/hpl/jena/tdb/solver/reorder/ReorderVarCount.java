@@ -11,7 +11,7 @@ import com.hp.hpl.jena.vocabulary.RDF;
 
 import com.hp.hpl.jena.sparql.core.Var;
 
-public class ReorderVarCount extends ReorderPatternBase
+public class ReorderVarCount extends ReorderTransformationBase
 {
     // TODO Test!
     // TODO Connectivity

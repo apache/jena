@@ -19,7 +19,7 @@ import test.BaseTest;
 import com.hp.hpl.jena.tdb.base.record.Record;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 import com.hp.hpl.jena.tdb.base.record.RecordLib;
-import com.hp.hpl.jena.tdb.sys.Const;
+import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
 public class TestRecordBuffer extends BaseTest
 {
@@ -28,7 +28,7 @@ public class TestRecordBuffer extends BaseTest
     @BeforeClass static public void before()
     {
         recordFactory = new RecordFactory(RecordLib.TestRecordLength, 0) ;
-        Const.NullOut = true ;    
+        SystemTDB.NullOut = true ;    
     }
     
     @Test public void recBuffer01()

@@ -24,7 +24,7 @@ import org.slf4j.LoggerFactory;
 import com.hp.hpl.jena.tdb.base.buffer.PtrBuffer;
 import com.hp.hpl.jena.tdb.base.buffer.RecordBuffer;
 import com.hp.hpl.jena.tdb.base.record.Record;
-import com.hp.hpl.jena.tdb.sys.Const;
+import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
 public class BTreeNode
 {
@@ -1360,7 +1360,7 @@ public class BTreeNode
         if ( k != null && max != null && keyGE(k,max) )
             error("Node: %d - Record is too high (max=%s):: %s", id, max, this) ;
         
-        if ( Const.NullOut )
+        if ( SystemTDB.NullOut )
             // Test records in the free area
             for ( int i = count ; i < maxRecords() ; i++ )
                 if ( ! records.isClear(i) )
@@ -1368,7 +1368,7 @@ public class BTreeNode
         
         // Test children
         
-        if ( Const.NullOut )
+        if ( SystemTDB.NullOut )
         {
             int i = 0 ;
             if ( ! isLeaf )

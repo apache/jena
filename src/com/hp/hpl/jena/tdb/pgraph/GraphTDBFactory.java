@@ -78,7 +78,8 @@ public class GraphTDBFactory
                 reorder = ReorderLib.weighted(location.getPath(Names.optStats)) ;
                 logTDB.info("Statistics-based BGP optimizer") ;  
             } catch (SSEParseException ex) { 
-                throw new TDBException("Error in stats file: "+ex.getMessage()) ;
+                log.warn("Error in stats file: "+ex.getMessage()) ;
+                reorder = null ;
             }
         }
         

@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.Deque;
 import java.util.List;
 
-import com.hp.hpl.jena.tdb.sys.Const;
+import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -172,7 +172,7 @@ public class BlockMgrMem extends BlockMgrBase
         check(id) ;
         if ( bb.capacity() != blockSize )
             throw new BlockException(format("BlockMgrMem: Wrong size block.  Expected=%d : actual=%d", blockSize, bb.capacity())) ;
-        if ( bb.order() != Const.NetworkOrder )
+        if ( bb.order() != SystemTDB.NetworkOrder )
             throw new BlockException("BlockMgrMem: Wrong byte order") ;
         
     }

@@ -12,7 +12,7 @@ import com.sleepycat.je.*;
 
 import com.hp.hpl.jena.tdb.TDBException;
 import com.hp.hpl.jena.tdb.base.file.Location;
-import com.hp.hpl.jena.tdb.sys.Const;
+import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
 public class SetupBDB
 {
@@ -29,7 +29,7 @@ public class SetupBDB
             envConfig.setAllowCreate(true);
             //envConfig.setTransactional(false) ; // Default
             // Aggressively high.
-            envConfig.setCachePercent(Const.BDB_cacheSizePercent) ;
+            envConfig.setCachePercent(SystemTDB.BDB_cacheSizePercent) ;
             
             dbEnv = new Environment(new File(dirname), envConfig);
             dbConfig = new DatabaseConfig() ;

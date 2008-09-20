@@ -8,6 +8,9 @@ package dev;
 
 import iterator.TS_Iterator;
 import lib.TS_Lib;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
+import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -48,6 +51,12 @@ import com.hp.hpl.jena.tdb.sys.TS_Sys;
 
 public class TS_Main
 {
+    @BeforeClass static public void beforeClass()   
+    {
+        Logger.getLogger("com.hp.hpl.jena.tdb").setLevel(Level.WARN) ;
+        Logger.getLogger("com.hp.hpl.jena.tdb.TDB").setLevel(Level.FATAL) ;
+    }
+    
     // For "ant" before 1.7 that only understands JUnit3. 
     public static junit.framework.Test suite() {
         return new junit.framework.JUnit4TestAdapter(TS_Main.class) ;

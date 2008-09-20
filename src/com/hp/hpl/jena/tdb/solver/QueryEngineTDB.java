@@ -16,6 +16,7 @@ import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.main.QueryEngineMain;
 import com.hp.hpl.jena.sparql.util.Context;
 
+// NOT USED - nstead, TDB uses a custom OpCompiler to intercept certain Op evaluations. 
 public class QueryEngineTDB extends QueryEngineMain
 {
     // ---- Wiring

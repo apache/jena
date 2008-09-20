@@ -15,13 +15,16 @@ import java.util.List;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
+
 import com.hp.hpl.jena.sparql.core.BasicPattern;
 import com.hp.hpl.jena.sparql.core.Var;
+import com.hp.hpl.jena.sparql.sse.Item;
+
 import com.hp.hpl.jena.tdb.TDBException;
 
 
 /** Machinary */
-public abstract class ReorderPatternBase implements ReorderTransformation
+public abstract class ReorderTransformationBase implements ReorderTransformation
 {
     protected static final boolean DEBUG = false ;
     
@@ -42,6 +45,22 @@ public abstract class ReorderPatternBase implements ReorderTransformation
 
         // Convert to a mutable form (that allows things like "TERM")
         List<PatternTriple> components = toList(map(triples, convert)) ;
+        
+        // This is for moving the substitution inside the reorder code.
+        // Otherwise StageReorder needs to call Substitute.substitute  
+//        Binding b = new BindingMap() ;
+//        if ( b != null )
+//        {
+//            @SuppressWarnings("unchecked")
+//            Iterator<Var> iter = (Iterator<Var>)b.vars() ;
+//            for ( ; iter.hasNext() ; )
+//            {
+//                Var v = iter.next() ;
+//                Node n = b.get(v) ;
+//                update(v, n, components) ;
+//            }
+//        }
+
         ReorderProc proc = reorder(triples, components) ;
         return proc ;
     }
@@ -175,6 +194,24 @@ public abstract class ReorderPatternBase implements ReorderTransformation
             if ( node.equals(elt.object.getNode()) )
                 elt.object = PatternElements.TERM ;
         }
+    }
+    
+    /** Update based on a variable/value (c.f. Substitute.substitute) */
+    protected final void update(Var var, Node value, List<PatternTriple> components)
+    {
+        for ( PatternTriple elt : components )
+            if ( elt != null )
+                update(var, value, elt) ;
+    }
+    
+    private void update(Var var, Node value, PatternTriple elt)
+    {
+        if ( var.equals(elt.subject.getNode()) )
+            elt.subject = Item.createNode(value) ;
+        if ( var.equals(elt.predicate.getNode()) )
+            elt.predicate = Item.createNode(value) ;
+        if ( var.equals(elt.object.getNode()) )
+            elt.object = Item.createNode(value) ;
     }
     
     private static Transform<Triple, PatternTriple> convert = new Transform<Triple, PatternTriple>(){

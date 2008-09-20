@@ -29,7 +29,7 @@ import com.hp.hpl.jena.tdb.base.file.PlainFileMem;
 import com.hp.hpl.jena.tdb.base.record.Record;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 import com.hp.hpl.jena.tdb.index.Index;
-import com.hp.hpl.jena.tdb.sys.Const;
+import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
 /** Extensible hashing
  * http://en.wikipedia.org/wiki/Extendible_hashing
@@ -105,7 +105,7 @@ public class ExtHash implements Index
         this.dictionaryFile = dictionaryBackingFile ;
         // Start bigger?
         int dictionarySize = 1 ;
-        dictionary = dictionaryFile.ensure(Const.SizeOfInt).asIntBuffer() ;
+        dictionary = dictionaryFile.ensure(SystemTDB.SizeOfInt).asIntBuffer() ;
         this.recordFactory = recordFactory ; 
         
         hashBucketMgr = new HashBucketMgr(recordFactory, blockMgrHashBuckets) ;
@@ -189,7 +189,7 @@ public class ExtHash implements Index
             log("resize: %d ==> %d", oldSize, newSize) ;
         }
         
-        IntBuffer newDictionary = dictionaryFile.ensure(newSize*Const.SizeOfInt).asIntBuffer() ;
+        IntBuffer newDictionary = dictionaryFile.ensure(newSize*SystemTDB.SizeOfInt).asIntBuffer() ;
         if ( dictionary != null )
         {
             // Fill new dictionary
@@ -652,7 +652,7 @@ public class ExtHash implements Index
                              idx, bucket.getId(), x, bucket.getTrieValue(), bucket) ;
         }
         
-        if ( Const.NullOut )
+        if ( SystemTDB.NullOut )
         {
             for ( int i = bucket.getCount() ; i < bucket.getMaxSize() ; i++ )
             {

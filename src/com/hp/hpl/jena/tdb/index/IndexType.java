@@ -6,7 +6,7 @@
 
 package com.hp.hpl.jena.tdb.index;
 
-import com.hp.hpl.jena.tdb.sys.Const;
+import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
 public enum IndexType
 {
@@ -22,8 +22,8 @@ public enum IndexType
 
     public static IndexType get(String name)
     {
-        if ( name.equalsIgnoreCase(Const.indexTypeBTree) ) return BTree ;
-        if ( name.equalsIgnoreCase(Const.indexTypeBPlusTree) ) return BPlusTree ;
+        if ( name.equalsIgnoreCase(SystemTDB.indexTypeBTree) ) return BTree ;
+        if ( name.equalsIgnoreCase(SystemTDB.indexTypeBPlusTree) ) return BPlusTree ;
 //        if ( name.equalsIgnoreCase(Const.indexTypeExtHash) ) return ExtHash ;
         return null ;
     }

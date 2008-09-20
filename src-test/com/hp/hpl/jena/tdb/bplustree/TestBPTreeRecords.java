@@ -19,7 +19,7 @@ import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 import com.hp.hpl.jena.tdb.base.record.RecordLib;
 import com.hp.hpl.jena.tdb.base.recordfile.RecordBufferPage;
 import com.hp.hpl.jena.tdb.base.recordfile.RecordBufferPageMgr;
-import com.hp.hpl.jena.tdb.sys.Const;
+import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
 public class TestBPTreeRecords extends TestBase
 {
@@ -37,8 +37,8 @@ public class TestBPTreeRecords extends TestBase
     
     @BeforeClass public static void beforeClass()
     {
-        oldNullOut = Const.NullOut ;
-        Const.NullOut = true ;
+        oldNullOut = SystemTDB.NullOut ;
+        SystemTDB.NullOut = true ;
         
         oldCheckingNode = BPlusTreeParams.CheckingNode ;
         BPlusTreeParams.CheckingNode = true ;
@@ -59,7 +59,7 @@ public class TestBPTreeRecords extends TestBase
     
     @AfterClass public static void afterClass()
     {
-        Const.NullOut = oldNullOut ;
+        SystemTDB.NullOut = oldNullOut ;
         BPlusTreeParams.CheckingTree = oldCheckingNode ;
         BPlusTreeParams.CheckingTree = oldCheckingBTree ;
     }

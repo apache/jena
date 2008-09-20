@@ -19,7 +19,7 @@ import com.hp.hpl.jena.tdb.TDBException;
 import com.hp.hpl.jena.tdb.lib.NodeLib;
 import com.hp.hpl.jena.tdb.pgraph.NodeId;
 import com.hp.hpl.jena.tdb.pgraph.NodeTable;
-import com.hp.hpl.jena.tdb.sys.Const;
+import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
 
 public class NodeTableBDBDirect implements NodeTable
@@ -134,7 +134,7 @@ public class NodeTableBDBDirect implements NodeTable
 
     private static byte[] longBuff(long id)
     {
-        byte[] b = new byte[Const.SizeOfLong] ;
+        byte[] b = new byte[SystemTDB.SizeOfLong] ;
         Bytes.setLong(id, b) ;
         return b ;
     }

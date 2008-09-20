@@ -10,7 +10,7 @@ import java.nio.ByteBuffer;
 
 import com.hp.hpl.jena.tdb.base.buffer.BufferException;
 import com.hp.hpl.jena.tdb.base.buffer.PtrBuffer;
-import com.hp.hpl.jena.tdb.sys.Const;
+import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
 
 import org.junit.BeforeClass;
@@ -21,7 +21,7 @@ public class TestPtrBuffer extends BaseTest
 {
     @BeforeClass static public void before()
     {
-        Const.NullOut = true ;    
+        SystemTDB.NullOut = true ;    
     }
     
     // Testing the test framework!

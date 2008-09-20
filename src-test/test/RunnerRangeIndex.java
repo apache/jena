@@ -15,7 +15,7 @@ import com.hp.hpl.jena.tdb.base.block.BlockMgrMem;
 import com.hp.hpl.jena.tdb.bplustree.BPlusTreeParams;
 import com.hp.hpl.jena.tdb.index.IndexTestGenerator;
 import com.hp.hpl.jena.tdb.index.RangeIndexMaker;
-import com.hp.hpl.jena.tdb.sys.Const;
+import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
 public abstract class RunnerRangeIndex extends RunnerExecute
 {
@@ -80,12 +80,12 @@ public abstract class RunnerRangeIndex extends RunnerExecute
             else if ( a.equalsIgnoreCase("bptree:check") )
             {
                 BPlusTreeParams.CheckingTree = true ;
-                Const.NullOut = true ;
+                SystemTDB.NullOut = true ;
             }
             else if ( a.equalsIgnoreCase("bptree:checknode") )
             {
                 BPlusTreeParams.CheckingNode = true ;
-                Const.NullOut = true ;
+                SystemTDB.NullOut = true ;
                 BlockMgrMem.SafeMode = true ;
             }
             else if ( a.equalsIgnoreCase("bptree:log") )
@@ -104,7 +104,7 @@ public abstract class RunnerRangeIndex extends RunnerExecute
             else if ( a.equalsIgnoreCase("check") )
             {
                 BPlusTreeParams.CheckingNode = true ;
-                Const.NullOut = true ;
+                SystemTDB.NullOut = true ;
                 BlockMgrMem.SafeMode = true ;
             }
             else if ( a.equalsIgnoreCase("display") )

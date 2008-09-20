@@ -15,18 +15,70 @@ import java.util.List;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
+
 import com.hp.hpl.jena.sparql.core.BasicPattern;
 import com.hp.hpl.jena.sparql.core.Var;
+import com.hp.hpl.jena.sparql.engine.ExecutionContext;
+import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.binding.BindingMap;
+import com.hp.hpl.jena.sparql.engine.iterator.QueryIterSingleton;
+
 import com.hp.hpl.jena.tdb.pgraph.GraphTDB;
 import com.hp.hpl.jena.tdb.pgraph.NodeId;
 
 
-/** Utilities used within the BGP solver */
+/** Utilities used within the TDB BGP solver */
 public class SolverLib
 {
     // ---- TDB specific
+    
+    /** Non-reordering execution of a basic graph pattern, given a iterator of bindings as input */ 
+    public static QueryIterator execute(GraphTDB graph, BasicPattern pattern, QueryIterator input, ExecutionContext execCxt)
+    {
+        // ---- Execute
+        @SuppressWarnings("unchecked")
+        List<Triple> triples = (List<Triple>)pattern.getList() ;
+        @SuppressWarnings("unchecked")
+        Iterator<Binding> iter = (Iterator<Binding>)input ;
+        
+        Iterator<BindingNodeId> chain = Iter.map(iter, SolverLib.convFromBinding(graph)) ;
+        
+        for ( Triple triple : triples )
+            chain = solve(graph, chain, triple, execCxt) ;
+        
+        Iterator<Binding> iterBinding = Iter.map(chain, convToBinding(graph)) ;
+        return new QueryIterTDB(iterBinding, input, execCxt) ;
+    }
+    
+    /** Non-reordering execution of a basic graph pattern, given a single binding as input */ 
+    public static QueryIterator execute(GraphTDB graph, BasicPattern pattern, Binding binding, ExecutionContext execCxt)
+    {
+        QueryIterator input = new QueryIterSingleton(binding, execCxt) ;
+        return execute(graph, pattern, input, execCxt) ;
+        
+        // Maybe there is a btter way to do this, given it starts from a single binding. 
+//        // ---- Execute
+//        @SuppressWarnings("unchecked")
+//        List<Triple> triples = (List<Triple>)pattern.getList() ;
+//        Iterator<BindingNodeId> chain = 
+//            new SingletonIterator<BindingNodeId>(convFromBinding(graph).convert(binding)) ;
+//        
+//        for ( Triple triple : triples )
+//            chain = solve(graph, chain, triple, execCxt) ;
+//        
+//        Iterator<Binding> iterBinding = Iter.map(chain, convToBinding(graph)) ;
+//        return new QueryIterTDB(iterBinding, null, execCxt) ;
+    }
+
+    private static Iterator<BindingNodeId> solve(GraphTDB graph,
+                                                 Iterator<BindingNodeId> chain,
+                                                 Triple triple, 
+                                                 ExecutionContext execCxt)
+                                                 {
+        return new StageMatchTriple(graph, chain, triple, execCxt) ;
+                                                 }
+    
     // Transform : BindingNodeId ==> Binding
     public static Transform<BindingNodeId, Binding> convToBinding(final GraphTDB graph)
     {
@@ -78,7 +130,8 @@ public class SolverLib
         } ;
     }
 
-    static String strPattern(BasicPattern pattern)
+    /** Turn a BasicPattern into an abbreviated string for debugging */  
+    public static String strPattern(BasicPattern pattern)
     {
         @SuppressWarnings("unchecked")
         List<Triple> triples = (List<Triple>)pattern.getList() ;

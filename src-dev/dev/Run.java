@@ -38,7 +38,7 @@ import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderVarCount;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderWeighted;
 import com.hp.hpl.jena.tdb.solver.stats.StatsMatcher;
-import com.hp.hpl.jena.tdb.sys.Const;
+import com.hp.hpl.jena.tdb.sys.SystemTDB;
 import com.hp.hpl.jena.util.FileManager;
 
 public class Run
@@ -162,7 +162,7 @@ public class Run
     static void scan(String filename)
     {
         // Rely on OS read ahead.
-        BlockMgr blkMgr = BlockMgrFactory.createStdFileNoCache(filename, Const.BlockSize) ;
+        BlockMgr blkMgr = BlockMgrFactory.createStdFileNoCache(filename, SystemTDB.BlockSize) ;
         RecordFactory f = GraphTDB.indexRecordFactory ; 
         RecordBufferPageMgr recordPageMgr = new RecordBufferPageMgr(f, blkMgr) ;
         int idx = 0 ;

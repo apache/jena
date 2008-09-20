@@ -13,7 +13,7 @@ import test.BaseTest;
 
 import com.hp.hpl.jena.tdb.base.record.Record;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
-import com.hp.hpl.jena.tdb.sys.Const;
+import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
 public class TestBTreeLong extends BaseTest
 {
@@ -25,13 +25,13 @@ public class TestBTreeLong extends BaseTest
     { 
         recordFactory = new RecordFactory(LongRecordLength, 0) ;
         BTreeParams.CheckingNode = true ;
-        b = Const.NullOut ;
-        Const.NullOut = true ;
+        b = SystemTDB.NullOut ;
+        SystemTDB.NullOut = true ;
     }
     
     @AfterClass public static void after()
     { 
-        Const.NullOut = b ;
+        SystemTDB.NullOut = b ;
     }
     
     @Test public void record1()

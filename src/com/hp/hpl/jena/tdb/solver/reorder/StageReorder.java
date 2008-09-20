@@ -6,57 +6,45 @@
 
 package com.hp.hpl.jena.tdb.solver.reorder;
 
-import iterator.RepeatApplyIterator;
-
-import java.util.Iterator;
-
 import com.hp.hpl.jena.sparql.core.BasicPattern;
 import com.hp.hpl.jena.sparql.core.Substitute;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
+import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.tdb.TDBException;
 
-public class StageReorder extends RepeatApplyIterator<Binding>
+import com.hp.hpl.jena.tdb.solver.stage.Stage;
+
+public class StageReorder implements Stage
 {
     private ReorderProc reorderProc = null ;
     private ReorderTransformation transform ;
     private Stage stage ;
-    private BasicPattern pattern ;
-    private ExecutionContext execCxt ;
-
-    public StageReorder(BasicPattern pattern, Iterator<Binding> _input, 
-                        ReorderTransformation transform,  Stage stage,
-                        ExecutionContext execCxt)
+    public StageReorder(ReorderTransformation transform, Stage stage)
     {
-        super(_input) ;
-        this.pattern = pattern ;
         this.transform = transform ;
         this.stage = stage ;
-        this.execCxt = execCxt ;
     }
 
     @Override
-    protected Iterator<Binding> makeNextStage(Binding binding)
+    public QueryIterator execute(BasicPattern pattern, Binding binding, ExecutionContext execCxt)
     {
         // ---- Reorder
+        // This does a substitute - which stage.execute will do anyway.
+        // Could move into reorderIndexes.
         BasicPattern pattern2 = Substitute.substitute(pattern, binding) ;
 
         if ( transform != null && pattern.size() > 1 )
         {
             if ( reorderProc == null )
-                // Cache the reorder processor - ie. the first binding is used
+                // Cache the reorder processor - i.e. the first binding is used
                 // as a template for later input bindings.   
                 reorderProc = transform.reorderIndexes(pattern2) ;
             pattern2 = reorderProc.reorder(pattern2) ;
         }
         
-        // ---- Execute
-        if ( true ) throw new TDBException("NOT READY: StageReorder") ;
+        // ---- Execute - pass on to the wrapped stage.
         return stage.execute(pattern2, binding, execCxt) ;
     }
-
-    interface Stage { public Iterator<Binding> execute(BasicPattern pattern, Binding binding, ExecutionContext execCxt) ; }
-    
 }
 
 /*

@@ -7,9 +7,9 @@
 package com.hp.hpl.jena.tdb.pgraph;
 
 import static com.hp.hpl.jena.tdb.TDB.logDuplicates;
-import static com.hp.hpl.jena.tdb.sys.Const.LenIndexRecord;
-import static com.hp.hpl.jena.tdb.sys.Const.LenNodeHash;
-import static com.hp.hpl.jena.tdb.sys.Const.SizeOfNodeId;
+import static com.hp.hpl.jena.tdb.sys.SystemTDB.LenIndexRecord;
+import static com.hp.hpl.jena.tdb.sys.SystemTDB.LenNodeHash;
+import static com.hp.hpl.jena.tdb.sys.SystemTDB.SizeOfNodeId;
 import iterator.Filter;
 import iterator.Iter;
 
@@ -34,7 +34,7 @@ import com.hp.hpl.jena.tdb.index.TripleIndex;
 import com.hp.hpl.jena.tdb.lib.TupleLib;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
 import com.hp.hpl.jena.tdb.solver.reorder.Reorderable;
-import com.hp.hpl.jena.tdb.sys.Const;
+import com.hp.hpl.jena.tdb.sys.SystemTDB;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 import com.hp.hpl.jena.util.iterator.NiceIterator;
 
@@ -61,11 +61,12 @@ public class GraphTDB extends GraphBase implements Sync, Reorderable
     private NodeTable nodeTable = null ;
     
     private final GraphTDBQueryHandler queryHandler = new GraphTDBQueryHandler(this) ;
-    private ReorderTransformation reorderPattern = null ;
+    private ReorderTransformation reorderTransform = null ;
     
     protected GraphTDB() {}   // Must call init!
     
-    public GraphTDB(TripleIndex spo, TripleIndex pos, TripleIndex osp, NodeTable nodeTable, ReorderTransformation reorderPattern)
+    public GraphTDB(TripleIndex spo, TripleIndex pos, TripleIndex osp, 
+                    NodeTable nodeTable, ReorderTransformation reorderTransform)
     {
         if ( spo == null )
             throw new TDBException("SPO index is required") ;
@@ -74,9 +75,9 @@ public class GraphTDB extends GraphBase implements Sync, Reorderable
         this.indexPOS = pos ;
         this.indexOSP = osp ;
         this.nodeTable = nodeTable ;
-        this.reorderPattern = reorderPattern ;
+        this.reorderTransform = reorderTransform ;
         
-        int syncPoint = Const.SyncTick ;
+        int syncPoint = SystemTDB.SyncTick ;
         if ( syncPoint > 0 )
             this.getEventManager().register(new GraphSyncListener(this, syncPoint)) ;
     }
@@ -423,7 +424,7 @@ public class GraphTDB extends GraphBase implements Sync, Reorderable
     // Placed here so detailed manipulatation code can be external to this class.
     
     /** Reorder processor - may be null, for "none" */ 
-    public ReorderTransformation getReorderPattern()       { return reorderPattern ; }
+    public ReorderTransformation getReorderTransform()       { return reorderTransform ; }
 
     public TripleIndex getIndexSPO()                { return indexSPO ; }
     public TripleIndex getIndexPOS()                { return indexPOS ; }

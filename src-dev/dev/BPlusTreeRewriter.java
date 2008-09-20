@@ -23,7 +23,7 @@ import com.hp.hpl.jena.tdb.base.recordfile.RecordBufferPage;
 import com.hp.hpl.jena.tdb.base.recordfile.RecordBufferPageMgr;
 import com.hp.hpl.jena.tdb.base.recordfile.RecordRangeIterator;
 import com.hp.hpl.jena.tdb.pgraph.GraphTDB;
-import com.hp.hpl.jena.tdb.sys.Const;
+import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
 public class BPlusTreeRewriter
 {
@@ -53,7 +53,7 @@ public class BPlusTreeRewriter
     
     private static RecordRangeIterator records(String filename)
     {
-        BlockMgr blkMgr = BlockMgrFactory.createStdFileNoCache(filename, Const.BlockSize) ;
+        BlockMgr blkMgr = BlockMgrFactory.createStdFileNoCache(filename, SystemTDB.BlockSize) ;
         RecordBufferPageMgr recordPageMgr = new RecordBufferPageMgr(recordFactory, blkMgr) ;
         RecordBufferPage page = recordPageMgr.get(0) ;
         return new RecordRangeIterator(page, null,null) ;
@@ -66,7 +66,7 @@ public class BPlusTreeRewriter
     public static void phase2(String filename)
     {
         //String filename = rootname+".dat" ;
-        BlockMgr blkMgr = BlockMgrFactory.createStdFileNoCache(filename, Const.BlockSize) ;
+        BlockMgr blkMgr = BlockMgrFactory.createStdFileNoCache(filename, SystemTDB.BlockSize) ;
         RecordBufferPageMgr recordPageMgr = new RecordBufferPageMgr(recordFactory, blkMgr) ;
         
         BlocksIterator iter = new BlocksIterator(recordPageMgr, 0) ;
@@ -174,7 +174,7 @@ public class BPlusTreeRewriter
         private WriteDataFile(String filename)
         {
             // No point caching.
-            blkMgr = BlockMgrFactory.createStdFileNoCache(filename, Const.BlockSize) ;
+            blkMgr = BlockMgrFactory.createStdFileNoCache(filename, SystemTDB.BlockSize) ;
             recordPageMgr = new RecordBufferPageMgr(recordFactory, blkMgr) ;
         }
 

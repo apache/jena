@@ -17,7 +17,7 @@ import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.impl.LiteralLabel;
 import com.hp.hpl.jena.tdb.TDBException;
-import com.hp.hpl.jena.tdb.sys.Const;
+import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
 final
 public class NodeId
@@ -42,7 +42,7 @@ public class NodeId
     
     private static boolean enableInlineLiterals = true ;
     
-    public static final int SIZE = Const.SizeOfLong ;
+    public static final int SIZE = SystemTDB.SizeOfLong ;
     final long value ;
     
     public static NodeId create(long value)

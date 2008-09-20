@@ -12,7 +12,7 @@ import org.junit.BeforeClass;
 import com.hp.hpl.jena.tdb.base.record.RecordLib;
 import com.hp.hpl.jena.tdb.index.RangeIndex;
 import com.hp.hpl.jena.tdb.index.TestRangeIndex;
-import com.hp.hpl.jena.tdb.sys.Const;
+import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
 public class TestBPlusTree extends TestRangeIndex
 {
@@ -21,13 +21,13 @@ public class TestBPlusTree extends TestRangeIndex
     @BeforeClass public static void before()
     { 
         BPlusTreeParams.checkAll() ;
-        b = Const.NullOut ;
-        Const.NullOut = true ;
+        b = SystemTDB.NullOut ;
+        SystemTDB.NullOut = true ;
     }
     
     @AfterClass public static void after()
     { 
-        Const.NullOut = b ;
+        SystemTDB.NullOut = b ;
     }
     
     

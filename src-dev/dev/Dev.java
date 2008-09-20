@@ -8,18 +8,15 @@ package dev;
 
 public class Dev
 {
-    // ** solver.reorder.StageGeneratorReorder
-    // ** General StageGenerator one bindng at a time over a Stage.
-    
     // ---- Optimizer
     //   Abbreviate planning when below a threshold.
-    //   TDB.optimizerOn() / TDB.optimizerOff() -- leaving it in the StageGenerator chain.
-    //   VarCounting : need to consider connectivity for boundedness propagation 
-    //     when same possible choices (stats is the same only less so). 
-    //     e.g. (?s P X) (?s1 P X) (?s P X)    vs   (?s1 P X) (?s P X) (?s P X) 
+    //   Consider do all plans from first choice.
+    //     VarCounting : need to consider connectivity for boundedness propagation 
+    //       when same possible choices (stats is the same only less so). 
+    //       e.g. (?s P X) (?s1 P X) (?s P X)    vs   (?s1 P X) (?s P X) (?s P X) 
     
     // -- Work on Filter-BGP blocks.
-    // OpCompilerTDB to intercept (later: in ARQ at "OpCompiler.compile")
+    // OpCompilerTDB to intercept (later?: in ARQ at "OpCompiler.compile")
     
     // -- Tests : VarCounter, stats matcher.
     

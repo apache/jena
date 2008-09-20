@@ -8,18 +8,20 @@ package com.hp.hpl.jena.tdb.solver;
 
 import java.util.Iterator;
 
+import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterPlainWrapper;
 
 public class QueryIterTDB extends QueryIterPlainWrapper
 {
+    // Rename as QueryIterCloseOther?
     final private QueryIterator originalInput ;
     
     // The original input needs closing as well.
-    public QueryIterTDB(Iterator<Binding> iterBinding, QueryIterator originalInput)
+    public QueryIterTDB(Iterator<Binding> iterBinding, QueryIterator originalInput, ExecutionContext execCxt)
     {
-        super(iterBinding) ;
+        super(iterBinding, execCxt) ;
         this.originalInput = originalInput ;
     }
     

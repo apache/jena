@@ -12,7 +12,7 @@ import org.junit.BeforeClass;
 import com.hp.hpl.jena.tdb.base.record.RecordLib;
 import com.hp.hpl.jena.tdb.index.RangeIndex;
 import com.hp.hpl.jena.tdb.index.TestRangeIndex;
-import com.hp.hpl.jena.tdb.sys.Const;
+import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
 public class TestBTree extends TestRangeIndex
 {
@@ -21,12 +21,12 @@ public class TestBTree extends TestRangeIndex
     @BeforeClass public static void before()
     { 
         BTreeParams.CheckingNode = true ;
-        Const.NullOut = true ;
+        SystemTDB.NullOut = true ;
     }
     
     @AfterClass public static void after()
     { 
-        Const.NullOut = b ;
+        SystemTDB.NullOut = b ;
     }
     
     // ---- Overridable maker

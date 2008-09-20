@@ -16,7 +16,7 @@ import java.nio.channels.FileChannel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.hp.hpl.jena.tdb.sys.Const;
+import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
 /** Abstract class to for block managers over a file */
 public abstract class BlockMgrFile extends BlockMgrBase
@@ -107,7 +107,7 @@ public abstract class BlockMgrFile extends BlockMgrBase
         check(id) ;
         if ( bb.capacity() != blockSize )
             throw new BlockException(format("BlockMgrMapped: Wrong size block.  Expected=%d : actual=%d", blockSize, bb.capacity())) ;
-        if ( bb.order() != Const.NetworkOrder )
+        if ( bb.order() != SystemTDB.NetworkOrder )
             throw new BlockException("BlockMgrMapped: Wrong byte order") ;
     }
 

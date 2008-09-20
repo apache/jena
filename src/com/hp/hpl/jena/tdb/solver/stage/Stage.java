@@ -1,52 +1,19 @@
 /*
- * (c) Copyright 2007, 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package test;
+package com.hp.hpl.jena.tdb.solver.stage;
 
-import com.hp.hpl.jena.tdb.bplustree.BPlusTreeMaker;
-import com.hp.hpl.jena.tdb.btree.BTreeParams;
-import com.hp.hpl.jena.tdb.index.RangeIndexMaker;
-import com.hp.hpl.jena.tdb.sys.SystemTDB;
+import com.hp.hpl.jena.sparql.core.BasicPattern;
+import com.hp.hpl.jena.sparql.engine.ExecutionContext;
+import com.hp.hpl.jena.sparql.engine.QueryIterator;
+import com.hp.hpl.jena.sparql.engine.binding.Binding;
 
-public abstract class BTreeRun extends RunnerRangeIndex
+public interface Stage
 {
-    
-    
-    static public void main(String...a)
-    {
-        new BPlusTreeRun().perform(a) ;
-    }
-    
-    
-    @Override
-    protected RangeIndexMaker makeRangeIndexMaker()
-    {
-        return new BPlusTreeMaker(order, order) ;
-    }
-
-
-    @Override
-    protected void startRun(RunType runType)
-    {
-        switch (runType)
-        {
-            case test:
-                showProgress = true ;
-                BTreeParams.CheckingBTree = true ;
-                BTreeParams.CheckingNode = true ;
-                SystemTDB.NullOut = true ;
-                break ;
-            case perf:  
-                showProgress = false ;
-                BTreeParams.CheckingBTree = false ;
-                BTreeParams.CheckingNode = false ;
-                SystemTDB.NullOut = false ;
-                break ;
-        }
-    }
+    public QueryIterator execute(BasicPattern pattern, Binding binding, ExecutionContext execCxt) ;
 }
 
 /*

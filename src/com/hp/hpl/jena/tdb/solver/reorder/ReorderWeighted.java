@@ -8,7 +8,7 @@ package com.hp.hpl.jena.tdb.solver.reorder;
 
 import com.hp.hpl.jena.tdb.solver.stats.StatsMatcher;
 
-public final class ReorderWeighted extends ReorderPatternBase
+public final class ReorderWeighted extends ReorderTransformationBase
 {
     private StatsMatcher stats ;
     

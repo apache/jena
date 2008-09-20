@@ -6,17 +6,20 @@
 
 package com.hp.hpl.jena.tdb.solver;
 
-import java.util.Iterator;
-
 import com.hp.hpl.jena.graph.Graph;
+
 import com.hp.hpl.jena.sparql.core.BasicPattern;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.main.StageGenerator;
-import com.hp.hpl.jena.tdb.pgraph.GraphTDB;
-import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
 
+import com.hp.hpl.jena.tdb.pgraph.GraphTDB;
+import com.hp.hpl.jena.tdb.solver.reorder.StageReorder;
+import com.hp.hpl.jena.tdb.solver.stage.Stage;
+import com.hp.hpl.jena.tdb.solver.stage.StageGenerator1;
+
+// TODO Break up into reorder and execute.
 public class StageGeneratorTDB implements StageGenerator
 {
     StageGenerator above = null ;
@@ -27,26 +30,38 @@ public class StageGeneratorTDB implements StageGenerator
     }
     
     @Override
-    public QueryIterator execute(BasicPattern pattern, QueryIterator input, ExecutionContext execCxt)
+    public QueryIterator execute(final BasicPattern pattern, QueryIterator input, ExecutionContext execCxt)
     {
         // --- In case this isn't for TDB
         Graph g = execCxt.getActiveGraph() ;
         
         if ( ! ( g instanceof GraphTDB ) )
-            // Not use - bounce up the StageGenerator
+            // Not us - bounce up the StageGenerator chain
             return above.execute(pattern, input, execCxt) ;
+        final GraphTDB graph = (GraphTDB)g ;
         
-        // To be split up.
-        GraphTDB graph = (GraphTDB)g ;
+        // The TDB raw execution
+        Stage stage1 = new Stage(){
+            @Override
+            public QueryIterator execute(BasicPattern pattern, Binding binding, ExecutionContext execCxt)
+            { return SolverLib.execute(graph, pattern, binding, execCxt) ; }
+            } ;
         
-        ReorderTransformation reorder = graph.getReorderPattern() ;
-
-        @SuppressWarnings("unchecked")
-        Iterator<Binding> _input = (Iterator<Binding>)input ;
-        Iterator<Binding> iterBinding = new StageMatchPattern(graph, _input, pattern, reorder, execCxt) ;
-        // StageMatchPattern<T> (well, RepeatApplyIterator<T>) will not close input 
-        // QueryIterators are from ARQ and not "iterator.Closable"
-        return new QueryIterTDB(iterBinding, input) ;
+        // Wrap with the BGP optimizer.
+        final Stage stage2 = new StageReorder(graph.getReorderTransform(), stage1) ;
+        
+        // And wrap in the unbudnling of the input iterator 
+        return new StageGenerator1(stage2).execute(pattern, input, execCxt)  ;
+        
+        // == StageGenerator1
+//        return new QueryIterRepeatApply(input, execCxt) 
+//        {
+//            @Override
+//            protected QueryIterator nextStage(Binding binding)
+//            {
+//                return stage2.execute(pattern, binding, getExecContext()) ;
+//            }
+//        } ;
     }
 }
 

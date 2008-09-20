@@ -9,7 +9,7 @@ package com.hp.hpl.jena.tdb.base.recordfile;
 import java.nio.ByteBuffer;
 
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
-import com.hp.hpl.jena.tdb.sys.Const;
+import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
 /** The on-disk form of a block of a single RecordBuffer
  * (i.e. not part of a BTree/BPlusTree node).
@@ -22,7 +22,7 @@ public class RecordBufferPage extends RecordBufferPageBase
     // To Constants
 //    final public static int COUNT      = 0 ;
     final public static int LINK            = 4 ;
-    final private static int FIELD_LENGTH   = Const.SizeOfInt ;
+    final private static int FIELD_LENGTH   = SystemTDB.SizeOfInt ;
 
     private RecordBufferPageMgr pageMgr ;
     private int link ;

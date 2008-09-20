@@ -6,7 +6,7 @@
 
 package com.hp.hpl.jena.tdb.pgraph;
 
-import static com.hp.hpl.jena.tdb.sys.Const.NodeCacheSize;
+import static com.hp.hpl.jena.tdb.sys.SystemTDB.NodeCacheSize;
 
 import com.hp.hpl.jena.tdb.base.file.FileFactory;
 import com.hp.hpl.jena.tdb.base.file.Location;

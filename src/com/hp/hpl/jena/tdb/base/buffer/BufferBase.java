@@ -13,7 +13,7 @@ import static java.util.Arrays.fill;
 import java.nio.ByteBuffer;
 
 import com.hp.hpl.jena.tdb.base.record.RecordException;
-import static com.hp.hpl.jena.tdb.sys.Const.* ;
+import static com.hp.hpl.jena.tdb.sys.SystemTDB.* ;
 
 
 /** ByteBuffer specialization - Common operations for RecordBuffer and PtrBuffer */  

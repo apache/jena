@@ -9,7 +9,7 @@ package com.hp.hpl.jena.tdb.index;
 import com.hp.hpl.jena.tdb.TDBException;
 import com.hp.hpl.jena.tdb.base.file.Location;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
-import com.hp.hpl.jena.tdb.sys.Const;
+import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
 /** A policy holder for making indexes, range indexes, and data files. 
  */   
@@ -28,12 +28,12 @@ public class IndexBuilder
     
     public static IndexBuilder mem()
     { 
-        return createIndexBuilderMem(Const.getIndexType()) ;
+        return createIndexBuilderMem(SystemTDB.getIndexType()) ;
     }
 
     private static synchronized IndexBuilder chooseIndexBuilder()
     {
-        return createIndexBuilder(Const.getIndexType()) ;
+        return createIndexBuilder(SystemTDB.getIndexType()) ;
     }
     
     private static IndexBuilder createIndexBuilderMem(IndexType indexType)
@@ -42,12 +42,12 @@ public class IndexBuilder
         {
             case BTree:
             {
-                IndexFactoryBTreeMem idxFactory = new IndexFactoryBTreeMem(Const.OrderMem) ;
+                IndexFactoryBTreeMem idxFactory = new IndexFactoryBTreeMem(SystemTDB.OrderMem) ;
                 return new IndexBuilder(idxFactory,idxFactory) ;
             }
             case BPlusTree:
             {
-                IndexFactoryBPlusTreeMem idxFactory = new IndexFactoryBPlusTreeMem(Const.OrderMem) ;
+                IndexFactoryBPlusTreeMem idxFactory = new IndexFactoryBPlusTreeMem(SystemTDB.OrderMem) ;
                 return new IndexBuilder(idxFactory,idxFactory) ;
             }
         }
@@ -60,12 +60,12 @@ public class IndexBuilder
         {
             case BTree:
             {
-                IndexFactoryBTree idx = new IndexFactoryBTree(Const.BlockSize) ;
+                IndexFactoryBTree idx = new IndexFactoryBTree(SystemTDB.BlockSize) ;
                 return new IndexBuilder(idx, idx) ;
             }
             case BPlusTree:
             {
-                IndexFactoryBPlusTree idx = new IndexFactoryBPlusTree(Const.BlockSize) ;
+                IndexFactoryBPlusTree idx = new IndexFactoryBPlusTree(SystemTDB.BlockSize) ;
                 return new IndexBuilder(idx, idx) ;
             }
         }

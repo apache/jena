@@ -12,7 +12,7 @@ import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 
 import com.hp.hpl.jena.tdb.base.record.RecordException;
-import com.hp.hpl.jena.tdb.sys.Const;
+import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
 
 /** An IntBuffer with extra operations */
@@ -26,18 +26,18 @@ public class PtrBuffer extends BufferBase
     
     private PtrBuffer(int maxRec)
     {
-        this(ByteBuffer.allocate(Const.SizeOfPointer*maxRec), 0) ;
+        this(ByteBuffer.allocate(SystemTDB.SizeOfPointer*maxRec), 0) ;
     }
     
     public PtrBuffer(ByteBuffer bb, int num)
     { 
-        super(bb, Const.SizeOfPointer, num) ;
+        super(bb, SystemTDB.SizeOfPointer, num) ;
         iBuff = bb.asIntBuffer() ;
 
         if ( CheckBuffer )
         {
             // It is a IntBuffer with associated ByteBuffer
-            if ( iBuff.position() != 0 || bb.order() != Const.NetworkOrder )
+            if ( iBuff.position() != 0 || bb.order() != SystemTDB.NetworkOrder )
                 throw new RecordException("Duff pointer buffer") ;
         }
     }

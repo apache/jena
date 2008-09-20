@@ -9,17 +9,20 @@ package com.hp.hpl.jena.tdb;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.hp.hpl.jena.query.ARQ;
 import com.hp.hpl.jena.rdf.model.impl.RDFReaderFImpl;
+
 import com.hp.hpl.jena.sparql.engine.main.StageGenBasicPattern;
 import com.hp.hpl.jena.sparql.engine.main.StageGenerator;
 import com.hp.hpl.jena.sparql.util.Context;
 import com.hp.hpl.jena.sparql.util.Symbol;
+
+import com.hp.hpl.jena.query.ARQ;
+
 import com.hp.hpl.jena.tdb.base.loader.NTriplesReader2;
 import com.hp.hpl.jena.tdb.pgraph.assembler.PGraphAssemblerVocab;
 import com.hp.hpl.jena.tdb.solver.StageGeneratorGeneric;
-import com.hp.hpl.jena.tdb.solver.StageGeneratorTDB;
-import com.hp.hpl.jena.tdb.sys.Const;
+import com.hp.hpl.jena.tdb.solver.StageGeneratorTDB_AIO;
+import com.hp.hpl.jena.tdb.sys.SystemTDB;
 import com.hp.hpl.jena.tdb.sys.Metadata;
 
 
@@ -35,22 +38,19 @@ public class TDB
     
     /** Root of TDB-defined parameter short names */  
     public static final String tdbSymbolPrefix = "tdb" ;
-//
-//    public static String symbolPrefix = "tdb" ;
 
-    public static final Symbol logBGP               = Const.allocSymbol("logBGP") ;
-    public static final Symbol logDuplicates        = Const.allocSymbol("logDuplicates") ;
+    public static final Symbol logBGP               = SystemTDB.allocSymbol("logBGP") ;
+    public static final Symbol logDuplicates        = SystemTDB.allocSymbol("logDuplicates") ;
     // Value: direct, mapped, default 
-    public static final Symbol symFileMode          = Const.allocSymbol("fileMode") ;  
-    public static final Symbol symIndexType         = Const.allocSymbol("indexType") ;
-    
-//    public static void panic(Class<?> clazz, String string)
-//    {
-//        org.slf4j.LoggerFactory.getLogger(clazz).error(string) ;
-//        throw new TDBException(string) ;
-//    }
+    public static final Symbol symFileMode          = SystemTDB.allocSymbol("fileMode") ;  
+    public static final Symbol symIndexType         = SystemTDB.allocSymbol("indexType") ;
     
     public static Context getContext()     { return ARQ.getContext() ; }  
+    
+    public static void optimizerOn()    { optimizer(true) ; }
+    public static void optimizerOff()   { optimizer(false) ; }
+    public static void optimizer(boolean b)
+    { }
     
     // Called on assembler loading.
     /** TDB System initialization - normally, this is not explicitly called because
@@ -95,7 +95,7 @@ public class TDB
             // ARQ base.  Cause chaos by using the new version.
             orig = new StageGeneratorGeneric() ;
 
-        StageGenerator stageGenerator = new StageGeneratorTDB(orig) ;
+        StageGenerator stageGenerator = new StageGeneratorTDB_AIO(orig) ;
         ARQ.getContext().set(ARQ.stageGenerator, stageGenerator) ;
     }
     
