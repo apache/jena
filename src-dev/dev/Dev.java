@@ -13,7 +13,7 @@ public class Dev
     
     // ---- Optimizer
     //   Abbreviate planning when below a threshold (likely selectivity?)
-    //   Think about relaistic "bad" cases
+    //   Think about realistic "bad" cases due to connectivity
     //   Consider doing all plans from first choice.
     //     VarCounting : need to consider connectivity for boundedness propagation
     //     or consider all plans at step one. 
