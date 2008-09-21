@@ -11,9 +11,6 @@ public class Dev
     // OpAssign - needs expression prepare (for function binding)?
     // Other places using a VarExprList?
     // Does prepare really matter if failure is defined as a false for evaluation?
-
-    //  (tidying) : ARQ : treat memory graphs as a storage (StageGenBasicPattern in ARQ).
-    //      StageGenBasicPatternMem 
     
     // Dev: escapes in Literals and symbols in SSE (ParseSSBase)
     // Need configurable escape processing.

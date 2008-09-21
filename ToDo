@@ -1,11 +1,15 @@
 ==== ARQ ToDo
 
+** Clean up
+   Properties file for version in ARQ.class
+   Using new build systems
+     Separate out into a build area; use ivy (no source etc)
+     Or Make multiple jar artifacts
+
 ** Quads and the quad engine - better as a dynamic transform? See dev.Quadization
 
 ** Paths 
-
-+ {0} to be an assignment? 
-+ ** Path syntax tests (scripted)
+  + {0} to be an assignment? 
 
 + Precedence-driven printing PathWriter.
 

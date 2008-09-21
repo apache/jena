@@ -5,9 +5,9 @@
   
   <!-- The major and minor version numbers  -->
   <property name="version-major"      value="2"/>
-  <property name="version-minor"      value="4"/>
-  <property name="version-revision"   value="2"/>
-  <property name="version-status"     value=""/>
+  <property name="version-minor"      value="5"/>
+  <property name="version-revision"   value="0"/>
+  <property name="version-status"     value="-dev"/>
   <property name="version"
             value="${version-major}.${version-minor}.${version-revision}${version-status}"/>
 
@@ -41,7 +41,7 @@
   <!-- Define contents of each JAR file -->
   <property name="arq.path.impl"      value="com/hp/hpl/jena/sparql"/>
   <property name="extra.classes" 
-	    value="${arq.path.impl}/**/test/** ${arq.path.impl}/**/junit/** arq/**"/>
+	    value="${arq.path.impl}/**/test/** ${arq.path.impl}/**/junit/** arq/** ${arq.path.impl}/**/suites/**"/>
 
   <!-- =========================================================== -->
   <!-- ==== Environment -->
