@@ -1,4 +1,8 @@
 
-== 0.5.4
+
+== 0.6.0
++ Added optimizer (statistics based) 
+
+== 0.5.3
 + Bug fixes: concurrency control for on-disk files
   
