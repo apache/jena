@@ -8,10 +8,15 @@ package dev;
 
 public class Dev
 {
+    // ---- Matcher
+    // Back-tracking
+    
     // ---- Optimizer
     //   Abbreviate planning when below a threshold (likely selectivity?)
+    //   Think about relaistic "bad" cases
     //   Consider doing all plans from first choice.
-    //     VarCounting : need to consider connectivity for boundedness propagation 
+    //     VarCounting : need to consider connectivity for boundedness propagation
+    //     or consider all plans at step one. 
     
     // ---- Work on Filter-BGP blocks.
     //     OpCompilerTDB to intercept
@@ -23,6 +28,7 @@ public class Dev
     // ---- ExtHash : Trial
     
     // ---- New cache API alloc/return/invalidate (shrink/grow?) : stats
+    // Weak references and more space.
     
     // ---- Reopenable BlockMgrs (and the object file?) 
     
@@ -30,7 +36,7 @@ public class Dev
     //     Compression
     
     // ---- tdbloader: 
-    //   close indexes not in use in a given phase
+    //   ** Close indexes not in use in a given phase
     //   Especially efficient iterator() for B+Trees (not mmap).
     //   ** (script) to work on gzip files
     //   ** Write stats (where to hook in to get unique?)

@@ -34,11 +34,88 @@ public abstract class ReorderTransformationBase implements ReorderTransformation
     {
         return reorderIndexes(pattern).reorder(pattern) ;
     }
+
+    // -------- Experimental.
+//    public final ReorderProc reorderIndexes2(BasicPattern pattern)
+//    {
+//        if (pattern.size() <= 1 )
+//            return ReorderLib.identityProc() ;
+//        
+//        @SuppressWarnings("unchecked")
+//        List<Triple> triples = (List<Triple>)pattern.getList() ;
+//
+//        // Convert to a mutable form (that allows things like "TERM")
+//        List<PatternTriple> components = toList(map(triples, convert)) ;
+//        
+//        ReorderProc proc = reorder2(triples, components) ;
+//        return proc ;
+//    }
+//
+//    private ReorderProc reorder2(List<Triple> triples, List<PatternTriple> components)
+//    {
+//        int N = components.size() ;
+//        int numReorder = N ;
+//        int numReorderAll = 1 ;
+//        int indexes[] = new int[N] ;
+//        int idx = 0 ;
+//
+//        // First, do all possibilities.
+//        for ( ; idx < numReorderAll ; idx++ )
+//        {
+//            List<Integer> startPoints = chooseAll(components) ;
+//            for ( int x : startPoints )
+//            {
+//                //Duplicate compoents so we can mutate it 
+//                List<PatternTriple> components2 = new ArrayList<PatternTriple>(components) ;
+//                Triple triple = triples.get(x) ;
+//                update(triple, components2) ;
+//                // Now what? Look ahead one possibility.
+//                int j2 = chooseNext(components2) ;
+//                
+//                
+//            }
+//            
+//            if ( j < 0 )
+//                break ;
+//        }
+//        
+//        
+//        
+//        //Set<Var> varsInScope = new HashSet<Var>() ;
+//        // Now do simply.
+//        for ( ; idx < numReorder ; idx++ )
+//        {
+//            int j = chooseNext(components) ;
+//            if ( j < 0 )
+//                break ;
+//            Triple triple = triples.get(j) ;
+//            indexes[idx] = j ;
+//            //VarUtils.addVarsFromTriple(varsInScope, triple) ;
+//            update(triple, components) ;
+//            components.set(j, null) ;
+//        }
+//        
+//        // Copy over the remainder (if any) 
+//        for ( int i = 0 ; i < components.size() ; i++ )
+//        {
+//            if ( components.get(i) != null )
+//                indexes[idx++] = i ;
+//            
+//            //VarUtils.addVarsFromTriple(varsInScope, triples.get(i)) ;
+//        }
+//        if ( triples.size() != idx )
+//            throw new TDBException(String.format("Inconsistency: number of triples (%d) not equal to number of indexes processed (%d)", triples.size(), idx)) ;
+//        
+//        ReorderProc proc = new ReorderProcIndexes(indexes) ; 
+//        return proc ;
+//    }
+    
+    // -------- 
     
     @Override
     public final ReorderProc reorderIndexes(BasicPattern pattern)
     {
-        if (pattern.size() < 2 )
+        if (pattern.size() <= 1 )
             return ReorderLib.identityProc() ;
         
         @SuppressWarnings("unchecked")
@@ -80,11 +157,6 @@ public abstract class ReorderTransformationBase implements ReorderTransformation
             int j = chooseNext(components) ;
             if ( j < 0 )
                 break ;
-//            {
-//                System.err.println("Reorder error") ;
-//                System.err.println("---- Triples:\n"+printAbbrevList(triples)) ;
-//                System.err.println("---- Components:\n"+printAbbrevList(components)) ;
-//            }
             Triple triple = triples.get(j) ;
             indexes[idx] = j ;
             //VarUtils.addVarsFromTriple(varsInScope, triple) ;
@@ -137,29 +209,6 @@ public abstract class ReorderTransformationBase implements ReorderTransformation
         }
         
         int idx = processPTriples(pTriples, null) ; 
-//        
-//        int idx = -1 ;
-//        double min = Double.MAX_VALUE ;
-//        int N = pTriples.size() ;
-//        for ( int i = 0 ; i < N ; i++ )
-//        {
-//            PatternTriple pt = pTriples.get(i) ;
-//            if ( pt == null )
-//                continue ;
-//            double x = weight(pt) ;
-//            if ( x < 0 )
-//            {
-//                // Not found.  Make sure idx is not left as -1 
-//                if ( idx == -1 )
-//                    idx = i ;
-//                break ;
-//            }
-//            if ( x < min )
-//            {
-//                min = x ;
-//                idx = i ;
-//            }
-//        }
         
         if ( DEBUG )
         {
@@ -225,21 +274,21 @@ public abstract class ReorderTransformationBase implements ReorderTransformation
     protected abstract double weight(PatternTriple pt) ;
 
     /** Update components to note any variables from triple */
-    protected final void update(Triple triple, List<PatternTriple> components)
+    protected static void update(Triple triple, List<PatternTriple> components)
     {
         for ( PatternTriple elt : components )
             if ( elt != null )
                 update(triple, elt) ;
     }
 
-    private void update(Triple triple, PatternTriple tuple)
+    private static void update(Triple triple, PatternTriple tuple)
     {
         update(triple.getSubject(), tuple) ;
         update(triple.getPredicate(), tuple) ;
         update(triple.getObject(), tuple) ;
     }
 
-    private void update(Node node, PatternTriple elt)
+    private static void update(Node node, PatternTriple elt)
     {
         if ( Var.isVar(node) )
         {
@@ -253,14 +302,14 @@ public abstract class ReorderTransformationBase implements ReorderTransformation
     }
     
     /** Update based on a variable/value (c.f. Substitute.substitute) */
-    protected final void update(Var var, Node value, List<PatternTriple> components)
+    protected static void update(Var var, Node value, List<PatternTriple> components)
     {
         for ( PatternTriple elt : components )
             if ( elt != null )
                 update(var, value, elt) ;
     }
     
-    private void update(Var var, Node value, PatternTriple elt)
+    private static void update(Var var, Node value, PatternTriple elt)
     {
         if ( var.equals(elt.subject.getNode()) )
             elt.subject = Item.createNode(value) ;

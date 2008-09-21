@@ -44,7 +44,7 @@ public class StageGeneratorTDB_AIO implements StageGenerator
 
         @SuppressWarnings("unchecked")
         Iterator<Binding> _input = (Iterator<Binding>)input ;
-        Iterator<Binding> iterBinding = new StageMatchPattern(graph, _input, pattern, reorder, execCxt) ;
+        Iterator<Binding> iterBinding = new StageMatchPattern_AIO(graph, _input, pattern, reorder, execCxt) ;
         // StageMatchPattern<T> (well, RepeatApplyIterator<T>) will not close input 
         // QueryIterators are from ARQ and not "iterator.Closable"
         return new QueryIterTDB(iterBinding, input, execCxt) ;

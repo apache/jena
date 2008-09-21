@@ -24,33 +24,14 @@ public class StageGenerator1 implements StageGenerator
     {
         this.stage = stage ; 
     }
-    
-//    static class StageCaller extends QueryIterRepeatApply 
-//    {
-//        private BasicPattern pattern ;
-//        private Stage stage ;
-//
-//        public StageCaller(BasicPattern pattern, QueryIterator input, Stage stage, ExecutionContext context)
-//        {
-//            super(input, context) ;
-//            this.pattern = pattern;
-//            this.stage = stage ;
-//            
-//        }
-//
-//        @Override
-//        protected QueryIterator nextStage(Binding binding)
-//        {
-//            return stage.execute(pattern, binding, getExecContext()) ;
-//        }
-//    }
-    
+
     @Override
     public QueryIterator execute(final BasicPattern pattern, 
                                  final QueryIterator input, 
                                  final ExecutionContext execCxt)
     {
-        return new QueryIterRepeatApply(input, execCxt)     // We live and learn.  I didn't know arguments to the constructor worked. 
+        // We live and learn.  I didn't know arguments to the abstract class constructor worked.
+        return new QueryIterRepeatApply(input, execCxt) 
         {
             @Override
             protected QueryIterator nextStage(Binding binding)

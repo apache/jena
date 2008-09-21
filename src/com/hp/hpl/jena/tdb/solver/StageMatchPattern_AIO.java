@@ -6,25 +6,28 @@
 
 package com.hp.hpl.jena.tdb.solver;
 
-import static com.hp.hpl.jena.tdb.solver.SolverLib.* ;
-import java.util.Iterator;
-import java.util.List;
-
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.sparql.core.Substitute;
-import com.hp.hpl.jena.sparql.core.BasicPattern;
-import com.hp.hpl.jena.sparql.engine.ExecutionContext;
-import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.tdb.pgraph.GraphTDB;
-import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
-import com.hp.hpl.jena.tdb.solver.reorder.ReorderProc;
-
+import static com.hp.hpl.jena.tdb.solver.SolverLib.convFromBinding;
+import static com.hp.hpl.jena.tdb.solver.SolverLib.convToBinding;
 import iterator.Iter;
 import iterator.RepeatApplyIterator;
 import iterator.SingletonIterator;
 
-// Only used by the all-in-one StategGenerator for TDB (which is not the normal one to use).
-public class StageMatchPattern extends RepeatApplyIterator<Binding>
+import java.util.Iterator;
+import java.util.List;
+
+import com.hp.hpl.jena.graph.Triple;
+
+import com.hp.hpl.jena.sparql.core.BasicPattern;
+import com.hp.hpl.jena.sparql.core.Substitute;
+import com.hp.hpl.jena.sparql.engine.ExecutionContext;
+import com.hp.hpl.jena.sparql.engine.binding.Binding;
+
+import com.hp.hpl.jena.tdb.pgraph.GraphTDB;
+import com.hp.hpl.jena.tdb.solver.reorder.ReorderProc;
+import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
+
+// *** Only used by the all-in-one StategGenerator for TDB (which is not the normal one to use).
+public class StageMatchPattern_AIO extends RepeatApplyIterator<Binding>
 {
     private BasicPattern pattern ;
     private ReorderTransformation reorderTransform ;
@@ -33,7 +36,7 @@ public class StageMatchPattern extends RepeatApplyIterator<Binding>
     // Cache slot.
     private ReorderProc reorderProc = null ;
     
-    protected StageMatchPattern(GraphTDB graph, Iterator<Binding> input, BasicPattern pattern, ReorderTransformation reorder, ExecutionContext execCxt)
+    protected StageMatchPattern_AIO(GraphTDB graph, Iterator<Binding> input, BasicPattern pattern, ReorderTransformation reorder, ExecutionContext execCxt)
     {
         super(input) ;
         this.pattern = pattern ;

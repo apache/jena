@@ -31,8 +31,6 @@ import com.hp.hpl.jena.tdb.pgraph.NodeId;
 /** Utilities used within the TDB BGP solver */
 public class SolverLib
 {
-    // ---- TDB specific
-    
     /** Non-reordering execution of a basic graph pattern, given a iterator of bindings as input */ 
     public static QueryIterator execute(GraphTDB graph, BasicPattern pattern, QueryIterator input, ExecutionContext execCxt)
     {
@@ -57,7 +55,7 @@ public class SolverLib
         QueryIterator input = new QueryIterSingleton(binding, execCxt) ;
         return execute(graph, pattern, input, execCxt) ;
         
-        // Maybe there is a btter way to do this, given it starts from a single binding. 
+        // Maybe there is a better way to do this, given it starts from a single binding. 
 //        // ---- Execute
 //        @SuppressWarnings("unchecked")
 //        List<Triple> triples = (List<Triple>)pattern.getList() ;
@@ -71,13 +69,11 @@ public class SolverLib
 //        return new QueryIterTDB(iterBinding, null, execCxt) ;
     }
 
-    private static Iterator<BindingNodeId> solve(GraphTDB graph,
-                                                 Iterator<BindingNodeId> chain,
-                                                 Triple triple, 
-                                                 ExecutionContext execCxt)
-                                                 {
+    private static Iterator<BindingNodeId> solve(GraphTDB graph, Iterator<BindingNodeId> chain, 
+                                                 Triple triple, ExecutionContext execCxt)
+    {
         return new StageMatchTriple(graph, chain, triple, execCxt) ;
-                                                 }
+    }
     
     // Transform : BindingNodeId ==> Binding
     public static Transform<BindingNodeId, Binding> convToBinding(final GraphTDB graph)
