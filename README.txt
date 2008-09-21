@@ -2,4 +2,4 @@ README for TDB
 ==============
 
 Documentation:
-    http;//jena.hpl.hp.com/wiki/TDB
+    http://jena.hpl.hp.com/wiki/TDB

@@ -9,9 +9,9 @@
   <property environment="env"/>
 
   <!-- The major and minor version numbers  -->
-  <property name="version-major"   	value="0"/>
-  <property name="version-minor"    	value="5"/>
-  <property name="version-revision"   	value="4"/>
+  <property name="version-major"   	    value="0"/>
+  <property name="version-minor"        value="5"/>
+  <property name="version-revision"     value="4"/>
   <property name="version-status"       value="-dev"/>
   <property name="version"
             value="${version-major}.${version-minor}.${version-revision}${version-status}"/>
@@ -21,7 +21,6 @@
 	    value="Copyright &#169; 2007, 2008 Hewlett-Packard Development Company, LP"/>
   <property name="javadoc.packages"     value="com.hp.hpl.jena.tdb"/>
   <property name="javadoc.all.packages" value="com.hp.hpl.jena.tdb.*"/>
-
   
   <target name="main" depends="jar"/>
 

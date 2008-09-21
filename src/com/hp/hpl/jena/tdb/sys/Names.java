@@ -26,7 +26,7 @@ public class Names
     
     /** Optimizer / stats */
     public static String optStats           = "stats.opt";
-    public static String optCountVar        = "var-count.opt";      // Currently, it's just the presence of this file that matters.
+    public static String optDefault         = "fixed.opt";      // Currently, it's just the presence of this file that matters.
     public static String optNone            = "none.opt"; 
 }
 

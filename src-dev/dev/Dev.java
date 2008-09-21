@@ -10,15 +10,13 @@ public class Dev
 {
     // ---- Optimizer
     //   Abbreviate planning when below a threshold (likely selectivity?)
-    //   Consider do all plans from first choice.
+    //   Consider doing all plans from first choice.
     //     VarCounting : need to consider connectivity for boundedness propagation 
-    //       when same possible choices (stats is the same only less so). 
-    //       e.g. (?s P X) (?s1 P X) (?s P X)    vs   (?s1 P X) (?s P X) (?s P X) 
     
-    // -- Work on Filter-BGP blocks.
-    // OpCompilerTDB to intercept (later?: in ARQ at "OpCompiler.compile")
+    // ---- Work on Filter-BGP blocks.
+    //     OpCompilerTDB to intercept
     
-    // -- Tests : VarCounter, stats matcher.
+    // ---- Tests : VarCounter, stats matcher.
     
     // ---- B+Tree rewriter
     
@@ -27,6 +25,9 @@ public class Dev
     // ---- New cache API alloc/return/invalidate (shrink/grow?) : stats
     
     // ---- Reopenable BlockMgrs (and the object file?) 
+    
+    // ---- Node Table
+    //     Compression
     
     // ---- tdbloader: 
     //   close indexes not in use in a given phase

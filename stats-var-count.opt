@@ -1,18 +1,19 @@
 # -*- sse -*-
+# Rules for a fixed optimizations scheme
 
 (prefix ((rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>))
   (stats
-    # Rules for a variable counting algorithm
-      ((TERM TERM TERM) 1)
-      
-      ((TERM TERM VAR) 2)
-      ((VAR rdf:type TERM) 5)  # Make worse than other ?PO
-      ((VAR TERM TERM) 3)
-      ((TERM VAR TERM) 2)
-      
-      ((VAR TERM VAR)  10)
-      ((VAR VAR TERM)  30)
-      ((TERM VAR VAR)  20)
-      
-      ((VAR VAR VAR)  50)
-      ))
+    
+    ((TERM TERM TERM) 1)
+    
+    ((TERM TERM VAR) 2)
+    ((VAR rdf:type TERM) 5)  # Make worse than other ?PO
+    ((VAR TERM TERM) 3)
+    ((TERM VAR TERM) 2)
+    
+    ((VAR TERM VAR)  10)
+    ((VAR VAR TERM)  30)
+    ((TERM VAR VAR)  20)
+    
+    ((VAR VAR VAR)  50)
+    ))

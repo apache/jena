@@ -20,7 +20,7 @@ import com.hp.hpl.jena.tdb.index.RangeIndex;
 import com.hp.hpl.jena.tdb.index.TripleIndex;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderLib;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
-import com.hp.hpl.jena.tdb.solver.reorder.ReorderVarCount;
+import com.hp.hpl.jena.tdb.solver.reorder.ReorderFixed;
 import com.hp.hpl.jena.tdb.sys.Names;
 
 /** Place to put various "making" things. */
@@ -83,11 +83,11 @@ public class GraphTDBFactory
             }
         }
         
-        if ( reorder == null && location.exists(Names.optCountVar) )
+        if ( reorder == null && location.exists(Names.optDefault) )
         {
-            // Not as good but better than nothering.
-            reorder = new ReorderVarCount() ;
-            logTDB.info("Variable counting BGP optimizer") ;  
+            // Not as good but better than nothing.
+            reorder = new ReorderFixed() ;
+            logTDB.info("Fixed pattern BGP optimizer") ;  
         }
         
         if ( location.exists(Names.optNone) )

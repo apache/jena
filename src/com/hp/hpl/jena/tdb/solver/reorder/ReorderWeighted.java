@@ -18,9 +18,9 @@ public final class ReorderWeighted extends ReorderTransformationBase
     }
     
     @Override
-    protected double weight(PatternTriple item)
+    protected double weight(PatternTriple pTriple)
     {
-        return stats.match(item.subject, item.predicate, item.object) ;
+        return stats.match(pTriple) ;
     }
 }
 /*

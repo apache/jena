@@ -6,14 +6,7 @@
 
 package com.hp.hpl.jena.tdb.solver.stats;
 
-import static com.hp.hpl.jena.tdb.solver.reorder.PatternElements.ANY;
-import static com.hp.hpl.jena.tdb.solver.reorder.PatternElements.BNODE;
-import static com.hp.hpl.jena.tdb.solver.reorder.PatternElements.LITERAL;
-import static com.hp.hpl.jena.tdb.solver.reorder.PatternElements.TERM;
-import static com.hp.hpl.jena.tdb.solver.reorder.PatternElements.URI;
-import static com.hp.hpl.jena.tdb.solver.reorder.PatternElements.VAR;
 import static com.hp.hpl.jena.tdb.solver.reorder.PatternElements.*;
-
 
 import java.io.PrintStream;
 import java.util.ArrayList;
@@ -23,9 +16,9 @@ import java.util.Map;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.shared.PrefixMapping;
+import com.hp.hpl.jena.vocabulary.RDF;
+
 import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.sparql.serializer.SerializationContext;
 import com.hp.hpl.jena.sparql.sse.Item;
 import com.hp.hpl.jena.sparql.sse.ItemException;
 import com.hp.hpl.jena.sparql.sse.ItemList;
@@ -33,8 +26,9 @@ import com.hp.hpl.jena.sparql.sse.SSE;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
 import com.hp.hpl.jena.sparql.util.PrintUtils;
 import com.hp.hpl.jena.sparql.util.Printable;
+
 import com.hp.hpl.jena.tdb.TDBException;
-import com.hp.hpl.jena.vocabulary.RDF;
+import com.hp.hpl.jena.tdb.solver.reorder.PatternTriple;
 
 /** Stats format:
  * <pre>(stats
@@ -55,14 +49,14 @@ public final class StatsMatcher
     public static final String META      = "meta" ; 
     public static final String COUNT     = "count" ;
     
-    static class Pattern implements Printable
+    static public class Pattern implements Printable
     {
         Item subjItem ;
         Item predItem ;
         Item objItem ;
         double weight ; 
         
-        Pattern(double w, Item subj, Item pred, Item obj)
+        public Pattern(double w, Item subj, Item pred, Item obj)
         {
             weight = w ;
             subjItem = subj ;
@@ -91,14 +85,6 @@ public final class StatsMatcher
             out.print(weight) ;
             out.print(")") ;
         }
-
-        public void output(IndentedWriter out, SerializationContext cxt)
-        {}
-
-        public String toString(PrefixMapping pmap)
-        {
-            return null ;
-        }
     }
 
     private static class Match
@@ -120,7 +106,7 @@ public final class StatsMatcher
     
     //Map<Item, List<Pattern>> patterns = new HashMap<>() ;//new ArrayList<Pattern>() ;
     
-    private StatsMatcher() {}
+    public StatsMatcher() {}
     
     public StatsMatcher(String filename)
     {
@@ -149,6 +135,8 @@ public final class StatsMatcher
         
         // Estimated fan out from SP? and ?PO
         // Can override in stats file.
+        
+        // Sizes for large files.
         double weightSP = 2 ;
         double weightPO = 10 ;                   
 
@@ -165,9 +153,9 @@ public final class StatsMatcher
                 count = x.getList().get(1).asInteger() ;
         }
         
+        // Modify for small files.
         if ( count != - 1 && count < 100 )
             weightPO = 4 ;
-
         
         while (!list.isEmpty()) 
         {
@@ -180,15 +168,12 @@ public final class StatsMatcher
             if ( pat.isNode() )
             {
                 // Knowing ?PO is quite important - it ranges from IFP (1) to
-                // rdf:type rdf:Resource (potentially everything)
-                
-                // At least weight to avoid rdf:type if there is another ?PO.
-                // Numbers for large models.
+                // rdf:type rdf:Resource (potentially everything).
                 
                 double numProp = elt.getList().get(1).getDouble() ;
                 
                 if ( rdfType.equals(pat.getNode()) )
-                    // Special case:  ? rdf:type O
+                    // Special case:  ? rdf:type O which is often not very selective. 
                     weightPO = Math.min(numProp, 5*weightPO) ;
                     
                 // If does not exist. 
@@ -211,7 +196,7 @@ public final class StatsMatcher
         }
     }
         
-    private void addPattern(Pattern pattern)
+    public void addPattern(Pattern pattern)
     {
         // Check for named variables whch shoudl not appear in a Pattern
         check(pattern) ;
@@ -226,8 +211,6 @@ public final class StatsMatcher
         }
         entry.add(pattern) ;
     }
-    
-    // -- More for Item
     
     private static void check(Pattern pattern)
     {
@@ -260,6 +243,11 @@ public final class StatsMatcher
                      Item.createNode(t.getObject())) ;
     }
 
+    public double match(PatternTriple pTriple)
+    {
+        return match(pTriple.subject, pTriple.predicate, pTriple.object) ;
+    }
+    
     /** Return the matching weight for the first triple match found, else -1 for no match */
     
     public double match(Item subj, Item pred, Item obj)
@@ -303,18 +291,13 @@ public final class StatsMatcher
         return minPos(w, oldMin) ;
     }
     
-    //Mimumum respecting -1 for "not known"
+    //Minimum respecting -1 for "not known"
     private static double minPos(double x, double y)
     {
         if ( x == -1.0 ) return y ;
         if ( y == -1.0 ) return x ;
         return Math.min(x, y) ;
     }
-    
-    double matchLinear(Item subj, Item pred, Item obj)
-    {
-        return matchLinear(patterns, subj, pred, obj) ;
-    } 
     
     private static double matchLinear(List<Pattern> patterns, Item subj, Item pred, Item obj)
     {

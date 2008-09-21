@@ -52,7 +52,7 @@
        
   -->
 
-  <!-- Set version from compoents (if not already set -->
+  <!-- Set version from components (if not already set) -->
   <property    name="version"  
 	       value="${version-major}.${version-minor}.${version-revision}${version-status}"/>
 
