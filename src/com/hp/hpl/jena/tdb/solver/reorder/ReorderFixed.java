@@ -26,14 +26,18 @@ public class ReorderFixed extends ReorderTransformationBase
     static StatsMatcher matcher ;
     static {
         matcher = new StatsMatcher() ;
-        // The order matters, not the relative weights.
-        matcher.addPattern(new Pattern(1,   TERM, TERM, VAR)) ;     // SP?
-        matcher.addPattern(new Pattern(2,   VAR,  TERM, TERM)) ;    // ?PO
-        matcher.addPattern(new Pattern(3,   TERM, TERM, TERM)) ;    // S?O
-        matcher.addPattern(new Pattern(4,   TERM, type, TERM)) ;    // ? type O
-        matcher.addPattern(new Pattern(5,   TERM, VAR,  VAR)) ;     // S??
-        matcher.addPattern(new Pattern(6,   VAR,  VAR,  TERM)) ;    // ??O
-        matcher.addPattern(new Pattern(7,   VAR,  TERM, VAR)) ;     // ?P?
+        
+        //matcher.addPattern(new Pattern(1,   TERM, TERM, TERM)) ;     // SPO - built-in - not needed a s a rule
+        
+        matcher.addPattern(new Pattern(2,   TERM, TERM, VAR)) ;     // SP?
+        matcher.addPattern(new Pattern(5,   TERM, type, TERM)) ;    // ? type O -- worse than ?PO
+        matcher.addPattern(new Pattern(3,   VAR,  TERM, TERM)) ;    // ?PO
+        matcher.addPattern(new Pattern(2,   TERM, TERM, TERM)) ;    // S?O
+        
+        matcher.addPattern(new Pattern(10,  TERM, VAR,  VAR)) ;     // S??
+        matcher.addPattern(new Pattern(20,  VAR,  VAR,  TERM)) ;    // ??O
+        matcher.addPattern(new Pattern(30,  VAR,  TERM, VAR)) ;     // ?P?
+
         matcher.addPattern(new Pattern(100, VAR,  VAR,  VAR)) ;     // ???
     }
     
