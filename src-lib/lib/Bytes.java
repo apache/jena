@@ -14,6 +14,7 @@ import java.nio.charset.CharacterCodingException;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetDecoder;
 import java.nio.charset.CharsetEncoder;
+import java.nio.charset.CoderResult;
 
 /** Byte-oriented operations.  Packing and unpacking integers
  *  is in network order (Big endian - which is the preferred order in Java)
@@ -180,13 +181,15 @@ public class Bytes
 //    }
 
     static Charset utf8 = null ;
-    static CharsetEncoder enc = null ;
-    static CharsetDecoder dec = null ;
+    //static CharsetEncoder enc = null ;
+    //static CharsetDecoder dec = null ;
     static {
         try {
             utf8 = Charset.forName(encodingUTF8) ;
-            enc = utf8.newEncoder() ;
-            dec = utf8.newDecoder() ;
+            // Encoders and decoders are not thread-safe - internal codec state.
+            // Could pool if it become expensive 
+//            enc = utf8.newEncoder() ;
+//            dec = utf8.newDecoder() ;
         } catch (Throwable ex)
         {
             ex.printStackTrace(System.err);
@@ -195,22 +198,29 @@ public class Bytes
     
     public static void toByteBuffer(String s, ByteBuffer bb)
     {
+        CharsetEncoder enc = utf8.newEncoder() ;
         CharBuffer cBuff = CharBuffer.wrap(s);
-        enc.reset() ;
-        enc.encode(cBuff, bb, true) ;
+        CoderResult r = enc.encode(cBuff, bb, true) ;
+        if ( r == CoderResult.OVERFLOW )
+            throw new InternalError("Bytes.toByteBuffer: encode overflow (1)") ;
         enc.flush(bb) ;
+        if ( r == CoderResult.OVERFLOW )
+            throw new InternalError("Bytes.toByteBuffer: encode overflow (2)") ;
     }
     
     public static String fromByteBuffer(ByteBuffer bb)
     {
         try
         {
+            CharsetDecoder dec = utf8.newDecoder() ;
             CharBuffer cBuff = dec.decode(bb) ;
+            CoderResult r = dec.flush(cBuff) ;
+            if ( r == CoderResult.OVERFLOW )
+                throw new InternalError("Bytes.fromByteBuffer: decode overflow") ;
             return cBuff.toString() ;
         } catch (CharacterCodingException ex)
         {
-            ex.printStackTrace(System.err);
-            return null ;
+            throw new InternalError("Bytes:fromByteBuffer: character encoding error in buffer") ; 
         }
     }
 }

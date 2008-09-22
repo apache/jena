@@ -11,6 +11,8 @@ public class Dev
     // ---- Matcher
     // Back-tracking
     
+    // ---- Tests : VarCounter, stats matcher.
+
     // ---- Optimizer
     //   Abbreviate planning when below a threshold (likely selectivity?)
     //   Think about realistic "bad" cases due to connectivity
@@ -20,8 +22,6 @@ public class Dev
     
     // ---- Work on Filter-BGP blocks.
     //     OpCompilerTDB to intercept
-    
-    // ---- Tests : VarCounter, stats matcher.
     
     // ---- B+Tree rewriter
     
@@ -40,6 +40,7 @@ public class Dev
     //   Especially efficient iterator() for B+Trees (not mmap).
     //   ** (script) to work on gzip files
     //   ** Write stats (where to hook in to get unique?)
+    //   32 bit ideas: 
 
     // ---- Use of java properties for key values.
     // Or config file.

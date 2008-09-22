@@ -11,7 +11,6 @@ import java.io.IOException;
 import lib.FileOps;
 import lib.Pair;
 import lib.cache.Cache2;
-
 import arq.cmd.CmdUtils;
 
 import com.hp.hpl.jena.graph.Graph;
@@ -34,8 +33,8 @@ import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 import com.hp.hpl.jena.tdb.base.recordfile.RecordBufferPage;
 import com.hp.hpl.jena.tdb.base.recordfile.RecordBufferPageMgr;
 import com.hp.hpl.jena.tdb.pgraph.GraphTDB;
-import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderFixed;
+import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderWeighted;
 import com.hp.hpl.jena.tdb.solver.stats.StatsMatcher;
 import com.hp.hpl.jena.tdb.sys.SystemTDB;
@@ -54,7 +53,6 @@ public class Run
 
     static { CmdUtils.setLog4j() ; }
  
-    
     public static void main(String ... args) throws IOException
     {
         //smallGraph() ;
