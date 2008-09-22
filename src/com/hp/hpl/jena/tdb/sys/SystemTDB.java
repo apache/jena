@@ -216,10 +216,10 @@ public class SystemTDB
         {
             if ( is64bitSystem )
             {
-                log.info("File mode: Mapped") ;
+                log.debug("File mode: Mapped") ;
                 return FileMode.mapped ;
             }
-            log.info("File mode: Direct") ;
+            log.debug("File mode: Direct") ;
             return FileMode.direct ;
         }
         throw new TDBException("Unrecognized file mode (not one of 'default', 'direct' or 'mapped': "+x) ;
