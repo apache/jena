@@ -64,7 +64,7 @@ public class Scratch {
     }
 
     private static boolean hasTableAndColumns(Connection conn, String tableName, String... colNames) throws SQLException {
-        Collection<String> cols = new HashSet();
+        Collection<String> cols = new HashSet<String>();
         for (String c : colNames) {
             if (c != null) {
                 cols.add(c.toLowerCase());
