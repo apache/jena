@@ -57,9 +57,15 @@ public class Compile
             request.DistinctOnCLOB = false ;
         }
         
-        if ( StoreUtils.isPostgreSQL(store) || StoreUtils.isMySQL(store) )
+        if ( StoreUtils.isPostgreSQL(store) )
             request.LimitOffsetTranslation = true ;
-
+        
+        if ( StoreUtils.isMySQL(store) )
+            request.LimitOffsetTranslation = true ;
+        
+        if ( StoreUtils.isSQLServer(store) )
+            request.DistinctOnCLOB = false ;
+        
         QueryCompiler queryCompiler = store.getQueryCompilerFactory().createQueryCompiler(request) ;
         Op op2 = queryCompiler.compile(op) ;
         return op2 ;
