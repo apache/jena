@@ -9,16 +9,16 @@ package dev;
 public class Dev
 {
     // ---- Matcher
-    // Back-tracking
+    // Back-tracking?
     
     // ---- Tests : VarCounter, stats matcher.
 
     // ---- Optimizer
-    //   Abbreviate planning when below a threshold (likely selectivity?)
-    //   Think about realistic "bad" cases due to connectivity
+    //   Abbreviate planning when below a threshold (likely selectivity?), or number of triples planned.
     //   Consider doing all plans from first choice.
     //     VarCounting : need to consider connectivity for boundedness propagation
-    //     or consider all plans at step one. 
+    //     or consider all plans at step one.
+    // Documentation
     
     // ---- Work on Filter-BGP blocks.
     //     OpCompilerTDB to intercept
