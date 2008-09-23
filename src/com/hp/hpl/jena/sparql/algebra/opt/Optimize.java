@@ -23,6 +23,27 @@ public class Optimize implements Rewrite
     static private Log log = LogFactory.getLog(Optimize.class) ;
     // Optimize at query execution time.
 
+    // A small (one slot) registry to allow plugging in an alternative optimizer
+    public interface Factory { Rewrite create(Context context) ; }
+    
+    // Set this to a different factory implementation to have a different general optimizer.  
+    public static Factory factory = new Factory(){
+
+        public Rewrite create(Context context)
+        {
+            return new Optimize(context) ;
+        }} ;  
+    
+    static private Rewrite decideOptimizer(Context context)
+    {
+        if ( factory == null )
+            return new Optimize(context) ;    // Only if default 'factory' gets lost.
+        else
+            return factory.create(context) ;
+    }
+        
+    // ----        
+        
     public static Op optimize(Op op, ExecutionContext execCxt)
     {
         return optimize(op, execCxt.getContext()) ;
@@ -31,7 +52,7 @@ public class Optimize implements Rewrite
     // The execution-independent optimizations
     public static Op optimize(Op op, Context context)
     {
-        Rewrite opt = new Optimize(context) ;
+        Rewrite opt = decideOptimizer(context) ;
         return opt.rewrite(op) ;
     }
 
