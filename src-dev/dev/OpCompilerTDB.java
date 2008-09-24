@@ -51,6 +51,8 @@ public class OpCompilerTDB extends OpCompiler
             return super.compile(opFilter, input) ;
         
         // A MESS!
+        // Create statics in SolverLib.
+        // QueryIterator execute(BasicPattern pattern, ExprList exprs, QueryIterator input, GraphTDB graph)
         
         // It's (filter (bgp ...)) for TDB.
         
