@@ -83,10 +83,19 @@ public class WriterGraph
             out.print(" ") ;
             out.print(label) ;
         }
+        
+        Iterator iter = g.find(Node.ANY, Node.ANY, Node.ANY) ;
+        if ( ! iter.hasNext() )
+        {
+            // Empty.
+            WriterLib.finish(out, Tags.tagGraph) ;
+            return ;
+        }
+        
         out.println() ;
         out.incIndent() ;
         boolean first = true ; 
-        for ( Iterator iter = g.find(Node.ANY, Node.ANY, Node.ANY) ; iter.hasNext() ; )
+        for ( ; iter.hasNext() ; )
         {
             if ( ! first )
                 out.println();
