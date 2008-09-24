@@ -4,23 +4,23 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.solver;
+package com.hp.hpl.jena.tdb.lib;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
+import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.vocabulary.RDF;
 
-import com.hp.hpl.jena.tdb.solver.reorder.TestReorder;
-import com.hp.hpl.jena.tdb.solver.stats.TestStats;
-
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
-    TestReorder.class,      // Reorder engine - TDB independent
-    TestStats.class,        // Stats - TDB independent
-    TestSolverTDB.class     // Tests the TDB connectivity
-})
-
-public class TS_Solver
-{}
+public class NodeConst
+{
+    public static final Node nodeTrue       = Node.createLiteral("true", null,  XSDDatatype.XSDboolean) ; 
+    public static final Node nodeFalse      = Node.createLiteral("false", null,  XSDDatatype.XSDboolean) ; 
+    public static final Node nodeZero       = Node.createLiteral("0", null,  XSDDatatype.XSDinteger) ;
+    public static final Node nodeOne        = Node.createLiteral("1", null,  XSDDatatype.XSDinteger) ;
+    public static final Node nodeTwo        = Node.createLiteral("2", null,  XSDDatatype.XSDinteger) ;
+    public static final Node nodeMinusOne   = Node.createLiteral("-1", null,  XSDDatatype.XSDinteger) ;
+    
+    public static final Node nodeRDFType    = RDF.type.asNode() ;
+}
 
 /*
  * (c) Copyright 2008 Hewlett-Packard Development Company, LP

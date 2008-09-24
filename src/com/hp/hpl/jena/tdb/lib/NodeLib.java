@@ -13,19 +13,18 @@ import java.io.UnsupportedEncodingException;
 import java.security.DigestException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
 
 import lib.Bytes;
 
-import com.hp.hpl.jena.rdf.model.AnonId;
-
 import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.graph.Triple;
+import com.hp.hpl.jena.rdf.model.AnonId;
 import com.hp.hpl.jena.shared.PrefixMapping;
-
 import com.hp.hpl.jena.sparql.sse.SSE;
 import com.hp.hpl.jena.sparql.sse.SSEParseException;
 import com.hp.hpl.jena.sparql.util.ALog;
 import com.hp.hpl.jena.sparql.util.FmtUtils;
-
 import com.hp.hpl.jena.tdb.TDBException;
 import com.hp.hpl.jena.tdb.base.record.Record;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
@@ -61,6 +60,14 @@ public class NodeLib
             ALog.fatal(NodeLib.class, "decode: Failed to parse: "+s) ;
             throw ex ;
         }
+    }
+
+    /** Cast a list (known to be triples, e.g. from Java 1.4) to a List<Triple> */
+    public static List<Triple> tripleList(List<?> triples)
+    {
+        @SuppressWarnings("unchecked")
+        List<Triple> x = (List<Triple>)triples ;
+        return x ;
     }
     
     public static Hash hash(Node n)

@@ -17,6 +17,7 @@ import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.impl.LiteralLabel;
 import com.hp.hpl.jena.tdb.TDBException;
+import com.hp.hpl.jena.tdb.lib.NodeConst;
 import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
 final
@@ -145,8 +146,6 @@ public class NodeId
     public static final int BOOLEAN            = 5 ;
     public static final int SHORT_STRING       = 6 ;
     public static final int SPECIAL            = 0xFF ;
-    public static final Node nodeTrue = Node.createLiteral("true", null,  XSDDatatype.XSDboolean) ; 
-    public static final Node nodeFalse = Node.createLiteral("false", null,  XSDDatatype.XSDboolean) ; 
     
     /** Encode a node as an inline literal.  Return null if it can't be done */
     public static NodeId inline(Node node)
@@ -269,8 +268,8 @@ public class NodeId
             case BOOLEAN:
             {
                 long val = BitsLong.clear(v, 56, 64) ;
-                if ( val == 0 ) return nodeFalse ; 
-                if ( val == 1 ) return nodeTrue ;
+                if ( val == 0 ) return NodeConst.nodeFalse ; 
+                if ( val == 1 ) return NodeConst.nodeTrue ;
                 throw new TDBException("Unrecognized boolean node id : "+val) ;
             }
             default:

@@ -6,40 +6,130 @@
 
 package com.hp.hpl.jena.tdb.solver.reorder;
 
-import com.hp.hpl.jena.sparql.core.BasicPattern;
-
 import org.junit.Test;
 import test.BaseTest;
 
+import com.hp.hpl.jena.graph.Triple;
+import com.hp.hpl.jena.sparql.core.BasicPattern;
+import com.hp.hpl.jena.sparql.sse.Item;
+import com.hp.hpl.jena.sparql.sse.SSE;
+import com.hp.hpl.jena.tdb.solver.stats.StatsMatcher;
+
 public class TestReorder extends BaseTest
 {
-    static class X implements ReorderProc {
-
-        @Override
-        public BasicPattern reorder(BasicPattern bgp)
-        {
-            return null ;
-        } }
     
-    static class Y implements ReorderTransformation
+    static class TestTransform extends ReorderTransformationBase
     {
-
         @Override
-        public BasicPattern reorder(BasicPattern pattern)
+        protected double weight(PatternTriple pt)
         {
-            return null ;
-        }
-
-        @Override
-        public ReorderProc reorderIndexes(BasicPattern pattern)
-        {
-            return null ;
+            return 0 ;
         }
         
+    } ;
+    
+    @Test public void match_1()
+    {
+        StatsMatcher matcher = matcher("((:x :p ANY) 5)") ;
+        Triple t = triple("(:x :p ?v)") ;
+        double d = matcher.match(t) ;
+        assertEquals(5.0, d, 0) ;
+    }
+    
+    @Test public void match_2()
+    {
+        StatsMatcher matcher = matcher("((:x :p ANY) 5)") ;
+        Triple t = triple("(:x :q ?v)") ;   // No match
+        double d = matcher.match(t) ;
+        assertEquals(-1, d, 0) ;
+    }
+    
+    @Test public void match_3()
+    {
+        StatsMatcher matcher = matcher("((:x :p VAR) 5)") ;
+        Triple t = triple("(:x :p ?v)") ;
+        double d = matcher.match(t) ;
+        assertEquals(5, d, 0) ;
+    }
+    
+    @Test public void match_4()
+    {
+        StatsMatcher matcher = matcher("((TERM :p VAR) 5)") ;
+        Triple t = triple("(:x :p ?v)") ;
+        double d = matcher.match(t) ;
+        assertEquals(5, d, 0) ;
     }
     
     
-    @Test public void test1() { fail("Not yet implemented") ; }
+    private static StatsMatcher matcher(String str)
+    {
+        String s1 = "(prefix ((: <http://example/>))\n(stats " ;
+        String s2 = "))" ;
+        Item item = SSE.parse(s1+str+s2) ;
+        return new StatsMatcher(item) ; 
+    }
+    
+    @Test public void reorderIndexes1() 
+    { 
+        ReorderProc proc = new ReorderProcIndexes(new int[]{0,1}) ;
+        BasicPattern bgp = bgp("(bgp (:x :p ?v) (:x :q ?w))") ; 
+        BasicPattern bgp2 = proc.reorder(bgp) ;
+        assertEquals(bgp, bgp2) ;
+    }
+    
+    @Test public void reorderIndexes2() 
+    { 
+        ReorderProc proc = new ReorderProcIndexes(new int[]{1,0}) ;
+        BasicPattern bgp1 = bgp("(bgp (:x :p ?v) (:x :q ?w))") ; 
+        BasicPattern bgp2 = bgp("(bgp (:x :q ?w) (:x :p ?v))") ; 
+        BasicPattern bgp3 = proc.reorder(bgp1) ;
+        assertEquals(bgp2, bgp3) ;
+    }
+
+    
+    
+    private static BasicPattern bgp(String str)
+    {
+        String s1 = "(prefix ((: <http://example/>)) " ;
+        String s2 = ")" ;
+        return SSE.parseBGP(s1+str+s2) ;
+    }
+    
+    private static Triple triple(String str)
+    {
+        String s1 = "(prefix ((: <http://example/>)) " ;
+        String s2 = ")" ;
+        return SSE.parseTriple(s1+str+s2) ;
+    }
+    
+//  static class Reverse implements ReorderProc {
+//
+//      @Override
+//      public BasicPattern reorder(BasicPattern bgp)
+//      {
+//          BasicPattern x = new BasicPattern() ;
+//          for ( Triple t : NodeLib.tripleList(bgp.getList()) )
+//              x.add(0, t) ;
+//          return x ;
+//      } }
+//  
+//  static class Y implements ReorderTransformation
+//  {
+//
+//      @Override
+//      public BasicPattern reorder(BasicPattern pattern)
+//      {
+//          return null ;
+//      }
+//
+//      @Override
+//      public ReorderProc reorderIndexes(BasicPattern pattern)
+//      {
+//          return null ;
+//      }
+//      
+//  }
+  
 }
 
 /*

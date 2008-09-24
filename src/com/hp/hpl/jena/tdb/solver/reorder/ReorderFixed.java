@@ -9,10 +9,8 @@ package com.hp.hpl.jena.tdb.solver.reorder;
 import static com.hp.hpl.jena.tdb.solver.reorder.PatternElements.TERM;
 import static com.hp.hpl.jena.tdb.solver.reorder.PatternElements.VAR;
 
-import com.hp.hpl.jena.vocabulary.RDF;
-
 import com.hp.hpl.jena.sparql.sse.Item;
-
+import com.hp.hpl.jena.tdb.lib.NodeConst;
 import com.hp.hpl.jena.tdb.solver.stats.StatsMatcher;
 import com.hp.hpl.jena.tdb.solver.stats.StatsMatcher.Pattern;
 
@@ -21,7 +19,7 @@ public class ReorderFixed extends ReorderTransformationBase
     // Fixed scheme for when we have no stats.
     // It chooses a triple pattern by order of preference.
     
-    private static Item type = Item.createNode(RDF.type.asNode()) ;
+    private static Item type = Item.createNode(NodeConst.nodeRDFType) ;
     
     static StatsMatcher matcher ;
     static {

@@ -6,7 +6,19 @@
 
 package com.hp.hpl.jena.tdb.solver.stats;
 
-import static com.hp.hpl.jena.tdb.solver.reorder.PatternElements.*;
+import static com.hp.hpl.jena.tdb.solver.reorder.PatternElements.ANY;
+import static com.hp.hpl.jena.tdb.solver.reorder.PatternElements.BNODE;
+import static com.hp.hpl.jena.tdb.solver.reorder.PatternElements.LITERAL;
+import static com.hp.hpl.jena.tdb.solver.reorder.PatternElements.TERM;
+import static com.hp.hpl.jena.tdb.solver.reorder.PatternElements.URI;
+import static com.hp.hpl.jena.tdb.solver.reorder.PatternElements.VAR;
+import static com.hp.hpl.jena.tdb.solver.reorder.PatternElements.isAny;
+import static com.hp.hpl.jena.tdb.solver.reorder.PatternElements.isAnyBNode;
+import static com.hp.hpl.jena.tdb.solver.reorder.PatternElements.isAnyLiteral;
+import static com.hp.hpl.jena.tdb.solver.reorder.PatternElements.isAnyTerm;
+import static com.hp.hpl.jena.tdb.solver.reorder.PatternElements.isAnyURI;
+import static com.hp.hpl.jena.tdb.solver.reorder.PatternElements.isAnyVar;
+import static com.hp.hpl.jena.tdb.solver.reorder.PatternElements.isSet;
 
 import java.io.PrintStream;
 import java.util.ArrayList;
@@ -16,8 +28,6 @@ import java.util.Map;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.vocabulary.RDF;
-
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.sse.Item;
 import com.hp.hpl.jena.sparql.sse.ItemException;
@@ -26,12 +36,11 @@ import com.hp.hpl.jena.sparql.sse.SSE;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
 import com.hp.hpl.jena.sparql.util.PrintUtils;
 import com.hp.hpl.jena.sparql.util.Printable;
-
 import com.hp.hpl.jena.tdb.TDBException;
+import com.hp.hpl.jena.tdb.lib.NodeConst;
 import com.hp.hpl.jena.tdb.solver.reorder.PatternTriple;
 
-/** Stats format:
- * <pre>(stats
+/** Stats format:<pre>(stats
  *    (meta ...)
  *    ((S P O) weight)
  *    (<predicate uri> weight)
@@ -125,7 +134,6 @@ public final class StatsMatcher
     
     
     
-    private static final Node rdfType = RDF.type.asNode() ;
     private void init(Item stats)
     {
         if ( !stats.isTagged(STATS) )
@@ -172,7 +180,7 @@ public final class StatsMatcher
                 
                 double numProp = elt.getList().get(1).getDouble() ;
                 
-                if ( rdfType.equals(pat.getNode()) )
+                if ( NodeConst.nodeRDFType.equals(pat.getNode()) )
                     // Special case:  ? rdf:type O which is often not very selective. 
                     weightPO = Math.min(numProp, 5*weightPO) ;
                     
@@ -256,7 +264,7 @@ public final class StatsMatcher
             // A set of triples ...
             return 1.0 ;
         
-        // A predciate can be :
+        // A predicate can be :
         //   A URI      - search on that URI, the TERM and ANY chains.
         //   A variable - search on that VAR and ANY chains.
         

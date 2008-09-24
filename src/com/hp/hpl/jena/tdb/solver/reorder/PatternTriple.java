@@ -9,6 +9,7 @@ package com.hp.hpl.jena.tdb.solver.reorder;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.sparql.sse.Item;
+import com.hp.hpl.jena.sparql.sse.ItemList;
 
 
 /** A mutable triple pattern */
@@ -17,6 +18,12 @@ public final class PatternTriple
     public Item subject ;
     public Item predicate ;
     public Item object ;
+    
+    public static PatternTriple parse(Item pt)
+    { 
+        ItemList list = pt.getList();
+        return new PatternTriple(list.get(0), list.get(1), list.get(2)) ; 
+    }
     
     public PatternTriple(Item s, Item p, Item o)
     {
