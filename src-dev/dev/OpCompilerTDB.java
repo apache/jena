@@ -11,23 +11,38 @@ import com.hp.hpl.jena.sparql.algebra.op.OpFilter;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.main.OpCompiler;
+import com.hp.hpl.jena.tdb.pgraph.GraphTDB;
 
 public class OpCompilerTDB extends OpCompiler
 {
+    boolean isForTDB ;
+    
+    // A new compile object is created for each op compilation.
+    // So the execCxt is changing as we go through the query-compile-excute process  
     public OpCompilerTDB(ExecutionContext execCxt)
     {
         super(execCxt) ;
+        isForTDB = (execCxt.getActiveGraph() instanceof GraphTDB) ;
     }
 
+//    // For reference, this is the standard BGP step. 
+//    @Override
+//    public QueryIterator compile(OpBGP opBGP, QueryIterator input)
+//    {
+//        BasicPattern pattern = opBGP.getPattern() ;
+//        return StageBuilder.compile(pattern, input, execCxt) ;
+//    }
+    
     @Override
     public QueryIterator compile(OpFilter opFilter, QueryIterator input)
     {
+        if ( ! isForTDB )
+            return super.compile(opFilter, input) ;
+        
         if ( ! OpBGP.isBGP(opFilter.getSubOp()) )
             return super.compile(opFilter, input) ;
         
-        // It's (filter (bgp ...))
-        // This is query-compile time.  Do not know that this is over a TDB graph.
-        // So add a delay wrapper.
+        // It's (filter (bgp ...)) for TDB.
         
         return super.compile(opFilter, input) ;
     }
