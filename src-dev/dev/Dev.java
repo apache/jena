@@ -10,6 +10,7 @@ public class Dev
 {
     // ---- Filter placement
     // ---- Replan 1 in 100 requests
+    // ---- A way to force display of optimizer even for the deep parts (assumes no inputs?)
     
     // ---- Matcher
     // Back-tracking?
