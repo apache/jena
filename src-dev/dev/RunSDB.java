@@ -19,56 +19,91 @@ import java.util.Iterator;
 import sdb.SDBCmd;
 import arq.cmd.CmdUtils;
 
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.query.Dataset;
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.QueryExecution;
-import com.hp.hpl.jena.query.QueryExecutionFactory;
-import com.hp.hpl.jena.query.QueryFactory;
-import com.hp.hpl.jena.query.ResultSetFormatter;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.RDFNode;
-import com.hp.hpl.jena.sdb.SDB;
-import com.hp.hpl.jena.sdb.SDBFactory;
-import com.hp.hpl.jena.sdb.Store;
-import com.hp.hpl.jena.sdb.iterator.Iter;
-import com.hp.hpl.jena.sdb.modify.GraphStoreSDB;
-import com.hp.hpl.jena.sdb.sql.JDBC;
-import com.hp.hpl.jena.sdb.sql.SDBConnection;
-import com.hp.hpl.jena.sdb.store.StoreConfig;
+
+import com.hp.hpl.jena.util.FileManager;
+
+import com.hp.hpl.jena.graph.Graph;
+import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.graph.Triple;
+
 import com.hp.hpl.jena.sparql.core.DatasetGraph;
 import com.hp.hpl.jena.sparql.resultset.ResultsFormat;
 import com.hp.hpl.jena.sparql.sse.SSE;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
 import com.hp.hpl.jena.sparql.util.QueryExecUtils;
+
+import com.hp.hpl.jena.query.*;
+
 import com.hp.hpl.jena.update.UpdateAction;
-import com.hp.hpl.jena.util.FileManager;
+
+import com.hp.hpl.jena.sdb.SDB;
+import com.hp.hpl.jena.sdb.SDBFactory;
+import com.hp.hpl.jena.sdb.Store;
+import com.hp.hpl.jena.sdb.StoreDesc;
+import com.hp.hpl.jena.sdb.iterator.Iter;
+import com.hp.hpl.jena.sdb.modify.GraphStoreSDB;
+import com.hp.hpl.jena.sdb.sql.JDBC;
+import com.hp.hpl.jena.sdb.sql.SDBConnection;
+import com.hp.hpl.jena.sdb.sql.SDBConnectionFactory;
+import com.hp.hpl.jena.sdb.store.StoreConfig;
+import com.hp.hpl.jena.sdb.store.StoreFactory;
 
 public class RunSDB
 {
     static { CmdUtils.setLog4j() ; CmdUtils.setN3Params() ; }
     
-    @SuppressWarnings("unchecked")
-    public static void main(String ... argv) 
+    public static void main(String ... argv)
     {
-        if ( false )
-        {
-            Store store = SDBFactory.connectStore("sdb.ttl") ;
+        Triple t1 = SSE.parseTriple("(:x1 :p :z)") ;
+        Triple t2 = SSE.parseTriple("(:x2 :p :z)") ;
 
-                //SDBFactory.connectNamedModel(store, "http://example/G9") ; 
+        StoreDesc desc = StoreDesc.read("sdb.ttl") ;
+        java.sql.Connection conn = SDBFactory.createSqlConnection("sdb.ttl") ;
+        
+        
+        boolean explicitTransactions = true ;
+        {
+            SDBConnection sConn1 = SDBConnectionFactory.create(conn) ;
+            Store store1 = StoreFactory.create(desc, sConn1) ;
             
-            Dataset ds = SDBFactory.connectDataset(store) ;
-            Iterator<Node> nodes = ds.listNames() ;
-            for ( ; nodes.hasNext() ; )
-            {
-                System.out.println("N: "+nodes.next()) ;
-            }
-            System.out.println("END") ;
-            System.exit(0) ;
+            if ( explicitTransactions )
+                store1.getConnection().getTransactionHandler().begin() ;
+            
+            Graph graph1 = SDBFactory.connectDefaultGraph(store1) ;
+            graph1.getBulkUpdateHandler().removeAll() ;
+            SSE.write(graph1) ; System.out.println();
+            graph1.add(t1) ;
+            SSE.write(graph1) ; System.out.println();
+            
+            if ( explicitTransactions )
+                store1.getConnection().getTransactionHandler().commit() ;
+            
+            //store1.close() ;
+            
+        }       
+        
+        // Mythically return conn to the pool.
+        // Get from pool
+        // i.e. same connection.  Make a store around it
+        
+        {
+            SDBConnection sConn2 = SDBConnectionFactory.create(conn) ;
+            Store store2 = StoreFactory.create(desc, sConn2) ;
+
+            if ( explicitTransactions )
+                store2.getConnection().getTransactionHandler().begin() ;
+            
+            Graph graph2 = SDBFactory.connectDefaultGraph(store2) ;
+            graph2.add(t2) ;
+            SSE.write(graph2) ; System.out.println();
+            
+            if ( explicitTransactions )
+                store2.getConnection().getTransactionHandler().commit() ;
+
+            store2.close() ;
         }
-        sdb.sdbprint.main("--sdb=sdb.ttl", "SELECT DISTINCT ?g { GRAPH ?g { ?s ?p ?o}}") ;
-        System.exit(0) ;
-        runQueryDefaultModel("Q.rq", "sdb.ttl") ;
         System.exit(0) ;
         
         runQuery("Q.rq") ;

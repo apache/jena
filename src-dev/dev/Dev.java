@@ -9,6 +9,9 @@ package dev;
 
 public class Dev
 {
+    // For DISTINCT do in a subquery on the node ids.
+    // Similarly, push in the PROJECT to the node ids phase. 
+    
     // DatasetStore to imnplement listNames()
     // ==> DatasetStoreGraph.listGraphNodes() ;
     // ==> StoreUtils.storeGraphNames
