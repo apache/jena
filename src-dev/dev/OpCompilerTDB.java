@@ -6,16 +6,23 @@
 
 package dev;
 
+import com.hp.hpl.jena.sparql.algebra.Op;
+import com.hp.hpl.jena.sparql.algebra.Transform;
 import com.hp.hpl.jena.sparql.algebra.op.OpBGP;
 import com.hp.hpl.jena.sparql.algebra.op.OpFilter;
+import com.hp.hpl.jena.sparql.algebra.opt.TransformFilterPlacement;
+import com.hp.hpl.jena.sparql.core.BasicPattern;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.main.OpCompiler;
+
 import com.hp.hpl.jena.tdb.pgraph.GraphTDB;
+import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
 
 public class OpCompilerTDB extends OpCompiler
 {
     boolean isForTDB ;
+    Transform opTransform = new TransformFilterPlacement() ;
     
     // A new compile object is created for each op compilation.
     // So the execCxt is changing as we go through the query-compile-excute process  
@@ -44,7 +51,26 @@ public class OpCompilerTDB extends OpCompiler
         
         // It's (filter (bgp ...)) for TDB.
         
+        // TO DO : Break out the reorder steps into statics so we can do all here.
+        // StageGeneratorTDB becomes very simple (call to static + SolverLib).
+        
+        // TEST : not based on input.
+        
+        OpBGP opBGP = (OpBGP)opFilter.getSubOp() ;
+        GraphTDB graph = (GraphTDB)execCxt.getActiveGraph() ;
+        ReorderTransformation transform = graph.getReorderTransform() ;
+        BasicPattern pattern = transform.reorder(opBGP.getPattern()) ;
+        
+        OpBGP opBGP2 = new OpBGP(pattern) ;
+        // Trsanform based on new, better BGP
+        Op op = opTransform.transform(opFilter, opBGP2) ;
+        
+        // UG. Need to stop this getting re-reordered :-).
+        // OLD - REPLACE
         return super.compile(opFilter, input) ;
+            
+        
+        //return super.compile(opFilter, input) ;
     }
 
 //    @Override
