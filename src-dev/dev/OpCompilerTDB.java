@@ -15,6 +15,7 @@ import com.hp.hpl.jena.sparql.core.BasicPattern;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.main.OpCompiler;
+import com.hp.hpl.jena.sparql.expr.ExprList;
 
 import com.hp.hpl.jena.tdb.pgraph.GraphTDB;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
@@ -49,12 +50,15 @@ public class OpCompilerTDB extends OpCompiler
         if ( ! OpBGP.isBGP(opFilter.getSubOp()) )
             return super.compile(opFilter, input) ;
         
+        // A MESS!
+        
         // It's (filter (bgp ...)) for TDB.
         
         // TO DO : Break out the reorder steps into statics so we can do all here.
         // StageGeneratorTDB becomes very simple (call to static + SolverLib).
         
         // TEST : not based on input.
+        // Need the onestep finding thing.
         
         OpBGP opBGP = (OpBGP)opFilter.getSubOp() ;
         GraphTDB graph = (GraphTDB)execCxt.getActiveGraph() ;
@@ -73,6 +77,21 @@ public class OpCompilerTDB extends OpCompiler
         //return super.compile(opFilter, input) ;
     }
 
+    static Transform placement = new TransformFilterPlacement() ;
+    public static QueryIterator execute(BasicPattern pattern, ExprList exprs, QueryIterator input, GraphTDB graph)
+    {
+        // Do the one slot thing.
+        ReorderTransformation transform = graph.getReorderTransform() ;
+        pattern = transform.reorder(pattern) ;
+        
+        if ( exprs != null )
+        {
+            // Do filter placement.
+        }
+        // Solve without messing around!
+        return null ;
+    }
+    
 //    @Override
 //    public QueryIterator compile(OpBGP opBGP, QueryIterator input)
 //    {
