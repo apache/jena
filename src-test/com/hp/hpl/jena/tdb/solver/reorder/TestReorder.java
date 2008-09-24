@@ -90,6 +90,24 @@ public class TestReorder extends BaseTest
         assertEquals(5, d, 0) ;
     }
 
+    // Test first match wins. 
+    @Test public void match_10()
+    {
+        StatsMatcher matcher = matcher("((VAR :p LITERAL) 5) ((VAR :p ANY) 10)") ;
+        Triple t = triple("(?x :p 1913)") ;
+        double d = matcher.match(t) ;
+        assertEquals(5, d, 0) ;
+    }
+
+    @Test public void match_11()
+    {
+        StatsMatcher matcher = matcher("((VAR :p ANY) 10) ((VAR :p LITERAL) 5)") ;
+        Triple t = triple("(?x :p 1913)") ;
+        double d = matcher.match(t) ;
+        assertEquals(10, d, 0) ;
+    }
+
+    
     private static StatsMatcher matcher(String str)
     {
         String s1 = "(prefix ((: <http://example/>))\n(stats " ;
