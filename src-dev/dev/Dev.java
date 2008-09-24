@@ -9,6 +9,7 @@ package dev;
 public class Dev
 {
     // ---- Filter placement
+    // ---- TestStats, VarCounter.
     // ---- Replan 1 in 100 requests
     // ---- A way to force display of optimizer even for the deep parts (assumes no inputs?)
     
