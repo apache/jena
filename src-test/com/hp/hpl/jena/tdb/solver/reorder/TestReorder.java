@@ -17,18 +17,8 @@ import com.hp.hpl.jena.tdb.solver.stats.StatsMatcher;
 
 public class TestReorder extends BaseTest
 {
-    
-    static class TestTransform extends ReorderTransformationBase
-    {
-        @Override
-        protected double weight(PatternTriple pt)
-        {
-            return 0 ;
-        }
-        
-    } ;
-    
-    @Test public void match_1()
+
+    @Test public void match_01()
     {
         StatsMatcher matcher = matcher("((:x :p ANY) 5)") ;
         Triple t = triple("(:x :p ?v)") ;
@@ -36,7 +26,7 @@ public class TestReorder extends BaseTest
         assertEquals(5.0, d, 0) ;
     }
     
-    @Test public void match_2()
+    @Test public void match_02()
     {
         StatsMatcher matcher = matcher("((:x :p ANY) 5)") ;
         Triple t = triple("(:x :q ?v)") ;   // No match
@@ -44,7 +34,7 @@ public class TestReorder extends BaseTest
         assertEquals(-1, d, 0) ;
     }
     
-    @Test public void match_3()
+    @Test public void match_03()
     {
         StatsMatcher matcher = matcher("((:x :p VAR) 5)") ;
         Triple t = triple("(:x :p ?v)") ;
@@ -52,7 +42,7 @@ public class TestReorder extends BaseTest
         assertEquals(5, d, 0) ;
     }
     
-    @Test public void match_4()
+    @Test public void match_04()
     {
         StatsMatcher matcher = matcher("((TERM :p VAR) 5)") ;
         Triple t = triple("(:x :p ?v)") ;
@@ -60,7 +50,46 @@ public class TestReorder extends BaseTest
         assertEquals(5, d, 0) ;
     }
     
+    @Test public void match_05()
+    {
+        StatsMatcher matcher = matcher("((URI :p VAR) 5)") ;
+        Triple t = triple("(:x :p ?v)") ;
+        double d = matcher.match(t) ;
+        assertEquals(5, d, 0) ;
+    }
     
+    @Test public void match_06()
+    {
+        StatsMatcher matcher = matcher("((LITERAL :p VAR) 5)") ;
+        Triple t = triple("(:x :p ?v)") ;   // No match
+        double d = matcher.match(t) ;
+        assertEquals(-1, d, 0) ;
+    }
+
+    @Test public void match_07()
+    {
+        StatsMatcher matcher = matcher("((BNODE :p VAR) 5)") ;
+        Triple t = triple("(_:a :p ?v)") ;
+        double d = matcher.match(t) ;
+        assertEquals(5, d, 0) ;
+    }
+
+    @Test public void match_08()
+    {
+        StatsMatcher matcher = matcher("((VAR :p LITERAL) 5)") ;
+        Triple t = triple("(?x :p ?v)") ;   // No match
+        double d = matcher.match(t) ;
+        assertEquals(-1, d, 0) ;
+    }
+
+    @Test public void match_09()
+    {
+        StatsMatcher matcher = matcher("((VAR :p LITERAL) 5)") ;
+        Triple t = triple("(?x :p 1913)") ;
+        double d = matcher.match(t) ;
+        assertEquals(5, d, 0) ;
+    }
+
     private static StatsMatcher matcher(String str)
     {
         String s1 = "(prefix ((: <http://example/>))\n(stats " ;
