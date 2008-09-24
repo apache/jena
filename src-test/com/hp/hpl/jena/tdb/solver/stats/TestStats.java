@@ -4,23 +4,17 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.solver;
+package com.hp.hpl.jena.tdb.solver.stats;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import org.junit.Test;
+import test.BaseTest;
 
-import com.hp.hpl.jena.tdb.solver.reorder.TestReorder;
-import com.hp.hpl.jena.tdb.solver.stats.TestStats;
+public class TestStats extends BaseTest
+{
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
-    TestReorder.class,      // Reorder engine - TDB independent
-    TestStats.class,        // Stats - TDB independent
-    TestSolverTDB.class,    // Tests the TDB connectivity
-})
+    @Test public void test1() { fail("Not yet implemented") ; }
 
-public class TS_Solver
-{}
+}
 
 /*
  * (c) Copyright 2008 Hewlett-Packard Development Company, LP

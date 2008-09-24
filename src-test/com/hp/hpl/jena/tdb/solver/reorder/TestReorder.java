@@ -4,23 +4,43 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.solver;
+package com.hp.hpl.jena.tdb.solver.reorder;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import com.hp.hpl.jena.sparql.core.BasicPattern;
 
-import com.hp.hpl.jena.tdb.solver.reorder.TestReorder;
-import com.hp.hpl.jena.tdb.solver.stats.TestStats;
+import org.junit.Test;
+import test.BaseTest;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
-    TestReorder.class,      // Reorder engine - TDB independent
-    TestStats.class,        // Stats - TDB independent
-    TestSolverTDB.class,    // Tests the TDB connectivity
-})
+public class TestReorder extends BaseTest
+{
+    static class X implements ReorderProc {
 
-public class TS_Solver
-{}
+        @Override
+        public BasicPattern reorder(BasicPattern bgp)
+        {
+            return null ;
+        } }
+    
+    static class Y implements ReorderTransformation
+    {
+
+        @Override
+        public BasicPattern reorder(BasicPattern pattern)
+        {
+            return null ;
+        }
+
+        @Override
+        public ReorderProc reorderIndexes(BasicPattern pattern)
+        {
+            return null ;
+        }
+        
+    }
+    
+    
+    @Test public void test1() { fail("Not yet implemented") ; }
+}
 
 /*
  * (c) Copyright 2008 Hewlett-Packard Development Company, LP

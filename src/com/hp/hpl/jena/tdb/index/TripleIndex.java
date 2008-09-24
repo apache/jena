@@ -27,8 +27,8 @@ import com.hp.hpl.jena.tdb.pgraph.NodeId;
 public class TripleIndex
 {
     private static Logger log = LoggerFactory.getLogger(TripleIndex.class) ;
-    Descriptor desc ;
-    RangeIndex index ;
+    protected Descriptor desc ;
+    protected RangeIndex index ;
     
     public TripleIndex(String description, RangeIndex index)
     {

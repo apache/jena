@@ -44,7 +44,7 @@ import com.hp.hpl.jena.query.ResultSetFormatter;
 
 import com.hp.hpl.jena.tdb.pgraph.GraphTDBFactory;
 
-public class TestSolver extends TestBase
+public class TestSolverTDB extends TestBase
 {
     static final String graphData = "testing/data.ttl" ;
     static Graph graph = null ;
