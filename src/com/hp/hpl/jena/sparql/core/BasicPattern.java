@@ -21,10 +21,23 @@ import com.hp.hpl.jena.sparql.util.Utils;
 
 public class BasicPattern
 {
-    private List triples = new ArrayList() ; 
+    private List triples ;
 
-    public BasicPattern() {}
-    public BasicPattern(BasicPattern other) {triples.addAll(other.triples) ; }
+    public BasicPattern() { this(new ArrayList()) ; }
+    public BasicPattern(BasicPattern other)
+    {
+        this() ;
+        // Copy.
+        triples.addAll(other.triples) ;
+    }
+    private BasicPattern(List triples) { this.triples = triples ; }
+    
+    /** Wrap a list of triples up as a BasicPattern.  Chnaging the list, changes the BasicPattern */ 
+    public static BasicPattern wrap(List triples)
+    {
+        return new BasicPattern(triples) ;
+    }
+    
     
     public void add(Triple t) { triples.add(t) ; }
     public void addAll(BasicPattern other) { triples.addAll(other.triples) ; }

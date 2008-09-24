@@ -19,6 +19,7 @@ import com.hp.hpl.jena.sparql.ARQException;
 import com.hp.hpl.jena.sparql.algebra.Algebra;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.Table;
+import com.hp.hpl.jena.sparql.core.BasicPattern;
 import com.hp.hpl.jena.sparql.core.DatasetGraph;
 import com.hp.hpl.jena.sparql.core.Prologue;
 import com.hp.hpl.jena.sparql.core.Quad;
@@ -26,6 +27,7 @@ import com.hp.hpl.jena.sparql.expr.Expr;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext;
 import com.hp.hpl.jena.sparql.sse.builders.BuilderExpr;
 import com.hp.hpl.jena.sparql.sse.builders.BuilderGraph;
+import com.hp.hpl.jena.sparql.sse.builders.BuilderOp;
 import com.hp.hpl.jena.sparql.sse.builders.BuilderTable;
 import com.hp.hpl.jena.sparql.sse.lang.ParseHandler;
 import com.hp.hpl.jena.sparql.sse.lang.ParseHandlerPlain;
@@ -145,6 +147,24 @@ public class SSE
     /** Parse a string and obtain a SPARQL algebra op, given a prefix mapping */
     public static Op parseOp(String s, PrefixMapping pmap) { return Algebra.parse(s, pmap) ; }
 
+    /** Read in a file, parse, and obtain a SPARQL algebra basic graph pattern */
+    public static BasicPattern readBGP(String filename)
+    { 
+        Item item = readFile(filename, null) ;
+        return BuilderOp.buildBGP(item) ;
+    }    
+    
+    /** Parse a string and obtain a SPARQL algebra basic graph pattern */
+    public static BasicPattern parseBGP(String s)
+    { return parseBGP(s, getDefaultPrefixMapRead()) ; }
+    
+    /** Parse a string and obtain a SPARQL algebra basic graph pattern, given a prefix mapping */
+    public static BasicPattern parseBGP(String s, PrefixMapping pmap)
+    { 
+        Item item = parse(s, pmap) ;
+        return BuilderOp.buildBGP(item) ;
+    }
+    
     /** Read a file and obtain a SPARQL algebra table */
     public static Table readTable(String filename) { return readTable(filename, null) ; }
     

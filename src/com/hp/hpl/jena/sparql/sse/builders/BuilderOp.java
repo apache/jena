@@ -94,6 +94,32 @@ public class BuilderOp
         return null ;
     }
 
+    public static BasicPattern buildBGP(Item item)
+    {
+        if ( ! item.isTagged(Tags.tagBGP) )
+            BuilderLib.broken(item, "Not a basic graph pattern") ;
+        if ( ! item.isList() )
+            BuilderLib.broken(item, "Not a list for a basic graph pattern") ;
+        ItemList list = item.getList() ;
+        return buildBGP(list) ;
+        
+    }
+    
+    private static BasicPattern buildBGP(ItemList list)
+    {
+        // Skips the tag.
+        BasicPattern triples = new BasicPattern() ;
+        for ( int i = 1 ; i < list.size() ; i++ )
+        {
+            Item item = list.get(i) ;
+            if ( ! item.isList() )
+                BuilderLib.broken(item, "Not a triple structure") ;
+            Triple t = BuilderGraph.buildTriple(item.getList()) ;
+            triples.add(t) ; 
+        }
+        return triples ;
+    }
+    
     public static Expr buildExpr(Item item)
     {
         return BuilderExpr.buildExpr(item) ;
@@ -145,15 +171,7 @@ public class BuilderOp
     {
         public Op make(ItemList list)
         {
-            BasicPattern triples = new BasicPattern() ;
-            for ( int i = 1 ; i < list.size() ; i++ )
-            {
-                Item item = list.get(i) ;
-                if ( ! item.isList() )
-                    BuilderLib.broken(item, "Not a triple structure") ;
-                Triple t = BuilderGraph.buildTriple(item.getList()) ;
-                triples.add(t) ; 
-            }
+            BasicPattern triples = buildBGP(list) ;
             return new OpBGP(triples) ;
         }
     } ;
