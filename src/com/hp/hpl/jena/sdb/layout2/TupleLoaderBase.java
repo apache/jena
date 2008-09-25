@@ -359,7 +359,7 @@ public abstract class TupleLoaderBase extends com.hp.hpl.jena.sdb.store.TupleLoa
                 && msg.matches("There is already an object named '#.*' in the database."))
                 ignore = true ;
     
-            // MySQL
+            // MySQL : com.mysql.jdbc.exceptions.MySQLSyntaxErrorException (at least in 5.0)
             if ( msg.matches("Table.*already exists") )
                 ignore = true ;
     

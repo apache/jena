@@ -5,7 +5,6 @@
 
 # For use with Joseki.
 [] ja:loadClass "com.hp.hpl.jena.sdb.SDB" .
-sdb:DatasetStore rdfs:subClassOf ja:RDFDataset .
 
 <#dataset> rdf:type sdb:DatasetStore ;
     sdb:store <#store> .
@@ -16,7 +15,10 @@ sdb:DatasetStore rdfs:subClassOf ja:RDFDataset .
     sdb:connection     <#conn> .
 
 <#conn> rdf:type sdb:SDBConnection ;
+
 ##    sdb:sdbType        "h2:mem" ;
+##    sdb:sdbName        "mem" ;
+
     sdb:sdbType        "h2:file" ;
     sdb:sdbName        "DB/H2" ;
 
@@ -26,7 +28,7 @@ sdb:DatasetStore rdfs:subClassOf ja:RDFDataset .
 
 ##     sdb:sdbType       "MySQL" ;
 ##     sdb:sdbHost       "localhost" ;
-##     sdb:sdbName       "SDB2" ;
+##     sdb:sdbName       "SDB" ;
 
 ##     sdb:sdbType        "postgresql" ;
 ##     sdb:sdbHost        "localhost" ;
@@ -35,4 +37,5 @@ sdb:DatasetStore rdfs:subClassOf ja:RDFDataset .
 ##     sdb:sdbType        "MSSQLServerExpress" ;
 ##     sdb:sdbHost        "localhost" ;
 ##     sdb:sdbName        "test2-hash" ;
-     .
+
+    .
