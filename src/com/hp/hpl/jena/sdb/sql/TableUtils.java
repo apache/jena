@@ -114,6 +114,10 @@ public class TableUtils
         { throw new SDBExceptionSQL("SQLException : Can't drop table: "+tableName, ex) ; }
     }
 
+    public static void dropTableSilent(SDBConnection connection, String tableName)
+    {
+        connection.execSilent("DROP TABLE "+tableName) ;
+    }
 }
 
 /*

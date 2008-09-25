@@ -49,34 +49,7 @@ public abstract class TupleLoaderBase extends com.hp.hpl.jena.sdb.store.TupleLoa
 	}
 	
 	protected void init() throws SQLException {
-		// Create the temporary tables
-		try {
-			if (!TableUtils.hasTable(connection().getSqlConnection(), getNodeLoader()))
-				connection().exec(getCreateTempNodes());
-			if (!TableUtils.hasTable(connection().getSqlConnection(), getTupleLoader()))
-				connection().exec(getCreateTempTuples());
-		} catch (SQLException e) { 
-		    // Work around for MySQL issue, which won't say if temp table exists
-		    // This is also the case for MS Server SQL
-		    // Testing the message is as good as it gets without needing the DB-specific 
-		    String msg = e.getMessage() ;
-		    String className = e.getClass().getName() ;
-		    
-		    boolean ignore = false ;
-
-		    // MS-SQL
-		    if ( className.equals("com.microsoft.sqlserver.jdbc.SQLServerException")
-		        && msg.matches("There is already an object named '#.*' in the database."))
-		        ignore = true ;
-
-		    // MySQL
-		    if ( msg.matches("Table.*already exists") )
-		        ignore = true ;
-
-		    if ( ! ignore )
-		        throw e;
-		}
-		
+	    ensureTempTables() ;
 		// Prepare those statements
 		insertNodeLoader = connection().prepareStatement(getInsertTempNodes());
 		insertTupleLoader = connection().prepareStatement(getInsertTempTuples());
@@ -330,9 +303,73 @@ public abstract class TupleLoaderBase extends com.hp.hpl.jena.sdb.store.TupleLoa
 	
 	public boolean clearsOnCommit() { return false; }
 	
-	/* Encapsulate the gory internals of breaking up nodes for the database */
-	
-	public static class PreparedNode
+	// ---- Temporary table creation.
+	// Some dtaabases (MySQL, MS SQL) do not make the temnporary tables visible to a metadata probe.
+	// 
+	private void createTempTables() throws SQLException
+    {
+        connection().exec(getCreateTempNodes());
+        connection().exec(getCreateTempTuples());
+    }
+
+    private void ensureTempTables() throws SQLException
+    {
+        // Pick one.
+        ensureTempTables1() ;
+        //ensureTempTables2()
+        }
+
+    // Optimistic scheme - create the tables, if fails, delete (ignoring errors) and try once again. 
+    private void ensureTempTables1() throws SQLException
+    {
+        boolean b = connection().loggingSQLExceptions() ;
+        try {
+            connection().setLogSQLExceptions(false) ;
+            createTempTables() ;
+        } catch (SQLException ex)
+        {
+            TableUtils.dropTableSilent(connection(), getNodeLoader()) ;
+            TableUtils.dropTableSilent(connection(), getTupleLoader()) ;
+            createTempTables() ;    // Allow this to throw the SQLException
+        }
+        finally { connection().setLogSQLExceptions(b) ; }
+    }
+
+    // Pessimistic scheme - probe for table existence and create if necessary.
+    // Need to cope with invisible temporary tables.
+    private void ensureTempTables2() throws SQLException
+    {
+        try {
+            // execSilent - because exceptions happen (e.g. systems that do not expose temporary tables to the DB metadata).
+            if (!TableUtils.hasTable(connection().getSqlConnection(), getNodeLoader()))
+                connection().execSilent(getCreateTempNodes());
+            if (!TableUtils.hasTable(connection().getSqlConnection(), getTupleLoader()))
+                connection().execSilent(getCreateTempTuples());
+        } catch (SQLException e) { 
+            // Work around for MySQL issue, which won't say if temp table exists
+            // This is also the case for MS Server SQL
+            // Testing the message is as good as it gets without needing the DB-specific 
+            String msg = e.getMessage() ;
+            String className = e.getClass().getName() ;
+    
+            boolean ignore = false ;
+    
+            // MS-SQL
+            if ( className.equals("com.microsoft.sqlserver.jdbc.SQLServerException")
+                && msg.matches("There is already an object named '#.*' in the database."))
+                ignore = true ;
+    
+            // MySQL
+            if ( msg.matches("Table.*already exists") )
+                ignore = true ;
+    
+            if ( ! ignore )
+                throw e;
+        }
+    }
+
+    /* Encapsulate the gory internals of breaking up nodes for the database */
+    public static class PreparedNode
     {
         public long hash;
         public String lex;

@@ -168,17 +168,17 @@ public class SDBConnection
         }
 //        catch (SQLSyntaxErrorException ex)  // Java 6
 //        {
-//            exception("execAny", ex, sqlString) ;
+//            exception("exec", ex, sqlString) ;
 //            throw ex ;
 //        }
         catch (SQLException ex)
         {
-            exception("execAny", ex, sqlString) ;
+            exception("exec", ex, sqlString) ;
             throw ex ;
         }
     }
 
-    /** Execute a statement, return the result set if there was one, else null.  Runtime exception. */
+    /** Execute a statement, return the result set if there was one, else null.  */
     public ResultSetJDBC execSilent(String sqlString)
     {
         if ( loggingSQLStatements() )
