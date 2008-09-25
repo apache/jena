@@ -103,17 +103,9 @@ public class OpCompilerTDB extends OpCompiler
         // HACK reset to avoid infinite loop.
         OpCompiler.factory = OpCompiler.stdFactory ;
         
-        // Solve without messing around - because we intercept plain BGPs and do directly 
+        // Solve without messing around - because we changed the OpCompielr factory!  
         return QC.compile(op, input, execCxt) ;
     }
-    
-//    @Override
-//    public QueryIterator compile(OpBGP opBGP, QueryIterator input)
-//    {
-//        BasicPattern pattern = opBGP.getPattern() ;
-//        return StageBuilder.compile(pattern, input, execCxt) ;
-//    }
-    
 }
 
 /*
