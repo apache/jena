@@ -15,15 +15,24 @@ import com.hp.hpl.jena.sparql.core.BasicPattern;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.main.OpCompiler;
+import com.hp.hpl.jena.sparql.engine.main.QC;
 import com.hp.hpl.jena.sparql.expr.ExprList;
-
 import com.hp.hpl.jena.tdb.pgraph.GraphTDB;
+import com.hp.hpl.jena.tdb.solver.SolverLib;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
 
 public class OpCompilerTDB extends OpCompiler
 {
-    boolean isForTDB ;
-    Transform opTransform = new TransformFilterPlacement() ;
+    public static Factory altFactory = new Factory() {
+
+        @Override
+        public OpCompiler create(ExecutionContext execCxt)
+        {
+            return new OpCompilerTDB(execCxt) ;
+        }} ;
+    
+    private boolean isForTDB ;
+    private Transform opTransform = new TransformFilterPlacement() ;
     
     // A new compile object is created for each op compilation.
     // So the execCxt is changing as we go through the query-compile-excute process  
@@ -41,6 +50,17 @@ public class OpCompilerTDB extends OpCompiler
 //        return StageBuilder.compile(pattern, input, execCxt) ;
 //    }
     
+    // TESTING ONLY - bypass the TDB Stage generator which does reordering
+    // Eventually, teh stageGenerator will be direct only and all optimization does here or before.
+    @Override
+    public QueryIterator compile(OpBGP opBGP, QueryIterator input)
+    {
+        if ( ! isForTDB )
+            return super.compile(opBGP, input) ;
+        GraphTDB graph = (GraphTDB)execCxt.getActiveGraph() ;
+        return SolverLib.execute(graph, opBGP.getPattern(), input, execCxt) ;
+    }
+    
     @Override
     public QueryIterator compile(OpFilter opFilter, QueryIterator input)
     {
@@ -49,49 +69,37 @@ public class OpCompilerTDB extends OpCompiler
         
         if ( ! OpBGP.isBGP(opFilter.getSubOp()) )
             return super.compile(opFilter, input) ;
-        
-        // A MESS!
-        // Create statics in SolverLib.
-        // QueryIterator execute(BasicPattern pattern, ExprList exprs, QueryIterator input, GraphTDB graph)
-        
-        // It's (filter (bgp ...)) for TDB.
-        
-        // TO DO : Break out the reorder steps into statics so we can do all here.
-        // StageGeneratorTDB becomes very simple (call to static + SolverLib).
-        
-        // TEST : not based on input.
-        // Need the onestep finding thing.
+
+        // Experimental.
+        // Currently, optimize without considering the input stream.
+        // Correct for top level patterns. 
         
         OpBGP opBGP = (OpBGP)opFilter.getSubOp() ;
         GraphTDB graph = (GraphTDB)execCxt.getActiveGraph() ;
-        ReorderTransformation transform = graph.getReorderTransform() ;
-        BasicPattern pattern = transform.reorder(opBGP.getPattern()) ;
         
-        OpBGP opBGP2 = new OpBGP(pattern) ;
-        // Trsanform based on new, better BGP
-        Op op = opTransform.transform(opFilter, opBGP2) ;
-        
-        // UG. Need to stop this getting re-reordered :-).
-        // OLD - REPLACE
-        return super.compile(opFilter, input) ;
-            
-        
+        return execute(opBGP.getPattern(), opFilter.getExprs(), input, graph) ;
         //return super.compile(opFilter, input) ;
     }
 
+    // Will migrate to SolverLib.
     static Transform placement = new TransformFilterPlacement() ;
-    public static QueryIterator execute(BasicPattern pattern, ExprList exprs, QueryIterator input, GraphTDB graph)
+    public QueryIterator execute(BasicPattern pattern, ExprList exprs, QueryIterator input, GraphTDB graph)
     {
-        // Do the one slot thing.
         ReorderTransformation transform = graph.getReorderTransform() ;
         pattern = transform.reorder(pattern) ;
+        Op op = new OpBGP(pattern) ;
         
         if ( exprs != null )
         {
-            // Do filter placement.
+            op = TransformFilterPlacement.transform(exprs, pattern) ;
+            System.out.println(op) ;
         }
-        // Solve without messing around!
-        return null ;
+        
+        // HACK reset to avoid infinite loop.
+        OpCompiler.factory = OpCompiler.stdFactory ;
+        
+        // Solve without messing around - because we intercept plain BGPs and do directly 
+        return QC.compile(op, input, execCxt) ;
     }
     
 //    @Override

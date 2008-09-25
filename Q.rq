@@ -1,43 +1,7 @@
 PREFIX : <http://example/>
 SELECT *
-{ 
-{  ?s :p ?v .
-   ?s1 :X1 ?z .
-   ?s :q ?w .
-##    ?s :X2 :W .
-   ?x ?y ?z .
-## } UNION {
-##    ?a :p ?v .
-##    ?a :X1 ?w .
-##    ?b :q ?w .
-##    ?b :X2 :W .
+{
+    ?x :p ?v . 
+    ?z :q ?w . 
+    FILTER(?v != "2")
 }
-}
-
-
-
-## PREFIX  rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-## PREFIX  d:    <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromProducer549/>
-## PREFIX  bsbm: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/>
-## PREFIX  rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-## 
-## SELECT DISTINCT  ?product ?productLabel
-## WHERE
-##   { ?product  rdfs:label  ?productLabel .
-##     FILTER ( d:Product27056 != ?product )
-##     d:Product27056
-##               bsbm:productFeature   ?prodFeature .
-##     ?product  bsbm:productFeature   ?prodFeature .
-##     d:Product27056
-##               bsbm:productPropertyNumeric1  ?origProperty1 .
-##     ?product  bsbm:productPropertyNumeric1  ?simProperty1 .
-##     FILTER ( ( ?simProperty1 < ( ?origProperty1 + 120 ) ) &&
-##              ( ?simProperty1 > ( ?origProperty1 - 120 ) ) )
-##     d:Product27056
-##               bsbm:productPropertyNumeric2  ?origProperty2 .
-##     ?product  bsbm:productPropertyNumeric2  ?simProperty2 .
-##     FILTER ( ( ?simProperty2 < ( ?origProperty2 + 170 ) ) &&
-##              ( ?simProperty2 > ( ?origProperty2 - 170 ) ) )
-##   }
-## ORDER BY ?productLabel
-## LIMIT   5

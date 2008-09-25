@@ -33,7 +33,7 @@ public class SolverLib
         public Iterator<Binding> convert(GraphTDB graph, Iterator<BindingNodeId> iterBindingIds) ;
     }
     
-    /** Change this to chnage the process of NodeId to Node conversion.  Normally it's this code, which 
+    /** Change this to change the process of NodeId to Node conversion.  Normally it's this code, which 
      * puts a delayed iterator mapping around the BindingNodeId stream. 
      */
     public static ConvertNodeIDToNode converter = new ConvertNodeIDToNode(){
@@ -58,7 +58,7 @@ public class SolverLib
             chain = solve(graph, chain, triple, execCxt) ;
         
         //Iterator<Binding> iterBinding = Iter.map(chain, convToBinding(graph)) ;
-        // Temporary : indirection to allow the cluster engine to do it differently.
+        // ** Temporary : indirection to allow the cluster engine to do it differently.
         Iterator<Binding> iterBinding = converter.convert(graph, chain) ;
         return new QueryIterTDB(iterBinding, input, execCxt) ;
     }
