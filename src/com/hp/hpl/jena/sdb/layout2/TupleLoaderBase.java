@@ -328,6 +328,8 @@ public abstract class TupleLoaderBase extends com.hp.hpl.jena.sdb.store.TupleLoa
             createTempTables() ;
         } catch (SQLException ex)
         {
+            // Some problem - due to the differences in databases we didn't check whether tables existed first.
+            // DSo attempt to cleanup, then tryagain to create the temporary tables.  
             TableUtils.dropTableSilent(connection(), getNodeLoader()) ;
             TableUtils.dropTableSilent(connection(), getTupleLoader()) ;
             createTempTables() ;    // Allow this to throw the SQLException
