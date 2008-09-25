@@ -18,7 +18,6 @@ import com.hp.hpl.jena.sparql.engine.main.OpCompiler;
 import com.hp.hpl.jena.sparql.engine.main.QC;
 import com.hp.hpl.jena.sparql.expr.ExprList;
 import com.hp.hpl.jena.tdb.pgraph.GraphTDB;
-import com.hp.hpl.jena.tdb.solver.SolverLib;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
 
 public class OpCompilerTDB extends OpCompiler
@@ -50,16 +49,22 @@ public class OpCompilerTDB extends OpCompiler
 //        return StageBuilder.compile(pattern, input, execCxt) ;
 //    }
     
-    // TESTING ONLY - bypass the TDB Stage generator which does reordering
-    // Eventually, teh stageGenerator will be direct only and all optimization does here or before.
     @Override
     public QueryIterator compile(OpBGP opBGP, QueryIterator input)
     {
         if ( ! isForTDB )
             return super.compile(opBGP, input) ;
         GraphTDB graph = (GraphTDB)execCxt.getActiveGraph() ;
-        return SolverLib.execute(graph, opBGP.getPattern(), input, execCxt) ;
+        return execute(opBGP.getPattern(), null, input, graph) ;
+        
+        //return SolverLib.execute(graph, opBGP.getPattern(), input, execCxt) ;
     }
+    
+//    @Override
+//    public QueryIterator compile(OpLabel opLabel, QueryIterator input)
+//    {
+//        return super.compile(opLabel, input) ;
+//    }
     
     @Override
     public QueryIterator compile(OpFilter opFilter, QueryIterator input)
@@ -90,10 +95,10 @@ public class OpCompilerTDB extends OpCompiler
         Op op = new OpBGP(pattern) ;
         
         if ( exprs != null )
-        {
             op = TransformFilterPlacement.transform(exprs, pattern) ;
-            System.out.println(op) ;
-        }
+        
+        System.out.println("Execute::") ;
+        System.out.println(op) ;
         
         // HACK reset to avoid infinite loop.
         OpCompiler.factory = OpCompiler.stdFactory ;

@@ -1,7 +1,8 @@
 PREFIX : <http://example/>
 SELECT *
 {
+    ?z ?q ?w . 
     ?x :p ?v . 
-    ?z :q ?w . 
-    FILTER(?v != "2")
+    FILTER(?v = "2")
 }
+LIMIT 5

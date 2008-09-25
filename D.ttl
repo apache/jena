@@ -1,7 +1,7 @@
 @prefix   :         <http://example/> .
 @prefix  xsd:    <http://www.w3.org/2001/XMLSchema#> .
 
-:x1 :p "1,233.5"^^xsd:decimal .
+#:x1 :p "1,233.5"^^xsd:decimal .
 :x1 :p "1233.5"^^xsd:decimal .
 
 :x1 :p "x" .
