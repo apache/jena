@@ -15,7 +15,6 @@ import java.util.List;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
-
 import com.hp.hpl.jena.sparql.core.BasicPattern;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
@@ -23,7 +22,6 @@ import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.binding.BindingMap;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterSingleton;
-
 import com.hp.hpl.jena.tdb.pgraph.GraphTDB;
 import com.hp.hpl.jena.tdb.pgraph.NodeId;
 
@@ -35,7 +33,9 @@ public class SolverLib
         public Iterator<Binding> convert(GraphTDB graph, Iterator<BindingNodeId> iterBindingIds) ;
     }
     
-    
+    /** Change this to chnage the process of NodeId to Node conversion.  Normally it's this code, which 
+     * puts a delayed iterator mapping around the BindingNodeId stream. 
+     */
     public static ConvertNodeIDToNode converter = new ConvertNodeIDToNode(){
         @Override
         public Iterator<Binding> convert(GraphTDB graph, Iterator<BindingNodeId> iterBindingIds)
@@ -101,7 +101,7 @@ public class SolverLib
                     return new BindingTDB(null, bindingNodeIds, graph.getNodeTable()) ;
                 else
                 {
-                    // Makes nodes immediately.  Interacts with FILTERs, causing unecessary NodeTable accesses. 
+                    // Makes nodes immediately.  Causing unecessary NodeTable accesses (e.g. project) 
                     Binding b = new BindingMap() ;
                     for ( Var v : bindingNodeIds )
                     {
