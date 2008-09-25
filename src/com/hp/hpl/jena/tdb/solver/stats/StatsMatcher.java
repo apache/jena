@@ -284,7 +284,19 @@ public final class StatsMatcher
             w = search(ANY, subj, pred, obj, w) ;
             return w ;
         }
-        throw new TDBException("Unidetnified predicate: "+pred) ;
+        
+        if ( pred.equals(ANY) )
+        {
+            throw new TDBException("Predicate is ANY") ;
+            
+            //double w = matchLinear(patterns, subj, pred, obj) ;
+//            double w = -1 ;
+//            w = search(VAR, subj, pred, obj, w) ;
+//            w = search(ANY, subj, pred, obj, w) ;
+//            return w ;
+        }
+        
+        throw new TDBException("Unidentified predicate: "+pred) ;
         
         //return matchLinear(subj, pred, obj) ;
     }

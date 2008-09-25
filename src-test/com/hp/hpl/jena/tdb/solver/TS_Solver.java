@@ -9,13 +9,9 @@ package com.hp.hpl.jena.tdb.solver;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
-import com.hp.hpl.jena.tdb.solver.reorder.TestReorder;
-import com.hp.hpl.jena.tdb.solver.stats.TestStats;
-
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
     TestReorder.class,      // Reorder engine - TDB independent
-    TestStats.class,        // Stats - TDB independent
     TestSolverTDB.class     // Tests the TDB connectivity
 })
 

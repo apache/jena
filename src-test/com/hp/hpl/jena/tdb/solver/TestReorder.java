@@ -4,15 +4,21 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.solver.reorder;
+package com.hp.hpl.jena.tdb.solver;
 
+import static com.hp.hpl.jena.tdb.solver.TestSolverLib.bgp;
+import static com.hp.hpl.jena.tdb.solver.TestSolverLib.matcher;
+import static com.hp.hpl.jena.tdb.solver.TestSolverLib.triple;
 import org.junit.Test;
 import test.BaseTest;
 
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.sparql.core.BasicPattern;
-import com.hp.hpl.jena.sparql.sse.Item;
-import com.hp.hpl.jena.sparql.sse.SSE;
+import com.hp.hpl.jena.tdb.solver.reorder.ReorderFixed;
+import com.hp.hpl.jena.tdb.solver.reorder.ReorderProc;
+import com.hp.hpl.jena.tdb.solver.reorder.ReorderProcIndexes;
+import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
+import com.hp.hpl.jena.tdb.solver.reorder.ReorderWeighted;
 import com.hp.hpl.jena.tdb.solver.stats.StatsMatcher;
 
 public class TestReorder extends BaseTest
@@ -108,14 +114,6 @@ public class TestReorder extends BaseTest
     }
 
     
-    private static StatsMatcher matcher(String str)
-    {
-        String s1 = "(prefix ((: <http://example/>))\n(stats " ;
-        String s2 = "))" ;
-        Item item = SSE.parse(s1+str+s2) ;
-        return new StatsMatcher(item) ; 
-    }
-    
     @Test public void reorderIndexes1() 
     { 
         ReorderProc proc = new ReorderProcIndexes(new int[]{0,1}) ;
@@ -132,50 +130,27 @@ public class TestReorder extends BaseTest
         BasicPattern bgp3 = proc.reorder(bgp1) ;
         assertEquals(bgp2, bgp3) ;
     }
-
     
+    // TestReorder covers the main machinary
+    // This class tests the rules
     
-    private static BasicPattern bgp(String str)
+    @Test public void stats_01()
     {
-        String s1 = "(prefix ((: <http://example/>)) " ;
-        String s2 = ")" ;
-        return SSE.parseBGP(s1+str+s2) ;
+        StatsMatcher m = matcher("((:x :p ANY) 5)") ;
+        ReorderTransformation transform = new ReorderWeighted(m) ;
+        BasicPattern bgp = bgp("(bgp)") ;
+        BasicPattern bgp2 = transform.reorder(bgp) ;
+        assertEquals(bgp2, bgp) ;
     }
     
-    private static Triple triple(String str)
-    {
-        String s1 = "(prefix ((: <http://example/>)) " ;
-        String s2 = ")" ;
-        return SSE.parseTriple(s1+str+s2) ;
-    }
     
-//  static class Reverse implements ReorderProc {
-//
-//      @Override
-//      public BasicPattern reorder(BasicPattern bgp)
-//      {
-//          BasicPattern x = new BasicPattern() ;
-//          for ( Triple t : NodeLib.tripleList(bgp.getList()) )
-//              x.add(0, t) ;
-//          return x ;
-//      } }
-//  
-//  static class Y implements ReorderTransformation
-//  {
-//
-//      @Override
-//      public BasicPattern reorder(BasicPattern pattern)
-//      {
-//          return null ;
-//      }
-//
-//      @Override
-//      public ReorderProc reorderIndexes(BasicPattern pattern)
-//      {
-//          return null ;
-//      }
-//      
-//  }
+    @Test public void stats_dft_01()
+    {
+        ReorderTransformation transform = new ReorderFixed() ;
+        BasicPattern bgp = bgp("(bgp)") ;
+        BasicPattern bgp2 = transform.reorder(bgp) ;
+        assertEquals(bgp2, bgp) ;
+    }
   
 }
 

@@ -4,15 +4,50 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.solver.stats;
+package com.hp.hpl.jena.tdb.solver;
 
-import org.junit.Test;
-import test.BaseTest;
+import lib.StrUtils;
 
-public class TestStats extends BaseTest
+import com.hp.hpl.jena.graph.Triple;
+import com.hp.hpl.jena.sparql.core.BasicPattern;
+import com.hp.hpl.jena.sparql.sse.Item;
+import com.hp.hpl.jena.sparql.sse.SSE;
+import com.hp.hpl.jena.tdb.solver.stats.StatsMatcher;
+
+public class TestSolverLib
 {
-    // TestReorder covers the mainmachinary 
-    @Test public void test1() { }
+    public static BasicPattern bgp(String str)
+    {
+        String s1 = "(prefix ((: <http://example/>)) " ;
+        String s2 = ")" ;
+        return SSE.parseBGP(s1+str+s2) ;
+    }
+    
+//    private static StatsMatcher matcher(String str)
+//    {
+//        String s1 = "(prefix ((: <http://example/>))\n(stats " ;
+//        String s2 = "))" ;
+//        Item item = SSE.parse(s1+str+s2) ;
+//        return new StatsMatcher(item) ; 
+//    }
+//    
+    public static StatsMatcher matcher(String... str)
+    {
+        String s1 = "(prefix ((: <http://example/>))\n(stats " ;
+        String s2 = "))" ;
+        
+        String x = StrUtils.strjoinNL(str) ;
+        
+        Item item = SSE.parse(s1+x+s2) ;
+        return new StatsMatcher(item) ; 
+    }
+
+    public static Triple triple(String str)
+    {
+        String s1 = "(prefix ((: <http://example/>)) " ;
+        String s2 = ")" ;
+        return SSE.parseTriple(s1+str+s2) ;
+    }
 
 }
 

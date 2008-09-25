@@ -8,7 +8,7 @@ package dev;
 
 public class Dev
 {
-    // ---- Sor out filter placement and reordering
+    // ---- Sort out filter placement and reordering
     //   OpCompilerTDB
     // ---- TestStats, VarCounter.
     // ---- Replan 1 in 100 requests
