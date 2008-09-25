@@ -21,17 +21,18 @@ import com.hp.hpl.jena.sparql.util.Utils;
 
 public class OpLabel extends Op1
 {
-    // BEware : while this is a Op1, it have no sub operation.
+    // Beware : while this is a Op1, it have no sub operation.
     // (label "foo") and (label "foo" (other ...)) are legal.
     // OpNull?
     
+    // Better: string+(object for internal use only)+op?
     public static Op create(Object label, Op op) { return new OpLabel(label, op) ; }
     
     private Object object ;
 
-    public OpLabel(Object thing) { this(thing, null) ; }
+    private OpLabel(Object thing) { this(thing, null) ; }
     
-    public OpLabel(Object thing, Op op)
+    private OpLabel(Object thing, Op op)
     {
         super(op) ;
         this.object = thing ;

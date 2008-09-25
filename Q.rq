@@ -1,9 +1,7 @@
 PREFIX apf:     <http://jena.hpl.hp.com/ARQ/property#>
-prefix :        <http://example/>
+PREFIX :        <http://example/>
 SELECT *
 {
-    ?x :p1 ?a .    
-    ?x :p2 ?b .    
-    ?name apf:concat (?a "--" ?b)
+    { ?x :p1 ?a . } { ?x :p2 ?b . FILTER(?a < 5) ?x :p2 ?a }
 }
 

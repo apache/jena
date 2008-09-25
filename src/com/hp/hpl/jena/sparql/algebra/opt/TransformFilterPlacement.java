@@ -35,6 +35,14 @@ public class TransformFilterPlacement extends TransformCopy
 {
     static boolean doFilterPlacement = true ;
     
+    public static Op transform(ExprList exprs, BasicPattern bgp)
+    {
+        if ( ! doFilterPlacement )
+            return OpFilter.filter(exprs, new OpBGP(bgp)) ;
+        
+        return transformFilterBGP(exprs, new HashSet(), bgp) ;
+    }
+    
     public TransformFilterPlacement()
     { }
     
@@ -57,7 +65,7 @@ public class TransformFilterPlacement extends TransformCopy
         return op ;
     }
         
-    private Op transform(ExprList exprs, Set varsScope, Op x)
+    private static Op transform(ExprList exprs, Set varsScope, Op x)
     {
         if ( x instanceof OpBGP )
             return transformFilterBGP(exprs, varsScope, (OpBGP)x) ;
@@ -70,10 +78,13 @@ public class TransformFilterPlacement extends TransformCopy
         return x ;
     }
     
-    private Op transformFilterBGP(ExprList exprs, Set patternVarsScope, OpBGP x)
+    private static Op transformFilterBGP(ExprList exprs, Set patternVarsScope, OpBGP x)
     {
-        BasicPattern pattern = ((OpBGP)x).getPattern() ;
+        return  transformFilterBGP(exprs, patternVarsScope, x.getPattern()) ;
+    }
 
+    private static Op transformFilterBGP(ExprList exprs, Set patternVarsScope, BasicPattern pattern)
+    {
         // Any filters that depend on no variables. 
         Op op = insertAnyFilter(exprs, patternVarsScope, null) ;
         
@@ -104,7 +115,7 @@ public class TransformFilterPlacement extends TransformCopy
         return op ;
     }
     
-    private Op transformFilterSequence(ExprList exprs, Set varScope, OpSequence opSequence)
+    private static Op transformFilterSequence(ExprList exprs, Set varScope, OpSequence opSequence)
     {
         //List ops = stages(opSequence) ;
         List ops = opSequence.getElements() ;
@@ -128,7 +139,7 @@ public class TransformFilterPlacement extends TransformCopy
     // ---- Utilities
     
     /** For any expression now in scope, wrap the op with a filter */
-    private Op insertAnyFilter(ExprList exprs, Set patternVarsScope, Op op)
+    private static Op insertAnyFilter(ExprList exprs, Set patternVarsScope, Op op)
     {
         for ( Iterator iter = exprs.iterator() ; iter.hasNext() ; )
         {

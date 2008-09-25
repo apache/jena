@@ -24,7 +24,7 @@ import com.hp.hpl.jena.sparql.core.Var;
 class VarFinder
 {
     // See also VarUtils and OpVars.
-    // This class is specific to the needs of the main query engine and scopoing of variables
+    // This class is specific to the needs of the main query engine and scoping of variables
     
     static Set optDefined(Op op)
     {

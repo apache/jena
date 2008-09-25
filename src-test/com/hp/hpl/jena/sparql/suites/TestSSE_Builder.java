@@ -41,7 +41,7 @@ public class TestSSE_Builder extends TestCase
     public void testOp_02() { opSame("(null)", OpNull.create()) ; }
     public void testOp_03() { opSame("(bgp [triple ?s ?p ?o])") ; }
 
-    public void testOp_04() { opSame("(label 'ABC' (table unit))", new OpLabel("ABC", OpTable.unit())) ; }
+    public void testOp_04() { opSame("(label 'ABC' (table unit))", OpLabel.create("ABC", OpTable.unit())) ; }
     
     private static void opSame(String str)
     {

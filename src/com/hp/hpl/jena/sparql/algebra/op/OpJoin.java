@@ -42,7 +42,6 @@ public class OpJoin extends Op2
         Table t = ((OpTable)op).getTable() ;
         // Safe answer.
         return (t instanceof TableUnit) ;
-        
     }
     
     private OpJoin(Op left, Op right) { super(left, right) ; }
@@ -53,6 +52,7 @@ public class OpJoin extends Op2
     { return transform.transform(this, left, right) ; }
         
     public void visit(OpVisitor opVisitor) { opVisitor.visit(this) ; }
+    
     public Op copy(Op newLeft, Op newRight)
     { return new OpJoin(newLeft, newRight) ; }
     

@@ -49,15 +49,15 @@ public class OpCompiler
     
     // A small (one slot) registry to allow (experimental) alternative  OpCompilers
     public interface Factory { OpCompiler create(ExecutionContext execCxt) ; }
-    
     // Set this to a different factory implementation to have a different OpCompiler.  
-    public static Factory factory = new Factory(){
-
+    public static Factory stdFactory = new Factory(){
         public OpCompiler create(ExecutionContext execCxt)
         {
             return new OpCompiler(execCxt) ;
         }} ;  
+    public static Factory factory = stdFactory ; 
 
+            
     static private OpCompiler decideOpCompiler(ExecutionContext execCxt)
     {
         if ( factory == null )
