@@ -32,6 +32,7 @@ public class TupleLoaderHashSQLServer extends TupleLoaderHashBase {
 	@Override
 	public String getNodeLoader() {
 		// In SQL Server temp tables start with a #
+	    // **** Temproary tables are not visible to the check for table exists on a connection. 
 		return "#"+super.getNodeLoader();
 	}
 

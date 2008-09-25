@@ -55,8 +55,26 @@ public abstract class TupleLoaderBase extends com.hp.hpl.jena.sdb.store.TupleLoa
 				connection().exec(getCreateTempNodes());
 			if (!TableUtils.hasTable(connection().getSqlConnection(), getTupleLoader()))
 				connection().exec(getCreateTempTuples());
-		} catch (SQLException e) { // Work around for MySQL issue, which won't say if temp table exists
-			if (!e.getMessage().matches("Table.*already exists")) throw e;
+		} catch (SQLException e) { 
+		    // Work around for MySQL issue, which won't say if temp table exists
+		    // This is also the case for MS Server SQL
+		    // Testing the message is as good as it gets without needing the DB-specific 
+		    String msg = e.getMessage() ;
+		    String className = e.getClass().getName() ;
+		    
+		    boolean ignore = false ;
+
+		    // MS-SQL
+		    if ( className.equals("com.microsoft.sqlserver.jdbc.SQLServerException")
+		        && msg.matches("There is already an object named '#.*' in the database."))
+		        ignore = true ;
+
+		    // MySQL
+		    if ( msg.matches("Table.*already exists") )
+		        ignore = true ;
+
+		    if ( ! ignore )
+		        throw e;
 		}
 		
 		// Prepare those statements
