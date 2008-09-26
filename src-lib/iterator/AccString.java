@@ -38,6 +38,9 @@ public class AccString<T> implements Accumulate<T, String>
         buffer = new StringBuilder() ; 
         first = true ;
     }
+    
+    public void finish() {}
+
 } 
 
 /*

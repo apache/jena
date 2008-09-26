@@ -27,7 +27,7 @@
 
     <!-- User environment variables to find user/key -->
     <sftp name="dev-publish" host="jena.hpl.hp.com" 
-	  user="${env.IVYUSER}" keyFile="${env.IVYKEY}">
+	  user="${ivy.user}" keyFile="${ivy.keyfile}">
       <ivy      pattern="${sftp.root}/[module]/[revision]/ivy.xml"/>
       <artifact pattern="${sftp.root}/[module]/[revision]/[artifact]-[revision](-[classifier]).[ext]"/>
     </sftp>

@@ -30,9 +30,10 @@ public class Iter<T> implements Iterable<T>, Iterator<T>
         Accumulate<T,Set<T>> action = new Accumulate<T,Set<T>>()
         {
             private Set<T> acc = null ;
-            public void accumulate(T item)   { acc.add(item) ; }
+            public void accumulate(T item)  { acc.add(item) ; }
             public Set<T> get()             { return acc ; }
             public void start()             { acc = new HashSet<T>() ; }
+            public void finish()            {}
         } ;
         return reduce(stream, action) ;
     }
@@ -45,9 +46,10 @@ public class Iter<T> implements Iterable<T>, Iterator<T>
         Accumulate<T,List<T>> action = new Accumulate<T,List<T>>()
         {
             private List<T> acc = null ;
-            public void accumulate(T item)   { acc.add(item) ; }
-            public List<T> get()             { return acc ; }
+            public void accumulate(T item)  { acc.add(item) ; }
+            public List<T> get()            { return acc ; }
             public void start()             { acc = new ArrayList<T>() ; }
+            public void finish()            {}
         } ;
         return reduce(stream, action) ;
     }
@@ -69,6 +71,7 @@ public class Iter<T> implements Iterable<T>, Iterator<T>
             T item = stream.next(); 
             aggregator.accumulate(item) ;
         }
+        aggregator.finish();
         return aggregator.get();
     }
 

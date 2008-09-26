@@ -82,7 +82,10 @@
   <property name="build.dir"              value="build"/>
   <property name="build.classes.dir"      value="${build.dir}/classes"/>
   <property name="artifacts.dir"          value="${build.dir}/artifacts"/>
-  <property name="pub.dir.local"  location="${build.dir}/pub"/>
+  <property name="pub.dir.local"          location="${build.dir}/pub"/>
+
+  <property name="ivy.keyfile"            location="${env.IVYKEY}">
+  <property name="ivy.user"               value="${env.IVYUSER}"/>
 
   <!-- Other -->
   <property name="javadoc.title"          value="${Name}"/>

@@ -10,6 +10,7 @@ public interface Accumulate <T, R>
 {
     public void start() ;
     public void accumulate(T item) ;
+    public void finish();
     public R get() ;
 }
 
