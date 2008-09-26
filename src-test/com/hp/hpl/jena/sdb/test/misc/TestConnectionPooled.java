@@ -7,6 +7,8 @@
 package com.hp.hpl.jena.sdb.test.misc;
 
 import static org.junit.Assert.assertTrue;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -24,18 +26,28 @@ import com.hp.hpl.jena.sparql.sse.SSE;
 @RunWith(Parameterized.class)
 public class TestConnectionPooled extends ParamAllStores
 {
+    java.sql.Connection conn ;
+    
+    // Use "AllStores" so the JDBC connections are already there
     public TestConnectionPooled(String name, Store store)
     {
         super(name, store) ;
     }
+    
+    @Before public void before()
+    {
+        store.getTableFormatter().create() ;
+        conn = store.getConnection().getSqlConnection() ;
+    }
+
+    @After public void after() { }
+
     
     @Test public void reuseJDBCConection() 
     {
         Triple t1 = SSE.parseTriple("(:x1 :p :z)") ;
         Triple t2 = SSE.parseTriple("(:x2 :p :z)") ;
         boolean explicitTransactions = false ;
-        java.sql.Connection conn = store.getConnection().getSqlConnection() ;
-        store.getTableFormatter().create() ;
         
         // Make store.
         {

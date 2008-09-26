@@ -16,8 +16,8 @@ public class SDBTestSetup
     public static final String storeDescMainBase    = testDirSDB+"StoreDesc/" ;
     public static final String storeDescSimpleBase  = testDirSDB+"StoreDescSimple/" ;
     
-    public static final String storeList            = storeDescMainBase+"store-list.ttl" ;
-    public static final String storeListSimple      = storeDescSimpleBase+"store-list-simple.ttl" ;
+    public static final String storeList            = testDirSDB+"store-list.ttl" ;
+    public static final String storeListSimple      = testDirSDB+"store-list-simple.ttl" ;
 }
 
 /*

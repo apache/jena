@@ -10,8 +10,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
 import com.hp.hpl.jena.sdb.Store;
@@ -22,7 +20,7 @@ import com.hp.hpl.jena.sdb.test.SDBTestSetup;
 import com.hp.hpl.jena.sdb.util.Pair;
 
 
-@RunWith(Parameterized.class)
+//@RunWith(Parameterized.class)
 public abstract class ParamAllStores
 {
     // Make into Object[]{String,Store} lists just for JUnit. 

@@ -53,7 +53,7 @@ public class StoreList
     {
         public Pair<String, StoreDesc> convert(Pair<String, String> pair)
         {
-            return new Pair<String, StoreDesc>(pair.car(), StoreDesc.read(pair.car())) ;
+            return new Pair<String, StoreDesc>(pair.car(), StoreDesc.read(pair.cdr())) ;
         }
     } ;
 
