@@ -21,6 +21,8 @@ import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.sdb.SDB;
 import com.hp.hpl.jena.sdb.Store;
 import com.hp.hpl.jena.sdb.StoreDesc;
+import com.hp.hpl.jena.sdb.iterator.Iter;
+import com.hp.hpl.jena.sdb.iterator.Transform;
 import com.hp.hpl.jena.sdb.store.StoreFactory;
 import com.hp.hpl.jena.sdb.util.Pair;
 import com.hp.hpl.jena.sdb.util.StrUtils;
@@ -46,28 +48,51 @@ public class StoreList
              "  ?l list:member [ rdfs:label ?label ; sdb:description ?desc ]",
             "}") ;
     
-    
-    List<Pair<String, Store>> storeList ;
-    
-    public StoreList(String filename)
+    // Not Java's finest hour ...
+    static Transform<Pair<String, String>, Pair<String, StoreDesc>> t1 = new  Transform<Pair<String, String>, Pair<String, StoreDesc>>()
     {
-        storeList = storesByQuery(filename) ;
-    }
-    
-    public List<Pair<String, Store>> get()
+        public Pair<String, StoreDesc> convert(Pair<String, String> pair)
+        {
+            return new Pair<String, StoreDesc>(pair.car(), StoreDesc.read(pair.car())) ;
+        }
+    } ;
+
+    static Transform<Pair<String, StoreDesc>, Pair<String, Store>> t2 = new Transform<Pair<String, StoreDesc>, Pair<String, Store>>()
     {
-        return storeList ;
-    }
+        public Pair<String, Store> convert(Pair<String, StoreDesc> pair)
+        {
+            Store store = StoreFactory.create(pair.cdr()) ;
+            // HSQL and H2 (in memory) need formatting
+            // Better woudl be to know in memory/on disk
+            // Relies on StoreDesc getting the label correctly (SDBConnectionFactory)
+            String jdbcURL = store.getConnection().getJdbcURL() ;
+            boolean isInMem =  (jdbcURL==null ? false : jdbcURL.contains(":mem:") ) ;
+            if ( formatStores || isInMem )
+                store.getTableFormatter().create() ;
+            return new Pair<String, Store>(pair.car(), store) ;
+        }
+    } ;
     
     public static List<Pair<String, Store>> stores(String fn)
     {
-        return storesByQuery(fn) ;
+        List<Pair<String, String>> x = storesByQuery(fn) ;
+        //List<Pair<String, StoreDesc>> y = Iter.iter(x).map(t1).toList() ;
+        List<Pair<String, Store>> z = Iter.iter(x).map(t1).map(t2).toList() ;
+        return z ;
     }
     
-    private static List<Pair<String, Store>> storesByQuery(String fn)
+    public static List<Pair<String, StoreDesc>> storeDesc(String fn)
+    {
+        List<Pair<String, String>> x = storesByQuery(fn) ;
+        List<Pair<String, StoreDesc>> y = Iter.iter(x).map(t1).toList() ;
+        return y ;
+    }
+    
+    
+    private static List<Pair<String, String>> storesByQuery(String fn)
     {
         Model model = FileManager.get().loadModel(fn) ;
-        List<Pair<String, Store>> stores = new ArrayList<Pair<String, Store>>();
+        List<Pair<String, String>> data = new ArrayList<Pair<String, String>>();
         Query query = QueryFactory.create(queryString) ;
         QueryExecution qExec = QueryExecutionFactory.create(query, model) ;
         try {
@@ -78,27 +103,10 @@ public class StoreList
                 QuerySolution qs = rs.nextSolution() ;
                 String label = qs.getLiteral("label").getLexicalForm() ;
                 String desc = qs.getResource("desc").getURI() ;
-                worker(stores, label, desc) ;
+                data.add(new Pair<String, String>(label, desc)) ;
             }
         } finally { qExec.close() ; }
-        return stores ;
-    }
-    
-    private static void worker(List<Pair<String, Store>> data, String label, String storeDescFile)
-    {
-        StoreDesc storeDesc = StoreDesc.read(storeDescFile) ;
-        Store store = StoreFactory.create(storeDesc) ;
-        
-        // HSQL and H2 (in memory) need formatting
-        // Better woudl be to know in memory/on disk
-        // Relies on StoreDesc getting the label correctly (SDBConnectionFactory)
-        String jdbcURL = store.getConnection().getJdbcURL() ;
-        boolean isInMem =  (jdbcURL==null ? false : jdbcURL.contains(":mem:") ) ;
-        
-        if ( formatStores || isInMem )
-            store.getTableFormatter().create() ;
-        Pair<String, Store> e = new Pair<String, Store>(label, store) ;
-        data.add(e) ;
+        return data ;
     }
 }
 

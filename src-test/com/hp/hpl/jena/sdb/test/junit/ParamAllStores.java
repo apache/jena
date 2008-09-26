@@ -25,8 +25,6 @@ import com.hp.hpl.jena.sdb.util.Pair;
 @RunWith(Parameterized.class)
 public abstract class ParamAllStores
 {
-   
-    
     // Make into Object[]{String,Store} lists just for JUnit. 
     static Transform<Pair<String, Store>, Object[]> fix = new Transform<Pair<String, Store>, Object[]>()
     {

@@ -14,23 +14,20 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
-import com.hp.hpl.jena.sdb.Store;
+import com.hp.hpl.jena.sdb.StoreDesc;
 import com.hp.hpl.jena.sdb.iterator.Iter;
 import com.hp.hpl.jena.sdb.iterator.Transform;
 import com.hp.hpl.jena.sdb.shared.StoreList;
+import com.hp.hpl.jena.sdb.test.SDBTestSetup;
 import com.hp.hpl.jena.sdb.util.Pair;
-
 
 @RunWith(Parameterized.class)
 public abstract class ParamAllStoreDesc
 {
-    static String storeList         = "testing/store-list.ttl" ;
-    static String storeListSimple   = "testing/store-list-simple.ttl" ;
-    
     // Make into Object[]{String,Store} lists just for JUnit. 
-    static Transform<Pair<String, Store>, Object[]> fix = new Transform<Pair<String, Store>, Object[]>()
+    static Transform<Pair<String, StoreDesc>, Object[]> fix = new Transform<Pair<String, StoreDesc>, Object[]>()
     {
-        public Object[] convert(Pair<String, Store> item)
+        public Object[] convert(Pair<String, StoreDesc> item)
         { return new Object[]{item.car(), item.cdr()} ; }
     } ;
 
@@ -39,9 +36,9 @@ public abstract class ParamAllStoreDesc
     static Collection<Object[]> data = null ;
     static 
     {
-        List<Pair<String, Store>> x = new ArrayList<Pair<String, Store>>() ;
-        x.addAll(StoreList.stores(storeList)) ;
-        x.addAll(StoreList.stores(storeListSimple)) ;
+        List<Pair<String, StoreDesc>> x = new ArrayList<Pair<String, StoreDesc>>() ;
+        x.addAll(StoreList.storeDesc(SDBTestSetup.storeList)) ;
+        x.addAll(StoreList.storeDesc(SDBTestSetup.storeListSimple)) ;
         data = Iter.iter(x).map(fix).toList() ;
     }
     
@@ -52,15 +49,13 @@ public abstract class ParamAllStoreDesc
     @Parameters public static Collection<Object[]> data() { return data ; }
     
     protected final String name ;
-    protected final Store store ;
+    protected final StoreDesc storeDesc ;
     
-    public ParamAllStoreDesc(String name, Store store)
+    public ParamAllStoreDesc(String name, StoreDesc storeDesc)
     {
         this.name = name ;
-        this.store = store ;
+        this.storeDesc = storeDesc ;
     }
-
-//    @Test public void test1() { System.out.println("Test1 "+name) ; } 
 }
 
 /*
