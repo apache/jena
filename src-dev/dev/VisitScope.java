@@ -7,8 +7,21 @@
 package dev;
 
 //import com.hp.hpl.jena.sparql.algebra.OpVisitor;
+import java.util.HashSet;
+import java.util.Set;
+
+import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.sparql.algebra.OpVisitorByType;
-import com.hp.hpl.jena.sparql.algebra.op.*;
+import com.hp.hpl.jena.sparql.algebra.op.Op0;
+import com.hp.hpl.jena.sparql.algebra.op.Op1;
+import com.hp.hpl.jena.sparql.algebra.op.Op2;
+import com.hp.hpl.jena.sparql.algebra.op.OpBGP;
+import com.hp.hpl.jena.sparql.algebra.op.OpExt;
+import com.hp.hpl.jena.sparql.algebra.op.OpN;
+import com.hp.hpl.jena.sparql.core.Quad;
+import com.hp.hpl.jena.sparql.core.Var;
+import com.hp.hpl.jena.tdb.lib.NodeLib;
 
 public class VisitScope extends OpVisitorByType
 {
@@ -35,7 +48,35 @@ public class VisitScope extends OpVisitorByType
 
     @Override
     public void visit(OpBGP opBGP)
-    {}
+    {
+        Set<Var> acc = new HashSet<Var>() ;
+        for ( Triple t : NodeLib.tripleList(opBGP) )
+            addVarsFromTriple(acc, t) ;
+    }
+    
+    private static void addVarsFromTriple(Set<Var> acc, Triple t)
+    {
+        addVar(acc, t.getSubject()) ;
+        addVar(acc, t.getPredicate()) ;
+        addVar(acc, t.getObject()) ;
+    }
+    
+    private static void addVarsFromQuad(Set<Var> acc, Quad q)
+    {
+        addVar(acc, q.getSubject()) ;
+        addVar(acc, q.getPredicate()) ;
+        addVar(acc, q.getObject()) ;
+        addVar(acc, q.getGraph()) ;
+    }
+    
+    private static void addVar(Set<Var> acc, Node n)
+    {
+        if ( n == null )
+            return ;
+        
+        if ( Var.isVar(n) )
+            acc.add(Var.alloc(n)) ;
+    }
     
 //
 //    @Override

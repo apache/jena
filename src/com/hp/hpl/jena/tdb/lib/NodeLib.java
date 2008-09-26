@@ -21,6 +21,8 @@ import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.rdf.model.AnonId;
 import com.hp.hpl.jena.shared.PrefixMapping;
+import com.hp.hpl.jena.sparql.algebra.op.OpBGP;
+import com.hp.hpl.jena.sparql.core.BasicPattern;
 import com.hp.hpl.jena.sparql.sse.SSE;
 import com.hp.hpl.jena.sparql.sse.SSEParseException;
 import com.hp.hpl.jena.sparql.util.ALog;
@@ -60,6 +62,18 @@ public class NodeLib
             ALog.fatal(NodeLib.class, "decode: Failed to parse: "+s) ;
             throw ex ;
         }
+    }
+
+    /** Get the triples in the form of a List<Triple> */
+    public static List<Triple> tripleList(OpBGP opBGP)
+    {
+        return tripleList(opBGP.getPattern()) ;
+    }
+    
+    /** Get the triples in the form of a List<Triple> */
+    public static List<Triple> tripleList(BasicPattern pattern)
+    {
+        return tripleList(pattern.getList()) ;
     }
 
     /** Cast a list (known to be triples, e.g. from Java 1.4) to a List<Triple> */
