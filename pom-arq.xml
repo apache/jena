@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd"
+>
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>com.hp.hpl.jena</groupId>
+  <artifactId>arq</artifactId>
+  <version>@VERSION@</version>
+  <packaging>jar</packaging>
+
+  <name>ARQ</name>
+  <url>http://jena.sourceforge.net/ARQ/</url>
+  <inceptionYear>2005</inceptionYear>
+  <description>ARQ is a query engine for Jena that supports the SPARQL RDF Query language. SPARQL is the query language developed by the W3C RDF Data Access Working Group.</description>
+
+  <licenses>
+    <license>
+
+      <name>BSD</name>
+      <url>http://jena.sourceforge.net/ARQ/license.html</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
+  <scm>
+    <url>https://jena.svn.sourceforge.net/svnroot/jena/ARQ/</url>
+
+  </scm>
+
+  <organization>
+    <name>HP Labs</name>
+    <url>http://www.hpl.hp.com/semweb/</url>
+  </organization>
+
+  <dependencies>
+
+    <dependency>
+      <groupId>com.hp.hpl.jena</groupId>
+      <artifactId>jena</artifactId>
+      <version>2.5.6</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.lucene</groupId>
+
+      <artifactId>lucene-core</artifactId>
+      <version>2.3.1</version>
+    </dependency>
+
+    <dependency>
+      <groupId>stax</groupId>
+      <artifactId>stax-api</artifactId>
+
+      <version>1.0</version>
+    </dependency>
+
+    <dependency>
+      <!-- org.codehaus.woodstox : The POM groupId is "woodstox" -->
+      <groupId>woodstox</groupId>
+      <artifactId>wstx-asl</artifactId>
+      <version>3.0.0</version>
+
+    </dependency>
+	
+    <dependency>
+      <groupId>com.hp.hpl.jena</groupId>
+      <artifactId>json-jena</artifactId>
+      <version>1.0</version>
+    </dependency>
+
+	
+  </dependencies>
+
+</project>

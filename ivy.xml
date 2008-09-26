@@ -18,9 +18,10 @@
 
   <publications>
     <artifact name="arq" type="jar"/>
-    <artifact name="arq-extra" type="jar"/>
+    <!-- Need a second module to get the maven name right? -->
+    <!-- <artifact name="arq-extra" type="jar"/> -->
     <artifact name="arq" type="xml" ext="pom"/>
-    <artifact name="arq" mvn:classifier="sources" type="sources" ext="jar"/>
+    <!-- <artifact name="arq" mvn:classifier="sources" type="sources" ext="jar"/> -->
     <artifact name="arq" mvn:classifier="javadoc" type="javadoc" ext="jar"/>
   </publications>
 

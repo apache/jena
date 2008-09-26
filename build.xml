@@ -283,7 +283,6 @@
     <copy todir="${dist.dir}/${src-ex.dir}">
       <fileset dir="${src-ex.dir}" includes="**"/>
     </copy>
-    
 
     <!-- Misc files -->
     <copy todir="${dist.dir}/" file="build.xml"/>
@@ -458,10 +457,38 @@
   <property name="artifacts.dir" 	location="tmp/artifacts"/>
     
   <target name="artifacts">
-    <echo message="TODO :: collect arifacts"/>
+    <!-- Crudely pick out of the distribution area -->
+    <copy file="${dist.dir}/lib/${jarfile}" tofile="${artifacts.dir}/${name}-${version}.jar"/> 
+    
+    <!--
+    <copy file="${dist.dir}/lib/${jarfile.extra}" tofile="${artifacts.dir}/${name}-extra-${version}.jar"/>
+    -->
+    
+    <!-- Sources -->
+    <!-- This is all the sources : needs tidying up
+    <jar destfile="${artifacts.dir}/${name}-${version}-sources.jar">
+      <fileset dir="${dist.dir}/src">
+      	<include name="**/*.java"/>
+      </fileset>
+    </jar>
+    -->
+    
+    <!-- Javadoc -->
+    <jar destfile="${artifacts.dir}/${name}-${version}-javadoc.jar">
+      <fileset dir="${dist.dir}/doc/javadoc">
+      </fileset>
+    </jar>
+    
+    <!-- pom.xml -->
+    <copy file="pom-arq.xml" tofile="${artifacts.dir}/${name}-${version}.pom">
+    	<filterset>
+          <filter token="VERSION" value="${version}"/>
+        </filterset>
+    </copy>
   </target>
-      
-  <target name="publish" depends="release,artifacts,ivy-publish-dev">
+   
+  <!-- Add release -->
+  <target name="publish" depends="artifacts,ivy-publish-dev">
   </target>
     
   <target name="ivy-init">
