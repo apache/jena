@@ -11,23 +11,11 @@ public class Dev
 {
     // Testing: SDBTestAll does not include the model tests yet because they are not linked to the store description files
     // ParamAllStores for JUnit paramterized tests approach.
-    // TestConnection, 
-    // Make the Store decription list a global.  Needs to be self-initializing. 
     
     // For DISTINCT do in a subquery on the node ids.
     // Similarly, push in the PROJECT to the node ids phase. 
     
-    // DatasetStore to imnplement listNames()
-    // ==> DatasetStoreGraph.listGraphNodes() ;
-    // ==> StoreUtils.storeGraphNames
-    // This wil do OpDatasetNames??
-    // Temporarily - why doesn't the SQL use DISTINCT
-    // ==> Fix up (distinct (project ...)) 
-    
-    /* Principle: SDB does not connection management.
-     * It wraps connections.  The constainer does the connection management.
-     * 
-     * Remove quad dependency (and so complex paths will work).
+    /* Remove quad dependency (and so complex paths will work).
      * See ARQ new Quadization
      */
 }
