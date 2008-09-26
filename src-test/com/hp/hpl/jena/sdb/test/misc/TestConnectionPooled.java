@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.test.setup;
+package com.hp.hpl.jena.sdb.test.misc;
 
 import static org.junit.Assert.assertTrue;
 import org.junit.Test;
@@ -18,7 +18,7 @@ import com.hp.hpl.jena.sdb.Store;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.sql.SDBConnectionFactory;
 import com.hp.hpl.jena.sdb.store.StoreFactory;
-import com.hp.hpl.jena.sdb.test.ParamAllStores;
+import com.hp.hpl.jena.sdb.test.junit.ParamAllStores;
 import com.hp.hpl.jena.sparql.sse.SSE;
 
 @RunWith(Parameterized.class)

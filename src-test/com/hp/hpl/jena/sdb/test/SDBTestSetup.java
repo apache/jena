@@ -1,54 +1,27 @@
 /*
- * (c) Copyright 2007, 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.test.setup;
-
-import java.sql.Connection;
-
-import org.junit.Test;
-
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.Property;
-import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.sdb.SDBFactory;
-import com.hp.hpl.jena.sdb.Store;
-import com.hp.hpl.jena.sdb.StoreDesc;
-import com.hp.hpl.jena.sdb.sql.SDBConnection;
-import com.hp.hpl.jena.sdb.store.StoreFactory;
-import com.hp.hpl.jena.sdb.test.SDBTestAll;
+package com.hp.hpl.jena.sdb.test;
 
 
-public class TestConnection
+public class SDBTestSetup
 {
-    @Test public void connection_1()
-    {
-        String desc = SDBTestAll.testDirSDB+"StoreDesc/h2-hash.ttl" ;
-        StoreDesc sDesc = StoreDesc.read(desc) ;
-        
-        Connection c = SDBFactory.createSqlConnection(desc) ;
-        
-        SDBConnection conn1 = SDBFactory.createConnection(c) ;
-        Store store1 = StoreFactory.create(sDesc, conn1) ;
-        
-        SDBConnection conn2 = SDBFactory.createConnection(c) ;
-        Store store2 = StoreFactory.create(sDesc, conn2) ;
-        
-        Model model1 = SDBFactory.connectDefaultModel(store1) ;
-        Model model2 = SDBFactory.connectDefaultModel(store2) ;
-        
-        Resource s = model1.createResource() ;
-        Property p = model1.createProperty("http://example/p") ;
-        
-        model1.add(s, p, "model1") ;
-        model2.add(s, p, "model2") ;
-    }
+    public static final String testDirSDB           = "testing/" ;
+    public static final String manifestMain         = testDirSDB + "manifest-sdb.ttl" ;
+    public static final String manifestSimple       = testDirSDB + "manifest-sdb-simple.ttl" ;
+    
+    public static final String storeDescMainBase    = testDirSDB+"StoreDesc/" ;
+    public static final String storeDescSimpleBase  = testDirSDB+"StoreDescSimple/" ;
+    
+    public static final String storeList            = storeDescMainBase+"store-list.ttl" ;
+    public static final String storeListSimple      = storeDescSimpleBase+"store-list-simple.ttl" ;
 }
 
 /*
- * (c) Copyright 2007, 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.test;
+package com.hp.hpl.jena.sdb.test.junit;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -22,7 +22,7 @@ import com.hp.hpl.jena.sdb.util.Pair;
 
 
 @RunWith(Parameterized.class)
-public abstract class ParamAllStores
+public abstract class ParamAllStoreDesc
 {
     static String storeList         = "testing/store-list.ttl" ;
     static String storeListSimple   = "testing/store-list-simple.ttl" ;
@@ -54,7 +54,7 @@ public abstract class ParamAllStores
     protected final String name ;
     protected final Store store ;
     
-    public ParamAllStores(String name, Store store)
+    public ParamAllStoreDesc(String name, Store store)
     {
         this.name = name ;
         this.store = store ;

@@ -6,14 +6,11 @@
 
 package com.hp.hpl.jena.sdb.test;
 
-import static com.hp.hpl.jena.sdb.test.SDBTestAll.manifestMain;
-import static com.hp.hpl.jena.sdb.test.SDBTestAll.manifestSimple;
 import junit.framework.TestSuite;
 import org.junit.runner.RunWith;
 import org.junit.runners.AllTests;
 
 import com.hp.hpl.jena.query.ARQ;
-
 import com.hp.hpl.jena.sdb.SDB;
 import com.hp.hpl.jena.sdb.test.junit.QueryTestSDBFactory;
 
@@ -28,10 +25,6 @@ public class SDBQueryTestSuite extends TestSuite
 
     // Old style (JUnit3) but it allows programmatic
     // construction of the test suite hierarchy from a script.
-    
-    static String storeList         = "testing/store-list.ttl" ;
-    static String storeListSimple   = "testing/store-list-simple.ttl" ;
-    
     static public TestSuite suite() { return new SDBQueryTestSuite() ; }
     
     private SDBQueryTestSuite()
@@ -42,8 +35,8 @@ public class SDBQueryTestSuite extends TestSuite
             // PostgreSQL gets upset with comments in comments??
             ARQ.getContext().setFalse(SDB.annotateGeneratedSQL) ;
 
-        QueryTestSDBFactory.make(this, storeList, manifestMain) ;
-        QueryTestSDBFactory.make(this, storeListSimple, manifestSimple) ;
+        QueryTestSDBFactory.make(this, SDBTestSetup.storeList, SDBTestSetup.manifestMain) ;
+        QueryTestSDBFactory.make(this, SDBTestSetup.storeListSimple, SDBTestSetup.manifestSimple) ;
     }
     
  

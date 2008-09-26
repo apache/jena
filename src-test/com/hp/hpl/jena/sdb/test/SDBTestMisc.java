@@ -7,7 +7,11 @@
 package com.hp.hpl.jena.sdb.test;
 
 import com.hp.hpl.jena.sdb.test.iterator.TestAlg;
-import com.hp.hpl.jena.sdb.test.shared.TestRegistry;
+import com.hp.hpl.jena.sdb.test.misc.TestAssembler;
+import com.hp.hpl.jena.sdb.test.misc.TestExprMatch;
+import com.hp.hpl.jena.sdb.test.misc.TestPrefixMappingSDB;
+import com.hp.hpl.jena.sdb.test.misc.TestRegex;
+import com.hp.hpl.jena.sdb.test.misc.TestRegistry;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;

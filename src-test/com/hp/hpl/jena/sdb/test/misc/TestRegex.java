@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.test;
+package com.hp.hpl.jena.sdb.test.misc;
 
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
