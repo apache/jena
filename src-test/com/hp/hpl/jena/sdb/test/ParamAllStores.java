@@ -4,13 +4,12 @@
  * [See end of file]
  */
 
-package dev;
+package com.hp.hpl.jena.sdb.test;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
@@ -23,46 +22,45 @@ import com.hp.hpl.jena.sdb.util.Pair;
 
 
 @RunWith(Parameterized.class)
-public class ParamAllStores
+public abstract class ParamAllStores
 {
     static String storeList         = "testing/store-list.ttl" ;
     static String storeListSimple   = "testing/store-list-simple.ttl" ;
     
+    // Make into Object[]{String,Store} lists just for JUnit. 
     static Transform<Pair<String, Store>, Object[]> fix = new Transform<Pair<String, Store>, Object[]>()
     {
         public Object[] convert(Pair<String, Store> item)
-        {
-            return new Object[]{item} ; 
-        }
-        
+        { return new Object[]{item.car(), item.cdr()} ; }
     } ;
 
-    
-    // Collection of arrays.
-    @Parameters public static Collection<Object[]> data()
+    // Build once and return the same for parametrized types each time.
+    // Connections are slow to create.
+    static Collection<Object[]> data = null ;
+    static 
     {
         List<Pair<String, Store>> x = new ArrayList<Pair<String, Store>>() ;
-        Iter<Pair<String, Store>> s = Iter.iter(x) ;
-        s = s.append(stores(storeList)) ;
-        s = s.append(stores(storeListSimple)) ;
-        Iter<Object[]> z = s.map(fix) ;
-        return z.toList() ; 
-        
+        x.addAll(StoreList.stores(storeList)) ;
+        x.addAll(StoreList.stores(storeListSimple)) ;
+        data = Iter.iter(x).map(fix).toList() ;
     }
-    private static Iter<Pair<String, Store>> stores(String storeList)
+    
+    // ----
+    
+    // Each Object[] becomes the arguments to the class constructor (with reflection)
+    // Reflection is not sensitive to generic parameterization (it's type erasure) 
+    @Parameters public static Collection<Object[]> data() { return data ; }
+    
+    protected final String name ;
+    protected final Store store ;
+    
+    public ParamAllStores(String name, Store store)
     {
-        return Iter.iter(StoreList.stores(storeList)) ;
+        this.name = name ;
+        this.store = store ;
     }
 
-    Pair<String, Store> pair ;
-    public ParamAllStores(Pair<String, Store> x)
-    {
-        pair = x ;
-        System.out.println("Name = "+x.car()) ;
-    }
-
-    @Test public void test1() { System.out.println("Test1 "+pair.car()) ; } 
-    @Test public void test2() { System.out.println("Test2 "+pair.car()) ; }
+//    @Test public void test1() { System.out.println("Test1 "+name) ; } 
 }
 
 /*

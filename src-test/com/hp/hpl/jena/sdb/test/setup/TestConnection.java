@@ -45,11 +45,6 @@ public class TestConnection
         model1.add(s, p, "model1") ;
         model2.add(s, p, "model2") ;
     }
-    
-    @Test public void connection_2()
-    {
-        
-    }
 }
 
 /*
