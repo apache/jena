@@ -35,14 +35,14 @@ public class AlgebraGenerator
     private Context context ;
     private PathCompiler pathCompiler = new PathCompiler() ;
     
-    // SimplifyEarly=true is the alternative reading of
+    // simplifyInAlgebraGeneration=true is the alternative reading of
     // the DAWG Algebra translation algorithm. 
 
-    // If we simplify here (early), it changes the SPARQL for OPTIONAL {{ FILTER }}
-    // The  {{}} reslts in (join unit (filter ...)) the filter is not moved
+    // If we simplify during algebra generation, it changes the SPARQL for OPTIONAL {{ FILTER }}
+    // The  {{}} results in (join unit (filter ...)) the filter is not moved
     // into the LeftJoin.  
     
-    boolean simplifyEarly = false ;         // False is correct setting. 
+    boolean simplifyInAlgebraGeneration = false ;         // False is correct setting. 
 
     public AlgebraGenerator(Context context)
     { 
@@ -69,7 +69,7 @@ public class AlgebraGenerator
     {
         Op op = compileElement(elt) ;
         Op op2 = op ;
-        if ( ! simplifyEarly && simplify != null )
+        if ( ! simplifyInAlgebraGeneration && simplify != null )
             op2 = Transformer.transform(simplify, op) ;
         return op2;
     }
@@ -145,11 +145,10 @@ public class AlgebraGenerator
     // Step 2: (Groups and unions) Was done during parsing to get ElementUnion.
     // Step 3: (GRAPH) Done in this code.
     // Step 4: (Filter extraction and OPTIONAL) Done in this code
-    // Simplicifation: Done later 
+    // Simplification: Done later 
     // If simplicifation is done now, it changes OPTIONAL { { ?x :p ?w . FILTER(?w>23) } } because it removes the
     //   (join Z (filter...)) that in turn stops the filter getting moved into the LeftJoin.  
     //   It need a depth of 2 or more {{ }} for this to happen. 
-    
 
     protected Op compileElementGroup(ElementGroup groupElt)
     {
@@ -271,6 +270,13 @@ public class AlgebraGenerator
             return join(current, op) ;
         }
         
+        if ( elt instanceof ElementAssign )
+        {
+            ElementAssign assign = (ElementAssign)elt ;
+            Op subOp = OpAssign.assign(current, assign.getVar(), assign.getExpr()) ;
+            return subOp ;
+        }
+        
         // All other elements: compile the element and then join on to the current group expression.
         if ( elt instanceof ElementGroup || 
              elt instanceof ElementNamedGraph ||
@@ -279,13 +285,6 @@ public class AlgebraGenerator
         {
             Op op = compileElement(elt) ;
             return join(current, op) ;
-        }
-        
-        if ( elt instanceof ElementAssign )
-        {
-            ElementAssign assign = (ElementAssign)elt ;
-            Op subOp = OpAssign.assign(current, assign.getVar(), assign.getExpr()) ;
-            return subOp ;
         }
         
         broken("compileDirect/Element not recognized: "+Utils.className(elt)) ;
@@ -313,8 +312,7 @@ public class AlgebraGenerator
     
     protected Op compileBasicPattern(BasicPattern pattern)
     {
-        // Property functions : assume done later.
-        // (Or do as a tranform here.)
+        // Property functions : done as a transform later
         return new OpBGP(pattern) ;
     }
     
@@ -483,7 +481,7 @@ public class AlgebraGenerator
 //        }
         
         
-        if ( simplifyEarly )
+        if ( simplifyInAlgebraGeneration )
         {
             if ( OpJoin.isJoinIdentify(current) )
                 return newOp ;

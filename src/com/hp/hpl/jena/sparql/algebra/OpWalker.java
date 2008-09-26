@@ -18,11 +18,10 @@ public class OpWalker
         op.visit(new WalkerVisitor(visitor)) ;
     }
     
-    public static class WalkerVisitor implements OpVisitor
+    private static final class WalkerVisitor extends OpVisitorByType
     {
         private OpVisitor visitor ;
 
-        // If using this as a superclass, remember to call super.visit.
         public WalkerVisitor() { this(null) ; }
         public WalkerVisitor(OpVisitor visitor) { this.visitor = visitor ; }
         
@@ -54,86 +53,8 @@ public class OpWalker
             if ( visitor != null ) op.visit(visitor) ; 
         }
         
-        public void visit(OpBGP opBGP)
-        { visit0(opBGP) ; }
-        
-        public void visit(OpQuadPattern quadPattern)
-        { visit0(quadPattern) ; }
-
-        public void visit(OpTriple opTriple)
-        { visit0(opTriple) ; }
-        
-        public void visit(OpPath opPath)
-        { visit0(opPath) ; }
-        
-        public void visit(OpProcedure opProcedure)
-        { visit1(opProcedure) ; }
-
-        public void visit(OpPropFunc opPropFunc)
-        { visit1(opPropFunc) ; }
-
-        public void visit(OpJoin opJoin)
-        { visit2(opJoin) ; }
-
-        public void visit(OpSequence opSequence)
-        { visitN(opSequence) ; }
-        
-        public void visit(OpLeftJoin opLeftJoin)
-        { visit2(opLeftJoin) ; }
-
-        public void visit(OpDiff opDiff)
-        { visit2(opDiff) ; }
-
-        public void visit(OpUnion opUnion)
-        { visit2(opUnion) ; }
-
-        public void visit(OpFilter opFilter)
-        { visit1(opFilter) ; }
-
-        public void visit(OpGraph opGraph)
-        { visit1(opGraph) ; }
-
-        public void visit(OpService opService)
-        { visit1(opService) ; }
-
-        public void visit(OpDatasetNames dsNames)
-        { visit0(dsNames) ; }
-
-        public void visit(OpTable opUnit)
-        { visit0(opUnit) ; }
-
-        public void visit(OpExt opExt)
-        { opExt.visit(visitor) ; }
-
-        public void visit(OpNull opNull)
-        { visit0(opNull) ; }
-
-        public void visit(OpLabel opLabel)
-        { visit1(opLabel) ; }
-
-        public void visit(OpAssign opAssign)
-        { visit1(opAssign) ; }
-
-        public void visit(OpList opList)
-        { visit1(opList) ; }
-
-        public void visit(OpOrder opOrder)
-        { visit1(opOrder) ; }
-
-        public void visit(OpProject opProject)
-        { visit1(opProject) ; }
-
-        public void visit(OpReduced opReduced)
-        { visit1(opReduced) ; }
-
-        public void visit(OpDistinct opDistinct)
-        { visit1(opDistinct) ; }
-
-        public void visit(OpSlice opSlice)
-        { visit1(opSlice) ; }
-
-        public void visit(OpGroupAgg opGroupAgg)
-        { visit1(opGroupAgg) ; }
+        protected void visitExt(OpExt op)
+        { op.visit(visitor) ; }
     }
 }
 

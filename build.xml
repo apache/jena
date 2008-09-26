@@ -1,8 +1,8 @@
-<project name="ARQ" default="main" basedir=".">
+<project name="ARQ" xmlns:ivy="antlib:org.apache.ivy.ant" default="main" basedir=".">
 
   <property name="Name"            value="ARQ"/>
   <property name="name"            value="arq"/>
-  
+  <property environment="env"/>
   <!-- The major and minor version numbers  -->
   <property name="version-major"      value="2"/>
   <property name="version-minor"      value="5"/>
@@ -446,5 +446,87 @@
     </javac>
   </target>
   -->
+
+  <!-- Publishing with Ivy // Retrofit -->
+
+  <!-- ========================================== -->
+  <!-- ==== Ivy : Dependency Management  -->
+
+  <property name="ivy.keyfile" 		location="${env.IVYKEY}"/>
+  <property name="ivy.user"    		value="${env.IVYUSER}"/>
+  <property name="pub.dir.local" 	location="tmp/pub"/>
+  <property name="artifacts.dir" 	location="tmp/artifacts"/>
+    
+  <target name="artifacts">
+    <echo message="TODO :: collect arifacts"/>
+  </target>
+      
+  <target name="publish" depends="release,artifacts,ivy-publish-dev">
+  </target>
+    
+  <target name="ivy-init">
+    <ivy:settings />
+  </target>
+
+  <!-- DEVELOPMENT : lib2/ -->
+  <target name="ivy-setup-lib" depends="ivy-init,ivy-resolve-report"> 
+    <ivy:retrieve conf="dev" pattern="lib2/[artifact]-[revision](-[classifier]).[ext]" />
+    <ivy:cachepath pathid="ivy.dev.classpath" conf="dev" />
+  </target>
+
+  <target name="ivy-resolve" depends="ivy-resolve-report"/>
+
+  <target name="ivy-resolve-report" depends="ivy-init">
+    <ivy:resolve conf="main"
+		 haltonfailure="false" failureproperty="ivy.resolve.failed"/>
+    <ivy:report todir="${reports.dir}"/>
+    <fail message="Ivy dependency failed" if="ivy.resolve.failed"/>
+  </target>
+
+  <target name="ivy-publish" depends="ivy-init,ivy-resolve">
+    <!-- <ivy:resolve conf="main"/> -->
+    <ivy:deliver con="main"/>
+    <ivy:publish conf="main" 
+		 resolver="dev-publish" 
+		 overwrite="true">
+      <artifacts pattern="${artifacts.dir}/[artifact]-[revision](-[classifier]).[ext]" />
+    </ivy:publish>
+  </target>
+
+  <target name="publish-check">
+    <fail message="Publication environment variables (IVYUSER, IVYKEY) not set">
+      <condition>
+	<and> 
+	  <not><isset property="env.IVYUSER"/></not>
+	  <not><isset property="env.IVYKEY"/></not>
+	</and>
+      </condition>
+    </fail>
+    <fail message="Publication environment variable (IVYUSER) not set"  unless="env.IVYUSER"/>
+    <fail message="Publication environment variable (IVYKEY) not set"  unless="env.IVYKEY"/>
+  </target>
+
+  <!-- DEVELOPMENT -->
+  <target name="ivy-publish-dev" depends="ivy-init,publish-check,ivy-resolve">
+    <!-- <ivy:resolve conf="main"/> -->
+    <ivy:publish conf="main" 
+		 resolver="dev-resolver" 
+		 overwrite="true"
+		 forcedeliver="true">
+      <artifacts pattern="${artifacts.dir}/[artifact]-[revision](-[classifier]).[ext]" />
+    </ivy:publish>
+  </target>
+
+  <target name="ivy-pom" depends="ivy-init">
+    <!-- Make a basic POM file -->
+    <ivy:makepom ivyfile="ivy.xml" 
+		 pomfile="pom-arq-auto.xml">
+      <!--
+	<mapping conf="default" scope="compile"/>
+	<mapping conf="runtime" scope="runtime"/>
+      -->
+    </ivy:makepom>
+  </target>
+
 
 </project>

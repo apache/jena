@@ -71,6 +71,7 @@ public class Optimize implements Rewrite
     {
         if ( false )
         {
+            // Simplify is always applied by the AlgebraGenerator
             op = apply("Simplify", new TransformSimplify(), op) ;
             op = apply("Delabel", new TransformRemoveLabels(), op) ;
         }
