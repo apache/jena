@@ -42,8 +42,7 @@ public class ParamAllStores
     @Parameters public static Collection<Object[]> data()
     {
         List<Pair<String, Store>> x = new ArrayList<Pair<String, Store>>() ;
-
-        Iter<Pair<String, Store>> s = Iter.iter(x) ; 
+        Iter<Pair<String, Store>> s = Iter.iter(x) ;
         s = s.append(stores(storeList)) ;
         s = s.append(stores(storeListSimple)) ;
         Iter<Object[]> z = s.map(fix) ;
@@ -55,15 +54,15 @@ public class ParamAllStores
         return Iter.iter(StoreList.stores(storeList)) ;
     }
 
+    Pair<String, Store> pair ;
     public ParamAllStores(Pair<String, Store> x)
     {
-        //System.out.println("Store = "+x.car()) ;
-        System.out.println("Name = "+x.cdr()) ;
+        pair = x ;
+        System.out.println("Name = "+x.car()) ;
     }
 
-    @Test public void foo1() {} 
-    @Test public void foo2() {}
-
+    @Test public void test1() { System.out.println("Test1 "+pair.car()) ; } 
+    @Test public void test2() { System.out.println("Test2 "+pair.car()) ; }
 }
 
 /*

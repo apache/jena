@@ -9,6 +9,7 @@ package com.hp.hpl.jena.sdb.test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
+/** Not quite all: Does not yet include the model tests which need to be the linked to the store descriptions */
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
     SDBTestMisc.class,
@@ -16,14 +17,14 @@ import org.junit.runners.Suite;
     SDBUpdateTestSuite.class
 } )
 
-public class SDBTest
+public class SDBTestAll
 {
     public static final String testDirSDB           = "testing/" ;
-    public static final String manifestMain         = SDBTest.testDirSDB + "manifest-sdb.ttl" ;
-    public static final String manifestSimple       = SDBTest.testDirSDB + "manifest-sdb-simple.ttl" ;
+    public static final String manifestMain         = SDBTestAll.testDirSDB + "manifest-sdb.ttl" ;
+    public static final String manifestSimple       = SDBTestAll.testDirSDB + "manifest-sdb-simple.ttl" ;
     
-    public static final String storeDescMainBase    = SDBTest.testDirSDB+"StoreDesc/" ;
-    public static final String storeDescSimpleBase  = SDBTest.testDirSDB+"StoreDescSimple/" ;
+    public static final String storeDescMainBase    = SDBTestAll.testDirSDB+"StoreDesc/" ;
+    public static final String storeDescSimpleBase  = SDBTestAll.testDirSDB+"StoreDescSimple/" ;
 }
 
 /*

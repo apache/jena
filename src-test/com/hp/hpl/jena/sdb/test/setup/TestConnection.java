@@ -18,14 +18,14 @@ import com.hp.hpl.jena.sdb.Store;
 import com.hp.hpl.jena.sdb.StoreDesc;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.store.StoreFactory;
-import com.hp.hpl.jena.sdb.test.SDBTest;
+import com.hp.hpl.jena.sdb.test.SDBTestAll;
 
 
 public class TestConnection
 {
     @Test public void connection_1()
     {
-        String desc = SDBTest.testDirSDB+"StoreDesc/mysql-hash.ttl" ;
+        String desc = SDBTestAll.testDirSDB+"StoreDesc/h2-hash.ttl" ;
         StoreDesc sDesc = StoreDesc.read(desc) ;
         
         Connection c = SDBFactory.createSqlConnection(desc) ;
@@ -44,6 +44,11 @@ public class TestConnection
         
         model1.add(s, p, "model1") ;
         model2.add(s, p, "model2") ;
+    }
+    
+    @Test public void connection_2()
+    {
+        
     }
 }
 

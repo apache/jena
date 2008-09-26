@@ -8,7 +8,8 @@ Documentation:
 
 ==== SDB v1.2
 
-Added Store#isClosed(). Does nothing except track whether you've called close().
++ Fix to BulkLoader (MS SQL Server) to allow creating a second store over an JDBC so JDBC pooled conenctions work
++ Added Store#isClosed(). Does nothing currently except track whether you've called close().
 
 ==== SDB v1.1
 

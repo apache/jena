@@ -20,9 +20,9 @@ import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.sdb.SDB;
 import com.hp.hpl.jena.sdb.Store;
+import com.hp.hpl.jena.sdb.StoreDesc;
 import com.hp.hpl.jena.sdb.store.StoreFactory;
 import com.hp.hpl.jena.sdb.util.Pair;
-import com.hp.hpl.jena.sdb.util.StoreUtils;
 import com.hp.hpl.jena.sdb.util.StrUtils;
 import com.hp.hpl.jena.sdb.util.Vocab;
 import com.hp.hpl.jena.util.FileManager;
@@ -86,9 +86,14 @@ public class StoreList
     
     private static void worker(List<Pair<String, Store>> data, String label, String storeDescFile)
     {
-        Store store = StoreFactory.create(storeDescFile) ;
-        if ( formatStores || StoreUtils.isHSQL(store) || StoreUtils.isH2(store) )
-            // HSQL (in memory) needs formatting always as does H2
+        StoreDesc storeDesc = StoreDesc.read(storeDescFile) ;
+        Store store = StoreFactory.create(storeDesc) ;
+
+        boolean isInMem = storeDesc.getDbType().getName().endsWith(":mem") ;
+        
+        //if ( formatStores || StoreUtils.isHSQL(store) || StoreUtils.isH2(store) )
+        if ( formatStores || isInMem )
+            // HSQL and H2 (in memory) need formatting
             store.getTableFormatter().create() ;
         Pair<String, Store> e = new Pair<String, Store>(label, store) ;
         data.add(e) ;

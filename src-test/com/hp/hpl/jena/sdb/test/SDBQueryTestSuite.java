@@ -6,8 +6,8 @@
 
 package com.hp.hpl.jena.sdb.test;
 
-import static com.hp.hpl.jena.sdb.test.SDBTest.manifestMain;
-import static com.hp.hpl.jena.sdb.test.SDBTest.manifestSimple;
+import static com.hp.hpl.jena.sdb.test.SDBTestAll.manifestMain;
+import static com.hp.hpl.jena.sdb.test.SDBTestAll.manifestSimple;
 import junit.framework.TestSuite;
 import org.junit.runner.RunWith;
 import org.junit.runners.AllTests;

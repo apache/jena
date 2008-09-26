@@ -9,6 +9,11 @@ package dev;
 
 public class Dev
 {
+    // Testing: SDBTestAll does not include the model tests yet because they are not linked to the store description files
+    // ParamAllStores for JUnit paramterized tests approach.
+    // TestConnection, 
+    // Make the Store decription list a global.  Needs to be self-initializing. 
+    
     // For DISTINCT do in a subquery on the node ids.
     // Similarly, push in the PROJECT to the node ids phase. 
     
