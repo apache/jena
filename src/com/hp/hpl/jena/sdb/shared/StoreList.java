@@ -88,12 +88,14 @@ public class StoreList
     {
         StoreDesc storeDesc = StoreDesc.read(storeDescFile) ;
         Store store = StoreFactory.create(storeDesc) ;
-
-        boolean isInMem = storeDesc.getDbType().getName().endsWith(":mem") ;
         
-        //if ( formatStores || StoreUtils.isHSQL(store) || StoreUtils.isH2(store) )
+        // HSQL and H2 (in memory) need formatting
+        // Better woudl be to know in memory/on disk
+        // Relies on StoreDesc getting the label correctly (SDBConnectionFactory)
+        String jdbcURL = store.getConnection().getJdbcURL() ;
+        boolean isInMem =  (jdbcURL==null ? false : jdbcURL.contains(":mem:") ) ;
+        
         if ( formatStores || isInMem )
-            // HSQL and H2 (in memory) need formatting
             store.getTableFormatter().create() ;
         Pair<String, Store> e = new Pair<String, Store>(label, store) ;
         data.add(e) ;

@@ -65,9 +65,11 @@ public class SDBConnectionFactory
     private static SDBConnection worker(SDBConnectionDesc desc)
     {
         java.sql.Connection sqlConnection = createSqlConnection(desc) ;
-        SDBConnection c = new SDBConnection(sqlConnection) ;
+        SDBConnection c = new SDBConnection(sqlConnection, desc.getJdbcURL()) ;
         if ( desc.getLabel() != null )
             c.setLabel(desc.getLabel()) ;
+        else
+            c.setLabel(desc.getJdbcURL()) ;
         return c ;
     }
 

@@ -44,6 +44,8 @@ public class SDBConnection
     TransactionHandler transactionHandler = null ;
     String label = gen.next() ;
     
+    String jdbcURL = "unset" ;
+    
     // Defaults 
     public static boolean logSQLExceptions = true ;
     public static boolean logSQLStatements = false ;
@@ -63,12 +65,19 @@ public class SDBConnection
     { 
         this(SDBConnectionFactory.createSqlConnection(url, user, password)) ;
         setLabel(url) ;
+        setJdbcURL(url) ;
     }
     
     public SDBConnection(Connection jdbcConnection)
     { 
+        this(jdbcConnection, null) ;
+    }
+    
+    public SDBConnection(Connection jdbcConnection, String url)
+    { 
         sqlConnection = jdbcConnection ;
         transactionHandler = new TransactionHandlerSDB(this) ;
+        if ( url != null ) setJdbcURL(url) ;
     }
 
     public static SDBConnection none()
@@ -285,6 +294,16 @@ public class SDBConnection
         this.label = label ;
     }
     
+    public String getJdbcURL()
+    {
+        return jdbcURL ;
+    }
+
+    public void setJdbcURL(String jdbcURL)
+    {
+        this.jdbcURL = jdbcURL ;
+    }
+
     static Log sqlLog = log ; // LogFactory.getLog("SQL") ; // Remember to turn on in log4j.properties.
     
     private void exception(String who, SQLException ex, String sqlString)
