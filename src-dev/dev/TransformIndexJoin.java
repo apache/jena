@@ -4,34 +4,28 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.pgraph;
+package dev;
 
-import java.util.Arrays;
+import com.hp.hpl.jena.sparql.algebra.Op;
+import com.hp.hpl.jena.sparql.algebra.TransformCopy;
+import com.hp.hpl.jena.sparql.algebra.op.OpJoin;
+import com.hp.hpl.jena.sparql.algebra.op.OpSequence;
+import com.hp.hpl.jena.sparql.engine.main.JoinClassifier;
 
-/** Value-based hashes */ 
-public class Hash
+public class TransformIndexJoin extends TransformCopy
 {
-    byte [] bytes ;
-    public Hash(int len) { bytes = new byte[len] ; }
-    public int getLen() { return bytes.length ; }
-    public byte [] getBytes() { return bytes ; }
-    
+    // Transformer/TransformCopy that applied many transforms more efficiently.
     @Override
-    public int hashCode()
+    public Op transform(OpJoin opJoin, Op left, Op right)
     { 
-        return Arrays.hashCode(bytes) ;
+        // Look one level in for any filters with out-of-scope variables.
+        boolean canDoLinear = JoinClassifier.isLinear(opJoin) ;
+
+        if ( canDoLinear )
+            // Streamed evaluation
+            return OpSequence.create(left, right) ;
+        return super.transform(opJoin, left, right) ;
     }
-    
-    @Override
-    public boolean equals(Object other)
-    {
-        if ( this == other ) return true ;
-        if ( ! (other instanceof Hash) )
-            return false ;
-        boolean b = Arrays.equals(bytes, ((Hash)other).bytes) ;
-        return b ;
-    }
-    
 }
 
 /*

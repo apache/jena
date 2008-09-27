@@ -9,25 +9,39 @@ package dev;
 public class Dev
 {
     // ---- Sort out filter placement and reordering
-    //   OpCompilerTDB
+    // Dynamic:
+    //    Use QueryIterPeek
+    // Design/Dynamic
+    //   QueryIterPeek to look forward at one Binding.
+    //   OpExt(Main?) to mark a BGP for no further work.  Or OpLabel - need to compleet OpLabel
+    //   Simple case - ignore bindings - correct at top level.
+    // Long term: static
+    //   Static ==> more modular, better if algebra extsnds to all op (e.g. IndexedJoin)  
+    
+    // Design/static
+    //   Scoping and rewrite with later execution
+    //   generalise the approach:
+    //     OpJoin => sequnece // OpAugment/Op1 or IndexedLeftJoin/Op2 : an indexed LeftJoin
+    //     OpAugment is very like "match or {}" rather than "match or nil"
+    
+    //   TransformCopy 
+    //      - maybe Transform should be "Op transform(OpABC)"
+    //      - and TransformCopy is TransformRewrite. (there are no non-TransformCopy's)
+    
     // ---- TestStats, VarCounter.
-    // ---- Replan 1 in 100 requests
     // ---- A way to force display of optimizer even for the deep parts (assumes no inputs?)
     
     // ---- Matcher
     // Back-tracking?
     
-    // ---- Tests : VarCounter, stats matcher.
-
     // ---- Optimizer
     //   Abbreviate planning when below a threshold (likely selectivity?), or number of triples planned.
     //   Consider doing all plans from first choice.
     //     VarCounting : need to consider connectivity for boundedness propagation
     //     or consider all plans at step one.
     // Documentation
-    
-    // ---- Work on Filter-BGP blocks.
-    //     OpCompilerTDB to intercept
+
+    // ------------------------------------------
     
     // ---- B+Tree rewriter
     

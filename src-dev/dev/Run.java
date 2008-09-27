@@ -65,8 +65,9 @@ public class Run
     {
         //smallGraph() ;
         //tdbloader("--desc=tdb.ttl", "--mem", "/home/afs/Datasets/MusicBrainz/tracks.nt") ;
-        
  
+        //indexification() ; System.exit(0) ;
+        
         altCompile() ; System.exit(0) ;
         rewrite() ; System.exit(0) ;
         
@@ -89,6 +90,16 @@ public class Run
         
     }
     
+    private static void indexification()
+    {
+        Op op = SSE.readOp("Q.sse") ;
+        System.out.println(op) ;
+        System.out.println("----") ;
+        op = Transformer.transform(new TransformIndexJoin(), op) ;
+        System.out.println(op) ;
+        System.out.println("----") ;
+    }
+
     public static void altCompile()
     {
         // Rewire.

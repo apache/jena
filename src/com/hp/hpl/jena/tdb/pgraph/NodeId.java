@@ -104,6 +104,7 @@ public class NodeId
     @Override
     public boolean equals(Object other)
     {
+        if ( this == other ) return true ;
         if ( !(other instanceof NodeId ) ) return false ;
         return value == ((NodeId)other).value ;
     }

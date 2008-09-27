@@ -171,7 +171,7 @@ public abstract class ReorderTransformationBase implements ReorderTransformation
                     idx = i ;
                     if ( results != null ) results.add(i) ;
                 }
-                break ;
+                continue ;
             }
             
             if ( x == min )

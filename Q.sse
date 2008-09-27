@@ -1,0 +1,16 @@
+(prefix ((: <http://example/>))
+  (sequence
+    (join
+      (bgp (?x :p ?v))
+      (bgp (?x :q ?v)))
+    (join
+      (bgp (?x :p ?v))
+      (filter ?v 
+	(bgp (?y :q ?z))))
+    (join
+      (bgp (?x :p ?v))
+      (filter ?v 
+	(bgp (?y :q ?v))))
+    ))
+
+

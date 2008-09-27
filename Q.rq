@@ -1,8 +1,14 @@
 PREFIX : <http://example/>
 SELECT *
 {
+  {
     ?z ?q ?w . 
     ?x :p ?v . 
     FILTER(?v = "2")
+   } UNION 
+   {
+    ?z ?q ?w . 
+    ?x :p ?v . 
+   }
 }
 LIMIT 5

@@ -8,8 +8,11 @@ package dev;
 
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.Transform;
+import com.hp.hpl.jena.sparql.algebra.TransformCopy;
+import com.hp.hpl.jena.sparql.algebra.Transformer;
 import com.hp.hpl.jena.sparql.algebra.op.OpBGP;
 import com.hp.hpl.jena.sparql.algebra.op.OpFilter;
+import com.hp.hpl.jena.sparql.algebra.op.OpLabel;
 import com.hp.hpl.jena.sparql.algebra.opt.TransformFilterPlacement;
 import com.hp.hpl.jena.sparql.core.BasicPattern;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
@@ -18,6 +21,7 @@ import com.hp.hpl.jena.sparql.engine.main.OpCompiler;
 import com.hp.hpl.jena.sparql.engine.main.QC;
 import com.hp.hpl.jena.sparql.expr.ExprList;
 import com.hp.hpl.jena.tdb.pgraph.GraphTDB;
+import com.hp.hpl.jena.tdb.solver.SolverLib;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
 
 public class OpCompilerTDB extends OpCompiler
@@ -30,8 +34,18 @@ public class OpCompilerTDB extends OpCompiler
             return new OpCompilerTDB(execCxt) ;
         }} ;
     
+        // ---- Stop a BGP being reorder, again. 
+    static String executeNow = "DirectTDB" ;
+    private static Transform labelBGP = new TransformCopy()
+    {
+        @Override
+        public Op transform(OpBGP opBGP)
+        {
+            return OpLabel.create(executeNow, opBGP) ;
+        }
+    } ;
+    
     private boolean isForTDB ;
-    private Transform opTransform = new TransformFilterPlacement() ;
     
     // A new compile object is created for each op compilation.
     // So the execCxt is changing as we go through the query-compile-excute process  
@@ -56,16 +70,21 @@ public class OpCompilerTDB extends OpCompiler
             return super.compile(opBGP, input) ;
         GraphTDB graph = (GraphTDB)execCxt.getActiveGraph() ;
         return execute(opBGP.getPattern(), null, input, graph) ;
-        
-        //return SolverLib.execute(graph, opBGP.getPattern(), input, execCxt) ;
     }
     
-//    @Override
-//    public QueryIterator compile(OpLabel opLabel, QueryIterator input)
-//    {
-//        return super.compile(opLabel, input) ;
-//    }
-    
+    @Override
+    public QueryIterator compile(OpLabel opLabel, QueryIterator input)
+    {
+        if ( isForTDB && executeNow.equals(opLabel.getObject()) )
+        {
+            GraphTDB graph = (GraphTDB)execCxt.getActiveGraph() ;
+            OpBGP opBGP = (OpBGP)opLabel.getSubOp() ; 
+            return SolverLib.execute(graph, opBGP.getPattern(), input, execCxt) ;
+        }
+
+        return super.compile(opLabel, input) ;
+    }
+
     @Override
     public QueryIterator compile(OpFilter opFilter, QueryIterator input)
     {
@@ -86,24 +105,21 @@ public class OpCompilerTDB extends OpCompiler
         //return super.compile(opFilter, input) ;
     }
 
-    // Will migrate to SolverLib.
-    static Transform placement = new TransformFilterPlacement() ;
     public QueryIterator execute(BasicPattern pattern, ExprList exprs, QueryIterator input, GraphTDB graph)
     {
         ReorderTransformation transform = graph.getReorderTransform() ;
-        pattern = transform.reorder(pattern) ;
+        if ( transform != null )
+            pattern = transform.reorder(pattern) ;
         Op op = new OpBGP(pattern) ;
         
         if ( exprs != null )
             op = TransformFilterPlacement.transform(exprs, pattern) ;
-        
         System.out.println("Execute::") ;
         System.out.println(op) ;
         
-        // HACK reset to avoid infinite loop.
-        OpCompiler.factory = OpCompiler.stdFactory ;
+        // Solve without reordering again. 
+        op = Transformer.transform(labelBGP, op) ;
         
-        // Solve without messing around - because we changed the OpCompielr factory!  
         return QC.compile(op, input, execCxt) ;
     }
 }
