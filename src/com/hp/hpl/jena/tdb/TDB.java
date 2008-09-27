@@ -21,9 +21,9 @@ import com.hp.hpl.jena.query.ARQ;
 import com.hp.hpl.jena.tdb.base.loader.NTriplesReader2;
 import com.hp.hpl.jena.tdb.pgraph.assembler.PGraphAssemblerVocab;
 import com.hp.hpl.jena.tdb.solver.StageGeneratorGeneric;
-import com.hp.hpl.jena.tdb.solver.StageGeneratorTDB_AIO;
-import com.hp.hpl.jena.tdb.sys.SystemTDB;
+import com.hp.hpl.jena.tdb.solver.StageGeneratorTDB;
 import com.hp.hpl.jena.tdb.sys.Metadata;
+import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
 
 
@@ -95,7 +95,7 @@ public class TDB
             // ARQ base.  Cause chaos by using the new version.
             orig = new StageGeneratorGeneric() ;
 
-        StageGenerator stageGenerator = new StageGeneratorTDB_AIO(orig) ;
+        StageGenerator stageGenerator = new StageGeneratorTDB(orig) ;
         ARQ.getContext().set(ARQ.stageGenerator, stageGenerator) ;
     }
     

@@ -11,6 +11,7 @@ public class Dev
     // ---- Sort out filter placement and reordering
     // Dynamic:
     //    Use QueryIterPeek
+    //    Wire in and mothball StageGeneratorTDB 
     // Design/Dynamic
     //   QueryIterPeek to look forward at one Binding.
     //   OpExt(Main?) to mark a BGP for no further work.  Or OpLabel - need to compleet OpLabel

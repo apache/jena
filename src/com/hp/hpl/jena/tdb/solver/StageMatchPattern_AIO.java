@@ -26,7 +26,7 @@ import com.hp.hpl.jena.tdb.pgraph.GraphTDB;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderProc;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
 
-// *** Only used by the all-in-one StategGenerator for TDB (which is not the normal one to use).
+// *** Only used by the all-in-one StageGenerator for TDB
 public class StageMatchPattern_AIO extends RepeatApplyIterator<Binding>
 {
     private BasicPattern pattern ;

@@ -18,6 +18,8 @@ import com.hp.hpl.jena.tdb.pgraph.GraphTDB;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
 
 // TODO Break up into reorder and execute.
+// replace with teh OpCompilerTDB because that handles filters as well.
+// Does not lok one binding in, to do a dynamic better job.
 public class StageGeneratorTDB_AIO implements StageGenerator
 {
     StageGenerator above = null ;
@@ -34,7 +36,7 @@ public class StageGeneratorTDB_AIO implements StageGenerator
         Graph g = execCxt.getActiveGraph() ;
         
         if ( ! ( g instanceof GraphTDB ) )
-            // Not use - bounce up the StageGenerator
+            // Not us - bounce up the StageGenerator
             return above.execute(pattern, input, execCxt) ;
         
         // To be split up.

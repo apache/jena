@@ -13,7 +13,7 @@ import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.main.StageGenerator;
 import com.hp.hpl.jena.tdb.pgraph.GraphTDB;
 
-// Execute TDB requests direcly,-- no reordering 
+/** Execute TDB requests directly -- no reordering */ 
 public class StageGeneratorDirectTDB implements StageGenerator
 {
     StageGenerator above = null ;

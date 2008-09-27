@@ -50,7 +50,7 @@ public class StageGeneratorTDB implements StageGenerator
         // Wrap with the BGP optimizer.
         final Stage stage2 = new StageReorder(graph.getReorderTransform(), stage1) ;
         
-        // And wrap in the unbudnling of the input iterator 
+        // And wrap in the unbundling of the input iterator 
         return new StageGenerator1(stage2).execute(pattern, input, execCxt)  ;
         
         // == StageGenerator1
