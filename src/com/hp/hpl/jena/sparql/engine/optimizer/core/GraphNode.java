@@ -75,8 +75,11 @@ public class GraphNode
 		return triple ;
 	}
 	
-	public boolean equals(GraphNode node)
+	public boolean equals(Object other)
 	{
+	    if ( this == other ) return true ;
+	    if ( ! ( other instanceof GraphNode ) ) return false ;
+	    GraphNode node = (GraphNode)other ;
 		if (this.triple.matches(node.triple()))
 			return true ;
 		

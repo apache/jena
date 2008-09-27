@@ -60,6 +60,7 @@ public class BindingWrapped implements Binding
     
     public boolean equals(Object other)
     {
+        if ( this == other ) return true ;
         if ( ! ( other instanceof Binding) ) return false ;
         Binding binding = (Binding)other ;
         return BindingBase.equals(this, binding) ; 

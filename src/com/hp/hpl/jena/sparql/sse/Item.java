@@ -182,6 +182,7 @@ public class Item extends ItemLocation
     
     public boolean equals(Object other)
     { 
+        if ( this == other ) return true ;
         if ( ! ( other instanceof Item ) ) return false ;
         
         ItemEquals x = new ItemEquals((Item)other) ;

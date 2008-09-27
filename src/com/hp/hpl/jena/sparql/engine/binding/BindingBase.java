@@ -192,6 +192,7 @@ abstract public class BindingBase implements Binding
     public int hashCode() { return hashCode(this) ; } 
     public boolean equals(Object other)
     {
+        if ( this == other ) return true ;
         if ( ! ( other instanceof Binding) ) return false ;
         Binding binding = (Binding)other ;
         return equals(this, binding) ; 
@@ -213,6 +214,8 @@ abstract public class BindingBase implements Binding
 
     public static boolean equals(Binding bind1, Binding bind2)
     {
+        if ( bind1 == bind2 ) return true ;
+
         // Same variables?
         
         if ( bind1.size() != bind2.size() )

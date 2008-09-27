@@ -26,6 +26,7 @@ public class ResultSetUtils
 {
     public static boolean equals(ResultSet rs1, ResultSet rs2)
     {
+        if ( rs1 == rs2 ) return true ;
         Model model2 = resultSetToModel(rs2) ;
         return equals(rs1, model2) ;
     }

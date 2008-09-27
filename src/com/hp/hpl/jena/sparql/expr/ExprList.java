@@ -95,6 +95,7 @@ public class ExprList
 
     public boolean equals(Object other)
     {
+        if ( this == other ) return true ;
         if ( ! ( other instanceof ExprList ) ) return false ;
         ExprList exprs = (ExprList)other ;
         return expressions.equals(exprs.expressions) ;

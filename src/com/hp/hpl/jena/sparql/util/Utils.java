@@ -134,6 +134,7 @@ public class Utils
     
     public static boolean equals(Object obj1, Object obj2)
     {
+        if ( obj1 == obj2) return true ;
         if ( obj1 == null )
             return obj2 == null ;
         // obj1 != null

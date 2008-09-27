@@ -166,13 +166,9 @@ class CompilerDispatch implements OpVisitor
 
     public void visit(OpLabel opLabel)
     {
-        if ( opLabel.hasSubOp() )
-        {   
-            QueryIterator input = pop() ;
-            QueryIterator qIter = opCompiler.compileOp(opLabel.getSubOp(), input) ;
-            push(qIter) ;
-        }
-        // Else leave the iterator on the stack (i.e. as if it were join identity / unit table)
+        QueryIterator input = pop() ;
+        QueryIterator qIter = opCompiler.compile(opLabel, input) ;
+        push(qIter) ;
     }
 
     public void visit(OpList opList)

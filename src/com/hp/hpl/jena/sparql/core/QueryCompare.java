@@ -27,6 +27,7 @@ public class QueryCompare implements QueryVisitor
 
     public static boolean equals(Query query1, Query query2)
     {
+        if ( query1 == query2 ) return true ;
         QueryCompare visitor = new QueryCompare(query1) ;
         try {
             query2.visit(visitor) ;

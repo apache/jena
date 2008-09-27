@@ -37,6 +37,7 @@ public class PathBlock
     
     public boolean equals(Object other)
     { 
+        if ( this == other ) return true ;
         if ( ! ( other instanceof PathBlock) ) 
             return false ;
         PathBlock bp = (PathBlock)other ;

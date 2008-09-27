@@ -1,53 +1,59 @@
 /*
- * (c) Copyright 2007, 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.core;
+package com.hp.hpl.jena.sparql.engine.iterator;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ListIterator;
+import com.hp.hpl.jena.sparql.ARQInternalErrorException;
+import com.hp.hpl.jena.sparql.engine.ExecutionContext;
+import com.hp.hpl.jena.sparql.engine.QueryIterator;
+import com.hp.hpl.jena.sparql.engine.binding.Binding;
 
-
-/** A class whose purpose is to give a name to a collection of quads
- * Reduces the use of bland "List" in APIs (Java 1.4) 
- */ 
-
-public class QuadPattern
+public class QueryIterPeek extends QueryIter1
 {
-    private List quads = new ArrayList() ; 
-
-    public QuadPattern() {}
-    public QuadPattern(QuadPattern other) {quads.addAll(other.quads) ; }
+    private Binding binding = null ; 
+    private boolean closed = false ;
     
-    public void add(Quad q) { quads.add(q) ; }
-    public void addAll(QuadPattern other) { quads.addAll(other.quads) ; }
-    public void add(int i, Quad q) { quads.add(i, q) ; }
-    
-    public Quad get(int i) { return (Quad)quads.get(i) ; }
-    public ListIterator iterator() { return quads.listIterator() ; } 
-    public int size() { return quads.size() ; }
-    public boolean isEmpty() { return quads.isEmpty() ; }
-    
-    public List getList() { return quads ; } 
-    
-    public int hashCode() { return quads.hashCode() ; } 
-    public boolean equals(Object other)
-    { 
-        if ( this == other ) return true ;
-        if ( ! ( other instanceof QuadPattern) ) 
-            return false ;
-        QuadPattern bp = (QuadPattern)other ;
-        return quads.equals(bp.quads) ;
+    public QueryIterPeek(QueryIterator iterator, ExecutionContext cxt)
+    {
+        super(iterator, cxt) ;
     }
-    
-    public String toString() { return quads.toString() ; } 
+
+    public Binding peek() 
+    {
+        if ( closed ) return null ;
+        if ( ! hasNextBinding() )
+            return null ;
+        return binding ;
+    }
+
+    protected boolean hasNextBinding()
+    {
+        if ( binding != null )
+            return true ;
+        if ( ! getInput().hasNext() )
+            return false ;
+        binding = getInput().nextBinding() ;
+        return true ;
+    }
+
+    protected Binding moveToNextBinding()
+    {
+        if ( ! hasNextBinding() )
+            throw new ARQInternalErrorException("No next binding") ;
+        Binding b = binding ;
+        binding = null ;
+        return b ;
+    }
+
+    protected void closeSubIterator()
+    { closed = true ; }
 }
 
 /*
- * (c) Copyright 2007, 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

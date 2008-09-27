@@ -82,6 +82,7 @@ public class Pattern
  	 */
  	public boolean equals(Object o)
  	{
+ 	   if ( this == o ) return true ;
  		if (! (o instanceof Pattern))
  			throw new ClassCastException("Object is not an instance of Pattern") ;
  		

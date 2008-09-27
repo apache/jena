@@ -100,6 +100,7 @@ public final class TriplePath
     
     public boolean equals(Object other)
     {
+        if ( this == other) return true ;
         if ( ! ( other instanceof TriplePath) )
             return false ;
         TriplePath tp = (TriplePath)other ;

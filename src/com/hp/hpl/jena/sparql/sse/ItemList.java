@@ -41,6 +41,7 @@ public class ItemList extends ItemLocation //implements Iterable<Item>
     public int hashCode() { return elements.hashCode() ^ offset ; }
     public boolean equals(Object other)
     { 
+        if ( this == other ) return true ;
         if ( ! ( other instanceof ItemList) ) return false ;
         ItemList list = (ItemList)other ;
         

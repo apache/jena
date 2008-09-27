@@ -30,7 +30,10 @@ public abstract class Template
     public abstract boolean equalIso(Object temp2, NodeIsomorphismMap labelMap) ;
     
     final public boolean equals(Object temp2)
-    { return equalIso(temp2, null) ; }
+    { 
+        if ( this == temp2 ) return true ;
+        return equalIso(temp2, null) ;
+    }
     
     public String toString()
     {

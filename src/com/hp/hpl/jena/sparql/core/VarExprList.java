@@ -6,11 +6,7 @@
 
 package com.hp.hpl.jena.sparql.core;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import com.hp.hpl.jena.graph.Node;
 
@@ -108,6 +104,7 @@ public class VarExprList
     
     public boolean equals(Object other)
     {
+        if ( this == other) return true ;
         if ( ! ( other instanceof VarExprList ) )
             return false ;
         VarExprList x = (VarExprList)other ;

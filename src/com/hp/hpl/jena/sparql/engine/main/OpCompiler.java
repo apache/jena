@@ -322,6 +322,14 @@ public class OpCompiler
         throw new QueryExecException("Encountered unsupport OpExt: "+opExt.getName()) ;
     }
 
+    public QueryIterator compile(OpLabel opLabel, QueryIterator input)
+    {
+      if ( ! opLabel.hasSubOp() )
+          return input ;
+
+      return compileOp(opLabel.getSubOp(), input) ;
+    }
+
     public QueryIterator compile(OpNull opNull, QueryIterator input)
     {
         // Loose the input.

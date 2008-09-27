@@ -49,6 +49,7 @@ public class BindingKey
     
     public boolean equals(Object other)
     {
+        if ( this == other ) return true ;
         if ( ! ( other instanceof BindingKey ) )
             return false ;
         Binding binding2 = ((BindingKey)other).getKey() ;
