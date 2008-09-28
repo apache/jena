@@ -6,12 +6,10 @@
 
 package arq.cmdline;
 
-import java.util.List;
-
-import com.hp.hpl.jena.Jena;
-import com.hp.hpl.jena.query.ARQ;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIteratorBase;
 import com.hp.hpl.jena.sparql.util.Utils;
+
+import com.hp.hpl.jena.query.ARQ;
 
 public abstract class CmdARQ extends CmdGeneral
 {
@@ -29,17 +27,11 @@ public abstract class CmdARQ extends CmdGeneral
     protected void processModulesAndArgs()
     { 
         if ( modVersion.getVersionFlag() )
-            ModVersion.printVersionAndExit() ;
+            modVersion.printVersionAndExit() ;
         if ( super.contains(strictDecl) ) 
             ARQ.setStrictMode() ;
         if ( modGeneral.debug )
             QueryIteratorBase.traceIterators = true ;
-    }
-    
-    public void version(List items)
-    {
-        items.add("ARQ Version: "+ARQ.VERSION) ;
-        items.add("Jena: "+Jena.VERSION) ;
     }
     
     protected String getCommandName()

@@ -6,10 +6,17 @@
 
 package arq.cmdline;
 
-import com.hp.hpl.jena.Jena;
-import com.hp.hpl.jena.query.ARQ;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.Iterator;
 
-import java.lang.reflect.*;
+import java.util.List;
+
+import com.hp.hpl.jena.Jena;
+
+import com.hp.hpl.jena.sparql.util.Utils;
+
+import com.hp.hpl.jena.query.ARQ;
 
 public class ModVersion implements ArgModuleGeneral
 {
@@ -17,10 +24,16 @@ public class ModVersion implements ArgModuleGeneral
     protected boolean version = false ;
     protected boolean printAndExit = false ;
     
+    private List classes = new ArrayList() ; 
+    
     public ModVersion(boolean printAndExit)
     {
         this.printAndExit = printAndExit ;
+        addClass(Jena.class) ;
+        addClass(ARQ.class) ;
     }
+    
+    public void addClass(Class c) { classes.add(c) ; }
     
     public void registerWith(CmdGeneral cmdLine)
     {
@@ -37,24 +50,22 @@ public class ModVersion implements ArgModuleGeneral
 
     public boolean getVersionFlag() { return version ; }
     
-    public static void printVersion()
+    public void printVersion()
     {
-        fields("Jena", Jena.class) ;
-        fields("ARQ ", ARQ.class) ;
+        for ( Iterator iter = classes.iterator() ; iter.hasNext() ; )
+        {
+            Class c = (Class)iter.next();
+            String x = Utils.classShortName(c) ;
+            fields(x, c) ;    
+        }
     }  
      
-    public static void printVersionAndExit()
+    public void printVersionAndExit()
     {
         printVersion() ;
         System.exit(0) ;
     }
-    
-//        public static final String PATH = "com.hp.hpl.jena.query";
-//        public static final String NAME = "@name@";
-//        public static final String WEBSITE = "@website@";
-//        public static final String BUILD_DATE = "@build-time@";
-        
-    private static String[] fields = { "NAME", "VERSION", "BUILD_DATE" } ;
+    private static String[] fields = { /*"NAME",*/ "VERSION", "BUILD_DATE" } ;
     
     private static void fields(String prefix, Class cls)
     {
@@ -63,12 +74,12 @@ public class ModVersion implements ArgModuleGeneral
 
     }
 
-    private static void printField(String prefix, String fieldName, Class cls)
+    private static String field(String fieldName, Class cls)
     {
         try
         {
             Field f = cls.getDeclaredField(fieldName) ;
-            System.out.println(prefix+": "+f.getName()+": " + f.get(null)) ;
+            return f.get(null).toString() ;
         } catch (IllegalArgumentException ex)
         {
             ex.printStackTrace();
@@ -82,6 +93,12 @@ public class ModVersion implements ArgModuleGeneral
         {
             ex.printStackTrace();
         }
+        return "<error>" ;
+    }
+    
+    private static void printField(String prefix, String fieldName, Class cls)
+    {
+        System.out.println(prefix+": "+fieldName+": " + field(fieldName, cls)) ;
     }
 }
 

@@ -12,7 +12,7 @@ public class version
 {
     public static void main (String [] argv)
     {
-        ModVersion.printVersionAndExit() ;
+        new ModVersion(false).printVersionAndExit() ;
     }
 }
 

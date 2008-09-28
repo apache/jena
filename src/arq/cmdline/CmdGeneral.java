@@ -22,8 +22,8 @@ public abstract class CmdGeneral extends CmdArgModule implements CallbackHelp//,
 {
     static { CmdUtils.setLog4j() ; CmdUtils.setN3Params() ; }
 
-    ModGeneral modGeneral = new ModGeneral(this) ;
-    ModVersion modVersion = new ModVersion(true) ;
+    protected ModGeneral modGeneral = new ModGeneral(this) ;
+    protected ModVersion modVersion = new ModVersion(true) ;
     
     // Could be turned into a module but these are convenient as inherited flags
     // ModGeneral.
