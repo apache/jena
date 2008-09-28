@@ -32,7 +32,7 @@ public class StageGeneratorDirectTDB implements StageGenerator
         if ( ! ( g instanceof GraphTDB ) )
             // Not us - bounce up the StageGenerator chain
             return above.execute(pattern, input, execCxt) ;
-        final GraphTDB graph = (GraphTDB)g ;
+        GraphTDB graph = (GraphTDB)g ;
         return SolverLib.execute(graph, pattern, input, execCxt) ;
     }
 }

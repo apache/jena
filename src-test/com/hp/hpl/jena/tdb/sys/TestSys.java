@@ -16,7 +16,7 @@ public class TestSys extends BaseTest
     @Test public void sys1()
     {
         assertNotNull(TDB.VERSION) ;
-        assertNotNull(TDB.BUILD_DATETIME) ;
+        assertNotNull(TDB.BUILD_DATE) ;
     }
 }
 

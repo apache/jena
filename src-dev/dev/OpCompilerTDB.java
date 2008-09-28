@@ -72,7 +72,7 @@ public class OpCompilerTDB extends OpCompiler
         if ( ! isForTDB )
             return super.compile(opBGP, input) ;
         GraphTDB graph = (GraphTDB)execCxt.getActiveGraph() ;
-        return execute(opBGP.getPattern(), null, input, graph) ;
+        return optimizeExecute(graph, input, opBGP.getPattern(), null, execCxt) ;
     }
     
     @Override
@@ -97,25 +97,22 @@ public class OpCompilerTDB extends OpCompiler
         if ( ! OpBGP.isBGP(opFilter.getSubOp()) )
             return super.compile(opFilter, input) ;
 
-        // Experimental.
-        // Currently, optimize without considering the input stream.
-        // Correct for top level patterns. 
-        
         OpBGP opBGP = (OpBGP)opFilter.getSubOp() ;
         GraphTDB graph = (GraphTDB)execCxt.getActiveGraph() ;
         
-        return execute(opBGP.getPattern(), opFilter.getExprs(), input, graph) ;
-        //return super.compile(opFilter, input) ;
+        return optimizeExecute(graph, input, opBGP.getPattern(), opFilter.getExprs(), execCxt) ;
     }
 
     // SolverLib??
-    public QueryIterator execute(BasicPattern pattern, ExprList exprs, QueryIterator input, GraphTDB graph)
+    public static QueryIterator optimizeExecute(GraphTDB graph, QueryIterator input, BasicPattern pattern, ExprList exprs, ExecutionContext execCxt)
     {
         if ( ! input.hasNext() )
             return input ;
         
+        // Must pass this into next stage. 
         QueryIterPeek peek = QueryIterPeek.create(input, execCxt) ;
-        BasicPattern pattern2 = Substitute.substitute(pattern, peek.nextBinding() ) ;
+        input = null ; // Now invalid.
+        BasicPattern pattern2 = Substitute.substitute(pattern, peek.peek() ) ;
 
         // Calc the reorder from this as a prototypical patten
         // to be executed after substitution. 
@@ -128,17 +125,18 @@ public class OpCompilerTDB extends OpCompiler
             pattern = proc.reorder(pattern) ; 
         }
         
-        Op op = new OpBGP(pattern) ;
-        
+        Op op = null ;
         if ( exprs != null )
             op = TransformFilterPlacement.transform(exprs, pattern) ;
-        System.out.println("Execute::") ;
-        System.out.println(op) ;
+        else
+            op = new OpBGP(pattern) ;
+//        System.out.println("Execute::") ;
+//        System.out.println(op) ;
         
         // Solve without reordering again by labeling it. 
         op = Transformer.transform(labelBGP, op) ;
         
-        return QC.compile(op, input, execCxt) ;
+        return QC.compile(op, peek, execCxt) ;
     }
 }
 

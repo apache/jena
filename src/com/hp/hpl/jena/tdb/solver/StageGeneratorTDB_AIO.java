@@ -17,14 +17,14 @@ import com.hp.hpl.jena.sparql.engine.main.StageGenerator;
 import com.hp.hpl.jena.tdb.pgraph.GraphTDB;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
 
-// TODO Break up into reorder and execute.
-// replace with teh OpCompilerTDB because that handles filters as well.
+// To be deleted.
+// Replace with the OpCompilerTDB because that handles filters as well.
 // Does not lok one binding in, to do a dynamic better job.
 public class StageGeneratorTDB_AIO implements StageGenerator
 {
     StageGenerator above = null ;
     
-    public StageGeneratorTDB_AIO(StageGenerator original)
+    private StageGeneratorTDB_AIO(StageGenerator original)
     {
         above = original ;
     }

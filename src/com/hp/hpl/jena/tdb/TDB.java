@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.rdf.model.impl.RDFReaderFImpl;
 
+import com.hp.hpl.jena.sparql.engine.main.OpCompiler;
 import com.hp.hpl.jena.sparql.engine.main.StageGenBasicPattern;
 import com.hp.hpl.jena.sparql.engine.main.StageGenerator;
 import com.hp.hpl.jena.sparql.util.Context;
@@ -20,12 +21,12 @@ import com.hp.hpl.jena.query.ARQ;
 
 import com.hp.hpl.jena.tdb.base.loader.NTriplesReader2;
 import com.hp.hpl.jena.tdb.pgraph.assembler.PGraphAssemblerVocab;
+import com.hp.hpl.jena.tdb.solver.StageGeneratorDirectTDB;
 import com.hp.hpl.jena.tdb.solver.StageGeneratorGeneric;
-import com.hp.hpl.jena.tdb.solver.StageGeneratorTDB;
 import com.hp.hpl.jena.tdb.sys.Metadata;
 import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
-
+import dev.OpCompilerTDB;
 
 public class TDB
 {
@@ -95,22 +96,20 @@ public class TDB
             // ARQ base.  Cause chaos by using the new version.
             orig = new StageGeneratorGeneric() ;
 
-        StageGenerator stageGenerator = new StageGeneratorTDB(orig) ;
+        // Wire in the new 
+        OpCompiler.factory = OpCompilerTDB.altFactory ;
+        StageGenerator stageGenerator = new StageGeneratorDirectTDB(orig) ;
         ARQ.getContext().set(ARQ.stageGenerator, stageGenerator) ;
     }
     
-    // Add tests in TestSys to check set up correctly.
-    
     /** The root package name for TDB */   
     public static final String PATH = "com.hp.hpl.jena.tdb";
-//   
-//    /** The product name */   
-//    public static final String NAME = "TDB";
-//   
-//    /** The TDB web site : see also http://jena.sourceforge.net*/   
-//    public static final String WEBSITE = "http://jena.hpl.hp.com/wiki/TDB";
-//   
-        /** The full name of the current TDB version */   
+
+    // The names known to ModVersion : "NAME", "VERSION", "BUILD_DATE"
+    
+    public static final String NAME = "TDB" ;
+    
+    /** The full name of the current TDB version */   
     public static final String VERSION = Metadata.get(PATH+".version", "unknown") ;
 //   
 //    /** The major version number for this release of TDB (ie '2' for TDB 2.0) */
@@ -123,7 +122,7 @@ public class TDB
 //    public static final String VERSION_STATUS = "@version-status@";
 //   
     /** The date and time at which this release was built */   
-    public static final String BUILD_DATETIME = Metadata.get(PATH+".build.datetime", "unset") ;
+    public static final String BUILD_DATE = Metadata.get(PATH+".build.datetime", "unset") ;
 }
 
 /*

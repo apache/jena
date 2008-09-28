@@ -28,6 +28,7 @@ public class tdbquery extends arq.query
         super(argv) ;
         // Because this inherits from an ARQ command
         CmdTDB.init() ;
+        super.modVersion.addClass(TDB.class) ;
     }
 
     @Override

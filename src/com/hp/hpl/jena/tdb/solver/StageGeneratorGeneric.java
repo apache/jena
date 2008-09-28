@@ -51,7 +51,6 @@ public class StageGeneratorGeneric implements StageGenerator
         return executeUseQueryHandler(pattern, input, execCxt) ;
     }
 
-
     /** Use the inline, iterator based BGP matcher which works over find() */ 
     private QueryIterator executeInline(BasicPattern pattern, QueryIterator input, ExecutionContext execCxt)
     {

@@ -32,6 +32,9 @@
   <property name="src.lib.test.dir"       value="src-lib-test"/>
   <property name="src.examples.dir"       value="src-examples"/>
   <property name="src.dev.dir"            value="src-dev"/>
+
+  <!-- Resource name -->
+  <property name="build.metadata.file"    value="com/hp/hpl/jena/tdb/tdb-properties.xml"/>
   
   <path id="java.source.path.main">
     <pathelement path="${src.dir}"/>

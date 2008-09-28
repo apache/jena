@@ -91,9 +91,11 @@
   <property name="javadoc.title"          value="${Name}"/>
 
   <property name="build.metadata.file.dest"   
-	    value="${build.classes.dir}/${build.metadata.file}"/>
+	    value="${build.classes.dir}/${build.metadata.file}"
+	    if="build.metadata.file"/>
   <property name="build.metadata.file.src"   
-	    value="${src.dir}/${build.metadata.file}"/>
+	    value="${src.dir}/${build.metadata.file}"
+	    if="build.metadata.file"/>
 
   <!-- Testing -->
   <property name="reports.dir"            value="reports"/>

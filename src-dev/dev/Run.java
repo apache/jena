@@ -103,7 +103,7 @@ public class Run
     public static void altCompile()
     {
         // Rewire.
-        TDB.init();
+        TDB.init() ;
         OpCompiler.factory = OpCompilerTDB.altFactory ;
         Query query = QueryFactory.read("Q.rq") ;
 

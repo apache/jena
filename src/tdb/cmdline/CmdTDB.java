@@ -28,6 +28,7 @@ public abstract class CmdTDB extends CmdARQ
         super(argv) ;
         init() ;
         super.addModule(tdbDatasetAssembler) ;
+        super.modVersion.addClass(TDB.class) ;
     }
     
     public static void init()

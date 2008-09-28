@@ -6,23 +6,26 @@
 
 package com.hp.hpl.jena.tdb.solver;
 
-import static com.hp.hpl.jena.tdb.solver.SolverLib.convFromBinding;
-import static com.hp.hpl.jena.tdb.solver.SolverLib.convToBinding;
 import iterator.Iter;
 import iterator.RepeatApplyIterator;
 import iterator.SingletonIterator;
+import iterator.Transform;
 
 import java.util.Iterator;
 import java.util.List;
 
+import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 
 import com.hp.hpl.jena.sparql.core.BasicPattern;
 import com.hp.hpl.jena.sparql.core.Substitute;
+import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
+import com.hp.hpl.jena.sparql.engine.binding.BindingMap;
 
 import com.hp.hpl.jena.tdb.pgraph.GraphTDB;
+import com.hp.hpl.jena.tdb.pgraph.NodeId;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderProc;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
 
@@ -81,6 +84,59 @@ public class StageMatchPattern_AIO extends RepeatApplyIterator<Binding>
                                          ExecutionContext execCxt)
     {
         return new StageMatchTriple(graph, chain, triple, execCxt) ;
+    }
+    
+    // Copied from SolverLib - now private there
+    
+    // Transform : BindingNodeId ==> Binding
+    private static Transform<BindingNodeId, Binding> convToBinding(final GraphTDB graph)
+    {
+        return new Transform<BindingNodeId, Binding>()
+        {
+            @Override
+            public Binding convert(BindingNodeId bindingNodeIds)
+            {
+                if ( true )
+                    return new BindingTDB(null, bindingNodeIds, graph.getNodeTable()) ;
+                else
+                {
+                    // Makes nodes immediately.  Causing unecessary NodeTable accesses (e.g. project) 
+                    Binding b = new BindingMap() ;
+                    for ( Var v : bindingNodeIds )
+                    {
+                        NodeId id = bindingNodeIds.get(v) ;
+                        Node n = graph.getNodeTable().retrieveNodeByNodeId(id) ;
+                        b.add(v, n) ;
+                    }
+                    return b ;
+                }
+            }
+        } ;
+    }
+
+    // Transform : Binding ==> BindingNodeId
+    private static Transform<Binding, BindingNodeId> convFromBinding(final GraphTDB graph)
+    {
+        return new Transform<Binding, BindingNodeId>()
+        {
+            @Override
+            public BindingNodeId convert(Binding binding)
+            {
+                BindingNodeId b = new BindingNodeId() ;
+                @SuppressWarnings("unchecked")
+                Iterator<Var> vars = (Iterator<Var>)binding.vars() ;
+    
+                for ( ; vars.hasNext() ; )
+                {
+                    Var v = vars.next() ;
+                    Node n = binding.get(v) ;  
+                    // Rely on the node table cache. 
+                    NodeId id = graph.getNodeTable().nodeIdForNode(n) ;
+                    b.put(v, id) ;
+                }
+                return b ;
+            }
+        } ;
     }
 }
 
