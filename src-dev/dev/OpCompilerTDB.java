@@ -15,13 +15,16 @@ import com.hp.hpl.jena.sparql.algebra.op.OpFilter;
 import com.hp.hpl.jena.sparql.algebra.op.OpLabel;
 import com.hp.hpl.jena.sparql.algebra.opt.TransformFilterPlacement;
 import com.hp.hpl.jena.sparql.core.BasicPattern;
+import com.hp.hpl.jena.sparql.core.Substitute;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
+import com.hp.hpl.jena.sparql.engine.iterator.QueryIterPeek;
 import com.hp.hpl.jena.sparql.engine.main.OpCompiler;
 import com.hp.hpl.jena.sparql.engine.main.QC;
 import com.hp.hpl.jena.sparql.expr.ExprList;
 import com.hp.hpl.jena.tdb.pgraph.GraphTDB;
 import com.hp.hpl.jena.tdb.solver.SolverLib;
+import com.hp.hpl.jena.tdb.solver.reorder.ReorderProc;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
 
 public class OpCompilerTDB extends OpCompiler
@@ -105,11 +108,26 @@ public class OpCompilerTDB extends OpCompiler
         //return super.compile(opFilter, input) ;
     }
 
+    // SolverLib??
     public QueryIterator execute(BasicPattern pattern, ExprList exprs, QueryIterator input, GraphTDB graph)
     {
+        if ( ! input.hasNext() )
+            return input ;
+        
+        QueryIterPeek peek = QueryIterPeek.create(input, execCxt) ;
+        BasicPattern pattern2 = Substitute.substitute(pattern, peek.nextBinding() ) ;
+
+        // Calc the reorder from this as a prototypical patten
+        // to be executed after substitution. 
         ReorderTransformation transform = graph.getReorderTransform() ;
         if ( transform != null )
-            pattern = transform.reorder(pattern) ;
+        {
+            // Calculate the reordering based on the substituted pattern.
+            ReorderProc proc = transform.reorderIndexes(pattern2) ;
+            // Then reorder original patten
+            pattern = proc.reorder(pattern) ; 
+        }
+        
         Op op = new OpBGP(pattern) ;
         
         if ( exprs != null )
@@ -117,7 +135,7 @@ public class OpCompilerTDB extends OpCompiler
         System.out.println("Execute::") ;
         System.out.println(op) ;
         
-        // Solve without reordering again. 
+        // Solve without reordering again by labeling it. 
         op = Transformer.transform(labelBGP, op) ;
         
         return QC.compile(op, input, execCxt) ;
