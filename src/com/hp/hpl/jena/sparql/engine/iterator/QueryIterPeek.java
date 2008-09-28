@@ -16,7 +16,14 @@ public class QueryIterPeek extends QueryIter1
     private Binding binding = null ; 
     private boolean closed = false ;
     
-    public QueryIterPeek(QueryIterator iterator, ExecutionContext cxt)
+    public static QueryIterPeek create(QueryIterator iterator, ExecutionContext cxt)
+    {
+        if ( iterator instanceof QueryIterPeek)
+            return (QueryIterPeek)iterator ;
+        return new QueryIterPeek(iterator, cxt) ;
+    }
+    
+    private QueryIterPeek(QueryIterator iterator, ExecutionContext cxt)
     {
         super(iterator, cxt) ;
     }

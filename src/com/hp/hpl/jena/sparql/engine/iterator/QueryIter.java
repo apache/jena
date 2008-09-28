@@ -27,17 +27,17 @@ public abstract class QueryIter extends QueryIteratorBase
     
     private ExecutionContext tracker ;
     
-    public QueryIter(ExecutionContext qCxt)
+    public QueryIter(ExecutionContext execCxt)
     { 
-        tracker = qCxt ;
+        tracker = execCxt ;
         register() ;
     }
 
-    public static QueryIter makeTracked(QueryIterator qIter, ExecutionContext qCxt)
+    public static QueryIter makeTracked(QueryIterator qIter, ExecutionContext execCxt)
     {
         if ( qIter instanceof QueryIter )
             return (QueryIter)qIter ;
-        return new QueryIterTracked(qIter, qCxt) ; 
+        return new QueryIterTracked(qIter, execCxt) ; 
     }
     
     public final void close()
