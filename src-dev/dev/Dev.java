@@ -8,18 +8,13 @@ package dev;
 
 public class Dev
 {
+    // ---- Next: materialized views
+    
     // ---- Sort out filter placement and reordering
     // Dynamic:
-    //    Use QueryIterPeek
-    //    Wire in, and mothball StageGeneratorTDB (and delete AIO) 
-    // Design/Dynamic
-    //   QueryIterPeek to look forward at one Binding.
-    //   OpExt(Main?) to mark a BGP for no further work.  Or OpLabel - need to compleet OpLabel
-    //   Simple case - ignore bindings - correct at top level.
-    // Long term: static
-    //   Static ==> more modular, better if algebra extsnds to all op (e.g. IndexedJoin)  
+    //    Mothball StageGenerator AIO 
     
-    // Design/static
+    // Design/static (long term?)
     //   Scoping and rewrite with later execution
     //   generalise the approach:
     //     OpJoin => sequnece // OpAugment/Op1 or IndexedLeftJoin/Op2 : an indexed LeftJoin
@@ -27,13 +22,10 @@ public class Dev
     
     //   TransformCopy 
     //      - maybe Transform should be "Op transform(OpABC)"
-    //      - and TransformCopy is TransformRewrite. (there are no non-TransformCopy's)
+    //      - and TransformCopy(list) is TransformRewrite. (there are no non-TransformCopy's)
     
     // ---- TestStats, VarCounter.
     // ---- A way to force display of optimizer even for the deep parts (assumes no inputs?)
-    
-    // ---- Matcher
-    // Back-tracking?
     
     // ---- Optimizer
     //   Abbreviate planning when below a threshold (likely selectivity?), or number of triples planned.
