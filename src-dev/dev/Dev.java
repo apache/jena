@@ -10,15 +10,14 @@ public class Dev
 {
     // ---- Next: materialized views
     
-    // ---- Sort out filter placement and reordering
-    // Dynamic:
-    //    Mothball StageGenerator AIO 
+    // ---- Optimization
+    //   Instrumentation
     
     // Design/static (long term?)
     //   Scoping and rewrite with later execution
     //   generalise the approach:
-    //     OpJoin => sequnece // OpAugment/Op1 or IndexedLeftJoin/Op2 : an indexed LeftJoin
-    //     OpAugment is very like "match or {}" rather than "match or nil"
+    //     OpJoin => sequence // OpAugment/Op1 or IndexedLeftJoin/Op2 : an indexed LeftJoin
+    //     OpAugment is "match or {}" rather than "match or nil"
     
     //   TransformCopy 
     //      - maybe Transform should be "Op transform(OpABC)"

@@ -73,7 +73,7 @@ public class Run
         rewrite() ; System.exit(0) ;
         
         String[] a = { "--desc=tdb.ttl", 
-                       "--set=tdb:logBGP=true",
+                       "--set=tdb:logExec=true",
                        "--file=Q.rq" } ;
         tdb.tdbquery.main(a) ;
         System.exit(0) ;
@@ -277,7 +277,7 @@ public class Run
     
     private static void tdbquery(String assembler, String query)
     {
-        String[] a = { "--set", "tdb:logBGP=true", "--desc="+assembler, query } ;
+        String[] a = { "--set", "tdb:logExec=true", "--desc="+assembler, query } ;
         tdb.tdbquery.main(a) ;
         System.exit(0) ;
     }

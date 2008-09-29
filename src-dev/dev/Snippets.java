@@ -172,11 +172,6 @@ public class Snippets
             System.out.printf("%,d\n", id*BlockSize) ;
         }
         System.exit(0) ;
-//        String[] a = { "--set", "tdb:logBGP=true", "--desc="+assembler, query } ;
-//        tdb.tdbquery.main(a) ;
-//        System.exit(0) ;
-        
- 
         
         // ----
         btreePacking(3, 32, 8*1024) ; 

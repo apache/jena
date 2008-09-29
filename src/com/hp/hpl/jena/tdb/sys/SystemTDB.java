@@ -33,6 +33,7 @@ public class SystemTDB
     // NB Same logger as the TDB class because this class is the system info but kept out of TDB javadoc.
     // It's visibility is TDB, not really public. 
     private static final Logger log = LoggerFactory.getLogger(TDB.class) ;
+    private static final Logger logInfo = TDB.logInfo ;
     
     // Get these via a properties file
     
@@ -121,7 +122,6 @@ public class SystemTDB
     }
     
     // --------
-    // XXX
     // Tie to location but that means one instance per graph
     // More in the context !
     
@@ -168,7 +168,7 @@ public class SystemTDB
         if ( s != null )
         {
             boolean b = s.equals("64") ; 
-            log.debug("System architecture: "+(b?"64 bit":"32 bit")) ;
+            logInfo.info("System architecture: "+(b?"64 bit":"32 bit")) ;
             return b ;
         }
         // Not a SUN VM
@@ -178,9 +178,9 @@ public class SystemTDB
             log.warn("Can't determine the data model") ;
             return false ;    
         }
-        log.info("Can't determine the data model from 'sun.arch.data.model' - using java.vm.info") ;
+        log.debug("Can't determine the data model from 'sun.arch.data.model' - using java.vm.info") ;
         boolean b = s.contains("64") ;
-        log.info("System architecture: "+(b?"64 bit":"32 bit")) ;
+        logInfo.info("System architecture: (from java.vm.info) "+(b?"64 bit":"32 bit")) ;
         return b ;
     }
     
@@ -203,12 +203,12 @@ public class SystemTDB
 
         if ( x.equalsIgnoreCase("direct") )
         {
-            log.info("File mode: direct (forced)") ;
+            logInfo.info("File mode: direct (forced)") ;
             return FileMode.direct ;
         }
         if ( x.equalsIgnoreCase("mapped") )
         {
-            log.info("File mode: mapped (forced)") ;
+            logInfo.info("File mode: mapped (forced)") ;
             return FileMode.mapped ;
         }
         
@@ -216,10 +216,10 @@ public class SystemTDB
         {
             if ( is64bitSystem )
             {
-                log.debug("File mode: Mapped") ;
+                logInfo.info("File mode: Mapped") ;
                 return FileMode.mapped ;
             }
-            log.debug("File mode: Direct") ;
+            logInfo.info("File mode: Direct") ;
             return FileMode.direct ;
         }
         throw new TDBException("Unrecognized file mode (not one of 'default', 'direct' or 'mapped': "+x) ;

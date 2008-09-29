@@ -6,6 +6,9 @@
 
 package com.hp.hpl.jena.tdb.solver;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.Transform;
 import com.hp.hpl.jena.sparql.algebra.TransformCopy;
@@ -22,12 +25,15 @@ import com.hp.hpl.jena.sparql.engine.iterator.QueryIterPeek;
 import com.hp.hpl.jena.sparql.engine.main.OpCompiler;
 import com.hp.hpl.jena.sparql.engine.main.QC;
 import com.hp.hpl.jena.sparql.expr.ExprList;
+import com.hp.hpl.jena.tdb.TDB;
 import com.hp.hpl.jena.tdb.pgraph.GraphTDB;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderProc;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
 
 public class OpCompilerTDB extends OpCompiler
 {
+    private static Logger log = LoggerFactory.getLogger(OpCompilerTDB.class) ;
+
     public static Factory altFactory = new Factory() {
 
         @Override
@@ -129,8 +135,13 @@ public class OpCompilerTDB extends OpCompiler
             op = TransformFilterPlacement.transform(exprs, pattern) ;
         else
             op = new OpBGP(pattern) ;
-//        System.out.println("Execute::") ;
-//        System.out.println(op) ;
+        
+        if ( execCxt.getContext().isTrue(TDB.logExec) && log.isInfoEnabled() )
+        {
+            String x = "Execute::\n"+op ;
+            log.info(x) ;
+            //System.out.println(x) ;
+        }
         
         // Solve without reordering again by labeling it. 
         op = Transformer.transform(labelBGP, op) ;
