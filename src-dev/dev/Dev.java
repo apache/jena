@@ -20,7 +20,7 @@ public class Dev
     //     OpAugment is "match or {}" rather than "match or nil" OpDefault? OpConditional?
     //     OpConditional(left, right) -- streaming - 
     //        try to extend with left and for each row can't get an extension, do right instead. 
-    //        Over-engineered?
+    //        Over-engineered? OpConditional(expr) only in a sequence.
     
     //   TransformCopy 
     //      - maybe Transform should be "Op transform(OpABC)"
