@@ -18,6 +18,9 @@ public class Dev
     //   generalise the approach:
     //     OpJoin => sequence // OpAugment/Op1 or IndexedLeftJoin/Op2 : an indexed LeftJoin
     //     OpAugment is "match or {}" rather than "match or nil" OpDefault? OpConditional?
+    //     OpConditional(left, right) -- streaming - 
+    //        try to extend with left and for each row can't get an extension, do right instead. 
+    //        Over-engineered?
     
     //   TransformCopy 
     //      - maybe Transform should be "Op transform(OpABC)"
