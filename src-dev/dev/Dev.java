@@ -21,6 +21,7 @@ public class Dev
     //     OpConditional(left, right) -- streaming - 
     //        try to extend with left and for each row can't get an extension, do right instead. 
     //        Over-engineered? OpConditional(expr) only in a sequence.
+    //        Or OpN is a sequence of left then augment right1, right2, ...
     
     //   TransformCopy 
     //      - maybe Transform should be "Op transform(OpABC)"
