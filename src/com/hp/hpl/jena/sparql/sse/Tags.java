@@ -55,6 +55,7 @@ public class Tags
     public static final String tagJoin          = "join" ;
     public static final String tagSequence      = "sequence" ;
     public static final String tagLeftJoin      = "leftjoin" ;
+    public static final String tagConditional   = "conditional" ;
     public static final String tagDiff          = "diff" ;
     public static final String tagUnion         = "union" ;
 

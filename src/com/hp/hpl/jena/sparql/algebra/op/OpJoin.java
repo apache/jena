@@ -59,7 +59,7 @@ public class OpJoin extends Op2
     public boolean equalTo(Op op2, NodeIsomorphismMap labelMap)
     {
         if ( ! ( op2 instanceof OpJoin) ) return false ;
-        return super.sameAs((Op2)op2, labelMap) ;
+        return super.sameArgumentsAs((Op2)op2, labelMap) ;
     }
 
 }

@@ -37,7 +37,7 @@ public abstract class Op2 extends OpBase
     }
     
     // equalsTo worker
-    protected boolean sameAs(Op2 op2, NodeIsomorphismMap labelMap)
+    protected final boolean sameArgumentsAs(Op2 op2, NodeIsomorphismMap labelMap)
     {
         return left.equalTo(op2.left, labelMap) && 
                right.equalTo(op2.right, labelMap) ;

@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006, 2007, 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
@@ -12,27 +12,46 @@ import com.hp.hpl.jena.sparql.algebra.Transform;
 import com.hp.hpl.jena.sparql.sse.Tags;
 import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 
-public class OpUnion extends Op2
+/** Conditional execution - execute the first
+ *  expression and return the results unless it is the empty table
+ *  in which case return the evaluataion of the second expression.
+ *  Second expression may or may not be evaluated.
+ *    
+ * @author Andy Seaborne
+ */
+public class OpCondition extends Op2
 {
-    public OpUnion(Op left, Op right) { super(left, right) ; }
-    
-    public Op apply(Transform transform, Op left, Op right)
-    { return transform.transform(this, left, right) ; }
+    public OpCondition(Op left, Op right)
+    {
+        super(left, right) ;
+    }
 
-    public String getName()                 { return Tags.tagUnion ; }
-    public void visit(OpVisitor opVisitor)  { opVisitor.visit(this) ; }
+    public Op apply(Transform transform, Op left, Op right)
+    //{ return transform.transform(this, left, right) ; }
+    { return null ; }
+        
+    public void visit(OpVisitor opVisitor) 
+    //{ opVisitor.visit(this) ; }
+    {}
+    
     public Op copy(Op newLeft, Op newRight)
-    { return new OpUnion(newLeft, newRight) ; }
+    { return new OpCondition(newLeft, newRight) ; }
     
     public boolean equalTo(Op op2, NodeIsomorphismMap labelMap)
     {
-        if ( ! ( op2 instanceof OpUnion) ) return false ;
-        return super.sameArgumentsAs((Op2)op2, labelMap) ;
+        if ( ! ( op2 instanceof OpCondition) ) return false ;
+        return super.sameArgumentsAs((OpCondition)op2, labelMap) ;
     }
+    
+    public String getName()
+    {
+        return Tags.tagConditional ;
+    }
+
 }
 
 /*
- * (c) Copyright 2006, 2007, 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
