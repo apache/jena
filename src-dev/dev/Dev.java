@@ -17,7 +17,7 @@ public class Dev
     //   Scoping and rewrite with later execution
     //   generalise the approach:
     //     OpJoin => sequence // OpAugment/Op1 or IndexedLeftJoin/Op2 : an indexed LeftJoin
-    //     OpAugment is "match or {}" rather than "match or nil" OpDefault?
+    //     OpAugment is "match or {}" rather than "match or nil" OpDefault? OpConditional?
     
     //   TransformCopy 
     //      - maybe Transform should be "Op transform(OpABC)"
