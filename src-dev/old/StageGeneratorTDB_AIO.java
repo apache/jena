@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.solver;
+package old;
 
 import java.util.Iterator;
 
@@ -15,6 +15,7 @@ import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.main.StageGenerator;
 import com.hp.hpl.jena.tdb.pgraph.GraphTDB;
+import com.hp.hpl.jena.tdb.solver.QueryIterTDB;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
 
 // To be deleted.

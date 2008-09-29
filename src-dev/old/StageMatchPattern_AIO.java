@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.solver;
+package old;
 
 import iterator.Iter;
 import iterator.RepeatApplyIterator;
@@ -26,6 +26,9 @@ import com.hp.hpl.jena.sparql.engine.binding.BindingMap;
 
 import com.hp.hpl.jena.tdb.pgraph.GraphTDB;
 import com.hp.hpl.jena.tdb.pgraph.NodeId;
+import com.hp.hpl.jena.tdb.solver.BindingNodeId;
+import com.hp.hpl.jena.tdb.solver.BindingTDB;
+import com.hp.hpl.jena.tdb.solver.StageMatchTriple;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderProc;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
 
