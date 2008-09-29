@@ -84,18 +84,15 @@
   <property name="artifacts.dir"          value="${build.dir}/artifacts"/>
   <property name="pub.dir.local"          location="${build.dir}/pub"/>
 
-  <property name="ivy.keyfile"            location="${env.IVYKEY}">
+  <property name="ivy.keyfile"            location="${env.IVYKEY}"/>
   <property name="ivy.user"               value="${env.IVYUSER}"/>
 
   <!-- Other -->
   <property name="javadoc.title"          value="${Name}"/>
 
-  <property name="build.metadata.file.dest"   
-	    value="${build.classes.dir}/${build.metadata.file}"
-	    if="build.metadata.file"/>
-  <property name="build.metadata.file.src"   
-	    value="${src.dir}/${build.metadata.file}"
-	    if="build.metadata.file"/>
+  <property name="build.metadata.file"			value="unset"/>
+  <property name="build.metadata.file.dest"		value="${build.classes.dir}/${build.metadata.file}"/>
+  <property name="build.metadata.file.src"      value="${src.dir}/${build.metadata.file}"/>
 
   <!-- Testing -->
   <property name="reports.dir"            value="reports"/>
