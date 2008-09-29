@@ -87,6 +87,8 @@ public abstract class TableBase implements Table
     
     public abstract int size() ;
     
+    public abstract boolean isEmpty() ;
+    
     public ResultSet toResultSet()
     {
         QueryIterator qIter = iterator(null) ;

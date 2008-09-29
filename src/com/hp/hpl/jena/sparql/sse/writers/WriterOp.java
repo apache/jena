@@ -239,6 +239,9 @@ public class WriterOp
         public void visit(OpUnion opUnion)
         { visitOp2(opUnion, null) ; } 
     
+        public void visit(OpConditional opCondition)
+        { visitOp2(opCondition, null) ; }
+
         public void visit(OpFilter opFilter)
         { 
             start(opFilter, NoNL) ;

@@ -52,7 +52,9 @@ public class TableN extends TableBase
         rows.add(binding) ;
     }
     
-    public int size() { return rows.size() ; }
+    public int size()           { return rows.size() ; }
+    public boolean isEmpty()    { return rows.isEmpty() ; }
+
     
     // Note - this table is the RIGHT table, and takes a LEFT binding.
     public QueryIterator matchRightLeft(Binding bindingLeft, boolean includeOnNoMatch,

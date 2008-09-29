@@ -131,6 +131,15 @@ public class EvaluatorDispatch implements OpVisitor
         push(table) ;
     }
 
+    public void visit(OpConditional opCond)
+    {
+        Table left = eval(opCond.getLeft()) ;
+        // Ref engine - don;'t care about efficiency
+        Table right = eval(opCond.getRight()) ;
+        Table table = evaluator.condition(left, right) ;
+        push(table) ;
+    }
+    
     public void visit(OpFilter opFilter)
     {
         Table table = eval(opFilter.getSubOp()) ;

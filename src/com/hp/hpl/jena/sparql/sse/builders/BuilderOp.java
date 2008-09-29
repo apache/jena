@@ -64,6 +64,7 @@ public class BuilderOp
         dispatch.put(Tags.tagLeftJoin,      buildLeftJoin) ;
         dispatch.put(Tags.tagDiff,          buildDiff) ;
         dispatch.put(Tags.tagUnion,         buildUnion) ;
+        dispatch.put(Tags.tagConditional,   buildConditional) ;
 
         dispatch.put(Tags.tagToList,        buildToList) ;
         dispatch.put(Tags.tagGroupBy,       buildGroupBy) ;
@@ -296,6 +297,21 @@ public class BuilderOp
             Op left = build(list, 1) ;
             Op right  = build(list, 2) ;
             Op op = new OpUnion(left, right) ;
+            return op ;
+        }
+    } ;
+    
+    final protected Build buildConditional = new Build()
+    {
+        public Op make(ItemList list)
+        {
+            BuilderLib.checkLength(2, 3, list, "condition") ;
+            Op left = build(list, 1) ;
+            // No second argument means unit.
+            Op right = OpTable.unit() ;
+            if ( list.size() != 2 )
+                right  = build(list, 2) ;
+            Op op = new OpConditional(left, right) ;
             return op ;
         }
     } ;

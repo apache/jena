@@ -48,6 +48,8 @@ public class TableEmpty extends TableBase
     public String toString()    { return "TableEmpty" ; }
 
     public int size()           { return 0 ; }
+    public boolean isEmpty()    { return true ; }
+
 }
 
 /*

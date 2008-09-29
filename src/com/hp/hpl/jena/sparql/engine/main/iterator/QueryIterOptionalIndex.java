@@ -7,7 +7,6 @@
 package com.hp.hpl.jena.sparql.engine.main.iterator;
 
 import com.hp.hpl.jena.sparql.algebra.Op;
-import com.hp.hpl.jena.sparql.algebra.op.OpFilter;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
@@ -15,7 +14,6 @@ import com.hp.hpl.jena.sparql.engine.iterator.QueryIterDefaulting;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterRepeatApply;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterSingleton;
 import com.hp.hpl.jena.sparql.engine.main.QC;
-import com.hp.hpl.jena.sparql.expr.ExprList;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
 import com.hp.hpl.jena.sparql.util.Utils;
@@ -26,24 +24,14 @@ public class QueryIterOptionalIndex extends QueryIterRepeatApply
 {
     private Op op ;
 
-    public QueryIterOptionalIndex(QueryIterator input, Op op, ExprList exprs, ExecutionContext context)
+    public QueryIterOptionalIndex(QueryIterator input, Op op, ExecutionContext context)
     {
         super(input, context) ;
-        // In an indexed left join, the LHS bindings are visible to the
-        // RHS execution so the expression is evaluated by moving it to be 
-        // a filter over the RHS pattern. 
-        if ( exprs != null )
-            op = OpFilter.filter(exprs, op) ;
         this.op = op ;
     }
 
     protected QueryIterator nextStage(Binding binding)
     {
-        // Can lead to repeated substitutions, all the way down.
-        // But depth is uncommon (except in artifical queries designed
-        // to test the algebra or engine!)
-        // TODO Rethink and do better?
-        
         Op op2 = QC.substitute(op, binding) ;
         QueryIterator thisStep = new QueryIterSingleton(binding, getExecContext()) ;
         

@@ -145,6 +145,17 @@ public class EvaluatorSimple implements Evaluator
         return new TableN(output) ;
     }
 
+    public Table condition(Table left, Table right)
+    {
+        if ( left.isEmpty() )
+        {
+            left.close();
+            return right ;
+        }
+        right.close();
+        return left ;
+    }
+
     public Table list(Table table) { return table ; } 
 
     public Table order(Table table, List conditions)

@@ -183,6 +183,9 @@ public class OpAsQuery
             currentGroup().addElement(elUnion) ;
         }
 
+        public void visit(OpConditional opCondition)
+        { throw new ARQNotImplemented("OpCondition") ; }
+
         public void visit(OpFilter opFilter)
         {
             // (filter .. (filter ( ... ))   (non-canonicalizing OpFilters)

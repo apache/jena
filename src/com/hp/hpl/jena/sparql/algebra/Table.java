@@ -27,6 +27,7 @@ public interface Table
     public List getVars() ;
     public List getVarNames() ;
     public int size() ;
+    public boolean isEmpty() ;
     public QueryIterator iterator(ExecutionContext execCxt) ;
     public void addBinding(Binding binding) ;
     public boolean contains(Binding binding) ;

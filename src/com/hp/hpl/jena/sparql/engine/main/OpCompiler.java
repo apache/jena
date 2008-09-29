@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import com.hp.hpl.jena.query.QueryExecException;
 import com.hp.hpl.jena.sparql.ARQNotImplemented;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.Table;
@@ -19,16 +18,13 @@ import com.hp.hpl.jena.sparql.core.BasicPattern;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.iterator.*;
-import com.hp.hpl.jena.sparql.engine.main.iterator.QueryIterGraph;
-import com.hp.hpl.jena.sparql.engine.main.iterator.QueryIterJoin;
-import com.hp.hpl.jena.sparql.engine.main.iterator.QueryIterLeftJoin;
-import com.hp.hpl.jena.sparql.engine.main.iterator.QueryIterOptionalIndex;
-import com.hp.hpl.jena.sparql.engine.main.iterator.QueryIterService;
-import com.hp.hpl.jena.sparql.engine.main.iterator.QueryIterUnion;
+import com.hp.hpl.jena.sparql.engine.main.iterator.*;
 import com.hp.hpl.jena.sparql.expr.Expr;
 import com.hp.hpl.jena.sparql.expr.ExprList;
 import com.hp.hpl.jena.sparql.procedure.ProcEval;
 import com.hp.hpl.jena.sparql.procedure.Procedure;
+
+import com.hp.hpl.jena.query.QueryExecException;
 
 /**
  * Turn an Op expression into an execution of QueryIterators.
@@ -196,26 +192,44 @@ public class OpCompiler
         if ( exprs != null )
             exprs.prepareExprs(execCxt.getContext()) ;
 
-        QueryIterator left = compileOp(opLeftJoin.getLeft(), input) ;
         // Do an indexed substitute into the right if possible.
         boolean canDoLinear = LeftJoinClassifier.isLinear(opLeftJoin) ;
         
         if ( canDoLinear )
         {
             // Pass left into right for substitution before right side evaluation.
-            QueryIterator qIter = new QueryIterOptionalIndex(left, opLeftJoin.getRight(), exprs, execCxt) ;
-            return  qIter ;
+            // In an indexed left join, the LHS bindings are visible to the
+            // RHS execution so the expression is evaluated by moving it to be 
+            // a filter over the RHS pattern. 
+            
+            Op opLeft = opLeftJoin.getLeft() ;
+            Op opRight = opLeftJoin.getRight() ;
+            if (exprs != null )
+                opRight = OpFilter.filter(exprs, opRight) ;
+            QueryIterator left = compileOp(opLeft, input) ;
+            QueryIterator qIter = new QueryIterOptionalIndex(left, opRight, execCxt) ;
+            return qIter ;
         }
 
+		// Not index-able.
         // Do it by sub-evaluation of left and right then left join.
         // Can be expensive if RHS returns a lot.
         // To consider: partial substitution for improved performance (but does it occur for real?)
 
+        QueryIterator left = compileOp(opLeftJoin.getLeft(), input) ;
         QueryIterator right = compileOp(opLeftJoin.getRight(), root()) ;
         QueryIterator qIter = new QueryIterLeftJoin(left, right, exprs, execCxt) ;
         return qIter ;
     }
 
+    public QueryIterator compile(OpConditional opCondition, QueryIterator input)
+    {
+        throw new ARQNotImplemented("OpCompile: OpConditional") ;
+//        QueryIterator left = compileOp(opLeft, input) ;
+//        QueryIterator qIter = new QueryIterOptionalIndex(left, opRight, execCxt) ;
+//        return qIter ;
+    }
+    
     public QueryIterator compile(OpDiff opDiff, QueryIterator input)
     { 
         QueryIterator left = compileOp(opDiff.getLeft(), input) ;

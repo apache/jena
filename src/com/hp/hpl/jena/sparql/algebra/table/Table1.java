@@ -84,6 +84,7 @@ public class Table1 extends TableBase
     }
     
     public int size()           { return 1 ; }
+    public boolean isEmpty()    { return false ; }
     
     public String toString()    { return "Table1("+var+","+FmtUtils.stringForNode(value)+")" ; }
 }

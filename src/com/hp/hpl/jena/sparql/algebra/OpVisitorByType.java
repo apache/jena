@@ -53,6 +53,9 @@ public abstract class OpVisitorByType implements OpVisitor
 
     public void visit(OpUnion opUnion)
     { visit2(opUnion) ; }
+    
+    public void visit(OpConditional opCond)
+    { visit2(opCond) ; }
 
     public void visit(OpFilter opFilter)
     { visit1(opFilter) ; }

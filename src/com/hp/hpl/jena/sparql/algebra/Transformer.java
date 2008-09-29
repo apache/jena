@@ -162,6 +162,9 @@ public class Transformer
         public void visit(OpUnion opUnion)
         { visit2(opUnion) ; }
 
+        public void visit(OpConditional opCondition)
+        { visit2(opCondition) ; }
+        
         public void visit(OpFilter opFilter)
         { visit1(opFilter) ; }
 

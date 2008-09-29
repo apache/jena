@@ -41,6 +41,7 @@ public class TableUnit extends TableBase
     public void closeTable()    { }
 
     public int size()           { return 1 ; }
+    public boolean isEmpty()    { return false ; }
 
     public List getVarNames()   { return new ArrayList() ; }
 

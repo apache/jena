@@ -19,28 +19,26 @@ import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
  *    
  * @author Andy Seaborne
  */
-public class OpCondition extends Op2
+public class OpConditional extends Op2
 {
-    public OpCondition(Op left, Op right)
+    public OpConditional(Op left, Op right)
     {
         super(left, right) ;
     }
 
     public Op apply(Transform transform, Op left, Op right)
-    //{ return transform.transform(this, left, right) ; }
-    { return null ; }
+    { return transform.transform(this, left, right) ; }
         
     public void visit(OpVisitor opVisitor) 
-    //{ opVisitor.visit(this) ; }
-    {}
+    { opVisitor.visit(this) ; }
     
     public Op copy(Op newLeft, Op newRight)
-    { return new OpCondition(newLeft, newRight) ; }
+    { return new OpConditional(newLeft, newRight) ; }
     
     public boolean equalTo(Op op2, NodeIsomorphismMap labelMap)
     {
-        if ( ! ( op2 instanceof OpCondition) ) return false ;
-        return super.sameArgumentsAs((OpCondition)op2, labelMap) ;
+        if ( ! ( op2 instanceof OpConditional) ) return false ;
+        return super.sameArgumentsAs((OpConditional)op2, labelMap) ;
     }
     
     public String getName()
