@@ -54,7 +54,7 @@
 
   <!-- Set version from components (if not already set) -->
   <property    name="version"  
-	       value="${version-major}.${version-minor}.${version-revision}${version-status}"/>
+               value="${version-major}.${version-minor}.${version-revision}${version-status}"/>
 
   <!-- Artifacts -->
   <property name="jarfile"                value="${name}-${version}.jar"/>
@@ -90,8 +90,8 @@
   <!-- Other -->
   <property name="javadoc.title"          value="${Name}"/>
 
-  <property name="build.metadata.file"			value="unset"/>
-  <property name="build.metadata.file.dest"		value="${build.classes.dir}/${build.metadata.file}"/>
+  <property name="build.metadata.file"          value="unset"/>
+  <property name="build.metadata.file.dest"     value="${build.classes.dir}/${build.metadata.file}"/>
   <property name="build.metadata.file.src"      value="${src.dir}/${build.metadata.file}"/>
 
   <!-- Testing -->
@@ -159,13 +159,13 @@
   <target name="compile" depends="javac-flags" description="Compile project">
     <mkdir dir="${build.classes.dir}"/>
     <javac destdir="${build.classes.dir}"
-	   debug="${java.debug}"
-	   deprecation="${java.debuglevel}"
-	   optimize="${java.optimize}"
-	   encoding="${java.encoding}"
-	   source="${java.source}"
-	   target="${java.target}"
-	   >
+           debug="${java.debug}"
+           deprecation="${java.debuglevel}"
+           optimize="${java.optimize}"
+           encoding="${java.encoding}"
+           source="${java.source}"
+           target="${java.target}"
+           >
       <src refid="java.source.path"/>
       <classpath refid="java.build.class.path" />
     </javac>
@@ -192,43 +192,43 @@
   <!-- ==== Javadoc -->
 
   <target name="javadoc" depends="javac-flags"
-	  description="Make the javadoc"
-	  if="javadoc.packages">
+          description="Make the javadoc"
+          if="javadoc.packages">
     <delete  dir="${javadoc.dir}"/>
     <mkdir   dir="${javadoc.dir}"/>
     <javadoc packagenames="${javadoc.packages}"
-	     destdir="${javadoc.dir}"
-	     author="true"
-	     sourcepathref="java.source.path.main"
-	     source="${java.source}"
-	     version="true"
-	     windowtitle="${Name}-${version} Javadoc"
-	     doctitle="${javadoc.title}"
-	     Public="true"
-	     Use="true"
-	     bottom="${copyright.text}"
-	     additionalparam="-breakiterator">
+             destdir="${javadoc.dir}"
+             author="true"
+             sourcepathref="java.source.path.main"
+             source="${java.source}"
+             version="true"
+             windowtitle="${Name}-${version} Javadoc"
+             doctitle="${javadoc.title}"
+             Public="true"
+             Use="true"
+             bottom="${copyright.text}"
+             additionalparam="-breakiterator">
       <classpath refid="java.build.class.path"/>
     </javadoc>
   </target>
 
   <target name="javadoc-all" depends="javac-flags"
-	  description="Make all the javadoc"
-	  if="javadoc.all.packages">
+          description="Make all the javadoc"
+          if="javadoc.all.packages">
     <delete  dir="${javadoc.all.dir}"/>
     <mkdir   dir="${javadoc.all.dir}"/>
     <javadoc packagenames="${javadoc.all.packages}"
-	     destdir="${javadoc.all.dir}"
-	     author="true"
-	     sourcepathref="java.source.path.main"
-	     source="${java.source}"
-	     version="true"
-	     windowtitle="${Name}-${version} Javadoc"
-	     doctitle="${javadoc.title}"
-	     Public="true"
-	     Use="true"
-	     bottom="${copyright.text}"
-	     additionalparam="-breakiterator">
+             destdir="${javadoc.all.dir}"
+             author="true"
+             sourcepathref="java.source.path.main"
+             source="${java.source}"
+             version="true"
+             windowtitle="${Name}-${version} Javadoc"
+             doctitle="${javadoc.title}"
+             Public="true"
+             Use="true"
+             bottom="${copyright.text}"
+             additionalparam="-breakiterator">
       <classpath refid="java.build.class.path"/>
     </javadoc>
   </target>
@@ -245,8 +245,8 @@
     <!-- <delete file="${artifacts.dir}/${pomfile}"/> -->
     <copy file="${pomfile.template}" tofile="${artifacts.dir}/${pomfile}">
       <filterset>
-	<!-- <filterset refid="filters.shared"/> -->
-	<filter token="VERSION" value="${version}"/>
+        <!-- <filterset refid="filters.shared"/> -->
+        <filter token="VERSION" value="${version}"/>
       </filterset>
     </copy>
   </target>
@@ -259,7 +259,7 @@
 
   <target name="javadoc-artifact" depends="javadoc">
     <jar destfile="${artifacts.dir}/${javadoc.artifact}" 
-	 basedir="${javadoc.dir}"/>
+         basedir="${javadoc.dir}"/>
   </target>
   
   <!-- Zipped files -->
@@ -272,17 +272,17 @@
 
  <target name="javadoc-zip" depends="javadoc">
     <jar destfile="${artifacts.dir}/${javadoc.zipfile}" 
-	 basedir="${javadoc.dir}"/>
+         basedir="${javadoc.dir}"/>
   </target>
   <!-- ========================================== -->
   <!-- ==== Publication -->
 
   <!-- jar-artifact,pom-artifact,src-artifact,javadoc-artifact -->
   <target name="artifacts" 
-	  depends="jar-artifact,pom-artifact,src-artifact,javadoc-artifact"/>
+          depends="jar-artifact,pom-artifact,src-artifact,javadoc-artifact"/>
   
   <target name="publish" description="Build and publish this version"
-	  depends="clean-once,artifacts,ivy-publish">
+          depends="clean-once,artifacts,ivy-publish">
   </target>
   
   <!-- ========================================== -->
@@ -308,17 +308,17 @@
       <!-- <formatter usefile="false" type="brief"/> -->
       <formatter type="xml" />
       <classpath>
-	<pathelement path="${build.classes.dir}" />
-	<path refid="java.run.class.path" />
+        <pathelement path="${build.classes.dir}" />
+        <path refid="java.run.class.path" />
       </classpath>
       <!-- <test name="test.TS_Main" outfile="${reports.dir.xml}/junit-report"/> -->
       <batchtest todir="${reports.dir.xml}">
-	<fileset dir="${src.test.dir}">
-	  <include name="**/TS_*.java" />
-	</fileset>
-	<fileset dir="${src.lib.test.dir}">
-	  <include name="**/TS_*.java" />
-	</fileset>
+        <fileset dir="${src.test.dir}">
+          <include name="**/TS_*.java" />
+        </fileset>
+        <fileset dir="${src.lib.test.dir}">
+          <include name="**/TS_*.java" />
+        </fileset>
       </batchtest>
     </junit>
   </target>
@@ -326,7 +326,7 @@
   <target name="run-report" depends="run-junit">
     <junitreport todir="./${reports.dir}">
       <fileset dir="./${reports.dir.xml}">
-	<include name="**.xml"/>
+        <include name="**.xml"/>
       </fileset>
       <report format="frames" todir="./${reports.outdir}"/>
     </junitreport>
@@ -345,7 +345,7 @@
 
   <!-- DEVELOPMENT : lib2/ -->
   <target name="ivy-setup-lib" depends="ivy-init,ivy-resolve-report" 
-	  description="Resolve and fetch dependences with Ivy">
+          description="Resolve and fetch dependences with Ivy">
     <ivy:retrieve conf="dev" pattern="lib2/[artifact]-[revision](-[classifier]).[ext]" />
     <ivy:cachepath pathid="ivy.dev.classpath" conf="dev" />
   </target>
@@ -354,7 +354,7 @@
 
   <target name="ivy-resolve-report" depends="ivy-init">
     <ivy:resolve conf="dev"
-		 haltonfailure="false" failureproperty="ivy.resolve.failed"/>
+                 haltonfailure="false" failureproperty="ivy.resolve.failed"/>
     <ivy:report todir="${reports.dir}"/>
     <fail message="Ivy dependency failed" if="ivy.resolve.failed"/>
   </target>
@@ -363,8 +363,8 @@
     <!-- <ivy:resolve conf="main"/> -->
     <ivy:deliver con="main"/>
     <ivy:publish conf="main" 
-		 resolver="dev-publish" 
-		 overwrite="true">
+                 resolver="dev-publish" 
+                 overwrite="true">
       <artifacts pattern="${artifacts.dir}/[artifact]-[revision](-[classifier]).[ext]" />
     </ivy:publish>
   </target>
@@ -372,10 +372,10 @@
   <target name="publish-check">
     <fail message="Publication environment variables (IVYUSER, IVYKEY) not set">
       <condition>
-	<and> 
-	  <not><isset property="env.IVYUSER"/></not>
-	  <not><isset property="env.IVYKEY"/></not>
-	</and>
+        <and> 
+          <not><isset property="env.IVYUSER"/></not>
+          <not><isset property="env.IVYKEY"/></not>
+        </and>
       </condition>
     </fail>
     <fail message="Publication environment variable (IVYUSER) not set"  unless="env.IVYUSER"/>
@@ -386,9 +386,9 @@
   <target name="ivy-publish-dev" depends="ivy-init,publish-check,ivy-resolve">
     <!-- <ivy:resolve conf="main"/> -->
     <ivy:publish conf="main" 
-		 resolver="dev-resolver" 
-		 overwrite="true"
-		 forcedeliver="true">
+                 resolver="dev-resolver" 
+                 overwrite="true"
+                 forcedeliver="true">
       <artifacts pattern="${artifacts.dir}/[artifact]-[revision](-[classifier]).[ext]" />
     </ivy:publish>
   </target>
@@ -396,10 +396,10 @@
   <target name="ivy-pom" depends="ivy-init">
     <!-- Make a basic POM file -->
     <ivy:makepom ivyfile="ivy.xml" 
-		 pomfile="pom-tdb-auto.xml">
+                 pomfile="pom-tdb-auto.xml">
       <!--
-	<mapping conf="default" scope="compile"/>
-	<mapping conf="runtime" scope="runtime"/>
+        <mapping conf="default" scope="compile"/>
+        <mapping conf="runtime" scope="runtime"/>
       -->
     </ivy:makepom>
   </target>
@@ -415,8 +415,8 @@
       <arg value="10"/>
       <arg value="100"/>
       <classpath>
-	<pathelement path="${build.classes.dir}"/>
-	<path refid="java.run.class.path"/>
+        <pathelement path="${build.classes.dir}"/>
+        <path refid="java.run.class.path"/>
       </classpath>
     </java>
   </target>
@@ -426,7 +426,7 @@
   <!-- ==== Misc -->
 
   <target name="clean" description="Clean (build and reports)"
-	  depends="clean-build-area,clean-reports">
+          depends="clean-build-area,clean-reports">
   </target>
 
   <target name="clean-once" unless="clean.run">

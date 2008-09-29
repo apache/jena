@@ -34,8 +34,8 @@
   <property name="src.dev.dir"            value="src-dev"/>
 
   <!-- Metadata -->
+  <property name="build.metadata.file"	       value="com/hp/hpl/jena/tdb/tdb-properties.xml"/>
   <property name="build.metadata.file.src"     value="tdb-properties.xml"/>
-  <property name="build.metadata.file.dest"    value="com/hp/hpl/jena/tdb/tdb-properties.xml"/>
   
   <path id="java.source.path.main">
     <pathelement path="${src.dir}"/>
