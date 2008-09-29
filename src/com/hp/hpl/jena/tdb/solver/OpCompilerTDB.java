@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package dev;
+package com.hp.hpl.jena.tdb.solver;
 
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.Transform;
@@ -23,7 +23,6 @@ import com.hp.hpl.jena.sparql.engine.main.OpCompiler;
 import com.hp.hpl.jena.sparql.engine.main.QC;
 import com.hp.hpl.jena.sparql.expr.ExprList;
 import com.hp.hpl.jena.tdb.pgraph.GraphTDB;
-import com.hp.hpl.jena.tdb.solver.SolverLib;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderProc;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
 

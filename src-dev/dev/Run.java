@@ -41,6 +41,7 @@ import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 import com.hp.hpl.jena.tdb.base.recordfile.RecordBufferPage;
 import com.hp.hpl.jena.tdb.base.recordfile.RecordBufferPageMgr;
 import com.hp.hpl.jena.tdb.pgraph.GraphTDB;
+import com.hp.hpl.jena.tdb.solver.OpCompilerTDB;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderFixed;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderWeighted;

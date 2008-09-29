@@ -21,12 +21,12 @@ import com.hp.hpl.jena.query.ARQ;
 
 import com.hp.hpl.jena.tdb.base.loader.NTriplesReader2;
 import com.hp.hpl.jena.tdb.pgraph.assembler.PGraphAssemblerVocab;
+import com.hp.hpl.jena.tdb.solver.OpCompilerTDB;
 import com.hp.hpl.jena.tdb.solver.StageGeneratorDirectTDB;
 import com.hp.hpl.jena.tdb.solver.StageGeneratorGeneric;
 import com.hp.hpl.jena.tdb.sys.Metadata;
 import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
-import dev.OpCompilerTDB;
 
 public class TDB
 {
