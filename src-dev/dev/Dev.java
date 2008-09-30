@@ -8,6 +8,8 @@ package dev;
 
 public class Dev
 {
+    // ---- Sync after update (32 bit, Tomcat shutdown)
+    
     // ---- Next: materialized views
     
     // ---- Optimization
