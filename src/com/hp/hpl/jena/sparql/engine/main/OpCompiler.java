@@ -224,10 +224,10 @@ public class OpCompiler
 
     public QueryIterator compile(OpConditional opCondition, QueryIterator input)
     {
-        throw new ARQNotImplemented("OpCompile: OpConditional") ;
-//        QueryIterator left = compileOp(opLeft, input) ;
-//        QueryIterator qIter = new QueryIterOptionalIndex(left, opRight, execCxt) ;
-//        return qIter ;
+        if ( true )
+            throw new ARQNotImplemented("OpCompile: OpConditional") ;
+        //QueryIterOptionalIndex
+        return null ;
     }
     
     public QueryIterator compile(OpDiff opDiff, QueryIterator input)

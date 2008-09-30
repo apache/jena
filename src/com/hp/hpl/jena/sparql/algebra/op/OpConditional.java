@@ -12,14 +12,15 @@ import com.hp.hpl.jena.sparql.algebra.Transform;
 import com.hp.hpl.jena.sparql.sse.Tags;
 import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 
-/** Conditional execution - execute the first
- *  expression and return the results unless it is the empty table
- *  in which case return the evaluataion of the second expression.
- *  Second expression may or may not be evaluated.
+/** Conditional execution - workes with streamed execution, primarily.
+ *  For each element in the input stream, 
+ *  execute the expression (i.e. index-join it to the element
+ *  in the input stream).  If it matches, return those results.
+ *  If it does not, return the input stream element.
  *    
  * @author Andy Seaborne
  */
-public class OpConditional extends Op2
+public class OpConditional extends Op2 //Op1
 {
     public OpConditional(Op left, Op right)
     {
