@@ -2,7 +2,8 @@
 
 == 0.6.0
 + Added optimizer (statistics based) 
++ (32 bit OS) Added a transaction handler that will cause cached changes
+  to be flushed to disk.  This is not ACID semantics and no abort is possible.   
 
 == 0.5.3
 + Bug fixes: concurrency control for on-disk files
-  
