@@ -9,11 +9,12 @@ package dev;
 public class Dev
 {
     // ---- Sync after update (32 bit, Tomcat shutdown)
-    //   Transaction handler added.  Default model only.  Hack.
-    //   Sync thread vs Transaction model for GraphStore.
+    //   Transaction handler added.  Default model only.  Temp-hack.
+    //   (Sync thread vs Transaction model for GraphStore. No.)
     //   Event from GraphStoreEvents.RequestStart, RequestFinish
     
     // ---- Next: materialized views
+    // ---- Next: range queries (filter (bgp)) ==> (range ....) 
     
     // ---- Assembler 
     //    Setting options (globally, per model)
@@ -21,9 +22,9 @@ public class Dev
     // ---- Optimization
     //   Instrumentation
     
-    // Design/static (long term?)
+    // Design/static (long term)
     //   Scoping and rewrite with later execution
-    //   generalise the approach:
+    //   Generalise the approach:
     //     OpJoin => sequence // OpAugment/Op1 or IndexedLeftJoin/Op2 : an indexed LeftJoin
     //     OpAugment is "match or {}" rather than "match or nil" OpDefault? OpConditional?
     //     OpConditional(left, right) -- streaming - 
@@ -58,13 +59,13 @@ public class Dev
     
     // ---- Node Table
     //     Compression
+    //     hort string inline?
     
     // ---- tdbloader: 
     //   ** Close indexes not in use in a given phase
     //   Especially efficient iterator() for B+Trees (not mmap).
     //   ** (script) to work on gzip files
     //   ** Write stats (where to hook in to get unique?)
-    //   32 bit ideas: 
 
     // ---- Use of java properties for key values.
     // Or config file.
