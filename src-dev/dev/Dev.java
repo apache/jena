@@ -9,10 +9,12 @@ package dev;
 public class Dev
 {
     // ---- Sync after update (32 bit, Tomcat shutdown)
-    //   Thread to poke?
-    //   Update .start/.finish?
+    //   Transaction handler added.  Default model only.  Hack.
     
     // ---- Next: materialized views
+    
+    // ---- Assembler 
+    //    Setting options (globally, per model)
     
     // ---- Optimization
     //   Instrumentation

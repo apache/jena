@@ -13,9 +13,12 @@ import lib.Pair;
 import lib.cache.Cache2;
 import arq.cmd.CmdUtils;
 
+import com.hp.hpl.jena.graph.Factory;
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
+import com.hp.hpl.jena.shared.ReificationStyle;
+
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryExecution;
 import com.hp.hpl.jena.query.QueryExecutionFactory;
@@ -23,8 +26,10 @@ import com.hp.hpl.jena.query.QueryFactory;
 import com.hp.hpl.jena.query.ResultSet;
 import com.hp.hpl.jena.query.ResultSetFormatter;
 import com.hp.hpl.jena.query.Syntax;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
+
+import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.rdf.model.impl.ModelCom;
+
 import com.hp.hpl.jena.sparql.algebra.Algebra;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.Transformer;
@@ -68,6 +73,7 @@ public class Run
         //tdbloader("--desc=tdb.ttl", "--mem", "/home/afs/Datasets/MusicBrainz/tracks.nt") ;
  
         //indexification() ; System.exit(0) ;
+        reification() ; System.exit(0) ;
         
         altCompile() ; System.exit(0) ;
         rewrite() ; System.exit(0) ;
@@ -88,6 +94,34 @@ public class Run
 //      query("SELECT * { ?s ?p ?o}", model) ;
 //      System.exit(0) ;
 
+        
+    }
+    
+    private static void reification()
+    {
+        Graph graph = TDBFactory.createGraph("DB2") ;
+       
+        Model model = new ModelCom( Factory.createGraphMem( ReificationStyle.Standard ) );
+        System.out.println(model.getReificationStyle()) ;
+        
+        Resource x = model.createResource("http://example/x") ;
+        Property p = model.createProperty("http://example/p") ;
+        Literal z = model.createLiteral("z") ;
+
+        Statement s = model.createStatement(x, p, z) ;
+        model.add(s) ;
+        model.write(System.out, "TTL") ;
+        System.out.println("--------") ;
+        ReifiedStatement rs = model.createReifiedStatement(s) ;
+        model.write(System.out, "TTL") ;
+        System.out.println("--------") ;
+        model.close();
+        //model.getAnyReifiedStatement(s) ;
+        //((GraphTDB)model.getGraph()).sync(true) ;
+        
+        //Without closing the model.
+        model = TDBFactory.createModel("DB2") ;
+        model.write(System.out, "TTL") ;
         
     }
     

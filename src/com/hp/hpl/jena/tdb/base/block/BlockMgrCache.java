@@ -129,7 +129,6 @@ public class BlockMgrCache extends BlockMgrWrapper
             String x = "" ;
             if ( indexName != null )
                 x = indexName+" : ";
-            //log.info(String.format("%sH=%d, M=%d, W=%d", x, cacheHits, cacheMisses, cacheWriteHits)) ;
             log("%sH=%d, M=%d, W=%d", x, cacheHits, cacheMisses, cacheWriteHits) ;
         }
         

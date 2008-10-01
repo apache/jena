@@ -16,6 +16,8 @@ import iterator.Iter;
 import java.util.Iterator;
 
 import lib.Tuple;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.graph.Capabilities;
 import com.hp.hpl.jena.graph.Node;
@@ -45,7 +47,7 @@ import com.hp.hpl.jena.util.iterator.NiceIterator;
 
 public class GraphTDB extends GraphBase implements Sync, Reorderable
 {
-    //static Logger log = LoggerFactory.getLogger(GraphTDB.class) ;
+    private static Logger log = LoggerFactory.getLogger(GraphTDB.class) ;
     
     // ---- Record factories
     public final static RecordFactory indexRecordFactory = new RecordFactory(LenIndexRecord, 0) ; 

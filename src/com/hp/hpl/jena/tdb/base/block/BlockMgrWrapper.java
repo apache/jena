@@ -36,18 +36,6 @@ public class BlockMgrWrapper implements BlockMgr
     { return blockMgr.blockSize() ; }
     
     @Override
-    public void finishRead()
-    {
-        blockMgr.finishRead() ;
-    }
-
-    @Override
-    public void finishUpdate()
-    {
-        blockMgr.finishUpdate() ;
-    }
-
-    @Override
     public ByteBuffer get(int id)
     {
         return blockMgr.get(id) ;
@@ -92,9 +80,21 @@ public class BlockMgrWrapper implements BlockMgr
     }
 
     @Override
+    public void finishRead()
+    {
+        blockMgr.finishRead() ;
+    }
+
+    @Override
     public void startUpdate()
     {
         blockMgr.startUpdate() ;
+    }
+
+    @Override
+    public void finishUpdate()
+    {
+        blockMgr.finishUpdate() ;
     }
 
     @Override
