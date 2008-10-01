@@ -9,6 +9,8 @@ package dev;
 public class Dev
 {
     // ---- Sync after update (32 bit, Tomcat shutdown)
+    //   Thread to poke?
+    //   Update .start/.finish?
     
     // ---- Next: materialized views
     
