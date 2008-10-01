@@ -16,10 +16,9 @@ import com.hp.hpl.jena.update.GraphStoreFactory;
 import com.hp.hpl.jena.update.UpdateProcessor;
 import com.hp.hpl.jena.update.UpdateRequest;
 
-/** General purpose UpdateProcessor for GraphStoreBasic objects */
+/** General purpose UpdateProcessor for GraphStore objects */
 public class UpdateProcessorMain implements UpdateProcessor
 {
-
     private GraphStore graphStore ;
     private UpdateRequest request ;
     private Binding inputBinding ;
@@ -33,13 +32,14 @@ public class UpdateProcessorMain implements UpdateProcessor
     
     public void execute()
     {
+        graphStore.startRequest() ;
         UpdateVisitor v = new UpdateProcessorVisitor(graphStore, inputBinding) ;
         for ( Iterator iter = request.getUpdates().iterator() ; iter.hasNext(); )
         {
             Update update = (Update)iter.next() ;
             update.visit(v) ;
         }
-        
+        graphStore.finishRequest() ;
     }
 
     public static UpdateProcessorFactory getFactory() { 

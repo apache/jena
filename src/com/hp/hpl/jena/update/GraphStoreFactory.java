@@ -8,17 +8,17 @@ package com.hp.hpl.jena.update;
 
 import java.util.Iterator;
 
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.rdf.model.Model;
 
-import com.hp.hpl.jena.query.Dataset;
+import com.hp.hpl.jena.graph.Graph;
+import com.hp.hpl.jena.graph.Node;
+
 import com.hp.hpl.jena.sparql.core.DataSourceGraphImpl;
 import com.hp.hpl.jena.sparql.core.DataSourceImpl;
 import com.hp.hpl.jena.sparql.core.DatasetImpl;
-import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.sparql.modify.op.Update;
 import com.hp.hpl.jena.sparql.util.graph.GraphUtils;
+
+import com.hp.hpl.jena.query.Dataset;
 
 /** Operations to create a GraphStore
  */
@@ -65,25 +65,7 @@ public class GraphStoreFactory
             super(graph) ;
         }
 
-        /** @deprecated */
-        public void execute(UpdateRequest request, Binding binding)
-        //{ request.exec(this, binding) ; }
-        { UpdateFactory.create(request, this, binding) ; }
-
-        /** @deprecated */
-        public void execute(UpdateRequest request)
-        //{ request.exec(this) ; }
-        { UpdateFactory.create(request, this) ; }
-
-        /** @deprecated */
-        public void execute(Update graphUpdate, Binding binding)
-        //{ execute(new UpdateRequest(graphUpdate), binding) ; }
-        { UpdateFactory.create(graphUpdate, this, binding) ; }
-
-        /** @deprecated */
-        public void execute(Update graphUpdate)
-        //{ execute(new UpdateRequest(graphUpdate)) ; }
-        { UpdateFactory.create(graphUpdate, this) ; }
+        
         
         public Dataset toDataset()
         {
@@ -91,6 +73,13 @@ public class GraphStoreFactory
             return new DataSourceImpl(this) ;
         }
 
+        // Transaction here are not ideal - a tranaction may need to span multiple requests for application-level consistency 
+        public void startRequest()
+        { }
+
+        public void finishRequest()
+        { }
+        
         public void close()
         {
             for ( Iterator iter = listGraphNodes() ; iter.hasNext() ; )
@@ -99,9 +88,6 @@ public class GraphStoreFactory
                 getGraph(n).close();
             }
         }
-
-        public void sync()
-        {}
     }
 }
 
