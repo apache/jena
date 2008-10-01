@@ -14,7 +14,8 @@ public class Dev
     //   Event from GraphStoreEvents.RequestStart, RequestFinish
     
     // ---- Next: materialized views
-    // ---- Next: range queries (filter (bgp)) ==> (range ....) 
+    // ---- Next: range queries (filter (bgp)) ==> (range ....)
+    //    Given NodeId structure, should be doable for ints and dates.
     
     // ---- Assembler 
     //    Setting options (globally, per model)
