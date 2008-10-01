@@ -19,10 +19,7 @@ import lib.Tuple;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.hp.hpl.jena.graph.Capabilities;
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.graph.TripleMatch;
+import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.impl.GraphBase;
 import com.hp.hpl.jena.graph.query.QueryHandler;
 import com.hp.hpl.jena.rdf.model.AnonId;
@@ -63,6 +60,7 @@ public class GraphTDB extends GraphBase implements Sync, Reorderable
     private NodeTable nodeTable = null ;
     
     private final GraphTDBQueryHandler queryHandler = new GraphTDBQueryHandler(this) ;
+    private final TransactionHandler transactionHandler = new GraphTDBTransactionHandler(this) ;
     private ReorderTransformation reorderTransform = null ;
     
     protected GraphTDB() {}   // Must call init!
@@ -83,14 +81,14 @@ public class GraphTDB extends GraphBase implements Sync, Reorderable
         if ( syncPoint > 0 )
             this.getEventManager().register(new GraphSyncListener(this, syncPoint)) ;
     }
-
     
     @Override
     public QueryHandler queryHandler()
-    { 
-        return queryHandler ;
-    }
+    { return queryHandler ; }
     
+    @Override
+    public TransactionHandler getTransactionHandler()
+    { return transactionHandler ; }
     
     @Override
     public void performAdd( Triple t ) 
