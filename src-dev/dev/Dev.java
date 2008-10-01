@@ -10,6 +10,7 @@ public class Dev
 {
     // ---- Sync after update (32 bit, Tomcat shutdown)
     //   Transaction handler added.  Default model only.  Hack.
+    //   Sync thread vs Tranbsaction model for GraphStore. 
     
     // ---- Next: materialized views
     
