@@ -8,12 +8,16 @@ package com.hp.hpl.jena.sparql.modify;
 
 import java.util.*;
 
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.ModelFactory;
+
+import com.hp.hpl.jena.util.FileManager;
+
 import com.hp.hpl.jena.graph.Factory;
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
+
 import com.hp.hpl.jena.sparql.AlreadyExists;
 import com.hp.hpl.jena.sparql.DoesNotExist;
 import com.hp.hpl.jena.sparql.engine.Plan;
@@ -30,8 +34,6 @@ import com.hp.hpl.jena.sparql.util.FmtUtils;
 import com.hp.hpl.jena.query.QueryExecutionFactory;
 
 import com.hp.hpl.jena.update.GraphStore;
-import com.hp.hpl.jena.update.UpdateException;
-import com.hp.hpl.jena.util.FileManager;
 
 /** A general processor for executing SPARQL/Updates on GraphStoreBasic objects*/ 
 public class UpdateProcessorVisitor implements UpdateVisitor
@@ -48,7 +50,7 @@ public class UpdateProcessorVisitor implements UpdateVisitor
     
     public void visit(final UpdateInsertData insertData)
     {
-        action(insertData.getGraphNames(), new Action() {
+        GraphStoreUtils.action(graphStore, insertData.getGraphNames(), new GraphStoreAction() {
             public void exec(Graph graph)
             {
                 graph.getBulkUpdateHandler().add(insertData.getData()) ;  
@@ -57,7 +59,7 @@ public class UpdateProcessorVisitor implements UpdateVisitor
     
     public void visit(final UpdateDeleteData deleteData)
     {
-        action(deleteData.getGraphNames(), new Action() {
+        GraphStoreUtils.action(graphStore, deleteData.getGraphNames(), new GraphStoreAction() {
             public void exec(Graph graph)
             {
                 graph.getBulkUpdateHandler().delete(deleteData.getData()) ;  
@@ -73,8 +75,8 @@ public class UpdateProcessorVisitor implements UpdateVisitor
     private void visitModify(final UpdateModifyBase modify)
     {
         final List bindings = evalBindings(modify.getElement() ) ;
-        action(modify.getGraphNames(), new Action() { public void exec(Graph graph) { execDeletes(modify, graph, bindings) ; }}) ;
-        action(modify.getGraphNames(), new Action() { public void exec(Graph graph) { execInserts(modify, graph, bindings) ; }}) ;
+        GraphStoreUtils.action(graphStore, modify.getGraphNames(), new GraphStoreAction() { public void exec(Graph graph) { execDeletes(modify, graph, bindings) ; }}) ;
+        GraphStoreUtils.action(graphStore, modify.getGraphNames(), new GraphStoreAction() { public void exec(Graph graph) { execInserts(modify, graph, bindings) ; }}) ;
     }
   
     private List evalBindings(Element pattern)
@@ -119,7 +121,7 @@ public class UpdateProcessorVisitor implements UpdateVisitor
 
     public void visit(UpdateClear clear)
     {
-        action(clear.getGraphName(),  new Action() {
+        GraphStoreUtils.action(graphStore, clear.getGraphName(),  new GraphStoreAction() {
             public void exec(Graph graph)
             {
                 graph.getBulkUpdateHandler().removeAll() ;
@@ -128,7 +130,7 @@ public class UpdateProcessorVisitor implements UpdateVisitor
     
     public void visit(final UpdateLoad load)
     {
-        action(load.getGraphName(),  new Action() {
+        GraphStoreUtils.action(graphStore, load.getGraphName(),  new GraphStoreAction() {
             public void exec(Graph graph)
             {
                 Model model = ModelFactory.createModelForGraph(graph) ;
@@ -172,42 +174,6 @@ public class UpdateProcessorVisitor implements UpdateVisitor
     }
 
     // -----------------------------------------------------
-    // -- Driver : dispatch to an action.
-    interface Action { void exec(Graph graph) ; }
-    // Choose graph and dispatch.
-    private void action(Node graphName, Action action)
-    {
-        Graph g = null ;
-        if ( graphName != null )
-        {
-            g = graphStore.getGraph(graphName) ;
-            if ( g == null )
-                throw new UpdateException("No such graph: "+graphName) ;
-        }
-        else
-            g = graphStore.getDefaultGraph() ;
-        action.exec(g) ;
-    }
-
-    private void action(List graphNodes, Action action)
-    {
-        if ( graphNodes.isEmpty() )
-        {
-            Graph g = graphStore.getDefaultGraph() ;
-            action.exec(g) ;
-        }
-        else
-        {
-            for ( Iterator iter = graphNodes.iterator() ; iter.hasNext() ; )
-            {
-                Node gn = (Node)iter.next() ;
-                Graph g = graphStore.getGraph(gn) ;
-                if ( g == null )
-                    throw new UpdateException("No such graph: "+gn) ; 
-                action.exec(g) ;
-            }
-        }
-    }
     
     protected static Collection subst(Template template, QueryIterator qIter)
     {

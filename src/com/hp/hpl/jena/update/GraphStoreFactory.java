@@ -6,17 +6,13 @@
 
 package com.hp.hpl.jena.update;
 
-import java.util.Iterator;
-
 import com.hp.hpl.jena.rdf.model.Model;
 
 import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.graph.Node;
 
-import com.hp.hpl.jena.sparql.core.DataSourceGraphImpl;
 import com.hp.hpl.jena.sparql.core.DataSourceImpl;
 import com.hp.hpl.jena.sparql.core.DatasetImpl;
-import com.hp.hpl.jena.sparql.util.graph.GraphUtils;
+import com.hp.hpl.jena.sparql.modify.GraphStoreBasic;
 
 import com.hp.hpl.jena.query.Dataset;
 
@@ -51,43 +47,6 @@ public class GraphStoreFactory
         if ( ( dataset instanceof DatasetImpl ) || (dataset instanceof DataSourceImpl ) )
             return new GraphStoreBasic(dataset) ; 
         throw new UpdateException("Can't create a GraphStore for dataset: "+dataset) ;
-    }
-        
-    
-    public static class GraphStoreBasic extends DataSourceGraphImpl implements GraphStore
-    {
-        public GraphStoreBasic() { super.setDefaultGraph(GraphUtils.makeDefaultGraph()) ; }
-        
-        public GraphStoreBasic(Dataset ds) { super(ds) ; }
-        
-        public GraphStoreBasic(Graph graph)
-        {
-            super(graph) ;
-        }
-
-        
-        
-        public Dataset toDataset()
-        {
-            // This is a shallow structure copy.
-            return new DataSourceImpl(this) ;
-        }
-
-        // Transaction here are not ideal - a tranaction may need to span multiple requests for application-level consistency 
-        public void startRequest()
-        { }
-
-        public void finishRequest()
-        { }
-        
-        public void close()
-        {
-            for ( Iterator iter = listGraphNodes() ; iter.hasNext() ; )
-            {
-                Node n = (Node)iter.next();
-                getGraph(n).close();
-            }
-        }
     }
 }
 

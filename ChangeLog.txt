@@ -14,6 +14,10 @@ ChangeLog for ARQ
 + Bug fix: LET expressions did not eliminate solutions when
     assigned a new, different value.
 
++ Internal utilities updated for TDB
+
++ Signal start/end of updates using the graph-level events mechanism.
+
 ==== ARQ 2.4
 
 + Change to interface for query compilation : Algebra.compile and Algebra.optimize 

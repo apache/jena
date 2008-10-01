@@ -6,57 +6,49 @@
 
 package com.hp.hpl.jena.sparql.modify;
 
-import java.util.Iterator;
+import com.hp.hpl.jena.graph.Graph;
 
-import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.sparql.modify.op.Update;
+import com.hp.hpl.jena.sparql.core.DataSourceGraphImpl;
+import com.hp.hpl.jena.sparql.core.DataSourceImpl;
+import com.hp.hpl.jena.sparql.util.graph.GraphUtils;
+
+import com.hp.hpl.jena.query.Dataset;
 
 import com.hp.hpl.jena.update.GraphStore;
-import com.hp.hpl.jena.update.UpdateProcessor;
-import com.hp.hpl.jena.update.UpdateRequest;
 
-/** General purpose UpdateProcessor for GraphStore objects */
-public class UpdateProcessorMain implements UpdateProcessor
+public class GraphStoreBasic extends DataSourceGraphImpl implements GraphStore
 {
-    private GraphStore graphStore ;
-    private UpdateRequest request ;
-    private Binding inputBinding ;
-
-    private UpdateProcessorMain(GraphStore graphStore, UpdateRequest request, Binding inputBinding)
-    {
-        this.graphStore = graphStore ;
-        this.request = request ;
-        this.inputBinding = inputBinding ;
-    }
+    public GraphStoreBasic() { super.setDefaultGraph(GraphUtils.makeDefaultGraph()) ; }
     
-    public void execute()
+    public GraphStoreBasic(Dataset ds) { super(ds) ; }
+    
+    public GraphStoreBasic(Graph graph)
     {
-        graphStore.startRequest() ;
-        UpdateVisitor v = new UpdateProcessorVisitor(graphStore, inputBinding) ;
-        for ( Iterator iter = request.getUpdates().iterator() ; iter.hasNext(); )
-        {
-            Update update = (Update)iter.next() ;
-            update.visit(v) ;
-        }
-        graphStore.finishRequest() ;
+        super(graph) ;
     }
 
-    public static UpdateProcessorFactory getFactory() { 
-        return new UpdateProcessorFactory()
+    
+    
+    public Dataset toDataset()
+    {
+        // This is a shallow structure copy.
+        return new DataSourceImpl(this) ;
+    }
+
+    public void startRequest()
+    { GraphStoreUtils.sendToAll(this, GraphStoreEvents.RequestStartEvent) ; }
+    public void finishRequest()
+    { GraphStoreUtils.sendToAll(this, GraphStoreEvents.RequestFinishEvent) ; }
+    
+    public void close()
+    {
+        GraphStoreUtils.actionAll(this, 
+                                  new GraphStoreAction()
         {
-            public boolean accept(UpdateRequest request, GraphStore graphStore)
-            {
-                return (graphStore instanceof GraphStoreBasic) ;
-            }
-        
-            public UpdateProcessor create(UpdateRequest request, GraphStore graphStore, Binding inputBinding)
-            {
-                return new UpdateProcessorMain(graphStore, request, inputBinding) ;
-            }
-        } ;
+            public void exec(Graph graph){ graph.close() ; }
+        }) ;
     }
 }
-
 /*
  * (c) Copyright 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.

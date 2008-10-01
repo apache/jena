@@ -6,55 +6,10 @@
 
 package com.hp.hpl.jena.sparql.modify;
 
-import java.util.Iterator;
-
-import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.sparql.modify.op.Update;
-
-import com.hp.hpl.jena.update.GraphStore;
-import com.hp.hpl.jena.update.UpdateProcessor;
-import com.hp.hpl.jena.update.UpdateRequest;
-
-/** General purpose UpdateProcessor for GraphStore objects */
-public class UpdateProcessorMain implements UpdateProcessor
+public class GraphStoreEvents
 {
-    private GraphStore graphStore ;
-    private UpdateRequest request ;
-    private Binding inputBinding ;
-
-    private UpdateProcessorMain(GraphStore graphStore, UpdateRequest request, Binding inputBinding)
-    {
-        this.graphStore = graphStore ;
-        this.request = request ;
-        this.inputBinding = inputBinding ;
-    }
-    
-    public void execute()
-    {
-        graphStore.startRequest() ;
-        UpdateVisitor v = new UpdateProcessorVisitor(graphStore, inputBinding) ;
-        for ( Iterator iter = request.getUpdates().iterator() ; iter.hasNext(); )
-        {
-            Update update = (Update)iter.next() ;
-            update.visit(v) ;
-        }
-        graphStore.finishRequest() ;
-    }
-
-    public static UpdateProcessorFactory getFactory() { 
-        return new UpdateProcessorFactory()
-        {
-            public boolean accept(UpdateRequest request, GraphStore graphStore)
-            {
-                return (graphStore instanceof GraphStoreBasic) ;
-            }
-        
-            public UpdateProcessor create(UpdateRequest request, GraphStore graphStore, Binding inputBinding)
-            {
-                return new UpdateProcessorMain(graphStore, request, inputBinding) ;
-            }
-        } ;
-    }
+    public static final Object RequestStartEvent = new Object() ; 
+    public static final Object RequestFinishEvent = new Object() ;
 }
 
 /*
