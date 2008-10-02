@@ -10,11 +10,10 @@ public class Dev
 {
     // ---- Sync after update (32 bit, Tomcat shutdown)
     //   Transaction handler added.  Default model only.  Temp-hack.
-    //   (Sync thread vs Transaction model for GraphStore. No.)
-    //   Event from GraphStoreEvents.RequestStart, RequestFinish
+    //   Catch: GraphStoreEvents.RequestStart, RequestFinish
     
     // ---- Next: materialized views
-    // ---- Next: range queries (filter (bgp)) ==> (range ....)
+    // ---- Next: range queries (filter E (bgp T)) ==> (range T E....) where E has one var and the one var is in T
     //    Given NodeId structure, should be doable for ints and dates.
     
     // ---- Assembler 
