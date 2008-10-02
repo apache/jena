@@ -13,12 +13,9 @@ import lib.Pair;
 import lib.cache.Cache2;
 import arq.cmd.CmdUtils;
 
-import com.hp.hpl.jena.graph.Factory;
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.shared.ReificationStyle;
-
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryExecution;
 import com.hp.hpl.jena.query.QueryExecutionFactory;
@@ -26,10 +23,9 @@ import com.hp.hpl.jena.query.QueryFactory;
 import com.hp.hpl.jena.query.ResultSet;
 import com.hp.hpl.jena.query.ResultSetFormatter;
 import com.hp.hpl.jena.query.Syntax;
-
-import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.rdf.model.impl.ModelCom;
-
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.rdf.model.RSIterator;
 import com.hp.hpl.jena.sparql.algebra.Algebra;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.Transformer;
@@ -99,24 +95,38 @@ public class Run
     
     private static void reification()
     {
-        Graph graph = TDBFactory.createGraph("DB2") ;
-       
-        Model model = new ModelCom( Factory.createGraphMem( ReificationStyle.Standard ) );
-        System.out.println(model.getReificationStyle()) ;
+        FileOps.clearDirectory("DB2") ;
+        //Graph graph = TDBFactory.createGraph("DB2") ;
+        Model model = TDBFactory.createModel("DB2") ;
+//        Model model = new ModelCom( Factory.createGraphMem( ReificationStyle.Standard ) );
+//        System.out.println(model.getReificationStyle()) ;
         
-        Resource x = model.createResource("http://example/x") ;
-        Property p = model.createProperty("http://example/p") ;
-        Literal z = model.createLiteral("z") ;
-
-        Statement s = model.createStatement(x, p, z) ;
-        model.add(s) ;
-        model.write(System.out, "TTL") ;
-        System.out.println("--------") ;
-        ReifiedStatement rs = model.createReifiedStatement(s) ;
+        FileManager.get().readModel(model, "D.ttl") ;
+        
+//        Resource x = model.createResource("http://example/x") ;
+//        Property p = model.createProperty("http://example/p") ;
+//        Literal z = model.createLiteral("z") ;
+//
+//        Statement s = model.createStatement(x, p, z) ;
+//        model.add(s) ;
+//        model.write(System.out, "TTL") ;
+//        System.out.println("--------") ;
+//        ReifiedStatement rs = model.createReifiedStatement(s) ;
+        
+        RSIterator rsIter = model.listReifiedStatements() ;
+        while(rsIter.hasNext())
+            System.out.println("**"+rsIter.next()) ;
+        
+        
         model.write(System.out, "TTL") ;
         System.out.println("--------") ;
         model.close();
-        //model.getAnyReifiedStatement(s) ;
+        
+        
+        
+        
+        //rs = model.getAnyReifiedStatement(s) ;
+        
         //((GraphTDB)model.getGraph()).sync(true) ;
         
         //Without closing the model.

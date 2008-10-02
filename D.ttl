@@ -1,14 +1,26 @@
-@prefix   :         <http://example/> .
-@prefix  xsd:    <http://www.w3.org/2001/XMLSchema#> .
+<http://example/x>
+      <http://example/p> "z" .
 
-#:x1 :p "1,233.5"^^xsd:decimal .
-:x1 :p "1233.5"^^xsd:decimal .
+[]    <http://www.w3.org/1999/02/22-rdf-syntax-ns#type>
+              <http://www.w3.org/1999/02/22-rdf-syntax-ns#Statement> ;
+      <http://www.w3.org/1999/02/22-rdf-syntax-ns#object>
+              "z" ;
+      <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate>
+              <http://example/p> ;
+      <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject>
+              <http://example/x> .
 
-:x1 :p "x" .
-
-:x2 :p "1" .
-:x2 :p "2" .
-:x2 :p "3" .
-:x2 :p "4" .
-:x2 :p "5" .
-
+## @prefix   :         <http://example/> .
+## @prefix  xsd:    <http://www.w3.org/2001/XMLSchema#> .
+## 
+## #:x1 :p "1,233.5"^^xsd:decimal .
+## :x1 :p "1233.5"^^xsd:decimal .
+## 
+## :x1 :p "x" .
+## 
+## :x2 :p "1" .
+## :x2 :p "2" .
+## :x2 :p "3" .
+## :x2 :p "4" .
+## :x2 :p "5" .
+## 
