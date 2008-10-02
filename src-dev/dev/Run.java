@@ -49,8 +49,8 @@ public class Run
 {
     public static void main(String[] argv) throws Exception
     {
-        execQuery("D.ttl", "Q.rq") ;
-        arq.uparse.main(new String[]{"--file", "update.ru"}) ;
+        //execQuery("D.ttl", "Q.rq") ;
+        arq.query.main(new String[]{"--desc=umbel-db.ttl", "SELECT * {}"}) ;
         System.exit(0) ;
         
         if ( true )
