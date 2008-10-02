@@ -29,7 +29,6 @@ public class ModDatasetAssembler extends ModDatasetGeneral
             dataset = (Dataset)modAssembler.create(DatasetAssemblerVocab.tDataset) ;
             if ( dataset == null )
                 throw new CmdException("No dataset description found in: "+modAssembler.getAssemblerFile()) ;
-            
         }
         catch (CmdException ex) { throw ex ; }
         catch (ARQException ex) { throw ex; }
