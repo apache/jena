@@ -304,7 +304,7 @@ public abstract class TupleLoaderBase extends com.hp.hpl.jena.sdb.store.TupleLoa
 	public boolean clearsOnCommit() { return false; }
 	
 	// ---- Temporary table creation.
-	// Some dtaabases (MySQL, MS SQL) do not make the temnporary tables visible to a metadata probe.
+	// Some databases (MySQL, MS SQL) do not make the temnporary tables visible to a metadata probe.
 	// 
 	private void createTempTables() throws SQLException
     {
