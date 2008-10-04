@@ -21,8 +21,19 @@ public class Dev
     
     // ---- Optimization
     //   Instrumentation
+    //   Abbreviate planning when below a threshold (likely selectivity?), or number of triples planned.
+    //   Consider doing all plans from first choice.
+    //     VarCounting : need to consider connectivity for boundedness propagation
+    //     or consider all plans at step one.
+    // Documentation
     
     // ---- Reifier
+    
+    // ---- Loader - traverse of SPO via a direct block mgr?
+    //  GraphTDB.primaryTraverse() -> Iterator<Tuple<NodeId>>??
+    //    Do properly : reopenable indexes (under the triple index)
+    //      Reopenable block mgr's .passivate/.activate
+    //    Open second index on same
     
     // Design/static (long term)
     //   Scoping and rewrite with later execution
@@ -41,13 +52,6 @@ public class Dev
     // ---- TestStats, VarCounter.
     // ---- A way to force display of optimizer even for the deep parts (assumes no inputs?)
     
-    // ---- Optimizer
-    //   Abbreviate planning when below a threshold (likely selectivity?), or number of triples planned.
-    //   Consider doing all plans from first choice.
-    //     VarCounting : need to consider connectivity for boundedness propagation
-    //     or consider all plans at step one.
-    // Documentation
-
     // ------------------------------------------
     
     // ---- B+Tree rewriter

@@ -30,7 +30,7 @@ import com.hp.hpl.jena.sparql.util.graph.GraphLoadMonitor;
 import com.hp.hpl.jena.tdb.index.TripleIndex;
 import com.hp.hpl.jena.tdb.solver.stats.StatsWriter;
 
-/** To directly load data, including manipulaattng the indexes at a quite low level for efficiency.
+/** To directly load data, including manipulating the indexes at a quite low level for efficiency.
  * Not efficent for small, incremental additions to a graph.  
  */
 
@@ -39,10 +39,10 @@ public class BulkLoader
     private GraphTDB graph ;
     private boolean showProgress ;
     
-    private boolean doInParallel ;
-    private boolean doIncremental ;
-    private boolean doInterleaved ;
-    private boolean generateStats ;
+    private boolean doInParallel = false ;
+    private boolean doIncremental = false ;
+    private boolean doInterleaved = false ;
+    private boolean generateStats  = false ;
 
     private TripleIndex triplesSPO ;
     private TripleIndex triplesPOS ;
@@ -54,7 +54,7 @@ public class BulkLoader
         this(graph, showProgress, false, false, false) ;
     }
     
-    /** Create a bulkloader for a graph : showProgress/parallel/incrmental/generate statistics */ 
+    /** Create a bulkloader for a graph : showProgress/parallel/incremental/generate statistics */ 
 
     public BulkLoader(GraphTDB graph, boolean showProgress, boolean doInParallel, boolean doIncremental, boolean generateStats)
     {
@@ -268,7 +268,7 @@ public class BulkLoader
             @Override
             public void run()
             {
-                copyIndex(srcIndex, new TripleIndex[]{destIndex}, label, printTiming) ;
+                copyIndex(srcIndex.all(), new TripleIndex[]{destIndex}, label, printTiming) ;
                 sema.release() ;
             }} ;
         
@@ -287,7 +287,7 @@ public class BulkLoader
         long time1 = timer.readTimer() ;
         if ( triplesPOS != null )
         {
-            copyIndex(triplesSPO, new TripleIndex[]{triplesPOS}, "POS", printTiming) ;
+            copyIndex(triplesSPO.all(), new TripleIndex[]{triplesPOS}, "POS", printTiming) ;
             long time2 = timer.readTimer() ;
             if ( printTiming )
                 printf("Time for POS indexing: %.2fs\n", (time2-time1)/1000.0) ;
@@ -297,7 +297,7 @@ public class BulkLoader
 
         if ( triplesOSP != null )
         {
-            copyIndex(triplesSPO, new TripleIndex[]{triplesOSP}, "OSP", printTiming) ;
+            copyIndex(triplesSPO.all(), new TripleIndex[]{triplesOSP}, "OSP", printTiming) ;
             
             long time3 = timer.readTimer() ;
             if ( printTiming && triplesOSP != null )
@@ -310,7 +310,7 @@ public class BulkLoader
 
     }
 
-    // Do as one pass over the SPO index, creating both othe rindexes at the same time.
+    // Do as one pass over the SPO index, creating both other indexes at the same time.
     // Can be hugely costly in system resources.
     private void createSecondaryIndexesInterleaved(boolean printTiming)
     {
@@ -322,7 +322,7 @@ public class BulkLoader
         
         long time1 = timer.readTimer() ;
         
-        copyIndex(triplesSPO, new TripleIndex[]{triplesPOS, triplesOSP}, "POS/OSP", printTiming) ;
+        copyIndex(triplesSPO.all(), new TripleIndex[]{triplesPOS, triplesOSP}, "POS/OSP", printTiming) ;
         
         long time2 = timer.readTimer() ;
         if ( printTiming )
@@ -335,7 +335,7 @@ public class BulkLoader
     
     private static Object lock = new Object() ;
 
-    private static void copyIndex(TripleIndex srcIdx, TripleIndex[] destIndexes, String label, boolean printTiming)
+    private static void copyIndex(Iterator<Tuple<NodeId>> srcIter, TripleIndex[] destIndexes, String label, boolean printTiming)
     {
         long quantum = 100000 ;
         long quantum2 = 5*quantum ;
@@ -346,10 +346,9 @@ public class BulkLoader
         long last = 0 ;
         timer.startTimer() ;
         
-        Iterator<Tuple<NodeId>> iter = srcIdx.all() ;
-        for ( int counter = 0 ; iter.hasNext() ; counter++ )
+        for ( int counter = 0 ; srcIter.hasNext() ; counter++ )
         {
-            Tuple<NodeId> tuple = iter.next();
+            Tuple<NodeId> tuple = srcIter.next();
             for ( TripleIndex destIdx : destIndexes )
             {
                 if ( destIdx != null )
