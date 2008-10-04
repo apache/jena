@@ -10,14 +10,8 @@ import java.util.Stack;
 
 import com.hp.hpl.jena.graph.Node;
 
-import com.hp.hpl.jena.sparql.algebra.Op;
-import com.hp.hpl.jena.sparql.algebra.OpVisitorBase;
-import com.hp.hpl.jena.sparql.algebra.TransformCopy;
-import com.hp.hpl.jena.sparql.algebra.Transformer;
-import com.hp.hpl.jena.sparql.algebra.op.OpBGP;
-import com.hp.hpl.jena.sparql.algebra.op.OpGraph;
-import com.hp.hpl.jena.sparql.algebra.op.OpPath;
-import com.hp.hpl.jena.sparql.algebra.op.OpQuadPattern;
+import com.hp.hpl.jena.sparql.algebra.*;
+import com.hp.hpl.jena.sparql.algebra.op.*;
 import com.hp.hpl.jena.sparql.core.Quad;
 
 public class Quadization extends TransformCopy
@@ -40,6 +34,8 @@ public class Quadization extends TransformCopy
         return Transformer.transform(qg, op, rg) ;
     }
     
+    // **** Use BeforeAfterVisitor
+    
     // Could build an an Op=>Node map (or just OpBGP=>Node map)
     static class RecordGraph extends OpVisitorBase
     {
@@ -51,7 +47,7 @@ public class Quadization extends TransformCopy
             stack.push(opGraph.getNode()) ;
         }
         
-        //**** after visitot action.
+        //**** after visitor action.
         public void unvisit(OpGraph opGraph)
         {
             stack.pop() ;
@@ -94,6 +90,167 @@ public class Quadization extends TransformCopy
         {
             return new OpQuadPattern(tracker.getNode(), opBGP.getPattern()) ;
         }
+    }
+
+    // Applies a visitor before and visitor after a code visit.
+    // Can do as just an "apply, one, apply two" but double nesting but that's confusing.
+    static class BeforeAfterVisitor implements OpVisitor
+    {
+        OpVisitor beforeVisitor = null ;
+        OpVisitor afterVisitor = null ;
+        OpVisitor mainVisitor = null ;
+        
+        public BeforeAfterVisitor(OpVisitor mainVisitor ,
+                                  OpVisitor beforeVisitor, 
+                                  OpVisitor afterVisitor) 
+        {
+            this.mainVisitor = mainVisitor ;
+            this.beforeVisitor = beforeVisitor ;
+            this.afterVisitor = afterVisitor ;
+        }
+        
+        private void before(Op op)
+        { 
+            if ( beforeVisitor != null )
+                op.visit(beforeVisitor) ;
+        }
+
+        private void after(Op op)
+        {
+            if ( afterVisitor != null )
+                op.visit(afterVisitor) ;
+        }
+
+        public void visit(OpBGP opBGP)
+        { 
+            before(opBGP) ; mainVisitor.visit(opBGP) ; after(opBGP) ;
+        }
+        
+        public void visit(OpQuadPattern quadPattern)
+        {
+			before(quadPattern) ; mainVisitor.visit(quadPattern) ; after(quadPattern) ;
+		}
+        
+        public void visit(OpTriple opTriple)
+        {
+			before(opTriple) ; mainVisitor.visit(opTriple) ; after(opTriple) ;
+		}
+        
+        public void visit(OpPath opPath)
+        {
+			before(opPath) ; mainVisitor.visit(opPath) ; after(opPath) ;
+		}
+        
+        public void visit(OpTable opTable)
+        {
+			before(opTable) ; mainVisitor.visit(opTable) ; after(opTable) ;
+		}
+        public void visit(OpNull opNull)
+        {
+			before(opNull) ; mainVisitor.visit(opNull) ; after(opNull) ;
+		}
+        
+        public void visit(OpProcedure opProc)
+        {
+			before(opProc) ; mainVisitor.visit(opProc) ; after(opProc) ;
+		}
+        public void visit(OpPropFunc opPropFunc)
+        {
+			before(opPropFunc) ; mainVisitor.visit(opPropFunc) ; after(opPropFunc) ;
+		}
+        
+        public void visit(OpFilter opFilter)
+        {
+			before(opFilter) ; mainVisitor.visit(opFilter) ; after(opFilter) ;
+		}
+        public void visit(OpGraph opGraph)
+        {
+			before(opGraph) ; mainVisitor.visit(opGraph) ; after(opGraph) ;
+		}
+        
+        public void visit(OpService opService)
+        {
+			before(opService) ; mainVisitor.visit(opService) ; after(opService) ;
+		}
+        public void visit(OpDatasetNames dsNames)
+        {
+			before(dsNames) ; mainVisitor.visit(dsNames) ; after(dsNames) ;
+		}
+        
+        public void visit(OpLabel opLabel)
+        {
+			before(opLabel) ; mainVisitor.visit(opLabel) ; after(opLabel) ;
+		}
+        public void visit(OpJoin opJoin)
+        {
+			before(opJoin) ; mainVisitor.visit(opJoin) ; after(opJoin) ;
+		}
+        
+        public void visit(OpSequence opSequence)
+        {
+			before(opSequence) ; mainVisitor.visit(opSequence) ; after(opSequence) ;
+		}
+        
+        public void visit(OpLeftJoin opLeftJoin)
+        {
+			before(opLeftJoin) ; mainVisitor.visit(opLeftJoin) ; after(opLeftJoin) ;
+		}
+        public void visit(OpDiff opDiff)
+        {
+			before(opDiff) ; mainVisitor.visit(opDiff) ; after(opDiff) ;
+		}
+        
+        public void visit(OpUnion opUnion)
+        {
+			before(opUnion) ; mainVisitor.visit(opUnion) ; after(opUnion) ;
+		}
+        
+        public void visit(OpConditional opCondition)
+        {
+			before(opCondition) ; mainVisitor.visit(opCondition) ; after(opCondition) ;
+		}
+        public void visit(OpExt opExt)
+        {
+			before(opExt) ; mainVisitor.visit(opExt) ; after(opExt) ;
+		}
+        
+        public void visit(OpList opList)
+        {
+			before(opList) ; mainVisitor.visit(opList) ; after(opList) ;
+		}
+        public void visit(OpOrder opOrder)
+        {
+			before(opOrder) ; mainVisitor.visit(opOrder) ; after(opOrder) ;
+		}
+        
+        public void visit(OpProject opProject)
+        {
+			before(opProject) ; mainVisitor.visit(opProject) ; after(opProject) ;
+		}
+        
+        public void visit(OpReduced opReduced)
+        {
+			before(opReduced) ; mainVisitor.visit(opReduced) ; after(opReduced) ;
+		}
+        
+        public void visit(OpDistinct opDistinct)
+        {
+			before(opDistinct) ; mainVisitor.visit(opDistinct) ; after(opDistinct) ;
+		}
+        public void visit(OpSlice opSlice)
+        {
+			before(opSlice) ; mainVisitor.visit(opSlice) ; after(opSlice) ;
+		}
+        
+        public void visit(OpAssign opAssign)
+        {
+			before(opAssign) ; mainVisitor.visit(opAssign) ; after(opAssign) ;
+		}
+        
+        public void visit(OpGroupAgg opGroupAgg)
+        {
+			before(opGroupAgg) ; mainVisitor.visit(opGroupAgg) ; after(opGroupAgg) ;
+		}
     }    
 }
 
