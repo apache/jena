@@ -22,9 +22,13 @@ import com.hp.hpl.jena.sparql.core.Quad;
 
 public class Quadization extends TransformCopy
 {
-    // A pair - a visitor to track the current node in
-    // A transformation to convert BGPs to Quads
-    // and reset the node on the way out.
+    // A pair - a visitor to track the current node and
+    // transformation to convert BGPs to Quads.
+    // The transform resets the node on the way out.
+    // At the moment, it's "before visitor" 
+    // Could have an "after visitor as well"
+    // This is "visitor" for the non-recusive indirect to an op by type. 
+    
     // And paths
     
     private Quadization() { }
@@ -36,6 +40,7 @@ public class Quadization extends TransformCopy
         return Transformer.transform(qg, op, rg) ;
     }
     
+    // Could build an an Op=>Node map (or just OpBGP=>Node map)
     static class RecordGraph extends OpVisitorBase
     {
         Stack stack = new Stack() ;
@@ -46,6 +51,7 @@ public class Quadization extends TransformCopy
             stack.push(opGraph.getNode()) ;
         }
         
+        //**** after visitot action.
         public void unvisit(OpGraph opGraph)
         {
             stack.pop() ;
@@ -53,6 +59,11 @@ public class Quadization extends TransformCopy
         
         Node getNode() { return (Node)stack.peek(); }
     }
+    
+    
+    
+    // Transforms are a bottom-up rewrite. 
+    // We want a top-down tracking of the graph node.
     
     static class QuadGraph extends TransformCopy
     {
@@ -73,8 +84,8 @@ public class Quadization extends TransformCopy
             // Put the graph back round it
             // ?? inc default graph node.
             Node gn = tracker.getNode() ;
-            if ( gn.equals(Quad.defaultGraphNode ) )
-                return opPath ; 
+//            if ( gn.equals(Quad.defaultGraphNode ) )
+//                return opPath ; 
             
             return new OpGraph(gn , opPath) ;
         }

@@ -18,9 +18,9 @@ public interface OpExt extends Op
     public OpExt copy() ;
     
     /** Return an op that will used by query processing algorithms such as 
-     * optimization.  This method returns a non-extension Op expression that
-     * is the equivalent SPARQL expression.  For example, this is the Op replaced
-     * by this extension node.   
+     *  optimization.  This method returns a non-extension Op expression that
+     *  is the equivalent SPARQL expression.  For example, this is the Op replaced
+     *  by this extension node.   
      */ 
     public Op effectiveOp() ;
 }
