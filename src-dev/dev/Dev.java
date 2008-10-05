@@ -8,6 +8,11 @@ package dev;
 
 public class Dev
 {
+    // Static scope analysis
+    // Full scope, parallel map(op => scope sets)
+    // Write tests
+    //   Break up VarFinder later.
+    
     // OpAssign - needs expression prepare (for function binding)?
     // Other places using a VarExprList?
     // Does prepare really matter if failure is defined as a false for evaluation?
@@ -17,15 +22,21 @@ public class Dev
     
     // ** Quads and paths interaction (not interacting currently).
     // See Quadization
-    // Leaves paths wrapped in OpGraph.  Assumes can do "OpDatasetNames"
+    // Ready to roll out to SDB.
+    // [later: quad paths]
 
-    //     Modify SDB?  <<== ****
-    //
-    // Next:
-    // +  (current) -- A kind of table (stack during evaluation?)
-    
+    // OpExt reworking
+    //   OpExtFactory: .getBuilder()
+    //   OpExt.output [OpExtBase: outputs: (ext subtag op1 op2 ...)]
+    //   OpExt.eval(input, context) ==> QI
+    // Registry for subtag => builder [or directly register subtag as tag]
+    // New ops is now implement, register.
+    // test with chnage to OpSQL.
+
+    // Can Transformer use OpWalker and BeforeAfterVisitor? 
     // Migrate:
     // TransformPathFlattern - left in AlgebraGenerator for now - code in src-dev/opt
+    // But needs to merge adjacent BGPs
     //   Do adjacent BGP merging afterwards.
     //   compilePathBlock(PathBlock pathBlock) 
     //     calls .reduce(pathBlock) 

@@ -6,54 +6,33 @@
 
 package dev;
 
-import java.util.Iterator;
-
 import arq.sparql;
 import arq.sse_query;
 
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.QueryExecution;
-import com.hp.hpl.jena.query.QueryExecutionFactory;
-import com.hp.hpl.jena.query.QueryFactory;
-import com.hp.hpl.jena.query.QuerySolutionMap;
-import com.hp.hpl.jena.query.ResultSetFormatter;
-import com.hp.hpl.jena.query.Syntax;
 import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.shared.PrefixMapping;
-import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
+
+import com.hp.hpl.jena.util.FileManager;
+import com.hp.hpl.jena.util.FileUtils;
+
 import com.hp.hpl.jena.sparql.algebra.Algebra;
 import com.hp.hpl.jena.sparql.algebra.Op;
-import com.hp.hpl.jena.sparql.algebra.Transform;
-import com.hp.hpl.jena.sparql.algebra.Transformer;
-import com.hp.hpl.jena.sparql.algebra.op.OpPath;
-import com.hp.hpl.jena.sparql.algebra.opt.TransformFilterPlacement;
-import com.hp.hpl.jena.sparql.core.PathBlock;
-import com.hp.hpl.jena.sparql.core.TriplePath;
-import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.sparql.path.Path;
-import com.hp.hpl.jena.sparql.path.PathCompiler;
-import com.hp.hpl.jena.sparql.path.PathParser;
 import com.hp.hpl.jena.sparql.sse.SSE;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
 import com.hp.hpl.jena.sparql.util.StringUtils;
-import com.hp.hpl.jena.update.GraphStore;
-import com.hp.hpl.jena.update.GraphStoreFactory;
-import com.hp.hpl.jena.update.UpdateAction;
-import com.hp.hpl.jena.update.UpdateFactory;
-import com.hp.hpl.jena.update.UpdateRequest;
-import com.hp.hpl.jena.util.FileManager;
-import com.hp.hpl.jena.util.FileUtils;
+
+import com.hp.hpl.jena.query.*;
+
+import com.hp.hpl.jena.update.*;
 
 public class Run
 {
     public static void main(String[] argv) throws Exception
     {
         //execQuery("D.ttl", "Q.rq") ;
-        arq.query.main(new String[]{"--desc=umbel-db.ttl", "SELECT * {}"}) ;
-        System.exit(0) ;
+        //arq.query.main(new String[]{"--desc=umbel-db.ttl", "SELECT * {}"}) ;
+        code() ; System.exit(0) ; 
         
-        if ( true )
+        if ( false )
         {
 //            Query query = QueryFactory.read("Q.arq", Syntax.syntaxARQ) ;
 //            System.out.println(query) ;
@@ -80,43 +59,10 @@ public class Run
         // Compressed syntax
         // match(Subject, Path, Object, PrefixMapping)
         
-        String qstr = StringUtils.join("\n", new String[]{
-                "PREFIX : <http://example/>\n",
-                "PREFIX list: <http://jena.hpl.hp.com/ARQ/list#>\n",
-        		"SELECT ?g",
-        		"{ ?s ?p ?o ",
-        		"  GRAPH ?g {",
-        		"    GRAPH ?g2",
-        		//"    { ?sg :q/:p* ?og }",
-                "    { ?sg :q/:p ?og . ?og list:member ?m . ?sg :q* ?og2 }", 
-                
-        		"   }",
-        		"}"
-        }) ;
-            
-        
-        Query query = QueryFactory.create(qstr, Syntax.syntaxARQ) ;
-        Op op = Algebra.compile(query) ;
-        op = Algebra.optimize(op) ;
-        Op op3 = Algebra.compileQuad(query) ;
-        
-        //Op op = SSE.parseOp("(join (BGP (?s ?p ?o)) (graph ?g (BGP (<sg> ?gp ?go)) ))") ;
-        
-        Op op2 = Quadization.quadize(op) ;
-        
-        System.out.println("---- Original") ;
-        System.out.println(op) ;
-        System.out.println("---- Quadization") ;
-        System.out.println(op2) ;
-        System.out.println("---- Old quad translation") ;
-        System.out.println(op3) ;
-        System.exit(0) ;
         
         
         runQParse() ;
         execQuery("D.ttl", "Q.arq") ;
-        
-        path() ; System.exit(0) ;
         {
             String []a = { "--engine=ref", "--file=Q.rq", "--print=op" } ;
             arq.qparse.main(a) ;
@@ -162,73 +108,43 @@ public class Run
         System.exit(0) ;
     }
     
-    private static void path()
-    {
-//        String[] a = { "--print=op", "--file=Q.sse" } ;
-//        arq.sse_query.main(a) ;
-//        System.exit(0) ;
-        
-        Model model = FileManager.get().loadModel("D.ttl") ;
-
-        PrefixMapping pmap = new PrefixMappingImpl() ;
-        pmap.setNsPrefixes(PrefixMapping.Standard) ;
-        pmap.setNsPrefix("", "http://example/") ;
-        
-        // | alt.
-        
-        if ( false )
-        {
-            path1(":p*/:q", pmap) ;
-            path1("^:p", pmap) ;
-            path1("^:p/:q", pmap) ;
-            path1("^(:p/:q)", pmap) ;
-            path1(":p*/:q", pmap) ;
-            path1(":p^:q", pmap) ;
-        }
-        
-        if ( false )
-        {
-            Path path = PathParser.parse("rdf:type/rdfs:subClassOf*", pmap) ;
-            //path = new P_Link(RDF.type.asNode()) ;
-            
-            TriplePath triplePath = new TriplePath(Var.alloc("s"), path, Var.alloc("o")) ; 
-            OpPath opPath = new OpPath(triplePath) ;
-            System.out.println(opPath.toString(pmap)) ;
-            String x = opPath.toString(pmap) ;
-            Op op = SSE.parseOp(x, pmap) ;
-            System.out.println(op.toString(pmap)) ;
-        }
-        
-        System.exit(0) ;
-    }
-
-    private static void path1(String str, PrefixMapping pmap)
-    {
-        Path path = PathParser.parse(str, pmap) ;
-        PathBlock pBlk = new PathBlock() ;
-        Node s = Node.createURI("s") ;
-        Node o = Node.createURI("o") ;
-        TriplePath tp = new TriplePath(s, path, o) ;
-        pBlk.add(tp) ;
-        
-        System.out.println("Path: "+str) ;
-        PathBlock x = new PathCompiler().reduce(pBlk) ;
-        for ( Iterator iter = x.iterator() ; iter.hasNext() ; )
-            System.out.println("  "+iter.next()) ;
-        System.out.println() ;
-    }
-    
     public static void code()
     {
-        Transform t = new TransformFilterPlacement() ;
-        
-        Op op = SSE.readOp("Q.sse") ;
+        String qstr = StringUtils.join("\n", new String[]{
+            "PREFIX : <http://example/>\n",
+            "PREFIX list: <http://jena.hpl.hp.com/ARQ/list#>\n",
+            "SELECT ?g",
+            "{ ?s ?p ?o ",
+            "  GRAPH ?g {",
+            "    GRAPH ?g2",
+            //"    { ?sg :q/:p* ?og }",
+            "    { ?sg :q/:p ?og . ?og list:member ?m . ?sg :q* ?og2 }", 
+            "    GRAPH ?G {}" ,
+            "   }",
+            "}"
+        }) ;
+
+
+        Query query = QueryFactory.create(qstr, Syntax.syntaxARQ) ;
+        Op op = Algebra.compile(query) ;
+        //op = Algebra.optimize(op) ;
+        //Op op3 = Algebra.compileQuad(query) ;
+
+        //Op op = SSE.parseOp("(join (BGP (?s ?p ?o)) (graph ?g (BGP (<sg> ?gp ?go)) ))") ;
+
+        System.out.println("---- Original") ;
         System.out.println(op) ;
-        op = Transformer.transform(new TransformFilterPlacement(), op) ;
-        System.out.println(op) ;
+        Op op2 = Quadization.quadize(op) ;
+
+        System.out.println("---- Quadization") ;
+        System.out.println(op2) ;
+//        System.out.println("---- Old quad translation") ;
+//        System.out.println(op3) ;
         System.exit(0) ;
-        
+
+
     }
+
     private static void runQParse()
     {
         // "--engine=quad" "--opt"

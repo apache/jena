@@ -19,9 +19,9 @@ public class Transformer
     static boolean noDupIfSame = true ;
     
     public static Op transform(Transform transform, Op op)
-    { return transform(transform, op, null) ; }
+    { return transform(transform, op, null, null) ; }
     
-    public static Op transform(Transform transform, Op op, OpVisitor monitor)
+    public static Op transform(Transform transform, Op op, OpVisitor beforeVisitor, OpVisitor afterVisitor)
     {
         if ( op == null )
         {
@@ -29,7 +29,7 @@ public class Transformer
             return op ;
         }
         
-        TransformApply v = new TransformApply(transform, monitor) ;
+        TransformApply v = new TransformApply(transform, beforeVisitor, afterVisitor) ;
         op.visit(v) ;
         Op r = v.result() ;
         return r ;
@@ -37,24 +37,31 @@ public class Transformer
     
     private Transformer() { }
     
+    // Does not use OpWalker because we need to push/pop stack during visitX operations.
+    
     private static final 
-    class TransformApply implements OpVisitor
+    class TransformApply extends OpVisitorByType
     {
+        private OpVisitor beforeVisitor = null ;
+        private OpVisitor afterVisitor = null ;
+        
         private Transform transform = null ;
-        // Called before recursing.  Can be null.  Must not mutate anything.
-        private OpVisitor beforeVisitor = null ; 
         private Stack stack = new Stack() ;
         private Op pop() { return (Op)stack.pop(); }
+        
         private void push(Op op)
         { 
             // Including nulls
             stack.push(op) ;
         }
         
-        public TransformApply(Transform transform, OpVisitor beforeVisitor)
+        public TransformApply(Transform transform,
+                              OpVisitor beforeVisitor, 
+                              OpVisitor afterVisitor)
         { 
             this.transform = transform ;
             this.beforeVisitor = beforeVisitor ;
+            this.afterVisitor = afterVisitor ;
         }
         
         public Op result()
@@ -64,17 +71,28 @@ public class Transformer
             return pop() ; 
         }
 
-        private void visit0(Op0 op)
-        {
+        private void before(Op op)
+        { 
             if ( beforeVisitor != null )
                 op.visit(beforeVisitor) ;
-            push(op.apply(transform)) ;
+        }
+
+        private void after(Op op)
+        {
+            if ( afterVisitor != null )
+                op.visit(afterVisitor) ;
         }
         
-        private void visit1(Op1 op)
+        protected void visit0(Op0 op)
         {
-            if ( beforeVisitor != null )
-                op.visit(beforeVisitor) ;
+            before(op) ;
+            push(op.apply(transform)) ;
+            after(op) ;
+        }
+        
+        protected void visit1(Op1 op)
+        {
+            before(op) ;
             Op subOp = null ;
             if ( op.getSubOp() != null )
             {
@@ -82,12 +100,12 @@ public class Transformer
                 subOp = pop() ;
             }
             push(op.apply(transform, subOp)) ;
+            after(op) ;
         }
 
-        private void visit2(Op2 op)
+        protected void visit2(Op2 op)
         { 
-            if ( beforeVisitor != null )
-                op.visit(beforeVisitor) ;
+            before(op) ;
             Op left = null ;
             Op right = null ;
 
@@ -103,12 +121,13 @@ public class Transformer
             }
             Op opX = op.apply(transform, left, right) ; 
             push(opX) ;
+            after(op) ;
+
         }
         
-        private void visitN(OpN op)
+        protected void visitN(OpN op)
         {
-            if ( beforeVisitor != null )
-                op.visit(beforeVisitor) ;
+            before(op) ;
             List x = new ArrayList(op.size()) ;
             for ( Iterator iter = op.iterator() ; iter.hasNext() ; )
             {
@@ -121,91 +140,17 @@ public class Transformer
             }
             Op opX = op.apply(transform, x) ;  
             push(opX) ;
+            after(op) ;
+
         }
         
-        public void visit(OpTable opTable)
-        { visit0(opTable) ; }
-        
-        public void visit(OpQuadPattern quadPattern)
-        { visit0(quadPattern) ; }
+        protected void visitExt(OpExt op)
+        {
+            before(op) ;
+            push(transform.transform(op)) ;
+            after(op) ;
 
-        public void visit(OpPath opPath)
-        { visit0(opPath) ; }
-        
-        public void visit(OpTriple opTriple)
-        { visit0(opTriple) ; }
-        
-        public void visit(OpDatasetNames dsNames)
-        { visit0(dsNames) ; }
-
-        public void visit(OpBGP op)
-        { visit0(op); } 
-        
-        public void visit(OpProcedure opProc)
-        { visit1(opProc) ; }
-        
-        public void visit(OpPropFunc opPropFunc)
-        { visit1(opPropFunc) ; }
-        
-        public void visit(OpJoin opJoin)
-        { visit2(opJoin) ; }
-
-        public void visit(OpSequence opSequence)
-        { visitN(opSequence) ; }
-        
-        public void visit(OpLeftJoin opLeftJoin)
-        { visit2(opLeftJoin) ; }
-
-        public void visit(OpDiff opDiff)
-        { visit2(opDiff) ; }
-        
-        public void visit(OpUnion opUnion)
-        { visit2(opUnion) ; }
-
-        public void visit(OpConditional opCondition)
-        { visit2(opCondition) ; }
-        
-        public void visit(OpFilter opFilter)
-        { visit1(opFilter) ; }
-
-        public void visit(OpGraph opGraph)
-        { visit1(opGraph) ; }
-
-        public void visit(OpService opService)
-        { visit1(opService) ; }
-        
-        public void visit(OpExt opExt)
-        { push(transform.transform(opExt)) ; }
-        
-        public void visit(OpNull opNull)
-        { visit0(opNull) ; }
-        
-        public void visit(OpLabel opLabel)
-        { visit1(opLabel) ; }
-        
-        public void visit(OpList opList)
-        { visit1(opList) ; }
-        
-        public void visit(OpOrder opOrder)
-        { visit1(opOrder) ; }
-        
-        public void visit(OpProject opProject)
-        { visit1(opProject) ; }
-        
-        public void visit(OpDistinct opDistinct)
-        { visit1(opDistinct) ; }
-        
-        public void visit(OpReduced opReduced)
-        { visit1(opReduced) ; }
-        
-        public void visit(OpAssign opAssign)
-        { visit1(opAssign) ; }
-        
-        public void visit(OpSlice opSlice)
-        { visit1(opSlice) ; }
-        
-        public void visit(OpGroupAgg opGroupAgg)
-        { visit1(opGroupAgg) ; }
+        }
     }
 }
 

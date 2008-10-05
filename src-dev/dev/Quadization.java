@@ -16,241 +16,97 @@ import com.hp.hpl.jena.sparql.core.Quad;
 
 public class Quadization extends TransformCopy
 {
-    // A pair - a visitor to track the current node and
-    // transformation to convert BGPs to Quads.
-    // The transform resets the node on the way out.
-    // At the moment, it's "before visitor" 
-    // Could have an "after visitor as well"
-    // This is "visitor" for the non-recusive indirect to an op by type. 
+    // Transform to a quad form:
+    //   BGPs go to quad patterns
+    //   Paths (complex) go to (graph (path ...)) [later: quad paths] 
+    //   Drop OpGraph 
+
+    // Done as a before/after pair to run the stack of graph
+    // nodes and a transform to do the conversion. 
     
     // And paths
     
     private Quadization() { }
     public static Op quadize(Op op)
     {
-        // Wire the (pre)vistor to the transformer 
-        RecordGraph rg = new RecordGraph() ;
-        QuadGraph qg = new QuadGraph(rg) ;
-        return Transformer.transform(qg, op, rg) ;
+        final Stack stack = new Stack() ;
+        stack.push(Quad.defaultGraphNode) ; // Starting condition
+        
+        OpVisitor before = new Pusher(stack) ;
+        OpVisitor after = new Popper(stack) ;
+        
+        TransformQuadGraph qg = new TransformQuadGraph(stack) ;
+        return Transformer.transform(qg, op, before, after) ;
     }
     
-    // **** Use BeforeAfterVisitor
-    
-    // Could build an an Op=>Node map (or just OpBGP=>Node map)
-    static class RecordGraph extends OpVisitorBase
+    private static class Pusher extends OpVisitorBase
     {
-        Stack stack = new Stack() ;
-        RecordGraph() { stack.push(Quad.defaultGraphNode) ; }
-
+        Stack stack ;
+        Pusher(Stack stack) { this.stack = stack ; }
         public void visit(OpGraph opGraph)
         {
             stack.push(opGraph.getNode()) ;
         }
-        
-        //**** after visitor action.
-        public void unvisit(OpGraph opGraph)
-        {
-            stack.pop() ;
-        }
-        
-        Node getNode() { return (Node)stack.peek(); }
     }
     
-    
-    
-    // Transforms are a bottom-up rewrite. 
-    // We want a top-down tracking of the graph node.
-    
-    static class QuadGraph extends TransformCopy
+    private static class Popper extends OpVisitorBase
     {
-        private RecordGraph tracker ;
-
-        public QuadGraph(RecordGraph tracker) { this.tracker = tracker ; }
-        
-        public Op transform(OpGraph opGraph, Op subOp)
+        Stack stack ;
+        Popper(Stack stack) { this.stack = stack ; }
+        public void visit(OpGraph opGraph)
         {
-            // On the way out, we reset the currentGraph
-            // and return the transformed subtree
-            tracker.unvisit(opGraph) ;
-            return subOp ;
+            Node n = (Node)stack.pop() ;
+        }
+    }
+
+    private static class TransformQuadGraph extends TransformCopy
+    {
+        private Stack tracker ;
+
+        public TransformQuadGraph(Stack tracker) { this.tracker = tracker ; }
+        private Node getNode() { return (Node)tracker.peek() ; }
+
+        public Op transform(OpGraph opGraph, Op op)
+        {
+            
+            boolean noPattern = false ;
+            
+            if ( OpBGP.isBGP(op) )
+            {
+                if ( ((OpBGP)op).getPattern().isEmpty() )
+                    noPattern = true ;
+            }
+            else if ( op instanceof OpTable )
+            {
+                if ( ((OpTable)op).isJoinIdentity() )
+                    noPattern = true ;
+            }
+            
+            if ( noPattern )
+            {
+                // The case of something like:
+                // GRAPH ?g {} or GRAPH <v> {}
+                // which are ways of accessing the names in the dataset.
+                return new OpDatasetNames(opGraph.getNode()) ;
+            }
+            
+            // Drop (graph...) because inside nodes have been converted
+            // to quads.  Or 
+            return op ;
         }
         
         public Op transform(OpPath opPath)
         {
-            // Put the graph back round it
+            // Put the (graph) back round it
             // ?? inc default graph node.
-            Node gn = tracker.getNode() ;
-//            if ( gn.equals(Quad.defaultGraphNode ) )
-//                return opPath ; 
-            
-            return new OpGraph(gn , opPath) ;
+            return new OpGraph(getNode() , opPath) ;
+            // Does not get removed by transform above. 
         }
         
         public Op transform(OpBGP opBGP)
         {
-            return new OpQuadPattern(tracker.getNode(), opBGP.getPattern()) ;
+            return new OpQuadPattern(getNode(), opBGP.getPattern()) ;
         }
-    }
-
-    // Applies a visitor before and visitor after a code visit.
-    // Can do as just an "apply, one, apply two" but double nesting but that's confusing.
-    static class BeforeAfterVisitor implements OpVisitor
-    {
-        OpVisitor beforeVisitor = null ;
-        OpVisitor afterVisitor = null ;
-        OpVisitor mainVisitor = null ;
-        
-        public BeforeAfterVisitor(OpVisitor mainVisitor ,
-                                  OpVisitor beforeVisitor, 
-                                  OpVisitor afterVisitor) 
-        {
-            this.mainVisitor = mainVisitor ;
-            this.beforeVisitor = beforeVisitor ;
-            this.afterVisitor = afterVisitor ;
-        }
-        
-        private void before(Op op)
-        { 
-            if ( beforeVisitor != null )
-                op.visit(beforeVisitor) ;
-        }
-
-        private void after(Op op)
-        {
-            if ( afterVisitor != null )
-                op.visit(afterVisitor) ;
-        }
-
-        public void visit(OpBGP opBGP)
-        { 
-            before(opBGP) ; mainVisitor.visit(opBGP) ; after(opBGP) ;
-        }
-        
-        public void visit(OpQuadPattern quadPattern)
-        {
-			before(quadPattern) ; mainVisitor.visit(quadPattern) ; after(quadPattern) ;
-		}
-        
-        public void visit(OpTriple opTriple)
-        {
-			before(opTriple) ; mainVisitor.visit(opTriple) ; after(opTriple) ;
-		}
-        
-        public void visit(OpPath opPath)
-        {
-			before(opPath) ; mainVisitor.visit(opPath) ; after(opPath) ;
-		}
-        
-        public void visit(OpTable opTable)
-        {
-			before(opTable) ; mainVisitor.visit(opTable) ; after(opTable) ;
-		}
-        public void visit(OpNull opNull)
-        {
-			before(opNull) ; mainVisitor.visit(opNull) ; after(opNull) ;
-		}
-        
-        public void visit(OpProcedure opProc)
-        {
-			before(opProc) ; mainVisitor.visit(opProc) ; after(opProc) ;
-		}
-        public void visit(OpPropFunc opPropFunc)
-        {
-			before(opPropFunc) ; mainVisitor.visit(opPropFunc) ; after(opPropFunc) ;
-		}
-        
-        public void visit(OpFilter opFilter)
-        {
-			before(opFilter) ; mainVisitor.visit(opFilter) ; after(opFilter) ;
-		}
-        public void visit(OpGraph opGraph)
-        {
-			before(opGraph) ; mainVisitor.visit(opGraph) ; after(opGraph) ;
-		}
-        
-        public void visit(OpService opService)
-        {
-			before(opService) ; mainVisitor.visit(opService) ; after(opService) ;
-		}
-        public void visit(OpDatasetNames dsNames)
-        {
-			before(dsNames) ; mainVisitor.visit(dsNames) ; after(dsNames) ;
-		}
-        
-        public void visit(OpLabel opLabel)
-        {
-			before(opLabel) ; mainVisitor.visit(opLabel) ; after(opLabel) ;
-		}
-        public void visit(OpJoin opJoin)
-        {
-			before(opJoin) ; mainVisitor.visit(opJoin) ; after(opJoin) ;
-		}
-        
-        public void visit(OpSequence opSequence)
-        {
-			before(opSequence) ; mainVisitor.visit(opSequence) ; after(opSequence) ;
-		}
-        
-        public void visit(OpLeftJoin opLeftJoin)
-        {
-			before(opLeftJoin) ; mainVisitor.visit(opLeftJoin) ; after(opLeftJoin) ;
-		}
-        public void visit(OpDiff opDiff)
-        {
-			before(opDiff) ; mainVisitor.visit(opDiff) ; after(opDiff) ;
-		}
-        
-        public void visit(OpUnion opUnion)
-        {
-			before(opUnion) ; mainVisitor.visit(opUnion) ; after(opUnion) ;
-		}
-        
-        public void visit(OpConditional opCondition)
-        {
-			before(opCondition) ; mainVisitor.visit(opCondition) ; after(opCondition) ;
-		}
-        public void visit(OpExt opExt)
-        {
-			before(opExt) ; mainVisitor.visit(opExt) ; after(opExt) ;
-		}
-        
-        public void visit(OpList opList)
-        {
-			before(opList) ; mainVisitor.visit(opList) ; after(opList) ;
-		}
-        public void visit(OpOrder opOrder)
-        {
-			before(opOrder) ; mainVisitor.visit(opOrder) ; after(opOrder) ;
-		}
-        
-        public void visit(OpProject opProject)
-        {
-			before(opProject) ; mainVisitor.visit(opProject) ; after(opProject) ;
-		}
-        
-        public void visit(OpReduced opReduced)
-        {
-			before(opReduced) ; mainVisitor.visit(opReduced) ; after(opReduced) ;
-		}
-        
-        public void visit(OpDistinct opDistinct)
-        {
-			before(opDistinct) ; mainVisitor.visit(opDistinct) ; after(opDistinct) ;
-		}
-        public void visit(OpSlice opSlice)
-        {
-			before(opSlice) ; mainVisitor.visit(opSlice) ; after(opSlice) ;
-		}
-        
-        public void visit(OpAssign opAssign)
-        {
-			before(opAssign) ; mainVisitor.visit(opAssign) ; after(opAssign) ;
-		}
-        
-        public void visit(OpGroupAgg opGroupAgg)
-        {
-			before(opGroupAgg) ; mainVisitor.visit(opGroupAgg) ; after(opGroupAgg) ;
-		}
     }    
 }
 
