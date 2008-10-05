@@ -10,7 +10,7 @@ public class Dev
 {
     // ---- Sync after update (32 bit, Tomcat shutdown)
     //   Transaction handler added.  Default model only.  Temp-hack.
-    //   Catch: GraphStoreEvents.RequestStart, RequestFinish
+    //   Catch: GraphStoreEvents.RequestStart, RequestFinish from ARQ.
     
     // ---- Next: materialized views
     // ---- Next: range queries (filter E (bgp T)) ==> (range T E....) where E has one var and the one var is in T
@@ -29,11 +29,18 @@ public class Dev
     
     // ---- Reifier
     
+    // ---- Quads
+    
     // ---- Loader - traverse of SPO via a direct block mgr?
+    //   ** Close indexes not in use in a given phase
     //  GraphTDB.primaryTraverse() -> Iterator<Tuple<NodeId>>??
     //    Do properly : reopenable indexes (under the triple index)
     //      Reopenable block mgr's .passivate/.activate
     //    Open second index on same
+    // ---- tdbloader: 
+    //   ** (script) to work on gzip files
+    //   ** Write stats (where to hook in to get unique?)
+
     
     // Design/static (long term)
     //   Scoping and rewrite with later execution
@@ -65,13 +72,8 @@ public class Dev
     
     // ---- Node Table
     //     Compression
-    //     hort string inline?
+    //     short string inline?
     
-    // ---- tdbloader: 
-    //   ** Close indexes not in use in a given phase
-    //   Especially efficient iterator() for B+Trees (not mmap).
-    //   ** (script) to work on gzip files
-    //   ** Write stats (where to hook in to get unique?)
 
     // ---- Use of java properties for key values.
     // Or config file.
@@ -89,7 +91,7 @@ public class Dev
     //    - shared formatting with GraphLoadMonitor
     
     // ---- Misc :
-    // Interface Sync everywhere?
+    // Interface Sync everywhere?  Interface for weak(er) transactions.
     // CountingSync.
     //   bound variable tracking
     //   LARQ++
