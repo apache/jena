@@ -128,7 +128,7 @@ public class ObjectFileDisk extends FileBase implements ObjectFile
         catch (IOException ex) { throw new FileException("ObjectFile.all", ex) ; }
         
         List<String> strings = new ArrayList<String>() ;
-        int x = 0 ;
+        long x = 0 ;
         while ( x < filesize )
         {
             ByteBuffer bb = readBytes(x) ;
@@ -138,6 +138,21 @@ public class ObjectFileDisk extends FileBase implements ObjectFile
             x = x + bb.limit() + 4 ; 
         }
         return strings ;
+    }
+    
+    public void dump()
+    {
+        try { out.seek(0) ; } 
+        catch (IOException ex) { throw new FileException("ObjectFile.all", ex) ; }
+        
+        int x = 0 ;
+        while ( x < filesize )
+        {
+            ByteBuffer bb = readBytes(x) ;
+            String str = Bytes.fromByteBuffer(bb) ;
+            System.out.printf("0x%08X : %s\n", x, str) ;
+            x = x + bb.limit() + 4 ; 
+        }
     }
     
     

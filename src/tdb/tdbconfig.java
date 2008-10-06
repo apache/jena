@@ -6,11 +6,14 @@
 
 package tdb;
 
+import java.util.List;
+
 import tdb.cmdline.CmdSub;
 import tdb.cmdline.CmdTDB;
 import arq.cmdline.CmdARQ;
 
 import com.hp.hpl.jena.sparql.sse.Item;
+import com.hp.hpl.jena.tdb.base.objectfile.ObjectFileDisk;
 import com.hp.hpl.jena.tdb.pgraph.GraphTDB;
 import com.hp.hpl.jena.tdb.solver.stats.StatsWriter;
 
@@ -20,6 +23,7 @@ public class tdbconfig extends CmdSub
     static final String CMD_CLEAN   = "clean" ;
     static final String CMD_HELP    = "help" ;
     static final String CMD_STATS   = "stats" ;
+    static final String CMD_NODES   = "nodes" ;
     
     static public void main(String... argv)
     {
@@ -35,8 +39,9 @@ public class tdbconfig extends CmdSub
           { @Override public void exec(String[] argv) { new SubHelp(argv).main() ; } }) ;
         super.addSubCommand(CMD_STATS, new Exec()
         { @Override public void exec(String[] argv) { new SubStats(argv).main() ; } }) ;
+        super.addSubCommand(CMD_NODES, new Exec()
+        { @Override public void exec(String[] argv) { new SubNodes(argv).main() ; } }) ;
     }
-    
     
     // Subcommand : help
     static class SubHelp extends CmdARQ
@@ -94,6 +99,40 @@ public class tdbconfig extends CmdSub
             return "tdbconfig stats" ;
         }
     }
+    
+    static class SubNodes extends CmdTDB
+    {
+        public SubNodes(String ... argv)
+        {
+            super(argv) ;
+        }
+        
+        @Override
+        protected String getSummary()
+        {
+            return "tdbconfig stats" ;
+        }
+
+        @Override
+        protected void exec()
+        {
+            @SuppressWarnings("unchecked")
+            List<String> args = (List<String>)positionals ;
+            for ( String x : args )
+            {
+                System.out.println("**** Object File: "+x) ;
+                ObjectFileDisk objs = new ObjectFileDisk(x) ;
+                objs.dump() ;
+            }
+        }
+
+        @Override
+        protected String getCommandName()
+        {
+            return "tdbconfig nodes" ;
+        }
+    }
+
 }
 
 /*
