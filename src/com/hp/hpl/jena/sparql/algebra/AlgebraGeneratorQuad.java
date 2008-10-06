@@ -26,7 +26,7 @@ public class AlgebraGeneratorQuad extends AlgebraGenerator
 
     
     public AlgebraGeneratorQuad(Context context) { super(context) ; }
-    public AlgebraGeneratorQuad()                { super() ; }
+    private AlgebraGeneratorQuad()                { super() ; }
     
     protected Op compileBasicPattern(BasicPattern pattern)
     {

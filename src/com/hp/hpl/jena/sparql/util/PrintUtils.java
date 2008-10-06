@@ -162,9 +162,10 @@ public class PrintUtils
 
     public static void printQuad(IndentedWriter out, Query query, boolean printOptimized)
     {
-        Op op = Algebra.compileQuad(query) ;
+        Op op = Algebra.compile(query) ;
         if ( printOptimized )
             op =  Algebra.optimize(op) ;
+        op = Algebra.toQuadForm(op) ;
         WriterSSE.out(out, op, query) ;
 //        SerializationContext sCxt = new SerializationContext(query) ;
 //        op.output(out, sCxt) ;
