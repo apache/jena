@@ -15,6 +15,7 @@ import com.hp.hpl.jena.util.FileManager;
 import com.hp.hpl.jena.util.FileUtils;
 
 import com.hp.hpl.jena.sparql.algebra.Algebra;
+import com.hp.hpl.jena.sparql.algebra.AlgebraQuad;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.sse.SSE;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
@@ -134,7 +135,7 @@ public class Run
 
         System.out.println("---- Original") ;
         System.out.println(op) ;
-        Op op2 = Quadization.quadize(op) ;
+        Op op2 = AlgebraQuad.quadize(op) ;
 
         System.out.println("---- Quadization") ;
         System.out.println(op2) ;

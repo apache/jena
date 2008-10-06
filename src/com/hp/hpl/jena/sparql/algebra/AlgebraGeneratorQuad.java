@@ -20,7 +20,10 @@ import com.hp.hpl.jena.sparql.util.Context;
 
 public class AlgebraGeneratorQuad extends AlgebraGenerator 
 {
+    // This class will disappear when the AlgebraQuad transform is ready.
+    
     private Node currentGraph = Quad.defaultGraphNode ;
+
     
     public AlgebraGeneratorQuad(Context context) { super(context) ; }
     public AlgebraGeneratorQuad()                { super() ; }

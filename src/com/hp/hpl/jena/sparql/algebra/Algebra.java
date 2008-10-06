@@ -108,6 +108,11 @@ public class Algebra
         return op ;
     }
 
+    public static Op toQuadForm(Op op)
+    {
+        return AlgebraQuad.quadize(op) ;
+    }
+    
     // -------- SSE
     
     static public Op read(String filename)

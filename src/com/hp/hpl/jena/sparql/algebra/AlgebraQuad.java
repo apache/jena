@@ -4,33 +4,36 @@
  * [See end of file]
  */
 
-package dev;
+package com.hp.hpl.jena.sparql.algebra;
 
 import java.util.Stack;
 
 import com.hp.hpl.jena.graph.Node;
-
-import com.hp.hpl.jena.sparql.algebra.*;
-import com.hp.hpl.jena.sparql.algebra.op.*;
+import com.hp.hpl.jena.sparql.algebra.op.OpBGP;
+import com.hp.hpl.jena.sparql.algebra.op.OpDatasetNames;
+import com.hp.hpl.jena.sparql.algebra.op.OpGraph;
+import com.hp.hpl.jena.sparql.algebra.op.OpPath;
+import com.hp.hpl.jena.sparql.algebra.op.OpQuadPattern;
+import com.hp.hpl.jena.sparql.algebra.op.OpTable;
 import com.hp.hpl.jena.sparql.core.Quad;
 
-public class Quadization extends TransformCopy
+/*8 COnvert an algebra expression into a quad form */
+public class AlgebraQuad extends TransformCopy
 {
     // Transform to a quad form:
-    //   BGPs go to quad patterns
-    //   Paths (complex) go to (graph (path ...)) [later: quad paths] 
-    //   Drop OpGraph 
+    //   + BGPs go to quad patterns
+    //   + Drop (previous) OpGraph 
+    //   + Paths (complex - simple ones are flatten elsewhere) go to (graph (path ...)) [later: quad paths] 
 
     // Done as a before/after pair to run the stack of graph
     // nodes and a transform to do the conversion. 
     
-    // And paths
-    
-    private Quadization() { }
+    private AlgebraQuad() { }
+
     public static Op quadize(Op op)
     {
         final Stack stack = new Stack() ;
-        stack.push(Quad.defaultGraphNode) ; // Starting condition
+        stack.push(Quad.defaultGraphNode) ;             // Starting condition
         
         OpVisitor before = new Pusher(stack) ;
         OpVisitor after = new Popper(stack) ;
@@ -73,11 +76,13 @@ public class Quadization extends TransformCopy
             
             if ( OpBGP.isBGP(op) )
             {
+                // Empty BGP
                 if ( ((OpBGP)op).getPattern().isEmpty() )
                     noPattern = true ;
             }
             else if ( op instanceof OpTable )
             {
+                // Empty BGP compiled to a unit table
                 if ( ((OpTable)op).isJoinIdentity() )
                     noPattern = true ;
             }
@@ -90,8 +95,8 @@ public class Quadization extends TransformCopy
                 return new OpDatasetNames(opGraph.getNode()) ;
             }
             
-            // Drop (graph...) because inside nodes have been converted
-            // to quads.  Or 
+            // Drop (graph...) because inside nodes
+            // have been converted to quads.
             return op ;
         }
         
@@ -100,7 +105,8 @@ public class Quadization extends TransformCopy
             // Put the (graph) back round it
             // ?? inc default graph node.
             return new OpGraph(getNode() , opPath) ;
-            // Does not get removed by transform above. 
+            // Does not get removed by transform above because this is
+            // not the OpGraph that gets walked by the transform.  
         }
         
         public Op transform(OpBGP opBGP)
