@@ -9,19 +9,20 @@ import java.util.Iterator;
 
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.shared.Lock;
+
+import com.hp.hpl.jena.sparql.util.FmtUtils;
+
 import com.hp.hpl.jena.query.Dataset;
 import com.hp.hpl.jena.query.QueryExecution;
 import com.hp.hpl.jena.query.QueryExecutionFactory;
 import com.hp.hpl.jena.query.ResultSet;
+
+import com.hp.hpl.jena.update.GraphStore;
+
 import com.hp.hpl.jena.sdb.SDBFactory;
 import com.hp.hpl.jena.sdb.Store;
 import com.hp.hpl.jena.sdb.util.StoreUtils;
-import com.hp.hpl.jena.shared.Lock;
-import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.sparql.modify.op.Update;
-import com.hp.hpl.jena.update.GraphStore;
-import com.hp.hpl.jena.update.UpdateFactory;
-import com.hp.hpl.jena.update.UpdateRequest;
 
 public class GraphStoreSDB implements GraphStore
 {
@@ -31,34 +32,13 @@ public class GraphStoreSDB implements GraphStore
 
     public Store getStore() { return store ; }
 
-    
-    @Deprecated
-    public void execute(UpdateRequest request, Binding binding)
-    //{ request.exec(this, binding) ; }
-    { UpdateFactory.create(request, this, binding) ; }
-
-    @Deprecated
-    public void execute(UpdateRequest request)
-    //{ request.exec(this) ; }
-    { UpdateFactory.create(request, this) ; }
-
-    @Deprecated
-    public void execute(Update graphUpdate, Binding binding)
-    //{ execute(new UpdateRequest(graphUpdate), binding) ; }
-    { UpdateFactory.create(graphUpdate, this, binding) ; }
-
-    @Deprecated
-    public void execute(Update graphUpdate)
-    //{ execute(new UpdateRequest(graphUpdate)) ; }
-    { UpdateFactory.create(graphUpdate, this) ; }
-    
     public Dataset toDataset()
     {
         return SDBFactory.connectDataset(store) ;
     }
 
     public void addGraph(Node graphName, Graph graph)
-    { /* No-op in SDB until theer is explciit graph management */ }
+    { /* No-op in SDB until there is explicit graph management */ }
 
     public Graph removeGraph(Node graphName)
     {
@@ -70,7 +50,7 @@ public class GraphStoreSDB implements GraphStore
 
     public boolean containsGraph(Node graphNode)
     {
-        String qs = "SELECT ?g { ?s ?p ?o } LIMIT 1" ;
+        String qs = "SELECT * { GRAPH "+FmtUtils.stringForNode(graphNode)+" { ?s ?p ?o }} LIMIT 1" ;
         QueryExecution qExec = QueryExecutionFactory.create(qs, toDataset()) ;
         ResultSet rs = qExec.execSelect() ;
         boolean b = rs.hasNext() ;
@@ -90,12 +70,12 @@ public class GraphStoreSDB implements GraphStore
 
     public Lock getLock()
     {
-        throw new UnsupportedOperationException("Locking must be over all stors on this connection") ;
+        throw new UnsupportedOperationException("Locking must be over all stores on this connection") ;
     }
 
     public Iterator<Node> listGraphNodes()
     {
-        return StoreUtils.storeGraphNames(store) ;//.iterator() ;
+        return StoreUtils.storeGraphNames(store) ;
     }
 
     public int size()
@@ -113,6 +93,12 @@ public class GraphStoreSDB implements GraphStore
         // Delete all triples.
         g.getBulkUpdateHandler().removeAll() ;
     }
+
+    public void finishRequest()
+    {}
+
+    public void startRequest()
+    {}
 
 }
 

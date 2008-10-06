@@ -8,6 +8,7 @@ Documentation:
 
 ==== SDB v1.2
 
++ Must use ARQ 2.5 (changes to quad support in preparation for optimization and path support)
 + Fix to BulkLoader (MS SQL Server) to allow creating a second store over an JDBC so JDBC pooled conenctions work
 + Added Store#isClosed(). Does nothing currently except track whether you've called close().
 

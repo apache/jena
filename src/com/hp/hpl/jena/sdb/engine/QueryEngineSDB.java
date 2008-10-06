@@ -9,27 +9,24 @@ package com.hp.hpl.jena.sdb.engine;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.sdb.Store;
-import com.hp.hpl.jena.sdb.compiler.Compile;
-import com.hp.hpl.jena.sdb.compiler.OpSQL;
-import com.hp.hpl.jena.sdb.core.SDBRequest;
-import com.hp.hpl.jena.sdb.store.DatasetStoreGraph;
-import com.hp.hpl.jena.sparql.algebra.AlgebraGeneratorQuad;
+import com.hp.hpl.jena.sparql.algebra.Algebra;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.core.DatasetGraph;
-import com.hp.hpl.jena.sparql.engine.ExecutionContext;
-import com.hp.hpl.jena.sparql.engine.Plan;
-import com.hp.hpl.jena.sparql.engine.QueryEngineBase;
-import com.hp.hpl.jena.sparql.engine.QueryEngineFactory;
-import com.hp.hpl.jena.sparql.engine.QueryEngineRegistry;
-import com.hp.hpl.jena.sparql.engine.QueryIterator;
+import com.hp.hpl.jena.sparql.engine.*;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.binding.BindingRoot;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterSingleton;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIteratorCheck;
 import com.hp.hpl.jena.sparql.engine.main.QC;
 import com.hp.hpl.jena.sparql.util.Context;
+
+import com.hp.hpl.jena.query.Query;
+
+import com.hp.hpl.jena.sdb.Store;
+import com.hp.hpl.jena.sdb.compiler.Compile;
+import com.hp.hpl.jena.sdb.compiler.OpSQL;
+import com.hp.hpl.jena.sdb.core.SDBRequest;
+import com.hp.hpl.jena.sdb.store.DatasetStoreGraph;
 
 
 public class QueryEngineSDB extends QueryEngineBase
@@ -46,7 +43,7 @@ public class QueryEngineSDB extends QueryEngineBase
     
     public QueryEngineSDB(DatasetStoreGraph dsg, Query query, Binding initialBinding, Context context)
     {
-        super(query, dsg, new AlgebraGeneratorQuad(context), initialBinding, context) ;
+        super(query, dsg, initialBinding, context) ;
         init(dsg, query, initialBinding, context) ;
     }
 
@@ -63,8 +60,7 @@ public class QueryEngineSDB extends QueryEngineBase
         this.originalOp = getOp() ;
         // Enable transformations
         // Op op = Algebra.optimize(originalOp, context) ;
-        // SDB uses the quad engine which does not support property functions.
-        Op op = originalOp ;
+        Op op =  Algebra.toQuadForm(originalOp) ;
         op = Compile.compile(store, op, initialBinding, context, request) ;
         setOp(op) ;
     }

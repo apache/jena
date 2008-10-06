@@ -9,15 +9,13 @@ package dev;
 
 public class Dev
 {
+    // QueryEngineSDB.init ; enable some static optimizations.
+    
     // Testing: SDBTestAll does not include the model tests yet because they are not linked to the store description files
     // ParamAllStores for JUnit paramterized tests approach.
     
     // For DISTINCT do in a subquery on the node ids.
     // Similarly, push in the PROJECT to the node ids phase. 
-    
-    /* Remove quad dependency (and so complex paths will work).
-     * See ARQ new Quadization
-     */
 }
 
 /*
