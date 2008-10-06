@@ -3,6 +3,10 @@ ChangeLog for ARQ
 
 ==== ARQ 2.5
 
++ Redesign of quad support. 
+  AlgebraGeeneratorQuad retired
+  Use Algebra.toQuadForm(Op) to turn an algebra expression into quads.   
+
 + fn:string-join was misnamed - was actually renamed as fn:concat
   And now takes arbitrary number of arguments
 
