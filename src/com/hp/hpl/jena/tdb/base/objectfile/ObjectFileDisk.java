@@ -61,7 +61,6 @@ public class ObjectFileDisk extends FileBase implements ObjectFile
             long location = filesize ;
             channel.position(location) ;
             // write length
-            
             int x = channel.write(bb) ;
             if ( x != len+4 )
                 throw new FileException("ObjectFile.write: Buffer length = "+len+" : actual write = "+x) ; 
