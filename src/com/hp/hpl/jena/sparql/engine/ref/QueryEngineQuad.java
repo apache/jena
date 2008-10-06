@@ -6,14 +6,18 @@
 
 package com.hp.hpl.jena.sparql.engine.ref;
 
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.sparql.algebra.AlgebraGeneratorQuad;
+import com.hp.hpl.jena.sparql.algebra.Algebra;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.core.DatasetGraph;
-import com.hp.hpl.jena.sparql.engine.*;
+import com.hp.hpl.jena.sparql.engine.Plan;
+import com.hp.hpl.jena.sparql.engine.QueryEngineFactory;
+import com.hp.hpl.jena.sparql.engine.QueryEngineRegistry;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.util.Context;
 
+import com.hp.hpl.jena.query.Query;
+
+/* For reference mainly - better to transform the algebra expression directly */
 public class QueryEngineQuad extends QueryEngineRef
 {
     public QueryEngineQuad(Op op, DatasetGraph dataset, Context context)
@@ -21,14 +25,33 @@ public class QueryEngineQuad extends QueryEngineRef
     
     public QueryEngineQuad(Op op, DatasetGraph dataset, Binding input, Context context)
     { super(op, dataset, input, context) ; }
-    
-    public QueryEngineQuad(Query query, DatasetGraph dataset, Binding input, Context context)
+
+    protected QueryEngineQuad(Query query, DatasetGraph dataset,
+                             Binding input, Context context)
     {
-        super(query,
-              dataset,
-              new AlgebraGeneratorQuad(context), 
-              input, context) ; ; 
+        super(query, dataset, input, context) ;
     }
+    
+    protected Op modifyOp(Op op)
+    { 
+        return Algebra.toQuadForm(op) ;
+    }
+    
+//    
+//    
+//    public QueryEngineQuad(Op op, DatasetGraph dataset, Context context)
+//    { this(op, dataset, null, context) ; }
+//    
+//    public QueryEngineQuad(Op op, DatasetGraph dataset, Binding input, Context context)
+//    { super(op, dataset, input, context) ; }
+//    
+//    public QueryEngineQuad(Query query, DatasetGraph dataset, Binding input, Context context)
+//    {
+//        super(query,
+//              dataset,
+//              new AlgebraGeneratorQuad(context), 
+//              input, context) ; ; 
+//    }
     
     static public QueryEngineFactory getFactory()   { return factory ; } 
     static public void register()       { QueryEngineRegistry.addFactory(factory) ; }

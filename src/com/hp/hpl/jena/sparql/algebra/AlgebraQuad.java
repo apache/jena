@@ -71,7 +71,6 @@ public class AlgebraQuad extends TransformCopy
 
         public Op transform(OpGraph opGraph, Op op)
         {
-            
             boolean noPattern = false ;
             
             if ( OpBGP.isBGP(op) )

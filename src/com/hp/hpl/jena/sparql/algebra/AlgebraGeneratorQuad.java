@@ -18,14 +18,14 @@ import com.hp.hpl.jena.sparql.syntax.ElementNamedGraph;
 import com.hp.hpl.jena.sparql.util.ALog;
 import com.hp.hpl.jena.sparql.util.Context;
 
+/** @deprecated - Use {@link Algebra.toQuadForm} */
 public class AlgebraGeneratorQuad extends AlgebraGenerator 
 {
     // This class will disappear when the AlgebraQuad transform is ready.
     
     private Node currentGraph = Quad.defaultGraphNode ;
-
     
-    public AlgebraGeneratorQuad(Context context) { super(context) ; }
+    private AlgebraGeneratorQuad(Context context) { super(context) ; }
     private AlgebraGeneratorQuad()                { super() ; }
     
     protected Op compileBasicPattern(BasicPattern pattern)

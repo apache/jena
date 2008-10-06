@@ -26,16 +26,10 @@ public class QueryEngineRef extends QueryEngineBase
     public QueryEngineRef(Op op, DatasetGraph dataset, Binding input, Context context)
     { super(op, dataset, input, context) ; }
 
-    public QueryEngineRef(Query query, DatasetGraph dataset, 
-                          Binding input, Context context)
-    {
-        this(query, dataset, new AlgebraGenerator(context), input, context) ; 
-    }
-    
-    protected QueryEngineRef(Query query, DatasetGraph dataset, AlgebraGenerator gen,
+    protected QueryEngineRef(Query query, DatasetGraph dataset,
                              Binding input, Context context)
     {
-        super(query, dataset, gen, input, context) ;
+        super(query, dataset, input, context) ;
     }
     
     protected Op modifyOp(Op op)

@@ -7,10 +7,9 @@
 package com.hp.hpl.jena.sparql.engine;
 
 import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.query.ARQ;
-import com.hp.hpl.jena.query.Query;
+
 import com.hp.hpl.jena.sparql.ARQConstants;
-import com.hp.hpl.jena.sparql.algebra.AlgebraGenerator;
+import com.hp.hpl.jena.sparql.algebra.Algebra;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.core.Closeable;
 import com.hp.hpl.jena.sparql.core.DataSourceGraphImpl;
@@ -20,6 +19,9 @@ import com.hp.hpl.jena.sparql.engine.binding.BindingRoot;
 import com.hp.hpl.jena.sparql.util.ALog;
 import com.hp.hpl.jena.sparql.util.Context;
 import com.hp.hpl.jena.sparql.util.NodeFactory;
+
+import com.hp.hpl.jena.query.ARQ;
+import com.hp.hpl.jena.query.Query;
 
 public abstract class QueryEngineBase implements OpExec, Closeable
 {
@@ -32,7 +34,7 @@ public abstract class QueryEngineBase implements OpExec, Closeable
     
     protected QueryEngineBase(Query query,
                               DatasetGraph dataset, 
-                              AlgebraGenerator gen,
+                              //AlgebraGenerator gen,
                               Binding input,
                               Context context)
     {
@@ -44,7 +46,7 @@ public abstract class QueryEngineBase implements OpExec, Closeable
         
         // Build the Op.
         query.setResultVars() ;
-        setOp(createOp(query, gen)) ;
+        setOp(createOp(query)) ;
     }
     
     protected QueryEngineBase(Op op, DatasetGraph dataset, Binding input, Context context)
@@ -104,9 +106,9 @@ public abstract class QueryEngineBase implements OpExec, Closeable
     protected Op modifyOp(Op op)
     { return op ; }
     
-    protected Op createOp(Query query, AlgebraGenerator gen)
+    protected Op createOp(Query query)
     {
-        Op op = gen.compile(query) ;
+        Op op = Algebra.compile(query) ;
         return op ;
     }
     

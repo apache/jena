@@ -15,46 +15,81 @@ public class OpWalker
 {
     public static void walk(Op op, OpVisitor visitor)
     {
-        op.visit(new WalkerVisitor(visitor)) ;
+        op.visit(new WalkerVisitor(visitor, null, null)) ;
+    }
+    
+    public static void walk(Op op, OpVisitor visitor, OpVisitor beforeVisitor, OpVisitor afterVisitor)
+    {
+        op.visit(new WalkerVisitor(visitor, beforeVisitor, afterVisitor)) ;
     }
     
     private static final class WalkerVisitor extends OpVisitorByType
     {
+        private OpVisitor beforeVisitor = null ;
+        private OpVisitor afterVisitor = null ;
+        //private OpVisitor mainVisitor = null ;
         private OpVisitor visitor ;
 
-        public WalkerVisitor() { this(null) ; }
+        public WalkerVisitor(OpVisitor visitor, OpVisitor beforeVisitor, OpVisitor afterVisitor)
+        { 
+            this(visitor) ;
+            this.beforeVisitor = beforeVisitor ;
+            this.afterVisitor = afterVisitor ;
+        }
+
         public WalkerVisitor(OpVisitor visitor) { this.visitor = visitor ; }
+        
+        private void before(Op op)
+        { 
+            if ( beforeVisitor != null )
+                op.visit(beforeVisitor) ;
+        }
+
+        private void after(Op op)
+        {
+            if ( afterVisitor != null )
+                op.visit(afterVisitor) ;
+        }
         
         protected void visitN(OpN op)
         {
+            before(op) ;
             for ( Iterator iter = op.iterator() ; iter.hasNext() ; )
             {
                 Op sub = (Op)iter.next() ;
                 sub.visit(this) ;
             }
-            if ( visitor != null ) op.visit(visitor) ;        
+            if ( visitor != null ) op.visit(visitor) ;
+            after(op) ;
         }
 
         protected void visit2(Op2 op)
         {
+            before(op) ;
             if ( op.getLeft() != null ) op.getLeft().visit(this) ;
             if ( op.getRight() != null ) op.getRight().visit(this) ;
-            if ( visitor != null ) op.visit(visitor) ;        
+            if ( visitor != null ) op.visit(visitor) ;      
+            after(op) ; 
         }
         
         protected void visit1(Op1 op)
         {
+            before(op) ;
             if ( op.getSubOp() != null ) op.getSubOp().visit(this) ;
-            if ( visitor != null ) op.visit(visitor) ;        
+            if ( visitor != null ) op.visit(visitor) ; 
+            after(op) ;
         }
         
         protected void visit0(Op0 op)         
         {  
-            if ( visitor != null ) op.visit(visitor) ; 
+            before(op) ;
+            if ( visitor != null ) op.visit(visitor) ;
+            after(op) ;
         }
         
         protected void visitExt(OpExt op)
-        { op.visit(visitor) ; }
+        {             before(op) ;
+op.visit(visitor) ; after(op) ;}
     }
 }
 

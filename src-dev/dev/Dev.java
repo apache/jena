@@ -9,13 +9,9 @@ package dev;
 public class Dev
 {
     // ** Quads and paths interaction (not interacting currently).
-    // See Quadization
     // Ready to roll out to SDB.
     // [later: quad paths]
-    //
-    // Remove Query argument from QueryEngineBase constructor
-    // Pass in the op (or use the setter)
-    
+
     // Static scope analysis
     // Full scope, parallel map(op => scope sets)
     // Write tests

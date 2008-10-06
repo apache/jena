@@ -14,7 +14,6 @@ import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.util.FileManager;
 import com.hp.hpl.jena.util.FileUtils;
 
-import com.hp.hpl.jena.sparql.algebra.Algebra;
 import com.hp.hpl.jena.sparql.algebra.AlgebraQuad;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.sse.SSE;
@@ -111,27 +110,10 @@ public class Run
     
     public static void code()
     {
-        String qstr = StringUtils.join("\n", new String[]{
-            "PREFIX : <http://example/>\n",
-            "PREFIX list: <http://jena.hpl.hp.com/ARQ/list#>\n",
-            "SELECT ?g",
-            "{ ?s ?p ?o ",
-            "  GRAPH ?g {",
-            "    GRAPH ?g2",
-            //"    { ?sg :q/:p* ?og }",
-            "    { ?sg :q/:p ?og . ?og list:member ?m . ?sg :q* ?og2 }", 
-            "    GRAPH ?G {}" ,
-            "   }",
-            "}"
-        }) ;
 
-
-        Query query = QueryFactory.create(qstr, Syntax.syntaxARQ) ;
-        Op op = Algebra.compile(query) ;
+        Op op = SSE.readOp("Q.sse") ;
         //op = Algebra.optimize(op) ;
         //Op op3 = Algebra.compileQuad(query) ;
-
-        //Op op = SSE.parseOp("(join (BGP (?s ?p ?o)) (graph ?g (BGP (<sg> ?gp ?go)) ))") ;
 
         System.out.println("---- Original") ;
         System.out.println(op) ;
@@ -139,8 +121,6 @@ public class Run
 
         System.out.println("---- Quadization") ;
         System.out.println(op2) ;
-//        System.out.println("---- Old quad translation") ;
-//        System.out.println(op3) ;
         System.exit(0) ;
 
 

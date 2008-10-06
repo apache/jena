@@ -30,17 +30,13 @@ public class Transformer
         }
 
         TransformApply v = new TransformApply(transform) ;
-        OpVisitor v2 = v ;
-        if ( beforeVisitor != null || afterVisitor != null )
-            v2 = new BeforeAfterVisitor(v, beforeVisitor, afterVisitor) ;
-            
-        OpWalker.walk(op, v2) ;
+        OpWalker.walk(op, v, beforeVisitor, afterVisitor) ;
         Op r = v.result() ;
         return r ;
         
     }
     
-    private static Op _transform(Transform transform, Op op, OpVisitor beforeVisitor, OpVisitor afterVisitor)
+    public static Op _transform(Transform transform, Op op, OpVisitor beforeVisitor, OpVisitor afterVisitor)
     {
         if ( op == null )
         {
