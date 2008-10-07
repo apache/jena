@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
     [See end of file]
-    $Id: Regression.java,v 1.42 2008-02-13 07:54:03 chris-dollin Exp $
+    $Id: Regression.java,v 1.43 2008-10-07 15:39:11 andy_seaborne Exp $
  */
 
 package com.hp.hpl.jena.regression;
@@ -24,7 +24,7 @@ import org.apache.commons.logging.LogFactory;
  * NewRegression suite; kers.]
  *
  * @author  bwm
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.42 $' Date='$Date: 2008-02-13 07:54:03 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.43 $' Date='$Date: 2008-10-07 15:39:11 $'
  */
 public class Regression extends Object {
 
@@ -4804,10 +4804,14 @@ public class Regression extends Object {
     }
 
     public void error(String testName, int testNum, Exception e) {
+        
         System.out.println("Test Failed: "
         + testName + " "
         + testNum  + " "
         + e.toString());
+        System.out.println("--------") ;
+        e.printStackTrace(System.out) ;
+        System.out.println("--------") ;
         errors = true;
         throw new RuntimeException( "BOOM BOOM BOOM" );
     }
@@ -4886,5 +4890,5 @@ public class Regression extends Object {
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: Regression.java,v 1.42 2008-02-13 07:54:03 chris-dollin Exp $
+ * $Id: Regression.java,v 1.43 2008-10-07 15:39:11 andy_seaborne Exp $
  */
