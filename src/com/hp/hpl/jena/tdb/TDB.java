@@ -70,6 +70,7 @@ public class TDB
             return ;
         initialized = true ;
 
+        // TDB uses a custom OpCompiler.
         //QueryEngineTDB.register() ;
         
         //Gets in the way!
@@ -96,11 +97,11 @@ public class TDB
         if ( orig instanceof StageGenBasicPattern )
             // ARQ base.  Cause chaos by using the new version.
             orig = new StageGeneratorGeneric() ;
-
-        // Wire in the new 
-        OpCompiler.factory = OpCompilerTDB.altFactory ;
         StageGenerator stageGenerator = new StageGeneratorDirectTDB(orig) ;
         ARQ.getContext().set(ARQ.stageGenerator, stageGenerator) ;
+
+        // Wire in the new OpCompiler 
+        OpCompiler.factory = OpCompilerTDB.altFactory ;
     }
     
     /** The root package name for TDB */   

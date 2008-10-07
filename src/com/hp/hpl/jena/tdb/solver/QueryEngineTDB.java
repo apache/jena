@@ -16,7 +16,9 @@ import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.main.QueryEngineMain;
 import com.hp.hpl.jena.sparql.util.Context;
 
-// NOT USED - nstead, TDB uses a custom OpCompiler to intercept certain Op evaluations. 
+// NOT USED - instead, TDB uses a custom OpCompiler to intercept certain Op evaluations
+// (which is dynamic - work here would be static optimization)   
+// If this is used, will use an OpExt to have optimized TDB ops
 public class QueryEngineTDB extends QueryEngineMain
 {
     // ---- Wiring
@@ -25,11 +27,11 @@ public class QueryEngineTDB extends QueryEngineMain
     static public void unregister()     { QueryEngineRegistry.removeFactory(factory) ; }
     
     // ---- Object
-    public QueryEngineTDB(Op op, DatasetGraph dataset, Binding input, Context context)
+    private QueryEngineTDB(Op op, DatasetGraph dataset, Binding input, Context context)
     { super(op, dataset, input, context) ; }
 
     
-    public QueryEngineTDB(Query query, DatasetGraph dataset, Binding input, Context context)
+    private QueryEngineTDB(Query query, DatasetGraph dataset, Binding input, Context context)
     { super(query, dataset, input, context) ; }
     
     // Choose the algebra-level optimizations to invoke. 
