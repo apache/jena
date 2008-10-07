@@ -145,13 +145,13 @@ public class ObjectFileDisk extends FileBase implements ObjectFile
         try { out.seek(0) ; } 
         catch (IOException ex) { throw new FileException("ObjectFile.all", ex) ; }
         
-        int x = 0 ;
-        while ( x < filesize )
+        long fileIdx = 0 ;
+        while ( fileIdx < filesize )
         {
-            ByteBuffer bb = readBytes(x) ;
+            ByteBuffer bb = readBytes(fileIdx) ;
             String str = Bytes.fromByteBuffer(bb) ;
-            System.out.printf("0x%08X : %s\n", x, str) ;
-            x = x + bb.limit() + 4 ; 
+            System.out.printf("0x%08X : %s\n", fileIdx, str) ;
+            fileIdx = fileIdx + bb.limit() + 4 ; 
         }
     }
     
