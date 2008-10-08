@@ -267,7 +267,7 @@ import oracle.jdbc.OracleDatabaseMetaData;
 				  m_dbcon.getConnection().setAutoCommit(false);				
 				}
 				opname = "getEmptyBLOB";
-				String cmd = m_sql.getSQLStatement(opname, table, longObjID.getID().toString());
+				String cmd = m_sql.getSQLStatement(opname, table, Integer.toString(longObjID.getIntID()));
 				Statement lobStmt = m_sql.getConnection().createStatement();
 				ResultSet lrs = lobStmt.executeQuery(cmd);
 				lrs.next();

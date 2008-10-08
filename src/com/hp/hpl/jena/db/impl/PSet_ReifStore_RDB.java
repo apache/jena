@@ -39,7 +39,7 @@ import org.apache.commons.logging.LogFactory;
 * Based on Driver* classes by Dave Reynolds.
 *
 * @author <a href="mailto:harumi.kuno@hp.com">Harumi Kuno</a>
-* @version $Revision: 1.29 $ on $Date: 2008-01-02 12:08:24 $
+* @version $Revision: 1.30 $ on $Date: 2008-10-08 15:06:16 $
 */
 
 public class PSet_ReifStore_RDB extends PSet_TripleStore_RDB {
@@ -79,7 +79,7 @@ public class PSet_ReifStore_RDB extends PSet_TripleStore_RDB {
 		boolean hasType,
 		IDBID graphID, boolean getTriples) {
 		String astName = getTblName();
-		String gid = graphID.getID().toString();
+		int gid = graphID.getIntID() ; 
 		ResultSetReifIterator result = new ResultSetReifIterator(this, getTriples, graphID);
 
 		PreparedStatement ps = null;
@@ -105,7 +105,7 @@ public class PSet_ReifStore_RDB extends PSet_TripleStore_RDB {
 			if (hasType)
 				ps.setString(args++, "T");
 
-			ps.setString(args++, gid);
+			ps.setInt(args++, gid);
 
 		} catch (Exception e) {
 			notFound = true;
@@ -130,7 +130,7 @@ public class PSet_ReifStore_RDB extends PSet_TripleStore_RDB {
 		TripleMatch t,
 		IDBID graphID) {
 		String astName = getTblName();
-		String gid = graphID.getID().toString();
+		int gid = graphID.getIntID() ;
 		ResultSetReifIterator result = new ResultSetReifIterator(this, true, graphID);
 		PreparedStatement ps = null;
 
@@ -174,7 +174,7 @@ public class PSet_ReifStore_RDB extends PSet_TripleStore_RDB {
 
 		if ( done == false ) try {
 			ps = m_sql.getPreparedSQLStatement(stmtStr, getTblName());
-			ps.setString(argc++, gid);
+			ps.setInt(argc++, gid);
 			if ( gotStmt ) {
 				String stmtNode = m_driver.nodeToRDBString(stmtURI, false);
 				if ( stmtNode == null ) done = true;
@@ -254,7 +254,7 @@ public class PSet_ReifStore_RDB extends PSet_TripleStore_RDB {
 				else ps.setString(argc++, argStr);
 			}
 
-				ps.setString(argc, my_GID.getID().toString());
+				ps.setInt(argc, my_GID.getIntID());
 		} catch (Exception e) {
 			notFound = true;
 			logger.warn( "Getting prepared statement for " + stmtStr + " Caught exception ",  e);
@@ -302,7 +302,7 @@ public class PSet_ReifStore_RDB extends PSet_TripleStore_RDB {
 
 	public ExtendedIterator findReifNodes(Node stmtURI, IDBID graphID) {
 		String astName = getTblName();
-		String gid = graphID.getID().toString();
+		int gid = graphID.getIntID() ;
 		ResultSetIterator result = new ResultSetNodeIterator();
 		int argc = 1;
 		PreparedStatement ps = null;
@@ -315,11 +315,11 @@ public class PSet_ReifStore_RDB extends PSet_TripleStore_RDB {
 
 			if (stmtURI != null) {
 				String stmt_uri = m_driver.nodeToRDBString(stmtURI,false);
-				if ( stmtURI == null ) notFound = true;
+				if ( stmt_uri == null ) notFound = true;
 				else ps.setString(argc++, stmt_uri);
 			}
 
-			ps.setString(argc, gid);
+			ps.setInt(argc, gid);
 
 		} catch (Exception e) {
 			notFound = true;
@@ -404,7 +404,7 @@ public class PSet_ReifStore_RDB extends PSet_TripleStore_RDB {
 					throw new RDFRDBException("Invalid update statement URI: " + stmtURI.toString());
 				ps.setString(argc++,argStr);
 
-				ps.setString(argc++,my_GID.getID().toString());
+				ps.setInt(argc++,my_GID.getIntID());
 			} catch (Exception e) {
 				logger.warn( "Getting prepared statement for "	+ stmtStr + " Caught exception ", e);
                 throw new JenaException("Exception during database access", e);    // Rethrow in case there is a recovery option
@@ -481,7 +481,7 @@ public class PSet_ReifStore_RDB extends PSet_TripleStore_RDB {
 					// find on hasType field
 					ps.setString(argc++,"T");
 				}
-				ps.setString(argc,my_GID.getID().toString());
+				ps.setInt(argc,my_GID.getIntID());
 				
 			} catch (Exception e) {
 				logger.warn( "Getting prepared statement for " + stmtStr + " Caught exception ", e);
@@ -538,7 +538,7 @@ public class PSet_ReifStore_RDB extends PSet_TripleStore_RDB {
 					ps.setString(argc++,argStr);
 				else if ( fragMask.hasObj() )
 					ps.setString(argc++,argStr);
-				ps.setString(argc++,my_GID.getID().toString());
+				ps.setInt(argc++,my_GID.getIntID());
 				ps.setString(argc,uriStr);
 				
 			} catch (Exception e) {

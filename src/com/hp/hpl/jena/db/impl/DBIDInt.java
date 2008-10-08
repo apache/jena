@@ -16,15 +16,9 @@ package com.hp.hpl.jena.db.impl;
 //=======================================================================
 /**
 * Interface for database identifiers.
-* Most RDF entities (resources, literals, statements) have an associated
-* database index. These are cached using RDB-specific variants of the jena
-* "impl" classes. This can avoid some redundant database lookup.
-* <p>
-* This variant just uses integers allocated by the database driver as indices.
-* This would be sufficient for databases up to 4x10^9 statements.
-*
-* @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
-* @version $Revision: 1.7 $ on $Date: 2008-01-02 12:08:24 $
+* Now only used for used for Graph IDs and long literals. 
+* 
+* @version $Revision: 1.8 $ on $Date: 2008-10-08 15:06:16 $
 */
 
 public class DBIDInt implements IDBID {
@@ -43,7 +37,8 @@ public class DBIDInt implements IDBID {
     }
 
     /** get the identifier as an Integer, fits calling signature of our generic sql interface. */
-    public Object getID() {
+    // OLD
+    public Object _getID() {
         return m_dbid;
     }
 
@@ -51,7 +46,7 @@ public class DBIDInt implements IDBID {
     public int getIntID() {
         return m_dbid.intValue();
     }
-
+    
     /** Hash is based on the underlying object */
     public int hashCode() {
         return m_dbid.hashCode();
