@@ -18,6 +18,7 @@ public class Dev
     
     // ---- Assembler 
     //    Setting options (globally, per model)
+    //    Variable indexes
     
     // ---- Optimization
     //   Instrumentation
