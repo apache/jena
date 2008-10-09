@@ -8,17 +8,20 @@ package com.hp.hpl.jena.tdb.pgraph.assembler;
 
 import static com.hp.hpl.jena.sparql.util.graph.GraphUtils.exactlyOneProperty;
 import static com.hp.hpl.jena.sparql.util.graph.GraphUtils.getStringValue;
+import static com.hp.hpl.jena.tdb.pgraph.assembler.PGraphAssemblerVocab.pDescription;
+import static com.hp.hpl.jena.tdb.pgraph.assembler.PGraphAssemblerVocab.pFile;
 import static com.hp.hpl.jena.tdb.pgraph.assembler.PGraphAssemblerVocab.pIndex;
 import static com.hp.hpl.jena.tdb.pgraph.assembler.PGraphAssemblerVocab.pLocation;
-
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.Resource;
 
 import com.hp.hpl.jena.assembler.Assembler;
 import com.hp.hpl.jena.assembler.Mode;
 import com.hp.hpl.jena.assembler.assemblers.AssemblerBase;
 import com.hp.hpl.jena.assembler.exceptions.AssemblerException;
-
+import com.hp.hpl.jena.rdf.model.Literal;
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.RDFNode;
+import com.hp.hpl.jena.rdf.model.Resource;
+import com.hp.hpl.jena.rdf.model.StmtIterator;
 import com.hp.hpl.jena.tdb.TDB;
 import com.hp.hpl.jena.tdb.TDBException;
 import com.hp.hpl.jena.tdb.TDBFactory;
@@ -57,6 +60,34 @@ public class PGraphAssembler extends AssemblerBase implements Assembler
         if ( ! root.hasProperty(pIndex) )
             // Make just using the location.
             return TDBFactory.createModel(loc) ;
+        
+        // There has got to be a better way.
+        
+         /*
+        ResultSet rs = match("?root assem:index [ assem:description ?d ; assem:file ?f ]", prefixes) ;
+        ResultSet rs = match(root, "assem:index [ assem:description ?d ; assem:file ?f ]", prefixes) ;
+         */        
+
+        // ---- API ways
+        
+        StmtIterator sIter = root.listProperties(pIndex) ;
+        while(sIter.hasNext())
+        {
+            RDFNode obj = sIter.nextStatement().getObject() ;
+            if ( obj.isLiteral() )
+            {
+                String desc = ((Literal)obj).getString() ;
+                System.out.printf("Index: %s\n", desc) ; System.out.flush();
+                continue ;
+            }
+            
+            Resource x = (Resource)obj ;
+            String desc = x.getProperty(pDescription).getString() ;
+            String file = x.getProperty(pFile).getString() ;
+            System.out.printf("Index: %s in file %s\n", desc, file) ; System.out.flush();
+        }
+        
+        System.out.flush();
         throw new TDBException("Custom indexes turned off") ; 
 //        // ------- Experimental : Make using explicit index descriptions
 //        // ---- Uses BTree, not BPlusTrees - need upgrading. 

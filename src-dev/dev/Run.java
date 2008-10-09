@@ -65,6 +65,10 @@ public class Run
  
     public static void main(String ... args) throws IOException
     {
+        TDBFactory.assembleGraph( "Store/gbt.ttl") ;
+        System.out.println("Assembled") ;
+        System.exit(0) ;
+        
         //smallGraph() ;
         //tdbloader("--desc=tdb.ttl", "--mem", "/home/afs/Datasets/MusicBrainz/tracks.nt") ;
  
