@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestFileModelAssembler.java,v 1.7 2008-01-02 12:05:55 andy_seaborne Exp $
+ 	$Id: TestFileModelAssembler.java,v 1.8 2008-10-09 14:24:31 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.test;
@@ -17,6 +17,7 @@ import com.hp.hpl.jena.util.FileUtils;
 
 public class TestFileModelAssembler extends ModelAssemblerTestBase
     {
+ 
     public TestFileModelAssembler( String name )
         { super( name );  }
 
@@ -127,6 +128,38 @@ public class TestFileModelAssembler extends ModelAssemblerTestBase
         Model m = a.openModel( root  );
         assertSame( model, m );
         }
+    
+    public void testStrictAndCreateCanBeSetFromProperties()
+        {       
+        NoteAssemblerBooleans a = new NoteAssemblerBooleans();
+        a.openModel( assemble( "x ja:create 'true'" ) );  assertEquals( true, a.create );
+        a.openModel( assemble( "x ja:create 'false'" ) );  assertEquals( false, a.create );
+        a.openModel( assemble( "x ja:strict 'true'" ) );  assertEquals( true, a.strict );
+        a.openModel( assemble( "x ja:strict 'false'" ) );  assertEquals( false, a.strict );
+        }
+
+    private Resource assemble( String details )
+        {
+        return resourceInModel( "x rdf:type ja:FileModel; x ja:modelName 'junk'; <D>; x ja:directory file:spoo".replaceAll( "<D>", details ) );
+        }   
+    
+    private final class NoteAssemblerBooleans extends FileModelAssembler
+        {
+        private final Model model;
+        public boolean create;
+        public boolean strict;
+        
+        private NoteAssemblerBooleans()
+            { this.model = model(); }
+
+        public Model createFileModel( File fullName, String lang, boolean create, boolean strict, ReificationStyle s )
+            { 
+            this.create = create;
+            this.strict = strict;
+            return model; 
+            }
+        }
+
     
     public void testFileModelAssemblerUsesMode()
         {

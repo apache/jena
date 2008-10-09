@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestAssemblerVocabulary.java,v 1.9 2008-08-14 10:35:41 chris-dollin Exp $
+ 	$Id: TestAssemblerVocabulary.java,v 1.10 2008-10-09 14:24:31 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.test;
@@ -60,6 +60,8 @@ public class TestAssemblerVocabulary extends AssemblerTestBase
         assertLocalname( "namespace", JA.namespace );
         assertLocalname( "includes", JA.includes );
         assertLocalname( "directory", JA.directory );
+        assertLocalname( "create", JA.create );
+        assertLocalname( "strict", JA.strict );
         assertLocalname( "mapName", JA.mapName );
         assertLocalname( "documentManager", JA.documentManager );
         assertLocalname( "ontModelSpec", JA.ontModelSpec );

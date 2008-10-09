@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: JA.java,v 1.18 2008-08-14 10:35:44 chris-dollin Exp $
+ 	$Id: JA.java,v 1.19 2008-10-09 14:24:37 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler;
@@ -98,6 +98,10 @@ public class JA
     public static final Property includes = property( "includes" );
 
     public static final Property directory = property( "directory" );
+
+    public static final Property create = property( "create" );
+
+    public static final Property strict = property( "strict" );
 
     public static final Property mapName = property( "mapName" );
 
