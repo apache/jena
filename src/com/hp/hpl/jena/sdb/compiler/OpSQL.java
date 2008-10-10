@@ -41,7 +41,7 @@ public class OpSQL extends OpExtMain
     
     @Override
     public QueryIterator eval(QueryIterator input, ExecutionContext execCxt)
-    { return new QueryIterSQL(this, input, execCxt) ; }
+    { return new QueryIterOpSQL(this, input, execCxt) ; }
 
     public QueryIterator exec(ExecutionContext execCxt)
     { return exec(BindingRoot.create(), execCxt) ; }

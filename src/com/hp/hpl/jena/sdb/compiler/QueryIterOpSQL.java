@@ -15,12 +15,12 @@ import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterRepeatApply;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
 
-public class QueryIterSQL extends QueryIterRepeatApply
+public class QueryIterOpSQL extends QueryIterRepeatApply
 {
 
     private OpSQL opSQL ;
     
-    public QueryIterSQL(OpSQL op, 
+    public QueryIterOpSQL(OpSQL op, 
                         QueryIterator input ,
                         ExecutionContext context)
     { 
