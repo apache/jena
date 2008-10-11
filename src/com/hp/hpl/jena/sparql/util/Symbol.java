@@ -15,7 +15,7 @@ public class Symbol
     String symbol ;
     
     static public Symbol create(String symbolStr) { return new Symbol(symbolStr) ; }
-    static public Symbol create(Symbol other) {return new Symbol(other) ; }
+    static public Symbol create(Symbol other) { return new Symbol(other) ; }
     
     protected Symbol(String symbol)
     { 
@@ -32,7 +32,7 @@ public class Symbol
     
     public int hashCode() { return symbol.hashCode() ; } 
     
-    public boolean isCompatibleWith(Symbol other) { return equals(other) ; }
+    //public boolean isCompatibleWith(Symbol other) { return equals(other) ; }
     
     public boolean equals(Object other)
     {
