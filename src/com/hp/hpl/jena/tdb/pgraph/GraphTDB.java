@@ -29,7 +29,11 @@ import com.hp.hpl.jena.tdb.TDB;
 import com.hp.hpl.jena.tdb.TDBException;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 import com.hp.hpl.jena.tdb.graph.GraphSyncListener;
+import com.hp.hpl.jena.tdb.graph.GraphTDBQueryHandler;
+import com.hp.hpl.jena.tdb.graph.GraphTDBTransactionHandler;
+import com.hp.hpl.jena.tdb.graph.UpdateListener;
 import com.hp.hpl.jena.tdb.index.TripleIndex;
+import com.hp.hpl.jena.tdb.lib.Sync;
 import com.hp.hpl.jena.tdb.lib.TupleLib;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
 import com.hp.hpl.jena.tdb.solver.reorder.Reorderable;
@@ -80,6 +84,7 @@ public class GraphTDB extends GraphBase implements Sync, Reorderable
         int syncPoint = SystemTDB.SyncTick ;
         if ( syncPoint > 0 )
             this.getEventManager().register(new GraphSyncListener(this, syncPoint)) ;
+        this.getEventManager().register(new UpdateListener(this)) ;
     }
     
     @Override

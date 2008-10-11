@@ -23,6 +23,11 @@ import com.hp.hpl.jena.query.QueryFactory;
 import com.hp.hpl.jena.query.ResultSet;
 import com.hp.hpl.jena.query.ResultSetFormatter;
 import com.hp.hpl.jena.query.Syntax;
+
+import com.hp.hpl.jena.update.UpdateAction;
+import com.hp.hpl.jena.update.UpdateFactory;
+import com.hp.hpl.jena.update.UpdateRequest;
+
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.RSIterator;
@@ -65,6 +70,12 @@ public class Run
  
     public static void main(String ... args) throws IOException
     {
+        Model m = TDBFactory.createModel() ;
+        UpdateRequest r = UpdateFactory.create("LOAD <D.ttl>") ;
+        UpdateAction.execute(r, m) ;
+        System.exit(0) ;
+        
+        
         TDBFactory.assembleGraph( "Store/gbt.ttl") ;
         System.out.println("Assembled") ;
         System.exit(0) ;

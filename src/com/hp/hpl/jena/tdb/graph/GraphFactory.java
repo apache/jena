@@ -13,6 +13,11 @@ public class GraphFactory
     {
         return new StatsGraph() ;
     }
+    
+    public static SinkGraph sinkGraph()
+    {
+        return new SinkGraph() ;
+    }
 }
 
 /*

@@ -4,47 +4,64 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.pgraph;
+package com.hp.hpl.jena.tdb.graph;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.hp.hpl.jena.graph.Graph;
+import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.graph.query.SimpleQueryHandler;
+import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 
-import com.hp.hpl.jena.graph.impl.TransactionHandlerBase;
-
-/** TDB does not support ACID transactions - it (weakly) flushes after operations finish. */
-
-public class GraphTDBTransactionHandler extends TransactionHandlerBase //implements TransactionHandler 
+public class GraphTDBQueryHandler extends SimpleQueryHandler //implements QueryHandler
 {
-    private static Logger log = LoggerFactory.getLogger(GraphTDB.class) ;
-    private final GraphTDB graph ;
 
-    public GraphTDBTransactionHandler(GraphTDB graph)
+    public GraphTDBQueryHandler(Graph graph)
     {
-        this.graph = graph ;
-    }
-    
-    @Override
-    public void abort()
-    {
-        log.warn("'Abort' of a transaction not supported - ignored") ;
+        super(graph) ;
     }
 
+    // ----------------------
     @Override
-    public void begin()
-    {}
+    public boolean containsNode(Node n)
+    {
+        return super.containsNode(n) ;
+    }
 
     @Override
-    public void commit()
+    public ExtendedIterator subjectsFor(Node p, Node o)
     {
-        graph.sync(false) ;
+        return super.subjectsFor(p, o) ;
     }
-    
 
     @Override
-    public boolean transactionsSupported()
+    public ExtendedIterator predicatesFor(Node s, Node o)
     {
-        return true ;
+        return super.predicatesFor(s, o) ;
     }
+
+    @Override
+    public ExtendedIterator objectsFor(Node s, Node p)
+    {
+        return super.objectsFor(s, p) ;
+    }
+    // ----------------------
+
+//    @Override
+//    public Stage patternStage(Mapping map, ExpressionSet constraints, Triple[] p)
+//    {
+//        return null ;
+//    }
+//
+//    @Override
+//    public BindingQueryPlan prepareBindings(Query q, Node[] variables)
+//    {
+//        return null ;
+//    }
+//
+//    @Override
+//    public TreeQueryPlan prepareTree(Graph pattern)
+//    {
+//        return null ;
+//    }
 }
 
 /*

@@ -4,11 +4,52 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.pgraph;
+package com.hp.hpl.jena.tdb.graph;
 
-public interface Sync
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.hp.hpl.jena.graph.impl.TransactionHandlerBase;
+
+import com.hp.hpl.jena.tdb.pgraph.GraphTDB;
+
+/** TDB does not support ACID transactions - it uses the SPARQL/Update events.  
+ *  It (weakly) flushes if commit is called although it denies supporting transactions
+ */
+
+public class GraphTDBTransactionHandler extends TransactionHandlerBase //implements TransactionHandler 
 {
-    public void sync(boolean force) ;
+    private static Logger log = LoggerFactory.getLogger(GraphTDB.class) ;
+    private final GraphTDB graph ;
+
+    public GraphTDBTransactionHandler(GraphTDB graph)
+    {
+        this.graph = graph ;
+    }
+    
+    @Override
+    public void abort()
+    {
+        throw new UnsupportedOperationException("TDB: 'abort' of a transaction not supported") ;
+        //log.warn("'Abort' of a transaction not supported - ignored") ;
+    }
+
+    @Override
+    public void begin()
+    {}
+
+    @Override
+    public void commit()
+    {
+        graph.sync(false) ;
+    }
+    
+
+    @Override
+    public boolean transactionsSupported()
+    {
+        return false ;
+    }
 }
 
 /*

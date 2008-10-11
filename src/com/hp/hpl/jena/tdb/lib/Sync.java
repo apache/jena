@@ -4,64 +4,11 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.pgraph;
+package com.hp.hpl.jena.tdb.lib;
 
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.query.SimpleQueryHandler;
-import com.hp.hpl.jena.util.iterator.ExtendedIterator;
-
-public class GraphTDBQueryHandler extends SimpleQueryHandler //implements QueryHandler
+public interface Sync
 {
-
-    public GraphTDBQueryHandler(Graph graph)
-    {
-        super(graph) ;
-    }
-
-    // ----------------------
-    @Override
-    public boolean containsNode(Node n)
-    {
-        return super.containsNode(n) ;
-    }
-
-    @Override
-    public ExtendedIterator subjectsFor(Node p, Node o)
-    {
-        return super.subjectsFor(p, o) ;
-    }
-
-    @Override
-    public ExtendedIterator predicatesFor(Node s, Node o)
-    {
-        return super.predicatesFor(s, o) ;
-    }
-
-    @Override
-    public ExtendedIterator objectsFor(Node s, Node p)
-    {
-        return super.objectsFor(s, p) ;
-    }
-    // ----------------------
-
-//    @Override
-//    public Stage patternStage(Mapping map, ExpressionSet constraints, Triple[] p)
-//    {
-//        return null ;
-//    }
-//
-//    @Override
-//    public BindingQueryPlan prepareBindings(Query q, Node[] variables)
-//    {
-//        return null ;
-//    }
-//
-//    @Override
-//    public TreeQueryPlan prepareTree(Graph pattern)
-//    {
-//        return null ;
-//    }
+    public void sync(boolean force) ;
 }
 
 /*

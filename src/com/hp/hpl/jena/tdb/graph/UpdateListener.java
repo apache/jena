@@ -6,46 +6,50 @@
 
 package com.hp.hpl.jena.tdb.graph;
 
-import com.hp.hpl.jena.sparql.util.graph.GraphListenerCounter;
+import com.hp.hpl.jena.graph.Graph;
+import com.hp.hpl.jena.graph.Triple;
+
+import com.hp.hpl.jena.sparql.modify.GraphStoreEvents;
+import com.hp.hpl.jena.sparql.util.graph.GraphListenerBase;
 
 import com.hp.hpl.jena.tdb.lib.Sync;
 
 
-/** Calls sync every tickCount additions and at the end of a bulk load. */ 
-public class GraphSyncListener extends GraphListenerCounter
+/** Listen for end of update events and sync when seen */
+
+public class UpdateListener extends GraphListenerBase
 {
     Sync sync ;
     
-    public GraphSyncListener(Sync g, int tickCount)
+    public UpdateListener(Sync g)
     {
-        super(tickCount) ;
         sync = g ;
     }
 
     @Override
-    protected void deleteTick()
+    public void notifyEvent(Graph source, Object value)
     {
-        sync.sync(false) ;
-    }
+        if ( value.equals(GraphStoreEvents.RequestStartEvent) )
+        {}
+        else if ( value.equals(GraphStoreEvents.RequestFinishEvent) )
+        {
+            sync.sync(false) ;
+        }
 
-    @Override
-    protected void addTick()
-    {
-        sync.sync(false);
+        super.notifyEvent(source, value) ;
     }
-
-    @Override
-    protected void startRead()
-    { }
-            
-    @Override
-    protected void finishRead()
-    { 
-        sync.sync(true) ;
-    }
-
-        
     
+    
+    // ---- Ignore these.
+    
+    @Override
+    protected void addEvent(Triple t)
+    { }
+
+    @Override
+    protected void deleteEvent(Triple t)
+    {}
+
 }
 
 /*
