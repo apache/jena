@@ -8,20 +8,18 @@ package com.hp.hpl.jena.tdb.pgraph.assembler;
 
 import static com.hp.hpl.jena.sparql.util.graph.GraphUtils.exactlyOneProperty;
 import static com.hp.hpl.jena.sparql.util.graph.GraphUtils.getStringValue;
-import static com.hp.hpl.jena.tdb.pgraph.assembler.PGraphAssemblerVocab.pDescription;
-import static com.hp.hpl.jena.tdb.pgraph.assembler.PGraphAssemblerVocab.pFile;
 import static com.hp.hpl.jena.tdb.pgraph.assembler.PGraphAssemblerVocab.pIndex;
 import static com.hp.hpl.jena.tdb.pgraph.assembler.PGraphAssemblerVocab.pLocation;
+
+import com.hp.hpl.jena.rdf.model.*;
 
 import com.hp.hpl.jena.assembler.Assembler;
 import com.hp.hpl.jena.assembler.Mode;
 import com.hp.hpl.jena.assembler.assemblers.AssemblerBase;
 import com.hp.hpl.jena.assembler.exceptions.AssemblerException;
-import com.hp.hpl.jena.rdf.model.Literal;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.RDFNode;
-import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.rdf.model.StmtIterator;
+
+import com.hp.hpl.jena.sparql.util.FmtUtils;
+
 import com.hp.hpl.jena.tdb.TDB;
 import com.hp.hpl.jena.tdb.TDBException;
 import com.hp.hpl.jena.tdb.TDBFactory;
@@ -46,7 +44,7 @@ public class PGraphAssembler extends AssemblerBase implements Assembler
         
         // Or [not tested]
         // [] rdf:type tdb:GraphTDB ;
-        //      index [ ... ] ;
+        //      tdb:index "SPO" ;
         //    .
         
         // Or [not ready]
@@ -61,15 +59,11 @@ public class PGraphAssembler extends AssemblerBase implements Assembler
             // Make just using the location.
             return TDBFactory.createModel(loc) ;
         
-        // There has got to be a better way.
-        
-         /*
-        ResultSet rs = match("?root assem:index [ assem:description ?d ; assem:file ?f ]", prefixes) ;
-        ResultSet rs = match(root, "assem:index [ assem:description ?d ; assem:file ?f ]", prefixes) ;
-         */        
-
         // ---- API ways
         
+        
+        String[] indexes = null ;
+
         StmtIterator sIter = root.listProperties(pIndex) ;
         while(sIter.hasNext())
         {
@@ -80,11 +74,11 @@ public class PGraphAssembler extends AssemblerBase implements Assembler
                 System.out.printf("Index: %s\n", desc) ; System.out.flush();
                 continue ;
             }
-            
-            Resource x = (Resource)obj ;
-            String desc = x.getProperty(pDescription).getString() ;
-            String file = x.getProperty(pFile).getString() ;
-            System.out.printf("Index: %s in file %s\n", desc, file) ; System.out.flush();
+            throw new TDBException("Wrong format for tdb:index: shoudl be a string: found: "+FmtUtils.stringForRDFNode(obj)) ; 
+//            Resource x = (Resource)obj ;
+//            String desc = x.getProperty(pDescription).getString() ;
+//            String file = x.getProperty(pFile).getString() ;
+//            System.out.printf("Index: %s in file %s\n", desc, file) ; System.out.flush();
         }
         
         System.out.flush();

@@ -8,10 +8,6 @@ package dev;
 
 public class Dev
 {
-    // ---- Sync after update (32 bit, Tomcat shutdown)
-    //   Transaction handler added.  Default model only.  Temp-hack.
-    //   Catch: GraphStoreEvents.RequestStart, RequestFinish from ARQ.
-    
     // ---- Next: materialized views
     // ---- Next: range queries (filter E (bgp T)) ==> (range T E....) where E has one var and the one var is in T
     //    Given NodeId structure, should be doable for ints and dates.
