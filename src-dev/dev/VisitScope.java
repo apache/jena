@@ -7,32 +7,36 @@
 package dev;
 
 //import com.hp.hpl.jena.sparql.algebra.OpVisitor;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
+
+import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.OpVisitorByType;
-import com.hp.hpl.jena.sparql.algebra.op.Op0;
-import com.hp.hpl.jena.sparql.algebra.op.Op1;
-import com.hp.hpl.jena.sparql.algebra.op.Op2;
-import com.hp.hpl.jena.sparql.algebra.op.OpBGP;
-import com.hp.hpl.jena.sparql.algebra.op.OpExt;
-import com.hp.hpl.jena.sparql.algebra.op.OpN;
+import com.hp.hpl.jena.sparql.algebra.op.*;
 import com.hp.hpl.jena.sparql.core.Quad;
 import com.hp.hpl.jena.sparql.core.Var;
+
 import com.hp.hpl.jena.tdb.lib.NodeLib;
 
 public class VisitScope extends OpVisitorByType
 {
+    Map<Op, Collection<Var>> defined = new HashMap<Op, Collection<Var>>() ;
 
+    // ---- Default actions
     @Override
     protected void visit0(Op0 op)
-    {}
+    {
+        Collection<Var> x =  Collections.emptySet() ;
+        defined.put(op,x) ;
+    }
 
     @Override
     protected void visit1(Op1 op)
-    {}
+    {
+        defined.put(op, defined.get(op.getSubOp())) ;
+    }
 
     @Override
     protected void visit2(Op2 op)
@@ -46,13 +50,62 @@ public class VisitScope extends OpVisitorByType
     protected void visitN(OpN op)
     {}
 
+    // ---- Compositions
+    
+    @Override
+    public void visit(OpJoin opJoin)
+    {
+        // IF Walker: will have visited below already.
+        opJoin.getLeft().visit(this) ;
+        opJoin.getRight().visit(this) ;
+        
+        Collection<Var> vars = new HashSet<Var>() ;
+        vars.addAll(defined.get(opJoin.getLeft())) ;
+        vars.addAll(defined.get(opJoin.getRight())) ;
+        defined.put(opJoin, vars) ;
+    }
+    
+    @Override
+    public void visit(OpLeftJoin opLeftJoin) {}
+
+    @Override
+    public void visit(OpUnion opUnion) {}
+
+    @Override
+    public void visit(OpGraph opGraph) {}
+    
+    // ---- Other
+    
+    @Override
+    public void visit(OpFilter opFilter) {}
+    
+    @Override
+    public void visit(OpAssign opAssign) {}
+
+    @Override
+    public void visit(OpProject opProject) {}
+    
+    // ---- Base elements
+    
     @Override
     public void visit(OpBGP opBGP)
     {
         Set<Var> acc = new HashSet<Var>() ;
         for ( Triple t : NodeLib.tripleList(opBGP) )
             addVarsFromTriple(acc, t) ;
+        defined.put(opBGP, acc) ;
     }
+    
+    @Override
+    public void visit(OpQuadPattern opQuad)
+    {
+        Set<Var> acc = new HashSet<Var>() ;
+        for ( Quad q : NodeLib.quadList(opQuad) )
+            addVarsFromQuad(acc, q) ;
+        defined.put(opQuad, acc) ;
+    }
+    
+    // ---- Workers
     
     private static void addVarsFromTriple(Set<Var> acc, Triple t)
     {

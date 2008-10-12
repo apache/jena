@@ -17,16 +17,22 @@ import java.util.List;
 
 import lib.Bytes;
 
+import com.hp.hpl.jena.rdf.model.AnonId;
+
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.rdf.model.AnonId;
 import com.hp.hpl.jena.shared.PrefixMapping;
+
 import com.hp.hpl.jena.sparql.algebra.op.OpBGP;
+import com.hp.hpl.jena.sparql.algebra.op.OpQuadPattern;
 import com.hp.hpl.jena.sparql.core.BasicPattern;
+import com.hp.hpl.jena.sparql.core.Quad;
+import com.hp.hpl.jena.sparql.core.QuadPattern;
 import com.hp.hpl.jena.sparql.sse.SSE;
 import com.hp.hpl.jena.sparql.sse.SSEParseException;
 import com.hp.hpl.jena.sparql.util.ALog;
 import com.hp.hpl.jena.sparql.util.FmtUtils;
+
 import com.hp.hpl.jena.tdb.TDBException;
 import com.hp.hpl.jena.tdb.base.record.Record;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
@@ -63,7 +69,6 @@ public class NodeLib
             throw ex ;
         }
     }
-
     /** Get the triples in the form of a List<Triple> */
     public static List<Triple> tripleList(OpBGP opBGP)
     {
@@ -75,12 +80,32 @@ public class NodeLib
     {
         return tripleList(pattern.getList()) ;
     }
-
+    
     /** Cast a list (known to be triples, e.g. from Java 1.4) to a List<Triple> */
     public static List<Triple> tripleList(List<?> triples)
     {
         @SuppressWarnings("unchecked")
         List<Triple> x = (List<Triple>)triples ;
+        return x ;
+    }
+    
+    /** Get the triples in the form of a List<Triple> */
+    public static List<Quad> quadList(OpQuadPattern opQuad)
+    {
+        return quadList(opQuad.getQuads()) ;
+    }
+    
+    /** Get the triples in the form of a List<Triple> */
+    public static List<Quad> quadList(QuadPattern pattern)
+    {
+        return quadList(pattern.getList()) ;
+    }
+
+    /** Cast a list (known to be triples, e.g. from Java 1.4) to a List<Triple> */
+    public static List<Quad> quadList(List<?> quads)
+    {
+        @SuppressWarnings("unchecked")
+        List<Quad> x = (List<Quad>)quads ;
         return x ;
     }
     
