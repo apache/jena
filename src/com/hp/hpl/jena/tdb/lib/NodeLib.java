@@ -28,6 +28,7 @@ import com.hp.hpl.jena.sparql.algebra.op.OpQuadPattern;
 import com.hp.hpl.jena.sparql.core.BasicPattern;
 import com.hp.hpl.jena.sparql.core.Quad;
 import com.hp.hpl.jena.sparql.core.QuadPattern;
+import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.sse.SSE;
 import com.hp.hpl.jena.sparql.sse.SSEParseException;
 import com.hp.hpl.jena.sparql.util.ALog;
@@ -106,6 +107,22 @@ public class NodeLib
     {
         @SuppressWarnings("unchecked")
         List<Quad> x = (List<Quad>)quads ;
+        return x ;
+    }
+    
+    /** Cast a list (known to be nodes, e.g. from Java 1.4) to a List<Node> */
+    public static List<Node> nodeList(List<?> nodes)
+    {
+        @SuppressWarnings("unchecked")
+        List<Node> x = (List<Node>)nodes ;
+        return x ;
+    }
+    
+    /** Cast a list (known to be vars, e.g. from Java 1.4) to a List<Var> */
+    public static List<Var> varList(List<?> vars)
+    {
+        @SuppressWarnings("unchecked")
+        List<Var> x = (List<Var>)vars ;
         return x ;
     }
     
