@@ -30,11 +30,6 @@ public class OpProject extends OpModifier
     
     public List getVars() { return vars ; }
     
-    public Op copy()
-    {
-        return null ;
-    }
-
     public String getName() { return Tags.tagProject ; }
     public void visit(OpVisitor opVisitor)  { opVisitor.visit(this) ; }
     public Op copy(Op subOp)                { return new OpProject(subOp, vars) ; }
