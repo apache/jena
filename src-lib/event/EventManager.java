@@ -17,38 +17,50 @@ import java.util.Map;
  */
 public class EventManager
 {
-    // Singleton.
     private static EventManager eventManager = new EventManager() ;
     
     // Public operations 
-    static public void register(Object object, EventListener listener) 
-    { eventManager.register$(object, listener) ; }
+    static public void register(Object object, EventType type, EventListener listener) 
+    { eventManager.register$(object, type, listener) ; }
     
-    static public void unregister(Object object, EventListener listener)
-    { eventManager.unregister$(object, listener) ; }
-
+    /** Unregister a listener for events */ 
+    static public void unregister(Object object, EventType type, EventListener listener)
+    { eventManager.unregister$(object, type, listener) ; }
+    
+    /** Send an event to all listeners on an object for the event's type */  
     static public void send(Object dest, Event event)
     { eventManager.send$(dest, event) ; }
     
-    // ---- The object itself
-    private Map<Object,List<EventListener>> listeners = new HashMap<Object,List<EventListener>>() ;
+    // All registered objects
+    // All registered type
+    
+    // ---- The object EventManager itself
+    
+    private Map<Object, Map<EventType, List<EventListener>>> listeners = new HashMap<Object, Map<EventType, List<EventListener>>>() ;
+
     // Singleton above.
     private EventManager () {}
     
-    private void register$(Object object, EventListener listener) 
+    private void register$(Object object, EventType type, EventListener listener) 
     {
-        List<EventListener> x = listeners.get(object) ;
+        Map<EventType, List<EventListener>> x = listeners.get(object) ;
         if ( x == null )
         {
-            x = new ArrayList<EventListener>() ;
+            x = new HashMap<EventType, List<EventListener>> () ;
             listeners.put(object, x) ;
         }
-        x.add(listener) ;
+        List<EventListener> z = x.get(type) ;
+        if ( z == null )
+        {
+            z = new ArrayList<EventListener>() ;
+            x.put(type, z) ;
+        }
+        z.add(listener) ;
     }
     
-    private void unregister$(Object object, EventListener listener) 
+    private void unregister$(Object object, EventType type, EventListener listener) 
     {
-        List<EventListener> x = listeners.get(object) ;
+        List<EventListener> x = find(object, type) ;
         if ( x == null ) 
             return ;
         x.remove(listener); 
@@ -56,7 +68,7 @@ public class EventManager
     
     private void send$(Object dest, Event event)
     {
-        List<EventListener> x = listeners.get(dest) ;
+        List<EventListener> x = find(dest, event.getType()) ;
         if ( x == null ) 
         {
             deliveryFailure(dest, event) ;
@@ -69,6 +81,14 @@ public class EventManager
     private void deliveryFailure(Object object, Event event)
     {}
     
+    private List<EventListener> find(Object object, EventType type)
+    {
+        Map<EventType, List<EventListener>> x = listeners.get(object) ;
+        if ( x == null )
+            return null ;
+        List<EventListener> z = x.get(type) ;
+        return z ;
+    }
 }
 
 /*
