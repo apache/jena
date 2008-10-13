@@ -4,26 +4,22 @@
 @prefix ja:      <http://jena.hpl.hp.com/2005/11/Assembler#> .
 
 # **** Experimental stuff
-[] ja:loadClass "com.hp.hpl.jena.tdb.TDB" .
 
-## Tell the system of the new model types.
-## Can the init do this?
-  ##tdb:GraphBTree rdfs:subClassOf ja:Model .
-  ##tdb:GraphBDB rdfs:subClassOf ja:Model .
+[] ja:loadClass "com.hp.hpl.jena.tdb.TDB" .
 
 <#dataset> rdf:type         ja:RDFDataset ;
     ja:defaultGraph <#graph> ;
     . 
 
-## <#graph> rdf:type tdb:GraphTDB ;
-##     tdb:location "." ;      # Means here: not a URI??
-##     .
-
 <#graph> rdf:type tdb:GraphTDB ;
     tdb:location "tmp" ;
-    tdb:index "SPOG" ;
-    tdb:index [ tdb:description "SPO" ; tdb:file "tmp/SPO-1.idx" ] ;
-    tdb:index [ tdb:description "POS" ; tdb:file "tmp/POS-1.idx" ] ;
+    tdb:index "SGPO" ;
+    tdb:index "POGS" ;
+    # YARS: spoc poc ocs csp cp os
+    # SDB: SPOG POSG OSPG GSPO GPOS GOSP
+
+##     tdb:index [ tdb:description "SPO" ; tdb:file "tmp/SPO-1.idx" ] ;
+##     tdb:index [ tdb:description "POS" ; tdb:file "tmp/POS-1.idx" ] ;
 ##    tdb:index [ tdb:description "OSP" ; tdb:file "tmp/OSP-1.idx" ] ;
     .
 
