@@ -7,31 +7,34 @@
 package dev;
 
 import java.io.IOException;
+import java.util.Map;
+import java.util.Set;
 
 import lib.FileOps;
 import lib.Pair;
 import lib.cache.Cache2;
 import arq.cmd.CmdUtils;
 
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.rdf.model.RSIterator;
-
-import com.hp.hpl.jena.util.FileManager;
-
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
-
+import com.hp.hpl.jena.query.Query;
+import com.hp.hpl.jena.query.QueryExecution;
+import com.hp.hpl.jena.query.QueryExecutionFactory;
+import com.hp.hpl.jena.query.QueryFactory;
+import com.hp.hpl.jena.query.ResultSet;
+import com.hp.hpl.jena.query.ResultSetFormatter;
+import com.hp.hpl.jena.query.Syntax;
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.rdf.model.RSIterator;
 import com.hp.hpl.jena.sparql.algebra.Algebra;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.Transformer;
+import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.main.OpCompiler;
 import com.hp.hpl.jena.sparql.sse.SSE;
 import com.hp.hpl.jena.sparql.util.QueryExecUtils;
-
-import com.hp.hpl.jena.query.*;
-
 import com.hp.hpl.jena.tdb.TDB;
 import com.hp.hpl.jena.tdb.TDBFactory;
 import com.hp.hpl.jena.tdb.base.block.BlockMgr;
@@ -48,6 +51,7 @@ import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderWeighted;
 import com.hp.hpl.jena.tdb.solver.stats.StatsMatcher;
 import com.hp.hpl.jena.tdb.sys.SystemTDB;
+import com.hp.hpl.jena.util.FileManager;
 
 public class Run
 {
@@ -64,16 +68,23 @@ public class Run
  
     public static void main(String ... args) throws IOException
     {
-//        Model m = TDBFactory.createModel() ;
-//        UpdateRequest r = UpdateFactory.create("LOAD <D.ttl>") ;
-//        UpdateAction.execute(r, m) ;
+//        TDBFactory.assembleGraph( "Store/gbt.ttl") ;
+//        System.out.println("Assembled") ;
 //        System.exit(0) ;
+
         
+        Op op = SSE.parseOp("(bgp (?x :p ?v) (?x :q 123))") ;
         
-        TDBFactory.assembleGraph( "Store/gbt.ttl") ;
-        System.out.println("Assembled") ;
+        Map <Op, Set<Var>> x = VisitScope.scopeMap(op) ;
+        for ( Op k : x.keySet() )
+        {
+            Set<Var> vars = x.get(k) ;
+            String s = k.toString();
+            if ( s.endsWith("\n") )
+                s = s.substring(0, s.length()-2) ;
+            System.out.println(s+" ==> "+vars) ;
+        }
         System.exit(0) ;
-        
         //smallGraph() ;
         //tdbloader("--desc=tdb.ttl", "--mem", "/home/afs/Datasets/MusicBrainz/tracks.nt") ;
  
