@@ -8,21 +8,20 @@ package event;
 
 public class Event
 {
-    private EventType label ;
+    private EventType type ;
     private Object argument ;
     
-    public Event(EventType label, Object argument) { this.label = label ; this.argument = argument ; }
+    public Event(EventType label, Object argument) { this.type = label ; this.argument = argument ; }
     
-    public EventType getLabel()
+    public EventType getType()
     {
-        return label ;
+        return type ;
     }
 
     public Object getArgument()
     {
         return argument ;
     }
-
 }
 
 /*
