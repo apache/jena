@@ -11,6 +11,7 @@ import junit.framework.TestSuite;
 import sdb.cmd.CmdArgsDB;
 import arq.cmdline.ArgDecl;
 
+import com.hp.hpl.jena.query.ARQ;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.sdb.SDB;
@@ -87,8 +88,14 @@ public class sdbtest extends CmdArgsDB
             //SchemaBase.printAbstractSQL = true ;
             System.out.println("Manifest: "+manifest) ;
         }
+        
         TestSuite ts = new TestSuite() ;
         ts.addTest(QueryTestSDBFactory.make(getStore(), manifest, null)) ;
+        
+        if ( true )
+            // PostgreSQL gets upset with comments in comments??
+            ARQ.getContext().setFalse(SDB.annotateGeneratedSQL) ;
+        
         SimpleTestRunner.runAndReport(ts) ;
     }
     
