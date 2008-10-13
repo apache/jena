@@ -6,23 +6,14 @@
 
 package event;
 
-public class Event
+import com.hp.hpl.jena.sparql.util.Symbol;
+
+public class EventType extends Symbol
 {
-    private EventType label ;
-    private Object argument ;
+    public EventType(String label) { super(label) ; }
     
-    public Event(EventType label, Object argument) { this.label = label ; this.argument = argument ; }
-    
-    public EventType getLabel()
-    {
-        return label ;
-    }
-
-    public Object getArgument()
-    {
-        return argument ;
-    }
-
+    @Override 
+    public String toString() { return "event:"+getSymbol() ; }
 }
 
 /*

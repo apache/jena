@@ -16,7 +16,7 @@ public class TestEvent extends BaseTest
     {
         public int eventCount = 0 ;
         public Object dest = null ;
-        public EventLabel label = null ;
+        public EventType label = null ;
         public Object arg = null ;
         
         @Override
@@ -33,8 +33,8 @@ public class TestEvent extends BaseTest
     {
         EventListenerLogger listener = new EventListenerLogger() ;
         Object obj = new Object() ;
-        EventLabel ev1 = new EventLabel("1") ;
-        EventLabel ev2 = new EventLabel("2") ;
+        EventType ev1 = new EventType("1") ;
+        EventType ev2 = new EventType("2") ;
         Object arg = new String("arg") ;
         
         assertEquals(0, listener.eventCount) ;
@@ -50,8 +50,8 @@ public class TestEvent extends BaseTest
     {
         EventListenerLogger listener = new EventListenerLogger() ;
         Object obj = new Object() ;
-        EventLabel ev1 = new EventLabel("1") ;
-        EventLabel ev2 = new EventLabel("2") ;
+        EventType ev1 = new EventType("1") ;
+        EventType ev2 = new EventType("2") ;
         Object arg = new String("arg") ;
         
         assertEquals(0, listener.eventCount) ;
@@ -71,8 +71,8 @@ public class TestEvent extends BaseTest
     {
         EventListenerLogger listener = new EventListenerLogger() ;
         Object obj = new Object() ;
-        EventLabel ev1 = new EventLabel("1") ;
-        EventLabel ev2 = new EventLabel("2") ;
+        EventType ev1 = new EventType("1") ;
+        EventType ev2 = new EventType("2") ;
         Object arg = new String("arg") ;
         
         EventManager.send(obj, new Event(ev1, "foo")) ;

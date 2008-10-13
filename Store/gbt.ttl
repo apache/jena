@@ -21,6 +21,7 @@
 
 <#graph> rdf:type tdb:GraphTDB ;
     tdb:location "tmp" ;
+    tdb:index "SPOG" ;
     tdb:index [ tdb:description "SPO" ; tdb:file "tmp/SPO-1.idx" ] ;
     tdb:index [ tdb:description "POS" ; tdb:file "tmp/POS-1.idx" ] ;
 ##    tdb:index [ tdb:description "OSP" ; tdb:file "tmp/OSP-1.idx" ] ;
