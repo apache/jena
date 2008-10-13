@@ -23,17 +23,17 @@ import com.hp.hpl.jena.sparql.core.Var;
 
 import com.hp.hpl.jena.tdb.lib.NodeLib;
 
-public class VisitScope
+public class Scope
 {
     
     public static Map<Op, Set<Var>> scopeMap(Op op)
     {
-        ScopeWorker v = new ScopeWorker() ;
+        ScopeVisitor v = new ScopeVisitor() ;
         OpWalker.walk(op, v) ;
         return v.defined ;
     }
     
-    static class ScopeWorker extends OpVisitorByType
+    private static class ScopeVisitor extends OpVisitorByType
     {
 
         Map<Op, Set<Var>> defined = new HashMap<Op, Set<Var>>() ;

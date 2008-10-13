@@ -73,9 +73,9 @@ public class Run
 //        System.exit(0) ;
 
         
-        Op op = SSE.parseOp("(leftjoin (bgp (?x :p ?v)) (bgp (?x :q 123)))") ;
+        Op op = SSE.parseOp("(union (bgp (?x :p ?v)) (bgp (?x :q 123)))") ;
         
-        Map <Op, Set<Var>> x = VisitScope.scopeMap(op) ;
+        Map <Op, Set<Var>> x = Scope.scopeMap(op) ;
         for ( Op k : x.keySet() )
         {
             Set<Var> vars = x.get(k) ;
@@ -83,9 +83,6 @@ public class Run
             s = s.replaceAll("\n", " ") ;
             s = s.replaceAll("\r", " ") ;
             s = s.replaceAll("  +", " ") ;
-//            
-//            while ( s.endsWith("\n") || s.endsWith("\r") )
-//                s = s.substring(0, s.length()-1) ;
             System.out.println(vars+" <==> "+s) ;
         }
         System.exit(0) ;
