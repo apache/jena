@@ -132,7 +132,7 @@ INSERT INTO ${a} (ID, Name) VALUES (?,?)
 #-------------------------------------------------------------------
 # Remove the name of a graph.
 deleteGraph
-Update ${a} SET NAME=null where ID = ?
+Update ${a} SET Name=null where ID = ?
 
 #-------------------------------------------------------------------
 # Delete a triple
@@ -166,7 +166,7 @@ Select nextval('${a}_ID_seq')
 #-------------------------------------------------------------------
 # Return a long object
 getLongObject
-SELECT HEAD, TAIL FROM ${a} WHERE ID = ?
+SELECT Head, Tail FROM ${a} WHERE ID = ?
 
 #-------------------------------------------------------------------
 # Return the ID of a long object, if it exists, based on the Head

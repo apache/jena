@@ -43,7 +43,7 @@ import org.apache.xerces.util.XMLChar;
 * loaded in a separate file etc/[layout]_[database].sql from the classpath.
 *
 * @author hkuno modification of Jena1 code by Dave Reynolds (der)
-* @version $Revision: 1.69 $ on $Date: 2008-01-02 12:08:22 $
+* @version $Revision: 1.70 $ on $Date: 2008-10-13 16:32:14 $
 */
 
 public abstract class DriverRDB implements IRDBDriver {
@@ -1559,7 +1559,7 @@ public abstract class DriverRDB implements IRDBDriver {
 			if ( uri.startsWith(RDBCodeURI) ) {
 				throw new RDFRDBException ("URI Node looks like a blank node: " + uri );
 			}
-			// TODO: need to write special version of splitNamespace for rdb.
+			// TO DO: need to write special version of splitNamespace for rdb.
 			//		or else, need a guarantee that splitNamespace never changes.
 			//		the problem is that if the splitNamespace algorithm changes,
 			//		then URI's may be encoded differently. so, URI's in existing
@@ -1599,7 +1599,6 @@ public abstract class DriverRDB implements IRDBDriver {
 				res = RDBCodeURI + RDBCodeValue + pfx + qname + EOS;
 			}
 		} else if ( node.isLiteral() ){
-			// TODO: may need to encode literal value when datatype is not a string.
 			Node_Literal litNode = (Node_Literal) node;
 			String lval = litNode.getLiteralLexicalForm();
 			String lang = litNode.getLiteralLanguage();
@@ -2211,11 +2210,15 @@ public abstract class DriverRDB implements IRDBDriver {
 			if (rs.next()) {
                 res = new RDBLongObject();
 				res.head = rs.getString(1);
-
-                switch (rs.getMetaData().getColumnType(2))
+				int colType = rs.getMetaData().getColumnType(2) ;
+                switch (colType)
                 {
                     case Types.VARCHAR:
                     case Types.LONGVARCHAR:
+                    //case Types.LONGNVARCHAR:        // JDBC 4 - Types.LONGNVARCHAR -16 (const in Java 1.6)
+                    case -16:                           
+                    //case Types.NVARCHAR:            // JDBC 4 - Types.NVARCHAR -9 (const in Java 1.6)
+                    case -9: 
                     case Types.CHAR:
                         res.tail = rs.getString(2) ;
                         if ( res.tail == null )
@@ -2223,6 +2226,8 @@ public abstract class DriverRDB implements IRDBDriver {
                         break ;
                     case Types.BLOB:
                     case Types.LONGVARBINARY:
+                    //case Types.NCLOB:               // JDBC 4 - Types.NCLOB 2011 (const in Java 1.6)
+                    case 2011:                          
                         byte[] b2 = rs.getBytes(2) ;
                         if ( b2 == null )
                             // The meaning of "" is mixed in SQL. 
@@ -2282,24 +2287,24 @@ public abstract class DriverRDB implements IRDBDriver {
 	}
 	
 	public String genSQLReifQualStmt () {
-		return "stmt = ?";
+		return "Stmt = ?";
 	}
 	
 	public String genSQLReifQualAnyObj( boolean objIsStmt) {
-		return "( subj = ? OR prop = ? OR obj = ?" + (objIsStmt ? " OR hasType = " +
+		return "( Subj = ? OR Prop = ? OR Obj = ?" + (objIsStmt ? " OR HasType = " +
 			QUOTE_CHAR + "T" + QUOTE_CHAR + " )" : " )");		
 	}
 	
 	public String genSQLReifQualObj ( char reifProp, boolean hasObj ) {
 		String qual = "";
 		if ( reifProp == 'T' ) {
-			qual = "hasType = " + QUOTE_CHAR + "T" + QUOTE_CHAR;
+			qual = "HasType = " + QUOTE_CHAR + "T" + QUOTE_CHAR;
 		} else {
 			String cmp = (hasObj ? " = ?" : " is not null");
 			String col = null;
-			if ( reifProp == 'S' ) col = "subj";
-			else if ( reifProp == 'P' ) col = "prop";
-			else if ( reifProp == 'O' ) col = "obj";
+			if ( reifProp == 'S' ) col = "Subj";
+			else if ( reifProp == 'P' ) col = "Prop";
+			else if ( reifProp == 'O' ) col = "Obj";
 			else throw new JenaException("Undefined reification property");
 		
 			qual = col + cmp;

@@ -2,6 +2,10 @@ Release Notes
 =============
 ==== post Jena 2.5.5
 
+Database layer:
+   o Compatibility fixes for PostgreSQL 8.3 (no schema changes)  
+   o Compatibility fixes for MS SQL Server 2008  (no schema changes)
+
 ReasonerFactoryAssembler
     o Now takes note of ja:schema properties & binds such a schema
       to the reasoners that the factory produces.

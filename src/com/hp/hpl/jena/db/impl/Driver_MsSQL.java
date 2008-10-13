@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2005, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: Driver_MsSQL.java,v 1.6 2008-01-02 12:08:23 andy_seaborne Exp $
+ * $Id: Driver_MsSQL.java,v 1.7 2008-10-13 16:32:14 andy_seaborne Exp $
  *****************************************************************/
 
 package com.hp.hpl.jena.db.impl;
@@ -13,6 +13,7 @@ package com.hp.hpl.jena.db.impl;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.util.Properties;
 
 import com.hp.hpl.jena.db.IDBConnection;
@@ -32,7 +33,7 @@ import com.hp.hpl.jena.db.RDFRDBException;
  * for impact.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  */
 
 public class Driver_MsSQL extends Driver_PostgreSQL  {
@@ -85,6 +86,39 @@ public class Driver_MsSQL extends Driver_PostgreSQL  {
             logger.error("Unable to set connection for Driver:", e);
         }
     }
+    
+    
+    private int getSequence(PreparedStatement ps) throws SQLException
+    {
+        // http://support.microsoft.com/kb/313130
+        ps.execute() ;
+        
+        int updateCount = ps.getUpdateCount() ;
+        boolean bMoreResults = true;
+
+        int attempts = 0 ;
+        // Skip to first result set.
+        while (bMoreResults || (updateCount != -1) )
+        {
+            attempts++ ;
+            ResultSet rs = ps.getResultSet();
+            if ( rs != null )
+            {
+                rs.next() ;
+                int seq = rs.getInt(1) ;
+                rs.close();
+                return seq ;
+            }
+            bMoreResults = ps.getMoreResults();
+            updateCount = ps.getUpdateCount();
+            if ( attempts > 10 )
+            {
+                System.err.println("Loop in getSequence") ;
+                break ;
+            }
+        }
+        return -1 ;
+    }
 
     /**
      * Insert a long object into the database.
@@ -110,14 +144,19 @@ public class Driver_MsSQL extends Driver_PostgreSQL  {
                 ps.setNull(argi++, java.sql.Types.LONGVARCHAR);
             }
 
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) {
-                result = wrapDBID(rs.getObject(1));
-            } else {
-                throw new RDFRDBException("No insert ID");
-            }
-
-            return result;
+            // New code for SQL Server 2008
+            int x = getSequence(ps) ;
+            return new DBIDInt(x) ;
+            
+            // Worked upto and including SQL Server 2005
+//            ResultSet rs = ps.executeQuery();
+//            if (rs.next()) {
+//                result = wrapDBID(rs.getObject(1));
+//            } else {
+//                throw new RDFRDBException("No insert ID");
+//            }
+//
+//            return result;
             
         } catch (Exception e1) {
             throw new RDFRDBException("Failed to add long object ", e1);
@@ -131,19 +170,23 @@ public class Driver_MsSQL extends Driver_PostgreSQL  {
     public int graphIdAlloc(String graphName) {
         DBIDInt result = null;
         try {
+            // http://support.microsoft.com/kb/313130
             PreparedStatement ps =
                 m_sql.getPreparedSQLStatement("insertGraph", GRAPH_TABLE);
             ps.setString(1, graphName);
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) {
-                result = wrapDBID(rs.getObject(1));
-            } else {
-                throw new RDFRDBException("No insert ID");
-            }
+            int x = getSequence(ps) ;
+            return x ;
+            // Old code (SQL Server 2005 and before)
+//            ResultSet rs = ps.executeQuery();
+//            if (rs.next()) {
+//                result = wrapDBID(rs.getObject(1));
+//            } else {
+//                throw new RDFRDBException("No insert ID");
+//            }
         } catch (SQLException e) {
             throw new RDFRDBException("Failed to get last inserted ID: " + e);
         }
-        return result.getIntID();
+        //return result.getIntID();
     }
     
     /**
@@ -188,8 +231,6 @@ public class Driver_MsSQL extends Driver_PostgreSQL  {
 //        return tableName;
 //    }
     
-    // TODO: Review string match op codes
-    // TODO: Check case sensitivity of URI retrieval
     // Case sensitive search is a problem (SQL Server 2000 defaults to case insensitive and
     // you only change it by defining collation order for the column/table, earlier
     // SQL Servers required a database reinstallation to change the collation order).

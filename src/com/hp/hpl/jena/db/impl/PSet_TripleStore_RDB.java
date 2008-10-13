@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: PSet_TripleStore_RDB.java,v 1.59 2008-10-08 15:06:16 andy_seaborne Exp $
+  $Id: PSet_TripleStore_RDB.java,v 1.60 2008-10-13 16:32:14 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.db.impl;
@@ -39,7 +39,7 @@ import org.apache.commons.logging.LogFactory;
 * Based on Driver* classes by Dave Reynolds.
 *
 * @author <a href="mailto:harumi.kuno@hp.com">Harumi Kuno</a>
-* @version $Revision: 1.59 $ on $Date: 2008-10-08 15:06:16 $
+* @version $Revision: 1.60 $ on $Date: 2008-10-13 16:32:14 $
 */
 
 public  class PSet_TripleStore_RDB implements IPSet {
@@ -850,6 +850,21 @@ if ( hack != 0 ) {
 
 				ps.setInt(args++, gid);
 				//*/ }
+				
+//				if ( getTblName().equals("jena_g1t1_stmt"))
+//				{
+//				    // DEBUG - destructive.
+//	                System.out.println("SQL: "+op+"("+subj+","+pred+","+obj+") ["+gid+"] "+getTblName()) ;
+//	                ps.execute() ;
+//	                ResultSet rs = ps.getResultSet();
+//	                while(rs.next())
+//	                {
+//	                    System.out.println(rs.getString(1)) ;
+//                        System.out.println(rs.getString(2)) ;
+//                        System.out.println(rs.getString(3)) ;
+//	                }
+//				}
+				
 				m_sql.executeSQL(ps, op, result);
 
 				//m_sql.returnPreparedSQLStatement(ps,op);
