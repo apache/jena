@@ -36,6 +36,9 @@ public class Scope
     private static class ScopeVisitor extends OpVisitorByType
     {
 
+        // More nodes
+        // Optionals as well. 
+        
         Map<Op, Set<Var>> defined = new HashMap<Op, Set<Var>>() ;
 
         // ---- Default actions
@@ -69,6 +72,19 @@ public class Scope
         // ---- Compositions
         // When used with the Walker, the sub-ops wil have been done before
         // these composite nodes are visited here.
+
+        @Override
+        public void visit(OpSequence opSeq)
+        {
+            // Need to modify each sub op becase a sequence puts earlier ops in scope of later ones. 
+            @SuppressWarnings("unchecked")
+            Iterator<Op> seq = (Iterator<Op>)opSeq.iterator() ;
+            for ( ; seq.hasNext() ; )
+            {
+                Op op = seq.next();
+                Set<Var> vars = defined.get(op) ;
+            }
+        }
 
         @Override
         public void visit(OpJoin opJoin)
