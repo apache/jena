@@ -148,9 +148,8 @@ public final class StatsMatcher
         // Some wild guesses
         double weightSP = 2 ;
         double weightPO = 10 ;
-        double weightTypeO = 1000 ;
+        double weightTypeO = 1000 ; // ? rdf:type <Object> -- Avoid as can be very, very bad.
 
-        int _ = 0 ;
         if ( list.car().isTagged(META) )
         {        
             // Process the meta tag.
