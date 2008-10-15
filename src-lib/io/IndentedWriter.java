@@ -41,6 +41,8 @@ public class IndentedWriter
     protected int row = 1 ;
     protected boolean lineNumbers = false ;
     protected boolean startingNewLine = true ;
+    private char padChar = ' ' ;
+    private String padString = null ;
     
     public IndentedWriter() { this(System.out, false) ; }
     
@@ -95,8 +97,7 @@ public class IndentedWriter
 
     public void println() { newline() ; }
     
-    char lastChar = '\0' ;
-
+    private char lastChar = '\0' ;
     // Worker
     private void printOneChar(char ch) 
     {
@@ -147,7 +148,8 @@ public class IndentedWriter
         startingNewLine = true ;
         row++ ;
         column = 0 ;
-        // PrintWriters do not autoflush by default.
+        // Note that PrintWriters do not autoflush by default
+        // so if layered over a PrintWirter, need to flush that as well.  
         flush() ;
     }
     
@@ -175,7 +177,7 @@ public class IndentedWriter
      */
     public void pad(int col) { pad(col, false) ; }
     
-    /** Pad to a given number of columns maybe including the the indent.
+    /** Pad to a given number of columns maybe including the indent.
      * 
      * @param col Column number (first column is 1).
      * @param absoluteColumn Whether to include the indent
@@ -186,10 +188,9 @@ public class IndentedWriter
         if ( !absoluteColumn )
             col = col+currentIndent ;
         int spaces = col - column  ;
-        
         for ( int i = 0 ; i < spaces ; i++ )
         {
-            write(' ') ;
+            write(' ') ;        // Always a space.
             column++ ;
         }
     }
@@ -197,10 +198,21 @@ public class IndentedWriter
     
     private void padInt() 
     {
-        for ( int i = column ; i < currentIndent ; i++ )
+        if ( padString == null )
         {
-            write(' ') ;
-            column++ ;
+            for ( int i = column ; i < currentIndent ; i++ )
+            {
+                write(padChar) ;
+                column++ ;
+            }
+        }
+        else
+        {
+            for ( int i = column ; i < currentIndent ; i += padString.length() )
+            {
+                write(padString) ;
+                column += padString.length() ;
+            }
         }
     }
     
@@ -221,6 +233,11 @@ public class IndentedWriter
     {
         this.lineNumbers = lineNumbers ;
     }
+    
+    public char getPadChar()                { return padChar ; }
+    public void setPadChar(char ch)         { this.padChar  = ch ; }
+    public String getPadString()            { return padString ; }
+    public void setPadString(String str)    { this.padString = str ; unitIndent = str.length(); }
 
     public void incIndent(int x) { currentIndent += x ; }
     public void incIndent()      { incIndent(unitIndent) ; }
