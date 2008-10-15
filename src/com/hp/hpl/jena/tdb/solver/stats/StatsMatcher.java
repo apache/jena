@@ -145,8 +145,10 @@ public final class StatsMatcher
         // Can override in stats file.
         
         // Sizes for large files.
+        // Some wild guesses
         double weightSP = 2 ;
-        double weightPO = 10 ;                   
+        double weightPO = 10 ;
+        double weightTypeO = 1000 ;
 
         int _ = 0 ;
         if ( list.car().isTagged(META) )
@@ -163,7 +165,10 @@ public final class StatsMatcher
         
         // Modify for small files.
         if ( count != - 1 && count < 100 )
+        {
             weightPO = 4 ;
+            weightTypeO = 40 ;
+        }
         
         while (!list.isEmpty()) 
         {
@@ -182,7 +187,7 @@ public final class StatsMatcher
                 
                 if ( NodeConst.nodeRDFType.equals(pat.getNode()) )
                     // Special case:  ? rdf:type O which is often not very selective. 
-                    weightPO = Math.min(numProp, 5*weightPO) ;
+                    weightPO = weightTypeO ;
                     
                 // If does not exist. 
                 addPattern(new Pattern(weightSP, TERM, pat, ANY)) ;     // S, P, ? : approx weight
