@@ -27,7 +27,6 @@ public class OpWalker
     {
         private OpVisitor beforeVisitor = null ;
         private OpVisitor afterVisitor = null ;
-        //private OpVisitor mainVisitor = null ;
         private OpVisitor visitor ;
 
         public WalkerVisitor(OpVisitor visitor, OpVisitor beforeVisitor, OpVisitor afterVisitor)
@@ -88,8 +87,11 @@ public class OpWalker
         }
         
         protected void visitExt(OpExt op)
-        {             before(op) ;
-op.visit(visitor) ; after(op) ;}
+        {
+            before(op) ;
+            if ( visitor != null ) op.visit(visitor) ;
+            after(op) ;
+        }
     }
 }
 
