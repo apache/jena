@@ -15,26 +15,24 @@ import lib.Pair;
 import lib.cache.Cache2;
 import arq.cmd.CmdUtils;
 
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.QueryExecution;
-import com.hp.hpl.jena.query.QueryExecutionFactory;
-import com.hp.hpl.jena.query.QueryFactory;
-import com.hp.hpl.jena.query.ResultSet;
-import com.hp.hpl.jena.query.ResultSetFormatter;
-import com.hp.hpl.jena.query.Syntax;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.RSIterator;
+
+import com.hp.hpl.jena.util.FileManager;
+
+import com.hp.hpl.jena.graph.Graph;
+import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.graph.Triple;
+
 import com.hp.hpl.jena.sparql.algebra.Algebra;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.Transformer;
 import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.sparql.engine.main.OpCompiler;
 import com.hp.hpl.jena.sparql.sse.SSE;
-import com.hp.hpl.jena.sparql.util.QueryExecUtils;
+
+import com.hp.hpl.jena.query.*;
+
 import com.hp.hpl.jena.tdb.TDB;
 import com.hp.hpl.jena.tdb.TDBFactory;
 import com.hp.hpl.jena.tdb.base.block.BlockMgr;
@@ -45,13 +43,11 @@ import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 import com.hp.hpl.jena.tdb.base.recordfile.RecordBufferPage;
 import com.hp.hpl.jena.tdb.base.recordfile.RecordBufferPageMgr;
 import com.hp.hpl.jena.tdb.pgraph.GraphTDB;
-import com.hp.hpl.jena.tdb.solver.OpCompilerTDB;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderFixed;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderWeighted;
 import com.hp.hpl.jena.tdb.solver.stats.StatsMatcher;
 import com.hp.hpl.jena.tdb.sys.SystemTDB;
-import com.hp.hpl.jena.util.FileManager;
 
 public class Run
 {
@@ -76,33 +72,30 @@ public class Run
         Op op = SSE.parseOp("(union (bgp (?x :p ?v)) (bgp (?x :q 123)))") ;
         
         Map <Op, Set<Var>> x = Scope.scopeMap(op) ;
-        for ( Op k : x.keySet() )
+        if ( false )
         {
-            Set<Var> vars = x.get(k) ;
-            String s = k.toString();
-            s = s.replaceAll("\n", " ") ;
-            s = s.replaceAll("\r", " ") ;
-            s = s.replaceAll("  +", " ") ;
-            System.out.println(vars+" <==> "+s) ;
+            for ( Op k : x.keySet() )
+            {
+                Set<Var> vars = x.get(k) ;
+                String s = k.toString();
+                s = s.replaceAll("\n", " ") ;
+                s = s.replaceAll("\r", " ") ;
+                s = s.replaceAll("  +", " ") ;
+                System.out.println(vars+" <==> "+s) ;
+            }
         }
+        op = reorganise(op, x) ;
+        System.out.println("----") ;
+        
         System.exit(0) ;
         //smallGraph() ;
         //tdbloader("--desc=tdb.ttl", "--mem", "/home/afs/Datasets/MusicBrainz/tracks.nt") ;
  
         //indexification() ; System.exit(0) ;
         reification() ; System.exit(0) ;
-        
-        altCompile() ; System.exit(0) ;
         rewrite() ; System.exit(0) ;
         
-        String[] a = { "--desc=tdb.ttl", 
-                       "--set=tdb:logExec=true",
-                       "--file=Q.rq" } ;
-        tdb.tdbquery.main(a) ;
-        System.exit(0) ;
-        
         //cache2() ;
-        
         processBPTree() ;
         
         //tdbquery("dataset.ttl", "SELECT * { ?s ?p ?o }") ;
@@ -110,10 +103,13 @@ public class Run
 //      Model model = TDBFactory.createModel("tmp") ;
 //      query("SELECT * { ?s ?p ?o}", model) ;
 //      System.exit(0) ;
-
-        
     }
     
+    private static Op reorganise(Op op, Map<Op, Set<Var>> x)
+    {
+        return null ;
+    }
+
     private static void reification()
     {
         FileOps.clearDirectory("DB2") ;
@@ -166,23 +162,6 @@ public class Run
         System.out.println("----") ;
     }
 
-    public static void altCompile()
-    {
-        // Rewire.
-        TDB.init() ;
-        OpCompiler.factory = OpCompilerTDB.altFactory ;
-        Query query = QueryFactory.read("Q.rq") ;
-
-        Op op = Algebra.compile(query) ;
-        System.out.println(op) ;
-        Model model = TDBFactory.createModel("DB") ;
-        QueryExecution qexec = QueryExecutionFactory.create(query, model) ;
-        QueryExecUtils.executeQuery(query, qexec) ;
-        System.out.println("----") ;
-        System.exit(0) ;
-        
-    }
-    
     public static void rewrite()
     {
         ReorderTransformation reorder = null ;
