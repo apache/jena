@@ -42,7 +42,7 @@ public class OpCompilerTDB extends OpCompiler
             return new OpCompilerTDB(execCxt) ;
         }} ;
     
-        // ---- Stop a BGP being reorder, again. 
+        // ---- Stop a BGP being reordered, again. 
     static String executeNow = "DirectTDB" ;
     private static Transform labelBGP = new TransformCopy()
     {
