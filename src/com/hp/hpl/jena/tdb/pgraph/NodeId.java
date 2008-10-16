@@ -130,8 +130,8 @@ public class NodeId
      *  guarantee that all integers, say, are store inline. 
      *  
      *  Integer format: signed 56 bit number.
-     *  Decimal format: 1 bit sign, 7 bits signed exponent (base 10: the scale) and 48 bits BCD.
-     *     48 bits = 12 nibbles/digits 
+     *  Decimal format: 8 bits scale, 48bits of signed valued.
+
      *  Date format:
      *  DateTime format:
      *  Boolean format:
