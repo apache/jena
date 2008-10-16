@@ -8,7 +8,7 @@ package lib;
 
 public class Lib
 {
-    public static boolean eq(Object obj1, Object obj2)
+    public static <T> boolean equals(T obj1, T obj2)
     {
         if ( obj1 == null )
             return obj2 == null ;

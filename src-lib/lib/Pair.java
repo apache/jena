@@ -7,7 +7,6 @@
 package lib;
 
 import static lib.StrUtils.str;
-import static lib.Lib.eq;
 import static lib.Lib.hashCodeObject;
 
 public class Pair<A, B>
@@ -41,7 +40,7 @@ public class Pair<A, B>
         
         if( ! ( other instanceof Pair ) ) return false ;
         Pair<?,?> p2 = (Pair<?,?>)other ;
-        return  eq(car(), p2.car()) && eq(cdr(), p2.cdr()) ;
+        return  Lib.equals(car(), p2.car()) && Lib.equals(cdr(), p2.cdr()) ;
     }
     
     @Override 

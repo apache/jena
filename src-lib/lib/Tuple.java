@@ -6,7 +6,6 @@
 
 package lib;
 
-import static lib.Lib.eq;
 import iterator.Iter;
 
 import java.util.Arrays;
@@ -48,7 +47,7 @@ public final class Tuple<T>
         {
             Object obj1 = tuple[i] ;
             Object obj2 = x.tuple[i] ;
-            if ( ! eq(obj1, obj2) )
+            if ( ! Lib.equals(obj1, obj2) )
                 return false ;
         }
         return true ; 

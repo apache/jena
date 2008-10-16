@@ -6,9 +6,8 @@
 
 package lib;
 
-import com.hp.hpl.jena.sparql.util.Utils;
 
-/** A mutable reference */
+/** A mutable container */
 public class Ref<T>
 {
     private T value ;
@@ -20,18 +19,20 @@ public class Ref<T>
 
     public void setValue(T value)
     { this.value = value; }
+
     
-    @Override
-    public int hashCode() { return value.hashCode()^0x1 ; }
-    
-    @Override
-    public boolean equals(Object other)
-    {
-        if ( !(  other instanceof Ref ) )
-            return false ;
-        Ref<?> r = (Ref<?>)other ;
-        return Utils.equals(value, r.value) ;
-    }
+    // hashCode and equality are defined on object pointers. 
+//    @Override
+//    public int hashCode() { return value.hashCode()^0x1 ; }
+//    
+//    @Override
+//    public boolean equals(Object other)
+//    {
+//        if ( !(  other instanceof Ref ) )
+//            return false ;
+//        Ref<?> r = (Ref<?>)other ;
+//        return Lib.equals(value, r.value) ;
+//    }
     
     @Override
     public String toString()
