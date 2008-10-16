@@ -12,8 +12,15 @@ import java.util.Set;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.OpVisitorByType;
 import com.hp.hpl.jena.sparql.algebra.op.*;
+import com.hp.hpl.jena.sparql.algebra.opt.TransformFilterPlacement;
+import com.hp.hpl.jena.sparql.core.BasicPattern;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.expr.ExprList;
+
+import com.hp.hpl.jena.tdb.solver.reorder.PatternTriple;
+import com.hp.hpl.jena.tdb.solver.reorder.ReorderProc;
+import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
+import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformationBase;
 
 public class ReOrganise
 {
@@ -64,8 +71,27 @@ public class ReOrganise
         }
         
         
-        private void reorganise(OpBGP subOp, ExprList exprs, Set<Var> set)
-        {}
+        private Op reorganise(OpBGP opBGP, ExprList exprs, Set<Var> set)
+        {
+            BasicPattern pattern = opBGP.getPattern() ;
+            ReorderTransformation transform = new ReorderTransformationBase(){
+                @Override
+                protected double weight(PatternTriple pt)
+                {
+                    return 0 ;
+                }} ;
+
+            ReorderProc proc = transform.reorderIndexes(pattern) ;
+            pattern = proc.reorder(pattern) ; 
+
+            Op op = null ;
+            if ( exprs != null )
+                op = TransformFilterPlacement.transform(exprs, pattern) ;
+            else
+                op = new OpBGP(pattern) ;
+            
+            return op ;
+        }
         
         
     }
