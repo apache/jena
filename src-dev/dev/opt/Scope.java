@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package dev;
+package dev.opt;
 
 //import com.hp.hpl.jena.sparql.algebra.OpVisitor;
 import java.util.*;

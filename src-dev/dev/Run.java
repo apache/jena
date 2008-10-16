@@ -49,6 +49,9 @@ import com.hp.hpl.jena.tdb.solver.reorder.ReorderWeighted;
 import com.hp.hpl.jena.tdb.solver.stats.StatsMatcher;
 import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
+import dev.opt.Scope;
+import dev.opt.TransformIndexJoin;
+
 public class Run
 {
     static String divider = "" ;
