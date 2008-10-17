@@ -10,76 +10,73 @@ import java.util.Map;
 import java.util.Set;
 
 import com.hp.hpl.jena.sparql.algebra.Op;
-import com.hp.hpl.jena.sparql.algebra.OpVisitorByType;
-import com.hp.hpl.jena.sparql.algebra.op.*;
+import com.hp.hpl.jena.sparql.algebra.TransformCopy;
+import com.hp.hpl.jena.sparql.algebra.Transformer;
+import com.hp.hpl.jena.sparql.algebra.op.OpBGP;
+import com.hp.hpl.jena.sparql.algebra.op.OpFilter;
 import com.hp.hpl.jena.sparql.algebra.opt.TransformFilterPlacement;
 import com.hp.hpl.jena.sparql.core.BasicPattern;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.expr.ExprList;
-
-import com.hp.hpl.jena.tdb.solver.reorder.PatternTriple;
+import com.hp.hpl.jena.tdb.solver.reorder.ReorderFixed;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderProc;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
-import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformationBase;
 
 public class Reorganise
 {
-    Map<Op, Set<Var>> scopeMap ;
+    // At the moment, we can do all reorganisation as a bottom-up walk. 
+    //    BGP gets reordered,
+    //    Then filters flowed into position.
+    // If we want to take a more holistic view, need to do the rewriting as a top down analysis
     
-    // Use OpWalker as a before visitor walker?
-    // But sometimes, want the walk to control whether to descend or not. 
+    
+    // Use OpWalker as a before visitor walker?  
+    //  Need to intercept/modify OpWalker.WalkerVisitor
+    // Can use OpWalker.WalkerVisitor for that.
 
-    // Before visitor with ability to modify the walk.
-    private final class WalkerVisitor extends OpVisitorByType
+    public static Op reorganise(Op op, Map<Op, Set<Var>> x)
     {
-
-        @Override
-        protected void visit0(Op0 op)
-        {}
-
-        @Override
-        protected void visit1(Op1 op)
-        {}
-
-        @Override
-        protected void visit2(Op2 op)
-        {}
-
-        @Override
-        protected void visitExt(OpExt op)
-        {}
-
-        @Override
-        protected void visitN(OpN op)
-        {}
+        return Transformer.transform(new ReorganiseTransform(x), op) ;
+    }
+    
+    private static final class ReorganiseTransform extends TransformCopy
+    {
+        Map<Op, Set<Var>> scopeMap ;
         
-        @Override
-        public void visit(OpFilter opFilter)
+        public ReorganiseTransform(Map<Op, Set<Var>> scopeMap)
         {
-            if ( OpBGP.isBGP(opFilter.getSubOp()) )
+            super() ;
+            this.scopeMap = scopeMap ;
+        }
+
+        // Places we want to intercept the walk.
+        @Override
+        public Op transform(OpFilter opFilter, Op sub)
+        {
+            if ( OpBGP.isBGP(sub) )
             {
-                reorganise((OpBGP)opFilter.getSubOp(), opFilter.getExprs(), scopeMap.get(opFilter)) ;
-                return ;
+                return reorganise((OpBGP)sub, opFilter.getExprs(), scopeMap.get(opFilter)) ;
             }
-            visit1(opFilter) ;
+            return super.transform(opFilter, sub) ;
         }
 
         @Override
-        public void visit(OpBGP opBGP)
+        public Op transform(OpBGP opBGP)
         {
-            reorganise(opBGP, null, scopeMap.get(opBGP)) ;
+            return reorganise(opBGP, null, scopeMap.get(opBGP)) ;
         }
-        
         
         private Op reorganise(OpBGP opBGP, ExprList exprs, Set<Var> set)
         {
             BasicPattern pattern = opBGP.getPattern() ;
-            ReorderTransformation transform = new ReorderTransformationBase(){
-                @Override
-                protected double weight(PatternTriple pt)
-                {
-                    return 0 ;
-                }} ;
+            ReorderTransformation transform = new ReorderFixed() ;
+            
+//            ReorderTransformation transform = new ReorderTransformationBase(){
+//                @Override
+//                protected double weight(PatternTriple pt)
+//                {
+//                    return 0 ;
+//                }} ;
 
             ReorderProc proc = transform.reorderIndexes(pattern) ;
             pattern = proc.reorder(pattern) ; 
@@ -92,9 +89,8 @@ public class Reorganise
             
             return op ;
         }
-        
-        
     }
+    
 }
 
 /*

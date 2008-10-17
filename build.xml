@@ -53,13 +53,18 @@
   </path>
 
   <!-- Sources as fileset (want path=>fileset to avoid the duplication here) -->
+
   <fileset dir="." id="fileset.src">
     <include name="${src.dir}/**/*.java"/>
     <include name="${src.test.dir}**/*.java"/>
     <include name="${src.lib.dir}**/*.java"/>
     <include name="${src.lib.test.dir}**/*.java"/>
   </fileset>
- 
+
+<!--
+   <pathconvert pathsep="," property="fileset.src" refid="java.source.path"/>
+   <echo>${fileset.src}</echo>
+-->
   <import file="build-lib.xml"/>
   <import file="build-dist.xml"/>
 

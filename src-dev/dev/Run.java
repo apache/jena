@@ -49,6 +49,7 @@ import com.hp.hpl.jena.tdb.solver.reorder.ReorderWeighted;
 import com.hp.hpl.jena.tdb.solver.stats.StatsMatcher;
 import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
+import dev.opt.Reorganise;
 import dev.opt.Scope;
 import dev.opt.TransformIndexJoin;
 
@@ -72,7 +73,7 @@ public class Run
 //        System.exit(0) ;
 
         
-        Op op = SSE.parseOp("(union (bgp (?x :p ?v)) (bgp (?x :q 123)))") ;
+        Op op = SSE.parseOp("(filter (= ?x :X) (bgp (?x :p ?v) (?x :q 123)))") ;
         
         Map <Op, Set<Var>> x = Scope.scopeMap(op) ;
         if ( false )
@@ -87,7 +88,10 @@ public class Run
                 System.out.println(vars+" <==> "+s) ;
             }
         }
-        op = reorganise(op, x) ;
+        
+        System.out.println(op) ;
+        op = Reorganise.reorganise(op, x) ;
+        System.out.println(op) ;
         System.out.println("----") ;
         
         System.exit(0) ;
@@ -108,11 +112,7 @@ public class Run
 //      System.exit(0) ;
     }
     
-    private static Op reorganise(Op op, Map<Op, Set<Var>> x)
-    {
-        return null ;
-    }
-
+ 
     private static void reification()
     {
         FileOps.clearDirectory("DB2") ;
