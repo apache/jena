@@ -51,9 +51,9 @@ public class RunSDB
     
     public static void main(String ... argv) throws SQLException
     {
-        TestStores2Connections1.main(argv) ;
+        //TestStores2Connections1.main(argv) ;
         
-        runQuery("Q.rq") ;
+        runQuery("Q.rq") ; System.exit(0) ;
 
         {
             // SPARQL/Update

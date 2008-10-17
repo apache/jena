@@ -17,7 +17,7 @@ import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryException;
 import com.hp.hpl.jena.query.QueryExecution;
 import com.hp.hpl.jena.query.QueryExecutionFactory;
-import com.hp.hpl.jena.sdb.compiler.QC;
+import com.hp.hpl.jena.sdb.compiler.SDB_QC;
 import com.hp.hpl.jena.sdb.engine.QueryEngineSDB;
 import com.hp.hpl.jena.sdb.util.PrintSDB;
 import com.hp.hpl.jena.sparql.engine.QueryExecutionBase;
@@ -89,7 +89,7 @@ public class sdbquery extends CmdArgsDB
         
         if ( isVerbose() )
         {
-            QC.PrintSQL = true ;
+            SDB_QC.PrintSQL = true ;
             modQuery.getQuery().serialize(System.out) ;
             System.out.println(divider) ; 
         }

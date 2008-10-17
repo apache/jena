@@ -69,7 +69,7 @@ public class TransformSDB extends TransformCopy
     @Override
     public Op transform(OpJoin opJoin, Op left, Op right)
     {
-        if ( ! QC.isOpSQL(left) || ! QC.isOpSQL(right) )
+        if ( ! SDB_QC.isOpSQL(left) || ! SDB_QC.isOpSQL(right) )
             return super.transform(opJoin, left, right) ;
         
         SqlNode sqlLeft = ((OpSQL)left).getSqlNode() ;
@@ -83,7 +83,7 @@ public class TransformSDB extends TransformCopy
         if ( ! request.LeftJoinTranslation )
             return super.transform(opJoin, left, right) ;
         
-        if ( ! QC.isOpSQL(left) || ! QC.isOpSQL(right) )
+        if ( ! SDB_QC.isOpSQL(left) || ! SDB_QC.isOpSQL(right) )
             return super.transform(opJoin, left, right) ;
 
         // Condition(s) in the left join.  Punt for now. 
@@ -168,7 +168,7 @@ public class TransformSDB extends TransformCopy
     @Override
     public Op transform(OpDistinct opDistinct, Op subOp)
     { 
-        if ( ! QC.isOpSQL(subOp) )
+        if ( ! SDB_QC.isOpSQL(subOp) )
             return super.transform(opDistinct, subOp) ;
         //request.getStore().supportsDistinct() ; 
         
@@ -190,7 +190,7 @@ public class TransformSDB extends TransformCopy
     public Op transform(OpProject opProject, Op subOp)
     { 
         //request.getStore().getSQLBridgeFactory().create(request, null, null)
-        if ( ! QC.isOpSQL(subOp) )
+        if ( ! SDB_QC.isOpSQL(subOp) )
             return super.transform(opProject, subOp) ;
         if ( false ) return super.transform(opProject, subOp) ;
         
@@ -229,15 +229,15 @@ public class TransformSDB extends TransformCopy
         boolean canHandle = false ;
         
         // Relies on the fact that isOpSQL(null) is false.
-        if (  QC.isOpSQL(subOp) )
+        if (  SDB_QC.isOpSQL(subOp) )
             canHandle = true ;
-        else if ( QC.isOpSQL(sub(asProject(subOp))) )
+        else if ( SDB_QC.isOpSQL(sub(asProject(subOp))) )
         {
             return transformSliceProject(opSlice, (OpProject)subOp) ;
         }
 
         // Simple slice
-        if ( ! QC.isOpSQL(subOp) )
+        if ( ! SDB_QC.isOpSQL(subOp) )
             return super.transform(opSlice, subOp) ;
 
         return transformSlice(opSlice, ((OpSQL)subOp).getSqlNode()) ;
@@ -255,7 +255,7 @@ public class TransformSDB extends TransformCopy
         // (slice (project X))
         Op subOp = opProject.getSubOp() ;
         
-        if ( ! QC.isOpSQL(subOp) )
+        if ( ! SDB_QC.isOpSQL(subOp) )
             // Can't cope - just pass the slice to the general superclass. 
             return super.transform(opSlice, opProject) ;
 

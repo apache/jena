@@ -51,7 +51,7 @@ public abstract class QueryCompilerMain implements QueryCompiler
         while ( patternOp instanceof OpModifier )
             patternOp = ((OpModifier)patternOp).getSubOp() ;
         
-        boolean patternIsOneSQLStatement = QC.isOpSQL(patternOp) ;
+        boolean patternIsOneSQLStatement = SDB_QC.isOpSQL(patternOp) ;
             
         // To be removed : project handling in SqlNodesFinisher:: transform SDB should do this.
         // See XYZ below
@@ -94,7 +94,7 @@ public abstract class QueryCompilerMain implements QueryCompiler
                         
             if ( justProjectVars && request.getQuery() != null )
                 // Need project vars and also the ORDER BY (for external sorting)
-                projectVars = QC.queryOutVars(request.getQuery()) ;
+                projectVars = SDB_QC.queryOutVars(request.getQuery()) ;
             else
             {
                 // All variables.

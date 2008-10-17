@@ -33,9 +33,9 @@ import com.hp.hpl.jena.sdb.iterator.Transform;
 import com.hp.hpl.jena.sdb.sql.ResultSetJDBC;
 import com.hp.hpl.jena.sdb.sql.SDBExceptionSQL;
 
-public class QC
+public class SDB_QC
 {
-    private static Log log = LogFactory.getLog(QC.class) ;
+    private static Log log = LogFactory.getLog(SDB_QC.class) ;
     
     public static boolean fetchPrint = false ;
     public static boolean PrintSQL = false ;
@@ -100,7 +100,7 @@ public class QC
         
         if ( vars.size() == 0 )
             // SELECT * {}
-            LogFactory.getLog(QC.class).warn("No project variables") ;
+            LogFactory.getLog(SDB_QC.class).warn("No project variables") ;
         
         // Add the ORDER BY variables
         List<SortCondition> orderConditions = query.getOrderBy() ;

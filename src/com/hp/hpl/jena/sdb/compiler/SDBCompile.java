@@ -16,7 +16,7 @@ import com.hp.hpl.jena.sparql.core.Substitute;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.util.Context;
 
-public class Compile
+public class SDBCompile
 {
     // ----- Compilation : Op -> SQL
     public static Op compile(Store store, Op op)
