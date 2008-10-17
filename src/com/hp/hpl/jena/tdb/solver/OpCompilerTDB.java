@@ -125,7 +125,7 @@ public class OpCompilerTDB extends OpCompiler
         if ( transform != null )
         {
             // Calculate the reordering based on the substituted pattern.
-            ReorderProc proc = transform.reorderIndexes(pattern2) ;
+            ReorderProc proc = transform.reorderIndexes(pattern2, null) ;
             // Then reorder original patten
             pattern = proc.reorder(pattern) ; 
         }

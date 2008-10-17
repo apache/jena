@@ -131,7 +131,7 @@ public class Scope
         // ---- Other
 
         @Override
-        public void visit(OpFilter opFilter) {}
+        public void visit(OpFilter opFilter) { visit1(opFilter) ; }
 
         @Override
         public void visit(OpAssign opAssign) {}

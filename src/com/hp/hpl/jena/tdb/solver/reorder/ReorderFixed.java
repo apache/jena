@@ -43,23 +43,6 @@ public class ReorderFixed extends ReorderTransformationBase
     protected double weight(PatternTriple pt)
     {
         return matcher.match(pt) ;
-        
-//        int count = 0 ;
-//        // Var.isVar is null-safe
-//        if ( Var.isVar(pt.subject.getNode()) )
-//            count++ ;
-//        if ( Var.isVar(pt.predicate.getNode()) )
-//            count++ ;
-//        if ( Var.isVar(pt.object.getNode()) )
-//            count++ ;
-//        else
-//        {
-//            // ?x rdf:type <TYPE>
-//            if ( rdfType.equals(pt.predicate.getNode()) )
-//                // Discourage rdf:type.
-//                count += 0.5 ;
-//        }   
-//        return count ;
     }
 }
 

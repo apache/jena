@@ -6,9 +6,12 @@
 
 package dev.opt;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.TransformCopy;
 import com.hp.hpl.jena.sparql.algebra.Transformer;
@@ -18,9 +21,12 @@ import com.hp.hpl.jena.sparql.algebra.opt.TransformFilterPlacement;
 import com.hp.hpl.jena.sparql.core.BasicPattern;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.expr.ExprList;
-import com.hp.hpl.jena.tdb.solver.reorder.ReorderFixed;
+import com.hp.hpl.jena.sparql.sse.Item;
+import com.hp.hpl.jena.tdb.solver.reorder.PatternElements;
+import com.hp.hpl.jena.tdb.solver.reorder.PatternTriple;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderProc;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
+import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformationBase;
 
 public class Reorganise
 {
@@ -66,10 +72,16 @@ public class Reorganise
             return reorganise(opBGP, null, scopeMap.get(opBGP)) ;
         }
         
-        private Op reorganise(OpBGP opBGP, ExprList exprs, Set<Var> set)
+        private static Op reorganise(OpBGP opBGP, ExprList exprs, Set<Var> set)
         {
+            // Redo the BGP pattern WRT the scope set.
             BasicPattern pattern = opBGP.getPattern() ;
-            ReorderTransformation transform = new ReorderFixed() ;
+            ReorderTransformation transform = new ReorderTransformationReorg(set) ;
+            
+            // This can miss very restrictive filters (partial condional scans) 
+            // but those still require large amount of index access even if they
+            // emit very few results.   
+            
             
 //            ReorderTransformation transform = new ReorderTransformationBase(){
 //                @Override
@@ -78,7 +90,7 @@ public class Reorganise
 //                    return 0 ;
 //                }} ;
 
-            ReorderProc proc = transform.reorderIndexes(pattern) ;
+            ReorderProc proc = transform.reorderIndexes(pattern, set) ;
             pattern = proc.reorder(pattern) ; 
 
             Op op = null ;
@@ -89,6 +101,59 @@ public class Reorganise
             
             return op ;
         }
+    }
+    
+    static class ReorderTransformationReorg extends ReorderTransformationBase  
+    {
+        
+        Set<Var> definedVars ;
+        
+        public ReorderTransformationReorg(Set<Var> definedVars)
+        {
+            this.definedVars = definedVars ;
+        }
+    
+        @Override
+        protected List<PatternTriple> modifyComponents(List<PatternTriple> components)
+        {
+            if ( definedVars == null || definedVars.size() == 0 )
+                return components ;
+            
+            List<PatternTriple> components2 = new ArrayList<PatternTriple>() ;
+            for ( PatternTriple pt : components)
+            {
+                pt = update(pt) ;
+                components2.add(pt) ;
+            }
+            return components2 ;
+        }
+        
+        private PatternTriple update(PatternTriple pt)
+        {
+            return new PatternTriple(update(pt.subject),
+                                     update(pt.predicate),
+                                     update(pt.object)) ;
+        }
+
+        private Item update(Item item)
+        {
+            if ( !item.isNode() ) return item ;
+
+            Node n = item.getNode() ;
+            if ( ! Var.isAllocVar(n) ) return item ;
+
+            Var v = Var.alloc(n) ;
+            if ( definedVars.contains(v) )
+                return PatternElements.TERM ;
+            return item ;
+        }
+
+        @Override
+        protected double weight(PatternTriple pt)
+        {
+            return 0 ;
+        }
+        
     }
     
 }

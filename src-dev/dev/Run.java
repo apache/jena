@@ -73,7 +73,7 @@ public class Run
 //        System.exit(0) ;
 
         
-        Op op = SSE.parseOp("(filter (= ?x :X) (bgp (?x :p ?v) (?x :q 123)))") ;
+        Op op = SSE.parseOp("(join (bgp (?w :q 123)) (filter (!= ?x :X) (bgp (?x :p ?v) (?x :q ?w))))") ;
         
         Map <Op, Set<Var>> x = Scope.scopeMap(op) ;
         if ( false )

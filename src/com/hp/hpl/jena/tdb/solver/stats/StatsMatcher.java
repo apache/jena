@@ -105,15 +105,12 @@ public final class StatsMatcher
         int anyMatches = 0 ;
     }
 
-    // A better structure would be a hierarchy based on P,S,O
-    // because P is often fixed.
-    // Or a map keyed by P.
+    // General structure
     List<Pattern> patterns = new ArrayList<Pattern>() ;
-    
+    // Map keyed by P for faster lookup (if no P available, we'll use the full list).  
     Map<Item, List<Pattern>> _patterns = new HashMap<Item,  List<Pattern>>() ;
-    long count = -1 ;
     
-    //Map<Item, List<Pattern>> patterns = new HashMap<>() ;//new ArrayList<Pattern>() ;
+    long count = -1 ;
     
     public StatsMatcher() {}
     

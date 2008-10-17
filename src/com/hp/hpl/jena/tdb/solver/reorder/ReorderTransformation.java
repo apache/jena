@@ -6,15 +6,18 @@
 
 package com.hp.hpl.jena.tdb.solver.reorder;
 
+import java.util.Set;
+
 import com.hp.hpl.jena.sparql.core.BasicPattern;
+import com.hp.hpl.jena.sparql.core.Var;
 
 public interface ReorderTransformation
 {
     /** Return the reordering function based on a basic graph pattern. */
-    public ReorderProc reorderIndexes(BasicPattern pattern) ;
+    public ReorderProc reorderIndexes(BasicPattern pattern, Set<Var> definedVars) ;
     
     /** Return the reordered basic graph pattern. */
-    public BasicPattern reorder(BasicPattern pattern) ;
+    public BasicPattern reorder(BasicPattern pattern, Set<Var> definedVars) ;
 }
 
 /*

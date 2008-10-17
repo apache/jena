@@ -13,6 +13,7 @@ import iterator.Transform;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
@@ -30,13 +31,13 @@ public abstract class ReorderTransformationBase implements ReorderTransformation
     protected static final boolean DEBUG = false ;
     
     @Override
-    public BasicPattern reorder(BasicPattern pattern)
+    public BasicPattern reorder(BasicPattern pattern, Set<Var> definedVars)
     {
-        return reorderIndexes(pattern).reorder(pattern) ;
+        return reorderIndexes(pattern, definedVars).reorder(pattern) ;
     }
 
     @Override
-    public final ReorderProc reorderIndexes(BasicPattern pattern)
+    public final ReorderProc reorderIndexes(BasicPattern pattern, Set<Var> definedVars)
     {
         if (pattern.size() <= 1 )
             return ReorderLib.identityProc() ;
@@ -63,8 +64,15 @@ public abstract class ReorderTransformationBase implements ReorderTransformation
 //            }
 //        }
 
+        // Allow subclasses to get in (e.g. static reordering).
+        components = modifyComponents(components) ;
         ReorderProc proc = reorder(triples, components) ;
         return proc ;
+    }
+
+    protected List<PatternTriple> modifyComponents(List<PatternTriple> components)
+    {
+        return components ;
     }
 
     private ReorderProc reorder(List<Triple> triples, List<PatternTriple> components)

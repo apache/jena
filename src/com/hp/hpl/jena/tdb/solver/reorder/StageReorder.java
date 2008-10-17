@@ -14,6 +14,7 @@ import com.hp.hpl.jena.sparql.engine.binding.Binding;
 
 import com.hp.hpl.jena.tdb.solver.stage.Stage;
 
+// OLD code : now done in OpCompilerTDB
 public class StageReorder implements Stage
 {
     private ReorderProc reorderProc = null ;
@@ -38,7 +39,7 @@ public class StageReorder implements Stage
             if ( reorderProc == null )
                 // Cache the reorder processor - i.e. the first binding is used
                 // as a template for later input bindings.   
-                reorderProc = transform.reorderIndexes(pattern2) ;
+                reorderProc = transform.reorderIndexes(pattern2, null) ;
             pattern2 = reorderProc.reorder(pattern2) ;
         }
         
