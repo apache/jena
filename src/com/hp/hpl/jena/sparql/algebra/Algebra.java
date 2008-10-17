@@ -83,32 +83,38 @@ public class Algebra
 
     // Use toQuadForm.
     
-//    /** Compile a query - pattern and modifiers - to quad form. */
-//    public static Op compileQuad(Query query)
-//    {
-//        if ( query == null )
-//            return null ;
-//        return new AlgebraGeneratorQuad().compile(query) ;
-//    }
+    /** Compile a query - to quad form.
+     * @deprecated Use {@link toQuadForm(Op)}
+     */ 
+    public static Op compileQuad(Query query)
+    {
+        if ( query == null )
+            return null ;
+        return toQuadForm(compile(query)) ;
+    }
 
-//    /** Compile a pattern to quad form. */
-//    public static Op compileQuad(Element elt)
-//    {
-//        if ( elt == null )
-//            return null ;
-//        return new AlgebraGeneratorQuad().compile(elt) ;
-//    }
+    /** Compile a pattern to quad form. 
+     * @deprecated Use {@link toQuadForm(Op)}
+     */ 
+    public static Op compileQuad(Element elt)
+    {
+        if ( elt == null )
+            return null ;
+        return toQuadForm(compile(elt)) ;
+    }
 
-//    /** Compile a pattern - to quad form. */
-//    public static Op compileQuad(Query query, boolean optimize)
-//    {
-//        if ( query == null )
-//            return null ;
-//        Op op = new AlgebraGeneratorQuad().compile(query) ;
-//        if ( optimize )
-//            op = optimize(op) ;
-//        return op ;
-//    }
+    /** Compile a pattern - to quad form.
+     * @deprecated Use {@link toQuadForm(Op)}
+     */ 
+    public static Op compileQuad(Query query, boolean optimize)
+    {
+        if ( query == null )
+            return null ;
+        Op op = toQuadForm(compile(query)) ;
+        if ( optimize )
+            op = optimize(op) ;
+        return op ;
+    }
 
     public static Op toQuadForm(Op op)
     {

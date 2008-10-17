@@ -12,7 +12,6 @@ import java.util.List;
 import arq.cmd.CmdException;
 
 import com.hp.hpl.jena.sparql.engine.main.QueryEngineMain;
-import com.hp.hpl.jena.sparql.engine.ref.QueryEngineQuad;
 import com.hp.hpl.jena.sparql.engine.ref.QueryEngineRef;
 
 
@@ -57,12 +56,6 @@ public class ModEngine extends ModBase
                 continue ;
             }
             
-            if ( engineName.equalsIgnoreCase("quad") )
-            {
-                QueryEngineQuad.register() ;
-                continue ;
-            }
-            
             if ( engineName.equalsIgnoreCase("main") )
             {
                 QueryEngineMain.register() ;
@@ -79,11 +72,6 @@ public class ModEngine extends ModBase
                  engineName.equalsIgnoreCase("reference") )
             {
                 QueryEngineRef.unregister() ;
-                continue ;
-            }
-            if ( engineName.equalsIgnoreCase("quad") )
-            {
-                QueryEngineQuad.unregister() ;
                 continue ;
             }
             if ( engineName.equalsIgnoreCase("main") )

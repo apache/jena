@@ -9,7 +9,6 @@ package com.hp.hpl.jena.sparql.test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
-import com.hp.hpl.jena.sparql.engine.ref.QueryEngineQuad;
 import com.hp.hpl.jena.sparql.engine.ref.QueryEngineRef;
 import com.hp.hpl.jena.sparql.expr.E_Function;
 import com.hp.hpl.jena.sparql.expr.NodeValue;
@@ -34,14 +33,6 @@ public class ARQTestRefEngine extends TestCase
         QueryEngineRef.register() ;
         TestSuite ts = suiteMaker() ;
         //QueryEngineRef.unregister() ;
-        return ts ;
-    }
-    
-    private static TestSuite suiteQuad()
-    {
-        QueryEngineQuad.register() ;
-        TestSuite ts = suiteMaker() ;
-        QueryEngineQuad.unregister() ;
         return ts ;
     }
     

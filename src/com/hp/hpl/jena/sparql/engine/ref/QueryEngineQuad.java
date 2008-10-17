@@ -37,22 +37,6 @@ public class QueryEngineQuad extends QueryEngineRef
         return Algebra.toQuadForm(op) ;
     }
     
-//    
-//    
-//    public QueryEngineQuad(Op op, DatasetGraph dataset, Context context)
-//    { this(op, dataset, null, context) ; }
-//    
-//    public QueryEngineQuad(Op op, DatasetGraph dataset, Binding input, Context context)
-//    { super(op, dataset, input, context) ; }
-//    
-//    public QueryEngineQuad(Query query, DatasetGraph dataset, Binding input, Context context)
-//    {
-//        super(query,
-//              dataset,
-//              new AlgebraGeneratorQuad(context), 
-//              input, context) ; ; 
-//    }
-    
     static public QueryEngineFactory getFactory()   { return factory ; } 
     static public void register()       { QueryEngineRegistry.addFactory(factory) ; }
     static public void unregister()     { QueryEngineRegistry.removeFactory(factory) ; }
