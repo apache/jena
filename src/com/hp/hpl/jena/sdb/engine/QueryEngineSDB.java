@@ -9,24 +9,27 @@ package com.hp.hpl.jena.sdb.engine;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.hp.hpl.jena.query.Query;
+import com.hp.hpl.jena.sdb.Store;
+import com.hp.hpl.jena.sdb.compiler.SDBCompile;
+import com.hp.hpl.jena.sdb.compiler.OpSQL;
+import com.hp.hpl.jena.sdb.core.SDBRequest;
+import com.hp.hpl.jena.sdb.store.DatasetStoreGraph;
 import com.hp.hpl.jena.sparql.algebra.Algebra;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.core.DatasetGraph;
-import com.hp.hpl.jena.sparql.engine.*;
+import com.hp.hpl.jena.sparql.engine.ExecutionContext;
+import com.hp.hpl.jena.sparql.engine.Plan;
+import com.hp.hpl.jena.sparql.engine.QueryEngineBase;
+import com.hp.hpl.jena.sparql.engine.QueryEngineFactory;
+import com.hp.hpl.jena.sparql.engine.QueryEngineRegistry;
+import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.binding.BindingRoot;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterSingleton;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIteratorCheck;
 import com.hp.hpl.jena.sparql.engine.main.QC;
 import com.hp.hpl.jena.sparql.util.Context;
-
-import com.hp.hpl.jena.query.Query;
-
-import com.hp.hpl.jena.sdb.Store;
-import com.hp.hpl.jena.sdb.compiler.Compile;
-import com.hp.hpl.jena.sdb.compiler.OpSQL;
-import com.hp.hpl.jena.sdb.core.SDBRequest;
-import com.hp.hpl.jena.sdb.store.DatasetStoreGraph;
 
 
 public class QueryEngineSDB extends QueryEngineBase
@@ -53,6 +56,12 @@ public class QueryEngineSDB extends QueryEngineBase
         init(dsg, null, initialBinding, context) ;
     }
     
+//    @Override
+//    protected Op modifyOp(Op op)
+//    { 
+//        return op ;
+//    }
+    
     private void init(DatasetStoreGraph dsg, Query query, Binding initialBinding, Context context)
     {
         this.store = dsg.getStore() ;
@@ -60,32 +69,25 @@ public class QueryEngineSDB extends QueryEngineBase
         this.originalOp = getOp() ;
         // Enable transformations
         // Op op = Algebra.optimize(originalOp, context) ;
-        Op op =  Algebra.toQuadForm(originalOp) ;
-        op = Compile.compile(store, op, initialBinding, context, request) ;
+        // SDB uses the quad engine which does not support property functions.
+        Op op = originalOp ;
+        // Quad it now so it can be passed to Compile.compil
+        op = Algebra.toQuadForm(op) ;
+        op = SDBCompile.compile(store, op, initialBinding, context, request) ;
         setOp(op) ;
     }
     
     public SDBRequest getRequest()      { return request ; }
     
-//    public void close()
-//    { 
-//        if ( request != null )
-//            request.close() ;
-//    }
+    @Override
+    public void close()
+    { 
+        super.close();
+    }
 
     @Override
     public QueryIterator eval(Op op, DatasetGraph dsg, Binding binding, Context context)
     {
-        // Compiled in init().
-//        if ( op == null || ! binding.isEmpty() )
-//        {
-//            // Assumes we compiled in the constructor.
-//            // If we have already compiled this op, get the original,substitute and recompile.
-//            if ( op instanceof OpSQL )
-//                op = ((OpSQL)op).getOriginal() ;
-//            op = QC.compile(store, op, binding, context, request) ;
-//        }
-        
         ExecutionContext execCxt = new ExecutionContext(context, dsg.getDefaultGraph(), dsg) ;
         
         // This pattern is common to QueryEngineMain - find a sharing pattern 
