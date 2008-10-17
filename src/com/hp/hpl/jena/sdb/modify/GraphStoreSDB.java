@@ -9,20 +9,16 @@ import java.util.Iterator;
 
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.shared.Lock;
-
-import com.hp.hpl.jena.sparql.util.FmtUtils;
-
 import com.hp.hpl.jena.query.Dataset;
 import com.hp.hpl.jena.query.QueryExecution;
 import com.hp.hpl.jena.query.QueryExecutionFactory;
 import com.hp.hpl.jena.query.ResultSet;
-
-import com.hp.hpl.jena.update.GraphStore;
-
 import com.hp.hpl.jena.sdb.SDBFactory;
 import com.hp.hpl.jena.sdb.Store;
 import com.hp.hpl.jena.sdb.util.StoreUtils;
+import com.hp.hpl.jena.shared.Lock;
+import com.hp.hpl.jena.sparql.util.FmtUtils;
+import com.hp.hpl.jena.update.GraphStore;
 
 public class GraphStoreSDB implements GraphStore
 {
@@ -32,13 +28,20 @@ public class GraphStoreSDB implements GraphStore
 
     public Store getStore() { return store ; }
 
+    
+    public void startRequest()
+    {}
+
+    public void finishRequest()
+    {}
+
     public Dataset toDataset()
     {
         return SDBFactory.connectDataset(store) ;
     }
 
     public void addGraph(Node graphName, Graph graph)
-    { /* No-op in SDB until there is explicit graph management */ }
+    { /* No-op in SDB until theer is explciit graph management */ }
 
     public Graph removeGraph(Node graphName)
     {
@@ -93,12 +96,6 @@ public class GraphStoreSDB implements GraphStore
         // Delete all triples.
         g.getBulkUpdateHandler().removeAll() ;
     }
-
-    public void finishRequest()
-    {}
-
-    public void startRequest()
-    {}
 
 }
 
