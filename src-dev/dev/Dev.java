@@ -8,14 +8,6 @@ package dev;
 
 public class Dev
 {
-    // ---- Next: materialized views
-    // ---- Next: range queries (filter E (bgp T)) ==> (range T E....) where E has one var and the one var is in T
-    //    Given NodeId structure, should be doable for ints and dates.
-    
-    // ---- Assembler 
-    //    Setting options (globally, per model)
-    //    Variable indexes
-    
     // ---- Optimization
     //   Instrumentation
     //   Abbreviate planning when below a threshold (likely selectivity?), or number of triples planned.
@@ -23,6 +15,14 @@ public class Dev
     //     VarCounting : need to consider connectivity for boundedness propagation
     //     or consider all plans at step one.
     // ** Documentation
+    
+    // ---- Next: materialized views
+    // ---- Next: range queries (filter E (bgp T)) ==> (range T E....) where E has one var and the one var is in T
+    //    Given NodeId structure, should be doable for ints and dates.
+    
+    // ---- Assembler 
+    //    Setting options (globally, per model)
+    //    Variable indexes
     
     // ---- Reifier
     
