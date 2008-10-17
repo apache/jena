@@ -50,7 +50,7 @@ public class OpSQL extends OpExtMain
     {
         if ( parent == null )
             parent = BindingRoot.create() ;
-        QueryIterator qIter = QC.exec(this,
+        QueryIterator qIter = SDB_QC.exec(this,
                                       getRequest(),
                                       parent, 
                                       execCxt) ;
@@ -93,7 +93,7 @@ public class OpSQL extends OpExtMain
 
     public String toSQL()
     {
-       return QC.toSqlString(this, request) ;
+       return SDB_QC.toSqlString(this, request) ;
     }
 
     public SqlNode getSqlNode()
