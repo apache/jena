@@ -9,7 +9,6 @@ package dev;
 public class Dev
 {
     // ** Quads and paths interaction (not interacting currently).
-    // Ready to roll out to SDB.
     // [later: quad paths]
 
     // Static scope analysis
@@ -32,7 +31,6 @@ public class Dev
     // New ops is now implement, register.
     // test with chnage to OpSQL.
 
-    // Can Transformer use OpWalker and BeforeAfterVisitor? 
     // Migrate:
     // TransformPathFlattern - left in AlgebraGenerator for now - code in src-dev/opt
     // But needs to merge adjacent BGPs
