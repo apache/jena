@@ -6,11 +6,7 @@
 
 package com.hp.hpl.jena.tdb.solver.reorder;
 
-import java.util.Set;
-
 import com.hp.hpl.jena.sparql.core.BasicPattern;
-import com.hp.hpl.jena.sparql.core.Var;
-
 import com.hp.hpl.jena.tdb.solver.stats.StatsMatcher;
 
 public class ReorderLib
@@ -31,13 +27,13 @@ public class ReorderLib
 
     private static ReorderTransformation _identity = new ReorderTransformation() {
         @Override
-        public BasicPattern reorder(BasicPattern pattern, Set<Var> definedVars)
+        public BasicPattern reorder(BasicPattern pattern)
         {
             return pattern ;
         }
 
         @Override
-        public ReorderProc reorderIndexes(BasicPattern pattern, Set<Var> definedVars)
+        public ReorderProc reorderIndexes(BasicPattern pattern)
         {
             return _identityProc ;
         } } ;

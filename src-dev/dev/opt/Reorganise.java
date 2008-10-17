@@ -7,6 +7,7 @@
 package dev.opt;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -17,6 +18,7 @@ import com.hp.hpl.jena.sparql.algebra.TransformCopy;
 import com.hp.hpl.jena.sparql.algebra.Transformer;
 import com.hp.hpl.jena.sparql.algebra.op.OpBGP;
 import com.hp.hpl.jena.sparql.algebra.op.OpFilter;
+import com.hp.hpl.jena.sparql.algebra.op.OpSequence;
 import com.hp.hpl.jena.sparql.algebra.opt.TransformFilterPlacement;
 import com.hp.hpl.jena.sparql.core.BasicPattern;
 import com.hp.hpl.jena.sparql.core.Var;
@@ -60,9 +62,7 @@ public class Reorganise
         public Op transform(OpFilter opFilter, Op sub)
         {
             if ( OpBGP.isBGP(sub) )
-            {
                 return reorganise((OpBGP)sub, opFilter.getExprs(), scopeMap.get(opFilter)) ;
-            }
             return super.transform(opFilter, sub) ;
         }
 
@@ -72,13 +72,32 @@ public class Reorganise
             return reorganise(opBGP, null, scopeMap.get(opBGP)) ;
         }
         
+        // At this point we need to be walk-down.
+        @Override
+        public Op transform(OpSequence opSequence, @SuppressWarnings("unchecked") List elts) 
+        {
+            @SuppressWarnings("unchecked")
+            List<Op> x = (List<Op>)opSequence.getElements() ;   // Old elements, not transformed.
+            Set<Var> defined = new HashSet<Var>() ;
+            
+            for ( Op op : x )
+            {
+                // Do op.
+                // Extend scope
+                defined.addAll(scopeMap.get(op)) ;
+            }
+            
+            return super.transform(opSequence, elts);
+            // for every element in the sequence, accumulate the known bound variables. 
+        }
+        
         private static Op reorganise(OpBGP opBGP, ExprList exprs, Set<Var> set)
         {
             // Redo the BGP pattern WRT the scope set.
             BasicPattern pattern = opBGP.getPattern() ;
             ReorderTransformation transform = new ReorderTransformationReorg(set) ;
             
-            // This can miss very restrictive filters (partial condional scans) 
+            // This can miss very restrictive filters (partial conditional scans) 
             // but those still require large amount of index access even if they
             // emit very few results.   
             
@@ -90,7 +109,7 @@ public class Reorganise
 //                    return 0 ;
 //                }} ;
 
-            ReorderProc proc = transform.reorderIndexes(pattern, set) ;
+            ReorderProc proc = transform.reorderIndexes(pattern) ;
             pattern = proc.reorder(pattern) ; 
 
             Op op = null ;

@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.solver.reorder;
+package com.hp.hpl.jena.tdb.solver.stage;
 
 import com.hp.hpl.jena.sparql.core.BasicPattern;
 import com.hp.hpl.jena.sparql.core.Substitute;
@@ -12,7 +12,8 @@ import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 
-import com.hp.hpl.jena.tdb.solver.stage.Stage;
+import com.hp.hpl.jena.tdb.solver.reorder.ReorderProc;
+import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
 
 // OLD code : now done in OpCompilerTDB
 public class StageReorder implements Stage
@@ -39,7 +40,7 @@ public class StageReorder implements Stage
             if ( reorderProc == null )
                 // Cache the reorder processor - i.e. the first binding is used
                 // as a template for later input bindings.   
-                reorderProc = transform.reorderIndexes(pattern2, null) ;
+                reorderProc = transform.reorderIndexes(pattern2) ;
             pattern2 = reorderProc.reorder(pattern2) ;
         }
         

@@ -13,15 +13,12 @@ import iterator.Transform;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
-
 import com.hp.hpl.jena.sparql.core.BasicPattern;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.sse.Item;
-
 import com.hp.hpl.jena.tdb.TDBException;
 
 
@@ -31,13 +28,13 @@ public abstract class ReorderTransformationBase implements ReorderTransformation
     protected static final boolean DEBUG = false ;
     
     @Override
-    public BasicPattern reorder(BasicPattern pattern, Set<Var> definedVars)
+    public BasicPattern reorder(BasicPattern pattern)
     {
-        return reorderIndexes(pattern, definedVars).reorder(pattern) ;
+        return reorderIndexes(pattern).reorder(pattern) ;
     }
 
     @Override
-    public final ReorderProc reorderIndexes(BasicPattern pattern, Set<Var> definedVars)
+    public final ReorderProc reorderIndexes(BasicPattern pattern)
     {
         if (pattern.size() <= 1 )
             return ReorderLib.identityProc() ;

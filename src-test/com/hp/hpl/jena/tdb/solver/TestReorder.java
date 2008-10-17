@@ -139,7 +139,7 @@ public class TestReorder extends BaseTest
         StatsMatcher m = matcher("((:x :p ANY) 5)") ;
         ReorderTransformation transform = new ReorderWeighted(m) ;
         BasicPattern bgp = bgp("(bgp)") ;
-        BasicPattern bgp2 = transform.reorder(bgp, null) ;
+        BasicPattern bgp2 = transform.reorder(bgp) ;
         assertEquals(bgp2, bgp) ;
     }
     
@@ -148,7 +148,7 @@ public class TestReorder extends BaseTest
     {
         ReorderTransformation transform = new ReorderFixed() ;
         BasicPattern bgp = bgp("(bgp)") ;
-        BasicPattern bgp2 = transform.reorder(bgp, null) ;
+        BasicPattern bgp2 = transform.reorder(bgp) ;
         assertEquals(bgp2, bgp) ;
     }
   
