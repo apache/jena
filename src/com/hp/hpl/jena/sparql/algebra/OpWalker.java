@@ -10,6 +10,9 @@ import java.util.Iterator;
 
 import com.hp.hpl.jena.sparql.algebra.op.*;
 
+/** Apply a visitor to the whole structure of Ops, recursively.
+ *  Visit sub Op before the current level
+ */
 
 public class OpWalker
 {
