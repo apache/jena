@@ -41,6 +41,9 @@ public class BuilderOp
 
         if (item.isSymbol() )
             BuilderLib.broken(item, "Attempt to build op structure from a bare symbol") ;
+        
+        if (!item.isTagged())
+            BuilderLib.broken(item, "Attempt to build op structure from a non-tagged item") ;
 
         BuilderOp b = new BuilderOp();
         return b.build(item.getList()) ;
@@ -82,7 +85,7 @@ public class BuilderOp
     }
 
     // The main recursive build operation.
-    public Op build(ItemList list)
+    private Op build(ItemList list)
     {
         Item head = list.get(0) ;
         String tag = head.getSymbol() ;
