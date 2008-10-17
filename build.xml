@@ -62,7 +62,10 @@
   </fileset>
 
 <!--
-   <pathconvert pathsep="," property="fileset.src" refid="java.source.path"/>
+   <pathconvert pathsep="," property="fileset.src" refid="java.source.path">
+   All java files
+   </pathconvert>
+  
    <echo>${fileset.src}</echo>
 -->
   <import file="build-lib.xml"/>
