@@ -6,11 +6,8 @@
 
 package com.hp.hpl.jena.sdb.compiler;
 
-import com.hp.hpl.jena.sdb.core.SDBRequest;
-import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
-import com.hp.hpl.jena.sdb.store.SQLBridge;
 import com.hp.hpl.jena.sparql.algebra.Op;
-import com.hp.hpl.jena.sparql.algebra.op.OpExtBase;
+import com.hp.hpl.jena.sparql.algebra.op.OpExt;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.Plan;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
@@ -19,7 +16,11 @@ import com.hp.hpl.jena.sparql.engine.binding.BindingRoot;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
 import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 
-public class OpSQL extends OpExtBase
+import com.hp.hpl.jena.sdb.core.SDBRequest;
+import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
+import com.hp.hpl.jena.sdb.store.SQLBridge;
+
+public class OpSQL extends OpExt
 {
     private SqlNode sqlNode ;
     private Op originalOp ;
@@ -36,7 +37,7 @@ public class OpSQL extends OpExtBase
         this.bridge = null ;
     }
 
-    //@Override
+    @Override
     public QueryIterator eval(QueryIterator input, ExecutionContext execCxt)
     { return new QueryIterOpSQL(this, input, execCxt) ; }
 
@@ -56,6 +57,8 @@ public class OpSQL extends OpExtBase
 
 
     public Op getOriginal()     { return originalOp ; }
+    
+    @Override
     public Op effectiveOp()     { return originalOp ; }
 
     @Override
@@ -105,7 +108,15 @@ public class OpSQL extends OpExtBase
 
     public void setBridge(SQLBridge bridge) { this.bridge = bridge ; }
 
-    public String getName()                 { return "OpSQL" ; }
+    @Override
+    public String getSubTag()
+    {
+        return "SQL" ;
+    }
+
+    @Override
+    public void outputArgs(IndentedWriter out)
+    {}
 }
 
 /*
