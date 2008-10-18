@@ -89,7 +89,7 @@ public class ItemList extends ItemLocation //implements Iterable<Item>
     {
         if (  _size() < start+offset )
             return null ;
-        ItemList x = new ItemList(super.getLine(), super.getColumn(), offset+start, elements) ;
+        ItemList x = new ItemList(noLine, noColumn, offset+start, elements) ;
         return x ;
     }
     
@@ -104,7 +104,7 @@ public class ItemList extends ItemLocation //implements Iterable<Item>
         if ( finish > _size() )
             return null ;
         
-        ItemList x = new ItemList(super.getLine(), super.getColumn()) ;
+        ItemList x = new ItemList() ;
         // Take a slice.
         // Note : this is a copy.
         // Note: List.subList just puts a wrapper around the overlying list

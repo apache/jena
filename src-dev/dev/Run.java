@@ -16,8 +16,8 @@ import com.hp.hpl.jena.util.FileUtils;
 
 import com.hp.hpl.jena.sparql.algebra.AlgebraQuad;
 import com.hp.hpl.jena.sparql.algebra.Op;
-import com.hp.hpl.jena.sparql.algebra.OpExtFactory;
-import com.hp.hpl.jena.sparql.algebra.OpExtFactory.ExtBuilder;
+import com.hp.hpl.jena.sparql.algebra.OpExtRegistry;
+import com.hp.hpl.jena.sparql.algebra.OpExtRegistry.ExtBuilder;
 import com.hp.hpl.jena.sparql.algebra.op.OpExt;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
@@ -69,9 +69,10 @@ public class Run
 
     public static void main(String[] argv) throws Exception
     {
-        OpExtFactory.register(new ExtBuilder(){
+        OpExtRegistry.register(new ExtBuilder(){
             public OpExt make(ItemList argList)
             {
+                System.out.println("Args: "+argList) ;
                 return new OpExtTest() ;
             }
 

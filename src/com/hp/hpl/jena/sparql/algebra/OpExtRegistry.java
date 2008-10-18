@@ -15,7 +15,7 @@ import com.hp.hpl.jena.sparql.sse.Tags;
 import com.hp.hpl.jena.sparql.sse.builders.BuilderOp;
 
 /** Manage extension algebra operations */
-public class OpExtFactory
+public class OpExtRegistry
 {
     static Map extensions = new HashMap() ;
     // Wire in.
