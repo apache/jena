@@ -6,6 +6,8 @@
 
 package dev;
 
+import java.util.Iterator;
+
 import arq.sparql;
 import arq.sse_query;
 
@@ -21,6 +23,7 @@ import com.hp.hpl.jena.sparql.algebra.OpExtRegistry.ExtBuilder;
 import com.hp.hpl.jena.sparql.algebra.op.OpExt;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
+import com.hp.hpl.jena.sparql.sse.Item;
 import com.hp.hpl.jena.sparql.sse.ItemList;
 import com.hp.hpl.jena.sparql.sse.SSE;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
@@ -36,6 +39,11 @@ public class Run
 {
     static class OpExtTest extends OpExt 
     {
+        private ItemList argList ;
+
+        public OpExtTest(ItemList argList)
+        { this.argList = argList ; }
+
         public Op effectiveOp()
         {
             return null ;
@@ -48,21 +56,29 @@ public class Run
 
         public boolean equalTo(Op other, NodeIsomorphismMap labelMap)
         {
-            return false ;
+            if ( ! ( other instanceof OpExtTest) ) return false ;
+            return argList.equals(((OpExtTest)other).argList) ;
         }
 
         public String getSubTag() { return "TAG" ; }
 
         public void outputArgs(IndentedWriter out)
         {
-            out.print("123") ;
-            out.print(" ") ;
-            out.print("456") ;
+            boolean first = true ;
+            for ( Iterator iter = argList.iterator() ; iter.hasNext() ; )
+            {
+                Item item = (Item)iter.next();
+                if ( first )
+                    first = false ;
+                else
+                    out.print(" ") ;
+                out.print(item) ;
+            }
         }
         
         public int hashCode()
         {
-            return 15 ;
+            return argList.hashCode() ;
         }
     }
     
@@ -73,7 +89,7 @@ public class Run
             public OpExt make(ItemList argList)
             {
                 System.out.println("Args: "+argList) ;
-                return new OpExtTest() ;
+                return new OpExtTest(argList) ;
             }
 
             public String getSubTab()
@@ -81,7 +97,7 @@ public class Run
                 return "ABC" ;
             }}) ;
         
-        Op op = SSE.parseOp("(ext ABC 123)") ;
+        Op op = SSE.parseOp("(ext ABC 123 667)") ;
         System.out.println(op); 
         
         System.out.println("----") ; System.exit(0) ; 

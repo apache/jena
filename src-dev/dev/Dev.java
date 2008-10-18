@@ -8,22 +8,13 @@ package dev;
 
 public class Dev
 {
-    // ---- [later: quad paths]
+    // ---- [quad paths]
 
     // ---- Static scope analysis
     // Full scope, parallel map(op => scope sets)
     // Write tests
     //   Break up VarFinder later.
     
-    // ---- OpExt reworking
-    //   BuilderOp - done. 
-    //   WriterOp?? OpExt.getSubTag.
-    //   OpExt.output [OpExtBase: outputs: (ext subtag op1 op2 ...)]
-    //   OpExt.eval(input, context) ==> QI
-    //    This engine main-centric?
-    
-    // New op is now implement, register.
-
     // ---- OpAssign - needs expression prepare (for function binding)?
     // Other places using a VarExprList?
     // Does prepare really matter if failure is defined as a false for evaluation?
