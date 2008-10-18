@@ -27,6 +27,10 @@ public class Dev
     // ---- Reifier
     
     // ---- Quads
+    //   Common abstractions
+    //       quad table (share with SDB)
+    //       dataset as graph + quads
+    //       daatset management
     
     // ---- Loader - traverse of SPO via a direct block mgr?
     //   ** Close indexes not in use in a given phase
