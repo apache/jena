@@ -7,6 +7,8 @@
 package com.hp.hpl.jena.sparql.algebra.op;
 
 import com.hp.hpl.jena.sparql.algebra.Op;
+import com.hp.hpl.jena.sparql.engine.ExecutionContext;
+import com.hp.hpl.jena.sparql.engine.QueryIterator;
 
 /** Marker for extension points
  *  Execution will be per-engine specific
@@ -14,15 +16,17 @@ import com.hp.hpl.jena.sparql.algebra.Op;
  */
 public interface OpExt extends Op
 { 
-    /** A copy - immutable OpExt subclasses can return 'this' */
-    public OpExt copy() ;
-    
     /** Return an op that will used by query processing algorithms such as 
      *  optimization.  This method returns a non-extension Op expression that
      *  is the equivalent SPARQL expression.  For example, this is the Op replaced
      *  by this extension node.   
      */ 
     public Op effectiveOp() ;
+    
+    /** Evaluate the op, given a stream of bindings as input 
+     *  Throw UnsupportedOperationException if this OpExt is not executeable. 
+     */
+    public QueryIterator eval(QueryIterator input, ExecutionContext execCxt) ;
 }
 
 

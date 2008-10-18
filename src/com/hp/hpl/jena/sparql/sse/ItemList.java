@@ -85,6 +85,34 @@ public class ItemList extends ItemLocation //implements Iterable<Item>
         return x ;
     }
     
+    public ItemList sublist(int start)
+    {
+        if (  _size() < start+offset )
+            return null ;
+        ItemList x = new ItemList(super.getLine(), super.getColumn(), offset+start, elements) ;
+        return x ;
+    }
+    
+    /** Slice of the list from start (inclusive) to finish (exclusive) */
+    public ItemList sublist(int start, int finish)
+    {
+        if ( start < 0 || finish < 0 || finish < start )
+            return null ;
+        
+        if (  _size() < start )
+            return null ;
+        if ( finish > _size() )
+            return null ;
+        
+        ItemList x = new ItemList(super.getLine(), super.getColumn()) ;
+        // Take a slice.
+        // Note : this is a copy.
+        // Note: List.subList just puts a wrapper around the overlying list
+        // but don't do this a lot because ArrayList.get recurses to the core list (may run out of stack).
+        x.elements.addAll(elements.subList(start+offset, finish+offset)) ;
+        return x ;
+    }
+    
     public String shortString()
     {
         if (  _size() == 0 ) return "()" ;

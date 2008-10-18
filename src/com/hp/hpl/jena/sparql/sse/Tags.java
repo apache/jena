@@ -76,6 +76,8 @@ public class Tags
     public static final String tagPathMod       = "mod" ;
     public static final String tagPathReverse   = "reverse" ;
     
+    public static final String tagExt           = "ext" ;
+    
     // Expressions
     // sym => swiggly thing, tag => word-ish thing
     

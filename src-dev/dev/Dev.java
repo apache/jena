@@ -8,7 +8,6 @@ package dev;
 
 public class Dev
 {
-    // ** Quads and paths interaction (not interacting currently).
     // [later: quad paths]
 
     // Static scope analysis
@@ -20,16 +19,23 @@ public class Dev
     // Other places using a VarExprList?
     // Does prepare really matter if failure is defined as a false for evaluation?
     
-    // Dev: escapes in Literals and symbols in SSE (ParseSSBase)
+    // Dev: escapes in Literals and symbols in SSE (ParseSSEBase)
     // Need configurable escape processing.
     
     // OpExt reworking
     //   OpExtFactory: .getBuilder()
+    
     //   OpExt.output [OpExtBase: outputs: (ext subtag op1 op2 ...)]
     //   OpExt.eval(input, context) ==> QI
+    //    This engine main-centric?
+    
     // Registry for subtag => builder [or directly register subtag as tag]
-    // New ops is now implement, register.
-    // test with chnage to OpSQL.
+    // Also (ext "name" Object) as an internal carrier.
+    // This is OpExt -> requirement is eval
+    
+    
+    // New op is now implement, register.
+    // test with change to OpSQL.
 
     // Migrate:
     // TransformPathFlattern - left in AlgebraGenerator for now - code in src-dev/opt

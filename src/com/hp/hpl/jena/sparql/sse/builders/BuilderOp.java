@@ -34,6 +34,13 @@ import com.hp.hpl.jena.sparql.sse.Tags;
 
 public class BuilderOp
 {
+    // It's easier to have a object than have all statics because the
+    // order of statics matters (the dispatch table gets initialized to
+    // tag/null because the buildXYZ are null at that point).
+    // which forces the code structure unnaturally.
+    
+    private static BuilderOp builderOp = new BuilderOp() ;
+    
     public static Op build(Item item)
     {
         if (item.isNode() )
@@ -45,8 +52,7 @@ public class BuilderOp
         if (!item.isTagged())
             BuilderLib.broken(item, "Attempt to build op structure from a non-tagged item") ;
 
-        BuilderOp b = new BuilderOp();
-        return b.build(item.getList()) ;
+        return builderOp.build(item.getList()) ;
     }
 
     protected Map dispatch = new HashMap() ;
@@ -84,6 +90,16 @@ public class BuilderOp
         dispatch.put(Tags.tagLabel,         buildLabel) ;
     }
 
+    public static void add(String tag, Build builder)
+    {
+        builderOp.dispatch.put(tag, builder) ;
+    }
+
+    public static void remove(String tag, Build builder)
+    {
+        builderOp.dispatch.remove(tag) ;
+    }
+    
     // The main recursive build operation.
     private Op build(ItemList list)
     {
@@ -161,6 +177,10 @@ public class BuilderOp
 
     static public interface Build { Op make(ItemList list) ; }
 
+    // Not static.  The initialization through the singleton would not work
+    // (static initialization order - these operations would need to go
+    // before the singelton. 
+    // Or assign null and create object on first call but that breaks add/remove
     final protected Build buildTable = new Build()
     {
         public Op make(ItemList list)

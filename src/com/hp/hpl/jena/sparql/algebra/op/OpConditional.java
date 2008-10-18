@@ -12,7 +12,7 @@ import com.hp.hpl.jena.sparql.algebra.Transform;
 import com.hp.hpl.jena.sparql.sse.Tags;
 import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 
-/** Conditional execution - workes with streamed execution, primarily.
+/** Conditional execution - works with streamed execution, primarily.
  *  For each element in the input stream, 
  *  execute the expression (i.e. index-join it to the element
  *  in the input stream).  If it matches, return those results.

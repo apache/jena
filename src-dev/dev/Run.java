@@ -16,6 +16,8 @@ import com.hp.hpl.jena.util.FileUtils;
 
 import com.hp.hpl.jena.sparql.algebra.AlgebraQuad;
 import com.hp.hpl.jena.sparql.algebra.Op;
+import com.hp.hpl.jena.sparql.algebra.op.OpExt;
+import com.hp.hpl.jena.sparql.sse.ItemList;
 import com.hp.hpl.jena.sparql.sse.SSE;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
 import com.hp.hpl.jena.sparql.util.StringUtils;
@@ -24,10 +26,22 @@ import com.hp.hpl.jena.query.*;
 
 import com.hp.hpl.jena.update.*;
 
+import dev.OpExtFactory.ExtBuilder;
+
 public class Run
 {
     public static void main(String[] argv) throws Exception
     {
+        OpExtFactory.register("ABC", new ExtBuilder(){
+
+            public OpExt make(ItemList argList)
+            {
+                return null ;
+            }}) ;
+        
+        SSE.parseOp("(ext ABC 123)") ;
+        System.out.println("----") ; System.exit(0) ; 
+        
         //execQuery("D.ttl", "Q.rq") ;
         //arq.query.main(new String[]{"--desc=umbel-db.ttl", "SELECT * {}"}) ;
         code() ; System.exit(0) ; 

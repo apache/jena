@@ -1,22 +1,61 @@
 /*
- * (c) Copyright 2007, 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.engine.main;
+package dev;
 
-import com.hp.hpl.jena.sparql.algebra.op.OpExtBase;
-import com.hp.hpl.jena.sparql.engine.ExecutionContext;
-import com.hp.hpl.jena.sparql.engine.QueryIterator;
+import java.util.HashMap;
+import java.util.Map;
 
-public abstract class OpExtMain extends OpExtBase
+import com.hp.hpl.jena.sparql.algebra.Op;
+import com.hp.hpl.jena.sparql.algebra.op.OpExt;
+import com.hp.hpl.jena.sparql.sse.ItemList;
+import com.hp.hpl.jena.sparql.sse.Tags;
+import com.hp.hpl.jena.sparql.sse.builders.BuilderOp;
+
+/** Manage extension algebra operations */
+public class OpExtFactory
 {
-    public abstract QueryIterator eval(QueryIterator input, ExecutionContext execCxt) ;
+    static Map extensions = new HashMap() ;
+    // Wire in.
+    static { BuilderOp.add(Tags.tagExt, new BuildExt()) ; }
+    
+    public static void register(String subtag, ExtBuilder builder)
+    {
+        extensions.put(subtag, builder) ;
+    }
+    
+    public static void unregister(String subtag)
+    {
+        extensions.remove(subtag) ;
+    }
+    
+    static public interface ExtBuilder
+    {
+        /** The remaining arguments */
+        public OpExt make(ItemList argList) ;
+    }
+    
+    static public class BuildExt implements BuilderOp.Build 
+    { 
+        public Op make(ItemList list)
+        {
+            // 0 is the "ext"
+            String subtag = list.get(1).getSymbol() ;
+            ExtBuilder b = (ExtBuilder)extensions.get(subtag) ;
+            list = list.sublist(2) ;
+            OpExt ext = b.make(list) ;  // Arguments 2 onwards
+            return ext ;
+        }
+    }
+    
+    
 }
 
 /*
- * (c) Copyright 2007, 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

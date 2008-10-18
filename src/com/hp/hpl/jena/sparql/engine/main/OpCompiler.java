@@ -327,13 +327,13 @@ public class OpCompiler
 
     public QueryIterator compile(OpExt opExt, QueryIterator input)
     { 
-        if ( opExt instanceof OpExtMain )
-        {
-            OpExtMain op = (OpExtMain)opExt ;
-            return op.eval(input, execCxt) ;
-        }
-        
-        throw new QueryExecException("Encountered unsupport OpExt: "+opExt.getName()) ;
+        try {
+            QueryIterator qIter = opExt.eval(input, execCxt) ;
+            if ( qIter != null )
+                return qIter ;
+        } catch (UnsupportedOperationException ex) { }
+        // null or UnsupportedOperationException
+        throw new QueryExecException("Encountered unsupported OpExt: "+opExt.getName()) ;
     }
 
     public QueryIterator compile(OpLabel opLabel, QueryIterator input)
