@@ -16,30 +16,73 @@ import com.hp.hpl.jena.util.FileUtils;
 
 import com.hp.hpl.jena.sparql.algebra.AlgebraQuad;
 import com.hp.hpl.jena.sparql.algebra.Op;
+import com.hp.hpl.jena.sparql.algebra.OpExtFactory;
+import com.hp.hpl.jena.sparql.algebra.OpExtFactory.ExtBuilder;
 import com.hp.hpl.jena.sparql.algebra.op.OpExt;
+import com.hp.hpl.jena.sparql.engine.ExecutionContext;
+import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.sse.ItemList;
 import com.hp.hpl.jena.sparql.sse.SSE;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
+import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 import com.hp.hpl.jena.sparql.util.StringUtils;
 
 import com.hp.hpl.jena.query.*;
 
 import com.hp.hpl.jena.update.*;
 
-import dev.OpExtFactory.ExtBuilder;
 
 public class Run
 {
+    static class OpExtTest extends OpExt 
+    {
+        public Op effectiveOp()
+        {
+            return null ;
+        }
+
+        public QueryIterator eval(QueryIterator input, ExecutionContext execCxt)
+        {
+            return null ;
+        }
+
+        public boolean equalTo(Op other, NodeIsomorphismMap labelMap)
+        {
+            return false ;
+        }
+
+        public String getSubTag() { return "TAG" ; }
+
+        public void outputArgs(IndentedWriter out)
+        {
+            out.print("123") ;
+            out.print(" ") ;
+            out.print("456") ;
+        }
+        
+        public int hashCode()
+        {
+            return 15 ;
+        }
+    }
+    
+
     public static void main(String[] argv) throws Exception
     {
-        OpExtFactory.register("ABC", new ExtBuilder(){
-
+        OpExtFactory.register(new ExtBuilder(){
             public OpExt make(ItemList argList)
             {
-                return null ;
+                return new OpExtTest() ;
+            }
+
+            public String getSubTab()
+            {
+                return "ABC" ;
             }}) ;
         
-        SSE.parseOp("(ext ABC 123)") ;
+        Op op = SSE.parseOp("(ext ABC 123)") ;
+        System.out.println(op); 
+        
         System.out.println("----") ; System.exit(0) ; 
         
         //execQuery("D.ttl", "Q.rq") ;

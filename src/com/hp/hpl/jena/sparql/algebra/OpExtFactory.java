@@ -1,43 +1,62 @@
 /*
- * (c) Copyright 2006, 2007, 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.algebra.op;
+package com.hp.hpl.jena.sparql.algebra;
 
-import com.hp.hpl.jena.sparql.algebra.OpVisitor;
-import com.hp.hpl.jena.sparql.engine.Plan;
-import com.hp.hpl.jena.sparql.serializer.SerializationContext;
-import com.hp.hpl.jena.sparql.util.IndentedWriter;
-import com.hp.hpl.jena.sparql.util.Utils;
+import java.util.HashMap;
+import java.util.Map;
 
-public abstract class OpExtBase extends OpBase implements OpExt
+import com.hp.hpl.jena.sparql.algebra.op.OpExt;
+import com.hp.hpl.jena.sparql.sse.ItemList;
+import com.hp.hpl.jena.sparql.sse.Tags;
+import com.hp.hpl.jena.sparql.sse.builders.BuilderOp;
+
+/** Manage extension algebra operations */
+public class OpExtFactory
 {
-    public void visit(OpVisitor opVisitor)
-    { opVisitor.visit(this) ; }
-
-    // Default print actions
-    // Better to override one or both of the instance method.
+    static Map extensions = new HashMap() ;
+    // Wire in.
+    static { BuilderOp.add(Tags.tagExt, new BuildExt()) ; }
     
-    public void output(IndentedWriter out, SerializationContext sCxt)
+    public static void register(ExtBuilder builder)
     {
-        int line = out.getRow() ;
-        output(out) ;
-        if ( line != out.getRow() )
-            out.ensureStartOfLine() ;
+        extensions.put(builder.getSubTab(), builder) ;
     }
     
-    public void output(IndentedWriter out)
+    public static void unregister(String subtag)
     {
-        out.print(Plan.startMarker) ;
-        out.print(Utils.className(this)) ;
-        out.print(Plan.finishMarker) ;
+        extensions.remove(subtag) ;
     }
+    
+    static public interface ExtBuilder
+    {
+        /** Subtag */
+        public String getSubTab() ;
+        /** The remaining arguments */
+        public OpExt make(ItemList argList) ;
+    }
+    
+    static public class BuildExt implements BuilderOp.Build 
+    { 
+        public Op make(ItemList list)
+        {
+            // 0 is the "ext"
+            String subtag = list.get(1).getSymbol() ;
+            ExtBuilder b = (ExtBuilder)extensions.get(subtag) ;
+            list = list.sublist(2) ;
+            OpExt ext = b.make(list) ;  // Arguments 2 onwards
+            return ext ;
+        }
+    }
+    
+    
 }
 
 /*
- * (c) Copyright 2006, 2007, 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

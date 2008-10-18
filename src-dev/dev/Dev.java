@@ -8,36 +8,30 @@ package dev;
 
 public class Dev
 {
-    // [later: quad paths]
+    // ---- [later: quad paths]
 
-    // Static scope analysis
+    // ---- Static scope analysis
     // Full scope, parallel map(op => scope sets)
     // Write tests
     //   Break up VarFinder later.
     
-    // OpAssign - needs expression prepare (for function binding)?
+    // ---- OpExt reworking
+    //   BuilderOp - done. 
+    //   WriterOp?? OpExt.getSubTag.
+    //   OpExt.output [OpExtBase: outputs: (ext subtag op1 op2 ...)]
+    //   OpExt.eval(input, context) ==> QI
+    //    This engine main-centric?
+    
+    // New op is now implement, register.
+
+    // ---- OpAssign - needs expression prepare (for function binding)?
     // Other places using a VarExprList?
     // Does prepare really matter if failure is defined as a false for evaluation?
     
     // Dev: escapes in Literals and symbols in SSE (ParseSSEBase)
     // Need configurable escape processing.
     
-    // OpExt reworking
-    //   OpExtFactory: .getBuilder()
-    
-    //   OpExt.output [OpExtBase: outputs: (ext subtag op1 op2 ...)]
-    //   OpExt.eval(input, context) ==> QI
-    //    This engine main-centric?
-    
-    // Registry for subtag => builder [or directly register subtag as tag]
-    // Also (ext "name" Object) as an internal carrier.
-    // This is OpExt -> requirement is eval
-    
-    
-    // New op is now implement, register.
-    // test with change to OpSQL.
-
-    // Migrate:
+    // ---- Migrate:
     // TransformPathFlattern - left in AlgebraGenerator for now - code in src-dev/opt
     // But needs to merge adjacent BGPs
     //   Do adjacent BGP merging afterwards.

@@ -7,26 +7,59 @@
 package com.hp.hpl.jena.sparql.algebra.op;
 
 import com.hp.hpl.jena.sparql.algebra.Op;
+import com.hp.hpl.jena.sparql.algebra.OpVisitor;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
+import com.hp.hpl.jena.sparql.serializer.SerializationContext;
+import com.hp.hpl.jena.sparql.sse.Tags;
+import com.hp.hpl.jena.sparql.sse.writers.WriterLib;
+import com.hp.hpl.jena.sparql.util.IndentedWriter;
 
 /** Marker for extension points
  *  Execution will be per-engine specific
  * @author Andy Seaborne
  */
-public interface OpExt extends Op
+public abstract class OpExt extends OpBase
 { 
     /** Return an op that will used by query processing algorithms such as 
      *  optimization.  This method returns a non-extension Op expression that
      *  is the equivalent SPARQL expression.  For example, this is the Op replaced
      *  by this extension node.   
      */ 
-    public Op effectiveOp() ;
+    public abstract Op effectiveOp() ;
     
     /** Evaluate the op, given a stream of bindings as input 
      *  Throw UnsupportedOperationException if this OpExt is not executeable. 
      */
-    public QueryIterator eval(QueryIterator input, ExecutionContext execCxt) ;
+    public abstract QueryIterator eval(QueryIterator input, ExecutionContext execCxt) ;
+    
+    public final String getName() { return Tags.tagExt ; }
+    
+    public final void visit(OpVisitor opVisitor)
+    { opVisitor.visit(this) ; }
+
+    public void output(IndentedWriter out, SerializationContext sCxt)
+        {
+            int line = out.getRow() ;
+            output(out) ;
+            if ( line != out.getRow() )
+                out.ensureStartOfLine() ;
+        }
+        
+    public void output(IndentedWriter out)
+    {
+        WriterLib.start(out, Tags.tagExt, WriterLib.NoNL) ;
+        out.print(getSubTag()) ;
+        out.print(" ") ;
+        outputArgs(out) ;
+        WriterLib.finish(out) ;
+    }
+    
+    /** Return the sub tag - must match teh builder */ 
+    public abstract String getSubTag() ;
+
+    /** Output the arguments in legal SSE format. Multiple items, whitespace separated */ 
+    public abstract void outputArgs(IndentedWriter out) ;
 }
 
 
