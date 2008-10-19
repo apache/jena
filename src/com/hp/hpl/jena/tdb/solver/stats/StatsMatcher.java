@@ -28,6 +28,8 @@ import java.util.Map;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
+
+import com.hp.hpl.jena.sparql.ARQNotImplemented;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.sse.Item;
 import com.hp.hpl.jena.sparql.sse.ItemException;
@@ -138,15 +140,6 @@ public final class StatsMatcher
 
         ItemList list = stats.getList().cdr();      // Skip tag
         
-        // Estimated fan out from SP? and ?PO
-        // Can override in stats file.
-        
-        // Sizes for large files.
-        // Some wild guesses
-        double weightSP = 2 ;
-        double weightPO = 10 ;
-        double weightTypeO = 1000 ; // ? rdf:type <Object> -- Avoid as can be very, very bad.
-
         if ( list.car().isTagged(META) )
         {        
             // Process the meta tag.
@@ -158,14 +151,7 @@ public final class StatsMatcher
             if ( x != null )
                 count = x.getList().get(1).asInteger() ;
         }
-        
-        // Modify for small files.
-        if ( count != - 1 && count < 100 )
-        {
-            weightPO = 4 ;
-            weightTypeO = 40 ;
-        }
-        
+       
         while (!list.isEmpty()) 
         {
             
@@ -176,19 +162,12 @@ public final class StatsMatcher
             
             if ( pat.isNode() )
             {
-                // Knowing ?PO is quite important - it ranges from IFP (1) to
-                // rdf:type rdf:Resource (potentially everything).
-                
                 double numProp = elt.getList().get(1).getDouble() ;
                 
-                if ( NodeConst.nodeRDFType.equals(pat.getNode()) )
-                    // Special case:  ? rdf:type O which is often not very selective. 
-                    weightPO = weightTypeO ;
-                    
-                // If does not exist. 
-                addPattern(new Pattern(weightSP, TERM, pat, ANY)) ;     // S, P, ? : approx weight
-                addPattern(new Pattern(weightPO,  ANY, pat, TERM)) ;    // ?, P, O : approx weight
-                addPattern(new Pattern(numProp,   ANY, pat, ANY)) ;     // ?, P, ?
+                if ( count < 100 )
+                    addPatternsSmall(pat, numProp) ;
+                else
+                    addPatterns(pat, numProp) ;
             }
             else
             {
@@ -204,10 +183,63 @@ public final class StatsMatcher
             // Round and round
         }
     }
+     
+    // Knowing ?PO is quite important - it ranges from IFP (1) to
+    // rdf:type rdf:Resource (potentially everything).
+
+    static final double weightSP = 2 ;
+    static final double weightPO = 10 ;
+    static final double weightTypeO = 1000 ; // ? rdf:type <Object> -- Avoid as can be very, very bad.
+    
+    static final double weightSP_small = 2 ;
+    static final double weightPO_small = 4 ;
+    static final double weightTypeO_small = 40 ;
+    
+    /** Add patterns based solely on the predicate count and some guessing */  
+    public void addPatterns(Node predicate, double numProp)
+    {
+        addPatterns(Item.createNode(predicate),  numProp) ;
+    }
+    
+    /** Add patterns based solely on the predicate count and some guessing for a small graph
+     * (less than a few thousand triples)
+     */  
+    public void addPatternsSmall(Node predicate, double numProp)
+    {
+        addPatternsSmall(Item.createNode(predicate),  numProp) ;
+    }
+    
+    private void addPatterns(Item predicate, double numProp)
+    {
+        double wSP = weightSP ;
+        double wPO = weightPO ;
         
+        if ( NodeConst.nodeRDFType.equals(predicate.getNode()) )
+            // ? rdf:type <Object> -- Avoid as can be very, very bad.
+            wPO = weightTypeO ;
+        addPatterns(predicate, numProp, wSP, wPO) ;
+    }
+    
+    private void addPatternsSmall(Item predicate, double numProp)
+    {
+        double wSP = weightSP_small ;
+        double wPO = weightPO_small ;
+        
+        if ( NodeConst.nodeRDFType.equals(predicate.getNode()) )
+            wPO = weightTypeO_small ;
+        addPatterns(predicate, numProp, wSP, wPO) ;
+    }
+
+    private void addPatterns(Item predicate, double wP, double wSP, double wPO)
+    {
+        addPattern(new Pattern(wSP, TERM, predicate, ANY)) ;     // S, P, ? : approx weight
+        addPattern(new Pattern(wPO,  ANY, predicate, TERM)) ;    // ?, P, O : approx weight
+        addPattern(new Pattern(wP,   ANY, predicate, ANY)) ;     // ?, P, ?
+    }
+
     public void addPattern(Pattern pattern)
     {
-        // Check for named variables whch shoudl not appear in a Pattern
+        // Check for named variables whch should not appear in a Pattern
         check(pattern) ;
         
         patterns.add(pattern) ;
@@ -219,6 +251,19 @@ public final class StatsMatcher
             _patterns.put(pattern.predItem, entry ) ;
         }
         entry.add(pattern) ;
+    }
+    
+    public void addPattern(Triple triple)
+    {
+        if ( triple.getSubject().isVariable() )
+        {
+            // PO, P and O
+        }
+        else
+        {
+            //SPO, SP and SO
+        }
+        throw new ARQNotImplemented() ;
     }
     
     private static void check(Pattern pattern)

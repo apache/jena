@@ -14,6 +14,7 @@ public class Dev
     //   Consider doing all plans from first choice.
     //     VarCounting : need to consider connectivity for boundedness propagation
     //     or consider all plans at step one.
+    // ** Stats matcher for memory graphs (StageGeneratorGeneric)
     // ** Documentation
     
     // ---- Next: materialized views

@@ -29,6 +29,7 @@ import com.hp.hpl.jena.sparql.algebra.Algebra;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.Transformer;
 import com.hp.hpl.jena.sparql.core.Var;
+import com.hp.hpl.jena.sparql.engine.main.StageGenerator;
 import com.hp.hpl.jena.sparql.sse.SSE;
 
 import com.hp.hpl.jena.query.*;
@@ -43,6 +44,7 @@ import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 import com.hp.hpl.jena.tdb.base.recordfile.RecordBufferPage;
 import com.hp.hpl.jena.tdb.base.recordfile.RecordBufferPageMgr;
 import com.hp.hpl.jena.tdb.pgraph.GraphTDB;
+import com.hp.hpl.jena.tdb.solver.StageGeneratorGeneric;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderFixed;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderWeighted;
@@ -68,10 +70,11 @@ public class Run
  
     public static void main(String ... args) throws IOException
     {
+        memOpt() ; System.exit(0) ;
+        
 //        TDBFactory.assembleGraph( "Store/gbt.ttl") ;
 //        System.out.println("Assembled") ;
 //        System.exit(0) ;
-
         
         Op op = SSE.parseOp("(join (bgp (?w :q 123)) (filter (!= ?x :X) (bgp (?x :p ?v) (?x :q ?w))))") ;
         
@@ -113,6 +116,19 @@ public class Run
     }
     
  
+    private static void memOpt()
+    {
+        StageGenerator stageGenerator = new StageGeneratorGeneric() ;
+        ARQ.getContext().set(ARQ.stageGenerator, stageGenerator) ;
+
+        Model model = FileManager.get().loadModel("D.ttl") ;
+        Query q = QueryFactory.read("Q.rq") ;
+        QueryExecution qexec = QueryExecutionFactory.create(q, model) ;
+        ResultSet rs = qexec.execSelect() ;
+        ResultSetFormatter.out(rs) ;
+        qexec.close() ;
+    }
+    
     private static void reification()
     {
         FileOps.clearDirectory("DB2") ;

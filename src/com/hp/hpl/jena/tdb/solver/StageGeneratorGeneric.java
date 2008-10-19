@@ -8,6 +8,8 @@ package com.hp.hpl.jena.tdb.solver;
 
 import com.hp.hpl.jena.db.GraphRDB;
 import com.hp.hpl.jena.graph.Graph;
+import com.hp.hpl.jena.graph.GraphStatisticsHandler;
+import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.mem.GraphMem;
 import com.hp.hpl.jena.mem.faster.GraphMemFaster;
 import com.hp.hpl.jena.sparql.ARQConstants;
@@ -18,8 +20,16 @@ import com.hp.hpl.jena.sparql.engine.iterator.QueryIterBlockTriples;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterBlockTriplesQH;
 import com.hp.hpl.jena.sparql.engine.main.StageGenerator;
 import com.hp.hpl.jena.sparql.util.ALog;
+import com.hp.hpl.jena.sparql.util.FmtUtils;
 import com.hp.hpl.jena.sparql.util.Symbol;
 import com.hp.hpl.jena.sparql.util.Utils;
+
+import com.hp.hpl.jena.tdb.lib.NodeLib;
+import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
+import com.hp.hpl.jena.tdb.solver.reorder.ReorderWeighted;
+import com.hp.hpl.jena.tdb.solver.stats.StatsMatcher;
+
+import static com.hp.hpl.jena.tdb.lib.NodeLib.termOrAny; 
 
 /** Generic - always works - StageGenerator */
 public class StageGeneratorGeneric implements StageGenerator
@@ -38,17 +48,17 @@ public class StageGeneratorGeneric implements StageGenerator
         // Known Jena graph types.
 
         if ( graph instanceof GraphMemFaster )      // Newer Graph-in-memory; default graph type in Jena
-            return executeInline(pattern, input, execCxt) ;
+            return executeInlineStats(pattern, input, execCxt) ;
 
         if ( graph instanceof GraphRDB )
-            return executeUseQueryHandler(pattern, input, execCxt) ;
+            return executeQueryHandler(pattern, input, execCxt) ;
 
         if ( graph instanceof GraphMem )            // Old Graph-in-memory
-            return executeInline(pattern, input, execCxt) ;
+            return executeInlineStats(pattern, input, execCxt) ;
 
         // When in doubt ... use the general pass-through to graph query handler matcher.
         // Includes union graphs, InfGraphs and many other unusual kinds. 
-        return executeUseQueryHandler(pattern, input, execCxt) ;
+        return executeQueryHandler(pattern, input, execCxt) ;
     }
 
     /** Use the inline, iterator based BGP matcher which works over find() */ 
@@ -57,11 +67,51 @@ public class StageGeneratorGeneric implements StageGenerator
         if ( execCxt.getContext().isTrueOrUndef(altMatcher) )
             return QueryIterBlockTriples.create(input, pattern, execCxt) ;
         else
-            return executeUseQueryHandler(pattern, input, execCxt) ;
+            return executeQueryHandler(pattern, input, execCxt) ;
+    }
+
+    // This is going to get me into trouble ....
+    //private static Map<Graph, StatsMatcher>   
+    
+    /** Use the inline, iterator based BGP matcher after some reorganisation for statistics */ 
+    private QueryIterator executeInlineStats(BasicPattern pattern, QueryIterator input, ExecutionContext execCxt)
+    {
+        Graph graph = execCxt.getActiveGraph() ;
+        GraphStatisticsHandler stats = graph.getStatisticsHandler() ;
+        if ( stats != null )
+        {
+            System.out.println(pattern) ;
+            
+            // XXX cache these!
+            StatsMatcher matcher = new StatsMatcher() ;  
+            // Reorder.
+            for ( Triple t : NodeLib.tripleList(pattern) )
+            {
+                long x = weight(stats, t) ;
+                System.out.println(x+" :: "+FmtUtils.stringForTriple(t)) ;
+                if ( x == -1 )
+                {
+                    // No estimate
+                }
+                
+                //matcher.addPattern(t) ;
+            }
+            ReorderTransformation rt = new ReorderWeighted(matcher) ;
+            pattern = rt.reorder(pattern) ;
+            System.out.println(pattern) ;
+        }
+        return executeInline(pattern, input, execCxt) ;
+    }
+
+    private static long weight(GraphStatisticsHandler stats, Triple t)
+    {
+        return stats.getStatistic(termOrAny(t.getSubject()),
+                                  termOrAny(t.getPredicate()),
+                                  termOrAny(t.getObject())) ;
     }
 
     /** Use the graph's query handler */ 
-    private QueryIterator executeUseQueryHandler(BasicPattern pattern, QueryIterator input, ExecutionContext execCxt)
+    private QueryIterator executeQueryHandler(BasicPattern pattern, QueryIterator input, ExecutionContext execCxt)
     {
         return QueryIterBlockTriplesQH.create(input, pattern, execCxt) ;
     }

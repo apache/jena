@@ -94,7 +94,7 @@ public class TDB
         // Globally change the stage generator to intercept BGP on TDB
         StageGenerator orig = (StageGenerator)ARQ.getContext().get(ARQ.stageGenerator) ;
         
-        if ( orig instanceof StageGenBasicPattern )
+        if ( orig instanceof StageGenBasicPattern ) //|| StageGenOptimizedBasicPattern)
             // ARQ base.  Cause chaos by using the new version.
             orig = new StageGeneratorGeneric() ;
         StageGenerator stageGenerator = new StageGeneratorDirectTDB(orig) ;

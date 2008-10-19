@@ -210,6 +210,13 @@ public class NodeLib
         Bytes.setLong(id3, b, 2*SizeOfLong) ;
         return factory.create(b) ;
     }
+
+    public static Node termOrAny(Node node)
+    {
+        if ( node == null || node.isVariable() )
+            return Node.ANY ;
+        return node ;
+    }
 }
 
 /*
