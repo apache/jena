@@ -8,9 +8,12 @@ package dev;
 
 public class Dev
 {
-    // ---- Consoldiation
+   
+    // ---- Consolidation
 
     // ---- Reopenable BlockMgrs (and the object file?) 
+    
+    // ---- ExtHash trials
     
     // ---- Optimization
     //   Check back on what ARQ currently does.
