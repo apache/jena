@@ -34,7 +34,7 @@ public class AggSum implements AggregateFactory
     
     // XQuery/XPath Functions&Operators suggests zero
     // SQL suggests null.
-    private static final NodeValue noValuesToSum = NodeValue.nvZERO ; 
+    private static final NodeValue noValuesToSum = null ; //NodeValue.nvZERO ; 
     
     // ---- Aggregator
     class AggSumWorker extends AggregatorBase
@@ -63,9 +63,8 @@ public class AggSum implements AggregateFactory
         private NodeValue total = noValuesToSum ;
         
         public AccCountVar()
-        { 
-            System.out.println("AccCountVar") ;
-        }
+        { }
+
         public void accumulate(Binding binding, FunctionEnv functionEnv)
         { 
             try {
