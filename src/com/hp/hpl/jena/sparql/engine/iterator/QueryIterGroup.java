@@ -116,8 +116,9 @@ public class QueryIterGroup extends QueryIterPlainWrapper
                     E_Aggregator agg = (E_Aggregator)aggIter.next();
                     Var v = agg.asVar() ;
                     Node value =  agg.getAggregator().getValue(key) ;
-                    // Extend with the aggregations.
-                    binding.add(v, value) ;
+                    if ( value != null )
+                        // Extend with the aggregations.
+                        binding.add(v, value) ;
                 }
             }
         }

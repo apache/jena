@@ -32,6 +32,10 @@ public class AggSum implements AggregateFactory
         return new AggSumWorker() ;
     }
     
+    // XQuery/XPath Functions&Operators suggests zero
+    // SQL suggests null.
+    private static final NodeValue noValuesToSum = NodeValue.nvZERO ; 
+    
     // ---- Aggregator
     class AggSumWorker extends AggregatorBase
     {
@@ -48,27 +52,36 @@ public class AggSum implements AggregateFactory
             return new AccCountVar() ;
         }
         
-        public Node getValueEmpty()     { return NodeValue.nodeIntZERO ; } 
+        /* null is SQL-like.  NodeValue.nodeIntZERO is F&O like */ 
+        public Node getValueEmpty()     { return NodeValue.toNode(noValuesToSum) ; } 
     }
 
     // ---- Accumulator
     class AccCountVar implements Accumulator
     {
-        private NodeValue total = NodeValue.nvZERO ;
+        // Non-empty case but still can be nothing because the expression may be undefined.
+        private NodeValue total = noValuesToSum ;
         
-        public AccCountVar()   { }
+        public AccCountVar()
+        { 
+            System.out.println("AccCountVar") ;
+        }
         public void accumulate(Binding binding, FunctionEnv functionEnv)
         { 
             try {
-                // XXX WRONG! new FunctionEnvBase()
-                
                 NodeValue nv = expr.eval(binding, functionEnv) ;
                 if ( nv.isNumber() )
-                    total = XSDFuncOp.add(nv, total) ;
+                {
+                    if ( total == noValuesToSum )
+                        total = nv ;
+                    else
+                        total = XSDFuncOp.add(nv, total) ;
+                }
             } catch (ExprEvalException ex)
             {}
         }
-        public NodeValue getValue()             { return total ; }
+        public NodeValue getValue()
+        { return total ; }
     }
 }
 

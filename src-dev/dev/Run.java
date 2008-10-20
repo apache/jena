@@ -85,6 +85,9 @@ public class Run
 
     public static void main(String[] argv) throws Exception
     {
+        execQuery("../Jena-Misc/D.ttl", "../Jena-Misc/Q.arq") ;
+        
+        
         OpExtRegistry.register(new ExtBuilder(){
             public OpExt make(ItemList argList)
             {

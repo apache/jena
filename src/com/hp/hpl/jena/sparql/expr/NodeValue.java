@@ -99,6 +99,13 @@ public abstract class NodeValue extends ExprNode
     public static final Node nodeIntONE = Node.createLiteral("1", null, XSDDatatype.XSDinteger) ;
     public static final NodeValue nvONE = NodeValue.makeNode(nodeIntONE) ;
     
+    // Use NodeValue.toNode(NodeValue) 
+//    public static Node asNode(NodeValue nv)
+//    {
+//        if ( nv == null ) return null ;
+//        return nv.asNode() ; 
+//    }
+    
     // Initialization
 //    static
 //    {}

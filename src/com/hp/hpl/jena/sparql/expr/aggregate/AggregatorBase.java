@@ -13,6 +13,7 @@ import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.binding.BindingKey;
+import com.hp.hpl.jena.sparql.expr.NodeValue;
 import com.hp.hpl.jena.sparql.function.FunctionEnv;
 
 /** Splits bindings by their keys and manages one accumulator per key
@@ -45,7 +46,10 @@ public abstract class AggregatorBase implements Aggregator
         Accumulator acc = (Accumulator)buckets.get(key) ;
         if ( acc == null )
             throw new ARQInternalErrorException("Null for accumulator") ;
-        return acc.getValue().asNode() ;
+        NodeValue nv = acc.getValue();
+        if ( nv == null ) 
+            return null ;
+        return nv.asNode() ;
     }
     
     public String key() { return toPrefixString() ; }
