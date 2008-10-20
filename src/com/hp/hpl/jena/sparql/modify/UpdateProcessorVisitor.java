@@ -191,7 +191,7 @@ public class UpdateProcessorVisitor implements UpdateVisitor
             if ( ! isGroundTriple(triple))
             {
                 ALog.warn(UpdateProcessorVisitor.class, "Unbound triple: "+FmtUtils.stringForTriple(triple)) ;
-                acc.remove(triple) ;
+                iter.remove() ;
             }
         }
         

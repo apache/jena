@@ -25,25 +25,25 @@ import com.hp.hpl.jena.update.UpdateRequest;
 import com.hp.hpl.jena.util.FileUtils;
 
 
-public class ParserSPARQLUpdate
+public class ParserSPARQLUpdate_OLD
 {
-    public UpdateRequest parse(UpdateRequest update, String queryString)
+    /*public*/ private UpdateRequest parse(UpdateRequest update, String queryString)
     {
         Reader r = new StringReader(queryString) ;
         return _parse(update, r) ;
     }
     
-    public UpdateRequest parse(UpdateRequest update, InputStream in)
+    /*public*/ private UpdateRequest parse(UpdateRequest update, InputStream in)
     {
         Reader r = FileUtils.asBufferedUTF8(in) ;
         return _parse(update, r) ;
     }
 
     /** Use with care - Reader must be UTF-8 */ 
-    public UpdateRequest parse(UpdateRequest update, Reader r)
+    /*public*/ private UpdateRequest parse(UpdateRequest update, Reader r)
     {
         if ( r instanceof FileReader )
-            LogFactory.getLog(this.getClass()).warn("FileReader passe to ParserSPARQLUpdate.parse - use a FileInputStream") ;
+            LogFactory.getLog(this.getClass()).warn("FileReader passed to ParserSPARQLUpdate.parse - use a FileInputStream") ;
         return _parse(update, r) ;
     }
     
