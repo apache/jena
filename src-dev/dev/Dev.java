@@ -8,7 +8,12 @@ package dev;
 
 public class Dev
 {
+    // ---- Consoldiation
+
+    // ---- Reopenable BlockMgrs (and the object file?) 
+    
     // ---- Optimization
+    //   Check back on what ARQ currently does.
     //   Instrumentation
     //   Abbreviate planning when below a threshold (likely selectivity?), or number of triples planned.
     //   Consider doing all plans from first choice.
@@ -17,13 +22,14 @@ public class Dev
     // ** Stats matcher for memory graphs (StageGeneratorGeneric)
     // ** Documentation
     
-    // ---- Next: materialized views
-    // ---- Next: range queries (filter E (bgp T)) ==> (range T E....) where E has one var and the one var is in T
-    //    Given NodeId structure, should be doable for ints and dates.
-    
     // ---- Assembler 
     //    Setting options (globally, per model)
     //    Variable indexes
+    
+    // ---- Materialized views
+    
+    // ---- Range queries (filter E (bgp T)) ==> (range T E....) where E has one var and the one var is in T
+    //    Given NodeId structure, should be doable for ints and dates.
     
     // ---- Reifier
     
@@ -39,6 +45,7 @@ public class Dev
     //    Do properly : reopenable indexes (under the triple index)
     //      Reopenable block mgr's .passivate/.activate
     //    Open second index on same
+    //    - shared formatting with GraphLoadMonitor
     // ---- tdbloader: 
     //   ** (script) to work on gzip files
     //   ** Write stats (where to hook in to get unique?)
@@ -65,21 +72,13 @@ public class Dev
     
     // ---- B+Tree rewriter
     
-    // ---- ExtHash : Trial
-    
     // ---- New cache API alloc/return/invalidate (shrink/grow?) : stats
     // Weak references and more space.
-    
-    // ---- Reopenable BlockMgrs (and the object file?) 
     
     // ---- Node Table
     //     Compression
     //     short string inline?
     
-
-    // ---- Use of java properties for key values.
-    // Or config file.
-
     // ---- Graph
     // QueryHandler to access subjectsFor etc. 
     // removeAll implementation: depends on iterator.remove
@@ -89,19 +88,10 @@ public class Dev
     // TDBFactory ==> "create" ==> connect(... , boolean canCreate) ;
     // Location-keyed cache of TDB graphs 
     
-    // ---- BulkLoader
-    //    - shared formatting with GraphLoadMonitor
-    
-    // ---- Misc :
-    // Interface Sync everywhere?  Interface for weak(er) transactions.
-    // CountingSync.
-    //   bound variable tracking
-    //   LARQ++
-    
     // Version of NodeTable that does Logical => Physical id translation
     //    And a PageMgr wrapper for same?
 
     // Inlines => Inline56, Inline64
 
-    // Fix BDB form
+    // Update BDB form
 }
