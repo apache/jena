@@ -9,7 +9,6 @@ package com.hp.hpl.jena.tdb.solver;
 import com.hp.hpl.jena.db.GraphRDB;
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.GraphStatisticsHandler;
-import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.mem.GraphMem;
 import com.hp.hpl.jena.mem.faster.GraphMemFaster;
@@ -22,13 +21,13 @@ import com.hp.hpl.jena.sparql.engine.iterator.QueryIterBlockTriples;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterBlockTriplesQH;
 import com.hp.hpl.jena.sparql.engine.main.StageGenerator;
 import com.hp.hpl.jena.sparql.util.ALog;
-import com.hp.hpl.jena.sparql.util.FmtUtils;
 import com.hp.hpl.jena.sparql.util.Symbol;
 import com.hp.hpl.jena.sparql.util.Utils;
 
 import com.hp.hpl.jena.tdb.lib.NodeLib;
 import com.hp.hpl.jena.tdb.solver.reorder.PatternTriple;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
+import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformationBase;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderWeighted;
 import com.hp.hpl.jena.tdb.solver.stats.StatsMatcher;
 
@@ -92,15 +91,15 @@ public class StageGeneratorGeneric implements StageGenerator
             {
                 PatternTriple pt = new PatternTriple(t) ;
                 
-                
-                long x = weight(stats, t) ;
-                System.out.println(x+" :: "+FmtUtils.stringForTriple(t)) ;
-                if ( x == -1 )
-                {
-                    // No estimate
-                }
-                
-                //matcher.addPattern(t) ;
+//                
+//                long x = weight(stats, t) ;
+//                System.out.println(x+" :: "+FmtUtils.stringForTriple(t)) ;
+//                if ( x == -1 )
+//                {
+//                    // No estimate
+//                }
+//                
+//                //matcher.addPattern(t) ;
             }
             ReorderTransformation rt = new ReorderWeighted(matcher) ;
             pattern = rt.reorder(pattern) ;
@@ -109,24 +108,43 @@ public class StageGeneratorGeneric implements StageGenerator
         return executeInline(pattern, input, execCxt) ;
     }
 
-    private static long weight(GraphStatisticsHandler stats, Triple t)
-    {
-        long S = stats.getStatistic(t.getSubject(), Node.ANY, Node.ANY) ;
-        long P = stats.getStatistic(Node.ANY, t.getPredicate(), Node.ANY) ;
-        long O = stats.getStatistic(Node.ANY, Node.ANY, t.getObject()) ;
-
-        if ( S == 0 || P == 0 || O == 0 )
-            return 0 ;
-        
-        if ( S > 0 ) ;
-
-        return -1 ;
-    }
+//    private static long weight(GraphStatisticsHandler stats, Triple t)
+//    {
+//        // Make a weight for 
+//        // Need to cope with Item.TERM
+//        // 
+//        
+//        long S = stats.getStatistic(t.getSubject(), Node.ANY, Node.ANY) ;
+//        long P = stats.getStatistic(Node.ANY, t.getPredicate(), Node.ANY) ;
+//        long O = stats.getStatistic(Node.ANY, Node.ANY, t.getObject()) ;
+//
+//        if ( S == 0 || P == 0 || O == 0 )
+//            return 0 ;
+//        
+//        if ( S > 0 ) ;
+//
+//        return -1 ;
+//    }
 
     /** Use the graph's query handler */ 
     private QueryIterator executeQueryHandler(BasicPattern pattern, QueryIterator input, ExecutionContext execCxt)
     {
         return QueryIterBlockTriplesQH.create(input, pattern, execCxt) ;
+    }
+    
+    static class ReorderStatsHandler extends ReorderTransformationBase
+    {
+        
+        private GraphStatisticsHandler stats ;
+
+        ReorderStatsHandler(GraphStatisticsHandler stats) { this.stats = stats ; }
+        
+        @Override
+        protected double weight(PatternTriple pt)
+        {
+            return 0 ;
+        }
+        
     }
 }
 
