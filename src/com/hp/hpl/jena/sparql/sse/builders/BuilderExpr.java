@@ -19,6 +19,7 @@ import com.hp.hpl.jena.sparql.expr.aggregate.AggCount;
 import com.hp.hpl.jena.sparql.expr.aggregate.AggCountDistinct;
 import com.hp.hpl.jena.sparql.expr.aggregate.AggCountVar;
 import com.hp.hpl.jena.sparql.expr.aggregate.AggCountVarDistinct;
+import com.hp.hpl.jena.sparql.expr.aggregate.AggSum;
 import com.hp.hpl.jena.sparql.expr.aggregate.AggregateFactory;
 import com.hp.hpl.jena.sparql.sse.Item;
 import com.hp.hpl.jena.sparql.sse.ItemList;
@@ -188,7 +189,9 @@ public class BuilderExpr
         dispatch.put(Tags.tagURI, buildURI) ;
         dispatch.put(Tags.tagIsBlank, buildIsBlank) ;
         dispatch.put(Tags.tagIsLiteral, buildIsLiteral) ;
+        
         dispatch.put(Tags.tagCount, buildCount) ;
+        dispatch.put(Tags.tagSum, buildSum) ;
     }
 
     // See exprbuilder.rb
@@ -518,7 +521,7 @@ public class BuilderExpr
     // (count distinct)
     // (count ?var)
     // (count distinct ?var)
-    // Need a canonical name for the variable that wil be set by the aggregation.
+    // Need a canonical name for the variable that will be set by the aggregation.
     // Aggregator.getVarName.
     
     final protected Build buildCount = new Build()
@@ -554,6 +557,20 @@ public class BuilderExpr
                 else
                     agg = new AggCountVarDistinct(v) ;
             }
+            return new E_Aggregator((Var)null, agg.create()) ; 
+        }
+    };
+    
+    final protected Build buildSum = new Build()
+    {
+        public Expr make(final ItemList list)
+        {
+            ItemList x = list.cdr();    // drop "sum"
+            if ( x.size() != 1 )
+                BuilderLib.broken(list, "Broken syntax: "+list.shortString()) ;
+            // (sum ?var) 
+            Expr expr = buildExpr(x.get(0)) ;
+            AggregateFactory agg = new AggSum(expr) ;
             return new E_Aggregator((Var)null, agg.create()) ; 
         }
     };

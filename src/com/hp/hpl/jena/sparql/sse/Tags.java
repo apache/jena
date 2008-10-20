@@ -120,6 +120,7 @@ public class Tags
     public static final String tagDesc          = "desc" ;
     
     public static final String tagCount         = "count" ;
+    public static final String tagSum           = "sum" ;
 }
 
 /*

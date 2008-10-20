@@ -18,7 +18,7 @@ import com.hp.hpl.jena.sparql.util.ExprUtils;
 
 public class AggSum implements AggregateFactory
 {
-    // ---- COUNT(?var)
+    // ---- SUM(?var)
     
     // ---- AggregatorFactory
     private Expr expr ;

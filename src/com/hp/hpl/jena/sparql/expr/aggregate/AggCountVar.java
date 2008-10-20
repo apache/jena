@@ -29,7 +29,7 @@ public class AggCountVar implements AggregateFactory
     }
     
     // ---- Aggregator
-    class AggCountVarWorker extends AggregatorBase
+    private class AggCountVarWorker extends AggregatorBase
     {
         public AggCountVarWorker()
         {
@@ -48,7 +48,7 @@ public class AggCountVar implements AggregateFactory
     }
 
     // ---- Accumulator
-    class AccCountVar implements Accumulator
+    private class AccCountVar implements Accumulator
     {
         private long count = 0 ;
         public AccCountVar()   { }
