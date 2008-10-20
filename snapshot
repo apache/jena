@@ -1,12 +1,15 @@
 #!/bin/bash
 
-MODULE="$1"
+MODULE="$@"
 
-if [ "$MODULE" = "ARQ" ]
-then
-    echo "Error: can't snapshot ARQ to itself" 1>&2
-    exit 1
-    fi
+for m in $MODULE
+do
+  if [ "$m" = "ARQ" ]
+      then
+      echo "Error: can't snapshot ARQ to itself" 1>&2
+      exit 1
+  fi
+  done
 
 # Where to move the jars to
 if [ "$MODULE" != "" ]
