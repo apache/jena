@@ -30,6 +30,7 @@ import com.hp.hpl.jena.tdb.solver.reorder.ReorderProc;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformationBase;
 
+// Work in progress
 public class Reorganise
 {
     // At the moment, we can do all reorganisation as a bottom-up walk. 
@@ -47,6 +48,7 @@ public class Reorganise
         return Transformer.transform(new ReorganiseTransform(x), op) ;
     }
     
+    /** Transform to use a map of scopes (defined variables) to drive the reorganisation. */
     private static final class ReorganiseTransform extends TransformCopy
     {
         Map<Op, Set<Var>> scopeMap ;
@@ -122,6 +124,7 @@ public class Reorganise
         }
     }
     
+    /** ReorderTransformation that uses a set of defined variables (defined bfore this BGP is reached) */
     static class ReorderTransformationReorg extends ReorderTransformationBase  
     {
         
@@ -132,6 +135,7 @@ public class Reorganise
             this.definedVars = definedVars ;
         }
     
+        /* Modify with TERM for any defined variables */
         @Override
         protected List<PatternTriple> modifyComponents(List<PatternTriple> components)
         {

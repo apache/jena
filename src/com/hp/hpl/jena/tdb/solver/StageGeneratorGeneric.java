@@ -9,9 +9,11 @@ package com.hp.hpl.jena.tdb.solver;
 import com.hp.hpl.jena.db.GraphRDB;
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.GraphStatisticsHandler;
+import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.mem.GraphMem;
 import com.hp.hpl.jena.mem.faster.GraphMemFaster;
+
 import com.hp.hpl.jena.sparql.ARQConstants;
 import com.hp.hpl.jena.sparql.core.BasicPattern;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
@@ -25,11 +27,10 @@ import com.hp.hpl.jena.sparql.util.Symbol;
 import com.hp.hpl.jena.sparql.util.Utils;
 
 import com.hp.hpl.jena.tdb.lib.NodeLib;
+import com.hp.hpl.jena.tdb.solver.reorder.PatternTriple;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderWeighted;
 import com.hp.hpl.jena.tdb.solver.stats.StatsMatcher;
-
-import static com.hp.hpl.jena.tdb.lib.NodeLib.termOrAny; 
 
 /** Generic - always works - StageGenerator */
 public class StageGeneratorGeneric implements StageGenerator
@@ -78,8 +79,10 @@ public class StageGeneratorGeneric implements StageGenerator
     {
         Graph graph = execCxt.getActiveGraph() ;
         GraphStatisticsHandler stats = graph.getStatisticsHandler() ;
+        
         if ( stats != null )
         {
+            
             System.out.println(pattern) ;
             
             // XXX cache these!
@@ -87,6 +90,9 @@ public class StageGeneratorGeneric implements StageGenerator
             // Reorder.
             for ( Triple t : NodeLib.tripleList(pattern) )
             {
+                PatternTriple pt = new PatternTriple(t) ;
+                
+                
                 long x = weight(stats, t) ;
                 System.out.println(x+" :: "+FmtUtils.stringForTriple(t)) ;
                 if ( x == -1 )
@@ -105,9 +111,16 @@ public class StageGeneratorGeneric implements StageGenerator
 
     private static long weight(GraphStatisticsHandler stats, Triple t)
     {
-        return stats.getStatistic(termOrAny(t.getSubject()),
-                                  termOrAny(t.getPredicate()),
-                                  termOrAny(t.getObject())) ;
+        long S = stats.getStatistic(t.getSubject(), Node.ANY, Node.ANY) ;
+        long P = stats.getStatistic(Node.ANY, t.getPredicate(), Node.ANY) ;
+        long O = stats.getStatistic(Node.ANY, Node.ANY, t.getObject()) ;
+
+        if ( S == 0 || P == 0 || O == 0 )
+            return 0 ;
+        
+        if ( S > 0 ) ;
+
+        return -1 ;
     }
 
     /** Use the graph's query handler */ 

@@ -9,6 +9,8 @@ SELECT *
    {
     ?z ?q ?w . 
     ?x :p ?v . 
+    ?x :p "1" . 
+    :x1 ?p "x" . 
    }
 }
 LIMIT 5
