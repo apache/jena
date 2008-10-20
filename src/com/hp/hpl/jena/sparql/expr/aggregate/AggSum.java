@@ -34,7 +34,7 @@ public class AggSum implements AggregateFactory
     
     // XQuery/XPath Functions&Operators suggests zero
     // SQL suggests null.
-    private static final NodeValue noValuesToSum = null ; //NodeValue.nvZERO ; 
+    private static final NodeValue noValuesToSum = NodeValue.nvZERO ; // null 
     
     // ---- Aggregator
     class AggSumWorker extends AggregatorBase
