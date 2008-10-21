@@ -44,6 +44,11 @@ public class ReorderLib
     public static ReorderTransformation identity()
     { return _identity ; }
 
+    public static ReorderTransformation fixed()
+    {
+        return new ReorderFixed() ;
+    }
+    
     
     public static ReorderTransformation weighted(String filename)
     {

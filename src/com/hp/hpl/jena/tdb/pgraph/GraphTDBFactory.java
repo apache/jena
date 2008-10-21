@@ -10,7 +10,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.sparql.sse.SSEParseException;
-
 import com.hp.hpl.jena.tdb.TDB;
 import com.hp.hpl.jena.tdb.TDBException;
 import com.hp.hpl.jena.tdb.base.file.Location;
@@ -20,8 +19,8 @@ import com.hp.hpl.jena.tdb.index.RangeIndex;
 import com.hp.hpl.jena.tdb.index.TripleIndex;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderLib;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
-import com.hp.hpl.jena.tdb.solver.reorder.ReorderFixed;
 import com.hp.hpl.jena.tdb.sys.Names;
+import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
 /** Place to put various "making" things. */
 
@@ -30,7 +29,7 @@ public class GraphTDBFactory
     // For this class
     private static Logger log = LoggerFactory.getLogger(GraphTDBFactory.class) ;
     // Generally informative
-    private static Logger logTDB = LoggerFactory.getLogger(TDB.class) ;
+    private static Logger logTDB = TDB.logInfo ;
 
     /** Create a graph backed with storage at a particular location */
     public static GraphTDB create(Location location)
@@ -71,6 +70,13 @@ public class GraphTDBFactory
         // Creates the object file as a file-backed one. 
         NodeTable nodeTable = new NodeTableIndex(factory, location) ;
         
+        ReorderTransformation reorder = chooseOptimizer(location) ;
+
+        return new GraphTDB(triplesSPO, triplesPOS, triplesOSP, nodeTable, reorder) ;
+    }
+    
+    private static ReorderTransformation chooseOptimizer(Location location)
+    {
         ReorderTransformation reorder = null ;
         if ( location.exists(Names.optStats) )
         {
@@ -86,7 +92,7 @@ public class GraphTDBFactory
         if ( reorder == null && location.exists(Names.optDefault) )
         {
             // Not as good but better than nothing.
-            reorder = new ReorderFixed() ;
+            reorder = ReorderLib.fixed() ;
             logTDB.info("Fixed pattern BGP optimizer") ;  
         }
         
@@ -97,9 +103,12 @@ public class GraphTDBFactory
         }
 
         if ( reorder == null )
+            reorder = SystemTDB.defaultOptimizer ;
+        
+        if ( reorder == null )
             logTDB.warn("No BGP optimizer") ;
         
-        return new GraphTDB(triplesSPO, triplesPOS, triplesOSP, nodeTable, reorder) ;
+        return reorder ; 
     }
     
     // ----

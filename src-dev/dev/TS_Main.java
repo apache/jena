@@ -23,6 +23,8 @@ import com.hp.hpl.jena.tdb.base.recordfile.TS_RecordFile;
 import com.hp.hpl.jena.tdb.index.TS_Index;
 import com.hp.hpl.jena.tdb.pgraph.TS_GraphTDB;
 import com.hp.hpl.jena.tdb.solver.TS_Solver;
+import com.hp.hpl.jena.tdb.solver.reorder.ReorderLib;
+import com.hp.hpl.jena.tdb.sys.SystemTDB;
 import com.hp.hpl.jena.tdb.sys.TS_Sys;
 
 // Ideal - find all TS_ classes on the classpath and run.  Like ant does
@@ -53,8 +55,9 @@ public class TS_Main
 {
     @BeforeClass static public void beforeClass()   
     {
-        Logger.getLogger("com.hp.hpl.jena.tdb").setLevel(Level.WARN) ;
-        Logger.getLogger("com.hp.hpl.jena.tdb.TDB").setLevel(Level.FATAL) ;
+        Logger.getLogger("com.hp.hpl.jena.tdb.info").setLevel(Level.WARN) ;
+        Logger.getLogger("com.hp.hpl.jena.tdb.exec").setLevel(Level.WARN) ;
+        SystemTDB.defaultOptimizer = ReorderLib.identity() ;
     }
     
     // For "ant" before 1.7 that only understands JUnit3. 

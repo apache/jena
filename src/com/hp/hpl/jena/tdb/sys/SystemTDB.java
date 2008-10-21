@@ -16,24 +16,21 @@ import java.util.Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.hp.hpl.jena.util.FileUtils;
-
-import com.hp.hpl.jena.sparql.util.Symbol;
-
 import com.hp.hpl.jena.query.ARQ;
-
+import com.hp.hpl.jena.sparql.util.Symbol;
 import com.hp.hpl.jena.tdb.TDB;
 import com.hp.hpl.jena.tdb.TDBException;
 import com.hp.hpl.jena.tdb.base.block.FileMode;
 import com.hp.hpl.jena.tdb.index.IndexType;
 import com.hp.hpl.jena.tdb.pgraph.NodeId;
+import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
+import com.hp.hpl.jena.util.FileUtils;
 
 public class SystemTDB
 {
     // NB Same logger as the TDB class because this class is the system info but kept out of TDB javadoc.
     // It's visibility is TDB, not really public. 
     private static final Logger log = LoggerFactory.getLogger(TDB.class) ;
-    private static final Logger logInfo = TDB.logInfo ;
     
     // Get these via a properties file
     
@@ -91,6 +88,8 @@ public class SystemTDB
     
     /** Number of adds/deletes between calls to sync (-ve to disable) */
     public static final int SyncTick                = intValue("SyncTick", 5*1000) ;
+
+    public static ReorderTransformation defaultOptimizer = null ; //ReorderLib.fixed() ;
 
     public static final ByteOrder NetworkOrder      = ByteOrder.BIG_ENDIAN ;
     
@@ -169,7 +168,7 @@ public class SystemTDB
         if ( s != null )
         {
             boolean b = s.equals("64") ; 
-            logInfo.info("System architecture: "+(b?"64 bit":"32 bit")) ;
+            TDB.logInfo.info("System architecture: "+(b?"64 bit":"32 bit")) ;
             return b ;
         }
         // Not a SUN VM
@@ -181,7 +180,7 @@ public class SystemTDB
         }
         log.debug("Can't determine the data model from 'sun.arch.data.model' - using java.vm.info") ;
         boolean b = s.contains("64") ;
-        logInfo.info("System architecture: (from java.vm.info) "+(b?"64 bit":"32 bit")) ;
+        TDB.logInfo.info("System architecture: (from java.vm.info) "+(b?"64 bit":"32 bit")) ;
         return b ;
     }
     
@@ -204,12 +203,12 @@ public class SystemTDB
 
         if ( x.equalsIgnoreCase("direct") )
         {
-            logInfo.info("File mode: direct (forced)") ;
+            TDB.logInfo.info("File mode: direct (forced)") ;
             return FileMode.direct ;
         }
         if ( x.equalsIgnoreCase("mapped") )
         {
-            logInfo.info("File mode: mapped (forced)") ;
+            TDB.logInfo.info("File mode: mapped (forced)") ;
             return FileMode.mapped ;
         }
         
@@ -217,10 +216,10 @@ public class SystemTDB
         {
             if ( is64bitSystem )
             {
-                logInfo.info("File mode: Mapped") ;
+                TDB.logInfo.info("File mode: Mapped") ;
                 return FileMode.mapped ;
             }
-            logInfo.info("File mode: Direct") ;
+            TDB.logInfo.info("File mode: Direct") ;
             return FileMode.direct ;
         }
         throw new TDBException("Unrecognized file mode (not one of 'default', 'direct' or 'mapped': "+x) ;
@@ -236,7 +235,7 @@ public class SystemTDB
     
     // Delay until needed so application can set symIndexType
     private static IndexType indexType = null ;
-    
+
     public static IndexType getIndexType()
     {
         if ( indexType != null )

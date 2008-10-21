@@ -13,6 +13,9 @@ import iterator.Transform;
 import java.util.Iterator;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.sparql.core.BasicPattern;
@@ -29,6 +32,8 @@ import com.hp.hpl.jena.tdb.pgraph.NodeId;
 /** Utilities used within the TDB BGP solver */
 public class SolverLib
 {
+    private static Logger log = LoggerFactory.getLogger(SolverLib.class) ; 
+    
     public interface ConvertNodeIDToNode { 
         public Iterator<Binding> convert(GraphTDB graph, Iterator<BindingNodeId> iterBindingIds) ;
     }
@@ -46,6 +51,10 @@ public class SolverLib
     /** Non-reordering execution of a basic graph pattern, given a iterator of bindings as input */ 
     public static QueryIterator execute(GraphTDB graph, BasicPattern pattern, QueryIterator input, ExecutionContext execCxt)
     {
+        // Don't log here normally, OpCompiler is the right place.
+        if ( log.isDebugEnabled() )
+            log.debug(pattern.toString()) ;
+        
         // ---- Execute
         @SuppressWarnings("unchecked")
         List<Triple> triples = (List<Triple>)pattern.getList() ;

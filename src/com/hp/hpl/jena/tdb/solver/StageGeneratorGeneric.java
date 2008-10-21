@@ -24,8 +24,10 @@ import com.hp.hpl.jena.sparql.engine.main.StageGenerator;
 import com.hp.hpl.jena.sparql.util.ALog;
 import com.hp.hpl.jena.sparql.util.Symbol;
 import com.hp.hpl.jena.sparql.util.Utils;
+import com.hp.hpl.jena.tdb.TDB;
 import com.hp.hpl.jena.tdb.solver.reorder.PatternTriple;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderFixed;
+import com.hp.hpl.jena.tdb.solver.reorder.ReorderLib;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformationBase;
 
@@ -80,11 +82,13 @@ public class StageGeneratorGeneric implements StageGenerator
                                     QueryIterator input,
                                     ExecutionContext execCxt)
     {
+        boolean logExec = TDB.logExec.isDebugEnabled() ;  // execCxt.getContext().isTrue(TDB.symLogExec) ;
+        if ( logExec ) TDB.logExec.debug(">>"+pattern) ;
+        
         if ( reorder != null )
         {
-            System.out.println(">>"+pattern) ;
             pattern = reorder.reorder(pattern) ;
-            System.out.println("--"+pattern) ;
+            if ( logExec ) TDB.logExec.debug("->"+pattern) ;
         }
 
         return execution.execute(pattern, input, execCxt) ; 
@@ -108,8 +112,7 @@ public class StageGeneratorGeneric implements StageGenerator
         
     // ---- Reorder policies
         
-    private static ReorderFixed _fixed = new ReorderFixed() ;
-    private static ReorderTransformation fixed() { return _fixed ; } 
+    private static ReorderTransformation fixed() { return ReorderLib.fixed() ; } 
 
     private static ReorderTransformation basicStats(Graph graph)
     {
@@ -119,21 +122,7 @@ public class StageGeneratorGeneric implements StageGenerator
         return new ReorderStatsHandler(graph, graph.getStatisticsHandler()) ;
     }
 
-//    // ---- Now actually do something ...
-//    
-//    /** This captures all BGPs (for logging) because reorder can be null*/
-//    private static QueryIterator reorderExecute(BasicPattern pattern, ReorderTransformation reorder,  QueryIterator input,ExecutionContext execCxt)
-//    {
-//        if ( reorder != null )
-//        {
-//            System.out.println(">>"+pattern) ;
-//            pattern = reorder.reorder(pattern) ;
-//            System.out.println("--"+pattern) ;
-//        }
-//        return baseExecute(pattern, input, execCxt) ; 
-//    }
-
-    /* Exexution - allow the inline matcher to be turned off */ 
+    /* Execution - allow the inline matcher to be turned off */ 
     private static QueryIterator baseExecute(BasicPattern pattern, QueryIterator input, ExecutionContext execCxt)
     {
         if ( execCxt.getContext().isTrueOrUndef(altMatcher) )

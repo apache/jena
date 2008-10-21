@@ -38,6 +38,7 @@ public class ModTDBAssembler extends ModAssembler
         int count = 0 ;
 
         modLocation.processArgs(cmdLine) ;
+        super.processArgs(cmdLine) ;
         if ( super.getAssemblerFile() != null ) count++ ;
         if ( modLocation.getLocation() != null ) count++ ;    
         

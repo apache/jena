@@ -37,7 +37,7 @@ public class tdbquery extends arq.query
         super.processModulesAndArgs() ;
         if ( isVerbose() )
         {
-            ARQ.getContext().setTrue(TDB.logExec) ;
+            ARQ.getContext().setTrue(TDB.symLogExec) ;
         }
     }
     

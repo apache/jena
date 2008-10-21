@@ -32,7 +32,12 @@ import com.hp.hpl.jena.tdb.sys.SystemTDB;
 public class TDB
 {
     private static final Logger log = LoggerFactory.getLogger(TDB.class) ;
+    
+    /** Logger for general information */ 
     public static final Logger logInfo = LoggerFactory.getLogger("com.hp.hpl.jena.tdb.info") ;
+    
+    /** Logger for general execution information */
+    public static final Logger logExec = LoggerFactory.getLogger("com.hp.hpl.jena.tdb.exec") ;
     
     public static String namespace = "http://jena.hpl.hp.com/2008/tdb#" ;
 
@@ -42,8 +47,8 @@ public class TDB
     /** Root of TDB-defined parameter short names */  
     public static final String tdbSymbolPrefix = "tdb" ;
 
-    public static final Symbol logExec              = SystemTDB.allocSymbol("logExec") ;
-    public static final Symbol logDuplicates        = SystemTDB.allocSymbol("logDuplicates") ;
+    public static final Symbol symLogExec              = SystemTDB.allocSymbol("logExec") ;
+    public static final Symbol symLogDuplicates        = SystemTDB.allocSymbol("logDuplicates") ;
     // Value: direct, mapped, default 
     public static final Symbol symFileMode          = SystemTDB.allocSymbol("fileMode") ;  
     public static final Symbol symIndexType         = SystemTDB.allocSymbol("indexType") ;

@@ -6,8 +6,7 @@
 
 package com.hp.hpl.jena.tdb.solver;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import static com.hp.hpl.jena.tdb.TDB.logExec;
 
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.Transform;
@@ -25,15 +24,12 @@ import com.hp.hpl.jena.sparql.engine.iterator.QueryIterPeek;
 import com.hp.hpl.jena.sparql.engine.main.OpCompiler;
 import com.hp.hpl.jena.sparql.engine.main.QC;
 import com.hp.hpl.jena.sparql.expr.ExprList;
-import com.hp.hpl.jena.tdb.TDB;
 import com.hp.hpl.jena.tdb.pgraph.GraphTDB;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderProc;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
 
 public class OpCompilerTDB extends OpCompiler
 {
-    private static Logger log = LoggerFactory.getLogger(OpCompilerTDB.class) ;
-
     public static Factory altFactory = new Factory() {
 
         @Override
@@ -136,11 +132,15 @@ public class OpCompilerTDB extends OpCompiler
         else
             op = new OpBGP(pattern) ;
         
-        if ( execCxt.getContext().isTrue(TDB.logExec) && log.isInfoEnabled() )
+        //if ( execCxt.getContext().isTrue(TDB.symLogExec) && log.isInfoEnabled() )
+        if ( logExec.isInfoEnabled() )
         {
-            String x = "Execute::\n"+op ;
-            log.info(x) ;
-            //System.out.println(x) ;
+            // Really want a one line version
+            String x = op.toString();
+            x = x.replaceAll("\n", "") ;
+            x = x.replaceAll("\r", "") ;
+            x = "Execute:: "+x ;
+            logExec.info(x) ;
         }
         
         // Solve without reordering again by labeling it. 

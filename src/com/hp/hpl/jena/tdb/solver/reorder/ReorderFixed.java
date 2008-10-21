@@ -16,6 +16,7 @@ import com.hp.hpl.jena.tdb.solver.stats.StatsMatcher.Pattern;
 
 public class ReorderFixed extends ReorderTransformationBase
 {
+    ReorderFixed() {}
     // Fixed scheme for when we have no stats.
     // It chooses a triple pattern by order of preference.
     

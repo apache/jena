@@ -49,7 +49,7 @@ public class ModTDBDataset extends ModDataset
     public void processArgs(CmdArgModule cmdLine)
     {
         useMemory = cmdLine.contains(argMem) ;
-        //-->modAssembler.processArgs(cmdLine) ;
+        modAssembler.processArgs(cmdLine) ;
     }        
 
     private Model model = null ;
@@ -78,7 +78,7 @@ public class ModTDBDataset extends ModDataset
             return TDBFactory.assembleGraph( modAssembler.getAssemblerFile()) ;
         if ( modAssembler.getLocation() != null )
             return TDBFactory.createGraph(modAssembler.getLocation()) ;
-        throw new CmdException("Don't know how to make a model") ;
+        throw new CmdException("Don't know how to make the TDB graph") ;
     }
     
     @Override

@@ -6,7 +6,7 @@
 
 package com.hp.hpl.jena.tdb.pgraph;
 
-import static com.hp.hpl.jena.tdb.TDB.logDuplicates;
+import static com.hp.hpl.jena.tdb.TDB.symLogDuplicates;
 import static com.hp.hpl.jena.tdb.sys.SystemTDB.LenIndexRecord;
 import static com.hp.hpl.jena.tdb.sys.SystemTDB.LenNodeHash;
 import static com.hp.hpl.jena.tdb.sys.SystemTDB.SizeOfNodeId;
@@ -107,7 +107,7 @@ public class GraphTDB extends GraphBase implements Sync, Reorderable
         
         if ( ! indexSPO.add(sId, pId, oId) )
         {
-            if ( TDB.getContext().isTrue(logDuplicates) )
+            if ( TDB.getContext().isTrue(symLogDuplicates) )
             {
                 System.out.print("Duplicate: (") ;
                 System.out.print(FmtUtils.stringForTriple(t, this.getPrefixMapping())) ;

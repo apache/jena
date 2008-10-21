@@ -100,7 +100,10 @@ public class TDBFactory
     { return factory.createGraph() ; }
 
     private static Graph _createGraph(Location loc)
-    { return factory.createGraph(loc) ; }
+    {
+        // The code to choose the optimizer is in GraphTDBFactory.chooseOptimizer
+        return factory.createGraph(loc) ;
+    }
 
     /** Set the implementation factory */
     public static void setImplFactory(ImplFactory f) { factory = f ; }

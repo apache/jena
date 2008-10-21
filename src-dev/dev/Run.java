@@ -15,25 +15,20 @@ import lib.Pair;
 import lib.cache.Cache2;
 import arq.cmd.CmdUtils;
 
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.rdf.model.RSIterator;
-
-import com.hp.hpl.jena.util.FileManager;
-
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
-
+import com.hp.hpl.jena.query.*;
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.rdf.model.RSIterator;
 import com.hp.hpl.jena.sparql.algebra.Algebra;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.Transformer;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.main.StageGenerator;
+import com.hp.hpl.jena.sparql.engine.optimizer.StageGenOptimizedBasicPattern;
 import com.hp.hpl.jena.sparql.sse.SSE;
-
-import com.hp.hpl.jena.query.*;
-
 import com.hp.hpl.jena.tdb.TDB;
 import com.hp.hpl.jena.tdb.TDBFactory;
 import com.hp.hpl.jena.tdb.base.block.BlockMgr;
@@ -45,11 +40,10 @@ import com.hp.hpl.jena.tdb.base.recordfile.RecordBufferPage;
 import com.hp.hpl.jena.tdb.base.recordfile.RecordBufferPageMgr;
 import com.hp.hpl.jena.tdb.pgraph.GraphTDB;
 import com.hp.hpl.jena.tdb.solver.StageGeneratorGeneric;
-import com.hp.hpl.jena.tdb.solver.reorder.ReorderFixed;
+import com.hp.hpl.jena.tdb.solver.reorder.ReorderLib;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
-import com.hp.hpl.jena.tdb.solver.reorder.ReorderWeighted;
-import com.hp.hpl.jena.tdb.solver.stats.StatsMatcher;
 import com.hp.hpl.jena.tdb.sys.SystemTDB;
+import com.hp.hpl.jena.util.FileManager;
 
 import dev.opt.Reorganise;
 import dev.opt.Scope;
@@ -70,7 +64,8 @@ public class Run
  
     public static void main(String ... args) throws IOException
     {
-        memOpt() ; System.exit(0) ;
+        tdbquery("SELECT * { ?s ?p ?o . ?s ?p 1 }") ; System.exit(0) ;
+        memOpt() ; 
         
 //        TDBFactory.assembleGraph( "Store/gbt.ttl") ;
 //        System.out.println("Assembled") ;
@@ -118,9 +113,12 @@ public class Run
  
     private static void memOpt()
     {
-        StageGenerator stageGenerator = new StageGeneratorGeneric() ;
-        ARQ.getContext().set(ARQ.stageGenerator, stageGenerator) ;
-
+        if ( true )
+        {
+            StageGenOptimizedBasicPattern x = null ;
+            StageGenerator stageGenerator = new StageGeneratorGeneric() ;
+            ARQ.getContext().set(ARQ.stageGenerator, stageGenerator) ;
+        }
         Model model = FileManager.get().loadModel("D.ttl") ;
         Query q = QueryFactory.read("Q.rq") ;
         QueryExecution qexec = QueryExecutionFactory.create(q, model) ;
@@ -185,12 +183,10 @@ public class Run
     {
         ReorderTransformation reorder = null ;
         if ( false )
-            reorder = new ReorderFixed() ;
+            reorder = ReorderLib.fixed() ;
         else
         {
-            StatsMatcher matcher = new StatsMatcher("stats.sse") ;
-            //StatsMatcher matcher = new StatsMatcher("stats-var-count.opt") ;
-            reorder = new ReorderWeighted(matcher) ;
+            reorder = ReorderLib.weighted("stats.sse") ;
         }
         Query query = QueryFactory.read("Q.rq") ;
         Op op = Algebra.compile(query) ;

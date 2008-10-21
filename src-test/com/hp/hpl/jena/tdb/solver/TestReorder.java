@@ -14,7 +14,7 @@ import test.BaseTest;
 
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.sparql.core.BasicPattern;
-import com.hp.hpl.jena.tdb.solver.reorder.ReorderFixed;
+import com.hp.hpl.jena.tdb.solver.reorder.ReorderLib;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderProc;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderProcIndexes;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
@@ -146,7 +146,7 @@ public class TestReorder extends BaseTest
     
     @Test public void stats_dft_01()
     {
-        ReorderTransformation transform = new ReorderFixed() ;
+        ReorderTransformation transform = ReorderLib.fixed() ;
         BasicPattern bgp = bgp("(bgp)") ;
         BasicPattern bgp2 = transform.reorder(bgp) ;
         assertEquals(bgp2, bgp) ;

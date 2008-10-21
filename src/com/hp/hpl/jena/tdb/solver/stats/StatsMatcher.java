@@ -318,8 +318,8 @@ public final class StatsMatcher
         {
             double w = -1 ;
             w = search(pred, subj, pred, obj, w) ;
-            w = search(TERM, subj, pred, obj, w) ;
-            w = search(ANY, subj, pred, obj, w) ;
+            w = search(TERM, subj, pred, obj, w) ;  //?? 
+            w = search(ANY, subj, pred, obj, w) ;   //??
             return w ;
         }
         
@@ -327,6 +327,14 @@ public final class StatsMatcher
         {
             double w = -1 ;
             w = search(VAR, subj, pred, obj, w) ;
+            w = search(ANY, subj, pred, obj, w) ;
+            return w ;
+        }
+        
+        if ( pred.equals(TERM) )
+        {
+            double w = -1 ;
+            w = search(TERM, subj, pred, obj, w) ;
             w = search(ANY, subj, pred, obj, w) ;
             return w ;
         }
@@ -342,7 +350,7 @@ public final class StatsMatcher
 //            return w ;
         }
         
-        throw new TDBException("Unidentified predicate: "+pred) ;
+        throw new TDBException("Unidentified predicate: "+pred+" in ("+subj+" "+pred+" "+obj+")") ;
         
         //return matchLinear(subj, pred, obj) ;
     }
