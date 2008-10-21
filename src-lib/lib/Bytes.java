@@ -180,26 +180,27 @@ public class Bytes
 //        
 //    }
 
-    static Charset utf8 = null ;
-    //static CharsetEncoder enc = null ;
-    //static CharsetDecoder dec = null ;
+    private static Charset utf8 = null ;
+    private static CharsetEncoder enc = null ;
+    private static CharsetDecoder dec = null ;
     static {
         try {
             utf8 = Charset.forName(encodingUTF8) ;
             // Encoders and decoders are not thread-safe - internal codec state.
             // Could pool if it become expensive 
-//            enc = utf8.newEncoder() ;
-//            dec = utf8.newDecoder() ;
+            enc = utf8.newEncoder() ;
+            dec = utf8.newDecoder() ;
         } catch (Throwable ex)
         {
             ex.printStackTrace(System.err);
         }
     }
     
+    /** Encode a string into a ByteBuffer - not thread safe */
     public static void toByteBuffer(String s, ByteBuffer bb)
     {
-        CharsetEncoder enc = utf8.newEncoder() ;
-        
+     // not thread safe (because of the shared encoder)
+        enc.reset();
 //        enc = enc.onMalformedInput(CodingErrorAction.REPLACE)
 //                 .onUnmappableCharacter(CodingErrorAction.REPLACE);
         
@@ -212,11 +213,13 @@ public class Bytes
             throw new InternalError("Bytes.toByteBuffer: encode overflow (2)") ;
     }
     
+    /** Decode a string into a ByteBuffer - not thread safe */
     public static String fromByteBuffer(ByteBuffer bb)
     {
+        // not thread safe (because of the shared decoder)
         try
         {
-            CharsetDecoder dec = utf8.newDecoder() ;
+            dec.reset();
             CharBuffer cBuff = dec.decode(bb) ;
             CoderResult r = dec.flush(cBuff) ;
             if ( r == CoderResult.OVERFLOW )
