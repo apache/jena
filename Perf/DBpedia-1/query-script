@@ -19,5 +19,5 @@ for q in $TDBROOT/Perf/DBpedia-1/query?a.rq
 do
   N="$(basename $q)"
   echo "==== $N ===="
-  tdbquery --time --results $RESULTS --desc "$DB_DESC" --query "$q"
+  tdbquery --time --results $RESULTS $LOCATION --query "$q"
   done
