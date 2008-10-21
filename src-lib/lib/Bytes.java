@@ -41,9 +41,18 @@ public class Bytes
         // Comes out hight to low : 0x01 0x02 0x03 0x04 0x05 0x06 0x07 0x08 
     }
     
+    
+    
+    /** Get an int from a byte array (network order)
+     * @param b Byte Array
+     */
     public static final int getInt(byte[]b)
     { return getInt(b, 0) ; }
     
+    /** Get an int from a byte array (network order)
+     * @param b Byte Array
+     * @param idx Starting point of bytes 
+     */
     public static final int getInt(byte[]b, int idx)
     {
         return assembleInt(b[idx+0],
@@ -52,9 +61,16 @@ public class Bytes
                            b[idx+3]) ;
     }
 
+    /** Get a long from a byte array (network order)
+     * @param b Byte Array
+     */
     public static final long getLong(byte[]b)
     { return getLong(b, 0) ; }
     
+    /** Get a long from a byte array (network order)
+     * @param b Byte Array
+     * @param idx Starting point of bytes 
+     */
     public static final long getLong(byte[]b, int idx)
     {
         return assembleLong(b[idx+0],
@@ -68,9 +84,18 @@ public class Bytes
 
     }
 
+    /** Put an int into a byte array
+     * @param value The integer
+     * @param b byte array 
+     */
     public static final void setInt(int value, byte[]b)
     { setInt(value, b, 0) ; }
     
+    /** Put an int into a byte array from a given position
+     * @param value The integer
+     * @param b byte array 
+     * @param idx starting point
+     */
     public static final void setInt(int x, byte[]b, int idx)
     {
 //        b[idx+0] = byte3(value) ;
@@ -85,9 +110,18 @@ public class Bytes
     }
     
     
+    /** Put a long into a byte array
+     * @param value The integer
+     * @param b byte array 
+     */
     public static final void setLong(long value, byte[]b)
     { setLong(value, b, 0) ; }
     
+    /** Put a long into a byte array from a given position
+     * @param value The integer
+     * @param b byte array 
+     * @param idx starting point
+     */
     public static final void setLong(long value, byte[]b, int idx)
     {
         int lo = (int)(value&0xFFFFFFFFL) ;
@@ -96,6 +130,7 @@ public class Bytes
         setInt(lo, b, idx+4) ;
     }
 
+    /** int to byte array */
     public static byte[] packInt(int val)
     {
         byte[] valBytes = new byte[Integer.SIZE/Byte.SIZE] ;
@@ -103,6 +138,7 @@ public class Bytes
         return valBytes ;
     }
     
+    /** long to byte array */
     public static byte[] packLong(long val)
     {
         byte[] valBytes = new byte[Long.SIZE/Byte.SIZE] ;
@@ -110,7 +146,7 @@ public class Bytes
         return valBytes ;
     }
     
-    // Order of args -- high to low
+    /** Make an int order of args -- high to low */
     static private int assembleInt(byte b3, byte b2, byte b1, byte b0)
     {
         return (int)( ((b3 & 0xFF) << 24) |
@@ -120,7 +156,7 @@ public class Bytes
                     );
     }
 
-    // Order of args -- high to low
+    /** Make a long order of args -- high to low */
     static private Long assembleLong(byte b7, byte b6, byte b5, byte b4, byte b3, byte b2, byte b1, byte b0)
     {
         
@@ -142,6 +178,7 @@ public class Bytes
     /** Java name for UTF-8 encoding */
     private static final String encodingUTF8     = "utf-8" ;
     
+    /** Return the UTF-8 bytes for a string */
     public static byte[] string2bytes(String x)
     {
         try
@@ -155,6 +192,7 @@ public class Bytes
         }
     }
     
+    /** Rerurn the string for some UTF-8 bytes */
     public static String bytes2string(byte[] x)
     {
         try
