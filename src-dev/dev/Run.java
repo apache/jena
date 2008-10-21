@@ -64,6 +64,7 @@ public class Run
  
     public static void main(String ... args) throws IOException
     {
+        
         tdbquery("SELECT * { ?s ?p ?o . ?s ?p 1 }") ; System.exit(0) ;
         memOpt() ; 
         

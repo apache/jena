@@ -199,11 +199,15 @@ public class Bytes
     public static void toByteBuffer(String s, ByteBuffer bb)
     {
         CharsetEncoder enc = utf8.newEncoder() ;
+        
+//        enc = enc.onMalformedInput(CodingErrorAction.REPLACE)
+//                 .onUnmappableCharacter(CodingErrorAction.REPLACE);
+        
         CharBuffer cBuff = CharBuffer.wrap(s);
         CoderResult r = enc.encode(cBuff, bb, true) ;
         if ( r == CoderResult.OVERFLOW )
             throw new InternalError("Bytes.toByteBuffer: encode overflow (1)") ;
-        enc.flush(bb) ;
+        r = enc.flush(bb) ;
         if ( r == CoderResult.OVERFLOW )
             throw new InternalError("Bytes.toByteBuffer: encode overflow (2)") ;
     }

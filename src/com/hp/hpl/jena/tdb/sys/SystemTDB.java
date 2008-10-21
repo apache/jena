@@ -89,6 +89,7 @@ public class SystemTDB
     /** Number of adds/deletes between calls to sync (-ve to disable) */
     public static final int SyncTick                = intValue("SyncTick", 5*1000) ;
 
+    // Choice is in GraphTDBFactory
     public static ReorderTransformation defaultOptimizer = null ; //ReorderLib.fixed() ;
 
     public static final ByteOrder NetworkOrder      = ByteOrder.BIG_ENDIAN ;
