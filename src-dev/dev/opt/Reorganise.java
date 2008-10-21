@@ -33,6 +33,8 @@ import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformationBase;
 // Work in progress
 public class Reorganise
 {
+    
+    
     // At the moment, we can do all reorganisation as a bottom-up walk. 
     //    BGP gets reordered,
     //    Then filters flowed into position.
@@ -64,7 +66,12 @@ public class Reorganise
         public Op transform(OpFilter opFilter, Op sub)
         {
             if ( OpBGP.isBGP(sub) )
+                // Reorganise and place filters
                 return reorganise((OpBGP)sub, opFilter.getExprs(), scopeMap.get(opFilter)) ;
+//            if ( sub instanceof OpSequence )
+//            //if ( OpSequence.isSeq(sub) )
+//            { }
+            
             return super.transform(opFilter, sub) ;
         }
 
@@ -84,6 +91,7 @@ public class Reorganise
             
             for ( Op op : x )
             {
+                //****
                 // Do op.
                 // Extend scope
                 defined.addAll(scopeMap.get(op)) ;

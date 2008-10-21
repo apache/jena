@@ -21,12 +21,19 @@ public class ReorderFixed extends ReorderTransformationBase
     
     private static Item type = Item.createNode(NodeConst.nodeRDFType) ;
     
-    static StatsMatcher matcher ;
+    /** The number of triples used for the base scale */
+    public static int MultiTermSampleSize = 100 ; 
+
+    /** Maximum value for a match involving two terms. */
+    public static int MultiTermMax = 9 ; 
+    
+    public static StatsMatcher matcher ;
     static {
         matcher = new StatsMatcher() ;
         
         //matcher.addPattern(new Pattern(1,   TERM, TERM, TERM)) ;     // SPO - built-in - not needed a s a rule
         
+        // Numbers choosen as an approximation for a graph of 100 triples
         matcher.addPattern(new Pattern(2,   TERM, TERM, VAR)) ;     // SP?
         matcher.addPattern(new Pattern(5,   TERM, type, TERM)) ;    // ? type O -- worse than ?PO
         matcher.addPattern(new Pattern(3,   VAR,  TERM, TERM)) ;    // ?PO
@@ -36,11 +43,11 @@ public class ReorderFixed extends ReorderTransformationBase
         matcher.addPattern(new Pattern(20,  VAR,  VAR,  TERM)) ;    // ??O
         matcher.addPattern(new Pattern(30,  VAR,  TERM, VAR)) ;     // ?P?
 
-        matcher.addPattern(new Pattern(100, VAR,  VAR,  VAR)) ;     // ???
+        matcher.addPattern(new Pattern(MultiTermSampleSize, VAR,  VAR,  VAR)) ;     // ???
     }
     
     @Override
-    protected double weight(PatternTriple pt)
+    public double weight(PatternTriple pt)
     {
         return matcher.match(pt) ;
     }

@@ -6,13 +6,14 @@
 
 package com.hp.hpl.jena.tdb.solver;
 
+import static com.hp.hpl.jena.tdb.solver.reorder.PatternElements.TERM;
+
 import com.hp.hpl.jena.db.GraphRDB;
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.GraphStatisticsHandler;
-import com.hp.hpl.jena.graph.Triple;
+import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.mem.GraphMem;
 import com.hp.hpl.jena.mem.faster.GraphMemFaster;
-
 import com.hp.hpl.jena.sparql.ARQConstants;
 import com.hp.hpl.jena.sparql.core.BasicPattern;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
@@ -23,13 +24,9 @@ import com.hp.hpl.jena.sparql.engine.main.StageGenerator;
 import com.hp.hpl.jena.sparql.util.ALog;
 import com.hp.hpl.jena.sparql.util.Symbol;
 import com.hp.hpl.jena.sparql.util.Utils;
-
-import com.hp.hpl.jena.tdb.lib.NodeLib;
 import com.hp.hpl.jena.tdb.solver.reorder.PatternTriple;
-import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
+import com.hp.hpl.jena.tdb.solver.reorder.ReorderFixed;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformationBase;
-import com.hp.hpl.jena.tdb.solver.reorder.ReorderWeighted;
-import com.hp.hpl.jena.tdb.solver.stats.StatsMatcher;
 
 /** Generic - always works - StageGenerator */
 public class StageGeneratorGeneric implements StageGenerator
@@ -81,50 +78,13 @@ public class StageGeneratorGeneric implements StageGenerator
         
         if ( stats != null )
         {
-            
             System.out.println(pattern) ;
-            
-            // XXX cache these!
-            StatsMatcher matcher = new StatsMatcher() ;  
-            // Reorder.
-            for ( Triple t : NodeLib.tripleList(pattern) )
-            {
-                PatternTriple pt = new PatternTriple(t) ;
-                
-//                
-//                long x = weight(stats, t) ;
-//                System.out.println(x+" :: "+FmtUtils.stringForTriple(t)) ;
-//                if ( x == -1 )
-//                {
-//                    // No estimate
-//                }
-//                
-//                //matcher.addPattern(t) ;
-            }
-            ReorderTransformation rt = new ReorderWeighted(matcher) ;
-            pattern = rt.reorder(pattern) ;
+            ReorderStatsHandler reorder = new ReorderStatsHandler(graph, stats) ;
+            pattern = reorder.reorder(pattern) ;
             System.out.println(pattern) ;
         }
         return executeInline(pattern, input, execCxt) ;
     }
-
-//    private static long weight(GraphStatisticsHandler stats, Triple t)
-//    {
-//        // Make a weight for 
-//        // Need to cope with Item.TERM
-//        // 
-//        
-//        long S = stats.getStatistic(t.getSubject(), Node.ANY, Node.ANY) ;
-//        long P = stats.getStatistic(Node.ANY, t.getPredicate(), Node.ANY) ;
-//        long O = stats.getStatistic(Node.ANY, Node.ANY, t.getObject()) ;
-//
-//        if ( S == 0 || P == 0 || O == 0 )
-//            return 0 ;
-//        
-//        if ( S > 0 ) ;
-//
-//        return -1 ;
-//    }
 
     /** Use the graph's query handler */ 
     private QueryIterator executeQueryHandler(BasicPattern pattern, QueryIterator input, ExecutionContext execCxt)
@@ -134,17 +94,89 @@ public class StageGeneratorGeneric implements StageGenerator
     
     static class ReorderStatsHandler extends ReorderTransformationBase
     {
+        static ReorderFixed fixed = new ReorderFixed() ;
+        
+        // Guesses at the selectivity of fixed, but unknown, values.
+        // Choose these for large graphs because bad guesses don't harm small graphs.  
+        
+        final long TERM_S ;
+        final long TERM_TYPE ;
+        final long TERM_P ;
+        final long TERM_O ;
+        final long N ;
         
         private GraphStatisticsHandler stats ;
 
-        ReorderStatsHandler(GraphStatisticsHandler stats) { this.stats = stats ; }
+        ReorderStatsHandler(Graph graph, GraphStatisticsHandler stats)
+        {
+            this.stats = stats ;
+            N = graph.size() ;
+            // Note: when these are too badly wrong, the app can supply a statistics file. 
+            TERM_S = 10 ;       // Wild guess: "An average subject has 10 properties".
+            TERM_P = N/10 ;     // Wild guess: "An average vocabulary has 10 properties"
+            TERM_O = 20 ;       // Wild guess: "An average object is in 20 triples".
+            TERM_TYPE = N/10 ;  // Wild guess: "An average class has in 1/10 of the resources."
+        }
         
         @Override
         protected double weight(PatternTriple pt)
         {
-            return 0 ;
+            double x = fixed.weight(pt) ;
+            // If there are two fixed terms, use the fixed weighting, all of which are quite small.
+            // This choose a less optimal triple but the worse choice is still a very selective choice.
+            // One case is IFPs: the multi term choice for PO is not 1. 
+            if ( x < ReorderFixed.MultiTermMax )
+            {
+                // Rescale it from the fixed numbers of  ReorderFixed
+                //x = ReorderFixed.MultiTermSampleSize * x / N ;
+            }
+            else
+                x = weight1(pt) ;
+            
+            System.out.printf("** %s: --> %s\n", pt, x) ;
+            return x ;
         }
         
+        
+        private double weight1(PatternTriple pt)
+        {
+            // One or zero fixed terms.
+            
+            long S = -1 ;
+            long P = -1 ;
+            long O = -1 ;
+            
+            // Include guesses for SP, OP, typeClass
+            
+            if ( pt.subject.isNode() )
+                S = stats.getStatistic(pt.subject.getNode(), Node.ANY, Node.ANY) ;
+            else if ( TERM.equals(pt.subject) )
+                S = TERM_S ;
+            
+            // rdf:type.
+            if ( pt.predicate.isNode() )
+                P = stats.getStatistic(Node.ANY, pt.predicate.getNode(), Node.ANY) ;
+            else if ( TERM.equals(pt.predicate) )
+                P = TERM_P ;
+            
+            if ( pt.object.isNode() )
+                O = stats.getStatistic(Node.ANY, Node.ANY, pt.object.getNode()) ;
+            else if ( TERM.equals(pt.object) )
+                O = TERM_O ;
+
+            if ( S == 0 || P == 0 || O == 0 )
+                // Can't match.
+                return 0 ;
+            
+            // Find min positive
+            double x = -1 ;
+            if ( S > 0 ) x = S ;
+            if ( P > 0 && P < x ) x = P ;
+            if ( O > 0 && O < x ) x = O ;
+            System.out.printf("** [%d, %d, %d]\n", S, P ,O) ;
+
+            return x ;
+        }
     }
 }
 

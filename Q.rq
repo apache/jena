@@ -8,7 +8,7 @@ SELECT *
 ##    } UNION 
    {
     ?z ?q ?w . 
-    ?x :p ?v . 
+    ?z :p ?v . 
     ?x :p "1" . 
     :x1 ?p "x" . 
    }
