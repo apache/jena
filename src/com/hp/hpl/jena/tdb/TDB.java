@@ -14,6 +14,7 @@ import com.hp.hpl.jena.rdf.model.impl.RDFReaderFImpl;
 import com.hp.hpl.jena.sparql.engine.main.OpCompiler;
 import com.hp.hpl.jena.sparql.engine.main.StageGenBasicPattern;
 import com.hp.hpl.jena.sparql.engine.main.StageGenerator;
+import com.hp.hpl.jena.sparql.engine.optimizer.StageGenOptimizedBasicPattern;
 import com.hp.hpl.jena.sparql.util.Context;
 import com.hp.hpl.jena.sparql.util.Symbol;
 
@@ -94,9 +95,12 @@ public class TDB
         // Globally change the stage generator to intercept BGP on TDB
         StageGenerator orig = (StageGenerator)ARQ.getContext().get(ARQ.stageGenerator) ;
         
-        if ( orig instanceof StageGenBasicPattern ) //|| StageGenOptimizedBasicPattern)
+        
+        if ( orig instanceof StageGenBasicPattern || orig instanceof StageGenOptimizedBasicPattern )
             // ARQ base.  Cause chaos by using the new version.
             orig = new StageGeneratorGeneric() ;
+        
+        
         StageGenerator stageGenerator = new StageGeneratorDirectTDB(orig) ;
         ARQ.getContext().set(ARQ.stageGenerator, stageGenerator) ;
 

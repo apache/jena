@@ -26,13 +26,14 @@ import com.hp.hpl.jena.sparql.util.Symbol;
 import com.hp.hpl.jena.sparql.util.Utils;
 import com.hp.hpl.jena.tdb.solver.reorder.PatternTriple;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderFixed;
+import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformationBase;
 
 /** Generic - always works - StageGenerator */
 public class StageGeneratorGeneric implements StageGenerator
 {
     public static Symbol altMatcher = ARQConstants.allocSymbol("altmatcher") ;
-
+    
     public QueryIterator execute(BasicPattern pattern, 
                                  QueryIterator input,
                                  ExecutionContext execCxt)
@@ -42,59 +43,123 @@ public class StageGeneratorGeneric implements StageGenerator
 
         Graph graph = execCxt.getActiveGraph() ; 
 
-        // Known Jena graph types.
+        // Choose reorder transformation and execution strategy.
+        
+        final ReorderTransformation reorder ;
+        final StageGenerator executor ;
+        
+        if ( graph instanceof GraphMemFaster )
+        {
+            reorder = basicStats(graph) ;
+            executor = executeInline ; 
+        }
+        else if ( graph instanceof GraphRDB )
+        {
+            reorder = null ;
+            executor = executeQueryHandler ;
+        }
+        else if ( graph instanceof GraphMem )            // Old Graph-in-memory
+        {
+            reorder = basicStats(graph) ;
+            executor = executeInline ; 
+        }
+        else
+        {
+            // When in doubt ... use the general pass-through to graph query handler matcher.
+            // Includes union graphs, InfGraphs and many other unusual kinds.
+            reorder = null ;
+            executor = executeInline ;
+        }
 
-        if ( graph instanceof GraphMemFaster )      // Newer Graph-in-memory; default graph type in Jena
-            return executeInlineStats(pattern, input, execCxt) ;
-
-        if ( graph instanceof GraphRDB )
-            return executeQueryHandler(pattern, input, execCxt) ;
-
-        if ( graph instanceof GraphMem )            // Old Graph-in-memory
-            return executeInlineStats(pattern, input, execCxt) ;
-
-        // When in doubt ... use the general pass-through to graph query handler matcher.
-        // Includes union graphs, InfGraphs and many other unusual kinds. 
-        return executeQueryHandler(pattern, input, execCxt) ;
+        return execute(pattern, reorder, executor, input, execCxt) ;
     }
 
-    /** Use the inline, iterator based BGP matcher which works over find() */ 
-    private QueryIterator executeInline(BasicPattern pattern, QueryIterator input, ExecutionContext execCxt)
+    protected QueryIterator execute(BasicPattern pattern,
+                                    ReorderTransformation reorder,
+                                    StageGenerator execution, 
+                                    QueryIterator input,
+                                    ExecutionContext execCxt)
+    {
+        if ( reorder != null )
+        {
+            System.out.println(">>"+pattern) ;
+            pattern = reorder.reorder(pattern) ;
+            System.out.println("--"+pattern) ;
+        }
+
+        return execution.execute(pattern, input, execCxt) ; 
+    }
+    
+    
+    // ---- Execution policies
+    private static StageGenerator executeQueryHandler = new StageGenerator() {
+        @Override
+        public QueryIterator execute(BasicPattern pattern, QueryIterator input, ExecutionContext execCxt)
+        {
+            return QueryIterBlockTriplesQH.create(input, pattern, execCxt) ;
+        }} ;
+
+    private static StageGenerator executeInline = new StageGenerator() {
+        @Override
+        public QueryIterator execute(BasicPattern pattern, QueryIterator input, ExecutionContext execCxt)
+        {
+                return QueryIterBlockTriples.create(input, pattern, execCxt) ;
+        }} ;
+        
+    // ---- Reorder policies
+        
+    private static ReorderFixed _fixed = new ReorderFixed() ;
+    private static ReorderTransformation fixed() { return _fixed ; } 
+
+    private static ReorderTransformation basicStats(Graph graph)
+    {
+        GraphStatisticsHandler stats = graph.getStatisticsHandler() ;
+        if ( stats == null )
+            return fixed() ;
+        return new ReorderStatsHandler(graph, graph.getStatisticsHandler()) ;
+    }
+
+//    // ---- Now actually do something ...
+//    
+//    /** This captures all BGPs (for logging) because reorder can be null*/
+//    private static QueryIterator reorderExecute(BasicPattern pattern, ReorderTransformation reorder,  QueryIterator input,ExecutionContext execCxt)
+//    {
+//        if ( reorder != null )
+//        {
+//            System.out.println(">>"+pattern) ;
+//            pattern = reorder.reorder(pattern) ;
+//            System.out.println("--"+pattern) ;
+//        }
+//        return baseExecute(pattern, input, execCxt) ; 
+//    }
+
+    /* Exexution - allow the inline matcher to be turned off */ 
+    private static QueryIterator baseExecute(BasicPattern pattern, QueryIterator input, ExecutionContext execCxt)
     {
         if ( execCxt.getContext().isTrueOrUndef(altMatcher) )
-            return QueryIterBlockTriples.create(input, pattern, execCxt) ;
+            return executeInline(pattern, input, execCxt) ;
         else
             return executeQueryHandler(pattern, input, execCxt) ;
     }
-
-    // This is going to get me into trouble ....
-    //private static Map<Graph, StatsMatcher>   
     
-    /** Use the inline, iterator based BGP matcher after some reorganisation for statistics */ 
-    private QueryIterator executeInlineStats(BasicPattern pattern, QueryIterator input, ExecutionContext execCxt)
+    /** Use the inline BGP matcher */ 
+    private static QueryIterator executeInline(BasicPattern pattern, QueryIterator input, ExecutionContext execCxt)
     {
-        Graph graph = execCxt.getActiveGraph() ;
-        GraphStatisticsHandler stats = graph.getStatisticsHandler() ;
-        
-        if ( stats != null )
-        {
-            System.out.println(pattern) ;
-            ReorderStatsHandler reorder = new ReorderStatsHandler(graph, stats) ;
-            pattern = reorder.reorder(pattern) ;
-            System.out.println(pattern) ;
-        }
-        return executeInline(pattern, input, execCxt) ;
+        return QueryIterBlockTriples.create(input, pattern, execCxt) ;
     }
 
-    /** Use the graph's query handler */ 
-    private QueryIterator executeQueryHandler(BasicPattern pattern, QueryIterator input, ExecutionContext execCxt)
+    /** Use the graph's query handler. */ 
+    private static QueryIterator executeQueryHandler(BasicPattern pattern, QueryIterator input, ExecutionContext execCxt)
     {
         return QueryIterBlockTriplesQH.create(input, pattern, execCxt) ;
     }
     
-    static class ReorderStatsHandler extends ReorderTransformationBase
+    
+    
+    /** Reorder a basic graph pattern using a graph statistic handler */
+    private static class ReorderStatsHandler extends ReorderTransformationBase
     {
-        static ReorderFixed fixed = new ReorderFixed() ;
+        static ReorderFixed fixed = (ReorderFixed)fixed() ;        // We need our own copy to call into.
         
         // Guesses at the selectivity of fixed, but unknown, values.
         // Choose these for large graphs because bad guesses don't harm small graphs.  
@@ -133,7 +198,7 @@ public class StageGeneratorGeneric implements StageGenerator
             else
                 x = weight1(pt) ;
             
-            System.out.printf("** %s: --> %s\n", pt, x) ;
+            //System.out.printf("** %s: --> %s\n", pt, x) ;
             return x ;
         }
         
@@ -173,7 +238,7 @@ public class StageGeneratorGeneric implements StageGenerator
             if ( S > 0 ) x = S ;
             if ( P > 0 && P < x ) x = P ;
             if ( O > 0 && O < x ) x = O ;
-            System.out.printf("** [%d, %d, %d]\n", S, P ,O) ;
+            //System.out.printf("** [%d, %d, %d]\n", S, P ,O) ;
 
             return x ;
         }

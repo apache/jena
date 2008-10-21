@@ -126,7 +126,7 @@ public class SystemTDB
     // More in the context !
     
     private static String propertyFileName = "" ;
-    private static Properties properties = null ; //readPropertiesFile() ;
+    private static Properties properties = readPropertiesFile() ;
     
     private static int intValue(String name, int defaultValue)
     {
@@ -150,8 +150,9 @@ public class SystemTDB
             Reader r = FileUtils.asBufferedUTF8(new FileInputStream(propertyFileName)) ;
             p.load(r) ;
         } catch (FileNotFoundException ex)
-        {
-            ex.printStackTrace();
+        { 
+            log.debug("No system properties file ("+propertyFileName+")") ;
+            return null ;
         } catch (IOException ex)
         {
             ex.printStackTrace();
