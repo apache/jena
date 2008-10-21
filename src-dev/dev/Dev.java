@@ -16,13 +16,8 @@ public class Dev
     // ---- ExtHash trials
     
     // ---- Optimization
-    //   Check back on what ARQ currently does.
-    //   Instrumentation
     //   Abbreviate planning when below a threshold (likely selectivity?), or number of triples planned.
     //   Consider doing all plans from first choice.
-    //     VarCounting : need to consider connectivity for boundedness propagation
-    //     or consider all plans at step one.
-    // ** Stats matcher for memory graphs (StageGeneratorGeneric)
     // ** Documentation
     
     // ---- Assembler 
