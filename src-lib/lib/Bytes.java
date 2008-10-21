@@ -134,8 +134,6 @@ public class Bytes
                 (((long)b0 & 0xFF) <<  0) ;
     }
 
-    
-    
     private static byte byte3(int x) { return (byte)(x >> 24); }
     private static byte byte2(int x) { return (byte)(x >> 16); }
     private static byte byte1(int x) { return (byte)(x >>  8); }
@@ -170,16 +168,6 @@ public class Bytes
         }
     }
     
-//
-//
-//    public static String string(ByteBuffer bb, int len)
-//    {
-//        byte b[] = new byte[len] ;
-//        bb.get(b) ;
-//        return bytes2string(b) ;
-//        
-//    }
-
     private static Charset utf8 = null ;
     private static CharsetEncoder enc = null ;
     private static CharsetDecoder dec = null ;
