@@ -11,6 +11,7 @@ import java.util.Iterator;
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
+import com.hp.hpl.jena.sparql.core.BasicPattern;
 import com.hp.hpl.jena.sparql.core.DatasetGraph;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext;
 import com.hp.hpl.jena.sparql.sse.Tags;
@@ -32,6 +33,16 @@ public class WriterGraph
     public static void output(IndentedWriter out, DatasetGraph dataset, SerializationContext naming)
     { writeDataset(out, dataset, naming) ; }
 
+    public static void output(IndentedWriter out, BasicPattern pattern, SerializationContext sCxt)
+    {
+        for ( Iterator iter = pattern.iterator() ; iter.hasNext() ;)
+        {
+            Triple triple = (Triple)iter.next() ;
+            WriterNode.output(out, triple, sCxt) ;
+            out.println() ;
+        }
+    }
+    
     // ---- Workers
     
     private static void writeDataset(IndentedWriter out, DatasetGraph ds, SerializationContext naming)

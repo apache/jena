@@ -6,11 +6,17 @@
 
 package com.hp.hpl.jena.sparql.sse;
 
-import java.io.*;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.Reader;
+import java.io.StringReader;
 
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
+import com.hp.hpl.jena.query.Dataset;
 import com.hp.hpl.jena.shared.NotFoundException;
 import com.hp.hpl.jena.shared.PrefixMapping;
 import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
@@ -38,9 +44,6 @@ import com.hp.hpl.jena.sparql.sse.writers.WriterNode;
 import com.hp.hpl.jena.sparql.sse.writers.WriterOp;
 import com.hp.hpl.jena.sparql.util.FmtUtils;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
-
-import com.hp.hpl.jena.query.Dataset;
-
 import com.hp.hpl.jena.util.FileUtils;
 
 public class SSE
@@ -314,6 +317,9 @@ public class SSE
                            new SerializationContext(graph.getPrefixMapping())) ;
     }
 
+    
+    
+    
     public static void write(DatasetGraph dataset) { write(IndentedWriter.stdout, dataset) ; IndentedWriter.stdout.flush() ; } 
     public static void write(OutputStream out, DatasetGraph dataset)
     { 
@@ -331,6 +337,17 @@ public class SSE
     public static void write(OutputStream out, Dataset dataset)     { write(out, dataset.asDatasetGraph()) ; } 
     public static void write(IndentedWriter out, Dataset dataset)   { write(out, dataset.asDatasetGraph()) ; }
 
+    public static void write(BasicPattern pattern)                  { write(IndentedWriter.stdout, pattern) ; IndentedWriter.stdout.flush() ; }
+    
+    public static void write(IndentedWriter out, BasicPattern pattern)
+    { write(IndentedWriter.stdout, pattern, null) ; IndentedWriter.stdout.flush() ; }
+    
+    public static void write(IndentedWriter out, BasicPattern pattern, PrefixMapping pMap)
+    {
+        WriterGraph.output(out, pattern, sCxt(pMap)) ;
+        out.flush() ;
+    }
+    
     public static void write(Triple triple) { write(IndentedWriter.stdout, triple) ; IndentedWriter.stdout.flush() ; }
     public static void write(OutputStream out, Triple triple)
     { 
@@ -340,8 +357,8 @@ public class SSE
     }
     public static void write(IndentedWriter out, Triple triple)                         
     { 
-        WriterNode.output(IndentedWriter.stdout, triple, sCxt(defaultDefaultPrefixMapWrite)) ; 
-        IndentedWriter.stdout.flush() ;
+        WriterNode.output(out, triple, sCxt(defaultDefaultPrefixMapWrite)) ; 
+        out.flush() ;
     }
     
     public static void write(Node node) { write(IndentedWriter.stdout, node) ; IndentedWriter.stdout.flush() ; }
@@ -357,14 +374,16 @@ public class SSE
         IndentedWriter.stdout.flush() ;
     }
     
-    private static SerializationContext sCxt(Graph graph)
+    /** Return a SerializationContext appropriate for the graph */
+    public static SerializationContext sCxt(Graph graph)
     {
         if ( graph != null )
             return sCxt(graph.getPrefixMapping()) ;
         return new SerializationContext() ;
     }  
     
-    private static SerializationContext sCxt(PrefixMapping pmap)
+    /** Return a SerializationContext appropriate for the prfix mapping */
+    public static SerializationContext sCxt(PrefixMapping pmap)
     {
         if ( pmap != null )
             return new SerializationContext(pmap) ;

@@ -162,19 +162,24 @@ public class WriterOp
             if ( opBGP.getPattern().size() == 1 )
             {
                 start(opBGP, NoNL) ;
-                formatTriple(opBGP.getPattern().get(0)) ;
+                write(opBGP.getPattern()) ;
                 finish(opBGP) ;
                 return ;
             }
             
             start(opBGP, NL) ;
-            for ( Iterator iter = opBGP.getPattern().iterator() ; iter.hasNext() ;)
+            write(opBGP.getPattern()) ;
+            finish(opBGP) ;
+        }
+        
+        private void write(BasicPattern pattern)
+        {
+            for ( Iterator iter = pattern.iterator() ; iter.hasNext() ;)
             {
                Triple t = (Triple)iter.next() ;
                formatTriple(t) ;
                out.println() ;
             }
-            finish(opBGP) ;
         }
         
         public void visit(OpTriple opTriple)
