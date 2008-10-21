@@ -29,7 +29,7 @@ public class OpBGP extends Op0
     
     public BasicPattern getPattern()        { return pattern ; } 
     
-    public String getName()                 { return Tags.tagBGP.toUpperCase() ; }
+    public String getName()                 { return Tags.tagBGP /*.toUpperCase()*/ ; }
     public Op apply(Transform transform)    { return transform.transform(this) ; } 
     public void visit(OpVisitor opVisitor)  { opVisitor.visit(this) ; }
     public Op copy()                        { return new OpBGP(pattern) ; }
