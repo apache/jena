@@ -42,13 +42,11 @@ import com.hp.hpl.jena.query.QueryExecException;
 
 public class OpCompiler
 {
-    // If this becomes important, then formalise as symbol value in the context. 
-    
-    // A small (one slot) registry to allow (experimental) alternative  OpCompilers
+    // Maker of OpCompilers.
     public interface Factory { OpCompiler create(ExecutionContext execCxt) ; }
     
     // Set this to a different factory implementation to have a different OpCompiler.  
-    public static Factory stdFactory = new Factory(){
+    private static Factory stdFactory = new Factory(){
         public OpCompiler create(ExecutionContext execCxt)
         {
             return new OpCompiler(execCxt) ;
@@ -56,7 +54,7 @@ public class OpCompiler
 //    public static Factory factory = stdFactory ; 
 
     
-    public static OpCompiler create(ExecutionContext execCxt)
+    private static OpCompiler createOpCompiler(ExecutionContext execCxt)
     {
         Factory factory = (Factory)execCxt.getContext().get(ARQConstants.sysOpCompilerFactory) ;
         if ( factory == null )
@@ -66,15 +64,6 @@ public class OpCompiler
         return factory.create(execCxt) ;
     }
     
-            
-//    static private OpCompiler decideOpCompiler(ExecutionContext execCxt)
-//    {
-//        if ( factory == null )
-//            return new OpCompiler(execCxt) ;    // Only if default 'factory' gets lost.
-//        else
-//            return factory.create(execCxt) ;
-//    }
-        
     // -------
     
     static QueryIterator compile(Op op, ExecutionContext execCxt)
@@ -85,7 +74,7 @@ public class OpCompiler
     // Public interface is via QC.compile.
     static QueryIterator compile(Op op, QueryIterator qIter, ExecutionContext execCxt)
     {
-        OpCompiler compiler = create(execCxt) ;
+        OpCompiler compiler = createOpCompiler(execCxt) ;
         QueryIterator q = compiler.compileOp(op, qIter) ;
         return q ;
     }
