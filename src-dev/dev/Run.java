@@ -65,7 +65,10 @@ public class Run
     public static void main(String ... args) throws IOException
     {
         
-        tdbquery("SELECT * { ?s ?p ?o . ?s ?p 1 }") ; System.exit(0) ;
+        String[] a = { "--set=tdb:logExec=true", "SELECT * { ?s ?p ?o . ?s ?p 1 }" } ;
+        tdb.tdbquery.main(a) ;
+        System.exit(0) ;
+        
         memOpt() ; 
         
 //        TDBFactory.assembleGraph( "Store/gbt.ttl") ;

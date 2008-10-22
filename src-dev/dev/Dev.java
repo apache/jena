@@ -11,9 +11,9 @@ public class Dev
    
     
     // ---- Release
-    //   ARQ Optimizer and controlling optimizations per graph (esp FilterPlacement).
-    //   TDB 32 bit cache - check the tick point and cache sizes.
-    //     Only flush the oldest 75% LRU blocks from the write cache. 
+    //   ?? ARQ Optimizer and controlling optimizations per graph (esp FilterPlacement).
+    // Optimizer documentation
+    // Final testing
 
     // ---- Reopenable BlockMgrs (and the object file?) 
     

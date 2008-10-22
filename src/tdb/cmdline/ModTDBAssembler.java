@@ -66,16 +66,13 @@ public class ModTDBAssembler extends ModAssembler
     @Override
     public String getAssemblerFile()
     {
-        if ( super.getAssemblerFile() != null )
-            return super.getAssemblerFile() ;
-        
-        if ( ! useDefaultAssemblerFile )
-            return super.getAssemblerFile() ;
-        
-        File f = new File(defaultAssemblerFile) ;
-        if ( f.exists() )
-            return defaultAssemblerFile ; 
-        return null ;
+        if ( useDefaultAssemblerFile )
+        {
+            File f = new File(defaultAssemblerFile) ;
+            if ( f.exists() )
+                return defaultAssemblerFile ; 
+        }
+        return super.getAssemblerFile() ;
     }
 }
 

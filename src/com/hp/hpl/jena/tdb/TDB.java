@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.rdf.model.impl.RDFReaderFImpl;
 
-import com.hp.hpl.jena.sparql.engine.main.OpCompiler;
+import com.hp.hpl.jena.sparql.ARQConstants;
 import com.hp.hpl.jena.sparql.engine.main.StageGenBasicPattern;
 import com.hp.hpl.jena.sparql.engine.main.StageGenerator;
 import com.hp.hpl.jena.sparql.engine.optimizer.StageGenOptimizedBasicPattern;
@@ -116,12 +116,11 @@ public class TDB
             // ARQ base.  Cause chaos by using the new version.
             orig = new StageGeneratorGeneric() ;
         
-        
         StageGenerator stageGenerator = new StageGeneratorDirectTDB(orig) ;
         ARQ.getContext().set(ARQ.stageGenerator, stageGenerator) ;
 
         // Wire in the new OpCompiler 
-        OpCompiler.factory = OpCompilerTDB.altFactory ;
+        ARQ.getContext().set(ARQConstants.sysOpCompilerFactory, OpCompilerTDB.altFactory) ;
     }
     
     // ---- Static constandts read by modVersion 

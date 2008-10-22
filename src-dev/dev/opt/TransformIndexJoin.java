@@ -7,10 +7,25 @@
 package dev.opt;
 
 import com.hp.hpl.jena.sparql.algebra.Op;
+import com.hp.hpl.jena.sparql.algebra.OpExtRegistry;
 import com.hp.hpl.jena.sparql.algebra.TransformCopy;
-import com.hp.hpl.jena.sparql.algebra.op.OpJoin;
-import com.hp.hpl.jena.sparql.algebra.op.OpSequence;
+import com.hp.hpl.jena.sparql.algebra.op.*;
+import com.hp.hpl.jena.sparql.engine.ExecutionContext;
+import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.main.JoinClassifier;
+import com.hp.hpl.jena.sparql.engine.main.LeftJoinClassifier;
+import com.hp.hpl.jena.sparql.engine.main.OpCompiler;
+import com.hp.hpl.jena.sparql.engine.main.iterator.QueryIterOptionalIndex;
+import com.hp.hpl.jena.sparql.expr.ExprList;
+import com.hp.hpl.jena.sparql.serializer.SerializationContext;
+import com.hp.hpl.jena.sparql.sse.ItemList;
+import com.hp.hpl.jena.sparql.sse.SSE;
+import com.hp.hpl.jena.sparql.sse.builders.BuilderExpr;
+import com.hp.hpl.jena.sparql.sse.builders.BuilderLib;
+import com.hp.hpl.jena.sparql.sse.builders.BuilderOp;
+import com.hp.hpl.jena.sparql.sse.writers.WriterExpr;
+import com.hp.hpl.jena.sparql.util.IndentedWriter;
+import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 
 public class TransformIndexJoin extends TransformCopy
 {
@@ -25,6 +40,112 @@ public class TransformIndexJoin extends TransformCopy
             // Streamed evaluation
             return OpSequence.create(left, right) ;
         return super.transform(opJoin, left, right) ;
+    }
+    
+    @Override
+    public Op transform(OpLeftJoin opLeftJoin, Op left, Op right)
+    { 
+        boolean canDoLinear = LeftJoinClassifier.isLinear(opLeftJoin) ;
+
+        if ( canDoLinear )
+            // Streamed evaluation - Operator?
+            return new OpIndexedLeftJoin(left, right, opLeftJoin.getExprs()) ;
+        return super.transform(opLeftJoin, left, right) ;
+    }
+    
+    static final String indexedLeftJoin = "indLJ" ;
+    
+    static class OpIndLJFactory implements OpExtRegistry.ExtBuilder
+    {
+        @Override
+        public String getSubTab()
+        {
+            return indexedLeftJoin ;
+        }
+
+        @Override
+        public OpExt make(ItemList argList)
+        {
+            
+            BuilderLib.checkLength(2, 3, argList, "Wrong length for IndexedLeftJoin") ;
+            
+            Op left = BuilderOp.build(argList.get(0)) ;
+            Op right = BuilderOp.build(argList.get(1)) ;
+            ExprList exprs = null ;
+            if ( argList.size() == 3 )
+            {
+                exprs = BuilderExpr.buildExprList(argList.get(2)) ;
+            }
+            return new  OpIndexedLeftJoin(left, right, exprs);
+        }
+        
+    }
+    
+    static class OpIndexedLeftJoin extends OpExt
+    {
+
+        private Op left ;
+        private Op right ;
+        private ExprList exprs ;
+
+        OpIndexedLeftJoin(Op left, Op right, ExprList exprs)
+        { 
+            this.left = left ;
+            this.right = right ;
+            this.exprs = exprs ;
+        }
+        
+        @Override
+        public Op effectiveOp()
+        {
+            return OpLeftJoin.create(left, right, exprs) ;
+        }
+
+        @Override
+        public QueryIterator eval(QueryIterator input, ExecutionContext execCxt)
+        {
+            Op opLeft = left ;
+            Op opRight = right ;
+            if (exprs != null )
+                opRight = OpFilter.filter(exprs, opRight) ;
+            
+            OpCompiler c = OpCompiler.create(execCxt) ;
+            QueryIterator left = c.compileOp(opLeft, input) ;
+            QueryIterator qIter = new QueryIterOptionalIndex(left, opRight, execCxt) ;
+            return qIter ;
+        }
+
+        @Override
+        public String getSubTag()
+        {
+            return indexedLeftJoin ;
+        }
+
+        @Override
+        public void outputArgs(IndentedWriter out, SerializationContext sCxt)
+        {
+            SSE.write(out, left) ;
+            out.print(" ") ;
+            SSE.write(out, right) ;
+            if ( exprs != null )
+            {
+                out.print(" ") ;
+                WriterExpr.output(out, exprs, sCxt) ;
+            }
+        }
+
+        @Override
+        public boolean equalTo(Op other, NodeIsomorphismMap labelMap)
+        {
+            return false ;
+        }
+
+        @Override
+        public int hashCode()
+        {
+            return 0 ;
+        }
+        
     }
 }
 

@@ -58,6 +58,7 @@ public class PGraphAssemblerVocab
         // Domain and range for properties.
         // Separated and use ja:imports
         assemblerClass(g, DatasetTDB,            new DatasetAssemblerTDB()) ;
+        
         assemblerClass(g, PGraphType,            new PGraphAssembler()) ;
         assemblerClass(g, PGraphBDBType,         new PGraphAssembler()) ;
         assemblerClass(g, TripleIndexType,       new TripleIndexAssembler()) ;
@@ -69,7 +70,7 @@ public class PGraphAssemblerVocab
         if ( g == null )
             g = Assembler.general ;
         g.implementWith(r, a) ;
-        //**assemblerAssertions.add(r, RDFS.subClassOf, JA.Object) ;
+        //assemblerAssertions.add(r, RDFS.subClassOf, JA.Object) ;
     }
 }
 

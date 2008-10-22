@@ -10,7 +10,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import arq.cmd.CmdException;
-import arq.cmdline.*;
+import arq.cmdline.ArgDecl;
+import arq.cmdline.CmdArgModule;
+import arq.cmdline.CmdGeneral;
+import arq.cmdline.ModDataset;
 
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
@@ -28,6 +31,7 @@ import com.hp.hpl.jena.query.*;
 
 import com.hp.hpl.jena.tdb.TDBFactory;
 import com.hp.hpl.jena.tdb.pgraph.GraphTDB;
+import com.hp.hpl.jena.tdb.pgraph.assembler.PGraphAssemblerVocab;
 
 public class ModTDBDataset extends ModDataset
 {
@@ -88,7 +92,10 @@ public class ModTDBDataset extends ModDataset
         {
             Dataset thing = null ;
             try {
-                thing = (Dataset)AssemblerUtils.build( modAssembler.getAssemblerFile(), DatasetAssemblerVocab.tDataset) ;
+                thing = (Dataset)AssemblerUtils.build( modAssembler.getAssemblerFile(), PGraphAssemblerVocab.DatasetTDB) ;
+                if ( thing == null )
+                    // Should use assembler inheritance but how do we assert the subclass relationship in a program. 
+                    thing = (Dataset)AssemblerUtils.build( modAssembler.getAssemblerFile(), DatasetAssemblerVocab.tDataset) ;
             }
             catch (ARQException ex)     { throw ex; }
             catch (JenaException ex)    { throw ex ; }

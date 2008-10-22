@@ -6,18 +6,20 @@
 
 package com.hp.hpl.jena.tdb.pgraph.assembler;
 
+import static com.hp.hpl.jena.sparql.core.assembler.DatasetAssemblerVocab.pDefaultGraph;
+import static com.hp.hpl.jena.sparql.core.assembler.DatasetAssemblerVocab.pNamedGraph;
+
+import com.hp.hpl.jena.rdf.model.Resource;
+
 import com.hp.hpl.jena.assembler.Assembler;
 import com.hp.hpl.jena.assembler.Mode;
-import com.hp.hpl.jena.assembler.assemblers.AssemblerBase;
-import com.hp.hpl.jena.rdf.model.Resource;
+
 import com.hp.hpl.jena.sparql.core.assembler.DatasetAssembler;
+
 import com.hp.hpl.jena.tdb.TDB;
 import com.hp.hpl.jena.tdb.TDBException;
 
-//import static com.hp.hpl.jena.tdb.pgraph.assembler.PGraphAssemblerVocab.* ;
-import static com.hp.hpl.jena.sparql.core.assembler.DatasetAssemblerVocab.* ;
-
-public class DatasetAssemblerTDB extends AssemblerBase implements Assembler
+public class DatasetAssemblerTDB extends DatasetAssembler
 {
     DatasetAssembler a = new DatasetAssembler() ;
     
@@ -30,7 +32,7 @@ public class DatasetAssemblerTDB extends AssemblerBase implements Assembler
         {
             // Check no other vocabulary used.
             // Regular description,using dfeaultGraph /namedgraph
-            return a.open(a, root, mode) ;
+            return super.open(a, root, mode) ;
         }
 
         throw new TDBException("No description of TDB resources found: "+root) ;
