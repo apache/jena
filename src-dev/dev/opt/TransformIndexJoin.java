@@ -14,7 +14,7 @@ import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.main.JoinClassifier;
 import com.hp.hpl.jena.sparql.engine.main.LeftJoinClassifier;
-import com.hp.hpl.jena.sparql.engine.main.OpCompiler;
+import com.hp.hpl.jena.sparql.engine.main.QC;
 import com.hp.hpl.jena.sparql.engine.main.iterator.QueryIterOptionalIndex;
 import com.hp.hpl.jena.sparql.expr.ExprList;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext;
@@ -109,8 +109,7 @@ public class TransformIndexJoin extends TransformCopy
             if (exprs != null )
                 opRight = OpFilter.filter(exprs, opRight) ;
             
-            OpCompiler c = OpCompiler.create(execCxt) ;
-            QueryIterator left = c.compileOp(opLeft, input) ;
+            QueryIterator left = QC.compile(opLeft, input, execCxt) ;
             QueryIterator qIter = new QueryIterOptionalIndex(left, opRight, execCxt) ;
             return qIter ;
         }

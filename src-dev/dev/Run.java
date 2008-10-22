@@ -65,7 +65,7 @@ public class Run
     public static void main(String ... args) throws IOException
     {
         
-        String[] a = { "--set=tdb:logExec=true", "SELECT * { ?s ?p ?o . ?s ?p 1 }" } ;
+        String[] a = { "--set=tdb:logExec=true", "--file=Q.rq" } ;
         tdb.tdbquery.main(a) ;
         System.exit(0) ;
         

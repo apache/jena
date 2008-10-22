@@ -80,7 +80,10 @@ public class OpCompilerTDB extends OpCompiler
     @Override
     public QueryIterator compile(OpLabel opLabel, QueryIterator input)
     {
-        if ( isForTDB && executeNow.equals(opLabel.getObject()) )
+        if ( ! isForTDB )
+            return super.compile(opLabel, input) ;
+        
+        if ( executeNow.equals(opLabel.getObject()) )
         {
             GraphTDB graph = (GraphTDB)execCxt.getActiveGraph() ;
             OpBGP opBGP = (OpBGP)opLabel.getSubOp() ; 

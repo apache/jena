@@ -12,6 +12,7 @@ public class Dev
     
     // ---- Release
     //   ?? ARQ Optimizer and controlling optimizations per graph (esp FilterPlacement).
+    // Double optimization: (filter ...) => (sequence ...) => calls (filter) again
     // Optimizer documentation
     // Final testing
 
