@@ -38,7 +38,9 @@ public class Algebra
     
     // -------- Prepackaged combinations
     
-    /** Compile a query - pattern and modifiers.  Optionally optimize the algebra expression. */
+    /** Compile a query - pattern and modifiers.  Optionally optimize the algebra expression.
+     * @deprecated Perform an explicit Algebra.optimize on compile(Query)
+     */
     public static Op compile(Query query, boolean optimize)
     {
         Op op = compile(query) ;

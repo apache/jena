@@ -14,6 +14,7 @@ import java.util.List;
 
 import com.hp.hpl.jena.Jena;
 
+import com.hp.hpl.jena.sparql.util.IndentedWriter;
 import com.hp.hpl.jena.sparql.util.Utils;
 
 import com.hp.hpl.jena.query.ARQ;
@@ -98,7 +99,15 @@ public class ModVersion implements ArgModuleGeneral
     
     private static void printField(String prefix, String fieldName, Class cls)
     {
-        System.out.println(prefix+": "+fieldName+": " + field(fieldName, cls)) ;
+        IndentedWriter out = IndentedWriter.stdout ;
+        out.print(prefix) ;
+        out.print(": ") ;
+        out.pad(12) ;
+        out.print(fieldName) ;
+        out.print(": ") ;
+        out.print(field(fieldName, cls)) ;
+        out.println() ;
+        out.flush();
     }
 }
 

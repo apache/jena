@@ -48,7 +48,7 @@ public class QueryEngineMain extends QueryEngineBase
 //    }
     
     protected Op modifyOp(Op op)
-    { return Algebra.optimize(op) ; }
+    { return Algebra.optimize(op, super.context) ; }
     
     // -------- Factory
     
