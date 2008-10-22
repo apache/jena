@@ -11,6 +11,7 @@ SELECT *
     ?z :p ?v . 
     ?x :p "1" . 
     :x1 ?p "x" . 
+    FILTER(?v > 5 )
    }
 }
 LIMIT 5

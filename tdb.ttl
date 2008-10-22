@@ -4,7 +4,8 @@
 
 [] ja:loadClass "com.hp.hpl.jena.tdb.TDB" .
 
-<#dataset> rdf:type         tdb:DatasetTDB ;
+
+<#dataset> rdf:type      ja:RDFDataset ; #  tdb:DatasetTDB ;
     ja:defaultGraph <#graph> ;
     . 
 
