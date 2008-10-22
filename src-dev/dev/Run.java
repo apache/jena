@@ -12,7 +12,7 @@ import java.util.Set;
 
 import lib.FileOps;
 import lib.Pair;
-import lib.cache.Cache2;
+import lib.cache.CacheNG;
 import arq.cmd.CmdUtils;
 
 import com.hp.hpl.jena.graph.Graph;
@@ -200,7 +200,7 @@ public class Run
     
     private static void cache2()
     {
-        Cache2<Integer, String> pool = new Cache2<Integer, String>(2) ;
+        CacheNG<Integer, String> pool = new CacheNG<Integer, String>(2) ;
         pool.putObject(1, "X1") ;
         pool.putObject(2, "X2") ;
         pool.putObject(3, "X3") ;

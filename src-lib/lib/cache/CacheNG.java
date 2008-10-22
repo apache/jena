@@ -28,10 +28,10 @@ import com.hp.hpl.jena.sparql.util.ALog;
  */
 
 // Rename later.  This does not assume that read-only objects are returned (may change)?  
-public class Cache2<Key, T> implements Cache<Key, T>
+public class CacheNG<Key, T> implements Cache<Key, T>
 {
     // XXX Stats and loging/reporting
-    private static Logger log = LoggerFactory.getLogger(Cache2.class) ;
+    private static Logger log = LoggerFactory.getLogger(CacheNG.class) ;
     private int statsDumpTick = -1 ;
     private final boolean logging = false  ;
     
@@ -48,8 +48,8 @@ public class Cache2<Key, T> implements Cache<Key, T>
     private long cacheEjects ;
     private long cacheTimePoint = 0;  
     
-    public Cache2(int num)            { this(0, num) ; }
-    private Cache2(int min, int max)
+    public CacheNG(int num)            { this(0, num) ; }
+    private CacheNG(int min, int max)
     { 
         this.min = min ;
         this.max = max ;

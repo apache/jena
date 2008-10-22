@@ -4,16 +4,86 @@
  * [See end of file]
  */
 
-package lib;
+package lib.cache;
 
-import lib.cache.CacheNG;
-import org.junit.Test;
+import iterator.SingletonIterator;
 
-public class TestPool
+import java.util.Iterator;
+
+import lib.ActionKeyValue;
+import lib.Cache;
+
+/** A one-slot cache.*/
+public class Cache1<K, V> implements Cache<K,V>
 {
-    @Test public void pool_01()
-    { CacheNG<Integer, String> pool = new CacheNG<Integer, String>(2) ; }
+    private K key ;
+    private V value ;
     
+    public Cache1() { clear() ; }
+    
+    @Override
+    public boolean contains(K key)
+    {
+        return key != null ;
+    }
+
+    @Override
+    public V getObject(K key)
+    {
+        if ( this.key == null ) return null ;
+        if ( this.key.equals(key) ) return value ;
+        return null ;
+    }
+
+    @Override
+    public void clear()
+    { 
+        key = null ;
+        value = null ;
+    }
+
+    @Override
+    public boolean isEmpty()
+    {
+        return key == null ;
+    }
+
+    @Override
+    public Iterator<K> keys()
+    {
+        return new SingletonIterator<K>(key) ;
+    }
+
+    @Override
+    public void putObject(K key, V thing)
+    {
+        this.key = key ;
+        this.value = thing ;
+    }
+
+    @Override
+    public void removeObject(K key)
+    {
+        if ( this.key == null ) return ;
+        if ( this.key.equals(key) )
+        {
+            this.key = key ;
+            this.value = null ;
+        }
+    }
+
+    @Override
+    public void setDropHandler(ActionKeyValue<K, V> dropHandler)
+    {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public long size()
+    {
+        return (key == null) ? 0 : 1 ;
+    }
+
 }
 
 /*
