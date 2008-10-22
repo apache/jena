@@ -16,59 +16,62 @@ import lib.Cache;
 /** A one-slot cache.*/
 public class Cache1<K, V> implements Cache<K,V>
 {
-    private K key ;
-    private V value ;
+    private K cacheKey ;
+    private V cacheValue ;
     
     public Cache1() { clear() ; }
     
     @Override
     public boolean contains(K key)
     {
-        return key != null ;
+        if ( cacheKey == null )
+            return false ;
+        return cacheKey.equals(key) ;
     }
 
     @Override
     public V getObject(K key)
     {
-        if ( this.key == null ) return null ;
-        if ( this.key.equals(key) ) return value ;
+        if ( cacheKey == null ) return null ;
+        if ( cacheKey.equals(key) ) return cacheValue ;
         return null ;
     }
 
     @Override
     public void clear()
     { 
-        key = null ;
-        value = null ;
+        cacheKey = null ;
+        cacheValue = null ;
     }
 
     @Override
     public boolean isEmpty()
     {
-        return key == null ;
+        return cacheKey == null ;
     }
 
     @Override
     public Iterator<K> keys()
     {
-        return new SingletonIterator<K>(key) ;
+        return new SingletonIterator<K>(cacheKey) ;
     }
 
     @Override
     public void putObject(K key, V thing)
     {
-        this.key = key ;
-        this.value = thing ;
+        // Displaces any existing cached key/value pair
+        cacheKey = key ;
+        cacheValue = thing ;
     }
 
     @Override
     public void removeObject(K key)
     {
-        if ( this.key == null ) return ;
-        if ( this.key.equals(key) )
+        if ( cacheKey == null ) return ;
+        if ( cacheKey.equals(key) )
         {
-            this.key = key ;
-            this.value = null ;
+            cacheKey = key ;
+            cacheValue = null ;
         }
     }
 
@@ -81,7 +84,7 @@ public class Cache1<K, V> implements Cache<K,V>
     @Override
     public long size()
     {
-        return (key == null) ? 0 : 1 ;
+        return (cacheKey == null) ? 0 : 1 ;
     }
 
 }
