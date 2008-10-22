@@ -24,6 +24,7 @@ import com.hp.hpl.jena.sparql.engine.iterator.QueryIterPeek;
 import com.hp.hpl.jena.sparql.engine.main.OpCompiler;
 import com.hp.hpl.jena.sparql.engine.main.QC;
 import com.hp.hpl.jena.sparql.expr.ExprList;
+import com.hp.hpl.jena.tdb.TDB;
 import com.hp.hpl.jena.tdb.pgraph.GraphTDB;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderProc;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
@@ -132,8 +133,7 @@ public class OpCompilerTDB extends OpCompiler
         else
             op = new OpBGP(pattern) ;
         
-        //if ( execCxt.getContext().isTrue(TDB.symLogExec) && log.isInfoEnabled() )
-        if ( logExec.isInfoEnabled() )
+        if ( execCxt.getContext().isTrue(TDB.symLogExec) && logExec.isInfoEnabled() )
         {
             // Really want a one line version
             String x = op.toString();

@@ -11,8 +11,11 @@ import java.util.List;
 import tdb.cmdline.CmdSub;
 import tdb.cmdline.CmdTDB;
 import arq.cmdline.CmdARQ;
+import arq.cmdline.ModVersion;
 
 import com.hp.hpl.jena.sparql.sse.Item;
+import com.hp.hpl.jena.sparql.util.Utils;
+import com.hp.hpl.jena.tdb.TDB;
 import com.hp.hpl.jena.tdb.base.objectfile.ObjectFileDisk;
 import com.hp.hpl.jena.tdb.pgraph.GraphTDB;
 import com.hp.hpl.jena.tdb.solver.stats.StatsWriter;
@@ -24,6 +27,7 @@ public class tdbconfig extends CmdSub
     static final String CMD_HELP    = "help" ;
     static final String CMD_STATS   = "stats" ;
     static final String CMD_NODES   = "nodes" ;
+    static final String CMD_INFO    = "info" ;
     
     static public void main(String... argv)
     {
@@ -35,12 +39,20 @@ public class tdbconfig extends CmdSub
         super(argv) ;
 //        super.addSubCommand(CMD_CLEAN, new Exec()
 //          { @Override public void exec(String[] argv) { new tdbclean(argv).main() ; } }) ;
+        
         super.addSubCommand(CMD_HELP, new Exec()
-          { @Override public void exec(String[] argv) { new SubHelp(argv).main() ; } }) ;
+        { @Override public void exec(String[] argv) { new SubHelp(argv).main() ; } }) ;
+        
         super.addSubCommand(CMD_STATS, new Exec()
         { @Override public void exec(String[] argv) { new SubStats(argv).main() ; } }) ;
+        
         super.addSubCommand(CMD_NODES, new Exec()
         { @Override public void exec(String[] argv) { new SubNodes(argv).main() ; } }) ;
+        
+        super.addSubCommand(CMD_INFO, new Exec()
+        { @Override public void exec(String[] argv) { new SubInfo(argv).main() ; } }) ;
+
+        
     }
     
     // Subcommand : help
@@ -133,6 +145,35 @@ public class tdbconfig extends CmdSub
         }
     }
 
+    static class SubInfo extends CmdTDB
+    {
+        public SubInfo(String ... argv)
+        {
+            super(argv) ;
+        }
+        
+        @Override
+        protected String getSummary()
+        {
+            return "tdbconfig info" ;
+        }
+
+        @Override
+        protected void exec()
+        {
+            System.out.println("-- "+Utils.nowAsString()+" --") ;
+            ModVersion v = new ModVersion(true) ;
+            v.addClass(TDB.class) ;
+            v.printVersionAndExit() ;
+        }
+
+        @Override
+        protected String getCommandName()
+        {
+            return "tdbconfig info" ;
+        }
+    }
+    
 }
 
 /*

@@ -125,6 +125,8 @@ public class SystemTDB
     // Tie to location but that means one instance per graph
     // More in the context !
     
+    // Combine with the TDB propertied (Metadata)
+    
     private static String propertyFileName = "" ;
     private static Properties properties = readPropertiesFile() ;
     

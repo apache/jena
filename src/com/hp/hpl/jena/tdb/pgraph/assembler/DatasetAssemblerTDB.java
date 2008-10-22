@@ -4,46 +4,38 @@
  * [See end of file]
  */
 
-package tdb;
+package com.hp.hpl.jena.tdb.pgraph.assembler;
 
-import tdb.cmdline.CmdTDB;
-import tdb.cmdline.ModTDBDataset;
-import arq.cmdline.ModDataset;
-
-import com.hp.hpl.jena.query.ARQ;
-
+import com.hp.hpl.jena.assembler.Assembler;
+import com.hp.hpl.jena.assembler.Mode;
+import com.hp.hpl.jena.assembler.assemblers.AssemblerBase;
+import com.hp.hpl.jena.rdf.model.Resource;
+import com.hp.hpl.jena.sparql.core.assembler.DatasetAssembler;
 import com.hp.hpl.jena.tdb.TDB;
+import com.hp.hpl.jena.tdb.TDBException;
 
+//import static com.hp.hpl.jena.tdb.pgraph.assembler.PGraphAssemblerVocab.* ;
+import static com.hp.hpl.jena.sparql.core.assembler.DatasetAssemblerVocab.* ;
 
-public class tdbquery extends arq.query
+public class DatasetAssemblerTDB extends AssemblerBase implements Assembler
 {
+    DatasetAssembler a = new DatasetAssembler() ;
     
-    public static void main(String [] argv)
+    @Override
+    public Object open(Assembler a, Resource root, Mode mode)
     {
-        new tdbquery(argv).main() ;
-    }
-    
-    public tdbquery(String[] argv)
-    {
-        super(argv) ;
-        // Because this inherits from an ARQ command
-        CmdTDB.init() ;
-        super.modVersion.addClass(TDB.class) ;
+        // Just in case ... although we managed to get here so TDB.init was probably called.
+        TDB.init() ;
+        if ( root.hasProperty(pDefaultGraph) || root.hasProperty(pNamedGraph) )
+        {
+            // Check no other vocabulary used.
+            // Regular description,using dfeaultGraph /namedgraph
+            return a.open(a, root, mode) ;
+        }
+
+        throw new TDBException("No description of TDB resources found: "+root) ;
     }
 
-    @Override
-    protected void processModulesAndArgs()
-    {
-        super.processModulesAndArgs() ;
-        if ( isVerbose() )
-            ARQ.getContext().setTrue(TDB.symLogExec) ;
-    }
-    
-    @Override
-    protected ModDataset setModDataset()
-    {
-        return new ModTDBDataset() ;
-    }
 }
 
 /*

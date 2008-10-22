@@ -36,7 +36,7 @@ public class TDB
     /** Logger for general information */ 
     public static final Logger logInfo = LoggerFactory.getLogger("com.hp.hpl.jena.tdb.info") ;
     
-    /** Logger for general execution information */
+    /** Logger for execution information */
     public static final Logger logExec = LoggerFactory.getLogger("com.hp.hpl.jena.tdb.exec") ;
     
     public static String namespace = "http://jena.hpl.hp.com/2008/tdb#" ;
@@ -47,10 +47,24 @@ public class TDB
     /** Root of TDB-defined parameter short names */  
     public static final String tdbSymbolPrefix = "tdb" ;
 
+    /** Symbol to enable logging of execution.  Must also set log4j, or other logging system,
+     * for logger "com.hp.hpl.jena.tdb.exec"
+     * e.g. log4j.properties -- log4j.logger.com.hp.hpl.jena.tdb.exec=INFO
+     */
     public static final Symbol symLogExec              = SystemTDB.allocSymbol("logExec") ;
+
+    /** Set or unset execution logging - logging is to logger "com.hp.hpl.jena.tdb.exec" at level INFO */
+    public static void setExecutionLogging(boolean state)
+    {
+        TDB.getContext().set(symLogExec, state) ;
+    }
+    
+    /** Log duplicates during loading */
     public static final Symbol symLogDuplicates        = SystemTDB.allocSymbol("logDuplicates") ;
-    // Value: direct, mapped, default 
-    public static final Symbol symFileMode          = SystemTDB.allocSymbol("fileMode") ;  
+    
+    /** File mode : one of "direct", "mapped", "default" */ 
+    public static final Symbol symFileMode          = SystemTDB.allocSymbol("fileMode") ;
+    /** Index type */
     public static final Symbol symIndexType         = SystemTDB.allocSymbol("indexType") ;
     
     public static Context getContext()     { return ARQ.getContext() ; }  
@@ -78,9 +92,6 @@ public class TDB
 
         // TDB uses a custom OpCompiler.
         //QueryEngineTDB.register() ;
-        
-        //Gets in the way!
-        ARQ.getContext().set(ARQ.filterPlacement, false) ;
         
         PGraphAssemblerVocab.init();
         
@@ -113,6 +124,7 @@ public class TDB
         OpCompiler.factory = OpCompilerTDB.altFactory ;
     }
     
+    // ---- Static constandts read by modVersion 
     /** The root package name for TDB */   
     public static final String PATH = "com.hp.hpl.jena.tdb";
 

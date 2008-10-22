@@ -82,13 +82,13 @@ public class StageGeneratorGeneric implements StageGenerator
                                     QueryIterator input,
                                     ExecutionContext execCxt)
     {
-        boolean logExec = TDB.logExec.isDebugEnabled() ;  // execCxt.getContext().isTrue(TDB.symLogExec) ;
-        if ( logExec ) TDB.logExec.debug(">>"+pattern) ;
+        boolean loggingExec = execCxt.getContext().isTrue(TDB.symLogExec) && TDB.logExec.isDebugEnabled() ;
+        if ( loggingExec ) TDB.logExec.debug(">>"+pattern) ;
         
         if ( reorder != null )
         {
             pattern = reorder.reorder(pattern) ;
-            if ( logExec ) TDB.logExec.debug("->"+pattern) ;
+            if ( loggingExec ) TDB.logExec.debug("->"+pattern) ;
         }
 
         return execution.execute(pattern, input, execCxt) ; 

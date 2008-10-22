@@ -21,6 +21,7 @@ public class PGraphAssemblerVocab
     public static String getURI() { return NS ; } 
 
     // Types
+    public static final Resource DatasetTDB         = Vocab.type(NS, "DatasetTDB") ;
     public static final Resource PGraphType         = Vocab.type(NS, "GraphTDB") ;
     public static final Resource PGraphBDBType      = Vocab.type(NS, "GraphBDB") ;
     public static final Resource TripleIndexType    = Vocab.type(NS, "TripleIndex") ;
@@ -56,6 +57,7 @@ public class PGraphAssemblerVocab
         // Wire in the extension assemblers (extensions relative to the Jena assembler framework)
         // Domain and range for properties.
         // Separated and use ja:imports
+        assemblerClass(g, DatasetTDB,            new DatasetAssemblerTDB()) ;
         assemblerClass(g, PGraphType,            new PGraphAssembler()) ;
         assemblerClass(g, PGraphBDBType,         new PGraphAssembler()) ;
         assemblerClass(g, TripleIndexType,       new TripleIndexAssembler()) ;

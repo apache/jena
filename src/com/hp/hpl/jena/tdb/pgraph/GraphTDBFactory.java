@@ -6,11 +6,12 @@
 
 package com.hp.hpl.jena.tdb.pgraph;
 
+import static com.hp.hpl.jena.tdb.TDB.logExec;
+import static com.hp.hpl.jena.tdb.TDB.logInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.sparql.sse.SSEParseException;
-import com.hp.hpl.jena.tdb.TDB;
 import com.hp.hpl.jena.tdb.TDBException;
 import com.hp.hpl.jena.tdb.base.file.Location;
 import com.hp.hpl.jena.tdb.index.Index;
@@ -28,8 +29,6 @@ public class GraphTDBFactory
 {
     // For this class
     private static Logger log = LoggerFactory.getLogger(GraphTDBFactory.class) ;
-    // Generally informative
-    private static Logger logTDB = TDB.logInfo ;
 
     /** Create a graph backed with storage at a particular location */
     public static GraphTDB create(Location location)
@@ -82,7 +81,7 @@ public class GraphTDBFactory
         {
             try {
                 reorder = ReorderLib.weighted(location.getPath(Names.optStats)) ;
-                logTDB.info("Statistics-based BGP optimizer") ;  
+                logInfo.info("Statistics-based BGP optimizer") ;  
             } catch (SSEParseException ex) { 
                 log.warn("Error in stats file: "+ex.getMessage()) ;
                 reorder = null ;
@@ -93,20 +92,20 @@ public class GraphTDBFactory
         {
             // Not as good but better than nothing.
             reorder = ReorderLib.fixed() ;
-            logTDB.info("Fixed pattern BGP optimizer") ;  
+            logInfo.info("Fixed pattern BGP optimizer") ;  
         }
         
         if ( location.exists(Names.optNone) )
         {
             reorder = ReorderLib.identity() ;
-            logTDB.info("Optimizer explicitly turned off") ;
+            logInfo.info("Optimizer explicitly turned off") ;
         }
 
         if ( reorder == null )
             reorder = SystemTDB.defaultOptimizer ;
         
         if ( reorder == null )
-            logTDB.warn("No BGP optimizer") ;
+            logExec.warn("No BGP optimizer") ;
         
         return reorder ; 
     }
