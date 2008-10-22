@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import com.hp.hpl.jena.sparql.ARQConstants;
 import com.hp.hpl.jena.sparql.ARQNotImplemented;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.Table;
@@ -45,22 +46,34 @@ public class OpCompiler
     
     // A small (one slot) registry to allow (experimental) alternative  OpCompilers
     public interface Factory { OpCompiler create(ExecutionContext execCxt) ; }
+    
     // Set this to a different factory implementation to have a different OpCompiler.  
     public static Factory stdFactory = new Factory(){
         public OpCompiler create(ExecutionContext execCxt)
         {
             return new OpCompiler(execCxt) ;
         }} ;  
-    public static Factory factory = stdFactory ; 
+//    public static Factory factory = stdFactory ; 
 
-            
-    static private OpCompiler decideOpCompiler(ExecutionContext execCxt)
+    
+    public static OpCompiler create(ExecutionContext execCxt)
     {
+        Factory factory = (Factory)execCxt.getContext().get(ARQConstants.sysOpCompilerFactory) ;
         if ( factory == null )
-            return new OpCompiler(execCxt) ;    // Only if default 'factory' gets lost.
-        else
-            return factory.create(execCxt) ;
+            factory = stdFactory ;
+        if ( factory == null )
+            return new OpCompiler(execCxt) ; 
+        return factory.create(execCxt) ;
     }
+    
+            
+//    static private OpCompiler decideOpCompiler(ExecutionContext execCxt)
+//    {
+//        if ( factory == null )
+//            return new OpCompiler(execCxt) ;    // Only if default 'factory' gets lost.
+//        else
+//            return factory.create(execCxt) ;
+//    }
         
     // -------
     
@@ -72,7 +85,7 @@ public class OpCompiler
     // Public interface is via QC.compile.
     static QueryIterator compile(Op op, QueryIterator qIter, ExecutionContext execCxt)
     {
-        OpCompiler compiler = decideOpCompiler(execCxt) ;
+        OpCompiler compiler = create(execCxt) ;
         QueryIterator q = compiler.compileOp(op, qIter) ;
         return q ;
     }

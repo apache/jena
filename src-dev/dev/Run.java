@@ -23,6 +23,7 @@ import com.hp.hpl.jena.sparql.algebra.OpExtRegistry.ExtBuilder;
 import com.hp.hpl.jena.sparql.algebra.op.OpExt;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
+import com.hp.hpl.jena.sparql.serializer.SerializationContext;
 import com.hp.hpl.jena.sparql.sse.Item;
 import com.hp.hpl.jena.sparql.sse.ItemList;
 import com.hp.hpl.jena.sparql.sse.SSE;
@@ -62,7 +63,7 @@ public class Run
 
         public String getSubTag() { return "TAG" ; }
 
-        public void outputArgs(IndentedWriter out)
+        public void outputArgs(IndentedWriter out, SerializationContext sCxt)
         {
             boolean first = true ;
             for ( Iterator iter = argList.iterator() ; iter.hasNext() ; )

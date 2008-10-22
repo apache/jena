@@ -39,27 +39,22 @@ public abstract class OpExt extends OpBase
     { opVisitor.visit(this) ; }
 
     public void output(IndentedWriter out, SerializationContext sCxt)
-        {
-            int line = out.getRow() ;
-            output(out) ;
-            if ( line != out.getRow() )
-                out.ensureStartOfLine() ;
-        }
-        
-    public void output(IndentedWriter out)
     {
+        int line = out.getRow() ;
         WriterLib.start(out, Tags.tagExt, WriterLib.NoNL) ;
         out.print(getSubTag()) ;
         out.print(" ") ;
-        outputArgs(out) ;
+        outputArgs(out, sCxt) ;
         WriterLib.finish(out) ;
+        if ( line != out.getRow() )
+            out.ensureStartOfLine() ;
     }
     
     /** Return the sub tag - must match teh builder */ 
     public abstract String getSubTag() ;
 
     /** Output the arguments in legal SSE format. Multiple items, whitespace separated */ 
-    public abstract void outputArgs(IndentedWriter out) ;
+    public abstract void outputArgs(IndentedWriter out, SerializationContext sCxt) ;
 }
 
 
