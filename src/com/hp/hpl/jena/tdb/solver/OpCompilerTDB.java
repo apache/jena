@@ -135,18 +135,52 @@ public class OpCompilerTDB extends OpCompiler
             String x = op.toString();
             x = x.replaceAll("\n", "") ;
             x = x.replaceAll("\r", "") ;
+            x = x.replaceAll("  \\(", " \\(") ;
             x = "Execute:: "+x ;
             logExec.info(x) ;
         }
         
         ExecutionContext ec2 = new ExecutionContext(execCxt) ;
         // No - change to one that catches BGP execution and (plainly) executes it. 
-        ec2.setExecutor(OpCompiler.stdFactory) ;
+        ec2.setExecutor(plainFactory) ;
         
         // Solve without going through this factory again.
         // There would be issues of nested (graph ...)
         // but this is only a (filter (bgp...)) at most
         return QC.compile(op, peek, ec2) ;
+    }
+    
+    
+    static OpCompilerFactory plainFactory = new OpCompilePlainFactoryTDB() ;
+    static class OpCompilePlainFactoryTDB implements OpCompilerFactory
+    {
+        @Override
+        public OpCompiler create(ExecutionContext execCxt)
+        {
+            return new OpCompilePlainTDB(execCxt) ;
+        }
+        
+    }
+    
+    
+    static class OpCompilePlainTDB extends OpCompiler
+    {
+        public OpCompilePlainTDB(ExecutionContext execCxt)
+        {
+            super(execCxt) ;
+        }
+        
+        @Override
+        public QueryIterator compile(OpBGP opBGP, QueryIterator input)
+        {
+            System.out.println("OpCompilePlainTDB") ;
+            if ( ! (execCxt.getActiveGraph() instanceof GraphTDB) )
+                return super.compile(opBGP, input) ;
+            GraphTDB graph = (GraphTDB)execCxt.getActiveGraph() ;
+            System.out.println(opBGP) ;
+            System.out.println(input.hasNext()) ;
+            return SolverLib.execute(graph, opBGP.getPattern(), input, execCxt) ;
+        }
     }
 }
 
