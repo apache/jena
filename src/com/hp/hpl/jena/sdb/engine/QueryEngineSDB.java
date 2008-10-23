@@ -88,7 +88,7 @@ public class QueryEngineSDB extends QueryEngineBase
     @Override
     public QueryIterator eval(Op op, DatasetGraph dsg, Binding binding, Context context)
     {
-        ExecutionContext execCxt = new ExecutionContext(context, dsg.getDefaultGraph(), dsg) ;
+        ExecutionContext execCxt = new ExecutionContext(context, dsg.getDefaultGraph(), dsg, QC.getFactory(context)) ;
         
         // This pattern is common to QueryEngineMain - find a sharing pattern 
         if ( ! ( op instanceof OpSQL ) )

@@ -97,7 +97,7 @@ public class TupleTable
             String sqlStr = store.getSQLGenerator().generateSQL(request, b.getSqlNode()) ;
             //System.out.println(sqlStr) ;
             ResultSetJDBC tableData = store.getConnection().execQuery(sqlStr) ;
-            ExecutionContext execCxt = new ExecutionContext(new Context(), null, null) ;
+            ExecutionContext execCxt = new ExecutionContext(new Context(), null, null, null) ;
             return b.assembleResults(tableData, BindingRoot.create(), execCxt) ;
         } catch (SQLException ex)
         { throw new SDBExceptionSQL(ex) ; }

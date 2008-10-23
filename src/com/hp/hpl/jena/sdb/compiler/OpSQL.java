@@ -13,6 +13,7 @@ import com.hp.hpl.jena.sparql.engine.Plan;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.binding.BindingRoot;
+import com.hp.hpl.jena.sparql.serializer.SerializationContext;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
 import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 
@@ -115,8 +116,12 @@ public class OpSQL extends OpExt
     }
 
     @Override
-    public void outputArgs(IndentedWriter out)
-    {}
+    public void outputArgs(IndentedWriter out, SerializationContext sCxt)
+    {
+        out.print("'''") ;
+        sqlNode.output(out) ;
+        out.print("'''") ;
+    }
 }
 
 /*
