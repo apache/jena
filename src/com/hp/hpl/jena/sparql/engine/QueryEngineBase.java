@@ -23,7 +23,8 @@ import com.hp.hpl.jena.sparql.util.NodeFactory;
 import com.hp.hpl.jena.query.ARQ;
 import com.hp.hpl.jena.query.Query;
 
-public abstract class QueryEngineBase implements OpExec, Closeable
+/** Main part of a QueryEngine - somethign that takes responsibility for a complete query execution */ 
+public abstract class QueryEngineBase implements OpEval, Closeable
 {
     private DatasetGraph dataset = null ;
     protected Context context ;

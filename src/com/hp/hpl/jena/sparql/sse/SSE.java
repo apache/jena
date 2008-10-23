@@ -6,12 +6,7 @@
 
 package com.hp.hpl.jena.sparql.sse;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.Reader;
-import java.io.StringReader;
+import java.io.*;
 
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
@@ -197,11 +192,16 @@ public class SSE
     public static Item readFile(String filename, PrefixMapping pmap)
     {
         try {
-            InputStream in = new FileInputStream(filename) ;
+            FileInputStream in = new FileInputStream(filename) ;
+            long len = in.getChannel().size() ;
+            if ( len == 0 )
+                return Item.nil ;
             return parse(in, pmap) ;
         } 
         catch (FileNotFoundException ex)
-        { throw new NotFoundException("Not found: "+filename) ; }
+        { throw new NotFoundException("Not found: "+filename) ; } 
+        catch (IOException ex)
+        { throw new ARQException("IOExeption: "+filename, ex) ; }
     }
     
     /** Parse a string and obtain an SSE item expression (no additional prefix mappings)*/

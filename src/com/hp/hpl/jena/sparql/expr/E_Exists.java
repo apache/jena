@@ -9,7 +9,7 @@ package com.hp.hpl.jena.sparql.expr;
 import com.hp.hpl.jena.sparql.ARQConstants;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException;
 import com.hp.hpl.jena.sparql.algebra.Op;
-import com.hp.hpl.jena.sparql.engine.OpExec;
+import com.hp.hpl.jena.sparql.engine.OpEval;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.function.FunctionEnv;
@@ -42,7 +42,9 @@ public class E_Exists extends ExprFunction
 
     public NodeValue eval(Binding binding, FunctionEnv env)
     {
-        OpExec opExec = (OpExec)env.getContext().get(ARQConstants.sysCurrentOpExec) ;
+        // XXX Dubious.  Need to get the OpCompilerFactory and that needs an ExecutionContext.
+        // XXX Dubious.  QueryIterator tracking is lost.
+        OpEval opExec = (OpEval)env.getContext().get(ARQConstants.sysCurrentOpExec) ;
         if ( opExec == null )
             throw new ARQInternalErrorException("No OpExec") ;
         QueryIterator qIter = opExec.eval(op, env.getDataset(), binding, env.getContext()) ;

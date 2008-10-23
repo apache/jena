@@ -12,7 +12,7 @@ import com.hp.hpl.jena.sparql.core.DatasetGraph;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.util.Context;
 
-public interface OpExec
+public interface OpEval
 {
     public QueryIterator eval(Op op, Graph graph) ;
     public QueryIterator eval(Op op, DatasetGraph dsg, Context context) ;
