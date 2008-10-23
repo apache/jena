@@ -146,6 +146,13 @@ public class StrUtils
     {
         return substitute(strjoinNL(args),subs) ;
     }
+
+    public static String chop(String x)
+    {
+        if ( x.length() == 0 )
+            return x ;
+        return x.substring(0, x.length()-1) ;
+    }
 }
 
 /*

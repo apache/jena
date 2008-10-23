@@ -95,6 +95,9 @@ public class TDB
         
         PGraphAssemblerVocab.init();
         
+        // XXX Really need to sort this out!
+        TDB.getContext().set(ARQ.filterPlacement, false) ;
+        
         wireStageGenerator() ;
         
         // Override N-TRIPLES
@@ -110,7 +113,6 @@ public class TDB
     {
         // Globally change the stage generator to intercept BGP on TDB
         StageGenerator orig = (StageGenerator)ARQ.getContext().get(ARQ.stageGenerator) ;
-        
         
         if ( orig instanceof StageGenBasicPattern || orig instanceof StageGenOptimizedBasicPattern )
             // ARQ base.  Cause chaos by using the new version.

@@ -7,6 +7,7 @@
 package com.hp.hpl.jena.tdb.solver;
 
 import static com.hp.hpl.jena.tdb.TDB.logExec;
+import lib.StrUtils;
 
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.Transform;
@@ -131,12 +132,14 @@ public class OpCompilerTDB extends OpCompiler
         
         if ( execCxt.getContext().isTrue(TDB.symLogExec) && logExec.isInfoEnabled() )
         {
-            // Really want a one line version
             String x = op.toString();
-            x = x.replaceAll("\n", "") ;
-            x = x.replaceAll("\r", "") ;
-            x = x.replaceAll("  \\(", " \\(") ;
-            x = "Execute:: "+x ;
+            x = StrUtils.chop(x) ;
+            
+            while ( x.endsWith("\n") )
+                x = StrUtils.chop(x) ;
+            while ( x.endsWith("\r") )
+                x = StrUtils.chop(x) ;
+            x = "Execute:: \n"+x ;
             logExec.info(x) ;
         }
         
@@ -173,12 +176,10 @@ public class OpCompilerTDB extends OpCompiler
         @Override
         public QueryIterator compile(OpBGP opBGP, QueryIterator input)
         {
-            System.out.println("OpCompilePlainTDB") ;
             if ( ! (execCxt.getActiveGraph() instanceof GraphTDB) )
                 return super.compile(opBGP, input) ;
+            // Log execution.
             GraphTDB graph = (GraphTDB)execCxt.getActiveGraph() ;
-            System.out.println(opBGP) ;
-            System.out.println(input.hasNext()) ;
             return SolverLib.execute(graph, opBGP.getPattern(), input, execCxt) ;
         }
     }

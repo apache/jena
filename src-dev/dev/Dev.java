@@ -10,11 +10,11 @@ public class Dev
 {
     // ---- Release
     //   ?? ARQ Optimizer and controlling optimizations per graph (esp FilterPlacement).
-    // ** Double optimization: (filter ...) => (sequence ...) => calls (filter) again
-    //    Pair OpCompilerFactory and an Op together.
+    // Tidy up in OpCompilerTDB
+    // Renaming (in ARQ) for OpCompiler
     // Optimizer documentation
     // Final testing
-    // Try a load with a null sink SPO to test just the node table speed.  
+    // CmdTDB : --info
 
     // ---- Reopenable BlockMgrs (and the object file?) 
     
