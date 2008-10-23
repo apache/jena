@@ -12,7 +12,7 @@ public class Dev
     //   ?? ARQ Optimizer and controlling optimizations per graph (esp FilterPlacement).
     // Tidy up in OpCompilerTDB
     // Renaming (in ARQ) for OpCompiler
-    // Optimizer documentation
+    // Optimizer documentation - check
     // Final testing
 
     // ---- Reopenable BlockMgrs (and the object file?) 
