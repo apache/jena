@@ -219,7 +219,7 @@ public class ExprUtils
         try {
             Context context = ARQ.getContext().copy() ;
             context.set(ARQConstants.sysCurrentTime, NodeFactory.nowAsDateTime()) ;
-            FunctionEnv env = new ExecutionContext(context, null, null) ; 
+            FunctionEnv env = new ExecutionContext(context, null, null, null) ; 
             NodeValue r = expr.eval(binding, env) ;
             //System.out.println(r.asQuotedString()) ;
             Node n = r.asNode() ;

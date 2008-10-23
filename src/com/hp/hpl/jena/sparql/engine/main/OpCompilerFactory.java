@@ -1,45 +1,16 @@
 /*
- * (c) Copyright 2007, 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
 package com.hp.hpl.jena.sparql.engine.main;
 
-import com.hp.hpl.jena.sparql.ARQConstants;
-import com.hp.hpl.jena.sparql.algebra.Op;
-import com.hp.hpl.jena.sparql.core.Substitute;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
-import com.hp.hpl.jena.sparql.engine.QueryIterator;
-import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.sparql.util.Context;
 
-public class QC
-{
-    public static OpCompilerFactory getFactory(Context context)
-    {
-        return (OpCompilerFactory)context.get(ARQConstants.sysOpCompilerFactory) ;
-    }
-    
-    public static void setFactory(Context context, OpCompilerFactory factory)
-    {
-        context.set(ARQConstants.sysOpCompilerFactory, factory) ;
-    }
-    
-    
-    public static Op substitute(Op op, Binding binding)
-    {
-        return Substitute.substitute(op, binding) ;
-    }
-    
-    public static QueryIterator compile(Op op, QueryIterator qIter, ExecutionContext execCxt)
-    {
-        return OpCompiler.compile(op, qIter, execCxt) ;
-    }
-}
-
+public interface OpCompilerFactory { OpCompiler create(ExecutionContext execCxt) ; }
 /*
- * (c) Copyright 2007, 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

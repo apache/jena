@@ -1,11 +1,12 @@
+PREFIX : <http://example/>
 PREFIX  afn:     <http://jena.hpl.hp.com/ARQ/function#>
 PREFIX  rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX  rdfs:   <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX  apf:     <http://jena.hpl.hp.com/ARQ/property#>
 
-SELECT *
+SELECT ?x
 {
-    FILTER (  afn:nowX() )
-    LET ( ?x := afn:nowX() )
+    ?x :p ?v 
 }
-
+GROUP BY ?x
+HAVING (count(?v)>1)

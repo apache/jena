@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import com.hp.hpl.jena.sparql.ARQConstants;
+import com.hp.hpl.jena.query.QueryExecException;
 import com.hp.hpl.jena.sparql.ARQNotImplemented;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.Table;
@@ -19,13 +19,16 @@ import com.hp.hpl.jena.sparql.core.BasicPattern;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.iterator.*;
-import com.hp.hpl.jena.sparql.engine.main.iterator.*;
+import com.hp.hpl.jena.sparql.engine.main.iterator.QueryIterGraph;
+import com.hp.hpl.jena.sparql.engine.main.iterator.QueryIterJoin;
+import com.hp.hpl.jena.sparql.engine.main.iterator.QueryIterLeftJoin;
+import com.hp.hpl.jena.sparql.engine.main.iterator.QueryIterOptionalIndex;
+import com.hp.hpl.jena.sparql.engine.main.iterator.QueryIterService;
+import com.hp.hpl.jena.sparql.engine.main.iterator.QueryIterUnion;
 import com.hp.hpl.jena.sparql.expr.Expr;
 import com.hp.hpl.jena.sparql.expr.ExprList;
 import com.hp.hpl.jena.sparql.procedure.ProcEval;
 import com.hp.hpl.jena.sparql.procedure.Procedure;
-
-import com.hp.hpl.jena.query.QueryExecException;
 
 /**
  * Turn an Op expression into an execution of QueryIterators.
@@ -42,11 +45,10 @@ import com.hp.hpl.jena.query.QueryExecException;
 
 public class OpCompiler
 {
-    // Maker of OpCompilers.
-    public interface Factory { OpCompiler create(ExecutionContext execCxt) ; }
+    // Should be called "OpExecute" or some such and s/compile/execute/g
     
     // Set this to a different factory implementation to have a different OpCompiler.  
-    private static Factory stdFactory = new Factory(){
+    protected static final OpCompilerFactory stdFactory = new OpCompilerFactory(){
         public OpCompiler create(ExecutionContext execCxt)
         {
             return new OpCompiler(execCxt) ;
@@ -56,7 +58,7 @@ public class OpCompiler
     
     private static OpCompiler createOpCompiler(ExecutionContext execCxt)
     {
-        Factory factory = (Factory)execCxt.getContext().get(ARQConstants.sysOpCompilerFactory) ;
+        OpCompilerFactory factory = execCxt.getExecutor() ;
         if ( factory == null )
             factory = stdFactory ;
         if ( factory == null )
@@ -68,7 +70,7 @@ public class OpCompiler
     
     static QueryIterator compile(Op op, ExecutionContext execCxt)
     {
-        return compile(op, root(execCxt), execCxt) ;
+        return compile(op, createRootQueryIterator(execCxt), execCxt) ;
     }
     
     // Public interface is via QC.compile.
@@ -408,13 +410,13 @@ public class OpCompiler
         return qIter ;
     }
 
-    protected static QueryIterator root(ExecutionContext execCxt)
+    protected static QueryIterator createRootQueryIterator(ExecutionContext execCxt)
     {
         return QueryIterRoot.create(execCxt) ;
     }
 
     protected QueryIterator root()
-    { return root(execCxt) ; }
+    { return createRootQueryIterator(execCxt) ; }
 }
 
 /*

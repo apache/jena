@@ -13,6 +13,7 @@ import com.hp.hpl.jena.sparql.core.Substitute;
 import com.hp.hpl.jena.sparql.engine.*;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIteratorCheck;
+import com.hp.hpl.jena.sparql.engine.main.QC;
 import com.hp.hpl.jena.sparql.util.Context;
 
 import com.hp.hpl.jena.query.Query;
@@ -45,7 +46,7 @@ public class QueryEngineRef extends QueryEngineBase
         if ( binding.vars().hasNext() )
             op = Substitute.substitute(op, binding) ;
 
-        ExecutionContext execCxt = new ExecutionContext(context, dsg.getDefaultGraph(), dsg) ;
+        ExecutionContext execCxt = new ExecutionContext(context, dsg.getDefaultGraph(), dsg, QC.getFactory(context)) ;
         Evaluator eval = EvaluatorFactory.create(execCxt) ;
         Table table = Eval.eval(eval, op) ;
         QueryIterator qIter = table.iterator(execCxt) ;

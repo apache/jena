@@ -12,6 +12,7 @@ import java.util.Iterator;
 
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.sparql.core.DatasetGraph;
+import com.hp.hpl.jena.sparql.engine.main.OpCompilerFactory;
 import com.hp.hpl.jena.sparql.function.FunctionEnv;
 import com.hp.hpl.jena.sparql.util.Context;
 
@@ -27,29 +28,38 @@ public class ExecutionContext implements FunctionEnv
     // Tracking all iterators leads to a build up of state,
     private Collection allIterators     = null ; 
     private Graph activeGraph           = null ;
+    private OpCompilerFactory executor  = null ;
 
-    /** Clone and change active graph - shares tracking */
-    public ExecutionContext(ExecutionContext other, Graph activeGraph) 
+    /** Clone */
+    public ExecutionContext(ExecutionContext other) 
     {
         this.context = other.context ;
         this.dataset = other.dataset ;
         this.openIterators = other.openIterators ;
         this.allIterators = other.allIterators ;
-        this.activeGraph = activeGraph ;
+        this.activeGraph = other.activeGraph ;
+        this.executor = other.executor ;
+    }
+    
+    /** Clone and change active graph - shares tracking */
+    public ExecutionContext(ExecutionContext other, Graph activeGraph) 
+    {
+        this(other) ; 
+        this.activeGraph = activeGraph ; 
     }
 
-    public ExecutionContext(Context params, Graph activeGraph, DatasetGraph dataset)
+    public ExecutionContext(Context params, Graph activeGraph, DatasetGraph dataset, OpCompilerFactory factory)
     {
         this.context = params ;
         this.dataset = dataset ;
-        openIterators = new ArrayList() ;
+        this.openIterators = new ArrayList() ;
         if ( TrackAllIterators )
-            allIterators  = new ArrayList() ;
+            this.allIterators  = new ArrayList() ;
         this.activeGraph = activeGraph ;
+        this.executor = factory ;
     }
 
     public Context getContext()       { return context ; }
-    public DatasetGraph getDataset()  { return dataset ; }
     public void openIterator(QueryIterator qIter)
     {
         openIterators.add(qIter) ;
@@ -68,13 +78,37 @@ public class ExecutionContext implements FunctionEnv
         if ( allIterators == null ) return null ;
         return allIterators.iterator() ;
     }
-
     
+    public OpCompilerFactory getExecutor()
+    {
+        return executor ;
+    }
+    
+    /** Setter for the policy for algebra expression evaluation - use with care */
+    public void setExecutor(OpCompilerFactory executor)
+    {
+        this.executor = executor ;
+    }
+
+    public DatasetGraph getDataset()  { return dataset ; }
+
+//    /** Setter for the dataset - use with care */
+//    public void setDataset(DatasetGraph dataset)
+//    {
+//        this.dataset = dataset ;
+//    }
+
     /** Return the active graph (the one matching is against at this point in the query.
      * May be null if unknown or not applicable - for example, doing quad store access or
      * when sorting  
      */ 
     public Graph getActiveGraph()     { return activeGraph ; }
+
+//    /** Setter for the active graph - use with care */
+//    public void setActiveGraph(Graph activeGraph)
+//    {
+//        this.activeGraph = activeGraph ;
+//    }
 }
 
 /*

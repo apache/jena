@@ -29,7 +29,7 @@ public class Context
     { }
     
     /** Create a context and initialize it with a copy of the named values of another one.
-     *  Shallow copy: the values them selves are not copied
+     *  Shallow copy: the values themselves are not copied
      */ 
     public Context(Context cxt)
     { setAll(cxt) ; }
