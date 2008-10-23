@@ -147,6 +147,7 @@ public class OpCompilerTDB extends OpCompiler
         }
         
         // Solve without reordering again by labeling it. 
+        // But if this is an OpSequence, it does call in to reordering again.  
         op = Transformer.transform(labelBGP, op) ;
         
         return QC.compile(op, peek, execCxt) ;

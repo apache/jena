@@ -51,7 +51,7 @@ public class TDB
      * for logger "com.hp.hpl.jena.tdb.exec"
      * e.g. log4j.properties -- log4j.logger.com.hp.hpl.jena.tdb.exec=INFO
      */
-    public static final Symbol symLogExec              = SystemTDB.allocSymbol("logExec") ;
+    public static final Symbol symLogExec           = SystemTDB.allocSymbol("logExec") ;
 
     /** Set or unset execution logging - logging is to logger "com.hp.hpl.jena.tdb.exec" at level INFO */
     public static void setExecutionLogging(boolean state)
@@ -60,7 +60,7 @@ public class TDB
     }
     
     /** Log duplicates during loading */
-    public static final Symbol symLogDuplicates        = SystemTDB.allocSymbol("logDuplicates") ;
+    public static final Symbol symLogDuplicates     = SystemTDB.allocSymbol("logDuplicates") ;
     
     /** File mode : one of "direct", "mapped", "default" */ 
     public static final Symbol symFileMode          = SystemTDB.allocSymbol("fileMode") ;

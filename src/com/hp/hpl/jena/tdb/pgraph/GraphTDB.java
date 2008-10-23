@@ -105,17 +105,15 @@ public class GraphTDB extends GraphBase implements Sync, Reorderable
         NodeId pId = storeNode(p) ;
         NodeId oId = storeNode(o) ;
         
-        if ( ! indexSPO.add(sId, pId, oId) )
+        if ( indexSPO != null )
         {
-            if ( TDB.getContext().isTrue(symLogDuplicates) )
+            if ( ! indexSPO.add(sId, pId, oId) )
             {
-                System.out.print("Duplicate: (") ;
-                System.out.print(FmtUtils.stringForTriple(t, this.getPrefixMapping())) ;
-                System.out.println(")") ;
+                duplicate(t, sId, pId, oId) ;
+                return ;
             }
-            return ;
         }
-
+        
         if ( indexPOS != null )
         {
             if ( ! indexPOS.add(sId, pId, oId) )
@@ -126,6 +124,15 @@ public class GraphTDB extends GraphBase implements Sync, Reorderable
         {
             if ( ! indexOSP.add(sId, pId, oId) )
                 throw new TDBException("OSP duplicate: "+t) ;
+        }
+    }
+
+    private void duplicate(Triple t, NodeId id, NodeId id2, NodeId id3)
+    {
+        if ( TDB.getContext().isTrue(symLogDuplicates) && log.isInfoEnabled() )
+        {
+            String $ = FmtUtils.stringForTriple(t, this.getPrefixMapping()) ;
+            log.info("Duplicate: ("+$+")") ;
         }
     }
 

@@ -22,13 +22,16 @@ import com.hp.hpl.jena.graph.Triple;
 
 import com.hp.hpl.jena.sparql.sse.Item;
 import com.hp.hpl.jena.sparql.util.StringUtils;
+import com.hp.hpl.jena.sparql.util.Symbol;
 import com.hp.hpl.jena.sparql.util.Timer;
 import com.hp.hpl.jena.sparql.util.Utils;
 import com.hp.hpl.jena.sparql.util.graph.GraphListenerBase;
 import com.hp.hpl.jena.sparql.util.graph.GraphLoadMonitor;
 
+import com.hp.hpl.jena.tdb.TDB;
 import com.hp.hpl.jena.tdb.index.TripleIndex;
 import com.hp.hpl.jena.tdb.solver.stats.StatsWriter;
+import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
 /** To directly load data, including manipulating the indexes at a quite low level for efficiency.
  * Not efficent for small, incremental additions to a graph.  
@@ -37,6 +40,9 @@ import com.hp.hpl.jena.tdb.solver.stats.StatsWriter;
 public class BulkLoader
 {
     private GraphTDB graph ;
+    private Symbol symTesting = SystemTDB.allocSymbol("testing") ;
+    
+    private boolean testingSpecial = false ;
     private boolean showProgress ;
     
     private boolean doInParallel = false ;
@@ -63,6 +69,7 @@ public class BulkLoader
         this.doInParallel = doInParallel ;
         this.doIncremental = doIncremental ;
         this.generateStats = generateStats ;
+        this.testingSpecial = TDB.getContext().isTrue(symTesting) ;
     }
     
     public void load(List<String> urls)
@@ -78,6 +85,11 @@ public class BulkLoader
             println("** Load empty graph") ;
             // SPO only.
             dropSecondaryIndexes() ;
+            if ( testingSpecial )
+            {
+                println("** Load node table only") ;
+                graph.setIndexSPO(null) ;
+            }
         }
         else
         {
@@ -105,6 +117,12 @@ public class BulkLoader
         // Especially the node table.
         graph.sync(true) ;
         // Close other resourses (node table).
+        
+        if ( testingSpecial )
+        {
+            graph.close() ;
+            return ;
+        }
         
         if ( rebuildIndexes )
         {

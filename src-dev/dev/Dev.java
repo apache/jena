@@ -8,13 +8,13 @@ package dev;
 
 public class Dev
 {
-   
-    
     // ---- Release
     //   ?? ARQ Optimizer and controlling optimizations per graph (esp FilterPlacement).
-    // Double optimization: (filter ...) => (sequence ...) => calls (filter) again
+    // ** Double optimization: (filter ...) => (sequence ...) => calls (filter) again
+    //    Pair OpCompilerFcatory and an Op together.
     // Optimizer documentation
     // Final testing
+    // Try a load with a null sink SPO to test just the node table speed.  
 
     // ---- Reopenable BlockMgrs (and the object file?) 
     
