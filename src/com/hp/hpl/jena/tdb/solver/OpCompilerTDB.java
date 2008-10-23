@@ -11,7 +11,6 @@ import static com.hp.hpl.jena.tdb.TDB.logExec;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.Transform;
 import com.hp.hpl.jena.sparql.algebra.TransformCopy;
-import com.hp.hpl.jena.sparql.algebra.Transformer;
 import com.hp.hpl.jena.sparql.algebra.op.OpBGP;
 import com.hp.hpl.jena.sparql.algebra.op.OpFilter;
 import com.hp.hpl.jena.sparql.algebra.op.OpLabel;
@@ -22,6 +21,7 @@ import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterPeek;
 import com.hp.hpl.jena.sparql.engine.main.OpCompiler;
+import com.hp.hpl.jena.sparql.engine.main.OpCompilerFactory;
 import com.hp.hpl.jena.sparql.engine.main.QC;
 import com.hp.hpl.jena.sparql.expr.ExprList;
 import com.hp.hpl.jena.tdb.TDB;
@@ -31,7 +31,7 @@ import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
 
 public class OpCompilerTDB extends OpCompiler
 {
-    public static Factory altFactory = new Factory() {
+    public static OpCompilerFactory altFactory = new OpCompilerFactory() {
 
         @Override
         public OpCompiler create(ExecutionContext execCxt)
@@ -39,7 +39,8 @@ public class OpCompilerTDB extends OpCompiler
             return new OpCompilerTDB(execCxt) ;
         }} ;
     
-        // ---- Stop a BGP being reordered, again. 
+
+    // ---- Stop a BGP being reordered, again. 
     static String executeNow = "DirectTDB" ;
     private static Transform labelBGP = new TransformCopy()
     {
@@ -53,21 +54,13 @@ public class OpCompilerTDB extends OpCompiler
     private boolean isForTDB ;
     
     // A new compile object is created for each op compilation.
-    // So the execCxt is changing as we go through the query-compile-excute process  
+    // So the execCxt is changing as we go through the query-compile-execute process  
     public OpCompilerTDB(ExecutionContext execCxt)
     {
         super(execCxt) ;
         isForTDB = (execCxt.getActiveGraph() instanceof GraphTDB) ;
     }
 
-//    // For reference, this is the standard BGP step. 
-//    @Override
-//    public QueryIterator compile(OpBGP opBGP, QueryIterator input)
-//    {
-//        BasicPattern pattern = opBGP.getPattern() ;
-//        return StageBuilder.compile(pattern, input, execCxt) ;
-//    }
-    
     @Override
     public QueryIterator compile(OpBGP opBGP, QueryIterator input)
     {
@@ -146,11 +139,14 @@ public class OpCompilerTDB extends OpCompiler
             logExec.info(x) ;
         }
         
-        // Solve without reordering again by labeling it. 
-        // But if this is an OpSequence, it does call in to reordering again.  
-        op = Transformer.transform(labelBGP, op) ;
+        ExecutionContext ec2 = new ExecutionContext(execCxt) ;
+        // No - change to one that catches BGP execution and (plainly) executes it. 
+        ec2.setExecutor(OpCompiler.stdFactory) ;
         
-        return QC.compile(op, peek, execCxt) ;
+        // Solve without going through this factory again.
+        // There would be issues of nested (graph ...)
+        // but this is only a (filter (bgp...)) at most
+        return QC.compile(op, peek, ec2) ;
     }
 }
 
