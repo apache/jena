@@ -228,13 +228,6 @@ public class GraphTDB extends GraphBase implements Sync, Reorderable
         if ( obj == NodeId.NodeDoesNotExist )
             return new com.hp.hpl.jena.util.iterator.NullIterator() ;
         
-//        if ( subj < 0 && subj != NodeTable.NodeNotConcrete )
-//            throw new JenaException("Subject error") ;
-//        if ( pred < 0 && pred != NodeTable.NodeNotConcrete )
-//            throw new JenaException("Predicate error") ;
-//        if ( obj < 0 && obj != NodeTable.NodeNotConcrete )
-//            throw new JenaException("Object error") ;
-
         boolean s_set = ( subj != NodeId.NodeIdAny ) ;
         boolean p_set = ( pred != NodeId.NodeIdAny ) ;
         boolean o_set = ( obj  != NodeId.NodeIdAny ) ;
@@ -270,7 +263,7 @@ public class GraphTDB extends GraphBase implements Sync, Reorderable
         if ( indexSPO != null )
         {
             int w = indexSPO.weight(subj, pred, obj) ;
-            if ( w > 0 )
+            if ( w > indexNumSlots )
             {
                 indexNumSlots = w ;
                 index = indexSPO ; 
@@ -300,7 +293,7 @@ public class GraphTDB extends GraphBase implements Sync, Reorderable
         Iterator<Tuple<NodeId>> iter = null ;
         
         if ( index == null )
-            // No index for a 
+            // No index at all.  Scan.
             iter = indexSPO.all() ;
         else 
             iter = index.find(subj, pred, obj) ;
