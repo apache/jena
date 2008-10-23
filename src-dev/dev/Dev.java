@@ -14,7 +14,6 @@ public class Dev
     // Renaming (in ARQ) for OpCompiler
     // Optimizer documentation
     // Final testing
-    // CmdTDB : --info
 
     // ---- Reopenable BlockMgrs (and the object file?) 
     

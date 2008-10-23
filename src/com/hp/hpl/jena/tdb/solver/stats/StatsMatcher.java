@@ -35,6 +35,7 @@ import com.hp.hpl.jena.sparql.sse.Item;
 import com.hp.hpl.jena.sparql.sse.ItemException;
 import com.hp.hpl.jena.sparql.sse.ItemList;
 import com.hp.hpl.jena.sparql.sse.SSE;
+import com.hp.hpl.jena.sparql.util.ALog;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
 import com.hp.hpl.jena.sparql.util.PrintUtils;
 import com.hp.hpl.jena.sparql.util.Printable;
@@ -120,6 +121,11 @@ public final class StatsMatcher
     {
         try {
             Item stats = SSE.readFile(filename) ;
+            if ( stats.isNil() )
+            {
+                ALog.warn(this, "Empty stats file: "+filename) ;
+                return ;
+            }
             if ( !stats.isTagged(STATS) )
                 throw new TDBException("Not a stats file: "+filename) ;
             init(stats) ;
@@ -128,10 +134,9 @@ public final class StatsMatcher
             throw ex ;
         }
     }
+    
     public StatsMatcher(Item stats)
     { init(stats) ; }
-    
-    
     
     private void init(Item stats)
     {
