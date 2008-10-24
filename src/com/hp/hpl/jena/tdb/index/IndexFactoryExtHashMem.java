@@ -6,11 +6,10 @@
 
 package com.hp.hpl.jena.tdb.index;
 
-import com.hp.hpl.jena.tdb.TDBException;
-import com.hp.hpl.jena.tdb.base.block.BlockMgr;
-import com.hp.hpl.jena.tdb.base.block.BlockMgrFactory;
 import com.hp.hpl.jena.tdb.base.file.Location;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
+import com.hp.hpl.jena.tdb.index.ext.ExtHash;
+import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
 /** Index factory for extendible hash tables in memory (for testing).
  *  Only an index, not a rnage index
@@ -25,13 +24,7 @@ public class IndexFactoryExtHashMem implements IndexFactory
     @Override
     public Index createIndex(Location location, String name, RecordFactory recordFactory)
     {
-        throw new  TDBException("Not implemented") ;
-        //return new ExtHash
-    }
-    
-    protected BlockMgr createBlockMgr(String filename, int blockSize)
-    {
-        return BlockMgrFactory.createFile(filename, blockSize) ;
+        return ExtHash.createMem(recordFactory, SystemTDB.BlockSize) ;
     }
 }
 

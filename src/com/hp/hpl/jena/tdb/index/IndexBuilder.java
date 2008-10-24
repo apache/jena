@@ -23,7 +23,7 @@ public class IndexBuilder
     
     public static IndexBuilder getBTree()       { return createIndexBuilder(IndexType.BTree) ; }
     public static IndexBuilder getBPlusTree()   { return createIndexBuilder(IndexType.BPlusTree) ; }
-    public static IndexBuilder getExtHash()       { return createIndexBuilder(IndexType.ExtHash) ; }
+    public static IndexBuilder getExtHash()     { return createIndexBuilder(IndexType.ExtHash) ; }
     
     private static IndexBuilder builderMem = null ;
     
@@ -53,7 +53,7 @@ public class IndexBuilder
             }
             case ExtHash:
             {
-                // Range is B+Tree 
+                // Index files are Extendible hash indexes; range indexes are is B+Tree 
                 IndexFactoryExtHashMem idxFactory = new IndexFactoryExtHashMem() ;
                 IndexFactoryBPlusTreeMem idxRangeFactory = new IndexFactoryBPlusTreeMem(SystemTDB.OrderMem) ;
                 return new IndexBuilder(idxFactory, idxRangeFactory) ;
@@ -79,7 +79,7 @@ public class IndexBuilder
             case ExtHash:
             {
                 IndexFactoryExtHash idxFactory = new IndexFactoryExtHash(SystemTDB.BlockSize) ;
-                IndexFactoryBTree idx = new IndexFactoryBTree(SystemTDB.BlockSize) ;
+                IndexFactoryBPlusTree idx = new IndexFactoryBPlusTree(SystemTDB.BlockSize) ;
                 return new IndexBuilder(idxFactory, idx) ;
             }
         }

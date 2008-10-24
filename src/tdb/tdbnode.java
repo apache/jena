@@ -22,7 +22,7 @@ public class tdbnode extends CmdTDB
     static public void main(String... argv)
     { 
         CmdUtils.setLog4j() ;
-        new tdbnode(argv).main() ;
+        new tdbnode(argv).mainRun() ;
     }
 
     protected tdbnode(String[] argv)

@@ -38,7 +38,7 @@ public class tdbcheck extends CmdARQ
         RDFReaderFImpl.setBaseReaderClassName("N-TRIPLES", bulkLoaderClass) ;
         RDFReaderFImpl.setBaseReaderClassName("N-TRIPLE", bulkLoaderClass) ;
         // Checking done in graph.
-        new tdbcheck(argv).main() ;
+        new tdbcheck(argv).mainRun() ;
     }
 
     protected tdbcheck(String[] argv)

@@ -24,7 +24,7 @@ public class tdbexamine extends CmdTDB
 
     public static void main (String [] argv)
     {
-        new tdbexamine(argv).main() ;
+        new tdbexamine(argv).mainRun() ;
     }
     
     public tdbexamine(String[] argv)

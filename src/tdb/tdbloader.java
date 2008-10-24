@@ -30,7 +30,7 @@ public class tdbloader extends CmdTDB
     static public void main(String... argv)
     { 
         CmdUtils.setLog4j() ;
-        new tdbloader(argv).main() ;
+        new tdbloader(argv).mainRun() ;
     }
 
     protected tdbloader(String[] argv)

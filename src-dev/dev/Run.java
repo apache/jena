@@ -7,21 +7,26 @@
 package dev;
 
 import java.io.IOException;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
+import lib.Bytes;
 import lib.FileOps;
 import lib.Pair;
 import lib.cache.CacheNG;
 import arq.cmd.CmdUtils;
 
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.query.*;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.RSIterator;
+
+import com.hp.hpl.jena.util.FileManager;
+
+import com.hp.hpl.jena.graph.Graph;
+import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.graph.Triple;
+
 import com.hp.hpl.jena.sparql.algebra.Algebra;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.Transformer;
@@ -29,21 +34,26 @@ import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.main.StageGenerator;
 import com.hp.hpl.jena.sparql.engine.optimizer.StageGenOptimizedBasicPattern;
 import com.hp.hpl.jena.sparql.sse.SSE;
+
+import com.hp.hpl.jena.query.*;
+
 import com.hp.hpl.jena.tdb.TDB;
 import com.hp.hpl.jena.tdb.TDBFactory;
 import com.hp.hpl.jena.tdb.base.block.BlockMgr;
 import com.hp.hpl.jena.tdb.base.block.BlockMgrFactory;
 import com.hp.hpl.jena.tdb.base.buffer.RecordBuffer;
 import com.hp.hpl.jena.tdb.base.file.Location;
+import com.hp.hpl.jena.tdb.base.record.Record;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 import com.hp.hpl.jena.tdb.base.recordfile.RecordBufferPage;
 import com.hp.hpl.jena.tdb.base.recordfile.RecordBufferPageMgr;
+import com.hp.hpl.jena.tdb.index.Index;
+import com.hp.hpl.jena.tdb.index.IndexFactoryExtHash;
 import com.hp.hpl.jena.tdb.pgraph.GraphTDB;
 import com.hp.hpl.jena.tdb.solver.StageGeneratorGeneric;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderLib;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
 import com.hp.hpl.jena.tdb.sys.SystemTDB;
-import com.hp.hpl.jena.util.FileManager;
 
 import dev.opt.Reorganise;
 import dev.opt.Scope;
@@ -64,6 +74,7 @@ public class Run
  
     public static void main(String ... args) throws IOException
     {
+        extHash() ; 
         
         String[] a = { "--set=tdb:logExec=true", "--file=Q.rq" } ;
         tdb.tdbquery.main(a) ;
@@ -115,6 +126,31 @@ public class Run
     }
     
  
+    private static void extHash()
+    {
+        IndexFactoryExtHash f = new IndexFactoryExtHash(8*1024) ;
+        Location loc = new Location("tmp") ;
+        RecordFactory rf = new RecordFactory(4,8) ;
+        Index idx = f.createIndex(loc, "hash", rf) ;
+        byte[] k = Bytes.packInt(12) ;
+        byte[] v = Bytes.packLong(0x1234567812345678L) ;
+        Record r = rf.create(k, v) ;
+        idx.add(r) ;
+        idx.close();
+        // ---
+        idx = f.createIndex(loc, "hash", rf) ;
+        
+        System.out.println("----") ;
+        for ( Iterator<Record> iter = idx.iterator() ; iter.hasNext() ; )
+        {
+            Record r2 = iter.next() ;
+            System.out.println(r2) ;
+        }
+        System.out.println("----") ;
+        System.exit(0) ;
+    }
+
+
     private static void memOpt()
     {
         if ( true )

@@ -21,7 +21,7 @@ public class tdbstats extends CmdTDB
     static public void main(String... argv)
     { 
         CmdUtils.setLog4j() ;
-        new tdbstats(argv).main() ;
+        new tdbstats(argv).mainRun() ;
     }
 
     protected tdbstats(String[] argv)

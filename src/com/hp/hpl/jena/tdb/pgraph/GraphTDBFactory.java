@@ -35,6 +35,12 @@ public class GraphTDBFactory
     { 
         if ( location == null )
             throw new TDBException("Location is null") ;
+
+        if ( location.exists(Names.indexNode2Id, Names.extHashExt) )
+        {
+            log.info("Existing extendible hash index for nodes found - using ExtHash/B+Tree indexing") ;
+            return create(IndexBuilder.getExtHash(), location) ;
+        }
         
         if ( location.exists(Names.indexSPO, Names.btExt) )
         {

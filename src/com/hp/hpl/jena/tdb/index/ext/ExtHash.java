@@ -346,9 +346,12 @@ public class ExtHash implements Index
         return sessionCounter ;
     }
 
-    //@Override
+    @Override
     public void close()
-    {}
+    {
+        hashBucketMgr.getBlockMgr().close() ;
+        dictionaryFile.close() ;
+    }
 
     // =====================
     // Insert

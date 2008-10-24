@@ -107,11 +107,13 @@ public class Location
         return f.exists() ;
     }
 
+    /** Return the name of the file relative to this location */ 
     public String getPath(String filename)
     {
         return getPath(filename, null) ;
     }
     
+    /** Return the name of the file, and extension, relative to this location */ 
     public String getPath(String filename, String ext)
     {
         check(filename, ext) ;

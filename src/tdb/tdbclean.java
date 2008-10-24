@@ -15,7 +15,7 @@ public class tdbclean extends CmdTDB
     static public void main(String... argv)
     { 
         CmdUtils.setLog4j() ;
-        new tdbclean(argv).main() ;
+        new tdbclean(argv).mainRun() ;
     }
 
     protected tdbclean(String[] argv)

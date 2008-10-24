@@ -8,26 +8,30 @@ package com.hp.hpl.jena.tdb.sys;
 
 public class Names
 {
-    public static final String indexSPO     = "SPO" ;
-    public static final String indexPOS     = "POS" ;
-    public static final String indexOSP     = "OSP" ;
+    public static final String indexSPO         = "SPO" ;
+    public static final String indexPOS         = "POS" ;
+    public static final String indexOSP         = "OSP" ;
     
     /** B+Trees - nodes file and records file */
-    public static final String bptExt1      = "idn" ;
-    public static final String bptExt2      = "dat" ;
+    public static final String bptExt1          = "idn" ;
+    public static final String bptExt2          = "dat" ;
 
     /** BTrees - single file per tree */
-    public static final String btExt        = "idx" ;
+    public static final String btExt            = "idx" ;
+    
+    /** ExtHash - dictionary file*/
+    public static final String extHashExt       = "exh" ;
+    public static final String extHashBucketExt = "dat" ;
     
     /** Node file */
-    public static final String nodesData    = "nodes.dat" ;
-    public static String indexNode2Id       = "node2id";
-    public static String indexId2Node       = "id2node";
+    public static final String nodesData        = "nodes.dat" ;
+    public static final String indexNode2Id     = "node2id";
+    public static final String indexId2Node     = "id2node";
     
     /** Optimizer / stats */
-    public static String optStats           = "stats.opt";
-    public static String optDefault         = "fixed.opt";      // Currently, it's just the presence of this file that matters.
-    public static String optNone            = "none.opt"; 
+    public static final String optStats         = "stats.opt";
+    public static final String optDefault       = "fixed.opt";      // Currently, it's just the presence of this file that matters.
+    public static final String optNone          = "none.opt"; 
 }
 
 /*

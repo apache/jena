@@ -20,7 +20,7 @@ public class tdbdump extends CmdTDB
     static public void main(String... argv)
     { 
         CmdUtils.setLog4j() ;
-        new tdbdump(argv).main() ;
+        new tdbdump(argv).mainRun() ;
     }
 
     protected tdbdump(String[] argv)

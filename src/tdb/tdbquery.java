@@ -20,7 +20,7 @@ public class tdbquery extends arq.query
     
     public static void main(String [] argv)
     {
-        new tdbquery(argv).main() ;
+        new tdbquery(argv).mainRun() ;
     }
     
     public tdbquery(String[] argv)
