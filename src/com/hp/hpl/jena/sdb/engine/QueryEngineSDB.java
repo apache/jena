@@ -96,7 +96,7 @@ public class QueryEngineSDB extends QueryEngineBase
             // Not top - invoke the main query engine as a framework to
             // put all the sub-opSQL parts together.
             QueryIterator input = new QueryIterSingleton(binding, execCxt) ;
-            QueryIterator qIter = QC.compile(op, input, execCxt) ;  // OpCompiler from main query engine.
+            QueryIterator qIter = QC.execute(op, input, execCxt) ;  // OpExecutor from main query engine.
             qIter = QueryIteratorCheck.check(qIter, execCxt) ;
             return qIter ;
           }
