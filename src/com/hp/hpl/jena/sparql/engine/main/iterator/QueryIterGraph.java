@@ -179,7 +179,7 @@ public class QueryIterGraph extends QueryIterRepeatApply
             
             ExecutionContext cxt2 = new ExecutionContext(outerCxt, g) ;
             QueryIterator subInput = new QueryIterSingleton(binding, cxt2) ;
-            return QC.compile(op, subInput, cxt2) ;
+            return QC.execute(op, subInput, cxt2) ;
         }
     }
 }

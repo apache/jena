@@ -165,8 +165,8 @@ public class ARQConstants
      * */
     public static final Symbol sysCurrentQuery  = Symbol.create(systemVarNS+"query") ;
 
-    /** Context key for the OpCompiler to be used */
-    public static final Symbol sysOpCompilerFactory  = Symbol.create(systemVarNS+"opCompilerFactory") ;
+    /** Context key for the OpExecutor to be used */
+    public static final Symbol sysOpExecutorFactory  = Symbol.create(systemVarNS+"opExecutorFactory") ;
     
     /** Context key for the dataset for the current query execution 
      * May be null if was not created from a query string.

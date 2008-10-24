@@ -137,7 +137,7 @@ public class labelSearch implements PropertyFunction
         }        
         
         // Use the default, optimizing query engine.
-        return QC.compile(filter, input, execCxt) ;
+        return QC.execute(filter, input, execCxt) ;
     }
 
     
@@ -161,7 +161,7 @@ public class labelSearch implements PropertyFunction
         // The better design is to build the Op structure programmatically,
         Op op = Algebra.compile(elementGroup) ;
         op = Algebra.optimize(op, execCxt.getContext()) ;
-        return QC.compile(op, input, execCxt) ;
+        return QC.execute(op, input, execCxt) ;
     }
     
     static int hiddenVariableCount = 0 ; 

@@ -39,7 +39,7 @@ public class QueryEngineMain extends QueryEngineBase
     {
         ExecutionContext execCxt = new ExecutionContext(context, dsg.getDefaultGraph(), dsg, QC.getFactory(context)) ;
         QueryIterator qIter1 = QueryIterRoot.create(input, execCxt) ;
-        QueryIterator qIter = QC.compile(op, qIter1, execCxt) ;
+        QueryIterator qIter = QC.execute(op, qIter1, execCxt) ;
         // Wrap with something to check for closed iterators.
         qIter = QueryIteratorCheck.check(qIter, execCxt) ;
         return qIter ;

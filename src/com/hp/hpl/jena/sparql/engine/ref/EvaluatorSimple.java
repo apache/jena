@@ -47,7 +47,7 @@ public class EvaluatorSimple implements Evaluator
 
     public Table basicPattern(BasicPattern pattern)
     {
-        QueryIterator qIter = StageBuilder.compile(pattern, QueryIterRoot.create(execCxt), execCxt) ;
+        QueryIterator qIter = StageBuilder.execute(pattern, QueryIterRoot.create(execCxt), execCxt) ;
         return TableFactory.create(qIter) ;
     }
 

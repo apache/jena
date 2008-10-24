@@ -36,84 +36,82 @@ import com.hp.hpl.jena.sparql.procedure.Procedure;
  * Does not consider optimizing the algebra expression (that should happen
  * elsewhere). BGPs are still subject to StageBuilding during iterator
  * execution. During execution, when a substitution into an algebra expression
- * happens (in other words, a streaming opertation (index-join-like), there is a
- * call into the compiler each time so it doe snot just happen once before a
+ * happens (in other words, a streaming operation, index-join-like), there is a
+ * call into the executor each time so it does not just happen once before a
  * query starts.
  * 
  * @author Andy Seaborne
  */
 
-public class OpCompiler
+public class OpExecutor
 {
-    // Should be called "OpExecute" or some such and s/compile/execute/g
-    
-    // Set this to a different factory implementation to have a different OpCompiler.  
-    protected static final OpCompilerFactory stdFactory = new OpCompilerFactory(){
-        public OpCompiler create(ExecutionContext execCxt)
+    // Set this to a different factory implementation to have a different OpExecutor.  
+    protected static final OpExecutorFactory stdFactory = new OpExecutorFactory(){
+        public OpExecutor create(ExecutionContext execCxt)
         {
-            return new OpCompiler(execCxt) ;
+            return new OpExecutor(execCxt) ;
         }} ;  
 //    public static Factory factory = stdFactory ; 
 
     
-    private static OpCompiler createOpCompiler(ExecutionContext execCxt)
+    private static OpExecutor createOpExecutor(ExecutionContext execCxt)
     {
-        OpCompilerFactory factory = execCxt.getExecutor() ;
+        OpExecutorFactory factory = execCxt.getExecutor() ;
         if ( factory == null )
             factory = stdFactory ;
         if ( factory == null )
-            return new OpCompiler(execCxt) ; 
+            return new OpExecutor(execCxt) ; 
         return factory.create(execCxt) ;
     }
     
     // -------
     
-    static QueryIterator compile(Op op, ExecutionContext execCxt)
+    static QueryIterator execute(Op op, ExecutionContext execCxt)
     {
-        return compile(op, createRootQueryIterator(execCxt), execCxt) ;
+        return execute(op, createRootQueryIterator(execCxt), execCxt) ;
     }
     
-    // Public interface is via QC.compile.
-    static QueryIterator compile(Op op, QueryIterator qIter, ExecutionContext execCxt)
+    // Public interface is via QC.execute.
+    static QueryIterator execute(Op op, QueryIterator qIter, ExecutionContext execCxt)
     {
-        OpCompiler compiler = createOpCompiler(execCxt) ;
-        QueryIterator q = compiler.compileOp(op, qIter) ;
+        OpExecutor exec = createOpExecutor(execCxt) ;
+        QueryIterator q = exec.executeOp(op, qIter) ;
         return q ;
     }
 
     // -------- The object starts here --------
     
     protected ExecutionContext execCxt ;
-    protected CompilerDispatch dispatcher = null ;
+    protected ExecutionDispatch dispatcher = null ;
 
-    protected OpCompiler(ExecutionContext execCxt)
+    protected OpExecutor(ExecutionContext execCxt)
     { 
         this.execCxt = execCxt ;
-        dispatcher = new CompilerDispatch(this) ;
+        dispatcher = new ExecutionDispatch(this) ;
     }
 
-    public QueryIterator compileOp(Op op)
+    public QueryIterator executeOp(Op op)
     {
-        return compileOp(op, null) ;
+        return executeOp(op, null) ;
     }
 
-    public QueryIterator compileOp(Op op, QueryIterator input)
+    public QueryIterator executeOp(Op op, QueryIterator input)
     {
-        return dispatcher.compile(op, input) ;
+        return dispatcher.exec(op, input) ;
     }
         
-    public QueryIterator compile(OpBGP opBGP, QueryIterator input)
+    public QueryIterator execute(OpBGP opBGP, QueryIterator input)
     {
         BasicPattern pattern = opBGP.getPattern() ;
-        return StageBuilder.compile(pattern, input, execCxt) ;
+        return StageBuilder.execute(pattern, input, execCxt) ;
     }
 
-    public QueryIterator compile(OpTriple opTriple, QueryIterator input)
+    public QueryIterator execute(OpTriple opTriple, QueryIterator input)
     {
-        return compile(opTriple.asBGP(), input) ;
+        return execute(opTriple.asBGP(), input) ;
     }
 
-    public QueryIterator compile(OpQuadPattern quadPattern, QueryIterator input)
+    public QueryIterator execute(OpQuadPattern quadPattern, QueryIterator input)
     {
         if ( false )
         {
@@ -121,35 +119,35 @@ public class OpCompiler
             {
                 // Easy case.
                 OpBGP opBGP = new OpBGP(quadPattern.getBasicPattern()) ;
-                return compile(opBGP, input) ;  
+                return execute(opBGP, input) ;  
             }
         }        
         // Turn into a OpGraph/OpBGP.
-        throw new ARQNotImplemented("compile/OpQuadPattern") ;
+        throw new ARQNotImplemented("execute/OpQuadPattern") ;
     }
 
-    public QueryIterator compile(OpPath opPath, QueryIterator input)
+    public QueryIterator execute(OpPath opPath, QueryIterator input)
     {
         return new QueryIterPath(opPath.getTriplePath(), input, execCxt) ;
     }
 
-    public QueryIterator compile(OpProcedure opProc, QueryIterator input)
+    public QueryIterator execute(OpProcedure opProc, QueryIterator input)
     {
         Procedure procedure = ProcEval.build(opProc, execCxt) ;
-        QueryIterator qIter = compileOp(opProc.getSubOp(), input) ;
+        QueryIterator qIter = executeOp(opProc.getSubOp(), input) ;
         // Delay until query starts executing.
         return new QueryIterProcedure(qIter, procedure, execCxt) ;
     }
 
-    public QueryIterator compile(OpPropFunc opPropFunc, QueryIterator input)
+    public QueryIterator execute(OpPropFunc opPropFunc, QueryIterator input)
     {
         Procedure procedure = ProcEval.build(opPropFunc.getProperty(), opPropFunc.getSubjectArgs(),opPropFunc.getObjectArgs(), execCxt) ;
-        QueryIterator qIter = compileOp(opPropFunc.getSubOp(), input) ;
+        QueryIterator qIter = executeOp(opPropFunc.getSubOp(), input) ;
         return new QueryIterProcedure(qIter, procedure, execCxt) ;
     }
 
 
-    public QueryIterator compile(OpJoin opJoin, QueryIterator input)
+    public QueryIterator execute(OpJoin opJoin, QueryIterator input)
     {
         // Look one level in for any filters with out-of-scope variables.
         boolean canDoLinear = JoinClassifier.isLinear(opJoin) ;
@@ -161,8 +159,8 @@ public class OpCompiler
         // Can't do purely indexed (e.g. a filter referencing a variable out of scope is in the way)
         // To consider: partial substitution for improved performance (but does it occur for real?)
         
-        QueryIterator left = compileOp(opJoin.getLeft(), input) ;
-        QueryIterator right = compileOp(opJoin.getRight(), root()) ;
+        QueryIterator left = executeOp(opJoin.getLeft(), input) ;
+        QueryIterator right = executeOp(opJoin.getRight(), root()) ;
         QueryIterator qIter = new QueryIterJoin(left, right, execCxt) ;
         return qIter ;
         // Worth doing anything about join(join(..))?
@@ -171,26 +169,26 @@ public class OpCompiler
     // Pass iterator from left directly into the right.
     protected QueryIterator stream(Op opLeft, Op opRight, QueryIterator input)
     {
-        QueryIterator left = compileOp(opLeft, input) ;
-        QueryIterator right = compileOp(opRight, left) ;
+        QueryIterator left = executeOp(opLeft, input) ;
+        QueryIterator right = executeOp(opRight, left) ;
         return right ;
     }
 
     // Pass iterator from one step directly into the next.
-    public QueryIterator compile(OpSequence opSequence, QueryIterator input)
+    public QueryIterator execute(OpSequence opSequence, QueryIterator input)
     {
         QueryIterator qIter = input ;
         
         for ( Iterator iter = opSequence.iterator() ; iter.hasNext() ; )
         {
             Op sub = (Op)iter.next() ;
-            qIter = compileOp(sub, qIter) ;
+            qIter = executeOp(sub, qIter) ;
         }
         
         return qIter ;
     }
     
-    public QueryIterator compile(OpLeftJoin opLeftJoin, QueryIterator input)
+    public QueryIterator execute(OpLeftJoin opLeftJoin, QueryIterator input)
     {
         ExprList exprs = opLeftJoin.getExprs() ;
         if ( exprs != null )
@@ -210,7 +208,7 @@ public class OpCompiler
             Op opRight = opLeftJoin.getRight() ;
             if (exprs != null )
                 opRight = OpFilter.filter(exprs, opRight) ;
-            QueryIterator left = compileOp(opLeft, input) ;
+            QueryIterator left = executeOp(opLeft, input) ;
             QueryIterator qIter = new QueryIterOptionalIndex(left, opRight, execCxt) ;
             return qIter ;
         }
@@ -220,13 +218,13 @@ public class OpCompiler
         // Can be expensive if RHS returns a lot.
         // To consider: partial substitution for improved performance (but does it occur for real?)
 
-        QueryIterator left = compileOp(opLeftJoin.getLeft(), input) ;
-        QueryIterator right = compileOp(opLeftJoin.getRight(), root()) ;
+        QueryIterator left = executeOp(opLeftJoin.getLeft(), input) ;
+        QueryIterator right = executeOp(opLeftJoin.getRight(), root()) ;
         QueryIterator qIter = new QueryIterLeftJoin(left, right, exprs, execCxt) ;
         return qIter ;
     }
 
-    public QueryIterator compile(OpConditional opCondition, QueryIterator input)
+    public QueryIterator execute(OpConditional opCondition, QueryIterator input)
     {
         if ( true )
             throw new ARQNotImplemented("OpCompile: OpConditional") ;
@@ -234,14 +232,14 @@ public class OpCompiler
         return null ;
     }
     
-    public QueryIterator compile(OpDiff opDiff, QueryIterator input)
+    public QueryIterator execute(OpDiff opDiff, QueryIterator input)
     { 
-        QueryIterator left = compileOp(opDiff.getLeft(), input) ;
-        QueryIterator right = compileOp(opDiff.getRight(), root()) ;
+        QueryIterator left = executeOp(opDiff.getLeft(), input) ;
+        QueryIterator right = executeOp(opDiff.getRight(), root()) ;
         return new QueryIterDiff(left, right, execCxt) ;
     }
     
-    public QueryIterator compile(OpUnion opUnion, QueryIterator input)
+    public QueryIterator execute(OpUnion opUnion, QueryIterator input)
     {
         List x = flattenUnion(opUnion) ;
         QueryIterator cIter = new QueryIterUnion(input, x, execCxt) ;
@@ -269,13 +267,13 @@ public class OpCompiler
             acc.add( opUnion.getRight() ) ;
     }
     
-    public QueryIterator compile(OpFilter opFilter, QueryIterator input)
+    public QueryIterator execute(OpFilter opFilter, QueryIterator input)
     {
         ExprList exprs = opFilter.getExprs() ;
         exprs.prepareExprs(execCxt.getContext()) ;
         
         Op base = opFilter.getSubOp() ;
-        QueryIterator qIter = compileOp(base, input) ;
+        QueryIterator qIter = executeOp(base, input) ;
 
         for ( Iterator iter = exprs.iterator() ; iter.hasNext(); )
         {
@@ -285,17 +283,17 @@ public class OpCompiler
         return qIter ;
     }
 
-    public QueryIterator compile(OpGraph opGraph, QueryIterator input)
+    public QueryIterator execute(OpGraph opGraph, QueryIterator input)
     { 
         return new QueryIterGraph(input, opGraph, execCxt) ;
     }
     
-    public QueryIterator compile(OpService opService, QueryIterator input)
+    public QueryIterator execute(OpService opService, QueryIterator input)
     {
         return new QueryIterService(input, opService, execCxt) ;
     }
     
-    public QueryIterator compile(OpDatasetNames dsNames, QueryIterator input)
+    public QueryIterator execute(OpDatasetNames dsNames, QueryIterator input)
     { 
         if ( true ) throw new ARQNotImplemented("OpDatasetNames") ;
         
@@ -304,10 +302,10 @@ public class OpCompiler
         Op left = null ; 
         Op right = OpTable.create(t) ;
         Op opJoin = OpJoin.create(left, right) ;
-        return compileOp(opJoin , input) ;    //??
+        return executeOp(opJoin , input) ;    //??
     }
 
-    public QueryIterator compile(OpTable opTable, QueryIterator input)
+    public QueryIterator execute(OpTable opTable, QueryIterator input)
     { 
 //        if ( input instanceof QueryIteratorBase )
 //        {
@@ -329,7 +327,7 @@ public class OpCompiler
         return qIter ;
     }
 
-    public QueryIterator compile(OpExt opExt, QueryIterator input)
+    public QueryIterator execute(OpExt opExt, QueryIterator input)
     { 
         try {
             QueryIterator qIter = opExt.eval(input, execCxt) ;
@@ -340,72 +338,72 @@ public class OpCompiler
         throw new QueryExecException("Encountered unsupported OpExt: "+opExt.getName()) ;
     }
 
-    public QueryIterator compile(OpLabel opLabel, QueryIterator input)
+    public QueryIterator execute(OpLabel opLabel, QueryIterator input)
     {
       if ( ! opLabel.hasSubOp() )
           return input ;
 
-      return compileOp(opLabel.getSubOp(), input) ;
+      return executeOp(opLabel.getSubOp(), input) ;
     }
 
-    public QueryIterator compile(OpNull opNull, QueryIterator input)
+    public QueryIterator execute(OpNull opNull, QueryIterator input)
     {
         // Loose the input.
         input.close() ;
         return new QueryIterNullIterator(execCxt) ;
     }
 
-    public QueryIterator compile(OpList opList, QueryIterator input)
+    public QueryIterator execute(OpList opList, QueryIterator input)
     {
-        return compileOp(opList.getSubOp(), input) ;
+        return executeOp(opList.getSubOp(), input) ;
     }
     
-    public QueryIterator compile(OpOrder opOrder, QueryIterator input)
+    public QueryIterator execute(OpOrder opOrder, QueryIterator input)
     { 
-        QueryIterator qIter = compileOp(opOrder.getSubOp(), input) ;
+        QueryIterator qIter = executeOp(opOrder.getSubOp(), input) ;
         qIter = new QueryIterSort(qIter, opOrder.getConditions(), execCxt) ;
         return qIter ;
     }
 
-    public QueryIterator compile(OpProject opProject, QueryIterator input)
+    public QueryIterator execute(OpProject opProject, QueryIterator input)
     {
-        QueryIterator  qIter = compileOp(opProject.getSubOp(), input) ;
+        QueryIterator  qIter = executeOp(opProject.getSubOp(), input) ;
         qIter = new QueryIterProject(qIter, opProject.getVars(), execCxt) ;
         return qIter ;
     }
 
-    public QueryIterator compile(OpSlice opSlice, QueryIterator input)
+    public QueryIterator execute(OpSlice opSlice, QueryIterator input)
     { 
-        QueryIterator qIter = compileOp(opSlice.getSubOp(), input) ;
+        QueryIterator qIter = executeOp(opSlice.getSubOp(), input) ;
         qIter = new QueryIterSlice(qIter, opSlice.getStart(), opSlice.getLength(), execCxt) ;
         return qIter ;
     }
     
-    public QueryIterator compile(OpGroupAgg opGroupAgg, QueryIterator input)
+    public QueryIterator execute(OpGroupAgg opGroupAgg, QueryIterator input)
     { 
-        QueryIterator qIter = compileOp(opGroupAgg.getSubOp(), input) ;
+        QueryIterator qIter = executeOp(opGroupAgg.getSubOp(), input) ;
         qIter = new QueryIterGroup(qIter, opGroupAgg.getGroupVars(), opGroupAgg.getAggregators(), execCxt) ;
         return qIter ;
     }
     
-    public QueryIterator compile(OpDistinct opDistinct, QueryIterator input)
+    public QueryIterator execute(OpDistinct opDistinct, QueryIterator input)
     {
-        QueryIterator qIter = compileOp(opDistinct.getSubOp(), input) ;
+        QueryIterator qIter = executeOp(opDistinct.getSubOp(), input) ;
         qIter = new QueryIterDistinct(qIter, execCxt) ;
         return qIter ;
     }
 
-    public QueryIterator compile(OpReduced opReduced, QueryIterator input)
+    public QueryIterator execute(OpReduced opReduced, QueryIterator input)
     {
-        QueryIterator qIter = compileOp(opReduced.getSubOp(), input) ;
+        QueryIterator qIter = executeOp(opReduced.getSubOp(), input) ;
         qIter = new QueryIterReduced(qIter, execCxt) ;
         return qIter ;
     }
 
-    public QueryIterator compile(OpAssign opAssign, QueryIterator input)
+    public QueryIterator execute(OpAssign opAssign, QueryIterator input)
     {
         // Need prepare?
-        QueryIterator qIter = compileOp(opAssign.getSubOp(), input) ;
+        QueryIterator qIter = executeOp(opAssign.getSubOp(), input) ;
         qIter = new QueryIterAssign(qIter, opAssign.getVarExprList(), execCxt) ;
         return qIter ;
     }

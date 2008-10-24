@@ -14,19 +14,19 @@ import com.hp.hpl.jena.sparql.algebra.op.*;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.util.ALog;
 
-/**  Class to provide type-safe compile() dispatch using the visitor support of Op */ 
+/**  Class to provide type-safe execution ispatch using the visitor support of Op */ 
 
-class CompilerDispatch implements OpVisitor
+class ExecutionDispatch implements OpVisitor
 {
     private Stack stack = new Stack() ;
-    private OpCompiler opCompiler ;
+    private OpExecutor opExecutor ;
     
-    CompilerDispatch(OpCompiler compiler)
+    ExecutionDispatch(OpExecutor exec)
     {
-        opCompiler = compiler ;
+        opExecutor = exec ;
     }
     
-    QueryIterator compile(Op op, QueryIterator input)
+    QueryIterator exec(Op op, QueryIterator input)
     {
         push(input) ;
         int x = stack.size() ; 
@@ -41,196 +41,196 @@ class CompilerDispatch implements OpVisitor
     public void visit(OpBGP opBGP)
     {
         QueryIterator input = pop() ;
-        QueryIterator qIter = opCompiler.compile(opBGP, input) ;
+        QueryIterator qIter = opExecutor.execute(opBGP, input) ;
         push(qIter) ;
     }
 
     public void visit(OpQuadPattern quadPattern)
     {
         QueryIterator input = pop() ;
-        QueryIterator qIter = opCompiler.compile(quadPattern, input) ;
+        QueryIterator qIter = opExecutor.execute(quadPattern, input) ;
         push(qIter) ;
     }
 
     public void visit(OpTriple opTriple)
     {
         QueryIterator input = pop() ;
-        QueryIterator qIter = opCompiler.compile(opTriple, input) ;
+        QueryIterator qIter = opExecutor.execute(opTriple, input) ;
         push(qIter) ;
     }
 
     public void visit(OpPath opPath)
     {
         QueryIterator input = pop() ;
-        QueryIterator qIter = opCompiler.compile(opPath, input) ;
+        QueryIterator qIter = opExecutor.execute(opPath, input) ;
         push(qIter) ;
     }
 
     public void visit(OpProcedure opProc)
     {
         QueryIterator input = pop() ;
-        QueryIterator qIter = opCompiler.compile(opProc, input) ;
+        QueryIterator qIter = opExecutor.execute(opProc, input) ;
         push(qIter) ;
     }
 
     public void visit(OpPropFunc opPropFunc)
     {
         QueryIterator input = pop() ;
-        QueryIterator qIter = opCompiler.compile(opPropFunc, input) ;
+        QueryIterator qIter = opExecutor.execute(opPropFunc, input) ;
         push(qIter) ;
     }
 
     public void visit(OpJoin opJoin)
     {
         QueryIterator input = pop() ;
-        QueryIterator qIter = opCompiler.compile(opJoin, input) ;
+        QueryIterator qIter = opExecutor.execute(opJoin, input) ;
         push(qIter) ;
     }
 
     public void visit(OpSequence opSequence)
     {
         QueryIterator input = pop() ;
-        QueryIterator qIter = opCompiler.compile(opSequence, input) ;
+        QueryIterator qIter = opExecutor.execute(opSequence, input) ;
         push(qIter) ;
     }
     
     public void visit(OpLeftJoin opLeftJoin)
     {
         QueryIterator input = pop() ;
-        QueryIterator qIter = opCompiler.compile(opLeftJoin, input) ;
+        QueryIterator qIter = opExecutor.execute(opLeftJoin, input) ;
         push(qIter) ;
     }
 
     public void visit(OpDiff opDiff)
     {
         QueryIterator input = pop() ;
-        QueryIterator qIter = opCompiler.compile(opDiff, input) ;
+        QueryIterator qIter = opExecutor.execute(opDiff, input) ;
         push(qIter) ;
     }
 
     public void visit(OpUnion opUnion)
     {
         QueryIterator input = pop() ;
-        QueryIterator qIter = opCompiler.compile(opUnion, input) ;
+        QueryIterator qIter = opExecutor.execute(opUnion, input) ;
         push(qIter) ;
     }
 
     public void visit(OpConditional opCondition)
     {
         QueryIterator input = pop() ;
-        QueryIterator qIter = opCompiler.compile(opCondition, input) ;
+        QueryIterator qIter = opExecutor.execute(opCondition, input) ;
         push(qIter) ;
     }
 
     public void visit(OpFilter opFilter)
     {
         QueryIterator input = pop() ;
-        QueryIterator qIter = opCompiler.compile(opFilter, input) ;
+        QueryIterator qIter = opExecutor.execute(opFilter, input) ;
         push(qIter) ;
     }
 
     public void visit(OpGraph opGraph)
     {
         QueryIterator input = pop() ;
-        QueryIterator qIter = opCompiler.compile(opGraph, input) ;
+        QueryIterator qIter = opExecutor.execute(opGraph, input) ;
         push(qIter) ;
     }
 
     public void visit(OpService opService)
     {
         QueryIterator input = pop() ;
-        QueryIterator qIter = opCompiler.compile(opService, input) ;
+        QueryIterator qIter = opExecutor.execute(opService, input) ;
         push(qIter) ;
     }
 
     public void visit(OpDatasetNames dsNames)
     {
         QueryIterator input = pop() ;
-        QueryIterator qIter = opCompiler.compile(dsNames, input) ;
+        QueryIterator qIter = opExecutor.execute(dsNames, input) ;
         push(qIter) ;
     }
 
     public void visit(OpTable opTable)
     {
         QueryIterator input = pop() ;
-        QueryIterator qIter = opCompiler.compile(opTable, input) ;
+        QueryIterator qIter = opExecutor.execute(opTable, input) ;
         push(qIter) ;
     }
 
     public void visit(OpExt opExt)
     {
         QueryIterator input = pop() ;
-        QueryIterator qIter = opCompiler.compile(opExt, input) ;
+        QueryIterator qIter = opExecutor.execute(opExt, input) ;
         push(qIter) ;
     }
 
     public void visit(OpNull opNull)
     {
         QueryIterator input = pop() ;
-        QueryIterator qIter = opCompiler.compile(opNull, input) ;
+        QueryIterator qIter = opExecutor.execute(opNull, input) ;
         push(qIter) ;
     }
 
     public void visit(OpLabel opLabel)
     {
         QueryIterator input = pop() ;
-        QueryIterator qIter = opCompiler.compile(opLabel, input) ;
+        QueryIterator qIter = opExecutor.execute(opLabel, input) ;
         push(qIter) ;
     }
 
     public void visit(OpList opList)
     {
         QueryIterator input = pop() ;
-        QueryIterator qIter = opCompiler.compile(opList, input) ;
+        QueryIterator qIter = opExecutor.execute(opList, input) ;
         push(qIter) ;
     }
 
     public void visit(OpOrder opOrder)
     {
         QueryIterator input = pop() ;
-        QueryIterator qIter = opCompiler.compile(opOrder, input) ;
+        QueryIterator qIter = opExecutor.execute(opOrder, input) ;
         push(qIter) ;
     }
 
     public void visit(OpProject opProject)
     {
         QueryIterator input = pop() ;
-        QueryIterator qIter = opCompiler.compile(opProject, input) ;
+        QueryIterator qIter = opExecutor.execute(opProject, input) ;
         push(qIter) ;
     }
 
     public void visit(OpDistinct opDistinct)
     {
         QueryIterator input = pop() ;
-        QueryIterator qIter = opCompiler.compile(opDistinct, input) ;
+        QueryIterator qIter = opExecutor.execute(opDistinct, input) ;
         push(qIter) ;
     }
 
     public void visit(OpReduced opReduced)
     {
         QueryIterator input = pop() ;
-        QueryIterator qIter = opCompiler.compile(opReduced, input) ;
+        QueryIterator qIter = opExecutor.execute(opReduced, input) ;
         push(qIter) ;
     }
 
     public void visit(OpAssign opAssign)
     {
         QueryIterator input = pop() ;
-        QueryIterator qIter = opCompiler.compile(opAssign, input) ;
+        QueryIterator qIter = opExecutor.execute(opAssign, input) ;
         push(qIter) ;
     }
     
     public void visit(OpSlice opSlice)
     {
         QueryIterator input = pop() ;
-        QueryIterator qIter = opCompiler.compile(opSlice, input) ;
+        QueryIterator qIter = opExecutor.execute(opSlice, input) ;
         push(qIter) ;
     }
     
     public void visit(OpGroupAgg opGroupAgg)
     { 
         QueryIterator input = pop() ;
-        QueryIterator qIter = opCompiler.compile(opGroupAgg, input) ;
+        QueryIterator qIter = opExecutor.execute(opGroupAgg, input) ;
         push(qIter) ;
     }
     

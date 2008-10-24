@@ -35,7 +35,7 @@ public class QueryIterOptionalIndex extends QueryIterRepeatApply
         Op op2 = QC.substitute(op, binding) ;
         QueryIterator thisStep = new QueryIterSingleton(binding, getExecContext()) ;
         
-        QueryIterator cIter = QC.compile(op2, thisStep, super.getExecContext()) ;
+        QueryIterator cIter = QC.execute(op2, thisStep, super.getExecContext()) ;
         cIter = new QueryIterDefaulting(cIter, binding, getExecContext()) ;
         return cIter ;
     }

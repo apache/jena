@@ -12,7 +12,7 @@ import java.util.Iterator;
 
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.sparql.core.DatasetGraph;
-import com.hp.hpl.jena.sparql.engine.main.OpCompilerFactory;
+import com.hp.hpl.jena.sparql.engine.main.OpExecutorFactory;
 import com.hp.hpl.jena.sparql.function.FunctionEnv;
 import com.hp.hpl.jena.sparql.util.Context;
 
@@ -28,7 +28,7 @@ public class ExecutionContext implements FunctionEnv
     // Tracking all iterators leads to a build up of state,
     private Collection allIterators     = null ; 
     private Graph activeGraph           = null ;
-    private OpCompilerFactory executor  = null ;
+    private OpExecutorFactory executor  = null ;
 
     /** Clone */
     public ExecutionContext(ExecutionContext other) 
@@ -48,7 +48,7 @@ public class ExecutionContext implements FunctionEnv
         this.activeGraph = activeGraph ; 
     }
 
-    public ExecutionContext(Context params, Graph activeGraph, DatasetGraph dataset, OpCompilerFactory factory)
+    public ExecutionContext(Context params, Graph activeGraph, DatasetGraph dataset, OpExecutorFactory factory)
     {
         this.context = params ;
         this.dataset = dataset ;
@@ -79,13 +79,13 @@ public class ExecutionContext implements FunctionEnv
         return allIterators.iterator() ;
     }
     
-    public OpCompilerFactory getExecutor()
+    public OpExecutorFactory getExecutor()
     {
         return executor ;
     }
     
     /** Setter for the policy for algebra expression evaluation - use with care */
-    public void setExecutor(OpCompilerFactory executor)
+    public void setExecutor(OpExecutorFactory executor)
     {
         this.executor = executor ;
     }

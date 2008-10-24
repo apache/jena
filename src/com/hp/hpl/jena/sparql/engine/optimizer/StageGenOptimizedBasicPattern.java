@@ -22,7 +22,7 @@ import com.hp.hpl.jena.sparql.engine.optimizer.util.Config;
 /**
  * The class implements the ARQ optimizer for basic graph patterns.
  * Then BasicPattern is statically optimized and a BasicStage is 
- * compiled out of the optimized BasicPattern.
+ * executed from the optimized BasicPattern.
  * 
  * @author Markus Stocker
  */
@@ -47,7 +47,7 @@ public class StageGenOptimizedBasicPattern implements StageGenerator
 	 * @param input
 	 * @param execCxt
 	 * @return QueryIterator
-	 * @see com.hp.hpl.jena.sparql.engine.main.StageGenerator#compile(com.hp.hpl.jena.sparql.core.BasicPattern, com.hp.hpl.jena.sparql.engine.ExecutionContext)
+	 * @see com.hp.hpl.jena.sparql.engine.main.StageGenerator#execute(com.hp.hpl.jena.sparql.core.BasicPattern, com.hp.hpl.jena.sparql.engine.ExecutionContext)
 	 */
 	public QueryIterator execute(BasicPattern pattern, QueryIterator input, ExecutionContext execCxt)
 	{

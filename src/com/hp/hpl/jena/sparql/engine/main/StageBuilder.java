@@ -20,7 +20,7 @@ import com.hp.hpl.jena.sparql.util.Context;
  * the most common case being connectinbg to a Jena graph.     
  * 
  * The StageBuilder finds the registered StageGenerator, and calls it to
- * compiler a basic graph pattern that has any boudn variables
+ * evaluate a basic graph pattern that has any bound variables
  * replaced by their value (in effect, an index join).
  *
  * Extension happens by registering a different StageGenerator in
@@ -35,7 +35,7 @@ import com.hp.hpl.jena.sparql.util.Context;
 
 public class StageBuilder
 {
-    public static QueryIterator compile(BasicPattern pattern, 
+    public static QueryIterator execute(BasicPattern pattern, 
                                         QueryIterator input, 
                                         ExecutionContext execCxt)
     {

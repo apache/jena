@@ -8,7 +8,7 @@ package com.hp.hpl.jena.sparql.engine.main;
 
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 
-public interface OpCompilerFactory { OpCompiler create(ExecutionContext execCxt) ; }
+public interface OpExecutorFactory { OpExecutor create(ExecutionContext execCxt) ; }
 /*
  * (c) Copyright 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.

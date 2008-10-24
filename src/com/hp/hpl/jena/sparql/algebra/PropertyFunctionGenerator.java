@@ -14,8 +14,10 @@ import java.util.Map;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.query.ARQ;
-import com.hp.hpl.jena.sparql.algebra.op.*;
+import com.hp.hpl.jena.sparql.algebra.op.OpBGP;
+import com.hp.hpl.jena.sparql.algebra.op.OpPropFunc;
+import com.hp.hpl.jena.sparql.algebra.op.OpSequence;
+import com.hp.hpl.jena.sparql.algebra.op.OpTable;
 import com.hp.hpl.jena.sparql.core.BasicPattern;
 import com.hp.hpl.jena.sparql.expr.Expr;
 import com.hp.hpl.jena.sparql.expr.ExprList;
@@ -26,28 +28,15 @@ import com.hp.hpl.jena.sparql.util.ExprUtils;
 import com.hp.hpl.jena.sparql.util.graph.GNode;
 import com.hp.hpl.jena.sparql.util.graph.GraphList;
 
-public class PropertyFunctionGenerator //implements StageGenerator
+public class PropertyFunctionGenerator
 {
-    public static Op compile(OpBGP opBGP, Context context)
+    public static Op buildPropertyFunctions(OpBGP opBGP, Context context)
     {
         if ( opBGP.getPattern().isEmpty() )
             return opBGP ;
         return compilePattern(opBGP.getPattern(), context) ;
     }
     
-    // Old router from OpCompiler. 
-    private static Op compile(BasicPattern pattern, Context context)
-    {
-        if ( pattern.isEmpty() )
-            return new OpBGP(pattern) ;
-
-        boolean doingMagicProperties = context.isTrue(ARQ.enablePropertyFunctions) ;
-        if ( ! doingMagicProperties )
-            return new OpBGP(pattern) ;
-        
-        return compilePattern(pattern, context) ;
-    }
-        
     private static Op compilePattern(BasicPattern pattern, Context context)
     {   
         // Split into triples and property functions.

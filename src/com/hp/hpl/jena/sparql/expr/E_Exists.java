@@ -42,7 +42,7 @@ public class E_Exists extends ExprFunction
 
     public NodeValue eval(Binding binding, FunctionEnv env)
     {
-        // XXX Dubious.  Need to get the OpCompilerFactory and that needs an ExecutionContext.
+        // XXX Dubious.  Need to get the OpExecutorFactory and that needs an ExecutionContext.
         // XXX Dubious.  QueryIterator tracking is lost.
         OpEval opExec = (OpEval)env.getContext().get(ARQConstants.sysCurrentOpExec) ;
         if ( opExec == null )

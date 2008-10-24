@@ -46,7 +46,7 @@ public class TransformPropertyFunction extends TransformCopy
         if ( ! doingMagicProperties )
             return opBGP ;
         
-        return PropertyFunctionGenerator.compile(opBGP, context) ;
+        return PropertyFunctionGenerator.buildPropertyFunctions(opBGP, context) ;
     }
 }
 

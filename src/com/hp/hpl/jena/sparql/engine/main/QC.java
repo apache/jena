@@ -16,14 +16,14 @@ import com.hp.hpl.jena.sparql.util.Context;
 
 public class QC
 {
-    public static OpCompilerFactory getFactory(Context context)
+    public static OpExecutorFactory getFactory(Context context)
     {
-        return (OpCompilerFactory)context.get(ARQConstants.sysOpCompilerFactory) ;
+        return (OpExecutorFactory)context.get(ARQConstants.sysOpExecutorFactory) ;
     }
     
-    public static void setFactory(Context context, OpCompilerFactory factory)
+    public static void setFactory(Context context, OpExecutorFactory factory)
     {
-        context.set(ARQConstants.sysOpCompilerFactory, factory) ;
+        context.set(ARQConstants.sysOpExecutorFactory, factory) ;
     }
     
     
@@ -32,9 +32,9 @@ public class QC
         return Substitute.substitute(op, binding) ;
     }
     
-    public static QueryIterator compile(Op op, QueryIterator qIter, ExecutionContext execCxt)
+    public static QueryIterator execute(Op op, QueryIterator qIter, ExecutionContext execCxt)
     {
-        return OpCompiler.compile(op, qIter, execCxt) ;
+        return OpExecutor.execute(op, qIter, execCxt) ;
     }
 }
 
