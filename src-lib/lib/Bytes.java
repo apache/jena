@@ -207,26 +207,28 @@ public class Bytes
     }
     
     private static Charset utf8 = null ;
-    private static CharsetEncoder enc = null ;
-    private static CharsetDecoder dec = null ;
+//    private static CharsetEncoder enc = null ;
+//    private static CharsetDecoder dec = null ;
     static {
         try {
             utf8 = Charset.forName(encodingUTF8) ;
             // Encoders and decoders are not thread-safe - internal codec state.
             // Could pool if it become expensive 
-            enc = utf8.newEncoder() ;
-            dec = utf8.newDecoder() ;
+//            enc = utf8.newEncoder() ;
+//            dec = utf8.newDecoder() ;
         } catch (Throwable ex)
         {
             ex.printStackTrace(System.err);
         }
     }
     
-    /** Encode a string into a ByteBuffer - not thread safe */
+    /** Encode a string into a ByteBuffer */
     public static void toByteBuffer(String s, ByteBuffer bb)
     {
-     // not thread safe (because of the shared encoder)
-        enc.reset();
+        // not thread safe across multiple TDB graph in the same JVM.
+        // enc.reset();
+        
+        CharsetEncoder enc = utf8.newEncoder() ; 
 //        enc = enc.onMalformedInput(CodingErrorAction.REPLACE)
 //                 .onUnmappableCharacter(CodingErrorAction.REPLACE);
         
@@ -239,13 +241,15 @@ public class Bytes
             throw new InternalError("Bytes.toByteBuffer: encode overflow (2)") ;
     }
     
-    /** Decode a string into a ByteBuffer - not thread safe */
+    /** Decode a string into a ByteBuffer */
     public static String fromByteBuffer(ByteBuffer bb)
     {
         // not thread safe (because of the shared decoder)
         try
         {
-            dec.reset();
+            // not thread safe across multiple TDB graph in the same JVM.
+            // dec.reset();
+            CharsetDecoder dec = utf8.newDecoder() ;
             CharBuffer cBuff = dec.decode(bb) ;
             CoderResult r = dec.flush(cBuff) ;
             if ( r == CoderResult.OVERFLOW )
