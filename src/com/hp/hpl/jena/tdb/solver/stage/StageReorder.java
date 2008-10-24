@@ -15,7 +15,7 @@ import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderProc;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
 
-// OLD code : now done in OpCompilerTDB
+// OLD code : now done in OpExecutorTDB
 public class StageReorder implements Stage
 {
     private ReorderProc reorderProc = null ;

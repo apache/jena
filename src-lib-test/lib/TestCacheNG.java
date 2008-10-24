@@ -9,9 +9,9 @@ package lib;
 import lib.cache.CacheNG;
 import org.junit.Test;
 
-public class TestPool
+public class TestCacheNG
 {
-    @Test public void pool_01()
+    @Test public void cache_01()
     { CacheNG<Integer, String> pool = new CacheNG<Integer, String>(2) ; }
     
 }

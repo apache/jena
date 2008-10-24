@@ -22,7 +22,7 @@ import com.hp.hpl.jena.query.ARQ;
 
 import com.hp.hpl.jena.tdb.base.loader.NTriplesReader2;
 import com.hp.hpl.jena.tdb.pgraph.assembler.PGraphAssemblerVocab;
-import com.hp.hpl.jena.tdb.solver.OpCompilerTDB;
+import com.hp.hpl.jena.tdb.solver.OpExecutorTDB;
 import com.hp.hpl.jena.tdb.solver.StageGeneratorDirectTDB;
 import com.hp.hpl.jena.tdb.solver.StageGeneratorGeneric;
 import com.hp.hpl.jena.tdb.sys.Metadata;
@@ -122,7 +122,7 @@ public class TDB
         ARQ.getContext().set(ARQ.stageGenerator, stageGenerator) ;
 
         // Wire in the new OpCompiler 
-        ARQ.getContext().set(ARQConstants.sysOpCompilerFactory, OpCompilerTDB.altFactory) ;
+        ARQ.getContext().set(ARQConstants.sysOpExecutorFactory, OpExecutorTDB.altFactory) ;
     }
     
     // ---- Static constandts read by modVersion 

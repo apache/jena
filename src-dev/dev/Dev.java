@@ -10,7 +10,7 @@ public class Dev
 {
     // ---- Release
     //   ?? ARQ Optimizer and controlling optimizations per graph (esp FilterPlacement).
-    // Tidy up in OpCompilerTDB
+    // Tidy up in OpExecutorTDB
     // Renaming (in ARQ) for OpCompiler
     // Optimizer documentation - check
     // Final testing

@@ -109,7 +109,7 @@ public class TransformIndexJoin extends TransformCopy
             if (exprs != null )
                 opRight = OpFilter.filter(exprs, opRight) ;
             
-            QueryIterator left = QC.compile(opLeft, input, execCxt) ;
+            QueryIterator left = QC.execute(opLeft, input, execCxt) ;
             QueryIterator qIter = new QueryIterOptionalIndex(left, opRight, execCxt) ;
             return qIter ;
         }

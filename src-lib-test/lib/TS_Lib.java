@@ -17,7 +17,7 @@ import org.junit.runners.Suite;
     TestBytes.class,
     TestListUtils.class,
     TestSetUtils.class,
-    TestPool.class
+    TestCacheNG.class
 } )
 
 public class TS_Lib

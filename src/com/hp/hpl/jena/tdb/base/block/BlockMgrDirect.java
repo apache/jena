@@ -53,7 +53,7 @@ public class BlockMgrDirect extends BlockMgrFile
                 throw new BlockException(format("get: short read (%d, not %d)", len, blockSize)) ;   
             return dst ;
         } catch (IOException ex)
-        { throw new BlockException("BlockMgrNIO.get", ex) ; }
+        { throw new BlockException("BlockMgrDirect.get", ex) ; }
     }
     
     @Override
@@ -69,7 +69,7 @@ public class BlockMgrDirect extends BlockMgrFile
             if ( len != blockSize )
                 throw new BlockException(format("put: short write (%d, not %d)", len, blockSize)) ;   
         } catch (IOException ex)
-        { throw new BlockException("BlockMgrNIO.put", ex) ; }
+        { throw new BlockException("BlockMgrDirect.put", ex) ; }
         putNotification(id, block) ;
     }
     

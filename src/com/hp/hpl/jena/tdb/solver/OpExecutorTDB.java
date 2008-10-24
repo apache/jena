@@ -21,8 +21,8 @@ import com.hp.hpl.jena.sparql.core.Substitute;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterPeek;
-import com.hp.hpl.jena.sparql.engine.main.OpCompiler;
-import com.hp.hpl.jena.sparql.engine.main.OpCompilerFactory;
+import com.hp.hpl.jena.sparql.engine.main.OpExecutor;
+import com.hp.hpl.jena.sparql.engine.main.OpExecutorFactory;
 import com.hp.hpl.jena.sparql.engine.main.QC;
 import com.hp.hpl.jena.sparql.expr.ExprList;
 import com.hp.hpl.jena.tdb.TDB;
@@ -30,14 +30,14 @@ import com.hp.hpl.jena.tdb.pgraph.GraphTDB;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderProc;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
 
-public class OpCompilerTDB extends OpCompiler
+public class OpExecutorTDB extends OpExecutor
 {
-    public static OpCompilerFactory altFactory = new OpCompilerFactory() {
+    public static OpExecutorFactory altFactory = new OpExecutorFactory() {
 
         @Override
-        public OpCompiler create(ExecutionContext execCxt)
+        public OpExecutor create(ExecutionContext execCxt)
         {
-            return new OpCompilerTDB(execCxt) ;
+            return new OpExecutorTDB(execCxt) ;
         }} ;
     
 
@@ -56,26 +56,26 @@ public class OpCompilerTDB extends OpCompiler
     
     // A new compile object is created for each op compilation.
     // So the execCxt is changing as we go through the query-compile-execute process  
-    public OpCompilerTDB(ExecutionContext execCxt)
+    public OpExecutorTDB(ExecutionContext execCxt)
     {
         super(execCxt) ;
         isForTDB = (execCxt.getActiveGraph() instanceof GraphTDB) ;
     }
 
     @Override
-    public QueryIterator compile(OpBGP opBGP, QueryIterator input)
+    public QueryIterator execute(OpBGP opBGP, QueryIterator input)
     {
         if ( ! isForTDB )
-            return super.compile(opBGP, input) ;
+            return super.execute(opBGP, input) ;
         GraphTDB graph = (GraphTDB)execCxt.getActiveGraph() ;
         return optimizeExecute(graph, input, opBGP.getPattern(), null, execCxt) ;
     }
     
     @Override
-    public QueryIterator compile(OpLabel opLabel, QueryIterator input)
+    public QueryIterator execute(OpLabel opLabel, QueryIterator input)
     {
         if ( ! isForTDB )
-            return super.compile(opLabel, input) ;
+            return super.execute(opLabel, input) ;
         
         if ( executeNow.equals(opLabel.getObject()) )
         {
@@ -84,17 +84,17 @@ public class OpCompilerTDB extends OpCompiler
             return SolverLib.execute(graph, opBGP.getPattern(), input, execCxt) ;
         }
 
-        return super.compile(opLabel, input) ;
+        return super.execute(opLabel, input) ;
     }
 
     @Override
-    public QueryIterator compile(OpFilter opFilter, QueryIterator input)
+    public QueryIterator execute(OpFilter opFilter, QueryIterator input)
     {
         if ( ! isForTDB )
-            return super.compile(opFilter, input) ;
+            return super.execute(opFilter, input) ;
         
         if ( ! OpBGP.isBGP(opFilter.getSubOp()) )
-            return super.compile(opFilter, input) ;
+            return super.execute(opFilter, input) ;
 
         OpBGP opBGP = (OpBGP)opFilter.getSubOp() ;
         GraphTDB graph = (GraphTDB)execCxt.getActiveGraph() ;
@@ -143,41 +143,44 @@ public class OpCompilerTDB extends OpCompiler
             logExec.info(x) ;
         }
         
+        // Switch off reorder when actually executing the op
         ExecutionContext ec2 = new ExecutionContext(execCxt) ;
-        // No - change to one that catches BGP execution and (plainly) executes it. 
         ec2.setExecutor(plainFactory) ;
+
+        // Alternative: but breaks unless we include opSequence as something
+        // that is execute straight.
+        // op = OpLabel.create(executeNow, op) ;
         
         // Solve without going through this factory again.
         // There would be issues of nested (graph ...)
         // but this is only a (filter (bgp...)) at most
-        return QC.compile(op, peek, ec2) ;
+        return QC.execute(op, peek, ec2) ;
     }
     
-    
-    static OpCompilerFactory plainFactory = new OpCompilePlainFactoryTDB() ;
-    static class OpCompilePlainFactoryTDB implements OpCompilerFactory
+    private static OpExecutorFactory plainFactory = new OpExecutorPlainFactoryTDB() ;
+    private static class OpExecutorPlainFactoryTDB implements OpExecutorFactory
     {
         @Override
-        public OpCompiler create(ExecutionContext execCxt)
+        public OpExecutor create(ExecutionContext execCxt)
         {
-            return new OpCompilePlainTDB(execCxt) ;
+            return new OpExecutorPlainTDB(execCxt) ;
         }
         
     }
     
-    
-    static class OpCompilePlainTDB extends OpCompiler
+    /** A op executor that simply executes a BGP without any reordering */ 
+    private static class OpExecutorPlainTDB extends OpExecutor
     {
-        public OpCompilePlainTDB(ExecutionContext execCxt)
+        public OpExecutorPlainTDB(ExecutionContext execCxt)
         {
             super(execCxt) ;
         }
         
         @Override
-        public QueryIterator compile(OpBGP opBGP, QueryIterator input)
+        public QueryIterator execute(OpBGP opBGP, QueryIterator input)
         {
             if ( ! (execCxt.getActiveGraph() instanceof GraphTDB) )
-                return super.compile(opBGP, input) ;
+                return super.execute(opBGP, input) ;
             // Log execution.
             GraphTDB graph = (GraphTDB)execCxt.getActiveGraph() ;
             return SolverLib.execute(graph, opBGP.getPattern(), input, execCxt) ;
