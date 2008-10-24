@@ -17,7 +17,7 @@ public class sse_exec extends CmdARQ_SSE
     
     public static void main (String [] argv)
     {
-        new sse_exec(argv).main() ;
+        new sse_exec(argv).mainRun() ;
     }
     
     public sse_exec(String[] argv)

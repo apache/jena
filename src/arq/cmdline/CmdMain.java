@@ -33,19 +33,19 @@ public abstract class CmdMain extends CmdLineArgs
     }
 
     /** Run command - exit on failure */
-    public void main()
-    { main(false, true) ; }
+    public void mainRun()
+    { mainRun(false, true) ; }
     
     /** Run command - choose whether to exit on failure */
-    public void main(boolean exitOnFailure)
-    { main(exitOnFailure, true) ; }
+    public void mainRun(boolean exitOnFailure)
+    { mainRun(exitOnFailure, true) ; }
     
     /** Run command - exit on success or failure */
     public void mainAndExit()
-    { main(true, true) ; }
+    { mainRun(true, true) ; }
      
     /** Run command */
-    public int main(boolean exitOnSuccess, boolean exitOnFailure)
+    public int mainRun(boolean exitOnSuccess, boolean exitOnFailure)
     {
         try { mainMethod() ; }
         catch (TerminationException ex) { System.exit(ex.getCode()) ; }

@@ -24,7 +24,7 @@ public class rset extends CmdARQ
 
     public static void main(String [] argv)
     {
-        new rset(argv).main() ;
+        new rset(argv).mainRun() ;
     }
 
     public rset(String[] argv)

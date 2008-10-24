@@ -29,7 +29,7 @@ public class remote extends CmdARQ
 
     public static void main (String [] argv)
     {
-        new remote(argv).main() ;
+        new remote(argv).mainRun() ;
     }
 
 

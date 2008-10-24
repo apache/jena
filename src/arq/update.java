@@ -30,7 +30,7 @@ public class update extends CmdUpdate
     boolean dump = false ;
     
     public static void main (String [] argv)
-    { new update(argv).main() ; }
+    { new update(argv).mainRun() ; }
     
     protected update(String[] argv)
     {

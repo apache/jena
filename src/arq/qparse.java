@@ -44,7 +44,7 @@ public class qparse extends CmdARQ
     
     public static void main(String [] argv)
     {
-        new qparse(argv).main() ;
+        new qparse(argv).mainRun() ;
     }
     
     public qparse(String[] argv)

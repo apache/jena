@@ -24,7 +24,7 @@ public class uparse extends CmdARQ
     List requestFiles = null ;
     
     public static void main (String [] argv)
-    { new uparse(argv).main() ; }
+    { new uparse(argv).mainRun() ; }
     
     protected uparse(String[] argv)
     {

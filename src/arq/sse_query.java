@@ -47,7 +47,7 @@ public class sse_query extends CmdARQ
     
     public static void main (String [] argv)
     {
-        new sse_query(argv).main() ;
+        new sse_query(argv).mainRun() ;
     }
     
     public sse_query(String[] argv)

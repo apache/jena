@@ -35,7 +35,7 @@ public class sse extends CmdARQ_SSE
 
     public static void main (String [] argv)
     {
-        new sse(argv).main() ;
+        new sse(argv).mainRun() ;
     }
 
     public sse(String[] argv)

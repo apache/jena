@@ -71,7 +71,7 @@ public class qtest extends CmdARQ
     public static void main (String [] argv)
     {
         try {
-            new qtest(argv).main() ;
+            new qtest(argv).mainRun() ;
         }
         catch (TerminationException ex) { System.exit(ex.getCode()) ; }
     }

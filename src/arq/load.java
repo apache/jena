@@ -35,7 +35,7 @@ public class load extends CmdUpdate
     boolean dump = false ;
     
     public static void main (String [] argv)
-    { new load(argv).main() ; }
+    { new load(argv).mainRun() ; }
     
     protected load(String[] argv)
     {
