@@ -18,7 +18,7 @@ then
     SRCDIRS="$MODULE"
 else
     LIBDIRS="${LIBDIR:-TDB SDB Joseki3}"
-    SRCDIRS="${SRCDIR:-TDB SDB}"
+    SRCDIRS="${SRCDIR:-TDB SDB Joseki3}"
 fi
 
 rm -f lib/arq.jar lib/arq-extra.jar
