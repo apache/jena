@@ -48,13 +48,13 @@ public class BlockMgrCache extends BlockMgrWrapper
                 public void apply(Integer id, ByteBuffer bb)
                 { 
                     log("Cache spill: write block: %d", id) ;
-                    entryExpel(id) ;
+                    expelEntry(id) ;
                 }
             }) ;
         }
     }
     
-    private void entryExpel(Integer id)
+    private void expelEntry(Integer id)
     {
         ByteBuffer bb = writeCache.getObject(id) ;
         if ( bb == null )
@@ -147,7 +147,7 @@ public class BlockMgrCache extends BlockMgrWrapper
         else
             log("sync") ;
         //if ( force )
-        flush() ;
+        syncFlush(false) ;
     }
     
     private void log(String fmt, Object... args)
@@ -163,26 +163,33 @@ public class BlockMgrCache extends BlockMgrWrapper
     public void close()
     {
         log("close ("+writeCache.size()+" blocks)") ;
-        flush() ;
+        syncFlush(true) ;
         blockMgr.close() ;
     }
 
-    private void flush()
+    private void syncFlush(boolean all)
     {
         if ( writeCache != null )
         {
             log("Flush (write cache)") ;
             
-            Integer[] ids = new Integer[(int)writeCache.size()] ;
+            long N = writeCache.size() ;
+            Integer[] ids = new Integer[(int)N] ;
 
             // Choose ... and it's in order.
             Iterator<Integer> iter = writeCache.keys() ;
             for ( int i = 0 ; iter.hasNext() ; i++ )
                 ids[i] = iter.next() ;
             
-            // Seen a concurrent modification when used in-memory for testing (Java bug?)
-            for ( Integer id : ids )
-                entryExpel(id) ;
+            // Flush entries.
+            long limit = 3*N/4 ;
+            if ( all ) limit = N ;
+            
+            for ( int i = 0 ; i < (int)limit ; i++ )
+            {
+                Integer id = ids[i] ;
+                expelEntry(id) ;
+            }
         }
     }
 }
