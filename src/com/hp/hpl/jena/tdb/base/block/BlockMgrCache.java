@@ -48,10 +48,20 @@ public class BlockMgrCache extends BlockMgrWrapper
                 public void apply(Integer id, ByteBuffer bb)
                 { 
                     log("Cache spill: write block: %d", id) ;
-                    blockMgr.put(id, bb) ; 
+                    entryExpel(id) ;
                 }
             }) ;
         }
+    }
+    
+    private void entryExpel(Integer id)
+    {
+        ByteBuffer bb = writeCache.getObject(id) ;
+        if ( bb == null )
+            return ;
+        log("Drop (write cache): %d", id) ;
+        blockMgr.put(id, bb) ;
+        writeCache.removeObject(id) ;
     }
     
     @Override
@@ -161,19 +171,18 @@ public class BlockMgrCache extends BlockMgrWrapper
     {
         if ( writeCache != null )
         {
-            Integer[] ids = new Integer[(int)writeCache.size()] ;
+            log("Flush (write cache)") ;
             
+            Integer[] ids = new Integer[(int)writeCache.size()] ;
+
+            // Choose ... and it's in order.
             Iterator<Integer> iter = writeCache.keys() ;
             for ( int i = 0 ; iter.hasNext() ; i++ )
                 ids[i] = iter.next() ;
-            // Concurrent modification when used in-memory for testing (Java bug?)
+            
+            // Seen a concurrent modification when used in-memory for testing (Java bug?)
             for ( Integer id : ids )
-            {
-                ByteBuffer buff = writeCache.getObject(id) ; 
-                log("Write: %d", id) ;
-                blockMgr.put(id, buff) ;
-            }
-            writeCache.clear() ;   
+                entryExpel(id) ;
         }
     }
 }
