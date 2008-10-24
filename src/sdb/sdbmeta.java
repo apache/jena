@@ -37,7 +37,7 @@ public class sdbmeta extends CmdArgsDB
     
     public static void main (String... argv)
     {
-        new sdbmeta(argv).main() ;
+        new sdbmeta(argv).mainRun() ;
     }
     
     protected sdbmeta(String... argv)

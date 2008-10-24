@@ -43,7 +43,7 @@ public class sdbload extends CmdArgsDB
     
     public static void main(String... argv)
     {
-        new sdbload(argv).main() ;
+        new sdbload(argv).mainRun() ;
     }
     
     String filename = null ;

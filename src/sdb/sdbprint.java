@@ -48,7 +48,7 @@ public class sdbprint extends CmdArgsDB
     boolean printSQL = false ;
     public static void main (String... argv)
     {
-        new sdbprint(argv).main() ;
+        new sdbprint(argv).mainRun() ;
     }
     
     public sdbprint(String... args)

@@ -56,7 +56,7 @@ public class sdbtuple extends CmdArgsDB
     
     String loadFile = null ;
     
-    public static void main(String ... args) { new sdbtuple(args).main() ; }
+    public static void main(String ... args) { new sdbtuple(args).mainRun() ; }
     
     public List<String> tables = new ArrayList<String>() ;
     public sdbtuple(String... argv)

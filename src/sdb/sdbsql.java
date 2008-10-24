@@ -26,7 +26,7 @@ public class sdbsql extends CmdArgsDB
     
     public static void main (String... argv)
     {
-        new sdbsql(argv).main() ;
+        new sdbsql(argv).mainRun() ;
     }
 
     public sdbsql(String... argv)

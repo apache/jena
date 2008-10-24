@@ -37,7 +37,7 @@ public class SDBCmd
     
     private static int exit(CmdMain cmd)
     {
-        int code = cmd.main(false, false) ;
+        int code = cmd.mainRun(false, false) ;
         if ( code != 0 && exitOnError )
         {
             System.err.println("Exit: command: "+Utils.className(cmd)) ;

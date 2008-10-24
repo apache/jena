@@ -17,7 +17,7 @@ public class query extends arq.query
 
     public static void main (String [] argv)
     {
-        new query(argv).main() ;
+        new query(argv).mainRun() ;
     }
     
     public query(String[] argv)

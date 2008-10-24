@@ -43,7 +43,7 @@ public class sdbtest extends CmdArgsDB
     
     public static void main (String... argv)
     {
-        new sdbtest(argv).main() ;
+        new sdbtest(argv).mainRun() ;
     }
     
     String filename = null ;

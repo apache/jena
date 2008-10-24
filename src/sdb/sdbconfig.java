@@ -25,7 +25,7 @@ public class sdbconfig extends CmdArgsDB
     
     public static void main(String ... argv)
     {
-        new sdbconfig(argv).main() ;
+        new sdbconfig(argv).mainRun() ;
     }
     
     protected sdbconfig(String... args)

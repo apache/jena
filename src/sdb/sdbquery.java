@@ -53,7 +53,7 @@ public class sdbquery extends CmdArgsDB
 
     public static void main (String... argv)
     {
-        new sdbquery(argv).main() ;
+        new sdbquery(argv).mainRun() ;
     }
    
     protected sdbquery(String... args)

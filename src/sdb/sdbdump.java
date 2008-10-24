@@ -38,7 +38,7 @@ public class sdbdump extends CmdArgsDB
 
     public static void main(String ... argv)
     {
-        new sdbdump(argv).main() ;
+        new sdbdump(argv).mainRun() ;
     }
 
     protected sdbdump(String ... args)

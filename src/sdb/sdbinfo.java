@@ -37,7 +37,7 @@ public class sdbinfo extends CmdArgsDB
 
     public static void main(String ... argv)
     {
-        new sdbinfo(argv).main() ;
+        new sdbinfo(argv).mainRun() ;
     }
     
     protected sdbinfo(String... args)
