@@ -23,6 +23,7 @@ public class IndexBuilder
     
     public static IndexBuilder getBTree()       { return createIndexBuilder(IndexType.BTree) ; }
     public static IndexBuilder getBPlusTree()   { return createIndexBuilder(IndexType.BPlusTree) ; }
+    public static IndexBuilder getExtHash()       { return createIndexBuilder(IndexType.ExtHash) ; }
     
     private static IndexBuilder builderMem = null ;
     
@@ -50,6 +51,13 @@ public class IndexBuilder
                 IndexFactoryBPlusTreeMem idxFactory = new IndexFactoryBPlusTreeMem(SystemTDB.OrderMem) ;
                 return new IndexBuilder(idxFactory,idxFactory) ;
             }
+            case ExtHash:
+            {
+                // Range is B+Tree 
+                IndexFactoryExtHashMem idxFactory = new IndexFactoryExtHashMem() ;
+                IndexFactoryBPlusTreeMem idxRangeFactory = new IndexFactoryBPlusTreeMem(SystemTDB.OrderMem) ;
+                return new IndexBuilder(idxFactory, idxRangeFactory) ;
+            }
         }
         throw new TDBException("Memory index builder: Unrecognized index type: " + indexType) ;
     }
@@ -67,6 +75,12 @@ public class IndexBuilder
             {
                 IndexFactoryBPlusTree idx = new IndexFactoryBPlusTree(SystemTDB.BlockSize) ;
                 return new IndexBuilder(idx, idx) ;
+            }
+            case ExtHash:
+            {
+                IndexFactoryExtHash idxFactory = new IndexFactoryExtHash(SystemTDB.BlockSize) ;
+                IndexFactoryBTree idx = new IndexFactoryBTree(SystemTDB.BlockSize) ;
+                return new IndexBuilder(idxFactory, idx) ;
             }
         }
         throw new TDBException("Unrecognized index type: " + indexType) ;
@@ -100,7 +114,6 @@ public class IndexBuilder
     {
         factoryIndex = indexBuilder ;
         builderRangeIndex = rangeIndexBuilder ;
-        
     }
     
     public Index newIndex(Location location, RecordFactory factory, String name)

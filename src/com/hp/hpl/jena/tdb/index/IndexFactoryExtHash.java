@@ -6,29 +6,39 @@
 
 package com.hp.hpl.jena.tdb.index;
 
-import com.hp.hpl.jena.tdb.sys.SystemTDB;
+import com.hp.hpl.jena.tdb.TDBException;
+import com.hp.hpl.jena.tdb.base.block.BlockMgr;
+import com.hp.hpl.jena.tdb.base.block.BlockMgrFactory;
+import com.hp.hpl.jena.tdb.base.file.Location;
+import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 
-public enum IndexType
+/** Index factory for extendible hash tables.
+ *  Only an index, not a rnage index
+ * @author Andy Seaborne
+ */
+
+public class IndexFactoryExtHash implements IndexFactory
 {
-    BTree 
-    { @Override public String getName() { return "BTree" ; } } ,
-    BPlusTree
-    { @Override public String getName() { return "BPlusTree" ; } } ,
-    ExtHash
-    { @Override public String getName() { return "ExtHash" ; } } ,
-    ;
+    private final int blockSize ;
 
-    abstract public String getName() ;
-
-    public static IndexType get(String name)
+    public IndexFactoryExtHash(int blockSize)
     {
-        if ( name.equalsIgnoreCase(SystemTDB.indexTypeBTree) ) return BTree ;
-        if ( name.equalsIgnoreCase(SystemTDB.indexTypeBPlusTree) ) return BPlusTree ;
-        if ( name.equalsIgnoreCase(SystemTDB.indexTypeExtHash) ) return ExtHash ;
-        return null ;
+        this.blockSize = blockSize ;
     }
-    @Override public String toString() { return getName() ; }
+    
+    @Override
+    public Index createIndex(Location location, String name, RecordFactory recordFactory)
+    {
+        throw new  TDBException("Not implemented") ;
+        //return new ExtHash
+    }
+    
+    protected BlockMgr createBlockMgr(String filename, int blockSize)
+    {
+        return BlockMgrFactory.createFile(filename, blockSize) ;
+    }
 }
+
 /*
  * (c) Copyright 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.

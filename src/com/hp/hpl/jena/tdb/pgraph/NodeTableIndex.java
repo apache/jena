@@ -22,7 +22,7 @@ public class NodeTableIndex extends NodeTableBase
     public NodeTableIndex(IndexBuilder factory, Location loc)
     {
         super() ;
-        
+        IndexBuilder.get() ;
         Index nodeToId = factory.newIndex(loc, GraphTDB.nodeRecordFactory, Names.indexNode2Id) ;
             
         // Data file.

@@ -18,6 +18,7 @@ public class Dev
     // ---- Reopenable BlockMgrs (and the object file?) 
     
     // ---- ExtHash trials
+    //  Making ExtHash indexes: IndexFactoryExtHash and IndexFactoryExtHashMem
     
     // ---- Optimization
     //   Abbreviate planning when below a threshold (likely selectivity?), or number of triples planned.
