@@ -63,6 +63,13 @@ public class BlockMgrCache extends BlockMgrWrapper
         blockMgr.put(id, bb) ;
         writeCache.removeObject(id) ;
     }
+
+    // Pool?
+//    @Override
+//    public ByteBuffer allocateBuffer(int id)
+//    {
+//        super.allocateBuffer(id) ;
+//    }
     
     @Override
     public ByteBuffer get(int id)
@@ -146,8 +153,7 @@ public class BlockMgrCache extends BlockMgrWrapper
             log("sync (%d blocks)", writeCache.size()) ;
         else
             log("sync") ;
-        //if ( force )
-        syncFlush(false) ;
+        syncFlush(force) ;
     }
     
     private void log(String fmt, Object... args)

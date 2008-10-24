@@ -51,6 +51,10 @@ public class Dev
     // ---- tdbloader: 
     //   ** (script) to work on gzip files
     //   ** Write stats (where to hook in to get unique?)
+    // ---- 32 bit mode.
+    // Occasional large drops (1K).  GC?  BufferPool for direct mode?
+    // allocateBuffer / returnBuffer
+    // NodeTable : pool for buffers for writing nodes?
 
     
     // Design/static (long term)
