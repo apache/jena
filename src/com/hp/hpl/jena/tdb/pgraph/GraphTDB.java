@@ -6,7 +6,6 @@
 
 package com.hp.hpl.jena.tdb.pgraph;
 
-import static com.hp.hpl.jena.tdb.TDB.symLogDuplicates;
 import static com.hp.hpl.jena.tdb.sys.SystemTDB.LenIndexRecord;
 import static com.hp.hpl.jena.tdb.sys.SystemTDB.LenNodeHash;
 import static com.hp.hpl.jena.tdb.sys.SystemTDB.SizeOfNodeId;
@@ -19,12 +18,18 @@ import lib.Tuple;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.hp.hpl.jena.rdf.model.AnonId;
+
+import com.hp.hpl.jena.util.iterator.ExtendedIterator;
+import com.hp.hpl.jena.util.iterator.NiceIterator;
+
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.impl.GraphBase;
 import com.hp.hpl.jena.graph.query.QueryHandler;
-import com.hp.hpl.jena.rdf.model.AnonId;
+
 import com.hp.hpl.jena.sparql.sse.SSE;
 import com.hp.hpl.jena.sparql.util.FmtUtils;
+
 import com.hp.hpl.jena.tdb.TDB;
 import com.hp.hpl.jena.tdb.TDBException;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
@@ -38,8 +43,6 @@ import com.hp.hpl.jena.tdb.lib.TupleLib;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
 import com.hp.hpl.jena.tdb.solver.reorder.Reorderable;
 import com.hp.hpl.jena.tdb.sys.SystemTDB;
-import com.hp.hpl.jena.util.iterator.ExtendedIterator;
-import com.hp.hpl.jena.util.iterator.NiceIterator;
 
 /** Machinary to implement a "nodes and triples" style graph,
  *  based on 3 indexes (SPO, POS, OSP)
@@ -129,7 +132,7 @@ public class GraphTDB extends GraphBase implements Sync, Reorderable
 
     private void duplicate(Triple t, NodeId id, NodeId id2, NodeId id3)
     {
-        if ( TDB.getContext().isTrue(symLogDuplicates) && log.isInfoEnabled() )
+        if ( TDB.getContext().isTrue(SystemTDB.symLogDuplicates) && log.isInfoEnabled() )
         {
             String $ = FmtUtils.stringForTriple(t, this.getPrefixMapping()) ;
             log.info("Duplicate: ("+$+")") ;

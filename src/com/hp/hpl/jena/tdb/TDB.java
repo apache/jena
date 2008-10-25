@@ -16,7 +16,6 @@ import com.hp.hpl.jena.sparql.engine.main.StageGenBasicPattern;
 import com.hp.hpl.jena.sparql.engine.main.StageGenerator;
 import com.hp.hpl.jena.sparql.engine.optimizer.StageGenOptimizedBasicPattern;
 import com.hp.hpl.jena.sparql.util.Context;
-import com.hp.hpl.jena.sparql.util.Symbol;
 
 import com.hp.hpl.jena.query.ARQ;
 
@@ -41,38 +40,15 @@ public class TDB
     
     public static String namespace = "http://jena.hpl.hp.com/2008/tdb#" ;
 
-    /** Root of TDB-defined parameter names */
-    public static final String symbolNamespace = "http://jena.hpl.hp.com/TDB#" ;
-    
-    /** Root of TDB-defined parameter short names */  
-    public static final String tdbSymbolPrefix = "tdb" ;
-
-    /** Symbol to enable logging of execution.  Must also set log4j, or other logging system,
-     * for logger "com.hp.hpl.jena.tdb.exec"
-     * e.g. log4j.properties -- log4j.logger.com.hp.hpl.jena.tdb.exec=INFO
-     */
-    public static final Symbol symLogExec           = SystemTDB.allocSymbol("logExec") ;
-
     /** Set or unset execution logging - logging is to logger "com.hp.hpl.jena.tdb.exec" at level INFO */
     public static void setExecutionLogging(boolean state)
     {
-        TDB.getContext().set(symLogExec, state) ;
+        TDB.getContext().set(SystemTDB.symLogExec, state) ;
+        if ( ! logExec.isInfoEnabled() )
+            log.warn("Attempt to enable execution logging but the logger is not logging at level info") ;
     }
     
-    /** Log duplicates during loading */
-    public static final Symbol symLogDuplicates     = SystemTDB.allocSymbol("logDuplicates") ;
-    
-    /** File mode : one of "direct", "mapped", "default" */ 
-    public static final Symbol symFileMode          = SystemTDB.allocSymbol("fileMode") ;
-    /** Index type */
-    public static final Symbol symIndexType         = SystemTDB.allocSymbol("indexType") ;
-    
     public static Context getContext()     { return ARQ.getContext() ; }  
-    
-    public static void optimizerOn()    { optimizer(true) ; }
-    public static void optimizerOff()   { optimizer(false) ; }
-    public static void optimizer(boolean b)
-    { }
     
     // Called on assembler loading.
     /** TDB System initialization - normally, this is not explicitly called because

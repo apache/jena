@@ -32,8 +32,6 @@ public class SystemTDB
     // It's visibility is TDB, not really public. 
     private static final Logger log = LoggerFactory.getLogger(TDB.class) ;
     
-    // Get these via a properties file
-    
     public static final String TDB_NS = "http://jena.hpl.hp.com/TDB#" ;
     
     /** Size, in bytes, of a Java long */
@@ -51,35 +49,88 @@ public class SystemTDB
     // ---- Node table related
     
     /** Size, in bytes, of a triple index record. */
-    public static final int LenIndexRecord         = 3 * NodeId.SIZE ;
+    public static final int LenIndexRecord          = 3 * NodeId.SIZE ;
     
     /** Size, in bytes, of a Node hash. */
-    public static final int LenNodeHash            = SizeOfLong ;
+    public static final int LenNodeHash             = SizeOfLong ;
 
-    // File unit sizes
+    // ---- Symbols and similar
+    
+    /** Root of TDB-defined parameter names */
+    public static final String symbolNamespace      = "http://jena.hpl.hp.com/TDB#" ;
+
+    /** Root of TDB-defined parameter short names */  
+    public static final String tdbSymbolPrefix      = "tdb" ;
+    
+    /** Root of any TDB-defined Java system properties */   
+    public static final String tdbPropertyRoot      = "com.hp.hpl.jena.tdb" ;
+
+    /** Symbol to enable logging of execution.  Must also set log4j, or other logging system,
+     * for logger "com.hp.hpl.jena.tdb.exec"
+     * e.g. log4j.properties -- log4j.logger.com.hp.hpl.jena.tdb.exec=INFO
+     */
+    public static final Symbol symLogExec           = allocSymbol("logExec") ;
+
+    /** Log duplicates during loading */
+    public static final Symbol symLogDuplicates     = allocSymbol("logDuplicates") ;
+
+    /** File mode : one of "direct", "mapped", "default" */ 
+    public static final Symbol symFileMode          = allocSymbol("fileMode") ;
+
+    /** Index type */
+    public static final Symbol symIndexType         = allocSymbol("indexType") ;
+    
+    // ---- Parameters
+    
+    // -- Machinary: statics must be defined before used.
+    // Tie to location but that means one instance per graph
+
+    private static final String propertyFileKey1    = tdbPropertyRoot+".settings" ;
+    private static final String propertyFileKey2    = tdbSymbolPrefix+":settings" ;
+
+    private static String propertyFileName = null ;
+    static {
+        propertyFileName = System.getProperty(propertyFileKey1) ;
+        if ( propertyFileName == null )
+            propertyFileName = System.getProperty(propertyFileKey2) ;
+    }
+
+    private static Properties properties = readPropertiesFile() ;
+
+    // -- Unsettable parameters
     
     /** Size, in bytes, of a block */
-    public static final int BlockSize               = intValue("BlockSize", 8*1024) ;
+    public static final int BlockSize               = 8*1024 ; // intValue("BlockSize", 8*1024) ;
 
-    /** Size, in bytes, of a block */
-    public static final int BlockSizeTest           = intValue("BlockSizeTest", 1024) ;
+    /** Size, in bytes, of a block for testing */
+    public static final int BlockSizeTest           = 1024 ; // intValue("BlockSizeTest", 1024) ;
     
 //    /** Size, in bytes, of a memory block */
-//    public static final int BlockSizeMem            = intValue("BlockSizeMem", 32*8 ) ;
+//    public static final int BlockSizeMem            = 32*8 ; //intValue("BlockSizeMem", 32*8 ) ;
 
     /** order of an in-memory BTree or B+Tree */
-    public static final int OrderMem                = intValue("OrderMem", 5) ;
+    public static final int OrderMem                = 5 ; // intValue("OrderMem", 5) ;
     
+    // -- Settable parameters
+
     /** Size, in bytes, of a segment (used for memory mapped files) */
     public static final int SegmentSize             = intValue("SegmentSize", 8*1024*1024) ;
     
-    // ---- Caches
+    // ---- Cache sizes (within the JVM)
     
-    /** Size of Node<->NodeId caches */
-    public static final int NodeCacheSize           = intValue("NodeCacheSize", 100*1000) ;
+    /** Size of Node to NodeId cache.
+     *  Used to map from Node to NodeId spaces.
+     *  Used for loading and for query preparation.
+     */
+    public static final int Node2NodeIdCacheSize    = intValue("Node2NodeIdCacheSize", 100*1000) ;
+    /** Size of NodeId to NodeI cache.
+     *  Used to map from NodeId to Node spaces.
+     *  Used for retriveing results.
+     */
+    public static final int NodeId2NodeCacheSize    = intValue("NodeId2NodeCacheSize", 100*1000) ;
 
     /** Size of the delayed-write block cache (32 bit systems only) (per file) */
-    public static final int BlockWriteCacheSize     = intValue("BlockWriteCacheSize", 2000) ;
+    public static final int BlockWriteCacheSize     = intValue("BlockWriteCacheSize", 2*1000) ;
 
     /** Size of read block cache (32 bit systems only).  Increase JVM size as necessary. Per file. */
     public static final int BlockReadCacheSize      = intValue("BlockReadCacheSize", 10*1000) ;
@@ -87,14 +138,14 @@ public class SystemTDB
     // ---- Misc
     
     /** Number of adds/deletes between calls to sync (-ve to disable) */
-    public static final int SyncTick                = intValue("SyncTick", 10*1000) ;
+    public static final int SyncTick                = intValue("SyncTick", 100*1000) ;
 
     // Choice is made in GraphTDBFactory
     public static ReorderTransformation defaultOptimizer = null ; //ReorderLib.fixed() ;
 
     public static final ByteOrder NetworkOrder      = ByteOrder.BIG_ENDIAN ;
     
-    public static boolean NullOut = false ;                  // For checking 
+    public static boolean NullOut = false ;
 
     public static boolean Checking = false ;
 
@@ -109,11 +160,11 @@ public class SystemTDB
     
     public static Symbol allocSymbol(String shortName)
     { 
-        if ( shortName.startsWith(TDB.tdbSymbolPrefix)) 
+        if ( shortName.startsWith(SystemTDB.tdbSymbolPrefix)) 
             throw new TDBException("Symbol short name begins with the TDB namespace prefix: "+shortName) ;
         if ( shortName.startsWith("http:")) 
             throw new TDBException("Symbol short name begins with http: "+shortName) ;
-        return allocSymbol(TDB.symbolNamespace, shortName) ;
+        return allocSymbol(SystemTDB.symbolNamespace, shortName) ;
     }
     
     private static Symbol allocSymbol(String namespace, String shortName)
@@ -121,14 +172,7 @@ public class SystemTDB
         return Symbol.create(namespace+shortName) ;
     }
     
-    // --------
-    // Tie to location but that means one instance per graph
-    // More in the context !
-    
-    // Combine with the TDB propertied (Metadata)
-    
-    private static String propertyFileName = "" ;
-    private static Properties properties = readPropertiesFile() ;
+    // ----
     
     private static int intValue(String name, int defaultValue)
     {
@@ -139,18 +183,23 @@ public class SystemTDB
             return defaultValue ;
         String x = properties.getProperty(name) ;
         if ( x == null )
-            return defaultValue ;  
+            return defaultValue ; 
+        TDB.logInfo.info("Set: "+name+" = "+x) ;
         int v = Integer.parseInt(x) ;
         return v ;
     }
-    
+
     private static Properties readPropertiesFile()
     {
+        if ( propertyFileName == null )
+            return null ;
+        
         Properties p = new Properties() ;
         try
         {
             Reader r = FileUtils.asBufferedUTF8(new FileInputStream(propertyFileName)) ;
             p.load(r) ;
+            TDB.logInfo.info("Using properties from '"+propertyFileName+"'") ;
         } catch (FileNotFoundException ex)
         { 
             log.debug("No system properties file ("+propertyFileName+")") ;
@@ -161,7 +210,13 @@ public class SystemTDB
         }
         return p ;
     }
+
+    
     // --------
+    // Tie to location but that means one instance per graph
+    // More in the context !
+    
+    // Combine with the TDB propertied (Metadata)
     
     public static final boolean is64bitSystem = determineIf64Bit() ;
 
@@ -202,7 +257,7 @@ public class SystemTDB
         // Called very, very early, before --set might be seen.
         // Hence delayed access above.
         
-        String x = ARQ.getContext().getAsString(TDB.symFileMode, "default") ;
+        String x = ARQ.getContext().getAsString(SystemTDB.symFileMode, "default") ;
 
         if ( x.equalsIgnoreCase("direct") )
         {
@@ -245,7 +300,7 @@ public class SystemTDB
             return indexType ;
         
         boolean defaultSetting = false ;
-        String x = TDB.getContext().getAsString(TDB.symIndexType) ;
+        String x = TDB.getContext().getAsString(SystemTDB.symIndexType) ;
         if ( x == null )
         {
             defaultSetting = true ;
@@ -258,8 +313,6 @@ public class SystemTDB
         indexType = iType ;
         return iType ;
     }
-    
-    
 }
 
 /*

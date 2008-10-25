@@ -15,6 +15,7 @@ import com.hp.hpl.jena.sparql.util.Utils;
 
 import com.hp.hpl.jena.tdb.TDB;
 import com.hp.hpl.jena.tdb.pgraph.GraphTDB;
+import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
 public abstract class CmdTDB extends CmdARQ
 {
@@ -34,7 +35,7 @@ public abstract class CmdTDB extends CmdARQ
     public static void init()
     {
         TDB.init() ;
-        ModSymbol.addPrefixMapping(TDB.tdbSymbolPrefix, TDB.symbolNamespace) ;
+        ModSymbol.addPrefixMapping(SystemTDB.tdbSymbolPrefix, SystemTDB.symbolNamespace) ;
     }
     
     protected Model getModel()

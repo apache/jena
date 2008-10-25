@@ -14,6 +14,7 @@ import lib.CacheFactory;
 import lib.CacheSetLRU;
 
 import com.hp.hpl.jena.graph.Node;
+
 import com.hp.hpl.jena.sparql.util.ALog;
 
 import com.hp.hpl.jena.tdb.TDBException;
@@ -35,11 +36,17 @@ public abstract class NodeTableBase implements NodeTable
     
     // A small cache of "known unknowns" to speed up searching for impossible things.   
     // Cache update needed on NodeTable changes because a node may become "known"
-    
     protected CacheSetLRU<Node> notPresent ;
 
-    // Delayed construction - must call init.
+    // Delayed construction - must call init explicitly.
     protected NodeTableBase() {}
+    
+    // Combined into one constructor.
+    protected NodeTableBase(Index nodeToId, ObjectFile objectFile, int nodeToIdCacheSize, int idToNodeCacheSize)
+    {
+        this() ;
+        init(nodeToId, objectFile, idToNodeCacheSize, idToNodeCacheSize) ;
+    }
     
     protected void init(Index nodeToId, ObjectFile objectFile,
                         int nodeToIdCacheSize, int idToNodeCacheSize)
@@ -52,14 +59,7 @@ public abstract class NodeTableBase implements NodeTable
             id2node_Cache = CacheFactory.createCache(idToNodeCacheSize) ;
         notPresent = new CacheSetLRU<Node>(100) ;
     }
-    
-    // Combined into one constructor.
-    protected NodeTableBase(Index nodeToId, ObjectFile objectFile, int nodeToIdCacheSize, int idToNodeCacheSize)
-    {
-        this() ;
-        init(nodeToId, objectFile, idToNodeCacheSize, idToNodeCacheSize) ;
-    }
-    
+
     // ---- Public interface for Node <==> NodeId
 
     /** Get the Node for this NodeId, or null if none */

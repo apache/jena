@@ -74,10 +74,12 @@ public class Run
  
     public static void main(String ... args) throws IOException
     {
-        extHash() ; 
+        //System.setProperty("tdb:settings", "tdb.properties") ;
+        tdbloader("D.ttl") ;
         
-        String[] a = { "--set=tdb:logExec=true", "--file=Q.rq" } ;
-        tdb.tdbquery.main(a) ;
+        //extHash() ; 
+        
+        tdbquery("--set=tdb:logExec=true", "--file=Q.rq") ;
         System.exit(0) ;
         
         memOpt() ; 
@@ -310,7 +312,7 @@ public class Run
     {
         // Do NOW!
         // TDB.getContext().set(TDB.symFileMode, "mapped") ;
-        TDB.getContext().set(TDB.symIndexType, "bplustree") ;
+        TDB.getContext().set(SystemTDB.symIndexType, "bplustree") ;
         
         Location loc = new Location("tmp") ;
         //FileOps.clearDirectory(loc.getDirectoryPath()) ;
@@ -367,17 +369,9 @@ public class Run
         qexec.close() ;
     }
     
-    private static void tdbquery(String query)
+    private static void tdbquery(String... args)
     {
-        String[] a = { query } ;
-        tdb.tdbquery.main(a) ;
-        System.exit(0) ;
-    }
-    
-    private static void tdbquery(String assembler, String query)
-    {
-        String[] a = { "--set", "tdb:logExec=true", "--desc="+assembler, query } ;
-        tdb.tdbquery.main(a) ;
+        tdb.tdbquery.main(args) ;
         System.exit(0) ;
     }
     
@@ -393,9 +387,9 @@ public class Run
         System.exit(0) ;
     }
     
-    private static void tdbconfig(String assembler, String file)
+    private static void tdbconfig(String... args) 
     {
-        tdb.tdbconfig.main("stats", "--desc="+assembler) ;
+        tdb.tdbconfig.main(args) ;
         System.exit(0) ;
     }
 }

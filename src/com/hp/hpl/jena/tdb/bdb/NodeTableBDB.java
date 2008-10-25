@@ -6,7 +6,8 @@
 
 package com.hp.hpl.jena.tdb.bdb;
 
-import static com.hp.hpl.jena.tdb.sys.SystemTDB.NodeCacheSize;
+import static com.hp.hpl.jena.tdb.sys.SystemTDB.Node2NodeIdCacheSize;
+import static com.hp.hpl.jena.tdb.sys.SystemTDB.NodeId2NodeCacheSize;
 import lib.Bytes;
 
 import com.sleepycat.je.*;
@@ -31,7 +32,7 @@ public class NodeTableBDB extends NodeTableBase
     
     public NodeTableBDB(SetupBDB config, Database nodeHashToId, ObjectFile objectFile)
     {
-        super(null, objectFile, NodeCacheSize, NodeCacheSize) ;
+        super(null, objectFile, Node2NodeIdCacheSize, NodeId2NodeCacheSize) ;
         this.config = config ;
         this.nodeHashToId = nodeHashToId ;
     }

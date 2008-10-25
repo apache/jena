@@ -10,11 +10,7 @@ public class Dev
 {
     // ---- Release
     //   ?? ARQ Optimizer and controlling optimizations per graph (esp FilterPlacement).
-    // Tidy up in OpExecutorTDB
-    // Renaming (in ARQ) for OpCompiler
-    // Optimizer documentation - check
-    // Final testing
-
+    
     // ---- Reopenable BlockMgrs (and the object file?) 
     
     // ---- ExtHash trials
@@ -23,7 +19,6 @@ public class Dev
     // ---- Optimization
     //   Abbreviate planning when below a threshold (likely selectivity?), or number of triples planned.
     //   Consider doing all plans from first choice.
-    // ** Documentation
     
     // ---- Assembler 
     //    Setting options (globally, per model)

@@ -6,7 +6,8 @@
 
 package com.hp.hpl.jena.tdb.pgraph;
 
-import static com.hp.hpl.jena.tdb.sys.SystemTDB.NodeCacheSize;
+import static com.hp.hpl.jena.tdb.sys.SystemTDB.Node2NodeIdCacheSize;
+import static com.hp.hpl.jena.tdb.sys.SystemTDB.NodeId2NodeCacheSize;
 
 import com.hp.hpl.jena.tdb.base.file.FileFactory;
 import com.hp.hpl.jena.tdb.base.file.Location;
@@ -22,12 +23,11 @@ public class NodeTableIndex extends NodeTableBase
     public NodeTableIndex(IndexBuilder factory, Location loc)
     {
         super() ;
-        IndexBuilder.get() ;
         Index nodeToId = factory.newIndex(loc, GraphTDB.nodeRecordFactory, Names.indexNode2Id) ;
             
         // Data file.
         ObjectFile objects = FileFactory.createObjectFileDisk(loc.getPath(Names.nodesData));
-        init(nodeToId, objects, NodeCacheSize, NodeCacheSize) ;
+        init(nodeToId, objects, Node2NodeIdCacheSize, NodeId2NodeCacheSize) ;
     }
     
     // Memory version - testing.

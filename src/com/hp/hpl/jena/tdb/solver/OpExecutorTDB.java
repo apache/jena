@@ -25,31 +25,30 @@ import com.hp.hpl.jena.sparql.engine.main.OpExecutor;
 import com.hp.hpl.jena.sparql.engine.main.OpExecutorFactory;
 import com.hp.hpl.jena.sparql.engine.main.QC;
 import com.hp.hpl.jena.sparql.expr.ExprList;
-import com.hp.hpl.jena.tdb.TDB;
 import com.hp.hpl.jena.tdb.pgraph.GraphTDB;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderProc;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
+import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
 public class OpExecutorTDB extends OpExecutor
 {
-    public static OpExecutorFactory altFactory = new OpExecutorFactory() {
-
+    public static OpExecutorFactory altFactory = new OpExecutorFactory()
+    {
         @Override
         public OpExecutor create(ExecutionContext execCxt)
-        {
-            return new OpExecutorTDB(execCxt) ;
-        }} ;
+        { return new OpExecutorTDB(execCxt) ; }
+    } ;
     
 
-    // ---- Stop a BGP being reordered, again. 
-    static String executeNow = "DirectTDB" ;
+    // ---- Stop a BGP being reordered.
+    // Normally, this is done by swapping to OpExecutorPlainTDB but this
+    // allows specific control for experimentation.
+    private static final String executeNow = "TDB:NoReorder" ;
     private static Transform labelBGP = new TransformCopy()
     {
         @Override
         public Op transform(OpBGP opBGP)
-        {
-            return OpLabel.create(executeNow, opBGP) ;
-        }
+        { return OpLabel.create(executeNow, opBGP) ; }
     } ;
     
     private boolean isForTDB ;
@@ -103,7 +102,8 @@ public class OpExecutorTDB extends OpExecutor
     }
 
     // SolverLib??
-    public static QueryIterator optimizeExecute(GraphTDB graph, QueryIterator input, BasicPattern pattern, ExprList exprs, ExecutionContext execCxt)
+    public static QueryIterator optimizeExecute(GraphTDB graph, QueryIterator input, BasicPattern pattern, 
+                                                ExprList exprs, ExecutionContext execCxt)
     {
         if ( ! input.hasNext() )
             return input ;
@@ -113,8 +113,7 @@ public class OpExecutorTDB extends OpExecutor
         input = null ; // Now invalid.
         BasicPattern pattern2 = Substitute.substitute(pattern, peek.peek() ) ;
 
-        // Calc the reorder from this as a prototypical patten
-        // to be executed after substitution. 
+        // -- Reorder
         ReorderTransformation transform = graph.getReorderTransform() ;
         if ( transform != null )
         {
@@ -124,13 +123,15 @@ public class OpExecutorTDB extends OpExecutor
             pattern = proc.reorder(pattern) ; 
         }
         
+        // -- Filter placement
         Op op = null ;
         if ( exprs != null )
             op = TransformFilterPlacement.transform(exprs, pattern) ;
         else
             op = new OpBGP(pattern) ;
         
-        if ( execCxt.getContext().isTrue(TDB.symLogExec) && logExec.isInfoEnabled() )
+        // -- Explain
+        if ( execCxt.getContext().isTrue(SystemTDB.symLogExec) && logExec.isInfoEnabled() )
         {
             String x = op.toString();
             x = StrUtils.chop(x) ;
@@ -143,15 +144,12 @@ public class OpExecutorTDB extends OpExecutor
             logExec.info(x) ;
         }
         
-        // Switch off reorder when actually executing the op
+        // -- Execute
+        // Switch to a non-reordring executor
         ExecutionContext ec2 = new ExecutionContext(execCxt) ;
         ec2.setExecutor(plainFactory) ;
 
-        // Alternative: but breaks unless we include opSequence as something
-        // that is execute straight.
-        // op = OpLabel.create(executeNow, op) ;
-        
-        // Solve without going through this factory again.
+        // Solve without going through this executor again.
         // There would be issues of nested (graph ...)
         // but this is only a (filter (bgp...)) at most
         return QC.execute(op, peek, ec2) ;
@@ -168,7 +166,7 @@ public class OpExecutorTDB extends OpExecutor
         
     }
     
-    /** A op executor that simply executes a BGP without any reordering */ 
+    /** An op executor that simply executes a BGP without any reordering */ 
     private static class OpExecutorPlainTDB extends OpExecutor
     {
         public OpExecutorPlainTDB(ExecutionContext execCxt)

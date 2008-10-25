@@ -13,6 +13,7 @@ import arq.cmdline.ModDataset;
 import com.hp.hpl.jena.query.ARQ;
 
 import com.hp.hpl.jena.tdb.TDB;
+import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
 
 public class tdbquery extends arq.query
@@ -36,7 +37,7 @@ public class tdbquery extends arq.query
     {
         super.processModulesAndArgs() ;
         if ( isVerbose() )
-            ARQ.getContext().setTrue(TDB.symLogExec) ;
+            ARQ.getContext().setTrue(SystemTDB.symLogExec) ;
     }
     
     @Override
