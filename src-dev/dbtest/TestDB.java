@@ -21,7 +21,7 @@ public class TestDB extends TestCase
     static private final String arabicBase            = "ءآأ";
     static private final String symbolsBase           = "☺☻♪♫" ;
     static private final String chineseBase           = "孫子兵法" ; // The Art of War 
-    static private final String japaneseBase          = "日本" ;    // Japan
+    static private final String japaneseBase          = "日本" ;    // Japanese
     
     static public TestSuite suite(Connection jdbc, Params params)
     {
