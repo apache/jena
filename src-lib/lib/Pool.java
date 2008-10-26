@@ -1,42 +1,21 @@
 /*
- * (c) Copyright 2008 Hewlett-Packard Development Company, LP
- * All rights reserved.
- * [See end of file]
+ * (c) Copyright 2008 Hewlett-Packard Development Company, LP All rights
+ * reserved. [See end of file]
  */
 
-package lib;
+package lib ;
 
-import java.util.ArrayDeque;
-import java.util.Deque;
-
-/** A Pool of objects */ 
-public class Pool<T>
+public interface Pool<T>
 {
-    // For convenience we operate a LIFO policy.
-    // This not part of the extenal contract of a "pool"
-    Deque<T> stack = new ArrayDeque<T>();
-    int maxSize = -1 ;  // Unbounded
-    
-    public Pool() {} 
-    //public Pool(int maxSize) { this.maxSize = maxSize ; }
-    
-    public void put(T item)
-    {
-        if ( maxSize >= 0 && stack.size() == 0 )
-        {}
-        stack.push(item) ;
-    }
-    
-    /** Get an item from the pool - return null if the pool is empty */
-    public T get()              
-    { 
-        if ( stack.size() == 0 ) return null ;
-        return stack.pop();
-    }
-    
-    public boolean isEmpty()    { return stack.size() == 0 ; } 
-}
 
+    public abstract void put(T item) ;
+
+    /** Get an item from the pool - return null if the pool is empty */
+    public abstract T get() ;
+
+    public abstract boolean isEmpty() ;
+
+}
 /*
  * (c) Copyright 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.

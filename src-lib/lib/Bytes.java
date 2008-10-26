@@ -207,15 +207,15 @@ public class Bytes
     }
     
     private static Charset utf8 = null ;
+    // Pools for encoders/decoder.  Paolo says that creating an encopder or decoder is not that cheap. 
+    private static Pool<CharsetEncoder> encoders = new SyncPool<CharsetEncoder>() ;
+    private static Pool<CharsetDecoder> decoders = new SyncPool<CharsetDecoder>() ;
+    
 //    private static CharsetEncoder enc = null ;
 //    private static CharsetDecoder dec = null ;
     static {
         try {
             utf8 = Charset.forName(encodingUTF8) ;
-            // Encoders and decoders are not thread-safe - internal codec state.
-            // Could pool if it become expensive 
-//            enc = utf8.newEncoder() ;
-//            dec = utf8.newDecoder() ;
         } catch (Throwable ex)
         {
             ex.printStackTrace(System.err);
@@ -225,35 +225,42 @@ public class Bytes
     /** Encode a string into a ByteBuffer */
     public static void toByteBuffer(String s, ByteBuffer bb)
     {
-        // not thread safe across multiple TDB graph in the same JVM.
-        // enc.reset();
-        
-        CharsetEncoder enc = utf8.newEncoder() ; 
+        CharsetEncoder enc = encoders.get();
+        if ( enc == null )
+            enc = utf8.newEncoder();
 //        enc = enc.onMalformedInput(CodingErrorAction.REPLACE)
 //                 .onUnmappableCharacter(CodingErrorAction.REPLACE);
         
         CharBuffer cBuff = CharBuffer.wrap(s);
         CoderResult r = enc.encode(cBuff, bb, true) ;
-        if ( r == CoderResult.OVERFLOW )
+        if ( r.isOverflow() )
             throw new InternalError("Bytes.toByteBuffer: encode overflow (1)") ;
         r = enc.flush(bb) ;
-        if ( r == CoderResult.OVERFLOW )
+        if ( r.isOverflow() )
             throw new InternalError("Bytes.toByteBuffer: encode overflow (2)") ;
+        enc.reset();
+        encoders.put(enc) ;
     }
     
     /** Decode a string into a ByteBuffer */
     public static String fromByteBuffer(ByteBuffer bb)
     {
-        // not thread safe (because of the shared decoder)
+        if ( bb.remaining() == 0 )
+            return "" ;
+        
         try
         {
-            // not thread safe across multiple TDB graph in the same JVM.
-            // dec.reset();
-            CharsetDecoder dec = utf8.newDecoder() ;
+            CharsetDecoder dec = decoders.get();
+            if ( dec == null )
+                dec = utf8.newDecoder() ;
             CharBuffer cBuff = dec.decode(bb) ;
-            CoderResult r = dec.flush(cBuff) ;
-            if ( r == CoderResult.OVERFLOW )
-                throw new InternalError("Bytes.fromByteBuffer: decode overflow") ;
+            // No need to flush - the packaged form decode(ByteBuffer) does that. 
+//            CoderResult r = dec.flush(cBuff) ;  // If no bytes, crashes here (illegal state).
+//            if ( r == CoderResult.OVERFLOW )
+//                throw new InternalError("Bytes.fromByteBuffer: decode overflow") ;
+            dec.reset() ;
+            decoders.put(dec) ;
+            // Yuk - another copy.
             return cBuff.toString() ;
         } catch (CharacterCodingException ex)
         {

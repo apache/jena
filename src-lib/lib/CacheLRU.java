@@ -92,6 +92,7 @@ public class CacheLRU<K,V> implements Cache<K,V>
 
     public static class CacheImpl<K,V> extends LinkedHashMap<K, V>
     {
+        // Use? ArrayBlockingQueue
         int maxEntries ; 
         ActionKeyValue<K,V> dropHandler = null ;
     

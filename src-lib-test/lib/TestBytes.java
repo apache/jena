@@ -6,6 +6,8 @@
 
 package lib;
 
+import java.nio.ByteBuffer;
+
 import org.junit.Test;
 import test.BaseTest;
 
@@ -112,11 +114,35 @@ public class TestBytes extends BaseTest
         long i2 = Bytes.getLong(b,8) ;
         assertEquals(0xF1F2F3F4F5F6F7F8L,i1) ;
         assertEquals(0xA1A2A3A4A5A6A7A8L,i2) ;
-
-        
-        
     }
 
+    private static void codec(String str)
+    {
+        ByteBuffer bb = ByteBuffer.allocate(16) ; 
+        Bytes.toByteBuffer(str, bb) ;
+        bb.flip() ;
+        String str2 = Bytes.fromByteBuffer(bb) ;
+        assertEquals(str, str2) ;
+    }
+    
+    static private final String asciiBase             = "abc" ;
+    static private final String latinBase             = "Àéíÿ" ;
+    static private final String latinExtraBase        = "ỹﬁﬂ" ;  // fi-ligature, fl-ligature
+    static private final String greekBase             = "αβγ" ;
+    static private final String hewbrewBase           = "אבג" ;
+    static private final String arabicBase            = "ءآأ";
+    static private final String symbolsBase           = "☺☻♪♫" ;
+    static private final String chineseBase           = "孫子兵法" ; // The Art of War 
+    static private final String japaneseBase          = "日本" ;    // Japanese
+    
+    @Test public void codec1()  { codec(asciiBase) ; }
+    @Test public void codec2()  { codec("") ; }
+    @Test public void codec3()  { codec(greekBase) ; }
+    @Test public void codec4()  { codec(hewbrewBase) ; }
+    @Test public void codec5()  { codec(arabicBase) ; }
+    @Test public void codec6()  { codec(symbolsBase) ; }
+    @Test public void codec7()  { codec(chineseBase) ; }
+    @Test public void codec8()  { codec(japaneseBase) ; }
 }
 
 /*

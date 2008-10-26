@@ -6,26 +6,36 @@
 
 package lib;
 
+import java.util.ArrayDeque;
+import java.util.Deque;
 
-/** Syncronization wrapper for a pool */ 
-public class SyncPool<T> extends PoolBase<T>
+/** A Pool of objects */ 
+public class PoolBase<T> implements Pool<T>
 {
-    public SyncPool() { } 
+    // For convenience we operate a LIFO policy.
+    // This not part of the extenal contract of a "pool"
+    Deque<T> stack = new ArrayDeque<T>();
+    int maxSize = -1 ;  // Unbounded
     
-    @Override
-    public final synchronized void put(T item)
+    public PoolBase() {} 
+    //public Pool(int maxSize) { this.maxSize = maxSize ; }
+    
+    public void put(T item)
     {
-        super.put(item) ;
+        // Currently, unbounded
+        if ( maxSize >= 0 && stack.size() == 0 )
+        {}
+        stack.push(item) ;
     }
     
-    @Override
-    public final synchronized T get()              
+    /** Get an item from the pool - return null if the pool is empty */
+    public T get()              
     { 
-        return super.get();
+        if ( stack.size() == 0 ) return null ;
+        return stack.pop();
     }
     
-    @Override
-    public final synchronized boolean isEmpty()    { return super.isEmpty() ; } 
+    public boolean isEmpty()    { return stack.size() == 0 ; } 
 }
 
 /*
