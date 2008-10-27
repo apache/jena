@@ -13,20 +13,16 @@ import java.util.Set;
 
 import lib.Bytes;
 import lib.FileOps;
-import lib.Pair;
 import lib.cache.CacheNG;
 import arq.cmd.CmdUtils;
-
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.rdf.model.RSIterator;
-
-import com.hp.hpl.jena.util.FileManager;
 
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
-
+import com.hp.hpl.jena.query.*;
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.rdf.model.RSIterator;
 import com.hp.hpl.jena.sparql.algebra.Algebra;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.Transformer;
@@ -34,19 +30,11 @@ import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.main.StageGenerator;
 import com.hp.hpl.jena.sparql.engine.optimizer.StageGenOptimizedBasicPattern;
 import com.hp.hpl.jena.sparql.sse.SSE;
-
-import com.hp.hpl.jena.query.*;
-
 import com.hp.hpl.jena.tdb.TDB;
 import com.hp.hpl.jena.tdb.TDBFactory;
-import com.hp.hpl.jena.tdb.base.block.BlockMgr;
-import com.hp.hpl.jena.tdb.base.block.BlockMgrFactory;
-import com.hp.hpl.jena.tdb.base.buffer.RecordBuffer;
 import com.hp.hpl.jena.tdb.base.file.Location;
 import com.hp.hpl.jena.tdb.base.record.Record;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
-import com.hp.hpl.jena.tdb.base.recordfile.RecordBufferPage;
-import com.hp.hpl.jena.tdb.base.recordfile.RecordBufferPageMgr;
 import com.hp.hpl.jena.tdb.index.Index;
 import com.hp.hpl.jena.tdb.index.IndexFactoryExtHash;
 import com.hp.hpl.jena.tdb.pgraph.GraphTDB;
@@ -54,6 +42,7 @@ import com.hp.hpl.jena.tdb.solver.StageGeneratorGeneric;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderLib;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
 import com.hp.hpl.jena.tdb.sys.SystemTDB;
+import com.hp.hpl.jena.util.FileManager;
 
 import dev.opt.Reorganise;
 import dev.opt.Scope;
@@ -118,8 +107,6 @@ public class Run
         rewrite() ; System.exit(0) ;
         
         //cache2() ;
-        processBPTree() ;
-        
         //tdbquery("dataset.ttl", "SELECT * { ?s ?p ?o }") ;
 
 //      Model model = TDBFactory.createModel("tmp") ;
@@ -257,56 +244,7 @@ public class Run
         System.exit(0) ;
     }
 
-    private static void processBPTree()
-    {
-        divider() ;
-        
-        
-        String root1 = "DB/OSP" ;
-        String root2 = "DB/OSP-2" ;
-        FileOps.delete(root2+".dat") ;
-
-        Pair<Long, Long> results = BPlusTreeRewriter.rewrite(root1, root2) ;
-        long total = results.car() ;
-        long blocks = results.cdr() ;
-        System.out.printf("Count = %d in %d blocks\n", total, blocks) ;
-        System.out.println() ;
-        scan(root1+".dat") ;
-        scan(root2+".dat") ;
-        
-        // Now scan for split points
-        BPlusTreeRewriter.phase2(root2+".dat") ; 
-        
-        System.exit(0) ;
-    }
-
-    // Checker.
-    // Assumes the file is not open anywhere else.
-    static void scan(String filename)
-    {
-        // Rely on OS read ahead.
-        BlockMgr blkMgr = BlockMgrFactory.createStdFileNoCache(filename, SystemTDB.BlockSize) ;
-        RecordFactory f = GraphTDB.indexRecordFactory ; 
-        RecordBufferPageMgr recordPageMgr = new RecordBufferPageMgr(f, blkMgr) ;
-        int idx = 0 ;
-        int n = 0 ;
-        int total = 0 ;
-        
-        while ( idx >= 0 )
-        {
-            RecordBufferPage page = recordPageMgr.get(idx) ;
-            //System.out.printf("%04d :: %04d -> %04d [%d, %d]\n", n, page.getId(), page.getLink(), page.getCount(), page.getMaxSize()) ;
-            RecordBuffer rb = page.getRecordBuffer() ;
-            //System.out.printf("     :: %d %d\n", rb.getSize(), rb.maxSize() ) ;
-            total += rb.size();
-            idx = page.getLink() ;
-            n++ ;
-        }
-        blkMgr.close() ;
-        System.out.printf("%-15s [Scan] Count = %d in %d blocks\n", filename, total, n) ;
-    }
-    
-    
+ 
     
     static public void smallGraph() 
     {
