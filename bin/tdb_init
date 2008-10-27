@@ -32,7 +32,7 @@ then
 TDB_CMD=$(basename $0)
 
 ## ---- JVM Args e.g. -Xmx1024M
-JVM_ARGS=${JVM_ARGS:--Xmx1024M -server}
+JVM_ARGS=${JVM_ARGS:-Xmx1024M -server}
 
 ## ---- Classpath : adds in current CP
 TDB_CP="$($TDBROOT/bin/tdb_path)"

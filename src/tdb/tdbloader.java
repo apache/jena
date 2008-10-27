@@ -59,7 +59,10 @@ public class tdbloader extends CmdTDB
     protected void exec()
     {
         if ( isVerbose())
+        {
+            System.out.println("Java maximum memory: "+Runtime.getRuntime().maxMemory());
             System.out.println(ARQ.getContext()) ;
+        }
         if ( isVerbose() )
             timing = true ;
         if ( isQuiet() )
