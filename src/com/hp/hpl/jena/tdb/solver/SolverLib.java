@@ -51,7 +51,7 @@ public class SolverLib
     /** Non-reordering execution of a basic graph pattern, given a iterator of bindings as input */ 
     public static QueryIterator execute(GraphTDB graph, BasicPattern pattern, QueryIterator input, ExecutionContext execCxt)
     {
-        // Don't log here normally, OpCompiler is the right place.
+        // Don't log at level info here normally, OpExecutor is the right place.
         if ( log.isDebugEnabled() )
             log.debug(pattern.toString()) ;
         

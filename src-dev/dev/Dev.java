@@ -16,9 +16,12 @@ public class Dev
     // ---- ExtHash trials
     //  Making ExtHash indexes: IndexFactoryExtHash and IndexFactoryExtHashMem
     
-    // ---- Optimization
+    // ---- Optimization and execution
     //   Abbreviate planning when below a threshold (likely selectivity?), or number of triples planned.
     //   Consider doing all plans from first choice.
+    //   Consider using standard OpExecutor which wil go via StageGeneratorDirectTDB
+    
+    
     
     // ---- Assembler 
     //    Setting options (globally, per model)

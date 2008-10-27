@@ -30,6 +30,13 @@ import com.hp.hpl.jena.tdb.solver.reorder.ReorderProc;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
 import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
+/** TDB executor for algebra expressions.  It is the standard ARQ executor
+ *  except for basic graph patterns and filtered basic graph patterns (currently).  
+ * 
+ * See also: StageGeneratorDirectTDB, a non-reordering 
+ * 
+ * @author Andy Seaborne
+ */
 public class OpExecutorTDB extends OpExecutor
 {
     public static OpExecutorFactory altFactory = new OpExecutorFactory()
@@ -163,9 +170,9 @@ public class OpExecutorTDB extends OpExecutor
         {
             return new OpExecutorPlainTDB(execCxt) ;
         }
-        
     }
     
+    // This can be the standard one if the stage generator is StageGeneratorDirectTDB   
     /** An op executor that simply executes a BGP without any reordering */ 
     private static class OpExecutorPlainTDB extends OpExecutor
     {

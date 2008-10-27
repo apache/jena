@@ -74,7 +74,7 @@ public class TDB
         // XXX Really need to sort this out!
         TDB.getContext().set(ARQ.filterPlacement, false) ;
         
-        wireStageGenerator() ;
+        wireIntoExecution() ;
         
         // Override N-TRIPLES
         String bulkLoaderClass = NTriplesReader2.class.getName() ;
@@ -85,7 +85,7 @@ public class TDB
             log.debug("\n"+ARQ.getContext()) ;
     }
     
-    private static void wireStageGenerator()
+    private static void wireIntoExecution()
     {
         // Globally change the stage generator to intercept BGP on TDB
         StageGenerator orig = (StageGenerator)ARQ.getContext().get(ARQ.stageGenerator) ;
@@ -94,10 +94,12 @@ public class TDB
             // ARQ base.  Cause chaos by using the new version.
             orig = new StageGeneratorGeneric() ;
         
+        // Wire in the TDB stage generator which wil make TDB work whether
+        // or not the TDB executor is used.
         StageGenerator stageGenerator = new StageGeneratorDirectTDB(orig) ;
         ARQ.getContext().set(ARQ.stageGenerator, stageGenerator) ;
 
-        // Wire in the new OpCompiler 
+        // Wire in the new OpExecutor.  This is normal way to execute.
         ARQ.getContext().set(ARQConstants.sysOpExecutorFactory, OpExecutorTDB.altFactory) ;
     }
     
