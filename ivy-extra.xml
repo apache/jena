@@ -4,7 +4,7 @@
 	    xmlns:mvn="http://ant.apache.org/ivy/maven"
 	    xsi:noNamespaceSchemaLocation="http://ant.apache.org/ivy/schemas/ivy.xsd">
 
-  <info module="arq"
+  <info module="arq-extra"
 	organisation="com.hp.hpl.jena" 
 	revision="${version}">
     <license name="BSD"/>
