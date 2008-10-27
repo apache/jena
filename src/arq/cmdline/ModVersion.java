@@ -6,18 +6,9 @@
 
 package arq.cmdline;
 
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Iterator;
-
-import java.util.List;
-
 import com.hp.hpl.jena.Jena;
-
-import com.hp.hpl.jena.sparql.util.IndentedWriter;
-import com.hp.hpl.jena.sparql.util.Utils;
-
 import com.hp.hpl.jena.query.ARQ;
+import com.hp.hpl.jena.sparql.util.Version;
 
 public class ModVersion implements ArgModuleGeneral
 {
@@ -25,16 +16,16 @@ public class ModVersion implements ArgModuleGeneral
     protected boolean version = false ;
     protected boolean printAndExit = false ;
     
-    private List classes = new ArrayList() ; 
+    private Version versionMgr = new Version() ; 
     
     public ModVersion(boolean printAndExit)
     {
         this.printAndExit = printAndExit ;
-        addClass(Jena.class) ;
-        addClass(ARQ.class) ;
+        versionMgr.addClass(Jena.class) ;
+        versionMgr.addClass(ARQ.class) ;
     }
     
-    public void addClass(Class c) { classes.add(c) ; }
+    public void addClass(Class c) { versionMgr.addClass(c) ; }
     
     public void registerWith(CmdGeneral cmdLine)
     {
@@ -45,6 +36,7 @@ public class ModVersion implements ArgModuleGeneral
     {
         if ( cmdLine.contains(versionDecl) )
             version = true ;
+        // The --version flag causes us to print and exit. 
         if ( version && printAndExit )
             printVersionAndExit() ;
     }
@@ -53,61 +45,13 @@ public class ModVersion implements ArgModuleGeneral
     
     public void printVersion()
     {
-        for ( Iterator iter = classes.iterator() ; iter.hasNext() ; )
-        {
-            Class c = (Class)iter.next();
-            String x = Utils.classShortName(c) ;
-            fields(x, c) ;    
-        }
+        versionMgr.print() ;
     }  
      
     public void printVersionAndExit()
     {
         printVersion() ;
         System.exit(0) ;
-    }
-    private static String[] fields = { /*"NAME",*/ "VERSION", "BUILD_DATE" } ;
-    
-    private static void fields(String prefix, Class cls)
-    {
-        for (int i=0; i < fields.length; i++)
-            printField(prefix, fields[i], cls) ;
-
-    }
-
-    private static String field(String fieldName, Class cls)
-    {
-        try
-        {
-            Field f = cls.getDeclaredField(fieldName) ;
-            return f.get(null).toString() ;
-        } catch (IllegalArgumentException ex)
-        {
-            ex.printStackTrace();
-        } catch (IllegalAccessException ex)
-        {
-            ex.printStackTrace();
-        } catch (SecurityException ex)
-        {
-            ex.printStackTrace();
-        } catch (NoSuchFieldException ex)
-        {
-            ex.printStackTrace();
-        }
-        return "<error>" ;
-    }
-    
-    private static void printField(String prefix, String fieldName, Class cls)
-    {
-        IndentedWriter out = IndentedWriter.stdout ;
-        out.print(prefix) ;
-        out.print(": ") ;
-        out.pad(12) ;
-        out.print(fieldName) ;
-        out.print(": ") ;
-        out.print(field(fieldName, cls)) ;
-        out.println() ;
-        out.flush();
     }
 }
 

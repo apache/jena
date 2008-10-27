@@ -90,28 +90,32 @@ public class OpExecutor
         dispatcher = new ExecutionDispatch(this) ;
     }
 
-    public QueryIterator executeOp(Op op)
-    {
-        return executeOp(op, null) ;
-    }
+//    public QueryIterator executeOp(Op op)
+//    {
+//        return executeOp(op, root()) ;
+//    }
 
+    // ---- The recursive step.
+    
     public QueryIterator executeOp(Op op, QueryIterator input)
     {
         return dispatcher.exec(op, input) ;
     }
-        
-    public QueryIterator execute(OpBGP opBGP, QueryIterator input)
+    
+    // ---- All the cases
+    
+    protected QueryIterator execute(OpBGP opBGP, QueryIterator input)
     {
         BasicPattern pattern = opBGP.getPattern() ;
         return StageBuilder.execute(pattern, input, execCxt) ;
     }
 
-    public QueryIterator execute(OpTriple opTriple, QueryIterator input)
+    protected QueryIterator execute(OpTriple opTriple, QueryIterator input)
     {
         return execute(opTriple.asBGP(), input) ;
     }
 
-    public QueryIterator execute(OpQuadPattern quadPattern, QueryIterator input)
+    protected QueryIterator execute(OpQuadPattern quadPattern, QueryIterator input)
     {
         if ( false )
         {
@@ -126,12 +130,12 @@ public class OpExecutor
         throw new ARQNotImplemented("execute/OpQuadPattern") ;
     }
 
-    public QueryIterator execute(OpPath opPath, QueryIterator input)
+    protected QueryIterator execute(OpPath opPath, QueryIterator input)
     {
         return new QueryIterPath(opPath.getTriplePath(), input, execCxt) ;
     }
 
-    public QueryIterator execute(OpProcedure opProc, QueryIterator input)
+    protected QueryIterator execute(OpProcedure opProc, QueryIterator input)
     {
         Procedure procedure = ProcEval.build(opProc, execCxt) ;
         QueryIterator qIter = executeOp(opProc.getSubOp(), input) ;
@@ -139,7 +143,7 @@ public class OpExecutor
         return new QueryIterProcedure(qIter, procedure, execCxt) ;
     }
 
-    public QueryIterator execute(OpPropFunc opPropFunc, QueryIterator input)
+    protected QueryIterator execute(OpPropFunc opPropFunc, QueryIterator input)
     {
         Procedure procedure = ProcEval.build(opPropFunc.getProperty(), opPropFunc.getSubjectArgs(),opPropFunc.getObjectArgs(), execCxt) ;
         QueryIterator qIter = executeOp(opPropFunc.getSubOp(), input) ;
@@ -147,7 +151,7 @@ public class OpExecutor
     }
 
 
-    public QueryIterator execute(OpJoin opJoin, QueryIterator input)
+    protected QueryIterator execute(OpJoin opJoin, QueryIterator input)
     {
         // Look one level in for any filters with out-of-scope variables.
         boolean canDoLinear = JoinClassifier.isLinear(opJoin) ;
@@ -175,7 +179,7 @@ public class OpExecutor
     }
 
     // Pass iterator from one step directly into the next.
-    public QueryIterator execute(OpSequence opSequence, QueryIterator input)
+    protected QueryIterator execute(OpSequence opSequence, QueryIterator input)
     {
         QueryIterator qIter = input ;
         
@@ -188,7 +192,7 @@ public class OpExecutor
         return qIter ;
     }
     
-    public QueryIterator execute(OpLeftJoin opLeftJoin, QueryIterator input)
+    protected QueryIterator execute(OpLeftJoin opLeftJoin, QueryIterator input)
     {
         ExprList exprs = opLeftJoin.getExprs() ;
         if ( exprs != null )
@@ -224,7 +228,7 @@ public class OpExecutor
         return qIter ;
     }
 
-    public QueryIterator execute(OpConditional opCondition, QueryIterator input)
+    protected QueryIterator execute(OpConditional opCondition, QueryIterator input)
     {
         if ( true )
             throw new ARQNotImplemented("OpCompile: OpConditional") ;
@@ -232,14 +236,14 @@ public class OpExecutor
         return null ;
     }
     
-    public QueryIterator execute(OpDiff opDiff, QueryIterator input)
+    protected QueryIterator execute(OpDiff opDiff, QueryIterator input)
     { 
         QueryIterator left = executeOp(opDiff.getLeft(), input) ;
         QueryIterator right = executeOp(opDiff.getRight(), root()) ;
         return new QueryIterDiff(left, right, execCxt) ;
     }
     
-    public QueryIterator execute(OpUnion opUnion, QueryIterator input)
+    protected QueryIterator execute(OpUnion opUnion, QueryIterator input)
     {
         List x = flattenUnion(opUnion) ;
         QueryIterator cIter = new QueryIterUnion(input, x, execCxt) ;
@@ -267,7 +271,7 @@ public class OpExecutor
             acc.add( opUnion.getRight() ) ;
     }
     
-    public QueryIterator execute(OpFilter opFilter, QueryIterator input)
+    protected QueryIterator execute(OpFilter opFilter, QueryIterator input)
     {
         ExprList exprs = opFilter.getExprs() ;
         exprs.prepareExprs(execCxt.getContext()) ;
@@ -283,17 +287,17 @@ public class OpExecutor
         return qIter ;
     }
 
-    public QueryIterator execute(OpGraph opGraph, QueryIterator input)
+    protected QueryIterator execute(OpGraph opGraph, QueryIterator input)
     { 
         return new QueryIterGraph(input, opGraph, execCxt) ;
     }
     
-    public QueryIterator execute(OpService opService, QueryIterator input)
+    protected QueryIterator execute(OpService opService, QueryIterator input)
     {
         return new QueryIterService(input, opService, execCxt) ;
     }
     
-    public QueryIterator execute(OpDatasetNames dsNames, QueryIterator input)
+    protected QueryIterator execute(OpDatasetNames dsNames, QueryIterator input)
     { 
         if ( true ) throw new ARQNotImplemented("OpDatasetNames") ;
         
@@ -305,7 +309,7 @@ public class OpExecutor
         return executeOp(opJoin , input) ;    //??
     }
 
-    public QueryIterator execute(OpTable opTable, QueryIterator input)
+    protected QueryIterator execute(OpTable opTable, QueryIterator input)
     { 
 //        if ( input instanceof QueryIteratorBase )
 //        {
@@ -327,7 +331,7 @@ public class OpExecutor
         return qIter ;
     }
 
-    public QueryIterator execute(OpExt opExt, QueryIterator input)
+    protected QueryIterator execute(OpExt opExt, QueryIterator input)
     { 
         try {
             QueryIterator qIter = opExt.eval(input, execCxt) ;
@@ -338,7 +342,7 @@ public class OpExecutor
         throw new QueryExecException("Encountered unsupported OpExt: "+opExt.getName()) ;
     }
 
-    public QueryIterator execute(OpLabel opLabel, QueryIterator input)
+    protected QueryIterator execute(OpLabel opLabel, QueryIterator input)
     {
       if ( ! opLabel.hasSubOp() )
           return input ;
@@ -346,61 +350,61 @@ public class OpExecutor
       return executeOp(opLabel.getSubOp(), input) ;
     }
 
-    public QueryIterator execute(OpNull opNull, QueryIterator input)
+    protected QueryIterator execute(OpNull opNull, QueryIterator input)
     {
         // Loose the input.
         input.close() ;
         return new QueryIterNullIterator(execCxt) ;
     }
 
-    public QueryIterator execute(OpList opList, QueryIterator input)
+    protected QueryIterator execute(OpList opList, QueryIterator input)
     {
         return executeOp(opList.getSubOp(), input) ;
     }
     
-    public QueryIterator execute(OpOrder opOrder, QueryIterator input)
+    protected QueryIterator execute(OpOrder opOrder, QueryIterator input)
     { 
         QueryIterator qIter = executeOp(opOrder.getSubOp(), input) ;
         qIter = new QueryIterSort(qIter, opOrder.getConditions(), execCxt) ;
         return qIter ;
     }
 
-    public QueryIterator execute(OpProject opProject, QueryIterator input)
+    protected QueryIterator execute(OpProject opProject, QueryIterator input)
     {
         QueryIterator  qIter = executeOp(opProject.getSubOp(), input) ;
         qIter = new QueryIterProject(qIter, opProject.getVars(), execCxt) ;
         return qIter ;
     }
 
-    public QueryIterator execute(OpSlice opSlice, QueryIterator input)
+    protected QueryIterator execute(OpSlice opSlice, QueryIterator input)
     { 
         QueryIterator qIter = executeOp(opSlice.getSubOp(), input) ;
         qIter = new QueryIterSlice(qIter, opSlice.getStart(), opSlice.getLength(), execCxt) ;
         return qIter ;
     }
     
-    public QueryIterator execute(OpGroupAgg opGroupAgg, QueryIterator input)
+    protected QueryIterator execute(OpGroupAgg opGroupAgg, QueryIterator input)
     { 
         QueryIterator qIter = executeOp(opGroupAgg.getSubOp(), input) ;
         qIter = new QueryIterGroup(qIter, opGroupAgg.getGroupVars(), opGroupAgg.getAggregators(), execCxt) ;
         return qIter ;
     }
     
-    public QueryIterator execute(OpDistinct opDistinct, QueryIterator input)
+    protected QueryIterator execute(OpDistinct opDistinct, QueryIterator input)
     {
         QueryIterator qIter = executeOp(opDistinct.getSubOp(), input) ;
         qIter = new QueryIterDistinct(qIter, execCxt) ;
         return qIter ;
     }
 
-    public QueryIterator execute(OpReduced opReduced, QueryIterator input)
+    protected QueryIterator execute(OpReduced opReduced, QueryIterator input)
     {
         QueryIterator qIter = executeOp(opReduced.getSubOp(), input) ;
         qIter = new QueryIterReduced(qIter, execCxt) ;
         return qIter ;
     }
 
-    public QueryIterator execute(OpAssign opAssign, QueryIterator input)
+    protected QueryIterator execute(OpAssign opAssign, QueryIterator input)
     {
         // Need prepare?
         QueryIterator qIter = executeOp(opAssign.getSubOp(), input) ;
@@ -408,7 +412,7 @@ public class OpExecutor
         return qIter ;
     }
 
-    protected static QueryIterator createRootQueryIterator(ExecutionContext execCxt)
+    public static QueryIterator createRootQueryIterator(ExecutionContext execCxt)
     {
         return QueryIterRoot.create(execCxt) ;
     }
