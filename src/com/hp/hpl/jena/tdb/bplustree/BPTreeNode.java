@@ -343,7 +343,7 @@ public final class BPTreeNode extends BPTreePage
         idx = convert(idx) ;
         // Find index, or insertion point (immediate higher slot) as (-i-1)
         // A key is the highest element of the records up to this point
-        // so we search down at slot x (betwen somethign smaller and something
+        // so we search down at slot x (betwen something smaller and something
         // larger.
         BPTreePage page = get(idx) ;
         return page ;

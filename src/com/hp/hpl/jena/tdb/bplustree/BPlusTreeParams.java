@@ -49,10 +49,10 @@ public class BPlusTreeParams
     
     // ---- Derived constants.
 
-    /** Maximum number of keys */
+    /** Maximum number of keys per non-leaf block */
     final int MaxRec ; 
 
-    /** Maximum number of pointers per block */
+    /** Maximum number of pointers per block per non-leaf block */
     final int MaxPtr  ;
 
     /** Minimum number of keys per non-leaf block */
