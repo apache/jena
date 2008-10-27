@@ -449,7 +449,7 @@
   <!-- Publishing with Ivy // Retrofit -->
 
   <!-- ========================================== -->
-  <!-- ==== Ivy : Dependency Management  -->
+  <!-- ==== Ivy : Publication  -->
 
   <property name="ivy.keyfile" 		location="${env.IVYKEY}"/>
   <property name="ivy.user"    		value="${env.IVYUSER}"/>
@@ -495,12 +495,23 @@
     <ivy:settings />
   </target>
 
-  <!-- DEVELOPMENT : lib2/ -->
-  <target name="ivy-setup-lib" depends="ivy-init,ivy-resolve-report"> 
-    <ivy:retrieve conf="dev" pattern="lib2/[artifact]-[revision](-[classifier]).[ext]" />
-    <ivy:cachepath pathid="ivy.dev.classpath" conf="dev" />
-  </target>
+  <macrodef name="arq-publish-one"> 
+    <attribute name="ivyfile"/>
+    <!-- <element name="some-tasks" optional="yes"/> -->
+    <sequential>
+      <ivy:resolve file="@{ivyfile}"/>
+      <ivy:publish conf="main" 
+		 resolver="dev-resolver" 
+		 overwrite="true">
+	<artifacts pattern="${artifacts.dir}/[artifact]-[revision](-[classifier]).[ext]" />
+    </ivy:publish>
+    </sequential>
+  </macrodef>
 
+  <target name="arq-publish" depends="artifacts" description="Publish!">
+    <arq-publish-one ivyfile="ivy-extra.xml"/>
+  </target>
+	    
   <target name="ivy-resolve" depends="ivy-resolve-report"/>
 
   <target name="ivy-resolve-report" depends="ivy-init">
@@ -510,7 +521,7 @@
     <fail message="Ivy dependency failed" if="ivy.resolve.failed"/>
   </target>
 
-  <target name="ivy-publish" depends="ivy-init,ivy-resolve">
+  <target name="ivy-publish" depends="publish-check,ivy-init,ivy-resolve">
     <!-- <ivy:resolve conf="main"/> -->
     <ivy:deliver con="main"/>
     <ivy:publish conf="main" 
@@ -543,17 +554,5 @@
       <artifacts pattern="${artifacts.dir}/[artifact]-[revision](-[classifier]).[ext]" />
     </ivy:publish>
   </target>
-
-  <target name="ivy-pom" depends="ivy-init">
-    <!-- Make a basic POM file -->
-    <ivy:makepom ivyfile="ivy.xml" 
-		 pomfile="pom-arq-auto.xml">
-      <!--
-	<mapping conf="default" scope="compile"/>
-	<mapping conf="runtime" scope="runtime"/>
-      -->
-    </ivy:makepom>
-  </target>
-
-
+  
 </project>
