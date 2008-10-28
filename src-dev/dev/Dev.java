@@ -8,6 +8,8 @@ package dev;
 
 public class Dev
 {
+    // [Signed numbers in SPARQL expressions]
+
     // ---- [quad paths]
 
     // ---- Static scope analysis
