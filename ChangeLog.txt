@@ -1,6 +1,8 @@
 ChangeLog for ARQ
 =================
 
+==== ARQ 2.6
+
 ==== ARQ 2.5
 
 + Redesign of quad support. 
