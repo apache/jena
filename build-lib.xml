@@ -364,7 +364,7 @@
 
   <target name="ivy-publish" depends="ivy-init,ivy-resolve">
     <!-- <ivy:resolve conf="main"/> -->
-    <ivy:deliver con="main"/>
+    <ivy:deliver conf="main"/>
     <ivy:publish conf="main" 
                  resolver="dev-publish" 
                  overwrite="true">
