@@ -8,22 +8,14 @@ package dev;
 
 public class Dev
 {
-    // ---- Release
-    //   ?? ARQ Optimizer and controlling optimizations per graph (esp FilterPlacement).
+    // ---- Reopenable BlockMgrs (and the object file?) 
+
+    // --  ?? ARQ Optimizer and controlling optimizations per graph (esp FilterPlacement).
     
     // Umbel data: http://umbel.org/documentation.html
     
-    // ---- Reopenable BlockMgrs (and the object file?) 
-    
-    // ---- ExtHash trials
-    //  Making ExtHash indexes: IndexFactoryExtHash and IndexFactoryExtHashMem
-    
-    // ---- Optimization and execution
-    //   Abbreviate planning when below a threshold (likely selectivity?), or number of triples planned.
-    //   Consider doing all plans from first choice.
-    //   Consider using standard OpExecutor which wil go via StageGeneratorDirectTDB
-    
-    // ---- Assembler 
+    // ---- Assembler and configuration
+    //    Configuring the built-in constants.
     //    Setting options (globally, per model)
     //    Variable indexes
     
@@ -56,16 +48,6 @@ public class Dev
     // NodeTable : pool for buffers for writing nodes?
 
     
-    // Design/static (long term)
-    //   Scoping and rewrite with later execution
-    //   Generalise the approach:
-    //     OpJoin => sequence // OpAugment/Op1 or IndexedLeftJoin/Op2 : an indexed LeftJoin
-    //     OpAugment is "match or {}" rather than "match or nil" OpDefault? OpConditional?
-    //     OpConditional(left, right) -- streaming - 
-    //        try to extend with left and for each row can't get an extension, do right instead. 
-    //        Over-engineered? OpConditional(expr) only in a sequence.
-    //        Or OpN is a sequence of left then augment right1, right2, ...
-    
     //   TransformCopy 
     //      - maybe Transform should be "Op transform(OpABC)"
     //      - and TransformCopy(list) is TransformRewrite. (there are no non-TransformCopy's)
@@ -75,24 +57,17 @@ public class Dev
     
     // ------------------------------------------
     
-    // ---- B+Tree rewriter
-    
     // ---- New cache API alloc/return/invalidate (shrink/grow?) : stats
     // Weak references and more space.
     
     // ---- Node Table
     //     Compression
-    //     short string inline?
     
     // ---- Graph
     // QueryHandler to access subjectsFor etc. 
     // removeAll implementation: depends on iterator.remove
     // but can do faster as a specific operation.
 
-    // Link Assembler (custom indexes) to TDBFactory 
-    // TDBFactory ==> "create" ==> connect(... , boolean canCreate) ;
-    // Location-keyed cache of TDB graphs 
-    
     // Version of NodeTable that does Logical => Physical id translation
     //    And a PageMgr wrapper for same?
 
