@@ -8,7 +8,6 @@ package com.hp.hpl.jena.sparql.syntax;
 
 import com.hp.hpl.jena.graph.Node;
 
-import com.hp.hpl.jena.sparql.ARQNotImplemented;
 import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 
 /** Evaluate a query element based on source information in a named collection.
@@ -45,7 +44,7 @@ public class ElementFetch extends Element
     }
 
     
-    public void visit(ElementVisitor v) { throw new ARQNotImplemented("ElementFetch.visit") ; } // { v.visit(this) ; }
+    public void visit(ElementVisitor v) { v.visit(this) ; }
 }
 
 /*

@@ -19,6 +19,8 @@ import com.hp.hpl.jena.sparql.core.*;
 import com.hp.hpl.jena.sparql.expr.Expr;
 import com.hp.hpl.jena.sparql.expr.ExprList;
 import com.hp.hpl.jena.sparql.path.PathCompiler;
+import com.hp.hpl.jena.sparql.sse.Item;
+import com.hp.hpl.jena.sparql.sse.ItemList;
 import com.hp.hpl.jena.sparql.syntax.*;
 import com.hp.hpl.jena.sparql.util.ALog;
 import com.hp.hpl.jena.sparql.util.Context;
@@ -88,6 +90,9 @@ public class AlgebraGenerator
       
         if ( elt instanceof ElementService )
             return compileElementService((ElementService)elt) ; 
+        
+        if ( elt instanceof ElementFetch )
+            return compileElementFetch((ElementFetch)elt) ; 
 
         // This is only here for queries built programmatically
         // (triple patterns not in a group) 
@@ -281,13 +286,14 @@ public class AlgebraGenerator
         if ( elt instanceof ElementGroup || 
              elt instanceof ElementNamedGraph ||
              elt instanceof ElementService ||
+             elt instanceof ElementFetch ||
              elt instanceof ElementUnion )
         {
             Op op = compileElement(elt) ;
             return join(current, op) ;
         }
         
-        broken("compileDirect/Element not recognized: "+Utils.className(elt)) ;
+        broken("compile/Element not recognized: "+Utils.className(elt)) ;
         return null ;
     }
 
@@ -378,6 +384,20 @@ public class AlgebraGenerator
         return new OpService(serviceNode, sub) ;
     }
     
+    private Op compileElementFetch(ElementFetch elt)
+    {
+        Node serviceNode = elt.getFetchNode() ;
+        
+        // Temporary,
+        OpExtRegistry.ExtBuilder builder = OpExtRegistry.builder("fetch") ;
+        if ( builder == null )
+            return OpLabel.create("fetch/"+serviceNode, OpTable.unit()) ;
+        Item item = Item.createNode(elt.getFetchNode()) ;
+        ItemList args = new ItemList() ;
+        args.add(item) ;
+        return builder.make(args) ;
+    }
+
     protected Op compileElementSubquery(ElementSubQuery eltSubQuery)
     {
         Op sub = this.compile(eltSubQuery.getQuery()) ;
@@ -494,7 +514,7 @@ public class AlgebraGenerator
 
     private void broken(String msg)
     {
-        System.err.println("AlgebraCompiler: "+msg) ;
+        //System.err.println("AlgebraGenerator: "+msg) ;
         throw new ARQInternalErrorException(msg) ;
     }
 }

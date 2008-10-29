@@ -45,7 +45,7 @@ public abstract class OpExt extends OpBase
         out.print(getSubTag()) ;
         out.print(" ") ;
         outputArgs(out, sCxt) ;
-        WriterLib.finish(out) ;
+        WriterLib.finish(out, Tags.tagExt) ;
         if ( line != out.getRow() )
             out.ensureStartOfLine() ;
     }

@@ -320,6 +320,16 @@ public class FormatterElement extends FormatterBase
     {
         visitNodePattern("SERVICE", el.getServiceNode(), el.getElement()) ;
     }
+
+    public void visit(ElementFetch el)
+    {
+        out.print("FETCH") ;
+        out.print(" ") ;
+        String nodeStr = ( el.getFetchNode() == null ) ? "*" : slotToString(el.getFetchNode()) ;
+        out.print(nodeStr) ;
+        //out.print(" ") ;
+    }
+    
     
     private void visitNodePattern(String label, Node node, Element subElement)
     {

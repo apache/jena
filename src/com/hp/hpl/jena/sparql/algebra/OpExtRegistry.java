@@ -39,13 +39,15 @@ public class OpExtRegistry
         public OpExt make(ItemList argList) ;
     }
     
+    public static ExtBuilder builder(String tag) { return (ExtBuilder)extensions.get(tag) ; }
+    
     static public class BuildExt implements BuilderOp.Build 
     { 
         public Op make(ItemList list)
         {
             // 0 is the "ext"
             String subtag = list.get(1).getSymbol() ;
-            ExtBuilder b = (ExtBuilder)extensions.get(subtag) ;
+            ExtBuilder b = builder(subtag) ;
             list = list.sublist(2) ;
             OpExt ext = b.make(list) ;  // Arguments 2 onwards
             return ext ;

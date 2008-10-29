@@ -98,6 +98,11 @@ public class ElementWalker
                 el.getElement().visit(this) ;
             proc.visit(el) ;
         }
+
+        public void visit(ElementFetch el)
+        {
+            proc.visit(el) ;
+        }
         
         public void visit(ElementUnsaid el)
         {
