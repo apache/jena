@@ -11,6 +11,8 @@ public class Dev
     // ---- Release
     //   ?? ARQ Optimizer and controlling optimizations per graph (esp FilterPlacement).
     
+    // Umbel data: http://umbel.org/documentation.html
+    
     // ---- Reopenable BlockMgrs (and the object file?) 
     
     // ---- ExtHash trials

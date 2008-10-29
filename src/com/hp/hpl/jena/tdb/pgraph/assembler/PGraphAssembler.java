@@ -27,7 +27,7 @@ import com.hp.hpl.jena.tdb.base.file.Location;
 
 public class PGraphAssembler extends AssemblerBase implements Assembler
 {
-    static TripleIndexAssembler tripleIndexBuilder = new TripleIndexAssembler() ;
+    static TripleIndexAssembler tripleIndexBuilder = null ; 
     // See Store/gbt.ttl
     
     @Override
@@ -74,7 +74,7 @@ public class PGraphAssembler extends AssemblerBase implements Assembler
                 System.out.printf("Index: %s\n", desc) ; System.out.flush();
                 continue ;
             }
-            throw new TDBException("Wrong format for tdb:index: shoudl be a string: found: "+FmtUtils.stringForRDFNode(obj)) ; 
+            throw new TDBException("Wrong format for tdb:index: should be a string: found: "+FmtUtils.stringForRDFNode(obj)) ; 
 //            Resource x = (Resource)obj ;
 //            String desc = x.getProperty(pDescription).getString() ;
 //            String file = x.getProperty(pFile).getString() ;
@@ -83,6 +83,9 @@ public class PGraphAssembler extends AssemblerBase implements Assembler
         
         System.out.flush();
         throw new TDBException("Custom indexes turned off") ; 
+        
+//        // Make and call directly.         
+//        tripleIndexBuilder = new TripleIndexAssembler(loc) ;
 //        // ------- Experimental : Make using explicit index descriptions
 //        // ---- Uses BTree, not BPlusTrees - need upgrading. 
 //        Map<String, TripleIndex> indexes = new HashMap<String, TripleIndex>() ;

@@ -61,7 +61,8 @@ public class PGraphAssemblerVocab
         
         assemblerClass(g, PGraphType,            new PGraphAssembler()) ;
         assemblerClass(g, PGraphBDBType,         new PGraphAssembler()) ;
-        assemblerClass(g, TripleIndexType,       new TripleIndexAssembler()) ;
+        // This is a subassembler of a PGraphAssembler and called directly.
+        //assemblerClass(g, TripleIndexType,       new TripleIndexAssembler()) ;
         assemblerClass(g, NodeTableType,         new NodeTableAssembler()) ;
     }
     

@@ -25,14 +25,14 @@ import com.hp.hpl.jena.tdb.pgraph.GraphTDB;
 
 public class TripleIndexAssembler extends AssemblerBase //implements Assembler
 {
+    // Subassembler of a PGraph assembler and is called directly.
     /* 
      * [ :description "SPO" ; :file "SPO.idx" ]
      */
     
     private Location location = null ;
-    
-    public TripleIndexAssembler()                     { this.location = new Location(".") ; }
-    public TripleIndexAssembler(Location location)    { this.location = location ; }
+    public TripleIndexAssembler()                   { this.location = null ; }
+    public TripleIndexAssembler(Location location)  { this.location = location ; }
     
     @Override
     public TripleIndex open(Assembler a, Resource root, Mode mode)
@@ -42,7 +42,7 @@ public class TripleIndexAssembler extends AssemblerBase //implements Assembler
         exactlyOneProperty(root, pFile) ;
         String filename = getAsStringValue(root, pFile) ;
         
-        // Always null - need to pass from PGraphAssembler
+        // Need to get location from the enclosing PGraphAssembler
         if ( location != null )
             filename = location.absolute(filename) ;
         
