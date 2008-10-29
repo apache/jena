@@ -15,28 +15,18 @@ import com.hp.hpl.jena.rdf.model.Model;
 
 import com.hp.hpl.jena.util.FileManager;
 
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.graph.Node;
-
 import com.hp.hpl.jena.sparql.algebra.AlgebraQuad;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.OpExtRegistry;
 import com.hp.hpl.jena.sparql.algebra.OpExtRegistry.ExtBuilder;
 import com.hp.hpl.jena.sparql.algebra.op.OpExt;
-import com.hp.hpl.jena.sparql.algebra.op.OpTable;
-import com.hp.hpl.jena.sparql.core.DataSourceGraph;
-import com.hp.hpl.jena.sparql.core.Substitute;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
-import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.sparql.engine.iterator.QueryIterRepeatApply;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext;
 import com.hp.hpl.jena.sparql.sse.Item;
 import com.hp.hpl.jena.sparql.sse.ItemList;
 import com.hp.hpl.jena.sparql.sse.SSE;
-import com.hp.hpl.jena.sparql.util.FmtUtils;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
-import com.hp.hpl.jena.sparql.util.IterLib;
 import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 
 import com.hp.hpl.jena.query.*;
@@ -57,89 +47,13 @@ public class Run
     
     public static void fetch()
     {
-        // Wire in.
-        OpExtRegistry.register(new ExtBuilder(){
-            public OpExt make(ItemList argList)
-            {
-                //System.out.println("Args: "+argList) ;
-                Node n = argList.get(0).getNode() ;
-                return new OpFetch(n) ;
-            }
-
-            public String getSubTab()
-            {
-                return "fetch" ;
-            }}) ;
-
-//        Query q = QueryFactory.read("Q.arq") ;
-//        System.out.print(q) ;
-//        Op op = Algebra.compile(q) ;
-//        System.out.print(op) ;
+        OpFetch.init() ;
         sparql.main(new String[]{"--file=Q.arq"}) ;
         //System.out.println("----") ;
         System.exit(0) ; 
     }
     
-    static class OpFetch extends OpExt 
-        {
-            private Node node ;
-        
-            public OpFetch(Node node) { this.node = node ; }
-            
-            public Op effectiveOp()
-            {
-                return OpTable.unit() ;
-            }
-        
-            public QueryIterator eval(QueryIterator input, ExecutionContext execCxt)
-            {
-                return new QueryIterFetch(input, execCxt) ;
-            }
-        
-            class QueryIterFetch extends QueryIterRepeatApply
-            {
-
-                public QueryIterFetch(QueryIterator input, ExecutionContext context)
-                {
-                    super(input, context) ;
-                }
-
-                protected QueryIterator nextStage(Binding binding)
-                {
-                    DataSourceGraph ds = (DataSourceGraph)super.getExecContext().getDataset() ;
-                    Node n = Substitute.substitute(node, binding) ;
-                    String uri = n.getURI();
-                    if ( ds.containsGraph(n) )
-                        return IterLib.result(binding, getExecContext()) ;
-                    // DO NOT LOOK
-                    Model m = FileManager.get().loadModel(uri) ;
-                    Graph g = m.getGraph() ;
-                    ds.addGraph(n, g) ;
-                    return IterLib.result(binding, getExecContext()) ;
-                }
-                
-            }
-            
-            public boolean equalTo(Op other, NodeIsomorphismMap labelMap)
-            {
-                if ( ! ( other instanceof OpFetch) ) return false ;
-                return node.equals(((OpFetch)other).node) ;
-            }
-        
-            public String getSubTag() { return "fetch" ; }
-        
-            public void outputArgs(IndentedWriter out, SerializationContext sCxt)
-            {
-                out.print(FmtUtils.stringForNode(node, sCxt)) ;
-            }
-            
-            public int hashCode()
-            {
-                return "fetch".hashCode() ^ node.hashCode() ;
-            }
-    }
-    
-    
+ 
     
     public static void code()
     {
