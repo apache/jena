@@ -536,6 +536,8 @@ Element GraphPatternNotTriples() : { Element el = null ; }
    el = ServiceGraphPattern()
  |
    el = Assignment()
+ |
+   el = FetchGraph()
 
  )
   { return el ; }
@@ -555,7 +557,7 @@ Element GraphGraphPattern() : { Element el ; Node n ;}
 }
 
 
-Element ServiceGraphPattern() : { Element el ; Node n ; String iri ; }
+Element ServiceGraphPattern() : { Element el ; Node n ; }
 {
   <SERVICE>
   n = VarOrIRIref()
@@ -573,6 +575,14 @@ Element Assignment() : { Var v ; Expr expr ; }
   <RPAREN>
     { return new ElementAssign(v, expr) ; }
 }
+
+Element FetchGraph() : { Node n ; }
+{
+  <FETCH>
+  n = VarOrIRIref()
+  { return new ElementFetch(n) ; }
+}
+
 
 
 // G (union G)* can be a single group pattern
@@ -1430,6 +1440,8 @@ TOKEN [IGNORE_CASE] :
 | < SUM: "sum" >
 | < AVG: "avg" >
 | < STDDEV: "stdev" >
+//|  < LOAD:        "load" >
+| < FETCH: "fetch" >
 
 
 | < FILTER: "filter" >

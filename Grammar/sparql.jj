@@ -300,12 +300,6 @@ Element GraphPatternNotTriples() : { Element el = null ; }
    el = GroupOrUnionGraphPattern()
  |
    el = GraphGraphPattern()
-
-
-
-
-
-
  )
   { return el ; }
 }

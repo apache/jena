@@ -1,41 +1,55 @@
 /*
- * (c) Copyright 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package dev;
+package com.hp.hpl.jena.sparql.syntax;
 
-public class Dev
+import com.hp.hpl.jena.graph.Node;
+
+import com.hp.hpl.jena.sparql.ARQNotImplemented;
+import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
+
+/** Evaluate a query element based on source information in a named collection.
+ * 
+ * @author Andy Seaborne
+ */
+
+public class ElementFetch extends Element
 {
-    // ---- [quad paths]
-    
-    // ?? Extends Algebra back to reading graphs and making datasets?
-    // What's the generalization?
-    // FETCH : visitor, syntax tests, Algebra, execution
+    private Node sourceNode ;
 
-    // ---- Static scope analysis
-    // Full scope, parallel map(op => scope sets)
-    // Write tests
-    //   Break up VarFinder later.
+    // FETCH <uri> or FETCH ?var
+    public ElementFetch(Node n)
+    {
+        sourceNode = n ;
+    }
     
-    // ---- OpAssign - needs expression prepare (for function binding)?
-    // Other places using a VarExprList?
-    // Does prepare really matter if failure is defined as a false for evaluation?
+    public Node getFetchNode() { return sourceNode ; }
     
-    // Dev: escapes in Literals and symbols in SSE (ParseSSEBase)
-    // Need configurable escape processing.
+    //@Override
+    public int hashCode() { return sourceNode.hashCode() ^ Element.HashFetch ; }
+
+    //@Override
+    public boolean equalTo(Element el2, NodeIsomorphismMap isoMap)
+    {
+        if ( el2 == null ) return false ;
+
+        if ( ! ( el2 instanceof ElementFetch ) ) 
+            return false ;
+        ElementFetch g2 = (ElementFetch)el2 ;
+        if ( ! this.getFetchNode().equals(g2.getFetchNode()) )
+            return false ;
+        return true ;
+    }
+
     
-    // ---- Migrate:
-    // TransformPathFlattern - left in AlgebraGenerator for now - code in src-dev/opt
-    // But needs to merge adjacent BGPs
-    //   Do adjacent BGP merging afterwards.
-    //   compilePathBlock(PathBlock pathBlock) 
-    //     calls .reduce(pathBlock) 
+    public void visit(ElementVisitor v) { throw new ARQNotImplemented("ElementFetch.visit") ; } // { v.visit(this) ; }
 }
 
 /*
- * (c) Copyright 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

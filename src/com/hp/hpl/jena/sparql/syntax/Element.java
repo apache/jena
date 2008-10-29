@@ -57,6 +57,7 @@ public abstract class Element
     // static final int HashGraph                = 0xA5 ; // Nor needed
     static final int HashUnsaid               = 0xA6 ;
     static final int HashPath                 = 0xA7 ;
+    static final int HashFetch                = 0xA8 ;
 }
 
 /*
