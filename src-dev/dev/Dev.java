@@ -23,8 +23,6 @@ public class Dev
     //   Consider doing all plans from first choice.
     //   Consider using standard OpExecutor which wil go via StageGeneratorDirectTDB
     
-    
-    
     // ---- Assembler 
     //    Setting options (globally, per model)
     //    Variable indexes
