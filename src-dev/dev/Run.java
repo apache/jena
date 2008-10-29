@@ -11,15 +11,13 @@ import java.util.Iterator;
 import arq.sparql;
 import arq.sse_query;
 
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.QueryExecution;
-import com.hp.hpl.jena.query.QueryExecutionFactory;
-import com.hp.hpl.jena.query.QueryFactory;
-import com.hp.hpl.jena.query.QuerySolutionMap;
-import com.hp.hpl.jena.query.ResultSetFormatter;
 import com.hp.hpl.jena.rdf.model.Model;
 
-import com.hp.hpl.jena.sparql.algebra.Algebra;
+import com.hp.hpl.jena.util.FileManager;
+
+import com.hp.hpl.jena.graph.Graph;
+import com.hp.hpl.jena.graph.Node;
+
 import com.hp.hpl.jena.sparql.algebra.AlgebraQuad;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.OpExtRegistry;
@@ -40,10 +38,8 @@ import com.hp.hpl.jena.sparql.util.FmtUtils;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
 import com.hp.hpl.jena.sparql.util.IterLib;
 import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
-import com.hp.hpl.jena.util.FileManager;
 
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.query.*;
 
 
 public class Run
@@ -75,13 +71,13 @@ public class Run
                 return "fetch" ;
             }}) ;
 
-        Query q = QueryFactory.read("Q.arq") ;
-        System.out.print(q) ;
-        Op op = Algebra.compile(q) ;
-        System.out.print(op) ;
-        execQuery("D.ttl", "Q.arq") ;
-        
-        System.out.println("----") ; System.exit(0) ; 
+//        Query q = QueryFactory.read("Q.arq") ;
+//        System.out.print(q) ;
+//        Op op = Algebra.compile(q) ;
+//        System.out.print(op) ;
+        sparql.main(new String[]{"--file=Q.arq"}) ;
+        //System.out.println("----") ;
+        System.exit(0) ; 
     }
     
     static class OpFetch extends OpExt 
@@ -111,8 +107,7 @@ public class Run
                 protected QueryIterator nextStage(Binding binding)
                 {
                     DataSourceGraph ds = (DataSourceGraph)super.getExecContext().getDataset() ;
-                    Binding b = null ;
-                    Node n = Substitute.substitute(node, b) ;
+                    Node n = Substitute.substitute(node, binding) ;
                     String uri = n.getURI();
                     if ( ds.containsGraph(n) )
                         return IterLib.result(binding, getExecContext()) ;
