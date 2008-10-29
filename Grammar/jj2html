@@ -30,8 +30,9 @@ $grammar = &readFile($grammarFile) ;
 $tokens = &readFile($tokensFile) ;
 
 $grammar =~ s!DOCUMENT START!! ;
-$grammar =~ s!NON-TERMINALS!! ;
+# $grammar =~ s!NON-TERMINALS!! ;
 $grammar =~ s!DOCUMENT END!! ;
+$grammar =~ s!TOKENS.*NON-TERMINALS!!s ;
 
 $grammar =~ s!//.*!!g ;
 $grammar =~ s!\r!!g ;

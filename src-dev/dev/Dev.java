@@ -11,6 +11,9 @@ public class Dev
     // [Signed numbers in SPARQL expressions]
 
     // ---- [quad paths]
+    
+    // ?? Extends Algebra back to reading graphs and making datasets?
+    // What's the generalization?
 
     // ---- Static scope analysis
     // Full scope, parallel map(op => scope sets)

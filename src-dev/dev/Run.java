@@ -11,11 +11,13 @@ import java.util.Iterator;
 import arq.sparql;
 import arq.sse_query;
 
+import com.hp.hpl.jena.query.Query;
+import com.hp.hpl.jena.query.QueryExecution;
+import com.hp.hpl.jena.query.QueryExecutionFactory;
+import com.hp.hpl.jena.query.QueryFactory;
+import com.hp.hpl.jena.query.QuerySolutionMap;
+import com.hp.hpl.jena.query.ResultSetFormatter;
 import com.hp.hpl.jena.rdf.model.Model;
-
-import com.hp.hpl.jena.util.FileManager;
-import com.hp.hpl.jena.util.FileUtils;
-
 import com.hp.hpl.jena.sparql.algebra.AlgebraQuad;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.OpExtRegistry;
@@ -29,40 +31,92 @@ import com.hp.hpl.jena.sparql.sse.ItemList;
 import com.hp.hpl.jena.sparql.sse.SSE;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
 import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
-import com.hp.hpl.jena.sparql.util.StringUtils;
-
-import com.hp.hpl.jena.query.*;
-
-import com.hp.hpl.jena.update.*;
+import com.hp.hpl.jena.util.FileManager;
 
 
 public class Run
 {
+    public static void main(String[] argv) throws Exception
+    {
+        
+        // Parses as "2*3+4 junk"
+        // Need to try for a longer pattern.
+        // See errata notes for fix.
+        arq.qexpr.main(new String[]{"2*3+4*5"}) ; System.exit(0) ;
+
+        execQuery("../Jena-Misc/D.ttl", "../Jena-Misc/Q.arq") ;
+        //execQuery("D.ttl", "Q.rq") ;
+        //arq.query.main(new String[]{"--desc=umbel-db.ttl", "SELECT * {}"}) ;
+        code() ; System.exit(0) ; 
+
+        // Compressed syntax
+        // match(Subject, Path, Object, PrefixMapping)
+
+        runQParse() ;
+        System.exit(0) ;
+    }
+    
+    public static void code()
+    {
+
+        Op op = SSE.readOp("Q.sse") ;
+        //op = Algebra.optimize(op) ;
+        //Op op3 = Algebra.compileQuad(query) ;
+
+        System.out.println("---- Original") ;
+        System.out.println(op) ;
+        Op op2 = AlgebraQuad.quadize(op) ;
+
+        System.out.println("---- Quadization") ;
+        System.out.println(op2) ;
+        System.exit(0) ;
+    }
+    
+    public static void opExtension()
+    {
+        OpExtRegistry.register(new ExtBuilder(){
+            public OpExt make(ItemList argList)
+            {
+                System.out.println("Args: "+argList) ;
+                return new OpExtTest(argList) ;
+            }
+
+            public String getSubTab()
+            {
+                return "ABC" ;
+            }}) ;
+        
+        Op op = SSE.parseOp("(ext ABC 123 667)") ;
+        System.out.println(op); 
+        
+        System.out.println("----") ; System.exit(0) ; 
+    }
+
     static class OpExtTest extends OpExt 
     {
         private ItemList argList ;
-
+    
         public OpExtTest(ItemList argList)
         { this.argList = argList ; }
-
+    
         public Op effectiveOp()
         {
             return null ;
         }
-
+    
         public QueryIterator eval(QueryIterator input, ExecutionContext execCxt)
         {
             return null ;
         }
-
+    
         public boolean equalTo(Op other, NodeIsomorphismMap labelMap)
         {
             if ( ! ( other instanceof OpExtTest) ) return false ;
             return argList.equals(((OpExtTest)other).argList) ;
         }
-
+    
         public String getSubTag() { return "TAG" ; }
-
+    
         public void outputArgs(IndentedWriter out, SerializationContext sCxt)
         {
             boolean first = true ;
@@ -82,127 +136,7 @@ public class Run
             return argList.hashCode() ;
         }
     }
-    
 
-    public static void main(String[] argv) throws Exception
-    {
-        execQuery("../Jena-Misc/D.ttl", "../Jena-Misc/Q.arq") ;
-        
-        
-        OpExtRegistry.register(new ExtBuilder(){
-            public OpExt make(ItemList argList)
-            {
-                System.out.println("Args: "+argList) ;
-                return new OpExtTest(argList) ;
-            }
-
-            public String getSubTab()
-            {
-                return "ABC" ;
-            }}) ;
-        
-        Op op = SSE.parseOp("(ext ABC 123 667)") ;
-        System.out.println(op); 
-        
-        System.out.println("----") ; System.exit(0) ; 
-        
-        //execQuery("D.ttl", "Q.rq") ;
-        //arq.query.main(new String[]{"--desc=umbel-db.ttl", "SELECT * {}"}) ;
-        code() ; System.exit(0) ; 
-        
-        if ( false )
-        {
-//            Query query = QueryFactory.read("Q.arq", Syntax.syntaxARQ) ;
-//            System.out.println(query) ;
-//            System.exit(0) ;
-            
-            String x = FileUtils.readWholeFileAsUTF8("Q.arq") ;
-            System.out.println(x) ;
-            
-            Query query1 = QueryFactory.read("Q.arq", Syntax.syntaxARQ) ;
-            Query query2 = QueryFactory.read("Q.arq", Syntax.syntaxARQ) ;
-            
-            System.out.println(query1.hashCode()) ;
-            System.out.println(query2.hashCode()) ;
-            
-            System.out.println(query1) ;
-            
-            query2 = QueryFactory.create(""+query1, Syntax.syntaxARQ) ;
-            System.out.println(query2.hashCode()) ;
-            
-            System.exit(0) ;
-        }
-        //runQTest() ;
-        runQParseARQ() ;
-        // Compressed syntax
-        // match(Subject, Path, Object, PrefixMapping)
-        
-        
-        
-        runQParse() ;
-        execQuery("D.ttl", "Q.arq") ;
-        {
-            String []a = { "--engine=ref", "--file=Q.rq", "--print=op" } ;
-            arq.qparse.main(a) ;
-            System.exit(0) ;
-        }
-        {
-            String qs = StringUtils.join("\n",
-                                         new String[]
-                                                    {
-                "PREFIX dc: <http://purl.org/dc/elements/1.1/>",
-                "INSERT DATA INTO <http://example/bookStore>",
-                                                    "{ <http://example/book3>  dc:title  'Fundamentals of Compiler Design'}"}
-            ) ;
-            UpdateRequest request2 = UpdateFactory.create(qs);
-            request2.output(IndentedWriter.stdout);
-            IndentedWriter.stdout.flush();
-            System.exit(0) ;
-        }
-        
-        
-        UpdateRequest r = UpdateFactory.read("update.ru") ;
-        GraphStore gs = GraphStoreFactory.create() ;
-        System.out.println(r) ;
-        
-        UpdateAction.execute(r, gs) ;
-
-        SSE.write(gs) ;
-        System.exit(0) ;
-        
-        
-        //code() ; System.exit(0) ;
-        runUpdate() ; System.exit(0) ;
-        
-        //QueryEngineMain.register() ;
-        String a[] = new String[]{
-            //"-v",
-            //"--engine=ref",
-            "--data=D.ttl",
-            "-query=Q.rq" ,
-        } ;
-
-        sparql.main(a) ;
-        System.exit(0) ;
-    }
-    
-    public static void code()
-    {
-
-        Op op = SSE.readOp("Q.sse") ;
-        //op = Algebra.optimize(op) ;
-        //Op op3 = Algebra.compileQuad(query) ;
-
-        System.out.println("---- Original") ;
-        System.out.println(op) ;
-        Op op2 = AlgebraQuad.quadize(op) ;
-
-        System.out.println("---- Quadization") ;
-        System.out.println(op2) ;
-        System.exit(0) ;
-
-
-    }
 
     private static void runQParse()
     {

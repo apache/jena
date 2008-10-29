@@ -237,7 +237,7 @@ NON-TERMINALS
 	ValueLogical	:=	RelationalExpression
 	RelationalExpression	:=	NumericExpression ( <EQ> NumericExpression | <NE> NumericExpression | <LT> NumericExpression | <GT> NumericExpression | <LE> NumericExpression | <GE> NumericExpression )?
 	NumericExpression	:=	AdditiveExpression
-	AdditiveExpression	:=	MultiplicativeExpression ( <PLUS> MultiplicativeExpression | <MINUS> MultiplicativeExpression | NumericLiteralPositive | NumericLiteralNegative )*
+	AdditiveExpression	:=	MultiplicativeExpression ( <PLUS> MultiplicativeExpression | <MINUS> MultiplicativeExpression | ( NumericLiteralPositive | NumericLiteralNegative ) ( ( <STAR> UnaryExpression ) | ( <SLASH> UnaryExpression ) )? )*
 	MultiplicativeExpression	:=	UnaryExpression ( <STAR> UnaryExpression | <SLASH> UnaryExpression )*
 	UnaryExpression	:=	<BANG> PrimaryExpression
 		|	<PLUS> PrimaryExpression
