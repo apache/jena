@@ -38,15 +38,6 @@ public class Run
 {
     public static void main(String[] argv) throws Exception
     {
-        
-        // Parses as "2*3+4 junk"
-        // Need to try for a longer pattern.
-        // See errata notes for fix.
-        arq.qexpr.main(new String[]{"2*3+4*5"}) ; System.exit(0) ;
-
-        execQuery("../Jena-Misc/D.ttl", "../Jena-Misc/Q.arq") ;
-        //execQuery("D.ttl", "Q.rq") ;
-        //arq.query.main(new String[]{"--desc=umbel-db.ttl", "SELECT * {}"}) ;
         code() ; System.exit(0) ; 
 
         // Compressed syntax
