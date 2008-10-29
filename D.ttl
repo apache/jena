@@ -1,20 +1,6 @@
 @prefix   :         <http://example/> .
 @prefix  xsd:    <http://www.w3.org/2001/XMLSchema#> .
 
-#:x1 :p "1,233.5"^^xsd:decimal .
-:x1 :p "1233.5"^^xsd:decimal .
-
-:x1 :p "x" .
-
-:x2 :p "1" .
-:x2 :p "2" .
-:x2 :p "3" .
-:x2 :p "4" .
-:x2 :p "5" .
-
-:y1 :q 1 .
-:y1 :q 2 .
-:y1 :q 3 .
-:y1 :q 4 .
-
+:z :lang "xyz"@en .
+:z :lang "xyz"@EN .
 
