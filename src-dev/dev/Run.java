@@ -20,6 +20,7 @@ import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.OpExtRegistry;
 import com.hp.hpl.jena.sparql.algebra.OpExtRegistry.ExtBuilder;
 import com.hp.hpl.jena.sparql.algebra.op.OpExt;
+import com.hp.hpl.jena.sparql.algebra.op.OpFetch;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext;
@@ -47,7 +48,7 @@ public class Run
     
     public static void fetch()
     {
-        OpFetch.init() ;
+        OpFetch.enable() ;
         sparql.main(new String[]{"--file=Q.arq"}) ;
         //System.out.println("----") ;
         System.exit(0) ; 

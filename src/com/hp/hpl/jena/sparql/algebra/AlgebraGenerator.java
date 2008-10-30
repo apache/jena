@@ -388,10 +388,13 @@ public class AlgebraGenerator
     {
         Node serviceNode = elt.getFetchNode() ;
         
-        // Temporary,
+        // Probe to see if enabled.
         OpExtRegistry.ExtBuilder builder = OpExtRegistry.builder("fetch") ;
         if ( builder == null )
+        {
+            ALog.warn(this, "Attempt to use OpFetch - need to enable first with a call to OpFetch.enable()") ; 
             return OpLabel.create("fetch/"+serviceNode, OpTable.unit()) ;
+        }
         Item item = Item.createNode(elt.getFetchNode()) ;
         ItemList args = new ItemList() ;
         args.add(item) ;

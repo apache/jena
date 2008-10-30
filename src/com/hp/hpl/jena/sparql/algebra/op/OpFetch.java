@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package dev;
+package com.hp.hpl.jena.sparql.algebra.op;
 
 import com.hp.hpl.jena.rdf.model.Model;
 
@@ -16,8 +16,6 @@ import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.OpExtRegistry;
 import com.hp.hpl.jena.sparql.algebra.OpExtRegistry.ExtBuilder;
-import com.hp.hpl.jena.sparql.algebra.op.OpExt;
-import com.hp.hpl.jena.sparql.algebra.op.OpTable;
 import com.hp.hpl.jena.sparql.core.DataSourceGraph;
 import com.hp.hpl.jena.sparql.core.Substitute;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
@@ -34,8 +32,12 @@ import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 public class OpFetch extends OpExt
 {
     // ----------------
-    public static void init()
+    private static boolean enabled = false ;
+    public static void enable()
     {
+        if ( enabled ) return ;
+        enabled = true ;
+        
         OpExtRegistry.register(new ExtBuilder(){
             public OpExt make(ItemList argList)
             {

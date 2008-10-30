@@ -1,12 +1,11 @@
-PREFIX : <http://example/>
-PREFIX  afn:     <http://jena.hpl.hp.com/ARQ/function#>
-PREFIX  rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-PREFIX  rdfs:   <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX  apf:     <http://jena.hpl.hp.com/ARQ/property#>
-
-SELECT ?x
+PREFIX fb: <http://rdf.freebase.com/ns/>
+SELECT ?actor ?name
+FROM fb:en.blade_runner
 {
-    ?x :p ?v 
+  fb:en.blade_runner fb:film.film.starring ?personUUID
+  FETCH ?personUUID
+  GRAPH ?personUUID { ?personUUID fb:film.performance.actor ?actor }
+  FETCH ?actor
+  GRAPH ?actor { ?actor fb:type.object.name ?name }
 }
-GROUP BY ?x
-HAVING (count(?v)>1)
+ORDER BY ?actor
