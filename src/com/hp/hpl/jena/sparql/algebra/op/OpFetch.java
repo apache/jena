@@ -13,9 +13,9 @@ import com.hp.hpl.jena.util.FileManager;
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
 
+import com.hp.hpl.jena.sparql.algebra.ExtBuilder;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.OpExtRegistry;
-import com.hp.hpl.jena.sparql.algebra.OpExtRegistry.ExtBuilder;
 import com.hp.hpl.jena.sparql.core.DataSourceGraph;
 import com.hp.hpl.jena.sparql.core.Substitute;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
@@ -38,18 +38,10 @@ public class OpFetch extends OpExt
         if ( enabled ) return ;
         enabled = true ;
         
-        OpExtRegistry.register(new ExtBuilder(){
-            public OpExt make(ItemList argList)
-            {
-                //System.out.println("Args: "+argList) ;
-                Node n = argList.get(0).getNode() ;
-                return new OpFetch(n) ;
-            }
-
-            public String getSubTab()
-            {
-                return "fetch" ;
-            }}) ;
+        OpExtRegistry.register(new ExtBuilder() {
+            public OpExt make(ItemList argList) { return new OpFetch(argList.get(0).getNode()) ; }
+            public String getSubTab()           { return "fetch" ; }
+        }) ;
     }
     // ----------------
     
@@ -82,7 +74,7 @@ public class OpFetch extends OpExt
             String uri = n.getURI();
             if ( ds.containsGraph(n) )
                 return IterLib.result(binding, getExecContext()) ;
-            // DO NOT LOOK
+            // DO NOT LOOK AT THIS CODE
             Model m = FileManager.get().loadModel(uri) ;
             Graph g = m.getGraph() ;
             ds.addGraph(n, g) ;

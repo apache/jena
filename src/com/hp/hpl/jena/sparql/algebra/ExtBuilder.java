@@ -6,49 +6,16 @@
 
 package com.hp.hpl.jena.sparql.algebra;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import com.hp.hpl.jena.sparql.algebra.op.OpExt;
 import com.hp.hpl.jena.sparql.sse.ItemList;
-import com.hp.hpl.jena.sparql.sse.Tags;
-import com.hp.hpl.jena.sparql.sse.builders.BuilderOp;
 
-/** Manage extension algebra operations */
-public class OpExtRegistry
+public interface ExtBuilder
 {
-    static Map extensions = new HashMap() ;
-    // Wire in.
-    static { BuilderOp.add(Tags.tagExt, new BuildExt()) ; }
-    
-    public static void register(ExtBuilder builder)
-    {
-        extensions.put(builder.getSubTab(), builder) ;
-    }
-    
-    public static void unregister(String subtag)
-    {
-        extensions.remove(subtag) ;
-    }
-    
-    public static ExtBuilder builder(String tag) { return (ExtBuilder)extensions.get(tag) ; }
-    
-    static public class BuildExt implements BuilderOp.Build 
-    { 
-        public Op make(ItemList list)
-        {
-            // 0 is the "ext"
-            String subtag = list.get(1).getSymbol() ;
-            ExtBuilder b = builder(subtag) ;
-            list = list.sublist(2) ;
-            OpExt ext = b.make(list) ;  // Arguments 2 onwards
-            return ext ;
-        }
-    }
-    
-    
+    /** Subtag */
+    public String getSubTab() ;
+    /** The remaining arguments */
+    public OpExt make(ItemList argList) ;
 }
-
 /*
  * (c) Copyright 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.

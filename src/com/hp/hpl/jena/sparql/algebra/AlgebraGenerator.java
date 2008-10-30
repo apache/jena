@@ -389,7 +389,7 @@ public class AlgebraGenerator
         Node serviceNode = elt.getFetchNode() ;
         
         // Probe to see if enabled.
-        OpExtRegistry.ExtBuilder builder = OpExtRegistry.builder("fetch") ;
+        ExtBuilder builder = OpExtRegistry.builder("fetch") ;
         if ( builder == null )
         {
             ALog.warn(this, "Attempt to use OpFetch - need to enable first with a call to OpFetch.enable()") ; 

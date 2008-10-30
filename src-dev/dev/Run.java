@@ -16,9 +16,9 @@ import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.util.FileManager;
 
 import com.hp.hpl.jena.sparql.algebra.AlgebraQuad;
+import com.hp.hpl.jena.sparql.algebra.ExtBuilder;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.OpExtRegistry;
-import com.hp.hpl.jena.sparql.algebra.OpExtRegistry.ExtBuilder;
 import com.hp.hpl.jena.sparql.algebra.op.OpExt;
 import com.hp.hpl.jena.sparql.algebra.op.OpFetch;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
@@ -81,10 +81,8 @@ public class Run
                 return new OpExtTest(argList) ;
             }
 
-            public String getSubTab()
-            {
-                return "ABC" ;
-            }}) ;
+            public String getSubTab() { return "ABC" ; }
+        }) ;
         
         Op op = SSE.parseOp("(ext ABC 123 667)") ;
         System.out.println(op); 
