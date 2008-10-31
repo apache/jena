@@ -32,6 +32,7 @@ import com.hp.hpl.jena.sparql.util.FmtUtils;
 
 import com.hp.hpl.jena.tdb.TDB;
 import com.hp.hpl.jena.tdb.TDBException;
+import com.hp.hpl.jena.tdb.base.file.Location;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 import com.hp.hpl.jena.tdb.graph.GraphSyncListener;
 import com.hp.hpl.jena.tdb.graph.GraphTDBQueryHandler;
@@ -69,11 +70,13 @@ public class GraphTDB extends GraphBase implements Sync, Reorderable
     private final GraphTDBQueryHandler queryHandler = new GraphTDBQueryHandler(this) ;
     private final TransactionHandler transactionHandler = new GraphTDBTransactionHandler(this) ;
     private ReorderTransformation reorderTransform = null ;
+
+    private Location location ;
     
-    protected GraphTDB() {}   // Must call init!
+    protected GraphTDB() {}
     
     public GraphTDB(TripleIndex spo, TripleIndex pos, TripleIndex osp, 
-                    NodeTable nodeTable, ReorderTransformation reorderTransform)
+                    NodeTable nodeTable, ReorderTransformation reorderTransform, Location location)
     {
         if ( spo == null )
             throw new TDBException("SPO index is required") ;
@@ -83,6 +86,7 @@ public class GraphTDB extends GraphBase implements Sync, Reorderable
         this.indexOSP = osp ;
         this.nodeTable = nodeTable ;
         this.reorderTransform = reorderTransform ;
+        this.location = location ;
         
         int syncPoint = SystemTDB.SyncTick ;
         if ( syncPoint > 0 )
@@ -432,7 +436,8 @@ public class GraphTDB extends GraphBase implements Sync, Reorderable
     // Placed here so detailed manipulatation code can be external to this class.
     
     /** Reorder processor - may be null, for "none" */ 
-    public ReorderTransformation getReorderTransform()       { return reorderTransform ; }
+    public ReorderTransformation getReorderTransform()      { return reorderTransform ; }
+    public Location getLocation()                           { return location ; }
 
     public TripleIndex getIndexSPO()                { return indexSPO ; }
     public TripleIndex getIndexPOS()                { return indexPOS ; }

@@ -77,7 +77,7 @@ public class GraphTDBFactory
         
         ReorderTransformation reorder = chooseOptimizer(location) ;
 
-        return new GraphTDB(triplesSPO, triplesPOS, triplesOSP, nodeTable, reorder) ;
+        return new GraphTDB(triplesSPO, triplesPOS, triplesOSP, nodeTable, reorder, location) ;
     }
     
     private static ReorderTransformation chooseOptimizer(Location location)
@@ -141,7 +141,7 @@ public class GraphTDBFactory
         // Implicitly creates the object file as a memory one. 
         NodeTable nodeTable = new NodeTableIndex(factory) ;
         
-        return new GraphTDB(triplesSPO, triplesPOS, triplesOSP, nodeTable, null) ;
+        return new GraphTDB(triplesSPO, triplesPOS, triplesOSP, nodeTable, null, null) ;
     }
 }
 

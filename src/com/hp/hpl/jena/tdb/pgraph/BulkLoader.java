@@ -6,32 +6,38 @@
 
 package com.hp.hpl.jena.tdb.pgraph;
 
-import java.util.*;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Semaphore;
 
 import lib.MapUtils;
 import lib.Tuple;
 
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
-
-import com.hp.hpl.jena.util.FileManager;
-
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
-
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.sparql.sse.Item;
+import com.hp.hpl.jena.sparql.sse.ItemWriter;
+import com.hp.hpl.jena.sparql.util.ALog;
+import com.hp.hpl.jena.sparql.util.IndentedWriter;
 import com.hp.hpl.jena.sparql.util.StringUtils;
 import com.hp.hpl.jena.sparql.util.Symbol;
 import com.hp.hpl.jena.sparql.util.Timer;
 import com.hp.hpl.jena.sparql.util.Utils;
 import com.hp.hpl.jena.sparql.util.graph.GraphListenerBase;
 import com.hp.hpl.jena.sparql.util.graph.GraphLoadMonitor;
-
 import com.hp.hpl.jena.tdb.TDB;
 import com.hp.hpl.jena.tdb.index.TripleIndex;
 import com.hp.hpl.jena.tdb.solver.stats.StatsWriter;
+import com.hp.hpl.jena.tdb.sys.Names;
 import com.hp.hpl.jena.tdb.sys.SystemTDB;
+import com.hp.hpl.jena.util.FileManager;
 
 /** To directly load data, including manipulating the indexes at a quite low level for efficiency.
  * Not efficent for small, incremental additions to a graph.  
@@ -114,6 +120,23 @@ public class BulkLoader
             statsFinish(model) ;
         }
         
+        if ( generateStats && statsItem != null )
+        {
+            String fn = graph.getLocation().getPath(Names.optStats) ;
+            try {
+                FileOutputStream fout = new FileOutputStream(fn) ;
+                IndentedWriter out = new IndentedWriter(fout) ;
+                ItemWriter.write(out, statsItem, null) ;
+                out.ensureStartOfLine() ;
+                out.flush() ;
+                fout.close();
+            } catch (IOException ex)
+            {
+                ALog.fatal(this, "Failed to write stats file: "+ex.getLocalizedMessage(), ex) ;
+            }
+        }
+
+        
         // Especially the node table.
         graph.sync(true) ;
         // Close other resourses (node table).
@@ -149,11 +172,6 @@ public class BulkLoader
             printf("Time for load: %.2fs [%,d triples/s]\n", time/1000.0, tps) ;
         }
         
-        if ( generateStats && statsItem != null )
-        {
-            System.out.println() ;
-            System.out.println(statsItem) ;
-        }
     }
 
     

@@ -38,6 +38,7 @@ public class tdbloader extends CmdTDB
         super(argv) ;
         super.add(argParallel, "--parallel", "Do rebuilding of secondary indexes in a parallel") ;
         super.add(argIncremental, "--incremental", "Do an incremental load (keep indexes during load, don't rebuild)") ;
+        super.add(argStats, "--stats", "Generate statistics while loading (new graph only)") ;
     }
 
     @Override

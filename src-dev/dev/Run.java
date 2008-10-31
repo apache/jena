@@ -64,8 +64,9 @@ public class Run
     public static void main(String ... args) throws IOException
     {
         //System.setProperty("tdb:settings", "tdb.properties") ;
-        tdbloader("D.ttl") ;
-        
+        FileOps.clearDirectory("DB") ;
+        tdbloader("--stats", "D.ttl") ;
+        System.exit(0) ;
         //extHash() ; 
         
         tdbquery("--set=tdb:logExec=true", "--file=Q.rq") ;
