@@ -6,13 +6,12 @@
 
 package com.hp.hpl.jena.sparql.sse;
 
-import java.io.PrintStream;
+import java.io.OutputStream;
 import java.util.Iterator;
 import java.util.Map;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.shared.PrefixMapping;
-
 import com.hp.hpl.jena.sparql.serializer.SerializationContext;
 import com.hp.hpl.jena.sparql.util.FmtUtils;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
@@ -30,7 +29,7 @@ public class ItemWriter
         pv.finishPrint() ;
     }
     
-    public static void write(PrintStream out, Item item)
+    public static void write(OutputStream out, Item item)
     {
         IndentedWriter iw = new IndentedWriter(out) ;
         write(iw, item , null) ;
