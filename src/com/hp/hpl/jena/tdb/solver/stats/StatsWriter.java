@@ -59,8 +59,7 @@ public class StatsWriter
         long count = 0 ;
         Map<NodeId, Integer> predicateIds = new HashMap<NodeId, Integer>(1000) ;
         
-        
-        TripleIndex index = graph.getIndexSPO() ;
+        TripleIndex index = graph.getTripleTable().getIndexSPO() ;
         Iterator<Tuple<NodeId>> iter = index.all() ;
         for ( ; iter.hasNext() ; )
         {
@@ -78,7 +77,7 @@ public class StatsWriter
         Map<Node, Integer> predicates = new HashMap<Node, Integer>(1000) ;
         for ( NodeId p : predicateIds.keySet() )
         {
-            Node n = graph.getNodeTable().retrieveNodeByNodeId(p) ;
+            Node n = graph.getTripleTable().getNodeTable().retrieveNodeByNodeId(p) ;
             
             // Skip these - they just clog things up!
             if ( n.getURI().startsWith("http://www.w3.org/1999/02/22-rdf-syntax-ns#_") )

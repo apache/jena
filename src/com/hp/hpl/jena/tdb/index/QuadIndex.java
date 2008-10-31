@@ -4,61 +4,11 @@
  * [See end of file]
  */
 
-package lib;
+package com.hp.hpl.jena.tdb.index;
 
-import iterator.Iter;
-
-import java.util.Arrays;
-import java.util.List;
-
-public final class Tuple<T>
+public class QuadIndex
 {
-    final T[] tuple ;
-    public Tuple(T ...tuple)
-    {
-        this.tuple = tuple ;
-    }
-    
-    public T get(int idx) { return tuple[idx] ; }
 
-    public List<T> asList() { return Arrays.asList(tuple) ; }
-
-    public final int size() { return tuple.length ; }
-    
-    @Override
-    public int hashCode()
-    { 
-        int x = 99 ;
-        for ( T n : tuple )
-            x ^= n.hashCode() ;
-        return x ;  
-    }
-    
-    @Override
-    public boolean equals(Object other) 
-    {
-        if ( this == other ) return true ;
-        if ( ! ( other instanceof Tuple ) )
-            return false ;
-        Tuple<?> x = (Tuple<?>)other ;
-        if ( x.size() != this.size() )
-            return false ;
-        for ( int i = 0 ; i < tuple.length ; i++ )
-        {
-            Object obj1 = tuple[i] ;
-            Object obj2 = x.tuple[i] ;
-            if ( ! Lib.equals(obj1, obj2) )
-                return false ;
-        }
-        return true ; 
-    }
-    
-    @Override
-    public String toString()
-    {
-        StringBuilder sb = new StringBuilder() ;
-        return "["+Iter.asString(asList(), ", ")+"]" ;
-    }
 }
 
 /*

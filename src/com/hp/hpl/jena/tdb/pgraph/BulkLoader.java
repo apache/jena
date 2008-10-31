@@ -46,6 +46,7 @@ import com.hp.hpl.jena.util.FileManager;
 public class BulkLoader
 {
     private GraphTDB graph ;
+    private TripleTable tripleTable ;
     private Symbol symTesting = SystemTDB.allocSymbol("testing") ;
     
     private boolean testingSpecial = false ;
@@ -71,6 +72,7 @@ public class BulkLoader
     public BulkLoader(GraphTDB graph, boolean showProgress, boolean doInParallel, boolean doIncremental, boolean generateStats)
     {
         this.graph = graph ;
+        this.tripleTable = graph.getTripleTable() ;
         this.showProgress = showProgress ;
         this.doInParallel = doInParallel ;
         this.doIncremental = doIncremental ;
@@ -94,7 +96,7 @@ public class BulkLoader
             if ( testingSpecial )
             {
                 println("** Load node table only") ;
-                graph.setIndexSPO(null) ;
+                tripleTable.setIndexSPO(null) ;
             }
         }
         else
@@ -122,7 +124,7 @@ public class BulkLoader
         
         if ( generateStats && statsItem != null )
         {
-            String fn = graph.getLocation().getPath(Names.optStats) ;
+            String fn = tripleTable.getLocation().getPath(Names.optStats) ;
             try {
                 FileOutputStream fout = new FileOutputStream(fn) ;
                 IndentedWriter out = new IndentedWriter(fout) ;
@@ -231,20 +233,20 @@ public class BulkLoader
     private void dropSecondaryIndexes()
     {
         // Remember first ...
-        triplesSPO = graph.getIndexSPO() ;
-        triplesPOS = graph.getIndexPOS() ;
-        triplesOSP = graph.getIndexOSP() ;
+        triplesSPO = tripleTable.getIndexSPO() ;
+        triplesPOS = tripleTable.getIndexPOS() ;
+        triplesOSP = tripleTable.getIndexOSP() ;
         
-        if ( graph.getIndexPOS() != null )
+        if ( tripleTable.getIndexPOS() != null )
         {
             //graph.getIndexPOS().close();
-            graph.setIndexPOS(null) ;
+            tripleTable.setIndexPOS(null) ;
         }
         
-        if ( graph.getIndexOSP() != null )
+        if ( tripleTable.getIndexOSP() != null )
         {
             //graph.getIndexOSP().close();
-            graph.setIndexOSP(null) ;
+            tripleTable.setIndexOSP(null) ;
         }
     }
 
@@ -294,8 +296,8 @@ public class BulkLoader
             printf("Time for POS/OSP indexing: %.2fs\n", time/1000.0) ;
         timer.endTimer() ;
         
-        graph.setIndexOSP(triplesOSP) ;
-        graph.setIndexPOS(triplesPOS) ;
+        tripleTable.setIndexOSP(triplesOSP) ;
+        tripleTable.setIndexPOS(triplesPOS) ;
     }
     
     private Runnable setup(final Semaphore sema, final TripleIndex srcIndex, final TripleIndex destIndex, final String label, final boolean printTiming)
@@ -341,8 +343,8 @@ public class BulkLoader
             timer.endTimer() ;
         }
         
-        graph.setIndexOSP(triplesOSP) ;
-        graph.setIndexPOS(triplesPOS) ;
+        tripleTable.setIndexOSP(triplesOSP) ;
+        tripleTable.setIndexPOS(triplesPOS) ;
 
     }
 
@@ -364,8 +366,8 @@ public class BulkLoader
         if ( printTiming )
             printf("Time for both POS and OSP indexes: %.2fs\n", (time2-time1)/1000.0) ;
         
-        graph.setIndexOSP(triplesOSP) ;
-        graph.setIndexPOS(triplesPOS) ;
+        tripleTable.setIndexOSP(triplesOSP) ;
+        tripleTable.setIndexPOS(triplesPOS) ;
 
     }
     

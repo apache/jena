@@ -53,7 +53,7 @@ public class StageMatchTriple extends RepeatApplyIterator<BindingNodeId>
         final Var var_p = (p == null) ? asVar(triple.getPredicate()) : null ;
         final Var var_o = (o == null) ? asVar(triple.getObject()) : null ;
 
-        Iterator<Tuple<NodeId>> tuples = graph.find(s,p,o);
+        Iterator<Tuple<NodeId>> tuples = graph.getTripleTable().find(s,p,o);
 
         Transform<Tuple<NodeId>, BindingNodeId> binder = new Transform<Tuple<NodeId>, BindingNodeId>()
         {
@@ -116,7 +116,7 @@ public class StageMatchTriple extends RepeatApplyIterator<BindingNodeId>
             return n ;
         } 
         // May return NodeId.NodeDoesNotExist which must not be null. 
-        return graph.getNodeTable().nodeIdForNode(node) ;
+        return graph.getTripleTable().getNodeTable().nodeIdForNode(node) ;
     }
 }
 /*

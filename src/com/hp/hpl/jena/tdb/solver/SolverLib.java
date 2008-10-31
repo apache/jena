@@ -107,7 +107,7 @@ public class SolverLib
             public Binding convert(BindingNodeId bindingNodeIds)
             {
                 if ( true )
-                    return new BindingTDB(null, bindingNodeIds, graph.getNodeTable()) ;
+                    return new BindingTDB(null, bindingNodeIds, graph.getTripleTable().getNodeTable()) ;
                 else
                 {
                     // Makes nodes immediately.  Causing unecessary NodeTable accesses (e.g. project) 
@@ -115,7 +115,7 @@ public class SolverLib
                     for ( Var v : bindingNodeIds )
                     {
                         NodeId id = bindingNodeIds.get(v) ;
-                        Node n = graph.getNodeTable().retrieveNodeByNodeId(id) ;
+                        Node n = graph.getTripleTable().getNodeTable().retrieveNodeByNodeId(id) ;
                         b.add(v, n) ;
                     }
                     return b ;
@@ -141,7 +141,7 @@ public class SolverLib
                     Var v = vars.next() ;
                     Node n = binding.get(v) ;  
                     // Rely on the node table cache. 
-                    NodeId id = graph.getNodeTable().nodeIdForNode(n) ;
+                    NodeId id = graph.getTripleTable().getNodeTable().nodeIdForNode(n) ;
                     b.put(v, id) ;
                 }
                 return b ;

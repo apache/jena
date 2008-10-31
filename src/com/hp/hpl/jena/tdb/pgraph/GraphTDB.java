@@ -9,27 +9,19 @@ package com.hp.hpl.jena.tdb.pgraph;
 import static com.hp.hpl.jena.tdb.sys.SystemTDB.LenIndexRecord;
 import static com.hp.hpl.jena.tdb.sys.SystemTDB.LenNodeHash;
 import static com.hp.hpl.jena.tdb.sys.SystemTDB.SizeOfNodeId;
-import iterator.Filter;
-import iterator.Iter;
 
 import java.util.Iterator;
 
-import lib.Tuple;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.hp.hpl.jena.rdf.model.AnonId;
-
-import com.hp.hpl.jena.util.iterator.ExtendedIterator;
-import com.hp.hpl.jena.util.iterator.NiceIterator;
-
-import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.graph.Capabilities;
+import com.hp.hpl.jena.graph.TransactionHandler;
+import com.hp.hpl.jena.graph.Triple;
+import com.hp.hpl.jena.graph.TripleMatch;
 import com.hp.hpl.jena.graph.impl.GraphBase;
 import com.hp.hpl.jena.graph.query.QueryHandler;
-
-import com.hp.hpl.jena.sparql.sse.SSE;
 import com.hp.hpl.jena.sparql.util.FmtUtils;
-
 import com.hp.hpl.jena.tdb.TDB;
 import com.hp.hpl.jena.tdb.TDBException;
 import com.hp.hpl.jena.tdb.base.file.Location;
@@ -40,10 +32,11 @@ import com.hp.hpl.jena.tdb.graph.GraphTDBTransactionHandler;
 import com.hp.hpl.jena.tdb.graph.UpdateListener;
 import com.hp.hpl.jena.tdb.index.TripleIndex;
 import com.hp.hpl.jena.tdb.lib.Sync;
-import com.hp.hpl.jena.tdb.lib.TupleLib;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
 import com.hp.hpl.jena.tdb.solver.reorder.Reorderable;
 import com.hp.hpl.jena.tdb.sys.SystemTDB;
+import com.hp.hpl.jena.util.iterator.ExtendedIterator;
+import com.hp.hpl.jena.util.iterator.NiceIterator;
 
 /** Machinary to implement a "nodes and triples" style graph,
  *  based on 3 indexes (SPO, POS, OSP)
@@ -58,21 +51,12 @@ public class GraphTDB extends GraphBase implements Sync, Reorderable
     public final static RecordFactory indexRecordFactory = new RecordFactory(LenIndexRecord, 0) ; 
     public final static RecordFactory nodeRecordFactory = new RecordFactory(LenNodeHash, SizeOfNodeId) ;
     
-    //static Logger log = LoggerFactory.getLogger(GraphTDB.class) ;
-    
-    // Just some renames.  This code does not depend on index order.
-    
-    private TripleIndex indexSPO = null ;
-    private TripleIndex indexPOS = null ;
-    private TripleIndex indexOSP = null ;
-    private NodeTable nodeTable = null ;
-    
     private final GraphTDBQueryHandler queryHandler = new GraphTDBQueryHandler(this) ;
     private final TransactionHandler transactionHandler = new GraphTDBTransactionHandler(this) ;
     private ReorderTransformation reorderTransform = null ;
 
-    private Location location ;
-    
+    private TripleTable tripleTable ;
+
     protected GraphTDB() {}
     
     public GraphTDB(TripleIndex spo, TripleIndex pos, TripleIndex osp, 
@@ -80,13 +64,9 @@ public class GraphTDB extends GraphBase implements Sync, Reorderable
     {
         if ( spo == null )
             throw new TDBException("SPO index is required") ;
-        
-        this.indexSPO = spo ;
-        this.indexPOS = pos ;
-        this.indexOSP = osp ;
-        this.nodeTable = nodeTable ;
+
+        this.tripleTable = new TripleTable(spo, pos, osp, nodeTable, location) ; 
         this.reorderTransform = reorderTransform ;
-        this.location = location ;
         
         int syncPoint = SystemTDB.SyncTick ;
         if ( syncPoint > 0 )
@@ -105,36 +85,12 @@ public class GraphTDB extends GraphBase implements Sync, Reorderable
     @Override
     public void performAdd( Triple t ) 
     { 
-        Node s = t.getSubject() ;
-        Node p = t.getPredicate() ;
-        Node o = t.getObject() ;
-        NodeId sId = storeNode(s) ;
-        NodeId pId = storeNode(p) ;
-        NodeId oId = storeNode(o) ;
-        
-        if ( indexSPO != null )
-        {
-            if ( ! indexSPO.add(sId, pId, oId) )
-            {
-                duplicate(t, sId, pId, oId) ;
-                return ;
-            }
-        }
-        
-        if ( indexPOS != null )
-        {
-            if ( ! indexPOS.add(sId, pId, oId) )
-                throw new TDBException("POS duplicate: "+t) ;
-        }
-
-        if ( indexOSP != null )
-        {
-            if ( ! indexOSP.add(sId, pId, oId) )
-                throw new TDBException("OSP duplicate: "+t) ;
-        }
+        boolean changed = tripleTable.add(t) ;
+        if ( ! changed )
+            duplicate(t) ;
     }
 
-    private void duplicate(Triple t, NodeId id, NodeId id2, NodeId id3)
+    private void duplicate(Triple t)
     {
         if ( TDB.getContext().isTrue(SystemTDB.symLogDuplicates) && log.isInfoEnabled() )
         {
@@ -146,27 +102,7 @@ public class GraphTDB extends GraphBase implements Sync, Reorderable
     @Override
     public void performDelete( Triple t ) 
     { 
-        Node s = t.getSubject() ;
-        Node p = t.getPredicate() ;
-        Node o = t.getObject() ;
-
-        NodeId sId = storeNode(s) ;
-        NodeId pId = storeNode(p) ;
-        NodeId oId = storeNode(o) ;
-        
-        if ( ! indexSPO.delete(sId, pId, oId) )
-            return ;
-        if ( indexPOS != null )
-        {
-            if ( ! indexPOS.delete(sId, pId, oId) )
-                throw new TDBException("No POS entry") ;
-        }
-        
-        if ( indexOSP != null )
-        {
-            if ( ! indexOSP.delete(sId, pId, oId) )
-                throw new TDBException("No OSP entry") ;
-        }
+        boolean changed = tripleTable.delete(t) ;
     }
     
 //    // Make sure that the stage generator isn't installed.
@@ -174,168 +110,14 @@ public class GraphTDB extends GraphBase implements Sync, Reorderable
 //    public QueryHandler queryHandler()
 //    { return new GraphQueryHandlerTDB(this) ; }
     
-    // ==== Node
-    
-    protected String encode(Node node)
-    {
-        if ( node.isBlank() )
-            return "_:"+node.getBlankNodeLabel() ;
-        return FmtUtils.stringForNode(node) ;
-    }
-
-    protected Node decode(String s)
-    {
-        if ( s.startsWith("_:") )   
-        {
-            s = s.substring(2) ;
-            return Node.createAnon(new AnonId(s)) ;
-        }
-        
-        return SSE.parseNode(s) ;
-    }
-
-    private final NodeId idForNode(Node node)
-    {
-        if ( node == null || node == Node.ANY )
-            return NodeId.NodeIdAny ;
-        return nodeTable.nodeIdForNode(node) ;
-    }
-    
-    // Store node, return id.  Node may already be stored.
-    //protected abstract int storeNode(Node node) ;
-    
-    protected final NodeId storeNode(Node node)
-    {
-        return nodeTable.storeNode(node) ;
-    }
-    
-    protected final Node retrieveNode(NodeId id)
-    {
-        return nodeTable.retrieveNodeByNodeId(id) ;
-    }
-
-    // ==== Triple indexes
-    
     @Override
     protected ExtendedIterator graphBaseFind(TripleMatch m)
     {
-        Node s = m.getMatchSubject() ;
-        Node p = m.getMatchPredicate() ;
-        Node o = m.getMatchObject() ;
-        
-        NodeId subj = idForNode(s) ;
-        if ( subj == NodeId.NodeDoesNotExist )
+        Iterator<Triple> iter = tripleTable.find(m.getMatchSubject(), m.getMatchPredicate(), m.getMatchObject()) ;
+        if ( iter == null )
             return new com.hp.hpl.jena.util.iterator.NullIterator() ;
-        
-        NodeId pred = idForNode(p) ;
-        if ( pred == NodeId.NodeDoesNotExist )
-            return new com.hp.hpl.jena.util.iterator.NullIterator() ;
-        
-        NodeId obj = idForNode(o) ;
-        if ( obj == NodeId.NodeDoesNotExist )
-            return new com.hp.hpl.jena.util.iterator.NullIterator() ;
-        
-        boolean s_set = ( subj != NodeId.NodeIdAny ) ;
-        boolean p_set = ( pred != NodeId.NodeIdAny ) ;
-        boolean o_set = ( obj  != NodeId.NodeIdAny ) ;
-
-        if ( s_set && p_set && o_set )
-        {
-            // s p o
-            if( indexSPO.find(subj, pred, obj).hasNext() )
-                return new com.hp.hpl.jena.util.iterator.SingletonIterator(new Triple(s,p,o)) ;
-            else
-                return new com.hp.hpl.jena.util.iterator.NullIterator() ;
-        }
-        
-        Iterator<Tuple<NodeId>> _iter = find(subj, pred, obj) ;
-        Iterator<Triple> iter = TupleLib.convertToTriples(nodeTable, _iter) ;
         return new MapperIterator(iter) ;
     }
-    
-    public Iterator<Tuple<NodeId>> find(NodeId subj, NodeId pred, NodeId obj)
-    {
-        if ( subj == NodeId.NodeIdAny ) subj = null ;
-        if ( pred == NodeId.NodeIdAny ) pred = null ;
-        if ( obj == NodeId.NodeIdAny ) obj = null ;
-     
-        int numSlots = 0 ;
-        if ( subj != null ) numSlots++ ;
-        if ( pred != null ) numSlots++ ;
-        if ( obj  != null ) numSlots++ ;
-        
-        TripleIndex index = null ;
-        int indexNumSlots = 0 ;
-        
-        if ( indexSPO != null )
-        {
-            int w = indexSPO.weight(subj, pred, obj) ;
-            if ( w > indexNumSlots )
-            {
-                indexNumSlots = w ;
-                index = indexSPO ; 
-            }
-        }
-        
-        if ( indexPOS != null )
-        {
-            int w = indexPOS.weight(subj, pred, obj) ;
-            if ( w > indexNumSlots )
-            {
-                indexNumSlots = w ;
-                index = indexPOS ;
-            }
-        }
-            
-        if ( indexOSP != null )
-        {
-            int w = indexOSP.weight(subj, pred, obj) ;
-            if ( w > indexNumSlots )
-            {
-                indexNumSlots = w ;
-                index = indexOSP ;
-            }
-        }
-        
-        Iterator<Tuple<NodeId>> iter = null ;
-        
-        if ( index == null )
-            // No index at all.  Scan.
-            iter = indexSPO.all() ;
-        else 
-            iter = index.find(subj, pred, obj) ;
-        
-        if ( indexNumSlots < numSlots )
-            // Didn't match all defined slots in request.  
-            // Partial or full scan needed.
-            iter = scan(iter, subj, pred, obj) ;
-        
-        return iter ;
-    }
-    
-    private Iterator<Tuple<NodeId>> scan(Iterator<Tuple<NodeId>> iter,
-                                         final NodeId subj, final NodeId pred, final NodeId obj)
-    {
-        Filter<Tuple<NodeId>> filter = new Filter<Tuple<NodeId>>()
-        {
-            @Override
-            public boolean accept(Tuple<NodeId> item)
-            {
-                if ( subj != null && ! (item.get(0).equals(subj)) )
-                    return false ;
-                if ( pred != null && ! (item.get(1).equals(pred)) )
-                    return false ;
-                if ( obj != null && ! (item.get(2).equals(obj)) )
-                    return false ;
-                return true ;
-            }
-        } ;
-        
-        return Iter.filter(iter, filter) ;
-            
-    }
-    
-
 
     static class MapperIterator extends NiceIterator
     {
@@ -351,14 +133,6 @@ public class GraphTDB extends GraphBase implements Sync, Reorderable
         @Override
         public Triple next() { return iter.next(); }
     }
-    
-    final
-    protected Iterator<Triple> all(TripleIndex index)
-    {
-        return TupleLib.convertToTriples(nodeTable, index.all()) ;
-    }
-    
-    // Include more here!
     
     @Override
     public Capabilities getCapabilities()
@@ -382,73 +156,22 @@ public class GraphTDB extends GraphBase implements Sync, Reorderable
     @Override
     final public void close()
     {
-        if ( indexSPO != null )
-            indexSPO.close();
-        if ( indexPOS != null )
-            indexPOS.close();
-        if ( indexOSP != null )
-            indexOSP.close();
-        if ( nodeTable != null )
-            nodeTable.close() ;
+        tripleTable.close();
         super.close() ;
-    }
-    
-    public void dumpIndexes()
-    {
-        if ( indexSPO == null && indexPOS == null && indexOSP == null )
-        {
-            System.out.println("No indexes") ;
-            return ;
-        }
-        
-        if ( indexSPO != null ) indexSPO.dump();
-        if ( indexPOS != null ) indexPOS.dump();
-        if ( indexOSP != null ) indexOSP.dump();
     }
     
     @Override
     public void sync(boolean force)
     {
-        if ( indexSPO != null )
-            indexSPO.sync(force);
-        if ( indexPOS != null )
-            indexPOS.sync(force);
-        if ( indexOSP != null )
-            indexOSP.sync(force);
-        if ( nodeTable != null )
-            nodeTable.sync(force) ;
+        tripleTable.sync(force);
     }
 
-    protected final Triple triple(NodeId s, NodeId p, NodeId o) 
-    {
-        Node sNode = retrieveNode(s) ;
-        Node pNode = retrieveNode(p) ;
-        Node oNode = retrieveNode(o) ;
-        return new Triple(sNode, pNode, oNode) ;
-    }
-    
-    protected final Triple triple(Tuple<NodeId> tuple) 
-    {
-        return triple(tuple.get(0), tuple.get(1), tuple.get(2)) ;
-    }
-
-    // Getters and setters for most things - USE WITH CARE
-    // Placed here so detailed manipulatation code can be external to this class.
-    
     /** Reorder processor - may be null, for "none" */ 
     public ReorderTransformation getReorderTransform()      { return reorderTransform ; }
-    public Location getLocation()                           { return location ; }
 
-    public TripleIndex getIndexSPO()                { return indexSPO ; }
-    public TripleIndex getIndexPOS()                { return indexPOS ; }
-    public TripleIndex getIndexOSP()                { return indexOSP ; }
+    public TripleTable getTripleTable()                     { return tripleTable ; }
+    public Location getLocation()                           { return tripleTable.getLocation() ; }
 
-    public void setIndexSPO(TripleIndex indexSPO)   { this.indexSPO = indexSPO ; }
-    public void setIndexPOS(TripleIndex indexPOS)   { this.indexPOS = indexPOS ; }
-    public void setIndexOSP(TripleIndex indexOSP)   { this.indexOSP = indexOSP ; }
-
-    public NodeTable getNodeTable()                 { return nodeTable ; }
-    public void setNodeTable(NodeTable nodeTable)   { this.nodeTable = nodeTable ; }
 }
 
 /*
