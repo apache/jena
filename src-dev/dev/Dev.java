@@ -8,7 +8,30 @@ package dev;
 
 public class Dev
 {
-    // Stats and the loader
+    
+    // TupleTable
+    // --
+    // Test TupleIndex
+    // Test TupleTable
+    
+    // TupleIndex (Tuple<NodeId> <=> Record)
+    // TupleTable is X TupleIndexes with all the reordering.
+    //   Then a Tuple<NodeID><->Tuple<Node> wrapper
+    //   Then a Triple/Quad <=> Tuple<Node> wrapper
+    // --
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     
     // ---- Reopenable BlockMgrs (and the object file?) 
 

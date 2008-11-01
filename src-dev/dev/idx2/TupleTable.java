@@ -4,10 +4,7 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.pgraph;
-
-import iterator.Filter;
-import iterator.Iter;
+package dev.idx2;
 
 import java.util.Iterator;
 
@@ -19,37 +16,22 @@ import com.hp.hpl.jena.sparql.core.Closeable;
 
 import com.hp.hpl.jena.tdb.TDBException;
 import com.hp.hpl.jena.tdb.base.file.Location;
-import com.hp.hpl.jena.tdb.base.record.Record;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
-import com.hp.hpl.jena.tdb.index.RangeIndex;
 import com.hp.hpl.jena.tdb.lib.Sync;
+import com.hp.hpl.jena.tdb.pgraph.NodeId;
 
+/** A TupleTable is a set of TupleIndexes.  The first TupleIndex is the "primary" index and must exist */
 public class TupleTable implements Sync, Closeable
 {
-    // UNFINISHED.
-    // TripleIndex ==> TupleIndex
-    // TupleTable is X TupleIndexes.
-    // Then a Tuple<NodeID><->Tuple<Node> wrapper
-    // Then a Triple/Quad <=> Tuple<Node> wrapper
-    
-    // Alt:
-    // TupleIndex
-    // NodeIndex
-    // Table of TupleNodes is X NodeIndex's
-    
-    
-    // Should it be a TupleNodeTable? (c.f. TripleTable, QuadTable)
-    // Can we extract the Tuple indexing from TripleTable to generalise to N?
-    
     private static Logger log = LoggerFactory.getLogger(TupleTable.class) ;
     
-    private RangeIndex[] indexes = null ;
+    private TupleIndex[] indexes = null ;
     private Location location ;
 
     private int len ;
     private RecordFactory factory ;
     
-    protected TupleTable(int N, RangeIndex[] indexes, RecordFactory factory, Location location)
+    protected TupleTable(int N, TupleIndex[] indexes, RecordFactory factory, Location location)
     {
         this.len = N ;
         this.indexes = indexes ;
@@ -68,9 +50,8 @@ public class TupleTable implements Sync, Closeable
 
         for ( int i = 0 ; i < len ; i++ )
         {
-            Record r = null ; 
             if ( indexes[i] == null ) continue ;
-            if ( ! indexes[i].add(r) )
+            if ( ! indexes[i].add(t) )
             {
                 if ( i == 0 )
                 {
@@ -94,11 +75,8 @@ public class TupleTable implements Sync, Closeable
 
         for ( int i = 0 ; i < len ; i++ )
         {
-            // to byte[]
-            byte[] key = null ;
-            Record r = factory.create(key) ;
             if ( indexes[i] == null ) continue ;
-            if ( ! indexes[i].delete(r) )
+            if ( ! indexes[i].delete(t) )
             {
                 if ( i == 0 )
                 {
@@ -131,56 +109,26 @@ public class TupleTable implements Sync, Closeable
         }
 
         int indexNumSlots = 0 ;
-        RangeIndex rangeIndex = null ;
+        TupleIndex index = null ;
         for ( int i = 0 ; i < indexes.length ; i++ )
         {
-            RangeIndex idx = indexes[i] ;
+            TupleIndex idx = indexes[i] ;
             if ( idx != null )
             {
-                //int w = idx.weight(subj, pred, obj) ;
-                int w = -1 ;
+                int w = idx.weight(pattern) ;
                 if ( w > indexNumSlots )
                 {
                     indexNumSlots = w ;
-                    rangeIndex = idx ; 
+                    index = idx ; 
                 }
             }
         }
         
-        Iterator<Tuple<NodeId>> iter = null ;
-        
-        if ( rangeIndex == null )
+        if ( index == null )
             // No index at all.  Scan.
-            iter = null ; // indexes[0].iterator() ;
-        else 
-        {
-            Record r = null ;
-            iter = null ; // rangeIndex.find(r) ;
-        }
-        
-        if ( indexNumSlots < numSlots )
-            // Didn't match all defined slots in request.  
-            // Partial or full scan needed.
-            iter = scan(iter, pattern) ;
-        
-        return iter ;
-    }
-    
-    private Iterator<Tuple<NodeId>> scan(Iterator<Tuple<NodeId>> iter,
-                                         Tuple<NodeId> pattern)
-    {
-        Filter<Tuple<NodeId>> filter = new Filter<Tuple<NodeId>>()
-        {
-            @Override
-            public boolean accept(Tuple<NodeId> item)
-            {
-                // Check on pattern
-                return true ;
-            }
-        } ;
-        
-        return Iter.filter(iter, filter) ;
-            
+            index = indexes[0] ;
+
+        return index.find(pattern) ;
     }
     
     @Override
@@ -188,7 +136,7 @@ public class TupleTable implements Sync, Closeable
     {
         for ( int i = 0 ; i < indexes.length ; i++ )
         {
-            RangeIndex idx = indexes[i] ;
+            TupleIndex idx = indexes[i] ;
             if ( idx != null )
                 idx.close();
         }
@@ -198,7 +146,7 @@ public class TupleTable implements Sync, Closeable
     {
         for ( int i = 0 ; i < indexes.length ; i++ )
         {
-            RangeIndex idx = indexes[i] ;
+            TupleIndex idx = indexes[i] ;
             if ( idx != null )
                 ;
                 //idx.dump();
@@ -211,17 +159,16 @@ public class TupleTable implements Sync, Closeable
     {
         for ( int i = 0 ; i < indexes.length ; i++ )
         {
-            RangeIndex idx = indexes[i] ;
+            TupleIndex idx = indexes[i] ;
             if ( idx != null )
                 idx.sync(force) ;
         }
     }
 
-    /// Getters and setters - use with care,
+    // Getters and setters - use with care,
     public Location getLocation()                       { return location ; }
-
-    public RangeIndex getIndex(int i)                   { return indexes[i] ; }
-    public void setIndexSPO(int i, RangeIndex index)    {indexes[i] = index ; }
+    public TupleIndex getIndex(int i)                   { return indexes[i] ; }
+    public void setTupleIndex(int i, TupleIndex index)  { indexes[i] = index ; }
 }
 
 /*
