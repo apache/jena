@@ -174,8 +174,9 @@ public class TupleIndex implements Sync, Closeable
                 for ( int i = 0 ; i < tupleLength ; i++ )
                 {
                     // The pattern must be null or match the tuple being tested.
-                    if ( pattern.get(i) != null && item.get(i) != pattern.get(i) ) 
-                        return false ;
+                    if ( pattern.get(i) != null )
+                        if ( ! item.get(i).equals(pattern.get(i)) ) 
+                            return false ;
                 }
                 return true ;
             }

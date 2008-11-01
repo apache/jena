@@ -32,6 +32,8 @@ public class TestTupleIndex extends BaseTest
     static NodeId n5 = new NodeId(0x5555555555555555L) ;
     static NodeId n6 = new NodeId(0x6666666666666666L) ; 
     
+    
+    
     static TupleIndex create(String description)
     {
         RangeIndex rIdx = IndexBuilder.mem().newRangeIndex(null, factory, "TupleIndexTest") ;
@@ -39,20 +41,22 @@ public class TestTupleIndex extends BaseTest
         return index ;
     }
     
+    static void add(TupleIndex index, NodeId x1, NodeId x2, NodeId x3)
+    {
+        Tuple<NodeId> tuple = new Tuple<NodeId>(x1, x2, x3) ;
+        index.add(tuple) ;
+    }
+    
     @Test public void tupleIndex_1()
     {
-        Tuple<NodeId> tuple = new Tuple<NodeId>(n1, n2, n3) ;
-        RangeIndex rIdx = IndexBuilder.mem().newRangeIndex(null, factory, "TupleIndexTest") ;
         TupleIndex index = create("SPO") ;
-        index.add(tuple) ;
+        add(index, n1, n2, n3) ;
     }
     
     @Test public void tupleIndexFind_1()
     {
-        Tuple<NodeId> tuple = new Tuple<NodeId>(n1, n2, n3) ;
-        RangeIndex rIdx = IndexBuilder.mem().newRangeIndex(null, factory, "TupleIndexTest") ;
         TupleIndex index = create("SPO") ;
-        index.add(tuple) ;
+        add(index, n1, n2, n3) ;
         
         Tuple<NodeId> tuple2 = new Tuple<NodeId>(n1, n2, n3) ;
         Iterator<Tuple<NodeId>> iter = index.find(tuple2) ;
@@ -63,12 +67,82 @@ public class TestTupleIndex extends BaseTest
  
     @Test public void tupleIndexFind_2()
     {
-        Tuple<NodeId> tuple = new Tuple<NodeId>(n1, n2, n3) ;
-        RangeIndex rIdx = IndexBuilder.mem().newRangeIndex(null, factory, "TupleIndexTest") ;
         TupleIndex index = create("SPO") ;
-        index.add(tuple) ;
+        add(index, n1, n2, n3) ;
+        
+        Tuple<NodeId> tuple2 = new Tuple<NodeId>(n1, n2, null) ;
+        Iterator<Tuple<NodeId>> iter = index.find(tuple2) ;
+        assertTrue(iter.hasNext()) ;
+        iter.next();
+        assertFalse(iter.hasNext()) ;
+    }
+    
+    @Test public void tupleIndexFind_3()
+    {
+        TupleIndex index = create("SPO") ;
+        add(index, n1, n2, n3) ;
+        
+        Tuple<NodeId> tuple2 = new Tuple<NodeId>(n1, null, n3) ;
+        Iterator<Tuple<NodeId>> iter = index.find(tuple2) ;
+        assertTrue(iter.hasNext()) ;
+        iter.next();
+        assertFalse(iter.hasNext()) ;
+    }
+    
+    @Test public void tupleIndexFind_4()
+    {
+        TupleIndex index = create("SPO") ;
+        add(index, n1, n2, n3) ;
+        
+        Tuple<NodeId> tuple2 = new Tuple<NodeId>(n1, NodeId.NodeIdAny, NodeId.NodeIdAny) ;
+        Iterator<Tuple<NodeId>> iter = index.find(tuple2) ;
+        assertTrue(iter.hasNext()) ;
+        iter.next();
+        assertFalse(iter.hasNext()) ;
+    }
+    
+    @Test public void tupleIndexFindScan_1()
+    {
+        TupleIndex index = create("SPO") ;
+        add(index, n1, n2, n3) ;
+        
+        Tuple<NodeId> tuple2 = new Tuple<NodeId>(n1, null, n3) ;
+        Iterator<Tuple<NodeId>> iter = index.find(tuple2) ;
+        assertTrue(iter.hasNext()) ;
+        iter.next();
+        assertFalse(iter.hasNext()) ;
+    }
+    
+    // XXX More than one tuple.
+    
+    // XXX Not finding.
+    
+    @Test public void tupleIndexFindNot_1()
+    {
+        TupleIndex index = create("SPO") ;
+        add(index, n1, n2, n3) ;
         
         Tuple<NodeId> tuple2 = new Tuple<NodeId>(n4, n5, n6) ;
+        Iterator<Tuple<NodeId>> iter = index.find(tuple2) ;
+        assertFalse(iter.hasNext()) ;
+   }
+    
+    @Test public void tupleIndexFindNot_2()
+    {
+        TupleIndex index = create("SPO") ;
+        add(index, n1, n2, n3) ;
+        
+        Tuple<NodeId> tuple2 = new Tuple<NodeId>(n1, n5, n6) ;
+        Iterator<Tuple<NodeId>> iter = index.find(tuple2) ;
+        assertFalse(iter.hasNext()) ;
+   }
+
+    @Test public void tupleIndexFindNot_3()
+    {
+        TupleIndex index = create("SPO") ;
+        add(index, n1, n2, n3) ;
+        
+        Tuple<NodeId> tuple2 = new Tuple<NodeId>(n1, null, n6) ;
         Iterator<Tuple<NodeId>> iter = index.find(tuple2) ;
         assertFalse(iter.hasNext()) ;
    }
