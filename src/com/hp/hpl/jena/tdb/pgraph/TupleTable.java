@@ -27,6 +27,17 @@ import com.hp.hpl.jena.tdb.lib.Sync;
 public class TupleTable implements Sync, Closeable
 {
     // UNFINISHED.
+    // TripleIndex ==> TupleIndex
+    // TupleTable is X TupleIndexes.
+    // Then a Tuple<NodeID><->Tuple<Node> wrapper
+    // Then a Triple/Quad <=> Tuple<Node> wrapper
+    
+    // Alt:
+    // TupleIndex
+    // NodeIndex
+    // Table of TupleNodes is X NodeIndex's
+    
+    
     // Should it be a TupleNodeTable? (c.f. TripleTable, QuadTable)
     // Can we extract the Tuple indexing from TripleTable to generalise to N?
     
