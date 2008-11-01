@@ -166,20 +166,20 @@ public class TripleTable implements Sync, Closeable
         return nodeTable.retrieveNodeByNodeId(id) ;
     }
 
-    /** Find by node.  Return null  if defintiely does not exist (e.g. no such node) */
+    /** Find by node. */
     public Iterator<Triple> find(Node s, Node p, Node o)
     {
         NodeId subj = idForNode(s) ;
         if ( subj == NodeId.NodeDoesNotExist )
-            return null ;
+            return new NullIterator<Triple>() ;
         
         NodeId pred = idForNode(p) ;
         if ( pred == NodeId.NodeDoesNotExist )
-            return null ;
+            return new NullIterator<Triple>() ;
         
         NodeId obj = idForNode(o) ;
         if ( obj == NodeId.NodeDoesNotExist )
-            return null ;
+            return new NullIterator<Triple>() ;
         
         boolean s_set = ( subj != NodeId.NodeIdAny ) ;
         boolean p_set = ( pred != NodeId.NodeIdAny ) ;

@@ -27,6 +27,8 @@ public class QuadTable implements Sync, Closeable
     private QuadIndex indexGSPO ;
     private QuadIndex indexGPOS ;
     private QuadIndex indexGOSP ;
+    private QuadIndex[] indexes = new QuadIndex[6] ;
+    
     private NodeTable nodeTable ;
     private ReorderTransformation reorderTransform ;
     

@@ -19,9 +19,14 @@ public final class Tuple<T>
         this.tuple = tuple ;
     }
     
+//    public Tuple(int N)
+//    { }
+    
     public T get(int idx) { return tuple[idx] ; }
 
     public List<T> asList() { return Arrays.asList(tuple) ; }
+    
+    public T[] tuple() { return tuple ; }
 
     public final int size() { return tuple.length ; }
     
