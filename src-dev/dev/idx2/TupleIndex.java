@@ -135,6 +135,8 @@ public class TupleIndex implements Sync, Closeable
                 throw new ARQNotImplemented("Unfinished: TupleIndex.find") ;
             // Adjust the maxRec.
             NodeId X = pattern2[leadingIdx] ;
+            // Set the max Record to the leading NodeIds, +1.
+            // Example, SP- inclusive to S(P+1)- exclusive. 
             Bytes.setLong(X.getId()+1, maxRec.getKey(), leadingIdx*SizeOfNodeId) ;
             iter = index.iterator(minRec, maxRec) ;
         }
