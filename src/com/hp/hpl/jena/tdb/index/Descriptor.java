@@ -180,6 +180,11 @@ public class Descriptor
         
         return new Tuple<NodeId>(sId, pId, oId) ; 
     }
+
+    public RecordFactory getFactory()
+    {
+        return recordFactory ; 
+    }
 }
 
 /*

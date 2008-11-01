@@ -6,9 +6,74 @@
 
 package dev.idx2;
 
-public class TestTupleIndex
-{
+import java.util.Iterator;
 
+import lib.Tuple;
+import org.junit.Test;
+import tdb.Cmd;
+import test.BaseTest;
+
+import com.hp.hpl.jena.tdb.base.record.RecordFactory;
+import com.hp.hpl.jena.tdb.index.Descriptor;
+import com.hp.hpl.jena.tdb.index.IndexBuilder;
+import com.hp.hpl.jena.tdb.index.RangeIndex;
+import com.hp.hpl.jena.tdb.pgraph.NodeId;
+import com.hp.hpl.jena.tdb.sys.SystemTDB;
+
+public class TestTupleIndex extends BaseTest
+{
+    static { Cmd.setLog4j() ; }
+    
+    static RecordFactory factory = new RecordFactory(3*SystemTDB.SizeOfNodeId, 0) ;
+    static NodeId n1 = new NodeId(1) ;
+    static NodeId n2 = new NodeId(2) ;
+    static NodeId n3 = new NodeId(3) ;
+    static NodeId n4 = new NodeId(0x4040404040404040L) ;
+    static NodeId n5 = new NodeId(0x5555555555555555L) ;
+    static NodeId n6 = new NodeId(0x6666666666666666L) ; 
+    
+    static TupleIndex create(String description)
+    {
+        RangeIndex rIdx = IndexBuilder.mem().newRangeIndex(null, factory, "TupleIndexTest") ;
+        TupleIndex index = new TupleIndex(3, new Descriptor(description, factory), rIdx) ;
+        return index ;
+    }
+    
+    @Test public void tupleIndex_1()
+    {
+        Tuple<NodeId> tuple = new Tuple<NodeId>(n1, n2, n3) ;
+        RangeIndex rIdx = IndexBuilder.mem().newRangeIndex(null, factory, "TupleIndexTest") ;
+        TupleIndex index = create("SPO") ;
+        index.add(tuple) ;
+    }
+    
+    @Test public void tupleIndexFind_1()
+    {
+        Tuple<NodeId> tuple = new Tuple<NodeId>(n1, n2, n3) ;
+        RangeIndex rIdx = IndexBuilder.mem().newRangeIndex(null, factory, "TupleIndexTest") ;
+        TupleIndex index = create("SPO") ;
+        index.add(tuple) ;
+        
+        Tuple<NodeId> tuple2 = new Tuple<NodeId>(n1, n2, n3) ;
+        Iterator<Tuple<NodeId>> iter = index.find(tuple2) ;
+        assertTrue(iter.hasNext()) ;
+        iter.next();
+        assertFalse(iter.hasNext()) ;
+    }
+ 
+    @Test public void tupleIndexFind_2()
+    {
+        Tuple<NodeId> tuple = new Tuple<NodeId>(n1, n2, n3) ;
+        RangeIndex rIdx = IndexBuilder.mem().newRangeIndex(null, factory, "TupleIndexTest") ;
+        TupleIndex index = create("SPO") ;
+        index.add(tuple) ;
+        
+        Tuple<NodeId> tuple2 = new Tuple<NodeId>(n4, n5, n6) ;
+        Iterator<Tuple<NodeId>> iter = index.find(tuple2) ;
+        assertFalse(iter.hasNext()) ;
+   }
+ 
+    
 }
 
 /*

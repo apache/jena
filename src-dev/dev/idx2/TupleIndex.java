@@ -6,9 +6,7 @@
 
 package dev.idx2;
 
-import iterator.Filter;
-import iterator.Iter;
-import iterator.Transform;
+import iterator.*;
 
 import java.util.Iterator;
 
@@ -29,9 +27,6 @@ import static com.hp.hpl.jena.tdb.sys.SystemTDB.SizeOfNodeId;
 
 import static java.lang.String.format ;
 
-// Tuple<NodeID> <=> Record
-// Extract from tripleTable.
-
 // NEED TO GENERALISE Descriptor.
 // See XXX below
 
@@ -44,11 +39,12 @@ public class TupleIndex implements Sync, Closeable
     RecordFactory factory ;
     private Descriptor descriptor ;
     
-    public TupleIndex(int N,  Descriptor desc, RecordFactory factory)
+    public TupleIndex(int N,  Descriptor desc, RangeIndex index)
     {
         this.tupleLength = N ;
-        this.factory = factory ;
+        this.factory = desc.getFactory() ;
         this.descriptor = desc ;
+        this.index = index ;
         if ( factory.keyLength() != N*SizeOfNodeId)
             throw new TDBException(format("Mismatch: TupleIndex of length %d is not comparative with a factory for key length %d", N, factory.keyLength())) ;
     }
@@ -122,7 +118,15 @@ public class TupleIndex implements Sync, Closeable
         }
 
         
-        // Adjust the 
+        // Is it a simple existence test?
+        if ( numSlots == pattern.size() )
+        {
+            if ( index.contains(minRec) )
+                return new SingletonIterator<Tuple<NodeId>>(pattern) ;  
+            else
+                return new NullIterator<Tuple<NodeId>>() ; 
+        }
+        
         
         Iterator<Record> iter = null ;
         
@@ -131,8 +135,6 @@ public class TupleIndex implements Sync, Closeable
             iter = index.iterator() ;
         else 
         {
-            if ( true )
-                throw new ARQNotImplemented("Unfinished: TupleIndex.find") ;
             // Adjust the maxRec.
             NodeId X = pattern2[leadingIdx] ;
             // Set the max Record to the leading NodeIds, +1.
