@@ -21,6 +21,18 @@ import com.hp.hpl.jena.tdb.pgraph.NodeId;
 
 public class Descriptor
 {
+    static interface Selector2
+    { 
+        NodeId choose(Tuple<NodeId> tuple) ;
+        
+        static final Selector2 sel_1 = new Selector2() {
+            @Override public NodeId choose(Tuple<NodeId> tuple)
+            { return tuple.get(1) ; }
+        } ;
+    }
+    
+    //static final NodeId choose(Tuple<NodeId> tuple, int i) { return tuple.get(i) ; }
+    
     static interface Selector
     { 
         NodeId choose(NodeId s, NodeId p , NodeId o) ;
@@ -42,6 +54,8 @@ public class Descriptor
             { return n3 ; }
         } ;
 
+
+        
         static final Selector selectors[] = new Selector[] { sel_1, sel_2, sel_3 } ;
     }
 
@@ -50,12 +64,13 @@ public class Descriptor
     static final private Selector sel_p = Selector.sel_2 ;            
     static final private Selector sel_o = Selector.sel_3 ;
 
-    // ---- Selectors for Index order selection => SPO
+    // Member fields
+    // ---- Selectors for index order selection from SPO (SPO=>index)
     private final Selector sel_slot_1 ;  
     private final Selector sel_slot_2 ; 
     private final Selector sel_slot_3 ;  
 
-    // ---- Selectors for putting index order into SPO
+    // ---- Selectors for putting index order into SPO (index=>SPO)
     private final Selector sel_extract_s ;  
     private final Selector sel_extract_p ; 
     private final Selector sel_extract_o ;
@@ -95,25 +110,16 @@ public class Descriptor
             throw new TDBException("Bad descriptor: "+desc) ; 
     }
 
-    // Get selector for SPO
+    // Get selector for SPO (SPO=>index)
     private Selector getSelector(String desc, int i)
     {
         char ch = desc.charAt(i) ;
         ch = Character.toUpperCase(ch) ;
-        return selector(ch) ;
-    }
-
-    // Get selector for index order.
-    private Selector findSelector(String desc, char ch)
-    {
-        int idx = desc.indexOf(ch) ;
-        if ( idx < 0 )
-            throw new TDBException("Bad findSelector: "+desc+" : "+ch) ; 
-        return Selector.selectors[idx] ;
-    }
-    
-    private Selector selector(char ch)
-    {
+//        return selector(ch) ;
+//    }
+//    
+//    private Selector selector(char ch)
+//    {
         switch (ch)
         {
             case 'S': return sel_s ;
@@ -122,6 +128,17 @@ public class Descriptor
             //case 'G':
         }
         throw new TDBException("Can't find a select for "+ch) ;
+    }
+    
+
+
+    // Get selector for index order (index=>SPO)
+    private Selector findSelector(String desc, char ch)
+    {
+        int idx = desc.indexOf(ch) ;
+        if ( idx < 0 )
+            throw new TDBException("Bad findSelector: "+desc+" : "+ch) ; 
+        return Selector.selectors[idx] ;
     }
     
     public String getDescription() { return description ; }

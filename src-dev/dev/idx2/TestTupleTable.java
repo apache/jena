@@ -6,10 +6,23 @@
 
 package dev.idx2;
 
+import org.junit.Test;
+
 
 public class TestTupleTable
 {
- 
+    static private TupleTable create()
+    {
+        
+        TupleIndex idxSPO = TestTupleIndex.create("SPO") ;
+        TupleIndex idxPOS = TestTupleIndex.create("POS") ;
+        TupleIndex idxOSP = TestTupleIndex.create("OSP") ;
+        TupleIndex x[] = { idxSPO, idxPOS, idxOSP } ;
+        TupleTable table = new TupleTable(3, x, TestTupleIndex.factory, null) ;
+        return table ;
+    }
+    
+    @Test public void create1() { create() ; } 
 }
 
 /*
