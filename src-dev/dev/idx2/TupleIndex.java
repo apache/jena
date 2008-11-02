@@ -88,7 +88,7 @@ public class TupleIndex implements Sync, Closeable
         
         // Canonical form.
         int numSlots = 0 ;
-        int leadingIdx = 0 ;    // Index of last leading pattern NodeId.
+        int leadingIdx = -2;    // Index of last leading pattern NodeId.  Start less than numSlots-1
         boolean leading = true ;
         // Records.
         Record minRec = factory.createKeyOnly() ;
@@ -117,7 +117,6 @@ public class TupleIndex implements Sync, Closeable
                 leading = false ;
         }
 
-        
         // Is it a simple existence test?
         if ( numSlots == pattern.size() )
         {
@@ -127,10 +126,9 @@ public class TupleIndex implements Sync, Closeable
                 return new NullIterator<Tuple<NodeId>>() ; 
         }
         
-        
         Iterator<Record> iter = null ;
         
-        if ( numSlots == 0 )
+        if ( leadingIdx < 0 )
             // No index at all.  Scan.
             iter = index.iterator() ;
         else 
