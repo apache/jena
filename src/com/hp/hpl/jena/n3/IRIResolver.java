@@ -155,13 +155,14 @@ public class IRIResolver {
 		return exceptions(base.resolve(relURI)).toString();
 	}
 
+	
 	/**
 	 * Throw any exceptions resulting from IRI.
 	 * @param iri
 	 * @return iri
 	 */
 	static private IRI exceptions(IRI iri) {
-		if (iri.hasViolation(false)) {
+		if (showExceptions && iri.hasViolation(false)) {
 			try {
 				cwd.construct(iri);
 			} catch (IRIException e) {
@@ -170,7 +171,16 @@ public class IRIResolver {
 		}
 		return iri;
 	}
+	
+	private static boolean showExceptions = true;
 
+	/**
+	    To allow Eyeball to bypass IRI checking (because it's doing its own)
+	    @author kers
+	*/
+	public static void suppressExceptions()
+	    { showExceptions = false; }
+	
 	/**
 	 * Resolve the relative URI str against the current
 	 * working directory.
