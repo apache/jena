@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: AssemblerTestBase.java,v 1.11 2008-01-03 15:18:54 chris-dollin Exp $
+ 	$Id: AssemblerTestBase.java,v 1.12 2008-11-06 10:57:37 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.test;
@@ -102,7 +102,7 @@ public abstract class AssemblerTestBase extends ModelTestBase
     protected Resource resourceInModel( String string )
         {
         Model m = model( string );
-        Resource r = resource( string.substring( 0, string.indexOf( ' ' ) ) );
+        Resource r = resource( m, string.substring( 0, string.indexOf( ' ' ) ) );
         return (Resource) r.inModel( m );        
         }
 

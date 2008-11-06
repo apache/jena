@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: AbstractTestReifier.java,v 1.33 2008-01-02 12:05:31 andy_seaborne Exp $
+  $Id: AbstractTestReifier.java,v 1.34 2008-11-06 10:57:30 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -51,6 +51,21 @@ public abstract class AbstractTestReifier extends GraphTestBase
     protected final Graph graphWithIf( boolean cond, String facts )
         { return graphWithUnless( !cond, facts ); }
             
+    public void testGetGraphNotNull()
+        {
+        assertNotNull( getGraph( Minimal )  );
+        }
+    
+    public void testGotGraphReifierNotNull()
+        {
+        assertNotNull( getGraph( Minimal ).getReifier() );
+        }
+    
+    public void testGotGraphReifierStyleNotNull()
+        {
+        assertNotNull( getGraph( Minimal ).getReifier().getStyle() );
+        }
+    
     public void testStyle()
         {
         assertSame( Minimal, getGraph( Minimal ).getReifier().getStyle() );    
@@ -212,6 +227,7 @@ public abstract class AbstractTestReifier extends GraphTestBase
             {
             graphAdd( g,  clashingStatement );
             assertEquals( null, g.getReifier().getTriple( node( "x" ) ) );
+            // System.err.println( ">> tRC: clashing = " + clashingStatement );
             assertFalse( g.getReifier().hasTriple( SPO ) );
             }
         catch (AlreadyReifiedException e)
