@@ -1,21 +1,20 @@
 /*
  	(c) Copyright 2008 Hewlett-Packard Development Company, LP
  	All rights reserved.
- 	$Id: TestBasicReifier.java,v 1.1 2008-11-06 10:57:30 chris-dollin Exp $
+ 	$Id: TestBasicReifier.java,v 1.2 2008-11-06 11:03:01 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
 
 import java.util.List;
 
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import junit.framework.TestSuite;
 
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.impl.*;
 import com.hp.hpl.jena.graph.query.*;
 import com.hp.hpl.jena.mem.GraphMem;
-import com.hp.hpl.jena.shared.ReificationStyle;
+import com.hp.hpl.jena.shared.*;
 import com.hp.hpl.jena.util.iterator.*;
 import com.hp.hpl.jena.vocabulary.RDF;
 
@@ -77,10 +76,10 @@ public class TestBasicReifier extends AbstractTestReifier
             { this.style = style; this.graph = (BasicReifierGraph) graph; }
 
         public ExtendedIterator allNodes()
-            { throw new NotImplementedException(); }
+            { throw new BrokenException( "this reifier operation" ); }
 
         public ExtendedIterator allNodes( Triple t )
-            { throw new NotImplementedException(); }
+            { throw new BrokenException( "this reifier operation" ); }
 
         public void close()
             { /* nothing to do */ }
@@ -100,7 +99,7 @@ public class TestBasicReifier extends AbstractTestReifier
             };
 
         public ExtendedIterator findEither( TripleMatch m, boolean showHidden )
-            { throw new NotImplementedException(); }
+            { throw new BrokenException( "this reifier operation" ); }
 
         public ExtendedIterator findExposed( TripleMatch m )
             {
@@ -120,7 +119,7 @@ public class TestBasicReifier extends AbstractTestReifier
             }
 
         public boolean handledRemove( Triple t )
-            { throw new NotImplementedException(); }
+            { throw new BrokenException( "this reifier operation" ); }
 
         public boolean hasTriple( Node n )
             { return getTriple( n ) != null; }
@@ -132,10 +131,10 @@ public class TestBasicReifier extends AbstractTestReifier
             }
 
         public void remove( Node n, Triple t )
-            { throw new NotImplementedException(); }
+            { throw new BrokenException( "this reifier operation" ); }
 
         public void remove( Triple t )
-            { throw new NotImplementedException(); }
+            { throw new BrokenException( "this reifier operation" ); }
 
         public int size()
             { return style.conceals() ? count( find() ) : 0; }
