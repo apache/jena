@@ -164,6 +164,18 @@ public class Descriptor
     public final NodeId getSlot3(NodeId x, NodeId y, NodeId z)
     { return sel_slot_3.choose(x,y,z) ; }
     
+    public final NodeId getSlot(int i, NodeId x, NodeId y, NodeId z)
+    {
+        if ( i == 0 ) 
+            return getSlot1(x,y,z) ;
+        if ( i == 1 )
+            return getSlot2(x,y,z) ;
+        if ( i == 2 )
+            return getSlot3(x,y,z) ;
+        throw new TDBException("Descriotion.get(i,x,y,z): index out of range: "+i) ;
+    }
+
+    
     // In SPO order
     public final Record record(Tuple<NodeId> tuple)
     { return record(tuple.get(0), tuple.get(1), tuple.get(2)) ; }

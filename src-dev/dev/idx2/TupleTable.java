@@ -108,6 +108,9 @@ public class TupleTable implements Sync, Closeable
                 numSlots++ ;
         }
 
+        if ( numSlots == 0 )
+            return indexes[0].all() ;
+        
         int indexNumSlots = 0 ;
         TupleIndex index = null ;
         for ( int i = 0 ; i < indexes.length ; i++ )

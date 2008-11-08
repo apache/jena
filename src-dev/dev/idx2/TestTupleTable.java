@@ -6,11 +6,31 @@
 
 package dev.idx2;
 
+import iterator.Iter;
+
+import java.util.Iterator;
+import java.util.List;
+
+import lib.Tuple;
+
+import com.hp.hpl.jena.tdb.base.record.RecordFactory;
+import com.hp.hpl.jena.tdb.pgraph.NodeId;
+import com.hp.hpl.jena.tdb.sys.SystemTDB;
+
 import org.junit.Test;
+import test.BaseTest;
 
 
-public class TestTupleTable
+public class TestTupleTable extends BaseTest
 {
+    static RecordFactory factory = new RecordFactory(3*SystemTDB.SizeOfNodeId, 0) ;
+    static NodeId n1 = new NodeId(1) ;
+    static NodeId n2 = new NodeId(2) ;
+    static NodeId n3 = new NodeId(3) ;
+    static NodeId n4 = new NodeId(0x4040404040404040L) ;
+    static NodeId n5 = new NodeId(0x5555555555555555L) ;
+    static NodeId n6 = new NodeId(0x6666666666666666L) ; 
+    
     static private TupleTable create()
     {
         
@@ -22,7 +42,39 @@ public class TestTupleTable
         return table ;
     }
     
+    static void add(TupleTable table, NodeId x1, NodeId x2, NodeId x3)
+    {
+        Tuple<NodeId> tuple = new Tuple<NodeId>(x1, x2, x3) ;
+        table.add(tuple) ;
+    }
+    
     @Test public void create1() { create() ; } 
+    
+    @Test public void create2()
+    { 
+        TupleTable table = create() ;
+        add(table, n1, n2, n3) ;
+
+        Tuple<NodeId> pat = new Tuple<NodeId>(null, null, null) ;
+        Iterator<Tuple<NodeId>> iter = table.find(pat) ;
+        List<Tuple<NodeId>> x = Iter.toList(iter) ;
+        int z = x.size() ;
+        assertEquals(1, z) ;
+    }
+    
+    @Test public void create3()
+    { 
+        TupleTable table = create() ;
+        add(table, n1, n2, n3) ;
+        add(table, n1, n2, n4) ;
+
+        Tuple<NodeId> pat = new Tuple<NodeId>(null, n2, null) ;
+        Iterator<Tuple<NodeId>> iter = table.find(pat) ;
+        assertNotNull(iter) ;
+        List<Tuple<NodeId>> x = Iter.toList(iter) ;
+        int z = x.size() ;
+        assertEquals(2, z) ;
+    }
 }
 
 /*

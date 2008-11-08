@@ -6,15 +6,16 @@
 
 package dev.idx2;
 
+import static com.hp.hpl.jena.tdb.sys.SystemTDB.SizeOfNodeId;
+import static java.lang.String.format;
 import iterator.*;
 
 import java.util.Iterator;
 
-import com.hp.hpl.jena.sparql.ARQNotImplemented;
-import com.hp.hpl.jena.sparql.core.Closeable;
-
 import lib.Bytes;
 import lib.Tuple;
+
+import com.hp.hpl.jena.sparql.core.Closeable;
 
 import com.hp.hpl.jena.tdb.TDBException;
 import com.hp.hpl.jena.tdb.base.record.Record;
@@ -23,9 +24,6 @@ import com.hp.hpl.jena.tdb.index.Descriptor;
 import com.hp.hpl.jena.tdb.index.RangeIndex;
 import com.hp.hpl.jena.tdb.lib.Sync;
 import com.hp.hpl.jena.tdb.pgraph.NodeId;
-import static com.hp.hpl.jena.tdb.sys.SystemTDB.SizeOfNodeId;
-
-import static java.lang.String.format ;
 
 // NEED TO GENERALISE Descriptor.
 // See XXX below
@@ -74,16 +72,29 @@ public class TupleIndex implements Sync, Closeable
         return index.delete(r) ;
     }
     
+    public Iterator<Tuple<NodeId>> findOrScan(Tuple<NodeId> pattern)
+    {
+        Iterator<Tuple<NodeId>> iter = find(pattern) ;
+        if ( iter == null )
+            iter = scan(pattern) ;
+        return iter ;
+    }
+    
+    
     /** Find all matching tuples - a slot of NodeId.NodeIdAny (or null) means match any.
+     *  Return null if a full scan is needed.
      */
     public Iterator<Tuple<NodeId>> find(Tuple<NodeId> pattern)
     {
+        System.err.println("Pattern not remapped") ;
+        // WHICH ORDER IS THE PATTERN?  Index order?
         if ( Check )
         {
             if ( tupleLength != pattern.size() )
             throw new TDBException(String.format("Mismatch: tuple length %d / index for length %d", pattern.size(), tupleLength)) ;
         } 
         
+        // Remap by descriptor
         NodeId[] pattern2 = new NodeId[pattern.size()] ;
         
         // Canonical form.
@@ -93,11 +104,13 @@ public class TupleIndex implements Sync, Closeable
         // Records.
         Record minRec = factory.createKeyOnly() ;
         Record maxRec = factory.createKeyOnly() ;
-
         
         for ( int i = 0 ; i < pattern.size() ; i++ )
         {
-            pattern2[i] = pattern.get(i) ;
+            //int j = descriptor.map(i) ;
+            int j = i ;
+            
+            pattern2[i] = pattern.get(j) ;
             if ( pattern2[i] == NodeId.NodeIdAny )
                 pattern2[i] = null ;
             
@@ -129,14 +142,15 @@ public class TupleIndex implements Sync, Closeable
         Iterator<Record> iter = null ;
         
         if ( leadingIdx < 0 )
-            // No index at all.  Scan.
-            iter = index.iterator() ;
+            //iter = index.iterator() ;
+            // Full scan necessary
+            return null ;
         else 
         {
             // Adjust the maxRec.
             NodeId X = pattern2[leadingIdx] ;
             // Set the max Record to the leading NodeIds, +1.
-            // Example, SP- inclusive to S(P+1)- exclusive. 
+            // Example, SP? inclusive to S(P+1)? exclusive where ? is zero. 
             Bytes.setLong(X.getId()+1, maxRec.getKey(), leadingIdx*SizeOfNodeId) ;
             iter = index.iterator(minRec, maxRec) ;
         }
@@ -149,6 +163,17 @@ public class TupleIndex implements Sync, Closeable
             tuples = scan(tuples, pattern) ;
         
         return tuples ;
+    }
+    
+    public Iterator<Tuple<NodeId>> scan(Tuple<NodeId> pattern)
+    {
+        return scan(all(), pattern) ;
+    }
+    
+    public Iterator<Tuple<NodeId>> all()
+    {
+        Iterator<Record> iter = index.iterator() ;
+        return Iter.map(iter, transformToTuple) ;
     }
     
     private Transform<Record, Tuple<NodeId>> transformToTuple = new Transform<Record, Tuple<NodeId>>()
@@ -193,17 +218,17 @@ public class TupleIndex implements Sync, Closeable
         
         for ( int i = 0 ; i < tupleLength ; i++ )
         {
-            if ( true )
-                throw new ARQNotImplemented("Unfinished: TupleIndex.find") ;
-
-            //NodeId X = desc.getSlot(i, pattern) ;
-            NodeId X = null ;
+            NodeId X = getSlot(i, pattern) ;
             if ( X == null ) return i ;
         }
         return 0 ;
     }
-
     
+    private NodeId getSlot(int i, Tuple<NodeId> pattern)
+    {
+        return descriptor.getSlot(i, pattern.get(0), pattern.get(1), pattern.get(2)) ;
+    }
+
     @Override
     public void close()
     {
@@ -216,6 +241,8 @@ public class TupleIndex implements Sync, Closeable
         index.sync(force) ;
     }
 
+    @Override
+    public String toString() { return "index:"+descriptor.getDescription() ; }
 }
 
 /*

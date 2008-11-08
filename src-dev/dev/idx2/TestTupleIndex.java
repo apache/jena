@@ -188,6 +188,9 @@ public class TestTupleIndex extends BaseTest
         
         Tuple<NodeId> tuple2 = new Tuple<NodeId>(null, null, n3) ;
         Iterator<Tuple<NodeId>> iter = index.find(tuple2) ;
+        assertNull(iter) ;
+        
+        iter = index.findOrScan(tuple2) ;
         assertTrue(iter.hasNext()) ;
         iter.next();
         assertFalse(iter.hasNext()) ;
