@@ -221,6 +221,20 @@ public class SDBConnection
     	}
     }
     
+    /** Close a prepared statement **/
+    public void closePreparedStatement(PreparedStatement ps) throws SQLException {
+        if ( loggingSQLStatements() )
+            writeLog("closePrepareStatement", ps.toString()) ;
+        if ( ps == null )
+            return ;
+        try {
+            ps.close() ;
+        } catch (SQLException ex) {
+            exception("closePrepareStatement", ex, ps.toString()) ;
+            throw ex;
+        }
+    }
+    
     /** Get the names of the application tables */
     public List<String> getTableNames()
     {
