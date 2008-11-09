@@ -6,13 +6,19 @@
 
 package dev.idx2;
 
+import static java.lang.String.format;
+
 import java.util.Arrays;
-import static java.lang.String.format ;
+import java.util.List;
+
 import lib.ListUtils;
+import lib.StrUtils;
 import lib.Tuple;
 
+import com.hp.hpl.jena.tdb.TDBException;
 
-/** General descriptor of a reorderring (mapping) of columns indexes to columns indexes, 
+
+/** General descriptor of a reorderring (mapping) of columns in tuples to columns in indexes, 
  * for example, from triples to triple index order. 
  * @author Andy Seaborne
  */
@@ -20,23 +26,41 @@ public class ColumnMap
 {
     // Map from tuple order to index order
     // So SPO->POS is (0->2, 1->0, 2->1)
-    private int[] indexOrder ;
+    private int[] mapOrder ;
     
     // The mapping from index to tuple order
     // For POS->SPO, is (0->1, 1->2, 2->0)
-    private int[] retrieveOrder ;
+    private int[] unmapOrder ;
     private String label ;
 
+    /** Construct a column mapping that maps the input (one col, one char) to the output */  
+    public ColumnMap(String input, String output)
+    {
+        this(input+"->"+output, compileMapping(input, output)) ;
+    }
+    
+    public <T> ColumnMap(List<T> input, List<T> output)
+    {
+        this(input+"->"+output, compileMapping(input, output)) ;
+    }
+    
+    
+    /** Construct a column map - the elements are the 
+     * mappings of a tuple originally in the order 0,1,2,...
+     * so SPO->POS is 2,0,1 (SPO->POS so S->2, P->0, O->1)   
+     * and not 1,2,0 (which is the extraction mapping).
+     * The label is just a lable and is not interpretted.
+     */
     public ColumnMap(String label, int...elements)
     {
         this.label = label ;
 
-        this.indexOrder = new int[elements.length] ;
+        this.mapOrder = new int[elements.length] ;
         System.arraycopy(elements, 0, elements, 0, elements.length) ;
-        Arrays.fill(indexOrder, -1) ;
+        Arrays.fill(mapOrder, -1) ;
         
-        this.retrieveOrder = new int[elements.length] ;
-        Arrays.fill(retrieveOrder, -1) ;
+        this.unmapOrder = new int[elements.length] ;
+        Arrays.fill(unmapOrder, -1) ;
     
         for ( int i = 0 ; i < elements.length ; i++ )
         {
@@ -44,24 +68,24 @@ public class ColumnMap
             if ( x < 0 || x >= elements.length)
                 throw new IllegalArgumentException("Out of range: "+x) ;
             // Checking
-            if ( indexOrder[i] != -1 || retrieveOrder[x] != -1 )
+            if ( mapOrder[i] != -1 || unmapOrder[x] != -1 )
                 throw new IllegalArgumentException("Inconsistent: "+ListUtils.str(elements)) ;
             
-            indexOrder[i] = x ;
-            retrieveOrder[x] = i ;
+            mapOrder[i] = x ;
+            unmapOrder[x] = i ;
         }
     }
     
-    /** copy over a tuple from normal order to index order */
-    public <T> Tuple<T> indexOrder(Tuple<T> src)
+    /** Return a tuple with the column mapping applied */
+    public <T> Tuple<T> map(Tuple<T> src)
     {
-        return map(src, indexOrder) ;
+        return map(src, mapOrder) ;
     }
     
-    /** copy over a tuple from mapped (index) order to normal order */
-    public <T> Tuple<T> retrieveOrder(Tuple<T> src)
+    /** Return a tuple with the column mapping reversed */
+    public <T> Tuple<T> unmap(Tuple<T> src)
     {
-        return map(src, indexOrder) ;
+        return map(src, unmapOrder) ;
     }
 
     private <T> Tuple<T> map(Tuple<T> src, int[] map)
@@ -72,20 +96,58 @@ public class ColumnMap
         for ( int i = 0 ; i < src.size() ; i++ )
         {
             int j = map[i] ;
-            elts[i] = src.get(j) ;
+            elts[j] = src.get(i) ;
         }
         return new Tuple<T>(elts) ;
     }
     
-    public int indexOrder(int i) { return indexOrder[i] ; }
+    /*public*/ int mapOrder(int i) { return mapOrder[i] ; }
     
-    public int retrieveOrder(int i) { return retrieveOrder[i] ; }
+    /*public*/ int unmapOrder(int i) { return unmapOrder[i] ; }
+    
+    /** Compile a mapping encoded a single charcaters e.g. "SPO", "POS" */
+    static int[] compileMapping(String domain, String range)
+    {
+        List<Character> input = StrUtils.toCharList(domain) ;
+        List<Character> output = StrUtils.toCharList(range) ;
+        return compileMapping(input, output) ;
+    }
+
+    /** Compile a mapping */
+    static <T> int[] compileMapping(T[] domain, T[] range)
+    {
+        return compileMapping(Arrays.asList(domain), Arrays.asList(range)) ;
+    }
+    
+    /** Compile a mapping */
+    static <T> int[] compileMapping(List<T> domain, List<T>range)
+    {
+        if ( domain.size() != range.size() )
+            throw new TDBException("Bad mapping: lengths not the same: "+domain+" -> "+range) ; 
+        
+        int[] cols = new int[domain.size()] ;
+        boolean[] mapped = new boolean[domain.size()] ;
+        //Arrays.fill(mapped, false) ;
+        
+        for ( int i = 0 ; i < domain.size() ; i++ )
+        {
+            T input = domain.get(i) ;
+            int j = range.indexOf(input) ;
+            if ( j < 0 )
+                throw new TDBException("Bad mapping: missing mapping: "+domain+" -> "+range) ;
+            if ( mapped[j] )
+                throw new TDBException("Bad mapping: duplicate: "+domain+" -> "+range) ;
+            cols[i] = j ;
+            mapped[j] = true ;
+        }
+        return cols ;
+    }
     
     @Override
     public String toString()
     {
-        return label ; 
-        //return format("%s:%s%s", label, mapStr(indexOrder), mapStr(retrieveOrder)) ;
+        //return label ; 
+        return format("%s:%s%s", label, mapStr(mapOrder), mapStr(unmapOrder)) ;
     }
 
     private Object mapStr(int[] map)

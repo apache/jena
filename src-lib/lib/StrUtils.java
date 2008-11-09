@@ -7,6 +7,7 @@
 package lib;
 
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -152,6 +153,14 @@ public class StrUtils
         if ( x.length() == 0 )
             return x ;
         return x.substring(0, x.length()-1) ;
+    }
+
+    public static List<Character> toCharList(String str)
+    {
+        List<Character> characters = new ArrayList<Character>(str.length()) ;
+        for ( Character ch : str.toCharArray() )
+            characters.add(ch) ;
+        return characters ;
     }
 }
 
