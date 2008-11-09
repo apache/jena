@@ -39,11 +39,15 @@ public class ColumnMap
         this(input+"->"+output, compileMapping(input, output)) ;
     }
     
-    public <T> ColumnMap(List<T> input, List<T> output)
+    public <T> ColumnMap(String label, List<T> input, List<T> output)
     {
-        this(input+"->"+output, compileMapping(input, output)) ;
+        this(label, compileMapping(input, output)) ;
     }
     
+    public <T> ColumnMap(String label, T[] input, T[] output)
+    {
+        this(label, compileMapping(input, output)) ;
+    }
     
     /** Construct a column map - the elements are the 
      * mappings of a tuple originally in the order 0,1,2,...
@@ -101,11 +105,11 @@ public class ColumnMap
         return new Tuple<T>(elts) ;
     }
     
-    /*public*/ int mapOrder(int i) { return mapOrder[i] ; }
+    /*public*/ /*Testing*/ int mapOrder(int i) { return mapOrder[i] ; }
     
-    /*public*/ int unmapOrder(int i) { return unmapOrder[i] ; }
+    /*public*/ /*Testing*/ int unmapOrder(int i) { return unmapOrder[i] ; }
     
-    /** Compile a mapping encoded a single charcaters e.g. "SPO", "POS" */
+    /** Compile a mapping encoded as single charcaters e.g. "SPO", "POS" */
     static int[] compileMapping(String domain, String range)
     {
         List<Character> input = StrUtils.toCharList(domain) ;
@@ -113,7 +117,7 @@ public class ColumnMap
         return compileMapping(input, output) ;
     }
 
-    /** Compile a mapping */
+    /** Compile a mapping, encoded two list, the domain and range of the mapping function  */
     static <T> int[] compileMapping(T[] domain, T[] range)
     {
         return compileMapping(Arrays.asList(domain), Arrays.asList(range)) ;

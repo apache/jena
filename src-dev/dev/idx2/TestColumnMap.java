@@ -73,6 +73,20 @@ public class TestColumnMap extends BaseTest
         assertEquals(new Tuple<String>("G", "S", "P", "O"), unmapped) ;
     }
 
+    @Test public void map2()
+    {
+        String[] x = { "G", "S", "P", "O" } ;
+        String[] y = { "O", "S", "P", "G" } ;
+        
+        ColumnMap cmap = new ColumnMap("Test", x, y) ;
+        Tuple<String> tuple = new Tuple<String>(x) ;
+        Tuple<String> mapped = cmap.map(tuple) ;
+        
+        Tuple<String> expected = new Tuple<String>(y) ;
+        assertEquals(expected, mapped) ;
+        Tuple<String> unmapped = cmap.unmap(mapped) ;
+        assertEquals(new Tuple<String>(x), unmapped) ;
+    }
     
 }
 
