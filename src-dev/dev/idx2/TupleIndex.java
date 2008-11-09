@@ -107,26 +107,21 @@ public class TupleIndex implements Sync, Closeable
         // Convert to index order.
         pattern = colMap.map(pattern) ;
         
-        NodeId[] pattern2 = new NodeId[pattern.size()] ;
-        
         // Canonical form.
         int numSlots = 0 ;
         int leadingIdx = -2;    // Index of last leading pattern NodeId.  Start less than numSlots-1
         boolean leading = true ;
+        
         // Records.
         Record minRec = factory.createKeyOnly() ;
         Record maxRec = factory.createKeyOnly() ;
         
         for ( int i = 0 ; i < pattern.size() ; i++ )
         {
-            //int j = colMap.mapOrder(i) ;        // Map. ????
-            int j = i ;
+            NodeId X = pattern.get(i) ;
+            if ( X == NodeId.NodeIdAny )
+                X = null ;
             
-            pattern2[i] = pattern.get(j) ;
-            if ( pattern2[i] == NodeId.NodeIdAny )
-                pattern2[i] = null ;
-            
-            NodeId X = pattern2[i] ;
             if ( X != null )
             {
                 numSlots++ ;
@@ -164,7 +159,7 @@ public class TupleIndex implements Sync, Closeable
         else 
         {
             // Adjust the maxRec.
-            NodeId X = pattern2[leadingIdx] ;
+            NodeId X = pattern.get(leadingIdx) ;
             // Set the max Record to the leading NodeIds, +1.
             // Example, SP? inclusive to S(P+1)? exclusive where ? is zero. 
             Bytes.setLong(X.getId()+1, maxRec.getKey(), leadingIdx*SizeOfNodeId) ;
