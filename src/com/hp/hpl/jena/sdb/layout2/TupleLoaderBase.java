@@ -155,7 +155,22 @@ public abstract class TupleLoaderBase extends com.hp.hpl.jena.sdb.store.TupleLoa
 		flush();
 	}
 	
-	// Start a transaction if required
+	@Override
+	public void close()
+	{
+	    // Added: AFS : 8/11 - need Damian's approval.
+	    super.close();
+	    try { 
+	        connection().closePreparedStatement(insertTupleLoader) ;
+	        connection().closePreparedStatement(insertNodeLoader);
+	        connection().closePreparedStatement(deleteTuples);
+	        connection().closePreparedStatement(deleteAllTuples);
+	        connection().closePreparedStatement(clearTupleLoader);
+	        connection().closePreparedStatement(clearNodeLoader);
+	    } catch (SQLException ex) {}
+	}
+
+    // Start a transaction if required
 	private static boolean startTransaction(SDBConnection connection) {
 		boolean handleTransaction = false; // is somebody handling transactions already?
 		try {
