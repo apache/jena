@@ -33,7 +33,6 @@ public class TestTupleTable extends BaseTest
     
     static private TupleTable create()
     {
-        
         TupleIndex idxSPO = TestTupleIndex.create("SPO") ;
         TupleIndex idxPOS = TestTupleIndex.create("POS") ;
         TupleIndex idxOSP = TestTupleIndex.create("OSP") ;

@@ -20,28 +20,25 @@ import com.hp.hpl.jena.sparql.core.Closeable;
 import com.hp.hpl.jena.tdb.TDBException;
 import com.hp.hpl.jena.tdb.base.record.Record;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
-import com.hp.hpl.jena.tdb.index.Descriptor;
 import com.hp.hpl.jena.tdb.index.RangeIndex;
 import com.hp.hpl.jena.tdb.lib.Sync;
 import com.hp.hpl.jena.tdb.pgraph.NodeId;
 
-// NEED TO GENERALISE Descriptor.
-// See XXX below
-
 public class TupleIndex implements Sync, Closeable
 {
-    // Usually done further out.
-    static final boolean Check = false ;
-    RangeIndex index ; 
-    final int tupleLength ;
-    RecordFactory factory ;
-    private Descriptor descriptor ;
+    private static final boolean Check = false ;
+    private RangeIndex index ; 
+    private final int tupleLength ;
+    private RecordFactory factory ;
+    private Desc descriptor ;
+    private ColumnMap colMap ;
     
-    public TupleIndex(int N,  Descriptor desc, RangeIndex index)
+    public TupleIndex(int N,  ColumnMap colMapping, RecordFactory factory, RangeIndex index)
     {
         this.tupleLength = N ;
-        this.factory = desc.getFactory() ;
-        this.descriptor = desc ;
+        this.factory = factory ;
+        this.descriptor = new Desc(colMapping, factory) ;
+        this.colMap = colMapping ;
         this.index = index ;
         if ( factory.keyLength() != N*SizeOfNodeId)
             throw new TDBException(format("Mismatch: TupleIndex of length %d is not comparative with a factory for key length %d", N, factory.keyLength())) ;
@@ -72,29 +69,44 @@ public class TupleIndex implements Sync, Closeable
         return index.delete(r) ;
     }
     
-    public Iterator<Tuple<NodeId>> findOrScan(Tuple<NodeId> pattern)
+    public Desc getDesc() { return descriptor ;  } 
+    public ColumnMap getColMap() { return colMap ;  }
+    
+    Iterator<Tuple<NodeId>> findOrScan(Tuple<NodeId> pattern)
     {
-        Iterator<Tuple<NodeId>> iter = find(pattern) ;
-        if ( iter == null )
-            iter = scan(pattern) ;
-        return iter ;
+        return findWorker(pattern, true, true) ;
     }
     
+    Iterator<Tuple<NodeId>> findOrPartialScan(Tuple<NodeId> pattern)
+    {
+        return findWorker(pattern, true, false) ;
+    }
+
+    Iterator<Tuple<NodeId>> findByIndex(Tuple<NodeId> pattern)
+    {
+        return findWorker(pattern, false, false) ;
+    }
     
     /** Find all matching tuples - a slot of NodeId.NodeIdAny (or null) means match any.
      *  Return null if a full scan is needed.
      */
+
     public Iterator<Tuple<NodeId>> find(Tuple<NodeId> pattern)
     {
-        System.err.println("Pattern not remapped") ;
-        // WHICH ORDER IS THE PATTERN?  Index order?
+        return findOrScan(pattern) ;
+    }
+    
+    private Iterator<Tuple<NodeId>> findWorker(Tuple<NodeId> pattern, boolean partialScanAllowed, boolean fullScanAllowed)
+    {
         if ( Check )
         {
             if ( tupleLength != pattern.size() )
             throw new TDBException(String.format("Mismatch: tuple length %d / index for length %d", pattern.size(), tupleLength)) ;
         } 
         
-        // Remap by descriptor
+        // Convert to index order.
+        pattern = colMap.map(pattern) ;
+        
         NodeId[] pattern2 = new NodeId[pattern.size()] ;
         
         // Canonical form.
@@ -107,7 +119,7 @@ public class TupleIndex implements Sync, Closeable
         
         for ( int i = 0 ; i < pattern.size() ; i++ )
         {
-            //int j = descriptor.map(i) ;
+            //int j = colMap.mapOrder(i) ;        // Map. ????
             int j = i ;
             
             pattern2[i] = pattern.get(j) ;
@@ -142,9 +154,13 @@ public class TupleIndex implements Sync, Closeable
         Iterator<Record> iter = null ;
         
         if ( leadingIdx < 0 )
-            //iter = index.iterator() ;
+        {
+            if ( ! fullScanAllowed )
+                return null ;
+            System.out.println("Full scan") ;
             // Full scan necessary
-            return null ;
+            iter = index.iterator() ;
+        }
         else 
         {
             // Adjust the maxRec.
@@ -158,9 +174,15 @@ public class TupleIndex implements Sync, Closeable
         Iterator<Tuple<NodeId>> tuples = Iter.map(iter, transformToTuple) ;
         
         if ( leadingIdx < numSlots-1 )
+        {
+            if ( ! partialScanAllowed )
+                return null ;
+            
+            System.out.println("Partial scan") ;
             // Didn't match all defined slots in request.  
             // Partial or full scan needed.
             tuples = scan(tuples, pattern) ;
+        }
         
         return tuples ;
     }
@@ -226,7 +248,7 @@ public class TupleIndex implements Sync, Closeable
     
     private NodeId getSlot(int i, Tuple<NodeId> pattern)
     {
-        return descriptor.getSlot(i, pattern.get(0), pattern.get(1), pattern.get(2)) ;
+        return descriptor.extract(i, pattern.get(0), pattern.get(1), pattern.get(2)) ;
     }
 
     @Override
@@ -242,7 +264,7 @@ public class TupleIndex implements Sync, Closeable
     }
 
     @Override
-    public String toString() { return "index:"+descriptor.getDescription() ; }
+    public String toString() { return "index:"+descriptor.getLabel() ; }
 }
 
 /*

@@ -169,6 +169,11 @@ public class ColumnMap
         
         return buff.toString() ;
     }
+
+    public String getLabel()
+    {
+        return label ;
+    }
     
 }
 

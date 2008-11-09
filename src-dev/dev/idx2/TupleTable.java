@@ -118,7 +118,8 @@ public class TupleTable implements Sync, Closeable
             TupleIndex idx = indexes[i] ;
             if ( idx != null )
             {
-                int w = idx.weight(pattern) ;
+                Tuple<NodeId> mapped = idx.getColMap().map(pattern) ;
+                int w = idx.weight(mapped) ;
                 if ( w > indexNumSlots )
                 {
                     indexNumSlots = w ;
@@ -131,7 +132,7 @@ public class TupleTable implements Sync, Closeable
             // No index at all.  Scan.
             index = indexes[0] ;
 
-        return index.find(pattern) ;
+        return index.findOrScan(pattern) ;
     }
     
     @Override

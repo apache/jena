@@ -17,7 +17,6 @@ import tdb.Cmd;
 import test.BaseTest;
 
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
-import com.hp.hpl.jena.tdb.index.Descriptor;
 import com.hp.hpl.jena.tdb.index.IndexBuilder;
 import com.hp.hpl.jena.tdb.index.RangeIndex;
 import com.hp.hpl.jena.tdb.pgraph.NodeId;
@@ -38,7 +37,8 @@ public class TestTupleIndex extends BaseTest
     static TupleIndex create(String description)
     {
         RangeIndex rIdx = IndexBuilder.mem().newRangeIndex(null, factory, "TupleIndexTest") ;
-        TupleIndex index = new TupleIndex(3, new Descriptor(description, factory), rIdx) ;
+        ColumnMap cmap = new ColumnMap("SPO", description) ;
+        TupleIndex index = new TupleIndex(3, cmap, factory, rIdx) ;
         return index ;
     }
     
@@ -54,97 +54,99 @@ public class TestTupleIndex extends BaseTest
         add(index, n1, n2, n3) ;
     }
     
-    @Test public void tupleIndexFind_1()
+    @Test public void tupleIndexSPO_1()
     {
         TupleIndex index = create("SPO") ;
         add(index, n1, n2, n3) ;
         
         Tuple<NodeId> tuple2 = new Tuple<NodeId>(n1, n2, n3) ;
-        Iterator<Tuple<NodeId>> iter = index.find(tuple2) ;
+        Iterator<Tuple<NodeId>> iter = index.findByIndex(tuple2) ;
         assertTrue(iter.hasNext()) ;
         iter.next();
         assertFalse(iter.hasNext()) ;
     }
  
-    @Test public void tupleIndexFind_2()
+    @Test public void tupleIndexSPO_2()
     {
         TupleIndex index = create("SPO") ;
         add(index, n1, n2, n3) ;
         
         Tuple<NodeId> tuple2 = new Tuple<NodeId>(n1, n2, null) ;
-        Iterator<Tuple<NodeId>> iter = index.find(tuple2) ;
+        Iterator<Tuple<NodeId>> iter = index.findByIndex(tuple2) ;
         assertTrue(iter.hasNext()) ;
         iter.next();
         assertFalse(iter.hasNext()) ;
     }
     
-    @Test public void tupleIndexFind_3()
+    @Test public void tupleIndexSPO_3()
     {
         TupleIndex index = create("SPO") ;
         add(index, n1, n2, n3) ;
         
         Tuple<NodeId> tuple2 = new Tuple<NodeId>(n1, null, n3) ;
-        Iterator<Tuple<NodeId>> iter = index.find(tuple2) ;
+        Iterator<Tuple<NodeId>> iter = index.findByIndex(tuple2) ;
+        assertNull(iter) ;
+        iter = index.findOrPartialScan(tuple2) ;
         assertTrue(iter.hasNext()) ;
         iter.next();
         assertFalse(iter.hasNext()) ;
     }
     
-    @Test public void tupleIndexFind_4()
+    @Test public void tupleIndexSPO_4()
     {
         TupleIndex index = create("SPO") ;
         add(index, n1, n2, n3) ;
         
         Tuple<NodeId> tuple2 = new Tuple<NodeId>(n1, NodeId.NodeIdAny, NodeId.NodeIdAny) ;
-        Iterator<Tuple<NodeId>> iter = index.find(tuple2) ;
+        Iterator<Tuple<NodeId>> iter = index.findByIndex(tuple2) ;
         assertTrue(iter.hasNext()) ;
         iter.next();
         assertFalse(iter.hasNext()) ;
     }
     
-    @Test public void tupleIndexFind_5()
+    @Test public void tupleIndexSPO_5()
     {
         TupleIndex index = create("SPO") ;
         add(index, n1, n2, n3) ;
         add(index, n1, n2, n4) ;
         
         Tuple<NodeId> tuple2 = new Tuple<NodeId>(n1, n2, n3) ;
-        Iterator<Tuple<NodeId>> iter = index.find(tuple2) ;
+        Iterator<Tuple<NodeId>> iter = index.findByIndex(tuple2) ;
         Set<Tuple<NodeId>> x = Iter.toSet(iter) ;
         assertEquals(1, x.size()) ;
         assertTrue(x.contains(new Tuple<NodeId>(n1, n2, n3))) ;
         assertFalse(x.contains(new Tuple<NodeId>(n1, n2, n4))) ;
     }
 
-    @Test public void tupleIndexFind_6()
+    @Test public void tupleIndexSPO_6()
     {
         TupleIndex index = create("SPO") ;
         add(index, n1, n2, n3) ;
         add(index, n1, n2, n4) ;
         
         Tuple<NodeId> tuple2 = new Tuple<NodeId>(n1, n2, NodeId.NodeIdAny) ;
-        Iterator<Tuple<NodeId>> iter = index.find(tuple2) ;
+        Iterator<Tuple<NodeId>> iter = index.findByIndex(tuple2) ;
         Set<Tuple<NodeId>> x = Iter.toSet(iter) ;
         assertEquals(2, x.size()) ;
         assertTrue(x.contains(new Tuple<NodeId>(n1, n2, n3))) ;
         assertTrue(x.contains(new Tuple<NodeId>(n1, n2, n4))) ;
     }
 
-    @Test public void tupleIndexFind_7()
+    @Test public void tupleIndexSPO_7()
     {
         TupleIndex index = create("SPO") ;
         add(index, n1, n2, n3) ;
         add(index, n1, n2, n4) ;
         
         Tuple<NodeId> tuple2 = new Tuple<NodeId>(n1, NodeId.NodeIdAny, NodeId.NodeIdAny) ;
-        Iterator<Tuple<NodeId>> iter = index.find(tuple2) ;
+        Iterator<Tuple<NodeId>> iter = index.findByIndex(tuple2) ;
         Set<Tuple<NodeId>> x = Iter.toSet(iter) ;
         assertEquals(2, x.size()) ;
         assertTrue(x.contains(new Tuple<NodeId>(n1, n2, n3))) ;
         assertTrue(x.contains(new Tuple<NodeId>(n1, n2, n4))) ;
     }
 
-    @Test public void tupleIndexFind_8()
+    @Test public void tupleIndexSPO_8()
     {
         TupleIndex index = create("SPO") ;
         add(index, n1, n2, n3) ;
@@ -152,7 +154,7 @@ public class TestTupleIndex extends BaseTest
 
         {
             Tuple<NodeId> tuple2 = new Tuple<NodeId>(n1, NodeId.NodeIdAny, NodeId.NodeIdAny) ;
-            Iterator<Tuple<NodeId>> iter = index.find(tuple2) ;
+            Iterator<Tuple<NodeId>> iter = index.findByIndex(tuple2) ;
             Set<Tuple<NodeId>> x = Iter.toSet(iter) ;
             assertEquals(1, x.size()) ;
             assertTrue(x.contains(new Tuple<NodeId>(n1, n2, n3))) ;
@@ -160,26 +162,70 @@ public class TestTupleIndex extends BaseTest
 
         {
             Tuple<NodeId> tuple2 = new Tuple<NodeId>(n2, NodeId.NodeIdAny, NodeId.NodeIdAny) ;
-            Iterator<Tuple<NodeId>> iter = index.find(tuple2) ;
+            Iterator<Tuple<NodeId>> iter = index.findByIndex(tuple2) ;
             Set<Tuple<NodeId>> x = Iter.toSet(iter) ;
             assertEquals(1, x.size()) ;
             assertTrue(x.contains(new Tuple<NodeId>(n2, n3, n4))) ;
         }
     }
 
+    @Test public void tupleIndexPOS_1()
+    {
+        TupleIndex index = create("POS") ;
+        add(index, n1, n2, n3) ;
+        
+        {
+            Iterator<Tuple<NodeId>> iter =  index.all() ;
+            for ( ; iter.hasNext() ; )
+                System.out.println(iter.next()) ;
+        }
+        
+        Tuple<NodeId> tuple2 = new Tuple<NodeId>(n1, n2, n3) ;
+        Iterator<Tuple<NodeId>> iter = index.findByIndex(tuple2) ;
+        assertTrue("Can't find tuple", iter.hasNext()) ;
+        iter.next();
+        assertFalse(iter.hasNext()) ;
+    }
+ 
+    @Test public void tupleIndexPOS_2()
+    {
+        TupleIndex index = create("POS") ;
+        add(index, n1, n2, n3) ;
+        
+        Tuple<NodeId> tuple2 = new Tuple<NodeId>(null, n2, null) ;
+        Iterator<Tuple<NodeId>> iter = index.findByIndex(tuple2) ;
+        assertTrue("Can't find tuple",iter.hasNext()) ;
+        iter.next();
+        assertFalse(iter.hasNext()) ;
+    }
+    
+
+    @Test public void tupleIndexPOS_3()
+    {
+        TupleIndex index = create("POS") ;
+        add(index, n1, n2, n3) ;
+        
+        Tuple<NodeId> tuple2 = new Tuple<NodeId>(null, n2, n3) ;
+        Iterator<Tuple<NodeId>> iter = index.findByIndex(tuple2) ;
+        assertTrue("Can't find tuple", iter.hasNext()) ;
+        iter.next();
+        assertFalse(iter.hasNext()) ;
+    }
 
     @Test public void tupleIndexFindScan_1()
     {
         TupleIndex index = create("SPO") ;
         add(index, n1, n2, n3) ;
         Tuple<NodeId> tuple2 = new Tuple<NodeId>(n1, null, n3) ;
-        Iterator<Tuple<NodeId>> iter = index.find(tuple2) ;
+        Iterator<Tuple<NodeId>> iter = index.findByIndex(tuple2) ;
+        assertNull(iter) ;
+        iter = index.findOrPartialScan(tuple2) ;
         assertTrue(iter.hasNext()) ;
         iter.next();
         assertFalse(iter.hasNext()) ;
     }
     
-    @Test public void tupleIndexFindScan2()
+    @Test public void tupleIndexFindScan_2()
     {
         TupleIndex index = create("SPO") ;
         add(index, n1, n2, n3) ;
@@ -187,7 +233,10 @@ public class TestTupleIndex extends BaseTest
         
         
         Tuple<NodeId> tuple2 = new Tuple<NodeId>(null, null, n3) ;
-        Iterator<Tuple<NodeId>> iter = index.find(tuple2) ;
+        Iterator<Tuple<NodeId>> iter = index.findByIndex(tuple2) ;
+        assertNull(iter) ;
+        
+        iter = index.findOrPartialScan(tuple2) ;
         assertNull(iter) ;
         
         iter = index.findOrScan(tuple2) ;
@@ -202,7 +251,8 @@ public class TestTupleIndex extends BaseTest
         add(index, n1, n2, n3) ;
         
         Tuple<NodeId> tuple2 = new Tuple<NodeId>(n4, n5, n6) ;
-        Iterator<Tuple<NodeId>> iter = index.find(tuple2) ;
+        Iterator<Tuple<NodeId>> iter = index.findByIndex(tuple2) ;
+        assertNotNull(iter) ;
         assertFalse(iter.hasNext()) ;
    }
     
@@ -212,7 +262,7 @@ public class TestTupleIndex extends BaseTest
         add(index, n1, n2, n3) ;
         
         Tuple<NodeId> tuple2 = new Tuple<NodeId>(n1, n5, n6) ;
-        Iterator<Tuple<NodeId>> iter = index.find(tuple2) ;
+        Iterator<Tuple<NodeId>> iter = index.findByIndex(tuple2) ;
         assertFalse(iter.hasNext()) ;
    }
 
@@ -222,7 +272,7 @@ public class TestTupleIndex extends BaseTest
         add(index, n1, n2, n3) ;
         
         Tuple<NodeId> tuple2 = new Tuple<NodeId>(n1, null, n6) ;
-        Iterator<Tuple<NodeId>> iter = index.find(tuple2) ;
+        Iterator<Tuple<NodeId>> iter = index.findOrPartialScan(tuple2) ;
         assertFalse(iter.hasNext()) ;
    }
 
@@ -233,7 +283,7 @@ public class TestTupleIndex extends BaseTest
         add(index, n1, n5, n6) ;
         
         Tuple<NodeId> tuple2 = new Tuple<NodeId>(n4, n5, n6) ;
-        Iterator<Tuple<NodeId>> iter = index.find(tuple2) ;
+        Iterator<Tuple<NodeId>> iter = index.findByIndex(tuple2) ;
         assertFalse(iter.hasNext()) ;
    }
     
@@ -244,7 +294,7 @@ public class TestTupleIndex extends BaseTest
         add(index, n1, n5, n6) ;
         
         Tuple<NodeId> tuple2 = new Tuple<NodeId>(n2, n5, n6) ;
-        Iterator<Tuple<NodeId>> iter = index.find(tuple2) ;
+        Iterator<Tuple<NodeId>> iter = index.findByIndex(tuple2) ;
         assertFalse(iter.hasNext()) ;
    }
 
@@ -255,7 +305,7 @@ public class TestTupleIndex extends BaseTest
         add(index, n4, n5, n6) ;
         
         Tuple<NodeId> tuple2 = new Tuple<NodeId>(n1, null, n6) ;
-        Iterator<Tuple<NodeId>> iter = index.find(tuple2) ;
+        Iterator<Tuple<NodeId>> iter = index.findOrPartialScan(tuple2) ;
         assertFalse(iter.hasNext()) ;
    }
 
