@@ -6,42 +6,38 @@
 
 package dev.idx2;
 
+import lib.Tuple;
+import org.junit.Test;
+import test.BaseTest;
 
-// Generalized descriptor.
-public class Desc
+public class TestRemapInt extends BaseTest
 {
-    // Tuples are 0, 1, 2, ...
-    
-    
-    // Map from tuple order to index order
-    // So POS is 1,2,0
-    private int[] indexOrder ;
-    
-    // The mapping from index to tuple order
-    // For POS, that is 2,0,1 (S=2, P=0, O=1) 
-    private int[] retrieveOrder ;
-
-    public Desc(int...elements)
+    @Test public void remap1() 
     {
-        this.indexOrder = new int[elements.length] ;
-        System.arraycopy(elements, 0, elements, 0, elements.length) ;
+        ColumnMap x = new ColumnMap("POS", 2,0,1) ;   // S->2 etc
         
-        this.retrieveOrder = new int[elements.length] ;
-    
-        for ( int i = 0 ; i < elements.length ; i++ )
-        {
-            int x = elements[i] ;
-            if ( x < 0 || x >= elements.length)
-                throw new IllegalArgumentException("Out of range: "+x) ;
-            indexOrder[i] = x ;
-            retrieveOrder[x] = i ;
-        }
-        
+        assertEquals(2, x.indexOrder(0)) ;   
+        assertEquals(0, x.indexOrder(1)) ;
+        assertEquals(1, x.indexOrder(2)) ;
     }
     
-    public int indexOrder(int i) { return indexOrder[i] ; }
-    
-    public int retrieveOrder(int i) { return retrieveOrder[i] ; }
+    @Test public void remap2() 
+    {
+        ColumnMap x = new ColumnMap("POS", 2,0,1) ;
+        assertEquals(1, x.retrieveOrder(0)) ;   // The index 1 comes from position 0.
+        assertEquals(2, x.retrieveOrder(1)) ;
+        assertEquals(0, x.retrieveOrder(2)) ;
+    }
+
+    @Test public void remap3() 
+    {
+        ColumnMap x = new ColumnMap("POS", 2,0,1) ;
+        Tuple<String> tuple = new Tuple<String>("S", "P", "O") ;
+        Tuple<String> mapped = x.indexOrder(tuple) ;
+        Tuple<String> expected = new Tuple<String>("P", "O", "S") ;
+        assertEquals(expected, mapped) ;
+    }
+
 }
 
 /*

@@ -29,6 +29,52 @@ public class ListUtils
             x.add(v) ;
         return x ;
     }
+    
+    public static <T> String str(T[] array)
+    {
+        StringBuilder buff = new StringBuilder() ;
+        String sep = "[" ;
+
+        for ( int i = 0 ; i < array.length ; i++ )
+        {
+            buff.append(sep) ;
+            sep = ", " ; 
+            buff.append(array[i]) ;
+        }
+        buff.append("]") ;
+        return buff.toString() ;
+    }
+    
+    public static String str(int[] array)
+    {
+        StringBuilder buff = new StringBuilder() ;
+        String sep = "[" ;
+
+        for ( int i = 0 ; i < array.length ; i++ )
+        {
+            buff.append(sep) ;
+            sep = ", " ; 
+            buff.append(array[i]) ;
+        }
+        buff.append("]") ;
+        return buff.toString() ;
+    }
+    
+    public static String str(long[] array)
+    {
+        StringBuilder buff = new StringBuilder() ;
+        String sep = "[" ;
+
+        for ( int i = 0 ; i < array.length ; i++ )
+        {
+            buff.append(sep) ;
+            sep = ", " ; 
+            buff.append(array[i]) ;
+        }
+        buff.append("]") ;
+        return buff.toString() ;
+    }
+
 }
 
 /*

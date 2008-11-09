@@ -44,6 +44,7 @@ import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
 import com.hp.hpl.jena.tdb.sys.SystemTDB;
 import com.hp.hpl.jena.util.FileManager;
 
+import dev.idx2.ColumnMap;
 import dev.opt.Reorganise;
 import dev.opt.Scope;
 import dev.opt.TransformIndexJoin;
@@ -63,6 +64,15 @@ public class Run
  
     public static void main(String ... args) throws IOException
     {
+        ColumnMap  d = new ColumnMap("SPO-POS", 1,2,1) ;
+        
+        System.exit(0) ;
+        
+        
+        
+        
+        
+        
         //System.setProperty("tdb:settings", "tdb.properties") ;
         FileOps.clearDirectory("DB") ;
         tdbloader("--stats", "D.ttl") ;

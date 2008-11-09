@@ -13,16 +13,23 @@ import java.util.List;
 
 public final class Tuple<T>
 {
+   
+    public static <T> Tuple<T> blankTuple(int len)
+    {
+        @SuppressWarnings("unchecked")
+        T[] tuple = (T[])new Object[len] ;
+        return new Tuple<T>(tuple) ;
+    }
+    
     final T[] tuple ;
-    public Tuple(T ...tuple)
+    
+    public Tuple(T...tuple)
     {
         this.tuple = tuple ;
     }
     
-//    public Tuple(int N)
-//    { }
-    
     public T get(int idx) { return tuple[idx] ; }
+    //public void set(int idx, T elt) { tuple[idx] = elt ; }
 
     public List<T> asList() { return Arrays.asList(tuple) ; }
     

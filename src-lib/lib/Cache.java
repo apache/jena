@@ -19,9 +19,11 @@ public interface Cache<Key, Value>
 //    public void returnObject(Key key) ;
     public void removeObject(Key key) ;
     public Iterator<Key> keys() ;
+    
     public boolean isEmpty() ;
     public void clear() ;
     public long size() ;
+    
     public void setDropHandler(ActionKeyValue<Key,Value> dropHandler) ;
 }
 
