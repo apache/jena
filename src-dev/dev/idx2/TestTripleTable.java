@@ -6,6 +6,13 @@
 
 package dev.idx2;
 
+import java.util.Iterator;
+
+import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.graph.Triple;
+
+import com.hp.hpl.jena.sparql.sse.SSE;
+
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.junit.Test;
@@ -26,17 +33,22 @@ public class TestTripleTable extends BaseTest
     }
     
     static RecordFactory factory = GraphTDB.indexRecordFactory ;
-    
+
+    // ----
     // Move to TDBFactoryGraph
     
-    private static TripleTable2 create()
+    private static TripleTable2 create() { return create("SPO", "POS", "OSP") ; }
+    
+    private static TripleTable2 create(String...descs)
     {
-        
-        TupleIndex spo = createIndex("SPO") ;
-        TupleIndex pos = createIndex("POS") ;
-        TupleIndex osp = createIndex("OSP") ;
-        TupleIndex indexes[] = { spo, pos, osp } ;
-        
+        TupleIndex indexes[] = new TupleIndex[descs.length] ;
+        int i = 0 ;
+        for ( String desc : descs )
+        {
+            indexes[i] = createIndex(desc) ;
+            i++ ;
+        }
+
         NodeTable nodeTable = new NodeTableIndex(IndexBuilder.mem()) ;
         return new TripleTable2(indexes, nodeTable, factory, null) ;
     }
@@ -48,7 +60,32 @@ public class TestTripleTable extends BaseTest
         return tupleIndex ;
     }
     
+    // ----
+    static Node n1 = SSE.parseNode("<http://example/n1>") ;
+    static Node n2 = SSE.parseNode("<http://example/n2>") ;
+    static Node n3 = SSE.parseNode("<http://example/n3>") ;
+    static Node n4 = SSE.parseNode("<http://example/n4>") ;
+    static Node n5 = SSE.parseNode("<http://example/n5>") ;
+    static Node n6 = SSE.parseNode("<http://example/n6>") ;
+    
     @Test public void createTripleTable() { create() ; }
+    
+    @Test public void add1()
+    { 
+        TripleTable2 t = create() ;
+        t.add(new Triple(n1,n2,n3)) ;
+    }
+    
+    @Test public void find1()
+    { 
+        TripleTable2 t = create() ;
+        t.add(new Triple(n1,n2,n3)) ;
+        Iterator<Triple> iter = t.find(n1, n2, n3) ;
+        assertNotNull(iter) ;
+        assertTrue(iter.hasNext()) ;
+        assertEquals(new Triple(n1,n2,n3), iter.next()) ;
+        assertFalse(iter.hasNext()) ;
+    }
     
 }
 
