@@ -14,7 +14,6 @@ import org.slf4j.LoggerFactory;
 import com.hp.hpl.jena.sparql.sse.SSEParseException;
 import com.hp.hpl.jena.tdb.TDBException;
 import com.hp.hpl.jena.tdb.base.file.Location;
-import com.hp.hpl.jena.tdb.index.Index;
 import com.hp.hpl.jena.tdb.index.IndexBuilder;
 import com.hp.hpl.jena.tdb.index.RangeIndex;
 import com.hp.hpl.jena.tdb.index.TripleIndex;
@@ -136,9 +135,6 @@ public class GraphTDBFactory
         RangeIndex idxOSP = factory.newRangeIndex(null, GraphTDB.indexRecordFactory, Names.indexOSP) ;
         TripleIndex triplesOSP = new TripleIndex(Names.indexOSP, idxOSP) ;
      
-        Index nodeIndex = factory.newIndex(null, GraphTDB.nodeRecordFactory, Names.indexNode2Id) ;
-        
-        // Implicitly creates the object file as a memory one. 
         NodeTable nodeTable = new NodeTableIndex(factory) ;
         
         return new GraphTDB(triplesSPO, triplesPOS, triplesOSP, nodeTable, null, null) ;
