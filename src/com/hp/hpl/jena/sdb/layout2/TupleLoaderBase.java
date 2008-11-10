@@ -158,9 +158,10 @@ public abstract class TupleLoaderBase extends com.hp.hpl.jena.sdb.store.TupleLoa
 	@Override
 	public void close()
 	{
-	    // Added: AFS : 8/11 - need Damian's approval.
 	    super.close();
 	    try { 
+	        // Close prepared statements - important on Oracle because there is an associated cursor
+	        // and cuyrsors are a scarce resource that need managing carefully.
 	        connection().closePreparedStatement(insertTupleLoader) ;
 	        connection().closePreparedStatement(insertNodeLoader);
 	        connection().closePreparedStatement(deleteTuples);
