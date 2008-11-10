@@ -96,15 +96,12 @@ public class TupleTable implements Sync, Closeable
         if ( len != pattern.size() )
             throw new TDBException(String.format("Mismatch: finding tuple of length %d in a table of tuples of length %d", pattern.size(), len)) ;
         
-        NodeId[] pattern2 = new NodeId[pattern.size()] ;
         int numSlots = 0 ;
         // Canonical form. 
-        for ( int i = 0 ; i < pattern.size() ; i++ )
+        for ( int i = 0 ; i < len ; i++ )
         {
-            pattern2[i] = pattern.get(i) ;
-            if ( pattern2[i] == NodeId.NodeIdAny )
-                pattern2[i] = null ;
-            if ( pattern2[i] != null )
+            NodeId x = pattern.get(i) ;
+            if ( x != NodeId.NodeIdAny && x != null )
                 numSlots++ ;
         }
 

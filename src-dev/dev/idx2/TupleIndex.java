@@ -137,7 +137,7 @@ public class TupleIndex implements Sync, Closeable
                 // Not leading key slots.
                 leading = false ;
         }
-
+        
         // Is it a simple existence test?
         if ( numSlots == pattern.size() )
         {
@@ -240,7 +240,7 @@ public class TupleIndex implements Sync, Closeable
             NodeId X = colMap.fetchSlot(i, pattern) ;
             if ( X == null ) return i ;
         }
-        return 0 ;
+        return tupleLength ;
     }
     
     @Override
