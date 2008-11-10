@@ -6,9 +6,104 @@
 
 package dev.idx2;
 
+import iterator.NullIterator;
+
+import java.util.Iterator;
+
+import lib.Tuple;
+
+import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.graph.Triple;
+import com.hp.hpl.jena.tdb.base.file.Location;
+import com.hp.hpl.jena.tdb.base.record.RecordFactory;
+import com.hp.hpl.jena.tdb.lib.TupleLib;
+import com.hp.hpl.jena.tdb.pgraph.NodeId;
+import com.hp.hpl.jena.tdb.pgraph.NodeTable;
+
+/** TripleTable - a collection of TupleIndexes for 3-tuples */
 public class TripleTable2
 {
+    private final NodeTable nodeTable ;
+    private final Location location ;
+    private TupleTable tupleTable ;
 
+    public TripleTable2(TupleIndex[] indexes, NodeTable nodeTable, RecordFactory factory, Location location)
+    {
+        this.tupleTable = new TupleTable(3, indexes, factory, location) ;
+        this.nodeTable = nodeTable ;
+        this.location = location ;
+    }
+    
+    public boolean add( Triple t ) 
+    { 
+        return tupleTable.delete(tuple(t)) ;
+    }
+    
+    /** Delete a triple  - return true if it was deleted, false if it didn't exist */
+    public boolean delete( Triple t ) 
+    { 
+        return tupleTable.delete(tuple(t)) ;
+    }
+    
+    private Tuple<NodeId> tuple(Triple t)
+    {
+        Node s = t.getSubject() ;
+        Node p = t.getPredicate() ;
+        Node o = t.getObject() ;
+
+        NodeId sId = storeNode(s) ;
+        NodeId pId = storeNode(p) ;
+        NodeId oId = storeNode(o) ;
+        return tuple3(sId,pId,oId) ;  
+    }
+    
+    private Tuple<NodeId> tuple3(NodeId x, NodeId y, NodeId z)
+    {
+        return new Tuple<NodeId>(x, y, z) ;
+    }
+    
+    /** Find by node. */
+    public Iterator<Triple> find(Node s, Node p, Node o)
+    {
+        NodeId subj = idForNode(s) ;
+        if ( subj == NodeId.NodeDoesNotExist )
+            return new NullIterator<Triple>() ;
+        
+        NodeId pred = idForNode(p) ;
+        if ( pred == NodeId.NodeDoesNotExist )
+            return new NullIterator<Triple>() ;
+        
+        NodeId obj = idForNode(o) ;
+        if ( obj == NodeId.NodeDoesNotExist )
+            return new NullIterator<Triple>() ;
+
+        Tuple<NodeId> tuple = tuple3(subj, pred, obj) ;
+        Iterator<Tuple<NodeId>> _iter = tupleTable.find(tuple) ;
+        Iterator<Triple> iter = TupleLib.convertToTriples(nodeTable, _iter) ;
+        return iter ;
+    }
+
+    // ==== Node
+
+    private final NodeId idForNode(Node node)
+    {
+        if ( node == null || node == Node.ANY )
+            return NodeId.NodeIdAny ;
+        return nodeTable.nodeIdForNode(node) ;
+    }
+    
+    // Store node, return id.  Node may already be stored.
+    //protected abstract int storeNode(Node node) ;
+    
+    protected final NodeId storeNode(Node node)
+    {
+        return nodeTable.storeNode(node) ;
+    }
+    
+    protected final Node retrieveNode(NodeId id)
+    {
+        return nodeTable.retrieveNodeByNodeId(id) ;
+    }
 }
 
 /*
