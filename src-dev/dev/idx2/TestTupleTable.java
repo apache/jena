@@ -59,6 +59,8 @@ public class TestTupleTable extends BaseTest
         List<Tuple<NodeId>> x = Iter.toList(iter) ;
         int z = x.size() ;
         assertEquals(1, z) ;
+        Tuple<NodeId> e1 = x.get(0) ;
+        assertEquals(new Tuple<NodeId>(n1, n2, n3) , e1) ;
     }
     
     @Test public void createFind2()
@@ -73,6 +75,11 @@ public class TestTupleTable extends BaseTest
         List<Tuple<NodeId>> x = Iter.toList(iter) ;
         int z = x.size() ;
         assertEquals(2, z) ;
+        
+        Tuple<NodeId> e1 = x.get(0) ;
+        Tuple<NodeId> e2 = x.get(1) ;
+        assertEquals(new Tuple<NodeId>(n1, n2, n3) , e1) ;
+        assertEquals(new Tuple<NodeId>(n1, n2, n4) , e2) ;
     }
 }
 

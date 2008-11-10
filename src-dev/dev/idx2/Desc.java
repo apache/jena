@@ -6,7 +6,6 @@
 
 package dev.idx2;
 
-import static com.hp.hpl.jena.tdb.sys.SystemTDB.SizeOfNodeId;
 import lib.Tuple;
 
 import com.hp.hpl.jena.tdb.base.record.Record;
@@ -27,27 +26,24 @@ public class Desc
     
     public final Record record(Tuple<NodeId> tuple)
     {
-        NodeId id1 = colMap.fetchSlot(0, tuple) ; 
-        NodeId id2 = colMap.fetchSlot(1, tuple) ;
-        NodeId id3 = colMap.fetchSlot(2, tuple) ;
-        // Convert to [] form.
-        return NodeLib.record(factory, id1, id2, id3) ;
+        return NodeLib.record(factory, tuple, colMap) ;
     }
     
     public final Tuple<NodeId> tuple(Record e)
     {
-        // In index native order
-        NodeId[] n = new NodeId[3] ; 
-        
-        n[0] = NodeLib.getNodeId(e, 0) ;
-        n[1] = NodeLib.getNodeId(e, SizeOfNodeId) ;
-        n[2] = NodeLib.getNodeId(e, 2*SizeOfNodeId) ;
-
-        NodeId sId = colMap.mapSlot(0, n) ;
-        NodeId pId = colMap.mapSlot(1, n) ;
-        NodeId oId = colMap.mapSlot(2, n) ;
-        
-        return new Tuple<NodeId>(sId, pId, oId) ; 
+        return NodeLib.tuple(e, colMap) ;
+//        // In index native order
+//        NodeId[] n = new NodeId[3] ; 
+//        
+//        n[0] = NodeLib.getNodeId(e, 0) ;
+//        n[1] = NodeLib.getNodeId(e, SizeOfNodeId) ;
+//        n[2] = NodeLib.getNodeId(e, 2*SizeOfNodeId) ;
+//
+//        NodeId sId = colMap.mapSlot(0, n) ;
+//        NodeId pId = colMap.mapSlot(1, n) ;
+//        NodeId oId = colMap.mapSlot(2, n) ;
+//        
+//        return new Tuple<NodeId>(sId, pId, oId) ; 
     }
 
     public String getLabel()

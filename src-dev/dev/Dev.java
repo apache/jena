@@ -20,8 +20,6 @@ public class Dev
     // Check where reordering happen - make it part of TupleIndex do the reordering?
     // Currently, done in TupleTable but better TupleIndex  
     
-    
-    
     // ---- Reopenable BlockMgrs (and the object file?) 
 
     // --  ?? ARQ Optimizer and controlling optimizations per graph (esp FilterPlacement).

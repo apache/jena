@@ -16,6 +16,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
 import lib.Bytes;
+import lib.Tuple;
 
 import com.hp.hpl.jena.rdf.model.AnonId;
 
@@ -40,6 +41,8 @@ import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 import com.hp.hpl.jena.tdb.pgraph.Hash;
 import com.hp.hpl.jena.tdb.pgraph.NodeId;
 import com.hp.hpl.jena.tdb.pgraph.NodeType;
+
+import dev.idx2.ColumnMap;
 
 public class NodeLib
 {
@@ -193,22 +196,52 @@ public class NodeLib
         return NodeId.create(Bytes.getLong(r.getKey(), idx)) ;
     }
     
-
-    public static Record record(RecordFactory factory, NodeId id1, NodeId id2, NodeId id3)
+    public static Tuple<NodeId> tuple(Record r, ColumnMap cMap)
     {
-        byte[] b = new byte[3*NodeId.SIZE] ;
-        Bytes.setLong(id1.getId(), b, 0) ;  
-        Bytes.setLong(id2.getId(), b, SizeOfLong) ;
-        Bytes.setLong(id3.getId(), b, 2*SizeOfLong) ;
+        int N = r.getKey().length/SizeOfLong ;
+        NodeId[] nodeIds = new NodeId[N] ;
+        for ( int i = 0 ; i < N ; i++ )
+        {
+            long x = Bytes.getLong(r.getKey(), i*SizeOfLong) ;
+            NodeId id = NodeId.create(x) ;
+            int j = i ;
+            if ( cMap != null )
+                j = cMap.fetchSlotIdx(i) ;
+            nodeIds[j] = id ;
+        }
+        return new Tuple<NodeId>(nodeIds) ;
+    }
+    
+    public static Record record(RecordFactory factory, Tuple<NodeId> tuple, ColumnMap cMap) 
+    {
+        byte[] b = new byte[tuple.size()*NodeId.SIZE] ;
+        for ( int i = 0 ; i < tuple.size() ; i++ )
+        {
+            int j = cMap.mapSlotIdx(i) ;
+            // i'th Nodeid goes to j'th bytes slot.
+            Bytes.setLong(tuple.get(i).getId(), b,j*SizeOfLong) ;
+        }
+            
+        return factory.create(b) ;
+    }
+
+    // OLD to go.
+    @Deprecated
+    public static Record record(RecordFactory factory, NodeId...nodeIds)
+    {
+        byte[] b = new byte[nodeIds.length*NodeId.SIZE] ;
+        for ( int i = 0 ; i < nodeIds.length ; i++ )
+            Bytes.setLong(nodeIds[i].getId(), b, i*SizeOfLong) ;  
         return factory.create(b) ;
     }
     
-    public static Record record(RecordFactory factory, long id1, long id2, long id3)
+    // OLD to go.
+    @Deprecated
+    public static Record record(RecordFactory factory, long...nodeIds)
     {
-        byte[] b = new byte[3*SizeOfLong] ;
-        Bytes.setLong(id1, b, 0) ;  
-        Bytes.setLong(id2, b, SizeOfLong) ;
-        Bytes.setLong(id3, b, 2*SizeOfLong) ;
+        byte[] b = new byte[nodeIds.length*NodeId.SIZE] ;
+        for ( int i = 0 ; i < nodeIds.length ; i++ )
+            Bytes.setLong(nodeIds[i], b, i*SizeOfLong) ;  
         return factory.create(b) ;
     }
 

@@ -112,6 +112,17 @@ public class ColumnMap
         return tuple[idx] ;
     }
     
+    /** Get the index of the i'th slot as it appears after mapping : SPO->POS : 0'th slot is S from POS so 2->0 */
+    public int mapSlotIdx(int idx)
+    { 
+        return insertOrder[idx] ;        // Yes - it's the insert location we want to access 
+    }
+
+    /** Get the index of the i'th slot as it appears from a mapping : for SPO->POS : 0'th slot is P so 1->0 */
+    public int fetchSlotIdx(int idx)
+    { 
+        return fetchOrder[idx] ;        // Yes - it's the insert location we want to access 
+    }
 
     /** Return a tuple with the column mapping applied */
     public <T> Tuple<T> map(Tuple<T> src)
@@ -137,11 +148,7 @@ public class ColumnMap
         }
         return new Tuple<T>(elts) ;
     }
-//    
-//    /*public*/ /*Testing*/ int insertOrder(int i) { return insertOrder[i] ; }
-//    
-//    /*public*/ /*Testing*/ int fetchOrder(int i) { return fetchOrder[i] ; }
-//    
+    
     /** Compile a mapping encoded as single charcaters e.g. "SPO", "POS" */
     static int[] compileMapping(String domain, String range)
     {
