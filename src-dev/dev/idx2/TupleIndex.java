@@ -88,6 +88,7 @@ public class TupleIndex implements Sync, Closeable
     }
     
     /** Find all matching tuples - a slot of NodeId.NodeIdAny (or null) means match any.
+     *  Inpout pattern in natural order, not index order.
      *  Return null if a full scan is needed.
      */
 
@@ -225,6 +226,7 @@ public class TupleIndex implements Sync, Closeable
         return Iter.filter(iter, filter) ;
     }
     
+    /** Weight a pattern IN normal order (not index order) */
     public int weight(Tuple<NodeId> pattern)
     {
         if ( Check )
@@ -235,17 +237,12 @@ public class TupleIndex implements Sync, Closeable
         
         for ( int i = 0 ; i < tupleLength ; i++ )
         {
-            NodeId X = getSlot(i, pattern) ;
+            NodeId X = colMap.fetchSlot(i, pattern) ;
             if ( X == null ) return i ;
         }
         return 0 ;
     }
     
-    private NodeId getSlot(int i, Tuple<NodeId> pattern)
-    {
-        return descriptor.extract(i, pattern.get(0), pattern.get(1), pattern.get(2)) ;
-    }
-
     @Override
     public void close()
     {

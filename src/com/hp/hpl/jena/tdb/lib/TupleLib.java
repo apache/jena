@@ -33,18 +33,14 @@ public class TupleLib
         return Iter.map(iter, transformToSPO) ;
     }
     
-    
     public static Tuple<NodeId> tuple(Record e)
     {
         // In index native order
-        long x = NodeLib.getId(e, 0) ;
-        long y = NodeLib.getId(e, SizeOfNodeId) ;
-        long z = NodeLib.getId(e, 2*SizeOfNodeId) ;
-        return new Tuple<NodeId>(NodeId.create(x), 
-                                 NodeId.create(y), 
-                                 NodeId.create(z)) ;
+        NodeId x = NodeLib.getNodeId(e, 0) ;
+        NodeId y = NodeLib.getNodeId(e, SizeOfNodeId) ;
+        NodeId z = NodeLib.getNodeId(e, 2*SizeOfNodeId) ;
+        return new Tuple<NodeId>(x, y, z) ;
     }
-
     
     public static  Iterator<Triple> convertToTriples(final NodeTable nodeTable, Iterator<Tuple<NodeId>> iter)
     {

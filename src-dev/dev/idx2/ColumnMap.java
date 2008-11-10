@@ -84,19 +84,35 @@ public class ColumnMap
     }
     
     /** Get the i'th slot after mapping : SPO->POS : 0'th slot is P from SPO */
-    public <T> T fetchSlot(Tuple<T> tuple, int idx)
+    public <T> T fetchSlot(int idx, Tuple<T> tuple)
     { 
-        idx = fetchOrder(idx) ;     // Apply the reverse mapping as we are doing zero is P, so it's an unmap.
+        idx = fetchOrder[idx] ;     // Apply the reverse mapping as we are doing zero is P, so it's an unmap.
+        return tuple.get(idx) ;
+    }
+
+    /** Get the i'th slot after mapping : SPO->POS : 0'th slot is P from SPO */
+    public <T> T fetchSlot(int idx, T[] tuple)
+    { 
+        idx = fetchOrder[idx] ;     // Apply the reverse mapping as we are doing zero is P, so it's an unmap.
+        return tuple[idx] ;
+    }
+    
+
+    /** Get the i'th slot as it appears after mapping : SPO->POS : 0'th slot is S from POS */
+    public <T> T mapSlot(int idx, Tuple<T> tuple)
+    { 
+        idx = insertOrder[idx] ;
         return tuple.get(idx) ;
     }
     
     /** Get the i'th slot as it appears after mapping : SPO->POS : 0'th slot is S from POS */
-    public <T> T mapSlot(Tuple<T> tuple, int idx)
+    public <T> T mapSlot(int idx, T[] tuple)
     { 
-        idx = insertOrder(idx) ;
-        return tuple.get(idx) ;
+        idx = insertOrder[idx] ;        // Yes - it's the insert location we want to access 
+        return tuple[idx] ;
     }
     
+
     /** Return a tuple with the column mapping applied */
     public <T> Tuple<T> map(Tuple<T> src)
     {
@@ -121,11 +137,11 @@ public class ColumnMap
         }
         return new Tuple<T>(elts) ;
     }
-    
-    /*public*/ /*Testing*/ int insertOrder(int i) { return insertOrder[i] ; }
-    
-    /*public*/ /*Testing*/ int fetchOrder(int i) { return fetchOrder[i] ; }
-    
+//    
+//    /*public*/ /*Testing*/ int insertOrder(int i) { return insertOrder[i] ; }
+//    
+//    /*public*/ /*Testing*/ int fetchOrder(int i) { return fetchOrder[i] ; }
+//    
     /** Compile a mapping encoded as single charcaters e.g. "SPO", "POS" */
     static int[] compileMapping(String domain, String range)
     {

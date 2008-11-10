@@ -118,7 +118,8 @@ public class TupleTable implements Sync, Closeable
             TupleIndex idx = indexes[i] ;
             if ( idx != null )
             {
-                Tuple<NodeId> mapped = idx.getColMap().map(pattern) ;
+                //Tuple<NodeId> mapped = idx.getColMap().map(pattern) ;
+                Tuple<NodeId> mapped = pattern ;
                 int w = idx.weight(mapped) ;
                 if ( w > indexNumSlots )
                 {

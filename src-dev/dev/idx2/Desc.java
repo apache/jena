@@ -27,9 +27,9 @@ public class Desc
     
     public final Record record(Tuple<NodeId> tuple)
     {
-        NodeId id1 = colMap.fetchSlot(tuple, 0) ; 
-        NodeId id2 = colMap.fetchSlot(tuple, 1) ;
-        NodeId id3 = colMap.fetchSlot(tuple, 2) ;
+        NodeId id1 = colMap.fetchSlot(0, tuple) ; 
+        NodeId id2 = colMap.fetchSlot(1, tuple) ;
+        NodeId id3 = colMap.fetchSlot(2, tuple) ;
         // Convert to [] form.
         return NodeLib.record(factory, id1, id2, id3) ;
     }
@@ -37,28 +37,17 @@ public class Desc
     public final Tuple<NodeId> tuple(Record e)
     {
         // In index native order
-        long x = NodeLib.getId(e, 0) ;
-        long y = NodeLib.getId(e, SizeOfNodeId) ;
-        long z = NodeLib.getId(e, 2*SizeOfNodeId) ;
-        // In SPO order
-        return tuple(NodeId.create(x), 
-                     NodeId.create(y), 
-                     NodeId.create(z)) ;
-    }
-    
-    // To SPO order
-    public final Tuple<NodeId> tuple(NodeId x, NodeId y, NodeId z)
-    {
-        NodeId sId = extract(0, x,y,z) ;
-        NodeId pId = extract(1, x,y,z) ;
-        NodeId oId = extract(2, x,y,z) ;
-        return new Tuple<NodeId>(sId, pId, oId) ; 
-    }
+        NodeId[] n = new NodeId[3] ; 
+        
+        n[0] = NodeLib.getNodeId(e, 0) ;
+        n[1] = NodeLib.getNodeId(e, SizeOfNodeId) ;
+        n[2] = NodeLib.getNodeId(e, 2*SizeOfNodeId) ;
 
-    NodeId extract(int i, NodeId...array)
-    {
-        return array[colMap.insertOrder(i)] ;  /****/
-        //return null ;
+        NodeId sId = colMap.mapSlot(0, n) ;
+        NodeId pId = colMap.mapSlot(1, n) ;
+        NodeId oId = colMap.mapSlot(2, n) ;
+        
+        return new Tuple<NodeId>(sId, pId, oId) ; 
     }
 
     public String getLabel()

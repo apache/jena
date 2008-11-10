@@ -16,17 +16,19 @@ public class TestColumnMap extends BaseTest
     {
         ColumnMap x = new ColumnMap("SPO->POS", 2,0,1) ;   // S->2 etc
         
-        assertEquals(2, x.insertOrder(0)) ;   
-        assertEquals(0, x.insertOrder(1)) ;
-        assertEquals(1, x.insertOrder(2)) ;
+        Integer[] array = {0,1,2 } ;
+        assertEquals(Integer.valueOf(2), x.mapSlot(0, array) ) ;   
+        assertEquals(Integer.valueOf(0), x.mapSlot(1, array) ) ; 
+        assertEquals(Integer.valueOf(1), x.mapSlot(2, array) ) ; 
     }
     
     @Test public void remap2() 
     {
         ColumnMap x = new ColumnMap("SPO->POS", 2,0,1) ;
-        assertEquals(1, x.fetchOrder(0)) ;   // The index 1 comes from position 0.
-        assertEquals(2, x.fetchOrder(1)) ;
-        assertEquals(0, x.fetchOrder(2)) ;
+        Integer[] array = { 0,1,2 } ;
+        assertEquals(Integer.valueOf(1), x.fetchSlot(0, array)) ;   // The index 1 comes from position 0.
+        assertEquals(Integer.valueOf(2), x.fetchSlot(1, array)) ;
+        assertEquals(Integer.valueOf(0), x.fetchSlot(2, array)) ;
     }
 
     @Test public void remap3() 

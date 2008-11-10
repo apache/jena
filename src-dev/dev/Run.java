@@ -68,9 +68,9 @@ public class Run
         ColumnMap  d = new ColumnMap("SPO", "POS") ;
         System.out.println(d.toString()) ;
         Tuple<String> t = new Tuple<String>("S", "P", "O") ;
-        System.out.println(d.fetchSlot(t, 0)) ;
-        System.out.println(d.fetchSlot(t, 1)) ;
-        System.out.println(d.fetchSlot(t, 2)) ;
+        System.out.println(d.fetchSlot(0, t)) ;
+        System.out.println(d.fetchSlot(1, t)) ;
+        System.out.println(d.fetchSlot(2, t)) ;
         
         System.out.println(d.map(t)) ;
         

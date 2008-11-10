@@ -191,18 +191,10 @@ public class Descriptor
     public final Tuple<NodeId> tuple(Record e)
     {
         // In index native order
-        long x = NodeLib.getId(e, 0) ;
-        long y = NodeLib.getId(e, SizeOfNodeId) ;
-        long z = NodeLib.getId(e, 2*SizeOfNodeId) ;
-        // In SPO order
-        return tuple(NodeId.create(x), 
-                     NodeId.create(y), 
-                     NodeId.create(z)) ;
-    }
-    
-    // To SPO order
-    public final Tuple<NodeId> tuple(NodeId x, NodeId y, NodeId z)
-    {
+        NodeId x = NodeLib.getNodeId(e, 0) ;
+        NodeId y = NodeLib.getNodeId(e, SizeOfNodeId) ;
+        NodeId z = NodeLib.getNodeId(e, 2*SizeOfNodeId) ;
+
         NodeId sId = getSubj(x,y,z) ;
         NodeId pId = getPred(x,y,z) ;
         NodeId oId = getObj(x,y,z) ;

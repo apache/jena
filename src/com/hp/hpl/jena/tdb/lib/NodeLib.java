@@ -188,11 +188,12 @@ public class NodeLib
         return ;
     }
     
-    public static long getId(Record r, int idx)
+    public static NodeId getNodeId(Record r, int idx)
     {
-        return Bytes.getLong(r.getKey(), idx) ;
+        return NodeId.create(Bytes.getLong(r.getKey(), idx)) ;
     }
     
+
     public static Record record(RecordFactory factory, NodeId id1, NodeId id2, NodeId id3)
     {
         byte[] b = new byte[3*NodeId.SIZE] ;
