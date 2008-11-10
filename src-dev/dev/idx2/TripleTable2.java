@@ -36,7 +36,7 @@ public class TripleTable2
     
     public boolean add( Triple t ) 
     { 
-        return tupleTable.delete(tuple(t)) ;
+        return tupleTable.add(tuple(t)) ;
     }
     
     /** Delete a triple  - return true if it was deleted, false if it didn't exist */

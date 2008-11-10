@@ -144,7 +144,7 @@ public class TupleIndex implements Sync, Closeable
             if ( index.contains(minRec) )
                 return new SingletonIterator<Tuple<NodeId>>(pattern) ;  
             else
-                return new NullIterator<Tuple<NodeId>>() ; 
+                return new NullIterator<Tuple<NodeId>>() ;
         }
         
         Iterator<Record> iter = null ;
