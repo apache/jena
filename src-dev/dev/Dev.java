@@ -17,42 +17,8 @@ public class Dev
     //   Then a Triple/Quad <=> Tuple<Node> wrapper
     //   The TripleTable, QuadTable.
     // --
-    // Testing:
-    // TestTupleIndex - not just SPO.
-    // And more tests.  Scan and no scan.
-    // TestTupleTable.
-    
-    /*
-
-    Need to be more systematic about naming.
-    
-    See Desc.record which needs to get the unmap 
-    And extract()
-    
-    Problem in naming is that Desc wants in 0,1,2, order for the INDEX ORDER form.
-    ColMap is 0,1,2 in the ORIGINAL ORDER
-
-    
-    getMappedSlot(i, Tuple) means get the i slot in the mapped form. 
-
-    mapOrder -> 
-    Mapping SPO->POS  means getMapped(0) -> 2
-     
-    POS:
-    ColumnMapping(i, SPO) -> (0, P)
-
-    colMap.pack(idx, tuple) makes SPO goto POS.
-    colMap.unpack(idx, tuple) makes SPO goto POS.
-
-    map: turns SPO into POS
-
-    "pack" and unpack
-    Insert and extract
-    */
-    
-    // Does TupleTable or TupleIndex do the reordering?
-    // Currently, TupleTable but better TupleIndex  
-    // Avoid excessive tuple->mapped tuple->record
+    // Check where reordering happen - make it part of TupleIndex do the reordering?
+    // Currently, done in TupleTable but better TupleIndex  
     
     
     

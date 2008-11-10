@@ -49,7 +49,7 @@ public class TestTupleTable extends BaseTest
     
     @Test public void create1() { create() ; } 
     
-    @Test public void create2()
+    @Test public void createFind1()
     { 
         TupleTable table = create() ;
         add(table, n1, n2, n3) ;
@@ -61,7 +61,7 @@ public class TestTupleTable extends BaseTest
         assertEquals(1, z) ;
     }
     
-    @Test public void create3()
+    @Test public void createFind2()
     { 
         TupleTable table = create() ;
         add(table, n1, n2, n3) ;
