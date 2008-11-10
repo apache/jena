@@ -69,7 +69,7 @@ public class TupleIndex implements Sync, Closeable
         return index.delete(r) ;
     }
     
-    public Desc getDesc() { return descriptor ;  } 
+    public String getLabel() { return descriptor.getLabel() ;  } 
     public ColumnMap getColMap() { return colMap ;  }
     
     Iterator<Tuple<NodeId>> findOrScan(Tuple<NodeId> pattern)

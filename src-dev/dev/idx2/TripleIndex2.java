@@ -21,6 +21,8 @@ import com.hp.hpl.jena.tdb.pgraph.NodeId;
 
 public class TripleIndex2
 {
+    // Needed?  Or just a "TripleTable".
+    
     private final TupleIndex index ;
 
     public TripleIndex2(Location location, String indexType, RangeIndex rangeIndex)
@@ -74,7 +76,7 @@ public class TripleIndex2
 //    }
     
     @Override
-    public String toString()            { return "TripleIndex: "+index.getDesc().getLabel() ; }  
+    public String toString()            { return "TripleIndex: "+index.getLabel() ; }  
     
     public void sync(boolean force)     { index.sync(force); }
     public void close()                 { index.close(); }

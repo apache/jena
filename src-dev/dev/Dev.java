@@ -9,16 +9,12 @@ package dev;
 public class Dev
 {
     
-    // TupleTable
     // --
-    // Test TupleIndex
-    // Test TupleTable
-    //   Then a Tuple<NodeID><->Tuple<Node> wrapper
-    //   Then a Triple/Quad <=> Tuple<Node> wrapper
     //   The TripleTable, QuadTable.
     // --
-    // Check where reordering happen - make it part of TupleIndex do the reordering?
-    // Currently, done in TupleTable but better TupleIndex  
+    // The big switch over.  Keep old code for timing purposes.
+
+    
     
     // ---- Reopenable BlockMgrs (and the object file?) 
 
