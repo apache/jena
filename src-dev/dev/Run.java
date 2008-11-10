@@ -13,6 +13,7 @@ import java.util.Set;
 
 import lib.Bytes;
 import lib.FileOps;
+import lib.Tuple;
 import lib.cache.CacheNG;
 import arq.cmd.CmdUtils;
 
@@ -64,7 +65,14 @@ public class Run
  
     public static void main(String ... args) throws IOException
     {
-        ColumnMap  d = new ColumnMap("SPO-POS", 1,2,1) ;
+        ColumnMap  d = new ColumnMap("SPO", "POS") ;
+        System.out.println(d.toString()) ;
+        Tuple<String> t = new Tuple<String>("S", "P", "O") ;
+        System.out.println(d.fetchSlot(t, 0)) ;
+        System.out.println(d.fetchSlot(t, 1)) ;
+        System.out.println(d.fetchSlot(t, 2)) ;
+        
+        System.out.println(d.map(t)) ;
         
         System.exit(0) ;
         

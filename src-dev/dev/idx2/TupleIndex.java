@@ -152,7 +152,7 @@ public class TupleIndex implements Sync, Closeable
         {
             if ( ! fullScanAllowed )
                 return null ;
-            System.out.println("Full scan") ;
+            //System.out.println("Full scan") ;
             // Full scan necessary
             iter = index.iterator() ;
         }
@@ -173,7 +173,7 @@ public class TupleIndex implements Sync, Closeable
             if ( ! partialScanAllowed )
                 return null ;
             
-            System.out.println("Partial scan") ;
+            //System.out.println("Partial scan") ;
             // Didn't match all defined slots in request.  
             // Partial or full scan needed.
             tuples = scan(tuples, pattern) ;

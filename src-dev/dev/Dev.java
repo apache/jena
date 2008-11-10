@@ -23,6 +23,7 @@ public class Dev
     // TestTupleTable.
     
     /*
+
     Need to be more systematic about naming.
     
     See Desc.record which needs to get the unmap 
@@ -32,11 +33,10 @@ public class Dev
     ColMap is 0,1,2 in the ORIGINAL ORDER
 
     
-
     getMappedSlot(i, Tuple) means get the i slot in the mapped form. 
 
     mapOrder -> 
-    Mapping SPO->POS  means getMapped(0) -> 1
+    Mapping SPO->POS  means getMapped(0) -> 2
      
     POS:
     ColumnMapping(i, SPO) -> (0, P)

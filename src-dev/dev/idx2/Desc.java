@@ -27,9 +27,9 @@ public class Desc
     
     public final Record record(Tuple<NodeId> tuple)
     {
-        NodeId id1 = tuple.get(colMap.unmapOrder(0)) ;  // NAMING!!!
-        NodeId id2 = tuple.get(colMap.unmapOrder(1)) ;
-        NodeId id3 = tuple.get(colMap.unmapOrder(2)) ;
+        NodeId id1 = colMap.fetchSlot(tuple, 0) ; 
+        NodeId id2 = colMap.fetchSlot(tuple, 1) ;
+        NodeId id3 = colMap.fetchSlot(tuple, 2) ;
         // Convert to [] form.
         return NodeLib.record(factory, id1, id2, id3) ;
     }
@@ -57,7 +57,8 @@ public class Desc
 
     NodeId extract(int i, NodeId...array)
     {
-        return array[colMap.mapOrder(i)] ;  /****/
+        return array[colMap.insertOrder(i)] ;  /****/
+        //return null ;
     }
 
     public String getLabel()

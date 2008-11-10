@@ -174,12 +174,12 @@ public class TestTupleIndex extends BaseTest
         TupleIndex index = create("POS") ;
         add(index, n1, n2, n3) ;
         
-        {
-            Iterator<Tuple<NodeId>> iter =  index.all() ;
-            for ( ; iter.hasNext() ; )
-                System.out.println(iter.next()) ;
-        }
-        
+//        {
+//            Iterator<Tuple<NodeId>> iter =  index.all() ;
+//            for ( ; iter.hasNext() ; )
+//                System.out.println(iter.next()) ;
+//        }
+
         Tuple<NodeId> tuple2 = new Tuple<NodeId>(n1, n2, n3) ;
         Iterator<Tuple<NodeId>> iter = index.findByIndex(tuple2) ;
         assertTrue("Can't find tuple", iter.hasNext()) ;
