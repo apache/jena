@@ -1,54 +1,36 @@
 /*
- * (c) Copyright 2007, 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package test;
+package com.hp.hpl.jena.tdb.index.btree;
 
+import com.hp.hpl.jena.tdb.base.record.RecordLib;
+import com.hp.hpl.jena.tdb.index.Index;
+import com.hp.hpl.jena.tdb.index.RangeIndex;
 import com.hp.hpl.jena.tdb.index.RangeIndexMaker;
-import com.hp.hpl.jena.tdb.index.bplustree.BPlusTreeMaker;
-import com.hp.hpl.jena.tdb.index.btree.BTreeParams;
-import com.hp.hpl.jena.tdb.sys.SystemTDB;
+import com.hp.hpl.jena.tdb.index.btree.BTree;
 
-public abstract class BTreeRun extends RunnerRangeIndex
+public class BTreeMaker implements RangeIndexMaker
 {
-    
-    
-    static public void main(String...a)
-    {
-        new BPlusTreeRun().perform(a) ;
-    }
-    
+    private int order ;
+
+    public BTreeMaker(int order) { this.order = order ; }
     
     @Override
-    protected RangeIndexMaker makeRangeIndexMaker()
-    {
-        return new BPlusTreeMaker(order, order) ;
-    }
-
+    public Index makeIndex() { return makeRangeIndex() ; }
 
     @Override
-    protected void startRun(RunType runType)
+    public RangeIndex makeRangeIndex()
     {
-        switch (runType)
-        {
-            case test:
-                showProgress = true ;
-                BTreeParams.CheckingBTree = true ;
-                BTreeParams.CheckingNode = true ;
-                SystemTDB.NullOut = true ;
-                break ;
-            case perf:  
-                showProgress = false ;
-                BTreeParams.CheckingBTree = false ;
-                BTreeParams.CheckingNode = false ;
-                SystemTDB.NullOut = false ;
-                break ;
-        }
+        BTree bTree = BTree.makeMem(order, RecordLib.TestRecordLength, 0) ;
+        return bTree ;
     }
+    
+    @Override
+    public String getLabel() { return "BTree order = "+order ; } 
 }
-
 /*
  * (c) Copyright 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.

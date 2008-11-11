@@ -10,10 +10,10 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 import com.hp.hpl.jena.tdb.base.buffer.TestPtrBuffer;
-import com.hp.hpl.jena.tdb.bplustree.TestBPTreeRecords;
-import com.hp.hpl.jena.tdb.bplustree.TestBPlusTree;
-import com.hp.hpl.jena.tdb.btree.TestBTree;
-import com.hp.hpl.jena.tdb.btree.TestBTreeLong;
+import com.hp.hpl.jena.tdb.index.bplustree.TestBPTreeRecords;
+import com.hp.hpl.jena.tdb.index.bplustree.TestBPlusTree;
+import com.hp.hpl.jena.tdb.index.btree.TestBTree;
+import com.hp.hpl.jena.tdb.index.btree.TestBTreeLong;
 import com.hp.hpl.jena.tdb.index.ext.TestExtHash;
 
 @RunWith(Suite.class)

@@ -15,10 +15,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import com.hp.hpl.jena.tdb.bplustree.BPlusTreeMaker;
 import com.hp.hpl.jena.tdb.index.Index;
 import com.hp.hpl.jena.tdb.index.IndexMaker;
 import com.hp.hpl.jena.tdb.index.IndexTestLib;
+import com.hp.hpl.jena.tdb.index.bplustree.BPlusTreeMaker;
 
 public abstract class RunnerExecute
 {

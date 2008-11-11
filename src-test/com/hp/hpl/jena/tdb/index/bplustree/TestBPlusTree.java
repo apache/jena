@@ -4,53 +4,44 @@
  * [See end of file]
  */
 
-package test;
+package com.hp.hpl.jena.tdb.index.bplustree;
 
-import com.hp.hpl.jena.tdb.index.RangeIndexMaker;
-import com.hp.hpl.jena.tdb.index.bplustree.BPlusTreeMaker;
-import com.hp.hpl.jena.tdb.index.btree.BTreeParams;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+
+import com.hp.hpl.jena.tdb.base.record.RecordLib;
+import com.hp.hpl.jena.tdb.index.RangeIndex;
+import com.hp.hpl.jena.tdb.index.TestRangeIndex;
+import com.hp.hpl.jena.tdb.index.bplustree.BPlusTree;
+import com.hp.hpl.jena.tdb.index.bplustree.BPlusTreeParams;
 import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
-public abstract class BTreeRun extends RunnerRangeIndex
+public class TestBPlusTree extends TestRangeIndex
 {
+ 
+    static boolean b ;
+    @BeforeClass public static void before()
+    { 
+        BPlusTreeParams.checkAll() ;
+        b = SystemTDB.NullOut ;
+        SystemTDB.NullOut = true ;
+    }
     
-    
-    static public void main(String...a)
-    {
-        new BPlusTreeRun().perform(a) ;
+    @AfterClass public static void after()
+    { 
+        SystemTDB.NullOut = b ;
     }
     
     
     @Override
-    protected RangeIndexMaker makeRangeIndexMaker()
+    protected RangeIndex makeRangeIndex(int order, int minRecords)
     {
-        return new BPlusTreeMaker(order, order) ;
-    }
-
-
-    @Override
-    protected void startRun(RunType runType)
-    {
-        switch (runType)
-        {
-            case test:
-                showProgress = true ;
-                BTreeParams.CheckingBTree = true ;
-                BTreeParams.CheckingNode = true ;
-                SystemTDB.NullOut = true ;
-                break ;
-            case perf:  
-                showProgress = false ;
-                BTreeParams.CheckingBTree = false ;
-                BTreeParams.CheckingNode = false ;
-                SystemTDB.NullOut = false ;
-                break ;
-        }
+        return BPlusTree.makeMem(order, minRecords, RecordLib.TestRecordLength, 0) ;
     }
 }
 
 /*
- * (c) Copyright 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007, 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

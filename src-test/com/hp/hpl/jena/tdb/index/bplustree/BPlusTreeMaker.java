@@ -1,52 +1,42 @@
 /*
- * (c) Copyright 2007, 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package test;
+package com.hp.hpl.jena.tdb.index.bplustree;
 
+import com.hp.hpl.jena.tdb.base.record.RecordLib;
+import com.hp.hpl.jena.tdb.index.Index;
+import com.hp.hpl.jena.tdb.index.RangeIndex;
 import com.hp.hpl.jena.tdb.index.RangeIndexMaker;
-import com.hp.hpl.jena.tdb.index.bplustree.BPlusTreeMaker;
-import com.hp.hpl.jena.tdb.index.btree.BTreeParams;
-import com.hp.hpl.jena.tdb.sys.SystemTDB;
+import com.hp.hpl.jena.tdb.index.bplustree.BPlusTree;
 
-public abstract class BTreeRun extends RunnerRangeIndex
+public class BPlusTreeMaker implements RangeIndexMaker
 {
-    
-    
-    static public void main(String...a)
-    {
-        new BPlusTreeRun().perform(a) ;
-    }
-    
-    
-    @Override
-    protected RangeIndexMaker makeRangeIndexMaker()
-    {
-        return new BPlusTreeMaker(order, order) ;
-    }
+    private int order ;
+    private int recordOrder ;
 
 
-    @Override
-    protected void startRun(RunType runType)
-    {
-        switch (runType)
-        {
-            case test:
-                showProgress = true ;
-                BTreeParams.CheckingBTree = true ;
-                BTreeParams.CheckingNode = true ;
-                SystemTDB.NullOut = true ;
-                break ;
-            case perf:  
-                showProgress = false ;
-                BTreeParams.CheckingBTree = false ;
-                BTreeParams.CheckingNode = false ;
-                SystemTDB.NullOut = false ;
-                break ;
-        }
+    public BPlusTreeMaker(int order, int recordOrder)
+    { 
+        this.order = order ; 
+        this.recordOrder = recordOrder ;
     }
+    
+    @Override
+    public Index makeIndex() { return makeRangeIndex() ; }
+
+    @Override
+    public RangeIndex makeRangeIndex()
+    {
+        BPlusTree bpTree = BPlusTree.makeMem(order, recordOrder, RecordLib.TestRecordLength, 0) ;
+        return bpTree ;
+    }
+
+    @Override
+    public String getLabel() { return "B+Tree order = "+order ; } 
+
 }
 
 /*
