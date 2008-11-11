@@ -14,8 +14,12 @@ import lib.Tuple;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
+
+import com.hp.hpl.jena.sparql.core.Closeable;
+
 import com.hp.hpl.jena.tdb.base.file.Location;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
+import com.hp.hpl.jena.tdb.lib.Sync;
 import com.hp.hpl.jena.tdb.lib.TupleLib;
 import com.hp.hpl.jena.tdb.pgraph.NodeId;
 import com.hp.hpl.jena.tdb.pgraph.NodeTable;
@@ -27,7 +31,7 @@ import com.hp.hpl.jena.tdb.pgraph.NodeTable;
 *   The node table form can map to and from NodeIds (longs)
 */
 
-public class TripleTable2
+public class TripleTable2 implements Sync, Closeable
 {
     private final NodeTable nodeTable ;
     private final Location location ;
@@ -115,6 +119,21 @@ public class TripleTable2
      * that directly manipulate internal structures. 
      */
     public TupleTable getTupleTable() { return tupleTable ; }
+    
+    @Override
+    final public void close()
+    {
+        tupleTable.close() ;
+        nodeTable.close() ;
+    }
+    
+    @Override
+    public void sync(boolean force)
+    {
+        tupleTable.sync(force) ;
+        nodeTable.sync(force) ;
+    }
+    
 }
 
 /*
