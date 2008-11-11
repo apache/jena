@@ -104,6 +104,11 @@ public class TripleTable2
     {
         return nodeTable.retrieveNodeByNodeId(id) ;
     }
+    
+    /** Return the undelying tuple table - used with great care by tools
+     * that directly manipulate internal structures. 
+     */
+    public TupleTable getTupleTable() { return tupleTable ; }
 }
 
 /*

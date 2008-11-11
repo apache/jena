@@ -115,9 +115,7 @@ public class TupleTable implements Sync, Closeable
             TupleIndex idx = indexes[i] ;
             if ( idx != null )
             {
-                //Tuple<NodeId> mapped = idx.getColMap().map(pattern) ;
-                Tuple<NodeId> mapped = pattern ;
-                int w = idx.weight(mapped) ;
+                int w = idx.weight(pattern) ;
                 if ( w > indexNumSlots )
                 {
                     indexNumSlots = w ;
@@ -167,9 +165,16 @@ public class TupleTable implements Sync, Closeable
         }
     }
 
-    // Getters and setters - use with care,
+    /** Location for this tuple table (if persistent) */
     public Location getLocation()                       { return location ; }
+    
+    /** Get i'th index */ 
     public TupleIndex getIndex(int i)                   { return indexes[i] ; }
+    
+    /** Get all indexes - for code that maipulates internal structures directly - use with care */ 
+    public TupleIndex[] getIndexes(int i)               { return indexes ; }
+    
+    /** Set index - for code that maipulates internal structures directly - use with care */ 
     public void setTupleIndex(int i, TupleIndex index)  { indexes[i] = index ; }
 }
 

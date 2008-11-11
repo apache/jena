@@ -185,7 +185,9 @@ public class Descriptor
         NodeId id1 = sel_slot_1.choose(s, p, o) ;
         NodeId id2 = sel_slot_2.choose(s, p, o) ;
         NodeId id3 = sel_slot_3.choose(s, p, o) ;
-        return NodeLib.record(recordFactory, id1, id2, id3) ;
+        @SuppressWarnings("deprecation")
+        Record r =  NodeLib.record(recordFactory, id1, id2, id3) ;
+        return r ;
     }
     
     public final Tuple<NodeId> tuple(Record e)

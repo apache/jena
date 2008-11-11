@@ -14,6 +14,7 @@ import org.junit.runners.Suite;
     TestColumnMap.class,
     TestTupleIndex.class,
     TestTupleTable.class,
+    TestTripleTable.class
 } )
 public class TS_Index2
 { }

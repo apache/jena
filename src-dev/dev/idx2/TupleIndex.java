@@ -238,7 +238,9 @@ public class TupleIndex implements Sync, Closeable
         for ( int i = 0 ; i < tupleLength ; i++ )
         {
             NodeId X = colMap.fetchSlot(i, pattern) ;
-            if ( X == null ) return i ;
+            if ( X == NodeId.NodeIdAny || X == null )
+                // End of fixed terms
+                return i ;
         }
         return tupleLength ;
     }

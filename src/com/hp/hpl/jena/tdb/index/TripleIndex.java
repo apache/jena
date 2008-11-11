@@ -140,8 +140,10 @@ public class TripleIndex
                 max3 = min3+1 ;     // Still +1 because index high is exclusive. 
             }
         }
-
+        
+        @SuppressWarnings("deprecation")
         Record r1 = NodeLib.record(index.getRecordFactory(), min1, min2, min3) ;
+        @SuppressWarnings("deprecation")
         Record r2 = NodeLib.record(index.getRecordFactory(), max1, max2, max3) ;
         Iterator<Record> iter = index.iterator(r1, r2) ;
         return asTuples(iter) ;

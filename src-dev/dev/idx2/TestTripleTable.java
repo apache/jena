@@ -61,6 +61,35 @@ public class TestTripleTable extends BaseTest
     }
     
     // ----
+    private static void add(TripleTable2 table, Node s, Node p, Node o)
+    {
+        table.add(new Triple(s,p,o)) ;
+    }
+
+    private static void notMatch(TripleTable2 table, Node s, Node p, Node o)
+    {
+        Iterator<Triple> iter = table.find(s, p, o) ;
+        assertNotNull(iter) ;
+        assertFalse(iter.hasNext()) ;
+    }
+
+    private static void match(TripleTable2 table, Node s, Node p, Node o)
+    {
+        Iterator<Triple> iter = table.find(s, p, o) ;
+        assertNotNull(iter) ;
+        assertTrue(iter.hasNext()) ;
+    }
+    
+    
+    private static void contains(TripleTable2 table, Node s, Node p, Node o)
+    {
+        Iterator<Triple> iter = table.find(s, p, o) ;
+        assertNotNull(iter) ;
+        assertTrue(iter.hasNext()) ;
+        assertEquals(new Triple(s, p, o), iter.next()) ;
+        assertFalse(iter.hasNext()) ;
+    }
+    
     static Node n1 = SSE.parseNode("<http://example/n1>") ;
     static Node n2 = SSE.parseNode("<http://example/n2>") ;
     static Node n3 = SSE.parseNode("<http://example/n3>") ;
@@ -68,25 +97,54 @@ public class TestTripleTable extends BaseTest
     static Node n5 = SSE.parseNode("<http://example/n5>") ;
     static Node n6 = SSE.parseNode("<http://example/n6>") ;
     
-    @Test public void createTripleTable() { create() ; }
+    @Test public void createTripleTable()
+    { 
+        TripleTable2 table = create() ; 
+        notMatch(table, n1, n2, n3) ;
+    }
     
     @Test public void add1()
     { 
-        TripleTable2 t = create() ;
-        t.add(new Triple(n1,n2,n3)) ;
+        TripleTable2 table = create() ;
+        table.add(new Triple(n1,n2,n3)) ;
     }
     
     @Test public void find1()
     { 
-        TripleTable2 t = create() ;
-        t.add(new Triple(n1,n2,n3)) ;
-        Iterator<Triple> iter = t.find(n1, n2, n3) ;
-        assertNotNull(iter) ;
-        assertTrue(iter.hasNext()) ;
-        assertEquals(new Triple(n1,n2,n3), iter.next()) ;
-        assertFalse(iter.hasNext()) ;
+        TripleTable2 table = create() ;
+        add(table, n1, n2, n3) ;
+        contains(table, n1, n2, n3) ;
+        notMatch(table, n1, n2, n4) ;
     }
-    
+
+    @Test public void find2()
+    { 
+        TripleTable2 table = create() ;
+        add(table, n1, n2, n3) ;
+        add(table, n1, n2, n4) ;
+        contains(table, n1, n2, n3) ;
+        contains(table, n1, n2, n4) ;
+    }
+
+    @Test public void find3()
+    { 
+        TripleTable2 table = create() ;
+        add(table, n1, n2, n3) ;
+        add(table, n4, n5, n6) ;
+        contains(table, n1, n2, n3) ;
+        contains(table, n4, n5, n6) ;
+        notMatch(table, n1, n2, n4) ;
+    }
+
+    @Test public void find4()
+    { 
+        TripleTable2 table = create() ;
+        add(table, n1, n2, n3) ;
+        add(table, n4, n5, n6) ;
+        match(table, Node.ANY, n2, n3) ;
+        match(table, null, n2, n3) ;
+        match(table, null, null, null) ;
+    }
 }
 
 /*
