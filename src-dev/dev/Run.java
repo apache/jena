@@ -17,13 +17,16 @@ import lib.Tuple;
 import lib.cache.CacheNG;
 import arq.cmd.CmdUtils;
 
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.query.*;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.RSIterator;
+
+import com.hp.hpl.jena.util.FileManager;
+
+import com.hp.hpl.jena.graph.Graph;
+import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.graph.Triple;
+
 import com.hp.hpl.jena.sparql.algebra.Algebra;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.Transformer;
@@ -31,6 +34,9 @@ import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.main.StageGenerator;
 import com.hp.hpl.jena.sparql.engine.optimizer.StageGenOptimizedBasicPattern;
 import com.hp.hpl.jena.sparql.sse.SSE;
+
+import com.hp.hpl.jena.query.*;
+
 import com.hp.hpl.jena.tdb.TDB;
 import com.hp.hpl.jena.tdb.TDBFactory;
 import com.hp.hpl.jena.tdb.base.file.Location;
@@ -43,9 +49,9 @@ import com.hp.hpl.jena.tdb.solver.StageGeneratorGeneric;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderLib;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
 import com.hp.hpl.jena.tdb.sys.SystemTDB;
-import com.hp.hpl.jena.util.FileManager;
 
 import dev.idx2.ColumnMap;
+import dev.idx2.TmpFactory;
 import dev.opt.Reorganise;
 import dev.opt.Scope;
 import dev.opt.TransformIndexJoin;
@@ -65,6 +71,14 @@ public class Run
  
     public static void main(String ... args) throws IOException
     {
+        Graph g = TmpFactory.createGraphMem() ;
+        Model m = ModelFactory.createModelForGraph(g) ;
+        FileManager.get().readModel(m, "D.ttl") ;
+        
+        query("SELECT * { ?s ?p ?o}", m) ;
+        System.exit(0) ;
+        
+        
         ColumnMap  d = new ColumnMap("SPO", "POS") ;
         System.out.println(d.toString()) ;
         Tuple<String> t = new Tuple<String>("S", "P", "O") ;

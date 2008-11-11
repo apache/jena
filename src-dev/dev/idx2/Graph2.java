@@ -24,14 +24,11 @@ import com.hp.hpl.jena.graph.query.QueryHandler;
 import com.hp.hpl.jena.sparql.util.FmtUtils;
 
 import com.hp.hpl.jena.tdb.TDB;
-import com.hp.hpl.jena.tdb.TDBException;
 import com.hp.hpl.jena.tdb.base.file.Location;
 import com.hp.hpl.jena.tdb.graph.GraphSyncListener;
 import com.hp.hpl.jena.tdb.graph.GraphTDBQueryHandler;
 import com.hp.hpl.jena.tdb.graph.UpdateListener;
 import com.hp.hpl.jena.tdb.lib.Sync;
-import com.hp.hpl.jena.tdb.pgraph.GraphTDB;
-import com.hp.hpl.jena.tdb.pgraph.NodeTable;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
 import com.hp.hpl.jena.tdb.solver.reorder.Reorderable;
 import com.hp.hpl.jena.tdb.sys.SystemTDB;
@@ -45,15 +42,11 @@ public class Graph2 extends GraphBase implements Sync, Reorderable
     private final TransactionHandler transactionHandler = null ; //new GraphTDBTransactionHandler(this) ;
     private final ReorderTransformation reorderTransform  ;
 
-    public Graph2(TupleIndex[] indexes,
-                  NodeTable nodeTable, 
+    public Graph2(TripleTable2 tripleTable,
                   ReorderTransformation reorderTransform,
                   Location location)
     {
-        if ( indexes.length == 0 || indexes[0] == null )
-            throw new TDBException("A primary index is required") ;
-
-        this.tripleTable = new TripleTable2(indexes, nodeTable, GraphTDB.indexRecordFactory, location) ;
+        this.tripleTable = tripleTable ;
         this.reorderTransform = reorderTransform ;
         
         int syncPoint = SystemTDB.SyncTick ;
@@ -61,6 +54,7 @@ public class Graph2 extends GraphBase implements Sync, Reorderable
             this.getEventManager().register(new GraphSyncListener(this, syncPoint)) ;
         this.getEventManager().register(new UpdateListener(this)) ;
     }
+    
     
     @Override
     public QueryHandler queryHandler()

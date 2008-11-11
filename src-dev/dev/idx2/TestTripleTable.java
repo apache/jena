@@ -6,24 +6,22 @@
 
 package dev.idx2;
 
+import static dev.idx2.TmpFactory.createTripleTableMem;
+
 import java.util.Iterator;
-
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Triple;
-
-import com.hp.hpl.jena.sparql.sse.SSE;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.junit.Test;
 import test.BaseTest;
 
+import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.graph.Triple;
+
+import com.hp.hpl.jena.sparql.sse.SSE;
+
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
-import com.hp.hpl.jena.tdb.index.IndexBuilder;
-import com.hp.hpl.jena.tdb.index.RangeIndex;
 import com.hp.hpl.jena.tdb.pgraph.GraphTDB;
-import com.hp.hpl.jena.tdb.pgraph.NodeTable;
-import com.hp.hpl.jena.tdb.pgraph.NodeTableIndex;
 
 public class TestTripleTable extends BaseTest
 {
@@ -34,33 +32,7 @@ public class TestTripleTable extends BaseTest
     
     static RecordFactory factory = GraphTDB.indexRecordFactory ;
 
-    // ----
-    // Move to TDBFactoryGraph
-    
-    private static TripleTable2 create() { return create("SPO", "POS", "OSP") ; }
-    
-    private static TripleTable2 create(String...descs)
-    {
-        TupleIndex indexes[] = new TupleIndex[descs.length] ;
-        int i = 0 ;
-        for ( String desc : descs )
-        {
-            indexes[i] = createIndex(desc) ;
-            i++ ;
-        }
 
-        NodeTable nodeTable = new NodeTableIndex(IndexBuilder.mem()) ;
-        return new TripleTable2(indexes, nodeTable, factory, null) ;
-    }
-
-    private static TupleIndex createIndex(String desc)
-    {
-        RangeIndex rIdx1 = IndexBuilder.mem().newRangeIndex(null, factory, desc) ;
-        TupleIndex tupleIndex = new TupleIndex(3, new ColumnMap("SPO", desc), factory, rIdx1) ; 
-        return tupleIndex ;
-    }
-    
-    // ----
     private static void add(TripleTable2 table, Node s, Node p, Node o)
     {
         table.add(new Triple(s,p,o)) ;
@@ -97,21 +69,21 @@ public class TestTripleTable extends BaseTest
     static Node n5 = SSE.parseNode("<http://example/n5>") ;
     static Node n6 = SSE.parseNode("<http://example/n6>") ;
     
-    @Test public void createTripleTable()
+    @Test public void createTripleTable1()
     { 
-        TripleTable2 table = create() ; 
+        TripleTable2 table = createTripleTableMem() ; 
         notMatch(table, n1, n2, n3) ;
     }
     
     @Test public void add1()
     { 
-        TripleTable2 table = create() ;
+        TripleTable2 table = createTripleTableMem() ;
         table.add(new Triple(n1,n2,n3)) ;
     }
     
     @Test public void find1()
     { 
-        TripleTable2 table = create() ;
+        TripleTable2 table = createTripleTableMem() ;
         add(table, n1, n2, n3) ;
         contains(table, n1, n2, n3) ;
         notMatch(table, n1, n2, n4) ;
@@ -119,7 +91,7 @@ public class TestTripleTable extends BaseTest
 
     @Test public void find2()
     { 
-        TripleTable2 table = create() ;
+        TripleTable2 table = createTripleTableMem() ;
         add(table, n1, n2, n3) ;
         add(table, n1, n2, n4) ;
         contains(table, n1, n2, n3) ;
@@ -128,7 +100,7 @@ public class TestTripleTable extends BaseTest
 
     @Test public void find3()
     { 
-        TripleTable2 table = create() ;
+        TripleTable2 table = createTripleTableMem() ;
         add(table, n1, n2, n3) ;
         add(table, n4, n5, n6) ;
         contains(table, n1, n2, n3) ;
@@ -138,7 +110,7 @@ public class TestTripleTable extends BaseTest
 
     @Test public void find4()
     { 
-        TripleTable2 table = create() ;
+        TripleTable2 table = createTripleTableMem() ;
         add(table, n1, n2, n3) ;
         add(table, n4, n5, n6) ;
         match(table, Node.ANY, n2, n3) ;

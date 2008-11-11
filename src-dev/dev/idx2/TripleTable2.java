@@ -17,6 +17,7 @@ import com.hp.hpl.jena.graph.Triple;
 
 import com.hp.hpl.jena.sparql.core.Closeable;
 
+import com.hp.hpl.jena.tdb.TDBException;
 import com.hp.hpl.jena.tdb.base.file.Location;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 import com.hp.hpl.jena.tdb.lib.Sync;
@@ -37,9 +38,11 @@ public class TripleTable2 implements Sync, Closeable
     private final Location location ;
     private TupleTable tupleTable ;
 
-    public TripleTable2(TupleIndex[] indexes, NodeTable nodeTable, RecordFactory factory, Location location)
+    public TripleTable2(TupleIndex[] indexes, RecordFactory indexRecordFactory, NodeTable nodeTable, Location location)
     {
-        this.tupleTable = new TupleTable(3, indexes, factory, location) ;
+        if ( indexes.length == 0 || indexes[0] == null )
+            throw new TDBException("A primary index is required") ;
+        this.tupleTable = new TupleTable(3, indexes, indexRecordFactory, location) ;
         this.nodeTable = nodeTable ;
         this.location = location ;
     }
