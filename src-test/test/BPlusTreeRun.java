@@ -7,8 +7,8 @@
 package test;
 
 import com.hp.hpl.jena.tdb.bplustree.BPlusTreeMaker;
-import com.hp.hpl.jena.tdb.bplustree.BPlusTreeParams;
 import com.hp.hpl.jena.tdb.index.RangeIndexMaker;
+import com.hp.hpl.jena.tdb.index.bplustree.BPlusTreeParams;
 import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
 public class BPlusTreeRun extends RunnerRangeIndex

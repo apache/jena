@@ -19,6 +19,10 @@ import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 import com.hp.hpl.jena.tdb.base.record.RecordLib;
 import com.hp.hpl.jena.tdb.base.recordfile.RecordBufferPage;
 import com.hp.hpl.jena.tdb.base.recordfile.RecordBufferPageMgr;
+import com.hp.hpl.jena.tdb.index.bplustree.BPTreePage;
+import com.hp.hpl.jena.tdb.index.bplustree.BPTreeRecords;
+import com.hp.hpl.jena.tdb.index.bplustree.BPlusTree;
+import com.hp.hpl.jena.tdb.index.bplustree.BPlusTreeParams;
 import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
 public class TestBPTreeRecords extends TestBase

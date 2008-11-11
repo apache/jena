@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.bplustree;
+package com.hp.hpl.jena.tdb.index.bplustree;
 
 import static com.hp.hpl.jena.tdb.base.block.BlockType.*;
 

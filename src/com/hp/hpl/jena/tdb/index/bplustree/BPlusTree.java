@@ -4,10 +4,10 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.bplustree;
+package com.hp.hpl.jena.tdb.index.bplustree;
 
-import static com.hp.hpl.jena.tdb.bplustree.BPlusTreeParams.CheckingNode;
-import static com.hp.hpl.jena.tdb.bplustree.BPlusTreeParams.CheckingTree;
+import static com.hp.hpl.jena.tdb.index.bplustree.BPlusTreeParams.CheckingNode;
+import static com.hp.hpl.jena.tdb.index.bplustree.BPlusTreeParams.CheckingTree;
 import static java.lang.String.format;
 
 import java.util.Iterator;

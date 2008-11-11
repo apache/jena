@@ -10,8 +10,8 @@ import com.hp.hpl.jena.tdb.base.block.BlockMgr;
 import com.hp.hpl.jena.tdb.base.block.BlockMgrFactory;
 import com.hp.hpl.jena.tdb.base.file.Location;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
-import com.hp.hpl.jena.tdb.bplustree.BPlusTree;
-import com.hp.hpl.jena.tdb.bplustree.BPlusTreeParams;
+import com.hp.hpl.jena.tdb.index.bplustree.BPlusTree;
+import com.hp.hpl.jena.tdb.index.bplustree.BPlusTreeParams;
 
 public class IndexFactoryBPlusTreeMem implements IndexFactory, IndexRangeFactory
 {

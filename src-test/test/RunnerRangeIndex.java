@@ -12,9 +12,9 @@ import org.apache.log4j.Level;
 import tdb.Cmd;
 
 import com.hp.hpl.jena.tdb.base.block.BlockMgrMem;
-import com.hp.hpl.jena.tdb.bplustree.BPlusTreeParams;
 import com.hp.hpl.jena.tdb.index.IndexTestGenerator;
 import com.hp.hpl.jena.tdb.index.RangeIndexMaker;
+import com.hp.hpl.jena.tdb.index.bplustree.BPlusTreeParams;
 import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
 public abstract class RunnerRangeIndex extends RunnerExecute
