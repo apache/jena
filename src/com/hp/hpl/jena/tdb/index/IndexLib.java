@@ -35,11 +35,6 @@ public class IndexLib
             System.out.printf("%2d: %s\n", i, tuple) ;
         } 
     }
-    
-    public static void printNative(TripleIndex index)
-    {
-        print(index.tuplesNativeOrder()) ;
-    }
 }
 
 /*

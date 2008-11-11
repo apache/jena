@@ -26,9 +26,7 @@ import com.hp.hpl.jena.tdb.index.ext.TestExtHash;
     TestExtHash.class
 } )
 public class TS_Index
-{
-
-}
+{ }
 
 /*
  * (c) Copyright 2008 Hewlett-Packard Development Company, LP

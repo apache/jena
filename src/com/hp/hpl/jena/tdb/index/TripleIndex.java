@@ -24,6 +24,7 @@ import com.hp.hpl.jena.tdb.pgraph.NodeId;
 
 
 /** A single index of triples.  Uses a Descriptor for SPO<->native order */
+//@Deprecated
 public class TripleIndex
 {
     private static Logger log = LoggerFactory.getLogger(TripleIndex.class) ;
