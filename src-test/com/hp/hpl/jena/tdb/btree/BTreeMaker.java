@@ -10,6 +10,7 @@ import com.hp.hpl.jena.tdb.base.record.RecordLib;
 import com.hp.hpl.jena.tdb.index.Index;
 import com.hp.hpl.jena.tdb.index.RangeIndex;
 import com.hp.hpl.jena.tdb.index.RangeIndexMaker;
+import com.hp.hpl.jena.tdb.index.btree.BTree;
 
 public class BTreeMaker implements RangeIndexMaker
 {

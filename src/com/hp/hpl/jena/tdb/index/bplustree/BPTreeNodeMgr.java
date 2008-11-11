@@ -16,7 +16,7 @@ import com.hp.hpl.jena.tdb.base.block.BlockType;
 import com.hp.hpl.jena.tdb.base.buffer.PtrBuffer;
 import com.hp.hpl.jena.tdb.base.buffer.RecordBuffer;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
-import com.hp.hpl.jena.tdb.btree.BTreeException;
+import com.hp.hpl.jena.tdb.index.btree.BTreeException;
 
 /** BPlusTreePageMgr = BPlusTreeNode manager */
 final class BPTreeNodeMgr

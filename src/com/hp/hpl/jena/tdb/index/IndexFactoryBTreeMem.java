@@ -8,7 +8,7 @@ package com.hp.hpl.jena.tdb.index;
 
 import com.hp.hpl.jena.tdb.base.file.Location;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
-import com.hp.hpl.jena.tdb.btree.BTree;
+import com.hp.hpl.jena.tdb.index.btree.BTree;
 
 public class IndexFactoryBTreeMem implements IndexFactory, IndexRangeFactory
 {

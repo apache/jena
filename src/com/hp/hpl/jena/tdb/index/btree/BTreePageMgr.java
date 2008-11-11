@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.btree;
+package com.hp.hpl.jena.tdb.index.btree;
 
 import static com.hp.hpl.jena.tdb.base.block.BlockType.* ;
 import java.nio.ByteBuffer;

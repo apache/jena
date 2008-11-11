@@ -12,6 +12,8 @@ import org.junit.BeforeClass;
 import com.hp.hpl.jena.tdb.base.record.RecordLib;
 import com.hp.hpl.jena.tdb.index.RangeIndex;
 import com.hp.hpl.jena.tdb.index.TestRangeIndex;
+import com.hp.hpl.jena.tdb.index.btree.BTree;
+import com.hp.hpl.jena.tdb.index.btree.BTreeParams;
 import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
 public class TestBTree extends TestRangeIndex

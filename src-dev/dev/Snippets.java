@@ -15,7 +15,7 @@ import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.sparql.sse.SSE;
 import com.hp.hpl.jena.sparql.util.FmtUtils;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
-import com.hp.hpl.jena.tdb.btree.BTreeParams;
+import com.hp.hpl.jena.tdb.index.btree.BTreeParams;
 import com.hp.hpl.jena.tdb.lib.StringAbbrev;
 import com.hp.hpl.jena.tdb.pgraph.NodeId;
 import com.sleepycat.je.*;

@@ -13,6 +13,8 @@ import test.BaseTest;
 
 import com.hp.hpl.jena.tdb.base.record.Record;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
+import com.hp.hpl.jena.tdb.index.btree.BTree;
+import com.hp.hpl.jena.tdb.index.btree.BTreeParams;
 import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
 public class TestBTreeLong extends BaseTest

@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.btree;
+package com.hp.hpl.jena.tdb.index.btree;
 
 import com.hp.hpl.jena.tdb.TDBException;
 

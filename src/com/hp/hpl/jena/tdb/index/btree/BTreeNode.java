@@ -4,13 +4,13 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.btree;
+package com.hp.hpl.jena.tdb.index.btree;
 
 import static com.hp.hpl.jena.tdb.base.record.Record.compareByKey;
 import static com.hp.hpl.jena.tdb.base.record.Record.keyGE;
-import static com.hp.hpl.jena.tdb.btree.BTreeParams.CheckingNode;
-import static com.hp.hpl.jena.tdb.btree.BTreeParams.DumpTree;
-import static com.hp.hpl.jena.tdb.btree.BTreeParams.Logging;
+import static com.hp.hpl.jena.tdb.index.btree.BTreeParams.CheckingNode;
+import static com.hp.hpl.jena.tdb.index.btree.BTreeParams.DumpTree;
+import static com.hp.hpl.jena.tdb.index.btree.BTreeParams.Logging;
 import static java.lang.String.format;
 
 import java.io.ByteArrayOutputStream;
