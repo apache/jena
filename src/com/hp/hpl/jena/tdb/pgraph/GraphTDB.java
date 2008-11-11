@@ -38,9 +38,9 @@ import com.hp.hpl.jena.tdb.sys.SystemTDB;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 import com.hp.hpl.jena.util.iterator.NiceIterator;
 
-/** Machinary to implement a "nodes and triples" style graph,
- *  based on 3 indexes (SPO, POS, OSP)
- *  and a node table form can map to and from integers.
+/** Machinary to implement the Jena interfaces.
+ *  This wraps a "nodes and triples" style graph (in TripleTable)
+ *  with the code and data needed for ARQ and Jena. 
  */
 
 public class GraphTDB extends GraphBase implements Sync, Reorderable

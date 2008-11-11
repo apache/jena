@@ -20,7 +20,13 @@ import com.hp.hpl.jena.tdb.lib.TupleLib;
 import com.hp.hpl.jena.tdb.pgraph.NodeId;
 import com.hp.hpl.jena.tdb.pgraph.NodeTable;
 
-/** TripleTable - a collection of TupleIndexes for 3-tuples */
+/** TripleTable - a collection of TupleIndexes for 3-tuples
+ *  together with a node table.
+*   Normally, based on 3 indexes (SPO, POS, OSP) but other
+*   indexing structures can be configured.
+*   The node table form can map to and from NodeIds (longs)
+*/
+
 public class TripleTable2
 {
     private final NodeTable nodeTable ;
