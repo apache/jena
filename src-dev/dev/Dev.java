@@ -14,7 +14,7 @@ public class Dev
     // --
     // The big switch over.  Keep old code for timing purposes.
 
-    // Canonicalization - language tags.
+    // Canonicalization - language tags.  NodeLib
     
     // ---- Reopenable BlockMgrs (and the object file?) 
 

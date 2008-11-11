@@ -73,6 +73,13 @@ public class NodeLib
             throw ex ;
         }
     }
+    
+//    /** Canonical language tag : RFC 3066 and RFC 2234 */
+//    public String langTag(String langTag)
+//    {
+//        
+//    }
+    
     /** Get the triples in the form of a List<Triple> */
     public static List<Triple> tripleList(OpBGP opBGP)
     {
