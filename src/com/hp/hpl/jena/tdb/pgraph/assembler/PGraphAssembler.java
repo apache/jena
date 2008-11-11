@@ -27,7 +27,7 @@ import com.hp.hpl.jena.tdb.base.file.Location;
 
 public class PGraphAssembler extends AssemblerBase implements Assembler
 {
-    static TripleIndexAssembler tripleIndexBuilder = null ; 
+    static IndexAssembler indexAssembler = null ; 
     // See Store/gbt.ttl
     
     @Override

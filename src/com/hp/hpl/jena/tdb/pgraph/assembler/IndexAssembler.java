@@ -23,7 +23,7 @@ import com.hp.hpl.jena.tdb.index.RangeIndex;
 import com.hp.hpl.jena.tdb.index.TripleIndex;
 import com.hp.hpl.jena.tdb.pgraph.GraphTDB;
 
-public class TripleIndexAssembler extends AssemblerBase //implements Assembler
+public class IndexAssembler extends AssemblerBase //implements Assembler
 {
     // Subassembler of a PGraph assembler and is called directly.
     /* 
@@ -31,8 +31,8 @@ public class TripleIndexAssembler extends AssemblerBase //implements Assembler
      */
     
     private Location location = null ;
-    public TripleIndexAssembler()                   { this.location = null ; }
-    public TripleIndexAssembler(Location location)  { this.location = location ; }
+    public IndexAssembler()                   { this.location = null ; }
+    public IndexAssembler(Location location)  { this.location = location ; }
     
     @Override
     public TripleIndex open(Assembler a, Resource root, Mode mode)
