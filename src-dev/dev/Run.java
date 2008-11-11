@@ -75,7 +75,7 @@ public class Run
         Model m = ModelFactory.createModelForGraph(g) ;
         FileManager.get().readModel(m, "D.ttl") ;
         
-        query("SELECT * { ?s ?p ?o}", m) ;
+        query("SELECT * { ?s ?p \"xyz\"@en }", m) ;
         System.exit(0) ;
         
         
