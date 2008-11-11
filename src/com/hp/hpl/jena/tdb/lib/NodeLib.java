@@ -74,7 +74,7 @@ public class NodeLib
         }
     }
     
-//    /** Canonical language tag : RFC 3066 and RFC 2234 */
+//    /** Canonical language tag : RFC 4646, 4647 (matching)  */
 //    public String langTag(String langTag)
 //    {
 //        
