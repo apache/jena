@@ -51,7 +51,7 @@ import com.hp.hpl.jena.tdb.solver.reorder.ReorderLib;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
 import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
-import dev.idx2.TmpFactory;
+import dev.idx2.FactoryTDB2;
 import dev.opt.Reorganise;
 import dev.opt.Scope;
 import dev.opt.TransformIndexJoin;
@@ -71,7 +71,7 @@ public class Run
  
     public static void main(String ... args) throws IOException
     {
-        Graph g = TmpFactory.createGraphMem() ;
+        Graph g = FactoryTDB2.createGraphMem() ;
         Model m = ModelFactory.createModelForGraph(g) ;
         FileManager.get().readModel(m, "D.ttl") ;
         

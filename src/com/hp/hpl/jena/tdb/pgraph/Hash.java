@@ -8,7 +8,7 @@ package com.hp.hpl.jena.tdb.pgraph;
 
 import java.util.Arrays;
 
-/** Value-based hashes */ 
+/** Hash values. */ 
 public class Hash
 {
     byte [] bytes ;

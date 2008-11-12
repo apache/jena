@@ -31,10 +31,10 @@ import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
 import com.hp.hpl.jena.tdb.sys.Names;
 import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
-public class TmpFactory
+public class FactoryTDB2
 {
     // For this class
-    private static Logger log = LoggerFactory.getLogger(TmpFactory.class) ;
+    private static Logger log = LoggerFactory.getLogger(FactoryTDB2.class) ;
     // Move to TDBFactoryGraph
     
     // ---- Record factories
@@ -50,7 +50,7 @@ public class TmpFactory
      */
     public static Graph2 createGraph(Location location)
     {
-        TripleTable2 table = TmpFactory.createTripleTable(IndexBuilder.get(),
+        TripleTable2 table = FactoryTDB2.createTripleTable(IndexBuilder.get(),
                                                           location,
                                                           "SPO", "OPS", "OSP") ;
         ReorderTransformation transform = chooseOptimizer(location) ;                                               
@@ -59,7 +59,7 @@ public class TmpFactory
     
     public static Graph2 createGraphMem()
     {
-        TripleTable2 table = TmpFactory.createTripleTableMem("SPO", "OPS", "OSP") ;
+        TripleTable2 table = FactoryTDB2.createTripleTableMem("SPO", "OPS", "OSP") ;
         ReorderTransformation transform = chooseOptimizer(null) ;
         return new Graph2(table, transform, null) ;
     }  

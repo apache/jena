@@ -6,7 +6,7 @@
 
 package dev.idx2;
 
-import static dev.idx2.TmpFactory.createTripleTableMem;
+import static dev.idx2.FactoryTDB2.createTripleTableMem;
 
 import java.util.Iterator;
 
