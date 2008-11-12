@@ -4,8 +4,9 @@
  * [See end of file]
  */
 
-package dev.idx2;
+package lib;
 
+import lib.ColumnMap;
 import lib.Tuple;
 import org.junit.Test;
 import test.BaseTest;

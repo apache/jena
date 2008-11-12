@@ -17,6 +17,7 @@ import com.hp.hpl.jena.tdb.TDBException;
 import com.hp.hpl.jena.tdb.base.record.Record;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 import com.hp.hpl.jena.tdb.lib.NodeLib;
+import com.hp.hpl.jena.tdb.lib.TupleLib;
 import com.hp.hpl.jena.tdb.pgraph.NodeId;
 
 public class Descriptor
@@ -186,7 +187,7 @@ public class Descriptor
         NodeId id2 = sel_slot_2.choose(s, p, o) ;
         NodeId id3 = sel_slot_3.choose(s, p, o) ;
         @SuppressWarnings("deprecation")
-        Record r =  NodeLib.record(recordFactory, id1, id2, id3) ;
+        Record r =  TupleLib.record(recordFactory, id1, id2, id3) ;
         return r ;
     }
     

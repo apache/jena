@@ -11,6 +11,7 @@ import iterator.Iter;
 import java.util.Iterator;
 import java.util.Set;
 
+import lib.ColumnMap;
 import lib.Tuple;
 import org.junit.Test;
 import tdb.Cmd;

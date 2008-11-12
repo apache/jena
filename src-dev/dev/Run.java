@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.Set;
 
 import lib.Bytes;
+import lib.ColumnMap;
 import lib.FileOps;
 import lib.Tuple;
 import lib.cache.CacheNG;
@@ -50,7 +51,6 @@ import com.hp.hpl.jena.tdb.solver.reorder.ReorderLib;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
 import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
-import dev.idx2.ColumnMap;
 import dev.idx2.TmpFactory;
 import dev.opt.Reorganise;
 import dev.opt.Scope;

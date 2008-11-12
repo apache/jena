@@ -15,12 +15,13 @@ import com.hp.hpl.jena.tdb.pgraph.NodeId;
 
 public class IndexLib
 {
-    
+    @Deprecated
     public static Iterator<Tuple<NodeId>> tuples(RangeIndex index)
     {
-        return TupleLib.tuples(index.iterator()) ;
+        return TupleLib.tuplesRaw(index.iterator()) ;
     }
     
+    @Deprecated
     public static void print(RangeIndex index)
     {
         print(tuples(index)) ;

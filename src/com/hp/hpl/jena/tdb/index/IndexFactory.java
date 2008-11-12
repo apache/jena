@@ -13,6 +13,7 @@ import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 public interface IndexFactory
 {
     public Index createIndex(Location location, String name, RecordFactory recordFactory) ;
+    
 }
 
 /*

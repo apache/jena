@@ -6,34 +6,43 @@
 
 package com.hp.hpl.jena.tdb.lib;
 
+import static com.hp.hpl.jena.tdb.sys.SystemTDB.SizeOfLong;
 import static com.hp.hpl.jena.tdb.sys.SystemTDB.SizeOfNodeId;
 import iterator.Iter;
 import iterator.Transform;
 
 import java.util.Iterator;
 
+import lib.Bytes;
+import lib.ColumnMap;
 import lib.Tuple;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.tdb.base.record.Record;
+import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 import com.hp.hpl.jena.tdb.pgraph.NodeId;
 import com.hp.hpl.jena.tdb.pgraph.NodeTable;
 
+
 public class TupleLib
 {
-    public static Iterator<Tuple<NodeId>> tuples(Iterator<Record> iter)
+    @Deprecated
+    public static Iterator<Tuple<NodeId>> tuplesRaw(Iterator<Record> iter)
     {
-        Transform<Record, Tuple<NodeId>> transformToSPO = new Transform<Record, Tuple<NodeId>>() {
+        Transform<Record, Tuple<NodeId>> transform = new Transform<Record, Tuple<NodeId>>() {
             @Override
             public Tuple<NodeId> convert(Record item)
             {
-                return TupleLib.tuple(item) ;
+                return TupleLib.tuplesRaw(item) ;
             }} ; 
-        return Iter.map(iter, transformToSPO) ;
+        return Iter.map(iter, transform) ;
     }
+    // ----
     
-    public static Tuple<NodeId> tuple(Record e)
+    // TO GO
+    @Deprecated
+    public static Tuple<NodeId> tuplesRaw(Record e)
     {
         // In index native order
         NodeId x = NodeLib.getNodeId(e, 0) ;
@@ -53,6 +62,7 @@ public class TupleLib
         return Iter.map(iter, action) ;
     }
     
+    @Deprecated
     public static Triple triple(NodeTable nodeTable, NodeId s, NodeId p, NodeId o) 
     {
         Node sNode = nodeTable.retrieveNodeByNodeId(s) ;
@@ -61,9 +71,80 @@ public class TupleLib
         return new Triple(sNode, pNode, oNode) ;
     }
     
+    @Deprecated
     public static Triple triple(NodeTable nodeTable, Tuple<NodeId> tuple) 
     {
         return triple(nodeTable, tuple.get(0), tuple.get(1), tuple.get(2)) ;
+    }
+    
+    // ---- Tuples and Triples
+
+    /** Triple to Tuple, not remapped by a ColumnMap. */
+    public static Tuple<NodeId> tuple(Triple t, NodeTable nodeTable)
+    {
+        Node s = t.getSubject() ;
+        Node p = t.getPredicate() ;
+        Node o = t.getObject() ;
+
+        NodeId x = nodeTable.storeNode(s) ;
+        NodeId y = nodeTable.storeNode(p) ;
+        NodeId z = nodeTable.storeNode(o) ;
+        return new Tuple<NodeId>(x, y, z) ;  
+    }
+
+    
+    
+    // ---- Tuples and Records
+    public static Tuple<NodeId> tuple(Record r, ColumnMap cMap)
+    {
+        int N = r.getKey().length/SizeOfLong ;
+        NodeId[] nodeIds = new NodeId[N] ;
+        for ( int i = 0 ; i < N ; i++ )
+        {
+            long x = Bytes.getLong(r.getKey(), i*SizeOfLong) ;
+            NodeId id = NodeId.create(x) ;
+            int j = i ;
+            if ( cMap != null )
+                j = cMap.fetchSlotIdx(i) ;
+            nodeIds[j] = id ;
+        }
+        return new Tuple<NodeId>(nodeIds) ;
+    }
+
+
+    public static Record record(RecordFactory factory, Tuple<NodeId> tuple, ColumnMap cMap) 
+    {
+        byte[] b = new byte[tuple.size()*NodeId.SIZE] ;
+        for ( int i = 0 ; i < tuple.size() ; i++ )
+        {
+            int j = cMap.mapSlotIdx(i) ;
+            // i'th Nodeid goes to j'th bytes slot.
+            Bytes.setLong(tuple.get(i).getId(), b,j*SizeOfLong) ;
+        }
+            
+        return factory.create(b) ;
+    }
+
+
+    // OLD to go.
+    @Deprecated
+    public static Record record(RecordFactory factory, NodeId...nodeIds)
+    {
+        byte[] b = new byte[nodeIds.length*NodeId.SIZE] ;
+        for ( int i = 0 ; i < nodeIds.length ; i++ )
+            Bytes.setLong(nodeIds[i].getId(), b, i*SizeOfLong) ;  
+        return factory.create(b) ;
+    }
+
+
+    // OLD to go.
+    @Deprecated
+    public static Record record(RecordFactory factory, long...nodeIds)
+    {
+        byte[] b = new byte[nodeIds.length*NodeId.SIZE] ;
+        for ( int i = 0 ; i < nodeIds.length ; i++ )
+            Bytes.setLong(nodeIds[i], b, i*SizeOfLong) ;  
+        return factory.create(b) ;
     }
 
 }

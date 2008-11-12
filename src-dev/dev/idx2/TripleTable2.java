@@ -8,6 +8,7 @@ package dev.idx2;
 
 import iterator.NullIterator;
 
+import static com.hp.hpl.jena.tdb.lib.TupleLib.* ;
 import java.util.Iterator;
 
 import lib.Tuple;
@@ -47,32 +48,15 @@ public class TripleTable2 implements Sync, Closeable
         this.location = location ;
     }
     
-    public boolean add( Triple t ) 
+    public boolean add( Triple triple ) 
     { 
-        return tupleTable.add(tuple(t)) ;
+        return tupleTable.add(tuple(triple, nodeTable)) ;
     }
     
     /** Delete a triple  - return true if it was deleted, false if it didn't exist */
-    public boolean delete( Triple t ) 
+    public boolean delete( Triple triple ) 
     { 
-        return tupleTable.delete(tuple(t)) ;
-    }
-    
-    private Tuple<NodeId> tuple(Triple t)
-    {
-        Node s = t.getSubject() ;
-        Node p = t.getPredicate() ;
-        Node o = t.getObject() ;
-
-        NodeId sId = storeNode(s) ;
-        NodeId pId = storeNode(p) ;
-        NodeId oId = storeNode(o) ;
-        return tuple3(sId,pId,oId) ;  
-    }
-    
-    private Tuple<NodeId> tuple3(NodeId x, NodeId y, NodeId z)
-    {
-        return new Tuple<NodeId>(x, y, z) ;
+        return tupleTable.delete(tuple(triple, nodeTable)) ;
     }
     
     /** Find by node. */
@@ -90,7 +74,7 @@ public class TripleTable2 implements Sync, Closeable
         if ( obj == NodeId.NodeDoesNotExist )
             return new NullIterator<Triple>() ;
 
-        Tuple<NodeId> tuple = tuple3(subj, pred, obj) ;
+        Tuple<NodeId> tuple = new Tuple<NodeId>(subj, pred, obj) ;
         Iterator<Tuple<NodeId>> _iter = tupleTable.find(tuple) ;
         Iterator<Triple> iter = TupleLib.convertToTriples(nodeTable, _iter) ;
         return iter ;

@@ -11,7 +11,6 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
-    TestColumnMap.class,
     TestTupleIndex.class,
     TestTupleTable.class,
     TestTripleTable.class

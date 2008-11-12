@@ -35,7 +35,19 @@ public final class Tuple<T>
     
     public T[] tuple() { return tuple ; }
 
-    public final int size() { return tuple.length ; }
+    /** Return a tuple with the column mapping applied */
+    public Tuple<T> map(ColumnMap colMap)
+    {
+        return colMap.map(this) ;
+    }
+    
+    /** Return a tuple with the column mapping reversed */
+    public Tuple<T> unmap(ColumnMap colMap)
+    {
+        return colMap.unmap(this) ;
+    }
+    
+    public int size() { return tuple.length ; }
     
     @Override
     public int hashCode()

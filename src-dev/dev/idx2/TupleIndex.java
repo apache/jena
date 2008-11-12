@@ -13,6 +13,7 @@ import iterator.*;
 import java.util.Iterator;
 
 import lib.Bytes;
+import lib.ColumnMap;
 import lib.Tuple;
 
 import com.hp.hpl.jena.sparql.core.Closeable;
@@ -22,6 +23,7 @@ import com.hp.hpl.jena.tdb.base.record.Record;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 import com.hp.hpl.jena.tdb.index.RangeIndex;
 import com.hp.hpl.jena.tdb.lib.Sync;
+import com.hp.hpl.jena.tdb.lib.TupleLib;
 import com.hp.hpl.jena.tdb.pgraph.NodeId;
 
 public class TupleIndex implements Sync, Closeable
@@ -30,16 +32,15 @@ public class TupleIndex implements Sync, Closeable
     private RangeIndex index ; 
     private final int tupleLength ;
     private RecordFactory factory ;
-    private Desc descriptor ;
     private ColumnMap colMap ;
     
     public TupleIndex(int N,  ColumnMap colMapping, RecordFactory factory, RangeIndex index)
     {
         this.tupleLength = N ;
         this.factory = factory ;
-        this.descriptor = new Desc(colMapping, factory) ;
         this.colMap = colMapping ;
         this.index = index ;
+        
         if ( factory.keyLength() != N*SizeOfNodeId)
             throw new TDBException(format("Mismatch: TupleIndex of length %d is not comparative with a factory for key length %d", N, factory.keyLength())) ;
     }
@@ -53,7 +54,7 @@ public class TupleIndex implements Sync, Closeable
             throw new TDBException(String.format("Mismatch: tuple length %d / index for length %d", tuple.size(), tupleLength)) ;
         }
 
-        Record r = descriptor.record(tuple) ;
+        Record r = TupleLib.record(factory, tuple, colMap) ;
         return index.add(r) ;
     }
     /** Delete a tuple - return true if it was deleted, false if it didn't exist */
@@ -65,12 +66,12 @@ public class TupleIndex implements Sync, Closeable
             throw new TDBException(String.format("Mismatch: tuple length %d / index for length %d", tuple.size(), tupleLength)) ;
         }
 
-        Record r = descriptor.record(tuple) ;
+        Record r = TupleLib.record(factory, tuple, colMap) ;
         return index.delete(r) ;
     }
     
-    public String getLabel() { return descriptor.getLabel() ;  } 
-    public ColumnMap getColMap() { return colMap ;  }
+    public String getLabel() { return colMap.getLabel() ;  } 
+    //public ColumnMap getColMap() { return colMap ;  }
     
     Iterator<Tuple<NodeId>> findOrScan(Tuple<NodeId> pattern)
     {
@@ -199,7 +200,7 @@ public class TupleIndex implements Sync, Closeable
         @Override
         public Tuple<NodeId> convert(Record item)
         {
-            return descriptor.tuple(item) ;
+            return TupleLib.tuple(item, colMap) ;
         }
     } ; 
     
@@ -258,7 +259,7 @@ public class TupleIndex implements Sync, Closeable
     }
 
     @Override
-    public String toString() { return "index:"+descriptor.getLabel() ; }
+    public String toString() { return "index:"+getLabel() ; }
 }
 
 /*

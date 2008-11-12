@@ -19,7 +19,7 @@ import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.tdb.TDBException;
 import com.hp.hpl.jena.tdb.base.record.Record;
-import com.hp.hpl.jena.tdb.lib.NodeLib;
+import com.hp.hpl.jena.tdb.lib.TupleLib;
 import com.hp.hpl.jena.tdb.pgraph.NodeId;
 
 
@@ -143,9 +143,9 @@ public class TripleIndex
         }
         
         @SuppressWarnings("deprecation")
-        Record r1 = NodeLib.record(index.getRecordFactory(), min1, min2, min3) ;
+        Record r1 = TupleLib.record(index.getRecordFactory(), min1, min2, min3) ;
         @SuppressWarnings("deprecation")
-        Record r2 = NodeLib.record(index.getRecordFactory(), max1, max2, max3) ;
+        Record r2 = TupleLib.record(index.getRecordFactory(), max1, max2, max3) ;
         Iterator<Record> iter = index.iterator(r1, r2) ;
         return asTuples(iter) ;
     }
@@ -203,6 +203,7 @@ public class TripleIndex
 
     public void close() { index.close(); }
     
+    @SuppressWarnings("deprecation")
     public void dump()
     {
         System.out.println("Index: "+desc.getDescription()) ;

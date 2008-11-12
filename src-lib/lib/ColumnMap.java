@@ -4,16 +4,13 @@
  * [See end of file]
  */
 
-package dev.idx2;
+package lib;
 
 import static java.lang.String.format;
 
 import java.util.Arrays;
 import java.util.List;
 
-import lib.ListUtils;
-import lib.StrUtils;
-import lib.Tuple;
 
 import com.hp.hpl.jena.tdb.TDBException;
 
