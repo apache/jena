@@ -18,8 +18,11 @@ import org.slf4j.LoggerFactory;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 
+import com.hp.hpl.jena.graph.Graph;
+
 import com.hp.hpl.jena.sparql.sse.SSEParseException;
 
+import com.hp.hpl.jena.tdb.TDBFactory;
 import com.hp.hpl.jena.tdb.base.file.Location;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 import com.hp.hpl.jena.tdb.index.IndexBuilder;
@@ -137,6 +140,26 @@ public class FactoryTDB2
             logExec.warn("No BGP optimizer") ;
         
         return reorder ; 
+    }
+    
+    // ----------
+    public static void enable()
+    {
+        TDBFactory.ImplFactory f = new TDBFactory.ImplFactory()
+        {
+            @Override
+            public Graph createGraph()
+            {
+                return FactoryTDB2.createGraphMem() ;
+            }
+    
+            @Override
+            public Graph createGraph(Location loc)
+            {
+                return FactoryTDB2.createGraph(loc) ;
+            }
+        } ;
+        TDBFactory.setImplFactory(f) ;
     }
 }
 

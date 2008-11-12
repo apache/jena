@@ -52,6 +52,7 @@ import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
 import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
 import dev.idx2.FactoryTDB2;
+import dev.idx2.Graph2;
 import dev.opt.Reorganise;
 import dev.opt.Scope;
 import dev.opt.TransformIndexJoin;
@@ -71,7 +72,11 @@ public class Run
  
     public static void main(String ... args) throws IOException
     {
-        Graph g = FactoryTDB2.createGraphMem() ;
+        FactoryTDB2.enable() ;
+        tdbloader("/home/afs/Datasets/MusicBrainz/artists.nt") ;
+        System.exit(0) ;
+        
+        Graph g = (Graph2)TDBFactory.createGraph() ;
         Model m = ModelFactory.createModelForGraph(g) ;
         FileManager.get().readModel(m, "D.ttl") ;
         
