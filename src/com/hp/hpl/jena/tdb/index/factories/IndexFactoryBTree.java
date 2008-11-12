@@ -4,12 +4,16 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.index;
+package com.hp.hpl.jena.tdb.index.factories;
 
 import com.hp.hpl.jena.tdb.base.block.BlockMgr;
 import com.hp.hpl.jena.tdb.base.block.BlockMgrFactory;
 import com.hp.hpl.jena.tdb.base.file.Location;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
+import com.hp.hpl.jena.tdb.index.Index;
+import com.hp.hpl.jena.tdb.index.IndexFactory;
+import com.hp.hpl.jena.tdb.index.IndexRangeFactory;
+import com.hp.hpl.jena.tdb.index.RangeIndex;
 import com.hp.hpl.jena.tdb.index.btree.BTree;
 import com.hp.hpl.jena.tdb.index.btree.BTreeParams;
 

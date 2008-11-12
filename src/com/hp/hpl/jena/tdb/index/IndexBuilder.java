@@ -9,6 +9,12 @@ package com.hp.hpl.jena.tdb.index;
 import com.hp.hpl.jena.tdb.TDBException;
 import com.hp.hpl.jena.tdb.base.file.Location;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
+import com.hp.hpl.jena.tdb.index.factories.IndexFactoryBPlusTree;
+import com.hp.hpl.jena.tdb.index.factories.IndexFactoryBPlusTreeMem;
+import com.hp.hpl.jena.tdb.index.factories.IndexFactoryBTree;
+import com.hp.hpl.jena.tdb.index.factories.IndexFactoryBTreeMem;
+import com.hp.hpl.jena.tdb.index.factories.IndexFactoryExtHash;
+import com.hp.hpl.jena.tdb.index.factories.IndexFactoryExtHashMem;
 import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
 /** A policy holder for making indexes, range indexes, and data files. 

@@ -44,7 +44,7 @@ import com.hp.hpl.jena.tdb.base.file.Location;
 import com.hp.hpl.jena.tdb.base.record.Record;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 import com.hp.hpl.jena.tdb.index.Index;
-import com.hp.hpl.jena.tdb.index.IndexFactoryExtHash;
+import com.hp.hpl.jena.tdb.index.factories.IndexFactoryExtHash;
 import com.hp.hpl.jena.tdb.pgraph.GraphTDB;
 import com.hp.hpl.jena.tdb.solver.StageGeneratorGeneric;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderLib;

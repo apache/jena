@@ -4,27 +4,43 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.index;
+package com.hp.hpl.jena.tdb.index.factories;
 
+import com.hp.hpl.jena.tdb.base.block.BlockMgr;
+import com.hp.hpl.jena.tdb.base.block.BlockMgrFactory;
 import com.hp.hpl.jena.tdb.base.file.Location;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
-import com.hp.hpl.jena.tdb.index.ext.ExtHash;
-import com.hp.hpl.jena.tdb.sys.SystemTDB;
+import com.hp.hpl.jena.tdb.index.Index;
+import com.hp.hpl.jena.tdb.index.IndexFactory;
+import com.hp.hpl.jena.tdb.index.IndexRangeFactory;
+import com.hp.hpl.jena.tdb.index.RangeIndex;
+import com.hp.hpl.jena.tdb.index.bplustree.BPlusTree;
+import com.hp.hpl.jena.tdb.index.bplustree.BPlusTreeParams;
 
-/** Index factory for extendible hash tables in memory (for testing).
- *  Only an index, not a rnage index
- * @author Andy Seaborne
- */
-
-public class IndexFactoryExtHashMem implements IndexFactory
+public class IndexFactoryBPlusTreeMem implements IndexFactory, IndexRangeFactory
 {
-    public IndexFactoryExtHashMem()
-    { }
+    private final int order ;
+
+    public IndexFactoryBPlusTreeMem(int order)
+    {
+        this.order = order ;
+    }
     
     @Override
     public Index createIndex(Location location, String name, RecordFactory recordFactory)
     {
-        return ExtHash.createMem(recordFactory, SystemTDB.BlockSize) ;
+        return createRangeIndex(location, name, recordFactory) ;
+    }
+    
+    @Override
+    public RangeIndex createRangeIndex(Location location, String name, RecordFactory recordFactory)
+    {
+        int blkSize = BPlusTreeParams.calcBlockSize(order, recordFactory) ;
+        BPlusTreeParams params = new BPlusTreeParams(order, recordFactory) ;
+        BlockMgr blkMgr1 = BlockMgrFactory.createMem(name, blkSize) ;
+        BlockMgr blkMgr2 = BlockMgrFactory.createMem(name, blkSize) ;
+        BPlusTree bTree = BPlusTree.attach(params, blkMgr1, blkMgr2) ; 
+        return bTree ;
     }
 }
 

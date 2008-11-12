@@ -4,48 +4,36 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.index;
+package com.hp.hpl.jena.tdb.index.factories;
 
-import com.hp.hpl.jena.tdb.base.block.BlockMgr;
-import com.hp.hpl.jena.tdb.base.block.BlockMgrFactory;
 import com.hp.hpl.jena.tdb.base.file.Location;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
-import com.hp.hpl.jena.tdb.index.bplustree.BPlusTree;
-import com.hp.hpl.jena.tdb.index.bplustree.BPlusTreeParams;
+import com.hp.hpl.jena.tdb.index.Index;
+import com.hp.hpl.jena.tdb.index.IndexFactory;
+import com.hp.hpl.jena.tdb.index.IndexRangeFactory;
+import com.hp.hpl.jena.tdb.index.RangeIndex;
+import com.hp.hpl.jena.tdb.index.btree.BTree;
 
-public class IndexFactoryBPlusTree implements IndexFactory, IndexRangeFactory
+public class IndexFactoryBTreeMem implements IndexFactory, IndexRangeFactory
 {
-    private final int blockSize ;
+    
+    private final int order ;
 
-    public IndexFactoryBPlusTree(int blockSize)
+    public IndexFactoryBTreeMem(int order)
     {
-        this.blockSize = blockSize ;
+        this.order = order ;
     }
     
     @Override
-    public Index createIndex(Location location, String name, RecordFactory factory)
+    public Index createIndex(Location location, String name, RecordFactory recordFactory)
     {
-        return createRangeIndex(location, name, factory) ;
+        return createRangeIndex(location, name, recordFactory) ;
     }
     
     @Override
-    public RangeIndex createRangeIndex(Location location, String name, RecordFactory factory)
+    public RangeIndex createRangeIndex(Location location, String name, RecordFactory recordFactory)
     {
-        int order = BPlusTreeParams.calcOrder(blockSize, factory) ;
-        BPlusTreeParams params = new BPlusTreeParams(order, factory) ;
-        
-        String fnNodes = location.getPath(name, "idn") ;
-        BlockMgr blkMgrNodes = createBlockMgr(fnNodes, blockSize) ;
-        
-        String fnRecords = location.getPath(name, "dat") ;
-        BlockMgr blkMgrRecords = createBlockMgr(fnRecords, blockSize) ;
-
-        return BPlusTree.attach(params, blkMgrNodes, blkMgrRecords) ;
-    }
-    
-    protected BlockMgr createBlockMgr(String filename, int blockSize)
-    {
-        return BlockMgrFactory.createFile(filename, blockSize) ;
+        return BTree.makeMem(name, order, recordFactory.keyLength(), recordFactory.valueLength()) ;
     }
 }
 

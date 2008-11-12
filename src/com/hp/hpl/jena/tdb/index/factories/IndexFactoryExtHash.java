@@ -4,39 +4,48 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.index;
+package com.hp.hpl.jena.tdb.index.factories;
 
 import com.hp.hpl.jena.tdb.base.block.BlockMgr;
 import com.hp.hpl.jena.tdb.base.block.BlockMgrFactory;
+import com.hp.hpl.jena.tdb.base.file.FileFactory;
 import com.hp.hpl.jena.tdb.base.file.Location;
+import com.hp.hpl.jena.tdb.base.file.PlainFile;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
-import com.hp.hpl.jena.tdb.index.bplustree.BPlusTree;
-import com.hp.hpl.jena.tdb.index.bplustree.BPlusTreeParams;
+import com.hp.hpl.jena.tdb.index.Index;
+import com.hp.hpl.jena.tdb.index.IndexFactory;
+import com.hp.hpl.jena.tdb.index.ext.ExtHash;
+import com.hp.hpl.jena.tdb.sys.Names;
 
-public class IndexFactoryBPlusTreeMem implements IndexFactory, IndexRangeFactory
+/** Index factory for extendible hash tables.
+ *  Only an index, not a rnage index
+ * @author Andy Seaborne
+ */
+
+public class IndexFactoryExtHash implements IndexFactory
 {
-    private final int order ;
+    private final int blockSize ;
 
-    public IndexFactoryBPlusTreeMem(int order)
+    public IndexFactoryExtHash(int blockSize)
     {
-        this.order = order ;
+        this.blockSize = blockSize ;
     }
     
     @Override
     public Index createIndex(Location location, String name, RecordFactory recordFactory)
     {
-        return createRangeIndex(location, name, recordFactory) ;
+        String fnDictionary = location.getPath(name, Names.extHashExt) ;
+        PlainFile dictionary = FileFactory.createPlainFileDisk(fnDictionary) ;
+        
+        String fnBuckets = location.getPath(name, Names.extHashBucketExt) ;
+        BlockMgr mgr =  BlockMgrFactory.createFile(fnBuckets, blockSize) ;
+        ExtHash eHash = new ExtHash(dictionary, recordFactory, mgr) ;
+        return eHash ;
     }
     
-    @Override
-    public RangeIndex createRangeIndex(Location location, String name, RecordFactory recordFactory)
+    protected BlockMgr createBlockMgr(String filename, int blockSize)
     {
-        int blkSize = BPlusTreeParams.calcBlockSize(order, recordFactory) ;
-        BPlusTreeParams params = new BPlusTreeParams(order, recordFactory) ;
-        BlockMgr blkMgr1 = BlockMgrFactory.createMem(name, blkSize) ;
-        BlockMgr blkMgr2 = BlockMgrFactory.createMem(name, blkSize) ;
-        BPlusTree bTree = BPlusTree.attach(params, blkMgr1, blkMgr2) ; 
-        return bTree ;
+        return BlockMgrFactory.createFile(filename, blockSize) ;
     }
 }
 

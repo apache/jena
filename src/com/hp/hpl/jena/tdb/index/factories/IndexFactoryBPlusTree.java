@@ -4,41 +4,47 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.index;
+package com.hp.hpl.jena.tdb.index.factories;
 
 import com.hp.hpl.jena.tdb.base.block.BlockMgr;
 import com.hp.hpl.jena.tdb.base.block.BlockMgrFactory;
-import com.hp.hpl.jena.tdb.base.file.FileFactory;
 import com.hp.hpl.jena.tdb.base.file.Location;
-import com.hp.hpl.jena.tdb.base.file.PlainFile;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
-import com.hp.hpl.jena.tdb.index.ext.ExtHash;
-import com.hp.hpl.jena.tdb.sys.Names;
+import com.hp.hpl.jena.tdb.index.Index;
+import com.hp.hpl.jena.tdb.index.IndexFactory;
+import com.hp.hpl.jena.tdb.index.IndexRangeFactory;
+import com.hp.hpl.jena.tdb.index.RangeIndex;
+import com.hp.hpl.jena.tdb.index.bplustree.BPlusTree;
+import com.hp.hpl.jena.tdb.index.bplustree.BPlusTreeParams;
 
-/** Index factory for extendible hash tables.
- *  Only an index, not a rnage index
- * @author Andy Seaborne
- */
-
-public class IndexFactoryExtHash implements IndexFactory
+public class IndexFactoryBPlusTree implements IndexFactory, IndexRangeFactory
 {
     private final int blockSize ;
 
-    public IndexFactoryExtHash(int blockSize)
+    public IndexFactoryBPlusTree(int blockSize)
     {
         this.blockSize = blockSize ;
     }
     
     @Override
-    public Index createIndex(Location location, String name, RecordFactory recordFactory)
+    public Index createIndex(Location location, String name, RecordFactory factory)
     {
-        String fnDictionary = location.getPath(name, Names.extHashExt) ;
-        PlainFile dictionary = FileFactory.createPlainFileDisk(fnDictionary) ;
+        return createRangeIndex(location, name, factory) ;
+    }
+    
+    @Override
+    public RangeIndex createRangeIndex(Location location, String name, RecordFactory factory)
+    {
+        int order = BPlusTreeParams.calcOrder(blockSize, factory) ;
+        BPlusTreeParams params = new BPlusTreeParams(order, factory) ;
         
-        String fnBuckets = location.getPath(name, Names.extHashBucketExt) ;
-        BlockMgr mgr =  BlockMgrFactory.createFile(fnBuckets, blockSize) ;
-        ExtHash eHash = new ExtHash(dictionary, recordFactory, mgr) ;
-        return eHash ;
+        String fnNodes = location.getPath(name, "idn") ;
+        BlockMgr blkMgrNodes = createBlockMgr(fnNodes, blockSize) ;
+        
+        String fnRecords = location.getPath(name, "dat") ;
+        BlockMgr blkMgrRecords = createBlockMgr(fnRecords, blockSize) ;
+
+        return BPlusTree.attach(params, blkMgrNodes, blkMgrRecords) ;
     }
     
     protected BlockMgr createBlockMgr(String filename, int blockSize)
