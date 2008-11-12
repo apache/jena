@@ -55,7 +55,7 @@ public class FactoryTDB2
     {
         TripleTable2 table = FactoryTDB2.createTripleTable(IndexBuilder.get(),
                                                           location,
-                                                          "SPO", "OPS", "OSP") ;
+                                                          "SPO", "POS", "OSP") ;
         ReorderTransformation transform = chooseOptimizer(location) ;                                               
         return new Graph2(table, transform, location) ;
     }  
