@@ -17,6 +17,8 @@ package lib;
  */ 
 public final class BitsLong
 {
+    private BitsLong() {}
+
     // When this is false, no calls to check() should be generated.
     //public static final boolean CHECK = true ;
     private static int LongLen = Long.SIZE ;

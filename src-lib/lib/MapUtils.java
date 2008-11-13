@@ -8,9 +8,10 @@ package lib;
 
 import java.util.Map;
 
+/** Map specific functions */
 public class MapUtils
 {
-     // Map specific operations
+    private MapUtils() {}
     
     public static <K, V> void apply(Map<K, V> map, ActionKeyValue<K, V> action)
     {

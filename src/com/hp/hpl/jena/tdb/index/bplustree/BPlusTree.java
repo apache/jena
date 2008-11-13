@@ -335,7 +335,6 @@ public class BPlusTree implements Iterable<Record>, RangeIndex
     {
         return BPlusTreeParams.logging(log) ;
     }
-  
 }
 
 /*

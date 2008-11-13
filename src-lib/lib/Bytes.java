@@ -23,6 +23,8 @@ import java.nio.charset.CoderResult;
 
 public class Bytes
 {
+    private Bytes() {}
+    
     // http://en.wikipedia.org/wiki/Endianness
     // Java is, by default, network order (big endian)
     // i.e what you get from ByteBuffer.allocate/.allocateDirect();

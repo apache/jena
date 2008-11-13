@@ -13,7 +13,6 @@ import java.util.List;
 
 public final class Tuple<T>
 {
-   
     public static <T> Tuple<T> blankTuple(int len)
     {
         @SuppressWarnings("unchecked")

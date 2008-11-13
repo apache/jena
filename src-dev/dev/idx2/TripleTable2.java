@@ -107,6 +107,12 @@ public class TripleTable2 implements Sync, Closeable
      */
     public TupleTable getTupleTable() { return tupleTable ; }
     
+    /** Return the location of for the indexes of this triple table.
+     *  Usually, all the indexes are in the same location.   
+     *  May be null (e.g. in-memory testing) 
+     */ 
+    public Location getLocation() { return tupleTable.getLocation() ; }
+    
     @Override
     final public void close()
     {

@@ -14,6 +14,8 @@ import java.util.List;
 
 public class ListUtils
 {
+    private ListUtils() {}
+
     public static <T>
     List<T> unique(List<T> list)
     {

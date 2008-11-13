@@ -1,34 +1,41 @@
 /*
- * (c) Copyright 2007, 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
 package lib;
 
-import java.security.SecureRandom;
-import java.util.Random;
+import java.lang.reflect.Array;
+import java.util.Arrays;
 
-public class RandomLib
+/** Collection of array-related operations */
+public class ArrayUtils
 {
-    private RandomLib() {}
+    private ArrayUtils() {}
     
-    // The only.
-    public static final Random random = new SecureRandom() ;
-    
-    public static final Random qrandom = randInit() ;
-
-    private static Random randInit()
+    /** Allocate an array of generic type T (initialized to null) */
+    @SuppressWarnings("unchecked")
+    public static <T> T[] alloc(Class<T> cls, int n)
     {
-        // Cheap random numbers, well seeded.
-        int seed = random.nextInt() ;
-        return new Random(seed) ;   
+        return (T[])Array.newInstance(cls, n) ;
+//        @SuppressWarnings("unchecked")
+//        T[] array = (T[])new Object[n] ;
+//        return array ;
     }
     
+    /** Allocation space and copy */ 
+    public static <T> T[] copy(T[] array)
+    {
+        return Arrays.copyOf(array, array.length) ;
+//        T[] array2 = alloc(array.length) ;
+//        System.arraycopy(array, 0, array2, 0, array.length) ;
+//        return array2 ;
+    }
 }
 
 /*
- * (c) Copyright 2007, 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

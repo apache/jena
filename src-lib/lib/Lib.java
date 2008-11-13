@@ -8,6 +8,8 @@ package lib;
 
 public class Lib
 {
+    private Lib() {}
+    
     public static <T> boolean equals(T obj1, T obj2)
     {
         if ( obj1 == null )

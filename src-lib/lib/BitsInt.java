@@ -16,6 +16,8 @@ package lib;
  */ 
 public final class BitsInt
 {
+    private BitsInt() {}
+    
     private static int IntLen = Integer.SIZE ;
     
     /** Extract the value packed into bits start (inclusive) and finish (exclusive),

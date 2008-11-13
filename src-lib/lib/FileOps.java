@@ -11,6 +11,8 @@ import java.io.FilenameFilter;
 
 public class FileOps
 {
+    private FileOps() {}
+    
     /** Delete a file
      * 
      * @param filename

@@ -40,6 +40,8 @@ public class FactoryTDB2
     private static Logger log = LoggerFactory.getLogger(FactoryTDB2.class) ;
     // Move to TDBFactoryGraph
     
+    private static String[] indexes = { "SPO", "POS", "OSP" } ;
+    
     // ---- Record factories
     public final static RecordFactory indexRecordFactory = new RecordFactory(LenIndexRecord, 0) ; 
     public final static RecordFactory nodeRecordFactory = new RecordFactory(LenNodeHash, SizeOfNodeId) ;
@@ -53,16 +55,14 @@ public class FactoryTDB2
      */
     public static Graph2 createGraph(Location location)
     {
-        TripleTable2 table = FactoryTDB2.createTripleTable(IndexBuilder.get(),
-                                                          location,
-                                                          "SPO", "POS", "OSP") ;
+        TripleTable2 table = createTripleTable(IndexBuilder.get(), location, indexes) ;
         ReorderTransformation transform = chooseOptimizer(location) ;                                               
         return new Graph2(table, transform, location) ;
     }  
     
     public static Graph2 createGraphMem()
     {
-        TripleTable2 table = FactoryTDB2.createTripleTableMem("SPO", "OPS", "OSP") ;
+        TripleTable2 table = createTripleTableMem(indexes) ;
         ReorderTransformation transform = chooseOptimizer(null) ;
         return new Graph2(table, transform, null) ;
     }  
@@ -72,17 +72,17 @@ public class FactoryTDB2
         return ModelFactory.createModelForGraph(createGraph(location)) ;
     }
     
-    public static TripleTable2 createTripleTableMem()
+    static TripleTable2 createTripleTableMem()
     { 
-        return createTripleTable(IndexBuilder.mem(), null, "SPO", "POS", "OSP") ;
+        return createTripleTable(IndexBuilder.mem(), null, indexes) ;
     }
      
-    public static TripleTable2 createTripleTableMem(String...descs)
+    static TripleTable2 createTripleTableMem(String...descs)
     { 
         return createTripleTable(IndexBuilder.mem(), null, descs) ;
     }
     
-    public static TripleTable2 createTripleTable(IndexBuilder indexBuilder, Location location, String...descs)
+    private static TripleTable2 createTripleTable(IndexBuilder indexBuilder, Location location, String...descs)
     {
         TupleIndex indexes[] = new TupleIndex[descs.length] ;
         int i = 0 ;
@@ -92,7 +92,7 @@ public class FactoryTDB2
             i++ ;
         }
 
-        NodeTable nodeTable = new NodeTableIndex(indexBuilder) ;
+        NodeTable nodeTable = new NodeTableIndex(indexBuilder, location) ;
         return new TripleTable2(indexes, indexRecordFactory, nodeTable, location) ;
     }
 

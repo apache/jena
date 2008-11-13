@@ -14,6 +14,8 @@ import java.util.Map;
 
 public class StrUtils
 {
+    private StrUtils() {}
+    
     /** strjoin with a newline as the separator */
     public static String strjoinNL(String... args)
     {

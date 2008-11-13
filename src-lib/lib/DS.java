@@ -18,6 +18,8 @@ import java.util.Set;
 
 public class DS
 {
+    private DS() {}
+    
     public static <X> Set<X> set() { return new HashSet<X>(); }  
     public static <X> Set<X> set(int initialSize) { return new HashSet<X>(initialSize); }  
     public static <X> Set<X> set(Set<X> other) { return new HashSet<X>(other); }  

@@ -11,6 +11,8 @@ import java.util.Set;
 
 public class SetUtils
 {
+    private SetUtils() {}
+    
      // Set specific operations
     
     public static <T> Set<T> intersection(Set<? extends T> setLeft, Set<? extends T> setRight)

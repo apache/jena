@@ -34,6 +34,9 @@ public interface Index extends Iterable<Record>
     /** Get the Record factory associated with this index */
     public RecordFactory getRecordFactory() ;
     
+//    /** Location on disk (maybe null - e.g. in-memory testing) */
+//    public Location getLocation() ;
+    
     /** Syncrhonize with any persistent storage underlying the index */
     public void sync(boolean force) ;
     

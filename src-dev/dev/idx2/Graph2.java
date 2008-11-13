@@ -128,6 +128,9 @@ public class Graph2 extends GraphBase implements Sync, Reorderable
     @Override
     public ReorderTransformation getReorderTransform()      { return reorderTransform ; }
     
+    public TripleTable2 getTripleTable()                    { return tripleTable   ; }
+    public Location     getLocation()                       { return tripleTable.getLocation() ; }
+    
     @Override
     final public void close()
     {

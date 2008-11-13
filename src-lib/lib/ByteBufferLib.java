@@ -11,6 +11,7 @@ import java.nio.ByteBuffer;
 
 public class ByteBufferLib
 {
+    private ByteBufferLib() {}
     
 //    protected static void fill(ByteBuffer bb, byte fillValue)
 //    {

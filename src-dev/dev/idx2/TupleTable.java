@@ -169,10 +169,13 @@ public class TupleTable implements Sync, Closeable
     public TupleIndex getIndex(int i)                   { return indexes[i] ; }
     
     /** Get all indexes - for code that maipulates internal structures directly - use with care */ 
-    public TupleIndex[] getIndexes()               { return indexes ; }
+    public TupleIndex[] getIndexes()                    { return indexes ; }
     
     /** Set index - for code that maipulates internal structures directly - use with care */ 
     public void setTupleIndex(int i, TupleIndex index)  { indexes[i] = index ; }
+
+    /** Number of indexes on this tuple table */
+    public int numIndexes()                             { return indexes.length ; }
 }
 
 /*

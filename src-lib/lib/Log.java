@@ -12,6 +12,8 @@ import org.slf4j.LoggerFactory;
 // Simple wrapper for convenient, non-time critical logging.
 public class Log
 {
+    private Log() {}
+    
     static public void warn(Object caller, String msg)
     {
         warn(caller.getClass(), msg) ;
