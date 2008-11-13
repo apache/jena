@@ -638,7 +638,7 @@ public class Query extends Prologue implements Cloneable
         IndentedLineBuffer buff = new IndentedLineBuffer() ;
         serialize(buff, getSyntax()) ;
         String qs = buff.toString() ;
-        return QueryFactory.create(qs) ;
+        return QueryFactory.create(qs, getSyntax()) ;
     }
     
     // ---- Query canonical syntax
