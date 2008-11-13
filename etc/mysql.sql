@@ -34,33 +34,33 @@ CREATE TABLE ${f}sys_stmt (
  Prop       ${a} NOT NULL,
  Obj        ${a} NOT NULL,
  GraphID    INTEGER
-) Type = ${b};;
+) ENGINE = ${b};;
 DROP TABLE IF EXISTS ${f}long_lit;;
 CREATE TABLE ${f}long_lit (
  ID      	INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY,
  Head    	${d} NOT NULL,
  ChkSum		BIGINT,
  Tail    	MEDIUMBLOB
-) Type = ${b};;
+) ENGINE = ${b};;
 DROP TABLE IF EXISTS ${f}long_uri;;
 CREATE TABLE ${f}long_uri (
  ID      	INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY,
  Head    	${d} NOT NULL,
  ChkSum 	BIGINT,
  Tail    	MEDIUMBLOB
-) Type = ${b};;
+) ENGINE = ${b};;
 DROP TABLE IF EXISTS ${f}prefix;;
 CREATE TABLE ${f}prefix (
  ID      	INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY,
  Head    	${d} NOT NULL,
  ChkSum		BIGINT,
  Tail    	MEDIUMBLOB
-) Type = ${b};;
+) ENGINE = ${b};;
 DROP TABLE IF EXISTS ${f}graph;;
 CREATE TABLE ${f}graph (
  ID      INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY,
  Name    TINYBLOB
-) Type = ${b};;
+) ENGINE = ${b};;
 CREATE UNIQUE INDEX ${f}XLIT ON ${f}long_lit(Head(${e}),ChkSum);;
 CREATE UNIQUE INDEX ${f}XURI ON ${f}long_uri(Head(${e}),ChkSum);;
 CREATE UNIQUE INDEX ${f}XBND ON ${f}prefix(Head(${e}),ChkSum);;
@@ -82,7 +82,7 @@ CREATE TABLE ${a} (
  Prop       ${b} NOT NULL,
  Obj        ${b} NOT NULL,
  GraphID    INTEGER
-) TYPE = ${c};;
+) ENGINE = ${c};;
 CREATE INDEX ${a}XSP ON ${a}(Subj(${d}), Prop(${d}));;
 CREATE INDEX ${a}XO ON ${a}(Obj(${d}));;
 
@@ -102,7 +102,7 @@ CREATE TABLE ${a} (
  GraphID    INTEGER,
  Stmt       ${b} NOT NULL,
  HasType    CHAR(1) NOT NULL
-) TYPE  = ${c};;
+) ENGINE = ${c};;
 CREATE UNIQUE INDEX ${a}XSTMT ON ${a}(Stmt(${d}), HasType);;
 CREATE INDEX ${a}XSP ON ${a}(Subj(${d}), Prop(${d}));;
 CREATE INDEX ${a}XO ON ${a}(Obj(${d}));;
