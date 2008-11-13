@@ -258,6 +258,11 @@ public class TupleIndex implements Sync, Closeable
         index.sync(force) ;
     }
 
+    public int getTupleLength()
+    {
+        return tupleLength ;
+    }
+
     @Override
     public String toString() { return "index:"+getLabel() ; }
 }

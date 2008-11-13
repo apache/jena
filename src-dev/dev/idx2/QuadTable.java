@@ -14,8 +14,8 @@ import java.util.Iterator;
 import lib.Tuple;
 
 import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.sparql.core.Closeable;
+import com.hp.hpl.jena.sparql.core.Quad;
 import com.hp.hpl.jena.tdb.base.file.Location;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 import com.hp.hpl.jena.tdb.lib.Sync;
@@ -23,49 +23,52 @@ import com.hp.hpl.jena.tdb.lib.TupleLib;
 import com.hp.hpl.jena.tdb.pgraph.NodeId;
 import com.hp.hpl.jena.tdb.pgraph.NodeTable;
 
-/** TripleTable - a collection of TupleIndexes for 3-tuples
+/** Quad table - a collection of TupleIndexes for 4-tuples
  *  together with a node table.
-*   Normally, based on 3 indexes (SPO, POS, OSP) but other
-*   indexing structures can be configured.
-*   The node table form can map to and from NodeIds (longs)
-*/
+ */
 
-public class TripleTable2 extends NodeTupleTable implements Sync, Closeable
+public class QuadTable extends NodeTupleTable implements Sync, Closeable
 {
-    public TripleTable2(TupleIndex[] indexes, RecordFactory indexRecordFactory, NodeTable nodeTable, Location location)
+
+    public QuadTable(TupleIndex[] indexes, RecordFactory indexRecordFactory, NodeTable nodeTable, Location location)
     {
-        super(3, indexes, indexRecordFactory, nodeTable, location) ;
+        super(4, indexes, indexRecordFactory, nodeTable, location);
     }
-    
-    public boolean add( Triple triple ) 
+
+    /** Add a quad - return true if it was added, false if it already existed */
+    public boolean add( Quad quad ) 
     { 
-        return tupleTable.add(tuple(triple, nodeTable)) ;
+        return tupleTable.add(tuple(quad, nodeTable)) ;
     }
-    
-    /** Delete a triple  - return true if it was deleted, false if it didn't exist */
-    public boolean delete( Triple triple ) 
+
+    /** Delete a quad - return true if it was deleted, false if it didn't exist */
+    public boolean delete( Quad quad ) 
     { 
-        return tupleTable.delete(tuple(triple, nodeTable)) ;
+        return tupleTable.delete(tuple(quad, nodeTable)) ;
     }
-    
+
     /** Find by node. */
-    public Iterator<Triple> find(Node s, Node p, Node o)
+    public Iterator<Quad> find(Node g, Node s, Node p, Node o)
     {
+        NodeId graph = idForNode(g) ;
+        if ( graph == NodeId.NodeDoesNotExist )
+            return new NullIterator<Quad>() ;
+        
         NodeId subj = idForNode(s) ;
         if ( subj == NodeId.NodeDoesNotExist )
-            return new NullIterator<Triple>() ;
-        
+            return new NullIterator<Quad>() ;
+
         NodeId pred = idForNode(p) ;
         if ( pred == NodeId.NodeDoesNotExist )
-            return new NullIterator<Triple>() ;
-        
+            return new NullIterator<Quad>() ;
+
         NodeId obj = idForNode(o) ;
         if ( obj == NodeId.NodeDoesNotExist )
-            return new NullIterator<Triple>() ;
+            return new NullIterator<Quad>() ;
 
-        Tuple<NodeId> tuple = new Tuple<NodeId>(subj, pred, obj) ;
+        Tuple<NodeId> tuple = new Tuple<NodeId>(graph, subj, pred, obj) ;
         Iterator<Tuple<NodeId>> _iter = tupleTable.find(tuple) ;
-        Iterator<Triple> iter = TupleLib.convertToTriples(nodeTable, _iter) ;
+        Iterator<Quad> iter = TupleLib.convertToQuads(nodeTable, _iter) ;
         return iter ;
     }
 }

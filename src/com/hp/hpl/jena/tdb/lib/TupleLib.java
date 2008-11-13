@@ -19,6 +19,7 @@ import lib.Tuple;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
+import com.hp.hpl.jena.sparql.core.Quad;
 import com.hp.hpl.jena.tdb.base.record.Record;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 import com.hp.hpl.jena.tdb.pgraph.NodeId;
@@ -62,6 +63,18 @@ public class TupleLib
         return Iter.map(iter, action) ;
     }
     
+    public static  Iterator<Quad> convertToQuads(final NodeTable nodeTable, Iterator<Tuple<NodeId>> iter)
+    {
+        Transform<Tuple<NodeId>, Quad> action =  new Transform<Tuple<NodeId>, Quad>(){
+            @Override
+            public Quad convert(Tuple<NodeId> item)
+            {
+                return quad(nodeTable, item) ;
+            }} ;
+        return Iter.map(iter, action) ;
+    }
+    
+
     @Deprecated
     public static Triple triple(NodeTable nodeTable, NodeId s, NodeId p, NodeId o) 
     {
@@ -72,12 +85,28 @@ public class TupleLib
     }
     
     @Deprecated
-    public static Triple triple(NodeTable nodeTable, Tuple<NodeId> tuple) 
+    public static Quad quad(NodeTable nodeTable, NodeId g, NodeId s, NodeId p, NodeId o) 
+    {
+        Node gNode = nodeTable.retrieveNodeByNodeId(g) ;
+        Node sNode = nodeTable.retrieveNodeByNodeId(s) ;
+        Node pNode = nodeTable.retrieveNodeByNodeId(p) ;
+        Node oNode = nodeTable.retrieveNodeByNodeId(o) ;
+        return new Quad(gNode, sNode, pNode, oNode) ;
+    }
+
+    //@Deprecated
+    private static Triple triple(NodeTable nodeTable, Tuple<NodeId> tuple) 
     {
         return triple(nodeTable, tuple.get(0), tuple.get(1), tuple.get(2)) ;
     }
     
-    // ---- Tuples and Triples
+  //@Deprecated
+    private static Quad quad(NodeTable nodeTable, Tuple<NodeId> tuple) 
+    {
+        return quad(nodeTable, tuple.get(0), tuple.get(1), tuple.get(2), tuple.get(3)) ;
+    }
+    
+    // ---- Tuples, Triples and Quads
 
     /** Triple to Tuple, not remapped by a ColumnMap. */
     public static Tuple<NodeId> tuple(Triple t, NodeTable nodeTable)
@@ -92,6 +121,21 @@ public class TupleLib
         return new Tuple<NodeId>(x, y, z) ;  
     }
 
+    /** Quad to Tuple, not remapped by a ColumnMap. */
+    public static Tuple<NodeId> tuple(Quad t, NodeTable nodeTable)
+    {
+        Node g = t.getGraph() ;
+        Node s = t.getSubject() ;
+        Node p = t.getPredicate() ;
+        Node o = t.getObject() ;
+
+        NodeId gId = nodeTable.storeNode(g) ;
+        NodeId sId = nodeTable.storeNode(s) ;
+        NodeId pId = nodeTable.storeNode(p) ;
+        NodeId oId = nodeTable.storeNode(o) ;
+        
+        return new Tuple<NodeId>(gId, sId, pId, oId) ;  
+    }
     
     
     // ---- Tuples and Records
