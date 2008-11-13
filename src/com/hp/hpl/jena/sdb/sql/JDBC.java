@@ -109,7 +109,7 @@ public class JDBC
         if ( password == null )
             password = Access.getPassword() ;
         
-        if ( type.equals("mysql") || type.equals("postgresql") || type.equals("pgsql") )
+        if ( type.equals("mysql") )
         {
             String s = String.format("jdbc:%s://%s/%s", type, host, dbName) ;
             return s ;
@@ -135,7 +135,7 @@ public class JDBC
             return s ;
         }
 
-        if ( type.startsWith("pgsql"))
+        if ( type.startsWith("pgsql") || type.equals("postgresql") )
         {
         	String s = String.format("jdbc:%s://%s/%s", type, host, dbName) ;
         	return s ;
