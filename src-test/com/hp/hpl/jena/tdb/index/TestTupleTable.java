@@ -16,7 +16,7 @@ import lib.Tuple;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 import com.hp.hpl.jena.tdb.index.TupleIndex;
 import com.hp.hpl.jena.tdb.index.TupleTable;
-import com.hp.hpl.jena.tdb.pgraph.NodeId;
+import com.hp.hpl.jena.tdb.store.NodeId;
 import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
 import org.junit.Test;

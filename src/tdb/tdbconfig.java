@@ -15,10 +15,11 @@ import arq.cmdline.ModVersion;
 
 import com.hp.hpl.jena.sparql.sse.Item;
 import com.hp.hpl.jena.sparql.util.Utils;
+
 import com.hp.hpl.jena.tdb.TDB;
 import com.hp.hpl.jena.tdb.base.objectfile.ObjectFileDisk;
-import com.hp.hpl.jena.tdb.pgraph.GraphTDB;
 import com.hp.hpl.jena.tdb.solver.stats.StatsCollector;
+import com.hp.hpl.jena.tdb.store.GraphTDB;
 
 /** Tools to manage a TDB store.  Subcommand based. */
 public class tdbconfig extends CmdSub

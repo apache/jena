@@ -8,6 +8,10 @@ package tdb;
 
 import java.util.List;
 
+import lib.Log;
+
+import com.hp.hpl.jena.graph.Graph;
+
 import tdb.cmdline.CmdTDB;
 import arq.cmd.CmdUtils;
 import arq.cmdline.ArgDecl;
@@ -15,6 +19,9 @@ import arq.cmdline.ArgDecl;
 import com.hp.hpl.jena.query.ARQ;
 
 import com.hp.hpl.jena.tdb.pgraph.BulkLoader1;
+import com.hp.hpl.jena.tdb.pgraph.PGraph;
+import com.hp.hpl.jena.tdb.store.BulkLoader2;
+import com.hp.hpl.jena.tdb.store.GraphTDB;
 
 public class tdbloader extends CmdTDB
 {
@@ -74,10 +81,17 @@ public class tdbloader extends CmdTDB
         if ( urls.size() == 0 )
             urls.add("-") ;
         
-        BulkLoader1 loader = new BulkLoader1(getGraph(), timing, doInParallel, doIncremental, generateStats) ;
+        Graph graph = getGraph() ;
+        if ( graph instanceof PGraph )
+        {
+            Log.warn(this, "Old PGraph") ;
+            BulkLoader1 loader = new BulkLoader1((PGraph)graph, timing, doInParallel, doIncremental, generateStats) ;
+            loader.load(urls) ;
+            return ;
+        }
+        BulkLoader2 loader = new BulkLoader2((GraphTDB)graph, timing, doInParallel, doIncremental, generateStats) ;
         loader.load(urls) ;
     }
-
 }
 
 /*

@@ -30,8 +30,8 @@ import com.hp.hpl.jena.sparql.core.assembler.DatasetAssemblerVocab;
 import com.hp.hpl.jena.query.*;
 
 import com.hp.hpl.jena.tdb.TDBFactory;
-import com.hp.hpl.jena.tdb.pgraph.GraphTDB;
-import com.hp.hpl.jena.tdb.pgraph.assembler.PGraphAssemblerVocab;
+import com.hp.hpl.jena.tdb.assembler.VocabTDB;
+import com.hp.hpl.jena.tdb.pgraph.PGraph;
 
 public class ModTDBDataset extends ModDataset
 {
@@ -92,7 +92,7 @@ public class ModTDBDataset extends ModDataset
         {
             Dataset thing = null ;
             try {
-                thing = (Dataset)AssemblerUtils.build( modAssembler.getAssemblerFile(), PGraphAssemblerVocab.DatasetTDB) ;
+                thing = (Dataset)AssemblerUtils.build( modAssembler.getAssemblerFile(), VocabTDB.DatasetTDB) ;
                 if ( thing == null )
                     // Should use assembler inheritance but how do we assert the subclass relationship in a program. 
                     thing = (Dataset)AssemblerUtils.build( modAssembler.getAssemblerFile(), DatasetAssemblerVocab.tDataset) ;
@@ -111,7 +111,7 @@ public class ModTDBDataset extends ModDataset
         // No assembler - use location (a single graph).
         Model model = TDBFactory.createModel(modAssembler.getLocation()) ;
         // Check of type.
-        GraphTDB graph = (GraphTDB)model.getGraph() ;
+        PGraph graph = (PGraph)model.getGraph() ;
         return DatasetFactory.create(model) ;
     }
     

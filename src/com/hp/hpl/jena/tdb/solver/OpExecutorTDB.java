@@ -25,7 +25,7 @@ import com.hp.hpl.jena.sparql.engine.main.OpExecutor;
 import com.hp.hpl.jena.sparql.engine.main.OpExecutorFactory;
 import com.hp.hpl.jena.sparql.engine.main.QC;
 import com.hp.hpl.jena.sparql.expr.ExprList;
-import com.hp.hpl.jena.tdb.pgraph.GraphTDB;
+import com.hp.hpl.jena.tdb.pgraph.PGraph;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderProc;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
 import com.hp.hpl.jena.tdb.sys.SystemTDB;
@@ -65,7 +65,7 @@ public class OpExecutorTDB extends OpExecutor
     public OpExecutorTDB(ExecutionContext execCxt)
     {
         super(execCxt) ;
-        isForTDB = (execCxt.getActiveGraph() instanceof GraphTDB) ;
+        isForTDB = (execCxt.getActiveGraph() instanceof PGraph) ;
     }
 
     @Override
@@ -73,7 +73,7 @@ public class OpExecutorTDB extends OpExecutor
     {
         if ( ! isForTDB )
             return super.execute(opBGP, input) ;
-        GraphTDB graph = (GraphTDB)execCxt.getActiveGraph() ;
+        PGraph graph = (PGraph)execCxt.getActiveGraph() ;
         return optimizeExecute(graph, input, opBGP.getPattern(), null, execCxt) ;
     }
     
@@ -85,7 +85,7 @@ public class OpExecutorTDB extends OpExecutor
         
         if ( executeNow.equals(opLabel.getObject()) )
         {
-            GraphTDB graph = (GraphTDB)execCxt.getActiveGraph() ;
+            PGraph graph = (PGraph)execCxt.getActiveGraph() ;
             OpBGP opBGP = (OpBGP)opLabel.getSubOp() ; 
             return SolverLib.execute(graph, opBGP.getPattern(), input, execCxt) ;
         }
@@ -103,13 +103,13 @@ public class OpExecutorTDB extends OpExecutor
             return super.execute(opFilter, input) ;
 
         OpBGP opBGP = (OpBGP)opFilter.getSubOp() ;
-        GraphTDB graph = (GraphTDB)execCxt.getActiveGraph() ;
+        PGraph graph = (PGraph)execCxt.getActiveGraph() ;
         
         return optimizeExecute(graph, input, opBGP.getPattern(), opFilter.getExprs(), execCxt) ;
     }
 
     // SolverLib??
-    public static QueryIterator optimizeExecute(GraphTDB graph, QueryIterator input, BasicPattern pattern, 
+    public static QueryIterator optimizeExecute(PGraph graph, QueryIterator input, BasicPattern pattern, 
                                                 ExprList exprs, ExecutionContext execCxt)
     {
         if ( ! input.hasNext() )
@@ -184,10 +184,10 @@ public class OpExecutorTDB extends OpExecutor
         @Override
         public QueryIterator execute(OpBGP opBGP, QueryIterator input)
         {
-            if ( ! (execCxt.getActiveGraph() instanceof GraphTDB) )
+            if ( ! (execCxt.getActiveGraph() instanceof PGraph) )
                 return super.execute(opBGP, input) ;
             // Log execution.
-            GraphTDB graph = (GraphTDB)execCxt.getActiveGraph() ;
+            PGraph graph = (PGraph)execCxt.getActiveGraph() ;
             return SolverLib.execute(graph, opBGP.getPattern(), input, execCxt) ;
         }
     }

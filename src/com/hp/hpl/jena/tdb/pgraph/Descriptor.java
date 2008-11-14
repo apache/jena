@@ -18,6 +18,7 @@ import com.hp.hpl.jena.tdb.base.record.Record;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 import com.hp.hpl.jena.tdb.lib.NodeLib;
 import com.hp.hpl.jena.tdb.lib.TupleLib;
+import com.hp.hpl.jena.tdb.store.NodeId;
 
 public class Descriptor
 {

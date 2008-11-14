@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.pgraph;
+package com.hp.hpl.jena.tdb.store;
 
 import junit.TestBase;
 import org.junit.Test;
@@ -13,6 +13,8 @@ import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.graph.Node;
 
 import com.hp.hpl.jena.sparql.sse.SSE;
+
+import com.hp.hpl.jena.tdb.store.NodeId;
 
 public class TestNodeId extends TestBase
 {

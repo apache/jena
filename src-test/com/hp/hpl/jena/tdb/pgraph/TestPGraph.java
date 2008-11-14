@@ -4,27 +4,58 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.pgraph.assembler;
+package com.hp.hpl.jena.tdb.pgraph;
 
-import com.hp.hpl.jena.rdf.model.Property;
-import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.rdf.model.ResourceFactory;
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
 
-public class Vocab
+import com.hp.hpl.jena.graph.Graph;
+
+import com.hp.hpl.jena.tdb.TDBFactory;
+import com.hp.hpl.jena.tdb.base.file.Location;
+import com.hp.hpl.jena.tdb.junit.AbstractTestGraph2;
+import com.hp.hpl.jena.tdb.junit.GraphLocation;
+import com.hp.hpl.jena.tdb.store.TS_Store;
+
+/** Programmatic tests on persistent graph */
+public class TestPGraph extends AbstractTestGraph2
 {
-    public static Resource type(String namespace, String localName)
-    { 
-        return ResourceFactory.createResource(namespace+localName) ;
+    static GraphLocation graphLocation = null ;
+    
+    @BeforeClass public static void beforeClass()
+    {
+        graphLocation = new GraphLocation(new Location(TS_Store.testArea), TDBFactory.pgraphFactory) ;
+        graphLocation.clearDirectory() ; 
+        graphLocation.createGraph() ;
     }
     
-    public static Resource resource(String namespace, String localName)
-    {
-        return ResourceFactory.createResource(namespace+localName) ;
+    @AfterClass public static void afterClass()
+    { 
+        graphLocation.releaseGraph() ;
+        graphLocation.clearDirectory() ;
     }
+    
 
-    public static Property property(String namespace, String localName)
+    Graph graph = null ;
+    @Before public void before()
+    { 
+        //graphLocation.clearGraph() ;
+        graphLocation.releaseGraph() ;
+        graphLocation.clearDirectory() ;
+        graphLocation.createGraph() ;
+        graph = graphLocation.getGraph() ;
+    }
+            
+            
+    @After public void after()   
+    { }
+    
+    @Override
+    protected Graph emptyGraph()
     {
-        return ResourceFactory.createProperty(namespace+localName) ;
+        return graph ;
     }
 }
 

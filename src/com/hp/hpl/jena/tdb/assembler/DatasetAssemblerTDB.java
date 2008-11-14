@@ -4,30 +4,40 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.pgraph;
+package com.hp.hpl.jena.tdb.assembler;
 
-import junit.framework.TestSuite;
-import org.junit.runner.RunWith;
-import org.junit.runners.AllTests;
+import static com.hp.hpl.jena.sparql.core.assembler.DatasetAssemblerVocab.pDefaultGraph;
+import static com.hp.hpl.jena.sparql.core.assembler.DatasetAssemblerVocab.pNamedGraph;
 
-import com.hp.hpl.jena.tdb.junit.TestFactoryTDB;
+import com.hp.hpl.jena.rdf.model.Resource;
 
-/** Scripted test generation */
+import com.hp.hpl.jena.assembler.Assembler;
+import com.hp.hpl.jena.assembler.Mode;
 
-@RunWith(AllTests.class)
-public class GraphTDBTestSuite extends TestSuite
+import com.hp.hpl.jena.sparql.core.assembler.DatasetAssembler;
+
+import com.hp.hpl.jena.tdb.TDB;
+import com.hp.hpl.jena.tdb.TDBException;
+
+public class DatasetAssemblerTDB extends DatasetAssembler
 {
-    public static String manifestMain = "testing/manifest.ttl" ;
+    DatasetAssembler a = new DatasetAssembler() ;
     
-    static public TestSuite suite() { return new GraphTDBTestSuite() ; }
-    
-    private GraphTDBTestSuite()
+    @Override
+    public Object open(Assembler a, Resource root, Mode mode)
     {
-        super("PGraph") ;
-        TestFactoryTDB.make(this, manifestMain) ;
+        // Just in case ... although we managed to get here so TDB.init was probably called.
+        TDB.init() ;
+        if ( root.hasProperty(pDefaultGraph) || root.hasProperty(pNamedGraph) )
+        {
+            // Check no other vocabulary used.
+            // Regular description,using dfeaultGraph /namedgraph
+            return super.open(a, root, mode) ;
+        }
+
+        throw new TDBException("No description of TDB resources found: "+root) ;
     }
 
-    
 }
 
 /*

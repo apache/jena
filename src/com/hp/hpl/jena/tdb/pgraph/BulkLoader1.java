@@ -34,6 +34,7 @@ import com.hp.hpl.jena.sparql.util.graph.GraphListenerBase;
 import com.hp.hpl.jena.sparql.util.graph.GraphLoadMonitor;
 import com.hp.hpl.jena.tdb.TDB;
 import com.hp.hpl.jena.tdb.solver.stats.StatsCollector;
+import com.hp.hpl.jena.tdb.store.NodeId;
 import com.hp.hpl.jena.tdb.sys.Names;
 import com.hp.hpl.jena.tdb.sys.SystemTDB;
 import com.hp.hpl.jena.util.FileManager;
@@ -44,7 +45,7 @@ import com.hp.hpl.jena.util.FileManager;
 
 public class BulkLoader1
 {
-    private GraphTDB graph ;
+    private PGraph graph ;
     private TripleTable1 tripleTable ;
     private Symbol symTesting = SystemTDB.allocSymbol("testing") ;
     
@@ -61,14 +62,14 @@ public class BulkLoader1
     private TripleIndex triplesOSP ;
     private Item statsItem = null ; 
 
-    public BulkLoader1(GraphTDB graph, boolean showProgress)
+    public BulkLoader1(PGraph graph, boolean showProgress)
     {
         this(graph, showProgress, false, false, false) ;
     }
     
     /** Create a bulkloader for a graph : showProgress/parallel/incremental/generate statistics */ 
 
-    public BulkLoader1(GraphTDB graph, boolean showProgress, boolean doInParallel, boolean doIncremental, boolean generateStats)
+    public BulkLoader1(PGraph graph, boolean showProgress, boolean doInParallel, boolean doIncremental, boolean generateStats)
     {
         this.graph = graph ;
         this.tripleTable = graph.getTripleTable() ;

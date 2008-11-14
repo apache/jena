@@ -10,7 +10,7 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.hp.hpl.jena.tdb.pgraph.NodeId;
+import com.hp.hpl.jena.tdb.store.NodeId;
 
 import lib.Bytes;
 

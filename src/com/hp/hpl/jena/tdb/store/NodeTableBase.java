@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.pgraph;
+package com.hp.hpl.jena.tdb.store;
 
 import static com.hp.hpl.jena.tdb.lib.NodeLib.decode;
 import static com.hp.hpl.jena.tdb.lib.NodeLib.encode;

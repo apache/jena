@@ -22,6 +22,7 @@ import com.hp.hpl.jena.tdb.base.record.Record;
 import com.hp.hpl.jena.tdb.index.IndexLib;
 import com.hp.hpl.jena.tdb.index.RangeIndex;
 import com.hp.hpl.jena.tdb.lib.TupleLib;
+import com.hp.hpl.jena.tdb.store.NodeId;
 
 
 /** A single index of triples.  Uses a Descriptor for SPO<->native order */

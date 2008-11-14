@@ -21,20 +21,23 @@ import com.hp.hpl.jena.sparql.vocabulary.TestManifestX;
 
 import com.hp.hpl.jena.query.Syntax;
 
+import com.hp.hpl.jena.tdb.TDBFactory;
+import com.hp.hpl.jena.tdb.TDBFactory.ImplFactory;
+
 public class TestFactoryTDB extends TestFactoryManifest
 {
     public static EarlReport report = null ;
     
-    public static void make(TestSuite ts, String manifestFile)
+    public static void make(TestSuite ts, String manifestFile, String testRootName, TDBFactory.ImplFactory factory)
     {
         // for each graph type do
-            TestSuite ts2 = makeSuite(manifestFile, null) ;
-            ts.addTest(ts2) ;
+        TestSuite ts2 = makeSuite(manifestFile, testRootName, factory) ;
+        ts.addTest(ts2) ;
     }
     
-    public static TestSuite makeSuite(String manifestFile, String testRootName)
+    public static TestSuite makeSuite(String manifestFile, String testRootName, TDBFactory.ImplFactory factory)
     {
-        TestFactoryTDB f = new TestFactoryTDB(testRootName) ;
+        TestFactoryTDB f = new TestFactoryTDB(testRootName, factory) ;
         TestSuite ts = f.process(manifestFile) ;
         if ( testRootName != null )
             ts.setName(testRootName+ts.getName()) ;
@@ -44,15 +47,19 @@ public class TestFactoryTDB extends TestFactoryManifest
     // Factory
     
     public String testRootName ;
+    private ImplFactory factory ;
 
-    public TestFactoryTDB(String testRootName)
+    public TestFactoryTDB(String testRootName, TDBFactory.ImplFactory factory)
     {
         this.testRootName = testRootName ;
+        this.factory = factory ;
     }
     
     @Override
     protected Test makeTest(Resource manifest, Resource entry, String testName, Resource action, Resource result)
     {
+        if ( testRootName != null )
+            testName = testRootName+testName ;
         
         TestItem testItem = new TestItem(entry, null, Syntax.syntaxARQ, DataFormat.langXML) ;
         
@@ -61,7 +68,7 @@ public class TestFactoryTDB extends TestFactoryManifest
         if ( testItem.getTestType() != null )
         {
             if ( testItem.getTestType().equals(TestManifestX.TestQuery) )
-                test = new QueryTestTDB(testName, report, testItem) ;
+                test = new QueryTestTDB(testName, report, testItem, factory) ;
             
             if ( testItem.getTestType().equals(TestManifestX.TestSurpressed) )
                 test = new SurpressedTest(testName, report, testItem) ;
@@ -71,7 +78,7 @@ public class TestFactoryTDB extends TestFactoryManifest
         }
         // Default 
         if ( test == null )
-            test = new QueryTestTDB(testName, report, testItem) ;
+            test = new QueryTestTDB(testName, report, testItem, factory) ;
 
         return test ;
     }

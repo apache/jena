@@ -33,16 +33,16 @@ import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
 import com.hp.hpl.jena.tdb.solver.reorder.Reorderable;
 import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
-public class Graph2 extends GraphBase implements Sync, Reorderable
+public class GraphTDB extends GraphBase implements Sync, Reorderable
 {
-    private static Logger log = LoggerFactory.getLogger(Graph2.class) ;
+    private static Logger log = LoggerFactory.getLogger(GraphTDB.class) ;
     
     private final TripleTable2 tripleTable ;
     private final GraphTDBQueryHandler queryHandler = new GraphTDBQueryHandler(this) ;
     private final TransactionHandler transactionHandler = null ; //new GraphTDBTransactionHandler(this) ;
     private final ReorderTransformation reorderTransform  ;
 
-    public Graph2(TripleTable2 tripleTable,
+    public GraphTDB(TripleTable2 tripleTable,
                   ReorderTransformation reorderTransform,
                   Location location)
     {

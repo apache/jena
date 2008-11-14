@@ -4,53 +4,59 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.pgraph.assembler;
+package com.hp.hpl.jena.tdb.assembler;
 
+import static com.hp.hpl.jena.sparql.util.graph.GraphUtils.exactlyOneProperty;
 import static com.hp.hpl.jena.sparql.util.graph.GraphUtils.getAsStringValue;
-import static com.hp.hpl.jena.tdb.pgraph.assembler.PGraphAssemblerVocab.pNodeData;
-import static com.hp.hpl.jena.tdb.pgraph.assembler.PGraphAssemblerVocab.pNodeIndex;
+import static com.hp.hpl.jena.tdb.assembler.VocabTDB.pDescription;
+import static com.hp.hpl.jena.tdb.assembler.VocabTDB.pFile;
 
 import com.hp.hpl.jena.rdf.model.Resource;
 
 import com.hp.hpl.jena.assembler.Assembler;
 import com.hp.hpl.jena.assembler.Mode;
 import com.hp.hpl.jena.assembler.assemblers.AssemblerBase;
-import com.hp.hpl.jena.assembler.exceptions.AssemblerException;
 
 import com.hp.hpl.jena.tdb.base.file.Location;
 import com.hp.hpl.jena.tdb.index.IndexBuilder;
-import com.hp.hpl.jena.tdb.pgraph.NodeTable;
-import com.hp.hpl.jena.tdb.pgraph.NodeTableIndex;
+import com.hp.hpl.jena.tdb.index.RangeIndex;
+import com.hp.hpl.jena.tdb.pgraph.PGraph;
+import com.hp.hpl.jena.tdb.pgraph.TripleIndex;
 
-public class NodeTableAssembler extends AssemblerBase //implements Assembler
+public class IndexAssembler extends AssemblerBase //implements Assembler
 {
-    // ???
+    // Subassembler of a PGraph assembler and is called directly.
     /* 
-     * [ :location "...." ] 
-     * or (TBD)
-     * [ :nodeIndex "..." ;
-     *   :nodeData "..." ;
-     * ]
+     * [ :description "SPO" ; :file "SPO.idx" ]
      */
     
-
     private Location location = null ;
-    
-    public NodeTableAssembler()                     { this.location = new Location(".") ; }
-    public NodeTableAssembler(Location location)    { this.location = location ; }
+    private IndexAssembler()                   { this.location = null ; }
+    private IndexAssembler(Location location)  { this.location = location ; }
     
     @Override
-    public NodeTable open(Assembler a, Resource root, Mode mode)
+    public TripleIndex open(Assembler a, Resource root, Mode mode)
     {
-        String location = getAsStringValue(root, pNodeIndex) ;
+        exactlyOneProperty(root, pDescription) ;
+        String desc = getAsStringValue(root, pDescription).toUpperCase() ;
+        exactlyOneProperty(root, pFile) ;
+        String filename = getAsStringValue(root, pFile) ;
+        
+        // Need to get location from the enclosing PGraphAssembler
         if ( location != null )
-            return new NodeTableIndex(IndexBuilder.get(), new Location(location)) ;
+            filename = location.absolute(filename) ;
         
-        String nodeIndex = getAsStringValue(root, pNodeIndex) ;
-        String nodeData = getAsStringValue(root, pNodeData) ;
-        
-        throw new AssemblerException(root, "Split location index/data file not yet implemented") ; 
+        RangeIndex rIndex = IndexBuilder.createRangeIndex(new Location(filename), 
+                                                          desc, 
+                                                          PGraph.indexRecordFactory) ;
+        return new TripleIndex(desc, rIndex) ;
     }
+
+    public static RangeIndex rangeIndex(String filename, String name)
+    {
+        return IndexBuilder.createRangeIndex(new Location(filename), name, PGraph.indexRecordFactory) ;
+    }
+
 }
 
 /*

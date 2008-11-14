@@ -8,7 +8,7 @@ package com.hp.hpl.jena.tdb;
 
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.tdb.junit.AbstractTestGraph2;
-import com.hp.hpl.jena.tdb.pgraph.GraphTDBFactoryTest;
+import com.hp.hpl.jena.tdb.store.GraphTDBFactoryTest;
 
 public class TestGraphBPlusTreeMem2 extends AbstractTestGraph2
 {

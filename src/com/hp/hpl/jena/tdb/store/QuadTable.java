@@ -21,8 +21,6 @@ import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 import com.hp.hpl.jena.tdb.index.TupleIndex;
 import com.hp.hpl.jena.tdb.lib.Sync;
 import com.hp.hpl.jena.tdb.lib.TupleLib;
-import com.hp.hpl.jena.tdb.pgraph.NodeId;
-import com.hp.hpl.jena.tdb.pgraph.NodeTable;
 
 
 /** Quad table - a collection of TupleIndexes for 4-tuples

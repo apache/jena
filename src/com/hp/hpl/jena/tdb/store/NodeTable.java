@@ -4,21 +4,17 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb;
+package com.hp.hpl.jena.tdb.store;
 
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.tdb.junit.AbstractTestGraph2;
-import com.hp.hpl.jena.tdb.store.GraphTDBFactoryTest;
+import com.hp.hpl.jena.graph.Node;
 
-public class TestGraphBTreeMem2 extends AbstractTestGraph2
+public interface NodeTable
 {
-
-    @Override
-    protected Graph emptyGraph()
-    {
-        return GraphTDBFactoryTest.createBTreeMem() ;
-    }
-
+    NodeId storeNode(Node node) ;          // Store the node, reusing existing
+    NodeId nodeIdForNode(Node node) ;          // Look up node - do not create
+    Node retrieveNodeByNodeId(NodeId id) ;
+    void sync(boolean force) ;
+    void close() ;
 }
 
 /*

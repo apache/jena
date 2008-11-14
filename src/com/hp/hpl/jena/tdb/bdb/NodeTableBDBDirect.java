@@ -17,8 +17,8 @@ import com.hp.hpl.jena.graph.Node;
 
 import com.hp.hpl.jena.tdb.TDBException;
 import com.hp.hpl.jena.tdb.lib.NodeLib;
-import com.hp.hpl.jena.tdb.pgraph.NodeId;
-import com.hp.hpl.jena.tdb.pgraph.NodeTable;
+import com.hp.hpl.jena.tdb.store.NodeId;
+import com.hp.hpl.jena.tdb.store.NodeTable;
 import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
 

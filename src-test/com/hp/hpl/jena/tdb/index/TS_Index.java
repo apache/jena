@@ -9,7 +9,6 @@ package com.hp.hpl.jena.tdb.index;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
-import com.hp.hpl.jena.tdb.base.buffer.TestPtrBuffer;
 import com.hp.hpl.jena.tdb.index.bplustree.TestBPTreeRecords;
 import com.hp.hpl.jena.tdb.index.bplustree.TestBPlusTree;
 import com.hp.hpl.jena.tdb.index.btree.TestBTree;
@@ -19,15 +18,17 @@ import com.hp.hpl.jena.tdb.index.ext.TestExtHash;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
-    TestPtrBuffer.class,
+    
     TestBTree.class,
     TestBTreeLong.class,
     TestBPlusTree.class,
     TestBPTreeRecords.class,
     TestExtHash.class,
+    
     TestTupleIndex.class,
     TestTupleTable.class
 } )
+
 public class TS_Index
 { }
 

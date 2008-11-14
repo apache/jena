@@ -18,7 +18,7 @@ import com.hp.hpl.jena.tdb.TDBException;
 import com.hp.hpl.jena.tdb.base.file.Location;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 import com.hp.hpl.jena.tdb.lib.Sync;
-import com.hp.hpl.jena.tdb.pgraph.NodeId;
+import com.hp.hpl.jena.tdb.store.NodeId;
 
 /** A TupleTable is a set of TupleIndexes.  The first TupleIndex is the "primary" index and must exist */
 public class TupleTable implements Sync, Closeable

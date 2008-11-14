@@ -41,13 +41,13 @@ import com.hp.hpl.jena.tdb.base.record.Record;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 import com.hp.hpl.jena.tdb.index.Index;
 import com.hp.hpl.jena.tdb.index.factories.IndexFactoryExtHash;
-import com.hp.hpl.jena.tdb.pgraph.GraphTDB;
+import com.hp.hpl.jena.tdb.pgraph.PGraph;
 import com.hp.hpl.jena.tdb.solver.StageGeneratorGeneric;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderLib;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
 import com.hp.hpl.jena.tdb.store.BulkLoader2;
 import com.hp.hpl.jena.tdb.store.FactoryTDB2;
-import com.hp.hpl.jena.tdb.store.Graph2;
+import com.hp.hpl.jena.tdb.store.GraphTDB;
 import com.hp.hpl.jena.tdb.sys.SystemTDB;
 import com.hp.hpl.jena.util.FileManager;
 
@@ -73,7 +73,7 @@ public class Run
         {
             FactoryTDB2.enable() ;
             FileOps.clearDirectory("DB") ;
-            Graph2 g = (Graph2)TDBFactory.createGraph(new Location("DB")) ;
+            GraphTDB g = (GraphTDB)TDBFactory.createGraph(new Location("DB")) ;
             
             //Graph2 g = (Graph2)TDBFactory.createGraph() ;
 
@@ -84,7 +84,7 @@ public class Run
             System.exit(0) ;
         }
 
-        Graph g = (Graph2)TDBFactory.createGraph() ;
+        Graph g = (GraphTDB)TDBFactory.createGraph() ;
         Model m = ModelFactory.createModelForGraph(g) ;
         FileManager.get().readModel(m, "D.ttl") ;
         
@@ -331,7 +331,7 @@ public class Run
         {  
             System.out.println("**** Load data") ;
             FileManager.get().readModel(model, "D.ttl") ;
-            ((GraphTDB)graph).sync(true) ;
+            ((PGraph)graph).sync(true) ;
             System.out.println("Size = "+model.size()) ;
         }
         query("SELECT * { ?s ?p ?o }", model) ;

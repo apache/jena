@@ -12,18 +12,20 @@ import com.hp.hpl.jena.tdb.base.file.Location;
 import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile;
 import com.hp.hpl.jena.tdb.bdb.NodeTableBDB;
 import com.hp.hpl.jena.tdb.bdb.SetupBDB;
+import com.hp.hpl.jena.tdb.store.NodeTable;
+
 import com.sleepycat.je.Database;
 import com.sleepycat.je.DatabaseException;
 import com.sleepycat.je.Transaction;
 
 
 /** Jena persistent graph implemented using BDB (Java Edition).  Node storage using an external file. */
-public class GraphBDB extends GraphTDB
+public class GraphBDB extends PGraph
 {
     private Transaction txn = null ;
     private SetupBDB config ;
  
-    public static GraphTDB create(String dirname) { return new GraphBDB(dirname) ; }
+    public static PGraph create(String dirname) { return new GraphBDB(dirname) ; }
     
     private GraphBDB(String dirname)
     {

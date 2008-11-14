@@ -35,9 +35,9 @@ import com.hp.hpl.jena.sparql.util.FmtUtils;
 
 import com.hp.hpl.jena.tdb.TDBException;
 import com.hp.hpl.jena.tdb.base.record.Record;
-import com.hp.hpl.jena.tdb.pgraph.Hash;
-import com.hp.hpl.jena.tdb.pgraph.NodeId;
-import com.hp.hpl.jena.tdb.pgraph.NodeType;
+import com.hp.hpl.jena.tdb.store.Hash;
+import com.hp.hpl.jena.tdb.store.NodeId;
+import com.hp.hpl.jena.tdb.store.NodeType;
 
 
 public class NodeLib

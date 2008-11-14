@@ -6,16 +6,18 @@
 
 package com.hp.hpl.jena.tdb.pgraph;
 
-import com.hp.hpl.jena.graph.Node;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
-public interface NodeTable
-{
-    NodeId storeNode(Node node) ;          // Store the node, reusing existing
-    NodeId nodeIdForNode(Node node) ;          // Look up node - do not create
-    Node retrieveNodeByNodeId(NodeId id) ;
-    void sync(boolean force) ;
-    void close() ;
-}
+@RunWith(Suite.class)
+@Suite.SuiteClasses( {
+    // Old PGraph
+    TestPGraph.class,            // Basic graph tests
+    PGraphTestSuite.class        // Scripted tests
+})
+
+public class TS_PGraph
+{ }
 
 /*
  * (c) Copyright 2008 Hewlett-Packard Development Company, LP

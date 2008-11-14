@@ -4,42 +4,61 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.pgraph;
+package com.hp.hpl.jena.tdb.store;
 
-import static com.hp.hpl.jena.tdb.sys.SystemTDB.Node2NodeIdCacheSize;
-import static com.hp.hpl.jena.tdb.sys.SystemTDB.NodeId2NodeCacheSize;
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
 
-import com.hp.hpl.jena.tdb.base.file.FileFactory;
+import com.hp.hpl.jena.graph.Graph;
+
+import com.hp.hpl.jena.tdb.TDBFactory;
 import com.hp.hpl.jena.tdb.base.file.Location;
-import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile;
-import com.hp.hpl.jena.tdb.base.objectfile.ObjectFileMem;
-import com.hp.hpl.jena.tdb.index.Index;
-import com.hp.hpl.jena.tdb.index.IndexBuilder;
-import com.hp.hpl.jena.tdb.sys.Names;
+import com.hp.hpl.jena.tdb.junit.AbstractTestGraph2;
+import com.hp.hpl.jena.tdb.junit.GraphLocation;
+import com.hp.hpl.jena.tdb.store.TS_Store;
 
-public class NodeTableIndex extends NodeTableBase
+/** Programmatic tests on persistent graph */
+public class TestGraphTDB extends AbstractTestGraph2
 {
-    // Disk version
-    public NodeTableIndex(IndexBuilder factory, Location loc)
+    static GraphLocation graphLocation = null ;
+    
+    @BeforeClass public static void beforeClass()
     {
-        super() ;
-        Index nodeToId = factory.newIndex(loc, GraphTDB.nodeRecordFactory, Names.indexNode2Id) ;
-            
-        // Data file.
-        ObjectFile objects = FileFactory.createObjectFileDisk(loc.getPath(Names.nodesData));
-        init(nodeToId, objects, Node2NodeIdCacheSize, NodeId2NodeCacheSize) ;
+        graphLocation = new GraphLocation(new Location(TS_Store.testArea), TDBFactory.stdFactory) ;
+        graphLocation.clearDirectory() ; 
+        graphLocation.createGraph() ;
     }
     
-    // Memory version - testing.
-    public NodeTableIndex(IndexBuilder factory)
+    @AfterClass public static void afterClass()
+    { 
+        graphLocation.releaseGraph() ;
+        graphLocation.clearDirectory() ;
+    }
+    
+
+    Graph graph = null ;
+    @Before public void before()
+    { 
+        //graphLocation.clearGraph() ;
+        graphLocation.releaseGraph() ;
+        graphLocation.clearDirectory() ;
+        graphLocation.createGraph() ;
+        graph = graphLocation.getGraph() ;
+    }
+            
+            
+    @After public void after()   
+    { }
+    
+    @Override
+    protected Graph emptyGraph()
     {
-        super() ;
-        Index nodeToId = factory.newIndex(null, GraphTDB.nodeRecordFactory, Names.indexNode2Id) ;
-        
-        ObjectFile objects = new ObjectFileMem() ;
-        init(nodeToId, objects, 100, 100) ;
+        return graph ;
     }
 }
+
 /*
  * (c) Copyright 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.

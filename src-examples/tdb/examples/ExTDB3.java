@@ -18,7 +18,7 @@ import com.hp.hpl.jena.sparql.core.assembler.DatasetAssemblerVocab;
 import com.hp.hpl.jena.sparql.util.TypeNotUniqueException;
 import com.hp.hpl.jena.sparql.util.graph.GraphUtils;
 
-import com.hp.hpl.jena.tdb.pgraph.assembler.PGraphAssemblerVocab;
+import com.hp.hpl.jena.tdb.assembler.VocabTDB;
 
 /** 
  * Examples of finding an asembler for a TDB model in a larger collection
@@ -46,7 +46,7 @@ public class ExTDB3
             // Alternatively, look for the a single resource of the right type. 
             try {
                 // Find the required description - the file can contain descriptions of many different types.
-                root = GraphUtils.findRootByType(spec, PGraphAssemblerVocab.PGraphType) ;
+                root = GraphUtils.findRootByType(spec, VocabTDB.typeGraphTDB) ;
                 if ( root == null )
                     throw new JenaException("Failed to find a suitable root") ;
             } catch (TypeNotUniqueException ex)

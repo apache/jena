@@ -11,10 +11,17 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
-    TestTripleTable.class
+    TestNodeId.class,
+    TestTripleTable.class,
+    TestGraphTDB.class,
+    GraphTDBTestSuite.class
 } )
 public class TS_Store
-{ }
+{ 
+    public static final String testArea = "tmp/testing" ;
+}
+
+
 
 
 /*

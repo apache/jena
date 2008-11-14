@@ -8,7 +8,7 @@ package com.hp.hpl.jena.tdb.base.objectfile;
 
 import java.util.List;
 
-import com.hp.hpl.jena.tdb.pgraph.NodeId;
+import com.hp.hpl.jena.tdb.store.NodeId;
 
 /** A file for writing serialized objects to
  *  The file is currently "read/append"

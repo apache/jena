@@ -10,10 +10,12 @@ import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.sparql.core.assembler.AssemblerUtils;
+
+import com.hp.hpl.jena.tdb.assembler.VocabTDB;
 import com.hp.hpl.jena.tdb.base.file.Location;
-import com.hp.hpl.jena.tdb.pgraph.GraphTDB;
-import com.hp.hpl.jena.tdb.pgraph.GraphTDBFactory;
-import com.hp.hpl.jena.tdb.pgraph.assembler.PGraphAssemblerVocab;
+import com.hp.hpl.jena.tdb.store.FactoryTDB2;
+//import com.hp.hpl.jena.tdb.pgraph.GraphTDB;
+import com.hp.hpl.jena.tdb.pgraph.PGraphFactory;
 
 public class TDBFactory
 {
@@ -28,22 +30,39 @@ public class TDBFactory
 
     static ImplFactory factory = null ;
 
-    // Standard implementation factory
-    static ImplFactory stdFactory = new ImplFactory()
+    // PGraph (old) implementation factory
+    public static ImplFactory pgraphFactory = new ImplFactory()
     {
         @Override
         public Graph createGraph()
         {
-            return GraphTDBFactory.createMem() ;
+            return PGraphFactory.createMem() ;
         }
     
         @Override
         public Graph createGraph(Location loc)
         {
-            return GraphTDBFactory.create(loc) ;
+            return PGraphFactory.create(loc) ;
         }
     };
 
+    // Standard implementation factory
+    public static ImplFactory stdFactory = new ImplFactory()
+    {
+        @Override
+        public Graph createGraph()
+        {
+            return FactoryTDB2.createGraphMem() ;
+        }
+    
+        @Override
+        public Graph createGraph(Location loc)
+        {
+            return FactoryTDB2.createGraph(loc) ;
+        }
+    };
+
+    
     static { 
         TDB.init(); 
         setImplFactory(stdFactory) ;
@@ -52,14 +71,14 @@ public class TDBFactory
     /** Read the file and assembler a model, of type TDB persistent graph */ 
     public static Model assembleModel(String assemblerFile)
     {
-        return (Model)AssemblerUtils.build(assemblerFile, PGraphAssemblerVocab.PGraphType) ;
+        return (Model)AssemblerUtils.build(assemblerFile, VocabTDB.typeGraphTDB) ;
     }
     
     /** Read the file and assembler a model, of type TDB persistent graph */ 
     public static Graph assembleGraph(String assemblerFile)
     {
         Model m = assembleModel(assemblerFile) ;
-        Graph g = (GraphTDB)m.getGraph() ;
+        Graph g = m.getGraph() ;
         return g ;
     }
 

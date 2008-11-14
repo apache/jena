@@ -33,6 +33,7 @@ import com.hp.hpl.jena.tdb.graph.UpdateListener;
 import com.hp.hpl.jena.tdb.lib.Sync;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
 import com.hp.hpl.jena.tdb.solver.reorder.Reorderable;
+import com.hp.hpl.jena.tdb.store.NodeTable;
 import com.hp.hpl.jena.tdb.sys.SystemTDB;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 import com.hp.hpl.jena.util.iterator.NiceIterator;
@@ -42,9 +43,9 @@ import com.hp.hpl.jena.util.iterator.NiceIterator;
  *  with the code and data needed for ARQ and Jena. 
  */
 
-public class GraphTDB extends GraphBase implements Sync, Reorderable
+public class PGraph extends GraphBase implements Sync, Reorderable
 {
-    private static Logger log = LoggerFactory.getLogger(GraphTDB.class) ;
+    private static Logger log = LoggerFactory.getLogger(PGraph.class) ;
     
     // ---- Record factories
     public final static RecordFactory indexRecordFactory = new RecordFactory(LenIndexRecord, 0) ; 
@@ -56,9 +57,9 @@ public class GraphTDB extends GraphBase implements Sync, Reorderable
 
     private TripleTable1 tripleTable ;
 
-    protected GraphTDB() {}
+    protected PGraph() {}
     
-    public GraphTDB(TripleIndex spo, TripleIndex pos, TripleIndex osp, 
+    public PGraph(TripleIndex spo, TripleIndex pos, TripleIndex osp, 
                     NodeTable nodeTable, ReorderTransformation reorderTransform, Location location)
     {
         if ( spo == null )

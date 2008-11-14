@@ -25,8 +25,8 @@ import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.binding.BindingMap;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterSingleton;
-import com.hp.hpl.jena.tdb.pgraph.GraphTDB;
-import com.hp.hpl.jena.tdb.pgraph.NodeId;
+import com.hp.hpl.jena.tdb.pgraph.PGraph;
+import com.hp.hpl.jena.tdb.store.NodeId;
 
 
 /** Utilities used within the TDB BGP solver */
@@ -35,7 +35,7 @@ public class SolverLib
     private static Logger log = LoggerFactory.getLogger(SolverLib.class) ; 
     
     public interface ConvertNodeIDToNode { 
-        public Iterator<Binding> convert(GraphTDB graph, Iterator<BindingNodeId> iterBindingIds) ;
+        public Iterator<Binding> convert(PGraph graph, Iterator<BindingNodeId> iterBindingIds) ;
     }
     
     /** Change this to change the process of NodeId to Node conversion.  Normally it's this code, which 
@@ -43,13 +43,13 @@ public class SolverLib
      */
     public static ConvertNodeIDToNode converter = new ConvertNodeIDToNode(){
         @Override
-        public Iterator<Binding> convert(GraphTDB graph, Iterator<BindingNodeId> iterBindingIds)
+        public Iterator<Binding> convert(PGraph graph, Iterator<BindingNodeId> iterBindingIds)
         {
             return Iter.map(iterBindingIds, convToBinding(graph)) ;
         }} ;
     
     /** Non-reordering execution of a basic graph pattern, given a iterator of bindings as input */ 
-    public static QueryIterator execute(GraphTDB graph, BasicPattern pattern, QueryIterator input, ExecutionContext execCxt)
+    public static QueryIterator execute(PGraph graph, BasicPattern pattern, QueryIterator input, ExecutionContext execCxt)
     {
         // Don't log at level info here normally, OpExecutor is the right place.
         if ( log.isDebugEnabled() )
@@ -73,7 +73,7 @@ public class SolverLib
     }
 
     /** Non-reordering execution of a basic graph pattern, given a single binding as input */ 
-    public static QueryIterator execute(GraphTDB graph, BasicPattern pattern, Binding binding, ExecutionContext execCxt)
+    public static QueryIterator execute(PGraph graph, BasicPattern pattern, Binding binding, ExecutionContext execCxt)
     {
         QueryIterator input = new QueryIterSingleton(binding, execCxt) ;
         return execute(graph, pattern, input, execCxt) ;
@@ -92,14 +92,14 @@ public class SolverLib
 //        return new QueryIterTDB(iterBinding, null, execCxt) ;
     }
 
-    private static Iterator<BindingNodeId> solve(GraphTDB graph, Iterator<BindingNodeId> chain, 
+    private static Iterator<BindingNodeId> solve(PGraph graph, Iterator<BindingNodeId> chain, 
                                                  Triple triple, ExecutionContext execCxt)
     {
         return new StageMatchTriple(graph, chain, triple, execCxt) ;
     }
     
     // Transform : BindingNodeId ==> Binding
-    private static Transform<BindingNodeId, Binding> convToBinding(final GraphTDB graph)
+    private static Transform<BindingNodeId, Binding> convToBinding(final PGraph graph)
     {
         return new Transform<BindingNodeId, Binding>()
         {
@@ -125,7 +125,7 @@ public class SolverLib
     }
 
     // Transform : Binding ==> BindingNodeId
-    private static Transform<Binding, BindingNodeId> convFromBinding(final GraphTDB graph)
+    private static Transform<Binding, BindingNodeId> convFromBinding(final PGraph graph)
     {
         return new Transform<Binding, BindingNodeId>()
         {

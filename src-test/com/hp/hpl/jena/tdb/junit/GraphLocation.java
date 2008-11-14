@@ -19,6 +19,7 @@ import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.tdb.TDBFactory;
+import com.hp.hpl.jena.tdb.TDBFactory.ImplFactory;
 import com.hp.hpl.jena.tdb.base.file.Location;
 
 /** Manage a graph at a fixed location */
@@ -27,10 +28,12 @@ public class GraphLocation
     private Location loc = null ;
     private Graph graph = null ;
     private Model model = null ;
+    private ImplFactory factory ;
     
-    public GraphLocation(Location loc)
+    public GraphLocation(Location loc, TDBFactory.ImplFactory factory)
     {
         this.loc = loc ;
+        this.factory = factory ; 
     }
     
     public void clearDirectory() { FileOps.clearDirectory(loc.getDirectoryPath()) ; }
@@ -43,7 +46,7 @@ public class GraphLocation
     {
         if ( graph != null )
             throw new TDBTestException("Graph already in use") ;
-        graph = TDBFactory.createGraph(loc) ;
+        graph = factory.createGraph(loc) ;
         model = ModelFactory.createModelForGraph(graph) ;
         return graph ;
     }

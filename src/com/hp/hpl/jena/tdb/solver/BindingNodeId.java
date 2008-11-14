@@ -12,7 +12,8 @@ import java.util.Map;
 import lib.Map2;
 
 import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.tdb.pgraph.NodeId;
+
+import com.hp.hpl.jena.tdb.store.NodeId;
 
 /** Class for a Binding-like structure excep tit works on NodeIds, not on Nodes */  
 public class BindingNodeId extends Map2<Var, NodeId>

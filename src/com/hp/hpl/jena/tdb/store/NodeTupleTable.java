@@ -14,8 +14,6 @@ import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 import com.hp.hpl.jena.tdb.index.TupleIndex;
 import com.hp.hpl.jena.tdb.index.TupleTable;
 import com.hp.hpl.jena.tdb.lib.Sync;
-import com.hp.hpl.jena.tdb.pgraph.NodeId;
-import com.hp.hpl.jena.tdb.pgraph.NodeTable;
 
 
 /** Support code to group tuple table and node table */ 
@@ -69,6 +67,9 @@ public class NodeTupleTable implements Sync, Closeable
      * that directly manipulate internal structures. 
      */
     public final TupleTable getTupleTable() { return tupleTable ; }
+    
+    /** Return the node table */
+    public final NodeTable getNodeTable()   { return nodeTable ; }
     
     /** Return the location of for the indexes of this triple table.
      *  Usually, all the indexes are in the same location.   

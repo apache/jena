@@ -6,6 +6,7 @@
 
 package com.hp.hpl.jena.tdb.base.record;
 
+import com.hp.hpl.jena.tdb.base.buffer.TestPtrBuffer;
 import com.hp.hpl.jena.tdb.base.buffer.TestRecordBuffer;
 
 import org.junit.runner.RunWith;
@@ -14,6 +15,7 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
     TestRecord.class ,
+    TestPtrBuffer.class ,
     TestRecordBuffer.class 
 })
 

@@ -19,8 +19,8 @@ import com.hp.hpl.jena.sparql.util.Context;
 
 import com.hp.hpl.jena.query.ARQ;
 
+import com.hp.hpl.jena.tdb.assembler.VocabTDB;
 import com.hp.hpl.jena.tdb.base.loader.NTriplesReader2;
-import com.hp.hpl.jena.tdb.pgraph.assembler.PGraphAssemblerVocab;
 import com.hp.hpl.jena.tdb.solver.OpExecutorTDB;
 import com.hp.hpl.jena.tdb.solver.StageGeneratorDirectTDB;
 import com.hp.hpl.jena.tdb.solver.StageGeneratorGeneric;
@@ -69,7 +69,7 @@ public class TDB
         // TDB uses a custom OpCompiler.
         //QueryEngineTDB.register() ;
         
-        PGraphAssemblerVocab.init();
+        VocabTDB.init();
         
         // XXX Really need to sort this out!
         TDB.getContext().set(ARQ.filterPlacement, false) ;

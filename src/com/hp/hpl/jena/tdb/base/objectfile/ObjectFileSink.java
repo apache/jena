@@ -8,7 +8,7 @@ package com.hp.hpl.jena.tdb.base.objectfile;
 
 import java.util.List;
 
-import com.hp.hpl.jena.tdb.pgraph.NodeId;
+import com.hp.hpl.jena.tdb.store.NodeId;
 
 /** For testing only */
 public class ObjectFileSink implements ObjectFile

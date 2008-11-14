@@ -12,7 +12,7 @@ import org.junit.Test;
 import test.BaseTest;
 
 import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile;
-import com.hp.hpl.jena.tdb.pgraph.NodeId;
+import com.hp.hpl.jena.tdb.store.NodeId;
 
 public class TestObjectFile extends BaseTest
 {

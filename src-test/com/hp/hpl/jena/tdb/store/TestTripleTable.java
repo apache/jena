@@ -21,7 +21,7 @@ import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.sparql.sse.SSE;
 
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
-import com.hp.hpl.jena.tdb.pgraph.GraphTDB;
+import com.hp.hpl.jena.tdb.pgraph.PGraph;
 import com.hp.hpl.jena.tdb.store.TripleTable2;
 
 public class TestTripleTable extends BaseTest
@@ -31,7 +31,7 @@ public class TestTripleTable extends BaseTest
         Logger.getLogger("com.hp.hpl.jena.tdb.exec").setLevel(Level.WARN) ;
     }
     
-    static RecordFactory factory = GraphTDB.indexRecordFactory ;
+    static RecordFactory factory = PGraph.indexRecordFactory ;
 
 
     private static void add(TripleTable2 table, Node s, Node p, Node o)

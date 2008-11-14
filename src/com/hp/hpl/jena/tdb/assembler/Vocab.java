@@ -4,34 +4,28 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.pgraph;
+package com.hp.hpl.jena.tdb.assembler;
 
-import java.util.Arrays;
+import com.hp.hpl.jena.rdf.model.Property;
+import com.hp.hpl.jena.rdf.model.Resource;
+import com.hp.hpl.jena.rdf.model.ResourceFactory;
 
-/** Hash values. */ 
-public class Hash
+public class Vocab
 {
-    byte [] bytes ;
-    public Hash(int len) { bytes = new byte[len] ; }
-    public int getLen() { return bytes.length ; }
-    public byte [] getBytes() { return bytes ; }
-    
-    @Override
-    public int hashCode()
+    public static Resource type(String namespace, String localName)
     { 
-        return Arrays.hashCode(bytes) ;
+        return ResourceFactory.createResource(namespace+localName) ;
     }
     
-    @Override
-    public boolean equals(Object other)
+    public static Resource resource(String namespace, String localName)
     {
-        if ( this == other ) return true ;
-        if ( ! (other instanceof Hash) )
-            return false ;
-        boolean b = Arrays.equals(bytes, ((Hash)other).bytes) ;
-        return b ;
+        return ResourceFactory.createResource(namespace+localName) ;
     }
-    
+
+    public static Property property(String namespace, String localName)
+    {
+        return ResourceFactory.createProperty(namespace+localName) ;
+    }
 }
 
 /*

@@ -11,7 +11,7 @@ import java.util.Iterator;
 import lib.Tuple;
 
 import com.hp.hpl.jena.tdb.lib.TupleLib;
-import com.hp.hpl.jena.tdb.pgraph.NodeId;
+import com.hp.hpl.jena.tdb.store.NodeId;
 
 public class IndexLib
 {

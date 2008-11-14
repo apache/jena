@@ -9,7 +9,7 @@ package com.hp.hpl.jena.tdb;
 
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.tdb.junit.AbstractTestGraphNoRemove;
-import com.hp.hpl.jena.tdb.pgraph.GraphTDBFactoryTest;
+import com.hp.hpl.jena.tdb.store.GraphTDBFactoryTest;
 
 // Jena normal tests
 public class TestGraphBTreeMem extends AbstractTestGraphNoRemove

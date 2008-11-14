@@ -4,21 +4,31 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb;
+package com.hp.hpl.jena.tdb.store;
 
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.tdb.junit.AbstractTestGraph2;
-import com.hp.hpl.jena.tdb.store.GraphTDBFactoryTest;
+import junit.framework.TestSuite;
+import org.junit.runner.RunWith;
+import org.junit.runners.AllTests;
 
-public class TestGraphBTreeMem2 extends AbstractTestGraph2
+import com.hp.hpl.jena.tdb.TDBFactory;
+import com.hp.hpl.jena.tdb.junit.TestFactoryTDB;
+
+/** Scripted test generation */
+
+@RunWith(AllTests.class)
+public class GraphTDBTestSuite extends TestSuite
 {
-
-    @Override
-    protected Graph emptyGraph()
+    public static String manifestMain = "testing/manifest.ttl" ;
+    
+    static public TestSuite suite() { return new GraphTDBTestSuite() ; }
+    
+    private GraphTDBTestSuite()
     {
-        return GraphTDBFactoryTest.createBTreeMem() ;
+        super("GraphTDB") ;
+        TestFactoryTDB.make(this, manifestMain, "TDB-", TDBFactory.stdFactory) ;
     }
 
+    
 }
 
 /*

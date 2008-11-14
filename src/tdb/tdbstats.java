@@ -11,8 +11,8 @@ import arq.cmd.CmdUtils;
 
 import com.hp.hpl.jena.sparql.sse.Item;
 
-import com.hp.hpl.jena.tdb.pgraph.GraphTDB;
 import com.hp.hpl.jena.tdb.solver.stats.StatsCollector;
+import com.hp.hpl.jena.tdb.store.GraphTDB;
 
 
 public class tdbstats extends CmdTDB

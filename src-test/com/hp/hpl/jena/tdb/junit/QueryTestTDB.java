@@ -12,8 +12,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.rdf.model.Model;
+
+import com.hp.hpl.jena.tdb.TDBFactory;
+import com.hp.hpl.jena.tdb.TDBFactory.ImplFactory;
 import com.hp.hpl.jena.tdb.base.file.Location;
-import com.hp.hpl.jena.tdb.pgraph.TS_GraphTDB;
+import com.hp.hpl.jena.tdb.store.TS_Store;
+
 import com.hp.hpl.jena.util.FileManager;
 
 import com.hp.hpl.jena.sparql.engine.QueryEngineFactory;
@@ -37,6 +41,7 @@ public class QueryTestTDB extends EarlTestCase
 
     boolean skipThisTest = false ;
     TestItem item ;
+    private ImplFactory factory ;
  
     // Track what's currently loaded in the GraphLocation
     static GraphLocation graphLocation = null ;
@@ -44,24 +49,25 @@ public class QueryTestTDB extends EarlTestCase
     private static List<String> currentNamedGraphs = null ;
 
     // Old style (Junit3)
-    public QueryTestTDB(String testName, EarlReport report, TestItem item)
+    public QueryTestTDB(String testName, EarlReport report, TestItem item, TDBFactory.ImplFactory factory)
     {
         super(testName, item.getURI(), report) ;
         this.item = item ;
+        this.factory = factory ;
     }
     
     @Override public void setUp()
     {
-        if ( graphLocation == null )
+        //if ( graphLocation == null )
         {
-            graphLocation = new GraphLocation(new Location(TS_GraphTDB.testArea)) ;
+            graphLocation = new GraphLocation(new Location(TS_Store.testArea), factory) ;
             graphLocation.clearDirectory() ; 
             graphLocation.createGraph() ;
             model = graphLocation.getModel() ;
         }
     }
     
-    //@Override public void tearDown() {} 
+    @Override public void tearDown() { model.close() ; }
     
     public void setupData()
     {
@@ -80,7 +86,7 @@ public class QueryTestTDB extends EarlTestCase
         if ( current == null )
             throw new TDBTestException("No default graphs given") ;
 
-        graphLocation.clearGraph() ;
+        //graphLocation.clearGraph() ;
         
 //        List<Statement> stmts = new ArrayList<Statement>() ;
 //        StmtIterator sIter = model.listStatements() ;

@@ -28,8 +28,6 @@ import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 import com.hp.hpl.jena.tdb.index.IndexBuilder;
 import com.hp.hpl.jena.tdb.index.RangeIndex;
 import com.hp.hpl.jena.tdb.index.TupleIndex;
-import com.hp.hpl.jena.tdb.pgraph.NodeTable;
-import com.hp.hpl.jena.tdb.pgraph.NodeTableIndex;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderLib;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
 import com.hp.hpl.jena.tdb.sys.Names;
@@ -55,18 +53,18 @@ public class FactoryTDB2
      * @param transform
      * @return
      */
-    public static Graph2 createGraph(Location location)
+    public static GraphTDB createGraph(Location location)
     {
         TripleTable2 table = createTripleTable(IndexBuilder.get(), location, indexes) ;
         ReorderTransformation transform = chooseOptimizer(location) ;                                               
-        return new Graph2(table, transform, location) ;
+        return new GraphTDB(table, transform, location) ;
     }  
     
-    public static Graph2 createGraphMem()
+    public static GraphTDB createGraphMem()
     {
         TripleTable2 table = createTripleTableMem(indexes) ;
         ReorderTransformation transform = chooseOptimizer(null) ;
-        return new Graph2(table, transform, null) ;
+        return new GraphTDB(table, transform, null) ;
     }  
     
     public static Model createModel(Location location)
@@ -76,12 +74,22 @@ public class FactoryTDB2
     
     static TripleTable2 createTripleTableMem()
     { 
-        return createTripleTable(IndexBuilder.mem(), null, indexes) ;
+        return createTripleTableMem(indexes) ;
     }
      
     static TripleTable2 createTripleTableMem(String...descs)
     { 
-        return createTripleTable(IndexBuilder.mem(), null, descs) ;
+        IndexBuilder indexBuilder = IndexBuilder.mem();
+        TupleIndex indexes[] = new TupleIndex[descs.length] ;
+        int i = 0 ;
+        for ( String desc : descs )
+        {
+            indexes[i] = createTupleIndex(indexBuilder, null, desc) ;
+            i++ ;
+        }
+
+        NodeTable nodeTable = new NodeTableIndex(indexBuilder) ;
+        return new TripleTable2(indexes, indexRecordFactory, nodeTable, null) ;
     }
     
     private static TripleTable2 createTripleTable(IndexBuilder indexBuilder, Location location, String...descs)

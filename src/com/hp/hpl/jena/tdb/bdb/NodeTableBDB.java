@@ -17,9 +17,9 @@ import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.tdb.TDBException;
 import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile;
 import com.hp.hpl.jena.tdb.lib.NodeLib;
-import com.hp.hpl.jena.tdb.pgraph.Hash;
-import com.hp.hpl.jena.tdb.pgraph.NodeId;
-import com.hp.hpl.jena.tdb.pgraph.NodeTableBase;
+import com.hp.hpl.jena.tdb.store.Hash;
+import com.hp.hpl.jena.tdb.store.NodeId;
+import com.hp.hpl.jena.tdb.store.NodeTableBase;
 
 // OUT OF DATE
 

@@ -17,7 +17,7 @@ import com.hp.hpl.jena.tdb.base.block.BlockException;
 import com.hp.hpl.jena.tdb.base.file.FileBase;
 import com.hp.hpl.jena.tdb.base.file.FileException;
 import com.hp.hpl.jena.tdb.lib.StringAbbrev;
-import com.hp.hpl.jena.tdb.pgraph.NodeId;
+import com.hp.hpl.jena.tdb.store.NodeId;
 
 /** Controls the UTF encoder/decoder and is not limited to 64K byte encoded forms.
  * @see ObjectFileDisk_DataIO

@@ -14,7 +14,7 @@ import java.util.List;
 
 import com.hp.hpl.jena.tdb.base.block.BlockException;
 import com.hp.hpl.jena.tdb.base.file.FileException;
-import com.hp.hpl.jena.tdb.pgraph.NodeId;
+import com.hp.hpl.jena.tdb.store.NodeId;
 
 /** A file for writing serialized objects to disk, using DataInput/DataOuput
  * but that limits it to 64K bytes encoded forms. 

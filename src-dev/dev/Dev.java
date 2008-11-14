@@ -8,11 +8,8 @@ package dev;
 
 public class Dev
 {
-    
-    // --
-    //   The TripleTable, QuadTable.
-    // --
-    // The big switch over.  Keep old code for timing purposes.
+    // The switch over has happened!
+    // Scripted test slow?
 
     // Canonicalization - language tags.  NodeLib
     

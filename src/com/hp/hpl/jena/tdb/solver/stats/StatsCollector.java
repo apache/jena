@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import lib.Log;
 import lib.MapUtils;
 import lib.Tuple;
 
@@ -27,9 +28,13 @@ import com.hp.hpl.jena.sparql.sse.ItemList;
 import com.hp.hpl.jena.sparql.util.NodeFactory;
 import com.hp.hpl.jena.sparql.util.Utils;
 
-import com.hp.hpl.jena.tdb.pgraph.GraphTDB;
-import com.hp.hpl.jena.tdb.pgraph.NodeId;
+import com.hp.hpl.jena.tdb.index.TupleIndex;
+import com.hp.hpl.jena.tdb.pgraph.PGraph;
 import com.hp.hpl.jena.tdb.pgraph.TripleIndex;
+import com.hp.hpl.jena.tdb.store.GraphTDB;
+import com.hp.hpl.jena.tdb.store.NodeId;
+import com.hp.hpl.jena.tdb.store.NodeTable;
+
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 
 public class StatsCollector
@@ -93,7 +98,7 @@ public class StatsCollector
     }
     
     /** Gather statistics - faster for TDB */
-    public static Item gatherTDB(GraphTDB graph)
+    public static Item gatherTDB(PGraph graph)
     {
         long count = 0 ;
         Map<NodeId, Integer> predicateIds = new HashMap<NodeId, Integer>(1000) ;
@@ -107,16 +112,36 @@ public class StatsCollector
             MapUtils.increment(predicateIds, tuple.get(1)) ;
         }
         
-        return statsOutput(graph, predicateIds, count) ;
+        return statsOutput(graph.getTripleTable().getNodeTable(), predicateIds, count) ;
     }
         
+    /** Gather statistics - faster for TDB */
+    public static Item gatherTDB(GraphTDB graph)
+    {
+        long count = 0 ;
+        Map<NodeId, Integer> predicateIds = new HashMap<NodeId, Integer>(1000) ;
         
-    private static Item statsOutput(GraphTDB graph, Map<NodeId, Integer> predicateIds, long total)
+        TupleIndex index = graph.getTripleTable().getTupleTable().getIndex(0) ;
+        if ( ! index.getLabel().equals("SPO") )
+            Log.warn(StatsCollector.class, "May not be the right index: "+index.getLabel()) ;
+        
+        Iterator<Tuple<NodeId>> iter = index.all() ;
+        for ( ; iter.hasNext() ; )
+        {
+            Tuple<NodeId> tuple = iter.next(); 
+            count++ ;
+            MapUtils.increment(predicateIds, tuple.get(1)) ;
+        }
+        
+        return statsOutput(graph.getTripleTable().getNodeTable(), predicateIds, count) ;
+    }
+        
+    private static Item statsOutput(NodeTable nodeTable, Map<NodeId, Integer> predicateIds, long total)
     {
         Map<Node, Integer> predicates = new HashMap<Node, Integer>(1000) ;
         for ( NodeId p : predicateIds.keySet() )
         {
-            Node n = graph.getTripleTable().getNodeTable().retrieveNodeByNodeId(p) ;
+            Node n = nodeTable.retrieveNodeByNodeId(p) ;
             
             // Skip these - they just clog things up!
             if ( n.getURI().startsWith("http://www.w3.org/1999/02/22-rdf-syntax-ns#_") )

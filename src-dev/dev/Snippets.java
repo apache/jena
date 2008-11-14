@@ -17,7 +17,8 @@ import com.hp.hpl.jena.sparql.util.FmtUtils;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 import com.hp.hpl.jena.tdb.index.btree.BTreeParams;
 import com.hp.hpl.jena.tdb.lib.StringAbbrev;
-import com.hp.hpl.jena.tdb.pgraph.NodeId;
+import com.hp.hpl.jena.tdb.store.NodeId;
+
 import com.sleepycat.je.*;
 
 public class Snippets
