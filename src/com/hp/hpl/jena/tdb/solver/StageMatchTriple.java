@@ -17,18 +17,20 @@ import lib.Tuple;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
+
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
-import com.hp.hpl.jena.tdb.pgraph.PGraph;
+
+import com.hp.hpl.jena.tdb.store.GraphTDB;
 import com.hp.hpl.jena.tdb.store.NodeId;
 
 public class StageMatchTriple extends RepeatApplyIterator<BindingNodeId>
 {
-    private PGraph graph ;
+    private GraphTDB graph ;
     private Triple triple ;
     private ExecutionContext execCxt ;
 
-    public StageMatchTriple(PGraph graph, Iterator<BindingNodeId> input, Triple triple, ExecutionContext execCxt)
+    public StageMatchTriple(GraphTDB graph, Iterator<BindingNodeId> input, Triple triple, ExecutionContext execCxt)
     {
         super(input) ;
         this.graph = graph ; 
@@ -107,7 +109,7 @@ public class StageMatchTriple extends RepeatApplyIterator<BindingNodeId>
         return null ;
     }
 
-    private static NodeId idFor(PGraph graph, BindingNodeId input, Node node)
+    private static NodeId idFor(GraphTDB graph, BindingNodeId input, Node node)
     {
         if ( Var.isVar(node) )
         {

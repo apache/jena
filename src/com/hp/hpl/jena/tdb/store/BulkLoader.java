@@ -45,7 +45,7 @@ import com.hp.hpl.jena.util.FileManager;
  * Not efficent for small, incremental additions to a graph.  
  */
 
-public class BulkLoader2
+public class BulkLoader
 {
     private GraphTDB graph ;
     private Symbol symTesting = SystemTDB.allocSymbol("testing") ;
@@ -66,16 +66,16 @@ public class BulkLoader2
 //    private TripleIndex triplesPOS ;
 //    private TripleIndex triplesOSP ;
     private Item statsItem = null ;
-    private TripleTable2 tripleTable ; 
+    private TripleTable tripleTable ; 
 
-    public BulkLoader2(GraphTDB graph, boolean showProgress)
+    public BulkLoader(GraphTDB graph, boolean showProgress)
     {
         this(graph, showProgress, false, false, false) ;
     }
     
     /** Create a bulkloader for a graph : showProgress/parallel/incremental/generate statistics */ 
 
-    public BulkLoader2(GraphTDB graph, boolean showProgress, boolean doInParallel, boolean doIncremental, boolean generateStats)
+    public BulkLoader(GraphTDB graph, boolean showProgress, boolean doInParallel, boolean doIncremental, boolean generateStats)
     {
         this.graph = graph ;
         this.tripleTable = graph.getTripleTable() ;

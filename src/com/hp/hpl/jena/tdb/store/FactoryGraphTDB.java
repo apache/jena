@@ -34,12 +34,11 @@ import com.hp.hpl.jena.tdb.sys.Names;
 import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
 
-public class FactoryTDB2
+public class FactoryGraphTDB
 {
     // For this class
-    private static Logger log = LoggerFactory.getLogger(FactoryTDB2.class) ;
-    // Move to TDBFactoryGraph
-    
+    private static Logger log = LoggerFactory.getLogger(FactoryGraphTDB.class) ;
+
     private static String[] indexes = { "SPO", "POS", "OSP" } ;
     
     // ---- Record factories
@@ -55,14 +54,14 @@ public class FactoryTDB2
      */
     public static GraphTDB createGraph(Location location)
     {
-        TripleTable2 table = createTripleTable(IndexBuilder.get(), location, indexes) ;
+        TripleTable table = createTripleTable(IndexBuilder.get(), location, indexes) ;
         ReorderTransformation transform = chooseOptimizer(location) ;                                               
         return new GraphTDB(table, transform, location) ;
     }  
     
     public static GraphTDB createGraphMem()
     {
-        TripleTable2 table = createTripleTableMem(indexes) ;
+        TripleTable table = createTripleTableMem(indexes) ;
         ReorderTransformation transform = chooseOptimizer(null) ;
         return new GraphTDB(table, transform, null) ;
     }  
@@ -72,12 +71,12 @@ public class FactoryTDB2
         return ModelFactory.createModelForGraph(createGraph(location)) ;
     }
     
-    static TripleTable2 createTripleTableMem()
+    static TripleTable createTripleTableMem()
     { 
         return createTripleTableMem(indexes) ;
     }
      
-    static TripleTable2 createTripleTableMem(String...descs)
+    static TripleTable createTripleTableMem(String...descs)
     { 
         IndexBuilder indexBuilder = IndexBuilder.mem();
         TupleIndex indexes[] = new TupleIndex[descs.length] ;
@@ -89,10 +88,10 @@ public class FactoryTDB2
         }
 
         NodeTable nodeTable = new NodeTableIndex(indexBuilder) ;
-        return new TripleTable2(indexes, indexRecordFactory, nodeTable, null) ;
+        return new TripleTable(indexes, indexRecordFactory, nodeTable, null) ;
     }
     
-    private static TripleTable2 createTripleTable(IndexBuilder indexBuilder, Location location, String...descs)
+    private static TripleTable createTripleTable(IndexBuilder indexBuilder, Location location, String...descs)
     {
         TupleIndex indexes[] = new TupleIndex[descs.length] ;
         int i = 0 ;
@@ -103,7 +102,7 @@ public class FactoryTDB2
         }
 
         NodeTable nodeTable = new NodeTableIndex(indexBuilder, location) ;
-        return new TripleTable2(indexes, indexRecordFactory, nodeTable, location) ;
+        return new TripleTable(indexes, indexRecordFactory, nodeTable, location) ;
     }
 
     public static TupleIndex createTupleIndex(IndexBuilder indexBuilder, Location location, String desc)
@@ -160,13 +159,13 @@ public class FactoryTDB2
             @Override
             public Graph createGraph()
             {
-                return FactoryTDB2.createGraphMem() ;
+                return FactoryGraphTDB.createGraphMem() ;
             }
     
             @Override
             public Graph createGraph(Location loc)
             {
-                return FactoryTDB2.createGraph(loc) ;
+                return FactoryGraphTDB.createGraph(loc) ;
             }
         } ;
         TDBFactory.setImplFactory(f) ;

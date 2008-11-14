@@ -7,11 +7,13 @@
 package com.hp.hpl.jena.tdb.solver;
 
 import com.hp.hpl.jena.graph.Graph;
+
 import com.hp.hpl.jena.sparql.core.BasicPattern;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.main.StageGenerator;
-import com.hp.hpl.jena.tdb.pgraph.PGraph;
+
+import com.hp.hpl.jena.tdb.store.GraphTDB;
 
 /** Execute TDB requests directly -- no reordering */ 
 public class StageGeneratorDirectTDB implements StageGenerator
@@ -29,10 +31,10 @@ public class StageGeneratorDirectTDB implements StageGenerator
         // --- In case this isn't for TDB
         Graph g = execCxt.getActiveGraph() ;
         
-        if ( ! ( g instanceof PGraph ) )
+        if ( ! ( g instanceof GraphTDB ) )
             // Not us - bounce up the StageGenerator chain
             return above.execute(pattern, input, execCxt) ;
-        PGraph graph = (PGraph)g ;
+        GraphTDB graph = (GraphTDB)g ;
         return SolverLib.execute(graph, pattern, input, execCxt) ;
     }
 }

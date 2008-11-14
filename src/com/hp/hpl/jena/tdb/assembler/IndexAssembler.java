@@ -20,8 +20,8 @@ import com.hp.hpl.jena.assembler.assemblers.AssemblerBase;
 import com.hp.hpl.jena.tdb.base.file.Location;
 import com.hp.hpl.jena.tdb.index.IndexBuilder;
 import com.hp.hpl.jena.tdb.index.RangeIndex;
-import com.hp.hpl.jena.tdb.pgraph.PGraph;
 import com.hp.hpl.jena.tdb.pgraph.TripleIndex;
+import com.hp.hpl.jena.tdb.store.FactoryGraphTDB;
 
 public class IndexAssembler extends AssemblerBase //implements Assembler
 {
@@ -48,13 +48,13 @@ public class IndexAssembler extends AssemblerBase //implements Assembler
         
         RangeIndex rIndex = IndexBuilder.createRangeIndex(new Location(filename), 
                                                           desc, 
-                                                          PGraph.indexRecordFactory) ;
+                                                          FactoryGraphTDB.indexRecordFactory) ;
         return new TripleIndex(desc, rIndex) ;
     }
 
     public static RangeIndex rangeIndex(String filename, String name)
     {
-        return IndexBuilder.createRangeIndex(new Location(filename), name, PGraph.indexRecordFactory) ;
+        return IndexBuilder.createRangeIndex(new Location(filename), name, FactoryGraphTDB.indexRecordFactory) ;
     }
 
 }

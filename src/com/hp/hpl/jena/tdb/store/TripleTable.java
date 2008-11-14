@@ -30,9 +30,9 @@ import com.hp.hpl.jena.tdb.lib.TupleLib;
 *   The node table form can map to and from NodeIds (longs)
 */
 
-public class TripleTable2 extends NodeTupleTable implements Sync, Closeable
+public class TripleTable extends NodeTupleTable implements Sync, Closeable
 {
-    public TripleTable2(TupleIndex[] indexes, RecordFactory indexRecordFactory, NodeTable nodeTable, Location location)
+    public TripleTable(TupleIndex[] indexes, RecordFactory indexRecordFactory, NodeTable nodeTable, Location location)
     {
         super(3, indexes, indexRecordFactory, nodeTable, location) ;
     }
@@ -63,11 +63,20 @@ public class TripleTable2 extends NodeTupleTable implements Sync, Closeable
         if ( obj == NodeId.NodeDoesNotExist )
             return new NullIterator<Triple>() ;
 
-        Tuple<NodeId> tuple = new Tuple<NodeId>(subj, pred, obj) ;
-        Iterator<Tuple<NodeId>> _iter = tupleTable.find(tuple) ;
+        Iterator<Tuple<NodeId>> _iter = find(subj, pred, obj) ;
         Iterator<Triple> iter = TupleLib.convertToTriples(nodeTable, _iter) ;
         return iter ;
     }
+    
+    
+    /** Find by NodeId. */
+    public Iterator<Tuple<NodeId>> find(NodeId subj, NodeId pred, NodeId obj)
+    {
+        Tuple<NodeId> tuple = new Tuple<NodeId>(subj, pred, obj) ;
+        Iterator<Tuple<NodeId>> iter = tupleTable.find(tuple) ;
+        return iter ;
+    }
+
 }
 
 /*

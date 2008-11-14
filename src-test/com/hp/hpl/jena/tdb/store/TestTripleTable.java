@@ -6,7 +6,7 @@
 
 package com.hp.hpl.jena.tdb.store;
 
-import static com.hp.hpl.jena.tdb.store.FactoryTDB2.createTripleTableMem;
+import static com.hp.hpl.jena.tdb.store.FactoryGraphTDB.createTripleTableMem;
 
 import java.util.Iterator;
 
@@ -21,8 +21,6 @@ import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.sparql.sse.SSE;
 
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
-import com.hp.hpl.jena.tdb.pgraph.PGraph;
-import com.hp.hpl.jena.tdb.store.TripleTable2;
 
 public class TestTripleTable extends BaseTest
 {
@@ -31,22 +29,22 @@ public class TestTripleTable extends BaseTest
         Logger.getLogger("com.hp.hpl.jena.tdb.exec").setLevel(Level.WARN) ;
     }
     
-    static RecordFactory factory = PGraph.indexRecordFactory ;
+    static RecordFactory factory = FactoryGraphTDB.indexRecordFactory ;
 
 
-    private static void add(TripleTable2 table, Node s, Node p, Node o)
+    private static void add(TripleTable table, Node s, Node p, Node o)
     {
         table.add(new Triple(s,p,o)) ;
     }
 
-    private static void notMatch(TripleTable2 table, Node s, Node p, Node o)
+    private static void notMatch(TripleTable table, Node s, Node p, Node o)
     {
         Iterator<Triple> iter = table.find(s, p, o) ;
         assertNotNull(iter) ;
         assertFalse(iter.hasNext()) ;
     }
 
-    private static void match(TripleTable2 table, Node s, Node p, Node o)
+    private static void match(TripleTable table, Node s, Node p, Node o)
     {
         Iterator<Triple> iter = table.find(s, p, o) ;
         assertNotNull(iter) ;
@@ -54,7 +52,7 @@ public class TestTripleTable extends BaseTest
     }
     
     
-    private static void contains(TripleTable2 table, Node s, Node p, Node o)
+    private static void contains(TripleTable table, Node s, Node p, Node o)
     {
         Iterator<Triple> iter = table.find(s, p, o) ;
         assertNotNull(iter) ;
@@ -72,19 +70,19 @@ public class TestTripleTable extends BaseTest
     
     @Test public void createTripleTable1()
     { 
-        TripleTable2 table = createTripleTableMem() ; 
+        TripleTable table = createTripleTableMem() ; 
         notMatch(table, n1, n2, n3) ;
     }
     
     @Test public void add1()
     { 
-        TripleTable2 table = createTripleTableMem() ;
+        TripleTable table = createTripleTableMem() ;
         table.add(new Triple(n1,n2,n3)) ;
     }
     
     @Test public void find1()
     { 
-        TripleTable2 table = createTripleTableMem() ;
+        TripleTable table = createTripleTableMem() ;
         add(table, n1, n2, n3) ;
         contains(table, n1, n2, n3) ;
         notMatch(table, n1, n2, n4) ;
@@ -92,7 +90,7 @@ public class TestTripleTable extends BaseTest
 
     @Test public void find2()
     { 
-        TripleTable2 table = createTripleTableMem() ;
+        TripleTable table = createTripleTableMem() ;
         add(table, n1, n2, n3) ;
         add(table, n1, n2, n4) ;
         contains(table, n1, n2, n3) ;
@@ -101,7 +99,7 @@ public class TestTripleTable extends BaseTest
 
     @Test public void find3()
     { 
-        TripleTable2 table = createTripleTableMem() ;
+        TripleTable table = createTripleTableMem() ;
         add(table, n1, n2, n3) ;
         add(table, n4, n5, n6) ;
         contains(table, n1, n2, n3) ;
@@ -111,7 +109,7 @@ public class TestTripleTable extends BaseTest
 
     @Test public void find4()
     { 
-        TripleTable2 table = createTripleTableMem() ;
+        TripleTable table = createTripleTableMem() ;
         add(table, n1, n2, n3) ;
         add(table, n4, n5, n6) ;
         match(table, Node.ANY, n2, n3) ;

@@ -13,7 +13,7 @@ import com.hp.hpl.jena.sparql.core.assembler.AssemblerUtils;
 
 import com.hp.hpl.jena.tdb.assembler.VocabTDB;
 import com.hp.hpl.jena.tdb.base.file.Location;
-import com.hp.hpl.jena.tdb.store.FactoryTDB2;
+import com.hp.hpl.jena.tdb.store.FactoryGraphTDB;
 //import com.hp.hpl.jena.tdb.pgraph.GraphTDB;
 import com.hp.hpl.jena.tdb.pgraph.PGraphFactory;
 
@@ -52,13 +52,13 @@ public class TDBFactory
         @Override
         public Graph createGraph()
         {
-            return FactoryTDB2.createGraphMem() ;
+            return FactoryGraphTDB.createGraphMem() ;
         }
     
         @Override
         public Graph createGraph(Location loc)
         {
-            return FactoryTDB2.createGraph(loc) ;
+            return FactoryGraphTDB.createGraph(loc) ;
         }
     };
 

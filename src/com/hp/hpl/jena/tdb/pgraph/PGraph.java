@@ -15,28 +15,30 @@ import java.util.Iterator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.hp.hpl.jena.util.iterator.ExtendedIterator;
+import com.hp.hpl.jena.util.iterator.NiceIterator;
+
 import com.hp.hpl.jena.graph.Capabilities;
 import com.hp.hpl.jena.graph.TransactionHandler;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.graph.TripleMatch;
 import com.hp.hpl.jena.graph.impl.GraphBase;
 import com.hp.hpl.jena.graph.query.QueryHandler;
+
 import com.hp.hpl.jena.sparql.util.FmtUtils;
+
 import com.hp.hpl.jena.tdb.TDB;
 import com.hp.hpl.jena.tdb.TDBException;
 import com.hp.hpl.jena.tdb.base.file.Location;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 import com.hp.hpl.jena.tdb.graph.GraphSyncListener;
 import com.hp.hpl.jena.tdb.graph.GraphTDBQueryHandler;
-import com.hp.hpl.jena.tdb.graph.GraphTDBTransactionHandler;
 import com.hp.hpl.jena.tdb.graph.UpdateListener;
 import com.hp.hpl.jena.tdb.lib.Sync;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
 import com.hp.hpl.jena.tdb.solver.reorder.Reorderable;
 import com.hp.hpl.jena.tdb.store.NodeTable;
 import com.hp.hpl.jena.tdb.sys.SystemTDB;
-import com.hp.hpl.jena.util.iterator.ExtendedIterator;
-import com.hp.hpl.jena.util.iterator.NiceIterator;
 
 /** Machinary to implement the Jena interfaces.
  *  This wraps a "nodes and triples" style graph (in TripleTable)
@@ -48,11 +50,11 @@ public class PGraph extends GraphBase implements Sync, Reorderable
     private static Logger log = LoggerFactory.getLogger(PGraph.class) ;
     
     // ---- Record factories
-    public final static RecordFactory indexRecordFactory = new RecordFactory(LenIndexRecord, 0) ; 
-    public final static RecordFactory nodeRecordFactory = new RecordFactory(LenNodeHash, SizeOfNodeId) ;
+    final static RecordFactory indexRecordFactory = new RecordFactory(LenIndexRecord, 0) ; 
+    final static RecordFactory nodeRecordFactory = new RecordFactory(LenNodeHash, SizeOfNodeId) ;
     
     private final GraphTDBQueryHandler queryHandler = new GraphTDBQueryHandler(this) ;
-    private final TransactionHandler transactionHandler = new GraphTDBTransactionHandler(this) ;
+    private final TransactionHandler transactionHandler = null ; //new GraphTDBTransactionHandler(this) ;
     private ReorderTransformation reorderTransform = null ;
 
     private TripleTable1 tripleTable ;

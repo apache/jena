@@ -27,6 +27,7 @@ import com.hp.hpl.jena.tdb.TDB;
 import com.hp.hpl.jena.tdb.base.file.Location;
 import com.hp.hpl.jena.tdb.graph.GraphSyncListener;
 import com.hp.hpl.jena.tdb.graph.GraphTDBQueryHandler;
+import com.hp.hpl.jena.tdb.graph.GraphTDBTransactionHandler;
 import com.hp.hpl.jena.tdb.graph.UpdateListener;
 import com.hp.hpl.jena.tdb.lib.Sync;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
@@ -37,12 +38,12 @@ public class GraphTDB extends GraphBase implements Sync, Reorderable
 {
     private static Logger log = LoggerFactory.getLogger(GraphTDB.class) ;
     
-    private final TripleTable2 tripleTable ;
+    private final TripleTable tripleTable ;
     private final GraphTDBQueryHandler queryHandler = new GraphTDBQueryHandler(this) ;
-    private final TransactionHandler transactionHandler = null ; //new GraphTDBTransactionHandler(this) ;
+    private final TransactionHandler transactionHandler = new GraphTDBTransactionHandler(this) ;
     private final ReorderTransformation reorderTransform  ;
 
-    public GraphTDB(TripleTable2 tripleTable,
+    public GraphTDB(TripleTable tripleTable,
                   ReorderTransformation reorderTransform,
                   Location location)
     {
@@ -128,7 +129,7 @@ public class GraphTDB extends GraphBase implements Sync, Reorderable
     @Override
     public ReorderTransformation getReorderTransform()      { return reorderTransform ; }
     
-    public TripleTable2 getTripleTable()                    { return tripleTable   ; }
+    public TripleTable getTripleTable()                    { return tripleTable   ; }
     public Location     getLocation()                       { return tripleTable.getLocation() ; }
     
     @Override

@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import com.hp.hpl.jena.graph.impl.TransactionHandlerBase;
 
 import com.hp.hpl.jena.tdb.pgraph.PGraph;
+import com.hp.hpl.jena.tdb.store.GraphTDB;
 
 /** TDB does not support ACID transactions - it uses the SPARQL/Update events.  
  *  It (weakly) flushes if commit is called although it denies supporting transactions
@@ -20,9 +21,9 @@ import com.hp.hpl.jena.tdb.pgraph.PGraph;
 public class GraphTDBTransactionHandler extends TransactionHandlerBase //implements TransactionHandler 
 {
     private static Logger log = LoggerFactory.getLogger(PGraph.class) ;
-    private final PGraph graph ;
+    private final GraphTDB graph ;
 
-    public GraphTDBTransactionHandler(PGraph graph)
+    public GraphTDBTransactionHandler(GraphTDB graph)
     {
         this.graph = graph ;
     }

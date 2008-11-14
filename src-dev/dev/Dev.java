@@ -10,6 +10,7 @@ public class Dev
 {
     // The switch over has happened!
     // Scripted test slow?
+    //Execution of count() slow - failing to delay node instantiation?
 
     // Canonicalization - language tags.  NodeLib
     

@@ -20,7 +20,7 @@ import com.hp.hpl.jena.query.ARQ;
 
 import com.hp.hpl.jena.tdb.pgraph.BulkLoader1;
 import com.hp.hpl.jena.tdb.pgraph.PGraph;
-import com.hp.hpl.jena.tdb.store.BulkLoader2;
+import com.hp.hpl.jena.tdb.store.BulkLoader;
 import com.hp.hpl.jena.tdb.store.GraphTDB;
 
 public class tdbloader extends CmdTDB
@@ -89,7 +89,7 @@ public class tdbloader extends CmdTDB
             loader.load(urls) ;
             return ;
         }
-        BulkLoader2 loader = new BulkLoader2((GraphTDB)graph, timing, doInParallel, doIncremental, generateStats) ;
+        BulkLoader loader = new BulkLoader((GraphTDB)graph, timing, doInParallel, doIncremental, generateStats) ;
         loader.load(urls) ;
     }
 }
