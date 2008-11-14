@@ -12,7 +12,6 @@
 	<classpathentry kind="lib" path="lib/concurrent.jar"/>
 	<classpathentry kind="lib" path="lib/icu4j_3_4.jar"/>
 	<classpathentry kind="lib" path="lib/iri.jar"/>
-	<classpathentry kind="lib" path="lib/je-3.2.68.jar"/>
 	<classpathentry kind="lib" path="lib/jena.jar" sourcepath="jena-src.zip"/>
 	<classpathentry kind="lib" path="lib/jenatest.jar" sourcepath="jena-src.zip"/>
 	<classpathentry kind="lib" path="lib/json.jar"/>
@@ -27,5 +26,6 @@
 	<classpathentry kind="lib" path="lib/lucene-core-2.3.1.jar"/>
 	<classpathentry kind="lib" path="lib/arq.jar" sourcepath="arq-src.zip"/>
 	<classpathentry kind="lib" path="lib/arq-extra.jar" sourcepath="arq-src.zip"/>
+	<classpathentry kind="lib" path="lib/je-3.3.74.jar"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>

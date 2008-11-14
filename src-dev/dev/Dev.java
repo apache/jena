@@ -10,7 +10,6 @@ public class Dev
 {
     // The switch over has happened!
     // Scripted test slow?
-    //Execution of count() slow - failing to delay node instantiation?
 
     // Canonicalization - language tags.  NodeLib
     
@@ -49,17 +48,13 @@ public class Dev
     //   ** (script) to work on gzip files
     //   ** Write stats (where to hook in to get unique?)
     // ---- 32 bit mode.
-    // Occasional large drops (1K).  GC?  BufferPool for direct mode?
-    // allocateBuffer / returnBuffer
+    // ARC Cache Scheme
     // NodeTable : pool for buffers for writing nodes?
 
     
     //   TransformCopy 
     //      - maybe Transform should be "Op transform(OpABC)"
     //      - and TransformCopy(list) is TransformRewrite. (there are no non-TransformCopy's)
-    
-    // ---- TestStats, VarCounter.
-    // ---- A way to force display of optimizer even for the deep parts (assumes no inputs?)
     
     // ------------------------------------------
     

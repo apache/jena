@@ -51,6 +51,9 @@
       <exclude org="javax.jms" module="jms"/>
       <exclude org="javax.mail" module="mail"/>
     </dependency>
+    
+    <dependency org="com.sleepycat" name="je" rev="3.3.74"/>
+
   -->
   </dependencies>
 

@@ -9,6 +9,8 @@ package dev;
 import java.io.IOException;
 import java.util.*;
 
+import com.sleepycat.je.EnvironmentConfig;
+
 import lib.Bytes;
 import lib.ColumnMap;
 import lib.FileOps;
@@ -70,6 +72,13 @@ public class Run
  
     public static void main(String ... args) throws IOException
     {
+        EnvironmentConfig env = EnvironmentConfig.DEFAULT ;
+         
+        System.out.println(env.getCachePercent()) ; // 60%
+        
+        System.out.println(env.getCacheSize()) ;
+        System.exit(0) ;
+        
         tdbquery("--tdb=tdb.ttl", "SELECT count(*) { ?s ?p ?o }") ;
         System.exit(0) ;
         

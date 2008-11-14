@@ -7,6 +7,9 @@
 package com.hp.hpl.jena.tdb.solver;
 
 import static com.hp.hpl.jena.tdb.TDB.logExec;
+
+import com.hp.hpl.jena.graph.Node;
+
 import lib.StrUtils;
 
 import com.hp.hpl.jena.sparql.algebra.Op;
@@ -15,8 +18,10 @@ import com.hp.hpl.jena.sparql.algebra.TransformCopy;
 import com.hp.hpl.jena.sparql.algebra.op.OpBGP;
 import com.hp.hpl.jena.sparql.algebra.op.OpFilter;
 import com.hp.hpl.jena.sparql.algebra.op.OpLabel;
+import com.hp.hpl.jena.sparql.algebra.op.OpQuadPattern;
 import com.hp.hpl.jena.sparql.algebra.opt.TransformFilterPlacement;
 import com.hp.hpl.jena.sparql.core.BasicPattern;
+import com.hp.hpl.jena.sparql.core.Quad;
 import com.hp.hpl.jena.sparql.core.Substitute;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
@@ -69,7 +74,44 @@ public class OpExecutorTDB extends OpExecutor
     }
 
     @Override
-    public QueryIterator execute(OpBGP opBGP, QueryIterator input)
+    protected QueryIterator execute(OpQuadPattern quadPattern, QueryIterator input)
+    {
+        if ( ! isForTDB )
+            return super.execute(quadPattern, input) ;
+        //GraphTDB graph = (GraphTDB)execCxt.getActiveGraph() ;
+
+        // Dataset a TDB one?
+        // Presumably the quad transform has been applied.
+//        if ( ! ( execCxt.getDataset() instanceof DatasetTDB ) )
+//            return super.execute(quadPattern, input) ;
+        
+        if ( quadPattern.isDefaultGraph() )
+        {
+            // Quad.defaultGraphNode
+            // Easy case.
+            OpBGP opBGP = new OpBGP(quadPattern.getBasicPattern()) ;
+            return execute(opBGP, input) ;  
+        }
+        Node gn = quadPattern.getGraphNode() ;
+        // Special graph node names.
+        
+        if ( gn.equals(Quad.defaultGraphIRI ))
+        {
+            // Explicit name for the default graph
+        }
+        
+        if ( gn.equals(Quad.unionGraph) )
+        {
+            // Name for the union of named graphs
+        }
+       
+        
+        
+        return super.execute(quadPattern, input) ;
+    }
+    
+    @Override
+    protected QueryIterator execute(OpBGP opBGP, QueryIterator input)
     {
         if ( ! isForTDB )
             return super.execute(opBGP, input) ;
@@ -78,7 +120,7 @@ public class OpExecutorTDB extends OpExecutor
     }
     
     @Override
-    public QueryIterator execute(OpLabel opLabel, QueryIterator input)
+    protected QueryIterator execute(OpLabel opLabel, QueryIterator input)
     {
         if ( ! isForTDB )
             return super.execute(opLabel, input) ;
@@ -94,7 +136,7 @@ public class OpExecutorTDB extends OpExecutor
     }
 
     @Override
-    public QueryIterator execute(OpFilter opFilter, QueryIterator input)
+    protected QueryIterator execute(OpFilter opFilter, QueryIterator input)
     {
         if ( ! isForTDB )
             return super.execute(opFilter, input) ;
