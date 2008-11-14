@@ -14,7 +14,7 @@ import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.sparql.util.Utils;
 import com.hp.hpl.jena.tdb.TDB;
-import com.hp.hpl.jena.tdb.graph.StatsGraph;
+import com.hp.hpl.jena.tdb.solver.stats.StatsCollector;
 
 import com.hp.hpl.jena.util.FileManager;
 
@@ -55,7 +55,7 @@ public class tdbexamine extends CmdTDB
 
     private void examineOne(String s)
     {
-        StatsGraph graph = new StatsGraph() ;  
+        StatsCollector.StatsGraph graph = new StatsCollector.StatsGraph() ;  
         Model model = ModelFactory.createModelForGraph(graph) ;
         FileManager.get().readModel(model, s) ;
         graph.printStats() ;

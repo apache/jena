@@ -19,18 +19,57 @@ import lib.Tuple;
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
+import com.hp.hpl.jena.graph.TripleMatch;
+import com.hp.hpl.jena.graph.impl.GraphBase;
 
 import com.hp.hpl.jena.sparql.sse.Item;
 import com.hp.hpl.jena.sparql.sse.ItemList;
 import com.hp.hpl.jena.sparql.util.NodeFactory;
 import com.hp.hpl.jena.sparql.util.Utils;
 
-import com.hp.hpl.jena.tdb.index.TripleIndex;
 import com.hp.hpl.jena.tdb.pgraph.GraphTDB;
 import com.hp.hpl.jena.tdb.pgraph.NodeId;
+import com.hp.hpl.jena.tdb.pgraph.TripleIndex;
+import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 
-public class StatsWriter
+public class StatsCollector
 {
+    public static class StatsGraph extends GraphBase
+    {
+        // Connect to StatsWriter.
+        
+        long count = 0 ;
+        Map<Node, Integer> predicates = new HashMap<Node, Integer>(10000) ;
+        
+        @Override
+        protected ExtendedIterator graphBaseFind(TripleMatch m)
+        {
+            return null ;
+        }
+
+        @Override
+        public void performAdd( Triple t ) 
+        { 
+            // Raw.
+            count++ ;
+            
+            Node p = t.getPredicate() ;
+            Integer n = predicates.get(p) ;
+            if ( n == null )
+                predicates.put(p,1) ;
+            else
+                predicates.put(p, n+1) ;
+        }
+        
+        public void printStats()
+        {
+            StatsCollector.format(predicates, count) ;
+//            System.out.printf("Triples: %d\n",count) ;
+//            for ( Node p : predicates.keySet() )
+//                System.out.printf("%s : %d\n",p, predicates.get(p) ) ;
+        }
+    }
+    
     /** Gather statistics, any graph */
     public static Item gather(Graph graph)
     {

@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.index;
+package com.hp.hpl.jena.tdb.pgraph;
 
 import static com.hp.hpl.jena.tdb.sys.SystemTDB.SizeOfNodeId;
 import iterator.Iter;
@@ -19,8 +19,9 @@ import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.tdb.TDBException;
 import com.hp.hpl.jena.tdb.base.record.Record;
+import com.hp.hpl.jena.tdb.index.IndexLib;
+import com.hp.hpl.jena.tdb.index.RangeIndex;
 import com.hp.hpl.jena.tdb.lib.TupleLib;
-import com.hp.hpl.jena.tdb.pgraph.NodeId;
 
 
 /** A single index of triples.  Uses a Descriptor for SPO<->native order */

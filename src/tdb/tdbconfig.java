@@ -18,7 +18,7 @@ import com.hp.hpl.jena.sparql.util.Utils;
 import com.hp.hpl.jena.tdb.TDB;
 import com.hp.hpl.jena.tdb.base.objectfile.ObjectFileDisk;
 import com.hp.hpl.jena.tdb.pgraph.GraphTDB;
-import com.hp.hpl.jena.tdb.solver.stats.StatsWriter;
+import com.hp.hpl.jena.tdb.solver.stats.StatsCollector;
 
 /** Tools to manage a TDB store.  Subcommand based. */
 public class tdbconfig extends CmdSub
@@ -101,7 +101,7 @@ public class tdbconfig extends CmdSub
         protected void exec()
         {
             GraphTDB graph = getGraph() ;
-            Item item = StatsWriter.gatherTDB(graph) ;
+            Item item = StatsCollector.gatherTDB(graph) ;
             System.out.println(item) ;
         }
 

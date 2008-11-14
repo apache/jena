@@ -12,7 +12,7 @@ import arq.cmd.CmdUtils;
 import com.hp.hpl.jena.sparql.sse.Item;
 
 import com.hp.hpl.jena.tdb.pgraph.GraphTDB;
-import com.hp.hpl.jena.tdb.solver.stats.StatsWriter;
+import com.hp.hpl.jena.tdb.solver.stats.StatsCollector;
 
 
 public class tdbstats extends CmdTDB
@@ -39,7 +39,7 @@ public class tdbstats extends CmdTDB
     protected void exec()
     {
         GraphTDB graph = getGraph() ;
-        Item item = StatsWriter.gatherTDB(graph) ;
+        Item item = StatsCollector.gatherTDB(graph) ;
         System.out.println(item) ;
     }
 }

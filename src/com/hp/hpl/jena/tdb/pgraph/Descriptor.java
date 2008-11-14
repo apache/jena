@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.index;
+package com.hp.hpl.jena.tdb.pgraph;
 
 import static com.hp.hpl.jena.tdb.sys.SystemTDB.SizeOfNodeId;
 
@@ -18,7 +18,6 @@ import com.hp.hpl.jena.tdb.base.record.Record;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 import com.hp.hpl.jena.tdb.lib.NodeLib;
 import com.hp.hpl.jena.tdb.lib.TupleLib;
-import com.hp.hpl.jena.tdb.pgraph.NodeId;
 
 public class Descriptor
 {

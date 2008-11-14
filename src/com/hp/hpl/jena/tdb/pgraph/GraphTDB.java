@@ -30,7 +30,6 @@ import com.hp.hpl.jena.tdb.graph.GraphSyncListener;
 import com.hp.hpl.jena.tdb.graph.GraphTDBQueryHandler;
 import com.hp.hpl.jena.tdb.graph.GraphTDBTransactionHandler;
 import com.hp.hpl.jena.tdb.graph.UpdateListener;
-import com.hp.hpl.jena.tdb.index.TripleIndex;
 import com.hp.hpl.jena.tdb.lib.Sync;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
 import com.hp.hpl.jena.tdb.solver.reorder.Reorderable;

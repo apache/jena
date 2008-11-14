@@ -25,7 +25,6 @@ import com.hp.hpl.jena.sparql.sse.SSE;
 import com.hp.hpl.jena.sparql.util.FmtUtils;
 import com.hp.hpl.jena.tdb.TDBException;
 import com.hp.hpl.jena.tdb.base.file.Location;
-import com.hp.hpl.jena.tdb.index.TripleIndex;
 import com.hp.hpl.jena.tdb.lib.Sync;
 import com.hp.hpl.jena.tdb.lib.TupleLib;
 

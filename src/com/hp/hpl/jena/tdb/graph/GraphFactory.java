@@ -6,6 +6,7 @@
 
 package com.hp.hpl.jena.tdb.graph;
 
+import com.hp.hpl.jena.tdb.solver.stats.StatsCollector.StatsGraph;
 
 public class GraphFactory
 {

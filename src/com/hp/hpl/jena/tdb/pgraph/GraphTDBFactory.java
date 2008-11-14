@@ -16,7 +16,6 @@ import com.hp.hpl.jena.tdb.TDBException;
 import com.hp.hpl.jena.tdb.base.file.Location;
 import com.hp.hpl.jena.tdb.index.IndexBuilder;
 import com.hp.hpl.jena.tdb.index.RangeIndex;
-import com.hp.hpl.jena.tdb.index.TripleIndex;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderLib;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
 import com.hp.hpl.jena.tdb.sys.Names;

@@ -35,7 +35,7 @@ import com.hp.hpl.jena.sparql.util.graph.GraphListenerBase;
 import com.hp.hpl.jena.sparql.util.graph.GraphLoadMonitor;
 import com.hp.hpl.jena.tdb.TDB;
 import com.hp.hpl.jena.tdb.pgraph.NodeId;
-import com.hp.hpl.jena.tdb.solver.stats.StatsWriter;
+import com.hp.hpl.jena.tdb.solver.stats.StatsCollector;
 import com.hp.hpl.jena.tdb.sys.Names;
 import com.hp.hpl.jena.tdb.sys.SystemTDB;
 import com.hp.hpl.jena.util.FileManager;
@@ -214,7 +214,7 @@ public class BulkLoader2
         if ( generateStats )
         {
             model.getGraph().getEventManager().unregister(statsMonitor) ;
-            statsItem = StatsWriter.format(statsMonitor.predicates, statsMonitor.count) ;
+            statsItem = StatsCollector.format(statsMonitor.predicates, statsMonitor.count) ;
         }
     }
 

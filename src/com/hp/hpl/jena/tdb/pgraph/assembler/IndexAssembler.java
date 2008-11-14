@@ -20,8 +20,8 @@ import com.hp.hpl.jena.assembler.assemblers.AssemblerBase;
 import com.hp.hpl.jena.tdb.base.file.Location;
 import com.hp.hpl.jena.tdb.index.IndexBuilder;
 import com.hp.hpl.jena.tdb.index.RangeIndex;
-import com.hp.hpl.jena.tdb.index.TripleIndex;
 import com.hp.hpl.jena.tdb.pgraph.GraphTDB;
+import com.hp.hpl.jena.tdb.pgraph.TripleIndex;
 
 public class IndexAssembler extends AssemblerBase //implements Assembler
 {
