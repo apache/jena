@@ -14,7 +14,7 @@ import arq.cmdline.ArgDecl;
 
 import com.hp.hpl.jena.query.ARQ;
 
-import com.hp.hpl.jena.tdb.pgraph.BulkLoader;
+import com.hp.hpl.jena.tdb.pgraph.BulkLoader1;
 
 public class tdbloader extends CmdTDB
 {
@@ -74,7 +74,7 @@ public class tdbloader extends CmdTDB
         if ( urls.size() == 0 )
             urls.add("-") ;
         
-        BulkLoader loader = new BulkLoader(getGraph(), timing, doInParallel, doIncremental, generateStats) ;
+        BulkLoader1 loader = new BulkLoader1(getGraph(), timing, doInParallel, doIncremental, generateStats) ;
         loader.load(urls) ;
     }
 

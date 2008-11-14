@@ -4,18 +4,16 @@
  * [See end of file]
  */
 
-package dev.idx2;
+package com.hp.hpl.jena.tdb.store;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
-    TestTupleIndex.class,
-    TestTupleTable.class,
     TestTripleTable.class
 } )
-public class TS_Index2
+public class TS_Store
 { }
 
 

@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package dev.idx2;
+package com.hp.hpl.jena.tdb.index;
 
 import static com.hp.hpl.jena.tdb.sys.SystemTDB.SizeOfNodeId;
 import static java.lang.String.format;
@@ -21,7 +21,6 @@ import com.hp.hpl.jena.sparql.core.Closeable;
 import com.hp.hpl.jena.tdb.TDBException;
 import com.hp.hpl.jena.tdb.base.record.Record;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
-import com.hp.hpl.jena.tdb.index.RangeIndex;
 import com.hp.hpl.jena.tdb.lib.Sync;
 import com.hp.hpl.jena.tdb.lib.TupleLib;
 import com.hp.hpl.jena.tdb.pgraph.NodeId;

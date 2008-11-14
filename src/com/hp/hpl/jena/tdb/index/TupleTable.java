@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package dev.idx2;
+package com.hp.hpl.jena.tdb.index;
 
 import java.util.Iterator;
 
@@ -31,7 +31,7 @@ public class TupleTable implements Sync, Closeable
     private int tupleLen ;
     private RecordFactory factory ;
     
-    protected TupleTable(int tupleLen, TupleIndex[] indexes, RecordFactory factory, Location location)
+    public TupleTable(int tupleLen, TupleIndex[] indexes, RecordFactory factory, Location location)
     {
         this.tupleLen = tupleLen ;
         this.indexes = indexes ;

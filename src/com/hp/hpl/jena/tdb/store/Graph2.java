@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package dev.idx2;
+package com.hp.hpl.jena.tdb.store;
 
 import java.util.Iterator;
 

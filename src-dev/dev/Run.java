@@ -45,12 +45,12 @@ import com.hp.hpl.jena.tdb.pgraph.GraphTDB;
 import com.hp.hpl.jena.tdb.solver.StageGeneratorGeneric;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderLib;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
+import com.hp.hpl.jena.tdb.store.BulkLoader2;
+import com.hp.hpl.jena.tdb.store.FactoryTDB2;
+import com.hp.hpl.jena.tdb.store.Graph2;
 import com.hp.hpl.jena.tdb.sys.SystemTDB;
 import com.hp.hpl.jena.util.FileManager;
 
-import dev.idx2.BulkLoader2;
-import dev.idx2.FactoryTDB2;
-import dev.idx2.Graph2;
 import dev.opt.Reorganise;
 import dev.opt.Scope;
 import dev.opt.TransformIndexJoin;

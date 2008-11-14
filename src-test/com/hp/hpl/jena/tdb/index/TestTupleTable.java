@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package dev.idx2;
+package com.hp.hpl.jena.tdb.index;
 
 import iterator.Iter;
 
@@ -14,6 +14,8 @@ import java.util.List;
 import lib.Tuple;
 
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
+import com.hp.hpl.jena.tdb.index.TupleIndex;
+import com.hp.hpl.jena.tdb.index.TupleTable;
 import com.hp.hpl.jena.tdb.pgraph.NodeId;
 import com.hp.hpl.jena.tdb.sys.SystemTDB;
 

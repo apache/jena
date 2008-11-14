@@ -4,9 +4,9 @@
  * [See end of file]
  */
 
-package dev.idx2;
+package com.hp.hpl.jena.tdb.store;
 
-import static dev.idx2.FactoryTDB2.createTripleTableMem;
+import static com.hp.hpl.jena.tdb.store.FactoryTDB2.createTripleTableMem;
 
 import java.util.Iterator;
 
@@ -22,6 +22,7 @@ import com.hp.hpl.jena.sparql.sse.SSE;
 
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 import com.hp.hpl.jena.tdb.pgraph.GraphTDB;
+import com.hp.hpl.jena.tdb.store.TripleTable2;
 
 public class TestTripleTable extends BaseTest
 {

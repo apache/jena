@@ -16,6 +16,7 @@ import com.hp.hpl.jena.tdb.index.btree.TestBTree;
 import com.hp.hpl.jena.tdb.index.btree.TestBTreeLong;
 import com.hp.hpl.jena.tdb.index.ext.TestExtHash;
 
+
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
     TestPtrBuffer.class,
@@ -23,7 +24,9 @@ import com.hp.hpl.jena.tdb.index.ext.TestExtHash;
     TestBTreeLong.class,
     TestBPlusTree.class,
     TestBPTreeRecords.class,
-    TestExtHash.class
+    TestExtHash.class,
+    TestTupleIndex.class,
+    TestTupleTable.class
 } )
 public class TS_Index
 { }

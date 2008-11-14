@@ -36,9 +36,9 @@ import com.hp.hpl.jena.tdb.lib.TupleLib;
  *  and a node table form can map to and from integers.
  */
 
-public class TripleTable implements Sync, Closeable
+public class TripleTable1 implements Sync, Closeable
 {
-    private static Logger log = LoggerFactory.getLogger(TripleTable.class) ;
+    private static Logger log = LoggerFactory.getLogger(TripleTable1.class) ;
     
     private TripleIndex indexSPO = null ;
     private TripleIndex indexPOS = null ;
@@ -47,9 +47,9 @@ public class TripleTable implements Sync, Closeable
 
     private Location location ;
     
-    protected TripleTable() {}
+    protected TripleTable1() {}
     
-    public TripleTable(TripleIndex spo, TripleIndex pos, TripleIndex osp, 
+    public TripleTable1(TripleIndex spo, TripleIndex pos, TripleIndex osp, 
                        NodeTable nodeTable, Location location)
     {
         if ( spo == null )

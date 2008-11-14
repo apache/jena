@@ -54,7 +54,7 @@ public class GraphTDB extends GraphBase implements Sync, Reorderable
     private final TransactionHandler transactionHandler = new GraphTDBTransactionHandler(this) ;
     private ReorderTransformation reorderTransform = null ;
 
-    private TripleTable tripleTable ;
+    private TripleTable1 tripleTable ;
 
     protected GraphTDB() {}
     
@@ -64,7 +64,7 @@ public class GraphTDB extends GraphBase implements Sync, Reorderable
         if ( spo == null )
             throw new TDBException("SPO index is required") ;
 
-        this.tripleTable = new TripleTable(spo, pos, osp, nodeTable, location) ; 
+        this.tripleTable = new TripleTable1(spo, pos, osp, nodeTable, location) ; 
         this.reorderTransform = reorderTransform ;
         
         int syncPoint = SystemTDB.SyncTick ;
@@ -168,7 +168,7 @@ public class GraphTDB extends GraphBase implements Sync, Reorderable
     /** Reorder processor - may be null, for "none" */ 
     public ReorderTransformation getReorderTransform()      { return reorderTransform ; }
 
-    public TripleTable getTripleTable()                     { return tripleTable ; }
+    public TripleTable1 getTripleTable()                     { return tripleTable ; }
     public Location getLocation()                           { return tripleTable.getLocation() ; }
 
 }

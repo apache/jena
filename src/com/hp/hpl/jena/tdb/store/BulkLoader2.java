@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package dev.idx2;
+package com.hp.hpl.jena.tdb.store;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -34,11 +34,13 @@ import com.hp.hpl.jena.sparql.util.Utils;
 import com.hp.hpl.jena.sparql.util.graph.GraphListenerBase;
 import com.hp.hpl.jena.sparql.util.graph.GraphLoadMonitor;
 import com.hp.hpl.jena.tdb.TDB;
+import com.hp.hpl.jena.tdb.index.TupleIndex;
 import com.hp.hpl.jena.tdb.pgraph.NodeId;
 import com.hp.hpl.jena.tdb.solver.stats.StatsCollector;
 import com.hp.hpl.jena.tdb.sys.Names;
 import com.hp.hpl.jena.tdb.sys.SystemTDB;
 import com.hp.hpl.jena.util.FileManager;
+
 
 /** To directly load data, including manipulating the indexes at a quite low level for efficiency.
  * Not efficent for small, incremental additions to a graph.  
