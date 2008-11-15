@@ -33,7 +33,7 @@ import com.hp.hpl.jena.sparql.expr.ExprList;
 
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderProc;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
-import com.hp.hpl.jena.tdb.store.DatasetTDB;
+import com.hp.hpl.jena.tdb.store.DatasetGraphTDB;
 import com.hp.hpl.jena.tdb.store.GraphTDB;
 import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
@@ -84,7 +84,7 @@ public class OpExecutorTDB extends OpExecutor
 
         // Dataset a TDB one?
         // Presumably the quad transform has been applied.
-        if ( ! ( execCxt.getDataset() instanceof DatasetTDB ) )
+        if ( ! ( execCxt.getDataset() instanceof DatasetGraphTDB ) )
             return super.execute(quadPattern, input) ;
         
         if ( quadPattern.isDefaultGraph() )
@@ -105,7 +105,7 @@ public class OpExecutorTDB extends OpExecutor
             // Name for the union of named graphs
             gn = null ;
         
-        DatasetTDB ds = (DatasetTDB)execCxt.getDataset() ;
+        DatasetGraphTDB ds = (DatasetGraphTDB)execCxt.getDataset() ;
         QueryIterator qIter = SolverLib.execute(ds, gn, quadPattern.getBasicPattern(), input, execCxt) ;
         if ( gn == null )
             // Must be distinct if over all named graphs.

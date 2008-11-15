@@ -6,36 +6,35 @@
 
 package com.hp.hpl.jena.tdb.assembler;
 
-import static com.hp.hpl.jena.sparql.core.assembler.DatasetAssemblerVocab.pDefaultGraph;
-import static com.hp.hpl.jena.sparql.core.assembler.DatasetAssemblerVocab.pNamedGraph;
+import static com.hp.hpl.jena.sparql.util.graph.GraphUtils.exactlyOneProperty;
+import static com.hp.hpl.jena.sparql.util.graph.GraphUtils.getStringValue;
+import static com.hp.hpl.jena.tdb.assembler.VocabTDB.pLocation;
 
 import com.hp.hpl.jena.rdf.model.Resource;
 
 import com.hp.hpl.jena.assembler.Assembler;
 import com.hp.hpl.jena.assembler.Mode;
+import com.hp.hpl.jena.assembler.exceptions.AssemblerException;
 
 import com.hp.hpl.jena.sparql.core.assembler.DatasetAssembler;
 
 import com.hp.hpl.jena.tdb.TDB;
-import com.hp.hpl.jena.tdb.TDBException;
+import com.hp.hpl.jena.tdb.TDBFactory;
+import com.hp.hpl.jena.tdb.base.file.Location;
 
 public class DatasetAssemblerTDB extends DatasetAssembler
 {
-    DatasetAssembler a = new DatasetAssembler() ;
-    
     @Override
     public Object open(Assembler a, Resource root, Mode mode)
     {
-        // Just in case ... although we managed to get here so TDB.init was probably called.
         TDB.init() ;
-        if ( root.hasProperty(pDefaultGraph) || root.hasProperty(pNamedGraph) )
-        {
-            // Check no other vocabulary used.
-            // Regular description,using dfeaultGraph /namedgraph
-            return super.open(a, root, mode) ;
-        }
+        
+        if ( ! exactlyOneProperty(root, pLocation) )
+            throw new AssemblerException(root, "No location given") ;
 
-        throw new TDBException("No description of TDB resources found: "+root) ;
+        String dir = getStringValue(root, pLocation) ;
+        Location loc = new Location(dir) ;
+        return TDBFactory.createDataset(loc) ;
     }
 
 }

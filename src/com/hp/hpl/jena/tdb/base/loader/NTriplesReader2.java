@@ -19,19 +19,19 @@ public class NTriplesReader2 implements RDFReader
     @Override
     public void read(Model model, String url)
     { 
-        NTriplesLoader.read(model.getGraph(), url) ;
+        NodeTupleReader.read(model.getGraph(), url) ;
     }
 
     @Override
     public void read(Model model, Reader r, String base)
     { 
-        NTriplesLoader.read(model.getGraph(), r, base) ;
+        NodeTupleReader.read(model.getGraph(), r, base) ;
     }
 
     @Override
     public void read(Model model, InputStream r, String base)
     { 
-        NTriplesLoader.read(model.getGraph(), r, base) ;
+        NodeTupleReader.read(model.getGraph(), r, base) ;
     }
 
     public Object setProperty(String propName, Object propValue)

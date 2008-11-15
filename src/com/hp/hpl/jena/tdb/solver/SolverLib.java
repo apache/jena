@@ -72,7 +72,7 @@ public class SolverLib
     }
 
     /** Non-reordering execution of a quad pattern, given a iterator of bindings as input */ 
-    public static QueryIterator execute(DatasetTDB ds, Node graphNode, BasicPattern pattern, QueryIterator input, ExecutionContext execCxt)
+    public static QueryIterator execute(DatasetGraphTDB ds, Node graphNode, BasicPattern pattern, QueryIterator input, ExecutionContext execCxt)
     {
         @SuppressWarnings("unchecked")
         List<Triple> triples = (List<Triple>)pattern.getList() ;

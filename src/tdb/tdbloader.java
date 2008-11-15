@@ -11,6 +11,7 @@ import java.util.List;
 import lib.Log;
 
 import com.hp.hpl.jena.graph.Graph;
+import com.hp.hpl.jena.graph.Node;
 
 import tdb.cmdline.CmdTDB;
 import arq.cmd.CmdUtils;
@@ -25,14 +26,16 @@ import com.hp.hpl.jena.tdb.store.GraphTDB;
 
 public class tdbloader extends CmdTDB
 {
-    ArgDecl argParallel = new ArgDecl(ArgDecl.NoValue, "parallel") ;
-    ArgDecl argIncremental = new ArgDecl(ArgDecl.NoValue, "incr", "incrmenetal") ;
-    ArgDecl argStats = new ArgDecl(ArgDecl.NoValue, "stats") ;
+    ArgDecl argParallel         = new ArgDecl(ArgDecl.NoValue, "parallel") ;
+    ArgDecl argIncremental      = new ArgDecl(ArgDecl.NoValue, "incr", "incrmenetal") ;
+    ArgDecl argStats            = new ArgDecl(ArgDecl.NoValue, "stats") ;
+    ArgDecl argNamedGraph       = new ArgDecl(ArgDecl.HasValue, "graph") ;
     
     private boolean timing = true ;
     private boolean doInParallel = false ;
     private boolean doIncremental = false ;
     private boolean generateStats = false ;
+    private Node graphName = null ;
     
     static public void main(String... argv)
     { 
@@ -43,6 +46,7 @@ public class tdbloader extends CmdTDB
     protected tdbloader(String[] argv)
     {
         super(argv) ;
+        super.add(argNamedGraph, "--graph=IRI", "Load a named graph") ;
         super.add(argParallel, "--parallel", "Do rebuilding of secondary indexes in a parallel") ;
         super.add(argIncremental, "--incremental", "Do an incremental load (keep indexes during load, don't rebuild)") ;
         super.add(argStats, "--stats", "Generate statistics while loading (new graph only)") ;
@@ -55,6 +59,10 @@ public class tdbloader extends CmdTDB
         doInParallel = super.contains(argParallel) ;
         doIncremental = super.contains(argIncremental) ;
         generateStats = super.contains(argStats) ;
+        if ( super.contains(argNamedGraph) )
+            graphName = Node.createURI(super.getValue(argNamedGraph)) ; 
+        if ( graphName != null )
+            throw new IllegalArgumentException("Named graphs not supported yet") ;
     }
     
     @Override

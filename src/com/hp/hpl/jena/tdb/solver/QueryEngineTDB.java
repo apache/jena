@@ -7,6 +7,9 @@
 package com.hp.hpl.jena.tdb.solver;
 
 import com.hp.hpl.jena.query.Query;
+
+import com.hp.hpl.jena.tdb.store.DatasetGraphTDB;
+
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.core.DatasetGraph;
 import com.hp.hpl.jena.sparql.engine.Plan;
@@ -16,9 +19,7 @@ import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.main.QueryEngineMain;
 import com.hp.hpl.jena.sparql.util.Context;
 
-// NOT USED - instead, TDB uses a custom OpCompiler to intercept certain Op evaluations
-// (which is dynamic - work here would be static optimization)   
-// If this is used, will use an OpExt to have optimized TDB ops
+// NOT USED (yet) - instead, TDB uses a custom OpCompiler to intercept certain Op evaluations
 public class QueryEngineTDB extends QueryEngineMain
 {
     // ---- Wiring
@@ -27,11 +28,11 @@ public class QueryEngineTDB extends QueryEngineMain
     static public void unregister()     { QueryEngineRegistry.removeFactory(factory) ; }
     
     // ---- Object
-    private QueryEngineTDB(Op op, DatasetGraph dataset, Binding input, Context context)
+    private QueryEngineTDB(Op op, DatasetGraphTDB dataset, Binding input, Context context)
     { super(op, dataset, input, context) ; }
 
     
-    private QueryEngineTDB(Query query, DatasetGraph dataset, Binding input, Context context)
+    private QueryEngineTDB(Query query, DatasetGraphTDB dataset, Binding input, Context context)
     { super(query, dataset, input, context) ; }
     
     // Choose the algebra-level optimizations to invoke. 
@@ -46,11 +47,11 @@ public class QueryEngineTDB extends QueryEngineMain
     private static QueryEngineFactory factory = new QueryEngineFactory()
     {
         public boolean accept(Query query, DatasetGraph dataset, Context context) 
-        { return true ; }
+        { return (dataset instanceof DatasetGraphTDB) ; }
 
         public Plan create(Query query, DatasetGraph dataset, Binding input, Context context)
         {
-            QueryEngineTDB engine = new QueryEngineTDB(query, dataset, input, context) ;
+            QueryEngineTDB engine = new QueryEngineTDB(query, (DatasetGraphTDB)dataset, input, context) ;
             return engine.getPlan() ;
         }
         
@@ -59,7 +60,7 @@ public class QueryEngineTDB extends QueryEngineMain
 
         public Plan create(Op op, DatasetGraph dataset, Binding binding, Context context)
         {
-            QueryEngineTDB engine = new QueryEngineTDB(op, dataset, binding, context) ;
+            QueryEngineTDB engine = new QueryEngineTDB(op, (DatasetGraphTDB)dataset, binding, context) ;
             return engine.getPlan() ;
         }
     } ;

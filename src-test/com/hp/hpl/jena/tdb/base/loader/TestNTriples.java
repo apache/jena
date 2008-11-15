@@ -8,6 +8,8 @@ package com.hp.hpl.jena.tdb.base.loader;
 
 import java.io.StringReader;
 
+import lib.Tuple;
+
 import org.junit.Test;
 import test.BaseTest;
 
@@ -18,7 +20,7 @@ import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.sparql.util.graph.GraphUtils;
-import com.hp.hpl.jena.tdb.base.loader.NTriplesLoader;
+import com.hp.hpl.jena.tdb.base.loader.NodeTupleReader;
 
 public class TestNTriples extends BaseTest
 {
@@ -232,31 +234,31 @@ public class TestNTriples extends BaseTest
     
     private Node readNode(String form)
     {
-        NTriplesLoader b = make(form) ;
+        NodeTupleReader b = make(form) ;
         Node x = b.readNode() ;
         return x ;
     }
     
     private Triple readTriple(String form)
     {
-        NTriplesLoader b = make(form) ;
-        Triple x = b.readTriple() ;
-        return x ;
+        NodeTupleReader b = make(form) ;
+        Tuple<Node> t = b.readTuple() ;
+        if ( t == null )
+            return null ;
+        return new Triple(t.get(0), t.get(1), t.get(2) ) ;
     }
     
     private Graph parse(String contents)
     {
         Graph graph = GraphUtils.makePlainGraph() ;
         StringReader r = new StringReader(contents) ;
-        NTriplesLoader.read(graph, r, null) ;
+        NodeTupleReader.read(graph, r, null) ;
         return graph ;
     }
     
-    private NTriplesLoader make(String contents)
+    private NodeTupleReader make(String contents)
     {
-        StringReader r = new StringReader(contents) ;
-        NTriplesLoader b = new NTriplesLoader(r) ;
-        return b ;
+        return new NodeTupleReader(contents) ;
     }
 }
 

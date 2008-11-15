@@ -9,7 +9,11 @@ package com.hp.hpl.jena.tdb;
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
+
+import com.hp.hpl.jena.sparql.ARQNotImplemented;
 import com.hp.hpl.jena.sparql.core.assembler.AssemblerUtils;
+
+import com.hp.hpl.jena.query.Dataset;
 
 import com.hp.hpl.jena.tdb.assembler.VocabTDB;
 import com.hp.hpl.jena.tdb.base.file.Location;
@@ -26,6 +30,9 @@ public class TDBFactory
         public Graph createGraph() ;
         /** Make a TDB graph with persistent data at the location */
         public Graph createGraph(Location loc) ;
+        
+        public Dataset createDataset() ;
+        public Dataset createDataset(Location location) ;
     }
 
     static ImplFactory factory = null ;
@@ -35,15 +42,19 @@ public class TDBFactory
     {
         @Override
         public Graph createGraph()
-        {
-            return PGraphFactory.createMem() ;
-        }
+        { return PGraphFactory.createMem() ; }
     
         @Override
         public Graph createGraph(Location loc)
-        {
-            return PGraphFactory.create(loc) ;
-        }
+        { return PGraphFactory.create(loc) ; }
+
+        @Override
+        public Dataset createDataset(Location location)
+        { throw new ARQNotImplemented("Dataset/PGraph") ; }
+
+        @Override
+        public Dataset createDataset()
+        { throw new ARQNotImplemented("Dataset/PGraph") ; }
     };
 
     // Standard implementation factory
@@ -51,17 +62,20 @@ public class TDBFactory
     {
         @Override
         public Graph createGraph()
-        {
-            return FactoryGraphTDB.createGraphMem() ;
-        }
+        { return FactoryGraphTDB.createGraphMem() ; }
     
         @Override
-        public Graph createGraph(Location loc)
-        {
-            return FactoryGraphTDB.createGraph(loc) ;
-        }
-    };
+        public Graph createGraph(Location loc)      
+        { return FactoryGraphTDB.createGraph(loc) ; }
 
+        @Override
+        public Dataset createDataset(Location location)
+        { return FactoryGraphTDB.createDataset(location) ; }
+
+        @Override
+        public Dataset createDataset()
+        { return FactoryGraphTDB.createDatasetMem() ; }
+    };
     
     static { 
         TDB.init(); 
@@ -113,6 +127,14 @@ public class TDBFactory
     /** Create a TDB graph backed by an in-memory block manager. For testing. */  
     public static Graph createGraph()   { return _createGraph() ; }
     
+    /** Create or connect to a TDB-backed dataset */ 
+    public static Dataset createDataset(Location location)
+    { return factory.createDataset(location) ; }
+    
+    /** Create or connect to a TDB dataset backed by an in-memory block manager. For testing.*/ 
+    public static Dataset createDataset()
+    { return factory.createDataset() ; }
+
     // Point at which actual graphs are made.
     
     private static Graph _createGraph()

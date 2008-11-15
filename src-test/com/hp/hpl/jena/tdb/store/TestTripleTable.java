@@ -6,8 +6,6 @@
 
 package com.hp.hpl.jena.tdb.store;
 
-import static com.hp.hpl.jena.tdb.store.FactoryGraphTDB.createTripleTableMem;
-
 import java.util.Iterator;
 
 import org.apache.log4j.Level;
@@ -20,17 +18,12 @@ import com.hp.hpl.jena.graph.Triple;
 
 import com.hp.hpl.jena.sparql.sse.SSE;
 
-import com.hp.hpl.jena.tdb.base.record.RecordFactory;
-
 public class TestTripleTable extends BaseTest
 {
     static {
         Logger.getLogger("com.hp.hpl.jena.tdb.info").setLevel(Level.WARN) ;
         Logger.getLogger("com.hp.hpl.jena.tdb.exec").setLevel(Level.WARN) ;
     }
-    
-    static RecordFactory factory = FactoryGraphTDB.indexRecordFactory ;
-
 
     private static void add(TripleTable table, Node s, Node p, Node o)
     {
@@ -67,6 +60,8 @@ public class TestTripleTable extends BaseTest
     static Node n4 = SSE.parseNode("<http://example/n4>") ;
     static Node n5 = SSE.parseNode("<http://example/n5>") ;
     static Node n6 = SSE.parseNode("<http://example/n6>") ;
+    
+    
     
     @Test public void createTripleTable1()
     { 
@@ -115,6 +110,11 @@ public class TestTripleTable extends BaseTest
         match(table, Node.ANY, n2, n3) ;
         match(table, null, n2, n3) ;
         match(table, null, null, null) ;
+    }
+    
+    private TripleTable createTripleTableMem()
+    {
+       return FactoryGraphTDB.createTripleTableMem() ;
     }
 }
 

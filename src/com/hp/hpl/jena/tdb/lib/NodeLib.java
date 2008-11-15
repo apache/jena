@@ -8,10 +8,14 @@ package com.hp.hpl.jena.tdb.lib;
 
 import static com.hp.hpl.jena.tdb.sys.SystemTDB.LenNodeHash;
 
+import iterator.Iter;
+import iterator.Transform;
+
 import java.io.UnsupportedEncodingException;
 import java.security.DigestException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Iterator;
 import java.util.List;
 
 import lib.Bytes;
@@ -37,6 +41,7 @@ import com.hp.hpl.jena.tdb.TDBException;
 import com.hp.hpl.jena.tdb.base.record.Record;
 import com.hp.hpl.jena.tdb.store.Hash;
 import com.hp.hpl.jena.tdb.store.NodeId;
+import com.hp.hpl.jena.tdb.store.NodeTable;
 import com.hp.hpl.jena.tdb.store.NodeType;
 
 
@@ -205,6 +210,18 @@ public class NodeLib
             return Node.ANY ;
         return node ;
     }
+    
+    public static Iterator<Node> nodes(final NodeTable nodeTable, Iterator<NodeId> iter)
+    {
+        return Iter.map(iter, new Transform<NodeId, Node>(){
+            @Override
+            public Node convert(NodeId item)
+            {
+                return nodeTable.retrieveNodeByNodeId(item) ;
+            }
+        }) ;
+    }
+
 }
 
 /*

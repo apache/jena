@@ -72,11 +72,15 @@ public class Run
  
     public static void main(String ... args) throws IOException
     {
-        EnvironmentConfig env = EnvironmentConfig.DEFAULT ;
-         
-        System.out.println(env.getCachePercent()) ; // 60%
+        Dataset ds = TDBFactory.createDataset(new Location("DB")) ;
         
-        System.out.println(env.getCacheSize()) ;
+        //SSE.write(ds) ;
+        
+        Model model = ds.getNamedModel("http://example/") ;
+        FileManager.get().readModel(model, "D.ttl") ;
+        FileManager.get().readModel(ds.getDefaultModel(), "D.ttl") ;
+        
+        SSE.write(ds) ;
         System.exit(0) ;
         
         tdbquery("--tdb=tdb.ttl", "SELECT count(*) { ?s ?p ?o }") ;

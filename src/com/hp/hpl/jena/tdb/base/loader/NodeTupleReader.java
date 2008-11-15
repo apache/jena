@@ -32,9 +32,12 @@ package com.hp.hpl.jena.tdb.base.loader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.io.StringReader;
 import java.net.URL;
 import java.util.Hashtable;
 import java.util.Iterator;
+
+import lib.Tuple;
 
 import com.hp.hpl.jena.datatypes.RDFDatatype;
 import com.hp.hpl.jena.datatypes.TypeMapper;
@@ -51,12 +54,15 @@ import com.hp.hpl.jena.shared.JenaException;
 import com.hp.hpl.jena.shared.SyntaxError;
 import com.hp.hpl.jena.util.FileUtils;
 
-/** BulkLoader
- *  (also a fast N-triples reader)
+import event.Event;
+import event.EventListener;
+import event.EventManager;
+import event.EventType;
+
+/** A fast tuple-of-nodes reader (currently, triples only)
  */
-public final class NTriplesLoader
+public final class NodeTupleReader
 {
-    // TODO BulkLoader ToDo list
     //  1 - expect - check if false and react
     //  2 - readURIStr - check one char peek ahead but do any escape
     
@@ -64,8 +70,30 @@ public final class NTriplesLoader
     static final int NL = '\n' ;
     static final int CR = '\r' ;
 
-    //private Model model = null;
-    private Graph graph ; 
+    private TupleSink sink ;
+    interface TupleSink { void tuple(Tuple<Node> tuple) ; } 
+    
+    // N-Triples
+    static class GraphTupleSink implements TupleSink
+    {
+        private final Graph graph ;
+        GraphTupleSink(Graph g) { this.graph = g ; }
+        @Override
+        public void tuple(Tuple<Node> tuple)
+        {
+            if ( tuple.size() != 3 ) 
+                throw new lib.InternalError("Tuple not of length 3 for a triple") ;
+            Triple t = new Triple(tuple.get(0), tuple.get(1), tuple.get(2)) ;
+            graph.add(t) ;
+        }
+        
+    }
+    static class NullSink implements TupleSink
+    {
+        @Override
+        public void tuple(Tuple<Node> tuple) {}
+    }
+    
     private Hashtable<String, Node> anons = new Hashtable<String, Node>();
 
     private PeekReader in = null;
@@ -75,32 +103,48 @@ public final class NTriplesLoader
 
     private RDFErrorHandler errorHandler = new RollForwardErrorHandler();
 
+    static final EventType startRead = new EventType("StartRead") ;
+    static final EventType finishRead = new EventType("FinishRead") ;
+    
     /**
      * Already with ": " at end for error messages.
      */
     private String msgBase; // ???
-    static public boolean CheckingRDF = true ;
+    static public boolean CheckingNTriples = false ;
     
     static public boolean CheckingIRIs = false ;
     static public boolean KeepParsingAfterError = true ;
     final StringBuilder buffer = new StringBuilder(sbLength);
 
-    public NTriplesLoader()
+    public NodeTupleReader(String string)
     {
-        
+        this((TupleSink)null, new StringReader(string), "TEST") ;
     }
     
-    // Testing ONLY
-    NTriplesLoader(Reader r)
+    private NodeTupleReader(final Graph graph, Reader reader, String base)
     {
-        this(null, r, "TEST") ;
+        this(new GraphTupleSink(graph), reader, base) ;
+        CheckingNTriples = true ;
+        // Route events to graph events
+        event.EventManager.register(sink, startRead, new EventListener(){
+            @Override
+            public void event(Object dest, Event event)
+            {
+                graph.getEventManager().notifyEvent( graph , GraphEvents.startRead ) ;
+            }}) ;
+        event.EventManager.register(sink, finishRead, new EventListener(){
+            @Override
+            public void event(Object dest, Event event)
+            {
+                graph.getEventManager().notifyEvent( graph , GraphEvents.finishRead ) ;
+            }}) ;
     }
-    
-    private NTriplesLoader(Graph graph, Reader reader, String base)
+
+    public NodeTupleReader(TupleSink sink, Reader reader, String base)
     {
-      this.graph = graph ;
-      this.msgBase = ( base == null ? "" : (base + ": ") );
-      this.in = PeekReader.make(reader);
+        this.sink = sink ;
+        this.msgBase = ( base == null ? "" : (base + ": ") );
+        this.in = PeekReader.make(reader);
     }
 
     // XXX Forces use of file:
@@ -116,16 +160,16 @@ public final class NTriplesLoader
     }
     
     public static void read(Graph graph, InputStream in, String base)
-         {
+    {
         // N-Triples must be in ASCII, we permit UTF-8.
-        read(graph, FileUtils.asBufferedUTF8(in), base);
+        read(graph, FileUtils.asUTF8(in), base);
     }
     
     public static void read(Graph graph, Reader reader, String base)
     {
         if ( graph == null )
             throw new IllegalArgumentException("Null for graph") ;
-        NTriplesLoader b = new NTriplesLoader(graph, reader, base) ;
+        NodeTupleReader b = new NodeTupleReader(graph, reader, base) ;
         b.readRDF();
     }
 
@@ -134,22 +178,22 @@ public final class NTriplesLoader
         if ( noCache ) 
             Node.cache(false) ;
         try {
-            graph.getEventManager().notifyEvent( graph , GraphEvents.startRead ) ;
-            unwrappedReadRDF();
+            EventManager.send(sink, new Event(startRead, null)) ;
+            process();
         } catch (RuntimeException ex)
         { 
             ex.printStackTrace(System.err) ;
             throw ex ;
         }
         finally {
-            graph.getEventManager().notifyEvent( graph , GraphEvents.finishRead ) ;
+            EventManager.send(sink, new Event(finishRead, null)) ;
             if ( noCache ) Node.cache(true) ;
         }
         if ( ! KeepParsingAfterError && errCount > 0 )
             throw new SyntaxError("Unknown") ;
     }
     
-    private final void unwrappedReadRDF()
+    private final void process()
     {
         while (!in.eof())                       // Each line.
         {
@@ -160,15 +204,15 @@ public final class NTriplesLoader
         }
     }
     
-    // ----  Testing support
-    Triple emittedTriple = null ;
-    
-    Triple readTriple()
+    // ----
+    Tuple<Node> lastTuple = null ;
+    /** Testing */
+    Tuple<Node> readTuple()
     {
         readOne() ;
-        return emittedTriple ;
+        return lastTuple ;
     }
-    // ---- 
+    
     
     void readOne()
     {
@@ -188,7 +232,7 @@ public final class NTriplesLoader
             return ;
         }
         
-        if ( CheckingRDF && ! subject.isURI() && !subject.isBlank() )
+        if ( CheckingNTriples && ! subject.isURI() && !subject.isBlank() )
         {
             syntaxError("Subject is not an IRI or blank node") ;
             subject = null ;
@@ -202,7 +246,7 @@ public final class NTriplesLoader
             skipToNewlineLax() ;
             return ;
         }
-        if ( CheckingRDF && ! predicate.isURI() )
+        if ( CheckingNTriples && ! predicate.isURI() )
         {
             syntaxError("Predicate is not an IRI") ;
             predicate = null ;
@@ -216,7 +260,7 @@ public final class NTriplesLoader
             skipToNewlineLax() ;
             return ;
         }
-        if ( CheckingRDF && ! object.isURI() && !object.isBlank() && ! object.isLiteral() )
+        if ( CheckingNTriples && ! object.isURI() && !object.isBlank() && ! object.isLiteral() )
         {
             syntaxError("Object is not an IRI, blank node or literal") ;
             object = null ;
@@ -247,17 +291,19 @@ public final class NTriplesLoader
         }
     }
 
-    void emit(Node subject, Node predicate, Node object)
+    private void emit(Node...nodes)
     {
-        emittedTriple = new Triple(subject, predicate, object) ;
-        emit(emittedTriple) ;
-    }
+        if ( CheckingNTriples && nodes.length != 3 )
+        {
+            syntaxError("Not a 3-tuple") ;
+            return ;
+        }
         
-    private void emit(Triple t)
-    {
+        Tuple<Node> t = new Tuple<Node>(nodes) ;
+        lastTuple = t ;
         // Note : this can throw a JenaException for further checking of the triple. 
-        if ( graph != null )
-            graph.add(t) ;
+        if ( sink != null )
+            sink.tuple(t) ;
     }
 
     Node readNode()

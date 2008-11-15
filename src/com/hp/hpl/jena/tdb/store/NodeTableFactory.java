@@ -6,56 +6,17 @@
 
 package com.hp.hpl.jena.tdb.store;
 
-import java.util.Iterator;
+import com.hp.hpl.jena.tdb.base.file.Location;
+import com.hp.hpl.jena.tdb.index.IndexBuilder;
 
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.shared.Lock;
-
-import com.hp.hpl.jena.sparql.core.DatasetGraph;
-
-public class DatasetTDB implements DatasetGraph
+public class NodeTableFactory
 {
-
-    public QuadTable getQuadTable() { return null ; }
-    public TripleTable getDefaultTripleTableTable() { return null ; } 
-    
-    @Override
-    public boolean containsGraph(Node graphNode)
+    public static NodeTable create(IndexBuilder indexBuilder, Location location)
     {
-        return false ;
+        if ( location == null )
+            return new NodeTableIndex(indexBuilder) ;
+        return new NodeTableIndex(indexBuilder, location) ;
     }
-
-    @Override
-    public Graph getDefaultGraph()
-    {
-        return null ;
-    }
-
-    @Override
-    public Graph getGraph(Node graphNode)
-    {
-        return null ;
-    }
-
-    @Override
-    public Lock getLock()
-    {
-        return null ;
-    }
-
-    @Override
-    public Iterator<Node> listGraphNodes()
-    {
-        return null ;
-    }
-
-    @Override
-    public int size()
-    {
-        return 0 ;
-    }
-
 }
 
 /*

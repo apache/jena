@@ -50,7 +50,9 @@ public class SystemTDB
     // ---- Node table related
     
     /** Size, in bytes, of a triple index record. */
-    public static final int LenIndexRecord          = 3 * NodeId.SIZE ;
+    public static final int LenIndexTripleRecord    = 3 * NodeId.SIZE ;
+    /** Size, in bytes, of a quad index record. */
+    public static final int LenIndexQuadRecord      = 4 * NodeId.SIZE ;
     
     /** Size, in bytes, of a Node hash. */
     public static final int LenNodeHash             = SizeOfLong ;

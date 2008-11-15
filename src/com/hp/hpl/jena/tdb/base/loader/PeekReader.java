@@ -6,8 +6,11 @@
 
 package com.hp.hpl.jena.tdb.base.loader;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Reader;
+
+import lib.Log;
 
 /** Parsing-centric reader.  Faster than using BufferedReader, sometimes a lot fatser.
  *  1/ One character lookahead.
@@ -39,12 +42,15 @@ public final class PeekReader extends Reader
     private Reader in;
     private int colNum = 0;
     private int lineNum = 1;
-
+    
     public static PeekReader make(Reader r)
     {
         // StringReader special?
         if ( r instanceof PeekReader )
             return (PeekReader)r ;
+        if ( r instanceof BufferedReader )
+            Log.warn(PeekReader.class, "Bufferedreader passed to PeekReader") ;
+            
         return new PeekReader(r) ;
     }
     

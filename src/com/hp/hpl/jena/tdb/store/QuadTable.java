@@ -14,6 +14,8 @@ import java.util.Iterator;
 import lib.Tuple;
 
 import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.graph.Triple;
+
 import com.hp.hpl.jena.sparql.core.Closeable;
 import com.hp.hpl.jena.sparql.core.Quad;
 import com.hp.hpl.jena.tdb.base.file.Location;
@@ -41,10 +43,22 @@ public class QuadTable extends NodeTupleTable implements Sync, Closeable
         return tupleTable.add(tuple(quad, nodeTable)) ;
     }
 
+    /** Add a quad (as graph node and triple) - return true if it was added, false if it already existed */
+    public boolean add( Node gn, Triple triple ) 
+    { 
+        return tupleTable.add(tuple(gn, triple, nodeTable)) ;
+    }
+    
     /** Delete a quad - return true if it was deleted, false if it didn't exist */
     public boolean delete( Quad quad ) 
     { 
         return tupleTable.delete(tuple(quad, nodeTable)) ;
+    }
+
+    /** Delete a quad (as graph node and triple) - return true if it was deleted, false if it didn't exist */
+    public boolean delete( Node gn, Triple triple ) 
+    { 
+        return tupleTable.delete(tuple(gn, triple, nodeTable)) ;
     }
 
     /** Find by node. */

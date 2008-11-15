@@ -44,8 +44,8 @@ public class GraphTDB extends GraphBase implements Sync, Reorderable
     private final ReorderTransformation reorderTransform  ;
 
     public GraphTDB(TripleTable tripleTable,
-                  ReorderTransformation reorderTransform,
-                  Location location)
+                    ReorderTransformation reorderTransform,
+                    Location location)
     {
         this.tripleTable = tripleTable ;
         this.reorderTransform = reorderTransform ;

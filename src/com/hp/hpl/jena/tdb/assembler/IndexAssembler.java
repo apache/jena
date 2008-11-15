@@ -48,13 +48,13 @@ public class IndexAssembler extends AssemblerBase //implements Assembler
         
         RangeIndex rIndex = IndexBuilder.createRangeIndex(new Location(filename), 
                                                           desc, 
-                                                          FactoryGraphTDB.indexRecordFactory) ;
+                                                          FactoryGraphTDB.indexRecordTripleFactory) ;
         return new TripleIndex(desc, rIndex) ;
     }
 
     public static RangeIndex rangeIndex(String filename, String name)
     {
-        return IndexBuilder.createRangeIndex(new Location(filename), name, FactoryGraphTDB.indexRecordFactory) ;
+        return IndexBuilder.createRangeIndex(new Location(filename), name, FactoryGraphTDB.indexRecordTripleFactory) ;
     }
 
 }

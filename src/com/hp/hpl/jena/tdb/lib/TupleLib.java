@@ -128,13 +128,19 @@ public class TupleLib
     }
 
     /** Quad to Tuple, not remapped by a ColumnMap. */
-    public static Tuple<NodeId> tuple(Quad t, NodeTable nodeTable)
+    public static Tuple<NodeId> tuple(Quad quad, NodeTable nodeTable)
     {
-        Node g = t.getGraph() ;
-        Node s = t.getSubject() ;
-        Node p = t.getPredicate() ;
-        Node o = t.getObject() ;
-
+        return tuple(quad.getGraph(), quad.getSubject(), quad.getPredicate(), quad.getObject(), nodeTable) ;
+    }
+    
+    /** Quad 9as graph node and triple) to Tuple, not remapped by a ColumnMap. */
+    public static Tuple<NodeId> tuple(Node g, Triple t, NodeTable nodeTable)
+    {
+        return tuple(g, t.getSubject(), t.getPredicate(), t.getObject(), nodeTable) ;
+    }
+    
+    public static Tuple<NodeId> tuple(Node g, Node s, Node p, Node o, NodeTable nodeTable)
+    {
         NodeId gId = nodeTable.storeNode(g) ;
         NodeId sId = nodeTable.storeNode(s) ;
         NodeId pId = nodeTable.storeNode(p) ;
@@ -142,7 +148,6 @@ public class TupleLib
         
         return new Tuple<NodeId>(gId, sId, pId, oId) ;  
     }
-    
     
     // ---- Tuples and Records
     public static Tuple<NodeId> tuple(Record r, ColumnMap cMap)

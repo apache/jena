@@ -4,11 +4,7 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.pgraph;
-
-import static com.hp.hpl.jena.tdb.sys.SystemTDB.LenIndexTripleRecord;
-import static com.hp.hpl.jena.tdb.sys.SystemTDB.LenNodeHash;
-import static com.hp.hpl.jena.tdb.sys.SystemTDB.SizeOfNodeId;
+package com.hp.hpl.jena.tdb.store;
 
 import java.util.Iterator;
 
@@ -19,55 +15,34 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 import com.hp.hpl.jena.util.iterator.NiceIterator;
 
 import com.hp.hpl.jena.graph.Capabilities;
+import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.graph.TripleMatch;
 import com.hp.hpl.jena.graph.impl.GraphBase;
-import com.hp.hpl.jena.graph.query.QueryHandler;
 
+import com.hp.hpl.jena.sparql.core.Quad;
 import com.hp.hpl.jena.sparql.util.FmtUtils;
 
 import com.hp.hpl.jena.tdb.TDB;
-import com.hp.hpl.jena.tdb.TDBException;
 import com.hp.hpl.jena.tdb.base.file.Location;
-import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 import com.hp.hpl.jena.tdb.graph.GraphSyncListener;
-import com.hp.hpl.jena.tdb.graph.GraphTDBQueryHandler;
 import com.hp.hpl.jena.tdb.graph.UpdateListener;
 import com.hp.hpl.jena.tdb.lib.Sync;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
 import com.hp.hpl.jena.tdb.solver.reorder.Reorderable;
-import com.hp.hpl.jena.tdb.store.NodeTable;
 import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
-/** Machinary to implement the Jena interfaces.
- *  This wraps a "nodes and triples" style graph (in TripleTable)
- *  with the code and data needed for ARQ and Jena. 
- */
-
-public class PGraph extends GraphBase implements Sync, Reorderable
+public class GraphNamed extends GraphBase implements Sync, Reorderable
 {
-    private static Logger log = LoggerFactory.getLogger(PGraph.class) ;
+    private static Logger log = LoggerFactory.getLogger(GraphNamed.class) ;
     
-    // ---- Record factories
-    final static RecordFactory indexRecordFactory = new RecordFactory(LenIndexTripleRecord, 0) ; 
-    final static RecordFactory nodeRecordFactory = new RecordFactory(LenNodeHash, SizeOfNodeId) ;
-    
-    private final GraphTDBQueryHandler queryHandler = new GraphTDBQueryHandler(this) ;
-    //private final TransactionHandler transactionHandler = null ; //new GraphTDBTransactionHandler(this) ;
-    private ReorderTransformation reorderTransform = null ;
+    private final DatasetGraphTDB dataset ;
+    private final Node graphNode ;
 
-    private TripleTable1 tripleTable ;
-
-    protected PGraph() {}
-    
-    public PGraph(TripleIndex spo, TripleIndex pos, TripleIndex osp, 
-                    NodeTable nodeTable, ReorderTransformation reorderTransform, Location location)
+    public GraphNamed(DatasetGraphTDB dataset, Node graphName) 
     {
-        if ( spo == null )
-            throw new TDBException("SPO index is required") ;
-
-        this.tripleTable = new TripleTable1(spo, pos, osp, nodeTable, location) ; 
-        this.reorderTransform = reorderTransform ;
+        this.dataset = dataset ;
+        this.graphNode = graphName ;
         
         int syncPoint = SystemTDB.SyncTick ;
         if ( syncPoint > 0 )
@@ -75,10 +50,11 @@ public class PGraph extends GraphBase implements Sync, Reorderable
         this.getEventManager().register(new UpdateListener(this)) ;
     }
     
-    @Override
-    public QueryHandler queryHandler()
-    { return queryHandler ; }
     
+//    @Override
+//    public QueryHandler queryHandler()
+//    { return queryHandler ; }
+//    
 //    @Override
 //    public TransactionHandler getTransactionHandler()
 //    { return transactionHandler ; }
@@ -86,7 +62,7 @@ public class PGraph extends GraphBase implements Sync, Reorderable
     @Override
     public void performAdd( Triple t ) 
     { 
-        boolean changed = tripleTable.add(t) ;
+        boolean changed = dataset.getQuadTable().add(graphNode, t) ;
         if ( ! changed )
             duplicate(t) ;
     }
@@ -103,36 +79,33 @@ public class PGraph extends GraphBase implements Sync, Reorderable
     @Override
     public void performDelete( Triple t ) 
     { 
-        boolean changed = tripleTable.delete(t) ;
+        boolean changed = dataset.getQuadTable().delete(graphNode, t) ;
     }
-    
-//    // Make sure that the stage generator isn't installed.
-//    @Override
-//    public QueryHandler queryHandler()
-//    { return new GraphQueryHandlerTDB(this) ; }
     
     @Override
     protected ExtendedIterator graphBaseFind(TripleMatch m)
     {
-        Iterator<Triple> iter = tripleTable.find(m.getMatchSubject(), m.getMatchPredicate(), m.getMatchObject()) ;
+        Iterator<Quad> iter = dataset.getQuadTable().find(graphNode ,m.getMatchSubject(), m.getMatchPredicate(), m.getMatchObject()) ;
         if ( iter == null )
             return new com.hp.hpl.jena.util.iterator.NullIterator() ;
-        return new MapperIterator(iter) ;
+        
+        return new MapperIterator(graphNode, iter) ;
     }
 
+    // Simply convert from Iterator<Triple> to ExtendedIterator
     static class MapperIterator extends NiceIterator
     {
-        Iterator<Triple> iter ;
-        MapperIterator(Iterator<Triple> iter)
-        {
-            this.iter = iter ;
+        private final Iterator<Quad> iter ;
+        private final Node graphNode ;
+        MapperIterator(Node graphNode, Iterator<Quad> iter) { this.graphNode = graphNode ; this.iter = iter ; }
+        @Override public boolean hasNext() { return iter.hasNext() ; } 
+        @Override public Triple next()
+        { 
+            Quad q = iter.next();
+            if ( ! q.getGraph().equals(graphNode))
+                throw new InternalError("GraphNamed: Quads from unexpected graph") ;
+            return q.getTriple() ;
         }
-        
-        @Override
-        public boolean hasNext() { return iter.hasNext() ; } 
-        
-        @Override
-        public Triple next() { return iter.next(); }
     }
     
     @Override
@@ -154,25 +127,24 @@ public class PGraph extends GraphBase implements Sync, Reorderable
         return super.getCapabilities() ;
     }
     
+    /** Reorder processor - may be null, for "none" */
+    @Override
+    public ReorderTransformation getReorderTransform()      { return null ; }
+    
+    public Location     getLocation()                        { return dataset.getLocation() ; }
+    
     @Override
     final public void close()
     {
-        tripleTable.close();
+        dataset.close();
         super.close() ;
     }
     
     @Override
     public void sync(boolean force)
     {
-        tripleTable.sync(force);
+        dataset.sync(force);
     }
-
-    /** Reorder processor - may be null, for "none" */ 
-    public ReorderTransformation getReorderTransform()      { return reorderTransform ; }
-
-    public TripleTable1 getTripleTable()                     { return tripleTable ; }
-    public Location getLocation()                           { return tripleTable.getLocation() ; }
-
 }
 
 /*
