@@ -21,11 +21,11 @@ public class VocabTDB
     public static String getURI() { return NS ; } 
 
     // Types
-    public static final Resource DatasetTDB         = Vocab.type(NS, "DatasetTDB") ;
-    public static final Resource typeGraphTDB       = Vocab.type(NS, "GraphTDB") ;
-    public static final Resource typeGraphBDB       = Vocab.type(NS, "GraphBDB") ;
-    public static final Resource typeTupleIndex     = Vocab.type(NS, "TupleIndex") ;
-    public static final Resource typeNodeTable      = Vocab.type(NS, "NodeTable") ;
+    public static final Resource tDatasetTDB        = Vocab.type(NS, "DatasetTDB") ;
+    public static final Resource tGraphTDB          = Vocab.type(NS, "GraphTDB") ;
+    public static final Resource tGraphBDB          = Vocab.type(NS, "GraphBDB") ;
+    public static final Resource tTupleIndex        = Vocab.type(NS, "TupleIndex") ;
+    public static final Resource tNodeTable         = Vocab.type(NS, "NodeTable") ;
 
     public static final Property pLocation          = Vocab.property(NS, "location") ;
     
@@ -57,11 +57,11 @@ public class VocabTDB
         // Wire in the extension assemblers (extensions relative to the Jena assembler framework)
         // Domain and range for properties.
         // Separated and use ja:imports
-        assemblerClass(g, DatasetTDB,            new DatasetAssemblerTDB()) ;
+        assemblerClass(g, tDatasetTDB,            new DatasetAssemblerTDB()) ;
         
-        assemblerClass(g, typeGraphTDB,          new TDBGraphAssembler()) ;
+        assemblerClass(g, tGraphTDB,          new TDBGraphAssembler()) ;
         //assemblerClass(g, typeGraphBDB,          ?????) ;
-        assemblerClass(g, typeNodeTable,         new NodeTableAssembler()) ;
+        assemblerClass(g, tNodeTable,         new NodeTableAssembler()) ;
     }
     
     private static void assemblerClass(AssemblerGroup g, Resource r, Assembler a)

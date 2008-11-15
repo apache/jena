@@ -92,7 +92,7 @@ public class ModTDBDataset extends ModDataset
         {
             Dataset thing = null ;
             try {
-                thing = (Dataset)AssemblerUtils.build( modAssembler.getAssemblerFile(), VocabTDB.DatasetTDB) ;
+                thing = (Dataset)AssemblerUtils.build( modAssembler.getAssemblerFile(), VocabTDB.tDatasetTDB) ;
                 if ( thing == null )
                     // Should use assembler inheritance but how do we assert the subclass relationship in a program. 
                     thing = (Dataset)AssemblerUtils.build( modAssembler.getAssemblerFile(), DatasetAssemblerVocab.tDataset) ;

@@ -85,7 +85,7 @@ public class TDBFactory
     /** Read the file and assembler a model, of type TDB persistent graph */ 
     public static Model assembleModel(String assemblerFile)
     {
-        return (Model)AssemblerUtils.build(assemblerFile, VocabTDB.typeGraphTDB) ;
+        return (Model)AssemblerUtils.build(assemblerFile, VocabTDB.tGraphTDB) ;
     }
     
     /** Read the file and assembler a model, of type TDB persistent graph */ 
@@ -96,6 +96,12 @@ public class TDBFactory
         return g ;
     }
 
+    /** Read the file and assembler a dataset */ 
+    public static Dataset assembleDataset(String assemblerFile)
+    {
+        return (Dataset)AssemblerUtils.build(assemblerFile, VocabTDB.tDatasetTDB) ;
+    }
+    
     /** Create a model, at the given location */
     public static Model createModel(String dir)
     {

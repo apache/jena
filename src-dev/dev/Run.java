@@ -70,6 +70,8 @@ public class Run
  
     public static void main(String ... args) throws IOException
     {
+        
+        TDBFactory.assembleModel("tdb-ds.ttl") ;
         Dataset ds = TDBFactory.createDataset(new Location("DS")) ;
         
         //SSE.write(ds) ;
@@ -77,6 +79,8 @@ public class Run
 //        Model model = ds.getNamedModel("http://example/") ;
 //        FileManager.get().readModel(model, "D.ttl") ;
 //        FileManager.get().readModel(ds.getDefaultModel(), "D.ttl") ;
+        
+        query("SELECT * { GRAPH ?g { ?s ?p ?o } }", ds) ;
         
         SSE.write(ds) ;
         System.exit(0) ;
@@ -345,7 +349,7 @@ public class Run
             ((PGraph)graph).sync(true) ;
             System.out.println("Size = "+model.size()) ;
         }
-        query("SELECT * { ?s ?p ?o }", model) ;
+        //query("SELECT * { ?s ?p ?o }", model) ;
         
         
         model.close() ;
@@ -354,9 +358,18 @@ public class Run
         
     }
     
-    private static void query(String str, Model model)
+    private static void query(String str, Dataset dataset)
     {
         System.out.println(str) ; 
+        Query q = QueryFactory.create(str, Syntax.syntaxARQ) ;
+        QueryExecution qexec = QueryExecutionFactory.create(q, dataset) ;
+        ResultSet rs = qexec.execSelect() ;
+        ResultSetFormatter.out(rs) ;
+        qexec.close() ;
+    }
+    
+    private static void query(String str, Model model)
+    {
         Query q = QueryFactory.create(str, Syntax.syntaxARQ) ;
         QueryExecution qexec = QueryExecutionFactory.create(q, model) ;
         ResultSet rs = qexec.execSelect() ;

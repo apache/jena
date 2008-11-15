@@ -46,7 +46,7 @@ public class ExTDB3
             // Alternatively, look for the a single resource of the right type. 
             try {
                 // Find the required description - the file can contain descriptions of many different types.
-                root = GraphUtils.findRootByType(spec, VocabTDB.typeGraphTDB) ;
+                root = GraphUtils.findRootByType(spec, VocabTDB.tGraphTDB) ;
                 if ( root == null )
                     throw new JenaException("Failed to find a suitable root") ;
             } catch (TypeNotUniqueException ex)
