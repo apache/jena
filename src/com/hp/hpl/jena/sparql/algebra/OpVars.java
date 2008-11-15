@@ -13,6 +13,7 @@ import java.util.Set;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.sparql.algebra.op.*;
+import com.hp.hpl.jena.sparql.core.BasicPattern;
 import com.hp.hpl.jena.sparql.core.Quad;
 
 import com.hp.hpl.jena.query.SortCondition;
@@ -54,11 +55,16 @@ public class OpVars
 
         public void visit(OpBGP opBGP)
         {
-            for ( Iterator iter = opBGP.getPattern().iterator() ; iter.hasNext() ; )
+            vars(opBGP.getPattern()) ;
+        }
+        
+        private void vars(BasicPattern pattern)
+        {
+            for ( Iterator iter = pattern.iterator() ; iter.hasNext() ; )
             {
-                Triple t = (Triple)iter.next() ;
-                addVarsFromTriple(acc, t) ;
-            }
+                Triple triple = (Triple)iter.next() ;
+                addVarsFromTriple(acc, triple) ;
+            } 
         }
         
         public void visit(OpPath opPath)
@@ -69,11 +75,14 @@ public class OpVars
 
         public void visit(OpQuadPattern quadPattern)
         {
-            for ( Iterator iter = quadPattern.getQuads().iterator() ; iter.hasNext() ; )
-            {
-                Quad quad = (Quad)iter.next() ;
-                addVarsFromQuad(acc, quad) ;
-            }
+            addVar(acc, quadPattern.getGraphNode()) ;
+            vars(quadPattern.getBasicPattern()) ;
+            // Pure quading
+//            for ( Iterator iter = quadPattern.getQuads().iterator() ; iter.hasNext() ; )
+//            {
+//                Quad quad = (Quad)iter.next() ;
+//                addVarsFromQuad(acc, quad) ;
+//            }
         }
 
         public void visit(OpGraph opGraph)

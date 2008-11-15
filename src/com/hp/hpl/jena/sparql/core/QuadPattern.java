@@ -19,6 +19,8 @@ public class QuadPattern
 {
     private List quads = new ArrayList() ; 
 
+    // Not used?
+    // OpQuadPattern is a graph node and a basic graph pattern.
     public QuadPattern() {}
     public QuadPattern(QuadPattern other) {quads.addAll(other.quads) ; }
     

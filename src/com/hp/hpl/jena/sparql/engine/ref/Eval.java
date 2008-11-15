@@ -122,7 +122,7 @@ public class Eval
     
     static Table evalQuadPattern(OpQuadPattern opQuad, Evaluator evaluator)
     {
-        if ( opQuad.getQuads().size() == 0 )
+        if ( opQuad.isEmpty() )
             return TableFactory.createUnit() ;
         
         ExecutionContext cxt = evaluator.getExecContext() ;

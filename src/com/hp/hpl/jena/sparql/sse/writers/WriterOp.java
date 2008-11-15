@@ -140,15 +140,16 @@ public class WriterOp
 
         public void visit(OpQuadPattern opQuadP)
         { 
-            if ( opQuadP.getQuads().size() == 1 )
+            List quads = opQuadP.getQuads() ;
+            if ( quads.size() == 1 )
             {
                 start(opQuadP, NoNL) ;
-                formatQuad((Quad)opQuadP.getQuads().get(0)) ;
+                formatQuad((Quad)quads.get(0)) ;
                 finish(opQuadP) ;
                 return ;
             }
             start(opQuadP, NL) ;
-            for ( Iterator iter = opQuadP.getQuads().listIterator() ; iter.hasNext() ;)
+            for ( Iterator iter = quads.listIterator() ; iter.hasNext() ;)
             {
                Quad quad = (Quad)iter.next() ;
                formatQuad(quad) ;

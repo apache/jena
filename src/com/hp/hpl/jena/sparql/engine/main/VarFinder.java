@@ -18,7 +18,6 @@ import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.OpVisitorBase;
 import com.hp.hpl.jena.sparql.algebra.op.*;
 import com.hp.hpl.jena.sparql.core.BasicPattern;
-import com.hp.hpl.jena.sparql.core.Quad;
 import com.hp.hpl.jena.sparql.core.Var;
 
 class VarFinder
@@ -31,7 +30,7 @@ class VarFinder
         return VarUsageVisitor.apply(op).optDefines ;
     }
     
-    static Set fixed(Op op)
+    private static Set fixed(Op op)
     {
         return VarUsageVisitor.apply(op).defines ;
     }
@@ -42,14 +41,23 @@ class VarFinder
         return VarUsageVisitor.apply(op).filterMentions ;
     }
 
-    static void vars(Set vars, Triple triple)
+    private static void vars(Set vars, Triple triple)
     {
         slot(vars, triple.getSubject()) ;
         slot(vars, triple.getPredicate()) ;
         slot(vars, triple.getObject()) ;
     }
     
-    static void slot(Set vars, Node node)
+    private static void vars(Set acc, BasicPattern pattern)
+    {
+        for ( Iterator iter = pattern.iterator() ; iter.hasNext(); )
+        {
+            Triple triple = (Triple)iter.next() ;
+            vars(acc, triple) ;
+        }
+    }
+
+    private static void slot(Set vars, Node node)
     {
         if ( Var.isVar(node) )
             vars.add(Var.alloc(node)) ;
@@ -95,26 +103,24 @@ class VarFinder
         public void visit(OpQuadPattern quadPattern)
         {
             slot(defines, quadPattern.getGraphNode()) ;
-            List quads = quadPattern.getQuads() ;
-            for ( Iterator iter = quads.iterator() ; iter.hasNext(); )
-            {
-                Quad quad = (Quad)iter.next() ;
-                //slot(quad.getGraph()) ;
-                slot(defines, quad.getSubject()) ;
-                slot(defines, quad.getPredicate()) ;
-                slot(defines, quad.getObject()) ;
-            }
+            BasicPattern triples = quadPattern.getBasicPattern() ;
+            vars(defines, triples) ;
+//            List quads = quadPattern.getQuads() ;
+//            for ( Iterator iter = quads.iterator() ; iter.hasNext(); )
+//            {
+//                Quad quad = (Quad)iter.next() ;
+//                //slot(quad.getGraph()) ;
+//                slot(defines, quad.getSubject()) ;
+//                slot(defines, quad.getPredicate()) ;
+//                slot(defines, quad.getObject()) ;
+//            }
         }
 
         //@Override
         public void visit(OpBGP opBGP)
         {
             BasicPattern triples = opBGP.getPattern() ;
-            for ( Iterator iter = triples.iterator() ; iter.hasNext(); )
-            {
-                Triple triple = (Triple)iter.next() ;
-                vars(defines, triple) ;
-            }
+            vars(defines, triples) ;
         }
         
         //@Override

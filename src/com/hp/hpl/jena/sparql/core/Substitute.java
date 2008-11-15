@@ -11,7 +11,6 @@ import java.util.Iterator;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 
-import com.hp.hpl.jena.sparql.ARQInternalErrorException;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.TransformCopy;
 import com.hp.hpl.jena.sparql.algebra.Transformer;
@@ -98,17 +97,28 @@ public class Substitute
             Node g = substitute(gNode, binding) ;
 
             BasicPattern triples = new BasicPattern() ;
-            for ( Iterator iter = quadPattern.getQuads().iterator() ; iter.hasNext() ; )
+            for ( Iterator iter = quadPattern.getBasicPattern().iterator() ; iter.hasNext() ; )
             {
-                Quad quad = (Quad)iter.next() ;
-                if ( ! quad.getGraph().equals(gNode) )
-                    throw new ARQInternalErrorException("Internal error: quads block is not uniform over the graph node") ;
-                Node s = substitute(quad.getSubject(), binding) ;
-                Node p = substitute(quad.getPredicate(), binding) ;
-                Node o = substitute(quad.getObject(), binding) ;
+                Triple triple = (Triple)iter.next() ;
+                Node s = substitute(triple.getSubject(), binding) ;
+                Node p = substitute(triple.getPredicate(), binding) ;
+                Node o = substitute(triple.getObject(), binding) ;
                 Triple t = new Triple(s, p, o) ;
                 triples.add(t) ;
             }
+            
+            // Pure quading.
+//            for ( Iterator iter = quadPattern.getQuads().iterator() ; iter.hasNext() ; )
+//            {
+//                Quad quad = (Quad)iter.next() ;
+//                if ( ! quad.getGraph().equals(gNode) )
+//                    throw new ARQInternalErrorException("Internal error: quads block is not uniform over the graph node") ;
+//                Node s = substitute(quad.getSubject(), binding) ;
+//                Node p = substitute(quad.getPredicate(), binding) ;
+//                Node o = substitute(quad.getObject(), binding) ;
+//                Triple t = new Triple(s, p, o) ;
+//                triples.add(t) ;
+//            }
 
             return new OpQuadPattern(g, triples) ;
         }
