@@ -9,8 +9,6 @@ package dev;
 import java.io.IOException;
 import java.util.*;
 
-import com.sleepycat.je.EnvironmentConfig;
-
 import lib.Bytes;
 import lib.ColumnMap;
 import lib.FileOps;
@@ -72,13 +70,13 @@ public class Run
  
     public static void main(String ... args) throws IOException
     {
-        Dataset ds = TDBFactory.createDataset(new Location("DB")) ;
+        Dataset ds = TDBFactory.createDataset(new Location("DS")) ;
         
         //SSE.write(ds) ;
         
-        Model model = ds.getNamedModel("http://example/") ;
-        FileManager.get().readModel(model, "D.ttl") ;
-        FileManager.get().readModel(ds.getDefaultModel(), "D.ttl") ;
+//        Model model = ds.getNamedModel("http://example/") ;
+//        FileManager.get().readModel(model, "D.ttl") ;
+//        FileManager.get().readModel(ds.getDefaultModel(), "D.ttl") ;
         
         SSE.write(ds) ;
         System.exit(0) ;
