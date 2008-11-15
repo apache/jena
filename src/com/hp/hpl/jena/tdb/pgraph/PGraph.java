@@ -19,7 +19,6 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 import com.hp.hpl.jena.util.iterator.NiceIterator;
 
 import com.hp.hpl.jena.graph.Capabilities;
-import com.hp.hpl.jena.graph.TransactionHandler;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.graph.TripleMatch;
 import com.hp.hpl.jena.graph.impl.GraphBase;
@@ -54,7 +53,7 @@ public class PGraph extends GraphBase implements Sync, Reorderable
     final static RecordFactory nodeRecordFactory = new RecordFactory(LenNodeHash, SizeOfNodeId) ;
     
     private final GraphTDBQueryHandler queryHandler = new GraphTDBQueryHandler(this) ;
-    private final TransactionHandler transactionHandler = null ; //new GraphTDBTransactionHandler(this) ;
+    //private final TransactionHandler transactionHandler = null ; //new GraphTDBTransactionHandler(this) ;
     private ReorderTransformation reorderTransform = null ;
 
     private TripleTable1 tripleTable ;
@@ -80,9 +79,9 @@ public class PGraph extends GraphBase implements Sync, Reorderable
     public QueryHandler queryHandler()
     { return queryHandler ; }
     
-    @Override
-    public TransactionHandler getTransactionHandler()
-    { return transactionHandler ; }
+//    @Override
+//    public TransactionHandler getTransactionHandler()
+//    { return transactionHandler ; }
     
     @Override
     public void performAdd( Triple t ) 

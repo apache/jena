@@ -20,6 +20,8 @@ import lib.Tuple;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.sparql.core.Quad;
+
+import com.hp.hpl.jena.tdb.TDBException;
 import com.hp.hpl.jena.tdb.base.record.Record;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 import com.hp.hpl.jena.tdb.store.NodeId;
@@ -97,12 +99,16 @@ public class TupleLib
     //@Deprecated
     private static Triple triple(NodeTable nodeTable, Tuple<NodeId> tuple) 
     {
+        if ( tuple.size() != 3 )
+            throw new TDBException("Tuple is not of length 3: "+tuple) ;
         return triple(nodeTable, tuple.get(0), tuple.get(1), tuple.get(2)) ;
     }
     
-  //@Deprecated
+    //@Deprecated
     private static Quad quad(NodeTable nodeTable, Tuple<NodeId> tuple) 
     {
+        if ( tuple.size() != 4 )
+            throw new TDBException("Tuple is not of length 4: "+tuple) ;
         return quad(nodeTable, tuple.get(0), tuple.get(1), tuple.get(2), tuple.get(3)) ;
     }
     

@@ -16,46 +16,53 @@ import java.util.Iterator;
 import lib.Tuple;
 
 import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Triple;
 
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 
-import com.hp.hpl.jena.tdb.store.GraphTDB;
 import com.hp.hpl.jena.tdb.store.NodeId;
+import com.hp.hpl.jena.tdb.store.NodeTupleTable;
 
 public class StageMatchTriple extends RepeatApplyIterator<BindingNodeId>
 {
-    private GraphTDB graph ;
-    private Triple triple ;
-    private ExecutionContext execCxt ;
+    private final NodeTupleTable nodeTupleTable ;
+    private final Tuple<Node> tuple ;
+    private final NodeId ids[] ; 
+    private final Var[] var ; 
 
-    public StageMatchTriple(GraphTDB graph, Iterator<BindingNodeId> input, Triple triple, ExecutionContext execCxt)
+    private final ExecutionContext execCxt ;
+
+    public StageMatchTriple(NodeTupleTable nodeTupleTable, Iterator<BindingNodeId> input, Tuple<Node> tuple, ExecutionContext execCxt)
     {
         super(input) ;
-        this.graph = graph ; 
-        this.triple = triple ;
+        this.nodeTupleTable = nodeTupleTable ; 
+        this.tuple = tuple ;
         this.execCxt = execCxt ;
+        ids = new NodeId[tuple.size()] ;
+        var = new Var[tuple.size()] ;
+        for ( int i = 0 ; i < tuple.size() ; i++ )
+        {
+            Node n = tuple.get(i) ;
+            var[i] = Var.isVar(n) ? asVar(n) : null ;
+        }
     }
 
     @Override
     protected Iterator<BindingNodeId> makeNextStage(final BindingNodeId input)
     {
-        NodeId s = idFor(graph, input, triple.getSubject()) ;
-        if ( s == NodeId.NodeDoesNotExist ) return new NullIterator<BindingNodeId>() ;
-        
-        NodeId p = idFor(graph, input, triple.getPredicate()) ;
-        if ( p == NodeId.NodeDoesNotExist ) return new NullIterator<BindingNodeId>() ;
-        
-        NodeId o = idFor(graph, input, triple.getObject()) ;
-        if ( o == NodeId.NodeDoesNotExist ) return new NullIterator<BindingNodeId>() ;
-        
-        // s etc is a null if the triple has a variable in that slot.
-        final Var var_s = (s == null) ? asVar(triple.getSubject()) : null ;
-        final Var var_p = (p == null) ? asVar(triple.getPredicate()) : null ;
-        final Var var_o = (o == null) ? asVar(triple.getObject()) : null ;
+        // Process the Node to NodeId conversion ourselves because
+        // we wish to abort if an unknown node is seen.
+        for ( int i = 0 ; i < tuple.size() ; i++ )
+        {
+            Node n = tuple.get(i) ;
+            NodeId nId = idFor(nodeTupleTable, input, n) ;
+            if ( nId == NodeId.NodeDoesNotExist )
+                new NullIterator<BindingNodeId>() ;
+            ids[i] = nId ;
+        }
 
-        Iterator<Tuple<NodeId>> tuples = graph.getTripleTable().find(s,p,o);
+        // Go directly to the tuple table 
+        Iterator<Tuple<NodeId>> tuples = nodeTupleTable.getTupleTable().find(new Tuple<NodeId>(ids)) ;
 
         Transform<Tuple<NodeId>, BindingNodeId> binder = new Transform<Tuple<NodeId>, BindingNodeId>()
         {
@@ -63,28 +70,16 @@ public class StageMatchTriple extends RepeatApplyIterator<BindingNodeId>
             public BindingNodeId convert(Tuple<NodeId> tuple)
             {
                 BindingNodeId output = new BindingNodeId(input) ;
-
-                if ( var_s != null )
+                for ( int i = 0 ; i < var.length ; i++ )
                 {
-                    if ( reject(output, var_s, tuple.get(0)) )
+                    Var v = var[i] ;
+                    if ( v == null )
+                        continue ;
+                    NodeId id = tuple.get(i) ;
+                    if ( reject(output, v,id) )
                         return null ;
-                    output.put(var_s, tuple.get(0)) ;
+                    output.put(v, id) ;
                 }
-
-                if ( var_p != null )
-                {
-                    if ( reject(output, var_p, tuple.get(1)) )
-                        return null ;
-                    output.put(var_p, tuple.get(1)) ;
-                }
-
-                if ( var_o != null )
-                {
-                    if ( reject(output, var_o, tuple.get(2)) )
-                        return null ;
-                    output.put(var_o, tuple.get(2)) ;
-                }
-
                 return output ;
             }
         } ;
@@ -109,7 +104,8 @@ public class StageMatchTriple extends RepeatApplyIterator<BindingNodeId>
         return null ;
     }
 
-    private static NodeId idFor(GraphTDB graph, BindingNodeId input, Node node)
+    /** Return null for variables, and for nodes, the node id or NodeDoesNotExist */
+    private static NodeId idFor(NodeTupleTable nodeTupleTable, BindingNodeId input, Node node)
     {
         if ( Var.isVar(node) )
         {
@@ -118,7 +114,7 @@ public class StageMatchTriple extends RepeatApplyIterator<BindingNodeId>
             return n ;
         } 
         // May return NodeId.NodeDoesNotExist which must not be null. 
-        return graph.getTripleTable().getNodeTable().nodeIdForNode(node) ;
+        return nodeTupleTable.getNodeTable().nodeIdForNode(node) ;
     }
 }
 /*

@@ -6,8 +6,8 @@
 
 package dev.opt;
 
+import com.hp.hpl.jena.sparql.algebra.ExtBuilder;
 import com.hp.hpl.jena.sparql.algebra.Op;
-import com.hp.hpl.jena.sparql.algebra.OpExtRegistry;
 import com.hp.hpl.jena.sparql.algebra.TransformCopy;
 import com.hp.hpl.jena.sparql.algebra.op.*;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
@@ -55,7 +55,7 @@ public class TransformIndexJoin extends TransformCopy
     
     static final String indexedLeftJoin = "indLJ" ;
     
-    static class OpIndLJFactory implements OpExtRegistry.ExtBuilder
+    static class OpIndLJFactory implements ExtBuilder
     {
         @Override
         public String getSubTab()

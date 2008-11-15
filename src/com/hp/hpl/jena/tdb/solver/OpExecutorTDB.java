@@ -7,10 +7,9 @@
 package com.hp.hpl.jena.tdb.solver;
 
 import static com.hp.hpl.jena.tdb.TDB.logExec;
+import lib.StrUtils;
 
 import com.hp.hpl.jena.graph.Node;
-
-import lib.StrUtils;
 
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.Transform;
@@ -25,13 +24,16 @@ import com.hp.hpl.jena.sparql.core.Quad;
 import com.hp.hpl.jena.sparql.core.Substitute;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
+import com.hp.hpl.jena.sparql.engine.iterator.QueryIterDistinct;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterPeek;
 import com.hp.hpl.jena.sparql.engine.main.OpExecutor;
 import com.hp.hpl.jena.sparql.engine.main.OpExecutorFactory;
 import com.hp.hpl.jena.sparql.engine.main.QC;
 import com.hp.hpl.jena.sparql.expr.ExprList;
+
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderProc;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
+import com.hp.hpl.jena.tdb.store.DatasetTDB;
 import com.hp.hpl.jena.tdb.store.GraphTDB;
 import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
@@ -82,8 +84,8 @@ public class OpExecutorTDB extends OpExecutor
 
         // Dataset a TDB one?
         // Presumably the quad transform has been applied.
-//        if ( ! ( execCxt.getDataset() instanceof DatasetTDB ) )
-//            return super.execute(quadPattern, input) ;
+        if ( ! ( execCxt.getDataset() instanceof DatasetTDB ) )
+            return super.execute(quadPattern, input) ;
         
         if ( quadPattern.isDefaultGraph() )
         {
@@ -96,18 +98,19 @@ public class OpExecutorTDB extends OpExecutor
         // Special graph node names.
         
         if ( gn.equals(Quad.defaultGraphIRI ))
-        {
             // Explicit name for the default graph
-        }
+            return execute(new OpBGP(quadPattern.getBasicPattern()), input) ;
         
         if ( gn.equals(Quad.unionGraph) )
-        {
             // Name for the union of named graphs
-        }
-       
+            gn = null ;
         
-        
-        return super.execute(quadPattern, input) ;
+        DatasetTDB ds = (DatasetTDB)execCxt.getDataset() ;
+        QueryIterator qIter = SolverLib.execute(ds, gn, quadPattern.getBasicPattern(), input, execCxt) ;
+        if ( gn == null )
+            // Must be distinct if over all named graphs.
+            qIter = new QueryIterDistinct(qIter, execCxt) ;
+        return qIter ;
     }
     
     @Override

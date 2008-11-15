@@ -12,8 +12,6 @@ import com.hp.hpl.jena.tdb.index.factories.IndexFactoryBPlusTree;
 import com.hp.hpl.jena.tdb.index.factories.IndexFactoryBPlusTreeMem;
 import com.hp.hpl.jena.tdb.index.factories.IndexFactoryBTree;
 import com.hp.hpl.jena.tdb.index.factories.IndexFactoryBTreeMem;
-import com.hp.hpl.jena.tdb.pgraph.PGraph;
-import com.hp.hpl.jena.tdb.pgraph.PGraphFactory;
 import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
 /** Place to put various "making" explicitly for testing */
@@ -21,35 +19,35 @@ import com.hp.hpl.jena.tdb.sys.SystemTDB;
 public class GraphTDBFactoryTest
 {
     /** Create a graph backed with storage at a location using and BTree indexes (testing) */
-    public static PGraph createBTree(Location location)
+    public static GraphTDB createBTree(Location location)
     { 
         IndexFactoryBTree idxFactory = new IndexFactoryBTree(SystemTDB.BlockSizeTest) ;
         IndexBuilder builder = new IndexBuilder(idxFactory,idxFactory) ; 
-        return PGraphFactory.create(builder, location) ;
+        return FactoryGraphTDB.createGraph(builder, location) ;
     }
 
     /** Create a graph backed with storage at a location using and BTree indexes (testing) */
-    public static PGraph createBPlusTree(Location location)
+    public static GraphTDB createBPlusTree(Location location)
     { 
         IndexFactoryBPlusTree idxFactory = new IndexFactoryBPlusTree(SystemTDB.BlockSizeTest) ;
         IndexBuilder builder = new IndexBuilder(idxFactory,idxFactory) ; 
-        return PGraphFactory.create(builder, location) ;
+        return FactoryGraphTDB.createGraph(builder, location) ;
     }
 
     /** Create a graph backed with storage and BTree indexes in-memory (testing) */
-    public static PGraph createBTreeMem()
+    public static GraphTDB createBTreeMem()
     { 
         IndexFactoryBPlusTreeMem idxFactory = new IndexFactoryBPlusTreeMem(SystemTDB.OrderMem) ;
         IndexBuilder builder = new IndexBuilder(idxFactory,idxFactory) ; 
-        return PGraphFactory.createMem(builder) ;
+        return FactoryGraphTDB.createGraphMem(builder) ;
     }
     
     /** Create a graph backed with storage and B+Tree indexes in-memory (testing) */
-    public static PGraph createBPlusTreeMem()
+    public static GraphTDB createBPlusTreeMem()
     { 
         IndexFactoryBTreeMem idxFactory = new IndexFactoryBTreeMem(SystemTDB.OrderMem) ;
         IndexBuilder builder = new IndexBuilder(idxFactory,idxFactory) ; 
-        return PGraphFactory.createMem(builder) ;
+        return FactoryGraphTDB.createGraphMem(builder) ;
     }
 }
 

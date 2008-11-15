@@ -39,46 +39,70 @@ public class FactoryGraphTDB
     // For this class
     private static Logger log = LoggerFactory.getLogger(FactoryGraphTDB.class) ;
 
-    private static String[] indexes = { "SPO", "POS", "OSP" } ;
+    private static String primaryIndex = "SPO" ; 
+    private static String[] indexes = { primaryIndex, "POS", "OSP" } ;
     
     // ---- Record factories
     public final static RecordFactory indexRecordFactory = new RecordFactory(LenIndexRecord, 0) ; 
     public final static RecordFactory nodeRecordFactory = new RecordFactory(LenNodeHash, SizeOfNodeId) ;
     
-    /** Create a TDB graph at the location.  Any existing persisten files are reconnected.
-     * If there no index or node files at the location, and empty graph is setup.
+    /** Create a TDB graph at the location.  Any existing persistent files are reconnected.
+     * If there no index or node files at the location, an empty graph is setup.
      * 
      * @param location      The location containg the file system resources.
-     * @param transform
-     * @return
      */
     public static GraphTDB createGraph(Location location)
     {
-        TripleTable table = createTripleTable(IndexBuilder.get(), location, indexes) ;
-        ReorderTransformation transform = chooseOptimizer(location) ;                                               
+        return createGraph(IndexBuilder.get(), location) ;
+    }  
+    
+    /** Create a TDB graph using a specifc index builder - mainly for testing */
+    public static GraphTDB createGraph(IndexBuilder indexBuilder, Location location)
+    {
+        TripleTable table = createTripleTable(indexBuilder, location, indexes) ;
+        ReorderTransformation transform = chooseOptimizer(location) ;
         return new GraphTDB(table, transform, location) ;
     }  
     
+    
+    /** Create a TDB graph in-memory - for testing */
     public static GraphTDB createGraphMem()
     {
-        TripleTable table = createTripleTableMem(indexes) ;
+        return createGraph(IndexBuilder.mem(), null) ;
+    }
+
+    /** Create a TDB graph in-memory - for testing */
+    public static GraphTDB createGraphMem(IndexBuilder indexBuilder)
+    {
+        TripleTable table = createTripleTableMem(indexBuilder, indexes) ;
         ReorderTransformation transform = chooseOptimizer(null) ;
         return new GraphTDB(table, transform, null) ;
-    }  
-    
+    }
+
+    /** Create a TDB graph at the location and wrap it up as a Model.  
+     * Any existing persistent files are reconnected.
+     * If there no index or node files at the location, an empty graph is setup.
+     * 
+     * @param location      The location containg the file system resources.
+     */
     public static Model createModel(Location location)
     {
         return ModelFactory.createModelForGraph(createGraph(location)) ;
     }
     
+    /** Create a TDB graph in-memory - for testing */
     static TripleTable createTripleTableMem()
     { 
         return createTripleTableMem(indexes) ;
     }
-     
+
     static TripleTable createTripleTableMem(String...descs)
     { 
-        IndexBuilder indexBuilder = IndexBuilder.mem();
+        return createTripleTableMem(IndexBuilder.mem(), descs) ;
+    }
+    
+    private static TripleTable createTripleTableMem(IndexBuilder indexBuilder, String...descs)
+    {
         TupleIndex indexes[] = new TupleIndex[descs.length] ;
         int i = 0 ;
         for ( String desc : descs )
@@ -105,10 +129,10 @@ public class FactoryGraphTDB
         return new TripleTable(indexes, indexRecordFactory, nodeTable, location) ;
     }
 
-    public static TupleIndex createTupleIndex(IndexBuilder indexBuilder, Location location, String desc)
+    static TupleIndex createTupleIndex(IndexBuilder indexBuilder, Location location, String desc)
     {
         RangeIndex rIdx1 = indexBuilder.newRangeIndex(location, indexRecordFactory, desc) ;
-        TupleIndex tupleIndex = new TupleIndex(3, new ColumnMap("SPO", desc), indexRecordFactory, rIdx1) ; 
+        TupleIndex tupleIndex = new TupleIndex(3, new ColumnMap(primaryIndex, desc), indexRecordFactory, rIdx1) ; 
         return tupleIndex ;
     }
     

@@ -13,11 +13,13 @@ import iterator.Transform;
 import java.util.Iterator;
 import java.util.List;
 
+import lib.Tuple;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
+
 import com.hp.hpl.jena.sparql.core.BasicPattern;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
@@ -26,8 +28,7 @@ import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.binding.BindingMap;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterSingleton;
 
-import com.hp.hpl.jena.tdb.store.GraphTDB;
-import com.hp.hpl.jena.tdb.store.NodeId;
+import com.hp.hpl.jena.tdb.store.*;
 
 
 /** Utilities used within the TDB BGP solver */
@@ -36,43 +37,61 @@ public class SolverLib
     private static Logger log = LoggerFactory.getLogger(SolverLib.class) ; 
     
     public interface ConvertNodeIDToNode { 
-        public Iterator<Binding> convert(GraphTDB graph, Iterator<BindingNodeId> iterBindingIds) ;
+        public Iterator<Binding> convert(NodeTable nodeTable, Iterator<BindingNodeId> iterBindingIds) ;
     }
     
-    /** Change this to change the process of NodeId to Node conversion.  Normally it's this code, which 
-     * puts a delayed iterator mapping around the BindingNodeId stream. 
+    /** Change this to change the process of NodeId to Node conversion. 
+     * Normally it's this code, which puts a delayed iterator mapping
+     * around the BindingNodeId stream. 
      */
     public static ConvertNodeIDToNode converter = new ConvertNodeIDToNode(){
         @Override
-        public Iterator<Binding> convert(GraphTDB graph, Iterator<BindingNodeId> iterBindingIds)
+        public Iterator<Binding> convert(NodeTable nodeTable, Iterator<BindingNodeId> iterBindingIds)
         {
-            return Iter.map(iterBindingIds, convToBinding(graph)) ;
+            return Iter.map(iterBindingIds, convToBinding(nodeTable)) ;
         }} ;
     
     /** Non-reordering execution of a basic graph pattern, given a iterator of bindings as input */ 
     public static QueryIterator execute(GraphTDB graph, BasicPattern pattern, QueryIterator input, ExecutionContext execCxt)
     {
-        // Don't log at level info here normally, OpExecutor is the right place.
-        if ( log.isDebugEnabled() )
-            log.debug(pattern.toString()) ;
-        
-        // ---- Execute
         @SuppressWarnings("unchecked")
         List<Triple> triples = (List<Triple>)pattern.getList() ;
         @SuppressWarnings("unchecked")
         Iterator<Binding> iter = (Iterator<Binding>)input ;
-        
-        Iterator<BindingNodeId> chain = Iter.map(iter, SolverLib.convFromBinding(graph)) ;
+        NodeTable nodeTable = graph.getTripleTable().getNodeTable() ;
+        Iterator<BindingNodeId> chain = Iter.map(iter, SolverLib.convFromBinding(nodeTable)) ;
         
         for ( Triple triple : triples )
-            chain = solve(graph, chain, triple, execCxt) ;
+        {
+            Tuple<Node> t = new Tuple<Node>(triple.getSubject(), triple.getPredicate(), triple.getObject()) ;
+            chain = solve(graph.getTripleTable(), chain, t, execCxt) ;
+        }
         
-        //Iterator<Binding> iterBinding = Iter.map(chain, convToBinding(graph)) ;
-        // ** Temporary : indirection to allow the cluster engine to do it differently.
-        Iterator<Binding> iterBinding = converter.convert(graph, chain) ;
+        Iterator<Binding> iterBinding = converter.convert(nodeTable, chain) ;
         return new QueryIterTDB(iterBinding, input, execCxt) ;
     }
 
+    /** Non-reordering execution of a quad pattern, given a iterator of bindings as input */ 
+    public static QueryIterator execute(DatasetTDB ds, Node graphNode, BasicPattern pattern, QueryIterator input, ExecutionContext execCxt)
+    {
+        @SuppressWarnings("unchecked")
+        List<Triple> triples = (List<Triple>)pattern.getList() ;
+        @SuppressWarnings("unchecked")
+        Iterator<Binding> iter = (Iterator<Binding>)input ;
+        NodeTable nodeTable = ds.getQuadTable().getNodeTable() ;
+        Iterator<BindingNodeId> chain = Iter.map(iter, SolverLib.convFromBinding(nodeTable)) ;
+        
+        for ( Triple triple : triples )
+        {
+            Tuple<Node> t = new Tuple<Node>(graphNode, triple.getSubject(), triple.getPredicate(), triple.getObject()) ;
+            chain = solve(ds.getQuadTable(), chain, t, execCxt) ;
+        }
+        
+        Iterator<Binding> iterBinding = converter.convert(nodeTable, chain) ;
+        return new QueryIterTDB(iterBinding, input, execCxt) ;
+    }
+
+    
     /** Non-reordering execution of a basic graph pattern, given a single binding as input */ 
     public static QueryIterator execute(GraphTDB graph, BasicPattern pattern, Binding binding, ExecutionContext execCxt)
     {
@@ -93,14 +112,14 @@ public class SolverLib
 //        return new QueryIterTDB(iterBinding, null, execCxt) ;
     }
 
-    private static Iterator<BindingNodeId> solve(GraphTDB graph, Iterator<BindingNodeId> chain, 
-                                                 Triple triple, ExecutionContext execCxt)
+    private static Iterator<BindingNodeId> solve(NodeTupleTable nodeTupleTable, Iterator<BindingNodeId> chain, 
+                                                 Tuple<Node> tuple, ExecutionContext execCxt)
     {
-        return new StageMatchTriple(graph, chain, triple, execCxt) ;
+        return new StageMatchTriple(nodeTupleTable, chain, tuple, execCxt) ;
     }
     
     // Transform : BindingNodeId ==> Binding
-    private static Transform<BindingNodeId, Binding> convToBinding(final GraphTDB graph)
+    private static Transform<BindingNodeId, Binding> convToBinding(final NodeTable nodeTable)
     {
         return new Transform<BindingNodeId, Binding>()
         {
@@ -108,7 +127,7 @@ public class SolverLib
             public Binding convert(BindingNodeId bindingNodeIds)
             {
                 if ( true )
-                    return new BindingTDB(null, bindingNodeIds, graph.getTripleTable().getNodeTable()) ;
+                    return new BindingTDB(null, bindingNodeIds, nodeTable) ;
                 else
                 {
                     // Makes nodes immediately.  Causing unecessary NodeTable accesses (e.g. project) 
@@ -116,7 +135,7 @@ public class SolverLib
                     for ( Var v : bindingNodeIds )
                     {
                         NodeId id = bindingNodeIds.get(v) ;
-                        Node n = graph.getTripleTable().getNodeTable().retrieveNodeByNodeId(id) ;
+                        Node n = nodeTable.retrieveNodeByNodeId(id) ;
                         b.add(v, n) ;
                     }
                     return b ;
@@ -126,7 +145,7 @@ public class SolverLib
     }
 
     // Transform : Binding ==> BindingNodeId
-    private static Transform<Binding, BindingNodeId> convFromBinding(final GraphTDB graph)
+    private static Transform<Binding, BindingNodeId> convFromBinding(final NodeTable nodeTable)
     {
         return new Transform<Binding, BindingNodeId>()
         {
@@ -142,7 +161,7 @@ public class SolverLib
                     Var v = vars.next() ;
                     Node n = binding.get(v) ;  
                     // Rely on the node table cache. 
-                    NodeId id = graph.getTripleTable().getNodeTable().nodeIdForNode(n) ;
+                    NodeId id = nodeTable.nodeIdForNode(n) ;
                     b.put(v, id) ;
                 }
                 return b ;
