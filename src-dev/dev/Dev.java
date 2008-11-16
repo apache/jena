@@ -8,8 +8,14 @@ package dev;
 
 public class Dev
 {
-    // The switch over has happened!
     // Scripted test slow?
+    //   Quads transform
+    //   Special case GraphNamed to be like GraphTDB.  Or combine? 
+    //   Optimization of quad patterns
+    //   Quad loader.
+    //   ARQ Query engine determination
+    //   "First class Graph layer"
+    //   Test cases, include substitution.
 
     // Canonicalization - language tags.  NodeLib
     

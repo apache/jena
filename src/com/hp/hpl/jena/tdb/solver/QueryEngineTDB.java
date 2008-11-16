@@ -10,8 +10,10 @@ import com.hp.hpl.jena.query.Query;
 
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB;
 
+import com.hp.hpl.jena.sparql.algebra.Algebra;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.core.DatasetGraph;
+import com.hp.hpl.jena.sparql.core.Substitute;
 import com.hp.hpl.jena.sparql.engine.Plan;
 import com.hp.hpl.jena.sparql.engine.QueryEngineFactory;
 import com.hp.hpl.jena.sparql.engine.QueryEngineRegistry;
@@ -26,21 +28,26 @@ public class QueryEngineTDB extends QueryEngineMain
     static public QueryEngineFactory getFactory() { return factory ; } 
     static public void register()       { QueryEngineRegistry.addFactory(factory) ; }
     static public void unregister()     { QueryEngineRegistry.removeFactory(factory) ; }
+
     
+    Binding input ;
+
     // ---- Object
     private QueryEngineTDB(Op op, DatasetGraphTDB dataset, Binding input, Context context)
-    { super(op, dataset, input, context) ; }
+    { super(op, dataset, input, context) ; this.input = input ; }
 
     
     private QueryEngineTDB(Query query, DatasetGraphTDB dataset, Binding input, Context context)
-    { super(query, dataset, input, context) ; }
+    { super(query, dataset, input, context) ; this.input = input ; }
     
     // Choose the algebra-level optimizations to invoke. 
     @Override
     protected Op modifyOp(Op op)
     { 
-        return super.modifyOp(op) ;
-        //return Algebra.optimize(op) ;
+        op = Substitute.substitute(op, input) ;
+        op = super.modifyOp(op) ;
+        op = Algebra.toQuadForm(op) ;
+        return op ;
     }
 
     // ---- Factory

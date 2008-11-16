@@ -19,6 +19,7 @@ import arq.cmd.CmdUtils;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.RSIterator;
+import com.hp.hpl.jena.rdf.model.ResourceFactory;
 
 import com.hp.hpl.jena.util.FileManager;
 
@@ -29,6 +30,7 @@ import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.sparql.algebra.Algebra;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.Transformer;
+import com.hp.hpl.jena.sparql.core.Quad;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.main.StageGenerator;
 import com.hp.hpl.jena.sparql.engine.optimizer.StageGenOptimizedBasicPattern;
@@ -70,19 +72,39 @@ public class Run
  
     public static void main(String ... args) throws IOException
     {
-        
-        TDBFactory.assembleModel("tdb-ds.ttl") ;
-        Dataset ds = TDBFactory.createDataset(new Location("DS")) ;
+        FileOps.clearDirectory("DS") ;
+        Dataset ds = TDBFactory.assembleDataset("tdb-ds.ttl") ;
+        //Dataset ds = TDBFactory.createDataset(new Location("DS")) ;
         
         //SSE.write(ds) ;
         
-//        Model model = ds.getNamedModel("http://example/") ;
-//        FileManager.get().readModel(model, "D.ttl") ;
-//        FileManager.get().readModel(ds.getDefaultModel(), "D.ttl") ;
+        if ( true )
+        {
+            Model mNamed1 = ds.getNamedModel("http://example/d1/") ;
+            Model mNamed2 = ds.getNamedModel("http://example/d2/") ;
+            Model dftModel = ds.getDefaultModel() ;
+
+            FileManager.get().readModel(dftModel, "D.ttl") ;
+            FileManager.get().readModel(mNamed1, "D1.ttl") ;
+            FileManager.get().readModel(mNamed2, "D2.ttl") ;
+        }
+        Node n[] =     { Node.createURI("http://example/d2/") , Quad.defaultGraphIRI, Quad.defaultGraphNode, Quad.unionGraph } ;
+        String str[] = { "d2", "defaultGraphIRI", "defaultGraphNode", "unionGraph" } ;
+
+//        Node n[] = { Quad.unionGraph } ;
+//        String str[] = { "unionGraph" } ;
         
-        query("SELECT * { GRAPH ?g { ?s ?p ?o } }", ds) ;
+        for ( int i = 0 ; i < n.length ; i++ )
+        {
+            Node g = n[i] ;
+            String label = str[i] ;
+            System.out.println("**** "+label) ;
+            QuerySolutionMap qs = new QuerySolutionMap() ;
+            qs.add("g", ResourceFactory.createResource(n[i].getURI())) ;
+            query("SELECT * { GRAPH ?g { ?s ?p ?o } }", ds, qs) ;
+        }
         
-        SSE.write(ds) ;
+        //SSE.write(ds) ;
         System.exit(0) ;
         
         tdbquery("--tdb=tdb.ttl", "SELECT count(*) { ?s ?p ?o }") ;
@@ -360,9 +382,14 @@ public class Run
     
     private static void query(String str, Dataset dataset)
     {
+        query(str, dataset, null) ;
+    }
+    
+    private static void query(String str, Dataset dataset, QuerySolution qs)
+    {
         System.out.println(str) ; 
         Query q = QueryFactory.create(str, Syntax.syntaxARQ) ;
-        QueryExecution qexec = QueryExecutionFactory.create(q, dataset) ;
+        QueryExecution qexec = QueryExecutionFactory.create(q, dataset, qs) ;
         ResultSet rs = qexec.execSelect() ;
         ResultSetFormatter.out(rs) ;
         qexec.close() ;

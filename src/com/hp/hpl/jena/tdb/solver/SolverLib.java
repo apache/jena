@@ -83,8 +83,8 @@ public class SolverLib
         
         for ( Triple triple : triples )
         {
-            Tuple<Node> t = new Tuple<Node>(graphNode, triple.getSubject(), triple.getPredicate(), triple.getObject()) ;
-            chain = solve(ds.getQuadTable(), chain, t, execCxt) ;
+            Tuple<Node> tuple = new Tuple<Node>(graphNode, triple.getSubject(), triple.getPredicate(), triple.getObject()) ;
+            chain = solve(ds.getQuadTable(), chain, tuple, execCxt) ;
         }
         
         Iterator<Binding> iterBinding = converter.convert(nodeTable, chain) ;

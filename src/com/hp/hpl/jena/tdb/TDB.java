@@ -22,6 +22,7 @@ import com.hp.hpl.jena.query.ARQ;
 import com.hp.hpl.jena.tdb.assembler.VocabTDB;
 import com.hp.hpl.jena.tdb.base.loader.NTriplesReader2;
 import com.hp.hpl.jena.tdb.solver.OpExecutorTDB;
+import com.hp.hpl.jena.tdb.solver.QueryEngineTDB;
 import com.hp.hpl.jena.tdb.solver.StageGeneratorDirectTDB;
 import com.hp.hpl.jena.tdb.solver.StageGeneratorGeneric;
 import com.hp.hpl.jena.tdb.sys.Metadata;
@@ -70,6 +71,7 @@ public class TDB
         //QueryEngineTDB.register() ;
         
         VocabTDB.init();
+        QueryEngineTDB.register() ;
         
         // XXX Really need to sort this out!
         TDB.getContext().set(ARQ.filterPlacement, false) ;

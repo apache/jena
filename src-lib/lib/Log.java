@@ -14,6 +14,26 @@ public class Log
 {
     private Log() {}
     
+    static public void info(Class<?> cls, String msg)
+    {
+        log(cls).info(msg) ;
+    }
+    
+    static public void info(Object caller, String msg)
+    {
+        log(caller.getClass()).info(msg) ;
+    }
+    
+    static public void info(Class<?> cls, String msg, Throwable th)
+    {
+        log(cls).info(msg, th) ;
+    }
+    
+    static public void info(Object caller, String msg, Throwable th)
+    {
+        log(caller.getClass()).info(msg, th) ;
+    }
+    
     static public void warn(Object caller, String msg)
     {
         warn(caller.getClass(), msg) ;

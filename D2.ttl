@@ -1,0 +1,6 @@
+@prefix   :         <http://example/d2/> .
+@prefix  xsd:    <http://www.w3.org/2001/XMLSchema#> .
+
+:z :lang "xyz" .
+<http://example/d1/z> <http://example/d1/lang> "xyz" . # Duplicate
+<http://example/d1/z> :lang "abc" .

@@ -53,7 +53,7 @@ public class Map2<K, V> implements Iterable<K>
     public void put(K key, V value)
     {
         if ( map2 != null && map2.containsKey(key) )
-            throw new IllegalArgumentException("Parent map already conatins "+key) ;
+            throw new IllegalArgumentException("Parent map already contains "+key) ;
         map1.put(key, value) ;
     }
 

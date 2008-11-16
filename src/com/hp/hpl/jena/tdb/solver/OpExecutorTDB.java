@@ -7,11 +7,17 @@
 package com.hp.hpl.jena.tdb.solver;
 
 import static com.hp.hpl.jena.tdb.TDB.logExec;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import lib.Log;
 import lib.StrUtils;
 
 import com.hp.hpl.jena.graph.Node;
 
 import com.hp.hpl.jena.sparql.algebra.Op;
+import com.hp.hpl.jena.sparql.algebra.OpVars;
 import com.hp.hpl.jena.sparql.algebra.Transform;
 import com.hp.hpl.jena.sparql.algebra.TransformCopy;
 import com.hp.hpl.jena.sparql.algebra.op.OpBGP;
@@ -19,13 +25,12 @@ import com.hp.hpl.jena.sparql.algebra.op.OpFilter;
 import com.hp.hpl.jena.sparql.algebra.op.OpLabel;
 import com.hp.hpl.jena.sparql.algebra.op.OpQuadPattern;
 import com.hp.hpl.jena.sparql.algebra.opt.TransformFilterPlacement;
-import com.hp.hpl.jena.sparql.core.BasicPattern;
-import com.hp.hpl.jena.sparql.core.Quad;
-import com.hp.hpl.jena.sparql.core.Substitute;
+import com.hp.hpl.jena.sparql.core.*;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterDistinct;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterPeek;
+import com.hp.hpl.jena.sparql.engine.iterator.QueryIterProject;
 import com.hp.hpl.jena.sparql.engine.main.OpExecutor;
 import com.hp.hpl.jena.sparql.engine.main.OpExecutorFactory;
 import com.hp.hpl.jena.sparql.engine.main.QC;
@@ -82,6 +87,8 @@ public class OpExecutorTDB extends OpExecutor
             return super.execute(quadPattern, input) ;
         //GraphTDB graph = (GraphTDB)execCxt.getActiveGraph() ;
 
+        Log.info(this, "TDB quads") ;
+        
         // Dataset a TDB one?
         // Presumably the quad transform has been applied.
         if ( ! ( execCxt.getDataset() instanceof DatasetGraphTDB ) )
@@ -94,22 +101,36 @@ public class OpExecutorTDB extends OpExecutor
             OpBGP opBGP = new OpBGP(quadPattern.getBasicPattern()) ;
             return execute(opBGP, input) ;  
         }
+        
+        BasicPattern bgp = quadPattern.getBasicPattern() ;
+        
         Node gn = quadPattern.getGraphNode() ;
         // Special graph node names.
         
         if ( gn.equals(Quad.defaultGraphIRI ))
             // Explicit name for the default graph
-            return execute(new OpBGP(quadPattern.getBasicPattern()), input) ;
+            return execute(new OpBGP(bgp), input) ;
+
+        // **** Optimize the basic pattern.
         
+        boolean doingUnion = false ;
         if ( gn.equals(Quad.unionGraph) )
+        {
+            doingUnion = true ;
             // Name for the union of named graphs
-            gn = null ;
+            gn = VarAlloc.getVarAllocator().allocVar() ;
+        }
         
         DatasetGraphTDB ds = (DatasetGraphTDB)execCxt.getDataset() ;
-        QueryIterator qIter = SolverLib.execute(ds, gn, quadPattern.getBasicPattern(), input, execCxt) ;
-        if ( gn == null )
-            // Must be distinct if over all named graphs.
+        QueryIterator qIter = SolverLib.execute(ds, gn, bgp, input, execCxt) ;
+        if ( doingUnion )
+        {
+            //XXX QueryIterProjectHide
+            List<Var> vars = new ArrayList<Var>() ;
+            OpVars.vars(bgp, vars) ;
+            qIter = new QueryIterProject(qIter, vars, execCxt) ;
             qIter = new QueryIterDistinct(qIter, execCxt) ;
+        }
         return qIter ;
     }
     
