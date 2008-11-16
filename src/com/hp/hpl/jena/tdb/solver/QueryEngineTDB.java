@@ -21,7 +21,11 @@ import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.main.QueryEngineMain;
 import com.hp.hpl.jena.sparql.util.Context;
 
-// NOT USED (yet) - instead, TDB uses a custom OpCompiler to intercept certain Op evaluations
+// Used for DatasetTDB evaluation (not a TDB graph in any other datase).
+// TDB also uses a custom OpExecutor to intercept certain Op evaluations
+
+// Generalize - this is the quad transform only.
+
 public class QueryEngineTDB extends QueryEngineMain
 {
     // ---- Wiring
@@ -63,7 +67,7 @@ public class QueryEngineTDB extends QueryEngineMain
         }
         
         public boolean accept(Op op, DatasetGraph dataset, Context context) 
-        { return true ; }
+        { return (dataset instanceof DatasetGraphTDB) ; }
 
         public Plan create(Op op, DatasetGraph dataset, Binding binding, Context context)
         {
