@@ -8,9 +8,12 @@ package com.hp.hpl.jena.tdb.sys;
 
 public class Names
 {
-    public static final String indexSPO         = "SPO" ;
-    public static final String indexPOS         = "POS" ;
-    public static final String indexOSP         = "OSP" ;
+    public static final String primaryIndexTriples = "SPO" ; 
+    public static final String[] tripleIndexes = { primaryIndexTriples, "POS", "OSP" } ;
+
+    public static final String primaryIndexQuads = "GSPO" ; 
+    public static final String[] quadIndexes = { primaryIndexQuads, "GPOS", "GOSP", "POSG", "OSPG", "SPOG"} ;
+
     
     /** B+Trees - nodes file and records file */
     public static final String bptExt1          = "idn" ;

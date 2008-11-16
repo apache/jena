@@ -32,18 +32,12 @@ import com.hp.hpl.jena.tdb.solver.reorder.ReorderLib;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
 import com.hp.hpl.jena.tdb.sys.Names;
 import com.hp.hpl.jena.tdb.sys.SystemTDB;
-
+import static com.hp.hpl.jena.tdb.sys.Names.* ;
 
 public class FactoryGraphTDB
 {
     // For this class
     private static Logger log = LoggerFactory.getLogger(FactoryGraphTDB.class) ;
-
-    private static String primaryIndexTriples = "SPO" ; 
-    private static String[] tripleIndexes = { primaryIndexTriples, "POS", "OSP" } ;
-
-    private static String primaryIndexQuads = "SPOG" ; 
-    private static String[] quadIndexes = { primaryIndexQuads, "POSG", "OSPG", "GSPO", "GPOS", "GOSP" } ;
 
     // ---- Record factories
     public final static RecordFactory indexRecordTripleFactory = new RecordFactory(LenIndexTripleRecord, 0) ; 

@@ -40,11 +40,6 @@ public class GraphBDB extends PGraph
             NodeTable nodeTable = new NodeTableBDB(config, nodeToId, objects) ;
 
             throw new TDBException("NOT IMPLEMENTED YET") ;
-//            // ---- Triple indexes
-//            Index3 spo = new TripleIndexBDB(config, mapSPO, Names.indexSPO) ;
-//            Index3 pos = new TripleIndexBDB(config, mapPOS, Names.indexPOS) ;
-//            Index3 osp = new TripleIndexBDB(config, mapOSP, Names.indexOSP) ;
-//            init(spo, pos, osp, nodeTable) ;
         } catch (DatabaseException ex)
         {
             throw new TDBException(ex) ;

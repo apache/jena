@@ -62,9 +62,6 @@ public class BulkLoader
     private TupleIndex   primaryIndex ;
     private TupleIndex[] secondaryIndexes ;
     
-//    private TripleIndex triplesSPO ;
-//    private TripleIndex triplesPOS ;
-//    private TripleIndex triplesOSP ;
     private Item statsItem = null ;
     private TripleTable tripleTable ; 
 
