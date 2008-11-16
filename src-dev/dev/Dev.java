@@ -9,12 +9,9 @@ package dev;
 public class Dev
 {
     // Scripted test slow?
-    //   Quads transform
     //   Special case GraphNamed to be like GraphTDB.  Or combine? 
-    //   Optimization of quad patterns
+    //   Optimization of quad patterns - optimize associated BGP
     //   Quad loader.
-    //   ARQ Query engine determination
-    //   "First class Graph layer"
     //   Test cases, include substitution.
 
     // Canonicalization - language tags.  NodeLib

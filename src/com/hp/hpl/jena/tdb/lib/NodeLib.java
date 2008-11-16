@@ -75,12 +75,6 @@ public class NodeLib
         }
     }
     
-//    /** Canonical language tag : RFC 4646, 4647 (matching)  */
-//    public String langTag(String langTag)
-//    {
-//        
-//    }
-    
     /** Get the triples in the form of a List<Triple> */
     public static List<Triple> tripleList(OpBGP opBGP)
     {
