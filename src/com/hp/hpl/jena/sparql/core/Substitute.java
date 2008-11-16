@@ -38,7 +38,7 @@ public class Substitute
     public static Op substitute(Op op, Var var, Node node)
     {
         Binding b = new Binding1(null, var, node) ;
-        return Transformer.transform(new OpSubstituteWorker(b), op) ;
+        return substitute(op, b) ;
     }
     
     public static BasicPattern substitute(BasicPattern bgp, Binding binding)

@@ -6,6 +6,7 @@
 
 package com.hp.hpl.jena.sparql.algebra;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -45,7 +46,16 @@ public class OpVars
     {
         OpWalker.walk(op, new OpVarsQuery(acc)) ;
     }
-
+    
+    public static void vars(BasicPattern pattern, Collection acc)
+    {
+        for ( Iterator iter = pattern.iterator() ; iter.hasNext() ; )
+        {
+            Triple triple = (Triple)iter.next() ;
+            addVarsFromTriple(acc, triple) ;
+        } 
+    }
+    
     private static class OpVarsPattern extends OpVisitorBase
     {
         // The possibly-set-vars
@@ -55,16 +65,7 @@ public class OpVars
 
         public void visit(OpBGP opBGP)
         {
-            vars(opBGP.getPattern()) ;
-        }
-        
-        private void vars(BasicPattern pattern)
-        {
-            for ( Iterator iter = pattern.iterator() ; iter.hasNext() ; )
-            {
-                Triple triple = (Triple)iter.next() ;
-                addVarsFromTriple(acc, triple) ;
-            } 
+            vars(opBGP.getPattern(), acc) ;
         }
         
         public void visit(OpPath opPath)
@@ -76,7 +77,7 @@ public class OpVars
         public void visit(OpQuadPattern quadPattern)
         {
             addVar(acc, quadPattern.getGraphNode()) ;
-            vars(quadPattern.getBasicPattern()) ;
+            vars(quadPattern.getBasicPattern(), acc) ;
             // Pure quading
 //            for ( Iterator iter = quadPattern.getQuads().iterator() ; iter.hasNext() ; )
 //            {
@@ -140,14 +141,14 @@ public class OpVars
         }
     }
 
-    private static void addVarsFromTriple(Set acc, Triple t)
+    private static void addVarsFromTriple(Collection acc, Triple t)
     {
         addVar(acc, t.getSubject()) ;
         addVar(acc, t.getPredicate()) ;
         addVar(acc, t.getObject()) ;
     }
     
-    private static void addVarsFromQuad(Set acc, Quad q)
+    private static void addVarsFromQuad(Collection acc, Quad q)
     {
         addVar(acc, q.getSubject()) ;
         addVar(acc, q.getPredicate()) ;
@@ -155,7 +156,7 @@ public class OpVars
         addVar(acc, q.getGraph()) ;
     }
     
-    private static void addVar(Set acc, Node n)
+    private static void addVar(Collection acc, Node n)
     {
         if ( n == null )
             return ;
