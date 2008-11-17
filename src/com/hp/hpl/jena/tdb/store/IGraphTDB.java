@@ -6,11 +6,13 @@
 
 package com.hp.hpl.jena.tdb.store;
 
+import com.hp.hpl.jena.graph.Graph;
+
 import com.hp.hpl.jena.tdb.lib.Sync;
 import com.hp.hpl.jena.tdb.solver.reorder.Reorderable;
 
 // XXX Until a better name comes along ... thisought to be GraphTDB and GraphTDB ought to be GraphSingleTDB and GraphNamed opught to be GraphQuadTDB
-public interface IGraphTDB extends Sync, Reorderable
+public interface IGraphTDB extends Graph, Sync, Reorderable
 {
     public NodeTupleTable getNodeTupleTable() ;
     

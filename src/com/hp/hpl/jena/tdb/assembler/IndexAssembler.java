@@ -10,6 +10,7 @@ import static com.hp.hpl.jena.sparql.util.graph.GraphUtils.exactlyOneProperty;
 import static com.hp.hpl.jena.sparql.util.graph.GraphUtils.getAsStringValue;
 import static com.hp.hpl.jena.tdb.assembler.VocabTDB.pDescription;
 import static com.hp.hpl.jena.tdb.assembler.VocabTDB.pFile;
+import lib.ColumnMap;
 
 import com.hp.hpl.jena.rdf.model.Resource;
 
@@ -17,11 +18,14 @@ import com.hp.hpl.jena.assembler.Assembler;
 import com.hp.hpl.jena.assembler.Mode;
 import com.hp.hpl.jena.assembler.assemblers.AssemblerBase;
 
+import com.hp.hpl.jena.tdb.TDBException;
 import com.hp.hpl.jena.tdb.base.file.Location;
+import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 import com.hp.hpl.jena.tdb.index.IndexBuilder;
 import com.hp.hpl.jena.tdb.index.RangeIndex;
-import com.hp.hpl.jena.tdb.pgraph.TripleIndex;
+import com.hp.hpl.jena.tdb.index.TupleIndex;
 import com.hp.hpl.jena.tdb.store.FactoryGraphTDB;
+import com.hp.hpl.jena.tdb.sys.Names;
 
 public class IndexAssembler extends AssemblerBase //implements Assembler
 {
@@ -35,7 +39,7 @@ public class IndexAssembler extends AssemblerBase //implements Assembler
     private IndexAssembler(Location location)  { this.location = location ; }
     
     @Override
-    public TripleIndex open(Assembler a, Resource root, Mode mode)
+    public TupleIndex open(Assembler a, Resource root, Mode mode)
     {
         exactlyOneProperty(root, pDescription) ;
         String desc = getAsStringValue(root, pDescription).toUpperCase() ;
@@ -46,10 +50,25 @@ public class IndexAssembler extends AssemblerBase //implements Assembler
         if ( location != null )
             filename = location.absolute(filename) ;
         
-        RangeIndex rIndex = IndexBuilder.createRangeIndex(new Location(filename), 
-                                                          desc, 
-                                                          FactoryGraphTDB.indexRecordTripleFactory) ;
-        return new TripleIndex(desc, rIndex) ;
+        String primary = null ;
+        RecordFactory rf = null ;
+        
+        switch ( desc.length() )
+        {
+            case 3:
+                primary = Names.primaryIndexTriples ;
+                rf = FactoryGraphTDB.indexRecordTripleFactory ;
+                break ;
+            case 4:
+                primary = Names.primaryIndexQuads;
+                rf = FactoryGraphTDB.indexRecordQuadFactory ;
+                break ;
+            default:
+                throw new TDBException("Bad length for index description: "+desc) ;
+                
+        }
+        RangeIndex rIndex = IndexBuilder.createRangeIndex(new Location(filename), desc, rf) ;
+        return new TupleIndex(desc.length(), new ColumnMap(primary, desc), rf, rIndex) ;
     }
 
     public static RangeIndex rangeIndex(String filename, String name)

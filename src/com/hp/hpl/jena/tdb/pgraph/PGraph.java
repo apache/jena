@@ -52,7 +52,7 @@ public class PGraph extends GraphBase implements Sync, Reorderable
     final static RecordFactory indexRecordFactory = new RecordFactory(LenIndexTripleRecord, 0) ; 
     final static RecordFactory nodeRecordFactory = new RecordFactory(LenNodeHash, SizeOfNodeId) ;
     
-    private final GraphTDBQueryHandler queryHandler = new GraphTDBQueryHandler(this) ;
+    private final GraphTDBQueryHandler queryHandler = null ;
     //private final TransactionHandler transactionHandler = null ; //new GraphTDBTransactionHandler(this) ;
     private ReorderTransformation reorderTransform = null ;
 

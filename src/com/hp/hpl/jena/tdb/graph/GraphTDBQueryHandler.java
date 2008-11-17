@@ -6,15 +6,17 @@
 
 package com.hp.hpl.jena.tdb.graph;
 
-import com.hp.hpl.jena.graph.Graph;
+import com.hp.hpl.jena.util.iterator.ExtendedIterator;
+
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.query.SimpleQueryHandler;
-import com.hp.hpl.jena.util.iterator.ExtendedIterator;
+
+import com.hp.hpl.jena.tdb.store.IGraphTDB;
 
 public class GraphTDBQueryHandler extends SimpleQueryHandler //implements QueryHandler
 {
 
-    public GraphTDBQueryHandler(Graph graph)
+    public GraphTDBQueryHandler(IGraphTDB graph)
     {
         super(graph) ;
     }

@@ -110,7 +110,6 @@ public class FactoryGraphTDB
         return new DatasetImpl(new DatasetGraphTDB(triples, quads, null, location)) ;
     }
 
-
     // ---- Process
     private static TupleIndex[] indexes(IndexBuilder indexBuilder, RecordFactory recordFactory, 
                                         Location location, String primary, String...descs)

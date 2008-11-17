@@ -31,7 +31,7 @@ import com.hp.hpl.jena.sparql.util.Utils;
 import com.hp.hpl.jena.tdb.index.TupleIndex;
 import com.hp.hpl.jena.tdb.pgraph.PGraph;
 import com.hp.hpl.jena.tdb.pgraph.TripleIndex;
-import com.hp.hpl.jena.tdb.store.GraphTDB;
+import com.hp.hpl.jena.tdb.store.IGraphTDB;
 import com.hp.hpl.jena.tdb.store.NodeId;
 import com.hp.hpl.jena.tdb.store.NodeTable;
 
@@ -116,24 +116,28 @@ public class StatsCollector
     }
         
     /** Gather statistics - faster for TDB */
-    public static Item gatherTDB(GraphTDB graph)
+    public static Item gatherTDB(IGraphTDB graph)
     {
         long count = 0 ;
         Map<NodeId, Integer> predicateIds = new HashMap<NodeId, Integer>(1000) ;
         
-        TupleIndex index = graph.getTripleTable().getTupleTable().getIndex(0) ;
-        if ( ! index.getLabel().equals("SPO") )
+        TupleIndex index = graph.getNodeTupleTable().getTupleTable().getIndex(0) ;
+        if ( ! index.getLabel().equals("SPO->SPO") &&
+             ! index.getLabel().equals("GSPO->GSPO") )
             Log.warn(StatsCollector.class, "May not be the right index: "+index.getLabel()) ;
         
         Iterator<Tuple<NodeId>> iter = index.all() ;
+        boolean quads = (index.getTupleLength()==4)  ;
+        final int idx = (quads ? 2 : 1) ;
+        
         for ( ; iter.hasNext() ; )
         {
             Tuple<NodeId> tuple = iter.next(); 
             count++ ;
-            MapUtils.increment(predicateIds, tuple.get(1)) ;
+            MapUtils.increment(predicateIds, tuple.get(idx)) ;
         }
         
-        return statsOutput(graph.getTripleTable().getNodeTable(), predicateIds, count) ;
+        return statsOutput(graph.getNodeTupleTable().getNodeTable(), predicateIds, count) ;
     }
         
     private static Item statsOutput(NodeTable nodeTable, Map<NodeId, Integer> predicateIds, long total)
