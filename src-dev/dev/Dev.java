@@ -15,7 +15,6 @@ public class Dev
     //   Quad loader.
     //   Test cases, include substitution.
 
-    // Quick experiment : ObjectFileDisk that delays writing.
     // ---- Reopenable BlockMgrs (and the object file?) 
 
     // --  ?? ARQ Optimizer and controlling optimizations per graph (esp FilterPlacement).

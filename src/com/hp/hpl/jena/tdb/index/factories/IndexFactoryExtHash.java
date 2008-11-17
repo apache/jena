@@ -18,7 +18,7 @@ import com.hp.hpl.jena.tdb.index.ext.ExtHash;
 import com.hp.hpl.jena.tdb.sys.Names;
 
 /** Index factory for extendible hash tables.
- *  Only an index, not a rnage index
+ *  Only an index, not a range index
  * @author Andy Seaborne
  */
 
