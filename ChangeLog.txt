@@ -3,6 +3,10 @@ ChangeLog for TDB
 
 ==== 0.7.0
 
++ Named graph support
+  Native TDB support for RDF datasets, including a quads table.
+  Preliminary.
+
 ==== 0.6.0
 + Added optimizer (statistics based) 
 + (32 bit OS) Added a transaction handler that will cause cached changes
