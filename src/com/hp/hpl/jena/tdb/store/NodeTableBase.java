@@ -105,7 +105,8 @@ public abstract class NodeTableBase implements NodeTable
     }
 
     // ----------------
-    // Node to Node Id worker
+    
+    // Node to NodeId worker
     // Find a node, possibly placing it in the node file as well
     private NodeId _idForNode(Node node, boolean allocate)
     {

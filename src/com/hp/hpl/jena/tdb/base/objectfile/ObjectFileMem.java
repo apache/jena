@@ -78,6 +78,17 @@ public class ObjectFileMem implements ObjectFile
     @Override
     public void sync(boolean force)
     {}
+    
+    @Override
+    public void dump()
+    {
+        for ( int i = 0 ; i < buffers.size(); i++ )
+        {
+            String str = read(NodeId.create((long)i)) ;
+            System.out.printf("0x%08X : %s\n", i, str) ;
+        }
+    }
+
 }
 
 /*

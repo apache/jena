@@ -25,7 +25,9 @@ import com.hp.hpl.jena.tdb.store.NodeId;
  * @version $Id$
  */
 
-public class ObjectFileDisk extends FileBase implements ObjectFile 
+// Backup version whiel trying delayed writes 
+
+public class ObjectFileDiskDirect extends FileBase implements ObjectFile 
 {
     /* No synchronization - assumes that the caller has some appropriate lock
      * because the combination of file and cache operations need to be thread safe.  
@@ -38,13 +40,21 @@ public class ObjectFileDisk extends FileBase implements ObjectFile
      *   UTF-8 bytes. 
      */
     
-    public ObjectFileDisk(String filename)
+    public ObjectFileDiskDirect(String filename)
     {
         super(filename) ;
         try { 
             filesize = out.length() ;
         } catch (IOException ex) { throw new BlockException("Failed to get filesize", ex) ; } 
     }
+    
+    // Write cache.  Strings written but not sent to disk. 
+    // List<Pair<NodeId, String>>
+    
+    //List<Pair<NodeId, ByteBuffer>> delayCache = new ArrayList<Pair<NodeId, ByteBuffer>>() ;
+    
+    
+    
     
     @Override
     public NodeId write(String str)
@@ -57,9 +67,10 @@ public class ObjectFileDisk extends FileBase implements ObjectFile
         bb.limit(len+4) ;
         bb.putInt(0, len) ;     // Object length
         bb.position(0) ;
+        
         try {
             long location = filesize ;
-            channel.position(location) ;
+            channel.position(location) ;    // ?????
             // write length
             int x = channel.write(bb) ;
             if ( x != len+4 )

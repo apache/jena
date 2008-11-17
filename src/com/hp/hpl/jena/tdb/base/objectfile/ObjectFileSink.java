@@ -40,6 +40,9 @@ public class ObjectFileSink implements ObjectFile
     {
         return NodeId.create(++id) ;
     }
+    
+    @Override
+    public void dump() {}
 }
 
 /*

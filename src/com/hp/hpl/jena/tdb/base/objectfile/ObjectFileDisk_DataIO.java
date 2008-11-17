@@ -106,6 +106,12 @@ import com.hp.hpl.jena.tdb.store.NodeId;
         } catch (IOException ex)
         { throw new FileException("ObjectFile.all", ex) ; }
     }
+
+    @Override
+    public void dump()
+    {
+        System.out.println("No dump implemented") ;
+    }
 }
 
 /*

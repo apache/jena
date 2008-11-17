@@ -23,6 +23,7 @@ public interface ObjectFile
     public List<String> all() ;
     public void sync(boolean force) ;
     public void close() ;
+    public void dump() ;
 }
 
 /*
