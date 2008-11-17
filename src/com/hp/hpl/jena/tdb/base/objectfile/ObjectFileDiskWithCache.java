@@ -9,6 +9,7 @@ package com.hp.hpl.jena.tdb.base.objectfile;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import lib.Bytes;
@@ -45,8 +46,11 @@ public class ObjectFileDiskWithCache extends FileBase implements ObjectFile
     
     // Whether this is worth it, given the OS caches sequnetial writes, is dubious. 
     // Seems to make a small difference.
-    int delayCacheSize = 1000 ;
+    int delayCacheSize = 100 ;
+
     List<Pair<NodeId, ByteBuffer>> delayCache = (delayCacheSize == -1 ? null : new ArrayList<Pair<NodeId, ByteBuffer>>(delayCacheSize)) ;
+    ByteBuffer[] delayCacheArray = (delayCacheSize == -1 ? null : new ByteBuffer[delayCacheSize]) ;
+    
     long idAllocation ;
 
     public ObjectFileDiskWithCache(String filename)
@@ -65,7 +69,7 @@ public class ObjectFileDiskWithCache extends FileBase implements ObjectFile
     public NodeId write(String str)
     { 
         if ( delayCache != null && delayCache.size() >= delayCacheSize )
-            flush(delayCache) ;
+            flushCache() ;
         
         str = compress(str) ;
         ByteBuffer bb = ByteBuffer.allocate(4+4*str.length()) ;   // Worst case
@@ -79,36 +83,41 @@ public class ObjectFileDiskWithCache extends FileBase implements ObjectFile
         idAllocation = idAllocation + len+4 ;
         NodeId nodeId = NodeId.create(location) ;
         if ( delayCache != null )
+        {
+            int i = delayCache.size() ;
             delayCache.add(new Pair<NodeId, ByteBuffer>(nodeId, bb)) ;
+            delayCacheArray[i] = bb ;
+        }
         else
-            write(nodeId, bb) ; 
+        {
+            try {
+                int x = channel.write(bb) ;
+                if ( x != bb.limit() )
+                    throw new FileException("ObjectFile.write: Buffer length = "+bb.limit()+" : actual write = "+x) ; 
+                filesize = filesize+x ;
+            } catch (IOException ex)
+            { throw new FileException("ObjectFile.write", ex) ; }
+        }
         return nodeId ; 
     }
     
-    private void flush(List<Pair<NodeId, ByteBuffer>> cache)
+    private void flushCache()
     {
-        long id = filesize ; 
-        for ( Pair<NodeId, ByteBuffer> elt : cache )
-        {
-            if ( elt == null )
-                continue ;
-            write(elt.car(), elt.cdr()) ;
-        }
-        if ( filesize != idAllocation )
-            throw new FileException("ObjectFile.write: Fiel size now: "+filesize+" but allocation point: "+idAllocation) ;
-        delayCache.clear() ;
-    }
-
-    private void write(NodeId nodId, ByteBuffer bb)
-    {
+        if ( delayCache == null )
+            return ;
+        // Convert to one big write.
+        long id = filesize ;
         try {
             // write length
-            int x = channel.write(bb) ;
-            if ( x != bb.limit() )
-                throw new FileException("ObjectFile.write: Buffer length = "+bb.limit()+" : actual write = "+x) ; 
-            filesize = filesize+x ;
+            long x = channel.write(delayCacheArray, 0, delayCache.size()) ;
+            if ( x != (idAllocation-filesize) )
+                throw new FileException("ObjectFile.write: Buffer length = "+(idAllocation-filesize)+" : actual write = "+x) ; 
+            filesize = idAllocation ;
         } catch (IOException ex)
         { throw new FileException("ObjectFile.write", ex) ; }
+
+        delayCache.clear() ;
+        Arrays.fill(delayCacheArray, 0, delayCache.size(), null) ;
     }
     
     @Override
@@ -164,8 +173,7 @@ public class ObjectFileDiskWithCache extends FileBase implements ObjectFile
     @Override
     public void close()
     {
-        if ( delayCache != null )
-            flush(delayCache) ;
+        flushCache() ;
         try {
             channel.close() ;
         } catch (IOException ex)
@@ -177,7 +185,7 @@ public class ObjectFileDiskWithCache extends FileBase implements ObjectFile
     public void sync(boolean force)
     {
         if ( force )
-            flush(delayCache) ;
+            flushCache() ;
 //        try {
 //            channel.force(true) ;
 //        } catch (IOException ex)
