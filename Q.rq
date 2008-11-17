@@ -2,6 +2,7 @@ PREFIX apf:     <http://jena.hpl.hp.com/ARQ/property#>
 PREFIX :        <http://example/>
 SELECT *
 {
-    { ?x :p1 ?a . } { ?x :p2 ?b . FILTER(?a < 5) ?x :p2 ?a }
+    :xz :p (1 2 3)
+
 }
 

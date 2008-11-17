@@ -14,6 +14,8 @@ public class Dev
     // What's the generalization?
     // FETCH : visitor, syntax tests, Algebra, execution
 
+    // Disjunction of equalities => union.
+
     // ---- Static scope analysis
     // Full scope, parallel map(op => scope sets)
     // Write tests
