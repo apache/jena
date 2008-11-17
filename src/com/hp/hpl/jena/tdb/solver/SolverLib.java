@@ -13,22 +13,27 @@ import iterator.Transform;
 import java.util.Iterator;
 import java.util.List;
 
+import lib.Lib;
 import lib.Tuple;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
-
 import com.hp.hpl.jena.sparql.core.BasicPattern;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.binding.BindingMap;
-import com.hp.hpl.jena.sparql.engine.iterator.QueryIterSingleton;
-
-import com.hp.hpl.jena.tdb.store.*;
+import com.hp.hpl.jena.tdb.TDBException;
+import com.hp.hpl.jena.tdb.store.DatasetGraphTDB;
+import com.hp.hpl.jena.tdb.store.GraphNamed;
+import com.hp.hpl.jena.tdb.store.GraphTDB;
+import com.hp.hpl.jena.tdb.store.IGraphTDB;
+import com.hp.hpl.jena.tdb.store.NodeId;
+import com.hp.hpl.jena.tdb.store.NodeTable;
+import com.hp.hpl.jena.tdb.store.NodeTupleTable;
 
 
 /** Utilities used within the TDB BGP solver */
@@ -51,13 +56,23 @@ public class SolverLib
             return Iter.map(iterBindingIds, convToBinding(nodeTable)) ;
         }} ;
     
+     public static QueryIterator execute(IGraphTDB graph, BasicPattern pattern, QueryIterator input, ExecutionContext execCxt)
+     {
+         if ( graph instanceof GraphTDB )
+             return execute((GraphTDB)graph, pattern, input, execCxt) ;
+         if ( graph instanceof GraphNamed )
+             return execute((GraphNamed)graph, pattern, input, execCxt) ;
+         throw new TDBException("Unrecognized IGraphTDB: "+Lib.className(graph)) ;
+
+     }
+        
+        
     /** Non-reordering execution of a basic graph pattern, given a iterator of bindings as input */ 
     public static QueryIterator execute(GraphTDB graph, BasicPattern pattern, QueryIterator input, ExecutionContext execCxt)
     {
-        @SuppressWarnings("unchecked")
-        List<Triple> triples = (List<Triple>)pattern.getList() ;
-        @SuppressWarnings("unchecked")
-        Iterator<Binding> iter = (Iterator<Binding>)input ;
+        @SuppressWarnings("unchecked") List<Triple> triples = (List<Triple>)pattern.getList() ;
+        @SuppressWarnings("unchecked") Iterator<Binding> iter = (Iterator<Binding>)input ;
+        
         NodeTable nodeTable = graph.getTripleTable().getNodeTable() ;
         Iterator<BindingNodeId> chain = Iter.map(iter, SolverLib.convFromBinding(nodeTable)) ;
         
@@ -71,13 +86,39 @@ public class SolverLib
         return new QueryIterTDB(iterBinding, input, execCxt) ;
     }
 
+    /** Non-reordering execution of a basic graph pattern over a named graph over a TDB dataset */ 
+    public static QueryIterator execute(GraphNamed graph, BasicPattern pattern, QueryIterator input, ExecutionContext execCxt)
+    {
+        @SuppressWarnings("unchecked") List<Triple> triples = (List<Triple>)pattern.getList() ;
+        @SuppressWarnings("unchecked") Iterator<Binding> iter = (Iterator<Binding>)input ;
+        
+        NodeTable nodeTable = graph.getNodeTupleTable().getNodeTable() ;
+        Iterator<BindingNodeId> chain = Iter.map(iter, SolverLib.convFromBinding(nodeTable)) ;
+        NodeTupleTable ntt = graph.getNodeTupleTable() ;
+        
+        for ( Triple triple : triples )
+        {
+            Tuple<Node> t = null ;
+            if ( graph.getGraphNode() == null )
+                t = new Tuple<Node>(triple.getSubject(), triple.getPredicate(), triple.getObject()) ;
+            else
+                t = new Tuple<Node>(graph.getGraphNode(), triple.getSubject(), triple.getPredicate(), triple.getObject()) ;
+                    
+            chain = solve(ntt, chain, t, execCxt) ;
+        }
+        
+        Iterator<Binding> iterBinding = converter.convert(nodeTable, chain) ;
+        return new QueryIterTDB(iterBinding, input, execCxt) ;
+    }
+
+
+    
+    // Abstract: NodeTupleTable, Tuple generator, input, execCxt 
     /** Non-reordering execution of a quad pattern, given a iterator of bindings as input */ 
     public static QueryIterator execute(DatasetGraphTDB ds, Node graphNode, BasicPattern pattern, QueryIterator input, ExecutionContext execCxt)
     {
-        @SuppressWarnings("unchecked")
-        List<Triple> triples = (List<Triple>)pattern.getList() ;
-        @SuppressWarnings("unchecked")
-        Iterator<Binding> iter = (Iterator<Binding>)input ;
+        @SuppressWarnings("unchecked") List<Triple> triples = (List<Triple>)pattern.getList() ;
+        @SuppressWarnings("unchecked") Iterator<Binding> iter = (Iterator<Binding>)input ;
         NodeTable nodeTable = ds.getQuadTable().getNodeTable() ;
         Iterator<BindingNodeId> chain = Iter.map(iter, SolverLib.convFromBinding(nodeTable)) ;
         
@@ -92,26 +133,6 @@ public class SolverLib
     }
 
     
-    /** Non-reordering execution of a basic graph pattern, given a single binding as input */ 
-    public static QueryIterator execute(GraphTDB graph, BasicPattern pattern, Binding binding, ExecutionContext execCxt)
-    {
-        QueryIterator input = new QueryIterSingleton(binding, execCxt) ;
-        return execute(graph, pattern, input, execCxt) ;
-        
-        // Maybe there is a better way to do this, given it starts from a single binding. 
-//        // ---- Execute
-//        @SuppressWarnings("unchecked")
-//        List<Triple> triples = (List<Triple>)pattern.getList() ;
-//        Iterator<BindingNodeId> chain = 
-//            new SingletonIterator<BindingNodeId>(convFromBinding(graph).convert(binding)) ;
-//        
-//        for ( Triple triple : triples )
-//            chain = solve(graph, chain, triple, execCxt) ;
-//        
-//        Iterator<Binding> iterBinding = Iter.map(chain, convToBinding(graph)) ;
-//        return new QueryIterTDB(iterBinding, null, execCxt) ;
-    }
-
     private static Iterator<BindingNodeId> solve(NodeTupleTable nodeTupleTable, Iterator<BindingNodeId> chain, 
                                                  Tuple<Node> tuple, ExecutionContext execCxt)
     {

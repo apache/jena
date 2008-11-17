@@ -1,40 +1,19 @@
 /*
- * (c) C;opyright 2008 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2008 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.tdb.solver;
+package com.hp.hpl.jena.tdb.store;
 
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.sparql.core.BasicPattern;
-import com.hp.hpl.jena.sparql.engine.ExecutionContext;
-import com.hp.hpl.jena.sparql.engine.QueryIterator;
-import com.hp.hpl.jena.sparql.engine.main.StageGenerator;
-import com.hp.hpl.jena.tdb.store.IGraphTDB;
+import com.hp.hpl.jena.tdb.lib.Sync;
+import com.hp.hpl.jena.tdb.solver.reorder.Reorderable;
 
-/** Execute TDB requests directly -- no reordering */ 
-public class StageGeneratorDirectTDB implements StageGenerator
+// XXX Until a better name comes along ... thisought to be GraphTDB and GraphTDB ought to be GraphSingleTDB and GraphNamed opught to be GraphQuadTDB
+public interface IGraphTDB extends Sync, Reorderable
 {
-    StageGenerator above = null ;
+    public NodeTupleTable getNodeTupleTable() ;
     
-    public StageGeneratorDirectTDB(StageGenerator original)
-    {
-        above = original ;
-    }
-    
-    @Override
-    public QueryIterator execute(final BasicPattern pattern, QueryIterator input, ExecutionContext execCxt)
-    {
-        // --- In case this isn't for TDB
-        Graph g = execCxt.getActiveGraph() ;
-        
-        if ( ! ( g instanceof IGraphTDB ) )
-            // Not us - bounce up the StageGenerator chain
-            return above.execute(pattern, input, execCxt) ;
-        IGraphTDB graph = (IGraphTDB)g ;
-        return SolverLib.execute(graph, pattern, input, execCxt) ;
-    }
 }
 
 /*

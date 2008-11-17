@@ -11,30 +11,25 @@ import java.util.Iterator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.hp.hpl.jena.util.iterator.ExtendedIterator;
-import com.hp.hpl.jena.util.iterator.NiceIterator;
-
 import com.hp.hpl.jena.graph.Capabilities;
 import com.hp.hpl.jena.graph.TransactionHandler;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.graph.TripleMatch;
 import com.hp.hpl.jena.graph.impl.GraphBase;
 import com.hp.hpl.jena.graph.query.QueryHandler;
-
 import com.hp.hpl.jena.sparql.util.FmtUtils;
-
 import com.hp.hpl.jena.tdb.TDB;
 import com.hp.hpl.jena.tdb.base.file.Location;
 import com.hp.hpl.jena.tdb.graph.GraphSyncListener;
 import com.hp.hpl.jena.tdb.graph.GraphTDBQueryHandler;
 import com.hp.hpl.jena.tdb.graph.GraphTDBTransactionHandler;
 import com.hp.hpl.jena.tdb.graph.UpdateListener;
-import com.hp.hpl.jena.tdb.lib.Sync;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
-import com.hp.hpl.jena.tdb.solver.reorder.Reorderable;
 import com.hp.hpl.jena.tdb.sys.SystemTDB;
+import com.hp.hpl.jena.util.iterator.ExtendedIterator;
+import com.hp.hpl.jena.util.iterator.NiceIterator;
 
-public class GraphTDB extends GraphBase implements Sync, Reorderable
+public class GraphTDB extends GraphBase implements IGraphTDB
 {
     private static Logger log = LoggerFactory.getLogger(GraphTDB.class) ;
     
@@ -127,10 +122,11 @@ public class GraphTDB extends GraphBase implements Sync, Reorderable
     
     /** Reorder processor - may be null, for "none" */
     @Override
-    public ReorderTransformation getReorderTransform()      { return reorderTransform ; }
+    public ReorderTransformation getReorderTransform()  { return reorderTransform ; }
     
-    public TripleTable getTripleTable()                    { return tripleTable   ; }
-    public Location     getLocation()                       { return tripleTable.getLocation() ; }
+    public TripleTable getTripleTable()                 { return tripleTable   ; }
+    public NodeTupleTable getNodeTupleTable()           { return tripleTable   ; }
+    public Location getLocation()                       { return tripleTable.getLocation() ; }
     
     @Override
     final public void close()

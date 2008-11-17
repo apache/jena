@@ -14,8 +14,8 @@ import java.util.List;
 import lib.Log;
 import lib.StrUtils;
 
+import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
-
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.OpVars;
 import com.hp.hpl.jena.sparql.algebra.Transform;
@@ -25,7 +25,11 @@ import com.hp.hpl.jena.sparql.algebra.op.OpFilter;
 import com.hp.hpl.jena.sparql.algebra.op.OpLabel;
 import com.hp.hpl.jena.sparql.algebra.op.OpQuadPattern;
 import com.hp.hpl.jena.sparql.algebra.opt.TransformFilterPlacement;
-import com.hp.hpl.jena.sparql.core.*;
+import com.hp.hpl.jena.sparql.core.BasicPattern;
+import com.hp.hpl.jena.sparql.core.Quad;
+import com.hp.hpl.jena.sparql.core.Substitute;
+import com.hp.hpl.jena.sparql.core.Var;
+import com.hp.hpl.jena.sparql.core.VarAlloc;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterDistinct;
@@ -35,11 +39,10 @@ import com.hp.hpl.jena.sparql.engine.main.OpExecutor;
 import com.hp.hpl.jena.sparql.engine.main.OpExecutorFactory;
 import com.hp.hpl.jena.sparql.engine.main.QC;
 import com.hp.hpl.jena.sparql.expr.ExprList;
-
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderProc;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB;
-import com.hp.hpl.jena.tdb.store.GraphTDB;
+import com.hp.hpl.jena.tdb.store.IGraphTDB;
 import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
 /** TDB executor for algebra expressions.  It is the standard ARQ executor
@@ -77,7 +80,7 @@ public class OpExecutorTDB extends OpExecutor
     public OpExecutorTDB(ExecutionContext execCxt)
     {
         super(execCxt) ;
-        isForTDB = (execCxt.getActiveGraph() instanceof GraphTDB) ;
+        isForTDB = (execCxt.getActiveGraph() instanceof IGraphTDB) ;
     }
 
     @Override
@@ -86,8 +89,6 @@ public class OpExecutorTDB extends OpExecutor
         if ( ! isForTDB )
             return super.execute(quadPattern, input) ;
         //GraphTDB graph = (GraphTDB)execCxt.getActiveGraph() ;
-
-        Log.info(this, "TDB quads") ;
         
         // Dataset a TDB one?
         // Presumably the quad transform has been applied.
@@ -139,7 +140,8 @@ public class OpExecutorTDB extends OpExecutor
     {
         if ( ! isForTDB )
             return super.execute(opBGP, input) ;
-        GraphTDB graph = (GraphTDB)execCxt.getActiveGraph() ;
+        
+        IGraphTDB graph = (IGraphTDB)execCxt.getActiveGraph() ;
         return optimizeExecute(graph, input, opBGP.getPattern(), null, execCxt) ;
     }
     
@@ -151,7 +153,7 @@ public class OpExecutorTDB extends OpExecutor
         
         if ( executeNow.equals(opLabel.getObject()) )
         {
-            GraphTDB graph = (GraphTDB)execCxt.getActiveGraph() ;
+            IGraphTDB graph = (IGraphTDB)execCxt.getActiveGraph() ;
             OpBGP opBGP = (OpBGP)opLabel.getSubOp() ; 
             return SolverLib.execute(graph, opBGP.getPattern(), input, execCxt) ;
         }
@@ -169,13 +171,13 @@ public class OpExecutorTDB extends OpExecutor
             return super.execute(opFilter, input) ;
 
         OpBGP opBGP = (OpBGP)opFilter.getSubOp() ;
-        GraphTDB graph = (GraphTDB)execCxt.getActiveGraph() ;
+        IGraphTDB graph = (IGraphTDB)execCxt.getActiveGraph() ;
         
         return optimizeExecute(graph, input, opBGP.getPattern(), opFilter.getExprs(), execCxt) ;
     }
 
-    // SolverLib??
-    public static QueryIterator optimizeExecute(GraphTDB graph, QueryIterator input, BasicPattern pattern, 
+    // XXX Need super class of GraphTDB and NamedGraph
+    public static QueryIterator optimizeExecute(IGraphTDB graph, QueryIterator input, BasicPattern pattern, 
                                                 ExprList exprs, ExecutionContext execCxt)
     {
         if ( ! input.hasNext() )
@@ -238,7 +240,6 @@ public class OpExecutorTDB extends OpExecutor
         }
     }
     
-    // This can be the standard one if the stage generator is StageGeneratorDirectTDB   
     /** An op executor that simply executes a BGP without any reordering */ 
     private static class OpExecutorPlainTDB extends OpExecutor
     {
@@ -250,11 +251,12 @@ public class OpExecutorTDB extends OpExecutor
         @Override
         public QueryIterator execute(OpBGP opBGP, QueryIterator input)
         {
-            if ( ! (execCxt.getActiveGraph() instanceof GraphTDB) )
-                return super.execute(opBGP, input) ;
-            // Log execution.
-            GraphTDB graph = (GraphTDB)execCxt.getActiveGraph() ;
-            return SolverLib.execute(graph, opBGP.getPattern(), input, execCxt) ;
+            Graph g = execCxt.getActiveGraph() ;
+            
+            if ( g instanceof IGraphTDB )
+                return SolverLib.execute((IGraphTDB)g, opBGP.getPattern(), input, execCxt) ;
+            Log.warn(this, "Non-IGraphTDB passed to OpExecutorPlainTDB") ;
+            return super.execute(opBGP, input) ;
         }
     }
 }

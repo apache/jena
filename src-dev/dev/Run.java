@@ -88,9 +88,9 @@ public class Run
             FileManager.get().readModel(mNamed1, "D1.ttl") ;
             FileManager.get().readModel(mNamed2, "D2.ttl") ;
         }
-        Node n[] =     { Node.createURI("http://example/d2/") , Quad.defaultGraphIRI, Quad.defaultGraphNode, Quad.unionGraph } ;
-        String str[] = { "d2", "defaultGraphIRI", "defaultGraphNode", "unionGraph" } ;
-
+        Node n[] =     { null, Node.createURI("http://example/d2/") , Quad.defaultGraphIRI, Quad.defaultGraphNode, Quad.unionGraph } ;
+        String str[] = { "?g", "d2", "defaultGraphIRI", "defaultGraphNode", "unionGraph" } ;
+        
 //        Node n[] = { Quad.unionGraph } ;
 //        String str[] = { "unionGraph" } ;
         
@@ -100,11 +100,17 @@ public class Run
             String label = str[i] ;
             System.out.println("**** "+label) ;
             QuerySolutionMap qs = new QuerySolutionMap() ;
-            qs.add("g", ResourceFactory.createResource(n[i].getURI())) ;
-            query("SELECT * { GRAPH ?g { ?s ?p ?o } }", ds, qs) ;
+            if ( g != null )
+                qs.add("g", ResourceFactory.createResource(n[i].getURI())) ;
+            query("SELECT * { GRAPH ?g { ?s <http://example/d1/lang> ?o } }", ds, qs) ;
         }
         
-        //SSE.write(ds) ;
+        SSE.write(ds) ;
+
+        System.out.println("**** Named graph") ;
+        Model modelNamed = ds.getNamedModel("http://example/d1/") ;
+        query("SELECT * { ?s <http://example/d1/lang> ?o }", modelNamed) ;
+        
         System.exit(0) ;
         
         tdbquery("--tdb=tdb.ttl", "SELECT count(*) { ?s ?p ?o }") ;

@@ -11,37 +11,35 @@ import java.util.Iterator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.hp.hpl.jena.util.iterator.ExtendedIterator;
-import com.hp.hpl.jena.util.iterator.NiceIterator;
-
 import com.hp.hpl.jena.graph.Capabilities;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.graph.TripleMatch;
 import com.hp.hpl.jena.graph.impl.GraphBase;
-
 import com.hp.hpl.jena.sparql.core.Quad;
 import com.hp.hpl.jena.sparql.util.FmtUtils;
-
 import com.hp.hpl.jena.tdb.TDB;
 import com.hp.hpl.jena.tdb.base.file.Location;
 import com.hp.hpl.jena.tdb.graph.GraphSyncListener;
 import com.hp.hpl.jena.tdb.graph.UpdateListener;
-import com.hp.hpl.jena.tdb.lib.Sync;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
-import com.hp.hpl.jena.tdb.solver.reorder.Reorderable;
 import com.hp.hpl.jena.tdb.sys.SystemTDB;
+import com.hp.hpl.jena.util.iterator.ExtendedIterator;
+import com.hp.hpl.jena.util.iterator.NiceIterator;
 
-public class GraphNamed extends GraphBase implements Sync, Reorderable
+/** A graph wrapper that projects a quad table as a graph */
+public class GraphNamed extends GraphBase implements IGraphTDB
 {
     private static Logger log = LoggerFactory.getLogger(GraphNamed.class) ;
     
     private final DatasetGraphTDB dataset ;
+    private final QuadTable quadTable ; 
     private final Node graphNode ;
 
     public GraphNamed(DatasetGraphTDB dataset, Node graphName) 
     {
         this.dataset = dataset ;
+        this.quadTable = dataset.getQuadTable() ;
         this.graphNode = graphName ;
         
         int syncPoint = SystemTDB.SyncTick ;
@@ -85,14 +83,14 @@ public class GraphNamed extends GraphBase implements Sync, Reorderable
     @Override
     protected ExtendedIterator graphBaseFind(TripleMatch m)
     {
-        Iterator<Quad> iter = dataset.getQuadTable().find(graphNode ,m.getMatchSubject(), m.getMatchPredicate(), m.getMatchObject()) ;
+        Iterator<Quad> iter = dataset.getQuadTable().find(graphNode, m.getMatchSubject(), m.getMatchPredicate(), m.getMatchObject()) ;
         if ( iter == null )
             return new com.hp.hpl.jena.util.iterator.NullIterator() ;
         
         return new MapperIterator(graphNode, iter) ;
     }
 
-    // Simply convert from Iterator<Triple> to ExtendedIterator
+    // Simply convert from Iterator<Quad> to ExtendedIterator
     static class MapperIterator extends NiceIterator
     {
         private final Iterator<Quad> iter ;
@@ -129,9 +127,20 @@ public class GraphNamed extends GraphBase implements Sync, Reorderable
     
     /** Reorder processor - may be null, for "none" */
     @Override
-    public ReorderTransformation getReorderTransform()      { return null ; }
+    public final ReorderTransformation getReorderTransform()      { return null ; }
     
-    public Location     getLocation()                        { return dataset.getLocation() ; }
+    public final Location getLocation()                           { return dataset.getLocation() ; }
+    
+    public final Node getGraphNode()                              { return graphNode ; }
+
+    public NodeTupleTable getNodeTupleTable()
+    {
+        if ( graphNode == null )
+            return dataset.getDefaultTripleTableTable() ;
+        return dataset.getQuadTable() ;
+    }
+
+    public final DatasetGraphTDB   getDataset()                               { return dataset ; }
     
     @Override
     final public void close()

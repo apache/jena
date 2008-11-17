@@ -9,7 +9,9 @@ package dev;
 public class Dev
 {
     // Scripted test slow?
-    //   Special case GraphNamed to be like GraphTDB.  Or combine? 
+    //   Special case GraphNamed to be like GraphTDB.
+    //      Interface for reorderable+TDB 
+    //   At least make the executor react to GraphNamed.
     //   Optimization of quad patterns - optimize associated BGP
     //   Quad loader.
     //   Test cases, include substitution.
