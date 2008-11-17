@@ -9,15 +9,12 @@ package dev;
 public class Dev
 {
     // Scripted test slow?
-    //   Special case GraphNamed to be like GraphTDB.
-    //      Interface for reorderable+TDB 
-    //   At least make the executor react to GraphNamed.
+    // IGraphTDB renaming.
+    // GraphTDB > GraphTriplesTDB, GraphQuadsTDB : GraphFactory 
     //   Optimization of quad patterns - optimize associated BGP
     //   Quad loader.
     //   Test cases, include substitution.
 
-    // Canonicalization - language tags.  NodeLib
-    
     // ---- Reopenable BlockMgrs (and the object file?) 
 
     // --  ?? ARQ Optimizer and controlling optimizations per graph (esp FilterPlacement).
