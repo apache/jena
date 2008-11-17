@@ -14,14 +14,14 @@ import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.sparql.util.Utils;
 
 import com.hp.hpl.jena.tdb.TDB;
-import com.hp.hpl.jena.tdb.pgraph.PGraph;
 import com.hp.hpl.jena.tdb.store.GraphTDB;
+import com.hp.hpl.jena.tdb.store.IGraphTDB;
 import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
 public abstract class CmdTDB extends CmdARQ
 {
     // CmdTDB acts on a single graph
-    private PGraph graph = null ; 
+    private IGraphTDB graph = null ; 
     
     protected ModTDBDataset tdbDatasetAssembler = new ModTDBDataset() ;
     
