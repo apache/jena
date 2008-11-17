@@ -3,6 +3,10 @@ ChangeLog for ARQ
 
 ==== ARQ 2.6
 
++ Clean internal extensions points for TDB
+
++ Put misc support code in for TDB
+
 + Fix bug in SPARQL grammar (!) : expressions like "1+2*3" did not parse.  
   This is a fix to the grammar as published by the working group.  
    It does not invalidate or chnage any query that works - it makes some
