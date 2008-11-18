@@ -10,11 +10,8 @@ import arq.cmdline.CmdARQ;
 import arq.cmdline.ModSymbol;
 
 import com.hp.hpl.jena.rdf.model.Model;
-
 import com.hp.hpl.jena.sparql.util.Utils;
-
 import com.hp.hpl.jena.tdb.TDB;
-import com.hp.hpl.jena.tdb.store.GraphTDB;
 import com.hp.hpl.jena.tdb.store.IGraphTDB;
 import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
@@ -44,9 +41,9 @@ public abstract class CmdTDB extends CmdARQ
         return tdbDatasetAssembler.getModel() ;
     }
     
-    protected GraphTDB getGraph()
+    protected IGraphTDB getGraph()
     {
-        return (GraphTDB)tdbDatasetAssembler.getGraph() ;
+        return (IGraphTDB)tdbDatasetAssembler.getGraph() ;
     }
     
     @Override

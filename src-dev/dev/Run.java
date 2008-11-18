@@ -7,7 +7,11 @@
 package dev;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import lib.Bytes;
 import lib.ColumnMap;
@@ -16,17 +20,14 @@ import lib.Tuple;
 import lib.cache.CacheNG;
 import arq.cmd.CmdUtils;
 
+import com.hp.hpl.jena.graph.Graph;
+import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.graph.Triple;
+import com.hp.hpl.jena.query.*;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.RSIterator;
 import com.hp.hpl.jena.rdf.model.ResourceFactory;
-
-import com.hp.hpl.jena.util.FileManager;
-
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Triple;
-
 import com.hp.hpl.jena.sparql.algebra.Algebra;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.Transformer;
@@ -35,9 +36,6 @@ import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.main.StageGenerator;
 import com.hp.hpl.jena.sparql.engine.optimizer.StageGenOptimizedBasicPattern;
 import com.hp.hpl.jena.sparql.sse.SSE;
-
-import com.hp.hpl.jena.query.*;
-
 import com.hp.hpl.jena.tdb.TDB;
 import com.hp.hpl.jena.tdb.TDBFactory;
 import com.hp.hpl.jena.tdb.base.file.Location;
@@ -50,8 +48,9 @@ import com.hp.hpl.jena.tdb.solver.StageGeneratorGeneric;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderLib;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
 import com.hp.hpl.jena.tdb.store.BulkLoader;
-import com.hp.hpl.jena.tdb.store.GraphTDB;
+import com.hp.hpl.jena.tdb.store.IGraphTDB;
 import com.hp.hpl.jena.tdb.sys.SystemTDB;
+import com.hp.hpl.jena.util.FileManager;
 
 import dev.opt.Reorganise;
 import dev.opt.Scope;
@@ -125,7 +124,7 @@ public class Run
         {
             //FactoryGraphTDB.enable() ;
             FileOps.clearDirectory("DB") ;
-            GraphTDB g = (GraphTDB)TDBFactory.createGraph(new Location("DB")) ;
+            IGraphTDB g = (IGraphTDB)TDBFactory.createGraph(new Location("DB")) ;
             BulkLoader loader = new BulkLoader(g, true, false, false, false) ;
             List<String> x = new ArrayList<String>() ;
             x.add("/home/afs/Datasets/MusicBrainz/artists.nt") ;
@@ -133,7 +132,7 @@ public class Run
             System.exit(0) ;
         }
 
-        Graph g = (GraphTDB)TDBFactory.createGraph() ;
+        Graph g = (IGraphTDB)TDBFactory.createGraph() ;
         Model m = ModelFactory.createModelForGraph(g) ;
         FileManager.get().readModel(m, "D.ttl") ;
         

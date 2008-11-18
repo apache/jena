@@ -29,7 +29,7 @@ import com.hp.hpl.jena.tdb.sys.SystemTDB;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 import com.hp.hpl.jena.util.iterator.NiceIterator;
 
-/** A graph wrapper that projects a quad table as a graph */
+/** A graph implementation that projects a graph from a quad table */
 public class GraphNamed extends GraphBase implements IGraphTDB
 {
     private static Logger log = LoggerFactory.getLogger(GraphNamed.class) ;
@@ -131,6 +131,7 @@ public class GraphNamed extends GraphBase implements IGraphTDB
     @Override
     public final ReorderTransformation getReorderTransform()      { return null ; }
     
+    @Override
     public final Location getLocation()                           { return dataset.getLocation() ; }
     
     public final Node getGraphNode()                              { return graphNode ; }
@@ -144,7 +145,7 @@ public class GraphNamed extends GraphBase implements IGraphTDB
             return new Tuple<Node>(getGraphNode(), triple.getSubject(), triple.getPredicate(), triple.getObject()) ;
     }
 
-
+    @Override
     public NodeTupleTable getNodeTupleTable()
     {
         if ( graphNode == null )

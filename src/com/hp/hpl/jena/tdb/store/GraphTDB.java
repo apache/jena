@@ -32,6 +32,7 @@ import com.hp.hpl.jena.tdb.sys.SystemTDB;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 import com.hp.hpl.jena.util.iterator.NiceIterator;
 
+/** A graph implementation that uses a triple table */
 public class GraphTDB extends GraphBase implements IGraphTDB
 {
     //public NodeTupleTable getNodeTupleTable() ;
@@ -135,7 +136,10 @@ public class GraphTDB extends GraphBase implements IGraphTDB
         return new Tuple<Node>(triple.getSubject(), triple.getPredicate(), triple.getObject()) ;
     }
 
+    @Override
     public NodeTupleTable getNodeTupleTable()           { return tripleTable   ; }
+    
+    @Override
     public Location getLocation()                       { return tripleTable.getLocation() ; }
     
     @Override

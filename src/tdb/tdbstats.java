@@ -10,9 +10,8 @@ import tdb.cmdline.CmdTDB;
 import arq.cmd.CmdUtils;
 
 import com.hp.hpl.jena.sparql.sse.Item;
-
 import com.hp.hpl.jena.tdb.solver.stats.StatsCollector;
-import com.hp.hpl.jena.tdb.store.GraphTDB;
+import com.hp.hpl.jena.tdb.store.IGraphTDB;
 
 
 public class tdbstats extends CmdTDB
@@ -38,7 +37,7 @@ public class tdbstats extends CmdTDB
     @Override
     protected void exec()
     {
-        GraphTDB graph = getGraph() ;
+        IGraphTDB graph = getGraph() ;
         Item item = StatsCollector.gatherTDB(graph) ;
         System.out.println(item) ;
     }

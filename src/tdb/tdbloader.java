@@ -9,20 +9,17 @@ package tdb;
 import java.util.List;
 
 import lib.Log;
-
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.graph.Node;
-
 import tdb.cmdline.CmdTDB;
 import arq.cmd.CmdUtils;
 import arq.cmdline.ArgDecl;
 
+import com.hp.hpl.jena.graph.Graph;
+import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.query.ARQ;
-
 import com.hp.hpl.jena.tdb.pgraph.BulkLoader1;
 import com.hp.hpl.jena.tdb.pgraph.PGraph;
 import com.hp.hpl.jena.tdb.store.BulkLoader;
-import com.hp.hpl.jena.tdb.store.GraphTDB;
+import com.hp.hpl.jena.tdb.store.IGraphTDB;
 
 public class tdbloader extends CmdTDB
 {
@@ -97,7 +94,7 @@ public class tdbloader extends CmdTDB
             loader.load(urls) ;
             return ;
         }
-        BulkLoader loader = new BulkLoader((GraphTDB)graph, timing, doInParallel, doIncremental, generateStats) ;
+        BulkLoader loader = new BulkLoader((IGraphTDB)graph, timing, doInParallel, doIncremental, generateStats) ;
         loader.load(urls) ;
     }
 }
