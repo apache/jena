@@ -12,4 +12,9 @@
             [ qt:query  <pattern-1.rq> ;
               qt:data   <data-1.ttl> ] ;
       ]
+      [  mf:name    "Pattern 2" ;
+         mf:action
+            [ qt:query  <pattern-2.rq> ;
+              qt:data   <data-1.ttl> ] ;
+      ]
     ) .

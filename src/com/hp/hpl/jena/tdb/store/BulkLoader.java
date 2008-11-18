@@ -34,6 +34,7 @@ import com.hp.hpl.jena.sparql.util.Utils;
 import com.hp.hpl.jena.sparql.util.graph.GraphListenerBase;
 import com.hp.hpl.jena.sparql.util.graph.GraphLoadMonitor;
 import com.hp.hpl.jena.tdb.TDB;
+import com.hp.hpl.jena.tdb.TDBException;
 import com.hp.hpl.jena.tdb.index.TupleIndex;
 import com.hp.hpl.jena.tdb.solver.stats.StatsCollector;
 import com.hp.hpl.jena.tdb.sys.Names;
@@ -63,7 +64,7 @@ public class BulkLoader
     private TupleIndex[] secondaryIndexes ;
     
     private Item statsItem = null ;
-    private TripleTable tripleTable ; 
+    private NodeTupleTable nodeTupleTable ; 
 
     public BulkLoader(GraphTDB graph, boolean showProgress)
     {
@@ -74,8 +75,14 @@ public class BulkLoader
 
     public BulkLoader(GraphTDB graph, boolean showProgress, boolean doInParallel, boolean doIncremental, boolean generateStats)
     {
+        // Bulk loading restricted to tripel indexes
+        // Assumes that the NodeTupleTable is 3-way at the moment
         this.graph = graph ;
-        this.tripleTable = graph.getTripleTable() ;
+        this.nodeTupleTable = graph.getNodeTupleTable() ;
+        
+        if ( graph.isEmpty() && nodeTupleTable.getTupleTable().getTupleLen() != 3 )
+            throw new TDBException("BulkLoader: Bulk mode only works on 3-tuples") ;
+        
         this.showProgress = showProgress ;
         this.doInParallel = doInParallel ;
         this.doIncremental = doIncremental ;
@@ -99,7 +106,7 @@ public class BulkLoader
             if ( testingSpecial )
             {
                 println("** Load node table only") ;
-                tripleTable.getTupleTable().setTupleIndex(0, null) ;
+                nodeTupleTable.getTupleTable().setTupleIndex(0, null) ;
             }
         }
         else
@@ -245,16 +252,16 @@ public class BulkLoader
     private void dropSecondaryIndexes()
     {
         // Remember first ...
-        numIndexes = tripleTable.getTupleTable().numIndexes() ;
-        primaryIndex = tripleTable.getTupleTable().getIndex(0) ;
+        numIndexes = nodeTupleTable.getTupleTable().numIndexes() ;
+        primaryIndex = nodeTupleTable.getTupleTable().getIndex(0) ;
         
         secondaryIndexes = ArrayUtils.alloc(TupleIndex.class, numIndexes-1) ;
-        System.arraycopy(tripleTable.getTupleTable().getIndexes(), 1, 
+        System.arraycopy(nodeTupleTable.getTupleTable().getIndexes(), 1, 
                          secondaryIndexes, 0,
                          numIndexes-1) ;
         // Set non-primary indexes to null.
         for ( int i = 1 ; i < numIndexes ; i++ )
-            tripleTable.getTupleTable().setTupleIndex(i, null) ;
+            nodeTupleTable.getTupleTable().setTupleIndex(i, null) ;
     }
 
     private void createSecondaryIndexes(boolean printTiming)
@@ -268,7 +275,7 @@ public class BulkLoader
         
         // Re-attach the indexes.
         for ( int i = 1 ; i < numIndexes ; i++ )
-            tripleTable.getTupleTable().setTupleIndex(i, secondaryIndexes[i-1]) ;
+            nodeTupleTable.getTupleTable().setTupleIndex(i, secondaryIndexes[i-1]) ;
         
     }
     
@@ -278,7 +285,7 @@ public class BulkLoader
         Timer timer = new Timer() ;
         timer.startTimer() ;
         
-        TupleIndex primary = tripleTable.getTupleTable().getIndex(0) ;
+        TupleIndex primary = nodeTupleTable.getTupleTable().getIndex(0) ;
         
         int semaCount = 0 ;
         Semaphore sema = new Semaphore(0) ;
@@ -319,7 +326,7 @@ public class BulkLoader
     {
         Timer timer = new Timer() ;
         timer.startTimer() ;
-        TupleIndex primary = tripleTable.getTupleTable().getIndex(0) ;
+        TupleIndex primary = nodeTupleTable.getTupleTable().getIndex(0) ;
         
         for ( TupleIndex index : secondaryIndexes )
         {

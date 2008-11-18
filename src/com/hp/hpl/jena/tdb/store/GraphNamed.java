@@ -8,6 +8,8 @@ package com.hp.hpl.jena.tdb.store;
 
 import java.util.Iterator;
 
+import lib.Tuple;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -132,6 +134,16 @@ public class GraphNamed extends GraphBase implements IGraphTDB
     public final Location getLocation()                           { return dataset.getLocation() ; }
     
     public final Node getGraphNode()                              { return graphNode ; }
+
+    @Override
+    public Tuple<Node> asTuple(Triple triple)
+    {
+        if ( getGraphNode() == null )
+            return new Tuple<Node>(triple.getSubject(), triple.getPredicate(), triple.getObject()) ;
+        else
+            return new Tuple<Node>(getGraphNode(), triple.getSubject(), triple.getPredicate(), triple.getObject()) ;
+    }
+
 
     public NodeTupleTable getNodeTupleTable()
     {

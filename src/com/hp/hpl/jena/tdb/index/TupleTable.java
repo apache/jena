@@ -38,7 +38,13 @@ public class TupleTable implements Sync, Closeable
         this.factory = factory ;
         this.location = location ;
         if ( indexes[0] == null )
-            throw new TDBException("TupleTable: no primary index") ; 
+            throw new TDBException("TupleTable: no primary index") ;
+        for ( TupleIndex index : indexes )
+        {
+            if ( index != null && index.getTupleLength() != tupleLen )
+                throw new TDBException("Incompatible index: "+index.getLabel()) ;
+
+        }
         
     }
     
@@ -171,8 +177,17 @@ public class TupleTable implements Sync, Closeable
     /** Get all indexes - for code that maipulates internal structures directly - use with care */ 
     public TupleIndex[] getIndexes()                    { return indexes ; }
     
+    /** Get the width of tuples in indexes in this table */
+    public int getTupleLen()                            { return tupleLen ; }
+
     /** Set index - for code that maipulates internal structures directly - use with care */ 
-    public void setTupleIndex(int i, TupleIndex index)  { indexes[i] = index ; }
+    public void setTupleIndex(int i, TupleIndex index)
+    {
+        if ( index != null && index.getTupleLength() != tupleLen )
+            throw new TDBException("Incompatible index: "+index.getLabel()) ;
+        indexes[i] = index ;
+        
+    }
 
     /** Number of indexes on this tuple table */
     public int numIndexes()                             { return indexes.length ; }

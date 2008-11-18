@@ -41,7 +41,7 @@ public class tdbnode extends CmdTDB
     protected void exec()
     {
         GraphTDB graph = getGraph() ;
-        NodeTable nodeTable = graph.getTripleTable().getNodeTable() ;
+        NodeTable nodeTable = graph.getNodeTupleTable().getNodeTable() ;
         @SuppressWarnings("unchecked")
         Iterator<String> iter = (Iterator<String>)super.getPositional().iterator() ;
         if ( ! iter.hasNext() )

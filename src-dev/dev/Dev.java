@@ -16,6 +16,7 @@ public class Dev
     //   Optimization of quad patterns - optimize associated BGP
     //   Quad loader.
     //   Test cases, include substitution.
+    // OpRange
 
     // ---- Reopenable BlockMgrs (and the object file?) 
 
@@ -36,12 +37,10 @@ public class Dev
     // ---- Reifier
     
     // ---- Quads
-    //   Common abstractions
-    //       quad table (share with SDB)
-    //       dataset as graph + quads
     //       dataset management
     
     // ---- Loader - traverse of SPO via a direct block mgr?
+    //   For quads
     //   ** Close indexes not in use in a given phase
     //  GraphTDB.primaryTraverse() -> Iterator<Tuple<NodeId>>??
     //    Do properly : reopenable indexes (under the triple index)
@@ -53,9 +52,7 @@ public class Dev
     //   ** Write stats (where to hook in to get unique?)
     // ---- 32 bit mode.
     // ARC Cache Scheme
-    // NodeTable : pool for buffers for writing nodes?
 
-    
     //   TransformCopy 
     //      - maybe Transform should be "Op transform(OpABC)"
     //      - and TransformCopy(list) is TransformRewrite. (there are no non-TransformCopy's)
@@ -64,9 +61,10 @@ public class Dev
     
     // ---- New cache API alloc/return/invalidate (shrink/grow?) : stats
     // Weak references and more space.
+    // ARC policy
     
     // ---- Node Table
-    //     Compression
+    //     Compression?
     
     // ---- Graph
     // QueryHandler to access subjectsFor etc. 

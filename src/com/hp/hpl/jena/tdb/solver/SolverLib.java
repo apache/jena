@@ -13,7 +13,6 @@ import iterator.Transform;
 import java.util.Iterator;
 import java.util.List;
 
-import lib.Lib;
 import lib.Tuple;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,15 +25,11 @@ import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.binding.BindingMap;
-import com.hp.hpl.jena.tdb.TDBException;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB;
-import com.hp.hpl.jena.tdb.store.GraphNamed;
-import com.hp.hpl.jena.tdb.store.GraphTDB;
 import com.hp.hpl.jena.tdb.store.IGraphTDB;
 import com.hp.hpl.jena.tdb.store.NodeId;
 import com.hp.hpl.jena.tdb.store.NodeTable;
 import com.hp.hpl.jena.tdb.store.NodeTupleTable;
-
 
 /** Utilities used within the TDB BGP solver */
 public class SolverLib
@@ -55,63 +50,25 @@ public class SolverLib
         {
             return Iter.map(iterBindingIds, convToBinding(nodeTable)) ;
         }} ;
-    
-     public static QueryIterator execute(IGraphTDB graph, BasicPattern pattern, QueryIterator input, ExecutionContext execCxt)
-     {
-         if ( graph instanceof GraphTDB )
-             return execute((GraphTDB)graph, pattern, input, execCxt) ;
-         if ( graph instanceof GraphNamed )
-             return execute((GraphNamed)graph, pattern, input, execCxt) ;
-         throw new TDBException("Unrecognized IGraphTDB: "+Lib.className(graph)) ;
 
-     }
-        
-        
-    /** Non-reordering execution of a basic graph pattern, given a iterator of bindings as input */ 
-    public static QueryIterator execute(GraphTDB graph, BasicPattern pattern, QueryIterator input, ExecutionContext execCxt)
-    {
-        @SuppressWarnings("unchecked") List<Triple> triples = (List<Triple>)pattern.getList() ;
-        @SuppressWarnings("unchecked") Iterator<Binding> iter = (Iterator<Binding>)input ;
-        
-        NodeTable nodeTable = graph.getTripleTable().getNodeTable() ;
-        Iterator<BindingNodeId> chain = Iter.map(iter, SolverLib.convFromBinding(nodeTable)) ;
-        
-        for ( Triple triple : triples )
-        {
-            Tuple<Node> t = new Tuple<Node>(triple.getSubject(), triple.getPredicate(), triple.getObject()) ;
-            chain = solve(graph.getTripleTable(), chain, t, execCxt) ;
-        }
-        
-        Iterator<Binding> iterBinding = converter.convert(nodeTable, chain) ;
-        return new QueryIterTDB(iterBinding, input, execCxt) ;
-    }
-
-    /** Non-reordering execution of a basic graph pattern over a named graph over a TDB dataset */ 
-    public static QueryIterator execute(GraphNamed graph, BasicPattern pattern, QueryIterator input, ExecutionContext execCxt)
+        /** Non-reordering execution of a basic graph pattern, given a iterator of bindings as input */ 
+    public static QueryIterator execute(IGraphTDB graph, BasicPattern pattern, QueryIterator input, ExecutionContext execCxt)
     {
         @SuppressWarnings("unchecked") List<Triple> triples = (List<Triple>)pattern.getList() ;
         @SuppressWarnings("unchecked") Iterator<Binding> iter = (Iterator<Binding>)input ;
         
         NodeTable nodeTable = graph.getNodeTupleTable().getNodeTable() ;
         Iterator<BindingNodeId> chain = Iter.map(iter, SolverLib.convFromBinding(nodeTable)) ;
-        NodeTupleTable ntt = graph.getNodeTupleTable() ;
         
         for ( Triple triple : triples )
         {
-            Tuple<Node> t = null ;
-            if ( graph.getGraphNode() == null )
-                t = new Tuple<Node>(triple.getSubject(), triple.getPredicate(), triple.getObject()) ;
-            else
-                t = new Tuple<Node>(graph.getGraphNode(), triple.getSubject(), triple.getPredicate(), triple.getObject()) ;
-                    
-            chain = solve(ntt, chain, t, execCxt) ;
+            Tuple<Node> t = graph.asTuple(triple) ; 
+            chain = solve(graph.getNodeTupleTable(), chain, t, execCxt) ;
         }
         
         Iterator<Binding> iterBinding = converter.convert(nodeTable, chain) ;
         return new QueryIterTDB(iterBinding, input, execCxt) ;
     }
-
-
     
     // Abstract: NodeTupleTable, Tuple generator, input, execCxt 
     /** Non-reordering execution of a quad pattern, given a iterator of bindings as input */ 

@@ -6,8 +6,11 @@
 
 package com.hp.hpl.jena.tdb.store;
 
-import com.hp.hpl.jena.graph.Graph;
+import lib.Tuple;
 
+import com.hp.hpl.jena.graph.Graph;
+import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.tdb.lib.Sync;
 import com.hp.hpl.jena.tdb.solver.reorder.Reorderable;
 
@@ -15,6 +18,7 @@ import com.hp.hpl.jena.tdb.solver.reorder.Reorderable;
 public interface IGraphTDB extends Graph, Sync, Reorderable
 {
     public NodeTupleTable getNodeTupleTable() ;
+    public Tuple<Node> asTuple(Triple triple) ;
     
 }
 

@@ -8,10 +8,13 @@ package com.hp.hpl.jena.tdb.store;
 
 import java.util.Iterator;
 
+import lib.Tuple;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.graph.Capabilities;
+import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.TransactionHandler;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.graph.TripleMatch;
@@ -31,6 +34,8 @@ import com.hp.hpl.jena.util.iterator.NiceIterator;
 
 public class GraphTDB extends GraphBase implements IGraphTDB
 {
+    //public NodeTupleTable getNodeTupleTable() ;
+    
     private static Logger log = LoggerFactory.getLogger(GraphTDB.class) ;
     
     private final TripleTable tripleTable ;
@@ -124,7 +129,12 @@ public class GraphTDB extends GraphBase implements IGraphTDB
     @Override
     public ReorderTransformation getReorderTransform()  { return reorderTransform ; }
     
-    public TripleTable getTripleTable()                 { return tripleTable   ; }
+    @Override
+    public Tuple<Node> asTuple(Triple triple)
+    {
+        return new Tuple<Node>(triple.getSubject(), triple.getPredicate(), triple.getObject()) ;
+    }
+
     public NodeTupleTable getNodeTupleTable()           { return tripleTable   ; }
     public Location getLocation()                       { return tripleTable.getLocation() ; }
     
