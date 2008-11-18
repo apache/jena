@@ -21,6 +21,7 @@ import com.hp.hpl.jena.graph.impl.GraphBase;
 import com.hp.hpl.jena.sparql.core.Quad;
 import com.hp.hpl.jena.sparql.util.FmtUtils;
 import com.hp.hpl.jena.tdb.TDB;
+import com.hp.hpl.jena.tdb.TDBException;
 import com.hp.hpl.jena.tdb.base.file.Location;
 import com.hp.hpl.jena.tdb.graph.GraphSyncListener;
 import com.hp.hpl.jena.tdb.graph.UpdateListener;
@@ -30,19 +31,24 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 import com.hp.hpl.jena.util.iterator.NiceIterator;
 
 /** A graph implementation that projects a graph from a quad table */
-public class GraphNamed extends GraphBase implements IGraphTDB
+public class GraphNamedTDB extends GraphBase implements IGraphTDB
 {
-    private static Logger log = LoggerFactory.getLogger(GraphNamed.class) ;
+    private static Logger log = LoggerFactory.getLogger(GraphNamedTDB.class) ;
     
     private final DatasetGraphTDB dataset ;
     private final QuadTable quadTable ; 
     private final Node graphNode ;
+    private final ReorderTransformation transform ;
 
-    public GraphNamed(DatasetGraphTDB dataset, Node graphName) 
+    public GraphNamedTDB(DatasetGraphTDB dataset, Node graphName, ReorderTransformation transform) 
     {
         this.dataset = dataset ;
         this.quadTable = dataset.getQuadTable() ;
         this.graphNode = graphName ;
+        this.transform = transform ;
+        
+        if ( graphName == null )
+            throw new TDBException("GraphNamedTDB: Null graph name") ; 
         
         int syncPoint = SystemTDB.SyncTick ;
         if ( syncPoint > 0 )
@@ -129,7 +135,7 @@ public class GraphNamed extends GraphBase implements IGraphTDB
     
     /** Reorder processor - may be null, for "none" */
     @Override
-    public final ReorderTransformation getReorderTransform()      { return null ; }
+    public final ReorderTransformation getReorderTransform()      { return transform ; }
     
     @Override
     public final Location getLocation()                           { return dataset.getLocation() ; }
@@ -139,9 +145,9 @@ public class GraphNamed extends GraphBase implements IGraphTDB
     @Override
     public Tuple<Node> asTuple(Triple triple)
     {
-        if ( getGraphNode() == null )
-            return new Tuple<Node>(triple.getSubject(), triple.getPredicate(), triple.getObject()) ;
-        else
+//        if ( getGraphNode() == null )
+//            return new Tuple<Node>(triple.getSubject(), triple.getPredicate(), triple.getObject()) ;
+//        else
             return new Tuple<Node>(getGraphNode(), triple.getSubject(), triple.getPredicate(), triple.getObject()) ;
     }
 

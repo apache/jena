@@ -19,7 +19,7 @@ import com.hp.hpl.jena.tdb.sys.SystemTDB;
 public class GraphTDBFactoryTest
 {
     /** Create a graph backed with storage at a location using and BTree indexes (testing) */
-    public static GraphTDB createBTree(Location location)
+    public static GraphTriplesTDB createBTree(Location location)
     { 
         IndexFactoryBTree idxFactory = new IndexFactoryBTree(SystemTDB.BlockSizeTest) ;
         IndexBuilder builder = new IndexBuilder(idxFactory,idxFactory) ; 
@@ -27,7 +27,7 @@ public class GraphTDBFactoryTest
     }
 
     /** Create a graph backed with storage at a location using and BTree indexes (testing) */
-    public static GraphTDB createBPlusTree(Location location)
+    public static GraphTriplesTDB createBPlusTree(Location location)
     { 
         IndexFactoryBPlusTree idxFactory = new IndexFactoryBPlusTree(SystemTDB.BlockSizeTest) ;
         IndexBuilder builder = new IndexBuilder(idxFactory,idxFactory) ; 
@@ -35,7 +35,7 @@ public class GraphTDBFactoryTest
     }
 
     /** Create a graph backed with storage and BTree indexes in-memory (testing) */
-    public static GraphTDB createBTreeMem()
+    public static GraphTriplesTDB createBTreeMem()
     { 
         IndexFactoryBPlusTreeMem idxFactory = new IndexFactoryBPlusTreeMem(SystemTDB.OrderMem) ;
         IndexBuilder builder = new IndexBuilder(idxFactory,idxFactory) ; 
@@ -43,7 +43,7 @@ public class GraphTDBFactoryTest
     }
     
     /** Create a graph backed with storage and B+Tree indexes in-memory (testing) */
-    public static GraphTDB createBPlusTreeMem()
+    public static GraphTriplesTDB createBPlusTreeMem()
     { 
         IndexFactoryBTreeMem idxFactory = new IndexFactoryBTreeMem(SystemTDB.OrderMem) ;
         IndexBuilder builder = new IndexBuilder(idxFactory,idxFactory) ; 

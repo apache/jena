@@ -33,18 +33,18 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 import com.hp.hpl.jena.util.iterator.NiceIterator;
 
 /** A graph implementation that uses a triple table */
-public class GraphTDB extends GraphBase implements IGraphTDB
+public class GraphTriplesTDB extends GraphBase implements IGraphTDB
 {
     //public NodeTupleTable getNodeTupleTable() ;
     
-    private static Logger log = LoggerFactory.getLogger(GraphTDB.class) ;
+    private static Logger log = LoggerFactory.getLogger(GraphTriplesTDB.class) ;
     
     private final TripleTable tripleTable ;
     private final GraphTDBQueryHandler queryHandler = new GraphTDBQueryHandler(this) ;
     private final TransactionHandler transactionHandler = new GraphTDBTransactionHandler(this) ;
     private final ReorderTransformation reorderTransform  ;
 
-    public GraphTDB(TripleTable tripleTable,
+    public GraphTriplesTDB(TripleTable tripleTable,
                     ReorderTransformation reorderTransform,
                     Location location)
     {

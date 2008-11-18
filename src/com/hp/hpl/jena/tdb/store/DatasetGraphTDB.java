@@ -29,15 +29,17 @@ import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
 public class DatasetGraphTDB implements DatasetGraph, Sync, Closeable
 {
     private final TripleTable tripleTable ;
-    private final GraphTDB defaultGraph ;
+    private final GraphTriplesTDB defaultGraph ;
     private final QuadTable quadTable ;
     private final Lock lock = new LockMRSW() ;
+    private final ReorderTransformation transform ;
 
     public DatasetGraphTDB(TripleTable tripleTable, QuadTable quadTable, ReorderTransformation transform, Location location)
     {
         this.tripleTable = tripleTable ;
         this.quadTable = quadTable ;
-        defaultGraph = new GraphTDB(tripleTable, transform, location) ;
+        this.transform = transform ;
+        defaultGraph = new GraphTriplesTDB(tripleTable, transform, location) ;
     }
     
     public QuadTable getQuadTable()                 { return quadTable ; }
@@ -58,7 +60,7 @@ public class DatasetGraphTDB implements DatasetGraph, Sync, Closeable
     @Override
     public Graph getGraph(Node graphNode)
     {
-        return new GraphNamed(this, graphNode) ;
+        return new GraphNamedTDB(this, graphNode, transform);
     }
 
     @Override

@@ -49,29 +49,29 @@ public class FactoryGraphTDB
      * 
      * @param location      The location containg the file system resources.
      */
-    public static GraphTDB createGraph(Location location)
+    public static GraphTriplesTDB createGraph(Location location)
     {
         return createGraph(IndexBuilder.get(), location) ;
     }  
     
     /** Create a TDB graph using a specifc index builder - mainly for testing */
-    public static GraphTDB createGraph(IndexBuilder indexBuilder, Location location)
+    public static GraphTriplesTDB createGraph(IndexBuilder indexBuilder, Location location)
     {
         NodeTable nodeTable = NodeTableFactory.create(indexBuilder, location) ;
         TripleTable table = createTripleTable(indexBuilder, nodeTable, location, tripleIndexes) ;
         ReorderTransformation transform = chooseOptimizer(location) ;
-        return new GraphTDB(table, transform, location) ;
+        return new GraphTriplesTDB(table, transform, location) ;
     }  
     
     
     /** Create a TDB graph in-memory - for testing */
-    public static GraphTDB createGraphMem()
+    public static GraphTriplesTDB createGraphMem()
     {
         return createGraphMem(IndexBuilder.mem()) ;
     }
 
     /** Create a TDB graph in-memory - for testing */
-    public static GraphTDB createGraphMem(IndexBuilder indexBuilder)
+    public static GraphTriplesTDB createGraphMem(IndexBuilder indexBuilder)
     {
         return createGraph(indexBuilder, null) ;
     }
