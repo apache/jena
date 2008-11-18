@@ -17,10 +17,7 @@ public class Dev
     // ---- Reopenable BlockMgrs (and the object file?) 
 
     // Cheap parsing of Node table.
-    
-    // --  ?? ARQ Optimizer and controlling optimizations per graph (esp FilterPlacement).
-    
-    // Umbel data: http://umbel.org/documentation.html
+    // Simple, non-copy in-memory version for comparisons.
     
     // ---- Assembler and configuration
     //    Configuring the built-in constants.
