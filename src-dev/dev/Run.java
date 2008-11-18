@@ -8,9 +8,7 @@ package dev;
 
 import java.io.IOException;
 
-import lib.ColumnMap;
 import lib.FileOps;
-import lib.Tuple;
 import lib.cache.CacheNG;
 import arq.cmd.CmdUtils;
 
@@ -49,8 +47,28 @@ public class Run
         // tdbloader("--tdb=tdb.ttl", "/home/afs/Datasets/MusicBrainz/artists.nt") ;
         
         //tdbquery("--tdb=tdb.ttl", "SELECT count(*) { ?s ?p ?o . ?s ?p ?o }") ;
+        tdbquery("--tdb=tdb.ttl", "SELECT count(*) { ?s ?p ?o }") ;
         
         
+        tdbquery("--set=tdb:logExec=true", "--file=Q.rq") ;
+        System.exit(0) ;
+        
+        //smallGraph() ;
+        //tdbloader("--desc=tdb.ttl", "--mem", "/home/afs/Datasets/MusicBrainz/tracks.nt") ;
+ 
+        //indexification() ; System.exit(0) ;
+        rewrite() ; System.exit(0) ;
+        
+        //cache2() ;
+        //tdbquery("dataset.ttl", "SELECT * { ?s ?p ?o }") ;
+
+//      Model model = TDBFactory.createModel("tmp") ;
+//      query("SELECT * { ?s ?p ?o}", model) ;
+//      System.exit(0) ;
+    }
+
+    private static void namedGraphs()
+    {
         FileOps.clearDirectory("DS") ;
         Dataset ds = TDBFactory.assembleDataset("tdb-ds.ttl") ;
         //Dataset ds = TDBFactory.createDataset(new Location("DS")) ;
@@ -91,35 +109,6 @@ public class Run
         query("SELECT * { ?s <http://example/d1/lang> ?o }", modelNamed) ;
         
         System.exit(0) ;
-        
-        tdbquery("--tdb=tdb.ttl", "SELECT count(*) { ?s ?p ?o }") ;
-        ColumnMap  d = new ColumnMap("SPO", "POS") ;
-        System.out.println(d.toString()) ;
-        Tuple<String> t = new Tuple<String>("S", "P", "O") ;
-        System.out.println(d.fetchSlot(0, t)) ;
-        System.out.println(d.fetchSlot(1, t)) ;
-        System.out.println(d.fetchSlot(2, t)) ;
-        
-        System.out.println(d.map(t)) ;
-        
-        System.exit(0) ;
-        
-        
-        tdbquery("--set=tdb:logExec=true", "--file=Q.rq") ;
-        System.exit(0) ;
-        
-        //smallGraph() ;
-        //tdbloader("--desc=tdb.ttl", "--mem", "/home/afs/Datasets/MusicBrainz/tracks.nt") ;
- 
-        //indexification() ; System.exit(0) ;
-        rewrite() ; System.exit(0) ;
-        
-        //cache2() ;
-        //tdbquery("dataset.ttl", "SELECT * { ?s ?p ?o }") ;
-
-//      Model model = TDBFactory.createModel("tmp") ;
-//      query("SELECT * { ?s ?p ?o}", model) ;
-//      System.exit(0) ;
     }
     
      private static void indexification()

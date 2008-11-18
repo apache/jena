@@ -11,13 +11,9 @@ public class Dev
     // Tuple reader and checking IRIs (with IRI caching)
     
     // Scripted test slow?
-    // IGraphTDB renaming.
-    // GraphTDB > GraphTriplesTDB, GraphQuadsTDB : GraphFactory
-    // Or 
-    //      GraphTDB > GraphNamedTDB (with ".tuple(Triple)")
     //   Optimization of quad patterns - optimize associated BGP
     //   Quad loader.
-    //   Test cases, include substitution.
+    //   Command lise and dataset vs graph
     // OpRange
 
     // ---- Reopenable BlockMgrs (and the object file?) 
