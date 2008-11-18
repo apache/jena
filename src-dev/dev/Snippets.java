@@ -6,13 +6,9 @@
 
 package dev;
 
-import static lib.FileOps.clearDirectory;
-
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.sparql.sse.SSE;
 import com.hp.hpl.jena.sparql.util.FmtUtils;
-import com.hp.hpl.jena.tdb.base.record.RecordFactory;
-import com.hp.hpl.jena.tdb.index.btree.BTreeParams;
 import com.hp.hpl.jena.tdb.lib.StringAbbrev;
 import com.hp.hpl.jena.tdb.store.NodeId;
 
@@ -78,64 +74,6 @@ public class Snippets
         System.out.println(a2) ;
         System.out.println() ;
     }
-
-    static int BlockSize               = 8*1024 ;
-    static int SegmentSize = 8 * 1024 * 1024 ; 
-    static int blocksPerSegment = SegmentSize/BlockSize ;
-    
-    private static int segment(int id) { return id/blocksPerSegment ; }
-    private static int byteOffset(int id) { return (id%blocksPerSegment)*BlockSize ; }
-
-    
-    public static void seg()
-    {
-//        Id: 1179
-//        Seg=1
-//        Segoff=1,269,760
-
-        System.out.printf("Blocksize = %d , Segment size = %d\n", BlockSize, SegmentSize) ;
-        System.out.printf("blocksPerSegment = %d\n", blocksPerSegment) ;
-        
-        
-        for ( int id : new int[]{1, 2, 3, 4, 5, 1428, 1179})
-        {
-            int seg = segment(id) ;                     // Segment.
-            int segOff = byteOffset(id) ; 
-            System.out.printf("%d => [%d, %,d]\n", id, seg, segOff) ;
-            System.out.printf("%,d\n", id*BlockSize) ;
-        }
-        System.exit(0) ;
-        
-        // ----
-        btreePacking(3, 32, 8*1024) ; 
-        System.out.println() ;
-        
-        btreePacking(3, 64, 8*1024) ;
-        System.out.println() ;
-
-        btreePacking(4, 128, 8*1024) ;
-        //System.out.println() ;
-        // ----
-        System.exit(0) ;
-        
-        // ----
-        String dir = "tmp" ;
-        clearDirectory(dir) ;
-        System.exit(0) ;
-    }
-     
-    public static void btreePacking(int slots, int slotSize, int blkSize)
-    {
-        //divider() ;
-        RecordFactory f  = new RecordFactory(slots*slotSize/8,0) ;
-        System.out.printf("Input: %d slots, size %d bytes, %d blocksize\n", slots,slotSize/8, blkSize ) ;
-        System.out.println("Btree: "+BTreeParams.calcOrder(blkSize, f.recordLength())) ;      
-        System.out.println("Packed leaf : "+blkSize/f.recordLength()) ;
-        BTreeParams p = new BTreeParams(BTreeParams.calcOrder(blkSize, f.recordLength()), f) ;
-        System.out.println(p) ;
-    }             
-    
-
 }
 
 /*
