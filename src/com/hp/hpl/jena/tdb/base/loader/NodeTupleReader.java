@@ -37,6 +37,7 @@ import java.net.URL;
 import java.util.Hashtable;
 import java.util.Iterator;
 
+import lib.CacheSetLRU;
 import lib.Tuple;
 
 import com.hp.hpl.jena.datatypes.RDFDatatype;
@@ -69,7 +70,7 @@ public final class NodeTupleReader
     static final int EOF = -1 ;
     static final int NL = '\n' ;
     static final int CR = '\r' ;
-
+    
     private TupleSink sink ;
     interface TupleSink { void tuple(Tuple<Node> tuple) ; } 
     
@@ -480,22 +481,32 @@ public final class NodeTupleReader
     }
  
     static IRIFactory iriFactory = IRIFactory.semanticWebImplementation();
+    CacheSetLRU<String> cache = new CacheSetLRU<String>(1000) ;
+    
     private void checkIRI(String iriStr)
     {
+        if ( cache.contains(iriStr) ) 
+            return ;
+        
         boolean includeWarnings = true ;
-        IRI iri = iriFactory.create(iriStr); // always works
+        IRI iri = iriFactory.create(iriStr);        // Always works
         if (iri.hasViolation(includeWarnings))
         {
             Iterator<?> it = iri.violations(includeWarnings);
             while (it.hasNext()) {
                 Violation v = (Violation) it.next();
-//                syntaxError(v.getShortMessage()) ;
                 if ( v.isError() )
                     syntaxError(v.getShortMessage()) ;
                 else
-                    warning(v.getShortMessage()) ;
+                {
+                    if ( includeWarnings )
+                        warning(v.getShortMessage()) ;
+                }
             }
         }
+        else
+            // Cache the checked IRI.
+            cache.add(iriStr) ;
     }
 
     private boolean range(int ch, char a, char b)
