@@ -8,6 +8,8 @@ package dev;
 
 public class Dev
 {
+    // Tuple reader and checking IRIs (with caching)
+    
     // Scripted test slow?
     // IGraphTDB renaming.
     // GraphTDB > GraphTriplesTDB, GraphQuadsTDB : GraphFactory
@@ -20,6 +22,8 @@ public class Dev
 
     // ---- Reopenable BlockMgrs (and the object file?) 
 
+    // Cheap parsing of Node table.
+    
     // --  ?? ARQ Optimizer and controlling optimizations per graph (esp FilterPlacement).
     
     // Umbel data: http://umbel.org/documentation.html

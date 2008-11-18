@@ -8,9 +8,6 @@ package dev;
 
 import static lib.FileOps.clearDirectory;
 
-import java.io.File;
-import java.io.UnsupportedEncodingException;
-
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.sparql.sse.SSE;
 import com.hp.hpl.jena.sparql.util.FmtUtils;
@@ -19,73 +16,8 @@ import com.hp.hpl.jena.tdb.index.btree.BTreeParams;
 import com.hp.hpl.jena.tdb.lib.StringAbbrev;
 import com.hp.hpl.jena.tdb.store.NodeId;
 
-import com.sleepycat.je.*;
-
 public class Snippets
 {
-    public static void BDB()
-        {
-            Environment myDbEnvironment = null;
-            Database myDatabase = null ;
-    
-            try {
-                try {
-                    EnvironmentConfig envConfig = new EnvironmentConfig();
-                    envConfig.setAllowCreate(true);
-                    //envConfig.setTransactional(true) ;
-                    myDbEnvironment = new Environment(new File("tmp/dbEnv"), envConfig);
-    
-                    // Open the database. Create it if it does not already exist.
-                    DatabaseConfig dbConfig = new DatabaseConfig();
-                    //dbConfig.setTransactional(true) ;
-    
-                    dbConfig.setAllowCreate(true);
-                    myDatabase = myDbEnvironment.openDatabase(null, 
-                                                              "GRAPH", 
-                                                              dbConfig); 
-                    String aKey = "key" ;
-                    DatabaseEntry theKey = new DatabaseEntry(aKey.getBytes("UTF-8"));
-                    DatabaseEntry theData = new DatabaseEntry("DATA".getBytes("UTF-8"));
-    
-    //                if ( myDatabase.put(null, theKey, theData) !=
-    //                    OperationStatus.SUCCESS )
-    //                {
-    //                    System.out.println("Bad put") ;
-    //                    return ;
-    //                }
-    
-                    // Perform the get.
-                    if (myDatabase.get(null, theKey, theData, LockMode.DEFAULT) ==
-                        OperationStatus.SUCCESS) {
-                        System.out.println(theData) ;
-                        String s = new String(theData.getData(), "UTF-8") ;
-                        System.out.println("Get: "+s) ;
-                    }
-    
-    
-                } catch (DatabaseException dbe) {
-                    dbe.printStackTrace(); 
-                    // Exception handling goes here
-                } catch (UnsupportedEncodingException ex)
-                {
-                    ex.printStackTrace();
-                } 
-                try {
-                    if (myDatabase != null) {
-                        myDatabase.close();
-                    }
-                    if (myDbEnvironment != null) {
-                        myDbEnvironment.cleanLog();
-                        myDbEnvironment.close();
-                    } 
-                } catch (DatabaseException dbe) {
-                    dbe.printStackTrace();
-                }
-            } finally { 
-                System.out.println("Finished/BDB") ;
-                System.exit(0) ;
-            }
-        }
 
     static void typedNode()
         {

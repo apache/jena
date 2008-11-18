@@ -26,6 +26,5 @@
 	<classpathentry kind="lib" path="lib/lucene-core-2.3.1.jar"/>
 	<classpathentry kind="lib" path="lib/arq.jar" sourcepath="arq-src.zip"/>
 	<classpathentry kind="lib" path="lib/arq-extra.jar" sourcepath="arq-src.zip"/>
-	<classpathentry kind="lib" path="lib/je-3.3.74.jar"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>
