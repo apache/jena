@@ -10,7 +10,9 @@ public class Dev
 {
     // Scripted test slow?
     // IGraphTDB renaming.
-    // GraphTDB > GraphTriplesTDB, GraphQuadsTDB : GraphFactory 
+    // GraphTDB > GraphTriplesTDB, GraphQuadsTDB : GraphFactory
+    // Or 
+    //      GraphTDB > GraphNamedTDB (with ".tuple(Triple)")
     //   Optimization of quad patterns - optimize associated BGP
     //   Quad loader.
     //   Test cases, include substitution.

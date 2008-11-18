@@ -72,6 +72,12 @@ public class Run
  
     public static void main(String ... args) throws IOException
     {
+//        FileOps.clearDirectory("DB") ;
+//        tdbloader("--tdb=tdb.ttl", "/home/afs/Datasets/MusicBrainz/artists.nt") ;
+        
+        tdbquery("--tdb=tdb.ttl", "SELECT count(*) { ?s ?p ?o . ?s ?p ?o }") ;
+        
+        
         FileOps.clearDirectory("DS") ;
         Dataset ds = TDBFactory.assembleDataset("tdb-ds.ttl") ;
         //Dataset ds = TDBFactory.createDataset(new Location("DS")) ;

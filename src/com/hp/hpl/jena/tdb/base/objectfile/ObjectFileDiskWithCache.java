@@ -9,7 +9,6 @@ package com.hp.hpl.jena.tdb.base.objectfile;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import lib.Bytes;
@@ -41,16 +40,14 @@ public class ObjectFileDiskWithCache extends FileBase implements ObjectFile
      *   UTF-8 bytes. 
      */
     
-    // Write cache.  Strings written but not sent to disk. 
-    // List<Pair<NodeId, String>>
-    
-    // Whether this is worth it, given the OS caches sequnetial writes, is dubious. 
-    // Seems to make a small difference.
+    // Write cache.  
+    // 1 - Strings remembered that ar in the cache but not written yet 
+    // 2 - Accumulate a large buffer before writing  
+    // Seems to make a small difference?
     int delayCacheSize = 100 ;
-
-    List<Pair<NodeId, ByteBuffer>> delayCache = (delayCacheSize == -1 ? null : new ArrayList<Pair<NodeId, ByteBuffer>>(delayCacheSize)) ;
-    ByteBuffer[] delayCacheArray = (delayCacheSize == -1 ? null : new ByteBuffer[delayCacheSize]) ;
-    
+    List<Pair<NodeId, String>> delayCache = (delayCacheSize == -1 ? null : new ArrayList<Pair<NodeId, String>>(delayCacheSize)) ;
+    //ByteBuffer delayCache
+    ByteBuffer buffer = (delayCacheSize == -1 ? null : ByteBuffer.allocate(delayCacheSize*100) ) ;
     long idAllocation ;
 
     public ObjectFileDiskWithCache(String filename)
@@ -72,35 +69,60 @@ public class ObjectFileDiskWithCache extends FileBase implements ObjectFile
             flushCache() ;
         
         str = compress(str) ;
-        ByteBuffer bb = ByteBuffer.allocate(4+4*str.length()) ;   // Worst case
-        bb.position(4) ;
-        Bytes.toByteBuffer(str, bb) ;
-        int len = bb.position()-4 ;
-        bb.limit(len+4) ;
-        bb.putInt(0, len) ;     // Object length
-        bb.position(0) ;
+        if ( buffer == null )
+            _writeNow(str) ;
+        
+        // Write to the buffer now.
+        
+        int max = 4+4*str.length() ;        // Worst case.
+        int x = buffer.position() ;
+        if ( x+max > buffer.limit() )
+        {
+            flushCache() ;
+            // Will never fit
+            if ( max > buffer.limit() )
+                return _writeNow(str) ;
+        }
+        
+        buffer.position(x+4) ;              // Space for length
+        Bytes.toByteBuffer(str, buffer) ;
+        int y = buffer.position() ;
+        int len = y-x-4 ;
+        buffer.position(x) ;
+        buffer.putInt(0, len) ;             // Object length
+        buffer.position(y) ;
+
         long location = idAllocation ;
         idAllocation = idAllocation + len+4 ;
+        
         NodeId nodeId = NodeId.create(location) ;
-        if ( delayCache != null )
-        {
-            int i = delayCache.size() ;
-            delayCache.add(new Pair<NodeId, ByteBuffer>(nodeId, bb)) ;
-            delayCacheArray[i] = bb ;
-        }
-        else
-        {
-            try {
-                int x = channel.write(bb) ;
-                if ( x != bb.limit() )
-                    throw new FileException("ObjectFile.write: Buffer length = "+bb.limit()+" : actual write = "+x) ; 
-                filesize = filesize+x ;
-            } catch (IOException ex)
-            { throw new FileException("ObjectFile.write", ex) ; }
-        }
+        
+        int i = delayCache.size() ;
+        delayCache.add(new Pair<NodeId, String>(nodeId, str)) ;
         return nodeId ; 
     }
     
+    private NodeId _writeNow(String str)
+    {
+
+        try {
+            long location = filesize ;
+            ByteBuffer bb = ByteBuffer.allocate(4+4*str.length()) ;
+            bb.position(4) ;
+            Bytes.toByteBuffer(str, bb) ;
+            int len = bb.position()-4 ;
+            bb.limit(len+4) ;
+            bb.putInt(0, len) ;     // Object length
+            bb.position(0) ;
+            int x = channel.write(bb) ;
+            if ( x != bb.limit() )
+                throw new FileException("ObjectFile.write: Buffer length = "+bb.limit()+" : actual write = "+x) ; 
+            filesize = filesize+x ;
+            return NodeId.create(location) ;
+        } catch (IOException ex)
+        { throw new FileException("ObjectFile.write", ex) ; }
+    }
+
     private void flushCache()
     {
         if ( delayCache == null )
@@ -109,34 +131,38 @@ public class ObjectFileDiskWithCache extends FileBase implements ObjectFile
         long id = filesize ;
         try {
             // write length
-            long x = channel.write(delayCacheArray, 0, delayCache.size()) ;
+            buffer.flip() ;
+            long x = channel.write(buffer) ;
             if ( x != (idAllocation-filesize) )
-                throw new FileException("ObjectFile.write: Buffer length = "+(idAllocation-filesize)+" : actual write = "+x) ; 
+                throw new FileException("ObjectFile.flushCache: Buffer length = "+(idAllocation-filesize)+" : actual write = "+x) ; 
             filesize = idAllocation ;
+            buffer.clear() ;
         } catch (IOException ex)
         { throw new FileException("ObjectFile.write", ex) ; }
 
         delayCache.clear() ;
-        Arrays.fill(delayCacheArray, 0, delayCache.size(), null) ;
+        buffer.clear() ;
     }
     
     @Override
     public String read(NodeId id)
     {
         // Check cache.
-        ByteBuffer bb = null ;
+        String x = null ;
         if ( id.getId() > filesize )
-            bb = findInCache(id, delayCache) ;
-        else        
-            bb = readBytes(id) ;
-        String x = Bytes.fromByteBuffer(bb) ;
+            x = findInCache(id) ;
+        else
+        {
+            ByteBuffer bb = readBytes(id) ;
+            x = Bytes.fromByteBuffer(bb) ;
+        }
         x = decompress(x) ;
         return x ;
     }
 
-    private ByteBuffer findInCache(NodeId id, List<Pair<NodeId, ByteBuffer>> cache)
+    private String findInCache(NodeId id)
     {
-        for ( Pair<NodeId, ByteBuffer> elt : cache )
+        for ( Pair<NodeId, String> elt : delayCache )
         {
             NodeId n = elt.car() ;
             if ( n.equals(id) )

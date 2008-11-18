@@ -21,14 +21,13 @@ import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 
 import com.hp.hpl.jena.tdb.store.NodeId;
+import com.hp.hpl.jena.tdb.store.NodeTable;
 import com.hp.hpl.jena.tdb.store.NodeTupleTable;
 
 public class StageMatchTriple extends RepeatApplyIterator<BindingNodeId>
 {
     private final NodeTupleTable nodeTupleTable ;
     private final Tuple<Node> tuple ;
-    private final NodeId ids[] ; 
-    private final Var[] var ; 
 
     private final ExecutionContext execCxt ;
 
@@ -38,32 +37,34 @@ public class StageMatchTriple extends RepeatApplyIterator<BindingNodeId>
         this.nodeTupleTable = nodeTupleTable ; 
         this.tuple = tuple ;
         this.execCxt = execCxt ;
-        ids = new NodeId[tuple.size()] ;
-        var = new Var[tuple.size()] ;
-        for ( int i = 0 ; i < tuple.size() ; i++ )
-        {
-            Node n = tuple.get(i) ;
-            var[i] = Var.isVar(n) ? asVar(n) : null ;
-        }
     }
 
     @Override
     protected Iterator<BindingNodeId> makeNextStage(final BindingNodeId input)
     {
+        NodeId ids[] = new NodeId[tuple.size()] ;
+        // Variables for this tuple after subsitution
+        final Var[] var = new Var[tuple.size()] ;
+
         // Process the Node to NodeId conversion ourselves because
         // we wish to abort if an unknown node is seen.
         for ( int i = 0 ; i < tuple.size() ; i++ )
         {
             Node n = tuple.get(i) ;
-            NodeId nId = idFor(nodeTupleTable, input, n) ;
+            // Substitution and turning into NodeIds
+            // Varaibles unsubstituted are null NodeIds
+            NodeId nId = idFor(nodeTupleTable.getNodeTable(), input, n) ;
             if ( nId == NodeId.NodeDoesNotExist )
                 new NullIterator<BindingNodeId>() ;
             ids[i] = nId ;
+            if ( nId == null )
+                var[i] = asVar(n) ;
         }
 
         // Go directly to the tuple table 
         Iterator<Tuple<NodeId>> tuples = nodeTupleTable.getTupleTable().find(new Tuple<NodeId>(ids)) ;
 
+        // Map to BindingNodeId
         Transform<Tuple<NodeId>, BindingNodeId> binder = new Transform<Tuple<NodeId>, BindingNodeId>()
         {
             @Override
@@ -105,7 +106,7 @@ public class StageMatchTriple extends RepeatApplyIterator<BindingNodeId>
     }
 
     /** Return null for variables, and for nodes, the node id or NodeDoesNotExist */
-    private static NodeId idFor(NodeTupleTable nodeTupleTable, BindingNodeId input, Node node)
+    private static NodeId idFor(NodeTable nodeTable, BindingNodeId input, Node node)
     {
         if ( Var.isVar(node) )
         {
@@ -114,7 +115,7 @@ public class StageMatchTriple extends RepeatApplyIterator<BindingNodeId>
             return n ;
         } 
         // May return NodeId.NodeDoesNotExist which must not be null. 
-        return nodeTupleTable.getNodeTable().nodeIdForNode(node) ;
+        return nodeTable.nodeIdForNode(node) ;
     }
 }
 /*

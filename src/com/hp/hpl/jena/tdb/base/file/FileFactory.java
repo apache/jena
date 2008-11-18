@@ -16,6 +16,7 @@ public class FileFactory
     public static ObjectFile createObjectFileDisk(String filename)
     { 
         if ( false )
+            // This is slightly faster and much more complicated. 
             return new ObjectFileDiskWithCache(filename) ;
         return new ObjectFileDiskDirect(filename) ;
     }
