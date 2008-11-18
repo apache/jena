@@ -8,6 +8,8 @@ package dev;
 
 public class Dev
 {
+    // (Jena) Cached IRI checking.
+    
     // ---- [quad paths]
     
     // ?? Extends Algebra back to reading graphs and making datasets?
