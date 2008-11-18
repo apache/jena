@@ -8,8 +8,6 @@ package dev;
 
 public class Dev
 {
-    // Tuple reader and checking IRIs (with IRI caching)
-    
     // Scripted test slow?
     //   Optimization of quad patterns - optimize associated BGP
     //   Quad loader.
