@@ -6,7 +6,6 @@
 
 package dev;
 
-import static com.hp.hpl.jena.tdb.sys.Names.primaryIndexTriples;
 import static com.hp.hpl.jena.tdb.sys.Names.tripleIndexes;
 
 import java.io.IOException;
@@ -17,26 +16,28 @@ import lib.FileOps;
 import lib.cache.CacheNG;
 import arq.cmd.CmdUtils;
 
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.query.*;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ResourceFactory;
+
+import com.hp.hpl.jena.util.FileManager;
+
+import com.hp.hpl.jena.graph.Node;
+
 import com.hp.hpl.jena.sparql.algebra.Algebra;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.Transformer;
 import com.hp.hpl.jena.sparql.core.Quad;
 import com.hp.hpl.jena.sparql.sse.SSE;
+
+import com.hp.hpl.jena.query.*;
+
 import com.hp.hpl.jena.tdb.TDBFactory;
 import com.hp.hpl.jena.tdb.base.block.BlockMgrMem;
 import com.hp.hpl.jena.tdb.base.file.Location;
 import com.hp.hpl.jena.tdb.index.IndexBuilder;
-import com.hp.hpl.jena.tdb.index.TupleIndex;
-import com.hp.hpl.jena.tdb.solver.reorder.ReorderFixed;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderLib;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
 import com.hp.hpl.jena.tdb.store.*;
-import com.hp.hpl.jena.tdb.sys.Names;
-import com.hp.hpl.jena.util.FileManager;
 
 import dev.opt.TransformIndexJoin;
 
@@ -55,6 +56,8 @@ public class Run
  
     public static void main(String ... args) throws IOException
     {
+        tdb.tdbperf.main("load") ;
+        
         // FileOps.clearDirectory("DB") ;
         // tdbloader("--tdb=tdb.ttl", "/home/afs/Datasets/MusicBrainz/artists.nt") ;
         

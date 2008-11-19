@@ -1,0 +1,5 @@
+#!/bin/bash
+
+source "$TDBROOT/bin/tdb_init"
+#AGENT="-agentlib:hprof=cpu=times"
+exec java -server $AGENT $JVM_ARGS $SOCKS -cp "$TDB_CP" "tdb.tdbperf" "$@"
