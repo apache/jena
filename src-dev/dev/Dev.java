@@ -8,12 +8,18 @@ package dev;
 
 public class Dev
 {
+    // Tuple reader and checking IRIs (with IRI caching)
+    
     // Scripted test slow?
     //   Optimization of quad patterns - optimize associated BGP
     //   Quad loader.
     //   Command lise and dataset vs graph
     // OpRange
 
+    // ---- Tuple reader tests
+    // Checking, N-ary and non-RDF.
+    // Prefix mapping?  Migrate to a dump format.
+    
     // ---- Reopenable BlockMgrs (and the object file?) 
 
     // Cheap parsing of Node table.
