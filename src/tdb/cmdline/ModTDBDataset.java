@@ -31,7 +31,7 @@ import com.hp.hpl.jena.query.*;
 
 import com.hp.hpl.jena.tdb.TDBFactory;
 import com.hp.hpl.jena.tdb.assembler.VocabTDB;
-import com.hp.hpl.jena.tdb.store.IGraphTDB;
+import com.hp.hpl.jena.tdb.store.GraphTDB;
 
 public class ModTDBDataset extends ModDataset
 {
@@ -111,7 +111,7 @@ public class ModTDBDataset extends ModDataset
         // No assembler - use location (a single graph).
         Model model = TDBFactory.createModel(modAssembler.getLocation()) ;
         // Check of type.
-        IGraphTDB graph = (IGraphTDB)model.getGraph() ;
+        GraphTDB graph = (GraphTDB)model.getGraph() ;
         return DatasetFactory.create(model) ;
     }
     

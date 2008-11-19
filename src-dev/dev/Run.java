@@ -6,7 +6,12 @@
 
 package dev;
 
+import static com.hp.hpl.jena.tdb.sys.Names.primaryIndexTriples;
+import static com.hp.hpl.jena.tdb.sys.Names.tripleIndexes;
+
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import lib.FileOps;
 import lib.cache.CacheNG;
@@ -22,8 +27,15 @@ import com.hp.hpl.jena.sparql.algebra.Transformer;
 import com.hp.hpl.jena.sparql.core.Quad;
 import com.hp.hpl.jena.sparql.sse.SSE;
 import com.hp.hpl.jena.tdb.TDBFactory;
+import com.hp.hpl.jena.tdb.base.block.BlockMgrMem;
+import com.hp.hpl.jena.tdb.base.file.Location;
+import com.hp.hpl.jena.tdb.index.IndexBuilder;
+import com.hp.hpl.jena.tdb.index.TupleIndex;
+import com.hp.hpl.jena.tdb.solver.reorder.ReorderFixed;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderLib;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
+import com.hp.hpl.jena.tdb.store.*;
+import com.hp.hpl.jena.tdb.sys.Names;
 import com.hp.hpl.jena.util.FileManager;
 
 import dev.opt.TransformIndexJoin;
@@ -46,6 +58,13 @@ public class Run
         // FileOps.clearDirectory("DB") ;
         // tdbloader("--tdb=tdb.ttl", "/home/afs/Datasets/MusicBrainz/artists.nt") ;
         
+        GraphTDB g = setup() ;
+        BulkLoader b = new BulkLoader(g, true) ;
+        List<String> files = new ArrayList<String>() ;
+        files.add("/home/afs/Datasets/MusicBrainz/artists.nt") ;
+        b.load(files) ;
+        System.exit(0) ;
+        
         //tdbquery("--tdb=tdb.ttl", "SELECT count(*) { ?s ?p ?o . ?s ?p ?o }") ;
         tdbquery("--tdb=tdb.ttl", "SELECT count(*) { ?s ?p ?o }") ;
         
@@ -58,13 +77,21 @@ public class Run
  
         //indexification() ; System.exit(0) ;
         rewrite() ; System.exit(0) ;
+    }
+    
+    private static GraphTDB setup()
+    {
+        // Setup a graph - for experimental alternatives.
+        BlockMgrMem.SafeMode = false ;
+        IndexBuilder indexBuilder = IndexBuilder.mem() ;
+        Location location = null ;
         
-        //cache2() ;
-        //tdbquery("dataset.ttl", "SELECT * { ?s ?p ?o }") ;
-
-//      Model model = TDBFactory.createModel("tmp") ;
-//      query("SELECT * { ?s ?p ?o}", model) ;
-//      System.exit(0) ;
+        NodeTable nodeTable = NodeTableFactory.create(indexBuilder, location) ;
+        
+        TripleTable table = FactoryGraphTDB.createTripleTable(indexBuilder, nodeTable, location, tripleIndexes) ; 
+        ReorderTransformation transform = ReorderLib.identity() ;
+        GraphTDB g = new GraphTriplesTDB(table, transform, location) ;
+        return g ;
     }
 
     private static void namedGraphs()

@@ -26,7 +26,7 @@ import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.binding.BindingMap;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB;
-import com.hp.hpl.jena.tdb.store.IGraphTDB;
+import com.hp.hpl.jena.tdb.store.GraphTDB;
 import com.hp.hpl.jena.tdb.store.NodeId;
 import com.hp.hpl.jena.tdb.store.NodeTable;
 import com.hp.hpl.jena.tdb.store.NodeTupleTable;
@@ -52,7 +52,7 @@ public class SolverLib
         }} ;
 
         /** Non-reordering execution of a basic graph pattern, given a iterator of bindings as input */ 
-    public static QueryIterator execute(IGraphTDB graph, BasicPattern pattern, QueryIterator input, ExecutionContext execCxt)
+    public static QueryIterator execute(GraphTDB graph, BasicPattern pattern, QueryIterator input, ExecutionContext execCxt)
     {
         @SuppressWarnings("unchecked") List<Triple> triples = (List<Triple>)pattern.getList() ;
         @SuppressWarnings("unchecked") Iterator<Binding> iter = (Iterator<Binding>)input ;

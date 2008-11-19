@@ -25,6 +25,7 @@ import org.slf4j.LoggerFactory;
 final
 public class BlockMgrMem extends BlockMgrBase
 {
+    private static final boolean Checking = true ;
     private static Logger log = LoggerFactory.getLogger(BlockMgrMem.class) ;
     private List<ByteBuffer> blocks = new ArrayList<ByteBuffer>() ;
     
@@ -33,12 +34,19 @@ public class BlockMgrMem extends BlockMgrBase
     
     private static ByteBuffer FreeBlock = ByteBuffer.allocate(0) ;      // Marker
 
-    // This controls whether blocks are copied in and otu
-    public static boolean SafeMode = true ;                            
+    // This controls whether blocks are copied in and out
+    public static boolean SafeMode = true ;
+    private final boolean safeModeThisMgr ;                            
     
     BlockMgrMem(int blockSize)
     {
+        this(blockSize, SafeMode) ;
+    }
+    
+    BlockMgrMem(int blockSize, boolean safeMode)
+    {
         super(blockSize) ;
+        safeModeThisMgr = safeMode ;
     }
     
     @Override
@@ -55,7 +63,8 @@ public class BlockMgrMem extends BlockMgrBase
             
         // Not found a free slot.
         int x = blocks.size() ;
-        blocks.add(null) ;
+        // "blocks.add(x, null)" because it extends the array
+        blocks.add(null) ;   
         if ( log.isDebugEnabled() ) 
             log.debug(format("allocate() : %d", x)) ;
         return x;
@@ -83,12 +92,12 @@ public class BlockMgrMem extends BlockMgrBase
         if ( bb == null )
             throw new BlockException("Null block: "+id) ;
         if ( bb == FreeBlock )
-            throw new BlockException("Null block: "+id) ;
+            throw new BlockException("Free block: "+id) ;
 
         if ( log.isDebugEnabled() ) 
             log.debug(format("get(%d) : %s", id, bb)) ;
         // Return a copy - helps check for failure-to-write back
-        if ( SafeMode )
+        if ( safeModeThisMgr )
             bb = replicate(bb) ;
         return bb ;
     }
@@ -100,7 +109,9 @@ public class BlockMgrMem extends BlockMgrBase
         ByteBuffer bb = blocks.get(id) ;
         if ( bb == null )
             throw new BlockException("Null block: "+id) ;
-        if ( SafeMode )
+        if ( bb == FreeBlock )
+            throw new BlockException("Free block: "+id) ;
+        if ( safeModeThisMgr )
             bb = replicate(bb) ;
         return bb ;
     }
@@ -114,10 +125,7 @@ public class BlockMgrMem extends BlockMgrBase
             return false ;
 
         ByteBuffer bb = blocks.get(id) ; 
-        if ( bb == null )
-            throw new BlockException("Null block: "+id) ;
-        
-        return bb != FreeBlock ;
+        return bb != FreeBlock && bb != null ;
     }
 
     @Override
@@ -126,7 +134,7 @@ public class BlockMgrMem extends BlockMgrBase
         check(id, block) ;
         if ( log.isDebugEnabled() ) 
             log.debug(format("put(%d,)", id)) ;
-        if ( SafeMode )
+        if ( safeModeThisMgr )
             block = replicate(block) ;
         blocks.set(id, block) ;
     }
@@ -147,7 +155,10 @@ public class BlockMgrMem extends BlockMgrBase
     
     @Override
     public void close()
-    { blocks = null ; }
+    { 
+        blocks = null ;
+        freeBlocks = null ;
+    }
     
     @Override
     public boolean isEmpty()
@@ -155,7 +166,7 @@ public class BlockMgrMem extends BlockMgrBase
         return blocks.size() == 0 ;
     }
 
-    protected static ByteBuffer replicate(ByteBuffer srcBlk)
+    private static ByteBuffer replicate(ByteBuffer srcBlk)
     {
         ByteBuffer dstBlk = ByteBuffer.allocate(srcBlk.capacity()) ;
         System.arraycopy(srcBlk.array(), 0, dstBlk.array(), 0, srcBlk.capacity()) ;
@@ -164,11 +175,13 @@ public class BlockMgrMem extends BlockMgrBase
     
     private void check(int id)
     {
+        if ( !Checking ) return ;
         if ( id < 0 || id >= blocks.size() )
             throw new BlockException("BlockMgrMem: Bounds exception: "+id) ;
     }
     private void check(int id, ByteBuffer bb)
     {
+        if ( !Checking ) return ;
         check(id) ;
         if ( bb.capacity() != blockSize )
             throw new BlockException(format("BlockMgrMem: Wrong size block.  Expected=%d : actual=%d", blockSize, bb.capacity())) ;

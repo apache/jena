@@ -19,7 +19,7 @@ import com.hp.hpl.jena.tdb.TDB;
 import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile;
 import com.hp.hpl.jena.tdb.base.objectfile.ObjectFileDiskDirect;
 import com.hp.hpl.jena.tdb.solver.stats.StatsCollector;
-import com.hp.hpl.jena.tdb.store.IGraphTDB;
+import com.hp.hpl.jena.tdb.store.GraphTDB;
 
 /** Tools to manage a TDB store.  Subcommand based. */
 public class tdbconfig extends CmdSub
@@ -101,7 +101,7 @@ public class tdbconfig extends CmdSub
         @Override
         protected void exec()
         {
-            IGraphTDB graph = getGraph() ;
+            GraphTDB graph = getGraph() ;
             Item item = StatsCollector.gatherTDB(graph) ;
             System.out.println(item) ;
         }

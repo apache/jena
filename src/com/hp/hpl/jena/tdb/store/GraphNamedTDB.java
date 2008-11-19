@@ -31,7 +31,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 import com.hp.hpl.jena.util.iterator.NiceIterator;
 
 /** A graph implementation that projects a graph from a quad table */
-public class GraphNamedTDB extends GraphBase implements IGraphTDB
+public class GraphNamedTDB extends GraphBase implements GraphTDB
 {
     private static Logger log = LoggerFactory.getLogger(GraphNamedTDB.class) ;
     

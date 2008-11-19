@@ -48,7 +48,7 @@ import com.hp.hpl.jena.util.FileManager;
 
 public class BulkLoader
 {
-    private IGraphTDB graph ;
+    private GraphTDB graph ;
     private Symbol symTesting = SystemTDB.allocSymbol("testing") ;
     
     private boolean testingSpecial = false ;
@@ -66,14 +66,14 @@ public class BulkLoader
     private Item statsItem = null ;
     private NodeTupleTable nodeTupleTable ; 
 
-    public BulkLoader(IGraphTDB graph, boolean showProgress)
+    public BulkLoader(GraphTDB graph, boolean showProgress)
     {
         this(graph, showProgress, false, false, false) ;
     }
     
     /** Create a bulkloader for a graph : showProgress/parallel/incremental/generate statistics */ 
 
-    public BulkLoader(IGraphTDB graph, boolean showProgress, boolean doInParallel, boolean doIncremental, boolean generateStats)
+    public BulkLoader(GraphTDB graph, boolean showProgress, boolean doInParallel, boolean doIncremental, boolean generateStats)
     {
         // Bulk loading restricted to tripel indexes
         // Assumes that the NodeTupleTable is 3-way at the moment

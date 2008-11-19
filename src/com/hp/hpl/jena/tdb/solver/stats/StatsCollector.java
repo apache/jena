@@ -31,7 +31,7 @@ import com.hp.hpl.jena.sparql.util.Utils;
 import com.hp.hpl.jena.tdb.index.TupleIndex;
 import com.hp.hpl.jena.tdb.pgraph.PGraph;
 import com.hp.hpl.jena.tdb.pgraph.TripleIndex;
-import com.hp.hpl.jena.tdb.store.IGraphTDB;
+import com.hp.hpl.jena.tdb.store.GraphTDB;
 import com.hp.hpl.jena.tdb.store.NodeId;
 import com.hp.hpl.jena.tdb.store.NodeTable;
 
@@ -116,7 +116,7 @@ public class StatsCollector
     }
         
     /** Gather statistics - faster for TDB */
-    public static Item gatherTDB(IGraphTDB graph)
+    public static Item gatherTDB(GraphTDB graph)
     {
         long count = 0 ;
         Map<NodeId, Integer> predicateIds = new HashMap<NodeId, Integer>(1000) ;

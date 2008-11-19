@@ -14,28 +14,28 @@ public class Dev
     //   Optimization of quad patterns - optimize associated BGP
     //   Quad loader.
     //   Command lise and dataset vs graph
-    // OpRange
+    // OpRange - OpIndex - generative stream of possibilities.
 
     // ---- Tuple reader tests
+    // [incremental]
     // Checking, N-ary and non-RDF.
     // Prefix mapping?  Migrate to a dump format.
     
     // ---- Reopenable BlockMgrs (and the object file?) 
 
     // Cheap parsing of Node table.
-    // Simple, non-copy in-memory version for comparisons.
+    // [incremental]
+    // Simple, non-copy in-memory version for comparisons. BlockMgrMem(,false) ;
     
     // ---- Assembler and configuration
-    //    Configuring the built-in constants.
-    //    Setting options (globally, per model)
-    //    Variable indexes
+    //      Configuring the built-in constants.
+    //      Setting options (globally, per model)
+    //      Variable indexes
     
     // ---- Materialized views
     
     // ---- Range queries (filter E (bgp T)) ==> (range T E....) where E has one var and the one var is in T
-    //    Given NodeId structure, should be doable for ints and dates.
-    
-    // ---- Reifier
+    //      Given NodeId structure, should be doable for ints and dates.
     
     // ---- Quads
     //       dataset management

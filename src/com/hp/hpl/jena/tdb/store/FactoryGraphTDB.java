@@ -111,7 +111,7 @@ public class FactoryGraphTDB
     }
 
     // ---- Process
-    private static TupleIndex[] indexes(IndexBuilder indexBuilder, RecordFactory recordFactory, 
+    public static TupleIndex[] indexes(IndexBuilder indexBuilder, RecordFactory recordFactory, 
                                         Location location, String primary, String...descs)
     {
         TupleIndex indexes[] = new TupleIndex[descs.length] ;
@@ -131,7 +131,7 @@ public class FactoryGraphTDB
         return createTripleTable(IndexBuilder.mem(), nodeTable, null, tripleIndexes) ;
     }
 
-    private static TripleTable createTripleTable(IndexBuilder indexBuilder, NodeTable nodeTable, Location location, String...descs)
+    public static TripleTable createTripleTable(IndexBuilder indexBuilder, NodeTable nodeTable, Location location, String...descs)
     {
         TupleIndex indexes[] = indexes(indexBuilder, indexRecordTripleFactory, location, primaryIndexTriples, descs) ;
         return new TripleTable(indexes, indexRecordTripleFactory, nodeTable, location) ;

@@ -12,7 +12,7 @@ import tdb.cmdline.CmdTDB;
 import arq.cmd.CmdUtils;
 
 import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.tdb.store.IGraphTDB;
+import com.hp.hpl.jena.tdb.store.GraphTDB;
 import com.hp.hpl.jena.tdb.store.NodeId;
 import com.hp.hpl.jena.tdb.store.NodeTable;
 
@@ -39,7 +39,7 @@ public class tdbnode extends CmdTDB
     @Override
     protected void exec()
     {
-        IGraphTDB graph = getGraph() ;
+        GraphTDB graph = getGraph() ;
         NodeTable nodeTable = graph.getNodeTupleTable().getNodeTable() ;
         @SuppressWarnings("unchecked")
         Iterator<String> iter = (Iterator<String>)super.getPositional().iterator() ;

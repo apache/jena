@@ -33,7 +33,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 import com.hp.hpl.jena.util.iterator.NiceIterator;
 
 /** A graph implementation that uses a triple table */
-public class GraphTriplesTDB extends GraphBase implements IGraphTDB
+public class GraphTriplesTDB extends GraphBase implements GraphTDB
 {
     //public NodeTupleTable getNodeTupleTable() ;
     
