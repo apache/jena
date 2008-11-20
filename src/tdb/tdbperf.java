@@ -63,7 +63,7 @@ public class tdbperf extends CmdSub
 
         protected void exec()
         {
-            //TDB.init();
+            TDB.init();
             GraphTDB g = setup() ;
             BulkLoader b = new BulkLoader(g, true) ;
             List<String> files = new ArrayList<String>() ;
