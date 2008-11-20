@@ -56,7 +56,7 @@ public class Run
  
     public static void main(String ... args) throws IOException
     {
-        tdb.perf.tdbperf.main("parse", "/home/afs/Datasets/MusicBrainz/tracks-10k.nt") ;
+        tdb.perf.tdbperf.main("parse", "/home/afs/Datasets/MusicBrainz/artists.nt") ;
         
         // FileOps.clearDirectory("DB") ;
         // tdbloader("--tdb=tdb.ttl", "/home/afs/Datasets/MusicBrainz/artists.nt") ;
@@ -74,11 +74,6 @@ public class Run
         
         tdbquery("--set=tdb:logExec=true", "--file=Q.rq") ;
         System.exit(0) ;
-        
-        //smallGraph() ;
-        //tdbloader("--desc=tdb.ttl", "--mem", "/home/afs/Datasets/MusicBrainz/tracks.nt") ;
- 
-        //indexification() ; System.exit(0) ;
         rewrite() ; System.exit(0) ;
     }
     

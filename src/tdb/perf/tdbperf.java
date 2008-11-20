@@ -125,9 +125,13 @@ public class tdbperf extends CmdSub
             {
                 InputStream in = null ;
                 if ( fn.equals("-") || fn.equals("--") )
+                {
+                    System.out.println("Parse: stdin") ;
                     in = System.in ;
+                }
                 else
                 {
+                    System.out.println("Parse: "+fn) ;
                     try { in = new FileInputStream(fn) ; } 
                     catch (FileNotFoundException ex)
                     {
