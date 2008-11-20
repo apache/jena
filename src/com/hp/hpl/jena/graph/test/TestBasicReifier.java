@@ -1,12 +1,12 @@
 /*
  	(c) Copyright 2008 Hewlett-Packard Development Company, LP
  	All rights reserved.
- 	$Id: TestBasicReifier.java,v 1.3 2008-11-20 09:41:01 chris-dollin Exp $
+ 	$Id: TestBasicReifier.java,v 1.4 2008-11-20 16:01:25 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
 
-import java.util.List;
+import java.util.*;
 
 import junit.framework.TestSuite;
 
@@ -14,7 +14,6 @@ import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.impl.*;
 import com.hp.hpl.jena.graph.query.*;
 import com.hp.hpl.jena.mem.GraphMem;
-import com.hp.hpl.jena.rdf.model.Statement;
 import com.hp.hpl.jena.shared.*;
 import com.hp.hpl.jena.util.iterator.*;
 import com.hp.hpl.jena.vocabulary.RDF;
@@ -36,7 +35,7 @@ public class TestBasicReifier extends AbstractTestReifier
         TestSuite result = new TestSuite();
         result.addTest( MetaTestGraph.suite( TestBasicReifier.class, BasicReifierGraph.class ) );
         return result; 
-        }   
+        }       
 
     public Graph getGraph()
         { return getGraph( style );  }
@@ -65,7 +64,11 @@ public class TestBasicReifier extends AbstractTestReifier
             { base.delete( t ); }
         
         public int size()  
-            { return base.size() - reifier.size(); }
+            { 
+            BasicReifier br = (BasicReifier) reifier;
+            int discount = br.style.conceals() ? br.count( br.find() ) : 0;
+            return base.size()  - discount;
+            }
         }
 
     public static class BasicReifier implements Reifier
@@ -80,6 +83,11 @@ public class TestBasicReifier extends AbstractTestReifier
             {
             public Object map1( Object t ) { return ((Triple) t).getSubject(); }
             };
+
+        static final Map1 getObject = new Map1() 
+            {
+            public Object map1( Object t ) { return ((Triple) t).getObject(); }
+            };
         
         public ExtendedIterator allNodes()
             { // TODO needs constraining for :subject :object etc
@@ -93,12 +101,7 @@ public class TestBasicReifier extends AbstractTestReifier
             { /* nothing to do */ }
 
         public ExtendedIterator find( TripleMatch m )
-            {
-            return style.conceals() 
-                ? NullIterator.instance
-                : graph.getBase().find( m ).filterKeep( isReificationTriple )
-                ;
-            }
+            { return graph.getBase().find( m ).filterKeep( isReificationTriple ); }
         
         private static final Filter isReificationTriple = new Filter()
             {
@@ -134,8 +137,25 @@ public class TestBasicReifier extends AbstractTestReifier
 
         public Node reifyAs( Node n, Triple t )
             {
-            SimpleReifier.graphAddQuad( graph, n, t );
+            Triple already = getTriple( n );
+            if (already == null)
+                {
+                checkQuadElementFree( n, RDF.Nodes.subject, t.getSubject() );
+                checkQuadElementFree( n, RDF.Nodes.predicate, t.getPredicate() );
+                checkQuadElementFree( n, RDF.Nodes.object, t.getObject() );
+                SimpleReifier.graphAddQuad( graph, n, t );
+                }
+            else if (!t.equals( already ))
+                throw new AlreadyReifiedException( n );
             return n;
+            }
+
+        private void checkQuadElementFree( Node n, Node predicate, Node object )
+            {
+            List L = graph.find( n, predicate, Node.ANY ).mapWith( getObject ).toList();
+            if (L.size() == 0) return;
+            if (L.size() == 1 && L.get( 0 ).equals( object )) return;
+            throw new CannotReifyException( n );
             }
 
         public void remove( Node n, Triple t )
@@ -150,16 +170,16 @@ public class TestBasicReifier extends AbstractTestReifier
             { throw new BrokenException( "this reifier operation" ); }
 
         public int size()
-            { return style.conceals() ? count( find() ) : 0; }
+            { return style.conceals() ? 0: count( find() ); }
 
-        private int count( ExtendedIterator find )
+        int count( ExtendedIterator find )
             { 
             int result = 0;
             while (find.hasNext()) { result += 1; find.next(); }
             return result;
             }
 
-        private ExtendedIterator find()
+        ExtendedIterator find()
             { 
             return
                 graph.find( Node.ANY, RDF.Nodes.subject, Node.ANY )

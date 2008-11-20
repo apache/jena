@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
   [See end of file]ispo
-  $Id: GraphTestBase.java,v 1.35 2008-01-02 12:05:34 andy_seaborne Exp $
+  $Id: GraphTestBase.java,v 1.36 2008-11-20 16:01:25 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -393,7 +393,7 @@ public class GraphTestBase extends JenaTestBase
 
     protected static Graph getReificationTriples( final Reifier r )
         {
-        return new GraphBase()
+        return new GraphBase( ReificationStyle.Minimal )
             {
             public ExtendedIterator graphBaseFind( TripleMatch m ) { return r.find( m ); }
             };
