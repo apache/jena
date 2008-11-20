@@ -8,7 +8,10 @@ package com.hp.hpl.jena.tdb.base.loader;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.Reader;
+
+import com.hp.hpl.jena.util.FileUtils;
 
 import lib.Log;
 
@@ -49,9 +52,15 @@ public final class PeekReader extends Reader
         if ( r instanceof PeekReader )
             return (PeekReader)r ;
         if ( r instanceof BufferedReader )
-            Log.warn(PeekReader.class, "Bufferedreader passed to PeekReader") ;
+            Log.warn(PeekReader.class, "BufferedReader passed to PeekReader") ;
             
         return new PeekReader(r) ;
+    }
+    
+    public static PeekReader makeUTF8(InputStream in) 
+    {
+        Reader r = FileUtils.asUTF8(in) ;
+        return make(r) ;
     }
     
     private PeekReader(Reader in)

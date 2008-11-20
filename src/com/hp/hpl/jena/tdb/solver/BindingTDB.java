@@ -10,6 +10,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import lib.Log;
+
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
@@ -78,10 +80,7 @@ public class BindingTDB extends BindingBase
             return n ;
         } catch (Exception ex)
         {
-            System.err.printf("get1(%s)\n", var) ;
-            System.err.println(idBinding) ;
-            ex.printStackTrace(System.err) ;
-            System.exit(1) ;
+            Log.fatal(this, String.format("get1(%s)", var), ex) ;
             return null ;
         }
     }

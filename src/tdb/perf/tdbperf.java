@@ -4,11 +4,15 @@
  * [See end of file]
  */
 
-package tdb;
+package tdb.perf;
 
 import static com.hp.hpl.jena.tdb.sys.Names.tripleIndexes;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import tdb.cmdline.CmdSub;
@@ -16,11 +20,16 @@ import tdb.cmdline.CmdTDB;
 import arq.cmdline.CmdARQ;
 import arq.cmdline.ModVersion;
 
+import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.sparql.util.Utils;
 
 import com.hp.hpl.jena.tdb.TDB;
 import com.hp.hpl.jena.tdb.base.block.BlockMgrMem;
 import com.hp.hpl.jena.tdb.base.file.Location;
+import com.hp.hpl.jena.tdb.base.loader.NodeTupleReader;
+import com.hp.hpl.jena.tdb.base.loader.NodeTupleReader.TupleSink;
+import com.hp.hpl.jena.tdb.base.loader.NodeTupleReader.NullSink;
+import com.hp.hpl.jena.tdb.graph.SinkGraph;
 import com.hp.hpl.jena.tdb.index.IndexBuilder;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderLib;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
@@ -29,6 +38,7 @@ import com.hp.hpl.jena.tdb.store.*;
 /** Tools to test performance.  Subcommand based. */
 public class tdbperf extends CmdSub
 {
+    static final String CMD_PARSE   = "parse" ;
     static final String CMD_LOAD    = "load" ;
     static final String CMD_HELP    = "help" ;
     static final String CMD_INFO    = "info" ;
@@ -45,6 +55,9 @@ public class tdbperf extends CmdSub
         super.addSubCommand(CMD_LOAD, new Exec()
           { @Override public void exec(String[] argv) { new SubLoad(argv).exec() ; } }) ;
         
+        super.addSubCommand(CMD_PARSE, new Exec()
+        { @Override public void exec(String[] argv) { new SubParse(argv).exec() ; } }) ;
+
         super.addSubCommand(CMD_HELP, new Exec()
         { @Override public void exec(String[] argv) { new SubHelp(argv).mainRun() ; } }) ;
         
@@ -56,26 +69,26 @@ public class tdbperf extends CmdSub
     
     static class SubLoad //extends CmdTDB
     {
+        String[] args ;
         public SubLoad(String... argv)
         {
             //super(argv) ;
+            args = argv ;
         }
 
         protected void exec()
         {
             TDB.init();
-            GraphTDB g = setup() ;
+            GraphTDB g = setup1() ;
             BulkLoader b = new BulkLoader(g, true) ;
-            List<String> files = new ArrayList<String>() ;
-            files.add("/home/afs/Datasets/MusicBrainz/artists.nt") ;
-            b.load(files) ;
+            b.load(Arrays.asList(args)) ;
             System.exit(0) ;
         }
             
-        private static GraphTDB setup()
+        private static GraphTDB setup1()
         {
             // Setup a graph - for experimental alternatives.
-            BlockMgrMem.SafeMode = true ;
+            BlockMgrMem.SafeMode = false ;
             IndexBuilder indexBuilder = IndexBuilder.mem() ;
             Location location = null ;
 
@@ -87,7 +100,37 @@ public class tdbperf extends CmdSub
             return g ;
         } 
     }
+    
+    static class SubParse //extends CmdTDB
+    {
+        public SubParse(String... argv)
+        {
+            //super(argv) ;
+        }
 
+        protected void exec()
+        {
+            TDB.init();
+            Graph g = new SinkGraph() ;
+            TupleSink sink = new NullSink()  ;
+            List<String> files = new ArrayList<String>() ;
+            files.add("/home/afs/Datasets/MusicBrainz/artists.nt") ;
+            for ( String fn : files )
+            {
+                InputStream in ;
+                try { in = new FileInputStream(fn) ; } 
+                catch (FileNotFoundException ex)
+                {
+                    ex.printStackTrace();
+                    break ;
+                }
+                NodeTupleReader.read(sink, in, fn) ;
+            }
+            System.exit(0) ;
+        }
+            
+    }
+    
     // Subcommand : help
     static class SubHelp extends CmdARQ
     {

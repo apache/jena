@@ -56,7 +56,7 @@ public class Run
  
     public static void main(String ... args) throws IOException
     {
-        tdb.tdbperf.main("load") ;
+        tdb.perf.tdbperf.main("load") ;
         
         // FileOps.clearDirectory("DB") ;
         // tdbloader("--tdb=tdb.ttl", "/home/afs/Datasets/MusicBrainz/artists.nt") ;

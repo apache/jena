@@ -72,7 +72,7 @@ public final class NodeTupleReader
     static final int CR = '\r' ;
     
     private TupleSink sink ;
-    interface TupleSink { void tuple(Tuple<Node> tuple) ; } 
+    public interface TupleSink { void tuple(Tuple<Node> tuple) ; } 
     
     // N-Triples
     static class GraphTupleSink implements TupleSink
@@ -89,7 +89,7 @@ public final class NodeTupleReader
         }
         
     }
-    static class NullSink implements TupleSink
+    public static class NullSink implements TupleSink
     {
         @Override
         public void tuple(Tuple<Node> tuple) {}
@@ -117,7 +117,8 @@ public final class NodeTupleReader
     static public boolean KeepParsingAfterError = true ;
     final StringBuilder buffer = new StringBuilder(sbLength);
 
-    public NodeTupleReader(String string)
+    /** Testing interface */
+    NodeTupleReader(String string)
     {
         this((TupleSink)null, new StringReader(string), "TEST") ;
     }
@@ -141,11 +142,17 @@ public final class NodeTupleReader
             }}) ;
     }
 
-    public NodeTupleReader(TupleSink sink, Reader reader, String base)
+    private NodeTupleReader(TupleSink sink, Reader reader, String base)
     {
         this.sink = sink ;
         this.msgBase = ( base == null ? "" : (base + ": ") );
         this.in = PeekReader.make(reader);
+    }
+
+    public static void read(TupleSink sink, InputStream input, String base)
+    {
+        NodeTupleReader x = new NodeTupleReader(sink, FileUtils.asUTF8(input), base) ;
+        x.readRDF();
     }
 
     // XXX Forces use of file:
