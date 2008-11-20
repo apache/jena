@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2008 Hewlett-Packard Development Company, LP
  	All rights reserved.
- 	$Id: TestBasicReifier.java,v 1.2 2008-11-06 11:03:01 chris-dollin Exp $
+ 	$Id: TestBasicReifier.java,v 1.3 2008-11-20 09:41:01 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -14,6 +14,7 @@ import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.impl.*;
 import com.hp.hpl.jena.graph.query.*;
 import com.hp.hpl.jena.mem.GraphMem;
+import com.hp.hpl.jena.rdf.model.Statement;
 import com.hp.hpl.jena.shared.*;
 import com.hp.hpl.jena.util.iterator.*;
 import com.hp.hpl.jena.vocabulary.RDF;
@@ -75,8 +76,15 @@ public class TestBasicReifier extends AbstractTestReifier
         public BasicReifier( Graph graph, ReificationStyle style )
             { this.style = style; this.graph = (BasicReifierGraph) graph; }
 
+        static final Map1 getSubject = new Map1() 
+            {
+            public Object map1( Object t ) { return ((Triple) t).getSubject(); }
+            };
+        
         public ExtendedIterator allNodes()
-            { throw new BrokenException( "this reifier operation" ); }
+            { // TODO needs constraining for :subject :object etc
+            return graph.find( Node.ANY, RDF.Nodes.type, RDF.Nodes.Statement ).mapWith( getSubject );
+            }
 
         public ExtendedIterator allNodes( Triple t )
             { throw new BrokenException( "this reifier operation" ); }
@@ -99,7 +107,7 @@ public class TestBasicReifier extends AbstractTestReifier
             };
 
         public ExtendedIterator findEither( TripleMatch m, boolean showHidden )
-            { throw new BrokenException( "this reifier operation" ); }
+            { return showHidden == style.conceals() ? find( m ) : NullIterator.instance; }
 
         public ExtendedIterator findExposed( TripleMatch m )
             {
@@ -131,7 +139,12 @@ public class TestBasicReifier extends AbstractTestReifier
             }
 
         public void remove( Node n, Triple t )
-            { throw new BrokenException( "this reifier operation" ); }
+            { // TODO fix to ensure only works on complete reifications
+            graph.delete(  Triple.create( n, RDF.Nodes.subject, t.getSubject() ) );
+            graph.delete(  Triple.create( n, RDF.Nodes.predicate, t.getPredicate() ) );
+            graph.delete(  Triple.create( n, RDF.Nodes.object, t.getObject() ) );
+            graph.delete(  Triple.create( n, RDF.Nodes.type, RDF.Nodes.Statement ) );
+            }
 
         public void remove( Triple t )
             { throw new BrokenException( "this reifier operation" ); }
