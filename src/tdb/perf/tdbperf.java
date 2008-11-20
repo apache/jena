@@ -11,7 +11,6 @@ import static com.hp.hpl.jena.tdb.sys.Names.tripleIndexes;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -20,20 +19,23 @@ import tdb.cmdline.CmdTDB;
 import arq.cmdline.CmdARQ;
 import arq.cmdline.ModVersion;
 
-import com.hp.hpl.jena.graph.Graph;
+import com.hp.hpl.jena.sparql.util.Timer;
 import com.hp.hpl.jena.sparql.util.Utils;
-
 import com.hp.hpl.jena.tdb.TDB;
 import com.hp.hpl.jena.tdb.base.block.BlockMgrMem;
 import com.hp.hpl.jena.tdb.base.file.Location;
 import com.hp.hpl.jena.tdb.base.loader.NodeTupleReader;
-import com.hp.hpl.jena.tdb.base.loader.NodeTupleReader.TupleSink;
-import com.hp.hpl.jena.tdb.base.loader.NodeTupleReader.NullSink;
-import com.hp.hpl.jena.tdb.graph.SinkGraph;
+import com.hp.hpl.jena.tdb.base.loader.NodeTupleReader.CountingSink;
 import com.hp.hpl.jena.tdb.index.IndexBuilder;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderLib;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
-import com.hp.hpl.jena.tdb.store.*;
+import com.hp.hpl.jena.tdb.store.BulkLoader;
+import com.hp.hpl.jena.tdb.store.FactoryGraphTDB;
+import com.hp.hpl.jena.tdb.store.GraphTDB;
+import com.hp.hpl.jena.tdb.store.GraphTriplesTDB;
+import com.hp.hpl.jena.tdb.store.NodeTable;
+import com.hp.hpl.jena.tdb.store.NodeTableFactory;
+import com.hp.hpl.jena.tdb.store.TripleTable;
 
 /** Tools to test performance.  Subcommand based. */
 public class tdbperf extends CmdSub
@@ -103,18 +105,22 @@ public class tdbperf extends CmdSub
     
     static class SubParse //extends CmdTDB
     {
+        String[] args ;
         public SubParse(String... argv)
         {
             //super(argv) ;
+            args = argv ;
         }
 
         protected void exec()
         {
             TDB.init();
-            Graph g = new SinkGraph() ;
-            TupleSink sink = new NullSink()  ;
-            List<String> files = new ArrayList<String>() ;
-            files.add("/home/afs/Datasets/MusicBrainz/artists.nt") ;
+            //Graph g = new SinkGraph() ;
+            CountingSink sink = new CountingSink()  ;
+            Timer timer = new Timer() ;
+            timer.startTimer() ;
+            
+            List<String> files = Arrays.asList(args) ;
             for ( String fn : files )
             {
                 InputStream in ;
@@ -125,7 +131,15 @@ public class tdbperf extends CmdSub
                     break ;
                 }
                 NodeTupleReader.read(sink, in, fn) ;
+                long x = timer.readTimer() ;
             }
+            long x = timer.endTimer() ;
+            double time = (double)x/1000.0 ;
+            long count = sink.count ;
+            if ( time > 0 )
+                System.out.printf("Triples: %,d: Time: %,.2f sec [%,.2f TPS]\n", count, time, count/time);
+            else
+                System.out.printf("Triples: %,d: Time: %,.2f sec\n", count, time);
             System.exit(0) ;
         }
             

@@ -94,6 +94,14 @@ public final class NodeTupleReader
         @Override
         public void tuple(Tuple<Node> tuple) {}
     }
+
+    public static class CountingSink implements TupleSink
+    {
+        public long count = 0 ; 
+        @Override
+        public void tuple(Tuple<Node> tuple) { count++ ; }
+    }
+
     
     private Hashtable<String, Node> anons = new Hashtable<String, Node>();
 
