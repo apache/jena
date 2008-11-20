@@ -45,7 +45,7 @@ public class TupleIndex implements Sync, Closeable
     }
     
     /** Insert a tuple - return true if it was really added, false if it was a duplicate */
-    public boolean add( Tuple<NodeId> tuple) 
+    public boolean add(Tuple<NodeId> tuple) 
     { 
         if ( Check )
         {
@@ -57,7 +57,7 @@ public class TupleIndex implements Sync, Closeable
         return index.add(r) ;
     }
     /** Delete a tuple - return true if it was deleted, false if it didn't exist */
-    public boolean delete( Tuple<NodeId> tuple ) 
+    public boolean delete(Tuple<NodeId> tuple) 
     { 
         if ( Check )
         {

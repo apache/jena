@@ -7,41 +7,31 @@
 package dev;
 
 import junit.TestBase;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
+import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
-import com.hp.hpl.jena.tdb.pgraph.PGraphTestSuite;
-import com.hp.hpl.jena.tdb.pgraph.TestPGraph;
+import com.hp.hpl.jena.tdb.solver.reorder.ReorderLib;
+import com.hp.hpl.jena.tdb.store.TestGraphTDB;
+import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
-    TestPGraph.class,
-    PGraphTestSuite.class          // Scripted tests
+    TestGraphTDB.class,
 })
 
 public class TS_Dev extends TestBase
 {
+    @BeforeClass static public void beforeClass()   
+    {
+        Logger.getLogger("com.hp.hpl.jena.tdb.info").setLevel(Level.WARN) ;
+        Logger.getLogger("com.hp.hpl.jena.tdb.exec").setLevel(Level.WARN) ;
+        SystemTDB.defaultOptimizer = ReorderLib.identity() ;
+    }
 }
 
-//import com.hp.hpl.jena.tdb.junit.TestFactoryTDB;
-//import junit.framework.TestSuite;
-//import org.junit.runner.RunWith;
-
-//import org.junit.runners.Suite;
-
-//@RunWith(AllTests.class)
-//public class DevTest extends TestSuite
-//{
-//    public static String manifestMain = "m.ttl" ;
-//    
-//    static public TestSuite suite() { return new DevTest() ; }
-//    
-//    private DevTest()
-//    {
-//        super("PGraph") ;
-//        TestFactoryTDB.make(this, manifestMain) ;
-//    }
-//}
 
 /*
  * (c) Copyright 2008 Hewlett-Packard Development Company, LP

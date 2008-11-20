@@ -21,11 +21,12 @@ public class Dev
     // Checking, N-ary and non-RDF.
     // Prefix mapping?  Migrate to a dump format.
     
+    // InMemory version.  TupleIndex[base] > TupleIndexRecord, TupleIndexMem 
+    
     // ---- Reopenable BlockMgrs (and the object file?) 
 
     // Cheap parsing of Node table.
     // [incremental]
-    // Simple, non-copy in-memory version for comparisons. BlockMgrMem(,false) ;
     
     // ---- Assembler and configuration
     //      Configuring the built-in constants.
