@@ -75,7 +75,7 @@ public class tdbperf extends CmdSub
         private static GraphTDB setup()
         {
             // Setup a graph - for experimental alternatives.
-            BlockMgrMem.SafeMode = false ;
+            BlockMgrMem.SafeMode = true ;
             IndexBuilder indexBuilder = IndexBuilder.mem() ;
             Location location = null ;
 
