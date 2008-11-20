@@ -45,7 +45,6 @@ public class Run
         } ;
         String qs = StringUtils.join("\n", x) ;
         
-        
         Query query = QueryFactory.create(qs,Syntax.syntaxARQ) ;
         Op op = Algebra.compile(query) ;
         //op = Algebra.optimize(op) ;
