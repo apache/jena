@@ -12,7 +12,7 @@ import com.hp.hpl.jena.graph.impl.GraphBase;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 
 /** The well known graph implementation */
-public class SinkGraph extends GraphBase
+public final class SinkGraph extends GraphBase
 {
 
     @Override

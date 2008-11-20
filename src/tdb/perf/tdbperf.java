@@ -21,6 +21,7 @@ import arq.cmdline.ModVersion;
 
 import com.hp.hpl.jena.sparql.util.Timer;
 import com.hp.hpl.jena.sparql.util.Utils;
+
 import com.hp.hpl.jena.tdb.TDB;
 import com.hp.hpl.jena.tdb.base.block.BlockMgrMem;
 import com.hp.hpl.jena.tdb.base.file.Location;
@@ -29,13 +30,7 @@ import com.hp.hpl.jena.tdb.base.loader.NodeTupleReader.CountingSink;
 import com.hp.hpl.jena.tdb.index.IndexBuilder;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderLib;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
-import com.hp.hpl.jena.tdb.store.BulkLoader;
-import com.hp.hpl.jena.tdb.store.FactoryGraphTDB;
-import com.hp.hpl.jena.tdb.store.GraphTDB;
-import com.hp.hpl.jena.tdb.store.GraphTriplesTDB;
-import com.hp.hpl.jena.tdb.store.NodeTable;
-import com.hp.hpl.jena.tdb.store.NodeTableFactory;
-import com.hp.hpl.jena.tdb.store.TripleTable;
+import com.hp.hpl.jena.tdb.store.*;
 
 /** Tools to test performance.  Subcommand based. */
 public class tdbperf extends CmdSub
@@ -114,8 +109,7 @@ public class tdbperf extends CmdSub
 
         protected void exec()
         {
-            TDB.init();
-            //Graph g = new SinkGraph() ;
+            //TDB.init();
             CountingSink sink = new CountingSink()  ;
             Timer timer = new Timer() ;
             timer.startTimer() ;
@@ -144,7 +138,9 @@ public class tdbperf extends CmdSub
             }
             long x = timer.endTimer() ;
             double time = (double)x/1000.0 ;
+            
             long count = sink.count ;
+            
             if ( time > 0 )
                 System.out.printf("Triples: %,d: Time: %,.2f sec [%,.2f TPS]\n", count, time, count/time);
             else

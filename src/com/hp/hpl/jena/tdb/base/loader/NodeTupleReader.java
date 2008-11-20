@@ -75,7 +75,7 @@ public final class NodeTupleReader
     public interface TupleSink { void tuple(Tuple<Node> tuple) ; } 
     
     // N-Triples
-    static class GraphTupleSink implements TupleSink
+    static final class GraphTupleSink implements TupleSink
     {
         private final Graph graph ;
         GraphTupleSink(Graph g) { this.graph = g ; }
@@ -89,17 +89,23 @@ public final class NodeTupleReader
         }
         
     }
-    public static class NullSink implements TupleSink
+    public final static class NullSink implements TupleSink
     {
         @Override
         public void tuple(Tuple<Node> tuple) {}
     }
 
-    public static class CountingSink implements TupleSink
+    public final static class CountingSink implements TupleSink
     {
         public long count = 0 ; 
         @Override
-        public void tuple(Tuple<Node> tuple) { count++ ; }
+        public void tuple(Tuple<Node> tuple) 
+        {
+//            if ( tuple.size() != 3 ) 
+//                throw new lib.InternalError("Tuple not of length 3 for a triple") ;
+//            Triple t = new Triple(tuple.get(0), tuple.get(1), tuple.get(2)) ;
+            count++ ;
+        }
     }
 
     
