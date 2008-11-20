@@ -39,7 +39,7 @@ public class Run
     {
         String[] x = {"PREFIX afn:     <http://jena.hpl.hp.com/ARQ/function#>",
             " ASK {",
-            "FILTER bound(?test)",
+            "{ FILTER bound(?test) }",
             "LET (?x := afn:now())" ,
             "}"
         } ;
