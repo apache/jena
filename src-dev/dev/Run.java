@@ -12,13 +12,11 @@ import arq.sparql;
 import arq.sse_query;
 
 import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.ModelFactory;
 
 import com.hp.hpl.jena.util.FileManager;
 
-import com.hp.hpl.jena.sparql.algebra.AlgebraQuad;
-import com.hp.hpl.jena.sparql.algebra.ExtBuilder;
-import com.hp.hpl.jena.sparql.algebra.Op;
-import com.hp.hpl.jena.sparql.algebra.OpExtRegistry;
+import com.hp.hpl.jena.sparql.algebra.*;
 import com.hp.hpl.jena.sparql.algebra.op.OpExt;
 import com.hp.hpl.jena.sparql.algebra.op.OpFetch;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
@@ -29,6 +27,8 @@ import com.hp.hpl.jena.sparql.sse.ItemList;
 import com.hp.hpl.jena.sparql.sse.SSE;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
 import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
+import com.hp.hpl.jena.sparql.util.QueryExecUtils;
+import com.hp.hpl.jena.sparql.util.StringUtils;
 
 import com.hp.hpl.jena.query.*;
 
@@ -37,6 +37,25 @@ public class Run
 {
     public static void main(String[] argv) throws Exception
     {
+        String[] x = {"PREFIX afn:     <http://jena.hpl.hp.com/ARQ/function#>",
+            " ASK {",
+            "FILTER bound(?test)",
+            "LET (?x := afn:now())" ,
+            "}"
+        } ;
+        String qs = StringUtils.join("\n", x) ;
+        
+        
+        Query query = QueryFactory.create(qs,Syntax.syntaxARQ) ;
+        Op op = Algebra.compile(query) ;
+        //op = Algebra.optimize(op) ;
+        System.out.print(op) ;
+        
+        Model m = ModelFactory.createDefaultModel() ;
+        QueryExecution qexec = QueryExecutionFactory.create(query, m) ;
+        QueryExecUtils.executeQuery(query, qexec)  ;
+        System.exit(0) ;
+        
         fetch() ; System.exit(0) ; 
 
         // Compressed syntax
