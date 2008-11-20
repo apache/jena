@@ -119,16 +119,21 @@ public class tdbperf extends CmdSub
             CountingSink sink = new CountingSink()  ;
             Timer timer = new Timer() ;
             timer.startTimer() ;
-            
+
             List<String> files = Arrays.asList(args) ;
             for ( String fn : files )
             {
-                InputStream in ;
-                try { in = new FileInputStream(fn) ; } 
-                catch (FileNotFoundException ex)
+                InputStream in = null ;
+                if ( fn.equals("-") || fn.equals("--") )
+                    in = System.in ;
+                else
                 {
-                    ex.printStackTrace();
-                    break ;
+                    try { in = new FileInputStream(fn) ; } 
+                    catch (FileNotFoundException ex)
+                    {
+                        ex.printStackTrace();
+                        break ;
+                    }
                 }
                 NodeTupleReader.read(sink, in, fn) ;
                 long x = timer.readTimer() ;
