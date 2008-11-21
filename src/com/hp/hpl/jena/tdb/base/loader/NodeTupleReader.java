@@ -139,6 +139,8 @@ public final class NodeTupleReader
             x.readRDF(); 
     }
 
+    // Run the parser (PeekReader and the tuple parser) on a separate thread.
+    // Not necessarily any faster.
     private static void invokeParallel(final NodeTupleReader x)
     {
         // Split the sink by a pipe
