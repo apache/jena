@@ -22,7 +22,7 @@ import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 import com.hp.hpl.jena.tdb.lib.TupleLib;
 import com.hp.hpl.jena.tdb.store.NodeId;
 
-public class TupleIndexRecord implements TupleIndex
+public final class TupleIndexRecord implements TupleIndex
 {
     private static final boolean Check = false ;
     private RangeIndex index ; 
@@ -72,6 +72,16 @@ public class TupleIndexRecord implements TupleIndex
     public String getLabel() { return colMap.getLabel() ;  } 
     //public ColumnMap getColMap() { return colMap ;  }
     
+    /** Find all matching tuples - a slot of NodeId.NodeIdAny (or null) means match any.
+     *  Input pattern in natural order, not index order.
+     */
+    
+    @Override
+    public Iterator<Tuple<NodeId>> find(Tuple<NodeId> pattern)
+    {
+        return findOrScan(pattern) ;
+    }
+
     Iterator<Tuple<NodeId>> findOrScan(Tuple<NodeId> pattern)
     {
         return findWorker(pattern, true, true) ;
@@ -85,17 +95,6 @@ public class TupleIndexRecord implements TupleIndex
     Iterator<Tuple<NodeId>> findByIndex(Tuple<NodeId> pattern)
     {
         return findWorker(pattern, false, false) ;
-    }
-    
-    /** Find all matching tuples - a slot of NodeId.NodeIdAny (or null) means match any.
-     *  Inpout pattern in natural order, not index order.
-     *  Return null if a full scan is needed.
-     */
-
-    @Override
-    public Iterator<Tuple<NodeId>> find(Tuple<NodeId> pattern)
-    {
-        return findOrScan(pattern) ;
     }
     
     private Iterator<Tuple<NodeId>> findWorker(Tuple<NodeId> pattern, boolean partialScanAllowed, boolean fullScanAllowed)

@@ -27,8 +27,7 @@ public interface TupleIndex extends Sync, Closeable
     //public ColumnMap getColMap() { return colMap ;  }
     
     /** Find all matching tuples - a slot of NodeId.NodeIdAny (or null) means match any.
-     *  Inpout pattern in natural order, not index order.
-     *  Return null if a full scan is needed.
+     *  Input pattern in natural order, not index order.
      */
 
     public Iterator<Tuple<NodeId>> find(Tuple<NodeId> pattern) ;
