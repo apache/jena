@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2008 Hewlett-Packard Development Company, LP
  	All rights reserved.
- 	$Id: TestBasicReifier.java,v 1.5 2008-11-21 11:02:03 chris-dollin Exp $
+ 	$Id: TestBasicReifier.java,v 1.6 2008-11-21 11:55:00 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -33,7 +33,7 @@ public class TestBasicReifier extends AbstractTestReifier
     public static TestSuite suite()
         { 
         TestSuite result = new TestSuite();
-        result.addTest( MetaTestGraph.suite( TestBasicReifier.class, BasicReifierGraph.class ) );
+        result.addTest( MetaTestGraph.suite( TestBasicReifier.class, BasicReifierGraph.class, ReificationStyle.Standard ) );
         return result; 
         }       
 

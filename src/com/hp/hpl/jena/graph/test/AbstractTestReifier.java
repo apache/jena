@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: AbstractTestReifier.java,v 1.34 2008-11-06 10:57:30 chris-dollin Exp $
+  $Id: AbstractTestReifier.java,v 1.35 2008-11-21 11:55:00 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -154,22 +154,14 @@ public abstract class AbstractTestReifier extends GraphTestBase
         assertEquals( 0, g.size() );
         }
         
-    public void testReificationTriplesConvenient()
-        { testReificationTriples( Convenient ); }
-        
-    public void testReificationTriplesStandard()
-        { testReificationTriples( Standard ); }
-    
-    public void testReificationQuadletsMinimal()
-        { testReificationTriples( Minimal ); }
-        
     /**
         test that a reifier with the given style sees [or not, if it's minimal] the reification quads
         that are inserted through its graph.
     */
-    protected void testReificationTriples( ReificationStyle style )
+    public void testReificationTriples()
         {
-        Graph g = getGraph( style );
+        Graph g = getGraph();
+        ReificationStyle style = g.getReifier().getStyle();
         Graph quadlets = getReificationTriples( g.getReifier() );
         String S1 = "SSS rdf:predicate PPP", S2 = "SSS rdf:subject SSS";
         g.add( triple( S1 ) );
