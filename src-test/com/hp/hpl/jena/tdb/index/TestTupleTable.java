@@ -35,11 +35,11 @@ public class TestTupleTable extends BaseTest
     
     static private TupleTable create()
     {
-        TupleIndex idxSPO = TestTupleIndex.create("SPO") ;
-        TupleIndex idxPOS = TestTupleIndex.create("POS") ;
-        TupleIndex idxOSP = TestTupleIndex.create("OSP") ;
+        TupleIndex idxSPO = TestTupleIndexRecord.create("SPO") ;
+        TupleIndex idxPOS = TestTupleIndexRecord.create("POS") ;
+        TupleIndex idxOSP = TestTupleIndexRecord.create("OSP") ;
         TupleIndex x[] = { idxSPO, idxPOS, idxOSP } ;
-        TupleTable table = new TupleTable(3, x, TestTupleIndex.factory, null) ;
+        TupleTable table = new TupleTable(3, x, TestTupleIndexRecord.factory, null) ;
         return table ;
     }
     

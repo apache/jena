@@ -134,7 +134,7 @@ public class TupleTable implements Sync, Closeable
             // No index at all.  Scan.
             index = indexes[0] ;
 
-        return index.findOrScan(pattern) ;
+        return index.find(pattern) ;
     }
     
     @Override

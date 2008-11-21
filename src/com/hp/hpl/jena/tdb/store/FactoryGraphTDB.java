@@ -28,6 +28,7 @@ import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 import com.hp.hpl.jena.tdb.index.IndexBuilder;
 import com.hp.hpl.jena.tdb.index.RangeIndex;
 import com.hp.hpl.jena.tdb.index.TupleIndex;
+import com.hp.hpl.jena.tdb.index.TupleIndexRecord;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderLib;
 import com.hp.hpl.jena.tdb.solver.reorder.ReorderTransformation;
 import com.hp.hpl.jena.tdb.sys.Names;
@@ -154,7 +155,7 @@ public class FactoryGraphTDB
     private static TupleIndex createTupleIndex(IndexBuilder indexBuilder, RecordFactory recordFactory, Location location, String primary, String desc)
     {
         RangeIndex rIdx1 = indexBuilder.newRangeIndex(location, recordFactory, desc) ;
-        TupleIndex tupleIndex = new TupleIndex(desc.length(), new ColumnMap(primary, desc), recordFactory, rIdx1) ; 
+        TupleIndex tupleIndex = new TupleIndexRecord(desc.length(), new ColumnMap(primary, desc), recordFactory, rIdx1) ; 
         return tupleIndex ;
     }
     

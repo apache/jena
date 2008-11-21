@@ -18,13 +18,10 @@ import tdb.Cmd;
 import test.BaseTest;
 
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
-import com.hp.hpl.jena.tdb.index.IndexBuilder;
-import com.hp.hpl.jena.tdb.index.RangeIndex;
-import com.hp.hpl.jena.tdb.index.TupleIndex;
 import com.hp.hpl.jena.tdb.store.NodeId;
 import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
-public class TestTupleIndex extends BaseTest
+public class TestTupleIndexRecord extends BaseTest
 {
     static { Cmd.setLog4j() ; }
     
@@ -36,29 +33,29 @@ public class TestTupleIndex extends BaseTest
     static NodeId n5 = new NodeId(0x5555555555555555L) ;
     static NodeId n6 = new NodeId(0x6666666666666666L) ; 
     
-    static TupleIndex create(String description)
+    static TupleIndexRecord create(String description)
     {
         RangeIndex rIdx = IndexBuilder.mem().newRangeIndex(null, factory, "TupleIndexTest") ;
         ColumnMap cmap = new ColumnMap("SPO", description) ;
-        TupleIndex index = new TupleIndex(3, cmap, factory, rIdx) ;
+        TupleIndexRecord index = new TupleIndexRecord(3, cmap, factory, rIdx) ;
         return index ;
     }
     
-    static void add(TupleIndex index, NodeId x1, NodeId x2, NodeId x3)
+    static void add(TupleIndexRecord index, NodeId x1, NodeId x2, NodeId x3)
     {
         Tuple<NodeId> tuple = new Tuple<NodeId>(x1, x2, x3) ;
         index.add(tuple) ;
     }
     
-    @Test public void tupleIndex_1()
+    @Test public void TupleIndexRecord_1()
     {
-        TupleIndex index = create("SPO") ;
+        TupleIndexRecord index = create("SPO") ;
         add(index, n1, n2, n3) ;
     }
     
-    @Test public void tupleIndexSPO_1()
+    @Test public void TupleIndexRecordSPO_1()
     {
-        TupleIndex index = create("SPO") ;
+        TupleIndexRecord index = create("SPO") ;
         add(index, n1, n2, n3) ;
         
         Tuple<NodeId> tuple2 = new Tuple<NodeId>(n1, n2, n3) ;
@@ -68,9 +65,9 @@ public class TestTupleIndex extends BaseTest
         assertFalse(iter.hasNext()) ;
     }
  
-    @Test public void tupleIndexSPO_2()
+    @Test public void TupleIndexRecordSPO_2()
     {
-        TupleIndex index = create("SPO") ;
+        TupleIndexRecord index = create("SPO") ;
         add(index, n1, n2, n3) ;
         
         Tuple<NodeId> tuple2 = new Tuple<NodeId>(n1, n2, null) ;
@@ -80,9 +77,9 @@ public class TestTupleIndex extends BaseTest
         assertFalse(iter.hasNext()) ;
     }
     
-    @Test public void tupleIndexSPO_3()
+    @Test public void TupleIndexRecordSPO_3()
     {
-        TupleIndex index = create("SPO") ;
+        TupleIndexRecord index = create("SPO") ;
         add(index, n1, n2, n3) ;
         
         Tuple<NodeId> tuple2 = new Tuple<NodeId>(n1, null, n3) ;
@@ -94,9 +91,9 @@ public class TestTupleIndex extends BaseTest
         assertFalse(iter.hasNext()) ;
     }
     
-    @Test public void tupleIndexSPO_4()
+    @Test public void TupleIndexRecordSPO_4()
     {
-        TupleIndex index = create("SPO") ;
+        TupleIndexRecord index = create("SPO") ;
         add(index, n1, n2, n3) ;
         
         Tuple<NodeId> tuple2 = new Tuple<NodeId>(n1, NodeId.NodeIdAny, NodeId.NodeIdAny) ;
@@ -106,9 +103,9 @@ public class TestTupleIndex extends BaseTest
         assertFalse(iter.hasNext()) ;
     }
     
-    @Test public void tupleIndexSPO_5()
+    @Test public void TupleIndexRecordSPO_5()
     {
-        TupleIndex index = create("SPO") ;
+        TupleIndexRecord index = create("SPO") ;
         add(index, n1, n2, n3) ;
         add(index, n1, n2, n4) ;
         
@@ -120,9 +117,9 @@ public class TestTupleIndex extends BaseTest
         assertFalse(x.contains(new Tuple<NodeId>(n1, n2, n4))) ;
     }
 
-    @Test public void tupleIndexSPO_6()
+    @Test public void TupleIndexRecordSPO_6()
     {
-        TupleIndex index = create("SPO") ;
+        TupleIndexRecord index = create("SPO") ;
         add(index, n1, n2, n3) ;
         add(index, n1, n2, n4) ;
         
@@ -134,9 +131,9 @@ public class TestTupleIndex extends BaseTest
         assertTrue(x.contains(new Tuple<NodeId>(n1, n2, n4))) ;
     }
 
-    @Test public void tupleIndexSPO_7()
+    @Test public void TupleIndexRecordSPO_7()
     {
-        TupleIndex index = create("SPO") ;
+        TupleIndexRecord index = create("SPO") ;
         add(index, n1, n2, n3) ;
         add(index, n1, n2, n4) ;
         
@@ -148,9 +145,9 @@ public class TestTupleIndex extends BaseTest
         assertTrue(x.contains(new Tuple<NodeId>(n1, n2, n4))) ;
     }
 
-    @Test public void tupleIndexSPO_8()
+    @Test public void TupleIndexRecordSPO_8()
     {
-        TupleIndex index = create("SPO") ;
+        TupleIndexRecord index = create("SPO") ;
         add(index, n1, n2, n3) ;
         add(index, n2, n3, n4) ;
 
@@ -171,9 +168,9 @@ public class TestTupleIndex extends BaseTest
         }
     }
 
-    @Test public void tupleIndexPOS_1()
+    @Test public void TupleIndexRecordPOS_1()
     {
-        TupleIndex index = create("POS") ;
+        TupleIndexRecord index = create("POS") ;
         add(index, n1, n2, n3) ;
         
 //        {
@@ -189,9 +186,9 @@ public class TestTupleIndex extends BaseTest
         assertFalse(iter.hasNext()) ;
     }
  
-    @Test public void tupleIndexPOS_2()
+    @Test public void TupleIndexRecordPOS_2()
     {
-        TupleIndex index = create("POS") ;
+        TupleIndexRecord index = create("POS") ;
         add(index, n1, n2, n3) ;
         
         Tuple<NodeId> tuple2 = new Tuple<NodeId>(null, n2, null) ;
@@ -202,9 +199,9 @@ public class TestTupleIndex extends BaseTest
     }
     
 
-    @Test public void tupleIndexPOS_3()
+    @Test public void TupleIndexRecordPOS_3()
     {
-        TupleIndex index = create("POS") ;
+        TupleIndexRecord index = create("POS") ;
         add(index, n1, n2, n3) ;
         
         Tuple<NodeId> tuple2 = new Tuple<NodeId>(null, n2, n3) ;
@@ -214,9 +211,9 @@ public class TestTupleIndex extends BaseTest
         assertFalse(iter.hasNext()) ;
     }
 
-    @Test public void tupleIndexFindScan_1()
+    @Test public void TupleIndexRecordFindScan_1()
     {
-        TupleIndex index = create("SPO") ;
+        TupleIndexRecord index = create("SPO") ;
         add(index, n1, n2, n3) ;
         Tuple<NodeId> tuple2 = new Tuple<NodeId>(n1, null, n3) ;
         Iterator<Tuple<NodeId>> iter = index.findByIndex(tuple2) ;
@@ -227,9 +224,9 @@ public class TestTupleIndex extends BaseTest
         assertFalse(iter.hasNext()) ;
     }
     
-    @Test public void tupleIndexFindScan_2()
+    @Test public void TupleIndexRecordFindScan_2()
     {
-        TupleIndex index = create("SPO") ;
+        TupleIndexRecord index = create("SPO") ;
         add(index, n1, n2, n3) ;
         add(index, n1, n2, n4) ;
         
@@ -247,9 +244,9 @@ public class TestTupleIndex extends BaseTest
         assertFalse(iter.hasNext()) ;
     }
     
-    @Test public void tupleIndexFindNot_1()
+    @Test public void TupleIndexRecordFindNot_1()
     {
-        TupleIndex index = create("SPO") ;
+        TupleIndexRecord index = create("SPO") ;
         add(index, n1, n2, n3) ;
         
         Tuple<NodeId> tuple2 = new Tuple<NodeId>(n4, n5, n6) ;
@@ -258,9 +255,9 @@ public class TestTupleIndex extends BaseTest
         assertFalse(iter.hasNext()) ;
    }
     
-    @Test public void tupleIndexFindNot_2()
+    @Test public void TupleIndexRecordFindNot_2()
     {
-        TupleIndex index = create("SPO") ;
+        TupleIndexRecord index = create("SPO") ;
         add(index, n1, n2, n3) ;
         
         Tuple<NodeId> tuple2 = new Tuple<NodeId>(n1, n5, n6) ;
@@ -268,9 +265,9 @@ public class TestTupleIndex extends BaseTest
         assertFalse(iter.hasNext()) ;
    }
 
-    @Test public void tupleIndexFindNot_3()
+    @Test public void TupleIndexRecordFindNot_3()
     {
-        TupleIndex index = create("SPO") ;
+        TupleIndexRecord index = create("SPO") ;
         add(index, n1, n2, n3) ;
         
         Tuple<NodeId> tuple2 = new Tuple<NodeId>(n1, null, n6) ;
@@ -278,9 +275,9 @@ public class TestTupleIndex extends BaseTest
         assertFalse(iter.hasNext()) ;
    }
 
-    @Test public void tupleIndexFindNot_4()
+    @Test public void TupleIndexRecordFindNot_4()
     {
-        TupleIndex index = create("SPO") ;
+        TupleIndexRecord index = create("SPO") ;
         add(index, n1, n2, n3) ;
         add(index, n1, n5, n6) ;
         
@@ -289,9 +286,9 @@ public class TestTupleIndex extends BaseTest
         assertFalse(iter.hasNext()) ;
    }
     
-    @Test public void tupleIndexFindNot_5()
+    @Test public void TupleIndexRecordFindNot_5()
     {
-        TupleIndex index = create("SPO") ;
+        TupleIndexRecord index = create("SPO") ;
         add(index, n1, n2, n3) ;
         add(index, n1, n5, n6) ;
         
@@ -300,9 +297,9 @@ public class TestTupleIndex extends BaseTest
         assertFalse(iter.hasNext()) ;
    }
 
-    @Test public void tupleIndexFindNot_6()
+    @Test public void TupleIndexRecordFindNot_6()
     {
-        TupleIndex index = create("SPO") ;
+        TupleIndexRecord index = create("SPO") ;
         add(index, n1, n2, n3) ;
         add(index, n4, n5, n6) ;
         
