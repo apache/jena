@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2008 Hewlett-Packard Development Company, LP
  	All rights reserved.
- 	$Id: TestBasicReifier.java,v 1.4 2008-11-20 16:01:25 chris-dollin Exp $
+ 	$Id: TestBasicReifier.java,v 1.5 2008-11-21 11:02:03 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -57,17 +57,25 @@ public class TestBasicReifier extends AbstractTestReifier
         public Graph getBase()
             { return base; }
         
-        public void forceAddTriple( Triple t )
-            { base.add( t ); }
-        
         public void forceDeleteTriple( Triple t )
             { base.delete( t ); }
+        
+        public ExtendedIterator find( TripleMatch tm )
+            { return find( tm.asTriple() ); }
+        
+        public ExtendedIterator find( Node s, Node p, Node o )
+            { return find( Triple.create( s, p, o ) ); }
+        
+        private ExtendedIterator find( Triple t )
+            { 
+            ExtendedIterator found = base.find( t );
+            return reifier.getStyle().conceals() ? found.filterDrop( BasicReifier.isReificationTriple ) : found; 
+            }
         
         public int size()  
             { 
             BasicReifier br = (BasicReifier) reifier;
-            int discount = br.style.conceals() ? br.count( br.find() ) : 0;
-            return base.size()  - discount;
+            return base.size() - br.countConcealed();
             }
         }
 
@@ -75,9 +83,14 @@ public class TestBasicReifier extends AbstractTestReifier
         {
         protected final ReificationStyle style;
         protected final BasicReifierGraph graph;
+        protected final Graph base;
         
         public BasicReifier( Graph graph, ReificationStyle style )
-            { this.style = style; this.graph = (BasicReifierGraph) graph; }
+            { 
+            this.style = style; 
+            this.graph = (BasicReifierGraph) graph; 
+            this.base = this.graph.getBase(); 
+            }
 
         static final Map1 getSubject = new Map1() 
             {
@@ -91,7 +104,7 @@ public class TestBasicReifier extends AbstractTestReifier
         
         public ExtendedIterator allNodes()
             { // TODO needs constraining for :subject :object etc
-            return graph.find( Node.ANY, RDF.Nodes.type, RDF.Nodes.Statement ).mapWith( getSubject );
+            return base.find( Node.ANY, RDF.Nodes.type, RDF.Nodes.Statement ).mapWith( getSubject );
             }
 
         public ExtendedIterator allNodes( Triple t )
@@ -101,9 +114,9 @@ public class TestBasicReifier extends AbstractTestReifier
             { /* nothing to do */ }
 
         public ExtendedIterator find( TripleMatch m )
-            { return graph.getBase().find( m ).filterKeep( isReificationTriple ); }
+            { return base.find( m ).filterKeep( isReificationTriple ); }
         
-        private static final Filter isReificationTriple = new Filter()
+        protected static final Filter isReificationTriple = new Filter()
             {
             public boolean accept( Object o )
                 { return isReificationTriple( (Triple) o ); }  
@@ -125,7 +138,7 @@ public class TestBasicReifier extends AbstractTestReifier
 
         public boolean handledAdd( Triple t )
             {
-            graph.forceAddTriple( t );
+            base.add( t );
             return isReificationTriple( t );
             }
 
@@ -152,7 +165,7 @@ public class TestBasicReifier extends AbstractTestReifier
 
         private void checkQuadElementFree( Node n, Node predicate, Node object )
             {
-            List L = graph.find( n, predicate, Node.ANY ).mapWith( getObject ).toList();
+            List L = base.find( n, predicate, Node.ANY ).mapWith( getObject ).toList();
             if (L.size() == 0) return;
             if (L.size() == 1 && L.get( 0 ).equals( object )) return;
             throw new CannotReifyException( n );
@@ -160,17 +173,17 @@ public class TestBasicReifier extends AbstractTestReifier
 
         public void remove( Node n, Triple t )
             { // TODO fix to ensure only works on complete reifications
-            graph.delete(  Triple.create( n, RDF.Nodes.subject, t.getSubject() ) );
-            graph.delete(  Triple.create( n, RDF.Nodes.predicate, t.getPredicate() ) );
-            graph.delete(  Triple.create( n, RDF.Nodes.object, t.getObject() ) );
-            graph.delete(  Triple.create( n, RDF.Nodes.type, RDF.Nodes.Statement ) );
+            base.delete(  Triple.create( n, RDF.Nodes.subject, t.getSubject() ) );
+            base.delete(  Triple.create( n, RDF.Nodes.predicate, t.getPredicate() ) );
+            base.delete(  Triple.create( n, RDF.Nodes.object, t.getObject() ) );
+            base.delete(  Triple.create( n, RDF.Nodes.type, RDF.Nodes.Statement ) );
             }
 
         public void remove( Triple t )
             { throw new BrokenException( "this reifier operation" ); }
 
         public int size()
-            { return style.conceals() ? 0: count( find() ); }
+            { return style.conceals() ? 0: count( findQuadlets() ); }
 
         int count( ExtendedIterator find )
             { 
@@ -178,14 +191,17 @@ public class TestBasicReifier extends AbstractTestReifier
             while (find.hasNext()) { result += 1; find.next(); }
             return result;
             }
+        
+        int countConcealed()
+            { return style.conceals() ? count( findQuadlets() ) : 0; }
 
-        ExtendedIterator find()
+        ExtendedIterator findQuadlets()
             { 
             return
-                graph.find( Node.ANY, RDF.Nodes.subject, Node.ANY )
-                .andThen( graph.find( Node.ANY, RDF.Nodes.predicate, Node.ANY ) )
-                .andThen( graph.find( Node.ANY, RDF.Nodes.object, Node.ANY ) )
-                .andThen( graph.find( Node.ANY, RDF.Nodes.type, RDF.Nodes.Statement ) )
+                base.find( Node.ANY, RDF.Nodes.subject, Node.ANY )
+                .andThen( base.find( Node.ANY, RDF.Nodes.predicate, Node.ANY ) )
+                .andThen( base.find( Node.ANY, RDF.Nodes.object, Node.ANY ) )
+                .andThen( base.find( Node.ANY, RDF.Nodes.type, RDF.Nodes.Statement ) )
                 ;
             }
 
@@ -196,7 +212,7 @@ public class TestBasicReifier extends AbstractTestReifier
                 .addMatch( R, RDF.Nodes.subject, S )
                 .addMatch( R, RDF.Nodes.predicate, P )
                 .addMatch( R, RDF.Nodes.object, O );
-            List bindings = graph.queryHandler().prepareBindings( q, new Node[] {R, S, P, O} ).executeBindings().toList();
+            List bindings = base.queryHandler().prepareBindings( q, new Node[] {R, S, P, O} ).executeBindings().toList();
             return bindings.size() == 1 && t.equals( tripleFrom( (Domain) bindings.get( 0 ) ) );
             }
 
@@ -214,7 +230,7 @@ public class TestBasicReifier extends AbstractTestReifier
                 .addMatch( n, RDF.Nodes.predicate, P )
                 .addMatch( n, RDF.Nodes.object, O )
                 .addMatch( n, RDF.Nodes.type, RDF.Nodes.Statement );
-            List bindings = graph.queryHandler().prepareBindings( q, new Node[] {S, P, O} ).executeBindings().toList();
+            List bindings = base.queryHandler().prepareBindings( q, new Node[] {S, P, O} ).executeBindings().toList();
             return bindings.size() == 1 ? triple( (Domain) bindings.get(0) ) : null;
             }
 
