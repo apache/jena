@@ -8,7 +8,9 @@ package tdb.perf;
 
 import static com.hp.hpl.jena.tdb.sys.Names.tripleIndexes;
 
-import java.io.IOException;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.Arrays;
 import java.util.List;
 
@@ -34,7 +36,6 @@ import com.hp.hpl.jena.tdb.store.GraphTriplesTDB;
 import com.hp.hpl.jena.tdb.store.NodeTable;
 import com.hp.hpl.jena.tdb.store.NodeTableFactory;
 import com.hp.hpl.jena.tdb.store.TripleTable;
-import com.hp.hpl.jena.util.FileUtils;
 
 /** Tools to test performance.  Subcommand based. */
 public class tdbperf extends CmdSub
@@ -121,34 +122,29 @@ public class tdbperf extends CmdSub
             List<String> files = Arrays.asList(args) ;
             for ( String fn : files )
             {
-//                InputStream in = null ;
-//                if ( fn.equals("-") || fn.equals("--") )
-//                {
-//                    System.out.println("Parse: stdin") ;
-//                    in = System.in ;
-//                }
-//                else
-//                {
-//                    System.out.println("Parse: "+fn) ;
-//                    try { in = new FileInputStream(fn) ; } 
-//                    catch (FileNotFoundException ex)
-//                    {
-//                        ex.printStackTrace();
-//                        break ;
-//                    }
-//                }
-//                NodeTupleReader.read(sink, in, fn) ;
-                
-                String $ = null ;
-                try
+                InputStream in = null ;
+                if ( fn.equals("-") || fn.equals("--") )
                 {
-                    $ = FileUtils.readWholeFileAsUTF8(fn) ;
-                } catch (IOException ex)
-                {
-                    ex.printStackTrace();
-                    break ;
+                    System.out.println("Parse: stdin") ;
+                    in = System.in ;
                 }
-                NodeTupleReader.read(sink, $, fn) ;
+                else
+                {
+                    System.out.println("Parse: "+fn) ;
+                    try { in = new FileInputStream(fn) ; } 
+                    catch (FileNotFoundException ex)
+                    {
+                        ex.printStackTrace();
+                        break ;
+                    }
+                }
+                NodeTupleReader.read(sink, in, fn) ;
+                
+//                try { 
+//                    String $ = FileUtils.readWholeFileAsUTF8(fn) ;
+//                    NodeTupleReader.read(sink, $, fn) ;                    
+//                } catch (IOException ex) { ex.printStackTrace(); break ; }
+
                 long x = timer.readTimer() ;
             }
             long x = timer.endTimer() ;
