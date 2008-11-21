@@ -39,6 +39,7 @@ import java.util.concurrent.BlockingQueue;
 
 import lib.CacheSetLRU;
 import lib.InternalError;
+import lib.Log;
 import lib.Tuple;
 
 import com.hp.hpl.jena.datatypes.RDFDatatype;
@@ -128,8 +129,11 @@ public final class NodeTupleReader
 
     private static void invoke(NodeTupleReader x)
     {
-        if ( true ) 
+        if ( false ) 
+        {
+            Log.info(NodeTupleReader.class, "parallel load") ;
             invokeParallel(x);
+        }
         else
             // Single threaded
             x.readRDF(); 
